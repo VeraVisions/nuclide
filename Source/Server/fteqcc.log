@@ -1,0 +1,4614 @@
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including FuncBuyZone.c
+in function func_buyzone (line 7),
+FuncBuyZone.c:12: error: Unknown value "NULL".
+including Entities.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in progs.src on line 14
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including FuncBuyZone.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including FuncBuyZone.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including FuncBuyZone.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including FuncBuyZone.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+Defs.h:39: warning: Missing semicolon at end of definition
+Defs.h:39: error: "models/player/gign/gign.mdl" is not a type
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in Defs.h on line 39
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+in function Spawn_GameClient (line 21),
+Spawn.c:29: error: Unknown value "TEAM_T".
+Spawn.c:32: error: Unknown value "TEAM_CT".
+including Entities.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in progs.src on line 16
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+../Globals.h:28: error: expected ;, found 
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in ../Globals.h on line 28
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBuyZone.c
+FuncBuyZone.c:39: error: redeclaration of function body
+FuncHostageRescue.c:39:    const void() func_buyzone  is defined here
+including Spawn.c
+including Entities.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in FuncBuyZone.c on line 39
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+Compile finished: ../../Main/progs.dat (id format)
+Done. 0 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:43: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:43: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:44: error: Cannot cast from string to float
+
+************ ERROR ************
+Errors have occured
+Error in Client.c on line 44
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:43: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:43: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:43: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:43: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:43: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:41: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:41: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:41: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:42: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:41: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:41: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:41: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:42: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:42: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:42: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:42: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:42: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:42: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:42: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:42: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+in function func_ladder_sound (line 9),
+FuncLadder.c:21: error: Unknown value "clamp".
+in function func_ladder_touch (line 43),
+FuncLadder.c:54: error: Unknown field "driver" in class "entity"
+FuncLadder.c:54: warning: conditional type mismatch: variant
+FuncLadder.c:54: error: expected ), found .
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in FuncLadder.c on line 54
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+in function func_ladder_sound (line 9),
+FuncLadder.c:21: error: Unknown value "clamp".
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in progs.src on line 20
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:42: warning F302: Potentially uninitialised variable eTarget
+at global scope,
+FuncLadder.c:25: warning F210: Sound "player/pl_ladder1.wav" was used but not directly precached
+FuncLadder.c:27: warning F210: Sound "player/pl_ladder2.wav" was used but not directly precached
+FuncLadder.c:29: warning F210: Sound "player/pl_ladder3.wav" was used but not directly precached
+FuncLadder.c:31: warning F210: Sound "player/pl_ladder4.wav" was used but not directly precached
+Compile finished: ../../Main/progs.dat (id format)
+Done. 5 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:42: warning F302: Potentially uninitialised variable eTarget
+at global scope,
+FuncLadder.c:25: warning F210: Sound "player/pl_ladder1.wav" was used but not directly precached
+FuncLadder.c:27: warning F210: Sound "player/pl_ladder2.wav" was used but not directly precached
+FuncLadder.c:29: warning F210: Sound "player/pl_ladder3.wav" was used but not directly precached
+FuncLadder.c:31: warning F210: Sound "player/pl_ladder4.wav" was used but not directly precached
+Compile finished: ../../Main/progs.dat (id format)
+Done. 5 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:42: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:42: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:42: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+in function Spawn_GameClient (line 21),
+Spawn.c:62: error: Unknown field "viewmodel" in class "entity"
+including Entities.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in progs.src on line 20
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:42: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponBase.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:42: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponBase.c
+in function CWeaponBase::vPrimary (line 67),
+../Shared/WeaponBase.c:68: error: Unknown value "BulletFire".
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in progs.src on line 23
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponBase.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:42: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponBase.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:42: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponBase.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 27),
+Client.c:42: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponBase.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 37),
+Client.c:52: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponBase.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 37),
+Client.c:52: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponBase.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+in function Spawn_GameClient (line 21),
+Spawn.c:65: warning Q205: Hanging ';'
+including Entities.c
+including Client.c
+in function PutClientInServer (line 37),
+Client.c:52: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 2 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponBase.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 37),
+Client.c:52: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponBase.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 37),
+Client.c:52: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+../Globals.h:43: error: expected ;, found enum
+../Globals.h:82: error: expected ;, found .
+including Defs.h
+including ../Shared/WeaponBase.c
+in function CWeaponBase::vDraw (line 44),
+../Shared/WeaponBase.c:45: error: Unknown value "WEAPON_NONE".
+including Timer.c
+in function Timer_Update (line 37),
+Timer.c:44: error: expected ), found {
+including Main.c
+in function StartFrame (line 26),
+Main.c:29: error: Cannot cast from string to float
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+in function Spawn_GameClient (line 21),
+Spawn.c:39: error: Unknown value "WEAPON_GLOCK18".
+Spawn.c:40: error: Unknown value "GiveAmmo".
+Spawn.c:40: error: Unknown value "BULLET_PLAYER_9MM".
+Spawn.c:47: error: Unknown value "WEAPON_USP45".
+Spawn.c:47: warning F307: type mismatch: __variant WEAPON_USP45 to float self.weapon
+Spawn.c:47:    __variant WEAPON_USP45  is defined here
+Spawn.c:48: error: Unknown value "BULLET_PLAYER_45ACP".
+including Entities.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in ../Globals.h on line 43
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+../Globals.h:82: error: expected ;, found .
+including Defs.h
+including ../Shared/WeaponBase.c
+including Timer.c
+in function Timer_Update (line 37),
+Timer.c:44: error: expected ), found {
+including Main.c
+in function StartFrame (line 26),
+Main.c:29: error: Cannot cast from string to float
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+in function Spawn_GameClient (line 21),
+Spawn.c:40: error: Unknown value "GiveAmmo".
+Spawn.c:40: error: Unknown value "BULLET_PLAYER_9MM".
+Spawn.c:48: error: Unknown value "BULLET_PLAYER_45ACP".
+including Entities.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in ../Globals.h on line 82
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+../Globals.h:82: error: expected ;, found .
+including Defs.h
+including ../Shared/WeaponBase.c
+including Timer.c
+in function Timer_Update (line 37),
+Timer.c:44: error: expected ), found {
+including Main.c
+in function StartFrame (line 26),
+Main.c:29: error: Cannot cast from string to float
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in ../Globals.h on line 82
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+../Globals.h:82: error: expected ;, found .
+including Defs.h
+including ../Shared/WeaponBase.c
+including Timer.c
+including Main.c
+in function StartFrame (line 26),
+Main.c:29: error: Cannot cast from string to float
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in ../Globals.h on line 82
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+../Globals.h:82: error: expected ;, found .
+including Defs.h
+including ../Shared/WeaponBase.c
+including Timer.c
+including Main.c
+in function StartFrame (line 26),
+Main.c:29: error: Cannot cast from string to float
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in ../Globals.h on line 82
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+../Globals.h:82: error: expected ;, found .
+including Defs.h
+including ../Shared/WeaponBase.c
+including Timer.c
+including Main.c
+in function StartFrame (line 26),
+Main.c:29: error: Cannot cast from string to float
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in ../Globals.h on line 82
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponBase.c
+including Timer.c
+including Main.c
+in function StartFrame (line 26),
+Main.c:29: error: Cannot cast from string to float
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in Main.c on line 29
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponBase.c
+including Timer.c
+including Main.c
+in function StartFrame (line 26),
+Main.c:29: error: Cannot cast from string to float
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in Main.c on line 29
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponBase.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 45),
+Client.c:60: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponBase.c
+including Timer.c
+including Main.c
+in function worldspawn (line 47),
+Main.c:62: error: Cannot cast from float to string
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in Main.c on line 62
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponBase.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 45),
+Client.c:60: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponBase.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 45),
+Client.c:60: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponBase.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 45),
+Client.c:60: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (id format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponBase.c
+including Timer.c
+including Main.c
+in function worldspawn (line 47),
+Main.c:62: error: Address-of operator is not supported in this form without extensions. Consider the use of: #pragma target fte
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in Main.c on line 62
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponBase.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 45),
+Client.c:60: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponBase.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 45),
+Client.c:60: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponBase.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 45),
+Client.c:60: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponBase.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 45),
+Client.c:60: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponBase.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 45),
+Client.c:60: warning F302: Potentially uninitialised variable eTarget
+at global scope,
+Timer.c:52: warning F210: Sound "radio/moveout.wav" was used but not directly precached
+Timer.c:54: warning F210: Sound "radio/letsgo.wav" was used but not directly precached
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 3 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponBase.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 45),
+Client.c:60: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponBase.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 45),
+Client.c:60: warning F302: Potentially uninitialised variable eTarget
+at global scope,
+Timer.c:55: warning F210: Sound "radio/locknload.wav" was used but not directly precached
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 2 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponBase.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 45),
+Client.c:60: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+in function WeaponUSP45_PrimaryFire (line 46),
+../Shared/WeaponUSP45.c:48: error: Unknown value "OpenCSGunBase_PrimaryFire".
+../Shared/WeaponUSP45.c:56: warning Q206: WeaponUSP45_PrimaryFire: not all control paths return a value
+in function WeaponUSP45_Reload (line 58),
+../Shared/WeaponUSP45.c:60: error: Unknown value "OpenCSGunBase_Reload".
+../Shared/WeaponUSP45.c:68: warning Q206: WeaponUSP45_Reload: not all control paths return a value
+including ../Shared/WeaponBase.c
+at global scope,
+../Shared/WeaponBase.c:28: error: Unknown value "wptGLOCK18".
+../Shared/WeaponBase.c:28: error: initializer is not constant
+../Shared/WeaponBase.c:28:    __variant wptGLOCK18  is defined here
+../Shared/WeaponBase.c:28: warning F302: initializer is not initialised, wptGLOCK18 will be treated as 0
+../Shared/WeaponBase.c:28:    __variant wptGLOCK18  is defined here
+../Shared/WeaponBase.c:29: error: Unknown value "wptDEAGLE".
+../Shared/WeaponBase.c:29: error: initializer is not constant
+../Shared/WeaponBase.c:29:    __variant wptDEAGLE  is defined here
+../Shared/WeaponBase.c:29: warning F302: initializer is not initialised, wptDEAGLE will be treated as 0
+../Shared/WeaponBase.c:29:    __variant wptDEAGLE  is defined here
+../Shared/WeaponBase.c:30: error: Unknown value "wptP228".
+../Shared/WeaponBase.c:30: error: initializer is not constant
+../Shared/WeaponBase.c:30:    __variant wptP228  is defined here
+../Shared/WeaponBase.c:30: warning F302: initializer is not initialised, wptP228 will be treated as 0
+../Shared/WeaponBase.c:30:    __variant wptP228  is defined here
+../Shared/WeaponBase.c:31: error: Unknown value "wptELITES".
+../Shared/WeaponBase.c:31: error: initializer is not constant
+../Shared/WeaponBase.c:31:    __variant wptELITES  is defined here
+../Shared/WeaponBase.c:31: warning F302: initializer is not initialised, wptELITES will be treated as 0
+../Shared/WeaponBase.c:31:    __variant wptELITES  is defined here
+../Shared/WeaponBase.c:32: error: Unknown value "wptFIVESEVEN".
+../Shared/WeaponBase.c:32: error: initializer is not constant
+../Shared/WeaponBase.c:32:    __variant wptFIVESEVEN  is defined here
+../Shared/WeaponBase.c:32: warning F302: initializer is not initialised, wptFIVESEVEN will be treated as 0
+../Shared/WeaponBase.c:32:    __variant wptFIVESEVEN  is defined here
+../Shared/WeaponBase.c:33: error: Unknown value "wptM3".
+../Shared/WeaponBase.c:33: error: initializer is not constant
+../Shared/WeaponBase.c:33:    __variant wptM3  is defined here
+../Shared/WeaponBase.c:33: warning F302: initializer is not initialised, wptM3 will be treated as 0
+../Shared/WeaponBase.c:33:    __variant wptM3  is defined here
+../Shared/WeaponBase.c:34: error: Unknown value "wptM1014".
+../Shared/WeaponBase.c:34: error: initializer is not constant
+../Shared/WeaponBase.c:34:    __variant wptM1014  is defined here
+../Shared/WeaponBase.c:34: warning F302: initializer is not initialised, wptM1014 will be treated as 0
+../Shared/WeaponBase.c:34:    __variant wptM1014  is defined here
+../Shared/WeaponBase.c:35: error: Unknown value "wptMP5".
+../Shared/WeaponBase.c:35: error: initializer is not constant
+../Shared/WeaponBase.c:35:    __variant wptMP5  is defined here
+../Shared/WeaponBase.c:35: warning F302: initializer is not initialised, wptMP5 will be treated as 0
+../Shared/WeaponBase.c:35:    __variant wptMP5  is defined here
+../Shared/WeaponBase.c:36: error: Unknown value "wptP90".
+../Shared/WeaponBase.c:36: error: initializer is not constant
+../Shared/WeaponBase.c:36:    __variant wptP90  is defined here
+../Shared/WeaponBase.c:36: warning F302: initializer is not initialised, wptP90 will be treated as 0
+../Shared/WeaponBase.c:36:    __variant wptP90  is defined here
+../Shared/WeaponBase.c:37: error: Unknown value "wptUMP45".
+../Shared/WeaponBase.c:37: error: initializer is not constant
+../Shared/WeaponBase.c:37:    __variant wptUMP45  is defined here
+../Shared/WeaponBase.c:37: warning F302: initializer is not initialised, wptUMP45 will be treated as 0
+../Shared/WeaponBase.c:37:    __variant wptUMP45  is defined here
+../Shared/WeaponBase.c:38: error: Unknown value "wptMAC10".
+../Shared/WeaponBase.c:38: error: initializer is not constant
+../Shared/WeaponBase.c:38:    __variant wptMAC10  is defined here
+../Shared/WeaponBase.c:38: warning F302: initializer is not initialised, wptMAC10 will be treated as 0
+../Shared/WeaponBase.c:38:    __variant wptMAC10  is defined here
+../Shared/WeaponBase.c:39: error: Unknown value "wptTMP".
+../Shared/WeaponBase.c:39: error: initializer is not constant
+../Shared/WeaponBase.c:39:    __variant wptTMP  is defined here
+../Shared/WeaponBase.c:39: warning F302: initializer is not initialised, wptTMP will be treated as 0
+../Shared/WeaponBase.c:39:    __variant wptTMP  is defined here
+../Shared/WeaponBase.c:40: error: Unknown value "wptAK47".
+../Shared/WeaponBase.c:40: error: initializer is not constant
+../Shared/WeaponBase.c:40:    __variant wptAK47  is defined here
+../Shared/WeaponBase.c:40: warning F302: initializer is not initialised, wptAK47 will be treated as 0
+../Shared/WeaponBase.c:40:    __variant wptAK47  is defined here
+../Shared/WeaponBase.c:41: error: Unknown value "wptSG552".
+../Shared/WeaponBase.c:41: error: initializer is not constant
+../Shared/WeaponBase.c:41:    __variant wptSG552  is defined here
+../Shared/WeaponBase.c:41: warning F302: initializer is not initialised, wptSG552 will be treated as 0
+../Shared/WeaponBase.c:41:    __variant wptSG552  is defined here
+../Shared/WeaponBase.c:42: error: Unknown value "wptM4A1".
+../Shared/WeaponBase.c:42: error: initializer is not constant
+../Shared/WeaponBase.c:42:    __variant wptM4A1  is defined here
+../Shared/WeaponBase.c:42: warning F302: initializer is not initialised, wptM4A1 will be treated as 0
+../Shared/WeaponBase.c:42:    __variant wptM4A1  is defined here
+../Shared/WeaponBase.c:43: error: Unknown value "wptAUG".
+../Shared/WeaponBase.c:43: error: initializer is not constant
+../Shared/WeaponBase.c:43:    __variant wptAUG  is defined here
+../Shared/WeaponBase.c:43: warning F302: initializer is not initialised, wptAUG will be treated as 0
+../Shared/WeaponBase.c:43:    __variant wptAUG  is defined here
+../Shared/WeaponBase.c:44: error: Unknown value "wptSCOUT".
+../Shared/WeaponBase.c:44: error: initializer is not constant
+../Shared/WeaponBase.c:44:    __variant wptSCOUT  is defined here
+../Shared/WeaponBase.c:44: warning F302: initializer is not initialised, wptSCOUT will be treated as 0
+../Shared/WeaponBase.c:44:    __variant wptSCOUT  is defined here
+../Shared/WeaponBase.c:45: error: Unknown value "wptAWP".
+../Shared/WeaponBase.c:45: error: initializer is not constant
+../Shared/WeaponBase.c:45:    __variant wptAWP  is defined here
+../Shared/WeaponBase.c:45: warning F302: initializer is not initialised, wptAWP will be treated as 0
+../Shared/WeaponBase.c:45:    __variant wptAWP  is defined here
+../Shared/WeaponBase.c:46: error: Unknown value "wptG3SG1".
+../Shared/WeaponBase.c:46: error: initializer is not constant
+../Shared/WeaponBase.c:46:    __variant wptG3SG1  is defined here
+../Shared/WeaponBase.c:46: warning F302: initializer is not initialised, wptG3SG1 will be treated as 0
+../Shared/WeaponBase.c:46:    __variant wptG3SG1  is defined here
+../Shared/WeaponBase.c:47: error: Unknown value "wptSG550".
+../Shared/WeaponBase.c:47: error: initializer is not constant
+../Shared/WeaponBase.c:47:    __variant wptSG550  is defined here
+../Shared/WeaponBase.c:47: warning F302: initializer is not initialised, wptSG550 will be treated as 0
+../Shared/WeaponBase.c:47:    __variant wptSG550  is defined here
+../Shared/WeaponBase.c:49: error: Unknown value "wptPARA".
+../Shared/WeaponBase.c:49: error: initializer is not constant
+../Shared/WeaponBase.c:49:    __variant wptPARA  is defined here
+../Shared/WeaponBase.c:49: warning F302: initializer is not initialised, wptPARA will be treated as 0
+../Shared/WeaponBase.c:49:    __variant wptPARA  is defined here
+in function OpenCSGunBase_Draw (line 51),
+../Shared/WeaponBase.c:53: error: Implicit type mismatch on assignment to self.currentammo. Needed float, got .int.
+at global scope,
+progs.src:15: error: "Timer" is not a type
+
+************ ERROR ************
+Errors have occured
+Error in ../Shared/WeaponBase.c on line 53
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+in function WeaponUSP45_PrimaryFire (line 46),
+../Shared/WeaponUSP45.c:48: error: Unknown value "OpenCSGunBase_PrimaryFire".
+../Shared/WeaponUSP45.c:56: warning Q206: WeaponUSP45_PrimaryFire: not all control paths return a value
+in function WeaponUSP45_Reload (line 58),
+../Shared/WeaponUSP45.c:60: error: Unknown value "OpenCSGunBase_Reload".
+../Shared/WeaponUSP45.c:68: warning Q206: WeaponUSP45_Reload: not all control paths return a value
+including ../Shared/WeaponBase.c
+in function OpenCSGunBase_Draw (line 51),
+../Shared/WeaponBase.c:53: error: Implicit type mismatch on assignment to self.currentammo. Needed float, got .int.
+including Timer.c
+including Main.c
+in function worldspawn (line 47),
+Main.c:66: warning: Implicit cast from float * to __variant *
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in ../Shared/WeaponBase.c on line 53
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+in function WeaponUSP45_PrimaryFire (line 46),
+../Shared/WeaponUSP45.c:48: error: Unknown value "OpenCSGunBase_PrimaryFire".
+../Shared/WeaponUSP45.c:56: warning Q206: WeaponUSP45_PrimaryFire: not all control paths return a value
+in function WeaponUSP45_Reload (line 58),
+../Shared/WeaponUSP45.c:60: error: Unknown value "OpenCSGunBase_Reload".
+../Shared/WeaponUSP45.c:68: warning Q206: WeaponUSP45_Reload: not all control paths return a value
+including ../Shared/WeaponBase.c
+in function OpenCSGunBase_Draw (line 51),
+../Shared/WeaponBase.c:53: error: Implicit type mismatch on assignment to self.iCurrentClip. Needed int, got .int.
+including Timer.c
+including Main.c
+in function worldspawn (line 47),
+Main.c:66: warning: Implicit cast from float * to __variant *
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in ../Shared/WeaponBase.c on line 53
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+in function WeaponUSP45_PrimaryFire (line 46),
+../Shared/WeaponUSP45.c:56: warning Q206: WeaponUSP45_PrimaryFire: not all control paths return a value
+in function WeaponUSP45_Reload (line 58),
+../Shared/WeaponUSP45.c:68: warning Q206: WeaponUSP45_Reload: not all control paths return a value
+including ../Shared/WeaponBase.c
+in function OpenCSGunBase_Draw (line 51),
+../Shared/WeaponBase.c:53: error: Implicit type mismatch on assignment to self.iCurrentClip. Needed int, got .int.
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in ../Shared/WeaponBase.c on line 53
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+in function WeaponUSP45_PrimaryFire (line 46),
+../Shared/WeaponUSP45.c:56: warning Q206: WeaponUSP45_PrimaryFire: not all control paths return a value
+in function WeaponUSP45_Reload (line 58),
+../Shared/WeaponUSP45.c:68: warning Q206: WeaponUSP45_Reload: not all control paths return a value
+including ../Shared/WeaponBase.c
+in function OpenCSGunBase_PrimaryFire (line 55),
+../Shared/WeaponBase.c:58: error: type mismatch for - (.int and int)
+../Shared/WeaponBase.c:63: werror Q106: Assignment to lvalue
+../Shared/WeaponBase.c:24:    const weaponinfo_t wptTable  is defined here
+../Shared/WeaponBase.c:63: error: Implicit type mismatch. Needed field, got integer.
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in ../Shared/WeaponBase.c on line 63
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+in function WeaponUSP45_PrimaryFire (line 46),
+../Shared/WeaponUSP45.c:56: warning Q206: WeaponUSP45_PrimaryFire: not all control paths return a value
+in function WeaponUSP45_Reload (line 58),
+../Shared/WeaponUSP45.c:68: warning Q206: WeaponUSP45_Reload: not all control paths return a value
+including ../Shared/WeaponBase.c
+in function OpenCSGunBase_Draw (line 51),
+../Shared/WeaponBase.c:53: error: Implicit type mismatch on assignment to self.iCurrentClip. Needed int, got .int.
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in ../Shared/WeaponBase.c on line 53
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+in function WeaponUSP45_PrimaryFire (line 46),
+../Shared/WeaponUSP45.c:56: warning Q206: WeaponUSP45_PrimaryFire: not all control paths return a value
+in function WeaponUSP45_Reload (line 58),
+../Shared/WeaponUSP45.c:68: warning Q206: WeaponUSP45_Reload: not all control paths return a value
+including ../Shared/WeaponBase.c
+in function OpenCSGunBase_Reload (line 76),
+../Shared/WeaponBase.c:90: warning Q205: Statement does not do anything
+../Shared/WeaponBase.c:90: error: expected ;, found )
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in ../Shared/WeaponBase.c on line 90
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+in function WeaponUSP45_PrimaryFire (line 46),
+../Shared/WeaponUSP45.c:56: warning Q206: WeaponUSP45_PrimaryFire: not all control paths return a value
+in function WeaponUSP45_Reload (line 58),
+../Shared/WeaponUSP45.c:68: warning Q206: WeaponUSP45_Reload: not all control paths return a value
+including ../Shared/WeaponBase.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 45),
+Client.c:60: warning F302: Potentially uninitialised variable eTarget
+at global scope,
+:: warning: Mismatched union field types (modelindex and wptTable[3].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[3].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[4].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[4].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[5].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[5].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[6].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[6].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[7].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[7].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[8].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[8].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[9].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[9].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[10].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[10].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[11].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[11].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[12].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[12].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[13].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[13].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[14].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[14].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[15].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[15].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[16].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[16].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[17].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[17].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[18].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[18].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[19].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[19].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[20].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[20].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[21].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[21].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[22].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[22].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[23].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[23].iClipfld @0)
+:: warning: Mismatched union field types (wptTable[3].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[3].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[4].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[4].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[5].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[5].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[6].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[6].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[7].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[7].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[8].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[8].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[9].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[9].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[10].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[10].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[11].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[11].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[12].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[12].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[13].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[13].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[14].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[14].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[15].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[15].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[16].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[16].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[17].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[17].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[18].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[18].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[19].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[19].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[20].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[20].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[21].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[21].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[22].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[22].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[23].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[23].iClipfld and modelindex @0)
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 87 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+in function WeaponUSP45_PrimaryFire (line 46),
+../Shared/WeaponUSP45.c:56: warning Q206: WeaponUSP45_PrimaryFire: not all control paths return a value
+in function WeaponUSP45_Reload (line 58),
+../Shared/WeaponUSP45.c:68: warning Q206: WeaponUSP45_Reload: not all control paths return a value
+including ../Shared/WeaponBase.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 45),
+Client.c:60: warning F302: Potentially uninitialised variable eTarget
+at global scope,
+:: warning: Mismatched union field types (modelindex and wptTable[3].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[3].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[4].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[4].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[5].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[5].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[6].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[6].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[7].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[7].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[8].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[8].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[9].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[9].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[10].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[10].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[11].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[11].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[12].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[12].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[13].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[13].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[14].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[14].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[15].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[15].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[16].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[16].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[17].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[17].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[18].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[18].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[19].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[19].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[20].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[20].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[21].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[21].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[22].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[22].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[23].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[23].iClipfld @0)
+:: warning: Mismatched union field types (wptTable[3].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[3].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[4].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[4].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[5].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[5].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[6].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[6].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[7].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[7].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[8].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[8].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[9].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[9].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[10].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[10].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[11].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[11].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[12].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[12].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[13].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[13].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[14].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[14].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[15].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[15].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[16].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[16].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[17].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[17].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[18].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[18].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[19].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[19].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[20].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[20].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[21].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[21].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[22].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[22].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[23].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[23].iClipfld and modelindex @0)
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 87 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+in function WeaponUSP45_PrimaryFire (line 46),
+../Shared/WeaponUSP45.c:56: warning Q206: WeaponUSP45_PrimaryFire: not all control paths return a value
+in function WeaponUSP45_Reload (line 58),
+../Shared/WeaponUSP45.c:68: warning Q206: WeaponUSP45_Reload: not all control paths return a value
+including ../Shared/WeaponBase.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 45),
+Client.c:60: warning F302: Potentially uninitialised variable eTarget
+at global scope,
+:: warning: Mismatched union field types (modelindex and wptTable[3].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[3].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[4].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[4].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[5].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[5].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[6].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[6].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[7].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[7].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[8].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[8].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[9].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[9].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[10].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[10].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[11].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[11].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[12].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[12].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[13].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[13].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[14].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[14].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[15].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[15].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[16].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[16].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[17].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[17].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[18].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[18].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[19].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[19].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[20].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[20].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[21].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[21].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[22].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[22].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[23].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[23].iClipfld @0)
+:: warning: Mismatched union field types (wptTable[3].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[3].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[4].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[4].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[5].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[5].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[6].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[6].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[7].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[7].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[8].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[8].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[9].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[9].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[10].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[10].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[11].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[11].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[12].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[12].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[13].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[13].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[14].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[14].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[15].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[15].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[16].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[16].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[17].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[17].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[18].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[18].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[19].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[19].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[20].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[20].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[21].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[21].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[22].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[22].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[23].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[23].iClipfld and modelindex @0)
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 87 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+in function WeaponUSP45_PrimaryFire (line 46),
+../Shared/WeaponUSP45.c:56: warning Q206: WeaponUSP45_PrimaryFire: not all control paths return a value
+in function WeaponUSP45_Reload (line 58),
+../Shared/WeaponUSP45.c:68: warning Q206: WeaponUSP45_Reload: not all control paths return a value
+including ../Shared/WeaponBase.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 45),
+Client.c:60: warning F302: Potentially uninitialised variable eTarget
+at global scope,
+:: warning: Mismatched union field types (modelindex and wptTable[3].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[3].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[4].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[4].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[5].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[5].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[6].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[6].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[7].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[7].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[8].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[8].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[9].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[9].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[10].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[10].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[11].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[11].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[12].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[12].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[13].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[13].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[14].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[14].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[15].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[15].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[16].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[16].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[17].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[17].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[18].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[18].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[19].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[19].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[20].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[20].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[21].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[21].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[22].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[22].iClipfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[23].iCaliberfld @0)
+:: warning: Mismatched union field types (modelindex and wptTable[23].iClipfld @0)
+:: warning: Mismatched union field types (wptTable[3].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[3].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[4].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[4].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[5].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[5].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[6].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[6].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[7].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[7].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[8].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[8].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[9].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[9].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[10].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[10].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[11].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[11].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[12].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[12].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[13].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[13].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[14].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[14].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[15].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[15].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[16].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[16].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[17].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[17].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[18].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[18].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[19].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[19].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[20].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[20].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[21].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[21].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[22].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[22].iClipfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[23].iCaliberfld and modelindex @0)
+:: warning: Mismatched union field types (wptTable[23].iClipfld and modelindex @0)
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 87 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+in function WeaponUSP45_PrimaryFire (line 46),
+../Shared/WeaponUSP45.c:56: warning Q206: WeaponUSP45_PrimaryFire: not all control paths return a value
+in function WeaponUSP45_Reload (line 58),
+../Shared/WeaponUSP45.c:68: warning Q206: WeaponUSP45_Reload: not all control paths return a value
+including ../Shared/WeaponBase.c
+including Weapons.c
+at global scope,
+Weapons.c:25: warning: Implicit cast from float() to void()
+Weapons.c:25: warning: Implicit cast from float() to void()
+Weapons.c:40: error: redeclaration of function body
+Weapons.c:32:    const void() Weapon_PrimaryAttack  is defined here
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in Weapons.c on line 40
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponBase.c
+including Weapons.c
+Weapons.c:40: error: redeclaration of function body
+Weapons.c:32:    const void() Weapon_PrimaryAttack  is defined here
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in Weapons.c on line 40
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponBase.c
+including Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 45),
+Client.c:60: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponBase.c
+including Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Client.c
+in function PutClientInServer (line 45),
+Client.c:60: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponBase.c
+including Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 39),
+Client.c:54: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponBase.c
+including Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 39),
+Client.c:54: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponBase.c
+including Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 39),
+Client.c:54: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+../Shared/WeaponUSP45.c:62: error: expected ;, found void
+including ../Shared/WeaponBase.c
+including Weapons.c
+Weapons.c:26: error: Unknown value "WeaponUSP45_Draw".
+Weapons.c:26: error: initializer is not constant
+Weapons.c:26:    __variant WeaponUSP45_Draw  is defined here
+Weapons.c:26: warning F302: initializer is not initialised, WeaponUSP45_Draw will be treated as 0
+Weapons.c:26:    __variant WeaponUSP45_Draw  is defined here
+Weapons.c:26: error: Unknown value "WeaponUSP45_PrimaryFire".
+Weapons.c:26: error: initializer is not constant
+Weapons.c:26:    __variant WeaponUSP45_PrimaryFire  is defined here
+Weapons.c:26: warning F302: initializer is not initialised, WeaponUSP45_PrimaryFire will be treated as 0
+Weapons.c:26:    __variant WeaponUSP45_PrimaryFire  is defined here
+Weapons.c:26: error: Unknown value "WeaponUSP45_Reload".
+Weapons.c:26: error: initializer is not constant
+Weapons.c:26:    __variant WeaponUSP45_Reload  is defined here
+Weapons.c:26: warning F302: initializer is not initialised, WeaponUSP45_Reload will be treated as 0
+Weapons.c:26:    __variant WeaponUSP45_Reload  is defined here
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in ../Shared/WeaponUSP45.c on line 62
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponBase.c
+including Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 39),
+Client.c:54: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+../Globals.h:146: error: expected ;, found float
+including Defs.h
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponBase.c
+including Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+in function func_ladder_sound (line 27),
+FuncLadder.c:39: error: Unknown value "clamp".
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in ../Globals.h on line 146
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponBase.c
+in function OpenCSGunBase_Draw (line 53),
+../Shared/WeaponBase.c:57: error: Unknown value "Client_SendEvent".
+in function OpenCSGunBase_PrimaryFire (line 62),
+../Shared/WeaponBase.c:73: error: Unknown value "Client_SendEvent".
+in function OpenCSGunBase_Reload (line 79),
+../Shared/WeaponBase.c:101: error: Unknown value "Client_SendEvent".
+including Weapons.c
+including Timer.c
+including Main.c
+in function worldspawn (line 47),
+Main.c:66: warning: Implicit cast from float * to __variant *
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in progs.src on line 29
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponBase.c
+including Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 39),
+Client.c:54: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponBase.c
+including Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 39),
+Client.c:54: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponBase.c
+
+************ ERROR ************
+Couldn't open file Weapons.c
+Error in progs.src on line 15
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+in function Input_Handle (line 21),
+Input.c:24: werror Q105: too few parameters on call to Weapon_PrimaryAttack
+../Shared/Weapons.c:33:    const void(float fWeapon) Weapon_PrimaryAttack  is defined here
+Input.c:26: werror Q105: too few parameters on call to Weapon_Reload
+../Shared/Weapons.c:41:    const void(float fWeapon) Weapon_Reload  is defined here
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in progs.src on line 29
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+in function Weapon_Switch (line 30),
+../Shared/Weapons.c:32: error: Unknown value "Weapon_Draw".
+including Timer.c
+including Main.c
+in function worldspawn (line 47),
+Main.c:66: warning: Implicit cast from float * to __variant *
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in progs.src on line 29
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 39),
+Client.c:54: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 39),
+Client.c:54: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 39),
+Client.c:54: warning F302: Potentially uninitialised variable eTarget
+at global scope,
+../Shared/WeaponUSP45.c:75: warning F210: Sound "weapons/usp_unsil-1.wav" was used but not directly precached
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 2 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 39),
+Client.c:54: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 39),
+Client.c:54: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+../Globals.h:96: error: expected ;, found .
+including Defs.h
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponBase.c
+in function OpenCSGunBase_Reload (line 79),
+../Shared/WeaponBase.c:101: warning Q205: Hanging ';'
+including ../Shared/Weapons.c
+in function Weapon_AddItem (line 56),
+../Shared/Weapons.c:65: error: expected (, found if
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function Client_UpdateCurrents (line 87),
+Client.c:88: error: Implicit type mismatch on assignment to self.iCurrentClip. Needed int, got .int.
+
+************ ERROR ************
+Errors have occured
+Error in ../Globals.h on line 96
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponBase.c
+in function OpenCSGunBase_Reload (line 79),
+../Shared/WeaponBase.c:101: warning Q205: Hanging ';'
+including ../Shared/Weapons.c
+in function Weapon_AddItem (line 56),
+../Shared/Weapons.c:65: error: expected (, found if
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function Client_UpdateCurrents (line 87),
+Client.c:88: error: Implicit type mismatch on assignment to self.iCurrentClip. Needed int, got .int.
+
+************ ERROR ************
+Errors have occured
+Error in ../Shared/Weapons.c on line 65
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+in function Weapon_AddItem (line 56),
+../Shared/Weapons.c:65: error: expected (, found if
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function Client_UpdateCurrents (line 87),
+Client.c:88: error: Implicit type mismatch on assignment to self.iCurrentClip. Needed int, got .int.
+
+************ ERROR ************
+Errors have occured
+Error in ../Shared/Weapons.c on line 65
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+in function Weapon_AddItem (line 56),
+../Shared/Weapons.c:75: error: Unknown value "Client_UpdateCurrents".
+in function Weapon_GiveAmmo (line 78),
+../Shared/Weapons.c:80: error: Unknown value "Client_UpdateCurrents".
+including Timer.c
+including Main.c
+in function worldspawn (line 47),
+Main.c:68: warning: Implicit cast from float * to __variant *
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function Client_UpdateCurrents (line 87),
+Client.c:88: error: Implicit type mismatch on assignment to self.iCurrentClip. Needed int, got .int.
+
+************ ERROR ************
+Errors have occured
+Error in Client.c on line 88
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+in function Weapon_UpdateCurrents (line 51),
+../Shared/Weapons.c:52: error: Implicit type mismatch on assignment to self.iCurrentClip. Needed int, got .int.
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+in function Spawn_GameClient (line 21),
+Spawn.c:49: error: Unknown value "Weapon_Switch".
+including Entities.c
+including Input.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in ../Shared/Weapons.c on line 52
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 39),
+Client.c:54: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 39),
+Client.c:54: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 39),
+Client.c:54: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponBase.c
+../Shared/WeaponBase.c:28: error: Unknown value "wptGLOCK18".
+../Shared/WeaponBase.c:28: error: initializer is not constant
+../Shared/WeaponBase.c:28:    __variant wptGLOCK18  is defined here
+../Shared/WeaponBase.c:28: warning F302: initializer is not initialised, wptGLOCK18 will be treated as 0
+../Shared/WeaponBase.c:28:    __variant wptGLOCK18  is defined here
+../Shared/WeaponBase.c:29: error: Unknown value "wptDEAGLE".
+../Shared/WeaponBase.c:29: error: initializer is not constant
+../Shared/WeaponBase.c:29:    __variant wptDEAGLE  is defined here
+../Shared/WeaponBase.c:29: warning F302: initializer is not initialised, wptDEAGLE will be treated as 0
+../Shared/WeaponBase.c:29:    __variant wptDEAGLE  is defined here
+../Shared/WeaponBase.c:30: error: Unknown value "wptP228".
+../Shared/WeaponBase.c:30: error: initializer is not constant
+../Shared/WeaponBase.c:30:    __variant wptP228  is defined here
+../Shared/WeaponBase.c:30: warning F302: initializer is not initialised, wptP228 will be treated as 0
+../Shared/WeaponBase.c:30:    __variant wptP228  is defined here
+../Shared/WeaponBase.c:31: error: Unknown value "wptELITES".
+../Shared/WeaponBase.c:31: error: initializer is not constant
+../Shared/WeaponBase.c:31:    __variant wptELITES  is defined here
+../Shared/WeaponBase.c:31: warning F302: initializer is not initialised, wptELITES will be treated as 0
+../Shared/WeaponBase.c:31:    __variant wptELITES  is defined here
+../Shared/WeaponBase.c:32: error: Unknown value "wptFIVESEVEN".
+../Shared/WeaponBase.c:32: error: initializer is not constant
+../Shared/WeaponBase.c:32:    __variant wptFIVESEVEN  is defined here
+../Shared/WeaponBase.c:32: warning F302: initializer is not initialised, wptFIVESEVEN will be treated as 0
+../Shared/WeaponBase.c:32:    __variant wptFIVESEVEN  is defined here
+../Shared/WeaponBase.c:33: error: Unknown value "wptM3".
+../Shared/WeaponBase.c:33: error: initializer is not constant
+../Shared/WeaponBase.c:33:    __variant wptM3  is defined here
+../Shared/WeaponBase.c:33: warning F302: initializer is not initialised, wptM3 will be treated as 0
+../Shared/WeaponBase.c:33:    __variant wptM3  is defined here
+../Shared/WeaponBase.c:34: error: Unknown value "wptXM1014".
+../Shared/WeaponBase.c:34: error: initializer is not constant
+../Shared/WeaponBase.c:34:    __variant wptXM1014  is defined here
+../Shared/WeaponBase.c:34: warning F302: initializer is not initialised, wptXM1014 will be treated as 0
+../Shared/WeaponBase.c:34:    __variant wptXM1014  is defined here
+../Shared/WeaponBase.c:35: error: Unknown value "wptMP5".
+../Shared/WeaponBase.c:35: error: initializer is not constant
+../Shared/WeaponBase.c:35:    __variant wptMP5  is defined here
+../Shared/WeaponBase.c:35: warning F302: initializer is not initialised, wptMP5 will be treated as 0
+../Shared/WeaponBase.c:35:    __variant wptMP5  is defined here
+../Shared/WeaponBase.c:36: error: Unknown value "wptP90".
+../Shared/WeaponBase.c:36: error: initializer is not constant
+../Shared/WeaponBase.c:36:    __variant wptP90  is defined here
+../Shared/WeaponBase.c:36: warning F302: initializer is not initialised, wptP90 will be treated as 0
+../Shared/WeaponBase.c:36:    __variant wptP90  is defined here
+../Shared/WeaponBase.c:37: error: Unknown value "wptUMP45".
+../Shared/WeaponBase.c:37: error: initializer is not constant
+../Shared/WeaponBase.c:37:    __variant wptUMP45  is defined here
+../Shared/WeaponBase.c:37: warning F302: initializer is not initialised, wptUMP45 will be treated as 0
+../Shared/WeaponBase.c:37:    __variant wptUMP45  is defined here
+../Shared/WeaponBase.c:38: error: Unknown value "wptMAC10".
+../Shared/WeaponBase.c:38: error: initializer is not constant
+../Shared/WeaponBase.c:38:    __variant wptMAC10  is defined here
+../Shared/WeaponBase.c:38: warning F302: initializer is not initialised, wptMAC10 will be treated as 0
+../Shared/WeaponBase.c:38:    __variant wptMAC10  is defined here
+../Shared/WeaponBase.c:39: error: Unknown value "wptTMP".
+../Shared/WeaponBase.c:39: error: initializer is not constant
+../Shared/WeaponBase.c:39:    __variant wptTMP  is defined here
+../Shared/WeaponBase.c:39: warning F302: initializer is not initialised, wptTMP will be treated as 0
+../Shared/WeaponBase.c:39:    __variant wptTMP  is defined here
+../Shared/WeaponBase.c:40: error: Unknown value "wptAK47".
+../Shared/WeaponBase.c:40: error: initializer is not constant
+../Shared/WeaponBase.c:40:    __variant wptAK47  is defined here
+../Shared/WeaponBase.c:40: warning F302: initializer is not initialised, wptAK47 will be treated as 0
+../Shared/WeaponBase.c:40:    __variant wptAK47  is defined here
+../Shared/WeaponBase.c:41: error: Unknown value "wptSG552".
+../Shared/WeaponBase.c:41: error: initializer is not constant
+../Shared/WeaponBase.c:41:    __variant wptSG552  is defined here
+../Shared/WeaponBase.c:41: warning F302: initializer is not initialised, wptSG552 will be treated as 0
+../Shared/WeaponBase.c:41:    __variant wptSG552  is defined here
+../Shared/WeaponBase.c:42: error: Unknown value "wptM4A1".
+../Shared/WeaponBase.c:42: error: initializer is not constant
+../Shared/WeaponBase.c:42:    __variant wptM4A1  is defined here
+../Shared/WeaponBase.c:42: warning F302: initializer is not initialised, wptM4A1 will be treated as 0
+../Shared/WeaponBase.c:42:    __variant wptM4A1  is defined here
+../Shared/WeaponBase.c:43: error: Unknown value "wptAUG".
+../Shared/WeaponBase.c:43: error: initializer is not constant
+../Shared/WeaponBase.c:43:    __variant wptAUG  is defined here
+../Shared/WeaponBase.c:43: warning F302: initializer is not initialised, wptAUG will be treated as 0
+../Shared/WeaponBase.c:43:    __variant wptAUG  is defined here
+../Shared/WeaponBase.c:44: error: Unknown value "wptSCOUT".
+../Shared/WeaponBase.c:44: error: initializer is not constant
+../Shared/WeaponBase.c:44:    __variant wptSCOUT  is defined here
+../Shared/WeaponBase.c:44: warning F302: initializer is not initialised, wptSCOUT will be treated as 0
+../Shared/WeaponBase.c:44:    __variant wptSCOUT  is defined here
+../Shared/WeaponBase.c:45: error: Unknown value "wptAWP".
+../Shared/WeaponBase.c:45: error: initializer is not constant
+../Shared/WeaponBase.c:45:    __variant wptAWP  is defined here
+../Shared/WeaponBase.c:45: warning F302: initializer is not initialised, wptAWP will be treated as 0
+../Shared/WeaponBase.c:45:    __variant wptAWP  is defined here
+../Shared/WeaponBase.c:46: error: Unknown value "wptG3SG1".
+../Shared/WeaponBase.c:46: error: initializer is not constant
+../Shared/WeaponBase.c:46:    __variant wptG3SG1  is defined here
+../Shared/WeaponBase.c:46: warning F302: initializer is not initialised, wptG3SG1 will be treated as 0
+../Shared/WeaponBase.c:46:    __variant wptG3SG1  is defined here
+../Shared/WeaponBase.c:47: error: Unknown value "wptSG550".
+../Shared/WeaponBase.c:47: error: initializer is not constant
+../Shared/WeaponBase.c:47:    __variant wptSG550  is defined here
+../Shared/WeaponBase.c:47: warning F302: initializer is not initialised, wptSG550 will be treated as 0
+../Shared/WeaponBase.c:47:    __variant wptSG550  is defined here
+../Shared/WeaponBase.c:49: error: Unknown value "wptPARA".
+../Shared/WeaponBase.c:49: error: initializer is not constant
+../Shared/WeaponBase.c:49:    __variant wptPARA  is defined here
+../Shared/WeaponBase.c:49: warning F302: initializer is not initialised, wptPARA will be treated as 0
+../Shared/WeaponBase.c:49:    __variant wptPARA  is defined here
+
+************ ERROR ************
+Errors have occured
+Error in progs.src on line 13
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 39),
+Client.c:54: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 39),
+Client.c:54: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 39),
+Client.c:54: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 39),
+Client.c:54: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 39),
+Client.c:54: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 39),
+Client.c:54: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 39),
+Client.c:54: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 39),
+Client.c:54: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 39),
+Client.c:54: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 39),
+Client.c:54: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 39),
+Client.c:54: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 39),
+Client.c:54: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Entities.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 39),
+Client.c:54: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
