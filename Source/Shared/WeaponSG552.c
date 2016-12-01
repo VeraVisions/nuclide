@@ -34,8 +34,58 @@ weaponinfo_t wptSG552 = {
 	8192, 				// Bullet Range
 	0.955, 				// Range Modifier
 	TYPE_AUTO,
-	0.15, 				// Attack-Delay
+	0.09, 				// Attack-Delay
 	3.0, 				// Reload-Delay
 	iAmmo_556MM, 		// Caliber Pointer
 	iClip_SG552 		// Clip Pointer
 };
+
+// Anim Table
+enum {
+	ANIM_SG552_IDLE,
+	ANIM_SG552_RELOAD,
+	ANIM_SG552_DRAW,
+	ANIM_SG552_SHOOT1,
+	ANIM_SG552_SHOOT2,
+	ANIM_SG552_SHOOT3
+};
+
+void WeaponSG552_Draw( void ) {
+	#ifdef QWSSQC
+	OpenCSGunBase_Draw();
+	sound( self, CHAN_WEAPON, "weapons/sg552_boltpull.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
+	#else
+	View_PlayAnimation( ANIM_SG552_DRAW );
+	#endif
+}
+
+void WeaponSG552_PrimaryFire( void ) {
+	#ifdef QWSSQC
+	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
+		if ( random() <= 0.5 ) {
+			sound( self, CHAN_WEAPON, "weapons/sg552-1.wav", 1, ATTN_NORM );
+		} else {
+			sound( self, CHAN_WEAPON, "weapons/sg552-2.wav", 1, ATTN_NORM );
+		}
+	}
+	#else
+	int iRand = ceil( random() * 3 );
+	if ( iRand == 1 ) {
+		View_PlayAnimation( ANIM_SG552_SHOOT1 );
+	} else if ( iRand == 2 ) {
+		View_PlayAnimation( ANIM_SG552_SHOOT2 );
+	} else {
+		View_PlayAnimation( ANIM_SG552_SHOOT3 );
+	}
+	#endif
+}
+
+void WeaponSG552_Reload( void ) {
+	#ifdef QWSSQC
+	if ( OpenCSGunBase_Reload() == TRUE ) {
+		// Play Sound
+	}
+	#else
+	View_PlayAnimation( ANIM_SG552_RELOAD );
+	#endif
+}

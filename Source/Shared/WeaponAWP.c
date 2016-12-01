@@ -34,7 +34,7 @@ weaponinfo_t wptAWP = {
 	8192, 				// Bullet Range
 	0.99, 				// Range Modifier
 	TYPE_AUTO,
-	0.15, 				// Attack-Delay
+	1.5, 				// Attack-Delay
 	3.0, 				// Reload-Delay
 	iAmmo_338MAG, 		// Caliber Pointer
 	iClip_AWP 		// Clip Pointer

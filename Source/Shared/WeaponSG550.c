@@ -34,8 +34,51 @@ weaponinfo_t wptSG550 = {
 	8192, 				// Bullet Range
 	0.98, 				// Range Modifier
 	TYPE_AUTO,
-	0.15, 				// Attack-Delay
+	0.25, 				// Attack-Delay
 	3.0, 				// Reload-Delay
 	iAmmo_556MM, 		// Caliber Pointer
 	iClip_SG550 		// Clip Pointer
 };
+
+// Anim Table
+enum {
+	ANIM_SG550_IDLE,
+	ANIM_SG550_SHOOT1,
+	ANIM_SG550_SHOOT2,
+	ANIM_SG550_RELOAD,
+	ANIM_SG550_DRAW,
+};
+
+void WeaponSG550_Draw( void ) {
+	#ifdef QWSSQC
+	OpenCSGunBase_Draw();
+	sound( self, CHAN_WEAPON, "weapons/sg550_boltpull.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
+	#else
+	View_PlayAnimation( ANIM_SG550_DRAW );
+	#endif
+}
+
+void WeaponSG550_PrimaryFire( void ) {
+	#ifdef QWSSQC
+	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
+		sound( self, CHAN_WEAPON, "weapons/sg550-1.wav", 1, ATTN_NORM );
+	}
+	#else
+
+	if ( random() <= 0.5 ) {
+		View_PlayAnimation( ANIM_SG550_SHOOT1 );
+	} else {
+		View_PlayAnimation( ANIM_SG550_SHOOT2 );
+	} 
+	#endif
+}
+
+void WeaponSG550_Reload( void ) {
+	#ifdef QWSSQC
+	if ( OpenCSGunBase_Reload() == TRUE ) {
+		// Play Sound
+	}
+	#else
+	View_PlayAnimation( ANIM_SG550_RELOAD );
+	#endif
+}

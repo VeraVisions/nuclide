@@ -132,7 +132,7 @@ void WeaponUSP45_Secondary( void ) {
 	// Tell the client that we switched modes, too
 	Client_SendEvent( self, EV_WEAPON_SECONDARYATTACK );
 	
-	if ( self.iMode_GLOCK18 == TRUE ) {
+	if ( self.iMode_M4A1 == TRUE ) {
 		sound( self, CHAN_WEAPON, "weapons/usp_silencer_on.wav", 1, ATTN_NORM );
 	} else {
 		sound( self, CHAN_WEAPON, "weapons/usp_silencer_off.wav", 1, ATTN_NORM );
@@ -162,4 +162,3 @@ void WeaponUSP45_Reload( void ) {
 	}
 #endif
 }
-

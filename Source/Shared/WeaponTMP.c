@@ -34,8 +34,57 @@ weaponinfo_t wptTMP = {
 	4096, 				// Bullet Range
 	0.84, 				// Range Modifier
 	TYPE_AUTO,
-	0.15, 				// Attack-Delay
+	0.07, 				// Attack-Delay
 	3.0, 				// Reload-Delay
 	iAmmo_9MM, 		// Caliber Pointer
 	iClip_TMP 		// Clip Pointer
 };
+
+// Anim Table
+enum {
+	ANIM_TMP_IDLE,
+	ANIM_TMP_RELOAD,
+	ANIM_TMP_DRAW,
+	ANIM_TMP_SHOOT1,
+	ANIM_TMP_SHOOT2,
+	ANIM_TMP_SHOOT3
+};
+
+void WeaponTMP_Draw( void ) {
+#ifdef QWSSQC
+	OpenCSGunBase_Draw();
+#else
+	View_PlayAnimation( ANIM_TMP_DRAW );
+#endif
+}
+
+void WeaponTMP_PrimaryFire( void ) {
+#ifdef QWSSQC
+	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
+		if ( random() <= 0.5 ) {
+			sound( self, CHAN_WEAPON, "weapons/tmp-1.wav", 1, ATTN_NORM );
+		} else {
+			sound( self, CHAN_WEAPON, "weapons/tmp-2.wav", 1, ATTN_NORM );
+		}
+	}
+#else
+	int iRand = ceil( random() * 3 );
+	if ( iRand == 1 ) {
+		View_PlayAnimation( ANIM_TMP_SHOOT1 );
+	} else if ( iRand == 2 ) {
+		View_PlayAnimation( ANIM_TMP_SHOOT2 );
+	} else {
+		View_PlayAnimation( ANIM_TMP_SHOOT3 );
+	}
+#endif
+}
+
+void WeaponTMP_Reload( void ) {
+#ifdef QWSSQC
+	if ( OpenCSGunBase_Reload() == TRUE ) {
+		// Play Sound
+	}
+#else
+	View_PlayAnimation( ANIM_TMP_RELOAD );
+#endif
+}

@@ -61,12 +61,12 @@ void OpenCSGunBase_Draw( void ) {
 float OpenCSGunBase_PrimaryFire( void ) {
 	#ifdef QWSSQC
 	// Nothing in the clip anymore? Don't even attempt
-	if ( ( self.(wptTable[ self.weapon ].iClipfld) - wptTable[ self.weapon ].iBullets ) < 0 ) {
+	if ( ( self.(wptTable[ self.weapon ].iClipfld) - 1 ) < 0 ) {
 		return FALSE;
 	}
 	
 	// Take as many bullets away from the clip as it takes
-	self.(wptTable[ self.weapon ].iClipfld) -= wptTable[ self.weapon ].iBullets;
+	self.(wptTable[ self.weapon ].iClipfld) -= 1;
 	self.fAttackFinished = time + wptTable[ self.weapon ].fAttackFinished;
 	
 	Client_SendEvent( self, EV_WEAPON_PRIMARYATTACK );

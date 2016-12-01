@@ -34,8 +34,51 @@ weaponinfo_t wptSCOUT = {
 	8192, 				// Bullet Range
 	0.98, 				// Range Modifier
 	TYPE_AUTO,
-	0.15, 				// Attack-Delay
+	1.25, 				// Attack-Delay
 	3.0, 				// Reload-Delay
 	iAmmo_762MM, 		// Caliber Pointer
 	iClip_SCOUT 		// Clip Pointer
 };
+
+// Anim Table
+enum {
+	ANIM_SCOUT_IDLE,
+	ANIM_SCOUT_SHOOT1,
+	ANIM_SCOUT_SHOOT2,
+	ANIM_SCOUT_RELOAD,
+	ANIM_SCOUT_DRAW
+};
+
+void WeaponSCOUT_Draw( void ) {
+#ifdef QWSSQC
+	OpenCSGunBase_Draw();
+	sound( self, CHAN_WEAPON, "weapons/scout_bolt.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
+#else
+	View_PlayAnimation( ANIM_SCOUT_DRAW );
+#endif
+}
+
+void WeaponSCOUT_PrimaryFire( void ) {
+#ifdef QWSSQC
+	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
+		// Play Sound
+		sound( self, CHAN_WEAPON, "weapons/scout_fire-1.wav", 1, ATTN_NORM );
+	}
+#else
+	if ( random() <= 0.5 ) {
+		View_PlayAnimation( ANIM_SCOUT_SHOOT1 );
+	} else {
+		View_PlayAnimation( ANIM_SCOUT_SHOOT2 );
+	}
+#endif
+}
+
+void WeaponSCOUT_Reload( void ) {
+#ifdef QWSSQC
+	if ( OpenCSGunBase_Reload() == TRUE ) {
+		// Play Sound
+	}
+#else
+	View_PlayAnimation( ANIM_SCOUT_RELOAD );
+#endif
+}

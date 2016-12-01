@@ -40,7 +40,7 @@ weaponinfo_t wptM3 = {
 	3000, 				// Bullet Range
 	0.7, 				// Range Modifier
 	TYPE_SEMI,
-	2.0, 					// Attack-Delay
+	1.0, 					// Attack-Delay
 	3.0, 				// Reload-Delay
 	iAmmo_BUCKSHOT, 	// Caliber Pointer
 	iClip_M3 			// Clip Pointer
@@ -52,7 +52,6 @@ enum {
 	ANIM_M3_SHOOT1,
 	ANIM_M3_SHOOT2,
 	ANIM_M3_INSERT,
-	ANIM_M3_RELOAD,
 	ANIM_M3_RELOAD_END,
 	ANIM_M3_RELOAD_START,
 	ANIM_M3_DRAW
@@ -86,7 +85,9 @@ void WeaponM3_Secondary( void ) {
 #ifdef QWSSQC
 	// If it's full or no ammo is left...
 	if ( (self.(wptM3.iClipfld) == wptM3.iClipSize) || ( self.(wptM3.iCaliberfld) <= 0 ) ) {
-		WeaponM3_Reload();
+		self.iMode_M3 = 0;
+		Client_SendEvent( self, EV_WEAPON_RELOAD );
+		self.fAttackFinished = time + 1.0;
 		return;
 	}
 	
@@ -94,35 +95,40 @@ void WeaponM3_Secondary( void ) {
 	self.(wptM3.iCaliberfld) -= 1;
 	
 	Client_SendEvent( self, EV_WEAPON_SECONDARYATTACK );
+	
+	self.think = WeaponM3_Secondary;
+	self.nextthink = time + 0.5;
 #else
-	View_PlayAnimation( ANIM_M3_RELOAD );
+	View_PlayAnimation( ANIM_M3_INSERT );
 #endif
 }
 
 void WeaponM3_Reload( void ) {
 #ifdef QWSSQC
-	if ( OpenCSGunBase_Reload() == TRUE ) {
-		// Can we reload the gun even if we wanted to?
-		if ( !(self.(wptM3.iClipfld) == 0 && self.(wptM3.iCaliberfld) > 0) ) {
-			return;
-		}
-		
+	static void WeaponM3_ReloadNULL( void ) { }
+	// Can we reload the gun even if we wanted to?
+	if ( ( self.(wptM3.iClipfld) != wptM3.iClipSize ) && ( self.(wptM3.iCaliberfld) > 0 ) ) {
 		self.iMode_M3 = 1 - self.iMode_M3;
-		
+			
 		if ( self.iMode_M3 == TRUE ) {
 			self.think = WeaponM3_Secondary;
 			self.nextthink = time + 0.8;
+		} else {
+			self.think = WeaponM3_ReloadNULL;
 		}
-		
+			
 		Client_SendEvent( self, EV_WEAPON_RELOAD );
+		self.fAttackFinished = time + 1.0;
 	}
 #else
 	iWeaponMode_M3 = 1 - iWeaponMode_M3;
 	
-	if ( iWeaponMode_M3 == 0 ) {
+	if ( iWeaponMode_M3 == TRUE ) {
 		View_PlayAnimation( ANIM_M3_RELOAD_START );
+		print( "START!!!\n" );
 	} else {
 		View_PlayAnimation( ANIM_M3_RELOAD_END );
+		print( "ENDE!!!\n" );
 	}
 #endif
 }

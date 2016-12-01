@@ -20,6 +20,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 .int iClip_XM1014;
 
+#ifdef QWSSQC
+.int iMode_XM1014;
+#else
+int iWeaponMode_XM1014;
+#endif
+
 // Weapon Info
 weaponinfo_t wptXM1014 = { 
 	WEAPON_XM1014, 		// Identifier
@@ -34,8 +40,93 @@ weaponinfo_t wptXM1014 = {
 	3000, 				// Bullet Range
 	0.7, 				// Range Modifier
 	TYPE_AUTO,
-	0.15, 				// Attack-Delay
+	0.25, 				// Attack-Delay
 	3.0, 				// Reload-Delay
 	iAmmo_BUCKSHOT, 		// Caliber Pointer
 	iClip_XM1014 		// Clip Pointer
 };
+
+// Anim Table
+enum {
+	ANIM_XM1014_IDLE,
+	ANIM_XM1014_SHOOT1,
+	ANIM_XM1014_SHOOT2,
+	ANIM_XM1014_INSERT,
+	ANIM_XM1014_RELOAD_END,
+	ANIM_XM1014_RELOAD_START,
+	ANIM_XM1014_DRAW
+};
+
+void WeaponXM1014_Draw( void ) {
+	#ifdef QWSSQC
+	OpenCSGunBase_Draw();
+	sound( self, CHAN_WEAPON, "weapons/m3_pump.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
+	#else
+	View_PlayAnimation( ANIM_XM1014_DRAW );
+	#endif
+}
+
+void WeaponXM1014_PrimaryFire( void ) {
+#ifdef QWSSQC
+	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
+		sound( self, CHAN_WEAPON, "weapons/xm1014-1.wav", 1, ATTN_NORM );
+	}
+#else
+	if ( random() <= 0.5 ) {
+		View_PlayAnimation( ANIM_XM1014_SHOOT1 );
+	} else {
+		View_PlayAnimation( ANIM_XM1014_SHOOT2 );
+	}
+#endif
+}
+
+void WeaponXM1014_Reload( void);
+void WeaponXM1014_Secondary( void ) {
+#ifdef QWSSQC
+	// If it's full or no ammo is left...
+	if ( (self.(wptXM1014.iClipfld) == wptXM1014.iClipSize) || ( self.(wptXM1014.iCaliberfld) <= 0 ) ) {
+		self.iMode_XM1014 = 0;
+		Client_SendEvent( self, EV_WEAPON_RELOAD );
+		self.fAttackFinished = time + 1.0;
+		return;
+	}
+	
+	self.(wptXM1014.iClipfld) += 1;
+	self.(wptXM1014.iCaliberfld) -= 1;
+	
+	Client_SendEvent( self, EV_WEAPON_SECONDARYATTACK );
+	
+	self.think = WeaponXM1014_Secondary;
+	self.nextthink = time + 0.5;
+#else
+	View_PlayAnimation( ANIM_XM1014_INSERT );
+#endif
+}
+
+void WeaponXM1014_Reload( void ) {
+#ifdef QWSSQC
+	static void WeaponXM1014_ReloadNULL( void ) { }
+	// Can we reload the gun even if we wanted to?
+	if ( ( self.(wptXM1014.iClipfld) != wptXM1014.iClipSize ) && ( self.(wptXM1014.iCaliberfld) > 0 ) ) {
+		self.iMode_XM1014 = 1 - self.iMode_XM1014;
+			
+		if ( self.iMode_XM1014 == TRUE ) {
+			self.think = WeaponXM1014_Secondary;
+			self.nextthink = time + 0.8;
+		} else {
+			self.think = WeaponXM1014_ReloadNULL;
+		}
+			
+		Client_SendEvent( self, EV_WEAPON_RELOAD );
+		self.fAttackFinished = time + 1.0;
+	}
+#else
+	iWeaponMode_XM1014 = 1 - iWeaponMode_XM1014;
+	
+	if ( iWeaponMode_XM1014 == TRUE ) {
+		View_PlayAnimation( ANIM_XM1014_RELOAD_START );
+	} else {
+		View_PlayAnimation( ANIM_XM1014_RELOAD_END );
+	}
+#endif
+}

@@ -66,8 +66,13 @@ enum {
 void WeaponGLOCK18_Draw( void ) {
 #ifdef QWSSQC
 	OpenCSGunBase_Draw();
+	sound( self, CHAN_WEAPON, "weapons/slideback1.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
 #else
-	View_PlayAnimation( ANIM_DEAGLE_DRAW );
+	if ( random() <= 0.5 ) {
+		View_PlayAnimation( ANIM_GLOCK_DRAW1 );
+	} else {
+		View_PlayAnimation( ANIM_GLOCK_DRAW2 );
+	}
 #endif
 }
 

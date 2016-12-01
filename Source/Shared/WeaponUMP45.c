@@ -34,8 +34,55 @@ weaponinfo_t wptUMP45 = {
 	4096, 				// Bullet Range
 	0.82, 				// Range Modifier
 	TYPE_AUTO,
-	0.15, 				// Attack-Delay
+	0.105, 				// Attack-Delay
 	3.0, 				// Reload-Delay
 	iAmmo_45ACP, 		// Caliber Pointer
 	iClip_UMP45 		// Clip Pointer
 };
+
+// Anim Table
+enum {
+	ANIM_UMP45_IDLE,
+	ANIM_UMP45_RELOAD,
+	ANIM_UMP45_DRAW,
+	ANIM_UMP45_SHOOT1,
+	ANIM_UMP45_SHOOT2,
+	ANIM_UMP45_SHOOT3
+};
+
+void WeaponUMP45_Draw( void ) {
+#ifdef QWSSQC
+	OpenCSGunBase_Draw();
+	sound( self, CHAN_WEAPON, "weapons/ump45_boltslap.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
+#else
+	View_PlayAnimation( ANIM_UMP45_DRAW );
+#endif
+}
+
+void WeaponUMP45_PrimaryFire( void ) {
+#ifdef QWSSQC
+	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
+		sound( self, CHAN_WEAPON, "weapons/ump45-1.wav", 1, ATTN_NORM );
+	}
+#else
+	int iRand = ceil( random() * 3 );
+	
+	if ( iRand == 1 ) {
+		View_PlayAnimation( ANIM_UMP45_SHOOT1 );
+	} else if ( iRand == 2 ) {
+		View_PlayAnimation( ANIM_UMP45_SHOOT2 );
+	} else {
+		View_PlayAnimation( ANIM_UMP45_SHOOT3 );
+	}
+#endif
+}
+
+void WeaponUMP45_Reload( void ) {
+	#ifdef QWSSQC
+	if ( OpenCSGunBase_Reload() == TRUE ) {
+		// Play Sound
+	}
+	#else
+	View_PlayAnimation( ANIM_UMP45_RELOAD );
+	#endif
+}
