@@ -35,7 +35,7 @@ weaponinfo_t wptSCOUT = {
 	0.98, 				// Range Modifier
 	TYPE_AUTO,
 	1.25, 				// Attack-Delay
-	3.0, 				// Reload-Delay
+	2.0, 				// Reload-Delay
 	iAmmo_762MM, 		// Caliber Pointer
 	iClip_SCOUT 		// Clip Pointer
 };

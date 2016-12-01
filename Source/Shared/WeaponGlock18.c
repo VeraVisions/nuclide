@@ -41,7 +41,7 @@ weaponinfo_t wptGLOCK18 = {
 	0.75, 				// Range Modifier
 	TYPE_SEMI,
 	0.15, 				// Attack-Delay
-	3.0, 				// Reload-Delay
+	2.0, 				// Reload-Delay
 	iAmmo_9MM, 			// Caliber Pointer
 	iClip_GLOCK18 		// Clip Pointer
 };

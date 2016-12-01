@@ -41,7 +41,7 @@ weaponinfo_t wptUSP45 = {
 	0.79, 				// Range Modifier
 	TYPE_SEMI,
 	0.15, 				// Attack-Delay
-	3.0, 				// Reload-Delay
+	2.5, 				// Reload-Delay
 	iAmmo_45ACP, 		// Caliber Pointer
 	iClip_USP45 		// Clip Pointer
 };

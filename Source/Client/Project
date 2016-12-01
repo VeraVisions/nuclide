@@ -28,11 +28,18 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=1
-FILE_NAME_0=1317;C;0;EUTF-8;1;1;0;%2Fhome%2Feukara%2FProjects%2FOpenCS%2FSource%2FShared%2FWeaponUSP45.c;0;4
-FILE_NAME_1=3034;C;0;EUTF-8;1;1;0;%2Fhome%2Feukara%2FProjects%2FOpenCS%2FSource%2FShared%2FWeaponGlock18.c;0;4
-FILE_NAME_2=0;C;0;EUTF-8;1;1;0;%2Fhome%2Feukara%2FProjects%2FOpenCS%2FSource%2FServer%2FInput.c;0;4
-FILE_NAME_3=740;C;0;EUTF-8;1;1;0;%2Fhome%2Feukara%2FProjects%2FOpenCS%2FSource%2FClient%2FView.c;0;4
+current_page=10
+FILE_NAME_0=0;C;0;EUTF-8;1;1;0;%2Fhome%2Feukara%2FProjects%2FOpenCS%2FSource%2FClient%2FInit.c;0;4
+FILE_NAME_1=0;C;0;EUTF-8;1;1;0;%2Fhome%2Feukara%2FProjects%2FOpenCS%2FSource%2FServer%2FEntHostage.c;0;4
+FILE_NAME_2=1141;C;0;EUTF-8;1;1;0;%2Fhome%2Feukara%2FProjects%2FOpenCS%2FSource%2FShared%2FWeaponMP5.c;0;4
+FILE_NAME_3=1142;C;0;EUTF-8;1;1;0;%2Fhome%2Feukara%2FProjects%2FOpenCS%2FSource%2FShared%2FWeaponP90.c;0;4
+FILE_NAME_4=1149;C;0;EUTF-8;1;1;0;%2Fhome%2Feukara%2FProjects%2FOpenCS%2FSource%2FShared%2FWeaponSG550.c;0;4
+FILE_NAME_5=1150;C;0;EUTF-8;1;1;0;%2Fhome%2Feukara%2FProjects%2FOpenCS%2FSource%2FShared%2FWeaponSG552.c;0;4
+FILE_NAME_6=0;C;0;EUTF-8;1;1;0;%2Fhome%2Feukara%2FProjects%2FOpenCS%2FSource%2FShared%2FWeaponM3.c;0;4
+FILE_NAME_7=369;C;0;EUTF-8;1;1;0;%2Fhome%2Feukara%2FProjects%2FOpenCS%2FSource%2FShared%2FWeaponM4A1.c;0;4
+FILE_NAME_8=0;C;0;EUTF-8;1;1;0;%2Fhome%2Feukara%2FProjects%2FOpenCS%2FSource%2FShared%2FWeaponUSP45.c;0;4
+FILE_NAME_9=1222;C;0;EUTF-8;1;1;0;%2Fhome%2Feukara%2FProjects%2FOpenCS%2FSource%2FShared%2FWeaponElites.c;0;4
+FILE_NAME_10=1162;C;0;EUTF-8;1;1;0;%2Fhome%2Feukara%2FProjects%2FOpenCS%2FSource%2FShared%2FWeaponFiveSeven.c;0;4
 
 [VTE]
 last_dir=/home/eukara

@@ -141,10 +141,10 @@ void HUD_Draw( void ) {
 	HUD_DrawNums( getstatf( STAT_MONEY ), vMoneyPos );
 	
 	// Ammo
-	vector vAmmoClipPos = [ vVideoResolution_x - 160, vVideoResolution_y - 42 ];
+	vector vAmmoClipPos = [ vVideoResolution_x - 136, vVideoResolution_y - 42 ];
 	HUD_DrawNums( getstatf( STAT_CURRENT_CLIP ), vAmmoClipPos );
 	
-	vector vAmmoCalPos = [ vVideoResolution_x - 88, vVideoResolution_y - 42 ];
+	vector vAmmoCalPos = [ vVideoResolution_x - 64, vVideoResolution_y - 42 ];
 	HUD_DrawNums( getstatf( STAT_CURRENT_CALIBER ), vAmmoCalPos );
 	
 	// Caliber icon

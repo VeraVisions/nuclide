@@ -41,7 +41,7 @@ weaponinfo_t wptM4A1 = {
 	0.97, 				// Range Modifier
 	TYPE_AUTO,
 	0.09, 				// Attack-Delay
-	3.0, 				// Reload-Delay
+	3.1, 				// Reload-Delay
 	iAmmo_556MM, 		// Caliber Pointer
 	iClip_M4A1 			// Clip Pointer
 };

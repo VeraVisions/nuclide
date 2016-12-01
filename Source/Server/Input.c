@@ -28,12 +28,22 @@ void Input_Handle( void ) {
 		Weapon_SecondaryAttack( self.weapon );
 	}
 	
-	/*if( self.impulse == 10 ) { 
-		self.weapon++;
-	} 
-	if( self.impulse == 11 ) { 
-		self.weapon--;
-	} 
-
-	self.impulse = 0;  */
+	if ( cvar( "developer" ) == 1 ) {
+		if( self.impulse == 10 ) { 
+			if ( self.weapon < ( CS_WEAPON_COUNT - 1 ) ) {
+				dprint( "Weapon Cheat +\n" );
+				self.weapon++;
+				CSEv_GamePlayerBuy_f( self.weapon );
+			}
+		} 
+		if( self.impulse == 11 ) { 
+			if ( self.weapon > 1 ) {
+				dprint( "Weapon Cheat -\n" );
+				self.weapon--;
+				CSEv_GamePlayerBuy_f( self.weapon );
+			}
+		} 
+	}
+	
+	self.impulse = 0; 
 }

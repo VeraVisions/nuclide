@@ -27,7 +27,7 @@ weaponfunc_t wpnFuncTable[ CS_WEAPON_COUNT ] = {
 	{ WeaponGLOCK18_Draw, WeaponGLOCK18_PrimaryFire, WeaponGLOCK18_Secondary, WeaponGLOCK18_Reload },
 	{ WeaponDEAGLE_Draw, WeaponDEAGLE_PrimaryFire, Temp_Nothing, WeaponDEAGLE_Reload },
 	{ WeaponP228_Draw, WeaponP228_PrimaryFire, Temp_Nothing, WeaponP228_Reload },
-	{ WeaponUSP45_Draw, WeaponUSP45_PrimaryFire, Temp_Nothing, WeaponUSP45_Reload },
+	{ WeaponELITES_Draw, WeaponELITES_PrimaryFire, Temp_Nothing, WeaponELITES_Reload },
 	{ WeaponFIVESEVEN_Draw, WeaponFIVESEVEN_PrimaryFire, Temp_Nothing, WeaponFIVESEVEN_Reload },
 	#ifdef QWSSQC
 	{ WeaponM3_Draw, WeaponM3_PrimaryFire,  Temp_Nothing, WeaponM3_Reload },
@@ -43,7 +43,7 @@ weaponfunc_t wpnFuncTable[ CS_WEAPON_COUNT ] = {
 	{ WeaponTMP_Draw, WeaponTMP_PrimaryFire, Temp_Nothing, WeaponTMP_Reload },
 	{ WeaponAK47_Draw, WeaponAK47_PrimaryFire, Temp_Nothing, WeaponAK47_Reload },
 	{ WeaponSG552_Draw, WeaponSG552_PrimaryFire, Temp_Nothing, WeaponSG552_Reload },
-	{ WeaponM4A1_Draw, WeaponM4A1_PrimaryFire, Temp_Nothing, WeaponM4A1_Reload },
+	{ WeaponM4A1_Draw, WeaponM4A1_PrimaryFire, WeaponM4A1_Secondary, WeaponM4A1_Reload },
 	{ WeaponAUG_Draw, WeaponAUG_PrimaryFire, Temp_Nothing, WeaponAUG_Reload },
 	{ WeaponSCOUT_Draw, WeaponSCOUT_PrimaryFire, Temp_Nothing, WeaponSCOUT_Reload },
 	{ WeaponAWP_Draw, WeaponAWP_PrimaryFire, Temp_Nothing, WeaponAWP_Reload },
@@ -87,7 +87,6 @@ void Weapon_Reload( float fWeapon ) {
 }
 
 #ifdef QWSSQC
-
 void Weapon_UpdateCurrents( void ) {
 	self.iCurrentClip = self.(wptTable[ self.weapon ].iClipfld);
 	self.iCurrentCaliber = self.(wptTable[ self.weapon ].iCaliberfld);
@@ -129,5 +128,4 @@ void CSEv_GamePlayerBuy_f( float fWeapon ) {
 	self.fMoney -= wptTable[ fWeapon ].iPrice;
 	self.fAttackFinished = time + 1.0;
 }
-
 #endif

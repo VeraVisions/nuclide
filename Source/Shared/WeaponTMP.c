@@ -35,7 +35,7 @@ weaponinfo_t wptTMP = {
 	0.84, 				// Range Modifier
 	TYPE_AUTO,
 	0.07, 				// Attack-Delay
-	3.0, 				// Reload-Delay
+	2.1, 				// Reload-Delay
 	iAmmo_9MM, 		// Caliber Pointer
 	iClip_TMP 		// Clip Pointer
 };

@@ -35,7 +35,7 @@ weaponinfo_t wptAUG = {
 	0.96, 				// Range Modifier
 	TYPE_AUTO,
 	0.09, 				// Attack-Delay
-	3.0, 				// Reload-Delay
+	3.3, 				// Reload-Delay
 	iAmmo_762MM, 		// Caliber Pointer
 	iClip_AUG 		// Clip Pointer
 };

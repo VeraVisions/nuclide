@@ -24,7 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 weaponinfo_t wptDEAGLE = { 
 	WEAPON_DEAGLE, 		// Identifier
 	SLOT_SECONDARY,
-	3500, 				// Price
+	650, 				// Price
 	CALIBER_50AE, 		// Caliber ID
 	650, 				// Max Player Speed
 	1, 					// Bullets Per Shot
@@ -35,7 +35,7 @@ weaponinfo_t wptDEAGLE = {
 	0.81, 				// Range Modifier
 	TYPE_SEMI,
 	0.15, 				// Attack-Delay
-	3.0, 				// Reload-Delay
+	2.1, 				// Reload-Delay
 	iAmmo_50AE, 		// Caliber Pointer
 	iClip_DEAGLE 		// Clip Pointer
 };

@@ -35,7 +35,7 @@ weaponinfo_t wptG3SG1 = {
 	0.98, 				// Range Modifier
 	TYPE_AUTO,
 	0.25, 				// Attack-Delay
-	3.0, 				// Reload-Delay
+	4.6, 				// Reload-Delay
 	iAmmo_762MM, 		// Caliber Pointer
 	iClip_G3SG1 		// Clip Pointer
 };

@@ -35,7 +35,7 @@ weaponinfo_t wptP90 = {
 	0.84, 				// Range Modifier
 	TYPE_AUTO,
 	0.07, 				// Attack-Delay
-	3.0, 				// Reload-Delay
+	3.3, 				// Reload-Delay
 	iAmmo_57MM, 		// Caliber Pointer
 	iClip_P90 			// Clip Pointer
 };

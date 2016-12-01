@@ -35,7 +35,7 @@ weaponinfo_t wptMAC10 = {
 	0.82, 				// Range Modifier
 	TYPE_AUTO,
 	0.075, 				// Attack-Delay
-	3.0, 				// Reload-Delay
+	3.2, 				// Reload-Delay
 	iAmmo_45ACP, 		// Caliber Pointer
 	iClip_MAC10 		// Clip Pointer
 };

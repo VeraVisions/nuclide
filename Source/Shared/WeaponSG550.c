@@ -35,7 +35,7 @@ weaponinfo_t wptSG550 = {
 	0.98, 				// Range Modifier
 	TYPE_AUTO,
 	0.25, 				// Attack-Delay
-	3.0, 				// Reload-Delay
+	3.8, 				// Reload-Delay
 	iAmmo_556MM, 		// Caliber Pointer
 	iClip_SG550 		// Clip Pointer
 };

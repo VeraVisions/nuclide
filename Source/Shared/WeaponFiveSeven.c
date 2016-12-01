@@ -35,7 +35,7 @@ weaponinfo_t wptFIVESEVEN = {
 	0.885, 				// Range Modifier
 	TYPE_SEMI,
 	0.15, 				// Attack-Delay
-	3.0, 				// Reload-Delay
+	3.1, 				// Reload-Delay
 	iAmmo_57MM, 		// Caliber Pointer
 	iClip_FIVESEVEN 		// Clip Pointer
 };

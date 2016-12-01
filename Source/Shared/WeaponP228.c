@@ -35,7 +35,7 @@ weaponinfo_t wptP228 = {
 	0.8, 				// Range Modifier
 	TYPE_SEMI,
 	0.15, 				// Attack-Delay
-	3.0, 				// Reload-Delay
+	2.7, 				// Reload-Delay
 	iAmmo_357SIG, 		// Caliber Pointer
 	iClip_P228 			// Clip Pointer
 };
