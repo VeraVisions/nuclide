@@ -25,11 +25,11 @@ weaponfunc_t wpnFuncTable[ CS_WEAPON_COUNT ] = {
 	{ Temp_Nothing, Temp_Nothing, Temp_Nothing, Temp_Nothing },
 	{ WeaponUSP45_Draw, WeaponUSP45_PrimaryFire, WeaponUSP45_Secondary, WeaponUSP45_Reload },
 	{ WeaponGLOCK18_Draw, WeaponGLOCK18_PrimaryFire, WeaponGLOCK18_Secondary, WeaponGLOCK18_Reload },
+	{ WeaponDEAGLE_Draw, WeaponDEAGLE_PrimaryFire, Temp_Nothing, WeaponDEAGLE_Reload },
+	{ WeaponP228_Draw, WeaponP228_PrimaryFire, Temp_Nothing, WeaponP228_Reload },
 	{ WeaponUSP45_Draw, WeaponUSP45_PrimaryFire, Temp_Nothing, WeaponUSP45_Reload },
-	{ WeaponUSP45_Draw, WeaponUSP45_PrimaryFire, Temp_Nothing, WeaponUSP45_Reload },
-	{ WeaponUSP45_Draw, WeaponUSP45_PrimaryFire, Temp_Nothing, WeaponUSP45_Reload },
-	{ WeaponUSP45_Draw, WeaponUSP45_PrimaryFire, Temp_Nothing, WeaponUSP45_Reload },
-	{ WeaponUSP45_Draw, WeaponUSP45_PrimaryFire, Temp_Nothing, WeaponUSP45_Reload },
+	{ WeaponFIVESEVEN_Draw, WeaponFIVESEVEN_PrimaryFire, Temp_Nothing, WeaponFIVESEVEN_Reload },
+	{ WeaponM3_Draw, WeaponM3_PrimaryFire, Temp_Nothing, WeaponM3_Reload },
 	{ WeaponUSP45_Draw, WeaponUSP45_PrimaryFire, Temp_Nothing, WeaponUSP45_Reload },
 	{ WeaponUSP45_Draw, WeaponUSP45_PrimaryFire, Temp_Nothing, WeaponUSP45_Reload },
 	{ WeaponUSP45_Draw, WeaponUSP45_PrimaryFire, Temp_Nothing, WeaponUSP45_Reload },
@@ -121,6 +121,7 @@ void Weapon_GiveAmmo( float fWeapon, float fAmount ) {
 void CSEv_GamePlayerBuy_f( float fWeapon ) {
 	Weapon_AddItem( fWeapon );
 	self.fMoney -= wptTable[ fWeapon ].iPrice;
+	self.fAttackFinished = time + 1.0;
 }
 
 #endif

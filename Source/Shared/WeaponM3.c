@@ -20,6 +20,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 .int iClip_M3;
 
+#ifdef QWSSQC
+.int iMode_M3;
+#else
+int iWeaponMode_M3;
+#endif
+
 // Weapon Info
 weaponinfo_t wptM3 = { 
 	WEAPON_M3, 			// Identifier
@@ -39,3 +45,84 @@ weaponinfo_t wptM3 = {
 	iAmmo_BUCKSHOT, 	// Caliber Pointer
 	iClip_M3 			// Clip Pointer
 };
+
+// Anim Table
+enum {
+	ANIM_M3_IDLE,
+	ANIM_M3_SHOOT1,
+	ANIM_M3_SHOOT2,
+	ANIM_M3_INSERT,
+	ANIM_M3_RELOAD,
+	ANIM_M3_RELOAD_END,
+	ANIM_M3_RELOAD_START,
+	ANIM_M3_DRAW
+};
+
+void WeaponM3_Draw( void ) {
+	#ifdef QWSSQC
+	OpenCSGunBase_Draw();
+	sound( self, CHAN_WEAPON, "weapons/m3_pump.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
+	#else
+	View_PlayAnimation( ANIM_M3_DRAW );
+	#endif
+}
+
+void WeaponM3_PrimaryFire( void ) {
+#ifdef QWSSQC
+	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
+		sound( self, CHAN_WEAPON, "weapons/m3-1.wav", 1, ATTN_NORM );
+	}
+#else
+	if ( random() <= 0.5 ) {
+		View_PlayAnimation( ANIM_M3_SHOOT1 );
+	} else {
+		View_PlayAnimation( ANIM_M3_SHOOT2 );
+	}
+#endif
+}
+
+void WeaponM3_Reload( void);
+void WeaponM3_Secondary( void ) {
+#ifdef QWSSQC
+	// If it's full or no ammo is left...
+	if ( (self.(wptM3.iClipfld) == wptM3.iClipSize) || ( self.(wptM3.iCaliberfld) <= 0 ) ) {
+		WeaponM3_Reload();
+		return;
+	}
+	
+	self.(wptM3.iClipfld) += 1;
+	self.(wptM3.iCaliberfld) -= 1;
+	
+	Client_SendEvent( self, EV_WEAPON_SECONDARYATTACK );
+#else
+	View_PlayAnimation( ANIM_M3_RELOAD );
+#endif
+}
+
+void WeaponM3_Reload( void ) {
+#ifdef QWSSQC
+	if ( OpenCSGunBase_Reload() == TRUE ) {
+		// Can we reload the gun even if we wanted to?
+		if ( !(self.(wptM3.iClipfld) == 0 && self.(wptM3.iCaliberfld) > 0) ) {
+			return;
+		}
+		
+		self.iMode_M3 = 1 - self.iMode_M3;
+		
+		if ( self.iMode_M3 == TRUE ) {
+			self.think = WeaponM3_Secondary;
+			self.nextthink = time + 0.8;
+		}
+		
+		Client_SendEvent( self, EV_WEAPON_RELOAD );
+	}
+#else
+	iWeaponMode_M3 = 1 - iWeaponMode_M3;
+	
+	if ( iWeaponMode_M3 == 0 ) {
+		View_PlayAnimation( ANIM_M3_RELOAD_START );
+	} else {
+		View_PlayAnimation( ANIM_M3_RELOAD_END );
+	}
+#endif
+}

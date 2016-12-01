@@ -39,3 +39,57 @@ weaponinfo_t wptP228 = {
 	iAmmo_357SIG, 		// Caliber Pointer
 	iClip_P228 			// Clip Pointer
 };
+
+// Anim Table
+enum {
+	ANIM_P228_IDLE,
+	ANIM_P228_SHOOT1,
+	ANIM_P228_SHOOT2,
+	ANIM_P228_SHOOT3,
+	ANIM_P228_SHOOT_EMPTY,
+	ANIM_P228_RELOAD,
+	ANIM_P228_DRAW
+};
+
+void WeaponP228_Draw( void ) {
+#ifdef QWSSQC
+	OpenCSGunBase_Draw();
+	sound( self, CHAN_WEAPON, "weapons/p228_slidepull.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
+#else
+	View_PlayAnimation( ANIM_P228_DRAW );
+#endif
+}
+
+void WeaponP228_PrimaryFire( void ) {
+#ifdef QWSSQC
+	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
+		// Play Sound
+		sound( self, CHAN_WEAPON, "weapons/p228-1.wav", 1, ATTN_NORM );
+	}
+#else
+	if ( getstatf( STAT_CURRENT_CLIP ) == 0 ) {
+		View_PlayAnimation( ANIM_P228_SHOOT_EMPTY );
+	} else {
+		
+		int iRand = ceil( random() * 3 );
+		
+		if ( iRand == 1 ) {
+			View_PlayAnimation( ANIM_P228_SHOOT1 );
+		} else if ( iRand == 2 ) {
+			View_PlayAnimation( ANIM_P228_SHOOT2 );
+		} else {
+			View_PlayAnimation( ANIM_P228_SHOOT3 );
+		}
+	}
+#endif
+}
+
+void WeaponP228_Reload( void ) {
+#ifdef QWSSQC
+	if ( OpenCSGunBase_Reload() == TRUE ) {
+		// Play Sound
+	}
+#else
+	View_PlayAnimation( ANIM_P228_RELOAD );
+#endif
+}
