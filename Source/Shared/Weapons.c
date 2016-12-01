@@ -54,6 +54,10 @@ weaponfunc_t wpnFuncTable[ CS_WEAPON_COUNT ] = {
 
 void Weapon_Draw( float fWeapon ) {
 	wpnFuncTable[ fWeapon ].vDraw();
+	
+	#ifdef QWSSQC
+	self.maxspeed = (float)wptTable[ fWeapon ].iPlayerSpeed;
+	#endif
 }
 
 void Weapon_PrimaryAttack( float fWeapon ) {

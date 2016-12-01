@@ -66,8 +66,18 @@ void WeaponXM1014_Draw( void ) {
 	#endif
 }
 
+void WeaponXM1014_ReloadNULL( void ) { }
+
 void WeaponXM1014_PrimaryFire( void ) {
 #ifdef QWSSQC
+	if ( self.iMode_XM1014 == TRUE ) {
+		self.iMode_XM1014 = 0;
+		Client_SendEvent( self, EV_WEAPON_RELOAD );
+		self.think = WeaponXM1014_ReloadNULL;
+		self.fAttackFinished = time + 0.5;
+		return;
+	}
+	
 	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
 		sound( self, CHAN_WEAPON, "weapons/xm1014-1.wav", 1, ATTN_NORM );
 	}
@@ -87,7 +97,8 @@ void WeaponXM1014_Secondary( void ) {
 	if ( (self.(wptXM1014.iClipfld) == wptXM1014.iClipSize) || ( self.(wptXM1014.iCaliberfld) <= 0 ) ) {
 		self.iMode_XM1014 = 0;
 		Client_SendEvent( self, EV_WEAPON_RELOAD );
-		self.fAttackFinished = time + 1.0;
+		self.think = WeaponXM1014_ReloadNULL;
+		self.fAttackFinished = time + 0.5;
 		return;
 	}
 	
@@ -105,7 +116,6 @@ void WeaponXM1014_Secondary( void ) {
 
 void WeaponXM1014_Reload( void ) {
 #ifdef QWSSQC
-	static void WeaponXM1014_ReloadNULL( void ) { }
 	// Can we reload the gun even if we wanted to?
 	if ( ( self.(wptXM1014.iClipfld) != wptXM1014.iClipSize ) && ( self.(wptXM1014.iCaliberfld) > 0 ) ) {
 		self.iMode_XM1014 = 1 - self.iMode_XM1014;
@@ -118,7 +128,7 @@ void WeaponXM1014_Reload( void ) {
 		}
 			
 		Client_SendEvent( self, EV_WEAPON_RELOAD );
-		self.fAttackFinished = time + 1.0;
+		self.fAttackFinished = time + 0.5;
 	}
 #else
 	iWeaponMode_XM1014 = 1 - iWeaponMode_XM1014;

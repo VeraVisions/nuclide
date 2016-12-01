@@ -30,7 +30,7 @@ int iWeaponMode_M3;
 weaponinfo_t wptM3 = { 
 	WEAPON_M3, 			// Identifier
 	SLOT_PRIMARY,
-	500, 				// Price
+	1700, 				// Price
 	CALIBER_BUCKSHOT, 	// Caliber ID
 	220, 				// Max Player Speed
 	9, 					// Bullets Per Shot
@@ -40,7 +40,7 @@ weaponinfo_t wptM3 = {
 	3000, 				// Bullet Range
 	0.7, 				// Range Modifier
 	TYPE_SEMI,
-	1.0, 					// Attack-Delay
+	1.0, 				// Attack-Delay
 	3.0, 				// Reload-Delay
 	iAmmo_BUCKSHOT, 	// Caliber Pointer
 	iClip_M3 			// Clip Pointer
@@ -66,8 +66,18 @@ void WeaponM3_Draw( void ) {
 	#endif
 }
 
+void WeaponM3_ReloadNULL( void ) { }
+
 void WeaponM3_PrimaryFire( void ) {
 #ifdef QWSSQC
+	if ( self.iMode_M3 == TRUE ) {
+		self.iMode_M3 = 0;
+		Client_SendEvent( self, EV_WEAPON_RELOAD );
+		self.think = WeaponM3_ReloadNULL;
+		self.fAttackFinished = time + 1.0;
+		return;
+	}
+	
 	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
 		sound( self, CHAN_WEAPON, "weapons/m3-1.wav", 1, ATTN_NORM );
 	}
@@ -87,6 +97,7 @@ void WeaponM3_Secondary( void ) {
 	if ( (self.(wptM3.iClipfld) == wptM3.iClipSize) || ( self.(wptM3.iCaliberfld) <= 0 ) ) {
 		self.iMode_M3 = 0;
 		Client_SendEvent( self, EV_WEAPON_RELOAD );
+		self.think = WeaponM3_ReloadNULL;
 		self.fAttackFinished = time + 1.0;
 		return;
 	}
@@ -105,7 +116,6 @@ void WeaponM3_Secondary( void ) {
 
 void WeaponM3_Reload( void ) {
 #ifdef QWSSQC
-	static void WeaponM3_ReloadNULL( void ) { }
 	// Can we reload the gun even if we wanted to?
 	if ( ( self.(wptM3.iClipfld) != wptM3.iClipSize ) && ( self.(wptM3.iCaliberfld) > 0 ) ) {
 		self.iMode_M3 = 1 - self.iMode_M3;
