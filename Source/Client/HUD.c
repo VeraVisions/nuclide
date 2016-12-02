@@ -39,23 +39,25 @@ float vHUDNumPos[10] = {
 
 vector vHUDCalPos[10] = {
 	'0 0 0',
-	'0.09375 0.28125 0', // 50AE
-	'0.28125 0.28125 0', // 762MM
-	'0 0.375 0', // 556MM
-	'0.09375 0.375 0', // 338MAG
-	'0.1875 0.28125 0', // 9MM
-	'0 0.28125 0', // BUCKSHOT
-	'0.375 0.28125 0', // 45ACP
-	'0.46875 0.28125 0', // 357SIG
-	'0.46875 0.375 0', // 57MM
+	'0.09375 0.28125 0', 	// 50AE
+	'0.28125 0.28125 0', 	// 762MM
+	'0 0.375 0', 			// 556MM
+	'0.09375 0.375 0', 		// 338MAG
+	'0.1875 0.28125 0', 	// 9MM
+	'0 0.28125 0', 			// BUCKSHOT
+	'0.375 0.28125 0', 		// 45ACP
+	'0.46875 0.28125 0', 	// 357SIG
+	'0.46875 0.375 0', 		// 57MM
 };
 
-// Draws an individual number
-void HUD_DrawNumber( int iNumber, vector vPos ) {
-	if (iNumber < 0) iNumber = 0;
-	if (iNumber > 9) iNumber = 9;
-	
-	drawsubpic( vPos, '24 25 0', HUD_NUMFILE_LAYER, [ vHUDNumPos[ iNumber ], 0], [ NUMSIZE_X, NUMSIZE_Y ], VGUI_WINDOW_FGCOLOR, 1, DRAWFLAG_ADDITIVE );
+// Wrapper that draws an individual number
+void HUD_DrawNumber( int iNumber, vector vPos, float fAlpha ) {
+	drawsubpic( vPos, '24 25 0', HUD_NUMFILE_LAYER, [ vHUDNumPos[ iNumber ], 0], [ NUMSIZE_X, NUMSIZE_Y ], VGUI_WINDOW_FGCOLOR, fAlpha, DRAWFLAG_ADDITIVE );
+}
+
+// Draws a red number
+void HUD_DrawRedNumber( int iNumber, vector vPos, float fAlpha ) {
+	drawsubpic( vPos, '24 25 0', HUD_NUMFILE_LAYER, [ vHUDNumPos[ iNumber ], 0], [ NUMSIZE_X, NUMSIZE_Y ], '1 0 0', fAlpha, DRAWFLAG_ADDITIVE );
 }
 
 // Draws numerals quickly with a maximum length of 3 - e.g. for health, armor etc.
@@ -63,12 +65,12 @@ void HUD_DrawNums( float fNumber, vector vPos ) {
 	int iNumber = fNumber;
 	if ( iNumber > 0 ) {
 		while ( iNumber > 0 ) {
-			HUD_DrawNumber( (float)iNumber % 10, vPos );
+			HUD_DrawNumber( (float)iNumber % 10, vPos, 1 );
 			iNumber = iNumber / 10;
 			vPos_x -= 24;
 		} 
 	} else {
-		HUD_DrawNumber( 0, vPos );
+		HUD_DrawNumber( 0, vPos, 1 );
 	}
 }
 
@@ -126,24 +128,35 @@ void HUD_Draw( void ) {
 		iTens = iSeconds / 10;
 		iUnits = iSeconds - 10*iTens;
 	}
-	
-	drawsubpic( vTimePos, '24 25 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 6, NUMSIZE_Y * 3], [ NUMSIZE_X, NUMSIZE_Y ], VGUI_WINDOW_FGCOLOR, 1, DRAWFLAG_ADDITIVE );
-	HUD_DrawNumber( iMinutes, vTimePos + '48 0 0');
-	HUD_DrawNumber( iTens, vTimePos + '70 0 0');
-	HUD_DrawNumber( iUnits, vTimePos + '94 0 0' );
+
+	// Timer: Flashing red numbers
+	if ( ( iMinutes == 0 ) &&  ( iTens <= 1 ) ) {
+		float fAlpha = fabs( sin( time * 20 ) );
+		HUD_DrawRedNumber( iMinutes, vTimePos + '48 0 0', fAlpha);
+		HUD_DrawRedNumber( iTens, vTimePos + '70 0 0', fAlpha);
+		HUD_DrawRedNumber( iUnits, vTimePos + '94 0 0',fAlpha );
+		HUD_DrawNumber( iMinutes, vTimePos + '48 0 0', 1 - fAlpha);
+		HUD_DrawNumber( iTens, vTimePos + '70 0 0', 1 - fAlpha);
+		HUD_DrawNumber( iUnits, vTimePos + '94 0 0',1 - fAlpha );
+		
+		drawsubpic( vTimePos, '24 25 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 6, NUMSIZE_Y * 3], [ NUMSIZE_X, NUMSIZE_Y ], '1 0 0', fAlpha, DRAWFLAG_ADDITIVE );
+		drawsubpic( vTimePos, '24 25 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 6, NUMSIZE_Y * 3], [ NUMSIZE_X, NUMSIZE_Y ], VGUI_WINDOW_FGCOLOR, 1 - fAlpha, DRAWFLAG_ADDITIVE );
+	} else {
+		HUD_DrawNumber( iMinutes, vTimePos + '48 0 0', 1);
+		HUD_DrawNumber( iTens, vTimePos + '70 0 0', 1);
+		HUD_DrawNumber( iUnits, vTimePos + '94 0 0', 1);
+		drawsubpic( vTimePos, '24 25 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 6, NUMSIZE_Y * 3], [ NUMSIZE_X, NUMSIZE_Y ], VGUI_WINDOW_FGCOLOR, 1, DRAWFLAG_ADDITIVE );
+	}
 	
 	// The money
 	vector vMoneyPos = [ vVideoResolution_x - 160, vVideoResolution_y - 72 ];
-	
 	drawsubpic( vMoneyPos, '18 25 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 8, NUMSIZE_Y * 1], [ NUMSIZE_X * 0.75, NUMSIZE_Y ], VGUI_WINDOW_FGCOLOR, 1, DRAWFLAG_ADDITIVE );
 	vMoneyPos_x += ( 24 * 5 );
-
 	HUD_DrawNums( getstatf( STAT_MONEY ), vMoneyPos );
 	
 	// Ammo
 	vector vAmmoClipPos = [ vVideoResolution_x - 136, vVideoResolution_y - 42 ];
 	HUD_DrawNums( getstatf( STAT_CURRENT_CLIP ), vAmmoClipPos );
-	
 	vector vAmmoCalPos = [ vVideoResolution_x - 64, vVideoResolution_y - 42 ];
 	HUD_DrawNums( getstatf( STAT_CURRENT_CALIBER ), vAmmoCalPos );
 	

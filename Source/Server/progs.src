@@ -43,6 +43,7 @@ FuncBombTarget.c
 FuncBuyZone.c
 Spawn.c
 Entities.c
+Footsteps.c
 Input.c
 Client.c
 #endlist

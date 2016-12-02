@@ -49,11 +49,10 @@ entity eViewModel;
 void View_DrawViewModel( void ) {
 	if( !eViewModel ) {
 		eViewModel = spawn();
-		eViewModel.renderflags = RF_DEPTHHACK;
+		eViewModel.renderflags = RF_DEPTHHACK | RF_VIEWMODEL;
 	}
 	
-	eViewModel.origin = getproperty( VF_ORIGIN ) + '0 0 -1';
-	eViewModel.angles = getproperty( VF_ANGLES );
+	eViewModel.origin = '0 0 -1';
 	
 	if( getstatf( STAT_ACTIVEWEAPON ) < CS_WEAPON_COUNT ) {
 		setmodel( eViewModel, sViewModels[ getstatf( STAT_ACTIVEWEAPON ) ] );

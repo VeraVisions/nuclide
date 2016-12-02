@@ -33,7 +33,7 @@ void CSQC_UpdateView( float fWinWidth, float fWinHeight, float fGameFocus ) {
 	if( fGameFocus == TRUE ) {
 		HUD_Draw();
 		CSQC_VGUI_Draw();
-		drawstring( '320 240 0 ', sprintf( "FRAMETIME: %f",eViewModel.frame1time ) , '8 8 0', '1 1 1', 1, 0 );
+		drawstring( '320 240 0 ', sprintf( "FRAMETIME: %f", eViewModel.frame1time ) , '8 8 0', '1 1 1', 1, 0 );
 	}
 }
 

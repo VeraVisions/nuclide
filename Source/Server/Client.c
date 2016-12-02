@@ -80,6 +80,7 @@ void SV_RunClientCommand( void ) {
 		input_impulse = 0;
 	}
 	
+	Footsteps_Update();
 	runstandardplayerphysics( self );
 }
 
