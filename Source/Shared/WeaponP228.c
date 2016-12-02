@@ -37,7 +37,10 @@ weaponinfo_t wptP228 = {
 	0.15, 				// Attack-Delay
 	2.7, 				// Reload-Delay
 	iAmmo_357SIG, 		// Caliber Pointer
-	iClip_P228 			// Clip Pointer
+	iClip_P228, 		// Clip Pointer
+	-1,					// Accuracy Divisor
+	0,					// Accuracy Offset
+	0					// Max Inaccuracy
 };
 
 // Anim Table
@@ -52,7 +55,7 @@ enum {
 };
 
 void WeaponP228_Draw( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	OpenCSGunBase_Draw();
 	sound( self, CHAN_WEAPON, "weapons/p228_slidepull.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
 #else
@@ -61,7 +64,7 @@ void WeaponP228_Draw( void ) {
 }
 
 void WeaponP228_PrimaryFire( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
 		// Play Sound
 		sound( self, CHAN_WEAPON, "weapons/p228-1.wav", 1, ATTN_NORM );
@@ -85,7 +88,7 @@ void WeaponP228_PrimaryFire( void ) {
 }
 
 void WeaponP228_Reload( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	if ( OpenCSGunBase_Reload() == TRUE ) {
 		// Play Sound
 	}

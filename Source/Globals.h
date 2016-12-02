@@ -109,6 +109,7 @@ enum {
 	SLOT_GRENADE
 };
 
+// These values are taken from CS:S' .ctx script files
 typedef struct {
 	int iWeaponID; 	// Identifier
 	int iSlot;
@@ -131,6 +132,10 @@ typedef struct {
 	
 	.int iCaliberfld;	// Pointer towards the caliberfield of the gun
 	.int iClipfld;		// Pointer towards the clip of the gun
+	
+	float fAccuracyDivisor;
+	float fAccuracyOffset;
+	float fMaxInaccuracy;
 } weaponinfo_t;
 
 typedef struct {

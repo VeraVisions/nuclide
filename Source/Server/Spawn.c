@@ -66,7 +66,7 @@ void Spawn_GameClient( float fTeam ) {
 	setmodel( self, sCSPlayers[ fTeam ] );
 	setsize( self, VEC_HULL_MIN, VEC_HULL_MAX );
 
-	self.view_ofs = '0 0 28';
+	self.view_ofs = '0 0 24';
 	self.velocity = '0 0 0';
 	
 	self.frame = 1; // Idle frame

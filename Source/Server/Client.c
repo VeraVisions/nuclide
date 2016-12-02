@@ -34,7 +34,9 @@ void PlayerPreThink( void ) {
 	Input_Handle();
 }
 
-void PlayerPostThink( void ) {}
+void PlayerPostThink( void ) {
+	
+}
 
 void PutClientInServer( void ) {
 	entity eSpawn;

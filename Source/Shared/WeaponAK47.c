@@ -37,7 +37,10 @@ weaponinfo_t wptAK47 = {
 	0.1, 				// Attack-Delay
 	2.4, 				// Reload-Delay
 	iAmmo_762MM, 		// Caliber Pointer
-	iClip_AK47 		// Clip Pointer
+	iClip_AK47, 		// Clip Pointer
+	200,				// Accuracy Divisor
+	0.35,				// Accuracy Offset
+	1.25				// Max Inaccuracy
 };
 
 // Anim Table
@@ -51,7 +54,7 @@ enum {
 };
 
 void WeaponAK47_Draw( void ) {
-	#ifdef QWSSQC
+	#ifdef SSQC
 	OpenCSGunBase_Draw();
 	sound( self, CHAN_WEAPON, "weapons/ak47_boltpull.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
 	#else
@@ -60,7 +63,7 @@ void WeaponAK47_Draw( void ) {
 }
 
 void WeaponAK47_PrimaryFire( void ) {
-	#ifdef QWSSQC
+	#ifdef SSQC
 	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
 		if ( random() <= 0.5 ) {
 			sound( self, CHAN_WEAPON, "weapons/ak47-1.wav", 1, ATTN_NORM );
@@ -81,7 +84,7 @@ void WeaponAK47_PrimaryFire( void ) {
 }
 
 void WeaponAK47_Reload( void ) {
-	#ifdef QWSSQC
+	#ifdef SSQC
 	if ( OpenCSGunBase_Reload() == TRUE ) {
 		// Play Sound
 	}

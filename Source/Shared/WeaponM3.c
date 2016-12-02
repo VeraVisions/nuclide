@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 .int iClip_M3;
 
-#ifdef QWSSQC
+#ifdef SSQC
 .int iMode_M3;
 #else
 int iWeaponMode_M3;
@@ -43,7 +43,10 @@ weaponinfo_t wptM3 = {
 	1.0, 				// Attack-Delay
 	3.0, 				// Reload-Delay
 	iAmmo_BUCKSHOT, 	// Caliber Pointer
-	iClip_M3 			// Clip Pointer
+	iClip_M3, 	// Clip Pointer
+	200,				// Accuracy Divisor
+	0.35,				// Accuracy Offset
+	1.25				// Max Inaccuracy
 };
 
 // Anim Table
@@ -58,7 +61,7 @@ enum {
 };
 
 void WeaponM3_Draw( void ) {
-	#ifdef QWSSQC
+	#ifdef SSQC
 	OpenCSGunBase_Draw();
 	sound( self, CHAN_WEAPON, "weapons/m3_pump.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
 	#else
@@ -69,7 +72,7 @@ void WeaponM3_Draw( void ) {
 void WeaponM3_ReloadNULL( void ) { }
 
 void WeaponM3_PrimaryFire( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	if ( self.iMode_M3 == TRUE ) {
 		self.iMode_M3 = 0;
 		Client_SendEvent( self, EV_WEAPON_RELOAD );
@@ -92,7 +95,7 @@ void WeaponM3_PrimaryFire( void ) {
 
 void WeaponM3_Reload( void);
 void WeaponM3_Secondary( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	// If it's full or no ammo is left...
 	if ( (self.(wptM3.iClipfld) == wptM3.iClipSize) || ( self.(wptM3.iCaliberfld) <= 0 ) ) {
 		self.iMode_M3 = 0;
@@ -115,7 +118,7 @@ void WeaponM3_Secondary( void ) {
 }
 
 void WeaponM3_Reload( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	// Can we reload the gun even if we wanted to?
 	if ( ( self.(wptM3.iClipfld) != wptM3.iClipSize ) && ( self.(wptM3.iCaliberfld) > 0 ) ) {
 		self.iMode_M3 = 1 - self.iMode_M3;

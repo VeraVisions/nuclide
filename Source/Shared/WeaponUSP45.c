@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 .int iClip_USP45;
 
-#ifdef QWSSQC
+#ifdef SSQC
 .int iMode_USP45;
 #else
 int iWeaponMode_USP45;
@@ -43,7 +43,10 @@ weaponinfo_t wptUSP45 = {
 	0.15, 				// Attack-Delay
 	2.5, 				// Reload-Delay
 	iAmmo_45ACP, 		// Caliber Pointer
-	iClip_USP45 		// Clip Pointer
+	iClip_USP45, 		// Clip Pointer
+	-1,					// Accuracy Divisor
+	0,					// Accuracy Offset
+	0					// Max Inaccuracy
 };
 
 enum {
@@ -66,7 +69,7 @@ enum {
 };
 
 void WeaponUSP45_Draw( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	OpenCSGunBase_Draw();
 #else
 	if ( iWeaponMode_USP45 == TRUE ) {
@@ -78,7 +81,7 @@ void WeaponUSP45_Draw( void ) {
 }
 
 void WeaponUSP45_PrimaryFire( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
 		if ( self.iMode_USP45 == TRUE ) {
 			if ( random() <= 0.5 ) {
@@ -124,7 +127,7 @@ void WeaponUSP45_PrimaryFire( void ) {
 }
 
 void WeaponUSP45_Secondary( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	// Just switch the modes quickly
 	self.iMode_USP45 = 1 - self.iMode_USP45;
 	self.fAttackFinished = time + 3.0;
@@ -150,7 +153,7 @@ void WeaponUSP45_Secondary( void ) {
 }
 
 void WeaponUSP45_Reload( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	if ( OpenCSGunBase_Reload() == TRUE ) {
 		// Play Sound
 	}

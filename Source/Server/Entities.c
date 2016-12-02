@@ -22,10 +22,14 @@ void func_wall( void ) {
 	self.angles = '0 0 0';
 	self.movetype = MOVETYPE_PUSH;
 	self.solid = SOLID_BSP;
+
 	setmodel (self, self.model);
 	
 	// GoldSrc-Rendermode support
 	if( self.rendermode == 2 ) {
+		self.alpha = ( self.renderamt / 255 );
+	} else if ( self.rendermode == 5 ) {
+		self.effects = EF_ADDITIVE;
 		self.alpha = ( self.renderamt / 255 );
 	}
 }
@@ -43,15 +47,29 @@ void func_button( void ) {
 }
 
 void func_illusionary( void ){
-	setmodel( self, self.model );  
+	func_wall();
 	self.solid = SOLID_NOT;
 }
 
 void func_water( void ) {
-	func_illusionary();
+	func_wall();
+	self.skin = CONTENT_WATER;
 }
 
 void ambient_generic( void ) {
 	precache_sound( self.message );
- 	ambientsound( self.origin, self.message, 1, ATTN_NORM );
+	
+	if ( self.spawnflags & 1 ) {
+		self.style = ATTN_NONE;
+	} else if ( self.spawnflags & 2 ) {
+		self.style = ATTN_IDLE;
+	} else if ( self.spawnflags & 4 ) {
+		self.style = ATTN_STATIC;
+	} else if ( self.spawnflags & 8 ) {
+		self.style = ATTN_NORM;
+	} else {
+		self.style = ATTN_STATIC;
+	}
+	
+ 	ambientsound( self.origin, self.message, 1, self.style );
 }

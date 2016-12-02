@@ -37,7 +37,10 @@ weaponinfo_t wptG3SG1 = {
 	0.25, 				// Attack-Delay
 	4.6, 				// Reload-Delay
 	iAmmo_762MM, 		// Caliber Pointer
-	iClip_G3SG1 		// Clip Pointer
+	iClip_G3SG1, 	// Clip Pointer
+	-1,					// Accuracy Divisor
+	0,					// Accuracy Offset
+	0					// Max Inaccuracy
 };
 
 // Anim Table
@@ -50,7 +53,7 @@ enum {
 };
 
 void WeaponG3SG1_Draw( void ) {
-	#ifdef QWSSQC
+	#ifdef SSQC
 	OpenCSGunBase_Draw();
 	sound( self, CHAN_WEAPON, "weapons/g3sg1_slide.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
 	#else
@@ -59,7 +62,7 @@ void WeaponG3SG1_Draw( void ) {
 }
 
 void WeaponG3SG1_PrimaryFire( void ) {
-	#ifdef QWSSQC
+	#ifdef SSQC
 	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
 		// Play Sound
 		dprint("[DEBUG] FIRE!\n");
@@ -76,7 +79,7 @@ void WeaponG3SG1_PrimaryFire( void ) {
 }
 
 void WeaponG3SG1_Reload( void ) {
-	#ifdef QWSSQC
+	#ifdef SSQC
 	if ( OpenCSGunBase_Reload() == TRUE ) {
 		// Play Sound
 	}

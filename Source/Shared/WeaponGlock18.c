@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 .int iClip_GLOCK18;
 
-#ifdef QWSSQC
+#ifdef SSQC
 .int iMode_GLOCK18;
 #else
 int iWeaponMode_GLOCK18;
@@ -43,7 +43,10 @@ weaponinfo_t wptGLOCK18 = {
 	0.15, 				// Attack-Delay
 	2.0, 				// Reload-Delay
 	iAmmo_9MM, 			// Caliber Pointer
-	iClip_GLOCK18 		// Clip Pointer
+	iClip_GLOCK18, 	// Clip Pointer
+	-1,					// Accuracy Divisor
+	0,					// Accuracy Offset
+	0					// Max Inaccuracy
 };
 
 // Anim Table
@@ -64,7 +67,7 @@ enum {
 };
 
 void WeaponGLOCK18_Draw( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	OpenCSGunBase_Draw();
 	sound( self, CHAN_WEAPON, "weapons/slideback1.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
 #else
@@ -77,7 +80,7 @@ void WeaponGLOCK18_Draw( void ) {
 }
 
 void WeaponGLOCK18_PrimaryFire( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
 		// Play Sound
 		if ( self.iMode_GLOCK18 == FALSE ) {
@@ -104,7 +107,7 @@ void WeaponGLOCK18_PrimaryFire( void ) {
 }
 
 void WeaponGLOCK18_Secondary( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	// Just switch the modes quickly
 	self.iMode_GLOCK18 = 1 - self.iMode_GLOCK18;
 	self.fAttackFinished = time + 1.0;
@@ -123,7 +126,7 @@ void WeaponGLOCK18_Secondary( void ) {
 }
 
 void WeaponGLOCK18_Reload( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	if ( OpenCSGunBase_Reload() == TRUE ) {
 		// Play Sound
 	}

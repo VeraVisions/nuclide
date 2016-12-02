@@ -21,6 +21,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define VEC_HULL_MIN '-16 -16 -36'
 #define VEC_HULL_MAX '16 16 36'
 
+// Particle Fields
+float EFFECT_GUNSHOT;
+float EFFECT_BLOOD;
+
 // Player specific fields
 .float fInBuyZone;
 .float fInHostageZone;
@@ -41,11 +45,17 @@ float fGameTime;
 
 .float fAttackFinished;
 
+.float fAccuracy;
 
 // Game specific fields
 int iHostagesMax;
 int iHostagesRescued;
+
+// Generic entity fields
 .int iUsable;
+.int iBleeds;
+.void() vPain;
+.void() vDeath;
 
 // All about +use
 entity eActivator;
@@ -75,3 +85,5 @@ void Client_SendEvent( entity eClient, float fEVType );
 void OpenCSGunBase_Draw( void );
 float OpenCSGunBase_PrimaryFire( void );
 float OpenCSGunBase_Reload( void );
+
+void TraceAttack_FireBullets( void );

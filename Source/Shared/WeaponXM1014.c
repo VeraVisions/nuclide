@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 .int iClip_XM1014;
 
-#ifdef QWSSQC
+#ifdef SSQC
 .int iMode_XM1014;
 #else
 int iWeaponMode_XM1014;
@@ -34,7 +34,7 @@ weaponinfo_t wptXM1014 = {
 	CALIBER_BUCKSHOT, 		// Caliber ID
 	240, 				// Max Player Speed
 	6, 					// Bullets Per Shot
-	7, 				// Clip/MagSize
+	7, 					// Clip/MagSize
 	22, 				// Damage Per Bullet
 	1, 					// Penetration Multiplier
 	3000, 				// Bullet Range
@@ -42,8 +42,11 @@ weaponinfo_t wptXM1014 = {
 	TYPE_AUTO,
 	0.25, 				// Attack-Delay
 	3.0, 				// Reload-Delay
-	iAmmo_BUCKSHOT, 		// Caliber Pointer
-	iClip_XM1014 		// Clip Pointer
+	iAmmo_BUCKSHOT, 	// Caliber Pointer
+	iClip_XM1014, 		// Clip Pointer
+	200,				// Accuracy Divisor
+	0.35,				// Accuracy Offset
+	1.25				// Max Inaccuracy
 };
 
 // Anim Table
@@ -58,7 +61,7 @@ enum {
 };
 
 void WeaponXM1014_Draw( void ) {
-	#ifdef QWSSQC
+	#ifdef SSQC
 	OpenCSGunBase_Draw();
 	sound( self, CHAN_WEAPON, "weapons/m3_pump.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
 	#else
@@ -69,7 +72,7 @@ void WeaponXM1014_Draw( void ) {
 void WeaponXM1014_ReloadNULL( void ) { }
 
 void WeaponXM1014_PrimaryFire( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	if ( self.iMode_XM1014 == TRUE ) {
 		self.iMode_XM1014 = 0;
 		Client_SendEvent( self, EV_WEAPON_RELOAD );
@@ -92,7 +95,7 @@ void WeaponXM1014_PrimaryFire( void ) {
 
 void WeaponXM1014_Reload( void);
 void WeaponXM1014_Secondary( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	// If it's full or no ammo is left...
 	if ( (self.(wptXM1014.iClipfld) == wptXM1014.iClipSize) || ( self.(wptXM1014.iCaliberfld) <= 0 ) ) {
 		self.iMode_XM1014 = 0;
@@ -115,7 +118,7 @@ void WeaponXM1014_Secondary( void ) {
 }
 
 void WeaponXM1014_Reload( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	// Can we reload the gun even if we wanted to?
 	if ( ( self.(wptXM1014.iClipfld) != wptXM1014.iClipSize ) && ( self.(wptXM1014.iCaliberfld) > 0 ) ) {
 		self.iMode_XM1014 = 1 - self.iMode_XM1014;

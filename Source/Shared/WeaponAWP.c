@@ -37,7 +37,10 @@ weaponinfo_t wptAWP = {
 	1.2, 				// Attack-Delay
 	2.9, 				// Reload-Delay
 	iAmmo_338MAG, 		// Caliber Pointer
-	iClip_AWP 		// Clip Pointer
+	iClip_AWP, 			// Clip Pointer
+	-1,					// Accuracy Divisor
+	0,					// Accuracy Offset
+	0					// Max Inaccuracy
 };
 
 // Anim Table
@@ -51,7 +54,7 @@ enum {
 };
 
 void WeaponAWP_Draw( void ) {
-	#ifdef QWSSQC
+	#ifdef SSQC
 	OpenCSGunBase_Draw();
 	sound( self, CHAN_WEAPON, "weapons/awp_deploy.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
 	#else
@@ -60,7 +63,7 @@ void WeaponAWP_Draw( void ) {
 }
 
 void WeaponAWP_PrimaryFire( void ) {
-	#ifdef QWSSQC
+	#ifdef SSQC
 	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
 		// Play Sound
 		sound( self, CHAN_WEAPON, "weapons/awp1.wav", 1, ATTN_NORM );
@@ -78,7 +81,7 @@ void WeaponAWP_PrimaryFire( void ) {
 }
 
 void WeaponAWP_Reload( void ) {
-	#ifdef QWSSQC
+	#ifdef SSQC
 	if ( OpenCSGunBase_Reload() == TRUE ) {
 		// Play Sound
 	}

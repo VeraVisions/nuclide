@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 .int iClip_M4A1;
 
-#ifdef QWSSQC
+#ifdef SSQC
 .int iMode_M4A1;
 #else
 int iWeaponMode_M4A1;
@@ -43,7 +43,10 @@ weaponinfo_t wptM4A1 = {
 	0.09, 				// Attack-Delay
 	3.1, 				// Reload-Delay
 	iAmmo_556MM, 		// Caliber Pointer
-	iClip_M4A1 			// Clip Pointer
+	iClip_M4A1, 		// Clip Pointer
+	220,				// Accuracy Divisor
+	0.3,				// Accuracy Offset
+	1.0					// Max Inaccuracy
 };
 
 enum {
@@ -64,7 +67,7 @@ enum {
 };
 
 void WeaponM4A1_Draw( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	OpenCSGunBase_Draw();
 #else
 	if ( iWeaponMode_M4A1 == TRUE ) {
@@ -76,7 +79,7 @@ void WeaponM4A1_Draw( void ) {
 }
 
 void WeaponM4A1_PrimaryFire( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
 		if ( self.iMode_M4A1 == TRUE ) {
 			sound( self, CHAN_WEAPON, "weapons/m4a1-1.wav", 1, ATTN_NORM );
@@ -114,7 +117,7 @@ void WeaponM4A1_PrimaryFire( void ) {
 }
 
 void WeaponM4A1_Secondary( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	// Just switch the modes quickly
 	self.iMode_M4A1 = 1 - self.iMode_M4A1;
 	self.fAttackFinished = time + 3.0;
@@ -140,7 +143,7 @@ void WeaponM4A1_Secondary( void ) {
 }
 
 void WeaponM4A1_Reload( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	if ( OpenCSGunBase_Reload() == TRUE ) {
 		// Play Sound
 	}

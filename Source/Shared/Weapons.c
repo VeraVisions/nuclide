@@ -29,7 +29,7 @@ weaponfunc_t wpnFuncTable[ CS_WEAPON_COUNT ] = {
 	{ WeaponP228_Draw, WeaponP228_PrimaryFire, Temp_Nothing, WeaponP228_Reload },
 	{ WeaponELITES_Draw, WeaponELITES_PrimaryFire, Temp_Nothing, WeaponELITES_Reload },
 	{ WeaponFIVESEVEN_Draw, WeaponFIVESEVEN_PrimaryFire, Temp_Nothing, WeaponFIVESEVEN_Reload },
-	#ifdef QWSSQC
+	#ifdef SSQC
 	{ WeaponM3_Draw, WeaponM3_PrimaryFire,  Temp_Nothing, WeaponM3_Reload },
 	{ WeaponXM1014_Draw, WeaponXM1014_PrimaryFire, Temp_Nothing, WeaponXM1014_Reload },
 	#else 
@@ -55,13 +55,13 @@ weaponfunc_t wpnFuncTable[ CS_WEAPON_COUNT ] = {
 void Weapon_Draw( float fWeapon ) {
 	wpnFuncTable[ fWeapon ].vDraw();
 	
-	#ifdef QWSSQC
+	#ifdef SSQC
 	self.maxspeed = (float)wptTable[ fWeapon ].iPlayerSpeed;
 	#endif
 }
 
 void Weapon_PrimaryAttack( float fWeapon ) {
-	#ifdef QWSSQC
+	#ifdef SSQC
 	if ( self.fAttackFinished > time ) {
 		return;
 	}
@@ -71,7 +71,7 @@ void Weapon_PrimaryAttack( float fWeapon ) {
 }
 
 void Weapon_SecondaryAttack( float fWeapon ) {
-	#ifdef QWSSQC
+	#ifdef SSQC
 	if ( self.fAttackFinished > time ) {
 		return;
 	}
@@ -81,7 +81,7 @@ void Weapon_SecondaryAttack( float fWeapon ) {
 }
 
 void Weapon_Reload( float fWeapon ) {
-	#ifdef QWSSQC
+	#ifdef SSQC
 	if ( self.fAttackFinished > time ) {
 		return;
 	}
@@ -90,7 +90,7 @@ void Weapon_Reload( float fWeapon ) {
 	wpnFuncTable[ fWeapon ].vReload();
 }
 
-#ifdef QWSSQC
+#ifdef SSQC
 void Weapon_UpdateCurrents( void ) {
 	self.iCurrentClip = self.(wptTable[ self.weapon ].iClipfld);
 	self.iCurrentCaliber = self.(wptTable[ self.weapon ].iCaliberfld);

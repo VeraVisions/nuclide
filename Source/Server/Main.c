@@ -54,6 +54,9 @@ void worldspawn( void ) {
 	precache_model (sCSPlayers[7]);
 	precache_model (sCSPlayers[8]);
 	
+	EFFECT_GUNSHOT = particleeffectnum( "te_gunshot" );
+	EFFECT_BLOOD = particleeffectnum( "te_blood" );
+	
 	precache_sound( "radio/moveout.wav" );
 	precache_sound( "radio/letsgo.wav" );
 	precache_sound( "radio/locknload.wav" );

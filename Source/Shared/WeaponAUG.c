@@ -37,7 +37,10 @@ weaponinfo_t wptAUG = {
 	0.09, 				// Attack-Delay
 	3.3, 				// Reload-Delay
 	iAmmo_762MM, 		// Caliber Pointer
-	iClip_AUG 		// Clip Pointer
+	iClip_AUG, 			// Clip Pointer
+	215,				// Accuracy Divisor
+	0.3,				// Accuracy Offset
+	1.0					// Max Inaccuracy
 };
 
 // Anim Table
@@ -51,7 +54,7 @@ enum {
 };
 
 void WeaponAUG_Draw( void ) {
-	#ifdef QWSSQC
+	#ifdef SSQC
 	OpenCSGunBase_Draw();
 	sound( self, CHAN_WEAPON, "weapons/aug_boltpull.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
 	#else
@@ -60,7 +63,7 @@ void WeaponAUG_Draw( void ) {
 }
 
 void WeaponAUG_PrimaryFire( void ) {
-	#ifdef QWSSQC
+	#ifdef SSQC
 	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
 		sound( self, CHAN_WEAPON, "weapons/aug-1.wav", 1, ATTN_NORM );
 	}
@@ -77,7 +80,7 @@ void WeaponAUG_PrimaryFire( void ) {
 }
 
 void WeaponAUG_Reload( void ) {
-	#ifdef QWSSQC
+	#ifdef SSQC
 	if ( OpenCSGunBase_Reload() == TRUE ) {
 		// Play Sound
 	}

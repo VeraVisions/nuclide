@@ -26,7 +26,7 @@ weaponinfo_t wptDEAGLE = {
 	SLOT_SECONDARY,
 	650, 				// Price
 	CALIBER_50AE, 		// Caliber ID
-	650, 				// Max Player Speed
+	240, 				// Max Player Speed
 	1, 					// Bullets Per Shot
 	7, 					// Clip/MagSize
 	54, 				// Damage Per Bullet
@@ -37,7 +37,10 @@ weaponinfo_t wptDEAGLE = {
 	0.15, 				// Attack-Delay
 	2.1, 				// Reload-Delay
 	iAmmo_50AE, 		// Caliber Pointer
-	iClip_DEAGLE 		// Clip Pointer
+	iClip_DEAGLE, 			// Clip Pointer
+	-1,					// Accuracy Divisor
+	0,					// Accuracy Offset
+	0					// Max Inaccuracy
 };
 
 // Anim Table
@@ -51,7 +54,7 @@ enum {
 };
 
 void WeaponDEAGLE_Draw( void ) {
-	#ifdef QWSSQC
+	#ifdef SSQC
 	OpenCSGunBase_Draw();
 	sound( self, CHAN_WEAPON, "weapons/de_deploy.wav", 1, ATTN_IDLE ); // TODO: Move to the client..
 	#else
@@ -60,7 +63,7 @@ void WeaponDEAGLE_Draw( void ) {
 }
 
 void WeaponDEAGLE_PrimaryFire( void ) {
-	#ifdef QWSSQC
+	#ifdef SSQC
 	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
 		if ( random() <= 0.5 ) {
 			sound( self, CHAN_WEAPON, "weapons/deagle-1.wav", 1, ATTN_NORM );
@@ -83,7 +86,7 @@ void WeaponDEAGLE_PrimaryFire( void ) {
 }
 
 void WeaponDEAGLE_Reload( void ) {
-	#ifdef QWSSQC
+	#ifdef SSQC
 	if ( OpenCSGunBase_Reload() == TRUE ) {
 		// Play Sound
 	}

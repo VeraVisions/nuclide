@@ -37,7 +37,10 @@ weaponinfo_t wptMP5 = {
 	0.08, 				// Attack-Delay
 	2.6, 				// Reload-Delay
 	iAmmo_9MM, 			// Caliber Pointer
-	iClip_MP5 			// Clip Pointer
+	iClip_MP5, 			// Clip Pointer
+	220,				// Accuracy Divisor
+	0.45,				// Accuracy Offset
+	0.75				// Max Inaccuracy
 };
 
 // Anim Table
@@ -51,7 +54,7 @@ enum {
 };
 
 void WeaponMP5_Draw( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	OpenCSGunBase_Draw();
 	sound( self, CHAN_WEAPON, "weapons/mp5_slideback.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
 #else
@@ -60,7 +63,7 @@ void WeaponMP5_Draw( void ) {
 }
 
 void WeaponMP5_PrimaryFire( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
 		if ( random() <= 0.5 ) {
 			sound( self, CHAN_WEAPON, "weapons/mp5-1.wav", 1, ATTN_NORM );
@@ -81,7 +84,7 @@ void WeaponMP5_PrimaryFire( void ) {
 }
 
 void WeaponMP5_Reload( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	if ( OpenCSGunBase_Reload() == TRUE ) {
 		// Play Sound
 	}

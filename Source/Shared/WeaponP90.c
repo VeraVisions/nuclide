@@ -37,7 +37,10 @@ weaponinfo_t wptP90 = {
 	0.07, 				// Attack-Delay
 	3.3, 				// Reload-Delay
 	iAmmo_57MM, 		// Caliber Pointer
-	iClip_P90 			// Clip Pointer
+	iClip_P90, 			// Clip Pointer
+	175,				// Accuracy Divisor
+	0.45,				// Accuracy Offset
+	1.0					// Max Inaccuracy
 };
 
 // Anim Table
@@ -51,7 +54,7 @@ enum {
 };
 
 void WeaponP90_Draw( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	OpenCSGunBase_Draw();
 	sound( self, CHAN_WEAPON, "weapons/p90_boltpull.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
 #else
@@ -60,7 +63,7 @@ void WeaponP90_Draw( void ) {
 }
 
 void WeaponP90_PrimaryFire( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
 		sound( self, CHAN_WEAPON, "weapons/p90-1.wav", 1, ATTN_NORM );
 	}
@@ -78,7 +81,7 @@ void WeaponP90_PrimaryFire( void ) {
 }
 
 void WeaponP90_Reload( void ) {
-	#ifdef QWSSQC
+	#ifdef SSQC
 	if ( OpenCSGunBase_Reload() == TRUE ) {
 		// Play Sound
 	}

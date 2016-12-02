@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 .int iClip_ELITES;
 
-#ifdef QWSSQC
+#ifdef SSQC
 .int iMode_ELITES;
 #else
 int iWeaponMode_ELITES;
@@ -43,7 +43,10 @@ weaponinfo_t wptELITES = {
 	0.15, 				// Attack-Delay
 	4.6, 				// Reload-Delay
 	iAmmo_9MM, 			// Caliber Pointer
-	iClip_ELITES 		// Clip Pointer
+	iClip_ELITES, 		// Clip Pointer
+	-1,					// Accuracy Divisor
+	0,					// Accuracy Offset
+	0					// Max Inaccuracy
 };
 
 // Anim Table
@@ -67,7 +70,7 @@ enum {
 };
 
 void WeaponELITES_Draw( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	OpenCSGunBase_Draw();
 	sound( self, CHAN_WEAPON, "weapons/elite_deploy.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
 #else
@@ -76,7 +79,7 @@ void WeaponELITES_Draw( void ) {
 }
 
 void WeaponELITES_PrimaryFire( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
 		// Play Sound
 		sound( self, CHAN_WEAPON, "weapons/elite_fire.wav", 1, ATTN_NORM );
@@ -122,7 +125,7 @@ void WeaponELITES_PrimaryFire( void ) {
 }
 
 void WeaponELITES_Reload( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	if ( OpenCSGunBase_Reload() == TRUE ) {
 		// Play Sound
 	}

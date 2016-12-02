@@ -25,6 +25,16 @@ float Client_LerpCamera( float fStart, float fEnd, float fAmount ) {
 	return shortest_angle * fAmount;
 }
 
+void hostage_pain( void ) {
+	self.frame = 13 - ceil( random() * 5);
+}
+
+void hostage_die( void ) {
+	self.frame = 30 + ceil( random() * 5);
+	self.solid = SOLID_NOT;
+	self.takedamage = DAMAGE_NO;
+}
+
 void hostage_use( void ) {
 	if ( self.eUser == world ) {
 		sound( self, CHAN_VOICE, sprintf( "hostage/hos%d.wav", ceil( random() * 5 ) ), 1.0, ATTN_IDLE );
@@ -40,7 +50,7 @@ void hostage_physics( void ) {
 	input_buttons = 0;
 	input_angles = self.angles;
 		
-	if ( self.eUser != world ) {
+	if ( ( self.eUser != world ) && ( self.health > 0 )  ) {
 		// This is visible ingame, so this is definitely executed.
 		vector vEndAngle = vectoangles( self.eUser.origin - self.origin );
 		self.angles_y += Client_LerpCamera( self.angles_y, vEndAngle_y, 0.2 );
@@ -87,7 +97,11 @@ void hostage_entity( void ) {
 	
 	self.eUser = world;
 	self.iUsable = TRUE;
+	self.iBleeds = TRUE;
+	self.takedamage = DAMAGE_YES;
 	self.vUse = hostage_use;
+	self.vPain = hostage_pain;
+	self.vDeath = hostage_die;
 
 	self.frame = 13; // Idle frame
 	self.health = 100;

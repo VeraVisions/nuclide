@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 // Because padding...
-weaponinfo_t wptDEFAULT = { 0, 0, 0, 0, 240, 0, 0, 0, 0, 0.0, 0.0, 0, 0.0, 0.0, iAmmo_9MM, iAmmo_9MM };
+weaponinfo_t wptDEFAULT = { 0, 0, 0, 0, 240, 0, 0, 0, 0, 0.0, 0.0, 0, 0.0, 0.0, iAmmo_9MM, iAmmo_9MM, 0.0, 0.0, 0.0 };
 
 weaponinfo_t wptTable[ CS_WEAPON_COUNT ] = {
 	wptDEFAULT,
@@ -48,35 +48,35 @@ weaponinfo_t wptTable[ CS_WEAPON_COUNT ] = {
 	wptPARA
 };
 
-#ifdef QWSSQC
+#ifdef SSQC
 void OpenCSGunBase_Draw( void ) {
-	#ifdef QWSSQC
 		self.iCurrentClip = self.(wptTable[ self.weapon ].iClipfld);
 		self.iCurrentCaliber = self.(wptTable[ self.weapon ].iCaliberfld);
 		Client_SendEvent( self, EV_WEAPON_DRAW );
-	#endif
+}
+
+void OpenCSGunBase_AccuracyCalc( void ) {
+	self.fAccuracy = 3 / wptTable[ self.weapon ].fAccuracyDivisor;
 }
 
 // Returns whether or not to play an animation
 float OpenCSGunBase_PrimaryFire( void ) {
-	#ifdef QWSSQC
 	// Nothing in the clip anymore? Don't even attempt
 	if ( ( self.(wptTable[ self.weapon ].iClipfld) - 1 ) < 0 ) {
 		return FALSE;
 	}
 	
-	// Take as many bullets away from the clip as it takes
+	OpenCSGunBase_AccuracyCalc();
+	TraceAttack_FireBullets();
+	
 	self.(wptTable[ self.weapon ].iClipfld) -= 1;
 	self.fAttackFinished = time + wptTable[ self.weapon ].fAttackFinished;
 	
 	Client_SendEvent( self, EV_WEAPON_PRIMARYATTACK );
 	return TRUE;
-	
-	#endif
 }
 
 float OpenCSGunBase_Reload( void ) {
-	#ifdef QWSSQC
 	// Don't bother reloading the gun when full
 	if ( self.(wptTable[ self.weapon ].iClipfld) == wptTable[ self.weapon ].iClipSize ) {
 		return FALSE;
@@ -99,6 +99,5 @@ float OpenCSGunBase_Reload( void ) {
 	
 	Client_SendEvent( self, EV_WEAPON_RELOAD );
 	return TRUE;
-	#endif
 }
 #endif

@@ -37,7 +37,10 @@ weaponinfo_t wptSG552 = {
 	0.09, 				// Attack-Delay
 	3.2, 				// Reload-Delay
 	iAmmo_556MM, 		// Caliber Pointer
-	iClip_SG552 		// Clip Pointer
+	iClip_SG552, 		// Clip Pointer
+	220,				// Accuracy Divisor
+	0.3,				// Accuracy Offset
+	1.0					// Max Inaccuracy
 };
 
 // Anim Table
@@ -51,7 +54,7 @@ enum {
 };
 
 void WeaponSG552_Draw( void ) {
-	#ifdef QWSSQC
+	#ifdef SSQC
 	OpenCSGunBase_Draw();
 	sound( self, CHAN_WEAPON, "weapons/sg552_boltpull.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
 	#else
@@ -60,7 +63,7 @@ void WeaponSG552_Draw( void ) {
 }
 
 void WeaponSG552_PrimaryFire( void ) {
-	#ifdef QWSSQC
+	#ifdef SSQC
 	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
 		if ( random() <= 0.5 ) {
 			sound( self, CHAN_WEAPON, "weapons/sg552-1.wav", 1, ATTN_NORM );
@@ -81,7 +84,7 @@ void WeaponSG552_PrimaryFire( void ) {
 }
 
 void WeaponSG552_Reload( void ) {
-	#ifdef QWSSQC
+	#ifdef SSQC
 	if ( OpenCSGunBase_Reload() == TRUE ) {
 		// Play Sound
 	}

@@ -37,7 +37,10 @@ weaponinfo_t wptMAC10 = {
 	0.075, 				// Attack-Delay
 	3.2, 				// Reload-Delay
 	iAmmo_45ACP, 		// Caliber Pointer
-	iClip_MAC10 		// Clip Pointer
+	iClip_MAC10, 		// Clip Pointer
+	200,				// Accuracy Divisor
+	0.6,				// Accuracy Offset
+	1.65				// Max Inaccuracy
 };
 
 // Anim Table
@@ -51,7 +54,7 @@ enum {
 };
 
 void WeaponMAC10_Draw( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	OpenCSGunBase_Draw();
 	sound( self, CHAN_WEAPON, "weapons/mac10_boltpull.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
 #else
@@ -60,7 +63,7 @@ void WeaponMAC10_Draw( void ) {
 }
 
 void WeaponMAC10_PrimaryFire( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
 		sound( self, CHAN_WEAPON, "weapons/mac10-1.wav", 1, ATTN_NORM );
 	}
@@ -78,7 +81,7 @@ void WeaponMAC10_PrimaryFire( void ) {
 }
 
 void WeaponMAC10_Reload( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	if ( OpenCSGunBase_Reload() == TRUE ) {
 		// Play Sound
 	}

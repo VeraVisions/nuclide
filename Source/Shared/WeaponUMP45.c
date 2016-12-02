@@ -37,7 +37,10 @@ weaponinfo_t wptUMP45 = {
 	0.105, 				// Attack-Delay
 	3.5, 				// Reload-Delay
 	iAmmo_45ACP, 		// Caliber Pointer
-	iClip_UMP45 		// Clip Pointer
+	iClip_UMP45, 		// Clip Pointer
+	210,				// Accuracy Divisor
+	0.5,				// Accuracy Offset
+	1					// Max Inaccuracy
 };
 
 // Anim Table
@@ -51,7 +54,7 @@ enum {
 };
 
 void WeaponUMP45_Draw( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	OpenCSGunBase_Draw();
 	sound( self, CHAN_WEAPON, "weapons/ump45_boltslap.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
 #else
@@ -60,7 +63,7 @@ void WeaponUMP45_Draw( void ) {
 }
 
 void WeaponUMP45_PrimaryFire( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
 		sound( self, CHAN_WEAPON, "weapons/ump45-1.wav", 1, ATTN_NORM );
 	}
@@ -78,7 +81,7 @@ void WeaponUMP45_PrimaryFire( void ) {
 }
 
 void WeaponUMP45_Reload( void ) {
-	#ifdef QWSSQC
+	#ifdef SSQC
 	if ( OpenCSGunBase_Reload() == TRUE ) {
 		// Play Sound
 	}

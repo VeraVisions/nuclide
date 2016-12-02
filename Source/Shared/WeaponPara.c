@@ -37,7 +37,10 @@ weaponinfo_t wptPARA = {
 	0.08, 				// Attack-Delay
 	3.0, 				// Reload-Delay
 	iAmmo_556MM, 		// Caliber Pointer
-	iClip_PARA 			// Clip Pointer
+	iClip_PARA, 	// Clip Pointer
+	175,				// Accuracy Divisor
+	0.4,				// Accuracy Offset
+	0.9				// Max Inaccuracy
 };
 
 // Anim Table
@@ -51,7 +54,7 @@ enum {
 };
 
 void WeaponPARA_Draw( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	OpenCSGunBase_Draw();
 	sound( self, CHAN_WEAPON, "weapons/m249_chain.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
 #else
@@ -60,7 +63,7 @@ void WeaponPARA_Draw( void ) {
 }
 
 void WeaponPARA_PrimaryFire( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
 		if ( random() <= 0.5 ) {
 			sound( self, CHAN_WEAPON, "weapons/m249-1.wav", 1, ATTN_NORM );
@@ -81,7 +84,7 @@ void WeaponPARA_PrimaryFire( void ) {
 }
 
 void WeaponPARA_Reload( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	if ( OpenCSGunBase_Reload() == TRUE ) {
 		// Play Sound
 	}

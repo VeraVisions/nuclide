@@ -36,8 +36,11 @@ weaponinfo_t wptTMP = {
 	TYPE_AUTO,
 	0.07, 				// Attack-Delay
 	2.1, 				// Reload-Delay
-	iAmmo_9MM, 		// Caliber Pointer
-	iClip_TMP 		// Clip Pointer
+	iAmmo_9MM, 			// Caliber Pointer
+	iClip_TMP, 			// Clip Pointer
+	200,				// Accuracy Divisor
+	0.55,				// Accuracy Offset
+	1.4					// Max Inaccuracy
 };
 
 // Anim Table
@@ -51,7 +54,7 @@ enum {
 };
 
 void WeaponTMP_Draw( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	OpenCSGunBase_Draw();
 #else
 	View_PlayAnimation( ANIM_TMP_DRAW );
@@ -59,7 +62,7 @@ void WeaponTMP_Draw( void ) {
 }
 
 void WeaponTMP_PrimaryFire( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
 		if ( random() <= 0.5 ) {
 			sound( self, CHAN_WEAPON, "weapons/tmp-1.wav", 1, ATTN_NORM );
@@ -80,7 +83,7 @@ void WeaponTMP_PrimaryFire( void ) {
 }
 
 void WeaponTMP_Reload( void ) {
-#ifdef QWSSQC
+#ifdef SSQC
 	if ( OpenCSGunBase_Reload() == TRUE ) {
 		// Play Sound
 	}
