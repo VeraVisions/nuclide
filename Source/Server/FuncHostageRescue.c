@@ -26,6 +26,13 @@ func_hostage_rescue_touch
 void func_hostage_rescue_touch( void ) {
 	if ( ( other.classname == "player" ) && ( other.team == TEAM_CT ) ) {
 		other.fInHostageZone = TRUE; // Note: this will be cleared every frame inside SV_RunClientCommand
+	} else if ( other.classname == "hostage_entity" ) {
+		
+		sound( world, CHAN_VOICE, "radio/rescued.wav", 1.0, ATTN_NONE );
+		iHostagesRescued++;
+		
+		other.eUser.fMoney += 1000;
+		remove( other );
 	}
 }
 

@@ -43,7 +43,14 @@ float fGameTime;
 
 
 // Game specific fields
-int iHostages;
+int iHostagesMax;
+int iHostagesRescued;
+.int iUsable;
+
+// All about +use
+entity eActivator;
+.void() vUse;
+.int iUsable;
 
 // GoldSrc-Rendermode Fields
 .vector rendercolor;

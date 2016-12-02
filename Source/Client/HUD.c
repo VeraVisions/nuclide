@@ -111,7 +111,7 @@ void HUD_Draw( void ) {
 	vector vTimePos = [ ( vVideoResolution_x / 2 ) - 60, vVideoResolution_y - 42 ];
 	
 	if( serverkey( "timelimit" ) ) {
-		float fTimeLeft = ( stof(serverkey( "timelimit" )) * 60 ) - time;
+		float fTimeLeft = ( stof(serverkey( "timelimit" )) * 60 ) - getstatf( STAT_GAMETIME );
 		if( fTimeLeft < 0 ) {
 			iMinutes = iSeconds = iTens = iUnits = 0;
 		} else {
@@ -121,8 +121,8 @@ void HUD_Draw( void ) {
 			iUnits = iSeconds - 10*iTens;
 		}
 	} else {
-		iMinutes = time / 60;
-		iSeconds = time - 60*iMinutes;
+		iMinutes = getstatf( STAT_GAMETIME ) / 60;
+		iSeconds = getstatf( STAT_GAMETIME ) - 60*iMinutes;
 		iTens = iSeconds / 10;
 		iUnits = iSeconds - 10*iTens;
 	}

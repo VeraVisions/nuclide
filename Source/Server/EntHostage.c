@@ -18,6 +18,57 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+.entity eUser;
+
+float Client_LerpCamera( float fStart, float fEnd, float fAmount ) {
+	float shortest_angle = ( ( ( ( fEnd - fStart ) % 360 ) + 540 ) % 360 ) - 180;
+	return shortest_angle * fAmount;
+}
+
+void hostage_use( void ) {
+	if ( self.eUser == world ) {
+		sound( self, CHAN_VOICE, sprintf( "hostage/hos%d.wav", ceil( random() * 5 ) ), 1.0, ATTN_IDLE );
+		self.eUser = eActivator;
+	} else {
+		self.eUser = world;
+	}
+}
+
+void hostage_physics( void ) {
+	input_movevalues = '0 0 0';
+	input_impulse = 0;
+	input_buttons = 0;
+	input_angles = self.angles;
+		
+	if ( self.eUser != world ) {
+		// This is visible ingame, so this is definitely executed.
+		vector vEndAngle = vectoangles( self.eUser.origin - self.origin );
+		self.angles_y += Client_LerpCamera( self.angles_y, vEndAngle_y, 0.2 );
+		
+		// Just make them move forward right now
+		// TODO: trace the dist to determine whether or not we should back off
+		float fDist = vlen( self.eUser.origin - self.origin );
+		
+		if ( fDist < 130 ) {
+			self.frame = 13;
+			input_movevalues = '0 0 0';
+		} else if ( fDist < 200 ) {
+			self.frame = 0;
+			input_movevalues = '110 0 0';
+		} else {
+			self.frame = 2;
+			input_movevalues = '220 0 0';
+		}
+	} else {
+		
+	}
+	
+	// Tricking the engine
+	self.movetype = MOVETYPE_WALK;
+	runstandardplayerphysics( self );
+	self.customphysics = hostage_physics;
+}
+
 /*
 =================
 SPAWN: hostage_entity
@@ -27,13 +78,19 @@ Entry function for the hostages.
 */
 void hostage_entity( void ) {
 	precache_model( self.model );
-	setorigin( self, self.origin + '0 0 -36');
+	setorigin( self, self.origin );
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_WALK;
 	setmodel( self, self.model );
 	setsize( self, VEC_HULL_MIN + '0 0 36', VEC_HULL_MAX + '0 0 36' );
+	self.customphysics = hostage_physics;
+	
+	self.eUser = world;
+	self.iUsable = TRUE;
+	self.vUse = hostage_use;
 
 	self.frame = 13; // Idle frame
+	self.health = 100;
 	
-	iHostages = iHostages + 1; // Increase the global count of hostages
+	iHostagesMax = iHostagesMax + 1; // Increase the global count of hostages
 }

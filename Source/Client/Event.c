@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 void CSQC_ConsoleCommand_Init( void ) {
 	registercommand( "vgui_buymenu" );
+	registercommand( "use" );
 }
 
 float CSQC_ConsoleCommand( string sCMD ) {
@@ -30,6 +31,10 @@ float CSQC_ConsoleCommand( string sCMD ) {
 		if( getstatf( 34 ) == TRUE ) {
 			fVGUI_Display = VGUI_BM_MAIN;
 		}
+		return TRUE;
+    break;
+    case "use":
+		sendevent( "PlayerUse", "" );
 		return TRUE;
     break;
 	}

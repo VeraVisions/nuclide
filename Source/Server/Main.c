@@ -57,6 +57,13 @@ void worldspawn( void ) {
 	precache_sound( "radio/moveout.wav" );
 	precache_sound( "radio/letsgo.wav" );
 	precache_sound( "radio/locknload.wav" );
+	precache_sound( "radio/rescued.wav" );
+	
+	precache_sound( "hostage/hos1.wav" );
+	precache_sound( "hostage/hos2.wav" );
+	precache_sound( "hostage/hos3.wav" );
+	precache_sound( "hostage/hos4.wav" );
+	precache_sound( "hostage/hos5.wav" );
 	
 	precache_sound( "weapons/ak47-1.wav" );
 	precache_sound( "weapons/ak47-2.wav" );
@@ -227,6 +234,6 @@ void worldspawn( void ) {
 	clientstat( STAT_SLOT_GRENADE, EV_INTEGER, iSlotGrenade );
 	clientstat( STAT_CURRENT_CLIP, EV_INTEGER, iCurrentClip );
 	clientstat( STAT_CURRENT_CALIBER, EV_INTEGER, iCurrentCaliber );
-	pointerstat( STAT_SESSIONINFO, EV_FLOAT, &fGameState );
+	pointerstat( STAT_GAMETIME, EV_FLOAT, &fGameTime );
 }
 
