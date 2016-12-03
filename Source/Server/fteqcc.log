@@ -1,0 +1,2244 @@
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+EntHostage.c:29: error: expected ;, found float
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in EntHostage.c on line 29
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+in function hostage_waypoint (line 36),
+EntHostage.c:38: error: Cannot cast from vector to entity
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+
+************ ERROR ************
+Errors have occured
+Error in EntHostage.c on line 38
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+at global scope,
+EntHostage.c:39: warning F210: Model "models/chick.mdl" was used but not directly precached
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 2 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+at global scope,
+EntHostage.c:39: warning F210: Model "models/chick.mdl" was used but not directly precached
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 2 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+at global scope,
+EntHostage.c:39: warning F210: Model "models/chick.mdl" was used but not directly precached
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 2 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+at global scope,
+EntHostage.c:39: warning F210: Model "models/chick.mdl" was used but not directly precached
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 2 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+at global scope,
+EntHostage.c:39: warning F210: Model "models/chick.mdl" was used but not directly precached
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 2 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+at global scope,
+EntHostage.c:39: warning F210: Model "models/chick.mdl" was used but not directly precached
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 2 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+at global scope,
+EntHostage.c:39: warning F210: Model "models/chick.mdl" was used but not directly precached
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 2 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+at global scope,
+EntHostage.c:39: warning F210: Model "models/chick.mdl" was used but not directly precached
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 2 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+at global scope,
+EntHostage.c:39: warning F210: Model "models/chick.mdl" was used but not directly precached
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 2 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+at global scope,
+EntHostage.c:39: warning F210: Model "models/chick.mdl" was used but not directly precached
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 2 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+at global scope,
+EntHostage.c:39: warning F210: Model "models/chick.mdl" was used but not directly precached
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 2 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+at global scope,
+EntHostage.c:39: warning F210: Model "models/chick.mdl" was used but not directly precached
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 2 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including ../Math.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including ../Math.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including ../Math.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including ../Math.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including ../Math.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including ../Math.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including ../Shared/Effects.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including ../Math.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including ../Shared/Effects.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including ../Math.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including ../Shared/Effects.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including ../Math.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including ../Shared/Effects.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including ../Math.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including ../Shared/Effects.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings
+Args: fteqcc
+FTEQCC: Nov 11 2016
+Source file: progs.src
+Outputfile: ../../Main/progs.dat
+including ../Builtins.h
+including ../Globals.h
+including ../Math.h
+including Defs.h
+including ../Shared/WeaponAK47.c
+including ../Shared/WeaponAUG.c
+including ../Shared/WeaponAWP.c
+including ../Shared/WeaponDeagle.c
+including ../Shared/WeaponElites.c
+including ../Shared/WeaponFiveSeven.c
+including ../Shared/WeaponG3SG1.c
+including ../Shared/WeaponGlock18.c
+including ../Shared/WeaponM3.c
+including ../Shared/WeaponM4A1.c
+including ../Shared/WeaponMac10.c
+including ../Shared/WeaponMP5.c
+including ../Shared/WeaponP228.c
+including ../Shared/WeaponP90.c
+including ../Shared/WeaponPara.c
+including ../Shared/WeaponScout.c
+including ../Shared/WeaponSG550.c
+including ../Shared/WeaponSG552.c
+including ../Shared/WeaponTMP.c
+including ../Shared/WeaponUMP45.c
+including ../Shared/WeaponUSP45.c
+including ../Shared/WeaponXM1014.c
+including ../Shared/WeaponBase.c
+including ../Shared/Weapons.c
+including ../Shared/Effects.c
+including Damage.c
+including TraceAttack.c
+including Timer.c
+including Main.c
+including EntHostage.c
+including Entities.c
+including FuncBreakable.c
+including FuncLadder.c
+including FuncHostageRescue.c
+including FuncBombTarget.c
+including FuncBuyZone.c
+including Spawn.c
+including Footsteps.c
+including Input.c
+including Client.c
+in function PutClientInServer (line 41),
+Client.c:56: warning F302: Potentially uninitialised variable eTarget
+Compile finished: ../../Main/progs.dat (fte format)
+Done. 1 warnings

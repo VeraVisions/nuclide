@@ -111,6 +111,8 @@ void func_breakable_die( void ) {
 		sound( self, CHAN_VOICE, sprintf( "%s%d.wav", sTypeSample, ceil( random() * iTypeCount ) ), 1.0, ATTN_NORM );
 	}
 	
+	Effect_BreakModel( self.origin, self.size, self.velocity, self.style );
+	
 	remove( self );
 }
 

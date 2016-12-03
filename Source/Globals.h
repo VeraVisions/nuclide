@@ -151,7 +151,8 @@ enum {
 	EV_WEAPON_DRAW,
 	EV_WEAPON_PRIMARYATTACK,
 	EV_WEAPON_SECONDARYATTACK,
-	EV_WEAPON_RELOAD
+	EV_WEAPON_RELOAD,
+	EV_MODELGIB,
 };
 
 float clamp(float d, float imin, float imax) {

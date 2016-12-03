@@ -32,6 +32,9 @@ void func_hostage_rescue_touch( void ) {
 		iHostagesRescued++;
 		
 		other.eUser.fMoney += 1000;
+		if ( other.eTargetPoint != other.eUser ) {
+			remove( other.eTargetPoint );
+		}
 		remove( other );
 	}
 }

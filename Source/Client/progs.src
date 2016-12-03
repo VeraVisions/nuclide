@@ -34,6 +34,7 @@ Defs.h
 ../Shared/WeaponBase.c
 ../Shared/Weapons.c
 
+../Shared/Effects.c
 View.c
 VGUI_Objects.c
 VGUI_MOTD.c

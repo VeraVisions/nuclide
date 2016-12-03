@@ -53,6 +53,19 @@ void CSQC_Parse_Event( void ) {
 		Weapon_SecondaryAttack( getstatf( STAT_ACTIVEWEAPON ) );
 	} else if ( fHeader == EV_WEAPON_RELOAD ) {
 		Weapon_Reload( getstatf( STAT_ACTIVEWEAPON ) );
+	} else if ( fHeader == EV_MODELGIB ) {
+		vector vPos;
+		vPos_x = readcoord();
+		vPos_y = readcoord();
+		vPos_z = readcoord();
+		
+		vector vSize;
+		vSize_x = readcoord();
+		vSize_y = readcoord();
+		vSize_z = readcoord();
+
+		float fStyle = readbyte();
+		Effect_BreakModel( vPos, vSize, '0 0 0', fStyle );
 	}
 }
 

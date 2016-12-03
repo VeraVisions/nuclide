@@ -19,65 +19,135 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 .entity eUser;
+.entity eTargetPoint;
+.entity eLastCreated;
+enum {
+	HOSTAGE_IDLE,
+	HOSTAGE_WALK,
+	HOSTAGE_RUN
+};
 
-float Client_LerpCamera( float fStart, float fEnd, float fAmount ) {
-	float shortest_angle = ( ( ( ( fEnd - fStart ) % 360 ) + 540 ) % 360 ) - 180;
-	return shortest_angle * fAmount;
+// To make sure they are following us right
+entity hostage_waypoint( void ) {
+	entity ePoint = spawn();
+	setorigin( ePoint, self.eUser.origin );
+	//setmodel( ePoint, "models/chick.mdl" ); // Visual feedback...
+	return ePoint;
 }
 
+// Called whenver a hostage is shot
 void hostage_pain( void ) {
 	self.frame = 13 - ceil( random() * 5);
 }
 
+// hosdown.wav
 void hostage_die( void ) {
 	sound( world, CHAN_VOICE, "radio/hosdown.wav", 1.0, ATTN_NONE );
 	self.frame = 30 + ceil( random() * 5);
 	self.solid = SOLID_NOT;
 	self.takedamage = DAMAGE_NO;
+	
+	if ( other.eTargetPoint != other.eUser ) {
+			remove( other.eTargetPoint );
+	}
 }
 
+// Happens upon calling 'use'
 void hostage_use( void ) {
 	if ( self.eUser == world ) {
 		sound( self, CHAN_VOICE, sprintf( "hostage/hos%d.wav", ceil( random() * 5 ) ), 1.0, ATTN_IDLE );
 		self.eUser = eActivator;
+		self.eTargetPoint = self.eUser;
 	} else {
 		self.eUser = world;
 	}
 }
 
+// Run every frame
 void hostage_physics( void ) {
 	input_movevalues = '0 0 0';
 	input_impulse = 0;
 	input_buttons = 0;
 	input_angles = self.angles;
-		
+	
+	// Are we meant to follow someone and AREN'T dead?
 	if ( ( self.eUser != world ) && ( self.health > 0 )  ) {
-		// This is visible ingame, so this is definitely executed.
-		vector vEndAngle = vectoangles( self.eUser.origin - self.origin );
-		self.angles_y += Client_LerpCamera( self.angles_y, vEndAngle_y, 0.2 );
+		// Which direction we have to face
+		vector vEndAngle = vectoangles( self.eTargetPoint.origin - self.origin );
 		
-		// Just make them move forward right now
-		// TODO: trace the dist to determine whether or not we should back off
-		float fDist = vlen( self.eUser.origin - self.origin );
+		// Slowly turn towards target
+		float fTurn = Math_LerpAngle( self.angles_y, vEndAngle_y, 0.2 );
+		self.angles_y += fTurn;
 		
-		if ( fDist < 130 ) {
-			self.frame = 13;
-			input_movevalues = '0 0 0';
-		} else if ( fDist < 200 ) {
+		// Is the waypoint close? if so, remove and go set the next one!
+		float fDist1 = vlen( self.eTargetPoint.origin - self.origin );
+		
+		if ( fDist1 < 100 && self.eTargetPoint != self.eUser ) {
+			entity eTemp = self.eTargetPoint;
+			
+			if ( self.eTargetPoint.eTargetPoint ) {
+				self.eTargetPoint = self.eTargetPoint.eTargetPoint;
+			} else {
+				self.eTargetPoint = self.eUser;
+			}
+			
+			remove( eTemp ); // Delete the old waypoint
+		} 
+		
+		// Don't switch states so often
+		if( self.fAttackFinished < time ) {
+			
+			// Here we check the distance of us and the player, then choosing if we should walk/run etc.
+			float fDist = vlen( self.eUser.origin - self.origin );
+			
+			if ( fDist < 130 ) {
+				self.style = HOSTAGE_IDLE;
+				self.fAttackFinished = time + 0.1;
+			} else if ( fDist < 200 ) {
+				self.style = HOSTAGE_WALK;
+				self.fAttackFinished = time + 0.4;
+			} else {
+				self.style = HOSTAGE_RUN;
+				self.fAttackFinished = time + 0.1;
+				
+				// We only ever need to create waypoints when we run
+				if ( self.fStepTime < time ) {
+					if ( self.eTargetPoint == self.eUser ) {
+						// Create the first waypoint
+						self.eTargetPoint = hostage_waypoint();
+						self.eLastCreated = self.eTargetPoint;
+					} else {
+						// Create the next one and link
+						self.eLastCreated.eTargetPoint = hostage_waypoint();
+						self.eLastCreated = self.eLastCreated.eTargetPoint;
+					}
+					self.fStepTime = time + 0.2;
+				}
+			}
+		}
+		
+		// Decide speed and stuff
+		if ( self.style == HOSTAGE_WALK ) {
 			self.frame = 0;
 			input_movevalues = '110 0 0';
-		} else {
-			self.frame = 2;
+		} else if ( self.style == HOSTAGE_RUN ) {
 			input_movevalues = '220 0 0';
+			self.frame = 2;
+		} else {
+			input_movevalues = '0 0 0';
+			
+			if ( fTurn > 0 ) {
+				self.frame = 5;
+			} else if ( fTurn < 0 ){
+				self.frame = 6;
+			} else {
+				self.frame = 13;
+			}
 		}
-	} else {
-		
 	}
 	
-	// Tricking the engine
-	self.movetype = MOVETYPE_WALK;
+	// Calculate physstuff
 	runstandardplayerphysics( self );
-	self.customphysics = hostage_physics;
 }
 
 /*
@@ -97,12 +167,14 @@ void hostage_entity( void ) {
 	self.customphysics = hostage_physics;
 	
 	self.eUser = world;
+	self.eTargetPoint = world;
 	self.iUsable = TRUE;
 	self.iBleeds = TRUE;
 	self.takedamage = DAMAGE_YES;
 	self.vUse = hostage_use;
 	self.vPain = hostage_pain;
 	self.vDeath = hostage_die;
+	self.style = HOSTAGE_IDLE;
 
 	self.frame = 13; // Idle frame
 	self.health = 100;

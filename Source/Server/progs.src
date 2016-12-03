@@ -5,6 +5,7 @@
 #includelist
 ../Builtins.h
 ../Globals.h
+../Math.h
 Defs.h
 
 ../Shared/WeaponAK47.c
@@ -32,6 +33,7 @@ Defs.h
 ../Shared/WeaponBase.c
 ../Shared/Weapons.c
 
+../Shared/Effects.c
 Damage.c
 TraceAttack.c
 Timer.c
