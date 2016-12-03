@@ -32,16 +32,14 @@ void Spawn_GameClient( float fTeam ) {
 		return;
 	} else if( fTeam < 5 ) {
 		eSpawn = find ( world, classname, "info_player_deathmatch" );
-		self.team = TEAM_T; // This is only important to the Server codebase
-		forceinfokey( self, "team", "t" ); // This is for the Client codebase
+		self.team = TEAM_T;
 		
 		// TODO: Move this away from here
 		Weapon_AddItem( WEAPON_GLOCK18 );
 		Weapon_GiveAmmo( WEAPON_GLOCK18, 40 );
 	} else {
 		eSpawn = find ( world, classname, "info_player_start" );
-		self.team = TEAM_CT; // This is only important to the Server codebase
-		forceinfokey( self, "team", "ct" ); // This is for the Client codebase
+		self.team = TEAM_CT;
 		
 		// TODO: Move this away from here
 		Weapon_AddItem( WEAPON_USP45 );

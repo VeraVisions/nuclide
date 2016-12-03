@@ -203,7 +203,7 @@ VGUI_BuyMenu_Rifles
 void VGUI_BuyMenu_Rifles( vector vPos ) {
 	vVGUIButtonPos = vPos + '16 116 0';
 	
-	if ( getplayerkeyvalue( player_localnum, "team" ) == "t" ) {
+	if ( getstati( STAT_TEAM ) == TEAM_T ) {
 		VGUI_BuyMenu_Button( WEAPON_AK47 );
 		VGUI_BuyMenu_Button( WEAPON_SG552 );
 	
@@ -213,7 +213,7 @@ void VGUI_BuyMenu_Rifles( vector vPos ) {
 		VGUI_BuyMenu_Button( WEAPON_G3SG1 );
 	}
 
-	if ( getplayerkeyvalue( player_localnum, "team" ) == "ct" ) {
+	if ( getstati( STAT_TEAM ) == TEAM_CT ) {
 		VGUI_BuyMenu_Button( WEAPON_M4A1 );
 		VGUI_BuyMenu_Button( WEAPON_AUG );
 	

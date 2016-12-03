@@ -44,9 +44,9 @@ weaponinfo_t wptUSP45 = {
 	2.5, 				// Reload-Delay
 	iAmmo_45ACP, 		// Caliber Pointer
 	iClip_USP45, 		// Clip Pointer
-	-1,					// Accuracy Divisor
-	0,					// Accuracy Offset
-	0					// Max Inaccuracy
+	200,				// Accuracy Divisor
+	0.55,				// Accuracy Offset
+	1.4					// Max Inaccuracy
 };
 
 enum {
@@ -77,6 +77,8 @@ void WeaponUSP45_Draw( void ) {
 	} else {
 		View_PlayAnimation( ANIM_USP45_DRAW );
 	}
+	
+	Sound_Delayed( "weapons/usp_slideback.wav", 1.0, 0.5 );
 #endif
 }
 
@@ -134,20 +136,15 @@ void WeaponUSP45_Secondary( void ) {
 	
 	// Tell the client that we switched modes, too
 	Client_SendEvent( self, EV_WEAPON_SECONDARYATTACK );
-	
-	if ( self.iMode_M4A1 == TRUE ) {
-		sound( self, CHAN_WEAPON, "weapons/usp_silencer_on.wav", 1, ATTN_NORM );
-	} else {
-		sound( self, CHAN_WEAPON, "weapons/usp_silencer_off.wav", 1, ATTN_NORM );
-	}
-	
 #else 
 	iWeaponMode_USP45 = 1 - iWeaponMode_USP45;
 	
 	if ( iWeaponMode_USP45 == TRUE ) {
 		View_PlayAnimation( ANIM_USP45_SILENCER_ADD );
+		Sound_Delayed( "weapons/usp_silencer_on.wav", 1.0, 0.95 );
 	} else {
 		View_PlayAnimation( ANIM_USP45_SILENCER_REMOVE );
+		Sound_Delayed( "weapons/usp_silencer_off.wav", 1.0, 0.6 );
 	}
 #endif
 }
@@ -163,5 +160,9 @@ void WeaponUSP45_Reload( void ) {
 	} else {
 		View_PlayAnimation( ANIM_USP45_RELOAD );
 	}
+	
+	Sound_Delayed( "weapons/usp_clipout.wav", 1.0, 0.5 );
+	Sound_Delayed( "weapons/usp_clipin.wav", 1.0, 1.1 );
+	Sound_Delayed( "weapons/usp_sliderelease.wav", 1.0, 2.2 );
 #endif
 }

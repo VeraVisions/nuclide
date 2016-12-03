@@ -75,6 +75,8 @@ void WeaponM4A1_Draw( void ) {
 	} else {
 		View_PlayAnimation( ANIM_M4A1_DRAW );
 	}
+	
+	Sound_Delayed( "weapons/m4a1_boltpull.wav", 1.0, 0.5 );
 #endif
 }
 
@@ -124,20 +126,15 @@ void WeaponM4A1_Secondary( void ) {
 	
 	// Tell the client that we switched modes, too
 	Client_SendEvent( self, EV_WEAPON_SECONDARYATTACK );
-	
-	if ( self.iMode_M4A1 == TRUE ) {
-		sound( self, CHAN_WEAPON, "weapons/m4a1_silencer_on.wav", 1, ATTN_NORM );
-	} else {
-		sound( self, CHAN_WEAPON, "weapons/m4a1_silencer_off.wav", 1, ATTN_NORM );
-	}
-	
 #else 
 	iWeaponMode_M4A1 = 1 - iWeaponMode_M4A1;
 	
 	if ( iWeaponMode_M4A1 == TRUE ) {
 		View_PlayAnimation( ANIM_M4A1_SILENCER_ADD );
+		Sound_Delayed( "weapons/m4a1_silencer_on.wav", 1.0, 0.95 );
 	} else {
 		View_PlayAnimation( ANIM_M4A1_SILENCER_REMOVE );
+		Sound_Delayed( "weapons/m4a1_silencer_off.wav", 1.0, 0.6 );
 	}
 #endif
 }
@@ -153,5 +150,9 @@ void WeaponM4A1_Reload( void ) {
 	} else {
 		View_PlayAnimation( ANIM_M4A1_RELOAD );
 	}
+	
+	Sound_Delayed( "weapons/m4a1_clipout.wav", 1.0, 0.5 );
+	Sound_Delayed( "weapons/m4a1_clipin.wav", 1.0, 1.5 );
+	Sound_Delayed( "weapons/m4a1_boltpull.wav", 1.0, 2.4 );
 #endif
 }

@@ -38,9 +38,9 @@ weaponinfo_t wptG3SG1 = {
 	4.6, 				// Reload-Delay
 	iAmmo_762MM, 		// Caliber Pointer
 	iClip_G3SG1, 	// Clip Pointer
-	-1,					// Accuracy Divisor
-	0,					// Accuracy Offset
-	0					// Max Inaccuracy
+	200,				// Accuracy Divisor
+	0.55,				// Accuracy Offset
+	1.4					// Max Inaccuracy
 };
 
 // Anim Table

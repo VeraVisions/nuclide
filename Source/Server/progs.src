@@ -2,8 +2,6 @@
 
 #pragma progs_dat  "../../Main/progs.dat"
 
-#define SSQC
-
 #includelist
 ../Builtins.h
 ../Globals.h

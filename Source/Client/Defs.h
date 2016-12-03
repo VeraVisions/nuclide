@@ -37,4 +37,9 @@ float fInputKeyDown;
 float fMouseClick;
 vector vMousePos;
 
+// Sound Stuff
+.string sSoundSample;
+.float fVolume;
+
 void View_PlayAnimation( int iSequence );
+void Sound_Delayed( string sSample, float fVol, float fDelay );

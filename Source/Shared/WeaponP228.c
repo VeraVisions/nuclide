@@ -38,9 +38,9 @@ weaponinfo_t wptP228 = {
 	2.7, 				// Reload-Delay
 	iAmmo_357SIG, 		// Caliber Pointer
 	iClip_P228, 		// Clip Pointer
-	-1,					// Accuracy Divisor
-	0,					// Accuracy Offset
-	0					// Max Inaccuracy
+	200,				// Accuracy Divisor
+	0.55,				// Accuracy Offset
+	1.4					// Max Inaccuracy
 };
 
 // Anim Table

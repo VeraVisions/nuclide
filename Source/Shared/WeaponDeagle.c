@@ -38,9 +38,9 @@ weaponinfo_t wptDEAGLE = {
 	2.1, 				// Reload-Delay
 	iAmmo_50AE, 		// Caliber Pointer
 	iClip_DEAGLE, 			// Clip Pointer
-	-1,					// Accuracy Divisor
-	0,					// Accuracy Offset
-	0					// Max Inaccuracy
+	200,				// Accuracy Divisor
+	0.55,				// Accuracy Offset
+	1.4					// Max Inaccuracy
 };
 
 // Anim Table
@@ -56,7 +56,6 @@ enum {
 void WeaponDEAGLE_Draw( void ) {
 	#ifdef SSQC
 	OpenCSGunBase_Draw();
-	sound( self, CHAN_WEAPON, "weapons/de_deploy.wav", 1, ATTN_IDLE ); // TODO: Move to the client..
 	#else
 	View_PlayAnimation( ANIM_DEAGLE_DRAW );
 	#endif
@@ -92,5 +91,7 @@ void WeaponDEAGLE_Reload( void ) {
 	}
 	#else
 	View_PlayAnimation( ANIM_DEAGLE_RELOAD );
+	Sound_Delayed( "weapons/de_clipout.wav", 1.0, 0.5 );
+	Sound_Delayed( "weapons/de_clipin.wav", 1.0, 1.2 );
 	#endif
 }

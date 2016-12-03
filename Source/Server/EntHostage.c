@@ -30,6 +30,7 @@ void hostage_pain( void ) {
 }
 
 void hostage_die( void ) {
+	sound( world, CHAN_VOICE, "radio/hosdown.wav", 1.0, ATTN_NONE );
 	self.frame = 30 + ceil( random() * 5);
 	self.solid = SOLID_NOT;
 	self.takedamage = DAMAGE_NO;

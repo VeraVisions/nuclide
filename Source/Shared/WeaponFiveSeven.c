@@ -38,9 +38,9 @@ weaponinfo_t wptFIVESEVEN = {
 	3.1, 				// Reload-Delay
 	iAmmo_57MM, 		// Caliber Pointer
 	iClip_FIVESEVEN, 	// Clip Pointer
-	-1,					// Accuracy Divisor
-	0,					// Accuracy Offset
-	0					// Max Inaccuracy
+	200,				// Accuracy Divisor
+	0.55,				// Accuracy Offset
+	1.4					// Max Inaccuracy
 };
 
 // Anim Table

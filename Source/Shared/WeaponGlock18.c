@@ -44,9 +44,9 @@ weaponinfo_t wptGLOCK18 = {
 	2.0, 				// Reload-Delay
 	iAmmo_9MM, 			// Caliber Pointer
 	iClip_GLOCK18, 	// Clip Pointer
-	-1,					// Accuracy Divisor
-	0,					// Accuracy Offset
-	0					// Max Inaccuracy
+	200,				// Accuracy Divisor
+	0.55,				// Accuracy Offset
+	1.4					// Max Inaccuracyy
 };
 
 // Anim Table
@@ -69,13 +69,13 @@ enum {
 void WeaponGLOCK18_Draw( void ) {
 #ifdef SSQC
 	OpenCSGunBase_Draw();
-	sound( self, CHAN_WEAPON, "weapons/slideback1.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
 #else
 	if ( random() <= 0.5 ) {
 		View_PlayAnimation( ANIM_GLOCK_DRAW1 );
 	} else {
 		View_PlayAnimation( ANIM_GLOCK_DRAW2 );
 	}
+	Sound_Delayed( "weapons/slideback1.wav", 1.0, 0.5 );
 #endif
 }
 
@@ -135,6 +135,9 @@ void WeaponGLOCK18_Reload( void ) {
 		View_PlayAnimation( ANIM_GLOCK_RELOAD1 );
 	} else {
 		View_PlayAnimation( ANIM_GLOCK_RELOAD2 );
+		Sound_Delayed( "weapons/clipout1.wav", 1.0, 0.6 );
+		Sound_Delayed( "weapons/clipin1.wav", 1.0, 1.0 );
+		Sound_Delayed( "weapons/sliderelease1.wav", 1.0, 1.7 );
 	}
 #endif
 }

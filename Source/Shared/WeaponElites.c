@@ -44,9 +44,9 @@ weaponinfo_t wptELITES = {
 	4.6, 				// Reload-Delay
 	iAmmo_9MM, 			// Caliber Pointer
 	iClip_ELITES, 		// Clip Pointer
-	-1,					// Accuracy Divisor
-	0,					// Accuracy Offset
-	0					// Max Inaccuracy
+	200,				// Accuracy Divisor
+	0.55,				// Accuracy Offset
+	1.4					// Max Inaccuracy
 };
 
 // Anim Table

@@ -61,6 +61,7 @@ void worldspawn( void ) {
 	precache_sound( "radio/letsgo.wav" );
 	precache_sound( "radio/locknload.wav" );
 	precache_sound( "radio/rescued.wav" );
+	precache_sound( "radio/hosdown.wav" );
 	
 	precache_sound( "hostage/hos1.wav" );
 	precache_sound( "hostage/hos2.wav" );
@@ -237,6 +238,7 @@ void worldspawn( void ) {
 	clientstat( STAT_SLOT_GRENADE, EV_INTEGER, iSlotGrenade );
 	clientstat( STAT_CURRENT_CLIP, EV_INTEGER, iCurrentClip );
 	clientstat( STAT_CURRENT_CALIBER, EV_INTEGER, iCurrentCaliber );
+	clientstat( STAT_TEAM, EV_INTEGER, team );
 	pointerstat( STAT_GAMETIME, EV_FLOAT, &fGameTime );
 }
 
