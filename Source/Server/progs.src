@@ -37,12 +37,13 @@ TraceAttack.c
 Timer.c
 Main.c
 EntHostage.c
+Entities.c
+FuncBreakable.c
 FuncLadder.c
 FuncHostageRescue.c
 FuncBombTarget.c
 FuncBuyZone.c
 Spawn.c
-Entities.c
 Footsteps.c
 Input.c
 Client.c

@@ -56,9 +56,9 @@ enum {
 void WeaponSG552_Draw( void ) {
 	#ifdef SSQC
 	OpenCSGunBase_Draw();
-	sound( self, CHAN_WEAPON, "weapons/sg552_boltpull.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
 	#else
 	View_PlayAnimation( ANIM_SG552_DRAW );
+	Sound_Delayed( "weapons/sg552_boltpull.wav", 1.0, 0.5 );
 	#endif
 }
 
@@ -90,5 +90,8 @@ void WeaponSG552_Reload( void ) {
 	}
 	#else
 	View_PlayAnimation( ANIM_SG552_RELOAD );
+	Sound_Delayed( "weapons/sg552_clipout.wav", 1.0, 0.7 );
+	Sound_Delayed( "weapons/sg552_clipin.wav", 1.0, 1.7 );
+	Sound_Delayed( "weapons/sg552_boltpull.wav", 1.0, 2.4 );
 	#endif
 }

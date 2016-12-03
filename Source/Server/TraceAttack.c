@@ -22,14 +22,12 @@ float Math_CRandom( void ) {
 	return 2 * ( random() - 0.5 );
 }
 
-void TraceAttack_FireBullets( void ) {
+void TraceAttack_FireBullets( int iShots ) {
 	vector vSrc, vDir;
 
 	makevectors(self.v_angle);
 
 	vSrc = self.origin + self.view_ofs;
-	
-	int iShots = wptTable[ self.weapon ].iBullets;
 
 	while ( iShots > 0) {
 		vDir = aim( self, 100000 ) + Math_CRandom()*self.fAccuracy*v_right + Math_CRandom()*self.fAccuracy*v_up;

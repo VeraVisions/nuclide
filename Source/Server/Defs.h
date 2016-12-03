@@ -82,8 +82,9 @@ string sCSPlayers[9] = {
 
 void Client_SendEvent( entity eClient, float fEVType );
 
+void OpenCSGunBase_AccuracyCalc( void );
 void OpenCSGunBase_Draw( void );
 float OpenCSGunBase_PrimaryFire( void );
 float OpenCSGunBase_Reload( void );
 
-void TraceAttack_FireBullets( void );
+void TraceAttack_FireBullets( int iShots );

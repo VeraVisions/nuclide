@@ -55,7 +55,6 @@ enum {
 void WeaponSCOUT_Draw( void ) {
 #ifdef SSQC
 	OpenCSGunBase_Draw();
-	sound( self, CHAN_WEAPON, "weapons/scout_bolt.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
 #else
 	View_PlayAnimation( ANIM_SCOUT_DRAW );
 #endif
@@ -73,6 +72,8 @@ void WeaponSCOUT_PrimaryFire( void ) {
 	} else {
 		View_PlayAnimation( ANIM_SCOUT_SHOOT2 );
 	}
+	
+	Sound_Delayed( "weapons/scout_bolt.wav", 1.0, 0.5 );
 #endif
 }
 
@@ -83,5 +84,9 @@ void WeaponSCOUT_Reload( void ) {
 	}
 #else
 	View_PlayAnimation( ANIM_SCOUT_RELOAD );
+	
+	Sound_Delayed( "weapons/scout_clipout.wav", 1.0, 0.75 );
+	Sound_Delayed( "weapons/scout_clipin.wav", 1.0, 1.25 ); 
+	
 #endif
 }

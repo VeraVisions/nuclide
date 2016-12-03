@@ -56,7 +56,7 @@ enum {
 void WeaponUMP45_Draw( void ) {
 #ifdef SSQC
 	OpenCSGunBase_Draw();
-	sound( self, CHAN_WEAPON, "weapons/ump45_boltslap.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
+	//sound( self, CHAN_WEAPON, "weapons/ump45_boltslap.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
 #else
 	View_PlayAnimation( ANIM_UMP45_DRAW );
 #endif
@@ -87,5 +87,8 @@ void WeaponUMP45_Reload( void ) {
 	}
 	#else
 	View_PlayAnimation( ANIM_UMP45_RELOAD );
+	Sound_Delayed( "weapons/ump45_clipout.wav", 1.0, 0.7 );
+	Sound_Delayed( "weapons/ump45_clipin.wav", 1.0, 1.8 );
+	Sound_Delayed( "weapons/ump45_boltslap.wav", 1.0, 2.7 );
 	#endif
 }

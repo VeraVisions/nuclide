@@ -56,9 +56,9 @@ enum {
 void WeaponMP5_Draw( void ) {
 #ifdef SSQC
 	OpenCSGunBase_Draw();
-	sound( self, CHAN_WEAPON, "weapons/mp5_slideback.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
 #else
 	View_PlayAnimation( ANIM_MP5_DRAW );
+	Sound_Delayed( "weapons/mp5_slideback.wav", 1.0, 0.5 );
 #endif
 }
 
@@ -90,5 +90,8 @@ void WeaponMP5_Reload( void ) {
 	}
 #else
 	View_PlayAnimation( ANIM_MP5_RELOAD );
+	Sound_Delayed( "weapons/mp5_clipout.wav", 1.0, 0.6 );
+	Sound_Delayed( "weapons/mp5_clipin.wav", 1.0, 1.2 );
+	Sound_Delayed( "weapons/mp5_slideback.wav", 1.0, 2.0 );
 #endif
 }

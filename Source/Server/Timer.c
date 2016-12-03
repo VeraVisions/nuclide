@@ -48,7 +48,7 @@ void Timer_Update( void ) {
 			} else {
 				Timer_Begin( cvar( "mp_roundtime" ) * 60, GAME_ACTIVE ); // Unfreeze
 				
-				float fRand = ceil( random() * 6 );
+				float fRand = ceil( random() * 3 );
 				if ( fRand == 1 ) {
 					sound(world, CHAN_VOICE, "radio/moveout.wav", 1, ATTN_NONE );
 				} else if ( fRand == 2 ) {

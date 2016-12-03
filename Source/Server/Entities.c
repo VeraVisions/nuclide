@@ -38,10 +38,6 @@ void func_door( void ) {
 	func_wall();
 }
 
-void func_breakable( void ) {
-	func_wall();
-}
-
 void func_button( void ) {
 	func_wall();
 }

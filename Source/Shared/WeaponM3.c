@@ -63,9 +63,9 @@ enum {
 void WeaponM3_Draw( void ) {
 	#ifdef SSQC
 	OpenCSGunBase_Draw();
-	sound( self, CHAN_WEAPON, "weapons/m3_pump.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
 	#else
 	View_PlayAnimation( ANIM_M3_DRAW );
+	Sound_Delayed( "weapons/m3_pump.wav", 1.0, 0.5 );
 	#endif
 }
 
@@ -114,6 +114,7 @@ void WeaponM3_Secondary( void ) {
 	self.nextthink = time + 0.5;
 #else
 	View_PlayAnimation( ANIM_M3_INSERT );
+	Sound_Delayed( "weapons/m3_insertshell.wav", 1.0, 0.25 );
 #endif
 }
 
@@ -138,10 +139,9 @@ void WeaponM3_Reload( void ) {
 	
 	if ( iWeaponMode_M3 == TRUE ) {
 		View_PlayAnimation( ANIM_M3_RELOAD_START );
-		print( "START!!!\n" );
 	} else {
 		View_PlayAnimation( ANIM_M3_RELOAD_END );
-		print( "ENDE!!!\n" );
+		Sound_Delayed( "weapons/m3_pump.wav", 1.0, 0.5 );
 	}
 #endif
 }

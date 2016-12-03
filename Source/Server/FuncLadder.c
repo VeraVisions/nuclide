@@ -23,8 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 func_ladder_sound
 =================
 */
-void func_ladder_sound( entity target )
-{
+void func_ladder_sound( entity target ) {
 	if ( ( target.velocity_z == 0 ) || ( target.fStepTime > time ) ) {
 		return;
 	}
@@ -57,8 +56,7 @@ void func_ladder_sound( entity target )
 func_ladder_touch
 =================
 */
-void func_ladder_touch( void )
-{
+void func_ladder_touch( void ) {
 	vector vPlayerVector;
 	
  	if ( other.classname != "player" ) {

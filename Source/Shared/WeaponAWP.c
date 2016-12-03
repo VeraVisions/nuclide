@@ -56,9 +56,9 @@ enum {
 void WeaponAWP_Draw( void ) {
 	#ifdef SSQC
 	OpenCSGunBase_Draw();
-	sound( self, CHAN_WEAPON, "weapons/awp_deploy.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
 	#else
 	View_PlayAnimation( ANIM_AWP_DRAW );
+	Sound_Delayed( "weapons/awp_deploy.wav", 1.0, 0.5 );
 	#endif
 }
 
@@ -77,6 +77,8 @@ void WeaponAWP_PrimaryFire( void ) {
 	} else {
 		View_PlayAnimation( ANIM_AWP_SHOOT3 );
 	}
+	
+	Sound_Delayed( "weapons/awp_deploy.wav", 1.0, 0.4 );
 	#endif
 }
 
@@ -87,5 +89,8 @@ void WeaponAWP_Reload( void ) {
 	}
 	#else
 	View_PlayAnimation( ANIM_AWP_RELOAD );
+	
+	Sound_Delayed( "weapons/awp_clipout.wav", 1.0, 0.9 );
+	Sound_Delayed( "weapons/awp_clipin.wav", 1.0, 1.8 );
 	#endif
 }

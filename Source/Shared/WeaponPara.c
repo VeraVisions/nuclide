@@ -46,17 +46,15 @@ weaponinfo_t wptPARA = {
 // Anim Table
 enum {
 	ANIM_PARA_IDLE,
-	ANIM_PARA_RELOAD,
-	ANIM_PARA_DRAW,
 	ANIM_PARA_SHOOT1,
 	ANIM_PARA_SHOOT2,
-	ANIM_PARA_SHOOT3
+	ANIM_PARA_RELOAD,
+	ANIM_PARA_DRAW
 };
 
 void WeaponPARA_Draw( void ) {
 #ifdef SSQC
 	OpenCSGunBase_Draw();
-	sound( self, CHAN_WEAPON, "weapons/m249_chain.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
 #else
 	View_PlayAnimation( ANIM_PARA_DRAW );
 #endif
@@ -72,13 +70,10 @@ void WeaponPARA_PrimaryFire( void ) {
 		}
 	}
 #else
-	int iRand = ceil( random() * 3 );
-	if ( iRand == 1 ) {
+	if ( random() <= 0.5 ) {
 		View_PlayAnimation( ANIM_PARA_SHOOT1 );
-	} else if ( iRand == 2 ) {
-		View_PlayAnimation( ANIM_PARA_SHOOT2 );
 	} else {
-		View_PlayAnimation( ANIM_PARA_SHOOT3 );
+		View_PlayAnimation( ANIM_PARA_SHOOT2 );
 	}
 #endif
 }
@@ -90,5 +85,12 @@ void WeaponPARA_Reload( void ) {
 	}
 #else
 	View_PlayAnimation( ANIM_PARA_RELOAD );
+	
+	//sound( self, CHAN_WEAPON, "weapons/m249_chain.wav", 1, ATTN_IDLE ); // TODO: Move to the client...
+	Sound_Delayed( "weapons/m249_coverup.wav", 1.0, 0.75 );
+	Sound_Delayed( "weapons/m249_boxout.wav", 1.0, 1.6 );
+	Sound_Delayed( "weapons/m249_boxin.wav", 1.0, 2.5 );
+	Sound_Delayed( "weapons/m249_chain.wav", 1.0, 3.0 );
+	Sound_Delayed( "weapons/m249_coverdown.wav", 1.0, 3.9 );
 #endif
 }

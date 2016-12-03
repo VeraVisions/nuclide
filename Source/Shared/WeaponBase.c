@@ -67,7 +67,7 @@ float OpenCSGunBase_PrimaryFire( void ) {
 	}
 	
 	OpenCSGunBase_AccuracyCalc();
-	TraceAttack_FireBullets();
+	TraceAttack_FireBullets( wptTable[ self.weapon ].iBullets );
 	
 	self.(wptTable[ self.weapon ].iClipfld) -= 1;
 	self.fAttackFinished = time + wptTable[ self.weapon ].fAttackFinished;

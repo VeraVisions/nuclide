@@ -63,7 +63,6 @@ enum {
 void WeaponXM1014_Draw( void ) {
 	#ifdef SSQC
 	OpenCSGunBase_Draw();
-	sound( self, CHAN_WEAPON, "weapons/m3_pump.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
 	#else
 	View_PlayAnimation( ANIM_XM1014_DRAW );
 	#endif
@@ -114,6 +113,7 @@ void WeaponXM1014_Secondary( void ) {
 	self.nextthink = time + 0.5;
 #else
 	View_PlayAnimation( ANIM_XM1014_INSERT );
+	Sound_Delayed( "weapons/m3_insertshell.wav", 1.0, 0.25 );
 #endif
 }
 

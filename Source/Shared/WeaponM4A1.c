@@ -122,7 +122,7 @@ void WeaponM4A1_Secondary( void ) {
 #ifdef SSQC
 	// Just switch the modes quickly
 	self.iMode_M4A1 = 1 - self.iMode_M4A1;
-	self.fAttackFinished = time + 3.0;
+	self.fAttackFinished = time + 2;
 	
 	// Tell the client that we switched modes, too
 	Client_SendEvent( self, EV_WEAPON_SECONDARYATTACK );

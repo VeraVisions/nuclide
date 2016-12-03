@@ -24,6 +24,7 @@ float CSQC_Event_Sound( float entnum, float channel, string soundname, float vol
 
 void Sound_Delayed( string sSample, float fVol, float fDelay ) {
 	static void Sound_Delayed_PlayBack( void ) {
+		print( sprintf( "[SOUND] Playing Event %s\n", self.sSoundSample ) );
 		localsound( self.sSoundSample, CHAN_AUTO, self.fVolume );
 		remove( self );
 	}

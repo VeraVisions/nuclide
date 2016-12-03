@@ -41,7 +41,7 @@ weaponinfo_t wptGLOCK18 = {
 	0.75, 				// Range Modifier
 	TYPE_SEMI,
 	0.15, 				// Attack-Delay
-	2.0, 				// Reload-Delay
+	2.1, 				// Reload-Delay
 	iAmmo_9MM, 			// Caliber Pointer
 	iClip_GLOCK18, 	// Clip Pointer
 	200,				// Accuracy Divisor
@@ -81,13 +81,22 @@ void WeaponGLOCK18_Draw( void ) {
 
 void WeaponGLOCK18_PrimaryFire( void ) {
 #ifdef SSQC
-	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
-		// Play Sound
-		if ( self.iMode_GLOCK18 == FALSE ) {
+	if ( self.iMode_GLOCK18 == FALSE ) {
+		if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
 			sound( self, CHAN_WEAPON, "weapons/glock18-2.wav", 1, ATTN_NORM );
-		} else {
-			sound( self, CHAN_WEAPON, "weapons/glock18-1.wav", 1, ATTN_NORM );
 		}
+	} else {
+		if ( (self.iClip_GLOCK18 - 3 ) < 0 ) {
+			return FALSE;
+		}
+		OpenCSGunBase_AccuracyCalc();
+		TraceAttack_FireBullets( 3 );
+		
+		self.iClip_GLOCK18 -= 3;
+		self.fAttackFinished = time + 0.5;
+		
+		sound( self, CHAN_WEAPON, "weapons/glock18-1.wav", 1, ATTN_NORM );
+		Client_SendEvent( self, EV_WEAPON_PRIMARYATTACK );
 	}
 #else
 	if ( iWeaponMode_GLOCK18 == FALSE ) {
@@ -110,7 +119,7 @@ void WeaponGLOCK18_Secondary( void ) {
 #ifdef SSQC
 	// Just switch the modes quickly
 	self.iMode_GLOCK18 = 1 - self.iMode_GLOCK18;
-	self.fAttackFinished = time + 1.0;
+	self.fAttackFinished = time + 0.2;
 	
 	// Tell the client that we switched modes, too
 	Client_SendEvent( self, EV_WEAPON_SECONDARYATTACK );
@@ -131,8 +140,11 @@ void WeaponGLOCK18_Reload( void ) {
 		// Play Sound
 	}
 #else
-	if ( getstatf( STAT_CURRENT_CLIP ) == 0 ) {
+	if ( random() <= 0.5 ) {
 		View_PlayAnimation( ANIM_GLOCK_RELOAD1 );
+		Sound_Delayed( "weapons/clipout1.wav", 1.0, 0.6 );
+		Sound_Delayed( "weapons/clipin1.wav", 1.0, 1.2 );
+		Sound_Delayed( "weapons/sliderelease1.wav", 1.0, 1.9 );
 	} else {
 		View_PlayAnimation( ANIM_GLOCK_RELOAD2 );
 		Sound_Delayed( "weapons/clipout1.wav", 1.0, 0.6 );

@@ -86,7 +86,7 @@ void HUD_Draw( void ) {
 	HUD_DrawNums( getstatf( STAT_HEALTH ), vHealthPos + '72 0' );
 
 	// Armor
-	vector vArmorPos = [ 136, vVideoResolution_y - 42 ];
+	vector vArmorPos = [ 112, vVideoResolution_y - 42 ];
 	drawsubpic( vArmorPos, '24 24 0', HUD_NUMFILE_LAYER, [ 0, NUMSIZE_Y], [ NUMSIZE_X, NUMSIZE_X ], VGUI_WINDOW_FGCOLOR, 1, DRAWFLAG_ADDITIVE );
 	HUD_DrawNums( getstatf( STAT_ARMOR ), vArmorPos + '72 0' );
 

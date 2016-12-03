@@ -72,6 +72,7 @@ void PutClientInServer( void ) {
 
 void SV_RunClientCommand( void ) {
 	
+	// The individual zones will just override this behavior
 	self.fInBombZone = FALSE;
 	self.fInBuyZone = FALSE;
 	self.fInHostageZone = FALSE;
