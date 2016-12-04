@@ -88,3 +88,6 @@ float OpenCSGunBase_PrimaryFire( void );
 float OpenCSGunBase_Reload( void );
 
 void TraceAttack_FireBullets( int iShots );
+
+// WIP
+string __fullspawndata;

@@ -155,6 +155,20 @@ enum {
 	EV_MODELGIB,
 };
 
+// Submodel materials
+enum { 
+	MATERIAL_GLASS = 0, 
+	MATERIAL_WOOD, 
+	MATERIAL_METAL, 
+	MATERIAL_FLESH, 
+	MATERIAL_CINDER, 
+	MATERIAL_TILE, 
+	MATERIAL_COMPUTER, 
+	MATERIAL_GLASS_UNBREAKABLE, 
+	MATERIAL_ROCK, 
+	MATERIAL_NONE	
+};
+
 float clamp(float d, float imin, float imax) {
 	float t;
 

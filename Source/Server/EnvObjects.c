@@ -18,26 +18,31 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-void TraceAttack_FireBullets( int iShots ) {
-	vector vSrc, vDir;
-
-	makevectors(self.v_angle);
-
-	vSrc = self.origin + self.view_ofs;
-
-	while ( iShots > 0) {
-		vDir = aim( self, 100000 ) + Math_CRandom()*self.fAccuracy*v_right + Math_CRandom()*self.fAccuracy*v_up;
-		
-		traceline( vSrc, vSrc + ( vDir * 2048 ), FALSE, self);
-		if (trace_fraction != 1.0) {
-			if ( trace_ent.takedamage == DAMAGE_YES ) {
-				Damage_Apply( trace_ent, self, wptTable[ self.weapon ].iDamage, trace_endpos );
-			} else {
-				pointparticles( EFFECT_GUNSHOT, trace_endpos, '0 0 0', 1 );
-			}
-		}
-		iShots--;
+void cycler_sprite( void ) {
+	static void cycler_sprite_use( void ) {
+		remove( self );
 	}
 	
-	dprint( sprintf( "[DEBUG] ACCURACY: %f, %d %d %d\n", self.fAccuracy, vDir_x, vDir_y, vDir_z ));
+	precache_model( self.model );
+	setmodel( self, self.model );
+	self.vUse = cycler_sprite_use;
+	
+	Entities_RenderSetup();
+}
+
+void env_render( void ) {
+	static void env_render_use( void ) {
+		entity eFind = findchain( targetname, self.target );
+	
+		while ( eFind ) {
+			entity eOldSelf = self;
+			eFind.rendermode = self.rendermode;
+			eFind.rendercolor = self.rendercolor;
+			eFind.alpha = self.alpha;
+			eFind = eFind.chain;
+		}
+	}
+	
+	Entities_RenderSetup();
+	self.vUse = env_render_use;
 }

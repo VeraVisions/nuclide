@@ -18,9 +18,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-void Damage_Apply( entity eTarget, entity eAttacker, float fWeapon, vector vHitPos ) {
+void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos ) {
 	
-	eTarget.health = eTarget.health - wptTable[ self.weapon ].iDamage; // TODO: Body part multipliers
+	eTarget.health = eTarget.health - iDamage; // TODO: Body part multipliers
 	
 	if ( eTarget.iBleeds == TRUE ) {
 		makevectors( eAttacker.angles );

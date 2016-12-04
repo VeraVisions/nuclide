@@ -40,6 +40,9 @@ Timer.c
 Main.c
 EntHostage.c
 Entities.c
+Triggers.c
+AmbientSound.c
+EnvObjects.c
 FuncBreakable.c
 FuncLadder.c
 FuncHostageRescue.c

@@ -20,21 +20,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Entity information from http://twhl.info/wiki.php?id=164
 
+/*
+
+	Flags
+
+    Only Trigger (1) - Entity can only be activated (broken) by being triggered.
+    Touch (2) - Brush will break on touch.
+    Pressure (4) - Brush will break when pressured (e.g. player walking on it).
+*/
+
+#define SF_TRIGGER	1
+#define SF_TOUCH	2
+#define SF_PRESSURE	4
 
 // These are the material types apparently
 .float material;
-enum { 
-	MATERIAL_GLASS = 0, 
-	MATERIAL_WOOD, 
-	MATERIAL_METAL, 
-	MATERIAL_FLESH, 
-	MATERIAL_CINDER, 
-	MATERIAL_TILE, 
-	MATERIAL_COMPUTER, 
-	MATERIAL_GLASS_UNBREAKABLE, 
-	MATERIAL_ROCK, 
-	MATERIAL_NONE	
-};
 
 // Whenever it gets damaged
 void func_breakable_pain( void ) {
@@ -111,9 +111,42 @@ void func_breakable_die( void ) {
 		sound( self, CHAN_VOICE, sprintf( "%s%d.wav", sTypeSample, ceil( random() * iTypeCount ) ), 1.0, ATTN_NORM );
 	}
 	
-	Effect_BreakModel( self.origin, self.size, self.velocity, self.style );
+	Effect_BreakModel( self.absmin, self.absmax, self.velocity, self.material );
+	Entities_UseTargets();
 	
 	remove( self );
+}
+
+void func_breakable_touch( void ) {
+	static void func_breakable_touch_NULL( void ) { }
+	
+	if( other.classname != "player" ) {
+		return;
+	}
+
+	if ( self.spawnflags & SF_TOUCH ) {
+		int fDamage = (float)(vlen( self.velocity ) * 0.01);
+
+		if ( fDamage >= self.health ) {
+
+			self.touch = func_breakable_touch_NULL;
+			Damage_Apply( self, other, fDamage, self.absmin );
+			
+			if ( self.material == MATERIAL_GLASS || self.material == MATERIAL_COMPUTER ) {
+				Damage_Apply( other, self, fDamage/4, other.origin );
+			}
+		}
+	}
+
+	if ( ( self.spawnflags & SF_PRESSURE ) && other.absmin_z >= self.maxs_z - 2 ) {
+		self.think = func_breakable_die;
+		
+		if ( self.delay == 0 ) {
+			self.delay = 0.1;
+		}
+
+		self.nextthink = self.ltime + self.delay;
+	}	
 }
 
 /*
@@ -125,8 +158,19 @@ Entry function for the brushes that can die etc.
 */
 void func_breakable( void ) {
 	func_wall();
-	self.vPain = func_breakable_pain;
-	self.vDeath = func_breakable_die;
-	self.iBleeds = FALSE;
-	self.takedamage = DAMAGE_YES;
+	
+	if ( self.spawnflags & SF_TRIGGER ) {
+		self.takedamage = DAMAGE_NO;
+	} else {
+		self.takedamage = DAMAGE_YES;
+		self.vPain = func_breakable_pain;
+		self.vDeath = func_breakable_die;
+		self.iBleeds = FALSE;
+	}
+	
+	if ( self.spawnflags & SF_TOUCH || self.spawnflags & SF_PRESSURE ) {
+		self.touch = func_breakable_touch;
+	} 
+	
+	self.vUse = func_breakable_die;
 }

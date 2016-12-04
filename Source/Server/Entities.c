@@ -18,20 +18,54 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+void Entities_UseTargets( void ) {
+	entity eFind = findchain( targetname, self.target );
+	
+	while ( eFind ) {
+		entity eOldSelf = self;
+		self = eFind;
+		eFind.vUse();
+		self = eOldSelf;
+		eFind = eFind.chain;
+	}
+}
+
+enum { 
+	RENDERMODE_NORMAL = 0,
+	RENDERMODE_COLOR,
+	RENDERMODE_TEXTURE,
+	RENDERMODE_GLOW,
+	RENDERMODE_SOLID,
+	RENDERMODE_ADDITIVE
+};
+
+void Entities_RenderSetup( void ) {
+	// GoldSrc-Rendermode support
+	if ( self.rendermode != RENDERMODE_NORMAL ) {
+		self.alpha = ( self.renderamt / 255 );
+		if( self.alpha == 0 ) {
+			self.alpha = 0.0001;
+		}
+		
+		if ( self.rendermode == RENDERMODE_ADDITIVE ) {
+			self.effects = EF_ADDITIVE;
+		} else if ( self.rendermode == RENDERMODE_GLOW ) {
+			self.effects = EF_FULLBRIGHT;
+		}
+	}
+}
+
 void func_wall( void ) {
+	static void func_wall_use( void ) {
+		self.skin = 1 - self.skin;
+	}
 	self.angles = '0 0 0';
 	self.movetype = MOVETYPE_PUSH;
 	self.solid = SOLID_BSP;
 
-	setmodel (self, self.model);
-	
-	// GoldSrc-Rendermode support
-	if( self.rendermode == 2 ) {
-		self.alpha = ( self.renderamt / 255 );
-	} else if ( self.rendermode == 5 ) {
-		self.effects = EF_ADDITIVE;
-		self.alpha = ( self.renderamt / 255 );
-	}
+	setmodel( self, self.model );
+	self.vUse = func_wall_use;
+	Entities_RenderSetup();
 }
 
 void func_door( void ) {
@@ -50,22 +84,4 @@ void func_illusionary( void ){
 void func_water( void ) {
 	func_wall();
 	self.skin = CONTENT_WATER;
-}
-
-void ambient_generic( void ) {
-	precache_sound( self.message );
-	
-	if ( self.spawnflags & 1 ) {
-		self.style = ATTN_NONE;
-	} else if ( self.spawnflags & 2 ) {
-		self.style = ATTN_IDLE;
-	} else if ( self.spawnflags & 4 ) {
-		self.style = ATTN_STATIC;
-	} else if ( self.spawnflags & 8 ) {
-		self.style = ATTN_NORM;
-	} else {
-		self.style = ATTN_STATIC;
-	}
-	
- 	ambientsound( self.origin, self.message, 1, self.style );
 }
