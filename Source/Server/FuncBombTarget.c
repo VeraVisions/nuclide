@@ -43,4 +43,6 @@ void func_bomb_target( void ) {
 	setmodel( self, self.model );
 	self.model = 0;
 	self.touch = func_bomb_target_touch;
+	
+	iBombZones++;
 }

@@ -43,6 +43,8 @@ void Entities_RenderSetup( void ) {
 	// GoldSrc-Rendermode support
 	if ( self.rendermode != RENDERMODE_NORMAL ) {
 		self.alpha = ( self.renderamt / 255 );
+		self.colormod = self.rendercolor;
+		
 		if( self.alpha == 0 ) {
 			self.alpha = 0.0001;
 		}

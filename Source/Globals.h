@@ -21,7 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Stuff that applies to all codebases
 enum {
 	TEAM_T = 1,
-	TEAM_CT
+	TEAM_CT,
+	TEAM_VIP
 };
 
 enum { 
@@ -36,7 +37,9 @@ enum {
 	STAT_SLOT_GRENADE,
 	STAT_CURRENT_CLIP,
 	STAT_CURRENT_CALIBER,
-	STAT_TEAM
+	STAT_TEAM,
+	STAT_WON_T,
+	STAT_WON_CT
 };
 
 enum {

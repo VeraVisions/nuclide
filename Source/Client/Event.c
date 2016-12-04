@@ -18,18 +18,39 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+/*
+=================
+CSQC_ConsoleCommand_Init
+
+Init all the cmds in one place
+=================
+*/
 void CSQC_ConsoleCommand_Init( void ) {
 	registercommand( "vgui_buymenu" );
+	registercommand( "vgui_teammenu" );
 	registercommand( "use" );
 }
 
+/*
+=================
+CSQC_ConsoleCommand
+
+Can interject cmds and create new ones
+=================
+*/
 float CSQC_ConsoleCommand( string sCMD ) {
 	tokenize( sCMD );
 	switch ( argv(0) )
 	{
 	case "vgui_buymenu":
-		if( getstatf( 34 ) == TRUE ) {
+		if( getstatf( STAT_BUYZONE ) == TRUE ) {
 			fVGUI_Display = VGUI_BM_MAIN;
+		}
+		return TRUE;
+    break;
+    case "vgui_teammenu":
+		if( getstatf( STAT_TEAM ) == 0 ) {
+			fVGUI_Display = VGUI_TEAMSELECT;
 		}
 		return TRUE;
     break;
@@ -42,6 +63,13 @@ float CSQC_ConsoleCommand( string sCMD ) {
 	return FALSE;
 }
 
+/*
+=================
+CSQC_Parse_Event
+
+Whenever we call a SVC_CGAMEPACKET on the SSQC, this is being run
+=================
+*/
 void CSQC_Parse_Event( void ) {
 	float fHeader = readbyte();
 	
@@ -69,6 +97,13 @@ void CSQC_Parse_Event( void ) {
 	}
 }
 
+/*
+=================
+CSQC_InputEvent
+
+Updates all our input related globals for use in other functions
+=================
+*/
 float CSQC_InputEvent( float fEventType, float fKey, float fCharacter, float fDeviceID ) {
 	if ( fEventType == IE_KEYDOWN ) {
 		if ( fKey == K_MOUSE1 ) {
@@ -95,9 +130,16 @@ float CSQC_InputEvent( float fEventType, float fKey, float fCharacter, float fDe
 	return FALSE;
 }
 
+/*
+=================
+CSQC_Input_Frame
+
+Hijacks and controls what input globals are being sent to the server
+=================
+*/
 void CSQC_Input_Frame( void ) {
 	// If we are inside a VGUI, don't let the client do stuff outside
-	if ( fVGUI_Display != VGUI_NONE ) {
+	if ( ( fVGUI_Display != VGUI_NONE ) ) {
 		input_angles = '0 0 0';
 		input_movevalues = '0 0 0';
 		input_buttons = 0;

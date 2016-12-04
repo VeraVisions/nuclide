@@ -18,10 +18,24 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-void CSQC_Ent_Update( float isnew ) {
+/*
+=================
+CSQC_Ent_Update
+
+Called whenever an entity is sent manually via .SendFlags and so on
+=================
+*/
+void CSQC_Ent_Update( float fIsNew ) {
 
 }
 
+/*
+=================
+CSQC_Ent_Remove
+
+Self explanatory
+=================
+*/
 void CSQC_Ent_Remove( void ) {
 
 }

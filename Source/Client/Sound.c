@@ -18,10 +18,17 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-float CSQC_Event_Sound( float entnum, float channel, string soundname, float vol, float attenuation, vector pos, float pitchmod, float flags ) {
+/*float CSQC_Event_Sound( float entnum, float channel, string soundname, float vol, float attenuation, vector pos, float pitchmod, float flags ) {
 
-}
+}*/
 
+/*
+=================
+Sound_Delayed
+
+Now you can call sounds in advance
+=================
+*/
 void Sound_Delayed( string sSample, float fVol, float fDelay ) {
 	static void Sound_Delayed_PlayBack( void ) {
 		print( sprintf( "[SOUND] Playing Event %s\n", self.sSoundSample ) );

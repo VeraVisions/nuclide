@@ -22,28 +22,29 @@ void main( void ) {}
 void SetNewParms( void ) {}
 void SetChangeParms( void ) {}
 
-
+// Run every frame... by world?
 void StartFrame( void ) {
-	// See if the player count has changed noticeably
-	if ( fInGamePlayers > fOldInGamePlayers ) {
-//		bprint( "Starting OpenCS Match...\n" );
-		
+	
+	// Global amount of players etc.
+	int iInGamePlayers = ( iInGamePlayers_T + iInGamePlayers_CT );
+	
+	// See if the player count has changed
+	if ( iInGamePlayers > fOldInGamePlayers && fGameState == GAME_INACTIVE ) {
+		bprint( "Starting Match...\n" );
 		Timer_Begin( cvar( "mp_freezetime" ), GAME_FREEZE );
-		
-		fOldInGamePlayers = fInGamePlayers;
+		fOldInGamePlayers = iInGamePlayers;
 	} else {
 		// No players? Don't bother updating the Timer
-		if ( fInGamePlayers == 0 ) {
+		if ( iInGamePlayers == 0 ) {
 			fGameState = GAME_INACTIVE;
 			fGameTime = 0;
 		} else {
 			Timer_Update();
 		}
 	}
-	
-	
 }
 
+// The map... entity.
 void worldspawn( void ) {
 	precache_model (sCSPlayers[1]);
 	precache_model (sCSPlayers[2]);
@@ -62,6 +63,9 @@ void worldspawn( void ) {
 	precache_sound( "radio/locknload.wav" );
 	precache_sound( "radio/rescued.wav" );
 	precache_sound( "radio/hosdown.wav" );
+	precache_sound( "radio/terwin.wav" );
+	precache_sound( "radio/ctwin.wav" );
+	precache_sound( "radio/rounddraw.wav" );
 	
 	precache_sound( "hostage/hos1.wav" );
 	precache_sound( "hostage/hos2.wav" );
@@ -227,10 +231,11 @@ void worldspawn( void ) {
 	precache_sound( "weapons/xm1014-1.wav" );
 	precache_sound( "weapons/zoom.wav" );
 	
-	// TODO: Merge these into a single field
+	// TODO: Merge these into a single field?
 	clientstat( STAT_BUYZONE, EV_FLOAT, fInBuyZone );
 	clientstat( STAT_HOSTAGEZONE, EV_FLOAT, fInHostageZone );
 	clientstat( STAT_BOMBZONE, EV_FLOAT, fInBombZone );
+	
 	clientstat( STAT_MONEY, EV_FLOAT, fMoney );
 	clientstat( STAT_SLOT_MELEE, EV_INTEGER, iSlotMelee );
 	clientstat( STAT_SLOT_PRIMARY, EV_INTEGER, iSlotPrimary );
@@ -240,5 +245,7 @@ void worldspawn( void ) {
 	clientstat( STAT_CURRENT_CALIBER, EV_INTEGER, iCurrentCaliber );
 	clientstat( STAT_TEAM, EV_INTEGER, team );
 	pointerstat( STAT_GAMETIME, EV_FLOAT, &fGameTime );
+	pointerstat( STAT_WON_T, EV_INTEGER, &iWon_T );
+	pointerstat( STAT_WON_CT, EV_INTEGER, &iWon_CT );
 }
 

@@ -18,42 +18,34 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-/*
-=================
-CSQC_Init
-
-Comparable to worldspawn in SSQC in that it's mostly used for precaches
-=================
-*/
-void CSQC_Init(float apilevel, string enginename, float engineversion) {
-	precache_model( HUD_NUMFILE );
+void Player_Pain( void ) {
 	
-	for( int i = 0; i < CS_WEAPON_COUNT; i++ ) {
-		precache_model( sViewModels[ i ] );
+}
+
+void Player_Death( void ) {
+	
+	// Drop a corpse
+	entity eCorpse = spawn();
+	setorigin( eCorpse, self.origin );
+	setmodel( eCorpse, self.model );
+	eCorpse.angles = self.angles;
+	eCorpse.frame = 93; // TODO: Pick the right frame
+	
+	Spawn_MakeSpectator();
+	
+	if ( self.team == TEAM_T ) {
+		iInGamePlayers_T--;
+		
+		if ( iInGamePlayers_T == 0 ) {
+			Rules_RoundOver( TEAM_CT );
+		}
+	} else if ( self.team == TEAM_CT ) {
+		iInGamePlayers_CT--;
+		
+		if ( iInGamePlayers_CT == 0 ) {
+			Rules_RoundOver( TEAM_T );
+		}
+	} else if ( self.team == TEAM_VIP ) {
+		// TODO: Finish me
 	}
-	
-	CSQC_ConsoleCommand_Init();
-	CSQC_VGUI_Init();
-}
-
-/*
-=================
-CSQC_WorldLoaded
-
-Whenever the world is fully initialized...
-=================
-*/
-void CSQC_WorldLoaded( void ) {
-	
-}
-
-/*
-=================
-CSQC_Shutdown
-
-Incase you need to free something
-=================
-*/
-void CSQC_Shutdown( void ) {
-	
 }

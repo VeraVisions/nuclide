@@ -18,6 +18,13 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+/*
+=================
+CSQC_UpdateView
+
+Entry point for drawing on the client
+=================
+*/
 void CSQC_UpdateView( float fWinWidth, float fWinHeight, float fGameFocus ) {
 	vVideoResolution_x = fWinWidth;
 	vVideoResolution_y = fWinHeight;
@@ -37,6 +44,13 @@ void CSQC_UpdateView( float fWinWidth, float fWinHeight, float fGameFocus ) {
 	}
 }
 
+/*
+=================
+CSQC_UpdateViewLoading
+
+Doesn't really do anything useful yet
+=================
+*/
 void CSQC_UpdateViewLoading( float fWinWidth, float fWinHeight, float fGameFocus ) {
 	
 }

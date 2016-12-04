@@ -21,9 +21,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define HUD_NUMFILE "sprites/640hud7.spr" // We'll precache this
 #define HUD_NUMFILE_LAYER "sprites/640hud7.spr_0.tga" // And only use the first frame for drawing (needs precache)
 
+// Sigh
 #define NUMSIZE_X 0.09375
 #define NUMSIZE_Y 0.09765625
 
+// Instead of calculating them on demand, just read the offsets here
 float vHUDNumPos[10] = {
 	0,
 	0.09375,
@@ -37,6 +39,7 @@ float vHUDNumPos[10] = {
 	0.84375,
 };
 
+// Ditto
 vector vHUDCalPos[10] = {
 	'0 0 0',
 	'0.09375 0.28125 0', 	// 50AE
@@ -50,17 +53,35 @@ vector vHUDCalPos[10] = {
 	'0.46875 0.375 0', 		// 57MM
 };
 
-// Wrapper that draws an individual number
+/*
+=================
+HUD_DrawRedNumber
+
+Draws a normal number
+=================
+*/
 void HUD_DrawNumber( int iNumber, vector vPos, float fAlpha ) {
 	drawsubpic( vPos, '24 25 0', HUD_NUMFILE_LAYER, [ vHUDNumPos[ iNumber ], 0], [ NUMSIZE_X, NUMSIZE_Y ], VGUI_WINDOW_FGCOLOR, fAlpha, DRAWFLAG_ADDITIVE );
 }
 
-// Draws a red number
+/*
+=================
+HUD_DrawRedNumber
+
+Draws a red number
+=================
+*/
 void HUD_DrawRedNumber( int iNumber, vector vPos, float fAlpha ) {
 	drawsubpic( vPos, '24 25 0', HUD_NUMFILE_LAYER, [ vHUDNumPos[ iNumber ], 0], [ NUMSIZE_X, NUMSIZE_Y ], '1 0 0', fAlpha, DRAWFLAG_ADDITIVE );
 }
 
-// Draws numerals quickly with a maximum length of 3 - e.g. for health, armor etc.
+/*
+=================
+HUD_DrawNums
+
+Draws numerals quickly for health, armor etc.
+=================
+*/
 void HUD_DrawNums( float fNumber, vector vPos ) {
 	int iNumber = fNumber;
 	if ( iNumber > 0 ) {
@@ -74,22 +95,43 @@ void HUD_DrawNums( float fNumber, vector vPos ) {
 	}
 }
 
-// Called every frame
-void HUD_Draw( void ) {
-	if( getplayerkeyvalue( player_localnum, "*spectator" ) == "1" ) {
-		return;
-	}
+/*
+=================
+HUD_DrawHealth
+
+Draw the current amount of health
+=================
+*/
+void HUD_DrawHealth( void ) {
 	
 	// Health
 	vector vHealthPos = [ 16, vVideoResolution_y - 42 ];
 	drawsubpic( vHealthPos, '24 24 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 2, NUMSIZE_Y], [ NUMSIZE_X, NUMSIZE_X ], VGUI_WINDOW_FGCOLOR, 1, DRAWFLAG_ADDITIVE );
 	HUD_DrawNums( getstatf( STAT_HEALTH ), vHealthPos + '72 0' );
+}
 
-	// Armor
+/*
+=================
+HUD_DrawArmor
+
+Draw the current amount of Kevlar
+=================
+*/
+void HUD_DrawArmor( void ) {
+
 	vector vArmorPos = [ 112, vVideoResolution_y - 42 ];
 	drawsubpic( vArmorPos, '24 24 0', HUD_NUMFILE_LAYER, [ 0, NUMSIZE_Y], [ NUMSIZE_X, NUMSIZE_X ], VGUI_WINDOW_FGCOLOR, 1, DRAWFLAG_ADDITIVE );
 	HUD_DrawNums( getstatf( STAT_ARMOR ), vArmorPos + '72 0' );
+}
 
+/*
+=================
+HUD_DrawIcons
+
+Draw icons such as hostage, bomb and buyzones
+=================
+*/
+void HUD_DrawIcons( void ) {
 	// BuyZone Icon
 	if( getstatf( STAT_BUYZONE ) == TRUE ) {
 		vector vBuyIconPos = [ 16, ( vVideoResolution_y / 2 ) - 12 ];
@@ -107,8 +149,16 @@ void HUD_Draw( void ) {
 		vector vBIconPos = [ 16, ( vVideoResolution_y / 2 ) + 48 ];
 		drawsubpic( vBIconPos, '32 32 0', HUD_NUMFILE_LAYER, [ 0, 0.125 * 5 - 0.046875], [ 0.125, 0.125 ], '0 1 0', 1, DRAWFLAG_ADDITIVE );
 	}
-	
-	// The Timer 
+}
+
+/*
+=================
+HUD_DrawTimer
+
+Draws the roundtime at the bottom of the screen (always visible)
+=================
+*/
+void HUD_DrawTimer( void ) {
 	int iMinutes, iSeconds, iTens, iUnits;
 	vector vTimePos = [ ( vVideoResolution_x / 2 ) - 60, vVideoResolution_y - 42 ];
 	
@@ -129,7 +179,7 @@ void HUD_Draw( void ) {
 		iUnits = iSeconds - 10*iTens;
 	}
 
-	// Timer: Flashing red numbers
+	// Flashing red numbers
 	if ( ( iMinutes == 0 ) &&  ( iTens <= 1 ) ) {
 		float fAlpha = fabs( sin( time * 20 ) );
 		HUD_DrawRedNumber( iMinutes, vTimePos + '48 0 0', fAlpha);
@@ -147,14 +197,30 @@ void HUD_Draw( void ) {
 		HUD_DrawNumber( iUnits, vTimePos + '94 0 0', 1);
 		drawsubpic( vTimePos, '24 25 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 6, NUMSIZE_Y * 3], [ NUMSIZE_X, NUMSIZE_Y ], VGUI_WINDOW_FGCOLOR, 1, DRAWFLAG_ADDITIVE );
 	}
-	
-	// The money
+}
+
+/*
+=================
+HUD_DrawMoney
+
+Draws the amount of money (0-16000) with an icon to the screen
+=================
+*/
+void HUD_DrawMoney( void ) {
 	vector vMoneyPos = [ vVideoResolution_x - 160, vVideoResolution_y - 72 ];
 	drawsubpic( vMoneyPos, '18 25 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 8, NUMSIZE_Y * 1], [ NUMSIZE_X * 0.75, NUMSIZE_Y ], VGUI_WINDOW_FGCOLOR, 1, DRAWFLAG_ADDITIVE );
 	vMoneyPos_x += ( 24 * 5 );
 	HUD_DrawNums( getstatf( STAT_MONEY ), vMoneyPos );
-	
-	// Ammo
+}
+
+/*
+=================
+HUD_DrawAmmo
+
+Draws the current clip, the amount of ammo for the caliber and a matching caliber icon
+=================
+*/
+void HUD_DrawAmmo( void ) {
 	vector vAmmoClipPos = [ vVideoResolution_x - 136, vVideoResolution_y - 42 ];
 	HUD_DrawNums( getstatf( STAT_CURRENT_CLIP ), vAmmoClipPos );
 	vector vAmmoCalPos = [ vVideoResolution_x - 64, vVideoResolution_y - 42 ];
@@ -162,4 +228,26 @@ void HUD_Draw( void ) {
 	
 	// Caliber icon
 	drawsubpic( vVideoResolution - '42 42 0', '24 24 0', HUD_NUMFILE_LAYER, vHUDCalPos[ wptTable[ getstatf( STAT_ACTIVEWEAPON ) ].iCaliber ], [ NUMSIZE_X, NUMSIZE_X ], VGUI_WINDOW_FGCOLOR, 1, DRAWFLAG_ADDITIVE );
+}
+
+/*
+=================
+HUD_Draw
+
+Called every frame in Draw.c
+=================
+*/
+void HUD_Draw( void ) {
+	
+	HUD_DrawTimer();
+	
+	if( getplayerkeyvalue( player_localnum, "*spectator" ) == "1" ) {
+		return;
+	}
+	
+	HUD_DrawHealth();
+	HUD_DrawArmor();
+	HUD_DrawIcons();
+	HUD_DrawMoney();
+	HUD_DrawAmmo();
 }

@@ -44,6 +44,7 @@ void Timer_Update( void ) {
 	if ( ( fGameState == GAME_ACTIVE ) || ( fGameState == GAME_FREEZE ) ) {
 		if ( fGameTime <= 0 ) {
 			if ( fGameState == GAME_ACTIVE ) {
+				Rules_TimeOver();
 				Timer_Begin( 5, GAME_END); // Round is over, 5 seconds til a new round starts
 			} else {
 				Timer_Begin( cvar( "mp_roundtime" ) * 60, GAME_ACTIVE ); // Unfreeze
@@ -60,7 +61,7 @@ void Timer_Update( void ) {
 		}
 	} else if ( fGameState == GAME_END ) {
 		if ( fGameTime <= 0 ) {
-			// Restart round
+			Rules_Restart();
 		}
 	}
 }

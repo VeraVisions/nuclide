@@ -25,8 +25,12 @@ void ClientConnect( void ) {}
 
 void ClientDisconnect( void ) {
 	// We were part of the session
-	if( self.fInGame == TRUE ) {
-		fInGamePlayers--;
+	if( self.iInGame == TRUE ) {
+		if ( self.team == TEAM_T ) {
+			iInGamePlayers_T--;
+		} else if ( self.team == TEAM_CT ) {
+			iInGamePlayers_CT--;
+		}
 	}
 }
 
@@ -41,14 +45,7 @@ void PlayerPostThink( void ) {
 void PutClientInServer( void ) {
 	entity eSpawn;
 	eSpawn = find (world, classname, "trigger_camera");
-
-	self.classname = "spectator";
-	self.health = self.max_health = 999;
-	self.takedamage = DAMAGE_NO;
-	self.solid = SOLID_NOT;
-	self.movetype = MOVETYPE_FLY;
-	self.flags = FL_CLIENT;
-
+	
 	self.origin = eSpawn.origin + '0 0 1';
 	
 	// Rotate camera towards a target
@@ -61,13 +58,11 @@ void PutClientInServer( void ) {
 	}
 	
 	self.fixangle = TRUE;
-
-	self.model = 0;
-	setsize (self, '-16 -16 -16', '16 16 16');
-
-	self.view_ofs = self.velocity = '0 0 0';
+	self.classname = "spectator";
+	Spawn_MakeSpectator();
 	
-	forceinfokey( self, "*spectator", "1" ); // Make sure we are known as a spectator
+	// Because we don't want to reset these when we die
+	self.fMoney = cvar( "mp_startmoney" );
 }
 
 void SV_RunClientCommand( void ) {
@@ -77,7 +72,7 @@ void SV_RunClientCommand( void ) {
 	self.fInBuyZone = FALSE;
 	self.fInHostageZone = FALSE;
 	
-	if( fGameState != GAME_ACTIVE ) {
+	if( fGameState == GAME_FREEZE && self.team != 0 ) {
 		input_movevalues = '0 0 0';
 		input_buttons = 0;
 		input_impulse = 0;

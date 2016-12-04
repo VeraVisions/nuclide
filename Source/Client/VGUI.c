@@ -35,7 +35,14 @@ vguiwindow_t vguiMenus[11] = {
 	{ "Equipment", VGUI_BuyMenu_Equipment }
 };
 
-// Called every frame
+/*
+=================
+CSQC_VGUI_Draw
+
+This is the entry point for OpenCS own VGUI implementation
+Run every frame
+=================
+*/
 void CSQC_VGUI_Draw( void ) {
 	if ( fVGUI_Display == VGUI_NONE ) {
 		setcursormode( FALSE );
@@ -53,10 +60,14 @@ void CSQC_VGUI_Draw( void ) {
 	vguiMenus[ fVGUI_Display - 1 ].vDraw( vVGUIWindowPos );
 }
 
-// Called by CSQC_Init
+/*
+=================
+CSQC_VGUI_Init
+
+Initialize all there is
+=================
+*/
 void CSQC_VGUI_Init( void ) {
 	// We start on the MOTD, always
 	fVGUI_Display = VGUI_MOTD;
-
-	
 }

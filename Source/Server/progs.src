@@ -36,6 +36,7 @@ Defs.h
 ../Shared/Effects.c
 Damage.c
 TraceAttack.c
+Rules.c
 Timer.c
 Main.c
 EntHostage.c
@@ -48,6 +49,7 @@ FuncLadder.c
 FuncHostageRescue.c
 FuncBombTarget.c
 FuncBuyZone.c
+Player.c
 Spawn.c
 Footsteps.c
 Input.c

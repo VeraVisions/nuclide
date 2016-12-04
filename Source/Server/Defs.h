@@ -31,10 +31,16 @@ float EFFECT_BLOOD;
 .float fInBombZone;
 .float fMoney;
 .float fStepTime;
+.int iInGame;
 
-.float fInGame;
-float fInGamePlayers;
-float fOldInGamePlayers;
+// Match specific fields
+int iWon_T;
+int iWon_CT;
+int iInGamePlayers_T;
+int iInGamePlayers_CT;
+int fOldInGamePlayers;
+
+
 float fGameState;
 float fGameTime;
 
@@ -50,6 +56,8 @@ float fGameTime;
 // Game specific fields
 int iHostagesMax;
 int iHostagesRescued;
+
+int iBombZones;
 
 // Generic entity fields
 .int iUsable;
@@ -80,6 +88,10 @@ string sCSPlayers[9] = {
 	"models/player/gign/gign.mdl"
 };
 
+void Timer_Begin( float fTime, float fMode);
+void Spawn_RespawnClient( int iTeam );
+void Spawn_CreateClient( int iTeam );
+void Spawn_MakeSpectator( void );
 void Client_SendEvent( entity eClient, float fEVType );
 
 void OpenCSGunBase_AccuracyCalc( void );

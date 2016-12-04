@@ -51,7 +51,7 @@ void Effect_BreakModel( vector vMins, vector vMaxs, vector vVel, float fStyle ) 
 			sModel = "models/metalplategibs.mdl";
 			break;
 		case MATERIAL_FLESH:
-			sModel = "models/fleshgibs.mdl";;
+			sModel = "models/fleshgibs.mdl";
 			break;
 		case MATERIAL_CINDER:
 			sModel = "models/cindergibs.mdl";
