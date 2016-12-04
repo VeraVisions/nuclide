@@ -58,6 +58,7 @@ int iHostagesMax;
 int iHostagesRescued;
 
 int iBombZones;
+int iRescueZones;
 
 // Generic entity fields
 .int iUsable;

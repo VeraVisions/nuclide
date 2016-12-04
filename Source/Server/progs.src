@@ -38,7 +38,7 @@ Damage.c
 TraceAttack.c
 Rules.c
 Timer.c
-Main.c
+
 EntHostage.c
 Entities.c
 Triggers.c
@@ -49,6 +49,8 @@ FuncLadder.c
 FuncHostageRescue.c
 FuncBombTarget.c
 FuncBuyZone.c
+
+Main.c
 Player.c
 Spawn.c
 Footsteps.c

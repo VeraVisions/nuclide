@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Loop through all players and respawn them
 void Rules_Restart( void ) {
-	//localcmd( "restart_ents" );
+	localcmd( "restart_ents" );
 	
 	entity eFind = findchain( classname, "player" );
 	

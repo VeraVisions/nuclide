@@ -36,6 +36,10 @@ void func_hostage_rescue_touch( void ) {
 			remove( other.eTargetPoint );
 		}
 		remove( other );
+		
+		if ( iHostagesRescued >= iHostagesMax ) {
+			Rules_RoundOver( TEAM_CT );
+		}
 	}
 }
 
@@ -50,7 +54,43 @@ void func_hostage_rescue( void ) {
 	self.angles = '0 0 0';
 	self.movetype = MOVETYPE_NONE;
 	self.solid = SOLID_TRIGGER;
-	setmodel( self, self.model );
+	
+	if ( self.model ) {
+		setmodel( self, self.model );
+	} else {
+		setsize( self, self.mins, self.maxs );
+	}
+	
 	self.model = 0;
 	self.touch = func_hostage_rescue_touch;
+	
+	iRescueZones++;
+}
+
+void info_hostage_rescue( void ) {
+	self.mins = '-128 -128 -36';
+	self.maxs = '128 128 36';
+	func_hostage_rescue();
+}
+
+/*
+=================
+Game_CreateRescueZones
+
+Called by StartFrame if we somehow got no rescue zones
+=================
+*/
+void Game_CreateRescueZones( void ) {
+	entity eFind = findchain( classname, "info_player_start" );
+	
+	while ( eFind ) {
+		entity eRescueZone = spawn();
+		setorigin( eRescueZone, eFind.origin );
+		
+		entity eOldSelf = self;
+		self = eRescueZone;
+		info_hostage_rescue();
+		self = eOldSelf;
+		eFind = eFind.chain;
+	}
 }

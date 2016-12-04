@@ -140,13 +140,13 @@ void HUD_DrawIcons( void ) {
 	
 	// Hostage-Rescue Area Icon
 	if( getstatf( STAT_HOSTAGEZONE ) == TRUE ) {
-		vector vRIconPos = [ 16, ( vVideoResolution_y / 2 ) + 48 ];
+		vector vRIconPos = [ 16, ( vVideoResolution_y / 2 ) + 24 ];
 		drawsubpic( vRIconPos, '32 32 0', HUD_NUMFILE_LAYER, [ 0.125 * 2, 0.125 * 5 - 0.046875], [ 0.125, 0.125 ], '0 1 0', 1, DRAWFLAG_ADDITIVE );
 	}
 	
 	// Bomb-Area
 	if( getstatf( STAT_BOMBZONE ) == TRUE ) {
-		vector vBIconPos = [ 16, ( vVideoResolution_y / 2 ) + 48 ];
+		vector vBIconPos = [ 16, ( vVideoResolution_y / 2 ) + 24 ];
 		drawsubpic( vBIconPos, '32 32 0', HUD_NUMFILE_LAYER, [ 0, 0.125 * 5 - 0.046875], [ 0.125, 0.125 ], '0 1 0', 1, DRAWFLAG_ADDITIVE );
 	}
 }
@@ -181,7 +181,15 @@ void HUD_DrawTimer( void ) {
 
 	// Flashing red numbers
 	if ( ( iMinutes == 0 ) &&  ( iTens <= 1 ) ) {
-		float fAlpha = fabs( sin( time * 20 ) );
+		float fAlpha;
+		
+		// 0:00 is fully red
+		if ( ( iTens == 0 ) && ( iUnits == 0 ) ) {
+			fAlpha = 1;
+		} else {
+			fAlpha = fabs( sin( time * 20 ) );
+		}
+		
 		HUD_DrawRedNumber( iMinutes, vTimePos + '48 0 0', fAlpha);
 		HUD_DrawRedNumber( iTens, vTimePos + '70 0 0', fAlpha);
 		HUD_DrawRedNumber( iUnits, vTimePos + '94 0 0',fAlpha );

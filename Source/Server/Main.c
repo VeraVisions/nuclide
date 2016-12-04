@@ -25,6 +25,11 @@ void SetChangeParms( void ) {}
 // Run every frame... by world?
 void StartFrame( void ) {
 	
+	// We've got hostages, but no rescue zones, create some
+	if ( !iRescueZones  && iHostagesMax > 0 ) {
+		Game_CreateRescueZones();
+	}
+	
 	// Global amount of players etc.
 	int iInGamePlayers = ( iInGamePlayers_T + iInGamePlayers_CT );
 	
