@@ -26,7 +26,7 @@ weaponinfo_t wptMP5 = {
 	SLOT_PRIMARY,
 	1500, 				// Price
 	CALIBER_9MM, 		// Caliber ID
-	240, 				// Max Player Speed
+	1.0, 				// Max Player Speed
 	1, 					// Bullets Per Shot
 	30, 				// Clip/MagSize
 	26, 				// Damage Per Bullet

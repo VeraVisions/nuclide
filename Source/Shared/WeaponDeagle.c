@@ -26,7 +26,7 @@ weaponinfo_t wptDEAGLE = {
 	SLOT_SECONDARY,
 	650, 				// Price
 	CALIBER_50AE, 		// Caliber ID
-	240, 				// Max Player Speed
+	1.0, 				// Max Player Speed
 	1, 					// Bullets Per Shot
 	7, 					// Clip/MagSize
 	54, 				// Damage Per Bullet

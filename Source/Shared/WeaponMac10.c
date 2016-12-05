@@ -26,7 +26,7 @@ weaponinfo_t wptMAC10 = {
 	SLOT_PRIMARY,
 	1400, 				// Price
 	CALIBER_45ACP, 		// Caliber ID
-	240, 				// Max Player Speed
+	1.0, 				// Max Player Speed
 	1, 					// Bullets Per Shot
 	30, 				// Clip/MagSize
 	29, 				// Damage Per Bullet

@@ -26,7 +26,7 @@ weaponinfo_t wptFIVESEVEN = {
 	SLOT_SECONDARY,
 	750, 				// Price
 	CALIBER_57MM, 		// Caliber ID
-	240, 				// Max Player Speed
+	1.0, 				// Max Player Speed
 	1, 					// Bullets Per Shot
 	20, 				// Clip/MagSize
 	25, 				// Damage Per Bullet

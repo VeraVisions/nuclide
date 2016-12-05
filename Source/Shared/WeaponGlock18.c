@@ -32,7 +32,7 @@ weaponinfo_t wptGLOCK18 = {
 	SLOT_SECONDARY,
 	400, 				// Price
 	CALIBER_9MM, 		// Caliber ID
-	240, 				// Max Player Speed
+	1.0, 				// Max Player Speed
 	1, 					// Bullets Per Shot
 	20, 				// Clip/MagSize
 	25, 				// Damage Per Bullet

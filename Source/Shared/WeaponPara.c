@@ -26,7 +26,7 @@ weaponinfo_t wptPARA = {
 	SLOT_PRIMARY,
 	5750, 				// Price
 	CALIBER_556MMBOX, 	// Caliber ID
-	220, 				// Max Player Speed
+	0.88, 				// Max Player Speed
 	1, 					// Bullets Per Shot
 	100, 				// Clip/MagSize
 	35, 				// Damage Per Bullet

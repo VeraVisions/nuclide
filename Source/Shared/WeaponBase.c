@@ -45,7 +45,8 @@ weaponinfo_t wptTable[ CS_WEAPON_COUNT ] = {
 	wptAWP,
 	wptG3SG1,
 	wptSG550,
-	wptPARA
+	wptPARA,
+	wptC4BOMB
 };
 
 #ifdef SSQC

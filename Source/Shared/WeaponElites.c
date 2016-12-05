@@ -32,7 +32,7 @@ weaponinfo_t wptELITES = {
 	SLOT_SECONDARY,
 	800, 				// Price
 	CALIBER_9MM, 		// Caliber ID
-	240, 				// Max Player Speed
+	1.0, 				// Max Player Speed
 	1, 					// Bullets Per Shot
 	30, 				// Clip/MagSize
 	45, 				// Damage Per Bullet

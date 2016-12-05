@@ -44,12 +44,13 @@ enum {
 
 enum {
 	GAME_INACTIVE,
+	GAME_COMMENCING,
 	GAME_FREEZE,
 	GAME_ACTIVE,
 	GAME_END
 };
 
-#define CS_WEAPON_COUNT 24
+#define CS_WEAPON_COUNT 25
 enum {
 	WEAPON_NONE = 0,
 	WEAPON_KNIFE,
@@ -74,7 +75,8 @@ enum {
 	WEAPON_AWP,
 	WEAPON_G3SG1,
 	WEAPON_SG550,
-	WEAPON_PARA
+	WEAPON_PARA,
+	WEAPON_C4BOMB
 };
 
 enum {
@@ -121,7 +123,7 @@ typedef struct {
 	int iSlot;
 	int iPrice;		
 	int iCaliber;
-	int iPlayerSpeed;
+	float fSpeedM;
 	
 	int iBullets;	// How many bullets does it shoot?
 	int iClipSize;	// How big is the clip/magazine?

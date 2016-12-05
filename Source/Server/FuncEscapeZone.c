@@ -49,6 +49,4 @@ void func_escapezone( void ) {
 	
 	self.model = 0;
 	self.touch = func_escapezone_touch;
-	
-	iRescueZones++;
 }

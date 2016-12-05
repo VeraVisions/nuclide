@@ -26,7 +26,7 @@ weaponinfo_t wptSCOUT = {
 	SLOT_PRIMARY,
 	2750, 				// Price
 	CALIBER_762MM, 		// Caliber ID
-	240, 				// Max Player Speed
+	1.04, 				// Max Player Speed
 	1, 					// Bullets Per Shot
 	10, 				// Clip/MagSize
 	75, 				// Damage Per Bullet

@@ -26,7 +26,7 @@ weaponinfo_t wptP228 = {
 	SLOT_SECONDARY,
 	600, 				// Price
 	CALIBER_357SIG, 	// Caliber ID
-	240, 				// Max Player Speed
+	1.0, 				// Max Player Speed
 	1, 					// Bullets Per Shot
 	13, 				// Clip/MagSize
 	40, 				// Damage Per Bullet

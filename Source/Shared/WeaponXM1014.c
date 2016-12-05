@@ -32,7 +32,7 @@ weaponinfo_t wptXM1014 = {
 	SLOT_PRIMARY,
 	3000, 				// Price
 	CALIBER_BUCKSHOT, 		// Caliber ID
-	240, 				// Max Player Speed
+	0.96, 				// Max Player Speed
 	6, 					// Bullets Per Shot
 	7, 					// Clip/MagSize
 	22, 				// Damage Per Bullet

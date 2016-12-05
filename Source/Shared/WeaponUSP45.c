@@ -32,7 +32,7 @@ weaponinfo_t wptUSP45 = {
 	SLOT_SECONDARY,
 	500, 				// Price
 	CALIBER_45ACP, 		// Caliber ID
-	240, 				// Max Player Speed
+	1.0, 				// Max Player Speed
 	1, 					// Bullets Per Shot
 	12, 				// Clip/MagSize
 	34, 				// Damage Per Bullet

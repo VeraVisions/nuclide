@@ -26,7 +26,7 @@ weaponinfo_t wptP90 = {
 	SLOT_PRIMARY,
 	2350, 				// Price
 	CALIBER_57MM, 		// Caliber ID
-	235, 				// Max Player Speed
+	0.98, 				// Max Player Speed
 	1, 					// Bullets Per Shot
 	50, 				// Clip/MagSize
 	26, 				// Damage Per Bullet

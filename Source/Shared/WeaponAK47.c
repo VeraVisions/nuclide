@@ -26,7 +26,7 @@ weaponinfo_t wptAK47 = {
 	SLOT_PRIMARY,
 	2500, 				// Price
 	CALIBER_762MM, 		// Caliber ID
-	221, 				// Max Player Speed
+	0.88, 				// Max Player Speed
 	1, 					// Bullets Per Shot
 	30, 				// Clip/MagSize
 	36, 				// Damage Per Bullet

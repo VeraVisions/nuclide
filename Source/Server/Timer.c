@@ -24,22 +24,32 @@ void Timer_Begin( float fTime, float fMode) {
 		dprint( "[DEBUG] Game Freezetime\n" );
 		fGameState = GAME_FREEZE;
 	} else if ( fMode == GAME_ACTIVE ) {
-		dprint( "[DEBUG] Game Started\n" );
+		dprint( "[DEBUG] Game Active\n" );
 		fGameState = GAME_ACTIVE;
 	} else if ( fMode == GAME_END ) {
 		dprint( "[DEBUG] Game Ended\n" );
 		fGameState = GAME_END;
+	} else if ( fMode == GAME_COMMENCING ) {
+		dprint( "[DEBUG] Game Commencing\n" );
+		fGameState = GAME_COMMENCING;
 	}
 	
 	fGameTime = fTime;
 }
 
 void Timer_Update( void ) {
-	if ( fGameTime <= 0 || fGameState == GAME_INACTIVE ) {
+	if ( fGameState == GAME_INACTIVE ) {
 		return;
 	}
 	
 	fGameTime -= frametime;
+	
+	if ( fGameState == GAME_COMMENCING || fGameState == GAME_END ) {
+		if ( fGameTime <= 0 ) {
+			Rules_Restart();
+		}
+		return;
+	}
 	
 	if ( ( fGameState == GAME_ACTIVE ) || ( fGameState == GAME_FREEZE ) ) {
 		if ( fGameTime <= 0 ) {
@@ -58,10 +68,6 @@ void Timer_Update( void ) {
 					sound(world, CHAN_VOICE, "radio/letsgo.wav", 1, ATTN_NONE );
 				}
 			}
-		}
-	} else if ( fGameState == GAME_END ) {
-		if ( fGameTime <= 0 ) {
-			Rules_Restart();
 		}
 	}
 }

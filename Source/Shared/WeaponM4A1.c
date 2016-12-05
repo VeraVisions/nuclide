@@ -32,7 +32,7 @@ weaponinfo_t wptM4A1 = {
 	SLOT_PRIMARY,
 	3100, 				// Price
 	CALIBER_556MM, 		// Caliber ID
-	230, 				// Max Player Speed
+	0.92, 				// Max Player Speed
 	1, 					// Bullets Per Shot
 	30, 				// Clip/MagSize
 	33, 				// Damage Per Bullet

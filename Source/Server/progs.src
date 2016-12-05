@@ -11,6 +11,7 @@ Defs.h
 ../Shared/WeaponAK47.c
 ../Shared/WeaponAUG.c
 ../Shared/WeaponAWP.c
+../Shared/WeaponC4Bomb.c
 ../Shared/WeaponDeagle.c
 ../Shared/WeaponElites.c
 ../Shared/WeaponFiveSeven.c

@@ -26,7 +26,7 @@ weaponinfo_t wptAUG = {
 	SLOT_PRIMARY,
 	3500, 				// Price
 	CALIBER_762MM, 		// Caliber ID
-	221, 				// Max Player Speed
+	0.96, 				// Max Player Speed
 	1, 					// Bullets Per Shot
 	30, 				// Clip/MagSize
 	32, 				// Damage Per Bullet

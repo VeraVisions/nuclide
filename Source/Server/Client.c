@@ -27,9 +27,13 @@ void ClientDisconnect( void ) {
 	// We were part of the session
 	if( self.iInGame == TRUE ) {
 		if ( self.team == TEAM_T ) {
-			iInGamePlayers_T--;
+			if ( self.health > 0 ) {
+				iAlivePlayers_T--;
+			}
 		} else if ( self.team == TEAM_CT ) {
-			iInGamePlayers_CT--;
+			if ( self.health > 0 ) {
+				iAlivePlayers_CT--;
+			}
 		}
 	}
 }

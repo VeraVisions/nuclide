@@ -83,6 +83,7 @@ void Spawn_RespawnClient( float fTeam ) {
 	self.velocity = '0 0 0';
 	
 	self.frame = 1; // Idle frame
+	self.fBombProgress = 0;
 }
 
 void Spawn_CreateClient( float fCharModel ) {
@@ -92,13 +93,14 @@ void Spawn_CreateClient( float fCharModel ) {
 		return;
 	} else if( fCharModel < 5 ) {
 		self.team = TEAM_T;
-		iInGamePlayers_T++;
+		iAlivePlayers_T++;
 		
 		Weapon_AddItem( WEAPON_GLOCK18 );
 		Weapon_GiveAmmo( WEAPON_GLOCK18, 40 );
+		//Weapon_AddItem( WEAPON_C4BOMB );
 	} else {
 		self.team = TEAM_CT;
-		iInGamePlayers_CT++;
+		iAlivePlayers_CT++;
 
 		Weapon_AddItem( WEAPON_USP45 );
 		Weapon_GiveAmmo( WEAPON_USP45, 24 );
@@ -140,27 +142,32 @@ void Spawn_MakeSpectator( void ) {
 
 // Event Handling, called by the Client codebase via 'sendevent'
 void CSEv_GamePlayerSpawn_f( float fChar ) {
-	// Only allow to spawn directly into the game if we are still freezed/inactive
-	if ( fGameState == GAME_ACTIVE || fGameState == GAME_END ) {
-		// Yeah, set the future player model and stuff but let's act dead
-		if( fChar == 0 ) {
-			PutClientInServer();
-			return;
-		} else if( fChar < 5 ) {
-			self.team = TEAM_T;
-		} else {
-			self.team = TEAM_CT;
-		}
-		
-		self.classname = "player";
-		self.fCharModel = fChar;
-		self.health = 0;
-		Spawn_MakeSpectator();
-	} else {
-		self.fCharModel = fChar;
-		Spawn_CreateClient( fChar );
-	}
 	
+	switch ( fGameState ) {
+		case GAME_INACTIVE:
+		case GAME_COMMENCING:
+		case GAME_ACTIVE:
+		case GAME_END:
+			if( fChar == 0 ) {
+				PutClientInServer();
+				return;
+			} else if( fChar < 5 ) {
+				self.team = TEAM_T;
+			} else {
+				self.team = TEAM_CT;
+			}
+			
+			self.classname = "player";
+			self.fCharModel = fChar;
+			self.health = 0;
+			Spawn_MakeSpectator();
+			break;
+		default:
+			self.fCharModel = fChar;
+			Spawn_CreateClient( fChar );
+		break;
+		
+	}
 }
 
 // Counter-Terrorist Spawnpoints

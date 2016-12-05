@@ -26,7 +26,7 @@ weaponinfo_t wptSG550 = {
 	SLOT_PRIMARY,
 	4200, 				// Price
 	CALIBER_556MM, 		// Caliber ID
-	210, 				// Max Player Speed
+	0.84, 				// Max Player Speed
 	1, 					// Bullets Per Shot
 	30, 				// Clip/MagSize
 	70, 				// Damage Per Bullet

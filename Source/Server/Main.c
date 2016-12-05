@@ -30,13 +30,18 @@ void StartFrame( void ) {
 		Game_CreateRescueZones();
 	}
 	
-	// Global amount of players etc.
-	int iInGamePlayers = ( iInGamePlayers_T + iInGamePlayers_CT );
+	int iInGamePlayers; 
+	// Sigh, check if clients are in the game
+	if ( find( world, classname , "player" ) != world ) {
+		iInGamePlayers = 100;
+	} else {
+		iInGamePlayers = 0;
+	}
 	
 	// See if the player count has changed
-	if ( iInGamePlayers > fOldInGamePlayers && fGameState == GAME_INACTIVE ) {
-		bprint( "Starting Match...\n" );
-		Timer_Begin( cvar( "mp_freezetime" ), GAME_FREEZE );
+	if ( iInGamePlayers > fOldInGamePlayers ) {
+		bprint( "Game commencing...\n" );
+		Timer_Begin( 2, GAME_COMMENCING );
 		fOldInGamePlayers = iInGamePlayers;
 	} else {
 		// No players? Don't bother updating the Timer
@@ -51,14 +56,15 @@ void StartFrame( void ) {
 
 // The map... entity.
 void worldspawn( void ) {
-	precache_model (sCSPlayers[1]);
-	precache_model (sCSPlayers[2]);
-	precache_model (sCSPlayers[3]);
-	precache_model (sCSPlayers[4]);
-	precache_model (sCSPlayers[5]);
-	precache_model (sCSPlayers[6]);
-	precache_model (sCSPlayers[7]);
-	precache_model (sCSPlayers[8]);
+	precache_model( sCSPlayers[1] );
+	precache_model( sCSPlayers[2] );
+	precache_model( sCSPlayers[3] );
+	precache_model( sCSPlayers[4] );
+	precache_model( sCSPlayers[5] );
+	precache_model( sCSPlayers[6] );
+	precache_model( sCSPlayers[7] );
+	precache_model( sCSPlayers[8] );
+	precache_model( "models/w_c4.mdl" );
 	
 	EFFECT_GUNSHOT = particleeffectnum( "te_gunshot" );
 	EFFECT_BLOOD = particleeffectnum( "te_blood" );
@@ -71,6 +77,7 @@ void worldspawn( void ) {
 	precache_sound( "radio/terwin.wav" );
 	precache_sound( "radio/ctwin.wav" );
 	precache_sound( "radio/rounddraw.wav" );
+	precache_sound( "radio/bombpl.wav" );
 	
 	precache_sound( "hostage/hos1.wav" );
 	precache_sound( "hostage/hos2.wav" );

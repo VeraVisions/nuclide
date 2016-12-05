@@ -74,6 +74,7 @@ void Rules_TimeOver( void ) {
 	if ( iBombZones > 0 ) {
 		Rules_RoundOver( TEAM_CT );
 	} else if ( iHostagesMax > 0 ) {
+		// TODO: Broadcast_Print: Hostages have not been rescued!
 		Rules_RoundOver( TEAM_T );
 	} else {
 		Rules_RoundOver( 0 );

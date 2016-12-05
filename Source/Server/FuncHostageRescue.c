@@ -38,6 +38,7 @@ void func_hostage_rescue_touch( void ) {
 		remove( other );
 		
 		if ( iHostagesRescued >= iHostagesMax ) {
+			// TODO: Broadcast_Print: All Hostages have been rescued!
 			Rules_RoundOver( TEAM_CT );
 		}
 	}

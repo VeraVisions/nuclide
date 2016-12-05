@@ -26,7 +26,7 @@ weaponinfo_t wptAWP = {
 	SLOT_PRIMARY,
 	4750, 				// Price
 	CALIBER_338MAG, 	// Caliber ID
-	210, 				// Max Player Speed
+	0.84, 				// Max Player Speed
 	1, 					// Bullets Per Shot
 	10, 				// Clip/MagSize
 	115, 				// Damage Per Bullet

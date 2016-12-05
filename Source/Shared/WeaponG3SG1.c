@@ -26,7 +26,7 @@ weaponinfo_t wptG3SG1 = {
 	SLOT_PRIMARY,
 	5000, 				// Price
 	CALIBER_762MM, 		// Caliber ID
-	210, 				// Max Player Speed
+	0.84, 				// Max Player Speed
 	1, 					// Bullets Per Shot
 	20, 				// Clip/MagSize
 	80, 				// Damage Per Bullet

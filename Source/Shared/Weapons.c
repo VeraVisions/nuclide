@@ -49,7 +49,8 @@ weaponfunc_t wpnFuncTable[ CS_WEAPON_COUNT ] = {
 	{ WeaponAWP_Draw, WeaponAWP_PrimaryFire, Temp_Nothing, WeaponAWP_Reload },
 	{ WeaponG3SG1_Draw, WeaponG3SG1_PrimaryFire, Temp_Nothing, WeaponG3SG1_Reload },
 	{ WeaponSG550_Draw, WeaponSG550_PrimaryFire, Temp_Nothing, WeaponSG550_Reload },
-	{ WeaponPARA_Draw, WeaponPARA_PrimaryFire, Temp_Nothing, WeaponPARA_Reload }
+	{ WeaponPARA_Draw, WeaponPARA_PrimaryFire, Temp_Nothing, WeaponPARA_Reload },
+	{ WeaponC4BOMB_Draw, WeaponC4BOMB_PrimaryFire, Temp_Nothing, Temp_Nothing }
 };
 
 void Weapon_Draw( float fWeapon ) {
@@ -60,7 +61,7 @@ void Weapon_Draw( float fWeapon ) {
 	wpnFuncTable[ fWeapon ].vDraw();
 	
 	#ifdef SSQC
-	self.maxspeed = (float)wptTable[ fWeapon ].iPlayerSpeed;
+	self.maxspeed = Player_GetMaxSpeed( fWeapon );
 	self.fAttackFinished = time + 1.0;
 	#endif
 }
@@ -155,6 +156,16 @@ void Weapon_AddItem( float fWeapon ) {
 void Weapon_GiveAmmo( float fWeapon, float fAmount ) {
 	self.(wptTable[ self.weapon ].iCaliberfld ) += fAmount;
 	Weapon_UpdateCurrents();
+}
+
+void Weapon_SwitchBest( void ) {
+	if ( self.iSlotSecondary ) {
+		Weapon_Switch( SLOT_SECONDARY );
+	} else if ( self.iSlotPrimary ) {
+		Weapon_Switch( SLOT_PRIMARY );
+	} else {
+		Weapon_Switch( SLOT_MELEE );
+	}
 }
 
 void CSEv_GamePlayerBuy_f( float fWeapon ) {

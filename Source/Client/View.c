@@ -42,7 +42,8 @@ string sViewModels[ CS_WEAPON_COUNT ] = {
 	"models/v_awp.mdl",
 	"models/v_g3sg1.mdl",
 	"models/v_sg550.mdl",
-	"models/v_m249.mdl"
+	"models/v_m249.mdl",
+	"models/v_c4.mdl"
 };
 
 entity eViewModel;

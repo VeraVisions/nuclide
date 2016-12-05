@@ -41,12 +41,14 @@ float EFFECT_BLOOD;
 .float fCharModel;
 .int iCrouching;
 .int iCrouchAttempt;
+.int iHasBomb;
 
 // Match specific fields
 int iWon_T;
 int iWon_CT;
-int iInGamePlayers_T;
-int iInGamePlayers_CT;
+
+int iAlivePlayers_T;
+int iAlivePlayers_CT;
 int fOldInGamePlayers;
 
 float fGameState;
@@ -103,11 +105,13 @@ void Spawn_RespawnClient( float fTeam );
 void Spawn_CreateClient( float fTeam );
 void Spawn_MakeSpectator( void );
 void Client_SendEvent( entity eClient, float fEVType );
+void Weapon_SwitchBest( void );
 
 void OpenCSGunBase_AccuracyCalc( void );
 void OpenCSGunBase_Draw( void );
 float OpenCSGunBase_PrimaryFire( void );
 float OpenCSGunBase_Reload( void );
+float Player_GetMaxSpeed( float fWeapon );
 
 void TraceAttack_FireBullets( int iShots );
 

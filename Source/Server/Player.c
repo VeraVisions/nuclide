@@ -34,15 +34,15 @@ void Player_Death( void ) {
 	Spawn_MakeSpectator();
 	
 	if ( self.team == TEAM_T ) {
-		iInGamePlayers_T--;
+		iAlivePlayers_T--;
 		
-		if ( iInGamePlayers_T == 0 ) {
+		if ( iAlivePlayers_T == 0 ) {
 			Rules_RoundOver( TEAM_CT );
 		}
 	} else if ( self.team == TEAM_CT ) {
-		iInGamePlayers_CT--;
+		iAlivePlayers_CT--;
 		
-		if ( iInGamePlayers_CT == 0 ) {
+		if ( iAlivePlayers_T == 0 ) {
 			Rules_RoundOver( TEAM_T );
 		}
 	} else if ( self.team == TEAM_VIP ) {
@@ -50,39 +50,27 @@ void Player_Death( void ) {
 	}
 }
 
+float Player_GetMaxSpeed( float fWeapon ) {
+	if ( self.iCrouching == TRUE ) {
+		return (cvar( "cl_forwardspeed" ) * wptTable[ fWeapon ].fSpeedM) * 0.5;
+	} else {
+		return cvar( "cl_forwardspeed" ) * wptTable[ fWeapon ].fSpeedM;
+	}
+}
+
 /*
 =================
 Player_CrouchCheck
-
-TODO: Tracebox implementation sucks, BUT SHOULD BE USED HERE.
-This is just a hack because for some reason traceboxes hate HLBSP
 =================
 */
 float Player_CrouchCheck( entity targ ) {
-	float fCheck = TRUE;
+	float fCheck = FALSE;
 	vector vTrace = self.origin + '0 0 20';
 	
-	traceline( vTrace + '0 0 -36', vTrace + '0 0 36', FALSE, self ); 
-	if ( trace_fraction != 1 ) {
-		fCheck = FALSE;
-	}
-	
-	// Now the 4 edges
-	traceline( vTrace + '-16 0 -36', vTrace + '-16 0 36', FALSE, self ); 
-	if ( trace_fraction != 1 ) {
-		fCheck = FALSE;
-	}
-	traceline( vTrace + '0 -16 -36', vTrace + '0 -16 36', FALSE, self ); 
-	if ( trace_fraction != 1 ) {
-		fCheck = FALSE;
-	}
-	traceline( vTrace + '16 0 -36', vTrace + '16 0 36', FALSE, self ); 
-	if ( trace_fraction != 1 ) {
-		fCheck = FALSE;
-	}
-	traceline( vTrace + '0 16 -36', vTrace + '0 16 36', FALSE, self ); 
-	if ( trace_fraction != 1 ) {
-		fCheck = FALSE;
+	tracebox( vTrace, VEC_HULL_MIN, VEC_HULL_MAX, vTrace, FALSE, self );
+
+	if ( trace_startsolid == FALSE ) {
+		fCheck = TRUE;
 	}
 	
 	return fCheck;
@@ -103,6 +91,7 @@ void Player_CrouchDown( void ) {
 		self.iCrouching = TRUE;
 		self.view_ofs = VEC_PLAYER_CVIEWPOS;
 		self.velocity_z = self.velocity_z + 50;
+		self.maxspeed = Player_GetMaxSpeed( self.weapon );
 		self.iCrouchAttempt = 1;
 		return;
 	}
@@ -128,7 +117,7 @@ void Player_CrouchUp( void ) {
 		self.view_ofs = VEC_PLAYER_VIEWPOS;
 		self.iCrouching = FALSE;
 		self.iCrouchAttempt = FALSE;
-
+		self.maxspeed = Player_GetMaxSpeed( self.weapon );
 		return;
 	}
 

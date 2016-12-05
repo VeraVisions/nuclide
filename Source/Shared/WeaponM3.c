@@ -32,7 +32,7 @@ weaponinfo_t wptM3 = {
 	SLOT_PRIMARY,
 	1700, 				// Price
 	CALIBER_BUCKSHOT, 	// Caliber ID
-	220, 				// Max Player Speed
+	0.92, 				// Max Player Speed
 	9, 					// Bullets Per Shot
 	8, 					// Clip/MagSize
 	26, 				// Damage Per Bullet
