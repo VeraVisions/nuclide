@@ -25,7 +25,7 @@ weaponinfo_t wptPARA = {
 	WEAPON_PARA, 		// Identifier
 	SLOT_PRIMARY,
 	5750, 				// Price
-	CALIBER_556MM, 		// Caliber ID
+	CALIBER_556MMBOX, 	// Caliber ID
 	220, 				// Max Player Speed
 	1, 					// Bullets Per Shot
 	100, 				// Clip/MagSize
@@ -36,7 +36,7 @@ weaponinfo_t wptPARA = {
 	TYPE_AUTO,
 	0.08, 				// Attack-Delay
 	3.0, 				// Reload-Delay
-	iAmmo_556MM, 		// Caliber Pointer
+	iAmmo_556MMBOX, 	// Caliber Pointer
 	iClip_PARA, 	// Clip Pointer
 	175,				// Accuracy Divisor
 	0.4,				// Accuracy Offset

@@ -53,10 +53,15 @@ weaponfunc_t wpnFuncTable[ CS_WEAPON_COUNT ] = {
 };
 
 void Weapon_Draw( float fWeapon ) {
+	if ( !fWeapon ) {
+		return;
+	}
+	
 	wpnFuncTable[ fWeapon ].vDraw();
 	
 	#ifdef SSQC
 	self.maxspeed = (float)wptTable[ fWeapon ].iPlayerSpeed;
+	self.fAttackFinished = time + 1.0;
 	#endif
 }
 
@@ -91,6 +96,32 @@ void Weapon_Reload( float fWeapon ) {
 }
 
 #ifdef SSQC
+
+void Weapon_Switch( int iSlot ) {
+	if ( self.fAttackFinished > time ) {
+		return;
+	}
+	
+	float fWeapon;
+	
+	if ( iSlot == SLOT_MELEE ) {
+		fWeapon = self.iSlotMelee;
+	} else if ( iSlot == SLOT_PRIMARY ) {
+		fWeapon = self.iSlotPrimary;
+	} else if ( iSlot == SLOT_SECONDARY ) {
+		fWeapon = self.iSlotSecondary;
+	} else if ( iSlot == SLOT_GRENADE ) {
+		fWeapon = self.iSlotGrenade;
+	}
+	
+	if ( !fWeapon || self.weapon == fWeapon ) {
+		return;
+	}
+	
+	self.weapon = fWeapon;
+	Weapon_Draw( fWeapon );
+}
+
 void Weapon_UpdateCurrents( void ) {
 	self.iCurrentClip = self.(wptTable[ self.weapon ].iClipfld);
 	self.iCurrentCaliber = self.(wptTable[ self.weapon ].iCaliberfld);
@@ -127,8 +158,12 @@ void Weapon_GiveAmmo( float fWeapon, float fAmount ) {
 }
 
 void CSEv_GamePlayerBuy_f( float fWeapon ) {
+	if ( Rules_BuyingPossible() == FALSE ) {
+		return;
+	}
+	
 	Weapon_AddItem( fWeapon );
-	Weapon_GiveAmmo( fWeapon, 99 );
+
 	self.fMoney -= wptTable[ fWeapon ].iPrice;
 	self.fAttackFinished = time + 1.0;
 }

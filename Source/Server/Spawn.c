@@ -20,13 +20,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 entity eLastTSpawn;
 entity eLastCTSpawn;
-entity Spawn_FindSpawnPoint( int iTeam ) {
+entity Spawn_FindSpawnPoint( float fTeam ) {
 	entity eSpot, eLastSpawn;
 	entity eThing;
 	int iCount;
 	string sClassname;
 
-	if ( iTeam == TEAM_T ) {
+	if ( fTeam == TEAM_T ) {
 		sClassname = "info_player_deathmatch";
 		eSpot = eLastSpawn = eLastTSpawn;
 	} else {
@@ -57,7 +57,7 @@ entity Spawn_FindSpawnPoint( int iTeam ) {
 	return eSpot;
 }
 
-void Spawn_RespawnClient( int iTeam ) {
+void Spawn_RespawnClient( float fTeam ) {
 	entity eSpawn;
 	forceinfokey( self, "*spectator", "0" ); // Make sure we are known as a spectator
 	eSpawn = Spawn_FindSpawnPoint( self.team );
@@ -76,21 +76,21 @@ void Spawn_RespawnClient( int iTeam ) {
 	self.fixangle = TRUE;
 
 	// Get the player-model from Defs.h's list
-	setmodel( self, sCSPlayers[ iTeam ] );
+	setmodel( self, sCSPlayers[ self.fCharModel ] );
 	setsize( self, VEC_HULL_MIN, VEC_HULL_MAX );
 
-	self.view_ofs = '0 0 24';
+	self.view_ofs = VEC_PLAYER_VIEWPOS;
 	self.velocity = '0 0 0';
 	
 	self.frame = 1; // Idle frame
 }
 
-void Spawn_CreateClient( int iTeam ) {
+void Spawn_CreateClient( float fCharModel ) {
 	// What team are we on - 0= Spectator, < 5 Terrorists, CT rest
-	if( iTeam == 0 ) {
+	if( fCharModel == 0 ) {
 		PutClientInServer();
 		return;
-	} else if( iTeam < 5 ) {
+	} else if( fCharModel < 5 ) {
 		self.team = TEAM_T;
 		iInGamePlayers_T++;
 		
@@ -102,7 +102,6 @@ void Spawn_CreateClient( int iTeam ) {
 
 		Weapon_AddItem( WEAPON_USP45 );
 		Weapon_GiveAmmo( WEAPON_USP45, 24 );
-
 	}
 	
 	if( self.iInGame == FALSE ) {
@@ -134,11 +133,34 @@ void Spawn_MakeSpectator( void ) {
 		self.(wptTable[ i ].iClipfld) = 0;
 		self.(wptTable[ i ].iCaliberfld) = 0;
 	}
+	
+	// Clear the inventory
+	self.iSlotMelee = self.iSlotPrimary = self.iSlotSecondary = self.iSlotGrenade = 0;
 }
 
 // Event Handling, called by the Client codebase via 'sendevent'
-void CSEv_GamePlayerSpawn_f( float fTeam ) {
-	Spawn_CreateClient( fTeam );
+void CSEv_GamePlayerSpawn_f( float fChar ) {
+	// Only allow to spawn directly into the game if we are still freezed/inactive
+	if ( fGameState == GAME_ACTIVE || fGameState == GAME_END ) {
+		// Yeah, set the future player model and stuff but let's act dead
+		if( fChar == 0 ) {
+			PutClientInServer();
+			return;
+		} else if( fChar < 5 ) {
+			self.team = TEAM_T;
+		} else {
+			self.team = TEAM_CT;
+		}
+		
+		self.classname = "player";
+		self.fCharModel = fChar;
+		self.health = 0;
+		Spawn_MakeSpectator();
+	} else {
+		self.fCharModel = fChar;
+		Spawn_CreateClient( fChar );
+	}
+	
 }
 
 // Counter-Terrorist Spawnpoints

@@ -65,9 +65,11 @@ void VGUI_BuyMenu_Main( vector vPos ) {
 		fVGUI_Display = VGUI_BM_MGS;
 	}
 	static void BuyMenu_Main_6( void ) {
+		sendevent( "GamePlayerBuyAmmo", "f", 0 );
 		fVGUI_Display = VGUI_NONE;
 	}
 	static void BuyMenu_Main_7( void ) {
+		sendevent( "GamePlayerBuyAmmo", "f", 1 );
 		fVGUI_Display = VGUI_NONE;
 	}
 	static void BuyMenu_Main_8( void ) {

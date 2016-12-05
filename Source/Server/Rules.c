@@ -18,9 +18,22 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+// Checks if it is possible for players to buy anything
+float Rules_BuyingPossible( void ) {
+	if ( fGameState == GAME_ACTIVE ) {
+		if ( ( ( cvar( "mp_roundtime" ) * 60 ) - fGameTime ) > cvar( "mp_buytime" ) ) {
+			centerprint( self, sprintf( "%d seconds have passed...\nYou can't buy anything now!", cvar( "mp_buytime" ) ) );
+			self.fAttackFinished = time + 1.0;
+			return FALSE;
+		}
+	}
+	
+	return TRUE;
+}
+
 // Loop through all players and respawn them
 void Rules_Restart( void ) {
-	localcmd( "restart_ents" );
+	//localcmd( "restart_ents" );
 	
 	entity eFind = findchain( classname, "player" );
 	
@@ -31,7 +44,7 @@ void Rules_Restart( void ) {
 		if ( self.health > 0 ) {
 			Spawn_RespawnClient( self.team );
 		} else {
-			Spawn_CreateClient( self.team );
+			Spawn_CreateClient( self.fCharModel );
 		}
 		
 		self = eOldSelf;

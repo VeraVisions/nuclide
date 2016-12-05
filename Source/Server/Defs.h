@@ -20,6 +20,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define VEC_HULL_MIN '-16 -16 -36'
 #define VEC_HULL_MAX '16 16 36'
+#define VEC_PLAYER_VIEWPOS '0 0 24'
+
+#define VEC_CHULL_MIN '-16 -16 -18'
+#define VEC_CHULL_MAX '16 16 18'
+#define VEC_PLAYER_CVIEWPOS '0 0 12'
+
 
 // Particle Fields
 float EFFECT_GUNSHOT;
@@ -32,6 +38,9 @@ float EFFECT_BLOOD;
 .float fMoney;
 .float fStepTime;
 .int iInGame;
+.float fCharModel;
+.int iCrouching;
+.int iCrouchAttempt;
 
 // Match specific fields
 int iWon_T;
@@ -39,7 +48,6 @@ int iWon_CT;
 int iInGamePlayers_T;
 int iInGamePlayers_CT;
 int fOldInGamePlayers;
-
 
 float fGameState;
 float fGameTime;
@@ -89,9 +97,10 @@ string sCSPlayers[9] = {
 	"models/player/gign/gign.mdl"
 };
 
+float Rules_BuyingPossible( void );
 void Timer_Begin( float fTime, float fMode);
-void Spawn_RespawnClient( int iTeam );
-void Spawn_CreateClient( int iTeam );
+void Spawn_RespawnClient( float fTeam );
+void Spawn_CreateClient( float fTeam );
 void Spawn_MakeSpectator( void );
 void Client_SendEvent( entity eClient, float fEVType );
 

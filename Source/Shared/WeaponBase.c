@@ -87,12 +87,13 @@ float OpenCSGunBase_Reload( void ) {
 		return FALSE;
 	}
 	
+	// What if we've got less in our caliberfield than we need
 	if ( self.(wptTable[ self.weapon ].iCaliberfld) < wptTable[ self.weapon ].iClipSize ) {
 		self.(wptTable[ self.weapon ].iClipfld) = self.(wptTable[ self.weapon ].iCaliberfld);
 		self.(wptTable[ self.weapon ].iCaliberfld) = 0;
 	} else {
+		self.(wptTable[ self.weapon ].iCaliberfld) -= ( wptTable[ self.weapon ].iClipSize - self.(wptTable[ self.weapon ].iClipfld) );
 		self.(wptTable[ self.weapon ].iClipfld) = wptTable[ self.weapon ].iClipSize;
-		self.(wptTable[ self.weapon ].iCaliberfld) -= wptTable[ self.weapon ].iClipSize;
 	}
 	
 	self.fAttackFinished = time + wptTable[ self.weapon ].fReloadFinished;

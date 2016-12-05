@@ -96,6 +96,5 @@ void multi_manager( void ) {
 	}
 	
 	self.message = __fullspawndata;
-	self.think = multi_manager_use;
-	self.nextthink = self.ltime + 5;
+	self.vUse = multi_manager_use;
 }

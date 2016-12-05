@@ -28,8 +28,11 @@ void VGUI_MessageOfTheDay( vector vPos ) {
 
 	VGUI_Text( serverkey( "hostname" ), vPos + '16 64 0', '16 16 0');
 	
-	VGUI_Text( "You are playing an early preview of this game.", vPos + '16 116 0', '8 8 0' );
-	VGUI_Text( "Just press OK to proceed, or whatever.", vPos + '16 132 0', '8 8 0' );
+	vector vTextPos = vPos + '16 116 0';
+	for ( int i = 0; i < 25; i++ ) {
+		VGUI_Text( sMOTDString[ i ], vTextPos, '8 8 0' );
+		vTextPos_y += 10;
+	}
 	
 	VGUI_Button( "OK", MessageOfTheDay_ButtonOK, vPos + '16 440 0', '80 24 0' );
 }

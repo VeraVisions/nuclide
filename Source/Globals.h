@@ -81,6 +81,7 @@ enum {
 	CALIBER_50AE = 1,
 	CALIBER_762MM,
 	CALIBER_556MM,
+	CALIBER_556MMBOX,
 	CALIBER_338MAG,
 	CALIBER_9MM,
 	CALIBER_BUCKSHOT,
@@ -92,6 +93,7 @@ enum {
 .int iAmmo_50AE;
 .int iAmmo_762MM;
 .int iAmmo_556MM;
+.int iAmmo_556MMBOX;
 .int iAmmo_338MAG;
 .int iAmmo_9MM;
 .int iAmmo_BUCKSHOT;
@@ -141,6 +143,12 @@ typedef struct {
 	float fAccuracyOffset;
 	float fMaxInaccuracy;
 } weaponinfo_t;
+
+typedef struct {
+	int iSize;
+	int iMaxAmount;
+	int iPrice;
+} ammoinfo_t;
 
 typedef struct {
 	void() vDraw;

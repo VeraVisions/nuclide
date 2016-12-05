@@ -68,6 +68,30 @@ Initialize all there is
 =================
 */
 void CSQC_VGUI_Init( void ) {
+	string sTemp;
+	
+	// First load the MESSAGE OF THE DAY
+	filestream fmMOTD = fopen( "motd.txt", FILE_READ);
+	for ( int i = 0; i < 25; i++ ) {
+		sTemp = fgets( fmMOTD );
+		if not ( sTemp ) {
+			break;
+		} 
+		sMOTDString[ i ] = sTemp;
+	}
+	fclose( fmMOTD );
+	
+	// Now load the MAP DESCRIPTION
+	fmMOTD = fopen( sprintf( "maps/%s.txt", mapname ), FILE_READ);
+	for ( int i = 0; i < 35; i++ ) {
+		sTemp = fgets( fmMOTD );
+		if not ( sTemp ) {
+			break;
+		} 
+		sMapString[ i ] = sTemp;
+	}
+	fclose( fmMOTD );
+	
 	// We start on the MOTD, always
 	fVGUI_Display = VGUI_MOTD;
 }

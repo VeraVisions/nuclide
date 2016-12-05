@@ -49,3 +49,88 @@ void Player_Death( void ) {
 		// TODO: Finish me
 	}
 }
+
+/*
+=================
+Player_CrouchCheck
+
+TODO: Tracebox implementation sucks, BUT SHOULD BE USED HERE.
+This is just a hack because for some reason traceboxes hate HLBSP
+=================
+*/
+float Player_CrouchCheck( entity targ ) {
+	float fCheck = TRUE;
+	vector vTrace = self.origin + '0 0 20';
+	
+	traceline( vTrace + '0 0 -36', vTrace + '0 0 36', FALSE, self ); 
+	if ( trace_fraction != 1 ) {
+		fCheck = FALSE;
+	}
+	
+	// Now the 4 edges
+	traceline( vTrace + '-16 0 -36', vTrace + '-16 0 36', FALSE, self ); 
+	if ( trace_fraction != 1 ) {
+		fCheck = FALSE;
+	}
+	traceline( vTrace + '0 -16 -36', vTrace + '0 -16 36', FALSE, self ); 
+	if ( trace_fraction != 1 ) {
+		fCheck = FALSE;
+	}
+	traceline( vTrace + '16 0 -36', vTrace + '16 0 36', FALSE, self ); 
+	if ( trace_fraction != 1 ) {
+		fCheck = FALSE;
+	}
+	traceline( vTrace + '0 16 -36', vTrace + '0 16 36', FALSE, self ); 
+	if ( trace_fraction != 1 ) {
+		fCheck = FALSE;
+	}
+	
+	return fCheck;
+}
+
+/*
+=================
+Player_CrouchDown
+=================
+*/
+void Player_CrouchDown( void ) {
+	if( self.movetype != MOVETYPE_WALK ) {
+		return;
+	}
+
+	if( !self.iCrouching ) {
+		setsize( self, VEC_CHULL_MIN, VEC_CHULL_MAX );
+		self.iCrouching = TRUE;
+		self.view_ofs = VEC_PLAYER_CVIEWPOS;
+		self.velocity_z = self.velocity_z + 50;
+		self.iCrouchAttempt = 1;
+		return;
+	}
+
+	self.iCrouchAttempt = FALSE;
+}
+
+/*
+=================
+Player_CrouchUp
+=================
+*/
+void Player_CrouchUp( void ) {
+	if ( self.movetype != MOVETYPE_WALK ) {
+		return;
+	}
+
+	if ( self.iCrouching && ( !self.velocity_z ) && (Player_CrouchCheck( self ) ) ) {
+		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
+
+		setorigin( self, self.origin + '0 0 18');
+		self.velocity_z = self.velocity_z + 16;
+		self.view_ofs = VEC_PLAYER_VIEWPOS;
+		self.iCrouching = FALSE;
+		self.iCrouchAttempt = FALSE;
+
+		return;
+	}
+
+	self.iCrouchAttempt = TRUE;
+}

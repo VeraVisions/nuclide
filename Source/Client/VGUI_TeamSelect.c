@@ -35,13 +35,16 @@ void VGUI_TeamSelect_Main( vector vPos ) {
 		fVGUI_Display = VGUI_NONE;
 	}
 
-	VGUI_Text( "Gamemode Title", vPos + '16 64 0', '16 16 0');
+	VGUI_Text( sMapString[ 0 ], vPos + '16 64 0', '16 16 0');
 	
-	VGUI_Text( "This is a description of the gamemode that you are playing.", vPos + '16 116 0', '8 8 0' );
-	VGUI_Text( "As you can see, that stuff is not implemented yet.", vPos + '16 132 0', '8 8 0' );
-	
-	VGUI_Button( "Terrorists", TeamSelect_Main_ButtonT, vPos + '16 240 0', '180 24 0' );
-	VGUI_Button( "Counter-Terrorists", TeamSelect_Main_ButtonCT, vPos + '16 272 0', '180 24 0' );
+	vector vTextPos = vPos + '224 116 0';
+	for ( int i = 1; i < 35; i++ ) {
+		VGUI_Text( sMapString[ i ], vTextPos, '8 8 0' );
+		vTextPos_y += 10;
+	}
+
+	VGUI_Button( "Terrorists", TeamSelect_Main_ButtonT, vPos + '16 116 0', '180 24 0' );
+	VGUI_Button( "Counter-Terrorists", TeamSelect_Main_ButtonCT, vPos + '16 148 0', '180 24 0' );
 
 	VGUI_Button( "Auto-Assign", TeamSelect_Main_ButtonAuto, vPos + '16 336 0', '180 24 0' );
 	VGUI_Button( "Spectate", TeamSelect_Main_ButtonSpectate, vPos + '16 368 0', '180 24 0' );

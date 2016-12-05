@@ -41,6 +41,9 @@ enum {
 vector vVGUIWindowPos;
 vector vVGUIButtonPos;
 
+string sMOTDString[25];
+string sMapString[35];
+
 typedef struct {
 	string sTitle;
 	void( vector vPos ) vDraw;

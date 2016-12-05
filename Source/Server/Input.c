@@ -19,6 +19,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 void Input_Handle( void ) {
+	// TODO: Make this fast switch only
+	if ( self.impulse == 1 ) {
+		Weapon_Switch( SLOT_MELEE );
+	} else if ( self.impulse == 2 ) {
+		Weapon_Switch( SLOT_SECONDARY );
+	} else if ( self.impulse == 3 ) {
+		Weapon_Switch( SLOT_PRIMARY );
+	} else if ( self.impulse == 4 ) {
+		Weapon_Switch( SLOT_GRENADE );
+	} 
+	
+	if ( self.button3 ) {
+			Player_CrouchDown();
+	} else if ( self.iCrouching == TRUE ) {
+			Player_CrouchUp();
+	}
 	
 	if ( self.button0 ) {
 		Weapon_PrimaryAttack( self.weapon );
@@ -26,23 +42,6 @@ void Input_Handle( void ) {
 		Weapon_Reload( self.weapon );
 	} else if ( self.button5 ) {
 		Weapon_SecondaryAttack( self.weapon );
-	}
-	
-	if ( cvar( "developer" ) == 1 ) {
-		if( self.impulse == 10 ) { 
-			if ( self.weapon < ( CS_WEAPON_COUNT - 1 ) ) {
-				dprint( "Weapon Cheat +\n" );
-				self.weapon++;
-				CSEv_GamePlayerBuy_f( self.weapon );
-			}
-		} 
-		if( self.impulse == 11 ) { 
-			if ( self.weapon > 1 ) {
-				dprint( "Weapon Cheat -\n" );
-				self.weapon--;
-				CSEv_GamePlayerBuy_f( self.weapon );
-			}
-		} 
 	}
 	
 	self.impulse = 0; 

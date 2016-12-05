@@ -20,36 +20,35 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /*
 =================
-CSQC_UpdateView
-
-Entry point for drawing on the client
+func_escapezone_touch
 =================
 */
-void CSQC_UpdateView( float fWinWidth, float fWinHeight, float fGameFocus ) {
-	vVideoResolution_x = fWinWidth;
-	vVideoResolution_y = fWinHeight;
-
-	clearscene();
-	setproperty( VF_DRAWENGINESBAR, 0 );
-	setproperty( VF_DRAWCROSSHAIR, 0 );
-
-	addentities( MASK_ENGINE );
-	View_DrawViewModel();
-	renderscene();
-	
-	if( fGameFocus == TRUE ) {
-		HUD_Draw();
-		CSQC_VGUI_Draw();
-	}
+void func_escapezone_touch( void ) {
+	if ( ( other.classname == "player" ) && ( other.team == TEAM_T ) ) {
+		
+	} 
 }
 
 /*
 =================
-CSQC_UpdateViewLoading
+SPAWN: func_escapezone
 
-Doesn't really do anything useful yet
+Entry function for the terrorist escape zone
 =================
 */
-void CSQC_UpdateViewLoading( float fWinWidth, float fWinHeight, float fGameFocus ) {
+void func_escapezone( void ) {
+	self.angles = '0 0 0';
+	self.movetype = MOVETYPE_NONE;
+	self.solid = SOLID_TRIGGER;
 	
+	if ( self.model ) {
+		setmodel( self, self.model );
+	} else {
+		setsize( self, self.mins, self.maxs );
+	}
+	
+	self.model = 0;
+	self.touch = func_escapezone_touch;
+	
+	iRescueZones++;
 }
