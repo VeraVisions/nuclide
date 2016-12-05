@@ -18,6 +18,11 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+/*
+====================
+Entities_UseTargets
+====================
+*/
 void Entities_UseTargets( void ) {
 	entity eFind = findchain( targetname, self.target );
 	
@@ -30,6 +35,150 @@ void Entities_UseTargets( void ) {
 	}
 }
 
+/*
+====================
+Entities_Remove
+====================
+*/
+void Entities_Remove( void )
+{
+	remove( self );
+}
+
+/*
+====================
+Entities_SetMovedir
+
+Returns the movement direction based on angles
+====================
+*/
+void Entities_SetMovementDirection( void )
+{
+	if ( self.angles == '0 -1 0' ) {
+		self.movedir = '0 0 1';
+	} else if ( self.angles == '0 -2 0' ) {
+		self.movedir = '0 0 -1';
+	} else {
+		makevectors( self.angles );
+		self.movedir = v_forward;
+	}
+	
+	self.angles = '0 0 0';
+}
+
+/*
+====================
+Entities_InitTrigger
+
+  Prepares an entity to have the properties of a TRIGGER
+====================
+*/
+void Entities_InitTrigger( void ) {
+	if ( self.angles != '0 0 0' ) {
+		Entities_SetMovementDirection();
+	}
+	self.solid = SOLID_TRIGGER;
+	setmodel ( self, self.model );
+	self.movetype = MOVETYPE_NONE;
+	self.modelindex = 0;
+	self.model = "";
+}
+
+/*
+====================
+Entities_MoveToDestination_End
+====================
+*/
+.vector vFinalDestination;
+.void() vThinkMove;
+void Entities_MoveToDestination_End( void ) {
+	setorigin( self, self.vFinalDestination );
+	self.velocity = '0 0 0';
+	self.nextthink = -1;
+	self.vThinkMove();
+}
+
+/*
+====================
+Entities_MoveToDestination
+
+Sets velocity of an ent to move to a destination at the desired speed
+====================
+*/
+void Entities_MoveToDestination(vector vDestination, float fMoveSpeed, void() func) {
+	local vector vPositionDifference;
+	local float fTravelLength, fTravelTime;
+
+	if ( !fMoveSpeed ) {
+		objerror("No speed defined for moving entity! Will not divide by zero.");
+	}
+
+	self.vThinkMove = func;
+	self.vFinalDestination = vDestination;
+	self.think = Entities_MoveToDestination_End;
+
+	if ( vDestination == self.origin ) {
+		self.velocity = '0 0 0';
+		self.nextthink = ( self.ltime + 0.1 );
+		return;
+	}
+
+	vPositionDifference = ( vDestination - self.origin );
+	fTravelLength = vlen( vPositionDifference );
+	fTravelTime = ( fTravelLength / fMoveSpeed );
+
+	if ( fTravelTime < 0.1 ) {
+		self.velocity = '0 0 0';
+		self.nextthink = self.ltime + 0.1;
+		return;
+	}
+	
+	self.nextthink = ( self.ltime + fTravelTime );
+	self.velocity = ( vPositionDifference * ( 1 / fTravelTime ) );
+}
+
+/*
+====================
+Entities_CalcAngleMoveDone
+====================
+*/
+.vector vFinalAngle;
+void Entities_RotateToDestination_End( void ) {
+	self.angles = self.vFinalAngle;
+	self.avelocity = '0 0 0';
+	self.nextthink = -1;
+	self.vThinkMove();
+}
+
+/*
+====================
+Entities_RotateToDestination
+====================
+*/
+void Entities_RotateToDestination( vector vDestinationAngle, float fTravelSpeed, void() func ) {
+	local vector	vAngleDifference;
+	local float		fTravelLength, fTravelTime;
+
+	if ( !fTravelSpeed ) {
+		objerror("No speed defined for moving entity! Will not divide by zero.");
+	}
+	
+	vAngleDifference = ( vDestinationAngle - self.angles );
+	fTravelLength = vlen( vAngleDifference );
+	fTravelTime = ( fTravelLength / fTravelSpeed );
+	self.nextthink = ( self.ltime + fTravelTime );
+	self.avelocity = ( vAngleDifference * ( 1 / fTravelTime ) );
+	self.vFinalAngle = vDestinationAngle;
+	self.vThinkMove = func;
+	self.think = Entities_RotateToDestination_End;
+}
+
+
+/*
+====================
+GOLDSRC-RENDERMODE STUFF
+====================
+*/
 enum { 
 	RENDERMODE_NORMAL = 0,
 	RENDERMODE_COLOR,
@@ -68,10 +217,6 @@ void func_wall( void ) {
 	setmodel( self, self.model );
 	self.vUse = func_wall_use;
 	Entities_RenderSetup();
-}
-
-void func_door( void ) {
-	func_wall();
 }
 
 void func_button( void ) {

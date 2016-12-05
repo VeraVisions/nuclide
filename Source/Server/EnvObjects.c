@@ -39,6 +39,10 @@ void cycler_sprite( void ) {
 	Entities_RenderSetup();
 }
 
+void env_glow( void ) {
+	cycler_sprite();
+}
+
 /*
 =================
 env_render

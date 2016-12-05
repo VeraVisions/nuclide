@@ -51,6 +51,8 @@ FuncLadder.c
 FuncHostageRescue.c
 FuncBombTarget.c
 FuncBuyZone.c
+FuncDoor.c
+FuncDoorRotating.c
 
 Main.c
 Player.c
