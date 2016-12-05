@@ -48,13 +48,14 @@ void PlayerPostThink( void ) {
 
 void PutClientInServer( void ) {
 	entity eSpawn;
+	entity eTarget = world;
 	eSpawn = find (world, classname, "trigger_camera");
 	
 	self.origin = eSpawn.origin + '0 0 1';
 	
 	// Rotate camera towards a target
 	if( eSpawn.target ) {
-		entity eTarget = find( eTarget, targetname, eSpawn.target );
+		eTarget = find( eTarget, targetname, eSpawn.target );
 		self.angles = vectoangles( eTarget.origin - eSpawn.origin );
 		self.angles_x *= -1;
 	} else {	

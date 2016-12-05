@@ -51,9 +51,11 @@ FuncLadder.c
 FuncHostageRescue.c
 FuncBombTarget.c
 FuncBuyZone.c
+FuncButton.c
 FuncDoor.c
 FuncDoorRotating.c
 
+Light.c
 Main.c
 Player.c
 Spawn.c

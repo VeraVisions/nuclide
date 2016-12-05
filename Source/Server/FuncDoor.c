@@ -94,9 +94,15 @@ void FuncDoor_Arrived( void ) {
 	if ( self.wait < 0 ) {
 		return;
 	}
-		
-	self.think = FuncDoor_MoveBack;
-	self.nextthink = ( self.ltime + self.wait );
+	
+	if ( self.target ) {
+		Entities_UseTargets();
+	}
+	
+	if ( !( self.spawnflags & SF_MOV_TOGGLE ) ) {
+		self.think = FuncDoor_MoveBack;
+		self.nextthink = ( self.ltime + self.wait );
+	}
 }
 
 /*
@@ -109,6 +115,10 @@ void FuncDoor_Returned( void ) {
 		self.touch = FuncDoor_Touch;
 	}
     
+    if ( self.target ) {
+		Entities_UseTargets();
+	}
+	
 	self.state = STATE_LOWERED;
 }
 
@@ -119,7 +129,7 @@ FuncDoor_MoveBack
 */
 void FuncDoor_MoveBack( void ) {
 	
-	if( self.movesnd > 0 && self.movesnd <= 8 ) {
+	if( self.movesnd > 0 && self.movesnd <= 10 ) {
 		sound( self, CHAN_VOICE, sprintf( "doors/doormove%d.wav", self.movesnd ), 1.0, ATTN_NORM );
 	} else {
 		sound( self, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM );
@@ -143,15 +153,17 @@ void FuncDoor_MoveAway( void ) {
 		return;
 	}
 	
-	if( self.movesnd > 0 && self.movesnd <= 8 ) {
+	if( self.movesnd > 0 && self.movesnd <= 10 ) {
 		sound( self, CHAN_VOICE, sprintf( "doors/doormove%d.wav", self.movesnd ), 1.0, ATTN_NORM );
 	} else {
 		sound( self, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM );
 	}
 
-	if ( self.state == STATE_RAISED ) {	
-		self.nextthink = ( self.ltime + self.wait );
-		return;
+	if ( !( self.spawnflags & SF_MOV_TOGGLE ) ) {
+		if ( self.state == STATE_RAISED ) {	
+			self.nextthink = ( self.ltime + self.wait );
+			return;
+		}
 	}
 	
 	self.state = STATE_UP;
@@ -218,34 +230,30 @@ Spawn function of a moving door entity
 void func_door( void ) {
 	FuncDoor_PrecacheSounds();
 	Entities_SetMovementDirection();
+	
 	self.solid = SOLID_BSP;
+	
 	self.movetype = MOVETYPE_PUSH;
 	setorigin( self, self.origin );	
 	setmodel( self, self.model );
 
 	self.blocked = FuncDoor_Blocked;
-	self.use = FuncDoor_Trigger;
+	self.vUse = FuncDoor_Trigger;
 	
 	if ( !self.speed ) {
 		self.speed = 100;
 	}
-	if ( !self.wait ) {
-		self.wait = 2;
-	}
+
 	if ( !self.dmg ) {
 		self.dmg = 2;
 	}
-	if ( !self.style ) {
-		self.style = ATTN_NORM;
-	}
 	
-	if ( !( self.spawnflags & SF_MOV_TOGGLE ) ) {
-		if ( !( self.spawnflags & SF_MOV_USE ) ) {
-			self.touch = FuncDoor_Touch;
-		}
-
-		self.iUsable = TRUE;
+	if ( !( self.spawnflags & SF_MOV_USE ) ) {
+		self.touch = FuncDoor_Touch;
 	}
+
+	self.iUsable = TRUE;
+	
 
 	self.pos1 = self.origin;
 	self.pos2 = ( self.pos1 + self.movedir * ( fabs( self.movedir * self.size ) - self.lip ) );

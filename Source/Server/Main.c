@@ -243,6 +243,19 @@ void worldspawn( void ) {
 	precache_sound( "weapons/xm1014-1.wav" );
 	precache_sound( "weapons/zoom.wav" );
 	
+	lightstyle( 0, "m" );
+	lightstyle( 1, "mmnmmommommnonmmonqnmmo" );
+	lightstyle( 2, "abcdefghijklmnopqrstuvwxyzyxwvutsrqponmlkjihgfedcba" );
+	lightstyle( 3, "mmmmmaaaaammmmmaaaaaabcdefgabcdefg" );
+	lightstyle( 4, "mamamamamama" );
+	lightstyle( 5,"jklmnopqrstuvwxyzyxwvutsrqponmlkj" );
+	lightstyle( 6, "nmonqnmomnmomomno" );
+	lightstyle( 7, "mmmaaaabcdefgmmmmaaaammmaamm" );
+	lightstyle( 8, "mmmaaammmaaammmabcdefaaaammmmabcdefmmmaaaa" );
+	lightstyle( 9, "aaaaaaaazzzzzzzz" );
+	lightstyle( 10, "mmamammmmammamamaaamammma" );
+	lightstyle( 11, "abcdefghijklmnopqrrqponmlkjihgfedcba" );
+
 	// TODO: Merge these into a single field?
 	clientstat( STAT_BUYZONE, EV_FLOAT, fInBuyZone );
 	clientstat( STAT_HOSTAGEZONE, EV_FLOAT, fInHostageZone );

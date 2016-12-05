@@ -219,10 +219,6 @@ void func_wall( void ) {
 	Entities_RenderSetup();
 }
 
-void func_button( void ) {
-	func_wall();
-}
-
 void func_illusionary( void ){
 	func_wall();
 	self.solid = SOLID_NOT;

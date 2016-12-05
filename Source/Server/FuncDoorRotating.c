@@ -84,7 +84,7 @@ FuncDoorRotate_RotateBack
 */
 void FuncDoorRotate_RotateBack( void ) {
 	
-	if( self.movesnd > 0 && self.movesnd <= 8 ) {
+	if( self.movesnd > 0 && self.movesnd <= 10 ) {
 		sound( self, CHAN_VOICE, sprintf( "doors/doormove%d.wav", self.movesnd ), 1.0, ATTN_NORM );
 	} else {
 		sound( self, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM );
@@ -110,7 +110,7 @@ void FuncDoorRotate_RotateAway( void ) {
 		return;
 	}
 	
-	if( self.movesnd > 0 && self.movesnd <= 8 ) {
+	if( self.movesnd > 0 && self.movesnd <= 10 ) {
 		sound( self, CHAN_VOICE, sprintf( "doors/doormove%d.wav", self.movesnd ), 1.0, ATTN_NORM );
 	} else {
 		sound( self, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM );
