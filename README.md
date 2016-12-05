@@ -28,6 +28,7 @@ Basically, hostage rescue is playable as long as you don't care about grenades/k
 
 # Special Thanks
 Spike - Creator of FTE QuakeWorld and FTEQCC ( http://fte.triptohell.info/ )
+
 TWHL - Mapping Community with CS/HL entity information (  http://twhl.info )
 
 This repository uses no content from Half-Life nor the original CS, for credits
