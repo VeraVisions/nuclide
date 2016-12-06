@@ -152,6 +152,12 @@ void FuncDoorRotate_Trigger( void ) {
 	}
 
 	FuncDoorRotate_RotateAway();
+	
+	if ( self.delay ) {
+		Entities_UseTargets_Delay( self.delay );
+	} else {
+		Entities_UseTargets();
+	}
 }
 
 /*

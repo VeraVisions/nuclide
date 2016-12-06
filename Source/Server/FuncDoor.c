@@ -88,15 +88,11 @@ void FuncDoor_Arrived( void ) {
 		sound( self, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM );
 	}
 	
-	if ( !( self.spawnflags & SF_MOV_USE ) ) {
+	if ( ( self.spawnflags & SF_MOV_USE ) ) {
 		self.touch = FuncDoor_Touch;
 	}
 	if ( self.wait < 0 ) {
 		return;
-	}
-	
-	if ( self.target ) {
-		Entities_UseTargets();
 	}
 	
 	if ( !( self.spawnflags & SF_MOV_TOGGLE ) ) {
@@ -111,14 +107,10 @@ FuncDoor_Returned
 ====================
 */
 void FuncDoor_Returned( void ) {
-	if ( !( self.spawnflags & SF_MOV_USE ) ) {
+	if ( ( self.spawnflags & SF_MOV_USE ) ) {
 		self.touch = FuncDoor_Touch;
 	}
     
-    if ( self.target ) {
-		Entities_UseTargets();
-	}
-	
 	self.state = STATE_LOWERED;
 }
 
@@ -135,7 +127,7 @@ void FuncDoor_MoveBack( void ) {
 		sound( self, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM );
 	}
 	
-	if ( !( self.spawnflags & SF_MOV_USE ) ) {
+	if ( ( self.spawnflags & SF_MOV_USE ) ) {
 		self.touch = __NULL__;
 	}
     
@@ -182,6 +174,12 @@ void FuncDoor_Trigger( void ) {
 		return;
 	}
 
+	if ( self.delay ) {
+		Entities_UseTargets_Delay( self.delay );
+	} else {
+		Entities_UseTargets();
+	}
+	
 	FuncDoor_MoveAway();
 }
 
@@ -194,7 +192,7 @@ void FuncDoor_Touch( void ) {
 	if ( other.classname == "player" ) {
 		FuncDoor_Trigger();
     
-		if ( !( self.spawnflags & SF_MOV_USE ) ) {
+		if ( ( self.spawnflags & SF_MOV_USE ) ) {
 			self.touch = __NULL__;
 		}
 	}
@@ -240,6 +238,10 @@ void func_door( void ) {
 	self.blocked = FuncDoor_Blocked;
 	self.vUse = FuncDoor_Trigger;
 	
+	if ( self.wait == -1 ) {
+		self.spawnflags = self.spawnflags | SF_MOV_TOGGLE;
+	}
+	
 	if ( !self.speed ) {
 		self.speed = 100;
 	}
@@ -248,7 +250,7 @@ void func_door( void ) {
 		self.dmg = 2;
 	}
 	
-	if ( !( self.spawnflags & SF_MOV_USE ) ) {
+	if ( ( self.spawnflags & SF_MOV_USE ) ) {
 		self.touch = FuncDoor_Touch;
 	}
 

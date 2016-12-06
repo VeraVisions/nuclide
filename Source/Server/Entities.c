@@ -35,6 +35,21 @@ void Entities_UseTargets( void ) {
 	}
 }
 
+void Entities_UseTargets_Delay( float fDelay ) {
+	static void Entities_UseTargets_Delay_Think( void ) {
+		entity eOld = self;
+		self = self.owner;
+		Entities_UseTargets();
+		remove( eOld );
+	}
+	
+	entity eTimer = spawn();
+	eTimer.owner = self;
+	eTimer.think = Entities_UseTargets_Delay_Think;
+	eTimer.nextthink = time + fDelay;
+	
+}
+
 /*
 ====================
 Entities_Remove

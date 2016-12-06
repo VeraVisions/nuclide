@@ -42,7 +42,7 @@ void Player_Death( void ) {
 	} else if ( self.team == TEAM_CT ) {
 		iAlivePlayers_CT--;
 		
-		if ( iAlivePlayers_T == 0 ) {
+		if ( iAlivePlayers_CT == 0 ) {
 			Rules_RoundOver( TEAM_T );
 		}
 	} else if ( self.team == TEAM_VIP ) {

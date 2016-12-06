@@ -138,7 +138,6 @@ void FuncButton_Arrived( void ) {
 		return;
 	}
 	
-	Entities_UseTargets();
 	self.think = FuncButton_MoveBack;
 	self.nextthink = ( self.ltime + self.wait );
 }
@@ -188,7 +187,6 @@ void FuncButton_MoveAway( void ) {
 	
 	self.state = STATE_UP;
 	Entities_MoveToDestination ( self.pos2, self.speed, FuncButton_Arrived );
-	Entities_UseTargets();
 }
 
 /*
@@ -204,6 +202,12 @@ void FuncButton_Trigger( void ) {
 
 	sound( self, CHAN_VOICE, self.noise, 1.0, ATTN_NORM );
 	FuncButton_MoveAway();
+	
+	if ( self.delay ) {
+		Entities_UseTargets_Delay( self.delay );
+	} else {
+		Entities_UseTargets();
+	}
 }
 
 /*
