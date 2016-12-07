@@ -113,6 +113,7 @@ float OpenCSGunBase_Reload( void );
 float Player_GetMaxSpeed( float fWeapon );
 
 void TraceAttack_FireBullets( int iShots );
+void Damage_Radius( vector vOrigin, entity eAttacker, float fDamage, float fRadius );
 
 // WIP
 string __fullspawndata;

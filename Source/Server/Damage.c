@@ -39,3 +39,26 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 	
 	self = eOld;
 }
+
+void Damage_Radius( vector vOrigin, entity eAttacker, float fDamage, float fRadius ) {
+	entity eDChain = findradius( vOrigin, fRadius );
+	
+	while( eDChain ) {
+		
+		if ( eDChain.takedamage == DAMAGE_YES ) {
+				float fDiff = vlen( vOrigin - eDChain.origin );
+				
+				fDiff = ( fRadius - fDiff ) / fRadius;
+				
+				fDamage = fDamage * fDiff;
+				
+				bprint( sprintf("[DEBUG] EXPLOSION! Hit Radius: %d, Damage Multiplier: %f\n", vlen( vOrigin - eDChain.origin ), fDiff ) );
+
+				if ( fDiff > 0 ) {
+					Damage_Apply( eDChain, eAttacker, fDamage, eDChain.origin );
+				}
+		}
+		
+		eDChain = eDChain.chain;
+	}
+}

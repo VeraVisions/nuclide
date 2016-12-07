@@ -28,15 +28,15 @@ int iBombProgress;
 weaponinfo_t wptC4BOMB = { 
 	WEAPON_C4BOMB, 		// Identifier
 	SLOT_GRENADE,
-	650, 				// Price
+	0, 					// Price
 	CALIBER_50AE, 		// Caliber ID
 	1.0, 				// Max Player Speed
-	1, 					// Bullets Per Shot
-	1, 					// Clip/MagSize
-	54, 				// Damage
+	0, 					// Bullets Per Shot
+	0, 					// Clip/MagSize
+	500, 				// Damage
 	1, 					// Penetration Multiplier
 	64, 				// Bullet Range
-	0.81, 				// Range Modifier
+	1,	 				// Range Modifier
 	TYPE_AUTO,
 	0.0, 				// Attack-Delay
 	0.0, 				// Reload-Delay
@@ -60,18 +60,34 @@ void WeaponC4BOMB_Drop( vector vBombPos ) {
 	static void c4bomb_think( void ) {
 		if ( self.fAttackFinished < time ) {
 			Rules_RoundOver( TEAM_T );
+			// EXPLODE!
+			sound( self, CHAN_VOICE, "weapons/c4_explode1.wav", 1.0, ATTN_NONE );
+			Damage_Radius( self.origin, self.owner, 500, 1024 );
 			remove( self );
 			return;
 		}
-		self.nextthink = time + 0.12;
+		
+		if ( self.fAttackFinished - time < 5 ) {
+			sound( self, CHAN_VOICE, "weapons/c4_beep5.wav", 1.0, ATTN_NORM );
+		} else if ( self.fAttackFinished - time < 10 ) {
+			sound( self, CHAN_VOICE, "weapons/c4_beep4.wav", 1.0, ATTN_NORM );
+		} else if ( self.fAttackFinished - time < 20 ) {
+			sound( self, CHAN_VOICE, "weapons/c4_beep3.wav", 1.0, ATTN_NORM );
+		} else if ( self.fAttackFinished - time < 30 ) {
+			sound( self, CHAN_VOICE, "weapons/c4_beep2.wav", 1.0, ATTN_NORM );
+		} else {
+			sound( self, CHAN_VOICE, "weapons/c4_beep1.wav", 1.0, ATTN_NORM );
+		}
+		self.nextthink = time + 1.5;
 	}
 	
 	entity eBomb = spawn();
 	setorigin( eBomb, vBombPos );
 	setmodel( eBomb, "models/w_c4.mdl" );
 	eBomb.think = c4bomb_think;
-	eBomb.nextthink = time + 0.12;
+	eBomb.nextthink = time + 1.5;
 	eBomb.fAttackFinished = time + 45;
+	sound( eBomb, CHAN_WEAPON, "weapons/c4_plant.wav", 1.0, ATTN_IDLE );
 	
 	sound( world, CHAN_VOICE, "radio/bombpl.wav", 1.0, ATTN_NONE );
 	
@@ -117,7 +133,6 @@ void WeaponC4BOMB_PrimaryFire( void ) {
 	
 	// 3 seconds have passed, plant the bomb
 	if ( self.fBombProgress >= 3.0 ) {
-		Client_SendEvent( self, EV_WEAPON_SECONDARYATTACK ); // This means we'll drop the bomb on CSQC
 		WeaponC4BOMB_Drop( trace_endpos );
 	}
 #else

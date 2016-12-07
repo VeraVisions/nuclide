@@ -105,6 +105,11 @@ void Rules_Restart( void ) {
 
 // This can happen whenever an objective is complete or time is up
 void Rules_RoundOver( int iTeamWon ) {
+	
+	if ( fGameState != GAME_ACTIVE ) {
+		return;
+	}
+	
 	if ( iTeamWon == TEAM_T ) {
 		sound( world, CHAN_VOICE, "radio/terwin.wav", 1.0, ATTN_NONE );
 		iWon_T++;
