@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define VEC_HULL_MIN '-16 -16 -36'
 #define VEC_HULL_MAX '16 16 36'
-#define VEC_PLAYER_VIEWPOS '0 0 24'
+#define VEC_PLAYER_VIEWPOS '0 0 20'
 
 #define VEC_CHULL_MIN '-16 -16 -18'
 #define VEC_CHULL_MAX '16 16 18'
@@ -61,11 +61,13 @@ float fGameTime;
 
 // Game specific fields
 int iHostagesMax;
-int iHostagesRescued;
 int iBombZones;
 int iRescueZones;
 int iBuyZones;
 int iBuyRestriction; // For info_map_parameters
+
+int iHostagesRescued;
+int iBombPlanted;
 
 // Generic entity fields
 .int iUsable;
@@ -118,8 +120,6 @@ void Damage_Radius( vector vOrigin, entity eAttacker, float fDamage, float fRadi
 
 void Entities_InitRespawnable( void() vRespawnFunc );
 void Entities_Respawn( void );
-
-entity eOld;
 
 // WIP
 string __fullspawndata;

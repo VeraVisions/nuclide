@@ -20,21 +20,52 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /*
 ====================
+GOLDSRC-RENDERMODE STUFF
+====================
+*/
+enum { 
+	RENDERMODE_NORMAL = 0,
+	RENDERMODE_COLOR,
+	RENDERMODE_TEXTURE,
+	RENDERMODE_GLOW,
+	RENDERMODE_SOLID,
+	RENDERMODE_ADDITIVE
+};
+
+void Entities_RenderSetup( void ) {
+	// GoldSrc-Rendermode support
+	if ( self.rendermode != RENDERMODE_NORMAL ) {
+		self.alpha = ( self.renderamt / 255 );
+		self.colormod = self.rendercolor;
+		
+		if( self.alpha == 0 ) {
+			self.alpha = 0.0001;
+		}
+		
+		if ( self.rendermode == RENDERMODE_ADDITIVE ) {
+			self.effects = EF_ADDITIVE;
+		} else if ( self.rendermode == RENDERMODE_GLOW ) {
+			self.effects = EF_ADDITIVE | EF_FULLBRIGHT;
+		}
+	}
+}
+
+/*
+====================
 Entities_UseTargets
 ====================
 */
 void Entities_UseTargets( void ) {
 	entity eFind = findchain( targetname, self.target );
 	
+	entity eOld = self;
 	while ( eFind ) {
-		eOld = self;
 		self = eFind;
-		eFind.vUse();
-		self = eOld;
+		self.vUse();
 		eFind = eFind.chain;
 	}
+	self = eOld;
 }
-
 
 /*
 ====================
@@ -43,7 +74,7 @@ Entities_UseTargets_Delay
 */
 void Entities_UseTargets_Delay( float fDelay ) {
 	static void Entities_UseTargets_Delay_Think( void ) {
-		eOld = self;
+		entity eOld = self;
 		self = self.owner;
 		Entities_UseTargets();
 		remove( eOld );
@@ -53,7 +84,6 @@ void Entities_UseTargets_Delay( float fDelay ) {
 	eTimer.owner = self;
 	eTimer.think = Entities_UseTargets_Delay_Think;
 	eTimer.nextthink = time + fDelay;
-	
 }
 
 /*
@@ -68,9 +98,6 @@ Called
 .float fOldHealth;
 .vector vOldOrigin;
 .vector vOldAngle;
-.float fOldAlpha;
-.vector vOldColorMod;
-.float fOldEffects;
 .void() vRespawn;
 void Entities_InitRespawnable( void() vRespawnFunc ) {
 	self.sOldModel = self.model;
@@ -78,9 +105,6 @@ void Entities_InitRespawnable( void() vRespawnFunc ) {
 	self.fOldHealth = self.health;
 	self.vOldOrigin = self.origin;
 	self.vOldAngle = self.angles;
-	self.fOldAlpha = self.alpha;
-	self.vOldColorMod = self.colormod;
-	self.fOldEffects = self.effects;
 	self.vRespawn = vRespawnFunc;
 	self.fRespawns = TRUE;
 }
@@ -91,9 +115,7 @@ void Entities_Respawn( void ) {
 	self.health = self.fOldHealth;
 	self.origin = self.vOldOrigin;
 	self.angles = self.vOldAngle;
-	self.alpha = self.fOldAlpha;
-	self.colormod = self.vOldColorMod;
-	self.effects = self.fOldEffects;
+	Entities_RenderSetup();
 	self.vRespawn();
 }
 
@@ -239,39 +261,6 @@ void Entities_RotateToDestination( vector vDestinationAngle, float fTravelSpeed,
 	self.vFinalAngle = vDestinationAngle;
 	self.vThinkMove = func;
 	self.think = Entities_RotateToDestination_End;
-}
-
-
-/*
-====================
-GOLDSRC-RENDERMODE STUFF
-====================
-*/
-enum { 
-	RENDERMODE_NORMAL = 0,
-	RENDERMODE_COLOR,
-	RENDERMODE_TEXTURE,
-	RENDERMODE_GLOW,
-	RENDERMODE_SOLID,
-	RENDERMODE_ADDITIVE
-};
-
-void Entities_RenderSetup( void ) {
-	// GoldSrc-Rendermode support
-	if ( self.rendermode != RENDERMODE_NORMAL ) {
-		self.alpha = ( self.renderamt / 255 );
-		self.colormod = self.rendercolor;
-		
-		if( self.alpha == 0 ) {
-			self.alpha = 0.0001;
-		}
-		
-		if ( self.rendermode == RENDERMODE_ADDITIVE ) {
-			self.effects = EF_ADDITIVE;
-		} else if ( self.rendermode == RENDERMODE_GLOW ) {
-			self.effects = EF_ADDITIVE | EF_FULLBRIGHT;
-		}
-	}
 }
 
 void func_wall( void ) {

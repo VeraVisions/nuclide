@@ -27,14 +27,14 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 		pointparticles( EFFECT_BLOOD, vHitPos, v_forward * -1, 1 );
 	}
 	
-	eOld = self;
+	entity eOld = self;
 	self = eTarget;
 	
-	if ( eTarget.health <= 0 ) {
-		eTarget.health = 0;
-		eTarget.vDeath();
+	if ( self.health <= 0 ) {
+		self.health = 0;
+		self.vDeath();
 	} else {
-		eTarget.vPain();
+		self.vPain();
 	}
 	
 	self = eOld;

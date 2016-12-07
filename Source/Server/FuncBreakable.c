@@ -170,9 +170,11 @@ void func_breakable( void ) {
 			self.touch = func_breakable_touch;
 		} 
 		
+		self.health = 100;
+		
 		self.vUse = func_breakable_die;
 	}
-	
+
 	func_wall();
 	func_breakable_respawn();
 	

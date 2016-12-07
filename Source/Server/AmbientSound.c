@@ -56,14 +56,27 @@ void ambient_generic( void ) {
 		sound( self, CHAN_VOICE, self.message, self.health, self.style );
 	}
 	static void ambient_generic_useloop( void ) {
-		//self.message = "common/null.wav";
-		self.SendFlags = 128;
+		if ( self.state == TRUE ) {
+			self.message = "common/null.wav";
+			self.SendFlags = 128;
+			self.state = FALSE;
+		} else {
+			self.message = self.noise;
+			self.SendFlags = 128;
+			self.state = TRUE;
+		}
+	}
+	static void ambient_generic_respawn( void ) {
+		// If we are supposed to be looping, but have stopped playing... make sure we do again
+		if( !( self.spawnflags & 32 ) && ( self.state == FALSE ) ) {
+			ambient_generic_useloop();
+		}
 	}
 	
 	precache_sound( self.message );
 	setorigin( self, self.origin );
 	self.health = self.health / 10;
-
+	
 	if ( self.spawnflags & 1 ) {
 		self.style = ATTN_NONE;
 	} else if ( self.spawnflags & 2 ) {
@@ -79,12 +92,14 @@ void ambient_generic( void ) {
 	if( self.spawnflags & 32 ) {
 		self.vUse = ambient_generic_use;
 	} else {
+		self.noise = self.message; // Needed later for resuming
 		self.pvsflags = PVSF_NOREMOVE | PVSF_IGNOREPVS;
 		self.vUse = ambient_generic_useloop;
 		self.SendEntity = ambient_generic_send;
+		self.state = TRUE;
 	}
 	
-	
+	Entities_InitRespawnable( ambient_generic_respawn );
 }
 #else 
 void CSQC_ambient_generic( string sSample, float fVolume, float fAttenuation ) {

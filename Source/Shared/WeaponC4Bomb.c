@@ -64,6 +64,7 @@ void WeaponC4BOMB_Drop( vector vBombPos ) {
 			sound( self, CHAN_VOICE, "weapons/c4_explode1.wav", 1.0, ATTN_NONE );
 			Damage_Radius( self.origin, self.owner, 500, 1024 );
 			remove( self );
+			iBombPlanted = FALSE;
 			return;
 		}
 		
@@ -90,7 +91,7 @@ void WeaponC4BOMB_Drop( vector vBombPos ) {
 	sound( eBomb, CHAN_WEAPON, "weapons/c4_plant.wav", 1.0, ATTN_IDLE );
 	
 	Radio_BroadcastMessage( RADIO_BOMBPL );
-	
+	iBombPlanted = TRUE;
 	Weapon_SwitchBest();
 }
 #endif

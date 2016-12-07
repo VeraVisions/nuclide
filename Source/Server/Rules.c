@@ -59,9 +59,10 @@ float Rules_BuyingPossible( void ) {
 // Loop through all players and respawn them
 void Rules_Restart( void ) {
 	entity eFind = findchain( classname, "player" );
+	entity eOld = self;
 	
 	while ( eFind ) {
-		eOld = self;
+		
 		self = eFind;
 		
 		if ( self.health > 0 ) {
@@ -70,9 +71,10 @@ void Rules_Restart( void ) {
 			Spawn_CreateClient( self.fCharModel );
 		}
 		
-		self = eOld;
 		eFind = eFind.chain;
 	}
+	
+	self = eOld;
 	
 	// Select a random Terrorist for the bomb thing
 	if ( iBombZones > 0 ) {
@@ -100,13 +102,15 @@ void Rules_Restart( void ) {
 	
 	// Respawn all the entities
 	eFind = findchainfloat( fRespawns , TRUE );
+	eOld = self;
 	while ( eFind ) {
-		eOld = self;
+		
 		self = eFind;
 		Entities_Respawn();
-		self = eOld;
+		
 		eFind = eFind.chain;
 	}
+	self = eOld;
 	
 	Timer_Begin( cvar( "mp_freezetime" ), GAME_FREEZE );
 }

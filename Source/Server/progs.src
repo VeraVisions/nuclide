@@ -1,6 +1,6 @@
 #pragma target fte
 
-#pragma progs_dat  "../../Main/progs.dat"
+#pragma progs_dat  "../../cstrike/progs.dat"
 
 #includelist
 ../Builtins.h
@@ -46,7 +46,6 @@ Timer.c
 EntHostage.c
 Entities.c
 Triggers.c
-AmbientSound.c
 EnvObjects.c
 FuncBreakable.c
 FuncLadder.c
@@ -56,6 +55,7 @@ FuncBuyZone.c
 FuncButton.c
 FuncDoor.c
 FuncDoorRotating.c
+AmbientSound.c
 
 Light.c
 Main.c

@@ -181,6 +181,7 @@ void hostage_entity( void ) {
 
 		self.frame = 13; // Idle frame
 		self.health = 100;
+		self.velocity = '0 0 0';
 	}
 	
 	precache_model( self.model );

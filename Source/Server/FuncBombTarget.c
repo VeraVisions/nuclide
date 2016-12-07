@@ -24,6 +24,9 @@ func_bomb_target_touch
 =================
 */
 void func_bomb_target_touch( void ) {
+	if ( iBombPlanted == TRUE ) {
+		return;
+	}
 	if ( ( other.classname == "player" ) && ( other.team == TEAM_T ) ) {
 		other.fInBombZone = TRUE; // Note: this will be cleared every frame inside SV_RunClientCommand
 	}

@@ -63,35 +63,36 @@ Called by StartFrame if we somehow got no buy zones
 */
 void Game_CreateBuyZones( void ) {
 	entity eFind;
+	entity eOld;
 	
 	if ( iBuyRestriction == BUY_T || iBuyRestriction == BUY_BOTH ) {
 		eFind = findchain( classname, "info_player_deathmatch" );
-		
+		eOld = self;
 		while ( eFind ) {
 			entity eBuyZoneT = spawn();
 			setorigin( eBuyZoneT, eFind.origin );
-			eOld = self;
 			self = eBuyZoneT;
 			func_buyzone();
 			self.team = TEAM_T;
-			self = eOld;
+			
 			eFind = eFind.chain;
 		}
+		self = eOld;
 	}
 	
 	if ( iBuyRestriction == BUY_CT || iBuyRestriction == BUY_BOTH ) {
 		eFind = findchain( classname, "info_player_start" );
 		
+		eOld = self;
 		while ( eFind ) {
 			entity eBuyZoneCT = spawn();
 			setorigin( eBuyZoneCT, eFind.origin );
-			
-			eOld = self;
 			self = eBuyZoneCT;
 			func_buyzone();
 			self.team = TEAM_CT;
-			self = eOld;
+			
 			eFind = eFind.chain;
 		}
+		self = eOld;
 	}
 }

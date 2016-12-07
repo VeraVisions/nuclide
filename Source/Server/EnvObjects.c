@@ -33,10 +33,15 @@ Frames per second (framerate) - Framerate the sprite will run at if animated.
 =================
 */
 void cycler_sprite( void ) {
+	static void cycler_sprite_respawn( void ) {
+		// Find something to do here...
+	}
+	
 	precache_model( self.model );
 	setmodel( self, self.model );
 
 	Entities_RenderSetup();
+	Entities_InitRespawnable( cycler_sprite_respawn );
 }
 
 void env_glow( void ) {

@@ -36,7 +36,7 @@ void func_hostage_rescue_touch( void ) {
 			remove( other.eTargetPoint );
 		}
 		
-		eOld = self;
+		entity eOld = self;
 		self = other;
 		Entities_Remove();
 		self = eOld;
@@ -44,6 +44,7 @@ void func_hostage_rescue_touch( void ) {
 		if ( iHostagesRescued >= iHostagesMax ) {
 			// TODO: Broadcast_Print: All Hostages have been rescued!
 			Rules_RoundOver( TEAM_CT );
+			iHostagesRescued = 0;
 		}
 	}
 }
@@ -92,7 +93,7 @@ void Game_CreateRescueZones( void ) {
 		entity eRescueZone = spawn();
 		setorigin( eRescueZone, eFind.origin );
 		
-		eOld = self;
+		entity eOld = self;
 		self = eRescueZone;
 		info_hostage_rescue();
 		self = eOld;

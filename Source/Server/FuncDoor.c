@@ -160,7 +160,6 @@ void FuncDoor_MoveAway( void ) {
 	
 	self.state = STATE_UP;
 	Entities_MoveToDestination ( self.pos2, self.speed, FuncDoor_Arrived );
-	Entities_UseTargets();
 }
 
 /*
@@ -169,17 +168,20 @@ FuncDoor_Trigger
 ====================
 */
 void FuncDoor_Trigger( void ) {
+	// Only trigger stuff when we are done moving
+	if ( ( self.state == STATE_RAISED ) || ( self.state == STATE_LOWERED ) ) {
+		if ( self.delay > 0 ) {
+			Entities_UseTargets_Delay( self.delay );
+		} else {
+			Entities_UseTargets();
+		}
+	}
+	
 	if ( ( self.state == STATE_UP ) || ( self.state == STATE_RAISED ) ){
 		FuncDoor_MoveBack();
 		return;
 	}
 
-	if ( self.delay ) {
-		Entities_UseTargets_Delay( self.delay );
-	} else {
-		Entities_UseTargets();
-	}
-	
 	FuncDoor_MoveAway();
 }
 

@@ -1,6 +1,6 @@
 #pragma target fte
 
-#pragma progs_dat  "../../Main/csprogs.dat"
+#pragma progs_dat  "../../cstrike/csprogs.dat"
 
 #define CSQC
 

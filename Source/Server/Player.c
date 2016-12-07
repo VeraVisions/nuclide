@@ -38,7 +38,8 @@ void Player_Death( void ) {
 	if ( self.team == TEAM_T ) {
 		iAlivePlayers_T--;
 		
-		if ( iAlivePlayers_T == 0 ) {
+		// If the bomb has been planted, T deaths don't matter anymore
+		if ( iAlivePlayers_T == 0 && iBombPlanted == FALSE ) {
 			Rules_RoundOver( TEAM_CT );
 		}
 	} else if ( self.team == TEAM_CT ) {

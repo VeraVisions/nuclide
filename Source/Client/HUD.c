@@ -147,7 +147,16 @@ void HUD_DrawIcons( void ) {
 	// Bomb-Area
 	if( getstatf( STAT_BOMBZONE ) == TRUE ) {
 		vector vBIconPos = [ 16, ( vVideoResolution_y / 2 ) + 24 ];
-		drawsubpic( vBIconPos, '32 32 0', HUD_NUMFILE_LAYER, [ 0, 0.125 * 5 - 0.046875], [ 0.125, 0.125 ], '0 1 0', 1, DRAWFLAG_ADDITIVE );
+		
+		if ( getstatf( STAT_ACTIVEWEAPON ) == WEAPON_C4BOMB ) {
+			float fAlpha = fabs( sin( time * 20 ) );
+			drawsubpic( vBIconPos, '32 32 0', HUD_NUMFILE_LAYER, [ 0, 0.125 * 5 - 0.046875], [ 0.125, 0.125 ], '1 0 0', fAlpha, DRAWFLAG_ADDITIVE );
+			drawsubpic( vBIconPos, '32 32 0', HUD_NUMFILE_LAYER, [ 0, 0.125 * 5 - 0.046875], [ 0.125, 0.125 ], '0 1 0', 1 - fAlpha, DRAWFLAG_ADDITIVE );
+		} else {
+			drawsubpic( vBIconPos, '32 32 0', HUD_NUMFILE_LAYER, [ 0, 0.125 * 5 - 0.046875], [ 0.125, 0.125 ], '0 1 0', 1, DRAWFLAG_ADDITIVE );
+		}
+		
+		
 	}
 }
 

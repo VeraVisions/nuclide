@@ -18,17 +18,38 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+/*
+=================
+light
+
+Only thing this ent does, is allow the change of lightstyles.
+You can use custom patterns, too.
+=================
+*/
+.string pattern;
 void light( void ) {
 	static void light_toggle( void ) {
 		if ( self.health == TRUE ) {
 			lightstyle( self.style, "a" );
 			self.health = FALSE;
 		} else {
-			lightstyle( self.style, "m" );
+			lightstyle( self.style, self.pattern );
 			self.health = TRUE;
 		}
 	}
 	
+	if ( !self.pattern ) {
+		self.pattern = "m";
+	}
+	
+	if ( self.spawnflags & 1 ) {
+		lightstyle( self.style, "a" );
+		self.health = FALSE;
+	} else {
+		lightstyle( self.style, self.pattern );
+		self.health = TRUE;
+	}
+	
 	self.vUse = light_toggle;
-	self.health = TRUE;
+	
 }
