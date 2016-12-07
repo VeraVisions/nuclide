@@ -26,7 +26,22 @@ Called whenever an entity is sent manually via .SendFlags and so on
 =================
 */
 void CSQC_Ent_Update( float fIsNew ) {
+	float fEntType = readbyte();
+	
+	if ( fEntType == 1 ) {
+		self.origin_x = readcoord();
+		self.origin_y = readcoord();
+		self.origin_z = readcoord();
+		
+		setorigin( self, self.origin );
 
+		string sSample = readstring(); // WriteString( MSG_ENTITY, self.message );
+		float fVolume = readfloat(); // WriteFloat( MSG_ENTITY, self.health );
+		float fAttennuation = readbyte(); // WriteByte( MSG_ENTITY, self.style );
+		CSQC_ambient_generic( sSample, fVolume, fAttennuation );
+		//print( sprintf( "[DEV] Ambientsound (%s), ATTN %d \n", sSample, fAttennuation ) );
+	}
+	
 }
 
 /*
@@ -37,6 +52,7 @@ Self explanatory
 =================
 */
 void CSQC_Ent_Remove( void ) {
-
+	soundupdate( self, CHAN_VOICE, "", -1, ATTN_IDLE, 0, 0, 0 );
+	remove( self );
 }
 

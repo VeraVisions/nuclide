@@ -266,14 +266,8 @@ void func_button( void ) {
 	if ( !self.speed ) {
 		self.speed = 100;
 	}
-	if ( !self.wait ) {
-		self.wait = 2;
-	}
-	if ( !self.dmg ) {
-		self.dmg = 2;
-	}
 
-	if ( !( self.spawnflags & SF_BTT_TOUCH_ONLY ) ) {
+	if ( self.spawnflags & SF_BTT_TOUCH_ONLY ) {
 		self.touch = FuncButton_Touch;
 	}
 

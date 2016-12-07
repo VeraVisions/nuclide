@@ -40,14 +40,30 @@ Not Toggled (32) - 	Older FGDs show this as Not Looped.
       				Must be left unchecked for looping sound files. 
       				Note that actual looping depends purely on cue points defined in the .wav file (see notes).
 */
+#ifdef SSQC
 void ambient_generic( void ) {
+	static float ambient_generic_send( entity ePEnt, float fChanged ) {
+		WriteByte( MSG_ENTITY, 1 ); // Identifier
+		WriteCoord( MSG_ENTITY, self.origin_x );
+		WriteCoord( MSG_ENTITY, self.origin_y );
+		WriteCoord( MSG_ENTITY, self.origin_z );
+		WriteString( MSG_ENTITY, self.message );
+		WriteFloat( MSG_ENTITY, self.health );
+		WriteByte( MSG_ENTITY, self.style );
+		return TRUE;
+	}
 	static void ambient_generic_use( void ) {
 		sound( self, CHAN_VOICE, self.message, self.health, self.style );
 	}
+	static void ambient_generic_useloop( void ) {
+		//self.message = "common/null.wav";
+		self.SendFlags = 128;
+	}
 	
 	precache_sound( self.message );
+	setorigin( self, self.origin );
 	self.health = self.health / 10;
-	
+
 	if ( self.spawnflags & 1 ) {
 		self.style = ATTN_NONE;
 	} else if ( self.spawnflags & 2 ) {
@@ -60,11 +76,18 @@ void ambient_generic( void ) {
 		self.style = ATTN_STATIC;
 	}
 	
-	if ( self.spawnflags & 32 ) {
-		sound( self, CHAN_VOICE, self.message, self.health, self.style );
+	if( self.spawnflags & 32 ) {
+		self.vUse = ambient_generic_use;
 	} else {
-		ambientsound( self.origin, self.message, self.health, self.style );
+		self.pvsflags = PVSF_NOREMOVE | PVSF_IGNOREPVS;
+		self.vUse = ambient_generic_useloop;
+		self.SendEntity = ambient_generic_send;
 	}
 	
-	self.vUse = ambient_generic_use;
+	
 }
+#else 
+void CSQC_ambient_generic( string sSample, float fVolume, float fAttenuation ) {
+	sound( self, CHAN_VOICE, sSample, fVolume, fAttenuation );
+}
+#endif

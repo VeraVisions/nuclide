@@ -35,8 +35,10 @@ Defs.h
 ../Shared/WeaponXM1014.c
 ../Shared/WeaponBase.c
 ../Shared/Weapons.c
-
 ../Shared/Effects.c
+
+../Server/AmbientSound.c
+
 View.c
 VGUI_Objects.c
 VGUI_MOTD.c
