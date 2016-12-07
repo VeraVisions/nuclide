@@ -29,6 +29,7 @@ void Player_Death( void ) {
 	setorigin( eCorpse, self.origin );
 	setmodel( eCorpse, self.model );
 	eCorpse.angles = self.angles;
+	eCorpse.movetype = MOVETYPE_BOUNCE;
 	eCorpse.frame = 93; // TODO: Pick the right frame
 	
 	Spawn_MakeSpectator();

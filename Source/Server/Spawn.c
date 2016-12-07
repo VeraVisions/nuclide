@@ -57,6 +57,25 @@ entity Spawn_FindSpawnPoint( float fTeam ) {
 	return eSpot;
 }
 
+void Spawn_ObserverCam( void ) {
+	// Go find a camera if we aren't dead
+	entity eCamera = find ( world, classname, "trigger_camera" );
+	
+	if ( eCamera ) {
+		self.origin = eCamera.origin;
+		
+		if ( eCamera.target ) {
+			entity eTarget = find( world, targetname, eCamera.target );
+			if ( eTarget ) {
+				self.angles = vectoangles( eTarget.origin - eCamera.origin );
+				self.angles_x *= -1;
+			}
+		}
+	}
+	
+	self.fixangle = TRUE;
+}
+
 void Spawn_RespawnClient( float fTeam ) {
 	entity eSpawn;
 	forceinfokey( self, "*spectator", "0" ); // Make sure we are known as a spectator
@@ -90,6 +109,7 @@ void Spawn_CreateClient( float fCharModel ) {
 	// What team are we on - 0= Spectator, < 5 Terrorists, CT rest
 	if( fCharModel == 0 ) {
 		PutClientInServer();
+		Spawn_ObserverCam();
 		return;
 	} else if( fCharModel < 5 ) {
 		self.team = TEAM_T;
@@ -119,7 +139,6 @@ void Spawn_CreateClient( float fCharModel ) {
 
 // This is called on connect and whenever a player dies
 void Spawn_MakeSpectator( void ) {
-	entity eSpawn;
 	self.classname = "spectator";
 	
 	self.health = 0;
@@ -135,15 +154,6 @@ void Spawn_MakeSpectator( void ) {
 	self.view_ofs = self.velocity = '0 0 0';
 	
 	forceinfokey( self, "*spectator", "1" ); // Make sure we are known as a spectator
-	
-	// Go find a camera if we aren't dead
-	eSpawn = find (world, classname, "trigger_camera");
-	
-	if ( eSpawn ) {
-		self.origin = eSpawn.origin + '0 0 1';
-		self.angles = eSpawn.angles;
-		//self.angles_x = eSpawn.angles_x * -1;
-	}
 	
 	self.fixangle = TRUE;
 	
@@ -195,4 +205,6 @@ void info_player_start( void ) {
 void info_player_deathmatch( void ) {
 }
 
-void info_target( void ) { }
+void info_target( void ) { 
+	setorigin( self, self.origin );
+}

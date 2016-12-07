@@ -50,6 +50,7 @@ void PutClientInServer( void ) {
 	entity eTarget = world;
 
 	Spawn_MakeSpectator();
+	Spawn_ObserverCam();
 	
 	// Because we don't want to reset these when we die
 	self.fMoney = cvar( "mp_startmoney" );
