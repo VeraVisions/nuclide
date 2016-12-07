@@ -104,6 +104,7 @@ void WeaponC4BOMB_PrimaryFire( void ) {
 	if ( trace_fraction == 1 || self.fInBombZone == FALSE ) {
 		WeaponC4BOMB_Release();
 		self.fAttackFinished = time + 1.0;
+		return;
 	}
 	
 	// Play the sequence at the start

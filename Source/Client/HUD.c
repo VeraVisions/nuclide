@@ -229,6 +229,10 @@ Draws the current clip, the amount of ammo for the caliber and a matching calibe
 =================
 */
 void HUD_DrawAmmo( void ) {
+	if ( getstatf( STAT_ACTIVEWEAPON ) == WEAPON_KNIFE || getstatf( STAT_ACTIVEWEAPON ) == WEAPON_C4BOMB ) {
+		return;
+	}
+	
 	vector vAmmoClipPos = [ vVideoResolution_x - 136, vVideoResolution_y - 42 ];
 	HUD_DrawNums( getstatf( STAT_CURRENT_CLIP ), vAmmoClipPos );
 	vector vAmmoCalPos = [ vVideoResolution_x - 64, vVideoResolution_y - 42 ];
