@@ -59,11 +59,11 @@ float Rules_BuyingPossible( void ) {
 // Loop through all players and respawn them
 void Rules_Restart( void ) {
 	//localcmd( "restart_ents" );
-	
+	entity eOldSelf;
 	entity eFind = findchain( classname, "player" );
 	
 	while ( eFind ) {
-		entity eOldSelf = self;
+		eOldSelf = self;
 		self = eFind;
 		
 		if ( self.health > 0 ) {
@@ -74,6 +74,30 @@ void Rules_Restart( void ) {
 		
 		self = eOldSelf;
 		eFind = eFind.chain;
+	}
+	
+	// Select a random Terrorist for the bomb thing
+	if ( iBombZones > 0 ) {
+		int iRandomT = ceil( random() * iAlivePlayers_T );
+		int iPicked = 0;
+		
+		eFind = findchain( classname, "player" );
+		while ( eFind ) {
+			
+			if ( eFind.classname == "player" && eFind.team == TEAM_T ) {
+				iPicked++;
+				
+				if ( iPicked == iRandomT ) {
+					eOldSelf = self;
+					self = eFind;
+					Weapon_AddItem( WEAPON_C4BOMB );
+					self = eOldSelf;
+				}
+			}
+			
+			
+			eFind = eFind.chain;
+		}
 	}
 	
 	Timer_Begin( cvar( "mp_freezetime" ), GAME_FREEZE );
@@ -116,5 +140,9 @@ Also allows people to set the bomb placing radius incase you want to use info_bo
 */
 .float buying;
 void info_map_parameters( void ) {
-	iBuyRestriction = self.buying;
+	if ( !self.buying ) {
+		self.buying = BUY_BOTH;
+	} else {
+		iBuyRestriction = self.buying;
+	}
 }

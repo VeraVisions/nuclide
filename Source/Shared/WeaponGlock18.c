@@ -124,6 +124,7 @@ void WeaponGLOCK18_Secondary( void ) {
 	// Tell the client that we switched modes, too
 	Client_SendEvent( self, EV_WEAPON_SECONDARYATTACK );
 	
+	// TODO: Move to the clientside
 	if ( self.iMode_GLOCK18 == TRUE ) {
 		centerprint( self, "Switched to Burst-Fire mode" );
 	} else {

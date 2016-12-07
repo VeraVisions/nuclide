@@ -66,7 +66,7 @@ void Game_CreateBuyZones( void ) {
 	entity eFind;
 	
 	if ( iBuyRestriction == BUY_T || iBuyRestriction == BUY_BOTH ) {
-		eFind = findchain( classname, "info_player_start" );
+		eFind = findchain( classname, "info_player_deathmatch" );
 		
 		while ( eFind ) {
 			entity eBuyZoneT = spawn();

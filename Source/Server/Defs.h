@@ -96,6 +96,7 @@ string sCSPlayers[9] = {
 	"models/player/gign/gign.mdl"
 };
 
+void Rules_RoundOver( int iTeamWon );
 float Rules_BuyingPossible( void );
 void Timer_Begin( float fTime, float fMode);
 void Spawn_RespawnClient( float fTeam );

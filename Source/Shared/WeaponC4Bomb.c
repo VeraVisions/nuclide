@@ -41,7 +41,7 @@ weaponinfo_t wptC4BOMB = {
 	0.0, 				// Attack-Delay
 	0.0, 				// Reload-Delay
 	iAmmo_9MM, 			// Caliber Pointer
-	iAmmo_9MM, 		// Clip Pointer
+	iAmmo_9MM, 			// Clip Pointer
 	1,					// Accuracy Divisor
 	1,					// Accuracy Offset
 	1					// Max Inaccuracy
@@ -57,9 +57,21 @@ enum {
 
 #ifdef SSQC
 void WeaponC4BOMB_Drop( vector vBombPos ) {
+	static void c4bomb_think( void ) {
+		if ( self.fAttackFinished < time ) {
+			Rules_RoundOver( TEAM_T );
+			remove( self );
+			return;
+		}
+		self.nextthink = time + 0.12;
+	}
+	
 	entity eBomb = spawn();
 	setorigin( eBomb, vBombPos );
 	setmodel( eBomb, "models/w_c4.mdl" );
+	eBomb.think = c4bomb_think;
+	eBomb.nextthink = time + 0.12;
+	eBomb.fAttackFinished = time + 45;
 	
 	sound( world, CHAN_VOICE, "radio/bombpl.wav", 1.0, ATTN_NONE );
 	
@@ -69,8 +81,6 @@ void WeaponC4BOMB_Drop( vector vBombPos ) {
 
 void WeaponC4BOMB_Draw( void ) {
 #ifdef SSQC
-	self.iCurrentClip = 0;
-	self.iCurrentCaliber = 0;
 	Client_SendEvent( self, EV_WEAPON_DRAW );
 #else
 	View_PlayAnimation( ANIM_C4_DRAW );
