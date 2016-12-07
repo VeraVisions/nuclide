@@ -32,6 +32,8 @@ void Player_Death( void ) {
 	eCorpse.frame = 93; // TODO: Pick the right frame
 	
 	Spawn_MakeSpectator();
+	self.classname = "player";
+	self.health = 0;
 	
 	if ( self.team == TEAM_T ) {
 		iAlivePlayers_T--;

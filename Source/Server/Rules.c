@@ -18,11 +18,36 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+enum {
+	BUY_BOTH,
+	BUY_CT,
+	BUY_T,
+	BUY_NEITHER
+};
+
 // Checks if it is possible for players to buy anything
 float Rules_BuyingPossible( void ) {
 	if ( fGameState == GAME_ACTIVE ) {
 		if ( ( ( cvar( "mp_roundtime" ) * 60 ) - fGameTime ) > cvar( "mp_buytime" ) ) {
 			centerprint( self, sprintf( "%d seconds have passed...\nYou can't buy anything now!", cvar( "mp_buytime" ) ) );
+			self.fAttackFinished = time + 1.0;
+			return FALSE;
+		}
+	}
+	
+	if ( iBuyRestriction == BUY_NEITHER ) {
+		centerprint( self, "Sorry, you aren't meant to be buying anything.\n" );
+		self.fAttackFinished = time + 1.0;
+		return FALSE;
+	}
+	
+	if ( iBuyRestriction != BUY_BOTH ) {
+		if ( iBuyRestriction == BUY_CT && self.team == TEAM_T ) {
+			centerprint( self, "Terrorists aren't allowed to buy anything!\n" );
+			self.fAttackFinished = time + 1.0;
+			return FALSE;
+		} else if ( iBuyRestriction == BUY_T && self.team == TEAM_CT ) {
+			centerprint( self, "Counter-Terrorists aren't allowed to buy anything!\n" );
 			self.fAttackFinished = time + 1.0;
 			return FALSE;
 		}
@@ -79,4 +104,17 @@ void Rules_TimeOver( void ) {
 	} else {
 		Rules_RoundOver( 0 );
 	}
+}
+
+/*
+=================
+SPAWN: info_map_parameters
+
+Let's map authors decide who can buy stuff and who CAN'T.
+Also allows people to set the bomb placing radius incase you want to use info_bomb_target.
+=================
+*/
+.float buying;
+void info_map_parameters( void ) {
+	iBuyRestriction = self.buying;
 }

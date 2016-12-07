@@ -31,9 +31,7 @@ void func_bomb_target_touch( void ) {
 
 /*
 =================
-SPAWN: func_hostage_rescue
-
-Entry function for the rescue area-markings.
+SPAWN: func_bomb_target
 =================
 */
 void func_bomb_target( void ) {

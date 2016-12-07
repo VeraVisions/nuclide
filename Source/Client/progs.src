@@ -18,6 +18,7 @@ Defs.h
 ../Shared/WeaponFiveSeven.c
 ../Shared/WeaponG3SG1.c
 ../Shared/WeaponGlock18.c
+../Shared/WeaponKnife.c
 ../Shared/WeaponM3.c
 ../Shared/WeaponM4A1.c
 ../Shared/WeaponMac10.c

@@ -59,6 +59,10 @@ void Ammo_BuySecondary( void ) {
 	float fNew = ceil( ( (float)iRequiredAmmo / (float)ammoTable[ wptTable[ self.iSlotSecondary ].iCaliber ].iSize ) );
 	
 	for ( int i = 0; i < fNew; i++ ) {
+		if ( self.fMoney - ammoTable[ wptTable[ self.iSlotSecondary ].iCaliber ].iPrice < 0 ) {
+			break;
+		}
+		
 		self.(wptTable[ self.iSlotSecondary ].iCaliberfld) += ammoTable[ wptTable[ self.iSlotSecondary ].iCaliber ].iSize;
 		self.fMoney -= ammoTable[ wptTable[ self.iSlotSecondary ].iCaliber ].iPrice;
 		
@@ -79,6 +83,7 @@ void CSEv_GamePlayerBuyAmmo_f( float fType ) {
 		Ammo_BuySecondary();
 	}
 	
+	sound( self, CHAN_ITEM, "items/9mmclip1.wav", 1, ATTN_NORM );
 	Weapon_UpdateCurrents();
 	self.fAttackFinished = time + 1.0;
 }

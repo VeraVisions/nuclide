@@ -26,8 +26,8 @@ Init all the cmds in one place
 =================
 */
 void CSQC_ConsoleCommand_Init( void ) {
-	registercommand( "vgui_buymenu" );
-	registercommand( "vgui_teammenu" );
+	registercommand( "buy" );
+	registercommand( "chooseteam" );
 	registercommand( "use" );
 }
 
@@ -42,13 +42,13 @@ float CSQC_ConsoleCommand( string sCMD ) {
 	tokenize( sCMD );
 	switch ( argv(0) )
 	{
-	case "vgui_buymenu":
+	case "buy":
 		if( getstatf( STAT_BUYZONE ) == TRUE ) {
 			fVGUI_Display = VGUI_BM_MAIN;
 		}
 		return TRUE;
     break;
-    case "vgui_teammenu":
+    case "chooseteam":
 		if( getstatf( STAT_TEAM ) == 0 ) {
 			fVGUI_Display = VGUI_TEAMSELECT;
 		}
@@ -94,6 +94,17 @@ void CSQC_Parse_Event( void ) {
 
 		float fStyle = readbyte();
 		Effect_BreakModel( vPos, vSize, '0 0 0', fStyle );
+	} else if ( fHeader == EV_CAMERATRIGGER ) {
+
+		vCameraPos_x = readcoord();
+		vCameraPos_y = readcoord();
+		vCameraPos_z = readcoord();
+
+		vCameraAngle_x = readcoord();
+		vCameraAngle_y = readcoord();
+		vCameraAngle_z = readcoord();
+		
+		fCameraTime = time + readfloat();
 	}
 }
 

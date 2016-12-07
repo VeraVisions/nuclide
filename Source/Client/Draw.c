@@ -34,7 +34,14 @@ void CSQC_UpdateView( float fWinWidth, float fWinHeight, float fGameFocus ) {
 	setproperty( VF_DRAWCROSSHAIR, 0 );
 
 	addentities( MASK_ENGINE );
-	View_DrawViewModel();
+	
+	// When Cameratime is active, draw on the forced coords instead
+	if ( fCameraTime > time ) {
+		setproperty( VF_ORIGIN, vCameraPos) ;
+		setproperty( VF_ANGLES, vCameraAngle );
+	} else {
+		View_DrawViewModel();
+	}
 	renderscene();
 	
 	if( fGameFocus == TRUE ) {

@@ -72,6 +72,26 @@ void trigger_multiple( void ) {
 
 /*
 =================
+trigger_camera
+=================
+*/
+void trigger_camera( void ) {
+	static void trigger_camera_use( void ) {
+		Client_TriggerCamera( eActivator, self.origin, self.angles, self.wait );
+	}
+	
+	entity eTarget;
+	eTarget = find( world, targetname, self.target );
+	if( self.target ) {
+		self.angles = vectoangles( eTarget.origin - self.origin );
+		self.angles_x *= -1;
+	}
+	
+	self.vUse = trigger_camera_use;
+}
+
+/*
+=================
 multi_manager
 
 This entity can activate several different events (including itself) at specific times.

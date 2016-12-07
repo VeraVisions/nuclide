@@ -40,7 +40,59 @@ void func_buyzone( void ) {
 	self.angles = '0 0 0';
 	self.movetype = MOVETYPE_NONE;
 	self.solid = SOLID_TRIGGER;
-	setmodel (self, self.model);
+	
+	if ( self.model ) {
+		setmodel( self, self.model );
+	} else {
+		self.mins = '-128 -128 -36';
+		self.maxs = '128 128 36';
+		setsize( self, self.mins, self.maxs );
+	}
+	
 	self.model = 0;
 	self.touch = func_buyzone_touch;
+	iBuyZones++;
+}
+
+/*
+=================
+Game_CreateBuyZones
+
+Called by StartFrame if we somehow got no buy zones
+=================
+*/
+void Game_CreateBuyZones( void ) {
+	entity eOldSelf;
+	entity eFind;
+	
+	if ( iBuyRestriction == BUY_T || iBuyRestriction == BUY_BOTH ) {
+		eFind = findchain( classname, "info_player_start" );
+		
+		while ( eFind ) {
+			entity eBuyZoneT = spawn();
+			setorigin( eBuyZoneT, eFind.origin );
+			eOldSelf = self;
+			self = eBuyZoneT;
+			func_buyzone();
+			self.team = TEAM_T;
+			self = eOldSelf;
+			eFind = eFind.chain;
+		}
+	}
+	
+	if ( iBuyRestriction == BUY_CT || iBuyRestriction == BUY_BOTH ) {
+		eFind = findchain( classname, "info_player_start" );
+		
+		while ( eFind ) {
+			entity eBuyZoneCT = spawn();
+			setorigin( eBuyZoneCT, eFind.origin );
+			
+			eOldSelf = self;
+			self = eBuyZoneCT;
+			func_buyzone();
+			self.team = TEAM_CT;
+			self = eOldSelf;
+			eFind = eFind.chain;
+		}
+	}
 }

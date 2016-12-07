@@ -23,7 +23,7 @@ weaponinfo_t wptDEFAULT = { 0, 0, 0, 0, 240, 0, 0, 0, 0, 0.0, 0.0, 0, 0.0, 0.0, 
 
 weaponinfo_t wptTable[ CS_WEAPON_COUNT ] = {
 	wptDEFAULT,
-	wptDEFAULT,
+	wptKNIFE,
 	wptUSP45,
 	wptGLOCK18,
 	wptDEAGLE,

@@ -95,6 +95,7 @@ void Spawn_CreateClient( float fCharModel ) {
 		self.team = TEAM_T;
 		iAlivePlayers_T++;
 		
+		Weapon_AddItem( WEAPON_KNIFE );
 		Weapon_AddItem( WEAPON_GLOCK18 );
 		Weapon_GiveAmmo( WEAPON_GLOCK18, 40 );
 		//Weapon_AddItem( WEAPON_C4BOMB );
@@ -102,6 +103,7 @@ void Spawn_CreateClient( float fCharModel ) {
 		self.team = TEAM_CT;
 		iAlivePlayers_CT++;
 
+		Weapon_AddItem( WEAPON_KNIFE );
 		Weapon_AddItem( WEAPON_USP45 );
 		Weapon_GiveAmmo( WEAPON_USP45, 24 );
 	}
@@ -116,6 +118,9 @@ void Spawn_CreateClient( float fCharModel ) {
 
 // This is called on connect and whenever a player dies
 void Spawn_MakeSpectator( void ) {
+	entity eSpawn;
+	self.classname = "spectator";
+	
 	self.health = 0;
 	self.takedamage = DAMAGE_NO;
 	self.solid = SOLID_NOT;
@@ -129,6 +134,17 @@ void Spawn_MakeSpectator( void ) {
 	self.view_ofs = self.velocity = '0 0 0';
 	
 	forceinfokey( self, "*spectator", "1" ); // Make sure we are known as a spectator
+	
+	// Go find a camera if we aren't dead
+	eSpawn = find (world, classname, "trigger_camera");
+	
+	if ( eSpawn ) {
+		self.origin = eSpawn.origin + '0 0 1';
+		self.angles = eSpawn.angles;
+		//self.angles_x = eSpawn.angles_x * -1;
+	}
+	
+	self.fixangle = TRUE;
 	
 	// Clear all the ammo stuff
 	for ( int i = 0; i < CS_WEAPON_COUNT; i++ ) {
@@ -157,10 +173,10 @@ void CSEv_GamePlayerSpawn_f( float fChar ) {
 				self.team = TEAM_CT;
 			}
 			
+			Spawn_MakeSpectator();
 			self.classname = "player";
 			self.fCharModel = fChar;
 			self.health = 0;
-			Spawn_MakeSpectator();
 			break;
 		default:
 			self.fCharModel = fChar;
@@ -178,7 +194,4 @@ void info_player_start( void ) {
 void info_player_deathmatch( void ) {
 }
 
-// Spectator Spawnpoints
-void trigger_camera( void ) {
-}
 void info_target( void ) { }

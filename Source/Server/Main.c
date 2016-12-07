@@ -25,11 +25,16 @@ void SetChangeParms( void ) {}
 // Run every frame... by world?
 void StartFrame( void ) {
 	
+
 	// We've got hostages, but no rescue zones, create some
 	if ( !iRescueZones  && iHostagesMax > 0 ) {
 		Game_CreateRescueZones();
 	}
-	
+		
+	if ( iBuyZones == 0 ) {
+		Game_CreateBuyZones();
+	}
+
 	int iInGamePlayers; 
 	// Sigh, check if clients are in the game
 	if ( find( world, classname , "player" ) != world ) {
@@ -84,6 +89,8 @@ void worldspawn( void ) {
 	precache_sound( "hostage/hos3.wav" );
 	precache_sound( "hostage/hos4.wav" );
 	precache_sound( "hostage/hos5.wav" );
+	
+	precache_sound( "items/9mmclip1.wav" );
 	
 	precache_sound( "weapons/ak47-1.wav" );
 	precache_sound( "weapons/ak47-2.wav" );

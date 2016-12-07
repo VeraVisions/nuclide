@@ -216,7 +216,7 @@ void Entities_RenderSetup( void ) {
 		if ( self.rendermode == RENDERMODE_ADDITIVE ) {
 			self.effects = EF_ADDITIVE;
 		} else if ( self.rendermode == RENDERMODE_GLOW ) {
-			self.effects = EF_FULLBRIGHT;
+			self.effects = EF_ADDITIVE | EF_FULLBRIGHT;
 		}
 	}
 }

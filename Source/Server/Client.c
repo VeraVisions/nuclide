@@ -47,23 +47,8 @@ void PlayerPostThink( void ) {
 }
 
 void PutClientInServer( void ) {
-	entity eSpawn;
 	entity eTarget = world;
-	eSpawn = find (world, classname, "trigger_camera");
-	
-	self.origin = eSpawn.origin + '0 0 1';
-	
-	// Rotate camera towards a target
-	if( eSpawn.target ) {
-		eTarget = find( eTarget, targetname, eSpawn.target );
-		self.angles = vectoangles( eTarget.origin - eSpawn.origin );
-		self.angles_x *= -1;
-	} else {	
-		self.angles = eSpawn.angles;
-	}
-	
-	self.fixangle = TRUE;
-	self.classname = "spectator";
+
 	Spawn_MakeSpectator();
 	
 	// Because we don't want to reset these when we die
@@ -94,5 +79,23 @@ void Client_SendEvent( entity eClient, float fEVType ) {
 	WriteByte( MSG_MULTICAST, fEVType );
 
 	msg_entity = eClient;
+	multicast( '0 0 0', MULTICAST_ONE );
+}
+
+void Client_TriggerCamera( entity eTarget, vector vPos, vector vEndPos, float fResetTime ) {
+	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
+	
+	WriteByte( MSG_MULTICAST, EV_CAMERATRIGGER );
+	
+	WriteCoord( MSG_MULTICAST, vPos_x );
+	WriteCoord( MSG_MULTICAST, vPos_y );
+	WriteCoord( MSG_MULTICAST, vPos_z );
+	
+	WriteCoord( MSG_MULTICAST, vEndPos_x );
+	WriteCoord( MSG_MULTICAST, vEndPos_y );
+	WriteCoord( MSG_MULTICAST, vEndPos_z );
+	
+	WriteFloat( MSG_MULTICAST, fResetTime );
+	msg_entity = eTarget;
 	multicast( '0 0 0', MULTICAST_ONE );
 }

@@ -22,7 +22,7 @@ void Temp_Nothing( void ) { }
 
 weaponfunc_t wpnFuncTable[ CS_WEAPON_COUNT ] = {
 	{ Temp_Nothing, Temp_Nothing, Temp_Nothing, Temp_Nothing },
-	{ Temp_Nothing, Temp_Nothing, Temp_Nothing, Temp_Nothing },
+	{ WeaponKNIFE_Draw, WeaponKNIFE_PrimaryFire, WeaponKNIFE_Secondary, Temp_Nothing },
 	{ WeaponUSP45_Draw, WeaponUSP45_PrimaryFire, WeaponUSP45_Secondary, WeaponUSP45_Reload },
 	{ WeaponGLOCK18_Draw, WeaponGLOCK18_PrimaryFire, WeaponGLOCK18_Secondary, WeaponGLOCK18_Reload },
 	{ WeaponDEAGLE_Draw, WeaponDEAGLE_PrimaryFire, Temp_Nothing, WeaponDEAGLE_Reload },

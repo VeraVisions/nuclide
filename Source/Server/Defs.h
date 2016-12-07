@@ -46,29 +46,26 @@ float EFFECT_BLOOD;
 // Match specific fields
 int iWon_T;
 int iWon_CT;
-
 int iAlivePlayers_T;
 int iAlivePlayers_CT;
 int fOldInGamePlayers;
-
 float fGameState;
 float fGameTime;
 
+// Weapon specific fields
 .int iCurrentClip;
 .int iCurrentCaliber;
-
 .int iSlotMelee, iSlotPrimary, iSlotSecondary, iSlotGrenade;
-
 .float fAttackFinished;
-
 .float fAccuracy;
 
 // Game specific fields
 int iHostagesMax;
 int iHostagesRescued;
-
 int iBombZones;
 int iRescueZones;
+int iBuyZones;
+int iBuyRestriction; // For info_map_parameters
 
 // Generic entity fields
 .int iUsable;
@@ -105,6 +102,7 @@ void Spawn_RespawnClient( float fTeam );
 void Spawn_CreateClient( float fTeam );
 void Spawn_MakeSpectator( void );
 void Client_SendEvent( entity eClient, float fEVType );
+void Client_TriggerCamera( entity eTarget, vector vPos, vector vEndPos, float fResetTime );
 void Weapon_SwitchBest( void );
 
 void OpenCSGunBase_AccuracyCalc( void );
