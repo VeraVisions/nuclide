@@ -89,7 +89,7 @@ void WeaponC4BOMB_Drop( vector vBombPos ) {
 	eBomb.fAttackFinished = time + 45;
 	sound( eBomb, CHAN_WEAPON, "weapons/c4_plant.wav", 1.0, ATTN_IDLE );
 	
-	sound( world, CHAN_VOICE, "radio/bombpl.wav", 1.0, ATTN_NONE );
+	Radio_BroadcastMessage( RADIO_BOMBPL );
 	
 	Weapon_SwitchBest();
 }

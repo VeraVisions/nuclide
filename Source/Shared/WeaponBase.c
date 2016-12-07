@@ -51,9 +51,9 @@ weaponinfo_t wptTable[ CS_WEAPON_COUNT ] = {
 
 #ifdef SSQC
 void OpenCSGunBase_Draw( void ) {
-		self.iCurrentClip = self.(wptTable[ self.weapon ].iClipfld);
-		self.iCurrentCaliber = self.(wptTable[ self.weapon ].iCaliberfld);
-		Client_SendEvent( self, EV_WEAPON_DRAW );
+	self.iCurrentClip = self.(wptTable[ self.weapon ].iClipfld);
+	self.iCurrentCaliber = self.(wptTable[ self.weapon ].iCaliberfld);
+	Client_SendEvent( self, EV_WEAPON_DRAW );
 }
 
 void OpenCSGunBase_AccuracyCalc( void ) {

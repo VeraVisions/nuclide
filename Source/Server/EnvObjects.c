@@ -79,8 +79,6 @@ void env_render( void ) {
 		entity eFind = findchain( targetname, self.target );
 	
 		while ( eFind ) {
-			entity eOldSelf = self;
-			
 			if ( !( self.spawnflags & SF_NORENDERMODE ) ) {
 				eFind.rendermode = self.rendermode;
 			}

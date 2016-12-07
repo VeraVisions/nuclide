@@ -34,7 +34,10 @@ void trigger_multiple( void ) {
 			entity eFind = findchain( killtarget, self.target );
 			while ( eFind ) {
 				entity eRemoveMe = eFind;
-				remove( eRemoveMe );
+				eOld = self;
+				self = eRemoveMe;
+				Entities_Remove();
+				self = eOld;
 				eFind = eFind.chain;
 			}
 		}

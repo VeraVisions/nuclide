@@ -27,17 +27,23 @@ void Entities_UseTargets( void ) {
 	entity eFind = findchain( targetname, self.target );
 	
 	while ( eFind ) {
-		entity eOldSelf = self;
+		eOld = self;
 		self = eFind;
 		eFind.vUse();
-		self = eOldSelf;
+		self = eOld;
 		eFind = eFind.chain;
 	}
 }
 
+
+/*
+====================
+Entities_UseTargets_Delay
+====================
+*/
 void Entities_UseTargets_Delay( float fDelay ) {
 	static void Entities_UseTargets_Delay_Think( void ) {
-		entity eOld = self;
+		eOld = self;
 		self = self.owner;
 		Entities_UseTargets();
 		remove( eOld );
@@ -52,12 +58,59 @@ void Entities_UseTargets_Delay( float fDelay ) {
 
 /*
 ====================
-Entities_Remove
+Entities_InitRespawnable
+
+Called
 ====================
 */
-void Entities_Remove( void )
-{
-	remove( self );
+.string sOldModel;
+.float fOldSolid;
+.float fOldHealth;
+.vector vOldOrigin;
+.vector vOldAngle;
+.float fOldAlpha;
+.vector vOldColorMod;
+.float fOldEffects;
+.void() vRespawn;
+void Entities_InitRespawnable( void() vRespawnFunc ) {
+	self.sOldModel = self.model;
+	self.fOldSolid = self.solid;
+	self.fOldHealth = self.health;
+	self.vOldOrigin = self.origin;
+	self.vOldAngle = self.angles;
+	self.fOldAlpha = self.alpha;
+	self.vOldColorMod = self.colormod;
+	self.fOldEffects = self.effects;
+	self.vRespawn = vRespawnFunc;
+	self.fRespawns = TRUE;
+}
+
+void Entities_Respawn( void ) {
+	self.model = self.sOldModel;
+	self.solid = self.fOldSolid;
+	self.health = self.fOldHealth;
+	self.origin = self.vOldOrigin;
+	self.angles = self.vOldAngle;
+	self.alpha = self.fOldAlpha;
+	self.colormod = self.vOldColorMod;
+	self.effects = self.fOldEffects;
+	self.vRespawn();
+}
+
+/*
+====================
+Entities_Remove
+
+Technically, it doesn't remove everything
+====================
+*/
+void Entities_Remove( void ) {
+	if ( self.fRespawns == TRUE ) {
+		self.solid = SOLID_NOT;
+		self.model = 0;
+	} else {
+		remove( self );
+	}
 }
 
 /*

@@ -32,6 +32,8 @@ void CSQC_Init(float apilevel, string enginename, float engineversion) {
 		precache_model( sViewModels[ i ] );
 	}
 	
+	Radio_InitSounds();
+	
 	CSQC_ConsoleCommand_Init();
 	CSQC_VGUI_Init();
 }

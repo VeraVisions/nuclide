@@ -147,10 +147,6 @@ void Weapon_AddItem( float fWeapon ) {
 	
 	// Make sure we've got at least one full clip
 	self.(wptTable[ self.weapon ].iClipfld) = wptTable[ fWeapon ].iClipSize;
-	
-	Weapon_UpdateCurrents();
-	
-	Weapon_Draw( fWeapon );
 }
 
 void Weapon_GiveAmmo( float fWeapon, float fAmount ) {

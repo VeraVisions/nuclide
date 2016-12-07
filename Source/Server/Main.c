@@ -74,21 +74,16 @@ void worldspawn( void ) {
 	EFFECT_GUNSHOT = particleeffectnum( "te_gunshot" );
 	EFFECT_BLOOD = particleeffectnum( "te_blood" );
 	
-	precache_sound( "radio/moveout.wav" );
-	precache_sound( "radio/letsgo.wav" );
-	precache_sound( "radio/locknload.wav" );
-	precache_sound( "radio/rescued.wav" );
-	precache_sound( "radio/hosdown.wav" );
-	precache_sound( "radio/terwin.wav" );
-	precache_sound( "radio/ctwin.wav" );
-	precache_sound( "radio/rounddraw.wav" );
-	precache_sound( "radio/bombpl.wav" );
-	
 	precache_sound( "hostage/hos1.wav" );
 	precache_sound( "hostage/hos2.wav" );
 	precache_sound( "hostage/hos3.wav" );
 	precache_sound( "hostage/hos4.wav" );
 	precache_sound( "hostage/hos5.wav" );
+	
+	precache_sound( "player/pl_step1.wav" );
+	precache_sound( "player/pl_step2.wav" );
+	precache_sound( "player/pl_step3.wav" );
+	precache_sound( "player/pl_step4.wav" );
 	
 	precache_sound( "items/9mmclip1.wav" );
 	

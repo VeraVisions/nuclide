@@ -8,6 +8,7 @@
 ../Math.h
 Defs.h
 
+../Shared/Radio.c
 ../Shared/WeaponAK47.c
 ../Shared/WeaponAUG.c
 ../Shared/WeaponAWP.c

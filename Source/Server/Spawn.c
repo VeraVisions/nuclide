@@ -98,7 +98,7 @@ void Spawn_CreateClient( float fCharModel ) {
 		Weapon_AddItem( WEAPON_KNIFE );
 		Weapon_AddItem( WEAPON_GLOCK18 );
 		Weapon_GiveAmmo( WEAPON_GLOCK18, 40 );
-		//Weapon_AddItem( WEAPON_C4BOMB );
+		Weapon_Draw( WEAPON_GLOCK18 );
 	} else {
 		self.team = TEAM_CT;
 		iAlivePlayers_CT++;
@@ -106,6 +106,7 @@ void Spawn_CreateClient( float fCharModel ) {
 		Weapon_AddItem( WEAPON_KNIFE );
 		Weapon_AddItem( WEAPON_USP45 );
 		Weapon_GiveAmmo( WEAPON_USP45, 24 );
+		Weapon_Draw( WEAPON_GLOCK18 );
 	}
 	
 	if( self.iInGame == FALSE ) {

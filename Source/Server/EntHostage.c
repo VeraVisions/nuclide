@@ -42,7 +42,7 @@ void hostage_pain( void ) {
 
 // hosdown.wav
 void hostage_die( void ) {
-	sound( world, CHAN_VOICE, "radio/hosdown.wav", 1.0, ATTN_NONE );
+	Radio_BroadcastMessage( RADIO_HOSDOWN );
 	self.frame = 30 + ceil( random() * 5);
 	self.solid = SOLID_NOT;
 	self.takedamage = DAMAGE_NO;
@@ -160,26 +160,32 @@ Entry function for the hostages.
 =================
 */
 void hostage_entity( void ) {
-	precache_model( self.model );
-	setorigin( self, self.origin );
-	self.solid = SOLID_SLIDEBOX;
-	self.movetype = MOVETYPE_WALK;
-	setmodel( self, self.model );
-	setsize( self, VEC_HULL_MIN + '0 0 36', VEC_HULL_MAX + '0 0 36' );
-	self.customphysics = hostage_physics;
 	
-	self.eUser = world;
-	self.eTargetPoint = world;
-	self.iUsable = TRUE;
-	self.iBleeds = TRUE;
-	self.takedamage = DAMAGE_YES;
-	self.vUse = hostage_use;
-	self.vPain = hostage_pain;
-	self.vDeath = hostage_die;
-	self.style = HOSTAGE_IDLE;
+	static void hostage_entity_respawn( void ) {
+		setorigin( self, self.origin );
+		self.solid = SOLID_SLIDEBOX;
+		self.movetype = MOVETYPE_WALK;
+		setmodel( self, self.model );
+		setsize( self, VEC_HULL_MIN + '0 0 36', VEC_HULL_MAX + '0 0 36' );
+		self.customphysics = hostage_physics;
+		
+		self.eUser = world;
+		self.eTargetPoint = world;
+		self.iUsable = TRUE;
+		self.iBleeds = TRUE;
+		self.takedamage = DAMAGE_YES;
+		self.vUse = hostage_use;
+		self.vPain = hostage_pain;
+		self.vDeath = hostage_die;
+		self.style = HOSTAGE_IDLE;
 
-	self.frame = 13; // Idle frame
-	self.health = 100;
+		self.frame = 13; // Idle frame
+		self.health = 100;
+	}
 	
+	precache_model( self.model );
+	hostage_entity_respawn();
 	iHostagesMax = iHostagesMax + 1; // Increase the global count of hostages
+	
+	Entities_InitRespawnable( hostage_entity_respawn );
 }

@@ -79,6 +79,7 @@ void WeaponUSP45_Draw( void ) {
 	}
 	
 	Sound_Delayed( "weapons/usp_slideback.wav", 1.0, 0.5 );
+	print( "EXECUTED TWICE?????\n" );
 #endif
 }
 

@@ -113,8 +113,7 @@ void func_breakable_die( void ) {
 	
 	Effect_BreakModel( self.absmin, self.absmax, self.velocity, self.material );
 	Entities_UseTargets();
-	
-	remove( self );
+	Entities_Remove();
 }
 
 void func_breakable_touch( void ) {
@@ -157,20 +156,25 @@ Entry function for the brushes that can die etc.
 =================
 */
 void func_breakable( void ) {
-	func_wall();
-	
-	if ( self.spawnflags & SF_TRIGGER ) {
-		self.takedamage = DAMAGE_NO;
-	} else {
-		self.takedamage = DAMAGE_YES;
-		self.vPain = func_breakable_pain;
-		self.vDeath = func_breakable_die;
-		self.iBleeds = FALSE;
+	static void func_breakable_respawn( void ) {
+		if ( self.spawnflags & SF_TRIGGER ) {
+			self.takedamage = DAMAGE_NO;
+		} else {
+			self.takedamage = DAMAGE_YES;
+			self.vPain = func_breakable_pain;
+			self.vDeath = func_breakable_die;
+			self.iBleeds = FALSE;
+		}
+		
+		if ( self.spawnflags & SF_TOUCH || self.spawnflags & SF_PRESSURE ) {
+			self.touch = func_breakable_touch;
+		} 
+		
+		self.vUse = func_breakable_die;
 	}
 	
-	if ( self.spawnflags & SF_TOUCH || self.spawnflags & SF_PRESSURE ) {
-		self.touch = func_breakable_touch;
-	} 
+	func_wall();
+	func_breakable_respawn();
 	
-	self.vUse = func_breakable_die;
+	Entities_InitRespawnable( func_breakable_respawn );
 }

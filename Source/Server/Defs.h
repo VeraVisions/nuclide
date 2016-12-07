@@ -72,6 +72,7 @@ int iBuyRestriction; // For info_map_parameters
 .int iBleeds;
 .void() vPain;
 .void() vDeath;
+.float fRespawns;
 
 // All about +use
 entity eActivator;
@@ -114,6 +115,11 @@ float Player_GetMaxSpeed( float fWeapon );
 
 void TraceAttack_FireBullets( int iShots );
 void Damage_Radius( vector vOrigin, entity eAttacker, float fDamage, float fRadius );
+
+void Entities_InitRespawnable( void() vRespawnFunc );
+void Entities_Respawn( void );
+
+entity eOld;
 
 // WIP
 string __fullspawndata;

@@ -58,12 +58,10 @@ float Rules_BuyingPossible( void ) {
 
 // Loop through all players and respawn them
 void Rules_Restart( void ) {
-	//localcmd( "restart_ents" );
-	entity eOldSelf;
 	entity eFind = findchain( classname, "player" );
 	
 	while ( eFind ) {
-		eOldSelf = self;
+		eOld = self;
 		self = eFind;
 		
 		if ( self.health > 0 ) {
@@ -72,7 +70,7 @@ void Rules_Restart( void ) {
 			Spawn_CreateClient( self.fCharModel );
 		}
 		
-		self = eOldSelf;
+		self = eOld;
 		eFind = eFind.chain;
 	}
 	
@@ -88,16 +86,26 @@ void Rules_Restart( void ) {
 				iPicked++;
 				
 				if ( iPicked == iRandomT ) {
-					eOldSelf = self;
+					eOld = self;
 					self = eFind;
 					Weapon_AddItem( WEAPON_C4BOMB );
-					self = eOldSelf;
+					self = eOld;
 				}
 			}
 			
 			
 			eFind = eFind.chain;
 		}
+	}
+	
+	// Respawn all the entities
+	eFind = findchainfloat( fRespawns , TRUE );
+	while ( eFind ) {
+		eOld = self;
+		self = eFind;
+		Entities_Respawn();
+		self = eOld;
+		eFind = eFind.chain;
 	}
 	
 	Timer_Begin( cvar( "mp_freezetime" ), GAME_FREEZE );
@@ -111,13 +119,13 @@ void Rules_RoundOver( int iTeamWon ) {
 	}
 	
 	if ( iTeamWon == TEAM_T ) {
-		sound( world, CHAN_VOICE, "radio/terwin.wav", 1.0, ATTN_NONE );
+		Radio_BroadcastMessage( RADIO_TERWIN );
 		iWon_T++;
 	} else if ( iTeamWon == TEAM_CT ) {
-		sound( world, CHAN_VOICE, "radio/ctwin.wav", 1.0, ATTN_NONE );
+		Radio_BroadcastMessage( RADIO_CTWIN );
 		iWon_CT++;
 	} else {
-		sound( world, CHAN_VOICE, "radio/rounddraw.wav", 1.0, ATTN_NONE );
+		Radio_BroadcastMessage( RADIO_ROUNDDRAW );
 	}
 	
 	Timer_Begin( 5, GAME_END); // Round is over, 5 seconds til a new round starts

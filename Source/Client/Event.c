@@ -105,6 +105,8 @@ void CSQC_Parse_Event( void ) {
 		vCameraAngle_z = readcoord();
 		
 		fCameraTime = time + readfloat();
+	} else if ( fHeader == EV_RADIOMSG ) {
+		Radio_BroadcastMessage( readbyte() );
 	}
 }
 

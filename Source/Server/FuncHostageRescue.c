@@ -28,14 +28,18 @@ void func_hostage_rescue_touch( void ) {
 		other.fInHostageZone = TRUE; // Note: this will be cleared every frame inside SV_RunClientCommand
 	} else if ( other.classname == "hostage_entity" ) {
 		
-		sound( world, CHAN_VOICE, "radio/rescued.wav", 1.0, ATTN_NONE );
+		Radio_BroadcastMessage( RADIO_RESCUED );
 		iHostagesRescued++;
 		
 		other.eUser.fMoney += 1000;
 		if ( other.eTargetPoint != other.eUser ) {
 			remove( other.eTargetPoint );
 		}
-		remove( other );
+		
+		eOld = self;
+		self = other;
+		Entities_Remove();
+		self = eOld;
 		
 		if ( iHostagesRescued >= iHostagesMax ) {
 			// TODO: Broadcast_Print: All Hostages have been rescued!
@@ -88,10 +92,10 @@ void Game_CreateRescueZones( void ) {
 		entity eRescueZone = spawn();
 		setorigin( eRescueZone, eFind.origin );
 		
-		entity eOldSelf = self;
+		eOld = self;
 		self = eRescueZone;
 		info_hostage_rescue();
-		self = eOldSelf;
+		self = eOld;
 		eFind = eFind.chain;
 	}
 }

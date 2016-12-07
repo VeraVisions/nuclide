@@ -61,11 +61,11 @@ void Timer_Update( void ) {
 				
 				float fRand = ceil( random() * 3 );
 				if ( fRand == 1 ) {
-					sound(world, CHAN_VOICE, "radio/moveout.wav", 1, ATTN_NONE );
+					Radio_BroadcastMessage( RADIO_MOVEOUT );
 				} else if ( fRand == 2 ) {
-					sound(world, CHAN_VOICE, "radio/locknload.wav", 1, ATTN_NONE );
+					Radio_BroadcastMessage( RADIO_LOCKNLOAD );
 				} else {
-					sound(world, CHAN_VOICE, "radio/letsgo.wav", 1, ATTN_NONE );
+					Radio_BroadcastMessage( RADIO_LETSGO );
 				}
 			}
 		}

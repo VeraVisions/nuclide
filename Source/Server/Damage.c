@@ -27,7 +27,7 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 		pointparticles( EFFECT_BLOOD, vHitPos, v_forward * -1, 1 );
 	}
 	
-	entity eOld = self;
+	eOld = self;
 	self = eTarget;
 	
 	if ( eTarget.health <= 0 ) {
