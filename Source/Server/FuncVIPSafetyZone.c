@@ -20,20 +20,28 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /*
 =================
-func_escapezone_touch
+func_vip_safetyzone_touch
 =================
 */
-void func_vip_safetyzone( void ) {
-	if ( ( other.classname == "player" ) && ( other.team == TEAM_T ) ) {
+void func_vip_safetyzone_touch( void ) {
+	if ( ( other.classname == "player" ) && ( other.team == TEAM_VIP ) ) {
+		Rules_RoundOver( TEAM_CT );
 		
+		entity eOld = self;
+		self = other;
+		self.team = TEAM_CT;
+		Spawn_MakeSpectator();
+		self.classname = "player";
+
+		self = eOld;
 	} 
 }
 
 /*
 =================
-SPAWN: func_escapezone
+SPAWN: func_vip_safetyzone
 
-Entry function for the terrorist escape zone
+Entry function for the VIP escape zone
 =================
 */
 void func_vip_safetyzone( void ) {
@@ -48,5 +56,6 @@ void func_vip_safetyzone( void ) {
 	}
 	
 	self.model = 0;
-	self.touch = func_escapezone_touch;
+	self.touch = func_vip_safetyzone_touch;
+	iVIPZones++;
 }

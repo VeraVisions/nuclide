@@ -64,6 +64,7 @@ int iHostagesMax;
 int iBombZones;
 int iRescueZones;
 int iBuyZones;
+int iVIPZones;
 int iBuyRestriction; // For info_map_parameters
 
 int iHostagesRescued;

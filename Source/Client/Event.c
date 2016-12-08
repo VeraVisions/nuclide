@@ -49,9 +49,7 @@ float CSQC_ConsoleCommand( string sCMD ) {
 		return TRUE;
     break;
     case "chooseteam":
-		if( getstatf( STAT_TEAM ) == 0 ) {
-			fVGUI_Display = VGUI_TEAMSELECT;
-		}
+		fVGUI_Display = VGUI_TEAMSELECT;
 		return TRUE;
     break;
     case "use":

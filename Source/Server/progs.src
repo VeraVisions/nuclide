@@ -50,6 +50,7 @@ EnvObjects.c
 FuncBreakable.c
 FuncLadder.c
 FuncHostageRescue.c
+FuncVIPSafetyZone.c
 FuncBombTarget.c
 FuncBuyZone.c
 FuncButton.c

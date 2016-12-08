@@ -50,15 +50,16 @@ void Player_Death( void ) {
 			Rules_RoundOver( TEAM_T );
 		}
 	} else if ( self.team == TEAM_VIP ) {
-		// TODO: Finish me
+		iAlivePlayers_CT--; // For consistency
+		Rules_RoundOver( TEAM_T );
 	}
 }
 
 float Player_GetMaxSpeed( float fWeapon ) {
 	if ( self.iCrouching == TRUE ) {
-		return (cvar( "cl_forwardspeed" ) * wptTable[ fWeapon ].fSpeedM) * 0.5;
+		return (cvar( "sv_maxspeed" ) * wptTable[ fWeapon ].fSpeedM) * 0.5;
 	} else {
-		return cvar( "cl_forwardspeed" ) * wptTable[ fWeapon ].fSpeedM;
+		return cvar( "sv_maxspeed" ) * wptTable[ fWeapon ].fSpeedM;
 	}
 }
 

@@ -22,12 +22,14 @@ void main( void ) {}
 void SetNewParms( void ) {}
 void SetChangeParms( void ) {}
 
+void SV_PausedTic( float fDuration ) {
+
+}
+
 // Run every frame... by world?
 void StartFrame( void ) {
-	
-
 	// We've got hostages, but no rescue zones, create some
-	if ( !iRescueZones  && iHostagesMax > 0 ) {
+	if ( !iRescueZones && iHostagesMax > 0 ) {
 		Game_CreateRescueZones();
 	}
 		
@@ -53,6 +55,7 @@ void StartFrame( void ) {
 		if ( iInGamePlayers == 0 ) {
 			fGameState = GAME_INACTIVE;
 			fGameTime = 0;
+			fOldInGamePlayers = 0;
 		} else {
 			Timer_Update();
 		}
@@ -69,6 +72,7 @@ void worldspawn( void ) {
 	precache_model( sCSPlayers[6] );
 	precache_model( sCSPlayers[7] );
 	precache_model( sCSPlayers[8] );
+	precache_model( "models/player/vip/vip.mdl" );
 	precache_model( "models/w_c4.mdl" );
 	
 	EFFECT_GUNSHOT = particleeffectnum( "te_gunshot" );

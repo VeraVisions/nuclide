@@ -79,15 +79,15 @@ void Rules_Restart( void ) {
 	// Select a random Terrorist for the bomb thing
 	if ( iBombZones > 0 ) {
 		int iRandomT = ceil( random() * iAlivePlayers_T );
-		int iPicked = 0;
+		int iPickT = 0;
 		
 		eFind = findchain( classname, "player" );
 		while ( eFind ) {
 			
 			if ( eFind.classname == "player" && eFind.team == TEAM_T ) {
-				iPicked++;
+				iPickT++;
 				
-				if ( iPicked == iRandomT ) {
+				if ( iPickT == iRandomT ) {
 					eOld = self;
 					self = eFind;
 					Weapon_AddItem( WEAPON_C4BOMB );
@@ -95,6 +95,29 @@ void Rules_Restart( void ) {
 				}
 			}
 			
+			eFind = eFind.chain;
+		}
+	} 
+	
+	// If there is a VIP, select a random CT to be it
+	if ( iVIPZones > 0 ) {
+		int iRandomCT = ceil( random() * iAlivePlayers_CT );
+		int iPickCT = 0;
+
+		eFind = findchain( classname, "player" );
+		while ( eFind ) {
+			
+			if ( eFind.classname == "player" && eFind.team == TEAM_CT ) {
+				iPickCT++;
+				
+				if ( iPickCT == iRandomCT ) {
+					eOld = self;
+					self = eFind;
+					self.team = TEAM_VIP;
+					Spawn_RespawnClient( self.team );
+					self = eOld;
+				}
+			}
 			
 			eFind = eFind.chain;
 		}
@@ -137,7 +160,9 @@ void Rules_RoundOver( int iTeamWon ) {
 
 // Whenever mp_roundtime was being counted down to 0
 void Rules_TimeOver( void ) {
-	if ( iBombZones > 0 ) {
+	if ( iVIPZones > 0 ) {
+		Rules_RoundOver( TEAM_T );
+	} else if ( iBombZones > 0 ) {
 		Rules_RoundOver( TEAM_CT );
 	} else if ( iHostagesMax > 0 ) {
 		// TODO: Broadcast_Print: Hostages have not been rescued!

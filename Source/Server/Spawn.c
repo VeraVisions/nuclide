@@ -29,9 +29,11 @@ entity Spawn_FindSpawnPoint( float fTeam ) {
 	if ( fTeam == TEAM_T ) {
 		sClassname = "info_player_deathmatch";
 		eSpot = eLastSpawn = eLastTSpawn;
-	} else {
+	} else if ( fTeam == TEAM_CT ) {
 		sClassname = "info_player_start";
 		eSpot = eLastSpawn = eLastCTSpawn;
+	} else if ( fTeam == TEAM_VIP ) {
+		return find( world, classname, "info_vip_start" );
 	}
 
 	while (1) {
@@ -95,7 +97,11 @@ void Spawn_RespawnClient( float fTeam ) {
 	self.fixangle = TRUE;
 
 	// Get the player-model from Defs.h's list
-	setmodel( self, sCSPlayers[ self.fCharModel ] );
+	if ( self.team != TEAM_VIP ) {
+		setmodel( self, sCSPlayers[ self.fCharModel ] );
+	} else {
+		setmodel( self, "models/player/vip/vip.mdl" );
+	}
 	setsize( self, VEC_HULL_MIN, VEC_HULL_MAX );
 
 	self.view_ofs = VEC_PLAYER_VIEWPOS;
@@ -203,6 +209,10 @@ void info_player_start( void ) {
 
 // Terrorist Spawnpoints
 void info_player_deathmatch( void ) {
+}
+
+// VIP Spawnpoints
+void info_vip_start( void ) {
 }
 
 void info_target( void ) { 

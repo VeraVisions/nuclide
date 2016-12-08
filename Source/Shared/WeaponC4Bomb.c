@@ -87,7 +87,7 @@ void WeaponC4BOMB_Drop( vector vBombPos ) {
 	setmodel( eBomb, "models/w_c4.mdl" );
 	eBomb.think = c4bomb_think;
 	eBomb.nextthink = time + 1.5;
-	eBomb.fAttackFinished = time + 45;
+	eBomb.fAttackFinished = time + cvar( "mp_c4timer" );
 	sound( eBomb, CHAN_WEAPON, "weapons/c4_plant.wav", 1.0, ATTN_IDLE );
 	
 	Radio_BroadcastMessage( RADIO_BOMBPL );
