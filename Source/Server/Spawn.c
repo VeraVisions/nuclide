@@ -85,6 +85,8 @@ void Spawn_RespawnClient( float fTeam ) {
 
 	self.classname = "player";
 	self.health = self.max_health = 100;
+	forceinfokey( self, "*dead", "0" );
+	
 	self.takedamage = DAMAGE_YES;
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_WALK;
@@ -118,6 +120,7 @@ void Spawn_CreateClient( float fCharModel ) {
 		Spawn_ObserverCam();
 		return;
 	} else if( fCharModel < 5 ) {
+		forceinfokey( self, "*team", "0" ); 
 		self.team = TEAM_T;
 		iAlivePlayers_T++;
 		
@@ -132,13 +135,14 @@ void Spawn_CreateClient( float fCharModel ) {
 		Weapon_AddItem( WEAPON_KNIFE );
 		Weapon_AddItem( WEAPON_USP45 );
 		Weapon_GiveAmmo( WEAPON_USP45, 24 );
-		Weapon_Draw( WEAPON_GLOCK18 );
+		Weapon_Draw( WEAPON_GLOCK18 ); 
 	}
 	
 	if( self.iInGame == FALSE ) {
 		self.iInGame = TRUE;
 	}
 	
+	forceinfokey( self, "*team", ftos( self.team ) ); 
 	Spawn_RespawnClient( self.team );
 	self.fAttackFinished = time + 1;
 }
@@ -158,11 +162,8 @@ void Spawn_MakeSpectator( void ) {
 	setsize (self, '-16 -16 -16', '16 16 16');
 
 	self.view_ofs = self.velocity = '0 0 0';
-	
 	forceinfokey( self, "*spectator", "1" ); // Make sure we are known as a spectator
-	
-	self.fixangle = TRUE;
-	
+
 	// Clear all the ammo stuff
 	for ( int i = 0; i < CS_WEAPON_COUNT; i++ ) {
 		self.(wptTable[ i ].iClipfld) = 0;
@@ -175,6 +176,12 @@ void Spawn_MakeSpectator( void ) {
 
 // Event Handling, called by the Client codebase via 'sendevent'
 void CSEv_GamePlayerSpawn_f( float fChar ) {
+	
+	if ( self.team == TEAM_VIP ) {
+		centerprint( self, "You are the VIP!\nYou cannot switch roles now.\n" );
+		self.fAttackFinished = time + 1.0;
+		return;
+	}
 	
 	switch ( fGameState ) {
 		case GAME_INACTIVE:
@@ -194,6 +201,8 @@ void CSEv_GamePlayerSpawn_f( float fChar ) {
 			self.classname = "player";
 			self.fCharModel = fChar;
 			self.health = 0;
+			forceinfokey( self, "*dead", "1" );
+			forceinfokey( self, "*team", ftos( self.team ) ); 
 			break;
 		default:
 			self.fCharModel = fChar;
@@ -201,6 +210,11 @@ void CSEv_GamePlayerSpawn_f( float fChar ) {
 		break;
 		
 	}
+	
+	self.fKills = 0;
+	self.fDeaths = 0;
+	forceinfokey( self, "*score", "0" );
+	forceinfokey( self, "*deaths", "0" );
 }
 
 // Counter-Terrorist Spawnpoints

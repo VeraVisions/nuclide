@@ -20,7 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Stuff that applies to all codebases
 enum {
-	TEAM_T = 1,
+	TEAM_SPECTATOR,
+	TEAM_T,
 	TEAM_CT,
 	TEAM_VIP
 };
@@ -167,7 +168,8 @@ enum {
 	EV_WEAPON_RELOAD,
 	EV_MODELGIB,
 	EV_CAMERATRIGGER,
-	EV_RADIOMSG
+	EV_RADIOMSG,
+	EV_ORBITUARY
 };
 
 // Submodel materials

@@ -35,19 +35,25 @@ float Rules_BuyingPossible( void ) {
 		}
 	}
 	
+	if ( self.team == TEAM_VIP ) {
+		centerprint( self, "You are the VIP...\nYou can't buy anything!\n" );
+		self.fAttackFinished = time + 1.0;
+		return FALSE;
+	}
+	
 	if ( iBuyRestriction == BUY_NEITHER ) {
-		centerprint( self, "Sorry, you aren't meant to be buying anything.\n" );
+		centerprint( self, "Sorry, you aren't meant\nto be buying anything.\n" );
 		self.fAttackFinished = time + 1.0;
 		return FALSE;
 	}
 	
 	if ( iBuyRestriction != BUY_BOTH ) {
 		if ( iBuyRestriction == BUY_CT && self.team == TEAM_T ) {
-			centerprint( self, "Terrorists aren't allowed to buy anything!\n" );
+			centerprint( self, "Terrorists aren't allowed to\nbuy anything on this map!\n" );
 			self.fAttackFinished = time + 1.0;
 			return FALSE;
 		} else if ( iBuyRestriction == BUY_T && self.team == TEAM_CT ) {
-			centerprint( self, "Counter-Terrorists aren't allowed to buy anything!\n" );
+			centerprint( self, "CTs aren't allowed to buy\nanything on this map!\n" );
 			self.fAttackFinished = time + 1.0;
 			return FALSE;
 		}
@@ -58,6 +64,9 @@ float Rules_BuyingPossible( void ) {
 
 // Loop through all players and respawn them
 void Rules_Restart( void ) {
+	
+	iHostagesRescued = 0;
+	
 	entity eFind = findchain( classname, "player" );
 	entity eOld = self;
 	
@@ -70,6 +79,8 @@ void Rules_Restart( void ) {
 		} else {
 			Spawn_CreateClient( self.fCharModel );
 		}
+		
+		Money_GiveTeamReward();
 		
 		eFind = eFind.chain;
 	}
@@ -136,10 +147,11 @@ void Rules_Restart( void ) {
 	self = eOld;
 	
 	Timer_Begin( cvar( "mp_freezetime" ), GAME_FREEZE );
+	Money_ResetTeamReward();
 }
 
 // This can happen whenever an objective is complete or time is up
-void Rules_RoundOver( int iTeamWon ) {
+void Rules_RoundOver( int iTeamWon, int iMoneyReward ) {
 	
 	if ( fGameState != GAME_ACTIVE ) {
 		return;
@@ -154,21 +166,21 @@ void Rules_RoundOver( int iTeamWon ) {
 	} else {
 		Radio_BroadcastMessage( RADIO_ROUNDDRAW );
 	}
-	
+	Money_QueTeamReward( iTeamWon, iMoneyReward );
 	Timer_Begin( 5, GAME_END); // Round is over, 5 seconds til a new round starts
 }
 
 // Whenever mp_roundtime was being counted down to 0
 void Rules_TimeOver( void ) {
 	if ( iVIPZones > 0 ) {
-		Rules_RoundOver( TEAM_T );
+		Rules_RoundOver( TEAM_T, 3250 );
 	} else if ( iBombZones > 0 ) {
-		Rules_RoundOver( TEAM_CT );
+		Rules_RoundOver( TEAM_CT, 3250 );
 	} else if ( iHostagesMax > 0 ) {
 		// TODO: Broadcast_Print: Hostages have not been rescued!
-		Rules_RoundOver( TEAM_T );
+		Rules_RoundOver( TEAM_T, 3250 );
 	} else {
-		Rules_RoundOver( 0 );
+		Rules_RoundOver( 0, 0 );
 	}
 }
 

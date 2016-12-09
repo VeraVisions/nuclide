@@ -18,6 +18,19 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+void Damage_CastOrbituary( entity eAttacker, entity eTarget, float fWeapon, float fHeadShot ) {
+	WriteByte( MSG_BROADCAST, SVC_CGAMEPACKET );
+	WriteByte( MSG_BROADCAST, EV_ORBITUARY );
+	WriteByte( MSG_BROADCAST, num_for_edict( eAttacker ) - 1 );
+	WriteByte( MSG_BROADCAST, eAttacker.team );
+	WriteByte( MSG_BROADCAST, num_for_edict( eTarget ) - 1 );
+	WriteByte( MSG_BROADCAST, eTarget.team );
+	WriteByte( MSG_BROADCAST, fWeapon );
+	WriteByte( MSG_BROADCAST, fHeadShot );
+	msg_entity = self;
+	multicast( '0 0 0', MULTICAST_ALL );
+}
+
 void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos ) {
 	
 	eTarget.health = eTarget.health - iDamage; // TODO: Body part multipliers
@@ -25,6 +38,19 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 	if ( eTarget.iBleeds == TRUE ) {
 		makevectors( eAttacker.angles );
 		pointparticles( EFFECT_BLOOD, vHitPos, v_forward * -1, 1 );
+	}
+	
+	if ( eTarget.health <= 0 ) {
+		if ( eTarget.flags & FL_CLIENT  && eAttacker.flags & FL_CLIENT ) {
+			Damage_CastOrbituary( eAttacker, eTarget, eAttacker.weapon, FALSE );
+			eAttacker.fKills++;
+			eTarget.fDeaths++;
+			
+			forceinfokey( eAttacker, "*score", ftos( eAttacker.fKills ) );
+			forceinfokey( eTarget, "*deaths", ftos( eTarget.fDeaths ) );
+			
+			Money_AddMoney( eAttacker, 300 );
+		}
 	}
 	
 	entity eOld = self;

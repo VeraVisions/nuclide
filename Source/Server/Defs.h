@@ -42,6 +42,7 @@ float EFFECT_BLOOD;
 .int iCrouching;
 .int iCrouchAttempt;
 .int iHasBomb;
+.float fKills, fDeaths;
 
 // Match specific fields
 int iWon_T;
@@ -100,7 +101,7 @@ string sCSPlayers[9] = {
 	"models/player/gign/gign.mdl"
 };
 
-void Rules_RoundOver( int iTeamWon );
+void Rules_RoundOver( int iTeamWon, int iMoneyReward );
 float Rules_BuyingPossible( void );
 void Timer_Begin( float fTime, float fMode);
 void Spawn_RespawnClient( float fTeam );

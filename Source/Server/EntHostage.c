@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 .entity eUser;
 .entity eTargetPoint;
 .entity eLastCreated;
+.int iHasBeenUsed;
 enum {
 	HOSTAGE_IDLE,
 	HOSTAGE_WALK,
@@ -56,7 +57,13 @@ void hostage_die( void ) {
 void hostage_use( void ) {
 	if ( eActivator.team == TEAM_CT ) {
 		if ( ( self.eUser == world ) ) {
-			sound( self, CHAN_VOICE, sprintf( "hostage/hos%d.wav", ceil( random() * 5 ) ), 1.0, ATTN_IDLE );
+			
+			if ( self.iHasBeenUsed == FALSE ) {
+				Money_AddMoney( eActivator, 150 );
+				sound( self, CHAN_VOICE, sprintf( "hostage/hos%d.wav", ceil( random() * 5 ) ), 1.0, ATTN_IDLE );
+				self.iHasBeenUsed = TRUE;
+			}
+			
 			self.eUser = eActivator;
 			self.eTargetPoint = self.eUser;
 		} else {
@@ -182,6 +189,7 @@ void hostage_entity( void ) {
 		self.frame = 13; // Idle frame
 		self.health = 100;
 		self.velocity = '0 0 0';
+		self.iHasBeenUsed = FALSE;
 	}
 	
 	precache_model( self.model );

@@ -1,6 +1,6 @@
 #pragma target fte
 
-#pragma progs_dat  "../../cstrike/csprogs.dat"
+#pragma progs_dat  "../../opencs/csprogs.dat"
 
 #define CSQC
 
@@ -41,11 +41,13 @@ Defs.h
 ../Server/AmbientSound.c
 
 View.c
-VGUI_Objects.c
-VGUI_MOTD.c
-VGUI_BuyMenu.c
-VGUI_TeamSelect.c
+VGUIObjects.c
+VGUIScoreboard.c
+VGUIMOTD.c
+VGUIBuyMenu.c
+VGUITeamSelect.c
 VGUI.c
+HUDOrbituaries.c
 HUD.c
 Draw.c
 Sound.c

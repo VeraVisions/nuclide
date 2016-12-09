@@ -29,6 +29,9 @@ void CSQC_ConsoleCommand_Init( void ) {
 	registercommand( "buy" );
 	registercommand( "chooseteam" );
 	registercommand( "use" );
+	registercommand( "testobt" );
+	registercommand( "+showscores" );
+	registercommand( "-showscores" );
 }
 
 /*
@@ -47,17 +50,28 @@ float CSQC_ConsoleCommand( string sCMD ) {
 			fVGUI_Display = VGUI_BM_MAIN;
 		}
 		return TRUE;
-    break;
+		break;
     case "chooseteam":
 		fVGUI_Display = VGUI_TEAMSELECT;
 		return TRUE;
-    break;
+		break;
     case "use":
 		sendevent( "PlayerUse", "" );
 		return TRUE;
-    break;
+		break;
+    case "testobt":
+		HUD_AddOrbituaries( player_localnum, TEAM_T, player_localnum, TEAM_CT, getstatf( STAT_ACTIVEWEAPON ), FALSE );
+		return TRUE;
+		break;
+	case "+showscores":
+		iShowScores = TRUE;
+		return TRUE;
+		break;
+	case "-showscores":
+		iShowScores = FALSE;
+		return TRUE;
+		break;
 	}
-  
 	return FALSE;
 }
 
@@ -105,6 +119,8 @@ void CSQC_Parse_Event( void ) {
 		fCameraTime = time + readfloat();
 	} else if ( fHeader == EV_RADIOMSG ) {
 		Radio_BroadcastMessage( readbyte() );
+	} else if ( fHeader == EV_ORBITUARY ) {
+		HUD_AddOrbituaries( readbyte(), readbyte(), readbyte(), readbyte(), readbyte(), readbyte());
 	}
 }
 

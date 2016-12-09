@@ -1,6 +1,6 @@
 #pragma target fte
 
-#pragma progs_dat  "../../cstrike/progs.dat"
+#pragma progs_dat  "../../opencs/progs.dat"
 
 #includelist
 ../Builtins.h
@@ -37,6 +37,7 @@ Defs.h
 ../Shared/Weapons.c
 ../Shared/Effects.c
 
+Money.c
 Ammo.c
 Damage.c
 TraceAttack.c

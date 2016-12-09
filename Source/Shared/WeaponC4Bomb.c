@@ -59,7 +59,7 @@ enum {
 void WeaponC4BOMB_Drop( vector vBombPos ) {
 	static void c4bomb_think( void ) {
 		if ( self.fAttackFinished < time ) {
-			Rules_RoundOver( TEAM_T );
+			Rules_RoundOver( TEAM_T, 3500 );
 			// EXPLODE!
 			sound( self, CHAN_VOICE, "weapons/c4_explode1.wav", 1.0, ATTN_NONE );
 			Damage_Radius( self.origin, self.owner, 500, 1024 );

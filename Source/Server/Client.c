@@ -18,6 +18,20 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+/* Called when a spectator joins the game. */
+void SpectatorConnect( void ) {
+	Spawn_MakeSpectator();
+	Spawn_ObserverCam();
+}
+	
+void SpectatorDisconnect( void ) {
+	
+}
+	
+void SpectatorThink( void ) {
+	
+}
+
 void ClientKill( void ) {}
 
 
@@ -53,7 +67,8 @@ void PutClientInServer( void ) {
 	Spawn_ObserverCam();
 	
 	// Because we don't want to reset these when we die
-	self.fMoney = cvar( "mp_startmoney" );
+	Money_AddMoney( self, cvar( "mp_startmoney" ) );
+	forceinfokey( self, "*team", "0" ); 
 }
 
 void SV_RunClientCommand( void ) {

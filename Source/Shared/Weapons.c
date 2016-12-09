@@ -170,6 +170,7 @@ void CSEv_GamePlayerBuy_f( float fWeapon ) {
 	}
 	
 	Weapon_AddItem( fWeapon );
+	Weapon_Draw( fWeapon );
 
 	self.fMoney -= wptTable[ fWeapon ].iPrice;
 	self.fAttackFinished = time + 1.0;

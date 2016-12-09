@@ -107,6 +107,13 @@ FuncDoor_Returned
 ====================
 */
 void FuncDoor_Returned( void ) {
+	
+	if( self.stopsnd > 0 && self.stopsnd <= 8 ) {
+		sound( self, CHAN_VOICE, sprintf( "doors/doorstop%d.wav", self.stopsnd ), 1.0, ATTN_NORM );
+	} else {
+		sound( self, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM );
+	}
+	
 	if ( ( self.spawnflags & SF_MOV_USE ) ) {
 		self.touch = FuncDoor_Touch;
 	}

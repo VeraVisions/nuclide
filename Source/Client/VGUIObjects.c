@@ -20,6 +20,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "VGUI.h"
 
+vector HUD_GetChatColor( float fTeam ) {
+	if ( fTeam == TEAM_CT ) {
+		return '0.45 0.60 0.75';
+	} else if ( fTeam == TEAM_T ) {
+		return '0.75 0.1875 0.1875';
+	} else {
+		return '0.75 0.75 0.75';
+	}
+}
+
 // Returns whether or not our mouse cursor hovers over a region
 float VGUI_CheckMouse( vector vPos, vector vReg ) {
 	vector vSMins, vSMaxs;

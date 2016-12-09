@@ -1,0 +1,7 @@
+FTEMANIFEST 1
+game cstrike
+name "OpenCS"
+protocolname "OPENCS"
+basegame cstrike
+basegame *opencs
+disablehomedir 1

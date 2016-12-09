@@ -18,46 +18,41 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-/*
-=================
-CSQC_Init
+#define CS_MAX_MONEY 16000
 
-Comparable to worldspawn in SSQC in that it's mostly used for precaches
-=================
-*/
-void CSQC_Init(float apilevel, string enginename, float engineversion) {
-	precache_model( HUD_NUMFILE );
-	precache_model( "sprites/640hud1.spr" );
-	precache_model( "sprites/640hud16.spr" );
+int iMoneyReward_CT;
+int iMoneyReward_T;
+
+void Money_AddMoney( entity ePlayer, int iMoneyValue ) {
+	ePlayer.fMoney += (float)iMoneyValue;
 	
-	for( int i = 0; i < CS_WEAPON_COUNT; i++ ) {
-		precache_model( sViewModels[ i ] );
+	if ( ePlayer.fMoney > CS_MAX_MONEY ) {
+		ePlayer.fMoney = CS_MAX_MONEY;
 	}
 	
-	Radio_InitSounds();
-	
-	CSQC_ConsoleCommand_Init();
-	CSQC_VGUI_Init();
+	// Because people do tend to kill hostages...
+	if ( ePlayer.fMoney < 0 ) {
+		ePlayer.fMoney = 0;
+	}
 }
 
-/*
-=================
-CSQC_WorldLoaded
-
-Whenever the world is fully initialized...
-=================
-*/
-void CSQC_WorldLoaded( void ) {
-	
+void Money_QueTeamReward( float fTeam, int iMoneyValue ) {
+	if ( fTeam == TEAM_T ) {
+		iMoneyReward_T += iMoneyValue;
+	} else {
+		iMoneyReward_CT += iMoneyValue;
+	}
 }
 
-/*
-=================
-CSQC_Shutdown
+void Money_GiveTeamReward( void ) {
+	if ( self.team == TEAM_T ) {
+		Money_AddMoney( self, iMoneyReward_T );
+	} else {
+		Money_AddMoney( self, iMoneyReward_CT );
+	}
+}
 
-Incase you need to free something
-=================
-*/
-void CSQC_Shutdown( void ) {
-	
+void Money_ResetTeamReward( void ) {
+	iMoneyReward_T = 0;
+	iMoneyReward_CT = 0;
 }

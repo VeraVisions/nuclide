@@ -71,6 +71,7 @@ void CSQC_VGUI_Init( void ) {
 	string sTemp;
 	
 	// First load the MESSAGE OF THE DAY
+	// TODO: Move this to the server and put strings into infokeys
 	filestream fmMOTD = fopen( "motd.txt", FILE_READ);
 	for ( int i = 0; i < 25; i++ ) {
 		sTemp = fgets( fmMOTD );

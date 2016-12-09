@@ -18,6 +18,63 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#define	PRINT_LOW		0
+#define	PRINT_MEDIUM	1
+#define	PRINT_HIGH		2
+#define	PRINT_CHAT		3
+
+#define CHAT_LINES 5
+#define CHAT_TIME 4
+int iLineScroll;
+float fChatTime;
+string sMSGBuffer[ CHAT_LINES ];
+
+/*
+=================
+CSQC_Parse_Print
+
+Receives a message and sorts it into the chat messagebuffer
+=================
+*/
+void CSQC_Parse_Print(string sMessage, float fLevel ) {
+	if ( fLevel == PRINT_CHAT ) {
+		if ( iLineScroll < ( CHAT_LINES - 1 ) ) {
+			sMSGBuffer[ iLineScroll + 1 ] = sMessage;
+			iLineScroll++;
+		} else {
+			for ( int i = 0; i < ( CHAT_LINES - 1 ); i++ ) {
+				sMSGBuffer[ i ] = sMSGBuffer[ i + 1 ];
+			}
+			sMSGBuffer[ CHAT_LINES - 1 ] = sMessage;
+		}
+		
+		fChatTime = time + CHAT_TIME;
+	}
+}
+
+
+/*
+=================
+CSQC_DrawChat
+
+Just prints whatever is in the chat buffer and removes lines after some time.
+=================
+*/
+void CSQC_DrawChat( void ) {
+	vector vChatPos = [ 16, vVideoResolution_y - 128 ];
+	
+	// Remove messages after a fChatTime has passed
+	if ( fChatTime < time && iLineScroll >= 0 ) {
+		sMSGBuffer[ iLineScroll ] = "";
+		iLineScroll--;
+		fChatTime = time + CHAT_TIME;
+	}
+	
+	for ( int i = 0; i < CHAT_LINES; i++ ) {
+		drawstring( vChatPos, sMSGBuffer[ i ], '8 8 0', VGUI_WINDOW_FGCOLOR * 0.8, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
+		vChatPos_y += 12;
+	}
+}
 /*
 =================
 CSQC_UpdateView
@@ -46,7 +103,13 @@ void CSQC_UpdateView( float fWinWidth, float fWinHeight, float fGameFocus ) {
 	
 	if( fGameFocus == TRUE ) {
 		HUD_Draw();
-		CSQC_VGUI_Draw();
+		CSQC_DrawChat();
+		
+		if ( iShowScores == TRUE ) {
+			VGUI_Scores_Show();
+		} else {
+			CSQC_VGUI_Draw();
+		}
 	}
 }
 

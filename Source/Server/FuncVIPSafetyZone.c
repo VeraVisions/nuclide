@@ -25,7 +25,7 @@ func_vip_safetyzone_touch
 */
 void func_vip_safetyzone_touch( void ) {
 	if ( ( other.classname == "player" ) && ( other.team == TEAM_VIP ) ) {
-		Rules_RoundOver( TEAM_CT );
+		Rules_RoundOver( TEAM_CT, 2500 );
 		
 		entity eOld = self;
 		self = other;

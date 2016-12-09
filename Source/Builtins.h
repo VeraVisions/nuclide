@@ -12,7 +12,7 @@ Available options:
 -Faccessors - use accessors instead of basic types via defines
 -O          - write to a different qc file
 */
-#pragma noref 1
+#pragma noref 1A
 //#pragma flag enable logicops
 #pragma warning error Q101 /*too many parms*/
 #pragma warning error Q105 /*too few parms*/

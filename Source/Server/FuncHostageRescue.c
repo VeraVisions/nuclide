@@ -31,7 +31,8 @@ void func_hostage_rescue_touch( void ) {
 		Radio_BroadcastMessage( RADIO_RESCUED );
 		iHostagesRescued++;
 		
-		other.eUser.fMoney += 1000;
+		Money_AddMoney( other.eUser, 1000 );
+		Money_QueTeamReward( TEAM_CT, 800 );
 		if ( other.eTargetPoint != other.eUser ) {
 			remove( other.eTargetPoint );
 		}
@@ -43,8 +44,7 @@ void func_hostage_rescue_touch( void ) {
 		
 		if ( iHostagesRescued >= iHostagesMax ) {
 			// TODO: Broadcast_Print: All Hostages have been rescued!
-			Rules_RoundOver( TEAM_CT );
-			iHostagesRescued = 0;
+			Rules_RoundOver( TEAM_CT, 0 );
 		}
 	}
 }

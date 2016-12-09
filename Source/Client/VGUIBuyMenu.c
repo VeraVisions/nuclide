@@ -75,6 +75,9 @@ void VGUI_BuyMenu_Main( vector vPos ) {
 	static void BuyMenu_Main_8( void ) {
 		fVGUI_Display = VGUI_BM_EQUIPMENT;
 	}
+	static void BuyMenu_Main_9( void ) {
+		fVGUI_Display = VGUI_NONE;
+	}
 	
 	VGUI_Button( "Handguns", BuyMenu_Main_1, vPos + '16 116 0', '180 24 0' );
 	VGUI_Button( "Shotguns", BuyMenu_Main_2, vPos + '16 148 0', '180 24 0' );
@@ -86,7 +89,7 @@ void VGUI_BuyMenu_Main( vector vPos ) {
 	VGUI_Button( "Secondary Ammo", BuyMenu_Main_7, vPos + '16 340 0', '180 24 0' );
 	VGUI_Button( "Equipment", BuyMenu_Main_8, vPos + '16 372 0', '180 24 0' );
 
-	VGUI_Button( "Exit", BuyMenu_Main_7, vPos + '16 440 0', '180 24 0' );
+	VGUI_Button( "Exit", BuyMenu_Main_9, vPos + '16 440 0', '180 24 0' );
 }
 
 void VGUI_BuyMenu_Back( void ) {
@@ -147,11 +150,11 @@ void VGUI_BuyMenu_Handguns( vector vPos ) {
 	
 	vVGUIButtonPos_y += 32;
 
-	if ( getplayerkeyvalue( player_localnum, "team" ) == "t" ) {
+	if ( stof( getplayerkeyvalue( player_localnum, "*team" ) ) ==  TEAM_T ) {
 		VGUI_BuyMenu_Button( WEAPON_ELITES );
 	}
 	
-	if ( getplayerkeyvalue( player_localnum, "team" ) == "ct" ) {
+	if ( stof( getplayerkeyvalue( player_localnum, "*team" ) ) ==  TEAM_CT ) {
 		VGUI_BuyMenu_Button( WEAPON_FIVESEVEN );
 	}
 	VGUI_Button( "Back", VGUI_BuyMenu_Back, vPos + '16 440 0', '180 24 0' );
@@ -186,11 +189,11 @@ void VGUI_BuyMenu_SMGs( vector vPos ) {
 	
 	vVGUIButtonPos_y += 32;
 
-	if ( getplayerkeyvalue( player_localnum, "team" ) == "t" ) {
+	if ( stof( getplayerkeyvalue( player_localnum, "*team" ) ) ==  TEAM_T ) {
 		VGUI_BuyMenu_Button( WEAPON_MAC10 );
 	}
 	
-	if ( getplayerkeyvalue( player_localnum, "team" ) == "ct" ) {
+	if ( stof( getplayerkeyvalue( player_localnum, "*team" ) ) ==  TEAM_CT ) {
 		VGUI_BuyMenu_Button( WEAPON_TMP );
 	}
 	

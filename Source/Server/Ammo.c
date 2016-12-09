@@ -42,7 +42,7 @@ void Ammo_BuyPrimary( void ) {
 	
 	for ( int i = 0; i < fNew; i++ ) {
 		self.(wptTable[ self.iSlotPrimary ].iCaliberfld) += ammoTable[ wptTable[ self.iSlotPrimary ].iCaliber ].iSize;
-		self.fMoney -= ammoTable[ wptTable[ self.iSlotPrimary ].iCaliber ].iPrice;
+		Money_AddMoney( self, -ammoTable[ wptTable[ self.iSlotPrimary ].iCaliber ].iPrice );
 		
 		if ( self.(wptTable[ self.iSlotPrimary ].iCaliberfld) > ammoTable[ wptTable[ self.iSlotPrimary ].iCaliber ].iMaxAmount ) {
 			self.(wptTable[ self.iSlotPrimary ].iCaliberfld) = ammoTable[ wptTable[ self.iSlotPrimary ].iCaliber ].iMaxAmount;
@@ -64,7 +64,7 @@ void Ammo_BuySecondary( void ) {
 		}
 		
 		self.(wptTable[ self.iSlotSecondary ].iCaliberfld) += ammoTable[ wptTable[ self.iSlotSecondary ].iCaliber ].iSize;
-		self.fMoney -= ammoTable[ wptTable[ self.iSlotSecondary ].iCaliber ].iPrice;
+		Money_AddMoney( self, -ammoTable[ wptTable[ self.iSlotSecondary ].iCaliber ].iPrice );
 		
 		if ( self.(wptTable[ self.iSlotSecondary ].iCaliberfld) > ammoTable[ wptTable[ self.iSlotSecondary ].iCaliber ].iMaxAmount ) {
 			self.(wptTable[ self.iSlotSecondary ].iCaliberfld) = ammoTable[ wptTable[ self.iSlotSecondary ].iCaliber ].iMaxAmount;

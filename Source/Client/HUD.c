@@ -61,19 +61,8 @@ HUD_DrawRedNumber
 Draws a normal number
 =================
 */
-void HUD_DrawNumber( int iNumber, vector vPos, float fAlpha ) {
-	drawsubpic( vPos, '24 25 0', HUD_NUMFILE_LAYER, [ vHUDNumPos[ iNumber ], 0], [ NUMSIZE_X, NUMSIZE_Y ], VGUI_WINDOW_FGCOLOR, fAlpha, DRAWFLAG_ADDITIVE );
-}
-
-/*
-=================
-HUD_DrawRedNumber
-
-Draws a red number
-=================
-*/
-void HUD_DrawRedNumber( int iNumber, vector vPos, float fAlpha ) {
-	drawsubpic( vPos, '24 25 0', HUD_NUMFILE_LAYER, [ vHUDNumPos[ iNumber ], 0], [ NUMSIZE_X, NUMSIZE_Y ], '1 0 0', fAlpha, DRAWFLAG_ADDITIVE );
+void HUD_DrawNumber( int iNumber, vector vPos, float fAlpha, vector vColor ) {
+	drawsubpic( vPos, '24 25 0', HUD_NUMFILE_LAYER, [ vHUDNumPos[ iNumber ], 0], [ NUMSIZE_X, NUMSIZE_Y ], vColor, fAlpha, DRAWFLAG_ADDITIVE );
 }
 
 /*
@@ -83,16 +72,16 @@ HUD_DrawNums
 Draws numerals quickly for health, armor etc.
 =================
 */
-void HUD_DrawNums( float fNumber, vector vPos ) {
+void HUD_DrawNums( float fNumber, vector vPos, float fAlpha, vector vColor ) {
 	int iNumber = fNumber;
 	if ( iNumber > 0 ) {
 		while ( iNumber > 0 ) {
-			HUD_DrawNumber( (float)iNumber % 10, vPos, 1 );
+			HUD_DrawNumber( (float)iNumber % 10, vPos, fAlpha, vColor );
 			iNumber = iNumber / 10;
 			vPos_x -= 24;
 		} 
 	} else {
-		HUD_DrawNumber( 0, vPos, 1 );
+		HUD_DrawNumber( 0, vPos, fAlpha, vColor );
 	}
 }
 
@@ -108,7 +97,7 @@ void HUD_DrawHealth( void ) {
 	// Health
 	vector vHealthPos = [ 16, vVideoResolution_y - 42 ];
 	drawsubpic( vHealthPos, '24 24 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 2, NUMSIZE_Y], [ NUMSIZE_X, NUMSIZE_X ], VGUI_WINDOW_FGCOLOR, 1, DRAWFLAG_ADDITIVE );
-	HUD_DrawNums( getstatf( STAT_HEALTH ), vHealthPos + '72 0' );
+	HUD_DrawNums( getstatf( STAT_HEALTH ), vHealthPos + '72 0', 1, VGUI_WINDOW_FGCOLOR );
 }
 
 /*
@@ -122,7 +111,7 @@ void HUD_DrawArmor( void ) {
 
 	vector vArmorPos = [ 112, vVideoResolution_y - 42 ];
 	drawsubpic( vArmorPos, '24 24 0', HUD_NUMFILE_LAYER, [ 0, NUMSIZE_Y], [ NUMSIZE_X, NUMSIZE_X ], VGUI_WINDOW_FGCOLOR, 1, DRAWFLAG_ADDITIVE );
-	HUD_DrawNums( getstatf( STAT_ARMOR ), vArmorPos + '72 0' );
+	HUD_DrawNums( getstatf( STAT_ARMOR ), vArmorPos + '72 0', 1, VGUI_WINDOW_FGCOLOR);
 }
 
 /*
@@ -200,19 +189,19 @@ void HUD_DrawTimer( void ) {
 			fAlpha = fabs( sin( time * 20 ) );
 		}
 		
-		HUD_DrawRedNumber( iMinutes, vTimePos + '48 0 0', fAlpha);
-		HUD_DrawRedNumber( iTens, vTimePos + '70 0 0', fAlpha);
-		HUD_DrawRedNumber( iUnits, vTimePos + '94 0 0',fAlpha );
-		HUD_DrawNumber( iMinutes, vTimePos + '48 0 0', 1 - fAlpha);
-		HUD_DrawNumber( iTens, vTimePos + '70 0 0', 1 - fAlpha);
-		HUD_DrawNumber( iUnits, vTimePos + '94 0 0',1 - fAlpha );
+		HUD_DrawNumber( iMinutes, vTimePos + '48 0 0', fAlpha, '1 0 0' );
+		HUD_DrawNumber( iTens, vTimePos + '70 0 0', fAlpha, '1 0 0' );
+		HUD_DrawNumber( iUnits, vTimePos + '94 0 0',fAlpha, '1 0 0' );
+		HUD_DrawNumber( iMinutes, vTimePos + '48 0 0', 1 - fAlpha, VGUI_WINDOW_FGCOLOR );
+		HUD_DrawNumber( iTens, vTimePos + '70 0 0', 1 - fAlpha, VGUI_WINDOW_FGCOLOR );
+		HUD_DrawNumber( iUnits, vTimePos + '94 0 0',1 - fAlpha, VGUI_WINDOW_FGCOLOR );
 		
 		drawsubpic( vTimePos, '24 25 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 6, NUMSIZE_Y * 3], [ NUMSIZE_X, NUMSIZE_Y ], '1 0 0', fAlpha, DRAWFLAG_ADDITIVE );
 		drawsubpic( vTimePos, '24 25 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 6, NUMSIZE_Y * 3], [ NUMSIZE_X, NUMSIZE_Y ], VGUI_WINDOW_FGCOLOR, 1 - fAlpha, DRAWFLAG_ADDITIVE );
 	} else {
-		HUD_DrawNumber( iMinutes, vTimePos + '48 0 0', 1);
-		HUD_DrawNumber( iTens, vTimePos + '70 0 0', 1);
-		HUD_DrawNumber( iUnits, vTimePos + '94 0 0', 1);
+		HUD_DrawNumber( iMinutes, vTimePos + '48 0 0', 1, VGUI_WINDOW_FGCOLOR );
+		HUD_DrawNumber( iTens, vTimePos + '70 0 0', 1, VGUI_WINDOW_FGCOLOR );
+		HUD_DrawNumber( iUnits, vTimePos + '94 0 0', 1, VGUI_WINDOW_FGCOLOR );
 		drawsubpic( vTimePos, '24 25 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 6, NUMSIZE_Y * 3], [ NUMSIZE_X, NUMSIZE_Y ], VGUI_WINDOW_FGCOLOR, 1, DRAWFLAG_ADDITIVE );
 	}
 }
@@ -224,11 +213,38 @@ HUD_DrawMoney
 Draws the amount of money (0-16000) with an icon to the screen
 =================
 */
+float fOldMoneyValue;
+float fMoneyAlphaEffect;
+vector vMoneyColorEffect;
 void HUD_DrawMoney( void ) {
+	// If the money differs from last frame, paint it appropriately
+	if ( getstatf( STAT_MONEY ) > fOldMoneyValue ) {
+		// Make it green for a short time
+		vMoneyColorEffect = '0 1 0';
+		fMoneyAlphaEffect = 1.0;
+	} else if ( getstatf( STAT_MONEY ) < fOldMoneyValue ) {
+		// Make it red
+		vMoneyColorEffect = '1 0 0';
+		fMoneyAlphaEffect = 1.0;
+	}
+	
 	vector vMoneyPos = [ vVideoResolution_x - 160, vVideoResolution_y - 72 ];
-	drawsubpic( vMoneyPos, '18 25 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 8, NUMSIZE_Y * 1], [ NUMSIZE_X * 0.75, NUMSIZE_Y ], VGUI_WINDOW_FGCOLOR, 1, DRAWFLAG_ADDITIVE );
-	vMoneyPos_x += ( 24 * 5 );
-	HUD_DrawNums( getstatf( STAT_MONEY ), vMoneyPos );
+	
+	if ( fMoneyAlphaEffect > 0 ) {
+		fMoneyAlphaEffect -= frametime * 0.5;
+		drawsubpic( vMoneyPos, '18 25 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 8, NUMSIZE_Y * 1], [ NUMSIZE_X * 0.75, NUMSIZE_Y ], vMoneyColorEffect, fMoneyAlphaEffect, DRAWFLAG_ADDITIVE );
+		drawsubpic( vMoneyPos, '18 25 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 8, NUMSIZE_Y * 1], [ NUMSIZE_X * 0.75, NUMSIZE_Y ], VGUI_WINDOW_FGCOLOR, 1 - fMoneyAlphaEffect, DRAWFLAG_ADDITIVE );
+		
+		vMoneyPos_x += ( 24 * 5 );
+		HUD_DrawNums( getstatf( STAT_MONEY ), vMoneyPos, fMoneyAlphaEffect, vMoneyColorEffect );
+		HUD_DrawNums( getstatf( STAT_MONEY ), vMoneyPos, 1 - fMoneyAlphaEffect, VGUI_WINDOW_FGCOLOR );
+	} else {
+		drawsubpic( vMoneyPos, '18 25 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 8, NUMSIZE_Y * 1], [ NUMSIZE_X * 0.75, NUMSIZE_Y ], VGUI_WINDOW_FGCOLOR, 1, DRAWFLAG_ADDITIVE );
+		vMoneyPos_x += ( 24 * 5 );
+		HUD_DrawNums( getstatf( STAT_MONEY ), vMoneyPos, 1, VGUI_WINDOW_FGCOLOR );
+	}
+	
+	fOldMoneyValue = getstatf( STAT_MONEY );
 }
 
 /*
@@ -244,9 +260,9 @@ void HUD_DrawAmmo( void ) {
 	}
 	
 	vector vAmmoClipPos = [ vVideoResolution_x - 136, vVideoResolution_y - 42 ];
-	HUD_DrawNums( getstatf( STAT_CURRENT_CLIP ), vAmmoClipPos );
+	HUD_DrawNums( getstatf( STAT_CURRENT_CLIP ), vAmmoClipPos, 1, VGUI_WINDOW_FGCOLOR );
 	vector vAmmoCalPos = [ vVideoResolution_x - 64, vVideoResolution_y - 42 ];
-	HUD_DrawNums( getstatf( STAT_CURRENT_CALIBER ), vAmmoCalPos );
+	HUD_DrawNums( getstatf( STAT_CURRENT_CALIBER ), vAmmoCalPos, 1, VGUI_WINDOW_FGCOLOR );
 	
 	// Caliber icon
 	drawsubpic( vVideoResolution - '42 42 0', '24 24 0', HUD_NUMFILE_LAYER, vHUDCalPos[ wptTable[ getstatf( STAT_ACTIVEWEAPON ) ].iCaliber ], [ NUMSIZE_X, NUMSIZE_X ], VGUI_WINDOW_FGCOLOR, 1, DRAWFLAG_ADDITIVE );
@@ -272,4 +288,5 @@ void HUD_Draw( void ) {
 	HUD_DrawIcons();
 	HUD_DrawMoney();
 	HUD_DrawAmmo();
+	HUD_DrawOrbituaries();
 }
