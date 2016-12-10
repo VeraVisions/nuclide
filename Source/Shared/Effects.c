@@ -58,7 +58,12 @@ void Effect_BreakModel( vector vMins, vector vMaxs, vector vVel, float fStyle ) 
 	WriteByte( MSG_MULTICAST, fStyle );
 
 	msg_entity = self;
-	multicast( '0 0 0', MULTICAST_ALL );
+	
+	vector vWorldPos;
+	vWorldPos_x = vMins_x + ( 0.5 * ( vMaxs_x - vMins_x ) );	
+	vWorldPos_y = vMins_y + ( 0.5 * ( vMaxs_y - vMins_y ) );	
+	vWorldPos_z = vMins_z + ( 0.5 * ( vMaxs_z - vMins_z ) );
+	multicast( vWorldPos, MULTICAST_PVS );
 #else
 	static void Effect_BreakModel_Remove( void ) { remove( self ) ; }
 	

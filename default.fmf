@@ -2,6 +2,7 @@ FTEMANIFEST 1
 game cstrike
 name "OpenCS"
 protocolname "OPENCS"
+basegame valve
 basegame cstrike
 basegame *opencs
 disablehomedir 1

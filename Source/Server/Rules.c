@@ -68,7 +68,7 @@ void Rules_Restart( void ) {
 	
 	entity eOld = self;
 	
-	for ( entity eFind = world; eFind = find( eFind, classname, "player" ); ) {
+	for ( entity eFind = world; ( eFind = find( eFind, classname, "player" ) ); ) {
 		self = eFind;
 		
 		if ( self.health > 0 ) {
@@ -85,7 +85,7 @@ void Rules_Restart( void ) {
 		int iRandomT = floor( random( 1, (float)iAlivePlayers_T + 1 ) ); 
 		int iPickT = 0;
 		
-		for ( entity eFind = world; eFind = find( eFind, classname, "player" ); ) { 
+		for ( entity eFind = world; ( eFind = find( eFind, classname, "player" ) ); ) { 
 			if ( eFind.team == TEAM_T ) {
 				iPickT++;
 				
@@ -102,7 +102,7 @@ void Rules_Restart( void ) {
 		int iRandomCT = floor( random( 1, (float)iAlivePlayers_CT + 1 ) );
 		int iPickCT = 0;
 
-		for ( entity eFind = world; eFind = find( eFind, classname, "player" ); ) { 
+		for ( entity eFind = world; ( eFind = find( eFind, classname, "player" ) ); ) { 
 			if ( eFind.team == TEAM_CT ) {
 				iPickCT++;
 				if ( iPickCT == iRandomCT ) {
@@ -118,7 +118,7 @@ void Rules_Restart( void ) {
 	
 	// Respawn all the entities
 	
-	for ( entity eFind = world; eFind = findfloat( eFind, fRespawns, TRUE ); ) { 
+	for ( entity eFind = world; ( eFind = findfloat( eFind, fRespawns, TRUE ) ); ) { 
 		self = eFind;
 		Entities_Respawn();
 	}
