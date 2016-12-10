@@ -29,10 +29,13 @@ void func_vip_safetyzone_touch( void ) {
 		
 		entity eOld = self;
 		self = other;
-		self.team = TEAM_CT;
+		
 		Spawn_MakeSpectator();
 		self.classname = "player";
-
+		self.team = TEAM_CT;
+		forceinfokey( self, "*dead", "0" );
+		iAlivePlayers_CT--;
+		
 		self = eOld;
 	} 
 }

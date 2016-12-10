@@ -49,15 +49,17 @@ vector VGUI_Scores_DrawTeam( vector vPos, float fTeam ) {
 	for ( int i = -1; i > -32; i-- ) {
 		if ( stof( getplayerkeyvalue( i, "*team" ) ) ==  fTeam ) {
 			if ( getplayerkeyvalue( i, "name" ) ) {
+				vColor = HUD_GetChatColor( fTeam );
 				
 				if ( getplayerkeyvalue( i, "name" ) == getplayerkeyvalue( player_localnum, "name" ) ) {
-					vColor = HUD_GetChatColor( fTeam );
 					drawfill( vNewPos + '19 -2', '493 14', vColor, VGUI_WINDOW_BGALPHA, DRAWFLAG_ADDITIVE );
 					vColor = '1 1 1';
 				}
 				
 				if ( getplayerkeyvalue( i, "*dead" ) == "1" ) {
 					drawstring( vNewPos + '38 0', sprintf( "%s [DEAD]", getplayerkeyvalue( i, "name" ) ), '8 8 0', vColor, 1, 0 );
+				} else if ( getplayerkeyvalue( i, "*dead" ) == "2" ) {
+					drawstring( vNewPos + '38 0', sprintf( "%s [VIP]", getplayerkeyvalue( i, "name" ) ), '8 8 0', vColor, 1, 0 );
 				} else {
 					drawstring( vNewPos + '38 0', getplayerkeyvalue( i, "name" ), '8 8 0', vColor, 1, 0 );
 				}
@@ -65,7 +67,7 @@ vector VGUI_Scores_DrawTeam( vector vPos, float fTeam ) {
 				
 				// Spectators don't have stats worth caring about
 				if ( fTeam != TEAM_SPECTATOR ) {
-					VGUI_Scores_AlignedText( vNewPos + '320 0', getplayerkeyvalue( i, "*score" ), '8 8 0', vColor );
+					VGUI_Scores_AlignedText( vNewPos + '320 0', getplayerkeyvalue( i, INFOKEY_P_FRAGS ), '8 8 0', vColor );
 					VGUI_Scores_AlignedText( vNewPos + '384 0', getplayerkeyvalue( i, "*deaths" ), '8 8 0', vColor  );
 				}
 				VGUI_Scores_AlignedText( vNewPos + '456 0', getplayerkeyvalue( i, INFOKEY_P_PING ), '8 8 0', vColor );

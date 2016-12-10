@@ -195,6 +195,11 @@ FuncButton_Trigger
 ====================
 */
 void FuncButton_Trigger( void ) {
+	if ( self.fAttackFinished > self.ltime ) {
+		return;
+	}
+	self.fAttackFinished = self.ltime + self.wait;
+	
 	if ( ( self.state == STATE_UP ) || ( self.state == STATE_RAISED ) ){
 		FuncButton_MoveBack();
 		return;

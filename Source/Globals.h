@@ -44,6 +44,11 @@ enum {
 };
 
 enum {
+	ENT_AMBIENTSOUND = 1,
+	ENT_SPRITE
+};
+
+enum {
 	GAME_INACTIVE,
 	GAME_COMMENCING,
 	GAME_FREEZE,

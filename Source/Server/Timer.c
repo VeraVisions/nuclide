@@ -59,7 +59,7 @@ void Timer_Update( void ) {
 			} else {
 				Timer_Begin( cvar( "mp_roundtime" ) * 60, GAME_ACTIVE ); // Unfreeze
 				
-				float fRand = ceil( random() * 3 );
+				float fRand = floor( random( 1, 4 ) );
 				if ( fRand == 1 ) {
 					Radio_BroadcastMessage( RADIO_MOVEOUT );
 				} else if ( fRand == 2 ) {

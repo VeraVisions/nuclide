@@ -28,18 +28,20 @@ Called whenever an entity is sent manually via .SendFlags and so on
 void CSQC_Ent_Update( float fIsNew ) {
 	float fEntType = readbyte();
 	
-	if ( fEntType == 1 ) {
+	if ( fEntType == ENT_AMBIENTSOUND ) {
 		self.origin_x = readcoord();
 		self.origin_y = readcoord();
 		self.origin_z = readcoord();
 		
 		setorigin( self, self.origin );
+		
+		CSQC_ambient_generic( readstring(), readfloat(), readbyte() );
+	} else if ( fEntType == ENT_SPRITE ) {
+		self.origin_x = readcoord();
+		self.origin_y = readcoord();
+		self.origin_z = readcoord();
 
-		string sSample = readstring(); // WriteString( MSG_ENTITY, self.message );
-		float fVolume = readfloat(); // WriteFloat( MSG_ENTITY, self.health );
-		float fAttennuation = readbyte(); // WriteByte( MSG_ENTITY, self.style );
-		CSQC_ambient_generic( sSample, fVolume, fAttennuation );
-		//print( sprintf( "[DEV] Ambientsound (%s), ATTN %d \n", sSample, fAttennuation ) );
+		Effect_AnimatedSprite( self.origin, readfloat(), readfloat(), readfloat(), readfloat(), readfloat() );
 	}
 	
 }

@@ -64,14 +64,11 @@ float Rules_BuyingPossible( void ) {
 
 // Loop through all players and respawn them
 void Rules_Restart( void ) {
-	
 	iHostagesRescued = 0;
 	
-	entity eFind = findchain( classname, "player" );
 	entity eOld = self;
 	
-	while ( eFind ) {
-		
+	for ( entity eFind = world; eFind = find( eFind, classname, "player" ); ) {
 		self = eFind;
 		
 		if ( self.health > 0 ) {
@@ -81,69 +78,51 @@ void Rules_Restart( void ) {
 		}
 		
 		Money_GiveTeamReward();
-		
-		eFind = eFind.chain;
 	}
-	
-	self = eOld;
 	
 	// Select a random Terrorist for the bomb thing
 	if ( iBombZones > 0 ) {
-		int iRandomT = ceil( random() * iAlivePlayers_T );
+		int iRandomT = floor( random( 1, (float)iAlivePlayers_T + 1 ) ); 
 		int iPickT = 0;
 		
-		eFind = findchain( classname, "player" );
-		while ( eFind ) {
-			
-			if ( eFind.classname == "player" && eFind.team == TEAM_T ) {
+		for ( entity eFind = world; eFind = find( eFind, classname, "player" ); ) { 
+			if ( eFind.team == TEAM_T ) {
 				iPickT++;
 				
 				if ( iPickT == iRandomT ) {
-					eOld = self;
 					self = eFind;
 					Weapon_AddItem( WEAPON_C4BOMB );
-					self = eOld;
 				}
 			}
-			
-			eFind = eFind.chain;
 		}
 	} 
 	
 	// If there is a VIP, select a random CT to be it
 	if ( iVIPZones > 0 ) {
-		int iRandomCT = ceil( random() * iAlivePlayers_CT );
+		int iRandomCT = floor( random( 1, (float)iAlivePlayers_CT + 1 ) );
 		int iPickCT = 0;
 
-		eFind = findchain( classname, "player" );
-		while ( eFind ) {
-			
-			if ( eFind.classname == "player" && eFind.team == TEAM_CT ) {
+		for ( entity eFind = world; eFind = find( eFind, classname, "player" ); ) { 
+			if ( eFind.team == TEAM_CT ) {
 				iPickCT++;
-				
 				if ( iPickCT == iRandomCT ) {
-					eOld = self;
 					self = eFind;
 					self.team = TEAM_VIP;
 					Spawn_RespawnClient( self.team );
-					self = eOld;
+					forceinfokey( self, "*dead", "2" );
 				}
 			}
-			
-			eFind = eFind.chain;
 		}
+
 	}
 	
 	// Respawn all the entities
-	eFind = findchainfloat( fRespawns , TRUE );
-	eOld = self;
-	while ( eFind ) {
-		
+	
+	for ( entity eFind = world; eFind = findfloat( eFind, fRespawns, TRUE ); ) { 
 		self = eFind;
 		Entities_Respawn();
-		
-		eFind = eFind.chain;
 	}
+	
 	self = eOld;
 	
 	Timer_Begin( cvar( "mp_freezetime" ), GAME_FREEZE );

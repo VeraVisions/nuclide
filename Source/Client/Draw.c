@@ -49,6 +49,8 @@ void CSQC_Parse_Print(string sMessage, float fLevel ) {
 		}
 		
 		fChatTime = time + CHAT_TIME;
+	} else {
+		print( sMessage );
 	}
 }
 

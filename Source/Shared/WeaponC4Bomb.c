@@ -92,6 +92,7 @@ void WeaponC4BOMB_Drop( vector vBombPos ) {
 	
 	Radio_BroadcastMessage( RADIO_BOMBPL );
 	iBombPlanted = TRUE;
+	self.iSlotGrenade = self.iSlotGrenade - WEAPON_C4BOMB;
 	Weapon_SwitchBest();
 }
 #endif

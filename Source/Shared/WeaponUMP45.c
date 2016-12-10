@@ -68,7 +68,7 @@ void WeaponUMP45_PrimaryFire( void ) {
 		sound( self, CHAN_WEAPON, "weapons/ump45-1.wav", 1, ATTN_NORM );
 	}
 #else
-	int iRand = ceil( random() * 3 );
+	int iRand = (int)floor( random( 1, 4 ) );
 	
 	if ( iRand == 1 ) {
 		View_PlayAnimation( ANIM_UMP45_SHOOT1 );

@@ -35,18 +35,28 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 	
 	eTarget.health = eTarget.health - iDamage; // TODO: Body part multipliers
 	
+	// Special monetary punishment for hostage murderers
+	if ( eTarget.classname == "hostage_entity" ) {
+		if ( eTarget.health > 0 ) {
+			Money_AddMoney( eAttacker, -150 ); // Pain
+		} else {
+			Money_AddMoney( eAttacker, -1500 ); // Death
+		}
+	}
+	
+	// Don't be like Q1 and make everything bleed.
 	if ( eTarget.iBleeds == TRUE ) {
 		makevectors( eAttacker.angles );
 		pointparticles( EFFECT_BLOOD, vHitPos, v_forward * -1, 1 );
 	}
 	
+	// Target is dead and a client....
 	if ( eTarget.health <= 0 ) {
-		if ( eTarget.flags & FL_CLIENT  && eAttacker.flags & FL_CLIENT ) {
+		if ( ( eTarget.flags & FL_CLIENT )  && ( eAttacker.flags & FL_CLIENT ) ) {
 			Damage_CastOrbituary( eAttacker, eTarget, eAttacker.weapon, FALSE );
-			eAttacker.fKills++;
+			eAttacker.frags++;
 			eTarget.fDeaths++;
 			
-			forceinfokey( eAttacker, "*score", ftos( eAttacker.fKills ) );
 			forceinfokey( eTarget, "*deaths", ftos( eTarget.fDeaths ) );
 			
 			Money_AddMoney( eAttacker, 300 );

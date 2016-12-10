@@ -72,7 +72,7 @@ void WeaponMP5_PrimaryFire( void ) {
 		}
 	}
 #else
-	int iRand = ceil( random() * 3 );
+	int iRand = (int)floor( random( 1, 4 ) );
 	if ( iRand == 1 ) {
 		View_PlayAnimation( ANIM_MP5_SHOOT1 );
 	} else if ( iRand == 2 ) {

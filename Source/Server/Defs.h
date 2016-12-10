@@ -42,7 +42,7 @@ float EFFECT_BLOOD;
 .int iCrouching;
 .int iCrouchAttempt;
 .int iHasBomb;
-.float fKills, fDeaths;
+.float fDeaths;
 
 // Match specific fields
 int iWon_T;

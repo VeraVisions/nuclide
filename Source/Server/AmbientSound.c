@@ -41,9 +41,10 @@ Not Toggled (32) - 	Older FGDs show this as Not Looped.
       				Note that actual looping depends purely on cue points defined in the .wav file (see notes).
 */
 #ifdef SSQC
+.float pitch;
 void ambient_generic( void ) {
 	static float ambient_generic_send( entity ePEnt, float fChanged ) {
-		WriteByte( MSG_ENTITY, 1 ); // Identifier
+		WriteByte( MSG_ENTITY, ENT_AMBIENTSOUND ); // Identifier
 		WriteCoord( MSG_ENTITY, self.origin_x );
 		WriteCoord( MSG_ENTITY, self.origin_y );
 		WriteCoord( MSG_ENTITY, self.origin_z );
@@ -53,7 +54,7 @@ void ambient_generic( void ) {
 		return TRUE;
 	}
 	static void ambient_generic_use( void ) {
-		sound( self, CHAN_VOICE, self.message, self.health, self.style );
+		sound( self, CHAN_VOICE, self.message, self.health, self.style, self.pitch );
 	}
 	static void ambient_generic_useloop( void ) {
 		if ( self.state == TRUE ) {

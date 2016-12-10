@@ -33,7 +33,7 @@ void TraceAttack_FireBullets( int iShots ) {
 			if ( trace_ent.takedamage == DAMAGE_YES ) {
 				Damage_Apply( trace_ent, self, wptTable[ self.weapon ].iDamage, trace_endpos );
 			} else {
-				pointparticles( EFFECT_GUNSHOT, trace_endpos, '0 0 0', 1 );
+				pointparticles( EFFECT_GUNSHOT, trace_endpos, trace_plane_normal, 1 );
 			}
 		}
 		iShots--;

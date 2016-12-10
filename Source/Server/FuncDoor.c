@@ -175,6 +175,11 @@ FuncDoor_Trigger
 ====================
 */
 void FuncDoor_Trigger( void ) {
+	if ( self.fAttackFinished > self.ltime ) {
+		return;
+	}
+	self.fAttackFinished = self.ltime + self.wait;
+	
 	// Only trigger stuff when we are done moving
 	if ( ( self.state == STATE_RAISED ) || ( self.state == STATE_LOWERED ) ) {
 		if ( self.delay > 0 ) {

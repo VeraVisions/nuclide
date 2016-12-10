@@ -56,6 +56,8 @@ enum {
 void WeaponKNIFE_Draw( void ) {
 #ifdef SSQC
 	Client_SendEvent( self, EV_WEAPON_DRAW );
+	self.iCurrentClip = 0;
+	self.iCurrentCaliber = 0;
 #else
 	View_PlayAnimation( ANIM_KNIFE_DRAW );
 #endif

@@ -38,18 +38,18 @@ entity hostage_waypoint( void ) {
 
 // Called whenver a hostage is shot
 void hostage_pain( void ) {
-	self.frame = 13 - ceil( random() * 5);
+	self.frame = 13 - floor( random( 1, 6 ) );
 }
 
 // hosdown.wav
 void hostage_die( void ) {
 	Radio_BroadcastMessage( RADIO_HOSDOWN );
-	self.frame = 30 + ceil( random() * 5);
+	self.frame = 30 + floor( random( 1, 6 ) );
 	self.solid = SOLID_NOT;
 	self.takedamage = DAMAGE_NO;
 	
 	if ( other.eTargetPoint != other.eUser ) {
-			remove( other.eTargetPoint );
+		remove( other.eTargetPoint );
 	}
 }
 
@@ -57,10 +57,10 @@ void hostage_die( void ) {
 void hostage_use( void ) {
 	if ( eActivator.team == TEAM_CT ) {
 		if ( ( self.eUser == world ) ) {
-			
+			// Only give cash to the CT for using it for the first time
 			if ( self.iHasBeenUsed == FALSE ) {
 				Money_AddMoney( eActivator, 150 );
-				sound( self, CHAN_VOICE, sprintf( "hostage/hos%d.wav", ceil( random() * 5 ) ), 1.0, ATTN_IDLE );
+				sound( self, CHAN_VOICE, sprintf( "hostage/hos%d.wav", random( 1, 6 ) ), 1.0, ATTN_IDLE );
 				self.iHasBeenUsed = TRUE;
 			}
 			

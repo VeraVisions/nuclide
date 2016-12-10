@@ -68,7 +68,7 @@ void WeaponP90_PrimaryFire( void ) {
 		sound( self, CHAN_WEAPON, "weapons/p90-1.wav", 1, ATTN_NORM );
 	}
 #else
-	int iRand = ceil( random() * 3 );
+	int iRand = (int)floor( random( 1, 4 ) );
 	
 	if ( iRand == 1 ) {
 		View_PlayAnimation( ANIM_P90_SHOOT1 );

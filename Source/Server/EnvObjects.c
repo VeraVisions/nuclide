@@ -42,10 +42,48 @@ void cycler_sprite( void ) {
 
 	Entities_RenderSetup();
 	Entities_InitRespawnable( cycler_sprite_respawn );
+	self.vUse = cycler_sprite_respawn;
 }
 
 void env_glow( void ) {
 	cycler_sprite();
+}
+
+/*
+=================
+env_sprite
+
+This entity lets you display and cycle through the animation of a sprite.
+
+Attributes:
+Name (targetname) - Property used to identify entities.
+Pitch Yaw Roll (angles) - Sets the pitch (up / down), yaw (left / right) and roll (bank) respectively. The compass in WorldCraft / Hammer corresponds to Yaw. The settings are not always (or not all) used.
+Sprite (model) - A sprite must be specified here (sprites/spritename.spr).
+Frames per second (framerate) - Framerate the sprite will run at if animated.
+=================
+*/
+.float framerate;
+void env_sprite( void ) {
+	static float env_sprite_send( entity ePEnt, float fChanged ) {
+		WriteByte( MSG_ENTITY, ENT_SPRITE ); // Identifier
+		WriteCoord( MSG_ENTITY, self.origin_x );
+		WriteCoord( MSG_ENTITY, self.origin_y );
+		WriteCoord( MSG_ENTITY, self.origin_z );
+		WriteFloat( MSG_ENTITY, self.modelindex );
+		WriteFloat( MSG_ENTITY, self.framerate );
+		WriteFloat( MSG_ENTITY, self.scale );
+		WriteFloat( MSG_ENTITY, self.alpha );
+		WriteFloat( MSG_ENTITY, self.effects );
+		return TRUE;
+	}
+	static void env_sprite_use( void ) {
+	}
+	
+	precache_model( self.model );
+	setorigin( self, self.origin );
+	Entities_RenderSetup();
+	self.SendEntity = env_sprite_send;
+	self.vUse = env_sprite_use;
 }
 
 /*

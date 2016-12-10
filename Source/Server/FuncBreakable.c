@@ -68,7 +68,7 @@ void func_breakable_pain( void ) {
 	}
 	
 	if ( iTypeCount >= 1 ) {
-		sound( self, CHAN_VOICE, sprintf( "%s%d.wav", sTypeSample, ceil( random() * iTypeCount ) ), 1.0, ATTN_NORM );
+		sound( self, CHAN_VOICE, sprintf( "%s%d.wav", sTypeSample, random( 1, (float)iTypeCount + 1 ) ), 1.0, ATTN_NORM );
 	}
 }
 
@@ -108,7 +108,7 @@ void func_breakable_die( void ) {
 	}
 	
 	if ( iTypeCount >= 1 ) {
-		sound( self, CHAN_VOICE, sprintf( "%s%d.wav", sTypeSample, ceil( random() * iTypeCount ) ), 1.0, ATTN_NORM );
+		sound( self, CHAN_VOICE, sprintf( "%s%d.wav", sTypeSample, random( 1, (float)iTypeCount + 1 ) ), 1.0, ATTN_NORM );
 	}
 	
 	Effect_BreakModel( self.absmin, self.absmax, self.velocity, self.material );

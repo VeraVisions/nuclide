@@ -103,7 +103,7 @@ void WeaponUSP45_PrimaryFire( void ) {
 			View_PlayAnimation( ANIM_USP45_SHOOTLAST );
 		}
 	} else {
-		int iRand = ceil( random() * 3 );
+		int iRand = (int)floor( random( 1, 4 ) );
 		
 		if ( iRand == 1 ) {
 			if ( iWeaponMode_USP45 == TRUE ) {

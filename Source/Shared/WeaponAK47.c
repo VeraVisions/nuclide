@@ -72,7 +72,7 @@ void WeaponAK47_PrimaryFire( void ) {
 		}
 	}
 	#else
-	int iRand = ceil( random() * 3 );
+	int iRand = (int)floor( random( 1, 4 ) );
 	if ( iRand == 1 ) {
 		View_PlayAnimation( ANIM_AK47_SHOOT1 );
 	} else if ( iRand == 2 ) {

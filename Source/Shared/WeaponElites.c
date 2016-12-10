@@ -85,7 +85,7 @@ void WeaponELITES_PrimaryFire( void ) {
 		sound( self, CHAN_WEAPON, "weapons/elite_fire.wav", 1, ATTN_NORM );
 	}
 #else
-	int iRand = ceil( random() * 5 );
+	int iRand = (int)floor( random( 1, 4 ) );
 	if ( iWeaponMode_ELITES == 0 ) {
 		if ( getstatf( STAT_CURRENT_CLIP ) == 1 ) {
 			View_PlayAnimation( ANIM_ELITES_SHOOT_LEFTLAST );

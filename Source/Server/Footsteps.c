@@ -44,7 +44,7 @@ void Footsteps_Update( void ) {
 		dDelay = clamp( 0.1, 1 / ( fForce / 90 ), 1 );
 
 		traceline( self.origin + self.view_ofs, self.origin + '0 0 -48', FALSE, self );
-		sound( self, CHAN_BODY, sprintf( "player/pl_step%d.wav", ceil( random() * 4) ), 0.5, ATTN_IDLE );
+		sound( self, CHAN_BODY, sprintf( "player/pl_step%d.wav", random( 1, 5 ) ), 0.5, ATTN_IDLE );
 
 		self.fSteptime = time + dDelay;
 	}

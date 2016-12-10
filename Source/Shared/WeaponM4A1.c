@@ -94,7 +94,7 @@ void WeaponM4A1_PrimaryFire( void ) {
 		}
 	}
 #else
-	int iRand = ceil( random() * 3 );
+	int iRand = (int)floor( random( 1, 4 ) );
 		
 	if ( iRand == 1 ) {
 		if ( iWeaponMode_M4A1 == TRUE ) {

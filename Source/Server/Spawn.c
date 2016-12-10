@@ -211,9 +211,8 @@ void CSEv_GamePlayerSpawn_f( float fChar ) {
 		
 	}
 	
-	self.fKills = 0;
+	self.frags = 0;
 	self.fDeaths = 0;
-	forceinfokey( self, "*score", "0" );
 	forceinfokey( self, "*deaths", "0" );
 }
 
