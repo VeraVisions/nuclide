@@ -79,6 +79,19 @@ float OpenCSGunBase_PrimaryFire( void ) {
 }
 
 float OpenCSGunBase_Reload( void ) {
+	static void OpenCSGunBase_FinishReload( void ) {
+		// What if we've got less in our caliberfield than we need
+		if ( self.(wptTable[ self.weapon ].iCaliberfld) < wptTable[ self.weapon ].iClipSize ) {
+			self.(wptTable[ self.weapon ].iClipfld) = self.(wptTable[ self.weapon ].iCaliberfld);
+			self.(wptTable[ self.weapon ].iCaliberfld) = 0;
+		} else {
+			self.(wptTable[ self.weapon ].iCaliberfld) -= ( wptTable[ self.weapon ].iClipSize - self.(wptTable[ self.weapon ].iClipfld) );
+			self.(wptTable[ self.weapon ].iClipfld) = wptTable[ self.weapon ].iClipSize;
+		}
+		
+		Weapon_UpdateCurrents();
+	}
+	
 	// Don't bother reloading the gun when full
 	if ( self.(wptTable[ self.weapon ].iClipfld) == wptTable[ self.weapon ].iClipSize ) {
 		return FALSE;
@@ -89,16 +102,10 @@ float OpenCSGunBase_Reload( void ) {
 		return FALSE;
 	}
 	
-	// What if we've got less in our caliberfield than we need
-	if ( self.(wptTable[ self.weapon ].iCaliberfld) < wptTable[ self.weapon ].iClipSize ) {
-		self.(wptTable[ self.weapon ].iClipfld) = self.(wptTable[ self.weapon ].iCaliberfld);
-		self.(wptTable[ self.weapon ].iCaliberfld) = 0;
-	} else {
-		self.(wptTable[ self.weapon ].iCaliberfld) -= ( wptTable[ self.weapon ].iClipSize - self.(wptTable[ self.weapon ].iClipfld) );
-		self.(wptTable[ self.weapon ].iClipfld) = wptTable[ self.weapon ].iClipSize;
-	}
 	
-	self.fAttackFinished = time + wptTable[ self.weapon ].fReloadFinished;
+	self.think = OpenCSGunBase_FinishReload;
+	self.nextthink = time + wptTable[ self.weapon ].fReloadFinished;
+	self.fAttackFinished = self.nextthink;
 	
 	Client_SendEvent( self, EV_WEAPON_RELOAD );
 	return TRUE;

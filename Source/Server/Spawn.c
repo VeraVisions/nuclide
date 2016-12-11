@@ -171,7 +171,7 @@ void Spawn_MakeSpectator( void ) {
 	}
 	
 	// Clear the inventory
-	self.iSlotMelee = self.iSlotPrimary = self.iSlotSecondary = self.iSlotGrenade = 0;
+	self.fSlotMelee = self.fSlotPrimary = self.fSlotSecondary = self.fSlotGrenade = 0;
 }
 
 // Event Handling, called by the Client codebase via 'sendevent'

@@ -58,6 +58,9 @@ void Weapon_Draw( float fWeapon ) {
 		return;
 	}
 	
+	// In case reloading logic is still going on
+	self.think = Empty;
+	
 	wpnFuncTable[ fWeapon ].vDraw();
 	
 	#ifdef SSQC
@@ -97,7 +100,6 @@ void Weapon_Reload( float fWeapon ) {
 }
 
 #ifdef SSQC
-
 void Weapon_Switch( int iSlot ) {
 	if ( self.fAttackFinished > time ) {
 		return;
@@ -106,13 +108,13 @@ void Weapon_Switch( int iSlot ) {
 	float fWeapon;
 	
 	if ( iSlot == SLOT_MELEE ) {
-		fWeapon = self.iSlotMelee;
+		fWeapon = self.fSlotMelee;
 	} else if ( iSlot == SLOT_PRIMARY ) {
-		fWeapon = self.iSlotPrimary;
+		fWeapon = self.fSlotPrimary;
 	} else if ( iSlot == SLOT_SECONDARY ) {
-		fWeapon = self.iSlotSecondary;
+		fWeapon = self.fSlotSecondary;
 	} else if ( iSlot == SLOT_GRENADE ) {
-		fWeapon = self.iSlotGrenade;
+		fWeapon = self.fSlotGrenade;
 	}
 	
 	if ( !fWeapon || self.weapon == fWeapon ) {
@@ -134,13 +136,13 @@ void Weapon_AddItem( float fWeapon ) {
 	
 	// Add the gun to the appropriate slot
 	if( wptTable[ fWeapon ].iSlot == SLOT_MELEE ) {
-		self.iSlotMelee = fWeapon;
+		self.fSlotMelee = fWeapon;
 	} else if ( wptTable[ fWeapon ].iSlot == SLOT_SECONDARY ) {
-		self.iSlotSecondary = fWeapon;
+		self.fSlotSecondary = fWeapon;
 	} else if( wptTable[ fWeapon ].iSlot == SLOT_PRIMARY ) {
-		self.iSlotPrimary = fWeapon;
+		self.fSlotPrimary = fWeapon;
 	} else if ( wptTable[ fWeapon ].iSlot == SLOT_GRENADE ) {
-		self.iSlotGrenade = fWeapon;
+		self.fSlotGrenade = fWeapon;
 	}
 	
 	// Switch to it
@@ -156,9 +158,9 @@ void Weapon_GiveAmmo( float fWeapon, float fAmount ) {
 }
 
 void Weapon_SwitchBest( void ) {
-	if ( self.iSlotSecondary ) {
+	if ( self.fSlotSecondary ) {
 		Weapon_Switch( SLOT_SECONDARY );
-	} else if ( self.iSlotPrimary ) {
+	} else if ( self.fSlotPrimary ) {
 		Weapon_Switch( SLOT_PRIMARY );
 	} else {
 		Weapon_Switch( SLOT_MELEE );
@@ -176,6 +178,13 @@ void CSEv_PlayerBuyWeapon_f( float fWeapon ) {
 		Money_AddMoney( self, -wptTable[ fWeapon ].iPrice );
 		sound( self, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_IDLE );
 	}
+	self.fAttackFinished = time + 1.0;
+}
+
+void CSEv_PlayerSwitchWeapon_f( float fWeapon ) {
+	self.weapon = fWeapon;
+	Weapon_Draw( fWeapon );
+	
 	self.fAttackFinished = time + 1.0;
 }
 #endif

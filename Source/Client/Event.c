@@ -28,7 +28,8 @@ Init all the cmds in one place
 void CSQC_ConsoleCommand_Init( void ) {
 	registercommand( "buy" );
 	registercommand( "chooseteam" );
-	registercommand( "testobt" );
+	registercommand( "invnext" );
+	registercommand( "invprev" );
 	registercommand( "+showscores" );
 	registercommand( "-showscores" );
 }
@@ -42,8 +43,7 @@ Can interject cmds and create new ones
 */
 float CSQC_ConsoleCommand( string sCMD ) {
 	tokenize( sCMD );
-	switch ( argv(0) )
-	{
+	switch ( argv(0) ) {
 	case "buy":
 		if( getstatf( STAT_BUYZONE ) == TRUE ) {
 			fVGUI_Display = VGUI_BM_MAIN;
@@ -52,6 +52,14 @@ float CSQC_ConsoleCommand( string sCMD ) {
 		break;
     case "chooseteam":
 		fVGUI_Display = VGUI_TEAMSELECT;
+		return TRUE;
+		break;
+	case "invnext":
+		HUD_DrawWeaponSelect_Back();
+		return TRUE;
+		break;
+	case "invprev":
+		HUD_DrawWeaponSelect_Forward();
 		return TRUE;
 		break;
 	case "+showscores":
@@ -162,5 +170,10 @@ void CSQC_Input_Frame( void ) {
 		input_movevalues = '0 0 0';
 		input_buttons = 0;
 		input_impulse = 0;
+	}
+	
+	if ( ( fHUDWeaponSelected ) && ( input_buttons & INPUT_BUTTON0 ) ) {
+		HUD_DrawWeaponSelect_Trigger();
+		input_buttons = 0;
 	}
 }

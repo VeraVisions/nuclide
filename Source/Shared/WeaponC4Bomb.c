@@ -150,7 +150,7 @@ void WeaponC4BOMB_Drop( vector vBombPos ) {
 	iBombPlanted = TRUE;
 	
 	// Tell the bomb-planter to get rid of the weapon!
-	self.iSlotGrenade = self.iSlotGrenade - WEAPON_C4BOMB;
+	self.fSlotGrenade = self.fSlotGrenade - WEAPON_C4BOMB;
 	Weapon_SwitchBest();
 }
 #endif

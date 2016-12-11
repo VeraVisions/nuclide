@@ -400,4 +400,5 @@ void HUD_Draw( void ) {
 	HUD_DrawAmmo();
 	HUD_DrawOrbituaries();
 	HUD_DrawProgressBar();
+	HUD_DrawWeaponSelect();
 }

@@ -20,11 +20,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 void Input_Handle( void ) {
 	// TODO: Make this fast switch only
-	if ( self.impulse == 1 ) {
+	if ( self.impulse == 3 ) {
 		Weapon_Switch( SLOT_MELEE );
 	} else if ( self.impulse == 2 ) {
 		Weapon_Switch( SLOT_SECONDARY );
-	} else if ( self.impulse == 3 ) {
+	} else if ( self.impulse == 1 ) {
 		Weapon_Switch( SLOT_PRIMARY );
 	} else if ( self.impulse == 4 ) {
 		Weapon_Switch( SLOT_GRENADE );

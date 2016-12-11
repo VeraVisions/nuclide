@@ -273,10 +273,10 @@ void worldspawn( void ) {
 	
 	clientstat( 4, EV_FLOAT, armor );
 	clientstat( STAT_MONEY, EV_FLOAT, fMoney );
-	clientstat( STAT_SLOT_MELEE, EV_INTEGER, iSlotMelee );
-	clientstat( STAT_SLOT_PRIMARY, EV_INTEGER, iSlotPrimary );
-	clientstat( STAT_SLOT_SECONDARY, EV_INTEGER, iSlotSecondary );
-	clientstat( STAT_SLOT_GRENADE, EV_INTEGER, iSlotGrenade );
+	clientstat( STAT_SLOT_MELEE, EV_FLOAT, fSlotMelee );
+	clientstat( STAT_SLOT_PRIMARY, EV_FLOAT, fSlotPrimary );
+	clientstat( STAT_SLOT_SECONDARY, EV_FLOAT, fSlotSecondary );
+	clientstat( STAT_SLOT_GRENADE, EV_FLOAT, fSlotGrenade );
 	clientstat( STAT_CURRENT_CLIP, EV_INTEGER, iCurrentClip );
 	clientstat( STAT_CURRENT_CALIBER, EV_INTEGER, iCurrentCaliber );
 	clientstat( STAT_TEAM, EV_INTEGER, team );

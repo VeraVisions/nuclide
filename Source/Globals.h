@@ -127,9 +127,9 @@ enum {
 
 // Slot types
 enum { 
-	SLOT_MELEE,
-	SLOT_SECONDARY,
 	SLOT_PRIMARY,
+	SLOT_SECONDARY,
+	SLOT_MELEE,
 	SLOT_GRENADE
 };
 
@@ -206,6 +206,14 @@ enum {
 	MATERIAL_NONE	
 };
 
+// Actually used by input_button etc.
+#define INPUT_BUTTON0 1
+#define INPUT_BUTTON2 2
+#define INPUT_BUTTON3 4
+#define INPUT_BUTTON4 8
+#define INPUT_BUTTON5 16
+#define INPUT_BUTTON6 32
+
 float clamp(float d, float imin, float imax) {
 	float t;
 
@@ -219,3 +227,5 @@ float clamp(float d, float imin, float imax) {
   else
 	  return t;
 }
+
+void Empty( void ) { }

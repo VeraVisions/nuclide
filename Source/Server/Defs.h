@@ -61,7 +61,7 @@ float fGameTime;
 // Weapon specific fields
 .int iCurrentClip;
 .int iCurrentCaliber;
-.int iSlotMelee, iSlotPrimary, iSlotSecondary, iSlotGrenade;
+.float fSlotMelee, fSlotPrimary, fSlotSecondary, fSlotGrenade;
 .float fAttackFinished;
 .float fAccuracy;
 
@@ -116,6 +116,7 @@ void Spawn_MakeSpectator( void );
 void Client_SendEvent( entity eClient, float fEVType );
 void Client_TriggerCamera( entity eTarget, vector vPos, vector vEndPos, float fResetTime );
 void Weapon_SwitchBest( void );
+void Weapon_UpdateCurrents( void );
 
 void OpenCSGunBase_AccuracyCalc( void );
 void OpenCSGunBase_Draw( void );

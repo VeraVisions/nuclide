@@ -48,6 +48,7 @@ VGUIMOTD.c
 VGUIBuyMenu.c
 VGUITeamSelect.c
 VGUI.c
+HUDWeaponSelect.c
 HUDOrbituaries.c
 HUD.c
 Draw.c

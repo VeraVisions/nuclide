@@ -30,6 +30,17 @@ void CSQC_Init(float apilevel, string enginename, float engineversion) {
 	precache_model( "sprites/640hud1.spr" );
 	precache_model( "sprites/640hud16.spr" );
 	
+	precache_model( "sprites/640hud2.spr" );
+	precache_model( "sprites/640hud10.spr" );
+	precache_model( "sprites/640hud12.spr" );
+	precache_model( "sprites/640hud14.spr" );
+	precache_model( "sprites/640hud3.spr" );
+	
+	precache_sound( "common/wpn_hudon.wav" );
+	precache_sound( "common/wpn_hudoff.wav" );
+	precache_sound( "common/wpn_moveselect.wav" );
+	precache_sound( "common/wpn_select.wav" );
+	
 	for( int i = 0; i < CS_WEAPON_COUNT; i++ ) {
 		precache_model( sViewModels[ i ] );
 	}
