@@ -37,6 +37,7 @@ Defs.h
 ../Shared/Weapons.c
 ../Shared/Effects.c
 ../Shared/Radio.c
+../Shared/Equipment.c
 
 ../Server/AmbientSound.c
 

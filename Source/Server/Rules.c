@@ -92,6 +92,7 @@ void Rules_Restart( void ) {
 				if ( iPickT == iRandomT ) {
 					self = eFind;
 					Weapon_AddItem( WEAPON_C4BOMB );
+					centerprint( self, "You have the bomb!\nFind the target zone or DROP\nthe bomb for another Terrorist." );
 				}
 			}
 		}
@@ -109,6 +110,7 @@ void Rules_Restart( void ) {
 					self = eFind;
 					self.team = TEAM_VIP;
 					Spawn_RespawnClient( self.team );
+					centerprint( self, "You are the VIP\nMake your way to the safety zones!" );
 					forceinfokey( self, "*dead", "2" );
 				}
 			}
@@ -130,20 +132,26 @@ void Rules_Restart( void ) {
 }
 
 // This can happen whenever an objective is complete or time is up
-void Rules_RoundOver( int iTeamWon, int iMoneyReward ) {
+void Rules_RoundOver( int iTeamWon, int iMoneyReward, float fSilent ) {
 	
 	if ( fGameState != GAME_ACTIVE ) {
 		return;
 	}
 	
 	if ( iTeamWon == TEAM_T ) {
-		Radio_BroadcastMessage( RADIO_TERWIN );
+		if ( fSilent == TRUE ) {
+			Radio_BroadcastMessage( RADIO_TERWIN );
+		}
 		iWon_T++;
 	} else if ( iTeamWon == TEAM_CT ) {
-		Radio_BroadcastMessage( RADIO_CTWIN );
+		if ( fSilent == TRUE ) {
+			Radio_BroadcastMessage( RADIO_CTWIN );
+		}
 		iWon_CT++;
 	} else {
-		Radio_BroadcastMessage( RADIO_ROUNDDRAW );
+		if ( fSilent == TRUE ) {
+			Radio_BroadcastMessage( RADIO_ROUNDDRAW );
+		}
 	}
 	Money_QueTeamReward( iTeamWon, iMoneyReward );
 	Timer_Begin( 5, GAME_END); // Round is over, 5 seconds til a new round starts
@@ -152,14 +160,14 @@ void Rules_RoundOver( int iTeamWon, int iMoneyReward ) {
 // Whenever mp_roundtime was being counted down to 0
 void Rules_TimeOver( void ) {
 	if ( iVIPZones > 0 ) {
-		Rules_RoundOver( TEAM_T, 3250 );
+		Rules_RoundOver( TEAM_T, 3250, FALSE );
 	} else if ( iBombZones > 0 ) {
-		Rules_RoundOver( TEAM_CT, 3250 );
+		Rules_RoundOver( TEAM_CT, 3250, FALSE );
 	} else if ( iHostagesMax > 0 ) {
 		// TODO: Broadcast_Print: Hostages have not been rescued!
-		Rules_RoundOver( TEAM_T, 3250 );
+		Rules_RoundOver( TEAM_T, 3250, FALSE );
 	} else {
-		Rules_RoundOver( 0, 0 );
+		Rules_RoundOver( 0, 0, FALSE );
 	}
 }
 

@@ -1,0 +1,9 @@
+#pragma target fte
+
+#pragma progs_dat  "../../opencs/menu.dat"
+
+#includelist
+../Builtins.h
+../Globals.h
+../Math.h
+#endlist

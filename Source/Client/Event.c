@@ -28,7 +28,6 @@ Init all the cmds in one place
 void CSQC_ConsoleCommand_Init( void ) {
 	registercommand( "buy" );
 	registercommand( "chooseteam" );
-	registercommand( "use" );
 	registercommand( "testobt" );
 	registercommand( "+showscores" );
 	registercommand( "-showscores" );
@@ -53,14 +52,6 @@ float CSQC_ConsoleCommand( string sCMD ) {
 		break;
     case "chooseteam":
 		fVGUI_Display = VGUI_TEAMSELECT;
-		return TRUE;
-		break;
-    case "use":
-		sendevent( "PlayerUse", "" );
-		return TRUE;
-		break;
-    case "testobt":
-		HUD_AddOrbituaries( player_localnum, TEAM_T, player_localnum, TEAM_CT, getstatf( STAT_ACTIVEWEAPON ), FALSE );
 		return TRUE;
 		break;
 	case "+showscores":

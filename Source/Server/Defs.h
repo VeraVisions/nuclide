@@ -43,6 +43,11 @@ float EFFECT_BLOOD;
 .int iCrouchAttempt;
 .int iHasBomb;
 .float fDeaths;
+.int iEquipment;
+.float armor;
+.float fProgressBar;
+
+#define FL_USERELEASED 8192
 
 // Match specific fields
 int iWon_T;
@@ -77,6 +82,7 @@ int iBombPlanted;
 .void() vPain;
 .void() vDeath;
 .float fRespawns;
+.entity eUser;
 
 // All about +use
 entity eActivator;
@@ -101,7 +107,7 @@ string sCSPlayers[9] = {
 	"models/player/gign/gign.mdl"
 };
 
-void Rules_RoundOver( int iTeamWon, int iMoneyReward );
+void Rules_RoundOver( int iTeamWon, int iMoneyReward, float fSilent );
 float Rules_BuyingPossible( void );
 void Timer_Begin( float fTime, float fMode);
 void Spawn_RespawnClient( float fTeam );

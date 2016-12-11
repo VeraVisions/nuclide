@@ -38,6 +38,7 @@ enum {
 	STAT_SLOT_GRENADE,
 	STAT_CURRENT_CLIP,
 	STAT_CURRENT_CALIBER,
+	STAT_PROGRESS,
 	STAT_TEAM,
 	STAT_WON_T,
 	STAT_WON_CT
@@ -84,6 +85,15 @@ enum {
 	WEAPON_PARA,
 	WEAPON_C4BOMB
 };
+
+#define CS_EQUIPMENT_COUNT 7
+#define EQUIPMENT_KEVLAR 		1
+#define EQUIPMENT_HELMET 		2
+#define EQUIPMENT_FLASHBANG 	4
+#define EQUIPMENT_HEGRENADE 	8
+#define EQUIPMENT_SMOKEGRENADE 	16
+#define EQUIPMENT_DEFUSALKIT 	32
+#define EQUIPMENT_NIGHTVISION 	64
 
 enum {
 	CALIBER_50AE = 1,
@@ -151,6 +161,11 @@ typedef struct {
 	float fAccuracyOffset;
 	float fMaxInaccuracy;
 } weaponinfo_t;
+
+typedef struct {
+	int iID;
+	int iPrice;
+} equipmentinfo_t;
 
 typedef struct {
 	int iSize;

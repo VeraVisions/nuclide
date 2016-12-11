@@ -146,6 +146,11 @@ brush_rotate_trigger - What happens when you +use the brush or trigger it
 =================
 */
 void FuncDoorRotate_Trigger( void ) {
+	if ( self.fAttackFinished > time ) {
+		return;
+	}
+	self.fAttackFinished = self.ltime + self.wait;
+	
 	if ( ( self.state == STATE_UP ) || ( self.state == STATE_RAISED ) ) {
 		FuncDoorRotate_RotateBack();
 		return;
@@ -167,6 +172,7 @@ FuncDoorRotate_Touch
 */
 void FuncDoorRotate_Touch( void ) {
 	if ( other.classname == "player" ) {
+		eActivator = other;
 		FuncDoorRotate_Trigger();
     
 		if( !( self.spawnflags & SF_ROT_USE ) ) {
@@ -217,6 +223,10 @@ void func_door_rotating( void ) {
 
 	if ( !self.speed ) {
 		self.speed = 100;
+	}
+	
+	if( self.wait == 0 ) {
+		self.wait = 4;
 	}
   
 	self.pos1 = self.angles;

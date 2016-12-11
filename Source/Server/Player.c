@@ -43,17 +43,17 @@ void Player_Death( void ) {
 		
 		// If the bomb has been planted, T deaths don't matter anymore
 		if ( iAlivePlayers_T == 0 && iBombPlanted == FALSE ) {
-			Rules_RoundOver( TEAM_CT, 3600 );
+			Rules_RoundOver( TEAM_CT, 3600, FALSE );
 		}
 	} else if ( self.team == TEAM_CT ) {
 		iAlivePlayers_CT--;
 		
 		if ( iAlivePlayers_CT == 0 ) {
-			Rules_RoundOver( TEAM_T, 3600 );
+			Rules_RoundOver( TEAM_T, 3600, FALSE );
 		}
 	} else if ( self.team == TEAM_VIP ) {
 		iAlivePlayers_CT--; // For consistency
-		Rules_RoundOver( TEAM_T, 2500 );
+		Rules_RoundOver( TEAM_T, 2500, FALSE );
 	}
 }
 
@@ -116,7 +116,7 @@ void Player_CrouchUp( void ) {
 		return;
 	}
 
-	if ( self.iCrouching && ( !self.velocity_z ) && (Player_CrouchCheck( self ) ) ) {
+	if ( self.iCrouching && ( !self.velocity_z ) && ( Player_CrouchCheck( self ) ) ) {
 		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 
 		setorigin( self, self.origin + '0 0 18');
@@ -129,4 +129,50 @@ void Player_CrouchUp( void ) {
 	}
 
 	self.iCrouchAttempt = TRUE;
+}
+
+/*
+====================
+Player_UseDown
+====================
+*/
+void Player_UseDown( void ) {
+	if ( !( self.flags & FL_USERELEASED ) ) {
+		return;
+	}
+	
+	vector vSource;
+	entity eOriginalSelf;
+
+	makevectors(self.v_angle);
+	vSource = self.origin + self.view_ofs;
+	traceline ( vSource, vSource + ( v_forward * 64 ), FALSE, self);
+	
+	if ( trace_ent.iUsable ) {
+		sound( self, CHAN_WEAPON, "common/wpn_select.wav", 0.25, ATTN_IDLE );
+		if ( trace_ent.classname != "c4bomb" ) {
+			self.flags = ( self.flags - FL_USERELEASED );
+		} 
+		
+		eActivator = self;
+		eOriginalSelf = self;
+		self = trace_ent;
+		self.vUse();
+		self = eOriginalSelf;
+	} else {
+		sound( self, CHAN_WEAPON, "common/wpn_denyselect.wav", 0.25, ATTN_IDLE );
+		self.flags = ( self.flags - FL_USERELEASED );
+	}
+}
+
+/*
+====================
+Player_UseUp
+====================
+*/
+void Player_UseUp( void ) {
+	if ( !( self.frags & FL_USERELEASED ) ) {
+		self.flags = self.flags | FL_USERELEASED;
+		self.fProgressBar = 0;
+	}
 }

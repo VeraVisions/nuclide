@@ -74,6 +74,7 @@ float OpenCSGunBase_PrimaryFire( void ) {
 	self.fAttackFinished = time + wptTable[ self.weapon ].fAttackFinished;
 	
 	Client_SendEvent( self, EV_WEAPON_PRIMARYATTACK );
+	self.effects = self.effects | EF_MUZZLEFLASH;
 	return TRUE;
 }
 

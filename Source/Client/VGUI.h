@@ -52,4 +52,10 @@ typedef struct {
 typedef struct {
 	string sName;
 	string sImage;
-} vguiweapon_t;
+} vguiweaponobject_t;
+
+typedef struct {
+	float fID;
+	string sName;
+	string sImage;
+} vguiequipobject_t;

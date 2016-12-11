@@ -90,6 +90,10 @@ void worldspawn( void ) {
 	precache_sound( "player/pl_step4.wav" );
 	
 	precache_sound( "items/9mmclip1.wav" );
+	precache_sound( "items/tr_kevlar.wav" );
+	precache_sound( "items/gunpickup2.wav" );
+	precache_sound( "common/wpn_select.wav" );
+	precache_sound( "common/wpn_denyselect.wav" );
 	
 	precache_sound( "weapons/ak47-1.wav" );
 	precache_sound( "weapons/ak47-2.wav" );
@@ -267,6 +271,7 @@ void worldspawn( void ) {
 	clientstat( STAT_HOSTAGEZONE, EV_FLOAT, fInHostageZone );
 	clientstat( STAT_BOMBZONE, EV_FLOAT, fInBombZone );
 	
+	clientstat( 4, EV_FLOAT, armor );
 	clientstat( STAT_MONEY, EV_FLOAT, fMoney );
 	clientstat( STAT_SLOT_MELEE, EV_INTEGER, iSlotMelee );
 	clientstat( STAT_SLOT_PRIMARY, EV_INTEGER, iSlotPrimary );
@@ -275,6 +280,7 @@ void worldspawn( void ) {
 	clientstat( STAT_CURRENT_CLIP, EV_INTEGER, iCurrentClip );
 	clientstat( STAT_CURRENT_CALIBER, EV_INTEGER, iCurrentCaliber );
 	clientstat( STAT_TEAM, EV_INTEGER, team );
+	clientstat( STAT_PROGRESS, EV_FLOAT, fProgressBar );
 	pointerstat( STAT_GAMETIME, EV_FLOAT, &fGameTime );
 	pointerstat( STAT_WON_T, EV_INTEGER, &iWon_T );
 	pointerstat( STAT_WON_CT, EV_INTEGER, &iWon_CT );

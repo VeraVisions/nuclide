@@ -80,8 +80,10 @@ void env_sprite( void ) {
 	}
 	
 	precache_model( self.model );
+	setmodel( self, self.model );
 	setorigin( self, self.origin );
 	Entities_RenderSetup();
+	self.pvsflags = PVSF_NOREMOVE | PVSF_IGNOREPVS;
 	self.SendEntity = env_sprite_send;
 	self.vUse = env_sprite_use;
 }

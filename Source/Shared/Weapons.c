@@ -129,6 +129,7 @@ void Weapon_UpdateCurrents( void ) {
 }
 
 // We get a weapon for the first time essentially
+// TODO: Drop the current slot weapon upon buying a new one
 void Weapon_AddItem( float fWeapon ) {
 	
 	// Add the gun to the appropriate slot
@@ -164,15 +165,17 @@ void Weapon_SwitchBest( void ) {
 	}
 }
 
-void CSEv_GamePlayerBuy_f( float fWeapon ) {
+void CSEv_PlayerBuyWeapon_f( float fWeapon ) {
 	if ( Rules_BuyingPossible() == FALSE ) {
 		return;
 	}
 	
-	Weapon_AddItem( fWeapon );
-	Weapon_Draw( fWeapon );
-
-	self.fMoney -= wptTable[ fWeapon ].iPrice;
+	if ( ( self.fMoney - wptTable[ fWeapon ].iPrice ) >= 0 ) {
+		Weapon_AddItem( fWeapon );
+		Weapon_Draw( fWeapon );
+		Money_AddMoney( self, -wptTable[ fWeapon ].iPrice );
+		sound( self, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_IDLE );
+	}
 	self.fAttackFinished = time + 1.0;
 }
 #endif

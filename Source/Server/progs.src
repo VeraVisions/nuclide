@@ -8,6 +8,8 @@
 ../Math.h
 Defs.h
 
+Money.c
+
 ../Shared/Radio.c
 ../Shared/WeaponAK47.c
 ../Shared/WeaponAUG.c
@@ -36,8 +38,8 @@ Defs.h
 ../Shared/WeaponBase.c
 ../Shared/Weapons.c
 ../Shared/Effects.c
+../Shared/Equipment.c
 
-Money.c
 Ammo.c
 Damage.c
 TraceAttack.c

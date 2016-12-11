@@ -57,10 +57,20 @@ enum {
 
 #ifdef SSQC
 void WeaponC4BOMB_Drop( vector vBombPos ) {
-	static void c4bomb_think( void ) {
+	static float fBeepTime; // Used for the beeping sounds that last 1.5 seconds
+	static float fDefuseProgress; // Used to track... the progress
+	
+	static void C4BombThink( void ) {
+		// If the guy who started using us stopped using us, reset the defuser counter
+		if ( ( self.eUser != world ) && ( self.eUser.button6 == FALSE ) ) {
+			self.eUser.fProgressBar = 0;
+			self.eUser = world;
+			fDefuseProgress = 0;
+		}
+		
+		// If our time has passed, explode
 		if ( self.fAttackFinished < time ) {
-			Rules_RoundOver( TEAM_T, 3500 );
-			// EXPLODE!
+			Rules_RoundOver( TEAM_T, 3500, FALSE );
 			sound( self, CHAN_VOICE, "weapons/c4_explode1.wav", 1.0, ATTN_NONE );
 			Damage_Radius( self.origin, self.owner, 500, 1024 );
 			remove( self );
@@ -68,7 +78,15 @@ void WeaponC4BOMB_Drop( vector vBombPos ) {
 			return;
 		}
 		
-		if ( self.fAttackFinished - time < 5 ) {
+		// Only play sounds every once in a while
+		if ( fBeepTime > time ) {
+			return;
+		}
+		fBeepTime = time + 1.5;
+		
+		if ( self.fAttackFinished - time < 2 ) {
+			sound( self, CHAN_VOICE, "weapons/c4_beep5.wav", 1.0, ATTN_NONE );
+		} else if ( self.fAttackFinished - time < 5 ) {
 			sound( self, CHAN_VOICE, "weapons/c4_beep5.wav", 1.0, ATTN_NORM );
 		} else if ( self.fAttackFinished - time < 10 ) {
 			sound( self, CHAN_VOICE, "weapons/c4_beep4.wav", 1.0, ATTN_NORM );
@@ -79,19 +97,59 @@ void WeaponC4BOMB_Drop( vector vBombPos ) {
 		} else {
 			sound( self, CHAN_VOICE, "weapons/c4_beep1.wav", 1.0, ATTN_NORM );
 		}
-		self.nextthink = time + 1.5;
+	}
+	static void C4BombUse( void ) {
+		/*if ( eActivator.team != TEAM_CT ) {
+			return;
+		}*/
+		
+		// On first use, play defusing sound
+		if ( self.eUser == world ) {
+			sound( self, CHAN_VOICE, "weapons/c4_disarm.wav", 1.0, ATTN_NORM );
+		}
+		
+		// Takes 10 seconds to defuse that thing!
+		if ( fDefuseProgress > 10 ) {
+			sound( self, CHAN_VOICE, "weapons/c4_disarmed.wav", 1.0, ATTN_NORM );
+			Rules_RoundOver( TEAM_CT, 3500, TRUE );
+			Radio_BroadcastMessage( RADIO_BOMBDEF );
+			eActivator.fProgressBar = 0;
+			iBombPlanted = FALSE;
+			remove( self );
+			return;
+		}
+		
+		// If the user has for the right equipment, make 10 seconds pass twice as fast
+		if ( eActivator.iEquipment & EQUIPMENT_DEFUSALKIT ) {
+			fDefuseProgress += ( frametime * 2 );
+		} else {
+			fDefuseProgress += frametime;
+		}
+		
+		eActivator.fProgressBar = (fDefuseProgress * 0.1);
+		
+		// Makesure C4BombThink knows who the user is
+		self.eUser = eActivator;
 	}
 	
+	// Do all the dirty entspawning stuff
 	entity eBomb = spawn();
+	eBomb.classname = "c4bomb";
 	setorigin( eBomb, vBombPos );
 	setmodel( eBomb, "models/w_c4.mdl" );
-	eBomb.think = c4bomb_think;
-	eBomb.nextthink = time + 1.5;
+	eBomb.solid = SOLID_BBOX;
+	eBomb.customphysics = C4BombThink;
 	eBomb.fAttackFinished = time + cvar( "mp_c4timer" );
+	eBomb.vUse = C4BombUse;
+	eBomb.iUsable = TRUE;
+	
 	sound( eBomb, CHAN_WEAPON, "weapons/c4_plant.wav", 1.0, ATTN_IDLE );
 	
+	// Broadcast the bomb state
 	Radio_BroadcastMessage( RADIO_BOMBPL );
 	iBombPlanted = TRUE;
+	
+	// Tell the bomb-planter to get rid of the weapon!
 	self.iSlotGrenade = self.iSlotGrenade - WEAPON_C4BOMB;
 	Weapon_SwitchBest();
 }
@@ -119,6 +177,7 @@ void WeaponC4BOMB_PrimaryFire( void ) {
 	makevectors( self.v_angle );
 	traceline( self.origin + self.view_ofs, self.origin + self.view_ofs + ( v_forward * 64 ), FALSE, self );
 	
+	// If we aren't aiming at a place or look in the wrong location... stop it
 	if ( trace_fraction == 1 || self.fInBombZone == FALSE ) {
 		WeaponC4BOMB_Release();
 		self.fAttackFinished = time + 1.0;

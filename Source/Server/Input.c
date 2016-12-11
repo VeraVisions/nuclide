@@ -44,27 +44,11 @@ void Input_Handle( void ) {
 		Weapon_SecondaryAttack( self.weapon );
 	}
 	
+	if ( self.button6 ) {
+		Player_UseDown(); 
+	} else {
+		Player_UseUp();
+	}
+	
 	self.impulse = 0; 
-}
-
-/*
-====================
-CSEv_PlayerUse
-====================
-*/
-void CSEv_PlayerUse( void ) {
-	vector vSource;
-	entity eOriginalSelf;
-
-	makevectors(self.v_angle);
-	vSource = self.origin + self.view_ofs;
-	traceline ( vSource, vSource + ( v_forward * 64 ), FALSE, self);
-
-	if ( trace_ent.iUsable ) {
-		eActivator = self;
-		eOriginalSelf = self;
-		self = trace_ent;
-		self.vUse();
-		self = eOriginalSelf;
-	}	
 }
