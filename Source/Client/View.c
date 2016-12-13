@@ -46,21 +46,67 @@ string sViewModels[ CS_WEAPON_COUNT ] = {
 	"models/v_c4.mdl"
 };
 
+/*
+====================
+View_CalcBob
+====================
+*/
+vector pmove_vel;
+float V_CalcBob( void ) {
+	static float fBobTime;
+	static float fBob;
+	float fCycle;
+
+	vector vVelocity;
+	
+	if ( self.flags & FL_ONGROUND == -1 ) {
+		return fBob;	
+	}
+
+	fBobTime += frametime;
+	fCycle = fBobTime - (int)( fBobTime / cvar( "cl_bobcycle" ) ) * cvar( "cl_bobcycle" );
+	fCycle /= cvar( "cl_bobcycle" );
+	
+	if ( fCycle < cvar( "cl_bobup" ) ) {
+		fCycle = MATH_PI * fCycle / cvar( "cl_bobup" );
+	} else {
+		fCycle = MATH_PI + MATH_PI * ( fCycle - cvar( "cl_bobup" ) )/( 1.0 - cvar( "cl_bobup" ) );
+	}
+
+	vVelocity = pmove_vel; //ePlayerEnt.velocity;
+	vVelocity_z = 0;
+
+	fBob = sqrt( vVelocity_x * vVelocity_x + vVelocity_y * vVelocity_y ) * cvar( "cl_bob" );
+	fBob = fBob * 0.3 + fBob * 0.7 * sin(fCycle);
+	fBob = Math_Min( fBob, 4 );
+	fBob = Math_Max( fBob, -7 );
+	
+	return fBob * 0.5;
+}
+
 entity eViewModel;
 void View_DrawViewModel( void ) {
+	static float fLastTime;
+	
 	if( !eViewModel ) {
 		eViewModel = spawn();
-		eViewModel.renderflags = RF_DEPTHHACK | RF_VIEWMODEL;
+		eViewModel.renderflags = RF_DEPTHHACK;
 	}
 	
-	eViewModel.origin = '0 0 -1';
+	if ( time != fLastTime ) {
+		makevectors( getproperty( VF_ANGLES ) );
+		eViewModel.origin = getproperty( VF_ORIGIN ) + '0 0 -1' + ( v_forward * V_CalcBob() );
+		eViewModel.angles = getproperty( VF_ANGLES );
+		
+		if( getstatf( STAT_ACTIVEWEAPON ) < CS_WEAPON_COUNT ) {
+			setmodel( eViewModel, sViewModels[ getstatf( STAT_ACTIVEWEAPON ) ] );
+		}
 	
-	if( getstatf( STAT_ACTIVEWEAPON ) < CS_WEAPON_COUNT ) {
-		setmodel( eViewModel, sViewModels[ getstatf( STAT_ACTIVEWEAPON ) ] );
+		eViewModel.frame1time += frametime;
 	}
 	
+	fLastTime = time;
 	addentity( eViewModel );
-	eViewModel.frame1time += frametime;
 }
 
 void View_PlayAnimation( int iSequence ) {

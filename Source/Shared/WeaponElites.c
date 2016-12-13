@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-.int iClip_ELITES;
+.int iMag_ELITES;
 
 #ifdef SSQC
 .int iMode_ELITES;
@@ -43,10 +43,12 @@ weaponinfo_t wptELITES = {
 	0.15, 				// Attack-Delay
 	4.6, 				// Reload-Delay
 	iAmmo_9MM, 			// Caliber Pointer
-	iClip_ELITES, 		// Clip Pointer
+	iMag_ELITES, 		// Clip Pointer
 	200,				// Accuracy Divisor
 	0.55,				// Accuracy Offset
-	1.4					// Max Inaccuracy
+	1.4,					// Max Inaccuracy
+	4,
+	3
 };
 
 // Anim Table
@@ -87,7 +89,7 @@ void WeaponELITES_PrimaryFire( void ) {
 #else
 	int iRand = (int)floor( random( 1, 4 ) );
 	if ( iWeaponMode_ELITES == 0 ) {
-		if ( getstatf( STAT_CURRENT_CLIP ) == 1 ) {
+		if ( getstatf( STAT_CURRENT_MAG ) == 1 ) {
 			View_PlayAnimation( ANIM_ELITES_SHOOT_LEFTLAST );
 		} else {
 			if ( iRand == 1 ) {
@@ -103,7 +105,7 @@ void WeaponELITES_PrimaryFire( void ) {
 			}
 		}
 	} else {
-		if ( getstatf( STAT_CURRENT_CLIP ) == 0 ) {
+		if ( getstatf( STAT_CURRENT_MAG ) == 0 ) {
 			View_PlayAnimation( ANIM_ELITES_SHOOT_RIGHTLAST );
 		} else {
 			if ( iRand == 1 ) {
@@ -120,6 +122,7 @@ void WeaponELITES_PrimaryFire( void ) {
 		}
 	}
 	
+	OpenCSGunBase_ShotMultiplierHandle( 1 );
 	iWeaponMode_ELITES = 1 - iWeaponMode_ELITES;
 #endif
 }

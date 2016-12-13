@@ -7,6 +7,7 @@
 #includelist
 ../Builtins.h
 ../Globals.h
+../Math.h
 Defs.h
 
 ../Shared/WeaponAK47.c
@@ -48,6 +49,7 @@ VGUIMOTD.c
 VGUIBuyMenu.c
 VGUITeamSelect.c
 VGUI.c
+HUDCrosshair.c
 HUDWeaponSelect.c
 HUDOrbituaries.c
 HUD.c

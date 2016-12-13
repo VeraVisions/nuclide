@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-.int iClip_G3SG1;
+.int iMag_G3SG1;
 
 // Weapon Info
 weaponinfo_t wptG3SG1 = { 
@@ -37,10 +37,12 @@ weaponinfo_t wptG3SG1 = {
 	0.25, 				// Attack-Delay
 	4.6, 				// Reload-Delay
 	iAmmo_762MM, 		// Caliber Pointer
-	iClip_G3SG1, 	// Clip Pointer
+	iMag_G3SG1, 	// Clip Pointer
 	200,				// Accuracy Divisor
 	0.55,				// Accuracy Offset
-	1.4					// Max Inaccuracy
+	1.4,				// Max Inaccuracy
+	6,
+	4
 };
 
 // Anim Table
@@ -75,6 +77,7 @@ void WeaponG3SG1_PrimaryFire( void ) {
 	} else {
 		View_PlayAnimation( ANIM_G3SG1_SHOOT2 );
 	}
+	OpenCSGunBase_ShotMultiplierHandle( 1 );
 	#endif
 }
 

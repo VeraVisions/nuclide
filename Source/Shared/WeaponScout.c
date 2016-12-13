@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-.int iClip_SCOUT;
+.int iMag_SCOUT;
 
 // Weapon Info
 weaponinfo_t wptSCOUT = { 
@@ -37,10 +37,12 @@ weaponinfo_t wptSCOUT = {
 	1.25, 				// Attack-Delay
 	2.0, 				// Reload-Delay
 	iAmmo_762MM, 		// Caliber Pointer
-	iClip_SCOUT, 	// Clip Pointer
+	iMag_SCOUT, 	// Clip Pointer
 	200,				// Accuracy Divisor
 	0.55,				// Accuracy Offset
-	1.4					// Max Inaccuracy
+	1.4,				// Max Inaccuracy
+	5,
+	3
 };
 
 // Anim Table
@@ -73,6 +75,7 @@ void WeaponSCOUT_PrimaryFire( void ) {
 		View_PlayAnimation( ANIM_SCOUT_SHOOT2 );
 	}
 	
+	OpenCSGunBase_ShotMultiplierHandle( 1 );
 	Sound_Delayed( "weapons/scout_bolt.wav", 1.0, 0.5 );
 #endif
 }

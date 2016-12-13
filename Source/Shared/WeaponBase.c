@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 // Because padding...
-weaponinfo_t wptDEFAULT = { 0, 0, 0, 0, 240, 0, 0, 0, 0, 0.0, 0.0, 0, 0.0, 0.0, iAmmo_9MM, iAmmo_9MM, 0.0, 0.0, 0.0 };
+weaponinfo_t wptDEFAULT = { 0, 0, 0, 0, 240, 0, 0, 0, 0, 0.0, 0.0, 0, 0.0, 0.0, iAmmo_9MM, iAmmo_9MM, 0.0, 0.0, 0.0, 0, 0 };
 
 weaponinfo_t wptTable[ CS_WEAPON_COUNT ] = {
 	wptDEFAULT,
@@ -50,29 +50,63 @@ weaponinfo_t wptTable[ CS_WEAPON_COUNT ] = {
 };
 
 #ifdef SSQC
+.int iShotMultiplier;
+.float fDecreaseShotTime;
+.int iOldShotMultiplier;
+#else 
+int iShotMultiplier;
+#endif
+
+void OpenCSGunBase_ShotMultiplierHandle( float fShots ) {
+#ifdef SSQC
+	if ( self.iShotMultiplier > 12 ) {
+		self.iShotMultiplier = 12;
+	} else {
+		self.iShotMultiplier += fShots;
+	}
+	self.fDecreaseShotTime = time + 0.2;
+#else
+	if ( iShotMultiplier > 12 ) {
+		iShotMultiplier = 12;
+	} else {
+		iShotMultiplier += fShots;
+	}
+#endif
+}
+
+#ifdef SSQC
+
+// This is being triggered in PlayerPreThink after the input
+void OpenCSGunBase_ShotMultiplierUpdate( void ) {
+	if ( ( self.iShotMultiplier > 0 ) && ( self.fDecreaseShotTime < time ) ) {
+		self.fDecreaseShotTime = time + 0.1;
+		self.iShotMultiplier--;
+	}	
+}
+
 void OpenCSGunBase_Draw( void ) {
-	self.iCurrentClip = self.(wptTable[ self.weapon ].iClipfld);
+	self.iCurrentMag = self.(wptTable[ self.weapon ].iMagfld);
 	self.iCurrentCaliber = self.(wptTable[ self.weapon ].iCaliberfld);
 	Client_SendEvent( self, EV_WEAPON_DRAW );
 }
 
 void OpenCSGunBase_AccuracyCalc( void ) {
-	self.fAccuracy = 3 / wptTable[ self.weapon ].fAccuracyDivisor;
+	self.fAccuracy = self.iShotMultiplier / wptTable[ self.weapon ].fAccuracyDivisor;
 }
 
 // Returns whether or not to play an animation
 float OpenCSGunBase_PrimaryFire( void ) {
 	// Nothing in the clip anymore? Don't even attempt
-	if ( ( self.(wptTable[ self.weapon ].iClipfld) - 1 ) < 0 ) {
+	if ( ( self.(wptTable[ self.weapon ].iMagfld) - 1 ) < 0 ) {
 		return FALSE;
 	}
 	
 	OpenCSGunBase_AccuracyCalc();
 	TraceAttack_FireBullets( wptTable[ self.weapon ].iBullets );
 	
-	self.(wptTable[ self.weapon ].iClipfld) -= 1;
+	self.(wptTable[ self.weapon ].iMagfld) -= 1;
 	self.fAttackFinished = time + wptTable[ self.weapon ].fAttackFinished;
-	
+	OpenCSGunBase_ShotMultiplierHandle( 1 );
 	Client_SendEvent( self, EV_WEAPON_PRIMARYATTACK );
 	self.effects = self.effects | EF_MUZZLEFLASH;
 	return TRUE;
@@ -81,19 +115,19 @@ float OpenCSGunBase_PrimaryFire( void ) {
 float OpenCSGunBase_Reload( void ) {
 	static void OpenCSGunBase_FinishReload( void ) {
 		// What if we've got less in our caliberfield than we need
-		if ( self.(wptTable[ self.weapon ].iCaliberfld) < wptTable[ self.weapon ].iClipSize ) {
-			self.(wptTable[ self.weapon ].iClipfld) = self.(wptTable[ self.weapon ].iCaliberfld);
+		if ( self.(wptTable[ self.weapon ].iCaliberfld) < wptTable[ self.weapon ].iMagSize ) {
+			self.(wptTable[ self.weapon ].iMagfld) = self.(wptTable[ self.weapon ].iCaliberfld);
 			self.(wptTable[ self.weapon ].iCaliberfld) = 0;
 		} else {
-			self.(wptTable[ self.weapon ].iCaliberfld) -= ( wptTable[ self.weapon ].iClipSize - self.(wptTable[ self.weapon ].iClipfld) );
-			self.(wptTable[ self.weapon ].iClipfld) = wptTable[ self.weapon ].iClipSize;
+			self.(wptTable[ self.weapon ].iCaliberfld) -= ( wptTable[ self.weapon ].iMagSize - self.(wptTable[ self.weapon ].iMagfld) );
+			self.(wptTable[ self.weapon ].iMagfld) = wptTable[ self.weapon ].iMagSize;
 		}
 		
 		Weapon_UpdateCurrents();
 	}
 	
 	// Don't bother reloading the gun when full
-	if ( self.(wptTable[ self.weapon ].iClipfld) == wptTable[ self.weapon ].iClipSize ) {
+	if ( self.(wptTable[ self.weapon ].iMagfld) == wptTable[ self.weapon ].iMagSize ) {
 		return FALSE;
 	}
 	

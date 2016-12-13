@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-.int iClip_AWP;
+.int iMag_AWP;
 
 // Weapon Info
 weaponinfo_t wptAWP = { 
@@ -37,10 +37,12 @@ weaponinfo_t wptAWP = {
 	1.2, 				// Attack-Delay
 	2.9, 				// Reload-Delay
 	iAmmo_338MAG, 		// Caliber Pointer
-	iClip_AWP, 			// Clip Pointer
+	iMag_AWP, 			// Clip Pointer
 	-1,					// Accuracy Divisor
 	0,					// Accuracy Offset
-	0					// Max Inaccuracy
+	0,					// Max Inaccuracy
+	8,
+	3
 };
 
 // Anim Table
@@ -78,6 +80,7 @@ void WeaponAWP_PrimaryFire( void ) {
 		View_PlayAnimation( ANIM_AWP_SHOOT3 );
 	}
 	
+	OpenCSGunBase_ShotMultiplierHandle( 1 );
 	Sound_Delayed( "weapons/awp_deploy.wav", 1.0, 0.4 );
 	#endif
 }

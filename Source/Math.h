@@ -18,6 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#define MATH_PI 3.1415926
+
 float Math_LerpAngle( float fStart, float fEnd, float fAmount ) {
 	float shortest_angle = ( ( ( ( fEnd - fStart ) % 360 ) + 540 ) % 360 ) - 180;
 	return shortest_angle * fAmount;
@@ -25,4 +27,20 @@ float Math_LerpAngle( float fStart, float fEnd, float fAmount ) {
 
 float Math_CRandom( void ) {
 	return 2 * ( random() - 0.5 );
+}
+
+float Math_Min( float fA, float fB ) {
+	if ( fA < fB ) {
+		return fA;
+	} else {
+		return fB;
+	}
+}
+
+float Math_Max( float fA, float fB ) {
+	if ( fA > fB ) {
+		return fA;
+	} else {
+		return fB;
+	}
 }

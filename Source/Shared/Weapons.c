@@ -58,12 +58,12 @@ void Weapon_Draw( float fWeapon ) {
 		return;
 	}
 	
-	// In case reloading logic is still going on
-	self.think = Empty;
-	
 	wpnFuncTable[ fWeapon ].vDraw();
 	
 	#ifdef SSQC
+	// In case reloading logic is still going on
+	self.think = Empty;
+	
 	self.maxspeed = Player_GetMaxSpeed( fWeapon );
 	self.fAttackFinished = time + 1.0;
 	#endif
@@ -126,7 +126,7 @@ void Weapon_Switch( int iSlot ) {
 }
 
 void Weapon_UpdateCurrents( void ) {
-	self.iCurrentClip = self.(wptTable[ self.weapon ].iClipfld);
+	self.iCurrentMag = self.(wptTable[ self.weapon ].iMagfld);
 	self.iCurrentCaliber = self.(wptTable[ self.weapon ].iCaliberfld);
 }
 
@@ -149,7 +149,7 @@ void Weapon_AddItem( float fWeapon ) {
 	self.weapon = fWeapon;
 	
 	// Make sure we've got at least one full clip
-	self.(wptTable[ self.weapon ].iClipfld) = wptTable[ fWeapon ].iClipSize;
+	self.(wptTable[ self.weapon ].iMagfld) = wptTable[ fWeapon ].iMagSize;
 }
 
 void Weapon_GiveAmmo( float fWeapon, float fAmount ) {

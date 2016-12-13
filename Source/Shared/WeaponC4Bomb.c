@@ -44,7 +44,9 @@ weaponinfo_t wptC4BOMB = {
 	iAmmo_9MM, 			// Clip Pointer
 	1,					// Accuracy Divisor
 	1,					// Accuracy Offset
-	1					// Max Inaccuracy
+	1,					// Max Inaccuracy
+	8,
+	4
 };
 
 // Anim Table

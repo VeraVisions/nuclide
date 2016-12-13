@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-.int iClip_M3;
+.int iMag_M3;
 
 #ifdef SSQC
 .int iMode_M3;
@@ -43,10 +43,12 @@ weaponinfo_t wptM3 = {
 	1.0, 				// Attack-Delay
 	3.0, 				// Reload-Delay
 	iAmmo_BUCKSHOT, 	// Caliber Pointer
-	iClip_M3, 	// Clip Pointer
+	iMag_M3, 	// Clip Pointer
 	200,				// Accuracy Divisor
 	0.35,				// Accuracy Offset
-	1.25				// Max Inaccuracy
+	1.25,				// Max Inaccuracy
+	8,
+	6
 };
 
 // Anim Table
@@ -90,6 +92,7 @@ void WeaponM3_PrimaryFire( void ) {
 	} else {
 		View_PlayAnimation( ANIM_M3_SHOOT2 );
 	}
+	OpenCSGunBase_ShotMultiplierHandle( 1 );
 #endif
 }
 
@@ -97,7 +100,7 @@ void WeaponM3_Reload( void);
 void WeaponM3_Secondary( void ) {
 #ifdef SSQC
 	// If it's full or no ammo is left...
-	if ( (self.(wptM3.iClipfld) == wptM3.iClipSize) || ( self.(wptM3.iCaliberfld) <= 0 ) ) {
+	if ( (self.(wptM3.iMagfld) == wptM3.iMagSize) || ( self.(wptM3.iCaliberfld) <= 0 ) ) {
 		self.iMode_M3 = 0;
 		Client_SendEvent( self, EV_WEAPON_RELOAD );
 		self.think = WeaponM3_ReloadNULL;
@@ -105,7 +108,7 @@ void WeaponM3_Secondary( void ) {
 		return;
 	}
 	
-	self.(wptM3.iClipfld) += 1;
+	self.(wptM3.iMagfld) += 1;
 	self.(wptM3.iCaliberfld) -= 1;
 	
 	Client_SendEvent( self, EV_WEAPON_SECONDARYATTACK );
@@ -121,7 +124,7 @@ void WeaponM3_Secondary( void ) {
 void WeaponM3_Reload( void ) {
 #ifdef SSQC
 	// Can we reload the gun even if we wanted to?
-	if ( ( self.(wptM3.iClipfld) != wptM3.iClipSize ) && ( self.(wptM3.iCaliberfld) > 0 ) ) {
+	if ( ( self.(wptM3.iMagfld) != wptM3.iMagSize ) && ( self.(wptM3.iCaliberfld) > 0 ) ) {
 		self.iMode_M3 = 1 - self.iMode_M3;
 			
 		if ( self.iMode_M3 == TRUE ) {

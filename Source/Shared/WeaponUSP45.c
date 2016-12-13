@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-.int iClip_USP45;
+.int iMag_USP45;
 
 #ifdef SSQC
 .int iMode_USP45;
@@ -43,10 +43,12 @@ weaponinfo_t wptUSP45 = {
 	0.15, 				// Attack-Delay
 	2.5, 				// Reload-Delay
 	iAmmo_45ACP, 		// Caliber Pointer
-	iClip_USP45, 		// Clip Pointer
+	iMag_USP45, 		// Clip Pointer
 	200,				// Accuracy Divisor
 	0.55,				// Accuracy Offset
-	1.4					// Max Inaccuracy
+	1.4,				// Max Inaccuracy
+	8,
+	3
 };
 
 enum {
@@ -96,7 +98,7 @@ void WeaponUSP45_PrimaryFire( void ) {
 		}
 	}
 #else
-	if ( getstatf( STAT_CURRENT_CLIP ) == 0 ) {
+	if ( getstatf( STAT_CURRENT_MAG ) == 0 ) {
 		if ( iWeaponMode_USP45 == TRUE ) {
 			View_PlayAnimation( ANIM_USP45_SILENCER_SHOOTLAST );
 		} else {
@@ -125,6 +127,8 @@ void WeaponUSP45_PrimaryFire( void ) {
 			}
 		}
 	}
+	
+	OpenCSGunBase_ShotMultiplierHandle( 1 );
 #endif
 }
 

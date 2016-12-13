@@ -18,6 +18,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+
+#define PLAYER_SENDFLAG_UPDATE 1
+#define PLAYER_SENDFLAG_INGAME 2
+
 // Stuff that applies to all codebases
 enum {
 	TEAM_SPECTATOR,
@@ -31,21 +35,23 @@ enum {
 	STAT_HOSTAGEZONE,
 	STAT_BOMBZONE,
 	STAT_MONEY,
-	STAT_GAMETIME,
+	STAT_FLAGS,
 	STAT_SLOT_MELEE,
 	STAT_SLOT_PRIMARY,
 	STAT_SLOT_SECONDARY,
 	STAT_SLOT_GRENADE,
-	STAT_CURRENT_CLIP,
+	STAT_CURRENT_MAG,
 	STAT_CURRENT_CALIBER,
 	STAT_PROGRESS,
 	STAT_TEAM,
+	STAT_GAMETIME,
 	STAT_WON_T,
 	STAT_WON_CT
 };
 
 enum {
-	ENT_AMBIENTSOUND = 1,
+	ENT_PLAYER = 1,
+	ENT_AMBIENTSOUND,
 	ENT_SPRITE
 };
 
@@ -142,7 +148,7 @@ typedef struct {
 	float fSpeedM;
 	
 	int iBullets;	// How many bullets does it shoot?
-	int iClipSize;	// How big is the clip/magazine?
+	int iMagSize;	// How big is the clip/magazine?
 	
 	int iDamage;	// How much damage is done by a single bullet?
 	int iPenetration;	// Penetration multiplier
@@ -155,11 +161,14 @@ typedef struct {
 	float fReloadFinished; // When is the gone done firing
 	
 	.int iCaliberfld;	// Pointer towards the caliberfield of the gun
-	.int iClipfld;		// Pointer towards the clip of the gun
+	.int iMagfld;		// Pointer towards the clip of the gun
 	
 	float fAccuracyDivisor;
 	float fAccuracyOffset;
 	float fMaxInaccuracy;
+	
+	int iCrosshairMinDistance;
+	int iCrosshairDeltaDistance;
 } weaponinfo_t;
 
 typedef struct {
@@ -214,6 +223,9 @@ enum {
 #define INPUT_BUTTON5 16
 #define INPUT_BUTTON6 32
 
+#define FL_USERELEASED 8192
+#define FL_CROUCHING 16384
+
 float clamp(float d, float imin, float imax) {
 	float t;
 
@@ -229,3 +241,4 @@ float clamp(float d, float imin, float imax) {
 }
 
 void Empty( void ) { }
+void OpenCSGunBase_ShotMultiplierHandle( float fShots );

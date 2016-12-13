@@ -35,10 +35,12 @@ weaponinfo_t wptKNIFE = {
 	0.15, 				// Attack-Delay
 	1.0, 				// Reload-Delay
 	iAmmo_9MM, 			// Caliber Pointer
-	iClip_GLOCK18, 		// Clip Pointer
+	iMag_GLOCK18, 		// Clip Pointer
 	1,					// Accuracy Divisor
 	1.0,				// Accuracy Offset
-	1.0					// Max Inaccuracyy
+	1.0,				// Max Inaccuracy
+	7,
+	3
 };
 
 // Anim Table
@@ -56,7 +58,7 @@ enum {
 void WeaponKNIFE_Draw( void ) {
 #ifdef SSQC
 	Client_SendEvent( self, EV_WEAPON_DRAW );
-	self.iCurrentClip = 0;
+	self.iCurrentMag = 0;
 	self.iCurrentCaliber = 0;
 #else
 	View_PlayAnimation( ANIM_KNIFE_DRAW );

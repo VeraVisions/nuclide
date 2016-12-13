@@ -24,7 +24,7 @@ void TraceAttack_FireBullets( int iShots ) {
 	makevectors(self.v_angle);
 
 	vSrc = self.origin + self.view_ofs;
-
+	
 	while ( iShots > 0) {
 		vDir = aim( self, 100000 ) + Math_CRandom()*self.fAccuracy*v_right + Math_CRandom()*self.fAccuracy*v_up;
 		

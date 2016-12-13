@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-.int iClip_AUG;
+.int iMag_AUG;
 
 // Weapon Info
 weaponinfo_t wptAUG = { 
@@ -37,10 +37,12 @@ weaponinfo_t wptAUG = {
 	0.09, 				// Attack-Delay
 	3.3, 				// Reload-Delay
 	iAmmo_762MM, 		// Caliber Pointer
-	iClip_AUG, 			// Clip Pointer
+	iMag_AUG, 			// Clip Pointer
 	215,				// Accuracy Divisor
 	0.3,				// Accuracy Offset
-	1.0					// Max Inaccuracy
+	1.0,				// Max Inaccuracy
+	3,
+	3
 };
 
 // Anim Table
@@ -76,6 +78,8 @@ void WeaponAUG_PrimaryFire( void ) {
 	} else {
 		View_PlayAnimation( ANIM_AUG_SHOOT3 );
 	}
+	
+	OpenCSGunBase_ShotMultiplierHandle( 1 );
 	#endif
 }
 

@@ -48,7 +48,7 @@ weaponsymbolinfo_t wpSymbolTable[ CS_WEAPON_COUNT ] = {
 	{ "sprites/640hud2.spr_0.tga", '0 0.703125' }, 		//WEAPON_G3SG1
 	{ "sprites/640hud14.spr_0.tga", '0 0.703125' }, 	//WEAPON_SG550
 	{ "sprites/640hud3.spr_0.tga", '0 0' }, 			//WEAPON_PARA
-	{ "sprites/640hud3.spr_1.tga", '0 0' } 				//WEAPON_C4BOMB
+	{ "sprites/640hud1.spr_0.tga", '0 0' } 				//WEAPON_C4BOMB
 };
 
 vector vHUDSlotNumPos[ 4 ] = {

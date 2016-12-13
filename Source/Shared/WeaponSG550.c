@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-.int iClip_SG550;
+.int iMag_SG550;
 
 // Weapon Info
 weaponinfo_t wptSG550 = { 
@@ -37,10 +37,12 @@ weaponinfo_t wptSG550 = {
 	0.25, 				// Attack-Delay
 	3.8, 				// Reload-Delay
 	iAmmo_556MM, 		// Caliber Pointer
-	iClip_SG550, 		// Clip Pointer
+	iMag_SG550, 		// Clip Pointer
 	200,				// Accuracy Divisor
 	0.55,				// Accuracy Offset
-	1.4					// Max Inaccuracy
+	1.4,				// Max Inaccuracy
+	5,
+	3
 };
 
 // Anim Table
@@ -72,6 +74,7 @@ void WeaponSG550_PrimaryFire( void ) {
 	} else {
 		View_PlayAnimation( ANIM_SG550_SHOOT2 );
 	} 
+	OpenCSGunBase_ShotMultiplierHandle( 1 );
 	#endif
 }
 

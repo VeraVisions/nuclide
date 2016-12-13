@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-.int iClip_M4A1;
+.int iMag_M4A1;
 
 #ifdef SSQC
 .int iMode_M4A1;
@@ -43,10 +43,12 @@ weaponinfo_t wptM4A1 = {
 	0.09, 				// Attack-Delay
 	3.1, 				// Reload-Delay
 	iAmmo_556MM, 		// Caliber Pointer
-	iClip_M4A1, 		// Clip Pointer
+	iMag_M4A1, 		// Clip Pointer
 	220,				// Accuracy Divisor
 	0.3,				// Accuracy Offset
-	1.0					// Max Inaccuracy
+	1.0,				// Max Inaccuracy
+	4,
+	3
 };
 
 enum {
@@ -115,6 +117,7 @@ void WeaponM4A1_PrimaryFire( void ) {
 			View_PlayAnimation( ANIM_M4A1_SHOOT3 );
 		}
 	}
+	OpenCSGunBase_ShotMultiplierHandle( 1 );
 #endif
 }
 

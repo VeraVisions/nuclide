@@ -18,6 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+
 /*
 =================
 CSQC_Ent_Update
@@ -28,7 +29,34 @@ Called whenever an entity is sent manually via .SendFlags and so on
 void CSQC_Ent_Update( float fIsNew ) {
 	float fEntType = readbyte();
 	
-	if ( fEntType == ENT_AMBIENTSOUND ) {
+	/*if( fEntType == ENT_PLAYER ) {
+		if ( self.entnum == player_localentnum ) {
+			ePlayerEnt = self;
+		}
+		if ( fIsNew == TRUE ) {
+			self.predraw = CSQC_PlayerUpdate;
+			//self.drawmask = MASK_ENGINE;
+		}
+		
+		float fFlags = readbyte();
+		self.origin_x = readcoord();
+		self.origin_y = readcoord();
+		self.origin_z = readcoord();
+		self.angles_x = readcoord();
+		self.angles_y = readcoord();
+		self.angles_z = readcoord();
+		self.modelindex = readbyte();
+		
+		if ( fFlags & PLAYER_SENDFLAG_INGAME ) {
+			self.velocity_x = readcoord();
+			self.velocity_y = readcoord();
+			self.velocity_z = readcoord();
+			self.flags = readfloat();
+		}
+		
+		setorigin( self, self.origin );
+	
+	} else */if ( fEntType == ENT_AMBIENTSOUND ) {
 		self.origin_x = readcoord();
 		self.origin_y = readcoord();
 		self.origin_z = readcoord();

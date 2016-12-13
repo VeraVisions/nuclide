@@ -18,6 +18,26 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+/*float Player_SendEntity( entity ePEnt, float fChanged ) {
+	WriteByte( MSG_ENTITY, ENT_PLAYER );
+	WriteByte( MSG_ENTITY, fChanged );
+	WriteCoord( MSG_ENTITY, self.origin_x );
+	WriteCoord( MSG_ENTITY, self.origin_y );
+	WriteCoord( MSG_ENTITY, self.origin_z );
+	WriteCoord( MSG_ENTITY, self.angles_x );
+	WriteCoord( MSG_ENTITY, self.angles_y );
+	WriteCoord( MSG_ENTITY, self.angles_z );
+	WriteByte( MSG_ENTITY, self.modelindex );
+	
+	if ( fChanged & PLAYER_SENDFLAG_INGAME ) {
+		WriteCoord( MSG_ENTITY, self.velocity_x );
+		WriteCoord( MSG_ENTITY, self.velocity_y );
+		WriteCoord( MSG_ENTITY, self.velocity_z );
+		WriteFloat( MSG_ENTITY, self.flags );
+	}
+	return TRUE;
+}*/
+
 void Player_Pain( void ) {
 	
 }
@@ -58,7 +78,7 @@ void Player_Death( void ) {
 }
 
 float Player_GetMaxSpeed( float fWeapon ) {
-	if ( self.iCrouching == TRUE ) {
+	if ( self.flags & FL_CROUCHING ) {
 		return (cvar( "sv_maxspeed" ) * wptTable[ fWeapon ].fSpeedM) * 0.5;
 	} else {
 		return cvar( "sv_maxspeed" ) * wptTable[ fWeapon ].fSpeedM;
@@ -93,9 +113,9 @@ void Player_CrouchDown( void ) {
 		return;
 	}
 
-	if( !self.iCrouching ) {
+	if( !( self.flags & FL_CROUCHING ) ) {
 		setsize( self, VEC_CHULL_MIN, VEC_CHULL_MAX );
-		self.iCrouching = TRUE;
+		self.flags = self.flags | FL_CROUCHING;
 		self.view_ofs = VEC_PLAYER_CVIEWPOS;
 		self.velocity_z = self.velocity_z + 50;
 		self.maxspeed = Player_GetMaxSpeed( self.weapon );
@@ -116,13 +136,13 @@ void Player_CrouchUp( void ) {
 		return;
 	}
 
-	if ( self.iCrouching && ( !self.velocity_z ) && ( Player_CrouchCheck( self ) ) ) {
-		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
+	if ( ( self.flags & FL_CROUCHING ) && ( !self.velocity_z ) && ( Player_CrouchCheck( self ) ) ) {
+		setsize( self, VEC_HULL_MIN, VEC_HULL_MAX );
 
 		setorigin( self, self.origin + '0 0 18');
 		self.velocity_z = self.velocity_z + 16;
 		self.view_ofs = VEC_PLAYER_VIEWPOS;
-		self.iCrouching = FALSE;
+		self.flags = ( self.flags - FL_CROUCHING );
 		self.iCrouchAttempt = FALSE;
 		self.maxspeed = Player_GetMaxSpeed( self.weapon );
 		return;
@@ -149,9 +169,9 @@ void Player_UseDown( void ) {
 	traceline ( vSource, vSource + ( v_forward * 64 ), FALSE, self);
 	
 	if ( trace_ent.iUsable ) {
-		sound( self, CHAN_WEAPON, "common/wpn_select.wav", 0.25, ATTN_IDLE );
 		if ( trace_ent.classname != "c4bomb" ) {
 			self.flags = ( self.flags - FL_USERELEASED );
+			sound( self, CHAN_WEAPON, "common/wpn_select.wav", 0.25, ATTN_IDLE );
 		} 
 		
 		eActivator = self;

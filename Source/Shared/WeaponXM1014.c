@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-.int iClip_XM1014;
+.int iMag_XM1014;
 
 #ifdef SSQC
 .int iMode_XM1014;
@@ -43,10 +43,12 @@ weaponinfo_t wptXM1014 = {
 	0.25, 				// Attack-Delay
 	3.0, 				// Reload-Delay
 	iAmmo_BUCKSHOT, 	// Caliber Pointer
-	iClip_XM1014, 		// Clip Pointer
+	iMag_XM1014, 		// Clip Pointer
 	200,				// Accuracy Divisor
 	0.35,				// Accuracy Offset
-	1.25				// Max Inaccuracy
+	1.25,				// Max Inaccuracy
+	9,
+	4
 };
 
 // Anim Table
@@ -89,6 +91,8 @@ void WeaponXM1014_PrimaryFire( void ) {
 	} else {
 		View_PlayAnimation( ANIM_XM1014_SHOOT2 );
 	}
+	
+	OpenCSGunBase_ShotMultiplierHandle( 1 );
 #endif
 }
 
@@ -96,7 +100,7 @@ void WeaponXM1014_Reload( void);
 void WeaponXM1014_Secondary( void ) {
 #ifdef SSQC
 	// If it's full or no ammo is left...
-	if ( (self.(wptXM1014.iClipfld) == wptXM1014.iClipSize) || ( self.(wptXM1014.iCaliberfld) <= 0 ) ) {
+	if ( (self.(wptXM1014.iMagfld) == wptXM1014.iMagSize) || ( self.(wptXM1014.iCaliberfld) <= 0 ) ) {
 		self.iMode_XM1014 = 0;
 		Client_SendEvent( self, EV_WEAPON_RELOAD );
 		self.think = WeaponXM1014_ReloadNULL;
@@ -104,7 +108,7 @@ void WeaponXM1014_Secondary( void ) {
 		return;
 	}
 	
-	self.(wptXM1014.iClipfld) += 1;
+	self.(wptXM1014.iMagfld) += 1;
 	self.(wptXM1014.iCaliberfld) -= 1;
 	
 	Client_SendEvent( self, EV_WEAPON_SECONDARYATTACK );
@@ -120,7 +124,7 @@ void WeaponXM1014_Secondary( void ) {
 void WeaponXM1014_Reload( void ) {
 #ifdef SSQC
 	// Can we reload the gun even if we wanted to?
-	if ( ( self.(wptXM1014.iClipfld) != wptXM1014.iClipSize ) && ( self.(wptXM1014.iCaliberfld) > 0 ) ) {
+	if ( ( self.(wptXM1014.iMagfld) != wptXM1014.iMagSize ) && ( self.(wptXM1014.iCaliberfld) > 0 ) ) {
 		self.iMode_XM1014 = 1 - self.iMode_XM1014;
 			
 		if ( self.iMode_XM1014 == TRUE ) {

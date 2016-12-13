@@ -37,28 +37,27 @@ void StartFrame( void ) {
 		Game_CreateBuyZones();
 	}
 
-	int iInGamePlayers; 
-	// Sigh, check if clients are in the game
-	if ( find( world, classname , "player" ) != world ) {
-		iInGamePlayers = 100;
-	} else {
-		iInGamePlayers = 0;
-	}
-	
-	// See if the player count has changed
-	if ( iInGamePlayers > fOldInGamePlayers ) {
-		bprint( "Game commencing...\n" );
-		Timer_Begin( 2, GAME_COMMENCING );
-		fOldInGamePlayers = iInGamePlayers;
-	} else {
-		// No players? Don't bother updating the Timer
-		if ( iInGamePlayers == 0 ) {
+	// TODO: Optimise this
+	if ( ( iAlivePlayers_T + iAlivePlayers_CT ) == 0 ) {
+		int iInGamePlayers = 0;
+		static int iOldInGamePlayers;
+		for ( entity eFind = world; ( eFind = find( eFind, classname, "player" ) ); ) {
+			iInGamePlayers++;
+		}
+		
+		if ( iInGamePlayers > iOldInGamePlayers ) {
+			bprint( "Game commencing...\n" );
+			Timer_Begin( 2, GAME_COMMENCING );
+			iOldInGamePlayers = iInGamePlayers;
+		} else if ( iInGamePlayers == 0 ) {
 			fGameState = GAME_INACTIVE;
 			fGameTime = 0;
-			fOldInGamePlayers = 0;
+			iOldInGamePlayers = 0;
 		} else {
-			Timer_Update();
+			Timer_Update(); // Timer that happens once players have started joining
 		}
+	} else {
+		Timer_Update(); // Normal gameplay timer
 	}
 }
 
@@ -277,10 +276,11 @@ void worldspawn( void ) {
 	clientstat( STAT_SLOT_PRIMARY, EV_FLOAT, fSlotPrimary );
 	clientstat( STAT_SLOT_SECONDARY, EV_FLOAT, fSlotSecondary );
 	clientstat( STAT_SLOT_GRENADE, EV_FLOAT, fSlotGrenade );
-	clientstat( STAT_CURRENT_CLIP, EV_INTEGER, iCurrentClip );
+	clientstat( STAT_CURRENT_MAG, EV_INTEGER, iCurrentMag );
 	clientstat( STAT_CURRENT_CALIBER, EV_INTEGER, iCurrentCaliber );
 	clientstat( STAT_TEAM, EV_INTEGER, team );
 	clientstat( STAT_PROGRESS, EV_FLOAT, fProgressBar );
+	clientstat( STAT_FLAGS, EV_FLOAT, flags );
 	pointerstat( STAT_GAMETIME, EV_FLOAT, &fGameTime );
 	pointerstat( STAT_WON_T, EV_INTEGER, &iWon_T );
 	pointerstat( STAT_WON_CT, EV_INTEGER, &iWon_CT );

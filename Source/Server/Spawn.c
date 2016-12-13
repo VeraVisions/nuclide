@@ -166,7 +166,7 @@ void Spawn_MakeSpectator( void ) {
 
 	// Clear all the ammo stuff
 	for ( int i = 0; i < CS_WEAPON_COUNT; i++ ) {
-		self.(wptTable[ i ].iClipfld) = 0;
+		self.(wptTable[ i ].iMagfld) = 0;
 		self.(wptTable[ i ].iCaliberfld) = 0;
 	}
 	

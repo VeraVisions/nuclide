@@ -316,14 +316,14 @@ HUD_DrawAmmo
 Draws the current clip, the amount of ammo for the caliber and a matching caliber icon
 =================
 */
-float fOldClip, fOldCal;
+float fOldMag, fOldCal;
 float fAmmoAlpha;
 void HUD_DrawAmmo( void ) {
 	if ( getstatf( STAT_ACTIVEWEAPON ) == WEAPON_KNIFE || getstatf( STAT_ACTIVEWEAPON ) == WEAPON_C4BOMB ) {
 		return;
 	}
 	
-	if ( getstatf( STAT_CURRENT_CLIP ) != fOldClip || getstatf( STAT_CURRENT_CALIBER ) != fOldCal ) {
+	if ( getstatf( STAT_CURRENT_MAG ) != fOldMag || getstatf( STAT_CURRENT_CALIBER ) != fOldCal ) {
 		fAmmoAlpha = 1.0;
 	}
 	
@@ -333,8 +333,8 @@ void HUD_DrawAmmo( void ) {
 		fAmmoAlpha = HUD_ALPHA;
 	}
 	
-	vector vAmmoClipPos = [ vVideoResolution_x - 142, vVideoResolution_y - 42 ];
-	HUD_DrawNums( getstatf( STAT_CURRENT_CLIP ), vAmmoClipPos, fAmmoAlpha, VGUI_WINDOW_FGCOLOR );
+	vector vAmmoMagPos = [ vVideoResolution_x - 142, vVideoResolution_y - 42 ];
+	HUD_DrawNums( getstatf( STAT_CURRENT_MAG ), vAmmoMagPos, fAmmoAlpha, VGUI_WINDOW_FGCOLOR );
 	
 	drawsubpic( [vVideoResolution_x - 118, vVideoResolution_y - 42], '3 25 0', HUD_NUMFILE_LAYER, [0.9375, 0], [ 0.01171875, 0.09765625 ], VGUI_WINDOW_FGCOLOR, fAmmoAlpha, DRAWFLAG_ADDITIVE );
 	
@@ -343,7 +343,7 @@ void HUD_DrawAmmo( void ) {
 	
 	// Caliber icon
 	drawsubpic( vVideoResolution - '42 42 0', '24 24 0', HUD_NUMFILE_LAYER, vHUDCalPos[ wptTable[ getstatf( STAT_ACTIVEWEAPON ) ].iCaliber ], [ NUMSIZE_X, NUMSIZE_X ], VGUI_WINDOW_FGCOLOR, fAmmoAlpha, DRAWFLAG_ADDITIVE );
-	fOldClip = getstatf( STAT_CURRENT_CLIP );
+	fOldMag = getstatf( STAT_CURRENT_MAG );
 	fOldCal = getstatf( STAT_CURRENT_CALIBER );
 }
 
@@ -401,4 +401,5 @@ void HUD_Draw( void ) {
 	HUD_DrawOrbituaries();
 	HUD_DrawProgressBar();
 	HUD_DrawWeaponSelect();
+	HUD_DrawCrosshair();
 }

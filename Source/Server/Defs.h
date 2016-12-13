@@ -39,7 +39,6 @@ float EFFECT_BLOOD;
 .float fStepTime;
 .int iInGame;
 .float fCharModel;
-.int iCrouching;
 .int iCrouchAttempt;
 .int iHasBomb;
 .float fDeaths;
@@ -47,19 +46,17 @@ float EFFECT_BLOOD;
 .float armor;
 .float fProgressBar;
 
-#define FL_USERELEASED 8192
-
 // Match specific fields
 int iWon_T;
 int iWon_CT;
 int iAlivePlayers_T;
 int iAlivePlayers_CT;
-int fOldInGamePlayers;
+
 float fGameState;
 float fGameTime;
 
 // Weapon specific fields
-.int iCurrentClip;
+.int iCurrentMag;
 .int iCurrentCaliber;
 .float fSlotMelee, fSlotPrimary, fSlotSecondary, fSlotGrenade;
 .float fAttackFinished;

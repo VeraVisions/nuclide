@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-.int iClip_MAC10;
+.int iMag_MAC10;
 
 // Weapon Info
 weaponinfo_t wptMAC10 = { 
@@ -37,10 +37,12 @@ weaponinfo_t wptMAC10 = {
 	0.075, 				// Attack-Delay
 	3.2, 				// Reload-Delay
 	iAmmo_45ACP, 		// Caliber Pointer
-	iClip_MAC10, 		// Clip Pointer
+	iMag_MAC10, 		// Clip Pointer
 	200,				// Accuracy Divisor
 	0.6,				// Accuracy Offset
-	1.65				// Max Inaccuracy
+	1.65,				// Max Inaccuracy
+	9,
+	3
 };
 
 // Anim Table
@@ -76,6 +78,7 @@ void WeaponMAC10_PrimaryFire( void ) {
 	} else {
 		View_PlayAnimation( ANIM_MAC10_SHOOT3 );
 	}
+	OpenCSGunBase_ShotMultiplierHandle( 1 );
 #endif
 }
 

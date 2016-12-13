@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-.int iClip_FIVESEVEN;
+.int iMag_FIVESEVEN;
 
 // Weapon Info
 weaponinfo_t wptFIVESEVEN = { 
@@ -37,10 +37,12 @@ weaponinfo_t wptFIVESEVEN = {
 	0.15, 				// Attack-Delay
 	3.1, 				// Reload-Delay
 	iAmmo_57MM, 		// Caliber Pointer
-	iClip_FIVESEVEN, 	// Clip Pointer
+	iMag_FIVESEVEN, 	// Clip Pointer
 	200,				// Accuracy Divisor
 	0.55,				// Accuracy Offset
-	1.4					// Max Inaccuracy
+	1.4,				// Max Inaccuracy
+	8,
+	3
 };
 
 // Anim Table
@@ -69,7 +71,7 @@ void WeaponFIVESEVEN_PrimaryFire( void ) {
 		sound( self, CHAN_WEAPON, "weapons/fiveseven-1.wav", 1, ATTN_NORM );
 	}
 	#else
-	if ( getstatf( STAT_CURRENT_CLIP ) == 0 ) {
+	if ( getstatf( STAT_CURRENT_MAG ) == 0 ) {
 		View_PlayAnimation( ANIM_FIVESEVEN_SHOOT_EMPTY );
 	} else {
 		if ( random() <= 0.5 ) {
@@ -78,7 +80,7 @@ void WeaponFIVESEVEN_PrimaryFire( void ) {
 			View_PlayAnimation( ANIM_FIVESEVEN_SHOOT2 );
 		}
 	}
-	
+	OpenCSGunBase_ShotMultiplierHandle( 1 );
 	#endif
 }
 

@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-.int iClip_P90;
+.int iMag_P90;
 
 // Weapon Info
 weaponinfo_t wptP90 = { 
@@ -37,10 +37,12 @@ weaponinfo_t wptP90 = {
 	0.07, 				// Attack-Delay
 	3.3, 				// Reload-Delay
 	iAmmo_57MM, 		// Caliber Pointer
-	iClip_P90, 			// Clip Pointer
+	iMag_P90, 			// Clip Pointer
 	175,				// Accuracy Divisor
 	0.45,				// Accuracy Offset
-	1.0					// Max Inaccuracy
+	1.0,				// Max Inaccuracy
+	7,
+	3
 };
 
 // Anim Table
@@ -77,6 +79,7 @@ void WeaponP90_PrimaryFire( void ) {
 	} else {
 		View_PlayAnimation( ANIM_P90_SHOOT3 );
 	}
+	OpenCSGunBase_ShotMultiplierHandle( 1 );
 #endif
 }
 

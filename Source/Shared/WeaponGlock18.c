@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-.int iClip_GLOCK18;
+.int iMag_GLOCK18;
 
 #ifdef SSQC
 .int iMode_GLOCK18;
@@ -43,10 +43,12 @@ weaponinfo_t wptGLOCK18 = {
 	0.15, 				// Attack-Delay
 	2.1, 				// Reload-Delay
 	iAmmo_9MM, 			// Caliber Pointer
-	iClip_GLOCK18, 	// Clip Pointer
+	iMag_GLOCK18, 	// Clip Pointer
 	200,				// Accuracy Divisor
 	0.55,				// Accuracy Offset
-	1.4					// Max Inaccuracyy
+	1.4,				// Max Inaccuracyy
+	8,
+	3
 };
 
 // Anim Table
@@ -86,31 +88,34 @@ void WeaponGLOCK18_PrimaryFire( void ) {
 			sound( self, CHAN_WEAPON, "weapons/glock18-2.wav", 1, ATTN_NORM );
 		}
 	} else {
-		if ( (self.iClip_GLOCK18 - 3 ) < 0 ) {
+		if ( (self.iMag_GLOCK18 - 3 ) < 0 ) {
 			return FALSE;
 		}
 		OpenCSGunBase_AccuracyCalc();
 		TraceAttack_FireBullets( 3 );
 		
-		self.iClip_GLOCK18 -= 3;
+		self.iMag_GLOCK18 -= 3;
 		self.fAttackFinished = time + 0.5;
 		
 		sound( self, CHAN_WEAPON, "weapons/glock18-1.wav", 1, ATTN_NORM );
 		Client_SendEvent( self, EV_WEAPON_PRIMARYATTACK );
+		OpenCSGunBase_ShotMultiplierHandle( 3 );
 	}
 #else
 	if ( iWeaponMode_GLOCK18 == FALSE ) {
-		if ( getstatf( STAT_CURRENT_CLIP ) == 0 ) {
+		if ( getstatf( STAT_CURRENT_MAG ) == 0 ) {
 			View_PlayAnimation( ANIM_GLOCK_SHOOT_EMPTY );
 		} else {
 			View_PlayAnimation( ANIM_GLOCK_SHOOT );
 		}
+		OpenCSGunBase_ShotMultiplierHandle( 1 );
 	} else {
 		if ( random() <= 0.5 ) {
 			View_PlayAnimation( ANIM_GLOCK_SHOOT_BURST1 );
 		} else {
 			View_PlayAnimation( ANIM_GLOCK_SHOOT_BURST2 );
 		}
+		OpenCSGunBase_ShotMultiplierHandle( 3 );
 	}
 #endif
 }

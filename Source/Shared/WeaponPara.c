@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-.int iClip_PARA;
+.int iMag_PARA;
 
 // Weapon Info
 weaponinfo_t wptPARA = { 
@@ -37,10 +37,12 @@ weaponinfo_t wptPARA = {
 	0.08, 				// Attack-Delay
 	3.0, 				// Reload-Delay
 	iAmmo_556MMBOX, 	// Caliber Pointer
-	iClip_PARA, 	// Clip Pointer
+	iMag_PARA, 	// Clip Pointer
 	175,				// Accuracy Divisor
 	0.4,				// Accuracy Offset
-	0.9				// Max Inaccuracy
+	0.9,			// Max Inaccuracy
+	6,
+	3
 };
 
 // Anim Table
@@ -75,6 +77,7 @@ void WeaponPARA_PrimaryFire( void ) {
 	} else {
 		View_PlayAnimation( ANIM_PARA_SHOOT2 );
 	}
+	OpenCSGunBase_ShotMultiplierHandle( 1 );
 #endif
 }
 

@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-.int iClip_SG552;
+.int iMag_SG552;
 
 // Weapon Info
 weaponinfo_t wptSG552 = { 
@@ -37,10 +37,12 @@ weaponinfo_t wptSG552 = {
 	0.09, 				// Attack-Delay
 	3.2, 				// Reload-Delay
 	iAmmo_556MM, 		// Caliber Pointer
-	iClip_SG552, 		// Clip Pointer
+	iMag_SG552, 		// Clip Pointer
 	220,				// Accuracy Divisor
 	0.3,				// Accuracy Offset
-	1.0					// Max Inaccuracy
+	1.0,				// Max Inaccuracy
+	5,
+	3
 };
 
 // Anim Table
@@ -80,6 +82,8 @@ void WeaponSG552_PrimaryFire( void ) {
 	} else {
 		View_PlayAnimation( ANIM_SG552_SHOOT3 );
 	}
+	
+	OpenCSGunBase_ShotMultiplierHandle( 1 );
 	#endif
 }
 

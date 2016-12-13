@@ -54,10 +54,11 @@ void ClientDisconnect( void ) {
 
 void PlayerPreThink( void ) { 
 	Input_Handle();
+	OpenCSGunBase_ShotMultiplierUpdate();
 }
 
 void PlayerPostThink( void ) {
-	
+	Animation_PlayerUpdate();
 }
 
 void PutClientInServer( void ) {
@@ -65,6 +66,7 @@ void PutClientInServer( void ) {
 
 	Spawn_MakeSpectator();
 	Spawn_ObserverCam();
+	//self.SendEntity = Player_SendEntity;
 	
 	// Because we don't want to reset these when we die
 	Money_AddMoney( self, cvar( "mp_startmoney" ) );
@@ -84,7 +86,14 @@ void SV_RunClientCommand( void ) {
 		input_impulse = 0;
 	}
 	
+	if ( self.team && self.health > 0 ) {
+		self.SendFlags |= PLAYER_SENDFLAG_INGAME;
+	} else {
+		self.SendFlags |= PLAYER_SENDFLAG_UPDATE;
+	}
+	
 	Footsteps_Update();
+
 	runstandardplayerphysics( self );
 }
 

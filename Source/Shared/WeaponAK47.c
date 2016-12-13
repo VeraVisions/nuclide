@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-.int iClip_AK47;
+.int iMag_AK47;
 
 // Weapon Info
 weaponinfo_t wptAK47 = { 
@@ -37,10 +37,12 @@ weaponinfo_t wptAK47 = {
 	0.1, 				// Attack-Delay
 	2.4, 				// Reload-Delay
 	iAmmo_762MM, 		// Caliber Pointer
-	iClip_AK47, 		// Clip Pointer
+	iMag_AK47, 		// Clip Pointer
 	200,				// Accuracy Divisor
 	0.35,				// Accuracy Offset
-	1.25				// Max Inaccuracy
+	1.25,				// Max Inaccuracy
+	4,
+	4
 };
 
 // Anim Table
@@ -80,6 +82,8 @@ void WeaponAK47_PrimaryFire( void ) {
 	} else {
 		View_PlayAnimation( ANIM_AK47_SHOOT3 );
 	}
+	
+	OpenCSGunBase_ShotMultiplierHandle( 1 );
 	#endif
 }
 

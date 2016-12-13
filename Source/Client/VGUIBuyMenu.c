@@ -48,13 +48,13 @@ vguiweaponobject_t vguiWeaponTable[ CS_WEAPON_COUNT ] = {
 };
 
 vguiequipobject_t vguiEquipmentTable[ 7 ] = {
-	{ EQUIPMENT_KEVLAR, "Kevlar", "gfx/vgui/kevlar" },
-	{ EQUIPMENT_HELMET, "Kevlar & Helmet", "gfx/vgui/kevlar_helmet" },
+	{ EQUIPMENT_KEVLAR, "Kevlar", "gfx/vgui/640_kevlar" },
+	{ EQUIPMENT_HELMET, "Kevlar & Helmet", "gfx/vgui/640_kevlar_helmet" },
 	{ EQUIPMENT_FLASHBANG, "Flashband", "gfx/vgui/640_flashbang" },
 	{ EQUIPMENT_HEGRENADE, "HE Grenade", "gfx/vgui/640_hegrenade" },
 	{ EQUIPMENT_SMOKEGRENADE, "Smoke Grenade", "gfx/vgui/640_smokegrenade" },
-	{ EQUIPMENT_DEFUSALKIT, "Defusal Kit", "gfx/vgui/defuser" },
-	{ EQUIPMENT_NIGHTVISION, "NightVision", "gfx/vgui/nightvision" },
+	{ EQUIPMENT_DEFUSALKIT, "Defusal Kit", "gfx/vgui/640_defuser" },
+	{ EQUIPMENT_NIGHTVISION, "NightVision", "gfx/vgui/640_nightvision" },
 };
 
 // TODO: Clean this up

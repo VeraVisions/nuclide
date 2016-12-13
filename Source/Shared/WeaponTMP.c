@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-.int iClip_TMP;
+.int iMag_TMP;
 
 // Weapon Info
 weaponinfo_t wptTMP = { 
@@ -37,10 +37,12 @@ weaponinfo_t wptTMP = {
 	0.07, 				// Attack-Delay
 	2.1, 				// Reload-Delay
 	iAmmo_9MM, 			// Caliber Pointer
-	iClip_TMP, 			// Clip Pointer
+	iMag_TMP, 			// Clip Pointer
 	200,				// Accuracy Divisor
 	0.55,				// Accuracy Offset
-	1.4					// Max Inaccuracy
+	1.4,				// Max Inaccuracy
+	7,
+	3
 };
 
 // Anim Table
@@ -79,6 +81,8 @@ void WeaponTMP_PrimaryFire( void ) {
 	} else {
 		View_PlayAnimation( ANIM_TMP_SHOOT3 );
 	}
+	
+	OpenCSGunBase_ShotMultiplierHandle( 1 );
 #endif
 }
 

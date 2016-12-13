@@ -42,9 +42,11 @@ vector vMousePos;
 .float fVolume;
 
 // Camera Fields
+//entity ePlayerEnt;
 vector vCameraPos;
 vector vCameraAngle;
 float fCameraTime;
 
 void View_PlayAnimation( int iSequence );
 void Sound_Delayed( string sSample, float fVol, float fDelay );
+

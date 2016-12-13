@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-.int iClip_UMP45;
+.int iMag_UMP45;
 
 // Weapon Info
 weaponinfo_t wptUMP45 = { 
@@ -37,10 +37,12 @@ weaponinfo_t wptUMP45 = {
 	0.105, 				// Attack-Delay
 	3.5, 				// Reload-Delay
 	iAmmo_45ACP, 		// Caliber Pointer
-	iClip_UMP45, 		// Clip Pointer
+	iMag_UMP45, 		// Clip Pointer
 	210,				// Accuracy Divisor
 	0.5,				// Accuracy Offset
-	1					// Max Inaccuracy
+	1,					// Max Inaccuracy
+	6,
+	3
 };
 
 // Anim Table
@@ -77,6 +79,8 @@ void WeaponUMP45_PrimaryFire( void ) {
 	} else {
 		View_PlayAnimation( ANIM_UMP45_SHOOT3 );
 	}
+	
+	OpenCSGunBase_ShotMultiplierHandle( 1 );
 #endif
 }
 

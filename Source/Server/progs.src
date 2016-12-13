@@ -61,6 +61,7 @@ FuncDoor.c
 FuncDoorRotating.c
 AmbientSound.c
 
+Animations.c
 Light.c
 Main.c
 Player.c

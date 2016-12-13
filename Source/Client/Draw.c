@@ -54,7 +54,6 @@ void CSQC_Parse_Print(string sMessage, float fLevel ) {
 	}
 }
 
-
 /*
 =================
 CSQC_DrawChat
@@ -73,10 +72,73 @@ void CSQC_DrawChat( void ) {
 	}
 	
 	for ( int i = 0; i < CHAT_LINES; i++ ) {
-		drawstring( vChatPos, sMSGBuffer[ i ], '8 8 0', VGUI_WINDOW_FGCOLOR * 0.8, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
+		drawstring( vChatPos + '1 1', sMSGBuffer[ i ], '8 8 0', '0 0 0', VGUI_WINDOW_FGALPHA, 0 );
+		drawstring( vChatPos, sMSGBuffer[ i ], '8 8 0', VGUI_WINDOW_FGCOLOR, VGUI_WINDOW_FGALPHA, 0 );
 		vChatPos_y += 12;
 	}
 }
+
+/*
+=================
+CSQC_DrawCenterprint
+
+Read centerprints from a buffer and display them with alpha and whatnot
+=================
+*/
+float fCenterPrintAlpha;
+float fCenterPrintTime;
+float fCenterPrintLines;
+string sCenterPrintBuffer[ 18 ];
+
+void CSQC_DrawCenterprint( void ) {	
+	if ( fCenterPrintAlpha <= 0 ) {
+		return;
+	}
+	
+	vector vCenterPrintPos;
+	
+	if ( fCenterPrintTime > time ) {
+		fCenterPrintAlpha = 1;
+	} else {
+		fCenterPrintAlpha -= frametime;
+		
+		if ( fCenterPrintAlpha < 0 ) {
+			fCenterPrintAlpha = 0;
+		}
+	}
+	
+	vCenterPrintPos_y = ( vVideoResolution_y / 2 ) - ( fCenterPrintLines - 4 );
+	for ( int i = 0; i < ( fCenterPrintLines ); i++ ) {
+		vCenterPrintPos_x = ( vVideoResolution_x / 2 ) - ( stringwidth( sCenterPrintBuffer[ i ], FALSE ) / 2 );
+		drawstring( vCenterPrintPos + '1 1', sCenterPrintBuffer[ i ], '8 8 0', '0 0 0', fCenterPrintAlpha, 0 );
+		drawstring( vCenterPrintPos, sCenterPrintBuffer[ i ], '8 8 0', VGUI_WINDOW_FGCOLOR, fCenterPrintAlpha, 0 );
+		vCenterPrintPos_y += 8;
+	}
+}
+
+/*
+=================
+CSQC_Parse_CenterPrint
+
+Catches every centerprint call and allows us to tinker with it.
+That's how we are able to add color, alpha and whatnot.
+Keep in mind that newlines need to be tokenized
+=================
+*/
+float CSQC_Parse_CenterPrint( string sMessage ) {
+	
+	fCenterPrintLines = tokenizebyseparator( sMessage, "\n" );
+	
+	for( int i = 0; i < ( fCenterPrintLines ); i++ ) {
+		sCenterPrintBuffer[ i ] = argv( i );
+	}
+	
+	fCenterPrintAlpha = 1;
+	fCenterPrintTime = time + 3;
+	
+	return TRUE;
+}
+
 /*
 =================
 CSQC_UpdateView
@@ -99,6 +161,8 @@ void CSQC_UpdateView( float fWinWidth, float fWinHeight, float fGameFocus ) {
 		setproperty( VF_ORIGIN, vCameraPos) ;
 		setproperty( VF_ANGLES, vCameraAngle );
 	} else {
+		//setproperty( VF_ORIGIN, ePlayerEnt.origin + [ 0, 0, getstatf( STAT_VIEWHEIGHT ) ] );
+		//setproperty( VF_ANGLES, input_angles );
 		View_DrawViewModel();
 	}
 	renderscene();
@@ -109,7 +173,8 @@ void CSQC_UpdateView( float fWinWidth, float fWinHeight, float fGameFocus ) {
 		
 		if ( iShowScores == TRUE ) {
 			VGUI_Scores_Show();
-		} else {
+		} else { 
+			CSQC_DrawCenterprint();
 			CSQC_VGUI_Draw();
 		}
 	}

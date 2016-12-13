@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-.int iClip_MP5;
+.int iMag_MP5;
 
 // Weapon Info
 weaponinfo_t wptMP5 = { 
@@ -37,10 +37,12 @@ weaponinfo_t wptMP5 = {
 	0.08, 				// Attack-Delay
 	2.6, 				// Reload-Delay
 	iAmmo_9MM, 			// Caliber Pointer
-	iClip_MP5, 			// Clip Pointer
+	iMag_MP5, 			// Clip Pointer
 	220,				// Accuracy Divisor
 	0.45,				// Accuracy Offset
-	0.75				// Max Inaccuracy
+	0.75,				// Max Inaccuracy
+	6,
+	2
 };
 
 // Anim Table
@@ -80,6 +82,7 @@ void WeaponMP5_PrimaryFire( void ) {
 	} else {
 		View_PlayAnimation( ANIM_MP5_SHOOT3 );
 	}
+	OpenCSGunBase_ShotMultiplierHandle( 1 );
 #endif
 }
 

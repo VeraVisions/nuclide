@@ -32,7 +32,7 @@ void Input_Handle( void ) {
 	
 	if ( self.button3 ) {
 			Player_CrouchDown();
-	} else if ( self.iCrouching == TRUE ) {
+	} else if ( self.flags & FL_CROUCHING ) {
 			Player_CrouchUp();
 	}
 	
