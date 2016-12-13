@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Weapon Info
 weaponinfo_t wptAUG = { 
 	WEAPON_AUG, 		// Identifier
-	SLOT_PRIMARY,
+	SLOT_PRIMARY,		// Slot
 	3500, 				// Price
 	CALIBER_762MM, 		// Caliber ID
 	0.96, 				// Max Player Speed
@@ -33,7 +33,7 @@ weaponinfo_t wptAUG = {
 	2, 					// Penetration Multiplier
 	8192, 				// Bullet Range
 	0.96, 				// Range Modifier
-	TYPE_AUTO,
+	TYPE_AUTO,			// Firing Type
 	0.09, 				// Attack-Delay
 	3.3, 				// Reload-Delay
 	iAmmo_762MM, 		// Caliber Pointer
@@ -41,8 +41,9 @@ weaponinfo_t wptAUG = {
 	215,				// Accuracy Divisor
 	0.3,				// Accuracy Offset
 	1.0,				// Max Inaccuracy
-	3,
-	3
+	3,					// Minimum Crosshair Distance
+	3,					// Crosshair Movement Delta
+	1.4					// Armor penetration ratio
 };
 
 // Anim Table

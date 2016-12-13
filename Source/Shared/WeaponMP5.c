@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Weapon Info
 weaponinfo_t wptMP5 = { 
 	WEAPON_MP5, 		// Identifier
-	SLOT_PRIMARY,
+	SLOT_PRIMARY,		// Slot
 	1500, 				// Price
 	CALIBER_9MM, 		// Caliber ID
 	1.0, 				// Max Player Speed
@@ -33,7 +33,7 @@ weaponinfo_t wptMP5 = {
 	1, 					// Penetration Multiplier
 	4096, 				// Bullet Range
 	0.84, 				// Range Modifier
-	TYPE_AUTO,
+	TYPE_AUTO,			// Firing Type
 	0.08, 				// Attack-Delay
 	2.6, 				// Reload-Delay
 	iAmmo_9MM, 			// Caliber Pointer
@@ -41,8 +41,9 @@ weaponinfo_t wptMP5 = {
 	220,				// Accuracy Divisor
 	0.45,				// Accuracy Offset
 	0.75,				// Max Inaccuracy
-	6,
-	2
+	6,					// Minimum Crosshair Distance
+	2,					// Crosshair Movement Delta
+	1.0					// Armor penetration ratio
 };
 
 // Anim Table

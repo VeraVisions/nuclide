@@ -29,7 +29,7 @@ int iWeaponMode_ELITES;
 // Weapon Info
 weaponinfo_t wptELITES = { 
 	WEAPON_ELITES, 		// Identifier
-	SLOT_SECONDARY,
+	SLOT_SECONDARY,		// Slot
 	800, 				// Price
 	CALIBER_9MM, 		// Caliber ID
 	1.0, 				// Max Player Speed
@@ -39,16 +39,17 @@ weaponinfo_t wptELITES = {
 	1, 					// Penetration Multiplier
 	4096, 				// Bullet Range
 	0.75, 				// Range Modifier
-	TYPE_SEMI,
+	TYPE_SEMI,			// Firing Type
 	0.15, 				// Attack-Delay
 	4.6, 				// Reload-Delay
 	iAmmo_9MM, 			// Caliber Pointer
 	iMag_ELITES, 		// Clip Pointer
 	200,				// Accuracy Divisor
 	0.55,				// Accuracy Offset
-	1.4,					// Max Inaccuracy
-	4,
-	3
+	1.4,				// Max Inaccuracy
+	4,					// Minimum Crosshair Distance
+	3,					// Crosshair Movement Delta
+	1.05				// Armor penetration ratio
 };
 
 // Anim Table

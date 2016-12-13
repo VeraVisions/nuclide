@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Weapon Info
 weaponinfo_t wptSCOUT = { 
 	WEAPON_SCOUT, 		// Identifier
-	SLOT_PRIMARY,
+	SLOT_PRIMARY,		// Slot
 	2750, 				// Price
 	CALIBER_762MM, 		// Caliber ID
 	1.04, 				// Max Player Speed
@@ -33,16 +33,17 @@ weaponinfo_t wptSCOUT = {
 	3, 					// Penetration Multiplier
 	8192, 				// Bullet Range
 	0.98, 				// Range Modifier
-	TYPE_AUTO,
+	TYPE_AUTO,			// Firing Type
 	1.25, 				// Attack-Delay
 	2.0, 				// Reload-Delay
 	iAmmo_762MM, 		// Caliber Pointer
-	iMag_SCOUT, 	// Clip Pointer
+	iMag_SCOUT, 		// Clip Pointer
 	200,				// Accuracy Divisor
 	0.55,				// Accuracy Offset
 	1.4,				// Max Inaccuracy
-	5,
-	3
+	5,					// Minimum Crosshair Distance
+	3,					// Crosshair Movement Delta
+	1.7					// Armor penetration ratio
 };
 
 // Anim Table

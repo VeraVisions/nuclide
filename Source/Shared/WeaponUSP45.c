@@ -29,7 +29,7 @@ int iWeaponMode_USP45;
 // Weapon Info
 weaponinfo_t wptUSP45 = { 
 	WEAPON_USP45, 		// Identifier
-	SLOT_SECONDARY,
+	SLOT_SECONDARY,		// Slot
 	500, 				// Price
 	CALIBER_45ACP, 		// Caliber ID
 	1.0, 				// Max Player Speed
@@ -39,7 +39,7 @@ weaponinfo_t wptUSP45 = {
 	1, 					// Penetration Multiplier
 	4096, 				// Bullet Range
 	0.79, 				// Range Modifier
-	TYPE_SEMI,
+	TYPE_SEMI,			// Firing Type
 	0.15, 				// Attack-Delay
 	2.5, 				// Reload-Delay
 	iAmmo_45ACP, 		// Caliber Pointer
@@ -47,8 +47,9 @@ weaponinfo_t wptUSP45 = {
 	200,				// Accuracy Divisor
 	0.55,				// Accuracy Offset
 	1.4,				// Max Inaccuracy
-	8,
-	3
+	8,					// Minimum Crosshair Distance
+	3,					// Crosshair Movement Delta
+	1.0					// Armor penetration ratio
 };
 
 enum {

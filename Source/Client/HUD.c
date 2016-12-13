@@ -108,8 +108,8 @@ void HUD_DrawHealth( void ) {
 	}
 	
 	vector vHealthPos = [ 16, vVideoResolution_y - 42 ];
-	drawsubpic( vHealthPos, '24 24 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 2, NUMSIZE_Y], [ NUMSIZE_X, NUMSIZE_X ], VGUI_WINDOW_FGCOLOR, HUD_ALPHA, DRAWFLAG_ADDITIVE );
-	HUD_DrawNums( getstatf( STAT_HEALTH ), vHealthPos + '72 0', HUD_ALPHA, VGUI_WINDOW_FGCOLOR );
+	drawsubpic( vHealthPos, '24 24 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 2, NUMSIZE_Y], [ NUMSIZE_X, NUMSIZE_X ], vHUDColor, HUD_ALPHA, DRAWFLAG_ADDITIVE );
+	HUD_DrawNums( getstatf( STAT_HEALTH ), vHealthPos + '72 0', HUD_ALPHA, vHUDColor );
 	fOldHealth = getstatf( STAT_HEALTH );
 }
 
@@ -134,8 +134,8 @@ void HUD_DrawArmor( void ) {
 	}
 	
 	vector vArmorPos = [ 112, vVideoResolution_y - 42 ];
-	drawsubpic( vArmorPos, '24 24 0', HUD_NUMFILE_LAYER, [ 0, NUMSIZE_Y], [ NUMSIZE_X, NUMSIZE_X ], VGUI_WINDOW_FGCOLOR, fArmorAlpha, DRAWFLAG_ADDITIVE );
-	HUD_DrawNums( getstatf( STAT_ARMOR ), vArmorPos + '72 0', fArmorAlpha, VGUI_WINDOW_FGCOLOR);
+	drawsubpic( vArmorPos, '24 24 0', HUD_NUMFILE_LAYER, [ 0, NUMSIZE_Y], [ NUMSIZE_X, NUMSIZE_X ], vHUDColor, fArmorAlpha, DRAWFLAG_ADDITIVE );
+	HUD_DrawNums( getstatf( STAT_ARMOR ), vArmorPos + '72 0', fArmorAlpha, vHUDColor);
 	fOldArmor = getstatf( STAT_ARMOR );
 }
 
@@ -217,18 +217,18 @@ void HUD_DrawTimer( void ) {
 		HUD_DrawNumber( iMinutes, vTimePos + '48 0 0', fAlpha, '1 0 0' );
 		HUD_DrawNumber( iTens, vTimePos + '75 0 0', fAlpha, '1 0 0' );
 		HUD_DrawNumber( iUnits, vTimePos + '99 0 0',fAlpha, '1 0 0' );
-		HUD_DrawNumber( iMinutes, vTimePos + '48 0 0', 1 - fAlpha, VGUI_WINDOW_FGCOLOR );
-		HUD_DrawNumber( iTens, vTimePos + '75 0 0', 1 - fAlpha, VGUI_WINDOW_FGCOLOR );
-		HUD_DrawNumber( iUnits, vTimePos + '99 0 0',1 - fAlpha, VGUI_WINDOW_FGCOLOR );
+		HUD_DrawNumber( iMinutes, vTimePos + '48 0 0', 1 - fAlpha, vHUDColor );
+		HUD_DrawNumber( iTens, vTimePos + '75 0 0', 1 - fAlpha, vHUDColor );
+		HUD_DrawNumber( iUnits, vTimePos + '99 0 0',1 - fAlpha, vHUDColor );
 		
 		// : symbol
 		drawsubpic( vTimePos + '70 6 0', '3 3 0', HUD_NUMFILE_LAYER, [0.9375, 0], [ 0.01171875, 0.01171875 ], '1 0 0', fAlpha, DRAWFLAG_ADDITIVE );
 		drawsubpic( vTimePos + '70 16 0', '3 3 0', HUD_NUMFILE_LAYER, [0.9375, 0], [ 0.01171875, 0.01171875 ], '1 0 0', fAlpha, DRAWFLAG_ADDITIVE );
-		drawsubpic( vTimePos + '70 6 0', '3 3 0', HUD_NUMFILE_LAYER, [0.9375, 0], [ 0.01171875, 0.01171875 ], VGUI_WINDOW_FGCOLOR, 1 - fAlpha, DRAWFLAG_ADDITIVE );
-		drawsubpic( vTimePos + '70 16 0', '3 3 0', HUD_NUMFILE_LAYER, [0.9375, 0], [ 0.01171875, 0.01171875 ], VGUI_WINDOW_FGCOLOR, 1 - fAlpha, DRAWFLAG_ADDITIVE );
+		drawsubpic( vTimePos + '70 6 0', '3 3 0', HUD_NUMFILE_LAYER, [0.9375, 0], [ 0.01171875, 0.01171875 ], vHUDColor, 1 - fAlpha, DRAWFLAG_ADDITIVE );
+		drawsubpic( vTimePos + '70 16 0', '3 3 0', HUD_NUMFILE_LAYER, [0.9375, 0], [ 0.01171875, 0.01171875 ], vHUDColor, 1 - fAlpha, DRAWFLAG_ADDITIVE );
 		
 		drawsubpic( vTimePos, '24 25 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 6, NUMSIZE_Y * 3], [ NUMSIZE_X, NUMSIZE_Y ], '1 0 0', fAlpha, DRAWFLAG_ADDITIVE );
-		drawsubpic( vTimePos, '24 25 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 6, NUMSIZE_Y * 3], [ NUMSIZE_X, NUMSIZE_Y ], VGUI_WINDOW_FGCOLOR, 1 - fAlpha, DRAWFLAG_ADDITIVE );
+		drawsubpic( vTimePos, '24 25 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 6, NUMSIZE_Y * 3], [ NUMSIZE_X, NUMSIZE_Y ], vHUDColor, 1 - fAlpha, DRAWFLAG_ADDITIVE );
 	} else {
 		if ( iUnits != iOldUnits ) {
 			fTimerAlpha = 1.0;
@@ -239,14 +239,14 @@ void HUD_DrawTimer( void ) {
 		} else {
 			fTimerAlpha = HUD_ALPHA;
 		}
-		HUD_DrawNumber( iMinutes, vTimePos + '48 0 0', fTimerAlpha, VGUI_WINDOW_FGCOLOR );
-		HUD_DrawNumber( iTens, vTimePos + '75 0 0', fTimerAlpha, VGUI_WINDOW_FGCOLOR );
-		HUD_DrawNumber( iUnits, vTimePos + '99 0 0', fTimerAlpha, VGUI_WINDOW_FGCOLOR );
+		HUD_DrawNumber( iMinutes, vTimePos + '48 0 0', fTimerAlpha, vHUDColor );
+		HUD_DrawNumber( iTens, vTimePos + '75 0 0', fTimerAlpha, vHUDColor );
+		HUD_DrawNumber( iUnits, vTimePos + '99 0 0', fTimerAlpha, vHUDColor );
 		
-		drawsubpic( vTimePos + '70 6 0', '3 3 0', HUD_NUMFILE_LAYER, [0.9375, 0], [ 0.01171875, 0.01171875 ], VGUI_WINDOW_FGCOLOR, fTimerAlpha, DRAWFLAG_ADDITIVE );
-		drawsubpic( vTimePos + '70 16 0', '3 3 0', HUD_NUMFILE_LAYER, [0.9375, 0], [ 0.01171875, 0.01171875 ], VGUI_WINDOW_FGCOLOR, fTimerAlpha, DRAWFLAG_ADDITIVE );
+		drawsubpic( vTimePos + '70 6 0', '3 3 0', HUD_NUMFILE_LAYER, [0.9375, 0], [ 0.01171875, 0.01171875 ], vHUDColor, fTimerAlpha, DRAWFLAG_ADDITIVE );
+		drawsubpic( vTimePos + '70 16 0', '3 3 0', HUD_NUMFILE_LAYER, [0.9375, 0], [ 0.01171875, 0.01171875 ], vHUDColor, fTimerAlpha, DRAWFLAG_ADDITIVE );
 		
-		drawsubpic( vTimePos, '24 25 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 6, NUMSIZE_Y * 3], [ NUMSIZE_X, NUMSIZE_Y ], VGUI_WINDOW_FGCOLOR, fTimerAlpha, DRAWFLAG_ADDITIVE );
+		drawsubpic( vTimePos, '24 25 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 6, NUMSIZE_Y * 3], [ NUMSIZE_X, NUMSIZE_Y ], vHUDColor, fTimerAlpha, DRAWFLAG_ADDITIVE );
 		iOldUnits = iUnits;
 	}
 }
@@ -265,11 +265,22 @@ float fMoneyDifference;
 void HUD_DrawMoney( void ) {
 	// If the money differs from last frame, paint it appropriately
 	if ( getstatf( STAT_MONEY ) > fOldMoneyValue ) {
+		// Effect already in progress from something else, go add on top of it!
+		if ( fMoneyAlphaEffect > 0 ) {
+			fMoneyDifference += ( fOldMoneyValue - getstatf( STAT_MONEY ) );
+		} else {
+			fMoneyDifference = fOldMoneyValue - getstatf( STAT_MONEY );
+		}
 		// Make it green for a short time
 		vMoneyColorEffect = '0 1 0';
 		fMoneyAlphaEffect = 1.0;
-		fMoneyDifference = fOldMoneyValue - getstatf( STAT_MONEY );
 	} else if ( getstatf( STAT_MONEY ) < fOldMoneyValue ) {
+		// Same one as above
+		if ( fMoneyAlphaEffect > 0 ) {
+			fMoneyDifference += ( fOldMoneyValue - getstatf( STAT_MONEY ) );
+		} else {
+			fMoneyDifference = fOldMoneyValue - getstatf( STAT_MONEY );
+		}
 		// Make it red
 		vMoneyColorEffect = '1 0 0';
 		fMoneyAlphaEffect = 1.0;
@@ -282,7 +293,7 @@ void HUD_DrawMoney( void ) {
 	if ( fMoneyAlphaEffect > 0 ) {
 		fMoneyAlphaEffect -= frametime * 0.5;
 		drawsubpic( vMoneyPos, '18 25 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 8, NUMSIZE_Y * 1], [ NUMSIZE_X * 0.75, NUMSIZE_Y ], vMoneyColorEffect, fMoneyAlphaEffect, DRAWFLAG_ADDITIVE );
-		drawsubpic( vMoneyPos, '18 25 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 8, NUMSIZE_Y * 1], [ NUMSIZE_X * 0.75, NUMSIZE_Y ], VGUI_WINDOW_FGCOLOR, HUD_ALPHA - ( fMoneyAlphaEffect * 0.5 ), DRAWFLAG_ADDITIVE );
+		drawsubpic( vMoneyPos, '18 25 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 8, NUMSIZE_Y * 1], [ NUMSIZE_X * 0.75, NUMSIZE_Y ], vHUDColor, HUD_ALPHA - ( fMoneyAlphaEffect * 0.5 ), DRAWFLAG_ADDITIVE );
 		
 		// Draw the +/- symbols depending on whether or not we made or lost money
 		if ( fMoneyDifference < 0 ) {
@@ -296,14 +307,14 @@ void HUD_DrawMoney( void ) {
 		
 		// Draw the regular numbers at their normal positions
 		HUD_DrawNums( getstatf( STAT_MONEY ), vMoneyPos, fMoneyAlphaEffect, vMoneyColorEffect );
-		HUD_DrawNums( getstatf( STAT_MONEY ), vMoneyPos, HUD_ALPHA - ( fMoneyAlphaEffect * 0.5 ), VGUI_WINDOW_FGCOLOR );
+		HUD_DrawNums( getstatf( STAT_MONEY ), vMoneyPos, HUD_ALPHA - ( fMoneyAlphaEffect * 0.5 ), vHUDColor );
 		
 		// Draw above how much money we've gotten from all this
 		HUD_DrawNums( fabs( fMoneyDifference ), vMoneyPos + '0 -32 0', fMoneyAlphaEffect, vMoneyColorEffect );
 	} else {
-		drawsubpic( vMoneyPos, '18 25 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 8, NUMSIZE_Y * 1], [ NUMSIZE_X * 0.75, NUMSIZE_Y ], VGUI_WINDOW_FGCOLOR, HUD_ALPHA, DRAWFLAG_ADDITIVE );
+		drawsubpic( vMoneyPos, '18 25 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 8, NUMSIZE_Y * 1], [ NUMSIZE_X * 0.75, NUMSIZE_Y ], vHUDColor, HUD_ALPHA, DRAWFLAG_ADDITIVE );
 		vMoneyPos_x += ( 24 * 5 );
-		HUD_DrawNums( getstatf( STAT_MONEY ), vMoneyPos, HUD_ALPHA, VGUI_WINDOW_FGCOLOR );
+		HUD_DrawNums( getstatf( STAT_MONEY ), vMoneyPos, HUD_ALPHA, vHUDColor );
 	}
 	
 	fOldMoneyValue = getstatf( STAT_MONEY );
@@ -334,15 +345,15 @@ void HUD_DrawAmmo( void ) {
 	}
 	
 	vector vAmmoMagPos = [ vVideoResolution_x - 142, vVideoResolution_y - 42 ];
-	HUD_DrawNums( getstatf( STAT_CURRENT_MAG ), vAmmoMagPos, fAmmoAlpha, VGUI_WINDOW_FGCOLOR );
+	HUD_DrawNums( getstatf( STAT_CURRENT_MAG ), vAmmoMagPos, fAmmoAlpha, vHUDColor );
 	
-	drawsubpic( [vVideoResolution_x - 118, vVideoResolution_y - 42], '3 25 0', HUD_NUMFILE_LAYER, [0.9375, 0], [ 0.01171875, 0.09765625 ], VGUI_WINDOW_FGCOLOR, fAmmoAlpha, DRAWFLAG_ADDITIVE );
+	drawsubpic( [vVideoResolution_x - 118, vVideoResolution_y - 42], '3 25 0', HUD_NUMFILE_LAYER, [0.9375, 0], [ 0.01171875, 0.09765625 ], vHUDColor, fAmmoAlpha, DRAWFLAG_ADDITIVE );
 	
 	vector vAmmoCalPos = [ vVideoResolution_x - 64, vVideoResolution_y - 42 ];
-	HUD_DrawNums( getstatf( STAT_CURRENT_CALIBER ), vAmmoCalPos, fAmmoAlpha, VGUI_WINDOW_FGCOLOR );
+	HUD_DrawNums( getstatf( STAT_CURRENT_CALIBER ), vAmmoCalPos, fAmmoAlpha, vHUDColor );
 	
 	// Caliber icon
-	drawsubpic( vVideoResolution - '42 42 0', '24 24 0', HUD_NUMFILE_LAYER, vHUDCalPos[ wptTable[ getstatf( STAT_ACTIVEWEAPON ) ].iCaliber ], [ NUMSIZE_X, NUMSIZE_X ], VGUI_WINDOW_FGCOLOR, fAmmoAlpha, DRAWFLAG_ADDITIVE );
+	drawsubpic( vVideoResolution - '42 42 0', '24 24 0', HUD_NUMFILE_LAYER, vHUDCalPos[ wptTable[ getstatf( STAT_ACTIVEWEAPON ) ].iCaliber ], [ NUMSIZE_X, NUMSIZE_X ], vHUDColor, fAmmoAlpha, DRAWFLAG_ADDITIVE );
 	fOldMag = getstatf( STAT_CURRENT_MAG );
 	fOldCal = getstatf( STAT_CURRENT_CALIBER );
 }
@@ -360,20 +371,20 @@ void HUD_DrawProgressBar( void ) {
 		vector vBar = vSize;
 		vBar_x = 536 * getstatf( STAT_PROGRESS );
 		vBar_y = 13;
-		drawfill( vMainPos + '1 1 0', vBar, VGUI_WINDOW_FGCOLOR, 1, DRAWFLAG_ADDITIVE );
+		drawfill( vMainPos + '1 1 0', vBar, vHUDColor, 1, DRAWFLAG_ADDITIVE );
 		
 		// Draw the outline START
 		v1_x = vMainPos_x + vSize_x;
 		v1_y = vMainPos_y;
-		drawline( 1.0, vMainPos - '1 0 0', v1, VGUI_WINDOW_FGCOLOR, 1, DRAWFLAG_ADDITIVE );
+		drawline( 1.0, vMainPos - '1 0 0', v1, vHUDColor, 1, DRAWFLAG_ADDITIVE );
 		
 		v2_x = vMainPos_x;
 		v2_y = vMainPos_y + vSize_y;
-		drawline( 1.0, vMainPos, v2, VGUI_WINDOW_FGCOLOR, 1, DRAWFLAG_ADDITIVE );
+		drawline( 1.0, vMainPos, v2, vHUDColor, 1, DRAWFLAG_ADDITIVE );
 
 		v3 = vMainPos + vSize;
-		drawline( 1.0, v1, v3, VGUI_WINDOW_FGCOLOR, 1, DRAWFLAG_ADDITIVE );
-		drawline( 1.0, v2, v3, VGUI_WINDOW_FGCOLOR, 1, DRAWFLAG_ADDITIVE );
+		drawline( 1.0, v1, v3, vHUDColor, 1, DRAWFLAG_ADDITIVE );
+		drawline( 1.0, v2, v3, vHUDColor, 1, DRAWFLAG_ADDITIVE );
 		// Draw the outline END
 	}
 }
@@ -385,7 +396,20 @@ HUD_Draw
 Called every frame in Draw.c
 =================
 */
+string sOldConColor;
 void HUD_Draw( void ) {
+	// Only recalculate the color when it's changed.
+	if ( cvar_string( "con_color" ) != sOldConColor ) {
+		sOldConColor = cvar_string( "con_color" );
+		tokenize( sOldConColor );
+		vHUDColor_x = stof( argv( 0 ) ) / 255;
+		vHUDColor_y = stof( argv( 1 ) ) / 255;
+		vHUDColor_z = stof( argv( 2 ) ) / 255;
+	} else if ( cvar_string( "con_color" ) == "" ){
+		vHUDColor_x = 1;
+		vHUDColor_y = 0.5;
+		vHUDColor_z = 0;
+	}
 	
 	HUD_DrawTimer();
 	

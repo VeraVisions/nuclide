@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Weapon Info
 weaponinfo_t wptP228 = { 
 	WEAPON_P228, 		// Identifier
-	SLOT_SECONDARY,
+	SLOT_SECONDARY,		// Slot
 	600, 				// Price
 	CALIBER_357SIG, 	// Caliber ID
 	1.0, 				// Max Player Speed
@@ -33,16 +33,17 @@ weaponinfo_t wptP228 = {
 	1, 					// Penetration Multiplier
 	4096, 				// Bullet Range
 	0.8, 				// Range Modifier
-	TYPE_SEMI,
+	TYPE_SEMI,			// Firing Type
 	0.15, 				// Attack-Delay
 	2.7, 				// Reload-Delay
 	iAmmo_357SIG, 		// Caliber Pointer
-	iMag_P228, 		// Clip Pointer
+	iMag_P228, 			// Clip Pointer
 	200,				// Accuracy Divisor
 	0.55,				// Accuracy Offset
 	1.4,				// Max Inaccuracy
-	8,
-	3
+	8,					// Minimum Crosshair Distance
+	3,					// Crosshair Movement Delta
+	1.25				// Armor penetration ratio
 };
 
 // Anim Table

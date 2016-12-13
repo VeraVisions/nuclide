@@ -205,7 +205,7 @@ Draws the numbers 1-4 on the selection display
 =================
 */
 void HUD_DrawWeaponSelect_Num( vector vPos, float fValue ) {
-	drawsubpic( vPos, '20 20', "sprites/640hud7.spr_0.tga", vHUDSlotNumPos[ fValue ], [ 0.078125, 0.078125 ], VGUI_WINDOW_FGCOLOR, 1, DRAWFLAG_ADDITIVE );
+	drawsubpic( vPos, '20 20', "sprites/640hud7.spr_0.tga", vHUDSlotNumPos[ fValue ], [ 0.078125, 0.078125 ], vHUDColor, 1, DRAWFLAG_ADDITIVE );
 }
 
 /*
@@ -230,7 +230,7 @@ void HUD_DrawWeaponSelect( void ) {
 		HUD_DrawWeaponSelect_Num( vSelectPos, i );
 		
 		if ( wptTable[ fHUDWeaponSelected ].iSlot == i ) {
-			drawsubpic( vSelectPos + '0 20', '170 45', wpSymbolTable[ fHUDWeaponSelected ].sSprite, wpSymbolTable[ fHUDWeaponSelected ].vOrigin, [ 0.6640625, 0.17578125 ], VGUI_WINDOW_FGCOLOR, 1, DRAWFLAG_ADDITIVE );
+			drawsubpic( vSelectPos + '0 20', '170 45', wpSymbolTable[ fHUDWeaponSelected ].sSprite, wpSymbolTable[ fHUDWeaponSelected ].vOrigin, [ 0.6640625, 0.17578125 ], vHUDColor, 1, DRAWFLAG_ADDITIVE );
 			vSelectPos_x += 170;
 		} else {
 			vSelectPos_x += 20;

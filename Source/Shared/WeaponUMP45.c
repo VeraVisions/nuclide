@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Weapon Info
 weaponinfo_t wptUMP45 = { 
 	WEAPON_UMP45, 		// Identifier
-	SLOT_PRIMARY,
+	SLOT_PRIMARY,		// Slot
 	1700, 				// Price
 	CALIBER_45ACP, 		// Caliber ID
 	1.0, 				// Max Player Speed
@@ -33,7 +33,7 @@ weaponinfo_t wptUMP45 = {
 	1, 					// Penetration Multiplier
 	4096, 				// Bullet Range
 	0.82, 				// Range Modifier
-	TYPE_AUTO,
+	TYPE_AUTO,			// Firing Type
 	0.105, 				// Attack-Delay
 	3.5, 				// Reload-Delay
 	iAmmo_45ACP, 		// Caliber Pointer
@@ -41,8 +41,9 @@ weaponinfo_t wptUMP45 = {
 	210,				// Accuracy Divisor
 	0.5,				// Accuracy Offset
 	1,					// Max Inaccuracy
-	6,
-	3
+	6,					// Minimum Crosshair Distance
+	3,					// Crosshair Movement Delta
+	1.0					// Armor penetration ratio
 };
 
 // Anim Table

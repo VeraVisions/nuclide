@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Weapon Info
 weaponinfo_t wptSG552 = { 
 	WEAPON_SG552, 		// Identifier
-	SLOT_PRIMARY,
+	SLOT_PRIMARY,		// Slot
 	3500, 				// Price
 	CALIBER_556MM, 		// Caliber ID
 	0.94, 				// Max Player Speed
@@ -33,7 +33,7 @@ weaponinfo_t wptSG552 = {
 	2, 					// Penetration Multiplier
 	8192, 				// Bullet Range
 	0.955, 				// Range Modifier
-	TYPE_AUTO,
+	TYPE_AUTO,			// Firing Type
 	0.09, 				// Attack-Delay
 	3.2, 				// Reload-Delay
 	iAmmo_556MM, 		// Caliber Pointer
@@ -41,8 +41,9 @@ weaponinfo_t wptSG552 = {
 	220,				// Accuracy Divisor
 	0.3,				// Accuracy Offset
 	1.0,				// Max Inaccuracy
-	5,
-	3
+	5,					// Minimum Crosshair Distance
+	3,					// Crosshair Movement Delta
+	1.4					// Armor penetration ratio
 };
 
 // Anim Table

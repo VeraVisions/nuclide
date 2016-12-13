@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Weapon Info
 weaponinfo_t wptPARA = { 
 	WEAPON_PARA, 		// Identifier
-	SLOT_PRIMARY,
+	SLOT_PRIMARY,		// Slot
 	5750, 				// Price
 	CALIBER_556MMBOX, 	// Caliber ID
 	0.88, 				// Max Player Speed
@@ -33,16 +33,17 @@ weaponinfo_t wptPARA = {
 	2, 					// Penetration Multiplier
 	8192, 				// Bullet Range
 	0.97, 				// Range Modifier
-	TYPE_AUTO,
+	TYPE_AUTO,			// Firing Type
 	0.08, 				// Attack-Delay
 	3.0, 				// Reload-Delay
 	iAmmo_556MMBOX, 	// Caliber Pointer
-	iMag_PARA, 	// Clip Pointer
+	iMag_PARA, 			// Clip Pointer
 	175,				// Accuracy Divisor
 	0.4,				// Accuracy Offset
-	0.9,			// Max Inaccuracy
-	6,
-	3
+	0.9,				// Max Inaccuracy
+	6,					// Minimum Crosshair Distance
+	3,					// Crosshair Movement Delta
+	1.6					// Armor penetration ratio
 };
 
 // Anim Table

@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Weapon Info
 weaponinfo_t wptAWP = { 
 	WEAPON_AWP, 		// Identifier
-	SLOT_PRIMARY,
+	SLOT_PRIMARY,		// Slot
 	4750, 				// Price
 	CALIBER_338MAG, 	// Caliber ID
 	0.84, 				// Max Player Speed
@@ -33,16 +33,17 @@ weaponinfo_t wptAWP = {
 	3, 					// Penetration Multiplier
 	8192, 				// Bullet Range
 	0.99, 				// Range Modifier
-	TYPE_AUTO,
+	TYPE_AUTO,			// Firing Type
 	1.2, 				// Attack-Delay
 	2.9, 				// Reload-Delay
 	iAmmo_338MAG, 		// Caliber Pointer
 	iMag_AWP, 			// Clip Pointer
 	-1,					// Accuracy Divisor
 	0,					// Accuracy Offset
-	0,					// Max Inaccuracy
-	8,
-	3
+	0,					// Max Inaccuracy	
+	8,					// Minimum Crosshair Distance
+	3,					// Crosshair Movement Delta
+	1.95				// Armor penetration ratio
 };
 
 // Anim Table

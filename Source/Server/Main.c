@@ -46,7 +46,7 @@ void StartFrame( void ) {
 		}
 		
 		if ( iInGamePlayers > iOldInGamePlayers ) {
-			bprint( "Game commencing...\n" );
+			dprint( "Game commencing...\n" );
 			Timer_Begin( 2, GAME_COMMENCING );
 			iOldInGamePlayers = iInGamePlayers;
 		} else if ( iInGamePlayers == 0 ) {
@@ -285,4 +285,3 @@ void worldspawn( void ) {
 	pointerstat( STAT_WON_T, EV_INTEGER, &iWon_T );
 	pointerstat( STAT_WON_CT, EV_INTEGER, &iWon_CT );
 }
-

@@ -21,26 +21,27 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Weapon Info
 weaponinfo_t wptKNIFE = { 
 	WEAPON_KNIFE, 	// Identifier
-	SLOT_MELEE,
-	0, 					// Price
-	0, 					// Caliber ID
-	1.0, 				// Max Player Speed
-	1, 					// Bullets Per Shot
-	1, 					// Clip/MagSize
-	15, 				// Damage Per Bullet
-	1, 					// Penetration Multiplier
-	64, 				// Bullet Range
-	0.75, 				// Range Modifier
-	TYPE_SEMI,
-	0.15, 				// Attack-Delay
-	1.0, 				// Reload-Delay
-	iAmmo_9MM, 			// Caliber Pointer
-	iMag_GLOCK18, 		// Clip Pointer
-	1,					// Accuracy Divisor
-	1.0,				// Accuracy Offset
-	1.0,				// Max Inaccuracy
-	7,
-	3
+	SLOT_MELEE,		// Slot
+	0, 				// Price
+	0, 				// Caliber ID
+	1.0, 			// Max Player Speed
+	1, 				// Bullets Per Shot
+	1, 				// Clip/MagSize
+	50, 			// Damage Per Bullet
+	1, 				// Penetration Multiplier
+	64, 			// Bullet Range
+	0.75, 			// Range Modifier
+	TYPE_SEMI,		// Firing Type
+	0.15, 			// Attack-Delay
+	1.0, 			// Reload-Delay
+	iAmmo_9MM, 		// Caliber Pointer
+	iMag_GLOCK18, 	// Clip Pointer
+	1,				// Accuracy Divisor
+	1.0,			// Accuracy Offset
+	1.0,			// Max Inaccuracy
+	7,				// Minimum Crosshair Distance
+	3,				// Crosshair Movement Delta
+	1.7				// Armor penetration ratio
 };
 
 // Anim Table

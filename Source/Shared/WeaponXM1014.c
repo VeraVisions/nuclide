@@ -29,9 +29,9 @@ int iWeaponMode_XM1014;
 // Weapon Info
 weaponinfo_t wptXM1014 = { 
 	WEAPON_XM1014, 		// Identifier
-	SLOT_PRIMARY,
+	SLOT_PRIMARY,		// Slot
 	3000, 				// Price
-	CALIBER_BUCKSHOT, 		// Caliber ID
+	CALIBER_BUCKSHOT, 	// Caliber ID
 	0.96, 				// Max Player Speed
 	6, 					// Bullets Per Shot
 	7, 					// Clip/MagSize
@@ -39,7 +39,7 @@ weaponinfo_t wptXM1014 = {
 	1, 					// Penetration Multiplier
 	3000, 				// Bullet Range
 	0.7, 				// Range Modifier
-	TYPE_AUTO,
+	TYPE_AUTO,			// Firing Type
 	0.25, 				// Attack-Delay
 	3.0, 				// Reload-Delay
 	iAmmo_BUCKSHOT, 	// Caliber Pointer
@@ -47,8 +47,9 @@ weaponinfo_t wptXM1014 = {
 	200,				// Accuracy Divisor
 	0.35,				// Accuracy Offset
 	1.25,				// Max Inaccuracy
-	9,
-	4
+	9,					// Minimum Crosshair Distance
+	4,					// Crosshair Movement Delta
+	1.0					// Armor penetration ratio
 };
 
 // Anim Table

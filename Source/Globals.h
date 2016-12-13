@@ -139,7 +139,7 @@ enum {
 	SLOT_GRENADE
 };
 
-// These values are taken from CS:S' .ctx script files
+// These variables are taken from CS:S' .ctx script files, usually and interpreted as I go along...
 typedef struct {
 	int iWeaponID; 	// Identifier
 	int iSlot;
@@ -167,8 +167,9 @@ typedef struct {
 	float fAccuracyOffset;
 	float fMaxInaccuracy;
 	
-	int iCrosshairMinDistance;
-	int iCrosshairDeltaDistance;
+	int iCrosshairMinDistance;	// Some weapons just are inaccurate by design... 
+	int iCrosshairDeltaDistance;	// Scale factor of sorts
+	float fWeaponArmorRatio; // Some weapons seem to do more damage to the kevlar than others I guess
 } weaponinfo_t;
 
 typedef struct {

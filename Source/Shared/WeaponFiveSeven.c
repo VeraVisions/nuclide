@@ -22,8 +22,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Weapon Info
 weaponinfo_t wptFIVESEVEN = { 
-	WEAPON_FIVESEVEN, 		// Identifier
-	SLOT_SECONDARY,
+	WEAPON_FIVESEVEN, 	// Identifier
+	SLOT_SECONDARY,		// Slot
 	750, 				// Price
 	CALIBER_57MM, 		// Caliber ID
 	1.0, 				// Max Player Speed
@@ -33,7 +33,7 @@ weaponinfo_t wptFIVESEVEN = {
 	1, 					// Penetration Multiplier
 	4096, 				// Bullet Range
 	0.885, 				// Range Modifier
-	TYPE_SEMI,
+	TYPE_SEMI,			// Firing Type
 	0.15, 				// Attack-Delay
 	3.1, 				// Reload-Delay
 	iAmmo_57MM, 		// Caliber Pointer
@@ -41,8 +41,9 @@ weaponinfo_t wptFIVESEVEN = {
 	200,				// Accuracy Divisor
 	0.55,				// Accuracy Offset
 	1.4,				// Max Inaccuracy
-	8,
-	3
+	8,					// Minimum Crosshair Distance
+	3,					// Crosshair Movement Delta
+	1.5					// Armor penetration ratio
 };
 
 // Anim Table

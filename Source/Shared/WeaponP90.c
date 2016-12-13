@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Weapon Info
 weaponinfo_t wptP90 = { 
 	WEAPON_P90, 		// Identifier
-	SLOT_PRIMARY,
+	SLOT_PRIMARY,		// Slot
 	2350, 				// Price
 	CALIBER_57MM, 		// Caliber ID
 	0.98, 				// Max Player Speed
@@ -33,7 +33,7 @@ weaponinfo_t wptP90 = {
 	1, 					// Penetration Multiplier
 	4096, 				// Bullet Range
 	0.84, 				// Range Modifier
-	TYPE_AUTO,
+	TYPE_AUTO,			// Firing Type
 	0.07, 				// Attack-Delay
 	3.3, 				// Reload-Delay
 	iAmmo_57MM, 		// Caliber Pointer
@@ -41,8 +41,9 @@ weaponinfo_t wptP90 = {
 	175,				// Accuracy Divisor
 	0.45,				// Accuracy Offset
 	1.0,				// Max Inaccuracy
-	7,
-	3
+	7,					// Minimum Crosshair Distance
+	3,					// Crosshair Movement Delta
+	1.5					// Armor penetration ratio
 };
 
 // Anim Table

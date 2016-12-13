@@ -29,7 +29,7 @@ int iWeaponMode_M3;
 // Weapon Info
 weaponinfo_t wptM3 = { 
 	WEAPON_M3, 			// Identifier
-	SLOT_PRIMARY,
+	SLOT_PRIMARY,		// Slot
 	1700, 				// Price
 	CALIBER_BUCKSHOT, 	// Caliber ID
 	0.92, 				// Max Player Speed
@@ -39,16 +39,17 @@ weaponinfo_t wptM3 = {
 	1, 					// Penetration Multiplier
 	3000, 				// Bullet Range
 	0.7, 				// Range Modifier
-	TYPE_SEMI,
+	TYPE_SEMI,			// Firing Type
 	1.0, 				// Attack-Delay
 	3.0, 				// Reload-Delay
 	iAmmo_BUCKSHOT, 	// Caliber Pointer
-	iMag_M3, 	// Clip Pointer
+	iMag_M3, 			// Clip Pointer
 	200,				// Accuracy Divisor
 	0.35,				// Accuracy Offset
 	1.25,				// Max Inaccuracy
-	8,
-	6
+	8,					// Minimum Crosshair Distance
+	6,					// Crosshair Movement Delta
+	1.0					// Armor penetration ratio
 };
 
 // Anim Table

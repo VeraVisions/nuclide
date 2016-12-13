@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Weapon Info
 weaponinfo_t wptMAC10 = { 
 	WEAPON_MAC10, 		// Identifier
-	SLOT_PRIMARY,
+	SLOT_PRIMARY,		// Slot
 	1400, 				// Price
 	CALIBER_45ACP, 		// Caliber ID
 	1.0, 				// Max Player Speed
@@ -33,7 +33,7 @@ weaponinfo_t wptMAC10 = {
 	1, 					// Penetration Multiplier
 	4096, 				// Bullet Range
 	0.82, 				// Range Modifier
-	TYPE_AUTO,
+	TYPE_AUTO,			// Firing Type
 	0.075, 				// Attack-Delay
 	3.2, 				// Reload-Delay
 	iAmmo_45ACP, 		// Caliber Pointer
@@ -41,8 +41,9 @@ weaponinfo_t wptMAC10 = {
 	200,				// Accuracy Divisor
 	0.6,				// Accuracy Offset
 	1.65,				// Max Inaccuracy
-	9,
-	3
+	9,					// Minimum Crosshair Distance
+	3,					// Crosshair Movement Delta
+	0.95				// Armor penetration ratio
 };
 
 // Anim Table

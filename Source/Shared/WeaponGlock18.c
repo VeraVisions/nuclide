@@ -29,7 +29,7 @@ int iWeaponMode_GLOCK18;
 // Weapon Info
 weaponinfo_t wptGLOCK18 = { 
 	WEAPON_GLOCK18, 	// Identifier
-	SLOT_SECONDARY,
+	SLOT_SECONDARY,		// Slot
 	400, 				// Price
 	CALIBER_9MM, 		// Caliber ID
 	1.0, 				// Max Player Speed
@@ -39,16 +39,17 @@ weaponinfo_t wptGLOCK18 = {
 	1, 					// Penetration Multiplier
 	4096, 				// Bullet Range
 	0.75, 				// Range Modifier
-	TYPE_SEMI,
+	TYPE_SEMI,			// Firing Type
 	0.15, 				// Attack-Delay
 	2.1, 				// Reload-Delay
 	iAmmo_9MM, 			// Caliber Pointer
-	iMag_GLOCK18, 	// Clip Pointer
+	iMag_GLOCK18, 		// Clip Pointer
 	200,				// Accuracy Divisor
 	0.55,				// Accuracy Offset
 	1.4,				// Max Inaccuracyy
-	8,
-	3
+	8,					// Minimum Crosshair Distance
+	3,					// Crosshair Movement Delta
+	1.05				// Armor penetration ratio
 };
 
 // Anim Table

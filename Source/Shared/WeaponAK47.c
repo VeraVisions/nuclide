@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Weapon Info
 weaponinfo_t wptAK47 = { 
 	WEAPON_AK47, 		// Identifier
-	SLOT_PRIMARY,
+	SLOT_PRIMARY,		// Slot
 	2500, 				// Price
 	CALIBER_762MM, 		// Caliber ID
 	0.88, 				// Max Player Speed
@@ -33,16 +33,17 @@ weaponinfo_t wptAK47 = {
 	2, 					// Penetration Multiplier
 	8192, 				// Bullet Range
 	0.98, 				// Range Modifier
-	TYPE_AUTO,
+	TYPE_AUTO,			// Firing Type
 	0.1, 				// Attack-Delay
 	2.4, 				// Reload-Delay
 	iAmmo_762MM, 		// Caliber Pointer
-	iMag_AK47, 		// Clip Pointer
+	iMag_AK47, 			// Clip Pointer
 	200,				// Accuracy Divisor
 	0.35,				// Accuracy Offset
 	1.25,				// Max Inaccuracy
-	4,
-	4
+	4,					// Minimum Crosshair Distance
+	4,					// Crosshair Movement Delta
+	1.55				// Armor penetration ratio
 };
 
 // Anim Table

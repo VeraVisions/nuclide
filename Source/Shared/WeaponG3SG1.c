@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Weapon Info
 weaponinfo_t wptG3SG1 = { 
 	WEAPON_G3SG1, 		// Identifier
-	SLOT_PRIMARY,
+	SLOT_PRIMARY,		// Slot
 	5000, 				// Price
 	CALIBER_762MM, 		// Caliber ID
 	0.84, 				// Max Player Speed
@@ -33,16 +33,17 @@ weaponinfo_t wptG3SG1 = {
 	3, 					// Penetration Multiplier
 	8192, 				// Bullet Range
 	0.98, 				// Range Modifier
-	TYPE_AUTO,
+	TYPE_AUTO,			// Firing Type
 	0.25, 				// Attack-Delay
 	4.6, 				// Reload-Delay
 	iAmmo_762MM, 		// Caliber Pointer
-	iMag_G3SG1, 	// Clip Pointer
+	iMag_G3SG1, 		// Clip Pointer
 	200,				// Accuracy Divisor
 	0.55,				// Accuracy Offset
 	1.4,				// Max Inaccuracy
-	6,
-	4
+	6,					// Minimum Crosshair Distance
+	4,					// Crosshair Movement Delta
+	1.65				// Armor penetration ratio
 };
 
 // Anim Table

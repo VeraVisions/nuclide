@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define DRAWFLAG_MODULATE 2
 #define DRAWFLAG_2XMODULATE 3
 
+vector vHUDColor; // Defined in HUD_Draw (HUD.c)
 float fVGUI_Display; // The VGUI menu currently being drawn
 
 vector vVideoResolution; // Updated every frame

@@ -29,7 +29,7 @@ int iWeaponMode_M4A1;
 // Weapon Info
 weaponinfo_t wptM4A1 = { 
 	WEAPON_M4A1, 		// Identifier
-	SLOT_PRIMARY,
+	SLOT_PRIMARY,		// Slot
 	3100, 				// Price
 	CALIBER_556MM, 		// Caliber ID
 	0.92, 				// Max Player Speed
@@ -39,16 +39,17 @@ weaponinfo_t wptM4A1 = {
 	1, 					// Penetration Multiplier
 	8192, 				// Bullet Range
 	0.97, 				// Range Modifier
-	TYPE_AUTO,
+	TYPE_AUTO,			// Firing Type
 	0.09, 				// Attack-Delay
 	3.1, 				// Reload-Delay
 	iAmmo_556MM, 		// Caliber Pointer
-	iMag_M4A1, 		// Clip Pointer
+	iMag_M4A1, 			// Clip Pointer
 	220,				// Accuracy Divisor
 	0.3,				// Accuracy Offset
 	1.0,				// Max Inaccuracy
-	4,
-	3
+	4,					// Minimum Crosshair Distance
+	3,					// Crosshair Movement Delta
+	1.4					// Armor penetration ratio
 };
 
 enum {
