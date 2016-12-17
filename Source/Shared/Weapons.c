@@ -101,10 +101,6 @@ void Weapon_Reload( float fWeapon ) {
 
 #ifdef SSQC
 void Weapon_Switch( int iSlot ) {
-	if ( self.fAttackFinished > time ) {
-		return;
-	}
-	
 	float fWeapon;
 	
 	if ( iSlot == SLOT_MELEE ) {
@@ -174,10 +170,22 @@ void CSEv_PlayerBuyWeapon_f( float fWeapon ) {
 	
 	if ( ( self.fMoney - wptTable[ fWeapon ].iPrice ) >= 0 ) {
 		Weapon_AddItem( fWeapon );
+		
+		// Automatically fill weapons with ammo when you buy them (for free) like in CS:S
+		if ( cvar( "mp_fillweapons" ) == 1 ) {
+			if ( wptTable[ fWeapon ].iSlot == SLOT_PRIMARY ) {
+				Ammo_BuyPrimary( TRUE );
+			} else if ( wptTable[ fWeapon ].iSlot == SLOT_SECONDARY ) {
+				Ammo_BuySecondary( TRUE );
+			}
+		}
+		
 		Weapon_Draw( fWeapon );
 		Money_AddMoney( self, -wptTable[ fWeapon ].iPrice );
+		
 		sound( self, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_IDLE );
 	}
+	
 	self.fAttackFinished = time + 1.0;
 }
 

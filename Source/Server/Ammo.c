@@ -32,7 +32,7 @@ ammoinfo_t ammoTable[11] = {
 	{ 50, 100, 50 } //CALIBER_57MM
 };
 
-void Ammo_BuyPrimary( void ) {
+void Ammo_BuyPrimary( float fFree ) {
 	if ( !self.fSlotPrimary ) {
 		return;
 	}
@@ -51,7 +51,7 @@ void Ammo_BuyPrimary( void ) {
 	}  
 }
 
-void Ammo_BuySecondary( void ) {	
+void Ammo_BuySecondary( float fFree ) {	
 	if ( !self.fSlotSecondary ) {
 		return;
 	}
@@ -60,12 +60,14 @@ void Ammo_BuySecondary( void ) {
 	float fNew = ceil( ( (float)iRequiredAmmo / (float)ammoTable[ wptTable[ self.fSlotSecondary ].iCaliber ].iSize ) );
 	
 	for ( int i = 0; i < fNew; i++ ) {
-		if ( self.fMoney - ammoTable[ wptTable[ self.fSlotSecondary ].iCaliber ].iPrice < 0 ) {
-			break;
+		if ( fFree == FALSE ) {
+			if ( self.fMoney - ammoTable[ wptTable[ self.fSlotSecondary ].iCaliber ].iPrice < 0 ) {
+				break;
+			}
+			Money_AddMoney( self, -ammoTable[ wptTable[ self.fSlotSecondary ].iCaliber ].iPrice );
 		}
 		
 		self.(wptTable[ self.fSlotSecondary ].iCaliberfld) += ammoTable[ wptTable[ self.fSlotSecondary ].iCaliber ].iSize;
-		Money_AddMoney( self, -ammoTable[ wptTable[ self.fSlotSecondary ].iCaliber ].iPrice );
 		sound( self, CHAN_ITEM, "items/9mmclip1.wav", 1, ATTN_IDLE );
 		
 		if ( self.(wptTable[ self.fSlotSecondary ].iCaliberfld) > ammoTable[ wptTable[ self.fSlotSecondary ].iCaliber ].iMaxAmount ) {
@@ -80,9 +82,9 @@ void CSEv_GamePlayerBuyAmmo_f( float fType ) {
 	}
 	
 	if ( fType == 0 ) {
-		Ammo_BuyPrimary();
+		Ammo_BuyPrimary( FALSE );
 	} else {
-		Ammo_BuySecondary();
+		Ammo_BuySecondary( FALSE );
 	}
 	
 	Weapon_UpdateCurrents();

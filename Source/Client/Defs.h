@@ -24,9 +24,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define DRAWFLAG_MODULATE 2
 #define DRAWFLAG_2XMODULATE 3
 
-vector autocvar_con_color; // autocvar of "con_color"
-vector autocvar_vgui_color; // autocvar of "vgui_color"
-vector autocvar_cross_color; // autocvar of "cross_color"
+var vector autocvar_con_color; // autocvar of "con_color"
+var vector autocvar_vgui_color; // autocvar of "vgui_color"
+var vector autocvar_cross_color; // autocvar of "cross_color"
 
 vector vHUDColor; // Defined in HUD_Draw (HUD.c)
 vector vVGUIColor; // Defined in HUD_Draw (VGUI.c)

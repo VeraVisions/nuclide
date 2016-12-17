@@ -26,7 +26,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define VEC_CHULL_MAX '16 16 18'
 #define VEC_PLAYER_CVIEWPOS '0 0 12'
 
-
 // Particle Fields
 float EFFECT_GUNSHOT;
 float EFFECT_BLOOD;
@@ -127,5 +126,7 @@ void Damage_Radius( vector vOrigin, entity eAttacker, float fDamage, float fRadi
 void Entities_InitRespawnable( void() vRespawnFunc );
 void Entities_Respawn( void );
 
+void Ammo_BuyPrimary( float fFree );
+void Ammo_BuySecondary( float fFree );
 // WIP
 string __fullspawndata;

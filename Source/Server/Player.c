@@ -79,7 +79,7 @@ void Player_Death( void ) {
 
 float Player_GetMaxSpeed( float fWeapon ) {
 	if ( self.flags & FL_CROUCHING ) {
-		return (cvar( "sv_maxspeed" ) * wptTable[ fWeapon ].fSpeedM) * 0.5;
+		return ( cvar( "sv_maxspeed" ) * wptTable[ fWeapon ].fSpeedM ) * 0.5;
 	} else {
 		return cvar( "sv_maxspeed" ) * wptTable[ fWeapon ].fSpeedM;
 	}
