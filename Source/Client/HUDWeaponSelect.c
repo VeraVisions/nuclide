@@ -246,9 +246,7 @@ Called by CSQC_Input_Frame when conditions are met
 =================
 */
 void HUD_DrawWeaponSelect_Trigger( void ) {
-	if ( fHUDWeaponSelected != getstatf( STAT_ACTIVEWEAPON ) ) {
-		sendevent( "PlayerSwitchWeapon", "f", fHUDWeaponSelected );
-	}
+	sendevent( "PlayerSwitchWeapon", "f", fHUDWeaponSelected );
 	sound( self, CHAN_ITEM, "common/wpn_select.wav", 0.5, ATTN_NONE );
 	fHUDWeaponSelectTime = 0;
 	fHUDWeaponSelected = 0;

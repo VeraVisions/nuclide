@@ -111,7 +111,8 @@ void CSQC_DrawCenterprint( void ) {
 	for ( int i = 0; i < ( fCenterPrintLines ); i++ ) {
 		vCenterPrintPos_x = ( vVideoResolution_x / 2 ) - ( stringwidth( sCenterPrintBuffer[ i ], FALSE ) / 2 );
 		drawstring( vCenterPrintPos + '1 1', sCenterPrintBuffer[ i ], '8 8 0', '0 0 0', fCenterPrintAlpha, 0 );
-		drawstring( vCenterPrintPos, sCenterPrintBuffer[ i ], '8 8 0', VGUI_WINDOW_FGCOLOR, fCenterPrintAlpha, 0 );
+		drawstring( vCenterPrintPos, sCenterPrintBuffer[ i ], '8 8 0', '0.25 0.25 0.25', fCenterPrintAlpha, 0 );
+		drawstring( vCenterPrintPos, sCenterPrintBuffer[ i ], '8 8 0', vHUDColor, fCenterPrintAlpha, DRAWFLAG_ADDITIVE );
 		vCenterPrintPos_y += 8;
 	}
 }
@@ -165,6 +166,7 @@ void CSQC_UpdateView( float fWinWidth, float fWinHeight, float fGameFocus ) {
 		//setproperty( VF_ANGLES, input_angles );
 		View_DrawViewModel();
 	}
+	
 	renderscene();
 	
 	if( fGameFocus == TRUE ) {

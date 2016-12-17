@@ -106,7 +106,6 @@ void CSQC_Parse_Event( void ) {
 		float fStyle = readbyte();
 		Effect_BreakModel( vPos, vSize, '0 0 0', fStyle );
 	} else if ( fHeader == EV_CAMERATRIGGER ) {
-
 		vCameraPos_x = readcoord();
 		vCameraPos_y = readcoord();
 		vCameraPos_z = readcoord();

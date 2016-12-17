@@ -24,7 +24,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define DRAWFLAG_MODULATE 2
 #define DRAWFLAG_2XMODULATE 3
 
+vector autocvar_con_color; // autocvar of "con_color"
+vector autocvar_vgui_color; // autocvar of "vgui_color"
+vector autocvar_cross_color; // autocvar of "cross_color"
+
 vector vHUDColor; // Defined in HUD_Draw (HUD.c)
+vector vVGUIColor; // Defined in HUD_Draw (VGUI.c)
+vector vCrossColor; // Defined in HUD_Draw (HUDCrosshair.c)
+
 float fVGUI_Display; // The VGUI menu currently being drawn
 
 vector vVideoResolution; // Updated every frame
@@ -51,3 +58,5 @@ float fCameraTime;
 void View_PlayAnimation( int iSequence );
 void Sound_Delayed( string sSample, float fVol, float fDelay );
 
+// This actually belongs in Builtins.h since its an undocumented global
+vector pmove_vel;

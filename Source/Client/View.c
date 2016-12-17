@@ -51,8 +51,7 @@ string sViewModels[ CS_WEAPON_COUNT ] = {
 View_CalcBob
 ====================
 */
-vector pmove_vel;
-float V_CalcBob( void ) {
+float View_CalcBob( void ) {
 	static float fBobTime;
 	static float fBob;
 	float fCycle;
@@ -78,8 +77,8 @@ float V_CalcBob( void ) {
 
 	fBob = sqrt( vVelocity_x * vVelocity_x + vVelocity_y * vVelocity_y ) * cvar( "cl_bob" );
 	fBob = fBob * 0.3 + fBob * 0.7 * sin(fCycle);
-	fBob = Math_Min( fBob, 4 );
-	fBob = Math_Max( fBob, -7 );
+	fBob = min( fBob, 4 );
+	fBob = max( fBob, -7 );
 	
 	return fBob * 0.5;
 }
@@ -95,7 +94,7 @@ void View_DrawViewModel( void ) {
 	
 	if ( time != fLastTime ) {
 		makevectors( getproperty( VF_ANGLES ) );
-		eViewModel.origin = getproperty( VF_ORIGIN ) + '0 0 -1' + ( v_forward * V_CalcBob() );
+		eViewModel.origin = getproperty( VF_ORIGIN ) + '0 0 -1' + ( v_forward * View_CalcBob() );
 		eViewModel.angles = getproperty( VF_ANGLES );
 		
 		if( getstatf( STAT_ACTIVEWEAPON ) < CS_WEAPON_COUNT ) {

@@ -41,7 +41,7 @@ void Effect_AnimatedSprite( vector vPos, float fIndex, float fFPS, float fScale,
 	self.think = Effect_AnimatedSprite_Animate;
 	self.drawmask = MASK_ENGINE;
 	self.nextthink = time + ( 1 / self.framerate );
-	//self.maxframe = modelframecount( self.modelindex );
+	self.maxframe = modelframecount( self.modelindex );
 }
 #endif
 

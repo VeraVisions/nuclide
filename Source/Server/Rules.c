@@ -139,17 +139,17 @@ void Rules_RoundOver( int iTeamWon, int iMoneyReward, float fSilent ) {
 	}
 	
 	if ( iTeamWon == TEAM_T ) {
-		if ( fSilent == TRUE ) {
+		if ( fSilent == FALSE ) {
 			Radio_BroadcastMessage( RADIO_TERWIN );
 		}
 		iWon_T++;
 	} else if ( iTeamWon == TEAM_CT ) {
-		if ( fSilent == TRUE ) {
+		if ( fSilent == FALSE ) {
 			Radio_BroadcastMessage( RADIO_CTWIN );
 		}
 		iWon_CT++;
 	} else {
-		if ( fSilent == TRUE ) {
+		if ( fSilent == FALSE ) {
 			Radio_BroadcastMessage( RADIO_ROUNDDRAW );
 		}
 	}

@@ -48,6 +48,8 @@ void CSQC_VGUI_Draw( void ) {
 		setcursormode( FALSE );
 		return;
 	}
+	
+	vVGUIColor = autocvar_vgui_color * ( 1 / 255 );
 
 	setcursormode( TRUE );
 

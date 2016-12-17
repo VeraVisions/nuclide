@@ -182,8 +182,10 @@ void CSEv_PlayerBuyWeapon_f( float fWeapon ) {
 }
 
 void CSEv_PlayerSwitchWeapon_f( float fWeapon ) {
-	self.weapon = fWeapon;
-	Weapon_Draw( fWeapon );
+	if ( fWeapon != self.weapon ) {
+		self.weapon = fWeapon;
+		Weapon_Draw( fWeapon );
+	}
 	
 	self.fAttackFinished = time + 1.0;
 }

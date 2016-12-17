@@ -40,19 +40,15 @@ void StartFrame( void ) {
 	// TODO: Optimise this
 	if ( ( iAlivePlayers_T + iAlivePlayers_CT ) == 0 ) {
 		int iInGamePlayers = 0;
-		static int iOldInGamePlayers;
 		for ( entity eFind = world; ( eFind = find( eFind, classname, "player" ) ); ) {
 			iInGamePlayers++;
 		}
 		
-		if ( iInGamePlayers > iOldInGamePlayers ) {
-			dprint( "Game commencing...\n" );
+		if ( ( iInGamePlayers > 0 ) && ( fGameState != GAME_COMMENCING ) ) {
 			Timer_Begin( 2, GAME_COMMENCING );
-			iOldInGamePlayers = iInGamePlayers;
 		} else if ( iInGamePlayers == 0 ) {
 			fGameState = GAME_INACTIVE;
 			fGameTime = 0;
-			iOldInGamePlayers = 0;
 		} else {
 			Timer_Update(); // Timer that happens once players have started joining
 		}

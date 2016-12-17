@@ -28,19 +28,3 @@ float Math_LerpAngle( float fStart, float fEnd, float fAmount ) {
 float Math_CRandom( void ) {
 	return 2 * ( random() - 0.5 );
 }
-
-float Math_Min( float fA, float fB ) {
-	if ( fA < fB ) {
-		return fA;
-	} else {
-		return fB;
-	}
-}
-
-float Math_Max( float fA, float fB ) {
-	if ( fA > fB ) {
-		return fA;
-	} else {
-		return fB;
-	}
-}

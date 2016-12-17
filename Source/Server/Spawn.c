@@ -183,11 +183,22 @@ void CSEv_GamePlayerSpawn_f( float fChar ) {
 		return;
 	}
 	
+	// Hey, we are alive and are trying to switch teams, so subtract us from the Alive_Team counter.
+	if ( self.health > 0 ) {
+		if ( self.team == TEAM_T ) {
+			iAlivePlayers_T--;
+		} else if ( self.team == TEAM_CT ) {
+			iAlivePlayers_CT--;
+		}
+	}
+	
+	// Spawn the players immediately when its in the freeze state
 	switch ( fGameState ) {
-		case GAME_INACTIVE:
-		case GAME_COMMENCING:
-		case GAME_ACTIVE:
-		case GAME_END:
+		case GAME_FREEZE:
+			self.fCharModel = fChar;
+			Spawn_CreateClient( fChar );
+			break;
+		default:
 			if( fChar == 0 ) {
 				PutClientInServer();
 				return;
@@ -204,11 +215,6 @@ void CSEv_GamePlayerSpawn_f( float fChar ) {
 			forceinfokey( self, "*dead", "1" );
 			forceinfokey( self, "*team", ftos( self.team ) ); 
 			break;
-		default:
-			self.fCharModel = fChar;
-			Spawn_CreateClient( fChar );
-		break;
-		
 	}
 	
 	self.frags = 0;

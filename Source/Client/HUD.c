@@ -94,9 +94,9 @@ HUD_DrawHealth
 Draw the current amount of health
 =================
 */
-float fOldHealth;
-float fHealthAlpha;
 void HUD_DrawHealth( void ) {
+	static float fOldHealth;
+	static float fHealthAlpha;
 	if ( getstatf( STAT_HEALTH ) != fOldHealth ) {
 		fHealthAlpha = 1.0;
 	}
@@ -120,9 +120,9 @@ HUD_DrawArmor
 Draw the current amount of Kevlar
 =================
 */
-float fOldArmor;
-float fArmorAlpha;
 void HUD_DrawArmor( void ) {
+	static float fOldArmor;
+	static float fArmorAlpha;
 	if ( getstatf( STAT_ARMOR ) != fOldArmor ) {
 		fArmorAlpha = 1.0;
 	}
@@ -180,9 +180,9 @@ HUD_DrawTimer
 Draws the roundtime at the bottom of the screen (always visible)
 =================
 */
-int iOldUnits;
-float fTimerAlpha;
 void HUD_DrawTimer( void ) {
+	static int iOldUnits;
+	static float fTimerAlpha;
 	int iMinutes, iSeconds, iTens, iUnits;
 	vector vTimePos = [ ( vVideoResolution_x / 2 ) - 62, vVideoResolution_y - 42 ];
 	
@@ -258,11 +258,12 @@ HUD_DrawMoney
 Draws the amount of money (0-16000) with an icon to the screen
 =================
 */
-float fOldMoneyValue;
-float fMoneyAlphaEffect;
-vector vMoneyColorEffect;
-float fMoneyDifference;
 void HUD_DrawMoney( void ) {
+	static float fOldMoneyValue;
+	static float fMoneyAlphaEffect;
+	static vector vMoneyColorEffect;
+	static float fMoneyDifference;
+
 	// If the money differs from last frame, paint it appropriately
 	if ( getstatf( STAT_MONEY ) > fOldMoneyValue ) {
 		// Effect already in progress from something else, go add on top of it!
@@ -327,9 +328,9 @@ HUD_DrawAmmo
 Draws the current clip, the amount of ammo for the caliber and a matching caliber icon
 =================
 */
-float fOldMag, fOldCal;
-float fAmmoAlpha;
 void HUD_DrawAmmo( void ) {
+	static float fOldMag, fOldCal;
+	static float fAmmoAlpha;
 	if ( getstatf( STAT_ACTIVEWEAPON ) == WEAPON_KNIFE || getstatf( STAT_ACTIVEWEAPON ) == WEAPON_C4BOMB ) {
 		return;
 	}
@@ -389,6 +390,11 @@ void HUD_DrawProgressBar( void ) {
 	}
 }
 
+
+void HUD_DrawRadar( void ) {
+	drawpic( '16 16', "sprites/radar640.spr_0.tga", '128 128', '1 1 1', 0.5, DRAWFLAG_ADDITIVE );
+}
+
 /*
 =================
 HUD_Draw
@@ -396,20 +402,8 @@ HUD_Draw
 Called every frame in Draw.c
 =================
 */
-string sOldConColor;
 void HUD_Draw( void ) {
-	// Only recalculate the color when it's changed.
-	if ( cvar_string( "con_color" ) != sOldConColor ) {
-		sOldConColor = cvar_string( "con_color" );
-		tokenize( sOldConColor );
-		vHUDColor_x = stof( argv( 0 ) ) / 255;
-		vHUDColor_y = stof( argv( 1 ) ) / 255;
-		vHUDColor_z = stof( argv( 2 ) ) / 255;
-	} else if ( cvar_string( "con_color" ) == "" ){
-		vHUDColor_x = 1;
-		vHUDColor_y = 0.5;
-		vHUDColor_z = 0;
-	}
+	vHUDColor = autocvar_con_color * ( 1 / 255 );
 	
 	HUD_DrawTimer();
 	
@@ -417,6 +411,7 @@ void HUD_Draw( void ) {
 		return;
 	}
 	
+	HUD_DrawRadar();
 	HUD_DrawHealth();
 	HUD_DrawArmor();
 	HUD_DrawIcons();

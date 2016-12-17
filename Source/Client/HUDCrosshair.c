@@ -37,6 +37,8 @@ void HUD_DrawCrosshair( void ) {
 	float fDistance = wptTable[ getstatf( STAT_ACTIVEWEAPON ) ].iCrosshairMinDistance; 
 	float fDeltaDistance = wptTable[ getstatf( STAT_ACTIVEWEAPON ) ].iCrosshairDeltaDistance;
 	
+	vCrossColor = autocvar_cross_color * ( 1 / 255 );
+	
 	if ( !( getstatf( STAT_FLAGS ) & FL_ONGROUND) ) { // If we are in the air...
 		fDistance = fDistance * 2;
 	} else if ( getstatf( STAT_FLAGS ) & FL_CROUCHING ) { // Crouching...
@@ -47,7 +49,7 @@ void HUD_DrawCrosshair( void ) {
 	
 	// The amount of shots that we've shot totally does affect our accuracy!
 	if ( iShotMultiplier > iOldShotMultiplier ) {
-		fCrosshairDistance = Math_Min( 15, fCrosshairDistance + fDeltaDistance );
+		fCrosshairDistance = min( 15, fCrosshairDistance + fDeltaDistance );
 	} else if ( fCrosshairDistance > fDistance ) {
 		// Slowly decrease the distance again, 0.02 seems to be the magic number here.
 		fCrosshairDistance -= frametime + ( fCrosshairDistance * 0.02 );
@@ -67,7 +69,7 @@ void HUD_DrawCrosshair( void ) {
 	iCrosshairDistance = ceil( fCrosshairDistance );
 	iLineLength = ( ( iCrosshairDistance - fDistance ) / 2 ) + 5;
 
-	iLineLength = Math_Max( 1, iLineLength );
+	iLineLength = max( 1, iLineLength );
 	
 	// Line positions
 	vector vVer1, vVer2, vHor1, vHor2;
@@ -84,8 +86,8 @@ void HUD_DrawCrosshair( void ) {
 	vHor2_x = ( vVideoResolution_x / 2 ) + iCrosshairDistance + 1;
 	vHor2_y = ( vVideoResolution_y / 2 );
 
-	drawfill( vVer1, [ 1, iLineLength ], '0 1 0', 0.75, DRAWFLAG_ADDITIVE );
-	drawfill( vVer2, [ 1, iLineLength ], '0 1 0', 0.75, DRAWFLAG_ADDITIVE );
-	drawfill( vHor1, [ iLineLength, 1 ], '0 1 0', 0.75, DRAWFLAG_ADDITIVE );
-	drawfill( vHor2, [ iLineLength, 1 ], '0 1 0', 0.75, DRAWFLAG_ADDITIVE );
+	drawfill( vVer1, [ 1, iLineLength ], vCrossColor, 1, DRAWFLAG_ADDITIVE );
+	drawfill( vVer2, [ 1, iLineLength ], vCrossColor, 1, DRAWFLAG_ADDITIVE );
+	drawfill( vHor1, [ iLineLength, 1 ], vCrossColor, 1, DRAWFLAG_ADDITIVE );
+	drawfill( vHor2, [ iLineLength, 1 ], vCrossColor, 1, DRAWFLAG_ADDITIVE );
 }

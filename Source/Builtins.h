@@ -12,7 +12,7 @@ Available options:
 -Faccessors - use accessors instead of basic types via defines
 -O          - write to a different qc file
 */
-#pragma noref 1A
+#pragma noref 1
 //#pragma flag enable logicops
 #pragma warning error Q101 /*too many parms*/
 #pragma warning error Q105 /*too few parms*/
@@ -73,7 +73,6 @@ Available options:
 #define DP_EF_RED
 #define DP_ENT_CUSTOMCOLORMAP
 #define DP_ENT_EXTERIORMODELTOCLIENT
-#define DP_ENT_SCALE
 #define DP_ENT_TRAILEFFECTNUM /* self.traileffectnum=particleeffectnum("myeffectname"); can be used to attach a particle trail to the given server entity. This is equivelent to calling trailparticles each frame. */
 #define DP_ENT_VIEWMODEL
 #define DP_GECKO_SUPPORT
@@ -617,7 +616,7 @@ void(string dest, string from, string cmd, string info) SV_ParseClusterEvent;	/*
 float(string sender, string body) SV_ParseConnectionlessPacket;	/* Provides QC with a way to communicate between servers, or with client server browsers. Sender is the sender's ip. Body is the body of the message. You'll need to add your own password/etc support as required. Self is not valid. */
 void(float pauseduration) SV_PausedTic;	/* For each frame that the server is paused, this function will be called to give the gamecode a chance to unpause the server again. the pauseduration argument says how long the server has been paused for (the time global is frozen and will not increment while paused). Self is not valid. */
 float(float newstatus) SV_ShouldPause;	/* Called to give the qc a change to block pause/unpause requests. Return false for the pause request to be ignored. newstatus is 1 if the user is trying to pause the game. For the duration of the call, self will be set to the player who tried to pause, or to world if it was triggered by a server-side event. */
-void() SV_RunClientCommand;	/* Called each time a player movement packet was received from a client. Self is set to the player entity which should be updated, while the input_* globals specify the various properties stored within the input packet. The contents of this function should be somewaht identical to the equivelent function in CSQC, or prediction misses will occur. If you're feeling lazy, you can simply call 'runstandardplayerphysicsrunstandardplayerphysics' after modifying the inputs. */
+void() SV_RunClientCommand;	/* Called each time a player movement packet was received from a client. Self is set to the player entity which should be updated, while the input_* globals specify the various properties stored within the input packet. The contents of this function should be somewaht identical to the equivelent function in CSQC, or prediction misses will occur. If you're feeling lazy, you can simply call 'runstandardplayerphysics' after modifying the inputs. */
 void() SV_AddDebugPolygons;	/* Called each video frame. This is the only place where ssqc is allowed to call the R_BeginPolygon/R_PolygonVertex/R_EndPolygon builtins. This is exclusively for debugging, and will break in anything but single player as it will not be called if the engine is not running both a client and a server. */
 void() SV_PlayerPhysics;	/* Legacy method to tweak player input that does not reliably work with prediction (prediction WILL break). Mods that care about prediction should use SV_RunClientCommand instead. If pr_no_playerphysics is set to 1, this function will never be called, which will either fix prediction or completely break player movement depending on whether the feature was even useful. */
 void() EndFrame;	/* Called after non-player entities have been run at the end of the physics frame. Player physics is performed out of order and can/will still occur between EndFrame and BeginFrame. */
@@ -1225,8 +1224,10 @@ const float TEREDIT_TINT = 17;
 const float TEREDIT_RESET_SECT = 20;
 const float TEREDIT_RELOAD_SECT = 21;
 const float TEREDIT_ENTS_WIPE = 22;
-const float TEREDIT_ENTS_CONCAT = 23;
-const float TEREDIT_ENTS_GET = 24;
+const float TEREDIT_ENT_GET = 26;
+const float TEREDIT_ENT_SET = 27;
+const float TEREDIT_ENT_ADD = 28;
+const float TEREDIT_ENT_COUNT = 29;
 #endif
 #if defined(CSQC) || defined(MENU)
 const float SLIST_HOSTCACHEVIEWCOUNT = 0;
@@ -1663,7 +1664,7 @@ float(string extname) checkextension = #99; /*
 
 #endif
 float(__variant funcref) checkbuiltin = #0:checkbuiltin; /*
-		Checks to see if the specified builtin is supported/mapped. This is intended as a way to check for #0 functions, allowing for simple single-builtin functions. */
+		Checks to see if the specified builtin is supported/mapped. This is intended as a way to check for #0 functions, allowing for simple single-builtin functions. Warning, if two different engines map different builtins to the same number, then this function will not tell you which will be called, only that it won't crash (the exception being #0, which are remapped as available). */
 
 #ifdef SSQC
 float(string builtinname) builtin_find = #100; /*
@@ -2073,6 +2074,11 @@ void(string dest, string from, string cmd, string info) clusterevent = #0:cluste
 
 string(entity player, optional string newnode) clustertransfer = #0:clustertransfer; /*
 		Only functions in mapcluster mode. Initiate transfer of the player to a different node. Can take some time. If dest is specified, returns null on error. Otherwise returns the current/new target node (or null if not transferring). */
+
+#endif
+#if defined(CSQC) || defined(SSQC)
+float(float mdlidx) modelframecount = #0:modelframecount; /*
+		Retrieves the number of frames in the specified model. */
 
 #endif
 #if defined(CSQC) || defined(MENU)
@@ -2750,6 +2756,9 @@ void(string s) loadfromfile = #530; /*
 
 #endif
 #ifdef SSQC
+void(float pause) setpause = #531; /*
+		Sets whether the server should or should not be paused. This does not affect auto-paused things like when the console is down. */
+
 float(string mname) precache_vwep_model = #532; /* Part of ZQ_VWEP*/
 #endif
 float(float v, optional float base) log = #532; /* Part of ??MVDSV_BUILTINS
