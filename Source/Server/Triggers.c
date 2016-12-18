@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 .string killtarget;
 .float wait;
 .float delay;
+.float dmg;
 
 /*
 =================
@@ -112,6 +113,71 @@ void trigger_camera( void ) {
 	}
 	
 	self.vUse = trigger_camera_use;
+}
+
+/*
+=================
+trigger_hurt
+
+Brush that damages things, especially players
+=================
+*/
+#define SF_HURT_ONCE 			1 // Turn off once it fired the first time
+#define SF_HURT_OFF 			2 // Needs to be triggered in order to work again
+#define SF_HURT_NOPLAYERS 		8 // Don't hurt players
+#define SF_HURT_FIREONPLAYER 	16 // Only call UseTarget functions when it's a player
+#define SF_HURT_TOUCHPLAYER 	32 // Only hurt players
+
+void trigger_hurt( void ) {
+	static void trigger_hurt_use( void ) {
+		if ( self.solid == SOLID_NOT ) {
+			self.solid = SOLID_TRIGGER;
+		} else {
+			self.solid = SOLID_NOT;
+		}
+	}
+	
+	static void trigger_hurt_touch( void ) {
+		if ( self.fAttackFinished > self.ltime ) {
+			return;
+		} else if ( other.takedamage == DAMAGE_NO ) {
+			return;
+		} else if ( ( self.spawnflags & SF_HURT_TOUCHPLAYER ) && !( other.flags & FL_CLIENT ) ) {
+			return;
+		} else if ( ( self.spawnflags & SF_HURT_NOPLAYERS ) && ( other.flags & FL_CLIENT ) ) {
+			return;
+		}
+			
+		if ( self.spawnflags & SF_HURT_FIREONPLAYER ) {
+			if ( other.flags & FL_CLIENT ) {
+				Entities_UseTargets();
+			}
+		} else {
+			Entities_UseTargets();
+		}
+
+		Damage_Apply( other, self, self.dmg, other.origin );
+
+		// Shut it down if used once
+		if ( self.spawnflags & SF_HURT_ONCE ) {
+			self.solid = SOLID_NOT;
+		}
+		
+		self.fAttackFinished = self.ltime + 0.5;
+	}
+	
+	self.angles = '0 0 0';
+	self.solid = SOLID_TRIGGER;
+
+	setmodel( self, self.model );
+	self.model = 0;
+	
+	if ( self.spawnflags & SF_HURT_OFF ) {
+		self.solid = SOLID_NOT;
+	}
+	
+	self.vUse = trigger_hurt_use;
+	self.touch = trigger_hurt_touch;
 }
 
 /*

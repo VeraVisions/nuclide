@@ -42,13 +42,13 @@ weaponfunc_t wpnFuncTable[ CS_WEAPON_COUNT ] = {
 	{ WeaponMAC10_Draw, WeaponMAC10_PrimaryFire, Temp_Nothing, WeaponMAC10_Reload },
 	{ WeaponTMP_Draw, WeaponTMP_PrimaryFire, Temp_Nothing, WeaponTMP_Reload },
 	{ WeaponAK47_Draw, WeaponAK47_PrimaryFire, Temp_Nothing, WeaponAK47_Reload },
-	{ WeaponSG552_Draw, WeaponSG552_PrimaryFire, Temp_Nothing, WeaponSG552_Reload },
+	{ WeaponSG552_Draw, WeaponSG552_PrimaryFire, WeaponSG552_SecondaryFire, WeaponSG552_Reload },
 	{ WeaponM4A1_Draw, WeaponM4A1_PrimaryFire, WeaponM4A1_Secondary, WeaponM4A1_Reload },
-	{ WeaponAUG_Draw, WeaponAUG_PrimaryFire, Temp_Nothing, WeaponAUG_Reload },
-	{ WeaponSCOUT_Draw, WeaponSCOUT_PrimaryFire, Temp_Nothing, WeaponSCOUT_Reload },
-	{ WeaponAWP_Draw, WeaponAWP_PrimaryFire, Temp_Nothing, WeaponAWP_Reload },
-	{ WeaponG3SG1_Draw, WeaponG3SG1_PrimaryFire, Temp_Nothing, WeaponG3SG1_Reload },
-	{ WeaponSG550_Draw, WeaponSG550_PrimaryFire, Temp_Nothing, WeaponSG550_Reload },
+	{ WeaponAUG_Draw, WeaponAUG_PrimaryFire, WeaponAUG_SecondaryFire, WeaponAUG_Reload },
+	{ WeaponSCOUT_Draw, WeaponSCOUT_PrimaryFire, WeaponSCOUT_SecondaryFire, WeaponSCOUT_Reload },
+	{ WeaponAWP_Draw, WeaponAWP_PrimaryFire, WeaponAWP_SecondaryFire, WeaponAWP_Reload },
+	{ WeaponG3SG1_Draw, WeaponG3SG1_PrimaryFire, WeaponG3SG1_SecondaryFire, WeaponG3SG1_Reload },
+	{ WeaponSG550_Draw, WeaponSG550_PrimaryFire, WeaponSG550_SecondaryFire, WeaponSG550_Reload },
 	{ WeaponPARA_Draw, WeaponPARA_PrimaryFire, Temp_Nothing, WeaponPARA_Reload },
 	{ WeaponC4BOMB_Draw, WeaponC4BOMB_PrimaryFire, Temp_Nothing, Temp_Nothing }
 };
@@ -63,6 +63,8 @@ void Weapon_Draw( float fWeapon ) {
 	#ifdef SSQC
 	// In case reloading logic is still going on
 	self.think = Empty;
+	
+	self.viewzoom = 1.0;
 	
 	self.maxspeed = Player_GetMaxSpeed( fWeapon );
 	self.fAttackFinished = time + 1.0;
@@ -172,7 +174,7 @@ void CSEv_PlayerBuyWeapon_f( float fWeapon ) {
 		Weapon_AddItem( fWeapon );
 		
 		// Automatically fill weapons with ammo when you buy them (for free) like in CS:S
-		if ( cvar( "mp_fillweapons" ) == 1 ) {
+		if ( autocvar_mp_fillweapons == 1 ) {
 			if ( wptTable[ fWeapon ].iSlot == SLOT_PRIMARY ) {
 				Ammo_BuyPrimary( TRUE );
 			} else if ( wptTable[ fWeapon ].iSlot == SLOT_SECONDARY ) {

@@ -69,7 +69,9 @@ void PutClientInServer( void ) {
 	//self.SendEntity = Player_SendEntity;
 	
 	// Because we don't want to reset these when we die
-	Money_AddMoney( self, cvar( "mp_startmoney" ) );
+	Money_AddMoney( self, autocvar_mp_startmoney );
+	
+	self.team = 0;
 	forceinfokey( self, "*team", "0" ); 
 }
 

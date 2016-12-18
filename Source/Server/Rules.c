@@ -28,8 +28,8 @@ enum {
 // Checks if it is possible for players to buy anything
 float Rules_BuyingPossible( void ) {
 	if ( fGameState == GAME_ACTIVE ) {
-		if ( ( ( cvar( "mp_roundtime" ) * 60 ) - fGameTime ) > cvar( "mp_buytime" ) ) {
-			centerprint( self, sprintf( "%d seconds have passed...\nYou can't buy anything now!", cvar( "mp_buytime" ) ) );
+		if ( ( ( autocvar_mp_roundtime * 60 ) - fGameTime ) > autocvar_mp_buytime ) {
+			centerprint( self, sprintf( "%d seconds have passed...\nYou can't buy anything now!", autocvar_mp_buytime ) );
 			self.fAttackFinished = time + 1.0;
 			return FALSE;
 		}
@@ -127,7 +127,7 @@ void Rules_Restart( void ) {
 	
 	self = eOld;
 	
-	Timer_Begin( cvar( "mp_freezetime" ), GAME_FREEZE );
+	Timer_Begin( autocvar_mp_freezetime, GAME_FREEZE );
 	Money_ResetTeamReward();
 }
 

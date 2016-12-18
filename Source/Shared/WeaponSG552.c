@@ -88,6 +88,18 @@ void WeaponSG552_PrimaryFire( void ) {
 	#endif
 }
 
+void WeaponSG552_SecondaryFire( void ) {
+#ifdef SSQC
+	if ( self.viewzoom != 1.0 ) {
+		self.viewzoom = 1.0;
+	} else {
+		self.viewzoom = 0.6;
+	}
+	
+	self.fAttackFinished = time + 0.5;
+#endif
+}
+
 void WeaponSG552_Reload( void ) {
 	#ifdef SSQC
 	if ( OpenCSGunBase_Reload() == TRUE ) {

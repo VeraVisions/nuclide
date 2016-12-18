@@ -26,6 +26,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define VEC_CHULL_MAX '16 16 18'
 #define VEC_PLAYER_CVIEWPOS '0 0 12'
 
+// Server cvars
+var float autocvar_mp_startmoney = 800;
+var float autocvar_mp_buytime = 90;
+var float autocvar_mp_freezetime = 6;
+var float autocvar_mp_c4timer = 45;
+var float autocvar_mp_roundtime = 5;
+var float autocvar_mp_fillweapons = 0;
+
 // Particle Fields
 float EFFECT_GUNSHOT;
 float EFFECT_BLOOD;

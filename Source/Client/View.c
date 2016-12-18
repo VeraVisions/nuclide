@@ -63,19 +63,19 @@ float View_CalcBob( void ) {
 	}
 
 	fBobTime += frametime;
-	fCycle = fBobTime - (int)( fBobTime / cvar( "cl_bobcycle" ) ) * cvar( "cl_bobcycle" );
-	fCycle /= cvar( "cl_bobcycle" );
+	fCycle = fBobTime - (int)( fBobTime / autocvar_cl_bobcycle ) * autocvar_cl_bobcycle;
+	fCycle /= autocvar_cl_bobcycle;
 	
-	if ( fCycle < cvar( "cl_bobup" ) ) {
-		fCycle = MATH_PI * fCycle / cvar( "cl_bobup" );
+	if ( fCycle < autocvar_cl_bobup ) {
+		fCycle = MATH_PI * fCycle / autocvar_cl_bobup;
 	} else {
-		fCycle = MATH_PI + MATH_PI * ( fCycle - cvar( "cl_bobup" ) )/( 1.0 - cvar( "cl_bobup" ) );
+		fCycle = MATH_PI + MATH_PI * ( fCycle - autocvar_cl_bobup )/( 1.0 - autocvar_cl_bobup );
 	}
 
 	vVelocity = pmove_vel; //ePlayerEnt.velocity;
 	vVelocity_z = 0;
 
-	fBob = sqrt( vVelocity_x * vVelocity_x + vVelocity_y * vVelocity_y ) * cvar( "cl_bob" );
+	fBob = sqrt( vVelocity_x * vVelocity_x + vVelocity_y * vVelocity_y ) * autocvar_cl_bob;
 	fBob = fBob * 0.3 + fBob * 0.7 * sin(fCycle);
 	fBob = min( fBob, 4 );
 	fBob = max( fBob, -7 );

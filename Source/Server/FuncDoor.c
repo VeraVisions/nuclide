@@ -44,7 +44,6 @@ enum {
 
 .float speed;
 .float lip;
-.float dmg;
 .float state;
 .vector pos1, pos2;
 

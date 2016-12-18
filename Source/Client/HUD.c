@@ -133,7 +133,7 @@ void HUD_DrawArmor( void ) {
 		fArmorAlpha = HUD_ALPHA;
 	}
 	
-	vector vArmorPos = [ 112, vVideoResolution_y - 42 ];
+	vector vArmorPos = [ 128, vVideoResolution_y - 42 ];
 	drawsubpic( vArmorPos, '24 24 0', HUD_NUMFILE_LAYER, [ 0, NUMSIZE_Y], [ NUMSIZE_X, NUMSIZE_X ], vHUDColor, fArmorAlpha, DRAWFLAG_ADDITIVE );
 	HUD_DrawNums( getstatf( STAT_ARMOR ), vArmorPos + '72 0', fArmorAlpha, vHUDColor);
 	fOldArmor = getstatf( STAT_ARMOR );
@@ -187,20 +187,20 @@ void HUD_DrawTimer( void ) {
 	vector vTimePos = [ ( vVideoResolution_x / 2 ) - 62, vVideoResolution_y - 42 ];
 	
 	if( serverkey( "timelimit" ) ) {
-		float fTimeLeft = ( stof(serverkey( "timelimit" )) * 60 ) - getstatf( STAT_GAMETIME );
-		if( fTimeLeft < 0 ) {
+		float fTimeLeft = ( stof( serverkey( "timelimit" ) ) * 60 ) - getstatf( STAT_GAMETIME );
+		if ( fTimeLeft < 0 ) {
 			iMinutes = iSeconds = iTens = iUnits = 0;
 		} else {
 			iMinutes = fTimeLeft / 60;
 			iSeconds = fTimeLeft - 60 * iMinutes;
 			iTens = iSeconds / 10;
-			iUnits = iSeconds - 10*iTens;
+			iUnits = iSeconds - 10 * iTens;
 		}
 	} else {
 		iMinutes = getstatf( STAT_GAMETIME ) / 60;
-		iSeconds = getstatf( STAT_GAMETIME ) - 60*iMinutes;
+		iSeconds = getstatf( STAT_GAMETIME ) - 60 * iMinutes;
 		iTens = iSeconds / 10;
-		iUnits = iSeconds - 10*iTens;
+		iUnits = iSeconds - 10 * iTens;
 	}
 
 	// Flashing red numbers

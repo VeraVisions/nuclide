@@ -44,11 +44,13 @@ Defs.h
 
 View.c
 VGUIObjects.c
+VGUISpectator.c
 VGUIScoreboard.c
 VGUIMOTD.c
 VGUIBuyMenu.c
 VGUITeamSelect.c
 VGUI.c
+Nightvision.c
 HUDCrosshair.c
 HUDWeaponSelect.c
 HUDOrbituaries.c

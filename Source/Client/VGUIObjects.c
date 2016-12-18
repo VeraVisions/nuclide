@@ -144,3 +144,8 @@ void VGUI_FakeButton( string sLabel, vector vPos, vector vSize ) {
 void VGUI_Text( string sText, vector vPos, vector vSize ) {
 	drawstring( vPos, sText, vSize, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
 }
+
+void VGUI_RightText( vector vPos, string sText, vector vSize, vector vColor ) {
+	vPos_x -= stringwidth( sText, FALSE, vSize );
+	drawstring( vPos, sText, vSize, vColor, 1, 0 );
+}

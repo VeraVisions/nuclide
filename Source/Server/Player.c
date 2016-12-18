@@ -62,7 +62,7 @@ void Player_Death( void ) {
 		iAlivePlayers_T--;
 		
 		// If the bomb has been planted, T deaths don't matter anymore
-		if ( iAlivePlayers_T == 0 && iBombPlanted == FALSE ) {
+		if ( ( iAlivePlayers_T == 0 ) && ( iBombPlanted == FALSE ) ) {
 			Rules_RoundOver( TEAM_CT, 3600, FALSE );
 		}
 	} else if ( self.team == TEAM_CT ) {
@@ -157,7 +157,9 @@ Player_UseDown
 ====================
 */
 void Player_UseDown( void ) {
-	if ( !( self.flags & FL_USERELEASED ) ) {
+	if ( self.health <= 0 ) {
+		return;
+	} else if ( !( self.flags & FL_USERELEASED ) ) {
 		return;
 	}
 	

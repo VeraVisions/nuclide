@@ -37,7 +37,11 @@ void HUD_DrawCrosshair( void ) {
 	float fDistance = wptTable[ getstatf( STAT_ACTIVEWEAPON ) ].iCrosshairMinDistance; 
 	float fDeltaDistance = wptTable[ getstatf( STAT_ACTIVEWEAPON ) ].iCrosshairDeltaDistance;
 	
-	vCrossColor = autocvar_cross_color * ( 1 / 255 );
+	if ( iNightVision == FALSE ) {
+		vCrossColor = autocvar_cross_color * ( 1 / 255 );
+	} else {
+		vCrossColor = '1 0 0';
+	}
 	
 	if ( !( getstatf( STAT_FLAGS ) & FL_ONGROUND) ) { // If we are in the air...
 		fDistance = fDistance * 2;

@@ -52,14 +52,15 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 	
 	// Target is dead and a client....
 	if ( eTarget.health <= 0 ) {
-		if ( ( eTarget.flags & FL_CLIENT )  && ( eAttacker.flags & FL_CLIENT ) ) {
-			Damage_CastOrbituary( eAttacker, eTarget, eAttacker.weapon, FALSE );
-			eAttacker.frags++;
+		if ( eTarget.flags & FL_CLIENT ) {
 			eTarget.fDeaths++;
-			
 			forceinfokey( eTarget, "*deaths", ftos( eTarget.fDeaths ) );
-			
+		}
+		
+		if ( ( eTarget.flags & FL_CLIENT )  && ( eAttacker.flags & FL_CLIENT ) ) {
+			eAttacker.frags++;
 			Money_AddMoney( eAttacker, 300 );
+			Damage_CastOrbituary( eAttacker, eTarget, eAttacker.weapon, FALSE );
 		}
 	}
 	

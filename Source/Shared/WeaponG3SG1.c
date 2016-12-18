@@ -82,6 +82,20 @@ void WeaponG3SG1_PrimaryFire( void ) {
 	#endif
 }
 
+void WeaponG3SG1_SecondaryFire( void ) {
+#ifdef SSQC
+	if ( self.viewzoom == 1.0 ) {
+		self.viewzoom = 0.45;
+	} else if ( self.viewzoom == 0.45 ) {
+		self.viewzoom = 0.15;
+	} else {
+		self.viewzoom = 1.0;
+	}
+	
+	self.fAttackFinished = time + 0.5;
+#endif
+}
+
 void WeaponG3SG1_Reload( void ) {
 	#ifdef SSQC
 	if ( OpenCSGunBase_Reload() == TRUE ) {

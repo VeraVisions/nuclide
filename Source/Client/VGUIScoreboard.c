@@ -30,11 +30,6 @@ string sScoreTeams[4] = {
 // This is seperated from the other VGUI stuff so we can check scores while buying and whatnot
 int iShowScores;
 
-void VGUI_Scores_AlignedText( vector vPos, string sText, vector vSize, vector vColor ) {
-	vPos_x -= stringwidth( sText, FALSE, vSize );
-	drawstring( vPos, sText, vSize, vColor, 1, 0 );
-}
-
 vector VGUI_Scores_DrawTeam( vector vPos, float fTeam ) {
 	
 	vector vColor;
@@ -67,15 +62,15 @@ vector VGUI_Scores_DrawTeam( vector vPos, float fTeam ) {
 				
 				// Spectators don't have stats worth caring about
 				if ( fTeam != TEAM_SPECTATOR ) {
-					VGUI_Scores_AlignedText( vNewPos + '320 0', getplayerkeyvalue( i, INFOKEY_P_FRAGS ), '8 8 0', vColor );
-					VGUI_Scores_AlignedText( vNewPos + '384 0', getplayerkeyvalue( i, "*deaths" ), '8 8 0', vColor  );
+					VGUI_RightText( vNewPos + '320 0', getplayerkeyvalue( i, INFOKEY_P_FRAGS ), '8 8 0', vColor );
+					VGUI_RightText( vNewPos + '384 0', getplayerkeyvalue( i, "*deaths" ), '8 8 0', vColor  );
 				}
-				VGUI_Scores_AlignedText( vNewPos + '456 0', getplayerkeyvalue( i, INFOKEY_P_PING ), '8 8 0', vColor );
+				VGUI_RightText( vNewPos + '456 0', getplayerkeyvalue( i, INFOKEY_P_PING ), '8 8 0', vColor );
 					
 				if ( getplayerkeyvalue( i, INFOKEY_P_VOIPSPEAKING ) == "0" ) {
-					VGUI_Scores_AlignedText( vNewPos + '508 0', "N", '8 8 0', '1 1 1' );
+					VGUI_RightText( vNewPos + '508 0', "N", '8 8 0', '1 1 1' );
 				} else {
-					VGUI_Scores_AlignedText( vNewPos + '508 0', "Y", '8 8 0', '1 1 1' );
+					VGUI_RightText( vNewPos + '508 0', "Y", '8 8 0', '1 1 1' );
 				}
 				
 				vNewPos += '0 14';
@@ -95,9 +90,9 @@ vector VGUI_Scores_DrawTeam( vector vPos, float fTeam ) {
 		
 		// Draw the amount of rounds we've von
 		if ( fTeam == TEAM_CT ) {
-			VGUI_Scores_AlignedText( vPos + '320 0', sprintf( "%i", getstati( STAT_WON_CT ) ), '16 16 0', vColor );
+			VGUI_RightText( vPos + '320 0', sprintf( "%i", getstati( STAT_WON_CT ) ), '16 16 0', vColor );
 		} else if ( fTeam == TEAM_T ) {
-			VGUI_Scores_AlignedText( vPos + '320 0', sprintf( "%i", getstati( STAT_WON_T ) ), '16 16 0', vColor );
+			VGUI_RightText( vPos + '320 0', sprintf( "%i", getstati( STAT_WON_T ) ), '16 16 0', vColor );
 		}
 		
 		// Now we know the playercount, so let's calculate the position next to the Teamname String and print it
@@ -111,9 +106,13 @@ vector VGUI_Scores_DrawTeam( vector vPos, float fTeam ) {
 void VGUI_Scores_Show( void ) {
 	vector vMainPos;
 	vector v1, v2, v3;
-	vector vSize = '540 500';
+	vector vSize;
+	
+	vSize_x = 540;
+	vSize_y = vVideoResolution_y - 112;
+	
 	vMainPos_x = ( vVideoResolution_x / 2 ) - (vSize_x / 2);
-	vMainPos_y = ( vVideoResolution_y / 2 ) - (vSize_y / 2);
+	vMainPos_y = 56;
 		
 	// Draw the background
 	drawfill( vMainPos, vSize - '1 1 0', VGUI_WINDOW_BGCOLOR, VGUI_WINDOW_BGALPHA );

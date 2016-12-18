@@ -86,14 +86,16 @@ void CSQC_VGUI_Init( void ) {
 	
 	// Now load the MAP DESCRIPTION
 	fmMOTD = fopen( sprintf( "maps/%s.txt", mapname ), FILE_READ);
-	for ( int i = 0; i < 35; i++ ) {
-		sTemp = fgets( fmMOTD );
-		if not ( sTemp ) {
-			break;
-		} 
-		sMapString[ i ] = sTemp;
+	if ( fmMOTD != -1 ) {
+		for ( int i = 0; i < 35; i++ ) {
+			sTemp = fgets( fmMOTD );
+			if not ( sTemp ) {
+				break;
+			} 
+			sMapString[ i ] = sTemp;
+		}
+		fclose( fmMOTD );
 	}
-	fclose( fmMOTD );
 	
 	// We start on the MOTD, always
 	fVGUI_Display = VGUI_MOTD;

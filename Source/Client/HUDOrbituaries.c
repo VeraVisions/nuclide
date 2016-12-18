@@ -81,7 +81,7 @@ This actually displays the contents of orbBuffer
 =================
 */
 void HUD_DrawOrbituaries( void ) {
-	vector vOrbPos = [ vVideoResolution_x - 200, 16 ];
+	vector vOrbPos = [ vVideoResolution_x - 200, 56 ];
 	
 	if ( fOrbituaryTime < time && iOrbituaryScroll >= 0 ) {
 		// We are cheap, just clear the attacker and we're good.

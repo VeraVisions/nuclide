@@ -57,20 +57,20 @@ enum {
 };
 
 void WeaponAUG_Draw( void ) {
-	#ifdef SSQC
+#ifdef SSQC
 	OpenCSGunBase_Draw();
-	#else
+#else
 	View_PlayAnimation( ANIM_AUG_DRAW );
 	Sound_Delayed( "weapons/aug_boltpull.wav", 1.0, 0.5 );
-	#endif
+#endif
 }
 
 void WeaponAUG_PrimaryFire( void ) {
-	#ifdef SSQC
+#ifdef SSQC
 	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
 		sound( self, CHAN_WEAPON, "weapons/aug-1.wav", 1, ATTN_NORM );
 	}
-	#else
+#else
 	int iRand = (int)floor( random( 1, 4 ) );
 	if ( iRand == 1 ) {
 		View_PlayAnimation( ANIM_AUG_SHOOT1 );
@@ -81,20 +81,32 @@ void WeaponAUG_PrimaryFire( void ) {
 	}
 	
 	OpenCSGunBase_ShotMultiplierHandle( 1 );
-	#endif
+#endif
+}
+
+void WeaponAUG_SecondaryFire( void ) {
+#ifdef SSQC
+	if ( self.viewzoom != 1.0 ) {
+		self.viewzoom = 1.0;
+	} else {
+		self.viewzoom = 0.6;
+	}
+	
+	self.fAttackFinished = time + 0.5;
+#endif
 }
 
 void WeaponAUG_Reload( void ) {
-	#ifdef SSQC
+#ifdef SSQC
 	if ( OpenCSGunBase_Reload() == TRUE ) {
 		// Play Sound
 	}
-	#else
+#else
 	View_PlayAnimation( ANIM_AUG_RELOAD );
 	
 	Sound_Delayed( "weapons/aug_boltpull.wav", 1.0, 0.5 );
 	Sound_Delayed( "weapons/aug_clipout.wav", 1.0, 1.3 );
 	Sound_Delayed( "weapons/aug_clipin.wav", 1.0, 2.2 );
 	Sound_Delayed( "weapons/aug_boltslap.wav", 1.0, 2.8 );
-	#endif
+#endif
 }

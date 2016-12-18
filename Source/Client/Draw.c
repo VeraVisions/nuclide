@@ -37,21 +37,17 @@ Receives a message and sorts it into the chat messagebuffer
 =================
 */
 void CSQC_Parse_Print(string sMessage, float fLevel ) {
-	if ( fLevel == PRINT_CHAT ) {
-		if ( iLineScroll < ( CHAT_LINES - 1 ) ) {
-			sMSGBuffer[ iLineScroll + 1 ] = sMessage;
-			iLineScroll++;
-		} else {
-			for ( int i = 0; i < ( CHAT_LINES - 1 ); i++ ) {
-				sMSGBuffer[ i ] = sMSGBuffer[ i + 1 ];
-			}
-			sMSGBuffer[ CHAT_LINES - 1 ] = sMessage;
-		}
-		
-		fChatTime = time + CHAT_TIME;
+	if ( iLineScroll < ( CHAT_LINES - 1 ) ) {
+		sMSGBuffer[ iLineScroll + 1 ] = sMessage;
+		iLineScroll++;
 	} else {
-		print( sMessage );
+		for ( int i = 0; i < ( CHAT_LINES - 1 ); i++ ) {
+			sMSGBuffer[ i ] = sMSGBuffer[ i + 1 ];
+		}
+		sMSGBuffer[ CHAT_LINES - 1 ] = sMessage;
 	}
+		
+	fChatTime = time + CHAT_TIME;
 }
 
 /*
@@ -73,7 +69,7 @@ void CSQC_DrawChat( void ) {
 	
 	for ( int i = 0; i < CHAT_LINES; i++ ) {
 		drawstring( vChatPos + '1 1', sMSGBuffer[ i ], '8 8 0', '0 0 0', VGUI_WINDOW_FGALPHA, 0 );
-		drawstring( vChatPos, sMSGBuffer[ i ], '8 8 0', VGUI_WINDOW_FGCOLOR, VGUI_WINDOW_FGALPHA, 0 );
+		drawstring( vChatPos, sMSGBuffer[ i ], '8 8 0', vHUDColor, 1, DRAWFLAG_ADDITIVE );
 		vChatPos_y += 12;
 	}
 }
@@ -156,6 +152,8 @@ void CSQC_UpdateView( float fWinWidth, float fWinHeight, float fGameFocus ) {
 
 	addentities( MASK_ENGINE );
 	
+	Nightvision_PreDraw();
+	
 	// When Cameratime is active, draw on the forced coords instead
 	if ( fCameraTime > time ) {
 		setproperty( VF_ORIGIN, vCameraPos) ;
@@ -168,10 +166,19 @@ void CSQC_UpdateView( float fWinWidth, float fWinHeight, float fGameFocus ) {
 	
 	renderscene();
 	
+	Nightvision_PostDraw();
+	
 	if( fGameFocus == TRUE ) {
-		HUD_Draw();
+		// The spectator sees things... differently
+		if ( getplayerkeyvalue( player_localnum, "*spectator" ) == "1" ) {
+			VGUI_DrawSpectatorHUD();
+		} else {
+			HUD_Draw();
+		}
+		
 		CSQC_DrawChat();
 		
+		// Don't even try to draw centerprints and VGUI menus when scores are shown
 		if ( iShowScores == TRUE ) {
 			VGUI_Scores_Show();
 		} else { 

@@ -141,7 +141,7 @@ void WeaponC4BOMB_Drop( vector vBombPos ) {
 	setmodel( eBomb, "models/w_c4.mdl" );
 	eBomb.solid = SOLID_BBOX;
 	eBomb.customphysics = C4BombThink;
-	eBomb.fAttackFinished = time + cvar( "mp_c4timer" );
+	eBomb.fAttackFinished = time + autocvar_mp_c4timer;
 	eBomb.vUse = C4BombUse;
 	eBomb.iUsable = TRUE;
 	

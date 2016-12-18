@@ -57,7 +57,7 @@ void Timer_Update( void ) {
 				Rules_TimeOver();
 				Timer_Begin( 5, GAME_END); // Round is over, 5 seconds til a new round starts
 			} else {
-				Timer_Begin( cvar( "mp_roundtime" ) * 60, GAME_ACTIVE ); // Unfreeze
+				Timer_Begin( autocvar_mp_roundtime * 60, GAME_ACTIVE ); // Unfreeze
 				
 				float fRand = floor( random( 1, 4 ) );
 				if ( fRand == 1 ) {

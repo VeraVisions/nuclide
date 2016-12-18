@@ -32,6 +32,7 @@ void CSQC_ConsoleCommand_Init( void ) {
 	registercommand( "invprev" );
 	registercommand( "+showscores" );
 	registercommand( "-showscores" );
+	registercommand( "nightvision" );
 }
 
 /*
@@ -68,6 +69,10 @@ float CSQC_ConsoleCommand( string sCMD ) {
 		break;
 	case "-showscores":
 		iShowScores = FALSE;
+		return TRUE;
+		break;
+	case "nightvision":
+		Nightvision_Toggle();
 		return TRUE;
 		break;
 	}
