@@ -42,6 +42,8 @@ void Input_Handle( void ) {
 		Weapon_Reload( self.weapon );
 	} else if ( self.button5 ) {
 		Weapon_SecondaryAttack( self.weapon );
+	} else {
+		Weapon_Release();
 	}
 	
 	if ( self.button6 ) {

@@ -76,6 +76,8 @@ void Weapon_PrimaryAttack( float fWeapon ) {
 	if ( self.fAttackFinished > time ) {
 		return;
 	}
+	if ( !( self.flags & FL_SEMI_TOGGLED ) )
+		return;
 	#endif
 	
 	wpnFuncTable[ fWeapon ].vPrimary();
@@ -102,6 +104,10 @@ void Weapon_Reload( float fWeapon ) {
 }
 
 #ifdef SSQC
+void Weapon_Release( void ) {
+	self.flags = self.flags | FL_SEMI_TOGGLED;
+}
+
 void Weapon_Switch( int iSlot ) {
 	float fWeapon;
 	

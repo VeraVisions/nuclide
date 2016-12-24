@@ -101,6 +101,10 @@ float OpenCSGunBase_PrimaryFire( void ) {
 		return FALSE;
 	}
 	
+	if ( wptTable[ self.weapon ].fWeaponType == TYPE_SEMI ) {
+		self.flags = self.flags - ( self.flags & FL_SEMI_TOGGLED );
+	}
+	
 	OpenCSGunBase_AccuracyCalc();
 	TraceAttack_FireBullets( wptTable[ self.weapon ].iBullets );
 	

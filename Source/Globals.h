@@ -228,8 +228,9 @@ enum {
 #define INPUT_BUTTON5 16
 #define INPUT_BUTTON6 32
 
-#define FL_USERELEASED 8192
-#define FL_CROUCHING 16384
+#define FL_USERELEASED 	8192
+#define FL_CROUCHING 	16384
+#define FL_SEMI_TOGGLED 32768
 
 float clamp(float d, float imin, float imax) {
 	float t;
