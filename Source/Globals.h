@@ -161,8 +161,8 @@ typedef struct {
 	float fRangeModifier;	// ???
 	
 	float fWeaponType;
-	float fAttackFinished; // When is the gone done firing
-	float fReloadFinished; // When is the gone done firing
+	float fAttackFinished; 
+	float fReloadFinished;
 	
 	.int iCaliberfld;	// Pointer towards the caliberfield of the gun
 	.int iMagfld;		// Pointer towards the clip of the gun

@@ -135,8 +135,6 @@ void VGUI_FakeButton( string sLabel, vector vPos, vector vSize ) {
 	// Draw the button label
 	v4_x = vPos_x + 16;
 	v4_y = vPos_y + ( ( vSize_y / 2 ) - 4 );
-
-
 	drawstring( v4, sLabel, '8 8 0', vVGUIColor * 0.5, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
 }
 
