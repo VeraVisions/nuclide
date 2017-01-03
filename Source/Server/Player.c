@@ -198,3 +198,25 @@ void Player_UseUp( void ) {
 		self.fProgressBar = 0;
 	}
 }
+
+void PlayerPreThink( void ) { 
+	Input_Handle();
+	OpenCSGunBase_ShotMultiplierUpdate();
+	
+	if ( !( self.flags & FL_ONGROUND ) ){
+		self.fFallVelocity = -self.velocity_z;
+	} 
+}
+
+void PlayerPostThink( void ) {
+	Animation_PlayerUpdate();
+	
+	if ( ( self.flags & FL_ONGROUND ) && ( self.health > 0 ) && ( self.fFallVelocity > 100 )) {
+		if ( self.fFallVelocity > 580 ) {
+			self.fFallVelocity -= 580;
+			float fFallDamage = self.fFallVelocity * ( 200 / ( 1024 - 580 ) );
+			Damage_Apply( self, world, fFallDamage, self.origin );
+		} 
+		self.fFallVelocity = 0;
+	}
+}

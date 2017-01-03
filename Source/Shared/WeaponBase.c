@@ -18,11 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-// Because padding...
-weaponinfo_t wptDEFAULT = { 0, 0, 0, 0, 240, 0, 0, 0, 0, 0.0, 0.0, 0, 0.0, 0.0, iAmmo_9MM, iAmmo_9MM, 0.0, 0.0, 0.0, 0, 0 };
-
 weaponinfo_t wptTable[ CS_WEAPON_COUNT ] = {
-	wptDEFAULT,
+	{ 0, 0, 0, 0, 240, 0, 0, 0, 0, 0.0, 0.0, 0, 0.0, 0.0, iAmmo_9MM, iAmmo_9MM, 0.0, 0.0, 0.0, 0, 0 },
 	wptKNIFE,
 	wptUSP45,
 	wptGLOCK18,

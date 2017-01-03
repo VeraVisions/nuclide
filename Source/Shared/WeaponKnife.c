@@ -32,7 +32,7 @@ weaponinfo_t wptKNIFE = {
 	64, 			// Bullet Range
 	0.75, 			// Range Modifier
 	TYPE_SEMI,		// Firing Type
-	0.15, 			// Attack-Delay
+	0.3, 			// Attack-Delay
 	1.0, 			// Reload-Delay
 	iAmmo_9MM, 		// Caliber Pointer
 	iMag_GLOCK18, 	// Clip Pointer
@@ -58,9 +58,7 @@ enum {
 
 void WeaponKNIFE_Draw( void ) {
 #ifdef SSQC
-	Client_SendEvent( self, EV_WEAPON_DRAW );
-	self.iCurrentMag = 0;
-	self.iCurrentCaliber = 0;
+	BaseMelee_Draw();
 #else
 	View_PlayAnimation( ANIM_KNIFE_DRAW );
 #endif
@@ -68,6 +66,7 @@ void WeaponKNIFE_Draw( void ) {
 
 void WeaponKNIFE_PrimaryFire( void ) {
 #ifdef SSQC
+	BaseMelee_Attack();
 	Client_SendEvent( self, EV_WEAPON_PRIMARYATTACK );
 	self.fAttackFinished = time + wptKNIFE.fAttackFinished;
 #else
@@ -81,6 +80,7 @@ void WeaponKNIFE_PrimaryFire( void ) {
 
 void WeaponKNIFE_Secondary( void ) {
 #ifdef SSQC
+	BaseMelee_Attack();
 	Client_SendEvent( self, EV_WEAPON_SECONDARYATTACK );
 	self.fAttackFinished = time + wptKNIFE.fAttackFinished;
 #else

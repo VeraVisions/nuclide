@@ -34,6 +34,18 @@ var float autocvar_mp_c4timer = 45;
 var float autocvar_mp_roundtime = 5;
 var float autocvar_mp_fillweapons = 0;
 
+// Hit Group standards
+enum {
+	BODY_DEFAULT,
+	BODY_HEAD,
+	BODY_CHEST,
+	BODY_STOMACH,
+	BODY_ARMLEFT,
+	BODY_ARMRIGHT,
+	BODY_LEGLEFT,
+	BODY_LEGRIGHT
+};
+
 // Particle Fields
 float EFFECT_GUNSHOT;
 float EFFECT_BLOOD;
@@ -68,6 +80,7 @@ float fGameTime;
 .float fSlotMelee, fSlotPrimary, fSlotSecondary, fSlotGrenade;
 .float fAttackFinished;
 .float fAccuracy;
+.float fFallVelocity;
 
 // Game specific fields
 int iHostagesMax;
@@ -126,15 +139,22 @@ void OpenCSGunBase_AccuracyCalc( void );
 void OpenCSGunBase_Draw( void );
 float OpenCSGunBase_PrimaryFire( void );
 float OpenCSGunBase_Reload( void );
+
+void BaseMelee_Draw( void );
+void BaseMelee_Attack( void );
+	
 float Player_GetMaxSpeed( float fWeapon );
 
 void TraceAttack_FireBullets( int iShots );
 void Damage_Radius( vector vOrigin, entity eAttacker, float fDamage, float fRadius );
+void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos );
 
 void Entities_InitRespawnable( void() vRespawnFunc );
 void Entities_Respawn( void );
 
 void Ammo_BuyPrimary( float fFree );
 void Ammo_BuySecondary( float fFree );
+
+void Input_Handle( void );
 // WIP
 string __fullspawndata;

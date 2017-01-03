@@ -47,6 +47,7 @@ void hostage_die( void ) {
 	self.frame = 30 + floor( random( 1, 6 ) );
 	self.solid = SOLID_NOT;
 	self.takedamage = DAMAGE_NO;
+	//skel_delete( self.skeletonindex );
 	
 	if ( other.eTargetPoint != other.eUser ) {
 		remove( other.eTargetPoint );
@@ -78,7 +79,7 @@ void hostage_physics( void ) {
 	input_impulse = 0;
 	input_buttons = 0;
 	input_angles = self.angles;
-	
+		
 	// Are we meant to follow someone and AREN'T dead?
 	if ( ( self.eUser != world ) && ( self.health > 0 )  ) {
 		// Which direction we have to face
@@ -157,6 +158,8 @@ void hostage_physics( void ) {
 	
 	// Calculate physstuff
 	runstandardplayerphysics( self );
+	//self.frame1time += frametime;
+	//skel_build( self.skeletonindex, self, self.modelindex, 1, 0, 0 );
 }
 
 /*
@@ -174,8 +177,11 @@ void hostage_entity( void ) {
 		self.movetype = MOVETYPE_WALK;
 		setmodel( self, self.model );
 		setsize( self, VEC_HULL_MIN + '0 0 36', VEC_HULL_MAX + '0 0 36' );
-		self.customphysics = hostage_physics;
 		
+		//self.basebone = -1; // Debug: Network that shit
+		//self.skeletonindex = skel_create( self.modelindex );
+		self.customphysics = hostage_physics;
+
 		self.eUser = world;
 		self.eTargetPoint = world;
 		self.iUsable = TRUE;

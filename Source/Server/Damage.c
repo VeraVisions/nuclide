@@ -31,6 +31,34 @@ void Damage_CastOrbituary( entity eAttacker, entity eTarget, float fWeapon, floa
 	multicast( '0 0 0', MULTICAST_ALL );
 }
 
+string Damage_GetHitLocation( int iSurface ) {
+	switch ( iSurface ) {
+		case BODY_HEAD:
+			return "Head";
+			break;
+		case BODY_CHEST:
+			return "Chest";
+			break;
+		case BODY_STOMACH:
+			return "Stomach";
+			break;
+		case BODY_ARMLEFT:
+			return "Left Arm";
+			break;
+		case BODY_ARMRIGHT:
+			return "Right Arm";
+			break;
+		case BODY_LEGLEFT:
+			return "Left leg";
+			break;
+		case BODY_LEGRIGHT:
+			return "Right Leg";
+			break;
+		default:
+			return "Generic";
+	}
+}
+
 void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos ) {
 	
 	eTarget.health = eTarget.health - iDamage; // TODO: Body part multipliers
@@ -44,10 +72,24 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 		}
 	}
 	
+	if ( trace_surface_id == BODY_HEAD ) {
+		iDamage *= 4;
+	} else if ( iDamage == BODY_STOMACH ) {
+		iDamage *= 0.9;
+	} else if ( iDamage == BODY_LEGLEFT ) {
+		iDamage *= 0.9;
+	} else if ( iDamage == BODY_LEGRIGHT ) {
+		iDamage *= 0.9;
+	}
+	
+	bprint( sprintf( "[DEBUG] Hit Bodypart: %s\n", Damage_GetHitLocation( trace_surface_id ) ) );
+	
 	// Don't be like Q1 and make everything bleed.
 	if ( eTarget.iBleeds == TRUE ) {
 		makevectors( eAttacker.angles );
 		pointparticles( EFFECT_BLOOD, vHitPos, v_forward * -1, 1 );
+	} else {
+		pointparticles( EFFECT_GUNSHOT, trace_endpos, trace_plane_normal, 1 );
 	}
 	
 	// Target is dead and a client....

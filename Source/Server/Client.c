@@ -52,15 +52,6 @@ void ClientDisconnect( void ) {
 	}
 }
 
-void PlayerPreThink( void ) { 
-	Input_Handle();
-	OpenCSGunBase_ShotMultiplierUpdate();
-}
-
-void PlayerPostThink( void ) {
-	Animation_PlayerUpdate();
-}
-
 void PutClientInServer( void ) {
 	entity eTarget = world;
 

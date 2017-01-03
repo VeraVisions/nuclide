@@ -28,7 +28,7 @@ void TraceAttack_FireBullets( int iShots ) {
 	while ( iShots > 0) {
 		vDir = aim( self, 100000 ) + Math_CRandom()*self.fAccuracy*v_right + Math_CRandom()*self.fAccuracy*v_up;
 		
-		traceline( vSrc, vSrc + ( vDir * 2048 ), FALSE, self);
+		traceline( vSrc, vSrc + ( vDir * 2048 ), MOVE_HITMODEL, self);
 		if (trace_fraction != 1.0) {
 			if ( trace_ent.takedamage == DAMAGE_YES ) {
 				Damage_Apply( trace_ent, self, wptTable[ self.weapon ].iDamage, trace_endpos );
