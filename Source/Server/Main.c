@@ -59,6 +59,21 @@ void StartFrame( void ) {
 
 // The map... entity.
 void worldspawn( void ) {
+	// Let's load materials.txt because someone thought this was the best idea
+	string sTemp;
+	filestream fileMaterial = fopen( "sound/materials.txt", FILE_READ );
+	hashMaterials = hash_createtab( 512, HASH_ADD );
+	
+	if ( fileMaterial >= 0 ) {
+		while ( ( sTemp = fgets( fileMaterial ) ) ) {			
+			// Tokenize and just parse this stuff in
+			if ( tokenize_console( sTemp ) == 2 ) {
+				hash_add( hashMaterials, strtolower( argv( 1 ) ), str2chr( argv( 0 ), 0 ) );
+			}
+		}
+		fclose( fileMaterial );
+	}
+	
 	precache_model( sCSPlayers[1] );
 	precache_model( sCSPlayers[2] );
 	precache_model( sCSPlayers[3] );
@@ -78,11 +93,6 @@ void worldspawn( void ) {
 	precache_sound( "hostage/hos3.wav" );
 	precache_sound( "hostage/hos4.wav" );
 	precache_sound( "hostage/hos5.wav" );
-	
-	precache_sound( "player/pl_step1.wav" );
-	precache_sound( "player/pl_step2.wav" );
-	precache_sound( "player/pl_step3.wav" );
-	precache_sound( "player/pl_step4.wav" );
 	
 	precache_sound( "player/pl_pain2.wav" );
 	precache_sound( "player/pl_pain4.wav" );
@@ -295,6 +305,46 @@ void worldspawn( void ) {
 	precache_sound( "debris/bustceiling1.wav" );
 	precache_sound( "debris/bustceiling2.wav" );
 	precache_sound( "debris/bustceiling3.wav" );
+	
+	precache_sound( "player/pl_metal1.wav" );
+	precache_sound( "player/pl_metal2.wav" );
+	precache_sound( "player/pl_metal3.wav" );
+	precache_sound( "player/pl_metal4.wav" );
+	
+	precache_sound( "player/pl_duct1.wav" );
+	precache_sound( "player/pl_duct2.wav" );
+	precache_sound( "player/pl_duct3.wav" );
+	precache_sound( "player/pl_duct4.wav" );
+	
+	precache_sound( "player/pl_dirt1.wav" );
+	precache_sound( "player/pl_dirt2.wav" );
+	precache_sound( "player/pl_dirt3.wav" );
+	precache_sound( "player/pl_dirt4.wav" );
+	
+	precache_sound( "player/pl_slosh1.wav" );
+	precache_sound( "player/pl_slosh2.wav" );
+	precache_sound( "player/pl_slosh3.wav" );
+	precache_sound( "player/pl_slosh4.wav" );
+	
+	precache_sound( "player/pl_tile1.wav" );
+	precache_sound( "player/pl_tile2.wav" );
+	precache_sound( "player/pl_tile3.wav" );
+	precache_sound( "player/pl_tile4.wav" );
+	
+	precache_sound( "player/pl_grate1.wav" );
+	precache_sound( "player/pl_grate2.wav" );
+	precache_sound( "player/pl_grate3.wav" );
+	precache_sound( "player/pl_grate4.wav" );
+	
+	precache_sound( "player/pl_snow1.wav" );
+	precache_sound( "player/pl_snow2.wav" );
+	precache_sound( "player/pl_snow3.wav" );
+	precache_sound( "player/pl_snow4.wav" );
+	
+	precache_sound( "player/pl_step1.wav" );
+	precache_sound( "player/pl_step2.wav" );
+	precache_sound( "player/pl_step3.wav" );
+	precache_sound( "player/pl_step4.wav" );
 
 	lightstyle( 0, "m" );
 	lightstyle( 1, "mmnmmommommnonmmonqnmmo" );

@@ -156,5 +156,9 @@ void Ammo_BuyPrimary( float fFree );
 void Ammo_BuySecondary( float fFree );
 
 void Input_Handle( void );
+
 // WIP
 string __fullspawndata;
+hashtable hashMaterials;
+
+#define NULL __NULL__

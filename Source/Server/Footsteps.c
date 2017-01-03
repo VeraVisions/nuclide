@@ -31,6 +31,7 @@ void Footsteps_Update( void ) {
 	float fForce;
 	float dDelay;
 	vector vStep;
+	string sStepSound = "";
 
 	if ( ( self.movetype == MOVETYPE_WALK ) && ( self.flags & FL_ONGROUND ) ) {
 		if ( ( self.velocity_x == 0 && self.velocity_y == 0 ) || self.fSteptime > time ) {
@@ -44,8 +45,46 @@ void Footsteps_Update( void ) {
 		dDelay = clamp( 0.1, 1 / ( fForce / 90 ), 1 );
 
 		traceline( self.origin + self.view_ofs, self.origin + '0 0 -48', FALSE, self );
-		sound( self, CHAN_BODY, sprintf( "player/pl_step%d.wav", floor( ( random() * 4 ) + 1 ) ), 0.5, ATTN_IDLE );
+		
+		string sTexture = getsurfacetexture( trace_ent, getsurfacenearpoint( trace_ent, trace_endpos ) );
+		
+		switch( (float)hash_get( hashMaterials, sTexture ) ) { 
+			case 'M':
+				sStepSound = sprintf( "player/pl_metal%d.wav", floor( ( random() * 4 ) + 1 ) );
+				break;
+			case 'V':
+				sStepSound = sprintf( "player/pl_duct%d.wav", floor( ( random() * 4 ) + 1 ) );
+				break;
+			case 'D':
+				sStepSound = sprintf( "player/pl_dirt%d.wav", floor( ( random() * 4 ) + 1 ) );
+				break;
+			case 'S':
+				sStepSound = sprintf( "player/pl_slosh%d.wav", floor( ( random() * 4 ) + 1 ) );
+				break;
+			case 'T':
+				sStepSound = sprintf( "player/pl_tile%d.wav", floor( ( random() * 4 ) + 1 ) );
+				break;
+			case 'G':
+				sStepSound = sprintf( "player/pl_grate%d.wav", floor( ( random() * 4 ) + 1 ) );
+				break;
+			case 'W':
+				sStepSound = sprintf( "player/pl_step%d.wav", floor( ( random() * 4 ) + 1 ) );
+				break;
+			case 'P':
+				sStepSound = sprintf( "player/pl_step%d.wav", floor( ( random() * 4 ) + 1 ) );
+				break;
+			case 'Y':
+				sStepSound = sprintf( "player/pl_step%d.wav", floor( ( random() * 4 ) + 1 ) );
+				break;
+			case 'N':
+				sStepSound = sprintf( "player/pl_snow%d.wav", floor( ( random() * 4 ) + 1 ) );
+				break;
+			default:
+				sStepSound = sprintf( "player/pl_step%d.wav", floor( ( random() * 4 ) + 1 ) );
+				break;
+         }
 
+		sound( self, CHAN_BODY, sStepSound, 0.5, ATTN_IDLE );
 		self.fSteptime = time + dDelay;
 	}
 }
