@@ -84,6 +84,20 @@ void worldspawn( void ) {
 	precache_sound( "player/pl_step3.wav" );
 	precache_sound( "player/pl_step4.wav" );
 	
+	precache_sound( "player/pl_pain2.wav" );
+	precache_sound( "player/pl_pain4.wav" );
+	precache_sound( "player/pl_pain5.wav" );
+	precache_sound( "player/pl_pain6.wav" );
+	precache_sound( "player/pl_pain7.wav" );
+	
+	precache_sound( "player/die1.wav" );
+	precache_sound( "player/die2.wav" );
+	precache_sound( "player/die3.wav" );
+	
+	precache_sound( "player/headshot1.wav" );
+	precache_sound( "player/headshot2.wav" );
+	precache_sound( "player/headshot3.wav" );
+	
 	precache_sound( "items/9mmclip1.wav" );
 	precache_sound( "items/tr_kevlar.wav" );
 	precache_sound( "items/gunpickup2.wav" );

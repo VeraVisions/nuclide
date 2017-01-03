@@ -74,11 +74,11 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 	
 	if ( trace_surface_id == BODY_HEAD ) {
 		iDamage *= 4;
-	} else if ( iDamage == BODY_STOMACH ) {
+	} else if ( trace_surface_id == BODY_STOMACH ) {
 		iDamage *= 0.9;
-	} else if ( iDamage == BODY_LEGLEFT ) {
+	} else if ( trace_surface_id == BODY_LEGLEFT ) {
 		iDamage *= 0.9;
-	} else if ( iDamage == BODY_LEGRIGHT ) {
+	} else if ( trace_surface_id == BODY_LEGRIGHT ) {
 		iDamage *= 0.9;
 	}
 	
@@ -112,6 +112,13 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 	if ( self.health <= 0 ) {
 		self.health = 0;
 		self.vDeath();
+		
+		// Make a cooky death sound
+		if ( trace_surface_id == BODY_HEAD ) {
+			sound( self, CHAN_VOICE, sprintf( "player/headshot%d.wav", floor( ( random() * 3 ) + 1 ) ), 1, ATTN_NORM );
+		} else {
+			sound( self, CHAN_VOICE, sprintf( "player/die%d.wav", floor( ( random() * 3 ) + 1 ) ), 1, ATTN_NORM );
+		}
 	} else {
 		self.vPain();
 	}

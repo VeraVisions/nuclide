@@ -31,7 +31,7 @@ void BaseMelee_Attack( void ) {
 
 	makevectors( self.v_angle );
 	vSource = ( self.origin + self.view_ofs );
-	traceline( vSource, vSource + ( v_forward * 64 ), FALSE, self );
+	traceline( vSource, vSource + ( v_forward * 64 ), MOVE_HITMODEL, self );
 
 	if ( trace_fraction == 1.0 )
 		return;
@@ -41,6 +41,8 @@ void BaseMelee_Attack( void ) {
 	if ( trace_ent.takedamage ) {
 		Damage_Apply( trace_ent, self, wptTable[ self.weapon ].iDamage, trace_endpos );
 		return;
+	} else {
+		pointparticles( EFFECT_GUNSHOT, trace_endpos, trace_plane_normal, 1 );
 	}
 }
 

@@ -38,17 +38,26 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	return TRUE;
 }*/
 
+string sPainSounds[5] = {
+	"player/pl_pain2.wav",
+	"player/pl_pain4.wav",
+	"player/pl_pain5.wav",
+	"player/pl_pain6.wav",
+	"player/pl_pain7.wav"
+};
+
 void Player_Pain( void ) {
-	
+	sound( self, CHAN_VOICE, sPainSounds[ floor( random() * 5 ) ], 1, ATTN_IDLE );
+	self.velocity = '0 0 0';
 }
 
 void Player_Death( void ) {
-	
 	// Drop a corpse
 	entity eCorpse = spawn();
 	setorigin( eCorpse, self.origin );
 	setmodel( eCorpse, self.model );
-	eCorpse.angles = self.angles;
+	setsize( eCorpse, self.mins, self.maxs );
+	eCorpse.angles = [ 0, self.angles_y, 0 ];
 	eCorpse.movetype = MOVETYPE_BOUNCE;
 	eCorpse.frame = 93; // TODO: Pick the right frame
 	

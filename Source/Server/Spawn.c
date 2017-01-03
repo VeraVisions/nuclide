@@ -93,6 +93,7 @@ void Spawn_RespawnClient( float fTeam ) {
 	self.flags = FL_CLIENT;
 	self.vPain = Player_Pain;
 	self.vDeath = Player_Death;
+	self.iBleeds = TRUE;
 
 	self.origin = eSpawn.origin;
 	self.angles = eSpawn.angles;
