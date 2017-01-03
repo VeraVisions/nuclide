@@ -77,9 +77,9 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 	} else if ( trace_surface_id == BODY_STOMACH ) {
 		iDamage *= 0.9;
 	} else if ( trace_surface_id == BODY_LEGLEFT ) {
-		iDamage *= 0.9;
+		iDamage *= 0.4;
 	} else if ( trace_surface_id == BODY_LEGRIGHT ) {
-		iDamage *= 0.9;
+		iDamage *= 0.4;
 	}
 	
 	bprint( sprintf( "[DEBUG] Hit Bodypart: %s\n", Damage_GetHitLocation( trace_surface_id ) ) );
@@ -114,10 +114,13 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 		self.vDeath();
 		
 		// Make a cooky death sound
-		if ( trace_surface_id == BODY_HEAD ) {
-			sound( self, CHAN_VOICE, sprintf( "player/headshot%d.wav", floor( ( random() * 3 ) + 1 ) ), 1, ATTN_NORM );
-		} else {
-			sound( self, CHAN_VOICE, sprintf( "player/die%d.wav", floor( ( random() * 3 ) + 1 ) ), 1, ATTN_NORM );
+		if ( self.classname == "player" ) {
+			
+			if ( trace_surface_id == BODY_HEAD ) {
+				sound( self, CHAN_VOICE, sprintf( "player/headshot%d.wav", floor( ( random() * 3 ) + 1 ) ), 1, ATTN_NORM );
+			} else {
+				sound( self, CHAN_VOICE, sprintf( "player/die%d.wav", floor( ( random() * 3 ) + 1 ) ), 1, ATTN_NORM );
+			}
 		}
 	} else {
 		self.vPain();
