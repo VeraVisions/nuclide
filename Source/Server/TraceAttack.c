@@ -44,7 +44,9 @@ void TraceAttack_FireSingle( vector vPos, vector vAngle ) {
 			switch( (float)hash_get( hashMaterials, sTexture ) ) { 
 				case 'G':
 				case 'V':
+					Effect_Impact( IMPACT_METAL, trace_endpos, trace_plane_normal );
 					TraceAttack_Penetrate( trace_endpos + ( v_forward * 2 ), vAngle );
+					break;
 				case 'M':
 				case 'P':
 					Effect_Impact( IMPACT_METAL, trace_endpos, trace_plane_normal );
@@ -59,6 +61,8 @@ void TraceAttack_FireSingle( vector vPos, vector vAngle ) {
 					break;
 				case 'N':
 					TraceAttack_Penetrate( trace_endpos + ( v_forward * 2 ), vAngle );
+					Effect_Impact( IMPACT_DEFAULT, trace_endpos, trace_plane_normal );
+					break;
 				case 'T':
 				default:
 					Effect_Impact( IMPACT_DEFAULT, trace_endpos, trace_plane_normal );

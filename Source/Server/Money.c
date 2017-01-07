@@ -24,6 +24,8 @@ int iMoneyReward_CT;
 int iMoneyReward_T;
 
 void Money_AddMoney( entity ePlayer, int iMoneyValue ) {
+	
+	dprint( sprintf( "[DEBUG]: Giving %s %i in cash\n", ePlayer.netname, iMoneyValue ) );
 	ePlayer.fMoney += (float)iMoneyValue;
 	
 	if ( ePlayer.fMoney > CS_MAX_MONEY ) {
