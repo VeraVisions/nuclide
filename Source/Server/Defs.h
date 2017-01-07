@@ -142,7 +142,7 @@ void BaseMelee_Attack( void );
 float Player_GetMaxSpeed( float fWeapon );
 
 void Effect_Impact( int iType, vector vPos, vector vNormal );
-void TraceAttack_FireBullets( int iShots );
+void TraceAttack_FireBullets( int iShots, vector vPos );
 void Damage_Radius( vector vOrigin, entity eAttacker, float fDamage, float fRadius );
 void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos );
 

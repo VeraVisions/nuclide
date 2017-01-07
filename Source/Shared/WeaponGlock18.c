@@ -93,7 +93,7 @@ void WeaponGLOCK18_PrimaryFire( void ) {
 			return FALSE;
 		}
 		OpenCSGunBase_AccuracyCalc();
-		TraceAttack_FireBullets( 3 );
+		TraceAttack_FireBullets( 3, ( self.origin + self.view_ofs ) );
 		
 		self.iMag_GLOCK18 -= 3;
 		self.fAttackFinished = time + 0.5;
