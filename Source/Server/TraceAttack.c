@@ -38,9 +38,10 @@ void TraceAttack_FireBullets( int iShots, vector vPos ) {
 				string sTexture = getsurfacetexture( trace_ent, getsurfacenearpoint( trace_ent, trace_endpos ) );
 		
 				switch( (float)hash_get( hashMaterials, sTexture ) ) { 
-					case 'M':
-					case 'V':
 					case 'G':
+					case 'V':
+						TraceAttack_FireBullets( iShots, trace_endpos + ( v_forward * 2 ) );
+					case 'M':
 					case 'P':
 						Effect_Impact( IMPACT_METAL, trace_endpos, trace_plane_normal );
 						break;
@@ -53,6 +54,7 @@ void TraceAttack_FireBullets( int iShots, vector vPos ) {
 						Effect_Impact( IMPACT_GLASS, trace_endpos, trace_plane_normal );
 						break;
 					case 'N':
+						TraceAttack_FireBullets( iShots, trace_endpos + ( v_forward * 2 ) );
 					case 'T':
 					default:
 						Effect_Impact( IMPACT_DEFAULT, trace_endpos, trace_plane_normal );
