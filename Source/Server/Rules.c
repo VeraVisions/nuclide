@@ -1,6 +1,6 @@
 /*
 OpenCS Project
-Copyright (C) 2015 Marco "eukara" Hladik
+Copyright (C) 2016, 2017 Marco "eukara" Hladik
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
