@@ -35,7 +35,7 @@ void func_ladder_sound( entity target ) {
 	}
 
 	float fForce = vStep;
-	float dDelay = ( clamp( 0.1, 1 / (fForce / 50), 1 ) );
+	float fDelay = clamp( 0.1, 1 / ( fForce / 90 ), 1 );
 	float fRandom = random();
 
 	if ( fRandom <= 0.25 ) {
@@ -48,7 +48,7 @@ void func_ladder_sound( entity target ) {
 		sound( target, CHAN_BODY, "player/pl_ladder4.wav", 0.5, ATTN_IDLE );
 	}
 
-	target.fStepTime = ( time + dDelay );
+	target.fStepTime = ( time + fDelay );
 }
 
 /*

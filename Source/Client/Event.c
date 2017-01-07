@@ -124,6 +124,20 @@ void CSQC_Parse_Event( void ) {
 		Radio_BroadcastMessage( readbyte() );
 	} else if ( fHeader == EV_ORBITUARY ) {
 		HUD_AddOrbituaries( readbyte(), readbyte(), readbyte(), readbyte(), readbyte(), readbyte());
+	} else if ( fHeader == EV_IMPACT ) {
+		int iType;
+		vector vOrigin, vNormal;
+		
+		iType = (int)readbyte();
+		vOrigin_x = readcoord();
+		vOrigin_y = readcoord();
+		vOrigin_z = readcoord();
+
+		vNormal_x = readcoord();
+		vNormal_y = readcoord();
+		vNormal_z = readcoord();
+		
+		Effect_Impact( iType, vOrigin, vNormal );
 	}
 }
 

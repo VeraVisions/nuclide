@@ -46,10 +46,6 @@ enum {
 	BODY_LEGRIGHT
 };
 
-// Particle Fields
-float EFFECT_GUNSHOT;
-float EFFECT_BLOOD;
-
 // Player specific fields
 .float fInBuyZone;
 .float fInHostageZone;
@@ -145,6 +141,7 @@ void BaseMelee_Attack( void );
 	
 float Player_GetMaxSpeed( float fWeapon );
 
+void Effect_Impact( int iType, vector vPos, vector vNormal );
 void TraceAttack_FireBullets( int iShots );
 void Damage_Radius( vector vOrigin, entity eAttacker, float fDamage, float fRadius );
 void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos );

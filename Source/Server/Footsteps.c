@@ -29,7 +29,7 @@ TODO: Read sound/materials.txt and use that somehow
 */
 void Footsteps_Update( void ) {
 	float fForce;
-	float dDelay;
+	float fDelay;
 	vector vStep;
 	string sStepSound = "";
 
@@ -42,7 +42,7 @@ void Footsteps_Update( void ) {
 		vStep_y = fabs( self.velocity_y );
 
 		fForce = ( vStep_x + vStep_y );
-		dDelay = clamp( 0.1, 1 / ( fForce / 90 ), 1 );
+		fDelay = clamp( 0.1, 1 / ( fForce / 100 ), 1 );
 
 		traceline( self.origin + self.view_ofs, self.origin + '0 0 -48', FALSE, self );
 		
@@ -85,6 +85,6 @@ void Footsteps_Update( void ) {
          }
 
 		sound( self, CHAN_BODY, sStepSound, 0.5, ATTN_IDLE );
-		self.fSteptime = time + dDelay;
+		self.fSteptime = time + fDelay;
 	}
 }

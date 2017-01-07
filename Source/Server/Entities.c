@@ -284,4 +284,21 @@ void func_illusionary( void ){
 void func_water( void ) {
 	func_wall();
 	self.skin = CONTENT_WATER;
+	/*self.forceshader = shaderforname( "{\n"
+				"surfaceparm nodlight\n"
+				"surfaceparm nomarks\n"
+				"{\n"
+					"map $refraction\n"
+				"}\n"
+				"{\n"
+					"map $null\n"
+				"}\n"
+				"{\n"
+					"map $ripplemap\n"
+				"}\n"
+				"{\n"
+					"map $null\n" 
+				"}\n"
+				"program altwater#RIPPLEMAP#FRESNEL=4\n"
+			"}\n" );*/
 }

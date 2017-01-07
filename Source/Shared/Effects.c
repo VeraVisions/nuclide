@@ -45,6 +45,64 @@ void Effect_AnimatedSprite( vector vPos, float fIndex, float fFPS, float fScale,
 }
 #endif
 
+void Effect_Impact( int iType, vector vPos, vector vNormal ) {
+#ifdef SSQC
+	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
+	WriteByte( MSG_MULTICAST, EV_IMPACT );
+	WriteByte( MSG_MULTICAST, (float)iType );
+	WriteCoord( MSG_MULTICAST, vPos_x); 
+	WriteCoord( MSG_MULTICAST, vPos_y); 
+	WriteCoord( MSG_MULTICAST, vPos_z);
+	WriteCoord( MSG_MULTICAST, vNormal_x); 
+	WriteCoord( MSG_MULTICAST, vNormal_y); 
+	WriteCoord( MSG_MULTICAST, vNormal_z);
+	msg_entity = self;
+	multicast( vPos, MULTICAST_PVS );
+#else
+
+	switch ( iType ) {
+		case IMPACT_MELEE:
+			pointparticles( PARTICLE_PIECES_BLACK, vPos, vNormal, 1 );
+			pointsound( vPos, "weapons/knife_hitwall1.wav", 1, ATTN_STATIC );
+			break;
+		case IMPACT_EXPLOSION:
+			break;
+		case IMPACT_GLASS:
+			pointparticles( PARTICLE_PIECES_BLACK, vPos, vNormal, 1 );
+			break;
+		case IMPACT_WOOD:
+			pointparticles( PARTICLE_SPARK, vPos, vNormal, 1 );
+			pointparticles( PARTICLE_PIECES_BLACK, vPos, vNormal, 1 );
+			pointparticles( PARTICLE_SMOKE_BROWN, vPos, vNormal, 1 );
+			break;
+		case IMPACT_METAL:
+			pointparticles( PARTICLE_SPARK, vPos, vNormal, 1 );
+			pointparticles( PARTICLE_SPARK, vPos, vNormal, 1 );
+			pointparticles( PARTICLE_PIECES_BLACK, vPos, vNormal, 1 );
+			break;
+		case IMPACT_FLESH:
+			pointparticles( PARTICLE_BLOOD, vPos, vNormal, 1 );
+			break;
+		case IMPACT_DEFAULT:
+			pointparticles( PARTICLE_SPARK, vPos, vNormal, 1 );
+			pointparticles( PARTICLE_PIECES_BLACK, vPos, vNormal, 1 );
+			pointparticles( PARTICLE_SMOKE_GREY, vPos, vNormal, 1 );
+			break;
+		default:
+	}
+	
+	switch ( iType ) {
+		case IMPACT_METAL:
+			pointsound( vPos, sprintf( "weapons/ric_metal-%d.wav", floor( ( random() * 2 ) + 1 ) ), 1, ATTN_STATIC );
+			break;
+		default:
+			pointsound( vPos, sprintf( "weapons/ric%d.wav", floor( ( random() * 5 ) + 1 ) ), 1, ATTN_STATIC );
+			break;
+	}
+	
+#endif
+}
+
 void Effect_BreakModel( vector vMins, vector vMaxs, vector vVel, float fStyle ) {
 #ifdef SSQC
 	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );

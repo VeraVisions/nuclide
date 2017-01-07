@@ -69,20 +69,23 @@ void Player_Death( void ) {
 	
 	if ( self.team == TEAM_T ) {
 		iAlivePlayers_T--;
-		
-		// If the bomb has been planted, T deaths don't matter anymore
-		if ( ( iAlivePlayers_T == 0 ) && ( iBombPlanted == FALSE ) ) {
-			Rules_RoundOver( TEAM_CT, 3600, FALSE );
-		}
 	} else if ( self.team == TEAM_CT ) {
 		iAlivePlayers_CT--;
-		
-		if ( iAlivePlayers_CT == 0 ) {
-			Rules_RoundOver( TEAM_T, 3600, FALSE );
-		}
 	} else if ( self.team == TEAM_VIP ) {
 		iAlivePlayers_CT--; // For consistency
 		Rules_RoundOver( TEAM_T, 2500, FALSE );
+		return;
+	}
+	
+	if ( ( iAlivePlayers_T == 0 ) && ( iAlivePlayers_CT == 0 ) && ( iBombPlanted == FALSE ) ) {
+		Rules_RoundOver( FALSE, 3600, FALSE );
+	} else {
+		// If the bomb has been planted, T deaths don't matter anymore
+		if ( ( iAlivePlayers_T == 0 ) && ( iBombPlanted == FALSE ) ) {
+			Rules_RoundOver( TEAM_CT, 3600, FALSE );
+		} else if ( iAlivePlayers_CT == 0 ) {
+			Rules_RoundOver( TEAM_T, 3600, FALSE );
+		}
 	}
 }
 

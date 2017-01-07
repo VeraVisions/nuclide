@@ -32,8 +32,33 @@ void TraceAttack_FireBullets( int iShots ) {
 		if (trace_fraction != 1.0) {
 			if ( trace_ent.takedamage == DAMAGE_YES ) {
 				Damage_Apply( trace_ent, self, wptTable[ self.weapon ].iDamage, trace_endpos );
+			}
+			
+			if ( trace_ent.iBleeds == TRUE ) {
+				Effect_Impact( IMPACT_FLESH, trace_endpos, trace_plane_normal );
 			} else {
-				pointparticles( EFFECT_GUNSHOT, trace_endpos, trace_plane_normal, 1 );
+				string sTexture = getsurfacetexture( trace_ent, getsurfacenearpoint( trace_ent, trace_endpos ) );
+		
+				switch( (float)hash_get( hashMaterials, sTexture ) ) { 
+					case 'M':
+					case 'V':
+					case 'G':
+					case 'P':
+						Effect_Impact( IMPACT_METAL, trace_endpos, trace_plane_normal );
+						break;
+					case 'D':
+					case 'W':
+						Effect_Impact( IMPACT_WOOD, trace_endpos, trace_plane_normal );
+						break;
+					case 'Y':
+						Effect_Impact( IMPACT_GLASS, trace_endpos, trace_plane_normal );
+						break;
+					case 'N':
+					case 'T':
+					default:
+						Effect_Impact( IMPACT_DEFAULT, trace_endpos, trace_plane_normal );
+						break;
+				 }
 			}
 		}
 		iShots--;

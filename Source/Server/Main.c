@@ -85,9 +85,6 @@ void worldspawn( void ) {
 	precache_model( "models/player/vip/vip.mdl" );
 	precache_model( "models/w_c4.mdl" );
 	
-	EFFECT_GUNSHOT = particleeffectnum( "te_gunshot" );
-	EFFECT_BLOOD = particleeffectnum( "te_blood" );
-	
 	precache_sound( "hostage/hos1.wav" );
 	precache_sound( "hostage/hos2.wav" );
 	precache_sound( "hostage/hos3.wav" );

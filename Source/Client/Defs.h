@@ -33,6 +33,13 @@ var float autocvar_cl_bobcycle = 0.8;
 var float autocvar_cl_bobup = 0.5;
 var float autocvar_cl_bobclassic = 0;
 
+// Particle stuff
+var float PARTICLE_SPARK;
+var float PARTICLE_PIECES_BLACK;
+var float PARTICLE_SMOKE_GREY;
+var float PARTICLE_SMOKE_BROWN;
+var float PARTICLE_BLOOD;
+
 vector vHUDColor; // Defined in HUD_Draw (HUD.c)
 vector vVGUIColor; // Defined in HUD_Draw (VGUI.c)
 vector vCrossColor; // Defined in HUD_Draw (HUDCrosshair.c)

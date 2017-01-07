@@ -42,7 +42,11 @@ void BaseMelee_Attack( void ) {
 		Damage_Apply( trace_ent, self, wptTable[ self.weapon ].iDamage, trace_endpos );
 		return;
 	} else {
-		pointparticles( EFFECT_GUNSHOT, trace_endpos, trace_plane_normal, 1 );
+		if ( trace_ent.iBleeds ==  TRUE ) {
+			Effect_Impact( IMPACT_FLESH, trace_endpos, trace_plane_normal );
+		} else {
+			Effect_Impact( IMPACT_MELEE, trace_endpos, trace_plane_normal );
+		}
 	}
 }
 

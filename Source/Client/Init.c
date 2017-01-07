@@ -46,6 +46,12 @@ void CSQC_Init(float apilevel, string enginename, float engineversion) {
 		precache_model( sViewModels[ i ] );
 	}
 	
+	PARTICLE_SPARK 			= particleeffectnum( "part_spark" );
+	PARTICLE_PIECES_BLACK 	= particleeffectnum( "part_pieces_black" );
+	PARTICLE_SMOKE_GREY 	= particleeffectnum( "part_smoke_grey" );
+	PARTICLE_SMOKE_BROWN 	= particleeffectnum( "part_smoke_brown" );
+	PARTICLE_BLOOD 			= particleeffectnum( "part_blood" );
+	
 	Radio_InitSounds();
 	
 	CSQC_ConsoleCommand_Init();

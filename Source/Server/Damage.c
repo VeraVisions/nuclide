@@ -84,14 +84,6 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 	
 	bprint( sprintf( "[DEBUG] Hit Bodypart: %s\n", Damage_GetHitLocation( trace_surface_id ) ) );
 	
-	// Don't be like Q1 and make everything bleed.
-	if ( eTarget.iBleeds == TRUE ) {
-		makevectors( eAttacker.angles );
-		pointparticles( EFFECT_BLOOD, vHitPos, v_forward * -1, 1 );
-	} else {
-		pointparticles( EFFECT_GUNSHOT, trace_endpos, trace_plane_normal, 1 );
-	}
-	
 	// Target is dead and a client....
 	if ( eTarget.health <= 0 ) {
 		if ( eTarget.flags & FL_CLIENT ) {
