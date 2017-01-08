@@ -26,7 +26,7 @@ void BaseMelee_Draw( void ) {
 	Client_SendEvent( self, EV_WEAPON_DRAW );
 }
 
-void BaseMelee_Attack( void ) {
+int BaseMelee_Attack( void ) {
 	vector vSource;
 	vector vOrigin;
 
@@ -35,20 +35,20 @@ void BaseMelee_Attack( void ) {
 	traceline( vSource, vSource + ( v_forward * 64 ), MOVE_HITMODEL, self );
 
 	if ( trace_fraction == 1.0 )
-		return;
+		return FALSE;
 
 	vOrigin = trace_endpos - v_forward * 2;
 
 	if ( trace_ent.takedamage ) {
-		Damage_Apply( trace_ent, self, wptTable[ self.weapon ].iDamage, trace_endpos );
-		return;
-	} else {
-		if ( trace_ent.iBleeds ==  TRUE ) {
+		if ( trace_ent.iBleeds == TRUE ) {
 			Effect_Impact( IMPACT_FLESH, trace_endpos, trace_plane_normal );
-		} else {
-			Effect_Impact( IMPACT_MELEE, trace_endpos, trace_plane_normal );
 		}
+		Damage_Apply( trace_ent, self, wptTable[ self.weapon ].iDamage, trace_endpos );
+	} else {
+		Effect_Impact( IMPACT_MELEE, trace_endpos, trace_plane_normal );
 	}
+	
+	return TRUE;
 }
 
 void BaseMelee_Delayed( float fDelay ) {

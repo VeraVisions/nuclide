@@ -125,7 +125,7 @@ float OpenCSGunBase_PrimaryFire( void );
 float OpenCSGunBase_Reload( void );
 
 void BaseMelee_Draw( void );
-void BaseMelee_Attack( void );
+int BaseMelee_Attack( void );
 	
 float Player_GetMaxSpeed( float fWeapon );
 

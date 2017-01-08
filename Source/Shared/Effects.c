@@ -94,6 +94,9 @@ void Effect_Impact( int iType, vector vPos, vector vNormal ) {
 		case IMPACT_METAL:
 			pointsound( vPos, sprintf( "weapons/ric_metal-%d.wav", floor( ( random() * 2 ) + 1 ) ), 1, ATTN_STATIC );
 			break;
+		case IMPACT_FLESH:
+			pointsound( vPos, sprintf( "weapons/knife_hit%d.wav", floor( ( random() * 4 ) + 1 ) ), 1, ATTN_STATIC );
+			break;
 		default:
 			pointsound( vPos, sprintf( "weapons/ric%d.wav", floor( ( random() * 5 ) + 1 ) ), 1, ATTN_STATIC );
 			break;

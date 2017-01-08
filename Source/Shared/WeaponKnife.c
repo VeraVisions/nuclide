@@ -66,8 +66,17 @@ void WeaponKNIFE_Draw( void ) {
 
 void WeaponKNIFE_PrimaryFire( void ) {
 #ifdef SSQC
-	BaseMelee_Attack();
+
 	Client_SendEvent( self, EV_WEAPON_PRIMARYATTACK );
+	
+	if ( BaseMelee_Attack() == FALSE ) {
+		if ( random() <= 0.5 ) {
+			sound( self, CHAN_WEAPON, "weapons/knife_slash1.wav", 1, ATTN_IDLE );
+		} else {
+			sound( self, CHAN_WEAPON, "weapons/knife_slash2.wav", 1, ATTN_IDLE );
+		} 
+	}
+	
 	self.fAttackFinished = time + wptKNIFE.fAttackFinished;
 #else
 	if ( random() <= 0.5 ) {
