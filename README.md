@@ -15,16 +15,23 @@ Some of the cool things you can do with this:
 * Use it as a base for your own games/mods! (As long as you own the rights to the assets)
 
 # Status
-All the weapons are implemented, but only hostage rescue maps are supported at the moment.
-No equipment is implemented, no map radar/overview and no player animations.
-Basically, hostage rescue is playable as long as you don't care about grenades/kevlar.
+All the weapons are implemented, so are the gamemodes: Hostage Rescue (cs), Bomb Defusal (de), Assassination (as) and Escape (es).
+Not all equipment is implemented and no map radar/overview is recreated.
+Basically, the game is playable as long as you don't care about grenades (for now).
 
-# Compiling/Installing
+# Installing
 1. Download the latest version of FTE QuakeWorld.
 2. Download csv15full.exe and to get the cstrike folder.
 3. Move both the cstrike folder and FTE QuakeWorld into a folder
-4. Compile the Client and Server modules using FTEQCC and put them into the cstrike folder
+4. Clone this repository into that same folder, so that opencs, default.fmf and cstrike co-exist
 5. Run FTE QuakeWorld
+
+Optional step: Copy the 'valve' folder from your Half-Life installation in order for all features to work.
+
+# Notes
+You might get away with using the cstrike folder from the Steam version of CS 1.6, or any older version
+than 1.5 - but they are not supported. I will not try to recreate 1.6 or any other earlier versions specifically.
+I may however add additional, optional features that will emulate behaviour of later versions of CS.
 
 # Special Thanks
 Spike - Creator of FTE QuakeWorld and FTEQCC ( http://fte.triptohell.info/ )
