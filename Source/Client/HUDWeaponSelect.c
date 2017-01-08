@@ -170,7 +170,6 @@ void HUD_DrawWeaponSelect_Forward( void ) {
 		fHUDWeaponSelected = HUD_DrawWeaponSelect_GetWeapon( HUD_DrawWeaponSelect_NextItem( wptTable[ fHUDWeaponSelected ].iSlot ) );
 	}
 	
-	print( sprintf( "Selected %f\n", fHUDWeaponSelected ) );
 	fHUDWeaponSelectTime = time + 3;
 }
 

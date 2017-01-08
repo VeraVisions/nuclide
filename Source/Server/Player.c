@@ -46,12 +46,24 @@ string sPainSounds[5] = {
 	"player/pl_pain7.wav"
 };
 
-void Player_Pain( void ) {
+void Player_Pain( int iHitBody ) {
+	if ( iHitBody == BODY_HEAD ) {
+		Animation_PlayerTop( ANIM_HEAD_FLINCH, 0.1f );
+	} else {
+		Animation_PlayerTop( ANIM_GUT_FLINCH, 0.1f );
+	}
+	
 	sound( self, CHAN_VOICE, sPainSounds[ floor( random() * 5 ) ], 1, ATTN_IDLE );
 	self.velocity = '0 0 0';
 }
 
-void Player_Death( void ) {
+void Player_Death( int iHitBody ) {
+	if ( iHitBody == BODY_HEAD ) {
+		sound( self, CHAN_VOICE, sprintf( "player/headshot%d.wav", floor( ( random() * 3 ) + 1 ) ), 1, ATTN_NORM );
+	} else {
+		sound( self, CHAN_VOICE, sprintf( "player/die%d.wav", floor( ( random() * 3 ) + 1 ) ), 1, ATTN_NORM );
+	}
+			
 	// Drop a corpse
 	entity eCorpse = spawn();
 	setorigin( eCorpse, self.origin );
@@ -59,7 +71,31 @@ void Player_Death( void ) {
 	setsize( eCorpse, self.mins, self.maxs );
 	eCorpse.angles = [ 0, self.angles_y, 0 ];
 	eCorpse.movetype = MOVETYPE_BOUNCE;
-	eCorpse.frame = 93; // TODO: Pick the right frame
+	
+	if ( self.flags & FL_CROUCHING ) {
+		eCorpse.frame = ANIM_CROUCH_DIE;
+	} else {
+		switch ( iHitBody ) {
+			case BODY_HEAD:
+				eCorpse.frame = ANIM_DIE_HEAD;
+				break;
+			case BODY_STOMACH:
+				eCorpse.frame = ANIM_DIE_GUT;
+				break;
+			case BODY_LEGLEFT:
+			case BODY_ARMLEFT:
+				eCorpse.frame = ANIM_DIE_LEFT;
+				break;
+			case BODY_LEGRIGHT:
+			case BODY_ARMRIGHT:
+				eCorpse.frame = ANIM_DIE_RIGHT;
+				break;
+			default:
+				eCorpse.frame = ANIM_DEATH1 + floor( random() * 3 );
+				break;
+		}
+	}
+	
 	
 	Spawn_MakeSpectator();
 	self.classname = "player";

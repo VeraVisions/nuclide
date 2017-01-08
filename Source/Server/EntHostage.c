@@ -37,14 +37,15 @@ entity hostage_waypoint( void ) {
 }
 
 // Called whenver a hostage is shot
-void hostage_pain( void ) {
+void hostage_pain( int iHitBody ) {
 	self.frame = 13 - floor( random( 1, 6 ) );
 }
 
 // hosdown.wav
-void hostage_die( void ) {
+void hostage_die( int iHitBody ) {
 	Radio_BroadcastMessage( RADIO_HOSDOWN );
 	self.frame = 30 + floor( random( 1, 6 ) );
+	
 	self.solid = SOLID_NOT;
 	self.takedamage = DAMAGE_NO;
 	//skel_delete( self.skeletonindex );

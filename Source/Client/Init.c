@@ -26,6 +26,11 @@ Comparable to worldspawn in SSQC in that it's mostly used for precaches
 =================
 */
 void CSQC_Init(float apilevel, string enginename, float engineversion) {
+	//static float PlayerFrame( float fIsNew ) {
+	//	self.basebone = 40;
+	//	return TRUE;
+	//}
+	
 	precache_model( HUD_NUMFILE );
 	precache_model( "sprites/radar640.spr" );
 	precache_model( "sprites/640hud1.spr" );
@@ -46,12 +51,16 @@ void CSQC_Init(float apilevel, string enginename, float engineversion) {
 		precache_model( sViewModels[ i ] );
 	}
 	
+	//for( int i = 1; i < 9; i++ ) {
+	//	deltalisten( sCSPlayers[ i ], PlayerFrame, 0);
+	//}
+	
 	PARTICLE_SPARK 			= particleeffectnum( "part_spark" );
 	PARTICLE_PIECES_BLACK 	= particleeffectnum( "part_pieces_black" );
 	PARTICLE_SMOKE_GREY 	= particleeffectnum( "part_smoke_grey" );
 	PARTICLE_SMOKE_BROWN 	= particleeffectnum( "part_smoke_brown" );
 	PARTICLE_BLOOD 			= particleeffectnum( "part_blood" );
-	
+
 	Radio_InitSounds();
 	
 	CSQC_ConsoleCommand_Init();

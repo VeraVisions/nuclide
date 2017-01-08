@@ -92,8 +92,8 @@ int iBombPlanted;
 // Generic entity fields
 .int iUsable;
 .int iBleeds;
-.void() vPain;
-.void() vDeath;
+.void( int iHitBody ) vPain;
+.void( int iHitBody ) vDeath;
 .float fRespawns;
 .entity eUser;
 
@@ -107,18 +107,6 @@ entity eActivator;
 .float rendermode;
 .float renderamt;
 .float alpha;
-
-string sCSPlayers[9] = {
-	"",
-	"models/player/terror/terror.mdl",
-	"models/player/leet/leet.mdl",
-	"models/player/arctic/arctic.mdl",
-	"models/player/guerilla/guerilla.mdl",
-	"models/player/urban/urban.mdl",
-	"models/player/gsg9/gsg9.mdl",
-	"models/player/sas/sas.mdl",
-	"models/player/gign/gign.mdl"
-};
 
 void Rules_RoundOver( int iTeamWon, int iMoneyReward, float fSilent );
 float Rules_BuyingPossible( void );

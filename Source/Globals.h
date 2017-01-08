@@ -1,6 +1,6 @@
 /*
 OpenCS Project
-Copyright (C) 2015 Marco "eukara" Hladik
+Copyright (C) 2016, 2017 Marco "eukara" Hladik
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -21,6 +21,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define PLAYER_SENDFLAG_UPDATE 1
 #define PLAYER_SENDFLAG_INGAME 2
+
+string sCSPlayers[9] = {
+	"",
+	"models/player/terror/terror.mdl",
+	"models/player/leet/leet.mdl",
+	"models/player/arctic/arctic.mdl",
+	"models/player/guerilla/guerilla.mdl",
+	"models/player/urban/urban.mdl",
+	"models/player/gsg9/gsg9.mdl",
+	"models/player/sas/sas.mdl",
+	"models/player/gign/gign.mdl"
+};
 
 // Stuff that applies to all codebases
 enum {

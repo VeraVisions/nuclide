@@ -82,7 +82,7 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 		iDamage *= 0.4;
 	}
 	
-	bprint( sprintf( "[DEBUG] Hit Bodypart: %s\n", Damage_GetHitLocation( trace_surface_id ) ) );
+	dprint( sprintf( "[DEBUG] Hit Bodypart: %s\n", Damage_GetHitLocation( trace_surface_id ) ) );
 	
 	// Target is dead and a client....
 	if ( eTarget.health <= 0 ) {
@@ -103,19 +103,9 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 	
 	if ( self.health <= 0 ) {
 		self.health = 0;
-		self.vDeath();
-		
-		// Make a cooky death sound
-		if ( self.classname == "player" ) {
-			
-			if ( trace_surface_id == BODY_HEAD ) {
-				sound( self, CHAN_VOICE, sprintf( "player/headshot%d.wav", floor( ( random() * 3 ) + 1 ) ), 1, ATTN_NORM );
-			} else {
-				sound( self, CHAN_VOICE, sprintf( "player/die%d.wav", floor( ( random() * 3 ) + 1 ) ), 1, ATTN_NORM );
-			}
-		}
+		self.vDeath( trace_surface_id );
 	} else {
-		self.vPain();
+		self.vPain( trace_surface_id );
 	}
 	
 	self = eOld;
@@ -127,14 +117,14 @@ void Damage_Radius( vector vOrigin, entity eAttacker, float fDamage, float fRadi
 	while( eDChain ) {
 		
 		if ( eDChain.takedamage == DAMAGE_YES ) {
-				float fDiff = vlen( vOrigin - eDChain.origin );
+			float fDiff = vlen( vOrigin - eDChain.origin );
 				
-				fDiff = ( fRadius - fDiff ) / fRadius;
-				fDamage = fDamage * fDiff;
+			fDiff = ( fRadius - fDiff ) / fRadius;
+			fDamage = fDamage * fDiff;
 	
-				if ( fDiff > 0 ) {
-					Damage_Apply( eDChain, eAttacker, fDamage, eDChain.origin );
-				}
+			if ( fDiff > 0 ) {
+				Damage_Apply( eDChain, eAttacker, fDamage, eDChain.origin );
+			}
 		}
 		
 		eDChain = eDChain.chain;

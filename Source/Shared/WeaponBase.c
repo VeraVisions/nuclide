@@ -88,7 +88,7 @@ void OpenCSGunBase_Draw( void ) {
 }
 
 void OpenCSGunBase_AccuracyCalc( void ) {
-	self.fAccuracy = self.iShotMultiplier / wptTable[ self.weapon ].fAccuracyDivisor;
+	self.fAccuracy = ( self.iShotMultiplier / wptTable[ self.weapon ].fAccuracyDivisor ) * wptTable[ self.weapon ].iBullets;
 }
 
 // Returns whether or not to play an animation

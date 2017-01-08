@@ -19,7 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 // Entity information from http://twhl.info/wiki.php?id=164
-
 /*
 
 	Flags
@@ -37,7 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 .float material;
 
 // Whenever it gets damaged
-void func_breakable_pain( void ) {
+void func_breakable_pain( int iNull ) {
 	string sTypeSample = "";
 	int iTypeCount = 0;
 	
@@ -73,7 +72,7 @@ void func_breakable_pain( void ) {
 }
 
 // Whenever it.. dies
-void func_breakable_die( void ) {
+void func_breakable_die( int iNull ) {
 	string sTypeSample = "";
 	int iTypeCount = 0;
 	
@@ -116,6 +115,10 @@ void func_breakable_die( void ) {
 	Entities_Remove();
 }
 
+static void func_breakable_use( void ) {
+	func_breakable_die( 0 );
+}
+	
 void func_breakable_touch( void ) {
 	static void func_breakable_touch_NULL( void ) { }
 	
@@ -124,24 +127,23 @@ void func_breakable_touch( void ) {
 	}
 
 	if ( self.spawnflags & SF_TOUCH ) {
-		int fDamage = (float)(vlen( self.velocity ) * 0.01);
+		int fDamage = (float)(vlen( self.velocity ) * 0.01f );
 
 		if ( fDamage >= self.health ) {
-
 			self.touch = func_breakable_touch_NULL;
 			Damage_Apply( self, other, fDamage, self.absmin );
 			
-			if ( self.material == MATERIAL_GLASS || self.material == MATERIAL_COMPUTER ) {
-				Damage_Apply( other, self, fDamage/4, other.origin );
+			if ( ( self.material == MATERIAL_GLASS ) || ( self.material == MATERIAL_COMPUTER ) ) {
+				Damage_Apply( other, self, fDamage / 4, other.origin );
 			}
 		}
 	}
 
 	if ( ( self.spawnflags & SF_PRESSURE ) && other.absmin_z >= self.maxs_z - 2 ) {
-		self.think = func_breakable_die;
+		self.think = func_breakable_use;
 		
 		if ( self.delay == 0 ) {
-			self.delay = 0.1;
+			self.delay = 0.1f;
 		}
 
 		self.nextthink = self.ltime + self.delay;
@@ -170,7 +172,7 @@ void func_breakable( void ) {
 			self.touch = func_breakable_touch;
 		} 
 		
-		self.vUse = func_breakable_die;
+		self.vUse = func_breakable_use;
 	}
 
 	func_wall();

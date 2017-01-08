@@ -18,6 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+.float baseframe_time;
+
 enum {
 	ANIM_DUMMY1,
 	ANIM_IDLE,
@@ -117,9 +119,11 @@ enum {
 };
 
 void Animation_PlayerUpdate( void ) {
+	self.basebone = 40;
 	
-//	self.basebone = 40;
-//	self.baseframe = ANIM_AIM_SHOTGUN;
+	if ( self.baseframe_time < time ) {
+		self.baseframe = ANIM_AIM_SHOTGUN;
+	}
 	
 	if ( vlen( self.velocity ) == 0 ) {
 		if ( self.flags & FL_CROUCHING ) {
@@ -144,4 +148,9 @@ void Animation_PlayerUpdate( void ) {
 	if ( !( self.flags & FL_ONGROUND ) ) {
 		self.frame = ANIM_JUMP;
 	}
+}
+
+void Animation_PlayerTop( float fFrame, float fTime ) {
+	self.baseframe = fFrame;
+	self.baseframe_time = time + fTime;
 }
