@@ -76,7 +76,7 @@ void OpenCSGunBase_ShotMultiplierHandle( float fShots ) {
 // This is being triggered in PlayerPreThink after the input
 void OpenCSGunBase_ShotMultiplierUpdate( void ) {
 	if ( ( self.iShotMultiplier > 0 ) && ( self.fDecreaseShotTime < time ) ) {
-		self.fDecreaseShotTime = time + 0.1;
+		self.fDecreaseShotTime = time + wptTable[ self.weapon ].fAttackFinished + 0.01;
 		self.iShotMultiplier--;
 	}	
 }
@@ -88,7 +88,7 @@ void OpenCSGunBase_Draw( void ) {
 }
 
 void OpenCSGunBase_AccuracyCalc( void ) {
-	self.fAccuracy = ( self.iShotMultiplier / wptTable[ self.weapon ].fAccuracyDivisor ) * wptTable[ self.weapon ].iBullets;
+	self.fAccuracy = ( self.iShotMultiplier / wptTable[ self.weapon ].fAccuracyDivisor );
 }
 
 // Returns whether or not to play an animation
@@ -102,12 +102,12 @@ float OpenCSGunBase_PrimaryFire( void ) {
 		self.flags = self.flags - ( self.flags & FL_SEMI_TOGGLED );
 	}
 	
+	OpenCSGunBase_ShotMultiplierHandle( wptTable[ self.weapon ].iBullets );
 	OpenCSGunBase_AccuracyCalc();
 	TraceAttack_FireBullets( wptTable[ self.weapon ].iBullets, ( self.origin + self.view_ofs ) );
 	
 	self.(wptTable[ self.weapon ].iMagfld) -= 1;
 	self.fAttackFinished = time + wptTable[ self.weapon ].fAttackFinished;
-	OpenCSGunBase_ShotMultiplierHandle( 1 );
 	Client_SendEvent( self, EV_WEAPON_PRIMARYATTACK );
 	self.effects = self.effects | EF_MUZZLEFLASH;
 	return TRUE;
