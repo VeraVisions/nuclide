@@ -75,7 +75,7 @@ void TraceAttack_FireBullets( int iShots, vector vPos ) {
 	vector vDir;
 	makevectors(self.v_angle);
 	
-	while ( iShots > 0) {
+	while ( iShots > 0 ) {
 		iTotalPenetrations = 0;
 		vDir = aim( self, 100000 ) + Math_CRandom()*self.fAccuracy*v_right + Math_CRandom()*self.fAccuracy*v_up;
 		TraceAttack_FireSingle( vPos, vDir );

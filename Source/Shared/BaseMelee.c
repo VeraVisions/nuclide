@@ -34,14 +34,16 @@ int BaseMelee_Attack( void ) {
 	vSource = ( self.origin + self.view_ofs );
 	traceline( vSource, vSource + ( v_forward * 64 ), MOVE_HITMODEL, self );
 
-	if ( trace_fraction == 1.0 )
+	if ( trace_fraction == 1.0 ) {
 		return FALSE;
+	}
 
 	vOrigin = trace_endpos - v_forward * 2;
 
 	if ( trace_ent.takedamage ) {
 		if ( trace_ent.iBleeds == TRUE ) {
 			Effect_Impact( IMPACT_FLESH, trace_endpos, trace_plane_normal );
+			sound( self, CHAN_WEAPON, sprintf( "weapons/knife_hit%d.wav", floor( ( random() * 4 ) + 1 ) ), 1, ATTN_NORM );
 		}
 		Damage_Apply( trace_ent, self, wptTable[ self.weapon ].iDamage, trace_endpos );
 	} else {
