@@ -52,6 +52,7 @@ Entities.c
 Triggers.c
 EnvObjects.c
 FuncBreakable.c
+FuncPushable.c
 FuncLadder.c
 FuncHostageRescue.c
 FuncVIPSafetyZone.c

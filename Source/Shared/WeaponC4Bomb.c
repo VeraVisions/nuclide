@@ -101,9 +101,9 @@ void WeaponC4BOMB_Drop( vector vBombPos ) {
 		}
 	}
 	static void C4BombUse( void ) {
-		/*if ( eActivator.team != TEAM_CT ) {
+		if ( eActivator.team != TEAM_CT ) {
 			return;
-		}*/
+		}
 		
 		// On first use, play defusing sound
 		if ( self.eUser == world ) {
@@ -121,7 +121,7 @@ void WeaponC4BOMB_Drop( vector vBombPos ) {
 			return;
 		}
 		
-		// If the user has for the right equipment, make 10 seconds pass twice as fast
+		// If the user has the right equipment, make 10 seconds pass twice as fast
 		if ( eActivator.iEquipment & EQUIPMENT_DEFUSALKIT ) {
 			fDefuseProgress += ( frametime * 2 );
 		} else {

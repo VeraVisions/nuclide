@@ -150,6 +150,23 @@ void func_breakable_touch( void ) {
 	}	
 }
 
+void func_breakable_respawn( void ) {
+	if ( self.spawnflags & SF_TRIGGER ) {
+		self.takedamage = DAMAGE_NO;
+	} else {
+		self.takedamage = DAMAGE_YES;
+		self.vPain = func_breakable_pain;
+		self.vDeath = func_breakable_die;
+		self.iBleeds = FALSE;
+	}
+		
+	if ( self.spawnflags & SF_TOUCH || self.spawnflags & SF_PRESSURE ) {
+		self.touch = func_breakable_touch;
+	} 
+		
+	self.vUse = func_breakable_use;
+}
+	
 /*
 =================
 SPAWN: func_breakable
@@ -158,23 +175,6 @@ Entry function for the brushes that can die etc.
 =================
 */
 void func_breakable( void ) {
-	static void func_breakable_respawn( void ) {
-		if ( self.spawnflags & SF_TRIGGER ) {
-			self.takedamage = DAMAGE_NO;
-		} else {
-			self.takedamage = DAMAGE_YES;
-			self.vPain = func_breakable_pain;
-			self.vDeath = func_breakable_die;
-			self.iBleeds = FALSE;
-		}
-		
-		if ( self.spawnflags & SF_TOUCH || self.spawnflags & SF_PRESSURE ) {
-			self.touch = func_breakable_touch;
-		} 
-		
-		self.vUse = func_breakable_use;
-	}
-
 	func_wall();
 	func_breakable_respawn();
 	

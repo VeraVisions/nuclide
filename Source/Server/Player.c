@@ -219,7 +219,7 @@ void Player_UseDown( void ) {
 	traceline ( vSource, vSource + ( v_forward * 64 ), FALSE, self);
 	
 	if ( trace_ent.iUsable ) {
-		if ( trace_ent.classname != "c4bomb" ) {
+		if ( ( trace_ent.classname != "c4bomb" ) && ( trace_ent.classname != "func_pushable" ) ) {
 			self.flags = ( self.flags - FL_USERELEASED );
 			sound( self, CHAN_WEAPON, "common/wpn_select.wav", 0.25, ATTN_IDLE );
 		} 
