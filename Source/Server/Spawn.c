@@ -193,6 +193,11 @@ void CSEv_GamePlayerSpawn_f( float fChar ) {
 		}
 	}
 	
+	self.fSlotMelee = 0;
+	self.fSlotPrimary = 0;
+	self.fSlotSecondary = 0;
+	self.fSlotGrenade = 0;
+	
 	// Spawn the players immediately when its in the freeze state
 	switch ( fGameState ) {
 		case GAME_FREEZE:
