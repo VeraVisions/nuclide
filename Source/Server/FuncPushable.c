@@ -18,15 +18,32 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+/*
+=================
+SPAWN: func_pushable
+
+Entry function for the brushes that players can push.
+Pushables are an extension of breakables, so they mostly
+explain themselves.
+=================
+*/
 void func_pushable( void ) {
 	static void func_pushable_touch( void ) {
 		if ( other.classname == "player" ) {
 			func_breakable_touch();
-			self.movedir = other.movement;
-			self.v_angle = other.angles;
-		} 
+			
+			if ( other.absmin_z <= self.maxs_z - 2 ) {
+				self.movedir = other.movement;
+				self.v_angle = other.angles;
+			}
+		}
 	}
 	static void func_pushable_use( void ) {
+		if ( eActivator.classname != "player" ) {
+			func_breakable_use();
+			return;
+		}
+		
 		self.movedir = eActivator.movement;
 		self.v_angle = eActivator.angles;
 	}
@@ -35,16 +52,18 @@ void func_pushable( void ) {
 		input_impulse = input_buttons = 0;
 		input_angles = self.v_angle;
 		self.movedir = '0 0 0';
+		
 		runstandardplayerphysics( self );
 	}
 	static void func_pushable_respawn( void ) {
 		func_breakable_respawn();
-		self.iUsable = TRUE;
+		
 		self.solid = SOLID_SLIDEBOX;
 		self.movetype = MOVETYPE_WALK;
 		self.customphysics = func_pushable_physics;
 		self.touch = func_pushable_touch;
 		self.vUse = func_pushable_use;
+		self.iUsable = TRUE;
 	}
 	
 	func_wall();

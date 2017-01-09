@@ -115,7 +115,7 @@ void func_breakable_die( int iNull ) {
 	Entities_Remove();
 }
 
-static void func_breakable_use( void ) {
+void func_breakable_use( void ) {
 	func_breakable_die( 0 );
 }
 	
@@ -139,7 +139,7 @@ void func_breakable_touch( void ) {
 		}
 	}
 
-	if ( ( self.spawnflags & SF_PRESSURE ) && other.absmin_z >= self.maxs_z - 2 ) {
+	if ( ( self.spawnflags & SF_PRESSURE ) && ( other.absmin_z >= self.maxs_z - 2 ) ) {
 		self.think = func_breakable_use;
 		
 		if ( self.delay == 0 ) {
@@ -160,7 +160,7 @@ void func_breakable_respawn( void ) {
 		self.iBleeds = FALSE;
 	}
 		
-	if ( self.spawnflags & SF_TOUCH || self.spawnflags & SF_PRESSURE ) {
+	if ( ( self.spawnflags & SF_TOUCH ) || ( self.spawnflags & SF_PRESSURE ) ) {
 		self.touch = func_breakable_touch;
 	} 
 		

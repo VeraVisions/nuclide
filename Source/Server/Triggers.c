@@ -190,7 +190,7 @@ Attributes:
 Name (targetname) - Property used to identify entities.
 
 Flags:
-Multithreaded (1) - See notes below for an explanation.
+Multithreaded (1)
 
 Notes:
 There were better ways to do this, but someone thought it was viable to use custom, user defined fields
@@ -201,10 +201,39 @@ TODO: Try to find out what garbled mess __fullspawndata is trying to give us
 =================
 */
 void multi_manager( void ) {
+	static void multi_manager_enttrigger( void ) {
+		Entities_UseTargets();
+		remove( self );
+	}
 	static void multi_manager_use( void ) {
-		eprint( self );
+		int iFields = tokenize( self.message );
+		
+		for ( int i = 1; i < ( iFields - 1 ); i += 2 ) {
+			// Sigh, let's attempt to sanitize this
+			if ( ( argv( i ) != "classname" ) && ( argv( i ) != "origin" ) && ( argv( i ) != "targetname" ) ) {
+				entity eTemp = spawn();
+				eTemp.target = argv( i );
+				eTemp.think = multi_manager_enttrigger;
+				eTemp.nextthink = time + stof( argv( i + 1 ) );
+			}
+		}
 	}
 	
 	self.message = __fullspawndata;
 	self.vUse = multi_manager_use;
+}
+
+/*
+=================
+multisource
+
+TODO: State crap
+=================
+*/
+void multisource( void ) {
+	static void multisource_use( void ) {
+		Entities_UseTargets();
+	}
+	
+	self.vUse = multisource_use;
 }

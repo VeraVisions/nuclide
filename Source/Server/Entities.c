@@ -61,6 +61,7 @@ void Entities_UseTargets( void ) {
 	entity eOld = self;
 	while ( eFind ) {
 		self = eFind;
+		bprint( sprintf( "Triggering %s %s\n", self.classname, self.targetname ) );
 		self.vUse();
 		eFind = eFind.chain;
 	}
