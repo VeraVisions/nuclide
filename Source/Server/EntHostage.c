@@ -28,7 +28,13 @@ enum {
 	HOSTAGE_RUN
 };
 
-// To make sure they are following us right
+/*
+=================
+hostage_waypoint
+
+Spawns a new waypoint for the hostage
+=================
+*/
 entity hostage_waypoint( void ) {
 	entity ePoint = spawn();
 	setorigin( ePoint, self.eUser.origin );
@@ -36,12 +42,24 @@ entity hostage_waypoint( void ) {
 	return ePoint;
 }
 
-// Called whenver a hostage is shot
+/*
+=================
+hostage_pain
+
+Called whenever a hostage is shot
+=================
+*/
 void hostage_pain( int iHitBody ) {
 	self.frame = 13 - floor( random( 1, 6 ) );
 }
 
-// hosdown.wav
+/*
+=================
+hostage_die
+
+hosdown.wav
+=================
+*/
 void hostage_die( int iHitBody ) {
 	Radio_BroadcastMessage( RADIO_HOSDOWN );
 	self.frame = 30 + floor( random( 1, 6 ) );
@@ -55,7 +73,13 @@ void hostage_die( int iHitBody ) {
 	}
 }
 
-// Happens upon calling 'use'
+/*
+=================
+hostage_use
+
+Whenever a hostage is 'used'
+=================
+*/
 void hostage_use( void ) {
 	if ( eActivator.team == TEAM_CT ) {
 		if ( ( self.eUser == world ) ) {
@@ -74,7 +98,13 @@ void hostage_use( void ) {
 	}
 }
 
-// Run every frame
+/*
+=================
+hostage_physics
+
+Run every frame
+=================
+*/
 void hostage_physics( void ) {
 	input_movevalues = '0 0 0';
 	input_impulse = 0;

@@ -18,6 +18,13 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+/*
+=================
+Input_Handle
+
+Handles impulse and whatnot
+=================
+*/
 void Input_Handle( void ) {
 	// TODO: Make this fast switch only
 	if ( self.impulse == 3 ) {

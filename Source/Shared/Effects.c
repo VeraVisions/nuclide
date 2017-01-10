@@ -168,6 +168,47 @@ void Effect_BreakModel( vector vMins, vector vMaxs, vector vVel, float fStyle ) 
 			break;
 	}
 	
+	string sTypeSample = "";
+	int iTypeCount;
+	
+	switch ( fStyle ) {
+		case MATERIAL_GLASS:
+		case MATERIAL_GLASS_UNBREAKABLE:
+			sTypeSample = "debris/bustglass";
+			iTypeCount = 2;
+			break;
+		case MATERIAL_WOOD:
+			sTypeSample = "debris/bustcrate";
+			iTypeCount = 2;
+			break;
+		case MATERIAL_METAL:
+		case MATERIAL_COMPUTER:
+			sTypeSample = "debris/bustmetal";
+			iTypeCount = 2;
+			break;
+		case MATERIAL_FLESH:
+			sTypeSample = "debris/bustflesh";
+			iTypeCount = 2;
+			break;
+		case MATERIAL_CINDER:
+		case MATERIAL_ROCK:
+			sTypeSample = "debris/bustconcrete";
+			iTypeCount = 2;
+			break;
+		case MATERIAL_TILE:
+			sTypeSample = "debris/bustceiling";
+			iTypeCount = 1;
+			break;
+	}
+	
+	if ( iTypeCount > 0 ) {
+		vector vWorldPos;
+		vWorldPos_x = vMins_x + ( 0.5 * ( vMaxs_x - vMins_x ) );	
+		vWorldPos_y = vMins_y + ( 0.5 * ( vMaxs_y - vMins_y ) );	
+		vWorldPos_z = vMins_z + ( 0.5 * ( vMaxs_z - vMins_z ) );
+		pointsound( vWorldPos, sprintf( "%s%d.wav", sTypeSample, floor( random( 1, (float)iTypeCount ) + 1 ) ), 1.0f, ATTN_NORM );
+	}
+	
 	while ( fCount > 0 ) {
 		entity eGib = spawn();
 		

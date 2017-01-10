@@ -20,6 +20,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 int iTotalPenetrations;
 
+/*
+=================
+TraceAttack_FireSingle
+
+Fires a single shot that can penetrate some materials
+=================
+*/
 void TraceAttack_FireSingle( vector vPos, vector vAngle ) {
 	static void TraceAttack_Penetrate( vector vPos, vector vAngle  ) {
 		if ( iTotalPenetrations > 0 ) {
@@ -71,6 +78,14 @@ void TraceAttack_FireSingle( vector vPos, vector vAngle ) {
 		}
 	}
 }
+
+/*
+=================
+TraceAttack_FireBullets
+
+Fire a given amount of shots
+=================
+*/
 void TraceAttack_FireBullets( int iShots, vector vPos ) {
 	vector vDir;
 	makevectors(self.v_angle);

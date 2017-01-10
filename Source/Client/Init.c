@@ -47,6 +47,18 @@ void CSQC_Init(float apilevel, string enginename, float engineversion) {
 	precache_sound( "common/wpn_moveselect.wav" );
 	precache_sound( "common/wpn_select.wav" );
 	
+	precache_sound( "debris/bustglass1.wav" );
+	precache_sound( "debris/bustglass2.wav" );
+	precache_sound( "debris/bustcrate1.wav" );
+	precache_sound( "debris/bustcrate2.wav" );
+	precache_sound( "debris/bustmetal1.wav" );
+	precache_sound( "debris/bustmetal2.wav" );
+	precache_sound( "debris/bustflesh1.wav" );
+	precache_sound( "debris/bustflesh2.wav" );
+	precache_sound( "debris/bustconcrete1.wav" );
+	precache_sound( "debris/bustconcrete2.wav" );
+	precache_sound( "debris/bustceiling1.wav" );
+	
 	for( int i = 0; i < CS_WEAPON_COUNT; i++ ) {
 		precache_model( sViewModels[ i ] );
 	}

@@ -46,6 +46,11 @@ string sPainSounds[5] = {
 	"player/pl_pain7.wav"
 };
 
+/*
+=================
+Player_Pain
+=================
+*/
 void Player_Pain( int iHitBody ) {
 	if ( iHitBody == BODY_HEAD ) {
 		Animation_PlayerTop( ANIM_HEAD_FLINCH, 0.1f );
@@ -57,6 +62,11 @@ void Player_Pain( int iHitBody ) {
 	self.velocity = '0 0 0';
 }
 
+/*
+=================
+Player_Death
+=================
+*/
 void Player_Death( int iHitBody ) {
 	if ( iHitBody == BODY_HEAD ) {
 		sound( self, CHAN_VOICE, sprintf( "player/headshot%d.wav", floor( ( random() * 3 ) + 1 ) ), 1, ATTN_NORM );
@@ -126,6 +136,11 @@ void Player_Death( int iHitBody ) {
 	}
 }
 
+/*
+=================
+Player_GetMaxSpeed
+=================
+*/
 float Player_GetMaxSpeed( float fWeapon ) {
 	if ( self.flags & FL_CROUCHING ) {
 		return ( cvar( "sv_maxspeed" ) * wptTable[ fWeapon ].fSpeedM ) * 0.5;
@@ -248,6 +263,13 @@ void Player_UseUp( void ) {
 	}
 }
 
+/*
+=================
+PlayerPreThink
+
+Run before physics
+=================
+*/
 void PlayerPreThink( void ) { 
 	Input_Handle();
 	OpenCSGunBase_ShotMultiplierUpdate();
@@ -257,6 +279,13 @@ void PlayerPreThink( void ) {
 	} 
 }
 
+/*
+=================
+PlayerPreThink
+
+Run after physics
+=================
+*/
 void PlayerPostThink( void ) {
 	Animation_PlayerUpdate();
 	

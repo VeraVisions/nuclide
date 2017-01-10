@@ -118,6 +118,14 @@ enum {
 	ANIM_CROUCH_DIE
 };
 
+/*
+=================
+Animation_PlayerUpdate
+
+Called every frame to update the animation sequences
+depending on what the player is doing
+=================
+*/
 void Animation_PlayerUpdate( void ) {
 	self.basebone = 40;
 	
@@ -150,6 +158,13 @@ void Animation_PlayerUpdate( void ) {
 	}
 }
 
+/*
+=================
+Animation_PlayerTop
+
+Changes the animation sequence for the upper body part
+=================
+*/
 void Animation_PlayerTop( float fFrame, float fTime ) {
 	self.baseframe = fFrame;
 	self.baseframe_time = time + fTime;

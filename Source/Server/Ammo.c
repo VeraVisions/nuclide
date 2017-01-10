@@ -32,6 +32,13 @@ ammoinfo_t ammoTable[11] = {
 	{ 50, 100, 50 } //CALIBER_57MM
 };
 
+/*
+=================
+Ammo_BuyPrimary
+
+Buy ammo for the primary weapon you're equipped with
+=================
+*/
 void Ammo_BuyPrimary( float fFree ) {
 	if ( !self.fSlotPrimary ) {
 		return;
@@ -51,6 +58,13 @@ void Ammo_BuyPrimary( float fFree ) {
 	}  
 }
 
+/*
+=================
+Ammo_BuySecondary
+
+Buy ammo for the secondary weapon you're equipped with
+=================
+*/
 void Ammo_BuySecondary( float fFree ) {	
 	if ( !self.fSlotSecondary ) {
 		return;
@@ -76,6 +90,13 @@ void Ammo_BuySecondary( float fFree ) {
 	}  
 }
 
+/*
+=================
+CSEv_GamePlayerBuyAmmo_f
+
+Called from the client, checks if he can buy ammo and does if yes
+=================
+*/
 void CSEv_GamePlayerBuyAmmo_f( float fType ) {
 	if ( Rules_BuyingPossible() == FALSE ) {
 		return;

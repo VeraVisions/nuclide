@@ -20,6 +20,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 entity eLastTSpawn;
 entity eLastCTSpawn;
+
+/*
+=================
+Spawn_FindSpawnPoint
+
+Recursive function that gets the next spawnpoint
+=================
+*/
 entity Spawn_FindSpawnPoint( float fTeam ) {
 	entity eSpot, eLastSpawn;
 	entity eThing;
@@ -36,7 +44,7 @@ entity Spawn_FindSpawnPoint( float fTeam ) {
 		return find( world, classname, "info_vip_start" );
 	}
 
-	while (1) {
+	while ( 1 ) {
 		eSpot = find(eSpot, classname, sClassname);
 		
 		if (eSpot != world) {
@@ -59,6 +67,13 @@ entity Spawn_FindSpawnPoint( float fTeam ) {
 	return eSpot;
 }
 
+/*
+=================
+Spawn_ObserverCam
+
+Look for the next spawnpoint
+=================
+*/
 void Spawn_ObserverCam( void ) {
 	// Go find a camera if we aren't dead
 	entity eCamera = find ( world, classname, "trigger_camera" );
@@ -73,11 +88,21 @@ void Spawn_ObserverCam( void ) {
 				self.angles_x *= -1;
 			}
 		}
+	} else {
+		// Can't find a camera? Just do this lazy thing, CS seems to do the same
+		eCamera = find ( world, classname, "info_player_start" );
 	}
 	
 	self.fixangle = TRUE;
 }
 
+/*
+=================
+Spawn_RespawnClient
+
+Called whenever a player just needs his basic properties to be reset
+=================
+*/
 void Spawn_RespawnClient( float fTeam ) {
 	entity eSpawn;
 	forceinfokey( self, "*spectator", "0" ); // Make sure we are known as a spectator
@@ -114,6 +139,13 @@ void Spawn_RespawnClient( float fTeam ) {
 	self.fBombProgress = 0;
 }
 
+/*
+=================
+Spawn_CreateClient
+
+Called whenever a player becomes a completely new type of player
+=================
+*/
 void Spawn_CreateClient( float fCharModel ) {
 	// What team are we on - 0= Spectator, < 5 Terrorists, CT rest
 	if( fCharModel == 0 ) {
@@ -148,7 +180,13 @@ void Spawn_CreateClient( float fCharModel ) {
 	self.fAttackFinished = time + 1;
 }
 
-// This is called on connect and whenever a player dies
+/*
+=================
+Spawn_MakeSpectator
+
+Called on connect and whenever a player dies
+=================
+*/
 void Spawn_MakeSpectator( void ) {
 	self.classname = "spectator";
 	
@@ -175,7 +213,13 @@ void Spawn_MakeSpectator( void ) {
 	self.fSlotMelee = self.fSlotPrimary = self.fSlotSecondary = self.fSlotGrenade = 0;
 }
 
-// Event Handling, called by the Client codebase via 'sendevent'
+/*
+=================
+CSEv_GamePlayerSpawn_f
+
+Event Handling, called by the Client codebase via 'sendevent'
+=================
+*/
 void CSEv_GamePlayerSpawn_f( float fChar ) {
 	
 	if ( self.team == TEAM_VIP ) {
@@ -228,18 +272,41 @@ void CSEv_GamePlayerSpawn_f( float fChar ) {
 	forceinfokey( self, "*deaths", "0" );
 }
 
-// Counter-Terrorist Spawnpoints
+/*
+=================
+info_player_start
+
+Counter-Terrorist Spawnpoints
+=================
+*/
 void info_player_start( void ) {
 }
 
-// Terrorist Spawnpoints
+/*
+=================
+info_player_deathmatch
+
+Terrorist Spawnpoints
+=================
+*/
 void info_player_deathmatch( void ) {
 }
 
-// VIP Spawnpoints
-void info_vip_start( void ) {
-}
+/*
+=================
+info_target
 
+Cameras use this thing
+=================
+*/
 void info_target( void ) { 
 	setorigin( self, self.origin );
+}
+
+/*
+=================
+info_vip_start
+=================
+*/
+void info_vip_start( void ) {
 }

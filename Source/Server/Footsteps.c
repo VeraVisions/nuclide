@@ -24,7 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 =================
 Footsteps_Update
 
-TODO: Read sound/materials.txt and use that somehow
+Run every frame for each player, plays material based footsteps
 =================
 */
 void Footsteps_Update( void ) {

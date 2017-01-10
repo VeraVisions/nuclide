@@ -18,6 +18,13 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+/*
+=================
+Damage_CastOrbituary
+
+Sends a message to the clients to display a death message
+=================
+*/
 void Damage_CastOrbituary( entity eAttacker, entity eTarget, float fWeapon, float fHeadShot ) {
 	WriteByte( MSG_BROADCAST, SVC_CGAMEPACKET );
 	WriteByte( MSG_BROADCAST, EV_ORBITUARY );
@@ -31,6 +38,13 @@ void Damage_CastOrbituary( entity eAttacker, entity eTarget, float fWeapon, floa
 	multicast( '0 0 0', MULTICAST_ALL );
 }
 
+/*
+=================
+Damage_GetHitLocation
+
+Debug function
+=================
+*/
 string Damage_GetHitLocation( int iSurface ) {
 	switch ( iSurface ) {
 		case BODY_HEAD:
@@ -59,16 +73,15 @@ string Damage_GetHitLocation( int iSurface ) {
 	}
 }
 
+
+/*
+=================
+Damage_Apply
+
+Generic function that applies damage, pain and suffering
+=================
+*/
 void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos ) {
-	// Special monetary punishment for hostage murderers
-	if ( eTarget.classname == "hostage_entity" ) {
-		if ( eTarget.health > 0 ) {
-			Money_AddMoney( eAttacker, -150 ); // Pain
-		} else {
-			Money_AddMoney( eAttacker, -1500 ); // Death
-		}
-	}
-	
 	// Modify the damage based on the location
 	if ( trace_surface_id == BODY_HEAD ) {
 		if ( eTarget.iEquipment & EQUIPMENT_HELMET ) {
@@ -85,10 +98,19 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 		iDamage *= 0.4;
 	}
 	
+	dprint( sprintf( "[DEBUG] Hit Bodypart: %s\n", Damage_GetHitLocation( trace_surface_id ) ) );
+	
 	// Apply the damage finally
 	eTarget.health = eTarget.health - iDamage;
 	
-	dprint( sprintf( "[DEBUG] Hit Bodypart: %s\n", Damage_GetHitLocation( trace_surface_id ) ) );
+	// Special monetary punishment for hostage murderers
+	if ( eTarget.classname == "hostage_entity" ) {
+		if ( eTarget.health > 0 ) {
+			Money_AddMoney( eAttacker, -150 ); // Pain
+		} else {
+			Money_AddMoney( eAttacker, -1500 ); // Death
+		}
+	}
 	
 	// Target is dead and a client....
 	if ( eTarget.health <= 0 ) {
@@ -117,6 +139,13 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 	self = eOld;
 }
 
+/*
+=================
+Damage_Radius
+
+Even more pain and suffering, mostly used for explosives
+=================
+*/
 void Damage_Radius( vector vOrigin, entity eAttacker, float fDamage, float fRadius ) {
 	entity eDChain = findradius( vOrigin, fRadius );
 	

@@ -26,7 +26,13 @@ void SV_PausedTic( float fDuration ) {
 
 }
 
-// Run every frame... by world?
+/*
+=================
+StartFrame
+
+Runs every frame... by worldspawn?
+=================
+*/
 void StartFrame( void ) {
 	// We've got hostages, but no rescue zones, create some
 	if ( !iRescueZones && iHostagesMax > 0 ) {
@@ -57,7 +63,13 @@ void StartFrame( void ) {
 	}
 }
 
-// The map... entity.
+/*
+=================
+worldspawn
+
+It's the map entity, literally
+=================
+*/
 void worldspawn( void ) {
 	// Let's load materials.txt because someone thought this was the best idea
 	string sTemp;
@@ -288,20 +300,6 @@ void worldspawn( void ) {
 	precache_sound( "debris/concrete1.wav" );
 	precache_sound( "debris/concrete2.wav" );
 	precache_sound( "debris/concrete3.wav" );
-	precache_sound( "debris/bustglass1.wav" );
-	precache_sound( "debris/bustglass2.wav" );
-	precache_sound( "debris/bustwood1.wav" );
-	precache_sound( "debris/bustwood2.wav" );
-	precache_sound( "debris/bustmetal1.wav" );
-	precache_sound( "debris/bustmetal2.wav" );
-	precache_sound( "debris/bustflesh1.wav" );
-	precache_sound( "debris/bustflesh2.wav" );
-	precache_sound( "debris/bustconcrete1.wav" );
-	precache_sound( "debris/bustconcrete2.wav" );
-	precache_sound( "debris/bustconcrete3.wav" );
-	precache_sound( "debris/bustceiling1.wav" );
-	precache_sound( "debris/bustceiling2.wav" );
-	precache_sound( "debris/bustceiling3.wav" );
 	
 	precache_sound( "player/pl_metal1.wav" );
 	precache_sound( "player/pl_metal2.wav" );

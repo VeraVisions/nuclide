@@ -18,25 +18,65 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-/* Called when a spectator joins the game. */
+/*
+=================
+SpectatorConnect
+
+Called when a spectator joins the game
+=================
+*/
 void SpectatorConnect( void ) {
 	Spawn_MakeSpectator();
 	Spawn_ObserverCam();
 }
 	
+/*
+=================
+SpectatorDisconnect
+
+Called when a spectator leaves the game
+=================
+*/
 void SpectatorDisconnect( void ) {
 	
 }
-	
+
+/*
+=================
+SpectatorThink
+
+Run every frame on every spectator
+=================
+*/
 void SpectatorThink( void ) {
 	
 }
 
+/*
+=================
+ClientKill
+
+Suicide command 'kill' executes this function.
+=================
+*/
 void ClientKill( void ) {}
 
+/*
+=================
+ClientConnect
 
+Run whenever a new client joins
+=================
+*/
 void ClientConnect( void ) {}
 
+/*
+=================
+ClientDisconnect
+
+Run whenever a client quits
+=================
+*/
 void ClientDisconnect( void ) {
 	// We were part of the session
 	if( self.iInGame == TRUE ) {
@@ -52,6 +92,13 @@ void ClientDisconnect( void ) {
 	}
 }
 
+/*
+=================
+PutClientInServer
+
+Puts a client into the world.
+=================
+*/
 void PutClientInServer( void ) {
 	entity eTarget = world;
 
@@ -66,6 +113,13 @@ void PutClientInServer( void ) {
 	forceinfokey( self, "*team", "0" ); 
 }
 
+/*
+=================
+SV_RunClientCommand
+
+Funtion that can interrupt client commands before physics are run
+=================
+*/
 void SV_RunClientCommand( void ) {
 	
 	// The individual zones will just override this behavior
@@ -90,6 +144,13 @@ void SV_RunClientCommand( void ) {
 	runstandardplayerphysics( self );
 }
 
+/*
+=================
+Client_SendEvent
+
+Send a game event
+=================
+*/
 void Client_SendEvent( entity eClient, float fEVType ) {
 	Weapon_UpdateCurrents();
 	
@@ -100,6 +161,13 @@ void Client_SendEvent( entity eClient, float fEVType ) {
 	multicast( '0 0 0', MULTICAST_ONE );
 }
 
+/*
+=================
+Client_TriggerCamera
+
+Switches the player camera to a different position for a specific time
+=================
+*/
 void Client_TriggerCamera( entity eTarget, vector vPos, vector vEndPos, float fResetTime ) {
 	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
 	

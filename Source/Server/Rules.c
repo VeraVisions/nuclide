@@ -25,7 +25,13 @@ enum {
 	BUY_NEITHER
 };
 
-// Checks if it is possible for players to buy anything
+/*
+=================
+Rules_BuyingPossible
+
+Checks if it is possible for players to buy anything
+=================
+*/
 float Rules_BuyingPossible( void ) {
 	if ( self.health <= 0 ) {
 		return FALSE;
@@ -66,7 +72,13 @@ float Rules_BuyingPossible( void ) {
 	return TRUE;
 }
 
-// Loop through all players and respawn them
+/*
+=================
+Rules_Restart
+
+Loop through all ents and handle them
+=================
+*/
 void Rules_Restart( void ) {
 	iHostagesRescued = 0;
 	
@@ -140,7 +152,13 @@ void Rules_Restart( void ) {
 	Money_ResetTeamReward();
 }
 
-// This can happen whenever an objective is complete or time is up
+/*
+=================
+Rules_RoundOver
+
+This happens whenever an objective is complete or time is up
+=================
+*/
 void Rules_RoundOver( int iTeamWon, int iMoneyReward, float fSilent ) {
 	
 	if ( fGameState != GAME_ACTIVE ) {
@@ -166,7 +184,13 @@ void Rules_RoundOver( int iTeamWon, int iMoneyReward, float fSilent ) {
 	Timer_Begin( 5, GAME_END); // Round is over, 5 seconds til a new round starts
 }
 
-// Whenever mp_roundtime was being counted down to 0
+/*
+=================
+Rules_TimeOver
+
+Whenever mp_roundtime was being counted down to 0
+=================
+*/
 void Rules_TimeOver( void ) {
 	if ( iVIPZones > 0 ) {
 		Rules_RoundOver( TEAM_T, 3250, FALSE );

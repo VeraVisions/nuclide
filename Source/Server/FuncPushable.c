@@ -56,13 +56,15 @@ void func_pushable( void ) {
 		runstandardplayerphysics( self );
 	}
 	static void func_pushable_respawn( void ) {
-		func_breakable_respawn();
-		
+		self.takedamage = DAMAGE_YES;
 		self.solid = SOLID_SLIDEBOX;
 		self.movetype = MOVETYPE_WALK;
 		self.customphysics = func_pushable_physics;
 		self.touch = func_pushable_touch;
 		self.vUse = func_pushable_use;
+		self.vPain = func_breakable_pain;
+		self.vDeath = func_breakable_die;
+		self.iBleeds = FALSE;
 		self.iUsable = TRUE;
 	}
 	

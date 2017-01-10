@@ -32,10 +32,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define SF_TOUCH	2
 #define SF_PRESSURE	4
 
-// These are the material types apparently
 .float material;
 
-// Whenever it gets damaged
+/*
+=================
+func_breakable_pain
+=================
+*/
 void func_breakable_pain( int iNull ) {
 	string sTypeSample = "";
 	int iTypeCount = 0;
@@ -67,58 +70,35 @@ void func_breakable_pain( int iNull ) {
 	}
 	
 	if ( iTypeCount >= 1 ) {
-		sound( self, CHAN_VOICE, sprintf( "%s%d.wav", sTypeSample, random( 1, (float)iTypeCount + 1 ) ), 1.0, ATTN_NORM );
+		sound( self, CHAN_VOICE, sprintf( "%s%d.wav", sTypeSample, floor( random( 1, (float)iTypeCount ) + 1 ) ), 1.0, ATTN_NORM );
 	}
 }
 
-// Whenever it.. dies
-void func_breakable_die( int iNull ) {
-	string sTypeSample = "";
-	int iTypeCount = 0;
-	
-	switch ( self.material ) {
-		case MATERIAL_GLASS:
-		case MATERIAL_GLASS_UNBREAKABLE:
-			sTypeSample = "debris/bustglass";
-			iTypeCount = 2;
-			break;
-		case MATERIAL_WOOD:
-			sTypeSample = "debris/bustwood";
-			iTypeCount = 2;
-			break;
-		case MATERIAL_METAL:
-		case MATERIAL_COMPUTER:
-			sTypeSample = "debris/bustmetal";
-			iTypeCount = 2;
-			break;
-		case MATERIAL_FLESH:
-			sTypeSample = "debris/bustflesh";
-			iTypeCount = 2;
-			break;
-		case MATERIAL_CINDER:
-		case MATERIAL_ROCK:
-			sTypeSample = "debris/bustconcrete";
-			iTypeCount = 3;
-			break;
-		case MATERIAL_TILE:
-			sTypeSample = "debris/bustceiling";
-			iTypeCount = 3;
-			break;
-	}
-	
-	if ( iTypeCount >= 1 ) {
-		sound( self, CHAN_VOICE, sprintf( "%s%d.wav", sTypeSample, random( 1, (float)iTypeCount + 1 ) ), 1.0, ATTN_NORM );
-	}
-	
+/*
+=================
+func_breakable_die
+=================
+*/
+void func_breakable_die( int iNull ) {	
 	Effect_BreakModel( self.absmin, self.absmax, self.velocity, self.material );
 	Entities_UseTargets();
 	Entities_Remove();
 }
 
+/*
+=================
+func_breakable_use
+=================
+*/
 void func_breakable_use( void ) {
 	func_breakable_die( 0 );
 }
-	
+
+/*
+=================
+func_breakable_touch
+=================
+*/
 void func_breakable_touch( void ) {
 	static void func_breakable_touch_NULL( void ) { }
 	
@@ -150,6 +130,13 @@ void func_breakable_touch( void ) {
 	}	
 }
 
+/*
+=================
+func_breakable_respawn
+
+Respawns the breakable entity
+=================
+*/
 void func_breakable_respawn( void ) {
 	if ( self.spawnflags & SF_TRIGGER ) {
 		self.takedamage = DAMAGE_NO;

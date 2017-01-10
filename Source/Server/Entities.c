@@ -244,6 +244,8 @@ void Entities_RotateToDestination_End( void ) {
 /*
 ====================
 Entities_RotateToDestination
+
+Rotate to a given destination at a given pace
 ====================
 */
 void Entities_RotateToDestination( vector vDestinationAngle, float fTravelSpeed, void() func ) {

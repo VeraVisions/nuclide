@@ -20,6 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 /*
 =================
 func_bomb_target_touch
+
+Only for Ts, will give feedback whenever they are able to plant a bomb
 =================
 */
 void func_bomb_target_touch( void ) {

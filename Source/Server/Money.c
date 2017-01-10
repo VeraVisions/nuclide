@@ -23,6 +23,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 int iMoneyReward_CT;
 int iMoneyReward_T;
 
+/*
+=================
+Money_AddMoney
+
+Gives a player money and caps it
+=================
+*/
 void Money_AddMoney( entity ePlayer, int iMoneyValue ) {
 	
 	dprint( sprintf( "[DEBUG]: Giving %s %i in cash\n", ePlayer.netname, iMoneyValue ) );
@@ -38,6 +45,13 @@ void Money_AddMoney( entity ePlayer, int iMoneyValue ) {
 	}
 }
 
+/*
+=================
+Money_QueTeamReward
+
+Rewards are adding up throughout the match...
+=================
+*/
 void Money_QueTeamReward( float fTeam, int iMoneyValue ) {
 	if ( fTeam == TEAM_T ) {
 		iMoneyReward_T += iMoneyValue;
@@ -46,6 +60,13 @@ void Money_QueTeamReward( float fTeam, int iMoneyValue ) {
 	}
 }
 
+/*
+=================
+Money_GiveTeamReward
+
+...and eventually given when this is called
+=================
+*/
 void Money_GiveTeamReward( void ) {
 	if ( self.team == TEAM_T ) {
 		Money_AddMoney( self, iMoneyReward_T );
@@ -54,6 +75,11 @@ void Money_GiveTeamReward( void ) {
 	}
 }
 
+/*
+=================
+Money_ResetTeamReward
+=================
+*/
 void Money_ResetTeamReward( void ) {
 	iMoneyReward_T = 0;
 	iMoneyReward_CT = 0;

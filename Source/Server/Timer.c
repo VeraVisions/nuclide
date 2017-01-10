@@ -18,6 +18,13 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+/*
+=================
+Timer_Begin
+
+Initiates a new state timer
+=================
+*/
 void Timer_Begin( float fTime, float fMode) {
 	if ( fMode == GAME_FREEZE ) {
 		fGameState = GAME_FREEZE;
@@ -32,6 +39,13 @@ void Timer_Begin( float fTime, float fMode) {
 	fGameTime = fTime;
 }
 
+/*
+=================
+Timer_Update
+
+Called once every frame to check the status of things
+=================
+*/
 void Timer_Update( void ) {
 	if ( fGameState == GAME_INACTIVE ) {
 		return;
