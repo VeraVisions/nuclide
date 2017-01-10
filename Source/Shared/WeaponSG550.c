@@ -43,7 +43,8 @@ weaponinfo_t wptSG550 = {
 	1.4,				// Max Inaccuracy
 	5,					// Minimum Crosshair Distance
 	3,					// Crosshair Movement Delta
-	1.45				// Armor penetration ratio
+	1.45,				// Armor penetration ratio
+	ATYPE_RIFLE			// Animation Type
 };
 
 // Anim Table

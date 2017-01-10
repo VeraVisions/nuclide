@@ -43,7 +43,8 @@ weaponinfo_t wptG3SG1 = {
 	1.4,				// Max Inaccuracy
 	6,					// Minimum Crosshair Distance
 	4,					// Crosshair Movement Delta
-	1.65				// Armor penetration ratio
+	1.65,				// Armor penetration ratio
+	ATYPE_CARBINE		// Animation Type
 };
 
 // Anim Table

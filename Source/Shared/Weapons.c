@@ -208,4 +208,16 @@ void CSEv_PlayerSwitchWeapon_f( float fWeapon ) {
 	
 	self.fAttackFinished = time + 1.0;
 }
+
+float Weapon_GetAnimType( float fWeapon ) {
+	return wptTable[ fWeapon ].fAnimType;
+}
+
+float Weapon_GetFireRate( float fWeapon ) {
+	return wptTable[ fWeapon ].fAttackFinished;
+}
+
+float Weapon_GetReloadTime( float fWeapon ) {
+	return wptTable[ fWeapon ].fReloadFinished;
+}
 #endif

@@ -43,7 +43,8 @@ weaponinfo_t wptPARA = {
 	0.9,				// Max Inaccuracy
 	6,					// Minimum Crosshair Distance
 	3,					// Crosshair Movement Delta
-	1.6					// Armor penetration ratio
+	1.6,				// Armor penetration ratio
+	ATYPE_PARA			// Animation Type
 };
 
 // Anim Table

@@ -53,9 +53,9 @@ Player_Pain
 */
 void Player_Pain( int iHitBody ) {
 	if ( iHitBody == BODY_HEAD ) {
-		Animation_PlayerTop( ANIM_HEAD_FLINCH, 0.1f );
+		Animation_PlayerTopTemp( ANIM_HEAD_FLINCH, 0.1f );
 	} else {
-		Animation_PlayerTop( ANIM_GUT_FLINCH, 0.1f );
+		Animation_PlayerTopTemp( ANIM_GUT_FLINCH, 0.1f );
 	}
 	
 	sound( self, CHAN_VOICE, sPainSounds[ floor( random() * 5 ) ], 1, ATTN_IDLE );

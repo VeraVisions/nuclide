@@ -41,7 +41,8 @@ weaponinfo_t wptKNIFE = {
 	1.0,			// Max Inaccuracy
 	7,				// Minimum Crosshair Distance
 	3,				// Crosshair Movement Delta
-	1.7				// Armor penetration ratio
+	1.7,			// Armor penetration ratio
+	ATYPE_KNIFE		// Animation Type
 };
 
 // Anim Table
@@ -77,6 +78,7 @@ void WeaponKNIFE_PrimaryFire( void ) {
 		} 
 	}
 	
+	Animation_ShootWeapon();
 	self.fAttackFinished = time + wptKNIFE.fAttackFinished;
 #else
 	if ( random() <= 0.5 ) {

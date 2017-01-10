@@ -43,7 +43,8 @@ weaponinfo_t wptMAC10 = {
 	1.65,				// Max Inaccuracy
 	9,					// Minimum Crosshair Distance
 	3,					// Crosshair Movement Delta
-	0.95				// Armor penetration ratio
+	0.95,				// Armor penetration ratio
+	ATYPE_MP5			// Animation Type
 };
 
 // Anim Table

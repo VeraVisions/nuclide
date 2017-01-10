@@ -49,7 +49,8 @@ weaponinfo_t wptGLOCK18 = {
 	1.4,				// Max Inaccuracyy
 	8,					// Minimum Crosshair Distance
 	3,					// Crosshair Movement Delta
-	1.05				// Armor penetration ratio
+	1.05,				// Armor penetration ratio
+	ATYPE_ONEHAND		// Animation Type
 };
 
 // Anim Table

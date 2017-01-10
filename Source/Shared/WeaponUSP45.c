@@ -49,7 +49,8 @@ weaponinfo_t wptUSP45 = {
 	1.4,				// Max Inaccuracy
 	8,					// Minimum Crosshair Distance
 	3,					// Crosshair Movement Delta
-	1.0					// Armor penetration ratio
+	1.0,				// Armor penetration ratio
+	ATYPE_ONEHAND		// Animation Type
 };
 
 enum {
@@ -157,7 +158,7 @@ void WeaponUSP45_Secondary( void ) {
 void WeaponUSP45_Reload( void ) {
 #ifdef SSQC
 	if ( OpenCSGunBase_Reload() == TRUE ) {
-		// Play Sound
+
 	}
 #else
 	if ( iWeaponMode_USP45 == TRUE ) {

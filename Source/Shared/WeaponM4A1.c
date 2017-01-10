@@ -49,7 +49,8 @@ weaponinfo_t wptM4A1 = {
 	1.0,				// Max Inaccuracy
 	4,					// Minimum Crosshair Distance
 	3,					// Crosshair Movement Delta
-	1.4					// Armor penetration ratio
+	1.4,				// Armor penetration ratio
+	ATYPE_RIFLE			// Animation Type
 };
 
 enum {

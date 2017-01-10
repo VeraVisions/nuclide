@@ -45,8 +45,10 @@ weaponinfo_t wptC4BOMB = {
 	1,					// Accuracy Divisor
 	1,					// Accuracy Offset
 	1,					// Max Inaccuracy
-	8,
-	4
+	8,					// Minimum Crosshair Distance
+	4,					// Crosshair Movement Delta
+	1.0,				// Armor penetration ratio
+	ATYPE_C4		// Animation Type
 };
 
 // Anim Table
@@ -198,6 +200,7 @@ void WeaponC4BOMB_PrimaryFire( void ) {
 	
 	// If we aren't aiming at a place or look in the wrong location... stop it
 	if ( trace_fraction == 1 || self.fInBombZone == FALSE ) {
+		Animation_ReloadWeapon();
 		WeaponC4BOMB_Release();
 		self.fAttackFinished = time + 1.0;
 		return;
@@ -206,6 +209,7 @@ void WeaponC4BOMB_PrimaryFire( void ) {
 	// Play the sequence at the start
 	if ( self.fBombProgress == 0 ) {
 		Client_SendEvent( self, EV_WEAPON_PRIMARYATTACK );
+		Animation_ShootWeapon();
 	}
 	
 	// Add onto the planting-time thing

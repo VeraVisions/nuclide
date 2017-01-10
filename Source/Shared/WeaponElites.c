@@ -49,7 +49,8 @@ weaponinfo_t wptELITES = {
 	1.4,				// Max Inaccuracy
 	4,					// Minimum Crosshair Distance
 	3,					// Crosshair Movement Delta
-	1.05				// Armor penetration ratio
+	1.05,				// Armor penetration ratio
+	ATYPE_DUALPISTOLS	// Animation Type
 };
 
 // Anim Table

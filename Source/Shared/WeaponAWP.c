@@ -43,7 +43,8 @@ weaponinfo_t wptAWP = {
 	0,					// Max Inaccuracy	
 	8,					// Minimum Crosshair Distance
 	3,					// Crosshair Movement Delta
-	1.95				// Armor penetration ratio
+	1.95,				// Armor penetration ratio
+	ATYPE_CARBINE		// Animation Type
 };
 
 // Anim Table

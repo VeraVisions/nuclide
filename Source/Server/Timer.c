@@ -37,7 +37,6 @@ void Timer_Begin( float fTime, float fMode) {
 	}
 	
 	fGameTime = fTime;
-	bprint( sprintf( "Setting Timer to Mode %d, Time %d\n", fMode, fTime ) );
 }
 
 /*

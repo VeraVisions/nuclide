@@ -43,7 +43,8 @@ weaponinfo_t wptAK47 = {
 	1.25,				// Max Inaccuracy
 	4,					// Minimum Crosshair Distance
 	4,					// Crosshair Movement Delta
-	1.55				// Armor penetration ratio
+	1.55,				// Armor penetration ratio
+	ATYPE_AK47			// Animation Type
 };
 
 // Anim Table

@@ -42,7 +42,8 @@ weaponinfo_t wptP228 = {
 	1.4,				// Max Inaccuracy
 	8,					// Minimum Crosshair Distance
 	3,					// Crosshair Movement Delta
-	1.25				// Armor penetration ratio
+	1.25,				// Armor penetration ratio
+	ATYPE_ONEHAND		// Animation Type
 };
 
 // Anim Table
@@ -93,7 +94,6 @@ void WeaponP228_PrimaryFire( void ) {
 void WeaponP228_Reload( void ) {
 #ifdef SSQC
 	if ( OpenCSGunBase_Reload() == TRUE ) {
-		// Play Sound
 	}
 #else
 	View_PlayAnimation( ANIM_P228_RELOAD );

@@ -186,6 +186,7 @@ typedef struct {
 	int iCrosshairMinDistance;	// Some weapons just are inaccurate by design... 
 	int iCrosshairDeltaDistance;	// Scale factor of sorts
 	float fWeaponArmorRatio; // Some weapons seem to do more damage to the kevlar than others I guess
+	float fAnimType;
 } weaponinfo_t;
 
 typedef struct {
@@ -244,6 +245,21 @@ enum {
 	IMPACT_METAL, 
 	IMPACT_FLESH,
 	IMPACT_ROCK,
+};
+
+// Animation types
+enum {
+	ATYPE_ONEHAND,
+	ATYPE_DUALPISTOLS,
+	ATYPE_CARBINE,
+	ATYPE_RIFLE,
+	ATYPE_MP5,
+	ATYPE_SHOTGUN,
+	ATYPE_PARA,
+	ATYPE_GRENADE,
+	ATYPE_C4,
+	ATYPE_KNIFE,
+	ATYPE_AK47
 };
 
 // Actually used by input_button etc.

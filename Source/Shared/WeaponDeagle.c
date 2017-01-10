@@ -43,7 +43,8 @@ weaponinfo_t wptDEAGLE = {
 	1.4,				// Max Inaccuracy
 	8,					// Minimum Crosshair Distance
 	3,					// Crosshair Movement Delta
-	1.5					// Armor penetration ratio
+	1.5,				// Armor penetration ratio
+	ATYPE_ONEHAND		// Animation Type
 };
 
 // Anim Table
@@ -91,7 +92,7 @@ void WeaponDEAGLE_PrimaryFire( void ) {
 void WeaponDEAGLE_Reload( void ) {
 	#ifdef SSQC
 	if ( OpenCSGunBase_Reload() == TRUE ) {
-		// Play Sound
+
 	}
 	#else
 	View_PlayAnimation( ANIM_DEAGLE_RELOAD );

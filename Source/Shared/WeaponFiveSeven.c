@@ -43,7 +43,8 @@ weaponinfo_t wptFIVESEVEN = {
 	1.4,				// Max Inaccuracy
 	8,					// Minimum Crosshair Distance
 	3,					// Crosshair Movement Delta
-	1.5					// Armor penetration ratio
+	1.5,				// Armor penetration ratio
+	ATYPE_ONEHAND		// Animation Type
 };
 
 // Anim Table
@@ -57,21 +58,21 @@ enum {
 };
 
 void WeaponFIVESEVEN_Draw( void ) {
-	#ifdef SSQC
+#ifdef SSQC
 	OpenCSGunBase_Draw();
-	#else
+#else
 	View_PlayAnimation( ANIM_FIVESEVEN_DRAW );
 	Sound_Delayed( "weapons/fiveseven_slidepull.wav", 1.0, 0.5 );
-	#endif
+#endif
 }
 
 void WeaponFIVESEVEN_PrimaryFire( void ) {
-	#ifdef SSQC
+#ifdef SSQC
 	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
 		// Play Sound
 		sound( self, CHAN_WEAPON, "weapons/fiveseven-1.wav", 1, ATTN_NORM );
 	}
-	#else
+#else
 	if ( getstatf( STAT_CURRENT_MAG ) == 0 ) {
 		View_PlayAnimation( ANIM_FIVESEVEN_SHOOT_EMPTY );
 	} else {
@@ -82,19 +83,18 @@ void WeaponFIVESEVEN_PrimaryFire( void ) {
 		}
 	}
 	OpenCSGunBase_ShotMultiplierHandle( 1 );
-	#endif
+#endif
 }
 
 void WeaponFIVESEVEN_Reload( void ) {
-	#ifdef SSQC
+#ifdef SSQC
 	if ( OpenCSGunBase_Reload() == TRUE ) {
-		// Play Sound
 	}
-	#else
+#else
 	View_PlayAnimation( ANIM_FIVESEVEN_RELOAD );
 	
 	Sound_Delayed( "weapons/p228_clipout.wav", 1.0, 0.5 );
 	Sound_Delayed( "weapons/p228_clipin.wav", 1.0, 1.5 );
 	Sound_Delayed( "weapons/p228_sliderelease.wav", 1.0, 2.4 );
-	#endif
+#endif
 }

@@ -121,6 +121,9 @@ void Client_SendEvent( entity eClient, float fEVType );
 void Client_TriggerCamera( entity eTarget, vector vPos, vector vEndPos, float fResetTime );
 void Weapon_SwitchBest( void );
 void Weapon_UpdateCurrents( void );
+float Weapon_GetAnimType( float fWeapon );
+float Weapon_GetFireRate( float fWeapon );
+float Weapon_GetReloadTime( float fWeapon );
 
 void OpenCSGunBase_AccuracyCalc( void );
 void OpenCSGunBase_Draw( void );
@@ -145,6 +148,9 @@ void Ammo_BuyPrimary( float fFree );
 void Ammo_BuySecondary( float fFree );
 
 void Input_Handle( void );
+
+void Animation_PlayerTop( float fFrame );
+void Animation_PlayerTopTemp( float fFrame, float fTime );
 
 // WIP
 string __fullspawndata;
