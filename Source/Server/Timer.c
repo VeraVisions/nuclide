@@ -18,19 +18,14 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-// Detects the state of the game that we are in and cycles between them. INACTIVE > FREEZE > INGAME > ACTIVE
 void Timer_Begin( float fTime, float fMode) {
 	if ( fMode == GAME_FREEZE ) {
-		dprint( "[DEBUG] Game Freezetime\n" );
 		fGameState = GAME_FREEZE;
 	} else if ( fMode == GAME_ACTIVE ) {
-		dprint( "[DEBUG] Game Active\n" );
 		fGameState = GAME_ACTIVE;
 	} else if ( fMode == GAME_END ) {
-		dprint( "[DEBUG] Game Ended\n" );
 		fGameState = GAME_END;
 	} else if ( fMode == GAME_COMMENCING ) {
-		dprint( "[DEBUG] Game Commencing\n" );
 		fGameState = GAME_COMMENCING;
 	}
 	
@@ -58,15 +53,7 @@ void Timer_Update( void ) {
 				Timer_Begin( 5, GAME_END); // Round is over, 5 seconds til a new round starts
 			} else {
 				Timer_Begin( autocvar_mp_roundtime * 60, GAME_ACTIVE ); // Unfreeze
-				
-				float fRand = floor( random( 1, 4 ) );
-				if ( fRand == 1 ) {
-					Radio_BroadcastMessage( RADIO_MOVEOUT );
-				} else if ( fRand == 2 ) {
-					Radio_BroadcastMessage( RADIO_LOCKNLOAD );
-				} else {
-					Radio_BroadcastMessage( RADIO_LETSGO );
-				}
+				Radio_StartMessage();	
 			}
 		}
 	}

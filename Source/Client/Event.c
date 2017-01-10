@@ -33,6 +33,63 @@ void CSQC_ConsoleCommand_Init( void ) {
 	registercommand( "+showscores" );
 	registercommand( "-showscores" );
 	registercommand( "nightvision" );
+	
+	registercommand( "glock" );
+	registercommand( "usp" );
+	registercommand( "p228" );
+	registercommand( "deagle" );
+	registercommand( "fn57" );
+	registercommand( "elites" );
+	registercommand( "m3" );
+	registercommand( "xm1014" );
+	registercommand( "tmp" );
+	registercommand( "mac10" );
+	registercommand( "mp5" );
+	registercommand( "ump45" );
+	registercommand( "p90" );
+	registercommand( "ak47" );
+	registercommand( "m4a1" );
+	registercommand( "sg552" );
+	registercommand( "aug" );
+	registercommand( "scout" );
+	registercommand( "sg550" );
+	registercommand( "awp" );
+	registercommand( "g3sg1" );
+	registercommand( "m249" );
+	
+	registercommand( "primammo" );
+	registercommand( "secammo" );
+	
+	registercommand( "vest" );
+	registercommand( "vesthelm" );
+	registercommand( "flash" );
+	registercommand( "hegren" );
+	registercommand( "vsgren" );
+	registercommand( "defuser" );
+	registercommand( "nvg" );
+	
+	registercommand( "coverme" );
+	registercommand( "takepoint" );
+	registercommand( "regroup" );
+	registercommand( "followme" );
+	registercommand( "takingfire" );
+	
+	registercommand( "go" );
+	registercommand( "fallback" );
+	registercommand( "sticktog" );
+	registercommand( "getinpos" );
+	registercommand( "stormfront" );
+	registercommand( "report" );
+	
+	registercommand( "roger" );
+	registercommand( "enemyspot" );
+	registercommand( "needbackup" );
+	registercommand( "sectorclear" );
+	registercommand( "inposition" );
+	registercommand( "reportingin" );
+	registercommand( "getout" );
+	registercommand( "negative" );
+	registercommand( "enemydown" );
 }
 
 /*
@@ -73,6 +130,179 @@ float CSQC_ConsoleCommand( string sCMD ) {
 		break;
 	case "nightvision":
 		Nightvision_Toggle();
+		return TRUE;
+		break;
+	case "glock":
+		return TRUE;
+		break;
+	case "usp":
+		return TRUE;
+		break;
+	case "p228":
+		return TRUE;
+		break;
+	case "deagle":
+		return TRUE;
+		break;
+	case "fn57":
+		return TRUE;
+		break;
+	case "elites":
+		return TRUE;
+		break;
+	case "m3":
+		return TRUE;
+		break;
+	case "xm1014":
+		return TRUE;
+		break;
+	case "tmp":
+		return TRUE;
+		break;
+	case "mac10":
+		return TRUE;
+		break;
+	case "mp5":
+		return TRUE;
+		break;
+	case "ump45":
+		return TRUE;
+		break;
+	case "p90":
+		return TRUE;
+		break;
+	case "ak47":
+		return TRUE;
+		break;
+	case "m4a1":
+		return TRUE;
+		break;
+	case "sg552":
+		return TRUE;
+		break;
+	case "aug":
+		return TRUE;
+		break;
+	case "scout":
+		return TRUE;
+		break;
+	case "sg550":
+		return TRUE;
+		break;
+	case "awp":
+		return TRUE;
+		break;
+	case "g3sg1":
+		return TRUE;
+		break;
+	case "m249":
+		return TRUE;
+		break;
+	case "primammo":
+		return TRUE;
+		break;
+	case "secammo":
+		return TRUE;
+		break;
+	case "vest":
+		return TRUE;
+		break;
+	case "vesthelm":
+		return TRUE;
+		break;
+	case "flash":
+		return TRUE;
+		break;
+	case "hegren":
+		return TRUE;
+		break;
+	case "vsgren":
+		return TRUE;
+		break;
+	case "defuser":
+		return TRUE;
+		break;
+	case "nvg":
+		return TRUE;
+		break;
+	case "coverme":
+		sendevent( "RadioMessage", "f", RADIO_CT_COVERME );
+		return TRUE;
+		break;
+	case "takepoint":
+		sendevent( "RadioMessage", "f", RADIO_CT_POINT );
+		return TRUE;
+		break;
+	case "regroup":
+		sendevent( "RadioMessage", "f", RADIO_REGROUP );
+		return TRUE;
+		break;
+	case "followme":
+		sendevent( "RadioMessage", "f", RADIO_FOLLOWME );
+		return TRUE;
+		break;
+	case "takingfire":
+		sendevent( "RadioMessage", "f", RADIO_FIREASSIS );
+		return TRUE;
+		break;
+	case "go":
+		sendevent( "RadioMessage", "f", RADIO_GO );
+		return TRUE;
+		break;
+	case "fallback":
+		sendevent( "RadioMessage", "f", RADIO_FALLBACK );
+		return TRUE;
+		break;
+	case "sticktog":
+		sendevent( "RadioMessage", "f", RADIO_STICKTOG );
+		return TRUE;
+		break;
+	case "getinpos":
+		sendevent( "RadioMessage", "f", RADIO_COM_GETINPOS );
+		return TRUE;
+		break;
+	case "stormfront":
+		sendevent( "RadioMessage", "f", RADIO_STORMFRONT );
+		return TRUE;
+		break;
+	case "report":
+		sendevent( "RadioMessage", "f", RADIO_COM_REPORTIN );
+		return TRUE;
+		break;
+	case "roger":
+		sendevent( "RadioMessage", "f", RADIO_ROGER );
+		return TRUE;
+		break;
+	case "enemyspot":
+		sendevent( "RadioMessage", "f", RADIO_CT_ENEMYS );
+		return TRUE;
+		break;
+	case "needbackup":
+		sendevent( "RadioMessage", "f", RADIO_CT_BACKUP );
+		return TRUE;
+		break;
+	case "sectorclear":
+		sendevent( "RadioMessage", "f", RADIO_CLEAR );
+		return TRUE;
+		break;
+	case "inposition":
+		sendevent( "RadioMessage", "f", RADIO_CT_INPOS );
+		return TRUE;
+		break;
+	case "reportingin":
+		sendevent( "RadioMessage", "f", RADIO_CT_REPORTINGIN );
+		return TRUE;
+		break;
+	case "getout":
+		sendevent( "RadioMessage", "f", RADIO_GETOUT );
+		return TRUE;
+		break;
+	case "negative":
+		sendevent( "RadioMessage", "f", RADIO_NEGATIVE );
+		return TRUE;
+		break;
+	case "enemydown":
+		sendevent( "RadioMessage", "f", RADIO_ENEMYDOWN );
 		return TRUE;
 		break;
 	}
@@ -121,7 +351,9 @@ void CSQC_Parse_Event( void ) {
 		
 		fCameraTime = time + readfloat();
 	} else if ( fHeader == EV_RADIOMSG ) {
-		Radio_BroadcastMessage( readbyte() );
+		Radio_PlayMessage( readbyte() );
+	} else if ( fHeader == EV_RADIOMSG2 ) {
+		Radio_PlayPlayerMessage( readbyte(), readbyte() );
 	} else if ( fHeader == EV_ORBITUARY ) {
 		HUD_AddOrbituaries( readbyte(), readbyte(), readbyte(), readbyte(), readbyte(), readbyte());
 	} else if ( fHeader == EV_IMPACT ) {

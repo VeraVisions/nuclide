@@ -24,6 +24,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define DRAWFLAG_MODULATE 2
 #define DRAWFLAG_2XMODULATE 3
 
+// Undocumented printcall types
+#define	PRINT_LOW		0
+#define	PRINT_MEDIUM	1
+#define	PRINT_HIGH		2
+#define	PRINT_CHAT		3
+
 // Clientside cvars
 var vector autocvar_con_color = '255 128 0'; // autocvar of "con_color"
 var vector autocvar_vgui_color = '255 128 0'; // autocvar of "vgui_color"

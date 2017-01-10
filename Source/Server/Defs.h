@@ -75,6 +75,7 @@ float fGameTime;
 .int iCurrentCaliber;
 .float fSlotMelee, fSlotPrimary, fSlotSecondary, fSlotGrenade;
 .float fAttackFinished;
+.float fRadioFinished;
 .float fAccuracy;
 .float fFallVelocity;
 
@@ -84,6 +85,7 @@ int iBombZones;
 int iRescueZones;
 int iBuyZones;
 int iVIPZones;
+int iEscapeZones;
 int iBuyRestriction; // For info_map_parameters
 int iBombRadius; // For info_map_parameters
 

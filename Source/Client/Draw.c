@@ -18,11 +18,6 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#define	PRINT_LOW		0
-#define	PRINT_MEDIUM	1
-#define	PRINT_HIGH		2
-#define	PRINT_CHAT		3
-
 #define CHAT_LINES 5
 #define CHAT_TIME 4
 int iLineScroll;
