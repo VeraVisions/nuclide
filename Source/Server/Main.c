@@ -50,7 +50,7 @@ void StartFrame( void ) {
 			iInGamePlayers++;
 		}
 		
-		if ( ( iInGamePlayers > 0 ) && ( fGameState != GAME_COMMENCING ) ) {
+		if ( ( iInGamePlayers > 0 ) && ( fGameState != GAME_COMMENCING && fGameState != GAME_END ) ) {
 			Timer_Begin( 2, GAME_COMMENCING );
 		} else if ( iInGamePlayers == 0 ) {
 			fGameState = GAME_INACTIVE;
