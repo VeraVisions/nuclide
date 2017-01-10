@@ -37,7 +37,7 @@ void CSEv_PlayerBuyEquipment_f( float fID ) {
 	if ( ( self.fMoney - eqptTable[ fID ].iPrice ) >= 0 ) {
 		if ( eqptTable[ fID ].iID == EQUIPMENT_KEVLAR ) {
 			if ( self.armor == 100 ) {
-				// You already own armor etc.
+				// You already own kevlar etc.
 				centerprint( self, "You already have kevlar!" );
 			} else {
 				self.armor = 100;
@@ -50,21 +50,21 @@ void CSEv_PlayerBuyEquipment_f( float fID ) {
 		} else if ( eqptTable[ fID ].iID == EQUIPMENT_HELMET ) {
 			if ( self.armor == 100 ) {
 				if ( self.iEquipment & EQUIPMENT_HELMET ) {
-					// You already have full armor and a helmet
+					// You already have full kevlar and a helmet
 					centerprint( self, "You already have kevlar and a helmet!" );
 				} else {
-					// You have full armor, but no helmet
-					centerprint( self, "You already have some kevlar,\nand now you've bought a helmet!" );
+					// You have full kevlar, but no helmet
 					Money_AddMoney( self, -350 );
 					sound( self, CHAN_ITEM, "items/tr_kevlar.wav", 1, ATTN_IDLE );
+					centerprint( self, "You already have some kevlar,\nand now you've bought a helmet!" );
 				}
 			} else {
 				if ( self.iEquipment & EQUIPMENT_HELMET ) {
-					// Only get armor
-					centerprint( self, "You already have a helmet,\nand now you're bought some kevlar!" );
+					// Only get kevlar
 					self.armor = 100;
 					Money_AddMoney( self, -650 );
 					sound( self, CHAN_ITEM, "items/tr_kevlar.wav", 1, ATTN_IDLE );
+					centerprint( self, "You already have a helmet,\nand now you're bought some kevlar!" );
 				} else {
 					// Get both
 					self.armor = 100;
@@ -78,8 +78,10 @@ void CSEv_PlayerBuyEquipment_f( float fID ) {
 			return;
 		}
 		
-		self.iEquipment = self.iEquipment | ( eqptTable[ fID ].iID );
 		Money_AddMoney( self, -eqptTable[ fID ].iPrice );
+		self.iEquipment = self.iEquipment | ( eqptTable[ fID ].iID );
+	} else {
+		centerprint( self, "You have insufficient funds!" );
 	}
 	
 	self.fAttackFinished = time + 1.0;

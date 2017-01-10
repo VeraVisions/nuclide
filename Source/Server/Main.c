@@ -376,4 +376,6 @@ void worldspawn( void ) {
 	pointerstat( STAT_GAMETIME, EV_FLOAT, &fGameTime );
 	pointerstat( STAT_WON_T, EV_INTEGER, &iWon_T );
 	pointerstat( STAT_WON_CT, EV_INTEGER, &iWon_CT );
+	
+	iBombRadius = 1024;
 }

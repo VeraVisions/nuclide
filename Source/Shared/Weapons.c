@@ -192,6 +192,8 @@ void CSEv_PlayerBuyWeapon_f( float fWeapon ) {
 		Money_AddMoney( self, -wptTable[ fWeapon ].iPrice );
 		
 		sound( self, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_IDLE );
+	} else {
+		centerprint( self, "You have insufficient funds!" );
 	}
 	
 	self.fAttackFinished = time + 1.0;

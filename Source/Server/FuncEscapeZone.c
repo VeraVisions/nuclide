@@ -19,13 +19,31 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 /*
+
+TODO: This gamemode is odd about balancing, right now the last surviving terrorist
+ 	  will decide the match. Still have to think about what rules to set up.
+*/
+
+/*
 =================
 func_escapezone_touch
 =================
 */
-void func_vip_safetyzone( void ) {
+void func_escapezone_touch( void ) {
 	if ( ( other.classname == "player" ) && ( other.team == TEAM_T ) ) {
+		entity eOld = self;
+		self = other;
 		
+		Spawn_MakeSpectator();
+		self.classname = "player";
+		forceinfokey( self, "*dead", "0" );
+		iAlivePlayers_T--;
+		
+		self = eOld;
+		
+		if ( iAlivePlayers_T == 0 ) {
+			Rules_RoundOver( TEAM_T, 2500, FALSE );
+		}
 	} 
 }
 
@@ -36,7 +54,7 @@ SPAWN: func_escapezone
 Entry function for the terrorist escape zone
 =================
 */
-void func_vip_safetyzone( void ) {
+void func_escapezone( void ) {
 	self.angles = '0 0 0';
 	self.movetype = MOVETYPE_NONE;
 	self.solid = SOLID_TRIGGER;

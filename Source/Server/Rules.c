@@ -27,6 +27,10 @@ enum {
 
 // Checks if it is possible for players to buy anything
 float Rules_BuyingPossible( void ) {
+	if ( self.health <= 0 ) {
+		return FALSE;
+	}
+	
 	if ( fGameState == GAME_ACTIVE ) {
 		if ( ( ( autocvar_mp_roundtime * 60 ) - fGameTime ) > autocvar_mp_buytime ) {
 			centerprint( self, sprintf( "%d seconds have passed...\nYou can't buy anything now!", autocvar_mp_buytime ) );
@@ -68,6 +72,7 @@ void Rules_Restart( void ) {
 	
 	entity eOld = self;
 	
+	// Spawn/Respawn everyone at their team position and give them $$$
 	for ( entity eFind = world; ( eFind = find( eFind, classname, "player" ) ); ) {
 		self = eFind;
 		
@@ -80,7 +85,12 @@ void Rules_Restart( void ) {
 		Money_GiveTeamReward();
 	}
 	
-	// Select a random Terrorist for the bomb thing
+	// Clear the corpses
+	for ( entity eFind = world; ( eFind = find( eFind, classname, "corpse" ) ); ) {
+		remove( eFind );
+	}
+	
+	// Select a random Terrorist for the bomb, if needed
 	if ( iBombZones > 0 ) {
 		int iRandomT = floor( random( 1, (float)iAlivePlayers_T + 1 ) ); 
 		int iPickT = 0;
@@ -119,7 +129,6 @@ void Rules_Restart( void ) {
 	}
 	
 	// Respawn all the entities
-	
 	for ( entity eFind = world; ( eFind = findfloat( eFind, fRespawns, TRUE ) ); ) { 
 		self = eFind;
 		Entities_Respawn();
@@ -180,10 +189,12 @@ Also allows people to set the bomb placing radius incase you want to use info_bo
 =================
 */
 .float buying;
-void info_map_parameters( void ) {
-	if ( !self.buying ) {
-		self.buying = BUY_BOTH;
-	} else {
+.float bombradius;
+void info_map_parameters( void ) {	
+	if ( self.bombradius ) {
+		iBombRadius = self.bombradius;
+	}
+	if ( self.buying ) {
 		iBuyRestriction = self.buying;
 	}
 }

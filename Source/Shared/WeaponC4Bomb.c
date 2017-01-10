@@ -72,11 +72,28 @@ void WeaponC4BOMB_Drop( vector vBombPos ) {
 		
 		// If our time has passed, explode
 		if ( self.fAttackFinished < time ) {
+			// Terrorists win
 			Rules_RoundOver( TEAM_T, 3500, FALSE );
+			
+			// Make it explode and hurt things
+			Damage_Radius( self.origin, self, 500, 1024 );
 			sound( self, CHAN_VOICE, "weapons/c4_explode1.wav", 1.0, ATTN_NONE );
-			Damage_Radius( self.origin, self.owner, 500, 1024 );
-			remove( self );
+			
+			// Trigger all targets
+			entity eBombChain = findradius( self.origin, iBombRadius );
+			
+			while ( eBombChain ) {
+				if ( ( eBombChain.classname == "func_bomb_target" ) ) {
+					entity eOld = self;
+					self = eBombChain;
+					Entities_UseTargets();
+					self = eOld;
+				}
+				eBombChain = eBombChain.chain;
+			}
+			
 			iBombPlanted = FALSE;
+			remove( self );
 			return;
 		}
 		

@@ -60,9 +60,6 @@ string Damage_GetHitLocation( int iSurface ) {
 }
 
 void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos ) {
-	
-	eTarget.health = eTarget.health - iDamage; // TODO: Body part multipliers
-	
 	// Special monetary punishment for hostage murderers
 	if ( eTarget.classname == "hostage_entity" ) {
 		if ( eTarget.health > 0 ) {
@@ -72,8 +69,14 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 		}
 	}
 	
+	// Modify the damage based on the location
 	if ( trace_surface_id == BODY_HEAD ) {
-		iDamage *= 4;
+		if ( eTarget.iEquipment & EQUIPMENT_HELMET ) {
+			iDamage *= 0.5;
+			eTarget.iEquipment -= EQUIPMENT_HELMET;
+		} else {
+			iDamage *= 4;
+		}
 	} else if ( trace_surface_id == BODY_STOMACH ) {
 		iDamage *= 0.9;
 	} else if ( trace_surface_id == BODY_LEGLEFT ) {
@@ -81,6 +84,9 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 	} else if ( trace_surface_id == BODY_LEGRIGHT ) {
 		iDamage *= 0.4;
 	}
+	
+	// Apply the damage finally
+	eTarget.health = eTarget.health - iDamage;
 	
 	dprint( sprintf( "[DEBUG] Hit Bodypart: %s\n", Damage_GetHitLocation( trace_surface_id ) ) );
 	

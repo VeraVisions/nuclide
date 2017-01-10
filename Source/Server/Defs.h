@@ -85,6 +85,7 @@ int iRescueZones;
 int iBuyZones;
 int iVIPZones;
 int iBuyRestriction; // For info_map_parameters
+int iBombRadius; // For info_map_parameters
 
 int iHostagesRescued;
 int iBombPlanted;
@@ -134,6 +135,7 @@ void TraceAttack_FireBullets( int iShots, vector vPos );
 void Damage_Radius( vector vOrigin, entity eAttacker, float fDamage, float fRadius );
 void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos );
 
+void Entities_UseTargets( void );
 void Entities_InitRespawnable( void() vRespawnFunc );
 void Entities_Respawn( void );
 
