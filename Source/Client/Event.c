@@ -34,6 +34,10 @@ void CSQC_ConsoleCommand_Init( void ) {
 	registercommand( "-showscores" );
 	registercommand( "nightvision" );
 	
+	registercommand( "radio1" );
+	registercommand( "radio2" );
+	registercommand( "radio3" );
+	
 	registercommand( "glock" );
 	registercommand( "usp" );
 	registercommand( "p228" );
@@ -70,6 +74,7 @@ void CSQC_ConsoleCommand_Init( void ) {
 	
 	registercommand( "coverme" );
 	registercommand( "takepoint" );
+	registercommand( "holdpos" );
 	registercommand( "regroup" );
 	registercommand( "followme" );
 	registercommand( "takingfire" );
@@ -233,6 +238,10 @@ float CSQC_ConsoleCommand( string sCMD ) {
 		sendevent( "RadioMessage", "f", RADIO_CT_POINT );
 		return TRUE;
 		break;
+	case "takepoint":
+		sendevent( "RadioMessage", "f", RADIO_POSITION );
+		return TRUE;
+		break;
 	case "regroup":
 		sendevent( "RadioMessage", "f", RADIO_REGROUP );
 		return TRUE;
@@ -303,6 +312,18 @@ float CSQC_ConsoleCommand( string sCMD ) {
 		break;
 	case "enemydown":
 		sendevent( "RadioMessage", "f", RADIO_ENEMYDOWN );
+		return TRUE;
+		break;
+	case "radio1":
+		VGUI_Radio_Toggle( VGUI_RADIO1 );
+		return TRUE;
+		break;
+	case "radio2":
+		VGUI_Radio_Toggle( VGUI_RADIO2 );
+		return TRUE;
+		break;
+	case "radio3":
+		VGUI_Radio_Toggle( VGUI_RADIO3 );
 		return TRUE;
 		break;
 	}

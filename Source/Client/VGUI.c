@@ -51,6 +51,11 @@ void CSQC_VGUI_Draw( void ) {
 	
 	vVGUIColor = autocvar_vgui_color * ( 1 / 255 );
 
+	if ( fVGUI_Display >= 11 ) {
+		VGUI_Radio_Draw();
+		return;
+	}
+	
 	setcursormode( TRUE );
 
 	// Align the window to the center

@@ -76,6 +76,32 @@ void VGUI_Window( string sTitle, vector vPos, vector vSize ) {
 	drawline( 1.0, vPos + '0 48 0', v1 + '0 48 0', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
 }
 
+// Draws window with outline, border and title
+void VGUI_WindowSmall( string sTitle, vector vPos, vector vSize ) {
+	vector v1, v2, v3;
+
+	// Draw the background
+	drawfill( vPos, vSize - '1 1 0', VGUI_WINDOW_BGCOLOR, VGUI_WINDOW_BGALPHA );
+	
+	// Draw the outline START
+	v1_x = vPos_x + vSize_x;
+	v1_y = vPos_y;
+	drawline( 1.0, vPos - '1 0 0', v1, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
+	
+	v2_x = vPos_x;
+	v2_y = vPos_y + vSize_y;
+	drawline( 1.0, vPos, v2, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
+
+	v3 = vPos + vSize;
+	drawline( 1.0, v1, v3, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
+	drawline( 1.0, v2, v3, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
+	// Draw the outline END
+
+	// Draw the window title
+	drawstring( vPos + '8 8 0', sTitle, '8 8 0', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
+	drawline( 1.0, vPos + '0 24 0', v1 + '0 24 0', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
+}
+
 // Draws a button, returns whether or not a mouse is hovering over it (for inheritance' sake)
 float VGUI_Button( string sLabel, void() vFunction, vector vPos, vector vSize ) {
 	vector v1, v2, v3, v4;

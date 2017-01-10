@@ -49,6 +49,7 @@ VGUIScoreboard.c
 VGUIMOTD.c
 VGUIBuyMenu.c
 VGUITeamSelect.c
+VGUIRadio.c
 VGUI.c
 Nightvision.c
 HUDCrosshair.c

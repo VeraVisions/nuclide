@@ -29,6 +29,7 @@ void VGUI_MessageOfTheDay( vector vPos ) {
 	VGUI_Text( serverkey( "hostname" ), vPos + '16 64 0', '16 16 0');
 	
 	vector vTextPos = vPos + '16 116 0';
+	
 	for ( int i = 0; i < 25; i++ ) {
 		VGUI_Text( sMOTDString[ i ], vTextPos, '8 8 0' );
 		vTextPos_y += 10;
