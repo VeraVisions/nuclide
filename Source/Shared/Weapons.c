@@ -176,6 +176,7 @@ void CSEv_PlayerBuyWeapon_f( float fWeapon ) {
 		return;
 	}
 	
+	// TODO: Don't allow CTs to buy T guns and vice versa!
 	if ( ( self.fMoney - wptTable[ fWeapon ].iPrice ) >= 0 ) {
 		Weapon_AddItem( fWeapon );
 		

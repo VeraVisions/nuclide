@@ -51,7 +51,7 @@ void CSQC_VGUI_Draw( void ) {
 	
 	vVGUIColor = autocvar_vgui_color * ( 1 / 255 );
 
-	if ( fVGUI_Display >= 11 ) {
+	if ( fVGUI_Display >= VGUI_RADIO1 ) {
 		VGUI_Radio_Draw();
 		return;
 	}

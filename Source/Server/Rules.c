@@ -69,6 +69,10 @@ float Rules_BuyingPossible( void ) {
 		}
 	}
 	
+	if ( self.fInBuyZone == FALSE ) {
+		return FALSE;
+	}
+	
 	return TRUE;
 }
 

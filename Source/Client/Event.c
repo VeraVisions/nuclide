@@ -71,21 +71,19 @@ void CSQC_ConsoleCommand_Init( void ) {
 	registercommand( "vsgren" );
 	registercommand( "defuser" );
 	registercommand( "nvg" );
-	
+
 	registercommand( "coverme" );
 	registercommand( "takepoint" );
 	registercommand( "holdpos" );
 	registercommand( "regroup" );
 	registercommand( "followme" );
 	registercommand( "takingfire" );
-	
 	registercommand( "go" );
 	registercommand( "fallback" );
 	registercommand( "sticktog" );
 	registercommand( "getinpos" );
 	registercommand( "stormfront" );
 	registercommand( "report" );
-	
 	registercommand( "roger" );
 	registercommand( "enemyspot" );
 	registercommand( "needbackup" );
@@ -138,96 +136,127 @@ float CSQC_ConsoleCommand( string sCMD ) {
 		return TRUE;
 		break;
 	case "glock":
+		sendevent( "PlayerBuyWeapon", "f", WEAPON_GLOCK18 );
 		return TRUE;
 		break;
 	case "usp":
+		sendevent( "PlayerBuyWeapon", "f", WEAPON_USP45 );
 		return TRUE;
 		break;
 	case "p228":
+		sendevent( "PlayerBuyWeapon", "f", WEAPON_P228 );
 		return TRUE;
 		break;
 	case "deagle":
+		sendevent( "PlayerBuyWeapon", "f", WEAPON_DEAGLE );
 		return TRUE;
 		break;
 	case "fn57":
+		sendevent( "PlayerBuyWeapon", "f", WEAPON_FIVESEVEN );
 		return TRUE;
 		break;
 	case "elites":
+		sendevent( "PlayerBuyWeapon", "f", WEAPON_ELITES );
 		return TRUE;
 		break;
 	case "m3":
+		sendevent( "PlayerBuyWeapon", "f", WEAPON_M3 );
 		return TRUE;
 		break;
 	case "xm1014":
+		sendevent( "PlayerBuyWeapon", "f", WEAPON_XM1014 );
 		return TRUE;
 		break;
 	case "tmp":
+		sendevent( "PlayerBuyWeapon", "f", WEAPON_TMP );
 		return TRUE;
 		break;
 	case "mac10":
+		sendevent( "PlayerBuyWeapon", "f", WEAPON_MAC10 );
 		return TRUE;
 		break;
 	case "mp5":
+		sendevent( "PlayerBuyWeapon", "f", WEAPON_MP5 );
 		return TRUE;
 		break;
 	case "ump45":
+		sendevent( "PlayerBuyWeapon", "f", WEAPON_UMP45 );
 		return TRUE;
 		break;
 	case "p90":
+		sendevent( "PlayerBuyWeapon", "f", WEAPON_P90 );
 		return TRUE;
 		break;
 	case "ak47":
+		sendevent( "PlayerBuyWeapon", "f", WEAPON_AK47 );
 		return TRUE;
 		break;
 	case "m4a1":
+		sendevent( "PlayerBuyWeapon", "f", WEAPON_M4A1 );
 		return TRUE;
 		break;
 	case "sg552":
+		sendevent( "PlayerBuyWeapon", "f", WEAPON_SG552 );
 		return TRUE;
 		break;
 	case "aug":
+		sendevent( "PlayerBuyWeapon", "f", WEAPON_AUG );
 		return TRUE;
 		break;
 	case "scout":
+		sendevent( "PlayerBuyWeapon", "f", WEAPON_SCOUT );
 		return TRUE;
 		break;
 	case "sg550":
+		sendevent( "PlayerBuyWeapon", "f", WEAPON_SG550 );
 		return TRUE;
 		break;
 	case "awp":
+		sendevent( "PlayerBuyWeapon", "f", WEAPON_AWP );
 		return TRUE;
 		break;
 	case "g3sg1":
+		sendevent( "PlayerBuyWeapon", "f", WEAPON_G3SG1 );
 		return TRUE;
 		break;
 	case "m249":
+		sendevent( "PlayerBuyWeapon", "f", WEAPON_PARA );
 		return TRUE;
 		break;
 	case "primammo":
+		sendevent( "GamePlayerBuyAmmo", "f", 0 );
 		return TRUE;
 		break;
 	case "secammo":
+		sendevent( "GamePlayerBuyAmmo", "f", 1 );
 		return TRUE;
 		break;
 	case "vest":
+		sendevent( "PlayerBuyEquipment", "f", EQUIPMENT_KEVLAR );
 		return TRUE;
 		break;
 	case "vesthelm":
+		sendevent( "PlayerBuyEquipment", "f", EQUIPMENT_HELMET );
 		return TRUE;
 		break;
 	case "flash":
+		sendevent( "PlayerBuyEquipment", "f", EQUIPMENT_FLASHBANG );
 		return TRUE;
 		break;
 	case "hegren":
+		sendevent( "PlayerBuyEquipment", "f", EQUIPMENT_HEGRENADE );
 		return TRUE;
 		break;
 	case "vsgren":
+		sendevent( "PlayerBuyEquipment", "f", EQUIPMENT_SMOKEGRENADE );
 		return TRUE;
 		break;
 	case "defuser":
+		sendevent( "PlayerBuyEquipment", "f", EQUIPMENT_DEFUSALKIT );
 		return TRUE;
 		break;
 	case "nvg":
+		sendevent( "PlayerBuyEquipment", "f", EQUIPMENT_NIGHTVISION );
 		return TRUE;
 		break;
 	case "coverme":
