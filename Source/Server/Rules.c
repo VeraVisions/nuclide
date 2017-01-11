@@ -101,8 +101,8 @@ void Rules_Restart( void ) {
 		Money_GiveTeamReward();
 	}
 	
-	// Clear the corpses
-	for ( entity eFind = world; ( eFind = find( eFind, classname, "corpse" ) ); ) {
+	// Clear the corpses/items
+	for ( entity eFind = world; ( eFind = find( eFind, classname, "remove_me" ) ); ) {
 		remove( eFind );
 	}
 	

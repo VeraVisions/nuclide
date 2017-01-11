@@ -59,7 +59,7 @@ void CSQC_Init(float apilevel, string enginename, float engineversion) {
 	precache_sound( "debris/bustconcrete2.wav" );
 	precache_sound( "debris/bustceiling1.wav" );
 	
-	for( int i = 0; i < CS_WEAPON_COUNT; i++ ) {
+	for ( int i = 1; i < CS_WEAPON_COUNT; i++ ) {
 		precache_model( sViewModels[ i ] );
 	}
 	

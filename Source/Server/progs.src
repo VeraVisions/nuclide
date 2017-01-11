@@ -63,6 +63,7 @@ FuncBuyZone.c
 FuncButton.c
 FuncDoor.c
 FuncDoorRotating.c
+ArmouryEntity.c
 AmbientSound.c
 
 Light.c

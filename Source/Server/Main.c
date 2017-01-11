@@ -86,6 +86,10 @@ void worldspawn( void ) {
 		fclose( fileMaterial );
 	}
 	
+	for ( int i = 1; i < CS_WEAPON_COUNT; i++ ) {
+		precache_model( sWeaponModels[ i ] );
+	}
+	
 	precache_model( sCSPlayers[1] );
 	precache_model( sCSPlayers[2] );
 	precache_model( sCSPlayers[3] );

@@ -142,14 +142,14 @@ void VGUI_BuyMenu_WeaponButton( float fWeapon ) {
 	iLastSelected = fWeapon;
 	
 	if ( wptTable[ fWeapon ].iPrice <= getstatf( STAT_MONEY ) ) {
-		if ( VGUI_Button( vguiWeaponTable[ fWeapon ].sName, VGUI_BuyMenu_BuyWeapon, vVGUIButtonPos, '180 24 0' ) == TRUE ) {
-			drawpic( vVGUIWindowPos + '290 116', vguiWeaponTable[ fWeapon ].sImage, '256 64', '1 1 1', 1 );
-			VGUI_Text( sprintf( "Price: %i", wptTable[ fWeapon ].iPrice ), vVGUIWindowPos + '256 250', '8 8 0' );
-			VGUI_Text( sprintf( "Caliber: %i", wptTable[ fWeapon ].iCaliber ), vVGUIWindowPos + '256 260', '8 8 0' );
-			VGUI_Text( sprintf( "Rounds Per Minute: %d", ( wptTable[ fWeapon ].fAttackFinished) * 3600 ),  vVGUIWindowPos + '256 270', '8 8 0' );
+		if ( VGUI_Button( vguiWeaponTable[ fWeapon ].sName, VGUI_BuyMenu_BuyWeapon, vVGUIButtonPos, '264 24 0' ) == TRUE ) {
+			drawpic( vVGUIWindowPos + '328 116', vguiWeaponTable[ fWeapon ].sImage, '256 64', '1 1 1', 1 );
+			VGUI_Text( sprintf( "Price: %i", wptTable[ fWeapon ].iPrice ), vVGUIWindowPos + '328 250', '8 8 0' );
+			VGUI_Text( sprintf( "Caliber: %i", wptTable[ fWeapon ].iCaliber ), vVGUIWindowPos + '328 260', '8 8 0' );
+			VGUI_Text( sprintf( "Rounds Per Minute: %d", ( wptTable[ fWeapon ].fAttackFinished) * 3600 ),  vVGUIWindowPos + '328 270', '8 8 0' );
 		}
 	} else {
-		VGUI_FakeButton( vguiWeaponTable[ fWeapon ].sName, vVGUIButtonPos, '180 24 0' );
+		VGUI_FakeButton( vguiWeaponTable[ fWeapon ].sName, vVGUIButtonPos, '264 24 0' );
 	}
 
 	vVGUIButtonPos_y += 32;

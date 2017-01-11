@@ -36,6 +36,7 @@ void Sound_Delayed( string sSample, float fVol, float fDelay ) {
 		remove( self );
 	}
 	entity eSound = spawn();
+	eSound.classname = "event_sound";
 	eSound.think = Sound_Delayed_PlayBack;
 	eSound.sSoundSample = sSample;
 	eSound.fVolume = fVol;

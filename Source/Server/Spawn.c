@@ -168,7 +168,7 @@ void Spawn_CreateClient( float fCharModel ) {
 		Weapon_AddItem( WEAPON_KNIFE );
 		Weapon_AddItem( WEAPON_USP45 );
 		Weapon_GiveAmmo( WEAPON_USP45, 24 );
-		Weapon_Draw( WEAPON_GLOCK18 ); 
+		Weapon_Draw( WEAPON_USP45 );
 	}
 	
 	if( self.iInGame == FALSE ) {

@@ -119,8 +119,10 @@ void Spawn_CreateClient( float fTeam );
 void Spawn_MakeSpectator( void );
 void Client_SendEvent( entity eClient, float fEVType );
 void Client_TriggerCamera( entity eTarget, vector vPos, vector vEndPos, float fResetTime );
+
 void Weapon_SwitchBest( void );
 void Weapon_UpdateCurrents( void );
+void Weapon_DropWeapon( int iSlot );
 float Weapon_GetAnimType( float fWeapon );
 float Weapon_GetFireRate( float fWeapon );
 float Weapon_GetReloadTime( float fWeapon );

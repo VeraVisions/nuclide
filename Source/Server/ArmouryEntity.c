@@ -19,25 +19,25 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 int iArmouryItems[ 19 ] = {
-	WEAPON_MP5;
-	WEAPON_TMP;
-	WEAPON_P90;
-	WEAPON_MAC10;
-	WEAPON_AK47;
-	WEAPON_SG552;
-	WEAPON_M4A1;
-	WEAPON_AUG;
-	WEAPON_SCOUT;
-	WEAPON_G3SG1;
-	WEAPON_AWP;
-	WEAPON_M3;
-	WEAPON_XM1014;
-	WEAPON_PARA;
-	EQUIPMENT_FLASHBANG;
-	EQUIPMENT_HEGRENADE;
-	EQUIPMENT_KEVLAR;
-	EQUIPMENT_HELMET;
-	EQUIPMENT_SMOKEGRENADE;
+	WEAPON_MP5,
+	WEAPON_TMP,
+	WEAPON_P90,
+	WEAPON_MAC10,
+	WEAPON_AK47,
+	WEAPON_SG552,
+	WEAPON_M4A1,
+	WEAPON_AUG,
+	WEAPON_SCOUT,
+	WEAPON_G3SG1,
+	WEAPON_AWP,
+	WEAPON_M3,
+	WEAPON_XM1014,
+	WEAPON_PARA,
+	EQUIPMENT_FLASHBANG,
+	EQUIPMENT_HEGRENADE,
+	EQUIPMENT_KEVLAR,
+	EQUIPMENT_HELMET,
+	EQUIPMENT_SMOKEGRENADE,
 };
 
 string sArmouryModels[ 19 ] = {
@@ -62,9 +62,20 @@ string sArmouryModels[ 19 ] = {
 	"models/w_smokegrenade.mdl"
 };
 
+.float item;
+.float count;
+
+/*
+=================
+SPAWN: armoury_entity
+
+Very old entity that wasn't updated all that much
+but is heavily present throughout custom maps, hence the odd item list
+=================
+*/
 void armoury_entity( void ) {
 	static void armoury_entity_touch( void ) {
-		if ( other.classname == "player" ) {
+		if ( other.classname != "player" ) {
 			return;
 		}
 		
@@ -72,11 +83,16 @@ void armoury_entity( void ) {
 		self = other;
 
 		if ( iArmouryItems[ eOld.item ] < 32 ) {
-			Weapon_AddItem( iArmouryItems[ eOld.item ] );
+			if ( Weapon_SlotEmpty( Weapon_GetSlot( iArmouryItems[ eOld.item ] ) ) ) {
+				Weapon_AddItem( iArmouryItems[ eOld.item ] );
+				Weapon_Draw( iArmouryItems[ eOld.item ] );
+			} else {
+				self = eOld;
+				return;
+			}
 		} else {
-			self.iEquipment = self.iEquipment | iArmouryItems[ eOld.item ];
+			// Equipment
 		}
-
 		self = eOld;
 
 		self.health--;
@@ -86,12 +102,16 @@ void armoury_entity( void ) {
 		}
 	}
 	static void armoury_entity_respawn( void ) {
-		setmodel( self, sArmouryModels[ self.item ] );
-		self.solid = SOLID_BBOX;
+		self.solid = SOLID_TRIGGER;
 		self.health = self.count;
 		self.touch = armoury_entity_touch;
+		droptofloor();
 	}
 	
+	precache_model( sArmouryModels[ self.item ] );
+	setmodel( self, sArmouryModels[ self.item ] );
+	setsize( self, '-16 -16 0', '16 16 16' );
+		
 	armoury_entity_respawn();
 	Entities_InitRespawnable( armoury_entity_respawn );
 }

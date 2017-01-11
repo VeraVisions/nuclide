@@ -76,7 +76,7 @@ void Player_Death( int iHitBody ) {
 			
 	// Drop a corpse
 	entity eCorpse = spawn();
-	eCorpse.classname = "corpse";
+	eCorpse.classname = "remove_me";
 	setorigin( eCorpse, self.origin );
 	setmodel( eCorpse, self.model );
 	setsize( eCorpse, self.mins, self.maxs );

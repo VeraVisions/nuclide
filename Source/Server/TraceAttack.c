@@ -67,8 +67,8 @@ void TraceAttack_FireSingle( vector vPos, vector vAngle ) {
 					Effect_Impact( IMPACT_GLASS, trace_endpos, trace_plane_normal );
 					break;
 				case 'N':
-					TraceAttack_Penetrate( trace_endpos + ( v_forward * 2 ), vAngle );
 					Effect_Impact( IMPACT_DEFAULT, trace_endpos, trace_plane_normal );
+					TraceAttack_Penetrate( trace_endpos + ( v_forward * 2 ), vAngle );
 					break;
 				case 'T':
 				default:

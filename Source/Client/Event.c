@@ -33,6 +33,7 @@ void CSQC_ConsoleCommand_Init( void ) {
 	registercommand( "+showscores" );
 	registercommand( "-showscores" );
 	registercommand( "nightvision" );
+	registercommand( "drop" );
 	
 	registercommand( "radio1" );
 	registercommand( "radio2" );
@@ -133,6 +134,10 @@ float CSQC_ConsoleCommand( string sCMD ) {
 		break;
 	case "nightvision":
 		Nightvision_Toggle();
+		return TRUE;
+		break;
+	case "drop":
+		sendevent( "WeaponDrop", "" );
 		return TRUE;
 		break;
 	case "glock":
@@ -466,14 +471,16 @@ Hijacks and controls what input globals are being sent to the server
 void CSQC_Input_Frame( void ) {
 	// If we are inside a VGUI, don't let the client do stuff outside
 	if ( ( fVGUI_Display != VGUI_NONE ) ) {
-		input_angles = '0 0 0';
-		input_movevalues = '0 0 0';
-		input_buttons = 0;
-		input_impulse = 0;
-	}
-	
-	if ( ( fHUDWeaponSelected ) && ( input_buttons & INPUT_BUTTON0 ) ) {
+		fInputSendNext = time + 0.1;
+	} else if ( ( fHUDWeaponSelected ) && ( input_buttons & INPUT_BUTTON0 ) ) {
 		HUD_DrawWeaponSelect_Trigger();
 		input_buttons = 0;
+		fInputSendNext = time + 0.1;
+	}
+	
+	if ( fInputSendNext > time ) {
+		input_impulse = 0;
+		input_buttons = 0;
+		return;
 	}
 }

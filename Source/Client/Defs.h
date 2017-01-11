@@ -51,6 +51,7 @@ vector vVGUIColor; // Defined in HUD_Draw (VGUI.c)
 vector vCrossColor; // Defined in HUD_Draw (HUDCrosshair.c)
 
 float fVGUI_Display; // The VGUI menu currently being drawn
+float fInputSendNext;
 
 vector vVideoResolution; // Updated every frame
 

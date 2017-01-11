@@ -109,5 +109,4 @@ void CSEv_GamePlayerBuyAmmo_f( float fType ) {
 	}
 	
 	Weapon_UpdateCurrents();
-	self.fAttackFinished = time + 1.0;
 }
