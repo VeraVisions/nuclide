@@ -62,7 +62,6 @@ void WeaponAWP_Draw( void ) {
 	OpenCSGunBase_Draw();
 	#else
 	View_PlayAnimation( ANIM_AWP_DRAW );
-	Sound_Delayed( "weapons/awp_deploy.wav", 1.0, 0.5 );
 	#endif
 }
 
@@ -83,7 +82,6 @@ void WeaponAWP_PrimaryFire( void ) {
 	}
 	
 	OpenCSGunBase_ShotMultiplierHandle( 1 );
-	Sound_Delayed( "weapons/awp_deploy.wav", 1.0, 0.4 );
 	#endif
 }
 
@@ -108,8 +106,5 @@ void WeaponAWP_Reload( void ) {
 	}
 	#else
 	View_PlayAnimation( ANIM_AWP_RELOAD );
-	
-	Sound_Delayed( "weapons/awp_clipout.wav", 1.0, 0.9 );
-	Sound_Delayed( "weapons/awp_clipin.wav", 1.0, 1.8 );
 	#endif
 }

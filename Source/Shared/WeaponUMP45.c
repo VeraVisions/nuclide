@@ -93,8 +93,5 @@ void WeaponUMP45_Reload( void ) {
 	}
 	#else
 	View_PlayAnimation( ANIM_UMP45_RELOAD );
-	Sound_Delayed( "weapons/ump45_clipout.wav", 1.0, 0.7 );
-	Sound_Delayed( "weapons/ump45_clipin.wav", 1.0, 1.8 );
-	Sound_Delayed( "weapons/ump45_boltslap.wav", 1.0, 2.7 );
 	#endif
 }

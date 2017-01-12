@@ -136,13 +136,6 @@ void WeaponELITES_Reload( void ) {
 	}
 #else
 	View_PlayAnimation( ANIM_ELITES_RELOAD );
-	Sound_Delayed( "weapons/elite_reloadstart.wav", 1.0, 0.0 );
-	Sound_Delayed( "weapons/elite_leftclipin.wav", 1.0, 1.5 );
-	Sound_Delayed( "weapons/elite_clipout.wav", 1.0, 2.5 );
-	Sound_Delayed( "weapons/elite_sliderelease.wav", 1.0, 2.7 );
-	Sound_Delayed( "weapons/elite_rightclipin.wav", 1.0, 3.8 );
-	Sound_Delayed( "weapons/elite_sliderelease.wav", 1.0, 4.2 );
-
 	iWeaponMode_ELITES = 0;
 #endif
 }

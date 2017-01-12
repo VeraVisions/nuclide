@@ -182,8 +182,10 @@ Available options:
 #define FTE_FORCEINFOKEY /* Provides an easy way to change a user's userinfo from the server. */
 #define FTE_GFX_QUAKE3SHADERS /* specifies that the engine has full support for vanilla quake3 shaders */
 #define FTE_GFX_REMAPSHADER /* With the raw power of stuffcmds, the r_remapshader console command is exposed! This mystical command can be used to remap any shader to another. Remapped shaders that specify $diffuse etc in some form will inherit the textures implied by the surface. */
+#define FTE_GFX_MODELEVENTS /* Provides a query for per-animation events in model files, including from progs/foo.mdl.events files. */
 #define FTE_ISBACKBUFFERED /* Allows you to check if a client has too many reliable messages pending. */
 #define FTE_MEMALLOC /* Allows dynamically allocating memory. Use pointers to access this memory. Memory will not be saved into saved games. */
+#define FTE_MEDIA_AVI /* playfilm command supports avi files. */
 #define FTE_MEDIA_CIN /* playfilm command supports q2 cin files. */
 #define FTE_MEDIA_ROQ /* playfilm command supports q3 roq files. */
 #define FTE_MULTIPROGS /* Multiple progs.dat files can be loaded inside the same qcvm. Insert new ones with addprogs inside the 'init' function, and use externvalue+externset to rewrite globals (and hook functions) to link them together. Note that the result is generally not very clean unless you carefully design for it beforehand. */
@@ -1886,8 +1888,10 @@ void(string dest, string content) sendpacket = #242; /* Part of FTE_QC_SENDPACKE
 #ifdef CSQC
 vector(entity ent, float tagnum) rotatevectorsbytag = #244;
 #endif
-#ifdef SSQC
+#if defined(CSQC) || defined(SSQC)
 float(float dividend, float divisor) mod = #245;
+#endif
+#ifdef SSQC
 float(optional string host, optional string user, optional string pass, optional string defaultdb, optional string driver) sqlconnect = #250; /* Part of FTE_SQL*/
 void(float serveridx) sqldisconnect = #251; /* Part of FTE_SQL*/
 float(float serveridx, void(float serveridx, float queryidx, float rows, float columns, float eof, float firstrow) callback, float querytype, string query) sqlopenquery = #252; /* Part of FTE_SQL*/
@@ -1968,6 +1972,12 @@ float(float modidx, string framename) frameforname = #276; /* Part of FTE_CSQC_S
 
 float(float modidx, float framenum) frameduration = #277; /* Part of FTE_CSQC_SKELETONOBJECTS
 		Retrieves the duration (in seconds) of the specified framegroup. */
+
+float(float modidx, float framenum, __inout float basetime, float targettime, __inout float code, __inout string data) getnextmodelevent = #0:getnextmodelevent; /* Part of FTE_GFX_MODELEVENTS
+		Reports the next event within a model's animation. Returns a boolean if an event was found between basetime and targettime. Writes to basetime,code,data arguments (if an event was found, basetime is set to the event's time, otherwise to targettime). WARNING: this builtin cannot deal with multiple events with the same timestamp (only the first will be reported). */
+
+float(float modidx, float framenum, int eventidx, __out float timestamp, __out int code, __out string data) getmodeleventidx = #0:getmodeleventidx; /*
+		Reports an indexed event within a model's animation. Writes to timestamp,code,data arguments on success. Returns false if the animation/event/model was out of range/invalid. Does not consider looping animations (retry from index 0 if it fails and you know that its a looping animation). This builtin is more annoying to use than getnextmodelevent, but can be made to deal with multiple events with the exact same timestamp. */
 
 #endif
 #define dotproduct(v1,v2) ((vector)(v1)*(vector)(v2))
@@ -2220,12 +2230,13 @@ void(vector pivot, vector mins, vector maxs, string pic, vector txmin, vector tx
 
 #endif
 #ifdef CSQC
-float(float stnum) getstati = #330; /*
+#define getstati_punf(stnum) (float)(__variant)getstati(stnum)
+int(float stnum) getstati = #330; /*
 		Retrieves the numerical value of the given EV_INTEGER or EV_ENTITY stat (converted to a float). */
 
 #define getstatbits getstatf
 float(float stnum, optional float firstbit, optional float bitcount) getstatf = #331; /*
-		Retrieves the numerical value of the given EV_FLOAT stat. If firstbit and bitcount are specified, retrieves the upper bits of the STAT_ITEMS stat. */
+		Retrieves the numerical value of the given EV_FLOAT stat. If firstbit and bitcount are specified, retrieves the upper bits of the STAT_ITEMS stat (converted into a float, so there are no VM dependancies). */
 
 string(float stnum) getstats = #332; /*
 		Retrieves the value of the given EV_STRING stat, as a tempstring.

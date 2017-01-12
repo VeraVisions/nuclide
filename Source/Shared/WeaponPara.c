@@ -90,12 +90,5 @@ void WeaponPARA_Reload( void ) {
 	}
 #else
 	View_PlayAnimation( ANIM_PARA_RELOAD );
-	
-	//sound( self, CHAN_WEAPON, "weapons/m249_chain.wav", 1, ATTN_IDLE ); // TODO: Move to the client...
-	Sound_Delayed( "weapons/m249_coverup.wav", 1.0, 0.75 );
-	Sound_Delayed( "weapons/m249_boxout.wav", 1.0, 1.6 );
-	Sound_Delayed( "weapons/m249_boxin.wav", 1.0, 2.5 );
-	Sound_Delayed( "weapons/m249_chain.wav", 1.0, 3.0 );
-	Sound_Delayed( "weapons/m249_coverdown.wav", 1.0, 3.9 );
 #endif
 }

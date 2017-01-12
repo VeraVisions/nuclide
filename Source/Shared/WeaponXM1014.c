@@ -119,7 +119,6 @@ void WeaponXM1014_Secondary( void ) {
 	self.nextthink = time + 0.5;
 #else
 	View_PlayAnimation( ANIM_XM1014_INSERT );
-	Sound_Delayed( "weapons/m3_insertshell.wav", 1.0, 0.25 );
 #endif
 }
 

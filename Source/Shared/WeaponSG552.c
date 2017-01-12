@@ -58,16 +58,15 @@ enum {
 };
 
 void WeaponSG552_Draw( void ) {
-	#ifdef SSQC
+#ifdef SSQC
 	OpenCSGunBase_Draw();
-	#else
+#else
 	View_PlayAnimation( ANIM_SG552_DRAW );
-	Sound_Delayed( "weapons/sg552_boltpull.wav", 1.0, 0.5 );
-	#endif
+#endif
 }
 
 void WeaponSG552_PrimaryFire( void ) {
-	#ifdef SSQC
+#ifdef SSQC
 	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
 		if ( random() <= 0.5 ) {
 			sound( self, CHAN_WEAPON, "weapons/sg552-1.wav", 1, ATTN_NORM );
@@ -75,7 +74,7 @@ void WeaponSG552_PrimaryFire( void ) {
 			sound( self, CHAN_WEAPON, "weapons/sg552-2.wav", 1, ATTN_NORM );
 		}
 	}
-	#else
+#else
 	int iRand = (int)floor( random( 1, 4 ) );
 	if ( iRand == 1 ) {
 		View_PlayAnimation( ANIM_SG552_SHOOT1 );
@@ -86,7 +85,7 @@ void WeaponSG552_PrimaryFire( void ) {
 	}
 	
 	OpenCSGunBase_ShotMultiplierHandle( 1 );
-	#endif
+#endif
 }
 
 void WeaponSG552_SecondaryFire( void ) {
@@ -102,14 +101,11 @@ void WeaponSG552_SecondaryFire( void ) {
 }
 
 void WeaponSG552_Reload( void ) {
-	#ifdef SSQC
+#ifdef SSQC
 	if ( OpenCSGunBase_Reload() == TRUE ) {
 		// Play Sound
 	}
-	#else
+#else
 	View_PlayAnimation( ANIM_SG552_RELOAD );
-	Sound_Delayed( "weapons/sg552_clipout.wav", 1.0, 0.7 );
-	Sound_Delayed( "weapons/sg552_clipin.wav", 1.0, 1.7 );
-	Sound_Delayed( "weapons/sg552_boltpull.wav", 1.0, 2.4 );
-	#endif
+#endif
 }

@@ -18,8 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-string sViewModels[ CS_WEAPON_COUNT ] = {
-	"",
+string sViewModels[ CS_WEAPON_COUNT - 1 ] = {
 	"models/v_knife.mdl",
 	"models/v_usp.mdl",
 	"models/v_glock18.mdl",
@@ -82,23 +81,56 @@ float View_CalcBob( void ) {
 	
 	return fBob;
 }
-
+		
 entity eViewModel;
+entity eMuzzleflash;
+
 void View_DrawViewModel( void ) {
 	static float fLastTime;
 	static float fBob;
+	static float fLastWeapon;
+	
 	if( !eViewModel ) {
 		eViewModel = spawn();
 		eViewModel.renderflags = RF_DEPTHHACK;
+		
+		eMuzzleflash = spawn();
+		setmodel( eMuzzleflash, "sprites/muzzleflash1.spr" );
+		eMuzzleflash.renderflags = RF_DEPTHHACK | RF_ADDITIVE;
 	}
 	
+	// Don't update when paused
 	if ( time != fLastTime ) {
 		fBob = View_CalcBob();
 		
+		
 		if( getstatf( STAT_ACTIVEWEAPON ) < CS_WEAPON_COUNT ) {
-			setmodel( eViewModel, sViewModels[ getstatf( STAT_ACTIVEWEAPON ) ] );
+			if ( fLastWeapon != getstatf( STAT_ACTIVEWEAPON ) ) {
+				setmodel( eViewModel, sViewModels[ getstatf( STAT_ACTIVEWEAPON ) - 1 ] );
+				
+				eMuzzleflash.skeletonindex = skel_create( eViewModel.modelindex );
+				eMuzzleflash.skin = skel_get_numbones( eMuzzleflash.skeletonindex ) + 1;
+				fLastWeapon = getstatf( STAT_ACTIVEWEAPON );
+			}
 		}
-	
+		
+		// Take away alpha once it has drawn fully at least once
+		if ( eMuzzleflash.alpha > 0.0f ) {
+			eMuzzleflash.alpha -= ( frametime * 45 );			
+		}
+		
+		static float fBaseTime;
+		static float fCode;
+		static string sData ;
+		getnextmodelevent( eViewModel.modelindex, eViewModel.frame, fBaseTime, eViewModel.frame1time - 0.001, fCode, sData );
+
+		if ( fCode == 5004 ) {
+			localsound( sData, CHAN_AUTO, 1.0 );
+		} else if ( fCode == 5001 ) {
+			eMuzzleflash.alpha = 1.0f;
+			eMuzzleflash.scale = stof( sData ) * 0.01;
+		}
+		
 		eViewModel.frame1time += frametime;
 	}
 	
@@ -112,10 +144,18 @@ void View_DrawViewModel( void ) {
 	}
 	
 	fLastTime = time;
+	
+	// Update muzzleflash position and draw it
+	if ( eMuzzleflash.alpha > 0.0f ) {
+		eMuzzleflash.origin = gettaginfo( eViewModel, eMuzzleflash.skin );
+		dynamiclight_add( eMuzzleflash.origin, 400 * eMuzzleflash.alpha, '1 0.45 0');
+		addentity( eMuzzleflash );
+	}
+	
 	addentity( eViewModel );
 }
 
 void View_PlayAnimation( int iSequence ) {
 	eViewModel.frame = (float)iSequence;
-	eViewModel.frame1time = 0;
+	eViewModel.frame1time = 0.0f;
 }

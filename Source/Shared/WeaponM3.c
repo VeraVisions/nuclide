@@ -69,7 +69,6 @@ void WeaponM3_Draw( void ) {
 	OpenCSGunBase_Draw();
 	#else
 	View_PlayAnimation( ANIM_M3_DRAW );
-	Sound_Delayed( "weapons/m3_pump.wav", 1.0, 0.5 );
 	#endif
 }
 
@@ -119,7 +118,6 @@ void WeaponM3_Secondary( void ) {
 	self.nextthink = time + 0.5;
 #else
 	View_PlayAnimation( ANIM_M3_INSERT );
-	Sound_Delayed( "weapons/m3_insertshell.wav", 1.0, 0.25 );
 #endif
 }
 
@@ -146,7 +144,6 @@ void WeaponM3_Reload( void ) {
 		View_PlayAnimation( ANIM_M3_RELOAD_START );
 	} else {
 		View_PlayAnimation( ANIM_M3_RELOAD_END );
-		Sound_Delayed( "weapons/m3_pump.wav", 1.0, 0.5 );
 	}
 #endif
 }

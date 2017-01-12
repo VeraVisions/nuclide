@@ -79,7 +79,6 @@ void WeaponGLOCK18_Draw( void ) {
 	} else {
 		View_PlayAnimation( ANIM_GLOCK_DRAW2 );
 	}
-	Sound_Delayed( "weapons/slideback1.wav", 1.0, 0.5 );
 #endif
 }
 
@@ -150,14 +149,8 @@ void WeaponGLOCK18_Reload( void ) {
 #else
 	if ( random() <= 0.5 ) {
 		View_PlayAnimation( ANIM_GLOCK_RELOAD1 );
-		Sound_Delayed( "weapons/clipout1.wav", 1.0, 0.6 );
-		Sound_Delayed( "weapons/clipin1.wav", 1.0, 1.2 );
-		Sound_Delayed( "weapons/sliderelease1.wav", 1.0, 1.9 );
 	} else {
 		View_PlayAnimation( ANIM_GLOCK_RELOAD2 );
-		Sound_Delayed( "weapons/clipout1.wav", 1.0, 0.6 );
-		Sound_Delayed( "weapons/clipin1.wav", 1.0, 1.0 );
-		Sound_Delayed( "weapons/sliderelease1.wav", 1.0, 1.7 );
 	}
 #endif
 }

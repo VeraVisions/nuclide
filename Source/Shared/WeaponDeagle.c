@@ -96,7 +96,5 @@ void WeaponDEAGLE_Reload( void ) {
 	}
 	#else
 	View_PlayAnimation( ANIM_DEAGLE_RELOAD );
-	Sound_Delayed( "weapons/de_clipout.wav", 1.0, 0.5 );
-	Sound_Delayed( "weapons/de_clipin.wav", 1.0, 1.2 );
 	#endif
 }

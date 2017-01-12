@@ -95,8 +95,5 @@ void WeaponTMP_Reload( void ) {
 	}
 #else
 	View_PlayAnimation( ANIM_TMP_RELOAD );
-	
-	Sound_Delayed( "weapons/mac10_clipout.wav", 1.0, 0.6 );
-	Sound_Delayed( "weapons/mac10_clipin.wav", 1.0, 1.6 );
 #endif
 }

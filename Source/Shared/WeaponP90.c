@@ -62,7 +62,6 @@ void WeaponP90_Draw( void ) {
 	OpenCSGunBase_Draw();
 #else
 	View_PlayAnimation( ANIM_P90_DRAW );
-	Sound_Delayed( "weapons/p90_boltpull.wav", 1.0, 0.5 );
 #endif
 }
 
@@ -92,10 +91,5 @@ void WeaponP90_Reload( void ) {
 	}
 	#else
 	View_PlayAnimation( ANIM_P90_RELOAD );
-	
-	Sound_Delayed( "weapons/p90_cliprelease.wav", 1.0, 0.5 );
-	Sound_Delayed( "weapons/p90_clipout.wav", 1.0, 1 );
-	Sound_Delayed( "weapons/p90_clipin.wav", 1.0, 2.0 );
-	Sound_Delayed( "weapons/p90_boltpull.wav", 1.0, 2.7 );
 	#endif
 }

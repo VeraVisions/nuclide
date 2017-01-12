@@ -221,12 +221,5 @@ void WeaponC4BOMB_PrimaryFire( void ) {
 	}
 #else
 	View_PlayAnimation( ANIM_C4_ENTERCODE );
-	Sound_Delayed( "weapons/c4_click.wav", 1.0, 1.18 );
-	Sound_Delayed( "weapons/c4_click.wav", 1.0, 1.42 );
-	Sound_Delayed( "weapons/c4_click.wav", 1.0, 1.63 );
-	Sound_Delayed( "weapons/c4_click.wav", 1.0, 1.88 );
-	Sound_Delayed( "weapons/c4_click.wav", 1.0, 2.12 );
-	Sound_Delayed( "weapons/c4_click.wav", 1.0, 2.36 );
-	Sound_Delayed( "weapons/c4_click.wav", 1.0, 2.55 );
 #endif
 }

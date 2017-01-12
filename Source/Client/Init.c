@@ -32,6 +32,8 @@ void CSQC_Init(float apilevel, string enginename, float engineversion) {
 	//}
 	
 	precache_model( HUD_NUMFILE );
+	
+	precache_model( "sprites/muzzleflash1.spr" );
 	precache_model( "sprites/radar640.spr" );
 	precache_model( "sprites/640hud1.spr" );
 	precache_model( "sprites/640hud16.spr" );
@@ -59,7 +61,7 @@ void CSQC_Init(float apilevel, string enginename, float engineversion) {
 	precache_sound( "debris/bustconcrete2.wav" );
 	precache_sound( "debris/bustceiling1.wav" );
 	
-	for ( int i = 1; i < CS_WEAPON_COUNT; i++ ) {
+	for ( int i = 0; i < ( CS_WEAPON_COUNT - 1 ); i++ ) {
 		precache_model( sViewModels[ i ] );
 	}
 	

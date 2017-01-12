@@ -62,7 +62,6 @@ void WeaponMP5_Draw( void ) {
 	OpenCSGunBase_Draw();
 #else
 	View_PlayAnimation( ANIM_MP5_DRAW );
-	Sound_Delayed( "weapons/mp5_slideback.wav", 1.0, 0.5 );
 #endif
 }
 
@@ -95,8 +94,5 @@ void WeaponMP5_Reload( void ) {
 	}
 #else
 	View_PlayAnimation( ANIM_MP5_RELOAD );
-	Sound_Delayed( "weapons/mp5_clipout.wav", 1.0, 0.6 );
-	Sound_Delayed( "weapons/mp5_clipin.wav", 1.0, 1.2 );
-	Sound_Delayed( "weapons/mp5_slideback.wav", 1.0, 2.0 );
 #endif
 }

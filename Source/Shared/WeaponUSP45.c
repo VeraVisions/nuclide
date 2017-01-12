@@ -81,8 +81,6 @@ void WeaponUSP45_Draw( void ) {
 	} else {
 		View_PlayAnimation( ANIM_USP45_DRAW );
 	}
-	
-	Sound_Delayed( "weapons/usp_slideback.wav", 1.0, 0.5 );
 #endif
 }
 
@@ -147,10 +145,8 @@ void WeaponUSP45_Secondary( void ) {
 	
 	if ( iWeaponMode_USP45 == TRUE ) {
 		View_PlayAnimation( ANIM_USP45_SILENCER_ADD );
-		Sound_Delayed( "weapons/usp_silencer_on.wav", 1.0, 0.95 );
 	} else {
 		View_PlayAnimation( ANIM_USP45_SILENCER_REMOVE );
-		Sound_Delayed( "weapons/usp_silencer_off.wav", 1.0, 0.6 );
 	}
 #endif
 }
@@ -166,9 +162,5 @@ void WeaponUSP45_Reload( void ) {
 	} else {
 		View_PlayAnimation( ANIM_USP45_RELOAD );
 	}
-	
-	Sound_Delayed( "weapons/usp_clipout.wav", 1.0, 0.5 );
-	Sound_Delayed( "weapons/usp_clipin.wav", 1.0, 1.1 );
-	Sound_Delayed( "weapons/usp_sliderelease.wav", 1.0, 2.2 );
 #endif
 }

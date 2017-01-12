@@ -62,7 +62,6 @@ void WeaponAUG_Draw( void ) {
 	OpenCSGunBase_Draw();
 #else
 	View_PlayAnimation( ANIM_AUG_DRAW );
-	Sound_Delayed( "weapons/aug_boltpull.wav", 1.0, 0.5 );
 #endif
 }
 
@@ -104,10 +103,5 @@ void WeaponAUG_Reload( void ) {
 	}
 #else
 	View_PlayAnimation( ANIM_AUG_RELOAD );
-	
-	Sound_Delayed( "weapons/aug_boltpull.wav", 1.0, 0.5 );
-	Sound_Delayed( "weapons/aug_clipout.wav", 1.0, 1.3 );
-	Sound_Delayed( "weapons/aug_clipin.wav", 1.0, 2.2 );
-	Sound_Delayed( "weapons/aug_boltslap.wav", 1.0, 2.8 );
 #endif
 }

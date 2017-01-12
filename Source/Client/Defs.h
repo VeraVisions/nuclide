@@ -75,7 +75,6 @@ vector vCameraAngle;
 float fCameraTime;
 
 void View_PlayAnimation( int iSequence );
-void Sound_Delayed( string sSample, float fVol, float fDelay );
 
 // This actually belongs in Builtins.h since its an undocumented global
 vector pmove_vel;

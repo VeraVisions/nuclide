@@ -62,7 +62,6 @@ void WeaponP228_Draw( void ) {
 	OpenCSGunBase_Draw();
 #else
 	View_PlayAnimation( ANIM_P228_DRAW );
-	Sound_Delayed( "weapons/p228_slidepull.wav", 1.0, 0.5 );
 #endif
 }
 
@@ -97,9 +96,5 @@ void WeaponP228_Reload( void ) {
 	}
 #else
 	View_PlayAnimation( ANIM_P228_RELOAD );
-	
-	Sound_Delayed( "weapons/p228_clipout.wav", 1.0, 0.5 );
-	Sound_Delayed( "weapons/p228_clipin.wav", 1.0, 1.5 );
-	Sound_Delayed( "weapons/p228_sliderelease.wav", 1.0, 2.4 );
 #endif
 }

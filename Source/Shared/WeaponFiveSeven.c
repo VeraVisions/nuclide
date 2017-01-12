@@ -62,7 +62,6 @@ void WeaponFIVESEVEN_Draw( void ) {
 	OpenCSGunBase_Draw();
 #else
 	View_PlayAnimation( ANIM_FIVESEVEN_DRAW );
-	Sound_Delayed( "weapons/fiveseven_slidepull.wav", 1.0, 0.5 );
 #endif
 }
 
@@ -92,9 +91,5 @@ void WeaponFIVESEVEN_Reload( void ) {
 	}
 #else
 	View_PlayAnimation( ANIM_FIVESEVEN_RELOAD );
-	
-	Sound_Delayed( "weapons/p228_clipout.wav", 1.0, 0.5 );
-	Sound_Delayed( "weapons/p228_clipin.wav", 1.0, 1.5 );
-	Sound_Delayed( "weapons/p228_sliderelease.wav", 1.0, 2.4 );
 #endif
 }

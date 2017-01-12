@@ -78,7 +78,6 @@ void WeaponSCOUT_PrimaryFire( void ) {
 	}
 	
 	OpenCSGunBase_ShotMultiplierHandle( 1 );
-	Sound_Delayed( "weapons/scout_bolt.wav", 1.0, 0.5 );
 #endif
 }
 
@@ -103,9 +102,5 @@ void WeaponSCOUT_Reload( void ) {
 	}
 #else
 	View_PlayAnimation( ANIM_SCOUT_RELOAD );
-	
-	Sound_Delayed( "weapons/scout_clipout.wav", 1.0, 0.75 );
-	Sound_Delayed( "weapons/scout_clipin.wav", 1.0, 1.25 ); 
-	
 #endif
 }
