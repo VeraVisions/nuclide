@@ -61,6 +61,7 @@ void Effect_Impact( int iType, vector vPos, vector vNormal ) {
 
 	switch ( iType ) {
 		case IMPACT_MELEE:
+			pointparticles( DECAL_SHOT, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_PIECES_BLACK, vPos, vNormal, 1 );
 			pointsound( vPos, "weapons/knife_hitwall1.wav", 1, ATTN_STATIC );
 			break;
@@ -70,11 +71,13 @@ void Effect_Impact( int iType, vector vPos, vector vNormal ) {
 			pointparticles( PARTICLE_PIECES_BLACK, vPos, vNormal, 1 );
 			break;
 		case IMPACT_WOOD:
+			pointparticles( DECAL_SHOT, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_SPARK, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_PIECES_BLACK, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_SMOKE_BROWN, vPos, vNormal, 1 );
 			break;
 		case IMPACT_METAL:
+			pointparticles( DECAL_SHOT, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_SPARK, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_SPARK, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_PIECES_BLACK, vPos, vNormal, 1 );
@@ -83,6 +86,7 @@ void Effect_Impact( int iType, vector vPos, vector vNormal ) {
 			pointparticles( PARTICLE_BLOOD, vPos, vNormal, 1 );
 			break;
 		case IMPACT_DEFAULT:
+			pointparticles( DECAL_SHOT, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_SPARK, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_PIECES_BLACK, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_SMOKE_GREY, vPos, vNormal, 1 );
@@ -126,10 +130,10 @@ void Effect_BreakModel( vector vMins, vector vMaxs, vector vVel, float fStyle ) 
 #else
 	static void Effect_BreakModel_Remove( void ) { remove( self ) ; }
 	
-	float fCount = 20; // TODO: Generate gibcount based around size
 	float fModelCount;
 	vector vPos;
 	string sModel = "";
+	float fCount = 20;
 	
 	switch ( fStyle ) {
 		case MATERIAL_GLASS:
@@ -168,45 +172,32 @@ void Effect_BreakModel( vector vMins, vector vMaxs, vector vVel, float fStyle ) 
 			break;
 	}
 	
-	string sTypeSample = "";
-	int iTypeCount;
+	vector vWorldPos;
+	vWorldPos_x = vMins_x + ( 0.5 * ( vMaxs_x - vMins_x ) );	
+	vWorldPos_y = vMins_y + ( 0.5 * ( vMaxs_y - vMins_y ) );	
+	vWorldPos_z = vMins_z + ( 0.5 * ( vMaxs_z - vMins_z ) );
 	
 	switch ( fStyle ) {
 		case MATERIAL_GLASS:
-		case MATERIAL_GLASS_UNBREAKABLE:
-			sTypeSample = "debris/bustglass";
-			iTypeCount = 2;
+			pointsound( vWorldPos, sprintf( "debris/bustglass%d.wav", random( 1, 4 ) ), 1.0f, ATTN_NORM );
 			break;
 		case MATERIAL_WOOD:
-			sTypeSample = "debris/bustcrate";
-			iTypeCount = 2;
+			pointsound( vWorldPos, sprintf( "debris/bustcrate%d.wav", random( 1, 4 ) ), 1.0f, ATTN_NORM );
 			break;
 		case MATERIAL_METAL:
 		case MATERIAL_COMPUTER:
-			sTypeSample = "debris/bustmetal";
-			iTypeCount = 2;
+			pointsound( vWorldPos, sprintf( "debris/bustmetal%d.wav", random( 1, 3 ) ), 1.0f, ATTN_NORM );
 			break;
 		case MATERIAL_FLESH:
-			sTypeSample = "debris/bustflesh";
-			iTypeCount = 2;
+			pointsound( vWorldPos, sprintf( "debris/bustflesh%d.wav", random( 1, 3 ) ), 1.0f, ATTN_NORM );
 			break;
 		case MATERIAL_CINDER:
 		case MATERIAL_ROCK:
-			sTypeSample = "debris/bustconcrete";
-			iTypeCount = 2;
+			pointsound( vWorldPos, sprintf( "debris/bustconcrete%d.wav", random( 1, 4 ) ), 1.0f, ATTN_NORM );
 			break;
 		case MATERIAL_TILE:
-			sTypeSample = "debris/bustceiling";
-			iTypeCount = 1;
+			pointsound( vWorldPos, "debris/bustceiling.wav", 1.0f, ATTN_NORM );
 			break;
-	}
-	
-	if ( iTypeCount > 0 ) {
-		vector vWorldPos;
-		vWorldPos_x = vMins_x + ( 0.5 * ( vMaxs_x - vMins_x ) );	
-		vWorldPos_y = vMins_y + ( 0.5 * ( vMaxs_y - vMins_y ) );	
-		vWorldPos_z = vMins_z + ( 0.5 * ( vMaxs_z - vMins_z ) );
-		pointsound( vWorldPos, sprintf( "%s%d.wav", sTypeSample, floor( random( 1, (float)iTypeCount ) + 1 ) ), 1.0f, ATTN_NORM );
 	}
 	
 	while ( fCount > 0 ) {

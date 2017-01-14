@@ -56,7 +56,10 @@ weaponiconinfo_t wpIconTable[ CS_WEAPON_COUNT ] = {
 	{ "sprites/640hud1.spr_0.tga", '0.75 0.5625', '0.1875 0.0625' }, //WEAPON_G3SG1
 	{ "sprites/640hud16.spr_0.tga", '0.75 0.1875', '0.125 0.0625' }, //WEAPON_SG550
 	{ "sprites/640hud1.spr_0.tga", '0.75 0.625', '0.1875 0.0625' }, //WEAPON_PARA
-	{ "", '0 0', '-1 0.0625' } //WEAPON_C4BOMB
+	{ "", '0 0', '-1 0.0625' }, //WEAPON_C4BOMB
+	{ "", '0 0', '-1 0.0625' }, //WEAPON_FLASHBANG
+	{ "", '0 0', '-1 0.0625' }, //WEAPON_HEGRENADE
+	{ "", '0 0', '-1 0.0625' } //WEAPON_SMOKEGRENADE
 };
 
 typedef struct {

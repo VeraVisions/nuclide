@@ -18,8 +18,6 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-.float fSteptime;
-
 /*
 =================
 Footsteps_Update
@@ -34,7 +32,7 @@ void Footsteps_Update( void ) {
 	string sStepSound = "";
 
 	if ( ( self.movetype == MOVETYPE_WALK ) && ( self.flags & FL_ONGROUND ) ) {
-		if ( ( self.velocity_x == 0 && self.velocity_y == 0 ) || self.fSteptime > time ) {
+		if ( ( self.velocity_x == 0 && self.velocity_y == 0 ) || self.fStepTime > time ) {
 			return;
 		}
 
@@ -85,6 +83,6 @@ void Footsteps_Update( void ) {
          }
 
 		sound( self, CHAN_BODY, sStepSound, 0.5, ATTN_IDLE );
-		self.fSteptime = time + fDelay;
+		self.fStepTime = time + fDelay;
 	}
 }

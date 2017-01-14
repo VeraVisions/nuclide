@@ -38,8 +38,25 @@ Spawns a new waypoint for the hostage
 entity hostage_waypoint( void ) {
 	entity ePoint = spawn();
 	setorigin( ePoint, self.eUser.origin );
-	//setmodel( ePoint, "models/chick.mdl" ); // Visual feedback...
+	setsize( ePoint, self.mins, self.maxs );
+	ePoint.classname = "remove_me";
+	ePoint.movetype = MOVETYPE_TOSS;
+//	setmodel( ePoint, "models/chick.mdl" ); // Visual feedback...
 	return ePoint;
+}
+
+/*
+=================
+hostage_waypoint_needed
+
+Determines when we need to spawn a new waypoint
+=================
+*/
+float hostage_waypoint_needed( void ) {
+	if ( self.eUser.fStepTime > time ) {
+		return FALSE;
+	}
+	return TRUE;
 }
 
 /*
@@ -152,7 +169,7 @@ void hostage_physics( void ) {
 				self.fAttackFinished = time + 0.1;
 				
 				// We only ever need to create waypoints when we run
-				if ( self.fStepTime < time ) {
+				if ( hostage_waypoint_needed() == TRUE ) {
 					if ( self.eTargetPoint == self.eUser ) {
 						// Create the first waypoint
 						self.eTargetPoint = hostage_waypoint();
@@ -176,14 +193,14 @@ void hostage_physics( void ) {
 			self.frame = 2;
 		} else {
 			input_movevalues = '0 0 0';
-			
-			if ( fTurn > 0 ) {
-				self.frame = 5;
-			} else if ( fTurn < 0 ){
-				self.frame = 6;
-			} else {
-				self.frame = 13;
-			}
+		}
+		
+		if ( fTurn > 0.01 ) {
+			self.frame = 5;
+		} else if ( fTurn < -0.01 ){
+			self.frame = 6;
+		} else {
+			self.frame = 13;
 		}
 	}
 	

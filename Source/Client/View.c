@@ -42,7 +42,10 @@ string sViewModels[ CS_WEAPON_COUNT - 1 ] = {
 	"models/v_g3sg1.mdl",
 	"models/v_sg550.mdl",
 	"models/v_m249.mdl",
-	"models/v_c4.mdl"
+	"models/v_c4.mdl",
+	"models/v_flashbang.mdl",
+	"models/v_hegrenade.mdl",
+	"models/v_smokegrenade.mdl"
 };
 
 /*
@@ -81,36 +84,67 @@ float View_CalcBob( void ) {
 	
 	return fBob;
 }
-		
+
 entity eViewModel;
 entity eMuzzleflash;
+float fNumBones;
+
+void View_ProcessEvent( float fTimeStamp, int iCode, string sData ) {
+	if ( iCode == 5004 ) {
+		localsound( sData, CHAN_AUTO, 1.0 );
+	} else if ( iCode == 5001 ) {
+		eMuzzleflash.alpha = 1.0f;
+		eMuzzleflash.scale = 0.5;
+		eMuzzleflash.skin = fNumBones;
+		setmodel( eMuzzleflash, sprintf( "sprites/muzzleflash%s.spr", substring( sData, 1, 1 ) ) );
+	} else if( iCode == 5011 ) {
+		eMuzzleflash.alpha = 1.0f;
+		eMuzzleflash.scale = 0.5;
+		eMuzzleflash.skin = fNumBones + 1;
+		setmodel( eMuzzleflash, sprintf( "sprites/muzzleflash%s.spr", substring( sData, 1, 1 ) ) );
+	} else if ( iCode == 5021 ) {
+		eMuzzleflash.alpha = 1.0f;
+		eMuzzleflash.scale = 0.5;
+		eMuzzleflash.skin = fNumBones + 2;
+		setmodel( eMuzzleflash, sprintf( "sprites/muzzleflash%s.spr", substring( sData, 1, 1 ) ) );
+	} else if ( iCode == 5031 ) {
+		eMuzzleflash.alpha = 1.0f;
+		eMuzzleflash.scale = 0.5;
+		eMuzzleflash.skin = fNumBones + 3;
+		setmodel( eMuzzleflash, sprintf( "sprites/muzzleflash%s.spr", substring( sData, 1, 1 ) ) );
+	}
+}
 
 void View_DrawViewModel( void ) {
 	static float fLastTime;
 	static float fBob;
 	static float fLastWeapon;
-	
+
 	if( !eViewModel ) {
 		eViewModel = spawn();
 		eViewModel.renderflags = RF_DEPTHHACK;
 		
 		eMuzzleflash = spawn();
-		setmodel( eMuzzleflash, "sprites/muzzleflash1.spr" );
 		eMuzzleflash.renderflags = RF_DEPTHHACK | RF_ADDITIVE;
+	}
+	
+	if ( getstatf( STAT_HEALTH ) <= 0 ) {
+		return;
 	}
 	
 	// Don't update when paused
 	if ( time != fLastTime ) {
 		fBob = View_CalcBob();
 		
-		
 		if( getstatf( STAT_ACTIVEWEAPON ) < CS_WEAPON_COUNT ) {
 			if ( fLastWeapon != getstatf( STAT_ACTIVEWEAPON ) ) {
-				setmodel( eViewModel, sViewModels[ getstatf( STAT_ACTIVEWEAPON ) - 1 ] );
-				
-				eMuzzleflash.skeletonindex = skel_create( eViewModel.modelindex );
-				eMuzzleflash.skin = skel_get_numbones( eMuzzleflash.skeletonindex ) + 1;
 				fLastWeapon = getstatf( STAT_ACTIVEWEAPON );
+				if ( fLastWeapon ) {
+					setmodel( eViewModel, sViewModels[ getstatf( STAT_ACTIVEWEAPON ) - 1 ] );
+					skel_delete( eMuzzleflash.skeletonindex );
+					eMuzzleflash.skeletonindex = skel_create( eViewModel.modelindex );
+					fNumBones = skel_get_numbones( eMuzzleflash.skeletonindex ) + 1;
+				}
 			}
 		}
 		
@@ -120,16 +154,7 @@ void View_DrawViewModel( void ) {
 		}
 		
 		static float fBaseTime;
-		static float fCode;
-		static string sData ;
-		getnextmodelevent( eViewModel.modelindex, eViewModel.frame, fBaseTime, eViewModel.frame1time - 0.001, fCode, sData );
-
-		if ( fCode == 5004 ) {
-			localsound( sData, CHAN_AUTO, 1.0 );
-		} else if ( fCode == 5001 ) {
-			eMuzzleflash.alpha = 1.0f;
-			eMuzzleflash.scale = stof( sData ) * 0.01;
-		}
+		processmodelevents( eViewModel.modelindex, eViewModel.frame, fBaseTime, eViewModel.frame1time, View_ProcessEvent );
 		
 		eViewModel.frame1time += frametime;
 	}

@@ -33,9 +33,12 @@ void func_hostage_rescue_touch( void ) {
 		
 		Money_AddMoney( other.eUser, 1000 );
 		Money_QueTeamReward( TEAM_CT, 800 );
+		
 		if ( other.eTargetPoint != other.eUser ) {
 			remove( other.eTargetPoint );
 		}
+		
+		other.eTargetPoint = other.eUser = world;
 		
 		entity eOld = self;
 		self = other;

@@ -158,7 +158,7 @@ void Client_SendEvent( entity eClient, float fEVType ) {
 	WriteByte( MSG_MULTICAST, fEVType );
 
 	msg_entity = eClient;
-	multicast( '0 0 0', MULTICAST_ONE );
+	multicast( '0 0 0', MULTICAST_ALL );
 }
 
 /*
@@ -183,5 +183,5 @@ void Client_TriggerCamera( entity eTarget, vector vPos, vector vEndPos, float fR
 	
 	WriteFloat( MSG_MULTICAST, fResetTime );
 	msg_entity = eTarget;
-	multicast( '0 0 0', MULTICAST_ONE );
+	multicast( '0 0 0', MULTICAST_ALL );
 }

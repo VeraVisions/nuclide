@@ -297,7 +297,6 @@ void worldspawn( void ) {
 	precache_sound( "debris/flesh1.wav" );
 	precache_sound( "debris/flesh2.wav" );
 	precache_sound( "debris/flesh3.wav" );
-	precache_sound( "debris/flesh4.wav" );
 	precache_sound( "debris/flesh5.wav" );
 	precache_sound( "debris/flesh6.wav" );
 	precache_sound( "debris/flesh7.wav" );

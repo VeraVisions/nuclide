@@ -46,7 +46,10 @@ string sWeaponModels[ CS_WEAPON_COUNT ] = {
 	"models/w_g3sg1.mdl",
 	"models/w_sg550.mdl",
 	"models/w_m249.mdl",
-	"models/w_c4.mdl"
+	"models/w_c4.mdl",
+	"models/w_flashbang.mdl",
+	"models/w_hegrenade.mdl",
+	"models/w_smokegrenade.mdl"
 };
 #endif 
 
@@ -80,7 +83,10 @@ weaponfunc_t wpnFuncTable[ CS_WEAPON_COUNT ] = {
 	{ WeaponG3SG1_Draw, WeaponG3SG1_PrimaryFire, WeaponG3SG1_SecondaryFire, WeaponG3SG1_Reload },
 	{ WeaponSG550_Draw, WeaponSG550_PrimaryFire, WeaponSG550_SecondaryFire, WeaponSG550_Reload },
 	{ WeaponPARA_Draw, WeaponPARA_PrimaryFire, Temp_Nothing, WeaponPARA_Reload },
-	{ WeaponC4BOMB_Draw, WeaponC4BOMB_PrimaryFire, Temp_Nothing, Temp_Nothing }
+	{ WeaponC4BOMB_Draw, WeaponC4BOMB_PrimaryFire, Temp_Nothing, Temp_Nothing },
+	{ WeaponFLASHBANG_Draw, WeaponFLASHBANG_PrimaryFire, Temp_Nothing, Temp_Nothing },
+	{ WeaponHEGRENADE_Draw, WeaponHEGRENADE_PrimaryFire, Temp_Nothing, Temp_Nothing },
+	{ WeaponFLASHBANG_Draw, WeaponFLASHBANG_PrimaryFire, Temp_Nothing, Temp_Nothing }
 };
 
 /*

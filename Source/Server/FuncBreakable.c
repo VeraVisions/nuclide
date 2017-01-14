@@ -40,37 +40,29 @@ func_breakable_pain
 =================
 */
 void func_breakable_pain( int iNull ) {
-	string sTypeSample = "";
-	int iTypeCount = 0;
-	
 	switch ( self.material ) {
 		case MATERIAL_GLASS:
 		case MATERIAL_COMPUTER:
 		case MATERIAL_GLASS_UNBREAKABLE:
-			sTypeSample = "debris/glass";
-			iTypeCount = 3;
+			sound( self, CHAN_VOICE, sprintf( "debris/glass%d.wav", random( 1, 4 ) ), 1.0, ATTN_NORM );
 			break;
 		case MATERIAL_WOOD:
-			sTypeSample = "debris/wood";
-			iTypeCount = 3;
+			sound( self, CHAN_VOICE, sprintf( "debris/wood%d.wav", random( 1, 4 ) ), 1.0, ATTN_NORM );
 			break;
 		case MATERIAL_METAL:
-			sTypeSample = "debris/metal";
-			iTypeCount = 3;
+			sound( self, CHAN_VOICE, sprintf( "debris/metal%d.wav", random( 1, 4 ) ), 1.0, ATTN_NORM );
 			break;
 		case MATERIAL_FLESH:
-			sTypeSample = "debris/flesh";
-			iTypeCount = 7;
+			float fRand  = floor( random( 1, 8 ) );
+			if ( fRand == 4 ) { // sigh
+				fRand = 5;
+			}
+			sound( self, CHAN_VOICE, sprintf( "debris/flesh%d.wav", fRand ), 1.0, ATTN_NORM );
 			break;
 		case MATERIAL_CINDER:
 		case MATERIAL_ROCK:
-			sTypeSample = "debris/concrete";
-			iTypeCount = 3;
+			sound( self, CHAN_VOICE, sprintf( "debris/concrete%d.wav", random( 1, 4 ) ), 1.0, ATTN_NORM );
 			break;
-	}
-	
-	if ( iTypeCount >= 1 ) {
-		sound( self, CHAN_VOICE, sprintf( "%s%d.wav", sTypeSample, floor( random( 1, (float)iTypeCount ) + 1 ) ), 1.0, ATTN_NORM );
 	}
 }
 

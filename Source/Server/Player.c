@@ -83,6 +83,9 @@ void Player_Death( int iHitBody ) {
 	eCorpse.angles = [ 0, self.angles_y, 0 ];
 	eCorpse.movetype = MOVETYPE_BOUNCE;
 	
+	// Make ourselves disappear
+	self.modelindex = 0;
+	
 	if ( self.flags & FL_CROUCHING ) {
 		eCorpse.frame = ANIM_CROUCH_DIE;
 	} else {
@@ -124,13 +127,19 @@ void Player_Death( int iHitBody ) {
 		return;
 	}
 	
-	if ( ( iAlivePlayers_T == 0 ) && ( iAlivePlayers_CT == 0 ) && ( iBombPlanted == FALSE ) ) {
-		Rules_RoundOver( FALSE, 3600, FALSE );
+	if ( ( iAlivePlayers_T == 0 ) && ( iAlivePlayers_CT == 0 ) ) {
+		if ( ( iBombPlanted == FALSE ) || ( iBombZones > 0 ) ) {
+			Rules_RoundOver( FALSE, 3600, FALSE );
+		} else {
+			Rules_RoundOver( TEAM_T, 3600, FALSE );
+		}
 	} else {
 		// If the bomb has been planted, T deaths don't matter anymore
-		if ( ( iAlivePlayers_T == 0 ) && ( iBombPlanted == FALSE ) ) {
-			Rules_RoundOver( TEAM_CT, 3600, FALSE );
-		} else if ( iAlivePlayers_CT == 0 ) {
+		if ( ( self.team == TEAM_T ) && ( iAlivePlayers_T == 0 ) ) {
+			if ( ( iBombPlanted == FALSE ) || ( iBombZones == 0 ) ) {
+				Rules_RoundOver( TEAM_CT, 3600, FALSE );
+			}
+		} else if ( ( self.team == TEAM_CT ) && ( iAlivePlayers_CT == 0 ) ) {
 			Rules_RoundOver( TEAM_T, 3600, FALSE );
 		}
 	}
@@ -237,7 +246,7 @@ void Player_UseDown( void ) {
 	if ( trace_ent.iUsable ) {
 		if ( ( trace_ent.classname != "c4bomb" ) && ( trace_ent.classname != "func_pushable" ) ) {
 			self.flags = ( self.flags - FL_USERELEASED );
-			sound( self, CHAN_WEAPON, "common/wpn_select.wav", 0.25, ATTN_IDLE );
+			sound( self, CHAN_ITEM, "common/wpn_select.wav", 0.25, ATTN_IDLE );
 		} 
 		
 		eActivator = self;
@@ -246,7 +255,7 @@ void Player_UseDown( void ) {
 		self.vUse();
 		self = eOriginalSelf;
 	} else {
-		sound( self, CHAN_WEAPON, "common/wpn_denyselect.wav", 0.25, ATTN_IDLE );
+		sound( self, CHAN_ITEM, "common/wpn_denyselect.wav", 0.25, ATTN_IDLE );
 		self.flags = ( self.flags - FL_USERELEASED );
 	}
 }

@@ -51,15 +51,17 @@ void CSQC_Init(float apilevel, string enginename, float engineversion) {
 	
 	precache_sound( "debris/bustglass1.wav" );
 	precache_sound( "debris/bustglass2.wav" );
+	precache_sound( "debris/bustglass3.wav" );
 	precache_sound( "debris/bustcrate1.wav" );
 	precache_sound( "debris/bustcrate2.wav" );
+	precache_sound( "debris/bustcrate3.wav" );
 	precache_sound( "debris/bustmetal1.wav" );
 	precache_sound( "debris/bustmetal2.wav" );
 	precache_sound( "debris/bustflesh1.wav" );
 	precache_sound( "debris/bustflesh2.wav" );
 	precache_sound( "debris/bustconcrete1.wav" );
 	precache_sound( "debris/bustconcrete2.wav" );
-	precache_sound( "debris/bustceiling1.wav" );
+	precache_sound( "debris/bustceiling.wav" );
 	
 	for ( int i = 0; i < ( CS_WEAPON_COUNT - 1 ); i++ ) {
 		precache_model( sViewModels[ i ] );
@@ -74,6 +76,7 @@ void CSQC_Init(float apilevel, string enginename, float engineversion) {
 	PARTICLE_SMOKE_GREY 	= particleeffectnum( "part_smoke_grey" );
 	PARTICLE_SMOKE_BROWN 	= particleeffectnum( "part_smoke_brown" );
 	PARTICLE_BLOOD 			= particleeffectnum( "part_blood" );
+	DECAL_SHOT 				= particleeffectnum( "decal_shot1" );
 
 	Radio_InitSounds();
 	

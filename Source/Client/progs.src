@@ -17,8 +17,10 @@ Defs.h
 ../Shared/WeaponDeagle.c
 ../Shared/WeaponElites.c
 ../Shared/WeaponFiveSeven.c
+../Shared/WeaponFlashbang.c
 ../Shared/WeaponG3SG1.c
 ../Shared/WeaponGlock18.c
+../Shared/WeaponHEGrenade.c
 ../Shared/WeaponKnife.c
 ../Shared/WeaponM3.c
 ../Shared/WeaponM4A1.c
@@ -30,6 +32,7 @@ Defs.h
 ../Shared/WeaponScout.c
 ../Shared/WeaponSG550.c
 ../Shared/WeaponSG552.c
+../Shared/WeaponSmokeGrenade.c
 ../Shared/WeaponTMP.c
 ../Shared/WeaponUMP45.c
 ../Shared/WeaponUSP45.c

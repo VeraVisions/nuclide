@@ -73,6 +73,19 @@ string Damage_GetHitLocation( int iSurface ) {
 	}
 }
 
+int Damage_ShouldDamage( float fTargetTeam, float fAttackerTeam ) {
+	if ( fTargetTeam == TEAM_VIP ) {
+		fTargetTeam = TEAM_CT;
+	} else if ( fAttackerTeam == TEAM_VIP ) {
+		fAttackerTeam = TEAM_CT;
+	}
+	
+	if ( fTargetTeam == fAttackerTeam ) {
+		return FALSE;
+	}
+	
+	return TRUE;
+}
 
 /*
 =================
@@ -120,8 +133,14 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 		}
 		
 		if ( ( eTarget.flags & FL_CLIENT )  && ( eAttacker.flags & FL_CLIENT ) ) {
-			eAttacker.frags++;
-			Money_AddMoney( eAttacker, 300 );
+			// Don't encourage them to kill their own team members for $$$
+			if ( Damage_ShouldDamage( eTarget.team, eAttacker.team ) == TRUE ) {
+				eAttacker.frags++;
+				Money_AddMoney( eAttacker, 300 );
+			} else {
+				eAttacker.frags--;
+			}
+			
 			Damage_CastOrbituary( eAttacker, eTarget, eAttacker.weapon, FALSE );
 		}
 	}

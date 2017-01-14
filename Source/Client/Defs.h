@@ -45,6 +45,7 @@ var float PARTICLE_PIECES_BLACK;
 var float PARTICLE_SMOKE_GREY;
 var float PARTICLE_SMOKE_BROWN;
 var float PARTICLE_BLOOD;
+var float DECAL_SHOT;
 
 vector vHUDColor; // Defined in HUD_Draw (HUD.c)
 vector vVGUIColor; // Defined in HUD_Draw (VGUI.c)
