@@ -12,12 +12,12 @@ Counter-Strike, being one of the most popular multiplayer games to exist, surpri
 a free-software implementation done until now. 
 
 Some of the cool things you can do with this:
-* Play/Host CS and CS Servers on virtually every platform. ( Main selling point )
+* Play/Host CS and CS Servers on virtually every platform.
 * Customize the game to whatever extent you like.
 * Create entirely new weapons!
 * Create completely new and refreshing gamemodes!
 * Have a guarantee to be able to play it 20 years into the future!
-* Use it as a base for your own games/mods! (As long as you own the rights to the assets)
+* Use it as a base for your own games/mods!
 
 # Status
 All the weapons are implemented, so are the gamemodes: Hostage Rescue (cs), Bomb Defusal (de), Assassination (as) and Escape (es).
