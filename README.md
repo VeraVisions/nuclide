@@ -1,5 +1,5 @@
-# OpenCS
-Open-Source implementation of CS running on FTE QuakeWorld
+# FreeCS
+Open-Source implementation of Counter-Strike running on the FTE QuakeWorld engine.
 
 # Goals
 The goal of this project is to provide an open-source implementation of Counter-Strike 1.5.
@@ -23,21 +23,21 @@ Basically, the game is playable as long as you don't care about grenades (for no
 1. Download the latest version of FTE QuakeWorld.
 2. Download csv15full.exe and to get the cstrike folder.
 3. Move both the cstrike folder and FTE QuakeWorld into a folder
-4. Clone this repository into that same folder, so that opencs, default.fmf and cstrike co-exist
+4. Clone this repository into that same folder, so that freecs, default.fmf and cstrike co-exist
 5. Run FTE QuakeWorld
 
 Optional step: Copy the 'valve' folder from your Half-Life installation in order for all features to work.
 
 # Notes
-You might get away with using the cstrike folder from the Steam version of CS 1.6, or any older version
+You might get away with using the cstrike folder from the Steam version of Counter-Strike 1.6, or any older version
 than 1.5 - but they are not supported. I will not try to recreate 1.6 or any other earlier versions specifically.
-I may however add additional, optional features that will emulate behaviour of later versions of CS.
+I may however add additional, optional features that will emulate behaviour of later versions of Counter-Strike.
 
 # Special Thanks
 Spike - Creator of FTE QuakeWorld and FTEQCC ( http://fte.triptohell.info/ )
 
 TWHL - Mapping Community with CS/HL entity information (  http://twhl.info )
 
-This repository uses no content from Half-Life nor the original CS, for credits
+This repository uses no content from Half-Life nor the original Counter-Strike, for credits
 as to who created the ORIGINAL Counter-Strike, please visit
 http://web.archive.org/web/20021016230745/http://counter-strike.net/csteam.html
