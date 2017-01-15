@@ -1,9 +1,9 @@
 # FreeCS
 Open-Source implementation of Counter-Strike running on the FTE QuakeWorld engine.
 
-<img src="https://icculus.org/~marco/opencs/screenshots/fte-20170113225215-0.png" alt="Screen 1" width="320" height="240"> <img src="https://icculus.org/~marco/opencs/screenshots/fte-20170113225158-0.png" alt="Screen 2" width="320" height="240">
+<img src="https://icculus.org/~marco/opencs/screenshots/fte-20170113225215-0.png" alt="Screen 1" width="256" height="192"> <img src="https://icculus.org/~marco/opencs/screenshots/fte-20170113225158-0.png" alt="Screen 2" width="256" height="192">
 
-<img src="https://icculus.org/~marco/opencs/screenshots/fte-20170113225827-0.png" alt="Screen 3" width="320" height="240"> <img src="https://icculus.org/~marco/opencs/screenshots/fte-20170113225528-0.png" alt="Screen 4" width="320" height="240">
+<img src="https://icculus.org/~marco/opencs/screenshots/fte-20170113225827-0.png" alt="Screen 3" width="256" height="192"> <img src="https://icculus.org/~marco/opencs/screenshots/fte-20170113225528-0.png" alt="Screen 4" width="256" height="192">
 
 # Goals
 The goal of this project is to provide an open-source implementation of Counter-Strike 1.5.
