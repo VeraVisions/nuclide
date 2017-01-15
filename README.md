@@ -1,5 +1,5 @@
 # FreeCS
-Open-Source implementation of Counter-Strike running on the FTE QuakeWorld engine.
+Free-software implementation of Counter-Strike running on the FTE QuakeWorld engine.
 You still have to provide the assets yourself, but hey - CS 1.5 is a free download.
 
 <img src="https://icculus.org/~marco/opencs/screenshots/fte-20170113225215-0.png" alt="Screen 1" width="256" height="192"> <img src="https://icculus.org/~marco/opencs/screenshots/fte-20170113225158-0.png" alt="Screen 2" width="256" height="192">
