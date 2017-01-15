@@ -46,6 +46,7 @@ var float PARTICLE_SMOKE_GREY;
 var float PARTICLE_SMOKE_BROWN;
 var float PARTICLE_BLOOD;
 var float DECAL_SHOT;
+var float DECAL_GLASS;
 
 vector vHUDColor; // Defined in HUD_Draw (HUD.c)
 vector vVGUIColor; // Defined in HUD_Draw (VGUI.c)
@@ -60,6 +61,11 @@ vector vVideoResolution; // Updated every frame
 float fInputKeyCode;
 float fInputKeyASCII;
 float fInputKeyDown;
+
+var int iInputAttack2;
+var int iInputReload;
+var int iInputUse;
+var int iInputDuck;
 
 // Input globals for the mouse
 float fMouseClick;

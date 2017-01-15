@@ -68,6 +68,7 @@ void Effect_Impact( int iType, vector vPos, vector vNormal ) {
 		case IMPACT_EXPLOSION:
 			break;
 		case IMPACT_GLASS:
+			pointparticles( DECAL_GLASS, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_PIECES_BLACK, vPos, vNormal, 1 );
 			break;
 		case IMPACT_WOOD:

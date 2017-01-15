@@ -1,8 +1,8 @@
 FTEMANIFEST 1
 game cstrike
-name "OpenCS"
-protocolname "OPENCS"
+name "FreeCS"
+protocolname "FREECS"
 basegame valve
 basegame cstrike
-basegame *opencs
+basegame *freecs
 disablehomedir 1

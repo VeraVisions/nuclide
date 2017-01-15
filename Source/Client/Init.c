@@ -76,7 +76,8 @@ void CSQC_Init(float apilevel, string enginename, float engineversion) {
 	PARTICLE_SMOKE_GREY 	= particleeffectnum( "part_smoke_grey" );
 	PARTICLE_SMOKE_BROWN 	= particleeffectnum( "part_smoke_brown" );
 	PARTICLE_BLOOD 			= particleeffectnum( "part_blood" );
-	DECAL_SHOT 				= particleeffectnum( "decal_shot1" );
+	DECAL_SHOT 				= particleeffectnum( "decal_shot" );
+	DECAL_SHOT 				= particleeffectnum( "decal_glass" );
 
 	Radio_InitSounds();
 	

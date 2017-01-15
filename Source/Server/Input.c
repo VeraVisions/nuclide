@@ -38,9 +38,15 @@ void Input_Handle( void ) {
 	} 
 	
 	if ( self.button3 ) {
-			Player_CrouchDown();
+		Player_UseDown(); 
+	} else {
+		Player_UseUp();
+	}
+	
+	if ( self.button6 ) {
+		Player_CrouchDown();
 	} else if ( self.flags & FL_CROUCHING ) {
-			Player_CrouchUp();
+		Player_CrouchUp();
 	}
 	
 	if ( self.button0 ) {
@@ -51,12 +57,6 @@ void Input_Handle( void ) {
 		Weapon_SecondaryAttack( self.weapon );
 	} else {
 		Weapon_Release();
-	}
-	
-	if ( self.button6 ) {
-		Player_UseDown(); 
-	} else {
-		Player_UseUp();
 	}
 	
 	self.impulse = 0; 

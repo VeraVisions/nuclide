@@ -26,6 +26,16 @@ Init all the cmds in one place
 =================
 */
 void CSQC_ConsoleCommand_Init( void ) {
+	
+	registercommand( "+attack2" );
+	registercommand( "-attack2" );
+	registercommand( "+reload" );
+	registercommand( "-reload" );
+	registercommand( "+use" );
+	registercommand( "-use" );
+	registercommand( "+duck" );
+	registercommand( "-duck" );
+	
 	registercommand( "buy" );
 	registercommand( "chooseteam" );
 	registercommand( "invnext" );
@@ -106,6 +116,38 @@ Can interject cmds and create new ones
 float CSQC_ConsoleCommand( string sCMD ) {
 	tokenize( sCMD );
 	switch ( argv(0) ) {
+	case "+attack2":
+		iInputAttack2 = TRUE;
+		return TRUE;
+		break;
+	case "-attack2":
+		iInputAttack2 = FALSE;
+		return TRUE;
+		break;
+	case "+reload":
+		iInputReload = TRUE;
+		return TRUE;
+		break;
+	case "-reload":
+		iInputReload = FALSE;
+		return TRUE;
+		break;
+	case "+use":
+		iInputUse = TRUE;
+		return TRUE;
+		break;
+	case "-use":
+		iInputUse = FALSE;
+		return TRUE;
+		break;
+	case "+duck":
+		iInputDuck = TRUE;
+		return TRUE;
+		break;
+	case "-duck":
+		iInputDuck = FALSE;
+		return TRUE;
+		break;
 	case "buy":
 		if( getstatf( STAT_BUYZONE ) == TRUE ) {
 			fVGUI_Display = VGUI_BM_MAIN;
@@ -483,4 +525,20 @@ void CSQC_Input_Frame( void ) {
 		input_buttons = 0;
 		return;
 	}
+	
+	if ( iInputAttack2 == TRUE ) {
+		input_buttons |= INPUT_BUTTON5;
+	} 
+
+	if ( iInputReload == TRUE ) {
+		input_buttons |= INPUT_BUTTON4;
+	} 
+	
+	if ( iInputUse == TRUE ) {
+		input_buttons |= INPUT_BUTTON3;
+	} 
+	
+	if ( iInputDuck == TRUE ) {
+		input_buttons |= INPUT_BUTTON6;
+	} 
 }
