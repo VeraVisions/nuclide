@@ -11,13 +11,14 @@ The goal of this project is to provide an open-source version of Counter-Strike 
 Counter-Strike, being one of the most popular multiplayer games to exist, surprisingly hasn't had
 a free-software implementation done until now. 
 
-Some of the cool things you can do with this:
-- Play/Host CS and CS Servers on virtually every platform.
-- Customize the game to whatever extent you like.
-- Create entirely new weapons!
-- Create completely new and refreshing gamemodes!
-- Have a guarantee to be able to play it 20 years into the future!
-- Use it as a base for your own games/mods!
+Six cool random things you can do with this:
+
+1. Play/Host CS on virtually every platform.
+2. Customize the game to whatever extent you like.
+3. Create entirely new weapons!
+4. Create completely new and refreshing gamemodes!
+5. Have a guarantee to be able to play it 20 years into the future!
+6. Use it as a base for your own games/mods!
 
 # Status
 All the weapons are implemented, so are the gamemodes: 
