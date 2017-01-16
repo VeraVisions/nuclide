@@ -30,9 +30,9 @@ Not all equipment is implemented and no map radar/overview is recreated.
 Basically, the game is playable as long as you don't care about grenades (for now).
 
 # Installing
-1. Download the latest version of FTE QuakeWorld.
+1. Compile the latest version of FTEQW from the [SVN repo](https://sourceforge.net/projects/fteqw/).
 2. Download csv15full.exe (or the Linux server zip) to get the 'cstrike' folder.
-3. Move both the cstrike folder and FTE QuakeWorld into a folder
+3. Move both the cstrike folder and the FTE QuakeWorld binary into a folder
 4. Copy the contents of FreeCS into that same folder, so that fteqw, freecs, default.fmf and cstrike co-exist in the same directory.
 5. Run FTE QuakeWorld
 
