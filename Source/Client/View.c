@@ -74,7 +74,7 @@ float View_CalcBob( void ) {
 		fCycle = MATH_PI + MATH_PI * ( fCycle - autocvar_cl_bobup )/( 1.0 - autocvar_cl_bobup );
 	}
 
-	vVelocity = pmove_vel; //ePlayerEnt.velocity;
+	vVelocity = vPlayerVelocity;
 	vVelocity_z = 0;
 
 	fBob = sqrt( vVelocity_x * vVelocity_x + vVelocity_y * vVelocity_y ) * autocvar_cl_bob;

@@ -1,6 +1,6 @@
 #pragma target fte
 
-#pragma progs_dat  "../../opencs/progs.dat"
+#pragma progs_dat  "../../freecs/progs.dat"
 
 #includelist
 ../Builtins.h

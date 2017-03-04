@@ -81,6 +81,10 @@ vector vCameraPos;
 vector vCameraAngle;
 float fCameraTime;
 
+vector vPlayerOrigin;
+vector vPlayerOriginOld;
+vector vPlayerVelocity;
+
 void View_PlayAnimation( int iSequence );
 
 // This actually belongs in Builtins.h since its an undocumented global

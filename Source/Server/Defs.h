@@ -18,12 +18,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#define VEC_HULL_MIN '-16 -16 -36'
-#define VEC_HULL_MAX '16 16 36'
-#define VEC_PLAYER_VIEWPOS '0 0 20'
 
-#define VEC_CHULL_MIN '-16 -16 -18'
-#define VEC_CHULL_MAX '16 16 18'
+
+#define VEC_PLAYER_VIEWPOS '0 0 20'
 #define VEC_PLAYER_CVIEWPOS '0 0 12'
 
 // Server cvars
@@ -153,6 +150,7 @@ void Input_Handle( void );
 
 void Animation_PlayerTop( float fFrame );
 void Animation_PlayerTopTemp( float fFrame, float fTime );
+void Footsteps_Update( void );
 
 // WIP
 string __fullspawndata;

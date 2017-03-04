@@ -26,37 +26,37 @@ CSQC_Ent_Update
 Called whenever an entity is sent manually via .SendFlags and so on
 =================
 */
-void CSQC_Ent_Update( float fIsNew ) {
+void CSQC_Ent_Update( float flIsNew ) {
 	float fEntType = readbyte();
 	
-	/*if( fEntType == ENT_PLAYER ) {
-		if ( self.entnum == player_localentnum ) {
-			ePlayerEnt = self;
-		}
-		if ( fIsNew == TRUE ) {
-			self.predraw = CSQC_PlayerUpdate;
-			//self.drawmask = MASK_ENGINE;
+	if( fEntType == ENT_PLAYER ) {
+		if ( flIsNew == TRUE ) {
+			self.classname = "player";
+			self.solid = SOLID_SLIDEBOX;
+			self.predraw = Player_PreDraw;
+			self.drawmask = MASK_ENGINE;
 		}
 		
-		float fFlags = readbyte();
+		self.modelindex = readbyte();
 		self.origin_x = readcoord();
 		self.origin_y = readcoord();
 		self.origin_z = readcoord();
 		self.angles_x = readcoord();
 		self.angles_y = readcoord();
 		self.angles_z = readcoord();
-		self.modelindex = readbyte();
+		self.velocity_x = readshort();
+		self.velocity_y = readshort();
+		self.velocity_z = readshort();
+		self.flags = readfloat();
 		
-		if ( fFlags & PLAYER_SENDFLAG_INGAME ) {
-			self.velocity_x = readcoord();
-			self.velocity_y = readcoord();
-			self.velocity_z = readcoord();
-			self.flags = readfloat();
+		if ( self.flags & FL_CROUCHING ) {
+			setsize( self, VEC_CHULL_MIN, VEC_CHULL_MAX );
+		} else {
+			setsize( self, VEC_HULL_MIN, VEC_HULL_MAX );
 		}
 		
 		setorigin( self, self.origin );
-	
-	} else */if ( fEntType == ENT_AMBIENTSOUND ) {
+	} else if ( fEntType == ENT_AMBIENTSOUND ) {
 		self.origin_x = readcoord();
 		self.origin_y = readcoord();
 		self.origin_z = readcoord();

@@ -45,6 +45,7 @@ Defs.h
 
 ../Server/AmbientSound.c
 
+Player.c
 View.c
 VGUIObjects.c
 VGUISpectator.c

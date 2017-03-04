@@ -18,25 +18,25 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-/*float Player_SendEntity( entity ePEnt, float fChanged ) {
+float Player_SendEntity( entity ePEnt, float fChanged ) {
+	if ( self.health <= 0 && ePEnt != self ) {
+		return FALSE;
+	}
+	
 	WriteByte( MSG_ENTITY, ENT_PLAYER );
-	WriteByte( MSG_ENTITY, fChanged );
+	WriteByte( MSG_ENTITY, self.modelindex );
 	WriteCoord( MSG_ENTITY, self.origin_x );
 	WriteCoord( MSG_ENTITY, self.origin_y );
 	WriteCoord( MSG_ENTITY, self.origin_z );
 	WriteCoord( MSG_ENTITY, self.angles_x );
 	WriteCoord( MSG_ENTITY, self.angles_y );
 	WriteCoord( MSG_ENTITY, self.angles_z );
-	WriteByte( MSG_ENTITY, self.modelindex );
-	
-	if ( fChanged & PLAYER_SENDFLAG_INGAME ) {
-		WriteCoord( MSG_ENTITY, self.velocity_x );
-		WriteCoord( MSG_ENTITY, self.velocity_y );
-		WriteCoord( MSG_ENTITY, self.velocity_z );
-		WriteFloat( MSG_ENTITY, self.flags );
-	}
+	WriteShort( MSG_ENTITY, self.velocity_x );
+	WriteShort( MSG_ENTITY, self.velocity_y );
+	WriteShort( MSG_ENTITY, self.velocity_z );
+	WriteFloat( MSG_ENTITY, self.flags );
 	return TRUE;
-}*/
+}
 
 string sPainSounds[5] = {
 	"player/pl_pain2.wav",
@@ -297,6 +297,7 @@ Run after physics
 */
 void PlayerPostThink( void ) {
 	Animation_PlayerUpdate();
+	Footsteps_Update();
 	
 	if ( ( self.flags & FL_ONGROUND ) && ( self.health > 0 ) && ( self.fFallVelocity > 100 )) {
 		if ( self.fFallVelocity > 580 ) {
@@ -306,4 +307,6 @@ void PlayerPostThink( void ) {
 		} 
 		self.fFallVelocity = 0;
 	}
+	
+	self.SendFlags = 1;
 }

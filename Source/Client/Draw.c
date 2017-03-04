@@ -154,8 +154,8 @@ void CSQC_UpdateView( float fWinWidth, float fWinHeight, float fGameFocus ) {
 		setproperty( VF_ORIGIN, vCameraPos) ;
 		setproperty( VF_ANGLES, vCameraAngle );
 	} else {
-		//setproperty( VF_ORIGIN, ePlayerEnt.origin + [ 0, 0, getstatf( STAT_VIEWHEIGHT ) ] );
-		//setproperty( VF_ANGLES, input_angles );
+		setproperty( VF_ORIGIN, vPlayerOrigin + [ 0, 0, getstatf( STAT_VIEWHEIGHT ) ] );
+		setproperty( VF_ANGLES, view_angles );
 		View_DrawViewModel();
 	}
 	
