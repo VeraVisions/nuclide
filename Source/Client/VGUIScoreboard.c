@@ -115,7 +115,7 @@ void VGUI_Scores_Show( void ) {
 	vMainPos_y = 56;
 		
 	// Draw the background
-	drawfill( vMainPos, vSize - '1 1 0', VGUI_WINDOW_BGCOLOR, VGUI_WINDOW_BGALPHA );
+	drawfill( vMainPos + '1 1', vSize - '2 2', VGUI_WINDOW_BGCOLOR, VGUI_WINDOW_BGALPHA );
 	
 	// Draw the outline START
 	v1_x = vMainPos_x + vSize_x;

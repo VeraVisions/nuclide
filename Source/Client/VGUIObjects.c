@@ -55,7 +55,7 @@ void VGUI_Window( string sTitle, vector vPos, vector vSize ) {
 	vector v1, v2, v3;
 
 	// Draw the background
-	drawfill( vPos, vSize - '1 1 0', VGUI_WINDOW_BGCOLOR, VGUI_WINDOW_BGALPHA );
+	drawfill( vPos + '1 1', vSize - '2 2', VGUI_WINDOW_BGCOLOR, VGUI_WINDOW_BGALPHA );
 	
 	// Draw the outline START
 	v1_x = vPos_x + vSize_x;
@@ -81,7 +81,7 @@ void VGUI_WindowSmall( string sTitle, vector vPos, vector vSize ) {
 	vector v1, v2, v3;
 
 	// Draw the background
-	drawfill( vPos, vSize - '1 1 0', VGUI_WINDOW_BGCOLOR, VGUI_WINDOW_BGALPHA );
+	drawfill( vPos + '1 1', vSize - '2 2', VGUI_WINDOW_BGCOLOR, VGUI_WINDOW_BGALPHA );
 	
 	// Draw the outline START
 	v1_x = vPos_x + vSize_x;
