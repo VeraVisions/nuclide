@@ -83,7 +83,6 @@ void hostage_die( int iHitBody ) {
 	
 	self.solid = SOLID_NOT;
 	self.takedamage = DAMAGE_NO;
-	//skel_delete( self.skeletonindex );
 	
 	if ( other.eTargetPoint != other.eUser ) {
 		remove( other.eTargetPoint );
@@ -203,11 +202,8 @@ void hostage_physics( void ) {
 			self.frame = 13;
 		}
 	}
-	
-	// Calculate physstuff
+
 	runstandardplayerphysics( self );
-	//self.frame1time += frametime;
-	//skel_build( self.skeletonindex, self, self.modelindex, 1, 0, 0 );
 }
 
 /*
@@ -225,9 +221,6 @@ void hostage_entity( void ) {
 		self.movetype = MOVETYPE_WALK;
 		setmodel( self, self.model );
 		setsize( self, VEC_HULL_MIN + '0 0 36', VEC_HULL_MAX + '0 0 36' );
-		
-		//self.basebone = -1; // Debug: Network that shit
-		//self.skeletonindex = skel_create( self.modelindex );
 		self.customphysics = hostage_physics;
 
 		self.eUser = world;

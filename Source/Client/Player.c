@@ -32,7 +32,11 @@ float Player_PreDraw( void ) {
 		vector vOldVelocity = self.velocity;
 		float fOldPMoveFlags = self.pmove_flags;
 
-		self.movetype = MOVETYPE_WALK;
+		if ( getplayerkeyvalue( player_localnum, "*spectator" ) == "1" ) {
+			self.movetype = MOVETYPE_NOCLIP;
+		} else {
+			self.movetype = MOVETYPE_WALK;
+		}
 		
 		for ( int i = servercommandframe + 1; i <= clientcommandframe; i++ ) {
 			getinputstate( i );
