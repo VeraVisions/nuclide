@@ -127,7 +127,7 @@ void SV_RunClientCommand( void ) {
 	self.fInBuyZone = FALSE;
 	self.fInHostageZone = FALSE;
 	
-	if( fGameState == GAME_FREEZE && self.team != 0 ) {
+	if ( fGameState == GAME_FREEZE && self.health > 0 ) {
 		input_movevalues = '0 0 0';
 		input_buttons = 0;
 		input_impulse = 0;
