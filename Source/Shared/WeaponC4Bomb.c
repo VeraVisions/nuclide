@@ -142,9 +142,9 @@ void WeaponC4BOMB_Drop( vector vBombPos ) {
 		
 		// If the user has the right equipment, make 10 seconds pass twice as fast
 		if ( eActivator.iEquipment & EQUIPMENT_DEFUSALKIT ) {
-			fDefuseProgress += ( frametime * 2 );
+			fDefuseProgress += ( fGameFrametime * 2 );
 		} else {
-			fDefuseProgress += frametime;
+			fDefuseProgress += fGameFrametime;
 		}
 		
 		eActivator.fProgressBar = (fDefuseProgress * 0.1);
@@ -215,8 +215,9 @@ void WeaponC4BOMB_PrimaryFire( void ) {
 	// Add onto the planting-time thing
 	self.fBombProgress += frametime;
 	
+	centerprint( self, ftos(self.fBombProgress ) );
 	// 3 seconds have passed, plant the bomb
-	if ( self.fBombProgress >= 3.0 ) {
+	if ( self.fBombProgress >= 3.0f ) {
 		WeaponC4BOMB_Drop( trace_endpos );
 	}
 #else

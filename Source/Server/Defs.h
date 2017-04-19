@@ -89,6 +89,8 @@ int iBombRadius; // For info_map_parameters
 int iHostagesRescued;
 int iBombPlanted;
 
+var float fGameFrametime;
+
 // Generic entity fields
 .int iUsable;
 .int iBleeds;

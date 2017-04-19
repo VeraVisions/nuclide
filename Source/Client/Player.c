@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 float Player_PreDraw( void ) {
     if ( self.entnum == player_localentnum ) {
-		// Don't predict if we're frozen/paused
+		// Don't predict if we're frozen/paused FIXME: FTE doesn't have serverkey_float yet!
 		if ( serverkey( SERVERKEY_PAUSESTATE ) == "1" || ( ( getstati( STAT_GAMESTATE ) == GAME_FREEZE ) && ( getstati( STAT_HEALTH ) > 0 ) ) ) {
 			vPlayerOrigin = self.origin;
 			vPlayerVelocity = '0 0 0';

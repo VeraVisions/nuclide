@@ -125,8 +125,9 @@ void Weapon_PrimaryAttack( float fWeapon ) {
 	if ( !( self.flags & FL_SEMI_TOGGLED ) )
 		return;
 #endif
-
+#ifdef CSQC
 	Animation_ShootWeapon();
+#endif
 	wpnFuncTable[ fWeapon ].vPrimary();
 }
 
@@ -156,8 +157,9 @@ void Weapon_Reload( float fWeapon ) {
 		return;
 	}
 #endif
-
+#ifdef CSQC
 	Animation_ReloadWeapon();
+#endif
 	wpnFuncTable[ fWeapon ].vReload();
 }
 
