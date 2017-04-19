@@ -10,6 +10,7 @@
 ../Math.h
 Defs.h
 
+
 ../Shared/WeaponAK47.c
 ../Shared/WeaponAUG.c
 ../Shared/WeaponAWP.c
@@ -42,7 +43,7 @@ Defs.h
 ../Shared/Effects.c
 ../Shared/Radio.c
 ../Shared/Equipment.c
-
+../Shared/Animations.c
 ../Server/AmbientSound.c
 
 Player.c

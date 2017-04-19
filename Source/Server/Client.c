@@ -49,7 +49,7 @@ Run every frame on every spectator
 =================
 */
 void SpectatorThink( void ) {
-	
+	self.SendFlags = 1;
 }
 
 /*
@@ -121,7 +121,6 @@ Funtion that can interrupt client commands before physics are run
 =================
 */
 void SV_RunClientCommand( void ) {
-	
 	// The individual zones will just override this behavior
 	self.fInBombZone = FALSE;
 	self.fInBuyZone = FALSE;
@@ -148,9 +147,8 @@ void Client_SendEvent( entity eClient, float fEVType ) {
 	
 	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
 	WriteByte( MSG_MULTICAST, fEVType );
-
 	msg_entity = eClient;
-	multicast( '0 0 0', MULTICAST_ALL );
+	multicast( '0 0 0', MULTICAST_ONE );
 }
 
 /*
@@ -162,18 +160,14 @@ Switches the player camera to a different position for a specific time
 */
 void Client_TriggerCamera( entity eTarget, vector vPos, vector vEndPos, float fResetTime ) {
 	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
-	
 	WriteByte( MSG_MULTICAST, EV_CAMERATRIGGER );
-	
 	WriteCoord( MSG_MULTICAST, vPos_x );
 	WriteCoord( MSG_MULTICAST, vPos_y );
 	WriteCoord( MSG_MULTICAST, vPos_z );
-	
 	WriteCoord( MSG_MULTICAST, vEndPos_x );
 	WriteCoord( MSG_MULTICAST, vEndPos_y );
 	WriteCoord( MSG_MULTICAST, vEndPos_z );
-	
 	WriteFloat( MSG_MULTICAST, fResetTime );
 	msg_entity = eTarget;
-	multicast( '0 0 0', MULTICAST_ALL );
+	multicast( '0 0 0', MULTICAST_ONE );
 }

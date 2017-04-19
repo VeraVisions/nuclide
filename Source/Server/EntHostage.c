@@ -134,7 +134,7 @@ void hostage_physics( void ) {
 		vector vEndAngle = vectoangles( self.eTargetPoint.origin - self.origin );
 		
 		// Slowly turn towards target
-		float fTurn = Math_LerpAngle( self.angles_y, vEndAngle_y, 0.2 );
+		float fTurn = Math_LerpAngle( self.angles_y, vEndAngle_y, frametime );
 		self.angles_y += fTurn;
 		
 		// Is the waypoint close? if so, remove and go set the next one!

@@ -20,6 +20,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 float Player_PreDraw( void ) {
     if ( self.entnum == player_localentnum ) {
+		// Don't predict if we're frozen/paused
+		if ( serverkey( SERVERKEY_PAUSESTATE ) == "1" || ( ( getstati( STAT_GAMESTATE ) == GAME_FREEZE ) && ( getstati( STAT_HEALTH ) > 0 ) ) ) {
+			vPlayerOrigin = self.origin;
+			vPlayerVelocity = '0 0 0';
+			addentity( self );
+			return PREDRAW_NEXT;
+		}
+		
 		vector vOldOrigin = self.origin;
 		vector vOldVelocity = self.velocity;
 		float fOldPMoveFlags = self.pmove_flags;
@@ -59,6 +67,9 @@ float Player_PreDraw( void ) {
 
 		self.renderflags = RF_EXTERNALMODEL;
     } else {
+		Animation_PlayerUpdate();
+		self.baseframe1time += frametime;
+		self.frame1time += frametime;
         addentity( self );
     }
     return PREDRAW_NEXT;

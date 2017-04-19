@@ -26,6 +26,10 @@ Handles impulse and whatnot
 =================
 */
 void Input_Handle( void ) {
+	if ( self.health <= 0 ) {
+		return;
+	}
+	
 	// TODO: Make this fast switch only
 	if ( self.impulse == 3 ) {
 		Weapon_Switch( SLOT_MELEE );

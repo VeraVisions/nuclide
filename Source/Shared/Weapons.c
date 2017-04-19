@@ -125,7 +125,8 @@ void Weapon_PrimaryAttack( float fWeapon ) {
 	if ( !( self.flags & FL_SEMI_TOGGLED ) )
 		return;
 #endif
-	
+
+	Animation_ShootWeapon();
 	wpnFuncTable[ fWeapon ].vPrimary();
 }
 
@@ -155,31 +156,9 @@ void Weapon_Reload( float fWeapon ) {
 		return;
 	}
 #endif
-	
+
+	Animation_ReloadWeapon();
 	wpnFuncTable[ fWeapon ].vReload();
-}
-
-#ifdef SSQC
-/*
-=================
-Weapon_Release
-
-Called when letting go one of the weapon firing buttons
-=================
-*/
-void Weapon_Release( void ) {
-	self.flags = self.flags | FL_SEMI_TOGGLED;
-}
-
-/*
-=================
-Weapon_GetSlot
-
-Returns which slot a weapon belongs to
-=================
-*/
-int Weapon_GetSlot( float fWeapon ) {
-	return wptTable[ fWeapon ].iSlot;
 }
 
 /*
@@ -213,6 +192,29 @@ Returns the reloading delay before being able to be fired again
 */
 float Weapon_GetReloadTime( float fWeapon ) {
 	return wptTable[ fWeapon ].fReloadFinished;
+}
+
+#ifdef SSQC
+/*
+=================
+Weapon_Release
+
+Called when letting go one of the weapon firing buttons
+=================
+*/
+void Weapon_Release( void ) {
+	self.flags = self.flags | FL_SEMI_TOGGLED;
+}
+
+/*
+=================
+Weapon_GetSlot
+
+Returns which slot a weapon belongs to
+=================
+*/
+int Weapon_GetSlot( float fWeapon ) {
+	return wptTable[ fWeapon ].iSlot;
 }
 
 /*

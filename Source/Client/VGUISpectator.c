@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "VGUI.h"
 
 void VGUI_DrawSpectatorHUD( void ) {
+	vHUDColor = autocvar_con_color * ( 1 / 255 );
+	
 	// Draw the borders
 	drawfill( [ 0, 0 ], [ vVideoResolution_x, 40 ], '0 0 0', 1 );
 	drawfill( [ 0, vVideoResolution_y - 40], [ vVideoResolution_x, 40 ], '0 0 0', 1 );

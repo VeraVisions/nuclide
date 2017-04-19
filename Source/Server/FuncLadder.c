@@ -18,6 +18,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+// Uncomment this once FTEs engine ladder is fixed?
+//#define FTE_LADDER
+
 /*
 =================
 func_ladder_sound
@@ -28,7 +31,7 @@ void func_ladder_sound( entity target ) {
 		return;
 	}
 
-	float	vStep = target.velocity_z;
+	float vStep = target.velocity_z;
 
 	if ( vStep < 0 ) {
 		vStep *= -1.0;
@@ -57,12 +60,12 @@ func_ladder_touch
 =================
 */
 void func_ladder_touch( void ) {
-	vector vPlayerVector;
-	
  	if ( other.classname != "player" ) {
 		return;
 	}
 	
+#ifndef FTE_LADDER
+	vector vPlayerVector;
 	makevectors( other.v_angle );
 	vPlayerVector = v_forward;
 	vPlayerVector = ( vPlayerVector * 240 );
@@ -72,7 +75,8 @@ void func_ladder_touch( void ) {
 	} else {
 		other.velocity = '0 0 0';
 	}
-
+#endif
+	
 	func_ladder_sound( other );
 }
 
@@ -94,6 +98,11 @@ void func_ladder( void ) {
 	self.solid = SOLID_TRIGGER;
 	setmodel( self, self.model );
 	self.model = 0;
+	
+#ifdef FTE_LADDER
+	self.skin = CONTENT_LADDER;
+	self.alpha = 0.001;
+#endif
 
 	self.touch = func_ladder_touch;
 }

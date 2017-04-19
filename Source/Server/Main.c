@@ -375,6 +375,7 @@ void worldspawn( void ) {
 	clientstat( STAT_PROGRESS, EV_FLOAT, fProgressBar );
 	clientstat( STAT_FLAGS, EV_FLOAT, flags );
 	pointerstat( STAT_GAMETIME, EV_FLOAT, &fGameTime );
+	pointerstat( STAT_GAMESTATE, EV_FLOAT, &fGameState );
 	pointerstat( STAT_WON_T, EV_INTEGER, &iWon_T );
 	pointerstat( STAT_WON_CT, EV_INTEGER, &iWon_CT );
 	

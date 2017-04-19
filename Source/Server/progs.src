@@ -9,7 +9,7 @@
 Defs.h
 
 Money.c
-Animations.c
+../Shared/Animations.c
 
 PhysicsMove.c
 ../Shared/Radio.c

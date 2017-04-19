@@ -24,14 +24,16 @@ func_door_rotating Spawnflags
 =================
 */
 
-#define SF_ROT_OPEN		1
-#define SF_ROT_REVERSE 	2
-#define SF_ROT_UNLINK 	4
-#define SF_ROT_ONEWAY	16
-#define SF_ROT_TOGGLE	32
-#define SF_ROT_XAXIS	64
-#define SF_ROT_YAXIS	128
-#define SF_ROT_USE		256
+enumflags {
+	SF_ROT_OPEN,
+	SF_ROT_REVERSE,
+	SF_ROT_UNLINK,
+	SF_ROT_ONEWAY,
+	SF_ROT_TOGGLE,
+	SF_ROT_XAXIS,
+	SF_ROT_YAXIS,
+	SF_ROT_USE
+};
 
 void FuncDoorRotate_RotateAway( void );
 void FuncDoorRotate_RotateBack( void );
@@ -84,7 +86,7 @@ FuncDoorRotate_RotateBack
 */
 void FuncDoorRotate_RotateBack( void ) {
 	
-	if( self.movesnd > 0 && self.movesnd <= 10 ) {
+	if ( self.movesnd > 0 && self.movesnd <= 10 ) {
 		sound( self, CHAN_VOICE, sprintf( "doors/doormove%d.wav", self.movesnd ), 1.0, ATTN_NORM );
 	} else {
 		sound( self, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM );
@@ -110,7 +112,7 @@ void FuncDoorRotate_RotateAway( void ) {
 		return;
 	}
 	
-	if( self.movesnd > 0 && self.movesnd <= 10 ) {
+	if ( self.movesnd > 0 && self.movesnd <= 10 ) {
 		sound( self, CHAN_VOICE, sprintf( "doors/doormove%d.wav", self.movesnd ), 1.0, ATTN_NORM );
 	} else {
 		sound( self, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM );
@@ -175,7 +177,7 @@ void FuncDoorRotate_Touch( void ) {
 		eActivator = other;
 		FuncDoorRotate_Trigger();
     
-		if( !( self.spawnflags & SF_ROT_USE ) ) {
+		if ( !( self.spawnflags & SF_ROT_USE ) ) {
 			self.touch = __NULL__;
 		}
 	}
@@ -187,7 +189,7 @@ FuncDoorRotate_Blocked
 =================
 */
 void FuncDoorRotate_Blocked( void ) {
-	if( self.dmg ) {
+	if ( self.dmg ) {
 		Damage_Apply( other, self, self.dmg, other.origin );
 	}
 	
@@ -225,7 +227,7 @@ void func_door_rotating( void ) {
 		self.speed = 100;
 	}
 	
-	if( self.wait == 0 ) {
+	if ( self.wait == 0 ) {
 		self.wait = 4;
 	}
   

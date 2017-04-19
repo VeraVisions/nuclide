@@ -45,7 +45,7 @@ enum {
 .float state;
 .vector pos1, pos2;
 
-// Not all that customizable...
+// Not all that customizable... but better than QUAKE.
 .float movesnd;
 .float stopsnd;
 
@@ -55,11 +55,12 @@ FuncButton_PrecacheSounds
 ====================
 */
 void FuncButton_PrecacheSounds( void ) {
-	string sSample = "buttons/button9.wav";
+	string sSample = "buttons/button9.wav"; // Default sample?
 	
 	switch( self.sounds ) {
 		case 0: 
-			sSample = "common/null.wav";        
+			// if you ever wondered why a silent button sounded a bit noisey... it's because this one kinda blows
+			sSample = "common/null.wav";
 			break;
 		case 1:
 			sSample = "buttons/button1.wav";
@@ -119,6 +120,7 @@ void FuncButton_PrecacheSounds( void ) {
 			sSample = "buttons/lever5.wav";
 			break;
 	}
+	
 	precache_sound( sSample );
 	self.noise = sSample;
 }
@@ -236,7 +238,7 @@ FuncButton_Blocked
 ====================
 */
 void FuncButton_Blocked( void ) {
-	if( self.dmg ) {
+	if ( self.dmg ) {
 		Damage_Apply( other, self, self.dmg, other.origin );
 	}
 	
@@ -277,7 +279,6 @@ void func_button( void ) {
 	}
 
 	self.iUsable = TRUE;
-
 	self.pos1 = self.origin;
 	
 	if ( self.spawnflags & SF_BTT_NOMOVE ) {

@@ -48,6 +48,7 @@ void CSQC_Ent_Update( float flIsNew ) {
 		self.velocity_y = readshort();
 		self.velocity_z = readshort();
 		self.flags = readfloat();
+		self.weapon = readbyte();
 		
 		if ( self.flags & FL_CROUCHING ) {
 			setsize( self, VEC_CHULL_MIN, VEC_CHULL_MAX );

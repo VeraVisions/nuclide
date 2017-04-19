@@ -63,6 +63,7 @@ enum {
 	STAT_PROGRESS,
 	STAT_TEAM,
 	STAT_GAMETIME,
+	STAT_GAMESTATE,
 	STAT_WON_T,
 	STAT_WON_CT
 };
@@ -281,6 +282,7 @@ enum {
 #define FL_USERELEASED 	8192
 #define FL_CROUCHING 	16384
 #define FL_SEMI_TOGGLED 32768
+#define FL_FROZEN 		131072
 
 float clamp(float d, float imin, float imax) {
 	float t;

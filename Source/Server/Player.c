@@ -35,6 +35,7 @@ float Player_SendEntity( entity ePEnt, float fChanged ) {
 	WriteShort( MSG_ENTITY, self.velocity_y );
 	WriteShort( MSG_ENTITY, self.velocity_z );
 	WriteFloat( MSG_ENTITY, self.flags );
+	WriteByte( MSG_ENTITY, self.weapon );
 	return TRUE;
 }
 
