@@ -187,6 +187,7 @@ void WeaponC4BOMB_Draw( void ) {
 void WeaponC4BOMB_Release( void ) {
 #ifdef SSQC
 	self.fBombProgress = 0;
+	self.fAttackFinished = time + 1.0;
 #else
 	View_PlayAnimation( ANIM_C4_IDLE );
 	iBombProgress = 0;
@@ -202,22 +203,18 @@ void WeaponC4BOMB_PrimaryFire( void ) {
 	if ( trace_fraction == 1 || self.fInBombZone == FALSE ) {
 		Animation_ReloadWeapon();
 		WeaponC4BOMB_Release();
-		self.fAttackFinished = time + 1.0;
 		return;
 	}
 	
 	// Play the sequence at the start
 	if ( self.fBombProgress == 0 ) {
+		self.fBombProgress = time + 3.0f;
 		Client_SendEvent( self, EV_WEAPON_PRIMARYATTACK );
 		Animation_ShootWeapon();
 	}
-	
-	// Add onto the planting-time thing
-	self.fBombProgress += frametime;
-	
-	centerprint( self, ftos(self.fBombProgress ) );
+
 	// 3 seconds have passed, plant the bomb
-	if ( self.fBombProgress >= 3.0f ) {
+	if ( self.fBombProgress <=  time ) {
 		WeaponC4BOMB_Drop( trace_endpos );
 	}
 #else
