@@ -41,7 +41,7 @@ entity hostage_waypoint( void ) {
 	setsize( ePoint, self.mins, self.maxs );
 	ePoint.classname = "remove_me";
 	ePoint.movetype = MOVETYPE_TOSS;
-//	setmodel( ePoint, "models/chick.mdl" ); // Visual feedback...
+	setmodel( ePoint, "models/chick.mdl" ); // Visual feedback...
 	return ePoint;
 }
 
@@ -133,7 +133,7 @@ void hostage_physics( void ) {
 		vector vEndAngle = vectoangles( self.eTargetPoint.origin - self.origin );
 		
 		// Slowly turn towards target
-		float fTurn = Math_LerpAngle( self.angles_y, vEndAngle_y, frametime );
+		float fTurn = Math_LerpAngle( self.angles_y, vEndAngle_y, frametime * 4 );
 		self.angles_y += fTurn;
 		
 		// Is the waypoint close? if so, remove and go set the next one!
@@ -153,7 +153,6 @@ void hostage_physics( void ) {
 		
 		// Don't switch states so often
 		if( self.fAttackFinished < time ) {
-			
 			// Here we check the distance of us and the player, then choosing if we should walk/run etc.
 			float fDist = vlen( self.eUser.origin - self.origin );
 			
@@ -183,17 +182,6 @@ void hostage_physics( void ) {
 			}
 		}
 		
-		// Decide speed and stuff
-		if ( self.style == HOSTAGE_WALK ) {
-			self.frame = 0;
-			input_movevalues = '110 0 0';
-		} else if ( self.style == HOSTAGE_RUN ) {
-			input_movevalues = '220 0 0';
-			self.frame = 2;
-		} else {
-			input_movevalues = '0 0 0';
-		}
-		
 		if ( fTurn > 0.01 ) {
 			self.frame = 5;
 		} else if ( fTurn < -0.01 ){
@@ -201,9 +189,23 @@ void hostage_physics( void ) {
 		} else {
 			self.frame = 13;
 		}
+		
+		// Decide speed and stuff
+		if ( self.style == HOSTAGE_WALK ) {
+			self.frame = 0;
+			input_movevalues_x = 110;
+		} else if ( self.style == HOSTAGE_RUN ) {
+			input_movevalues_x = 220;
+			self.frame = 2;
+		} else {
+			input_movevalues_x = 0;
+		}
 	}
-
+	
+	input_timelength = frametime;
+	self.movetype = MOVETYPE_WALK;
 	runstandardplayerphysics( self );
+	self.movetype = MOVETYPE_NONE;
 }
 
 /*
@@ -218,7 +220,7 @@ void hostage_entity( void ) {
 	static void hostage_entity_respawn( void ) {
 		setorigin( self, self.origin );
 		self.solid = SOLID_SLIDEBOX;
-		self.movetype = MOVETYPE_WALK;
+		self.movetype = MOVETYPE_NONE;
 		setmodel( self, self.model );
 		setsize( self, VEC_HULL_MIN + '0 0 36', VEC_HULL_MAX + '0 0 36' );
 		self.customphysics = hostage_physics;

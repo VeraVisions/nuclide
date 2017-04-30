@@ -139,3 +139,55 @@ void env_render( void ) {
 	Entities_RenderSetup();
 	self.vUse = env_render_use;
 }
+
+/*
+=================
+env_explosion
+
+This entity creates any combination of fireball, 
+smoke, sparks, decals and sound, also known as an explosion.
+
+Attributes:
+Name (targetname) - Property used to identify entities.
+Magnitude (iMagnitude) - The size of the explosion. 100 is average.
+
+Flags:
+No Damage (1) - Explosion won't cause any damage.
+Repeatable (2) - Entity can be triggered more than once.
+No Fireball (4) - There is no orange fireball. It won't look much like an explosion...
+No Smoke (8) - Creates a pollution-free explosion.
+No Decals (16) - No scorch marks are left behind.
+No Sparks (32) - No sparks fly out.
+
+Notes:
+It's possible to create a similar effect with a combination of other entities, 
+but it wouldn't be much fun, so this quick and easy one is here instead!
+=================
+*/
+.int iMagnitude;
+
+enumflags {
+	ENVEXPLO_NODAMAGE,
+	ENVEXPLO_REPEATABLE,
+	ENVEXPLO_NOBALL,
+	ENVEXPLO_NOSMOKE,
+	ENVEXPLO_NODECAL,
+	ENVEXPLO_NOSPARKS
+};
+
+// TODO: Finish cosmetic effects
+void env_explosion( void ) {
+	static void env_explosion_use( void ) {
+		te_explosion( self.origin );
+		
+		if ( !( self.spawnflags & ENVEXPLO_NODAMAGE ) ) {
+			Damage_Radius( self.origin, self, 500, self.iMagnitude );
+		}
+		if ( !( self.spawnflags & ENVEXPLO_REPEATABLE ) ) {
+			self.vUse = __NULL__;
+			remove( self );
+		}
+	}
+	
+	self.vUse = env_explosion_use;
+}

@@ -184,6 +184,7 @@ Available options:
 #define FTE_GFX_REMAPSHADER /* With the raw power of stuffcmds, the r_remapshader console command is exposed! This mystical command can be used to remap any shader to another. Remapped shaders that specify $diffuse etc in some form will inherit the textures implied by the surface. */
 #define FTE_ISBACKBUFFERED /* Allows you to check if a client has too many reliable messages pending. */
 #define FTE_MEMALLOC /* Allows dynamically allocating memory. Use pointers to access this memory. Memory will not be saved into saved games. */
+#define FTE_MEDIA_AVI /* playfilm command supports avi files. */
 #define FTE_MEDIA_CIN /* playfilm command supports q2 cin files. */
 #define FTE_MEDIA_ROQ /* playfilm command supports q3 roq files. */
 #define FTE_MULTIPROGS /* Multiple progs.dat files can be loaded inside the same qcvm. Insert new ones with addprogs inside the 'init' function, and use externvalue+externset to rewrite globals (and hook functions) to link them together. Note that the result is generally not very clean unless you carefully design for it beforehand. */
@@ -657,6 +658,7 @@ void() initents;	/* Part of FTE_MULTIPROGS. Called after fields have been finali
 void() m_init;
 void() m_shutdown;
 void(vector screensize) m_draw;	/* Provides the menuqc with a chance to draw. Will be called even if the menu does not have focus, so be sure to avoid that. COMPAT: screensize is not provided in DP. */
+void(vector screensize) m_drawloading;	/* Additional drawing function to draw loading screen overlays. */
 void(float scan, float chr) m_keydown;
 void(float scan, float chr) m_keyup;
 void(float wantmode) m_toggle;
@@ -1143,8 +1145,6 @@ const float RF_EXTERNALMODEL = 2;	/* Specifies that this entity should be displa
 #if defined(CSQC) || defined(MENU)
 const float RF_DEPTHHACK = 4;	/* Hacks the depth values such that the entity uses depth values as if it were closer to the screen. This is useful when combined with viewmodels to avoid weapons poking in to walls. */
 const float RF_ADDITIVE = 8;	/* Shaders from this entity will temporarily be hacked to use an additive blend mode instead of their normal blend mode. */
-#endif
-#ifdef CSQC
 const float RF_USEAXIS = 16;	/* The entity will be oriented according to the current v_forward+v_right+v_up vector values instead of the entity's .angles field. */
 const float RF_NOSHADOW = 32;	/* This entity will not cast shadows. Often useful on view models. */
 const float RF_FRAMETIMESARESTARTTIMES = 64;	/* Specifies that the frame1time, frame2time field are timestamps (denoting the start of the animation) rather than time into the animation. */
@@ -1621,6 +1621,16 @@ float(string) stof = #81; /* Part of FRIK_FILE, FTE_STRINGS, QW_ENGINE, ZQ_QC_ST
 void(vector where, float set) multicast = #82; /*
 		Once the MSG_MULTICAST network message buffer has been filled with data, this builtin is used to dispatch it to the given target, filtering by pvs for reduced network bandwidth. */
 
+#endif
+#if defined(CSQC) || defined(SSQC)
+string(float style, optional vector rgb) getlightstyle = #0:getlightstyle; /*
+		Obtains the light style string for the given style. */
+
+vector(float style) getlightstylergb = #0:getlightstylergb; /*
+		Obtains the current rgb value of the specified light style. In csqc, this is correct with regard to the current frame, while ssqc gives no guarentees about time and ignores client cvars. Note: use getlight if you want the actual light value at a point. */
+
+#endif
+#ifdef SSQC
 void(float style, float val, optional vector rgb) lightstylestatic = #5; /*
 		Sets the lightstyle to an explicit numerical level. From Hexen2. */
 
@@ -1974,11 +1984,11 @@ float(float modidx, float framenum) frameduration = #277; /* Part of FTE_CSQC_SK
 void(float modidx, float framenum, __inout float basetime, float targettime, void(float timestamp, int code, string data) callback) processmodelevents = #0:processmodelevents; /*
 		Calls a callback for each event that has been reached. Basetime is set to targettime. */
 
-float(float modidx, float framenum, __inout float basetime, float targettime, __inout int code, __inout string data) getnextmodelevent = #0:getnextmodelevent; /*
+float(float modidx, float framenum, __inout float basetime, float targettime, __out int code, __out string data) getnextmodelevent = #0:getnextmodelevent; /*
 		Reports the next event within a model's animation. Returns a boolean if an event was found between basetime and targettime. Writes to basetime,code,data arguments (if an event was found, basetime is set to the event's time, otherwise to targettime).
 		WARNING: this builtin cannot deal with multiple events with the same timestamp (only the first will be reported). */
 
-float(float modidx, float framenum, int eventidx, __inout float timestamp, __inout int code, __inout string data) getmodeleventidx = #0:getmodeleventidx; /*
+float(float modidx, float framenum, int eventidx, __out float timestamp, __out int code, __out string data) getmodeleventidx = #0:getmodeleventidx; /*
 		Reports an indexed event within a model's animation. Writes to timestamp,code,data arguments on success. Returns false if the animation/event/model was out of range/invalid. Does not consider looping animations (retry from index 0 if it fails and you know that its a looping animation). This builtin is more annoying to use than getnextmodelevent, but can be made to deal with multiple events with the exact same timestamp. */
 
 #endif

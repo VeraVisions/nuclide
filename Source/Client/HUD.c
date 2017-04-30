@@ -406,11 +406,6 @@ void HUD_Draw( void ) {
 	vHUDColor = autocvar_con_color * ( 1 / 255 );
 	
 	HUD_DrawTimer();
-	
-	if( getplayerkeyvalue( player_localnum, "*spectator" ) == "1" ) {
-		return;
-	}
-	
 	HUD_DrawRadar();
 	HUD_DrawHealth();
 	HUD_DrawArmor();

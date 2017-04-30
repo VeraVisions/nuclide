@@ -1,9 +1,14 @@
 #pragma target fte
 
-#pragma progs_dat  "../../opencs/menu.dat"
+#pragma progs_dat  "../../freecs/menu.dat"
+
+#define MENU
 
 #includelist
 ../Builtins.h
-../Globals.h
 ../Math.h
+Defs.h
+Init.c
+Input.c
+Draw.c
 #endlist

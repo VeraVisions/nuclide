@@ -57,14 +57,6 @@ void CSQC_Ent_Update( float flIsNew ) {
 		}
 		
 		setorigin( self, self.origin );
-	} else if ( fEntType == ENT_AMBIENTSOUND ) {
-		self.origin_x = readcoord();
-		self.origin_y = readcoord();
-		self.origin_z = readcoord();
-		
-		setorigin( self, self.origin );
-		
-		CSQC_ambient_generic( readstring(), readfloat(), readbyte() );
 	} else if ( fEntType == ENT_SPRITE ) {
 		self.origin_x = readcoord();
 		self.origin_y = readcoord();

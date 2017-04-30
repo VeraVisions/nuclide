@@ -44,7 +44,6 @@ Defs.h
 ../Shared/Radio.c
 ../Shared/Equipment.c
 ../Shared/Animations.c
-../Server/AmbientSound.c
 
 Player.c
 View.c
