@@ -201,7 +201,7 @@ void Spawn_MakeSpectator( void ) {
 	setsize (self, '-16 -16 -16', '16 16 16');
 
 	self.view_ofs = self.velocity = '0 0 0';
-	forceinfokey( self, "*spectator", "1" ); // Make sure we are known as a spectator
+	forceinfokey( self, "*spectator", "2" ); // Make sure we are known as a spectator
 
 	// Clear all the ammo stuff
 	for ( int i = 0; i < CS_WEAPON_COUNT; i++ ) {
