@@ -1,5 +1,5 @@
 /*
-OpenCS Project
+FreeCS Project
 Copyright (C) 2016, 2017 Marco "eukara" Hladik
 
 This program is free software; you can redistribute it and/or
@@ -43,6 +43,9 @@ var float fMenuScale;
 
 float frametime;
 float fLastTime;
+
+string *sMapList;
+int iMapCount;
 
 /*
 =================

@@ -1,5 +1,5 @@
 /*
-OpenCS Project
+FreeCS Project
 Copyright (C) 2015 Marco "eukara" Hladik
 
 This program is free software; you can redistribute it and/or

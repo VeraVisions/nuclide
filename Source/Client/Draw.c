@@ -1,5 +1,5 @@
 /*
-OpenCS Project
+FreeCS Project
 Copyright (C) 2016, 2017 Marco "eukara" Hladik
 
 This program is free software; you can redistribute it and/or
@@ -165,7 +165,7 @@ void CSQC_UpdateView( float fWinWidth, float fWinHeight, float fGameFocus ) {
 	
 	if( fGameFocus == TRUE ) {
 		// The spectator sees things... differently
-		if ( getplayerkeyvalue( player_localnum, "*spectator" ) == "1" ) {
+		if ( getplayerkeyvalue( player_localnum, "*spectator" ) != "0" ) {
 			VGUI_DrawSpectatorHUD();
 		} else {
 			HUD_Draw();

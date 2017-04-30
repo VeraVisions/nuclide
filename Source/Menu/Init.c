@@ -1,5 +1,5 @@
 /*
-OpenCS Project
+FreeCS Project
 Copyright (C) 2016, 2017 Marco "eukara" Hladik
 
 This program is free software; you can redistribute it and/or
@@ -19,10 +19,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 void m_init( void ) {
+	precache_pic( "gfx/menu/freecs" );
 	precache_pic( "gfx/menu/back1" );
 	precache_pic( "gfx/menu/back2" );
 	precache_pic( "menu_static" );
-	precache_pic( "gfx/menu/freecs" );
+	
+	// Index all the maps... TODO: Filter out /valve/ to avoid useless junk from being cached.
+	searchhandle shMaps = search_begin( "maps/*.bsp", TRUE, TRUE );
+	iMapCount = search_getsize( shMaps );
+	sMapList = memalloc( sizeof( string ) * iMapCount );
+	
+	for ( int i = 0; i < iMapCount; i++ ) {
+		sMapList[ i ] = substring( search_getfilename( shMaps, i ), 5, strlen( search_getfilename( shMaps, i ) ) - 9 );
+	}
+
+	search_end( shMaps );
 }
 
 void m_shutdown( void ) {
