@@ -55,19 +55,19 @@ void VGUI_Window( string sTitle, vector vPos, vector vSize ) {
 	vector v1, v2, v3;
 
 	// Draw the background
-	drawfill( vPos + '1 1', vSize - '2 2', VGUI_WINDOW_BGCOLOR, VGUI_WINDOW_BGALPHA );
+	drawfill( vPos, vSize, VGUI_WINDOW_BGCOLOR, VGUI_WINDOW_BGALPHA );
 	
 	// Draw the outline START
 	v1_x = vPos_x + vSize_x;
-	v1_y = vPos_y;
-	drawline( 1.0, vPos - '1 0 0', v1, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
+	v1_y = vPos_y + 1;
+	drawline( 1.0, vPos, v1, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
 	
 	v2_x = vPos_x;
 	v2_y = vPos_y + vSize_y;
 	drawline( 1.0, vPos, v2, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
 
 	v3 = vPos + vSize;
-	drawline( 1.0, v1, v3, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
+	drawline( 1.0, v1 - '1 0', v3 - '1 0', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
 	drawline( 1.0, v2, v3, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
 	// Draw the outline END
 
@@ -81,19 +81,19 @@ void VGUI_WindowSmall( string sTitle, vector vPos, vector vSize ) {
 	vector v1, v2, v3;
 
 	// Draw the background
-	drawfill( vPos + '1 1', vSize - '2 2', VGUI_WINDOW_BGCOLOR, VGUI_WINDOW_BGALPHA );
+	drawfill( vPos, vSize, VGUI_WINDOW_BGCOLOR, VGUI_WINDOW_BGALPHA );
 	
 	// Draw the outline START
 	v1_x = vPos_x + vSize_x;
-	v1_y = vPos_y;
-	drawline( 1.0, vPos - '1 0 0', v1, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
+	v1_y = vPos_y + 1;
+	drawline( 1.0, vPos, v1, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
 	
 	v2_x = vPos_x;
 	v2_y = vPos_y + vSize_y;
 	drawline( 1.0, vPos, v2, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
 
 	v3 = vPos + vSize;
-	drawline( 1.0, v1, v3, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
+	drawline( 1.0, v1 - '1 0', v3 - '1 0', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
 	drawline( 1.0, v2, v3, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
 	// Draw the outline END
 
@@ -108,15 +108,15 @@ float VGUI_Button( string sLabel, void() vFunction, vector vPos, vector vSize ) 
 	
 	// Draw the outline START
 	v1_x = vPos_x + vSize_x;
-	v1_y = vPos_y;
-	drawline( 1.0, vPos - '1 0 0', v1, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
+	v1_y = vPos_y + 1;
+	drawline( 1.0, vPos, v1, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
 	
 	v2_x = vPos_x;
 	v2_y = vPos_y + vSize_y;
 	drawline( 1.0, vPos, v2, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
 
 	v3 = vPos + vSize;
-	drawline( 1.0, v1, v3, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
+	drawline( 1.0, v1 - '1 0', v3 - '1 0', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
 	drawline( 1.0, v2, v3, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
 	// Draw the outline END
 
@@ -145,16 +145,16 @@ void VGUI_FakeButton( string sLabel, vector vPos, vector vSize ) {
 	
 	// Draw the outline START
 	v1_x = vPos_x + vSize_x;
-	v1_y = vPos_y;
-	drawline( 1.0, vPos - '1 0 0', v1, vVGUIColor, VGUI_WINDOW_FGALPHA * 0.5, DRAWFLAG_ADDITIVE );
+	v1_y = vPos_y + 1;
+	drawline( 1.0, vPos, v1, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
 	
 	v2_x = vPos_x;
 	v2_y = vPos_y + vSize_y;
-	drawline( 1.0, vPos, v2, vVGUIColor, VGUI_WINDOW_FGALPHA * 0.5, DRAWFLAG_ADDITIVE );
+	drawline( 1.0, vPos, v2, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
 
 	v3 = vPos + vSize;
-	drawline( 1.0, v1, v3, vVGUIColor, VGUI_WINDOW_FGALPHA * 0.5, DRAWFLAG_ADDITIVE );
-	drawline( 1.0, v2, v3, vVGUIColor, VGUI_WINDOW_FGALPHA * 0.5, DRAWFLAG_ADDITIVE );
+	drawline( 1.0, v1 - '1 0', v3 - '1 0', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
+	drawline( 1.0, v2, v3, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
 	// Draw the outline END
 
 	// Draw the button label

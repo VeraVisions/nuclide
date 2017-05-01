@@ -56,7 +56,7 @@ void CSQC_VGUI_Draw( void ) {
 		return;
 	}
 	
-	setcursormode( TRUE );
+	setcursormode( TRUE, "gfx/cursor", '0 0 0', 1.0f );
 
 	// Align the window to the center
 	vVGUIWindowPos_x = ( vVideoResolution_x / 2 ) - 320;

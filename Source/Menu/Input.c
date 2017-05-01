@@ -97,7 +97,7 @@ void m_display( void ) {
 	iMenuActive = TRUE;
 	setkeydest( KEY_MENU );
 	setmousetarget( TARGET_MENU );
-	setcursormode( TRUE, "gfx/cursor" );
+	setcursormode( TRUE, "gfx/cursor", '0 0 0', 1.0f );
 }
 
 void m_hide( void ) {

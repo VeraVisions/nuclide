@@ -20,29 +20,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /*
 =================
-SpectatorConnect
-
-Called when a spectator joins the game
-=================
-*/
-void SpectatorConnect( void ) {
-	Spawn_MakeSpectator();
-	Spawn_ObserverCam();
-}
-	
-/*
-=================
-SpectatorDisconnect
-
-Called when a spectator leaves the game
-=================
-*/
-void SpectatorDisconnect( void ) {
-	
-}
-
-/*
-=================
 SpectatorThink
 
 Run every frame on every spectator
@@ -69,6 +46,31 @@ Run whenever a new client joins
 =================
 */
 void ClientConnect( void ) {}
+
+/*
+=================
+SpectatorConnect
+
+Called when a spectator joins the game
+=================
+*/
+void SpectatorConnect( void ) {
+	//Spawn_MakeSpectator();
+	//Spawn_ObserverCam();
+	ClientConnect();
+	PutClientInServer();
+}
+
+/*
+=================
+SpectatorDisconnect
+
+Called when a spectator leaves the game
+=================
+*/
+void SpectatorDisconnect( void ) {
+	
+}
 
 /*
 =================

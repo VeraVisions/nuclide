@@ -115,20 +115,20 @@ void VGUI_Scores_Show( void ) {
 	vMainPos_y = 56;
 		
 	// Draw the background
-	drawfill( vMainPos + '1 1', vSize - '2 2', VGUI_WINDOW_BGCOLOR, VGUI_WINDOW_BGALPHA );
+	drawfill( vMainPos, vSize, VGUI_WINDOW_BGCOLOR, VGUI_WINDOW_BGALPHA );
 	
 	// Draw the outline START
 	v1_x = vMainPos_x + vSize_x;
-	v1_y = vMainPos_y;
-	drawline( 1.0, vMainPos - '1 0 0', v1, '0.75 0.75 0.75', 0.5, DRAWFLAG_ADDITIVE );
+	v1_y = vMainPos_y + 1;
+	drawline( 1.0, vMainPos, v1, '0.35 0.35 0.35', 1, DRAWFLAG_NORMAL );
 	
 	v2_x = vMainPos_x;
 	v2_y = vMainPos_y + vSize_y;
-	drawline( 1.0, vMainPos, v2, '0.75 0.75 0.75', 0.5, DRAWFLAG_ADDITIVE );
+	drawline( 1.0, vMainPos, v2, '0.35 0.35 0.35', 1, DRAWFLAG_NORMAL );
 
 	v3 = vMainPos + vSize;
-	drawline( 1.0, v1, v3, '0.75 0.75 0.75', 0.5, DRAWFLAG_ADDITIVE );
-	drawline( 1.0, v2, v3, '0.75 0.75 0.75', 0.5, DRAWFLAG_ADDITIVE );
+	drawline( 1.0, v1 - '1 0', v3 - '1 0', '0.35 0.35 0.35', 1, DRAWFLAG_NORMAL );
+	drawline( 1.0, v2, v3, '0.35 0.35 0.35', 1, DRAWFLAG_NORMAL );
 	// Draw the outline END
 	
 	// Server title

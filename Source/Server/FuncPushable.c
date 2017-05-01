@@ -51,6 +51,7 @@ void func_pushable( void ) {
 		input_movevalues = [ self.movedir_x, self.movedir_y, 0 ];
 		input_impulse = input_buttons = 0;
 		input_angles = self.v_angle;
+		input_timelength = frametime;
 		self.movedir = '0 0 0';
 		
 		runstandardplayerphysics( self );
