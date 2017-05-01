@@ -6,6 +6,8 @@ You still have to provide the assets yourself, but hey - CS 1.5 is a free downlo
 
 <img src="https://icculus.org/~marco/opencs/screenshots/fte-20170113225827-0.png" alt="Screen 3" width="256" height="192"> <img src="https://icculus.org/~marco/opencs/screenshots/fte-20170113225528-0.png" alt="Screen 4" width="256" height="192">
 
+<img src="https://pbs.twimg.com/media/C-lqLjuXsAAeF1Z.jpg" alt="Android Port" width="340" height="192">
+
 # Goals
 The goal of this project is to provide an open-source version of Counter-Strike 1.5.
 Counter-Strike, being one of the most popular multiplayer games to exist, surprisingly hasn't had
