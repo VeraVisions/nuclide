@@ -18,6 +18,13 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+/*
+=================
+m_init
+
+Precaches and loading for the menu system
+=================
+*/
 void m_init( void ) {
 	precache_pic( "gfx/menu/freecs" );
 	precache_pic( "gfx/menu/back1" );
@@ -36,6 +43,13 @@ void m_init( void ) {
 	search_end( shMaps );
 }
 
+/*
+=================
+m_shutdown
+
+I can see the curtain... the ending.
+=================
+*/
 void m_shutdown( void ) {
 	
 }

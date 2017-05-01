@@ -40,12 +40,18 @@ var float fMouseClick;
 var int iMenuActive;
 
 var float fMenuScale;
+var float fMenuAlpha;
 
 float frametime;
 float fLastTime;
 
+int iMenu;
 string *sMapList;
 int iMapCount;
+
+// Draw.c & Objects.c
+float fFadeAlpha;
+int iButtonSelected;
 
 /*
 =================
@@ -55,11 +61,10 @@ Returns the greatest common denominator
 =================
 */
 int gcd_r( float a, float b ) {
-  if ( a == 0 ) { 
-	  return b;
-  }
-  
-  return gcd_r( floor( b%a ), a );
+	if ( a == 0 ) { 
+		return b;
+	}
+	return gcd_r( floor( b%a ), a );
 }
 
 /*
@@ -83,9 +88,7 @@ Returns the menu size for the given ratio.
 */
 vector Menu_Util_GetMenuSize( vector vAspect ) {
 	float fScale = ( vAspect_x / vAspect_y );
-	
-		return [ rint( 480 * fScale ), 480 ];
-	
+	return [ rint( 480 * fScale ), 480 ];
 }
 
 /*

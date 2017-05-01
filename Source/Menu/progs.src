@@ -10,5 +10,11 @@
 Defs.h
 Init.c
 Input.c
+Objects.c
+Menu_Create.c
+Menu_Options.c
+Menu_Quit.c
+Menu_Replays.c
+Menu_Servers.c
 Draw.c
 #endlist

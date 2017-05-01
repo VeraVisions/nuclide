@@ -41,7 +41,7 @@ entity hostage_waypoint( void ) {
 	setsize( ePoint, self.mins, self.maxs );
 	ePoint.classname = "remove_me";
 	ePoint.movetype = MOVETYPE_TOSS;
-	setmodel( ePoint, "models/chick.mdl" ); // Visual feedback...
+//	setmodel( ePoint, "models/chick.mdl" ); // Visual feedback...
 	return ePoint;
 }
 

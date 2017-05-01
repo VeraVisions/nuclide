@@ -91,7 +91,6 @@ void Spawn_ObserverCam( void ) {
 			}
 		}
 	} else {
-		bprint( "Can't find fucking camera\n" );
 		// Can't find a camera? Just do this lazy thing, CS seems to do the same
 		eCamera = find ( world, classname, "info_player_start" );
 		

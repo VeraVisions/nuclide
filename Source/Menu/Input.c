@@ -18,6 +18,13 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+/*
+=================
+Menu_InputCheckMouse
+
+Checks a specified region and returns TRUE if the mouse is above it.
+=================
+*/
 int Menu_InputCheckMouse( vector vPos, vector vReg ) {
 	vector vSMins, vSMaxs;
 	
@@ -41,6 +48,13 @@ int Menu_InputCheckMouse( vector vPos, vector vReg ) {
 	return FALSE;
 }
 
+/*
+=================
+Menu_InputEvent
+
+New FTE routine for advanced mouse input in menuqc!
+=================
+*/
 float Menu_InputEvent( float fEventType, float fKey, float fCharacter, float fDeviceID ) {
 	if ( fEventType == IE_KEYDOWN ) {
 		if ( fKey == K_MOUSE1 ) {
@@ -72,6 +86,13 @@ float Menu_InputEvent( float fEventType, float fKey, float fCharacter, float fDe
 	return TRUE;
 }
 
+/*
+=================
+m_display, m_hide, m_toggle
+
+Essentially what happens when togglemenu is used, called by the engine as well.
+=================
+*/
 void m_display( void ) {
 	iMenuActive = TRUE;
 	setkeydest( KEY_MENU );
