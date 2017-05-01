@@ -75,6 +75,8 @@ Look for the next spawnpoint
 =================
 */
 void Spawn_ObserverCam( void ) {
+	entity eTarget;
+	
 	// Go find a camera if we aren't dead
 	entity eCamera = find ( world, classname, "trigger_camera" );
 	
@@ -82,15 +84,28 @@ void Spawn_ObserverCam( void ) {
 		self.origin = eCamera.origin;
 		
 		if ( eCamera.target ) {
-			entity eTarget = find( world, targetname, eCamera.target );
+			eTarget = find( world, targetname, eCamera.target );
 			if ( eTarget ) {
 				self.angles = vectoangles( eTarget.origin - eCamera.origin );
 				self.angles_x *= -1;
 			}
 		}
 	} else {
+		bprint( "Can't find fucking camera\n" );
 		// Can't find a camera? Just do this lazy thing, CS seems to do the same
 		eCamera = find ( world, classname, "info_player_start" );
+		
+		if ( eCamera ) {
+			self.origin = eCamera.origin;
+			
+			if ( eCamera.target ) {
+				eTarget = find( world, targetname, eCamera.target );
+				if ( eTarget ) {
+					self.angles = vectoangles( eTarget.origin - eCamera.origin );
+					self.angles_x *= -1;
+				}
+			}
+		}
 	}
 	
 	self.fixangle = TRUE;
