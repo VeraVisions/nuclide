@@ -73,7 +73,7 @@ void VGUI_Radio_Draw( void ) {
 		vSize_y = ( 10 * VGUIRADIO_COMMANDS ) + 64;
 		vPos = [ 16, vVideoResolution_y - 148 - vSize_y ];
 		
-		VGUI_WindowSmall( _("Radio Commands"), vPos, vSize );
+		VGUI_WindowSmall( _("RADIO_TITLE1"), vPos, vSize );
 		
 		vPos_y += 24;
 		vPos_x += 8;
@@ -86,7 +86,7 @@ void VGUI_Radio_Draw( void ) {
 		vSize_y = ( 10 * VGUIRADIO_GROUPCOMMANDS ) + 64;
 		vPos = [ 16, vVideoResolution_y - 148 - vSize_y ];
 		
-		VGUI_WindowSmall( _("Group Radio Commands"), vPos, vSize );
+		VGUI_WindowSmall( _("RADIO_TITLE2"), vPos, vSize );
 		
 		vPos_y += 24;
 		vPos_x += 8;
@@ -99,7 +99,7 @@ void VGUI_Radio_Draw( void ) {
 		vSize_y = ( 10 * VGUIRADIO_RESPONSES ) + 64;
 		vPos = [ 16, vVideoResolution_y - 148 - vSize_y ];
 		
-		VGUI_WindowSmall( _("Radio Responses"), vPos, vSize );
+		VGUI_WindowSmall( _("RADIO_TITLE3"), vPos, vSize );
 		
 		vPos_y += 24;
 		vPos_x += 8;
@@ -110,7 +110,7 @@ void VGUI_Radio_Draw( void ) {
 	}
 	
 	vPos_y += 20;
-	VGUI_Text( sprintf( "0) %s", _("Back") ), vPos, '8 8 0' );
+	VGUI_Text( sprintf( "0) %s", _("VGUI_BACK") ), vPos, '8 8 0' );
 	
 	if ( fInputKeyCode == 48 ) {
 		fVGUI_Display = VGUI_NONE;

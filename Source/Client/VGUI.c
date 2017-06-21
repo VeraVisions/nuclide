@@ -22,17 +22,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Menus with their window titles and draw functions
 vguiwindow_t vguiMenus[11] = {
-	{ _("Message Of The Day"), VGUI_MessageOfTheDay },
-	{ _("Team Selection"), VGUI_TeamSelect_Main },
-	{ _("Terrorist Selection"), VGUI_TeamSelect_T },
-	{ _("Counter-Terrorist Selection"), VGUI_TeamSelect_CT },
-	{ _("Buy Menu"), VGUI_BuyMenu_Main },
-	{ _("Handguns"), VGUI_BuyMenu_Handguns },
-	{ _("Shotgun"), VGUI_BuyMenu_Shotguns },
-	{ _("Sub-Machine-Guns"), VGUI_BuyMenu_SMGs },
-	{ _("Rifles"), VGUI_BuyMenu_Rifles },
-	{ _("Machineguns"), VGUI_BuyMenu_Machineguns },
-	{ _("Equipment"), VGUI_BuyMenu_Equipment }
+	{ _("VGUI_TITLE_MOTD"), VGUI_MessageOfTheDay },
+	{ _("VGUI_TITLE_TEAMS"), VGUI_TeamSelect_Main },
+	{ _("VGUI_TITLE_TSEL"), VGUI_TeamSelect_T },
+	{ _("VGUI_TITLE_CTSEL"), VGUI_TeamSelect_CT },
+	{ _("VGUI_TITLE_BUY"), VGUI_BuyMenu_Main },
+	{ _("VGUI_TITLE_HANDGUN"), VGUI_BuyMenu_Handguns },
+	{ _("VGUI_TITLE_SHOTGUN"), VGUI_BuyMenu_Shotguns },
+	{ _("VGUI_TITLE_SMG"), VGUI_BuyMenu_SMGs },
+	{ _("VGUI_TITLE_RIFLE"), VGUI_BuyMenu_Rifles },
+	{ _("VGUI_TITLE_MG"), VGUI_BuyMenu_Machineguns },
+	{ _("VGUI_TITLE_EQUIPMENT"), VGUI_BuyMenu_Equipment }
 };
 
 /*

@@ -35,5 +35,5 @@ void VGUI_MessageOfTheDay( vector vPos ) {
 		vTextPos_y += 10;
 	}
 	
-	VGUI_Button( _("OK"), MessageOfTheDay_ButtonOK, vPos + '16 440 0', '80 24 0' );
+	VGUI_Button( _("VGUI_OK"), MessageOfTheDay_ButtonOK, vPos + '16 440 0', '80 24 0' );
 }

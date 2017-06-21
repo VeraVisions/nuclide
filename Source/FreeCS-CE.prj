@@ -1,5 +1,5 @@
 <project version="Crimson Editor 3.60">
-	<category name="Client" expanded="no">
+	<category name="Client" expanded="yes">
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\Defs.h" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\Draw.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\Entities.c" />
@@ -24,7 +24,7 @@
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\VGUITeamSelect.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\View.c" />
 	</category>
-	<category name="Server" expanded="no">
+	<category name="Server" expanded="yes">
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Server\AmbientSound.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Server\Ammo.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Server\ArmouryEntity.c" />
@@ -59,7 +59,7 @@
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Server\TraceAttack.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Server\Triggers.c" />
 	</category>
-	<category name="Menu" expanded="yes">
+	<category name="Menu" expanded="no">
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Defs.h" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Draw.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Init.c" />
@@ -72,7 +72,7 @@
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Objects.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\progs.src" />
 	</category>
-	<category name="Shared" expanded="no">
+	<category name="Shared" expanded="yes">
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Shared\Animations.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Shared\BaseMelee.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Shared\Effects.c" />
@@ -114,5 +114,14 @@
 </project>
 
 <workspace version="Crimson Editor 3.60">
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\freecs\csprogs.en.po" linenum="131" placement="0:1:-1:-1:-4:-23:132:132:980:602" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\VGUIBuyMenu.c" linenum="24" placement="0:1:-1:-1:-4:-23:22:22:874:496" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\VGUI.c" linenum="25" placement="0:1:-1:-1:-4:-23:44:44:896:518" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\VGUIMOTD.c" linenum="38" placement="0:1:-1:-1:-4:-23:66:66:918:540" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\VGUIRadio.c" linenum="113" placement="2:3:-1:-1:-4:-23:88:88:940:562" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\VGUIScoreboard.c" linenum="22" placement="0:1:-1:-1:-4:-23:110:110:962:584" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\VGUISpectator.c" linenum="60" placement="0:1:-1:-1:-4:-23:132:132:984:606" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\VGUITeamSelect.c" linenum="24" placement="0:1:-1:-1:-4:-23:154:154:1006:628" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Shared\Radio.c" linenum="118" placement="0:1:-1:-1:-4:-23:176:176:1028:650" />
 </workspace>
 

@@ -57,6 +57,6 @@ void VGUI_DrawSpectatorHUD( void ) {
 	drawfill( [ vVideoResolution_x - 85, 6 ], [ 2, 28 ], '0.56 0.56 0.21', 1 );
 	
 	// Team Stats
-	VGUI_RightText( [ vVideoResolution_x - 96, 6 ], sprintf( "Terrorists: %d", getstatf( STAT_WON_T ) ), '8 8 0', '0.56 0.56 0.21' );
-	VGUI_RightText( [ vVideoResolution_x - 96, 23 ], sprintf( "CT Forces: %d", getstatf( STAT_WON_CT ) ), '8 8 0', '0.56 0.56 0.21' );
+	VGUI_RightText( [ vVideoResolution_x - 96, 6 ], sprintf( _("VGUI_SPEC_TCOUNTER"), getstatf( STAT_WON_T ) ), '8 8 0', '0.56 0.56 0.21' );
+	VGUI_RightText( [ vVideoResolution_x - 96, 23 ], sprintf( _("VGUI_SPEC_CTCOUNTER"), getstatf( STAT_WON_CT ) ), '8 8 0', '0.56 0.56 0.21' );
 }

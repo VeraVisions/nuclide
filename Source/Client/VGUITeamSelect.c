@@ -21,69 +21,69 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "VGUI.h"
 
 string sClassInfo[64] = {
-	_("Phoenix Connexion"), "gfx/vgui/640_terror",
-	_("The Phoenix Faction was formed shortly"),
-	_("after the breakup of the USSR. Having"),
-	_("established a reputation for killing "),
-	_("anyone that gets in their way, the"),
-	_("the Phoenix Faction is one of the most"),
-	_("feared terrorist groups in Eastern Europe."),
+	_("VGUI_T1_TITLE"), "gfx/vgui/640_terror",
+	_("VGUI_T1_TXT1"),
+	_("VGUI_T1_TXT2"),
+	_("VGUI_T1_TXT3"),
+	_("VGUI_T1_TXT4"),
+	_("VGUI_T1_TXT5"),
+	_("VGUI_T1_TXT6"),
 	
-	_("L337 Krew"), "gfx/vgui/640_leet",
-	_("Middle Eastern fundamentalist group bent"),
-	_("on world domination and various other"),
-	_("evil deeds"),
-	_(""),
-	_(""),
-	_(""),
+	_("VGUI_T2_TITLE"), "gfx/vgui/640_leet",
+	_("VGUI_T2_TXT1"),
+	_("VGUI_T2_TXT2"),
+	_("VGUI_T2_TXT3"),
+	_("VGUI_T2_TXT4"),
+	_("VGUI_T2_TXT5"),
+	_("VGUI_T2_TXT6"),
 	
-	_("Arctic Avengers"), "gfx/vgui/640_arctic",
-	_("Swedish terrorist faction founded in 1977."),
-	_("Famous for their bombing of the Canadian"),
-	_("embassy in 1990."),
-	_(""),
-	_(""),
-	_(""),
+	_("VGUI_T3_TITLE"), "gfx/vgui/640_arctic",
+	_("VGUI_T3_TXT1"),
+	_("VGUI_T3_TXT2"),
+	_("VGUI_T3_TXT3"),
+	_("VGUI_T3_TXT4"),
+	_("VGUI_T3_TXT5"),
+	_("VGUI_T3_TXT6"),
 	
-	_("Guerilla Warfare"), "gfx/vgui/640_guerilla",
-	_("A terrorist faction founded in the"),
-	_("Middle East, Guerilla Warfare, has a"),
-	_("reputation for ruthlessness. Their disgust"),
-	_("for the American lifestyle was demonstrated"),
-	_("in their 1982 bombing of a school bus full"),
-	_("of Rock and Roll musicians."),
+	_("VGUI_T4_TITLE"), "gfx/vgui/640_guerilla",
+	_("VGUI_T4_TXT1"),
+	_("VGUI_T4_TXT2"),
+	_("VGUI_T4_TXT3"),
+	_("VGUI_T4_TXT4"),
+	_("VGUI_T4_TXT5"),
+	_("VGUI_T4_TXT6"),
 	
-	_("Seal Team 6"), "gfx/vgui/640_urban",
-	_("Seal Team 6 (to be known later as DEVGRU)"),
-	_("was founded in 1980 under the command of"),
-	_("Lieutenant-Commander Richard Marcincko."),
-	_("ST-6 was placed on permanent alert to"),
-	_("respond to terrorist attacks against"),
-	_("American targets worldwide."),
+	_("VGUI_CT1_TITLE"), "gfx/vgui/640_urban",
+	_("VGUI_CT1_TXT1"),
+	_("VGUI_CT1_TXT2"),
+	_("VGUI_CT1_TXT3"),
+	_("VGUI_CT1_TXT4"),
+	_("VGUI_CT1_TXT5"),
+	_("VGUI_CT1_TXT6"),
 	
-	_("German GSG9"), "gfx/vgui/640_gsg9",
-	_("GSG-9 was born out of the tragic events"),
-	_("that led to the death of several"),
-	_("Israeli athletes during the 1972 Olympic"),
-	_("games in Munich, Germany."),
-	_(""),
-	_(""),
+	_("VGUI_CT2_TITLE"), "gfx/vgui/640_gsg9",
+	_("VGUI_CT2_TXT1"),
+	_("VGUI_CT2_TXT2"),
+	_("VGUI_CT2_TXT3"),
+	_("VGUI_CT2_TXT4"),
+	_("VGUI_CT2_TXT5"),
+	_("VGUI_CT2_TXT6"),
 	
-	_("UK SAS"), "gfx/vgui/640_sas",
-	_("The world-renowned British SAS was founded"),
-	_("in the Second World War by a man named"),
-	_("David Stirling. Their role during WW2"),
-	_("involved gathering intelligence behind enemy"),
-	_("lines and executing sabotage strikes and"),
-	_("assassinations against key targets."),
+	_("VGUI_CT3_TITLE"), "gfx/vgui/640_sas",
+	_("VGUI_CT3_TXT1"),
+	_("VGUI_CT3_TXT2"),
+	_("VGUI_CT3_TXT3"),
+	_("VGUI_CT3_TXT4"),
+	_("VGUI_CT3_TXT5"),
+	_("VGUI_CT3_TXT6"),
 	
-	_("French GIGN"), "gfx/vgui/640_gign",
-	_("France's elite Counter-Terrorist unit was"),
-	_("designed to be a fast response force"),
-	_("that could decisively react to any large-"),
-	_("scale terrorist incident. Consisting of no"),
-	_("more than 100 men, the GIGN has earned its"),
-	_("reputation through a history of successful ops.")
+	_("VGUI_CT4_TITLE"), "gfx/vgui/640_gign",
+	_("VGUI_CT4_TXT1"),
+	_("VGUI_CT4_TXT2"),
+	_("VGUI_CT4_TXT3"),
+	_("VGUI_CT4_TXT4"),
+	_("VGUI_CT4_TXT5"),
+	_("VGUI_CT4_TXT6")
 };
 
 void VGUI_TeamSelect_Main( vector vPos ) {
@@ -127,13 +127,13 @@ void VGUI_TeamSelect_Main( vector vPos ) {
 		vTextPos_y += 10;
 	}
 
-	VGUI_Button( _("Terrorists"), TeamSelect_Main_ButtonT, vPos + '16 116 0', '180 24 0' );
-	VGUI_Button( _("Counter-Terrorists"), TeamSelect_Main_ButtonCT, vPos + '16 148 0', '180 24 0' );
+	VGUI_Button( _("VGUI_TEAM_T"), TeamSelect_Main_ButtonT, vPos + '16 116 0', '180 24 0' );
+	VGUI_Button( _("VGUI_TEAM_CT"), TeamSelect_Main_ButtonCT, vPos + '16 148 0', '180 24 0' );
 
-	VGUI_Button( _("Auto-Assign"), TeamSelect_Main_ButtonAuto, vPos + '16 336 0', '180 24 0' );
-	VGUI_Button( _("Spectate"), TeamSelect_Main_ButtonSpectate, vPos + '16 368 0', '180 24 0' );
+	VGUI_Button( _("VGUI_TEAM_AUTO"), TeamSelect_Main_ButtonAuto, vPos + '16 336 0', '180 24 0' );
+	VGUI_Button( _("VGUI_TEAM_SPEC"), TeamSelect_Main_ButtonSpectate, vPos + '16 368 0', '180 24 0' );
 	
-	VGUI_Button( _("Exit"), TeamSelect_Main_Exit, vPos + '16 440 0', '120 24 0' );
+	VGUI_Button( _("VGUI_EXIT"), TeamSelect_Main_Exit, vPos + '16 440 0', '120 24 0' );
 }
 
 void VGUI_TeamSelect_Back( void ) {
@@ -175,7 +175,7 @@ void VGUI_TeamSelect_T( vector vPos ) {
 	VGUI_TeamSelect_Button( 1, TeamSelect_T2, vPos + '16 192 0', '180 24 0' );
 	VGUI_TeamSelect_Button( 2, TeamSelect_T3, vPos + '16 224 0', '180 24 0' );
 	VGUI_TeamSelect_Button( 3, TeamSelect_T4, vPos + '16 256 0', '180 24 0' );
-	VGUI_Button( _("Back"), VGUI_TeamSelect_Back, vPos + '16 440 0', '120 24 0' );
+	VGUI_Button( _("VGUI_BACK"), VGUI_TeamSelect_Back, vPos + '16 440 0', '120 24 0' );
 }
 
 void VGUI_TeamSelect_CT ( vector vPos ) {
@@ -200,5 +200,5 @@ void VGUI_TeamSelect_CT ( vector vPos ) {
 	VGUI_TeamSelect_Button( 5, TeamSelect_CT2, vPos + '16 192 0', '180 24 0' );
 	VGUI_TeamSelect_Button( 6, TeamSelect_CT3, vPos + '16 224 0', '180 24 0' );
 	VGUI_TeamSelect_Button( 7, TeamSelect_CT4, vPos + '16 256 0', '180 24 0' );
-	VGUI_Button( _("Back"), VGUI_TeamSelect_Back, vPos + '16 440 0', '120 24 0' );
+	VGUI_Button( _("VGUI_BACK"), VGUI_TeamSelect_Back, vPos + '16 440 0', '120 24 0' );
 }
