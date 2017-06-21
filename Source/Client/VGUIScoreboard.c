@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "VGUI.h"
 
 string sScoreTeams[4] = {
-	"Spectator",
-	"Terrorists",
-	"CT Forces",
-	"VIP",
+	_("Spectator"),
+	_("Terrorists"),
+	_("CT Forces"),
+	_("VIP"),
 };
 
 // This is seperated from the other VGUI stuff so we can check scores while buying and whatnot
@@ -52,9 +52,9 @@ vector VGUI_Scores_DrawTeam( vector vPos, float fTeam ) {
 				}
 				
 				if ( getplayerkeyvalue( i, "*dead" ) == "1" ) {
-					drawstring( vNewPos + '38 0', sprintf( "%s [DEAD]", getplayerkeyvalue( i, "name" ) ), '8 8 0', vColor, 1, 0 );
+					drawstring( vNewPos + '38 0', sprintf( _("%s [DEAD]"), getplayerkeyvalue( i, "name" ) ), '8 8 0', vColor, 1, 0 );
 				} else if ( getplayerkeyvalue( i, "*dead" ) == "2" ) {
-					drawstring( vNewPos + '38 0', sprintf( "%s [VIP]", getplayerkeyvalue( i, "name" ) ), '8 8 0', vColor, 1, 0 );
+					drawstring( vNewPos + '38 0', sprintf( _("%s [VIP]"), getplayerkeyvalue( i, "name" ) ), '8 8 0', vColor, 1, 0 );
 				} else {
 					drawstring( vNewPos + '38 0', getplayerkeyvalue( i, "name" ), '8 8 0', vColor, 1, 0 );
 				}
@@ -98,7 +98,7 @@ vector VGUI_Scores_DrawTeam( vector vPos, float fTeam ) {
 		// Now we know the playercount, so let's calculate the position next to the Teamname String and print it
 		vector vCountPos = vPos + '24 6';
 		vCountPos_x += stringwidth( sScoreTeams[ fTeam ], FALSE, '16 16 0' ) + 8;
-		drawstring( vCountPos, sprintf( "(%i players)", iPlayerCount ), '8 8 0', vColor, 1, 0 );
+		drawstring( vCountPos, sprintf( _("(%i players)"), iPlayerCount ), '8 8 0', vColor, 1, 0 );
 	}
 	return vNewPos + '0 24';
 }
@@ -135,7 +135,7 @@ void VGUI_Scores_Show( void ) {
 	drawstring( vMainPos + '24 13', serverkey( "hostname" ), '16 16 0', VGUI_WINDOW_FGCOLOR, 1, 0 );
 	
 	// Tabs like Score, Ping etc.
-	drawstring( vMainPos + '280 32', "SCORE  DEATHS  LATENCY  VOICE", '8 8 0', VGUI_WINDOW_FGCOLOR, 1, 0 );
+	drawstring( vMainPos + '280 32', _("SCORE  DEATHS  LATENCY  VOICE"), '8 8 0', VGUI_WINDOW_FGCOLOR, 1, 0 );
 
 	vector vOffset = VGUI_Scores_DrawTeam( vMainPos + '0 50', TEAM_CT );
 	vOffset = VGUI_Scores_DrawTeam( vOffset, TEAM_T );

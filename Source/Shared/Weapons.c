@@ -206,6 +206,14 @@ Called when letting go one of the weapon firing buttons
 */
 void Weapon_Release( void ) {
 	self.flags = self.flags | FL_SEMI_TOGGLED;
+	
+	if ( self.weapon == WEAPON_FLASHBANG ) {
+		WeaponFLASHBANG_Release();
+	} else if ( self.weapon == WEAPON_HEGRENADE ) {
+		WeaponHEGRENADE_Release();
+	} else if ( self.weapon == WEAPON_SMOKEGRENADE ) {
+		WeaponSMOKEGRENADE_Release();
+	}
 }
 
 /*

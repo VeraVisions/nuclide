@@ -97,6 +97,9 @@ void WeaponM3_PrimaryFire( void ) {
 #endif
 }
 
+// The gun has no real secondary mode, but part of the reloading uses this function
+// mainly for client-side cosmetics. The server doesn't have a function telling
+// the client to switch animations (we save 1 byte in networking by reusing this)
 void WeaponM3_Reload( void);
 void WeaponM3_Secondary( void ) {
 #ifdef SSQC

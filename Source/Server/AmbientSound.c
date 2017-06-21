@@ -44,8 +44,14 @@ Not Toggled (32) - 	Older FGDs show this as Not Looped.
 .float pitch;
 void ambient_generic( void ) {
 	static float ambient_generic_send( entity ePEnt, float fChanged ) {
-		sound( self, CHAN_VOICE, self.message, self.health, self.style, self.pitch, 0, SOUNDFLAG_FORCELOOP );
-		return FALSE;
+		WriteByte( MSG_ENTITY, ENT_AMBIENTSOUND );
+		WriteCoord( MSG_ENTITY, self.origin_x );
+		WriteCoord( MSG_ENTITY, self.origin_y );
+		WriteCoord( MSG_ENTITY, self.origin_z );
+		WriteString( MSG_ENTITY, self.message );
+		WriteFloat( MSG_ENTITY, self.health );
+		WriteByte( MSG_ENTITY, self.style );
+		return TRUE;
 	}
 	static void ambient_generic_use( void ) {
 		sound( self, CHAN_VOICE, self.message, self.health, self.style, self.pitch );
@@ -88,7 +94,7 @@ void ambient_generic( void ) {
 		self.vUse = ambient_generic_use;
 	} else {
 		self.noise = self.message; // Needed later for resuming
-		self.pvsflags = PVSF_USEPHS;
+		self.pvsflags = PVSF_NOREMOVE | PVSF_IGNOREPVS;
 		self.vUse = ambient_generic_useloop;
 		self.SendEntity = ambient_generic_send;
 		self.state = TRUE;

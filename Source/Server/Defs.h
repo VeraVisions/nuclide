@@ -43,6 +43,13 @@ enum {
 	BODY_LEGRIGHT
 };
 
+// Grenade states
+enum {
+	GRENADE_UNREADY,
+	GRENADE_PULLING,
+	GRENADE_READY
+};
+
 // Player specific fields
 .float fInBuyZone;
 .float fInHostageZone;

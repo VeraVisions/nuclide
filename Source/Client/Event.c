@@ -279,31 +279,31 @@ float CSQC_ConsoleCommand( string sCMD ) {
 		return TRUE;
 		break;
 	case "vest":
-		sendevent( "PlayerBuyEquipment", "f", EQUIPMENT_KEVLAR );
+		sendevent( "PlayerBuyEquipment", "f", 0 );
 		return TRUE;
 		break;
 	case "vesthelm":
-		sendevent( "PlayerBuyEquipment", "f", EQUIPMENT_HELMET );
+		sendevent( "PlayerBuyEquipment", "f", 1 );
 		return TRUE;
 		break;
 	case "flash":
-		sendevent( "PlayerBuyEquipment", "f", EQUIPMENT_FLASHBANG );
+		sendevent( "PlayerBuyEquipment", "f", 2 );
 		return TRUE;
 		break;
 	case "hegren":
-		sendevent( "PlayerBuyEquipment", "f", EQUIPMENT_HEGRENADE );
+		sendevent( "PlayerBuyEquipment", "f", 3 );
 		return TRUE;
 		break;
 	case "vsgren":
-		sendevent( "PlayerBuyEquipment", "f", EQUIPMENT_SMOKEGRENADE );
+		sendevent( "PlayerBuyEquipment", "f", 4 );
 		return TRUE;
 		break;
 	case "defuser":
-		sendevent( "PlayerBuyEquipment", "f", EQUIPMENT_DEFUSALKIT );
+		sendevent( "PlayerBuyEquipment", "f", 5 );
 		return TRUE;
 		break;
 	case "nvg":
-		sendevent( "PlayerBuyEquipment", "f", EQUIPMENT_NIGHTVISION );
+		sendevent( "PlayerBuyEquipment", "f", 6 );
 		return TRUE;
 		break;
 	case "coverme":

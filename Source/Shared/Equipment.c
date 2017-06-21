@@ -21,9 +21,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 equipmentinfo_t eqptTable [ CS_EQUIPMENT_COUNT ] = {
 	{ EQUIPMENT_KEVLAR, 650 },
 	{ EQUIPMENT_HELMET, 1000 },
-	{ EQUIPMENT_FLASHBANG, 300 },
-	{ EQUIPMENT_HEGRENADE, 300 },
-	{ EQUIPMENT_SMOKEGRENADE, 300 },
+	{ WEAPON_FLASHBANG, 300 },
+	{ WEAPON_HEGRENADE, 300 },
+	{ WEAPON_SMOKEGRENADE, 300 },
 	{ EQUIPMENT_DEFUSALKIT, 200 },
 	{ EQUIPMENT_NIGHTVISION, 1250 },
 };
@@ -35,7 +35,25 @@ void CSEv_PlayerBuyEquipment_f( float fID ) {
 	}
 	
 	if ( ( self.fMoney - eqptTable[ fID ].iPrice ) >= 0 ) {
-		if ( eqptTable[ fID ].iID == EQUIPMENT_KEVLAR ) {
+		if ( eqptTable[ fID ].iID == WEAPON_HEGRENADE ) {
+			if ( self.iAmmo_HEGRENADE < 2 ) {
+				self.iAmmo_HEGRENADE++;
+			} else {
+				centerprint( self, "You can't carry any more!" );
+			}
+		} else if ( eqptTable[ fID ].iID == WEAPON_FLASHBANG ) {
+			if ( self.iAmmo_FLASHBANG < 2 ) {
+				self.iAmmo_FLASHBANG++;
+			} else {
+				centerprint( self, "You can't carry any more!" );
+			}
+		} else if ( eqptTable[ fID ].iID == WEAPON_SMOKEGRENADE ) {
+			if ( self.iAmmo_SMOKEGRENADE < 2 ) {
+				self.iAmmo_SMOKEGRENADE++;
+			} else {
+				centerprint( self, "You can't carry any more!" );
+			}
+		} else if ( eqptTable[ fID ].iID == EQUIPMENT_KEVLAR ) {
 			if ( self.armor == 100 ) {
 				// You already own kevlar etc.
 				centerprint( self, "You already have kevlar!" );
@@ -76,7 +94,7 @@ void CSEv_PlayerBuyEquipment_f( float fID ) {
 			
 			self.fAttackFinished = time + 1.0;
 			return;
-		}
+		} 
 		
 		Money_AddMoney( self, -eqptTable[ fID ].iPrice );
 		self.iEquipment = self.iEquipment | ( eqptTable[ fID ].iID );

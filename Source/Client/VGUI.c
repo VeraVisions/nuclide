@@ -22,17 +22,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Menus with their window titles and draw functions
 vguiwindow_t vguiMenus[11] = {
-	{ "Message Of The Day", VGUI_MessageOfTheDay },
-	{ "Team Selection", VGUI_TeamSelect_Main },
-	{ "Terrorist Selection", VGUI_TeamSelect_T },
-	{ "Counter-Terrorist Selection", VGUI_TeamSelect_CT },
-	{ "Buy Menu", VGUI_BuyMenu_Main },
-	{ "Handguns", VGUI_BuyMenu_Handguns },
-	{ "Shotgun", VGUI_BuyMenu_Shotguns },
-	{ "Sub-Machine-Guns", VGUI_BuyMenu_SMGs },
-	{ "Rifles", VGUI_BuyMenu_Rifles },
-	{ "Machineguns", VGUI_BuyMenu_Machineguns },
-	{ "Equipment", VGUI_BuyMenu_Equipment }
+	{ _("Message Of The Day"), VGUI_MessageOfTheDay },
+	{ _("Team Selection"), VGUI_TeamSelect_Main },
+	{ _("Terrorist Selection"), VGUI_TeamSelect_T },
+	{ _("Counter-Terrorist Selection"), VGUI_TeamSelect_CT },
+	{ _("Buy Menu"), VGUI_BuyMenu_Main },
+	{ _("Handguns"), VGUI_BuyMenu_Handguns },
+	{ _("Shotgun"), VGUI_BuyMenu_Shotguns },
+	{ _("Sub-Machine-Guns"), VGUI_BuyMenu_SMGs },
+	{ _("Rifles"), VGUI_BuyMenu_Rifles },
+	{ _("Machineguns"), VGUI_BuyMenu_Machineguns },
+	{ _("Equipment"), VGUI_BuyMenu_Equipment }
 };
 
 /*

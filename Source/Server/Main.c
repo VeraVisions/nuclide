@@ -91,6 +91,10 @@ void worldspawn( void ) {
 		precache_model( sWeaponModels[ i ] );
 	}
 	
+	precache_model( "models/w_flashbang.mdl" );
+	precache_model( "models/w_hegrenade.mdl" );
+	precache_model( "models/w_smokegrenade.mdl" );
+	
 	precache_model( sCSPlayers[1] );
 	precache_model( sCSPlayers[2] );
 	precache_model( sCSPlayers[3] );
@@ -369,6 +373,9 @@ void worldspawn( void ) {
 	clientstat( STAT_SLOT_PRIMARY, EV_FLOAT, fSlotPrimary );
 	clientstat( STAT_SLOT_SECONDARY, EV_FLOAT, fSlotSecondary );
 	clientstat( STAT_SLOT_GRENADE, EV_FLOAT, fSlotGrenade );
+	clientstat( STAT_ITEM_FLASHBANG, EV_INTEGER, iAmmo_FLASHBANG );
+	clientstat( STAT_ITEM_HEGRENADE, EV_INTEGER, iAmmo_HEGRENADE );
+	clientstat( STAT_ITEM_SMOKEGRENADE, EV_INTEGER, iAmmo_SMOKEGRENADE );
 	clientstat( STAT_EQUIPMENT, EV_INTEGER, iEquipment );
 	clientstat( STAT_CURRENT_MAG, EV_INTEGER, iCurrentMag );
 	clientstat( STAT_CURRENT_CALIBER, EV_INTEGER, iCurrentCaliber );

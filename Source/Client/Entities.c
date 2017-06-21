@@ -18,6 +18,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+void CSQC_ambient_generic( string sSample, float fVolume, float fAttenuation ) {
+	//print( sprintf( "SOUND: %s, %f, %d\n%d %d %d", sSample, fVolume, fAttenuation, self.origin_x, self.origin_y, self.origin_z ) );
+	sound( self, CHAN_VOICE, sSample, fVolume, fAttenuation, 0, SOUNDFLAG_FORCELOOP );
+}
 
 /*
 =================
@@ -57,6 +61,14 @@ void CSQC_Ent_Update( float flIsNew ) {
 		}
 		
 		setorigin( self, self.origin );
+	} else if ( fEntType == ENT_AMBIENTSOUND ) {
+		self.origin_x = readcoord();
+		self.origin_y = readcoord();
+		self.origin_z = readcoord();
+		
+		setorigin( self, self.origin );
+		
+		CSQC_ambient_generic( readstring(), readfloat(), readbyte() );
 	} else if ( fEntType == ENT_SPRITE ) {
 		self.origin_x = readcoord();
 		self.origin_y = readcoord();
