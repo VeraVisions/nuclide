@@ -27,10 +27,7 @@ Checks a specified region and returns TRUE if the mouse is above it.
 */
 int Menu_InputCheckMouse( vector vPos, vector vReg ) {
 	vector vSMins, vSMaxs;
-	
-	vReg = vReg * fMenuScale;
-	vPos = vPos * fMenuScale + [ iMenuPadding, 0, 0 ];
-		
+
 	vSMins = vPos;
 	vSMaxs = vPos;
 	vSMins_x = vPos_x;

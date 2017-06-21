@@ -26,10 +26,7 @@ Precaches and loading for the menu system
 =================
 */
 void m_init( void ) {
-	precache_pic( "gfx/menu/freecs" );
-	precache_pic( "gfx/menu/back1" );
-	precache_pic( "gfx/menu/back2" );
-	precache_pic( "menu_static" );
+	precache_pic( "gfx/shell/splash" );
 	
 	// Index all the maps... TODO: Filter out /valve/ to avoid useless junk from being cached.
 	searchhandle shMaps = search_begin( "maps/*.bsp", TRUE, TRUE );

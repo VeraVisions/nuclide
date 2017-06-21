@@ -18,6 +18,80 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+string sButtonLabels[ MENU_BUTTONS ] = {
+	"BTN_NEWGAME",
+	"BTN_RESUMEGAME",
+	"BTN_TRAINING",
+	"BTN_CONFIG",
+	"BTN_LOADGAME",
+	"BTN_SAVELOAD",
+	"BTN_README",
+	"BTN_QUIT",
+	"BTN_MULTIPLAYER",
+	"BTN_EASY",
+	"BTN_MEDIUM",
+	"BTN_DIFFICULT",
+	"BTN_SAVEGAME",
+	"BTN_LOADGAME2",
+	"BTN_CANCEL",
+	"BTN_OPTIONS",
+	"BTN_VIDEO",
+	"BTN_AUDIO",
+	"BTN_CONTROLS",
+	"BTN_DONE",
+	"BTN_QUICKSTART",
+	"BTN_DEFAULTS",
+	"BTN_OK",
+	"BTN_VIDEOOPTIONS",
+	"BTN_VIDEOMODES",
+	"BTN_ADVCONTROLS",
+	"BTN_ORDER",
+	"BTN_DELETE",
+	"BTN_INTERNET",
+	"BTN_IRCCHAT",
+	"BTN_LAN",
+	"BTN_CUSTOMIZE",
+	"BTN_SKIP",
+	"BTN_EXIT",
+	"BTN_CONNECT",
+	"BTN_REFRESH",
+	"BTN_FILTER",
+	"BTN_CREATE",
+	"BTN_CREATEGAME",
+	"BTN_CHATROOMS",
+	"BTN_LISTROOMS",
+	"BTN_SEARCH",
+	"BTN_SERVERS",
+	"BTN_JOIN",
+	"BTN_FIND",
+	"BTN_CREATEROOM",
+	"BTN_JOINGAME",
+	"BTN_SEARCHGAMES",
+	"BTN_FINDGAME",
+	"BTN_STARTGAME",
+	"BTN_GAMEINFO",
+	"BTN_UPDATE",
+	"BTN_ADDSERVER",
+	"BTN_DISCONNECT",
+	"BTN_CONSOLE",
+	"BTN_CONTENTCONTROL",
+	"BTN_UPDATE",
+	"BTN_VISITWON",
+	"BTN_PREVIEWS",
+	"BTN_ADVOPTIONS",
+	"BTN_3DINFO",
+	"BTN_CUSTOMGAME",
+	"BTN_ACTIVATE",
+	"BTN_INSTALL",
+	"BTN_VISITWEB",
+	"BTN_REFRESHLIST",
+	"BTN_DEACTIVATE",
+	"BTN_SPECTATEGAME",
+	"BTN_SPECTATEGAMES"
+};
+
+#define MENU_FGCOLOR '1 0.59 0.19'
+
 /*
 =================
 drawmenupic
@@ -25,107 +99,53 @@ drawmenupic
 Wrapper for drawpic that cares about resolution and scales.
 =================
 */
-void drawmenupic( vector vPosition, string sPic, vector vSize, vector vRGB, float fAlpha, float fDrawflag ) {
-	vSize = vSize * fMenuScale;
-	vPosition = vPosition * fMenuScale;
-	drawpic( vPosition + [ iMenuPadding, 0, 0 ], sPic, vSize, vRGB, fAlpha, fDrawflag );
-}
 
-/*
-=================
-drawmenufill
-
-Wrapper for drawpic that cares about resolution and scales.
-=================
-*/
-void drawmenufill( vector vPosition, vector vSize, vector vRGB, float fAlpha, float fDrawflag ) {
-	vSize = vSize * fMenuScale;
-	vPosition = vPosition * fMenuScale;
-	drawfill( vPosition + [ iMenuPadding, 0, 0 ], vSize, vRGB, fAlpha, fDrawflag );
-}
-
-/*
-=================
-drawmenustring
-
-Wrapper for drawstring that cares about resolution and scales.
-=================
-*/
-void drawmenustring( vector vPosition, string sText, vector vSize, vector vRGB, float fAlpha, float fDrawflag ) {
-	vSize = vSize * fMenuScale;
-	vPosition = vPosition * fMenuScale;
-	drawstring( vPosition + [ iMenuPadding, 0, 0 ], sText, vSize, vRGB, fAlpha, fDrawflag );
-}
-
-/*
-=================
-m_mainbutton
-
-Buttons on the main menu screen
-=================
-*/
-void m_mainbutton( vector vPos, string sText, int iItem, void() vFunc) {
-	static float fSelectionAlpha;
+void Object_Button( vector vPosition, int iButtonID, void() vFunction, __inout float fAlpha ) {
+	static int iLastButton = -1;
 	
-	if ( Menu_InputCheckMouse( vPos, '182 14' ) == TRUE ) {
-		if ( iButtonSelected != iItem ) {
-			iButtonSelected = iItem;
-			fSelectionAlpha = 0.0f;
+	vPosition += vMenuOffset;
+	
+	if ( fAlpha > 0.0f ) {
+		fAlpha -= frametime;
+	} else {
+		fAlpha = 0.0f;
+	}
+	
+	float sWidth = stringwidth( sButtonLabels[ iButtonID ], TRUE, '16 16' );
+	
+	if ( Menu_InputCheckMouse( vPosition, [ sWidth, 16 ] ) == TRUE ) {
+		if ( iLastButton != iButtonID ) {
+			localcmd( "play ../media/launch_deny2.wav\n" );
 		}
+		iLastButton = iButtonID;
+		fAlpha = 1.0f;
 		
 		if ( fMouseClick == TRUE ) {
-			if ( iMenu == iItem ) {
-				iMenu = 0;
-			} else {
-				iMenu = iItem;
-			}
-			fMenuAlpha = 0.0f;
+			vFunction();
+			localcmd( "play ../media/launch_select2.wav\n" );
 			fMouseClick = FALSE;
-			localsound( "buttons/button9.wav" );
-		}
-	}
-
-	if ( iMenu == iItem ) {
-		drawmenustring( vPos, sText, '14 14', '1 0.5 0', 1.0f, 0 );
-		vFunc();
-	} else {
-		if ( iButtonSelected == iItem ) {
-			drawmenustring( vPos, sText, '14 14', '1 1 1', 1 - fSelectionAlpha, 0 );
-			drawmenustring( vPos, sText, '14 14', '0.3 0.3 1', fSelectionAlpha, 0 );
-		} else {
-			drawmenustring( vPos, sText, '14 14', '1 1 1', fFadeAlpha, 0 );
 		}
 	}
 	
-	if ( fSelectionAlpha < 1.0f ) {
-		fSelectionAlpha += frametime;
-		if ( fSelectionAlpha > 1.0f ) {
-			fSelectionAlpha = 1.0f;
-		}
-	}
+	drawstring( vPosition, sButtonLabels[ iButtonID ], '16 16', MENU_FGCOLOR, 1.0f, 0 );
+	drawstring( vPosition, sButtonLabels[ iButtonID ], '16 16', '1 1 1', fAlpha, 0 );
 }
 
-
-void menu_buttoncmd( vector vPosition, string sLabel, vector vFSize, void() vFunc ) {
-	float fButtonAlpha = fMenuAlpha;
-	if ( Menu_InputCheckMouse( vPosition, [ stringwidth( sLabel, TRUE, vFSize), vFSize_y ] ) == TRUE ) {
-		if ( fMouseClick == TRUE ) {
-			vFunc();
-			fMouseClick = FALSE;
-			localsound( "buttons/button7.wav" );
-		}
-		drawmenufill( vPosition + [ 0, vFSize_y + 2 ], [ stringwidth( sLabel, TRUE, vFSize ), 2 ], '1 1 1', fMenuAlpha * 0.5, 0 );
-	} else {
-		fButtonAlpha *= 0.5;
-	}
-	drawmenustring( vPosition, sLabel, vFSize, '1 1 1', fButtonAlpha, FALSE );
+void Object_Button_Right( vector vPosition, int iButtonID, void() vFunction, __inout float fAlpha ) {
+	vPosition_x -= stringwidth( sButtonLabels[ iButtonID ], TRUE, '16 16' );
+	Object_Button( vPosition, iButtonID, vFunction, fAlpha );
 }
 
-#define OUTLINE_COLOR '0.8 0.8 1'
-void m_drawmenushadow( void ) {
-	drawmenufill( '16 32', '380 430', '0 0 0', fMenuAlpha * 0.75, 2 ); // Backdrop
-	drawmenufill( '15 32', '1 430', OUTLINE_COLOR, fMenuAlpha * 0.5, 2 ); // Left
-	drawmenufill( '397 32', '1 430', OUTLINE_COLOR, fMenuAlpha * 0.5, 2 ); // Right
-	drawmenufill( '15 31', '383 1', OUTLINE_COLOR, fMenuAlpha * 0.5, 2 ); // Up
-	drawmenufill( '15 462', '383 1', OUTLINE_COLOR, fMenuAlpha * 0.5, 2 ); // Down
+// Draws window with outline, border and title
+void Object_Frame( vector vPos, vector vSize ) {
+	vPos += vMenuOffset;
+	
+	// Draw the background
+	drawfill( vPos, vSize, '0 0 0', 1.0f );
+	
+	drawfill( vPos, [vSize_x, 1], MENU_FGCOLOR, 1.0f ); // Top
+	drawfill( [vPos_x, vPos_y + vSize_y], [vSize_x, 1], MENU_FGCOLOR, 1.0f ); // Bottom
+	
+	drawfill( vPos, [1, vSize_y], MENU_FGCOLOR, 1.0f ); // Left
+	drawfill( [vPos_x + vSize_x, vPos_y], [1, vSize_y], MENU_FGCOLOR, 1.0f ); // Right
 }

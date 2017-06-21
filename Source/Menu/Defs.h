@@ -26,21 +26,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define TARGET_MENU 	1
 #define TARGET_CLIENT 	2
 
-var vector vVideoAspect;
 var vector vVideoSize;
-var vector vMenuSize;
-var int iMenuPadding;
+var vector vMenuOffset;
 
 var vector vMousePos;
 var float fInputKeyCode;
 var float fInputKeyASCII;
 var float fInputKeyDown;
 var float fMouseClick;
+var float fButtonAlpha[8];
 
 var int iMenuActive;
-
-var float fMenuScale;
-var float fMenuAlpha;
 
 float frametime;
 float fLastTime;
@@ -49,55 +45,80 @@ int iMenu;
 string *sMapList;
 int iMapCount;
 
-// Draw.c & Objects.c
-float fFadeAlpha;
-int iButtonSelected;
+enum {
+	MENU_MAIN,
+	MENU_QUIT	
+};
 
-/*
-=================
-gcd_r
-
-Returns the greatest common denominator
-=================
-*/
-int gcd_r( float a, float b ) {
-	if ( a == 0 ) { 
-		return b;
-	}
-	return gcd_r( floor( b%a ), a );
-}
-
-/*
-=================
-Menu_Util_GetAspect
-
-Returns the aspect ratio for the current mode.
-=================
-*/
-vector Menu_Util_GetAspect( vector vResolution ) {
-	int r = gcd_r( vResolution_x, vResolution_y );
-	return [ vResolution_x/r, vResolution_y/r ];
-}
-
-/*
-=================
-Menu_Util_GetAspectSize
-
-Returns the menu size for the given ratio.
-=================
-*/
-vector Menu_Util_GetMenuSize( vector vAspect ) {
-	float fScale = ( vAspect_x / vAspect_y );
-	return [ rint( 480 * fScale ), 480 ];
-}
-
-/*
-=================
-Menu_Util_GetMenuPadding
-
-Returns the padding size for the current ratio.
-=================
-*/
-int Menu_Util_GetMenuPadding( void ) {
-	return ( vMenuSize_x - 640 ) / 2;
-}
+#define MENU_BUTTONS 69
+enum {
+	BTN_NEWGAME,
+	BTN_RESUMEGAME,
+	BTN_TRAINING,
+	BTN_CONFIG,
+	BTN_LOADGAME,
+	BTN_SAVELOAD,
+	BTN_README,
+	BTN_QUIT,
+	BTN_MULTIPLAYER,
+	BTN_EASY,
+	BTN_MEDIUM,
+	BTN_DIFFICULT,
+	BTN_SAVEGAME,
+	BTN_LOADGAME2,
+	BTN_CANCEL,
+	BTN_OPTIONS,
+	BTN_VIDEO,
+	BTN_AUDIO,
+	BTN_CONTROLS,
+	BTN_DONE,
+	BTN_QUICKSTART,
+	BTN_DEFAULTS,
+	BTN_OK,
+	BTN_VIDEOOPTIONS,
+	BTN_VIDEOMODES,
+	BTN_ADVCONTROLS,
+	BTN_ORDER,
+	BTN_DELETE,
+	BTN_INTERNET,
+	BTN_IRCCHAT,
+	BTN_LAN,
+	BTN_CUSTOMIZE,
+	BTN_SKIP,
+	BTN_EXIT,
+	BTN_CONNECT,
+	BTN_REFRESH,
+	BTN_FILTER,
+	BTN_CREATE,
+	BTN_CREATEGAME,
+	BTN_CHATROOMS,
+	BTN_LISTROOMS,
+	BTN_SEARCH,
+	BTN_SERVERS,
+	BTN_JOIN,
+	BTN_FIND,
+	BTN_CREATEROOM,
+	BTN_JOINGAME,
+	BTN_SEARCHGAMES,
+	BTN_FINDGAME,
+	BTN_STARTGAME,
+	BTN_GAMEINFO,
+	BTN_UPDATE,
+	BTN_ADDSERVER,
+	BTN_DISCONNECT,
+	BTN_CONSOLE,
+	BTN_CONTENTCONTROL,
+	BTN_UPDATE,
+	BTN_VISITWON,
+	BTN_PREVIEWS,
+	BTN_ADVOPTIONS,
+	BTN_3DINFO,
+	BTN_CUSTOMGAME,
+	BTN_ACTIVATE,
+	BTN_INSTALL,
+	BTN_VISITWEB,
+	BTN_REFRESHLIST,
+	BTN_DEACTIVATE,
+	BTN_SPECTATEGAME,
+	BTN_SPECTATEGAMES
+};
