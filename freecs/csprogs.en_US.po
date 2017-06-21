@@ -228,10 +228,10 @@ msgid "VGUI_T1_TXT3"
 msgstr "established a reputation for killing"
 
 msgid "VGUI_T1_TXT4"
-msgstr "anyone that gets in their way, the"
+msgstr "anyone that gets in their way."
 
 msgid "VGUI_T1_TXT5"
-msgstr "the Phoenix Faction is one of the most"
+msgstr "The Phoenix Faction is one of the most"
 
 msgid "VGUI_T1_TXT6"
 msgstr "feared terrorist groups in Eastern Europe."
