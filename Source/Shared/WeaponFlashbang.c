@@ -95,6 +95,11 @@ void WeaponFLASHBANG_PrimaryFire( void ) {
 #ifdef SSQC
 void WeaponFLASHBANG_Throw( void ) {
 	static void WeaponFLASHBANG_Explode( void ) {
+		if ( random() < 0.5 ) {
+			sound( self, CHAN_WEAPON, "weapons/flashbang-1.wav", 1, ATTN_NORM );
+		} else {
+			sound( self, CHAN_WEAPON, "weapons/flashbang-2.wav", 1, ATTN_NORM );
+		}
 		remove( self );
 	}
 	static void Weapon_FLASHBANG_Touch( void ) {

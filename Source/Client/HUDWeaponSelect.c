@@ -196,10 +196,10 @@ float HUD_DrawWeaponSelect_PreviousItem( float fSlot ) {
 				return SLOT_GRENADE;
 			} 
 		} 
-		if ( getstatf( STAT_SLOT_PRIMARY ) ) {
-			return SLOT_PRIMARY;
+		if ( getstatf( STAT_SLOT_MELEE ) ) {
+			return SLOT_MELEE;
 		} else {
-			return HUD_DrawWeaponSelect_NextItem( SLOT_PRIMARY );
+			return HUD_DrawWeaponSelect_PreviousItem( SLOT_MELEE );
 		}
 	}
 }

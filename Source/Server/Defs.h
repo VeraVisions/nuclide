@@ -159,6 +159,8 @@ void Animation_PlayerTop( float fFrame );
 void Animation_PlayerTopTemp( float fFrame, float fTime );
 void Footsteps_Update( void );
 
+void Effect_CreateExplosion( vector vPos );
+
 // WIP
 string __fullspawndata;
 hashtable hashMaterials;

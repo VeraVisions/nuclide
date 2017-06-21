@@ -467,6 +467,14 @@ void CSQC_Parse_Event( void ) {
 		vNormal_z = readcoord();
 		
 		Effect_Impact( iType, vOrigin, vNormal );
+	} else if ( fHeader == EV_EXPLOSION ) {
+		vector vExploPos;
+		
+		vExploPos_x = readcoord();
+		vExploPos_y = readcoord();
+		vExploPos_z = readcoord();
+		
+		Effect_CreateExplosion( vExploPos );
 	}
 }
 

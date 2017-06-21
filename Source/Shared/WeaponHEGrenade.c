@@ -95,13 +95,16 @@ void WeaponHEGRENADE_PrimaryFire( void ) {
 #ifdef SSQC
 void WeaponHEGRENADE_Throw( void ) {
 	static void WeaponHEGRENADE_Explode( void ) {
+		Effect_CreateExplosion( self.origin );
+		Damage_Radius( self.origin, self, 100, 512 );
+		sound( self, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 3 ) + 3 ), 1, ATTN_NORM );
 		remove( self );
 	}
 	static void Weapon_HEGRENADE_Touch( void ) {
 		if ( other.classname == "func_breakable" ) {
 			Damage_Apply( other, self, 10, self.origin );
 		}
-		sound( self, CHAN_WEAPON, sprintf( "weapons/grenade_hit%d.wav", floor( random() * 3 ) + 1 ), 1, ATTN_NORM );
+		sound( self, CHAN_WEAPON, "weapons/he_bounce-1.wav", 1, ATTN_NORM );
 	}
 	
 	makevectors( self.v_angle );

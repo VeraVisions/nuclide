@@ -90,6 +90,7 @@ void View_PlayAnimation( int iSequence );
 // This actually belongs in Builtins.h since its an undocumented global
 vector pmove_vel;
 .float weapon;
+.float maxframe;
 
 void Animation_ShootWeapon( void );
 void Animation_ReloadWeapon( void )

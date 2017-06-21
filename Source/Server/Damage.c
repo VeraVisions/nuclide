@@ -175,8 +175,8 @@ void Damage_Radius( vector vOrigin, entity eAttacker, float fDamage, float fRadi
 				
 			fDiff = ( fRadius - fDiff ) / fRadius;
 			fDamage = fDamage * fDiff;
-	
-			if ( fDiff > 0 ) {
+			
+			if ( fDamage > 0 ) {
 				Damage_Apply( eDChain, eAttacker, fDamage, eDChain.origin );
 			}
 		}

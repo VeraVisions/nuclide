@@ -17,11 +17,43 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
+
+void Effect_CreateExplosion( vector vPos ) {
+#ifdef SSQC
+	vPos_z += 48;
+	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
+	WriteByte( MSG_MULTICAST, EV_EXPLOSION );
+	WriteCoord( MSG_MULTICAST, vPos_x ); 
+	WriteCoord( MSG_MULTICAST, vPos_y ); 
+	WriteCoord( MSG_MULTICAST, vPos_z );
+	msg_entity = self;
+	multicast( vPos, MULTICAST_PVS );
+#else
+	print( "Explosion\n" );
+	static void Effect_CreateExplosion_Animate( void ) {
+		if ( self.frame >= self.maxframe ) {
+			remove( self );
+		} else {
+			self.frame += 1;
+		}
+		self.nextthink = time + 0.05f;
+	}
+	
+	entity eExplosion = spawn();
+	setorigin( eExplosion, vPos );
+	setmodel( eExplosion, "sprites/fexplo.spr" );
+	
+	eExplosion.think = Effect_CreateExplosion_Animate;
+	eExplosion.nextthink = time + 0.05f;
+	eExplosion.effects = EF_ADDITIVE;
+	eExplosion.drawmask = MASK_ENGINE;
+	eExplosion.maxframe = modelframecount( eExplosion.modelindex );
+#endif
+}
+
 #ifdef CSQC
 .float framerate;
-.float maxframe;
 void Effect_AnimatedSprite( vector vPos, float fIndex, float fFPS, float fScale, float fAlpha, float fEffects ) {
-	
 	static void Effect_AnimatedSprite_Animate( void ) {
 		if( self.frame >= self.maxframe ) {
 			self.frame = 0;

@@ -114,14 +114,19 @@
 </project>
 
 <workspace version="Crimson Editor 3.60">
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\freecs\csprogs.en.po" linenum="131" placement="0:1:-1:-1:-4:-23:132:132:980:602" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\VGUIBuyMenu.c" linenum="24" placement="0:1:-1:-1:-4:-23:22:22:874:496" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\VGUI.c" linenum="25" placement="0:1:-1:-1:-4:-23:44:44:896:518" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\VGUIMOTD.c" linenum="38" placement="0:1:-1:-1:-4:-23:66:66:918:540" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\VGUIRadio.c" linenum="113" placement="2:3:-1:-1:-4:-23:88:88:940:562" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\VGUIScoreboard.c" linenum="22" placement="0:1:-1:-1:-4:-23:110:110:962:584" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\VGUISpectator.c" linenum="60" placement="0:1:-1:-1:-4:-23:132:132:984:606" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\VGUITeamSelect.c" linenum="24" placement="0:1:-1:-1:-4:-23:154:154:1006:628" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Shared\Radio.c" linenum="118" placement="0:1:-1:-1:-4:-23:176:176:1028:650" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Shared\WeaponHEGrenade.c" linenum="98" placement="0:1:-1:-1:-4:-23:44:44:892:514" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Shared\WeaponC4Bomb.c" linenum="116" placement="0:1:-1:-1:-4:-23:66:66:918:540" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Shared\WeaponFlashbang.c" linenum="109" placement="0:1:-1:-1:-4:-23:88:88:940:562" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Shared\Effects.c" linenum="32" placement="0:1:-1:-1:-4:-23:132:132:984:606" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\Defs.h" linenum="94" placement="0:1:-1:-1:-4:-23:154:154:1006:628" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Globals.h" linenum="223" placement="0:1:-1:-1:-4:-23:176:176:1028:650" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\Event.c" linenum="470" placement="0:1:-1:-1:-4:-23:198:198:1050:672" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\Init.c" linenum="31" placement="0:1:-1:-1:-4:-23:220:220:1072:694" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Server\Defs.h" linenum="151" placement="0:1:-1:-1:-4:-23:0:0:852:474" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Builtins.h" linenum="860" placement="0:1:-1:-1:-4:-23:22:22:874:496" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\HUDWeaponSelect.c" linenum="187" placement="0:1:-1:-1:-4:-23:44:44:896:518" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\freecs\default.cfg" linenum="72" placement="2:3:-1:-1:-4:-23:66:66:918:540" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Server\Damage.c" linenum="179" placement="0:1:-1:-1:-4:-23:88:88:940:562" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\conhistory.txt" linenum="72" placement="0:1:-1:-1:-4:-23:110:110:962:584" />
 </workspace>
 
