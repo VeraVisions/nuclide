@@ -90,16 +90,15 @@ string sButtonLabels[ MENU_BUTTONS ] = {
 	"BTN_SPECTATEGAMES"
 };
 
-#define MENU_FGCOLOR '1 0.59 0.19'
+#define autocvar_menu_color '1 0.59 0.19'
 
 /*
 =================
-drawmenupic
+Object_Button
 
-Wrapper for drawpic that cares about resolution and scales.
+Used for the (used to be) bitmap buttons in the menu
 =================
 */
-
 void Object_Button( vector vPosition, int iButtonID, void() vFunction, __inout float fAlpha ) {
 	static int iLastButton = -1;
 	
@@ -127,25 +126,102 @@ void Object_Button( vector vPosition, int iButtonID, void() vFunction, __inout f
 		}
 	}
 	
-	drawstring( vPosition, sButtonLabels[ iButtonID ], '16 16', MENU_FGCOLOR, 1.0f, 0 );
+	drawstring( vPosition, sButtonLabels[ iButtonID ], '16 16', autocvar_menu_color, 1.0f, 0 );
 	drawstring( vPosition, sButtonLabels[ iButtonID ], '16 16', '1 1 1', fAlpha, 0 );
 }
 
+/*
+=================
+Object_Button_Right
+
+A right-aligned version of Object_Button
+=================
+*/
 void Object_Button_Right( vector vPosition, int iButtonID, void() vFunction, __inout float fAlpha ) {
 	vPosition_x -= stringwidth( sButtonLabels[ iButtonID ], TRUE, '16 16' );
 	Object_Button( vPosition, iButtonID, vFunction, fAlpha );
 }
 
-// Draws window with outline, border and title
-void Object_Frame( vector vPos, vector vSize ) {
-	vPos += vMenuOffset;
+/*
+=================
+Object_Frame
+
+A filled "window" of sorts
+=================
+*/
+void Object_Frame( vector vPosition, vector vSize ) {
+	vPosition += vMenuOffset;
 	
 	// Draw the background
-	drawfill( vPos, vSize, '0 0 0', 1.0f );
+	drawfill( vPosition, vSize, '0 0 0', 1.0f );
 	
-	drawfill( vPos, [vSize_x, 1], MENU_FGCOLOR, 1.0f ); // Top
-	drawfill( [vPos_x, vPos_y + vSize_y], [vSize_x, 1], MENU_FGCOLOR, 1.0f ); // Bottom
+	drawfill( vPosition, [vSize_x, 1], autocvar_menu_color, 1.0f ); // Top
+	drawfill( [vPosition_x, vPosition_y + vSize_y], [vSize_x, 1], autocvar_menu_color, 1.0f ); // Bottom
 	
-	drawfill( vPos, [1, vSize_y], MENU_FGCOLOR, 1.0f ); // Left
-	drawfill( [vPos_x + vSize_x, vPos_y], [1, vSize_y], MENU_FGCOLOR, 1.0f ); // Right
+	drawfill( vPosition, [1, vSize_y], autocvar_menu_color, 1.0f ); // Left
+	drawfill( [vPosition_x + vSize_x, vPosition_y], [1, vSize_y + 1], autocvar_menu_color, 1.0f ); // Right
 }
+
+/*
+=================
+Object_Label
+
+A label in a cvar driven color scheme
+=================
+*/
+void Object_Label( vector vPosition, string sLabel, vector vSize ) {
+	vPosition += vMenuOffset;
+	drawstring( vPosition, sLabel, vSize, autocvar_menu_color, 1.0f, 0 );	
+}
+
+/*
+=================
+Object_Label_Right
+
+A right-aligned version of Object_Label
+=================
+*/
+void Object_Label_Right( vector vPosition, string sLabel, vector vSize ) {
+	vPosition_x -= stringwidth( sLabel, TRUE, vSize );
+	Object_Label( vPosition, sLabel, vSize );
+}
+
+/*
+=================
+Object_Scrollbar
+
+A scrollbar, for different types of purposes.
+Note: Only have one at a time.
+=================
+*/
+void Object_Scrollbar( vector vPosition, int iHeight, __inout int iProgress ) {
+	Object_Frame( vPosition, [ 16, iHeight ] );
+	
+	vPosition += vMenuOffset;
+	iHeight -= 16;
+	if ( ( iScrollbarHold == TRUE ) || ( Menu_InputCheckMouse( [vPosition_x, vPosition_y + iProgress ], '16 16' ) == TRUE ) ) {
+		if ( fMouseClick == TRUE ) {
+			iProgress = ( vMousePos_y - vPosition_y ) - 8;
+			iScrollbarHold = TRUE;
+		}
+	}
+	
+	if ( fScrollWheel == SCROLL_DOWN ) {
+		iProgress += 2;
+		fScrollWheel = SCROLL_NONE;
+	} else if ( fScrollWheel == SCROLL_UP ) {
+		iProgress -= 2;
+		fScrollWheel = SCROLL_NONE;
+	}
+	
+	if ( iProgress < 0 ) {
+		iProgress = 0;
+	} else if ( iProgress > iHeight ) {
+		iProgress = iHeight;
+	} 
+			
+	iHeight += 16;
+	
+	drawfill( [vPosition_x, vPosition_y + iProgress], [ 16, 16 ], autocvar_menu_color, 1.0f );
+}
+

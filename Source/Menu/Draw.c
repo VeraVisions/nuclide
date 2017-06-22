@@ -36,11 +36,8 @@ Responsible for the fancy menu background
 =================
 */
 void m_drawback( void ) {
-	if ( clientstate() == 2 ) {
-		drawfill( '0 0', vVideoSize, '0 0 0', 0.75f );
-	} else {
-		drawpic( vMenuOffset, "gfx/shell/splash", '640 480', '1 1 1', 1.0f, 0 );
-	}
+	drawfill( '0 0', vVideoSize, '0 0 0', 0.75f );
+	drawpic( vMenuOffset, "gfx/shell/splash", '640 480', '1 1 1', 1.0f, 0 );
 }
 
 /*
@@ -59,6 +56,7 @@ void m_draw( vector vScreenSize ) {
 		vVideoSize = vScreenSize;
 		vMenuOffset_x = vVideoSize_x / 2 - 320;
 		vMenuOffset_y = vVideoSize_y / 2 - 240;
+		Menu_ResetClipArea();
 	}
 	
 	// we have to create frametime ourselves because menuqc is primitive
@@ -73,6 +71,10 @@ void m_draw( vector vScreenSize ) {
 	
 	if ( iMenu == MENU_MAIN ) {
 		Menu_Main();	
+	} else if ( iMenu == MENU_MULTIPLAYER ) {
+		Menu_Multiplayer();
+	} else if ( iMenu == MENU_MULTIPLAYER_CREATE ) {
+		Menu_Multiplayer_Create();
 	} else if ( iMenu == MENU_QUIT ) {
 		Menu_Quit();
 	}

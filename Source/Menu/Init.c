@@ -38,6 +38,8 @@ void m_init( void ) {
 	}
 
 	search_end( shMaps );
+	
+	Menu_ResetClipArea();
 }
 
 /*

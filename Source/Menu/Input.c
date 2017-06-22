@@ -18,6 +18,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+// Temporary state
+var vector vMenuClickMins;
+var vector vMenuClickMaxs;
+
 /*
 =================
 Menu_InputCheckMouse
@@ -25,24 +29,46 @@ Menu_InputCheckMouse
 Checks a specified region and returns TRUE if the mouse is above it.
 =================
 */
-int Menu_InputCheckMouse( vector vPos, vector vReg ) {
+int Menu_InputCheckMouse( vector vPosition, vector vRegion ) {
 	vector vSMins, vSMaxs;
 
-	vSMins = vPos;
-	vSMaxs = vPos;
-	vSMins_x = vPos_x;
-	vSMaxs_y = vPos_y - 1;
-
-	vSMaxs_x = vPos_x + vReg_x;
-	vSMaxs_y = vPos_y + vReg_y;
-
-	if ( vMousePos_x >= vSMins_x && vMousePos_x <= vSMaxs_x ) {
-		if ( vMousePos_y >= vSMins_y && vMousePos_y <= vSMaxs_y ) {
-			return TRUE;
+	// Some elements will be blocked (scrolling lists) outside of this region
+	if ( vMousePos_x >= vMenuClickMins_x && vMousePos_x <= vMenuClickMaxs_x ) {
+		if ( vMousePos_y >= vMenuClickMins_y && vMousePos_y <= vMenuClickMaxs_y ) {
+			vSMins = vSMaxs = vPosition;
+			vSMaxs_y = vPosition_y - 1;
+		
+			vSMaxs_x = vPosition_x + vRegion_x;
+			vSMaxs_y = vPosition_y + vRegion_y;
+		
+			if ( vMousePos_x >= vSMins_x && vMousePos_x <= vSMaxs_x ) {
+				if ( vMousePos_y >= vSMins_y && vMousePos_y <= vSMaxs_y ) {
+					return TRUE;
+				}
+			}
 		}
 	}
 	
 	return FALSE;
+}
+
+void Menu_SetClipArea( vector vPosition, vector vRegion ) {
+	vPosition += vMenuOffset;
+	vMenuClickMins = vPosition;
+	vMenuClickMaxs = vPosition;
+	vMenuClickMins_x = vPosition_x;
+	vMenuClickMaxs_y = vPosition_y - 1;
+		
+	vMenuClickMaxs_x = vPosition_x + vRegion_x;
+	vMenuClickMaxs_y = vPosition_y + vRegion_y;
+	
+	drawsetcliparea( vPosition_x, vPosition_y, vRegion_x, vRegion_y );
+}
+
+void Menu_ResetClipArea( void ) {
+	vMenuClickMins = vMenuOffset;
+	vMenuClickMaxs = vMenuOffset + '640 480';
+	drawresetcliparea();
 }
 
 /*
@@ -64,11 +90,18 @@ float Menu_InputEvent( float fEventType, float fKey, float fCharacter, float fDe
 			fInputKeyDown = 1;
 		}
 		
+		if ( fKey == K_MWHEELDOWN ) {
+			fScrollWheel = SCROLL_DOWN;
+		} else if ( fKey == K_MWHEELUP ) {
+			fScrollWheel = SCROLL_UP;
+		}
+		
 		fInputKeyCode = fKey;
 		fInputKeyASCII = fCharacter;
 	} else if ( fEventType == IE_KEYUP ) {
 		if ( fKey == K_MOUSE1 ) {
 			fMouseClick = 0;
+			iScrollbarHold = FALSE;
 		} else {
 			fInputKeyDown = 0;
 		}

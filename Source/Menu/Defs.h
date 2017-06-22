@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 var vector vVideoSize;
 var vector vMenuOffset;
+var vector autocvar_menu_color = '1 0.59 0.19';
 
 var vector vMousePos;
 var float fInputKeyCode;
@@ -35,8 +36,17 @@ var float fInputKeyASCII;
 var float fInputKeyDown;
 var float fMouseClick;
 var float fButtonAlpha[8];
+var float fScrollWheel;
+
+enum {
+	SCROLL_NONE,
+	SCROLL_UP,
+	SCROLL_DOWN
+};
 
 var int iMenuActive;
+
+var int iScrollbarHold; // Because of this, don't put more than one scrollbar per screen :)
 
 float frametime;
 float fLastTime;
@@ -47,6 +57,9 @@ int iMapCount;
 
 enum {
 	MENU_MAIN,
+	MENU_MULTIPLAYER,
+	MENU_MULTIPLAYER_CREATE,
+	MENU_MULTIPLAYER_OPTIONS,
 	MENU_QUIT	
 };
 
@@ -122,3 +135,6 @@ enum {
 	BTN_SPECTATEGAME,
 	BTN_SPECTATEGAMES
 };
+
+void Menu_SetClipArea( vector vPosition, vector vRegion );
+void Menu_ResetClipArea( void );

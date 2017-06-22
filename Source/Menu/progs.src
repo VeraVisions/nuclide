@@ -12,5 +12,6 @@ Init.c
 Input.c
 Objects.c
 MenuMain.c
+MenuMultiplayer.c
 Draw.c
 #endlist

@@ -22,6 +22,9 @@ void Menu_Main( void ) {
 	static void Main_ButtonConsole( void ) {
 		localcmd( "toggleconsole\n" );
 	}
+	static void Main_ButtonMultiplayer( void ) {
+		iMenu = MENU_MULTIPLAYER;
+	}
 	static void Main_ButtonQuit( void ) {
 		iMenu = MENU_QUIT;
 	}
@@ -29,7 +32,7 @@ void Menu_Main( void ) {
 	Object_Button( '72 188', BTN_CONSOLE, Main_ButtonConsole, fButtonAlpha[0] );
 	Object_Button( '72 272', BTN_CONFIG, __NULL__, fButtonAlpha[1] );
 	
-	Object_Button( '72 328', BTN_MULTIPLAYER, __NULL__, fButtonAlpha[2] );
+	Object_Button( '72 328', BTN_MULTIPLAYER, Main_ButtonMultiplayer, fButtonAlpha[2] );
 	Object_Button( '72 356', BTN_CUSTOMGAME, __NULL__, fButtonAlpha[3] );
 	Object_Button( '72 384', BTN_README, __NULL__, fButtonAlpha[4] );
 	Object_Button( '72 412', BTN_VISITWEB, __NULL__, fButtonAlpha[5] );
@@ -46,7 +49,7 @@ void Menu_Quit( void ) {
 	}
 	
 	Object_Frame( '192 192', '256 96' );
-	drawstring( vMenuOffset + '200 216', "FREECS_QUITMSG", '8 8', MENU_FGCOLOR, 1.0f, 0 );
+	Object_Label( '200 216', "FREECS_QUITMSG", '8 8' );
 		
 	Object_Button( '200 248', BTN_QUIT, Quit_Exit, fButtonAlpha[0] );
 	Object_Button_Right( '440 248', BTN_CANCEL, Quit_Cancel, fButtonAlpha[1] );

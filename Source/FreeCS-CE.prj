@@ -1,5 +1,5 @@
 <project version="Crimson Editor 3.60">
-	<category name="Client" expanded="yes">
+	<category name="Client" expanded="no">
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\Defs.h" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\Draw.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\Entities.c" />
@@ -65,6 +65,7 @@
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Init.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Input.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\MenuMain.c" />
+		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\MenuMultiplayer.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Objects.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\progs.src" />
 	</category>
@@ -110,15 +111,9 @@
 </project>
 
 <workspace version="Crimson Editor 3.60">
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Objects.c" linenum="135" placement="0:1:-1:-1:-4:-23:110:110:958:580" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Draw.c" linenum="77" placement="0:1:-1:-1:-4:-23:132:132:984:606" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Defs.h" linenum="40" placement="2:3:-1:-1:-4:-23:154:154:1006:628" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Init.c" linenum="33" placement="0:1:-1:-1:-4:-23:198:198:1050:672" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Input.c" linenum="1" placement="0:1:-1:-1:-4:-23:220:220:1072:694" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\MenuMain.c" linenum="20" placement="0:1:-1:-1:-4:-23:132:132:984:606" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\progs.src" linenum="14" placement="0:1:-1:-1:-4:-23:154:154:1006:628" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\VGUIObjects.c" linenum="20" placement="0:1:-1:-1:-4:-23:176:176:1028:650" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Builtins.h" linenum="2228" placement="0:1:-1:-1:-4:-23:198:198:1050:672" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\VGUIScoreboard.c" linenum="1" placement="0:1:-1:-1:-4:-23:220:220:1072:694" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\MenuMain.c" linenum="51" placement="0:1:-1:-1:-4:-23:110:110:958:580" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\MenuMultiplayer.c" linenum="43" placement="2:3:-1:-1:-4:-23:132:132:984:606" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Defs.h" linenum="116" placement="0:1:-1:-1:-4:-23:154:154:1006:628" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Draw.c" linenum="79" placement="0:1:-1:-1:-4:-23:110:110:962:584" />
 </workspace>
 
