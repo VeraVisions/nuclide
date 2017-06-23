@@ -18,6 +18,13 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+/*
+=================
+Menu_Main
+
+The first, main screen
+=================
+*/
 void Menu_Main( void ) {
 	static void Main_ButtonConsole( void ) {
 		localcmd( "toggleconsole\n" );
@@ -40,6 +47,13 @@ void Menu_Main( void ) {
 	
 }
 
+/*
+=================
+Menu_Quit
+
+The quit screen
+=================
+*/
 void Menu_Quit( void ) {
 	static void Quit_Cancel( void ) {
 		iMenu = MENU_MAIN;
@@ -49,8 +63,8 @@ void Menu_Quit( void ) {
 	}
 	
 	Object_Frame( '192 192', '256 96' );
-	Object_Label( '200 216', "FREECS_QUITMSG", '8 8' );
+	Object_Label( '200 216', _("FREECS_QUITMSG"), '8 8' );
 		
-	Object_Button( '200 248', BTN_QUIT, Quit_Exit, fButtonAlpha[0] );
-	Object_Button_Right( '440 248', BTN_CANCEL, Quit_Cancel, fButtonAlpha[1] );
+	Object_Button( '208 248', BTN_QUIT, Quit_Exit, fButtonAlpha[0] );
+	Object_Button( '364 248', BTN_CANCEL, Quit_Cancel, fButtonAlpha[1] );
 }

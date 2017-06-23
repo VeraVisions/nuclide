@@ -18,7 +18,6 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-// Temporary state
 var vector vMenuClickMins;
 var vector vMenuClickMaxs;
 
@@ -52,6 +51,14 @@ int Menu_InputCheckMouse( vector vPosition, vector vRegion ) {
 	return FALSE;
 }
 
+/*
+=================
+Menu_SetClipArea
+
+This will set the region in which mouse activity and drawing
+of objects will happen. Use it to clip text and mouse activity.
+=================
+*/
 void Menu_SetClipArea( vector vPosition, vector vRegion ) {
 	vPosition += vMenuOffset;
 	vMenuClickMins = vPosition;
@@ -65,6 +72,13 @@ void Menu_SetClipArea( vector vPosition, vector vRegion ) {
 	drawsetcliparea( vPosition_x, vPosition_y, vRegion_x, vRegion_y );
 }
 
+/*
+=================
+Menu_ResetClipArea
+
+Resets the clip area that was set via Menu_SetClipArea
+=================
+*/
 void Menu_ResetClipArea( void ) {
 	vMenuClickMins = vMenuOffset;
 	vMenuClickMaxs = vMenuOffset + '640 480';

@@ -19,78 +19,76 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 string sButtonLabels[ MENU_BUTTONS ] = {
-	"BTN_NEWGAME",
-	"BTN_RESUMEGAME",
-	"BTN_TRAINING",
-	"BTN_CONFIG",
-	"BTN_LOADGAME",
-	"BTN_SAVELOAD",
-	"BTN_README",
-	"BTN_QUIT",
-	"BTN_MULTIPLAYER",
-	"BTN_EASY",
-	"BTN_MEDIUM",
-	"BTN_DIFFICULT",
-	"BTN_SAVEGAME",
-	"BTN_LOADGAME2",
-	"BTN_CANCEL",
-	"BTN_OPTIONS",
-	"BTN_VIDEO",
-	"BTN_AUDIO",
-	"BTN_CONTROLS",
-	"BTN_DONE",
-	"BTN_QUICKSTART",
-	"BTN_DEFAULTS",
-	"BTN_OK",
-	"BTN_VIDEOOPTIONS",
-	"BTN_VIDEOMODES",
-	"BTN_ADVCONTROLS",
-	"BTN_ORDER",
-	"BTN_DELETE",
-	"BTN_INTERNET",
-	"BTN_IRCCHAT",
-	"BTN_LAN",
-	"BTN_CUSTOMIZE",
-	"BTN_SKIP",
-	"BTN_EXIT",
-	"BTN_CONNECT",
-	"BTN_REFRESH",
-	"BTN_FILTER",
-	"BTN_CREATE",
-	"BTN_CREATEGAME",
-	"BTN_CHATROOMS",
-	"BTN_LISTROOMS",
-	"BTN_SEARCH",
-	"BTN_SERVERS",
-	"BTN_JOIN",
-	"BTN_FIND",
-	"BTN_CREATEROOM",
-	"BTN_JOINGAME",
-	"BTN_SEARCHGAMES",
-	"BTN_FINDGAME",
-	"BTN_STARTGAME",
-	"BTN_GAMEINFO",
-	"BTN_UPDATE",
-	"BTN_ADDSERVER",
-	"BTN_DISCONNECT",
-	"BTN_CONSOLE",
-	"BTN_CONTENTCONTROL",
-	"BTN_UPDATE",
-	"BTN_VISITWON",
-	"BTN_PREVIEWS",
-	"BTN_ADVOPTIONS",
-	"BTN_3DINFO",
-	"BTN_CUSTOMGAME",
-	"BTN_ACTIVATE",
-	"BTN_INSTALL",
-	"BTN_VISITWEB",
-	"BTN_REFRESHLIST",
-	"BTN_DEACTIVATE",
-	"BTN_SPECTATEGAME",
-	"BTN_SPECTATEGAMES"
+	_("BTN_NEWGAME"),
+	_("BTN_RESUMEGAME"),
+	_("BTN_TRAINING"),
+	_("BTN_CONFIG"),
+	_("BTN_LOADGAME"),
+	_("BTN_SAVELOAD"),
+	_("BTN_README"),
+	_("BTN_QUIT"),
+	_("BTN_MULTIPLAYER"),
+	_("BTN_EASY"),
+	_("BTN_MEDIUM"),
+	_("BTN_DIFFICULT"),
+	_("BTN_SAVEGAME"),
+	_("BTN_LOADGAME2"),
+	_("BTN_CANCEL"),
+	_("BTN_OPTIONS"),
+	_("BTN_VIDEO"),
+	_("BTN_AUDIO"),
+	_("BTN_CONTROLS"),
+	_("BTN_DONE"),
+	_("BTN_QUICKSTART"),
+	_("BTN_DEFAULTS"),
+	_("BTN_OK"),
+	_("BTN_VIDEOOPTIONS"),
+	_("BTN_VIDEOMODES"),
+	_("BTN_ADVCONTROLS"),
+	_("BTN_ORDER"),
+	_("BTN_DELETE"),
+	_("BTN_INTERNET"),
+	_("BTN_IRCCHAT"),
+	_("BTN_LAN"),
+	_("BTN_CUSTOMIZE"),
+	_("BTN_SKIP"),
+	_("BTN_EXIT"),
+	_("BTN_CONNECT"),
+	_("BTN_REFRESH"),
+	_("BTN_FILTER"),
+	_("BTN_CREATE"),
+	_("BTN_CREATEGAME"),
+	_("BTN_CHATROOMS"),
+	_("BTN_LISTROOMS"),
+	_("BTN_SEARCH"),
+	_("BTN_SERVERS"),
+	_("BTN_JOIN"),
+	_("BTN_FIND"),
+	_("BTN_CREATEROOM"),
+	_("BTN_JOINGAME"),
+	_("BTN_SEARCHGAMES"),
+	_("BTN_FINDGAME"),
+	_("BTN_STARTGAME"),
+	_("BTN_GAMEINFO"),
+	_("BTN_UPDATE"),
+	_("BTN_ADDSERVER"),
+	_("BTN_DISCONNECT"),
+	_("BTN_CONSOLE"),
+	_("BTN_CONTENTCONTROL"),
+	_("BTN_UPDATE"),
+	_("BTN_VISITWON"),
+	_("BTN_PREVIEWS"),
+	_("BTN_ADVOPTIONS"),
+	_("BTN_3DINFO"),
+	_("BTN_CUSTOMGAME"),
+	_("BTN_ACTIVATE"),
+	_("BTN_INSTALL"),
+	_("BTN_VISITWEB"),
+	_("BTN_REFRESHLIST"),
+	_("BTN_DEACTIVATE"),
+	_("BTN_SPECTATEGAME"),
+	_("BTN_SPECTATEGAMES")
 };
-
-#define autocvar_menu_color '1 0.59 0.19'
 
 /*
 =================
@@ -110,9 +108,7 @@ void Object_Button( vector vPosition, int iButtonID, void() vFunction, __inout f
 		fAlpha = 0.0f;
 	}
 	
-	float sWidth = stringwidth( sButtonLabels[ iButtonID ], TRUE, '16 16' );
-	
-	if ( Menu_InputCheckMouse( vPosition, [ sWidth, 16 ] ) == TRUE ) {
+	if ( Menu_InputCheckMouse( vPosition, '156 26' ) == TRUE ) {
 		if ( iLastButton != iButtonID ) {
 			localcmd( "play ../media/launch_deny2.wav\n" );
 		}
@@ -125,21 +121,13 @@ void Object_Button( vector vPosition, int iButtonID, void() vFunction, __inout f
 			fMouseClick = FALSE;
 		}
 	}
-	
-	drawstring( vPosition, sButtonLabels[ iButtonID ], '16 16', autocvar_menu_color, 1.0f, 0 );
-	drawstring( vPosition, sButtonLabels[ iButtonID ], '16 16', '1 1 1', fAlpha, 0 );
-}
 
-/*
-=================
-Object_Button_Right
-
-A right-aligned version of Object_Button
-=================
-*/
-void Object_Button_Right( vector vPosition, int iButtonID, void() vFunction, __inout float fAlpha ) {
-	vPosition_x -= stringwidth( sButtonLabels[ iButtonID ], TRUE, '16 16' );
-	Object_Button( vPosition, iButtonID, vFunction, fAlpha );
+	vector vSrcPos, vSrcSize;
+	vSrcPos_x = 0;
+	vSrcPos_y = ( 78 * iButtonID ) / 5538;
+	vSrcSize = [ 1, 26 / 5538 ];
+	drawsubpic( vPosition, '156 26', "gfx/shell/btns_main", vSrcPos, vSrcSize, '1 1 1', 1.0f, 1 );
+	drawsubpic( vPosition, '156 26', "gfx/shell/btns_main", vSrcPos + [ 0, 52 / 5538 ], vSrcSize, '1 1 1', fAlpha, 1 );
 }
 
 /*
@@ -155,11 +143,11 @@ void Object_Frame( vector vPosition, vector vSize ) {
 	// Draw the background
 	drawfill( vPosition, vSize, '0 0 0', 1.0f );
 	
-	drawfill( vPosition, [vSize_x, 1], autocvar_menu_color, 1.0f ); // Top
-	drawfill( [vPosition_x, vPosition_y + vSize_y], [vSize_x, 1], autocvar_menu_color, 1.0f ); // Bottom
+	drawfill( vPosition, [vSize_x, 1], autocvar_menu_fgcolor, 1.0f ); // Top
+	drawfill( [vPosition_x, vPosition_y + vSize_y], [vSize_x, 1], autocvar_menu_fgcolor, 1.0f ); // Bottom
 	
-	drawfill( vPosition, [1, vSize_y], autocvar_menu_color, 1.0f ); // Left
-	drawfill( [vPosition_x + vSize_x, vPosition_y], [1, vSize_y + 1], autocvar_menu_color, 1.0f ); // Right
+	drawfill( vPosition, [1, vSize_y], autocvar_menu_fgcolor, 1.0f ); // Left
+	drawfill( [vPosition_x + vSize_x, vPosition_y], [1, vSize_y + 1], autocvar_menu_fgcolor, 1.0f ); // Right
 }
 
 /*
@@ -171,7 +159,7 @@ A label in a cvar driven color scheme
 */
 void Object_Label( vector vPosition, string sLabel, vector vSize ) {
 	vPosition += vMenuOffset;
-	drawstring( vPosition, sLabel, vSize, autocvar_menu_color, 1.0f, 0 );	
+	drawstring( vPosition, sLabel, vSize, autocvar_menu_fgcolor, 1.0f, 0 );	
 }
 
 /*
@@ -222,6 +210,6 @@ void Object_Scrollbar( vector vPosition, int iHeight, __inout int iProgress ) {
 			
 	iHeight += 16;
 	
-	drawfill( [vPosition_x, vPosition_y + iProgress], [ 16, 16 ], autocvar_menu_color, 1.0f );
+	drawfill( [vPosition_x, vPosition_y + iProgress], [ 16, 16 ], autocvar_menu_fgcolor, 1.0f );
 }
 

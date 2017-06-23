@@ -206,7 +206,8 @@ void FuncDoorRotate_Blocked( void ) {
 =================
 BrushRotate
 
-	Brush entity that rotates into a specific direction. Has the ability to trigger an object once touched, used or triggered otherwise.
+	Brush entity that rotates into a specific direction. 
+	Has the ability to trigger an object once touched, used or triggered otherwise.
 =================
 */
 void func_door_rotating( void ) {

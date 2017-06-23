@@ -40,8 +40,10 @@ void func_pushable( void ) {
 	}
 	static void func_pushable_use( void ) {
 		if ( eActivator.classname != "player" ) {
-			func_breakable_use();
-			return;
+			if ( self.health > 0 ) {
+				func_breakable_use();
+				return;
+			}
 		}
 		
 		self.movedir = eActivator.movement;

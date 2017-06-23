@@ -72,6 +72,13 @@ func_breakable_die
 =================
 */
 void func_breakable_die( int iNull ) {	
+	// Make sure this is dead
+	if ( self.vUse == __NULL__ ) {
+		return;
+	}
+	
+	self.health = 0;
+	self.vUse = __NULL__;
 	Effect_BreakModel( self.absmin, self.absmax, self.velocity, self.material );
 	Entities_UseTargets();
 	Entities_Remove();

@@ -62,7 +62,12 @@ void Entities_UseTargets( void ) {
 	while ( eFind ) {
 		self = eFind;
 		//bprint( sprintf( "Triggering %s %s\n", self.classname, self.targetname ) );
-		self.vUse();
+		
+		// Make sure we really do have a target...
+		if ( self.vUse != __NULL__ ) {
+			self.vUse();
+		}
+		
 		eFind = eFind.chain;
 	}
 	self = eOld;
@@ -100,6 +105,7 @@ Called
 .vector vOldOrigin;
 .vector vOldAngle;
 .void() vRespawn;
+.void() vOldUse;
 void Entities_InitRespawnable( void() vRespawnFunc ) {
 	self.sOldModel = self.model;
 	self.fOldSolid = self.solid;
@@ -107,6 +113,7 @@ void Entities_InitRespawnable( void() vRespawnFunc ) {
 	self.vOldOrigin = self.origin;
 	self.vOldAngle = self.angles;
 	self.vRespawn = vRespawnFunc;
+	self.vOldUse = self.vUse;
 	self.fRespawns = TRUE;
 }
 
@@ -116,6 +123,7 @@ void Entities_Respawn( void ) {
 	self.health = self.fOldHealth;
 	self.origin = self.vOldOrigin;
 	self.angles = self.vOldAngle;
+	self.vUse = self.vOldUse;
 	Entities_RenderSetup();
 	self.vRespawn();
 }

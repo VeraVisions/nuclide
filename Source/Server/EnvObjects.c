@@ -178,7 +178,7 @@ enumflags {
 // TODO: Finish cosmetic effects
 void env_explosion( void ) {
 	static void env_explosion_use( void ) {
-		te_explosion( self.origin );
+		Effect_CreateExplosion( self.origin );
 		
 		if ( !( self.spawnflags & ENVEXPLO_NODAMAGE ) ) {
 			Damage_Radius( self.origin, self, 500, self.iMagnitude );

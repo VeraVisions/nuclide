@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 var vector vVideoSize;
 var vector vMenuOffset;
-var vector autocvar_menu_color = '1 0.59 0.19';
+var vector autocvar_menu_fgcolor = '1 0.59 0.19';
 
 var vector vMousePos;
 var float fInputKeyCode;
@@ -45,7 +45,6 @@ enum {
 };
 
 var int iMenuActive;
-
 var int iScrollbarHold; // Because of this, don't put more than one scrollbar per screen :)
 
 float frametime;
@@ -55,12 +54,44 @@ int iMenu;
 string *sMapList;
 int iMapCount;
 
+var float FONT_MENU;
+
+#define MENU_COUNT 5
 enum {
 	MENU_MAIN,
 	MENU_MULTIPLAYER,
 	MENU_MULTIPLAYER_CREATE,
 	MENU_MULTIPLAYER_OPTIONS,
 	MENU_QUIT	
+};
+
+enum {
+	HEAD_ADVANCED,
+	HEAD_ADVOPTIONS,
+	HEAD_AUDIO,
+	HEAD_CONFIG,
+	HEAD_CONTROLS,
+	HEAD_CREATEGAME,
+	HEAD_CREATEROOM,
+	HEAD_CUSTOM,
+	HEAD_CUSTOMIZE,
+	HEAD_FILTER,
+	HEAD_GAMEOPTS,
+	HEAD_GORE,
+	HEAD_INETGAMES,
+	HEAD_KEYBOARD,
+	HEAD_LAN,
+	HEAD_LOAD,
+	HEAD_MULTI,
+	HEAD_README,
+	HEAD_ROOM,
+	HEAD_ROOMS,
+	HEAD_SAVE,
+	HEAD_SAVELOAD,
+	HEAD_SPECGAMES,
+	HEAD_VIDEO,
+	HEAD_VIDMODES,
+	HEAD_VIDOPTIONS
 };
 
 #define MENU_BUTTONS 69
@@ -101,7 +132,8 @@ enum {
 	BTN_EXIT,
 	BTN_CONNECT,
 	BTN_REFRESH,
-	BTN_FILTER,
+	BTN_FILTER1,
+	BTN_FILTER2,
 	BTN_CREATE,
 	BTN_CREATEGAME,
 	BTN_CHATROOMS,
@@ -136,5 +168,14 @@ enum {
 	BTN_SPECTATEGAMES
 };
 
+typedef struct {
+	void() vMenu;
+	int iHeaderID;
+} fcsMenu;
+
 void Menu_SetClipArea( vector vPosition, vector vRegion );
 void Menu_ResetClipArea( void );
+
+float Math_Lerp( float fA, float fB, float fPercent ) {
+	return ( fA * ( 1 - fPercent ) ) + ( fB * fPercent );
+}

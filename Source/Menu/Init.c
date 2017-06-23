@@ -38,8 +38,7 @@ void m_init( void ) {
 	}
 
 	search_end( shMaps );
-	
-	Menu_ResetClipArea();
+	FONT_MENU = loadfont( "menu", "gfx/menuchars", "32", -1 );
 }
 
 /*

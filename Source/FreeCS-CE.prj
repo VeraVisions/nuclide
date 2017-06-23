@@ -62,6 +62,7 @@
 	<category name="Menu" expanded="yes">
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Defs.h" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Draw.c" />
+		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Header.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Init.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Input.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\MenuMain.c" />
@@ -111,9 +112,18 @@
 </project>
 
 <workspace version="Crimson Editor 3.60">
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\MenuMain.c" linenum="51" placement="0:1:-1:-1:-4:-23:110:110:958:580" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\MenuMultiplayer.c" linenum="43" placement="2:3:-1:-1:-4:-23:132:132:984:606" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Defs.h" linenum="116" placement="0:1:-1:-1:-4:-23:154:154:1006:628" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Draw.c" linenum="79" placement="0:1:-1:-1:-4:-23:110:110:962:584" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Init.c" linenum="41" placement="0:1:-1:-1:-4:-23:132:132:980:602" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Defs.h" linenum="173" placement="0:1:-1:-1:-4:-23:154:154:1006:628" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Objects.c" linenum="13" placement="0:1:-1:-1:-4:-23:198:198:1050:672" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Shared\BaseMelee.c" linenum="10" placement="0:1:-1:-1:-4:-23:220:220:1072:694" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\MenuMain.c" linenum="19" placement="0:1:-1:-1:-4:-23:0:0:852:474" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\MenuMultiplayer.c" linenum="224" placement="0:1:-1:-1:-4:-23:22:22:874:496" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\freecs\default.cfg" linenum="20" placement="0:1:-1:-1:-4:-23:154:154:1006:628" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Input.c" linenum="1" placement="0:1:-1:-1:-4:-23:198:198:1050:672" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Builtins.h" linenum="2232" placement="0:1:-1:-1:-4:-23:220:220:1072:694" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Draw.c" linenum="82" placement="0:1:-1:-1:-4:-23:0:0:852:474" />
+	<localfile path="C:\Users\eukara\Dropbox\The Wastes Build\SDK\Source\Globals.h" linenum="369" placement="0:1:-1:-1:-4:-23:44:44:896:518" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Globals.h" linenum="299" placement="0:1:-1:-1:-4:-23:66:66:918:540" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Header.c" linenum="1" placement="2:3:-1:-1:-4:-23:88:88:940:562" />
 </workspace>
 

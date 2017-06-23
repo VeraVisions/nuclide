@@ -29,7 +29,7 @@ void Effect_CreateExplosion( vector vPos ) {
 	msg_entity = self;
 	multicast( vPos, MULTICAST_PVS );
 #else
-	print( "Explosion\n" );
+	
 	static void Effect_CreateExplosion_Animate( void ) {
 		if ( self.frame >= self.maxframe ) {
 			remove( self );
@@ -42,12 +42,15 @@ void Effect_CreateExplosion( vector vPos ) {
 	entity eExplosion = spawn();
 	setorigin( eExplosion, vPos );
 	setmodel( eExplosion, "sprites/fexplo.spr" );
+	sound( eExplosion, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 3 ) + 3 ), 1, ATTN_NORM );
 	
 	eExplosion.think = Effect_CreateExplosion_Animate;
 	eExplosion.nextthink = time + 0.05f;
 	eExplosion.effects = EF_ADDITIVE;
 	eExplosion.drawmask = MASK_ENGINE;
 	eExplosion.maxframe = modelframecount( eExplosion.modelindex );
+	
+	te_explosion( vPos );
 #endif
 }
 

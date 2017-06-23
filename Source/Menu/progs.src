@@ -13,5 +13,6 @@ Input.c
 Objects.c
 MenuMain.c
 MenuMultiplayer.c
+Header.c
 Draw.c
 #endlist

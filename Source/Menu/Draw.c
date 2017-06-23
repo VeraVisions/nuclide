@@ -18,15 +18,6 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-enum {
-	MAIN_NONE,
-	MAIN_BROWSER,
-	MAIN_HOST,
-	MAIN_OPTIONS,
-	MAIN_REPLAY,
-	MAIN_QUIT,
-	MAIN_DISCONNECT
-};
 
 /*
 =================
@@ -68,14 +59,6 @@ void m_draw( vector vScreenSize ) {
 	}
 
 	m_drawback();
-	
-	if ( iMenu == MENU_MAIN ) {
-		Menu_Main();	
-	} else if ( iMenu == MENU_MULTIPLAYER ) {
-		Menu_Multiplayer();
-	} else if ( iMenu == MENU_MULTIPLAYER_CREATE ) {
-		Menu_Multiplayer_Create();
-	} else if ( iMenu == MENU_QUIT ) {
-		Menu_Quit();
-	}
+	fcsMain[ iMenu ].vMenu();
+	Header_Draw();
 }
