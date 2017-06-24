@@ -417,12 +417,16 @@ void CSQC_Parse_Event( void ) {
 	float fHeader = readbyte();
 	
 	if ( fHeader == EV_WEAPON_DRAW ) {
+		fWeaponEventPlayer = readbyte();
 		Weapon_Draw( getstatf( STAT_ACTIVEWEAPON ) );
 	} else if ( fHeader == EV_WEAPON_PRIMARYATTACK ) {
+		fWeaponEventPlayer = readbyte();
 		Weapon_PrimaryAttack( getstatf( STAT_ACTIVEWEAPON ) );
 	} else if ( fHeader == EV_WEAPON_SECONDARYATTACK ) {
 		Weapon_SecondaryAttack( getstatf( STAT_ACTIVEWEAPON ) );
+		fWeaponEventPlayer = readbyte();
 	} else if ( fHeader == EV_WEAPON_RELOAD ) {
+		fWeaponEventPlayer = readbyte();
 		Weapon_Reload( getstatf( STAT_ACTIVEWEAPON ) );
 	} else if ( fHeader == EV_MODELGIB ) {
 		vector vPos;
@@ -521,11 +525,11 @@ Hijacks and controls what input globals are being sent to the server
 void CSQC_Input_Frame( void ) {
 	// If we are inside a VGUI, don't let the client do stuff outside
 	if ( ( fVGUI_Display != VGUI_NONE ) ) {
-		fInputSendNext = time + 0.1;
+		fInputSendNext = time + 0.2;
 	} else if ( ( fHUDWeaponSelected ) && ( input_buttons & INPUT_BUTTON0 ) ) {
 		HUD_DrawWeaponSelect_Trigger();
 		input_buttons = 0;
-		fInputSendNext = time + 0.1;
+		fInputSendNext = time + 0.2;
 	}
 	
 	if ( fInputSendNext > time ) {

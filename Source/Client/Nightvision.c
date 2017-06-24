@@ -28,7 +28,7 @@ Called by the cmd 'nightvision'
 =================
 */
 void Nightvision_Toggle( void ) {
-	if( getplayerkeyvalue( player_localnum, "*spectator" ) == "1" ) {
+	if( getplayerkeyvalue( player_localnum, "*spec" ) == "1" ) {
 		return;
 	}
 	
@@ -53,7 +53,7 @@ Called before rendering the frame in Draw.c
 =================
 */
 void Nightvision_PreDraw( void ) {
-	if( getplayerkeyvalue( player_localnum, "*spectator" ) == "1" ) {
+	if( getplayerkeyvalue( player_localnum, "*spec" ) == "1" ) {
 		iNightVision = FALSE;
 		return;
 	}

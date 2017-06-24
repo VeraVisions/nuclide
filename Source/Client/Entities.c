@@ -87,6 +87,10 @@ Self explanatory
 =================
 */
 void CSQC_Ent_Remove( void ) {
+	if ( self.eGunModel ) {
+		remove( self.eGunModel );
+	}
+	
 	soundupdate( self, CHAN_VOICE, "", -1, ATTN_IDLE, 0, 0, 0 );
 	remove( self );
 }

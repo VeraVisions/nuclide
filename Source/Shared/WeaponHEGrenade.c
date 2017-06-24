@@ -80,7 +80,7 @@ void WeaponHEGRENADE_PrimaryFire( void ) {
 	}
 	
 	Client_SendEvent( self, EV_WEAPON_PRIMARYATTACK );
-	Animation_ShootWeapon();
+	Animation_ShootWeapon( self );
 	self.fAttackFinished = time + wptHEGRENADE.fAttackFinished;
 	
 	// Mark the nade as ready once the pin has been pulled

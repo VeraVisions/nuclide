@@ -73,7 +73,7 @@ void VGUI_Window( string sTitle, vector vPos, vector vSize ) {
 	// Draw the outline END
 
 	// Draw the window title
-	drawstring( vPos + '16 16 0', sTitle, '16 16 0', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
+	CSQC_DrawText( vPos + '16 16 0', sTitle, '16 16 0', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_16 );
 	drawline( 1.0, vPos + '0 48 0', v1 + '0 48 0', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
 }
 
@@ -99,7 +99,7 @@ void VGUI_WindowSmall( string sTitle, vector vPos, vector vSize ) {
 	// Draw the outline END
 
 	// Draw the window title
-	drawstring( vPos + '8 8 0', sTitle, '8 8 0', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
+	CSQC_DrawText( vPos + '8 8 0', sTitle, '8 8 0', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_16 );
 	drawline( 1.0, vPos + '0 24 0', v1 + '0 24 0', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
 }
 
@@ -131,11 +131,11 @@ float VGUI_Button( string sLabel, void() vFunction, vector vPos, vector vSize ) 
 			fMouseClick = FALSE;
 		}
 
-		drawstring( v4, sLabel, '8 8 0', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
+		CSQC_DrawText( v4, sLabel, '8 8 0', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_DEFAULT );
 		drawline( 1.0, v4 + '0 10 0', v4 + '0 10 0' + [ (strlen( sLabel ) * 8 ), 0 ], vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
 		return TRUE;
 	} else {
-		drawstring( v4, sLabel, '8 8 0', vVGUIColor * 0.8, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
+		CSQC_DrawText( v4, sLabel, '8 8 0', vVGUIColor * 0.8, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_DEFAULT );
 	}
 
 	return FALSE;
@@ -161,15 +161,15 @@ void VGUI_FakeButton( string sLabel, vector vPos, vector vSize ) {
 	// Draw the button label
 	v4_x = vPos_x + 16;
 	v4_y = vPos_y + ( ( vSize_y / 2 ) - 4 );
-	drawstring( v4, sLabel, '8 8 0', vVGUIColor * 0.5, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
+	CSQC_DrawText( v4, sLabel, '8 8 0', vVGUIColor * 0.5, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_DEFAULT );
 }
 
 // Wrapper for simple VGUI Text labels
-void VGUI_Text( string sText, vector vPos, vector vSize ) {
-	drawstring( vPos, sText, vSize, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
+void VGUI_Text( string sText, vector vPos, vector vSize, float fFont ) {
+	CSQC_DrawText( vPos, sText, vSize, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, fFont );
 }
 
-void VGUI_RightText( vector vPos, string sText, vector vSize, vector vColor ) {
+void VGUI_RightText( vector vPos, string sText, vector vSize, vector vColor, float fFont ) {
 	vPos_x -= stringwidth( sText, FALSE, vSize );
-	drawstring( vPos, sText, vSize, vColor, 1, 0 );
+	CSQC_DrawText( vPos, sText, vSize, vColor, 1, 0, fFont );
 }

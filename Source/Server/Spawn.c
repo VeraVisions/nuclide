@@ -119,7 +119,7 @@ Called whenever a player just needs his basic properties to be reset
 */
 void Spawn_RespawnClient( float fTeam ) {
 	entity eSpawn;
-	forceinfokey( self, "*spectator", "0" ); // Make sure we are known as a spectator
+	forceinfokey( self, "*spec", "0" ); // Make sure we are known as a spectator
 	eSpawn = Spawn_FindSpawnPoint( self.team );
 
 	self.classname = "player";
@@ -215,7 +215,7 @@ void Spawn_MakeSpectator( void ) {
 	setsize (self, '-16 -16 -16', '16 16 16');
 
 	self.view_ofs = self.velocity = '0 0 0';
-	forceinfokey( self, "*spectator", "2" ); // Make sure we are known as a spectator
+	forceinfokey( self, "*spec", "2" ); // Make sure we are known as a spectator
 
 	// Clear all the ammo stuff
 	for ( int i = 0; i < CS_WEAPON_COUNT; i++ ) {

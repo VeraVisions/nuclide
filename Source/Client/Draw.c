@@ -165,7 +165,7 @@ void CSQC_UpdateView( float fWinWidth, float fWinHeight, float fGameFocus ) {
 	
 	if( fGameFocus == TRUE ) {
 		// The spectator sees things... differently
-		if ( getplayerkeyvalue( player_localnum, "*spectator" ) != "0" ) {
+		if ( getplayerkeyvalue( player_localnum, "*spec" ) != "0" ) {
 			VGUI_DrawSpectatorHUD();
 		} else {
 			HUD_Draw();

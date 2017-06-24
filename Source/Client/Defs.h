@@ -30,6 +30,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	PRINT_HIGH		2
 #define	PRINT_CHAT		3
 
+var float FONT_16;
+
 // Clientside cvars
 var vector autocvar_con_color = '255 128 0'; // autocvar of "con_color"
 var vector autocvar_vgui_color = '255 128 0'; // autocvar of "vgui_color"
@@ -92,5 +94,16 @@ vector pmove_vel;
 .float weapon;
 .float maxframe;
 
-void Animation_ShootWeapon( void );
-void Animation_ReloadWeapon( void )
+// For the player entity
+.entity eGunModel;
+float fWeaponEventPlayer;
+.float fWeaponLast;
+.float fWeaponBoneID;
+
+void Animation_ShootWeapon( entity ePlayer );
+void Animation_ReloadWeapon( entity ePlayer );
+
+void CSQC_DrawText( vector vPos, string sString, vector vSize, vector vColor, float fAlpha, float fFlags, float fFont ) {
+	drawfont = fFont;
+	drawstring( vPos, sString, vSize, vColor, fAlpha, fFlags );
+}

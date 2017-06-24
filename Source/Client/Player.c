@@ -18,6 +18,36 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+string sPModels[ CS_WEAPON_COUNT - 1 ] = {
+	"models/p_knife.mdl",
+	"models/p_usp.mdl",
+	"models/p_glock18.mdl",
+	"models/p_deagle.mdl",
+	"models/p_p228.mdl",
+	"models/p_elite.mdl",
+	"models/p_fiveseven.mdl",
+	"models/p_m3.mdl",
+	"models/p_xm1014.mdl",
+	"models/p_mp5.mdl",
+	"models/p_p90.mdl",
+	"models/p_ump45.mdl",
+	"models/p_mac10.mdl",
+	"models/p_tmp.mdl",
+	"models/p_ak47.mdl",
+	"models/p_sg552.mdl",
+	"models/p_m4a1.mdl",
+	"models/p_aug.mdl",
+	"models/p_scout.mdl",
+	"models/p_awp.mdl",
+	"models/p_g3sg1.mdl",
+	"models/p_sg550.mdl",
+	"models/p_m249.mdl",
+	"models/p_c4.mdl",
+	"models/p_flashbang.mdl",
+	"models/p_hegrenade.mdl",
+	"models/p_smokegrenade.mdl"
+};
+
 float Player_PreDraw( void ) {
     if ( self.entnum == player_localentnum ) {
 		// Don't predict if we're frozen/paused FIXME: FTE doesn't have serverkey_float yet!
@@ -32,7 +62,7 @@ float Player_PreDraw( void ) {
 		vector vOldVelocity = self.velocity;
 		float fOldPMoveFlags = self.pmove_flags;
 
-		if ( getplayerkeyvalue( player_localnum, "*spectator" ) == "0" ) {
+		if ( getplayerkeyvalue( player_localnum, "*spec" ) == "0" ) {
 			self.movetype = MOVETYPE_WALK;
 		} else {
 			self.movetype = MOVETYPE_NOCLIP;
@@ -71,9 +101,30 @@ float Player_PreDraw( void ) {
 
 		self.renderflags = RF_EXTERNALMODEL;
     } else {
+		if ( !self.eGunModel ) {
+			self.eGunModel = spawn();
+			self.eGunModel.drawmask = MASK_ENGINE;
+			
+			// Get the weapon bone ID for the current player model
+			self.fWeaponBoneID = gettagindex( self, "Bip01 R Hand" );
+	    }
+	    
+	    // Only bother updating the model if the weapon has changed
+	    if ( self.fWeaponLast != self.weapon ) {
+	    	setmodel( self.eGunModel, sPModels[ self.weapon - 1 ] );
+	    	self.fWeaponLast = self.weapon;
+	    	
+	    	// Update the bone index of the current p_ model so we can calculate the offset
+	    	self.eGunModel.fWeaponBoneID = gettagindex( self.eGunModel, "Bip01 R Hand" );
+    	}
+	    
 		Animation_PlayerUpdate();
 		self.baseframe1time += frametime;
 		self.frame1time += frametime;
+		
+		self.baseframe2time += frametime;
+		self.frame2time += frametime;
+		
         addentity( self );
     }
     return PREDRAW_NEXT;

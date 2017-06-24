@@ -22,6 +22,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 .float baseframe_old;
 .float fWasCrouching;
 
+// For lerping, sigh
+.float frame_last;
+.float baseframe_last;
+
 enum {
 	ANIM_DUMMY1,
 	ANIM_IDLE,
@@ -120,6 +124,15 @@ enum {
 	ANIM_CROUCH_DIE
 };
 
+
+void Animation_Print( string sWow ) {
+#ifdef CSQC
+	print( sprintf( "[DEBUG] %s" ), sWow );
+#else 
+	bprint( sprintf( "SSQC: %s" ), sWow );
+#endif	
+}
+
 /*
 =================
 Animation_PlayerUpdate
@@ -133,7 +146,7 @@ void Animation_PlayerUpdate( void ) {
 	
 	// TODO: Make this faster
 	if ( self.baseframe_time < time ) {
-		switch ( Weapon_GetAnimType( self.weapon ) && self.baseframe != self.baseframe_old ) {
+		switch ( Weapon_GetAnimType( self.weapon ) ) {
 			case ATYPE_AK47:
 				self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_AIM_AK47 : ANIM_AIM_AK47;
 				break;
@@ -190,6 +203,54 @@ void Animation_PlayerUpdate( void ) {
 			self.frame = ANIM_RUN;
 		}
 	}
+
+#ifdef CSQC
+	// Lerp it down!
+	if ( self.lerpfrac > 0 ) {
+		self.lerpfrac -= frametime * 5;
+		if ( self.lerpfrac < 0 ) {
+			self.lerpfrac = 0;
+		}
+	}
+
+	if ( self.baselerpfrac > 0 ) {
+		self.baselerpfrac -= frametime * 5;
+		if ( self.baselerpfrac < 0 ) {
+			self.baselerpfrac = 0;
+		}
+	}
+
+	if ( self.frame != self.frame_last ) {
+		//Animation_Print( sprintf( "New Frame: %d, Last Frame: %d\n", self.frame, self.frame_last ));
+		
+		// Move everything over to frame 2
+		self.frame2time = self.frame1time;
+		self.frame2 = self.frame_last;
+		
+		// Set frame_last to avoid this being called again
+		self.frame_last = self.frame;
+		
+		self.lerpfrac = 1.0f;
+		self.frame1time = 0.0f;
+	}
+	
+	if ( self.baseframe != self.baseframe_last ) {
+		//Animation_Print( sprintf( "New Baseframe: %d, Last Baseframe: %d\n", self.baseframe, self.baseframe_last ) );
+		
+		// Move everything over to frame 2
+		self.baseframe2time = self.baseframe1time;
+		self.baseframe2 = self.baseframe_last;
+		
+		// Set frame_last to avoid this being called again
+		self.baseframe_last = self.baseframe;
+		
+		self.baselerpfrac = 1.0f;
+		self.baseframe1time = 0.0f;
+	}
+	
+	self.bonecontrol1 = self.angles_x;
+#endif
+	self.angles_x = self.angles_z = 0;
 	
 	if ( !( self.flags & FL_ONGROUND ) ) {
 		self.frame = ANIM_JUMP;
@@ -201,6 +262,13 @@ void Animation_PlayerUpdate( void ) {
 		self.baseframe_time = 0;
 		self.fWasCrouching = ( self.flags & FL_CROUCHING );
 	}
+
+#ifdef CSQC
+	setorigin( self.eGunModel, self.origin );
+	self.eGunModel.angles = self.angles;
+	vector vOffset = gettaginfo( self.eGunModel, self.eGunModel.fWeaponBoneID ) - gettaginfo( self, self.fWeaponBoneID );
+	setorigin( self.eGunModel, self.origin - vOffset );
+#endif
 }
 
 /*
@@ -220,82 +288,82 @@ void Animation_PlayerTopTemp( float fFrame, float fTime ) {
 	self.baseframe_time = time + fTime;
 }
 
-void Animation_ShootWeapon( void ) {
-	switch ( Weapon_GetAnimType( self.weapon )  ) {
+void Animation_ShootWeapon( entity ePlayer ) {
+	switch ( Weapon_GetAnimType( ePlayer.weapon )  ) {
 		case ATYPE_AK47:
-			self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_SHOOT_AK47 : ANIM_SHOOT_AK47;
+			ePlayer.baseframe = ePlayer.flags & FL_CROUCHING ? ANIM_CROUCH_SHOOT_AK47 : ANIM_SHOOT_AK47;
 			break;
 		case ATYPE_C4:
-			self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_SHOOT_C4 : ANIM_SHOOT_C4;
+			ePlayer.baseframe = ePlayer.flags & FL_CROUCHING ? ANIM_CROUCH_SHOOT_C4 : ANIM_SHOOT_C4;
 			break;
 		case ATYPE_CARBINE:
-			self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_SHOOT_CARBINE : ANIM_SHOOT_CARBINE;
+			ePlayer.baseframe = ePlayer.flags & FL_CROUCHING ? ANIM_CROUCH_SHOOT_CARBINE : ANIM_SHOOT_CARBINE;
 			break;
 		case ATYPE_DUALPISTOLS:
-			self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_SHOOT_DUALPISTOLS : ANIM_SHOOT_DUALPISTOLS;
+			ePlayer.baseframe = ePlayer.flags & FL_CROUCHING ? ANIM_CROUCH_SHOOT_DUALPISTOLS : ANIM_SHOOT_DUALPISTOLS;
 			break;
 		case ATYPE_GRENADE:
-			self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_SHOOT_GRENADE : ANIM_SHOOT_GRENADE;
+			ePlayer.baseframe = ePlayer.flags & FL_CROUCHING ? ANIM_CROUCH_SHOOT_GRENADE : ANIM_SHOOT_GRENADE;
 			break;
 		case ATYPE_KNIFE:
-			self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_SHOOT_KNIFE : ANIM_SHOOT_KNIFE;
+			ePlayer.baseframe = ePlayer.flags & FL_CROUCHING ? ANIM_CROUCH_SHOOT_KNIFE : ANIM_SHOOT_KNIFE;
 			break;
 		case ATYPE_MP5:
-			self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_SHOOT_MP5 : ANIM_SHOOT_MP5;
+			ePlayer.baseframe = ePlayer.flags & FL_CROUCHING ? ANIM_CROUCH_SHOOT_MP5 : ANIM_SHOOT_MP5;
 			break;
 		case ATYPE_ONEHAND:
-			self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_SHOOT_ONEHAND : ANIM_SHOOT_ONEHAND;
+			ePlayer.baseframe = ePlayer.flags & FL_CROUCHING ? ANIM_CROUCH_SHOOT_ONEHAND : ANIM_SHOOT_ONEHAND;
 			break;
 		case ATYPE_PARA:
-			self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_SHOOT_PARA : ANIM_SHOOT_PARA;
+			ePlayer.baseframe = ePlayer.flags & FL_CROUCHING ? ANIM_CROUCH_SHOOT_PARA : ANIM_SHOOT_PARA;
 			break;
 		case ATYPE_RIFLE:
-			self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_SHOOT_RIFLE : ANIM_SHOOT_RIFLE;
+			ePlayer.baseframe = ePlayer.flags & FL_CROUCHING ? ANIM_CROUCH_SHOOT_RIFLE : ANIM_SHOOT_RIFLE;
 			break;
 		case ATYPE_SHOTGUN:
-			self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_SHOOT_SHOTGUN : ANIM_SHOOT_SHOTGUN;
+			ePlayer.baseframe = ePlayer.flags & FL_CROUCHING ? ANIM_CROUCH_SHOOT_SHOTGUN : ANIM_SHOOT_SHOTGUN;
 			break;
 	}
 	
-	self.baseframe_time = time + Weapon_GetFireRate( self.weapon );
+	ePlayer.baseframe_time = time + Weapon_GetFireRate( ePlayer.weapon );
 }
 
-void Animation_ReloadWeapon( void ) {
-	switch ( Weapon_GetAnimType( self.weapon )  ) {
+void Animation_ReloadWeapon( entity ePlayer ) {
+	switch ( Weapon_GetAnimType( ePlayer.weapon )  ) {
 		case ATYPE_AK47:
-			self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_RELOAD_AK47 : ANIM_RELOAD_AK47;
+			ePlayer.baseframe = ePlayer.flags & FL_CROUCHING ? ANIM_CROUCH_RELOAD_AK47 : ANIM_RELOAD_AK47;
 			break;
 		case ATYPE_C4:
-			self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_AIM_C4 : ANIM_AIM_C4;
+			ePlayer.baseframe = ePlayer.flags & FL_CROUCHING ? ANIM_CROUCH_AIM_C4 : ANIM_AIM_C4;
 			break;
 		case ATYPE_CARBINE:
-			self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_RELOAD_CARBINE : ANIM_RELOAD_CARBINE;
+			ePlayer.baseframe = ePlayer.flags & FL_CROUCHING ? ANIM_CROUCH_RELOAD_CARBINE : ANIM_RELOAD_CARBINE;
 			break;
 		case ATYPE_DUALPISTOLS:
-			self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_RELOAD_DUALPISTOLS : ANIM_RELOAD_DUALPISTOLS;
+			ePlayer.baseframe = ePlayer.flags & FL_CROUCHING ? ANIM_CROUCH_RELOAD_DUALPISTOLS : ANIM_RELOAD_DUALPISTOLS;
 			break;
 		case ATYPE_GRENADE:
-			self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_AIM_GRENADE : ANIM_AIM_GRENADE;
+			ePlayer.baseframe = ePlayer.flags & FL_CROUCHING ? ANIM_CROUCH_AIM_GRENADE : ANIM_AIM_GRENADE;
 			break;
 		case ATYPE_KNIFE:
-			self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_AIM_KNIFE : ANIM_AIM_KNIFE;
+			ePlayer.baseframe = ePlayer.flags & FL_CROUCHING ? ANIM_CROUCH_AIM_KNIFE : ANIM_AIM_KNIFE;
 			break;
 		case ATYPE_MP5:
-			self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_RELOAD_MP5 : ANIM_RELOAD_MP5;
+			ePlayer.baseframe = ePlayer.flags & FL_CROUCHING ? ANIM_CROUCH_RELOAD_MP5 : ANIM_RELOAD_MP5;
 			break;
 		case ATYPE_ONEHAND:
-			self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_RELOAD_ONEHAND : ANIM_RELOAD_ONEHAND;
+			ePlayer.baseframe = ePlayer.flags & FL_CROUCHING ? ANIM_CROUCH_RELOAD_ONEHAND : ANIM_RELOAD_ONEHAND;
 			break;
 		case ATYPE_PARA:
-			self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_RELOAD_PARA : ANIM_RELOAD_PARA;
+			ePlayer.baseframe = ePlayer.flags & FL_CROUCHING ? ANIM_CROUCH_RELOAD_PARA : ANIM_RELOAD_PARA;
 			break;
 		case ATYPE_RIFLE:
-			self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_RELOAD_RIFLE : ANIM_RELOAD_RIFLE;
+			ePlayer.baseframe = ePlayer.flags & FL_CROUCHING ? ANIM_CROUCH_RELOAD_RIFLE : ANIM_RELOAD_RIFLE;
 			break;
 		case ATYPE_SHOTGUN:
-			self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_RELOAD_SHOTGUN : ANIM_RELOAD_SHOTGUN;
+			ePlayer.baseframe = ePlayer.flags & FL_CROUCHING ? ANIM_CROUCH_RELOAD_SHOTGUN : ANIM_RELOAD_SHOTGUN;
 			break;
 	}
 	
-	self.baseframe_time = time + Weapon_GetReloadTime( self.weapon );
+	ePlayer.baseframe_time = time + Weapon_GetReloadTime( ePlayer.weapon );
 }

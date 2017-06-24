@@ -51,5 +51,16 @@ void light( void ) {
 	}
 	
 	self.vUse = light_toggle;
-	
+}
+
+/*
+=================
+light_environment
+
+This is just a dummy to prevent the engine from complaining.
+Don't get too excited.
+=================
+*/
+void light_environment( void ) {
+	remove( self );
 }

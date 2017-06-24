@@ -57,7 +57,7 @@ float fRadioResponses[ VGUIRADIO_RESPONSES ] = {
 };
 
 void VGUI_Radio_DrawCommand( float fIndex, float fMessage, vector vPos ) {
-	VGUI_Text( sprintf( "%d) %s", fIndex + 1, sRadioChat[ fMessage ] ), vPos, '8 8 0' );
+	VGUI_Text( sprintf( "%d) %s", fIndex + 1, sRadioChat[ fMessage ] ), vPos, '8 8 0', FONT_DEFAULT );
 	
 	if ( fInputKeyCode == ( fIndex + 49 ) ) {
 		sendevent( "RadioMessage", "f", fMessage );
@@ -110,7 +110,7 @@ void VGUI_Radio_Draw( void ) {
 	}
 	
 	vPos_y += 20;
-	VGUI_Text( sprintf( "0) %s", _("VGUI_BACK") ), vPos, '8 8 0' );
+	VGUI_Text( sprintf( "0) %s", _("VGUI_BACK") ), vPos, '8 8 0', FONT_DEFAULT );
 	
 	if ( fInputKeyCode == 48 ) {
 		fVGUI_Display = VGUI_NONE;

@@ -78,7 +78,7 @@ void WeaponKNIFE_PrimaryFire( void ) {
 		} 
 	}
 	
-	Animation_ShootWeapon();
+	Animation_ShootWeapon( self );
 	self.fAttackFinished = time + wptKNIFE.fAttackFinished;
 #else
 	if ( random() <= 0.5 ) {

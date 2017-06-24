@@ -108,6 +108,12 @@ void Weapon_Draw( float fWeapon ) {
 	self.fAttackFinished = time + 1.0;
 	self.maxspeed = Player_GetMaxSpeed( fWeapon );
 #endif
+
+#ifdef CSQC
+	if ( fWeaponEventPlayer != player_localentnum ) {
+		return;
+	}
+#endif
 	
 	wpnFuncTable[ fWeapon ].vDraw();
 }
@@ -126,8 +132,14 @@ void Weapon_PrimaryAttack( float fWeapon ) {
 		return;
 #endif
 #ifdef CSQC
-	Animation_ShootWeapon();
+	if ( fWeaponEventPlayer != player_localentnum ) {
+		entity ono = findfloat( world, entnum, fWeaponEventPlayer );
+		//print( sprintf( "Shooter! Origin: %d %d %d\n", ono.origin_x, ono.origin_y, ono.origin_z ) );
+		Animation_ShootWeapon( ono );
+		return;
+	}
 #endif
+
 	wpnFuncTable[ fWeapon ].vPrimary();
 }
 
@@ -142,7 +154,11 @@ void Weapon_SecondaryAttack( float fWeapon ) {
 		return;
 	}
 #endif
-	
+#ifdef CSQC
+	if ( fWeaponEventPlayer != player_localentnum ) {
+		return;
+	}
+#endif
 	wpnFuncTable[ fWeapon ].vSecondary();
 }
 
@@ -158,7 +174,11 @@ void Weapon_Reload( float fWeapon ) {
 	}
 #endif
 #ifdef CSQC
-	Animation_ReloadWeapon();
+	if ( fWeaponEventPlayer != player_localentnum ) {
+		entity ono = findfloat( world, entnum, fWeaponEventPlayer );
+		Animation_ReloadWeapon( ono );
+		return;
+	}
 #endif
 	wpnFuncTable[ fWeapon ].vReload();
 }

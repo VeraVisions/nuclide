@@ -207,7 +207,7 @@ void WeaponC4BOMB_PrimaryFire( void ) {
 	
 	// If we aren't aiming at a place or look in the wrong location... stop it
 	if ( trace_fraction == 1 || self.fInBombZone == FALSE ) {
-		Animation_ReloadWeapon();
+		Animation_ReloadWeapon( self );
 		WeaponC4BOMB_Release();
 		return;
 	}
@@ -216,7 +216,7 @@ void WeaponC4BOMB_PrimaryFire( void ) {
 	if ( self.fBombProgress == 0 ) {
 		self.fBombProgress = time + 3.0f;
 		Client_SendEvent( self, EV_WEAPON_PRIMARYATTACK );
-		Animation_ShootWeapon();
+		Animation_ShootWeapon( self );
 	}
 
 	// 3 seconds have passed, plant the bomb

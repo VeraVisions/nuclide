@@ -52,25 +52,25 @@ vector VGUI_Scores_DrawTeam( vector vPos, float fTeam ) {
 				}
 				
 				if ( getplayerkeyvalue( i, "*dead" ) == "1" ) {
-					drawstring( vNewPos + '38 0', sprintf( _("SCORE_DEAD"), getplayerkeyvalue( i, "name" ) ), '8 8 0', vColor, 1, 0 );
+					CSQC_DrawText( vNewPos + '38 0', sprintf( _("SCORE_DEAD"), getplayerkeyvalue( i, "name" ) ), '8 8 0', vColor, 1, 0, FONT_DEFAULT );
 				} else if ( getplayerkeyvalue( i, "*dead" ) == "2" ) {
-					drawstring( vNewPos + '38 0', sprintf( _("SCORE_VIP"), getplayerkeyvalue( i, "name" ) ), '8 8 0', vColor, 1, 0 );
+					CSQC_DrawText( vNewPos + '38 0', sprintf( _("SCORE_VIP"), getplayerkeyvalue( i, "name" ) ), '8 8 0', vColor, 1, 0, FONT_DEFAULT );
 				} else {
-					drawstring( vNewPos + '38 0', getplayerkeyvalue( i, "name" ), '8 8 0', vColor, 1, 0 );
+					CSQC_DrawText( vNewPos + '38 0', getplayerkeyvalue( i, "name" ), '8 8 0', vColor, 1, 0, FONT_DEFAULT );
 				}
 				
 				
 				// Spectators don't have stats worth caring about
 				if ( fTeam != TEAM_SPECTATOR ) {
-					VGUI_RightText( vNewPos + '320 0', getplayerkeyvalue( i, INFOKEY_P_FRAGS ), '8 8 0', vColor );
-					VGUI_RightText( vNewPos + '384 0', getplayerkeyvalue( i, "*deaths" ), '8 8 0', vColor  );
+					VGUI_RightText( vNewPos + '320 0', getplayerkeyvalue( i, INFOKEY_P_FRAGS ), '8 8 0', vColor, FONT_DEFAULT );
+					VGUI_RightText( vNewPos + '384 0', getplayerkeyvalue( i, "*deaths" ), '8 8 0', vColor, FONT_DEFAULT  );
 				}
-				VGUI_RightText( vNewPos + '456 0', getplayerkeyvalue( i, INFOKEY_P_PING ), '8 8 0', vColor );
+				VGUI_RightText( vNewPos + '456 0', getplayerkeyvalue( i, INFOKEY_P_PING ), '8 8 0', vColor, FONT_DEFAULT );
 					
 				if ( getplayerkeyvalue( i, INFOKEY_P_VOIPSPEAKING ) == "0" ) {
-					VGUI_RightText( vNewPos + '508 0', "N", '8 8 0', '1 1 1' );
+					VGUI_RightText( vNewPos + '508 0', "N", '8 8 0', '1 1 1', FONT_DEFAULT );
 				} else {
-					VGUI_RightText( vNewPos + '508 0', "Y", '8 8 0', '1 1 1' );
+					VGUI_RightText( vNewPos + '508 0', "Y", '8 8 0', '1 1 1', FONT_DEFAULT );
 				}
 				
 				vNewPos += '0 14';
@@ -85,20 +85,20 @@ vector VGUI_Scores_DrawTeam( vector vPos, float fTeam ) {
 	// If we've got no spectators, don't draw them.
 	if ( ( fTeam != TEAM_SPECTATOR ) || ( fTeam == TEAM_SPECTATOR && iPlayerCount > 0 ) ) {
 		// The name/title of the team
-		drawstring( vPos + '24 0', sScoreTeams[ fTeam ], '16 16 0', vColor, 1, 0 );
+		CSQC_DrawText( vPos + '24 0', sScoreTeams[ fTeam ], '16 16 0', vColor, 1, 0, FONT_16 );
 		drawline( 1.0, vPos + '19 24', vPos + '512 24 0', vColor, 1, 0 );
 		
 		// Draw the amount of rounds we've von
 		if ( fTeam == TEAM_CT ) {
-			VGUI_RightText( vPos + '320 0', sprintf( "%i", getstati( STAT_WON_CT ) ), '16 16 0', vColor );
+			VGUI_RightText( vPos + '320 0', sprintf( "%i", getstati( STAT_WON_CT ) ), '16 16 0', vColor, FONT_16 );
 		} else if ( fTeam == TEAM_T ) {
-			VGUI_RightText( vPos + '320 0', sprintf( "%i", getstati( STAT_WON_T ) ), '16 16 0', vColor );
+			VGUI_RightText( vPos + '320 0', sprintf( "%i", getstati( STAT_WON_T ) ), '16 16 0', vColor, FONT_16 );
 		}
 		
 		// Now we know the playercount, so let's calculate the position next to the Teamname String and print it
 		vector vCountPos = vPos + '24 6';
 		vCountPos_x += stringwidth( sScoreTeams[ fTeam ], FALSE, '16 16 0' ) + 8;
-		drawstring( vCountPos, sprintf( _("SCORE_PLAYERS"), iPlayerCount ), '8 8 0', vColor, 1, 0 );
+		CSQC_DrawText( vCountPos, sprintf( _("SCORE_PLAYERS"), iPlayerCount ), '8 8 0', vColor, 1, 0, FONT_DEFAULT );
 	}
 	return vNewPos + '0 24';
 }
@@ -132,13 +132,13 @@ void VGUI_Scores_Show( void ) {
 	// Draw the outline END
 	
 	// Server title
-	drawstring( vMainPos + '24 13', serverkey( "hostname" ), '16 16 0', VGUI_WINDOW_FGCOLOR, 1, 0 );
+	CSQC_DrawText( vMainPos + '24 13', serverkey( "hostname" ), '16 16 0', VGUI_WINDOW_FGCOLOR, 1, 0, FONT_16 );
 	
 	// Tabs like Score, Ping etc.
-	drawstring( vMainPos + '280 32', _("SCORE_SCORE"), '8 8 0', VGUI_WINDOW_FGCOLOR, 1, 0 );
-	drawstring( vMainPos + '336 32', _("SCORE_DEATHS"), '8 8 0', VGUI_WINDOW_FGCOLOR, 1, 0 );
-	drawstring( vMainPos + '400 32', _("SCORE_LATENCY"), '8 8 0', VGUI_WINDOW_FGCOLOR, 1, 0 );
-	drawstring( vMainPos + '472 32', _("SCORE_VOICE"), '8 8 0', VGUI_WINDOW_FGCOLOR, 1, 0 );
+	CSQC_DrawText( vMainPos + '280 32', _("SCORE_SCORE"), '8 8 0', VGUI_WINDOW_FGCOLOR, 1, 0, FONT_DEFAULT );
+	CSQC_DrawText( vMainPos + '336 32', _("SCORE_DEATHS"), '8 8 0', VGUI_WINDOW_FGCOLOR, 1, 0, FONT_DEFAULT );
+	CSQC_DrawText( vMainPos + '400 32', _("SCORE_LATENCY"), '8 8 0', VGUI_WINDOW_FGCOLOR, 1, 0, FONT_DEFAULT );
+	CSQC_DrawText( vMainPos + '472 32', _("SCORE_VOICE"), '8 8 0', VGUI_WINDOW_FGCOLOR, 1, 0, FONT_DEFAULT );
 
 	vector vOffset = VGUI_Scores_DrawTeam( vMainPos + '0 50', TEAM_CT );
 	vOffset = VGUI_Scores_DrawTeam( vOffset, TEAM_T );

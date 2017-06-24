@@ -20,18 +20,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "VGUI.h"
 
-// TODO: Read motd.txt and display that instead
 void VGUI_MessageOfTheDay( vector vPos ) {
 	static void MessageOfTheDay_ButtonOK( void ) {
 		fVGUI_Display = VGUI_TEAMSELECT;
 	}
 
-	VGUI_Text( serverkey( "hostname" ), vPos + '16 64 0', '16 16 0');
+	VGUI_Text( serverkey( "hostname" ), vPos + '16 64 0', '16 16 0', FONT_16 );
 	
 	vector vTextPos = vPos + '16 116 0';
 	
 	for ( int i = 0; i < 25; i++ ) {
-		VGUI_Text( sMOTDString[ i ], vTextPos, '8 8 0' );
+		VGUI_Text( sMOTDString[ i ], vTextPos, '8 8 0', FONT_DEFAULT );
 		vTextPos_y += 10;
 	}
 	

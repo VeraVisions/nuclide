@@ -149,8 +149,9 @@ void Client_SendEvent( entity eClient, float fEVType ) {
 	
 	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
 	WriteByte( MSG_MULTICAST, fEVType );
+	WriteByte( MSG_MULTICAST, num_for_edict( eClient ) );
 	msg_entity = eClient;
-	multicast( '0 0 0', MULTICAST_ONE );
+	multicast( self.origin, MULTICAST_PVS );
 }
 
 /*

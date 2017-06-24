@@ -108,7 +108,7 @@ float OpenCSGunBase_PrimaryFire( void ) {
 	OpenCSGunBase_ShotMultiplierHandle( wptTable[ self.weapon ].iBullets );
 	OpenCSGunBase_AccuracyCalc();
 	TraceAttack_FireBullets( wptTable[ self.weapon ].iBullets, ( self.origin + self.view_ofs ) );
-	Animation_ShootWeapon();
+	Animation_ShootWeapon( self );
 	
 	self.(wptTable[ self.weapon ].iMagfld) -= 1;
 	self.fAttackFinished = time + wptTable[ self.weapon ].fAttackFinished;
@@ -145,7 +145,7 @@ float OpenCSGunBase_Reload( void ) {
 	self.nextthink = time + wptTable[ self.weapon ].fReloadFinished;
 	self.fAttackFinished = self.nextthink;
 	
-	Animation_ReloadWeapon();
+	Animation_ReloadWeapon( self );
 	Client_SendEvent( self, EV_WEAPON_RELOAD );
 	return TRUE;
 }
