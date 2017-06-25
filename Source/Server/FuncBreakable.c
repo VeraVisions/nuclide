@@ -32,8 +32,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define SF_TOUCH	2
 #define SF_PRESSURE	4
 
-.float material;
-
 /*
 =================
 func_breakable_pain

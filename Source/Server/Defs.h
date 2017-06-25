@@ -18,8 +18,6 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-
-
 #define VEC_PLAYER_VIEWPOS '0 0 20'
 #define VEC_PLAYER_CVIEWPOS '0 0 12'
 
@@ -103,6 +101,7 @@ int iBombPlanted;
 .void( int iHitBody ) vDeath;
 .float fRespawns;
 .entity eUser;
+.float material;
 
 // All about +use
 entity eActivator;

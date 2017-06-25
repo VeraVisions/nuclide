@@ -62,10 +62,11 @@ enum {
 #ifdef SSQC
 var float fBeepTime; // Used for the beeping sounds that last 1.5 seconds
 var float fDefuseProgress; // Used to track... the progress
+
 static void WeaponC4BOMB_Use( void ) {
-	//if ( eActivator.team != TEAM_CT ) {
-	//	return;
-	//}
+	/*if ( eActivator.team != TEAM_CT ) {
+		return;
+	}*/
 		
 	// On first use, play defusing sound
 	if ( self.eUser == world ) {
@@ -160,9 +161,12 @@ void WeaponC4BOMB_Drop( vector vBombPos ) {
 	// Do all the dirty entspawning stuff
 	entity eBomb = spawn();
 	eBomb.classname = "c4bomb";
-	setorigin( eBomb, vBombPos );
-	setmodel( eBomb, "models/w_c4.mdl" );
+	
 	eBomb.solid = SOLID_BBOX;
+	setmodel( eBomb, "models/w_c4.mdl" );
+	setorigin( eBomb, vBombPos );
+	setsize( eBomb, '-6 -6 0', '6 6 6' );
+	
 	eBomb.customphysics = WeaponC4BOMB_Think;
 	eBomb.fAttackFinished = time + autocvar_mp_c4timer;
 	eBomb.vUse = WeaponC4BOMB_Use;
@@ -178,7 +182,7 @@ void WeaponC4BOMB_Drop( vector vBombPos ) {
 	// Tell the bomb-planter to get rid of the weapon!
 	self.fSlotGrenade = self.fSlotGrenade - WEAPON_C4BOMB;
 	Weapon_SwitchBest();
-	eprint( eBomb );
+	//eprint( eBomb );
 }
 #endif
 
@@ -195,6 +199,7 @@ void WeaponC4BOMB_Release( void ) {
 	self.fBombProgress = 0;
 	self.fAttackFinished = time + 1.0;
 #else
+	// TODO: This does not happen, yet
 	View_PlayAnimation( ANIM_C4_IDLE );
 	iBombProgress = 0;
 #endif

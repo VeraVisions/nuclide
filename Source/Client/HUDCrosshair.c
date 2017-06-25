@@ -55,7 +55,7 @@ void HUD_DrawCrosshair( void ) {
 	if ( iShotMultiplier > iOldShotMultiplier ) {
 		fCrosshairDistance = min( 15, fCrosshairDistance + fDeltaDistance );
 	} else if ( fCrosshairDistance > fDistance ) {
-		// Slowly decrease the distance again, 0.02 seems to be the magic number here.
+		// Slowly decrease the distance again
 		fCrosshairDistance -= ( fCrosshairDistance * frametime );
 		
 		if ( ( iShotMultiplier > 0 ) && ( fDecreaseShotTime < time ) ) {

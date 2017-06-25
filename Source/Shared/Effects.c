@@ -84,16 +84,15 @@ void Effect_Impact( int iType, vector vPos, vector vNormal ) {
 	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
 	WriteByte( MSG_MULTICAST, EV_IMPACT );
 	WriteByte( MSG_MULTICAST, (float)iType );
-	WriteCoord( MSG_MULTICAST, vPos_x); 
-	WriteCoord( MSG_MULTICAST, vPos_y); 
-	WriteCoord( MSG_MULTICAST, vPos_z);
-	WriteCoord( MSG_MULTICAST, vNormal_x); 
-	WriteCoord( MSG_MULTICAST, vNormal_y); 
-	WriteCoord( MSG_MULTICAST, vNormal_z);
+	WriteCoord( MSG_MULTICAST, vPos_x ); 
+	WriteCoord( MSG_MULTICAST, vPos_y ); 
+	WriteCoord( MSG_MULTICAST, vPos_z );
+	WriteCoord( MSG_MULTICAST, vNormal_x ); 
+	WriteCoord( MSG_MULTICAST, vNormal_y ); 
+	WriteCoord( MSG_MULTICAST, vNormal_z );
 	msg_entity = self;
 	multicast( vPos, MULTICAST_PVS );
 #else
-
 	switch ( iType ) {
 		case IMPACT_MELEE:
 			pointparticles( DECAL_SHOT, vPos, vNormal, 1 );

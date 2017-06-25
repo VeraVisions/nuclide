@@ -1,5 +1,4 @@
 #pragma target fte
-
 #pragma progs_dat  "../../freecs/csprogs.dat"
 
 #define CSQC
