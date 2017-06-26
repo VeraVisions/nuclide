@@ -144,9 +144,9 @@ void VGUI_BuyMenu_WeaponButton( float fWeapon ) {
 	if ( wptTable[ fWeapon ].iPrice <= getstatf( STAT_MONEY ) ) {
 		if ( VGUI_Button( vguiWeaponTable[ fWeapon ].sName, VGUI_BuyMenu_BuyWeapon, vVGUIButtonPos, '264 24 0' ) == TRUE ) {
 			drawpic( vVGUIWindowPos + '328 116', vguiWeaponTable[ fWeapon ].sImage, '256 64', '1 1 1', 1 );
-			VGUI_Text( sprintf( _("BUY_PRICETAG"), wptTable[ fWeapon ].iPrice ), vVGUIWindowPos + '328 250', '8 8 0', FONT_DEFAULT );
-			VGUI_Text( sprintf( _("BUY_CALIBER"), wptTable[ fWeapon ].iCaliber ), vVGUIWindowPos + '328 260', '8 8 0', FONT_DEFAULT );
-			VGUI_Text( sprintf( _("BUY_RPM"), ( wptTable[ fWeapon ].fAttackFinished) * 3600 ),  vVGUIWindowPos + '328 270', '8 8 0', FONT_DEFAULT );
+			VGUI_Text( sprintf( _("BUY_PRICETAG"), wptTable[ fWeapon ].iPrice ), vVGUIWindowPos + '328 250', '8 8', FONT_DEFAULT );
+			VGUI_Text( sprintf( _("BUY_CALIBER"), wptTable[ fWeapon ].iCaliber ), vVGUIWindowPos + '328 260', '8 8', FONT_DEFAULT );
+			VGUI_Text( sprintf( _("BUY_RPM"), ( wptTable[ fWeapon ].fAttackFinished) * 3600 ),  vVGUIWindowPos + '328 270', '8 8', FONT_DEFAULT );
 		}
 	} else {
 		VGUI_FakeButton( vguiWeaponTable[ fWeapon ].sName, vVGUIButtonPos, '264 24 0' );
@@ -168,7 +168,7 @@ void VGUI_BuyMenu_EquipmentButton( float fID ) {
 	if ( eqptTable[ fID ].iPrice <= getstatf( STAT_MONEY ) ) {
 		if ( VGUI_Button( vguiEquipmentTable[ fID ].sName, VGUI_BuyMenu_BuyEquipment, vVGUIButtonPos, '180 24 0' ) == TRUE ) {
 			drawpic( vVGUIWindowPos + '290 116', vguiEquipmentTable[ fID ].sImage, '256 64', '1 1 1', 1 );
-			VGUI_Text( sprintf( _("BUY_PRICETAG"), eqptTable[ fID ].iPrice ) , vVGUIWindowPos + '256 250', '8 8 0', FONT_DEFAULT );
+			VGUI_Text( sprintf( _("BUY_PRICETAG"), eqptTable[ fID ].iPrice ) , vVGUIWindowPos + '256 250', '8 8', FONT_DEFAULT );
 		}
 	} else {
 		VGUI_FakeButton( vguiEquipmentTable[ fID ].sName, vVGUIButtonPos, '180 24 0' );

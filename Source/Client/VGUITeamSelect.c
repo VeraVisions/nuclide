@@ -119,11 +119,11 @@ void VGUI_TeamSelect_Main( vector vPos ) {
 		fVGUI_Display = VGUI_NONE;
 	}
 
-	VGUI_Text( sMapString[ 0 ], vPos + '16 64 0', '16 16 0', FONT_16);
+	VGUI_Text( sMapString[ 0 ], vPos + '16 64 0', '16 16', FONT_16);
 	
 	vector vTextPos = vPos + '224 116 0';
 	for ( int i = 1; i < 35; i++ ) {
-		VGUI_Text( sMapString[ i ], vTextPos, '8 8 0', FONT_DEFAULT );
+		VGUI_Text( sMapString[ i ], vTextPos, '8 8', FONT_DEFAULT );
 		vTextPos_y += 10;
 	}
 
@@ -144,12 +144,12 @@ void VGUI_TeamSelect_Button( float fNumber, void() vFunc, vector vPos, vector vS
 	if( VGUI_Button( sClassInfo[ 8 * fNumber ] , vFunc, vPos, vSize ) == TRUE ) {
 		drawpic( vVGUIWindowPos + '356 64', sClassInfo[ 8 * fNumber + 1 ], '128 256', '1 1 1', 1 );
 		
-		VGUI_Text( sClassInfo[ 8 * fNumber + 2 ], vVGUIWindowPos + '232 336', '8 8 0', FONT_DEFAULT );
-		VGUI_Text( sClassInfo[ 8 * fNumber + 3 ], vVGUIWindowPos + '232 346', '8 8 0', FONT_DEFAULT );
-		VGUI_Text( sClassInfo[ 8 * fNumber + 4 ], vVGUIWindowPos + '232 356', '8 8 0', FONT_DEFAULT );
-		VGUI_Text( sClassInfo[ 8 * fNumber + 5 ], vVGUIWindowPos + '232 366', '8 8 0', FONT_DEFAULT );
-		VGUI_Text( sClassInfo[ 8 * fNumber + 6 ], vVGUIWindowPos + '232 376', '8 8 0', FONT_DEFAULT );
-		VGUI_Text( sClassInfo[ 8 * fNumber + 7 ], vVGUIWindowPos + '232 386', '8 8 0', FONT_DEFAULT );
+		VGUI_Text( sClassInfo[ 8 * fNumber + 2 ], vVGUIWindowPos + '232 336', '8 8', FONT_DEFAULT );
+		VGUI_Text( sClassInfo[ 8 * fNumber + 3 ], vVGUIWindowPos + '232 346', '8 8', FONT_DEFAULT );
+		VGUI_Text( sClassInfo[ 8 * fNumber + 4 ], vVGUIWindowPos + '232 356', '8 8', FONT_DEFAULT );
+		VGUI_Text( sClassInfo[ 8 * fNumber + 5 ], vVGUIWindowPos + '232 366', '8 8', FONT_DEFAULT );
+		VGUI_Text( sClassInfo[ 8 * fNumber + 6 ], vVGUIWindowPos + '232 376', '8 8', FONT_DEFAULT );
+		VGUI_Text( sClassInfo[ 8 * fNumber + 7 ], vVGUIWindowPos + '232 386', '8 8', FONT_DEFAULT );
 	}
 }
 

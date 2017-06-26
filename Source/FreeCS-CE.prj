@@ -59,7 +59,7 @@
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Server\TraceAttack.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Server\Triggers.c" />
 	</category>
-	<category name="Menu" expanded="no">
+	<category name="Menu" expanded="yes">
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Defs.h" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Draw.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Header.c" />
@@ -70,7 +70,7 @@
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Objects.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\progs.src" />
 	</category>
-	<category name="Shared" expanded="no">
+	<category name="Shared" expanded="yes">
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Shared\Animations.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Shared\BaseMelee.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Shared\Effects.c" />
@@ -112,7 +112,7 @@
 </project>
 
 <workspace version="Crimson Editor 3.60">
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Builtins.h" linenum="2247" placement="0:1:-1:-1:-4:-23:198:198:1046:676" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\HUD.c" linenum="15" placement="2:3:-1:-1:-4:-23:220:220:1072:702" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Shared\Animations.c" linenum="10" placement="0:1:-1:-1:-4:-23:22:22:958:326" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Shared\WeaponElites.c" linenum="10" placement="2:3:-1:-1:-4:-23:44:44:984:352" />
 </workspace>
 

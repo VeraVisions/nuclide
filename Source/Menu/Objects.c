@@ -144,10 +144,10 @@ void Object_Frame( vector vPosition, vector vSize ) {
 	drawfill( vPosition, vSize, '0 0 0', 1.0f );
 	
 	drawfill( vPosition, [vSize_x, 1], autocvar_menu_fgcolor, 1.0f ); // Top
-	drawfill( [vPosition_x, vPosition_y + vSize_y], [vSize_x, 1], autocvar_menu_fgcolor, 1.0f ); // Bottom
+	drawfill( [vPosition_x, vPosition_y + vSize_y - 1], [vSize_x, 1], autocvar_menu_fgcolor, 1.0f ); // Bottom
 	
 	drawfill( vPosition, [1, vSize_y], autocvar_menu_fgcolor, 1.0f ); // Left
-	drawfill( [vPosition_x + vSize_x, vPosition_y], [1, vSize_y + 1], autocvar_menu_fgcolor, 1.0f ); // Right
+	drawfill( [vPosition_x + vSize_x - 1, vPosition_y], [1, vSize_y], autocvar_menu_fgcolor, 1.0f ); // Right
 }
 
 /*

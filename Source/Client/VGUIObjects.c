@@ -52,116 +52,79 @@ float VGUI_CheckMouse( vector vPos, vector vReg ) {
 }
 
 // Draws window with outline, border and title
-void VGUI_Window( string sTitle, vector vPos, vector vSize ) {
-	vector v1, v2, v3;
-
+void VGUI_Window( string sTitle, vector vPosition, vector vSize ) {
 	// Draw the background
-	drawfill( vPos, vSize, VGUI_WINDOW_BGCOLOR, VGUI_WINDOW_BGALPHA );
+	drawfill( vPosition, vSize, VGUI_WINDOW_BGCOLOR, VGUI_WINDOW_BGALPHA );
 	
-	// Draw the outline START
-	v1_x = vPos_x + vSize_x;
-	v1_y = vPos_y + 1;
-	drawline( 1.0, vPos, v1, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
-	
-	v2_x = vPos_x;
-	v2_y = vPos_y + vSize_y;
-	drawline( 1.0, vPos, v2, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
-
-	v3 = vPos + vSize;
-	drawline( 1.0, v1 - '1 0', v3 - '1 0', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
-	drawline( 1.0, v2, v3, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
-	// Draw the outline END
+	// Sides
+	drawfill( vPosition, [vSize_x, 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( [vPosition_x, vPosition_y + vSize_y - 1], [vSize_x, 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( vPosition, [1, vSize_y], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( [vPosition_x + vSize_x - 1, vPosition_y], [1, vSize_y], vVGUIColor, VGUI_WINDOW_FGALPHA );
 
 	// Draw the window title
-	CSQC_DrawText( vPos + '16 16 0', sTitle, '16 16 0', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_16 );
-	drawline( 1.0, vPos + '0 48 0', v1 + '0 48 0', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
+	CSQC_DrawText( vPosition + '16 16', sTitle, '16 16', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_DEFAULT );
+	drawfill( vPosition + '0 48', [vSize_x, 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
 }
 
 // Draws window with outline, border and title
-void VGUI_WindowSmall( string sTitle, vector vPos, vector vSize ) {
-	vector v1, v2, v3;
-
+void VGUI_WindowSmall( string sTitle, vector vPosition, vector vSize ) {
 	// Draw the background
-	drawfill( vPos, vSize, VGUI_WINDOW_BGCOLOR, VGUI_WINDOW_BGALPHA );
+	drawfill( vPosition, vSize, VGUI_WINDOW_BGCOLOR, VGUI_WINDOW_BGALPHA );
 	
-	// Draw the outline START
-	v1_x = vPos_x + vSize_x;
-	v1_y = vPos_y + 1;
-	drawline( 1.0, vPos, v1, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
-	
-	v2_x = vPos_x;
-	v2_y = vPos_y + vSize_y;
-	drawline( 1.0, vPos, v2, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
-
-	v3 = vPos + vSize;
-	drawline( 1.0, v1 - '1 0', v3 - '1 0', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
-	drawline( 1.0, v2, v3, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
-	// Draw the outline END
+	// Sides
+	drawfill( vPosition, [vSize_x, 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( [vPosition_x, vPosition_y + vSize_y - 1], [vSize_x, 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( vPosition, [1, vSize_y], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( [vPosition_x + vSize_x - 1, vPosition_y], [1, vSize_y], vVGUIColor, VGUI_WINDOW_FGALPHA );
 
 	// Draw the window title
-	CSQC_DrawText( vPos + '8 8 0', sTitle, '8 8 0', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_16 );
-	drawline( 1.0, vPos + '0 24 0', v1 + '0 24 0', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
+	CSQC_DrawText( vPosition + '8 8', sTitle, '8 8', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_DEFAULT );
+	drawfill( vPosition + '0 24', [vSize_x, 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
 }
 
 // Draws a button, returns whether or not a mouse is hovering over it (for inheritance' sake)
-float VGUI_Button( string sLabel, void() vFunction, vector vPos, vector vSize ) {
-	vector v1, v2, v3, v4;
+float VGUI_Button( string sLabel, void() vFunction, vector vPosition, vector vSize ) {
+	vector vLabelPos;
 	
-	// Draw the outline START
-	v1_x = vPos_x + vSize_x;
-	v1_y = vPos_y + 1;
-	drawline( 1.0, vPos, v1, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
-	
-	v2_x = vPos_x;
-	v2_y = vPos_y + vSize_y;
-	drawline( 1.0, vPos, v2, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
-
-	v3 = vPos + vSize;
-	drawline( 1.0, v1 - '1 0', v3 - '1 0', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
-	drawline( 1.0, v2, v3, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
-	// Draw the outline END
+	drawfill( vPosition, [vSize_x, 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( [vPosition_x, vPosition_y + vSize_y - 1], [vSize_x, 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( vPosition, [1, vSize_y], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( [vPosition_x + vSize_x - 1, vPosition_y], [1, vSize_y], vVGUIColor, VGUI_WINDOW_FGALPHA );
 
 	// Draw the button label
-	v4_x = vPos_x + 16;
-	v4_y = vPos_y + ( ( vSize_y / 2 ) - 4 );
+	vLabelPos_x = vPosition_x + 16;
+	vLabelPos_y = vPosition_y + ( ( vSize_y / 2 ) - 4 );
 
-	if( VGUI_CheckMouse( vPos, vSize ) ) {
+	if( VGUI_CheckMouse( vPosition, vSize ) ) {
 		if ( fMouseClick == TRUE ) {
 			vFunction();
 			fMouseClick = FALSE;
 		}
 
-		CSQC_DrawText( v4, sLabel, '8 8 0', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_DEFAULT );
-		drawline( 1.0, v4 + '0 10 0', v4 + '0 10 0' + [ (strlen( sLabel ) * 8 ), 0 ], vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
+		CSQC_DrawText( vLabelPos, sLabel, '8 8', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_DEFAULT );
+		drawfill( vLabelPos + '0 10 0', [(strlen( sLabel ) * 8 ), 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
 		return TRUE;
 	} else {
-		CSQC_DrawText( v4, sLabel, '8 8 0', vVGUIColor * 0.8, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_DEFAULT );
+		CSQC_DrawText( vLabelPos, sLabel, '8 8', vVGUIColor * 0.8, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_DEFAULT );
 	}
 
 	return FALSE;
 }
 
-void VGUI_FakeButton( string sLabel, vector vPos, vector vSize ) {
-	vector v1, v2, v3, v4;
+void VGUI_FakeButton( string sLabel, vector vPosition, vector vSize ) {
+	vector vLabelPos;
 	
-	// Draw the outline START
-	v1_x = vPos_x + vSize_x;
-	v1_y = vPos_y + 1;
-	drawline( 1.0, vPos, v1, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
-	
-	v2_x = vPos_x;
-	v2_y = vPos_y + vSize_y;
-	drawline( 1.0, vPos, v2, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
-
-	v3 = vPos + vSize;
-	drawline( 1.0, v1 - '1 0', v3 - '1 0', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
-	drawline( 1.0, v2, v3, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE );
-	// Draw the outline END
+	drawfill( vPosition, [vSize_x, 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( [vPosition_x, vPosition_y + vSize_y - 1], [vSize_x, 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( vPosition, [1, vSize_y], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( [vPosition_x + vSize_x - 1, vPosition_y], [1, vSize_y], vVGUIColor, VGUI_WINDOW_FGALPHA );
 
 	// Draw the button label
-	v4_x = vPos_x + 16;
-	v4_y = vPos_y + ( ( vSize_y / 2 ) - 4 );
-	CSQC_DrawText( v4, sLabel, '8 8 0', vVGUIColor * 0.5, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_DEFAULT );
+	vLabelPos_x = vPosition_x + 16;
+	vLabelPos_y = vPosition_y + ( ( vSize_y / 2 ) - 4 );
+
+	CSQC_DrawText( vLabelPos, sLabel, '8 8', vVGUIColor * 0.5, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_DEFAULT );
 }
 
 // Wrapper for simple VGUI Text labels

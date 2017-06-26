@@ -63,8 +63,8 @@ void CSQC_DrawChat( void ) {
 	}
 	
 	for ( int i = 0; i < CHAT_LINES; i++ ) {
-		drawstring( vChatPos + '1 1', sMSGBuffer[ i ], '8 8 0', '0 0 0', VGUI_WINDOW_FGALPHA, 0 );
-		drawstring( vChatPos, sMSGBuffer[ i ], '8 8 0', vHUDColor, 1, DRAWFLAG_ADDITIVE );
+		drawstring( vChatPos + '1 1', sMSGBuffer[ i ], '8 8', '0 0 0', VGUI_WINDOW_FGALPHA, 0 );
+		drawstring( vChatPos, sMSGBuffer[ i ], '8 8', vHUDColor, 1, DRAWFLAG_ADDITIVE );
 		vChatPos_y += 12;
 	}
 }
@@ -101,8 +101,8 @@ void CSQC_DrawCenterprint( void ) {
 	vCenterPrintPos_y = ( vVideoResolution_y / 2 ) - ( fCenterPrintLines - 4 );
 	for ( int i = 0; i < ( fCenterPrintLines ); i++ ) {
 		vCenterPrintPos_x = ( vVideoResolution_x / 2 ) - ( stringwidth( sCenterPrintBuffer[ i ], FALSE ) / 2 );
-		drawstring( vCenterPrintPos + '1 1', sCenterPrintBuffer[ i ], '8 8 0', '0 0 0', fCenterPrintAlpha, 0 );
-		drawstring( vCenterPrintPos, sCenterPrintBuffer[ i ], '8 8 0', vHUDColor, fCenterPrintAlpha, DRAWFLAG_ADDITIVE );
+		drawstring( vCenterPrintPos + '1 1', sCenterPrintBuffer[ i ], '8 8', '0 0 0', fCenterPrintAlpha, 0 );
+		drawstring( vCenterPrintPos, sCenterPrintBuffer[ i ], '8 8', vHUDColor, fCenterPrintAlpha, DRAWFLAG_ADDITIVE );
 		vCenterPrintPos_y += 8;
 	}
 }

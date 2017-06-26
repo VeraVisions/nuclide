@@ -102,15 +102,15 @@ void HUD_DrawOrbituaries( void ) {
 		vOrbPos_x = vVideoResolution_x - ( orbBuffer[ i ].fOffset1 + orbBuffer[ i ].fOffset2 + orbBuffer[ i ].fOffset3 ) - 16;
 		
 		// Draw the attacker's name, shadow first
-		drawstring( vOrbPos + '1 1', orbBuffer[ i ].sAttacker, '8 8 0', '0 0 0', VGUI_WINDOW_FGALPHA, 0 );
-		drawstring( vOrbPos, orbBuffer[ i ].sAttacker, '8 8 0', orbBuffer[ i ].vColor1, VGUI_WINDOW_FGALPHA, 0 );
+		drawstring( vOrbPos + '1 1', orbBuffer[ i ].sAttacker, '8 8', '0 0 0', VGUI_WINDOW_FGALPHA, 0 );
+		drawstring( vOrbPos, orbBuffer[ i ].sAttacker, '8 8', orbBuffer[ i ].vColor1, VGUI_WINDOW_FGALPHA, 0 );
 		
 		// Draw the weapon icon
 		drawsubpic( vOrbPos + [ orbBuffer[ i ].fOffset1, 0 ], wpIconTable[ orbBuffer[ i ].fWeapon ].vSize * 256, wpIconTable[ orbBuffer[ i ].fWeapon ].sSprite, wpIconTable[ orbBuffer[ i ].fWeapon ].vOrigin, wpIconTable[ orbBuffer[ i ].fWeapon ].vSize, '1 0.5 0', 1, DRAWFLAG_ADDITIVE );
 		
 		// Draw the victim's name, shadow first again
-		drawstring( vOrbPos + [ orbBuffer[ i ].fOffset2 + orbBuffer[ i ].fOffset1, 0 ] + '1 1', orbBuffer[ i ].sVictim, '8 8 0', '0 0', VGUI_WINDOW_FGALPHA, 0 );
-		drawstring( vOrbPos + [ orbBuffer[ i ].fOffset2 + orbBuffer[ i ].fOffset1, 0 ], orbBuffer[ i ].sVictim, '8 8 0', orbBuffer[ i ].vColor2, VGUI_WINDOW_FGALPHA, 0 );
+		drawstring( vOrbPos + [ orbBuffer[ i ].fOffset2 + orbBuffer[ i ].fOffset1, 0 ] + '1 1', orbBuffer[ i ].sVictim, '8 8', '0 0', VGUI_WINDOW_FGALPHA, 0 );
+		drawstring( vOrbPos + [ orbBuffer[ i ].fOffset2 + orbBuffer[ i ].fOffset1, 0 ], orbBuffer[ i ].sVictim, '8 8', orbBuffer[ i ].vColor2, VGUI_WINDOW_FGALPHA, 0 );
 		vOrbPos_y += 18;
 	}
 }

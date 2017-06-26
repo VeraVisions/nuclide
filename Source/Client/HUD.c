@@ -293,14 +293,14 @@ void HUD_DrawMoney( void ) {
 	// If the alpha/color effect is active, draw the money twice in their varying alphas/colors
 	if ( fMoneyAlphaEffect > 0 ) {
 		fMoneyAlphaEffect -= frametime * 0.5;
-		drawsubpic( vMoneyPos, '18 25 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 8, NUMSIZE_Y * 1], [ NUMSIZE_X * 0.75, NUMSIZE_Y ], vMoneyColorEffect, fMoneyAlphaEffect, DRAWFLAG_ADDITIVE );
-		drawsubpic( vMoneyPos, '18 25 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 8, NUMSIZE_Y * 1], [ NUMSIZE_X * 0.75, NUMSIZE_Y ], vHUDColor, HUD_ALPHA - ( fMoneyAlphaEffect * 0.5 ), DRAWFLAG_ADDITIVE );
+		drawsubpic( vMoneyPos, '18 25', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 8, NUMSIZE_Y * 1], [ NUMSIZE_X * 0.75, NUMSIZE_Y ], vMoneyColorEffect, fMoneyAlphaEffect, DRAWFLAG_ADDITIVE );
+		drawsubpic( vMoneyPos, '18 25', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 8, NUMSIZE_Y * 1], [ NUMSIZE_X * 0.75, NUMSIZE_Y ], vHUDColor, HUD_ALPHA - ( fMoneyAlphaEffect * 0.5 ), DRAWFLAG_ADDITIVE );
 		
 		// Draw the +/- symbols depending on whether or not we made or lost money
 		if ( fMoneyDifference < 0 ) {
-			drawsubpic( vMoneyPos + '0 -32 0', '18 23 0', HUD_NUMFILE_LAYER, [ 0.8671875, 0.09765625], [ 0.0703125, 0.08984375 ], vMoneyColorEffect, fMoneyAlphaEffect, DRAWFLAG_ADDITIVE );
+			drawsubpic( vMoneyPos + '0 -32 0', '18 23', HUD_NUMFILE_LAYER, [ 0.8671875, 0.09765625], [ 0.0703125, 0.08984375 ], vMoneyColorEffect, fMoneyAlphaEffect, DRAWFLAG_ADDITIVE );
 		} else {
-			drawsubpic( vMoneyPos + '0 -32 0', '13 23 0', HUD_NUMFILE_LAYER, [ 0.8203125, 0.09765625], [ 0.05078125, 0.08984375 ], vMoneyColorEffect, fMoneyAlphaEffect, DRAWFLAG_ADDITIVE );
+			drawsubpic( vMoneyPos + '0 -32 0', '13 23', HUD_NUMFILE_LAYER, [ 0.8203125, 0.09765625], [ 0.05078125, 0.08984375 ], vMoneyColorEffect, fMoneyAlphaEffect, DRAWFLAG_ADDITIVE );
 		}
 		
 		// Shift the numbers for reverse drawing
@@ -348,13 +348,13 @@ void HUD_DrawAmmo( void ) {
 	vector vAmmoMagPos = [ vVideoResolution_x - 142, vVideoResolution_y - 42 ];
 	HUD_DrawNums( getstatf( STAT_CURRENT_MAG ), vAmmoMagPos, fAmmoAlpha, vHUDColor );
 	
-	drawsubpic( [vVideoResolution_x - 118, vVideoResolution_y - 42], '3 25 0', HUD_NUMFILE_LAYER, [0.9375, 0], [ 0.01171875, 0.09765625 ], vHUDColor, fAmmoAlpha, DRAWFLAG_ADDITIVE );
+	drawsubpic( [vVideoResolution_x - 118, vVideoResolution_y - 42], '3 25', HUD_NUMFILE_LAYER, [0.9375, 0], [ 0.01171875, 0.09765625 ], vHUDColor, fAmmoAlpha, DRAWFLAG_ADDITIVE );
 	
 	vector vAmmoCalPos = [ vVideoResolution_x - 64, vVideoResolution_y - 42 ];
 	HUD_DrawNums( getstatf( STAT_CURRENT_CALIBER ), vAmmoCalPos, fAmmoAlpha, vHUDColor );
 	
 	// Caliber icon
-	drawsubpic( vVideoResolution - '42 42 0', '24 24 0', HUD_NUMFILE_LAYER, vHUDCalPos[ wptTable[ getstatf( STAT_ACTIVEWEAPON ) ].iCaliber ], [ NUMSIZE_X, NUMSIZE_X ], vHUDColor, fAmmoAlpha, DRAWFLAG_ADDITIVE );
+	drawsubpic( vVideoResolution - '42 42', '24 24', HUD_NUMFILE_LAYER, vHUDCalPos[ wptTable[ getstatf( STAT_ACTIVEWEAPON ) ].iCaliber ], [ NUMSIZE_X, NUMSIZE_X ], vHUDColor, fAmmoAlpha, DRAWFLAG_ADDITIVE );
 	fOldMag = getstatf( STAT_CURRENT_MAG );
 	fOldCal = getstatf( STAT_CURRENT_CALIBER );
 }
@@ -362,7 +362,6 @@ void HUD_DrawAmmo( void ) {
 void HUD_DrawProgressBar( void ) {
 	vector vSize = '540 16';
 	vector vMainPos;
-	vector v1, v2, v3;
 
 	if ( getstatf( STAT_PROGRESS ) > 0 ) {
 		vMainPos_x = ( vVideoResolution_x / 2 ) - (vSize_x / 2);
@@ -370,23 +369,15 @@ void HUD_DrawProgressBar( void ) {
 	
 		// Draw the background
 		vector vBar = vSize;
-		vBar_x = 536 * getstatf( STAT_PROGRESS );
-		vBar_y = 13;
-		drawfill( vMainPos + '1 1 0', vBar, vHUDColor, 1, DRAWFLAG_ADDITIVE );
-		
-		// Draw the outline START
-		v1_x = vMainPos_x + vSize_x;
-		v1_y = vMainPos_y;
-		drawline( 1.0, vMainPos - '1 0 0', v1, vHUDColor, 1, DRAWFLAG_ADDITIVE );
-		
-		v2_x = vMainPos_x;
-		v2_y = vMainPos_y + vSize_y;
-		drawline( 1.0, vMainPos, v2, vHUDColor, 1, DRAWFLAG_ADDITIVE );
+		vBar_x = 538 * getstatf( STAT_PROGRESS );
+		vBar_y = 14;
+		drawfill( vMainPos + '1 1', vBar, vHUDColor, 1, DRAWFLAG_ADDITIVE );
 
-		v3 = vMainPos + vSize;
-		drawline( 1.0, v1, v3, vHUDColor, 1, DRAWFLAG_ADDITIVE );
-		drawline( 1.0, v2, v3, vHUDColor, 1, DRAWFLAG_ADDITIVE );
-		// Draw the outline END
+		drawfill( vMainPos, [vSize_x, 1], vHUDColor, 1.0f ); // Top
+		drawfill( [vMainPos_x, vMainPos_y + vSize_y], [vSize_x, 1], vHUDColor, 1.0f ); // Bottom
+	
+		drawfill( vMainPos, [1, vSize_y], vHUDColor, 1.0f ); // Left
+		drawfill( [vMainPos_x + vSize_x, vMainPos_y], [1, vSize_y + 1], vHUDColor, 1.0f ); // Right
 	}
 }
 
