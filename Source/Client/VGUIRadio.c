@@ -69,7 +69,7 @@ void VGUI_Radio_Draw( void ) {
 	vector vSize, vPos;
 	
 	if ( fVGUI_Display == VGUI_RADIO1 ) {
-		vSize_x = ( 33 * 8 ) + 16;
+		vSize_x = 312;
 		vSize_y = ( 10 * VGUIRADIO_COMMANDS ) + 64;
 		vPos = [ 16, vVideoResolution_y - 148 - vSize_y ];
 		
@@ -82,7 +82,7 @@ void VGUI_Radio_Draw( void ) {
 			VGUI_Radio_DrawCommand( i, fRadioCommands[ i ], vPos );
 		}
 	} else if ( fVGUI_Display == VGUI_RADIO2 ) {
-		vSize_x = ( 24 * 8 ) + 16;
+		vSize_x = 312;
 		vSize_y = ( 10 * VGUIRADIO_GROUPCOMMANDS ) + 64;
 		vPos = [ 16, vVideoResolution_y - 148 - vSize_y ];
 		
@@ -95,7 +95,7 @@ void VGUI_Radio_Draw( void ) {
 			VGUI_Radio_DrawCommand( i, fRadioGroupCommands[ i ], vPos );
 		}
 	} else {
-		vSize_x = ( 37 * 8 ) + 16;
+		vSize_x = 312;
 		vSize_y = ( 10 * VGUIRADIO_RESPONSES ) + 64;
 		vPos = [ 16, vVideoResolution_y - 148 - vSize_y ];
 		

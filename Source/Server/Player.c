@@ -84,6 +84,18 @@ void Player_Death( int iHitBody ) {
 	eCorpse.angles = [ 0, self.angles_y, 0 ];
 	eCorpse.movetype = MOVETYPE_BOUNCE;
 	
+	// Drop primary weapon as well as the bomb if present
+	if ( self.fSlotPrimary ) {
+		Weapon_DropWeapon( SLOT_PRIMARY );
+	} else {
+		if ( self.fSlotSecondary ) {
+			Weapon_DropWeapon( SLOT_PRIMARY );
+		}
+	}
+	if ( self.fSlotGrenade ) {
+		Weapon_DropWeapon( SLOT_GRENADE );
+	}
+	
 	// Make ourselves disappear
 	self.modelindex = 0;
 	

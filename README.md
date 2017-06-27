@@ -1,26 +1,27 @@
 # FreeCS
 Free-software implementation of Counter-Strike running on the FTE QuakeWorld engine.
-You still have to provide the assets yourself, but hey - CS 1.5 is a free download.
 
-<img src="https://icculus.org/~marco/opencs/screenshots/fte-20170113225215-0.png" alt="Screen 1" width="256" height="192"> <img src="https://icculus.org/~marco/opencs/screenshots/fte-20170113225158-0.png" alt="Screen 2" width="256" height="192">
+<img src="https://icculus.org/~marco/freecs/screens/screen1.png" alt="Screen 1" width="256" height="192"> <img src="https://icculus.org/~marco/freecs/screens/screen2.png" alt="Screen 2" width="256" height="192">
 
-<img src="https://icculus.org/~marco/opencs/screenshots/fte-20170113225827-0.png" alt="Screen 3" width="256" height="192"> <img src="https://icculus.org/~marco/opencs/screenshots/fte-20170113225528-0.png" alt="Screen 4" width="256" height="192">
+<img src="https://icculus.org/~marco/freecs/screens/screen3.png" alt="Screen 3" width="256" height="192"> <img src="https://icculus.org/~marco/freecs/screens/screen4.png" alt="Screen 4" width="256" height="192">
 
-<img src="https://pbs.twimg.com/media/C-lqLjuXsAAeF1Z.jpg" alt="Android Port" width="340" height="192">
+<img src="https://icculus.org/~marco/freecs/screens/portable.jpg" alt="Android Port" width="340" height="192">
 
 # Goals
 The goal of this project is to provide an open-source version of Counter-Strike 1.5.
-Counter-Strike, being one of the most popular multiplayer games to exist, surprisingly hasn't had
-a free-software implementation done until now. 
+Counter-Strike, being one of the most popular multiplayer games to exist, hasn't had
+a free-software implementation done until now.
+** This project distributes no assets from either Half-Life or Counter-Strike. You have to provide them yourself. **
+** This project shares no code with the Half-Life SDK. The entities are re-creations based on descriptions on TWHL.info. **
+** Read the HL SDK EULA to find out [why.](http://twhl.info/articulator.php?art=1) **
 
-Six cool random things you can do with this:
+Five cool random things you can do with this:
 
 1. Play/Host CS on virtually every platform.
 2. Customize the game to whatever extent you like.
 3. Create entirely new weapons!
 4. Create completely new and refreshing gamemodes!
 5. Have a guarantee to be able to play it 20 years into the future!
-6. Use it as a base for your own games/mods!
 
 # Status
 All the weapons are implemented, so are the gamemodes: 
