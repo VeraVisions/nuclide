@@ -20,8 +20,57 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 void main( void ) {}
 void SetNewParms( void ) {}
-
 void SetChangeParms( void ) {}
+
+void SV_SendChat( entity eSender, string sMessage, entity eEnt, float fType ) {
+	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
+	WriteByte( MSG_MULTICAST, fType == 0 ? EV_CHAT:EV_CHAT_TEAM );
+	WriteByte( MSG_MULTICAST, num_for_edict( eSender ) - 1 ); 
+	WriteByte( MSG_MULTICAST, eSender.team ); 
+	WriteString( MSG_MULTICAST, sMessage );
+	msg_entity = eEnt;
+	multicast( '0 0 0', MULTICAST_ONE );
+}
+
+/*
+=================
+SV_ParseClientCommand
+
+Intercepts 'cmd' calls. We use it to intercept
+chat messages and handle distribution ourselves.
+=================
+*/
+void SV_ParseClientCommand( string sCommand ) {
+	tokenize( sCommand );
+
+	// Players talk to players, spectators to spectators.
+	if ( self.health  ) {
+		if ( argv( 0 ) == "say" ) {
+			for ( entity eFind = world; ( eFind = find( eFind, classname, "player" ) ); ) { 
+				SV_SendChat( self, argv( 1 ), eFind, 0 );
+			}
+			return;
+		} else if ( argv( 0 ) == "say_team" ) {
+			for ( entity eFind = world; ( eFind = find( eFind, classname, "player" ) ); ) { 
+				if ( eFind.team == self.team ) {
+					SV_SendChat( self, argv( 1 ), eFind, 1 );
+				}
+			}
+			return;
+		} 
+	} else {
+		if ( argv( 0 ) == "say" ) {
+			for ( entity eFind = world; ( eFind = find( eFind, classname, "spectator" ) ); ) { 
+				SV_SendChat( self, argv( 1 ), eFind, 1 );
+			}
+			return;	
+		} else if ( argv( 0 ) == "say_team" ) {
+			return;	
+		} 
+	}
+
+	clientcommand( self, sCommand );
+}
 
 void SV_PausedTic( float fDuration ) {
 

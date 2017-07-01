@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define NUMSIZE_X 0.09375
 #define NUMSIZE_Y 0.09765625
 
-#define HUD_ALPHA 0.6
+#define HUD_ALPHA 0.5
 
 // Instead of calculating them on demand, just read the offsets here
 float vHUDNumPos[10] = {

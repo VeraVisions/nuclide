@@ -202,12 +202,12 @@ FuncDoor_Touch
 ====================
 */
 void FuncDoor_Touch( void ) {
+	if ( self.spawnflags & SF_MOV_TOGGLE ) {
+		return;
+	}
+	
 	if ( other.classname == "player" ) {
 		FuncDoor_Trigger();
-    
-		if ( ( self.spawnflags & SF_MOV_USE ) ) {
-			self.touch = __NULL__;
-		}
 	}
 }
 
@@ -262,12 +262,12 @@ void func_door( void ) {
 	if ( !self.dmg ) {
 		self.dmg = 2;
 	}
-	
-	if ( ( self.spawnflags & SF_MOV_USE ) ) {
+
+	if ( self.spawnflags & SF_MOV_USE ) {
+		self.iUsable = TRUE;
+	} else {
 		self.touch = FuncDoor_Touch;
 	}
-
-	self.iUsable = TRUE;
 	
 
 	self.pos1 = self.origin;

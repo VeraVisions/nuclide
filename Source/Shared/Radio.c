@@ -179,7 +179,7 @@ Play a radio message that doesn't come from a player
 */
 void Radio_PlayMessage( float fMessage ) {
 	sound( world, CHAN_VOICE, sRadioSamples[ fMessage ], 1, ATTN_NONE, 0, SOUNDFLAG_NOSPACIALISE );
-	CSQC_Parse_Print( sprintf( "[RADIO]: %s\n", sRadioChat[ fMessage ] ), PRINT_CHAT );
+	CSQC_Parse_Print( sprintf( "^2[RADIO]^xF80: %s\n", sRadioChat[ fMessage ] ), PRINT_CHAT );
 }
 
 /*
@@ -191,7 +191,7 @@ This radio message does come from a player
 */
 void Radio_PlayPlayerMessage( float fPlayerNum, float fMessage ) {
 	sound( world, CHAN_VOICE, sRadioSamples[ fMessage ], 1, ATTN_NONE, 0, SOUNDFLAG_NOSPACIALISE );
-	CSQC_Parse_Print( sprintf( "[RADIO] %s: %s\n", getplayerkeyvalue( fPlayerNum, "name" ), sRadioChat[ fMessage ] ), PRINT_CHAT );
+	CSQC_Parse_Print( sprintf( "^2[RADIO] %s%s^xF80: %s\n", HUD_GetChatColorHEX( stof( getplayerkeyvalue( fPlayerNum, "*team" ) ) ), getplayerkeyvalue( fPlayerNum, "name" ), sRadioChat[ fMessage ] ), PRINT_CHAT );
 }
 #endif
 

@@ -30,6 +30,26 @@ vector HUD_GetChatColor( float fTeam ) {
 	}
 }
 
+string HUD_GetChatColorHEX( float fTeam ) {
+	if ( fTeam == TEAM_CT ) {
+		return "^x7AC";
+	} else if ( fTeam == TEAM_T ) {
+		return "^xC33";
+	} else {
+		return "^xCCC";
+	}
+}
+
+string HUD_GetChatColorHEXTeam( float fTeam ) {
+	if ( fTeam == TEAM_CT ) {
+		return "^x7AC(Counter-Terrorist) ";
+	} else if ( fTeam == TEAM_T ) {
+		return "^xC33(Terrorist) ";
+	} else {
+		return "^xCCC(Spectator) ";
+	}
+}
+
 // Returns whether or not our mouse cursor hovers over a region
 float VGUI_CheckMouse( vector vPos, vector vReg ) {
 	vector vSMins, vSMaxs;

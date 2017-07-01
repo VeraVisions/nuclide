@@ -18,10 +18,12 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#define CHAT_LINES 5
-#define CHAT_TIME 4
-int iLineScroll;
+#define CHAT_LINES 	5
+#define CHAT_TIME 	10
+var int iLineScroll = 0;
+
 float fChatTime;
+float fChatAlpha;
 string sMSGBuffer[ CHAT_LINES ];
 
 /*
@@ -32,6 +34,11 @@ Receives a message and sorts it into the chat messagebuffer
 =================
 */
 void CSQC_Parse_Print(string sMessage, float fLevel ) {
+	// This gives messages other than chat an orange tint
+	if ( fLevel != PRINT_CHAT ) {
+		sMessage = sprintf( "^xF80%s", sMessage );
+	}
+	
 	if ( iLineScroll < ( CHAT_LINES - 1 ) ) {
 		sMSGBuffer[ iLineScroll + 1 ] = sMessage;
 		iLineScroll++;
@@ -43,6 +50,10 @@ void CSQC_Parse_Print(string sMessage, float fLevel ) {
 	}
 		
 	fChatTime = time + CHAT_TIME;
+	fChatAlpha = 1.0f;
+	
+	// Log to console
+	localcmd( sprintf( "echo \"%s\"\n", sMessage ) );
 }
 
 /*
@@ -56,16 +67,18 @@ void CSQC_DrawChat( void ) {
 	vector vChatPos = [ 16, vVideoResolution_y - 128 ];
 	
 	// Remove messages after a fChatTime has passed
-	if ( fChatTime < time && iLineScroll >= 0 ) {
-		sMSGBuffer[ iLineScroll ] = "";
-		iLineScroll--;
-		fChatTime = time + CHAT_TIME;
+	if ( fChatTime < time ) {
+		fChatAlpha -= frametime;
+	} else {
+		fChatAlpha = 1.0f;
 	}
 	
-	for ( int i = 0; i < CHAT_LINES; i++ ) {
-		drawstring( vChatPos + '1 1', sMSGBuffer[ i ], '8 8', '0 0 0', VGUI_WINDOW_FGALPHA, 0 );
-		drawstring( vChatPos, sMSGBuffer[ i ], '8 8', vHUDColor, 1, DRAWFLAG_ADDITIVE );
-		vChatPos_y += 12;
+	if ( fChatAlpha > 0.0f ) {
+		for ( int i = 0; i < CHAT_LINES; i++ ) {
+			drawstring( vChatPos + '1 1', sMSGBuffer[ i ], '8 8', '0 0 0', fChatAlpha, 0 );
+			drawstring( vChatPos, sMSGBuffer[ i ], '8 8', '1 1 1', fChatAlpha, 0 );
+			vChatPos_y += 12;
+		}
 	}
 }
 
@@ -102,7 +115,7 @@ void CSQC_DrawCenterprint( void ) {
 	for ( int i = 0; i < ( fCenterPrintLines ); i++ ) {
 		vCenterPrintPos_x = ( vVideoResolution_x / 2 ) - ( stringwidth( sCenterPrintBuffer[ i ], FALSE ) / 2 );
 		drawstring( vCenterPrintPos + '1 1', sCenterPrintBuffer[ i ], '8 8', '0 0 0', fCenterPrintAlpha, 0 );
-		drawstring( vCenterPrintPos, sCenterPrintBuffer[ i ], '8 8', vHUDColor, fCenterPrintAlpha, DRAWFLAG_ADDITIVE );
+		drawstring( vCenterPrintPos, sCenterPrintBuffer[ i ], '8 8', '1 1 1', fCenterPrintAlpha, 0 );
 		vCenterPrintPos_y += 8;
 	}
 }
@@ -117,11 +130,10 @@ Keep in mind that newlines need to be tokenized
 =================
 */
 float CSQC_Parse_CenterPrint( string sMessage ) {
-	
 	fCenterPrintLines = tokenizebyseparator( sMessage, "\n" );
 	
 	for( int i = 0; i < ( fCenterPrintLines ); i++ ) {
-		sCenterPrintBuffer[ i ] = argv( i );
+		sCenterPrintBuffer[ i ] = sprintf( "^xF80%s", argv( i ) );
 	}
 	
 	fCenterPrintAlpha = 1;

@@ -151,7 +151,7 @@ void FuncDoorRotate_Trigger( void ) {
 	if ( self.fAttackFinished > time ) {
 		return;
 	}
-	self.fAttackFinished = self.ltime + self.wait;
+	self.fAttackFinished = time + self.wait;
 	
 	if ( ( self.state == STATE_UP ) || ( self.state == STATE_RAISED ) ) {
 		FuncDoorRotate_RotateBack();
@@ -173,13 +173,13 @@ FuncDoorRotate_Touch
 =================
 */
 void FuncDoorRotate_Touch( void ) {
+	if ( self.spawnflags & SF_ROT_TOGGLE ) {
+		return;
+	}
+	
 	if ( other.classname == "player" ) {
 		eActivator = other;
 		FuncDoorRotate_Trigger();
-    
-		if ( !( self.spawnflags & SF_ROT_USE ) ) {
-			self.touch = __NULL__;
-		}
 	}
 }
 
@@ -221,8 +221,11 @@ void func_door_rotating( void ) {
 	self.blocked = FuncDoorRotate_Blocked;
 	self.vUse = FuncDoorRotate_Trigger;
 
-	self.touch = FuncDoorRotate_Touch;
-	self.iUsable = TRUE;
+	if ( self.spawnflags & SF_ROT_USE ) {
+		self.iUsable = TRUE;
+	} else {
+		self.touch = FuncDoorRotate_Touch;
+	}
 
 	if ( !self.speed ) {
 		self.speed = 100;
@@ -246,9 +249,9 @@ void func_door_rotating( void ) {
 		
 	}
 	
-	// ...only do X by default?
+	// only do Y by default
 	if ( !( self.spawnflags & SF_ROT_YAXIS ) && !( self.spawnflags & SF_ROT_XAXIS ) ) {
-		self.pos2_x = self.pos1_x + self.distance;
+		self.pos2_y = self.pos1_y + self.distance;
 	}
 	
 	if ( self.spawnflags & SF_ROT_OPEN ) {

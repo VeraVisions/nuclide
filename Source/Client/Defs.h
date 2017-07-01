@@ -33,8 +33,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 var float FONT_16;
 
 // Clientside cvars
-var vector autocvar_con_color = '255 128 0'; // autocvar of "con_color"
-var vector autocvar_vgui_color = '255 128 0'; // autocvar of "vgui_color"
+var vector autocvar_con_color = '255 170 0'; // autocvar of "con_color"
+var vector autocvar_vgui_color = '255 170 0'; // autocvar of "vgui_color"
 var vector autocvar_cross_color = '0 255 0'; // autocvar of "cross_color"
 var float autocvar_cl_bob = 0.01;
 var float autocvar_cl_bobcycle = 0.8;
@@ -88,6 +88,7 @@ vector vPlayerOriginOld;
 vector vPlayerVelocity;
 
 void View_PlayAnimation( int iSequence );
+string HUD_GetChatColorHEX( float fTeam );
 
 // This actually belongs in Builtins.h since its an undocumented global
 vector pmove_vel;
