@@ -54,6 +54,25 @@ void Effect_CreateExplosion( vector vPos ) {
 #endif
 }
 
+void Effect_CreateSpark( vector vPos, vector vAngle ) {
+#ifdef SSQC
+	vPos_z += 48;
+	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
+	WriteByte( MSG_MULTICAST, EV_SPARK );
+	WriteCoord( MSG_MULTICAST, vPos_x ); 
+	WriteCoord( MSG_MULTICAST, vPos_y ); 
+	WriteCoord( MSG_MULTICAST, vPos_z );
+	WriteCoord( MSG_MULTICAST, vAngle_x ); 
+	WriteCoord( MSG_MULTICAST, vAngle_y ); 
+	WriteCoord( MSG_MULTICAST, vAngle_z );
+	msg_entity = self;
+	multicast( vPos, MULTICAST_PVS );
+#else
+	pointparticles( PARTICLE_SPARK, vPos, vAngle, 1 );
+	pointsound( vPos, sprintf( "buttons/spark%d.wav", floor( random() * 6 ) + 1 ), 1, ATTN_STATIC );
+#endif
+}
+
 #ifdef CSQC
 .float framerate;
 void Effect_AnimatedSprite( vector vPos, float fIndex, float fFPS, float fScale, float fAlpha, float fEffects ) {

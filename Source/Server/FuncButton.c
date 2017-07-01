@@ -18,25 +18,24 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-/*
-=================
-func_door Spawnflags
-=================
-*/
+#define SF_BTT_NOMOVE		1
+#define	SF_BTT_TOGGLE		32
+#define SF_BTT_TOUCH_ONLY	256
 
 void() FuncButton_MoveAway;
 void() FuncButton_MoveBack;
 void() FuncButton_Touch;
-
-#define SF_BTT_NOMOVE		1
-#define	SF_BTT_TOGGLE		32
-#define SF_BTT_TOUCH_ONLY	256
 
 enum {
 	STATE_RAISED = 0,
 	STATE_LOWERED,
 	STATE_UP,
 	STATE_DOWN
+};
+
+enum {
+	FRAME_OFF,
+	FRAME_ON
 };
 
 .float speed;
@@ -55,74 +54,73 @@ FuncButton_PrecacheSounds
 ====================
 */
 void FuncButton_PrecacheSounds( void ) {
-	string sSample = "buttons/button9.wav"; // Default sample?
-	
 	switch( self.sounds ) {
 		case 0: 
 			// if you ever wondered why a silent button sounded a bit noisey... it's because this one kinda blows
-			sSample = "common/null.wav";
+			self.noise = "common/null.wav";
 			break;
 		case 1:
-			sSample = "buttons/button1.wav";
+			self.noise = "buttons/button1.wav";
 			break;
 		case 2:
-			sSample = "buttons/button2.wav";
+			self.noise = "buttons/button2.wav";
 			break;
 		case 3:
-			sSample = "buttons/button3.wav";
+			self.noise = "buttons/button3.wav";
 			break;
 		case 4:
-			sSample = "buttons/button4.wav";
+			self.noise = "buttons/button4.wav";
 			break;
 		case 5:
-			sSample = "buttons/button5.wav";
+			self.noise = "buttons/button5.wav";
 			break;
 		case 6:
-			sSample = "buttons/button6.wav";
+			self.noise = "buttons/button6.wav";
 			break;
 		case 7:
-			sSample = "buttons/button7.wav";
+			self.noise = "buttons/button7.wav";
 			break;
 		case 8:
-			sSample = "buttons/button8.wav";
+			self.noise = "buttons/button8.wav";
 			break;
 		case 9:
-			sSample = "buttons/button9.wav";
+			self.noise = "buttons/button9.wav";
 			break;
 		case 10:
-			sSample = "buttons/button10.wav";
+			self.noise = "buttons/button10.wav";
 			break;
 		case 11:
-			sSample = "buttons/button11.wav";
+			self.noise = "buttons/button11.wav";
 			break;
 		case 12:
-			sSample = "buttons/latchlocked1.wav";
+			self.noise = "buttons/latchlocked1.wav";
 			break;
 		case 13:
-			sSample = "buttons/latchunlocked1.wav";
+			self.noise = "buttons/latchunlocked1.wav";
 			break;
 		case 14:
-			sSample = "buttons/lightswitch2.wav";
+			self.noise = "buttons/lightswitch2.wav";
 			break;
 		case 21:
-			sSample = "buttons/lever1.wav";
+			self.noise = "buttons/lever1.wav";
 			break;
 		case 22:
-			sSample = "buttons/lever2.wav";	
+			self.noise = "buttons/lever2.wav";	
 			break;
 		case 23:
-			sSample = "buttons/lever3.wav";
+			self.noise = "buttons/lever3.wav";
 			break;
 		case 24:
-			sSample = "buttons/lever4.wav";
+			self.noise = "buttons/lever4.wav";
 			break;
 		case 25:
-			sSample = "buttons/lever5.wav";
+			self.noise = "buttons/lever5.wav";
 			break;
+		default:
+			self.noise = "buttons/button9.wav";
 	}
 	
-	precache_sound( sSample );
-	self.noise = sSample;
+	precache_sound( self.noise );
 }
 
 /*
@@ -140,8 +138,10 @@ void FuncButton_Arrived( void ) {
 		return;
 	}
 	
-	self.think = FuncButton_MoveBack;
-	self.nextthink = ( self.ltime + self.wait );
+	if ( self.wait != -1 ) {
+		self.think = FuncButton_MoveBack;
+		self.nextthink = ( self.ltime + self.wait );
+	}
 }
 
 /*
@@ -155,6 +155,7 @@ void FuncButton_Returned( void ) {
 	}
     
 	self.state = STATE_LOWERED;
+	self.frame = FRAME_OFF;
 }
 
 /*
@@ -169,7 +170,12 @@ void FuncButton_MoveBack( void ) {
 	}
     
 	self.state = STATE_DOWN;
-	Entities_MoveToDestination ( self.pos1, self.speed, FuncButton_Returned );
+	
+	if ( self.pos2 != self.pos1 ) {
+		Entities_MoveToDestination ( self.pos1, self.speed, FuncButton_Returned );
+	} else {
+		FuncButton_Returned();
+	}
 }
 
 /*
@@ -188,7 +194,14 @@ void FuncButton_MoveAway( void ) {
 	}
 	
 	self.state = STATE_UP;
-	Entities_MoveToDestination ( self.pos2, self.speed, FuncButton_Arrived );
+	
+	if ( self.pos2 != self.pos1 ) {
+		Entities_MoveToDestination ( self.pos2, self.speed, FuncButton_Arrived );
+	} else {
+		FuncButton_Arrived();
+	}
+	
+	self.frame = FRAME_ON;
 }
 
 /*
@@ -197,13 +210,15 @@ FuncButton_Trigger
 ====================
 */
 void FuncButton_Trigger( void ) {
-	if ( self.fAttackFinished > self.ltime ) {
+	if ( self.fAttackFinished > time ) {
 		return;
 	}
-	self.fAttackFinished = self.ltime + self.wait;
+	self.fAttackFinished = time + self.wait;
 	
 	if ( ( self.state == STATE_UP ) || ( self.state == STATE_RAISED ) ){
-		FuncButton_MoveBack();
+		if ( self.wait != -1 ) {
+			FuncButton_MoveBack();
+		}
 		return;
 	}
 
@@ -258,7 +273,6 @@ func_button
 Spawn function of a moving door entity
 ====================
 */
-
 void func_button( void ) {
 	FuncButton_PrecacheSounds();
 	Entities_SetMovementDirection();

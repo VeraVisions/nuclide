@@ -56,6 +56,7 @@ VGUIRadio.c
 VGUI.c
 Nightvision.c
 HUDCrosshair.c
+HUDScope.c
 HUDWeaponSelect.c
 HUDOrbituaries.c
 HUD.c

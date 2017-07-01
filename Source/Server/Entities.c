@@ -61,7 +61,7 @@ void Entities_UseTargets( void ) {
 	entity eOld = self;
 	while ( eFind ) {
 		self = eFind;
-		//bprint( sprintf( "Triggering %s %s\n", self.classname, self.targetname ) );
+		dprint( sprintf( "Triggering %s %s\n", self.classname, self.targetname ) );
 		
 		// Make sure we really do have a target...
 		if ( self.vUse != __NULL__ ) {

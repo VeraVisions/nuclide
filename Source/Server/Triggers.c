@@ -212,9 +212,17 @@ void multi_manager( void ) {
 			// Sigh, let's attempt to sanitize this
 			if ( ( argv( i ) != "classname" ) && ( argv( i ) != "origin" ) && ( argv( i ) != "targetname" ) ) {
 				entity eTemp = spawn();
-				eTemp.target = argv( i );
 				eTemp.think = multi_manager_enttrigger;
 				eTemp.nextthink = time + stof( argv( i + 1 ) );
+				
+				// sigh, because you obviously don't want to tokenize inside a tokenized loop
+				if ( substring( argv( i ), strlen( argv( i ) ) - 3,  1 ) == "#" ) {
+					eTemp.target = substring( argv( i ), 0, strlen( argv( i ) ) - 3 );
+				} else if ( substring( argv( i ), strlen( argv( i ) ) - 2,  1 ) == "#" ) {
+					eTemp.target = substring( argv( i ), 0, strlen( argv( i ) ) - 2 );
+				} else {
+					eTemp.target = argv( i );
+				}
 			}
 		}
 	}

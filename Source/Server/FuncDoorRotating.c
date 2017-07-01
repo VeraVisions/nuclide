@@ -234,21 +234,21 @@ void func_door_rotating( void ) {
   
 	self.pos1 = self.angles;
 	
-	// Only do X
+	// Only do Y
 	if ( self.spawnflags & SF_ROT_XAXIS	) {
-		self.pos2_x = self.pos1_x + self.distance;
+		self.pos2_y = self.pos1_y + self.distance;
 		
 	} 
 	
-	// Only do Y
+	// Only do X
 	if ( self.spawnflags & SF_ROT_YAXIS ) {
-		self.pos2_y = self.pos1_y + self.distance;
+		self.pos2_x = self.pos1_x + self.distance;
 		
 	}
 	
-	// ...only do Y by default?
+	// ...only do X by default?
 	if ( !( self.spawnflags & SF_ROT_YAXIS ) && !( self.spawnflags & SF_ROT_XAXIS ) ) {
-		self.pos2_y = self.pos1_y + self.distance;
+		self.pos2_x = self.pos1_x + self.distance;
 	}
 	
 	if ( self.spawnflags & SF_ROT_OPEN ) {

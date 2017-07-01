@@ -170,14 +170,17 @@ void View_DrawViewModel( void ) {
 	
 	fLastTime = time;
 	
-	// Update muzzleflash position and draw it
-	if ( eMuzzleflash.alpha > 0.0f ) {
-		eMuzzleflash.origin = gettaginfo( eViewModel, eMuzzleflash.skin );
-		dynamiclight_add( eMuzzleflash.origin, 400 * eMuzzleflash.alpha, '1 0.45 0');
-		addentity( eMuzzleflash );
+	// Only bother when zoomed out
+	if ( getstatf( STAT_VIEWZOOM ) == 255 ) {
+		// Update muzzleflash position and draw it
+		if ( eMuzzleflash.alpha > 0.0f ) {
+			eMuzzleflash.origin = gettaginfo( eViewModel, eMuzzleflash.skin );
+			dynamiclight_add( eMuzzleflash.origin, 400 * eMuzzleflash.alpha, '1 0.45 0');
+			addentity( eMuzzleflash );
+		}
+		
+		addentity( eViewModel );
 	}
-	
-	addentity( eViewModel );
 }
 
 void View_PlayAnimation( int iSequence ) {

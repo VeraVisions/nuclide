@@ -28,6 +28,16 @@ Comparable to worldspawn in SSQC in that it's mostly used for precaches
 void CSQC_Init(float apilevel, string enginename, float engineversion) {
 	precache_model( HUD_NUMFILE );
 	
+	precache_model( "sprites/top_left.spr" );
+	precache_model( "sprites/top.spr" );
+	precache_model( "sprites/top_right.spr" );
+	precache_model( "sprites/left.spr" );
+	precache_model( "sprites/right.spr" );
+	precache_model( "sprites/bottom_left.spr" );
+	precache_model( "sprites/bottom.spr" );
+	precache_model( "sprites/bottom_right.spr" );
+	
+	precache_model( "sprites/sniper_scope.spr" );
 	precache_model( "sprites/fexplo.spr" );
 	precache_model( "sprites/muzzleflash1.spr" );
 	precache_model( "sprites/radar640.spr" );

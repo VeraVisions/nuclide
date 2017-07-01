@@ -7,6 +7,7 @@
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\HUD.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\HUDCrosshair.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\HUDOrbituaries.c" />
+		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\HUDScope.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\HUDWeaponSelect.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\Init.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\Nightvision.c" />
@@ -59,7 +60,7 @@
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Server\TraceAttack.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Server\Triggers.c" />
 	</category>
-	<category name="Menu" expanded="yes">
+	<category name="Menu" expanded="no">
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Defs.h" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Draw.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Header.c" />
@@ -70,7 +71,7 @@
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Objects.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\progs.src" />
 	</category>
-	<category name="Shared" expanded="yes">
+	<category name="Shared" expanded="no">
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Shared\Animations.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Shared\BaseMelee.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Shared\Effects.c" />
@@ -112,12 +113,7 @@
 </project>
 
 <workspace version="Crimson Editor 3.60">
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Shared\Animations.c" linenum="267" placement="0:1:-1:-1:-4:-23:22:22:958:326" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Shared\WeaponElites.c" linenum="32" placement="0:1:-1:-1:-4:-23:44:44:984:352" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\VGUIRadio.c" linenum="25" placement="0:1:-1:-1:-4:-23:44:44:896:513" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\VGUIObjects.c" linenum="72" placement="0:1:-1:-1:-4:-23:66:66:918:535" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Objects.c" linenum="150" placement="0:1:-1:-1:-4:-23:88:88:940:557" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\VGUIMOTD.c" linenum="1" placement="0:1:-1:-1:-4:-23:110:110:962:579" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\VGUIScoreboard.c" linenum="97" placement="2:3:-1:-1:-4:-23:132:132:984:601" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\HUDCrosshair.c" linenum="28" placement="0:1:-1:-1:-4:-23:132:132:980:597" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\HUD.c" linenum="411" placement="2:3:-1:-1:-4:-23:154:154:1006:623" />
 </workspace>
 

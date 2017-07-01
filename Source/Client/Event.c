@@ -26,7 +26,6 @@ Init all the cmds in one place
 =================
 */
 void CSQC_ConsoleCommand_Init( void ) {
-	
 	registercommand( "+attack2" );
 	registercommand( "-attack2" );
 	registercommand( "+reload" );
@@ -479,6 +478,18 @@ void CSQC_Parse_Event( void ) {
 		vExploPos_z = readcoord();
 		
 		Effect_CreateExplosion( vExploPos );
+	} else if ( fHeader == EV_SPARK ) {
+		vector vSparkPos, vSparkAngle;
+		
+		vSparkPos_x = readcoord();
+		vSparkPos_y = readcoord();
+		vSparkPos_z = readcoord();
+		
+		vSparkAngle_x = readcoord();
+		vSparkAngle_y = readcoord();
+		vSparkAngle_z = readcoord();
+		
+		Effect_CreateSpark( vSparkPos, vSparkAngle );
 	}
 }
 

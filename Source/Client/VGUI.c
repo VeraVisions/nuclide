@@ -39,7 +39,7 @@ vguiwindow_t vguiMenus[11] = {
 =================
 CSQC_VGUI_Draw
 
-This is the entry point for OpenCS own VGUI implementation
+This is the entry point for FreeCS own "VGUI" implementation
 Run every frame
 =================
 */
@@ -79,7 +79,7 @@ void CSQC_VGUI_Init( void ) {
 	
 	// First load the MESSAGE OF THE DAY
 	// TODO: Move this to the server and put strings into infokeys
-	filestream fmMOTD = fopen( "motd.txt", FILE_READ);
+	filestream fmMOTD = fopen( "motd.txt", FILE_READ );
 	for ( int i = 0; i < 25; i++ ) {
 		sTemp = fgets( fmMOTD );
 		if not ( sTemp ) {
@@ -90,7 +90,7 @@ void CSQC_VGUI_Init( void ) {
 	fclose( fmMOTD );
 	
 	// Now load the MAP DESCRIPTION
-	fmMOTD = fopen( sprintf( "maps/%s.txt", mapname ), FILE_READ);
+	fmMOTD = fopen( sprintf( "maps/%s.txt", mapname ), FILE_READ );
 	if ( fmMOTD != -1 ) {
 		for ( int i = 0; i < 35; i++ ) {
 			sTemp = fgets( fmMOTD );

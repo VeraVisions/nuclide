@@ -89,7 +89,7 @@ void Player_Death( int iHitBody ) {
 		Weapon_DropWeapon( SLOT_PRIMARY );
 	} else {
 		if ( self.fSlotSecondary ) {
-			Weapon_DropWeapon( SLOT_PRIMARY );
+			Weapon_DropWeapon( SLOT_SECONDARY );
 		}
 	}
 	if ( self.fSlotGrenade ) {
@@ -177,16 +177,15 @@ Player_CrouchCheck
 =================
 */
 float Player_CrouchCheck( entity targ ) {
-	float fCheck = FALSE;
 	vector vTrace = self.origin + '0 0 20';
 	
 	tracebox( vTrace, VEC_HULL_MIN, VEC_HULL_MAX, vTrace, FALSE, self );
 
 	if ( trace_startsolid == FALSE ) {
-		fCheck = TRUE;
+		return TRUE;
 	}
 	
-	return fCheck;
+	return FALSE;
 }
 
 /*
@@ -195,11 +194,11 @@ Player_CrouchDown
 =================
 */
 void Player_CrouchDown( void ) {
-	if( self.movetype != MOVETYPE_WALK ) {
+	if ( self.movetype != MOVETYPE_WALK ) {
 		return;
 	}
 
-	if( !( self.flags & FL_CROUCHING ) ) {
+	if ( !( self.flags & FL_CROUCHING ) ) {
 		setsize( self, VEC_CHULL_MIN, VEC_CHULL_MAX );
 		self.flags = self.flags | FL_CROUCHING;
 		self.view_ofs = VEC_PLAYER_CVIEWPOS;

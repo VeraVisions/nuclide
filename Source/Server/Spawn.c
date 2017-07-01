@@ -210,6 +210,7 @@ void Spawn_MakeSpectator( void ) {
 	self.movetype = MOVETYPE_NOCLIP;
 	self.flags = FL_CLIENT;
 	self.weapon = 0;
+	self.viewzoom = 1.0f;
 
 	self.model = 0;
 	setsize (self, '-16 -16 -16', '16 16 16');

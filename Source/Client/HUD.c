@@ -396,6 +396,13 @@ Called every frame in Draw.c
 void HUD_Draw( void ) {
 	vHUDColor = autocvar_con_color * ( 1 / 255 );
 	
+	// I guess viewzoom turns from 0.0-1.0 float into a 0-255 byte
+	if ( getstatf( STAT_VIEWZOOM ) < 255 ) {
+		HUD_DrawScope();
+	} else {
+		HUD_DrawCrosshair();
+	}
+	
 	HUD_DrawTimer();
 	HUD_DrawRadar();
 	HUD_DrawHealth();
@@ -406,5 +413,4 @@ void HUD_Draw( void ) {
 	HUD_DrawOrbituaries();
 	HUD_DrawProgressBar();
 	HUD_DrawWeaponSelect();
-	HUD_DrawCrosshair();
 }

@@ -175,7 +175,6 @@ enumflags {
 	ENVEXPLO_NOSPARKS
 };
 
-// TODO: Finish cosmetic effects
 void env_explosion( void ) {
 	static void env_explosion_use( void ) {
 		Effect_CreateExplosion( self.origin );
@@ -190,4 +189,68 @@ void env_explosion( void ) {
 	}
 	
 	self.vUse = env_explosion_use;
+}
+
+/*
+=================
+env_spark
+
+Produces an electrical spark effect.
+
+Attributes:
+Name (targetname) - Property used to identify entities.
+Pitch Yaw Roll (angles) - Sets the angles respectively.
+Max Delay (MaxDelay) - Maximum delay between sparks.
+
+Flags:
+Toggle (32)
+Start On (64)
+
+
+Notes:
+According to the fieldname MaxDelay, it is probably going to use
+a random number to create a delay between the individual sparks.
+I have no idea why they didn't just reuse the delay field.
+We may never know.
+=================
+*/
+#define SPARK_TOGGLE 	32
+#define SPARK_ON 		64
+.float MaxDelay;
+void env_spark( void ) {
+	static void env_spark_fire( void ) {
+		Effect_CreateSpark( self.origin, self.angles );
+	}
+	static void env_spark_think( void ) {
+		env_spark_fire();
+		self.nextthink = time + ( random() * self.MaxDelay );
+	}
+	static void env_spark_use( void ) {	
+		if ( self.spawnflags & SPARK_TOGGLE ) {
+			if ( self.think != __NULL__ ) {
+				self.think = __NULL__;
+				self.nextthink = 0;
+			} else {
+				self.think = env_spark_think;
+				self.nextthink = time + ( random() * self.MaxDelay );
+			}
+		} else {
+			env_spark_fire();
+		}
+	}
+	static void env_spark_respawn( void ) {
+		if ( self.MaxDelay <= 0 ) {
+			self.MaxDelay = 1.0f;
+		}
+		
+		if ( self.spawnflags & SPARK_TOGGLE ) {
+			if ( self.spawnflags & SPARK_ON ) {
+				self.think = env_spark_think;
+				self.nextthink = time + ( random() * self.MaxDelay );
+			}
+		}
+	}
+	
+	self.vUse = env_spark_use;
+	Entities_InitRespawnable( env_spark_respawn );
 }
