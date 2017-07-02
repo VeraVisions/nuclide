@@ -95,6 +95,22 @@ void WeaponFLASHBANG_PrimaryFire( void ) {
 #ifdef SSQC
 void WeaponFLASHBANG_Throw( void ) {
 	static void WeaponFLASHBANG_Explode( void ) {
+		vector vNorm;
+		float fDot;
+		
+		for ( entity eFind = world; ( eFind = find( eFind, classname, "player" ) ); ) {
+			traceline( self.origin + '0 0 32', eFind.origin, FALSE, self );
+			if ( trace_fraction == 1 ) {
+				makevectors ( eFind.angles );
+				vNorm = normalize ( self.origin - eFind.origin );
+				fDot = vNorm * v_forward;
+				
+				if ( fDot > 0.3 ) {
+					Effect_CreateFlash( eFind );
+				}
+			}
+		}
+		
 		if ( random() < 0.5 ) {
 			sound( self, CHAN_WEAPON, "weapons/flashbang-1.wav", 1, ATTN_NORM );
 		} else {
@@ -131,6 +147,8 @@ void WeaponFLASHBANG_Throw( void ) {
 	
 	if ( !self.iAmmo_FLASHBANG ) {
 		Weapon_SwitchBest();
+	} else {
+		Weapon_Draw( WEAPON_FLASHBANG );	
 	}
 }
 #endif

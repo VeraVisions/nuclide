@@ -386,6 +386,20 @@ void HUD_DrawRadar( void ) {
 	drawpic( '16 16', "sprites/radar640.spr_0.tga", '128 128', '1 1 1', 0.5, DRAWFLAG_ADDITIVE );
 }
 
+void HUD_DrawFlash( void ) {
+	if ( fFlashTime > 0.0f ) {
+		fFlashTime -= frametime;
+	} else {
+		if ( fFlashAlpha > 0.0f ) {
+			fFlashAlpha -= ( frametime * 0.5 );
+		} else {
+			return;
+		}
+	}
+	
+	drawfill( '0 0', vVideoResolution, '1 1 1', fFlashAlpha, fFlashTime );
+}
+
 /*
 =================
 HUD_Draw
@@ -403,6 +417,7 @@ void HUD_Draw( void ) {
 		HUD_DrawCrosshair();
 	}
 	
+	HUD_DrawFlash();
 	HUD_DrawTimer();
 	HUD_DrawRadar();
 	HUD_DrawHealth();

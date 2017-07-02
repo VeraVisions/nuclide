@@ -490,6 +490,17 @@ void CSQC_Parse_Event( void ) {
 		vSparkAngle_z = readcoord();
 		
 		Effect_CreateSpark( vSparkPos, vSparkAngle );
+	} else if ( fHeader == EV_SMOKE ) {
+		vector vSmokePos;
+		
+		vSmokePos_x = readcoord();
+		vSmokePos_y = readcoord();
+		vSmokePos_z = readcoord();
+
+		Effect_CreateSmoke( vSmokePos );
+	} else if ( fHeader == EV_FLASH ) {
+		fFlashTime = 3.0f;
+		fFlashAlpha = 1.0f;
 	} else if ( fHeader == EV_CHAT ) {
 		float fSender = readbyte();
 		float fTeam = readbyte();

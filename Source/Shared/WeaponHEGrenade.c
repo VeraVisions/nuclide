@@ -128,6 +128,8 @@ void WeaponHEGRENADE_Throw( void ) {
 	
 	if ( !self.iAmmo_HEGRENADE ) {
 		Weapon_SwitchBest();
+	} else {
+		Weapon_Draw( WEAPON_HEGRENADE );
 	}
 }
 #endif

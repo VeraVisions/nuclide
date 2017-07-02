@@ -123,6 +123,7 @@ void Spawn_MakeSpectator( void );
 void Client_SendEvent( entity eClient, float fEVType );
 void Client_TriggerCamera( entity eTarget, vector vPos, vector vEndPos, float fResetTime );
 
+void Weapon_Draw( float fWeapon );
 void Weapon_SwitchBest( void );
 void Weapon_UpdateCurrents( void );
 void Weapon_DropWeapon( int iSlot );
@@ -141,6 +142,10 @@ int BaseMelee_Attack( void );
 float Player_GetMaxSpeed( float fWeapon );
 
 void Effect_Impact( int iType, vector vPos, vector vNormal );
+void Effect_CreateSmoke( vector vPos );
+void Effect_CreateExplosion( vector vPos );
+void Effect_CreateFlash( entity eTarget );
+
 void TraceAttack_FireBullets( int iShots, vector vPos );
 void Damage_Radius( vector vOrigin, entity eAttacker, float fDamage, float fRadius );
 void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos );
@@ -158,9 +163,6 @@ void Animation_PlayerTop( float fFrame );
 void Animation_PlayerTopTemp( float fFrame, float fTime );
 void Footsteps_Update( void );
 
-void Effect_CreateExplosion( vector vPos );
-
-// WIP
 string __fullspawndata;
 hashtable hashMaterials;
 

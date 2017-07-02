@@ -86,7 +86,7 @@ weaponfunc_t wpnFuncTable[ CS_WEAPON_COUNT ] = {
 	{ WeaponC4BOMB_Draw, WeaponC4BOMB_PrimaryFire, Temp_Nothing, Temp_Nothing },
 	{ WeaponFLASHBANG_Draw, WeaponFLASHBANG_PrimaryFire, Temp_Nothing, Temp_Nothing },
 	{ WeaponHEGRENADE_Draw, WeaponHEGRENADE_PrimaryFire, Temp_Nothing, Temp_Nothing },
-	{ WeaponFLASHBANG_Draw, WeaponFLASHBANG_PrimaryFire, Temp_Nothing, Temp_Nothing }
+	{ WeaponSMOKEGRENADE_Draw, WeaponSMOKEGRENADE_PrimaryFire, Temp_Nothing, Temp_Nothing }
 };
 
 /*

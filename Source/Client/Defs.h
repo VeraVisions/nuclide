@@ -40,15 +40,19 @@ var float autocvar_cl_bob = 0.01;
 var float autocvar_cl_bobcycle = 0.8;
 var float autocvar_cl_bobup = 0.5;
 var float autocvar_cl_bobclassic = 0;
+var float autocvar_v_lefthanded = 0;
 
 // Particle stuff
 var float PARTICLE_SPARK;
 var float PARTICLE_PIECES_BLACK;
 var float PARTICLE_SMOKE_GREY;
 var float PARTICLE_SMOKE_BROWN;
+var float PARTICLE_SMOKEGRENADE;
 var float PARTICLE_BLOOD;
 var float DECAL_SHOT;
 var float DECAL_GLASS;
+
+var float SHADER_CULLED;
 
 vector vHUDColor; // Defined in HUD_Draw (HUD.c)
 vector vVGUIColor; // Defined in HUD_Draw (VGUI.c)
@@ -100,6 +104,10 @@ vector pmove_vel;
 float fWeaponEventPlayer;
 .float fWeaponLast;
 .float fWeaponBoneID;
+
+// Flashbang'd
+var float fFlashTime;
+var float fFlashAlpha;
 
 void Animation_ShootWeapon( entity ePlayer );
 void Animation_ReloadWeapon( entity ePlayer );

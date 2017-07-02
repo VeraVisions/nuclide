@@ -38,18 +38,21 @@ void CSEv_PlayerBuyEquipment_f( float fID ) {
 		if ( eqptTable[ fID ].iID == WEAPON_HEGRENADE ) {
 			if ( self.iAmmo_HEGRENADE < 2 ) {
 				self.iAmmo_HEGRENADE++;
+				Money_AddMoney( self, -300 );
 			} else {
 				centerprint( self, "You can't carry any more!" );
 			}
 		} else if ( eqptTable[ fID ].iID == WEAPON_FLASHBANG ) {
 			if ( self.iAmmo_FLASHBANG < 2 ) {
 				self.iAmmo_FLASHBANG++;
+				Money_AddMoney( self, -300 );
 			} else {
 				centerprint( self, "You can't carry any more!" );
 			}
 		} else if ( eqptTable[ fID ].iID == WEAPON_SMOKEGRENADE ) {
 			if ( self.iAmmo_SMOKEGRENADE < 2 ) {
 				self.iAmmo_SMOKEGRENADE++;
+				Money_AddMoney( self, -300 );
 			} else {
 				centerprint( self, "You can't carry any more!" );
 			}
@@ -95,9 +98,6 @@ void CSEv_PlayerBuyEquipment_f( float fID ) {
 			self.fAttackFinished = time + 1.0;
 			return;
 		} 
-		
-		Money_AddMoney( self, -eqptTable[ fID ].iPrice );
-		self.iEquipment = self.iEquipment | ( eqptTable[ fID ].iID );
 	} else {
 		centerprint( self, "You have insufficient funds!" );
 	}

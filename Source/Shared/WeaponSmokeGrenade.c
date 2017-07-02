@@ -94,8 +94,17 @@ void WeaponSMOKEGRENADE_PrimaryFire( void ) {
 
 #ifdef SSQC
 void WeaponSMOKEGRENADE_Throw( void ) {
-	static void WeaponSMOKEGRENADE_Explode( void ) {
+	static void WeaponSMOKEGRENADE_Die( void ) {
 		remove( self );
+	}
+	static void WeaponSMOKEGRENADE_Explode( void ) {
+		Effect_CreateSmoke( self.origin );
+		
+		self.solid = SOLID_NOT;
+		self.movetype = MOVETYPE_NONE;
+		
+		self.think = WeaponSMOKEGRENADE_Die;
+		self.nextthink = time + 5.0f;
 	}
 	static void Weapon_SMOKEGRENADE_Touch( void ) {
 		if ( other.classname == "func_breakable" ) {
@@ -118,7 +127,6 @@ void WeaponSMOKEGRENADE_Throw( void ) {
 	eNade.avelocity = ( v_forward * 600 );
 	eNade.movetype = MOVETYPE_BOUNCE;
 	eNade.touch = Weapon_SMOKEGRENADE_Touch;
-	
 	eNade.think = WeaponSMOKEGRENADE_Explode;
 	eNade.nextthink = time + 3.0f;
 	
@@ -126,6 +134,8 @@ void WeaponSMOKEGRENADE_Throw( void ) {
 	
 	if ( !self.iAmmo_SMOKEGRENADE ) {
 		Weapon_SwitchBest();
+	} else {
+		Weapon_Draw( WEAPON_SMOKEGRENADE );	
 	}
 }
 #endif

@@ -328,7 +328,7 @@ void HUD_DrawWeaponSelect( void ) {
 		return;
 	}
 	
-	vector vSelectPos = '138 12 0';
+	vector vSelectPos = '160 12 0';
 	
 	for ( int i = 0; i < 4; i++ ) {
 		HUD_DrawWeaponSelect_Num( vSelectPos, i );
@@ -336,43 +336,36 @@ void HUD_DrawWeaponSelect( void ) {
 		// Again, grenades are treated seperately
 		if ( i == SLOT_GRENADE ) {
 			if ( wptTable[ fHUDWeaponSelected ].iSlot == SLOT_GRENADE ) {
-				vSelectPos_y -= 45;
 				if ( getstati_punf( STAT_ITEM_HEGRENADE ) ) {
-					vSelectPos_y += 45;
 					drawsubpic( vSelectPos + '0 20', '170 45', wpSymbolTable[ WEAPON_HEGRENADE ].sSprite, wpSymbolTable[ WEAPON_HEGRENADE ].vOrigin, [ 0.6640625, 0.17578125 ], vHUDColor, 1, DRAWFLAG_ADDITIVE );
+					if ( iHUDGrenadesSelected == WEAPON_HEGRENADE ) {
+						drawsubpic( vSelectPos + '0 20', '170 45', "sprites/640hud3.spr_0.tga", '0 0.703125', [ 0.6640625, 0.17578125 ], vHUDColor, 1, DRAWFLAG_ADDITIVE );
+					}
+					vSelectPos_y += 45;
 				}
-				if ( iHUDGrenadesSelected == WEAPON_HEGRENADE ) {
-					drawsubpic( vSelectPos + '0 20', '170 45', "sprites/640hud3.spr_0.tga", '0 0.703125', [ 0.6640625, 0.17578125 ], vHUDColor, 1, DRAWFLAG_ADDITIVE );
-				}
-				
 				if ( getstati_punf( STAT_ITEM_FLASHBANG ) ) {
-					vSelectPos_y += 45;
 					drawsubpic( vSelectPos + '0 20', '170 45', wpSymbolTable[ WEAPON_FLASHBANG ].sSprite, wpSymbolTable[ WEAPON_FLASHBANG ].vOrigin, [ 0.6640625, 0.17578125 ], vHUDColor, 1, DRAWFLAG_ADDITIVE );
+					if ( iHUDGrenadesSelected == WEAPON_FLASHBANG ) {
+						drawsubpic( vSelectPos + '0 20', '170 45', "sprites/640hud3.spr_0.tga", '0 0.703125', [ 0.6640625, 0.17578125 ], vHUDColor, 1, DRAWFLAG_ADDITIVE );
+					}
+					vSelectPos_y += 45;
 				}
-				if ( iHUDGrenadesSelected == WEAPON_FLASHBANG ) {
-					drawsubpic( vSelectPos + '0 20', '170 45', "sprites/640hud3.spr_0.tga", '0 0.703125', [ 0.6640625, 0.17578125 ], vHUDColor, 1, DRAWFLAG_ADDITIVE );
-				}
-				
-	
 				if ( getstati_punf( STAT_ITEM_SMOKEGRENADE ) ) {
-					vSelectPos_y += 45;
 					drawsubpic( vSelectPos + '0 20', '170 45', wpSymbolTable[ WEAPON_SMOKEGRENADE ].sSprite, wpSymbolTable[ WEAPON_SMOKEGRENADE ].vOrigin, [ 0.6640625, 0.17578125 ], vHUDColor, 1, DRAWFLAG_ADDITIVE );
-					
-				}
-				if ( iHUDGrenadesSelected == WEAPON_SMOKEGRENADE ) {
-					drawsubpic( vSelectPos + '0 20', '170 45', "sprites/640hud3.spr_0.tga", '0 0.703125', [ 0.6640625, 0.17578125 ], vHUDColor, 1, DRAWFLAG_ADDITIVE );
-				}
-				
-				if ( getstatf( STAT_SLOT_GRENADE ) ) {
+					if ( iHUDGrenadesSelected == WEAPON_SMOKEGRENADE ) {
+						drawsubpic( vSelectPos + '0 20', '170 45', "sprites/640hud3.spr_0.tga", '0 0.703125', [ 0.6640625, 0.17578125 ], vHUDColor, 1, DRAWFLAG_ADDITIVE );
+					}
 					vSelectPos_y += 45;
-					drawsubpic( vSelectPos + '0 20', '170 45', wpSymbolTable[ getstatf( STAT_SLOT_GRENADE ) ].sSprite, wpSymbolTable[ getstatf( STAT_SLOT_GRENADE ) ].vOrigin, [ 0.6640625, 0.17578125 ], vHUDColor, 1, DRAWFLAG_ADDITIVE );
 				}
-				if ( iHUDGrenadesSelected == getstatf( STAT_SLOT_GRENADE ) ) {
-					drawsubpic( vSelectPos + '0 20', '170 45', "sprites/640hud3.spr_0.tga", '0 0.703125', [ 0.6640625, 0.17578125 ], vHUDColor, 1, DRAWFLAG_ADDITIVE );
+				if ( getstatf( STAT_SLOT_GRENADE ) ) {
+					drawsubpic( vSelectPos + '0 20', '170 45', wpSymbolTable[ getstatf( STAT_SLOT_GRENADE ) ].sSprite, wpSymbolTable[ getstatf( STAT_SLOT_GRENADE ) ].vOrigin, [ 0.6640625, 0.17578125 ], vHUDColor, 1, DRAWFLAG_ADDITIVE );
+					if ( iHUDGrenadesSelected == getstatf( STAT_SLOT_GRENADE ) ) {
+						drawsubpic( vSelectPos + '0 20', '170 45', "sprites/640hud3.spr_0.tga", '0 0.703125', [ 0.6640625, 0.17578125 ], vHUDColor, 1, DRAWFLAG_ADDITIVE );
+					}
+					vSelectPos_y += 45;
 				}
 			}
 		} else {
-			
 			if ( wptTable[ fHUDWeaponSelected ].iSlot == i ) {
 				drawsubpic( vSelectPos + '0 20', '170 45', wpSymbolTable[ fHUDWeaponSelected ].sSprite, wpSymbolTable[ fHUDWeaponSelected ].vOrigin, [ 0.6640625, 0.17578125 ], vHUDColor, 1, DRAWFLAG_ADDITIVE );
 				drawsubpic( vSelectPos + '0 20', '170 45', "sprites/640hud3.spr_0.tga", '0 0.703125', [ 0.6640625, 0.17578125 ], vHUDColor, 1, DRAWFLAG_ADDITIVE );

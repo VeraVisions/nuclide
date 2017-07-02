@@ -162,7 +162,19 @@ void View_DrawViewModel( void ) {
 	makevectors( getproperty( VF_ANGLES ) );
 	eViewModel.origin = getproperty( VF_ORIGIN ) + '0 0 -1' + ( v_forward * ( fBob * 0.4 ) );
 	eViewModel.angles = getproperty( VF_ANGLES );
-		
+	
+	// Left-handed weapons
+	if ( autocvar_v_lefthanded ) {
+		v_right *= -1;
+		eViewModel.renderflags |= RF_USEAXIS;
+		eViewModel.forceshader = SHADER_CULLED;
+	} else {
+		if ( eViewModel.forceshader ) {
+			eViewModel.forceshader = 0;
+			eViewModel.renderflags -= RF_USEAXIS;
+		}
+	}
+	
 	// Give the gun a tilt effect like in old HL/CS versions
 	if ( autocvar_cl_bobclassic == 1 ) {
 		eViewModel.angles_z = -fBob;

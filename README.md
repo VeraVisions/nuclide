@@ -30,8 +30,7 @@ All the weapons are implemented, so are the gamemodes:
 - **Assassination** (as)
 - **Escape** (es)
 
-Not all equipment is implemented and no map radar/overview is recreated.
-Basically, the game is playable as long as you don't care about grenades (for now).
+The game is playable as long as you don't care about the radar/overview display.
 
 # Installing
 1. Get the latest version of FTEQW from the [website](http://triptohell.info/moodles/).

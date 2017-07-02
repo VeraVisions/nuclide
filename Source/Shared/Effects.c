@@ -56,7 +56,6 @@ void Effect_CreateExplosion( vector vPos ) {
 
 void Effect_CreateSpark( vector vPos, vector vAngle ) {
 #ifdef SSQC
-	vPos_z += 48;
 	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
 	WriteByte( MSG_MULTICAST, EV_SPARK );
 	WriteCoord( MSG_MULTICAST, vPos_x ); 
@@ -70,6 +69,44 @@ void Effect_CreateSpark( vector vPos, vector vAngle ) {
 #else
 	pointparticles( PARTICLE_SPARK, vPos, vAngle, 1 );
 	pointsound( vPos, sprintf( "buttons/spark%d.wav", floor( random() * 6 ) + 1 ), 1, ATTN_STATIC );
+#endif
+}
+
+#ifdef SSQC
+void Effect_CreateFlash( entity eTarget ) {
+	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
+	WriteByte( MSG_MULTICAST, EV_FLASH );
+	msg_entity = eTarget;
+	multicast( '0 0 0', MULTICAST_ONE );
+}
+#endif
+
+void Effect_CreateSmoke( vector vPos ) {
+#ifdef SSQC
+	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
+	WriteByte( MSG_MULTICAST, EV_SMOKE );
+	WriteCoord( MSG_MULTICAST, vPos_x ); 
+	WriteCoord( MSG_MULTICAST, vPos_y ); 
+	WriteCoord( MSG_MULTICAST, vPos_z );
+	msg_entity = self;
+	multicast( '0 0 0', MULTICAST_ALL );
+#else
+	static void Effect_CreateSmoke_Think( void ) {
+		if ( self.frame <= 0 ) {
+			remove( self );
+			return;
+		} 
+	
+		pointparticles( PARTICLE_SMOKEGRENADE, self.origin, '0 0 0', 1 );
+		self.frame--;
+		self.nextthink = time + 0.2f;
+	}
+	
+	entity eSmoke = spawn();
+	setorigin( eSmoke, vPos );
+	eSmoke.think = Effect_CreateSmoke_Think;
+	eSmoke.nextthink = time;
+	eSmoke.frame = 200;
 #endif
 }
 

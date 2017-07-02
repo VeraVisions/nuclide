@@ -80,8 +80,11 @@ void CSQC_Init(float apilevel, string enginename, float engineversion) {
 	PARTICLE_BLOOD 			= particleeffectnum( "part_blood" );
 	DECAL_SHOT 				= particleeffectnum( "decal_shot" );
 	DECAL_GLASS 			= particleeffectnum( "decal_glass" );
+	PARTICLE_SMOKEGRENADE	= particleeffectnum( "smokegren" );
 	
 	FONT_16 = loadfont( "16", "gfx/conchars_16", "16", -1 );
+	
+	SHADER_CULLED = shaderforname( "mirror_cull" );
 
 	Radio_InitSounds();
 	
