@@ -72,7 +72,7 @@ enum {
 
 void WeaponGLOCK18_Draw( void ) {
 #ifdef SSQC
-	OpenCSGunBase_Draw();
+	BaseGun_Draw();
 #else
 	if ( random() <= 0.5 ) {
 		View_PlayAnimation( ANIM_GLOCK_DRAW1 );
@@ -85,14 +85,14 @@ void WeaponGLOCK18_Draw( void ) {
 void WeaponGLOCK18_PrimaryFire( void ) {
 #ifdef SSQC
 	if ( self.iMode_GLOCK18 == FALSE ) {
-		if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
+		if ( BaseGun_PrimaryFire() == TRUE ) {
 			sound( self, CHAN_WEAPON, "weapons/glock18-2.wav", 1, ATTN_NORM );
 		}
 	} else {
 		if ( (self.iMag_GLOCK18 - 3 ) < 0 ) {
 			return FALSE;
 		}
-		OpenCSGunBase_AccuracyCalc();
+		BaseGun_AccuracyCalc();
 		TraceAttack_FireBullets( 3, ( self.origin + self.view_ofs ) );
 		
 		self.iMag_GLOCK18 -= 3;
@@ -100,7 +100,7 @@ void WeaponGLOCK18_PrimaryFire( void ) {
 		
 		sound( self, CHAN_WEAPON, "weapons/glock18-1.wav", 1, ATTN_NORM );
 		Client_SendEvent( self, EV_WEAPON_PRIMARYATTACK );
-		OpenCSGunBase_ShotMultiplierHandle( 3 );
+		BaseGun_ShotMultiplierHandle( 3 );
 	}
 #else
 	if ( iWeaponMode_GLOCK18 == FALSE ) {
@@ -109,14 +109,14 @@ void WeaponGLOCK18_PrimaryFire( void ) {
 		} else {
 			View_PlayAnimation( ANIM_GLOCK_SHOOT );
 		}
-		OpenCSGunBase_ShotMultiplierHandle( 1 );
+		BaseGun_ShotMultiplierHandle( 1 );
 	} else {
 		if ( random() <= 0.5 ) {
 			View_PlayAnimation( ANIM_GLOCK_SHOOT_BURST1 );
 		} else {
 			View_PlayAnimation( ANIM_GLOCK_SHOOT_BURST2 );
 		}
-		OpenCSGunBase_ShotMultiplierHandle( 3 );
+		BaseGun_ShotMultiplierHandle( 3 );
 	}
 #endif
 }
@@ -143,7 +143,7 @@ void WeaponGLOCK18_Secondary( void ) {
 
 void WeaponGLOCK18_Reload( void ) {
 #ifdef SSQC
-	if ( OpenCSGunBase_Reload() == TRUE ) {
+	if ( BaseGun_Reload() == TRUE ) {
 		// Play Sound
 	}
 #else

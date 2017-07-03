@@ -58,7 +58,7 @@ enum {
 
 void WeaponPARA_Draw( void ) {
 #ifdef SSQC
-	OpenCSGunBase_Draw();
+	BaseGun_Draw();
 #else
 	View_PlayAnimation( ANIM_PARA_DRAW );
 #endif
@@ -66,7 +66,7 @@ void WeaponPARA_Draw( void ) {
 
 void WeaponPARA_PrimaryFire( void ) {
 #ifdef SSQC
-	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
+	if ( BaseGun_PrimaryFire() == TRUE ) {
 		if ( random() <= 0.5 ) {
 			sound( self, CHAN_WEAPON, "weapons/m249-1.wav", 1, ATTN_NORM );
 		} else {
@@ -79,13 +79,13 @@ void WeaponPARA_PrimaryFire( void ) {
 	} else {
 		View_PlayAnimation( ANIM_PARA_SHOOT2 );
 	}
-	OpenCSGunBase_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle( 1 );
 #endif
 }
 
 void WeaponPARA_Reload( void ) {
 #ifdef SSQC
-	if ( OpenCSGunBase_Reload() == TRUE ) {
+	if ( BaseGun_Reload() == TRUE ) {
 		// Play Sound
 	}
 #else

@@ -207,7 +207,9 @@ void FuncDoor_Touch( void ) {
 	}
 	
 	if ( other.movetype == MOVETYPE_WALK ) {
-		FuncDoor_Trigger();
+		if ( other.absmin_z <= self.maxs_z - 2 ) {
+			FuncDoor_Trigger();
+		}
 	}
 }
 

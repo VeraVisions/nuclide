@@ -59,7 +59,7 @@ enum {
 
 void WeaponDEAGLE_Draw( void ) {
 	#ifdef SSQC
-	OpenCSGunBase_Draw();
+	BaseGun_Draw();
 	#else
 	View_PlayAnimation( ANIM_DEAGLE_DRAW );
 	#endif
@@ -67,7 +67,7 @@ void WeaponDEAGLE_Draw( void ) {
 
 void WeaponDEAGLE_PrimaryFire( void ) {
 	#ifdef SSQC
-	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
+	if ( BaseGun_PrimaryFire() == TRUE ) {
 		if ( random() <= 0.5 ) {
 			sound( self, CHAN_WEAPON, "weapons/deagle-1.wav", 1, ATTN_NORM );
 		} else {
@@ -85,13 +85,13 @@ void WeaponDEAGLE_PrimaryFire( void ) {
 		}
 	}
 	
-	OpenCSGunBase_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle( 1 );
 	#endif
 }
 
 void WeaponDEAGLE_Reload( void ) {
 	#ifdef SSQC
-	if ( OpenCSGunBase_Reload() == TRUE ) {
+	if ( BaseGun_Reload() == TRUE ) {
 
 	}
 	#else

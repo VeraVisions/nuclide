@@ -59,7 +59,7 @@ enum {
 
 void WeaponFIVESEVEN_Draw( void ) {
 #ifdef SSQC
-	OpenCSGunBase_Draw();
+	BaseGun_Draw();
 #else
 	View_PlayAnimation( ANIM_FIVESEVEN_DRAW );
 #endif
@@ -67,7 +67,7 @@ void WeaponFIVESEVEN_Draw( void ) {
 
 void WeaponFIVESEVEN_PrimaryFire( void ) {
 #ifdef SSQC
-	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
+	if ( BaseGun_PrimaryFire() == TRUE ) {
 		// Play Sound
 		sound( self, CHAN_WEAPON, "weapons/fiveseven-1.wav", 1, ATTN_NORM );
 	}
@@ -81,13 +81,13 @@ void WeaponFIVESEVEN_PrimaryFire( void ) {
 			View_PlayAnimation( ANIM_FIVESEVEN_SHOOT2 );
 		}
 	}
-	OpenCSGunBase_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle( 1 );
 #endif
 }
 
 void WeaponFIVESEVEN_Reload( void ) {
 #ifdef SSQC
-	if ( OpenCSGunBase_Reload() == TRUE ) {
+	if ( BaseGun_Reload() == TRUE ) {
 	}
 #else
 	View_PlayAnimation( ANIM_FIVESEVEN_RELOAD );

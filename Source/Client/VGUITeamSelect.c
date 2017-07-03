@@ -86,6 +86,11 @@ string sClassInfo[64] = {
 	_("VGUI_CT4_TXT6")
 };
 
+/*
+====================
+VGUI_TeamSelect_Main
+====================
+*/
 void VGUI_TeamSelect_Main( vector vPos ) {
 	static void TeamSelect_Main_ButtonT( void ) {
 		fVGUI_Display = VGUI_TEAM_T;
@@ -136,10 +141,20 @@ void VGUI_TeamSelect_Main( vector vPos ) {
 	VGUI_Button( _("VGUI_EXIT"), TeamSelect_Main_Exit, vPos + '16 440 0', '120 24 0' );
 }
 
+/*
+====================
+VGUI_TeamSelect_Back
+====================
+*/
 void VGUI_TeamSelect_Back( void ) {
 	fVGUI_Display = VGUI_TEAMSELECT;
 }
 
+/*
+====================
+VGUI_TeamSelect_Button
+====================
+*/
 void VGUI_TeamSelect_Button( float fNumber, void() vFunc, vector vPos, vector vSize ) {
 	if( VGUI_Button( sClassInfo[ 8 * fNumber ] , vFunc, vPos, vSize ) == TRUE ) {
 		drawpic( vVGUIWindowPos + '356 64', sClassInfo[ 8 * fNumber + 1 ], '128 256', '1 1 1', 1 );
@@ -153,6 +168,11 @@ void VGUI_TeamSelect_Button( float fNumber, void() vFunc, vector vPos, vector vS
 	}
 }
 
+/*
+====================
+VGUI_TeamSelect_T
+====================
+*/
 void VGUI_TeamSelect_T( vector vPos ) {
 	static void TeamSelect_T1( void ) {
 		sendevent( "GamePlayerSpawn", "f", 1 );
@@ -178,6 +198,11 @@ void VGUI_TeamSelect_T( vector vPos ) {
 	VGUI_Button( _("VGUI_BACK"), VGUI_TeamSelect_Back, vPos + '16 440 0', '120 24 0' );
 }
 
+/*
+====================
+VGUI_TeamSelect_CT
+====================
+*/
 void VGUI_TeamSelect_CT ( vector vPos ) {
 	static void TeamSelect_CT1( void ) {
 		sendevent( "GamePlayerSpawn", "f", 5 );

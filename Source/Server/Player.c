@@ -18,6 +18,19 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+string sPainSounds[5] = {
+	"player/pl_pain2.wav",
+	"player/pl_pain4.wav",
+	"player/pl_pain5.wav",
+	"player/pl_pain6.wav",
+	"player/pl_pain7.wav"
+};
+
+/*
+=================
+Player_SendEntity
+=================
+*/
 float Player_SendEntity( entity ePEnt, float fChanged ) {
 	if ( self.health <= 0 && ePEnt != self ) {
 		return FALSE;
@@ -38,14 +51,6 @@ float Player_SendEntity( entity ePEnt, float fChanged ) {
 	WriteByte( MSG_ENTITY, self.weapon );
 	return TRUE;
 }
-
-string sPainSounds[5] = {
-	"player/pl_pain2.wav",
-	"player/pl_pain4.wav",
-	"player/pl_pain5.wav",
-	"player/pl_pain6.wav",
-	"player/pl_pain7.wav"
-};
 
 /*
 =================
@@ -293,7 +298,7 @@ Run before physics
 */
 void PlayerPreThink( void ) { 
 	Input_Handle();
-	OpenCSGunBase_ShotMultiplierUpdate();
+	BaseGun_ShotMultiplierUpdate();
 	
 	if ( !( self.flags & FL_ONGROUND ) ){
 		self.fFallVelocity = -self.velocity_z;

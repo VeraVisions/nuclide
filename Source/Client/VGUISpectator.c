@@ -20,6 +20,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "VGUI.h"
 
+/*
+====================
+VGUI_DrawSpectatorHUD
+====================
+*/
 void VGUI_DrawSpectatorHUD( void ) {
 	vHUDColor = autocvar_con_color * ( 1 / 255 );
 	

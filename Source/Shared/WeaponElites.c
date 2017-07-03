@@ -75,7 +75,7 @@ enum {
 
 void WeaponELITES_Draw( void ) {
 #ifdef SSQC
-	OpenCSGunBase_Draw();
+	BaseGun_Draw();
 	sound( self, CHAN_WEAPON, "weapons/elite_deploy.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
 #else
 	View_PlayAnimation( ANIM_ELITES_DRAW );
@@ -84,7 +84,7 @@ void WeaponELITES_Draw( void ) {
 
 void WeaponELITES_PrimaryFire( void ) {
 #ifdef SSQC
-	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
+	if ( BaseGun_PrimaryFire() == TRUE ) {
 		// Play Sound
 		sound( self, CHAN_WEAPON, "weapons/elite_fire.wav", 1, ATTN_NORM );
 	}
@@ -124,14 +124,14 @@ void WeaponELITES_PrimaryFire( void ) {
 		}
 	}
 	
-	OpenCSGunBase_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle( 1 );
 	iWeaponMode_ELITES = 1 - iWeaponMode_ELITES;
 #endif
 }
 
 void WeaponELITES_Reload( void ) {
 #ifdef SSQC
-	if ( OpenCSGunBase_Reload() == TRUE ) {
+	if ( BaseGun_Reload() == TRUE ) {
 		// Play Sound
 	}
 #else

@@ -37,7 +37,7 @@ Defs.h
 ../Shared/WeaponUMP45.c
 ../Shared/WeaponUSP45.c
 ../Shared/WeaponXM1014.c
-../Shared/WeaponBase.c
+../Shared/BaseGun.c
 ../Shared/Weapons.c
 ../Shared/Effects.c
 ../Shared/Radio.c

@@ -72,7 +72,7 @@ enum {
 
 void WeaponM4A1_Draw( void ) {
 #ifdef SSQC
-	OpenCSGunBase_Draw();
+	BaseGun_Draw();
 #else
 	if ( iWeaponMode_M4A1 == TRUE ) {
 		View_PlayAnimation( ANIM_M4A1_SILENCER_DRAW );
@@ -84,7 +84,7 @@ void WeaponM4A1_Draw( void ) {
 
 void WeaponM4A1_PrimaryFire( void ) {
 #ifdef SSQC
-	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
+	if ( BaseGun_PrimaryFire() == TRUE ) {
 		if ( self.iMode_M4A1 == TRUE ) {
 			sound( self, CHAN_WEAPON, "weapons/m4a1-1.wav", 1, ATTN_NORM );
 		} else {
@@ -117,7 +117,7 @@ void WeaponM4A1_PrimaryFire( void ) {
 			View_PlayAnimation( ANIM_M4A1_SHOOT3 );
 		}
 	}
-	OpenCSGunBase_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle( 1 );
 #endif
 }
 
@@ -142,7 +142,7 @@ void WeaponM4A1_Secondary( void ) {
 
 void WeaponM4A1_Reload( void ) {
 #ifdef SSQC
-	if ( OpenCSGunBase_Reload() == TRUE ) {
+	if ( BaseGun_Reload() == TRUE ) {
 		// Play Sound
 	}
 #else

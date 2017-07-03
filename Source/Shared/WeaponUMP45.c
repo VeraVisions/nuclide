@@ -59,7 +59,7 @@ enum {
 
 void WeaponUMP45_Draw( void ) {
 #ifdef SSQC
-	OpenCSGunBase_Draw();
+	BaseGun_Draw();
 	//sound( self, CHAN_WEAPON, "weapons/ump45_boltslap.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
 #else
 	View_PlayAnimation( ANIM_UMP45_DRAW );
@@ -68,7 +68,7 @@ void WeaponUMP45_Draw( void ) {
 
 void WeaponUMP45_PrimaryFire( void ) {
 #ifdef SSQC
-	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
+	if ( BaseGun_PrimaryFire() == TRUE ) {
 		sound( self, CHAN_WEAPON, "weapons/ump45-1.wav", 1, ATTN_NORM );
 	}
 #else
@@ -82,13 +82,13 @@ void WeaponUMP45_PrimaryFire( void ) {
 		View_PlayAnimation( ANIM_UMP45_SHOOT3 );
 	}
 	
-	OpenCSGunBase_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle( 1 );
 #endif
 }
 
 void WeaponUMP45_Reload( void ) {
 	#ifdef SSQC
-	if ( OpenCSGunBase_Reload() == TRUE ) {
+	if ( BaseGun_Reload() == TRUE ) {
 		// Play Sound
 	}
 	#else

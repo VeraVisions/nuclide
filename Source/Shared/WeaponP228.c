@@ -59,7 +59,7 @@ enum {
 
 void WeaponP228_Draw( void ) {
 #ifdef SSQC
-	OpenCSGunBase_Draw();
+	BaseGun_Draw();
 #else
 	View_PlayAnimation( ANIM_P228_DRAW );
 #endif
@@ -67,7 +67,7 @@ void WeaponP228_Draw( void ) {
 
 void WeaponP228_PrimaryFire( void ) {
 #ifdef SSQC
-	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
+	if ( BaseGun_PrimaryFire() == TRUE ) {
 		// Play Sound
 		sound( self, CHAN_WEAPON, "weapons/p228-1.wav", 1, ATTN_NORM );
 	}
@@ -86,13 +86,13 @@ void WeaponP228_PrimaryFire( void ) {
 			View_PlayAnimation( ANIM_P228_SHOOT3 );
 		}
 	}
-	OpenCSGunBase_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle( 1 );
 #endif
 }
 
 void WeaponP228_Reload( void ) {
 #ifdef SSQC
-	if ( OpenCSGunBase_Reload() == TRUE ) {
+	if ( BaseGun_Reload() == TRUE ) {
 	}
 #else
 	View_PlayAnimation( ANIM_P228_RELOAD );

@@ -56,6 +56,13 @@ float fRadioResponses[ VGUIRADIO_RESPONSES ] = {
 	RADIO_ENEMYDOWN
 };
 
+/*
+====================
+VGUI_Radio_DrawCommand
+
+Prints and acts as an input check for a single command
+====================
+*/
 void VGUI_Radio_DrawCommand( float fIndex, float fMessage, vector vPos ) {
 	VGUI_Text( sprintf( "%d) %s", fIndex + 1, sRadioChat[ fMessage ] ), vPos, '8 8', FONT_DEFAULT );
 	
@@ -65,6 +72,13 @@ void VGUI_Radio_DrawCommand( float fIndex, float fMessage, vector vPos ) {
 	}
 }
 
+/*
+====================
+VGUI_Radio_Draw
+
+Main drawing routine for the radio menus
+====================
+*/
 void VGUI_Radio_Draw( void ) {
 	vector vSize, vPos;
 	
@@ -117,6 +131,11 @@ void VGUI_Radio_Draw( void ) {
 	}
 }
 
+/*
+====================
+VGUI_Radio_Toggle
+====================
+*/
 void VGUI_Radio_Toggle( float fMenu ) {
 	if ( getstatf( STAT_HEALTH ) <= 0 ) {
 		return;

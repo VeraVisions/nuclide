@@ -74,7 +74,7 @@ enum {
 
 void WeaponUSP45_Draw( void ) {
 #ifdef SSQC
-	OpenCSGunBase_Draw();
+	BaseGun_Draw();
 #else
 	if ( iWeaponMode_USP45 == TRUE ) {
 		View_PlayAnimation( ANIM_USP45_SILENCER_DRAW );
@@ -86,7 +86,7 @@ void WeaponUSP45_Draw( void ) {
 
 void WeaponUSP45_PrimaryFire( void ) {
 #ifdef SSQC
-	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
+	if ( BaseGun_PrimaryFire() == TRUE ) {
 		if ( self.iMode_USP45 == TRUE ) {
 			if ( random() <= 0.5 ) {
 				sound( self, CHAN_WEAPON, "weapons/usp1.wav", 1, ATTN_NORM );
@@ -128,7 +128,7 @@ void WeaponUSP45_PrimaryFire( void ) {
 		}
 	}
 	
-	OpenCSGunBase_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle( 1 );
 #endif
 }
 
@@ -153,7 +153,7 @@ void WeaponUSP45_Secondary( void ) {
 
 void WeaponUSP45_Reload( void ) {
 #ifdef SSQC
-	if ( OpenCSGunBase_Reload() == TRUE ) {
+	if ( BaseGun_Reload() == TRUE ) {
 
 	}
 #else

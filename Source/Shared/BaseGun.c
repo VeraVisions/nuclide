@@ -57,7 +57,12 @@ weaponinfo_t wptTable[ CS_WEAPON_COUNT ] = {
 int iShotMultiplier;
 #endif
 
-void OpenCSGunBase_ShotMultiplierHandle( float fShots ) {
+/*
+====================
+BaseGun_ShotMultiplierHandle
+====================
+*/
+void BaseGun_ShotMultiplierHandle( float fShots ) {
 #ifdef SSQC
 	if ( self.iShotMultiplier > 12 ) {
 		self.iShotMultiplier = 12;
@@ -75,23 +80,37 @@ void OpenCSGunBase_ShotMultiplierHandle( float fShots ) {
 }
 
 #ifdef SSQC
+/*
+====================
+BaseGun_ShotMultiplierUpdate
 
-// This is being triggered in PlayerPreThink after the input
-void OpenCSGunBase_ShotMultiplierUpdate( void ) {
+This is being triggered in PlayerPreThink after the input
+====================
+*/
+void BaseGun_ShotMultiplierUpdate( void ) {
 	if ( ( self.iShotMultiplier > 0 ) && ( self.fDecreaseShotTime < time ) ) {
 		self.fDecreaseShotTime = time + wptTable[ self.weapon ].fAttackFinished + 0.01;
 		self.iShotMultiplier--;
 	}	
 }
 
-void OpenCSGunBase_Draw( void ) {
+/*
+====================
+BaseGun_Draw
+====================
+*/
+void BaseGun_Draw( void ) {
 	self.iCurrentMag = self.(wptTable[ self.weapon ].iMagfld);
 	self.iCurrentCaliber = self.(wptTable[ self.weapon ].iCaliberfld);
 	Client_SendEvent( self, EV_WEAPON_DRAW );
 }
 
-void OpenCSGunBase_AccuracyCalc( void ) {
-	
+/*
+====================
+BaseGun_AccuracyCalc
+====================
+*/
+void BaseGun_AccuracyCalc( void ) {
 	if ( wptTable[ self.weapon ].fAccuracyDivisor == -1 ) {
 		if ( self.viewzoom < 1.0f ) {
 			self.fAccuracy = 0.0f;
@@ -103,19 +122,26 @@ void OpenCSGunBase_AccuracyCalc( void ) {
 	}
 }
 
-// Returns whether or not to play an animation
-float OpenCSGunBase_PrimaryFire( void ) {
+/*
+====================
+BaseGun_PrimaryFire
+
+Returns whether or not to play an animation
+====================
+*/
+float BaseGun_PrimaryFire( void ) {
 	// Nothing in the clip anymore? Don't even attempt
 	if ( ( self.(wptTable[ self.weapon ].iMagfld) - 1 ) < 0 ) {
 		return FALSE;
 	}
 	
+	// Responsible for semi-automatic switch
 	if ( wptTable[ self.weapon ].fWeaponType == TYPE_SEMI ) {
 		self.flags = self.flags - ( self.flags & FL_SEMI_TOGGLED );
 	}
 	
-	OpenCSGunBase_ShotMultiplierHandle( wptTable[ self.weapon ].iBullets );
-	OpenCSGunBase_AccuracyCalc();
+	BaseGun_ShotMultiplierHandle( wptTable[ self.weapon ].iBullets );
+	BaseGun_AccuracyCalc();
 	TraceAttack_FireBullets( wptTable[ self.weapon ].iBullets, ( self.origin + self.view_ofs ) );
 	Animation_ShootWeapon( self );
 	
@@ -125,8 +151,13 @@ float OpenCSGunBase_PrimaryFire( void ) {
 	return TRUE;
 }
 
-float OpenCSGunBase_Reload( void ) {
-	static void OpenCSGunBase_FinishReload( void ) {
+/*
+====================
+BaseGun_Reload
+====================
+*/
+float BaseGun_Reload( void ) {
+	static void BaseGun_FinishReload( void ) {
 		// What if we've got less in our caliberfield than we need
 		if ( self.(wptTable[ self.weapon ].iCaliberfld) < wptTable[ self.weapon ].iMagSize ) {
 			self.(wptTable[ self.weapon ].iMagfld) = self.(wptTable[ self.weapon ].iCaliberfld);
@@ -150,7 +181,7 @@ float OpenCSGunBase_Reload( void ) {
 	}
 	
 	
-	self.think = OpenCSGunBase_FinishReload;
+	self.think = BaseGun_FinishReload;
 	self.nextthink = time + wptTable[ self.weapon ].fReloadFinished;
 	self.fAttackFinished = self.nextthink;
 	

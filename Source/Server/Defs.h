@@ -131,10 +131,10 @@ float Weapon_GetAnimType( float fWeapon );
 float Weapon_GetFireRate( float fWeapon );
 float Weapon_GetReloadTime( float fWeapon );
 
-void OpenCSGunBase_AccuracyCalc( void );
-void OpenCSGunBase_Draw( void );
-float OpenCSGunBase_PrimaryFire( void );
-float OpenCSGunBase_Reload( void );
+void BaseGun_AccuracyCalc( void );
+void BaseGun_Draw( void );
+float BaseGun_PrimaryFire( void );
+float BaseGun_Reload( void );
 
 void BaseMelee_Draw( void );
 int BaseMelee_Attack( void );

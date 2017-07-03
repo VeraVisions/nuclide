@@ -50,7 +50,7 @@ void func_pushable( void ) {
 		self.v_angle = eActivator.angles;
 	}
 	static void func_pushable_physics( void ) {
-		input_movevalues = [ self.movedir_x, self.movedir_y, 0 ];
+		input_movevalues = [ self.movedir_x * 100, self.movedir_y * 100, 0 ];
 		input_impulse = input_buttons = 0;
 		input_angles = self.v_angle;
 		input_timelength = frametime;

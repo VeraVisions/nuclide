@@ -36,7 +36,7 @@ void TraceAttack_FireSingle( vector vPos, vector vAngle ) {
 		TraceAttack_FireSingle( vPos, vAngle );
 		iTotalPenetrations++;
 	}
-	traceline( vPos, vPos + ( vAngle * 8192 ), MOVE_HITMODEL, self);
+	traceline( vPos, vPos + ( vAngle * wptTable[ self.weapon ].fRange ), MOVE_HITMODEL, self);
 		
 	if (trace_fraction != 1.0) {
 		if ( trace_ent.takedamage == DAMAGE_YES ) {

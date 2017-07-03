@@ -59,7 +59,7 @@ enum {
 
 void WeaponAUG_Draw( void ) {
 #ifdef SSQC
-	OpenCSGunBase_Draw();
+	BaseGun_Draw();
 #else
 	View_PlayAnimation( ANIM_AUG_DRAW );
 #endif
@@ -67,7 +67,7 @@ void WeaponAUG_Draw( void ) {
 
 void WeaponAUG_PrimaryFire( void ) {
 #ifdef SSQC
-	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
+	if ( BaseGun_PrimaryFire() == TRUE ) {
 		sound( self, CHAN_WEAPON, "weapons/aug-1.wav", 1, ATTN_NORM );
 	}
 #else
@@ -80,7 +80,7 @@ void WeaponAUG_PrimaryFire( void ) {
 		View_PlayAnimation( ANIM_AUG_SHOOT3 );
 	}
 	
-	OpenCSGunBase_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle( 1 );
 #endif
 }
 
@@ -98,7 +98,7 @@ void WeaponAUG_SecondaryFire( void ) {
 
 void WeaponAUG_Reload( void ) {
 #ifdef SSQC
-	if ( OpenCSGunBase_Reload() == TRUE ) {
+	if ( BaseGun_Reload() == TRUE ) {
 		// Play Sound
 	}
 #else

@@ -303,4 +303,4 @@ float clamp(float d, float imin, float imax) {
 }
 
 void Empty( void ) { }
-void OpenCSGunBase_ShotMultiplierHandle( float fShots );
+void BaseGun_ShotMultiplierHandle( float fShots );

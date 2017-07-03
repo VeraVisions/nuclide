@@ -48,6 +48,14 @@ string sPModels[ CS_WEAPON_COUNT - 1 ] = {
 	"models/p_smokegrenade.mdl"
 };
 
+/*
+=================
+Player_PreDraw
+
+Run every before every frame is rendered.
+Responsible for local player prediction and other player appearance/interpolation.
+=================
+*/
 float Player_PreDraw( void ) {
     if ( self.entnum == player_localentnum ) {
 		// Don't predict if we're frozen/paused FIXME: FTE doesn't have serverkey_float yet!

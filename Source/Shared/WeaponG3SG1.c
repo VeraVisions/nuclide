@@ -58,7 +58,7 @@ enum {
 
 void WeaponG3SG1_Draw( void ) {
 	#ifdef SSQC
-	OpenCSGunBase_Draw();
+	BaseGun_Draw();
 	#else
 	View_PlayAnimation( ANIM_G3SG1_DRAW );
 	#endif
@@ -66,7 +66,7 @@ void WeaponG3SG1_Draw( void ) {
 
 void WeaponG3SG1_PrimaryFire( void ) {
 	#ifdef SSQC
-	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
+	if ( BaseGun_PrimaryFire() == TRUE ) {
 		// Play Sound
 		dprint("[DEBUG] FIRE!\n");
 		sound( self, CHAN_WEAPON, "weapons/g3sg1-1.wav", 1, ATTN_NORM );
@@ -78,7 +78,7 @@ void WeaponG3SG1_PrimaryFire( void ) {
 	} else {
 		View_PlayAnimation( ANIM_G3SG1_SHOOT2 );
 	}
-	OpenCSGunBase_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle( 1 );
 	#endif
 }
 
@@ -98,7 +98,7 @@ void WeaponG3SG1_SecondaryFire( void ) {
 
 void WeaponG3SG1_Reload( void ) {
 	#ifdef SSQC
-	if ( OpenCSGunBase_Reload() == TRUE ) {
+	if ( BaseGun_Reload() == TRUE ) {
 		// Play Sound
 	}
 	#else

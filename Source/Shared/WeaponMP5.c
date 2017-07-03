@@ -59,7 +59,7 @@ enum {
 
 void WeaponMP5_Draw( void ) {
 #ifdef SSQC
-	OpenCSGunBase_Draw();
+	BaseGun_Draw();
 #else
 	View_PlayAnimation( ANIM_MP5_DRAW );
 #endif
@@ -67,7 +67,7 @@ void WeaponMP5_Draw( void ) {
 
 void WeaponMP5_PrimaryFire( void ) {
 #ifdef SSQC
-	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
+	if ( BaseGun_PrimaryFire() == TRUE ) {
 		if ( random() <= 0.5 ) {
 			sound( self, CHAN_WEAPON, "weapons/mp5-1.wav", 1, ATTN_NORM );
 		} else {
@@ -83,13 +83,13 @@ void WeaponMP5_PrimaryFire( void ) {
 	} else {
 		View_PlayAnimation( ANIM_MP5_SHOOT3 );
 	}
-	OpenCSGunBase_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle( 1 );
 #endif
 }
 
 void WeaponMP5_Reload( void ) {
 #ifdef SSQC
-	if ( OpenCSGunBase_Reload() == TRUE ) {
+	if ( BaseGun_Reload() == TRUE ) {
 		// Play Sound
 	}
 #else

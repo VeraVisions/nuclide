@@ -59,7 +59,7 @@ enum {
 
 void WeaponAWP_Draw( void ) {
 	#ifdef SSQC
-	OpenCSGunBase_Draw();
+	BaseGun_Draw();
 	#else
 	View_PlayAnimation( ANIM_AWP_DRAW );
 	#endif
@@ -67,7 +67,7 @@ void WeaponAWP_Draw( void ) {
 
 void WeaponAWP_PrimaryFire( void ) {
 	#ifdef SSQC
-	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
+	if ( BaseGun_PrimaryFire() == TRUE ) {
 		// Play Sound
 		sound( self, CHAN_WEAPON, "weapons/awp1.wav", 1, ATTN_NORM );
 	}
@@ -81,7 +81,7 @@ void WeaponAWP_PrimaryFire( void ) {
 		View_PlayAnimation( ANIM_AWP_SHOOT3 );
 	}
 	
-	OpenCSGunBase_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle( 1 );
 	#endif
 }
 
@@ -101,7 +101,7 @@ void WeaponAWP_SecondaryFire( void ) {
 
 void WeaponAWP_Reload( void ) {
 	#ifdef SSQC
-	if ( OpenCSGunBase_Reload() == TRUE ) {
+	if ( BaseGun_Reload() == TRUE ) {
 		// Play Sound
 	}
 	#else

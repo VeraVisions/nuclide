@@ -66,7 +66,7 @@ enum {
 
 void WeaponM3_Draw( void ) {
 	#ifdef SSQC
-	OpenCSGunBase_Draw();
+	BaseGun_Draw();
 	#else
 	View_PlayAnimation( ANIM_M3_DRAW );
 	#endif
@@ -84,7 +84,7 @@ void WeaponM3_PrimaryFire( void ) {
 		return;
 	}
 	
-	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
+	if ( BaseGun_PrimaryFire() == TRUE ) {
 		sound( self, CHAN_WEAPON, "weapons/m3-1.wav", 1, ATTN_NORM );
 	}
 #else
@@ -93,7 +93,7 @@ void WeaponM3_PrimaryFire( void ) {
 	} else {
 		View_PlayAnimation( ANIM_M3_SHOOT2 );
 	}
-	OpenCSGunBase_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle( 1 );
 #endif
 }
 

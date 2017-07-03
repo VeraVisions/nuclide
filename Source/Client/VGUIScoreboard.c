@@ -30,6 +30,11 @@ string sScoreTeams[4] = {
 // This is seperated from the other VGUI stuff so we can check scores while buying and whatnot
 int iShowScores;
 
+/*
+====================
+VGUI_Scores_DrawTeam
+====================
+*/
 vector VGUI_Scores_DrawTeam( vector vPos, float fTeam ) {
 	
 	vector vColor;
@@ -103,6 +108,11 @@ vector VGUI_Scores_DrawTeam( vector vPos, float fTeam ) {
 	return vNewPos + '0 24';
 }
 
+/*
+====================
+VGUI_Scores_Show
+====================
+*/
 void VGUI_Scores_Show( void ) {
 	vector vMainPos;
 	vector vSize;

@@ -20,6 +20,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "VGUI.h"
 
+/*
+====================
+VGUI_MessageOfTheDay
+
+The MOTD screen. 
+
+TODO: Networking still needs to be done.
+You can't store motds in infokey strings because
+newline chars are not supported. You could hack it to use
+an array of infokeys, but that'll clutter things up
+====================
+*/
 void VGUI_MessageOfTheDay( vector vPos ) {
 	static void MessageOfTheDay_ButtonOK( void ) {
 		fVGUI_Display = VGUI_TEAMSELECT;

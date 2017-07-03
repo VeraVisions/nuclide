@@ -59,7 +59,7 @@ enum {
 
 void WeaponAK47_Draw( void ) {
 	#ifdef SSQC
-	OpenCSGunBase_Draw();
+	BaseGun_Draw();
 	#else
 	View_PlayAnimation( ANIM_AK47_DRAW );
 	#endif
@@ -67,7 +67,7 @@ void WeaponAK47_Draw( void ) {
 
 void WeaponAK47_PrimaryFire( void ) {
 	#ifdef SSQC
-	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
+	if ( BaseGun_PrimaryFire() == TRUE ) {
 		if ( random() <= 0.5 ) {
 			sound( self, CHAN_WEAPON, "weapons/ak47-1.wav", 1, ATTN_NORM );
 		} else {
@@ -84,13 +84,13 @@ void WeaponAK47_PrimaryFire( void ) {
 		View_PlayAnimation( ANIM_AK47_SHOOT3 );
 	}
 	
-	OpenCSGunBase_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle( 1 );
 	#endif
 }
 
 void WeaponAK47_Reload( void ) {
 	#ifdef SSQC
-	if ( OpenCSGunBase_Reload() == TRUE ) {
+	if ( BaseGun_Reload() == TRUE ) {
 		// Play Sound
 	}
 	#else

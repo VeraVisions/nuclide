@@ -59,7 +59,7 @@ enum {
 
 void WeaponSG552_Draw( void ) {
 #ifdef SSQC
-	OpenCSGunBase_Draw();
+	BaseGun_Draw();
 #else
 	View_PlayAnimation( ANIM_SG552_DRAW );
 #endif
@@ -67,7 +67,7 @@ void WeaponSG552_Draw( void ) {
 
 void WeaponSG552_PrimaryFire( void ) {
 #ifdef SSQC
-	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
+	if ( BaseGun_PrimaryFire() == TRUE ) {
 		if ( random() <= 0.5 ) {
 			sound( self, CHAN_WEAPON, "weapons/sg552-1.wav", 1, ATTN_NORM );
 		} else {
@@ -84,7 +84,7 @@ void WeaponSG552_PrimaryFire( void ) {
 		View_PlayAnimation( ANIM_SG552_SHOOT3 );
 	}
 	
-	OpenCSGunBase_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle( 1 );
 #endif
 }
 
@@ -102,7 +102,7 @@ void WeaponSG552_SecondaryFire( void ) {
 
 void WeaponSG552_Reload( void ) {
 #ifdef SSQC
-	if ( OpenCSGunBase_Reload() == TRUE ) {
+	if ( BaseGun_Reload() == TRUE ) {
 		// Play Sound
 	}
 #else

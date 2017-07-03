@@ -59,7 +59,7 @@ enum {
 
 void WeaponMAC10_Draw( void ) {
 #ifdef SSQC
-	OpenCSGunBase_Draw();
+	BaseGun_Draw();
 #else
 	View_PlayAnimation( ANIM_MAC10_DRAW );
 #endif
@@ -67,7 +67,7 @@ void WeaponMAC10_Draw( void ) {
 
 void WeaponMAC10_PrimaryFire( void ) {
 #ifdef SSQC
-	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
+	if ( BaseGun_PrimaryFire() == TRUE ) {
 		sound( self, CHAN_WEAPON, "weapons/mac10-1.wav", 1, ATTN_NORM );
 	}
 #else
@@ -80,13 +80,13 @@ void WeaponMAC10_PrimaryFire( void ) {
 	} else {
 		View_PlayAnimation( ANIM_MAC10_SHOOT3 );
 	}
-	OpenCSGunBase_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle( 1 );
 #endif
 }
 
 void WeaponMAC10_Reload( void ) {
 #ifdef SSQC
-	if ( OpenCSGunBase_Reload() == TRUE ) {
+	if ( BaseGun_Reload() == TRUE ) {
 		// Play Sound
 	}
 #else

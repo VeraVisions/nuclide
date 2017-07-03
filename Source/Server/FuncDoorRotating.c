@@ -178,8 +178,10 @@ void FuncDoorRotate_Touch( void ) {
 	}
 	
 	if ( other.movetype == MOVETYPE_WALK ) {
-		eActivator = other;
-		FuncDoorRotate_Trigger();
+		if ( other.absmin_z <= self.maxs_z - 2 ) {
+			eActivator = other;
+			FuncDoorRotate_Trigger();
+		}
 	}
 }
 

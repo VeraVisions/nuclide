@@ -20,6 +20,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "VGUI.h"
 
+/*
+====================
+HUD_GetChatColor
+
+Returns an RGB color vector for the specified team
+====================
+*/
 vector HUD_GetChatColor( float fTeam ) {
 	if ( fTeam == TEAM_CT ) {
 		return '0.45 0.60 0.75';
@@ -30,6 +37,13 @@ vector HUD_GetChatColor( float fTeam ) {
 	}
 }
 
+/*
+====================
+HUD_GetChatColor
+
+Returns a HEX color string prefix for the specified team
+====================
+*/
 string HUD_GetChatColorHEX( float fTeam ) {
 	if ( fTeam == TEAM_CT ) {
 		return "^x7AC";
@@ -40,6 +54,13 @@ string HUD_GetChatColorHEX( float fTeam ) {
 	}
 }
 
+/*
+====================
+HUD_GetChatColor
+
+Returns a HEX color string prefix with teamname
+====================
+*/
 string HUD_GetChatColorHEXTeam( float fTeam ) {
 	if ( fTeam == TEAM_CT ) {
 		return "^x7AC(Counter-Terrorist) ";
@@ -50,7 +71,13 @@ string HUD_GetChatColorHEXTeam( float fTeam ) {
 	}
 }
 
-// Returns whether or not our mouse cursor hovers over a region
+/*
+====================
+VGUI_CheckMouse
+
+Returns whether or not our mouse cursor hovers over a region
+====================
+*/
 float VGUI_CheckMouse( vector vPos, vector vReg ) {
 	vector vSMins, vSMaxs;
 	
@@ -71,7 +98,14 @@ float VGUI_CheckMouse( vector vPos, vector vReg ) {
 	return 0;
 }
 
-// Draws window with outline, border and title
+
+/*
+====================
+VGUI_Window
+
+Draws window with outline, border and title
+====================
+*/
 void VGUI_Window( string sTitle, vector vPosition, vector vSize ) {
 	// Draw the background
 	drawfill( vPosition, vSize, VGUI_WINDOW_BGCOLOR, VGUI_WINDOW_BGALPHA );
@@ -87,7 +121,14 @@ void VGUI_Window( string sTitle, vector vPosition, vector vSize ) {
 	drawfill( vPosition + '0 48', [vSize_x, 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
 }
 
-// Draws window with outline, border and title
+
+/*
+====================
+VGUI_WindowSmall
+
+Draws smaller window with outline, border and title
+====================
+*/
 void VGUI_WindowSmall( string sTitle, vector vPosition, vector vSize ) {
 	// Draw the background
 	drawfill( vPosition, vSize, VGUI_WINDOW_BGCOLOR, VGUI_WINDOW_BGALPHA );
@@ -103,7 +144,13 @@ void VGUI_WindowSmall( string sTitle, vector vPosition, vector vSize ) {
 	drawfill( vPosition + '0 24', [vSize_x, 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
 }
 
-// Draws a button, returns whether or not a mouse is hovering over it (for inheritance' sake)
+/*
+====================
+VGUI_WindowSmall
+
+Draws a button, returns whether or not a mouse is hovering over it (for inheritance' sake)
+====================
+*/
 float VGUI_Button( string sLabel, void() vFunction, vector vPosition, vector vSize ) {
 	vector vLabelPos;
 	
@@ -132,6 +179,13 @@ float VGUI_Button( string sLabel, void() vFunction, vector vPosition, vector vSi
 	return FALSE;
 }
 
+/*
+====================
+VGUI_FakeButton
+
+Looks like a button, doesn't function though. Meant for dead buttons
+====================
+*/
 void VGUI_FakeButton( string sLabel, vector vPosition, vector vSize ) {
 	vector vLabelPos;
 	
@@ -147,11 +201,24 @@ void VGUI_FakeButton( string sLabel, vector vPosition, vector vSize ) {
 	CSQC_DrawText( vLabelPos, sLabel, '8 8', vVGUIColor * 0.5, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_DEFAULT );
 }
 
-// Wrapper for simple VGUI Text labels
+/*
+====================
+VGUI_Text
+
+Wrapper for simple GUI text labels
+====================
+*/
 void VGUI_Text( string sText, vector vPos, vector vSize, float fFont ) {
 	CSQC_DrawText( vPos, sText, vSize, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, fFont );
 }
 
+/*
+====================
+VGUI_RightText
+
+Right-aligned version of above
+====================
+*/
 void VGUI_RightText( vector vPos, string sText, vector vSize, vector vColor, float fFont ) {
 	vPos_x -= stringwidth( sText, FALSE, vSize );
 	CSQC_DrawText( vPos, sText, vSize, vColor, 1, 0, fFont );

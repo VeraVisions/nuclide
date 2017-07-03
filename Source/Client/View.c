@@ -18,6 +18,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+entity eViewModel;
+entity eMuzzleflash;
+float fNumBones;
+
 string sViewModels[ CS_WEAPON_COUNT - 1 ] = {
 	"models/v_knife.mdl",
 	"models/v_usp.mdl",
@@ -85,10 +89,11 @@ float View_CalcBob( void ) {
 	return fBob;
 }
 
-entity eViewModel;
-entity eMuzzleflash;
-float fNumBones;
-
+/*
+====================
+View_ProcessEvent
+====================
+*/
 void View_ProcessEvent( float fTimeStamp, int iCode, string sData ) {
 	if ( iCode == 5004 ) {
 		localsound( sData, CHAN_AUTO, 1.0 );
@@ -115,6 +120,11 @@ void View_ProcessEvent( float fTimeStamp, int iCode, string sData ) {
 	}
 }
 
+/*
+====================
+View_DrawViewModel
+====================
+*/
 void View_DrawViewModel( void ) {
 	static float fLastTime;
 	static float fBob;
@@ -195,6 +205,11 @@ void View_DrawViewModel( void ) {
 	}
 }
 
+/*
+====================
+View_DrawViewModel
+====================
+*/
 void View_PlayAnimation( int iSequence ) {
 	eViewModel.frame = (float)iSequence;
 	eViewModel.frame1time = 0.0f;

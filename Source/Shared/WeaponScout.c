@@ -58,7 +58,7 @@ enum {
 
 void WeaponSCOUT_Draw( void ) {
 #ifdef SSQC
-	OpenCSGunBase_Draw();
+	BaseGun_Draw();
 #else
 	View_PlayAnimation( ANIM_SCOUT_DRAW );
 #endif
@@ -66,7 +66,7 @@ void WeaponSCOUT_Draw( void ) {
 
 void WeaponSCOUT_PrimaryFire( void ) {
 #ifdef SSQC
-	if ( OpenCSGunBase_PrimaryFire() == TRUE ) {
+	if ( BaseGun_PrimaryFire() == TRUE ) {
 		// Play Sound
 		sound( self, CHAN_WEAPON, "weapons/scout_fire-1.wav", 1, ATTN_NORM );
 	}
@@ -77,7 +77,7 @@ void WeaponSCOUT_PrimaryFire( void ) {
 		View_PlayAnimation( ANIM_SCOUT_SHOOT2 );
 	}
 	
-	OpenCSGunBase_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle( 1 );
 #endif
 }
 
@@ -97,7 +97,7 @@ void WeaponSCOUT_SecondaryFire( void ) {
 
 void WeaponSCOUT_Reload( void ) {
 #ifdef SSQC
-	if ( OpenCSGunBase_Reload() == TRUE ) {
+	if ( BaseGun_Reload() == TRUE ) {
 		// Play Sound
 	}
 #else
