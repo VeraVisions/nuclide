@@ -177,7 +177,7 @@ void FuncDoorRotate_Touch( void ) {
 		return;
 	}
 	
-	if ( other.classname == "player" ) {
+	if ( other.movetype == MOVETYPE_WALK ) {
 		eActivator = other;
 		FuncDoorRotate_Trigger();
 	}
@@ -211,57 +211,59 @@ BrushRotate
 =================
 */
 void func_door_rotating( void ) {
+	static void func_door_rotating_respawn( void ) {
+		self.solid = SOLID_BSP;
+		self.movetype = MOVETYPE_PUSH;
+		setorigin( self, self.origin );	
+		setmodel( self, self.model );
+	
+		self.blocked = FuncDoorRotate_Blocked;
+		self.vUse = FuncDoorRotate_Trigger;
+	
+		if ( self.spawnflags & SF_ROT_USE ) {
+			self.iUsable = TRUE;
+		} else {
+			self.touch = FuncDoorRotate_Touch;
+		}
+	
+		if ( !self.speed ) {
+			self.speed = 100;
+		}
+		
+		if ( self.wait == 0 ) {
+			self.wait = 4;
+		}
+	  
+		self.state = STATE_LOWERED;
+		self.pos1 = self.angles;
+		
+		// Only do Y
+		if ( self.spawnflags & SF_ROT_XAXIS	) {
+			self.pos2_y = self.pos1_y + self.distance;
+			
+		} 
+		
+		// Only do X
+		if ( self.spawnflags & SF_ROT_YAXIS ) {
+			self.pos2_x = self.pos1_x + self.distance;
+			
+		}
+		
+		// only do Y by default
+		if ( !( self.spawnflags & SF_ROT_YAXIS ) && !( self.spawnflags & SF_ROT_XAXIS ) ) {
+			self.pos2_y = self.pos1_y + self.distance;
+		}
+		
+		if ( self.spawnflags & SF_ROT_OPEN ) {
+			vector vTemp = self.pos2;
+			self.pos2 = self.pos1;
+			self.pos1 = vTemp;
+			self.angles = self.pos1;
+		}
+	}
 	FuncDoor_PrecacheSounds();
 	Entities_SetMovementDirection();
-	self.solid = SOLID_BSP;
-	self.movetype = MOVETYPE_PUSH;
-	setorigin( self, self.origin );	
-	setmodel( self, self.model );
-
-	self.blocked = FuncDoorRotate_Blocked;
-	self.vUse = FuncDoorRotate_Trigger;
-
-	if ( self.spawnflags & SF_ROT_USE ) {
-		self.iUsable = TRUE;
-	} else {
-		self.touch = FuncDoorRotate_Touch;
-	}
-
-	if ( !self.speed ) {
-		self.speed = 100;
-	}
-	
-	if ( self.wait == 0 ) {
-		self.wait = 4;
-	}
-  
-	self.pos1 = self.angles;
-	
-	// Only do Y
-	if ( self.spawnflags & SF_ROT_XAXIS	) {
-		self.pos2_y = self.pos1_y + self.distance;
-		
-	} 
-	
-	// Only do X
-	if ( self.spawnflags & SF_ROT_YAXIS ) {
-		self.pos2_x = self.pos1_x + self.distance;
-		
-	}
-	
-	// only do Y by default
-	if ( !( self.spawnflags & SF_ROT_YAXIS ) && !( self.spawnflags & SF_ROT_XAXIS ) ) {
-		self.pos2_y = self.pos1_y + self.distance;
-	}
-	
-	if ( self.spawnflags & SF_ROT_OPEN ) {
-		vector vTemp = self.pos2;
-		self.pos2 = self.pos1;
-		self.pos1 = vTemp;
-		self.angles = self.pos1;
-	}
-
-	self.state = STATE_LOWERED;
-	
+	func_door_rotating_respawn();
+	Entities_InitRespawnable( func_door_rotating_respawn );
 	Entities_RenderSetup();
 }

@@ -286,6 +286,7 @@ enum {
 #define FL_CROUCHING 	16384
 #define FL_SEMI_TOGGLED 32768
 #define FL_FROZEN 		131072
+#define FL_REMOVEME		262144
 
 float clamp(float d, float imin, float imax) {
 	float t;

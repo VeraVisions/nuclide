@@ -165,21 +165,48 @@ void trigger_hurt( void ) {
 		
 		self.fAttackFinished = self.ltime + 0.5;
 	}
+	static void trigger_hurt_respawn( void ) {
+		self.angles = '0 0 0';
+		self.solid = SOLID_TRIGGER;
 	
-	self.angles = '0 0 0';
-	self.solid = SOLID_TRIGGER;
-
-	setmodel( self, self.model );
-	self.model = 0;
-	
-	if ( self.spawnflags & SF_HURT_OFF ) {
-		self.solid = SOLID_NOT;
+		setmodel( self, self.model );
+		self.model = 0;
+		
+		if ( self.spawnflags & SF_HURT_OFF ) {
+			self.solid = SOLID_NOT;
+		}
+		
+		self.vUse = trigger_hurt_use;
+		self.touch = trigger_hurt_touch;
 	}
 	
-	self.vUse = trigger_hurt_use;
-	self.touch = trigger_hurt_touch;
+	trigger_hurt_respawn();
+	Entities_InitRespawnable( trigger_hurt_respawn );
 }
 
+/*
+=================
+trigger_relay
+
+This entity acts as a relay between an event and its target. 
+Its main advantage is that it can send a specific trigger state 
+to its target (only turn it on, or only turn it off, as opposed 
+to the toggling experienced with typical triggering).
+
+Attributes:
+Name (targetname) 
+Target (target)
+Delay before trigger (delay)
+Trigger State (triggerstate) - Off (0), On (1), or Toggle (2)
+
+Flags:
+Remove On fire (1)
+=================
+*/
+void trigger_relay( void ) {
+	
+}
+    
 /*
 =================
 multi_manager

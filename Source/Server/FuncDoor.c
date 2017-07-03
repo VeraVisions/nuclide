@@ -206,7 +206,7 @@ void FuncDoor_Touch( void ) {
 		return;
 	}
 	
-	if ( other.classname == "player" ) {
+	if ( other.movetype == MOVETYPE_WALK ) {
 		FuncDoor_Trigger();
 	}
 }
@@ -237,48 +237,48 @@ func_door
 Spawn function of a moving door entity
 ====================
 */
-
 void func_door( void ) {
+	static void func_door_respawn( void ) {
+		self.solid = SOLID_BSP;
+		self.movetype = MOVETYPE_PUSH;
+		setorigin( self, self.origin );	
+		setmodel( self, self.model );
+	
+		self.blocked = FuncDoor_Blocked;
+		self.vUse = FuncDoor_Trigger;
+		
+		if ( self.wait == -1 ) {
+			self.spawnflags = self.spawnflags | SF_MOV_TOGGLE;
+		}
+		
+		if ( !self.speed ) {
+			self.speed = 100;
+		}
+	
+		if ( !self.dmg ) {
+			self.dmg = 2;
+		}
+	
+		if ( self.spawnflags & SF_MOV_USE ) {
+			self.iUsable = TRUE;
+		} else {
+			self.touch = FuncDoor_Touch;
+		}
+		
+		self.state = STATE_LOWERED;
+		self.pos1 = self.origin;
+		self.pos2 = ( self.pos1 + self.movedir * ( fabs( self.movedir * self.size ) - self.lip ) );
+	
+		if ( self.spawnflags & SF_MOV_OPEN ) {
+			setorigin( self, self.pos2 );
+			self.pos2 = self.pos1;
+			self.pos1 = self.origin;
+		}
+	}
+	
 	FuncDoor_PrecacheSounds();
 	Entities_SetMovementDirection();
-	
-	self.solid = SOLID_BSP;
-	
-	self.movetype = MOVETYPE_PUSH;
-	setorigin( self, self.origin );	
-	setmodel( self, self.model );
-
-	self.blocked = FuncDoor_Blocked;
-	self.vUse = FuncDoor_Trigger;
-	
-	if ( self.wait == -1 ) {
-		self.spawnflags = self.spawnflags | SF_MOV_TOGGLE;
-	}
-	
-	if ( !self.speed ) {
-		self.speed = 100;
-	}
-
-	if ( !self.dmg ) {
-		self.dmg = 2;
-	}
-
-	if ( self.spawnflags & SF_MOV_USE ) {
-		self.iUsable = TRUE;
-	} else {
-		self.touch = FuncDoor_Touch;
-	}
-	
-
-	self.pos1 = self.origin;
-	self.pos2 = ( self.pos1 + self.movedir * ( fabs( self.movedir * self.size ) - self.lip ) );
-
-	if ( self.spawnflags & SF_MOV_OPEN ) {
-		setorigin( self, self.pos2 );
-		self.pos2 = self.pos1;
-		self.pos1 = self.origin;
-	}
-
-	self.state = STATE_LOWERED;
+	func_door_respawn();
+	Entities_InitRespawnable( func_door_respawn );
 	Entities_RenderSetup();
 }

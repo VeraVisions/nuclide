@@ -175,7 +175,3 @@ typedef struct {
 
 void Menu_SetClipArea( vector vPosition, vector vRegion );
 void Menu_ResetClipArea( void );
-
-float Math_Lerp( float fA, float fB, float fPercent ) {
-	return ( fA * ( 1 - fPercent ) ) + ( fB * fPercent );
-}

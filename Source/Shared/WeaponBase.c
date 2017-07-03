@@ -91,7 +91,16 @@ void OpenCSGunBase_Draw( void ) {
 }
 
 void OpenCSGunBase_AccuracyCalc( void ) {
-	self.fAccuracy = ( self.iShotMultiplier / wptTable[ self.weapon ].fAccuracyDivisor );
+	
+	if ( wptTable[ self.weapon ].fAccuracyDivisor == -1 ) {
+		if ( self.viewzoom < 1.0f ) {
+			self.fAccuracy = 0.0f;
+		} else {
+			self.fAccuracy = 0.05f;
+		}
+	} else {
+		self.fAccuracy = ( self.iShotMultiplier / wptTable[ self.weapon ].fAccuracyDivisor );
+	}
 }
 
 // Returns whether or not to play an animation
