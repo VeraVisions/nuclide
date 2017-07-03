@@ -25,6 +25,19 @@ float Math_LerpAngle( float fStart, float fEnd, float fAmount ) {
 	return shortest_angle * fAmount;
 }
 
+float Math_Lerp( float fA, float fB, float fPercent ) {
+	return ( fA * ( 1 - fPercent ) ) + ( fB * fPercent );
+}
+
+float Math_FixDelta( float fDelta ) {
+	if ( fDelta >= 180 ) {
+		fDelta -= 360;
+	} else if ( fDelta <= -180 ) {
+		fDelta += 360;
+	}
+	return fDelta;
+}
+
 float Math_CRandom( void ) {
 	return 2 * ( random() - 0.5 );
 }

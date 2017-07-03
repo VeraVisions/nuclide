@@ -25,7 +25,7 @@
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\VGUITeamSelect.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\View.c" />
 	</category>
-	<category name="Server" expanded="yes">
+	<category name="Server" expanded="no">
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Server\AmbientSound.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Server\Ammo.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Server\ArmouryEntity.c" />
@@ -71,7 +71,7 @@
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\Objects.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Menu\progs.src" />
 	</category>
-	<category name="Shared" expanded="yes">
+	<category name="Shared" expanded="no">
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Shared\Animations.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Shared\BaseMelee.c" />
 		<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Shared\Effects.c" />
@@ -113,20 +113,11 @@
 </project>
 
 <workspace version="Crimson Editor 3.60">
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\View.c" linenum="149" placement="0:1:-1:-1:-4:-23:198:198:1046:663" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Builtins.h" linenum="1402" placement="0:1:-1:-1:-4:-23:220:220:1072:689" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\Defs.h" linenum="109" placement="0:1:-1:-1:-4:-23:0:0:852:469" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\Init.c" linenum="81" placement="0:1:-1:-1:-4:-23:22:22:874:491" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Globals.h" linenum="226" placement="0:1:-1:-1:-4:-23:88:88:940:557" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Shared\Effects.c" linenum="100" placement="0:1:-1:-1:-4:-23:110:110:962:579" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Server\Rules.c" linenum="105" placement="0:1:-1:-1:-4:-23:154:154:1006:623" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Shared\WeaponFlashbang.c" linenum="151" placement="0:1:-1:-1:-4:-23:176:176:1028:645" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Server\Defs.h" linenum="137" placement="0:1:-1:-1:-4:-23:220:220:1072:689" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\Event.c" linenum="503" placement="0:1:-1:-1:-4:-23:0:0:852:469" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Shared\WeaponSmokeGrenade.c" linenum="138" placement="0:1:-1:-1:-4:-23:66:66:918:535" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Shared\Weapons.c" linenum="97" placement="0:1:-1:-1:-4:-23:88:88:940:557" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Shared\WeaponHEGrenade.c" linenum="132" placement="0:1:-1:-1:-4:-23:110:110:962:579" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Shared\Equipment.c" linenum="41" placement="0:1:-1:-1:-4:-23:132:132:984:601" />
-	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\README.md" linenum="33" placement="2:3:-1:-1:-4:-23:154:154:1006:623" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Builtins.h" linenum="11" placement="0:1:-1:-1:-4:-23:132:132:980:597" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\FreeCS\Source\Client\Init.c" linenum="29" placement="0:1:-1:-1:-4:-23:154:154:1006:623" />
+	<localfile path="C:\Users\eukara\Dropbox\The Wastes Build\conhistory.txt" linenum="1" placement="0:1:-1:-1:-4:-23:176:176:1028:645" />
+	<localfile path="C:\Users\eukara\Dropbox\The Wastes Build\SDK\COMPILE_ARGS.txt" linenum="1" placement="0:1:-1:-1:-4:-23:110:110:962:579" />
+	<localfile path="C:\Cygwin\home\eukara\Projects\fteqw-code\specs\multiprogs.txt" linenum="1" placement="0:1:-1:-1:-4:-23:132:132:984:601" />
+	<localfile path="E:\WORLDCRAFT\README.TXT" linenum="19" placement="2:3:-1:-1:-4:-23:154:154:1006:623" />
 </workspace>
 

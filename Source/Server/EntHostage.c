@@ -41,7 +41,7 @@ entity hostage_waypoint( void ) {
 	setsize( ePoint, self.mins, self.maxs );
 	ePoint.classname = "remove_me";
 	ePoint.movetype = MOVETYPE_TOSS;
-//	setmodel( ePoint, "models/chick.mdl" ); // Visual feedback...
+	//setmodel( ePoint, "models/chick.mdl" ); // Visual feedback...
 	return ePoint;
 }
 
@@ -53,10 +53,16 @@ Determines when we need to spawn a new waypoint
 =================
 */
 float hostage_waypoint_needed( void ) {
-	if ( self.eUser.fStepTime > time ) {
-		return FALSE;
+	float fState;
+	if ( self.eUser.movement == self.movement ) {
+		fState =  FALSE;
+	} else {
+		fState = TRUE;
 	}
-	return TRUE;
+	
+	self.movement = self.eUser.movement;
+	
+	return fState;
 }
 
 /*
@@ -125,7 +131,6 @@ void hostage_physics( void ) {
 	input_movevalues = '0 0 0';
 	input_impulse = 0;
 	input_buttons = 0;
-	input_angles = self.angles;
 		
 	// Are we meant to follow someone and AREN'T dead?
 	if ( ( self.eUser != world ) && ( self.health > 0 )  ) {
@@ -133,8 +138,10 @@ void hostage_physics( void ) {
 		vector vEndAngle = vectoangles( self.eTargetPoint.origin - self.origin );
 		
 		// Slowly turn towards target
-		float fTurn = Math_LerpAngle( self.angles_y, vEndAngle_y, frametime * 4 );
-		self.angles_y += fTurn;
+		float fTurn = Math_LerpAngle( self.v_angle_y, vEndAngle_y, frametime * 4 );
+		self.v_angle_y += fTurn;
+		
+		self.v_angle_y = Math_FixDelta( self.v_angle_y );
 		
 		// Is the waypoint close? if so, remove and go set the next one!
 		float fDist1 = vlen( self.eTargetPoint.origin - self.origin );
@@ -177,7 +184,6 @@ void hostage_physics( void ) {
 						self.eLastCreated.eTargetPoint = hostage_waypoint();
 						self.eLastCreated = self.eLastCreated.eTargetPoint;
 					}
-					self.fStepTime = time + 0.2;
 				}
 			}
 		}
@@ -203,8 +209,13 @@ void hostage_physics( void ) {
 	}
 	
 	input_timelength = frametime;
+	input_angles = self.v_angle;
 	self.movetype = MOVETYPE_WALK;
+	
 	runstandardplayerphysics( self );
+	Footsteps_Update();
+	
+	self.angles = self.v_angle;
 	self.movetype = MOVETYPE_NONE;
 }
 
@@ -218,6 +229,10 @@ Entry function for the hostages.
 void hostage_entity( void ) {
 	
 	static void hostage_entity_respawn( void ) {
+		self.v_angle_x = Math_FixDelta ( self.angles_x );
+		self.v_angle_y = Math_FixDelta ( self.angles_y );
+		self.v_angle_z = Math_FixDelta ( self.angles_z );
+		
 		setorigin( self, self.origin );
 		self.solid = SOLID_SLIDEBOX;
 		self.movetype = MOVETYPE_NONE;
