@@ -27,6 +27,7 @@ Precaches and loading for the menu system
 */
 void m_init( void ) {
 	precache_pic( "gfx/shell/splash" );
+	precache_pic( "gfx/shell/btns_main" );
 	
 	// Index all the maps... TODO: Filter out /valve/ to avoid useless junk from being cached.
 	searchhandle shMaps = search_begin( "maps/*.bsp", TRUE, TRUE );
@@ -39,6 +40,9 @@ void m_init( void ) {
 
 	search_end( shMaps );
 	FONT_MENU = loadfont( "menu", "gfx/menuchars", "32", -1 );
+	
+	vMenuButtonsSize = drawgetimagesize( "gfx/shell/btns_main" );
+	iMenuButtonHeight = ( vMenuButtonsSize_y / MENU_BUTTONS ) / 3;
 }
 
 /*
