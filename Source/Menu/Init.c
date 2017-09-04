@@ -42,7 +42,6 @@ void m_init( void ) {
 	FONT_MENU = loadfont( "menu", "gfx/menuchars", "32", -1 );
 	
 	vMenuButtonsSize = drawgetimagesize( "gfx/shell/btns_main" );
-	iMenuButtonHeight = ( vMenuButtonsSize_y / MENU_BUTTONS ) / 3;
 }
 
 /*

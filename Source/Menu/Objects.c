@@ -125,9 +125,9 @@ void Object_Button( vector vPosition, int iButtonID, void() vFunction, __inout f
 	vector vSrcPos, vSrcSize;
 	vSrcPos_x = 0;
 	vSrcPos_y = ( 78 * iButtonID ) / vMenuButtonsSize_y;
-	vSrcSize = [ 1, iMenuButtonHeight / vMenuButtonsSize_y ];
+	vSrcSize = [ 1, 26 / vMenuButtonsSize_y ];
 	drawsubpic( vPosition, '156 26', "gfx/shell/btns_main", vSrcPos, vSrcSize, '1 1 1', 1.0f, 1 );
-	drawsubpic( vPosition, '156 26', "gfx/shell/btns_main", vSrcPos + [ 0, 52 / 5538 ], vSrcSize, '1 1 1', fAlpha, 1 );
+	drawsubpic( vPosition, '156 26', "gfx/shell/btns_main", vSrcPos + [ 0, 52 / vMenuButtonsSize_y ], vSrcSize, '1 1 1', fAlpha, 1 );
 }
 
 /*

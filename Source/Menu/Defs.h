@@ -39,7 +39,6 @@ var float fButtonAlpha[8];
 var float fScrollWheel;
 
 var vector vMenuButtonsSize;
-var int iMenuButtonHeight;
 
 enum {
 	SCROLL_NONE,
