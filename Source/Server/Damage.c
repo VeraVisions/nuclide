@@ -118,7 +118,7 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 		float fRatio = 0.5;
 		
 		if ( eAttacker.weapon ) { 
-			fRatio = wptTable[ eAttacker.weapon ].fWeaponArmorRatio;
+			fRatio *= wptTable[ eAttacker.weapon ].fWeaponArmorRatio;
 		}
 		
 		// Simple implementation of how kevlar damage is calculated
