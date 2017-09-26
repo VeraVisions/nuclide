@@ -117,7 +117,7 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 	if ( eTarget.armor ) {
 		float fRatio = 0.5;
 		
-		if ( eAttacker != world ) { 
+		if ( eAttacker.weapon ) { 
 			fRatio = wptTable[ eAttacker.weapon ].fWeaponArmorRatio;
 		}
 		
@@ -132,11 +132,10 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 			eTarget.armor = 0;
 			eTarget.iEquipment -= EQUIPMENT_KEVLAR;
 		} else {
-			int oldValue = eTarget.armor;
 			if ( fNewArmor < 0 ) {
 				fNewArmor = 1;
 			}
-			eTarget.armor = ( oldValue - fNewArmor );
+			eTarget.armor -= fNewArmor;
 		}
 		eTarget.health -= fNewDmg;
 	} else {
