@@ -114,7 +114,34 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 	dprint( sprintf( "[DEBUG] Hit Bodypart: %s\n", Damage_GetHitLocation( trace_surface_id ) ) );
 	
 	// Apply the damage finally
-	eTarget.health = eTarget.health - iDamage;
+	if ( eTarget.armor ) {
+		float fRatio = 0.5;
+		
+		if ( eAttacker != world ) { 
+			fRatio = wptTable[ eAttacker.weapon ].fWeaponArmorRatio;
+		}
+		
+		// Simple implementation of how kevlar damage is calculated
+		float fNewDmg = iDamage * fRatio;
+		float fNewArmor = ( iDamage - fNewDmg ) / 2;
+		
+		if ( fNewArmor > eTarget.armor ) {
+			fNewArmor = eTarget.armor;
+			fNewArmor *= (1/0.5);
+			fNewDmg = iDamage - fNewArmor;
+			eTarget.armor = 0;
+		} else {
+			int oldValue = eTarget.armor;
+			if ( fNewArmor < 0 ) {
+				fNewArmor = 1;
+			}
+			eTarget.armor = ( oldValue - fNewArmor );
+		}
+		eTarget.health -= fNewDmg;
+	} else {
+		// No armor
+		eTarget.health -= iDamage;
+	}
 	
 	// Special monetary punishment for hostage murderers
 	if ( eTarget.classname == "hostage_entity" ) {
@@ -169,7 +196,6 @@ void Damage_Radius( vector vOrigin, entity eAttacker, float fDamage, float fRadi
 	entity eDChain = findradius( vOrigin, fRadius );
 	
 	while( eDChain ) {
-		
 		if ( eDChain.takedamage == DAMAGE_YES ) {
 			float fDiff = vlen( vOrigin - eDChain.origin );
 				
@@ -180,7 +206,6 @@ void Damage_Radius( vector vOrigin, entity eAttacker, float fDamage, float fRadi
 				Damage_Apply( eDChain, eAttacker, fDamage, eDChain.origin );
 			}
 		}
-		
 		eDChain = eDChain.chain;
 	}
 }
