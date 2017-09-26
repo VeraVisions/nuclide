@@ -130,6 +130,7 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 			fNewArmor *= (1/0.5);
 			fNewDmg = iDamage - fNewArmor;
 			eTarget.armor = 0;
+			eTarget.iEquipment -= EQUIPMENT_KEVLAR;
 		} else {
 			int oldValue = eTarget.armor;
 			if ( fNewArmor < 0 ) {
