@@ -25,9 +25,12 @@ m_init
 Precaches and loading for the menu system
 =================
 */
+void Menu_Configuration_Init( void );
 void m_init( void ) {
 	precache_pic( "gfx/shell/splash" );
 	precache_pic( "gfx/shell/btns_main" );
+	
+	Menu_Configuration_Init();
 	
 	// Index all the maps... TODO: Filter out /valve/ to avoid useless junk from being cached.
 	searchhandle shMaps = search_begin( "maps/*.bsp", TRUE, TRUE );

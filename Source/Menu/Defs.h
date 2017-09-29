@@ -18,6 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#define VERSION	"0.1a"
+
 #define KEY_UNKNOWN 		-1
 #define KEY_GAME 			0
 #define KEY_MENU 			2
@@ -58,9 +60,14 @@ int iMapCount;
 
 var float FONT_MENU;
 
-#define MENU_COUNT 5
+#define MENU_COUNT 10
 enum {
 	MENU_MAIN,
+	MENU_CONFIGURATION,
+	MENU_CONFIGURATION_AUDIO,
+	MENU_CONFIGURATION_VIDEO,
+	MENU_CONFIGURATION_PLAYER,
+	MENU_CONFIGURATION_CONTROLS,
 	MENU_MULTIPLAYER,
 	MENU_MULTIPLAYER_CREATE,
 	MENU_MULTIPLAYER_OPTIONS,

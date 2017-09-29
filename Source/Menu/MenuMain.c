@@ -29,6 +29,9 @@ void Menu_Main( void ) {
 	static void Main_ButtonConsole( void ) {
 		localcmd( "toggleconsole\n" );
 	}
+	static void Main_ButtonConfiguration( void ) {
+		iMenu = MENU_CONFIGURATION;
+	}
 	static void Main_ButtonMultiplayer( void ) {
 		iMenu = MENU_MULTIPLAYER;
 	}
@@ -37,7 +40,7 @@ void Menu_Main( void ) {
 	}
 	
 	Object_Button( '72 188', BTN_CONSOLE, Main_ButtonConsole, fButtonAlpha[0] );
-	Object_Button( '72 272', BTN_CONFIG, __NULL__, fButtonAlpha[1] );
+	Object_Button( '72 272', BTN_CONFIG, Main_ButtonConfiguration, fButtonAlpha[1] );
 	
 	Object_Button( '72 328', BTN_MULTIPLAYER, Main_ButtonMultiplayer, fButtonAlpha[2] );
 	Object_Button( '72 356', BTN_CUSTOMGAME, __NULL__, fButtonAlpha[3] );

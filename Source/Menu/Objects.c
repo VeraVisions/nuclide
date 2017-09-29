@@ -116,7 +116,9 @@ void Object_Button( vector vPosition, int iButtonID, void() vFunction, __inout f
 		fAlpha = 1.0f;
 		
 		if ( fMouseClick == TRUE ) {
-			vFunction();
+			if ( vFunction != __NULL__ ) {
+				vFunction();
+			}
 			localcmd( "play ../media/launch_select2.wav\n" );
 			fMouseClick = FALSE;
 		}

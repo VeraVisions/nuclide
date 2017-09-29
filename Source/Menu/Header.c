@@ -20,6 +20,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 fcsMenu fcsMain[ MENU_COUNT ] = {
 	{ Menu_Main, -1 },
+	{ Menu_Configuration, HEAD_CONFIG },
+	{ Menu_Configuration_Audio, HEAD_AUDIO },
+	{ Menu_Configuration_Video, HEAD_VIDEO },
+	{ Menu_Configuration_Player, HEAD_CUSTOMIZE },
+	{ Menu_Configuration_Controls, HEAD_CONTROLS },
 	{ Menu_Multiplayer, HEAD_MULTI },
 	{ Menu_Multiplayer_Create, HEAD_CREATEGAME },
 	{ Menu_Multiplayer_Create, HEAD_ADVOPTIONS },

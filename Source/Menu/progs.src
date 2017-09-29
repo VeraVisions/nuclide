@@ -11,6 +11,7 @@ Init.c
 Input.c
 Objects.c
 MenuMain.c
+MenuConfiguration.c
 MenuMultiplayer.c
 Header.c
 Draw.c

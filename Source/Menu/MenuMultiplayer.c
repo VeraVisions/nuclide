@@ -123,7 +123,7 @@ void Menu_Multiplayer( void ) {
 		localcmd( "com_protocolname FTE-Quake\n" );
 		//clear the filter
 		resethostcachemasks();
-		//sethostcachemaskstring( 0, gethostcacheindexforkey( "gamedir" ), "freecs", SLIST_TEST_EQUAL );
+		sethostcachemaskstring( 0, gethostcacheindexforkey( "gamedir" ), "freecs", SLIST_TEST_EQUAL );
 		sethostcachesort( gethostcacheindexforkey( "ping" ), FALSE );
 		refreshhostcache();
 		resorthostcache();
