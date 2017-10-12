@@ -11,8 +11,11 @@ Free-software implementation of Counter-Strike running on the FTE QuakeWorld eng
 The goal of this project is to provide an open-source version of Counter-Strike 1.5.
 Counter-Strike, being one of the most popular multiplayer games to exist, hasn't had
 a free-software implementation done until now.
+
 ** This project distributes no assets from either Half-Life or Counter-Strike. You have to provide them yourself. **
+
 ** This project shares no code with the Half-Life SDK. The entities are re-creations based on descriptions on TWHL.info. **
+
 ** Read the HL SDK EULA to find out [why.](http://twhl.info/articulator.php?art=1) **
 
 Five cool random things you can do with this:
