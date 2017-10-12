@@ -40,6 +40,7 @@ The game is playable as long as you don't care about the radar/overview display.
 5. Run FTE QuakeWorld
 
 *Optional step: Copy the 'valve' folder from your Half-Life installation in order for all assets to show up*
+**Most UNIX file systems are case-sensitive, so you'll want to rename the .wad files in the cstrike directory to be lowercase only. This will fix most missing texture bugs!**
 
 # Notes
 You might get away with using the cstrike folder from the Steam version of Counter-Strike 1.6, or any older version
