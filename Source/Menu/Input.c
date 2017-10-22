@@ -125,7 +125,12 @@ float Menu_InputEvent( float fEventType, float fKey, float fCharacter, float fDe
 	} else if ( fEventType == IE_MOUSEABS ) {
 		vMousePos_x = fKey;
 		vMousePos_y = fCharacter;
-	} 
+	} else if ( fEventType == IE_MOUSEDELTA ) {
+		vMousePos_x += fKey;
+		vMousePos_y += fCharacter;
+	} else {
+		return FALSE;
+	}
 	
 	return TRUE;
 }
