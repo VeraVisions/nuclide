@@ -43,6 +43,9 @@ void m_draw( vector vScreenSize ) {
 		return;
 	}
 	
+	// temporary
+	vMousePos = getmousepos();
+	
 	if ( vVideoSize != vScreenSize ) {
 		vVideoSize = vScreenSize;
 		vMenuOffset_x = vVideoSize_x / 2 - 320;

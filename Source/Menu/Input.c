@@ -128,6 +128,18 @@ float Menu_InputEvent( float fEventType, float fKey, float fCharacter, float fDe
 	} else if ( fEventType == IE_MOUSEDELTA ) {
 		vMousePos_x += fKey;
 		vMousePos_y += fCharacter;
+		
+		if ( vMousePos_x < 0 ) {
+			vMousePos_x = 0;
+		} else if ( vMousePos_x > vVideoSize_x ) {
+			vMousePos_x = vVideoSize_x;
+		}
+		
+		if ( vMousePos_y < 0 ) {
+			vMousePos_y = 0;
+		} else if ( vMousePos_y > vVideoSize_y ) {
+			vMousePos_y = vVideoSize_y;
+		}
 	} else {
 		return FALSE;
 	}

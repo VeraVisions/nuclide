@@ -547,6 +547,18 @@ float CSQC_InputEvent( float fEventType, float fKey, float fCharacter, float fDe
 	} else if ( fEventType == IE_MOUSEDELTA ) {
 		vMousePos_x += fKey;
 		vMousePos_y += fCharacter;
+		
+		if ( vMousePos_x < 0 ) {
+			vMousePos_x = 0;
+		} else if ( vMousePos_x > vVideoResolution_x ) {
+			vMousePos_x = vVideoResolution_x;
+		}
+		
+		if ( vMousePos_y < 0 ) {
+			vMousePos_y = 0;
+		} else if ( vMousePos_y > vVideoResolution_y ) {
+			vMousePos_y = vVideoResolution_y;
+		}
 	} else {
 		return FALSE;
 	}

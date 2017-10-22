@@ -176,6 +176,9 @@ void CSQC_UpdateView( float fWinWidth, float fWinHeight, float fGameFocus ) {
 	Nightvision_PostDraw();
 	
 	if( fGameFocus == TRUE ) {
+		// temporary
+		vMousePos = getmousepos();
+		
 		// The spectator sees things... differently
 		if ( getplayerkeyvalue( player_localnum, "*spec" ) != "0" ) {
 			VGUI_DrawSpectatorHUD();
