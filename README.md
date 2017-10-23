@@ -36,20 +36,26 @@ All the weapons are implemented, so are the gamemodes:
 The game is playable as long as you don't care about the radar/overview display.
 
 # Installing
-1. Get the latest version of FTEQW from the [website](http://triptohell.info/moodles/).
-2. Download csv15full.exe to get the 'cstrike' folder (Use Wine on *NIX because the linux server is missing assets...).
-3. Move both the cstrike folder and the FTE QuakeWorld binary into a folder
-4. Copy the contents of FreeCS into that same folder, so that fteqw, freecs, default.fmf and cstrike co-exist in the same directory.
-5. Run FTE QuakeWorld
+1. Get the newest copy of FreeCS by cloning or [clicking here](https://github.com/eukara/FreeCS/archive/master.zip)
+2. Extract it to somewhere safe on your harddrive, where you have read/write access (for Windows users... this is not C:/Program Files)
+3. Get the latest version of FTEQW from the [website](http://triptohell.info/moodles/) in binary from and put it into the FreeCS directory with default.fmf in it.
+4. Download csv15full.exe and run it (Use Wine on *NIX - no the Linux Server zip does NOT contain all the assets).
+5. Run csv15full.exe and install it into the FreeCS folder.
+5. Run FTE QuakeWorld to play!
 
 *Optional step: Copy the 'valve' folder from your Half-Life installation in order for all assets to show up*
 
-**Most UNIX file systems are case-sensitive, so you'll want to rename the .wad files in the cstrike directory to be lowercase only. This will fix most missing texture bugs!**
+**Most UNIX file systems are case-sensitive, so you'll want to rename the .wad files in the cstrike directory to be lowercase for now. This will fix most missing texture bugs! Yes, this problem will be adressed in the future. **
 
 # Notes
 You might get away with using the cstrike folder from the Steam version of Counter-Strike 1.6, or any older version
 than 1.5 - but they are not supported. I will not try to recreate 1.6 or any other earlier versions specifically.
 I may however add additional, optional features that will emulate behaviour of later versions of Counter-Strike.
+
+# Support this project
+Feel free to send pull requests and refresh my memory by suggesting missing features under the **Issues** tab!
+If you would like me to spend more time on this project, consider donating to me via https://paypal.me/eukara
+Any help is appreciated.
 
 # Special Thanks
 **Spike** - Creator of FTE QuakeWorld and FTEQCC [(Website)](http://fte.triptohell.info/)
