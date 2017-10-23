@@ -25,7 +25,7 @@
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\VGUITeamSelect.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\View.c" />
 	</category>
-	<category name="Server" expanded="yes">
+	<category name="Server" expanded="no">
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\AmbientSound.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\Ammo.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\ArmouryEntity.c" />
@@ -114,20 +114,11 @@
 </project>
 
 <workspace version="Crimson Editor 3.60">
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\Event.c" linenum="29" placement="0:1:-1:-1:-4:-23:66:66:838:288" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\Damage.c" linenum="133" placement="0:1:-1:-1:-4:-23:88:88:936:546" />
-	<localfile path="C:\Users\eukara\Dropbox\good.txt" linenum="1" placement="0:1:-1:-1:-4:-23:66:66:914:524" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\MenuMultiplayer.c" linenum="133" placement="0:1:-1:-1:-4:-23:88:88:936:546" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Objects.c" linenum="20" placement="0:1:-1:-1:-4:-23:110:110:958:568" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Draw.c" linenum="13" placement="0:1:-1:-1:-4:-23:132:132:980:590" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\MenuMain.c" linenum="43" placement="0:1:-1:-1:-4:-23:154:154:1002:612" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\MenuConfiguration.c" linenum="38" placement="0:1:-1:-1:-4:-23:176:176:1024:634" />
-	<localfile path="C:\Tools\Cygwin\home\eukara\FreeCS\freecs\menu.dat.en.po" linenum="38" placement="0:1:-1:-1:-4:-23:0:0:848:458" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\Footsteps.c" linenum="1" placement="0:1:-1:-1:-4:-23:22:22:870:480" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\Main.c" linenum="133" placement="0:1:-1:-1:-4:-23:44:44:892:502" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\Defs.h" linenum="167" placement="0:1:-1:-1:-4:-23:66:66:914:524" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Builtins.h" linenum="1712" placement="0:1:-1:-1:-4:-23:88:88:936:546" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\progs.src" linenum="14" placement="0:1:-1:-1:-4:-23:110:110:958:568" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Init.c" linenum="35" placement="2:3:-1:-1:-4:-23:132:132:980:590" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\MenuMain.c" linenum="34" placement="2:3:-1:-1:-8:-30:125:125:980:590" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\MenuMultiplayer.c" linenum="1" placement="0:1:-1:-1:-8:-30:150:150:1009:619" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\MenuConfiguration.c" linenum="130" placement="0:1:-1:-1:-8:-30:175:175:1034:644" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Input.c" linenum="125" placement="0:1:-1:-1:-8:-30:200:200:1059:669" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Builtins.h" linenum="1153" placement="0:1:-1:-1:-8:-30:225:225:1084:694" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\Event.c" linenum="527" placement="0:1:-1:-1:-8:-30:0:0:859:469" />
 </workspace>
 

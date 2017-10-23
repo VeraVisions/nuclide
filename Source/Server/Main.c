@@ -339,6 +339,10 @@ void worldspawn( void ) {
 	precache_sound( "weapons/xm1014-1.wav" );
 	precache_sound( "weapons/zoom.wav" );
 	
+	precache_sound( "weapons/explode3.wav" );
+	precache_sound( "weapons/explode4.wav" );
+	precache_sound( "weapons/explode5.wav" );
+	
 	precache_sound( "debris/glass1.wav" );
 	precache_sound( "debris/glass2.wav" );
 	precache_sound( "debris/glass3.wav" );
