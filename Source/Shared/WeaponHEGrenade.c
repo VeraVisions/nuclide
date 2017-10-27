@@ -101,6 +101,9 @@ void WeaponHEGRENADE_Throw( void ) {
 		remove( self );
 	}
 	static void Weapon_HEGRENADE_Touch( void ) {
+		if ( other.solid == SOLID_TRIGGER ) {
+			return;
+		}
 		if ( other == self.owner ) {
 			return;
 		}

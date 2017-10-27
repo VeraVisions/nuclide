@@ -107,6 +107,12 @@ void WeaponSMOKEGRENADE_Throw( void ) {
 		self.nextthink = time + 5.0f;
 	}
 	static void Weapon_SMOKEGRENADE_Touch( void ) {
+		if ( other.solid == SOLID_TRIGGER ) {
+			return;
+		}
+		if ( other == self.owner ) {
+			return;
+		}
 		if ( other.classname == "func_breakable" ) {
 			Damage_Apply( other, self, 10, self.origin );
 		}
