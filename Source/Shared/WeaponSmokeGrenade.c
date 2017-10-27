@@ -30,7 +30,7 @@ weaponinfo_t wptSMOKEGRENADE = {
 	WEAPON_SMOKEGRENADE, 	// Identifier
 	SLOT_GRENADE,		// Slot
 	200, 				// Price
-	0, 					// Caliber ID
+	EXPLOSIVE_SMOKE, 	// Caliber ID
 	1.0, 				// Max Player Speed
 	1, 					// Bullets Per Shot
 	1, 					// Clip/MagSize

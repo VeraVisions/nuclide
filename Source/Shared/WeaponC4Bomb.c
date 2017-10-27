@@ -29,7 +29,7 @@ weaponinfo_t wptC4BOMB = {
 	WEAPON_C4BOMB, 		// Identifier
 	SLOT_GRENADE,
 	0, 					// Price
-	CALIBER_50AE, 		// Caliber ID
+	EXPLOSIVE_C4, 		// Caliber ID
 	1.0, 				// Max Player Speed
 	0, 					// Bullets Per Shot
 	0, 					// Clip/MagSize

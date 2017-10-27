@@ -30,7 +30,7 @@ weaponinfo_t wptFLASHBANG = {
 	WEAPON_FLASHBANG, 	// Identifier
 	SLOT_GRENADE,		// Slot
 	200, 				// Price
-	0, 					// Caliber ID
+	EXPLOSIVE_FLASH, 	// Caliber ID
 	1.0, 				// Max Player Speed
 	1, 					// Bullets Per Shot
 	1, 					// Clip/MagSize

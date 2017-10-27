@@ -30,7 +30,7 @@ weaponinfo_t wptHEGRENADE = {
 	WEAPON_HEGRENADE, 	// Identifier
 	SLOT_GRENADE,		// Slot
 	200, 				// Price
-	0, 					// Caliber ID
+	EXPLOSIVE_HE, 		// Caliber ID
 	1.0, 				// Max Player Speed
 	1, 					// Bullets Per Shot
 	1, 					// Clip/MagSize
@@ -101,9 +101,13 @@ void WeaponHEGRENADE_Throw( void ) {
 		remove( self );
 	}
 	static void Weapon_HEGRENADE_Touch( void ) {
+		if ( other == self.owner ) {
+			return;
+		}
 		if ( other.classname == "func_breakable" && other.material == MATERIAL_GLASS ) {
 			Damage_Apply( other, self, 10, self.origin );
 		}
+		
 		sound( self, CHAN_WEAPON, "weapons/he_bounce-1.wav", 1, ATTN_NORM );
 	}
 	
@@ -115,7 +119,7 @@ void WeaponHEGRENADE_Throw( void ) {
 	
 	vector vDir = aim ( self, 100000 );
 	eNade.owner = self;
-	eNade.solid = SOLID_TRIGGER;
+	eNade.solid = SOLID_TRIGGER; // This is so grenades will not get slowed down by windows they touch
 	eNade.angles = vectoangles( vDir );
 	eNade.velocity = ( vDir * 800 );
 	eNade.avelocity = ( v_forward * 600 );
