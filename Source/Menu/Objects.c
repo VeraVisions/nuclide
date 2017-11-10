@@ -213,6 +213,15 @@ void Object_Scrollbar( vector vPosition, int iHeight, __inout int iProgress ) {
 	drawfill( [vPosition_x, vPosition_y + iProgress], [ 16, 16 ], autocvar_menu_fgcolor, 1.0f );
 }
 
+/*
+=================
+Object_ScrollbarH
+
+A scrollbar, for different types of purposes.
+This is the horizontal version.
+Note: Only have one at a time.
+=================
+*/
 void Object_ScrollbarH( vector vPosition, int iWidth, __inout int iProgress ) {
 	Object_Frame( vPosition, [ iWidth + 16, 16 ] );
 	
@@ -239,5 +248,40 @@ void Object_ScrollbarH( vector vPosition, int iWidth, __inout int iProgress ) {
 		iProgress = iWidth;
 	} 
 	
-	drawfill( [vPosition_x + iProgress, vPosition_y ], [ 16, 16 ], autocvar_menu_fgcolor, 1.0f );
+	drawfill( [ vPosition_x + iProgress, vPosition_y ], [ 16, 16 ], autocvar_menu_fgcolor, 1.0f );
+}
+
+/*
+=================
+Object_CvarToggle
+
+A nice way of toggling cvars.
+=================
+*/
+void Object_CvarToggle( vector vPosition, string sLabel, string sCvar ) {
+	float fAlpha = 0.8f;
+	int iWidth = stringwidth( sLabel, FALSE );
+	vPosition += vMenuOffset;
+	
+	if ( Menu_InputCheckMouse( vPosition, [ iWidth, 8 ] ) == TRUE ) {
+		fAlpha = 1.0f;
+		if ( fMouseClick == TRUE ) {
+			if ( cvar( sCvar ) == 0 ) {
+				cvar_set( sCvar, "1" );
+			} else {
+				cvar_set( sCvar, "0" );
+			}
+			fMouseClick = FALSE;
+		}
+	}
+	
+	drawfill( vPosition + '-2 -2', [ iWidth + 36, 12 ], '0 0 0', 0.8f );
+	
+	if ( cvar( sCvar ) == 0 ) {
+		drawstring( vPosition, sprintf( "[ ] %s", sLabel ), '8 8', autocvar_menu_fgcolor, fAlpha, 0 );
+	} else {
+		drawstring( vPosition, sprintf( "[X] %s", sLabel ), '8 8', autocvar_menu_fgcolor, fAlpha, 0 );
+	}
+	
+	
 }

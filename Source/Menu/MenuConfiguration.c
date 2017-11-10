@@ -166,6 +166,10 @@ void Menu_Configuration_Video( void ) {
 	
 	Menu_ResetClipArea();
 	
+	Object_CvarToggle( '400 165', "Fullscreen", "vid_fullscreen_standalone" );
+	Object_CvarToggle( '400 185', "Triple Buffering", "vid_triplebuffer" );
+	Object_CvarToggle( '400 205', "Virtual Synchronisation", "vid_vsync" );
+	
 	Object_Button( '32 148', BTN_OK, Video_Apply, fButtonAlpha[0] );
 	Object_Button( '32 180', BTN_CANCEL, Menu_Configuration_ButtonCancel, fButtonAlpha[1] );
 }
