@@ -26,16 +26,18 @@ Initializes external control scheme file, etc.
 =================
 */
 int iActCount;
+int iResCount;
 string *strActBind;
 string *strActDescr;
+string *strResolution;
 void Menu_Configuration_Init( void ) {
 	int iCount = 0;
 	string sTemp;
-	filestream fileActList = fopen( "gfx/shell/kb_act.lst", FILE_READ );
+	filestream fileSettings = fopen( "gfx/shell/kb_act.lst", FILE_READ );
 
 	// Count the valid entries.
-	if ( fileActList >= 0 ) {
-		while ( ( sTemp = fgets( fileActList ) ) ) {			
+	if ( fileSettings >= 0 ) {
+		while ( ( sTemp = fgets( fileSettings ) ) ) {			
 			if ( tokenize_console( sTemp ) == 2 ) {
 				iActCount++;
 			}
@@ -47,10 +49,10 @@ void Menu_Configuration_Init( void ) {
 	// Reset filestream position after allocating the strings
 	strActBind = memalloc( sizeof( string ) * iActCount );
 	strActDescr = memalloc( sizeof( string ) * iActCount );
-	fseek( fileActList, 0 );
+	fseek( fileSettings, 0 );
 	
 	// Parse the bindings in
-	while ( ( sTemp = fgets( fileActList ) ) ) {		
+	while ( ( sTemp = fgets( fileSettings ) ) ) {		
 		// Tokenize and just parse this stuff in
 		if ( tokenize_console( sTemp ) == 2 ) {
 			strActBind[ iCount ] = argv( 0 );
@@ -59,7 +61,31 @@ void Menu_Configuration_Init( void ) {
 			iCount++;
 		}
 	}
-	fclose( fileActList );
+	fclose( fileSettings );
+	
+	fileSettings = fopen( "resolutions.txt", FILE_READ );
+	// Count the valid entries.
+	if ( fileSettings >= 0 ) {
+		while ( ( sTemp = fgets( fileSettings ) ) ) {			
+			if ( tokenize_console( sTemp ) == 2 ) {
+				iResCount++;
+			}
+		}
+	} else {
+		error( "Cannot parse resolutions.txt!" );
+	}
+	
+	// Reset filestream position after allocating the strings
+	strResolution = memalloc( sizeof( string ) * iResCount );
+	fseek( fileSettings, 0 );
+	
+	// Parse the bindings in
+	iCount = 0;
+	while ( ( sTemp = fgets( fileSettings ) ) ) {		
+		strResolution[ iCount ] = sTemp;
+		iCount++;
+	}
+	fclose( fileSettings );
 }
 
 /*
@@ -67,7 +93,7 @@ void Menu_Configuration_Init( void ) {
 Menu_Configuration_ButtonOK
 =================
 */
-void Menu_Configuration_ButtonOK( void ) {
+void Menu_Configuration_ButtonOK( void ) {	
 	iMenu = MENU_CONFIGURATION;
 }
 
@@ -86,7 +112,61 @@ Menu_Configuration_Video
 =================
 */
 void Menu_Configuration_Video( void ) {
-	Object_Button( '32 148', BTN_OK, Menu_Configuration_ButtonOK, fButtonAlpha[0] );
+	static int iScrollRes = 0;
+	static int iSelectedResolution = -1;
+	
+	static void Video_Apply( void ) {
+		if ( iSelectedResolution != -1 ) {
+			tokenizebyseparator( strResolution[ iSelectedResolution ], "x", " " );
+			cvar_set( "vid_width", argv( 0 ) );
+			cvar_set( "vid_height", argv( 1 ) );
+			localcmd( "vid_restart\n" );
+		}
+	}
+	
+	static void Video_DisplayRes( vector vPosition, int i, __inout int iSelected ) {
+		float fItemAlpha = 1.0f;
+		
+		vPosition += vMenuOffset;
+		
+		if ( Menu_InputCheckMouse( [ vPosition_x, vPosition_y ], [ 284, 8 ] ) == TRUE ) {
+			if ( fMouseClick == TRUE ) {
+				if ( iSelected != i ) {
+					iSelected = i;
+					fInputKeyCode = 0;
+					fMouseClick = FALSE;
+				}
+			}
+		} else {
+			fItemAlpha = 0.8;
+		}
+		
+		if ( iSelected == i ) {
+			drawfill( [ vPosition_x, vPosition_y - 1 ], [ 156, 10 ], '1 1 1', 0.5, 2 );
+			drawstring( [vPosition_x + 8, vPosition_y], strResolution[ i ], '8 8 0', '1 1 1', 1.0f, FALSE );
+		} else {
+			drawstring( [vPosition_x + 8, vPosition_y], strResolution[ i ], '8 8 0', '1 1 1', fItemAlpha, FALSE );
+		}
+	}
+	
+	Object_Label( '196 148', _("VIDEO_RES"), '8 8' );
+	Object_Frame( '196 160', '164 300' );
+	
+	Object_Scrollbar( '372 160', 284, iScrollRes );
+	
+	Menu_SetClipArea( '196 160', '164 300' );
+	
+	vector vListPos = '200 165';
+	vListPos_y -= fabs( ( ( iResCount - 8 ) * 10 ) * ( iScrollRes / 300 ) );
+	
+	for ( int i = 0; i < iResCount; i++ ) {
+		Video_DisplayRes( vListPos, i, iSelectedResolution );
+		vListPos_y += 10;
+	}
+	
+	Menu_ResetClipArea();
+	
+	Object_Button( '32 148', BTN_OK, Video_Apply, fButtonAlpha[0] );
 	Object_Button( '32 180', BTN_CANCEL, Menu_Configuration_ButtonCancel, fButtonAlpha[1] );
 }
 
@@ -96,6 +176,23 @@ Menu_Configuration_Audio
 =================
 */
 void Menu_Configuration_Audio( void ) {
+	static int iAudioMaster = -1;
+	static int iLastMaster = -1;
+	
+	// Page is first opened, initialize the scrollbar variables
+	if ( iAudioMaster == -1 ) {
+		iAudioMaster = cvar( "volume" ) * 256;
+		iLastMaster = iAudioMaster;
+	}
+	
+	Object_Label( '196 148', _("AUDIO_MASTER"), '8 8' );
+	Object_ScrollbarH( '196 160', 256, iAudioMaster );
+	
+	if ( iAudioMaster != iLastMaster ) {
+		localcmd( sprintf( "volume %f\n", iAudioMaster / 256 ) );
+		iLastMaster = iAudioMaster;
+	}
+	
 	Object_Button( '32 148', BTN_OK, Menu_Configuration_ButtonOK, fButtonAlpha[0] );
 	Object_Button( '32 180', BTN_CANCEL, Menu_Configuration_ButtonCancel, fButtonAlpha[1] );
 }

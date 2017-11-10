@@ -72,7 +72,7 @@
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Objects.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\progs.src" />
 	</category>
-	<category name="Shared" expanded="no">
+	<category name="Shared" expanded="yes">
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Shared\Animations.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Shared\BaseMelee.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Shared\Effects.c" />
@@ -114,11 +114,6 @@
 </project>
 
 <workspace version="Crimson Editor 3.60">
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\MenuMain.c" linenum="34" placement="2:3:-1:-1:-8:-30:125:125:980:590" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\MenuMultiplayer.c" linenum="1" placement="0:1:-1:-1:-8:-30:150:150:1009:619" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\MenuConfiguration.c" linenum="130" placement="0:1:-1:-1:-8:-30:175:175:1034:644" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Input.c" linenum="125" placement="0:1:-1:-1:-8:-30:200:200:1059:669" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Builtins.h" linenum="1153" placement="0:1:-1:-1:-8:-30:225:225:1084:694" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\Event.c" linenum="527" placement="0:1:-1:-1:-8:-30:0:0:859:469" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\MenuConfiguration.c" linenum="1" placement="2:3:-1:-1:-4:-23:176:176:1058:608" />
 </workspace>
 

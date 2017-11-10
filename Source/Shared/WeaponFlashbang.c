@@ -30,7 +30,7 @@ weaponinfo_t wptFLASHBANG = {
 	WEAPON_FLASHBANG, 	// Identifier
 	SLOT_GRENADE,		// Slot
 	200, 				// Price
-	0, 					// Caliber ID
+	EXPLOSIVE_FLASH, 	// Caliber ID
 	1.0, 				// Max Player Speed
 	1, 					// Bullets Per Shot
 	1, 					// Clip/MagSize
@@ -119,6 +119,12 @@ void WeaponFLASHBANG_Throw( void ) {
 		remove( self );
 	}
 	static void Weapon_FLASHBANG_Touch( void ) {
+		if ( other.solid == SOLID_TRIGGER ) {
+			return;
+		}
+		if ( other == self.owner ) {
+			return;
+		}
 		if ( other.classname == "func_breakable" ) {
 			Damage_Apply( other, self, 10, self.origin );
 		}

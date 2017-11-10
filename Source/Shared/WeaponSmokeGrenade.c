@@ -30,7 +30,7 @@ weaponinfo_t wptSMOKEGRENADE = {
 	WEAPON_SMOKEGRENADE, 	// Identifier
 	SLOT_GRENADE,		// Slot
 	200, 				// Price
-	0, 					// Caliber ID
+	EXPLOSIVE_SMOKE, 	// Caliber ID
 	1.0, 				// Max Player Speed
 	1, 					// Bullets Per Shot
 	1, 					// Clip/MagSize
@@ -107,6 +107,12 @@ void WeaponSMOKEGRENADE_Throw( void ) {
 		self.nextthink = time + 5.0f;
 	}
 	static void Weapon_SMOKEGRENADE_Touch( void ) {
+		if ( other.solid == SOLID_TRIGGER ) {
+			return;
+		}
+		if ( other == self.owner ) {
+			return;
+		}
 		if ( other.classname == "func_breakable" ) {
 			Damage_Apply( other, self, 10, self.origin );
 		}

@@ -185,13 +185,13 @@ Note: Only have one at a time.
 =================
 */
 void Object_Scrollbar( vector vPosition, int iHeight, __inout int iProgress ) {
-	Object_Frame( vPosition, [ 16, iHeight ] );
+	Object_Frame( vPosition, [ 16, iHeight + 16 ] );
 	
 	vPosition += vMenuOffset;
-	iHeight -= 16;
+
 	if ( ( iScrollbarHold == TRUE ) || ( Menu_InputCheckMouse( [vPosition_x, vPosition_y + iProgress ], '16 16' ) == TRUE ) ) {
 		if ( fMouseClick == TRUE ) {
-			iProgress = ( vMousePos_y - vPosition_y ) - 8;
+			iProgress = ( vMousePos_y - vPosition_y );
 			iScrollbarHold = TRUE;
 		}
 	}
@@ -209,9 +209,35 @@ void Object_Scrollbar( vector vPosition, int iHeight, __inout int iProgress ) {
 	} else if ( iProgress > iHeight ) {
 		iProgress = iHeight;
 	} 
-			
-	iHeight += 16;
 	
 	drawfill( [vPosition_x, vPosition_y + iProgress], [ 16, 16 ], autocvar_menu_fgcolor, 1.0f );
 }
 
+void Object_ScrollbarH( vector vPosition, int iWidth, __inout int iProgress ) {
+	Object_Frame( vPosition, [ iWidth + 16, 16 ] );
+	
+	vPosition += vMenuOffset;
+
+	if ( ( iScrollbarHold == TRUE ) || ( Menu_InputCheckMouse( [vPosition_x + iProgress, vPosition_y ], '16 16' ) == TRUE ) ) {
+		if ( fMouseClick == TRUE ) {
+			iProgress = ( vMousePos_x - vPosition_x );
+			iScrollbarHold = TRUE;
+		}
+	}
+	
+	if ( fScrollWheel == SCROLL_DOWN ) {
+		iProgress += 2;
+		fScrollWheel = SCROLL_NONE;
+	} else if ( fScrollWheel == SCROLL_UP ) {
+		iProgress -= 2;
+		fScrollWheel = SCROLL_NONE;
+	}
+	
+	if ( iProgress < 0 ) {
+		iProgress = 0;
+	} else if ( iProgress > iWidth ) {
+		iProgress = iWidth;
+	} 
+	
+	drawfill( [vPosition_x + iProgress, vPosition_y ], [ 16, 16 ], autocvar_menu_fgcolor, 1.0f );
+}

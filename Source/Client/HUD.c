@@ -42,7 +42,7 @@ float vHUDNumPos[10] = {
 };
 
 // Ditto
-vector vHUDCalPos[11] = {
+vector vHUDCalPos[15] = {
 	'0 0 0',
 	'0.09375 0.28125 0', 	// 50AE
 	'0.28125 0.28125 0', 	// 762MM
@@ -54,6 +54,10 @@ vector vHUDCalPos[11] = {
 	'0.375 0.28125 0', 		// 45ACP
 	'0.46875 0.28125 0', 	// 357SIG
 	'0.46875 0.375 0', 		// 57MM
+	'0.375 0.375',			// C4
+	'0.5625 0.375',			// SMOKE
+	'0.28125 0.375',		// HE
+	'0.1875 0.375',		// FLASH
 };
 
 /*
@@ -331,6 +335,9 @@ Draws the current clip, the amount of ammo for the caliber and a matching calibe
 void HUD_DrawAmmo( void ) {
 	static float fOldMag, fOldCal;
 	static float fAmmoAlpha;
+	static vector vAmmoMagPos;
+	static vector vAmmoCalPos;
+	
 	if ( getstatf( STAT_ACTIVEWEAPON ) == WEAPON_KNIFE || getstatf( STAT_ACTIVEWEAPON ) == WEAPON_C4BOMB ) {
 		return;
 	}
@@ -345,13 +352,18 @@ void HUD_DrawAmmo( void ) {
 		fAmmoAlpha = HUD_ALPHA;
 	}
 	
-	vector vAmmoMagPos = [ vVideoResolution_x - 142, vVideoResolution_y - 42 ];
-	HUD_DrawNums( getstatf( STAT_CURRENT_MAG ), vAmmoMagPos, fAmmoAlpha, vHUDColor );
-	
-	drawsubpic( [vVideoResolution_x - 118, vVideoResolution_y - 42], '3 25', HUD_NUMFILE_LAYER, [0.9375, 0], [ 0.01171875, 0.09765625 ], vHUDColor, fAmmoAlpha, DRAWFLAG_ADDITIVE );
-	
-	vector vAmmoCalPos = [ vVideoResolution_x - 64, vVideoResolution_y - 42 ];
-	HUD_DrawNums( getstatf( STAT_CURRENT_CALIBER ), vAmmoCalPos, fAmmoAlpha, vHUDColor );
+	if ( wptTable[ getstatf( STAT_ACTIVEWEAPON ) ].iCaliber < 11 ) {
+		vAmmoMagPos = [ vVideoResolution_x - 142, vVideoResolution_y - 42 ];
+		HUD_DrawNums( getstatf( STAT_CURRENT_MAG ), vAmmoMagPos, fAmmoAlpha, vHUDColor );
+		
+		drawsubpic( [vVideoResolution_x - 118, vVideoResolution_y - 42], '3 25', HUD_NUMFILE_LAYER, [0.9375, 0], [ 0.01171875, 0.09765625 ], vHUDColor, fAmmoAlpha, DRAWFLAG_ADDITIVE );
+		
+		vAmmoCalPos = [ vVideoResolution_x - 64, vVideoResolution_y - 42 ];
+		HUD_DrawNums( getstatf( STAT_CURRENT_CALIBER ), vAmmoCalPos, fAmmoAlpha, vHUDColor );
+	} else {
+		vAmmoMagPos = [ vVideoResolution_x - 64, vVideoResolution_y - 42 ];
+		HUD_DrawNums( getstatf( STAT_CURRENT_MAG ), vAmmoMagPos, fAmmoAlpha, vHUDColor );
+	}
 	
 	// Caliber icon
 	drawsubpic( vVideoResolution - '42 42', '24 24', HUD_NUMFILE_LAYER, vHUDCalPos[ wptTable[ getstatf( STAT_ACTIVEWEAPON ) ].iCaliber ], [ NUMSIZE_X, NUMSIZE_X ], vHUDColor, fAmmoAlpha, DRAWFLAG_ADDITIVE );
