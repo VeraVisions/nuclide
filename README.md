@@ -39,7 +39,7 @@ The game is playable as long as you don't care about the radar/overview display.
 1. Get the newest copy of FreeCS by cloning or [clicking here](https://github.com/eukara/FreeCS/archive/master.zip)
 2. Extract it to somewhere safe on your harddrive, where you have read/write access (for Windows users... this is not C:/Program Files)
 3. Get the latest version of FTEQW from the [website](http://triptohell.info/moodles/) in binary from and put it into the FreeCS directory with default.fmf in it.
-4. Download csv15full.exe.
+4. Download csv15full.exe. You can find it on [FilePlanet](https://www.fileplanet.com/57255/50000/fileinfo/Counter-Strike-1.5-Full-Mod-Client-[Win32])
 5. Run csv15full.exe and install it into the FreeCS folder. (Use Wine on *NIX! No, the Linux Server zip does NOT contain all the assets)
 5. Run FTE QuakeWorld to play!
 
