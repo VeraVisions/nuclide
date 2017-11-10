@@ -20,7 +20,7 @@ msgstr ""
 msgid "FREECS_QUITMSG"
 msgstr "Are you sure you want to quit?"
 
-msgid "MP_MAPS" 
+msgid "MP_MAPS"
 msgstr "Maps:"
 
 msgid "MP_GAME"
@@ -34,3 +34,9 @@ msgstr "Players"
 
 msgid "MP_PING"
 msgstr "Ping"
+
+msgid "AUDIO_MASTER"
+msgstr "Master Volume"
+
+msgid "VIDEO_RES"
+msgstr "Resolution:"

@@ -12,11 +12,11 @@ The goal of this project is to provide an open-source version of Counter-Strike 
 Counter-Strike, being one of the most popular multiplayer games to exist, hasn't had
 a free-software implementation done until now.
 
-** This project distributes no assets from either Half-Life or Counter-Strike. You have to provide them yourself. **
+**This project distributes no assets from either Half-Life or Counter-Strike. You have to provide them yourself.**
 
-** This project shares no code with the Half-Life SDK. The entities are re-creations based on descriptions on TWHL.info. **
+**This project shares no code with the Half-Life SDK. The entities are re-creations based on descriptions on TWHL.info.**
 
-** Read the HL SDK EULA to find out [why.](http://twhl.info/articulator.php?art=1) **
+**Read the HL SDK EULA to find out** [why.](http://twhl.info/articulator.php?art=1)
 
 Five cool random things you can do with this:
 
@@ -39,13 +39,13 @@ The game is playable as long as you don't care about the radar/overview display.
 1. Get the newest copy of FreeCS by cloning or [clicking here](https://github.com/eukara/FreeCS/archive/master.zip)
 2. Extract it to somewhere safe on your harddrive, where you have read/write access (for Windows users... this is not C:/Program Files)
 3. Get the latest version of FTEQW from the [website](http://triptohell.info/moodles/) in binary from and put it into the FreeCS directory with default.fmf in it.
-4. Download csv15full.exe and run it (Use Wine on *NIX - no the Linux Server zip does NOT contain all the assets).
-5. Run csv15full.exe and install it into the FreeCS folder.
+4. Download csv15full.exe.
+5. Run csv15full.exe and install it into the FreeCS folder. (Use Wine on *NIX! No, the Linux Server zip does NOT contain all the assets)
 5. Run FTE QuakeWorld to play!
 
 *Optional step: Copy the 'valve' folder from your Half-Life installation in order for all assets to show up*
 
-**Most UNIX file systems are case-sensitive, so you'll want to rename the .wad files in the cstrike directory to be lowercase for now. This will fix most missing texture bugs! Yes, this problem will be adressed in the future. **
+**Most UNIX file systems are case-sensitive, so you'll want to rename the .wad files in the cstrike directory to be lowercase for now. This will fix most missing texture bugs! Yes, this problem will be adressed in the future.**
 
 # Notes
 You might get away with using the cstrike folder from the Steam version of Counter-Strike 1.6, or any older version
