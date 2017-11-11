@@ -128,20 +128,20 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 		if ( fNewArmor > eTarget.armor ) {
 			fNewArmor = eTarget.armor;
 			fNewArmor *= (1/0.5);
-			fNewDmg = iDamage - fNewArmor;
+			fNewDmg = rint( iDamage - fNewArmor );
 			eTarget.armor = 0;
 			eTarget.iEquipment -= EQUIPMENT_KEVLAR;
 		} else {
 			if ( fNewArmor < 0 ) {
 				fNewArmor = 1;
 			}
-			eTarget.armor -= fNewArmor;
+			eTarget.armor = rint( eTarget.armor - fNewArmor );
 		}
 		
 		if ( iSkipArmor == TRUE ) {
-			eTarget.health -= iDamage;
+			eTarget.health = rint( eTarget.health -= iDamage );
 		} else {
-			eTarget.health -= fNewDmg;
+			eTarget.health = rint( eTarget.health -= fNewDmg );
 		}
 	} else {
 		// No armor

@@ -134,8 +134,9 @@ void Weapon_PrimaryAttack( float fWeapon ) {
 #ifdef CSQC
 	if ( fWeaponEventPlayer != player_localentnum ) {
 		entity ono = findfloat( world, entnum, fWeaponEventPlayer );
-		//print( sprintf( "Shooter! Origin: %d %d %d\n", ono.origin_x, ono.origin_y, ono.origin_z ) );
-		Animation_ShootWeapon( ono );
+		if ( ono != __NULL__ ) {
+			Animation_ShootWeapon( ono );
+		}
 		return;
 	}
 #endif
@@ -176,7 +177,9 @@ void Weapon_Reload( float fWeapon ) {
 #ifdef CSQC
 	if ( fWeaponEventPlayer != player_localentnum ) {
 		entity ono = findfloat( world, entnum, fWeaponEventPlayer );
-		Animation_ReloadWeapon( ono );
+		if ( ono != __NULL__ ) {
+			Animation_ReloadWeapon( ono );
+		}
 		return;
 	}
 #endif

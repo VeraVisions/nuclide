@@ -163,9 +163,10 @@ static void WeaponC4BOMB_Think( void ) {
 void WeaponC4BOMB_Drop( vector vBombPos ) {
 	// Do all the dirty entspawning stuff
 	entity eBomb = spawn();
-	eBomb.classname = "c4bomb";
+	eBomb.classname = "remove_me";
 	
 	eBomb.solid = SOLID_BBOX;
+	eBomb.weapon = WEAPON_C4BOMB;
 	setmodel( eBomb, "models/w_c4.mdl" );
 	setorigin( eBomb, vBombPos );
 	setsize( eBomb, '-6 -6 0', '6 6 6' );
