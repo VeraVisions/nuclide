@@ -161,6 +161,9 @@ void CSQC_UpdateView( float fWinWidth, float fWinHeight, float fGameFocus ) {
 	
 	Nightvision_PreDraw();
 	
+	setproperty( VF_AFOV, cvar( "fov" ) * ( getstatf( STAT_VIEWZOOM ) / 255 ) );
+	setsensitivityscaler( ( getstatf( STAT_VIEWZOOM ) / 255 ) );
+	
 	// When Cameratime is active, draw on the forced coords instead
 	if ( fCameraTime > time ) {
 		setproperty( VF_ORIGIN, vCameraPos) ;

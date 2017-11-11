@@ -36,7 +36,9 @@ ClientKill
 Suicide command 'kill' executes this function.
 =================
 */
-void ClientKill( void ) {}
+void ClientKill( void ) {
+	Damage_Apply( self, self, self.health, self.origin );
+}
 
 /*
 =================

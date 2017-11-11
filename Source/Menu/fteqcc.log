@@ -1,0 +1,34 @@
+Args: "C:\Users\User\Dropbox\The Wastes Build\bin\fteqcc.exe"
+FTEQCC: Jun  5 2017
+Source file: progs.src
+Outputfile: ../../freecs/menu.dat
+including ../Builtins.h
+including ../Math.h
+including Defs.h
+including Init.c
+including Input.c
+including Objects.c
+including MenuMain.c
+including MenuConfiguration.c
+including MenuMultiplayer.c
+including Header.c
+including Draw.c
+Compile finished: ../../freecs/menu.dat (fte format)
+Done. 0 warnings
+Args: "C:\Users\User\Dropbox\The Wastes Build\bin\fteqcc.exe"
+FTEQCC: Jun  5 2017
+Source file: progs.src
+Outputfile: ../../freecs/menu.dat
+including ../Builtins.h
+including ../Math.h
+including Defs.h
+including Init.c
+including Input.c
+including Objects.c
+including MenuMain.c
+including MenuConfiguration.c
+including MenuMultiplayer.c
+including Header.c
+including Draw.c
+Compile finished: ../../freecs/menu.dat (fte format)
+Done. 0 warnings

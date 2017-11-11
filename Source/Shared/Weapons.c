@@ -405,6 +405,8 @@ void Weapon_DropWeapon( int iSlot ) {
 		if ( Weapon_SlotEmpty( Weapon_GetSlot( eOld.weapon ) ) ) {
 			Weapon_AddItem( eOld.weapon );
 			Weapon_Draw( eOld.weapon );
+			self.(wptTable[ eOld.weapon ].iMagfld) = eOld.health;
+			Weapon_UpdateCurrents();
 		} else {
 			self = eOld;
 			return;
@@ -433,7 +435,7 @@ void Weapon_DropWeapon( int iSlot ) {
 		return;
 	}
 	
-	self.weapon = 0;
+	
 	
 	entity eDrop = spawn();
 	setorigin( eDrop, self.origin + self.view_ofs );
@@ -446,11 +448,13 @@ void Weapon_DropWeapon( int iSlot ) {
 	eDrop.think = Weapon_DropWeapon_Think;
 	eDrop.touch = Weapon_DropWeapon_Touch;
 	eDrop.nextthink = time + 1.0f;
+	eDrop.health = self.(wptTable[ fWeapon ].iMagfld);
 	setsize( eDrop, '-16 -16 0', '16 16 16' );
 	
 	makevectors( self.v_angle );
 	eDrop.velocity = aim( self, 10000 ) * 256;
 
+	self.weapon = 0;
 	Weapon_SwitchBest();
 }
 
