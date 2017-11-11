@@ -45,7 +45,7 @@ int BaseMelee_Attack( void ) {
 			Effect_Impact( IMPACT_FLESH, trace_endpos, trace_plane_normal );
 			sound( self, CHAN_WEAPON, sprintf( "weapons/knife_hit%d.wav", floor( ( random() * 4 ) + 1 ) ), 1, ATTN_NORM );
 		}
-		Damage_Apply( trace_ent, self, wptTable[ self.weapon ].iDamage, trace_endpos );
+		Damage_Apply( trace_ent, self, wptTable[ self.weapon ].iDamage, trace_endpos, FALSE );
 	} else {
 		Effect_Impact( IMPACT_MELEE, trace_endpos, trace_plane_normal );
 	}

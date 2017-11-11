@@ -40,7 +40,7 @@ void TraceAttack_FireSingle( vector vPos, vector vAngle ) {
 		
 	if (trace_fraction != 1.0) {
 		if ( trace_ent.takedamage == DAMAGE_YES ) {
-			Damage_Apply( trace_ent, self, wptTable[ self.weapon ].iDamage, trace_endpos );
+			Damage_Apply( trace_ent, self, wptTable[ self.weapon ].iDamage, trace_endpos, FALSE );
 		}
 		
 		if ( trace_ent.iBleeds == TRUE ) {

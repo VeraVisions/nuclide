@@ -94,7 +94,7 @@ Damage_Apply
 Generic function that applies damage, pain and suffering
 =================
 */
-void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos ) {
+void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos, int iSkipArmor ) {
 	// Modify the damage based on the location
 	if ( trace_surface_id == BODY_HEAD ) {
 		if ( eTarget.iEquipment & EQUIPMENT_HELMET ) {
@@ -137,7 +137,12 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 			}
 			eTarget.armor -= fNewArmor;
 		}
-		eTarget.health -= fNewDmg;
+		
+		if ( iSkipArmor == TRUE ) {
+			eTarget.health -= iDamage;
+		} else {
+			eTarget.health -= fNewDmg;
+		}
 	} else {
 		// No armor
 		eTarget.health -= iDamage;
@@ -203,7 +208,7 @@ void Damage_Radius( vector vOrigin, entity eAttacker, float fDamage, float fRadi
 			fDamage = fDamage * fDiff;
 			
 			if ( fDamage > 0 ) {
-				Damage_Apply( eDChain, eAttacker, fDamage, eDChain.origin );
+				Damage_Apply( eDChain, eAttacker, fDamage, eDChain.origin, FALSE );
 			}
 		}
 		eDChain = eDChain.chain;

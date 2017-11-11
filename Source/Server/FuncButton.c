@@ -254,7 +254,7 @@ FuncButton_Blocked
 */
 void FuncButton_Blocked( void ) {
 	if ( self.dmg ) {
-		Damage_Apply( other, self, self.dmg, other.origin );
+		Damage_Apply( other, self, self.dmg, other.origin, FALSE );
 	}
 	
 	if ( self.wait >= 0 ) {

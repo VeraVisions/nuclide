@@ -148,7 +148,7 @@ void Effect_CreateFlash( entity eTarget );
 
 void TraceAttack_FireBullets( int iShots, vector vPos );
 void Damage_Radius( vector vOrigin, entity eAttacker, float fDamage, float fRadius );
-void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos );
+void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos, int iSkipArmor );
 
 void Entities_UseTargets( void );
 void Entities_InitRespawnable( void() vRespawnFunc );

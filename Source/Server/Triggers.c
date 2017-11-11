@@ -156,7 +156,7 @@ void trigger_hurt( void ) {
 			Entities_UseTargets();
 		}
 
-		Damage_Apply( other, self, self.dmg, other.origin );
+		Damage_Apply( other, self, self.dmg, other.origin, FALSE );
 
 		// Shut it down if used once
 		if ( self.spawnflags & SF_HURT_ONCE ) {

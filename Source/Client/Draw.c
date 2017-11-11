@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #define CHAT_LINES 	5
-#define CHAT_TIME 	10
+#define CHAT_TIME 	20
 var int iLineScroll = 0;
 
 float fChatTime;

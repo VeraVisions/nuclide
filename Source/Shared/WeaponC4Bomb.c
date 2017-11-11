@@ -94,6 +94,7 @@ static void WeaponC4BOMB_Use( void ) {
 	}
 		
 	eActivator.fProgressBar = (fDefuseProgress * 0.1);
+	self.fProgressBar = time + 1.0f;
 		
 	// Make sure WeaponC4BOMB_Think knows who the user is
 	self.eUser = eActivator;
@@ -102,9 +103,11 @@ static void WeaponC4BOMB_Use( void ) {
 static void WeaponC4BOMB_Think( void ) {
 	// If the guy who started using us stopped using us, reset the defuser counter
 	if ( ( self.eUser != world ) && ( self.eUser.button6 == FALSE ) ) {
-		self.eUser.fProgressBar = 0;
-		self.eUser = world;
-		fDefuseProgress = 0;
+		if ( self.fProgressBar < time ) {
+			self.eUser.fProgressBar = 0;
+			self.eUser = world;
+			fDefuseProgress = 0;
+		}
 	}
 		
 	// If our time has passed, explode

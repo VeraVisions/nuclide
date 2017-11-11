@@ -108,10 +108,10 @@ void func_breakable_touch( void ) {
 
 		if ( fDamage >= self.health ) {
 			self.touch = func_breakable_touch_NULL;
-			Damage_Apply( self, other, fDamage, self.absmin );
+			Damage_Apply( self, other, fDamage, self.absmin, FALSE );
 			
 			if ( ( self.material == MATERIAL_GLASS ) || ( self.material == MATERIAL_COMPUTER ) ) {
-				Damage_Apply( other, self, fDamage / 4, other.origin );
+				Damage_Apply( other, self, fDamage / 4, other.origin, FALSE );
 			}
 		}
 	}
