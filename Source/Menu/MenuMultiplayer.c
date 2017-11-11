@@ -107,6 +107,12 @@ void Menu_Multiplayer( void ) {
 	static int iScrollServer;
 	static int iServersTotal;
 	
+	static void Multiplayer_ButtonJoin( void ) {
+		if ( iSelectedServer >= 0 ) {
+			localcmd( sprintf( "connect %s\n", gethostcachestring( fldAddress, iSelectedServer ) ) );
+			m_hide();
+		}
+	}
 	static void Multiplayer_ButtonCreate( void ) {
 		iMenu = MENU_MULTIPLAYER_CREATE;
 	}
@@ -120,7 +126,6 @@ void Menu_Multiplayer( void ) {
 	
 	// Initialize it on the first run
 	if ( iSelectedServer == -1 ) {
-		localcmd( "com_protocolname FreeCS\n" );
 		//clear the filter
 		resethostcachemasks();
 		//sethostcachemaskstring( 0, gethostcacheindexforkey( "gamedir" ), "freecs", SLIST_TEST_EQUAL );
@@ -142,7 +147,7 @@ void Menu_Multiplayer( void ) {
 	iServersTotal = gethostcachevalue( SLIST_HOSTCACHEVIEWCOUNT );
 	
 	Menu_SetClipArea( '32 148', '164 160' );
-	Object_Button( '32 148', BTN_JOINGAME, __NULL__, fButtonAlpha[0] );
+	Object_Button( '32 148', BTN_JOINGAME, Multiplayer_ButtonJoin, fButtonAlpha[0] );
 	Object_Button( '32 180', BTN_CREATE, Multiplayer_ButtonCreate, fButtonAlpha[1] );
 	Object_Button( '32 212', BTN_GAMEINFO, __NULL__, fButtonAlpha[2] );
 	Object_Button( '32 244', BTN_REFRESHLIST, Multiplayer_ButtonRefresh, fButtonAlpha[3] );

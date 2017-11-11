@@ -47,7 +47,6 @@ void Menu_Main( void ) {
 	Object_Button( '72 384', BTN_README, __NULL__, fButtonAlpha[4] );
 	Object_Button( '72 412', BTN_VISITWEB, __NULL__, fButtonAlpha[5] );
 	Object_Button( '72 440', BTN_QUIT, Main_ButtonQuit, fButtonAlpha[6] );
-	
 }
 
 /*
