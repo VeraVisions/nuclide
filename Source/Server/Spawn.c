@@ -133,6 +133,7 @@ void Spawn_RespawnClient( float fTeam ) {
 	self.vPain = Player_Pain;
 	self.vDeath = Player_Death;
 	self.iBleeds = TRUE;
+	self.fSlotGrenade = 0; // Clear the C4
 
 	self.origin = eSpawn.origin;
 	self.angles = eSpawn.angles;
@@ -264,13 +265,37 @@ void CSEv_GamePlayerSpawn_f( float fChar ) {
 			Spawn_CreateClient( fChar );
 			break;
 		default:
-			if( fChar == 0 ) {
+			if ( fChar == 0 ) {
 				PutClientInServer();
 				return;
 			} else if( fChar < 5 ) {
 				self.team = TEAM_T;
+				
+				if ( fGameState == GAME_ACTIVE && iAlivePlayers_T == 0 ) {
+					self.fCharModel = fChar;
+					Spawn_CreateClient( fChar );
+					
+					if ( iBombZones > 0 ) {
+						Weapon_AddItem( WEAPON_C4BOMB );
+						centerprint( self, "You have the bomb!\nFind the target zone or DROP\nthe bomb for another Terrorist." );
+					}
+					break;
+				}
 			} else {
 				self.team = TEAM_CT;
+				
+				if ( fGameState == GAME_ACTIVE && iAlivePlayers_CT == 0 ) {
+					self.fCharModel = fChar;
+					Spawn_CreateClient( fChar );
+					
+					if ( iVIPZones > 0 ) {
+						self.team = TEAM_VIP;
+						Spawn_RespawnClient( self.team );
+						centerprint( self, "You are the VIP\nMake your way to the safety zones!" );
+						forceinfokey( self, "*dead", "2" );
+					}
+					break;
+				}
 			}
 			
 			Spawn_MakeSpectator();
