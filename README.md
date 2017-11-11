@@ -59,7 +59,9 @@ I may however add additional, optional features that will emulate behaviour of l
 # Support this project
 Feel free to send pull requests and refresh my memory by suggesting missing features under the **Issues** tab!
 If you would like me to spend more time on this project, consider donating to me via https://paypal.me/eukara
-Any help is appreciated.
+
+This is a one-man side-project. Keep it in mind before commenting...
+Anway, any help is appreciated.
 
 # Frequently Asked Questions
 **Q**: Why is this not emulating CS 1.6?
