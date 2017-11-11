@@ -49,8 +49,8 @@ The game is playable as long as you don't care about the radar/overview display.
 
 # Notes
 You might get away with using the cstrike folder from the Steam version of Counter-Strike 1.6, or any older version
-than 1.5 - but they are not supported. I will not try to recreate 1.6 or any other earlier versions specifically.
-I may however add additional, optional features that will emulate behaviour of later versions of Counter-Strike.
+than 1.5 - but they are not supported. I will not try to recreate 1.6 **YET** or any other earlier versions specifically.
+I may however add additional, optional features that will emulate behaviour of later versions of Counter-Strike, such as adding a way for server owners to configure whether or not buying a weapon automatically buys ammo (ala Counter-Strike: Source).
 
 # Support this project
 Feel free to send pull requests and refresh my memory by suggesting missing features under the **Issues** tab!
