@@ -166,7 +166,7 @@ void Menu_Configuration_Video( void ) {
 	
 	Menu_ResetClipArea();
 	
-	Object_CvarToggle( '400 165', "Fullscreen", "vid_fullscreen_standalone" );
+	Object_CvarToggle( '400 165', "Fullscreen", "vid_fullscreen" );
 	Object_CvarToggle( '400 185', "Triple Buffering", "vid_triplebuffer" );
 	Object_CvarToggle( '400 205', "Virtual Synchronisation", "vid_vsync" );
 	
