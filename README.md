@@ -63,7 +63,7 @@ Any help is appreciated.
 **A**: CS 1.5 is the version of Counter-Strike me and many others considered to be the definitive version. It is the last version developed by the original team. I primarily developed this because I could not run the original mod without running the old version of Half-Life (Steam Half-Life actively blocks CS 1.5 for some reason.)
 
 
-**Q**: Will those project ever cover Counter-Strike 1.6?
+**Q**: Will this project ever cover Counter-Strike 1.6?
 
 **A**: That's the plan eventually. If you are new to Counter-Strike (before CS:GO and the like came out) then you may enjoy this more! Maybe not. How they feel is up to every individual.
 
