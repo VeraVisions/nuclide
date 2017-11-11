@@ -1,6 +1,8 @@
 # FreeCS
 Free-software implementation of Counter-Strike running on the FTE QuakeWorld engine.
+
 **Yes. This runs on Linux. You only need WINE or a Windows machine to extract the CS 1.5 Files.**
+
 I cannot legally redistribute them. Sorry.
 
 <img src="https://icculus.org/~marco/freecs/screens/screen1.png" alt="Screen 1" width="256" height="192"> <img src="https://icculus.org/~marco/freecs/screens/screen2.png" alt="Screen 2" width="256" height="192">
