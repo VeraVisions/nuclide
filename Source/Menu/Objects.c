@@ -312,3 +312,40 @@ void Object_FuncToggle( vector vPosition, string sLabel, void( void ) vFunc, int
 		drawstring( vPosition, sprintf( "[X] %s", sLabel ), '8 8', autocvar_menu_fgcolor, fAlpha, 0 );
 	}
 }
+
+
+/*
+=================
+Object_FuncToggle
+
+A nice way of toggling cvars.
+=================
+*/
+void Object_Textfield( vector vPosition, __inout string strValue, int iMaxChars ) {
+	float fFieldAlpha = 0.8f;
+	vector vSize = [ ( iMaxChars * 8 ) + 16, 12 ];
+	
+	Object_Frame( vPosition - '2 2', vSize );
+	
+	vPosition += vMenuOffset;
+	
+	if ( Menu_InputCheckMouse( vPosition, vSize ) == TRUE ) {
+		if( fInputKeyCode == K_BACKSPACE ) {
+			if ( strValue ) {
+				strValue = substring( strValue, 0, strlen( strValue ) - 1 );
+				fInputKeyCode = 0;
+				fInputKeyASCII = 0;
+			}
+		} else if ( fInputKeyASCII ) {
+			if ( strlen( strValue ) <= iMaxChars ) {
+				strValue = sprintf( "%s%s", strValue, chr2str( fInputKeyASCII ) );
+				fInputKeyASCII = 0;
+				fInputKeyCode = 0;
+			}
+		}
+		fFieldAlpha = 1.0f;
+		drawstring( vPosition, sprintf( "%s_", strValue ), '8 8 0', autocvar_menu_fgcolor, fFieldAlpha, FALSE );
+	} else {
+		drawstring( vPosition, strValue, '8 8 0', autocvar_menu_fgcolor, fFieldAlpha, FALSE );
+	}
+}

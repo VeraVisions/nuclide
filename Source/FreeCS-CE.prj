@@ -114,6 +114,14 @@
 </project>
 
 <workspace version="Crimson Editor 3.60">
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\MenuConfiguration.c" linenum="1" placement="2:3:-1:-1:-4:-23:176:176:1058:608" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Defs.h" linenum="143" placement="0:1:-1:-1:-4:-23:198:198:1084:634" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\MenuMain.c" linenum="49" placement="0:1:-1:-1:-4:-23:0:0:886:436" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Objects.c" linenum="340" placement="0:1:-1:-1:-4:-23:22:22:908:458" />
+	<localfile path="C:\cygwin\home\User\FreeCS\freecs\menu.dat.en.po" linenum="48" placement="2:3:-1:-1:-4:-23:44:44:930:480" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\MenuMultiplayer.c" linenum="163" placement="0:1:-1:-1:-4:-23:88:88:974:524" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Builtins.h" linenum="2160" placement="0:1:-1:-1:-4:-23:110:110:996:546" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\MenuConfiguration.c" linenum="258" placement="0:1:-1:-1:-4:-23:132:132:1018:568" />
+	<localfile path="C:\cygwin\home\User\FreeCS\freecs\default.cfg" linenum="65" placement="0:1:-1:-1:-4:-23:198:198:1084:634" />
+	<localfile path="C:\cygwin\home\User\FreeCS\freecs\ftesrv.cfg" linenum="9" placement="0:1:-1:-1:-4:-23:0:0:886:436" />
 </workspace>
 

@@ -150,12 +150,19 @@ void Menu_Configuration_Video( void ) {
 		}
 	}
 	
-	// Get the current scale method
+	// Get the current scale method... and resolution
 	if ( iVideoScale == -1 ) {
 		if ( cvar( "vid_conautoscale" ) == 0 ) {
 			iVideoScale = 1;
 		} else {
 			iVideoScale = 0;
+		}
+		
+		for ( int i = 1; i < iResCount; i++ ) {
+			tokenizebyseparator( strResolution[ i ], "x", " " );
+			if ( ( stof( argv( 0 ) ) == vVideoSize_x && ( stof( argv( 1 ) ) == vVideoSize_y ) ) ) {
+				iSelectedResolution = i;
+			}
 		}
 	}
 	
@@ -164,7 +171,7 @@ void Menu_Configuration_Video( void ) {
 	
 	Object_Scrollbar( '372 160', 284, iScrollRes );
 	
-	Menu_SetClipArea( '196 160', '164 300' );
+	Menu_SetClipArea( '196 162', '164 298' );
 	
 	vector vListPos = '200 165';
 	vListPos_y -= fabs( ( ( iResCount - 8 ) * 10 ) * ( iScrollRes / 300 ) );
@@ -192,8 +199,10 @@ void Menu_Configuration_Video( void ) {
 	Object_CvarToggle( '400 205', "Virtual Synchronisation", "vid_vsync" );
 	Object_FuncToggle( '400 225', "HDPI Mode", Video_ScaleSwitch, iVideoScale );
 	
-	Object_Button( '32 148', BTN_OK, Video_Apply, fButtonAlpha[0] );
-	Object_Button( '32 180', BTN_CANCEL, Menu_Configuration_ButtonCancel, fButtonAlpha[1] );
+	drawtextfield( vMenuOffset + '400 265', '200 200', 1, _("VIDEO_RESTARTMSG") ) ;
+	
+	Object_Button( '32 148', BTN_REFRESH, Video_Apply, fButtonAlpha[0] );
+	Object_Button( '32 180', BTN_DONE, Menu_Configuration_ButtonCancel, fButtonAlpha[1] );
 }
 
 /*
@@ -229,7 +238,26 @@ Menu_Configuration_Player
 =================
 */
 void Menu_Configuration_Player( void ) {
-	Object_Button( '32 148', BTN_OK, Menu_Configuration_ButtonOK, fButtonAlpha[0] );
+	static string strPlayername;
+	static int iFirst = 1;
+	
+	static void Player_OK( void ) {
+		if ( strPlayername != __NULL__ ) {
+			localcmd( sprintf( "name %s\n", strPlayername ) );
+			iMenu = MENU_CONFIGURATION;
+		} else {
+			strPlayername = cvar_string( "name" );
+		}
+	}
+	
+	if ( iFirst == 1 ) {
+		strPlayername = cvar_string( "name" );
+		iFirst = 0;
+	}
+	
+	Object_Label( '196 148', _("PLAYER_NICK"), '8 8' );
+	Object_Textfield( '196 160', strPlayername, 16 );
+	Object_Button( '32 148', BTN_OK, Player_OK, fButtonAlpha[0] );
 	Object_Button( '32 180', BTN_CANCEL, Menu_Configuration_ButtonCancel, fButtonAlpha[1] );
 }
 
@@ -240,35 +268,56 @@ Menu_Configuration_Controls
 */
 void Menu_Configuration_Controls( void ) {
 	static float fActClickTime;
+	static int iBindKey = -1;
+	
+	void Controls_Default( void ) {
+		localcmd( "unbindall\nexec default.cfg\n" );
+	}
+	
 	void Controls_DisplayAct( vector vPosition, int i, __inout int iSelected ) {
-		float fItemAlpha = 1.0f;
+		float fItemAlpha = 0.8f;
+		
+		float fBindKey = tokenize( findkeysforcommand( strActBind[ i ] ) );
+		string sBindTx = "";
+		float j, k;
+		
+		for( j = 0; j < fBindKey; ++j ) {
+			k = stof( argv( j ) );
+			if( k != -1 ) {
+				if( sBindTx != "" ) {
+					sBindTx = strcat( sBindTx, ", " );
+				}
+				sBindTx = strcat( sBindTx, keynumtostring( k ) );
+			}
+		}
 		
 		vPosition += vMenuOffset;
 		
 		if ( Menu_InputCheckMouse( [ vPosition_x, vPosition_y ], [ 397, 8 ] ) == TRUE ) {
-			if ( fMouseClick == TRUE ) {
-				if ( iSelected != i ) {
-					iSelected = i;
-					fInputKeyCode = 0;
-					fMouseClick = FALSE;
-					fActClickTime = time + 0.2;
-				} else {
-					// change bind
-					iSelected = -2;
-					fInputKeyCode = 0;
-					fMouseClick = FALSE;
+			if ( strActBind[ i ] != "blank" ) {
+				fItemAlpha = 1.0f;
+				if ( fMouseClick == TRUE ) {
+					if ( iSelected != i ) {
+						iSelected = i;
+						fInputKeyCode = 0;
+						fMouseClick = FALSE;
+						fActClickTime = time + 0.2;
+					} else {
+						// change bind
+						iBindKey = iSelected;
+						fInputKeyCode = 0;
+						fMouseClick = FALSE;
+					}
 				}
 			}
-		} else {
-			fItemAlpha = 0.8;
 		}
 		
 		if ( iSelected == i ) {
 			drawfill( [ vPosition_x, vPosition_y - 1 ], [ 397, 10 ], '1 1 1', 0.5, 2 );
-			drawstring( [vPosition_x + 8, vPosition_y], strActBind[ i ], '8 8 0', '1 1 1', 1.0f, FALSE );
+			drawstring( [vPosition_x + 8, vPosition_y], sBindTx, '8 8 0', '1 1 1', 1.0f, FALSE );
 			drawstring( [vPosition_x + 128, vPosition_y], strActDescr[ i ], '8 8 0', '1 1 1', 1.0f, FALSE );
 		} else {
-			drawstring( [vPosition_x + 8, vPosition_y], strActBind[ i ], '8 8 0', '1 1 1', fItemAlpha, FALSE );
+			drawstring( [vPosition_x + 8, vPosition_y], sBindTx, '8 8 0', '1 1 1', fItemAlpha, FALSE );
 			drawstring( [vPosition_x + 128, vPosition_y], strActDescr[ i ], '8 8 0', '1 1 1', fItemAlpha, FALSE );
 		}
 	}
@@ -278,6 +327,7 @@ void Menu_Configuration_Controls( void ) {
 	
 	Object_Button( '32 148', BTN_OK, Menu_Configuration_ButtonOK, fButtonAlpha[0] );
 	Object_Button( '32 180', BTN_CANCEL, Menu_Configuration_ButtonCancel, fButtonAlpha[1] );
+	Object_Button( '32 244', BTN_DEFAULTS, Controls_Default, fButtonAlpha[2] );
 	
 	Object_Frame( '196 140', '404 308' );
 	Object_Scrollbar( '604 140', 308, iScrollAct );
@@ -294,6 +344,32 @@ void Menu_Configuration_Controls( void ) {
 		vListPos_y += 10;
 	}
 	Menu_ResetClipArea();
+	
+	if ( iBindKey >= 0 ) {
+		Object_Frame( '196 150', '404 100' );
+		drawstring( vMenuOffset + '216 170', "Press any button to assign it to:", '8 8 0', autocvar_menu_fgcolor, 1.0f, FALSE );
+		drawstring( vMenuOffset + '216 232', "To clear, press Backspace.", '8 8 0', autocvar_menu_fgcolor, 1.0f, FALSE );
+		drawstring( vMenuOffset + '216 190', strActDescr[ iBindKey ], '16 16', autocvar_menu_fgcolor, 1.0f, FALSE );
+		
+		if ( fInputKeyCode > 0 ) {
+			if( fInputKeyCode == K_BACKSPACE ) {
+				float fBindKey = tokenize( findkeysforcommand( strActBind[ iBindKey ] ) );
+				
+				for ( int i = 0; i < fBindKey; i++ ) {
+					localcmd( sprintf( "unbind %s\n", keynumtostring( stof( argv( i ) ) ) ) );
+				}
+					
+				iBindKey = -1;
+				fInputKeyCode = 0;
+				fInputKeyASCII = 0;
+			} else if ( fInputKeyCode != K_ESCAPE ) {
+				localcmd( sprintf( "bind %s %s\n", keynumtostring( fInputKeyCode ), strActBind[ iBindKey ] ) );
+				iBindKey = -1;
+				fInputKeyCode = 0;
+				fInputKeyASCII = 0;
+			}
+		}
+	}
 }
 
 /*

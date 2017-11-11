@@ -40,3 +40,9 @@ msgstr "Master Volume"
 
 msgid "VIDEO_RES"
 msgstr "Resolution:"
+
+msgid "VIDEO_RESTARTMSG"
+msgstr "Some settings will require you to REFRESH your renderer. Please do so with the option on the left. "
+
+msgid "PLAYER_NICK"
+msgstr "Nickname:"
