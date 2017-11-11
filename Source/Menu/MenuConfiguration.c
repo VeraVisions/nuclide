@@ -114,6 +114,7 @@ Menu_Configuration_Video
 void Menu_Configuration_Video( void ) {
 	static int iScrollRes = 0;
 	static int iSelectedResolution = -1;
+	static int iVideoScale = -1;
 	
 	static void Video_Apply( void ) {
 		if ( iSelectedResolution != -1 ) {
@@ -149,6 +150,15 @@ void Menu_Configuration_Video( void ) {
 		}
 	}
 	
+	// Get the current scale method
+	if ( iVideoScale == -1 ) {
+		if ( cvar( "vid_conautoscale" ) == 0 ) {
+			iVideoScale = 1;
+		} else {
+			iVideoScale = 0;
+		}
+	}
+	
 	Object_Label( '196 148', _("VIDEO_RES"), '8 8' );
 	Object_Frame( '196 160', '164 300' );
 	
@@ -166,9 +176,21 @@ void Menu_Configuration_Video( void ) {
 	
 	Menu_ResetClipArea();
 	
+	static void Video_ScaleSwitch( void ) {
+		iVideoScale = 1 - iVideoScale;
+		if ( iVideoScale == 1 ) {
+			cvar_set( "vid_conautoscale", "0" );
+			cvar_set( "vid_conwidth", "0" );
+			cvar_set( "vid_conheight", "480" );
+		} else {
+			cvar_set( "vid_conautoscale", "1" );
+		}
+	}
+	
 	Object_CvarToggle( '400 165', "Fullscreen", "vid_fullscreen" );
 	Object_CvarToggle( '400 185', "Triple Buffering", "vid_triplebuffer" );
 	Object_CvarToggle( '400 205', "Virtual Synchronisation", "vid_vsync" );
+	Object_FuncToggle( '400 225', "HDPI Mode", Video_ScaleSwitch, iVideoScale );
 	
 	Object_Button( '32 148', BTN_OK, Video_Apply, fButtonAlpha[0] );
 	Object_Button( '32 180', BTN_CANCEL, Menu_Configuration_ButtonCancel, fButtonAlpha[1] );

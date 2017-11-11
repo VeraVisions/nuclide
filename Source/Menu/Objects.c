@@ -263,7 +263,7 @@ void Object_CvarToggle( vector vPosition, string sLabel, string sCvar ) {
 	int iWidth = stringwidth( sLabel, FALSE );
 	vPosition += vMenuOffset;
 	
-	if ( Menu_InputCheckMouse( vPosition, [ iWidth, 8 ] ) == TRUE ) {
+	if ( Menu_InputCheckMouse( vPosition, [ iWidth + 32, 8 ] ) == TRUE ) {
 		fAlpha = 1.0f;
 		if ( fMouseClick == TRUE ) {
 			if ( cvar( sCvar ) == 0 ) {
@@ -282,6 +282,33 @@ void Object_CvarToggle( vector vPosition, string sLabel, string sCvar ) {
 	} else {
 		drawstring( vPosition, sprintf( "[X] %s", sLabel ), '8 8', autocvar_menu_fgcolor, fAlpha, 0 );
 	}
+}
+
+/*
+=================
+Object_FuncToggle
+
+A nice way of toggling cvars.
+=================
+*/
+void Object_FuncToggle( vector vPosition, string sLabel, void( void ) vFunc, int iValue ) {
+	float fAlpha = 0.8f;
+	int iWidth = stringwidth( sLabel, FALSE );
+	vPosition += vMenuOffset;
 	
+	if ( Menu_InputCheckMouse( vPosition, [ iWidth + 32, 8 ] ) == TRUE ) {
+		fAlpha = 1.0f;
+		if ( fMouseClick == TRUE ) {
+			vFunc();
+			fMouseClick = FALSE;
+		}
+	}
 	
+	drawfill( vPosition + '-2 -2', [ iWidth + 36, 12 ], '0 0 0', 0.8f );
+	
+	if ( iValue == 0 ) {
+		drawstring( vPosition, sprintf( "[ ] %s", sLabel ), '8 8', autocvar_menu_fgcolor, fAlpha, 0 );
+	} else {
+		drawstring( vPosition, sprintf( "[X] %s", sLabel ), '8 8', autocvar_menu_fgcolor, fAlpha, 0 );
+	}
 }
