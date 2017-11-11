@@ -120,10 +120,10 @@ void Menu_Multiplayer( void ) {
 	
 	// Initialize it on the first run
 	if ( iSelectedServer == -1 ) {
-		localcmd( "com_protocolname FTE-Quake\n" );
+		localcmd( "com_protocolname FreeCS\n" );
 		//clear the filter
 		resethostcachemasks();
-		sethostcachemaskstring( 0, gethostcacheindexforkey( "gamedir" ), "freecs", SLIST_TEST_EQUAL );
+		//sethostcachemaskstring( 0, gethostcacheindexforkey( "gamedir" ), "freecs", SLIST_TEST_EQUAL );
 		sethostcachesort( gethostcacheindexforkey( "ping" ), FALSE );
 		refreshhostcache();
 		resorthostcache();
