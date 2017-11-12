@@ -30,8 +30,6 @@ void SV_SendChat( entity eSender, string sMessage, entity eEnt, float fType ) {
 	WriteString( MSG_MULTICAST, sMessage );
 	msg_entity = eEnt;
 	multicast( '0 0 0', MULTICAST_ONE );
-	
-	localcmd( sprintf( "echo %s: %s\n", eSender.netname, sMessage ) );
 }
 
 /*
@@ -48,11 +46,13 @@ void SV_ParseClientCommand( string sCommand ) {
 	// Players talk to players, spectators to spectators.
 	if ( self.health  ) {
 		if ( argv( 0 ) == "say" ) {
+			localcmd( sprintf( "echo %s: %s\n", self.netname, argv( 1 ) ) );
 			for ( entity eFind = world; ( eFind = find( eFind, classname, "player" ) ); ) { 
 				SV_SendChat( self, argv( 1 ), eFind, 0 );
 			}
 			return;
 		} else if ( argv( 0 ) == "say_team" ) {
+			localcmd( sprintf( "echo %s: %s\n", self.netname, argv( 1 ) ) );
 			for ( entity eFind = world; ( eFind = find( eFind, classname, "player" ) ); ) { 
 				if ( eFind.team == self.team ) {
 					SV_SendChat( self, argv( 1 ), eFind, 1 );
@@ -62,11 +62,13 @@ void SV_ParseClientCommand( string sCommand ) {
 		} 
 	} else {
 		if ( argv( 0 ) == "say" ) {
+			localcmd( sprintf( "echo [DEAD] %s: %s\n", self.netname, argv( 1 ) ) );
 			for ( entity eFind = world; ( eFind = find( eFind, classname, "spectator" ) ); ) { 
 				SV_SendChat( self, argv( 1 ), eFind, 1 );
 			}
 			return;	
 		} else if ( argv( 0 ) == "say_team" ) {
+			localcmd( sprintf( "echo [DEAD] %s: %s\n", self.netname, argv( 1 ) ) );
 			return;	
 		} 
 	}

@@ -322,6 +322,10 @@ void PlayerPostThink( void ) {
 			float fFallDamage = self.fFallVelocity * ( 200 / ( 1024 - 580 ) );
 			Damage_Apply( self, world, fFallDamage, self.origin, FALSE );
 		} 
+		
+		if ( self.fFallVelocity > 200 ) {
+			self.velocity = '0 0 0';
+		}
 		self.fFallVelocity = 0;
 	}
 	
