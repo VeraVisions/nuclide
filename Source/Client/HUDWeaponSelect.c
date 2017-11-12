@@ -42,7 +42,7 @@ weaponsymbolinfo_t wpSymbolTable[ CS_WEAPON_COUNT ] = {
 	{ "sprites/640hud12.spr_0.tga", '0 0' }, 			//WEAPON_P90
 	{ "sprites/640hud16.spr_0.tga", '0 0' }, 			//WEAPON_UMP45
 	{ "sprites/640hud14.spr_0.tga", '0 0' }, 			//WEAPON_MAC10
-	{ "sprites/640hud12.spr_0.tga", '0 0' }, 			//WEAPON_TMP
+	{ "sprites/640hud5.spr_0.tga", '0 0' }, 			//WEAPON_TMP
 	{ "sprites/640hud10.spr_0.tga", '0 0' }, 			//WEAPON_AK47
 	{ "sprites/640hud10.spr_0.tga", '0 0.17578125' }, 	//WEAPON_SG552
 	{ "sprites/640hud2.spr_0.tga", '0 0.17578125' }, 	//WEAPON_M4A1
