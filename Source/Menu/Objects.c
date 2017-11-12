@@ -227,27 +227,26 @@ void Object_ScrollbarH( vector vPosition, int iWidth, __inout int iProgress ) {
 	
 	vPosition += vMenuOffset;
 
-	if ( ( iScrollbarHold == TRUE ) || ( Menu_InputCheckMouse( [vPosition_x + iProgress, vPosition_y ], '16 16' ) == TRUE ) ) {
+	if ( ( Menu_InputCheckMouse( [vPosition_x, vPosition_y ], [ iWidth, 16 ] ) == TRUE ) ) {
 		if ( fMouseClick == TRUE ) {
 			iProgress = ( vMousePos_x - vPosition_x );
-			iScrollbarHold = TRUE;
 		}
+		
+		if ( fScrollWheel == SCROLL_DOWN ) {
+			iProgress += 2;
+			fScrollWheel = SCROLL_NONE;
+		} else if ( fScrollWheel == SCROLL_UP ) {
+			iProgress -= 2;
+			fScrollWheel = SCROLL_NONE;
+		}
+		
+		if ( iProgress < 0 ) {
+			iProgress = 0;
+		} else if ( iProgress > iWidth ) {
+			iProgress = iWidth;
+		} 
 	}
-	
-	if ( fScrollWheel == SCROLL_DOWN ) {
-		iProgress += 2;
-		fScrollWheel = SCROLL_NONE;
-	} else if ( fScrollWheel == SCROLL_UP ) {
-		iProgress -= 2;
-		fScrollWheel = SCROLL_NONE;
-	}
-	
-	if ( iProgress < 0 ) {
-		iProgress = 0;
-	} else if ( iProgress > iWidth ) {
-		iProgress = iWidth;
-	} 
-	
+
 	drawfill( [ vPosition_x + iProgress, vPosition_y ], [ 16, 16 ], autocvar_menu_fgcolor, 1.0f );
 }
 

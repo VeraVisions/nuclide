@@ -132,7 +132,7 @@ void Weapon_PrimaryAttack( float fWeapon ) {
 		return;
 #endif
 #ifdef CSQC
-	if ( fWeaponEventPlayer != player_localentnum ) {
+	if ( fWeaponEventPlayer != player_localentnum || autocvar_cl_thirdperson == TRUE ) {
 		entity ono = findfloat( world, entnum, fWeaponEventPlayer );
 		if ( ono != __NULL__ ) {
 			Animation_ShootWeapon( ono );
@@ -156,7 +156,7 @@ void Weapon_SecondaryAttack( float fWeapon ) {
 	}
 #endif
 #ifdef CSQC
-	if ( fWeaponEventPlayer != player_localentnum ) {
+	if ( fWeaponEventPlayer != player_localentnum || autocvar_cl_thirdperson == TRUE ) {
 		return;
 	}
 #endif
@@ -175,7 +175,7 @@ void Weapon_Reload( float fWeapon ) {
 	}
 #endif
 #ifdef CSQC
-	if ( fWeaponEventPlayer != player_localentnum ) {
+	if ( fWeaponEventPlayer != player_localentnum || autocvar_cl_thirdperson == TRUE ) {
 		entity ono = findfloat( world, entnum, fWeaponEventPlayer );
 		if ( ono != __NULL__ ) {
 			Animation_ReloadWeapon( ono );

@@ -240,6 +240,9 @@ Menu_Configuration_Player
 void Menu_Configuration_Player( void ) {
 	static string strPlayername;
 	static int iFirst = 1;
+	static color cCross;
+	static color cVGUI;
+	static color cCon;
 	
 	static void Player_OK( void ) {
 		if ( strPlayername != __NULL__ ) {
@@ -248,15 +251,80 @@ void Menu_Configuration_Player( void ) {
 		} else {
 			strPlayername = cvar_string( "name" );
 		}
+		
+		cvar_set( "cross_color", sprintf( "%i %i %i", cCross.iR, cCross.iG, cCross.iB ) );
+		cvar_set( "vgui_color", sprintf( "%i %i %i", cVGUI.iR, cVGUI.iG, cVGUI.iB ) );
+		cvar_set( "con_color", sprintf( "%i %i %i", cCon.iR, cCon.iG, cCon.iB ) );
 	}
 	
 	if ( iFirst == 1 ) {
+		float fCheck;
 		strPlayername = cvar_string( "name" );
+	
+		fCheck = tokenize( cvar_string( "cross_color" ) );
+		if ( fCheck == 3 ) {
+			cCross.iR = stof( argv( 0 ) );
+			cCross.iG = stof( argv( 1 ) );
+			cCross.iB = stof( argv( 2 ) );
+		} else {
+			// TODO... put this in a more global location? If this is changed, change Defs.h in Source/Client too!
+			cCross.iR = 0;
+			cCross.iG = 255;
+			cCross.iB = 0;
+			cvar_set( "cross_color", "0 255 0" );
+		}
+		
+		fCheck = tokenize( cvar_string( "vgui_color" ) );
+		if ( fCheck == 3 ) {
+			cVGUI.iR = stof( argv( 0 ) );
+			cVGUI.iG = stof( argv( 1 ) );
+			cVGUI.iB = stof( argv( 2 ) );
+		} else {
+			cVGUI.iR = 255;
+			cVGUI.iG = 170;
+			cVGUI.iB = 0;
+			cvar_set( "vgui_color", "255 170 0" );
+		}
+		
+		fCheck = tokenize( cvar_string( "con_color" ) );
+		if ( fCheck == 3 ) {
+			cCon.iR = stof( argv( 0 ) );
+			cCon.iG = stof( argv( 1 ) );
+			cCon.iB = stof( argv( 2 ) );
+		} else {
+			cCon.iR = 255;
+			cCon.iG = 170;
+			cCon.iB = 0;
+			cvar_set( "con_color", "255 170 0" );
+		}
+		
 		iFirst = 0;
 	}
 	
 	Object_Label( '196 148', _("PLAYER_NICK"), '8 8' );
 	Object_Textfield( '196 160', strPlayername, 16 );
+	
+	Object_Label( '196 200', _("PLAYER_CROSSCOLOR"), '8 8' );
+	Object_ScrollbarH( '196 212', 255, cCross.iR );
+	Object_ScrollbarH( '196 230', 255, cCross.iG );
+	Object_ScrollbarH( '196 248', 255, cCross.iB );
+	Object_Frame( '468 388', '52 52' );
+	drawfill( vMenuOffset + '469 213', '50 50', [ cCross.iR / 255, cCross.iG / 255, cCross.iB / 255 ], 1.0f );
+	
+	Object_Label( '196 288', _("PLAYER_GUICOLOR"), '8 8' );
+	Object_ScrollbarH( '196 300', 255, cVGUI.iR );
+	Object_ScrollbarH( '196 318', 255, cVGUI.iG );
+	Object_ScrollbarH( '196 336', 255, cVGUI.iB );
+	Object_Frame( '468 388', '52 52' );
+	drawfill( vMenuOffset + '469 300', '50 50', [ cVGUI.iR / 255, cVGUI.iG / 255, cVGUI.iB / 255 ], 1.0f );
+	
+	Object_Label( '196 376', _("PLAYER_HUDCOLOR"), '8 8' );
+	Object_ScrollbarH( '196 388', 255, cCon.iR );
+	Object_ScrollbarH( '196 406', 255, cCon.iG );
+	Object_ScrollbarH( '196 424', 255, cCon.iB );
+	Object_Frame( '468 388', '52 52' );
+	drawfill( vMenuOffset + '469 388', '50 50', [ cCon.iR / 255, cCon.iG / 255, cCon.iB / 255 ], 1.0f );
+	
 	Object_Button( '32 148', BTN_OK, Player_OK, fButtonAlpha[0] );
 	Object_Button( '32 180', BTN_CANCEL, Menu_Configuration_ButtonCancel, fButtonAlpha[1] );
 }

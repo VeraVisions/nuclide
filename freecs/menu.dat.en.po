@@ -46,3 +46,12 @@ msgstr "Some settings will require you to REFRESH your renderer. Please do so wi
 
 msgid "PLAYER_NICK"
 msgstr "Nickname:"
+
+msgid "PLAYER_CROSSCOLOR"
+msgstr "Crosshair Color:"
+
+msgid "PLAYER_GUICOLOR"
+msgstr "UI Color:"
+
+msgid "PLAYER_HUDCOLOR"
+msgstr "Heads-Up-Display Color:"

@@ -182,5 +182,11 @@ typedef struct {
 	int iHeaderID;
 } fcsMenu;
 
+typedef struct {
+	int iR;
+	int iG;
+	int iB;
+} color;
+
 void Menu_SetClipArea( vector vPosition, vector vRegion );
 void Menu_ResetClipArea( void );

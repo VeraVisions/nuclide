@@ -40,3 +40,12 @@ msgstr "Lautstaerke:"
 
 msgid "VIDEO_RES"
 msgstr "Aufloesung:"
+
+msgid "PLAYER_CROSSCOLOR"
+msgstr "Fadenkreuz Farbe:"
+
+msgid "PLAYER_GUICOLOR"
+msgstr "UI Farbe:"
+
+msgid "PLAYER_HUDCOLOR"
+msgstr "Heads-Up-Display Farbe:"

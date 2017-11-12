@@ -106,6 +106,11 @@ void Rules_Restart( void ) {
 		remove( eFind );
 	}
 	
+	// Find the bombs. Destory them!
+	for ( entity eFind = world; ( eFind = find( eFind, classname, "c4bomb" ) ); ) {
+		remove( eFind );
+	}
+	
 	// Select a random Terrorist for the bomb, if needed
 	if ( iBombZones > 0 ) {
 		int iRandomT = floor( random( 1, (float)iAlivePlayers_T + 1 ) ); 

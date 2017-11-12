@@ -48,6 +48,31 @@ string sPModels[ CS_WEAPON_COUNT - 1 ] = {
 	"models/p_smokegrenade.mdl"
 };
 
+void Player_Draw( void ) {
+	if ( !self.eGunModel ) {
+		self.eGunModel = spawn();
+		self.eGunModel.drawmask = MASK_ENGINE;
+			
+		// Get the weapon bone ID for the current player model
+		self.fWeaponBoneID = gettagindex( self, "Bip01 R Hand" );
+	}
+	    
+	// Only bother updating the model if the weapon has changed
+	if ( self.fWeaponLast != self.weapon ) {
+		setmodel( self.eGunModel, sPModels[ self.weapon - 1 ] );
+		self.fWeaponLast = self.weapon;
+	    	
+		// Update the bone index of the current p_ model so we can calculate the offset
+		self.eGunModel.fWeaponBoneID = gettagindex( self.eGunModel, "Bip01 R Hand" );
+	}
+	    
+	Animation_PlayerUpdate();
+	self.baseframe1time += frametime;
+	self.frame1time += frametime;
+		
+	self.baseframe2time += frametime;
+	self.frame2time += frametime;	
+}
 /*
 =================
 Player_PreDraw
@@ -58,29 +83,33 @@ Responsible for local player prediction and other player appearance/interpolatio
 */
 float Player_PreDraw( void ) {
     if ( self.entnum == player_localentnum ) {
+	    vector vOldOrigin;
+	    vector vOldVelocity;
+	    float fOldPMoveFlags;
 		// Don't predict if we're frozen/paused FIXME: FTE doesn't have serverkey_float yet!
 		if ( serverkey( SERVERKEY_PAUSESTATE ) == "1" || ( ( getstati( STAT_GAMESTATE ) == GAME_FREEZE ) && ( getstati( STAT_HEALTH ) > 0 ) ) ) {
 			vPlayerOrigin = self.origin;
-			vPlayerVelocity = '0 0 0';
-			addentity( self );
-			return PREDRAW_NEXT;
-		}
-		
-		vector vOldOrigin = self.origin;
-		vector vOldVelocity = self.velocity;
-		float fOldPMoveFlags = self.pmove_flags;
-
-		if ( getplayerkeyvalue( player_localnum, "*spec" ) == "0" ) {
-			self.movetype = MOVETYPE_WALK;
+			vOldOrigin = vPlayerOrigin;
+			
+			self.velocity = '0 0 0';
+			vOldVelocity = self.velocity;
+			fOldPMoveFlags = 0;
 		} else {
-			self.movetype = MOVETYPE_NOCLIP;
+			vOldOrigin = self.origin;
+			vOldVelocity = self.velocity;
+			fOldPMoveFlags = self.pmove_flags;
+	
+			if ( getplayerkeyvalue( player_localnum, "*spec" ) == "0" ) {
+				self.movetype = MOVETYPE_WALK;
+			} else {
+				self.movetype = MOVETYPE_NOCLIP;
+			}
+			
+			for ( int i = servercommandframe + 1; i <= clientcommandframe; i++ ) {
+				getinputstate( i );
+				runstandardplayerphysics( self );
+			}
 		}
-		
-		for ( int i = servercommandframe + 1; i <= clientcommandframe; i++ ) {
-			getinputstate( i );
-			runstandardplayerphysics( self );
-		}
-				
 		vPlayerOriginOld = vPlayerOrigin;
 				
 		if ( ( self.flags & FL_ONGROUND ) && ( self.origin_z - vPlayerOriginOld_z > 0 ) ) {
@@ -97,8 +126,26 @@ float Player_PreDraw( void ) {
 			vPlayerOriginOld_z = self.origin_z;
 		}
 			
-		vPlayerOrigin = [ self.origin_x, self.origin_y, vPlayerOriginOld_z ];
 		vPlayerVelocity = self.velocity;
+		
+		if ( autocvar_cl_thirdperson == TRUE ) {
+			static vector vStart;
+			static vector vEnd;
+			
+			makevectors( view_angles );
+			vStart = [ self.origin_x, self.origin_y, vPlayerOriginOld_z + 8 ] + ( v_right * 4 );
+			vEnd = vStart + ( v_forward * -48 ) + '0 0 8' + ( v_right * 4 );
+			traceline( vStart, vEnd, FALSE, self );
+			vPlayerOrigin = trace_endpos + ( v_forward * 5 );
+			self.renderflags = 0;
+			Player_Draw();	
+		} else {
+			if ( self.eGunModel ) {
+				remove( self.eGunModel );
+			}
+			self.renderflags = RF_EXTERNALMODEL;
+			vPlayerOrigin = [ self.origin_x, self.origin_y, vPlayerOriginOld_z ];
+		}
 		addentity( self );
 
 		self.origin = vOldOrigin;
@@ -106,33 +153,8 @@ float Player_PreDraw( void ) {
 		self.velocity = vOldVelocity;
 		self.pmove_flags = fOldPMoveFlags;
 		self.movetype = MOVETYPE_NONE;
-
-		self.renderflags = RF_EXTERNALMODEL;
     } else {
-		if ( !self.eGunModel ) {
-			self.eGunModel = spawn();
-			self.eGunModel.drawmask = MASK_ENGINE;
-			
-			// Get the weapon bone ID for the current player model
-			self.fWeaponBoneID = gettagindex( self, "Bip01 R Hand" );
-	    }
-	    
-	    // Only bother updating the model if the weapon has changed
-	    if ( self.fWeaponLast != self.weapon ) {
-	    	setmodel( self.eGunModel, sPModels[ self.weapon - 1 ] );
-	    	self.fWeaponLast = self.weapon;
-	    	
-	    	// Update the bone index of the current p_ model so we can calculate the offset
-	    	self.eGunModel.fWeaponBoneID = gettagindex( self.eGunModel, "Bip01 R Hand" );
-    	}
-	    
-		Animation_PlayerUpdate();
-		self.baseframe1time += frametime;
-		self.frame1time += frametime;
-		
-		self.baseframe2time += frametime;
-		self.frame2time += frametime;
-		
+		Player_Draw();
         addentity( self );
     }
     return PREDRAW_NEXT;

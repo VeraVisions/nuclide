@@ -30,6 +30,8 @@ void SV_SendChat( entity eSender, string sMessage, entity eEnt, float fType ) {
 	WriteString( MSG_MULTICAST, sMessage );
 	msg_entity = eEnt;
 	multicast( '0 0 0', MULTICAST_ONE );
+	
+	localcmd( sprintf( "echo %s: %s\n", eSender.netname, sMessage ) );
 }
 
 /*

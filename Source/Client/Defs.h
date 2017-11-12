@@ -39,8 +39,9 @@ var vector autocvar_cross_color = '0 255 0'; // autocvar of "cross_color"
 var float autocvar_cl_bob = 0.01;
 var float autocvar_cl_bobcycle = 0.8;
 var float autocvar_cl_bobup = 0.5;
-var float autocvar_cl_bobclassic = 0;
-var float autocvar_v_lefthanded = 0;
+var int autocvar_cl_bobclassic = FALSE;
+var int autocvar_v_lefthanded = FALSE;
+var int autocvar_cl_thirdperson = FALSE;
 
 // Particle stuff
 var float PARTICLE_SPARK;

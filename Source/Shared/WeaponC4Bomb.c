@@ -64,9 +64,11 @@ var float fBeepTime; // Used for the beeping sounds that last 1.5 seconds
 var float fDefuseProgress; // Used to track... the progress
 
 static void WeaponC4BOMB_Use( void ) {
-	/*if ( eActivator.team != TEAM_CT ) {
-		return;
-	}*/
+	if ( cvar( "developer" ) == 0 ) {
+		if ( eActivator.team != TEAM_CT ) {
+			return;
+		}
+	}
 		
 	// On first use, play defusing sound
 	if ( self.eUser == world ) {
@@ -93,8 +95,7 @@ static void WeaponC4BOMB_Use( void ) {
 		fDefuseProgress += 0.01;
 	}
 		
-	eActivator.fProgressBar = (fDefuseProgress * 0.1);
-	self.fProgressBar = time + 1.0f;
+	eActivator.fProgressBar = fDefuseProgress * 0.1;
 		
 	// Make sure WeaponC4BOMB_Think knows who the user is
 	self.eUser = eActivator;
@@ -103,11 +104,9 @@ static void WeaponC4BOMB_Use( void ) {
 static void WeaponC4BOMB_Think( void ) {
 	// If the guy who started using us stopped using us, reset the defuser counter
 	if ( ( self.eUser != world ) && ( self.eUser.button6 == FALSE ) ) {
-		if ( self.fProgressBar < time ) {
-			self.eUser.fProgressBar = 0;
-			self.eUser = world;
-			fDefuseProgress = 0;
-		}
+		self.eUser.fProgressBar = 0;
+		self.eUser = world;
+		fDefuseProgress = 0;
 	}
 		
 	// If our time has passed, explode
@@ -163,10 +162,9 @@ static void WeaponC4BOMB_Think( void ) {
 void WeaponC4BOMB_Drop( vector vBombPos ) {
 	// Do all the dirty entspawning stuff
 	entity eBomb = spawn();
-	eBomb.classname = "remove_me";
+	eBomb.classname = "c4bomb";
 	
 	eBomb.solid = SOLID_BBOX;
-	eBomb.weapon = WEAPON_C4BOMB;
 	setmodel( eBomb, "models/w_c4.mdl" );
 	setorigin( eBomb, vBombPos );
 	setsize( eBomb, '-6 -6 0', '6 6 6' );
