@@ -60,8 +60,8 @@ HUDScope.c
 HUDWeaponSelect.c
 HUDOrbituaries.c
 HUD.c
-Draw.c
 Sound.c
+Draw.c
 Entities.c
 Event.c
 Init.c

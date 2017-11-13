@@ -234,7 +234,8 @@ enum {
 	EV_RADIOMSG2,
 	EV_ORBITUARY,
 	EV_CHAT,
-	EV_CHAT_TEAM
+	EV_CHAT_TEAM,
+	EV_CHAT_VOX
 };
 
 // Submodel materials

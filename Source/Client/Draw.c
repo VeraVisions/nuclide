@@ -196,6 +196,8 @@ void CSQC_UpdateView( float fWinWidth, float fWinHeight, float fGameFocus ) {
 			CSQC_VGUI_Draw();
 		}
 	}
+	
+	Sound_ProcessWordQue();
 }
 
 /*

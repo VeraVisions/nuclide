@@ -26,6 +26,7 @@ Init all the cmds in one place
 =================
 */
 void CSQC_ConsoleCommand_Init( void ) {
+	registercommand( "vox_test" );
 	registercommand( "+attack2" );
 	registercommand( "-attack2" );
 	registercommand( "+reload" );
@@ -115,6 +116,10 @@ Can interject cmds and create new ones
 float CSQC_ConsoleCommand( string sCMD ) {
 	tokenize( sCMD );
 	switch ( argv(0) ) {
+	case "vox_test":
+		Sound_PlayVOX( sCMD );
+		return TRUE;
+		break;
 	case "+attack2":
 		iInputAttack2 = TRUE;
 		return TRUE;
@@ -513,6 +518,8 @@ void CSQC_Parse_Event( void ) {
 		string sMessage2 = readstring();
 		
 		CSQC_Parse_Print( sprintf( "%s%s^xF80: %s", HUD_GetChatColorHEXTeam( fTeam2 ), getplayerkeyvalue( fSender2, "name" ), sMessage2 ), PRINT_CHAT );
+	} else if ( fHeader == EV_CHAT_VOX ) {
+		Sound_PlayVOX( readstring() );
 	}
 }
 
