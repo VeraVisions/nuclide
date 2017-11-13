@@ -128,7 +128,7 @@ float Player_PreDraw( void ) {
 			
 		vPlayerVelocity = self.velocity;
 		
-		if ( autocvar_cl_thirdperson == TRUE ) {
+		if ( autocvar_cl_thirdperson == TRUE && getstatf( STAT_HEALTH ) > 0 ) {
 			static vector vStart;
 			static vector vEnd;
 			

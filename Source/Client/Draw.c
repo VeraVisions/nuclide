@@ -186,6 +186,7 @@ void CSQC_UpdateView( float fWinWidth, float fWinHeight, float fGameFocus ) {
 			HUD_Draw();
 		}
 		
+		HUD_DrawOrbituaries();
 		CSQC_DrawChat();
 		
 		// Don't even try to draw centerprints and VGUI menus when scores are shown

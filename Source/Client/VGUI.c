@@ -63,6 +63,7 @@ void CSQC_VGUI_Draw( void ) {
 	vVGUIWindowPos_y = ( vVideoResolution_y / 2 ) - 240;
 	VGUI_Window( vguiMenus[ fVGUI_Display - 1 ].sTitle, vVGUIWindowPos, '640 480 0' );
 	
+	iVGUIKey = 48;
 	// Display the contents of whatever we have selected
 	vguiMenus[ fVGUI_Display - 1 ].vDraw( vVGUIWindowPos );
 }

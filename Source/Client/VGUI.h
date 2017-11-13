@@ -47,6 +47,8 @@ vector vVGUIButtonPos;
 string sMOTDString[25];
 string sMapString[35];
 
+var int iVGUIKey;
+
 typedef struct {
 	string sTitle;
 	void( vector vPos ) vDraw;

@@ -569,7 +569,6 @@ float CSQC_InputEvent( float fEventType, float fKey, float fCharacter, float fDe
 	} else {
 		return FALSE;
 	}
-	
 	return FALSE;
 }
 

@@ -62,5 +62,5 @@ void m_draw( vector vScreenSize ) {
 	fcsMain[ iMenu ].vMenu();
 	Header_Draw();
 	
-	drawstring( '16 16', sprintf( "FreeCS Version %s\n", VERSION ), '8 8', '1 1 1', 1.0f, 0 ); 
+	drawstring( '16 16', sprintf( "FreeCS Version: %s\n", __DATE__ ), '8 8', '1 1 1', 1.0f, 0 ); 
 }

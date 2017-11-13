@@ -437,7 +437,7 @@ void HUD_Draw( void ) {
 	HUD_DrawIcons();
 	HUD_DrawMoney();
 	HUD_DrawAmmo();
-	HUD_DrawOrbituaries();
+	
 	HUD_DrawProgressBar();
 	HUD_DrawWeaponSelect();
 }

@@ -169,6 +169,8 @@ void worldspawn( void ) {
 	localcmd( sprintf( "serverinfo motdlength %i\n", iMOTDLines ) );
 	fclose( fmMOTD );
 	
+	localcmd( sprintf( "serverinfo fcs_ver %s\n", __DATE__ ) );
+	
 	for ( int i = 1; i < CS_WEAPON_COUNT; i++ ) {
 		precache_model( sWeaponModels[ i ] );
 	}

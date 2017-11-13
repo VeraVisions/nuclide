@@ -154,6 +154,10 @@ Draws a button, returns whether or not a mouse is hovering over it (for inherita
 float VGUI_Button( string sLabel, void() vFunction, vector vPosition, vector vSize ) {
 	vector vLabelPos;
 	
+	if ( iVGUIKey < 57 ) {
+		iVGUIKey++;
+	}
+	
 	drawfill( vPosition, [vSize_x, 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
 	drawfill( [vPosition_x, vPosition_y + vSize_y - 1], [vSize_x, 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
 	drawfill( vPosition, [1, vSize_y], vVGUIColor, VGUI_WINDOW_FGALPHA );
@@ -162,8 +166,14 @@ float VGUI_Button( string sLabel, void() vFunction, vector vPosition, vector vSi
 	// Draw the button label
 	vLabelPos_x = vPosition_x + 16;
 	vLabelPos_y = vPosition_y + ( ( vSize_y / 2 ) - 4 );
-
-	if( VGUI_CheckMouse( vPosition, vSize ) ) {
+	
+	if ( ( iVGUIKey == fInputKeyCode ) ) {
+		vFunction();
+		fInputKeyCode = 0;
+		return TRUE;
+	}
+	
+	if ( VGUI_CheckMouse( vPosition, vSize ) ) {
 		if ( fMouseClick == TRUE ) {
 			vFunction();
 			fMouseClick = FALSE;
@@ -175,7 +185,7 @@ float VGUI_Button( string sLabel, void() vFunction, vector vPosition, vector vSi
 	} else {
 		CSQC_DrawText( vLabelPos, sLabel, '8 8', vVGUIColor * 0.8, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_DEFAULT );
 	}
-
+	
 	return FALSE;
 }
 
