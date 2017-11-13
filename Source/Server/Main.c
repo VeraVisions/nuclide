@@ -52,7 +52,7 @@ void SV_ParseClientCommand( string sCommand ) {
 			}
 			return;
 		} else if ( argv( 0 ) == "say_team" ) {
-			localcmd( sprintf( "echo %s: %s\n", self.netname, argv( 1 ) ) );
+			localcmd( sprintf( "echo [TEAM %d] %s: %s\n", self.team, self.netname, argv( 1 ) ) );
 			for ( entity eFind = world; ( eFind = find( eFind, classname, "player" ) ); ) { 
 				if ( eFind.team == self.team ) {
 					SV_SendChat( self, argv( 1 ), eFind, 1 );
@@ -125,6 +125,7 @@ It's the map entity, literally
 =================
 */
 void worldspawn( void ) {
+	int iMOTDLines = 0;
 	// Let's load materials.txt because someone thought this was the best idea
 	string sTemp;
 	filestream fileMaterial = fopen( "sound/materials.txt", FILE_READ );
@@ -139,6 +140,19 @@ void worldspawn( void ) {
 		}
 		fclose( fileMaterial );
 	}
+	
+	// The message of the day.
+	filestream fmMOTD = fopen( "motd.txt", FILE_READ );
+	for ( int i = 0; i < 25; i++ ) {
+		sTemp = fgets( fmMOTD );
+		if not ( sTemp ) {
+			break;
+		} 
+		localcmd( sprintf( "serverinfo motdline%i %s\n", iMOTDLines, sTemp ) );
+		iMOTDLines++;
+	}
+	localcmd( sprintf( "serverinfo motdlength %i\n", iMOTDLines ) );
+	fclose( fmMOTD );
 	
 	for ( int i = 1; i < CS_WEAPON_COUNT; i++ ) {
 		precache_model( sWeaponModels[ i ] );

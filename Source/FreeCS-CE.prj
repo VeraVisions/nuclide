@@ -60,7 +60,7 @@
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\TraceAttack.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\Triggers.c" />
 	</category>
-	<category name="Menu" expanded="yes">
+	<category name="Menu" expanded="no">
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Defs.h" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Draw.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Header.c" />
@@ -72,7 +72,7 @@
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Objects.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\progs.src" />
 	</category>
-	<category name="Shared" expanded="yes">
+	<category name="Shared" expanded="no">
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Shared\Animations.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Shared\BaseMelee.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Shared\Effects.c" />
@@ -114,18 +114,19 @@
 </project>
 
 <workspace version="Crimson Editor 3.60">
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\MenuConfiguration.c" linenum="255" placement="0:1:-1:-1:-4:-23:198:198:1080:630" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Globals.h" linenum="1" placement="0:1:-1:-1:-4:-23:0:0:886:436" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Defs.h" linenum="189" placement="0:1:-1:-1:-4:-23:22:22:908:458" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\Defs.h" linenum="37" placement="0:1:-1:-1:-4:-23:44:44:930:480" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Objects.c" linenum="237" placement="0:1:-1:-1:-4:-23:66:66:952:502" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Builtins.h" linenum="2214" placement="0:1:-1:-1:-4:-23:88:88:974:524" />
-	<localfile path="C:\cygwin\home\User\FreeCS\freecs\menu.dat.en.po" linenum="49" placement="0:1:-1:-1:-4:-23:110:110:996:546" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\Player.c" linenum="264" placement="0:1:-1:-1:-4:-23:132:132:1018:568" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\PhysicsMove.c" linenum="266" placement="0:1:-1:-1:-4:-23:154:154:1040:590" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\Client.c" linenum="138" placement="0:1:-1:-1:-4:-23:176:176:1062:612" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Shared\WeaponC4Bomb.c" linenum="89" placement="0:1:-1:-1:-4:-23:198:198:1084:634" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\Rules.c" linenum="101" placement="0:1:-1:-1:-4:-23:0:0:886:436" />
-	<localfile path="C:\cygwin\home\User\FreeCS\freecs\menu.dat.de.po" linenum="48" placement="2:3:-1:-1:-4:-23:22:22:908:458" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\MenuConfiguration.c" linenum="51" placement="0:1:-1:-1:-4:-23:22:22:904:454" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\Player.c" linenum="107" placement="0:1:-1:-1:-4:-23:44:44:930:480" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\PhysicsMove.c" linenum="158" placement="0:1:-1:-1:-4:-23:66:66:952:502" />
+	<localfile path="C:\cygwin\home\User\FreeCS\freecs\default.cfg" linenum="70" placement="2:3:-1:-1:-4:-23:88:88:974:524" />
+	<localfile path="C:\cygwin\home\User\FreeCS\freecs\ftesrv.cfg" linenum="11" placement="0:1:-1:-1:-4:-23:110:110:996:546" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\Client.c" linenum="20" placement="0:1:-1:-1:-4:-23:132:132:1018:568" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\Main.c" linenum="154" placement="0:1:-1:-1:-4:-23:154:154:1040:590" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\VGUITeamSelect.c" linenum="1" placement="0:1:-1:-1:-4:-23:22:22:908:458" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\VGUIBuyMenu.c" linenum="145" placement="0:1:-1:-1:-4:-23:44:44:930:480" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\VGUI.c" linenum="81" placement="0:1:-1:-1:-4:-23:66:66:952:502" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\Defs.h" linenum="21" placement="0:1:-1:-1:-4:-23:88:88:974:524" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\VGUI.h" linenum="47" placement="0:1:-1:-1:-4:-23:110:110:996:546" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Builtins.h" linenum="2395" placement="0:1:-1:-1:-4:-23:198:198:1084:634" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\Footsteps.c" linenum="41" placement="0:1:-1:-1:-4:-23:0:0:886:436" />
 </workspace>
 

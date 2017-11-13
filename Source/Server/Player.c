@@ -324,7 +324,7 @@ void PlayerPostThink( void ) {
 		} 
 		
 		if ( self.fFallVelocity > 200 ) {
-			self.velocity = '0 0 0';
+			self.velocity *= 0.25;
 		}
 		self.fFallVelocity = 0;
 	}

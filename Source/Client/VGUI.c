@@ -76,30 +76,28 @@ Initialize all there is
 */
 void CSQC_VGUI_Init( void ) {
 	string sTemp;
+	int iMOTDLength;
+	filestream fmMapDescr;
 	
 	// First load the MESSAGE OF THE DAY
 	// TODO: Move this to the server and put strings into infokeys
-	filestream fmMOTD = fopen( "motd.txt", FILE_READ );
-	for ( int i = 0; i < 25; i++ ) {
-		sTemp = fgets( fmMOTD );
-		if not ( sTemp ) {
-			break;
-		} 
-		sMOTDString[ i ] = sTemp;
+	
+	iMOTDLength = stof( serverkey( "motdlength" ) );
+	for ( int i = 0; i < iMOTDLength; i++ ) {
+		sMOTDString[ i ] = serverkey( sprintf( "motdline%i", i ) );
 	}
-	fclose( fmMOTD );
 	
 	// Now load the MAP DESCRIPTION
-	fmMOTD = fopen( sprintf( "maps/%s.txt", mapname ), FILE_READ );
-	if ( fmMOTD != -1 ) {
+	fmMapDescr = fopen( sprintf( "maps/%s.txt", mapname ), FILE_READ );
+	if ( fmMapDescr != -1 ) {
 		for ( int i = 0; i < 35; i++ ) {
-			sTemp = fgets( fmMOTD );
+			sTemp = fgets( fmMapDescr );
 			if not ( sTemp ) {
 				break;
 			} 
 			sMapString[ i ] = sTemp;
 		}
-		fclose( fmMOTD );
+		fclose( fmMapDescr );
 	}
 	
 	// We start on the MOTD, always

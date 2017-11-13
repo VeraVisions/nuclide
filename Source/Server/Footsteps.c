@@ -36,11 +36,15 @@ void Footsteps_Update( void ) {
 			return;
 		}
 
+		if ( self.movement_x < 200 || self.flags & FL_CROUCHING  ) {
+			return;
+		}
+		
 		vStep_x = fabs( self.velocity_x );
 		vStep_y = fabs( self.velocity_y );
 
 		fForce = ( vStep_x + vStep_y );
-		fDelay = clamp( 0.1, 1 / ( fForce / 100 ), 1 );
+		fDelay = clamp( 0.1, 1 / ( fForce / 90 ), 1 );
 
 		traceline( self.origin + self.view_ofs, self.origin + '0 0 -48', FALSE, self );
 		
