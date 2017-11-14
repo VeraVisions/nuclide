@@ -45,11 +45,16 @@ The game is playable as long as you don't care about the radar/overview display.
 3. Get the latest version of FTEQW from the [website](http://triptohell.info/moodles/) in binary form and put it into the FreeCS directory with default.fmf in it. [You can also build fteqw from source yourself if you know how.](https://sourceforge.net/projects/fteqw/)
 4. Download csv15full.exe. You can find it on [FilePlanet](https://www.fileplanet.com/57255/50000/fileinfo/Counter-Strike-1.5-Full-Mod-Client-[Win32])
 5. Run csv15full.exe and install it into the FreeCS folder. (Use Wine on *NIX! No, the Linux Server zip does NOT contain all the assets)
-5. Run FTE QuakeWorld to play!
+6. Run FTE QuakeWorld to play!
 
 **Optional step:** Copy the 'valve' folder from your Half-Life installation in order for all assets to show up into the same directory as freecs, cstrike and the default.fmf!
 
 **Most UNIX file systems are case-sensitive, so you'll want to rename the .wad files in the cstrike directory to be lowercase for now. This will fix most missing texture bugs! Yes, this problem will be adressed in the future.**
+
+**Dedicated Server Notes:** Get fteqwsv.exe and launch it with the following parameters:
+`fteqwsv.exe +sv_public 1 +map cs_assault`
+
+You can replace cs_assault with any map you desire.
 
 # Notes
 You might get away with using the cstrike folder from the Steam version of Counter-Strike 1.6, or any older version
