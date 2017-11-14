@@ -123,6 +123,9 @@ void Menu_Multiplayer( void ) {
 	static void Multiplayer_ButtonDone( void ) {
 		iMenu = MENU_MAIN;
 	}
+	static void Multiplayer_ButtonIRC( void ) {
+		iMenu = MENU_MULTIPLAYER_IRC;	
+	}
 	
 	// Initialize it on the first run
 	if ( iSelectedServer == -1 ) {
@@ -132,7 +135,7 @@ void Menu_Multiplayer( void ) {
 		sethostcachesort( gethostcacheindexforkey( "ping" ), FALSE );
 		refreshhostcache();
 		resorthostcache();
-		iSelectedServer = 0;
+		iSelectedServer = -2;
 	}
 	
 	fldName = gethostcacheindexforkey("name");
@@ -146,12 +149,15 @@ void Menu_Multiplayer( void ) {
 	
 	iServersTotal = gethostcachevalue( SLIST_HOSTCACHEVIEWCOUNT );
 	
-	Menu_SetClipArea( '32 148', '164 160' );
+	Menu_SetClipArea( '32 148', '164 192' );
 	Object_Button( '32 148', BTN_JOINGAME, Multiplayer_ButtonJoin, fButtonAlpha[0] );
 	Object_Button( '32 180', BTN_CREATE, Multiplayer_ButtonCreate, fButtonAlpha[1] );
 	Object_Button( '32 212', BTN_GAMEINFO, __NULL__, fButtonAlpha[2] );
 	Object_Button( '32 244', BTN_REFRESHLIST, Multiplayer_ButtonRefresh, fButtonAlpha[3] );
-	Object_Button( '32 276', BTN_DONE, Multiplayer_ButtonDone, fButtonAlpha[4] );
+	if ( checkcommand( "irc" ) ) {
+		Object_Button( '32 276', BTN_IRCCHAT, Multiplayer_ButtonIRC, fButtonAlpha[4] );
+	}
+	Object_Button( '32 308', BTN_DONE, Multiplayer_ButtonDone, fButtonAlpha[5] );
 	Menu_ResetClipArea();
 	
 	Object_Frame( '196 140', '404 308' );
@@ -234,4 +240,24 @@ void Menu_Multiplayer_Create( void ) {
 		vListPos_y += 10;
 	}
 	Menu_ResetClipArea();
+}
+
+void Menu_Multiplayer_IRC( void ) {
+	static int iIRCInit = FALSE;
+	
+	static void IRC_ButtonDone( void ) {
+		iMenu = MENU_MULTIPLAYER;
+	}
+	
+	if ( iIRCInit == FALSE ) {
+		print( "[IRC] Connecting to #freecs...\n" );
+		con_printf( "IRC", "/irc /connect irc.freenode.org #freecs\n" );
+		//con_getset( "IRC", "hidden", "1" );
+		iIRCInit = TRUE;
+		for (string s = ""; s; s = con_getset("", "next")) {con_printf(s, "SPAMMING EVERY CONSOLE HAR HAR HAR\n");}
+	}
+	
+	con_draw( "IRC", vMenuOffset + '196 140', '404 308', 8 );
+	
+	Object_Button( '32 308', BTN_DONE, IRC_ButtonDone, fButtonAlpha[0] );
 }

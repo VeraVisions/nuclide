@@ -25,7 +25,7 @@
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\VGUITeamSelect.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\View.c" />
 	</category>
-	<category name="Server" expanded="yes">
+	<category name="Server" expanded="no">
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\AmbientSound.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\Ammo.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\ArmouryEntity.c" />
@@ -114,6 +114,13 @@
 </project>
 
 <workspace version="Crimson Editor 3.60">
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\Client.c" linenum="15" placement="2:3:-1:-1:-4:-23:22:22:904:454" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\HUD.c" linenum="12" placement="0:1:-1:-1:-4:-23:0:0:882:432" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\MenuMultiplayer.c" linenum="256" placement="2:3:-1:-1:-4:-23:22:22:908:458" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Init.c" linenum="20" placement="0:1:-1:-1:-4:-23:44:44:930:480" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Builtins.h" linenum="2487" placement="0:1:-1:-1:-4:-23:66:66:952:502" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Defs.h" linenum="66" placement="0:1:-1:-1:-4:-23:88:88:974:524" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Draw.c" linenum="64" placement="0:1:-1:-1:-4:-23:132:132:1018:568" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Objects.c" linenum="103" placement="0:1:-1:-1:-4:-23:154:154:1040:590" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Header.c" linenum="21" placement="0:1:-1:-1:-4:-23:176:176:1062:612" />
 </workspace>
 

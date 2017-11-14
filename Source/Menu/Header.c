@@ -28,6 +28,7 @@ fcsMenu fcsMain[ MENU_COUNT ] = {
 	{ Menu_Multiplayer, HEAD_MULTI },
 	{ Menu_Multiplayer_Create, HEAD_CREATEGAME },
 	{ Menu_Multiplayer_Create, HEAD_ADVOPTIONS },
+	{ Menu_Multiplayer_IRC, HEAD_ADVOPTIONS },
 	{ Menu_Quit, -1 }	
 };
 

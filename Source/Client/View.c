@@ -126,7 +126,6 @@ View_DrawViewModel
 ====================
 */
 void View_DrawViewModel( void ) {
-	static float fLastTime;
 	static float fBob;
 	static float fLastWeapon;
 
@@ -143,7 +142,7 @@ void View_DrawViewModel( void ) {
 	}
 	
 	// Don't update when paused
-	if ( time != fLastTime ) {
+	if ( serverkey("pausestate") == "0" ) {
 		fBob = View_CalcBob();
 		
 		if( getstatf( STAT_ACTIVEWEAPON ) < CS_WEAPON_COUNT ) {
@@ -167,6 +166,7 @@ void View_DrawViewModel( void ) {
 		processmodelevents( eViewModel.modelindex, eViewModel.frame, fBaseTime, eViewModel.frame1time, View_ProcessEvent );
 		
 		eViewModel.frame1time += frametime;
+		eViewModel.frame2time += frametime;
 	}
 	
 	makevectors( getproperty( VF_ANGLES ) );
@@ -189,9 +189,7 @@ void View_DrawViewModel( void ) {
 	if ( autocvar_cl_bobclassic == 1 ) {
 		eViewModel.angles_z = -fBob;
 	}
-	
-	fLastTime = time;
-	
+
 	// Only bother when zoomed out
 	if ( getstatf( STAT_VIEWZOOM ) == 255 ) {
 		// Update muzzleflash position and draw it
