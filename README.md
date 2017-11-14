@@ -52,6 +52,7 @@ The game is playable as long as you don't care about the radar/overview display.
 **Most UNIX file systems are case-sensitive, so you'll want to rename the .wad files in the cstrike directory to be lowercase for now. This will fix most missing texture bugs! Yes, this problem will be adressed in the future.**
 
 **Dedicated Server Notes:** Get fteqwsv.exe and launch it with the following parameters:
+
 `fteqwsv.exe +sv_public 1 +map cs_assault`
 
 You can replace cs_assault with any map you desire.
