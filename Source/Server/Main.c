@@ -157,13 +157,18 @@ void worldspawn( void ) {
 	}
 	
 	// The message of the day.
-	filestream fmMOTD = fopen( "motd.txt", FILE_READ );
+	filestream fmMOTD = fopen( autocvar_motdfile, FILE_READ );
 	for ( int i = 0; i < 25; i++ ) {
 		sTemp = fgets( fmMOTD );
 		if not ( sTemp ) {
 			break;
 		} 
-		localcmd( sprintf( "serverinfo motdline%i %s\n", iMOTDLines, sTemp ) );
+		
+		if ( sTemp == __NULL__ ) {
+			localcmd( sprintf( "serverinfo motdline%i /\n", iMOTDLines ) );
+		} else {
+			localcmd( sprintf( "serverinfo motdline%i %s\n", iMOTDLines, sTemp ) );
+		}
 		iMOTDLines++;
 	}
 	localcmd( sprintf( "serverinfo motdlength %i\n", iMOTDLines ) );

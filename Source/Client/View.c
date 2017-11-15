@@ -89,6 +89,16 @@ float View_CalcBob( void ) {
 	return fBob;
 }
 
+void View_DropPunchAngle( void ) {
+	float fLerp;
+	fLerp = 1.0f - ( frametime * 4 );
+	vPunchAngle *= fLerp;
+}
+
+void View_AddPunchAngle( vector vAdd ) {
+	vPunchAngle += vAdd;
+}
+
 /*
 ====================
 View_ProcessEvent

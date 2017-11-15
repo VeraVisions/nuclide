@@ -42,7 +42,9 @@ void VGUI_MessageOfTheDay( vector vPos ) {
 	vector vTextPos = vPos + '16 116 0';
 	
 	for ( int i = 0; i < 25; i++ ) {
-		VGUI_Text( sMOTDString[ i ], vTextPos, '8 8', FONT_DEFAULT );
+		if ( sMOTDString[ i ] != "/" ) {
+			VGUI_Text( sMOTDString[ i ], vTextPos, '8 8', FONT_DEFAULT );
+		}
 		vTextPos_y += 10;
 	}
 	

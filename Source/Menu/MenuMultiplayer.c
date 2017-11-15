@@ -134,10 +134,10 @@ void Menu_Multiplayer( void ) {
 		//sethostcachemaskstring( 0, gethostcacheindexforkey( "gamedir" ), "freecs", SLIST_TEST_EQUAL );
 		sethostcachesort( gethostcacheindexforkey( "ping" ), FALSE );
 		refreshhostcache();
-		resorthostcache();
 		iSelectedServer = -2;
 	}
 	
+	resorthostcache();
 	fldName = gethostcacheindexforkey("name");
 	fldAddress = gethostcacheindexforkey("cname");
 	fldPing = gethostcacheindexforkey("ping");

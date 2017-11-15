@@ -73,6 +73,7 @@ void Player_Draw( void ) {
 	self.baseframe2time += frametime;
 	self.frame2time += frametime;	
 }
+
 /*
 =================
 Player_PreDraw

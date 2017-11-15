@@ -610,4 +610,6 @@ void CSQC_Input_Frame( void ) {
 	if ( iInputDuck == TRUE ) {
 		input_buttons |= INPUT_BUTTON6;
 	} 
+	
+	input_angles += vPunchAngle;
 }

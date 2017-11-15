@@ -92,6 +92,9 @@ vector vPlayerOrigin;
 vector vPlayerOriginOld;
 vector vPlayerVelocity;
 
+vector vPunchAngle;
+
+void View_AddPunchAngle( vector vAdd );
 void View_PlayAnimation( int iSequence );
 string HUD_GetChatColorHEX( float fTeam );
 

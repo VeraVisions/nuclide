@@ -29,6 +29,28 @@ float Math_Lerp( float fA, float fB, float fPercent ) {
 	return ( fA * ( 1 - fPercent ) ) + ( fB * fPercent );
 }
 
+float Math_VectorNormalize( vector v ) {
+	float	length, ilength;
+
+	length = v_x*v_x + v_y*v_y + v_z*v_z;
+	length = sqrt( length );		// FIXME
+
+	if ( length ) {
+		ilength = 1 / length;
+		v[0] *= ilength;
+		v[1] *= ilength;
+		v[2] *= ilength;
+	}
+		
+	return length;
+}
+
+void Math_VectorScale( vector in, float scale, __inout vector out ) {
+	out_x = in_x * scale;
+	out_y = in_y * scale;
+	out_z = in_z * scale;
+}
+
 float Math_FixDelta( float fDelta ) {
 	if ( fDelta >= 180 ) {
 		fDelta -= 360;

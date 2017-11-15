@@ -28,6 +28,7 @@ var float autocvar_mp_freezetime = 6;
 var float autocvar_mp_c4timer = 45;
 var float autocvar_mp_roundtime = 5;
 var float autocvar_mp_fillweapons = 0;
+var string autocvar_motdfile = "motd.txt";
 
 // Hit Group standards
 enum {

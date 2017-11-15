@@ -172,9 +172,12 @@ void CSQC_UpdateView( float fWinWidth, float fWinHeight, float fGameFocus ) {
 		setproperty( VF_ORIGIN, vPlayerOrigin + [ 0, 0, getstatf( STAT_VIEWHEIGHT ) ] );
 		setproperty( VF_ANGLES, view_angles );
 		View_DrawViewModel();
+		
 	}
-	
+
+	setproperty( VF_ANGLES, view_angles + vPunchAngle );
 	renderscene();
+	View_DropPunchAngle();
 	
 	Nightvision_PostDraw();
 	
