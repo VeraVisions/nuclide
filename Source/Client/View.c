@@ -181,7 +181,7 @@ void View_DrawViewModel( void ) {
 	
 	makevectors( getproperty( VF_ANGLES ) );
 	eViewModel.origin = getproperty( VF_ORIGIN ) + '0 0 -1' + ( v_forward * ( fBob * 0.4 ) );
-	eViewModel.angles = getproperty( VF_ANGLES );
+	eViewModel.angles = getproperty( VF_ANGLES ) + vPunchAngle;
 	
 	// Left-handed weapons
 	if ( autocvar_v_lefthanded ) {

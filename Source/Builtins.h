@@ -1992,7 +1992,7 @@ float(float modidx, float framenum, int eventidx, __out float timestamp, __out i
 		Reports an indexed event within a model's animation. Writes to timestamp,code,data arguments on success. Returns false if the animation/event/model was out of range/invalid. Does not consider looping animations (retry from index 0 if it fails and you know that its a looping animation). This builtin is more annoying to use than getnextmodelevent, but can be made to deal with multiple events with the exact same timestamp. */
 
 #endif
-#define dotproduct(v1,v2) ((vector)(v1)*(vector)(v2))
+#define dotproduct(a,b) ((vector)(a)*(vector)(b))
 vector(vector v1, vector v2) crossproduct = #0:crossproduct; /* Part of FTE_QC_CROSSPRODUCT
 		Small helper function to calculate the crossproduct of two vectors. */
 

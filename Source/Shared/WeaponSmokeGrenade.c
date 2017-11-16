@@ -97,6 +97,9 @@ void WeaponSMOKEGRENADE_Throw( void ) {
 	static void WeaponSMOKEGRENADE_Die( void ) {
 		remove( self );
 	}
+	static vector Caliber_Reflect( vector v1, vector v2 ) {
+		return v1 - 2 * dotproduct( v1, v2 ) * v2;
+	}
 	static void WeaponSMOKEGRENADE_Explode( void ) {
 		Effect_CreateSmoke( self.origin );
 		
@@ -114,7 +117,8 @@ void WeaponSMOKEGRENADE_Throw( void ) {
 			return;
 		}
 		if ( other.classname == "func_breakable" ) {
-			Damage_Apply( other, self, 10, self.origin, FALSE );
+			Damage_Apply( other, self, 50, self.origin, FALSE );
+			self.velocity = Caliber_Reflect( self.velocity, trace_plane_normal );
 		}
 		sound( self, CHAN_WEAPON, sprintf( "weapons/grenade_hit%d.wav", floor( random() * 3 ) + 1 ), 1, ATTN_NORM );
 	}

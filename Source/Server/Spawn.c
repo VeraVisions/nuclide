@@ -257,6 +257,11 @@ void CSEv_GamePlayerSpawn_f( float fChar ) {
 	self.fSlotPrimary = 0;
 	self.fSlotSecondary = 0;
 	self.fSlotGrenade = 0;
+	self.iEquipment = 0;
+	
+	if ( iAlivePlayers_T + iAlivePlayers_CT == 1 ) {
+		Rules_RoundOver( 0, 0, FALSE );
+	}
 	
 	// Spawn the players immediately when its in the freeze state
 	switch ( fGameState ) {
@@ -270,32 +275,8 @@ void CSEv_GamePlayerSpawn_f( float fChar ) {
 				return;
 			} else if( fChar < 5 ) {
 				self.team = TEAM_T;
-				
-				if ( fGameState == GAME_ACTIVE && iAlivePlayers_T == 0 ) {
-					self.fCharModel = fChar;
-					Spawn_CreateClient( fChar );
-					
-					if ( iBombZones > 0 ) {
-						Weapon_AddItem( WEAPON_C4BOMB );
-						centerprint( self, "You have the bomb!\nFind the target zone or DROP\nthe bomb for another Terrorist." );
-					}
-					break;
-				}
 			} else {
 				self.team = TEAM_CT;
-				
-				if ( fGameState == GAME_ACTIVE && iAlivePlayers_CT == 0 ) {
-					self.fCharModel = fChar;
-					Spawn_CreateClient( fChar );
-					
-					if ( iVIPZones > 0 ) {
-						self.team = TEAM_VIP;
-						Spawn_RespawnClient( self.team );
-						centerprint( self, "You are the VIP\nMake your way to the safety zones!" );
-						forceinfokey( self, "*dead", "2" );
-					}
-					break;
-				}
 			}
 			
 			Spawn_MakeSpectator();

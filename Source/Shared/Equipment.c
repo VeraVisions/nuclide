@@ -35,10 +35,27 @@ void CSEv_PlayerBuyEquipment_f( float fID ) {
 	}
 	
 	if ( ( self.fMoney - eqptTable[ fID ].iPrice ) >= 0 ) {
-		if ( eqptTable[ fID ].iID == WEAPON_HEGRENADE ) {
+		if ( eqptTable[ fID ].iID == EQUIPMENT_DEFUSALKIT ) {
+			if ( !( self.iEquipment & EQUIPMENT_DEFUSALKIT ) ) {
+				self.iEquipment |= EQUIPMENT_DEFUSALKIT;
+				Money_AddMoney( self, -200 );
+				sound( self, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_IDLE );
+			} else {
+				centerprint( self, "You already have a defusal kit!" );
+			}
+		} else if ( eqptTable[ fID ].iID == EQUIPMENT_NIGHTVISION ) {
+			if ( !( self.iEquipment & EQUIPMENT_NIGHTVISION ) ) {
+				self.iEquipment |= EQUIPMENT_NIGHTVISION;
+				Money_AddMoney( self, -1250 );
+				sound( self, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_IDLE );
+			} else {
+				centerprint( self, "You already have nightvision goggles!" );
+			}
+		} else if ( eqptTable[ fID ].iID == WEAPON_HEGRENADE ) {
 			if ( self.iAmmo_HEGRENADE < 2 ) {
 				self.iAmmo_HEGRENADE++;
 				Money_AddMoney( self, -300 );
+				sound( self, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_IDLE );
 			} else {
 				centerprint( self, "You can't carry any more!" );
 			}
@@ -46,6 +63,7 @@ void CSEv_PlayerBuyEquipment_f( float fID ) {
 			if ( self.iAmmo_FLASHBANG < 2 ) {
 				self.iAmmo_FLASHBANG++;
 				Money_AddMoney( self, -300 );
+				sound( self, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_IDLE );
 			} else {
 				centerprint( self, "You can't carry any more!" );
 			}
@@ -53,6 +71,7 @@ void CSEv_PlayerBuyEquipment_f( float fID ) {
 			if ( self.iAmmo_SMOKEGRENADE < 2 ) {
 				self.iAmmo_SMOKEGRENADE++;
 				Money_AddMoney( self, -300 );
+				sound( self, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_IDLE );
 			} else {
 				centerprint( self, "You can't carry any more!" );
 			}

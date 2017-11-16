@@ -39,6 +39,14 @@ void Menu_Main( void ) {
 		iMenu = MENU_QUIT;
 	}
 	
+	if ( iHLContent == FALSE ) {
+		Object_Frame( '232 200', '400 96' );
+		Object_Label( '244 212', "Warning", '16 16' );
+		Object_Label( '244 248', "You have not copied over your 'valve' directory", '8 8' );
+		Object_Label( '244 258', "from Half-Life. This will cause missing models,", '8 8' );
+		Object_Label( '244 268', "sounds and textures. Be warned!", '8 8' );
+	}
+	
 	Object_Button( '72 188', BTN_CONSOLE, Main_ButtonConsole, fButtonAlpha[0] );
 	Object_Button( '72 272', BTN_CONFIG, Main_ButtonConfiguration, fButtonAlpha[1] );
 	

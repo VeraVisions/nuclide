@@ -19,7 +19,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 void main( void ) {}
+
 void SetNewParms( void ) {}
+
 void SetChangeParms( void ) {}
 
 void SV_SendChat( entity eSender, string sMessage, entity eEnt, float fType ) {
@@ -141,6 +143,7 @@ It's the map entity, literally
 */
 void worldspawn( void ) {
 	int iMOTDLines = 0;
+	
 	// Let's load materials.txt because someone thought this was the best idea
 	string sTemp;
 	filestream fileMaterial = fopen( "sound/materials.txt", FILE_READ );
@@ -157,6 +160,7 @@ void worldspawn( void ) {
 	}
 	
 	// The message of the day.
+	localcmd( sprintf( "echo [MOTD] Loading %s.\n", autocvar_motdfile ) );
 	filestream fmMOTD = fopen( autocvar_motdfile, FILE_READ );
 	for ( int i = 0; i < 25; i++ ) {
 		sTemp = fgets( fmMOTD );
@@ -174,8 +178,45 @@ void worldspawn( void ) {
 	localcmd( sprintf( "serverinfo motdlength %i\n", iMOTDLines ) );
 	fclose( fmMOTD );
 	
+	// The mapcycle information.
+	localcmd( sprintf( "echo [MAPCYCLE] Loading %s.\n", autocvar_mapcyclefile ) );
+	filestream fmMapcycle = fopen( autocvar_mapcyclefile, FILE_READ );
+	for ( int i = 0;; i++ ) {
+		sTemp = fgets( fmMapcycle );
+		if not ( sTemp ) {
+			break;
+		} 
+		
+		if ( sTemp != __NULL__ ) {
+			iMapCycleCount++;
+		}
+	}
+	
+	fseek( fmMapcycle, 0 );
+	localcmd( sprintf( "echo [MAPCYCLE] List has %i maps.\n", iMapCycleCount ) );
+	sMapCycle = memalloc( sizeof( string ) * iMapCycleCount );
+	for ( int i = 0; i < iMapCycleCount; i++ ) {
+		sMapCycle[ i ] = fgets( fmMapcycle );
+	}
+	fclose( fmMapcycle );
+	
+	for ( int i = 0; i < iMapCycleCount; i++ ) {
+		if ( sMapCycle[ i ] == mapname ) {
+			if ( ( i + 1 ) < iMapCycleCount ) {
+				localcmd( sprintf( "echo [MAPCYCLE] Next map: %s\n", sMapCycle[ i + 1 ] ) );
+			} else {
+				break;
+			}
+		}
+	}
+	
+	// Let's make our version information clear
 	localcmd( sprintf( "serverinfo fcs_ver %s\n", __DATE__ ) );
 	
+	// Tell em the next map in the list we should load.
+	localcmd( sprintf( "serverinfo maplist %s\n", iMapCycleCount ) );
+	
+	// All the important precaches
 	for ( int i = 1; i < CS_WEAPON_COUNT; i++ ) {
 		precache_model( sWeaponModels[ i ] );
 	}

@@ -39,6 +39,7 @@ var float fInputKeyDown;
 var float fMouseClick;
 var float fButtonAlpha[8];
 var float fScrollWheel;
+var int iHLContent = 0;
 
 var vector vMenuButtonsSize;
 

@@ -191,6 +191,8 @@ void Rules_RoundOver( int iTeamWon, int iMoneyReward, float fSilent ) {
 	}
 	Money_QueTeamReward( iTeamWon, iMoneyReward );
 	Timer_Begin( 5, GAME_END); // Round is over, 5 seconds til a new round starts
+	
+	iBombPlanted = 0;
 }
 
 /*

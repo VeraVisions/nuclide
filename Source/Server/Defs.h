@@ -28,7 +28,14 @@ var float autocvar_mp_freezetime = 6;
 var float autocvar_mp_c4timer = 45;
 var float autocvar_mp_roundtime = 5;
 var float autocvar_mp_fillweapons = 0;
+var float autocvar_mp_timelimit = 60;
 var string autocvar_motdfile = "motd.txt";
+
+
+// Mapcycle features
+var string autocvar_mapcyclefile = "mapcycle.txt";
+var int iMapCycleCount;
+string *sMapCycle;
 
 // Hit Group standards
 enum {

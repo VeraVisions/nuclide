@@ -45,6 +45,11 @@ void m_init( void ) {
 	FONT_MENU = loadfont( "menu", "gfx/menuchars", "32", -1 );
 	
 	vMenuButtonsSize = drawgetimagesize( "gfx/shell/btns_main" );
+	
+	// For those peeps who don't read or don't want to follow the instructions
+	if ( whichpack( "sound/items/9mmclip1.wav" ) ) {
+		iHLContent = TRUE;
+	}
 }
 
 /*

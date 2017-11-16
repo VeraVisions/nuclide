@@ -98,7 +98,8 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 	// Modify the damage based on the location
 	if ( trace_surface_id == BODY_HEAD ) {
 		if ( eTarget.iEquipment & EQUIPMENT_HELMET ) {
-			iDamage *= 0.5;
+			sound( self, CHAN_ITEM, "weapons/ric_metal-2.wav", 1, ATTN_IDLE );
+			iDamage = 0;
 			eTarget.iEquipment -= EQUIPMENT_HELMET;
 		} else {
 			iDamage *= 4;

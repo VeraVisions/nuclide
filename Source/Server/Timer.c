@@ -47,6 +47,20 @@ Called once every frame to check the status of things
 =================
 */
 void Timer_Update( void ) {
+	// This map has been played enough we think
+	if ( time >= ( cvar( "mp_timelimit" ) * 60 ) ) {
+		for ( int i = 0; i < iMapCycleCount; i++ ) {
+			if ( sMapCycle[ i ] == mapname ) {
+				if ( ( i + 1 ) < iMapCycleCount ) {
+					localcmd( sprintf( "changelevel %s\n", sMapCycle[ i + 1 ] ) );
+					return;
+				} else {
+					localcmd( sprintf( "changelevel %s\n", sMapCycle[ 0 ] ) );
+				}
+			}
+		}
+	}
+	
 	if ( fGameState == GAME_INACTIVE ) {
 		return;
 	}

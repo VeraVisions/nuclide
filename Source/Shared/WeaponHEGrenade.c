@@ -108,7 +108,7 @@ void WeaponHEGRENADE_Throw( void ) {
 			return;
 		}
 		if ( other.classname == "func_breakable" && other.material == MATERIAL_GLASS ) {
-			Damage_Apply( other, self, 10, self.origin, FALSE );
+			Damage_Apply( other, self, 50, self.origin, FALSE );
 		}
 		
 		sound( self, CHAN_WEAPON, "weapons/he_bounce-1.wav", 1, ATTN_NORM );
