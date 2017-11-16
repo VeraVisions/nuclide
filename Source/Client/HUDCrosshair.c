@@ -25,11 +25,7 @@ HUD_DrawCrosshair
 Draws the cursor every frame, unless spectator
 =================
 */
-void HUD_DrawCrosshair( void ) {
-	static int iOldShotMultiplier;
-	static float fCrosshairDistance;
-	static float fDecreaseShotTime;
-	
+void HUD_DrawCrosshair( void ) {	
 	int iCrosshairDistance;
 	int iLineLength;
 	
@@ -47,48 +43,49 @@ void HUD_DrawCrosshair( void ) {
 		fDistance = fDistance * 2;
 	} else if ( getstatf( STAT_FLAGS ) & FL_CROUCHING ) { // Crouching...
 		fDistance = fDistance * 0.5;
-	} else if ( vlen( pmove_vel ) > 120 ) { // Running, not walking
+	} else if ( vlen( pSeat->ePlayer.velocity ) > 120 ) { // Running, not walking
 		fDistance = fDistance * 1.5;
 	}
 	
 	// The amount of shots that we've shot totally does affect our accuracy!
-	if ( iShotMultiplier > iOldShotMultiplier ) {
-		fCrosshairDistance = min( 15, fCrosshairDistance + fDeltaDistance );
-	} else if ( fCrosshairDistance > fDistance ) {
+	if ( pSeat->iShotMultiplier > pSeat->iOldShotMultiplier ) {
+		pSeat->fCrosshairDistance = min( 15, pSeat->fCrosshairDistance + fDeltaDistance );
+	} else if ( pSeat->fCrosshairDistance > fDistance ) {
 		// Slowly decrease the distance again
-		fCrosshairDistance -= ( fCrosshairDistance * frametime );
+		pSeat->fCrosshairDistance -= ( pSeat->fCrosshairDistance * frametime );
 		
-		if ( ( iShotMultiplier > 0 ) && ( fDecreaseShotTime < time ) ) {
-			fDecreaseShotTime = time + 0.2;
-			iShotMultiplier--;
+		if ( ( pSeat->iShotMultiplier > 0 ) && ( pSeat->fDecreaseShotTime < time ) ) {
+			pSeat->fDecreaseShotTime = time + 0.2;
+			pSeat->iShotMultiplier--;
 		}
 	}
 	
-	iOldShotMultiplier = iShotMultiplier;
+	pSeat->iOldShotMultiplier = pSeat->iShotMultiplier;
 	
-	if ( fCrosshairDistance < fDistance ) {
-		 fCrosshairDistance = fDistance;
+	if ( pSeat->fCrosshairDistance < fDistance ) {
+		 pSeat->fCrosshairDistance = fDistance;
 	}
 
-	iCrosshairDistance = ceil( fCrosshairDistance );
+	iCrosshairDistance = ceil( pSeat->fCrosshairDistance );
 	iLineLength = ( ( iCrosshairDistance - fDistance ) / 2 ) + 5;
 
 	iLineLength = max( 1, iLineLength );
 	
 	// Line positions
 	vector vVer1, vVer2, vHor1, vHor2;
+	vVer1 = vVer2 = vHor1 = vHor2 = vVideoMins;
 	
 	// Vertical Lines
-	vVer1_x = ( vVideoResolution_x / 2 );
-	vVer1_y = ( vVideoResolution_y / 2 ) - ( iCrosshairDistance + iLineLength );
-	vVer2_x = ( vVideoResolution_x / 2 );
-	vVer2_y = ( vVideoResolution_y / 2 ) + iCrosshairDistance + 1;
+	vVer1_x += ( vVideoResolution_x / 2 );
+	vVer1_y += ( vVideoResolution_y / 2 ) - ( iCrosshairDistance + iLineLength );
+	vVer2_x += ( vVideoResolution_x / 2 );
+	vVer2_y += ( vVideoResolution_y / 2 ) + iCrosshairDistance + 1;
 	
 	// Horizontal Lines
-	vHor1_x = ( vVideoResolution_x / 2 ) - ( iCrosshairDistance + iLineLength );
-	vHor1_y = ( vVideoResolution_y / 2 );
-	vHor2_x = ( vVideoResolution_x / 2 ) + iCrosshairDistance + 1;
-	vHor2_y = ( vVideoResolution_y / 2 );
+	vHor1_x += ( vVideoResolution_x / 2 ) - ( iCrosshairDistance + iLineLength );
+	vHor1_y += ( vVideoResolution_y / 2 );
+	vHor2_x += ( vVideoResolution_x / 2 ) + iCrosshairDistance + 1;
+	vHor2_y += ( vVideoResolution_y / 2 );
 
 	drawfill( vVer1, [ 1, iLineLength ], vCrossColor, 1, DRAWFLAG_ADDITIVE );
 	drawfill( vVer2, [ 1, iLineLength ], vCrossColor, 1, DRAWFLAG_ADDITIVE );

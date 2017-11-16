@@ -36,7 +36,7 @@ void Footsteps_Update( void ) {
 			return;
 		}
 
-		if ( self.movement_x < 200 || self.flags & FL_CROUCHING  ) {
+		if ( vlen( self.movement ) < 150 || self.flags & FL_CROUCHING  ) {
 			return;
 		}
 		

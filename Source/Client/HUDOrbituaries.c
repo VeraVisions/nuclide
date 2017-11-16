@@ -84,7 +84,7 @@ This actually displays the contents of orbBuffer
 =================
 */
 void HUD_DrawOrbituaries( void ) {
-	vector vOrbPos = [ vVideoResolution_x - 200, 56 ];
+	vector vOrbPos = vVideoMins + [ vVideoResolution_x - 200, 56 ];
 	
 	if ( fOrbituaryTime < time && iOrbituaryScroll >= 0 ) {
 		// We are cheap, just clear the attacker and we're good.
@@ -99,7 +99,7 @@ void HUD_DrawOrbituaries( void ) {
 		}
 		
 		// Calculate the position based on the saved offsets
-		vOrbPos_x = vVideoResolution_x - ( orbBuffer[ i ].fOffset1 + orbBuffer[ i ].fOffset2 + orbBuffer[ i ].fOffset3 ) - 16;
+		vOrbPos_x = vVideoMins_x + vVideoResolution_x - ( orbBuffer[ i ].fOffset1 + orbBuffer[ i ].fOffset2 + orbBuffer[ i ].fOffset3 ) - 16;
 		
 		// Draw the attacker's name, shadow first
 		drawstring( vOrbPos + '1 1', orbBuffer[ i ].sAttacker, '8 8', '0 0 0', VGUI_WINDOW_FGALPHA, 0 );

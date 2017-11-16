@@ -59,10 +59,55 @@ vector vHUDColor; // Defined in HUD_Draw (HUD.c)
 vector vVGUIColor; // Defined in HUD_Draw (VGUI.c)
 vector vCrossColor; // Defined in HUD_Draw (HUDCrosshair.c)
 
-float fVGUI_Display; // The VGUI menu currently being drawn
+struct
+{
+//Viewmodel stuff
+	entity eViewModel;
+	entity eMuzzleflash;
+	float fNumBones;
+	vector vPunchAngle;
+	float fLastWeapon;
+	float fBobTime;
+	float fBob;
+
+//Player fields
+	entity ePlayer;
+	vector vPlayerOrigin;
+	vector vPlayerOriginOld;
+	vector vPlayerVelocity;
+	
+// Camera Fields
+	//entity ePlayerEnt;
+	vector vCameraPos;
+	vector vCameraAngle;
+	float fCameraTime;
+	
+// Flashbang'd
+	float fFlashTime;
+	float fFlashAlpha;
+	
+//UI fields
+	float fVGUI_Display;	// The VGUI menu currently being drawn
+	int iShowScores;	// This is seperated from the other VGUI stuff so we can check scores while buying and whatnot
+	
+//crosshair
+	int iOldShotMultiplier;
+	float fCrosshairDistance;
+	float fDecreaseShotTime;
+	int iShotMultiplier;
+	
+//buy menu
+	// We can only carry one item per slot, so this is hacking around the last one
+	int iHUDGrenades;
+	int iHUDGrenadesSelected;
+	float fHUDWeaponSelectTime;
+	float fHUDWeaponSelected;
+} seats[4], *pSeat;
+
 float fInputSendNext;
 
-vector vVideoResolution; // Updated every frame
+vector vVideoMins;		//
+vector vVideoResolution;	// Updated every frame
 
 // Input globals, feel free to use them since they are updated upon input
 float fInputKeyCode;
@@ -79,27 +124,14 @@ float fMouseClick;
 vector vMousePos;
 
 // Sound Stuff
-.string sSoundSample;
-.float fVolume;
-
-// Camera Fields
-//entity ePlayerEnt;
-vector vCameraPos;
-vector vCameraAngle;
-float fCameraTime;
-
-vector vPlayerOrigin;
-vector vPlayerOriginOld;
-vector vPlayerVelocity;
-
-vector vPunchAngle;
+//.string sSoundSample;
+//.float fVolume;
 
 void View_AddPunchAngle( vector vAdd );
 void View_PlayAnimation( int iSequence );
 string HUD_GetChatColorHEX( float fTeam );
 
 // This actually belongs in Builtins.h since its an undocumented global
-vector pmove_vel;
 .float weapon;
 .float maxframe;
 
@@ -108,10 +140,6 @@ vector pmove_vel;
 float fWeaponEventPlayer;
 .float fWeaponLast;
 .float fWeaponBoneID;
-
-// Flashbang'd
-var float fFlashTime;
-var float fFlashAlpha;
 
 void Animation_ShootWeapon( entity ePlayer );
 void Animation_ReloadWeapon( entity ePlayer );

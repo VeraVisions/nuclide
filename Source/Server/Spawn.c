@@ -47,9 +47,14 @@ entity Spawn_FindSpawnPoint( float fTeam ) {
 	while ( 1 ) {
 		eSpot = find(eSpot, classname, sClassname);
 		
+		if (eSpot == eLastSpawn)
+		{	//fall back on lame cycling/spawnfragging
+			eLastSpawn = find(eLastSpawn, classname, sClassname);
+			if (!eLastSpawn)
+				eLastSpawn = find(eLastSpawn, classname, sClassname);
+			return eLastSpawn;
+		}
 		if (eSpot != world) {
-			if (eSpot == eLastSpawn)
-				return eLastSpawn;
 			iCount = 0;
 			eThing = findradius(eSpot.origin, 32);
 			while(eThing) {

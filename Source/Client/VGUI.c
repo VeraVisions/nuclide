@@ -43,29 +43,30 @@ This is the entry point for FreeCS own "VGUI" implementation
 Run every frame
 =================
 */
-void CSQC_VGUI_Draw( void ) {
-	if ( fVGUI_Display == VGUI_NONE ) {
+float CSQC_VGUI_Draw( void ) {
+	if ( pSeat->fVGUI_Display == VGUI_NONE ) {
 		setcursormode( FALSE );
-		return;
+		return FALSE;
 	}
 	
 	vVGUIColor = autocvar_vgui_color * ( 1 / 255 );
 
-	if ( fVGUI_Display >= VGUI_RADIO1 ) {
+	if ( pSeat->fVGUI_Display >= VGUI_RADIO1 ) {
 		VGUI_Radio_Draw();
-		return;
+		return FALSE;
 	}
-	
-	setcursormode( TRUE, "gfx/cursor", '0 0 0', 1.0f );
 
 	// Align the window to the center
-	vVGUIWindowPos_x = ( vVideoResolution_x / 2 ) - 320;
-	vVGUIWindowPos_y = ( vVideoResolution_y / 2 ) - 240;
-	VGUI_Window( vguiMenus[ fVGUI_Display - 1 ].sTitle, vVGUIWindowPos, '640 480 0' );
+	vVGUIWindowPos = vVideoMins;
+	vVGUIWindowPos_x += ( vVideoResolution_x / 2 ) - 320;
+	vVGUIWindowPos_y += ( vVideoResolution_y / 2 ) - 240;
+	VGUI_Window( vguiMenus[ pSeat->fVGUI_Display - 1 ].sTitle, vVGUIWindowPos, '640 480 0' );
 	
 	iVGUIKey = 48;
 	// Display the contents of whatever we have selected
-	vguiMenus[ fVGUI_Display - 1 ].vDraw( vVGUIWindowPos );
+	vguiMenus[ pSeat->fVGUI_Display - 1 ].vDraw( vVGUIWindowPos );
+	
+	return TRUE;
 }
 
 /*
@@ -102,5 +103,9 @@ void CSQC_VGUI_Init( void ) {
 	}
 	
 	// We start on the MOTD, always
-	fVGUI_Display = VGUI_MOTD;
+	for (int s = 0; s < seats.length; s++)
+	{
+		pSeat = &seats[s];
+		pSeat->fVGUI_Display = VGUI_MOTD;
+	}
 }

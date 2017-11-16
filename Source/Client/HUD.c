@@ -111,7 +111,7 @@ void HUD_DrawHealth( void ) {
 		fHealthAlpha = HUD_ALPHA;
 	}
 	
-	vector vHealthPos = [ 16, vVideoResolution_y - 42 ];
+	vector vHealthPos = vVideoMins + [ 16, vVideoResolution_y - 42 ];
 	drawsubpic( vHealthPos, '24 24 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 2, NUMSIZE_Y], [ NUMSIZE_X, NUMSIZE_X ], vHUDColor, HUD_ALPHA, DRAWFLAG_ADDITIVE );
 	HUD_DrawNums( getstatf( STAT_HEALTH ), vHealthPos + '72 0', HUD_ALPHA, vHUDColor );
 	fOldHealth = getstatf( STAT_HEALTH );
@@ -137,7 +137,7 @@ void HUD_DrawArmor( void ) {
 		fArmorAlpha = HUD_ALPHA;
 	}
 	
-	vector vArmorPos = [ 128, vVideoResolution_y - 42 ];
+	vector vArmorPos = vVideoMins + [ 128, vVideoResolution_y - 42 ];
 	drawsubpic( vArmorPos, '24 24 0', HUD_NUMFILE_LAYER, [ 0, NUMSIZE_Y], [ NUMSIZE_X, NUMSIZE_X ], vHUDColor, fArmorAlpha, DRAWFLAG_ADDITIVE );
 	HUD_DrawNums( getstatf( STAT_ARMOR ), vArmorPos + '72 0', fArmorAlpha, vHUDColor);
 	fOldArmor = getstatf( STAT_ARMOR );
@@ -153,19 +153,19 @@ Draw icons such as hostage, bomb and buyzones
 void HUD_DrawIcons( void ) {
 	// BuyZone Icon
 	if( getstatf( STAT_BUYZONE ) == TRUE ) {
-		vector vBuyIconPos = [ 16, ( vVideoResolution_y / 2 ) - 12 ];
+		vector vBuyIconPos = vVideoMins + [ 16, ( vVideoResolution_y / 2 ) - 12 ];
 		drawsubpic( vBuyIconPos, '32 32 0', HUD_NUMFILE_LAYER, [ 0.125 * 3, 0.125 * 5 - 0.046875], [ 0.125, 0.125 ], '0 1 0', 1, DRAWFLAG_ADDITIVE );
 	}
-	
+
 	// Hostage-Rescue Area Icon
 	if( getstatf( STAT_HOSTAGEZONE ) == TRUE ) {
-		vector vRIconPos = [ 16, ( vVideoResolution_y / 2 ) + 24 ];
+		vector vRIconPos = vVideoMins + [ 16, ( vVideoResolution_y / 2 ) + 24 ];
 		drawsubpic( vRIconPos, '32 32 0', HUD_NUMFILE_LAYER, [ 0.125 * 2, 0.125 * 5 - 0.046875], [ 0.125, 0.125 ], '0 1 0', 1, DRAWFLAG_ADDITIVE );
 	}
-	
+
 	// Bomb-Area
 	if( getstatf( STAT_BOMBZONE ) == TRUE ) {
-		vector vBIconPos = [ 16, ( vVideoResolution_y / 2 ) + 24 ];
+		vector vBIconPos = vVideoMins + [ 16, ( vVideoResolution_y / 2 ) + 24 ];
 		
 		if ( getstatf( STAT_ACTIVEWEAPON ) == WEAPON_C4BOMB ) {
 			float fAlpha = fabs( sin( time * 20 ) );
@@ -188,8 +188,8 @@ void HUD_DrawTimer( void ) {
 	static int iOldUnits;
 	static float fTimerAlpha;
 	int iMinutes, iSeconds, iTens, iUnits;
-	vector vTimePos = [ ( vVideoResolution_x / 2 ) - 62, vVideoResolution_y - 42 ];
-	
+	vector vTimePos = vVideoMins+[ ( vVideoResolution_x / 2 ) - 62, vVideoResolution_y - 42 ];
+
 	if( serverkey( "timelimit" ) ) {
 		float fTimeLeft = ( stof( serverkey( "timelimit" ) ) * 60 ) - getstatf( STAT_GAMETIME );
 		if ( fTimeLeft < 0 ) {
@@ -292,7 +292,7 @@ void HUD_DrawMoney( void ) {
 		fMoneyDifference = fOldMoneyValue - getstatf( STAT_MONEY );
 	}
 	
-	vector vMoneyPos = [ vVideoResolution_x - 160, vVideoResolution_y - 72 ];
+	vector vMoneyPos = vVideoMins+[ vVideoResolution_x - 160, vVideoResolution_y - 72 ];
 	
 	// If the alpha/color effect is active, draw the money twice in their varying alphas/colors
 	if ( fMoneyAlphaEffect > 0 ) {
@@ -353,20 +353,20 @@ void HUD_DrawAmmo( void ) {
 	}
 	
 	if ( wptTable[ getstatf( STAT_ACTIVEWEAPON ) ].iCaliber < 11 ) {
-		vAmmoMagPos = [ vVideoResolution_x - 142, vVideoResolution_y - 42 ];
+		vAmmoMagPos = vVideoMins+[ vVideoResolution_x - 142, vVideoResolution_y - 42 ];
 		HUD_DrawNums( getstatf( STAT_CURRENT_MAG ), vAmmoMagPos, fAmmoAlpha, vHUDColor );
 		
-		drawsubpic( [vVideoResolution_x - 118, vVideoResolution_y - 42], '3 25', HUD_NUMFILE_LAYER, [0.9375, 0], [ 0.01171875, 0.09765625 ], vHUDColor, fAmmoAlpha, DRAWFLAG_ADDITIVE );
+		drawsubpic( vVideoMins+[vVideoResolution_x - 118, vVideoResolution_y - 42], '3 25', HUD_NUMFILE_LAYER, [0.9375, 0], [ 0.01171875, 0.09765625 ], vHUDColor, fAmmoAlpha, DRAWFLAG_ADDITIVE );
 		
-		vAmmoCalPos = [ vVideoResolution_x - 64, vVideoResolution_y - 42 ];
+		vAmmoCalPos = vVideoMins+[ vVideoResolution_x - 64, vVideoResolution_y - 42 ];
 		HUD_DrawNums( getstatf( STAT_CURRENT_CALIBER ), vAmmoCalPos, fAmmoAlpha, vHUDColor );
 	} else {
-		vAmmoMagPos = [ vVideoResolution_x - 64, vVideoResolution_y - 42 ];
+		vAmmoMagPos = vVideoMins+[ vVideoResolution_x - 64, vVideoResolution_y - 42 ];
 		HUD_DrawNums( getstatf( STAT_CURRENT_MAG ), vAmmoMagPos, fAmmoAlpha, vHUDColor );
 	}
 	
 	// Caliber icon
-	drawsubpic( vVideoResolution - '42 42', '24 24', HUD_NUMFILE_LAYER, vHUDCalPos[ wptTable[ getstatf( STAT_ACTIVEWEAPON ) ].iCaliber ], [ NUMSIZE_X, NUMSIZE_X ], vHUDColor, fAmmoAlpha, DRAWFLAG_ADDITIVE );
+	drawsubpic( vVideoMins+vVideoResolution - '42 42', '24 24', HUD_NUMFILE_LAYER, vHUDCalPos[ wptTable[ getstatf( STAT_ACTIVEWEAPON ) ].iCaliber ], [ NUMSIZE_X, NUMSIZE_X ], vHUDColor, fAmmoAlpha, DRAWFLAG_ADDITIVE );
 	fOldMag = getstatf( STAT_CURRENT_MAG );
 	fOldCal = getstatf( STAT_CURRENT_CALIBER );
 }
@@ -376,8 +376,9 @@ void HUD_DrawProgressBar( void ) {
 	vector vMainPos;
 
 	if ( getstatf( STAT_PROGRESS ) > 0 ) {
-		vMainPos_x = ( vVideoResolution_x / 2 ) - (vSize_x / 2);
-		vMainPos_y = ( vVideoResolution_y / 2 ) - (vSize_y / 2);
+		vMainPos = vVideoMins;
+		vMainPos_x += ( vVideoResolution_x / 2 ) - (vSize_x / 2);
+		vMainPos_y += ( vVideoResolution_y / 2 ) - (vSize_y / 2);
 	
 		// Draw the background
 		vector vBar = vSize;
@@ -395,21 +396,21 @@ void HUD_DrawProgressBar( void ) {
 
 
 void HUD_DrawRadar( void ) {
-	drawpic( '16 16', "sprites/radar640.spr_0.tga", '128 128', '1 1 1', 0.5, DRAWFLAG_ADDITIVE );
+	drawpic( vVideoMins + '16 16', "sprites/radar640.spr_0.tga", '128 128', '1 1 1', 0.5, DRAWFLAG_ADDITIVE );
 }
 
 void HUD_DrawFlash( void ) {
-	if ( fFlashTime > 0.0f ) {
-		fFlashTime -= frametime;
+	if ( pSeat->fFlashTime > 0.0f ) {
+		pSeat->fFlashTime -= frametime;
 	} else {
-		if ( fFlashAlpha > 0.0f ) {
-			fFlashAlpha -= ( frametime * 0.5 );
+		if ( pSeat->fFlashAlpha > 0.0f ) {
+			pSeat->fFlashAlpha -= ( frametime * 0.5 );
 		} else {
 			return;
 		}
 	}
 	
-	drawfill( '0 0', vVideoResolution, '1 1 1', fFlashAlpha, fFlashTime );
+	drawfill( vVideoMins, vVideoResolution, '1 1 1', pSeat->fFlashAlpha, 0/*pSeat->fFlashTime*/ );
 }
 
 /*

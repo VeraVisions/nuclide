@@ -18,10 +18,6 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-// We can only carry one item per slot, so this is hacking around the last one
-int iHUDGrenades;
-int iHUDGrenadesSelected;
-
 typedef struct {
 	string sSprite;
 	vector vOrigin;
@@ -65,9 +61,6 @@ vector vHUDSlotNumPos[ 4 ] = {
 	'0.65625 0.359375 0', 	// 4 GRENADE
 };
 
-float fHUDWeaponSelectTime;
-float fHUDWeaponSelected;
-
 /*
 =================
 HUD_DrawWeaponSelect_NextItem
@@ -90,59 +83,59 @@ float HUD_DrawWeaponSelect_NextItem( float fSlot ) {
 		}
 	} else if ( fSlot == SLOT_MELEE ) {
 		// This happens when we go into the slot for the first time
-		iHUDGrenades = 0;
+		pSeat->iHUDGrenades = 0;
 
 		// Keep this order in order for the selection to work
 		if ( getstatf( STAT_SLOT_GRENADE ) ) {
-			iHUDGrenadesSelected = getstatf( STAT_SLOT_GRENADE );
-			iHUDGrenades++;
+			pSeat->iHUDGrenadesSelected = getstatf( STAT_SLOT_GRENADE );
+			pSeat->iHUDGrenades++;
 		}
 		
 		if ( getstati_punf( STAT_ITEM_SMOKEGRENADE ) ) {
-			iHUDGrenadesSelected = WEAPON_SMOKEGRENADE;
-			iHUDGrenades++;
+			pSeat->iHUDGrenadesSelected = WEAPON_SMOKEGRENADE;
+			pSeat->iHUDGrenades++;
 		}
 		if ( getstati_punf( STAT_ITEM_FLASHBANG ) ) {
-			iHUDGrenadesSelected = WEAPON_FLASHBANG;
-			iHUDGrenades++;
+			pSeat->iHUDGrenadesSelected = WEAPON_FLASHBANG;
+			pSeat->iHUDGrenades++;
 		} 
 		
 		if ( getstati_punf( STAT_ITEM_HEGRENADE ) ) {
-			iHUDGrenadesSelected = WEAPON_HEGRENADE;
-			iHUDGrenades++;
+			pSeat->iHUDGrenadesSelected = WEAPON_HEGRENADE;
+			pSeat->iHUDGrenades++;
 		} 
 		
 		// If we have any grenades, proceed with that slot
-		if ( iHUDGrenades ) {
+		if ( pSeat->iHUDGrenades ) {
 			return SLOT_GRENADE;
 		} else { 
 			return HUD_DrawWeaponSelect_NextItem( SLOT_GRENADE );
 		}
 	} else {
 		// If we're in the grenade slot, go down
-		if ( iHUDGrenadesSelected == WEAPON_HEGRENADE ) {
+		if ( pSeat->iHUDGrenadesSelected == WEAPON_HEGRENADE ) {
 			// Do we have a flash bang? If yes, select that thing
 			if ( getstati_punf( STAT_ITEM_FLASHBANG ) ) {
-				iHUDGrenadesSelected = WEAPON_FLASHBANG;
+				pSeat->iHUDGrenadesSelected = WEAPON_FLASHBANG;
 				return SLOT_GRENADE;
 			} else if ( getstati_punf( STAT_ITEM_SMOKEGRENADE ) ) {
-				iHUDGrenadesSelected = WEAPON_SMOKEGRENADE;
+				pSeat->iHUDGrenadesSelected = WEAPON_SMOKEGRENADE;
 				return SLOT_GRENADE;
 			} else if ( getstatf( STAT_SLOT_GRENADE ) ) {
-				iHUDGrenadesSelected =  getstatf( STAT_SLOT_GRENADE );
+				pSeat->iHUDGrenadesSelected =  getstatf( STAT_SLOT_GRENADE );
 				return SLOT_GRENADE;
 			} 
-		} else if ( iHUDGrenadesSelected == WEAPON_FLASHBANG ) {
+		} else if ( pSeat->iHUDGrenadesSelected == WEAPON_FLASHBANG ) {
 			if ( getstati_punf( STAT_ITEM_SMOKEGRENADE ) ) {
-				iHUDGrenadesSelected = WEAPON_SMOKEGRENADE;
+				pSeat->iHUDGrenadesSelected = WEAPON_SMOKEGRENADE;
 				return SLOT_GRENADE;
 			} else if ( getstatf( STAT_SLOT_GRENADE ) ) {
-				iHUDGrenadesSelected =  getstatf( STAT_SLOT_GRENADE );
+				pSeat->iHUDGrenadesSelected =  getstatf( STAT_SLOT_GRENADE );
 				return SLOT_GRENADE;
 			} 
-		} else if ( iHUDGrenadesSelected == WEAPON_SMOKEGRENADE ) {
+		} else if ( pSeat->iHUDGrenadesSelected == WEAPON_SMOKEGRENADE ) {
 			if ( getstatf( STAT_SLOT_GRENADE ) ) {
-				iHUDGrenadesSelected =  getstatf( STAT_SLOT_GRENADE );
+				pSeat->iHUDGrenadesSelected =  getstatf( STAT_SLOT_GRENADE );
 				return SLOT_GRENADE;
 			} 
 		} 
@@ -164,27 +157,27 @@ Checks and returns the previous slot with a weapon in it
 */
 float HUD_DrawWeaponSelect_PreviousItem( float fSlot ) {
 	if ( fSlot == SLOT_PRIMARY ) {
-		iHUDGrenades = 0;
+		pSeat->iHUDGrenades = 0;
 
 		// Keep this order in order for the selection to work
 		if ( getstati_punf( STAT_ITEM_HEGRENADE ) ) {
-			iHUDGrenadesSelected = WEAPON_HEGRENADE;
-			iHUDGrenades++;
+			pSeat->iHUDGrenadesSelected = WEAPON_HEGRENADE;
+			pSeat->iHUDGrenades++;
 		} 
 		if ( getstati_punf( STAT_ITEM_FLASHBANG ) ) {
-			iHUDGrenadesSelected = WEAPON_FLASHBANG;
-			iHUDGrenades++;
+			pSeat->iHUDGrenadesSelected = WEAPON_FLASHBANG;
+			pSeat->iHUDGrenades++;
 		} 
 		if ( getstati_punf( STAT_ITEM_SMOKEGRENADE ) ) {
-			iHUDGrenadesSelected = WEAPON_SMOKEGRENADE;
-			iHUDGrenades++;
+			pSeat->iHUDGrenadesSelected = WEAPON_SMOKEGRENADE;
+			pSeat->iHUDGrenades++;
 		}
 		if ( getstatf( STAT_SLOT_GRENADE ) ) {
-			iHUDGrenadesSelected =  getstatf( STAT_SLOT_GRENADE );
-			iHUDGrenades++;
+			pSeat->iHUDGrenadesSelected =  getstatf( STAT_SLOT_GRENADE );
+			pSeat->iHUDGrenades++;
 		}
 			
-		if ( iHUDGrenades ) {
+		if ( pSeat->iHUDGrenades ) {
 			return SLOT_GRENADE;
 		} else {
 			return HUD_DrawWeaponSelect_PreviousItem( SLOT_GRENADE );
@@ -202,29 +195,29 @@ float HUD_DrawWeaponSelect_PreviousItem( float fSlot ) {
 			return HUD_DrawWeaponSelect_PreviousItem( SLOT_SECONDARY );
 		}
 	} else {
-		if ( iHUDGrenadesSelected == getstatf( STAT_SLOT_GRENADE ) ) {
+		if ( pSeat->iHUDGrenadesSelected == getstatf( STAT_SLOT_GRENADE ) ) {
 			if ( getstati_punf( STAT_ITEM_SMOKEGRENADE ) ) {
-				iHUDGrenadesSelected = WEAPON_SMOKEGRENADE;
+				pSeat->iHUDGrenadesSelected = WEAPON_SMOKEGRENADE;
 				return SLOT_GRENADE;
 			} else if ( getstati_punf( STAT_ITEM_FLASHBANG ) ) {
-				iHUDGrenadesSelected = WEAPON_FLASHBANG;
+				pSeat->iHUDGrenadesSelected = WEAPON_FLASHBANG;
 				return SLOT_GRENADE;
 			} else if ( getstati_punf( STAT_ITEM_HEGRENADE ) ) {
-				iHUDGrenadesSelected = WEAPON_HEGRENADE;
+				pSeat->iHUDGrenadesSelected = WEAPON_HEGRENADE;
 				return SLOT_GRENADE;
 			} 
 		} 
-		if ( iHUDGrenadesSelected == WEAPON_SMOKEGRENADE ) {
+		if ( pSeat->iHUDGrenadesSelected == WEAPON_SMOKEGRENADE ) {
 			if ( getstati_punf( STAT_ITEM_FLASHBANG ) ) {
-				iHUDGrenadesSelected = WEAPON_FLASHBANG;
+				pSeat->iHUDGrenadesSelected = WEAPON_FLASHBANG;
 				return SLOT_GRENADE;
 			} else if ( getstati_punf( STAT_ITEM_HEGRENADE ) ) {
-				iHUDGrenadesSelected = WEAPON_HEGRENADE;
+				pSeat->iHUDGrenadesSelected = WEAPON_HEGRENADE;
 				return SLOT_GRENADE;
 			} 
-		} else if ( iHUDGrenadesSelected == WEAPON_FLASHBANG ) {
+		} else if ( pSeat->iHUDGrenadesSelected == WEAPON_FLASHBANG ) {
 			if ( getstati_punf( STAT_ITEM_HEGRENADE ) ) {
-				iHUDGrenadesSelected = WEAPON_HEGRENADE;
+				pSeat->iHUDGrenadesSelected = WEAPON_HEGRENADE;
 				return SLOT_GRENADE;
 			} 
 		} 
@@ -251,7 +244,7 @@ float HUD_DrawWeaponSelect_GetWeapon( float fSlot ) {
 	} else if ( fSlot == SLOT_MELEE ) {
 		return getstatf( STAT_SLOT_MELEE );
 	} else {
-		return iHUDGrenadesSelected;
+		return pSeat->iHUDGrenadesSelected;
 	}
 }
 
@@ -267,15 +260,15 @@ void HUD_DrawWeaponSelect_Forward( void ) {
 		return;
 	}
 	
-	if ( fHUDWeaponSelected == 0 ) {
+	if ( pSeat->fHUDWeaponSelected == 0 ) {
 		sound( self, CHAN_ITEM, "common/wpn_hudon.wav", 0.5, ATTN_NONE );
-		fHUDWeaponSelected = HUD_DrawWeaponSelect_GetWeapon( HUD_DrawWeaponSelect_NextItem( wptTable[ getstatf( STAT_ACTIVEWEAPON ) ].iSlot ) );
+		pSeat->fHUDWeaponSelected = HUD_DrawWeaponSelect_GetWeapon( HUD_DrawWeaponSelect_NextItem( wptTable[ getstatf( STAT_ACTIVEWEAPON ) ].iSlot ) );
 	} else {
 		sound( self, CHAN_ITEM, "common/wpn_moveselect.wav", 0.5, ATTN_NONE );
-		fHUDWeaponSelected = HUD_DrawWeaponSelect_GetWeapon( HUD_DrawWeaponSelect_NextItem( wptTable[ fHUDWeaponSelected ].iSlot ) );
+		pSeat->fHUDWeaponSelected = HUD_DrawWeaponSelect_GetWeapon( HUD_DrawWeaponSelect_NextItem( wptTable[ pSeat->fHUDWeaponSelected ].iSlot ) );
 	}
 	
-	fHUDWeaponSelectTime = time + 3;
+	pSeat->fHUDWeaponSelectTime = time + 3;
 }
 
 /*
@@ -290,15 +283,15 @@ void HUD_DrawWeaponSelect_Back( void ) {
 		return;
 	}
 	
-	if ( fHUDWeaponSelected == 0 ) {
+	if ( pSeat->fHUDWeaponSelected == 0 ) {
 		sound( self, CHAN_ITEM, "common/wpn_hudon.wav", 0.5, ATTN_NONE );
-		fHUDWeaponSelected = HUD_DrawWeaponSelect_GetWeapon( HUD_DrawWeaponSelect_PreviousItem( wptTable[ getstatf( STAT_ACTIVEWEAPON ) ].iSlot ) );
+		pSeat->fHUDWeaponSelected = HUD_DrawWeaponSelect_GetWeapon( HUD_DrawWeaponSelect_PreviousItem( wptTable[ getstatf( STAT_ACTIVEWEAPON ) ].iSlot ) );
 	} else {
 		sound( self, CHAN_ITEM, "common/wpn_moveselect.wav", 0.5, ATTN_NONE );
-		fHUDWeaponSelected = HUD_DrawWeaponSelect_GetWeapon( HUD_DrawWeaponSelect_PreviousItem( wptTable[ fHUDWeaponSelected ].iSlot ) );
+		pSeat->fHUDWeaponSelected = HUD_DrawWeaponSelect_GetWeapon( HUD_DrawWeaponSelect_PreviousItem( wptTable[ pSeat->fHUDWeaponSelected ].iSlot ) );
 	}
 	
-	fHUDWeaponSelectTime = time + 3;
+	pSeat->fHUDWeaponSelectTime = time + 3;
 }
 
 /*
@@ -320,54 +313,54 @@ Drawn every frame through HUD.c
 =================
 */
 void HUD_DrawWeaponSelect( void ) {	
-	if ( fHUDWeaponSelectTime < time ) {
-		if ( fHUDWeaponSelected ) {
+	if ( pSeat->fHUDWeaponSelectTime < time ) {
+		if ( pSeat->fHUDWeaponSelected ) {
 			sound( self, CHAN_ITEM, "common/wpn_hudoff.wav", 0.5, ATTN_NONE );
-			fHUDWeaponSelected = 0;
+			pSeat->fHUDWeaponSelected = 0;
 		}
 		return;
 	}
 	
-	vector vSelectPos = '160 12 0';
+	vector vSelectPos = vVideoMins + '160 12 0';
 	
 	for ( int i = 0; i < 4; i++ ) {
 		HUD_DrawWeaponSelect_Num( vSelectPos, i );
 		
 		// Again, grenades are treated seperately
 		if ( i == SLOT_GRENADE ) {
-			if ( wptTable[ fHUDWeaponSelected ].iSlot == SLOT_GRENADE ) {
+			if ( wptTable[ pSeat->fHUDWeaponSelected ].iSlot == SLOT_GRENADE ) {
 				if ( getstati_punf( STAT_ITEM_HEGRENADE ) ) {
 					drawsubpic( vSelectPos + '0 20', '170 45', wpSymbolTable[ WEAPON_HEGRENADE ].sSprite, wpSymbolTable[ WEAPON_HEGRENADE ].vOrigin, [ 0.6640625, 0.17578125 ], vHUDColor, 1, DRAWFLAG_ADDITIVE );
-					if ( iHUDGrenadesSelected == WEAPON_HEGRENADE ) {
+					if ( pSeat->iHUDGrenadesSelected == WEAPON_HEGRENADE ) {
 						drawsubpic( vSelectPos + '0 20', '170 45', "sprites/640hud3.spr_0.tga", '0 0.703125', [ 0.6640625, 0.17578125 ], vHUDColor, 1, DRAWFLAG_ADDITIVE );
 					}
 					vSelectPos_y += 45;
 				}
 				if ( getstati_punf( STAT_ITEM_FLASHBANG ) ) {
 					drawsubpic( vSelectPos + '0 20', '170 45', wpSymbolTable[ WEAPON_FLASHBANG ].sSprite, wpSymbolTable[ WEAPON_FLASHBANG ].vOrigin, [ 0.6640625, 0.17578125 ], vHUDColor, 1, DRAWFLAG_ADDITIVE );
-					if ( iHUDGrenadesSelected == WEAPON_FLASHBANG ) {
+					if ( pSeat->iHUDGrenadesSelected == WEAPON_FLASHBANG ) {
 						drawsubpic( vSelectPos + '0 20', '170 45', "sprites/640hud3.spr_0.tga", '0 0.703125', [ 0.6640625, 0.17578125 ], vHUDColor, 1, DRAWFLAG_ADDITIVE );
 					}
 					vSelectPos_y += 45;
 				}
 				if ( getstati_punf( STAT_ITEM_SMOKEGRENADE ) ) {
 					drawsubpic( vSelectPos + '0 20', '170 45', wpSymbolTable[ WEAPON_SMOKEGRENADE ].sSprite, wpSymbolTable[ WEAPON_SMOKEGRENADE ].vOrigin, [ 0.6640625, 0.17578125 ], vHUDColor, 1, DRAWFLAG_ADDITIVE );
-					if ( iHUDGrenadesSelected == WEAPON_SMOKEGRENADE ) {
+					if ( pSeat->iHUDGrenadesSelected == WEAPON_SMOKEGRENADE ) {
 						drawsubpic( vSelectPos + '0 20', '170 45', "sprites/640hud3.spr_0.tga", '0 0.703125', [ 0.6640625, 0.17578125 ], vHUDColor, 1, DRAWFLAG_ADDITIVE );
 					}
 					vSelectPos_y += 45;
 				}
 				if ( getstatf( STAT_SLOT_GRENADE ) ) {
 					drawsubpic( vSelectPos + '0 20', '170 45', wpSymbolTable[ getstatf( STAT_SLOT_GRENADE ) ].sSprite, wpSymbolTable[ getstatf( STAT_SLOT_GRENADE ) ].vOrigin, [ 0.6640625, 0.17578125 ], vHUDColor, 1, DRAWFLAG_ADDITIVE );
-					if ( iHUDGrenadesSelected == getstatf( STAT_SLOT_GRENADE ) ) {
+					if ( pSeat->iHUDGrenadesSelected == getstatf( STAT_SLOT_GRENADE ) ) {
 						drawsubpic( vSelectPos + '0 20', '170 45', "sprites/640hud3.spr_0.tga", '0 0.703125', [ 0.6640625, 0.17578125 ], vHUDColor, 1, DRAWFLAG_ADDITIVE );
 					}
 					vSelectPos_y += 45;
 				}
 			}
 		} else {
-			if ( wptTable[ fHUDWeaponSelected ].iSlot == i ) {
-				drawsubpic( vSelectPos + '0 20', '170 45', wpSymbolTable[ fHUDWeaponSelected ].sSprite, wpSymbolTable[ fHUDWeaponSelected ].vOrigin, [ 0.6640625, 0.17578125 ], vHUDColor, 1, DRAWFLAG_ADDITIVE );
+			if ( wptTable[ pSeat->fHUDWeaponSelected ].iSlot == i ) {
+				drawsubpic( vSelectPos + '0 20', '170 45', wpSymbolTable[ pSeat->fHUDWeaponSelected ].sSprite, wpSymbolTable[ pSeat->fHUDWeaponSelected ].vOrigin, [ 0.6640625, 0.17578125 ], vHUDColor, 1, DRAWFLAG_ADDITIVE );
 				drawsubpic( vSelectPos + '0 20', '170 45', "sprites/640hud3.spr_0.tga", '0 0.703125', [ 0.6640625, 0.17578125 ], vHUDColor, 1, DRAWFLAG_ADDITIVE );
 				vSelectPos_x += 170;
 			} else {
@@ -385,8 +378,8 @@ Called by CSQC_Input_Frame when conditions are met
 =================
 */
 void HUD_DrawWeaponSelect_Trigger( void ) {
-	sendevent( "PlayerSwitchWeapon", "f", fHUDWeaponSelected );
+	sendevent( "PlayerSwitchWeapon", "f", pSeat->fHUDWeaponSelected );
 	sound( self, CHAN_ITEM, "common/wpn_select.wav", 0.5, ATTN_NONE );
-	fHUDWeaponSelectTime = 0;
-	fHUDWeaponSelected = 0;
+	pSeat->fHUDWeaponSelectTime = 0;
+	pSeat->fHUDWeaponSelected = 0;
 }

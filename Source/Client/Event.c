@@ -114,6 +114,9 @@ Can interject cmds and create new ones
 =================
 */
 float CSQC_ConsoleCommand( string sCMD ) {
+	int s = (float)getproperty( VF_ACTIVESEAT );	//the engine will hide the p1 etc commands... which is fun...
+	pSeat = &seats[ s ];
+	
 	tokenize( sCMD );
 	switch ( argv(0) ) {
 	case "vox_test":
@@ -154,12 +157,12 @@ float CSQC_ConsoleCommand( string sCMD ) {
 		break;
 	case "buy":
 		if( getstatf( STAT_BUYZONE ) == TRUE ) {
-			fVGUI_Display = VGUI_BM_MAIN;
+			pSeat->fVGUI_Display = VGUI_BM_MAIN;
 		}
 		return TRUE;
 		break;
-    case "chooseteam":
-		fVGUI_Display = VGUI_TEAMSELECT;
+	case "chooseteam":
+		pSeat->fVGUI_Display = VGUI_TEAMSELECT;
 		return TRUE;
 		break;
 	case "invnext":
@@ -171,11 +174,11 @@ float CSQC_ConsoleCommand( string sCMD ) {
 		return TRUE;
 		break;
 	case "+showscores":
-		iShowScores = TRUE;
+		pSeat->iShowScores = TRUE;
 		return TRUE;
 		break;
 	case "-showscores":
-		iShowScores = FALSE;
+		pSeat->iShowScores = FALSE;
 		return TRUE;
 		break;
 	case "nightvision":
@@ -418,19 +421,46 @@ Whenever we call a SVC_CGAMEPACKET on the SSQC, this is being run
 =================
 */
 void CSQC_Parse_Event( void ) {
+	int s = (float)getproperty( VF_ACTIVESEAT );	//always 0, unless it was sent with a MULTICAST_ONE or MULTICAST_ONE_R to p2+
+	pSeat = &seats[ s ];
+	
 	float fHeader = readbyte();
 	
 	if ( fHeader == EV_WEAPON_DRAW ) {
 		fWeaponEventPlayer = readbyte();
+		for (s = 0; s < numclientseats; s++)	//lame loop
+			if (seats[s].ePlayer.entnum == fWeaponEventPlayer) {
+				setproperty(VF_ACTIVESEAT, (float)s);
+				pSeat = &seats[s];
+				break;
+			}
 		Weapon_Draw( getstatf( STAT_ACTIVEWEAPON ) );
 	} else if ( fHeader == EV_WEAPON_PRIMARYATTACK ) {
 		fWeaponEventPlayer = readbyte();
+		for (s = 0; s < numclientseats; s++)	//lame loop
+			if (seats[s].ePlayer.entnum == fWeaponEventPlayer) {
+				setproperty(VF_ACTIVESEAT, (float)s);
+				pSeat = &seats[s];
+				break;
+			}
 		Weapon_PrimaryAttack( getstatf( STAT_ACTIVEWEAPON ) );
 	} else if ( fHeader == EV_WEAPON_SECONDARYATTACK ) {
-		Weapon_SecondaryAttack( getstatf( STAT_ACTIVEWEAPON ) );
 		fWeaponEventPlayer = readbyte();
+		for (s = 0; s < numclientseats; s++)	//lame loop
+			if (seats[s].ePlayer.entnum == fWeaponEventPlayer) {
+				setproperty(VF_ACTIVESEAT, (float)s);
+				pSeat = &seats[s];
+				break;
+			}
+		Weapon_SecondaryAttack( getstatf( STAT_ACTIVEWEAPON ) );
 	} else if ( fHeader == EV_WEAPON_RELOAD ) {
 		fWeaponEventPlayer = readbyte();
+		for (s = 0; s < numclientseats; s++)	//lame loop
+			if (seats[s].ePlayer.entnum == fWeaponEventPlayer) {
+				setproperty(VF_ACTIVESEAT, (float)s);
+				pSeat = &seats[s];
+				break;
+			}
 		Weapon_Reload( getstatf( STAT_ACTIVEWEAPON ) );
 	} else if ( fHeader == EV_MODELGIB ) {
 		vector vPos;
@@ -446,15 +476,15 @@ void CSQC_Parse_Event( void ) {
 		float fStyle = readbyte();
 		Effect_BreakModel( vPos, vSize, '0 0 0', fStyle );
 	} else if ( fHeader == EV_CAMERATRIGGER ) {
-		vCameraPos_x = readcoord();
-		vCameraPos_y = readcoord();
-		vCameraPos_z = readcoord();
+		pSeat->vCameraPos.x = readcoord();
+		pSeat->vCameraPos.y = readcoord();
+		pSeat->vCameraPos.z = readcoord();
 
-		vCameraAngle_x = readcoord();
-		vCameraAngle_y = readcoord();
-		vCameraAngle_z = readcoord();
+		pSeat->vCameraAngle.x = readcoord();
+		pSeat->vCameraAngle.y = readcoord();
+		pSeat->vCameraAngle.z = readcoord();
 		
-		fCameraTime = time + readfloat();
+		pSeat->fCameraTime = time + readfloat();
 	} else if ( fHeader == EV_RADIOMSG ) {
 		Radio_PlayMessage( readbyte() );
 	} else if ( fHeader == EV_RADIOMSG2 ) {
@@ -504,8 +534,8 @@ void CSQC_Parse_Event( void ) {
 
 		Effect_CreateSmoke( vSmokePos );
 	} else if ( fHeader == EV_FLASH ) {
-		fFlashTime = 3.0f;
-		fFlashAlpha = 1.0f;
+		pSeat->fFlashTime = 3.0f;
+		pSeat->fFlashAlpha = 1.0f;
 	} else if ( fHeader == EV_CHAT ) {
 		float fSender = readbyte();
 		float fTeam = readbyte();
@@ -580,10 +610,13 @@ Hijacks and controls what input globals are being sent to the server
 =================
 */
 void CSQC_Input_Frame( void ) {
+	int s = (float)getproperty( VF_ACTIVESEAT );
+	pSeat = &seats[ s ];
+	
 	// If we are inside a VGUI, don't let the client do stuff outside
-	if ( ( fVGUI_Display != VGUI_NONE ) ) {
+	if ( ( pSeat->fVGUI_Display != VGUI_NONE ) ) {
 		fInputSendNext = time + 0.2;
-	} else if ( ( fHUDWeaponSelected ) && ( input_buttons & INPUT_BUTTON0 ) ) {
+	} else if ( ( pSeat->fHUDWeaponSelected ) && ( input_buttons & INPUT_BUTTON0 ) ) {
 		HUD_DrawWeaponSelect_Trigger();
 		input_buttons = 0;
 		fInputSendNext = time + 0.2;
@@ -611,5 +644,5 @@ void CSQC_Input_Frame( void ) {
 		input_buttons |= INPUT_BUTTON6;
 	} 
 	
-	input_angles += vPunchAngle;
+	input_angles += pSeat->vPunchAngle;
 }

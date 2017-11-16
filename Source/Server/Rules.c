@@ -179,11 +179,16 @@ void Rules_RoundOver( int iTeamWon, int iMoneyReward, float fSilent ) {
 			Radio_BroadcastMessage( RADIO_TERWIN );
 		}
 		iWon_T++;
+		
+		// FIXME: Calculate the proper loss values
+		Money_QueTeamReward( TEAM_CT, 1400 );
 	} else if ( iTeamWon == TEAM_CT ) {
 		if ( fSilent == FALSE ) {
 			Radio_BroadcastMessage( RADIO_CTWIN );
 		}
 		iWon_CT++;
+		// FIXME: Calculate the proper loss values
+		Money_QueTeamReward( TEAM_T, 1400 );
 	} else {
 		if ( fSilent == FALSE ) {
 			Radio_BroadcastMessage( RADIO_ROUNDDRAW );

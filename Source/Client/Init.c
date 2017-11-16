@@ -26,6 +26,7 @@ Comparable to worldspawn in SSQC in that it's mostly used for precaches
 =================
 */
 void CSQC_Init(float apilevel, string enginename, float engineversion) {
+	pSeat = &seats[0];
 	precache_model( HUD_NUMFILE );
 	
 	precache_model( "sprites/top_left.spr" );

@@ -18,6 +18,13 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+.float pmove_frame;
+
+.vector netorigin;
+.vector netangles;
+.vector netvelocity;
+.float netpmove_flags;
+
 string sPModels[ CS_WEAPON_COUNT - 1 ] = {
 	"models/p_knife.mdl",
 	"models/p_usp.mdl",
@@ -48,24 +55,45 @@ string sPModels[ CS_WEAPON_COUNT - 1 ] = {
 	"models/p_smokegrenade.mdl"
 };
 
+//.float bonecontrol1; //Halflife model format bone controller. On player models, this typically affects the spine's yaw.
+//.float bonecontrol2; //Halflife model format bone controller. On player models, this typically affects the spine's yaw.
+//.float bonecontrol3; //Halflife model format bone controller. On player models, this typically affects the spine's yaw.
+//.float bonecontrol4; //Halflife model format bone controller. On player models, this typically affects the spine's yaw.
+//.float bonecontrol5; //Halflife model format bone controller. This typically affects the mouth.
+//.float subblendfrac; //Weird animation value specific to halflife models. On player models, this typically affects the spine's pitch.
+//.float basesubblendfrac; // legs part.
+
+static float Player_Gun_PreDraw (void) {
+	self.entnum = self.owner.entnum; //so this entity gets its RF_EXTERNALMODEL flag rewritten as needed
+	addentity(self);
+	self.entnum = 0;	//so that findfloat won't find the wrong thing.
+	return PREDRAW_NEXT;
+}
+
 void Player_Draw( void ) {
 	if ( !self.eGunModel ) {
 		self.eGunModel = spawn();
+		self.eGunModel.classname = "vwep model";
+		self.eGunModel.owner = self;
+		self.eGunModel.predraw = Player_Gun_PreDraw;
 		self.eGunModel.drawmask = MASK_ENGINE;
-			
-		// Get the weapon bone ID for the current player model
-		self.fWeaponBoneID = gettagindex( self, "Bip01 R Hand" );
 	}
 	    
 	// Only bother updating the model if the weapon has changed
 	if ( self.fWeaponLast != self.weapon ) {
-		setmodel( self.eGunModel, sPModels[ self.weapon - 1 ] );
+		if ( self.weapon ) {
+			setmodel( self.eGunModel, sPModels[ self.weapon - 1 ] );
+		} else {
+			setmodel( self.eGunModel, "" );
+		}
 		self.fWeaponLast = self.weapon;
 	    	
 		// Update the bone index of the current p_ model so we can calculate the offset
+		// Get the weapon bone ID for the current player model
+		self.fWeaponBoneID = gettagindex( self, "Bip01 R Hand" );
 		self.eGunModel.fWeaponBoneID = gettagindex( self.eGunModel, "Bip01 R Hand" );
 	}
-	    
+
 	Animation_PlayerUpdate();
 	self.baseframe1time += frametime;
 	self.frame1time += frametime;
@@ -78,85 +106,111 @@ void Player_Draw( void ) {
 =================
 Player_PreDraw
 
-Run every before every frame is rendered.
-Responsible for local player prediction and other player appearance/interpolation.
+Runs as part of the addentities builtin.
+Responsible for player appearance/interpolation.
 =================
 */
 float Player_PreDraw( void ) {
-    if ( self.entnum == player_localentnum ) {
-	    vector vOldOrigin;
-	    vector vOldVelocity;
-	    float fOldPMoveFlags;
-		// Don't predict if we're frozen/paused FIXME: FTE doesn't have serverkey_float yet!
-		if ( serverkey( SERVERKEY_PAUSESTATE ) == "1" || ( ( getstati( STAT_GAMESTATE ) == GAME_FREEZE ) && ( getstati( STAT_HEALTH ) > 0 ) ) ) {
-			vPlayerOrigin = self.origin;
-			vOldOrigin = vPlayerOrigin;
-			
-			self.velocity = '0 0 0';
-			vOldVelocity = self.velocity;
-			fOldPMoveFlags = 0;
-		} else {
-			vOldOrigin = self.origin;
-			vOldVelocity = self.velocity;
-			fOldPMoveFlags = self.pmove_flags;
-	
-			if ( getplayerkeyvalue( player_localnum, "*spec" ) == "0" ) {
-				self.movetype = MOVETYPE_WALK;
-			} else {
-				self.movetype = MOVETYPE_NOCLIP;
-			}
-			
-			for ( int i = servercommandframe + 1; i <= clientcommandframe; i++ ) {
-				getinputstate( i );
-				runstandardplayerphysics( self );
-			}
-		}
-		vPlayerOriginOld = vPlayerOrigin;
-				
-		if ( ( self.flags & FL_ONGROUND ) && ( self.origin_z - vPlayerOriginOld_z > 0 ) ) {
-			vPlayerOriginOld_z += frametime * 150;
-					
-			if ( vPlayerOriginOld_z > self.origin_z ) {
-				vPlayerOriginOld_z = self.origin_z;
-			}
-			if ( self.origin_z - vPlayerOriginOld_z > 18 ) {
-				vPlayerOriginOld_z = self.origin_z - 18;
-			}
-			vPlayerOrigin_z += vPlayerOriginOld_z - self.origin_z;
-		} else {
-			vPlayerOriginOld_z = self.origin_z;
-		}
-			
-		vPlayerVelocity = self.velocity;
-		
-		if ( autocvar_cl_thirdperson == TRUE && getstatf( STAT_HEALTH ) > 0 ) {
-			static vector vStart;
-			static vector vEnd;
-			
-			makevectors( view_angles );
-			vStart = [ self.origin_x, self.origin_y, vPlayerOriginOld_z + 8 ] + ( v_right * 4 );
-			vEnd = vStart + ( v_forward * -48 ) + '0 0 8' + ( v_right * 4 );
-			traceline( vStart, vEnd, FALSE, self );
-			vPlayerOrigin = trace_endpos + ( v_forward * 5 );
-			self.renderflags = 0;
-			Player_Draw();	
-		} else {
-			if ( self.eGunModel ) {
-				remove( self.eGunModel );
-			}
-			self.renderflags = RF_EXTERNALMODEL;
-			vPlayerOrigin = [ self.origin_x, self.origin_y, vPlayerOriginOld_z ];
-		}
-		addentity( self );
-
-		self.origin = vOldOrigin;
-		setorigin( self, self.origin );
-		self.velocity = vOldVelocity;
-		self.pmove_flags = fOldPMoveFlags;
-		self.movetype = MOVETYPE_NONE;
-    } else {
-		Player_Draw();
-        addentity( self );
-    }
-    return PREDRAW_NEXT;
+	Player_Draw();
+	addentity( self );
+	return PREDRAW_NEXT;
 }
+
+/*
+=================
+Player_Predict
+
+Runs before every frame is rendered.
+Responsible for local player prediction.
+=================
+*/
+void Player_Predict(void) {
+	vector vOldOrigin = self.origin = self.netorigin;
+	vector vOldAngles = self.angles = self.netangles;
+	vector vOldVelocity = self.velocity = self.netvelocity;
+	float fOldPMoveFlags = self.pmove_flags = self.netpmove_flags;
+	// Don't predict if we're frozen/paused FIXME: FTE doesn't have serverkey_float yet!
+	if ( serverkey( SERVERKEY_PAUSESTATE ) == "1" || ( ( getstati( STAT_GAMESTATE ) == GAME_FREEZE ) && ( getstati( STAT_HEALTH ) > 0 ) ) ) {
+		pSeat->vPlayerOrigin = self.origin;
+		vOldOrigin = pSeat->vPlayerOrigin;
+
+		self.velocity = '0 0 0';
+		vOldVelocity = self.velocity;
+		fOldPMoveFlags = 0;
+	} else {
+		if ( getplayerkeyvalue( player_localnum, "*spec" ) == "0" ) {
+			self.movetype = MOVETYPE_WALK;
+		} else {
+			self.movetype = MOVETYPE_NOCLIP;
+		}
+
+		for ( int i = self.pmove_frame + 1; i <= clientcommandframe; i++ ) {
+			getinputstate( i );
+			runplayerphysics();
+		}
+	}
+	pSeat->vPlayerOriginOld = pSeat->vPlayerOrigin;
+
+	if ( ( self.flags & FL_ONGROUND ) && ( self.origin_z - pSeat->vPlayerOriginOld.z > 0 ) ) {
+		pSeat->vPlayerOriginOld.z += frametime * 150;
+
+		if ( pSeat->vPlayerOriginOld.z > self.origin_z ) {
+			pSeat->vPlayerOriginOld.z = self.origin_z;
+		}
+		if ( self.origin_z - pSeat->vPlayerOriginOld.z > 18 ) {
+			pSeat->vPlayerOriginOld.z = self.origin_z - 18;
+		}
+		pSeat->vPlayerOrigin.z += pSeat->vPlayerOriginOld.z - self.origin_z;
+	} else {
+		pSeat->vPlayerOriginOld.z = self.origin_z;
+	}
+
+	pSeat->vPlayerVelocity = self.velocity;
+
+	if ( autocvar_cl_thirdperson == TRUE && getstatf( STAT_HEALTH ) > 0 ) {
+		makevectors( view_angles );
+		vector vStart = [ self.origin_x, self.origin_y, pSeat->vPlayerOriginOld.z + 8 ] + ( v_right * 4 );
+		vector vEnd = vStart + ( v_forward * -48 ) + '0 0 8' + ( v_right * 4 );
+		traceline( vStart, vEnd, FALSE, self );
+		pSeat->vPlayerOrigin = trace_endpos + ( v_forward * 5 );
+	} else {
+		pSeat->vPlayerOrigin = [ self.origin_x, self.origin_y, pSeat->vPlayerOriginOld.z ];
+	}
+
+	self.movetype = MOVETYPE_NONE;
+}
+
+/*
+=================
+Player_Preupdate
+
+We're part way through parsing new player data.
+Propagate our pmove state to whatever the current frame before its stomped on (so any non-networked state updates locally).
+=================
+*/
+void Player_PreUpdate(void) {
+	self.origin = self.netorigin;
+	self.angles = self.netangles;
+	self.velocity = self.netvelocity;
+	self.pmove_flags = self.netpmove_flags;
+
+	if ( getplayerkeyvalue( player_localnum, "*spec" ) == "0" ) {
+		self.movetype = MOVETYPE_WALK;
+	} else {
+		self.movetype = MOVETYPE_NOCLIP;
+	}
+
+	for ( ; self.pmove_frame < servercommandframe; ) {
+		if ( getinputstate( ++self.pmove_frame ))
+			runplayerphysics();
+	}
+	
+	self.movetype = MOVETYPE_NONE;
+}
+void Player_PostUpdate(void) {
+	self.netorigin = self.origin;
+	self.netangles = self.angles;
+	self.netvelocity = self.velocity;
+	self.netpmove_flags = self.pmove_flags;
+	self.pmove_frame = servercommandframe;
+};

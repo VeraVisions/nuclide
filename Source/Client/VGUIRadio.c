@@ -68,7 +68,7 @@ void VGUI_Radio_DrawCommand( float fIndex, float fMessage, vector vPos ) {
 	
 	if ( fInputKeyCode == ( fIndex + 49 ) ) {
 		sendevent( "RadioMessage", "f", fMessage );
-		fVGUI_Display = VGUI_NONE;
+		pSeat->fVGUI_Display = VGUI_NONE;
 	}
 }
 
@@ -82,10 +82,10 @@ Main drawing routine for the radio menus
 void VGUI_Radio_Draw( void ) {
 	vector vSize, vPos;
 	
-	if ( fVGUI_Display == VGUI_RADIO1 ) {
+	if ( pSeat->fVGUI_Display == VGUI_RADIO1 ) {
 		vSize_x = 312;
 		vSize_y = ( 10 * VGUIRADIO_COMMANDS ) + 64;
-		vPos = [ 16, vVideoResolution_y - 148 - vSize_y ];
+		vPos = vVideoMins + [ 16, vVideoResolution_y - 148 - vSize_y ];
 		
 		VGUI_WindowSmall( _("RADIO_TITLE1"), vPos, vSize );
 		
@@ -95,10 +95,10 @@ void VGUI_Radio_Draw( void ) {
 			vPos_y += 10;
 			VGUI_Radio_DrawCommand( i, fRadioCommands[ i ], vPos );
 		}
-	} else if ( fVGUI_Display == VGUI_RADIO2 ) {
+	} else if ( pSeat->fVGUI_Display == VGUI_RADIO2 ) {
 		vSize_x = 312;
 		vSize_y = ( 10 * VGUIRADIO_GROUPCOMMANDS ) + 64;
-		vPos = [ 16, vVideoResolution_y - 148 - vSize_y ];
+		vPos = vVideoMins + [ 16, vVideoResolution_y - 148 - vSize_y ];
 		
 		VGUI_WindowSmall( _("RADIO_TITLE2"), vPos, vSize );
 		
@@ -111,7 +111,7 @@ void VGUI_Radio_Draw( void ) {
 	} else {
 		vSize_x = 312;
 		vSize_y = ( 10 * VGUIRADIO_RESPONSES ) + 64;
-		vPos = [ 16, vVideoResolution_y - 148 - vSize_y ];
+		vPos = vVideoMins + [ 16, vVideoResolution_y - 148 - vSize_y ];
 		
 		VGUI_WindowSmall( _("RADIO_TITLE3"), vPos, vSize );
 		
@@ -127,7 +127,7 @@ void VGUI_Radio_Draw( void ) {
 	VGUI_Text( sprintf( "0) %s", _("VGUI_BACK") ), vPos, '8 8', FONT_DEFAULT );
 	
 	if ( fInputKeyCode == 48 ) {
-		fVGUI_Display = VGUI_NONE;
+		pSeat->fVGUI_Display = VGUI_NONE;
 	}
 }
 
@@ -141,9 +141,9 @@ void VGUI_Radio_Toggle( float fMenu ) {
 		return;
 	}
 	
-	if ( fVGUI_Display == fMenu ) {
-		fVGUI_Display = VGUI_NONE;
+	if ( pSeat->fVGUI_Display == fMenu ) {
+		pSeat->fVGUI_Display = VGUI_NONE;
 	} else {
-		fVGUI_Display = fMenu;
+		pSeat->fVGUI_Display = fMenu;
 	}
 }

@@ -132,6 +132,36 @@ void Object_Button( vector vPosition, int iButtonID, void() vFunction, __inout f
 	drawsubpic( vPosition, '156 26', "gfx/shell/btns_main", vSrcPos + [ 0, 52 / vMenuButtonsSize_y ], vSrcSize, '1 1 1', fAlpha, 1 );
 }
 
+void Object_TextButton( vector vPosition, string sButtonText, void() vFunction, __inout float fAlpha ) {
+	static string sLastButton;
+	
+	vPosition += vMenuOffset;
+	
+	if ( fAlpha > 0.0f ) {
+		fAlpha -= frametime;
+	} else {
+		fAlpha = 0.0f;
+	}
+	
+	if ( Menu_InputCheckMouse( vPosition, [stringwidth(sButtonText, TRUE, '8 8'), 8] ) == TRUE ) {
+		if ( sLastButton != sButtonText ) {
+			localcmd( "play ../media/launch_deny2.wav\n" );
+		}
+		sLastButton = sButtonText;
+		fAlpha = 1.0f;
+
+		if ( fMouseClick == TRUE ) {
+			if ( vFunction != __NULL__ ) {
+				vFunction();
+			}
+			localcmd( "play ../media/launch_select2.wav\n" );
+			fMouseClick = FALSE;
+		}
+	}
+
+	drawstring( vPosition, sButtonText, '8 8', '1 1 1', fAlpha, 1 );
+}
+
 /*
 =================
 Object_Frame

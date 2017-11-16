@@ -23,8 +23,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 .float fWasCrouching;
 
 // For lerping, sigh
+#ifdef CSQC
 .float frame_last;
 .float baseframe_last;
+#endif
 
 enum {
 	ANIM_DUMMY1,

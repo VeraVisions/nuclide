@@ -30,8 +30,13 @@ void SV_SendChat( entity eSender, string sMessage, entity eEnt, float fType ) {
 	WriteByte( MSG_MULTICAST, num_for_edict( eSender ) - 1 ); 
 	WriteByte( MSG_MULTICAST, eSender.team ); 
 	WriteString( MSG_MULTICAST, sMessage );
-	msg_entity = eEnt;
-	multicast( '0 0 0', MULTICAST_ONE );
+	if (eEnt)
+	{
+		msg_entity = eEnt;
+		multicast( '0 0 0', MULTICAST_ONE );
+	}
+	else
+		multicast( '0 0 0', MULTICAST_ALL );
 }
 
 /*
@@ -49,9 +54,7 @@ void SV_ParseClientCommand( string sCommand ) {
 	if ( self.health  ) {
 		if ( argv( 0 ) == "say" ) {
 			localcmd( sprintf( "echo %s: %s\n", self.netname, argv( 1 ) ) );
-			for ( entity eFind = world; ( eFind = find( eFind, classname, "player" ) ); ) { 
-				SV_SendChat( self, argv( 1 ), eFind, 0 );
-			}
+			SV_SendChat( self, argv( 1 ), world, 0 );
 			return;
 		} else if ( argv( 0 ) == "say_team" ) {
 			localcmd( sprintf( "echo [TEAM %d] %s: %s\n", self.team, self.netname, argv( 1 ) ) );

@@ -18,10 +18,6 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-entity eViewModel;
-entity eMuzzleflash;
-float fNumBones;
-
 string sViewModels[ CS_WEAPON_COUNT - 1 ] = {
 	"models/v_knife.mdl",
 	"models/v_usp.mdl",
@@ -57,19 +53,17 @@ string sViewModels[ CS_WEAPON_COUNT - 1 ] = {
 View_CalcBob
 ====================
 */
-float View_CalcBob( void ) {
-	static float fBobTime;
-	static float fBob;
+void View_CalcBob( void ) {
 	float fCycle;
 
 	vector vVelocity;
 	
 	if ( self.flags & FL_ONGROUND == -1 ) {
-		return fBob;	
+		return;	
 	}
 
-	fBobTime += frametime;
-	fCycle = fBobTime - (int)( fBobTime / autocvar_cl_bobcycle ) * autocvar_cl_bobcycle;
+	pSeat->fBobTime += frametime;
+	fCycle = pSeat->fBobTime - (int)( pSeat->fBobTime / autocvar_cl_bobcycle ) * autocvar_cl_bobcycle;
 	fCycle /= autocvar_cl_bobcycle;
 	
 	if ( fCycle < autocvar_cl_bobup ) {
@@ -78,25 +72,22 @@ float View_CalcBob( void ) {
 		fCycle = MATH_PI + MATH_PI * ( fCycle - autocvar_cl_bobup )/( 1.0 - autocvar_cl_bobup );
 	}
 
-	vVelocity = vPlayerVelocity;
+	vVelocity = pSeat->vPlayerVelocity;
 	vVelocity_z = 0;
 
-	fBob = sqrt( vVelocity_x * vVelocity_x + vVelocity_y * vVelocity_y ) * autocvar_cl_bob;
+	float fBob = sqrt( vVelocity_x * vVelocity_x + vVelocity_y * vVelocity_y ) * autocvar_cl_bob;
 	fBob = fBob * 0.3 + fBob * 0.7 * sin( fCycle );
-	fBob = min( fBob, 4 );
-	fBob = max( fBob, -7 );
-	
-	return fBob;
+	pSeat->fBob = bound( -7, fBob, 4 );
 }
 
 void View_DropPunchAngle( void ) {
 	float fLerp;
 	fLerp = 1.0f - ( frametime * 4 );
-	vPunchAngle *= fLerp;
+	pSeat->vPunchAngle *= fLerp;
 }
 
 void View_AddPunchAngle( vector vAdd ) {
-	vPunchAngle += vAdd;
+	pSeat->vPunchAngle += vAdd;
 }
 
 /*
@@ -108,25 +99,25 @@ void View_ProcessEvent( float fTimeStamp, int iCode, string sData ) {
 	if ( iCode == 5004 ) {
 		localsound( sData, CHAN_AUTO, 1.0 );
 	} else if ( iCode == 5001 ) {
-		eMuzzleflash.alpha = 1.0f;
-		eMuzzleflash.scale = 0.5;
-		eMuzzleflash.skin = fNumBones;
-		setmodel( eMuzzleflash, sprintf( "sprites/muzzleflash%s.spr", substring( sData, 1, 1 ) ) );
+		pSeat->eMuzzleflash.alpha = 1.0f;
+		pSeat->eMuzzleflash.scale = 0.5;
+		pSeat->eMuzzleflash.skin = pSeat->fNumBones;
+		setmodel( pSeat->eMuzzleflash, sprintf( "sprites/muzzleflash%s.spr", substring( sData, 1, 1 ) ) );
 	} else if( iCode == 5011 ) {
-		eMuzzleflash.alpha = 1.0f;
-		eMuzzleflash.scale = 0.5;
-		eMuzzleflash.skin = fNumBones + 1;
-		setmodel( eMuzzleflash, sprintf( "sprites/muzzleflash%s.spr", substring( sData, 1, 1 ) ) );
+		pSeat->eMuzzleflash.alpha = 1.0f;
+		pSeat->eMuzzleflash.scale = 0.5;
+		pSeat->eMuzzleflash.skin = pSeat->fNumBones + 1;
+		setmodel( pSeat->eMuzzleflash, sprintf( "sprites/muzzleflash%s.spr", substring( sData, 1, 1 ) ) );
 	} else if ( iCode == 5021 ) {
-		eMuzzleflash.alpha = 1.0f;
-		eMuzzleflash.scale = 0.5;
-		eMuzzleflash.skin = fNumBones + 2;
-		setmodel( eMuzzleflash, sprintf( "sprites/muzzleflash%s.spr", substring( sData, 1, 1 ) ) );
+		pSeat->eMuzzleflash.alpha = 1.0f;
+		pSeat->eMuzzleflash.scale = 0.5;
+		pSeat->eMuzzleflash.skin = pSeat->fNumBones + 2;
+		setmodel( pSeat->eMuzzleflash, sprintf( "sprites/muzzleflash%s.spr", substring( sData, 1, 1 ) ) );
 	} else if ( iCode == 5031 ) {
-		eMuzzleflash.alpha = 1.0f;
-		eMuzzleflash.scale = 0.5;
-		eMuzzleflash.skin = fNumBones + 3;
-		setmodel( eMuzzleflash, sprintf( "sprites/muzzleflash%s.spr", substring( sData, 1, 1 ) ) );
+		pSeat->eMuzzleflash.alpha = 1.0f;
+		pSeat->eMuzzleflash.scale = 0.5;
+		pSeat->eMuzzleflash.skin = pSeat->fNumBones + 3;
+		setmodel( pSeat->eMuzzleflash, sprintf( "sprites/muzzleflash%s.spr", substring( sData, 1, 1 ) ) );
 	}
 }
 
@@ -136,52 +127,54 @@ View_DrawViewModel
 ====================
 */
 void View_DrawViewModel( void ) {
-	static float fBob;
-	static float fLastWeapon;
-
-	if( !eViewModel ) {
-		eViewModel = spawn();
-		eViewModel.renderflags = RF_DEPTHHACK;
+	if( !pSeat->eViewModel ) {
+		pSeat->eViewModel = spawn();
+		pSeat->eViewModel.classname = "view model";
+		pSeat->eViewModel.renderflags = RF_VIEWMODEL | RF_DEPTHHACK;
 		
-		eMuzzleflash = spawn();
-		eMuzzleflash.renderflags = RF_DEPTHHACK | RF_ADDITIVE;
+		pSeat->eMuzzleflash = spawn();
+		pSeat->eMuzzleflash.classname = "view muzzleflash";
+		pSeat->eMuzzleflash.renderflags = RF_VIEWMODEL | RF_DEPTHHACK | RF_ADDITIVE;
 	}
-	
+	entity eViewModel = pSeat->eViewModel;
+	entity eMuzzleflash = pSeat->eMuzzleflash;
+
 	if ( getstatf( STAT_HEALTH ) <= 0 ) {
 		return;
 	}
-	
+
 	// Don't update when paused
 	if ( serverkey("pausestate") == "0" ) {
-		fBob = View_CalcBob();
-		
-		if( getstatf( STAT_ACTIVEWEAPON ) < CS_WEAPON_COUNT ) {
-			if ( fLastWeapon != getstatf( STAT_ACTIVEWEAPON ) ) {
-				fLastWeapon = getstatf( STAT_ACTIVEWEAPON );
-				if ( fLastWeapon ) {
-					setmodel( eViewModel, sViewModels[ getstatf( STAT_ACTIVEWEAPON ) - 1 ] );
+		View_CalcBob();
+
+		int aw = getstati( STAT_ACTIVEWEAPON );
+		if( aw < CS_WEAPON_COUNT ) {
+			if ( pSeat->fLastWeapon != aw ) {
+				pSeat->fLastWeapon = aw;
+				if ( aw >= 1 ) {
+					setmodel( eViewModel, sViewModels[ aw - 1 ] );
 					skel_delete( eMuzzleflash.skeletonindex );
 					eMuzzleflash.skeletonindex = skel_create( eViewModel.modelindex );
-					fNumBones = skel_get_numbones( eMuzzleflash.skeletonindex ) + 1;
+					pSeat->fNumBones = skel_get_numbones( eMuzzleflash.skeletonindex ) + 1;
 				}
 			}
 		}
-		
+
 		// Take away alpha once it has drawn fully at least once
 		if ( eMuzzleflash.alpha > 0.0f ) {
 			eMuzzleflash.alpha -= ( frametime * 45 );			
 		}
-		
-		static float fBaseTime;
-		processmodelevents( eViewModel.modelindex, eViewModel.frame, fBaseTime, eViewModel.frame1time, View_ProcessEvent );
-		
+
+		float fBaseTime = eViewModel.frame1time;
 		eViewModel.frame1time += frametime;
 		eViewModel.frame2time += frametime;
+		
+		processmodelevents( eViewModel.modelindex, eViewModel.frame, fBaseTime, eViewModel.frame1time, View_ProcessEvent );
 	}
 	
-	makevectors( getproperty( VF_ANGLES ) );
-	eViewModel.origin = getproperty( VF_ORIGIN ) + '0 0 -1' + ( v_forward * ( fBob * 0.4 ) );
-	eViewModel.angles = getproperty( VF_ANGLES ) + vPunchAngle;
+	makevectors( '0 0 0');
+	eViewModel.origin = '0 0 -1' + ( v_forward * ( pSeat->fBob * 0.4 ) );
+	eViewModel.angles = pSeat->vPunchAngle;
 	
 	// Left-handed weapons
 	if ( autocvar_v_lefthanded ) {
@@ -197,7 +190,7 @@ void View_DrawViewModel( void ) {
 	
 	// Give the gun a tilt effect like in old HL/CS versions
 	if ( autocvar_cl_bobclassic == 1 ) {
-		eViewModel.angles_z = -fBob;
+		eViewModel.angles_z = -pSeat->fBob;
 	}
 
 	// Only bother when zoomed out
@@ -219,6 +212,6 @@ View_DrawViewModel
 ====================
 */
 void View_PlayAnimation( int iSequence ) {
-	eViewModel.frame = (float)iSequence;
-	eViewModel.frame1time = 0.0f;
+	pSeat->eViewModel.frame = (float)iSequence;
+	pSeat->eViewModel.frame1time = 0.0f;
 }

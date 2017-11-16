@@ -60,33 +60,33 @@ vguiequipobject_t vguiEquipmentTable[ 7 ] = {
 // TODO: Clean this up
 void VGUI_BuyMenu_Main( vector vPos ) {
 	static void BuyMenu_Main_1( void ) {
-		fVGUI_Display = VGUI_BM_HANDGUNS;
+		pSeat->fVGUI_Display = VGUI_BM_HANDGUNS;
 	}
 	static void BuyMenu_Main_2( void ) {
-		fVGUI_Display = VGUI_BM_SHOTGUNS;
+		pSeat->fVGUI_Display = VGUI_BM_SHOTGUNS;
 	}
 	static void BuyMenu_Main_3( void ) {
-		fVGUI_Display = VGUI_BM_SMG;
+		pSeat->fVGUI_Display = VGUI_BM_SMG;
 	}
 	static void BuyMenu_Main_4( void ) {
-		fVGUI_Display = VGUI_BM_RIFLES;
+		pSeat->fVGUI_Display = VGUI_BM_RIFLES;
 	}
 	static void BuyMenu_Main_5( void ) {
-		fVGUI_Display = VGUI_BM_MGS;
+		pSeat->fVGUI_Display = VGUI_BM_MGS;
 	}
 	static void BuyMenu_Main_6( void ) {
 		sendevent( "GamePlayerBuyAmmo", "f", 0 );
-		fVGUI_Display = VGUI_NONE;
+		pSeat->fVGUI_Display = VGUI_NONE;
 	}
 	static void BuyMenu_Main_7( void ) {
 		sendevent( "GamePlayerBuyAmmo", "f", 1 );
-		fVGUI_Display = VGUI_NONE;
+		pSeat->fVGUI_Display = VGUI_NONE;
 	}
 	static void BuyMenu_Main_8( void ) {
-		fVGUI_Display = VGUI_BM_EQUIPMENT;
+		pSeat->fVGUI_Display = VGUI_BM_EQUIPMENT;
 	}
 	static void BuyMenu_Main_9( void ) {
-		fVGUI_Display = VGUI_NONE;
+		pSeat->fVGUI_Display = VGUI_NONE;
 	}
 	
 	VGUI_Button( _("VGUI_TITLE_HANDGUN"), BuyMenu_Main_1, vPos + '16 116 0', '180 24 0' );
@@ -103,7 +103,7 @@ void VGUI_BuyMenu_Main( vector vPos ) {
 }
 
 void VGUI_BuyMenu_Back( void ) {
-	fVGUI_Display = VGUI_BM_MAIN;
+	pSeat->fVGUI_Display = VGUI_BM_MAIN;
 }
 
 /*
@@ -117,7 +117,7 @@ float iLastSelected;
 void VGUI_BuyMenu_BuyWeapon( void ) {
 	if( iLastSelected ) {
 		sendevent( "PlayerBuyWeapon", "f", iLastSelected );
-		fVGUI_Display = VGUI_NONE;
+		pSeat->fVGUI_Display = VGUI_NONE;
 	}
 }
 
@@ -128,7 +128,7 @@ VGUI_BuyMenu_BuyEquipment
 */
 void VGUI_BuyMenu_BuyEquipment( void ) {
 	sendevent( "PlayerBuyEquipment", "f", iLastSelected );
-	fVGUI_Display = VGUI_NONE;
+	pSeat->fVGUI_Display = VGUI_NONE;
 }
 
 /*

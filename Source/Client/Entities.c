@@ -39,7 +39,10 @@ void CSQC_Ent_Update( float flIsNew ) {
 			self.solid = SOLID_SLIDEBOX;
 			self.predraw = Player_PreDraw;
 			self.drawmask = MASK_ENGINE;
+			self.pmove_frame = servercommandframe;
 		}
+		else
+			Player_PreUpdate();
 		
 		self.modelindex = readbyte();
 		self.origin_x = readcoord();
@@ -53,6 +56,8 @@ void CSQC_Ent_Update( float flIsNew ) {
 		self.velocity_z = readshort();
 		self.flags = readfloat();
 		self.weapon = readbyte();
+		
+		Player_PostUpdate();
 		
 		if ( self.flags & FL_CROUCHING ) {
 			setsize( self, VEC_CHULL_MIN, VEC_CHULL_MAX );

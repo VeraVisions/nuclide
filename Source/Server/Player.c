@@ -147,7 +147,7 @@ void Player_Death( int iHitBody ) {
 	
 	if ( ( iAlivePlayers_T == 0 ) && ( iAlivePlayers_CT == 0 ) ) {
 		if ( ( iBombPlanted == FALSE ) || ( iBombZones > 0 ) ) {
-			Rules_RoundOver( FALSE, 3600, FALSE );
+			Rules_RoundOver( FALSE, 0, FALSE );
 		} else {
 			Rules_RoundOver( TEAM_T, 3600, FALSE );
 		}
@@ -299,10 +299,6 @@ Run before physics
 void PlayerPreThink( void ) { 
 	Input_Handle();
 	BaseGun_ShotMultiplierUpdate();
-	
-	if ( !( self.flags & FL_ONGROUND ) ){
-		self.fFallVelocity = -self.velocity_z;
-	} 
 }
 
 /*
@@ -315,19 +311,6 @@ Run after physics
 void PlayerPostThink( void ) {
 	Animation_PlayerUpdate();
 	Footsteps_Update();
-	
-	if ( ( self.flags & FL_ONGROUND ) && ( self.health > 0 ) && ( self.fFallVelocity > 100 )) {
-		if ( self.fFallVelocity > 580 ) {
-			self.fFallVelocity -= 580;
-			float fFallDamage = self.fFallVelocity * ( 200 / ( 1024 - 580 ) );
-			Damage_Apply( self, world, fFallDamage, self.origin, FALSE );
-		} 
-		
-		if ( self.fFallVelocity > 200 ) {
-			self.velocity *= 0.25;
-		}
-		self.fFallVelocity = 0;
-	}
 	
 	self.SendFlags = 1;
 }

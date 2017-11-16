@@ -63,3 +63,27 @@ float Math_FixDelta( float fDelta ) {
 float Math_CRandom( void ) {
 	return 2 * ( random() - 0.5 );
 }
+
+#if defined(SSQC) || defined(CSQC)
+#ifdef SSQC
+void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos, int iSkipArmor );
+#endif
+.float health;
+void runplayerphysics(void)
+{	//operates on self
+	float fallvel = ( self.flags & FL_ONGROUND )?0:-self.velocity_z;
+	runstandardplayerphysics(self);
+	if ( ( self.flags & FL_ONGROUND ) && ( self.health > 0 ) && ( fallvel > 100 )) {
+#ifdef SSQC
+		if ( fallvel > 580 ) {
+			float fFallDamage = (fallvel-580) * ( 200 / ( 1024 - 580 ) );
+			Damage_Apply( self, world, fFallDamage, self.origin, FALSE );
+		} 
+#endif
+		
+		if ( fallvel > 200 ) {
+			self.velocity *= 0.25;
+		}
+	}
+}
+#endif

@@ -293,6 +293,7 @@ void Effect_BreakModel( vector vMins, vector vMaxs, vector vVel, float fStyle ) 
 	
 	while ( fCount > 0 ) {
 		entity eGib = spawn();
+		eGib.classname = "gib";
 		
 		vPos_x = vMins_x + ( random() * ( vMaxs_x - vMins_x ) );	
 		vPos_y = vMins_y + ( random() * ( vMaxs_y - vMins_y ) );	

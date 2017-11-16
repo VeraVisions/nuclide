@@ -46,6 +46,7 @@
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\FuncHostageRescue.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\FuncLadder.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\FuncPushable.c" />
+		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\FuncVehicle.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\FuncVIPSafetyZone.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\Input.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\Light.c" />

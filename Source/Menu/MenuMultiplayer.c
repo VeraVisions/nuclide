@@ -244,20 +244,106 @@ void Menu_Multiplayer_Create( void ) {
 
 void Menu_Multiplayer_IRC( void ) {
 	static int iIRCInit = FALSE;
+	static string currenttab;
+	string showtab;
+	static string s;	//static to access it in nested functions.
 	
 	static void IRC_ButtonDone( void ) {
 		iMenu = MENU_MULTIPLAYER;
 	}
+	static void IRC_ButtonSelect(void) {
+		if (currenttab)
+			con_input(currenttab, IE_FOCUS, 0/*mouse focus*/, 0/*key focus*/, 0);
+		if (s)
+		{
+			currenttab = s;
+			con_input(currenttab, IE_FOCUS, 1/*mouse focus*/, 1/*key focus*/, 0);
+		}
+	}
 	
 	if ( iIRCInit == FALSE ) {
 		print( "[IRC] Connecting to #freecs...\n" );
-		con_printf( "IRC", "/irc /connect irc.freenode.org #freecs\n" );
-		//con_getset( "IRC", "hidden", "1" );
+		localcmd("/irc /connect irc.freenode.org #freecs\n");
 		iIRCInit = TRUE;
-		for (string s = ""; s; s = con_getset("", "next")) {con_printf(s, "SPAMMING EVERY CONSOLE HAR HAR HAR\n");}
+	}
+
+	int iTabIdx;
+	vector vTabPos = '196 140';
+	for (s = "", iTabIdx = 0; s; s = con_getset(s, "next"))
+	{
+		if (substring(s, 0, 3) == "IRC")
+		{
+			con_getset( s, "hidden", "1" );	//Hide all IRC consoles. We're evil like that.
+
+			string title = con_getset( s, "title" );
+
+			iTabIdx++;
+			if (fButtonAlpha[iTabIdx] < 0.5)
+				fButtonAlpha[iTabIdx] = 0.5;
+			Object_TextButton( vTabPos, title, IRC_ButtonSelect, fButtonAlpha[iTabIdx] );
+			vTabPos_x += stringwidth(title, TRUE, '8 8') + 8;
+		}
+	}
+	//TODO: scroll tabs.
+	//TODO: add a close button
+	//TODO: make it friendly when in-game.
+
+	showtab = currenttab;
+
+	if not (showtab)	//the channel we're trying to target
+		for (s = ""; s; s = con_getset(s, "next"))
+		{	//try to find our target channel
+			if (substring(s, 0, 3) == "IRC" && substring(s, -8, -1) == ":#freecs")
+			{
+				showtab = s;
+				break;
+			}
+		}
+	if (!showtab)	//the server-messages channel. used more as a loading screen than anything else.
+		for (s = ""; s; s = con_getset(s, "next"))
+		{
+			if (substring(s, 0, 3) == "IRC" && substring(s, -1, -1) == ":")
+			{
+				showtab = s;
+				break;
+			}
+		}
+
+	//TODO: propagate input events to the currenttab.
+	if (currenttab)
+	{
+		if (Menu_InputCheckMouse( vMenuOffset + '196 148', '404 308' ))
+		{
+			con_input(currenttab, IE_MOUSEABS, vMousePos_x, vMousePos_y, 0);
+
+			if (fMouseClick)
+			{
+				con_input(currenttab, IE_KEYDOWN, K_MOUSE1, 0, 0);
+				con_input(currenttab, IE_KEYUP, K_MOUSE1, 0, 0);
+			}
+			con_input(currenttab, IE_FOCUS, 1/*mouse focus*/, 1/*key focus*/, 0);
+		}
+		else
+			con_input(currenttab, IE_FOCUS, 0/*mouse focus*/, 1/*key focus*/, 0);
+
+		//this is hideous
+		//BUG BUG BUG FIXME: The engine attempts to restrict con_input inputs.
+		//as a result, it can only be called inside CSQC_Input_Event (or menuqc equivelents)
+		//note that if you wish to handle IME strings then you should be doing that anyway.
+		if (fInputKeyCode != K_MOUSE1 && (fInputKeyCode || fInputKeyASCII))
+		{
+//print(sprintf("Sending input: %f %f %c\n", fInputKeyCode, fInputKeyASCII, fInputKeyASCII));
+			con_input(currenttab, IE_KEYDOWN, fInputKeyCode, fInputKeyASCII, 0);
+			con_input(currenttab, IE_KEYUP, fInputKeyCode, fInputKeyASCII, 0);
+			fInputKeyCode = 0;
+			fInputKeyASCII = 0;
+		}
 	}
 	
-	con_draw( "IRC", vMenuOffset + '196 140', '404 308', 8 );
+	if (showtab)
+		con_draw( showtab, vMenuOffset + '196 148', '404 308', 8 );
+	else
+		Object_Label( '196 148', _("No IRC Output"), '8 8' );
 	
 	Object_Button( '32 308', BTN_DONE, IRC_ButtonDone, fButtonAlpha[0] );
 }

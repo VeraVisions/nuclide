@@ -52,9 +52,7 @@ weaponinfo_t wptTable[ CS_WEAPON_COUNT ] = {
 #ifdef SSQC
 .int iShotMultiplier;
 .float fDecreaseShotTime;
-.int iOldShotMultiplier;
-#else 
-int iShotMultiplier;
+//.int iOldShotMultiplier;
 #endif
 
 /*
@@ -72,13 +70,13 @@ void BaseGun_ShotMultiplierHandle( float fShots ) {
 	self.fDecreaseShotTime = time + 0.2;
 #else
 	vector vPunch;
-	if ( iShotMultiplier > 12 ) {
-		iShotMultiplier = 12;
+	if ( pSeat->iShotMultiplier > 12 ) {
+		pSeat->iShotMultiplier = 12;
 	} else {
-		iShotMultiplier += fShots;
+		pSeat->iShotMultiplier += fShots;
 	}
 	
-	vPunch_x = -2 * ( iShotMultiplier / 6 );
+	vPunch_x = -2 * ( pSeat->iShotMultiplier / 6 );
 	vPunch_y = random( -1, 1 );
 	View_AddPunchAngle( vPunch );
 #endif

@@ -64,7 +64,7 @@ Just prints whatever is in the chat buffer and removes lines after some time.
 =================
 */
 void CSQC_DrawChat( void ) {
-	vector vChatPos = [ 16, vVideoResolution_y - 128 ];
+	vector vChatPos = vVideoMins + [ 16, vVideoResolution_y - 128 ];
 	
 	// Remove messages after a fChatTime has passed
 	if ( fChatTime < time ) {
@@ -111,9 +111,10 @@ void CSQC_DrawCenterprint( void ) {
 		}
 	}
 	
-	vCenterPrintPos_y = ( vVideoResolution_y / 2 ) - ( fCenterPrintLines - 4 );
+	vCenterPrintPos_y = vVideoMins_y + ( vVideoResolution_y / 2 ) - ( fCenterPrintLines - 4 );
+	
 	for ( int i = 0; i < ( fCenterPrintLines ); i++ ) {
-		vCenterPrintPos_x = ( vVideoResolution_x / 2 ) - ( stringwidth( sCenterPrintBuffer[ i ], FALSE ) / 2 );
+		vCenterPrintPos_x = vVideoMins_x + ( vVideoResolution_x / 2 ) - ( stringwidth( sCenterPrintBuffer[ i ], FALSE ) / 2 );
 		drawstring( vCenterPrintPos + '1 1', sCenterPrintBuffer[ i ], '8 8', '0 0 0', fCenterPrintAlpha, 0 );
 		drawstring( vCenterPrintPos, sCenterPrintBuffer[ i ], '8 8', '1 1 1', fCenterPrintAlpha, 0 );
 		vCenterPrintPos_y += 8;
@@ -150,6 +151,8 @@ Entry point for drawing on the client
 =================
 */
 void CSQC_UpdateView( float fWinWidth, float fWinHeight, float fGameFocus ) {
+	float needcursor;
+	int s;
 	vVideoResolution_x = fWinWidth;
 	vVideoResolution_y = fWinHeight;
 
@@ -157,48 +160,108 @@ void CSQC_UpdateView( float fWinWidth, float fWinHeight, float fGameFocus ) {
 	setproperty( VF_DRAWENGINESBAR, 0 );
 	setproperty( VF_DRAWCROSSHAIR, 0 );
 
+	//just in case...
+	if ( numclientseats > seats.length ) {
+		numclientseats = seats.length;
+	}
+	
+	for ( s = seats.length; s-- > numclientseats; ) {
+		pSeat = &seats[ s ];
+		pSeat->fVGUI_Display = VGUI_MOTD;
+		pSeat->ePlayer = world;
+	}
+	for ( s = numclientseats; s-- > 0; ) {
+		pSeat = &seats[ s ];
+		setproperty( VF_ACTIVESEAT, (float)s );
+		pSeat->ePlayer = self = findfloat( world, entnum, player_localentnum );
+		if ( self ) {
+			Player_Predict();
+		}
+	}
+
 	addentities( MASK_ENGINE );
 	
 	Nightvision_PreDraw();
-	
-	setproperty( VF_AFOV, cvar( "fov" ) * ( getstatf( STAT_VIEWZOOM ) / 255 ) );
-	setsensitivityscaler( ( getstatf( STAT_VIEWZOOM ) / 255 ) );
-	
-	// When Cameratime is active, draw on the forced coords instead
-	if ( fCameraTime > time ) {
-		setproperty( VF_ORIGIN, vCameraPos) ;
-		setproperty( VF_ANGLES, vCameraAngle );
-	} else {
-		setproperty( VF_ORIGIN, vPlayerOrigin + [ 0, 0, getstatf( STAT_VIEWHEIGHT ) ] );
-		setproperty( VF_ANGLES, view_angles );
-		View_DrawViewModel();
-		
-	}
 
-	setproperty( VF_ANGLES, view_angles + vPunchAngle );
-	renderscene();
-	View_DropPunchAngle();
-	
-	Nightvision_PostDraw();
-	
-	if( fGameFocus == TRUE ) {
-		// The spectator sees things... differently
-		if ( getplayerkeyvalue( player_localnum, "*spec" ) != "0" ) {
-			VGUI_DrawSpectatorHUD();
+	for ( s = 0; s < numclientseats; s++ ) {
+		pSeat = &seats[ s ];
+		setproperty( VF_ACTIVESEAT, (float)s );
+
+		if ( autocvar_cl_thirdperson == TRUE && getstatf( STAT_HEALTH ) ) {
+			setproperty( VF_VIEWENTITY, (float)0 );
 		} else {
-			HUD_Draw();
+			setproperty( VF_VIEWENTITY, (float)player_localentnum );
 		}
-		
-		HUD_DrawOrbituaries();
-		CSQC_DrawChat();
-		
-		// Don't even try to draw centerprints and VGUI menus when scores are shown
-		if ( iShowScores == TRUE ) {
-			VGUI_Scores_Show();
-		} else { 
-			CSQC_DrawCenterprint();
-			CSQC_VGUI_Draw();
+
+		setproperty( VF_AFOV, cvar( "fov" ) * ( getstatf( STAT_VIEWZOOM ) / 255 ) );
+		setsensitivityscaler( ( getstatf( STAT_VIEWZOOM ) / 255 ) );
+
+		// When Cameratime is active, draw on the forced coords instead
+		if ( pSeat->fCameraTime > time ) {
+			setproperty( VF_ORIGIN, pSeat->vCameraPos ) ;
+		} else {
+			setproperty( VF_ORIGIN, pSeat->vPlayerOrigin + [ 0, 0, getstatf( STAT_VIEWHEIGHT ) ] );
+			View_DrawViewModel();
 		}
+
+		//FIXME: this is awkward. renderscene internally rounds to pixels.
+		//on the other hand, drawpic uses linear filtering and multisample and stuff.
+		//this means that there can be a pixel or so difference between scene and 2d.
+		//as a general rule, you won't notice unless there's some big drawfills.
+		switch ( numclientseats ) {
+		case 3:
+			if (!s)
+			{
+		case 2:
+				vVideoResolution = [ fWinWidth, fWinHeight * 0.5 ];
+				vVideoMins = [ 0, ( s & 1 ) * vVideoResolution_y ];
+				break;
+			}
+			s++;
+		case 4:
+			vVideoResolution = [ fWinWidth, fWinHeight ] * 0.5;
+			vVideoMins = [ (s&1) * vVideoResolution_x, ( s / 2i ) * vVideoResolution_y ];
+			break;
+		default:
+			vVideoResolution = [ fWinWidth, fWinHeight ];
+			vVideoMins = [ 0, 0 ];
+			break;
+		}
+		setproperty( VF_MIN, vVideoMins );
+		setproperty( VF_SIZE, vVideoResolution );
+		setproperty( VF_ANGLES, view_angles + pSeat->vPunchAngle );
+		renderscene();
+
+		View_DropPunchAngle();
+
+		Nightvision_PostDraw();
+
+		if( fGameFocus == TRUE ) {
+			// The spectator sees things... differently
+			if ( getplayerkeyvalue( player_localnum, "*spec" ) != "0" ) {
+				VGUI_DrawSpectatorHUD();
+			} else {
+				HUD_Draw();
+			}
+			
+			HUD_DrawOrbituaries();
+			CSQC_DrawChat();
+			
+			// Don't even try to draw centerprints and VGUI menus when scores are shown
+			if ( pSeat->iShowScores == TRUE ) {
+				VGUI_Scores_Show();
+			} else { 
+				CSQC_DrawCenterprint();
+				needcursor |= CSQC_VGUI_Draw();
+			}
+		}
+	}
+	pSeat = (void*)0x70000000i;
+	
+	if ( needcursor ) {
+		setcursormode( TRUE, "gfx/cursor", '0 0 0', 1.0f );
+	} else {
+		setcursormode( FALSE, "gfx/cursor", '0 0 0', 1.0f );
 	}
 	
 	Sound_ProcessWordQue();
@@ -212,5 +275,5 @@ Doesn't really do anything useful yet
 =================
 */
 void CSQC_UpdateViewLoading( float fWinWidth, float fWinHeight, float fGameFocus ) {
-	
+	drawfill( [ 0, 0 ], [ fWinWidth, fWinHeight ], [ 1, 1, 1 ], 1, 0 );
 }

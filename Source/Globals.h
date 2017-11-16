@@ -18,6 +18,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#pragma target FTE
+//#pragma flag enable lo	//enable short-circuiting
+
 #define VEC_HULL_MIN '-16 -16 -36'
 #define VEC_HULL_MAX '16 16 36'
 
@@ -287,25 +290,13 @@ enum {
 #define INPUT_BUTTON5 16
 #define INPUT_BUTTON6 32
 
-#define FL_USERELEASED 	8192
-#define FL_CROUCHING 	16384
-#define FL_SEMI_TOGGLED 32768
-#define FL_FROZEN 		131072
-#define FL_REMOVEME		262144
+#define FL_USERELEASED 	(1<<13)
+#define FL_CROUCHING 	(1<<19)
+#define FL_SEMI_TOGGLED (1<<15)
+#define FL_FROZEN 	(1<<17)
+#define FL_REMOVEME	(1<<18)
 
-float clamp(float d, float imin, float imax) {
-	float t;
-
-  if(d < imin)
-	  t = imin;
-  else
-	  t = d;
-
-  if(t > imax)
-	  return imax;
-  else
-	  return t;
-}
+#define clamp(d,min,max) bound(min,d,max)
 
 void Empty( void ) { }
 void BaseGun_ShotMultiplierHandle( float fShots );

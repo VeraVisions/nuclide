@@ -34,7 +34,7 @@ an array of infokeys, but that'll clutter things up
 */
 void VGUI_MessageOfTheDay( vector vPos ) {
 	static void MessageOfTheDay_ButtonOK( void ) {
-		fVGUI_Display = VGUI_TEAMSELECT;
+		pSeat->fVGUI_Display = VGUI_TEAMSELECT;
 	}
 
 	VGUI_Text( serverkey( "hostname" ), vPos + '16 64 0', '16 16', FONT_16 );

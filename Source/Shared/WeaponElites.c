@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 .int iMag_ELITES;
 
 #ifdef SSQC
-.int iMode_ELITES;
+//.int iMode_ELITES;
 #else
 int iWeaponMode_ELITES;
 #endif

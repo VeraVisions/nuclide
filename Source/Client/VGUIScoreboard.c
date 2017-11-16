@@ -27,9 +27,6 @@ string sScoreTeams[4] = {
 	_("SCORE_TITLE_VIP"),
 };
 
-// This is seperated from the other VGUI stuff so we can check scores while buying and whatnot
-int iShowScores;
-
 /*
 ====================
 VGUI_Scores_DrawTeam
@@ -120,8 +117,9 @@ void VGUI_Scores_Show( void ) {
 	vSize_x = 540;
 	vSize_y = vVideoResolution_y - 112;
 	
-	vMainPos_x = ( vVideoResolution_x / 2 ) - (vSize_x / 2);
-	vMainPos_y = 56;
+	vMainPos = vVideoMins;
+	vMainPos_x += ( vVideoResolution_x / 2 ) - (vSize_x / 2);
+	vMainPos_y += 56;
 		
 	// Draw the background
 	drawfill( vMainPos, vSize, VGUI_WINDOW_BGCOLOR, VGUI_WINDOW_BGALPHA );

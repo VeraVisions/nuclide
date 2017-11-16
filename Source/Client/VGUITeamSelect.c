@@ -93,10 +93,10 @@ VGUI_TeamSelect_Main
 */
 void VGUI_TeamSelect_Main( vector vPos ) {
 	static void TeamSelect_Main_ButtonT( void ) {
-		fVGUI_Display = VGUI_TEAM_T;
+		pSeat->fVGUI_Display = VGUI_TEAM_T;
 	}
 	static void TeamSelect_Main_ButtonCT( void ) {
-		fVGUI_Display = VGUI_TEAM_CT;
+		pSeat->fVGUI_Display = VGUI_TEAM_CT;
 	}
 	static void TeamSelect_Main_ButtonAuto( void ) {
 		int iPlayersT = 0;
@@ -111,17 +111,17 @@ void VGUI_TeamSelect_Main( vector vPos ) {
 		}
 		
 		if ( iPlayersCT > iPlayersT ) {
-			fVGUI_Display = VGUI_TEAM_T;
+			pSeat->fVGUI_Display = VGUI_TEAM_T;
 		} else {
-			fVGUI_Display = VGUI_TEAM_CT;
+			pSeat->fVGUI_Display = VGUI_TEAM_CT;
 		}
 	}
 	static void TeamSelect_Main_ButtonSpectate( void ) {
 		sendevent( "GamePlayerSpawn", "f", 0 );
-		fVGUI_Display = VGUI_NONE;
+		pSeat->fVGUI_Display = VGUI_NONE;
 	}
 	static void TeamSelect_Main_Exit( void ) {
-		fVGUI_Display = VGUI_NONE;
+		pSeat->fVGUI_Display = VGUI_NONE;
 	}
 
 	VGUI_Text( sMapString[ 0 ], vPos + '16 64 0', '16 16', FONT_16);
@@ -147,7 +147,7 @@ VGUI_TeamSelect_Back
 ====================
 */
 void VGUI_TeamSelect_Back( void ) {
-	fVGUI_Display = VGUI_TEAMSELECT;
+	pSeat->fVGUI_Display = VGUI_TEAMSELECT;
 }
 
 /*
@@ -176,19 +176,19 @@ VGUI_TeamSelect_T
 void VGUI_TeamSelect_T( vector vPos ) {
 	static void TeamSelect_T1( void ) {
 		sendevent( "GamePlayerSpawn", "f", 1 );
-		fVGUI_Display = VGUI_NONE;
+		pSeat->fVGUI_Display = VGUI_NONE;
 	}
 	static void TeamSelect_T2( void ) {
 		sendevent( "GamePlayerSpawn", "f", 2 );
-		fVGUI_Display = VGUI_NONE;
+		pSeat->fVGUI_Display = VGUI_NONE;
 	}
 	static void TeamSelect_T3( void ) {
 		sendevent( "GamePlayerSpawn", "f", 3 );
-		fVGUI_Display = VGUI_NONE;
+		pSeat->fVGUI_Display = VGUI_NONE;
 	}
 	static void TeamSelect_T4( void ) {
 		sendevent( "GamePlayerSpawn", "f", 4 );
-		fVGUI_Display = VGUI_NONE;
+		pSeat->fVGUI_Display = VGUI_NONE;
 	}
 	
 	VGUI_TeamSelect_Button( 0, TeamSelect_T1, vPos + '16 160 0', '180 24 0' );
@@ -206,19 +206,19 @@ VGUI_TeamSelect_CT
 void VGUI_TeamSelect_CT ( vector vPos ) {
 	static void TeamSelect_CT1( void ) {
 		sendevent( "GamePlayerSpawn", "f", 5 );
-		fVGUI_Display = VGUI_NONE;
+		pSeat->fVGUI_Display = VGUI_NONE;
 	}
 	static void TeamSelect_CT2( void ) {
 		sendevent( "GamePlayerSpawn", "f", 6 );
-		fVGUI_Display = VGUI_NONE;
+		pSeat->fVGUI_Display = VGUI_NONE;
 	}
 	static void TeamSelect_CT3( void ) {
 		sendevent( "GamePlayerSpawn", "f", 7 );
-		fVGUI_Display = VGUI_NONE;
+		pSeat->fVGUI_Display = VGUI_NONE;
 	}
 	static void TeamSelect_CT4( void ) {
 		sendevent( "GamePlayerSpawn", "f", 8 );
-		fVGUI_Display = VGUI_NONE;
+		pSeat->fVGUI_Display = VGUI_NONE;
 	}
 
 	VGUI_TeamSelect_Button( 4, TeamSelect_CT1, vPos + '16 160 0', '180 24 0' );

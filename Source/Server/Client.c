@@ -136,7 +136,7 @@ void SV_RunClientCommand( void ) {
 		input_impulse = 0;
 	}
 	
-	runstandardplayerphysics( self );
+	runplayerphysics();
 }
 
 /*

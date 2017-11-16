@@ -65,7 +65,7 @@ enum {
 .int iInGame;
 .float fCharModel;
 .int iCrouchAttempt;
-.int iHasBomb;
+//.int iHasBomb;
 .float fDeaths;
 .int iEquipment;
 .float armor;
@@ -87,7 +87,6 @@ float fGameTime;
 .float fAttackFinished;
 .float fRadioFinished;
 .float fAccuracy;
-.float fFallVelocity;
 
 // Game specific fields
 int iHostagesMax;
