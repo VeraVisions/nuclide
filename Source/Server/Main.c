@@ -216,9 +216,6 @@ void worldspawn( void ) {
 	// Let's make our version information clear
 	localcmd( sprintf( "serverinfo fcs_ver %s\n", __DATE__ ) );
 	
-	// Tell em the next map in the list we should load.
-	localcmd( sprintf( "serverinfo maplist %s\n", iMapCycleCount ) );
-	
 	// All the important precaches
 	for ( int i = 1; i < CS_WEAPON_COUNT; i++ ) {
 		precache_model( sWeaponModels[ i ] );

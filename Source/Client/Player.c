@@ -144,10 +144,16 @@ void Player_Predict(void) {
 			self.movetype = MOVETYPE_NOCLIP;
 		}
 
-		for ( int i = self.pmove_frame + 1; i <= clientcommandframe; i++ ) {
+		if (self.pmove_flags & 0x80000)
+			self.flags |= FL_ONGROUND;
+		else
+			self.flags &~= FL_ONGROUND;
+		for ( int i = self.pmove_frame; i <= clientcommandframe; i++ ) {
 			getinputstate( i );
 			runplayerphysics();
 		}
+		if (self.flags & FL_ONGROUND)
+			self.pmove_flags |= 0x80000;
 	}
 	pSeat->vPlayerOriginOld = pSeat->vPlayerOrigin;
 
@@ -200,10 +206,20 @@ void Player_PreUpdate(void) {
 		self.movetype = MOVETYPE_NOCLIP;
 	}
 
-	for ( ; self.pmove_frame < servercommandframe; ) {
-		if ( getinputstate( ++self.pmove_frame ))
+	if (self.pmove_flags & 0x80000)
+		self.flags |= FL_ONGROUND;
+	else
+		self.flags &~= FL_ONGROUND;
+	//we want to predict an exact copy of the data in the new packet
+	for ( ; self.pmove_frame <= servercommandframe; self.pmove_frame++) {
+		if ( getinputstate( self.pmove_frame ))
 			runplayerphysics();
 	}
+
+	if (self.flags & FL_ONGROUND)
+		self.pmove_flags |= 0x80000;
+
+	//we now have self.pmove_flags set properly...
 	
 	self.movetype = MOVETYPE_NONE;
 }
@@ -212,5 +228,5 @@ void Player_PostUpdate(void) {
 	self.netangles = self.angles;
 	self.netvelocity = self.velocity;
 	self.netpmove_flags = self.pmove_flags;
-	self.pmove_frame = servercommandframe;
+	self.pmove_frame = servercommandframe+1;
 };

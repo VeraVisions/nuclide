@@ -68,12 +68,11 @@ float Math_CRandom( void ) {
 #ifdef SSQC
 void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos, int iSkipArmor );
 #endif
-.float health;
 void runplayerphysics(void)
 {	//operates on self
 	float fallvel = ( self.flags & FL_ONGROUND )?0:-self.velocity_z;
 	runstandardplayerphysics(self);
-	if ( ( self.flags & FL_ONGROUND ) && ( self.health > 0 ) && ( fallvel > 100 )) {
+	if ( ( self.flags & FL_ONGROUND ) && self.movetype == MOVETYPE_WALK && ( fallvel > 100 )) {
 #ifdef SSQC
 		if ( fallvel > 580 ) {
 			float fFallDamage = (fallvel-580) * ( 200 / ( 1024 - 580 ) );
