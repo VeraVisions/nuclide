@@ -61,7 +61,7 @@
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\TraceAttack.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\Triggers.c" />
 	</category>
-	<category name="Menu" expanded="no">
+	<category name="Menu" expanded="yes">
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Defs.h" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Draw.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Header.c" />
@@ -83,7 +83,6 @@
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Shared\WeaponAK47.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Shared\WeaponAUG.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Shared\WeaponAWP.c" />
-		<localfile path="C:\cygwin\home\User\FreeCS\Source\Shared\WeaponBase.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Shared\WeaponC4Bomb.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Shared\WeaponDeagle.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Shared\WeaponElites.c" />

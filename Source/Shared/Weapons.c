@@ -287,6 +287,10 @@ float Weapon_SlotEmpty( int fSlot ) {
 		if ( self.fSlotSecondary == 0 ) {
 			return TRUE;
 		}
+	} else if ( fSlot == SLOT_GRENADE ) {
+		if ( self.fSlotGrenade == 0 ) {
+			return TRUE;
+		}
 	}
 	
 	return FALSE;
@@ -402,9 +406,14 @@ void Weapon_DropWeapon( int iSlot ) {
 			return;
 		}
 		
+		// No bomb for the CTs
+		if ( ( self.weapon == WEAPON_C4BOMB ) && ( other.team == TEAM_CT ) ) {
+			return;
+		}
+		
 		entity eOld = self;
 		self = other;
-
+		
 		if ( Weapon_SlotEmpty( Weapon_GetSlot( eOld.weapon ) ) ) {
 			Weapon_AddItem( eOld.weapon );
 			Weapon_Draw( eOld.weapon );

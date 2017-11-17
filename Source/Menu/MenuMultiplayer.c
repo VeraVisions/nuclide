@@ -189,6 +189,8 @@ Server creation menu screen
 void Menu_Multiplayer_Create( void ) {
 	static int iSelectedMap;
 	static int iScrollMap;
+	static int iFirst = 1;
+	static string strHostname;
 	
 	static void Create_ListMap( vector vPosition, int iIndex ) {
 		float fAlpha = 0.8;
@@ -216,6 +218,13 @@ void Menu_Multiplayer_Create( void ) {
 		iMenu = MENU_MULTIPLAYER_OPTIONS;
 	}
 	static void Create_ButtonOK( void ) {
+		// Apply the configurations
+		if ( strHostname != __NULL__ ) {
+			localcmd( sprintf( "hostname %s\n", strHostname ) );
+		} else {
+			strHostname = cvar_string( "hostname" );
+		}
+		
 		// Start server
 		localcmd( sprintf( "map %s\n", sMapList[ iSelectedMap ] ) );
 	}
@@ -223,10 +232,20 @@ void Menu_Multiplayer_Create( void ) {
 		iMenu = MENU_MULTIPLAYER;
 	}
 	
+	if ( iFirst == 1 ) {
+		strHostname = cvar_string( "hostname" );
+		iFirst = 0;
+	}
+	
 	Object_Button( '32 148', BTN_ADVOPTIONS, Create_ButtonAdvanced, fButtonAlpha[0] );
 	Object_Button( '32 180', BTN_OK, Create_ButtonOK, fButtonAlpha[1] );
 	Object_Button( '32 212', BTN_CANCEL, Create_ButtonCancel, fButtonAlpha[2] );
 	
+	// Options
+	Object_Label( '196 148', _("SERVER_NAME"), '8 8' );
+	Object_Textfield( '196 160', strHostname, 20 );
+	
+	// Map list
 	Object_Label( '384 148', _("MP_MAPS"), '8 8' );
 	Object_Frame( '384 164', '190 288' );
 	Object_Scrollbar( '576 164', 288, iScrollMap );

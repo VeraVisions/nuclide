@@ -55,3 +55,6 @@ msgstr "UI Color:"
 
 msgid "PLAYER_HUDCOLOR"
 msgstr "Heads-Up-Display Color:"
+
+msgid "SERVER_NAME"
+msgstr "Hostname:"
