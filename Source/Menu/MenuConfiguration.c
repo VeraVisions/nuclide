@@ -55,7 +55,12 @@ void Menu_Configuration_Init( void ) {
 	while ( ( sTemp = fgets( fileSettings ) ) ) {		
 		// Tokenize and just parse this stuff in
 		if ( tokenize_console( sTemp ) == 2 ) {
-			strActBind[ iCount ] = argv( 0 );
+			// FTE uses +voip, so replace the GoldSrc bind with that
+			if ( argv( 0 ) != "+voicerecord" ) {
+				strActBind[ iCount ] = argv( 0 );
+			} else {
+				strActBind[ iCount ] = "+voip";
+			}
 			strActDescr[ iCount ] = argv( 1 );
 			//print( sprintf( "%s %s\n", strActBind[ iCount ], strActDescr[ iCount ] ) );
 			iCount++;

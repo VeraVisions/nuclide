@@ -104,7 +104,7 @@ void CSEv_PlayerBuyEquipment_f( float fID ) {
 					self.armor = 100;
 					Money_AddMoney( self, -650 );
 					sound( self, CHAN_ITEM, "items/tr_kevlar.wav", 1, ATTN_IDLE );
-					centerprint( self, "You already have a helmet,\nand now you're bought some kevlar!" );
+					centerprint( self, "You already have a helmet,\nand now you've bought some kevlar!" );
 				} else {
 					// Get both
 					self.armor = 100;

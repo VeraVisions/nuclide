@@ -103,7 +103,7 @@ static void WeaponC4BOMB_Use( void ) {
 
 static void WeaponC4BOMB_Think( void ) {
 	// If the guy who started using us stopped using us, reset the defuser counter
-	if ( ( self.eUser != world ) && ( self.eUser.button6 == FALSE ) ) {
+	if ( ( self.eUser != world ) && ( self.eUser.button3 == FALSE ) ) {
 		self.eUser.fProgressBar = 0;
 		self.eUser = world;
 		fDefuseProgress = 0;
@@ -159,7 +159,7 @@ static void WeaponC4BOMB_Think( void ) {
 	}
 }
 
-void WeaponC4BOMB_Drop( vector vBombPos ) {
+void WeaponC4BOMB_Drop( vector vBombPos, vector vNormal ) {
 	// Do all the dirty entspawning stuff
 	entity eBomb = spawn();
 	eBomb.classname = "c4bomb";
@@ -173,7 +173,14 @@ void WeaponC4BOMB_Drop( vector vBombPos ) {
 	eBomb.fAttackFinished = time + autocvar_mp_c4timer;
 	eBomb.vUse = WeaponC4BOMB_Use;
 	eBomb.iUsable = TRUE;
-	eBomb.owner = world;
+	eBomb.owner = self;
+	
+	// Align the bomb to the wall
+	vector vBombAngles = self.angles + '0 90 0';
+	vBombAngles_x *= -1;
+	makevectors( vBombAngles );
+	vector vCoplanar = v_forward - ( v_forward * vNormal ) * vNormal;
+	eBomb.angles = vectoangles( vCoplanar, vNormal );
 	
 	sound( eBomb, CHAN_WEAPON, "weapons/c4_plant.wav", 1.0, ATTN_IDLE );
 	

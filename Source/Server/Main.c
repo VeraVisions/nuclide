@@ -86,11 +86,7 @@ float ConsoleCmd( string sCommand ) {
 	
 	if ( argv( 0 ) == "vox" ) {
 		localcmd( sprintf( "echo [VOX] Sending: %s\n", argv( 1 ) ) );
-		WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
-		WriteByte( MSG_MULTICAST, EV_CHAT_VOX );
-		WriteString( MSG_MULTICAST, argv( 1 ) );
-		msg_entity = world;
-		multicast( '0 0 0', MULTICAST_ALL );
+		Vox_Broadcast( argv( 1 ) );
 		return TRUE;
 	}
 	

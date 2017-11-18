@@ -113,6 +113,11 @@ void PutClientInServer( void ) {
 	// Because we don't want to reset these when we die
 	Money_AddMoney( self, autocvar_mp_startmoney );
 	
+	if ( autocvar_sv_voxannounce == TRUE ) {
+		float fTimeLeft = cvar( "mp_timelimit" ) - ( time / 60 );
+		Vox_Singlecast( self, sprintf( "%s minutes remaining", Vox_TimeToString( fTimeLeft ) ) );
+	}
+	
 	self.team = 0;
 	forceinfokey( self, "*team", "0" ); 
 }

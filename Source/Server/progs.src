@@ -46,6 +46,7 @@ PhysicsMove.c
 ../Shared/Effects.c
 ../Shared/Equipment.c
 
+Vox.c
 Ammo.c
 Damage.c
 TraceAttack.c

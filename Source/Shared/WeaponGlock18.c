@@ -89,15 +89,19 @@ void WeaponGLOCK18_PrimaryFire( void ) {
 			sound( self, CHAN_WEAPON, "weapons/glock18-2.wav", 1, ATTN_NORM );
 		}
 	} else {
-		if ( (self.iMag_GLOCK18 - 3 ) < 0 ) {
-			return FALSE;
+		if ( self.iMag_GLOCK18 <= 0 ) {
+			return;
 		}
-		BaseGun_AccuracyCalc();
-		TraceAttack_FireBullets( 3, ( self.origin + self.view_ofs ) );
 		
-		self.iMag_GLOCK18 -= 3;
+		for ( int i = 0; i < 3; i++ ) {
+			if ( self.iMag_GLOCK18 ) {
+				BaseGun_ShotMultiplierHandle( 1 );
+				BaseGun_AccuracyCalc();
+				TraceAttack_FireBullets( 1, ( self.origin + self.view_ofs ) );
+				self.iMag_GLOCK18 -= 1;
+			}
+		}
 		self.fAttackFinished = time + 0.5;
-		
 		sound( self, CHAN_WEAPON, "weapons/glock18-1.wav", 1, ATTN_NORM );
 		Client_SendEvent( self, EV_WEAPON_PRIMARYATTACK );
 		BaseGun_ShotMultiplierHandle( 3 );

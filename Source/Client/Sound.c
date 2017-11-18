@@ -44,6 +44,9 @@ void Sound_PlayVOX( string sMessage ) {
 }
 
 void Sound_ProcessWordQue( void ) {
+	if ( cltime < 2 ) {
+		return;
+	}
 	if ( iVOXCount ) {
 		if ( fSampleTime < time ) {
 			localcmd( sprintf( "play %s\n", sndVOX[ iVOXPos ].sSample ) );	

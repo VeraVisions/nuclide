@@ -100,6 +100,8 @@ void Player_Draw( void ) {
 		
 	self.baseframe2time += frametime;
 	self.frame2time += frametime;	
+	
+	self.bonecontrol5 = stof( getplayerkeyvalue( player_localnum, INFOKEY_P_VOIPLOUDNESS ) );
 }
 
 /*

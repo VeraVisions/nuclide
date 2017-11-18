@@ -27,12 +27,12 @@ var float autocvar_mp_buytime = 90;
 var float autocvar_mp_freezetime = 6;
 var float autocvar_mp_c4timer = 45;
 var float autocvar_mp_roundtime = 5;
-var float autocvar_mp_fillweapons = 0;
 var float autocvar_mp_timelimit = 60;
 var string autocvar_motdfile = "motd.txt";
 
+var int autocvar_mp_fillweapons = FALSE;
 var int autocvar_mp_autoreload = FALSE;
-
+var int autocvar_sv_voxannounce = TRUE;
 
 // Mapcycle features
 var string autocvar_mapcyclefile = "mapcycle.txt";

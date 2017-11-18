@@ -46,7 +46,7 @@ string sWeaponModels[ CS_WEAPON_COUNT ] = {
 	"models/w_g3sg1.mdl",
 	"models/w_sg550.mdl",
 	"models/w_m249.mdl",
-	"models/w_c4.mdl",
+	"models/w_backpack.mdl",
 	"models/w_flashbang.mdl",
 	"models/w_hegrenade.mdl",
 	"models/w_smokegrenade.mdl"

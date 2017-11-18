@@ -442,3 +442,30 @@ void HUD_Draw( void ) {
 	HUD_DrawProgressBar();
 	HUD_DrawWeaponSelect();
 }
+
+
+/*
+=================
+HUD_DrawVoice
+
+Draws a little notification for anyone using voice chat
+=================
+*/
+void HUD_DrawVoice( void ) {
+	vector vVoicePos = vVideoMins + [ vVideoResolution_x - 160, vVideoResolution_y - 136 ];
+	
+	for ( int i = -1; i > -32; i-- ) {
+		if ( getplayerkeyvalue( i, INFOKEY_P_VOIPSPEAKING ) == "1" ) {
+			drawfill( vVoicePos, '144 24', VGUI_WINDOW_BGCOLOR, VGUI_WINDOW_BGALPHA );
+			drawfill( vVoicePos, [144, 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
+			drawfill( [vVoicePos_x, vVoicePos_y + 23], [144, 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
+			drawfill( vVoicePos, [1, 24], vVGUIColor, VGUI_WINDOW_FGALPHA );
+			drawfill( [vVoicePos_x + 143, vVoicePos_y], [1, 24], vVGUIColor, VGUI_WINDOW_FGALPHA );
+		
+			CSQC_DrawText( [ vVoicePos_x + 16, vVoicePos_y + 8 ], sprintf( "  %.13s", getplayerkeyvalue( i, "name" ) ), '8 8', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_NORMAL, FONT_DEFAULT );
+	
+			drawpic( vVoicePos + '2 0', "gfx/vgui/icntlk_sv.tga", '24 24', vVGUIColor, 1, DRAWFLAG_NORMAL );
+			vVoicePos_y -= 32;
+		}
+	}
+}

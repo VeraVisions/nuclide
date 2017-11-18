@@ -1,5 +1,5 @@
 <project version="Crimson Editor 3.60">
-	<category name="Client" expanded="no">
+	<category name="Client" expanded="yes">
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\Defs.h" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\Draw.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\Entities.c" />
@@ -60,6 +60,7 @@
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\Timer.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\TraceAttack.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\Triggers.c" />
+		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\Vox.c" />
 	</category>
 	<category name="Menu" expanded="yes">
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Defs.h" />
@@ -73,7 +74,7 @@
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Objects.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\progs.src" />
 	</category>
-	<category name="Shared" expanded="no">
+	<category name="Shared" expanded="yes">
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Shared\Animations.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Shared\BaseGun.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Shared\BaseMelee.c" />
