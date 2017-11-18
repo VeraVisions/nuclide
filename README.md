@@ -87,7 +87,7 @@ Anway, any help is appreciated.
 
 **Q**: Can you not play CS 1.5 on Linux with this russian engine hack that violates the GPL and the Half-Life SDK?
 
-**A**: Lol. You miss the point.
+**A**: Lol. You miss the point. And no. That wouldn't work.
 
 
 # Special Thanks
