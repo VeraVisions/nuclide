@@ -85,7 +85,7 @@ Anway, any help is appreciated.
 **A**: If any time is spent rewriting CS from scratch, then it should be done without any license/engine restrictions. FTE QW runs on more platforms and architectures than Half-Life ever will and we have vastly more control over it.
 
 
-**Q**: Can you not play CS 1.5 on Linux with this russian engine hack that violates the GPL and the Half-Life SDK?
+**Q**: Can you not play CS 1.5 on Linux with this *engine hack* that violates the GPL and the Half-Life SDK?
 
 **A**: Lol. You miss the point. And no. That wouldn't work.
 
