@@ -228,7 +228,7 @@ void WeaponC4BOMB_PrimaryFire( void ) {
 
 	// 3 seconds have passed, plant the bomb
 	if ( self.fBombProgress <=  time ) {
-		WeaponC4BOMB_Drop( trace_endpos );
+		WeaponC4BOMB_Drop( trace_endpos, trace_plane_normal );
 	}
 #else
 	View_PlayAnimation( ANIM_C4_ENTERCODE );

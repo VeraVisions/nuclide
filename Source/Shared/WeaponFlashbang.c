@@ -138,6 +138,7 @@ void WeaponFLASHBANG_Throw( void ) {
 	setsize( eNade, '-4 -4 -4', '4 4 4' );
 	
 	vector vDir = aim ( self, 100000 );
+	eNade.classname = "remove_me";
 	eNade.owner = self;
 	eNade.solid = SOLID_TRIGGER;
 	eNade.angles = vectoangles( vDir );

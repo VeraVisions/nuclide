@@ -122,6 +122,7 @@ void WeaponHEGRENADE_Throw( void ) {
 	
 	vector vDir = aim ( self, 100000 );
 	eNade.owner = self;
+	eNade.classname = "remove_me";
 	eNade.solid = SOLID_TRIGGER; // This is so grenades will not get slowed down by windows they touch
 	eNade.angles = vectoangles( vDir );
 	eNade.velocity = ( vDir * 800 );

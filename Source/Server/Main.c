@@ -93,6 +93,7 @@ float ConsoleCmd( string sCommand ) {
 		multicast( '0 0 0', MULTICAST_ALL );
 		return TRUE;
 	}
+	
 	return FALSE;
 }
 

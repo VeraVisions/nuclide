@@ -76,6 +76,18 @@ float Rules_BuyingPossible( void ) {
 	return TRUE;
 }
 
+void Rules_MakeBomber( void ) {
+	Weapon_AddItem( WEAPON_C4BOMB );
+	centerprint( self, "You have the bomb!\nFind the target zone or DROP\nthe bomb for another Terrorist." );
+}
+
+void Rules_MakeVIP( void ) {
+	self.team = TEAM_VIP;
+	Spawn_RespawnClient( self.team );
+	centerprint( self, "You are the VIP\nMake your way to the safety zones!" );
+	forceinfokey( self, "*dead", "2" );
+}
+
 /*
 =================
 Rules_Restart
@@ -122,8 +134,7 @@ void Rules_Restart( void ) {
 				
 				if ( iPickT == iRandomT ) {
 					self = eFind;
-					Weapon_AddItem( WEAPON_C4BOMB );
-					centerprint( self, "You have the bomb!\nFind the target zone or DROP\nthe bomb for another Terrorist." );
+					Rules_MakeBomber();
 				}
 			}
 		}
@@ -139,10 +150,7 @@ void Rules_Restart( void ) {
 				iPickCT++;
 				if ( iPickCT == iRandomCT ) {
 					self = eFind;
-					self.team = TEAM_VIP;
-					Spawn_RespawnClient( self.team );
-					centerprint( self, "You are the VIP\nMake your way to the safety zones!" );
-					forceinfokey( self, "*dead", "2" );
+					Rules_MakeVIP();
 				}
 			}
 		}

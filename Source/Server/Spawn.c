@@ -211,6 +211,7 @@ void Spawn_MakeSpectator( void ) {
 	self.classname = "spectator";
 	
 	self.health = 0;
+	self.armor = 0;
 	self.takedamage = DAMAGE_NO;
 	self.solid = SOLID_NOT;
 	self.movetype = MOVETYPE_NOCLIP;
@@ -231,7 +232,7 @@ void Spawn_MakeSpectator( void ) {
 	}
 	
 	// Clear the inventory
-	self.fSlotMelee = self.fSlotPrimary = self.fSlotSecondary = self.fSlotGrenade = 0;
+	self.fSlotMelee = self.fSlotPrimary = self.fSlotSecondary = self.fSlotGrenade = self.iEquipment = 0;
 }
 
 /*
@@ -264,15 +265,22 @@ void CSEv_GamePlayerSpawn_f( float fChar ) {
 	self.fSlotGrenade = 0;
 	self.iEquipment = 0;
 	
-	if ( iAlivePlayers_T + iAlivePlayers_CT == 1 ) {
-		Rules_RoundOver( 0, 0, FALSE );
-	}
-	
 	// Spawn the players immediately when its in the freeze state
 	switch ( fGameState ) {
 		case GAME_FREEZE:
 			self.fCharModel = fChar;
 			Spawn_CreateClient( fChar );
+			
+			if ( ( self.team == TEAM_T ) && ( iAlivePlayers_T == 1 ) ) {
+				if ( iBombZones > 0 ) {
+					Rules_MakeBomber();
+				}
+			} else if ( ( self.team == TEAM_CT ) && ( iAlivePlayers_CT == 1 ) ) {
+				if ( iVIPZones > 0 ) {
+					Rules_MakeVIP();
+				}
+			}
+			
 			break;
 		default:
 			if ( fChar == 0 ) {
@@ -296,6 +304,13 @@ void CSEv_GamePlayerSpawn_f( float fChar ) {
 	self.frags = 0;
 	self.fDeaths = 0;
 	forceinfokey( self, "*deaths", "0" );
+	
+	// Split up for readability and expandability?
+	if ( ( self.team == TEAM_T ) && ( iAlivePlayers_T == 0 ) ) {
+		Rules_RoundOver( FALSE, 0, FALSE );
+	} else if ( ( self.team == TEAM_CT ) && ( iAlivePlayers_CT == 0 ) ) {
+		Rules_RoundOver( FALSE, 0, FALSE );
+	}
 }
 
 /*

@@ -48,12 +48,16 @@ void Ammo_BuyPrimary( float fFree ) {
 	float fNew = ceil( ( (float)iRequiredAmmo / (float)ammoTable[ wptTable[ self.fSlotPrimary ].iCaliber ].iSize ) );
 	
 	for ( int i = 0; i < fNew; i++ ) {
-		self.(wptTable[ self.fSlotPrimary ].iCaliberfld) += ammoTable[ wptTable[ self.fSlotPrimary ].iCaliber ].iSize;
-		Money_AddMoney( self, -ammoTable[ wptTable[ self.fSlotPrimary ].iCaliber ].iPrice );
-		sound( self, CHAN_ITEM, "items/9mmclip1.wav", 1, ATTN_IDLE );
-		
-		if ( self.(wptTable[ self.fSlotPrimary ].iCaliberfld) > ammoTable[ wptTable[ self.fSlotPrimary ].iCaliber ].iMaxAmount ) {
-			self.(wptTable[ self.fSlotPrimary ].iCaliberfld) = ammoTable[ wptTable[ self.fSlotPrimary ].iCaliber ].iMaxAmount;
+		if ( self.fMoney - ammoTable[ wptTable[ self.fSlotPrimary ].iCaliber ].iPrice  >= 0 ) {
+			self.(wptTable[ self.fSlotPrimary ].iCaliberfld) += ammoTable[ wptTable[ self.fSlotPrimary ].iCaliber ].iSize;
+			Money_AddMoney( self, -ammoTable[ wptTable[ self.fSlotPrimary ].iCaliber ].iPrice );
+			sound( self, CHAN_ITEM, "items/9mmclip1.wav", 1, ATTN_IDLE );
+			
+			if ( self.(wptTable[ self.fSlotPrimary ].iCaliberfld) > ammoTable[ wptTable[ self.fSlotPrimary ].iCaliber ].iMaxAmount ) {
+				self.(wptTable[ self.fSlotPrimary ].iCaliberfld) = ammoTable[ wptTable[ self.fSlotPrimary ].iCaliber ].iMaxAmount;
+			}
+		} else {
+			break;
 		}
 	}  
 }

@@ -447,8 +447,6 @@ void Weapon_DropWeapon( int iSlot ) {
 		return;
 	}
 	
-	
-	
 	entity eDrop = spawn();
 	setorigin( eDrop, self.origin + self.view_ofs );
 	setmodel( eDrop, sWeaponModels[ fWeapon ] );

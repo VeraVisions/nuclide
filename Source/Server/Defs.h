@@ -31,6 +31,8 @@ var float autocvar_mp_fillweapons = 0;
 var float autocvar_mp_timelimit = 60;
 var string autocvar_motdfile = "motd.txt";
 
+var int autocvar_mp_autoreload = FALSE;
+
 
 // Mapcycle features
 var string autocvar_mapcyclefile = "mapcycle.txt";

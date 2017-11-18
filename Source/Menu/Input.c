@@ -100,7 +100,6 @@ float Menu_InputEvent( float fEventType, float fKey, float fCharacter, float fDe
 			if ( fKey == K_ESCAPE ) {
 				m_toggle( 0 );
 			}
-		
 			fInputKeyDown = 1;
 		}
 		
