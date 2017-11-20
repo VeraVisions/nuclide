@@ -14,7 +14,7 @@ I cannot legally redistribute them. Sorry.
 # Goals
 The goal of this project is to provide an open-source version of Counter-Strike 1.5.
 Counter-Strike, being one of the most popular multiplayer games to exist, hasn't had
-a free-software implementation done until now.
+a free-software implementation done until now. While it will try to be as close as possible to the original mod, it will build upon it with optional features and better usability.
 
 **This project distributes no assets from either Half-Life or Counter-Strike. You have to provide them yourself.**
 
