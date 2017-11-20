@@ -32,7 +32,7 @@ var string autocvar_motdfile = "motd.txt";
 
 var int autocvar_mp_fillweapons = FALSE;
 var int autocvar_mp_autoreload = FALSE;
-var int autocvar_sv_voxannounce = TRUE;
+var int autocvar_sv_voxannounce = FALSE;
 
 // Mapcycle features
 var string autocvar_mapcyclefile = "mapcycle.txt";

@@ -25,8 +25,6 @@ float fldPing;
 float fldPlayers;
 float fldMaxplayers;
 float fldMap;
-float fldTimelimit;
-float fldFraglimit;
 float fServerClickTime;
 
 /*
@@ -144,8 +142,6 @@ void Menu_Multiplayer( void ) {
 	fldPlayers = gethostcacheindexforkey("numhumans");
 	fldMaxplayers = gethostcacheindexforkey("maxplayers");
 	fldMap = gethostcacheindexforkey("map");
-	fldTimelimit = gethostcacheindexforkey("timelimit");
-	fldFraglimit = gethostcacheindexforkey("fraglimit");
 	
 	iServersTotal = gethostcachevalue( SLIST_HOSTCACHEVIEWCOUNT );
 	

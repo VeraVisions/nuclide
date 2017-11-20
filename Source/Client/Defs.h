@@ -90,6 +90,9 @@ struct
 	float fVGUI_Display;	// The VGUI menu currently being drawn
 	int iShowScores;	// This is seperated from the other VGUI stuff so we can check scores while buying and whatnot
 	
+	// Testing
+	int iOverview;
+	
 //crosshair
 	int iOldShotMultiplier;
 	float fCrosshairDistance;

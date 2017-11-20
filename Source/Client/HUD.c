@@ -190,22 +190,10 @@ void HUD_DrawTimer( void ) {
 	int iMinutes, iSeconds, iTens, iUnits;
 	vector vTimePos = vVideoMins+[ ( vVideoResolution_x / 2 ) - 62, vVideoResolution_y - 42 ];
 
-	if( serverkey( "timelimit" ) ) {
-		float fTimeLeft = ( stof( serverkey( "timelimit" ) ) * 60 ) - getstatf( STAT_GAMETIME );
-		if ( fTimeLeft < 0 ) {
-			iMinutes = iSeconds = iTens = iUnits = 0;
-		} else {
-			iMinutes = fTimeLeft / 60;
-			iSeconds = fTimeLeft - 60 * iMinutes;
-			iTens = iSeconds / 10;
-			iUnits = iSeconds - 10 * iTens;
-		}
-	} else {
-		iMinutes = getstatf( STAT_GAMETIME ) / 60;
-		iSeconds = getstatf( STAT_GAMETIME ) - 60 * iMinutes;
-		iTens = iSeconds / 10;
-		iUnits = iSeconds - 10 * iTens;
-	}
+	iMinutes = getstatf( STAT_GAMETIME ) / 60;
+	iSeconds = getstatf( STAT_GAMETIME ) - 60 * iMinutes;
+	iTens = iSeconds / 10;
+	iUnits = iSeconds - 10 * iTens;
 
 	// Flashing red numbers
 	if ( ( iMinutes == 0 ) &&  ( iTens <= 1 ) ) {

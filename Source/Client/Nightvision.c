@@ -53,7 +53,7 @@ Called before rendering the frame in Draw.c
 =================
 */
 void Nightvision_PreDraw( void ) {
-	if( getplayerkeyvalue( player_localnum, "*spec" ) == "1" ) {
+	if( getplayerkeyvalue( player_localnum, "*spec" ) != "0" ) {
 		iNightVision = FALSE;
 		return;
 	}

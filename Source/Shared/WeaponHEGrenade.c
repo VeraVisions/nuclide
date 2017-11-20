@@ -107,8 +107,8 @@ void WeaponHEGRENADE_Throw( void ) {
 		if ( other == self.owner ) {
 			return;
 		}
-		if ( other.classname == "func_breakable" && other.material == MATERIAL_GLASS ) {
-			Damage_Apply( other, self, 50, self.origin, FALSE );
+		if ( ( other.classname == "func_breakable" ) && ( other.material == MATERIAL_GLASS ) ) {
+			Damage_Apply( other, self, other.health, self.origin, FALSE );
 		}
 		
 		sound( self, CHAN_WEAPON, "weapons/he_bounce-1.wav", 1, ATTN_NORM );
@@ -118,15 +118,15 @@ void WeaponHEGRENADE_Throw( void ) {
 	entity eNade = spawn();
 	setorigin( eNade, ( self.origin + self.view_ofs ) + ( v_forward * 16 ) );
 	setmodel( eNade, "models/w_hegrenade.mdl" );
-	setsize( eNade, '-4 -4 -4', '4 4 4' );
+	setsize( eNade, '-1 -1 -1', '1 1 1' );
 	
 	vector vDir = aim ( self, 100000 );
 	eNade.owner = self;
 	eNade.classname = "remove_me";
 	eNade.solid = SOLID_TRIGGER; // This is so grenades will not get slowed down by windows they touch
 	eNade.angles = vectoangles( vDir );
-	eNade.velocity = ( vDir * 800 );
-	eNade.avelocity = ( v_forward * 600 );
+	eNade.velocity = ( vDir * 1000 );
+	eNade.avelocity = ( v_forward * 1000 );
 	eNade.movetype = MOVETYPE_BOUNCE;
 	eNade.touch = Weapon_HEGRENADE_Touch;
 	

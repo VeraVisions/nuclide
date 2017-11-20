@@ -179,59 +179,69 @@ void CSQC_UpdateView( float fWinWidth, float fWinHeight, float fGameFocus ) {
 		}
 	}
 
-	addentities( MASK_ENGINE );
 	
-	Nightvision_PreDraw();
 
 	for ( s = 0; s < numclientseats; s++ ) {
 		pSeat = &seats[ s ];
 		setproperty( VF_ACTIVESEAT, (float)s );
-
-		if ( autocvar_cl_thirdperson == TRUE && getstatf( STAT_HEALTH ) ) {
-			setproperty( VF_VIEWENTITY, (float)0 );
-		} else {
-			setproperty( VF_VIEWENTITY, (float)player_localentnum );
+		
+		if ( pSeat.iOverview == FALSE ) {
+			addentities( MASK_ENGINE );
 		}
+		Nightvision_PreDraw();
 
-		setproperty( VF_AFOV, cvar( "fov" ) * ( getstatf( STAT_VIEWZOOM ) / 255 ) );
-		setsensitivityscaler( ( getstatf( STAT_VIEWZOOM ) / 255 ) );
-
-		// When Cameratime is active, draw on the forced coords instead
-		if ( pSeat->fCameraTime > time ) {
-			setproperty( VF_ORIGIN, pSeat->vCameraPos ) ;
-		} else {
-			setproperty( VF_ORIGIN, pSeat->vPlayerOrigin + [ 0, 0, getstatf( STAT_VIEWHEIGHT ) ] );
-			View_DrawViewModel();
-		}
-
-		//FIXME: this is awkward. renderscene internally rounds to pixels.
-		//on the other hand, drawpic uses linear filtering and multisample and stuff.
-		//this means that there can be a pixel or so difference between scene and 2d.
-		//as a general rule, you won't notice unless there's some big drawfills.
-		switch ( numclientseats ) {
-		case 3:
-			if (!s)
-			{
-		case 2:
-				vVideoResolution = [ fWinWidth, fWinHeight * 0.5 ];
-				vVideoMins = [ 0, ( s & 1 ) * vVideoResolution_y ];
+		if ( pSeat.iOverview == FALSE ) {
+			if ( autocvar_cl_thirdperson == TRUE && getstatf( STAT_HEALTH ) ) {
+				setproperty( VF_VIEWENTITY, (float)0 );
+			} else {
+				setproperty( VF_VIEWENTITY, (float)player_localentnum );
+			}
+	
+			setproperty( VF_AFOV, cvar( "fov" ) * ( getstatf( STAT_VIEWZOOM ) / 255 ) );
+			setsensitivityscaler( ( getstatf( STAT_VIEWZOOM ) / 255 ) );
+	
+			// When Cameratime is active, draw on the forced coords instead
+			if ( pSeat->fCameraTime > time ) {
+				setproperty( VF_ORIGIN, pSeat->vCameraPos ) ;
+			} else {
+				setproperty( VF_ORIGIN, pSeat->vPlayerOrigin + [ 0, 0, getstatf( STAT_VIEWHEIGHT ) ] );
+				View_DrawViewModel();
+			}
+	
+			//FIXME: this is awkward. renderscene internally rounds to pixels.
+			//on the other hand, drawpic uses linear filtering and multisample and stuff.
+			//this means that there can be a pixel or so difference between scene and 2d.
+			//as a general rule, you won't notice unless there's some big drawfills.
+			switch ( numclientseats ) {
+			case 3:
+				if (!s)
+				{
+			case 2:
+					vVideoResolution = [ fWinWidth, fWinHeight * 0.5 ];
+					vVideoMins = [ 0, ( s & 1 ) * vVideoResolution_y ];
+					break;
+				}
+				s++;
+			case 4:
+				vVideoResolution = [ fWinWidth, fWinHeight ] * 0.5;
+				vVideoMins = [ (s&1) * vVideoResolution_x, ( s / 2i ) * vVideoResolution_y ];
+				break;
+			default:
+				vVideoResolution = [ fWinWidth, fWinHeight ];
+				vVideoMins = [ 0, 0 ];
 				break;
 			}
-			s++;
-		case 4:
-			vVideoResolution = [ fWinWidth, fWinHeight ] * 0.5;
-			vVideoMins = [ (s&1) * vVideoResolution_x, ( s / 2i ) * vVideoResolution_y ];
-			break;
-		default:
-			vVideoResolution = [ fWinWidth, fWinHeight ];
-			vVideoMins = [ 0, 0 ];
-			break;
+			setproperty( VF_MIN, vVideoMins );
+			setproperty( VF_SIZE, vVideoResolution );
+			setproperty( VF_ANGLES, view_angles + pSeat->vPunchAngle );
+			setproperty( VF_DRAWWORLD, 1 );	
+		} else {
+			setproperty( VF_DRAWWORLD, 0 );
+			Overview_Draw();
 		}
-		setproperty( VF_MIN, vVideoMins );
-		setproperty( VF_SIZE, vVideoResolution );
-		setproperty( VF_ANGLES, view_angles + pSeat->vPunchAngle );
+		
 		renderscene();
-
+		
 		View_DropPunchAngle();
 
 		Nightvision_PostDraw();
@@ -257,6 +267,7 @@ void CSQC_UpdateView( float fWinWidth, float fWinHeight, float fGameFocus ) {
 			}
 		}
 	}
+	
 	pSeat = (void*)0x70000000i;
 	
 	if ( needcursor ) {

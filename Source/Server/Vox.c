@@ -53,6 +53,7 @@ Broadcasts a VOX message to all players
 =================
 */
 void Vox_Broadcast( string sMessage ) {
+	localcmd( sprintf( "echo [VOX] Broadcast: %s\n", sMessage ) );
 	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
 	WriteByte( MSG_MULTICAST, EV_CHAT_VOX );
 	WriteString( MSG_MULTICAST, sMessage );
@@ -68,6 +69,7 @@ Broadcasts a VOX message to one player
 =================
 */
 void Vox_Singlecast( entity eClient, string sMessage ) {
+	localcmd( sprintf( "echo [VOX] Singlecast to %s: %s\n", eClient.netname, sMessage ) );
 	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
 	WriteByte( MSG_MULTICAST, EV_CHAT_VOX );
 	WriteString( MSG_MULTICAST, sMessage );

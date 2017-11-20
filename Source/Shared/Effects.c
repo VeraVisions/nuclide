@@ -92,6 +92,11 @@ void Effect_CreateSmoke( vector vPos ) {
 	multicast( '0 0 0', MULTICAST_ALL );
 #else
 	static void Effect_CreateSmoke_Think( void ) {
+		// HACK: This should only ever happen when rounds restart!
+		// Any way this can go wrong?
+		if ( self.skin < getstatf( STAT_GAMETIME ) ) {
+			remove( self );
+		}
 		if ( self.frame <= 0 ) {
 			remove( self );
 			return;
@@ -100,6 +105,7 @@ void Effect_CreateSmoke( vector vPos ) {
 		pointparticles( PARTICLE_SMOKEGRENADE, self.origin, '0 0 0', 1 );
 		self.frame--;
 		self.nextthink = time + 0.2f;
+		self.skin = getstatf( STAT_GAMETIME );
 	}
 	
 	entity eSmoke = spawn();
@@ -107,6 +113,7 @@ void Effect_CreateSmoke( vector vPos ) {
 	eSmoke.think = Effect_CreateSmoke_Think;
 	eSmoke.nextthink = time;
 	eSmoke.frame = 200;
+	eSmoke.skin = getstatf( STAT_GAMETIME );
 #endif
 }
 

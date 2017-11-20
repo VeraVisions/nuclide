@@ -11,6 +11,7 @@
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\HUDWeaponSelect.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\Init.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\Nightvision.c" />
+		<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\Overview.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\Player.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\progs.src" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\Sound.c" />
@@ -25,7 +26,7 @@
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\VGUITeamSelect.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\View.c" />
 	</category>
-	<category name="Server" expanded="yes">
+	<category name="Server" expanded="no">
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\AmbientSound.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\Ammo.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\ArmouryEntity.c" />
@@ -62,7 +63,7 @@
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\Triggers.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\Vox.c" />
 	</category>
-	<category name="Menu" expanded="yes">
+	<category name="Menu" expanded="no">
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Defs.h" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Draw.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Header.c" />

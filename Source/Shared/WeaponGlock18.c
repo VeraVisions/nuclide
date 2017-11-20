@@ -104,7 +104,6 @@ void WeaponGLOCK18_PrimaryFire( void ) {
 		self.fAttackFinished = time + 0.5;
 		sound( self, CHAN_WEAPON, "weapons/glock18-1.wav", 1, ATTN_NORM );
 		Client_SendEvent( self, EV_WEAPON_PRIMARYATTACK );
-		BaseGun_ShotMultiplierHandle( 3 );
 	}
 #else
 	if ( iWeaponMode_GLOCK18 == FALSE ) {

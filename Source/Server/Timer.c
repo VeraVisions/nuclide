@@ -49,30 +49,31 @@ Called once every frame to check the status of things
 void Timer_Update( void ) {
 	static float fVoxTimer;
 	
-	// Not happy with this, but it'll do
-	if ( autocvar_sv_voxannounce == TRUE ) {
-		if ( fVoxTimer > time ) {
-			return;
-		}
-		
-		float fTimeLeft = ( cvar( "mp_timelimit" ) * 60 ) - time;
-		for ( int i = 0; i <= 10; i++ ) {
-			if ( rint( fTimeLeft ) == ( i * 60 ) ) {
-				Vox_Broadcast( sprintf( "%s minutes remaining", Vox_TimeToString( fTimeLeft / 60 ) ) );
-				fVoxTimer = time + 10.0f;
+	// This map has been played enough we think
+	if ( cvar( "mp_timelimit" ) > 0 ) {
+		if ( autocvar_sv_voxannounce == TRUE ) {
+			if ( fVoxTimer > time ) {
+				return;
+			}
+			
+			float fTimeLeft = ( cvar( "mp_timelimit" ) * 60 ) - time;
+			for ( int i = 0; i <= 10; i++ ) {
+				if ( rint( fTimeLeft ) == ( i * 60 ) ) {
+					Vox_Broadcast( sprintf( "%s minutes remaining", Vox_TimeToString( fTimeLeft / 60 ) ) );
+					fVoxTimer = time + 10.0f;
+				}
 			}
 		}
-	}
 	
-	// This map has been played enough we think
-	if ( time >= ( cvar( "mp_timelimit" ) * 60 ) ) {
-		for ( int i = 0; i < iMapCycleCount; i++ ) {
-			if ( sMapCycle[ i ] == mapname ) {
-				if ( ( i + 1 ) < iMapCycleCount ) {
-					localcmd( sprintf( "changelevel %s\n", sMapCycle[ i + 1 ] ) );
-					return;
-				} else {
-					localcmd( sprintf( "changelevel %s\n", sMapCycle[ 0 ] ) );
+		if ( time >= ( cvar( "mp_timelimit" ) * 60 ) ) {
+			for ( int i = 0; i < iMapCycleCount; i++ ) {
+				if ( sMapCycle[ i ] == mapname ) {
+					if ( ( i + 1 ) < iMapCycleCount ) {
+						localcmd( sprintf( "changelevel %s\n", sMapCycle[ i + 1 ] ) );
+						return;
+					} else {
+						localcmd( sprintf( "changelevel %s\n", sMapCycle[ 0 ] ) );
+					}
 				}
 			}
 		}

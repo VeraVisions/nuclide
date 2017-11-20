@@ -193,6 +193,51 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 
 /*
 =================
+Damage_CheckAttack
+
+This verifies that the entity is actually able to receive some damage,
+from a plain geographical standpoint
+=================
+*/
+float Damage_CheckAttack( entity eTarget, vector vAttackPos ) {
+	if ( eTarget.movetype == MOVETYPE_PUSH ) {
+		traceline( vAttackPos, 0.5 * ( eTarget.absmin + eTarget.absmax ), TRUE, self );
+		
+		if ( trace_fraction == 1 ) {
+			return TRUE;
+		} 
+		if ( trace_ent == eTarget ) {
+			return TRUE;
+		}
+		return FALSE;
+	}
+	
+	traceline( vAttackPos, eTarget.origin, TRUE, self );
+	if ( trace_fraction == 1 ) {
+		return TRUE;
+	}
+	traceline( vAttackPos, eTarget.origin + '15 15 0', TRUE, self );
+	if ( trace_fraction == 1 ) {
+		return TRUE;
+	}
+	traceline( vAttackPos, eTarget.origin + '-15 -15 0', TRUE, self );
+	if ( trace_fraction == 1 ) {
+		return TRUE;
+	}
+	traceline( vAttackPos, eTarget.origin + '-15 15 0', TRUE, self );
+	if ( trace_fraction == 1 ) {
+		return TRUE;
+	}
+	traceline( vAttackPos, eTarget.origin + '15 -15 0', TRUE, self );
+	if ( trace_fraction == 1 ) {
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+/*
+=================
 Damage_Radius
 
 Even more pain and suffering, mostly used for explosives
@@ -203,13 +248,15 @@ void Damage_Radius( vector vOrigin, entity eAttacker, float fDamage, float fRadi
 	
 	while( eDChain ) {
 		if ( eDChain.takedamage == DAMAGE_YES ) {
-			float fDiff = vlen( vOrigin - eDChain.origin );
+			if ( Damage_CheckAttack( eDChain, vOrigin ) ) {
+				float fDiff = vlen( vOrigin - eDChain.origin );
 				
-			fDiff = ( fRadius - fDiff ) / fRadius;
-			fDamage = fDamage * fDiff;
+				fDiff = ( fRadius - fDiff ) / fRadius;
+				fDamage = fDamage * fDiff;
 			
-			if ( fDamage > 0 ) {
-				Damage_Apply( eDChain, eAttacker, fDamage, eDChain.origin, FALSE );
+				if ( fDiff > 0 ) {
+					Damage_Apply( eDChain, eAttacker, fDamage, eDChain.origin, TRUE );
+				}
 			}
 		}
 		eDChain = eDChain.chain;

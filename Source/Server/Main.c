@@ -30,13 +30,12 @@ void SV_SendChat( entity eSender, string sMessage, entity eEnt, float fType ) {
 	WriteByte( MSG_MULTICAST, num_for_edict( eSender ) - 1 ); 
 	WriteByte( MSG_MULTICAST, eSender.team ); 
 	WriteString( MSG_MULTICAST, sMessage );
-	if (eEnt)
-	{
+	if (eEnt) {
 		msg_entity = eEnt;
 		multicast( '0 0 0', MULTICAST_ONE );
-	}
-	else
+	} else {
 		multicast( '0 0 0', MULTICAST_ALL );
+	}
 }
 
 /*
@@ -49,6 +48,12 @@ chat messages and handle distribution ourselves.
 */
 void SV_ParseClientCommand( string sCommand ) {
 	tokenize( sCommand );
+	
+	if ( argv( 1 ) == "timeleft" ) {
+		float fTimeLeft = cvar( "mp_timelimit" ) - ( time / 60 );
+		Vox_Singlecast( self, sprintf( "we have %s minutes remaining", Vox_TimeToString( fTimeLeft ) ) );
+		return;
+	}
 
 	// Players talk to players, spectators to spectators.
 	if ( self.health  ) {
@@ -85,7 +90,6 @@ float ConsoleCmd( string sCommand ) {
 	tokenize( sCommand );
 	
 	if ( argv( 0 ) == "vox" ) {
-		localcmd( sprintf( "echo [VOX] Sending: %s\n", argv( 1 ) ) );
 		Vox_Broadcast( argv( 1 ) );
 		return TRUE;
 	}
@@ -157,57 +161,70 @@ void worldspawn( void ) {
 			}
 		}
 		fclose( fileMaterial );
+	} else {
+		error( "Failed to load sound/materials.txt!\n" );	
 	}
 	
 	// The message of the day.
 	localcmd( sprintf( "echo [MOTD] Loading %s.\n", autocvar_motdfile ) );
 	filestream fmMOTD = fopen( autocvar_motdfile, FILE_READ );
-	for ( int i = 0; i < 25; i++ ) {
-		sTemp = fgets( fmMOTD );
-		if not ( sTemp ) {
-			break;
-		} 
-		
-		if ( sTemp == __NULL__ ) {
-			localcmd( sprintf( "serverinfo motdline%i /\n", iMOTDLines ) );
-		} else {
-			localcmd( sprintf( "serverinfo motdline%i %s\n", iMOTDLines, sTemp ) );
+	
+	if ( fmMOTD >= 0 ) {
+		for ( int i = 0; i < 25; i++ ) {
+			sTemp = fgets( fmMOTD );
+			if not ( sTemp ) {
+				break;
+			} 
+			
+			if ( sTemp == __NULL__ ) {
+				localcmd( sprintf( "serverinfo motdline%i /\n", iMOTDLines ) );
+			} else {
+				localcmd( sprintf( "serverinfo motdline%i %s\n", iMOTDLines, sTemp ) );
+			}
+			iMOTDLines++;
 		}
-		iMOTDLines++;
+		localcmd( sprintf( "serverinfo motdlength %i\n", iMOTDLines ) );
+		fclose( fmMOTD );
+	} else {
+		error( "[MOTD] Loading failed.\n" );	
 	}
-	localcmd( sprintf( "serverinfo motdlength %i\n", iMOTDLines ) );
-	fclose( fmMOTD );
 	
 	// The mapcycle information.
 	localcmd( sprintf( "echo [MAPCYCLE] Loading %s.\n", autocvar_mapcyclefile ) );
 	filestream fmMapcycle = fopen( autocvar_mapcyclefile, FILE_READ );
-	for ( int i = 0;; i++ ) {
-		sTemp = fgets( fmMapcycle );
-		if not ( sTemp ) {
-			break;
-		} 
-		
-		if ( sTemp != __NULL__ ) {
-			iMapCycleCount++;
-		}
-	}
 	
-	fseek( fmMapcycle, 0 );
-	localcmd( sprintf( "echo [MAPCYCLE] List has %i maps.\n", iMapCycleCount ) );
-	sMapCycle = memalloc( sizeof( string ) * iMapCycleCount );
-	for ( int i = 0; i < iMapCycleCount; i++ ) {
-		sMapCycle[ i ] = fgets( fmMapcycle );
-	}
-	fclose( fmMapcycle );
-	
-	for ( int i = 0; i < iMapCycleCount; i++ ) {
-		if ( sMapCycle[ i ] == mapname ) {
-			if ( ( i + 1 ) < iMapCycleCount ) {
-				localcmd( sprintf( "echo [MAPCYCLE] Next map: %s\n", sMapCycle[ i + 1 ] ) );
-			} else {
+	if ( fmMapcycle >= 0 ) {
+		for ( int i = 0;; i++ ) {
+			sTemp = fgets( fmMapcycle );
+			if not ( sTemp ) {
 				break;
+			} 
+			
+			if ( sTemp != __NULL__ ) {
+				iMapCycleCount++;
 			}
 		}
+		
+		fseek( fmMapcycle, 0 );
+		localcmd( sprintf( "echo [MAPCYCLE] List has %i maps.\n", iMapCycleCount ) );
+		sMapCycle = memalloc( sizeof( string ) * iMapCycleCount );
+		for ( int i = 0; i < iMapCycleCount; i++ ) {
+			sMapCycle[ i ] = fgets( fmMapcycle );
+		}
+		fclose( fmMapcycle );
+		
+		for ( int i = 0; i < iMapCycleCount; i++ ) {
+			if ( sMapCycle[ i ] == mapname ) {
+				if ( ( i + 1 ) < iMapCycleCount ) {
+					localcmd( sprintf( "echo [MAPCYCLE] Next map: %s\n", sMapCycle[ i + 1 ] ) );
+				} else {
+					break;
+				}
+			}
+		}
+	} else {
+		iMapCycleCount = 0;
+		error( "[MAPCYCLE] Loading failed.\n" );	
 	}
 	
 	// Let's make our version information clear

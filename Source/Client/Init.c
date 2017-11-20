@@ -71,6 +71,7 @@ void CSQC_Init(float apilevel, string enginename, float engineversion) {
 	precache_sound( "debris/bustceiling.wav" );
 	
 	precache_pic( "gfx/vgui/icntlk_sv" );
+	precache_pic( sprintf( "overviews/%s.bmp", mapname ) );
 	
 	for ( int i = 0; i < ( CS_WEAPON_COUNT - 1 ); i++ ) {
 		precache_model( sViewModels[ i ] );
@@ -93,6 +94,10 @@ void CSQC_Init(float apilevel, string enginename, float engineversion) {
 	
 	CSQC_ConsoleCommand_Init();
 	CSQC_VGUI_Init();
+	
+	Overview_Init();
+	
+	pSeat.iOverview = FALSE;
 }
 
 /*

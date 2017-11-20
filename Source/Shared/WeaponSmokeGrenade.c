@@ -127,7 +127,7 @@ void WeaponSMOKEGRENADE_Throw( void ) {
 	entity eNade = spawn();
 	setorigin( eNade, ( self.origin + self.view_ofs ) + ( v_forward * 16 ) );
 	setmodel( eNade, "models/w_smokegrenade.mdl" );
-	setsize( eNade, '-4 -4 -4', '4 4 4' );
+	setsize( eNade, '-1 -1 -1', '1 1 1' );
 	
 	vector vDir = aim ( self, 100000 );
 	eNade.classname = "remove_me";

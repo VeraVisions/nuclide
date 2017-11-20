@@ -34,22 +34,11 @@ void VGUI_DrawSpectatorHUD( void ) {
 	
 	// Draw the timer
 	int iMinutes, iSeconds, iTens, iUnits;
-	if( serverkey( "timelimit" ) ) {
-		float fTimeLeft = ( stof( serverkey( "timelimit" ) ) * 60 ) - getstatf( STAT_GAMETIME );
-		if ( fTimeLeft < 0 ) {
-			iMinutes = iSeconds = iTens = iUnits = 0;
-		} else {
-			iMinutes = fTimeLeft / 60;
-			iSeconds = fTimeLeft - 60 * iMinutes;
-			iTens = iSeconds / 10;
-			iUnits = iSeconds - 10 * iTens;
-		}
-	} else {
-		iMinutes = getstatf( STAT_GAMETIME ) / 60;
-		iSeconds = getstatf( STAT_GAMETIME ) - 60 * iMinutes;
-		iTens = iSeconds / 10;
-		iUnits = iSeconds - 10 * iTens;
-	}
+	iMinutes = getstatf( STAT_GAMETIME ) / 60;
+	iSeconds = getstatf( STAT_GAMETIME ) - 60 * iMinutes;
+	iTens = iSeconds / 10;
+	iUnits = iSeconds - 10 * iTens;
+	
 	
 	drawpic( vVideoMins + [ vVideoResolution_x - 70, 20 ], "gfx/vgui/640_timer", '14 14', '1 1 1', 1 );
 	VGUI_RightText( vVideoMins + [ vVideoResolution_x - 16, 23 ], sprintf( "%i:%i%i", iMinutes, iTens, iUnits ), '8 8', '0.56 0.56 0.21', FONT_DEFAULT );

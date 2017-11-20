@@ -44,6 +44,7 @@ Defs.h
 ../Shared/Equipment.c
 ../Shared/Animations.c
 
+Overview.c
 Player.c
 View.c
 VGUIObjects.c
