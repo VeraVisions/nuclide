@@ -200,7 +200,15 @@ typedef struct {
 	int iCrosshairDeltaDistance;	// Scale factor of sorts
 	float fWeaponArmorRatio; // Some weapons seem to do more damage to the kevlar than others I guess
 	float fAnimType;
+	int iShellType;	// Type of shell the weapon ejects
 } weaponinfo_t;
+
+enum {
+	SHELL_PISTOL,
+	SHELL_RIFLE,
+	SHELL_RIFLEBIG,
+	SHELL_SHOTGUN
+};
 
 typedef struct {
 	int iID;

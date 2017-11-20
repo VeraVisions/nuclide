@@ -30,6 +30,10 @@ void Input_Handle( void ) {
 		return;
 	}
 	
+	if ( fGameState == GAME_FREEZE ) {
+		return;
+	}
+	
 	// TODO: Make this fast switch only
 	if ( self.impulse == 3 ) {
 		Weapon_Switch( SLOT_MELEE );

@@ -42,7 +42,8 @@ weaponinfo_t wptKNIFE = {
 	7,				// Minimum Crosshair Distance
 	3,				// Crosshair Movement Delta
 	1.7,			// Armor penetration ratio
-	ATYPE_KNIFE		// Animation Type
+	ATYPE_KNIFE,	// Animation Type
+	FALSE
 };
 
 // Anim Table

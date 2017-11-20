@@ -174,7 +174,7 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 				eAttacker.frags--;
 			}
 			
-			Damage_CastOrbituary( eAttacker, eTarget, eAttacker.weapon, FALSE );
+			Damage_CastOrbituary( eAttacker, eTarget, eAttacker.weapon, trace_surface_id == BODY_HEAD ? TRUE:FALSE );
 		}
 	}
 	

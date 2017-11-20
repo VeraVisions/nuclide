@@ -49,7 +49,8 @@ weaponinfo_t wptHEGRENADE = {
 	7,					// Minimum Crosshair Distance
 	3,					// Crosshair Movement Delta
 	1.0,				// Armor penetration ratio
-	ATYPE_GRENADE		// Animation Type
+	ATYPE_GRENADE,		// Animation Type
+	FALSE
 };
 
 // Anim Table

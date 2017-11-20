@@ -50,7 +50,8 @@ weaponinfo_t wptELITES = {
 	4,					// Minimum Crosshair Distance
 	3,					// Crosshair Movement Delta
 	1.05,				// Armor penetration ratio
-	ATYPE_DUALPISTOLS	// Animation Type
+	ATYPE_DUALPISTOLS,	// Animation Type
+	SHELL_PISTOL
 };
 
 // Anim Table

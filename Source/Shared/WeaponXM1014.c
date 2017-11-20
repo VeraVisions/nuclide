@@ -50,7 +50,8 @@ weaponinfo_t wptXM1014 = {
 	9,					// Minimum Crosshair Distance
 	4,					// Crosshair Movement Delta
 	1.0,				// Armor penetration ratio
-	ATYPE_SHOTGUN		// Animation Type
+	ATYPE_SHOTGUN,		// Animation Type
+	SHELL_SHOTGUN
 };
 
 // Anim Table

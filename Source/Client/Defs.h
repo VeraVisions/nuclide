@@ -42,6 +42,7 @@ var float autocvar_cl_bobup = 0.5;
 var int autocvar_cl_bobclassic = FALSE;
 var int autocvar_v_lefthanded = FALSE;
 var int autocvar_cl_thirdperson = FALSE;
+var int autocvar_cl_radar = 2;
 
 // Particle stuff
 var float PARTICLE_SPARK;
@@ -59,12 +60,20 @@ vector vHUDColor; // Defined in HUD_Draw (HUD.c)
 vector vVGUIColor; // Defined in HUD_Draw (VGUI.c)
 vector vCrossColor; // Defined in HUD_Draw (HUDCrosshair.c)
 
+string sShellModel [ 4 ] = {
+	"models/pshell.mdl",
+	"models/rshell.mdl",
+	"models/rshell_big.mdl",
+	"models/shotgunshell.mdl"
+};
+
 struct
 {
 //Viewmodel stuff
 	entity eViewModel;
 	entity eMuzzleflash;
 	float fNumBones;
+	float fEjectBone;
 	vector vPunchAngle;
 	float fLastWeapon;
 	float fBobTime;
@@ -92,6 +101,8 @@ struct
 	
 	// Testing
 	int iOverview;
+	int iMapExpand;
+	float fMapLerp;
 	
 //crosshair
 	int iOldShotMultiplier;

@@ -106,7 +106,11 @@ void HUD_DrawOrbituaries( void ) {
 		drawstring( vOrbPos, orbBuffer[ i ].sAttacker, '8 8', orbBuffer[ i ].vColor1, VGUI_WINDOW_FGALPHA, 0 );
 		
 		// Draw the weapon icon
-		drawsubpic( vOrbPos + [ orbBuffer[ i ].fOffset1, 0 ], wpIconTable[ orbBuffer[ i ].fWeapon ].vSize * 256, wpIconTable[ orbBuffer[ i ].fWeapon ].sSprite, wpIconTable[ orbBuffer[ i ].fWeapon ].vOrigin, wpIconTable[ orbBuffer[ i ].fWeapon ].vSize, '1 0.5 0', 1, DRAWFLAG_ADDITIVE );
+		if ( orbBuffer[ i ].fHeadShot == TRUE ) {
+			drawsubpic( vOrbPos + [ orbBuffer[ i ].fOffset1 - 4, -4 ], '36 16', "sprites/640hud1.spr_0.tga", '0 0.9375', '0.140625 0.0625', '1 0.5 0', 1, DRAWFLAG_ADDITIVE );
+		} else {
+			drawsubpic( vOrbPos + [ orbBuffer[ i ].fOffset1, -4 ], wpIconTable[ orbBuffer[ i ].fWeapon ].vSize * 256, wpIconTable[ orbBuffer[ i ].fWeapon ].sSprite, wpIconTable[ orbBuffer[ i ].fWeapon ].vOrigin, wpIconTable[ orbBuffer[ i ].fWeapon ].vSize, '1 0.5 0', 1, DRAWFLAG_ADDITIVE );
+		}
 		
 		// Draw the victim's name, shadow first again
 		drawstring( vOrbPos + [ orbBuffer[ i ].fOffset2 + orbBuffer[ i ].fOffset1, 0 ] + '1 1', orbBuffer[ i ].sVictim, '8 8', '0 0', VGUI_WINDOW_FGALPHA, 0 );

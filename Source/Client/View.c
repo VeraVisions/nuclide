@@ -90,6 +90,26 @@ void View_AddPunchAngle( vector vAdd ) {
 	pSeat->vPunchAngle += vAdd;
 }
 
+void View_ShellEject( void ) {
+	static void View_ShellEject_Death( void ) {
+		remove( self );	
+	}
+	vector vOrigin = pSeat->vPlayerOrigin;
+	vector vEndPos = gettaginfo( pSeat->eViewModel, pSeat->fEjectBone );
+	makevectors( view_angles );
+	
+	vOrigin += ( v_forward * vEndPos_x ) + ( v_right * -vEndPos_y ) + ( v_up * vEndPos_z ) + [ 0, 0, getstatf( STAT_VIEWHEIGHT ) ];
+	
+	entity eShell = spawn();
+	setorigin( eShell, vOrigin );
+	setmodel( eShell, sShellModel[ wptTable[ getstati( STAT_ACTIVEWEAPON ) ].iShellType ] );
+	eShell.movetype = MOVETYPE_BOUNCE;
+	eShell.drawmask = MASK_ENGINE;
+	eShell.velocity = pSeat->vPlayerVelocity + ( v_up * random( 70, 120 ) ) + ( v_right * -random( 50, 70 ) );
+	eShell.think = View_ShellEject_Death;
+	eShell.nextthink = time + 2.5f; 
+}
+
 /*
 ====================
 View_ProcessEvent
@@ -103,21 +123,25 @@ void View_ProcessEvent( float fTimeStamp, int iCode, string sData ) {
 		pSeat->eMuzzleflash.scale = 0.5;
 		pSeat->eMuzzleflash.skin = pSeat->fNumBones;
 		setmodel( pSeat->eMuzzleflash, sprintf( "sprites/muzzleflash%s.spr", substring( sData, 1, 1 ) ) );
+		View_ShellEject();
 	} else if( iCode == 5011 ) {
 		pSeat->eMuzzleflash.alpha = 1.0f;
 		pSeat->eMuzzleflash.scale = 0.5;
 		pSeat->eMuzzleflash.skin = pSeat->fNumBones + 1;
 		setmodel( pSeat->eMuzzleflash, sprintf( "sprites/muzzleflash%s.spr", substring( sData, 1, 1 ) ) );
+		View_ShellEject();
 	} else if ( iCode == 5021 ) {
 		pSeat->eMuzzleflash.alpha = 1.0f;
 		pSeat->eMuzzleflash.scale = 0.5;
 		pSeat->eMuzzleflash.skin = pSeat->fNumBones + 2;
 		setmodel( pSeat->eMuzzleflash, sprintf( "sprites/muzzleflash%s.spr", substring( sData, 1, 1 ) ) );
+		View_ShellEject();
 	} else if ( iCode == 5031 ) {
 		pSeat->eMuzzleflash.alpha = 1.0f;
 		pSeat->eMuzzleflash.scale = 0.5;
 		pSeat->eMuzzleflash.skin = pSeat->fNumBones + 3;
 		setmodel( pSeat->eMuzzleflash, sprintf( "sprites/muzzleflash%s.spr", substring( sData, 1, 1 ) ) );
+		View_ShellEject();
 	}
 }
 
@@ -156,6 +180,7 @@ void View_DrawViewModel( void ) {
 					skel_delete( eMuzzleflash.skeletonindex );
 					eMuzzleflash.skeletonindex = skel_create( eViewModel.modelindex );
 					pSeat->fNumBones = skel_get_numbones( eMuzzleflash.skeletonindex ) + 1;
+					pSeat->fEjectBone = pSeat->fNumBones + 1;
 				}
 			}
 		}

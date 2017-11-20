@@ -43,7 +43,8 @@ weaponinfo_t wptP228 = {
 	8,					// Minimum Crosshair Distance
 	3,					// Crosshair Movement Delta
 	1.25,				// Armor penetration ratio
-	ATYPE_ONEHAND		// Animation Type
+	ATYPE_ONEHAND,		// Animation Type
+	SHELL_PISTOL
 };
 
 // Anim Table

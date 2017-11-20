@@ -44,7 +44,8 @@ weaponinfo_t wptPARA = {
 	6,					// Minimum Crosshair Distance
 	3,					// Crosshair Movement Delta
 	1.6,				// Armor penetration ratio
-	ATYPE_PARA			// Animation Type
+	ATYPE_PARA,			// Animation Type
+	SHELL_RIFLEBIG
 };
 
 // Anim Table

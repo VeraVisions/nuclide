@@ -44,7 +44,8 @@ weaponinfo_t wptG3SG1 = {
 	6,					// Minimum Crosshair Distance
 	4,					// Crosshair Movement Delta
 	1.65,				// Armor penetration ratio
-	ATYPE_CARBINE		// Animation Type
+	ATYPE_CARBINE,		// Animation Type
+	SHELL_RIFLE
 };
 
 // Anim Table

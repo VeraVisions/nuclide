@@ -44,7 +44,8 @@ weaponinfo_t wptAK47 = {
 	4,					// Minimum Crosshair Distance
 	4,					// Crosshair Movement Delta
 	1.55,				// Armor penetration ratio
-	ATYPE_AK47			// Animation Type
+	ATYPE_AK47,			// Animation Type
+	SHELL_RIFLE
 };
 
 // Anim Table

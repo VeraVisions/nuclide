@@ -69,6 +69,13 @@ void CSQC_Init(float apilevel, string enginename, float engineversion) {
 	precache_sound( "debris/bustconcrete1.wav" );
 	precache_sound( "debris/bustconcrete2.wav" );
 	precache_sound( "debris/bustceiling.wav" );
+	precache_model( "sprites/iplayervip.spr" );
+	precache_model( "sprites/ihostage.spr" );
+	
+	precache_model( "models/pshell.mdl" );
+	precache_model( "models/rshell.mdl" );
+	precache_model( "models/rshell_big.mdl" );
+	precache_model( "models/shotgunshell.mdl" );
 	
 	precache_pic( "gfx/vgui/icntlk_sv" );
 	precache_pic( sprintf( "overviews/%s.bmp", mapname ) );
@@ -94,10 +101,13 @@ void CSQC_Init(float apilevel, string enginename, float engineversion) {
 	
 	CSQC_ConsoleCommand_Init();
 	CSQC_VGUI_Init();
-	
 	Overview_Init();
 	
 	pSeat.iOverview = FALSE;
+}
+
+void CSQC_RendererRestarted( string sDescr ) {
+	Overview_Init();
 }
 
 /*

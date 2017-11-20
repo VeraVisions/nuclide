@@ -48,7 +48,8 @@ weaponinfo_t wptC4BOMB = {
 	8,					// Minimum Crosshair Distance
 	4,					// Crosshair Movement Delta
 	1.0,				// Armor penetration ratio
-	ATYPE_C4		// Animation Type
+	ATYPE_C4,		// Animation Type
+	FALSE
 };
 
 // Anim Table

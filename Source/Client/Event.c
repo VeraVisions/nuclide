@@ -26,6 +26,7 @@ Init all the cmds in one place
 =================
 */
 void CSQC_ConsoleCommand_Init( void ) {
+	registercommand( "minimap" );
 	registercommand( "overview_test" );
 	registercommand( "vox_test" );
 	registercommand( "+attack2" );
@@ -120,6 +121,10 @@ float CSQC_ConsoleCommand( string sCMD ) {
 	
 	tokenize( sCMD );
 	switch ( argv(0) ) {
+	case "minimap":
+		pSeat.iMapExpand = 1 - pSeat.iMapExpand;
+		return TRUE;
+		break;
 	case "overview_test":
 		pSeat.iOverview = 1 - pSeat.iOverview;
 		return TRUE;

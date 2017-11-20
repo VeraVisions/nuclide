@@ -2184,7 +2184,7 @@ string(string name, optional float trywad) precache_pic = #317; /*
 void(string imagename, int width, int height, int *pixeldata) r_uploadimage = #0:r_uploadimage; /* Part of FTE_CSQC_RAWIMAGES
 		Updates a texture with the specified rgba data. Will be created if needed. */
 
-int*(string filename, __out int width, __out int height) r_readimage = #0:r_readimage; /* Part of FTE_CSQC_RAWIMAGES
+int*(string filename, __inout int width, __inout int height) r_readimage = #0:r_readimage; /* Part of FTE_CSQC_RAWIMAGES
 		Reads and decodes an image from disk, providing raw pixel data. Returns __NULL__ if the image could not be read for any reason. Use memfree to free the data once you're done with it. */
 
 #define draw_getimagesize drawgetimagesize

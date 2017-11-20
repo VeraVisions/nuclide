@@ -112,8 +112,13 @@ void HUD_DrawHealth( void ) {
 	}
 	
 	vector vHealthPos = vVideoMins + [ 16, vVideoResolution_y - 42 ];
-	drawsubpic( vHealthPos, '24 24 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 2, NUMSIZE_Y], [ NUMSIZE_X, NUMSIZE_X ], vHUDColor, HUD_ALPHA, DRAWFLAG_ADDITIVE );
-	HUD_DrawNums( getstatf( STAT_HEALTH ), vHealthPos + '72 0', HUD_ALPHA, vHUDColor );
+	if ( getstatf( STAT_HEALTH ) > 25 ) {
+		drawsubpic( vHealthPos, '24 24 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 2, NUMSIZE_Y], [ NUMSIZE_X, NUMSIZE_X ], vHUDColor, HUD_ALPHA, DRAWFLAG_ADDITIVE );
+		HUD_DrawNums( getstatf( STAT_HEALTH ), vHealthPos + '72 0', HUD_ALPHA, vHUDColor );
+	} else {
+		drawsubpic( vHealthPos, '24 24 0', HUD_NUMFILE_LAYER, [ NUMSIZE_X * 2, NUMSIZE_Y], [ NUMSIZE_X, NUMSIZE_X ], '1 0 0', HUD_ALPHA, DRAWFLAG_ADDITIVE );
+		HUD_DrawNums( getstatf( STAT_HEALTH ), vHealthPos + '72 0', HUD_ALPHA, '1 0 0' );
+	}
 	fOldHealth = getstatf( STAT_HEALTH );
 }
 
@@ -139,7 +144,7 @@ void HUD_DrawArmor( void ) {
 	
 	vector vArmorPos = vVideoMins + [ 128, vVideoResolution_y - 42 ];
 	drawsubpic( vArmorPos, '24 24 0', HUD_NUMFILE_LAYER, [ 0, NUMSIZE_Y], [ NUMSIZE_X, NUMSIZE_X ], vHUDColor, fArmorAlpha, DRAWFLAG_ADDITIVE );
-	HUD_DrawNums( getstatf( STAT_ARMOR ), vArmorPos + '72 0', fArmorAlpha, vHUDColor);
+	HUD_DrawNums( getstatf( STAT_ARMOR ), vArmorPos + '72 0', fArmorAlpha, vHUDColor );
 	fOldArmor = getstatf( STAT_ARMOR );
 }
 
@@ -382,9 +387,56 @@ void HUD_DrawProgressBar( void ) {
 	}
 }
 
-
 void HUD_DrawRadar( void ) {
-	drawpic( vVideoMins + '16 16', "sprites/radar640.spr_0.tga", '128 128', '1 1 1', 0.5, DRAWFLAG_ADDITIVE );
+	if ( autocvar_cl_radar == 1 ) {
+		drawpic( vVideoMins + '16 16', "sprites/radar640.spr_0.tga", '128 128', '1 1 1', 0.5, DRAWFLAG_ADDITIVE );
+	} else if ( autocvar_cl_radar == 2 ) {
+		static int iLastMode = 0;
+		static vector vMapSize;
+		static float fZoom;
+		
+		if ( iLastMode != pSeat.iMapExpand ) {
+			iLastMode = pSeat.iMapExpand;
+		}
+		
+		if ( pSeat.iMapExpand == 1 ) {
+			if ( pSeat.fMapLerp < 1.0f ) {
+				vMapSize_x = rint( Math_Lerp( 128, vVideoResolution_x - 32, pSeat.fMapLerp ) );
+				vMapSize_y = rint( Math_Lerp( 128, vVideoResolution_y - 32, pSeat.fMapLerp ) );
+				fZoom = Math_Lerp( ( ovMap.fCameraHeight * ( 128 / ( vVideoResolution_y - 32 ) ) ), ovMap.fCameraHeight - 32, pSeat.fMapLerp );
+				pSeat.fMapLerp += frametime * 2;
+			} else {
+				pSeat.fMapLerp = 1.0f;
+				fZoom = ovMap.fCameraHeight;
+				vMapSize = vVideoResolution + '-32 -32';
+			}
+		} else {
+			if ( pSeat.fMapLerp > 0.0f ) {
+				vMapSize_x = rint( Math_Lerp( 128, vVideoResolution_x - 32, pSeat.fMapLerp ) );
+				vMapSize_y = rint( Math_Lerp( 128, vVideoResolution_y - 32, pSeat.fMapLerp ) );
+				fZoom = Math_Lerp( ( ovMap.fCameraHeight * ( 128 / ( vVideoResolution_y - 32 ) ) ), ovMap.fCameraHeight - 32, pSeat.fMapLerp );
+				pSeat.fMapLerp -= frametime * 2;
+			} else {
+				pSeat.fMapLerp = 0.0f;
+				fZoom = ( ovMap.fCameraHeight * ( 128 / ( vVideoResolution_y - 32 ) ) );
+				vMapSize = '128 128';
+			}
+		}
+
+		clearscene();
+		drawfill( vVideoMins + '15 15', vMapSize + '2 2', vHUDColor, 1.0f, DRAWFLAG_ADDITIVE );
+		drawfill( vVideoMins + '16 16', vMapSize, '0 0 0', 1.0f, 0 );
+		setproperty( VF_MIN, vVideoMins + '16 16' );
+		setproperty( VF_SIZE, vMapSize );
+	
+		Overview_DrawLayer();
+		
+		makevectors( view_angles );
+		setproperty( VF_ORIGIN, [ pSeat->vPlayerOrigin[0], pSeat->vPlayerOrigin[1], fZoom ]  );
+		setproperty( VF_ANGLES, [ Math_Lerp( 90, 60, pSeat.fMapLerp ), view_angles_y, 0 ] );
+		setproperty( VF_DRAWWORLD, 0 );
+		renderscene();
+	}
 }
 
 void HUD_DrawFlash( void ) {
@@ -419,13 +471,15 @@ void HUD_Draw( void ) {
 	}
 	
 	HUD_DrawFlash();
+	
 	HUD_DrawTimer();
-	HUD_DrawRadar();
 	HUD_DrawHealth();
 	HUD_DrawArmor();
 	HUD_DrawIcons();
 	HUD_DrawMoney();
 	HUD_DrawAmmo();
+	
+	HUD_DrawRadar();
 	
 	HUD_DrawProgressBar();
 	HUD_DrawWeaponSelect();

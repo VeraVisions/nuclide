@@ -44,7 +44,8 @@ weaponinfo_t wptMP5 = {
 	6,					// Minimum Crosshair Distance
 	2,					// Crosshair Movement Delta
 	1.0,				// Armor penetration ratio
-	ATYPE_MP5			// Animation Type
+	ATYPE_MP5,			// Animation Type
+	SHELL_PISTOL
 };
 
 // Anim Table

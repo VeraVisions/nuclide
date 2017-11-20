@@ -50,7 +50,8 @@ weaponinfo_t wptUSP45 = {
 	8,					// Minimum Crosshair Distance
 	3,					// Crosshair Movement Delta
 	1.0,				// Armor penetration ratio
-	ATYPE_ONEHAND		// Animation Type
+	ATYPE_ONEHAND,		// Animation Type
+	SHELL_PISTOL
 };
 
 enum {

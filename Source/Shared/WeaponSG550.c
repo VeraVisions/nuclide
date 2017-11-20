@@ -44,7 +44,8 @@ weaponinfo_t wptSG550 = {
 	5,					// Minimum Crosshair Distance
 	3,					// Crosshair Movement Delta
 	1.45,				// Armor penetration ratio
-	ATYPE_RIFLE			// Animation Type
+	ATYPE_RIFLE,		// Animation Type
+	SHELL_RIFLE
 };
 
 // Anim Table

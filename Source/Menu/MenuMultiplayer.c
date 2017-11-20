@@ -65,7 +65,7 @@ void Menu_Multiplayer_Find_Item( vector vPosition, int i, __inout int iSelected 
 				iSelected = i;
 				fInputKeyCode = 0;
 				fMouseClick = FALSE;
-				fServerClickTime = time + 0.2;
+				fServerClickTime = time + 0.5;
 			} else {
 				if ( fServerClickTime > time ) {
 					Menu_Multiplayer_Connect( i );
@@ -82,12 +82,12 @@ void Menu_Multiplayer_Find_Item( vector vPosition, int i, __inout int iSelected 
 	if ( iSelected == i ) {
 		drawfill( [ vPosition_x, vPosition_y - 1 ], [ 397, 10 ], '1 1 1', 0.5, 2 );
 		drawstring( [vPosition_x + 8, vPosition_y], sprintf( "%.25s", gethostcachestring( fldName, i ) ), '8 8 0', '1 1 1', 1.0f, FALSE );
-		drawstring( [vPosition_x + 218, vPosition_y], sprintf( "%.10s", gethostcachestring( fldMap, i ) ), '8 8 0', '1 1 1', 1.0f, FALSE );
+		drawstring( [vPosition_x + 186, vPosition_y], sprintf( "%.10s", gethostcachestring( fldMap, i ) ), '8 8 0', '1 1 1', 1.0f, FALSE );
 		drawstring( [vPosition_x + 298, vPosition_y], sprintf( "%d/%d", gethostcachenumber( fldPlayers, i ), gethostcachenumber( fldMaxplayers, i ) ), '8 8 0', '1 1 1', 1.0f, FALSE );
 		drawstring( [vPosition_x + 362, vPosition_y], sprintf( "%.3s", ftos( gethostcachenumber( fldPing, i ) ) ), '8 8 0', '1 1 1', 1.0f, FALSE );
 	} else {
 		drawstring( [vPosition_x + 8, vPosition_y], sprintf( "^3%.25s", gethostcachestring( fldName, i ) ), '8 8 0', '1 1 1', fItemAlpha, FALSE );
-		drawstring( [vPosition_x + 218, vPosition_y], sprintf( "%.10s", gethostcachestring( fldMap, i ) ), '8 8 0', '1 1 1', fItemAlpha, FALSE );
+		drawstring( [vPosition_x + 186, vPosition_y], sprintf( "%.10s", gethostcachestring( fldMap, i ) ), '8 8 0', '1 1 1', fItemAlpha, FALSE );
 		drawstring( [vPosition_x + 298, vPosition_y], sprintf( "%d/%d", gethostcachenumber( fldPlayers, i ), gethostcachenumber( fldMaxplayers, i ) ), '8 8 0', '1 1 1', fItemAlpha, FALSE );
 		drawstring( [vPosition_x + 362, vPosition_y], sprintf( "%.3s", ftos( gethostcachenumber( fldPing, i ) ) ), '8 8 0', '1 1 1', fItemAlpha, FALSE );
 	}
@@ -150,9 +150,11 @@ void Menu_Multiplayer( void ) {
 	Object_Button( '32 180', BTN_CREATE, Multiplayer_ButtonCreate, fButtonAlpha[1] );
 	Object_Button( '32 212', BTN_GAMEINFO, __NULL__, fButtonAlpha[2] );
 	Object_Button( '32 244', BTN_REFRESHLIST, Multiplayer_ButtonRefresh, fButtonAlpha[3] );
+	
 	if ( checkcommand( "irc" ) ) {
 		Object_Button( '32 276', BTN_IRCCHAT, Multiplayer_ButtonIRC, fButtonAlpha[4] );
 	}
+	
 	Object_Button( '32 308', BTN_DONE, Multiplayer_ButtonDone, fButtonAlpha[5] );
 	Menu_ResetClipArea();
 	
@@ -160,7 +162,7 @@ void Menu_Multiplayer( void ) {
 	Object_Scrollbar( '604 140', 308, iScrollServer );
 	
 	Object_Label( '208 124', _("MP_GAME"), '8 8' );
-	Object_Label( '418 124', _("MP_MAP"), '8 8' );
+	Object_Label( '386 124', _("MP_MAP"), '8 8' );
 	Object_Label( '498 124', _("MP_PLAYERS"), '8 8' );
 	Object_Label( '562 124', _("MP_PING"), '8 8' );
 	

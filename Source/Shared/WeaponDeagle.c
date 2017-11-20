@@ -44,7 +44,8 @@ weaponinfo_t wptDEAGLE = {
 	8,					// Minimum Crosshair Distance
 	3,					// Crosshair Movement Delta
 	1.5,				// Armor penetration ratio
-	ATYPE_ONEHAND		// Animation Type
+	ATYPE_ONEHAND,		// Animation Type
+	SHELL_PISTOL
 };
 
 // Anim Table
