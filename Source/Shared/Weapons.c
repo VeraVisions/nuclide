@@ -173,6 +173,7 @@ void Weapon_Reload( float fWeapon ) {
 	if ( self.fAttackFinished > time ) {
 		return;
 	}
+	self.viewzoom = 1.0;
 #endif
 #ifdef CSQC
 	if ( fWeaponEventPlayer != player_localentnum || autocvar_cl_thirdperson == TRUE ) {

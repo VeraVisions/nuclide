@@ -144,7 +144,7 @@ void View_DrawViewModel( void ) {
 	}
 
 	// Don't update when paused
-	if ( serverkey("pausestate") == "0" ) {
+	if ( serverkey( "pausestate" ) == "0" ) {
 		View_CalcBob();
 
 		int aw = getstati( STAT_ACTIVEWEAPON );
@@ -197,7 +197,7 @@ void View_DrawViewModel( void ) {
 		// Update muzzleflash position and draw it
 		if ( eMuzzleflash.alpha > 0.0f ) {
 			eMuzzleflash.origin = gettaginfo( eViewModel, eMuzzleflash.skin );
-			dynamiclight_add( eMuzzleflash.origin, 400 * eMuzzleflash.alpha, '1 0.45 0');
+			dynamiclight_add( pSeat->vPlayerOrigin, 400 * eMuzzleflash.alpha, '1 0.45 0');
 			addentity( eMuzzleflash );
 		}
 		

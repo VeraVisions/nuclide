@@ -59,7 +59,7 @@ void Nightvision_PreDraw( void ) {
 	}
 	
 	if ( iNightVision == TRUE ) {
-		dynamiclight_add( getproperty( VF_ORIGIN ), 500, '0 0.45 0');
+		dynamiclight_add( pSeat->vPlayerOrigin, 500, '0 0.45 0');
 	}
 }
 
