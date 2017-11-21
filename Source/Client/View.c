@@ -63,33 +63,54 @@ void View_CalcBob( void ) {
 	}
 
 	pSeat->fBobTime += frametime;
-	fCycle = pSeat->fBobTime - (int)( pSeat->fBobTime / autocvar_cl_bobcycle ) * autocvar_cl_bobcycle;
-	fCycle /= autocvar_cl_bobcycle;
+	fCycle = pSeat->fBobTime - (int)( pSeat->fBobTime / autocvar_v_bobcycle ) * autocvar_v_bobcycle;
+	fCycle /= autocvar_v_bobcycle;
 	
-	if ( fCycle < autocvar_cl_bobup ) {
-		fCycle = MATH_PI * fCycle / autocvar_cl_bobup;
+	if ( fCycle < autocvar_v_bobup ) {
+		fCycle = MATH_PI * fCycle / autocvar_v_bobup;
 	} else {
-		fCycle = MATH_PI + MATH_PI * ( fCycle - autocvar_cl_bobup )/( 1.0 - autocvar_cl_bobup );
+		fCycle = MATH_PI + MATH_PI * ( fCycle - autocvar_v_bobup )/( 1.0 - autocvar_v_bobup );
 	}
 
 	vVelocity = pSeat->vPlayerVelocity;
 	vVelocity_z = 0;
 
-	float fBob = sqrt( vVelocity_x * vVelocity_x + vVelocity_y * vVelocity_y ) * autocvar_cl_bob;
+	float fBob = sqrt( vVelocity_x * vVelocity_x + vVelocity_y * vVelocity_y ) * autocvar_v_bob;
 	fBob = fBob * 0.3 + fBob * 0.7 * sin( fCycle );
 	pSeat->fBob = bound( -7, fBob, 4 );
 }
 
+/*
+====================
+View_DropPunchAngle
+
+Quickly lerp to the original viewposition
+====================
+*/
 void View_DropPunchAngle( void ) {
 	float fLerp;
 	fLerp = 1.0f - ( frametime * 4 );
 	pSeat->vPunchAngle *= fLerp;
 }
 
+/*
+====================
+View_AddPunchAngle
+
+Gives the angle a bit of an offset/punch/kick
+====================
+*/
 void View_AddPunchAngle( vector vAdd ) {
 	pSeat->vPunchAngle += vAdd;
 }
 
+/*
+====================
+View_ShellEject
+
+Spawns a shell tempentity. Looking fancy
+====================
+*/
 void View_ShellEject( void ) {
 	static void View_ShellEject_Death( void ) {
 		remove( self );	
@@ -105,6 +126,7 @@ void View_ShellEject( void ) {
 	setmodel( eShell, sShellModel[ wptTable[ getstati( STAT_ACTIVEWEAPON ) ].iShellType ] );
 	eShell.movetype = MOVETYPE_BOUNCE;
 	eShell.drawmask = MASK_ENGINE;
+	eShell.angles = [ 0, view_angles_y, 0 ];
 	eShell.velocity = pSeat->vPlayerVelocity + ( v_up * random( 70, 120 ) ) + ( v_right * -random( 50, 70 ) );
 	eShell.think = View_ShellEject_Death;
 	eShell.nextthink = time + 2.5f; 
@@ -113,6 +135,9 @@ void View_ShellEject( void ) {
 /*
 ====================
 View_ProcessEvent
+
+Called by the engine whenever a model
+tries to play an event.
 ====================
 */
 void View_ProcessEvent( float fTimeStamp, int iCode, string sData ) {
@@ -148,6 +173,9 @@ void View_ProcessEvent( float fTimeStamp, int iCode, string sData ) {
 /*
 ====================
 View_DrawViewModel
+
+Really convoluted function that makes the gun,
+muzzleflash, dynamic lights and so on appear
 ====================
 */
 void View_DrawViewModel( void ) {
@@ -193,7 +221,6 @@ void View_DrawViewModel( void ) {
 		float fBaseTime = eViewModel.frame1time;
 		eViewModel.frame1time += frametime;
 		eViewModel.frame2time += frametime;
-		
 		processmodelevents( eViewModel.modelindex, eViewModel.frame, fBaseTime, eViewModel.frame1time, View_ProcessEvent );
 	}
 	
@@ -213,7 +240,7 @@ void View_DrawViewModel( void ) {
 	}
 	
 	// Give the gun a tilt effect like in old HL/CS versions
-	if ( autocvar_cl_bobclassic == 1 ) {
+	if ( autocvar_v_bobclassic == 1 ) {
 		eViewModel.angles_z = -pSeat->fBob;
 	}
 
@@ -225,14 +252,16 @@ void View_DrawViewModel( void ) {
 			dynamiclight_add( pSeat->vPlayerOrigin, 400 * eMuzzleflash.alpha, '1 0.45 0');
 			addentity( eMuzzleflash );
 		}
-		
 		addentity( eViewModel );
 	}
 }
 
 /*
 ====================
-View_DrawViewModel
+View_PlayAnimation
+
+Resets the timeline and plays a new sequence
+onto the view model
 ====================
 */
 void View_PlayAnimation( int iSequence ) {

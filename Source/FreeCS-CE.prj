@@ -63,7 +63,7 @@
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\Triggers.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\Vox.c" />
 	</category>
-	<category name="Menu" expanded="yes">
+	<category name="Menu" expanded="no">
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Defs.h" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Draw.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Header.c" />
@@ -75,7 +75,7 @@
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Objects.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\progs.src" />
 	</category>
-	<category name="Shared" expanded="yes">
+	<category name="Shared" expanded="no">
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Shared\Animations.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Shared\BaseGun.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Shared\BaseMelee.c" />
@@ -117,20 +117,6 @@
 </project>
 
 <workspace version="Crimson Editor 3.60">
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\VGUIRadio.c" linenum="146" placement="0:1:-1:-1:-4:-23:0:0:868:432" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Shared\Radio.c" linenum="247" placement="0:1:-1:-1:-4:-23:22:22:894:458" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\Draw.c" linenum="31" placement="0:1:-1:-1:-4:-23:44:44:916:480" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Builtins.h" linenum="2166" placement="0:1:-1:-1:-4:-23:66:66:938:502" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\MenuMultiplayer.c" linenum="48" placement="0:1:-1:-1:-4:-23:88:88:960:524" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\Defs.h" linenum="69" placement="0:1:-1:-1:-4:-23:110:110:982:546" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\HUD.c" linenum="1" placement="0:1:-1:-1:-4:-23:132:132:1004:568" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\Event.c" linenum="1" placement="0:1:-1:-1:-4:-23:154:154:1026:590" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\Entities.c" linenum="41" placement="0:1:-1:-1:-4:-23:176:176:1048:612" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\Nightvision.c" linenum="18" placement="0:1:-1:-1:-4:-23:198:198:1070:634" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\View.c" linenum="101" placement="2:3:-1:-1:-4:-23:0:0:872:436" />
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Shared\Effects.c" linenum="20" placement="0:1:-1:-1:-4:-23:22:22:894:458" />
-	<localfile path="C:\Users\User\Dropbox\The Wastes Build\sdk\Source\Shared\Effect.c" linenum="231" placement="0:1:-1:-1:-4:-23:44:44:916:480" />
-	<localfile path="C:\cygwin\home\User\SourceCode\cl_dll\ev_common.cpp" linenum="152" placement="0:1:-1:-1:-4:-23:66:66:938:502" />
-	<localfile path="C:\cygwin\home\User\SourceCode\cl_dll\ev_hldm.cpp" linenum="450" placement="0:1:-1:-1:-4:-23:88:88:960:524" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\Defs.h" linenum="46" placement="2:3:-1:-1:-4:-23:22:22:894:458" />
 </workspace>
 

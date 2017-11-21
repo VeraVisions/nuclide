@@ -36,13 +36,14 @@ var float FONT_16;
 var vector autocvar_con_color = '255 170 0'; // autocvar of "con_color"
 var vector autocvar_vgui_color = '255 170 0'; // autocvar of "vgui_color"
 var vector autocvar_cross_color = '0 255 0'; // autocvar of "cross_color"
-var float autocvar_cl_bob = 0.01;
-var float autocvar_cl_bobcycle = 0.8;
-var float autocvar_cl_bobup = 0.5;
-var int autocvar_cl_bobclassic = FALSE;
+var float autocvar_cl_bob = 0;
+var float autocvar_v_bob = 0.01;
+var float autocvar_v_bobcycle = 0.8;
+var float autocvar_v_bobup = 0.5;
+var int autocvar_v_bobclassic = FALSE;
 var int autocvar_v_lefthanded = FALSE;
 var int autocvar_cl_thirdperson = FALSE;
-var int autocvar_cl_radar = 2;
+var int autocvar_cl_radar = 1;
 
 // Particle stuff
 var float PARTICLE_SPARK;

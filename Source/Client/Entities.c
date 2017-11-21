@@ -40,9 +40,9 @@ void CSQC_Ent_Update( float flIsNew ) {
 			self.predraw = Player_PreDraw;
 			self.drawmask = MASK_ENGINE;
 			self.pmove_frame = servercommandframe;
-		}
-		else
+		} else {
 			Player_PreUpdate();
+		}
 		
 		self.modelindex = readbyte();
 		self.origin_x = readcoord();

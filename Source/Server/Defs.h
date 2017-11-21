@@ -139,6 +139,7 @@ void Weapon_DropWeapon( int iSlot );
 float Weapon_GetAnimType( float fWeapon );
 float Weapon_GetFireRate( float fWeapon );
 float Weapon_GetReloadTime( float fWeapon );
+void Weapon_Reload( float fWeapon );
 
 void BaseGun_AccuracyCalc( void );
 void BaseGun_Draw( void );
