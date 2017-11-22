@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 var vector vVideoSize;
 var vector vMenuOffset;
 var vector autocvar_menu_fgcolor = '1 0.59 0.19';
+var string autocvar_cl_logofile = "lambda";
 
 var vector vMousePos;
 var float fInputKeyCode;

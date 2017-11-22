@@ -67,5 +67,9 @@ void Input_Handle( void ) {
 		Weapon_Release();
 	}
 	
+	if ( self.impulse == 201 ) {
+		Effect_Spraypaint();	
+	}
+	
 	self.impulse = 0; 
 }

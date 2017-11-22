@@ -18,6 +18,72 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+
+#ifdef SSQC
+void Effect_RemoveSpray( entity eOwner ) {
+	for ( entity eFind = world; ( eFind = find( eFind, classname, "spray" ) ); ) {
+		if ( eFind.owner == self ) {
+			remove( eFind );
+		}
+	}
+}
+
+void Effect_Spraypaint( void ) {
+	static float Effect_Spraypaint_Send( entity ePVSEnt, float fChanged ) {
+		WriteByte( MSG_ENTITY, ENT_SPRAY );
+		WriteCoord( MSG_ENTITY, self.origin_x );
+		WriteCoord( MSG_ENTITY, self.origin_y );
+		WriteCoord( MSG_ENTITY, self.origin_z );
+		WriteCoord( MSG_ENTITY, self.angles_x );
+		WriteCoord( MSG_ENTITY, self.angles_y );
+		WriteCoord( MSG_ENTITY, self.angles_z );
+		WriteByte( MSG_ENTITY, num_for_edict( self.owner ) );
+		return TRUE;
+	} 
+	vector vSrc;
+	vector vEnd;
+	makevectors( self.v_angle );
+	
+	if ( self.health <= 0 ) {
+		return;
+	}
+
+	Effect_RemoveSpray( self );
+	
+	vSrc = self.origin + self.view_ofs;
+	vEnd = vSrc + v_forward * 128;
+	traceline( vSrc, vEnd, 0, self );
+	
+	// Found a wall
+	if ( trace_fraction != 1.0f ) {
+		entity eSpray = spawn();
+		eSpray.classname = "spray";
+		eSpray.owner = self;
+		eSpray.solid = SOLID_NOT;
+		setorigin( eSpray, trace_endpos );
+		
+		// Align it
+		vector vSprayAngles = self.angles;
+		vSprayAngles_x *= -1;
+		makevectors( vSprayAngles );
+		vector vCoplanar = v_forward - ( v_forward * trace_plane_normal ) * trace_plane_normal;
+		eSpray.angles = vectoangles( vCoplanar, trace_plane_normal );
+		
+		eSpray.SendEntity = Effect_Spraypaint_Send;
+		eSpray.SendFlags = 1;
+		sound( self, CHAN_VOICE, "player/sprayer.wav", 1.0, ATTN_NORM );
+	}
+#else
+float Effect_Spraypaint( void ) {
+	makevectors( self.angles );
+	// Temporary string, will getinfo from player later
+	adddecal( self.model, self.origin, v_up / 64, v_right / 64, '1 1 1', 1.0f );
+	addentity( self );
+	return PREDRAW_NEXT;
+#endif
+}
+
+
 void Effect_CreateExplosion( vector vPos ) {
 #ifdef SSQC
 	vPos_z += 48;

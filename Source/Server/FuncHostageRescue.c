@@ -27,6 +27,9 @@ void func_hostage_rescue_touch( void ) {
 	if ( ( other.classname == "player" ) && ( other.team == TEAM_CT ) ) {
 		other.fInHostageZone = TRUE; // Note: this will be cleared every frame inside SV_RunClientCommand
 	} else if ( other.classname == "hostage_entity" ) {
+		if ( self.solid == SOLID_NOT ) {
+			return;
+		}
 		
 		Radio_BroadcastMessage( RADIO_RESCUED );
 		iHostagesRescued++;

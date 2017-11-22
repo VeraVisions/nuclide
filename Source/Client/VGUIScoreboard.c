@@ -44,7 +44,7 @@ vector VGUI_Scores_DrawTeam( vector vPos, float fTeam ) {
 	
 	// Player loop, this one goes through ALL players but only prints the one from fTeam
 	for ( int i = -1; i > -32; i-- ) {
-		if ( stof( getplayerkeyvalue( i, "*team" ) ) ==  fTeam ) {
+		if ( stof( getplayerkeyvalue( i, "*team" ) ) == fTeam ) {
 			if ( getplayerkeyvalue( i, "name" ) ) {
 				vColor = HUD_GetChatColor( fTeam );
 				

@@ -45,6 +45,8 @@ var int autocvar_v_lefthanded = FALSE;
 var int autocvar_cl_thirdperson = FALSE;
 var int autocvar_cl_radar = 1;
 
+var string autocvar_cl_logofile = "lambda";
+
 // Particle stuff
 var float PARTICLE_SPARK;
 var float PARTICLE_PIECES_BLACK;

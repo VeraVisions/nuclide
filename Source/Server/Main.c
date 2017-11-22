@@ -269,6 +269,7 @@ void worldspawn( void ) {
 	precache_sound( "player/headshot1.wav" );
 	precache_sound( "player/headshot2.wav" );
 	precache_sound( "player/headshot3.wav" );
+	precache_sound( "player/sprayer.wav" );
 	
 	precache_sound( "items/9mmclip1.wav" );
 	precache_sound( "items/tr_kevlar.wav" );

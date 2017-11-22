@@ -69,6 +69,8 @@ void CSQC_Init(float apilevel, string enginename, float engineversion) {
 	precache_sound( "debris/bustconcrete1.wav" );
 	precache_sound( "debris/bustconcrete2.wav" );
 	precache_sound( "debris/bustceiling.wav" );
+	precache_model( "sprites/iplayerred.spr" );
+	precache_model( "sprites/iplayerblue.spr" );
 	precache_model( "sprites/iplayervip.spr" );
 	precache_model( "sprites/ihostage.spr" );
 	
@@ -79,6 +81,8 @@ void CSQC_Init(float apilevel, string enginename, float engineversion) {
 	
 	precache_pic( "gfx/vgui/icntlk_sv" );
 	precache_pic( sprintf( "overviews/%s.bmp", mapname ) );
+	
+	precache_pic( "logos/lambda.bmp" );
 	
 	for ( int i = 0; i < ( CS_WEAPON_COUNT - 1 ); i++ ) {
 		precache_model( sViewModels[ i ] );
@@ -96,6 +100,8 @@ void CSQC_Init(float apilevel, string enginename, float engineversion) {
 	FONT_16 = loadfont( "16", "gfx/conchars_16", "16", -1 );
 	
 	SHADER_CULLED = shaderforname( "mirror_cull" );
+	
+	localcmd( sprintf( "setinfo logo %s\n", autocvar_cl_logofile ) );
 
 	Radio_InitSounds();
 	

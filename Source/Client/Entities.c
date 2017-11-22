@@ -80,8 +80,20 @@ void CSQC_Ent_Update( float flIsNew ) {
 		self.origin_z = readcoord();
 
 		Effect_AnimatedSprite( self.origin, readfloat(), readfloat(), readfloat(), readfloat(), readfloat() );
+	} else if ( fEntType == ENT_SPRAY ) {
+		self.origin_x = readcoord();
+		self.origin_y = readcoord();
+		self.origin_z = readcoord();
+		
+		self.angles_x = readcoord();
+		self.angles_y = readcoord();
+		self.angles_z = readcoord();
+		
+		self.model = sprintf( "logos/%s.bmp" ,getplayerkeyvalue( readbyte() - 1, "logo" ) );
+		shaderforname( self.model, sprintf("{\npolygonOffset\n{\nmap %s\n}\n}\n", self.model ) );
+		self.predraw = Effect_Spraypaint;
+		self.drawmask = MASK_ENGINE;
 	}
-	
 }
 
 /*

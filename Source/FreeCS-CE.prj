@@ -26,7 +26,7 @@
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\VGUITeamSelect.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\View.c" />
 	</category>
-	<category name="Server" expanded="no">
+	<category name="Server" expanded="yes">
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\AmbientSound.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\Ammo.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Server\ArmouryEntity.c" />
@@ -75,7 +75,7 @@
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\Objects.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Menu\progs.src" />
 	</category>
-	<category name="Shared" expanded="no">
+	<category name="Shared" expanded="yes">
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Shared\Animations.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Shared\BaseGun.c" />
 		<localfile path="C:\cygwin\home\User\FreeCS\Source\Shared\BaseMelee.c" />
@@ -117,6 +117,7 @@
 </project>
 
 <workspace version="Crimson Editor 3.60">
-	<localfile path="C:\cygwin\home\User\FreeCS\Source\Client\Defs.h" linenum="46" placement="2:3:-1:-1:-4:-23:22:22:894:458" />
+	<localfile path="C:\cygwin\home\User\FreeCS\Source\Shared\Effects.c" linenum="1" placement="0:1:-1:-1:-4:-23:22:22:894:458" />
+	<localfile path="C:\Users\User\Dropbox\The Wastes Build\wastes\scripts\weapons.shader" linenum="499" placement="2:3:-1:-1:-4:-23:22:22:894:458" />
 </workspace>
 

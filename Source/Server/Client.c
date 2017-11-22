@@ -71,7 +71,7 @@ Called when a spectator leaves the game
 =================
 */
 void SpectatorDisconnect( void ) {
-	
+	Effect_RemoveSpray( self );
 }
 
 /*
@@ -94,6 +94,8 @@ void ClientDisconnect( void ) {
 			}
 		}
 	}
+	
+	Effect_RemoveSpray( self );
 }
 
 /*
