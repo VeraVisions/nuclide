@@ -115,6 +115,7 @@ void Overview_Init( void ) {
 }
 
 void Overview_DrawLayer( void ) {
+	setproperty( VF_AFOV, 90 );
 	if ( ovMap.iRotated == TRUE ) {
 		R_BeginPolygon( ovMap.sImagePath );
 		R_PolygonVertex( [ ovMap.vVert4[0], ovMap.vVert4[1], ovMap.fHeight ], '1 0', '1 1 1', 1.0f ); // Top Left
@@ -132,7 +133,15 @@ void Overview_DrawLayer( void ) {
 	}
 	
 	for ( entity eFind = world; ( eFind = find( eFind, classname, "player" ) ); ) {
-		R_BeginPolygon( "sprites/iplayervip.spr_0.tga" );
+		if ( getplayerkeyvalue( eFind.entnum - 1, "*team" ) == "1" ) {
+			R_BeginPolygon( "sprites/iplayerred.spr_0.tga" );
+		} else {
+			if ( getplayerkeyvalue( eFind.entnum - 1, "*dead" ) == "2" ) {
+				R_BeginPolygon( "sprites/iplayervip.spr_0.tga" );
+			} else { 
+				R_BeginPolygon( "sprites/iplayerblue.spr_0.tga" );
+			}
+		}
 		R_PolygonVertex( [ eFind.absmax_x + 16, eFind.absmin_y - 16, ovMap.fHeight + 16 ], '1 0', '1 1 1', 1.0f ); // Top Right
 		R_PolygonVertex( [ eFind.absmin_x - 16, eFind.absmin_y - 16, ovMap.fHeight + 16 ], '0 0', '1 1 1', 1.0f ); // Top left
 		R_PolygonVertex( [ eFind.absmin_x - 16, eFind.absmax_y + 16, ovMap.fHeight + 16 ], '0 1', '1 1 1', 1.0f ); // Bottom left
