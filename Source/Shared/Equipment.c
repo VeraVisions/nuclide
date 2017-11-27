@@ -36,6 +36,7 @@ void CSEv_PlayerBuyEquipment_f( float fID ) {
 	
 	if ( ( self.fMoney - eqptTable[ fID ].iPrice ) >= 0 ) {
 		if ( eqptTable[ fID ].iID == EQUIPMENT_DEFUSALKIT ) {
+			if ( self.team == TEAM_T ) { return; }
 			if ( !( self.iEquipment & EQUIPMENT_DEFUSALKIT ) ) {
 				self.iEquipment |= EQUIPMENT_DEFUSALKIT;
 				Money_AddMoney( self, -200 );

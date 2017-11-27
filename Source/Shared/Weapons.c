@@ -481,7 +481,20 @@ void CSEv_PlayerBuyWeapon_f( float fWeapon ) {
 		return;
 	}
 	
-	// TODO: Don't allow CTs to buy T guns and vice versa!
+	if ( self.team == TEAM_T ) {
+		if ( fWeapon == WEAPON_M4A1 ) { return; }
+		if ( fWeapon == WEAPON_AUG ) { return; }
+		if ( fWeapon == WEAPON_SG550 ) { return; }
+		if ( fWeapon == WEAPON_FIVESEVEN ) { return; }
+		if ( fWeapon == WEAPON_TMP ) { return; }
+	} else if ( self.team == TEAM_CT ) {
+		if ( fWeapon == WEAPON_AK47 ) { return; }
+		if ( fWeapon == WEAPON_SG552 ) { return; }
+		if ( fWeapon == WEAPON_G3SG1 ) { return; }
+		if ( fWeapon == WEAPON_ELITES ) { return; }
+		if ( fWeapon == WEAPON_MAC10 ) { return; }
+	}
+			
 	if ( ( self.fMoney - wptTable[ fWeapon ].iPrice ) >= 0 ) {
 		Weapon_AddItem( fWeapon );
 		
