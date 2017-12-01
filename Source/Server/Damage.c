@@ -152,9 +152,9 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 	// Special monetary punishment for hostage murderers
 	if ( eTarget.classname == "hostage_entity" ) {
 		if ( eTarget.health > 0 ) {
-			Money_AddMoney( eAttacker, -150 ); // Pain
+			Money_AddMoney( eAttacker, autocvar_fcs_penalty_pain ); // Pain
 		} else {
-			Money_AddMoney( eAttacker, -1500 ); // Death
+			Money_AddMoney( eAttacker, autocvar_fcs_penalty_kill ); // Death
 		}
 	}
 	
@@ -169,7 +169,7 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 			// Don't encourage them to kill their own team members for $$$
 			if ( Damage_ShouldDamage( eTarget.team, eAttacker.team ) == TRUE ) {
 				eAttacker.frags++;
-				Money_AddMoney( eAttacker, 300 );
+				Money_AddMoney( eAttacker, autocvar_fcs_reward_kill );
 			} else {
 				eAttacker.frags--;
 			}
@@ -243,12 +243,12 @@ Damage_Radius
 Even more pain and suffering, mostly used for explosives
 =================
 */
-void Damage_Radius( vector vOrigin, entity eAttacker, float fDamage, float fRadius ) {
+void Damage_Radius( vector vOrigin, entity eAttacker, float fDamage, float fRadius, int iCheckClip ) {
 	entity eDChain = findradius( vOrigin, fRadius );
 	
 	while( eDChain ) {
 		if ( eDChain.takedamage == DAMAGE_YES ) {
-			if ( Damage_CheckAttack( eDChain, vOrigin ) ) {
+			if ( Damage_CheckAttack( eDChain, vOrigin ) || iCheckClip == FALSE ) {
 				float fDiff = vlen( vOrigin - eDChain.origin );
 				
 				fDiff = ( fRadius - fDiff ) / fRadius;

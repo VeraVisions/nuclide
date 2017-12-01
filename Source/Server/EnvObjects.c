@@ -180,7 +180,7 @@ void env_explosion( void ) {
 		Effect_CreateExplosion( self.origin );
 		
 		if ( !( self.spawnflags & ENVEXPLO_NODAMAGE ) ) {
-			Damage_Radius( self.origin, self, 500, self.iMagnitude );
+			Damage_Radius( self.origin, self, 500, self.iMagnitude, TRUE );
 		}
 		if ( !( self.spawnflags & ENVEXPLO_REPEATABLE ) ) {
 			self.vUse = __NULL__;

@@ -178,17 +178,25 @@ void Spawn_CreateClient( float fCharModel ) {
 		iAlivePlayers_T++;
 		
 		Weapon_AddItem( WEAPON_KNIFE );
-		Weapon_AddItem( WEAPON_GLOCK18 );
-		Weapon_GiveAmmo( WEAPON_GLOCK18, 40 );
-		Weapon_Draw( WEAPON_GLOCK18 );
+		if ( autocvar_fcs_knifeonly == FALSE ) {
+			Weapon_AddItem( WEAPON_GLOCK18 );
+			Weapon_GiveAmmo( WEAPON_GLOCK18, 40 );
+			Weapon_Draw( WEAPON_GLOCK18 );
+		} else {
+			Weapon_Draw( WEAPON_KNIFE );
+		}
 	} else {
 		self.team = TEAM_CT;
 		iAlivePlayers_CT++;
 
 		Weapon_AddItem( WEAPON_KNIFE );
-		Weapon_AddItem( WEAPON_USP45 );
-		Weapon_GiveAmmo( WEAPON_USP45, 24 );
-		Weapon_Draw( WEAPON_USP45 );
+		if ( autocvar_fcs_knifeonly == FALSE ) {
+			Weapon_AddItem( WEAPON_USP45 );
+			Weapon_GiveAmmo( WEAPON_USP45, 24 );
+			Weapon_Draw( WEAPON_USP45 );
+		} else {
+			Weapon_Draw( WEAPON_KNIFE );
+		}
 	}
 	
 	if( self.iInGame == FALSE ) {
@@ -321,6 +329,9 @@ Counter-Terrorist Spawnpoints
 =================
 */
 void info_player_start( void ) {
+	if ( autocvar_fcs_swapteams == TRUE ) {
+		self.classname = "info_player_deathmatch";
+	}
 }
 
 /*
@@ -331,6 +342,9 @@ Terrorist Spawnpoints
 =================
 */
 void info_player_deathmatch( void ) {
+	if ( autocvar_fcs_swapteams == TRUE ) {
+		self.classname = "info_player_start";
+	}
 }
 
 /*

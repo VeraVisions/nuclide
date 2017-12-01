@@ -41,7 +41,7 @@ float Player_SendEntity( entity ePEnt, float fChanged ) {
 	WriteCoord( MSG_ENTITY, self.origin_x );
 	WriteCoord( MSG_ENTITY, self.origin_y );
 	WriteCoord( MSG_ENTITY, self.origin_z );
-	WriteCoord( MSG_ENTITY, self.angles_x );
+	WriteCoord( MSG_ENTITY, self.v_angle_x );
 	WriteCoord( MSG_ENTITY, self.angles_y );
 	WriteCoord( MSG_ENTITY, self.angles_z );
 	WriteShort( MSG_ENTITY, self.velocity_x );

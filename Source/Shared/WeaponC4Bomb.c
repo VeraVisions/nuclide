@@ -116,7 +116,7 @@ static void WeaponC4BOMB_Think( void ) {
 		Rules_RoundOver( TEAM_T, 3500, FALSE );
 			
 		// Make it explode and hurt things
-		Damage_Radius( self.origin, self, 500, 1024 );
+		Damage_Radius( self.origin, self, 500, 1024, FALSE );
 		sound( self, CHAN_VOICE, "weapons/c4_explode1.wav", 1.0, ATTN_NONE );
 			
 		// Trigger all targets

@@ -18,8 +18,6 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#define CS_MAX_MONEY 16000
-
 int iMoneyReward_CT;
 int iMoneyReward_T;
 
@@ -35,8 +33,8 @@ void Money_AddMoney( entity ePlayer, int iMoneyValue ) {
 	dprint( sprintf( "[DEBUG]: Giving %s %i in cash\n", ePlayer.netname, iMoneyValue ) );
 	ePlayer.fMoney += (float)iMoneyValue;
 	
-	if ( ePlayer.fMoney > CS_MAX_MONEY ) {
-		ePlayer.fMoney = CS_MAX_MONEY;
+	if ( ePlayer.fMoney > autocvar_fcs_maxmoney ) {
+		ePlayer.fMoney = autocvar_fcs_maxmoney;
 	}
 	
 	// Because people do tend to kill hostages...

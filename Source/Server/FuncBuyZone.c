@@ -37,6 +37,11 @@ Entry function for the buyzone area-markings.
 =================
 */
 void func_buyzone( void ) {
+	if ( autocvar_fcs_knifeonly == TRUE ) {
+		remove( self );
+		return;
+	}
+	
 	self.angles = '0 0 0';
 	self.movetype = MOVETYPE_NONE;
 	self.solid = SOLID_TRIGGER;
@@ -64,6 +69,10 @@ Called by StartFrame if we somehow got no buy zones
 void Game_CreateBuyZones( void ) {
 	entity eFind;
 	entity eOld;
+	
+	if ( autocvar_fcs_knifeonly == TRUE ) {
+		return;
+	}
 	
 	if ( iBuyRestriction == BUY_T || iBuyRestriction == BUY_BOTH ) {
 		eFind = findchain( classname, "info_player_deathmatch" );

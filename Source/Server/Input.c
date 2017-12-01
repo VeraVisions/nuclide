@@ -26,7 +26,15 @@ Handles impulse and whatnot
 =================
 */
 void Input_Handle( void ) {
+	// Dead, specatator
 	if ( self.health <= 0 ) {
+		/*if ( self.button2 ) {
+			if ( infokey( self, "*spectator" ) == "0" ) {
+				forceinfokey( self, "*spectator", "1" );
+			} else {
+				forceinfokey( self, "*spectator", "1" );
+			}
+		}*/
 		return;
 	}
 	

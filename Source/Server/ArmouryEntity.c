@@ -108,6 +108,11 @@ void armoury_entity( void ) {
 		droptofloor();
 	}
 	
+	if ( autocvar_fcs_nopickups == TRUE ) {
+		remove( self );
+		return;
+	}
+	
 	precache_model( sArmouryModels[ self.item ] );
 	setmodel( self, sArmouryModels[ self.item ] );
 	setsize( self, '-16 -16 0', '16 16 16' );

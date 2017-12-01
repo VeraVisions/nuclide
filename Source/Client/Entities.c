@@ -48,7 +48,7 @@ void CSQC_Ent_Update( float flIsNew ) {
 		self.origin_x = readcoord();
 		self.origin_y = readcoord();
 		self.origin_z = readcoord();
-		self.angles_x = readcoord();
+		self.subblend2frac = readcoord() / 90;
 		self.angles_y = readcoord();
 		self.angles_z = readcoord();
 		self.velocity_x = readshort();
@@ -89,8 +89,9 @@ void CSQC_Ent_Update( float flIsNew ) {
 		self.angles_y = readcoord();
 		self.angles_z = readcoord();
 		
+		// TODO: This doesn't cache them to be player specific yet, make it so!
 		self.model = sprintf( "logos/%s.bmp" ,getplayerkeyvalue( readbyte() - 1, "logo" ) );
-		shaderforname( self.model, sprintf("{\npolygonOffset\n{\nmap %s\n}\n}\n", self.model ) );
+		shaderforname( self.classname, sprintf("{\npolygonOffset\n{\nmap %s\nblendfunc blendFunc add\n\nrgbgen vertex\n}\n}\n", self.model ) );
 		self.predraw = Effect_Spraypaint;
 		self.drawmask = MASK_ENGINE;
 	}

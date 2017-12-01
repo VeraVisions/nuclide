@@ -63,10 +63,18 @@ void Effect_Spraypaint( void ) {
 		setorigin( eSpray, trace_endpos );
 		
 		// Align it
-		vector vSprayAngles = self.angles;
+		vector vSprayAngles = self.v_angle;
 		vSprayAngles_x *= -1;
 		makevectors( vSprayAngles );
+		
 		vector vCoplanar = v_forward - ( v_forward * trace_plane_normal ) * trace_plane_normal;
+		
+		centerprint( self, sprintf( "Coplanar: %f %f %f\n", vCoplanar_x, vCoplanar_y, vCoplanar_z ) );
+		
+		if ( trace_plane_normal_z == 0 ) {
+			vCoplanar = '0 0 1';
+		}
+		
 		eSpray.angles = vectoangles( vCoplanar, trace_plane_normal );
 		
 		eSpray.SendEntity = Effect_Spraypaint_Send;
@@ -77,7 +85,7 @@ void Effect_Spraypaint( void ) {
 float Effect_Spraypaint( void ) {
 	makevectors( self.angles );
 	// Temporary string, will getinfo from player later
-	adddecal( self.model, self.origin, v_up / 64, v_right / 64, '1 1 1', 1.0f );
+	adddecal( self.classname, self.origin, v_up / 32, v_forward / 32, '1 0 0', 1.0f );
 	addentity( self );
 	return PREDRAW_NEXT;
 #endif

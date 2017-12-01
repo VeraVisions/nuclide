@@ -83,6 +83,7 @@ void CSQC_Init(float apilevel, string enginename, float engineversion) {
 	precache_pic( sprintf( "overviews/%s.bmp", mapname ) );
 	
 	precache_pic( "logos/lambda.bmp" );
+	precache_pic( "logos/doug.bmp" );
 	
 	for ( int i = 0; i < ( CS_WEAPON_COUNT - 1 ); i++ ) {
 		precache_model( sViewModels[ i ] );

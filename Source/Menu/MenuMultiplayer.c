@@ -242,7 +242,8 @@ void Menu_Multiplayer_Create( void ) {
 	// Options
 	Object_Label( '196 148', _("SERVER_NAME"), '8 8' );
 	Object_Textfield( '196 160', strHostname, 20 );
-	
+	Object_CvarToggle( '196 185', "Public", "sv_public" );
+
 	// Map list
 	Object_Label( '384 148', _("MP_MAPS"), '8 8' );
 	Object_Frame( '384 164', '190 288' );

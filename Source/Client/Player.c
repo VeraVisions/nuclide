@@ -62,6 +62,7 @@ string sPModels[ CS_WEAPON_COUNT - 1 ] = {
 //.float bonecontrol5; //Halflife model format bone controller. This typically affects the mouth.
 //.float subblendfrac; //Weird animation value specific to halflife models. On player models, this typically affects the spine's pitch.
 //.float basesubblendfrac; // legs part.
+.float subblend2frac; // Up/Down
 
 static float Player_Gun_PreDraw (void) {
 	self.entnum = self.owner.entnum; //so this entity gets its RF_EXTERNALMODEL flag rewritten as needed
@@ -73,7 +74,7 @@ static float Player_Gun_PreDraw (void) {
 void Player_Draw( void ) {
 	if ( !self.eGunModel ) {
 		self.eGunModel = spawn();
-		self.eGunModel.classname = "vwep model";
+		self.eGunModel.classname = "pmodel";
 		self.eGunModel.owner = self;
 		self.eGunModel.predraw = Player_Gun_PreDraw;
 		self.eGunModel.drawmask = MASK_ENGINE;
@@ -102,6 +103,8 @@ void Player_Draw( void ) {
 	self.frame2time += frametime;	
 	
 	self.bonecontrol5 = stof( getplayerkeyvalue( player_localnum, INFOKEY_P_VOIPLOUDNESS ) );
+	//self.subblendfrac = ;
+	//self. = self.angles_x / 90;
 }
 
 /*
@@ -131,6 +134,7 @@ void Player_Predict(void) {
 	vector vOldAngles = self.angles = self.netangles;
 	vector vOldVelocity = self.velocity = self.netvelocity;
 	float fOldPMoveFlags = self.pmove_flags = self.netpmove_flags;
+	
 	// Don't predict if we're frozen/paused FIXME: FTE doesn't have serverkey_float yet!
 	if ( serverkey( SERVERKEY_PAUSESTATE ) == "1" || ( ( getstati( STAT_GAMESTATE ) == GAME_FREEZE ) && ( getstati( STAT_HEALTH ) > 0 ) ) ) {
 		pSeat->vPlayerOrigin = self.origin;
@@ -146,16 +150,20 @@ void Player_Predict(void) {
 			self.movetype = MOVETYPE_NOCLIP;
 		}
 
-		if (self.pmove_flags & 0x80000)
+		if (self.pmove_flags & 0x80000) {
 			self.flags |= FL_ONGROUND;
-		else
+		} else {
 			self.flags &~= FL_ONGROUND;
+		}
+		
 		for ( int i = self.pmove_frame; i <= clientcommandframe; i++ ) {
 			getinputstate( i );
 			runplayerphysics();
 		}
-		if (self.flags & FL_ONGROUND)
+		
+		if ( self.flags & FL_ONGROUND ) {
 			self.pmove_flags |= 0x80000;
+		}
 	}
 	pSeat->vPlayerOriginOld = pSeat->vPlayerOrigin;
 
@@ -196,7 +204,7 @@ We're part way through parsing new player data.
 Propagate our pmove state to whatever the current frame before its stomped on (so any non-networked state updates locally).
 =================
 */
-void Player_PreUpdate(void) {
+void Player_PreUpdate( void ) {
 	self.origin = self.netorigin;
 	self.angles = self.netangles;
 	self.velocity = self.netvelocity;
@@ -208,27 +216,30 @@ void Player_PreUpdate(void) {
 		self.movetype = MOVETYPE_NOCLIP;
 	}
 
-	if (self.pmove_flags & 0x80000)
+	if ( self.pmove_flags & 0x80000 ) {
 		self.flags |= FL_ONGROUND;
-	else
+	} else {
 		self.flags &~= FL_ONGROUND;
+	}
+	
 	//we want to predict an exact copy of the data in the new packet
-	for ( ; self.pmove_frame <= servercommandframe; self.pmove_frame++) {
-		if ( getinputstate( self.pmove_frame ))
+	for ( ; self.pmove_frame <= servercommandframe; self.pmove_frame++ ) {
+		if ( getinputstate( self.pmove_frame ) )
 			runplayerphysics();
 	}
 
-	if (self.flags & FL_ONGROUND)
+	if ( self.flags & FL_ONGROUND ) {
 		self.pmove_flags |= 0x80000;
+	}
 
 	//we now have self.pmove_flags set properly...
 	
 	self.movetype = MOVETYPE_NONE;
 }
-void Player_PostUpdate(void) {
+void Player_PostUpdate( void ) {
 	self.netorigin = self.origin;
 	self.netangles = self.angles;
 	self.netvelocity = self.velocity;
 	self.netpmove_flags = self.pmove_flags;
 	self.pmove_frame = servercommandframe+1;
-};
+}

@@ -30,9 +30,20 @@ var float autocvar_mp_roundtime = 5;
 var float autocvar_mp_timelimit = 60;
 var string autocvar_motdfile = "motd.txt";
 
-var int autocvar_mp_fillweapons = FALSE;
-var int autocvar_mp_autoreload = FALSE;
 var int autocvar_sv_voxannounce = FALSE;
+
+// Casual, or later CS variables
+var int autocvar_mp_fillweapons = FALSE; // This will automatically get ammo for the weapon you buy
+var int autocvar_mp_autoreload = FALSE; // When pressing fire and the gun is empty, it will reload instead
+
+// New, FreeCS exclusive variables
+var int autocvar_fcs_knifeonly = FALSE; // Disallows buying and spawning with weps
+var int autocvar_fcs_swapteams = FALSE; // Swaps spawnpoints
+var int autocvar_fcs_nopickups = FALSE; // Disable weapon items
+var int autocvar_fcs_reward_kill = 300;
+var int autocvar_fcs_penalty_pain = -150;
+var int autocvar_fcs_penalty_kill = -1500;
+var int autocvar_fcs_maxmoney = 16000;
 
 // Mapcycle features
 var string autocvar_mapcyclefile = "mapcycle.txt";
@@ -157,7 +168,7 @@ void Effect_CreateExplosion( vector vPos );
 void Effect_CreateFlash( entity eTarget );
 
 void TraceAttack_FireBullets( int iShots, vector vPos );
-void Damage_Radius( vector vOrigin, entity eAttacker, float fDamage, float fRadius );
+void Damage_Radius( vector vOrigin, entity eAttacker, float fDamage, float fRadius, int iCheckClip );
 void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos, int iSkipArmor );
 
 void Entities_UseTargets( void );
