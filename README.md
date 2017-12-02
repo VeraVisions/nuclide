@@ -39,7 +39,7 @@ All the weapons are implemented, so are the gamemodes:
 
 The game is playable as long as you don't care about the radar/overview display.
 
-# Installing
+# [Installing](https://github.com/eukara/FreeCS/wiki/Installation)
 1. Get the newest copy of FreeCS by cloning or [clicking here](https://github.com/eukara/FreeCS/archive/master.zip)
 2. Extract it to somewhere safe on your harddrive, where you have read/write access (for Windows users... this is not C:/Program Files)
 3. Get the latest version of FTEQW from the [website](http://triptohell.info/moodles/) in binary form and put it into the FreeCS directory with default.fmf in it. [You can also build fteqw from source yourself if you know how.](https://sourceforge.net/projects/fteqw/)
@@ -69,26 +69,10 @@ If you would like me to spend more time on this project, consider donating to me
 This is a one-man side-project. Keep it in mind before commenting...
 Anway, any help is appreciated.
 
-# Frequently Asked Questions
-**Q**: Why is this not emulating CS 1.6?
-
-**A**: CS 1.5 is the version of Counter-Strike me and many others considered to be the definitive version. It is the last version developed by the original team. I primarily developed this because I could not run the original mod without running the old version of Half-Life (Steam Half-Life actively blocks CS 1.5 for some reason.)
-
-
-**Q**: Will this project ever cover Counter-Strike 1.6?
-
-**A**: That's the plan eventually. If you are new to Counter-Strike (before CS:GO and the like came out) then you may enjoy this more! Maybe not. How they feel is up to every individual.
-
-
-**Q**: Why did you not re-create CS with the Half-Life SDK?
-
-**A**: If any time is spent rewriting CS from scratch, then it should be done without any license/engine restrictions. FTE QW runs on more platforms and architectures than Half-Life ever will and we have vastly more control over it.
-
-
-**Q**: Can you not play CS 1.5 on Linux with this *engine hack* that violates the GPL and the Half-Life SDK?
-
-**A**: Lol. You miss the point. And no. That wouldn't work.
-
+# [Client Console Commands](https://github.com/eukara/FreeCS/wiki/Client-Commands)
+# [Client Console Variables](https://github.com/eukara/FreeCS/wiki/Client-Variables)
+# [Server Console Commands & Variables](https://github.com/eukara/FreeCS/wiki/Server-Commands-&-Variables)
+# [Frequently Asked Questions](https://github.com/eukara/FreeCS/wiki/FAQ)
 
 # Special Thanks
 **Spike** - Creator of FTE QuakeWorld and FTEQCC [(Website)](http://fte.triptohell.info/)
