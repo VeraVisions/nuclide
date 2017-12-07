@@ -64,11 +64,12 @@ I may however add additional, optional features that will emulate behaviour of l
 
 # Support this project
 Feel free to send pull requests and refresh my memory by suggesting missing features under the **Issues** tab!
-If you would like me to spend more time on this project, consider donating to me via https://paypal.me/eukara
+If you would like me to spend more time on this project, consider donating to me via [PayPal](https://paypal.me/eukara) or [LiberaPay](https://liberapay.com/eukara/).
 
 This is a one-man side-project. Keep it in mind before commenting...
 Anway, any help is appreciated.
 
+# [Contributing](https://github.com/eukara/FreeCS/wiki/Contributing)
 # [Client Console Commands](https://github.com/eukara/FreeCS/wiki/Client-Commands)
 # [Client Console Variables](https://github.com/eukara/FreeCS/wiki/Client-Variables)
 # [Server Console Commands & Variables](https://github.com/eukara/FreeCS/wiki/Server-Commands-&-Variables)
