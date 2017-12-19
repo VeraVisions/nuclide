@@ -101,8 +101,6 @@ void CSQC_Init(float apilevel, string enginename, float engineversion) {
 	FONT_16 = loadfont( "16", "gfx/conchars_16", "16", -1 );
 	
 	SHADER_CULLED = shaderforname( "mirror_cull" );
-	
-	localcmd( sprintf( "setinfo logo %s\n", autocvar_cl_logofile ) );
 
 	Radio_InitSounds();
 	

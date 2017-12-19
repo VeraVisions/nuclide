@@ -89,9 +89,12 @@ void CSQC_Ent_Update( float flIsNew ) {
 		self.angles_y = readcoord();
 		self.angles_z = readcoord();
 		
-		// TODO: This doesn't cache them to be player specific yet, make it so!
-		self.model = sprintf( "logos/%s.bmp" ,getplayerkeyvalue( readbyte() - 1, "logo" ) );
-		shaderforname( self.classname, sprintf("{\npolygonOffset\n{\nmap %s\nblendfunc blendFunc add\n\nrgbgen vertex\n}\n}\n", self.model ) );
+		self.color_x = 1.0f - ( readbyte() / 255 );
+		self.color_y = 1.0f - ( readbyte() / 255 );
+		self.color_z = 1.0f - ( readbyte() / 255 );
+		string sLogo = readstring();
+		
+		self.classname = sprintf( "spray_%s", sLogo );
 		self.predraw = Effect_Spraypaint;
 		self.drawmask = MASK_ENGINE;
 	}

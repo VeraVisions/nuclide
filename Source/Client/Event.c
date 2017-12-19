@@ -120,7 +120,8 @@ float CSQC_ConsoleCommand( string sCMD ) {
 	pSeat = &seats[ s ];
 	
 	tokenize( sCMD );
-	switch ( argv(0) ) {
+
+	switch ( argv( 0 ) ) {
 	case "minimap":
 		pSeat.iMapExpand = 1 - pSeat.iMapExpand;
 		return TRUE;
@@ -636,6 +637,16 @@ void CSQC_Input_Frame( void ) {
 		input_impulse = 0;
 		input_buttons = 0;
 		return;
+	}
+	
+	if ( input_impulse == 101 ) {
+		print( "This aint Half-Life.\n" );
+		input_impulse = 0;
+	}
+	
+	if ( input_impulse == 201 ) {
+		tokenize( cvar_string( "cl_logocolor" ) );
+		sendevent( "EffectSpray", "sfff", autocvar_cl_logofile, stof( argv( 0 ) ), stof( argv( 1 ) ), stof( argv( 2 ) ) );
 	}
 	
 	if ( iInputAttack2 == TRUE ) {

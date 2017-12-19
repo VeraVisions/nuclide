@@ -28,7 +28,7 @@ void Effect_RemoveSpray( entity eOwner ) {
 	}
 }
 
-void Effect_Spraypaint( void ) {
+void Effect_Spraypaint( string sLogo, float fR, float fG, float fB ) {
 	static float Effect_Spraypaint_Send( entity ePVSEnt, float fChanged ) {
 		WriteByte( MSG_ENTITY, ENT_SPRAY );
 		WriteCoord( MSG_ENTITY, self.origin_x );
@@ -37,7 +37,10 @@ void Effect_Spraypaint( void ) {
 		WriteCoord( MSG_ENTITY, self.angles_x );
 		WriteCoord( MSG_ENTITY, self.angles_y );
 		WriteCoord( MSG_ENTITY, self.angles_z );
-		WriteByte( MSG_ENTITY, num_for_edict( self.owner ) );
+		WriteByte( MSG_ENTITY, self.color_x );
+		WriteByte( MSG_ENTITY, self.color_y );
+		WriteByte( MSG_ENTITY, self.color_z );
+		WriteString( MSG_ENTITY, self.model );
 		return TRUE;
 	} 
 	vector vSrc;
@@ -47,8 +50,6 @@ void Effect_Spraypaint( void ) {
 	if ( self.health <= 0 ) {
 		return;
 	}
-
-	Effect_RemoveSpray( self );
 	
 	vSrc = self.origin + self.view_ofs;
 	vEnd = vSrc + v_forward * 128;
@@ -56,10 +57,17 @@ void Effect_Spraypaint( void ) {
 	
 	// Found a wall
 	if ( trace_fraction != 1.0f ) {
+		Effect_RemoveSpray( self );
+		
 		entity eSpray = spawn();
 		eSpray.classname = "spray";
 		eSpray.owner = self;
 		eSpray.solid = SOLID_NOT;
+		eSpray.color_x = fR;
+		eSpray.color_y = fG;
+		eSpray.color_z = fB;
+		eSpray.model = sLogo;
+		
 		setorigin( eSpray, trace_endpos );
 		
 		// Align it
@@ -68,8 +76,6 @@ void Effect_Spraypaint( void ) {
 		makevectors( vSprayAngles );
 		
 		vector vCoplanar = v_forward - ( v_forward * trace_plane_normal ) * trace_plane_normal;
-		
-		centerprint( self, sprintf( "Coplanar: %f %f %f\n", vCoplanar_x, vCoplanar_y, vCoplanar_z ) );
 		
 		if ( trace_plane_normal_z == 0 ) {
 			vCoplanar = '0 0 1';
@@ -84,13 +90,17 @@ void Effect_Spraypaint( void ) {
 #else
 float Effect_Spraypaint( void ) {
 	makevectors( self.angles );
-	// Temporary string, will getinfo from player later
-	adddecal( self.classname, self.origin, v_up / 32, v_forward / 32, '1 0 0', 1.0f );
+	adddecal( self.classname, self.origin, v_up / 32, v_forward / 32, self.color, 1.0f );
 	addentity( self );
 	return PREDRAW_NEXT;
 #endif
 }
 
+#ifdef SSQC
+void CSEv_EffectSpray_sfff( string sLogo, float fR, float fG, float fB ) {
+	Effect_Spraypaint( sLogo, fR, fG, fB );
+}
+#endif
 
 void Effect_CreateExplosion( vector vPos ) {
 #ifdef SSQC

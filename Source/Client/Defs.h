@@ -46,6 +46,7 @@ var int autocvar_cl_thirdperson = FALSE;
 var int autocvar_cl_radar = 1;
 
 var string autocvar_cl_logofile = "lambda";
+var vector autocvar_cl_logocolor = '255 0 0';
 
 // Particle stuff
 var float PARTICLE_SPARK;

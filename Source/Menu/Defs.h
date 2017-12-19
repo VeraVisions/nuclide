@@ -32,6 +32,7 @@ var vector vVideoSize;
 var vector vMenuOffset;
 var vector autocvar_menu_fgcolor = '1 0.59 0.19';
 var string autocvar_cl_logofile = "lambda";
+var vector autocvar_cl_logocolor = '255 0 0';
 
 var vector vMousePos;
 var float fInputKeyCode;
@@ -59,6 +60,9 @@ float fLastTime;
 int iMenu;
 string *sMapList;
 int iMapCount;
+
+string *sLogos;
+var int iLogos;
 
 var float FONT_MENU;
 
