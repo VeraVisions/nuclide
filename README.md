@@ -3,6 +3,8 @@ Free-software implementation of Counter-Strike running on the FTE QuakeWorld eng
 
 Join our IRC channel at chat.freenode.net #freecs!
 
+[Join our Discord server!](https://discord.gg/MRJdFtw)
+
 **Yes. This runs on Linux. You only need WINE or a Windows machine to extract the CS 1.5 Files.**
 
 I cannot legally redistribute them. Sorry.
