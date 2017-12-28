@@ -41,16 +41,16 @@ void VGUI_DrawSpectatorHUD( void ) {
 	
 	
 	drawpic( vVideoMins + [ vVideoResolution_x - 70, 20 ], "gfx/vgui/640_timer", '14 14', '1 1 1', 1 );
-	VGUI_RightText( vVideoMins + [ vVideoResolution_x - 16, 23 ], sprintf( "%i:%i%i", iMinutes, iTens, iUnits ), '8 8', '0.56 0.56 0.21', FONT_DEFAULT );
+	VGUI_RightText( vVideoMins + [ vVideoResolution_x - 16, 23 ], sprintf( "%i:%i%i", iMinutes, iTens, iUnits ), '12 12', '0.56 0.56 0.21', FONT_CON );
 	
 	// Draw the money
-	CSQC_DrawText( vVideoMins + [ vVideoResolution_x - 67, 6 ], "$", '8 8', '0.56 0.56 0.21', 1, 0, FONT_DEFAULT );
-	VGUI_RightText( vVideoMins + [ vVideoResolution_x - 16, 6 ], sprintf( "%d", getstatf( STAT_MONEY ) ), '8 8', '0.56 0.56 0.21', FONT_DEFAULT );
+	CSQC_DrawText( vVideoMins + [ vVideoResolution_x - 67, 6 ], "$", '12 12', '0.56 0.56 0.21', 1, 0, FONT_CON );
+	VGUI_RightText( vVideoMins + [ vVideoResolution_x - 16, 6 ], sprintf( "%d", getstatf( STAT_MONEY ) ), '12 12', '0.56 0.56 0.21', FONT_CON );
 	
 	// Seperator
 	drawfill( vVideoMins + [ vVideoResolution_x - 85, 6 ], [ 2, 28 ], '0.56 0.56 0.21', 1 );
 	
 	// Team Stats
-	VGUI_RightText( vVideoMins + [ vVideoResolution_x - 96, 6 ], sprintf( _("VGUI_SPEC_TCOUNTER"), getstatf( STAT_WON_T ) ), '8 8', '0.56 0.56 0.21', FONT_DEFAULT );
-	VGUI_RightText( vVideoMins + [ vVideoResolution_x - 96, 23 ], sprintf( _("VGUI_SPEC_CTCOUNTER"), getstatf( STAT_WON_CT ) ), '8 8', '0.56 0.56 0.21', FONT_DEFAULT );
+	VGUI_RightText( vVideoMins + [ vVideoResolution_x - 96, 6 ], sprintf( _("VGUI_SPEC_TCOUNTER"), getstatf( STAT_WON_T ) ), '12 12', '0.56 0.56 0.21', FONT_CON );
+	VGUI_RightText( vVideoMins + [ vVideoResolution_x - 96, 23 ], sprintf( _("VGUI_SPEC_CTCOUNTER"), getstatf( STAT_WON_CT ) ), '12 12', '0.56 0.56 0.21', FONT_CON );
 }

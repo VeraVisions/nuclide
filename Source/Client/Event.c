@@ -26,6 +26,7 @@ Init all the cmds in one place
 =================
 */
 void CSQC_ConsoleCommand_Init( void ) {
+	registercommand( "dev_testorbituary" );
 	registercommand( "minimap" );
 	registercommand( "overview_test" );
 	registercommand( "vox_test" );
@@ -122,6 +123,10 @@ float CSQC_ConsoleCommand( string sCMD ) {
 	tokenize( sCMD );
 
 	switch ( argv( 0 ) ) {
+	case "dev_testorbituary":
+		HUD_AddOrbituaries( player_localnum, TEAM_T, player_localnum, TEAM_CT, floor( random( 1, CS_WEAPON_COUNT ) ), FALSE );
+		return TRUE;
+		break;
 	case "minimap":
 		pSeat.iMapExpand = 1 - pSeat.iMapExpand;
 		return TRUE;

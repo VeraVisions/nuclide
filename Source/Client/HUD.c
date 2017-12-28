@@ -504,7 +504,7 @@ void HUD_DrawVoice( void ) {
 			drawfill( vVoicePos, [1, 24], vVGUIColor, VGUI_WINDOW_FGALPHA );
 			drawfill( [vVoicePos_x + 143, vVoicePos_y], [1, 24], vVGUIColor, VGUI_WINDOW_FGALPHA );
 		
-			CSQC_DrawText( [ vVoicePos_x + 16, vVoicePos_y + 8 ], sprintf( "  %.13s", getplayerkeyvalue( i, "name" ) ), '8 8', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_NORMAL, FONT_DEFAULT );
+			CSQC_DrawText( [ vVoicePos_x + 16, vVoicePos_y + 8 ], sprintf( "  %.13s", getplayerkeyvalue( i, "name" ) ), '12 12', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_NORMAL, FONT_CON );
 	
 			drawpic( vVoicePos + '2 0', "gfx/vgui/icntlk_sv.tga", '24 24', vVGUIColor, 1, DRAWFLAG_NORMAL );
 			vVoicePos_y -= 32;

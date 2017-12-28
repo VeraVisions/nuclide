@@ -80,16 +80,16 @@ void Menu_Multiplayer_Find_Item( vector vPosition, int i, __inout int iSelected 
 	}
 	
 	if ( iSelected == i ) {
-		drawfill( [ vPosition_x, vPosition_y - 1 ], [ 397, 10 ], '1 1 1', 0.5, 2 );
-		drawstring( [vPosition_x + 8, vPosition_y], sprintf( "%.25s", gethostcachestring( fldName, i ) ), '8 8 0', '1 1 1', 1.0f, FALSE );
-		drawstring( [vPosition_x + 186, vPosition_y], sprintf( "%.10s", gethostcachestring( fldMap, i ) ), '8 8 0', '1 1 1', 1.0f, FALSE );
-		drawstring( [vPosition_x + 298, vPosition_y], sprintf( "%d/%d", gethostcachenumber( fldPlayers, i ), gethostcachenumber( fldMaxplayers, i ) ), '8 8 0', '1 1 1', 1.0f, FALSE );
-		drawstring( [vPosition_x + 362, vPosition_y], sprintf( "%.3s", ftos( gethostcachenumber( fldPing, i ) ) ), '8 8 0', '1 1 1', 1.0f, FALSE );
+		drawfill( [ vPosition_x, vPosition_y - 1 ], [ 397, 14 ], '1 1 1', 0.5, 2 );
+		drawstring( [vPosition_x + 8, vPosition_y], sprintf( "%.25s", gethostcachestring( fldName, i ) ), '12 12', '1 1 1', 1.0f, FALSE );
+		drawstring( [vPosition_x + 186, vPosition_y], sprintf( "%.10s", gethostcachestring( fldMap, i ) ), '12 12', '1 1 1', 1.0f, FALSE );
+		drawstring( [vPosition_x + 298, vPosition_y], sprintf( "%d/%d", gethostcachenumber( fldPlayers, i ), gethostcachenumber( fldMaxplayers, i ) ), '12 12', '1 1 1', 1.0f, FALSE );
+		drawstring( [vPosition_x + 362, vPosition_y], sprintf( "%.3s", ftos( gethostcachenumber( fldPing, i ) ) ), '12 12', '1 1 1', 1.0f, FALSE );
 	} else {
-		drawstring( [vPosition_x + 8, vPosition_y], sprintf( "^3%.25s", gethostcachestring( fldName, i ) ), '8 8 0', '1 1 1', fItemAlpha, FALSE );
-		drawstring( [vPosition_x + 186, vPosition_y], sprintf( "%.10s", gethostcachestring( fldMap, i ) ), '8 8 0', '1 1 1', fItemAlpha, FALSE );
-		drawstring( [vPosition_x + 298, vPosition_y], sprintf( "%d/%d", gethostcachenumber( fldPlayers, i ), gethostcachenumber( fldMaxplayers, i ) ), '8 8 0', '1 1 1', fItemAlpha, FALSE );
-		drawstring( [vPosition_x + 362, vPosition_y], sprintf( "%.3s", ftos( gethostcachenumber( fldPing, i ) ) ), '8 8 0', '1 1 1', fItemAlpha, FALSE );
+		drawstring( [vPosition_x + 8, vPosition_y], sprintf( "^3%.25s", gethostcachestring( fldName, i ) ), '12 12', '1 1 1', fItemAlpha, FALSE );
+		drawstring( [vPosition_x + 186, vPosition_y], sprintf( "%.10s", gethostcachestring( fldMap, i ) ), '12 12', '1 1 1', fItemAlpha, FALSE );
+		drawstring( [vPosition_x + 298, vPosition_y], sprintf( "%d/%d", gethostcachenumber( fldPlayers, i ), gethostcachenumber( fldMaxplayers, i ) ), '12 12', '1 1 1', fItemAlpha, FALSE );
+		drawstring( [vPosition_x + 362, vPosition_y], sprintf( "%.3s", ftos( gethostcachenumber( fldPing, i ) ) ), '12 12', '1 1 1', fItemAlpha, FALSE );
 	}
 }
 
@@ -161,10 +161,10 @@ void Menu_Multiplayer( void ) {
 	Object_Frame( '196 140', '404 308' );
 	Object_Scrollbar( '604 140', 308, iScrollServer );
 	
-	Object_Label( '208 124', _("MP_GAME"), '8 8' );
-	Object_Label( '386 124', _("MP_MAP"), '8 8' );
-	Object_Label( '498 124', _("MP_PLAYERS"), '8 8' );
-	Object_Label( '562 124', _("MP_PING"), '8 8' );
+	Object_Label( '208 124', _("MP_GAME"), '12 12' );
+	Object_Label( '386 124', _("MP_MAP"), '12 12' );
+	Object_Label( '498 124', _("MP_PLAYERS"), '12 12' );
+	Object_Label( '562 124', _("MP_PING"), '12 12' );
 	
 	Menu_SetClipArea( '196 141', '404 306' );
 	vector vListPos = '200 145';
@@ -172,7 +172,7 @@ void Menu_Multiplayer( void ) {
 	
 	for ( int i = 0; i < iServersTotal; i++ ) {
 		Menu_Multiplayer_Find_Item( vListPos, i, iSelectedServer );
-		vListPos_y += 10;
+		vListPos_y += 14;
 	}
 	Menu_ResetClipArea();
 }
@@ -204,11 +204,25 @@ void Menu_Multiplayer_Create( void ) {
 			}
 		}
 		
+		if ( fInputKeyCode == K_UPARROW ) {
+			iSelectedMap--;
+			fInputKeyCode = 0;
+		} else if ( fInputKeyCode == K_DOWNARROW ) {
+			iSelectedMap++;
+			fInputKeyCode = 0;
+		}
+		
+		if ( iSelectedMap >= iMapCount ) {
+			iSelectedMap = iMapCount - 1;
+		} else if ( iSelectedMap < 0 ) {
+			iSelectedMap = 0;
+		}
+		
 		if ( iSelectedMap == iIndex ) {
-			drawfill( [ vPosition_x, vPosition_y - 1 ], [ 182, 10 ], '1 1 1', 0.5, 2 );
-			drawstring( vPosition, sMapList[ iIndex ], '8 8', '1 1 1', 1.0f, 0 );	
+			drawfill( [ vPosition_x, vPosition_y - 1 ], [ 182, 14 ], '1 1 1', 0.5, 2 );
+			drawstring( vPosition + '8 0', sMapList[ iIndex ], '12 12', '1 1 1', 1.0f, 0 );	
 		} else {
-			drawstring( vPosition, sMapList[ iIndex ], '8 8', '0.9 0.9 0.9', fAlpha, 0 );
+			drawstring( vPosition + '8 0', sMapList[ iIndex ], '12 12', '0.9 0.9 0.9', fAlpha, 0 );
 		}
 	}
 	static void Create_ButtonAdvanced( void ) {
@@ -240,22 +254,22 @@ void Menu_Multiplayer_Create( void ) {
 	Object_Button( '32 212', BTN_CANCEL, Create_ButtonCancel, fButtonAlpha[2] );
 	
 	// Options
-	Object_Label( '196 148', _("SERVER_NAME"), '8 8' );
+	Object_Label( '196 148', _("SERVER_NAME"), '12 12' );
 	Object_Textfield( '196 160', strHostname, 20 );
 	Object_CvarToggle( '196 185', "Public", "sv_public" );
 
 	// Map list
-	Object_Label( '384 148', _("MP_MAPS"), '8 8' );
+	Object_Label( '384 148', _("MP_MAPS"), '12 12' );
 	Object_Frame( '384 164', '190 288' );
-	Object_Scrollbar( '576 164', 288, iScrollMap );
+	Object_Scrollbar( '576 164', 272, iScrollMap );
 	
 	// Maplist
 	vector vListPos = '392 172';
-	Menu_SetClipArea( '386 166', '188 286' );
-	vListPos_y -= fabs( ( ( iMapCount - 21 ) * 10 ) * ( iScrollMap / 288 ) );
+	Menu_SetClipArea( '386 166', '188 284' );
+	vListPos_y -= fabs( ( ( iMapCount - rint( 272 / 14 ) ) * 14 ) * ( iScrollMap / 272 ) );
 	for ( int i = 0; i < iMapCount; i++ ) {
 		Create_ListMap( vListPos, i );
-		vListPos_y += 10;
+		vListPos_y += 14;
 	}
 	Menu_ResetClipArea();
 }
@@ -299,7 +313,7 @@ void Menu_Multiplayer_IRC( void ) {
 			if (fButtonAlpha[iTabIdx] < 0.5)
 				fButtonAlpha[iTabIdx] = 0.5;
 			Object_TextButton( vTabPos, title, IRC_ButtonSelect, fButtonAlpha[iTabIdx] );
-			vTabPos_x += stringwidth(title, TRUE, '8 8') + 8;
+			vTabPos_x += stringwidth(title, TRUE, '12 12') + 8;
 		}
 	}
 	//TODO: scroll tabs.
@@ -361,7 +375,7 @@ void Menu_Multiplayer_IRC( void ) {
 	if (showtab)
 		con_draw( showtab, vMenuOffset + '196 148', '404 308', 8 );
 	else
-		Object_Label( '196 148', _("No IRC Output"), '8 8' );
+		Object_Label( '196 148', _("No IRC Output"), '12 12' );
 	
 	Object_Button( '32 308', BTN_DONE, IRC_ButtonDone, fButtonAlpha[0] );
 }

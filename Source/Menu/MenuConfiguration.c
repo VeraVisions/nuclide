@@ -149,9 +149,9 @@ void Menu_Configuration_Video( void ) {
 		
 		if ( iSelected == i ) {
 			drawfill( [ vPosition_x, vPosition_y - 1 ], [ 156, 10 ], '1 1 1', 0.5, 2 );
-			drawstring( [vPosition_x + 8, vPosition_y], strResolution[ i ], '8 8 0', '1 1 1', 1.0f, FALSE );
+			drawstring( [vPosition_x + 8, vPosition_y], strResolution[ i ], '12 12', '1 1 1', 1.0f, FALSE );
 		} else {
-			drawstring( [vPosition_x + 8, vPosition_y], strResolution[ i ], '8 8 0', '1 1 1', fItemAlpha, FALSE );
+			drawstring( [vPosition_x + 8, vPosition_y], strResolution[ i ], '12 12', '1 1 1', fItemAlpha, FALSE );
 		}
 	}
 	
@@ -171,7 +171,7 @@ void Menu_Configuration_Video( void ) {
 		}
 	}
 	
-	Object_Label( '196 148', _("VIDEO_RES"), '8 8' );
+	Object_Label( '196 148', _("VIDEO_RES"), '12 12' );
 	Object_Frame( '196 160', '164 300' );
 	
 	Object_Scrollbar( '372 160', 284, iScrollRes );
@@ -225,7 +225,7 @@ void Menu_Configuration_Audio( void ) {
 		iLastMaster = iAudioMaster;
 	}
 	
-	Object_Label( '196 148', _("AUDIO_MASTER"), '8 8' );
+	Object_Label( '196 148', _("AUDIO_MASTER"), '12 12' );
 	Object_ScrollbarH( '196 160', 256, iAudioMaster );
 	
 	if ( iAudioMaster != iLastMaster ) {
@@ -306,24 +306,24 @@ void Menu_Configuration_Player( void ) {
 		iFirst = 0;
 	}
 	
-	Object_Label( '196 148', _("PLAYER_NICK"), '8 8' );
+	Object_Label( '196 148', _("PLAYER_NICK"), '12 12' );
 	Object_Textfield( '196 160', strPlayername, 16 );
 	
-	Object_Label( '196 200', _("PLAYER_CROSSCOLOR"), '8 8' );
+	Object_Label( '196 200', _("PLAYER_CROSSCOLOR"), '12 12' );
 	Object_ScrollbarH( '196 212', 255, cCross.iR );
 	Object_ScrollbarH( '196 230', 255, cCross.iG );
 	Object_ScrollbarH( '196 248', 255, cCross.iB );
 	Object_Frame( '468 388', '52 52' );
 	drawfill( vMenuOffset + '469 213', '50 50', [ cCross.iR / 255, cCross.iG / 255, cCross.iB / 255 ], 1.0f );
 	
-	Object_Label( '196 288', _("PLAYER_GUICOLOR"), '8 8' );
+	Object_Label( '196 288', _("PLAYER_GUICOLOR"), '12 12' );
 	Object_ScrollbarH( '196 300', 255, cVGUI.iR );
 	Object_ScrollbarH( '196 318', 255, cVGUI.iG );
 	Object_ScrollbarH( '196 336', 255, cVGUI.iB );
 	Object_Frame( '468 388', '52 52' );
 	drawfill( vMenuOffset + '469 300', '50 50', [ cVGUI.iR / 255, cVGUI.iG / 255, cVGUI.iB / 255 ], 1.0f );
 	
-	Object_Label( '196 376', _("PLAYER_HUDCOLOR"), '8 8' );
+	Object_Label( '196 376', _("PLAYER_HUDCOLOR"), '12 12' );
 	Object_ScrollbarH( '196 388', 255, cCon.iR );
 	Object_ScrollbarH( '196 406', 255, cCon.iG );
 	Object_ScrollbarH( '196 424', 255, cCon.iB );
@@ -386,12 +386,12 @@ void Menu_Configuration_Controls( void ) {
 		}
 		
 		if ( iSelected == i ) {
-			drawfill( [ vPosition_x, vPosition_y - 1 ], [ 397, 10 ], '1 1 1', 0.5, 2 );
-			drawstring( [vPosition_x + 8, vPosition_y], sBindTx, '8 8 0', '1 1 1', 1.0f, FALSE );
-			drawstring( [vPosition_x + 128, vPosition_y], strActDescr[ i ], '8 8 0', '1 1 1', 1.0f, FALSE );
+			drawfill( [ vPosition_x, vPosition_y - 1 ], [ 397, 14 ], '1 1 1', 0.5, 2 );
+			drawstring( [vPosition_x + 8, vPosition_y], sBindTx, '12 12', '1 1 1', 1.0f, FALSE );
+			drawstring( [vPosition_x + 128, vPosition_y], strActDescr[ i ], '12 12', '1 1 1', 1.0f, FALSE );
 		} else {
-			drawstring( [vPosition_x + 8, vPosition_y], sBindTx, '8 8 0', '1 1 1', fItemAlpha, FALSE );
-			drawstring( [vPosition_x + 128, vPosition_y], strActDescr[ i ], '8 8 0', '1 1 1', fItemAlpha, FALSE );
+			drawstring( [vPosition_x + 8, vPosition_y], sBindTx, '12 12', '1 1 1', fItemAlpha, FALSE );
+			drawstring( [vPosition_x + 128, vPosition_y], strActDescr[ i ], '12 12', '1 1 1', fItemAlpha, FALSE );
 		}
 	}
 	
@@ -405,23 +405,23 @@ void Menu_Configuration_Controls( void ) {
 	Object_Frame( '196 140', '404 308' );
 	Object_Scrollbar( '604 140', 308, iScrollAct );
 	
-	Object_Label( '208 124', _("Keybind"), '8 8' );
-	Object_Label( '328 124', _("Description"), '8 8' );
+	Object_Label( '208 124', _("Keybind"), '12 12' );
+	Object_Label( '328 124', _("Description"), '12 12' );
 
 	Menu_SetClipArea( '196 141', '404 306' );
 	vector vListPos = '200 145';
-	vListPos_y -= fabs( ( ( iActCount - 8 ) * 10 ) * ( iScrollAct / 308 ) );
+	vListPos_y -= fabs( ( ( iActCount - rint( 308 / iActCount ) ) * 10 ) * ( iScrollAct / 308 ) );
 	
 	for ( int i = 0; i < iActCount; i++ ) {
 		Controls_DisplayAct( vListPos, i, iSelectedAct );
-		vListPos_y += 10;
+		vListPos_y += 14;
 	}
 	Menu_ResetClipArea();
 	
 	if ( iBindKey >= 0 ) {
 		Object_Frame( '196 150', '404 100' );
-		drawstring( vMenuOffset + '216 170', "Press any button to assign it to:", '8 8 0', autocvar_menu_fgcolor, 1.0f, FALSE );
-		drawstring( vMenuOffset + '216 232', "To clear, press Backspace.", '8 8 0', autocvar_menu_fgcolor, 1.0f, FALSE );
+		drawstring( vMenuOffset + '216 170', "Press any button to assign it to:", '12 12', autocvar_menu_fgcolor, 1.0f, FALSE );
+		drawstring( vMenuOffset + '216 232', "To clear, press Backspace.", '12 12', autocvar_menu_fgcolor, 1.0f, FALSE );
 		drawstring( vMenuOffset + '216 190', strActDescr[ iBindKey ], '16 16', autocvar_menu_fgcolor, 1.0f, FALSE );
 		
 		if ( fInputKeyCode > 0 ) {
@@ -437,6 +437,10 @@ void Menu_Configuration_Controls( void ) {
 				fInputKeyASCII = 0;
 			} else if ( fInputKeyCode != K_ESCAPE ) {
 				localcmd( sprintf( "bind %s %s\n", keynumtostring( fInputKeyCode ), strActBind[ iBindKey ] ) );
+				iBindKey = -1;
+				fInputKeyCode = 0;
+				fInputKeyASCII = 0;
+			} else {
 				iBindKey = -1;
 				fInputKeyCode = 0;
 				fInputKeyASCII = 0;

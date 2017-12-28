@@ -119,6 +119,7 @@ void Object_Button( vector vPosition, int iButtonID, void() vFunction, __inout f
 			if ( vFunction != __NULL__ ) {
 				vFunction();
 			}
+			vHeaderButtonPos = vPosition;
 			localcmd( "play ../media/launch_select2.wav\n" );
 			fMouseClick = FALSE;
 		}
@@ -143,7 +144,7 @@ void Object_TextButton( vector vPosition, string sButtonText, void() vFunction, 
 		fAlpha = 0.0f;
 	}
 	
-	if ( Menu_InputCheckMouse( vPosition, [stringwidth(sButtonText, TRUE, '8 8'), 8] ) == TRUE ) {
+	if ( Menu_InputCheckMouse( vPosition, [stringwidth(sButtonText, TRUE, '12 12'), 12] ) == TRUE ) {
 		if ( sLastButton != sButtonText ) {
 			localcmd( "play ../media/launch_deny2.wav\n" );
 		}
@@ -159,7 +160,7 @@ void Object_TextButton( vector vPosition, string sButtonText, void() vFunction, 
 		}
 	}
 
-	drawstring( vPosition, sButtonText, '8 8', '1 1 1', fAlpha, 1 );
+	drawstring( vPosition, sButtonText, '12 12', '1 1 1', fAlpha, 1 );
 }
 
 /*
@@ -292,7 +293,7 @@ void Object_CvarToggle( vector vPosition, string sLabel, string sCvar ) {
 	int iWidth = stringwidth( sLabel, FALSE );
 	vPosition += vMenuOffset;
 	
-	if ( Menu_InputCheckMouse( vPosition, [ iWidth + 32, 8 ] ) == TRUE ) {
+	if ( Menu_InputCheckMouse( vPosition, [ iWidth + 32, 12 ] ) == TRUE ) {
 		fAlpha = 1.0f;
 		if ( fMouseClick == TRUE ) {
 			if ( cvar( sCvar ) == 0 ) {
@@ -304,12 +305,12 @@ void Object_CvarToggle( vector vPosition, string sLabel, string sCvar ) {
 		}
 	}
 	
-	drawfill( vPosition + '-2 -2', [ iWidth + 36, 12 ], '0 0 0', 0.8f );
+	drawfill( vPosition + '-2 -2', [ iWidth + 36, 16 ], '0 0 0', 0.8f );
 	
 	if ( cvar( sCvar ) == 0 ) {
-		drawstring( vPosition, sprintf( "[ ] %s", sLabel ), '8 8', autocvar_menu_fgcolor, fAlpha, 0 );
+		drawstring( vPosition, sprintf( "[ ] %s", sLabel ), '12 12', autocvar_menu_fgcolor, fAlpha, 0 );
 	} else {
-		drawstring( vPosition, sprintf( "[X] %s", sLabel ), '8 8', autocvar_menu_fgcolor, fAlpha, 0 );
+		drawstring( vPosition, sprintf( "[X] %s", sLabel ), '12 12', autocvar_menu_fgcolor, fAlpha, 0 );
 	}
 }
 
@@ -325,7 +326,7 @@ void Object_FuncToggle( vector vPosition, string sLabel, void( void ) vFunc, int
 	int iWidth = stringwidth( sLabel, FALSE );
 	vPosition += vMenuOffset;
 	
-	if ( Menu_InputCheckMouse( vPosition, [ iWidth + 32, 8 ] ) == TRUE ) {
+	if ( Menu_InputCheckMouse( vPosition, [ iWidth + 32, 12 ] ) == TRUE ) {
 		fAlpha = 1.0f;
 		if ( fMouseClick == TRUE ) {
 			vFunc();
@@ -333,12 +334,12 @@ void Object_FuncToggle( vector vPosition, string sLabel, void( void ) vFunc, int
 		}
 	}
 	
-	drawfill( vPosition + '-2 -2', [ iWidth + 36, 12 ], '0 0 0', 0.8f );
+	drawfill( vPosition + '-2 -2', [ iWidth + 36, 16 ], '0 0 0', 0.8f );
 	
 	if ( iValue == 0 ) {
-		drawstring( vPosition, sprintf( "[ ] %s", sLabel ), '8 8', autocvar_menu_fgcolor, fAlpha, 0 );
+		drawstring( vPosition, sprintf( "[ ] %s", sLabel ), '12 12', autocvar_menu_fgcolor, fAlpha, 0 );
 	} else {
-		drawstring( vPosition, sprintf( "[X] %s", sLabel ), '8 8', autocvar_menu_fgcolor, fAlpha, 0 );
+		drawstring( vPosition, sprintf( "[X] %s", sLabel ), '12 12', autocvar_menu_fgcolor, fAlpha, 0 );
 	}
 }
 
@@ -352,7 +353,7 @@ A nice way of toggling cvars.
 */
 void Object_Textfield( vector vPosition, __inout string strValue, int iMaxChars ) {
 	float fFieldAlpha = 0.8f;
-	vector vSize = [ ( iMaxChars * 8 ) + 16, 12 ];
+	vector vSize = [ ( iMaxChars * 8 ) + 16, 14 ];
 	
 	Object_Frame( vPosition - '2 2', vSize );
 	
@@ -373,8 +374,8 @@ void Object_Textfield( vector vPosition, __inout string strValue, int iMaxChars 
 			}
 		}
 		fFieldAlpha = 1.0f;
-		drawstring( vPosition, sprintf( "%s_", strValue ), '8 8 0', autocvar_menu_fgcolor, fFieldAlpha, FALSE );
+		drawstring( vPosition, sprintf( "%s_", strValue ), '12 12', '1 1 1', fFieldAlpha, FALSE );
 	} else {
-		drawstring( vPosition, strValue, '8 8 0', autocvar_menu_fgcolor, fFieldAlpha, FALSE );
+		drawstring( vPosition, strValue, '12 12', '1 1 1', fFieldAlpha, FALSE );
 	}
 }

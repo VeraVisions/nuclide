@@ -80,8 +80,8 @@ void Header_Draw( void ) {
 	}
 	
 	if ( fHeaderLerp < 1.0f ) {
-		vHeaderPos_x = Math_Lerp( 484, 18, fHeaderLerp );
-		vHeaderPos_y = Math_Lerp( 454, 32, fHeaderLerp );
+		vHeaderPos_x = Math_Lerp( vHeaderButtonPos_x, 18, fHeaderLerp );
+		vHeaderPos_y = Math_Lerp( vHeaderButtonPos_y, 32, fHeaderLerp );
 		
 		vHeaderSize_x = Math_Lerp( 156, 460, fHeaderLerp );
 		vHeaderSize_y = Math_Lerp( 26, 80, fHeaderLerp );

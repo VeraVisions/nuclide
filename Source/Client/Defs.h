@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	PRINT_CHAT		3
 
 var float FONT_16;
+var float FONT_CON;
 
 // Clientside cvars
 var vector autocvar_con_color = '255 170 0'; // autocvar of "con_color"

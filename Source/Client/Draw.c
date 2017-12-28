@@ -76,9 +76,8 @@ void CSQC_DrawChat( void ) {
 	if ( fChatAlpha > 0.0f ) {
 #if 1
 		for ( int i = 0; i < CHAT_LINES; i++ ) {
-			drawstring( vChatPos + '1 1', sMSGBuffer[ i ], '8 8', '0 0 0', fChatAlpha, 0 );
-			drawstring( vChatPos, sMSGBuffer[ i ], '8 8', '1 1 1', fChatAlpha, 0 );
-			vChatPos_y += 12;
+			drawstring( vChatPos, sMSGBuffer[ i ], '12 12', '1 1 1', fChatAlpha, 0 );
+			vChatPos_y += 14;
 		}
 #else
 		string sDraw = sMSGBuffer[ 0 ];

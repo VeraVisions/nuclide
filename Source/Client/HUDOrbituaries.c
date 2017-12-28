@@ -85,7 +85,7 @@ This actually displays the contents of orbBuffer
 */
 void HUD_DrawOrbituaries( void ) {
 	vector vOrbPos = vVideoMins + [ vVideoResolution_x - 200, 56 ];
-	
+	drawfont = FONT_CON;
 	if ( fOrbituaryTime < time && iOrbituaryScroll >= 0 ) {
 		// We are cheap, just clear the attacker and we're good.
 		orbBuffer[ iOrbituaryScroll ].sAttacker = "";
@@ -102,8 +102,7 @@ void HUD_DrawOrbituaries( void ) {
 		vOrbPos_x = vVideoMins_x + vVideoResolution_x - ( orbBuffer[ i ].fOffset1 + orbBuffer[ i ].fOffset2 + orbBuffer[ i ].fOffset3 ) - 16;
 		
 		// Draw the attacker's name, shadow first
-		drawstring( vOrbPos + '1 1', orbBuffer[ i ].sAttacker, '8 8', '0 0 0', VGUI_WINDOW_FGALPHA, 0 );
-		drawstring( vOrbPos, orbBuffer[ i ].sAttacker, '8 8', orbBuffer[ i ].vColor1, VGUI_WINDOW_FGALPHA, 0 );
+		drawstring( vOrbPos, orbBuffer[ i ].sAttacker, '12 12', orbBuffer[ i ].vColor1, VGUI_WINDOW_FGALPHA, 0 );
 		
 		// Draw the weapon icon
 		if ( orbBuffer[ i ].fHeadShot == TRUE ) {
@@ -112,9 +111,8 @@ void HUD_DrawOrbituaries( void ) {
 			drawsubpic( vOrbPos + [ orbBuffer[ i ].fOffset1, -4 ], wpIconTable[ orbBuffer[ i ].fWeapon ].vSize * 256, wpIconTable[ orbBuffer[ i ].fWeapon ].sSprite, wpIconTable[ orbBuffer[ i ].fWeapon ].vOrigin, wpIconTable[ orbBuffer[ i ].fWeapon ].vSize, '1 0.5 0', 1, DRAWFLAG_ADDITIVE );
 		}
 		
-		// Draw the victim's name, shadow first again
-		drawstring( vOrbPos + [ orbBuffer[ i ].fOffset2 + orbBuffer[ i ].fOffset1, 0 ] + '1 1', orbBuffer[ i ].sVictim, '8 8', '0 0', VGUI_WINDOW_FGALPHA, 0 );
-		drawstring( vOrbPos + [ orbBuffer[ i ].fOffset2 + orbBuffer[ i ].fOffset1, 0 ], orbBuffer[ i ].sVictim, '8 8', orbBuffer[ i ].vColor2, VGUI_WINDOW_FGALPHA, 0 );
+		// Draw the victim's name
+		drawstring( vOrbPos + [ orbBuffer[ i ].fOffset2 + orbBuffer[ i ].fOffset1, 0 ], orbBuffer[ i ].sVictim, '12 12', orbBuffer[ i ].vColor2, VGUI_WINDOW_FGALPHA, 0 );
 		vOrbPos_y += 18;
 	}
 }
@@ -161,9 +159,9 @@ void HUD_AddOrbituaries( float fAttacker, float fAttackerTeam, float fVictim, fl
 		orbBuffer[ ORBITUARY_LINES - 1 ].vColor2 = HUD_GetChatColor( fVictimTeam );
 		orbBuffer[ ORBITUARY_LINES - 1 ].fWeapon = fWeapon;
 		orbBuffer[ ORBITUARY_LINES - 1 ].fHeadShot = fHeadshot;
-		orbBuffer[ ORBITUARY_LINES - 1 ].fOffset1 = stringwidth( orbBuffer[ ORBITUARY_LINES - 1 ].sAttacker, TRUE ) + 8;
+		orbBuffer[ ORBITUARY_LINES - 1 ].fOffset1 = stringwidth( orbBuffer[ ORBITUARY_LINES - 1 ].sAttacker, TRUE, '12 12' ) + 8;
 		orbBuffer[ ORBITUARY_LINES - 1 ].fOffset2 = ( wpIconTable[ fWeapon ].vSize[0] * 256 ) + 8;
-		orbBuffer[ ORBITUARY_LINES - 1 ].fOffset3 =  stringwidth( orbBuffer[ ORBITUARY_LINES - 1 ].sVictim, TRUE ) + 8;
+		orbBuffer[ ORBITUARY_LINES - 1 ].fOffset3 =  stringwidth( orbBuffer[ ORBITUARY_LINES - 1 ].sVictim, TRUE, '12 12' ) + 8;
 	}
 		
 	fOrbituaryTime = time + ORBITUARY_TIME;

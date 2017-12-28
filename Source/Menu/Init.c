@@ -69,6 +69,8 @@ void m_init( void ) {
 		iLogos += 1;
 	}
 	search_end( shSprays );
+	
+	drawfont = loadfont( "font", "", "12", -1 );
 }
 
 /*
