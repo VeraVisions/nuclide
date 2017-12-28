@@ -182,7 +182,7 @@ Player_CrouchCheck
 =================
 */
 float Player_CrouchCheck( entity targ ) {
-	vector vTrace = self.origin + '0 0 20';
+	vector vTrace = self.origin + '0 0 18';
 	
 	tracebox( vTrace, VEC_HULL_MIN, VEC_HULL_MAX, vTrace, FALSE, self );
 
@@ -226,7 +226,7 @@ void Player_CrouchUp( void ) {
 		return;
 	}
 
-	if ( ( self.flags & FL_CROUCHING ) && ( !self.velocity_z ) && ( Player_CrouchCheck( self ) ) ) {
+	if ( ( self.flags & FL_CROUCHING ) && ( Player_CrouchCheck( self ) ) ) {
 		setsize( self, VEC_HULL_MIN, VEC_HULL_MAX );
 
 		setorigin( self, self.origin + '0 0 18');

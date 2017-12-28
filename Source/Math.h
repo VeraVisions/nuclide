@@ -80,7 +80,7 @@ void runplayerphysics(void)
 		} 
 #endif
 		
-		if ( fallvel > 200 ) {
+		if ( fallvel > 245 ) {
 			self.velocity *= 0.25;
 		}
 	}
