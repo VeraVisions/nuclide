@@ -259,13 +259,22 @@ Returns whether or not we have the given weapon already
 =================
 */
 float Weapon_AlreadyExists( float fWeapon ) {
-	if ( wptTable[ fWeapon ].iSlot == SLOT_PRIMARY ) {
-		if ( self.fSlotPrimary == fWeapon ) {
+	if ( fWeapon == WEAPON_FLASHBANG || fWeapon == WEAPON_HEGRENADE || fWeapon == WEAPON_SMOKEGRENADE ) {
+		int iNades = self.iAmmo_FLASHBANG + self.iAmmo_HEGRENADE + self.iAmmo_SMOKEGRENADE;
+		if ( iNades ) {
 			return TRUE;
+		} else {
+			return FALSE;
 		}
-	} else if ( wptTable[ fWeapon ].iSlot == SLOT_SECONDARY ) {
-		if ( self.fSlotSecondary == fWeapon ) {
-			return TRUE;
+	} else { 
+		if ( wptTable[ fWeapon ].iSlot == SLOT_PRIMARY ) {
+			if ( self.fSlotPrimary == fWeapon ) {
+				return TRUE;
+			}
+		} else if ( wptTable[ fWeapon ].iSlot == SLOT_SECONDARY ) {
+			if ( self.fSlotSecondary == fWeapon ) {
+				return TRUE;
+			}
 		}
 	}
 	
@@ -524,7 +533,7 @@ Client-HUD call that switches to a specific weapon
 =================
 */
 void CSEv_PlayerSwitchWeapon_f( float fWeapon ) {
-	if ( Weapon_AlreadyExists( fWeapon ) == FALSE && fWeapon != WEAPON_KNIFE ) {
+	if ( ( Weapon_AlreadyExists( fWeapon ) == FALSE ) && ( fWeapon != WEAPON_KNIFE ) ) {
 		return;
 	}
 	if ( fWeapon != self.weapon ) {

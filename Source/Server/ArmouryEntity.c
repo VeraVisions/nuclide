@@ -81,8 +81,9 @@ void armoury_entity( void ) {
 		
 		entity eOld = self;
 		self = other;
-
-		if ( iArmouryItems[ eOld.item ] < 32 ) {
+		
+		// Only MP5 til PARA
+		if ( eOld.item < 14 ) {
 			if ( Weapon_SlotEmpty( Weapon_GetSlot( iArmouryItems[ eOld.item ] ) ) ) {
 				Weapon_AddItem( iArmouryItems[ eOld.item ] );
 				Weapon_Draw( iArmouryItems[ eOld.item ] );
@@ -92,6 +93,49 @@ void armoury_entity( void ) {
 			}
 		} else {
 			// Equipment
+			if ( iArmouryItems[ eOld.item ] == EQUIPMENT_KEVLAR ) {
+				if ( self.armor != 100 ) {
+					self.armor = 100;
+				} else {
+					self = eOld;
+					return;
+				}
+			} else if ( iArmouryItems[ eOld.item ] == EQUIPMENT_HELMET ) {
+				if ( self.armor == 100 ) {
+					if ( !( self.iEquipment & EQUIPMENT_HELMET ) ) {
+						sound( self, CHAN_ITEM, "items/tr_kevlar.wav", 1, ATTN_IDLE );
+					} else {
+						self = eOld;
+						return;
+					}
+				} else {
+					if ( self.iEquipment & EQUIPMENT_HELMET ) {
+						self.armor = 100;
+						sound( self, CHAN_ITEM, "items/tr_kevlar.wav", 1, ATTN_IDLE );
+					} else {
+						self.armor = 100;
+						self.iEquipment = self.iEquipment | EQUIPMENT_HELMET;
+						sound( self, CHAN_ITEM, "items/tr_kevlar.wav", 1, ATTN_IDLE );
+					}
+				}
+			} else {
+				int iNades = self.iAmmo_FLASHBANG + self.iAmmo_HEGRENADE + self.iAmmo_SMOKEGRENADE;
+				if ( iNades < 3 ) {
+					if ( iArmouryItems[ eOld.item ]  == WEAPON_FLASHBANG ) {
+						self.iAmmo_FLASHBANG++;
+						sound( self, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_IDLE );
+					} else if ( iArmouryItems[ eOld.item ]  == WEAPON_HEGRENADE ) {
+						self.iAmmo_HEGRENADE++;
+						sound( self, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_IDLE );
+					} else if ( iArmouryItems[ eOld.item ]  == WEAPON_SMOKEGRENADE ) {
+						self.iAmmo_SMOKEGRENADE++;
+						sound( self, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_IDLE );
+					}
+				} else {
+					self = eOld;
+					return;
+				}
+			}
 		}
 		self = eOld;
 
