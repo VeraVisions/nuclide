@@ -524,6 +524,9 @@ Client-HUD call that switches to a specific weapon
 =================
 */
 void CSEv_PlayerSwitchWeapon_f( float fWeapon ) {
+	if ( Weapon_AlreadyExists( fWeapon ) == FALSE && fWeapon != WEAPON_KNIFE ) {
+		return;
+	}
 	if ( fWeapon != self.weapon ) {
 		Weapon_Draw( fWeapon );
 	}
@@ -539,5 +542,4 @@ Client call that tells us to drop the currently equipped weapon
 void CSEv_WeaponDrop( void ) {
 	Weapon_DropWeapon( wptTable[ self.weapon ].iSlot );
 }
-
 #endif

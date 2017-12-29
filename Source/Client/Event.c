@@ -26,6 +26,17 @@ Init all the cmds in one place
 =================
 */
 void CSQC_ConsoleCommand_Init( void ) {
+	registercommand( "slot1" );
+	registercommand( "slot2" );
+	registercommand( "slot3" );
+	registercommand( "slot4" );
+	registercommand( "slot5" );
+	registercommand( "slot6" );
+	registercommand( "slot7" );
+	registercommand( "slot8" );
+	registercommand( "slot9" );
+	registercommand( "slot10" );
+	
 	registercommand( "dev_testorbituary" );
 	registercommand( "minimap" );
 	registercommand( "overview_test" );
@@ -41,6 +52,7 @@ void CSQC_ConsoleCommand_Init( void ) {
 	
 	registercommand( "buy" );
 	registercommand( "chooseteam" );
+	registercommand( "lastinv" );
 	registercommand( "invnext" );
 	registercommand( "invprev" );
 	registercommand( "+showscores" );
@@ -76,7 +88,9 @@ void CSQC_ConsoleCommand_Init( void ) {
 	registercommand( "m249" );
 	
 	registercommand( "primammo" );
+	registercommand( "buyammo1" );
 	registercommand( "secammo" );
+	registercommand( "buyammo2" );
 	
 	registercommand( "vest" );
 	registercommand( "vesthelm" );
@@ -123,6 +137,50 @@ float CSQC_ConsoleCommand( string sCMD ) {
 	tokenize( sCMD );
 
 	switch ( argv( 0 ) ) {
+	case "lastinv":
+		HUD_DrawWeaponSelect_Last();
+		return TRUE;
+		break;
+	case "slot1":
+		localcmd( "impulse 1\n" );
+		return TRUE;
+		break;
+	case "slot2":
+		localcmd( "impulse 2\n" );
+		return TRUE;
+		break;
+	case "slot3":
+		localcmd( "impulse 3\n" );
+		return TRUE;
+		break;
+	case "slot4":
+		localcmd( "impulse 4\n" );
+		return TRUE;
+		break;
+	case "slot5":
+		localcmd( "impulse 5\n" );
+		return TRUE;
+		break;
+	case "slot6":
+		localcmd( "impulse 6\n" );
+		return TRUE;
+		break;
+	case "slot7":
+		localcmd( "impulse 7\n" );
+		return TRUE;
+		break;
+	case "slot8":
+		localcmd( "impulse 8\n" );
+		return TRUE;
+		break;
+	case "slot9":
+		localcmd( "impulse 9\n" );
+		return TRUE;
+		break;
+	case "slot10":
+		localcmd( "impulse 10\n" );
+		return TRUE;
+		break;
 	case "dev_testorbituary":
 		HUD_AddOrbituaries( player_localnum, TEAM_T, player_localnum, TEAM_CT, floor( random( 1, CS_WEAPON_COUNT ) ), FALSE );
 		return TRUE;
@@ -293,10 +351,12 @@ float CSQC_ConsoleCommand( string sCMD ) {
 		sendevent( "PlayerBuyWeapon", "f", WEAPON_PARA );
 		return TRUE;
 		break;
+	case "buyammo1":
 	case "primammo":
 		sendevent( "GamePlayerBuyAmmo", "f", 0 );
 		return TRUE;
 		break;
+	case "buyammo2":
 	case "secammo":
 		sendevent( "GamePlayerBuyAmmo", "f", 1 );
 		return TRUE;

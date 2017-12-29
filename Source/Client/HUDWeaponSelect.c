@@ -370,16 +370,31 @@ void HUD_DrawWeaponSelect( void ) {
 	}
 }
 
+
+var float fHUDWeaponLast;
 /*
 =================
-HUD_DrawWeaponSelect
+HUD_DrawWeaponSelect_Trigger
 
 Called by CSQC_Input_Frame when conditions are met
 =================
 */
 void HUD_DrawWeaponSelect_Trigger( void ) {
+	fHUDWeaponLast = getstatf( STAT_ACTIVEWEAPON );
 	sendevent( "PlayerSwitchWeapon", "f", pSeat->fHUDWeaponSelected );
 	sound( self, CHAN_ITEM, "common/wpn_select.wav", 0.5, ATTN_NONE );
 	pSeat->fHUDWeaponSelectTime = 0;
 	pSeat->fHUDWeaponSelected = 0;
+}
+
+/*
+=================
+HUD_DrawWeaponSelect_Last
+
+Returns the last weapon we've used
+=================
+*/
+void HUD_DrawWeaponSelect_Last( void ) {
+	sendevent( "PlayerSwitchWeapon", "f", fHUDWeaponLast );
+	fHUDWeaponLast = getstatf( STAT_ACTIVEWEAPON );
 }
