@@ -128,6 +128,10 @@ void Player_Death( int iHitBody ) {
 		}
 	}
 	
+	if ( self.flags & FL_CROUCHING ) {
+		self.flags -= FL_CROUCHING;
+		self.maxspeed = Player_GetMaxSpeed( 0 );
+	}
 	
 	Spawn_MakeSpectator();
 	self.classname = "player";
@@ -205,11 +209,11 @@ void Player_CrouchDown( void ) {
 
 	if ( !( self.flags & FL_CROUCHING ) ) {
 		setsize( self, VEC_CHULL_MIN, VEC_CHULL_MAX );
+		setorigin( self, self.origin - '0 0 18' );
 		self.flags = self.flags | FL_CROUCHING;
 		self.view_ofs = VEC_PLAYER_CVIEWPOS;
-		self.velocity_z = self.velocity_z + 50;
 		self.maxspeed = Player_GetMaxSpeed( self.weapon );
-		self.iCrouchAttempt = 1;
+		self.iCrouchAttempt = TRUE;
 		return;
 	}
 
@@ -228,9 +232,8 @@ void Player_CrouchUp( void ) {
 
 	if ( ( self.flags & FL_CROUCHING ) && ( Player_CrouchCheck( self ) ) ) {
 		setsize( self, VEC_HULL_MIN, VEC_HULL_MAX );
-
-		setorigin( self, self.origin + '0 0 18');
-		self.velocity_z = self.velocity_z + 16;
+		setorigin( self, self.origin + '0 0 18' );
+		self.velocity_z = self.velocity_z + 25;
 		self.view_ofs = VEC_PLAYER_VIEWPOS;
 		self.flags = ( self.flags - FL_CROUCHING );
 		self.iCrouchAttempt = FALSE;

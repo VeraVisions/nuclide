@@ -157,8 +157,7 @@ void CSQC_CalcViewport( int s, float fWinWidth, float fWinHeight ) {
 	//as a general rule, you won't notice unless there's some big drawfills.
 	switch ( numclientseats ) {
 	case 3:
-		if (!s)
-		{
+		if ( !s ) {
 	case 2:
 		vVideoResolution = [ fWinWidth, fWinHeight * 0.5 ];
 		vVideoMins = [ 0, ( s & 1 ) * vVideoResolution_y ];
