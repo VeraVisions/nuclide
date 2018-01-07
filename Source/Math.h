@@ -79,7 +79,16 @@ void runplayerphysics(void)
 			Damage_Apply( self, world, fFallDamage, self.origin, FALSE );
 		} 
 #endif
-		
+
+#ifdef SSQC
+	if ( cvar( "pm_bunnyspeedcap") == 0 ) {
+		return;
+	}
+#else
+	if ( serverkey( "pm_bunnyspeedcap") == 0 ) {
+		return;
+	}
+#endif
 		if ( fallvel > 245 ) {
 			self.velocity *= 0.25;
 		}
