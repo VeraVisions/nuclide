@@ -137,6 +137,7 @@ Technically, it doesn't remove everything
 */
 void Entities_Remove( void ) {
 	if ( self.fRespawns == TRUE ) {
+		setorigin( self, self.vOldOrigin );
 		self.solid = SOLID_NOT;
 		self.model = 0;
 	} else {

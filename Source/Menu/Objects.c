@@ -192,7 +192,7 @@ A label in a cvar driven color scheme
 */
 void Object_Label( vector vPosition, string sLabel, vector vSize ) {
 	vPosition += vMenuOffset;
-	drawstring( vPosition, sLabel, vSize, autocvar_menu_fgcolor, 1.0f, 0 );	
+	drawstring( vPosition, sLabel, vSize, '1 1 1', 1.0f, 0 );	
 }
 
 /*
@@ -308,9 +308,9 @@ void Object_CvarToggle( vector vPosition, string sLabel, string sCvar ) {
 	drawfill( vPosition + '-2 -2', [ iWidth + 36, 16 ], '0 0 0', 0.8f );
 	
 	if ( cvar( sCvar ) == 0 ) {
-		drawstring( vPosition, sprintf( "[ ] %s", sLabel ), '12 12', autocvar_menu_fgcolor, fAlpha, 0 );
+		drawstring( vPosition, sprintf( "[ ] %s", sLabel ), '12 12', '1 1 1', fAlpha, 0 );
 	} else {
-		drawstring( vPosition, sprintf( "[X] %s", sLabel ), '12 12', autocvar_menu_fgcolor, fAlpha, 0 );
+		drawstring( vPosition, sprintf( "[X] %s", sLabel ), '12 12', '1 1 1', fAlpha, 0 );
 	}
 }
 
@@ -337,9 +337,9 @@ void Object_FuncToggle( vector vPosition, string sLabel, void( void ) vFunc, int
 	drawfill( vPosition + '-2 -2', [ iWidth + 36, 16 ], '0 0 0', 0.8f );
 	
 	if ( iValue == 0 ) {
-		drawstring( vPosition, sprintf( "[ ] %s", sLabel ), '12 12', autocvar_menu_fgcolor, fAlpha, 0 );
+		drawstring( vPosition, sprintf( "[ ] %s", sLabel ), '12 12', '1 1 1', fAlpha, 0 );
 	} else {
-		drawstring( vPosition, sprintf( "[X] %s", sLabel ), '12 12', autocvar_menu_fgcolor, fAlpha, 0 );
+		drawstring( vPosition, sprintf( "[X] %s", sLabel ), '12 12', '1 1 1', fAlpha, 0 );
 	}
 }
 
