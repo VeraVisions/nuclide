@@ -73,7 +73,7 @@ void Menu_Quit( void ) {
 	}
 	
 	Object_Frame( '192 192', '256 96' );
-	Object_Label( '200 216', _("FREECS_QUITMSG"), '12 12' );
+	Object_Label( '212 216', _("FREECS_QUITMSG"), '12 12' );
 		
 	Object_Button( '208 248', BTN_QUIT, Quit_Exit, fButtonAlpha[0] );
 	Object_Button( '364 248', BTN_CANCEL, Quit_Cancel, fButtonAlpha[1] );

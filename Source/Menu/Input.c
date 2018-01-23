@@ -179,8 +179,12 @@ float m_consolecommand( string sCMD ) {
 	tokenize( sCMD );
 	switch ( argv( 0 ) ) {
 		case "togglemenu":
-		m_display( );
-		return TRUE;
+			m_display( );
+			return TRUE;
+		break;
+		case "menu_quit":
+			iMenu = MENU_QUIT;
+			return TRUE;
 		break;
 		
 	}
