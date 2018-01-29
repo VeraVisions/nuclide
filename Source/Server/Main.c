@@ -130,6 +130,9 @@ void StartFrame( void ) {
 		} else if ( iInGamePlayers == 0 ) {
 			fGameState = GAME_INACTIVE;
 			fGameTime = 0;
+			iWon_T = 0;
+			iWon_CT = 0;
+			iRounds = 0;
 		} else {
 			Timer_Update(); // Timer that happens once players have started joining
 		}

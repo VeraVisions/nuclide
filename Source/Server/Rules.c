@@ -95,7 +95,7 @@ Rules_Restart
 Loop through all ents and handle them
 =================
 */
-void Rules_Restart( void ) {
+void Rules_Restart( int iWipe ) {
 	iHostagesRescued = 0;
 	
 	entity eOld = self;
@@ -104,13 +104,18 @@ void Rules_Restart( void ) {
 	for ( entity eFind = world; ( eFind = find( eFind, classname, "player" ) ); ) {
 		self = eFind;
 		
-		if ( self.health > 0 ) {
+		if ( self.health > 0 && iWipe == FALSE ) {
 			Spawn_RespawnClient( self.team );
 		} else {
+			Spawn_MakeSpectator();
 			Spawn_CreateClient( self.fCharModel );
 		}
 		
-		Money_GiveTeamReward();
+		if ( iWipe == FALSE ) {
+			Money_GiveTeamReward();
+		} else {
+			self.fMoney = autocvar_mp_startmoney;
+		}
 	}
 	
 	// Clear the corpses/items
@@ -202,10 +207,12 @@ void Rules_RoundOver( int iTeamWon, int iMoneyReward, float fSilent ) {
 			Radio_BroadcastMessage( RADIO_ROUNDDRAW );
 		}
 	}
+	
 	Money_QueTeamReward( iTeamWon, iMoneyReward );
 	Timer_Begin( 5, GAME_END); // Round is over, 5 seconds til a new round starts
 	
 	iBombPlanted = 0;
+	iRounds++;
 }
 
 /*
@@ -226,6 +233,40 @@ void Rules_TimeOver( void ) {
 	} else {
 		Rules_RoundOver( 0, 0, FALSE );
 	}
+}
+
+/*
+=================
+Rules_SwitchTeams
+
+Happens rarely
+=================
+*/
+void Rules_SwitchTeams( void ) {
+	int iCTW, iTW;
+	
+	for ( entity eFind = world; ( eFind = find( eFind, classname, "player" ) ); ) { 
+		if ( eFind.team == TEAM_CT ) {
+			eFind.team = TEAM_T;
+			eFind.fCharModel -= 4;
+		} else if ( eFind.team == TEAM_T ) {
+			eFind.team = TEAM_CT;
+			eFind.fCharModel += 4;
+		}
+		forceinfokey( eFind, "*team", ftos( eFind.team ) ); 
+	}
+	
+	iCTW = iWon_CT;
+	iTW = iWon_T;
+	
+	iWon_T = iCTW;
+	iWon_CT = iTW;
+	
+	iCTW = iAlivePlayers_CT;
+	iTW = iAlivePlayers_T;
+	
+	iAlivePlayers_CT = iTW;
+	iAlivePlayers_T = iCTW;
 }
 
 /*

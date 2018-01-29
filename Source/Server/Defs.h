@@ -87,6 +87,7 @@ enum {
 .float fProgressBar;
 
 // Match specific fields
+int iRounds;
 int iWon_T;
 int iWon_CT;
 int iAlivePlayers_T;

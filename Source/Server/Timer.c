@@ -87,6 +87,7 @@ void Timer_Update( void ) {
 	
 	// Okay, this means that timelimit is not the only deciding factor
 	if ( autocvar_mp_winlimit > 0 && fGameState != GAME_OVER ) {
+		// It really doesn't matter who won. Do some logging perhaps?
 		if ( iWon_CT == autocvar_mp_winlimit ) {
 			Timer_Begin( 5, GAME_OVER );
 		} else if ( iWon_T == autocvar_mp_winlimit ) {
@@ -102,7 +103,18 @@ void Timer_Update( void ) {
 	
 	if ( fGameState == GAME_COMMENCING || fGameState == GAME_END ) {
 		if ( fGameTime <= 0 ) {
-			Rules_Restart();
+			if ( iWon_T == 0 && iWon_CT == 0 ) {
+				Money_ResetTeamReward();
+				Rules_Restart( TRUE );
+			} else {
+				if ( autocvar_mp_halftime == TRUE && ( autocvar_mp_winlimit / 2 == iRounds ) ) {
+					Money_ResetTeamReward();
+					Rules_SwitchTeams();
+					Rules_Restart( TRUE );
+				} else {
+					Rules_Restart( FALSE );
+				}
+			}
 		}
 		return;
 	}
