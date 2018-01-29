@@ -267,7 +267,7 @@ void CSQC_UpdateView( float fWinWidth, float fWinHeight, float fGameFocus ) {
 			CSQC_DrawChat();
 			
 			// Don't even try to draw centerprints and VGUI menus when scores are shown
-			if ( pSeat->iShowScores == TRUE ) {
+			if ( pSeat->iShowScores == TRUE || getstatf( STAT_GAMESTATE ) == GAME_OVER ) {
 				VGUI_Scores_Show();
 			} else { 
 				CSQC_DrawCenterprint();

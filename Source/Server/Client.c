@@ -141,7 +141,7 @@ void SV_RunClientCommand( void ) {
 	
 	if ( fGameState == GAME_FREEZE && self.health > 0 ) {
 		input_movevalues = '0 0 0';
-		input_buttons = 0;
+		//input_buttons = 0;
 		input_impulse = 0;
 	}
 	

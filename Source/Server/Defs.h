@@ -22,7 +22,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define VEC_PLAYER_CVIEWPOS '0 0 12'
 
 // Server cvars
-var float autocvar_mp_startmoney = 800;
+var int autocvar_mp_winlimit = 0;
+var int autocvar_mp_halftime = 0;
+var int autocvar_mp_startmoney = 800;
 var float autocvar_mp_buytime = 90;
 var float autocvar_mp_freezetime = 6;
 var float autocvar_mp_c4timer = 45;

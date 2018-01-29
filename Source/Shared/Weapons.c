@@ -275,6 +275,10 @@ float Weapon_AlreadyExists( float fWeapon ) {
 			if ( self.fSlotSecondary == fWeapon ) {
 				return TRUE;
 			}
+		} else if ( wptTable[ fWeapon ].iSlot == SLOT_GRENADE ) {
+			if ( self.fSlotGrenade == fWeapon ) {
+				return TRUE;
+			}
 		}
 	}
 	

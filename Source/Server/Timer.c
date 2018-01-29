@@ -34,6 +34,8 @@ void Timer_Begin( float fTime, float fMode) {
 		fGameState = GAME_END;
 	} else if ( fMode == GAME_COMMENCING ) {
 		fGameState = GAME_COMMENCING;
+	} else if ( fMode == GAME_OVER ) {
+		fGameState = GAME_OVER;
 	}
 	
 	fGameTime = fTime;
@@ -66,16 +68,29 @@ void Timer_Update( void ) {
 		}
 	
 		if ( time >= ( cvar( "mp_timelimit" ) * 60 ) ) {
-			for ( int i = 0; i < iMapCycleCount; i++ ) {
-				if ( sMapCycle[ i ] == mapname ) {
-					if ( ( i + 1 ) < iMapCycleCount ) {
-						localcmd( sprintf( "changelevel %s\n", sMapCycle[ i + 1 ] ) );
-						return;
-					} else {
-						localcmd( sprintf( "changelevel %s\n", sMapCycle[ 0 ] ) );
-					}
+			Timer_Begin( 5, GAME_OVER );
+		}
+	}
+	
+	if ( ( fGameState == GAME_OVER ) && ( fGameTime < 0 ) ) {
+		for ( int i = 0; i < iMapCycleCount; i++ ) {
+			if ( sMapCycle[ i ] == mapname ) {
+				if ( ( i + 1 ) < iMapCycleCount ) {
+					localcmd( sprintf( "changelevel %s\n", sMapCycle[ i + 1 ] ) );
+					return;
+				} else {
+					localcmd( sprintf( "changelevel %s\n", sMapCycle[ 0 ] ) );
 				}
 			}
+		}
+	}
+	
+	// Okay, this means that timelimit is not the only deciding factor
+	if ( autocvar_mp_winlimit > 0 && fGameState != GAME_OVER ) {
+		if ( iWon_CT == autocvar_mp_winlimit ) {
+			Timer_Begin( 5, GAME_OVER );
+		} else if ( iWon_T == autocvar_mp_winlimit ) {
+			Timer_Begin( 5, GAME_OVER );
 		}
 	}
 	
@@ -96,7 +111,7 @@ void Timer_Update( void ) {
 		if ( fGameTime <= 0 ) {
 			if ( fGameState == GAME_ACTIVE ) {
 				Rules_TimeOver();
-				Timer_Begin( 5, GAME_END); // Round is over, 5 seconds til a new round starts
+				Timer_Begin( 5, GAME_END ); // Round is over, 5 seconds til a new round starts
 			} else {
 				Timer_Begin( autocvar_mp_roundtime * 60, GAME_ACTIVE ); // Unfreeze
 				Radio_StartMessage();	

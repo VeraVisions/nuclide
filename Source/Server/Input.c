@@ -38,10 +38,6 @@ void Input_Handle( void ) {
 		return;
 	}
 	
-	if ( fGameState == GAME_FREEZE ) {
-		return;
-	}
-	
 	// TODO: Make this fast switch only
 	if ( self.impulse == 3 ) {
 		Weapon_Switch( SLOT_MELEE );
@@ -66,7 +62,9 @@ void Input_Handle( void ) {
 	}
 	
 	if ( self.button0 ) {
-		Weapon_PrimaryAttack( self.weapon );
+		if ( fGameState != GAME_FREEZE ) {
+			Weapon_PrimaryAttack( self.weapon );
+		}
 	} else if ( self.button4 ) {
 		Weapon_Reload( self.weapon );
 	} else if ( self.button5 ) {
