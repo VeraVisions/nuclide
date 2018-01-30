@@ -101,9 +101,11 @@ First mulitplayer screen with the server browser
 =================
 */
 void Menu_Multiplayer( void ) {
+	static string strCustomIP;
 	static int iSelectedServer = -1;
 	static int iScrollServer;
 	static int iServersTotal;
+	static int iAddServer = FALSE;
 	
 	static void Multiplayer_ButtonJoin( void ) {
 		if ( iSelectedServer >= 0 ) {
@@ -123,6 +125,15 @@ void Menu_Multiplayer( void ) {
 	}
 	static void Multiplayer_ButtonIRC( void ) {
 		iMenu = MENU_MULTIPLAYER_IRC;	
+	}
+	static void Multiplayer_ButtonAdd( void ) {
+		iAddServer = 1 - iAddServer;	
+	}
+	static void Multiplayer_ButtonJoinIP( void ) {
+		if ( strCustomIP ) {
+			localcmd( sprintf( "connect %s\n", strCustomIP ) );
+			m_hide();
+		}
 	}
 	
 	// Initialize it on the first run
@@ -150,6 +161,7 @@ void Menu_Multiplayer( void ) {
 	Object_Button( '32 180', BTN_CREATE, Multiplayer_ButtonCreate, fButtonAlpha[1] );
 	Object_Button( '32 212', BTN_GAMEINFO, __NULL__, fButtonAlpha[2] );
 	Object_Button( '32 244', BTN_REFRESHLIST, Multiplayer_ButtonRefresh, fButtonAlpha[3] );
+	Object_Button( '32 276', BTN_ADDSERVER, Multiplayer_ButtonAdd, fButtonAlpha[4] );
 	
 	if ( checkcommand( "irc" ) ) {
 		Object_Button( '32 276', BTN_IRCCHAT, Multiplayer_ButtonIRC, fButtonAlpha[4] );
@@ -174,7 +186,19 @@ void Menu_Multiplayer( void ) {
 		Menu_Multiplayer_Find_Item( vListPos, i, iSelectedServer );
 		vListPos_y += 14;
 	}
+	
 	Menu_ResetClipArea();
+
+	if ( iAddServer ) {
+		Object_Frame( '192 192', '256 96' );
+		Object_Label( '212 216', "IP/Hostname:", '12 12' );
+		Object_Textfield( '212 232', strCustomIP, 25 );
+		
+		Object_Button( '208 248', BTN_JOIN, Multiplayer_ButtonJoinIP, fButtonAlpha[6] );
+		Object_Button( '364 248', BTN_CANCEL, Multiplayer_ButtonAdd, fButtonAlpha[7] );
+	}
+	
+	
 }
 
 /*
