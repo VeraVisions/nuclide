@@ -103,8 +103,6 @@ void Player_Draw( void ) {
 	self.frame2time += frametime;	
 	
 	self.bonecontrol5 = stof( getplayerkeyvalue( player_localnum, INFOKEY_P_VOIPLOUDNESS ) );
-	//self.subblendfrac = ;
-	//self. = self.angles_x / 90;
 }
 
 /*

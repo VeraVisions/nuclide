@@ -26,6 +26,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifdef CSQC
 .float frame_last;
 .float baseframe_last;
+#else
+.float subblend2frac;
 #endif
 
 enum {
@@ -279,6 +281,8 @@ void Animation_PlayerUpdate( void ) {
 	setorigin( self.eGunModel, self.origin ); // Set it to something consistent
 	vector vOffset = gettaginfo( self.eGunModel, self.eGunModel.fWeaponBoneID ) - gettaginfo( self, self.fWeaponBoneID );
 	setorigin( self.eGunModel, self.origin - vOffset );
+#else
+	self.subblend2frac = self.v_angle_x / 90;
 #endif
 }
 
