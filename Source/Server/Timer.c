@@ -52,23 +52,25 @@ void Timer_Update( void ) {
 	static float fVoxTimer;
 	
 	// This map has been played enough we think
-	if ( cvar( "mp_timelimit" ) > 0 ) {
-		if ( autocvar_sv_voxannounce == TRUE ) {
-			if ( fVoxTimer > time ) {
-				return;
-			}
-			
-			float fTimeLeft = ( cvar( "mp_timelimit" ) * 60 ) - time;
-			for ( int i = 0; i <= 10; i++ ) {
-				if ( rint( fTimeLeft ) == ( i * 60 ) ) {
-					Vox_Broadcast( sprintf( "%s minutes remaining", Vox_TimeToString( fTimeLeft / 60 ) ) );
-					fVoxTimer = time + 10.0f;
+	if ( fGameState != GAME_OVER ) {
+		if ( cvar( "mp_timelimit" ) > 0 ) {
+			if ( autocvar_sv_voxannounce == TRUE ) {
+				if ( fVoxTimer > time ) {
+					return;
+				}
+				
+				float fTimeLeft = ( cvar( "mp_timelimit" ) * 60 ) - time;
+				for ( int i = 0; i <= 10; i++ ) {
+					if ( rint( fTimeLeft ) == ( i * 60 ) ) {
+						Vox_Broadcast( sprintf( "%s minutes remaining", Vox_TimeToString( fTimeLeft / 60 ) ) );
+						fVoxTimer = time + 10.0f;
+					}
 				}
 			}
-		}
-	
-		if ( time >= ( cvar( "mp_timelimit" ) * 60 ) ) {
-			Timer_Begin( 5, GAME_OVER );
+		
+			if ( time >= ( cvar( "mp_timelimit" ) * 60 ) ) {
+				Timer_Begin( 5, GAME_OVER );
+			}
 		}
 	}
 	
