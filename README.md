@@ -66,18 +66,19 @@ You might get away with using the cstrike folder from the Steam version of Count
 than 1.5 - but they are not supported. I will not try to recreate 1.6 **YET** or any other earlier versions specifically.
 I may however add additional, optional features that will emulate behaviour of later versions of Counter-Strike, such as adding a way for server owners to configure whether or not buying a weapon automatically buys ammo (ala Counter-Strike: Source).
 
-# Support this project
-Feel free to send pull requests and refresh my memory by suggesting missing features under the **Issues** tab!
-If you would like me to spend more time on this project, consider donating to me via [PayPal](https://paypal.me/eukara) or [LiberaPay](https://liberapay.com/eukara/).
-
-This is a one-man side-project. Keep it in mind before commenting...
-Anway, any help is appreciated.
-
-# [Contributing](https://github.com/eukara/FreeCS/wiki/Contributing)
 # [Client Console Commands](https://github.com/eukara/FreeCS/wiki/Client-Commands)
 # [Client Console Variables](https://github.com/eukara/FreeCS/wiki/Client-Variables)
 # [Server Console Commands & Variables](https://github.com/eukara/FreeCS/wiki/Server-Commands-&-Variables)
 # [Frequently Asked Questions](https://github.com/eukara/FreeCS/wiki/FAQ)
+# [Contributing](https://github.com/eukara/FreeCS/wiki/Contributing)
+
+# Support this project
+Feel free to send pull requests and refresh my memory by suggesting missing features under the **Issues** tab!
+If you would like me to spend more time on this project, consider donating to me via [PayPal](https://paypal.me/eukara)
+However, you're doing great support by just testing and reporting problems to me.
+
+This is a one-man side-project. Keep it in mind before commenting...
+Anway, any help is appreciated!
 
 # Special Thanks
 **Spike** - Creator of FTE QuakeWorld and FTEQCC [(Website)](http://fte.triptohell.info/)
