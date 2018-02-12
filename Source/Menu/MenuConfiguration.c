@@ -148,10 +148,10 @@ void Menu_Configuration_Video( void ) {
 		}
 		
 		if ( iSelected == i ) {
-			drawfill( [ vPosition_x, vPosition_y - 1 ], [ 156, 10 ], '1 1 1', 0.5, 2 );
-			drawstring( [vPosition_x + 8, vPosition_y], strResolution[ i ], '12 12', '1 1 1', 1.0f, FALSE );
+			drawfill( [ vPosition_x, vPosition_y - 1 ], [ 156, 10 ], autocvar_menu_fgcolor, 0.5, 2 );
+			drawstring( [vPosition_x + 8, vPosition_y], strResolution[ i ], '12 12', autocvar_menu_fgcolor, 1.0f, FALSE );
 		} else {
-			drawstring( [vPosition_x + 8, vPosition_y], strResolution[ i ], '12 12', '1 1 1', fItemAlpha, FALSE );
+			drawstring( [vPosition_x + 8, vPosition_y], strResolution[ i ], '12 12', autocvar_menu_fgcolor, fItemAlpha, FALSE );
 		}
 	}
 	
@@ -386,12 +386,12 @@ void Menu_Configuration_Controls( void ) {
 		}
 		
 		if ( iSelected == i ) {
-			drawfill( [ vPosition_x, vPosition_y - 1 ], [ 397, 14 ], '1 1 1', 0.5, 2 );
-			drawstring( [vPosition_x + 8, vPosition_y], sBindTx, '12 12', '1 1 1', 1.0f, FALSE );
-			drawstring( [vPosition_x + 128, vPosition_y], strActDescr[ i ], '12 12', '1 1 1', 1.0f, FALSE );
+			drawfill( [ vPosition_x, vPosition_y - 1 ], [ 397, 14 ], autocvar_menu_fgcolor, 0.5, 2 );
+			drawstring( [vPosition_x + 8, vPosition_y], sBindTx, '12 12', autocvar_menu_fgcolor, 1.0f, FALSE );
+			drawstring( [vPosition_x + 128, vPosition_y], strActDescr[ i ], '12 12', autocvar_menu_fgcolor, 1.0f, FALSE );
 		} else {
-			drawstring( [vPosition_x + 8, vPosition_y], sBindTx, '12 12', '1 1 1', fItemAlpha, FALSE );
-			drawstring( [vPosition_x + 128, vPosition_y], strActDescr[ i ], '12 12', '1 1 1', fItemAlpha, FALSE );
+			drawstring( [vPosition_x + 8, vPosition_y], sBindTx, '12 12', autocvar_menu_fgcolor, fItemAlpha, FALSE );
+			drawstring( [vPosition_x + 128, vPosition_y], strActDescr[ i ], '12 12', autocvar_menu_fgcolor, fItemAlpha, FALSE );
 		}
 	}
 	

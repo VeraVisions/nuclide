@@ -154,7 +154,6 @@ void Spawn_RespawnClient( float fTeam ) {
 
 	self.view_ofs = VEC_PLAYER_VIEWPOS;
 	self.velocity = '0 0 0';
-	self.maxspeed = Player_GetMaxSpeed( self.weapon );
 	
 	self.frame = 1; // Idle frame
 	self.fBombProgress = 0;

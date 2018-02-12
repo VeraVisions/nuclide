@@ -79,7 +79,6 @@ enum {
 .float fStepTime;
 .int iInGame;
 .float fCharModel;
-.int iCrouchAttempt;
 //.int iHasBomb;
 .float fDeaths;
 .int iEquipment;
@@ -162,9 +161,6 @@ float BaseGun_Reload( void );
 
 void BaseMelee_Draw( void );
 int BaseMelee_Attack( void );
-	
-float Player_GetMaxSpeed( float fWeapon );
-
 void Effect_Impact( int iType, vector vPos, vector vNormal );
 void Effect_CreateSmoke( vector vPos );
 void Effect_CreateExplosion( vector vPos );

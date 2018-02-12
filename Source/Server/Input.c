@@ -55,12 +55,6 @@ void Input_Handle( void ) {
 		Player_UseUp();
 	}
 	
-	if ( self.button6 ) {
-		Player_CrouchDown();
-	} else if ( self.flags & FL_CROUCHING ) {
-		Player_CrouchUp();
-	}
-	
 	if ( self.button0 ) {
 		if ( fGameState != GAME_FREEZE ) {
 			Weapon_PrimaryAttack( self.weapon );

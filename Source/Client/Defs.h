@@ -45,6 +45,7 @@ var int autocvar_v_bobclassic = FALSE;
 var int autocvar_v_lefthanded = FALSE;
 var int autocvar_cl_thirdperson = FALSE;
 var int autocvar_cl_radar = 1;
+var int autocvar_cl_smoothstairs = TRUE;
 
 var string autocvar_cl_logofile = "lambda";
 var vector autocvar_cl_logocolor = '255 0 0';
@@ -151,7 +152,6 @@ void View_PlayAnimation( int iSequence );
 string HUD_GetChatColorHEX( float fTeam );
 
 // This actually belongs in Builtins.h since its an undocumented global
-.float weapon;
 .float maxframe;
 
 // For the player entity

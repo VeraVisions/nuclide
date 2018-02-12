@@ -155,6 +155,9 @@ void Player_Predict(void) {
 		}
 		
 		for ( int i = self.pmove_frame; i <= clientcommandframe; i++ ) {
+			if ( input_timelength == 0 ) {
+				break;
+			}
 			getinputstate( i );
 			runplayerphysics();
 		}
@@ -163,32 +166,47 @@ void Player_Predict(void) {
 			self.pmove_flags |= 0x80000;
 		}
 	}
-	pSeat->vPlayerOriginOld = pSeat->vPlayerOrigin;
+	
+	if ( autocvar_cl_smoothstairs && self.flags & FL_ONGROUND ) {
+		pSeat->vPlayerOriginOld = pSeat->vPlayerOrigin;
 
-	if ( ( self.flags & FL_ONGROUND ) && ( self.origin_z - pSeat->vPlayerOriginOld.z > 0 ) ) {
-		pSeat->vPlayerOriginOld.z += frametime * 150;
+		if ( ( self.jumptime <= 0 ) && ( self.origin_z - pSeat->vPlayerOriginOld.z > 0 ) ) {
+			pSeat->vPlayerOriginOld.z += frametime * 150;
 
-		if ( pSeat->vPlayerOriginOld.z > self.origin_z ) {
+			if ( pSeat->vPlayerOriginOld.z > self.origin_z ) {
+				pSeat->vPlayerOriginOld.z = self.origin_z;
+			}
+			if ( self.origin_z - pSeat->vPlayerOriginOld.z > 18 ) {
+				pSeat->vPlayerOriginOld.z = self.origin_z - 18;
+			}
+			pSeat->vPlayerOrigin.z += pSeat->vPlayerOriginOld.z - self.origin_z;
+		} else if ( ( self.jumptime <= 0 ) && ( self.origin_z - pSeat->vPlayerOriginOld.z < 0 ) ) {
+			pSeat->vPlayerOriginOld.z -= frametime * 250;
+			
+			if ( pSeat->vPlayerOriginOld.z < self.origin_z ) {
+				pSeat->vPlayerOriginOld.z = self.origin_z;
+			}
+			if ( self.origin_z - pSeat->vPlayerOriginOld.z > 18 ) {
+				pSeat->vPlayerOriginOld.z = self.origin_z - 18;
+			}
+			pSeat->vPlayerOrigin.z -= pSeat->vPlayerOriginOld.z - self.origin_z;
+		} else {
 			pSeat->vPlayerOriginOld.z = self.origin_z;
 		}
-		if ( self.origin_z - pSeat->vPlayerOriginOld.z > 18 ) {
-			pSeat->vPlayerOriginOld.z = self.origin_z - 18;
+
+		pSeat->vPlayerVelocity = self.velocity;
+
+		if ( autocvar_cl_thirdperson == TRUE && getstatf( STAT_HEALTH ) > 0 ) {
+			makevectors( view_angles );
+			vector vStart = [ self.origin_x, self.origin_y, pSeat->vPlayerOriginOld.z + 8 ] + ( v_right * 4 );
+			vector vEnd = vStart + ( v_forward * -48 ) + '0 0 8' + ( v_right * 4 );
+			traceline( vStart, vEnd, FALSE, self );
+			pSeat->vPlayerOrigin = trace_endpos + ( v_forward * 5 );
+		} else {
+			pSeat->vPlayerOrigin = [ self.origin_x, self.origin_y, pSeat->vPlayerOriginOld.z ];
 		}
-		pSeat->vPlayerOrigin.z += pSeat->vPlayerOriginOld.z - self.origin_z;
 	} else {
-		pSeat->vPlayerOriginOld.z = self.origin_z;
-	}
-
-	pSeat->vPlayerVelocity = self.velocity;
-
-	if ( autocvar_cl_thirdperson == TRUE && getstatf( STAT_HEALTH ) > 0 ) {
-		makevectors( view_angles );
-		vector vStart = [ self.origin_x, self.origin_y, pSeat->vPlayerOriginOld.z + 8 ] + ( v_right * 4 );
-		vector vEnd = vStart + ( v_forward * -48 ) + '0 0 8' + ( v_right * 4 );
-		traceline( vStart, vEnd, FALSE, self );
-		pSeat->vPlayerOrigin = trace_endpos + ( v_forward * 5 );
-	} else {
-		pSeat->vPlayerOrigin = [ self.origin_x, self.origin_y, pSeat->vPlayerOriginOld.z ];
+		pSeat->vPlayerOrigin = self.origin;
 	}
 
 	self.movetype = MOVETYPE_NONE;

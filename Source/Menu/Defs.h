@@ -65,8 +65,6 @@ int iMapCount;
 string *sLogos;
 var int iLogos;
 
-var float FONT_MENU;
-
 #define MENU_COUNT 11
 enum {
 	MENU_MAIN,

@@ -98,8 +98,8 @@ void CSQC_Init(float apilevel, string enginename, float engineversion) {
 	DECAL_GLASS 			= particleeffectnum( "decal_glass" );
 	PARTICLE_SMOKEGRENADE	= particleeffectnum( "smokegren" );
 	
-	FONT_16 = loadfont( "16", "gfx/conchars_16", "16", -1 );
-	FONT_CON = loadfont( "font", "", "12", -1 );
+	FONT_16 = loadfont( "16", "fonts/default", "16", -1 );
+	FONT_CON = loadfont( "font", "fonts/default", "12", -1 );
 	
 	SHADER_CULLED = shaderforname( "mirror_cull" );
 

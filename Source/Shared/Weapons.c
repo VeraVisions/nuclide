@@ -106,7 +106,6 @@ void Weapon_Draw( float fWeapon ) {
 	self.viewzoom = 1.0;
 	self.weapon = fWeapon;
 	self.fAttackFinished = time + 1.0;
-	self.maxspeed = Player_GetMaxSpeed( fWeapon );
 #endif
 
 #ifdef CSQC
@@ -218,6 +217,17 @@ Returns the reloading delay before being able to be fired again
 */
 float Weapon_GetReloadTime( float fWeapon ) {
 	return wptTable[ fWeapon ].fReloadFinished;
+}
+
+/*
+=================
+Weapon_GetSpeedM
+
+Returns the speed multiplier
+=================
+*/
+float Weapon_GetSpeedM( float fWeapon ) {
+	return wptTable[ fWeapon ].fSpeedM;
 }
 
 #ifdef SSQC

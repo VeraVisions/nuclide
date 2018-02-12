@@ -127,12 +127,7 @@ void Player_Death( int iHitBody ) {
 				break;
 		}
 	}
-	
-	if ( self.flags & FL_CROUCHING ) {
-		self.flags -= FL_CROUCHING;
-		self.maxspeed = Player_GetMaxSpeed( 0 );
-	}
-	
+
 	Spawn_MakeSpectator();
 	self.classname = "player";
 	self.health = 0;
@@ -165,84 +160,6 @@ void Player_Death( int iHitBody ) {
 			Rules_RoundOver( TEAM_T, 3600, FALSE );
 		}
 	}
-}
-
-/*
-=================
-Player_GetMaxSpeed
-=================
-*/
-float Player_GetMaxSpeed( float fWeapon ) {
-	if ( self.flags & FL_CROUCHING ) {
-		return ( cvar( "sv_maxspeed" ) * wptTable[ fWeapon ].fSpeedM ) * 0.5;
-	} else {
-		return cvar( "sv_maxspeed" ) * wptTable[ fWeapon ].fSpeedM;
-	}
-}
-
-/*
-=================
-Player_CrouchCheck
-=================
-*/
-float Player_CrouchCheck( entity targ ) {
-	vector vTrace = self.origin + '0 0 18';
-	
-	tracebox( vTrace, VEC_HULL_MIN, VEC_HULL_MAX, vTrace, FALSE, self );
-
-	if ( trace_startsolid == FALSE ) {
-		return TRUE;
-	}
-	
-	return FALSE;
-}
-
-/*
-=================
-Player_CrouchDown
-=================
-*/
-void Player_CrouchDown( void ) {
-	if ( self.movetype != MOVETYPE_WALK ) {
-		return;
-	}
-
-	if ( !( self.flags & FL_CROUCHING ) ) {
-		setsize( self, VEC_CHULL_MIN, VEC_CHULL_MAX );
-		setorigin( self, self.origin - '0 0 18' );
-		self.velocity_z = self.velocity_z + 50;
-		self.flags = self.flags | FL_CROUCHING;
-		self.view_ofs = VEC_PLAYER_CVIEWPOS;
-		self.maxspeed = Player_GetMaxSpeed( self.weapon );
-		self.iCrouchAttempt = TRUE;
-		return;
-	}
-
-	self.iCrouchAttempt = FALSE;
-}
-
-/*
-=================
-Player_CrouchUp
-=================
-*/
-void Player_CrouchUp( void ) {
-	if ( self.movetype != MOVETYPE_WALK ) {
-		return;
-	}
-
-	if ( ( self.flags & FL_CROUCHING ) && ( Player_CrouchCheck( self ) ) ) {
-		setsize( self, VEC_HULL_MIN, VEC_HULL_MAX );
-		setorigin( self, self.origin + '0 0 18' );
-		//self.velocity_z = self.velocity_z + 50;
-		self.view_ofs = VEC_PLAYER_VIEWPOS;
-		self.flags = ( self.flags - FL_CROUCHING );
-		self.iCrouchAttempt = FALSE;
-		self.maxspeed = Player_GetMaxSpeed( self.weapon );
-		return;
-	}
-
-	self.iCrouchAttempt = TRUE;
 }
 
 /*

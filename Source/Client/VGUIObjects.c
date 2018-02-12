@@ -117,7 +117,7 @@ void VGUI_Window( string sTitle, vector vPosition, vector vSize ) {
 	drawfill( [vPosition_x + vSize_x - 1, vPosition_y], [1, vSize_y], vVGUIColor, VGUI_WINDOW_FGALPHA );
 
 	// Draw the window title
-	CSQC_DrawText( vPosition + '16 16', sTitle, '12 12', '1 1 1', VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_CON );
+	CSQC_DrawText( vPosition + '16 16', sTitle, '12 12', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_CON );
 	drawfill( vPosition + '0 48', [vSize_x, 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
 }
 
@@ -140,7 +140,7 @@ void VGUI_WindowSmall( string sTitle, vector vPosition, vector vSize ) {
 	drawfill( [vPosition_x + vSize_x - 1, vPosition_y], [1, vSize_y], vVGUIColor, VGUI_WINDOW_FGALPHA );
 
 	// Draw the window title
-	CSQC_DrawText( vPosition + '8 8', sTitle, '12 12', '1 1 1', VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_CON );
+	CSQC_DrawText( vPosition + '8 8', sTitle, '12 12', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_CON );
 	drawfill( vPosition + '0 24', [vSize_x, 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
 }
 
@@ -179,11 +179,11 @@ float VGUI_Button( string sLabel, void() vFunction, vector vPosition, vector vSi
 			fMouseClick = FALSE;
 		}
 
-		CSQC_DrawText( vLabelPos, sLabel, '12 12', '1 1 1', VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_CON );
+		CSQC_DrawText( vLabelPos, sLabel, '12 12', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_CON );
 		drawfill( vLabelPos + '0 10 0', [ stringwidth( sLabel, TRUE, '12 12' ), 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
 		return TRUE;
 	} else {
-		CSQC_DrawText( vLabelPos, sLabel, '12 12', '1 1 1' * 0.8, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_CON );
+		CSQC_DrawText( vLabelPos, sLabel, '12 12', vVGUIColor * 0.8, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_CON );
 	}
 	
 	return FALSE;
@@ -208,7 +208,7 @@ void VGUI_FakeButton( string sLabel, vector vPosition, vector vSize ) {
 	vLabelPos_x = vPosition_x + 16;
 	vLabelPos_y = vPosition_y + ( ( vSize_y / 2 ) - 4 );
 
-	CSQC_DrawText( vLabelPos, sLabel, '12 12', '1 1 1' * 0.5, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_CON );
+	CSQC_DrawText( vLabelPos, sLabel, '12 12', vVGUIColor * 0.5, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_CON );
 }
 
 /*
@@ -219,7 +219,7 @@ Wrapper for simple GUI text labels
 ====================
 */
 void VGUI_Text( string sText, vector vPos, vector vSize, float fFont ) {
-	CSQC_DrawText( vPos, sText, vSize, '1 1 1', VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, fFont );
+	CSQC_DrawText( vPos, sText, vSize, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, fFont );
 }
 
 /*

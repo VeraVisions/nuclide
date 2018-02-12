@@ -5,13 +5,12 @@
 #includelist
 ../Builtins.h
 ../Globals.h
+../Shared/Physics.c
 ../Math.h
 Defs.h
 
 Money.c
 ../Shared/Animations.c
-
-PhysicsMove.c
 ../Shared/Radio.c
 ../Shared/WeaponAK47.c
 ../Shared/WeaponAUG.c

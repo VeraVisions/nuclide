@@ -42,7 +42,6 @@ void m_init( void ) {
 	}
 
 	search_end( shMaps );
-	FONT_MENU = loadfont( "menu", "gfx/menuchars", "32", -1 );
 	
 	vMenuButtonsSize = drawgetimagesize( "gfx/shell/btns_main" );
 	
@@ -70,7 +69,7 @@ void m_init( void ) {
 	}
 	search_end( shSprays );
 	
-	drawfont = loadfont( "font", "", "12", -1 );
+	drawfont = loadfont( "font", "fonts/default", "12", -1 );
 }
 
 /*

@@ -21,11 +21,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma target FTE
 //#pragma flag enable lo	//enable short-circuiting
 
-#define VEC_HULL_MIN '-16 -16 -36'
-#define VEC_HULL_MAX '16 16 36'
+const vector VEC_HULL_MIN = '-16 -16 -36';
+const vector VEC_HULL_MAX = '16 16 36';
 
-#define VEC_CHULL_MIN '-16 -16 -18'
-#define VEC_CHULL_MAX '16 16 18'
+const vector VEC_CHULL_MIN = '-16 -16 -18';
+const vector VEC_CHULL_MAX = '16 16 18';
+
+const vector VEC_PLAYER_VIEWPOS = '0 0 20';
+const vector VEC_PLAYER_CVIEWPOS = '0 0 12';
 
 #define PLAYER_SENDFLAG_UPDATE 1
 #define PLAYER_SENDFLAG_INGAME 2
@@ -310,3 +313,18 @@ enum {
 
 void Empty( void ) { }
 void BaseGun_ShotMultiplierHandle( float fShots );
+float Weapon_GetSpeedM( float fWeapon );
+.float weapon;
+
+/*
+=================
+Game_GetMaxSpeed
+=================
+*/
+float Game_GetMaxSpeed( float fWeapon ) {
+	if ( self.flags & FL_CROUCHING ) {
+		return ( cvar( "sv_maxspeed" ) * Weapon_GetSpeedM( fWeapon ) * 0.5 );
+	} else {
+		return cvar( "sv_maxspeed" ) * Weapon_GetSpeedM( fWeapon );
+	}
+}

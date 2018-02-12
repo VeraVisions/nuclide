@@ -6,9 +6,9 @@
 #includelist
 ../Builtins.h
 ../Globals.h
+../Shared/Physics.c
 ../Math.h
 Defs.h
-
 
 ../Shared/WeaponAK47.c
 ../Shared/WeaponAUG.c

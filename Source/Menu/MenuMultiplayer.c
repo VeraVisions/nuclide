@@ -81,15 +81,15 @@ void Menu_Multiplayer_Find_Item( vector vPosition, int i, __inout int iSelected 
 	
 	if ( iSelected == i ) {
 		drawfill( [ vPosition_x, vPosition_y - 1 ], [ 397, 14 ], '1 1 1', 0.5, 2 );
-		drawstring( [vPosition_x + 8, vPosition_y], sprintf( "%.25s", gethostcachestring( fldName, i ) ), '12 12', '1 1 1', 1.0f, FALSE );
-		drawstring( [vPosition_x + 186, vPosition_y], sprintf( "%.10s", gethostcachestring( fldMap, i ) ), '12 12', '1 1 1', 1.0f, FALSE );
-		drawstring( [vPosition_x + 298, vPosition_y], sprintf( "%d/%d", gethostcachenumber( fldPlayers, i ), gethostcachenumber( fldMaxplayers, i ) ), '12 12', '1 1 1', 1.0f, FALSE );
-		drawstring( [vPosition_x + 362, vPosition_y], sprintf( "%.3s", ftos( gethostcachenumber( fldPing, i ) ) ), '12 12', '1 1 1', 1.0f, FALSE );
+		drawstring( [vPosition_x + 8, vPosition_y], sprintf( "%.25s", gethostcachestring( fldName, i ) ), '12 12', autocvar_menu_fgcolor, 1.0f, FALSE );
+		drawstring( [vPosition_x + 186, vPosition_y], sprintf( "%.10s", gethostcachestring( fldMap, i ) ), '12 12', autocvar_menu_fgcolor, 1.0f, FALSE );
+		drawstring( [vPosition_x + 298, vPosition_y], sprintf( "%d/%d", gethostcachenumber( fldPlayers, i ), gethostcachenumber( fldMaxplayers, i ) ), '12 12', autocvar_menu_fgcolor, 1.0f, FALSE );
+		drawstring( [vPosition_x + 362, vPosition_y], sprintf( "%.3s", ftos( gethostcachenumber( fldPing, i ) ) ), '12 12', autocvar_menu_fgcolor, 1.0f, FALSE );
 	} else {
-		drawstring( [vPosition_x + 8, vPosition_y], sprintf( "^3%.25s", gethostcachestring( fldName, i ) ), '12 12', '1 1 1', fItemAlpha, FALSE );
-		drawstring( [vPosition_x + 186, vPosition_y], sprintf( "%.10s", gethostcachestring( fldMap, i ) ), '12 12', '1 1 1', fItemAlpha, FALSE );
-		drawstring( [vPosition_x + 298, vPosition_y], sprintf( "%d/%d", gethostcachenumber( fldPlayers, i ), gethostcachenumber( fldMaxplayers, i ) ), '12 12', '1 1 1', fItemAlpha, FALSE );
-		drawstring( [vPosition_x + 362, vPosition_y], sprintf( "%.3s", ftos( gethostcachenumber( fldPing, i ) ) ), '12 12', '1 1 1', fItemAlpha, FALSE );
+		drawstring( [vPosition_x + 8, vPosition_y], sprintf( "^3%.25s", gethostcachestring( fldName, i ) ), '12 12', autocvar_menu_fgcolor, fItemAlpha, FALSE );
+		drawstring( [vPosition_x + 186, vPosition_y], sprintf( "%.10s", gethostcachestring( fldMap, i ) ), '12 12', autocvar_menu_fgcolor, fItemAlpha, FALSE );
+		drawstring( [vPosition_x + 298, vPosition_y], sprintf( "%d/%d", gethostcachenumber( fldPlayers, i ), gethostcachenumber( fldMaxplayers, i ) ), '12 12', autocvar_menu_fgcolor, fItemAlpha, FALSE );
+		drawstring( [vPosition_x + 362, vPosition_y], sprintf( "%.3s", ftos( gethostcachenumber( fldPing, i ) ) ), '12 12', autocvar_menu_fgcolor, fItemAlpha, FALSE );
 	}
 }
 
@@ -243,10 +243,10 @@ void Menu_Multiplayer_Create( void ) {
 		}
 		
 		if ( iSelectedMap == iIndex ) {
-			drawfill( [ vPosition_x, vPosition_y - 1 ], [ 182, 14 ], '1 1 1', 0.5, 2 );
-			drawstring( vPosition + '8 0', sMapList[ iIndex ], '12 12', '1 1 1', 1.0f, 0 );	
+			drawfill( [ vPosition_x, vPosition_y - 1 ], [ 182, 14 ], '1 1 1', 0.25f, 2 );
+			drawstring( vPosition + '8 0', sMapList[ iIndex ], '12 12', autocvar_menu_fgcolor, 1.0f, 0 );	
 		} else {
-			drawstring( vPosition + '8 0', sMapList[ iIndex ], '12 12', '0.9 0.9 0.9', fAlpha, 0 );
+			drawstring( vPosition + '8 0', sMapList[ iIndex ], '12 12', autocvar_menu_fgcolor, fAlpha, 0 );
 		}
 	}
 	static void Create_ButtonAdvanced( void ) {
