@@ -24,11 +24,11 @@ vector input_movevalues;
 float input_buttons;
 
 #define PHYSICS_STEPHEIGHT 		18
-#define PHYSICS_AIRSTEPHEIGHT	18
+#define PHYSICS_AIRSTEPHEIGHT		18
 #define PHYSICS_FRICTION		4
-#define PHYSICS_EDGEFRICTION	2
+#define PHYSICS_EDGEFRICTION		2
 #define PHYSICS_GRAVITY			800
-#define PHYSICS_ACCELERATE		4
+#define PHYSICS_ACCELERATE		10
 #define PHYSICS_STOPSPEED		100
 
 #define PHYSICS_JUMP_CHAINWINDOW 0.5
@@ -314,12 +314,12 @@ void Physics_Run_Acceleration( float flMovetime, float flBefore ) {
 			// acceleration
 			f = flWishSpeed - ( self.velocity * vWishDirection );
 			if ( f > 0 ) {
-				self.velocity = self.velocity + vWishDirection * min( f, PHYSICS_ACCELERATE * flMovetime * flWishSpeed );
+				self.velocity += vWishDirection * min( f, PHYSICS_ACCELERATE * flMovetime * flWishSpeed );
 			}
 			
 		} else {
 			/*apply gravity*/
-			self.velocity_z = self.velocity_z - ( PHYSICS_GRAVITY * flMovetime );
+			self.velocity_z -= ( PHYSICS_GRAVITY * flMovetime );
 			
 			if ( flWishSpeed < 30 ) {
 				f = flWishSpeed - ( self.velocity * vWishDirection );
@@ -328,7 +328,7 @@ void Physics_Run_Acceleration( float flMovetime, float flBefore ) {
 			}
 			
 			if ( f > 0 ) {
-				self.velocity = self.velocity + vWishDirection * ( min( f, PHYSICS_ACCELERATE ) * flWishSpeed * flMovetime );
+				self.velocity += vWishDirection * ( min( f, PHYSICS_ACCELERATE ) * flWishSpeed * flMovetime );
 			}
 		}
 	}

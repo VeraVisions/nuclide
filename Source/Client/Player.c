@@ -148,22 +148,12 @@ void Player_Predict(void) {
 			self.movetype = MOVETYPE_NOCLIP;
 		}
 
-		if (self.pmove_flags & 0x80000) {
-			self.flags |= FL_ONGROUND;
-		} else {
-			self.flags &~= FL_ONGROUND;
-		}
-		
 		for ( int i = self.pmove_frame; i <= clientcommandframe; i++ ) {
 			if ( input_timelength == 0 ) {
 				break;
 			}
 			getinputstate( i );
 			runplayerphysics();
-		}
-		
-		if ( self.flags & FL_ONGROUND ) {
-			self.pmove_flags |= 0x80000;
 		}
 	}
 	
@@ -232,20 +222,10 @@ void Player_PreUpdate( void ) {
 		self.movetype = MOVETYPE_NOCLIP;
 	}
 
-	if ( self.pmove_flags & 0x80000 ) {
-		self.flags |= FL_ONGROUND;
-	} else {
-		self.flags &~= FL_ONGROUND;
-	}
-	
 	//we want to predict an exact copy of the data in the new packet
 	for ( ; self.pmove_frame <= servercommandframe; self.pmove_frame++ ) {
 		if ( getinputstate( self.pmove_frame ) )
 			runplayerphysics();
-	}
-
-	if ( self.flags & FL_ONGROUND ) {
-		self.pmove_flags |= 0x80000;
 	}
 
 	//we now have self.pmove_flags set properly...
