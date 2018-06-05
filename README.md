@@ -1,15 +1,9 @@
 # FreeCS
 A free-software implementation of Counter-Strike running on the FTE QuakeWorld engine.
 
-Join our IRC channel at chat.freenode.net #freecs and [Discord server!](https://discord.gg/MRJdFtw)
+Join our IRC channel at chat.freenode.net #freecs!
 
 **This implementation runs on Linux. WINE or a Windows machine is required to extract the CS 1.5 files. These files cannot be legally redistributed.**
-
-<img src="https://icculus.org/~marco/freecs/screens/screen1.png" alt="Screen 1" width="256" height="192"> <img src="https://icculus.org/~marco/freecs/screens/screen2.png" alt="Screen 2" width="256" height="192">
-
-<img src="https://icculus.org/~marco/freecs/screens/screen3.png" alt="Screen 3" width="256" height="192"> <img src="https://icculus.org/~marco/freecs/screens/screen4.png" alt="Screen 4" width="256" height="192">
-
-<img src="https://icculus.org/~marco/freecs/screens/portable.jpg" alt="Android Port" width="340" height="192">
 
 # Goals
 Although Counter-Strike is one of the most popular multiplayer games to exist, a free-software implementation has never been created. This project provides an open-source version of Counter-Strike 1.5 based closely on the original mod but with better usability and added optional features.
@@ -61,13 +55,6 @@ A recreation of the other Counter-Strike version will not be implemented **YET**
 However, additional optional features emulating the behaviour of later versions of Counter-Strike may be implemented.
 For example:
 * Adding a way for server owners to configure whether or not buying a weapon automatically buys ammo (like in Counter-Strike: Source).
-
-# Documentation
-### [Client Console Commands](https://github.com/eukara/FreeCS/wiki/Client-Commands)
-### [Client Console Variables](https://github.com/eukara/FreeCS/wiki/Client-Variables)
-### [Server Console Commands & Variables](https://github.com/eukara/FreeCS/wiki/Server-Commands-&-Variables)
-### [Frequently Asked Questions](https://github.com/eukara/FreeCS/wiki/FAQ)
-### [Contributing](https://github.com/eukara/FreeCS/wiki/Contributing)
 
 # Support this project
 Feel free to send pull requests and refresh my memory by suggesting missing features under the **Issues** tab!
