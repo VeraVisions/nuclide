@@ -71,6 +71,10 @@ FuncVehicle.c
 ArmouryEntity.c
 AmbientSound.c
 
+
+Bot/Bot.h
+Bot/Way.c
+
 Light.c
 Main.c
 Player.c
@@ -78,4 +82,7 @@ Spawn.c
 Footsteps.c
 Input.c
 Client.c
+
+Bot/Route.c 
+Bot/Bot.c
 #endlist

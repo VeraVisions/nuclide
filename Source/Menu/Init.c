@@ -69,7 +69,7 @@ void m_init( void ) {
 	}
 	search_end( shSprays );
 	
-	drawfont = loadfont( "font", "fonts/default", "12", -1 );
+	drawfont = loadfont( "font", "", "12", -1 );
 }
 
 /*

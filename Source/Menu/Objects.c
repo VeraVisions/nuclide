@@ -144,7 +144,7 @@ void Object_TextButton( vector vPosition, string sButtonText, void() vFunction, 
 		fAlpha = 0.0f;
 	}
 	
-	if ( Menu_InputCheckMouse( vPosition, [stringwidth(sButtonText, TRUE, '12 12'), 12] ) == TRUE ) {
+	if ( Menu_InputCheckMouse( vPosition, [stringwidth(sButtonText, TRUE, FONTSIZE), 12] ) == TRUE ) {
 		if ( sLastButton != sButtonText ) {
 			localcmd( "play ../media/launch_deny2.wav\n" );
 		}
@@ -160,7 +160,7 @@ void Object_TextButton( vector vPosition, string sButtonText, void() vFunction, 
 		}
 	}
 
-	drawstring( vPosition, sButtonText, '12 12', autocvar_menu_fgcolor, fAlpha, 1 );
+	drawstring( vPosition, sButtonText, FONTSIZE, autocvar_menu_fgcolor, fAlpha, 1 );
 }
 
 /*
@@ -192,7 +192,7 @@ A label in a cvar driven color scheme
 */
 void Object_Label( vector vPosition, string sLabel, vector vSize ) {
 	vPosition += vMenuOffset;
-	drawstring( vPosition, sLabel, vSize, autocvar_menu_fgcolor, 1.0f, 0 );	
+	drawstring( vPosition, sLabel, vSize, autocvar_menu_fgcolor, 1.0f, 0 );
 }
 
 /*
@@ -308,9 +308,9 @@ void Object_CvarToggle( vector vPosition, string sLabel, string sCvar ) {
 	drawfill( vPosition + '-2 -2', [ iWidth + 36, 16 ], '0 0 0', 0.8f );
 	
 	if ( cvar( sCvar ) == 0 ) {
-		drawstring( vPosition, sprintf( "[ ] %s", sLabel ), '12 12', autocvar_menu_fgcolor, fAlpha, 0 );
+		drawstring( vPosition, sprintf( "[ ] %s", sLabel ), FONTSIZE, autocvar_menu_fgcolor, fAlpha, 0 );
 	} else {
-		drawstring( vPosition, sprintf( "[X] %s", sLabel ), '12 12', autocvar_menu_fgcolor, fAlpha, 0 );
+		drawstring( vPosition, sprintf( "[X] %s", sLabel ), FONTSIZE, autocvar_menu_fgcolor, fAlpha, 0 );
 	}
 }
 
@@ -337,9 +337,9 @@ void Object_FuncToggle( vector vPosition, string sLabel, void( void ) vFunc, int
 	drawfill( vPosition + '-2 -2', [ iWidth + 36, 16 ], '0 0 0', 0.8f );
 	
 	if ( iValue == 0 ) {
-		drawstring( vPosition, sprintf( "[ ] %s", sLabel ), '12 12', autocvar_menu_fgcolor, fAlpha, 0 );
+		drawstring( vPosition, sprintf( "[ ] %s", sLabel ), FONTSIZE, autocvar_menu_fgcolor, fAlpha, 0 );
 	} else {
-		drawstring( vPosition, sprintf( "[X] %s", sLabel ), '12 12', autocvar_menu_fgcolor, fAlpha, 0 );
+		drawstring( vPosition, sprintf( "[X] %s", sLabel ), FONTSIZE, autocvar_menu_fgcolor, fAlpha, 0 );
 	}
 }
 
@@ -374,8 +374,8 @@ void Object_Textfield( vector vPosition, __inout string strValue, int iMaxChars 
 			}
 		}
 		fFieldAlpha = 1.0f;
-		drawstring( vPosition, sprintf( "%s_", strValue ), '12 12', autocvar_menu_fgcolor, fFieldAlpha, FALSE );
+		drawstring( vPosition, sprintf( "%s_", strValue ), FONTSIZE, autocvar_menu_fgcolor, fFieldAlpha, FALSE );
 	} else {
-		drawstring( vPosition, strValue, '12 12', autocvar_menu_fgcolor, fFieldAlpha, FALSE );
+		drawstring( vPosition, strValue, FONTSIZE, autocvar_menu_fgcolor, fFieldAlpha, FALSE );
 	}
 }

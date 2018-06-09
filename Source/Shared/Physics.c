@@ -24,9 +24,9 @@ vector input_movevalues;
 float input_buttons;
 
 #define PHYSICS_STEPHEIGHT 		18
-#define PHYSICS_AIRSTEPHEIGHT		18
+#define PHYSICS_AIRSTEPHEIGHT	18
 #define PHYSICS_FRICTION		4
-#define PHYSICS_EDGEFRICTION		2
+#define PHYSICS_EDGEFRICTION	2
 #define PHYSICS_GRAVITY			800
 #define PHYSICS_ACCELERATE		10
 #define PHYSICS_STOPSPEED		100
@@ -133,39 +133,7 @@ void Physics_Run_Acceleration( float flMovetime, float flBefore ) {
 		return;
 	}
 	
-	if ( self.movetype == MOVETYPE_WALK ) {
-		// Crouching
-		if ( input_movevalues_z < 0 ) {
-			if ( !( self.flags & FL_CROUCHING ) ) {
-				setorigin( self, self.origin - '0 0 18' );
-				self.flags |=  FL_CROUCHING;
-			}
-		} else {
-			if ( self.flags & FL_CROUCHING || ( self.flags & FL_CROUCHING ) ) {
-				tracebox( self.origin + '0 0 18', VEC_HULL_MIN, VEC_HULL_MAX, self.origin + '0 0 18', FALSE, self );
-				if ( trace_startsolid == FALSE ) {
-					setorigin( self, self.origin + '0 0 18' );
-					self.flags -= FL_CROUCHING;
-					
-					if ( self.velocity_z <= 0 ) {
-						self.velocity_z = self.velocity_z + 25;
-					}
-				}
-			}
-		}
-	}
-	
-	// Adjust the bounds and the viewheight, as well as speed
-	if ( self.flags & FL_CROUCHING ) {
-		self.mins = VEC_CHULL_MIN;
-		self.maxs = VEC_CHULL_MAX;
-		self.view_ofs = VEC_PLAYER_CVIEWPOS;
-	} else {
-		self.mins = VEC_HULL_MIN;
-		self.maxs = VEC_HULL_MAX;
-		self.view_ofs = VEC_PLAYER_VIEWPOS;
-	}
-	self.maxspeed = Game_GetMaxSpeed( self.weapon );
+
 
 	makevectors( input_angles );	
 	// swim

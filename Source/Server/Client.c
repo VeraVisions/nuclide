@@ -139,12 +139,17 @@ void SV_RunClientCommand( void ) {
 	self.fInBuyZone = FALSE;
 	self.fInHostageZone = FALSE;
 	
+	if (clienttype(self) == CLIENTTYPE_BOT) {
+		((CBot)self).RunAI();
+	}
+
 	if ( fGameState == GAME_FREEZE && self.health > 0 ) {
 		input_movevalues = '0 0 0';
 		//input_buttons = 0;
 		input_impulse = 0;
 	}
-	
+
+	Input_Handle();
 	runplayerphysics();
 }
 

@@ -218,7 +218,6 @@ Run before physics
 =================
 */
 void PlayerPreThink( void ) { 
-	Input_Handle();
 	BaseGun_ShotMultiplierUpdate();
 }
 

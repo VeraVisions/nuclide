@@ -41,10 +41,10 @@ void Menu_Main( void ) {
 	
 	if ( iHLContent == FALSE ) {
 		Object_Frame( '232 200', '400 96' );
-		Object_Label( '244 212', "Warning", '12 12' );
-		Object_Label( '244 248', "You have not copied over your 'valve' directory", '12 12' );
-		Object_Label( '244 258', "from Half-Life. This will cause missing models,", '12 12' );
-		Object_Label( '244 268', "sounds and textures. Be warned!", '12 12' );
+		Object_Label( '244 212', "Warning", FONTSIZE );
+		Object_Label( '244 248', "You have not copied over your 'valve' directory", FONTSIZE );
+		Object_Label( '244 258', "from Half-Life. This will cause missing models,", FONTSIZE );
+		Object_Label( '244 268', "sounds and textures. Be warned!", FONTSIZE );
 	}
 	
 	Object_Button( '72 188', BTN_CONSOLE, Main_ButtonConsole, fButtonAlpha[0] );
@@ -73,7 +73,7 @@ void Menu_Quit( void ) {
 	}
 	
 	Object_Frame( '192 192', '256 96' );
-	Object_Label( '212 216', _("FREECS_QUITMSG"), '12 12' );
+	Object_Label( '212 216', _("FREECS_QUITMSG"), FONTSIZE );
 		
 	Object_Button( '208 248', BTN_QUIT, Quit_Exit, fButtonAlpha[0] );
 	Object_Button( '364 248', BTN_CANCEL, Quit_Cancel, fButtonAlpha[1] );

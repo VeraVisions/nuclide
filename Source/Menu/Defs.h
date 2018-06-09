@@ -35,6 +35,8 @@ var string autocvar_cl_logofile = "lambda";
 var vector autocvar_cl_logocolor = '255 0 0';
 var vector vHeaderButtonPos;
 
+#define FONTSIZE '12 12'
+
 var vector vMousePos;
 var float fInputKeyCode;
 var float fInputKeyASCII;

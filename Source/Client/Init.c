@@ -99,7 +99,7 @@ void CSQC_Init(float apilevel, string enginename, float engineversion) {
 	PARTICLE_SMOKEGRENADE	= particleeffectnum( "smokegren" );
 	
 	FONT_16 = loadfont( "16", "fonts/default", "16", -1 );
-	FONT_CON = loadfont( "font", "fonts/default", "12", -1 );
+	FONT_CON  = loadfont( "font", "", "12", -1 );
 	
 	SHADER_CULLED = shaderforname( "mirror_cull" );
 

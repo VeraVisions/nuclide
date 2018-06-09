@@ -87,14 +87,116 @@ void SV_ParseClientCommand( string sCommand ) {
 }
 
 float ConsoleCmd( string sCommand ) {
+	CBot bot;
+	if ( !self ) {
+		for ( other = world; ( other = find( other, classname, "player" ) ); ) {
+			if ( clienttype( other ) == CLIENTTYPE_REAL ) {
+				self = other;
+				break;
+			}
+		}
+	}
 	tokenize( sCommand );
-	
-	if ( argv( 0 ) == "vox" ) {
+	switch ( argv( 0 ) ) {
+	case "bot_add":
+		bot = (CBot)spawnclient();
+		if ( !bot ) {
+			print( "Server is full\n" );
+			return TRUE;
+		}
+		bot.CreateRandom();
+		break;
+	case "bot_follow":
+		if ( !self ) {
+			return TRUE;
+		}
+		for ( other = world; ( other = find( other, classname, "Player" ) ); ) {
+			if ( clienttype( other ) != CLIENTTYPE_BOT ) {
+				continue;
+			}
+			bot = (CBot)other;
+			if ( bot.route ) {
+//				RT_RouteChange( bot.route, bot.origin, self.origin );
+			} else {
+//				RT_Destroy( bot.route );
+	//			bot.route = RT_RouteCreate( bot.origin, self.origin );
+			}
+		}
+		break;
+	case "bot_kill":
+		if ( !self ) {
+			return TRUE;
+		}
+		for ( other = world; ( other = find( other, classname, "Player" ) ); ) {
+			if ( clienttype( other ) != CLIENTTYPE_BOT ) {
+				continue;
+			}
+			if ( argv( 1 ) ) {
+				if ( other.netname == argv( 1 ) ) {
+					//Damage_Apply( other, other, 500, DAMAGE_SUICIDE, 0 );
+					break;
+				}
+			} else {
+				//Damage_Apply( other, other, 500, DAMAGE_SUICIDE, 0 );
+			}
+		}
+		break;
+	case "bot_kick":
+		if ( !self ) {
+			return TRUE;
+		}
+		for ( other = world; ( other = find( other, classname, "Player" ) ); ) {
+			if ( clienttype( other ) != CLIENTTYPE_BOT ) {
+				continue;
+			}
+			if ( argv( 1 ) ) {
+				if ( other.netname == argv( 1 ) ) {
+					dropclient( other );
+					break;
+				}
+			} else {
+				dropclient( other );
+			}
+		}
+		break;
+	case "way_add":
+		if ( !self ) {
+			return TRUE;
+		}
+		Way_Waypoint_Create( self, TRUE );
+		break;
+	case "way_delete":
+		if ( !self ) {
+			return TRUE;
+		}
+		Way_Waypoint_Delete( Way_FindClosestWaypoint( self.origin ) );
+		break;
+	case "way_radius":
+		if ( !self ) {
+			return TRUE;
+		}
+		Way_Waypoint_SetRadius( Way_FindClosestWaypoint( self.origin ), stof( argv( 1 ) ) );
+		break;
+	case "way_makejump":
+		if ( !self ) {
+			return TRUE;
+		}
+		Way_Waypoint_MakeJump( Way_FindClosestWaypoint( self.origin ) );
+		break;
+	case "way_save":
+		Way_DumpWaypoints( argv( 1 ) );
+		break;
+	case "way_load":
+		Way_ReadWaypoints( argv( 1 ) );
+		break;
+	case "vox":
 		Vox_Broadcast( argv( 1 ) );
-		return TRUE;
+		break;
+	default:
+		return FALSE;
 	}
 	
-	return FALSE;
+	return TRUE;
 }
 
 void SV_PausedTic( float fDuration ) {
@@ -237,6 +339,8 @@ void worldspawn( void ) {
 	for ( int i = 1; i < CS_WEAPON_COUNT; i++ ) {
 		precache_model( sWeaponModels[ i ] );
 	}
+	
+	Bot_Init();
 	
 	precache_model( "models/w_flashbang.mdl" );
 	precache_model( "models/w_hegrenade.mdl" );
