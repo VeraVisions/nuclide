@@ -2,9 +2,6 @@
 A free-software implementation of Counter-Strike running on the FTE QuakeWorld engine.
 
 Join our IRC channel at chat.freenode.net #freecs!
-
-**This implementation runs on Linux. WINE or a Windows machine is required to extract the CS 1.5 files. These files cannot be legally redistributed.**
-
 # Goals
 Although Counter-Strike is one of the most popular multiplayer games to exist, a free-software implementation has never been created. This project provides an open-source version of Counter-Strike 1.5 based closely on the original mod but with better usability and added optional features.
 
@@ -32,7 +29,7 @@ All weapons are implemented along with the following game modes:
 The game is playable as long as you don't care about the radar and overview display.
 
 # [Installing](https://github.com/eukara/FreeCS/wiki/Installation)
-1. Get the newest copy of FreeCS by cloning the repository or by [clicking here](https://github.com/eukara/FreeCS/archive/master.zip)
+1. Get the newest copy of FreeCS by cloning the repository
 2. Extract it to somewhere safe on your hard drive, where you have read/write access (for Windows users... this is not C:/Program Files)
 3. Get the latest binary form version of FTEQW from this [website](http://triptohell.info/moodles/) and put it into the FreeCS directory with default.fmf in it. [You can also build fteqw from source if you know how.](https://sourceforge.net/projects/fteqw/)
 4. Download csv15full.exe from [FilePlanet](https://www.fileplanet.com/57255/50000/fileinfo/Counter-Strike-1.5-Full-Mod-Client-[Win32])
@@ -69,5 +66,5 @@ Anyways, any help is appreciated!
 
 **TWHL** - Mapping Community with CS/HL entity information [(Website)](http://twhl.info)
 
-**This repository uses no content from Half-Life nor the original Counter-Strike. For credits
+**The code repository uses no content from Half-Life nor the original Counter-Strike. For credits
 to the ORIGINAL creators of Counter-Strike, please visit** [WebArchive - counter-strike net](http://web.archive.org/web/20021016230745/http://counter-strike.net/csteam.html)
