@@ -226,8 +226,8 @@ void CSQC_UpdateView( float fWinWidth, float fWinHeight, float fGameFocus ) {
 			setproperty( VF_VIEWENTITY, (float)player_localentnum );
 		}
 	
-		setproperty( VF_AFOV, cvar( "fov" ) * ( getstatf( STAT_VIEWZOOM ) / 255 ) );
-		setsensitivityscaler( ( getstatf( STAT_VIEWZOOM ) / 255 ) );
+		setproperty( VF_AFOV, cvar( "fov" ) * ( getstatf( STAT_VIEWZOOM ) ) );
+		setsensitivityscaler( ( getstatf( STAT_VIEWZOOM ) ) );
 	
 		// When Cameratime is active, draw on the forced coords instead
 		if ( pSeat->fCameraTime > time ) {

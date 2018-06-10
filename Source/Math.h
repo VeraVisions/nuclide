@@ -85,7 +85,6 @@ void runplayerphysics(void)
 				if ( trace_startsolid == FALSE ) {
 					setorigin( self, self.origin + '0 0 18' );
 					self.flags -= FL_CROUCHING;
-					
 					if ( self.velocity_z <= 0 ) {
 						self.velocity_z = self.velocity_z + 25;
 					}
@@ -105,7 +104,6 @@ void runplayerphysics(void)
 		self.view_ofs = VEC_PLAYER_VIEWPOS;
 	}
 	self.maxspeed = Game_GetMaxSpeed( self.weapon );
-	
 	runstandardplayerphysics( self );
 	if ( ( self.flags & FL_ONGROUND ) && self.movetype == MOVETYPE_WALK && ( fallvel > 100 )) {
 #ifdef SSQC

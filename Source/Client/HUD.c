@@ -464,7 +464,7 @@ void HUD_Draw( void ) {
 	vHUDColor = autocvar_con_color * ( 1 / 255 );
 	
 	// I guess viewzoom turns from 0.0-1.0 float into a 0-255 byte
-	if ( getstatf( STAT_VIEWZOOM ) < 255 ) {
+	if ( getstatf( STAT_VIEWZOOM ) < 1.0f ) {
 		HUD_DrawScope();
 	} else {
 		HUD_DrawCrosshair();

@@ -245,7 +245,7 @@ void View_DrawViewModel( void ) {
 	}
 
 	// Only bother when zoomed out
-	if ( getstatf( STAT_VIEWZOOM ) == 255 ) {
+	if ( getstatf( STAT_VIEWZOOM ) == 1.0f ) {
 		// Update muzzleflash position and draw it
 		if ( eMuzzleflash.alpha > 0.0f ) {
 			eMuzzleflash.origin = gettaginfo( eViewModel, eMuzzleflash.skin );

@@ -98,7 +98,7 @@ void func_vehicle( void ) {
 	static void func_vehicle_use( void ) {
 		bprint( "Used!\n" );
 		if ( self.eDriver ) {
-			if ( self.eDriver != eActivator )	{
+			if ( self.eDriver != eActivator ) {
 				// Someone else is using it, don't let him
 				return;	
 			} else {
@@ -124,8 +124,6 @@ void func_vehicle( void ) {
 	Entities_RenderSetup();
 	
 	Entities_InitRespawnable( func_vehicle_respawn );
-	
-	
 }
 
 void path_track( void ) {
