@@ -41,6 +41,8 @@ Not Toggled (32) - 	Older FGDs show this as Not Looped.
       				Note that actual looping depends purely on cue points defined in the .wav file (see notes).
 */
 .float pitch;
+.float loop;
+.float lforate;
 void ambient_generic( void ) {
 	static float ambient_generic_send( entity ePEnt, float fChanged ) {
 		WriteByte( MSG_ENTITY, ENT_AMBIENTSOUND );
@@ -50,6 +52,8 @@ void ambient_generic( void ) {
 		WriteString( MSG_ENTITY, self.message );
 		WriteFloat( MSG_ENTITY, self.health );
 		WriteByte( MSG_ENTITY, self.style );
+		WriteByte( MSG_ENTITY, self.loop );
+		WriteByte( MSG_ENTITY, self.lforate );
 		return TRUE;
 	}
 	static void ambient_generic_use( void ) {
@@ -72,11 +76,11 @@ void ambient_generic( void ) {
 			ambient_generic_useloop();
 		}
 	}
-	
+
 	precache_sound( self.message );
 	setorigin( self, self.origin );
 	self.health = self.health / 10;
-	
+
 	if ( self.spawnflags & 1 ) {
 		self.style = ATTN_NONE;
 	} else if ( self.spawnflags & 2 ) {
@@ -89,7 +93,13 @@ void ambient_generic( void ) {
 		self.style = ATTN_STATIC;
 	}
 	
-	if( self.spawnflags & 32 ) {
+	if ( self.spawnflags & 32 ) {
+		self.loop = FALSE;
+	} else {
+		self.loop = TRUE;
+	}
+
+	if( self.spawnflags & 16 ) {
 		self.vUse = ambient_generic_use;
 	} else {
 		self.noise = self.message; // Needed later for resuming

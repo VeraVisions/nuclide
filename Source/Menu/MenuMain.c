@@ -55,6 +55,13 @@ void Menu_Main( void ) {
 	Object_Button( '72 384', BTN_README, __NULL__, fButtonAlpha[4] );
 	Object_Button( '72 412', BTN_VISITWEB, __NULL__, fButtonAlpha[5] );
 	Object_Button( '72 440', BTN_QUIT, Main_ButtonQuit, fButtonAlpha[6] );
+	
+	Object_Desc( '244 282', "Change Counter-Strike's video, audio and control settings.", FONTSIZE );
+	Object_Desc( '244 338', "Get online and play Counter-Strike with others around the world.", FONTSIZE );
+	Object_Desc( '244 366', "Play/download other mods, or go back to Counter-Strike.", FONTSIZE );
+	Object_Desc( '244 394', "Read Counter-Strike's readme.txt.", FONTSIZE );
+	Object_Desc( '244 422', "Read the official Counter-Strike manual, learn how to play.", FONTSIZE );
+	Object_Desc( '244 450', "Quit Counter-Strike.", FONTSIZE );
 }
 
 /*

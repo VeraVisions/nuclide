@@ -18,9 +18,28 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-void CSQC_ambient_generic( string sSample, float fVolume, float fAttenuation ) {
+void CSQC_ambient_generic( string sSample, float fVolume, float fAttenuation, float fLoop, float lFORate ) {
 	//print( sprintf( "SOUND: %s, %f, %d\n%d %d %d", sSample, fVolume, fAttenuation, self.origin_x, self.origin_y, self.origin_z ) );
-	sound( self, CHAN_VOICE, sSample, fVolume, fAttenuation, 0, SOUNDFLAG_FORCELOOP );
+	static void LFOHack (void) {
+		sound( self, CHAN_VOICE, self.classname, self.movetype, self.style, 0, 0 );
+		self.nextthink = self.solid + time;
+	}
+	// Hack
+	if ( lFORate ) {
+		self.classname = sSample;
+		self.movetype = fVolume;
+		self.style = fAttenuation;
+		self.think = LFOHack;
+		self.solid = lFORate / 10;
+		self.nextthink = self.solid + time;
+		fLoop = FALSE;
+	}
+	
+	if ( fLoop ) {
+		sound( self, CHAN_VOICE, sSample, fVolume, fAttenuation, 0, SOUNDFLAG_FORCELOOP );
+	} else {
+		sound( self, CHAN_VOICE, sSample, fVolume, fAttenuation, 0, 0 );
+	}
 }
 
 /*
@@ -73,7 +92,7 @@ void CSQC_Ent_Update( float flIsNew ) {
 		
 		setorigin( self, self.origin );
 		
-		CSQC_ambient_generic( readstring(), readfloat(), readbyte() );
+		CSQC_ambient_generic( readstring(), readfloat(), readbyte(), readbyte(), readbyte() );
 	} else if ( fEntType == ENT_SPRITE ) {
 		self.origin_x = readcoord();
 		self.origin_y = readcoord();

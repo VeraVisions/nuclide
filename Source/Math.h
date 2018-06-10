@@ -103,6 +103,7 @@ void runplayerphysics(void)
 		self.maxs = VEC_HULL_MAX;
 		self.view_ofs = VEC_PLAYER_VIEWPOS;
 	}
+
 	self.maxspeed = Game_GetMaxSpeed( self.weapon );
 	runstandardplayerphysics( self );
 	if ( ( self.flags & FL_ONGROUND ) && self.movetype == MOVETYPE_WALK && ( fallvel > 100 )) {

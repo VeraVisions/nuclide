@@ -209,6 +209,18 @@ void Object_Label_Right( vector vPosition, string sLabel, vector vSize ) {
 
 /*
 =================
+Object_Desc
+
+A label in a grey scheme
+=================
+*/
+void Object_Desc( vector vPosition, string sLabel, vector vSize ) {
+	vPosition += vMenuOffset;
+	drawstring( vPosition, sLabel, vSize, '0.68 0.68 0.68', 1.0f, 0 );
+}
+
+/*
+=================
 Object_Scrollbar
 
 A scrollbar, for different types of purposes.
@@ -293,7 +305,7 @@ void Object_CvarToggle( vector vPosition, string sLabel, string sCvar ) {
 	int iWidth = stringwidth( sLabel, FALSE );
 	vPosition += vMenuOffset;
 	
-	if ( Menu_InputCheckMouse( vPosition, [ iWidth + 32, 12 ] ) == TRUE ) {
+	if ( Menu_InputCheckMouse( vPosition, [ iWidth + 32, 19 ] ) == TRUE ) {
 		fAlpha = 1.0f;
 		if ( fMouseClick == TRUE ) {
 			if ( cvar( sCvar ) == 0 ) {
@@ -305,12 +317,14 @@ void Object_CvarToggle( vector vPosition, string sLabel, string sCvar ) {
 		}
 	}
 	
-	drawfill( vPosition + '-2 -2', [ iWidth + 36, 16 ], '0 0 0', 0.8f );
+	drawfill( vPosition + '-2 -2', [ iWidth + 48, 19 ], '0 0 0', 0.8f );
 	
 	if ( cvar( sCvar ) == 0 ) {
-		drawstring( vPosition, sprintf( "[ ] %s", sLabel ), FONTSIZE, autocvar_menu_fgcolor, fAlpha, 0 );
+		drawpic( vPosition, "gfx/shell/cb_empty", '19 19', '1 1 1', 1.0f, 0 );
+		drawstring( vPosition+[24,4], sLabel, FONTSIZE, autocvar_menu_fgcolor, fAlpha, 0 );
 	} else {
-		drawstring( vPosition, sprintf( "[X] %s", sLabel ), FONTSIZE, autocvar_menu_fgcolor, fAlpha, 0 );
+		drawpic( vPosition, "gfx/shell/cb_checked", '19 19', '1 1 1', 1.0f, 0 );
+		drawstring( vPosition+[24,4], sLabel, FONTSIZE, autocvar_menu_fgcolor, fAlpha, 0 );
 	}
 }
 
@@ -326,7 +340,7 @@ void Object_FuncToggle( vector vPosition, string sLabel, void( void ) vFunc, int
 	int iWidth = stringwidth( sLabel, FALSE );
 	vPosition += vMenuOffset;
 	
-	if ( Menu_InputCheckMouse( vPosition, [ iWidth + 32, 12 ] ) == TRUE ) {
+	if ( Menu_InputCheckMouse( vPosition, [ iWidth + 32, 19 ] ) == TRUE ) {
 		fAlpha = 1.0f;
 		if ( fMouseClick == TRUE ) {
 			vFunc();
@@ -334,12 +348,14 @@ void Object_FuncToggle( vector vPosition, string sLabel, void( void ) vFunc, int
 		}
 	}
 	
-	drawfill( vPosition + '-2 -2', [ iWidth + 36, 16 ], '0 0 0', 0.8f );
+	drawfill( vPosition + '-2 -2', [ iWidth + 48, 19 ], '0 0 0', 0.8f );
 	
 	if ( iValue == 0 ) {
-		drawstring( vPosition, sprintf( "[ ] %s", sLabel ), FONTSIZE, autocvar_menu_fgcolor, fAlpha, 0 );
+		drawpic( vPosition, "gfx/shell/cb_empty", '19 19', '1 1 1', 1.0f, 0 );
+		drawstring( vPosition+[24,4], sLabel, FONTSIZE, autocvar_menu_fgcolor, fAlpha, 0 );
 	} else {
-		drawstring( vPosition, sprintf( "[X] %s", sLabel ), FONTSIZE, autocvar_menu_fgcolor, fAlpha, 0 );
+		drawpic( vPosition, "gfx/shell/cb_checked", '19 19', '1 1 1', 1.0f, 0 );
+		drawstring( vPosition+[24,4], sLabel, FONTSIZE, autocvar_menu_fgcolor, fAlpha, 0 );
 	}
 }
 

@@ -29,6 +29,8 @@ void Menu_Configuration_Init( void );
 void m_init( void ) {
 	precache_pic( "gfx/shell/splash" );
 	precache_pic( "gfx/shell/btns_main" );
+	precache_pic( "gfx/shell/cb_empty" );
+	precache_pic( "gfx/shell/cb_checked" );
 	
 	Menu_Configuration_Init();
 	

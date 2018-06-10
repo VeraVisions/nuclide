@@ -48,14 +48,14 @@ chat messages and handle distribution ourselves.
 */
 void SV_ParseClientCommand( string sCommand ) {
 	tokenize( sCommand );
-	
-	string chat = substring( sCommand, 4, strlen( sCommand ) - 4 )
-	
+
 	if ( argv( 1 ) == "timeleft" ) {
 		float fTimeLeft = cvar( "mp_timelimit" ) - ( time / 60 );
 		Vox_Singlecast( self, sprintf( "we have %s minutes remaining", Vox_TimeToString( fTimeLeft ) ) );
 		return;
 	}
+
+	string chat = substring( sCommand, 4, strlen( sCommand ) - 4 );
 
 	// Players talk to players, spectators to spectators.
 	if ( self.health  ) {

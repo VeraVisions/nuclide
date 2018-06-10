@@ -233,7 +233,11 @@ void CSQC_UpdateView( float fWinWidth, float fWinHeight, float fGameFocus ) {
 		if ( pSeat->fCameraTime > time ) {
 			setproperty( VF_ORIGIN, pSeat->vCameraPos ) ;
 		} else {
-			setproperty( VF_ORIGIN, pSeat->vPlayerOrigin + [ 0, 0, getstatf( STAT_VIEWHEIGHT ) ] );
+			if ( getstatf( STAT_HEALTH ) ) {
+				setproperty( VF_ORIGIN, pSeat->vPlayerOrigin + [ 0, 0, getstatf( STAT_VIEWHEIGHT ) ] );
+			} else {
+				setproperty( VF_ORIGIN, pSeat->vPlayerOrigin );
+			}
 			View_DrawViewModel();
 		}
 	

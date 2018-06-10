@@ -28,6 +28,51 @@ enum {
 	HOSTAGE_RUN
 };
 
+enum {
+	A_WALK,
+	A_WALKSCARED,
+	A_RUN,
+	A_RUNSCARED,
+	A_RUNLOOK,
+	A_180LEFT,
+	A_180RIGHT,
+	A_FLINCH,
+	A_PAIN,
+	A_PAINLEFT,
+	A_PAINRIGHT,
+	A_PAINLEGLEFT,
+	A_PAINLEGRIGHT,
+	A_IDLE1,
+	A_IDLE2,
+	A_IDLE3,
+	A_IDLE4,
+	A_IDLE5,
+	A_IDLE6,
+	A_SCARED_END,
+	A_SCARED1,
+	A_SCARED2,
+	A_SCARED3,
+	A_PANIC,
+	A_FEAR1,
+	A_FEAR2,
+	A_CRY,
+	A_SCI1,
+	A_SCI2,
+	A_SCI3,
+	A_DIE_SIMPLE,
+	A_DIE_FORWARD1,
+	A_DIE_FORWARD2,
+	A_DIE_BACKWARD,
+	A_DIE_HEADSHOT,
+	A_DIE_GUTSHOT,
+	A_LYING1,
+	A_LYING2,
+	A_DEADSIT,
+	A_DEADTABLE1,
+	A_DEADTABLE2,
+	A_DEADTABLE3
+};
+
 /*
 =================
 hostage_waypoint
@@ -73,7 +118,7 @@ Called whenever a hostage is shot
 =================
 */
 void hostage_pain( int iHitBody ) {
-	self.frame = 13 - floor( random( 1, 6 ) );
+	self.frame = A_PAIN + floor( random( 0, 5 ) );
 }
 
 /*
@@ -85,7 +130,7 @@ hosdown.wav
 */
 void hostage_die( int iHitBody ) {
 	Radio_BroadcastMessage( RADIO_HOSDOWN );
-	self.frame = 30 + floor( random( 1, 6 ) );
+	self.frame = A_DIE_SIMPLE + floor( random( 0, 6 ) );
 	
 	self.solid = SOLID_NOT;
 	self.takedamage = DAMAGE_NO;
@@ -140,7 +185,6 @@ void hostage_physics( void ) {
 		// Slowly turn towards target
 		float fTurn = Math_LerpAngle( self.v_angle_y, vEndAngle_y, frametime * 4 );
 		self.v_angle_y += fTurn;
-		
 		self.v_angle_y = Math_FixDelta( self.v_angle_y );
 		
 		// Is the waypoint close? if so, remove and go set the next one!
@@ -189,20 +233,20 @@ void hostage_physics( void ) {
 		}
 		
 		if ( fTurn > 0.01 ) {
-			self.frame = 5;
+			self.frame = A_180LEFT;
 		} else if ( fTurn < -0.01 ){
-			self.frame = 6;
+			self.frame = A_180RIGHT;
 		} else {
-			self.frame = 13;
+			self.frame = A_IDLE1;
 		}
 		
 		// Decide speed and stuff
 		if ( self.style == HOSTAGE_WALK ) {
-			self.frame = 0;
+			self.frame = A_WALK;
 			input_movevalues_x = 110;
 		} else if ( self.style == HOSTAGE_RUN ) {
 			input_movevalues_x = 220;
-			self.frame = 2;
+			self.frame = A_RUN;
 		} else {
 			input_movevalues_x = 0;
 		}
@@ -250,10 +294,19 @@ void hostage_entity( void ) {
 		self.vDeath = hostage_die;
 		self.style = HOSTAGE_IDLE;
 
-		self.frame = 13; // Idle frame
+		self.frame = A_IDLE1;
 		self.health = 100;
 		self.velocity = '0 0 0';
 		self.iHasBeenUsed = FALSE;
+	}
+
+	// Path hack
+	if ( self.model == "/models/hostage.mdl" ) {
+		self.model = "";
+	}
+
+	if ( !self.model ) {
+		self.model = "models/hostage.mdl";
 	}
 	
 	precache_model( self.model );
