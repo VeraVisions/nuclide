@@ -321,6 +321,9 @@ void Empty( void ) { }
 void BaseGun_ShotMultiplierHandle( float fShots );
 float Weapon_GetSpeedM( float fWeapon );
 .float weapon;
+.float jumptime;
+.vector view_ofs;
+.float maxspeed;
 
 /*
 =================
