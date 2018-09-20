@@ -70,7 +70,7 @@ void Way_DumpWaypoints( string filename )
 	{
 		fputs(file, sprintf("%v %f %i\n", waypoints[i].org, waypoints[i].flRadius, waypoints[i].iNeighbours));
 		for(int j = 0i; j < waypoints[i].iNeighbours; j++)
-			fputs(file, sprintf(" %i %f %#x\n", waypoints[i].neighbour[j].node, waypoints[i].neighbour[j].linkcost, waypoints[i].neighbour[j].iFlags));
+			fputs(file, sprintf(" %i %f %#x\n", waypoints[i].neighbour[j].node, waypoints[i].neighbour[j].linkcost, (float)waypoints[i].neighbour[j].iFlags));
 	}
 	fclose(file);
 }

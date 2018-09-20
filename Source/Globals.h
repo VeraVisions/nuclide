@@ -308,6 +308,8 @@ enum {
 #define INPUT_BUTTON4 8
 #define INPUT_BUTTON5 16
 #define INPUT_BUTTON6 32
+#define INPUT_BUTTON7 64
+#define INPUT_BUTTON8 128
 
 #define FL_USERELEASED 	(1<<13)
 #define FL_CROUCHING 	(1<<19)
@@ -330,10 +332,10 @@ float Weapon_GetSpeedM( float fWeapon );
 Game_GetMaxSpeed
 =================
 */
-float Game_GetMaxSpeed( float fWeapon ) {
-	if ( self.flags & FL_CROUCHING ) {
-		return ( cvar( "sv_maxspeed" ) * Weapon_GetSpeedM( fWeapon ) * 0.5 );
+float Game_GetMaxSpeed( entity eTarget ) {
+	if ( eTarget.flags & FL_CROUCHING ) {
+		return ( cvar( "sv_maxspeed" ) * Weapon_GetSpeedM( eTarget.weapon ) * 0.5 );
 	} else {
-		return cvar( "sv_maxspeed" ) * Weapon_GetSpeedM( fWeapon );
+		return cvar( "sv_maxspeed" ) * Weapon_GetSpeedM( eTarget.weapon );
 	}
 }

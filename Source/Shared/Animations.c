@@ -137,9 +137,9 @@ enum {
 
 void Animation_Print( string sWow ) {
 #ifdef CSQC
-	print( sprintf( "[DEBUG] %s" ), sWow );
+	print( sprintf( "[DEBUG] %s", sWow ) );
 #else 
-	bprint( sprintf( "SSQC: %s" ), sWow );
+	bprint( sprintf( "SSQC: %s", sWow )  );
 #endif	
 }
 
@@ -194,7 +194,9 @@ void Animation_PlayerUpdate( void ) {
 		self.baseframe_old = self.baseframe;
 	}
 	
-	if ( vlen( self.velocity ) == 0 ) {
+	if ( !( self.flags & FL_ONGROUND ) ) {
+		self.frame = ANIM_JUMP;
+	} else if ( vlen( self.velocity ) == 0 ) {
 		if ( self.flags & FL_CROUCHING ) {
 			self.frame = ANIM_IDLE_CROUCH;
 		} else {
@@ -288,6 +290,7 @@ void Animation_PlayerUpdate( void ) {
 	vector vOffset = gettaginfo( self.eGunModel, self.eGunModel.fWeaponBoneID ) - gettaginfo( self, self.fWeaponBoneID );
 	setorigin( self.eGunModel, self.origin - vOffset );
 #else
+	// On the CSQC it's done in Player.c
 	self.subblend2frac = self.v_angle_x / 90;
 #endif
 }

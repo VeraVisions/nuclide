@@ -45,7 +45,7 @@ void light( void ) {
 	}
 	
 	if ( !self.pattern ) {
-		self.pattern = "m";
+		self.pattern = getlightstyle( self.style );
 	}
 	
 	if ( self.spawnflags & 1 ) {

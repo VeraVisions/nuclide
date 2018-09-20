@@ -156,7 +156,7 @@ void SV_RunClientCommand( void ) {
 	}
 
 	Input_Handle();
-	runplayerphysics();
+	QPhysics_Run( self );
 }
 
 /*

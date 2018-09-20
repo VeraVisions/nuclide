@@ -225,7 +225,7 @@ void CSQC_UpdateView( float fWinWidth, float fWinHeight, float fGameFocus ) {
 		setproperty( VF_ACTIVESEAT, (float)s );
 		Nightvision_PreDraw();
 
-
+		// Don't hide the player entity
 		if ( autocvar_cl_thirdperson == TRUE && getstatf( STAT_HEALTH ) ) {
 			setproperty( VF_VIEWENTITY, (float)0 );
 		} else {
@@ -240,7 +240,15 @@ void CSQC_UpdateView( float fWinWidth, float fWinHeight, float fGameFocus ) {
 			setproperty( VF_ORIGIN, pSeat->vCameraPos ) ;
 		} else {
 			if ( getstatf( STAT_HEALTH ) ) {
-				setproperty( VF_ORIGIN, pSeat->vPlayerOrigin + [ 0, 0, getstatf( STAT_VIEWHEIGHT ) ] );
+				if ( autocvar_cl_thirdperson == TRUE  ) {
+					makevectors( view_angles );
+					vector vStart = [ pSeat->vPlayerOrigin[0], pSeat->vPlayerOrigin[1], pSeat->vPlayerOrigin[2] + 16 ] + ( v_right * 4 );
+					vector vEnd = vStart + ( v_forward * -48 ) + '0 0 16' + ( v_right * 4 );
+					traceline( vStart, vEnd, FALSE, self );
+					setproperty( VF_ORIGIN, trace_endpos + ( v_forward * 5 ) );
+				} else {
+					setproperty( VF_ORIGIN, pSeat->vPlayerOrigin + [ 0, 0, getstatf( STAT_VIEWHEIGHT ) ] );
+				}
 			} else {
 				setproperty( VF_ORIGIN, pSeat->vPlayerOrigin );
 			}

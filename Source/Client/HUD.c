@@ -477,16 +477,13 @@ void HUD_Draw( void ) {
 	}
 	
 	HUD_DrawFlash();
-	
 	HUD_DrawTimer();
 	HUD_DrawHealth();
 	HUD_DrawArmor();
 	HUD_DrawIcons();
 	HUD_DrawMoney();
 	HUD_DrawAmmo();
-	
 	HUD_DrawRadar();
-	
 	HUD_DrawProgressBar();
 	HUD_DrawWeaponSelect();
 }

@@ -73,7 +73,7 @@ void CSQC_Ent_Update( float flIsNew ) {
 		self.origin_x = readcoord();
 		self.origin_y = readcoord();
 		self.origin_z = readcoord();
-		self.subblend2frac = readcoord() / 90;
+		self.flUpAngle = readcoord() / 90;
 		self.angles_y = readcoord();
 		self.angles_z = readcoord();
 		self.velocity_x = readshort();

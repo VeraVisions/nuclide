@@ -68,6 +68,8 @@ var float DECAL_GLASS;
 
 var float SHADER_CULLED;
 
+.float flUpAngle;
+
 vector vHUDColor; // Defined in HUD_Draw (HUD.c)
 vector vVGUIColor; // Defined in HUD_Draw (VGUI.c)
 vector vCrossColor; // Defined in HUD_Draw (HUDCrosshair.c)

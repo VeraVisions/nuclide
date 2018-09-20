@@ -117,9 +117,12 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 	} else if ( trace_surface_id == BODY_LEGRIGHT ) {
 		iDamage *= 0.4;
 	}
-	
 	dprint( sprintf( "[DEBUG] Hit Bodypart: %s\n", Damage_GetHitLocation( trace_surface_id ) ) );
-	
+
+	if ( Damage_ShouldDamage( eTarget.team, eAttacker.team ) == FALSE && autocvar_mp_friendlyfire == 0 ) {
+		return;
+	}
+
 	// Apply the damage finally
 	if ( eTarget.armor ) {
 		float fRatio = 0.5;

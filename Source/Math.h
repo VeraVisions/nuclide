@@ -74,64 +74,90 @@ float Math_CRandom( void ) {
 #ifdef SSQC
 void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos, int iSkipArmor );
 #endif
-void runplayerphysics(void)
-{	//operates on self
-	float fallvel = ( self.flags & FL_ONGROUND )?0:-self.velocity_z;
-	
-	if ( self.movetype == MOVETYPE_WALK ) {
-		// Crouching
-		if ( input_movevalues_z < 0 ) {
-			if ( !( self.flags & FL_CROUCHING ) ) {
-				//setorigin( self, self.origin - '0 0 32' );
-				self.flags |=  FL_CROUCHING;
+
+//.vector basevelocity;
+int QPhysics_IsStuck( entity eTarget, vector vOffset, vector vecMins, vector vecMaxs )
+{
+	if ( eTarget.solid != SOLID_SLIDEBOX ) {
+		return FALSE;
+	}
+	tracebox( eTarget.origin + vOffset, vecMins, vecMaxs, eTarget.origin + vOffset, FALSE, eTarget );
+	return trace_startsolid;
+}
+
+void QPhysics_Jump ( entity eTarget )
+{
+	if ( !( eTarget.flags & FL_ONGROUND ) ) {
+		return;
+	}
+	if ( !( eTarget.flags & FL_JUMPRELEASED ) ) {
+		return;
+	}
+	eTarget.velocity_z = eTarget.velocity_z + 270;
+}
+
+void QPhysics_Run ( entity eTarget )
+{
+	int iFixCrouch = FALSE;
+	float flFallVel = ( self.flags & FL_ONGROUND ) ? 0 : -self.velocity_z;
+
+	// We didn't get any basevelocity this frame, remove the flag
+	/*if ( vlen( eTarget.basevelocity ) ) {
+		eTarget.flags -= ( eTarget.flags & FL_BASEVELOCITY );
+	}*/
+
+	if ( input_buttons & INPUT_BUTTON8 ) {
+		eTarget.flags |= FL_CROUCHING;
+	} else {
+		// If we aren't holding down duck anymore and 'attempt' to stand up, prevent it
+		if ( eTarget.flags & FL_CROUCHING ) {
+			if ( QPhysics_IsStuck( eTarget, '0 0 36', VEC_HULL_MIN, VEC_HULL_MAX ) == FALSE ) {
+				eTarget.flags -= ( eTarget.flags & FL_CROUCHING );
+				iFixCrouch = TRUE;
 			}
 		} else {
-			if ( self.flags & FL_CROUCHING && self.flags & FL_ONGROUND ) {
-				tracebox( self.origin + '0 0 18', VEC_HULL_MIN, VEC_HULL_MAX, self.origin + '0 0 18', FALSE, self );
-				if ( trace_startsolid == FALSE ) {
-					setorigin( self, self.origin + '0 0 18' );
-					self.flags -= FL_CROUCHING;
-					if ( self.velocity_z <= 0 ) {
-						self.velocity_z = self.velocity_z + 25;
-					}
+			eTarget.flags -= ( eTarget.flags & FL_CROUCHING );
+		}
+	}
+
+	if ( input_buttons & INPUT_BUTTON2 ) {
+		QPhysics_Jump( eTarget );
+		input_buttons -= ( input_buttons & INPUT_BUTTON2 );
+		eTarget.flags -= ( eTarget.flags & FL_JUMPRELEASED );
+		eTarget.flags -= ( eTarget.flags & FL_ONGROUND );
+	} else {
+		eTarget.flags |= FL_JUMPRELEASED;
+	}
+
+	if ( eTarget.flags & FL_CROUCHING ) {
+		setsize( eTarget, VEC_CHULL_MIN, VEC_CHULL_MAX );
+#ifdef SSQC
+		eTarget.view_ofs = VEC_PLAYER_CVIEWPOS;
+#endif
+	} else {
+		setsize( eTarget, VEC_HULL_MIN, VEC_HULL_MAX );
+		if ( iFixCrouch && QPhysics_IsStuck( eTarget, '0 0 0', VEC_HULL_MIN, VEC_HULL_MAX ) ) {
+			for ( int i = 0; i < 36; i++ ) {
+				eTarget.origin_z += 1;
+				if ( QPhysics_IsStuck( eTarget, '0 0 0', eTarget.mins, eTarget.maxs ) == FALSE ) {
+					break;
 				}
 			}
 		}
-	}
-	
-	// Adjust the bounds and the viewheight, as well as speed
-	if ( self.flags & FL_CROUCHING ) {
-		self.mins = VEC_CHULL_MIN;
-		self.maxs = VEC_CHULL_MAX;
-		self.view_ofs = VEC_PLAYER_CVIEWPOS;
-	} else {
-		self.mins = VEC_HULL_MIN;
-		self.maxs = VEC_HULL_MAX;
-		self.view_ofs = VEC_PLAYER_VIEWPOS;
+		setorigin( eTarget, eTarget.origin );
+#ifdef SSQC
+		eTarget.view_ofs = VEC_PLAYER_VIEWPOS;
+#endif
 	}
 
-	self.maxspeed = Game_GetMaxSpeed( self.weapon );
-	runstandardplayerphysics( self );
-	if ( ( self.flags & FL_ONGROUND ) && self.movetype == MOVETYPE_WALK && ( fallvel > 100 )) {
-#ifdef SSQC
-		if ( fallvel > 580 ) {
-			float fFallDamage = (fallvel-580) * ( 200 / ( 1024 - 580 ) );
-			Damage_Apply( self, world, fFallDamage, self.origin, FALSE );
-		} 
-#endif
+	eTarget.maxspeed = Game_GetMaxSpeed( eTarget );
+	runstandardplayerphysics( eTarget );
 
-#ifdef SSQC
-	if ( cvar( "pm_bunnyspeedcap") == 0 ) {
-		return;
+	#ifdef SSQC
+	if ( ( self.flags & FL_ONGROUND ) && self.movetype == MOVETYPE_WALK && ( flFallVel > 580 )) {
+		float fFallDamage = ( flFallVel - 580 ) * ( 200 / ( 1024 - 580 ) );
+		Damage_Apply( self, world, fFallDamage, self.origin, FALSE );
 	}
-#else
-	if ( serverkey( "pm_bunnyspeedcap") == 0 ) {
-		return;
-	}
-#endif
-		if ( fallvel > 245 ) {
-			self.velocity *= 0.25;
-		}
-	}
+	#endif
 }
 #endif

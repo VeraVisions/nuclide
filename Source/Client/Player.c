@@ -70,14 +70,16 @@ string sPModels[ CS_WEAPON_COUNT - 1 ] = {
 //.float basesubblendfrac; // legs part.
 .float subblend2frac; // Up/Down
 
-static float Player_Gun_PreDraw (void) {
+static float Player_Gun_PreDraw (void)
+{
 	self.entnum = self.owner.entnum; //so this entity gets its RF_EXTERNALMODEL flag rewritten as needed
 	addentity(self);
 	self.entnum = 0;	//so that findfloat won't find the wrong thing.
 	return PREDRAW_NEXT;
 }
 
-void Player_Draw( void ) {
+void Player_Draw ( void )
+{
 	if ( !self.eGunModel ) {
 		self.eGunModel = spawn();
 		self.eGunModel.classname = "pmodel";
@@ -85,7 +87,9 @@ void Player_Draw( void ) {
 		self.eGunModel.predraw = Player_Gun_PreDraw;
 		self.eGunModel.drawmask = MASK_ENGINE;
 	}
-	    
+
+	self.subblend2frac = self.flUpAngle;
+
 	// Only bother updating the model if the weapon has changed
 	if ( self.fWeaponLast != self.weapon ) {
 		if ( self.weapon ) {
@@ -102,12 +106,23 @@ void Player_Draw( void ) {
 	}
 
 	Animation_PlayerUpdate();
-	self.baseframe1time += frametime;
-	self.frame1time += frametime;
-		
-	self.baseframe2time += frametime;
-	self.frame2time += frametime;	
+	/*makevectors( [ 0, self.angles[1], 0 ] );
+	float fDirection = dotproduct( self.velocity, v_forward );
 	
+	if ( fDirection != 0 )
+	print( sprintf( "fDirection: %d\n", fDirection ) );
+
+	if ( fDirection < 0 ) {
+		self.baseframe1time -= frametime;
+		self.baseframe2time -= frametime;
+		self.frame2time -= frametime;
+		self.frame1time -= frametime;
+	} else {*/
+		self.baseframe1time += frametime;
+		self.baseframe2time += frametime;
+		self.frame2time += frametime;
+		self.frame1time += frametime;
+	/*}*/
 	self.bonecontrol5 = stof( getplayerkeyvalue( player_localnum, INFOKEY_P_VOIPLOUDNESS ) );
 }
 
@@ -119,7 +134,8 @@ Runs as part of the addentities builtin.
 Responsible for player appearance/interpolation.
 =================
 */
-float Player_PreDraw( void ) {
+float Player_PreDraw( void )
+{
 	Player_Draw();
 	addentity( self );
 	return PREDRAW_NEXT;
@@ -133,7 +149,8 @@ Runs before every frame is rendered.
 Responsible for local player prediction.
 =================
 */
-void Player_Predict(void) {
+void Player_Predict( void )
+{
 	vector vOldOrigin = self.origin = self.netorigin;
 	vector vOldAngles = self.angles = self.netangles;
 	vector vOldVelocity = self.velocity = self.netvelocity;
@@ -159,7 +176,7 @@ void Player_Predict(void) {
 				break;
 			}
 			getinputstate( i );
-			runplayerphysics();
+			QPhysics_Run( self );
 		}
 	}
 	
@@ -191,16 +208,7 @@ void Player_Predict(void) {
 		}
 
 		pSeat->vPlayerVelocity = self.velocity;
-
-		if ( autocvar_cl_thirdperson == TRUE && getstatf( STAT_HEALTH ) > 0 ) {
-			makevectors( view_angles );
-			vector vStart = [ self.origin_x, self.origin_y, pSeat->vPlayerOriginOld.z + 8 ] + ( v_right * 4 );
-			vector vEnd = vStart + ( v_forward * -48 ) + '0 0 8' + ( v_right * 4 );
-			traceline( vStart, vEnd, FALSE, self );
-			pSeat->vPlayerOrigin = trace_endpos + ( v_forward * 5 );
-		} else {
-			pSeat->vPlayerOrigin = [ self.origin_x, self.origin_y, pSeat->vPlayerOriginOld.z ];
-		}
+		pSeat->vPlayerOrigin = [ self.origin_x, self.origin_y, pSeat->vPlayerOriginOld.z ];
 	} else {
 		pSeat->vPlayerOrigin = self.origin;
 	}
@@ -216,7 +224,8 @@ We're part way through parsing new player data.
 Propagate our pmove state to whatever the current frame before its stomped on (so any non-networked state updates locally).
 =================
 */
-void Player_PreUpdate( void ) {
+void Player_PreUpdate( void )
+{
 	self.origin = self.netorigin;
 	self.angles = self.netangles;
 	self.velocity = self.netvelocity;
@@ -231,17 +240,19 @@ void Player_PreUpdate( void ) {
 	//we want to predict an exact copy of the data in the new packet
 	for ( ; self.pmove_frame <= servercommandframe; self.pmove_frame++ ) {
 		if ( getinputstate( self.pmove_frame ) )
-			runplayerphysics();
+			QPhysics_Run( self );
 	}
 
 	//we now have self.pmove_flags set properly...
 	
 	self.movetype = MOVETYPE_NONE;
 }
-void Player_PostUpdate( void ) {
+
+void Player_PostUpdate( void )
+{
 	self.netorigin = self.origin;
 	self.netangles = self.angles;
 	self.netvelocity = self.velocity;
 	self.netpmove_flags = self.pmove_flags;
-	self.pmove_frame = servercommandframe+1;
+	self.pmove_frame = servercommandframe + 1;
 }

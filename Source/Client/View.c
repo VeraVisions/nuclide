@@ -119,7 +119,7 @@ Spawns a shell tempentity. Looking fancy
 */
 void View_ShellEject( void ) {
 	static void View_ShellEject_Death( void ) {
-		remove( self );	
+		remove( self );
 	}
 	vector vOrigin = pSeat->vPlayerOrigin;
 	vector vEndPos = gettaginfo( pSeat->eViewModel, pSeat->fEjectBone );

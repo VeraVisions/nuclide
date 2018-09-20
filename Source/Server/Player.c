@@ -151,15 +151,14 @@ void Player_Death( int iHitBody ) {
 	}
 	
 	if ( ( iAlivePlayers_T == 0 ) && ( iAlivePlayers_CT == 0 ) ) {
-		if ( ( iBombPlanted == FALSE ) || ( iBombZones > 0 ) ) {
-			Rules_RoundOver( FALSE, 0, FALSE );
-		} else {
+		if ( iBombPlanted == TRUE ) {
 			Rules_RoundOver( TEAM_T, 3600, FALSE );
+		} else {
+			Rules_RoundOver( FALSE, 0, FALSE );
 		}
 	} else {
-		// If the bomb has been planted, T deaths don't matter anymore
 		if ( ( self.team == TEAM_T ) && ( iAlivePlayers_T == 0 ) ) {
-			if ( ( iBombPlanted == FALSE ) || ( iBombZones == 0 ) ) {
+			if ( iBombPlanted == FALSE ) {
 				Rules_RoundOver( TEAM_CT, 3600, FALSE );
 			}
 		} else if ( ( self.team == TEAM_CT ) && ( iAlivePlayers_CT == 0 ) ) {

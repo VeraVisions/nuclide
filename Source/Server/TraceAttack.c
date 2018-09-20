@@ -40,7 +40,7 @@ void TraceAttack_FireSingle( vector vPos, vector vAngle ) {
 		}
 		
 		TraceAttack_FireSingle( vPos, vAngle );
-		iTotalPenetrations++;
+		iTotalPenetrations = 1;
 	}
 	traceline( vPos, vPos + ( vAngle * wptTable[ self.weapon ].fRange ), MOVE_HITMODEL, self);
 		
