@@ -128,7 +128,7 @@ void CSQC_DrawCenterprint( void ) {
 	vCenterPrintPos_y = vVideoMins_y + ( vVideoResolution_y / 2 ) - ( fCenterPrintLines - 4 );
 	
 	for ( int i = 0; i < ( fCenterPrintLines ); i++ ) {
-		vCenterPrintPos_x = vVideoMins_x + ( vVideoResolution_x / 2 ) - ( stringwidth( sCenterPrintBuffer[ i ], FALSE, '12 12' ) / 2 );
+		vCenterPrintPos_x = vVideoMins_x + ( vVideoResolution_x / 2 ) - ( stringwidth( sCenterPrintBuffer[ i ], TRUE, '12 12' ) / 2 );
 		drawstring( vCenterPrintPos, sCenterPrintBuffer[ i ], '12 12', '1 1 1', fCenterPrintAlpha, 0 );
 		vCenterPrintPos_y += 8;
 	}
