@@ -213,7 +213,6 @@ void WeaponC4BOMB_Draw( void ) {
 void WeaponC4BOMB_Release( void ) {
 #ifdef SSQC
 	self.fBombProgress = 0;
-	print("C4 Bomb Release\n");
 #else
 	// TODO: This does not happen, yet
 	View_PlayAnimation( ANIM_C4_IDLE );
