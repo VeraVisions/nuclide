@@ -133,8 +133,9 @@ void Weapon_PrimaryAttack( float fWeapon ) {
 	if ( self.fAttackFinished > time ) {
 		return;
 	}
-	if ( !( self.flags & FL_SEMI_TOGGLED ) )
+	if ( !( self.flags & FL_SEMI_TOGGLED ) ) {
 		return;
+	}
 #endif
 #ifdef CSQC
 	if ( fWeaponEventPlayer != player_localentnum || autocvar_cl_thirdperson == TRUE ) {
@@ -253,6 +254,8 @@ void Weapon_Release( void ) {
 		WeaponHEGRENADE_Release();
 	} else if ( self.weapon == WEAPON_SMOKEGRENADE ) {
 		WeaponSMOKEGRENADE_Release();
+	} else if ( self.weapon == WEAPON_C4BOMB ) {
+		WeaponC4BOMB_Release();
 	}
 }
 
@@ -555,6 +558,17 @@ Client-HUD call that switches to a specific weapon
 void CSEv_PlayerSwitchWeapon_f( float fWeapon ) {
 	if ( ( Weapon_AlreadyExists( fWeapon ) == FALSE ) && ( fWeapon != WEAPON_KNIFE ) ) {
 		return;
+	}
+	if (wptTable[fWeapon].iSlot == SLOT_GRENADE) {
+		if (fWeapon == WEAPON_HEGRENADE && !(self.iAmmo_HEGRENADE)) {
+			return;
+		} else if (fWeapon == WEAPON_FLASHBANG && !(self.iAmmo_FLASHBANG)) {
+			return;
+		} else if (fWeapon == WEAPON_SMOKEGRENADE && !(self.iAmmo_SMOKEGRENADE)) {
+			return;
+		} else if (fWeapon == WEAPON_C4BOMB && !(self.fSlotGrenade & WEAPON_C4BOMB)) {
+			return;
+		}
 	}
 	if ( fWeapon != self.weapon ) {
 		Weapon_Draw( fWeapon );

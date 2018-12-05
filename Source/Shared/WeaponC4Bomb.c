@@ -213,7 +213,7 @@ void WeaponC4BOMB_Draw( void ) {
 void WeaponC4BOMB_Release( void ) {
 #ifdef SSQC
 	self.fBombProgress = 0;
-	self.fAttackFinished = time + 1.0;
+	print("C4 Bomb Release\n");
 #else
 	// TODO: This does not happen, yet
 	View_PlayAnimation( ANIM_C4_IDLE );
@@ -223,25 +223,31 @@ void WeaponC4BOMB_Release( void ) {
 
 void WeaponC4BOMB_PrimaryFire( void ) {
 #ifdef SSQC
+	vector source;
+	source = self.origin + self.view_ofs;
 	makevectors( self.v_angle );
-	traceline( self.origin + self.view_ofs, self.origin + self.view_ofs + ( v_forward * 64 ), FALSE, self );
-	
+	other = world;
+	traceline( source, source + ( v_forward * 64 ), MOVE_OTHERONLY, self );
+
 	// If we aren't aiming at a place or look in the wrong location... stop it
 	if ( trace_fraction == 1 || self.fInBombZone == FALSE ) {
 		Animation_ReloadWeapon( self );
 		WeaponC4BOMB_Release();
+		self.fAttackFinished = time + 1.0;
 		return;
 	}
-	
+
 	// Play the sequence at the start
 	if ( self.fBombProgress == 0 ) {
 		self.fBombProgress = time + 3.0f;
+		self.fAttackFinished = self.fBombProgress;
 		Client_SendEvent( self, EV_WEAPON_PRIMARYATTACK );
 		Animation_ShootWeapon( self );
 	}
 
 	// 3 seconds have passed, plant the bomb
-	if ( self.fBombProgress <=  time ) {
+	if ( self.fBombProgress <= time ) {
+		self.fBombProgress = 0;
 		WeaponC4BOMB_Drop( trace_endpos, trace_plane_normal );
 	}
 #else

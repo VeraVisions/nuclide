@@ -106,7 +106,8 @@ void WeaponFLASHBANG_Throw( void ) {
 		float fDot;
 		
 		for ( entity eFind = world; ( eFind = find( eFind, classname, "player" ) ); ) {
-			traceline( self.origin + '0 0 32', eFind.origin, FALSE, self );
+			other = world;
+			traceline( self.origin + '0 0 32', eFind.origin, MOVE_OTHERONLY, self );
 			if ( trace_fraction == 1 ) {
 				makevectors ( eFind.angles );
 				vNorm = normalize ( self.origin - eFind.origin );

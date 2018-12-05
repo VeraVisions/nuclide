@@ -39,14 +39,15 @@ void func_escapezone_touch( void ) {
 	if ( ( other.classname == "player" ) && ( other.team == TEAM_T ) ) {
 		entity eOld = self;
 		self = other;
-		
+
 		Spawn_MakeSpectator();
 		self.classname = "player";
 		forceinfokey( self, "*dead", "0" );
-		iAlivePlayers_T--;
-		
+		self.health = 0;
+		Rules_CountPlayers();
+
 		self = eOld;
-		
+
 		if ( iAlivePlayers_T == 0 ) {
 			Rules_RoundOver( TEAM_T, 2500, FALSE );
 		}

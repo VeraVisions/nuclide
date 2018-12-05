@@ -89,18 +89,9 @@ Run whenever a client quits
 */
 void ClientDisconnect( void ) {
 	// We were part of the session
-	if( self.iInGame == TRUE ) {
-		if ( self.team == TEAM_T ) {
-			if ( self.health > 0 ) {
-				iAlivePlayers_T--;
-			}
-		} else if ( self.team == TEAM_CT ) {
-			if ( self.health > 0 ) {
-				iAlivePlayers_CT--;
-			}
-		}
-	}
-	
+	self.health = 0;
+	Rules_CountPlayers();
+	Rules_DeathCheck();
 	Effect_RemoveSpray( self );
 }
 
@@ -140,11 +131,6 @@ Funtion that can interrupt client commands before physics are run
 =================
 */
 void SV_RunClientCommand( void ) {
-	// The individual zones will just override this behavior
-	self.fInBombZone = FALSE;
-	self.fInBuyZone = FALSE;
-	self.fInHostageZone = FALSE;
-	
 	if (clienttype(self) == CLIENTTYPE_BOT) {
 		((CBot)self).RunAI();
 	}
@@ -155,8 +141,14 @@ void SV_RunClientCommand( void ) {
 		input_impulse = 0;
 	}
 
-	Input_Handle();
+	// The individual zones will just override this behavior
+	self.fInBombZone = FALSE;
+	self.fInBuyZone = FALSE;
+	self.fInHostageZone = FALSE;
+
 	QPhysics_Run( self );
+
+	Input_Handle();
 }
 
 /*

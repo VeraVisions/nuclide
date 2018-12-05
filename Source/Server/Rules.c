@@ -275,6 +275,43 @@ void Rules_SwitchTeams( void ) {
 	iAlivePlayers_T = iCTW;
 }
 
+void Rules_CountPlayers(void)
+{
+	iAlivePlayers_T = 0;
+	iAlivePlayers_CT = 0;
+
+	for (entity eFind = world; (eFind = find(eFind, classname, "player")); ) {
+		if (eFind.health > 0) {
+			if ( eFind.team == TEAM_T) {
+				iAlivePlayers_T++;
+			} else if (eFind.team == TEAM_CT) {
+				iAlivePlayers_CT++;
+			} else if (eFind.team == TEAM_VIP) {
+				iAlivePlayers_CT++;
+			}
+		}
+	}
+}
+
+void Rules_DeathCheck(void)
+{
+	if ( ( iAlivePlayers_T == 0 ) && ( iAlivePlayers_CT == 0 ) ) {
+		if ( iBombPlanted == TRUE ) {
+			Rules_RoundOver( TEAM_T, 3600, FALSE );
+		} else {
+			Rules_RoundOver( FALSE, 0, FALSE );
+		}
+	} else {
+		if ( ( self.team == TEAM_T ) && ( iAlivePlayers_T == 0 ) ) {
+			if ( iBombPlanted == FALSE ) {
+				Rules_RoundOver( TEAM_CT, 3600, FALSE );
+			}
+		} else if ( ( self.team == TEAM_CT ) && ( iAlivePlayers_CT == 0 ) ) {
+			Rules_RoundOver( TEAM_T, 3600, FALSE );
+		}
+	}
+}
+
 /*
 =================
 SPAWN: info_map_parameters

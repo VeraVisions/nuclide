@@ -136,6 +136,7 @@ void Spawn_RespawnClient( float fTeam ) {
 	self.classname = "player";
 	self.health = self.max_health = 100;
 	forceinfokey( self, "*dead", "0" );
+	Rules_CountPlayers();
 	
 	self.takedamage = DAMAGE_YES;
 	self.solid = SOLID_SLIDEBOX;
@@ -181,7 +182,7 @@ void Spawn_CreateClient( float fCharModel ) {
 	} else if( fCharModel < 5 ) {
 		forceinfokey( self, "*team", "0" ); 
 		self.team = TEAM_T;
-		iAlivePlayers_T++;
+		Rules_CountPlayers();
 		
 		Weapon_AddItem( WEAPON_KNIFE );
 		if ( autocvar_fcs_knifeonly == FALSE ) {
@@ -193,7 +194,7 @@ void Spawn_CreateClient( float fCharModel ) {
 		}
 	} else {
 		self.team = TEAM_CT;
-		iAlivePlayers_CT++;
+		Rules_CountPlayers();
 
 		Weapon_AddItem( WEAPON_KNIFE );
 		if ( autocvar_fcs_knifeonly == FALSE ) {
@@ -266,11 +267,9 @@ void CSEv_GamePlayerSpawn_f( float fChar ) {
 	
 	// Hey, we are alive and are trying to switch teams, so subtract us from the Alive_Team counter.
 	if ( self.health > 0 ) {
-		if ( self.team == TEAM_T ) {
-			iAlivePlayers_T--;
-		} else if ( self.team == TEAM_CT ) {
-			iAlivePlayers_CT--;
-		}
+		self.health = 0;
+		Rules_CountPlayers();
+		Rules_DeathCheck();
 	}
 	
 	self.fSlotMelee = 0;
@@ -314,7 +313,7 @@ void CSEv_GamePlayerSpawn_f( float fChar ) {
 			forceinfokey( self, "*team", ftos( self.team ) ); 
 			break;
 	}
-	
+
 	self.frags = 0;
 	self.fDeaths = 0;
 	forceinfokey( self, "*deaths", "0" );

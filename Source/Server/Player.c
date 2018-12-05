@@ -139,32 +139,15 @@ void Player_Death( int iHitBody ) {
 	self.health = 0;
 	forceinfokey( self, "*dead", "1" ); 
 	forceinfokey( self, "*team", ftos( self.team ) );
-	
-	if ( self.team == TEAM_T ) {
-		iAlivePlayers_T--;
-	} else if ( self.team == TEAM_CT ) {
-		iAlivePlayers_CT--;
-	} else if ( self.team == TEAM_VIP ) {
-		iAlivePlayers_CT--; // For consistency
+
+	Rules_CountPlayers();
+
+	if ( self.team == TEAM_VIP ) {
 		Rules_RoundOver( TEAM_T, 2500, FALSE );
 		return;
 	}
-	
-	if ( ( iAlivePlayers_T == 0 ) && ( iAlivePlayers_CT == 0 ) ) {
-		if ( iBombPlanted == TRUE ) {
-			Rules_RoundOver( TEAM_T, 3600, FALSE );
-		} else {
-			Rules_RoundOver( FALSE, 0, FALSE );
-		}
-	} else {
-		if ( ( self.team == TEAM_T ) && ( iAlivePlayers_T == 0 ) ) {
-			if ( iBombPlanted == FALSE ) {
-				Rules_RoundOver( TEAM_CT, 3600, FALSE );
-			}
-		} else if ( ( self.team == TEAM_CT ) && ( iAlivePlayers_CT == 0 ) ) {
-			Rules_RoundOver( TEAM_T, 3600, FALSE );
-		}
-	}
+
+	Rules_DeathCheck();
 }
 
 /*
