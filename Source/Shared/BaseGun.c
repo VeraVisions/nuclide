@@ -170,13 +170,15 @@ BaseGun_Reload
 */
 float BaseGun_Reload( void ) {
 	static void BaseGun_FinishReload( void ) {
-		// What if we've got less in our caliberfield than we need
-		if ( self.(wptTable[ self.weapon ].iCaliberfld) < wptTable[ self.weapon ].iMagSize ) {
-			self.(wptTable[ self.weapon ].iMagfld) = self.(wptTable[ self.weapon ].iCaliberfld);
+		int iNeed = wptTable[ self.weapon ].iMagSize - self.(wptTable[ self.weapon ].iMagfld);
+		int iHave = self.(wptTable[ self.weapon ].iCaliberfld);
+		
+		if ( iNeed > iHave ) {
+			self.(wptTable[ self.weapon ].iMagfld) += iHave;
 			self.(wptTable[ self.weapon ].iCaliberfld) = 0;
 		} else {
-			self.(wptTable[ self.weapon ].iCaliberfld) -= ( wptTable[ self.weapon ].iMagSize - self.(wptTable[ self.weapon ].iMagfld) );
-			self.(wptTable[ self.weapon ].iMagfld) = wptTable[ self.weapon ].iMagSize;
+			self.(wptTable[ self.weapon ].iMagfld) += iNeed;
+			self.(wptTable[ self.weapon ].iCaliberfld) -= iNeed;
 		}
 		
 		Weapon_UpdateCurrents();
