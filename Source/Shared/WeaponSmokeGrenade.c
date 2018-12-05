@@ -47,7 +47,7 @@ weaponinfo_t wptSMOKEGRENADE = {
 	TYPE_SEMI,			// Firing Type
 	1.0, 				// Attack-Delay
 	1.0, 				// Reload-Delay
-	iAmmo_9MM, 			// Caliber Pointer
+	iNull, 				// Caliber Pointer
 	iAmmo_SMOKEGRENADE,	// Clip Pointer
 	1,					// Accuracy Divisor
 	1.0,				// Accuracy Offset

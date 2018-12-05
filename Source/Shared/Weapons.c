@@ -528,17 +528,9 @@ void CSEv_PlayerBuyWeapon_f( float fWeapon ) {
 	}
 			
 	if ( ( self.fMoney - wptTable[ fWeapon ].iPrice ) >= 0 ) {
-		Weapon_AddItem( fWeapon );
-		
-		// Automatically fill weapons with ammo when you buy them (for free) like in CS:S
-		if ( autocvar_mp_fillweapons == 1 ) {
-			if ( wptTable[ fWeapon ].iSlot == SLOT_PRIMARY ) {
-				Ammo_BuyPrimary( TRUE );
-			} else if ( wptTable[ fWeapon ].iSlot == SLOT_SECONDARY ) {
-				Ammo_BuySecondary( TRUE );
-			}
-		}
-		
+		Weapon_AddItem(fWeapon);
+		Ammo_AutoFill(fWeapon);
+
 		Weapon_Draw( fWeapon );
 		Money_AddMoney( self, -wptTable[ fWeapon ].iPrice );
 		

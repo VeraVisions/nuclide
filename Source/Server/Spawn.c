@@ -130,7 +130,7 @@ Called whenever a player just needs his basic properties to be reset
 */
 void Spawn_RespawnClient( float fTeam ) {
 	entity eSpawn;
-	forceinfokey( self, "*spec", "0" ); // Make sure we are known as a spectator
+	forceinfokey( self, "*spec", "0" );
 	eSpawn = Spawn_FindSpawnPoint( self.team );
 
 	self.classname = "player";
@@ -161,9 +161,12 @@ void Spawn_RespawnClient( float fTeam ) {
 
 	self.view_ofs = VEC_PLAYER_VIEWPOS;
 	self.velocity = '0 0 0';
-	
+
 	self.frame = 1; // Idle frame
 	self.fBombProgress = 0;
+
+	Ammo_AutoFill(self.fSlotPrimary);
+	Ammo_AutoFill(self.fSlotSecondary);
 }
 
 /*
@@ -182,7 +185,6 @@ void Spawn_CreateClient( float fCharModel ) {
 	} else if( fCharModel < 5 ) {
 		forceinfokey( self, "*team", "0" ); 
 		self.team = TEAM_T;
-		Rules_CountPlayers();
 		
 		Weapon_AddItem( WEAPON_KNIFE );
 		if ( autocvar_fcs_knifeonly == FALSE ) {
@@ -194,7 +196,6 @@ void Spawn_CreateClient( float fCharModel ) {
 		}
 	} else {
 		self.team = TEAM_CT;
-		Rules_CountPlayers();
 
 		Weapon_AddItem( WEAPON_KNIFE );
 		if ( autocvar_fcs_knifeonly == FALSE ) {
@@ -205,11 +206,11 @@ void Spawn_CreateClient( float fCharModel ) {
 			Weapon_Draw( WEAPON_KNIFE );
 		}
 	}
-	
+
 	if( self.iInGame == FALSE ) {
 		self.iInGame = TRUE;
 	}
-	
+
 	forceinfokey( self, "*team", ftos( self.team ) ); 
 	Spawn_RespawnClient( self.team );
 	self.fAttackFinished = time + 1;
@@ -224,7 +225,7 @@ Called on connect and whenever a player dies
 */
 void Spawn_MakeSpectator( void ) {
 	self.classname = "spectator";
-	
+
 	self.health = 0;
 	self.armor = 0;
 	self.takedamage = DAMAGE_NO;
@@ -240,12 +241,8 @@ void Spawn_MakeSpectator( void ) {
 	self.view_ofs = self.velocity = '0 0 0';
 	forceinfokey( self, "*spec", "2" ); // Make sure we are known as a spectator
 
-	// Clear all the ammo stuff
-	for ( int i = 0; i < CS_WEAPON_COUNT; i++ ) {
-		self.(wptTable[ i ].iMagfld) = 0;
-		self.(wptTable[ i ].iCaliberfld) = 0;
-	}
-	
+	Ammo_Clear();
+
 	// Clear the inventory
 	self.fSlotMelee = self.fSlotPrimary = self.fSlotSecondary = self.fSlotGrenade = self.iEquipment = 0;
 }
@@ -264,26 +261,23 @@ void CSEv_GamePlayerSpawn_f( float fChar ) {
 		self.fAttackFinished = time + 1.0;
 		return;
 	}
-	
+
 	// Hey, we are alive and are trying to switch teams, so subtract us from the Alive_Team counter.
 	if ( self.health > 0 ) {
 		self.health = 0;
 		Rules_CountPlayers();
 		Rules_DeathCheck();
+		Player_Death(0);
 	}
-	
-	self.fSlotMelee = 0;
-	self.fSlotPrimary = 0;
-	self.fSlotSecondary = 0;
-	self.fSlotGrenade = 0;
-	self.iEquipment = 0;
-	
+
+	Ammo_Clear();
+
 	// Spawn the players immediately when its in the freeze state
 	switch ( fGameState ) {
 		case GAME_FREEZE:
 			self.fCharModel = fChar;
 			Spawn_CreateClient( fChar );
-			
+
 			if ( ( self.team == TEAM_T ) && ( iAlivePlayers_T == 1 ) ) {
 				if ( iBombZones > 0 ) {
 					Rules_MakeBomber();
@@ -293,7 +287,7 @@ void CSEv_GamePlayerSpawn_f( float fChar ) {
 					Rules_MakeVIP();
 				}
 			}
-			
+
 			break;
 		default:
 			if ( fChar == 0 ) {
@@ -304,7 +298,7 @@ void CSEv_GamePlayerSpawn_f( float fChar ) {
 			} else {
 				self.team = TEAM_CT;
 			}
-			
+
 			Spawn_MakeSpectator();
 			self.classname = "player";
 			self.fCharModel = fChar;
@@ -317,7 +311,7 @@ void CSEv_GamePlayerSpawn_f( float fChar ) {
 	self.frags = 0;
 	self.fDeaths = 0;
 	forceinfokey( self, "*deaths", "0" );
-	
+
 	// Split up for readability and expandability?
 	if ( ( self.team == TEAM_T ) && ( iAlivePlayers_T == 0 ) ) {
 		Rules_RoundOver( FALSE, 0, FALSE );

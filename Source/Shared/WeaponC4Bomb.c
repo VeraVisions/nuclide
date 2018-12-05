@@ -46,15 +46,15 @@ weaponinfo_t wptC4BOMB = {
 	TYPE_AUTO,
 	0.0, 				// Attack-Delay
 	0.0, 				// Reload-Delay
-	iAmmo_9MM, 			// Caliber Pointer
-	iAmmo_9MM, 			// Clip Pointer
+	iNull, 				// Caliber Pointer
+	iNull, 				// Clip Pointer
 	1,					// Accuracy Divisor
 	1,					// Accuracy Offset
 	1,					// Max Inaccuracy
 	8,					// Minimum Crosshair Distance
 	4,					// Crosshair Movement Delta
 	1.0,				// Armor penetration ratio
-	ATYPE_C4,		// Animation Type
+	ATYPE_C4,			// Animation Type
 	FALSE
 };
 

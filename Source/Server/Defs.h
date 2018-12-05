@@ -38,12 +38,7 @@ var float autocvar_mp_roundtime = 5;
 var float autocvar_mp_timelimit = 60;
 var string autocvar_motdfile = "motd.txt";
 var int autocvar_mp_friendlyfire = FALSE;
-
 var int autocvar_sv_voxannounce = FALSE;
-
-// Casual, or later CS variables
-var int autocvar_mp_fillweapons = FALSE; // This will automatically get ammo for the weapon you buy
-var int autocvar_mp_autoreload = FALSE; // When pressing fire and the gun is empty, it will reload instead
 
 // New, FreeCS exclusive variables
 var int autocvar_fcs_knifeonly = FALSE; // Disallows buying and spawning with weps
@@ -53,6 +48,8 @@ var int autocvar_fcs_reward_kill = 300;
 var int autocvar_fcs_penalty_pain = -150;
 var int autocvar_fcs_penalty_kill = -1500;
 var int autocvar_fcs_maxmoney = 16000;
+var int autocvar_fcs_fillweapons = FALSE; // This will automatically get ammo for the weapon you buy
+var int autocvar_fcs_autoreload = FALSE; // When pressing fire and the gun is empty, it will reload instead
 
 // Mapcycle features
 var string autocvar_mapcyclefile = "mapcycle.txt";
@@ -136,6 +133,7 @@ int iBombPlanted;
 entity eActivator;
 .void() vUse;
 .int iUsable;
+.int iNull;
 
 // GoldSrc-Rendermode Fields
 .vector rendercolor;
@@ -181,8 +179,9 @@ void Entities_UseTargets( void );
 void Entities_InitRespawnable( void() vRespawnFunc );
 void Entities_Respawn( void );
 
-void Ammo_BuyPrimary( float fFree );
-void Ammo_BuySecondary( float fFree );
+void Ammo_AutoFill(float fWeapon);
+void Ammo_BuyPrimary(void);
+void Ammo_BuySecondary(void);
 
 void Input_Handle( void );
 

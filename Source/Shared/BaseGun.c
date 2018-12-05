@@ -141,7 +141,7 @@ Returns whether or not to play an animation
 float BaseGun_PrimaryFire( void ) {
 	// Nothing in the clip anymore? Don't even attempt
 	if ( ( self.(wptTable[ self.weapon ].iMagfld) - 1 ) < 0 ) {
-		if ( autocvar_mp_autoreload == TRUE ) {
+		if ( autocvar_fcs_autoreload == TRUE ) {
 			Weapon_Reload( self.weapon );
 		}
 		return FALSE;
@@ -172,7 +172,7 @@ float BaseGun_Reload( void ) {
 	static void BaseGun_FinishReload( void ) {
 		int iNeed = wptTable[ self.weapon ].iMagSize - self.(wptTable[ self.weapon ].iMagfld);
 		int iHave = self.(wptTable[ self.weapon ].iCaliberfld);
-		
+
 		if ( iNeed > iHave ) {
 			self.(wptTable[ self.weapon ].iMagfld) += iHave;
 			self.(wptTable[ self.weapon ].iCaliberfld) = 0;
@@ -180,7 +180,7 @@ float BaseGun_Reload( void ) {
 			self.(wptTable[ self.weapon ].iMagfld) += iNeed;
 			self.(wptTable[ self.weapon ].iCaliberfld) -= iNeed;
 		}
-		
+
 		Weapon_UpdateCurrents();
 	}
 	

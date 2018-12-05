@@ -40,8 +40,8 @@ weaponinfo_t wptKNIFE = {
 	TYPE_SEMI,		// Firing Type
 	0.7, 			// Attack-Delay
 	1.0, 			// Reload-Delay
-	iAmmo_9MM, 		// Caliber Pointer
-	iMag_GLOCK18, 	// Clip Pointer
+	iNull, 			// Caliber Pointer
+	iNull, 			// Clip Pointer
 	1,				// Accuracy Divisor
 	1.0,			// Accuracy Offset
 	1.0,			// Max Inaccuracy

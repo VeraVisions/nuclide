@@ -45,25 +45,23 @@ Ammo_BuyPrimary
 Buy ammo for the primary weapon you're equipped with
 =================
 */
-void Ammo_BuyPrimary( float fFree ) {
+void Ammo_BuyPrimary(void) {
 	if ( !self.fSlotPrimary ) {
 		return;
 	}
 
 	int iRequiredAmmo = ( ammoTable[ wptTable[ self.fSlotPrimary ].iCaliber ].iMaxAmount - self.(wptTable[ self.fSlotPrimary ].iCaliberfld));
 	float fNew = ceil( ( (float)iRequiredAmmo / (float)ammoTable[ wptTable[ self.fSlotPrimary ].iCaliber ].iSize ) );
-	
 	for ( int i = 0; i < fNew; i++ ) {
-		if ( self.fMoney - ammoTable[ wptTable[ self.fSlotPrimary ].iCaliber ].iPrice  >= 0 ) {
-			self.(wptTable[ self.fSlotPrimary ].iCaliberfld) += ammoTable[ wptTable[ self.fSlotPrimary ].iCaliber ].iSize;
-			Money_AddMoney( self, -ammoTable[ wptTable[ self.fSlotPrimary ].iCaliber ].iPrice );
-			sound( self, CHAN_ITEM, "items/9mmclip1.wav", 1, ATTN_IDLE );
-			
-			if ( self.(wptTable[ self.fSlotPrimary ].iCaliberfld) > ammoTable[ wptTable[ self.fSlotPrimary ].iCaliber ].iMaxAmount ) {
-				self.(wptTable[ self.fSlotPrimary ].iCaliberfld) = ammoTable[ wptTable[ self.fSlotPrimary ].iCaliber ].iMaxAmount;
-			}
-		} else {
+		if ( self.fMoney - ammoTable[ wptTable[ self.fSlotPrimary ].iCaliber ].iPrice < 0 ) {
 			break;
+		}
+		Money_AddMoney( self, -ammoTable[ wptTable[ self.fSlotPrimary ].iCaliber ].iPrice );
+		sound( self, CHAN_ITEM, "items/9mmclip1.wav", 1, ATTN_IDLE );
+		self.(wptTable[ self.fSlotPrimary ].iCaliberfld) += ammoTable[ wptTable[ self.fSlotPrimary ].iCaliber ].iSize;
+
+		if ( self.(wptTable[ self.fSlotPrimary ].iCaliberfld) > ammoTable[ wptTable[ self.fSlotPrimary ].iCaliber ].iMaxAmount ) {
+			self.(wptTable[ self.fSlotPrimary ].iCaliberfld) = ammoTable[ wptTable[ self.fSlotPrimary ].iCaliber ].iMaxAmount;
 		}
 	}  
 }
@@ -75,7 +73,7 @@ Ammo_BuySecondary
 Buy ammo for the secondary weapon you're equipped with
 =================
 */
-void Ammo_BuySecondary( float fFree ) {	
+void Ammo_BuySecondary(void) {	
 	if ( !self.fSlotSecondary ) {
 		return;
 	}
@@ -84,20 +82,45 @@ void Ammo_BuySecondary( float fFree ) {
 	float fNew = ceil( ( (float)iRequiredAmmo / (float)ammoTable[ wptTable[ self.fSlotSecondary ].iCaliber ].iSize ) );
 	
 	for ( int i = 0; i < fNew; i++ ) {
-		if ( fFree == FALSE ) {
-			if ( self.fMoney - ammoTable[ wptTable[ self.fSlotSecondary ].iCaliber ].iPrice < 0 ) {
-				break;
-			}
-			Money_AddMoney( self, -ammoTable[ wptTable[ self.fSlotSecondary ].iCaliber ].iPrice );
+		if ( self.fMoney - ammoTable[ wptTable[ self.fSlotSecondary ].iCaliber ].iPrice < 0 ) {
+			break;
 		}
-		
-		self.(wptTable[ self.fSlotSecondary ].iCaliberfld) += ammoTable[ wptTable[ self.fSlotSecondary ].iCaliber ].iSize;
+		Money_AddMoney( self, -ammoTable[ wptTable[ self.fSlotSecondary ].iCaliber ].iPrice );
 		sound( self, CHAN_ITEM, "items/9mmclip1.wav", 1, ATTN_IDLE );
-		
+		self.(wptTable[ self.fSlotSecondary ].iCaliberfld) += ammoTable[ wptTable[ self.fSlotSecondary ].iCaliber ].iSize;
+
 		if ( self.(wptTable[ self.fSlotSecondary ].iCaliberfld) > ammoTable[ wptTable[ self.fSlotSecondary ].iCaliber ].iMaxAmount ) {
 			self.(wptTable[ self.fSlotSecondary ].iCaliberfld) = ammoTable[ wptTable[ self.fSlotSecondary ].iCaliber ].iMaxAmount;
 		}
 	}  
+}
+
+void Ammo_AutoFill(float fWeapon)
+{
+	if (autocvar_fcs_fillweapons == FALSE) {
+		return;
+	}
+
+	if (Weapon_AlreadyExists(fWeapon)) {
+		self.(wptTable[fWeapon].iMagfld) = wptTable[fWeapon].iMagSize;
+		self.(wptTable[fWeapon].iCaliberfld) = ammoTable[wptTable[fWeapon].iCaliber].iMaxAmount;
+		Weapon_UpdateCurrents();
+	}
+}
+
+void Ammo_Clear(void)
+{
+	// Clear all the ammo stuff
+	for ( int i = 0; i < CS_WEAPON_COUNT; i++ ) {
+		self.(wptTable[ i ].iMagfld) = 0;
+		self.(wptTable[ i ].iCaliberfld) = 0;
+	}
+
+	self.fSlotMelee = 0;
+	self.fSlotPrimary = 0;
+	self.fSlotSecondary = 0;
+	self.fSlotGrenade = 0;
+	self.iEquipment = 0;
 }
 
 /*
@@ -113,10 +136,10 @@ void CSEv_GamePlayerBuyAmmo_f( float fType ) {
 	}
 	
 	if ( fType == 0 ) {
-		Ammo_BuyPrimary( FALSE );
+		Ammo_BuyPrimary();
 	} else {
-		Ammo_BuySecondary( FALSE );
+		Ammo_BuySecondary();
 	}
-	
+
 	Weapon_UpdateCurrents();
 }
