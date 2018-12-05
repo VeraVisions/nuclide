@@ -133,7 +133,6 @@ int iBombPlanted;
 entity eActivator;
 .void() vUse;
 .int iUsable;
-.int iNull;
 
 // GoldSrc-Rendermode Fields
 .vector rendercolor;

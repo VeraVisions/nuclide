@@ -721,7 +721,7 @@ void CSQC_Input_Frame( void ) {
 	}
 	
 	if ( iInputAttack2 == TRUE ) {
-		input_buttons |= INPUT_BUTTON5;
+		input_buttons |= INPUT_BUTTON3;
 	} 
 
 	if ( iInputReload == TRUE ) {
@@ -729,7 +729,7 @@ void CSQC_Input_Frame( void ) {
 	} 
 	
 	if ( iInputUse == TRUE ) {
-		input_buttons |= INPUT_BUTTON3;
+		input_buttons |= INPUT_BUTTON5;
 	} 
 	
 	if ( iInputDuck == TRUE ) {

@@ -55,7 +55,7 @@ void Input_Handle( void ) {
 		Weapon_Switch( SLOT_GRENADE );
 	} 
 	
-	if ( self.button3 ) {
+	if ( self.button5 ) {
 		Player_UseDown(); 
 	} else {
 		Player_UseUp();
@@ -67,7 +67,7 @@ void Input_Handle( void ) {
 		}
 	} else if ( self.button4 ) {
 		Weapon_Reload( self.weapon );
-	} else if ( self.button5 ) {
+	} else if ( self.button3 ) {
 		Weapon_SecondaryAttack( self.weapon );
 	} else {
 		Weapon_Release();

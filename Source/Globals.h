@@ -327,6 +327,8 @@ float Weapon_GetSpeedM( float fWeapon );
 .vector view_ofs;
 .float maxspeed;
 
+.int iNull;
+
 /*
 =================
 Game_GetMaxSpeed
