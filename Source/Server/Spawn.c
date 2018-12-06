@@ -146,6 +146,7 @@ void Spawn_RespawnClient( float fTeam ) {
 	self.vDeath = Player_Death;
 	self.iBleeds = TRUE;
 	self.fSlotGrenade = 0; // Clear the C4
+	self.viewzoom = 1.0; // Clear scopes
 
 	self.origin = eSpawn.origin;
 	self.angles = eSpawn.angles;
