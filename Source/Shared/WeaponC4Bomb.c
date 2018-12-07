@@ -110,7 +110,7 @@ static void WeaponC4BOMB_Use( void ) {
 
 static void WeaponC4BOMB_Think( void ) {
 	// If the guy who started using us stopped using us, reset the defuser counter
-	if ( ( self.eUser != world ) && ( self.eUser.button3 == FALSE ) ) {
+	if ( ( self.eUser != world ) && ( self.eUser.button5 == FALSE ) ) {
 		self.eUser.fProgressBar = 0;
 		self.eUser = world;
 		fDefuseProgress = 0;
