@@ -94,7 +94,7 @@ void Player_Death( int iHitBody ) {
 	setsize( eCorpse, self.mins, self.maxs );
 	eCorpse.angles = [ 0, self.angles_y, 0 ];
 	eCorpse.movetype = MOVETYPE_BOUNCE;
-	
+
 	// Drop primary weapon as well as the bomb if present
 	if ( self.fSlotPrimary ) {
 		Weapon_DropWeapon( SLOT_PRIMARY );

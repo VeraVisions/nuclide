@@ -417,3 +417,12 @@ void Effect_BreakModel( vector vMins, vector vMaxs, vector vVel, float fStyle ) 
 	}
 #endif
 }
+
+#ifdef CSQC
+float Effect_Decal( void ) {
+	makevectors( self.angles );
+	adddecal( self.classname, self.origin, v_up / self.size[0], v_forward / self.size[1], self.color, 1.0f );
+	addentity( self );
+	return PREDRAW_NEXT;
+}
+#endif

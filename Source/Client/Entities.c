@@ -122,6 +122,30 @@ void CSQC_Ent_Update( float flIsNew ) {
 		self.classname = sprintf( "spray_%s", sLogo );
 		self.predraw = Effect_Spraypaint;
 		self.drawmask = MASK_ENGINE;
+	} else if ( fEntType == ENT_DECAL ) {
+		string decalname = "";
+		string decalshader = "";
+
+		self.origin_x = readcoord();
+		self.origin_y = readcoord();
+		self.origin_z = readcoord();
+		
+		self.angles_x = readcoord();
+		self.angles_y = readcoord();
+		self.angles_z = readcoord();
+		
+		self.color_x = 1.0f - ( readbyte() / 255 );
+		self.color_y = 1.0f - ( readbyte() / 255 );
+		self.color_z = 1.0f - ( readbyte() / 255 );
+		self.classname = readstring();
+		decalname = sprintf("decal_%s", self.classname);
+		decalshader = sprintf("{\npolygonOffset\n{\nclampmap %s\nblendFunc filter\n}\n}", self.classname);
+		shaderforname(decalname, decalshader);
+		self.size = drawgetimagesize(self.classname);
+		self.classname = decalname;
+
+		self.predraw = Effect_Decal;
+		self.drawmask = MASK_ENGINE;
 	}
 }
 

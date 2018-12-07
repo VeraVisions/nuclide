@@ -69,6 +69,7 @@ FuncDoorRotating.c
 FuncVehicle.c
 ArmouryEntity.c
 AmbientSound.c
+InfoDecal.c
 
 
 Bot/Bot.h
