@@ -46,9 +46,6 @@ Not Toggled (32) - 	Older FGDs show this as Not Looped.
       				Must be left unchecked for looping sound files. 
       				Note that actual looping depends purely on cue points defined in the .wav file (see notes).
 */
-.float pitch;
-.float loop;
-.float lforate;
 void ambient_generic( void ) {
 	static float ambient_generic_send( entity ePEnt, float fChanged ) {
 		WriteByte( MSG_ENTITY, ENT_AMBIENTSOUND );

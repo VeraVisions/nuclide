@@ -48,15 +48,6 @@ enum {
 	STATE_DOWN
 };
 
-.float speed;
-.float lip;
-.float state;
-.vector pos1, pos2;
-
-// Not all that customizable...
-.float movesnd;
-.float stopsnd;
-
 /*
 ====================
 FuncDoor_PrecacheSounds

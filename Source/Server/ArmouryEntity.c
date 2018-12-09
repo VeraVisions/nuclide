@@ -68,9 +68,6 @@ string sArmouryModels[ 19 ] = {
 	"models/w_smokegrenade.mdl"
 };
 
-.float item;
-.float count;
-
 /*
 =================
 SPAWN: armoury_entity

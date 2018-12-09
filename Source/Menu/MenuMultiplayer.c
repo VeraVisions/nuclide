@@ -106,36 +106,40 @@ Menu_Multiplayer
 First mulitplayer screen with the server browser
 =================
 */
-void Menu_Multiplayer( void ) {
+void Menu_Multiplayer(void) {
 	static string strCustomIP;
 	static int iSelectedServer = -1;
 	static int iScrollServer;
 	static int iServersTotal;
 	static int iAddServer = FALSE;
 	
-	static void Multiplayer_ButtonJoin( void ) {
+	static void Multiplayer_ButtonJoin(void) {
 		if ( iSelectedServer >= 0 ) {
 			localcmd( sprintf( "connect %s\n", gethostcachestring( fldAddress, iSelectedServer ) ) );
 			m_hide();
 		}
 	}
-	static void Multiplayer_ButtonCreate( void ) {
+	static void Multiplayer_ButtonCreate(void) {
 		iMenu = MENU_MULTIPLAYER_CREATE;
 	}
-	static void Multiplayer_ButtonRefresh( void ) {
+	static void Multiplayer_ButtonRefresh(void) {
 		refreshhostcache();
 		resorthostcache();
 	}
-	static void Multiplayer_ButtonDone( void ) {
+	static void Multiplayer_ButtonUpdate(void) {
+		refreshhostcache(TRUE);
+		resorthostcache();
+	}
+	static void Multiplayer_ButtonDone(void) {
 		iMenu = MENU_MAIN;
 	}
-	static void Multiplayer_ButtonIRC( void ) {
+	static void Multiplayer_ButtonIRC(void) {
 		iMenu = MENU_MULTIPLAYER_IRC;	
 	}
-	static void Multiplayer_ButtonAdd( void ) {
+	static void Multiplayer_ButtonAdd(void) {
 		iAddServer = 1 - iAddServer;	
 	}
-	static void Multiplayer_ButtonJoinIP( void ) {
+	static void Multiplayer_ButtonJoinIP(void) {
 		if ( strCustomIP ) {
 			localcmd( sprintf( "connect %s\n", strCustomIP ) );
 			m_hide();
@@ -162,18 +166,19 @@ void Menu_Multiplayer( void ) {
 	
 	iServersTotal = gethostcachevalue( SLIST_HOSTCACHEVIEWCOUNT );
 	
-	Menu_SetClipArea( '32 148', '164 192' );
+	Menu_SetClipArea( '32 148', '164 256' );
 	Object_Button( '32 148', BTN_JOINGAME, Multiplayer_ButtonJoin, fButtonAlpha[0] );
 	Object_Button( '32 180', BTN_CREATE, Multiplayer_ButtonCreate, fButtonAlpha[1] );
 	Object_Button( '32 212', BTN_GAMEINFO, __NULL__, fButtonAlpha[2] );
 	Object_Button( '32 244', BTN_REFRESHLIST, Multiplayer_ButtonRefresh, fButtonAlpha[3] );
-	Object_Button( '32 276', BTN_ADDSERVER, Multiplayer_ButtonAdd, fButtonAlpha[4] );
+	Object_Button( '32 276', BTN_UPDATELIST, Multiplayer_ButtonUpdate, fButtonAlpha[4] );
+	Object_Button( '32 308', BTN_ADDSERVER, Multiplayer_ButtonAdd, fButtonAlpha[5] );
 	
-	if ( checkcommand( "irc" ) ) {
-		Object_Button( '32 276', BTN_IRCCHAT, Multiplayer_ButtonIRC, fButtonAlpha[4] );
-	}
+	//if ( checkcommand( "irc" ) ) {
+		Object_Button( '32 340', BTN_IRCCHAT, Multiplayer_ButtonIRC, fButtonAlpha[6] );
+	//}
 	
-	Object_Button( '32 308', BTN_DONE, Multiplayer_ButtonDone, fButtonAlpha[5] );
+	Object_Button( '32 372', BTN_DONE, Multiplayer_ButtonDone, fButtonAlpha[7] );
 	Menu_ResetClipArea();
 	
 	Object_Frame( '196 140', '404 308' );
@@ -214,7 +219,7 @@ Menu_Multiplayer_Create
 Server creation menu screen
 =================
 */
-void Menu_Multiplayer_Create( void ) {
+void Menu_Multiplayer_Create(void) {
 	static int iSelectedMap;
 	static int iScrollMap;
 	static int iFirst = 1;
@@ -255,11 +260,11 @@ void Menu_Multiplayer_Create( void ) {
 			drawstring( vPosition + '8 0', sMapList[ iIndex ], '12 12', autocvar_menu_fgcolor, fAlpha, 0 );
 		}
 	}
-	static void Create_ButtonAdvanced( void ) {
+	static void Create_ButtonAdvanced(void) {
 		// Advanced options
 		iMenu = MENU_MULTIPLAYER_OPTIONS;
 	}
-	static void Create_ButtonOK( void ) {
+	static void Create_ButtonOK(void) {
 		// Apply the configurations
 		if ( strHostname != __NULL__ ) {
 			localcmd( sprintf( "hostname %s\n", strHostname ) );
@@ -270,7 +275,7 @@ void Menu_Multiplayer_Create( void ) {
 		// Start server
 		localcmd( sprintf( "map %s\n", sMapList[ iSelectedMap ] ) );
 	}
-	static void Create_ButtonCancel( void ) {
+	static void Create_ButtonCancel(void) {
 		iMenu = MENU_MULTIPLAYER;
 	}
 	
@@ -304,13 +309,43 @@ void Menu_Multiplayer_Create( void ) {
 	Menu_ResetClipArea();
 }
 
-void Menu_Multiplayer_IRC( void ) {
+int iIRCShowRooms;
+var string irc_currentroom;
+
+static string stockrooms[] = {
+	"FreeCS Chat", "#freecs",
+	"Maps & Mods", "#maps",
+	"Off-Topic", "#general",
+	"Support", "#support"
+};
+	
+void Menu_Multiplayer_IRC_Rooms(void)
+{
+	static int iRoomsInitialized = FALSE;
+	static string roomlist;
+
+	static void IRC_ButtonDone(void) {
+		iIRCShowRooms = FALSE;
+	}
+	
+	if (!iRoomsInitialized) {
+		//roomlist
+	}
+	
+	Object_Button( '32 308', BTN_DONE, IRC_ButtonDone, fButtonAlpha[0] );
+}
+
+void Menu_Multiplayer_IRC(void) {
 	static int iIRCInit = FALSE;
 	static string currenttab;
 	string showtab;
-	static string s;	//static to access it in nested functions.
+	static string s;
+	static string strGameDir_Lobby;
+	static string strGameDir_Support;
+	static string strGameDir_Maps;
+	static string strGameDir_Mods;
 	
-	static void IRC_ButtonDone( void ) {
+	static void IRC_ButtonDone(void) {
 		iMenu = MENU_MULTIPLAYER;
 	}
 	static void IRC_ButtonSelect(void) {
@@ -322,11 +357,22 @@ void Menu_Multiplayer_IRC( void ) {
 			con_input(currenttab, IE_FOCUS, 1/*mouse focus*/, 1/*key focus*/, 0);
 		}
 	}
-	
+
 	if ( iIRCInit == FALSE ) {
-		print( "[IRC] Connecting to #freecs...\n" );
-		localcmd("/irc /connect irc.freenode.org #freecs\n");
+		localcmd("plug_load irc\n");
+		localcmd(sprintf("irc_nick %s\n", cvar_string("name")));
+		strGameDir_Lobby = sprintf("#%s_lobby", cvar_string("game"));
+		strGameDir_Support = sprintf("#%s_support", cvar_string("game"));
+		strGameDir_Maps = sprintf("#%s_maps", cvar_string("game"));
+		strGameDir_Mods = sprintf("#%s_mods", cvar_string("game"));
+		localcmd("irc /connect www.vera-visions.com\n");
 		iIRCInit = TRUE;
+		iIRCShowRooms = TRUE;
+	}
+
+	if (iIRCShowRooms) {
+		Menu_Multiplayer_IRC_Rooms();
+		return;
 	}
 
 	int iTabIdx;
@@ -355,7 +401,8 @@ void Menu_Multiplayer_IRC( void ) {
 	if not (showtab)	//the channel we're trying to target
 		for (s = ""; s; s = con_getset(s, "next"))
 		{	//try to find our target channel
-			if (substring(s, 0, 3) == "IRC" && substring(s, -8, -1) == ":#freecs")
+			print(sprintf("TAB: %s\n", s));
+			if (substring(s, 0, 3) == "IRC" && substring(s, -7, -1) == "#freecs")
 			{
 				showtab = s;
 				break;
@@ -394,7 +441,7 @@ void Menu_Multiplayer_IRC( void ) {
 		//note that if you wish to handle IME strings then you should be doing that anyway.
 		if (fInputKeyCode != K_MOUSE1 && (fInputKeyCode || fInputKeyASCII))
 		{
-//print(sprintf("Sending input: %f %f %c\n", fInputKeyCode, fInputKeyASCII, fInputKeyASCII));
+			//print(sprintf("Sending input: %f %f %c\n", fInputKeyCode, fInputKeyASCII, fInputKeyASCII));
 			con_input(currenttab, IE_KEYDOWN, fInputKeyCode, fInputKeyASCII, 0);
 			con_input(currenttab, IE_KEYUP, fInputKeyCode, fInputKeyASCII, 0);
 			fInputKeyCode = 0;

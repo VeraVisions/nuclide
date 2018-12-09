@@ -24,6 +24,8 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
+string(float a, float b) getgamedirinfo = #0;
+
 /*
 =================
 m_init
@@ -78,6 +80,13 @@ void m_init( void ) {
 	search_end( shSprays );
 	
 	drawfont = loadfont( "font", "", "12", -1 );
+
+	string gamedirname;
+	string gamedescription;
+	for (int gameidx = 0; (gamedirname = getgamedirinfo(gameidx, 0)); gameidx++) {
+		gamedescription = getgamedirinfo(gameidx, 1);
+		print(sprintf("Gamedir %s, description %s\n", gamedirname, gamedescription));
+	}
 }
 
 /*

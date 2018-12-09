@@ -95,7 +95,13 @@ void Effect_Spraypaint( string sLogo, float fR, float fG, float fB ) {
 #else
 float Effect_Spraypaint( void ) {
 	makevectors( self.angles );
-	adddecal( self.classname, self.origin, v_up / 32, v_forward / 32, self.color, 1.0f );
+	float surf = getsurfacenearpoint(world, self.origin);
+	vector s_dir = getsurfacepointattribute(world, surf, 0, SPA_S_AXIS);
+	vector t_dir = getsurfacepointattribute(world, surf, 0, SPA_T_AXIS);
+	
+	//vector fixedty = dotproduct( 
+
+	adddecal( self.classname, self.origin, v_up / 32, t_dir / 32, self.color, 1.0f );
 	addentity( self );
 	return PREDRAW_NEXT;
 #endif
@@ -421,7 +427,12 @@ void Effect_BreakModel( vector vMins, vector vMaxs, vector vVel, float fStyle ) 
 #ifdef CSQC
 float Effect_Decal( void ) {
 	makevectors( self.angles );
-	adddecal( self.classname, self.origin, v_up / self.size[0], v_forward / self.size[1], self.color, 1.0f );
+
+	float surf = getsurfacenearpoint(world, self.origin);
+	vector s_dir = getsurfacepointattribute(world, surf, 0, SPA_S_AXIS);
+	vector t_dir = getsurfacepointattribute(world, surf, 0, SPA_T_AXIS);
+
+	adddecal( self.classname, self.origin, v_up / self.size[0], t_dir / self.size[1], self.color, 1.0f );
 	addentity( self );
 	return PREDRAW_NEXT;
 }

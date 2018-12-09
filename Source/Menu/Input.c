@@ -148,7 +148,9 @@ float Menu_InputEvent( float fEventType, float fKey, float fCharacter, float fDe
 	} else {
 		return FALSE;
 	}
-	
+
+	m_draw(vVideoSize);
+
 	return TRUE;
 }
 

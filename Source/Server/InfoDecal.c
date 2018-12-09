@@ -24,9 +24,6 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
-/* decal name */
-.string texture;
-
 /* We need to save trace infos temporarily in order to figure out what to
  * project the decal against. Half-Life's infodecal entity only stores origin,
  * but not angles. So we have to figure them out ourselves. */

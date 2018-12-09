@@ -31,6 +31,33 @@ enum {
 	BUY_NEITHER
 };
 
+/* Edit this for a custom gun-game order */
+int gg_order[] = {
+	WEAPON_KNIFE,
+	WEAPON_GLOCK18,
+	WEAPON_USP45,
+	WEAPON_P228,
+	WEAPON_FIVESEVEN,
+	WEAPON_ELITES,
+	WEAPON_DEAGLE,
+	WEAPON_M3,
+	WEAPON_XM1014,
+	WEAPON_TMP,
+	WEAPON_MAC10,
+	WEAPON_MP5,
+	WEAPON_UMP45,
+	WEAPON_P90,
+	WEAPON_AK47,
+	WEAPON_SCOUT,
+	WEAPON_M4A1,
+	WEAPON_SG552,
+	WEAPON_AUG,
+	WEAPON_G3SG1,
+	WEAPON_SG550,
+	WEAPON_AWP,
+	WEAPON_PARA
+};
+
 /*
 =================
 Rules_BuyingPossible
@@ -250,27 +277,27 @@ Happens rarely
 */
 void Rules_SwitchTeams( void ) {
 	int iCTW, iTW;
-	
-	for ( entity eFind = world; ( eFind = find( eFind, classname, "player" ) ); ) { 
-		if ( eFind.team == TEAM_CT ) {
+
+	for (entity eFind = world; (eFind = find(eFind, classname, "player"));) { 
+		if (eFind.team == TEAM_CT) {
 			eFind.team = TEAM_T;
 			eFind.fCharModel -= 4;
-		} else if ( eFind.team == TEAM_T ) {
+		} else if (eFind.team == TEAM_T) {
 			eFind.team = TEAM_CT;
 			eFind.fCharModel += 4;
 		}
-		forceinfokey( eFind, "*team", ftos( eFind.team ) ); 
+		forceinfokey(eFind, "*team", ftos(eFind.team));
 	}
-	
+
 	iCTW = iWon_CT;
 	iTW = iWon_T;
-	
+
 	iWon_T = iCTW;
 	iWon_CT = iTW;
-	
+
 	iCTW = iAlivePlayers_CT;
 	iTW = iAlivePlayers_T;
-	
+
 	iAlivePlayers_CT = iTW;
 	iAlivePlayers_T = iCTW;
 }
@@ -316,12 +343,11 @@ void Rules_DeathCheck(void)
 =================
 SPAWN: info_map_parameters
 
-Let's map authors decide who can buy stuff and who CAN'T.
-Also allows people to set the bomb placing radius incase you want to use info_bomb_target.
+Let map authors decide who can buy stuff and who CAN'T.
+Also allows people to set the bomb placing radius incase
+you want to use info_bomb_target.
 =================
 */
-.float buying;
-.float bombradius;
 void info_map_parameters( void ) {	
 	if ( self.bombradius ) {
 		iBombRadius = self.bombradius;

@@ -67,7 +67,6 @@ Sprite (model) - A sprite must be specified here (sprites/spritename.spr).
 Frames per second (framerate) - Framerate the sprite will run at if animated.
 =================
 */
-.float framerate;
 void env_sprite( void ) {
 	static float env_sprite_send( entity ePEnt, float fChanged ) {
 		WriteByte( MSG_ENTITY, ENT_SPRITE ); // Identifier
@@ -170,7 +169,6 @@ It's possible to create a similar effect with a combination of other entities,
 but it wouldn't be much fun, so this quick and easy one is here instead!
 =================
 */
-.int iMagnitude;
 
 enumflags {
 	ENVEXPLO_NODAMAGE,
@@ -222,7 +220,7 @@ We may never know.
 */
 #define SPARK_TOGGLE 	32
 #define SPARK_ON 		64
-.float MaxDelay;
+
 void env_spark( void ) {
 	static void env_spark_fire( void ) {
 		Effect_CreateSpark( self.origin, self.angles );

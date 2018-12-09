@@ -75,20 +75,6 @@ enum {
 	GRENADE_READY
 };
 
-// Player specific fields
-.float fInBuyZone;
-.float fInHostageZone;
-.float fInBombZone;
-.float fMoney;
-.float fStepTime;
-.int iInGame;
-.float fCharModel;
-//.int iHasBomb;
-.float fDeaths;
-.int iEquipment;
-.float armor;
-.float fProgressBar;
-
 // Match specific fields
 int iRounds;
 int iWon_T;
@@ -99,13 +85,7 @@ int iAlivePlayers_CT;
 float fGameState;
 float fGameTime;
 
-// Weapon specific fields
-.int iCurrentMag;
-.int iCurrentCaliber;
-.float fSlotMelee, fSlotPrimary, fSlotSecondary, fSlotGrenade;
-.float fAttackFinished;
-.float fRadioFinished;
-.float fAccuracy;
+entity eActivator;
 
 // Game specific fields
 int iHostagesMax;
@@ -119,26 +99,6 @@ int iBombRadius; // For info_map_parameters
 
 int iHostagesRescued;
 int iBombPlanted;
-
-// Generic entity fields
-.int iUsable;
-.int iBleeds;
-.void( int iHitBody ) vPain;
-.void( int iHitBody ) vDeath;
-.float fRespawns;
-.entity eUser;
-.float material;
-
-// All about +use
-entity eActivator;
-.void() vUse;
-.int iUsable;
-
-// GoldSrc-Rendermode Fields
-.vector rendercolor;
-.float rendermode;
-.float renderamt;
-.float alpha;
 
 void Rules_RoundOver( int iTeamWon, int iMoneyReward, float fSilent );
 float Rules_BuyingPossible( void );

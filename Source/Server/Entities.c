@@ -105,13 +105,6 @@ Entities_InitRespawnable
 Called
 ====================
 */
-.string sOldModel;
-.float fOldSolid;
-.float fOldHealth;
-.vector vOldOrigin;
-.vector vOldAngle;
-.void() vRespawn;
-.void() vOldUse;
 void Entities_InitRespawnable( void() vRespawnFunc ) {
 	self.sOldModel = self.model;
 	self.fOldSolid = self.solid;

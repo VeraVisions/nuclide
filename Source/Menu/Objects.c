@@ -76,7 +76,7 @@ string sButtonLabels[ MENU_BUTTONS ] = {
 	_("BTN_FINDGAME"),
 	_("BTN_STARTGAME"),
 	_("BTN_GAMEINFO"),
-	_("BTN_UPDATE"),
+	_("BTN_UPDATELIST"),
 	_("BTN_ADDSERVER"),
 	_("BTN_DISCONNECT"),
 	_("BTN_CONSOLE"),

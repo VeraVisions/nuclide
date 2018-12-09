@@ -24,10 +24,6 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
-.entity eTargetPoint;
-.entity eLastCreated;
-.int iHasBeenUsed;
-
 enum {
 	HOSTAGE_IDLE,
 	HOSTAGE_WALK,

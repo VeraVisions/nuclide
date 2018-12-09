@@ -45,8 +45,6 @@ void FuncDoorRotate_RotateAway( void );
 void FuncDoorRotate_RotateBack( void );
 void FuncDoorRotate_Touch( void );
 
-.float distance;
-
 /*
 =================
 FuncDoorRotate_Arrived

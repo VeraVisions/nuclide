@@ -32,7 +32,6 @@ Only thing this ent does, is allow the change of lightstyles.
 You can use custom patterns, too.
 =================
 */
-.string pattern;
 void light( void ) {
 	static void light_toggle( void ) {
 		if ( self.health == TRUE ) {
