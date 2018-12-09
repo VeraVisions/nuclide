@@ -253,8 +253,8 @@ void Effect_Impact( int iType, vector vPos, vector vNormal ) {
 #else
 	switch ( iType ) {
 		case IMPACT_MELEE:
-			pointparticles( DECAL_SHOT, vPos, vNormal, 1 );
-			pointparticles( PARTICLE_PIECES_BLACK, vPos, vNormal, 1 );
+			/*pointparticles( DECAL_SHOT, vPos, vNormal, 1 );
+			pointparticles( PARTICLE_PIECES_BLACK, vPos, vNormal, 1 );*/
 			pointsound( vPos, "weapons/knife_hitwall1.wav", 1, ATTN_STATIC );
 			break;
 		case IMPACT_EXPLOSION:
