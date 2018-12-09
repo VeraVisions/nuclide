@@ -78,6 +78,8 @@ void CSQC_Init(float apilevel, string enginename, float engineversion) {
 	precache_sound("debris/bustconcrete2.wav");
 	precache_sound("debris/bustceiling.wav");
 	precache_sound("player/pl_pain2.wav");
+	Sound_InitVOX();
+
 	precache_model("sprites/iplayerred.spr");
 	precache_model("sprites/iplayerblue.spr");
 	precache_model("sprites/iplayervip.spr");
