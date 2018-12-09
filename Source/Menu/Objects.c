@@ -116,7 +116,7 @@ void Object_Button( vector vPosition, int iButtonID, void() vFunction, __inout f
 	
 	if ( Menu_InputCheckMouse( vPosition, '156 26' ) == TRUE ) {
 		if ( iLastButton != iButtonID ) {
-			localcmd( "play ../media/launch_deny2.wav\n" );
+			//localcmd( "play ../media/launch_deny2.wav\n" );
 		}
 		iLastButton = iButtonID;
 		fAlpha = 1.0f;
@@ -126,7 +126,7 @@ void Object_Button( vector vPosition, int iButtonID, void() vFunction, __inout f
 				vFunction();
 			}
 			vHeaderButtonPos = vPosition;
-			localcmd( "play ../media/launch_select2.wav\n" );
+			localsound("../media/launch_select2.wav"); 
 			fMouseClick = FALSE;
 		}
 	}
@@ -152,7 +152,7 @@ void Object_TextButton( vector vPosition, string sButtonText, void() vFunction, 
 	
 	if ( Menu_InputCheckMouse( vPosition, [stringwidth(sButtonText, TRUE, FONTSIZE), 12] ) == TRUE ) {
 		if ( sLastButton != sButtonText ) {
-			localcmd( "play ../media/launch_deny2.wav\n" );
+			localsound("../media/launch_deny2.wav"); 
 		}
 		sLastButton = sButtonText;
 		fAlpha = 1.0f;
@@ -161,7 +161,7 @@ void Object_TextButton( vector vPosition, string sButtonText, void() vFunction, 
 			if ( vFunction != __NULL__ ) {
 				vFunction();
 			}
-			localcmd( "play ../media/launch_select2.wav\n" );
+			localsound("../media/launch_select2.wav"); 
 			fMouseClick = FALSE;
 		}
 	}

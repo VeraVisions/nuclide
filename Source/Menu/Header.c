@@ -79,6 +79,7 @@ void Header_Draw( void ) {
 	if ( iHeader != iLastHeader ) {
 		fHeaderLerp = 0.0f;
 		iLastHeader = iHeader;
+		localsound("../media/launch_upmenu1.wav"); 
 	}
 	
 	if ( iHeader == -1 ) {
