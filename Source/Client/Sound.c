@@ -63,7 +63,7 @@ void Sound_ProcessWordQue( void ) {
 				iVOXCount = 0;
 				iVOXPos = 0;
 			} else {
-				fSampleTime = time + sndVOX[ iVOXPos ].fLength;
+				fSampleTime = time + sndVOX[ iVOXPos - 1 ].fLength;
 			}
 		}
 	}
