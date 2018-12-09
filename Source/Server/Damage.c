@@ -150,13 +150,17 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 		
 		if ( iSkipArmor == TRUE ) {
 			eTarget.health = rint( eTarget.health -= iDamage );
+			eTarget.dmg_take = (float)iDamage;
 		} else {
 			eTarget.health = rint( eTarget.health -= fNewDmg );
+			eTarget.dmg_take = (float)fNewDmg;
 		}
 	} else {
 		// No armor
 		eTarget.health -= iDamage;
+		eTarget.dmg_take = (float)iDamage;
 	}
+	eTarget.dmg_inflictor = eAttacker;
 	
 	// Special monetary punishment for hostage murderers
 	if ( eTarget.classname == "hostage_entity" ) {
@@ -166,7 +170,7 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 			Money_AddMoney( eAttacker, autocvar_fcs_penalty_kill ); // Death
 		}
 	}
-	
+
 	// Target is dead and a client....
 	if ( eTarget.health <= 0 ) {
 		if ( eTarget.flags & FL_CLIENT ) {

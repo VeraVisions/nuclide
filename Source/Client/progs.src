@@ -54,6 +54,7 @@ VGUIBuyMenu.c
 VGUITeamSelect.c
 VGUIRadio.c
 VGUI.c
+Damage.c
 Nightvision.c
 HUDCrosshair.c
 HUDScope.c

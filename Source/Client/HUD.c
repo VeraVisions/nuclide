@@ -475,8 +475,9 @@ void HUD_Draw( void ) {
 	} else {
 		HUD_DrawCrosshair();
 	}
-	
+
 	HUD_DrawFlash();
+	Damage_Draw();
 	HUD_DrawTimer();
 	HUD_DrawHealth();
 	HUD_DrawArmor();
