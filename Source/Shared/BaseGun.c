@@ -141,9 +141,6 @@ Returns whether or not to play an animation
 float BaseGun_PrimaryFire( void ) {
 	// Nothing in the clip anymore? Don't even attempt
 	if ( ( self.(wptTable[ self.weapon ].iMagfld) - 1 ) < 0 ) {
-		if ( autocvar_fcs_autoreload == TRUE ) {
-			Weapon_Reload( self.weapon );
-		}
 		return FALSE;
 	}
 	

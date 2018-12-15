@@ -426,13 +426,7 @@ void Effect_BreakModel( vector vMins, vector vMaxs, vector vVel, float fStyle ) 
 
 #ifdef CSQC
 float Effect_Decal( void ) {
-	makevectors( self.angles );
-
-	float surf = getsurfacenearpoint(world, self.origin);
-	vector s_dir = getsurfacepointattribute(world, surf, 0, SPA_S_AXIS);
-	vector t_dir = getsurfacepointattribute(world, surf, 0, SPA_T_AXIS);
-
-	adddecal( self.classname, self.origin, v_up / self.size[0], t_dir / self.size[1], self.color, 1.0f );
+	adddecal( self.classname, self.origin, self.mins, self.maxs, self.color, 1.0f );
 	addentity( self );
 	return PREDRAW_NEXT;
 }

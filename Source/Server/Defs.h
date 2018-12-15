@@ -49,7 +49,6 @@ var int autocvar_fcs_penalty_pain = -150;
 var int autocvar_fcs_penalty_kill = -1500;
 var int autocvar_fcs_maxmoney = 16000;
 var int autocvar_fcs_fillweapons = FALSE; // This will automatically get ammo for the weapon you buy
-var int autocvar_fcs_autoreload = FALSE; // When pressing fire and the gun is empty, it will reload instead
 
 // Mapcycle features
 var string autocvar_mapcyclefile = "mapcycle.txt";

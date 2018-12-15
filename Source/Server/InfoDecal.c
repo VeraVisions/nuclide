@@ -57,6 +57,15 @@ void infodecal(void)
 	int b = 0;
 	float frac = 1.0f;
 	vector vpos = self.origin;
+	
+	if (serverkeyfloat("*bspversion") != 30) {
+		self.texture = sprintf( "materials/%s", self.texture );
+	}
+
+	if (!self.texture) {
+		remove(self);
+		return;
+	}
 
 	/* Unrolled because I'm lazy */
 	makevectors([0, 0, 0]);

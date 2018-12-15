@@ -138,11 +138,21 @@ void CSQC_Ent_Update( float flIsNew ) {
 		self.color_y = 1.0f - ( readbyte() / 255 );
 		self.color_z = 1.0f - ( readbyte() / 255 );
 		self.classname = readstring();
-		decalname = sprintf("decal_%s", self.classname);
-		decalshader = sprintf("{\npolygonOffset\n{\nclampmap %s\nblendFunc filter\n}\n}", self.classname);
-		shaderforname(decalname, decalshader);
 		self.size = drawgetimagesize(self.classname);
-		self.classname = decalname;
+
+		if (serverkeyfloat("*bspversion") != 30) {
+			decalname = sprintf("decal_%s", self.classname);
+			decalshader = sprintf("{\npolygonOffset\n{\nclampmap %s\nblendFunc filter\n}\n}", self.classname);
+			shaderforname(decalname, decalshader);
+			self.classname = decalname;
+		}
+		
+		makevectors( self.angles );
+		float surf = getsurfacenearpoint(world, self.origin);
+		vector s_dir = getsurfacepointattribute(world, surf, 0, SPA_S_AXIS);
+		vector t_dir = getsurfacepointattribute(world, surf, 0, SPA_T_AXIS);
+		self.mins = v_up / self.size[0];
+		self.maxs = t_dir / self.size[1];
 
 		self.predraw = Effect_Decal;
 		self.drawmask = MASK_ENGINE;

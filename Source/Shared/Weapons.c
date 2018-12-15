@@ -256,6 +256,10 @@ void Weapon_Release( void ) {
 		WeaponSMOKEGRENADE_Release();
 	} else if ( self.weapon == WEAPON_C4BOMB ) {
 		WeaponC4BOMB_Release();
+	} else {
+		if (self.(wptTable[ self.weapon ].iMagfld) == 0 && self.(wptTable[ self.weapon ].iCaliberfld)) {
+			Weapon_Reload(self.weapon);
+		}
 	}
 }
 
