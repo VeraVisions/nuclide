@@ -47,7 +47,15 @@ void func_buyzone( void ) {
 		remove( self );
 		return;
 	}
-	
+
+	if ( autocvar_fcs_swapteams == TRUE ) {
+		if (self.team == TEAM_T) {
+			self.team = TEAM_CT;
+		} else if (self.team == TEAM_CT) {
+			self.team = TEAM_T;
+		}
+	}
+
 	self.angles = '0 0 0';
 	self.movetype = MOVETYPE_NONE;
 	self.solid = SOLID_TRIGGER;
