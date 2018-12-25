@@ -205,6 +205,7 @@ void Rules_Restart( int iWipe ) {
 	
 	Timer_Begin( autocvar_mp_freezetime, GAME_FREEZE );
 	Money_ResetTeamReward();
+	fDefuseProgress = 0;
 }
 
 /*
