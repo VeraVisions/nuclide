@@ -245,9 +245,9 @@ void hostage_physics( void ) {
 		// Decide speed and stuff
 		if ( self.style == HOSTAGE_WALK ) {
 			self.frame = A_WALK;
-			input_movevalues_x = 110;
+			input_movevalues_x = 160;
 		} else if ( self.style == HOSTAGE_RUN ) {
-			input_movevalues_x = 220;
+			input_movevalues_x = 320;
 			self.frame = A_RUN;
 		} else {
 			input_movevalues_x = 0;

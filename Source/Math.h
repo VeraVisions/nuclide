@@ -155,7 +155,7 @@ void QPhysics_Run ( entity eTarget )
 
 	#ifdef SSQC
 	if ( ( self.flags & FL_ONGROUND ) && self.movetype == MOVETYPE_WALK && ( flFallVel > 580 )) {
-		float fFallDamage = ( flFallVel - 580 ) * ( 200 / ( 1024 - 580 ) );
+		float fFallDamage = ( flFallVel - 580 ) * ( 100 / ( 1024 - 580 ) );
 		Damage_Apply( self, world, fFallDamage, self.origin, FALSE );
 	}
 	#endif

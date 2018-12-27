@@ -1,0 +1,2 @@
+all:
+	fteqcc progs.src

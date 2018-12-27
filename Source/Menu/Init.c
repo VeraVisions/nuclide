@@ -61,19 +61,19 @@ void m_init( void ) {
 	}
 	
 	// Initialize all the spraylogos
-	searchhandle shSprays = search_begin( "logos/*.bmp", TRUE, TRUE );
+	searchhandle shSprays = search_begin( "*.bmp", TRUE, TRUE );
 	sLogos = memalloc( sizeof( string ) * search_getsize( shSprays ) );
 	for ( int i = 0; i < search_getsize( shSprays ); i++ ) {
 		string sShadername;
 		string sShortname = search_getfilename( shSprays, i );
 		precache_pic( sShortname );
-		sShortname = substring( sShortname, 6, strlen( sShortname ) - 10 );
+		sShortname = substring( sShortname, 0, strlen( sShortname ) - 4 );
 		sLogos[ i ] = sShortname;
 		sShadername = sprintf( "spray_%s", sShortname );
 		if ( substring( sShortname, 0, 1 ) == "#" ) {
 			shaderforname( sShadername, sprintf("{\ncull disable\npolygonOffset\n{\nmap %s\n}\n}\n", search_getfilename( shSprays, i ) ) );
 		} else {
-			shaderforname( sShadername, sprintf("{\ncull disable\npolygonOffset\n{\nmap %s\nblendFunc GL_ZERO GL_ONE_MINUS_SRC_COLOR\n\nrgbgen vertex\n}\n}\n", search_getfilename( shSprays, i ) ) );
+			shaderforname( sShadername, sprintf("{\ncull disable\npolygonOffset\n{\nmap %s\nblendFunc GL_ZERO GL_ONE_MINUS_SRC_COLOR\nrgbgen vertex\n}\n}\n", search_getfilename( shSprays, i ) ) );
 		}
 		iLogos += 1;
 	}

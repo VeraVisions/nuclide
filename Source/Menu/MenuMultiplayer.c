@@ -365,7 +365,7 @@ void Menu_Multiplayer_IRC(void) {
 		strGameDir_Support = sprintf("#%s_support", cvar_string("game"));
 		strGameDir_Maps = sprintf("#%s_maps", cvar_string("game"));
 		strGameDir_Mods = sprintf("#%s_mods", cvar_string("game"));
-		localcmd("irc /connect www.vera-visions.com\n");
+		localcmd("irc /open www.vera-visions.com\n");
 		iIRCInit = TRUE;
 		iIRCShowRooms = TRUE;
 	}

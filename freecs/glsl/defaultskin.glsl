@@ -1,4 +1,4 @@
-!!ver 110
+!!ver 120
 !!permu FRAMEBLEND
 !!permu SKELETAL
 !!permu FOG
@@ -21,7 +21,7 @@ varying vec3 light;
 		vec3 n, s, t, w;
 		gl_Position = skeletaltransform_wnst(w,n,s,t);
 		tex_c = v_texcoord;
-		light = ( hl( n, e_light_dir ) * e_light_mul ) + e_light_ambient;
+		light = e_light_ambient + ( e_light_mul * hl( n, e_light_dir ) );
 	}
 #endif
 

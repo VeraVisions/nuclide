@@ -1,0 +1,30 @@
+HALF-LIFE WON MENU - QUAKEC VERSION
+===================================
+
+This menu logic is part of the FreeCS project.
+It's a close recreation of the Half-Life main-menu (pre-Steam), also known as
+the Half-Life WON menu (or just WON Menu - you get the idea).
+
+It attempts to parse string-data and bitmaps from the original paths
+whenever it can. It's a full replacement of Half-Life's original menu.
+
+It's created from scratch and is not C++ - it's QuakeC and meant to be used
+within FTE QuakeWorld. The file extensions are only changed in order to help
+with the syntax highlighting choice of your favorite editor.
+
+This codebase is to be compiled with FTEQCC, no other compiler is supported.
+
+The code has a LICENSE attached to it, I'd encourage you to read it.
+If you don't want to comply with the LICENSE, you either don't use the software
+or we could still negotiate a separate license agreement (for $$$).
+
+A few warnings to the uneducated:
+If you're planning on merging or using any of this code in combination with the
+original Half-Life SDK, you're violating the Half-Life SDK License Agreement.
+
+I hope this all does not discourage you from using it for your own project.
+
+Thanks to Spike for FTEQCC's advanced features and his engine, FTEQW, that makes
+FreeCS and other projects even possible.
+
+Marco 'eukara' Hladik

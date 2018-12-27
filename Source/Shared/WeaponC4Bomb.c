@@ -31,7 +31,7 @@ int iBombProgress;
 #endif
 
 // Weapon Info
-weaponinfo_t wptC4BOMB = { 
+weaponinfo_t wptC4BOMB = {
 	WEAPON_C4BOMB, 		// Identifier
 	SLOT_GRENADE,
 	0, 					// Price
