@@ -40,7 +40,7 @@ var float FONT_16;
 var float FONT_CON;
 
 // Clientside cvars
-var vector autocvar_con_color = '255 170 0'; // autocvar of "con_color"
+var vector autocvar_con_color = '255 150 0'; // autocvar of "con_color"
 var vector autocvar_vgui_color = '255 170 0'; // autocvar of "vgui_color"
 var vector autocvar_cross_color = '0 255 0'; // autocvar of "cross_color"
 var float autocvar_cl_bob = 0;

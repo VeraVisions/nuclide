@@ -394,7 +394,7 @@ void HUD_DrawProgressBar(void) {
 
 void HUD_DrawRadar(void) {
 	if (autocvar_cl_radar == 1) {
-		drawpic(vVideoMins + [16,16], "sprites/radar640.spr_0.tga", [128,128], [1,1,1], 0.5, DRAWFLAG_ADDITIVE);
+		drawpic(vVideoMins, "sprites/radar640.spr_0.tga", [128,128], [1,1,1], 0.25, DRAWFLAG_ADDITIVE);
 	} else if (autocvar_cl_radar == 2) {
 		static int iLastMode = 0;
 		static vector vMapSize;
