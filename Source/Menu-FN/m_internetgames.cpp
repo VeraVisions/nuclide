@@ -22,6 +22,14 @@ CServerList inet_lbServers;
 CScrollbar inet_sbServers;
 
 /* Button Callbacks */
+void inet_btnjoin(void)
+{
+	string addr = inet_lbServers.GetSelectedItem();
+	
+	if (addr) {
+		localcmd(sprintf("connect %s\n", addr));
+	}
+}
 void inet_btncreate_start(void)
 {
 	static void inet_btncreate_end(void) {
@@ -80,7 +88,7 @@ void menu_internetgames_init(void)
 
 	inet_btnJoin = spawn(CMainButton);
 	inet_btnJoin.SetImage(BTN_JOINGAME);
-	//inet_btnJoin.SetExecute(btn_console);
+	inet_btnJoin.SetExecute(inet_btnjoin);
 	inet_btnJoin.SetPos(30,140);
 	Widget_Add(fn_inet, inet_btnJoin);
 

@@ -18,7 +18,14 @@ CServerList lan_lbServers;
 CScrollbar lan_sbServers;
 
 /* Button Callbacks */
-
+void lan_btnjoin(void)
+{
+	string addr = lan_lbServers.GetSelectedItem();
+	
+	if (addr) {
+		localcmd(sprintf("connect %s\n", addr));
+	}
+}
 void lan_btncreate_start(void)
 {
 	static void lan_btncreate_end(void) {
@@ -75,7 +82,7 @@ void menu_langames_init(void)
 
 	lan_btnJoin = spawn(CMainButton);
 	lan_btnJoin.SetImage(BTN_JOINGAME);
-	//lan_btnJoin.SetExecute(btn_console);
+	lan_btnJoin.SetExecute(lan_btnjoin);
 	lan_btnJoin.SetPos(30,140);
 	Widget_Add(fn_lan, lan_btnJoin);
 
