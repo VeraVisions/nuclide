@@ -231,7 +231,10 @@ void View_DrawViewModel( void ) {
 	}
 	
 	makevectors( '0 0 0');
-	eViewModel.origin = '0 0 -1' + ( v_forward * ( pSeat->fBob * 0.4 ) );
+	eViewModel.origin = '0 0 -1' + ( v_forward * ( pSeat->fBob * 0.4 ) )
+			+ ( v_forward * autocvar_v_gunofs[0] )
+			+ ( v_right * autocvar_v_gunofs[1] )
+			+ ( v_up * autocvar_v_gunofs[2] );;
 	
 	// Left-handed weapons
 	if ( autocvar_v_lefthanded ) {

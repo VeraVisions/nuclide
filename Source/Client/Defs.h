@@ -49,6 +49,7 @@ var float autocvar_v_bobcycle = 0.8;
 var float autocvar_v_bobup = 0.5;
 var int autocvar_v_bobclassic = FALSE;
 var int autocvar_v_lefthanded = FALSE;
+var vector autocvar_v_gunofs = [0,0,0];
 var int autocvar_cl_thirdperson = FALSE;
 var int autocvar_cl_radar = 1;
 var int autocvar_cl_smoothstairs = TRUE;
