@@ -99,7 +99,7 @@ void QPhysics_Jump ( entity eTarget )
 void QPhysics_Run ( entity eTarget )
 {
 	int iFixCrouch = FALSE;
-	float flFallVel = ( self.flags & FL_ONGROUND ) ? 0 : -self.velocity_z;
+	float flFallVel = ( eTarget.flags & FL_ONGROUND ) ? 0 : -eTarget.velocity_z;
 
 	// We didn't get any basevelocity this frame, remove the flag
 	/*if ( vlen( eTarget.basevelocity ) ) {
@@ -154,9 +154,9 @@ void QPhysics_Run ( entity eTarget )
 	runstandardplayerphysics( eTarget );
 
 	#ifdef SSQC
-	if ( ( self.flags & FL_ONGROUND ) && self.movetype == MOVETYPE_WALK && ( flFallVel > 580 )) {
+	if ( ( eTarget.flags & FL_ONGROUND ) && eTarget.movetype == MOVETYPE_WALK && ( flFallVel > 580 )) {
 		float fFallDamage = ( flFallVel - 580 ) * ( 100 / ( 1024 - 580 ) );
-		Damage_Apply( self, world, fFallDamage, self.origin, FALSE );
+		Damage_Apply( eTarget, world, fFallDamage, eTarget.origin, FALSE );
 	}
 	#endif
 }

@@ -24,7 +24,7 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#define CHAT_LINES 	5
+#define CHAT_LINES 5
 #define CHAT_TIME 	20
 var int iLineScroll = 0;
 
@@ -125,7 +125,7 @@ void CSQC_DrawCenterprint( void ) {
 		}
 	}
 	
-	vCenterPrintPos_y = vVideoMins_y + ( vVideoResolution_y / 2 ) - ( fCenterPrintLines - 4 );
+	vCenterPrintPos_y = vVideoMins_y + ( vVideoResolution_y / 2 ) - ( fCenterPrintLines - 4 ) - 69;
 	
 	for ( int i = 0; i < ( fCenterPrintLines ); i++ ) {
 		vCenterPrintPos_x = vVideoMins_x + ( vVideoResolution_x / 2 ) - ( stringwidth( sCenterPrintBuffer[ i ], TRUE, '12 12' ) / 2 );
@@ -269,6 +269,7 @@ void CSQC_UpdateView( float fWinWidth, float fWinHeight, float fGameFocus ) {
 		setproperty( VF_ACTIVESEAT, (float)s );
 		
 		CSQC_CalcViewport( s, fWinWidth, fWinHeight );
+		Fade_Update ( vVideoMins[0],vVideoMins[1], fWinWidth, fWinHeight );
 		View_DropPunchAngle();
 		Nightvision_PostDraw();
 

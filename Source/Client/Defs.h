@@ -162,6 +162,7 @@ string HUD_GetChatColorHEX( float fTeam );
 
 // This actually belongs in Builtins.h since its an undocumented global
 .float maxframe;
+float clframetime;
 
 // For the player entity
 .entity eGunModel;

@@ -90,7 +90,7 @@ void btn_multiplayer_start(void)
 
 void btn_training(void)
 {
-	localcmd("map t0a0\n");
+	localcmd("maxplayers 1\nmap t0a0\n");
 }
 
 void btn_quit(void)

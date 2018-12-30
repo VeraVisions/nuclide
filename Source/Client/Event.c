@@ -632,6 +632,8 @@ void CSQC_Parse_Event( void ) {
 		CSQC_Parse_Print( sprintf( "%s%s^xF80: %s", HUD_GetChatColorHEXTeam( fTeam2 ), getplayerkeyvalue( fSender2, "name" ), sMessage2 ), PRINT_CHAT );
 	} else if ( fHeader == EV_CHAT_VOX ) {
 		Sound_PlayVOX( readstring() );
+	} else if (fHeader == EV_FADE) {
+		Fade_Parse();
 	}
 }
 

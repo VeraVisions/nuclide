@@ -65,10 +65,8 @@ void CSQC_Ent_Update( float flIsNew ) {
 			self.predraw = Player_PreDraw;
 			self.drawmask = MASK_ENGINE;
 			self.pmove_frame = servercommandframe;
-		} else {
-			Player_PreUpdate();
 		}
-		
+
 		self.modelindex = readbyte();
 		self.origin_x = readcoord();
 		self.origin_y = readcoord();
@@ -81,8 +79,6 @@ void CSQC_Ent_Update( float flIsNew ) {
 		self.velocity_z = readshort();
 		self.flags = readfloat();
 		self.weapon = readbyte();
-		
-		Player_PostUpdate();
 		
 		if ( self.flags & FL_CROUCHING ) {
 			setsize( self, VEC_CHULL_MIN, VEC_CHULL_MAX );
@@ -140,7 +136,7 @@ void CSQC_Ent_Update( float flIsNew ) {
 		self.classname = readstring();
 		self.size = drawgetimagesize(self.classname);
 
-		if (serverkeyfloat("*bspversion") != 30) {
+		if (serverkeyfloat("*bspversion") == 30) {
 			decalname = sprintf("decal_%s", self.classname);
 			decalshader = sprintf("{\npolygonOffset\n{\nclampmap %s\nblendFunc filter\n}\n}", self.classname);
 			shaderforname(decalname, decalshader);

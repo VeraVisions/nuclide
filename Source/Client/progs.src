@@ -43,6 +43,8 @@ Defs.h
 ../Shared/Equipment.c
 ../Shared/Animations.c
 
+../gs-entbase/client/fade.cpp
+
 Overview.c
 Player.c
 View.c

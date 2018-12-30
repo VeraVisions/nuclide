@@ -251,6 +251,8 @@ enum {
 	EV_SPARK,
 	EV_SMOKE,
 	EV_FLASH,
+	EV_SHAKE,
+	EV_FADE,
 	EV_MODELGIB,
 	EV_CAMERATRIGGER,
 	EV_RADIOMSG,
@@ -336,9 +338,16 @@ Game_GetMaxSpeed
 =================
 */
 float Game_GetMaxSpeed( entity eTarget ) {
-	if ( eTarget.flags & FL_CROUCHING ) {
-		return ( cvar( "sv_maxspeed" ) * Weapon_GetSpeedM( eTarget.weapon ) * 0.5 );
+	int weap;
+	if (!eTarget.weapon) {
+		weap = WEAPON_KNIFE;
 	} else {
-		return cvar( "sv_maxspeed" ) * Weapon_GetSpeedM( eTarget.weapon );
+		weap = eTarget.weapon;
+	}
+
+	if ( eTarget.flags & FL_CROUCHING ) {
+		return ( cvar( "sv_maxspeed" ) * Weapon_GetSpeedM(weap) * 0.5 );
+	} else {
+		return cvar( "sv_maxspeed" ) * Weapon_GetSpeedM(weap);
 	}
 }

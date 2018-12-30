@@ -108,6 +108,10 @@ void CSQC_VGUI_Init( void ) {
 		fclose( fmMapDescr );
 	}
 	
+	if (serverkeyfloat("slots") == 1) {
+		pSeat->fVGUI_Display = VGUI_NONE;
+		return;
+	}
 	// We start on the MOTD, always
 	for (int s = 0; s < seats.length; s++)
 	{

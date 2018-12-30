@@ -200,6 +200,10 @@ void HUD_DrawTimer(void) {
 	int iMinutes, iSeconds, iTens, iUnits;
 	vector vTimePos = vVideoMins+[(vVideoResolution[0] / 2) - 62, vVideoResolution[1] - 42];
 
+	if (getstatf(STAT_GAMETIME) == -1) {
+		return;
+	}
+
 	iMinutes = getstatf(STAT_GAMETIME) / 60;
 	iSeconds = getstatf(STAT_GAMETIME) - 60 * iMinutes;
 	iTens = iSeconds / 10;
@@ -336,6 +340,9 @@ void HUD_DrawAmmo(void) {
 	static vector vAmmoMagPos;
 	static vector vAmmoCalPos;
 	
+	if (getstatf(STAT_ACTIVEWEAPON) == 0) {
+		return;
+	}
 	if (getstatf(STAT_ACTIVEWEAPON) == WEAPON_KNIFE || getstatf(STAT_ACTIVEWEAPON) == WEAPON_C4BOMB) {
 		return;
 	}

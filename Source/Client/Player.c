@@ -24,6 +24,10 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
+
+void Player_PreUpdate( void );
+void Player_PostUpdate( void );
+
 .float pmove_frame;
 
 .vector netorigin;
@@ -78,6 +82,22 @@ static float Player_Gun_PreDraw (void)
 	return PREDRAW_NEXT;
 }
 
+void Player_Gun_Offset(void)
+{
+	vector v1, v2;
+	self.eGunModel.angles = self.angles; // Set it to something consistent
+	gettaginfo( self, self.fWeaponBoneID ); // Updates the v_ globals for the player hand bone angle
+	v1 = vectoangles( v_right, v_up ); // Create angles from the v_ matrix
+	gettaginfo( self.eGunModel, self.eGunModel.fWeaponBoneID ); // Updates the v_ globals for the weapon hand bone angle
+	v2 = vectoangles( v_right, v_up ); 
+	self.eGunModel.angles = self.angles + ( v1 - v2 ); // The difference is applied
+	
+	// Fix the origin
+	setorigin( self.eGunModel, self.origin ); // Set it to something consistent
+	vector vOffset = gettaginfo( self.eGunModel, self.eGunModel.fWeaponBoneID ) - gettaginfo( self, self.fWeaponBoneID );
+	setorigin( self.eGunModel, self.origin - vOffset );
+}
+
 void Player_Draw ( void )
 {
 	if ( !self.eGunModel ) {
@@ -113,17 +133,46 @@ void Player_Draw ( void )
 	print( sprintf( "fDirection: %d\n", fDirection ) );
 
 	if ( fDirection < 0 ) {
-		self.baseframe1time -= frametime;
-		self.baseframe2time -= frametime;
-		self.frame2time -= frametime;
-		self.frame1time -= frametime;
+		self.baseframe1time -= clframetime;
+		self.baseframe2time -= clframetime;
+		self.frame2time -= clframetime;
+		self.frame1time -= clframetime;
 	} else {*/
-		self.baseframe1time += frametime;
-		self.baseframe2time += frametime;
-		self.frame2time += frametime;
-		self.frame1time += frametime;
+		self.baseframe1time += clframetime;
+		self.baseframe2time += clframetime;
+		self.frame2time += clframetime;
+		self.frame1time += clframetime;
 	/*}*/
-	self.bonecontrol5 = stof( getplayerkeyvalue( player_localnum, INFOKEY_P_VOIPLOUDNESS ) );
+	self.bonecontrol5 = getplayerkeyfloat( self.entnum - 1, "voiploudness" );
+
+	makevectors( [ 0, self.angles[1], 0 ] );
+	float fCorrect = dotproduct(self.velocity, v_right);
+
+	float a, s;
+	if (self.velocity[0] == 0 && self.velocity[1] == 0) {
+		a = 0;
+		s = 0;
+	} else {
+		a = self.angles[1] - vectoyaw(self.velocity);
+		s = vlen(self.velocity);
+		if (s < 100) {
+			a *= s/100;
+		}
+	}
+	s /= 400;
+	if (a < -180)
+		a += 360;
+	if (a > 180)
+		a -= 360;
+
+	if (a > 120)
+		a = 120;
+	if (a < -120)
+		a = -120;
+	//self.bonecontrol1 = self.bonecontrol2 = self.bonecontrol3 = self.bonecontrol4 = (a)/150;///4;
+	self.angles[1] -= a;
+	self.angles[0] = 0;
+	self.subblendfrac = (a)/-120;
 }
 
 /*
@@ -137,6 +186,7 @@ Responsible for player appearance/interpolation.
 float Player_PreDraw( void )
 {
 	Player_Draw();
+	Player_Gun_Offset();
 	addentity( self );
 	return PREDRAW_NEXT;
 }
@@ -151,40 +201,23 @@ Responsible for local player prediction.
 */
 void Player_Predict( void )
 {
-	vector vOldOrigin = self.origin = self.netorigin;
-	vector vOldAngles = self.angles = self.netangles;
-	vector vOldVelocity = self.velocity = self.netvelocity;
-	float fOldPMoveFlags = self.pmove_flags = self.netpmove_flags;
-	
 	// Don't predict if we're frozen/paused FIXME: FTE doesn't have serverkey_float yet!
 	if ( serverkey( SERVERKEY_PAUSESTATE ) == "1" || ( ( getstati( STAT_GAMESTATE ) == GAME_FREEZE ) && ( getstati( STAT_HEALTH ) > 0 ) ) ) {
 		pSeat->vPlayerOrigin = self.origin;
-		vOldOrigin = pSeat->vPlayerOrigin;
+		self.netorigin = pSeat->vPlayerOrigin;
 
 		self.velocity = '0 0 0';
-		vOldVelocity = self.velocity;
-		fOldPMoveFlags = 0;
+		self.netvelocity = self.velocity;
+		self.netpmove_flags = 0;
 	} else {
-		if ( getplayerkeyvalue( player_localnum, "*spec" ) == "0" ) {
-			self.movetype = MOVETYPE_WALK;
-		} else {
-			self.movetype = MOVETYPE_NOCLIP;
-		}
-
-		for ( int i = self.pmove_frame; i <= clientcommandframe; i++ ) {
-			if ( input_timelength == 0 ) {
-				break;
-			}
-			getinputstate( i );
-			QPhysics_Run( self );
-		}
+		Player_PreUpdate();
 	}
-	
+
 	if ( autocvar_cl_smoothstairs && self.flags & FL_ONGROUND ) {
 		pSeat->vPlayerOriginOld = pSeat->vPlayerOrigin;
 
 		if ( ( self.jumptime <= 0 ) && ( self.origin_z - pSeat->vPlayerOriginOld.z > 0 ) ) {
-			pSeat->vPlayerOriginOld.z += frametime * 150;
+			pSeat->vPlayerOriginOld.z += clframetime * 150;
 
 			if ( pSeat->vPlayerOriginOld.z > self.origin_z ) {
 				pSeat->vPlayerOriginOld.z = self.origin_z;
@@ -193,16 +226,6 @@ void Player_Predict( void )
 				pSeat->vPlayerOriginOld.z = self.origin_z - 18;
 			}
 			pSeat->vPlayerOrigin.z += pSeat->vPlayerOriginOld.z - self.origin_z;
-		} else if ( ( self.jumptime <= 0 ) && ( self.origin_z - pSeat->vPlayerOriginOld.z < 0 ) ) {
-			pSeat->vPlayerOriginOld.z -= frametime * 250;
-			
-			if ( pSeat->vPlayerOriginOld.z < self.origin_z ) {
-				pSeat->vPlayerOriginOld.z = self.origin_z;
-			}
-			if ( self.origin_z - pSeat->vPlayerOriginOld.z > 18 ) {
-				pSeat->vPlayerOriginOld.z = self.origin_z - 18;
-			}
-			pSeat->vPlayerOrigin.z -= pSeat->vPlayerOriginOld.z - self.origin_z;
 		} else {
 			pSeat->vPlayerOriginOld.z = self.origin_z;
 		}
@@ -211,9 +234,10 @@ void Player_Predict( void )
 		pSeat->vPlayerOrigin = [ self.origin_x, self.origin_y, pSeat->vPlayerOriginOld.z ];
 	} else {
 		pSeat->vPlayerOrigin = self.origin;
+		pSeat->vPlayerVelocity = self.velocity;
 	}
 
-	self.movetype = MOVETYPE_NONE;
+	Player_PostUpdate();
 }
 
 /*
@@ -226,21 +250,32 @@ Propagate our pmove state to whatever the current frame before its stomped on (s
 */
 void Player_PreUpdate( void )
 {
-	self.origin = self.netorigin;
-	self.angles = self.netangles;
-	self.velocity = self.netvelocity;
-	self.pmove_flags = self.netpmove_flags;
+	
+	self.netorigin = self.origin;
+	self.netangles = self.angles;
+	self.netvelocity = self.velocity;
+	self.netpmove_flags = self.pmove_flags;
 
-	if ( getplayerkeyvalue( player_localnum, "*spec" ) == "0" ) {
+	if ( getplayerkeyvalue( self.entnum - 1, "*spec" ) == "0" ) {
 		self.movetype = MOVETYPE_WALK;
 	} else {
 		self.movetype = MOVETYPE_NOCLIP;
 	}
 
 	//we want to predict an exact copy of the data in the new packet
-	for ( ; self.pmove_frame <= servercommandframe; self.pmove_frame++ ) {
-		if ( getinputstate( self.pmove_frame ) )
-			QPhysics_Run( self );
+	/*for ( ; self.pmove_frame <= servercommandframe; self.pmove_frame++ ) {
+		float flSuccess = getinputstate( self.pmove_frame );*/
+	for ( int i = servercommandframe + 1; i <= clientcommandframe; i++ ) {
+		float flSuccess = getinputstate( i );
+		if ( flSuccess == FALSE ) {
+			continue;
+		}
+
+		// Partial frames are the worst
+		if (input_timelength == 0) {
+			break;
+		}
+		QPhysics_Run( self );
 	}
 
 	//we now have self.pmove_flags set properly...
@@ -250,9 +285,9 @@ void Player_PreUpdate( void )
 
 void Player_PostUpdate( void )
 {
-	self.netorigin = self.origin;
-	self.netangles = self.angles;
-	self.netvelocity = self.velocity;
-	self.netpmove_flags = self.pmove_flags;
+	self.origin = self.netorigin;
+	self.angles = self.netangles;
+	self.velocity = self.netvelocity;
+	self.pmove_flags = self.netpmove_flags;
 	self.pmove_frame = servercommandframe + 1;
 }

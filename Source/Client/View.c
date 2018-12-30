@@ -68,7 +68,7 @@ void View_CalcBob( void ) {
 		return;	
 	}
 
-	pSeat->fBobTime += frametime;
+	pSeat->fBobTime += clframetime;
 	fCycle = pSeat->fBobTime - (int)( pSeat->fBobTime / autocvar_v_bobcycle ) * autocvar_v_bobcycle;
 	fCycle /= autocvar_v_bobcycle;
 	
@@ -95,7 +95,7 @@ Quickly lerp to the original viewposition
 */
 void View_DropPunchAngle( void ) {
 	float fLerp;
-	fLerp = 1.0f - ( frametime * 4 );
+	fLerp = 1.0f - ( clframetime * 4 );
 	pSeat->vPunchAngle *= fLerp;
 }
 
@@ -221,12 +221,12 @@ void View_DrawViewModel( void ) {
 
 		// Take away alpha once it has drawn fully at least once
 		if ( eMuzzleflash.alpha > 0.0f ) {
-			eMuzzleflash.alpha -= ( frametime * 45 );			
+			eMuzzleflash.alpha -= ( clframetime * 45 );			
 		}
 
 		float fBaseTime = eViewModel.frame1time;
-		eViewModel.frame1time += frametime;
-		eViewModel.frame2time += frametime;
+		eViewModel.frame1time += clframetime;
+		eViewModel.frame2time += clframetime;
 		processmodelevents( eViewModel.modelindex, eViewModel.frame, fBaseTime, eViewModel.frame1time, View_ProcessEvent );
 	}
 	
@@ -234,7 +234,7 @@ void View_DrawViewModel( void ) {
 	eViewModel.origin = '0 0 -1' + ( v_forward * ( pSeat->fBob * 0.4 ) )
 			+ ( v_forward * autocvar_v_gunofs[0] )
 			+ ( v_right * autocvar_v_gunofs[1] )
-			+ ( v_up * autocvar_v_gunofs[2] );;
+			+ ( v_up * autocvar_v_gunofs[2] );
 	
 	// Left-handed weapons
 	if ( autocvar_v_lefthanded ) {

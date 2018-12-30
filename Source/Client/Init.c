@@ -119,6 +119,7 @@ void CSQC_Init(float apilevel, string enginename, float engineversion) {
 	CSQC_ConsoleCommand_Init();
 	CSQC_VGUI_Init();
 	Overview_Init();
+	Fade_Init();
 	
 	pSeat.iOverview = FALSE;
 }
