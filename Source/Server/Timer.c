@@ -57,6 +57,11 @@ Called once every frame to check the status of things
 void Timer_Update(void) {
 	static float fVoxTimer;
 	
+	if ( cvar( "sv_playerslots" ) == 1 ) {
+		fGameTime = -1;
+		return;
+	}
+	
 	// This map has been played enough we think
 	if (fGameState != GAME_OVER) {
 		if (cvar("mp_timelimit") > 0) {

@@ -24,6 +24,8 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
+.int iStep;
+
 /*
 =================
 Footsteps_Update
@@ -32,67 +34,81 @@ Run every frame for each player, plays material based footsteps
 =================
 */
 void Footsteps_Update( void ) {
-	float fForce;
-	float fDelay;
-	vector vStep;
-	string sStepSound = "";
+	float fSpeed;
+	float fVol;
+	string sMaterial = "";
+	string sTexture = "";
 
 	if ( ( self.movetype == MOVETYPE_WALK ) && ( self.flags & FL_ONGROUND ) ) {
 		if ( ( self.velocity_x == 0 && self.velocity_y == 0 ) || self.fStepTime > time ) {
 			return;
 		}
 
-		if ( vlen( self.velocity ) < 150  ) {
-			return;
-		}
-		
-		vStep_x = fabs( self.velocity_x );
-		vStep_y = fabs( self.velocity_y );
-
-		fForce = ( vStep_x + vStep_y );
-		fDelay = clamp( 0.1, 1 / ( fForce / 90 ), 1 );
-
+		fSpeed = vlen( self.velocity );
 		traceline( self.origin + self.view_ofs, self.origin + '0 0 -48', FALSE, self );
-		
-		string sTexture = getsurfacetexture( trace_ent, getsurfacenearpoint( trace_ent, trace_endpos ) );
+		sTexture = getsurfacetexture( trace_ent, getsurfacenearpoint( trace_ent, trace_endpos ) );
+
+		if ( fSpeed < 140 ) {
+			self.fStepTime = time + 0.35;
+			fVol = 0.15f;
+		} else if ( fSpeed < 270 ) {
+			self.fStepTime = time + 0.35;
+			fVol = 0.35f;
+		} else {
+			self.fStepTime = time + 0.35;
+			fVol = 0.75;
+		}
 		
 		switch( (float)hash_get( hashMaterials, sTexture ) ) { 
 			case 'M':
-				sStepSound = sprintf( "player/pl_metal%d.wav", floor( ( random() * 4 ) + 1 ) );
+				sMaterial = "metal";
 				break;
 			case 'V':
-				sStepSound = sprintf( "player/pl_duct%d.wav", floor( ( random() * 4 ) + 1 ) );
+				sMaterial = "duct";
 				break;
 			case 'D':
-				sStepSound = sprintf( "player/pl_dirt%d.wav", floor( ( random() * 4 ) + 1 ) );
+				sMaterial = "dirt";
 				break;
 			case 'S':
-				sStepSound = sprintf( "player/pl_slosh%d.wav", floor( ( random() * 4 ) + 1 ) );
+				sMaterial = "slosh";
 				break;
 			case 'T':
-				sStepSound = sprintf( "player/pl_tile%d.wav", floor( ( random() * 4 ) + 1 ) );
+				sMaterial = "tile";
 				break;
 			case 'G':
-				sStepSound = sprintf( "player/pl_grate%d.wav", floor( ( random() * 4 ) + 1 ) );
+				sMaterial = "grate";
 				break;
 			case 'W':
-				sStepSound = sprintf( "player/pl_step%d.wav", floor( ( random() * 4 ) + 1 ) );
+				sMaterial = "step";
 				break;
 			case 'P':
-				sStepSound = sprintf( "player/pl_step%d.wav", floor( ( random() * 4 ) + 1 ) );
+				sMaterial = "step";
 				break;
 			case 'Y':
-				sStepSound = sprintf( "player/pl_step%d.wav", floor( ( random() * 4 ) + 1 ) );
+				sMaterial = "step";
 				break;
 			case 'N':
-				sStepSound = sprintf( "player/pl_snow%d.wav", floor( ( random() * 4 ) + 1 ) );
+				sMaterial = "snow";
 				break;
 			default:
-				sStepSound = sprintf( "player/pl_step%d.wav", floor( ( random() * 4 ) + 1 ) );
+				sMaterial = "step";
 				break;
          }
 
-		sound( self, CHAN_BODY, sStepSound, 0.5, ATTN_IDLE );
-		self.fStepTime = time + fDelay;
+		if ( self.iStep ) {
+			if ( random() < 0.5f ) {
+				sound( self, CHAN_BODY, sprintf( "player/pl_%s1.wav", sMaterial), fVol, ATTN_STATIC );
+			} else {
+				sound( self, CHAN_BODY, sprintf( "player/pl_%s2.wav", sMaterial), fVol, ATTN_STATIC );
+			}
+		} else {
+			if ( random() < 0.5f ) {
+				sound( self, CHAN_BODY, sprintf( "player/pl_%s3.wav", sMaterial), fVol, ATTN_STATIC );
+			} else {
+				sound( self, CHAN_BODY, sprintf( "player/pl_%s4.wav", sMaterial), fVol, ATTN_STATIC );
+			}
+		}
+				
+		self.iStep = 1 - self.iStep;
 	}
 }

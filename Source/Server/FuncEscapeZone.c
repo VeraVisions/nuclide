@@ -45,13 +45,12 @@ void func_escapezone_touch( void ) {
 		forceinfokey( self, "*dead", "0" );
 		self.health = 0;
 		Rules_CountPlayers();
-
 		self = eOld;
 
 		if ( iAlivePlayers_T == 0 ) {
 			Rules_RoundOver( TEAM_T, 2500, FALSE );
 		}
-	} 
+	}
 }
 
 /*
@@ -65,13 +64,13 @@ void func_escapezone( void ) {
 	self.angles = '0 0 0';
 	self.movetype = MOVETYPE_NONE;
 	self.solid = SOLID_TRIGGER;
-	
+
 	if ( self.model ) {
 		setmodel( self, self.model );
 	} else {
 		setsize( self, self.mins, self.maxs );
 	}
-	
+
 	self.model = 0;
 	self.touch = func_escapezone_touch;
 	

@@ -95,6 +95,25 @@ void ClientDisconnect( void ) {
 	Effect_RemoveSpray( self );
 }
 
+void DecodeChangeParms(void)
+{
+	g_landmarkpos[0] = parm1;
+	g_landmarkpos[1] = parm2;
+	g_landmarkpos[2] = parm3;
+	self.angles[0] = parm4;
+	self.angles[1] = parm5;
+	self.angles[2] = parm6;
+}
+void SetChangeParms(void)
+{
+	parm1 = g_landmarkpos[0];
+	parm2 = g_landmarkpos[1];
+	parm3 = g_landmarkpos[2];
+	parm4 = self.angles[0];
+	parm5 = self.angles[1];
+	parm6 = self.angles[2];
+}
+
 /*
 =================
 PutClientInServer
@@ -103,6 +122,46 @@ Puts a client into the world.
 =================
 */
 void PutClientInServer( void ) {
+	
+	if ( cvar( "sv_playerslots" ) == 1 ) {
+		entity spot;
+		self.SendEntity = Player_SendEntity;
+
+		DecodeChangeParms();
+
+		if (startspot) {
+			self.origin = Landmark_GetSpot();
+			self.fixangle = TRUE;
+		} else {
+			spot = find( world, classname, "info_player_start" );
+			self.origin = spot.origin;
+			self.angles = spot.angles;
+			self.fixangle = TRUE;
+		}
+
+		self.classname = "player";
+		self.health = self.max_health = 100;
+		forceinfokey( self, "*dead", "0" );
+		self.takedamage = DAMAGE_YES;
+		self.solid = SOLID_SLIDEBOX;
+		self.movetype = MOVETYPE_WALK;
+		self.flags = FL_CLIENT;
+		self.vPain = Player_Pain;
+		self.vDeath = Player_Death;
+		self.iBleeds = TRUE;
+		self.fSlotGrenade = 0;
+		self.viewzoom = 1.0;
+		setmodel( self, "models/player/vip/vip.mdl" );
+		setsize( self, VEC_HULL_MIN, VEC_HULL_MAX );
+		self.view_ofs = VEC_PLAYER_VIEWPOS;
+		self.velocity = '0 0 0';
+		self.frame = 1; // Idle frame
+		self.fBombProgress = 0;
+		self.team = TEAM_CT;
+		forceinfokey( self, "*spec", "0" ); 
+		return;
+	}
+
 	entity eTarget = world;
 
 	Spawn_MakeSpectator();

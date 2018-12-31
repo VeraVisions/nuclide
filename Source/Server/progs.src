@@ -1,5 +1,4 @@
 #pragma target fte
-
 #pragma progs_dat  "../../freecs/progs.dat"
 
 #includelist
@@ -8,6 +7,7 @@
 ../Math.h
 Defs.h
 DefsFields.h
+../gs-entbase/server/defs.h
 
 Money.c
 ../Shared/Animations.c
@@ -53,30 +53,69 @@ Rules.c
 Timer.c
 
 EntHostage.c
+
+../gs-entbase/server/baseentity.cpp
+../gs-entbase/server/basetrigger.cpp
+../gs-entbase/server/ambient_generic.cpp
+../gs-entbase/server/env_beam.cpp
+../gs-entbase/server/env_fade.cpp
+../gs-entbase/server/env_sprite.cpp
+../gs-entbase/server/env_spark.cpp
+../gs-entbase/server/env_explosion.cpp
+../gs-entbase/server/env_render.cpp
+../gs-entbase/server/env_glow.cpp
+../gs-entbase/server/env_shake.cpp
+../gs-entbase/server/func_recharge.cpp
+../gs-entbase/server/func_healthcharger.cpp
+../gs-entbase/server/func_breakable.cpp
+../gs-entbase/server/func_button.cpp
+../gs-entbase/server/func_door.cpp
+../gs-entbase/server/func_door_rotating.cpp
+../gs-entbase/server/func_illusionary.cpp
+../gs-entbase/server/func_ladder.cpp
+../gs-entbase/server/func_train.cpp
+../gs-entbase/server/func_wall.cpp
+../gs-entbase/server/func_conveyor.cpp
+../gs-entbase/server/func_rotating.cpp
+../gs-entbase/server/light.cpp
+../gs-entbase/server/stubs.cpp
+../gs-entbase/server/trigger_auto.cpp
+../gs-entbase/server/trigger_cdaudio.cpp
+../gs-entbase/server/trigger_camera.cpp
+../gs-entbase/server/trigger_hurt.cpp
+../gs-entbase/server/trigger_changelevel.cpp
+../gs-entbase/server/trigger_once.cpp
+../gs-entbase/server/trigger_multiple.cpp
+../gs-entbase/server/trigger_push.cpp
+../gs-entbase/server/trigger_teleport.cpp
+../gs-entbase/server/trigger_transition.cpp
+../gs-entbase/server/trigger_relay.cpp
+../gs-entbase/server/env_shooter.cpp
+../gs-entbase/server/env_beverage.cpp
+../gs-entbase/server/env_global.cpp
+../gs-entbase/server/item_food.cpp
+../gs-entbase/server/item_suit.cpp
+../gs-entbase/server/multi_manager.cpp
+../gs-entbase/server/monster_furniture.cpp
+../gs-entbase/server/monster_generic.cpp
+../gs-entbase/server/multisource.cpp
+../gs-entbase/server/scripted_sequence.cpp
+//../gs-entbase/server/info_player_start.cpp
+//../gs-entbase/server/info_player_deathmatch.cpp
 Entities.c
-Triggers.c
-EnvObjects.c
-FuncBreakable.c
-FuncPushable.c
-FuncLadder.c
 FuncHostageRescue.c
-FuncVIPSafetyZone.c
 FuncEscapeZone.c
 FuncBombTarget.c
 FuncBuyZone.c
-FuncButton.c
-FuncDoor.c
-FuncDoorRotating.c
-FuncVehicle.c
-ArmouryEntity.c
-AmbientSound.c
-InfoDecal.c
+FuncVIPSafetyZone.c
 
+
+InfoDecal.c
+ArmouryEntity.c
 
 Bot/Bot.h
 Bot/Way.c
 
-Light.c
 Main.c
 Player.c
 Spawn.c

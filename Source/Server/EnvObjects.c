@@ -120,7 +120,7 @@ then become invisible, then let the door move (with a static doorhandle attached
 
 #define SF_NORENDERFX		1
 #define SF_NORENDERAMT		2
-#define SF_NORENDERMODE		4
+#define SF_NORENDERMODE	4
 #define SF_NORENDERCOLOR	8
 
 void env_render( void ) {
@@ -246,7 +246,7 @@ void env_spark( void ) {
 		if ( self.MaxDelay <= 0 ) {
 			self.MaxDelay = 1.0f;
 		}
-		
+
 		if ( self.spawnflags & SPARK_TOGGLE ) {
 			if ( self.spawnflags & SPARK_ON ) {
 				self.think = env_spark_think;

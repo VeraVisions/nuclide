@@ -24,35 +24,42 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
+var string autocvar_skins_dir = "";
+
 string sViewModels[ CS_WEAPON_COUNT - 1 ] = {
-	"models/v_knife.mdl",
-	"models/v_usp.mdl",
-	"models/v_glock18.mdl",
-	"models/v_deagle.mdl",
-	"models/v_p228.mdl",
-	"models/v_elite.mdl",
-	"models/v_fiveseven.mdl",
-	"models/v_m3.mdl",
-	"models/v_xm1014.mdl",
-	"models/v_mp5.mdl",
-	"models/v_p90.mdl",
-	"models/v_ump45.mdl",
-	"models/v_mac10.mdl",
-	"models/v_tmp.mdl",
-	"models/v_ak47.mdl",
-	"models/v_sg552.mdl",
-	"models/v_m4a1.mdl",
-	"models/v_aug.mdl",
-	"models/v_scout.mdl",
-	"models/v_awp.mdl",
-	"models/v_g3sg1.mdl",
-	"models/v_sg550.mdl",
-	"models/v_m249.mdl",
-	"models/v_c4.mdl",
-	"models/v_flashbang.mdl",
-	"models/v_hegrenade.mdl",
-	"models/v_smokegrenade.mdl"
+	"v_knife.mdl",
+	"v_usp.mdl",
+	"v_glock18.mdl",
+	"v_deagle.mdl",
+	"v_p228.mdl",
+	"v_elite.mdl",
+	"v_fiveseven.mdl",
+	"v_m3.mdl",
+	"v_xm1014.mdl",
+	"v_mp5.mdl",
+	"v_p90.mdl",
+	"v_ump45.mdl",
+	"v_mac10.mdl",
+	"v_tmp.mdl",
+	"v_ak47.mdl",
+	"v_sg552.mdl",
+	"v_m4a1.mdl",
+	"v_aug.mdl",
+	"v_scout.mdl",
+	"v_awp.mdl",
+	"v_g3sg1.mdl",
+	"v_sg550.mdl",
+	"v_m249.mdl",
+	"v_c4.mdl",
+	"v_flashbang.mdl",
+	"v_hegrenade.mdl",
+	"v_smokegrenade.mdl"
 };
+
+void View_Init(void)
+{
+	
+}
 
 /*
 ====================
@@ -210,7 +217,13 @@ void View_DrawViewModel( void ) {
 			if ( pSeat->fLastWeapon != aw ) {
 				pSeat->fLastWeapon = aw;
 				if ( aw >= 1 ) {
-					setmodel( eViewModel, sViewModels[ aw - 1 ] );
+					string wm;
+					if (autocvar_skins_dir != "") {
+						wm = sprintf("skins/%s/%s", autocvar_skins_dir, sViewModels[ aw - 1 ]);
+					} else {
+						wm = sprintf("models/%s", sViewModels[ aw - 1 ]);
+					}
+					setmodel( eViewModel, wm );
 					skel_delete( eMuzzleflash.skeletonindex );
 					eMuzzleflash.skeletonindex = skel_create( eViewModel.modelindex );
 					pSeat->fNumBones = skel_get_numbones( eMuzzleflash.skeletonindex ) + 1;

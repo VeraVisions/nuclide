@@ -28,8 +28,6 @@ void main( void ) {}
 
 void SetNewParms( void ) {}
 
-void SetChangeParms( void ) {}
-
 void SV_SendChat( entity eSender, string sMessage, entity eEnt, float fType ) {
 	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
 	WriteByte( MSG_MULTICAST, fType == 0 ? EV_CHAT:EV_CHAT_TEAM );
@@ -658,4 +656,5 @@ void worldspawn( void ) {
 	pointerstat( STAT_WON_CT, EV_INTEGER, &iWon_CT );
 	
 	iBombRadius = 1024;
+	localcmd(sprintf("serverinfo slots %d\n", cvar("sv_playerslots")));
 }

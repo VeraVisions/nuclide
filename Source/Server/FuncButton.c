@@ -25,7 +25,7 @@
 */
 
 #define SF_BTT_NOMOVE		1
-#define	SF_BTT_TOGGLE		32
+#define SF_BTT_TOGGLE		32
 #define SF_BTT_TOUCH_ONLY	256
 
 void() FuncButton_MoveAway;

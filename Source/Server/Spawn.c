@@ -364,17 +364,6 @@ void info_player_terrorist(void)
 
 /*
 =================
-info_target
-
-Cameras use this thing
-=================
-*/
-void info_target( void ) { 
-	setorigin( self, self.origin );
-}
-
-/*
-=================
 info_vip_start
 =================
 */

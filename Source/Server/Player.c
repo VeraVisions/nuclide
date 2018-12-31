@@ -155,6 +155,14 @@ void Player_Death( int iHitBody ) {
 Player_UseDown
 ====================
 */
+void UseWorkaround( entity eTarget )
+{
+	eActivator = self;
+	entity eOldSelf = self;
+	self = eTarget;
+	self.PlayerUse();
+	self = eOldSelf;
+}
 void Player_UseDown( void ) {
 	if ( self.health <= 0 ) {
 		return;
@@ -163,23 +171,18 @@ void Player_UseDown( void ) {
 	}
 	
 	vector vSource;
-	entity eOriginalSelf;
 
 	makevectors(self.v_angle);
 	vSource = self.origin + self.view_ofs;
 	traceline ( vSource, vSource + ( v_forward * 64 ), FALSE, self);
 	
-	if ( trace_ent.iUsable ) {
+	if (trace_ent.gflags & GF_USABLE) {
 		if ( ( trace_ent.classname != "c4bomb" ) && ( trace_ent.classname != "func_pushable" ) ) {
 			self.flags = ( self.flags - FL_USERELEASED );
 			sound( self, CHAN_ITEM, "common/wpn_select.wav", 0.25, ATTN_IDLE );
 		} 
 		
-		eActivator = self;
-		eOriginalSelf = self;
-		self = trace_ent;
-		self.vUse();
-		self = eOriginalSelf;
+		UseWorkaround(trace_ent);
 	} else {
 		sound( self, CHAN_ITEM, "common/wpn_denyselect.wav", 0.25, ATTN_IDLE );
 		self.flags = ( self.flags - FL_USERELEASED );

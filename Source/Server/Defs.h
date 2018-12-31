@@ -24,6 +24,8 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#define CLASSEXPORT(classname,classa) void classname ( void ) { spawnfunc_##classa(); }
+
 #define VEC_PLAYER_VIEWPOS '0 0 20'
 #define VEC_PLAYER_CVIEWPOS '0 0 12'
 
@@ -148,6 +150,7 @@ void Animation_PlayerTop( float fFrame );
 void Animation_PlayerTopTemp( float fFrame, float fTime );
 void Footsteps_Update( void );
 
+string startspot;
 string __fullspawndata;
 hashtable hashMaterials;
 

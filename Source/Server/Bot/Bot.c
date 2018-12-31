@@ -39,6 +39,7 @@ float bot_skill[] = {
 Bot_AutoAdd
 =================
 */
+.float delay;
 void Bot_AutoAdd( void ) {
 	if ( self.delay == TRUE ) {
 		CBot bot;

@@ -288,10 +288,10 @@ void hostage_entity( void ) {
 
 		self.eUser = world;
 		self.eTargetPoint = world;
-		self.iUsable = TRUE;
+		self.gflags = GF_USABLE;
+		self.PlayerUse = hostage_use;
 		self.iBleeds = TRUE;
 		self.takedamage = DAMAGE_YES;
-		self.vUse = hostage_use;
 		self.vPain = hostage_pain;
 		self.vDeath = hostage_die;
 		self.style = HOSTAGE_IDLE;
