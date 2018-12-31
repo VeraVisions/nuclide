@@ -25,8 +25,8 @@
 */
 
 
-void Player_PreUpdate( void );
-void Player_PostUpdate( void );
+void Player_PreUpdate(void);
+void Player_PostUpdate(void);
 
 .float pmove_frame;
 
@@ -35,7 +35,7 @@ void Player_PostUpdate( void );
 .vector netvelocity;
 .float netpmove_flags;
 
-string sPModels[ CS_WEAPON_COUNT - 1 ] = {
+string sPModels[CS_WEAPON_COUNT - 1] = {
 	"models/p_knife.mdl",
 	"models/p_usp.mdl",
 	"models/p_glock18.mdl",
@@ -86,21 +86,21 @@ void Player_Gun_Offset(void)
 {
 	vector v1, v2;
 	self.eGunModel.angles = self.angles; // Set it to something consistent
-	gettaginfo( self, self.fWeaponBoneID ); // Updates the v_ globals for the player hand bone angle
-	v1 = vectoangles( v_right, v_up ); // Create angles from the v_ matrix
-	gettaginfo( self.eGunModel, self.eGunModel.fWeaponBoneID ); // Updates the v_ globals for the weapon hand bone angle
-	v2 = vectoangles( v_right, v_up ); 
-	self.eGunModel.angles = self.angles + ( v1 - v2 ); // The difference is applied
+	gettaginfo(self, self.fWeaponBoneID); // Updates the v_ globals for the player hand bone angle
+	v1 = vectoangles(v_right, v_up); // Create angles from the v_ matrix
+	gettaginfo(self.eGunModel, self.eGunModel.fWeaponBoneID); // Updates the v_ globals for the weapon hand bone angle
+	v2 = vectoangles(v_right, v_up); 
+	self.eGunModel.angles = self.angles + (v1 - v2); // The difference is applied
 	
 	// Fix the origin
-	setorigin( self.eGunModel, self.origin ); // Set it to something consistent
-	vector vOffset = gettaginfo( self.eGunModel, self.eGunModel.fWeaponBoneID ) - gettaginfo( self, self.fWeaponBoneID );
-	setorigin( self.eGunModel, self.origin - vOffset );
+	setorigin(self.eGunModel, self.origin); // Set it to something consistent
+	vector vOffset = gettaginfo(self.eGunModel, self.eGunModel.fWeaponBoneID) - gettaginfo(self, self.fWeaponBoneID);
+	setorigin(self.eGunModel, self.origin - vOffset);
 }
 
-void Player_Draw ( void )
+void Player_Draw (void)
 {
-	if ( !self.eGunModel ) {
+	if (!self.eGunModel) {
 		self.eGunModel = spawn();
 		self.eGunModel.classname = "pmodel";
 		self.eGunModel.owner = self;
@@ -111,28 +111,28 @@ void Player_Draw ( void )
 	self.subblend2frac = self.flUpAngle;
 
 	// Only bother updating the model if the weapon has changed
-	if ( self.fWeaponLast != self.weapon ) {
-		if ( self.weapon ) {
-			setmodel( self.eGunModel, sPModels[ self.weapon - 1 ] );
+	if (self.fWeaponLast != self.weapon) {
+		if (self.weapon) {
+			setmodel(self.eGunModel, sPModels[self.weapon - 1]);
 		} else {
-			setmodel( self.eGunModel, "" );
+			setmodel(self.eGunModel, "");
 		}
 		self.fWeaponLast = self.weapon;
 	    	
 		// Update the bone index of the current p_ model so we can calculate the offset
 		// Get the weapon bone ID for the current player model
-		self.fWeaponBoneID = gettagindex( self, "Bip01 R Hand" );
-		self.eGunModel.fWeaponBoneID = gettagindex( self.eGunModel, "Bip01 R Hand" );
+		self.fWeaponBoneID = gettagindex(self, "Bip01 R Hand");
+		self.eGunModel.fWeaponBoneID = gettagindex(self.eGunModel, "Bip01 R Hand");
 	}
 
 	Animation_PlayerUpdate();
-	/*makevectors( [ 0, self.angles[1], 0 ] );
-	float fDirection = dotproduct( self.velocity, v_forward );
+	/*makevectors([0, self.angles[1], 0]);
+	float fDirection = dotproduct(self.velocity, v_forward);
 	
-	if ( fDirection != 0 )
-	print( sprintf( "fDirection: %d\n", fDirection ) );
+	if (fDirection != 0)
+	print(sprintf("fDirection: %d\n", fDirection));
 
-	if ( fDirection < 0 ) {
+	if (fDirection < 0) {
 		self.baseframe1time -= clframetime;
 		self.baseframe2time -= clframetime;
 		self.frame2time -= clframetime;
@@ -143,9 +143,9 @@ void Player_Draw ( void )
 		self.frame2time += clframetime;
 		self.frame1time += clframetime;
 	/*}*/
-	self.bonecontrol5 = getplayerkeyfloat( self.entnum - 1, "voiploudness" );
+	self.bonecontrol5 = getplayerkeyfloat(self.entnum - 1, "voiploudness");
 
-	makevectors( [ 0, self.angles[1], 0 ] );
+	makevectors([0, self.angles[1], 0]);
 	float fCorrect = dotproduct(self.velocity, v_right);
 
 	float a, s;
@@ -183,11 +183,11 @@ Runs as part of the addentities builtin.
 Responsible for player appearance/interpolation.
 =================
 */
-float Player_PreDraw( void )
+float Player_PreDraw(void)
 {
 	Player_Draw();
 	Player_Gun_Offset();
-	addentity( self );
+	addentity(self);
 	return PREDRAW_NEXT;
 }
 
@@ -199,10 +199,10 @@ Runs before every frame is rendered.
 Responsible for local player prediction.
 =================
 */
-void Player_Predict( void )
+void Player_Predict(void)
 {
 	// Don't predict if we're frozen/paused FIXME: FTE doesn't have serverkey_float yet!
-	if ( serverkey( SERVERKEY_PAUSESTATE ) == "1" || ( ( getstati( STAT_GAMESTATE ) == GAME_FREEZE ) && ( getstati( STAT_HEALTH ) > 0 ) ) ) {
+	if (serverkey(SERVERKEY_PAUSESTATE) == "1" || ((getstati(STAT_GAMESTATE) == GAME_FREEZE) && (getstati(STAT_HEALTH) > 0))) {
 		pSeat->vPlayerOrigin = self.origin;
 		self.netorigin = pSeat->vPlayerOrigin;
 
@@ -213,25 +213,25 @@ void Player_Predict( void )
 		Player_PreUpdate();
 	}
 
-	if ( autocvar_cl_smoothstairs && self.flags & FL_ONGROUND ) {
+	if (autocvar_cl_smoothstairs && self.flags & FL_ONGROUND) {
 		pSeat->vPlayerOriginOld = pSeat->vPlayerOrigin;
 
-		if ( ( self.jumptime <= 0 ) && ( self.origin_z - pSeat->vPlayerOriginOld.z > 0 ) ) {
-			pSeat->vPlayerOriginOld.z += clframetime * 150;
+		if ((self.jumptime <= 0) && (self.origin[2] - pSeat->vPlayerOriginOld[2] > 0)) {
+			pSeat->vPlayerOriginOld[2] += clframetime * 150;
 
-			if ( pSeat->vPlayerOriginOld.z > self.origin_z ) {
-				pSeat->vPlayerOriginOld.z = self.origin_z;
+			if (pSeat->vPlayerOriginOld[2] > self.origin[2]) {
+				pSeat->vPlayerOriginOld[2] = self.origin[2];
 			}
-			if ( self.origin_z - pSeat->vPlayerOriginOld.z > 18 ) {
-				pSeat->vPlayerOriginOld.z = self.origin_z - 18;
+			if (self.origin[2] - pSeat->vPlayerOriginOld[2] > 18) {
+				pSeat->vPlayerOriginOld[2] = self.origin[2] - 18;
 			}
-			pSeat->vPlayerOrigin.z += pSeat->vPlayerOriginOld.z - self.origin_z;
+			pSeat->vPlayerOrigin[2] += pSeat->vPlayerOriginOld[2] - self.origin[2];
 		} else {
-			pSeat->vPlayerOriginOld.z = self.origin_z;
+			pSeat->vPlayerOriginOld[2] = self.origin[2];
 		}
 
 		pSeat->vPlayerVelocity = self.velocity;
-		pSeat->vPlayerOrigin = [ self.origin_x, self.origin_y, pSeat->vPlayerOriginOld.z ];
+		pSeat->vPlayerOrigin = [self.origin[0], self.origin[1], pSeat->vPlayerOriginOld[2]];
 	} else {
 		pSeat->vPlayerOrigin = self.origin;
 		pSeat->vPlayerVelocity = self.velocity;
@@ -248,26 +248,25 @@ We're part way through parsing new player data.
 Propagate our pmove state to whatever the current frame before its stomped on (so any non-networked state updates locally).
 =================
 */
-void Player_PreUpdate( void )
+void Player_PreUpdate(void)
 {
-	
 	self.netorigin = self.origin;
 	self.netangles = self.angles;
 	self.netvelocity = self.velocity;
 	self.netpmove_flags = self.pmove_flags;
 
-	if ( getplayerkeyvalue( self.entnum - 1, "*spec" ) == "0" ) {
+	if (getplayerkeyvalue(self.entnum - 1, "*spec") == "0") {
 		self.movetype = MOVETYPE_WALK;
 	} else {
 		self.movetype = MOVETYPE_NOCLIP;
 	}
 
 	//we want to predict an exact copy of the data in the new packet
-	/*for ( ; self.pmove_frame <= servercommandframe; self.pmove_frame++ ) {
-		float flSuccess = getinputstate( self.pmove_frame );*/
-	for ( int i = servercommandframe + 1; i <= clientcommandframe; i++ ) {
-		float flSuccess = getinputstate( i );
-		if ( flSuccess == FALSE ) {
+	/*for (; self.pmove_frame <= servercommandframe; self.pmove_frame++) {
+		float flSuccess = getinputstate(self.pmove_frame);*/
+	for (int i = servercommandframe + 1; i <= clientcommandframe; i++) {
+		float flSuccess = getinputstate(i);
+		if (flSuccess == FALSE) {
 			continue;
 		}
 
@@ -275,7 +274,7 @@ void Player_PreUpdate( void )
 		if (input_timelength == 0) {
 			break;
 		}
-		QPhysics_Run( self );
+		QPhysics_Run(self);
 	}
 
 	//we now have self.pmove_flags set properly...
@@ -283,7 +282,7 @@ void Player_PreUpdate( void )
 	self.movetype = MOVETYPE_NONE;
 }
 
-void Player_PostUpdate( void )
+void Player_PostUpdate(void)
 {
 	self.origin = self.netorigin;
 	self.angles = self.netangles;

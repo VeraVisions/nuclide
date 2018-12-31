@@ -275,21 +275,7 @@ void Animation_PlayerUpdate( void ) {
 		self.fWasCrouching = ( self.flags & FL_CROUCHING );
 	}
 
-#ifdef CSQC
-	// Fix the angle (this is REALLY expensive, probably. But how else would one do it without skeletal objects?)
-	vector v1, v2;
-	self.eGunModel.angles = self.angles; // Set it to something consistent
-	gettaginfo( self, self.fWeaponBoneID ); // Updates the v_ globals for the player hand bone angle
-	v1 = vectoangles( v_right, v_up ); // Create angles from the v_ matrix
-	gettaginfo( self.eGunModel, self.eGunModel.fWeaponBoneID ); // Updates the v_ globals for the weapon hand bone angle
-	v2 = vectoangles( v_right, v_up ); 
-	self.eGunModel.angles = self.angles + ( v1 - v2 ); // The difference is applied
-	
-	// Fix the origin
-	setorigin( self.eGunModel, self.origin ); // Set it to something consistent
-	vector vOffset = gettaginfo( self.eGunModel, self.eGunModel.fWeaponBoneID ) - gettaginfo( self, self.fWeaponBoneID );
-	setorigin( self.eGunModel, self.origin - vOffset );
-#else
+#ifdef SSQC
 	// On the CSQC it's done in Player.c
 	self.subblend2frac = self.v_angle_x / 90;
 #endif
