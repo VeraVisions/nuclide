@@ -91,11 +91,9 @@ void CSQC_Init(float apilevel, string enginename, float engineversion) {
 	precache_model("models/rshell_big.mdl");
 	precache_model("models/shotgunshell.mdl");
 	
-	precache_pic( "gfx/vgui/icntlk_sv");
+	precache_pic("gfx/vgui/icntlk_sv");
+	precache_pic("gfx/vgui/icntlk_pl");
 	precache_pic( sprintf( "overviews/%s.bmp", mapname ) );
-	
-	precache_pic( "lambda.bmp");
-	precache_pic( "logos/doug.bmp");
 
 	PARTICLE_SPARK 			= particleeffectnum("part_spark");
 	PARTICLE_PIECES_BLACK 	= particleeffectnum("part_pieces_black");

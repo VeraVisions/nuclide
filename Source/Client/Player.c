@@ -176,6 +176,25 @@ void Player_Draw (void)
 /*
 =================
 Player_PreDraw
+=================
+*/
+void Player_DrawVoice(void)
+{
+	if (getplayerkeyfloat(self.entnum - 1, INFOKEY_P_VOIPSPEAKING)) {
+		vector vpos = self.origin + [0,0,48];
+		makevectors(view_angles);
+		R_BeginPolygon("gfx/vgui/icntlk_pl");
+		R_PolygonVertex(vpos + v_right*16 - v_up*16, '1 1', [1,1,1], 1);
+		R_PolygonVertex(vpos - v_right*16 - v_up*16, '0 1', [1,1,1], 1);
+		R_PolygonVertex(vpos - v_right*16 + v_up*16, '0 0', [1,1,1], 1);
+		R_PolygonVertex(vpos + v_right*16 + v_up*16, '1 0', [1,1,1], 1);
+		R_EndPolygon();
+	}
+}
+
+/*
+=================
+Player_PreDraw
 
 Runs as part of the addentities builtin.
 Responsible for player appearance/interpolation.
@@ -188,6 +207,7 @@ float Player_PreDraw(void)
 	Player_Gun_Offset();
 
 	if (autocvar_cl_thirdperson == TRUE || self.entnum != player_localentnum) {
+		Player_DrawVoice();
 		addentity(self);
 		addentity(self.eGunModel);
 	} else {
