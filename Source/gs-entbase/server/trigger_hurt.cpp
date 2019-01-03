@@ -18,6 +18,9 @@ class trigger_hurt : CBaseTrigger
 	int		m_iDamage;
 	float	m_flDelay;
 	void()	trigger_hurt;
+	
+	virtual void() Trigger;
+	virtual void() Touch;
 };
 
 void trigger_hurt :: Trigger ( void )
@@ -57,7 +60,7 @@ void trigger_hurt :: Touch ( void )
 		}
 	}
 
-	// Damage_Apply( other, this, m_iDamage, other.origin, FALSE );
+	Damage_Apply( other, this, m_iDamage, other.origin, FALSE );
 	//Damage_Apply( other, world, m_iDamage, DAMAGE_BLEED, WEAPON_NONE );
 	
 	// Shut it down if used once

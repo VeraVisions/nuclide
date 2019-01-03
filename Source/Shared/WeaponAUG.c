@@ -27,7 +27,7 @@
 .int iMag_AUG;
 
 // Weapon Info
-weaponinfo_t wptAUG = { 
+weaponinfo_t wptAUG = {
 	WEAPON_AUG, 		// Identifier
 	SLOT_PRIMARY,		// Slot
 	3500, 				// Price

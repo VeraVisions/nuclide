@@ -98,25 +98,25 @@ void HUD_DrawOrbituaries( void ) {
 		iOrbituaryScroll--;
 		fOrbituaryTime = time + ORBITUARY_TIME;
 	}
-	
+
 	for ( int i = 0; i < ORBITUARY_LINES; i++ ) {
 		if ( orbBuffer[ i ].sAttacker == "" ) {
 			return;
 		}
-		
+
 		// Calculate the position based on the saved offsets
 		vOrbPos_x = vVideoMins_x + vVideoResolution_x - ( orbBuffer[ i ].fOffset1 + orbBuffer[ i ].fOffset2 + orbBuffer[ i ].fOffset3 ) - 16;
-		
+
 		// Draw the attacker's name, shadow first
 		drawstring( vOrbPos, orbBuffer[ i ].sAttacker, '12 12', orbBuffer[ i ].vColor1, VGUI_WINDOW_FGALPHA, 0 );
-		
+
 		// Draw the weapon icon
 		if ( orbBuffer[ i ].fHeadShot == TRUE ) {
 			drawsubpic( vOrbPos + [ orbBuffer[ i ].fOffset1 - 4, -4 ], '36 16', "sprites/640hud1.spr_0.tga", '0 0.9375', '0.140625 0.0625', '1 0.5 0', 1, DRAWFLAG_ADDITIVE );
 		} else {
 			drawsubpic( vOrbPos + [ orbBuffer[ i ].fOffset1, -4 ], wpIconTable[ orbBuffer[ i ].fWeapon ].vSize * 256, wpIconTable[ orbBuffer[ i ].fWeapon ].sSprite, wpIconTable[ orbBuffer[ i ].fWeapon ].vOrigin, wpIconTable[ orbBuffer[ i ].fWeapon ].vSize, '1 0.5 0', 1, DRAWFLAG_ADDITIVE );
 		}
-		
+
 		// Draw the victim's name
 		drawstring( vOrbPos + [ orbBuffer[ i ].fOffset2 + orbBuffer[ i ].fOffset1, 0 ], orbBuffer[ i ].sVictim, '12 12', orbBuffer[ i ].vColor2, VGUI_WINDOW_FGALPHA, 0 );
 		vOrbPos_y += 18;
@@ -169,6 +169,6 @@ void HUD_AddOrbituaries( float fAttacker, float fAttackerTeam, float fVictim, fl
 		orbBuffer[ ORBITUARY_LINES - 1 ].fOffset2 = ( wpIconTable[ fWeapon ].vSize[0] * 256 ) + 8;
 		orbBuffer[ ORBITUARY_LINES - 1 ].fOffset3 =  stringwidth( orbBuffer[ ORBITUARY_LINES - 1 ].sVictim, TRUE, '12 12' ) + 8;
 	}
-		
+
 	fOrbituaryTime = time + ORBITUARY_TIME;
 }
