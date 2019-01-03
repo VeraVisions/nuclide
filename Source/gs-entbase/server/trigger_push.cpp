@@ -10,19 +10,19 @@
 #define TP_STARTOFF	2
 #define TP_AAAA		4
 
-class CTriggerPush : CBaseTrigger
+class trigger_push : CBaseTrigger
 {
 	vector m_vecMoveDir;
 	float m_flDelay;
 	float m_flSpeed;
-	void() CTriggerPush;
+	void() trigger_push;
 	virtual void() touch;
 	virtual void() Respawn;
 	virtual void() Trigger;
 	virtual void() SetMovementDirection;
 };
 
-void CTriggerPush :: SetMovementDirection ( void )
+void trigger_push :: SetMovementDirection ( void )
 {
 	if ( angles == '0 -1 0' ) {
 		m_vecMoveDir = '0 0 1';
@@ -37,7 +37,7 @@ void CTriggerPush :: SetMovementDirection ( void )
 	//m_vecMoveDir *= 1;
 }
 
-void CTriggerPush :: Trigger ( void )
+void trigger_push :: Trigger ( void )
 {
 	if ( solid == SOLID_NOT ) {
 		solid = SOLID_TRIGGER;
@@ -46,7 +46,7 @@ void CTriggerPush :: Trigger ( void )
 	}
 }
 
-void CTriggerPush :: touch ( void )
+void trigger_push :: touch ( void )
 {
 	switch( other.movetype )
 	{
@@ -75,7 +75,7 @@ void CTriggerPush :: touch ( void )
 	}
 }
 
-void CTriggerPush :: Respawn ( void )
+void trigger_push :: Respawn ( void )
 {
 	if ( angles == '0 0 0' ) {
 		angles[1] = 360;
@@ -91,7 +91,7 @@ void CTriggerPush :: Respawn ( void )
 	}
 }
 	
-void CTriggerPush :: CTriggerPush ( void )
+void trigger_push :: trigger_push ( void )
 {
 	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
 		switch ( argv( i ) ) {
@@ -105,7 +105,5 @@ void CTriggerPush :: CTriggerPush ( void )
 	
 	CBaseTrigger::CBaseTrigger();
 	CBaseTrigger::InitBrushTrigger();
-	CTriggerPush::Respawn();
+	trigger_push::Respawn();
 }
-
-CLASSEXPORT( trigger_push, CTriggerPush )

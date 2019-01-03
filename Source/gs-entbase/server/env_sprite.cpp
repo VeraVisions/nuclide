@@ -8,18 +8,19 @@
 
 /* https://twhl.info/wiki/page/env_sprite_(Half-Life) */
 
-enumflags {
+enumflags
+{
 	ENVS_STARTON,
 	ENVS_PLAYONCE
 };
 
-class CEnvSprite : CBaseTrigger
+class env_sprite : CBaseTrigger
 {
-	void() CEnvSprite;
+	void() env_sprite;
 	virtual void() Trigger;
 };
 
-void CEnvSprite::Trigger(void)
+void env_sprite::Trigger(void)
 {
 	Respawn();
 	if (spawnflags & ENVS_PLAYONCE) {
@@ -27,7 +28,7 @@ void CEnvSprite::Trigger(void)
 	}
 }
 
-void CEnvSprite::CEnvSprite(void)
+void env_sprite::env_sprite(void)
 {
 	CBaseTrigger::CBaseTrigger();
 	precache_model(m_oldModel);
@@ -37,5 +38,3 @@ void CEnvSprite::CEnvSprite(void)
 		Hide();
 	}
 }
-
-CLASSEXPORT(env_sprite, CEnvSprite)

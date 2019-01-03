@@ -41,20 +41,23 @@ float Player_SendEntity( entity ePEnt, float fChanged ) {
 	if ( self.health <= 0 && ePEnt != self ) {
 		return FALSE;
 	}
-	
+
 	WriteByte( MSG_ENTITY, ENT_PLAYER );
-	WriteByte( MSG_ENTITY, self.modelindex );
+	WriteShort( MSG_ENTITY, self.modelindex );
 	WriteCoord( MSG_ENTITY, self.origin_x );
 	WriteCoord( MSG_ENTITY, self.origin_y );
 	WriteCoord( MSG_ENTITY, self.origin_z );
 	WriteCoord( MSG_ENTITY, self.v_angle_x );
 	WriteCoord( MSG_ENTITY, self.angles_y );
 	WriteCoord( MSG_ENTITY, self.angles_z );
-	WriteShort( MSG_ENTITY, self.velocity_x );
-	WriteShort( MSG_ENTITY, self.velocity_y );
-	WriteShort( MSG_ENTITY, self.velocity_z );
+	WriteCoord( MSG_ENTITY, self.velocity_x );
+	WriteCoord( MSG_ENTITY, self.velocity_y );
+	WriteCoord( MSG_ENTITY, self.velocity_z );
 	WriteFloat( MSG_ENTITY, self.flags );
+	WriteFloat( MSG_ENTITY, self.pmove_flags );
 	WriteByte( MSG_ENTITY, self.weapon );
+	WriteByte( MSG_ENTITY, self.health );
+	WriteFloat( MSG_ENTITY, self.movetype );
 	return TRUE;
 }
 
@@ -64,11 +67,12 @@ Player_Pain
 =================
 */
 void Player_Pain( int iHitBody ) {
+	/*
 	if ( iHitBody == BODY_HEAD ) {
-		Animation_PlayerTopTemp( ANIM_HEAD_FLINCH, 0.1f );
+		Animation_PlayerTopTemp( ANIM_HEAD_FLINCH, 0.25f );
 	} else {
-		Animation_PlayerTopTemp( ANIM_GUT_FLINCH, 0.1f );
-	}
+		Animation_PlayerTopTemp( ANIM_GUT_FLINCH, 0.25f );
+	}*/
 	
 	sound( self, CHAN_VOICE, sPainSounds[ floor( random() * 5 ) ], 1, ATTN_IDLE );
 	self.velocity = '0 0 0';

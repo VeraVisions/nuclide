@@ -6,13 +6,13 @@
 *
 ****/
 
-class CFuncWall : CBaseTrigger
+class func_wall : CBaseTrigger
 {
-	void() CFuncWall;
+	void() func_wall;
 	virtual void() Trigger;
 };
 
-void CFuncWall :: CFuncWall ( void )
+void func_wall :: func_wall ( void )
 {
 	precache_model( model );
 	//angles = '0 0 0';
@@ -22,10 +22,9 @@ void CFuncWall :: CFuncWall ( void )
 	CBaseTrigger::CBaseTrigger();
 }
 
-void CFuncWall :: Trigger ( void )
+void func_wall :: Trigger ( void )
 {
 	frame = 1 - frame;
 }
 
-CLASSEXPORT( func_wall, CFuncWall )
-CLASSEXPORT( func_train, CFuncWall )
+CLASSEXPORT( func_train, func_wall )

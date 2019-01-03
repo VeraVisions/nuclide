@@ -6,14 +6,14 @@
 *
 ****/
 
-class CMultiManager : CBaseTrigger
+class multi_manager : CBaseTrigger
 {
 	string m_strBuffer;
 	int m_iBusy;
 	virtual void() Trigger;
 };
 
-void CMultiManager :: Trigger ( void )
+void multi_manager :: Trigger ( void )
 {
 	static void mm_enttrigger ( void ) {
 		spawnfunc_CBaseTrigger();
@@ -21,7 +21,7 @@ void CMultiManager :: Trigger ( void )
 		wow.m_strTarget = wow.netname;
 		
 		entity eFind = find( world, CBaseTrigger::m_strTargetName, self.netname );
-		//dprint( sprintf( "CMultiManager: %s (%s)\n", wow.m_strTarget, eFind.classname ) );
+		//dprint( sprintf( "multi_manager: %s (%s)\n", wow.m_strTarget, eFind.classname ) );
 		
 		CBaseTrigger::UseTargets();
 		remove( wow );
@@ -39,7 +39,7 @@ void CMultiManager :: Trigger ( void )
 	}
 }
 
-void CMultiManager :: CMultiManager ( void )
+void multi_manager :: multi_manager ( void )
 {
 	m_strBuffer = "";
 	int iFields = tokenize( __fullspawndata );
@@ -67,5 +67,3 @@ void CMultiManager :: CMultiManager ( void )
 
 	CBaseTrigger::CBaseTrigger();
 }
-
-CLASSEXPORT( multi_manager, CMultiManager )

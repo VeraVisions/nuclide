@@ -58,7 +58,11 @@ string sViewModels[ CS_WEAPON_COUNT - 1 ] = {
 
 void View_Init(void)
 {
-	
+	string wm;
+	for ( int i = 0; i < ( CS_WEAPON_COUNT - 1 ); i++ ) {
+		wm = sprintf("models/%s", sViewModels[i]);
+		precache_model(wm);
+	}
 }
 
 /*
@@ -276,6 +280,34 @@ void View_DrawViewModel( void ) {
 		}
 		addentity( eViewModel );
 	}
+}
+
+void View_Stairsmooth(void)
+{
+	vector currentpos = pSeat->vPlayerOrigin;
+	vector endpos = currentpos;
+	static vector oldpos;
+
+	/* Have we gone up since last frame? */
+	if ( ( pSeat->fPlayerFlags & FL_ONGROUND ) && ( endpos[2] - oldpos[2] > 0 ) ) {
+		endpos[2] = oldpos[2] += (frametime * 150);
+
+		if ( endpos[2] > currentpos[2] ) {
+			endpos[2] = currentpos[2];
+		}
+		if ( currentpos[2] - endpos[2] > 18 ) {
+			endpos[2] = currentpos[2] - 18;
+		}
+	}
+
+	// Teleport hack
+	if ( fabs( currentpos[2] - oldpos[2] ) > 64 ) {
+		endpos[2] = currentpos[2];
+	}
+
+	//setproperty(VF_ORIGIN, endpos);
+	pSeat->vPlayerOrigin = endpos;
+	oldpos = endpos;
 }
 
 /*

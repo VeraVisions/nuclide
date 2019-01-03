@@ -6,14 +6,12 @@
 *
 ****/
 
-class CTriggerEnd : CBaseTrigger
+class trigger_endsection : CBaseTrigger
 {
 	virtual void() Trigger;
 }
 
-void CTriggerEnd :: Trigger ( void )
+void trigger_endsection :: Trigger ( void )
 {
 	localcmd( "disconnect\n" );
 }
-
-CLASSEXPORT( trigger_endsection, CTriggerEnd )

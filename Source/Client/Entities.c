@@ -64,29 +64,31 @@ void CSQC_Ent_Update( float flIsNew ) {
 			self.solid = SOLID_SLIDEBOX;
 			self.predraw = Player_PreDraw;
 			self.drawmask = MASK_ENGINE;
-			self.pmove_frame = servercommandframe;
+			self.customphysics = Empty;
+			setsize( self, VEC_HULL_MIN, VEC_HULL_MAX );
 		}
 
-		self.modelindex = readbyte();
+		self.modelindex = readshort();
 		self.origin_x = readcoord();
 		self.origin_y = readcoord();
 		self.origin_z = readcoord();
 		self.flUpAngle = readcoord() / 90;
 		self.angles_y = readcoord();
 		self.angles_z = readcoord();
-		self.velocity_x = readshort();
-		self.velocity_y = readshort();
-		self.velocity_z = readshort();
+		self.velocity_x = readcoord();
+		self.velocity_y = readcoord();
+		self.velocity_z = readcoord();
 		self.flags = readfloat();
+		self.pmove_flags = readfloat();
 		self.weapon = readbyte();
-		
-		if ( self.flags & FL_CROUCHING ) {
-			setsize( self, VEC_CHULL_MIN, VEC_CHULL_MAX );
-		} else {
-			setsize( self, VEC_HULL_MIN, VEC_HULL_MAX );
-		}
-		
+		self.health = readbyte();
+		self.movetype = readfloat();
 		setorigin( self, self.origin );
+		
+		if (self.health < self.oldhealth) {
+			Animation_PlayerTopTemp( ANIM_GUT_FLINCH, 0.1f );
+		}
+		self.oldhealth = self.health;
 	} else if ( fEntType == ENT_AMBIENTSOUND ) {
 		self.origin_x = readcoord();
 		self.origin_y = readcoord();
@@ -102,22 +104,7 @@ void CSQC_Ent_Update( float flIsNew ) {
 
 		Effect_AnimatedSprite( self.origin, readfloat(), readfloat(), readfloat(), readfloat(), readfloat() );
 	} else if ( fEntType == ENT_SPRAY ) {
-		self.origin_x = readcoord();
-		self.origin_y = readcoord();
-		self.origin_z = readcoord();
-		
-		self.angles_x = readcoord();
-		self.angles_y = readcoord();
-		self.angles_z = readcoord();
-		
-		self.color_x = 1.0f - ( readbyte() / 255 );
-		self.color_y = 1.0f - ( readbyte() / 255 );
-		self.color_z = 1.0f - ( readbyte() / 255 );
-		string sLogo = readstring();
-		
-		self.classname = sprintf( "spray_%s", sLogo );
-		self.predraw = Effect_Spraypaint;
-		self.drawmask = MASK_ENGINE;
+		Spraylogo_Parse();
 	} else if ( fEntType == ENT_DECAL ) {
 		string decalname = "";
 		string decalshader = "";

@@ -25,7 +25,7 @@ void ac_btndone_start(void)
 }
 void ac_btncancel_start(void)
 {
-	static void ac_btnadvanced_end(void) {
+	static void ac_btncancel_end(void) {
 		g_menupage = PAGE_CUSTOMIZE;
 	}
 	localsound("../media/launch_dnmenu1.wav");
@@ -34,7 +34,7 @@ void ac_btncancel_start(void)
 	header.m_lerp = 0.0f;
 	header.m_visible = TRUE;
 	header.SetHeader(HEAD_ADVANCED);
-	header.SetExecute(ac_btnadvanced_end);
+	header.SetExecute(ac_btncancel_end);
 }
 
 void menu_advancedcustomize_init(void)

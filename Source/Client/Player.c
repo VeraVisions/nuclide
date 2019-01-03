@@ -26,13 +26,14 @@
 
 
 void Player_PreUpdate(void);
-void Player_PostUpdate(void);
+void Player_ResetPrediction(void);
 
 .float pmove_frame;
 
 .vector netorigin;
 .vector netangles;
 .vector netvelocity;
+.float netflags;
 .float netpmove_flags;
 
 string sPModels[CS_WEAPON_COUNT - 1] = {
@@ -74,14 +75,6 @@ string sPModels[CS_WEAPON_COUNT - 1] = {
 //.float basesubblendfrac; // legs part.
 .float subblend2frac; // Up/Down
 
-static float Player_Gun_PreDraw (void)
-{
-	self.entnum = self.owner.entnum; //so this entity gets its RF_EXTERNALMODEL flag rewritten as needed
-	addentity(self);
-	self.entnum = 0;	//so that findfloat won't find the wrong thing.
-	return PREDRAW_NEXT;
-}
-
 void Player_Gun_Offset(void)
 {
 	vector v1, v2;
@@ -104,8 +97,6 @@ void Player_Draw (void)
 		self.eGunModel = spawn();
 		self.eGunModel.classname = "pmodel";
 		self.eGunModel.owner = self;
-		self.eGunModel.predraw = Player_Gun_PreDraw;
-		self.eGunModel.drawmask = MASK_ENGINE;
 	}
 
 	self.subblend2frac = self.flUpAngle;
@@ -160,19 +151,26 @@ void Player_Draw (void)
 		}
 	}
 	s /= 400;
-	if (a < -180)
+	
+	/* Clamp */
+	if (a < -180) {
 		a += 360;
-	if (a > 180)
+	}
+	if (a > 180) {
 		a -= 360;
-
-	if (a > 120)
+	}
+	if (a > 120) {
 		a = 120;
-	if (a < -120)
+	}
+	if (a < -120) {
 		a = -120;
-	//self.bonecontrol1 = self.bonecontrol2 = self.bonecontrol3 = self.bonecontrol4 = (a)/150;///4;
-	self.angles[1] -= a;
-	self.angles[0] = 0;
+	}
+
+	/* Turn torso */
 	self.subblendfrac = (a)/-120;
+
+	/* Correct the legs */
+	self.angles[1] -= a;
 }
 
 /*
@@ -185,59 +183,19 @@ Responsible for player appearance/interpolation.
 */
 float Player_PreDraw(void)
 {
+	/* Run animations regardless of rendering the player */
 	Player_Draw();
 	Player_Gun_Offset();
-	addentity(self);
+
+	if (autocvar_cl_thirdperson == TRUE || self.entnum != player_localentnum) {
+		addentity(self);
+		addentity(self.eGunModel);
+	} else {
+		removeentity(self);
+		removeentity(self.eGunModel);
+	}
+
 	return PREDRAW_NEXT;
-}
-
-/*
-=================
-Player_Predict
-
-Runs before every frame is rendered.
-Responsible for local player prediction.
-=================
-*/
-void Player_Predict(void)
-{
-	// Don't predict if we're frozen/paused FIXME: FTE doesn't have serverkey_float yet!
-	if (serverkey(SERVERKEY_PAUSESTATE) == "1" || ((getstati(STAT_GAMESTATE) == GAME_FREEZE) && (getstati(STAT_HEALTH) > 0))) {
-		pSeat->vPlayerOrigin = self.origin;
-		self.netorigin = pSeat->vPlayerOrigin;
-
-		self.velocity = '0 0 0';
-		self.netvelocity = self.velocity;
-		self.netpmove_flags = 0;
-	} else {
-		Player_PreUpdate();
-	}
-
-	if (autocvar_cl_smoothstairs && self.flags & FL_ONGROUND) {
-		pSeat->vPlayerOriginOld = pSeat->vPlayerOrigin;
-
-		if ((self.jumptime <= 0) && (self.origin[2] - pSeat->vPlayerOriginOld[2] > 0)) {
-			pSeat->vPlayerOriginOld[2] += clframetime * 150;
-
-			if (pSeat->vPlayerOriginOld[2] > self.origin[2]) {
-				pSeat->vPlayerOriginOld[2] = self.origin[2];
-			}
-			if (self.origin[2] - pSeat->vPlayerOriginOld[2] > 18) {
-				pSeat->vPlayerOriginOld[2] = self.origin[2] - 18;
-			}
-			pSeat->vPlayerOrigin[2] += pSeat->vPlayerOriginOld[2] - self.origin[2];
-		} else {
-			pSeat->vPlayerOriginOld[2] = self.origin[2];
-		}
-
-		pSeat->vPlayerVelocity = self.velocity;
-		pSeat->vPlayerOrigin = [self.origin[0], self.origin[1], pSeat->vPlayerOriginOld[2]];
-	} else {
-		pSeat->vPlayerOrigin = self.origin;
-		pSeat->vPlayerVelocity = self.velocity;
-	}
-
-	Player_PostUpdate();
 }
 
 /*
@@ -251,42 +209,32 @@ Propagate our pmove state to whatever the current frame before its stomped on (s
 void Player_PreUpdate(void)
 {
 	self.netorigin = self.origin;
-	self.netangles = self.angles;
 	self.netvelocity = self.velocity;
+	self.netflags = self.flags;
 	self.netpmove_flags = self.pmove_flags;
-
-	if (getplayerkeyvalue(self.entnum - 1, "*spec") == "0") {
-		self.movetype = MOVETYPE_WALK;
-	} else {
-		self.movetype = MOVETYPE_NOCLIP;
-	}
 
 	//we want to predict an exact copy of the data in the new packet
 	/*for (; self.pmove_frame <= servercommandframe; self.pmove_frame++) {
 		float flSuccess = getinputstate(self.pmove_frame);*/
-	for (int i = servercommandframe + 1; i <= clientcommandframe; i++) {
-		float flSuccess = getinputstate(i);
+	for ( int i = servercommandframe + 1; i <= clientcommandframe; i++ ) {
+		float flSuccess = getinputstate( i );
 		if (flSuccess == FALSE) {
 			continue;
 		}
-
 		// Partial frames are the worst
 		if (input_timelength == 0) {
 			break;
 		}
 		QPhysics_Run(self);
 	}
-
-	//we now have self.pmove_flags set properly...
-	
-	self.movetype = MOVETYPE_NONE;
 }
 
-void Player_PostUpdate(void)
+void Player_ResetPrediction(void)
 {
 	self.origin = self.netorigin;
-	self.angles = self.netangles;
 	self.velocity = self.netvelocity;
+	self.flags = self.netflags;
 	self.pmove_flags = self.netpmove_flags;
-	self.pmove_frame = servercommandframe + 1;
+	setorigin( self, self.origin );
+	//self.pmove_frame = servercommandframe + 1;
 }

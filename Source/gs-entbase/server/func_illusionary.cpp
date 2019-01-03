@@ -6,24 +6,27 @@
 *
 ****/
 
-class CFuncIllusionary : CBaseEntity
+class func_illusionary : CBaseEntity
 {
 	virtual void() Use;
 };
 
-void CFuncIllusionary :: CFuncIllusionary ( void )
+void func_illusionary :: func_illusionary ( void )
 {
+	CBaseEntity::CBaseEntity();
 	precache_model( model );
 	//angles = '0 0 0';
 	movetype = MOVETYPE_PUSH;
-	self.solid = SOLID_NOT;
+	solid = SOLID_NOT;
 	setmodel( this, model );
-	CBaseEntity::CBaseEntity();
+
+	// FIXME: Add support for (skin) -1 = Empty, -7 = Volumetric light
+	if (skin < 0 ) {
+		skin = 0;
+	}
 }
 
-void CFuncIllusionary :: Use ( void )
+void func_illusionary :: Use ( void )
 {
 	skin = 1 - skin;
 }
-
-CLASSEXPORT( func_illusionary, CFuncIllusionary )

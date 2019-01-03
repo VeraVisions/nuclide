@@ -18,13 +18,13 @@ enumflags
 	MF_FADECORPSE
 };
 
-class CMonsterFurniture : CBaseEntity
+class monster_furniture : CBaseEntity
 {
-	void() CMonsterFurniture;
+	void() monster_furniture;
 	//virtual void() Respawn;
 };
 
-void CMonsterFurniture :: CMonsterFurniture ( void )
+void monster_furniture :: monster_furniture ( void )
 {
 	precache_model( model );
 	setmodel( this, model );
@@ -37,5 +37,3 @@ void CMonsterFurniture :: CMonsterFurniture ( void )
 	//self.modelflags = MF_ROTATE;
 #endif
 }
-
-CLASSEXPORT( monster_furniture, CMonsterFurniture )

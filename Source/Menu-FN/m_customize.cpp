@@ -93,7 +93,7 @@ void menu_customize_init(void)
 	cz_psSpray.SetMax(g_sprayscount);
 	cz_psSpray.SetPics(g_sprays);
 	cz_psSpray.SetValueS("logo");
-	Widget_Add(fn_customize, cz_psSpray);
+	//Widget_Add(fn_customize, cz_psSpray);
 	
 	cz_psModel = spawn(CPictureSwitch);
 	cz_psModel.SetPos(410,160);
@@ -102,7 +102,7 @@ void menu_customize_init(void)
 	cz_psModel.SetPics(g_models);
 	cz_psModel.SetMax(g_modelcount);
 	cz_psSpray.SetValueS("model");
-	Widget_Add(fn_customize, cz_psModel);
+	//Widget_Add(fn_customize, cz_psModel);
 }
 
 void menu_customize_draw(void)

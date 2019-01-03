@@ -25,16 +25,16 @@ Notes
 	Given the way this entity behaves, there is little practical use for this entity beyond viewing animations (for which there are programs that are far more convenient).
 */
 
-class CCycler : CBaseEntity
+class cycler:CBaseEntity
 {
-	void() CCycler;
+	void() cycler;
 };
 
-void CCycler :: CCycler ( void )
+void cycler::cycler(void)
 {
-	precache_model( model );
+	precache_model(model);
 	CBaseEntity::CBaseEntity();
-	setmodel( this, model );
+	setmodel(this, model);
 	solid = SOLID_BBOX;
 }
 

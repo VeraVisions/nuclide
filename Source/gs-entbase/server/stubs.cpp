@@ -6,30 +6,28 @@
 *
 ****/
 
-class CInfoNull
+class info_null
 {
-	void() CInfoNull;
+	void() info_null;
 };
 
-void CInfoNull :: CInfoNull ( void )
+void info_null :: info_null ( void )
 {
 	remove( self );
 }
 
-class CInfoNotNull
+class info_notnull
 {
-	void() CInfoNotNull;
+	void() info_notnull;
 };
 
-void CInfoNotNull :: CInfoNotNull ( void )
+void info_notnull :: info_notnull ( void )
 {
 	
 }
 
-CLASSEXPORT( info_null, CInfoNull )
-CLASSEXPORT( info_notnull, CInfoNotNull )
-CLASSEXPORT( info_node, CInfoNotNull )
-CLASSEXPORT( info_target, CInfoNotNull )
+CLASSEXPORT( info_node, info_notnull )
+CLASSEXPORT( info_target, info_notnull )
 
 /*class CSuit : CBaseTrigger
 {

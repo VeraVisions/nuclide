@@ -25,7 +25,7 @@ enum
 	FRAME_ON
 };
 
-class CButton : CBaseTrigger
+class func_button : CBaseTrigger
 {
 	float m_flSpeed;
 	float m_flLip;
@@ -56,7 +56,7 @@ class CButton : CBaseTrigger
 	virtual void() MoveToDestination_End;
 };
 
-void CButton :: Precache( void )
+void func_button :: Precache( void )
 {
 	precache_model( model );
 	switch( m_iSounds ) {
@@ -127,7 +127,7 @@ void CButton :: Precache( void )
 	precache_sound( m_strNoise );
 }
 
-void CButton :: Arrived( void )
+void func_button :: Arrived( void )
 {
 	m_iState = STATE_RAISED;
 	
@@ -144,7 +144,7 @@ void CButton :: Arrived( void )
 	}
 }
 
-void CButton :: Returned( void )
+void func_button :: Returned( void )
 {
 	if ( !( spawnflags & SF_BTT_TOUCH_ONLY ) ) {
 		touch = Touch;
@@ -154,7 +154,7 @@ void CButton :: Returned( void )
 	frame = FRAME_OFF;
 }
 
-void CButton :: MoveBack( void )
+void func_button :: MoveBack( void )
 {
 	if ( !( spawnflags & SF_BTT_TOUCH_ONLY ) ) {
 		touch = __NULL__;
@@ -163,13 +163,13 @@ void CButton :: MoveBack( void )
 	m_iState = STATE_DOWN;
 	
 	if ( m_vecPos2 != m_vecPos1 ) {
-		CButton::MoveToDestination ( m_vecPos1, Returned );
+		func_button::MoveToDestination ( m_vecPos1, Returned );
 	} else {
-		CButton::Returned();
+		func_button::Returned();
 	}
 }
 
-void CButton :: MoveAway( void )
+void func_button :: MoveAway( void )
 {
 	if ( m_iState == STATE_UP ) {
 		return;
@@ -183,15 +183,15 @@ void CButton :: MoveAway( void )
 	m_iState = STATE_UP;
 	
 	if ( m_vecPos2 != m_vecPos1 ) {
-		CButton::MoveToDestination( m_vecPos2, Arrived );
+		func_button::MoveToDestination( m_vecPos2, Arrived );
 	} else {
-		CButton::Arrived();
+		func_button::Arrived();
 	}
 	
 	frame = FRAME_ON;
 }
 
-void CButton :: Trigger( void )
+void func_button :: Trigger( void )
 {
 	if ( m_flNextTrigger > time ) {
 		return;
@@ -201,31 +201,31 @@ void CButton :: Trigger( void )
 	
 	if ( ( m_iState == STATE_UP ) || ( m_iState == STATE_RAISED ) ){
 		if ( m_flWait != -1 ) {
-			CButton::MoveBack();
+			func_button::MoveBack();
 		}
 		return;
 	}
 
 	sound( this, CHAN_VOICE, m_strNoise, 1.0, ATTN_NORM );
-	CButton::MoveAway();
+	func_button::MoveAway();
 	
 	if ( m_flDelay ) {
 #ifdef GS_DEVELOPER
-		dprint( sprintf( "CButton: Delayed trigger of `%s`\n", m_strTarget ) );
+		dprint( sprintf( "func_button: Delayed trigger of `%s`\n", m_strTarget ) );
 #endif
 		CBaseTrigger::UseTargets_Delay( m_flDelay );
 	} else {
 #ifdef GS_DEVELOPER
-		print( sprintf( "CButton: Normal trigger of `%s`\n", m_strTarget ) );
+		print( sprintf( "func_button: Normal trigger of `%s`\n", m_strTarget ) );
 #endif
 		CBaseTrigger::UseTargets();
 	}
 }
 
-void CButton :: Touch( void )
+void func_button :: Touch( void )
 {
 	if ( other.movetype == MOVETYPE_WALK ) {
-		CButton::Trigger();
+		func_button::Trigger();
     
 		if ( !( spawnflags & SF_BTT_TOUCH_ONLY ) ) {
 			touch = __NULL__;
@@ -233,12 +233,12 @@ void CButton :: Touch( void )
 	}
 }
 
-void CButton :: PlayerUse ( void )
+void func_button :: PlayerUse ( void )
 {
 	Trigger();
 }
 
-void CButton :: Blocked( void )
+void func_button :: Blocked( void )
 {
 	if ( m_iDamage ) {
 		//Damage_Apply( other, this, dmg, other.origin, FALSE );
@@ -246,14 +246,14 @@ void CButton :: Blocked( void )
 	
 	if ( m_flWait >= 0 ) {
 		if ( m_iState == STATE_DOWN ) {
-			CButton::MoveAway ();
+			func_button::MoveAway ();
 		} else {
-			CButton::MoveBack ();
+			func_button::MoveBack ();
 		}
 	}
 }
 
-void CButton :: SetMovementDirection( void )
+void func_button :: SetMovementDirection( void )
 {
 	if ( angles == '0 -1 0' ) {
 		movedir = '0 0 1';
@@ -267,7 +267,7 @@ void CButton :: SetMovementDirection( void )
 	angles = '0 0 0';
 }
 
-void CButton :: MoveToDestination_End( void )
+void func_button :: MoveToDestination_End( void )
 {
 	setorigin( this, m_vecDest );
 	velocity = '0 0 0';
@@ -275,7 +275,7 @@ void CButton :: MoveToDestination_End( void )
 	m_pMove();
 }
 
-void CButton :: MoveToDestination( vector vDestination, void() func )
+void func_button :: MoveToDestination( vector vDestination, void() func )
 {
 	vector vecDifference;
 	float flTravel, fTravelTime;
@@ -308,7 +308,7 @@ void CButton :: MoveToDestination( vector vDestination, void() func )
 	velocity = ( vecDifference * ( 1 / fTravelTime ) );
 }
 
-void CButton :: CButton( void )
+void func_button :: func_button( void )
 {
 	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
 		switch ( argv( i ) ) {
@@ -332,8 +332,8 @@ void CButton :: CButton( void )
 		}
 	}
 
-	CButton::Precache();
-	CButton::SetMovementDirection();
+	func_button::Precache();
+	func_button::SetMovementDirection();
 	CBaseTrigger::CBaseTrigger();
 
 	solid = SOLID_BSP;
@@ -364,5 +364,3 @@ void CButton :: CButton( void )
 
 	m_iState = STATE_LOWERED;
 }
-
-CLASSEXPORT( func_button, CButton )

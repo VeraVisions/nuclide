@@ -38,6 +38,10 @@ void Footsteps_Update( void ) {
 	float fVol;
 	string sMaterial = "";
 	string sTexture = "";
+	
+	if (self.flags & FL_CROUCHING) {
+		return;
+	}
 
 	if ( ( self.movetype == MOVETYPE_WALK ) && ( self.flags & FL_ONGROUND ) ) {
 		if ( ( self.velocity_x == 0 && self.velocity_y == 0 ) || self.fStepTime > time ) {

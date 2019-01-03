@@ -8,25 +8,26 @@
 
 vector g_landmarkpos;
 
-enumflags {
+enumflags
+{
 	LC_NOINTERMISSION,	// Unused?
 	LC_USEONLY
 };
 
-class CLevelChanger : CBaseTrigger
+class trigger_changelevel : CBaseTrigger
 {
 	string m_strMap;
 	string m_strLandmark;
 	float m_flChangeDelay;
 	entity m_activator;
 
-	void() CLevelChanger;
+	void() trigger_changelevel;
 	virtual void() Change;
 	virtual void() Trigger;
 	virtual int( entity, entity ) IsInside;
 };
 
-int CLevelChanger :: IsInside ( entity ePlayer, entity eVolume ) {
+int trigger_changelevel :: IsInside ( entity ePlayer, entity eVolume ) {
 	if ( ePlayer.absmin[0] > eVolume.absmax[0] ||
 		 ePlayer.absmin[1] > eVolume.absmax[1] ||
 		 ePlayer.absmin[2] > eVolume.absmax[2] ||
@@ -37,7 +38,7 @@ int CLevelChanger :: IsInside ( entity ePlayer, entity eVolume ) {
 	return TRUE;
 }
 
-void CLevelChanger :: Change ( void )
+void trigger_changelevel :: Change ( void )
 {
 	if ( m_strLandmark ) {
 		entity landmark = find( world, ::targetname, m_strLandmark );
@@ -48,7 +49,7 @@ void CLevelChanger :: Change ( void )
 	}
 }
 
-void CLevelChanger :: Trigger ( void )
+void trigger_changelevel :: Trigger ( void )
 {
 	//entity eVolume;
 	
@@ -72,7 +73,7 @@ void CLevelChanger :: Trigger ( void )
 	}
 }
 
-void CLevelChanger :: CLevelChanger ( void )
+void trigger_changelevel :: trigger_changelevel ( void )
 {
 	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
 		switch ( argv( i ) ) {
@@ -98,8 +99,7 @@ void CLevelChanger :: CLevelChanger ( void )
 	CBaseTrigger::InitBrushTrigger();
 }
 
-CLASSEXPORT( info_landmark, CInfoNull )
-CLASSEXPORT( trigger_changelevel, CLevelChanger )
+CLASSEXPORT( info_landmark, info_notnull )
 
 vector Landmark_GetSpot(void)
 {

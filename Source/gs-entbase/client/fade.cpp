@@ -4,10 +4,6 @@
 *
 ****/
 
-#ifndef FADEOVERLAY
-#define FADEOVERLAY
-#endif
-
 float g_flFadeDuration;
 float g_flFadeHold;
 float g_flFadeMaxAlpha;
@@ -32,49 +28,49 @@ enumflags
 	EVF_ONLYUSER
 };
 
-void Fade_Init ( void )
+void Fade_Init(void)
 {
-	shaderforname( "fade_modulate","{\n{\nmap $whiteimage\nrgbGen vertex\nblendFunc GL_DST_COLOR GL_ONE_MINUS_SRC_ALPHA\nalphaGen vertex\n}\n}\n" );
+	shaderforname("fade_modulate","{\n{\nmap $whiteimage\nrgbGen vertex\nblendFunc GL_DST_COLOR GL_ONE_MINUS_SRC_ALPHA\nalphaGen vertex\n}\n}\n");
 }
 
-void Fade_Update ( float x, float y, float w, float h )
+void Fade_Update (int x, int y, int w, int h)
 {
-	if ( g_iFadeActive == FALSE ) {
+	if (g_iFadeActive == FALSE) {
 		return;
 	}
-	if ( g_flFadeStyle & EVF_FADEDROM ) {
-		if ( g_flFadeTime > g_flFadeHold ) {
-			g_flFadeAlpha -= ( frametime * ( 1.0f / g_flFadeDuration ) ) * g_flFadeMaxAlpha;
+	if (g_flFadeStyle & EVF_FADEDROM) {
+		if (g_flFadeTime > g_flFadeHold) {
+			g_flFadeAlpha -= (frametime * (1.0f / g_flFadeDuration)) * g_flFadeMaxAlpha;
 		}
 	} else {
-		if ( g_flFadeTime < g_flFadeDuration ) {
-			g_flFadeAlpha += ( frametime * ( 1.0f / g_flFadeDuration ) ) * g_flFadeMaxAlpha;
+		if (g_flFadeTime < g_flFadeDuration) {
+			g_flFadeAlpha += (frametime * (1.0f / g_flFadeDuration)) * g_flFadeMaxAlpha;
 		} else {
-			g_flFadeAlpha -= ( frametime * ( 1.0f / g_flFadeHold ) ) * g_flFadeMaxAlpha;
+			g_flFadeAlpha -= (frametime * (1.0f / g_flFadeHold)) * g_flFadeMaxAlpha;
 		}
 	}
 
-	if ( g_flFadeAlpha > 1.0f ) {
+	if (g_flFadeAlpha > 1.0f) {
 		g_flFadeAlpha = 1.0f;
-	} else if ( g_flFadeAlpha < 0.0f ) {
+	} else if (g_flFadeAlpha < 0.0f) {
 		g_flFadeAlpha = 0.0f;
 	}
 
-	if ( g_flFadeAlpha <= 0 ) {
+	if (g_flFadeAlpha <= 0) {
 		g_iFadeActive = FALSE;
 		return;
 	}
 
-	if ( g_flFadeStyle & EVF_MODULATE ) {
-		drawpic( [x, y], "fade_modulate", [w, h], g_vecFadeColor, g_flFadeAlpha, 0 );
+	if (g_flFadeStyle & EVF_MODULATE) {
+		drawpic([x, y], "fade_modulate", [w, h], g_vecFadeColor, g_flFadeAlpha, 0);
 	} else {
-		drawfill( [x, y], [w, h], g_vecFadeColor, g_flFadeAlpha, 0 );
+		drawfill([x, y], [w, h], g_vecFadeColor, g_flFadeAlpha, 0);
 	}
 
 	g_flFadeTime += frametime;
 }
 
-void Fade_Parse ( void )
+void Fade_Parse (void)
 {
 	g_vecFadeColor[0] = readbyte() / 255;
 	g_vecFadeColor[1] = readbyte() / 255;
@@ -85,7 +81,7 @@ void Fade_Parse ( void )
 	g_flFadeStyle = readbyte();
 	g_flFadeTime = 0.0f;
 
-	if ( g_flFadeStyle & EVF_FADEDROM ) {
+	if (g_flFadeStyle & EVF_FADEDROM) {
 		g_flFadeAlpha = 1.0f;
 	} else {
 		g_flFadeAlpha = 0.0f;

@@ -21,16 +21,16 @@ enum
 	SKIN_RANDOM
 };
 
-class CEnvBeverage : CBaseTrigger
+class env_beverage : CBaseTrigger
 {
 	int m_iUses;
 	int m_iReady;
 	int m_iSkin;
-	void() CEnvBeverage;
+	void() env_beverage;
 	virtual void() Trigger;
 };
 
-void CEnvBeverage :: Trigger ( void )
+void env_beverage :: Trigger ( void )
 {
 	if ( m_iReady == FALSE || m_iUses <= 0 ) {
 		return;
@@ -47,7 +47,7 @@ void CEnvBeverage :: Trigger ( void )
 	m_iReady = FALSE;
 }
 
-void CEnvBeverage :: CEnvBeverage ( void )
+void env_beverage :: env_beverage ( void )
 {
 	precache_model( "models/can.mdl" );
 	precache_sound( "weapons/g_bounce3.wav" );
@@ -68,5 +68,3 @@ void CEnvBeverage :: CEnvBeverage ( void )
 	}
 	m_iReady = TRUE;
 }
-
-CLASSEXPORT( env_beverage, CEnvBeverage )

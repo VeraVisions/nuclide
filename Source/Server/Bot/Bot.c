@@ -301,8 +301,6 @@ void CBot::RunAI( void )
 	button6 = input_buttons & INPUT_BUTTON6; //unused
 	//button7 = input_buttons & INPUT_BUTTON7; //sprint
 	movement = input_movevalues;
-	
-	//runplayerphysics();
 }
 
 /*

@@ -99,6 +99,7 @@ struct
 	vector vPlayerOrigin;
 	vector vPlayerOriginOld;
 	vector vPlayerVelocity;
+	float fPlayerFlags;
 	
 // Camera Fields
 	//entity ePlayerEnt;
@@ -169,6 +170,8 @@ float clframetime;
 float fWeaponEventPlayer;
 .float fWeaponLast;
 .float fWeaponBoneID;
+.float health;
+.float oldhealth;
 
 void Animation_ShootWeapon( entity ePlayer );
 void Animation_ReloadWeapon( entity ePlayer );
@@ -177,3 +180,7 @@ void CSQC_DrawText( vector vPos, string sString, vector vSize, vector vColor, fl
 	drawfont = fFont;
 	drawstring( vPos, sString, vSize, vColor, fAlpha, fFlags );
 }
+
+#if defined(CSQC)
+int(float playernum, string keyname, optional void *outptr, int size) getplayerkeyblob = #0;
+#endif

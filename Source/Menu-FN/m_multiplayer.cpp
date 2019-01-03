@@ -80,6 +80,20 @@ void mp_btnlan_start(void)
 	header.SetExecute(mp_btnlan_end);
 }
 
+void mp_btnchatrooms_start(void)
+{
+	static void mp_btnchatrooms_end(void) {
+		g_menupage = PAGE_CHATROOMS;
+	}
+	localsound("../media/launch_upmenu1.wav");
+	header.SetStartEndPos(50,239,45,45);
+	header.SetStartEndSize(156,26,460,80);
+	header.m_lerp = 0.0f;
+	header.m_visible = TRUE;
+	header.SetHeader(HEAD_ROOMS);
+	header.SetExecute(mp_btnchatrooms_end);
+}
+
 void mp_btncustomize_start(void)
 {
 	static void mp_btncustomize_end(void) {
@@ -119,7 +133,7 @@ void menu_multiplayer_init(void)
 	
 	mp_btnChat = spawn(CMainButton);
 	mp_btnChat.SetImage(BTN_CHATROOMS);
-	//mp_btnChat.SetExecute(btn_console);
+	mp_btnChat.SetExecute(mp_btnchatrooms_start);
 	mp_btnChat.SetPos(50,236);
 	Widget_Add(fn_multiplayer, mp_btnChat);
 	

@@ -6,29 +6,29 @@
 *
 ****/
 
-class CLight : CBaseTrigger
+class light : CBaseTrigger
 {
 	string m_strPattern;
 	int m_iEnabled;
 	float m_flStyle;
-	void() CLight;
+	void() light;
 	virtual void() Trigger;
 };
 
-void CLight :: Trigger ( void )
+void light :: Trigger ( void )
 {
 	if ( m_iEnabled == TRUE ) {
-		//dprint( "CLight: Turned off!\n" );
+		//dprint( "light: Turned off!\n" );
 		lightstyle( m_flStyle, "a" );
 		m_iEnabled = FALSE;
 	} else {
-		//dprint( "CLight: Turned on!\n" );
+		//dprint( "light: Turned on!\n" );
 		lightstyle( m_flStyle, m_strPattern );
 		m_iEnabled = TRUE;
 	}
 }
 
-void CLight :: CLight ( void )
+void light :: light ( void )
 {
 	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
 		switch ( argv( i ) ) {
@@ -61,6 +61,6 @@ void CLight :: CLight ( void )
 	}
 }
 
-CLASSEXPORT( light, CLight )
-CLASSEXPORT( light_spot, CLight )
+CLASSEXPORT( light_spot, light )
+CLASSEXPORT( light_environment, light )
 

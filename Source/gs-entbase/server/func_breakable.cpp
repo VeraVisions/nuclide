@@ -20,26 +20,27 @@ enumflags
 	SF_PRESSURE
 };
 
-class CFuncBreakable : CBaseTrigger
+class func_breakable : CBaseTrigger
 {
 	float m_iMaterial;
+	float m_flDelay;
+	/*entity m_pressAttacker;
+	int m_pressType;
+	int m_pressDamage;*/
+
 	virtual void() Trigger;
-	virtual void() touch;
+	virtual void() PlayerTouch;
+	/*virtual void() PressureDeath;*/
 	virtual void( entity eAttacker, int iType, int iDamage ) vPain;
 	virtual void( entity eAttacker, int iType, int iDamage ) vDeath;
 };
 
-void CFuncBreakable :: Respawn ( void )
+void func_breakable :: vPain ( entity attacker, int type, int damage )
 {
-	if ( spawnflags & SF_TRIGGER ) {
-		takedamage = DAMAGE_NO;
-	} else {
-		takedamage = DAMAGE_YES;
+	if (spawnflags & SF_TRIGGER) {
+		return;
 	}
-}
 
-void CFuncBreakable :: vPain ( entity attacker, int type, int damage )
-{
 	if (serverkeyfloat("*bspversion") != 30) {
 		return;
 	}
@@ -57,7 +58,8 @@ void CFuncBreakable :: vPain ( entity attacker, int type, int damage )
 			break;
 		case MATERIAL_FLESH:
 			float fRand  = floor( random( 1, 8 ) );
-			if ( fRand == 4 ) { // sigh
+			/* There never was a flesh4.wav */
+			if ( fRand == 4 ) {
 				fRand = 5;
 			}
 			sound( self, CHAN_VOICE, sprintf( "debris/flesh%d.wav", fRand ), 1.0, ATTN_NORM );
@@ -69,33 +71,75 @@ void CFuncBreakable :: vPain ( entity attacker, int type, int damage )
 	}
 }
 
-void CFuncBreakable :: vDeath ( entity attacker, int type, int damage )
+void func_breakable :: vDeath ( entity attacker, int type, int damage )
 {
+	if (m_iMaterial == MATERIAL_GLASS_UNBREAKABLE) {
+		return;
+	}
 	health = 0;
 	Effect_BreakModel( absmin, absmax, '0 0 0', m_iMaterial );
 	CBaseTrigger::UseTargets();
 	CBaseEntity::Hide();
 }
 
-void CFuncBreakable :: Trigger ( void )
+void func_breakable :: Trigger ( void )
 {
-	CFuncBreakable::vDeath( world, 0, 0 );
+	func_breakable::vDeath( world, 0, 0 );
 }
 
-void CFuncBreakable :: touch ( void )
+/*void func_breakable :: PressureDeath ( void )
+{
+	func_breakable::vDeath(m_pressAttacker, m_pressType, m_pressDamage);
+}*/
+
+void func_breakable :: PlayerTouch ( void )
 {
 	if ( other.classname == classname ) {
 		return;
 	}
 
-	if ( m_iMaterial == MATERIAL_GLASS ) {
-		if (vlen(other.velocity) > 200) {
-			vDeath( other, 0, 1 );
+	if (spawnflags & SF_TOUCH) {
+		int fDamage = (float)(vlen(other.velocity) * 0.01f);
+
+		if (fDamage >= health) {
+			touch = __NULL__;
+			Damage_Apply( this, other, fDamage, absmin, FALSE );
+			
+			if ((m_iMaterial == MATERIAL_GLASS) || (m_iMaterial == MATERIAL_COMPUTER)) {
+				Damage_Apply(other, this, fDamage / 4, other.origin, FALSE);
+			}
 		}
+	}
+
+	if ((spawnflags & SF_PRESSURE) && (other.absmin_z >= maxs_z - 2)) {
+		think = Trigger;
+
+		if (m_flDelay == 0) {
+			m_flDelay = 0.1f;
+		}
+
+		nextthink = time + m_flDelay;
 	}
 }
 
-void CFuncBreakable :: CFuncBreakable( void )
+
+void func_breakable :: Respawn ( void )
+{
+	touch = PlayerTouch;
+	if ( spawnflags & SF_TRIGGER ) {
+		takedamage = DAMAGE_NO;
+	} else {
+		takedamage = DAMAGE_YES;
+	}
+
+	health = m_oldHealth;
+
+	if ( !health ) {
+		health = 15;
+	}
+}
+
+void func_breakable :: func_breakable( void )
 {
 	precache_model( model );
 	angles = [0,0,0];
@@ -103,21 +147,20 @@ void CFuncBreakable :: CFuncBreakable( void )
 	solid = SOLID_BSP;
 	setmodel( this, model );
 	CBaseEntity::CBaseEntity();
-	CFuncBreakable::Respawn();
+	func_breakable::Respawn();
 
 	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
 		switch ( argv( i ) ) {
 		case "material":
-			m_iMaterial = stoi( argv( i + 1 ) );
+			m_iMaterial = stof( argv( i + 1 ) );
+			break;
+		case "delay":
+			m_flDelay = stof( argv( i + 1 ) );
 			break;
 		default:
 			break;
 		}
 	}
 	
-	if ( !health ) {
-		health = 15;
-	}
+	
 }
-
-CLASSEXPORT( func_breakable, CFuncBreakable )

@@ -346,8 +346,8 @@ float Game_GetMaxSpeed( entity eTarget ) {
 	}
 
 	if ( eTarget.flags & FL_CROUCHING ) {
-		return ( cvar( "sv_maxspeed" ) * Weapon_GetSpeedM(weap) * 0.5 );
+		return ( serverkeyfloat("phy_maxspeed") * Weapon_GetSpeedM(weap) * 0.5 );
 	} else {
-		return cvar( "sv_maxspeed" ) * Weapon_GetSpeedM(weap);
+		return serverkeyfloat("phy_maxspeed") * Weapon_GetSpeedM(weap);
 	}
 }

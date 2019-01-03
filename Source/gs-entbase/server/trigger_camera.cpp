@@ -6,15 +6,15 @@
 *
 ****/
 
-class CTriggerCamera:CBaseTrigger
+class trigger_camera:CBaseTrigger
 {
 	float m_flWait;
 
-	void() CTriggerCamera;
+	void() trigger_camera;
 	virtual void() Trigger;
 };
 
-void CTriggerCamera::Trigger(void)
+void trigger_camera::Trigger(void)
 {
 	if (m_strTarget) {
 		entity e = find(world, CBaseTrigger::m_strTargetName, m_strTarget);
@@ -26,7 +26,7 @@ void CTriggerCamera::Trigger(void)
 	Client_TriggerCamera(eActivator, origin, angles, m_flWait);
 }
 
-void CTriggerCamera::CTriggerCamera(void)
+void trigger_camera::trigger_camera(void)
 {
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
@@ -39,5 +39,3 @@ void CTriggerCamera::CTriggerCamera(void)
 	}
 	CBaseTrigger::CBaseTrigger();
 }
-
-CLASSEXPORT(trigger_camera, CTriggerCamera)

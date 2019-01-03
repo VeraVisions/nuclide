@@ -6,14 +6,14 @@
 *
 ****/
 
-class CMultiSource : CBaseTrigger
+class multisource : CBaseTrigger
 {
-	void() CMultiSource;
+	void() multisource;
 	virtual int() GetValue;
 	virtual void() Trigger;
 };
 
-int CMultiSource :: GetValue ( void )
+int multisource :: GetValue ( void )
 {
 	int iWillTrigger = TRUE;
 	
@@ -28,19 +28,17 @@ int CMultiSource :: GetValue ( void )
 	return iWillTrigger;
 }
 
-void CMultiSource :: Trigger ( void )
+void multisource :: Trigger ( void )
 {
 	if ( GetValue() == FALSE ) {
 		return;
 	}
 	
-	//dprint( sprintf( "CMultiSource: Trigger of %s\n", m_strTarget ) );
+	//dprint( sprintf( "multisource: Trigger of %s\n", m_strTarget ) );
 	CBaseTrigger::UseTargets();
 }
 
-void CMultiSource :: CMultiSource ( void )
+void multisource :: multisource ( void )
 {
 	CBaseTrigger::CBaseTrigger();
 }
-
-CLASSEXPORT( multisource, CMultiSource )

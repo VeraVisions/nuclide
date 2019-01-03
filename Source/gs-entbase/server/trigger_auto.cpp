@@ -6,15 +6,15 @@
 *
 ****/
 
-class CTriggerAuto : CBaseTrigger
+class trigger_auto : CBaseTrigger
 {
 	float m_flDelay;
 	
-	void() CTriggerAuto;
+	void() trigger_auto;
 	virtual void() think;
 };
 
-void CTriggerAuto :: think ( void )
+void trigger_auto :: think ( void )
 {
 	// This is weird, because ents may not be spawned yet.
 	// However, Half-Life doesn't care about this, either.
@@ -26,7 +26,7 @@ void CTriggerAuto :: think ( void )
 	}
 }
 
-void CTriggerAuto :: CTriggerAuto ( void )
+void trigger_auto :: trigger_auto ( void )
 {
 	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
 		switch ( argv( i ) ) {
@@ -40,5 +40,3 @@ void CTriggerAuto :: CTriggerAuto ( void )
 	CBaseTrigger::CBaseTrigger();
 	nextthink = time + 0.2f;
 }
-
-CLASSEXPORT( trigger_auto, CTriggerAuto )

@@ -657,4 +657,6 @@ void worldspawn( void ) {
 	
 	iBombRadius = 1024;
 	localcmd(sprintf("serverinfo slots %d\n", cvar("sv_playerslots")));
+	localcmd("teamplay 1\n");
+	PMove_Init();
 }

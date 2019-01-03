@@ -12,15 +12,15 @@
 #define SF_HURT_FIREONPLAYER 	16 // Only call UseTarget functions when it's a player
 #define SF_HURT_TOUCHPLAYER 	32 // Only hurt players
 
-class CTriggerHurt : CBaseTrigger
+class trigger_hurt : CBaseTrigger
 {
 	float	m_flNextTrigger;
 	int		m_iDamage;
 	float	m_flDelay;
-	void()	CTriggerHurt;
+	void()	trigger_hurt;
 };
 
-void CTriggerHurt :: Trigger ( void )
+void trigger_hurt :: Trigger ( void )
 {
 	if ( solid == SOLID_NOT ) {
 		solid = SOLID_TRIGGER;
@@ -29,7 +29,7 @@ void CTriggerHurt :: Trigger ( void )
 	}
 }
 
-void CTriggerHurt :: Touch ( void )
+void trigger_hurt :: Touch ( void )
 {
 	if ( m_flNextTrigger > ltime ) {
 		return;
@@ -68,7 +68,7 @@ void CTriggerHurt :: Touch ( void )
 	m_flNextTrigger = ltime + 0.5;
 }
 
-void CTriggerHurt :: Respawn ( void )
+void trigger_hurt :: Respawn ( void )
 {
 	solid = SOLID_TRIGGER;
 	if ( spawnflags & SF_HURT_OFF ) {
@@ -77,7 +77,7 @@ void CTriggerHurt :: Respawn ( void )
 	touch = Touch;
 }
 
-void CTriggerHurt :: CTriggerHurt ( void )
+void trigger_hurt :: trigger_hurt ( void )
 {
 	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
 		switch ( argv( i ) ) {
@@ -93,8 +93,6 @@ void CTriggerHurt :: CTriggerHurt ( void )
 		}
 	}
 	CBaseTrigger::InitBrushTrigger();
-	CTriggerHurt::Respawn();
+	trigger_hurt::Respawn();
 	CBaseEntity::CBaseEntity();
 }
-
-CLASSEXPORT( trigger_hurt, CTriggerHurt )

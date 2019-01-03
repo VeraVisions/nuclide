@@ -6,19 +6,19 @@
 *
 ****/
 
-class CItemSuit:CBaseTrigger
+class item_suit:CBaseTrigger
 {
-	void() CItemSuit;
+	void() item_suit;
 	virtual void() touch;
 };
 
-void CItemSuit::touch(void)
+void item_suit::touch(void)
 {
 	Trigger();
 	Hide();
 }
 
-void CItemSuit::CItemSuit(void)
+void item_suit::item_suit(void)
 {
 	CBaseTrigger::CBaseTrigger();
 
@@ -26,5 +26,3 @@ void CItemSuit::CItemSuit(void)
 	setmodel( self, "models/w_kevlar.mdl");
 	InitPointTrigger();
 }
-
-CLASSEXPORT(item_suit, CItemSuit)

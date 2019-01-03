@@ -6,13 +6,11 @@
 *
 ****/
 
-class CEnvBeam {
-	void() CEnvBeam;
+class env_beam {
+	void() env_beam;
 };
 
-void CEnvBeam :: CEnvBeam ( void )
+void env_beam :: env_beam ( void )
 {
 	
 }
-
-CLASSEXPORT( env_beam, CEnvBeam )

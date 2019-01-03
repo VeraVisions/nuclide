@@ -6,22 +6,22 @@
 *
 ****/
 
-class CItemFood
+class item_food
 {
 	int m_iIsCan;
-	void() CItemFood;
+	void() item_food;
 	virtual void() Setup;
 	virtual void() Touch;
 };
 
-void CItemFood :: Touch ( void )
+void item_food :: Touch ( void )
 {
 	if ( other.classname != "Player" ) {
 		return;
 	}
 	
 	if ( owner != __NULL__ ) {
-		CEnvBeverage bevOwner = (CEnvBeverage)owner;
+		env_beverage bevOwner = (env_beverage)owner;
 		bevOwner.m_iReady = TRUE;
 	}
 	
@@ -29,7 +29,7 @@ void CItemFood :: Touch ( void )
 	remove( this );
 }
 
-void CItemFood :: Setup ( void )
+void item_food :: Setup ( void )
 {
 	solid = SOLID_TRIGGER;
 	setsize( this, '-8 -8 -8', '8 8 8' );
@@ -40,7 +40,7 @@ void CItemFood :: Setup ( void )
 	}
 }
 
-void CItemFood :: CItemFood ( void )
+void item_food :: item_food ( void )
 {
 	// TODO: differentiate between item_sodacan and item_food
 	m_iIsCan = 1;
@@ -57,5 +57,4 @@ void CItemFood :: CItemFood ( void )
 	nextthink = time + 1.0f;
 }
 
-CLASSEXPORT( item_sodacan, CItemFood )
-CLASSEXPORT( item_food, CItemFood )
+CLASSEXPORT( item_sodacan, item_food )

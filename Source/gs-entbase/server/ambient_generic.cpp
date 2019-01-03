@@ -16,7 +16,7 @@ enumflags
 	AS_NOTTOGGLED
 };
 
-class CAmbientGeneric : CBaseTrigger {
+class ambient_generic : CBaseTrigger {
 	string m_strActivePath;
 	string m_strSoundPath;
 	float m_flVolume;
@@ -29,10 +29,10 @@ class CAmbientGeneric : CBaseTrigger {
 	float m_flVolume_Start;
 	float m_flFadeIn;
 	float m_flFadeOut;*/ // TODO: Do this in CSQC
-	void() CAmbientGeneric;
+	void() ambient_generic;
 };
 
-static float CAmbientGeneric::Network(entity ePEnt, float fChanged)
+static float ambient_generic::Network(entity ePEnt, float fChanged)
 {
 	WriteByte( MSG_ENTITY, ENT_AMBIENTSOUND );
 	WriteCoord( MSG_ENTITY, origin[0] );
@@ -45,11 +45,11 @@ static float CAmbientGeneric::Network(entity ePEnt, float fChanged)
 	WriteByte( MSG_ENTITY, 0 );
 	return TRUE;
 }
-void CAmbientGeneric::UseNormal( void )
+void ambient_generic::UseNormal( void )
 {
 	sound(this, CHAN_VOICE, m_strActivePath, m_flVolume, m_flRadius, m_flPitch);
 }
-void CAmbientGeneric::UseLoop( void )
+void ambient_generic::UseLoop( void )
 {
 	if ( m_iToggleSwitch == TRUE ) {
 		m_strActivePath = "common/null.wav";
@@ -62,7 +62,7 @@ void CAmbientGeneric::UseLoop( void )
 	}
 }
 
-void CAmbientGeneric::CAmbientGeneric ( void )
+void ambient_generic::ambient_generic ( void )
 {
 	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
 		switch ( argv( i ) ) {
@@ -88,7 +88,7 @@ void CAmbientGeneric::CAmbientGeneric ( void )
 	}
 
 	if ( !m_strSoundPath ) {
-		objerror( "CAmbientGeneric: No sound file specified. Aborting." );
+		objerror( "ambient_generic: No sound file specified. Aborting." );
 	}
 
 	precache_sound( m_strSoundPath );
@@ -127,6 +127,3 @@ void CAmbientGeneric::CAmbientGeneric ( void )
 
 	CBaseTrigger::CBaseTrigger();
 }
-
-CLASSEXPORT( ambient_generic, CAmbientGeneric )
- 

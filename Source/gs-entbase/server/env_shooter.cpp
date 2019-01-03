@@ -6,7 +6,7 @@
 *
 ****/
 
-class CEnvShooter : CBaseTrigger
+class env_shooter : CBaseTrigger
 {
 	float m_iGibs;
 	float m_flDelay;
@@ -19,7 +19,7 @@ class CEnvShooter : CBaseTrigger
 	float m_flSkin;
 };
 
-void CEnvShooter :: Trigger ( void )
+void env_shooter :: Trigger ( void )
 {
 	static void Gib_Remove ( void ) { remove( self ); }
 	for ( int i = 0; i < m_iGibs; i++ ) {
@@ -34,7 +34,7 @@ void CEnvShooter :: Trigger ( void )
 	}
 }
 
-void CEnvShooter :: CEnvShooter ( void )
+void env_shooter :: env_shooter ( void )
 {
 	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
 		switch ( argv( i ) ) {
@@ -73,5 +73,3 @@ void CEnvShooter :: CEnvShooter ( void )
 	precache_model( m_strShootModel );
 	CBaseTrigger::CBaseTrigger();
 }
-
-CLASSEXPORT( env_shooter, CEnvShooter )

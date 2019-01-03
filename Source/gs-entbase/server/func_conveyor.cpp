@@ -9,18 +9,18 @@
 #define SF_CONVEYOR_VISUAL		1
 #define SF_CONVEYOR_NOTSOLID	2
 
-class CFuncConveyor : CFuncWall
+class func_conveyor : func_wall
 {
 	float m_flSpeed;
 	vector m_vecMoveDir;
-	void() CFuncConveyor;
+	void() func_conveyor;
 	virtual void() Trigger;
 	virtual void() touch;
 	virtual void() SetMovementDirection;
 	virtual void( float ) UpdateSpeed;
 };
 
-void CFuncConveyor :: SetMovementDirection ( void )
+void func_conveyor :: SetMovementDirection ( void )
 {
 	if ( angles == '0 -1 0' ) {
 		m_vecMoveDir = '0 0 1';
@@ -36,7 +36,7 @@ void CFuncConveyor :: SetMovementDirection ( void )
 
 
 // HACKHACK -- This is ugly, but encode the speed in the rendercolor to avoid adding more data to the network stream
-void CFuncConveyor :: UpdateSpeed( float flSpeed )
+void func_conveyor :: UpdateSpeed( float flSpeed )
 {
 	// Encode it as an integer with 4 fractional bits
 	/*int speedCode = (int)( fabs( flSpeed ) * 16.0f );
@@ -51,22 +51,22 @@ void CFuncConveyor :: UpdateSpeed( float flSpeed )
 	pev->rendercolor.z = (speedCode & 0xFF);*/
 }
 
-void CFuncConveyor :: touch ( void )
+void func_conveyor :: touch ( void )
 {
 	//other.basevelocity = m_vecMoveDir * m_flSpeed;
 }
 
 
-void CFuncConveyor :: Trigger ( void )
+void func_conveyor :: Trigger ( void )
 {
     m_flSpeed = -m_flSpeed;
 	UpdateSpeed( m_flSpeed );
 }
 
-void CFuncConveyor :: CFuncConveyor ( void )
+void func_conveyor :: func_conveyor ( void )
 {
 	SetMovementDirection();
-	CFuncWall::CFuncWall();
+	func_wall::func_wall();
 
 	if ( !( spawnflags & SF_CONVEYOR_VISUAL ) ) {
 		//SetBits( pev->flags, FL_CONVEYOR );
@@ -84,5 +84,3 @@ void CFuncConveyor :: CFuncConveyor ( void )
 
 	UpdateSpeed( m_flSpeed );
 }
-
-CLASSEXPORT( func_conveyor, CFuncConveyor )

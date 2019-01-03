@@ -6,15 +6,15 @@
 *
 ****/
 
-class CFuncHealthCharger:CBaseTrigger
+class func_healthcharger:CBaseTrigger
 {
 	float m_flDelay;
 
-	void() CFuncHealthCharger;
+	void() func_healthcharger;
 	virtual void() PlayerUse;
 };
 
-void CFuncHealthCharger::PlayerUse(void)
+void func_healthcharger::PlayerUse(void)
 {
 	eActivator.flags = (eActivator.flags - FL_USERELEASED);
 
@@ -26,7 +26,7 @@ void CFuncHealthCharger::PlayerUse(void)
 	m_flDelay = time + 1.0f;
 }
 
-void CFuncHealthCharger::CFuncHealthCharger(void)
+void func_healthcharger::func_healthcharger(void)
 {
 	solid = SOLID_BSP;
 	movetype = MOVETYPE_PUSH;
@@ -34,5 +34,3 @@ void CFuncHealthCharger::CFuncHealthCharger(void)
 	setmodel(this, model);
 	gflags = GF_USABLE;
 }
-
-CLASSEXPORT(func_healthcharger, CFuncHealthCharger)

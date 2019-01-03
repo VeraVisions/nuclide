@@ -14,18 +14,18 @@ enumflags
 	TO_PUSHABLES
 };
 
-class CTriggerOnce : CBaseTrigger
+class trigger_once:CBaseTrigger
 {
 	float m_flDelay;
-	void() CTriggerOnce;
+	void() trigger_once;
 	virtual void() touch;
 	virtual void() Respawn;
 };
 
-void CTriggerOnce :: touch ( void )
+void trigger_once::touch(void)
 {
 	if ( m_flDelay > 0 ) {
-		CBaseTrigger::UseTargets_Delay( m_flDelay );
+		CBaseTrigger::UseTargets_Delay(m_flDelay);
 	} else {
 		CBaseTrigger::UseTargets();
 	}
@@ -35,7 +35,7 @@ void CTriggerOnce :: touch ( void )
 #endif
 }
 
-void CTriggerOnce :: Respawn ( void )
+void trigger_once::Respawn(void)
 {
 	solid = SOLID_TRIGGER;
 #ifdef GS_DEVELOPER
@@ -43,7 +43,7 @@ void CTriggerOnce :: Respawn ( void )
 #endif
 }
 
-void CTriggerOnce :: CTriggerOnce ( void )
+void trigger_once::trigger_once(void)
 {
 	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
 		switch ( argv( i ) ) {
@@ -54,9 +54,7 @@ void CTriggerOnce :: CTriggerOnce ( void )
 			break;
 		}
 	}
-	CTriggerOnce::Respawn();
+	trigger_once::Respawn();
 	CBaseEntity::CBaseEntity();
 	CBaseTrigger::InitBrushTrigger();
 }
-
-CLASSEXPORT( trigger_once, CTriggerOnce )

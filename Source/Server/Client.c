@@ -77,7 +77,7 @@ Called when a spectator leaves the game
 =================
 */
 void SpectatorDisconnect( void ) {
-	Effect_RemoveSpray( self );
+	Spray_RemoveAll( self );
 }
 
 /*
@@ -92,7 +92,7 @@ void ClientDisconnect( void ) {
 	self.health = 0;
 	Rules_CountPlayers();
 	Rules_DeathCheck();
-	Effect_RemoveSpray( self );
+	Spray_RemoveAll( self );
 }
 
 void DecodeChangeParms(void)

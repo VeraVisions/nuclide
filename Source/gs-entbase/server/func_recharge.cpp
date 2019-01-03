@@ -6,15 +6,15 @@
 *
 ****/
 
-class CFuncSuitCharger:CBaseTrigger
+class func_recharge:CBaseTrigger
 {
 	float m_flDelay;
 	
-	void() CFuncSuitCharger;
+	void() func_recharge;
 	virtual void() PlayerUse;
 };
 
-void CFuncSuitCharger::PlayerUse(void)
+void func_recharge::PlayerUse(void)
 {
 	eActivator.flags = (eActivator.flags - FL_USERELEASED);
 
@@ -26,7 +26,7 @@ void CFuncSuitCharger::PlayerUse(void)
 	m_flDelay = time + 1.0f;
 }
 
-void CFuncSuitCharger::CFuncSuitCharger(void)
+void func_recharge::func_recharge(void)
 {
 	solid = SOLID_BSP;
 	movetype = MOVETYPE_PUSH;
@@ -34,5 +34,3 @@ void CFuncSuitCharger::CFuncSuitCharger(void)
 	setmodel(this, model);
 	gflags = GF_USABLE;
 }
-
-CLASSEXPORT(func_recharge, CFuncSuitCharger)

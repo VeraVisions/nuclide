@@ -43,8 +43,11 @@ Defs.h
 ../Shared/Equipment.c
 ../Shared/Animations.c
 
+../Shared/pmove.c
+
 ../gs-entbase/client/fade.cpp
 
+../Shared/spraylogo.cpp
 Overview.c
 Player.c
 View.c

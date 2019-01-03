@@ -25,18 +25,18 @@ string spark_snd[] = {
 	"buttons/spark6.wav"
 };
 
-class CEnvSpark:CBaseTrigger
+class env_spark:CBaseTrigger
 {
 	float m_flMaxDelay;
 
-	void() CEnvSpark;
+	void() env_spark;
 	virtual void() CreateSpark;
 	virtual void() TimedSpark;
 	virtual void() Trigger;
 	virtual void() Respawn;
 };
 
-void CEnvSpark::CEnvSpark(void)
+void env_spark::env_spark(void)
 {
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
@@ -54,19 +54,19 @@ void CEnvSpark::CEnvSpark(void)
 	Respawn();
 }
 
-void CEnvSpark::CreateSpark(void)
+void env_spark::CreateSpark(void)
 {
 	int r = floor((random() * 6));
 	sound(this, CHAN_AUTO, spark_snd[r], 1.0f, ATTN_IDLE);
 }
 
-void CEnvSpark::TimedSpark(void)
+void env_spark::TimedSpark(void)
 {
 	CreateSpark();
 	nextthink = time + (random() * m_flMaxDelay);
 }
 
-void CEnvSpark::Trigger(void)
+void env_spark::Trigger(void)
 {
 	if (spawnflags & EVSPARK_TOGGLE) {
 		if (think != __NULL__) {
@@ -81,7 +81,7 @@ void CEnvSpark::Trigger(void)
 	}
 }
 
-void CEnvSpark::Respawn(void)
+void env_spark::Respawn(void)
 {
 	if (m_flMaxDelay <= 0) {
 		m_flMaxDelay = 1.0f;
@@ -94,5 +94,3 @@ void CEnvSpark::Respawn(void)
 		}
 	}
 }
-
-CLASSEXPORT(env_spark, CEnvSpark)

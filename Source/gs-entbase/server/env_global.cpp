@@ -17,13 +17,13 @@ enum
 
 const string CENVGLOBAL_CVAR = "env_global_data";
 
-class CEnvGlobal : CBaseTrigger
+class env_global : CBaseTrigger
 {
 	string m_strGlobalState;
 	int m_iTriggerMode;
 	int m_iInitialState;
 	
-	void() CEnvGlobal;
+	void() env_global;
 	virtual void() Trigger;
 	
 	virtual int( string ) GlobalPresent;
@@ -32,7 +32,7 @@ class CEnvGlobal : CBaseTrigger
 	virtual int( string ) GetGlobal;
 };
 
-void CEnvGlobal :: Trigger ( void ) {
+void env_global :: Trigger ( void ) {
 	int iOldValue = GetGlobal( m_strGlobalState );
 	int iNewValue = 0;
 	
@@ -63,7 +63,7 @@ void CEnvGlobal :: Trigger ( void ) {
 	}
 }
 
-int CEnvGlobal :: GlobalPresent ( string strName ) {
+int env_global :: GlobalPresent ( string strName ) {
 	for ( int i = 1; i < ( tokenize( cvar_string( CENVGLOBAL_CVAR ) ) - 1 ); i += 2 ) {
 		if ( argv( i ) == strName ) {
 			return 1;
@@ -72,11 +72,11 @@ int CEnvGlobal :: GlobalPresent ( string strName ) {
 	return 0;
 }
 
-void CEnvGlobal :: AddNewGlobal ( string strName, int iValue ) {
+void env_global :: AddNewGlobal ( string strName, int iValue ) {
 	cvar_set( CENVGLOBAL_CVAR, sprintf( "%s %s %i", cvar_string( CENVGLOBAL_CVAR ), strName, iValue ) );
 }
 
-void CEnvGlobal :: SetGlobal ( string strName, int iValue ) {
+void env_global :: SetGlobal ( string strName, int iValue ) {
 	string strNewData = "";
 	for ( int i = 1; i < ( tokenize( cvar_string( CENVGLOBAL_CVAR ) ) - 1 ); i += 2 ) {
 		if ( argv( i ) != strName ) {
@@ -86,7 +86,7 @@ void CEnvGlobal :: SetGlobal ( string strName, int iValue ) {
 	cvar_set( CENVGLOBAL_CVAR, sprintf( "%s %s %i", strNewData, strName, iValue ) );
 }
 
-int CEnvGlobal :: GetGlobal ( string strName ) {
+int env_global :: GetGlobal ( string strName ) {
 	for ( int i = 1; i < ( tokenize( cvar_string( CENVGLOBAL_CVAR ) ) - 1 ); i += 2 ) {
 		if ( argv( i ) == strName ) {
 			return stoi( argv( i + 1 ) );
@@ -95,7 +95,7 @@ int CEnvGlobal :: GetGlobal ( string strName ) {
 	return 0;
 }
 
-void CEnvGlobal :: CEnvGlobal ( void )
+void env_global :: env_global ( void )
 {
 	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
 		switch ( argv( i ) ) {
@@ -114,7 +114,7 @@ void CEnvGlobal :: CEnvGlobal ( void )
 	}
 	
 	if ( !m_strGlobalState ) {
-		objerror( "CEnvGlobal: No globalstate name given! Aborting\n" );
+		objerror( "env_global: No globalstate name given! Aborting\n" );
 	}
 	
 	if ( spawnflags & GLOBAL_SETSPAWN ) {
@@ -123,5 +123,3 @@ void CEnvGlobal :: CEnvGlobal ( void )
 		}
 	}
 }
-
-CLASSEXPORT( env_global, CEnvGlobal )

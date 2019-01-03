@@ -18,7 +18,7 @@
 #define SF_DOOR_NOMONSTERS		512
 #define SF_DOOR_SILENT			0x80000000i
 
-class CDoorRotating : CBaseTrigger
+class func_door_rotating:CBaseTrigger
 {
 	int m_iMoveSnd;
 	int m_iStopSnd;
@@ -36,7 +36,7 @@ class CDoorRotating : CBaseTrigger
 	vector m_vecMoveDir;
 	virtual void() m_pMove = 0;
 	
-	void() CDoorRotating;
+	void() func_door_rotating;
 	virtual void() Precache;
 	virtual void() Arrived;
 	virtual void() Returned;
@@ -51,7 +51,7 @@ class CDoorRotating : CBaseTrigger
 	virtual void() RotateToDestination_End;
 };
 
-void CDoorRotating :: Precache ( void )
+void func_door_rotating::Precache(void)
 {
 	if ( m_iMoveSnd > 0 && m_iMoveSnd <= 10 ) {
 		precache_sound( sprintf( "doors/doormove%i.wav", m_iMoveSnd ) );
@@ -66,7 +66,7 @@ void CDoorRotating :: Precache ( void )
 	}
 }
 
-void CDoorRotating :: Arrived ( void )
+void func_door_rotating::Arrived(void)
 {
 	m_iState = STATE_RAISED;
 
@@ -87,7 +87,7 @@ void CDoorRotating :: Arrived ( void )
 	nextthink = ( ltime + m_flWait );
 }
 
-void CDoorRotating :: Returned ( void )
+void func_door_rotating::Returned(void)
 {
 	if ( !(spawnflags & SF_ROT_USE) ) {
 		touch = Touch;
@@ -96,7 +96,7 @@ void CDoorRotating :: Returned ( void )
 	m_iState = STATE_LOWERED;
 }
 
-void CDoorRotating :: RotateBack ( void )
+void func_door_rotating::RotateBack(void)
 {
 	if ( m_iMoveSnd > 0 && m_iMoveSnd <= 10 ) {
 		sound( this, CHAN_VOICE, sprintf( "doors/doormove%i.wav", m_iMoveSnd ), 1.0, ATTN_NORM );
@@ -112,7 +112,7 @@ void CDoorRotating :: RotateBack ( void )
 	RotateToDestination( m_vecPos1, Returned );
 }
 
-void CDoorRotating :: RotateAway ( void )
+void func_door_rotating::RotateAway(void)
 {
 	float fDirection = 1.0;
 
@@ -148,7 +148,7 @@ void CDoorRotating :: RotateAway ( void )
 	RotateToDestination( m_vecPos2 * fDirection, Arrived );
 }
 
-void CDoorRotating :: Trigger ( void )
+void func_door_rotating::Trigger(void)
 {
 	if ( m_flNextAction > time ) {
 		return;
@@ -164,24 +164,24 @@ void CDoorRotating :: Trigger ( void )
 
 	if ( m_flDelay ) {
 #ifdef GS_DEVELOPER
-		print( sprintf( "CDoorRotating: Delayed trigger of `%s`\n", m_strTarget ) );
+		print( sprintf( "func_door_rotating: Delayed trigger of `%s`\n", m_strTarget ) );
 #endif
 		CBaseTrigger::UseTargets_Delay( m_flDelay );
 	} else {
 #ifdef GS_DEVELOPER
-		print( sprintf( "CDoorRotating: Normal trigger of `%s`\n", m_strTarget ) );
+		print( sprintf( "func_door_rotating: Normal trigger of `%s`\n", m_strTarget ) );
 #endif
 		CBaseTrigger::UseTargets();
 	}
 }
 
-void CDoorRotating :: PlayerUse ( void )
+void func_door_rotating::PlayerUse(void)
 {
 	eActivator.gflags &= ~GF_USE_RELEASED;
 	Trigger();
 }
 
-void CDoorRotating :: Touch ( void )
+void func_door_rotating::Touch(void)
 {
 	if ( spawnflags & SF_ROT_USE ) {
 		return;
@@ -196,10 +196,10 @@ void CDoorRotating :: Touch ( void )
 	touch = __NULL__;
 }
 
-void CDoorRotating :: Blocked ( void )
+void func_door_rotating::Blocked(void)
 {
 	if ( m_iDamage ) {
-//		Damage_Apply( other, this, m_iDamage, other.origin, FALSE );
+		Damage_Apply( other, this, m_iDamage, other.origin, FALSE );
 	}
 
 	if ( m_flWait >= 0 ) {
@@ -211,7 +211,7 @@ void CDoorRotating :: Blocked ( void )
 	}
 }
 
-void CDoorRotating :: Respawn ( void )
+void func_door_rotating::Respawn(void)
 {
 	solid = SOLID_BSP;
 	movetype = MOVETYPE_PUSH;
@@ -246,7 +246,7 @@ void CDoorRotating :: Respawn ( void )
 	}
 }
 
-void CDoorRotating :: SetMovementDirection ( void )
+void func_door_rotating::SetMovementDirection(void)
 {
 	if ( spawnflags & SF_ROT_ZAXIS ) {
 		m_vecMoveDir = '0 0 1';
@@ -257,7 +257,7 @@ void CDoorRotating :: SetMovementDirection ( void )
 	}
 }
 
-void CDoorRotating :: RotateToDestination_End ( void )
+void func_door_rotating::RotateToDestination_End(void)
 {
 	angles = m_vecDest;
 	avelocity = '0 0 0';
@@ -265,7 +265,7 @@ void CDoorRotating :: RotateToDestination_End ( void )
 	m_pMove();
 }
 
-void CDoorRotating :: RotateToDestination ( vector vDestinationAngle, void() func )
+void func_door_rotating::RotateToDestination(vector vDestinationAngle, void() func)
 {
 	vector vecAngleDifference;
 	float flTravelLength, flTravelTime;
@@ -283,7 +283,7 @@ void CDoorRotating :: RotateToDestination ( vector vDestinationAngle, void() fun
 	nextthink = ( ltime + flTravelTime );
 }
 
-void CDoorRotating :: CDoorRotating ( void )
+void func_door_rotating::func_door_rotating(void)
 {
 	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
 		switch ( argv( i ) ) {
@@ -309,7 +309,7 @@ void CDoorRotating :: CDoorRotating ( void )
 			break;
 		}
 	}
-	
+
 	if ( !m_flSpeed ) {
 		m_flSpeed = 100;
 	}
@@ -322,10 +322,9 @@ void CDoorRotating :: CDoorRotating ( void )
 	if ( !m_flDistance ) {
 		m_flDistance = 90;
 	}
-	CDoorRotating::Precache();
-	CBaseEntity::CBaseEntity();
-	CDoorRotating::SetMovementDirection();
-	CDoorRotating::Respawn();
-}
 
-CLASSEXPORT( func_door_rotating, CDoorRotating )
+	func_door_rotating::Precache();
+	CBaseEntity::CBaseEntity();
+	func_door_rotating::SetMovementDirection();
+	func_door_rotating::Respawn();
+}

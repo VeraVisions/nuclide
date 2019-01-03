@@ -18,13 +18,13 @@ enumflags
 	MF_FADECORPSE
 };
 
-class CMonsterGeneric : CBaseEntity
+class monster_generic : CBaseEntity
 {
-	void() CMonsterGeneric;
+	void() monster_generic;
 	//virtual void() Respawn;
 };
 
-void CMonsterGeneric :: CMonsterGeneric ( void )
+void monster_generic :: monster_generic ( void )
 {
 	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
 		switch ( argv( i ) ) {
@@ -46,6 +46,4 @@ void CMonsterGeneric :: CMonsterGeneric ( void )
 	self.modelflags = MF_ROTATE;
 #endif
 }
-
-CLASSEXPORT( monster_generic, CMonsterGeneric )
 

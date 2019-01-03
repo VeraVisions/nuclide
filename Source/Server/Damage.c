@@ -1,28 +1,10 @@
-/*
-	Copyright 2016-2018 Marco "eukara" Hladik
-	
-	MIT LICENSE
-
-	Permission is hereby granted, free of charge, to any person 
-	obtaining a copy of this software and associated documentation 
-	files (the "Software"), to deal in the Software without 
-	restriction, including without limitation the rights to use,
-	copy, modify, merge, publish, distribute, sublicense, and/or
-	sell copies of the Software, and to permit persons to whom the
-	Software is furnished to do so, subject to the following conditions:
-
-	The above copyright notice and this permission notice shall be
-	included in all copies or substantial portions of the Software.
-
-	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-	OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-	NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-	HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-	WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-	OTHER DEALINGS IN THE SOFTWARE.
-*/
+/***
+*
+*   Copyright (c) 2016-2019 Marco 'eukara' Hladik. All rights reserved.
+* 
+* 	See the file LICENSE attached with the sources for usage details.
+*
+****/
 
 /*
 =================
@@ -257,21 +239,34 @@ Even more pain and suffering, mostly used for explosives
 =================
 */
 void Damage_Radius( vector vOrigin, entity eAttacker, float fDamage, float fRadius, int iCheckClip ) {
-	entity eDChain = findradius( vOrigin, fRadius );
-	
-	while( eDChain ) {
-		if ( eDChain.takedamage == DAMAGE_YES ) {
-			if ( Damage_CheckAttack( eDChain, vOrigin ) || iCheckClip == FALSE ) {
-				float fDiff = vlen( vOrigin - eDChain.origin );
-				
-				fDiff = ( fRadius - fDiff ) / fRadius;
-				fDamage = fDamage * fDiff;
-			
-				if ( fDiff > 0 ) {
-					Damage_Apply( eDChain, eAttacker, fDamage, eDChain.origin, TRUE );
-				}
-			}
+	for ( entity eDChain = world; ( eDChain = findfloat( eDChain, takedamage, DAMAGE_YES ) ); ) {
+		vector vecRealPos;
+		vecRealPos[0] = eDChain.absmin[0] + ( 0.5 * ( eDChain.absmax[0] - eDChain.absmin[0] ) );
+		vecRealPos[1] = eDChain.absmin[1] + ( 0.5 * ( eDChain.absmax[1] - eDChain.absmin[1] ) );
+		vecRealPos[2] = eDChain.absmin[2] + ( 0.5 * ( eDChain.absmax[2] - eDChain.absmin[2] ) );
+
+		float fDist = vlen( vOrigin - vecRealPos );
+		//vector vPush;
+
+		if ( fDist > fRadius ) {
+			continue;
 		}
-		eDChain = eDChain.chain;
+
+		if ( Damage_CheckAttack( eDChain, vOrigin ) || iCheckClip == FALSE ) {
+			float fDiff = vlen( vOrigin - vecRealPos );
+
+			fDiff = ( fRadius - fDiff ) / fRadius;
+			fDamage = rint(fDamage * fDiff);
+
+			if ( fDiff > 0 ) {
+				Damage_Apply( eDChain, eAttacker, fDamage, eDChain.origin, TRUE );
+				/*if ( eDChain.movetype != MOVETYPE_NONE ) {
+					vPush = vectoangles( vecRealPos - vOrigin );
+					makevectors( vPush );
+					eDChain.velocity += ( v_forward * fDamage * 5 ) + ( v_up * fDamage * 2.5 );
+				}*/
+			}
+			
+		}
 	}
 }

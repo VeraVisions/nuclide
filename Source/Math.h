@@ -85,79 +85,19 @@ int QPhysics_IsStuck( entity eTarget, vector vOffset, vector vecMins, vector vec
 	return trace_startsolid;
 }
 
-void QPhysics_Jump ( entity eTarget )
-{
-	if ( !( eTarget.flags & FL_ONGROUND ) ) {
-		return;
-	}
-	if ( !( eTarget.flags & FL_JUMPRELEASED ) ) {
-		return;
-	}
-	eTarget.velocity_z = eTarget.velocity_z + 270;
-}
-
+void PMove_Run (void)
 void QPhysics_Run ( entity eTarget )
 {
-	int iFixCrouch = FALSE;
 	float flFallVel = ( eTarget.flags & FL_ONGROUND ) ? 0 : -eTarget.velocity_z;
 
-	// We didn't get any basevelocity this frame, remove the flag
-	/*if ( vlen( eTarget.basevelocity ) ) {
-		eTarget.flags -= ( eTarget.flags & FL_BASEVELOCITY );
-	}*/
-
-	if ( input_buttons & INPUT_BUTTON8 ) {
-		eTarget.flags |= FL_CROUCHING;
-	} else {
-		// If we aren't holding down duck anymore and 'attempt' to stand up, prevent it
-		if ( eTarget.flags & FL_CROUCHING ) {
-			if ( QPhysics_IsStuck( eTarget, '0 0 36', VEC_HULL_MIN, VEC_HULL_MAX ) == FALSE ) {
-				eTarget.flags -= ( eTarget.flags & FL_CROUCHING );
-				iFixCrouch = TRUE;
-			}
-		} else {
-			eTarget.flags -= ( eTarget.flags & FL_CROUCHING );
-		}
-	}
-
-	if ( input_buttons & INPUT_BUTTON2 ) {
-		QPhysics_Jump( eTarget );
-		input_buttons -= ( input_buttons & INPUT_BUTTON2 );
-		eTarget.flags -= ( eTarget.flags & FL_JUMPRELEASED );
-		eTarget.flags -= ( eTarget.flags & FL_ONGROUND );
-	} else {
-		eTarget.flags |= FL_JUMPRELEASED;
-	}
-
-	if ( eTarget.flags & FL_CROUCHING ) {
-		setsize( eTarget, VEC_CHULL_MIN, VEC_CHULL_MAX );
-#ifdef SSQC
-		eTarget.view_ofs = VEC_PLAYER_CVIEWPOS;
-#endif
-	} else {
-		setsize( eTarget, VEC_HULL_MIN, VEC_HULL_MAX );
-		if ( iFixCrouch && QPhysics_IsStuck( eTarget, '0 0 0', VEC_HULL_MIN, VEC_HULL_MAX ) ) {
-			for ( int i = 0; i < 36; i++ ) {
-				eTarget.origin_z += 1;
-				if ( QPhysics_IsStuck( eTarget, '0 0 0', eTarget.mins, eTarget.maxs ) == FALSE ) {
-					break;
-				}
-			}
-		}
-		setorigin( eTarget, eTarget.origin );
-#ifdef SSQC
-		eTarget.view_ofs = VEC_PLAYER_VIEWPOS;
-#endif
-	}
-
 	eTarget.maxspeed = Game_GetMaxSpeed( eTarget );
-	runstandardplayerphysics( eTarget );
-
-	#ifdef SSQC
+	//runstandardplayerphysics( eTarget );
+	PMove_Run();
+#ifdef SSQC
 	if ( ( eTarget.flags & FL_ONGROUND ) && eTarget.movetype == MOVETYPE_WALK && ( flFallVel > 580 )) {
 		float fFallDamage = ( flFallVel - 580 ) * ( 100 / ( 1024 - 580 ) );
 		Damage_Apply( eTarget, world, fFallDamage, eTarget.origin, FALSE );
 	}
-	#endif
+#endif
 }
 #endif

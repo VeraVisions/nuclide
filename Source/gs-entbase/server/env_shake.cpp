@@ -8,18 +8,18 @@
 
 #define EVS_GLOBAL 1
 
-class CEnvShake : CBaseTrigger
+class env_shake : CBaseTrigger
 {
 	float m_flRadius;
 	float m_flAmplitude;
 	float m_flDuration;
 	float m_flFrequency;
 
-	void() CEnvShake;
+	void() env_shake;
 	virtual void() Trigger;
 };
 
-void CEnvShake :: Trigger (void)
+void env_shake :: Trigger (void)
 {
 	for (entity eClients = world; (eClients = find(eClients, ::classname, "Player"));) {
 		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
@@ -33,7 +33,7 @@ void CEnvShake :: Trigger (void)
 	}
 }
 
-void CEnvShake :: CEnvShake (void)
+void env_shake :: env_shake (void)
 {
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
@@ -55,5 +55,3 @@ void CEnvShake :: CEnvShake (void)
 	}
 	CBaseTrigger::CBaseTrigger();
 }
-
-CLASSEXPORT(env_shake, CEnvShake)

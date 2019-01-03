@@ -76,8 +76,8 @@ Nightvision_PostDraw
 Called after rendering the frame in Draw.c
 =================
 */
-void Nightvision_PostDraw( void ) {
+void Nightvision_PostDraw(int x, int y, int w, int h ) {
 	if ( iNightVision == TRUE ) {
-		drawfill( '0 0', vVideoResolution, '0 0.5 0', 1, DRAWFLAG_ADDITIVE );
+		drawfill( [x,y], [w,h], '0 0.5 0', 1, DRAWFLAG_ADDITIVE );
 	}
 }

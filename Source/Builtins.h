@@ -2249,7 +2249,7 @@ float(string name) iscachedpic = #316; /*
 string(string name, optional float trywad) precache_pic = #317; /*
 		Forces the engine to load the named image. If trywad is specified, the specified name must any lack path and extension. */
 
-void(string imagename, int width, int height, int *pixeldata) r_uploadimage = #0:r_uploadimage; /* Part of FTE_CSQC_RAWIMAGES
+void(string imagename, int width, int height, void *data, optional int datasize, int format) r_uploadimage = #0:r_uploadimage; /* Part of FTE_CSQC_RAWIMAGES
 		Updates a texture with the specified rgba data. Will be created if needed. */
 
 int*(string filename, __out int width, __out int height) r_readimage = #0:r_readimage; /* Part of FTE_CSQC_RAWIMAGES

@@ -15,16 +15,16 @@ enumflags {
 	ENVEXPLO_NOSPARKS
 };
 
-class CEnvExplosion:CBaseTrigger
+class env_explosion:CBaseTrigger
 {
 	int m_iMagnitude;
 	float m_flMaxDelay;
 
-	void() CEnvExplosion;
+	void() env_explosion;
 	virtual void() Trigger;
 };
 
-void CEnvExplosion::CEnvExplosion(void)
+void env_explosion::env_explosion(void)
 {
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
@@ -38,7 +38,7 @@ void CEnvExplosion::CEnvExplosion(void)
 	CBaseTrigger::CBaseTrigger();
 }
 
-void CEnvExplosion::Trigger(void)
+void env_explosion::Trigger(void)
 {
 	Effect_CreateExplosion(origin);
 
@@ -50,5 +50,3 @@ void CEnvExplosion::Trigger(void)
 		remove(this);
 	}
 }
-
-CLASSEXPORT(env_explosion, CEnvExplosion)

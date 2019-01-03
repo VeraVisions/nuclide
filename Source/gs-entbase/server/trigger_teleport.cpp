@@ -6,13 +6,13 @@
 *
 ****/
 
-class CTriggerTeleport : CBaseTrigger
+class trigger_teleport : CBaseTrigger
 {
-	void() CTriggerTeleport;
+	void() trigger_teleport;
 	virtual void() touch;
 };
 
-void CTriggerTeleport :: touch ( void )
+void trigger_teleport :: touch ( void )
 {
 	if ( other.health > 0 || other.solid == SOLID_SLIDEBOX ) {
 		entity eTarget = find( world, ::targetname, target );
@@ -20,11 +20,10 @@ void CTriggerTeleport :: touch ( void )
 	}
 }
 
-void CTriggerTeleport :: CTriggerTeleport ( void )
+void trigger_teleport :: trigger_teleport ( void )
 {
 	CBaseTrigger::CBaseTrigger();
 	CBaseTrigger::InitBrushTrigger();
 }
 
-CLASSEXPORT( trigger_teleport, CTriggerTeleport )
-CLASSEXPORT( info_teleport_destination, CInfoNull )
+CLASSEXPORT( info_teleport_destination, info_notnull )

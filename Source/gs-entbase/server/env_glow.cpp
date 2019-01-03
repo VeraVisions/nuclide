@@ -8,21 +8,20 @@
 
 /* https://twhl.info/wiki/page/env_sprite_(Half-Life) */
 
-enumflags {
+enumflags
+{
 	ENVS_STARTON,
 	ENVS_PLAYONCE
 };
 
-class CEnvGlow : CBaseEntity
+class env_glow : CBaseEntity
 {
-	void() CEnvGlow;
+	void() env_glow;
 };
 
-void CEnvGlow::CEnvGlow(void)
+void env_glow::env_glow(void)
 {
 	CBaseEntity::CBaseEntity();
 	precache_model(m_oldModel);
 	Respawn();
 }
-
-CLASSEXPORT(env_glow, CEnvGlow)

@@ -6,12 +6,12 @@
 *
 ****/
 
-class CTriggerVolume
+class trigger_transition
 {
-	void() CTriggerVolume;
+	void() trigger_transition;
 };
 
-void CTriggerVolume :: CTriggerVolume ( void )
+void trigger_transition :: trigger_transition ( void )
 {
 	solid = SOLID_NOT;
 	movetype = MOVETYPE_NONE;
@@ -20,4 +20,4 @@ void CTriggerVolume :: CTriggerVolume ( void )
 	modelindex = 0;
 } 
 
-CLASSEXPORT( trigger_transition, CTriggerVolume )
+CLASSEXPORT( trigger_transition, trigger_transition )

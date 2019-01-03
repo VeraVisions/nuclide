@@ -14,16 +14,16 @@ enumflags
 	TM_PUSHABLES
 };
 
-class CTriggerMultiple : CBaseTrigger
+class trigger_multiple : CBaseTrigger
 {
 	float m_flDelay;
 	float m_flWait;
-	void() CTriggerMultiple;
+	void() trigger_multiple;
 	virtual void() touch;
 	virtual void() Respawn;
 };
 
-void CTriggerMultiple :: touch ( void )
+void trigger_multiple :: touch ( void )
 {
 	if ( m_flDelay > 0 ) {
 		CBaseTrigger::UseTargets_Delay( m_flDelay );
@@ -39,7 +39,7 @@ void CTriggerMultiple :: touch ( void )
 #endif
 }
 
-void CTriggerMultiple :: Respawn ( void )
+void trigger_multiple :: Respawn ( void )
 {
 	solid = SOLID_TRIGGER;
 #ifdef GS_DEVELOPER
@@ -47,7 +47,7 @@ void CTriggerMultiple :: Respawn ( void )
 #endif
 }
 
-void CTriggerMultiple :: CTriggerMultiple ( void )
+void trigger_multiple :: trigger_multiple ( void )
 {
 	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
 		switch ( argv( i ) ) {
@@ -61,9 +61,7 @@ void CTriggerMultiple :: CTriggerMultiple ( void )
 			break;
 		}
 	}
-	CTriggerMultiple::Respawn();
+	trigger_multiple::Respawn();
 	CBaseEntity::CBaseEntity();
 	CBaseTrigger::InitBrushTrigger();
 }
-
-CLASSEXPORT( trigger_multiple, CTriggerMultiple )

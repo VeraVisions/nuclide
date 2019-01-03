@@ -44,7 +44,8 @@ Money.c
 ../Shared/Weapons.c
 ../Shared/Effects.c
 ../Shared/Equipment.c
-
+../Shared/spraylogo.cpp
+../Shared/pmove.c
 Vox.c
 Ammo.c
 Damage.c
@@ -72,9 +73,11 @@ EntHostage.c
 ../gs-entbase/server/func_door.cpp
 ../gs-entbase/server/func_door_rotating.cpp
 ../gs-entbase/server/func_illusionary.cpp
-../gs-entbase/server/func_ladder.cpp
+//../gs-entbase/server/func_ladder.cpp
+FuncLadder.c
 ../gs-entbase/server/func_train.cpp
 ../gs-entbase/server/func_wall.cpp
+../gs-entbase/server/func_wall_toggle.cpp
 ../gs-entbase/server/func_conveyor.cpp
 ../gs-entbase/server/func_rotating.cpp
 ../gs-entbase/server/light.cpp

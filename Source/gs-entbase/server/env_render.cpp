@@ -13,12 +13,12 @@ enumflags {
 	SF_NORENDERCOLOR
 };
 
-class CEnvRender:CBaseTrigger
+class env_render:CBaseTrigger
 {
 	virtual void() Trigger;
 };
 
-void CEnvRender::Trigger(void)
+void env_render::Trigger(void)
 {
 	for (entity eFind = world; 
 		(eFind = find(eFind, CBaseTrigger::m_strTargetName, m_strTarget));) {
@@ -36,4 +36,3 @@ void CEnvRender::Trigger(void)
 	}
 }
 
-CLASSEXPORT(env_render, CEnvRender)
