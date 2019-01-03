@@ -58,6 +58,7 @@ void CSQC_Init(float apilevel, string enginename, float engineversion) {
 	precache_model("sprites/640hud3.spr");
 	precache_model("sprites/640hud5.spr");
 	precache_model("sprites/640_pain.spr");
+	precache_model("sprites/crosshairs.spr");
 	
 	precache_sound("common/wpn_hudon.wav");
 	precache_sound("common/wpn_hudoff.wav");
@@ -95,10 +96,6 @@ void CSQC_Init(float apilevel, string enginename, float engineversion) {
 	
 	precache_pic( "lambda.bmp");
 	precache_pic( "logos/doug.bmp");
-	
-	for ( int i = 0; i < ( CS_WEAPON_COUNT - 1 ); i++ ) {
-		precache_model( sViewModels[ i ] );
-	}
 
 	PARTICLE_SPARK 			= particleeffectnum("part_spark");
 	PARTICLE_PIECES_BLACK 	= particleeffectnum("part_pieces_black");

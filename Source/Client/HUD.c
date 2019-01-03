@@ -477,7 +477,11 @@ void HUD_Draw(void) {
 	
 	// I guess viewzoom turns from 0.0-1.0 float into a 0-255 byte
 	if (getstatf(STAT_VIEWZOOM) < 1.0f) {
-		HUD_DrawScope();
+		if (getstatf(STAT_ACTIVEWEAPON) == WEAPON_SG552 || getstatf(STAT_ACTIVEWEAPON) == WEAPON_AUG) {
+			HUD_DrawSimpleCrosshair();
+		} else {
+			HUD_DrawScope();
+		}
 	} else {
 		HUD_DrawCrosshair();
 	}

@@ -76,6 +76,10 @@ void WeaponAUG_PrimaryFire( void ) {
 #ifdef SSQC
 	if ( BaseGun_PrimaryFire() == TRUE ) {
 		sound( self, CHAN_WEAPON, "weapons/aug-1.wav", 1, ATTN_NORM );
+		
+		if ( self.viewzoom != 1.0 ) {
+			self.fAttackFinished = time + (wptAUG.fAttackFinished * 2);
+		}
 	}
 #else
 	int iRand = (int)floor( random( 1, 4 ) );
@@ -98,7 +102,7 @@ void WeaponAUG_SecondaryFire( void ) {
 	} else {
 		self.viewzoom = 0.6;
 	}
-	
+
 	self.fAttackFinished = time + 0.5;
 #endif
 }

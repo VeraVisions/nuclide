@@ -98,3 +98,20 @@ void HUD_DrawCrosshair( void ) {
 	drawfill( vHor1, [ iLineLength, 1 ], vCrossColor, 1, DRAWFLAG_ADDITIVE );
 	drawfill( vHor2, [ iLineLength, 1 ], vCrossColor, 1, DRAWFLAG_ADDITIVE );
 }
+
+
+/*
+=================
+HUD_DrawSimpleCrosshair
+
+Draws a simple HL crosshair
+=================
+*/
+void HUD_DrawSimpleCrosshair( void )
+{
+	static vector cross_pos;
+	
+	// Draw the scope in the middle, seperately from the border
+	cross_pos = ( vVideoResolution / 2 ) + '-12 -12';
+	drawsubpic(cross_pos, [24,24], "sprites/crosshairs.spr_0.tga", [0.1875,0], [0.1875, 0.1875], [1,1,1], 1, DRAWFLAG_NORMAL);
+}
