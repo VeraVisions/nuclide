@@ -24,7 +24,6 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
-
 void Player_PreUpdate(void);
 void Player_ResetPrediction(void);
 

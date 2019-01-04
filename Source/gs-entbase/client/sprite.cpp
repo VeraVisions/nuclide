@@ -18,7 +18,7 @@ void Sprite_AnimateThink( void ) {
 	} else {
 		self.frame += 1;
 	}
-		
+
 	self.nextthink = time + ( 1 / self.framerate );
 }
 	

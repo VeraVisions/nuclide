@@ -48,6 +48,9 @@ Money.c
 ../Shared/spraylogo.cpp
 ../Shared/pmove.c
 
+
+info_map_parameters.cpp
+
 Vox.c
 Ammo.c
 Damage.c

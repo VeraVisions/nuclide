@@ -125,7 +125,3 @@
 
 /* light */
 .string pattern;
-
-/* info_map_parameters */
-.float buying;
-.float bombradius;

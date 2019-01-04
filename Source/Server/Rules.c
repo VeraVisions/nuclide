@@ -339,21 +339,3 @@ void Rules_DeathCheck(void)
 		}
 	}
 }
-
-/*
-=================
-SPAWN: info_map_parameters
-
-Let map authors decide who can buy stuff and who CAN'T.
-Also allows people to set the bomb placing radius incase
-you want to use info_bomb_target.
-=================
-*/
-void info_map_parameters( void ) {	
-	if ( self.bombradius ) {
-		iBombRadius = self.bombradius;
-	}
-	if ( self.buying ) {
-		iBuyRestriction = self.buying;
-	}
-}
