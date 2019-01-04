@@ -76,7 +76,7 @@ void func_pushable( void ) {
 		self.iBleeds = FALSE;
 		self.iUsable = TRUE;
 	}
-	
+
 	func_wall();
 	func_pushable_respawn();
 	

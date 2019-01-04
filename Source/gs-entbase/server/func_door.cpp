@@ -109,7 +109,7 @@ void func_door :: Returned (void)
 	if (!(spawnflags & SF_MOV_USE)) {
 		touch = Touch;
 	}
-    
+
 	m_iState = STATE_LOWERED;
 }
 
@@ -124,7 +124,7 @@ void func_door :: MoveBack (void)
 	if (!(spawnflags & SF_MOV_USE)) {
 		touch = __NULL__;
 	}
-    
+
 	m_iState = STATE_DOWN;
 	MoveToDestination(m_vecPos1, Returned);
 }
@@ -287,7 +287,8 @@ void func_door :: MoveToDestination (vector vDestination, void() func)
 	float fTravelTime;
 
 	if (!m_flSpeed) {
-		objerror("No speed defined for moving entity! Will not divide by zero.");
+		objerror("func_door: No speed defined!");
+		return;
 	}
 
 	m_pMove = func;

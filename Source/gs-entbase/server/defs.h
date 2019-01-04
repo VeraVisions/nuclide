@@ -28,3 +28,6 @@ enumflags
 	GF_BLOCKING,
 	GF_BOT_POI
 };
+
+void Effect_CreateSpark(vector pos, vector ang);
+void Effect_BreakModel(vector mins, vector maxs,vector vel, float mat);

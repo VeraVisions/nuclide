@@ -551,6 +551,8 @@ void CSQC_Parse_Event(void) {
 		Sound_PlayVOX(readstring());
 	} else if (fHeader == EV_FADE) {
 		Fade_Parse();
+	} else if (fHeader == EV_SPRITE) {
+		Sprite_ParseEvent();
 	}
 }
 

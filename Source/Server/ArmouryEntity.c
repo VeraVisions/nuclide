@@ -154,7 +154,6 @@ void armoury_entity( void ) {
 		self.touch = armoury_entity_touch;
 		droptofloor();
 	}
-	
 	if ( autocvar_fcs_nopickups == TRUE ) {
 		remove( self );
 		return;
@@ -163,7 +162,7 @@ void armoury_entity( void ) {
 	precache_model( sArmouryModels[ self.item ] );
 	setmodel( self, sArmouryModels[ self.item ] );
 	setsize( self, '-16 -16 0', '16 16 16' );
-		
+
 	armoury_entity_respawn();
 	Entities_InitRespawnable( armoury_entity_respawn );
 }

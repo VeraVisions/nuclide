@@ -356,7 +356,7 @@ void func_button :: func_button( void )
 
 	m_vecPos1 = origin;
 
-	if ( spawnflags & SF_BTT_NOMOVE ) {
+	if (spawnflags & SF_BTT_NOMOVE) {
 		m_vecPos2 = m_vecPos1;
 	} else {
 		m_vecPos2 = ( m_vecPos1 + movedir * ( fabs( movedir * size ) - m_flLip ) );

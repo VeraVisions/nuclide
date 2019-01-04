@@ -79,7 +79,7 @@ void PMove_Categorize(void)
 	tracebox( self.origin, self.mins, self.maxs, self.origin, FALSE, self );
 	self.hitcontentsmaski = oldhitcontents;
 	
-	print(sprintf( "Contents: %i\n", trace_endcontentsi));
+	//print(sprintf( "Contents: %i\n", trace_endcontentsi));
 
 	if (trace_endcontentsi & CONTENTBIT_WATER) {
 		contents = CONTENT_WATER;
