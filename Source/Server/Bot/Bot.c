@@ -329,4 +329,6 @@ void CBot::Create( int iBotID )
 
 	ClientConnect();
 	PutClientInServer();
+	
+	customphysics = Empty;
 }

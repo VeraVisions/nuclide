@@ -28,6 +28,8 @@ class func_breakable : CBaseTrigger
 	int m_pressType;
 	int m_pressDamage;*/
 
+	void() func_breakable;
+	virtual void() Respawn;
 	virtual void() Trigger;
 	virtual void() PlayerTouch;
 	/*virtual void() PressureDeath;*/
@@ -112,6 +114,7 @@ void func_breakable :: PlayerTouch ( void )
 	}
 
 	if ((spawnflags & SF_PRESSURE) && (other.absmin_z >= maxs_z - 2)) {
+		touch = __NULL__;
 		think = Trigger;
 
 		if (m_flDelay == 0) {
@@ -125,7 +128,11 @@ void func_breakable :: PlayerTouch ( void )
 
 void func_breakable :: Respawn ( void )
 {
+	setorigin(this, m_oldOrigin);
+	setmodel(this, m_oldModel);
 	touch = PlayerTouch;
+	think = __NULL__;
+
 	if ( spawnflags & SF_TRIGGER ) {
 		takedamage = DAMAGE_NO;
 	} else {
@@ -161,6 +168,4 @@ void func_breakable :: func_breakable( void )
 			break;
 		}
 	}
-	
-	
 }

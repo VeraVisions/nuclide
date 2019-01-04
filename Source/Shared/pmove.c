@@ -20,7 +20,7 @@ var float PHY_JUMP_CHAINDECAY	= 50;
 .float waterlevel;
 .float watertype;
 .float teleport_time;
-//int trace_endcontentsi;
+int trace_endcontentsi;
 .float maxspeed;
 .vector view_ofs;
 
@@ -73,22 +73,23 @@ void PMove_Categorize(void)
 		}
 	}
 
-	// Check water levels, boo
-	contents = pointcontents(self.origin + self.mins + '0 0 1');
-	
-	//print(sprintf("Contents: %d\n", contents));
-
-	// Ladder content testing
+	/*// Check water levels, boo */
 	int oldhitcontents = self.hitcontentsmaski;
-	self.hitcontentsmaski = CONTENTBIT_FTELADDER;
-	tracebox(self.origin, self.mins, self.maxs, self.origin, FALSE, self);
+	self.hitcontentsmaski = CONTENTBIT_LAVA | CONTENTBIT_SLIME | CONTENTBIT_WATER;
+	tracebox( self.origin, self.mins, self.maxs, self.origin, FALSE, self );
 	self.hitcontentsmaski = oldhitcontents;
+	
+	print(sprintf( "Contents: %i\n", trace_endcontentsi));
 
-	/*if (trace_endcontentsi & CONTENTBIT_FTELADDER || iContents == CONTENT_LADDER) {
-		self.flags |= FL_ONLADDER;
+	if (trace_endcontentsi & CONTENTBIT_WATER) {
+		contents = CONTENT_WATER;
+	} else if (trace_endcontentsi & CONTENTBIT_SLIME) {
+		contents = CONTENT_SLIME;
+	} else if (trace_endcontentsi & CONTENTBIT_LAVA) {
+		contents = CONTENT_LAVA;
 	} else {
-		self.flags &= ~FL_ONLADDER;
-	}*/
+		contents = CONTENT_EMPTY;
+	}
 
 	if (contents < CONTENT_SOLID && contents != CONTENT_LADDER) {
 		self.watertype = contents;
@@ -630,21 +631,19 @@ void PMove_Run_Move(void)
 		}
 	}
 
-	if ((self.flags & FL_ONGROUND) && !(self.velocity[2] > 0)) {
-		/* try to step down, only if there's something down there */
+	/* touch whatever is below */
+	if (self.flags & FL_ONGROUND) {
 		vecDestPos = self.origin;
 		vecDestPos[2] -= serverkeyfloat("phy_stepheight");
-		tracebox(self.origin, self.mins, self.maxs, vecDestPos, FALSE, self);	//try going straight there
+		tracebox(self.origin, self.mins, self.maxs, vecDestPos, FALSE, self);
 		if (trace_fraction >= 1) {
 			return;
 		}
-		if (trace_startsolid) {
+		/*if (trace_startsolid) {
 			if (!PMove_Fix_Origin()) {
 				return;
 			}
-		}
-		self.origin = trace_endpos;
-
+		}*/
 		PMove_DoTouch(trace_ent);
 	}
 }

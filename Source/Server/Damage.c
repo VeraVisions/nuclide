@@ -105,6 +105,8 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 		return;
 	}
 
+	eTarget.velocity = [0,0,0];
+
 	// Apply the damage finally
 	if ( eTarget.armor ) {
 		float fRatio = 0.5;

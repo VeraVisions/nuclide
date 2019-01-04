@@ -272,7 +272,7 @@ void SV_AddDebugPolygons( void ) {
 		return;
 	}
 
-	int nearest = Way_FindClosestWaypoint( self.origin );
+	int nearest = Way_FindClosestWaypoint(self.origin);
 	makevectors(self.v_angle);
 	R_BeginPolygon( "waypoint", 0, 0 );
 	
