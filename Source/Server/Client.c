@@ -172,7 +172,7 @@ void PutClientInServer( void ) {
 	Money_AddMoney( self, autocvar_mp_startmoney );
 	
 	if ( cvar( "mp_timelimit" ) > 0 ) {
-		if ( autocvar_sv_voxannounce == TRUE ) {
+		if ( autocvar_fcs_voxannounce == TRUE ) {
 			float fTimeLeft = cvar( "mp_timelimit" ) - ( time / 60 );
 			Vox_Singlecast( self, sprintf( "we have %s minutes remaining", Vox_TimeToString( fTimeLeft ) ) );
 		}

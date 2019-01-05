@@ -65,7 +65,7 @@ void Timer_Update(void) {
 	// This map has been played enough we think
 	if (fGameState != GAME_OVER) {
 		if (cvar("mp_timelimit") > 0) {
-			if (autocvar_sv_voxannounce == TRUE) {
+			if (autocvar_fcs_voxannounce == TRUE) {
 				if (fVoxTimer > time) {
 					return;
 				}

@@ -40,9 +40,9 @@ var float autocvar_mp_roundtime = 5;
 var float autocvar_mp_timelimit = 60;
 var string autocvar_motdfile = "motd.txt";
 var int autocvar_mp_friendlyfire = FALSE;
-var int autocvar_sv_voxannounce = FALSE;
 
 // New, FreeCS exclusive variables
+var int autocvar_fcs_voxannounce = FALSE;
 var int autocvar_fcs_knifeonly = FALSE; // Disallows buying and spawning with weps
 var int autocvar_fcs_swapteams = FALSE; // Swaps spawnpoints
 var int autocvar_fcs_nopickups = FALSE; // Disable weapon items
