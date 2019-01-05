@@ -14,11 +14,12 @@ class func_hostage_rescue
 
 void func_hostage_rescue::touch(void)
 {
-	if ((other.classname == "player" ) && ( other.team == TEAM_CT )) {
+	if ((other.classname == "player" ) && (other.team == TEAM_CT)) {
 		/* This will be cleared every frame inside SV_RunClientCommand */
 		other.fInHostageZone = TRUE; 
 	} else if (other.classname == "hostage_entity") {
 		hostage_entity hosty = (hostage_entity)other;
+
 		if (solid == SOLID_NOT) {
 			return;
 		}

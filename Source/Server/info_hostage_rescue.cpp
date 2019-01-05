@@ -21,13 +21,9 @@ Called by StartFrame if we somehow got no rescue zones
 void Game_CreateRescueZones(void)
 {
 	entity a;
-	int count = 0;
 
 	for (a = world; (a = find(a, classname, "info_player_start"));) {
 		func_hostage_rescue zone = spawn(func_hostage_rescue);
 		setorigin(zone, a.origin);
-		count++;
 	}
-
-	print(sprintf("Game: Created %i func_hostage_rescue\n", count));
 }

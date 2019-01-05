@@ -77,41 +77,25 @@ Called by StartFrame if we somehow got no buy zones
 =================
 */
 void Game_CreateBuyZones( void ) {
-	entity eFind;
-	entity eOld;
-	
+	entity a;
+
 	if ( autocvar_fcs_knifeonly == TRUE ) {
 		return;
 	}
-	
+
 	if ( iBuyRestriction == BUY_T || iBuyRestriction == BUY_BOTH ) {
-		eFind = findchain( classname, "info_player_deathmatch" );
-		eOld = self;
-		while ( eFind ) {
-			entity eBuyZoneT = spawn();
-			setorigin( eBuyZoneT, eFind.origin );
-			self = eBuyZoneT;
-			spawnfunc_func_buyzone();
-			self.team = TEAM_T;
-			
-			eFind = eFind.chain;
+		for (a = world; (a = find(a, classname, "info_player_deathmatch"));) {
+			func_buyzone zone = spawn(func_buyzone);
+			setorigin(zone, a.origin);
+			zone.team = TEAM_T;
 		}
-		self = eOld;
 	}
-	
+
 	if ( iBuyRestriction == BUY_CT || iBuyRestriction == BUY_BOTH ) {
-		eFind = findchain( classname, "info_player_start" );
-		
-		eOld = self;
-		while ( eFind ) {
-			entity eBuyZoneCT = spawn();
-			setorigin( eBuyZoneCT, eFind.origin );
-			self = eBuyZoneCT;
-			spawnfunc_func_buyzone();
-			self.team = TEAM_CT;
-			
-			eFind = eFind.chain;
+		for (a = world; (a = find(a, classname, "info_player_start"));) {
+			func_buyzone zone = spawn(func_buyzone);
+			setorigin(zone, a.origin);
+			zone.team = TEAM_CT;
 		}
-		self = eOld;
 	}
 }
