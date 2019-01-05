@@ -104,6 +104,7 @@ void CSEv_PlayerBuyEquipment_f( float fID ) {
 					Money_AddMoney( self, -350 );
 					sound( self, CHAN_ITEM, "items/tr_kevlar.wav", 1, ATTN_IDLE );
 					centerprint( self, "You already have some kevlar,\nand now you've bought a helmet!" );
+					self.iEquipment = self.iEquipment | EQUIPMENT_HELMET;
 				}
 			} else {
 				if ( self.iEquipment & EQUIPMENT_HELMET ) {
