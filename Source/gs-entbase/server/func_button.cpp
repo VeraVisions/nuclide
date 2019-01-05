@@ -133,9 +133,12 @@ void func_button::Arrived(void)
 {
 	m_iState = STATE_RAISED;
 	
-	if (!(spawnflags & SF_BTT_TOUCH_ONLY)) {
+	if (spawnflags & SF_BTT_TOUCH_ONLY) {
 		touch = Touch;
+	} else {
+		touch = __NULL__;
 	}
+
 	if (spawnflags & SF_BTT_TOGGLE) {
 		return;
 	}
@@ -148,7 +151,7 @@ void func_button::Arrived(void)
 
 void func_button::Returned(void)
 {
-	if (!(spawnflags & SF_BTT_TOUCH_ONLY)) {
+	if (spawnflags & SF_BTT_TOUCH_ONLY) {
 		touch = Touch;
 	}
     
@@ -158,10 +161,7 @@ void func_button::Returned(void)
 
 void func_button::MoveBack(void)
 {
-	if (!(spawnflags & SF_BTT_TOUCH_ONLY)) {
-		touch = __NULL__;
-	}
-    
+	touch = __NULL__;
 	m_iState = STATE_DOWN;
 	
 	if (m_vecPos2 != m_vecPos1) {
@@ -176,6 +176,7 @@ void func_button::MoveAway(void)
 	if (m_iState == STATE_UP) {
 		return;
 	}
+	touch = __NULL__;
 
 	if (m_iState == STATE_RAISED) {
 		nextthink = (ltime + m_flWait);
@@ -248,9 +249,9 @@ void func_button::Blocked(void)
 	
 	if (m_flWait >= 0) {
 		if (m_iState == STATE_DOWN) {
-			func_button::MoveAway ();
+			func_button::MoveAway();
 		} else {
-			func_button::MoveBack ();
+			func_button::MoveBack();
 		}
 	}
 }
