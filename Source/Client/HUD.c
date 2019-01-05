@@ -174,7 +174,7 @@ void HUD_DrawIcons(void) {
 
 	// Defusal Kit Icon (64, 148)
 	if (getstatf(STAT_EQUIPMENT) & EQUIPMENT_DEFUSALKIT) {
-		drawsubpic(iconpos, [32,32], HUD_NUMFILE_LAYER, [0.25, 0.578125], [0.125, 0.125], [0,1,0], 1, DRAWFLAG_ADDITIVE);
+		drawsubpic(iconpos, [32,32], HUD_NUMFILE_LAYER, [0.125, 0.578125], [0.125, 0.125], [0,1,0], 1, DRAWFLAG_ADDITIVE);
 		iconpos[1] += 32;
 	}
 
