@@ -58,6 +58,14 @@ enum {
 	HOSA_DEADTABLE3
 };
 
+string g_hostsnd[] = {
+	"hostage/hos1.wav",
+	"hostage/hos2.wav",
+	"hostage/hos3.wav",
+	"hostage/hos4.wav",
+	"hostage/hos5.wav"
+};
+
 class hostage_entity:CBaseEntity
 {
 	vector m_vecLastUserPos;
@@ -164,8 +172,9 @@ void hostage_entity::PlayerUse(void)
 		if ((m_eUser == world)) {
 			/* Only give cash to the CT for using it for the first time */
 			if (m_iUsed == FALSE) {
+				int rand = floor(random(0,5));
+				sound(this, CHAN_VOICE, g_hostsnd[rand], 1.0, ATTN_IDLE);
 				Money_AddMoney(eActivator, 150);
-				sound(this, CHAN_VOICE, sprintf("hostage/hos%d.wav", random(1, 6)), 1.0, ATTN_IDLE);
 				m_iUsed = TRUE;
 			}
 
@@ -230,6 +239,10 @@ void hostage_entity::Respawn(void)
 
 void hostage_entity::hostage_entity(void)
 {
+	for (int i = 0; i < g_hostsnd.length; i++) {
+		precache_sound(g_hostsnd[i]);
+	}
+
 	/* Path hack, FIXME do it a better way */
 	if (model == "/models/hostage.mdl") {
 		model = "";
