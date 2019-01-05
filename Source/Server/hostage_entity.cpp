@@ -60,6 +60,7 @@ enum {
 
 class hostage_entity:CBaseEntity
 {
+	vector m_vecLastUserPos;
 	entity m_eUser;
 	entity m_eRescuer;
 	int m_iUsed;
@@ -83,17 +84,28 @@ void hostage_entity::Physics(void)
 	input_buttons = 0;
 
 	if (m_eUser!= world) {
-		vector enda = vectoangles(m_eUser.origin - origin);
-		enda[0] = 0;
-		enda[1] = Math_FixDelta(enda[1]);
-		enda[2] = 0;
-		v_angle = enda;
-		
-		/* Give up after 512 units */
+		v_angle = vectoangles(m_eUser.origin - origin);
+		v_angle[0] = 0;
+		v_angle[1] = Math_FixDelta(v_angle[1]);
+		v_angle[2] = 0;
+
+		/* Give up after 1024 units */
 		if (vlen(m_eUser.origin - origin) > 1024) {
 			m_eUser = world;
 		} else if (vlen(m_eUser.origin - origin) > 128) {
 			input_movevalues[0] = 240;
+
+			other = world;
+			tracebox(origin, mins, maxs, m_eUser.origin, MOVE_OTHERONLY, this);
+
+			/* Tracing failed, there's world geometry in the way */
+			if (trace_fraction < 1.0f) {
+				vector vdir = normalize(m_vecLastUserPos - origin) * 240;
+				makevectors(v_angle);
+				input_movevalues = [v_forward * vdir, v_right * vdir, v_up * vdir];
+			} else {
+				m_vecLastUserPos = m_eUser.origin;
+			}
 		}
 	}
 
@@ -107,20 +119,19 @@ void hostage_entity::Physics(void)
 		frame = m_iScared ? HOSA_RUNSCARED:HOSA_RUN;
 	}
 
+	input_angles = angles = v_angle;
 	input_timelength = frametime;
-	input_angles = v_angle;
 	movetype = MOVETYPE_WALK;
 
 	runstandardplayerphysics(this);
 	Footsteps_Update();
 
-	angles = v_angle;
 	movetype = MOVETYPE_NONE;
 }
 
 void hostage_entity::touch(void)
 {
-	if (other.team == TEAM_CT) {
+	if (other.team != TEAM_T) {
 		velocity = normalize(other.origin - origin) * -128;
 	}
 }
@@ -129,7 +140,7 @@ void hostage_entity::PlayerUse(void)
 {
 	if (eActivator.team == TEAM_CT) {
 		if ((m_eUser == world)) {
-			// Only give cash to the CT for using it for the first time
+			/* Only give cash to the CT for using it for the first time */
 			if (m_iUsed == FALSE) {
 				Money_AddMoney(eActivator, 150);
 				sound(this, CHAN_VOICE, sprintf("hostage/hos%d.wav", random(1, 6)), 1.0, ATTN_IDLE);
@@ -196,7 +207,7 @@ void hostage_entity::Respawn(void)
 
 void hostage_entity::hostage_entity(void)
 {
-	// Path hack, FIXME do it a better way
+	/* Path hack, FIXME do it a better way */
 	if (model == "/models/hostage.mdl") {
 		model = "";
 	}
