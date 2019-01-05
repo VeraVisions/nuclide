@@ -149,7 +149,13 @@ void HUD_DrawArmor(void) {
 	}
 	
 	vector vArmorPos = vVideoMins + [128, vVideoResolution[1] - 42];
-	drawsubpic(vArmorPos, [24,24], HUD_NUMFILE_LAYER, [0, NUMSIZE_Y], [NUMSIZE_X, NUMSIZE_X], vHUDColor, fArmorAlpha, DRAWFLAG_ADDITIVE);
+	
+	if (getstatf(STAT_EQUIPMENT) & EQUIPMENT_HELMET) {
+		drawsubpic(vArmorPos, [24,24], HUD_NUMFILE_LAYER, [0, 0.4862745098], [NUMSIZE_X, NUMSIZE_X], vHUDColor, fArmorAlpha, DRAWFLAG_ADDITIVE);
+	} else {
+		drawsubpic(vArmorPos, [24,24], HUD_NUMFILE_LAYER, [0, NUMSIZE_Y], [NUMSIZE_X, NUMSIZE_X], vHUDColor, fArmorAlpha, DRAWFLAG_ADDITIVE);
+	}
+
 	HUD_DrawNums(getstatf(STAT_ARMOR), vArmorPos + [72,0], fArmorAlpha, vHUDColor);
 	fOldArmor = getstatf(STAT_ARMOR);
 }
