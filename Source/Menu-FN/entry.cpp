@@ -133,7 +133,7 @@ float m_consolecommand(string cmd)
 			m_display();
 			break;
 		default:
-			return TRUE;
+			return FALSE;
 	}
-	return FALSE;
+	return TRUE;
 }

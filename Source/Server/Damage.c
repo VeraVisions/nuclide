@@ -101,8 +101,12 @@ void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos
 	}
 	dprint( sprintf( "[DEBUG] Hit Bodypart: %s\n", Damage_GetHitLocation( trace_surface_id ) ) );
 
-	if ( Damage_ShouldDamage( eTarget.team, eAttacker.team ) == FALSE && autocvar_mp_friendlyfire == 0 ) {
-		return;
+	if (eTarget != eAttacker) {
+		if ( !Damage_ShouldDamage(eTarget.team, eAttacker.team)) {
+			if (!autocvar_mp_friendlyfire) {
+				return;
+			}
+		}
 	}
 
 	eTarget.velocity = [0,0,0];
