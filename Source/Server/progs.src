@@ -48,7 +48,10 @@ Money.c
 ../Shared/spraylogo.cpp
 ../Shared/pmove.c
 
-
+hostage_entity.cpp
+func_hostage_rescue.cpp
+info_hostage_rescue.cpp
+func_vip_safetyzone.cpp
 info_map_parameters.cpp
 
 Vox.c
@@ -58,16 +61,9 @@ TraceAttack.c
 Rules.c
 Timer.c
 
-EntHostage.c
-
-Entities.c
-FuncHostageRescue.c
-FuncEscapeZone.c
-FuncBombTarget.c
-FuncBuyZone.c
-FuncVIPSafetyZone.c
-
-ArmouryEntity.c
+func_bomb_target.cpp
+func_buyzone.cpp
+func_escapezone.cpp
 
 Bot/Bot.h
 Bot/Way.c

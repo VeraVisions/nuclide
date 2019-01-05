@@ -136,10 +136,6 @@ void TraceAttack_FireBullets( int iShots, vector vPos );
 void Damage_Radius( vector vOrigin, entity eAttacker, float fDamage, float fRadius, int iCheckClip );
 void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos, int iSkipArmor );
 
-void Entities_UseTargets( void );
-void Entities_InitRespawnable( void() vRespawnFunc );
-void Entities_Respawn( void );
-
 void Ammo_AutoFill(float fWeapon);
 void Ammo_BuyPrimary(void);
 void Ammo_BuySecondary(void);

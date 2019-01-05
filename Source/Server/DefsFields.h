@@ -24,11 +24,6 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
-// GoldSrc-Rendermode Fields
-.vector rendercolor;
-.float rendermode;
-.float renderamt;
-.float alpha;
 
 // All about +use
 .void(void) vUse;
@@ -78,23 +73,10 @@
 
 /* Map Entity Specific Fields /*
  * They used to be in their respective files, but there is not much point */
- 
- /* ambient_generic */
-.float pitch;
-.float loop;
-.float lforate;
 
 /* armoury_entity */
 .float item;
 .float count;
-
-/* hostage_entity */
-.entity eTargetPoint;
-.entity eLastCreated;
-.int iHasBeenUsed;
-
-/* env_sprite */
-.float framerate;
 
 /* env_explosion */
 .int iMagnitude;

@@ -1,6 +1,8 @@
 /***
 *
-*   Copyright (c) 2000-2019, Vera Visions. All rights reserved.
+*   Copyright (c) 2016-2019 Marco 'eukara' Hladik. All rights reserved.
+* 
+* 	See the file LICENSE attached with the sources for usage details.
 *
 ****/
 

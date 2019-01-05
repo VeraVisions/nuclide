@@ -24,52 +24,48 @@
 	OTHER DEALINGS IN THE SOFTWARE.
 */
 
-/*
-=================
-func_buyzone_touch
-=================
-*/
-void func_buyzone_touch( void ) {
-	if( ( other.classname == "player" ) && ( other.team == self.team ) ) {
-		other.fInBuyZone = TRUE; // Note: this will be cleared every frame inside SV_RunClientCommand
+class func_buyzone
+{
+	void() func_buyzone;
+	virtual void() touch;
+};
+
+void func_buyzone::touch(void)
+{
+	/* This will be cleared every frame inside SV_RunClientCommand */
+	if((other.classname == "player" ) && (other.team == self.team)) {
+		other.fInBuyZone = TRUE;
 	}
 }
 
-/*
-=================
-SPAWN: func_buyzone
-
-Entry function for the buyzone area-markings.
-=================
-*/
-void func_buyzone( void ) {
-	if ( autocvar_fcs_knifeonly == TRUE ) {
+void func_buyzone::func_buyzone(void)
+{
+	if (autocvar_fcs_knifeonly == TRUE) {
 		remove( self );
 		return;
 	}
 
-	if ( autocvar_fcs_swapteams == TRUE ) {
-		if (self.team == TEAM_T) {
-			self.team = TEAM_CT;
-		} else if (self.team == TEAM_CT) {
-			self.team = TEAM_T;
+	if (autocvar_fcs_swapteams == TRUE) {
+		if (team == TEAM_T) {
+			team = TEAM_CT;
+		} else if (team == TEAM_CT) {
+			team = TEAM_T;
 		}
 	}
 
-	self.angles = '0 0 0';
-	self.movetype = MOVETYPE_NONE;
-	self.solid = SOLID_TRIGGER;
-	
-	if ( self.model ) {
-		setmodel( self, self.model );
+	angles = '0 0 0';
+	movetype = MOVETYPE_NONE;
+	solid = SOLID_TRIGGER;
+
+	if (model) {
+		setmodel(this, model);
 	} else {
-		self.mins = '-128 -128 -36';
-		self.maxs = '128 128 36';
-		setsize( self, self.mins, self.maxs );
+		mins = '-128 -128 -36';
+		maxs = '128 128 36';
+		setsize(this, mins, maxs);
 	}
-	
-	self.model = 0;
-	self.touch = func_buyzone_touch;
+
+	model = 0;
 	iBuyZones++;
 }
 
@@ -95,7 +91,7 @@ void Game_CreateBuyZones( void ) {
 			entity eBuyZoneT = spawn();
 			setorigin( eBuyZoneT, eFind.origin );
 			self = eBuyZoneT;
-			func_buyzone();
+			spawnfunc_func_buyzone();
 			self.team = TEAM_T;
 			
 			eFind = eFind.chain;
@@ -111,7 +107,7 @@ void Game_CreateBuyZones( void ) {
 			entity eBuyZoneCT = spawn();
 			setorigin( eBuyZoneCT, eFind.origin );
 			self = eBuyZoneCT;
-			func_buyzone();
+			spawnfunc_func_buyzone();
 			self.team = TEAM_CT;
 			
 			eFind = eFind.chain;

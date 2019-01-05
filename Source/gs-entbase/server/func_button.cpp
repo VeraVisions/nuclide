@@ -25,7 +25,7 @@ enum
 	FRAME_ON
 };
 
-class func_button : CBaseTrigger
+class func_button:CBaseTrigger
 {
 	float m_flSpeed;
 	float m_flLip;
@@ -39,9 +39,11 @@ class func_button : CBaseTrigger
 	string m_strNoise;
 	float m_flWait;
 	float m_flDelay;
+	vector m_vecMoveDir;
 	virtual void() m_pMove = 0;
 	
 	virtual void() Precache;
+	virtual void() Respawn;
 	virtual void() Arrived;
 	virtual void() Returned;
 	virtual void() MoveBack;
@@ -49,17 +51,17 @@ class func_button : CBaseTrigger
 	virtual void() Touch;
 	virtual void() Blocked;
 	virtual void() Trigger;
-	virtual void() PlayerUse;
+	virtual void() Use;
 	
 	virtual void() SetMovementDirection;
 	virtual void(vector vdest, void() func) MoveToDestination;
 	virtual void() MoveToDestination_End;
 };
 
-void func_button :: Precache( void )
+void func_button::Precache(void)
 {
-	precache_model( model );
-	switch( m_iSounds ) {
+	precache_model(model);
+	switch(m_iSounds) {
 		case 0: 
 			m_strNoise = "common/null.wav";
 			break;
@@ -124,29 +126,29 @@ void func_button :: Precache( void )
 			m_strNoise = "buttons/button9.wav";
 	}
 	
-	precache_sound( m_strNoise );
+	precache_sound(m_strNoise);
 }
 
-void func_button :: Arrived( void )
+void func_button::Arrived(void)
 {
 	m_iState = STATE_RAISED;
 	
-	if ( !( spawnflags & SF_BTT_TOUCH_ONLY ) ) {
+	if (!(spawnflags & SF_BTT_TOUCH_ONLY)) {
 		touch = Touch;
 	}
-	if ( spawnflags & SF_BTT_TOGGLE ) {
+	if (spawnflags & SF_BTT_TOGGLE) {
 		return;
 	}
 	
-	if ( m_flWait != -1 ) {
+	if (m_flWait != -1) {
 		think = MoveBack;
-		nextthink = ( ltime + m_flWait );
+		nextthink = (ltime + m_flWait);
 	}
 }
 
-void func_button :: Returned( void )
+void func_button::Returned(void)
 {
-	if ( !( spawnflags & SF_BTT_TOUCH_ONLY ) ) {
+	if (!(spawnflags & SF_BTT_TOUCH_ONLY)) {
 		touch = Touch;
 	}
     
@@ -154,36 +156,36 @@ void func_button :: Returned( void )
 	frame = FRAME_OFF;
 }
 
-void func_button :: MoveBack( void )
+void func_button::MoveBack(void)
 {
-	if ( !( spawnflags & SF_BTT_TOUCH_ONLY ) ) {
+	if (!(spawnflags & SF_BTT_TOUCH_ONLY)) {
 		touch = __NULL__;
 	}
     
 	m_iState = STATE_DOWN;
 	
-	if ( m_vecPos2 != m_vecPos1 ) {
-		func_button::MoveToDestination ( m_vecPos1, Returned );
+	if (m_vecPos2 != m_vecPos1) {
+		func_button::MoveToDestination (m_vecPos1, Returned);
 	} else {
 		func_button::Returned();
 	}
 }
 
-void func_button :: MoveAway( void )
+void func_button::MoveAway(void)
 {
-	if ( m_iState == STATE_UP ) {
+	if (m_iState == STATE_UP) {
 		return;
 	}
 
-	if ( m_iState == STATE_RAISED ) {
-		nextthink = ( ltime + m_flWait );
+	if (m_iState == STATE_RAISED) {
+		nextthink = (ltime + m_flWait);
 		return;
 	}
 	
 	m_iState = STATE_UP;
 	
-	if ( m_vecPos2 != m_vecPos1 ) {
-		func_button::MoveToDestination( m_vecPos2, Arrived );
+	if (m_vecPos2 != m_vecPos1) {
+		func_button::MoveToDestination(m_vecPos2, Arrived);
 	} else {
 		func_button::Arrived();
 	}
@@ -191,61 +193,61 @@ void func_button :: MoveAway( void )
 	frame = FRAME_ON;
 }
 
-void func_button :: Trigger( void )
+void func_button::Trigger(void)
 {
-	if ( m_flNextTrigger > time ) {
+	if (m_flNextTrigger > time) {
 		return;
 	}
 
 	m_flNextTrigger = time + m_flWait;
 	
-	if ( ( m_iState == STATE_UP ) || ( m_iState == STATE_RAISED ) ){
-		if ( m_flWait != -1 ) {
+	if ((m_iState == STATE_UP) || (m_iState == STATE_RAISED)){
+		if (m_flWait != -1) {
 			func_button::MoveBack();
 		}
 		return;
 	}
 
-	sound( this, CHAN_VOICE, m_strNoise, 1.0, ATTN_NORM );
+	sound(this, CHAN_VOICE, m_strNoise, 1.0, ATTN_NORM);
 	func_button::MoveAway();
 	
-	if ( m_flDelay ) {
+	if (m_flDelay) {
 #ifdef GS_DEVELOPER
-		dprint( sprintf( "func_button: Delayed trigger of `%s`\n", m_strTarget ) );
+		dprint(sprintf("func_button: Delayed trigger of `%s`\n", m_strTarget));
 #endif
-		CBaseTrigger::UseTargets_Delay( m_flDelay );
+		CBaseTrigger::UseTargets_Delay(m_flDelay);
 	} else {
 #ifdef GS_DEVELOPER
-		print( sprintf( "func_button: Normal trigger of `%s`\n", m_strTarget ) );
+		print(sprintf("func_button: Normal trigger of `%s`\n", m_strTarget));
 #endif
 		CBaseTrigger::UseTargets();
 	}
 }
 
-void func_button :: Touch( void )
+void func_button::Touch(void)
 {
-	if ( other.movetype == MOVETYPE_WALK ) {
+	if (other.movetype == MOVETYPE_WALK) {
 		func_button::Trigger();
     
-		if ( !( spawnflags & SF_BTT_TOUCH_ONLY ) ) {
+		if (!(spawnflags & SF_BTT_TOUCH_ONLY)) {
 			touch = __NULL__;
 		}
 	}
 }
 
-void func_button :: PlayerUse ( void )
+void func_button::Use(void)
 {
 	Trigger();
 }
 
-void func_button :: Blocked( void )
+void func_button::Blocked(void)
 {
-	if ( m_iDamage ) {
-		//Damage_Apply( other, this, dmg, other.origin, FALSE );
+	if (m_iDamage) {
+		//Damage_Apply(other, this, dmg, other.origin, FALSE);
 	}
 	
-	if ( m_flWait >= 0 ) {
-		if ( m_iState == STATE_DOWN ) {
+	if (m_flWait >= 0) {
+		if (m_iState == STATE_DOWN) {
 			func_button::MoveAway ();
 		} else {
 			func_button::MoveBack ();
@@ -253,114 +255,121 @@ void func_button :: Blocked( void )
 	}
 }
 
-void func_button :: SetMovementDirection( void )
+void func_button::SetMovementDirection(void)
 {
-	if ( angles == '0 -1 0' ) {
-		movedir = '0 0 1';
-	} else if ( angles == '0 -2 0' ) {
-		movedir = '0 0 -1';
+	if (m_oldAngle == '0 -1 0') {
+		m_vecMoveDir = '0 0 1';
+	} else if (m_oldAngle == '0 -2 0') {
+		m_vecMoveDir = '0 0 -1';
 	} else {
-		makevectors( angles );
-		movedir = v_forward;
+		makevectors(m_oldAngle);
+		m_vecMoveDir = v_forward;
 	}
-	
-	angles = '0 0 0';
 }
 
-void func_button :: MoveToDestination_End( void )
+void func_button::MoveToDestination_End(void)
 {
-	setorigin( this, m_vecDest );
-	velocity = '0 0 0';
+	setorigin(this, m_vecDest);
+	velocity = [0,0,0];
 	nextthink = -1;
 	m_pMove();
 }
 
-void func_button :: MoveToDestination( vector vDestination, void() func )
+void func_button::MoveToDestination(vector vDestination, void() func)
 {
 	vector vecDifference;
 	float flTravel, fTravelTime;
 
-	if ( !m_flSpeed ) {
-		objerror( "No speed defined for moving entity! Will not divide by zero." );
+	if (!m_flSpeed) {
+		objerror("No speed defined for moving entity! Will not divide by zero.");
 	}
 
 	m_pMove = func;
 	m_vecDest = vDestination;
 	think = MoveToDestination_End;
 
-	if ( vDestination == origin ) {
+	if (vDestination == origin) {
 		velocity = '0 0 0';
-		nextthink = ( ltime + 0.1 );
+		nextthink = (ltime + 0.1);
 		return;
 	}
 
-	vecDifference = ( vDestination - origin );
-	flTravel = vlen( vecDifference );
-	fTravelTime = ( flTravel / m_flSpeed );
+	vecDifference = (vDestination - origin);
+	flTravel = vlen(vecDifference);
+	fTravelTime = (flTravel / m_flSpeed);
 
-	if ( fTravelTime < 0.1 ) {
+	if (fTravelTime < 0.1) {
 		velocity = '0 0 0';
 		nextthink = ltime + 0.1;
 		return;
 	}
 	
-	nextthink = ( ltime + fTravelTime );
-	velocity = ( vecDifference * ( 1 / fTravelTime ) );
+	nextthink = (ltime + fTravelTime);
+	velocity = (vecDifference * (1 / fTravelTime));
 }
 
-void func_button :: func_button( void )
+void func_button::Respawn(void)
 {
-	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
-		switch ( argv( i ) ) {
+	func_button::SetMovementDirection();
+
+	solid = SOLID_BSP;
+	movetype = MOVETYPE_PUSH;
+	setorigin(this, m_oldOrigin);
+	setmodel(this, m_oldModel);
+	blocked = Blocked;
+	velocity = [0,0,0];
+	nextthink = -1;
+
+	if (!m_flSpeed) {
+		m_flSpeed = 100;
+	}
+
+	if (spawnflags & SF_BTT_TOUCH_ONLY) {
+		touch = Touch;
+		PlayerUse = __NULL__;
+	} else {
+		touch = __NULL__;
+		PlayerUse = Use;
+	}
+
+	m_vecPos1 = m_oldOrigin;
+
+	if (spawnflags & SF_BTT_NOMOVE) {
+		m_vecPos2 = m_vecPos1;
+	} else {
+		m_vecPos2 = (m_vecPos1 + m_vecMoveDir * (fabs(m_vecMoveDir * size) - m_flLip));
+	}
+
+	m_iState = STATE_LOWERED;
+}
+
+void func_button::func_button(void)
+{
+	func_button::Precache();
+	CBaseTrigger::CBaseTrigger();
+
+	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
+		switch (argv(i)) {
 		case "speed":
-			m_flSpeed = stof( argv( i + 1 ) );
+			m_flSpeed = stof(argv(i + 1));
 			break;
 		case "lip":
-			m_flLip = stof( argv( i + 1 ) );
+			m_flLip = stof(argv(i + 1));
 			break;
 		case "sounds":
-			m_iSounds = stoi( argv( i + 1 ) );
+			m_iSounds = stoi(argv(i + 1));
 			break;
 		case "wait":
-			m_flWait = stof( argv( i + 1 ) );
+			m_flWait = stof(argv(i + 1));
 			break;
 		case "delay":
-			m_flDelay = stof( argv( i + 1 ) );
+			m_flDelay = stof(argv(i + 1));
 			break;
 		default:
 			break;
 		}
 	}
 
-	func_button::Precache();
-	func_button::SetMovementDirection();
-	CBaseTrigger::CBaseTrigger();
-
-	solid = SOLID_BSP;
-	movetype = MOVETYPE_PUSH;
-	setorigin( this, origin );
-	setmodel( this, model );
-	blocked = Blocked;
-
-	if ( !m_flSpeed ) {
-		m_flSpeed = 100;
-	}
-
-	if ( spawnflags & SF_BTT_TOUCH_ONLY ) {
-		touch = Touch;
-		gflags -= gflags & GF_USABLE;
-	} else {
-		touch = __NULL__;
-		gflags |= GF_USABLE;
-	}
-
-	m_vecPos1 = origin;
-
-	if (spawnflags & SF_BTT_NOMOVE) {
-		m_vecPos2 = m_vecPos1;
-	} else {
-		m_vecPos2 = ( m_vecPos1 + movedir * ( fabs( movedir * size ) - m_flLip ) );
-	}
-
-	m_iState = STATE_LOWERED;
+	func_button::Respawn();
+	angles = [0,0,0];
 }

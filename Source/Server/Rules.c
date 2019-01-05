@@ -194,15 +194,15 @@ void Rules_Restart( int iWipe ) {
 		}
 
 	}
-	
+
 	// Respawn all the entities
-	for ( entity eFind = world; ( eFind = findfloat( eFind, fRespawns, TRUE ) ); ) { 
-		self = eFind;
-		Entities_Respawn();
+	for (entity a = world; (a = findfloat(a, gflags, GF_CANRESPAWN));) {
+		CBaseEntity caw = (CBaseEntity)a;
+		caw.Respawn();
 	}
-	
+
 	self = eOld;
-	
+
 	Timer_Begin( autocvar_mp_freezetime, GAME_FREEZE );
 	Money_ResetTeamReward();
 	fDefuseProgress = 0;

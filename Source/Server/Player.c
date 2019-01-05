@@ -180,7 +180,7 @@ void Player_UseDown( void ) {
 	vSource = self.origin + self.view_ofs;
 	traceline ( vSource, vSource + ( v_forward * 64 ), FALSE, self);
 	
-	if (trace_ent.gflags & GF_USABLE) {
+	if (trace_ent.PlayerUse) {
 		if ( ( trace_ent.classname != "c4bomb" ) && ( trace_ent.classname != "func_pushable" ) ) {
 			self.flags = ( self.flags - FL_USERELEASED );
 			sound( self, CHAN_ITEM, "common/wpn_select.wav", 0.25, ATTN_IDLE );

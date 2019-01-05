@@ -28,14 +28,25 @@ Notes
 class cycler:CBaseEntity
 {
 	void() cycler;
+	virtual void(entity, int, int) vPain;
 };
+
+void cycler::vPain(entity attacker, int type, int damage)
+{
+	if (frame >= modelframecount(modelindex)) {
+		frame = 0;
+	} else {
+		frame += 1;
+	}
+	health = 9999;
+}
 
 void cycler::cycler(void)
 {
-	precache_model(model);
 	CBaseEntity::CBaseEntity();
-	setmodel(this, model);
+	precache_model(m_oldModel);
+	setmodel(this, m_oldModel);
 	solid = SOLID_BBOX;
+	takedamage = DAMAGE_YES;
+	health = 9999;
 }
-
-

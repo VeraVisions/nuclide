@@ -6,7 +6,7 @@
 *
 ****/
 
-/* https://twhl.info/wiki/page/env_glow_(Half-Life) */
+/* https://twhl.info/wiki/page/cycler_sprite_(Half-Life) */
 
 enumflags
 {
@@ -14,12 +14,12 @@ enumflags
 	ENVS_PLAYONCE
 };
 
-class env_glow : CBaseEntity
+class cycler_sprite:CBaseEntity
 {
-	void() env_glow;
+	void() cycler_sprite;
 };
 
-void env_glow::env_glow(void)
+void cycler_sprite::cycler_sprite(void)
 {
 	CBaseEntity::CBaseEntity();
 	precache_model(m_oldModel);

@@ -6,57 +6,7 @@
 *
 ****/
 
-enum {
-	HOSTAGE_IDLE,
-	HOSTAGE_WALK,
-	HOSTAGE_RUN
-};
 
-enum {
-	HOSA_WALK,
-	HOSA_WALKSCARED,
-	HOSA_RUN,
-	HOSA_RUNSCARED,
-	HOSA_RUNLOOK,
-	HOSA_180LEFT,
-	HOSA_180RIGHT,
-	HOSA_FLINCH,
-	HOSA_PAIN,
-	HOSA_PAINLEFT,
-	HOSA_PAINRIGHT,
-	HOSA_PAINLEGLEFT,
-	HOSA_PAINLEGRIGHT,
-	HOSA_IDLE1,
-	HOSA_IDLE2,
-	HOSA_IDLE3,
-	HOSA_IDLE4,
-	HOSA_IDLE5,
-	HOSA_IDLE6,
-	HOSA_SCARED_END,
-	HOSA_SCARED1,
-	HOSA_SCARED2,
-	HOSA_SCARED3,
-	HOSA_SCARED4,
-	HOSA_PANIC,
-	HOSA_FEAR1,
-	HOSA_FEAR2,
-	HOSA_CRY,
-	HOSA_SCI1,
-	HOSA_SCI2,
-	HOSA_SCI3,
-	HOSA_DIE_SIMPLE,
-	HOSA_DIE_FORWARD1,
-	HOSA_DIE_FORWARD2,
-	HOSA_DIE_BACKWARD,
-	HOSA_DIE_HEADSHOT,
-	HOSA_DIE_GUTSHOT,
-	HOSA_LYING1,
-	HOSA_LYING2,
-	HOSA_DEADSIT,
-	HOSA_DEADTABLE1,
-	HOSA_DEADTABLE2,
-	HOSA_DEADTABLE3
-};
 
 /*
 =================
@@ -132,23 +82,7 @@ hostage_use
 Whenever a hostage is 'used'
 =================
 */
-void hostage_use(void) {
-	if (eActivator.team == TEAM_CT) {
-		if ((self.eUser == world)) {
-			// Only give cash to the CT for using it for the first time
-			if (self.iHasBeenUsed == FALSE) {
-				Money_AddMoney(eActivator, 150);
-				sound(self, CHAN_VOICE, sprintf("hostage/hos%d.wav", random(1, 6)), 1.0, ATTN_IDLE);
-				self.iHasBeenUsed = TRUE;
-			}
-			
-			self.eUser = eActivator;
-			self.eTargetPoint = self.eUser;
-		} else {
-			self.eUser = world;
-		}
-	}
-}
+
 
 /*
 =================

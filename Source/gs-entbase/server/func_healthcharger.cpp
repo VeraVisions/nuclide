@@ -16,7 +16,7 @@ class func_healthcharger:CBaseTrigger
 
 void func_healthcharger::PlayerUse(void)
 {
-	eActivator.flags = (eActivator.flags - FL_USERELEASED);
+	eActivator.gflags &= ~GF_USE_RELEASED;
 
 	if (m_flDelay > time) {
 		return;
@@ -32,5 +32,4 @@ void func_healthcharger::func_healthcharger(void)
 	movetype = MOVETYPE_PUSH;
 	setorigin(this, origin);
 	setmodel(this, model);
-	gflags = GF_USABLE;
 }

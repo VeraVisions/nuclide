@@ -21,7 +21,7 @@ enum
 	STATE_DOWN
 };
 
-class func_door : CBaseTrigger
+class func_door:CBaseTrigger
 {
 	vector m_vecPos1;
 	vector m_vecPos2;
@@ -50,11 +50,11 @@ class func_door : CBaseTrigger
 	virtual void() Trigger;
 	virtual void() Blocked;
 	virtual void() Touch;
-	virtual void() PlayerUse;
+	virtual void() Use;
 	virtual void() m_pMove = 0;
 };
 
-void func_door :: Precache (void)
+void func_door::Precache(void)
 {
 	if(m_iMoveSnd > 0 && m_iMoveSnd <= 10) {
 		precache_sound(sprintf("doors/doormove%i.wav", m_iMoveSnd));
@@ -69,13 +69,13 @@ void func_door :: Precache (void)
 	}
 }
 
-void func_door :: PlayerUse (void)
+void func_door::Use(void)
 {
 	eActivator.gflags &= ~GF_USE_RELEASED;
 	Trigger();
 }
 
-void func_door :: Arrived (void)
+void func_door::Arrived(void)
 {
 	m_iState = STATE_RAISED;
 
@@ -98,7 +98,7 @@ void func_door :: Arrived (void)
 	}
 }
 
-void func_door :: Returned (void)
+void func_door::Returned(void)
 {
 	if(m_iStopSnd > 0 && m_iStopSnd <= 8) {
 		sound(self, CHAN_VOICE, sprintf("doors/doorstop%i.wav", m_iStopSnd), 1.0, ATTN_NORM);
@@ -113,7 +113,7 @@ void func_door :: Returned (void)
 	m_iState = STATE_LOWERED;
 }
 
-void func_door :: MoveBack (void)
+void func_door::MoveBack(void)
 {
 	if(m_iMoveSnd > 0 && m_iMoveSnd <= 10) {
 		sound(self, CHAN_VOICE, sprintf("doors/doormove%i.wav", m_iMoveSnd), 1.0, ATTN_NORM);
@@ -129,7 +129,7 @@ void func_door :: MoveBack (void)
 	MoveToDestination(m_vecPos1, Returned);
 }
 
-void func_door :: MoveAway (void)
+void func_door::MoveAway(void)
 {
 	if (m_iState == STATE_UP) {
 		return;
@@ -152,7 +152,7 @@ void func_door :: MoveAway (void)
 	MoveToDestination(m_vecPos2, Arrived);
 }
 
-void func_door :: Trigger (void)
+void func_door::Trigger(void)
 {
 	if (m_flNextTrigger > ltime) {
 		if (!(spawnflags & SF_MOV_TOGGLE)) {
@@ -184,7 +184,7 @@ void func_door :: Trigger (void)
 	MoveAway();
 }
 
-void func_door :: Touch (void)
+void func_door::Touch(void)
 {
 	if (spawnflags & SF_MOV_TOGGLE) {
 		return;
@@ -201,7 +201,7 @@ void func_door :: Touch (void)
 	}
 }
 
-void func_door :: Blocked (void)
+void func_door::Blocked(void)
 {
 	if(m_iDamage) {
 		//Damage_Apply(other, self, dmg, other.origin, FALSE);
@@ -216,13 +216,69 @@ void func_door :: Blocked (void)
 	}
 }
 
-
-void func_door :: Respawn (void)
+void func_door::SetMovementDirection(void)
 {
+	if (angles == [0,-1,0]) {
+		m_vecMoveDir = [0,0,1];
+	} else if (angles == [0,-2,0]) {
+		m_vecMoveDir = [0,0,-1];
+	} else {
+		makevectors(angles);
+		m_vecMoveDir = v_forward;
+	}
+}
+
+void func_door::MoveToDestination_End(void)
+{
+	setorigin(this, m_vecDest);
+	velocity = [0,0,0];
+	nextthink = -1;
+	m_pMove();
+}
+
+void func_door::MoveToDestination(vector vDestination, void() func)
+{
+	vector vecDifference;
+	float flTravel;
+	float fTravelTime;
+
+	if (!m_flSpeed) {
+		objerror("func_door: No speed defined!");
+		return;
+	}
+
+	m_pMove = func;
+	m_vecDest = vDestination;
+	think = MoveToDestination_End;
+
+	if (vDestination == origin) {
+		velocity = [0,0,0];
+		nextthink = (ltime + 0.1f);
+		return;
+	}
+
+	vecDifference = (vDestination - origin);
+	flTravel = vlen(vecDifference);
+	fTravelTime = (flTravel / m_flSpeed);
+
+	if (fTravelTime < 0.1) {
+		velocity = [0,0,0];
+		nextthink = ltime + 0.1f;
+		return;
+	}
+
+	nextthink = (ltime + fTravelTime);
+	velocity = (vecDifference * (1 / fTravelTime));
+}
+
+void func_door::Respawn(void)
+{
+	func_door::SetMovementDirection();
+
 	solid = SOLID_BSP;
 	movetype = MOVETYPE_PUSH;
-	setorigin(this, origin);
-	setmodel(this, model);
+	setorigin(this, m_oldOrigin);
+	setmodel(this, m_oldModel);
 
 	blocked = Blocked;
 	//Use = Trigger;
@@ -241,81 +297,24 @@ void func_door :: Respawn (void)
 
 	if (spawnflags & SF_MOV_USE) {
 		touch = __NULL__;
-		gflags |= GF_USABLE;
+		PlayerUse = Use;
 	} else {
 		touch = Touch;
-		gflags -= gflags & GF_USABLE;
+		PlayerUse = __NULL__;
 	}
 
 	m_iState = STATE_LOWERED;
-	m_vecPos1 = origin;
+	m_vecPos1 = m_oldOrigin;
 	m_vecPos2 = (m_vecPos1 + m_vecMoveDir * (fabs(m_vecMoveDir * size) - m_flLip));
 
 	if (spawnflags & SF_MOV_OPEN) {
 		setorigin(this, m_vecPos2);
 		m_vecPos2 = m_vecPos1;
-		m_vecPos1 = origin;
+		m_vecPos1 = m_oldOrigin;
 	}
 }
 
-void func_door :: SetMovementDirection (void)
-{
-	if (angles == [0,-1,0]) {
-		m_vecMoveDir = [0,0,1];
-	} else if (angles == [0,-2,0]) {
-		m_vecMoveDir = [0,0,-1];
-	} else {
-		makevectors(angles);
-		m_vecMoveDir = v_forward;
-	}
-
-	angles = [0,0,0];
-}
-
-void func_door :: MoveToDestination_End (void)
-{
-	setorigin(this, m_vecDest);
-	velocity = [0,0,0];
-	nextthink = -1;
-	m_pMove();
-}
-
-void func_door :: MoveToDestination (vector vDestination, void() func)
-{
-	vector vecDifference;
-	float flTravel;
-	float fTravelTime;
-
-	if (!m_flSpeed) {
-		objerror("func_door: No speed defined!");
-		return;
-	}
-
-	m_pMove = func;
-	m_vecDest = vDestination;
-	think = MoveToDestination_End;
-
-	if (vDestination == origin) {
-		velocity = '0 0 0';
-		nextthink = (ltime + 0.1);
-		return;
-	}
-
-	vecDifference = (vDestination - origin);
-	flTravel = vlen(vecDifference);
-	fTravelTime = (flTravel / m_flSpeed);
-
-	if (fTravelTime < 0.1) {
-		velocity = '0 0 0';
-		nextthink = ltime + 0.1;
-		return;
-	}
-
-	nextthink = (ltime + fTravelTime);
-	velocity = (vecDifference * (1 / fTravelTime));
-}
-
-void func_door :: func_door (void)
+void func_door::func_door(void)
 {
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
@@ -342,10 +341,11 @@ void func_door :: func_door (void)
 		}
 	}
 
-	func_door::Precache();
-	func_door::SetMovementDirection();
-	func_door::Respawn();
 	CBaseTrigger::CBaseTrigger();
+	func_door::Precache();
+	func_door::Respawn();
+
+	angles = [0,0,0];
 
 	if (m_strTargetName) {
 		m_iLocked = TRUE;

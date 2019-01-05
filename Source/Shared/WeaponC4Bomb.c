@@ -114,7 +114,7 @@ static void WeaponC4BOMB_Think( void ) {
 			if ( ( eBombChain.classname == "func_bomb_target" ) ) {
 				entity eOld = self;
 				self = eBombChain;
-				Entities_UseTargets();
+				//Entities_UseTargets();
 				self = eOld;
 			}
 			eBombChain = eBombChain.chain;
@@ -160,7 +160,6 @@ void WeaponC4BOMB_Drop( vector vBombPos, vector vNormal ) {
 	
 	eBomb.customphysics = WeaponC4BOMB_Think;
 	eBomb.fAttackFinished = time + autocvar_mp_c4timer;
-	eBomb.gflags = GF_USABLE;
 	eBomb.PlayerUse = WeaponC4BOMB_Use;
 	eBomb.owner = self;
 	
