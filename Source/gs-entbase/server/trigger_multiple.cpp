@@ -30,8 +30,12 @@ void trigger_multiple :: touch ( void )
 	} else {
 		CBaseTrigger::UseTargets();
 	}
-	think = Respawn;
-	nextthink = time + m_flWait;
+	
+	/* This is effectively a trigger_once...*/
+	if (m_flWait != -1) {
+		think = Respawn;
+		nextthink = time + m_flWait;
+	}
 	solid = SOLID_NOT;
 	
 #ifdef GS_DEVELOPER
@@ -61,6 +65,7 @@ void trigger_multiple :: trigger_multiple ( void )
 			break;
 		}
 	}
+
 	trigger_multiple::Respawn();
 	CBaseEntity::CBaseEntity();
 	CBaseTrigger::InitBrushTrigger();
