@@ -8,13 +8,7 @@
 
 /* https://twhl.info/wiki/page/cycler_sprite_(Half-Life) */
 
-enumflags
-{
-	ENVS_STARTON,
-	ENVS_PLAYONCE
-};
-
-class cycler_sprite:CBaseEntity
+class cycler_sprite:CBaseTrigger
 {
 	void() cycler_sprite;
 };
