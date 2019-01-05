@@ -62,8 +62,10 @@ class hostage_entity:CBaseEntity
 {
 	entity m_eUser;
 	int m_iUsed;
+	int m_iScared;
 	void() hostage_entity;
 
+	virtual void() touch;
 	virtual void() Hide;
 	virtual void() Respawn;
 	virtual void() PlayerUse;
@@ -74,9 +76,11 @@ class hostage_entity:CBaseEntity
 
 void hostage_entity::Physics(void)
 {
+	float spvel;
 	input_movevalues = [0,0,0];
 	input_impulse = 0;
 	input_buttons = 0;
+
 	if (m_eUser!= world) {
 		vector enda = vectoangles(m_eUser.origin - origin);
 		enda[0] = 0;
@@ -84,20 +88,40 @@ void hostage_entity::Physics(void)
 		enda[2] = 0;
 		v_angle = enda;
 		
-		if (vlen(m_eUser.origin - origin) > 128) {
+		/* Give up after 512 units */
+		if (vlen(m_eUser.origin - origin) > 1024) {
+			m_eUser = world;
+		} else if (vlen(m_eUser.origin - origin) > 128) {
 			input_movevalues[0] = 240;
 		}
 	}
-	
+
+	spvel = vlen(velocity);
+
+	if (spvel < 5) {
+		frame = m_iScared ? HOSA_SCARED1:HOSA_IDLE1;
+	} else if (spvel <= 140) {
+		frame = m_iScared ? HOSA_WALKSCARED:HOSA_WALK;
+	} else if (spvel <= 240) {
+		frame = m_iScared ? HOSA_RUNSCARED:HOSA_RUN;
+	}
+
 	input_timelength = frametime;
 	input_angles = v_angle;
 	movetype = MOVETYPE_WALK;
-	
+
 	runstandardplayerphysics(this);
 	Footsteps_Update();
-	
+
 	angles = v_angle;
 	movetype = MOVETYPE_NONE;
+}
+
+void hostage_entity::touch(void)
+{
+	if (other.team == TEAM_CT) {
+		velocity = normalize(other.origin - origin) * -128;
+	}
 }
 
 void hostage_entity::PlayerUse(void)
@@ -121,16 +145,17 @@ void hostage_entity::PlayerUse(void)
 void hostage_entity::vPain(int iHitBody)
 {
 	frame = HOSA_FLINCH + floor(random(0, 5));
+	//m_iScared = TRUE;
 }
 
 void hostage_entity::vDeath(int iHitBody)
 {
-	Radio_BroadcastMessage(RADIO_HOSDOWN);
-	frame = HOSA_DIE_SIMPLE + floor(random(0, 6));
-	
 	solid = SOLID_NOT;
 	takedamage = DAMAGE_NO;
 	customphysics = Empty;
+
+	Radio_BroadcastMessage(RADIO_HOSDOWN);
+	frame = HOSA_DIE_SIMPLE + floor(random(0, 6));
 }
 
 void hostage_entity::Hide(void)
@@ -164,7 +189,7 @@ void hostage_entity::Respawn(void)
 	frame = HOSA_IDLE1;
 	health = 100;
 	velocity = [0,0,0];
-	m_iUsed = FALSE;
+	m_iUsed = m_iScared = FALSE;
 }
 
 void hostage_entity::hostage_entity(void)
