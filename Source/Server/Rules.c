@@ -147,7 +147,8 @@ void Rules_Restart( int iWipe ) {
 		if ( iWipe == FALSE ) {
 			Money_GiveTeamReward();
 		} else {
-			self.fMoney = autocvar_mp_startmoney;
+			self.fMoney = 0;
+			Money_AddMoney(self, autocvar_mp_startmoney);
 		}
 	}
 	
