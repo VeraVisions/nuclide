@@ -302,6 +302,10 @@ float Weapon_AlreadyExists( float fWeapon ) {
 			if ( self.fSlotGrenade == fWeapon ) {
 				return TRUE;
 			}
+		} else if ( wptTable[ fWeapon ].iSlot == SLOT_C4BOMB ) {
+			if ( self.fSlotC4Bomb == fWeapon ) {
+				return TRUE;
+			}
 		}
 	}
 	
@@ -328,6 +332,10 @@ float Weapon_SlotEmpty( int fSlot ) {
 		if ( self.fSlotGrenade == 0 ) {
 			return TRUE;
 		}
+	} else if ( fSlot == SLOT_C4BOMB ) {
+		if ( self.fSlotC4Bomb == 0 ) {
+			return TRUE;
+		}
 	}
 	
 	return FALSE;
@@ -351,6 +359,8 @@ void Weapon_Switch( int iSlot ) {
 		fWeapon = self.fSlotSecondary;
 	} else if ( iSlot == SLOT_GRENADE ) {
 		fWeapon = self.fSlotGrenade;
+	} else if ( iSlot == SLOT_C4BOMB ) {
+		fWeapon = self.fSlotC4Bomb;
 	}
 	
 	if ( !fWeapon || self.weapon == fWeapon ) {
@@ -393,6 +403,8 @@ void Weapon_AddItem( float fWeapon ) {
 		self.fSlotPrimary = fWeapon;
 	} else if ( wptTable[ fWeapon ].iSlot == SLOT_GRENADE ) {
 		self.fSlotGrenade = fWeapon;
+	} else if ( wptTable[ fWeapon ].iSlot == SLOT_C4BOMB ) {
+		self.fSlotC4Bomb = fWeapon;
 	}
 	
 	// Make sure we've got at least one full clip
@@ -480,6 +492,9 @@ void Weapon_DropWeapon( int iSlot ) {
 	} else if ( iSlot == SLOT_GRENADE ) {
 		fWeapon = self.fSlotGrenade;
 		self.fSlotGrenade = 0;
+	} else if ( iSlot == SLOT_C4BOMB ) {
+		fWeapon = self.fSlotC4Bomb;
+		self.fSlotGrenade = 0;
 	} else {
 		return;
 	}
@@ -561,8 +576,6 @@ void CSEv_PlayerSwitchWeapon_f( float fWeapon ) {
 		} else if (fWeapon == WEAPON_FLASHBANG && !(self.iAmmo_FLASHBANG)) {
 			return;
 		} else if (fWeapon == WEAPON_SMOKEGRENADE && !(self.iAmmo_SMOKEGRENADE)) {
-			return;
-		} else if (fWeapon == WEAPON_C4BOMB && !(self.fSlotGrenade & WEAPON_C4BOMB)) {
 			return;
 		}
 	}

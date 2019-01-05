@@ -15,7 +15,7 @@ int iBombProgress;
 // Weapon Info
 weaponinfo_t wptC4BOMB = {
 	WEAPON_C4BOMB, 		// Identifier
-	SLOT_GRENADE,
+	SLOT_C4BOMB,
 	0, 					// Price
 	EXPLOSIVE_C4, 		// Caliber ID
 	1.0, 				// Max Player Speed
@@ -177,7 +177,7 @@ void WeaponC4BOMB_Drop( vector vBombPos, vector vNormal ) {
 	iBombPlanted = TRUE;
 	
 	// Tell the bomb-planter to get rid of the weapon!
-	self.fSlotGrenade = self.fSlotGrenade - WEAPON_C4BOMB;
+	self.fSlotC4Bomb = 0;
 	Weapon_SwitchBest();
 	//eprint( eBomb );
 }

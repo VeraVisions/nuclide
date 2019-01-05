@@ -67,11 +67,11 @@ float CSQC_VGUI_Draw( void ) {
 	vVGUIWindowPos_x += ( vVideoResolution_x / 2 ) - 320;
 	vVGUIWindowPos_y += ( vVideoResolution_y / 2 ) - 240;
 	VGUI_Window( vguiMenus[ pSeat->fVGUI_Display - 1 ].sTitle, vVGUIWindowPos, '640 480 0' );
-	
+
 	iVGUIKey = 48;
 	// Display the contents of whatever we have selected
 	vguiMenus[ pSeat->fVGUI_Display - 1 ].vDraw( vVGUIWindowPos );
-	
+
 	return TRUE;
 }
 
@@ -86,15 +86,15 @@ void CSQC_VGUI_Init( void ) {
 	string sTemp;
 	int iMOTDLength;
 	filestream fmMapDescr;
-	
+
 	// First load the MESSAGE OF THE DAY
 	// TODO: Move this to the server and put strings into infokeys
-	
+
 	iMOTDLength = stof( serverkey( "motdlength" ) );
 	for ( int i = 0; i < iMOTDLength; i++ ) {
 		sMOTDString[ i ] = serverkey( sprintf( "motdline%i", i ) );
 	}
-	
+
 	// Now load the MAP DESCRIPTION
 	fmMapDescr = fopen( sprintf( "maps/%s.txt", mapname ), FILE_READ );
 	if ( fmMapDescr != -1 ) {
@@ -107,7 +107,7 @@ void CSQC_VGUI_Init( void ) {
 		}
 		fclose( fmMapDescr );
 	}
-	
+
 	if (serverkeyfloat("slots") == 1) {
 		pSeat->fVGUI_Display = VGUI_NONE;
 		return;

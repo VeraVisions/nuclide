@@ -203,8 +203,7 @@ void HUD_DrawIcons(void) {
 	}
 
 	// Bomb-Area
-	vector vBIconPos = vVideoMins + [16, (vVideoResolution[1] / 2) + 24];
-	if (getstatf(STAT_SLOT_GRENADE) == WEAPON_C4BOMB) {
+	if (getstatf(STAT_SLOT_C4BOMB) == WEAPON_C4BOMB) {
 		if (getstatf(STAT_BOMBZONE) == TRUE) {
 			float fAlpha = fabs(sin(time * 20));
 			drawsubpic(iconpos, [32,32], HUD_NUMFILE_LAYER, [0, 0.125 * 5 - 0.046875], [0.125, 0.125], [1,0,0], fAlpha, DRAWFLAG_ADDITIVE);

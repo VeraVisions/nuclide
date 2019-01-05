@@ -71,6 +71,7 @@ enum {
 	STAT_SLOT_PRIMARY,
 	STAT_SLOT_SECONDARY,
 	STAT_SLOT_GRENADE,
+	STAT_SLOT_C4BOMB,
 	STAT_EQUIPMENT,
 	STAT_ITEM_FLASHBANG,
 	STAT_ITEM_HEGRENADE,
@@ -179,7 +180,8 @@ enum {
 	SLOT_PRIMARY,
 	SLOT_SECONDARY,
 	SLOT_MELEE,
-	SLOT_GRENADE
+	SLOT_GRENADE,
+	SLOT_C4BOMB
 };
 
 // These variables are taken from CS:S' .ctx script files, usually and interpreted as I go along...

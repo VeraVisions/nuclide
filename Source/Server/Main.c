@@ -642,6 +642,7 @@ void worldspawn( void ) {
 	clientstat( STAT_SLOT_PRIMARY, EV_FLOAT, fSlotPrimary );
 	clientstat( STAT_SLOT_SECONDARY, EV_FLOAT, fSlotSecondary );
 	clientstat( STAT_SLOT_GRENADE, EV_FLOAT, fSlotGrenade );
+	clientstat( STAT_SLOT_C4BOMB, EV_FLOAT, fSlotC4Bomb );
 	clientstat( STAT_ITEM_FLASHBANG, EV_INTEGER, iAmmo_FLASHBANG );
 	clientstat( STAT_ITEM_HEGRENADE, EV_INTEGER, iAmmo_HEGRENADE );
 	clientstat( STAT_ITEM_SMOKEGRENADE, EV_INTEGER, iAmmo_SMOKEGRENADE );

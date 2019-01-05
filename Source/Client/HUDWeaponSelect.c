@@ -60,11 +60,12 @@ weaponsymbolinfo_t wpSymbolTable[CS_WEAPON_COUNT] = {
 	{ "sprites/640hud3.spr_0.tga", [0,0.52734375] }		//WEAPON_SMOKEGRENADE
 };
 
-vector vHUDSlotNumPos[4] = {
+vector vHUDSlotNumPos[5] = {
 	[0.65625,0.28125],	// 1 PRIMARY
 	[0.734375,0.28125],	// 2 SECONDARY
 	[0.8125,0.28125],	// 3 MELEE
-	[0.65625,0.359375]	// 4 GRENADE
+	[0.65625,0.359375],	// 4 GRENADE
+	[0.734375,0.359375]	// 5 C4-BOMB
 };
 
 /*
@@ -93,11 +94,6 @@ float HUD_DrawWeaponSelect_NextItem(float fSlot)
 		pSeat->iHUDGrenades = 0;
 
 		// Keep this order in order for the selection to work
-		if (getstatf(STAT_SLOT_GRENADE)) {
-			pSeat->iHUDGrenadesSelected = getstatf(STAT_SLOT_GRENADE);
-			pSeat->iHUDGrenades++;
-		}
-		
 		if (getstati_punf(STAT_ITEM_SMOKEGRENADE)) {
 			pSeat->iHUDGrenadesSelected = WEAPON_SMOKEGRENADE;
 			pSeat->iHUDGrenades++;
@@ -117,6 +113,12 @@ float HUD_DrawWeaponSelect_NextItem(float fSlot)
 			return SLOT_GRENADE;
 		} else { 
 			return HUD_DrawWeaponSelect_NextItem(SLOT_GRENADE);
+		}
+	} else if (fSlot == SLOT_C4BOMB) {
+		if (getstatf(STAT_SLOT_PRIMARY)) {
+			return SLOT_PRIMARY;
+		} else {
+			return HUD_DrawWeaponSelect_NextItem(SLOT_PRIMARY);
 		}
 	} else {
 		// If we're in the grenade slot, go down
@@ -147,10 +149,10 @@ float HUD_DrawWeaponSelect_NextItem(float fSlot)
 			} 
 		} 
 
-		if (getstatf(STAT_SLOT_PRIMARY)) {
-			return SLOT_PRIMARY;
+		if (getstatf(STAT_SLOT_C4BOMB)) {
+			return SLOT_C4BOMB;
 		} else {
-			return HUD_DrawWeaponSelect_NextItem(SLOT_PRIMARY);
+			return HUD_DrawWeaponSelect_NextItem(SLOT_C4BOMB);
 		}
 	}
 }
@@ -165,30 +167,10 @@ Checks and returns the previous slot with a weapon in it
 float HUD_DrawWeaponSelect_PreviousItem(float fSlot)
 {
 	if (fSlot == SLOT_PRIMARY) {
-		pSeat->iHUDGrenades = 0;
-
-		// Keep this order in order for the selection to work
-		if (getstati_punf(STAT_ITEM_HEGRENADE)) {
-			pSeat->iHUDGrenadesSelected = WEAPON_HEGRENADE;
-			pSeat->iHUDGrenades++;
-		} 
-		if (getstati_punf(STAT_ITEM_FLASHBANG)) {
-			pSeat->iHUDGrenadesSelected = WEAPON_FLASHBANG;
-			pSeat->iHUDGrenades++;
-		} 
-		if (getstati_punf(STAT_ITEM_SMOKEGRENADE)) {
-			pSeat->iHUDGrenadesSelected = WEAPON_SMOKEGRENADE;
-			pSeat->iHUDGrenades++;
-		}
-		if (getstatf(STAT_SLOT_GRENADE)) {
-			pSeat->iHUDGrenadesSelected =  getstatf(STAT_SLOT_GRENADE);
-			pSeat->iHUDGrenades++;
-		}
-			
-		if (pSeat->iHUDGrenades) {
-			return SLOT_GRENADE;
+		if (getstatf(STAT_SLOT_C4BOMB)) {
+			return SLOT_C4BOMB;
 		} else {
-			return HUD_DrawWeaponSelect_PreviousItem(SLOT_GRENADE);
+			return HUD_DrawWeaponSelect_PreviousItem(SLOT_C4BOMB);
 		}
 	} else if (fSlot == SLOT_SECONDARY) {
 		if (getstatf(STAT_SLOT_PRIMARY)) {
@@ -202,19 +184,30 @@ float HUD_DrawWeaponSelect_PreviousItem(float fSlot)
 		} else {
 			return HUD_DrawWeaponSelect_PreviousItem(SLOT_SECONDARY);
 		}
-	} else {
-		if (pSeat->iHUDGrenadesSelected == getstatf(STAT_SLOT_GRENADE)) {
-			if (getstati_punf(STAT_ITEM_SMOKEGRENADE)) {
-				pSeat->iHUDGrenadesSelected = WEAPON_SMOKEGRENADE;
-				return SLOT_GRENADE;
-			} else if (getstati_punf(STAT_ITEM_FLASHBANG)) {
-				pSeat->iHUDGrenadesSelected = WEAPON_FLASHBANG;
-				return SLOT_GRENADE;
-			} else if (getstati_punf(STAT_ITEM_HEGRENADE)) {
-				pSeat->iHUDGrenadesSelected = WEAPON_HEGRENADE;
-				return SLOT_GRENADE;
-			} 
+	} else if (fSlot == SLOT_C4BOMB) {
+		pSeat->iHUDGrenades = 0;
+
+		/* See if we any any type of grenade in this slot */
+		if (getstati_punf(STAT_ITEM_HEGRENADE)) {
+			pSeat->iHUDGrenadesSelected = WEAPON_HEGRENADE;
+			pSeat->iHUDGrenades++;
 		} 
+		if (getstati_punf(STAT_ITEM_FLASHBANG)) {
+			pSeat->iHUDGrenadesSelected = WEAPON_FLASHBANG;
+			pSeat->iHUDGrenades++;
+		} 
+		if (getstati_punf(STAT_ITEM_SMOKEGRENADE)) {
+			pSeat->iHUDGrenadesSelected = WEAPON_SMOKEGRENADE;
+			pSeat->iHUDGrenades++;
+		}
+
+		/* If we actually found a grenade, switch to the slot */
+		if (pSeat->iHUDGrenades) {
+			return SLOT_GRENADE;
+		} else {
+			return HUD_DrawWeaponSelect_PreviousItem(SLOT_GRENADE);
+		}
+	} else {
 		if (pSeat->iHUDGrenadesSelected == WEAPON_SMOKEGRENADE) {
 			if (getstati_punf(STAT_ITEM_FLASHBANG)) {
 				pSeat->iHUDGrenadesSelected = WEAPON_FLASHBANG;
@@ -228,7 +221,8 @@ float HUD_DrawWeaponSelect_PreviousItem(float fSlot)
 				pSeat->iHUDGrenadesSelected = WEAPON_HEGRENADE;
 				return SLOT_GRENADE;
 			} 
-		} 
+		}
+
 		if (getstatf(STAT_SLOT_MELEE)) {
 			return SLOT_MELEE;
 		} else {
@@ -252,6 +246,8 @@ float HUD_DrawWeaponSelect_GetWeapon(float fSlot)
 		return getstatf(STAT_SLOT_SECONDARY);
 	} else if (fSlot == SLOT_MELEE) {
 		return getstatf(STAT_SLOT_MELEE);
+	} else if (fSlot == SLOT_C4BOMB) {
+		return getstatf(STAT_SLOT_C4BOMB);
 	} else {
 		return pSeat->iHUDGrenadesSelected;
 	}
@@ -266,7 +262,7 @@ Called via the invprev command
 */
 void HUD_DrawWeaponSelect_Forward(void)
 {
-	if (!getstatf(STAT_SLOT_MELEE) && !getstatf(STAT_SLOT_MELEE)  && !getstatf(STAT_SLOT_MELEE) && !getstatf(STAT_SLOT_MELEE)) {
+	if (!getstatf(STAT_SLOT_MELEE)) {
 		return;
 	}
 	
@@ -290,7 +286,7 @@ Called via the invnext command
 */
 void HUD_DrawWeaponSelect_Back(void)
 {
-	if (!getstatf(STAT_SLOT_MELEE) && !getstatf(STAT_SLOT_MELEE)  && !getstatf(STAT_SLOT_MELEE) && !getstatf(STAT_SLOT_MELEE)) {
+	if (!getstatf(STAT_SLOT_MELEE)) {
 		return;
 	}
 	
@@ -336,11 +332,13 @@ void HUD_DrawWeaponSelect(void)
 	
 	vector vSelectPos = vVideoMins + [160,12];
 	
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 5; i++) {
+		vSelectPos[1] = vVideoMins[1] + 12;
 		HUD_DrawWeaponSelect_Num(vSelectPos, i);
 		
 		// Again, grenades are treated seperately
 		if (i == SLOT_GRENADE) {
+			int ihasnade = FALSE;
 			if (wptTable[pSeat->fHUDWeaponSelected].iSlot == SLOT_GRENADE) {
 				if (getstati_punf(STAT_ITEM_HEGRENADE)) {
 					drawsubpic(vSelectPos + [0,20], [170,45], wpSymbolTable[WEAPON_HEGRENADE].sSprite, wpSymbolTable[WEAPON_HEGRENADE].vOrigin, [0.6640625, 0.17578125], vHUDColor, 1, DRAWFLAG_ADDITIVE);
@@ -348,6 +346,7 @@ void HUD_DrawWeaponSelect(void)
 						drawsubpic(vSelectPos + [0,20], [170,45], "sprites/640hud3.spr_0.tga", [0,0.703125], [0.6640625, 0.17578125], vHUDColor, 1, DRAWFLAG_ADDITIVE);
 					}
 					vSelectPos_y += 45;
+					ihasnade = TRUE;
 				}
 				if (getstati_punf(STAT_ITEM_FLASHBANG)) {
 					drawsubpic(vSelectPos + [0,20], [170,45], wpSymbolTable[WEAPON_FLASHBANG].sSprite, wpSymbolTable[WEAPON_FLASHBANG].vOrigin, [0.6640625, 0.17578125], vHUDColor, 1, DRAWFLAG_ADDITIVE);
@@ -355,6 +354,7 @@ void HUD_DrawWeaponSelect(void)
 						drawsubpic(vSelectPos + [0,20], [170,45], "sprites/640hud3.spr_0.tga", [0,0.703125], [0.6640625, 0.17578125], vHUDColor, 1, DRAWFLAG_ADDITIVE);
 					}
 					vSelectPos_y += 45;
+					ihasnade = TRUE;
 				}
 				if (getstati_punf(STAT_ITEM_SMOKEGRENADE)) {
 					drawsubpic(vSelectPos + [0,20], [170,45], wpSymbolTable[WEAPON_SMOKEGRENADE].sSprite, wpSymbolTable[WEAPON_SMOKEGRENADE].vOrigin, [0.6640625, 0.17578125], vHUDColor, 1, DRAWFLAG_ADDITIVE);
@@ -362,14 +362,13 @@ void HUD_DrawWeaponSelect(void)
 						drawsubpic(vSelectPos + [0,20], [170,45], "sprites/640hud3.spr_0.tga", [0,0.703125], [0.6640625, 0.17578125], vHUDColor, 1, DRAWFLAG_ADDITIVE);
 					}
 					vSelectPos_y += 45;
+					ihasnade = TRUE;
 				}
-				if (getstatf(STAT_SLOT_GRENADE)) {
-					drawsubpic(vSelectPos + [0,20], [170,45], wpSymbolTable[getstatf(STAT_SLOT_GRENADE)].sSprite, wpSymbolTable[getstatf(STAT_SLOT_GRENADE)].vOrigin, [0.6640625, 0.17578125], vHUDColor, 1, DRAWFLAG_ADDITIVE);
-					if (pSeat->iHUDGrenadesSelected == getstatf(STAT_SLOT_GRENADE)) {
-						drawsubpic(vSelectPos + [0,20], [170,45], "sprites/640hud3.spr_0.tga", [0,0.703125], [0.6640625, 0.17578125], vHUDColor, 1, DRAWFLAG_ADDITIVE);
-					}
-					vSelectPos_y += 45;
-				}
+			}
+			if (ihasnade) {
+				vSelectPos_x += 170;
+			} else {
+				vSelectPos_x += 20;
 			}
 		} else {
 			if (wptTable[pSeat->fHUDWeaponSelected].iSlot == i) {

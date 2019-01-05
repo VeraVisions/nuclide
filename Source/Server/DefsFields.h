@@ -69,6 +69,7 @@
 .float fSlotPrimary;
 .float fSlotSecondary;
 .float fSlotGrenade;
+.float fSlotC4Bomb;
 .float fAttackFinished;
 .float fRadioFinished;
 .float fAccuracy;
