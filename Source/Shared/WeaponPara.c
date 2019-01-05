@@ -40,7 +40,7 @@ weaponinfo_t wptPARA = {
 	8192, 				// Bullet Range
 	0.97, 				// Range Modifier
 	TYPE_AUTO,			// Firing Type
-	0.08, 				// Attack-Delay
+	0.1, 				// Attack-Delay
 	3.0, 				// Reload-Delay
 	iAmmo_556MMBOX, 	// Caliber Pointer
 	iMag_PARA, 			// Clip Pointer

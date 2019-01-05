@@ -40,7 +40,7 @@ weaponinfo_t wptSG552 = {
 	8192, 				// Bullet Range
 	0.955, 				// Range Modifier
 	TYPE_AUTO,			// Firing Type
-	0.09, 				// Attack-Delay
+	0.0825, 				// Attack-Delay
 	3.2, 				// Reload-Delay
 	iAmmo_556MM, 		// Caliber Pointer
 	iMag_SG552, 		// Clip Pointer

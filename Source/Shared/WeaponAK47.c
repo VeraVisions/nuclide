@@ -40,7 +40,7 @@ weaponinfo_t wptAK47 = {
 	8192, 				// Bullet Range
 	0.98, 				// Range Modifier
 	TYPE_AUTO,			// Firing Type
-	0.1, 				// Attack-Delay
+	0.0955, 			// Attack-Delay
 	2.4, 				// Reload-Delay
 	iAmmo_762MM, 		// Caliber Pointer
 	iMag_AK47, 			// Clip Pointer

@@ -40,7 +40,7 @@ weaponinfo_t wptMAC10 = {
 	4096, 				// Bullet Range
 	0.82, 				// Range Modifier
 	TYPE_AUTO,			// Firing Type
-	0.075, 				// Attack-Delay
+	0.07, 				// Attack-Delay
 	3.2, 				// Reload-Delay
 	iAmmo_45ACP, 		// Caliber Pointer
 	iMag_MAC10, 		// Clip Pointer

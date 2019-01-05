@@ -45,7 +45,7 @@ weaponinfo_t wptM4A1 = {
 	8192, 				// Bullet Range
 	0.97, 				// Range Modifier
 	TYPE_AUTO,			// Firing Type
-	0.09, 				// Attack-Delay
+	0.0875, 				// Attack-Delay
 	3.1, 				// Reload-Delay
 	iAmmo_556MM, 		// Caliber Pointer
 	iMag_M4A1, 			// Clip Pointer

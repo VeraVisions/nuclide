@@ -40,7 +40,7 @@ weaponinfo_t wptAUG = {
 	8192, 				// Bullet Range
 	0.96, 				// Range Modifier
 	TYPE_AUTO,			// Firing Type
-	0.09, 				// Attack-Delay
+	0.0825, 				// Attack-Delay
 	3.3, 				// Reload-Delay
 	iAmmo_762MM, 		// Caliber Pointer
 	iMag_AUG, 			// Clip Pointer
@@ -78,7 +78,7 @@ void WeaponAUG_PrimaryFire( void ) {
 		sound( self, CHAN_WEAPON, "weapons/aug-1.wav", 1, ATTN_NORM );
 		
 		if ( self.viewzoom != 1.0 ) {
-			self.fAttackFinished = time + (wptAUG.fAttackFinished * 2);
+			self.fAttackFinished = time + 0.135;
 		}
 	}
 #else
