@@ -82,29 +82,51 @@ void hostage_entity::Physics(void)
 	input_movevalues = [0,0,0];
 	input_impulse = 0;
 	input_buttons = 0;
+	
+	/* Deal with a hostage being rescued when it's following someone else */
+	if (m_eRescuer.classname == "hostage_entity") {
+		if (m_eRescuer.solid == SOLID_NOT) {
+			m_eRescuer = m_eUser;
+		}
+	}
+	/* Deal with the hostage losing its rescuer (death) */
+	if (m_eUser.health <= 0) {
+		m_eUser = world;
+	}
 
 	if (m_eUser!= world) {
-		v_angle = vectoangles(m_eUser.origin - origin);
+		v_angle = vectoangles(m_eRescuer.origin - origin);
 		v_angle[0] = 0;
 		v_angle[1] = Math_FixDelta(v_angle[1]);
 		v_angle[2] = 0;
 
 		/* Give up after 1024 units */
-		if (vlen(m_eUser.origin - origin) > 1024) {
+		if (vlen(m_eRescuer.origin - origin) > 1024) {
 			m_eUser = world;
-		} else if (vlen(m_eUser.origin - origin) > 128) {
+		} else if (vlen(m_eRescuer.origin - origin) > 64) {
 			input_movevalues[0] = 240;
 
 			other = world;
-			tracebox(origin, mins, maxs, m_eUser.origin, MOVE_OTHERONLY, this);
+			traceline(origin, /*mins, maxs, */m_eRescuer.origin, MOVE_OTHERONLY, this);
 
 			/* Tracing failed, there's world geometry in the way */
 			if (trace_fraction < 1.0f) {
-				vector vdir = normalize(m_vecLastUserPos - origin) * 240;
-				makevectors(v_angle);
-				input_movevalues = [v_forward * vdir, v_right * vdir, v_up * vdir];
+				v_angle = vectoangles(m_vecLastUserPos - origin);
+				v_angle[0] = 0;
+				v_angle[1] = Math_FixDelta(v_angle[1]);
+				v_angle[2] = 0;
 			} else {
-				m_vecLastUserPos = m_eUser.origin;
+				m_vecLastUserPos = m_eRescuer.origin;
+			}
+
+			/* Trace again to see if another hostage is in our path and if so
+			 * follow them instead, this makes pathing easier */
+			traceline(origin, /*mins, maxs,*/ m_vecLastUserPos, FALSE, this);
+			if (trace_ent.classname == "hostage_entity") {
+				hostage_entity que = (hostage_entity)trace_ent;
+				if (que.m_eRescuer == m_eUser) {
+					m_eRescuer = trace_ent;
+				}
 			}
 		}
 	}
@@ -149,6 +171,7 @@ void hostage_entity::PlayerUse(void)
 
 			m_eUser = eActivator;
 			m_eRescuer = m_eUser;
+			m_vecLastUserPos = m_eUser.origin;
 		} else {
 			m_eUser = world;
 		}
