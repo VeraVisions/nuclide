@@ -143,8 +143,9 @@ void View_ShellEject( void ) {
 	setmodel( eShell, sShellModel[ wptTable[ getstati( STAT_ACTIVEWEAPON ) ].iShellType ] );
 	eShell.movetype = MOVETYPE_BOUNCE;
 	eShell.drawmask = MASK_ENGINE;
-	eShell.angles = [ 0, view_angles_y, 0 ];
+	eShell.angles = [ view_angles_x, view_angles_y, 0 ];
 	eShell.velocity = pSeat->vPlayerVelocity + ( v_up * random( 70, 120 ) ) + ( v_right * -random( 50, 70 ) );
+	eShell.avelocity = [0,45,900];
 	eShell.think = View_ShellEject_Death;
 	eShell.nextthink = time + 2.5f; 
 }
