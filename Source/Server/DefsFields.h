@@ -51,6 +51,8 @@
 .float fInBuyZone;
 .float fInHostageZone;
 .float fInBombZone;
+.float fInEscapeZone;
+.float fInVIPZone;
 .float fMoney;
 .float fStepTime;
 .int iInGame;

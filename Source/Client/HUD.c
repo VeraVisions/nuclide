@@ -168,16 +168,38 @@ Draw icons such as hostage, bomb and buyzones
 =================
 */
 void HUD_DrawIcons(void) {
+	vector iconpos;
+	
+	iconpos = vVideoMins + [16, (vVideoResolution[1] / 2) - 24];
+
+	// Defusal Kit Icon (64, 148)
+	if (getstatf(STAT_EQUIPMENT) & EQUIPMENT_DEFUSALKIT) {
+		drawsubpic(iconpos, [32,32], HUD_NUMFILE_LAYER, [0.25, 0.578125], [0.125, 0.125], [0,1,0], 1, DRAWFLAG_ADDITIVE);
+		iconpos[1] += 32;
+	}
+
 	// BuyZone Icon
-	if(getstatf(STAT_BUYZONE) == TRUE) {
-		vector vBuyIconPos = vVideoMins + [16, (vVideoResolution[1] / 2) - 12];
-		drawsubpic(vBuyIconPos, [32,32], HUD_NUMFILE_LAYER, [0.125 * 3, 0.125 * 5 - 0.046875], [0.125, 0.125], [0,1,0], 1, DRAWFLAG_ADDITIVE);
+	if (getstatf(STAT_BUYZONE) == TRUE) {
+		drawsubpic(iconpos, [32,32], HUD_NUMFILE_LAYER, [0.125 * 3, 0.125 * 5 - 0.046875], [0.125, 0.125], [0,1,0], 1, DRAWFLAG_ADDITIVE);
+		iconpos[1] += 32;
 	}
 
 	// Hostage-Rescue Area Icon
-	if(getstatf(STAT_HOSTAGEZONE) == TRUE) {
-		vector vRIconPos = vVideoMins + [16, (vVideoResolution[1] / 2) + 24];
-		drawsubpic(vRIconPos, [32,32], HUD_NUMFILE_LAYER, [0.125 * 2, 0.125 * 5 - 0.046875], [0.125, 0.125], [0,1,0], 1, DRAWFLAG_ADDITIVE);
+	if (getstatf(STAT_HOSTAGEZONE) == TRUE) {
+		drawsubpic(iconpos, [32,32], HUD_NUMFILE_LAYER, [0.125 * 2, 0.125 * 5 - 0.046875], [0.125, 0.125], [0,1,0], 1, DRAWFLAG_ADDITIVE);
+		iconpos[1] += 32;
+	}
+
+	// Escape Zone Icon (128, 148)
+	if (getstatf(STAT_ESCAPEZONE) == TRUE) {
+		drawsubpic(iconpos, [32,32], HUD_NUMFILE_LAYER, [0.5, 0.578125], [0.125, 0.125], [0,1,0], 1, DRAWFLAG_ADDITIVE);
+		iconpos[1] += 32;
+	}
+
+	// VIP Zone Icon (160, 148)
+	if (getstatf(STAT_VIPZONE) == TRUE) {
+		drawsubpic(iconpos, [32,32], HUD_NUMFILE_LAYER, [0.625, 0.578125], [0.125, 0.125], [0,1,0], 1, DRAWFLAG_ADDITIVE);
+		iconpos[1] += 32;
 	}
 
 	// Bomb-Area
@@ -185,11 +207,12 @@ void HUD_DrawIcons(void) {
 	if (getstatf(STAT_SLOT_GRENADE) == WEAPON_C4BOMB) {
 		if (getstatf(STAT_BOMBZONE) == TRUE) {
 			float fAlpha = fabs(sin(time * 20));
-			drawsubpic(vBIconPos, [32,32], HUD_NUMFILE_LAYER, [0, 0.125 * 5 - 0.046875], [0.125, 0.125], [1,0,0], fAlpha, DRAWFLAG_ADDITIVE);
-			drawsubpic(vBIconPos, [32,32], HUD_NUMFILE_LAYER, [0, 0.125 * 5 - 0.046875], [0.125, 0.125], [0,1,0], 1 - fAlpha, DRAWFLAG_ADDITIVE);
+			drawsubpic(iconpos, [32,32], HUD_NUMFILE_LAYER, [0, 0.125 * 5 - 0.046875], [0.125, 0.125], [1,0,0], fAlpha, DRAWFLAG_ADDITIVE);
+			drawsubpic(iconpos, [32,32], HUD_NUMFILE_LAYER, [0, 0.125 * 5 - 0.046875], [0.125, 0.125], [0,1,0], 1 - fAlpha, DRAWFLAG_ADDITIVE);
 		} else {
-			drawsubpic(vBIconPos, [32,32], HUD_NUMFILE_LAYER, [0, 0.125 * 5 - 0.046875], [0.125, 0.125], [0,1,0], 1, DRAWFLAG_ADDITIVE);
+			drawsubpic(iconpos, [32,32], HUD_NUMFILE_LAYER, [0, 0.125 * 5 - 0.046875], [0.125, 0.125], [0,1,0], 1, DRAWFLAG_ADDITIVE);
 		}
+		iconpos[1] += 32;
 	}
 }
 

@@ -37,12 +37,15 @@ func_escapezone_touch
 */
 void func_escapezone::touch(void)
 {
-	if ((other.classname == "player") && (other.team == TEAM_T)) {
-		Escape_Touch(other);
+	if (other.classname == "player") {
+		if (other.team == TEAM_T) {
+			Escape_Touch(other);
 
-		if (iAlivePlayers_T == 0) {
-			Rules_RoundOver(TEAM_T, 2500, FALSE);
+			if (iAlivePlayers_T == 0) {
+				Rules_RoundOver(TEAM_T, 2500, FALSE);
+			}
 		}
+		other.fInEscapeZone = TRUE;
 	}
 }
 

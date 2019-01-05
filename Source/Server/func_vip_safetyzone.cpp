@@ -27,9 +27,12 @@ void VIP_Rescue(entity targ)
 
 void func_vip_safetyzone::touch(void)
 {
-	if ((other.classname == "player") && (other.team == TEAM_VIP)) {
-		Rules_RoundOver(TEAM_CT, 2500, FALSE);
-		VIP_Rescue(other);
+	if (other.classname == "player") {
+		if (other.team == TEAM_VIP) {
+			Rules_RoundOver(TEAM_CT, 2500, FALSE);
+			VIP_Rescue(other);
+		}
+		other.fInVIPZone = TRUE;
 	}
 }
 

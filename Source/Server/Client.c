@@ -204,6 +204,8 @@ void SV_RunClientCommand( void ) {
 	self.fInBombZone = FALSE;
 	self.fInBuyZone = FALSE;
 	self.fInHostageZone = FALSE;
+	self.fInEscapeZone = FALSE;
+	self.fInVIPZone = FALSE;
 
 	QPhysics_Run( self );
 

@@ -25,7 +25,7 @@ Notes
 	Given the way this entity behaves, there is little practical use for this entity beyond viewing animations (for which there are programs that are far more convenient).
 */
 
-class cycler:CBaseEntity
+class cycler:CBaseTrigger
 {
 	void() cycler;
 	virtual void(entity, int, int) vPain;

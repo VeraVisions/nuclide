@@ -624,17 +624,18 @@ void worldspawn( void ) {
 	lightstyle( 10, "mmamammmmammamamaaamammma" );
 	lightstyle( 11, "abcdefghijklmnopqrrqponmlkjihgfedcba" );
 
-	// TODO: Merge these into a single field?
 	clientstat( 0, EV_FLOAT, health );
 	clientstat( 10, EV_FLOAT, weapon );
 	clientstat( 16, EV_FLOAT, view_ofs_z );
 	clientstat( 21, EV_FLOAT, viewzoom );
-//	clientstat( STAT_BOMBZONE, EV_FLOAT, fInBombZone );
-	
+
+	/* FIXME: Turn those into bitflags */
 	clientstat( STAT_BUYZONE, EV_FLOAT, fInBuyZone );
 	clientstat( STAT_HOSTAGEZONE, EV_FLOAT, fInHostageZone );
 	clientstat( STAT_BOMBZONE, EV_FLOAT, fInBombZone );
-	
+	clientstat( STAT_ESCAPEZONE, EV_FLOAT, fInEscapeZone );
+	clientstat( STAT_VIPZONE, EV_FLOAT, fInVIPZone );
+
 	clientstat( 4, EV_FLOAT, armor );
 	clientstat( STAT_MONEY, EV_FLOAT, fMoney );
 	clientstat( STAT_SLOT_MELEE, EV_FLOAT, fSlotMelee );
