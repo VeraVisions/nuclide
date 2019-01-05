@@ -88,6 +88,10 @@ void env_sprite::env_sprite(void)
 			break;
 		}
 	}
+	
+	if (!m_flFramerate) {
+		m_flFramerate = 10;
+	}
 
 	CBaseTrigger::CBaseTrigger();
 	precache_model(m_oldModel);
