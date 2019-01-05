@@ -66,6 +66,7 @@ void func_ladder :: func_ladder ( void )
 	alpha = 0.5f;
 	effects = EF_ADDITIVE;
 #else
-	model = 0;
+	alpha = 0.0001f;
+	effects = EF_NODRAW;
 #endif
 }
