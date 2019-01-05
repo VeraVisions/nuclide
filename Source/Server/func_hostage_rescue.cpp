@@ -27,7 +27,7 @@ void func_hostage_rescue::touch(void)
 		Radio_BroadcastMessage(RADIO_RESCUED);
 		iHostagesRescued++;
 
-		Money_AddMoney(hosty.m_eUser, 1000);
+		Money_AddMoney(hosty.m_eRescuer, 1000);
 		Money_QueTeamReward(TEAM_CT, 800);
 
 		CBaseEntity targa = (CBaseEntity)other;

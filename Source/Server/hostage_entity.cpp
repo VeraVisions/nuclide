@@ -61,6 +61,7 @@ enum {
 class hostage_entity:CBaseEntity
 {
 	entity m_eUser;
+	entity m_eRescuer;
 	int m_iUsed;
 	int m_iScared;
 	void() hostage_entity;
@@ -136,6 +137,7 @@ void hostage_entity::PlayerUse(void)
 			}
 
 			m_eUser = eActivator;
+			m_eRescuer = m_eUser;
 		} else {
 			m_eUser = world;
 		}
