@@ -3,6 +3,8 @@
 ../gs-entbase/server/baseentity.cpp
 ../gs-entbase/server/basetrigger.cpp
 ../gs-entbase/server/ambient_generic.cpp
+../gs-entbase/server/cycler.cpp
+../gs-entbase/server/cycler_sprite.cpp
 ../gs-entbase/server/env_beam.cpp
 ../gs-entbase/server/env_fade.cpp
 ../gs-entbase/server/env_sprite.cpp
