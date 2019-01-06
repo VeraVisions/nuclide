@@ -90,7 +90,7 @@ void ambient_generic::Respawn(void)
 	}
 	
 	if (m_iLoop) {
-		pvsflags = PVSF_IGNOREPVS;
+		pvsflags = PVSF_USEPHS;
 		Trigger = UseLoop;
 		SendEntity = Network;
 		SendFlags = 1;
