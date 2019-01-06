@@ -256,7 +256,15 @@ worldspawn
 It's the map entity, literally
 =================
 */
+int g_initialized;
+
 void worldspawn( void ) {
+	
+	if (g_initialized) {
+		return;
+	}
+	g_initialized = TRUE;
+
 	int iMOTDLines = 0;
 	
 	// Let's load materials.txt because someone thought this was the best idea
