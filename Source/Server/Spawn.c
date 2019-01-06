@@ -87,10 +87,10 @@ Look for the next spawnpoint
 */
 void Spawn_ObserverCam( void ) {
 	entity eTarget;
-	
+
 	// Go find a camera if we aren't dead
 	entity eCamera = find ( world, classname, "trigger_camera" );
-	
+
 	if ( eCamera ) {
 		self.origin = eCamera.origin;
 		
@@ -117,7 +117,7 @@ void Spawn_ObserverCam( void ) {
 			}
 		}
 	}
-	
+
 	self.fixangle = TRUE;
 }
 
@@ -137,7 +137,7 @@ void Spawn_RespawnClient( float fTeam ) {
 	self.health = self.max_health = 100;
 	forceinfokey( self, "*dead", "0" );
 	Rules_CountPlayers();
-	
+
 	self.takedamage = DAMAGE_YES;
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_WALK;
@@ -145,7 +145,7 @@ void Spawn_RespawnClient( float fTeam ) {
 	self.vPain = Player_Pain;
 	self.vDeath = Player_Death;
 	self.iBleeds = TRUE;
-	self.fSlotGrenade = 0; // Clear the C4
+	self.fSlotC4Bomb = 0; // Clear the C4
 	self.viewzoom = 1.0; // Clear scopes
 
 	self.origin = eSpawn.origin;
