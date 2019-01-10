@@ -24,6 +24,7 @@ class func_breakable:CBaseTrigger
 {
 	float m_iMaterial;
 	float m_flDelay;
+	float m_flExplodeMag;
 	/*entity m_pressAttacker;
 	int m_pressType;
 	int m_pressDamage;*/
@@ -80,6 +81,15 @@ void func_breakable::vDeath (entity attacker, int type, int damage)
 	}
 	health = 0;
 	Effect_BreakModel(absmin, absmax, '0 0 0', m_iMaterial);
+
+	if (m_flExplodeMag) {
+		vector vWorldPos;
+		vWorldPos[0] = absmin[0] + ( 0.5 * ( absmax[0] - absmin[0] ) );	
+		vWorldPos[1] = absmin[1] + ( 0.5 * ( absmax[1] - absmin[1] ) );	
+		vWorldPos[2] = absmin[2] + ( 0.5 * ( absmax[2] - absmin[2] ) );
+		Effect_CreateExplosion(vWorldPos);
+	}
+
 	CBaseTrigger::UseTargets();
 	CBaseEntity::Hide();
 }
@@ -162,6 +172,9 @@ void func_breakable::func_breakable(void)
 			break;
 		case "delay":
 			m_flDelay = stof(argv(i + 1));
+			break;
+		case "explodemagnitude":
+			m_flExplodeMag = stof(argv(i+1));
 			break;
 		default:
 			break;
