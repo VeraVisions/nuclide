@@ -19,7 +19,6 @@ class env_sprite:CBaseTrigger
 	int m_iToggled;
 	float m_flFramerate;
 	float m_flScale;
-	float m_flAlpha;
 	float m_flEffects;
 
 	void() env_sprite;
@@ -34,29 +33,35 @@ float env_sprite::Network(entity pvsent, float flags)
 		return FALSE;
 	}
 	WriteByte(MSG_ENTITY, ENT_SPRITE);
-	WriteCoord(MSG_ENTITY, origin_x);
-	WriteCoord(MSG_ENTITY, origin_y);
-	WriteCoord(MSG_ENTITY, origin_z);
+	WriteCoord(MSG_ENTITY, origin[0]);
+	WriteCoord(MSG_ENTITY, origin[1]);
+	WriteCoord(MSG_ENTITY, origin[2]);
 	WriteFloat(MSG_ENTITY, modelindex);
 	WriteFloat(MSG_ENTITY, m_flFramerate);
 	WriteFloat(MSG_ENTITY, m_flScale);
-	WriteFloat(MSG_ENTITY, m_flAlpha);
+	WriteFloat(MSG_ENTITY, alpha);
 	WriteFloat(MSG_ENTITY, effects);
+	WriteFloat(MSG_ENTITY, colormod[0]);
+	WriteFloat(MSG_ENTITY, colormod[1]);
+	WriteFloat(MSG_ENTITY, colormod[2]);
 	return TRUE;
 }
 
 void env_sprite::NetworkOnce(void)
 {
-	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
-	WriteByte(MSG_ENTITY, EV_SPRITE);
-	WriteCoord(MSG_ENTITY, origin_x);
-	WriteCoord(MSG_ENTITY, origin_y);
-	WriteCoord(MSG_ENTITY, origin_z);
-	WriteFloat(MSG_ENTITY, modelindex);
-	WriteFloat(MSG_ENTITY, m_flFramerate);
-	WriteFloat(MSG_ENTITY, m_flScale);
-	WriteFloat(MSG_ENTITY, m_flAlpha);
-	WriteFloat(MSG_ENTITY, effects);
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET );
+	WriteByte(MSG_MULTICAST, EV_SPRITE);
+	WriteCoord(MSG_MULTICAST, origin[0]);
+	WriteCoord(MSG_MULTICAST, origin[1]);
+	WriteCoord(MSG_MULTICAST, origin[2]);
+	WriteFloat(MSG_MULTICAST, modelindex);
+	WriteFloat(MSG_MULTICAST, m_flFramerate);
+	WriteFloat(MSG_MULTICAST, m_flScale);
+	WriteFloat(MSG_MULTICAST, alpha);
+	WriteFloat(MSG_MULTICAST, effects);
+	WriteFloat(MSG_MULTICAST, colormod[0]);
+	WriteFloat(MSG_MULTICAST, colormod[1]);
+	WriteFloat(MSG_MULTICAST, colormod[2]);
 	msg_entity = this;
 	multicast( origin, MULTICAST_PVS );
 }
@@ -80,9 +85,6 @@ void env_sprite::env_sprite(void)
 			break;
 		case "scale":
 			m_flScale = stof(argv(i + 1));
-			break;
-		case "alpha":
-			m_flAlpha = stof(argv(i + 1));
 			break;
 		default:
 			break;
