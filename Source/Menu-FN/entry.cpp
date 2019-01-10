@@ -61,10 +61,10 @@ void m_draw(vector screensize)
 	oldtime = time;
 }
 
-void m_drawloading(vector screensize, float opaque)
+/*void m_drawloading(vector screensize, float opaque)
 {
 	
-}
+}*/
 
 float Menu_InputEvent(float evtype, float scanx, float chary, float devid)
 {
