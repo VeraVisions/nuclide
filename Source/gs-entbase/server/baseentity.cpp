@@ -37,7 +37,7 @@ class CBaseEntity
 void CBaseEntity :: CBaseEntity ( void )
 {
 	gflags |= GF_CANRESPAWN;
-	m_oldModel = model;
+	m_oldModel = Util_FixModel(model);
 	m_oldSolid = solid;
 	m_oldHealth = health;
 	m_oldOrigin = origin;
@@ -65,18 +65,23 @@ void CBaseEntity :: CBaseEntity ( void )
 
 void CBaseEntity::RendermodeUpdate(void)
 {
-	if ( m_rendermode != RM_NORMAL ) {
-		alpha = ( m_renderamt / 255 );
-		colormod = m_rendercolor;
-		if( alpha == 0 ) {
-			alpha = 0.0001;
-		}
-		if ( m_rendermode == RM_ADDITIVE ) {
-			effects = EF_ADDITIVE; // QWSSQC: EF_FLAG2
-		} else if ( m_rendermode == RM_GLOW ) {
-			effects = EF_ADDITIVE | EF_FULLBRIGHT;
-		}
+	if (m_rendermode == RM_NORMAL) {
+		return;
 	}
+	
+	if (m_rendermode == RM_SOLID && m_renderamt != 0) {
+		return;
+	}
+
+	colormod = m_rendercolor / 255;
+	alpha = bound(0.001, ( m_renderamt / 255 ), 1.0);
+
+	if ( m_rendermode == RM_ADDITIVE ) {
+		effects = EF_ADDITIVE; // QWSSQC: EF_FLAG2
+	} else if ( m_rendermode == RM_GLOW ) {
+		effects = EF_ADDITIVE | EF_FULLBRIGHT;
+	}
+	
 }
 
 void CBaseEntity :: Respawn ( void )
