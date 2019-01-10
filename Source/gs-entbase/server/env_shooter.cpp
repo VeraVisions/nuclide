@@ -8,7 +8,9 @@
 
 class env_shooter : CBaseTrigger
 {
-	float m_iGibs;
+	int m_iGibs;
+	int m_iGibsLeft;
+
 	float m_flDelay;
 	float m_flVelocity;
 	float m_flVariance;
@@ -17,21 +19,48 @@ class env_shooter : CBaseTrigger
 	float m_flShootSounds;
 	float m_flScale;
 	float m_flSkin;
+	
+	void() env_shooter;
+	virtual void() Respawn;
+	virtual void() ShootGib;
+	virtual void() Trigger;
 };
+
+void env_shooter::ShootGib(void)
+{
+	static void Gib_Remove ( void ) { remove( self ); }
+
+	entity eGib = spawn();
+	eGib.movetype = MOVETYPE_BOUNCE;
+	setmodel(eGib, m_strShootModel);
+	setorigin(eGib, origin);
+
+	makevectors(angles);
+	eGib.velocity = v_forward * m_flVelocity + [0,0,64 + (random()*64)];
+	eGib.avelocity[0] = Math_CRandom() * 32;
+	eGib.avelocity[1] = Math_CRandom() * 32;
+	eGib.avelocity[2] = Math_CRandom() * 32;
+
+	eGib.think = Gib_Remove;
+	eGib.nextthink = time + m_flGibLife;
+	eGib.angles = angles;
+
+	m_iGibsLeft--;
+
+	if (m_iGibsLeft) {
+		nextthink = time + m_flVariance;
+	}
+}
 
 void env_shooter :: Trigger ( void )
 {
-	static void Gib_Remove ( void ) { remove( self ); }
-	for ( int i = 0; i < m_iGibs; i++ ) {
-		entity eGib = spawn();
-		eGib.movetype = MOVETYPE_BOUNCE;
-		setmodel( eGib, m_strShootModel );
-		
-		makevectors( angles );
-		eGib.velocity = v_forward * m_flVelocity;
-		eGib.think = Gib_Remove;
-		eGib.nextthink = m_flGibLife;
-	}
+	think = ShootGib;
+	nextthink = time + m_flVariance;
+}
+
+void env_shooter :: Respawn ( void )
+{
+	m_iGibsLeft = m_iGibs;
 }
 
 void env_shooter :: env_shooter ( void )
@@ -72,4 +101,5 @@ void env_shooter :: env_shooter ( void )
 	
 	precache_model( m_strShootModel );
 	CBaseTrigger::CBaseTrigger();
+	env_shooter::Respawn();
 }
