@@ -36,26 +36,7 @@ class ambient_generic:CBaseTrigger
 	virtual void() Respawn;
 	virtual void() UseNormal;
 	virtual void() UseLoop;
-	virtual float(entity, float) Network;
 };
-
-float ambient_generic::Network(entity ePEnt, float fChanged)
-{
-	if (!m_iToggleSwitch) {
-		return FALSE;
-	}
-
-	WriteByte(MSG_ENTITY, ENT_AMBIENTSOUND);
-	WriteCoord(MSG_ENTITY, origin[0]);
-	WriteCoord(MSG_ENTITY, origin[1]);
-	WriteCoord(MSG_ENTITY, origin[2]);
-	WriteString(MSG_ENTITY, m_strActivePath);
-	WriteFloat(MSG_ENTITY, m_flVolume);
-	WriteByte(MSG_ENTITY, m_flRadius);
-	WriteByte(MSG_ENTITY, m_iLoop);
-	WriteByte(MSG_ENTITY, 0);
-	return TRUE;
-}
 
 void ambient_generic::UseNormal(void)
 {
@@ -69,7 +50,8 @@ void ambient_generic::UseLoop(void)
 		m_strActivePath = m_strSoundPath;
 	}
 	m_iToggleSwitch = 1 - m_iToggleSwitch;
-	SendFlags = 1;
+	
+	UseNormal();
 }
 
 void ambient_generic::Respawn(void)
@@ -90,11 +72,9 @@ void ambient_generic::Respawn(void)
 	}
 	
 	if (m_iLoop) {
-		pvsflags = PVSF_USEPHS;
 		Trigger = UseLoop;
-		SendEntity = Network;
-		SendFlags = 1;
 	}
+	UseNormal();
 }
 
 void ambient_generic::ambient_generic (void)

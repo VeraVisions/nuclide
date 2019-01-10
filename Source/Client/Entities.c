@@ -41,11 +41,11 @@ void CSQC_ambient_generic( string sSample, float fVolume, float fAttenuation, fl
 		fLoop = FALSE;
 	}
 	
-	if ( fLoop ) {
+	/*if ( fLoop ) {
 		sound( self, CHAN_VOICE, sSample, fVolume, fAttenuation, 0, SOUNDFLAG_FORCELOOP );
-	} else {
+	} else {*/
 		sound( self, CHAN_VOICE, sSample, fVolume, fAttenuation, 0, 0 );
-	}
+	//}
 }
 
 /*
@@ -98,11 +98,7 @@ void CSQC_Ent_Update( float flIsNew ) {
 		
 		CSQC_ambient_generic( readstring(), readfloat(), readbyte(), readbyte(), readbyte() );
 	} else if ( fEntType == ENT_SPRITE ) {
-		self.origin_x = readcoord();
-		self.origin_y = readcoord();
-		self.origin_z = readcoord();
-
-		Effect_AnimatedSprite( self.origin, readfloat(), readfloat(), readfloat(), readfloat(), readfloat() );
+		Sprite_Animated();
 	} else if ( fEntType == ENT_SPRAY ) {
 		Spraylogo_Parse();
 	} else if ( fEntType == ENT_DECAL ) {
