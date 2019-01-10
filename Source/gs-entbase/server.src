@@ -13,6 +13,8 @@
 ../gs-entbase/server/env_render.cpp
 ../gs-entbase/server/env_glow.cpp
 ../gs-entbase/server/env_shake.cpp
+../gs-entbase/server/env_message.cpp
+../gs-entbase/server/game_text.cpp
 ../gs-entbase/server/func_recharge.cpp
 ../gs-entbase/server/func_healthcharger.cpp
 ../gs-entbase/server/func_breakable.cpp

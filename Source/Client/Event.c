@@ -553,6 +553,10 @@ void CSQC_Parse_Event(void) {
 		Fade_Parse();
 	} else if (fHeader == EV_SPRITE) {
 		Sprite_ParseEvent();
+	} else if (fHeader == EV_TEXT) {
+		GameText_Parse();
+	} else if (fHeader == EV_MESSAGE) {
+		GameMessage_Parse();
 	}
 }
 

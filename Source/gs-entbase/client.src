@@ -1,4 +1,5 @@
 #includelist
 ../gs-entbase/client/fade.cpp
 ../gs-entbase/client/sprite.cpp
+../gs-entbase/client/text.cpp
 #endlist
