@@ -24,6 +24,8 @@ class trigger_once:CBaseTrigger
 
 void trigger_once::touch(void)
 {
+	eActivator = other;
+
 	if ( m_flDelay > 0 ) {
 		CBaseTrigger::UseTargets_Delay(m_flDelay);
 	} else {
