@@ -6,7 +6,7 @@
 *
 ****/
 
-class func_bomb_target
+class func_bomb_target:CBaseTrigger
 {
 	void() func_bomb_target;
 	virtual void() touch;
@@ -26,10 +26,7 @@ void func_bomb_target::touch(void)
 
 void func_bomb_target::func_bomb_target(void)
 {
-	angles = [0,0,0];
-	movetype = MOVETYPE_NONE;
-	solid = SOLID_TRIGGER;
-	setmodel(this, model);
-	model = 0;
+	CBaseTrigger::CBaseTrigger();
+	CBaseTrigger::InitBrushTrigger();
 	iBombZones++;
 }

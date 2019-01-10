@@ -112,10 +112,8 @@ static void WeaponC4BOMB_Think( void ) {
 			
 		while ( eBombChain ) {
 			if ( ( eBombChain.classname == "func_bomb_target" ) ) {
-				entity eOld = self;
-				self = eBombChain;
-				//Entities_UseTargets();
-				self = eOld;
+				CBaseTrigger targetty = (CBaseTrigger)eBombChain;
+				targetty.UseTargets();
 			}
 			eBombChain = eBombChain.chain;
 		}
