@@ -494,7 +494,7 @@ void Weapon_DropWeapon( int iSlot ) {
 		self.fSlotGrenade = 0;
 	} else if ( iSlot == SLOT_C4BOMB ) {
 		fWeapon = self.fSlotC4Bomb;
-		self.fSlotGrenade = 0;
+		self.fSlotC4Bomb = 0;
 	} else {
 		return;
 	}
