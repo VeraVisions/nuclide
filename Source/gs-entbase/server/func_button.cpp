@@ -52,6 +52,8 @@ class func_button:CBaseTrigger
 	virtual void() Blocked;
 	virtual void() Trigger;
 	virtual void() Use;
+	virtual void(entity eAttacker, int iType, int iDamage) vPain;
+	virtual void(entity eAttacker, int iType, int iDamage) vDeath;
 	
 	virtual void() SetMovementDirection;
 	virtual void(vector vdest, void() func) MoveToDestination;
@@ -241,6 +243,16 @@ void func_button::Use(void)
 	Trigger();
 }
 
+void func_button::vPain (entity attacker, int type, int damage)
+{
+	Trigger();
+}
+
+void func_button::vDeath (entity attacker, int type, int damage)
+{
+	Trigger();
+}
+
 void func_button::Blocked(void)
 {
 	if (m_iDamage) {
@@ -320,6 +332,11 @@ void func_button::Respawn(void)
 	blocked = Blocked;
 	velocity = [0,0,0];
 	nextthink = -1;
+	health = m_oldHealth;
+	
+	if (health > 0) {
+		takedamage = DAMAGE_YES;
+	}
 
 	if (!m_flSpeed) {
 		m_flSpeed = 100;
