@@ -34,7 +34,7 @@ void trigger_hurt :: Trigger ( void )
 
 void trigger_hurt :: Touch ( void )
 {
-	if ( m_flNextTrigger > ltime ) {
+	if ( m_flNextTrigger > time ) {
 		return;
 	} else if ( other.takedamage == DAMAGE_NO ) {
 		return;
@@ -68,7 +68,7 @@ void trigger_hurt :: Touch ( void )
 		solid = SOLID_NOT;
 	}
 
-	m_flNextTrigger = ltime + 0.5;
+	m_flNextTrigger = time + 0.5;
 }
 
 void trigger_hurt :: Respawn ( void )
