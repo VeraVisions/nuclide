@@ -27,4 +27,3 @@ void func_wall :: Trigger ( void )
 	frame = 1 - frame;
 }
 
-CLASSEXPORT( func_train, func_wall )

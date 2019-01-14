@@ -63,8 +63,8 @@ void vm_btnok_start(void)
 
 	if (res) {
 		tokenizebyseparator(res, "x");
-		cvar_set("vid_width", argv(0));
-		cvar_set("vid_height", argv(1));
+		localcmd(sprintf("vid_width %s\n", argv(0)));
+		localcmd(sprintf("vid_height %s\n", argv(1)));
 		localcmd("vid_restart\n");
 	}
 

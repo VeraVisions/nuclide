@@ -58,6 +58,7 @@ float Player_SendEntity( entity ePEnt, float fChanged ) {
 	WriteByte( MSG_ENTITY, self.weapon );
 	WriteByte( MSG_ENTITY, self.health );
 	WriteFloat( MSG_ENTITY, self.movetype );
+	WriteFloat( MSG_ENTITY, self.view_ofs[2] );
 	return TRUE;
 }
 

@@ -26,6 +26,10 @@ class trigger_multiple : CBaseTrigger
 void trigger_multiple :: touch ( void )
 {
 	eActivator = other;
+	
+	if (other.movetype != MOVETYPE_WALK) {
+		return;
+	}
 
 	if ( m_flDelay > 0 ) {
 		CBaseTrigger::UseTargets_Delay( m_flDelay );

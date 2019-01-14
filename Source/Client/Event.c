@@ -662,7 +662,7 @@ void CSQC_Input_Frame(void) {
 	} 
 	
 	if (iInputDuck == TRUE) {
-		input_buttons|= INPUT_BUTTON8;
+		input_buttons |= INPUT_BUTTON8;
 	}
 	
 	input_angles += pSeat->vPunchAngle;

@@ -40,6 +40,15 @@ void PMove_Init(void) {
 	localcmd("serverinfo phy_maxspeed 240\n");
 }
 
+int PMove_Contents(vector org)
+{
+	int oldhitcontents = self.hitcontentsmaski;
+	self.hitcontentsmaski = -1;
+	traceline(org, org, TRUE, self);
+	self.hitcontentsmaski = oldhitcontents;
+	return trace_endcontentsi;
+}
+
 /*
 =================
 PMove_Categorize
@@ -50,10 +59,7 @@ PMove_Categorize
 */
 void PMove_Categorize(void)
 {
-	float contents;
-
-	// Make sure
-	if ((self.flags & FL_CROUCHING) /*&& !(self.flags & FL_ONLADDER)*/) {
+	if (self.flags & FL_CROUCHING) {
 		self.mins = VEC_CHULL_MIN;
 		self.maxs = VEC_CHULL_MAX;
 		self.view_ofs = VEC_PLAYER_CVIEWPOS;
@@ -62,8 +68,8 @@ void PMove_Categorize(void)
 		self.maxs = VEC_HULL_MAX;
 		self.view_ofs = VEC_PLAYER_VIEWPOS;
 	}
-
-	tracebox(self.origin, self.mins, self.maxs, self.origin - '0 0 0.25', FALSE, self);
+	
+	tracebox(self.origin, self.mins, self.maxs, self.origin - '0 0 0.25', TRUE, self);
 
 	if (!trace_startsolid) {
 		if ((trace_fraction < 1) && (trace_plane_normal[2] > 0.7)) {
@@ -73,28 +79,10 @@ void PMove_Categorize(void)
 		}
 	}
 
-	/*// Check water levels, boo */
-	int oldhitcontents = self.hitcontentsmaski;
-	self.hitcontentsmaski = CONTENTBIT_LAVA | CONTENTBIT_SLIME | CONTENTBIT_WATER;
-	tracebox( self.origin, self.mins, self.maxs, self.origin, FALSE, self );
-	self.hitcontentsmaski = oldhitcontents;
-	
-	//print(sprintf( "Contents: %i\n", trace_endcontentsi));
-
-	if (trace_endcontentsi & CONTENTBIT_WATER) {
-		contents = CONTENT_WATER;
-	} else if (trace_endcontentsi & CONTENTBIT_SLIME) {
-		contents = CONTENT_SLIME;
-	} else if (trace_endcontentsi & CONTENTBIT_LAVA) {
-		contents = CONTENT_LAVA;
-	} else {
-		contents = CONTENT_EMPTY;
-	}
-
-	if (contents < CONTENT_SOLID && contents != CONTENT_LADDER) {
-		self.watertype = contents;
-		if (pointcontents(self.origin + (self.mins + self.maxs) * 0.5) < CONTENT_SOLID) {
-			if (pointcontents(self.origin + self.maxs - '0 0 1') < CONTENT_SOLID) {
+	if (PMove_Contents(self.origin + self.mins + [0,0,1]) == 32) {
+		self.watertype = CONTENT_WATER;
+		if (PMove_Contents(self.origin + (self.mins + self.maxs) * 0.5) == 32) {
+			if (PMove_Contents(self.origin + self.maxs - '0 0 1') == 32) {
 				self.waterlevel = 3;
 			} else {
 				self.waterlevel = 2;
@@ -150,7 +138,7 @@ void PMove_WaterMove(void)
 #if 0
 			//sound (self, CHAN_BODY, "misc/outwater.wav", 1, ATTN_NORM);
 #endif
-			self.flags = self.flags - (self.flags & FL_INWATER);
+			self.flags &= ~FL_INWATER;
 		}
 		return;
 	}
@@ -250,7 +238,7 @@ void PMove_Run_Acceleration(float flMovetime, float flBefore)
 
 	if (self.movetype == MOVETYPE_WALK) {
 		// Crouching
-		if (input_buttons & INPUT_BUTTON8 /*&& !(self.flags & FL_ONLADDER)*/) {
+		if (input_buttons & INPUT_BUTTON8) {
 			self.flags |= FL_CROUCHING;
 		} else {
 			// If we aren't holding down duck anymore and 'attempt' to stand up, prevent it
@@ -263,13 +251,15 @@ void PMove_Run_Acceleration(float flMovetime, float flBefore)
 				self.flags &= ~FL_CROUCHING;
 			}
 		}
-		
+
 		if (self.flags & FL_CROUCHING) {
 			setsize(self, VEC_CHULL_MIN, VEC_CHULL_MAX);
-			//input_movevalues *= 0.333f;
-	#ifdef SSQC
 			self.view_ofs = VEC_PLAYER_CVIEWPOS;
-	#endif
+#ifdef CSQC
+			print("CSQC crouching!\n");
+#else
+			print("SSQC crouching!\n");
+#endif
 		} else {
 			setsize(self, VEC_HULL_MIN, VEC_HULL_MAX);
 			if (iFixCrouch && QPMove_IsStuck(self, [0,0,0], VEC_HULL_MIN, VEC_HULL_MAX)) {
@@ -281,20 +271,31 @@ void PMove_Run_Acceleration(float flMovetime, float flBefore)
 				}
 			}
 			setorigin(self, self.origin);
-	#ifdef SSQC
 			self.view_ofs = VEC_PLAYER_VIEWPOS;
-	#endif
+#ifdef CSQC
+			print("CSQC standing!\n");
+#else
+			print("SSQC standing!\n");
+#endif
 		}
 	}
 
-	makevectors(input_angles);	
+	makevectors(input_angles);
+
 	// swim
 	if (self.waterlevel >= 2) {
 		if (self.movetype != MOVETYPE_NOCLIP) {
-			self.flags = self.flags - (self.flags & FL_ONGROUND);
+
+			#ifdef SSQC
+			//print("SSQC: Water.\n");
+			#else
+			//print("CSQC: Water.\n");
+			#endif
+
+			self.flags &= ~FL_ONGROUND;
 
 			if (input_movevalues == [0,0,0]) {
-				vecWishVel = '0 0 -60'; // drift towards bottom
+				vecWishVel = [0,0,-60]; // drift towards bottom
 			} else {
 				vecWishVel = v_forward * input_movevalues[0];
 				vecWishVel += v_right * input_movevalues[1];
@@ -302,13 +303,13 @@ void PMove_Run_Acceleration(float flMovetime, float flBefore)
 			}
 
 			flWishSpeed = vlen(vecWishVel);
-			
+
 			if (flWishSpeed > self.maxspeed) {
 				flWishSpeed = self.maxspeed;
 			}
-	
+
 			flWishSpeed = flWishSpeed * 0.7;
-	
+
 			// water friction
 			if (self.velocity != [0,0,0]) {
 				flFriction = vlen(self.velocity) * (1 - flMovetime * serverkeyfloat("phy_friction"));
@@ -320,17 +321,24 @@ void PMove_Run_Acceleration(float flMovetime, float flBefore)
 			} else {
 				flFriction = 0;
 			}
-	
+
 			// water acceleration
 			if (flWishSpeed <= flFriction) {
 				return;
 			}
-	
+
 			flFriction = min(flWishSpeed - flFriction, serverkeyfloat("phy_accelerate") * flWishSpeed * flMovetime);
 			self.velocity = self.velocity + normalize(vecWishVel) * flFriction;
 			return;
 		}
 	}
+
+	#ifdef SSQC
+	//print("SSQC: Outside.\n");
+	#else
+	//print("CSQC: Outside.\n");
+	#endif
+
 	// hack to not let you back into teleporter
 	if (self.teleport_time > 0 && input_movevalues[0] < 0) {
 		vecWishVel = v_right * input_movevalues[1];
@@ -348,7 +356,7 @@ void PMove_Run_Acceleration(float flMovetime, float flBefore)
 	} else {
 		vecWishVel[2] = 0;
 	}
-	
+
 	vecWishDir = normalize(vecWishVel);
 	flWishSpeed = vlen(vecWishVel);
 	
@@ -397,7 +405,7 @@ void PMove_Run_Acceleration(float flMovetime, float flBefore)
 			self.flags |= FL_JUMPRELEASED;
 		}
 
-		if (self.flags & FL_ONGROUND /*|| self.flags & FL_ONLADDER*/) {
+		if (self.flags & FL_ONGROUND) {
 			// friction
 			if (self.velocity[0] || self.velocity[1]) {
 				vecTemp = self.velocity;
@@ -662,7 +670,7 @@ void PMove_Run(void)
 	if (self.waterlevel >= 2) {
 		PMove_CheckWaterJump();
 	}
-	
+
 	if (input_buttons & INPUT_BUTTON2) {
 		input_movevalues[2] = 240;
 	}	
@@ -670,18 +678,12 @@ void PMove_Run(void)
 		input_movevalues[2] = -240;
 	}
 
-	self.dimension_solid = 255;
-	self.dimension_hit = 255;
-
 	/* Call accelerate before and after the actual move, 
 	 * with half the move each time. 
 	 * This reduces framerate dependance. */
 	PMove_Run_Acceleration(input_timelength / 2, TRUE);
 	PMove_Run_Move();
 	PMove_Run_Acceleration(input_timelength / 2, FALSE);
-	
-	self.dimension_solid = 254;
-	self.dimension_hit = 254;
 
 	/* NOTE: should clip to network precision here if lower than a float */
 	self.angles = input_angles;

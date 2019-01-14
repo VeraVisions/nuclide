@@ -354,8 +354,9 @@ void func_door::func_door(void)
 
 void func_water(void)
 {
-	spawnfunc_func_door();
+	setmodel(self, self.model);
 	self.classname = "func_water";
 	self.solid = SOLID_BSP;
 	self.skin = CONTENT_WATER;
+	setorigin(self, self.origin); // relink. have to do this.
 }

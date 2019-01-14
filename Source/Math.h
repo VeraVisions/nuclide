@@ -88,16 +88,21 @@ int QPhysics_IsStuck( entity eTarget, vector vOffset, vector vecMins, vector vec
 void PMove_Run (void)
 void QPhysics_Run ( entity eTarget )
 {
-	float flFallVel = ( eTarget.flags & FL_ONGROUND ) ? 0 : -eTarget.velocity_z;
+	entity eOld = self;
+	self = eTarget;
 
-	eTarget.maxspeed = Game_GetMaxSpeed( eTarget );
-	//runstandardplayerphysics( eTarget );
+	float flFallVel = ( self.flags & FL_ONGROUND ) ? 0 : -self.velocity_z;
+
+	self.maxspeed = Game_GetMaxSpeed( self );
+	//runstandardplayerphysics(self);
 	PMove_Run();
 #ifdef SSQC
-	if ( ( eTarget.flags & FL_ONGROUND ) && eTarget.movetype == MOVETYPE_WALK && ( flFallVel > 580 )) {
+	if ( ( self.flags & FL_ONGROUND ) && self.movetype == MOVETYPE_WALK && ( flFallVel > 580 )) {
 		float fFallDamage = ( flFallVel - 580 ) * ( 100 / ( 1024 - 580 ) );
-		Damage_Apply( eTarget, world, fFallDamage, eTarget.origin, FALSE );
+		Damage_Apply( self, world, fFallDamage, self.origin, FALSE );
 	}
 #endif
+
+	self = eOld;
 }
 #endif

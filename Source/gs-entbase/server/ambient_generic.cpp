@@ -69,12 +69,12 @@ void ambient_generic::Respawn(void)
 		m_iToggleSwitch = FALSE;
 	} else {
 		m_iToggleSwitch = TRUE;
+		UseNormal();
 	}
 	
 	if (m_iLoop) {
 		Trigger = UseLoop;
 	}
-	UseNormal();
 }
 
 void ambient_generic::ambient_generic (void)

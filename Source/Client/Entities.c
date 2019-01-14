@@ -83,6 +83,7 @@ void CSQC_Ent_Update( float flIsNew ) {
 		self.weapon = readbyte();
 		self.health = readbyte();
 		self.movetype = readfloat();
+		self.view_ofs[2] = readfloat();
 		setorigin( self, self.origin );
 		
 		if (self.health < self.oldhealth) {

@@ -44,10 +44,15 @@ void infodecal(void)
 		self.texture = sprintf( "materials/%s", self.texture );
 	}
 
+	self.texture = "";
 	if (!self.texture) {
 		remove(self);
 		return;
 	}
+	
+	/*self.origin[0] = rint(self.origin[0]);
+	self.origin[1] = rint(self.origin[1]);
+	self.origin[2] = rint(self.origin[2]);*/
 
 	/* Unrolled because I'm lazy */
 	makevectors([0, 0, 0]);

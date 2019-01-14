@@ -133,7 +133,9 @@ void hostage_entity::Physics(void)
 			if (trace_ent.classname == "hostage_entity") {
 				hostage_entity que = (hostage_entity)trace_ent;
 				if (que.m_eRescuer == m_eUser) {
-					m_eRescuer = trace_ent;
+					if (trace_ent != this) {
+						m_eRescuer = trace_ent;
+					}
 				}
 			}
 		}

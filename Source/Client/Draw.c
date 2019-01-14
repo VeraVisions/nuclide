@@ -252,7 +252,7 @@ void CSQC_UpdateView(float fWinWidth, float fWinHeight, float fGameFocus) {
 					traceline(vStart, vEnd, FALSE, self);
 					setproperty(VF_ORIGIN, trace_endpos + (v_forward * 5));
 				} else {
-					setproperty(VF_ORIGIN, pSeat->vPlayerOrigin + [0, 0, getstatf(STAT_VIEWHEIGHT)]);
+					setproperty(VF_ORIGIN, pSeat->vPlayerOrigin + self.view_ofs);
 				}
 			} else {
 				setproperty(VF_ORIGIN, pSeat->vPlayerOrigin);
@@ -270,6 +270,7 @@ void CSQC_UpdateView(float fWinWidth, float fWinHeight, float fGameFocus) {
 		View_DropPunchAngle();
 		Fade_Update((int)vVideoMins[0],(int)vVideoMins[1], (int)fWinWidth, (int)fWinHeight);
 		Nightvision_PostDraw((int)vVideoMins[0],(int)vVideoMins[1], (int)fWinWidth, (int)fWinHeight);
+		View_PostDraw();
 
 		if(fGameFocus == TRUE) {
 			GameText_Draw();

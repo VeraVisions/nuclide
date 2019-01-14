@@ -204,7 +204,7 @@ void View_DrawViewModel( void ) {
 		
 		pSeat->eMuzzleflash = spawn();
 		pSeat->eMuzzleflash.classname = "view muzzleflash";
-		pSeat->eMuzzleflash.renderflags = RF_VIEWMODEL | RF_DEPTHHACK | RF_ADDITIVE;
+		pSeat->eMuzzleflash.renderflags = RF_VIEWMODEL | RF_ADDITIVE;
 	}
 	entity eViewModel = pSeat->eViewModel;
 	entity eMuzzleflash = pSeat->eMuzzleflash;
@@ -229,17 +229,19 @@ void View_DrawViewModel( void ) {
 						wm = sprintf("models/%s", sViewModels[ aw - 1 ]);
 					}
 					setmodel( eViewModel, wm );
+
+					if (getstati_punf(STAT_TEAM) == TEAM_CT) {
+						setcustomskin(eViewModel, "", "geomset 0 2\n");
+					} else {
+						setcustomskin(eViewModel, "", "geomset 0 1\n");
+					}
+
 					skel_delete( eMuzzleflash.skeletonindex );
 					eMuzzleflash.skeletonindex = skel_create( eViewModel.modelindex );
 					pSeat->fNumBones = skel_get_numbones( eMuzzleflash.skeletonindex ) + 1;
 					pSeat->fEjectBone = pSeat->fNumBones + 1;
 				}
 			}
-		}
-
-		// Take away alpha once it has drawn fully at least once
-		if ( eMuzzleflash.alpha > 0.0f ) {
-			eMuzzleflash.alpha -= ( clframetime * 45 );			
 		}
 
 		float fBaseTime = eViewModel.frame1time;
@@ -275,11 +277,22 @@ void View_DrawViewModel( void ) {
 	if ( getstatf( STAT_VIEWZOOM ) == 1.0f ) {
 		// Update muzzleflash position and draw it
 		if ( eMuzzleflash.alpha > 0.0f ) {
+			makevectors(getproperty(VF_ANGLES));
 			eMuzzleflash.origin = gettaginfo( eViewModel, eMuzzleflash.skin );
-			dynamiclight_add( pSeat->vPlayerOrigin, 400 * eMuzzleflash.alpha, '1 0.45 0');
+			dynamiclight_add( pSeat->vPlayerOrigin + (v_forward * 32), 400 * eMuzzleflash.alpha, '1 0.45 0');
 			addentity( eMuzzleflash );
 		}
 		addentity( eViewModel );
+	}
+}
+
+void View_PostDraw(void)
+{
+	entity eMuzzleflash = pSeat->eMuzzleflash;
+
+	// Take away alpha once it has drawn fully at least once
+	if ( eMuzzleflash.alpha > 0.0f ) {
+		eMuzzleflash.alpha -= ( clframetime * 16 );			
 	}
 }
 

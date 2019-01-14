@@ -6,189 +6,102 @@
 *
 ****/
 
-/*class CPathCorner
+class path_corner:CBaseTrigger
 {
 	float m_flSpeed;
 	float m_flWait;
-	string m_strTarget;
-	void() CPathCorner;
+
+	void() path_corner;
 };
 
-void CPathCorner :: CPathCorner ( void )
+void path_corner::path_corner(void)
 {
+	CBaseTrigger::CBaseTrigger();
 	m_flSpeed = 100;
 	m_flWait = 1.0f;
 }
 
-CLASSEXPORT(path_corner, CPathCorner)
-
-class CFuncTrain
+class func_train:CBaseTrigger
 {
-	int m_iDamage;
-	float m_flNextBlockAttack;
-	float m_flTraveltime;
-	float m_flWait;
 	float m_flSpeed;
-	vector m_vecDestination;
-	vector m_vecDestDelta;
 
-	// We don't need to inherit CBaseTrigger for these yet
-	string m_strTarget;
-	entity m_eTarget;
-
-	void() CFuncTrain;
-	virtual void() Move;
-	virtual void() Blocked;
-	virtual void() Trigger;
+	void() func_train;
 	virtual void() Find;
+	virtual void() MoveEnd;
 	virtual void() Trigger;
-	virtual void() Wait;
-	virtual void() Next;
-	virtual void() m_pMove = 0;
 };
 
-void CFuncTrain :: Done ( void )
+void func_train::Find(void)
 {
-	setorigin( this, m_vecDestination );
-	velocity = '0 0 0';
-	nextthink = -1;
+	entity f = find(world, CBaseTrigger::m_strTargetName, m_strTarget);
 
-	if ( m_pMove ) {
-		m_pMove();
-	}
-}
-
-void CFuncTrain :: Blocked ( void )
-{
-	if ( time < m_flNextBlockAttack ) {
+	if (!f) {
+		remove(this);
 		return;
 	}
-	m_flNextBlockAttack = time + 0.5;
-	//other.deathtype = "squish";
-	//T_Damage (other, self, self, m_iDamage);
+
+	print("^2func_train^7: Successfully found first target.\n");
+
+	vector vecWorldPos;
+	vecWorldPos[0] = absmin[0] + ( 0.5 * ( absmax[0] - absmin[0] ) );	
+	vecWorldPos[1] = absmin[1] + ( 0.5 * ( absmax[1] - absmin[1] ) );	
+	vecWorldPos[2] = absmin[2] + ( 0.5 * ( absmax[2] - absmin[2] ) );
+
+	vecWorldPos = f.origin - vecWorldPos;
+	setorigin(this, vecWorldPos);
 }
 
-void CFuncTrain :: Trigger ( void )
+void func_train::MoveEnd(void)
 {
-	// already activated
-	if ( think != Find ) {
-		return;
-	}
-	Next();
+	entity f = find(world, CBaseTrigger::m_strTargetName, m_strTarget);
+	CBaseTrigger p = (CBaseTrigger)f;
+	m_strTarget = p.m_strTargetName;
+
+	velocity = [0,0,0];
 }
 
-void CFuncTrain :: Wait ( void )
+void func_train::Trigger(void)
 {
-	if ( m_flWait ) {
-		nextthink = ltime + m_flWait;
-		sound (self, CHAN_VOICE, noise, 1, ATTN_NORM);
-	} else {
-		nextthink = ltime + 0.1f;
-	}
+	entity f = find(world, CBaseTrigger::m_strTargetName, m_strTarget);
 	
-	think = Next;
-}
-
-void CFuncTrain :: Next ( void )
-{
-	float flLen;
-	CPathCorner pTarget;
-
-	m_eTarget = find( world, ::targetname, m_strTarget );
-	pTarget = (CPathCorner) m_eTarget;
-	m_strTarget = pTarget.m_strTarget;
-
-	if ( !m_strTarget ) {
-		objerror( "train_next: no next target" );
-	}
-
-	if ( pTarget.m_flWait ) {
-		m_flWait = pTarget.m_flWait;
-	} else {
-		m_flWait = 0;
-	}
+	vector vecWorldPos;
+	vecWorldPos[0] = absmin[0] + ( 0.5 * ( absmax[0] - absmin[0] ) );	
+	vecWorldPos[1] = absmin[1] + ( 0.5 * ( absmax[1] - absmin[1] ) );	
+	vecWorldPos[2] = absmin[2] + ( 0.5 * ( absmax[2] - absmin[2] ) );
 	
-	sound( self, CHAN_VOICE, noise1, 1, ATTN_NORM );
-	
-	m_vecDestination = pTarget.origin - mins;
-	m_flSpeed = pTarget.m_flSpeed;
-	m_pMove = Wait;
-	think = Done;
+	vector vecDifference = (f.origin - vecWorldPos);
+	float flTravel = vlen(vecDifference);
+	float flTravelTime = (flTravel / m_flSpeed);
 
-	if ( m_vecDestination == origin ) {
-		velocity = '0 0 0';
-		nextthink = ltime + 0.1;
-		return;
-	}
-
-	// set destdelta to the vector needed to move
-	m_vecDestDelta = m_vecDestination - origin;
-	flLen = vlen( m_vecDestDelta ); // calculate length of vector
-	m_flTraveltime = flLen / m_flSpeed; // divide by speed to get time to reach dest
-
-	if ( m_flTraveltime < 0.1 ) {
-		velocity = '0 0 0';
-		nextthink = ltime + 0.1;
-		return;
-	}
-
-	nextthink = ltime + m_flTraveltime; // set nextthink to trigger a think when dest is reached
-	velocity = m_vecDestDelta * ( 1 / m_flTraveltime ); // scale the destdelta vector by the time spent traveling to get velocity
+	think = MoveEnd;
+	nextthink = (time + flTravelTime);
+	velocity = (vecDifference * (1 / flTravelTime));
 }
 
-void CFuncTrain :: Find ( void )
+void func_train::func_train(void)
 {
-	CPathCorner pTarget;
-	m_eTarget = find(world, ::targetname, m_strTarget);
-	pTarget = (CPathCorner) m_eTarget;
-	m_strTarget = pTarget.m_strTarget;
-	setorigin (this, m_eTarget.origin - mins);
+	CBaseTrigger::CBaseTrigger();
 
-	// not triggered, so start immediately
-	if ( !targetname ) {
-		nextthink = ltime + 0.1;
-		think = Next;
-	}
-}
-
-void CFuncTrain :: CFuncTrain ( void )
-{
-	if ( !m_flSpeed ) {
-		m_flSpeed = 100;
-	}
-	if ( !m_strTarget ) {
-		objerror ("func_train without a target");
-	}
-	if ( !m_iDamage ) {
-		m_iDamage = 2;
-	}
-
-	if ( sounds == 0 ) {
-		noise = ("misc/null.wav");
-		precache_sound ("misc/null.wav");
-		noise1 = ("misc/null.wav");
-		precache_sound ("misc/null.wav");
-	}
-
-	if ( sounds == 1 ) {
-		noise = ("plats/train2.wav");
-		precache_sound ("plats/train2.wav");
-		noise1 = ("plats/train1.wav");
-		precache_sound ("plats/train1.wav");
+	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
+		switch ( argv( i ) ) {
+		case "speed":
+			m_flSpeed = stof(argv(i+1));
+			break;
+		default:
+			break;
+		}
 	}
 
 	solid = SOLID_BSP;
 	movetype = MOVETYPE_PUSH;
-	blocked = Blocked;
+	//blocked = Blocked;
 
-	setmodel( this, model );
-	setsize( this, mins , maxs );
-	setorigin( this, origin );
+	setmodel(this, m_oldModel);
+	setsize(this, mins, maxs);
+	setorigin(this, m_oldOrigin);
 
 	// start trains on the second frame, to make sure their targets have had
 	// a chance to spawn
-	nextthink = ltime + 0.1;
+	nextthink = time + 0.25f;
 	think = Find;
 }
-
-CLASSEXPORT(func_train, CFuncTrain)*/

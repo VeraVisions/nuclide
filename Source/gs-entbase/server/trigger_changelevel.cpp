@@ -42,7 +42,7 @@ void trigger_changelevel :: Change ( void )
 {
 	if ( m_strLandmark ) {
 		entity landmark = find( world, ::targetname, m_strLandmark );
-		g_landmarkpos = landmark.origin - m_activator.origin;
+		g_landmarkpos = m_activator.origin - landmark.origin;
 		changelevel( m_strMap, m_strLandmark );
 	} else {
 		changelevel( m_strMap );
