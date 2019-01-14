@@ -68,7 +68,7 @@ void PMove_Categorize(void)
 		self.maxs = VEC_HULL_MAX;
 		self.view_ofs = VEC_PLAYER_VIEWPOS;
 	}
-	
+
 	tracebox(self.origin, self.mins, self.maxs, self.origin - '0 0 0.25', TRUE, self);
 
 	if (!trace_startsolid) {

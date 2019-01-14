@@ -240,6 +240,11 @@ void Player_PreUpdate(void)
 		if (flSuccess == FALSE) {
 			continue;
 		}
+
+		if (i==clientcommandframe){
+			CSQC_Input_Frame();
+		}
+
 		// Partial frames are the worst
 		if (input_timelength == 0) {
 			break;
