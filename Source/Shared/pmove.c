@@ -15,9 +15,9 @@
 .float waterlevel;
 .float watertype;
 .float teleport_time;
-int trace_endcontentsi;
 .float maxspeed;
 .vector view_ofs;
+int trace_endcontentsi;
 
 /*
 =================
@@ -73,7 +73,7 @@ void PMove_Categorize(void)
 		self.view_ofs = VEC_PLAYER_VIEWPOS;
 	}
 
-	tracebox(self.origin, self.mins, self.maxs, self.origin - '0 0 0.25', TRUE, self);
+	tracebox(self.origin, self.mins, self.maxs, self.origin - '0 0 0.25', FALSE, self);
 
 	if (!trace_startsolid) {
 		if ((trace_fraction < 1) && (trace_plane_normal[2] > 0.7)) {
