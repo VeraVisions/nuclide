@@ -1,5 +1,5 @@
 #pragma target fte
-#pragma progs_dat  "../../freecs/menu.dat"
+#pragma progs_dat  "../../fn/menu.dat"
 
 #define MENU
 

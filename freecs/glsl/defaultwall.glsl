@@ -21,7 +21,7 @@ varying vec2 lm_c;
 	{
 		vec4 diffuse_f = texture2D(s_diffuse, tex_c);
 		vec3 light = texture2D(s_lightmap, lm_c).rgb;
-		
+
 		if (light.r > 1.0f) {
 			light.r = 1.0f;
 		}

@@ -8,9 +8,9 @@
 
 class light:CBaseTrigger
 {
-	string m_strPattern;
 	int m_iEnabled;
 	float m_flStyle;
+	string m_strPattern;
 
 	void() light;
 	virtual void() Trigger;

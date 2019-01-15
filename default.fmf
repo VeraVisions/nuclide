@@ -2,6 +2,8 @@ FTEMANIFEST 1
 game cstrike
 name "FreeCS"
 protocolname "FREECS"
+basegame logos
+basegame fn
 basegame valve
 basegame cstrike
 basegame *freecs
