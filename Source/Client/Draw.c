@@ -191,6 +191,11 @@ Entry point for drawing on the client
 void CSQC_UpdateView(float fWinWidth, float fWinHeight, float fGameFocus) {
 	float needcursor;
 	int s;
+
+	if (fWinWidth == 0 || fWinHeight == 0) {
+		return;
+	}
+
 	vVideoResolution_x = fWinWidth;
 	vVideoResolution_y = fWinHeight;
 
@@ -309,15 +314,4 @@ void CSQC_UpdateView(float fWinWidth, float fWinHeight, float fGameFocus) {
 	}
 
 	Sound_ProcessWordQue();
-}
-
-/*
-=================
-CSQC_UpdateViewLoading
-
-Doesn't really do anything useful yet
-=================
-*/
-void CSQC_UpdateViewLoading(float fWinWidth, float fWinHeight, float fGameFocus) {
-	drawfill([0, 0], [fWinWidth, fWinHeight], [1, 1, 1], 1, 0);
 }

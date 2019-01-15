@@ -6,14 +6,9 @@
 *
 ****/
 
-float input_timelength;
-vector input_angles;
-vector input_movevalues;
-float input_buttons;
-
-var float PHY_JUMP_CHAINWINDOW	= 0.5f; // maximum possible height from double/chain jump
-var float PHY_JUMP_CHAIN		= 100; // decay over lifetime of window
-var float PHY_JUMP_CHAINDECAY	= 50;
+#define PHY_JUMP_CHAINWINDOW	0.5
+#define PHY_JUMP_CHAIN			100
+#define PHY_JUMP_CHAINDECAY	50
 
 /*FIXME: jumptime should use the time global, as time intervals are not predictable - decrement it based upon input_timelength*/
 .float jumptime;
@@ -40,6 +35,13 @@ void PMove_Init(void) {
 	localcmd("serverinfo phy_maxspeed 240\n");
 }
 
+/*
+=================
+PMove_Contents
+
+Wrapper that emulates pointcontents' behaviour
+=================
+*/
 int PMove_Contents(vector org)
 {
 	int oldhitcontents = self.hitcontentsmaski;
@@ -59,6 +61,8 @@ PMove_Categorize
 */
 void PMove_Categorize(void)
 {
+	int contents;
+
 	if (self.flags & FL_CROUCHING) {
 		self.mins = VEC_CHULL_MIN;
 		self.maxs = VEC_CHULL_MAX;
@@ -79,10 +83,20 @@ void PMove_Categorize(void)
 		}
 	}
 
-	if (PMove_Contents(self.origin + self.mins + [0,0,1]) == 32) {
-		self.watertype = CONTENT_WATER;
-		if (PMove_Contents(self.origin + (self.mins + self.maxs) * 0.5) == 32) {
-			if (PMove_Contents(self.origin + self.maxs - '0 0 1') == 32) {
+	contents = PMove_Contents(self.origin + self.mins + [0,0,1]);
+
+	if (contents == CONTENTBIT_WATER) {
+		contents = CONTENT_WATER;
+	} else if (contents == CONTENTBIT_SLIME) {
+		contents = CONTENT_SLIME;
+	} else if (contents == CONTENTBIT_LAVA) {
+		contents = CONTENT_LAVA;
+	}
+
+	if (contents < CONTENT_SOLID) {
+		self.watertype = contents;
+		if (PMove_Contents(self.origin + (self.mins + self.maxs) * 0.5) & CONTENTBITS_FLUID) {
+			if (PMove_Contents(self.origin + self.maxs - '0 0 1') & CONTENTBITS_FLUID) {
 				self.waterlevel = 3;
 			} else {
 				self.waterlevel = 2;
@@ -106,6 +120,7 @@ void PMove_WaterMove(void)
 	if (self.movetype == MOVETYPE_NOCLIP) {
 		return;
 	}
+
 	/*if (self.health < 0) {
 		return;
 	}*/
@@ -255,11 +270,6 @@ void PMove_Run_Acceleration(float flMovetime, float flBefore)
 		if (self.flags & FL_CROUCHING) {
 			setsize(self, VEC_CHULL_MIN, VEC_CHULL_MAX);
 			self.view_ofs = VEC_PLAYER_CVIEWPOS;
-#ifdef CSQC
-			print("CSQC crouching!\n");
-#else
-			print("SSQC crouching!\n");
-#endif
 		} else {
 			setsize(self, VEC_HULL_MIN, VEC_HULL_MAX);
 			if (iFixCrouch && QPMove_IsStuck(self, [0,0,0], VEC_HULL_MIN, VEC_HULL_MAX)) {
@@ -272,11 +282,6 @@ void PMove_Run_Acceleration(float flMovetime, float flBefore)
 			}
 			setorigin(self, self.origin);
 			self.view_ofs = VEC_PLAYER_VIEWPOS;
-#ifdef CSQC
-			print("CSQC standing!\n");
-#else
-			print("SSQC standing!\n");
-#endif
 		}
 	}
 
@@ -285,13 +290,6 @@ void PMove_Run_Acceleration(float flMovetime, float flBefore)
 	// swim
 	if (self.waterlevel >= 2) {
 		if (self.movetype != MOVETYPE_NOCLIP) {
-
-			#ifdef SSQC
-			//print("SSQC: Water.\n");
-			#else
-			//print("CSQC: Water.\n");
-			#endif
-
 			self.flags &= ~FL_ONGROUND;
 
 			if (input_movevalues == [0,0,0]) {
@@ -332,12 +330,6 @@ void PMove_Run_Acceleration(float flMovetime, float flBefore)
 			return;
 		}
 	}
-
-	#ifdef SSQC
-	//print("SSQC: Outside.\n");
-	#else
-	//print("CSQC: Outside.\n");
-	#endif
 
 	// hack to not let you back into teleporter
 	if (self.teleport_time > 0 && input_movevalues[0] < 0) {
