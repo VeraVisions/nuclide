@@ -1,3 +1,11 @@
+/***
+*
+*	Copyright (c) 2016-2019 Marco 'eukara' Hladik. All rights reserved.
+*
+*	See the file LICENSE attached with the sources for usage details.
+*
+****/
+
 int Util_CheckMouse(int x, int y, int sx, int sy) {
 	int mins[2];
 	int maxs[2];

@@ -3,8 +3,8 @@ game cstrike
 name "FreeCS"
 protocolname "FREECS"
 basegame logos
-basegame fn
 basegame valve
 basegame cstrike
+basegame fn
 basegame *freecs
 disablehomedir 1

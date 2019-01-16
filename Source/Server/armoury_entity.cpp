@@ -1,8 +1,8 @@
 /***
 *
-*   Copyright (c) 2016-2019 Marco 'eukara' Hladik. All rights reserved.
-* 
-* 	See the file LICENSE attached with the sources for usage details.
+*	Copyright (c) 2016-2019 Marco 'eukara' Hladik. All rights reserved.
+*
+*	See the file LICENSE attached with the sources for usage details.
 *
 ****/
 
@@ -25,7 +25,7 @@ int iArmouryItems[19] = {
 	WEAPON_HEGRENADE,
 	EQUIPMENT_KEVLAR,
 	EQUIPMENT_HELMET,
-	WEAPON_SMOKEGRENADE,
+	WEAPON_SMOKEGRENADE
 };
 
 string sArmouryModels[19] = {

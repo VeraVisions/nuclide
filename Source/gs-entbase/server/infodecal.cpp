@@ -1,14 +1,16 @@
 /***
 *
-*   Copyright (c) 2016-2019 Marco 'eukara' Hladik. All rights reserved.
-* 
-* 	See the file LICENSE attached with the sources for usage details.
+*	Copyright (c) 2016-2019 Marco 'eukara' Hladik. All rights reserved.
+*
+*	See the file LICENSE attached with the sources for usage details.
 *
 ****/
 
 /* We need to save trace infos temporarily in order to figure out what to
  * project the decal against. Half-Life's infodecal entity only stores origin,
  * but not angles. So we have to figure them out ourselves. */
+.string texture;
+
 typedef struct {
 	float fraction;
 	vector normal;

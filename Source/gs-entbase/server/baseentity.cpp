@@ -1,8 +1,8 @@
 /***
 *
-*   Copyright (c) 2016-2019 Marco 'eukara' Hladik. All rights reserved.
-* 
-* 	See the file LICENSE attached with the sources for usage details.
+*	Copyright (c) 2016-2019 Marco 'eukara' Hladik. All rights reserved.
+*
+*	See the file LICENSE attached with the sources for usage details.
 *
 ****/
 
@@ -43,6 +43,10 @@ void CBaseEntity :: CBaseEntity ( void )
 			return;
 		}
 	}
+	
+	/*m_renderamt = 255;
+	m_rendercolor = [1,1,1];
+	m_rendermode = 0;*/
 
 	gflags |= GF_CANRESPAWN;
 	m_oldModel = Util_FixModel(model);

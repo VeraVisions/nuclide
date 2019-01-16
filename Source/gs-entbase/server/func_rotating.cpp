@@ -1,8 +1,8 @@
 /***
 *
-*   Copyright (c) 2016-2019 Marco 'eukara' Hladik. All rights reserved.
-* 
-* 	See the file LICENSE attached with the sources for usage details.
+*	Copyright (c) 2016-2019 Marco 'eukara' Hladik. All rights reserved.
+*
+*	See the file LICENSE attached with the sources for usage details.
 *
 ****/
 
@@ -38,7 +38,7 @@ void CFuncRotating :: Rotate( void )
 void CFuncRotating :: Trigger ( void )
 {
 	if ( vlen( avelocity ) ) {
-		avelocity = '0 0 0';
+		avelocity = [0,0,0];
 	} else {
 		avelocity = m_vecMoveDir * m_flSpeed;
 	}
@@ -79,7 +79,7 @@ void CFuncRotating :: SetMovementDirection ( void )
 	} else {
 		m_vecMoveDir = '0 1 0';
 	}
-	
+
 	if ( spawnflags & FR_REVERSE ) {
 		m_vecMoveDir *= -1;
 	}
