@@ -6,7 +6,6 @@
 *
 ****/
 
-#define SF_ROT_YAXIS			0
 #define SF_ROT_OPEN			1
 #define SF_ROT_BACKWARDS		2
 #define SF_ROT_PASSABLE		8
@@ -136,15 +135,18 @@ void func_door_rotating::RotateAway(void)
 	m_iState = STATE_UP;
 
 	if (!(spawnflags & SF_ROT_ONEWAY)) {
-		vector vDifference = eActivator.origin - origin;
-		vector vAngles = eActivator.angles;
-		vAngles[0] = vAngles[2] = 0;
+		/* One way doors only work on the Y axis */
+		if (!(spawnflags & SF_ROT_ZAXIS || spawnflags & SF_ROT_XAXIS)) {
+			vector vDifference = eActivator.origin - origin;
+			vector vAngles = eActivator.angles;
+			vAngles[0] = vAngles[2] = 0;
 
-		makevectors(vAngles);
-		vector vNext = (eActivator.origin + (v_forward * 10)) - origin;
+			makevectors(vAngles);
+			vector vNext = (eActivator.origin + (v_forward * 10)) - origin;
 
-		if (((vDifference[0] * vNext[1]) - (vDifference[1] * vNext[0])) < 0) {
-			fDirection = -1.0f;
+			if (((vDifference[0] * vNext[1]) - (vDifference[1] * vNext[0])) < 0) {
+				fDirection = -1.0f;
+			}
 		}
 	}
 	RotateToDestination(m_vecPos2 * fDirection, Arrived);
@@ -226,6 +228,10 @@ void func_door_rotating::SetMovementDirection(void)
 	} else {
 		m_vecMoveDir = [0,1,0];
 	}
+
+	if (spawnflags & SF_ROT_BACKWARDS) {
+		m_vecMoveDir *= 1;
+	}
 }
 
 void func_door_rotating::RotateToDestination_End(void)
@@ -298,7 +304,7 @@ void func_door_rotating::Respawn(void)
 		vector vTemp = m_vecPos2;
 		m_vecPos2 = m_vecPos1;
 		m_vecPos1 = vTemp;
-		//m_vecMoveDir = m_vecMoveDir * -1;
+		m_vecMoveDir = m_vecMoveDir * -1;
 	}
 
 	if (m_strTargetName) {
