@@ -36,6 +36,14 @@ class CBaseEntity
 
 void CBaseEntity :: CBaseEntity ( void )
 {
+	/* Not in Deathmatch */
+	if (spawnflags & 2048) {
+		if (cvar("sv_playerslots") > 1) {
+			remove(this);
+			return;
+		}
+	}
+
 	gflags |= GF_CANRESPAWN;
 	m_oldModel = Util_FixModel(model);
 	m_oldSolid = solid;
