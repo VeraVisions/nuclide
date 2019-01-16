@@ -23,6 +23,7 @@ class func_door_rotating:CBaseTrigger
 	int m_iMoveSnd;
 	int m_iStopSnd;
 	int m_iDamage;
+	int m_iLocked;
 	float m_flDistance;
 	float m_flSpeed;
 	float m_flLip;
@@ -188,6 +189,10 @@ void func_door_rotating::Touch(void)
 		return;
 	}
 
+	if (m_iLocked) {
+		return;
+	}
+
 	if (other.movetype == MOVETYPE_WALK) {
 		if (other.absmin[2] <= maxs[2] - 2) {
 			eActivator = other;
@@ -294,6 +299,10 @@ void func_door_rotating::Respawn(void)
 		m_vecPos2 = m_vecPos1;
 		m_vecPos1 = vTemp;
 		//m_vecMoveDir = m_vecMoveDir * -1;
+	}
+
+	if (m_strTargetName) {
+		m_iLocked = TRUE;
 	}
 
 	angles = m_vecPos1;
