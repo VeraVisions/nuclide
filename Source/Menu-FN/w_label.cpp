@@ -57,5 +57,6 @@ void WField_Static(int x, int y, string msg, int sx, int sy, vector col,
 	drawfont = font;
 	x += g_menuofs[0];
 	y += g_menuofs[1];
-	drawtextfield([x,y], [sx,sy], flags, sprintf("^xAAA%s",msg));
+	drawtextfield([x,y], [sx,sy], flags, sprintf("%s%s", 
+				  Colors_RGB8_to_HEX(col), msg));
 }

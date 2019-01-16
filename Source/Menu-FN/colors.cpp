@@ -16,6 +16,36 @@ vector col_refresh_title;
 vector col_refresh_text;
 vector col_refresh_bg;
 
+string Colors_RGB8_to_HEX(vector color)
+{
+	string out = "^x";
+
+	for (int i = 0; i < 3; i++) {
+		string a;
+		float b = rint(color[i] * 15);
+
+		switch (b) {
+			case 10:
+				a = "A";
+			case 11:
+				a = "B";
+			case 12:
+				a = "C";
+			case 13:
+				a = "D";
+			case 14:
+				a = "E";
+			case 15:
+				a = "F";
+			default:
+				a = ftos(b);
+		}
+		out = sprintf("%s%s", out, a);
+	}
+
+	return out;
+}
+
 void Colors_Init(void)
 {
 	int c;

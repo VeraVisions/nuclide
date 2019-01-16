@@ -266,6 +266,10 @@ void menu_main_draw(void)
 		WLabel_Static(235, 440, m_reslbl[IDS_MAIN_QUITHELP], 10, 10,
 						col_help,1.0f, 0, font_label);
 	} else {
+		drawpic([g_menuofs[0],g_menuofs[1] + 70], "logo_avi",
+				g_logosize, [1,1,1], 1.0f);
+		g_logosize = gecko_get_texture_extent("logo_avi");
+
 		Widget_Draw(fn_main);
 		WLabel_Static(235, 216, m_reslbl[IDS_MAIN_NEWGAMEHELP], 10, 10,
 						col_help,1.0f, 0, font_label);

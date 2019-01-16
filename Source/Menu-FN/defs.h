@@ -20,6 +20,7 @@ var int autocvar_menu_intro = FALSE;
 int g_vidsize[2];
 int g_menuofs[2];
 int g_mousepos[2];
+vector g_logosize;
 int g_lastmousepos[2];
 int g_active;
 float g_btnofs;
