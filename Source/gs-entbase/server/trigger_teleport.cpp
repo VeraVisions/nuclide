@@ -15,8 +15,11 @@ class trigger_teleport : CBaseTrigger
 void trigger_teleport :: touch ( void )
 {
 	if ( other.health > 0 || other.solid == SOLID_SLIDEBOX ) {
-		entity eTarget = find( world, ::targetname, target );
-		setorigin( other, eTarget.origin );
+		entity eTarget = find(world, CBaseTrigger::m_strTargetName, m_strTarget);
+
+		if (eTarget) {
+			setorigin(other, eTarget.origin + [0,0,16]);
+		}
 	}
 }
 
