@@ -48,6 +48,7 @@ Money.c
 ../Shared/spraylogo.cpp
 ../Shared/pmove.c
 
+armoury_entity.cpp
 hostage_entity.cpp
 func_hostage_rescue.cpp
 info_hostage_rescue.cpp
