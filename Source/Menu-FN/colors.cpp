@@ -27,22 +27,27 @@ string Colors_RGB8_to_HEX(vector color)
 		switch (b) {
 			case 10:
 				a = "A";
+				break;
 			case 11:
 				a = "B";
+				break;
 			case 12:
 				a = "C";
+				break;
 			case 13:
 				a = "D";
+				break;
 			case 14:
 				a = "E";
+				break;
 			case 15:
 				a = "F";
+				break;
 			default:
 				a = ftos(b);
 		}
 		out = sprintf("%s%s", out, a);
 	}
-
 	return out;
 }
 

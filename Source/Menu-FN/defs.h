@@ -31,6 +31,7 @@ int font_label;
 int font_label_b;
 int font_console;
 int font_arial;
+int font_label_p;
 
 typedef struct {
 	void() m_init;

@@ -13,7 +13,8 @@ void m_init(void)
 	font_console = loadfont( "font", "", "12", -1 );
 	font_label = loadfont( "label", "gfx/shell/mssansserif.ttf", "10 12 14", -1 );
 	font_arial = loadfont( "label", "gfx/shell/arial.ttf", "14", -1 );
-	font_label_b = loadfont( "label_b", "gfx/shell/arialbd.ttf", "14 12 16", -1 );
+	font_label_b = loadfont( "label_b", "gfx/shell/arialbd.ttf", "14 12", -1 );
+	font_label_p = loadfont( "label_p", "gfx/shell/arialbd.ttf", "16", -1 );
 
 	localcmd("plug_load ffmpeg\n");
 	localcmd("con_textsize -12\n");

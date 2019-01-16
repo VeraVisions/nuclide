@@ -181,7 +181,7 @@ void menu_main_init(void)
 	main_btnQuitCancel.SetLength(68);
 	main_btnQuitCancel.SetExecute(btn_quit_cancel);
 	Widget_Add(main_dgQuit, main_btnQuitCancel);
-	
+
 	/* Main Menu (Connected) */
 	fn_main2 = spawn(CWidget);
 	main_btn2Console = spawn(CMainButton);
@@ -293,8 +293,10 @@ void menu_main_draw(void)
 
 	if (main_quitdialog) {
 		main_dgQuit.Draw();
-		WLabel_Static(203, 180, m_reslbl[IDS_MAIN_QUITPROMPT], 16, 16,
-						col_prompt_text, 1.0f, 0, font_label_b);
+		/*WLabel_Static(203, 180, m_reslbl[IDS_MAIN_QUITPROMPT], 16, 16,
+						col_prompt_text, 1.0f, 0, font_label_b);*/
+		WField_Static(162, 180, m_reslbl[IDS_MAIN_QUITPROMPT], 320, 260,
+						col_prompt_text, 1.0f, 2, font_label_p);
 		Widget_Draw(main_dgQuit);
 	}
 

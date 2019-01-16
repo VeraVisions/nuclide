@@ -192,10 +192,10 @@ void menu_multiplayer_draw(void)
 			inet_btnrefresh();
 		}
 		mp_dgConnect.Draw();
-		WLabel_Static(203, 180, m_reslbl[IDS_WON_LOGIN], 16, 16,
-						col_prompt_text, 1.0f, 0, font_label_b);
-		WLabel_Static(180, 280, sprintf(m_reslbl[IDS_QUICK_REQUEST],g_connecttimer), 12, 12,
-						col_prompt_title, 1.0f, 0, font_label);
+		WField_Static(162, 180, m_reslbl[IDS_WON_LOGIN], 320, 260,
+						col_prompt_text, 1.0f, 2, font_label_p);
+		WField_Static(162, 280, sprintf(m_reslbl[IDS_QUICK_REQUEST],g_connecttimer), 320, 260,
+						col_prompt_title, 1.0f, 2, font_label);
 		g_connecttimer -= frametime;
 		Master_ResortCache();
 	}
