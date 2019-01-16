@@ -35,7 +35,7 @@ void create_btnok_start(void)
 	}
 
 	/* Strip .bsp extension before submitting */
-	startmap = substring(create_lbMaps.GetSelectedItem(), 0, -4);
+	startmap = substring(create_lbMaps.GetSelectedItem(), 0, -5);
 
 	if (startmap == __NULL__) {
 		return;
