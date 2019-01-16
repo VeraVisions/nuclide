@@ -6,16 +6,21 @@
 *
 ****/
 
-#define SF_ROT_OPEN			1
-#define SF_ROT_BACKWARDS		2
-#define SF_ROT_PASSABLE		8
-#define SF_ROT_ONEWAY			16
-#define SF_ROT_TOGGLE			32
-#define SF_ROT_ZAXIS			64
-#define SF_ROT_XAXIS			128
-#define SF_ROT_USE				256
-#define SF_DOOR_NOMONSTERS		512
-#define SF_DOOR_SILENT			0x80000000i
+enumflags
+{
+	SF_ROT_OPEN,
+	SF_ROT_BACKWARDS,
+	SF_ROT_UNUSED1,
+	SF_ROT_PASSABLE,
+	SF_ROT_ONEWAY,
+	SF_ROT_TOGGLE,
+	SF_ROT_ZAXIS,
+	SF_ROT_XAXIS,
+	SF_ROT_USE,
+	SF_ROT_NOMONSTERS
+};
+
+#define SF_DOOR_SILENT 0x80000000i
 
 class func_door_rotating:CBaseTrigger
 {
@@ -41,19 +46,23 @@ class func_door_rotating:CBaseTrigger
 	virtual void() Precache;
 	virtual void() Arrived;
 	virtual void() Returned;
-	virtual void() RotateBack;
-	virtual void() RotateAway;
+	virtual void() Back;
+	virtual void() Away;
 	virtual void() Trigger;
 	virtual void() Use;
 	virtual void() Touch;
 	virtual void() Blocked;
 	virtual void() SetMovementDirection;
-	virtual void(vector angle, void() func) RotateToDestination;
-	virtual void() RotateToDestination_End;
+	virtual void(vector angle, void() func) RotToDest;
+	virtual void() RotToDest_End;
 };
 
 void func_door_rotating::Precache(void)
 {
+	if (spawnflags & SF_DOOR_SILENT) {
+		return;
+	}
+
 	if (m_iMoveSnd > 0 && m_iMoveSnd <= 10) {
 		precache_sound(sprintf("doors/doormove%i.wav", m_iMoveSnd));
 	} else {
@@ -84,7 +93,7 @@ void func_door_rotating::Arrived(void)
 		return;
 	}
 
-	think = RotateBack;
+	think = Back;
 	nextthink = (ltime + m_flWait);
 }
 
@@ -97,12 +106,14 @@ void func_door_rotating::Returned(void)
 	m_iState = STATE_LOWERED;
 }
 
-void func_door_rotating::RotateBack(void)
+void func_door_rotating::Back(void)
 {
-	if (m_iMoveSnd > 0 && m_iMoveSnd <= 10) {
-		sound(this, CHAN_VOICE, sprintf("doors/doormove%i.wav", m_iMoveSnd), 1.0, ATTN_NORM);
-	} else {
-		sound(this, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
+	if (!(spawnflags & SF_DOOR_SILENT)) {
+		if (m_iMoveSnd > 0 && m_iMoveSnd <= 10) {
+			sound(this, CHAN_VOICE, sprintf("doors/doormove%i.wav", m_iMoveSnd), 1.0, ATTN_NORM);
+		} else {
+			sound(this, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
+		}
 	}
 
 	if (!(spawnflags & SF_ROT_USE)) {
@@ -110,10 +121,10 @@ void func_door_rotating::RotateBack(void)
 	}
     
 	m_iState = STATE_DOWN;
-	RotateToDestination(m_vecPos1, Returned);
+	RotToDest(m_vecPos1, Returned);
 }
 
-void func_door_rotating::RotateAway(void)
+void func_door_rotating::Away(void)
 {
 	float fDirection = 1.0;
 
@@ -121,10 +132,12 @@ void func_door_rotating::RotateAway(void)
 		return;
 	}
 
-	if (m_iMoveSnd > 0 && m_iMoveSnd <= 10) {
-		sound(this, CHAN_VOICE, sprintf("doors/doormove%i.wav", m_iMoveSnd), 1.0, ATTN_NORM);
-	} else {
-		sound(this, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
+	if (!(spawnflags & SF_DOOR_SILENT)) {
+		if (m_iMoveSnd > 0 && m_iMoveSnd <= 10) {
+			sound(this, CHAN_VOICE, sprintf("doors/doormove%i.wav", m_iMoveSnd), 1.0, ATTN_NORM);
+		} else {
+			sound(this, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
+		}
 	}
   
 	if (m_iState == STATE_RAISED) {	
@@ -149,7 +162,7 @@ void func_door_rotating::RotateAway(void)
 			}
 		}
 	}
-	RotateToDestination(m_vecPos2 * fDirection, Arrived);
+	RotToDest(m_vecPos2 * fDirection, Arrived);
 }
 
 void func_door_rotating::Trigger(void)
@@ -160,11 +173,11 @@ void func_door_rotating::Trigger(void)
 	m_flNextAction = time + m_flWait;
 
 	if ((m_iState == STATE_UP) || (m_iState == STATE_RAISED)) {
-		RotateBack();
+		Back();
 		return;
 	}
 
-	RotateAway();
+	Away();
 
 	if (m_flDelay) {
 #ifdef GS_DEVELOPER
@@ -212,9 +225,9 @@ void func_door_rotating::Blocked(void)
 
 	if (m_flWait >= 0) {
 		if (m_iState == STATE_DOWN) {
-			RotateAway();
+			Away();
 		} else {
-			RotateBack();
+			Back();
 		}
 	}
 }
@@ -234,7 +247,7 @@ void func_door_rotating::SetMovementDirection(void)
 	}
 }
 
-void func_door_rotating::RotateToDestination_End(void)
+void func_door_rotating::RotToDest_End(void)
 {
 	angles = m_vecDest;
 	avelocity = [0,0,0];
@@ -242,21 +255,24 @@ void func_door_rotating::RotateToDestination_End(void)
 	m_pMove();
 }
 
-void func_door_rotating::RotateToDestination(vector vDestinationAngle, void() func)
+void func_door_rotating::RotToDest(vector vDestAngle, void() func)
 {
 	vector vecAngleDifference;
 	float flTravelLength, flTravelTime;
 
 	if (!m_flSpeed) {
-		objerror("No speed defined for moving entity! Will not divide by zero.");
+		print("^1func_door_rotating^7: No speed defined for moving entity!");
+		func_door_rotating::Respawn();
+		return;
 	}
-	vecAngleDifference = (vDestinationAngle - angles);
+
+	vecAngleDifference = (vDestAngle - angles);
 	flTravelLength = vlen(vecAngleDifference);
 	flTravelTime = (flTravelLength / m_flSpeed);
 	avelocity = (vecAngleDifference * (1 / flTravelTime));
-	m_vecDest = vDestinationAngle;
+	m_vecDest = vDestAngle;
 	m_pMove = func;
-	think = RotateToDestination_End;
+	think = RotToDest_End;
 	nextthink = (ltime + flTravelTime);
 }
 
