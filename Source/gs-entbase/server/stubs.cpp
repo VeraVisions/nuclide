@@ -16,14 +16,14 @@ void info_null :: info_null ( void )
 	remove( self );
 }
 
-class info_notnull
+class info_notnull:CBaseTrigger
 {
 	void() info_notnull;
 };
 
 void info_notnull :: info_notnull ( void )
 {
-	
+	CBaseTrigger::CBaseTrigger();
 }
 
 CLASSEXPORT( info_node, info_notnull )
