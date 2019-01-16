@@ -203,5 +203,7 @@ void menu_multiplayer_draw(void)
 
 void menu_multiplayer_input(float evtype, float scanx, float chary, float devid)
 {
-	Widget_Input(fn_multiplayer, evtype, scanx, chary, devid);
+	if (!g_connectstatus) {
+		Widget_Input(fn_multiplayer, evtype, scanx, chary, devid);
+	}
 }
