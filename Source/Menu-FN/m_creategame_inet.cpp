@@ -15,15 +15,20 @@ void createinet_btnok_start(void)
 {
 	static string startmap;
 	static void createinet_btnok_end(void) {
+		localcmd(sprintf("hostname %s\n", create_tbHostname.m_text));
+		localcmd(sprintf("sv_playerslots %s\n", create_tbMaxplayers.m_text));
+		localcmd(sprintf("password %s\n", create_tbPassword.m_text));
 		localcmd(sprintf("map %s\n", startmap));
 		g_menupage = PAGE_INTERNETGAMES;
 	}
-	
-	startmap = create_lbMaps.GetSelectedItem();
-	
+
+	/* Strip .bsp extension before submitting */
+	startmap = substring(create_lbMaps.GetSelectedItem(), 0, -5);
+
 	if (startmap == __NULL__) {
 		return;
 	}
+
 	localsound("../media/launch_dnmenu1.wav");
 	header.SetStartEndPos(45,45,30,172);
 	header.SetStartEndSize(460,80,156,26);

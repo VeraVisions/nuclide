@@ -33,12 +33,14 @@ void create_btnok_start(void)
 		localcmd(sprintf("map %s\n", startmap));
 		g_menupage = PAGE_LANGAMES;
 	}
-	
-	startmap = create_lbMaps.GetSelectedItem();
-	
+
+	/* Strip .bsp extension before submitting */
+	startmap = substring(create_lbMaps.GetSelectedItem(), 0, -4);
+
 	if (startmap == __NULL__) {
 		return;
 	}
+
 	localsound("../media/launch_dnmenu1.wav");
 	header.SetStartEndPos(45,45,30,172);
 	header.SetStartEndSize(460,80,156,26);
