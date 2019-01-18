@@ -1,10 +1,8 @@
 FTEMANIFEST 1
-game cstrike
-name "FreeCS"
-protocolname "FREECS"
+game fn
+name "FTEQW"
+protocolname "FTEQW"
 basegame logos
 basegame valve
-basegame cstrike
 basegame fn
-basegame *freecs
 disablehomedir 1

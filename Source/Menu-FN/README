@@ -4,15 +4,19 @@ HALF-LIFE WON MENU - QUAKEC VERSION
 This menu logic is part of the FreeCS project.
 It's a close recreation of the Half-Life main-menu (pre-Steam), also known as
 the Half-Life WON menu (or just WON Menu - you get the idea).
+It was used between 1998 and 2004.
 
 It attempts to parse string-data and bitmaps from the original paths
-whenever it can. It's a full replacement of Half-Life's original menu.
+whenever it can. 
+
+The original data is required for it to work.
 
 It's created from scratch and is not C++ - it's QuakeC and meant to be used
 within FTE QuakeWorld. The file extensions are only changed in order to help
 with the syntax highlighting choice of your favorite editor.
 
 This codebase is to be compiled with FTEQCC, no other compiler is supported.
+No engine other than FTE QuakeWorld is supported. I won't support anything else.
 
 The code has a LICENSE attached to it, I'd encourage you to read it.
 If you don't want to comply with the LICENSE, you either don't use the software
@@ -21,8 +25,24 @@ or we could still negotiate a separate license agreement (for $$$).
 A few warnings to the uneducated:
 If you're planning on merging or using any of this code in combination with the
 original Half-Life SDK, you're violating the Half-Life SDK License Agreement.
+This includes using it in combination with the original Half-Life binaries and
+libraries. Valve has spoken out against such projects for the reason above.
+They might not take action against you, but I certainly might.
+I hope this all does not discourage you from using it in your own project.
+As long as you comply with the license, you'll be fine!
 
-I hope this all does not discourage you from using it for your own project.
+Over the past decade enough Half-Life projects have sprung up that have violated 
+and abused the GPL, as well as other licenses, thus discouraging entities from
+releasing their sources in fear of such behaviour.
+
+In the hopes of making the community a better place, I WILL take action against
+any violation of our license. I hope that is clear.
+
+If anyone was to willingly distribute content created with the Half-Life SDK
+with this component, it'd violate the Half-Life SDK.
+I recommend that you use this menu without relying on Half-Life file formats.
+FreeCS gets around this by not actually shipping the CS content as part of the
+project.
 
 Thanks to Spike for FTEQCC's advanced features and his engine, FTEQW, that makes
 FreeCS and other projects even possible.
