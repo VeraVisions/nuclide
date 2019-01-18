@@ -6,21 +6,6 @@
 *
 ****/
 
-class path_corner:CBaseTrigger
-{
-	float m_flSpeed;
-	float m_flWait;
-
-	void() path_corner;
-};
-
-void path_corner::path_corner(void)
-{
-	CBaseTrigger::CBaseTrigger();
-	m_flSpeed = 100;
-	m_flWait = 1.0f;
-}
-
 class func_train:CBaseTrigger
 {
 	float m_flSpeed;
@@ -36,6 +21,7 @@ void func_train::Find(void)
 	entity f = find(world, CBaseTrigger::m_strTargetName, m_strTarget);
 
 	if (!f) {
+		print("^1func_train^7: End-Target not found! Removing.\n");
 		remove(this);
 		return;
 	}
@@ -53,16 +39,21 @@ void func_train::Find(void)
 
 void func_train::MoveEnd(void)
 {
-	entity f = find(world, CBaseTrigger::m_strTargetName, m_strTarget);
-	CBaseTrigger p = (CBaseTrigger)f;
-	m_strTarget = p.m_strTargetName;
+	CBaseTrigger f = (CBaseTrigger)find(world, CBaseTrigger::m_strTargetName, m_strTarget);
+	m_strTarget = f.m_strTargetName;
 
 	velocity = [0,0,0];
 }
 
 void func_train::Trigger(void)
 {
+
 	entity f = find(world, CBaseTrigger::m_strTargetName, m_strTarget);
+
+	if (!f) {
+		print("^1func_train^7: Trigger-Target not found! Removing.\n");
+		return;
+	}
 	
 	vector vecWorldPos;
 	vecWorldPos[0] = absmin[0] + ( 0.5 * ( absmax[0] - absmin[0] ) );	
@@ -75,7 +66,10 @@ void func_train::Trigger(void)
 
 	think = MoveEnd;
 	nextthink = (time + flTravelTime);
-	velocity = (vecDifference * (1 / flTravelTime));
+
+	print(sprintf("TRAIN %s SPEED: %v\n", this.classname, (vecDifference * (1 / flTravelTime))));
+	
+	//velocity = (vecDifference * (1 / flTravelTime));
 }
 
 void func_train::func_train(void)
@@ -97,7 +91,6 @@ void func_train::func_train(void)
 	//blocked = Blocked;
 
 	setmodel(this, m_oldModel);
-	setsize(this, mins, maxs);
 	setorigin(this, m_oldOrigin);
 
 	// start trains on the second frame, to make sure their targets have had

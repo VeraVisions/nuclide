@@ -359,6 +359,7 @@ void func_button::Respawn(void)
 	}
 
 	m_iState = STATE_LOWERED;
+	angles = [0,0,0];
 }
 
 void func_button::func_button(void)
@@ -389,5 +390,4 @@ void func_button::func_button(void)
 	}
 
 	func_button::Respawn();
-	angles = [0,0,0];
 }

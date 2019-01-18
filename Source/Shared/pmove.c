@@ -85,11 +85,11 @@ void PMove_Categorize(void)
 
 	contents = PMove_Contents(self.origin + self.mins + [0,0,1]);
 
-	if (contents == CONTENTBIT_WATER) {
+	if (contents & CONTENTBIT_WATER) {
 		contents = CONTENT_WATER;
-	} else if (contents == CONTENTBIT_SLIME) {
+	} else if (contents & CONTENTBIT_SLIME) {
 		contents = CONTENT_SLIME;
-	} else if (contents == CONTENTBIT_LAVA) {
+	} else if (contents & CONTENTBIT_LAVA) {
 		contents = CONTENT_LAVA;
 	}
 

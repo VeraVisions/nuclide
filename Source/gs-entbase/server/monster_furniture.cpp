@@ -37,3 +37,5 @@ void monster_furniture :: monster_furniture ( void )
 	//self.modelflags = MF_ROTATE;
 #endif
 }
+
+CLASSEXPORT(ts_model, monster_furniture)

@@ -117,7 +117,7 @@ void CScrollbar::Input(float type, float x, float y, float devid)
 	if (m_dn_hold) {
 		SetScroll(m_scroll + 1);
 	}
-	
+
 	barheight = m_theight * (m_theight / (m_max * 15));
 	barstep = (m_scroll * 15) * (m_theight / (m_max * 15));
 
