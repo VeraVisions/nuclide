@@ -27,6 +27,7 @@ w_listbox.cpp
 w_servers.cpp
 w_mainbutton.cpp
 w_modetab.cpp
+w_modlist.cpp
 w_pagetab.cpp
 w_pictureswitch.cpp
 w_slider.cpp

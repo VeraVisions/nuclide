@@ -114,7 +114,7 @@ void menu_creategame_init(void)
 
 	create_lbMaps = spawn(CListBox);
 	create_lbMaps.SetPos(384,175);
-	create_lbMaps.SetSize(202,282);
+	create_lbMaps.SetSize(202-16,282);
 	Widget_Add(fn_createshared, create_lbMaps);
 	
 	create_sbMaps = spawn(CScrollbar);

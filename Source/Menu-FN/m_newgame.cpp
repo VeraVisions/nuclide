@@ -17,7 +17,8 @@ void ng_btneasy_start(void)
 {
 	static void ng_btneasy_end(void) {
 		g_menupage = PAGE_MAIN;
-		localcmd("maxplayers 1\nmap c0a0\n");
+		localcmd("maxplayers 1\n");
+		localcmd(sprintf("map %s\n", games[gameinfo_current].startmap));
 	}
 	localsound("../media/launch_upmenu1.wav");
 	header.SetStartEndPos(45,45,70,208);

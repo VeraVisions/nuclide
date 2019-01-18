@@ -39,6 +39,30 @@ typedef struct {
 	void(float evtype, float scanx, float chary, float devid) m_input;
 } menupage_t;
 
+typedef struct
+{
+	string game;
+	string gamedir;
+	string url_info;
+	string url_dl;
+	string version;
+	int size;
+	int svonly;
+	int cldll;
+	string type;
+	string hlversion;
+	int nomodels;
+	string mpentity;
+	string gamedll;
+	string startmap;
+	string trainingmap;
+} gameinfo_t;
+
+var int gameinfo_current = -1;
+int gameinfo_count;
+gameinfo_t *games;
+string(float id, float b) getgamedirinfo = #0;
+
 int g_menupage;
 
 enum {

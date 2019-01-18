@@ -12,12 +12,17 @@ void m_init(void)
 
 	font_console = loadfont( "font", "", "12", -1 );
 	font_label = loadfont( "label", "gfx/shell/mssansserif.ttf", "10 12 14", -1 );
-	font_arial = loadfont( "label", "gfx/shell/arial.ttf", "14", -1 );
+	font_arial = loadfont( "label", "gfx/shell/arial.ttf", "14 11", -1 );
 	font_label_b = loadfont( "label_b", "gfx/shell/arialbd.ttf", "14 12", -1 );
 	font_label_p = loadfont( "label_p", "gfx/shell/arialbd.ttf", "16", -1 );
 
 	localcmd("plug_load ffmpeg\n");
+	
+	/* TODO: Shove these into defaults.cfg instead of forcing them */
 	localcmd("con_textsize -12\n");
+	localcmd("scr_conalpha 1\n");
+	localcmd("cl_idlefps 0\n");
+
 	shaderforname("logo_avi", "{\n{\nvideomap av:media/logo.avi\n}\n}");
 
 	for (int i = 0; i < g_bmp.length; i++) {
@@ -29,12 +34,28 @@ void m_init(void)
 
 	Strings_Init();
 	Colors_Init();
+	games_init();
 	main_init();
 }
 
 void m_shutdown(void)
 {
+	/*int i = 0;
+	for (i = 0; i < g_bmp.length; i++) {
+		freepic(g_bmp[i]);
+	}
 	
+	entity e;
+	i = 1;
+	while ((e = edict_num(i)) != __NULL__) {
+		remove(e);
+		i++;
+	}*/
+
+	memfree(g_sprays);
+	memfree(g_models);
+	memfree(g_maps);
+	memfree(games);
 }
 
 void m_draw(vector screensize)

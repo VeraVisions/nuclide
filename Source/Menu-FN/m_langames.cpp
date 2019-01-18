@@ -133,6 +133,18 @@ void menu_langames_draw(void)
 	Widget_Draw(fn_lan);
 	Master_ResortCache();
 	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_LAN],[460,80], [1,1,1], 1.0f, 1);
+	
+	/* Labels */
+	WLabel_Static(g_menuofs[0] + 282, g_menuofs[1] + 128, m_reslbl[IDS_SERVER_GAMESERVER], 10, 10, [1,1,1],
+					1.0f, 0, font_arial);
+	WLabel_Static(g_menuofs[0] + 377, g_menuofs[1] + 128, m_reslbl[IDS_SERVER_SPEED], 10, 10, [1,1,1],
+					1.0f, 0, font_arial);
+	WLabel_Static(g_menuofs[0] + 422, g_menuofs[1] + 128, m_reslbl[IDS_SERVER_MAP], 10, 10, [1,1,1],
+					1.0f, 0, font_arial);
+	WLabel_Static(g_menuofs[0] + 497, g_menuofs[1] + 128, m_reslbl[IDS_SERVER_GAME], 10, 10, [1,1,1],
+					1.0f, 0, font_arial);
+	WLabel_Static(g_menuofs[0] + 572, g_menuofs[1] + 128, m_reslbl[IDS_SERVER_PLAYERS], 10, 10, [1,1,1],
+					1.0f, 0, font_arial);
 }
 
 void menu_langames_input(float evtype, float scanx, float chary, float devid)

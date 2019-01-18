@@ -61,6 +61,11 @@ void btn_newgame_start(void)
 	header.SetHeader(HEAD_NEWGAME);
 	header.SetExecute(btn_newgame_end);
 }
+void btn_training(void)
+{
+	localcmd("maxplayers 1\n");
+	localcmd(sprintf("map %s\n", games[gameinfo_current].trainingmap));
+}
 void btn_configuration_start(void)
 {
 	static void btn_configuration_end(void) {
@@ -87,12 +92,19 @@ void btn_multiplayer_start(void)
 	header.SetHeader(HEAD_MULTI);
 	header.SetExecute(btn_multiplayer_end);
 }
-
-void btn_training(void)
+void btn_customgame_start(void)
 {
-	localcmd("maxplayers 1\nmap t0a0\n");
+	static void btn_customgame_end(void) {
+		g_menupage = PAGE_CUSTOMGAME;
+	}
+	localsound("../media/launch_upmenu1.wav");
+	header.SetStartEndPos(70,320,45,45);
+	header.SetStartEndSize(156,26,460,80);
+	header.m_lerp = 0.0f;
+	header.m_visible = TRUE;
+	header.SetHeader(HEAD_CUSTOM);
+	header.SetExecute(btn_customgame_end);
 }
-
 void btn_quit(void)
 {
 	main_quitdialog = TRUE;
@@ -119,13 +131,17 @@ void menu_main_init(void)
 
 	main_btnNewGame = spawn(CMainButton);
 	main_btnNewGame.SetImage(BTN_NEWGAME);
-	main_btnNewGame.SetExecute(btn_newgame_start);
+	if (games[gameinfo_current].type != "multiplayer_only") {
+		main_btnNewGame.SetExecute(btn_newgame_start);
+	}
 	main_btnNewGame.SetPos(70,208);
 	Widget_Add(fn_main, main_btnNewGame);
 
 	main_btnTraining = spawn(CMainButton);
 	main_btnTraining.SetImage(BTN_TRAINING);
-	main_btnTraining.SetExecute(btn_training);
+	if (games[gameinfo_current].type != "multiplayer_only") {
+		main_btnTraining.SetExecute(btn_training);
+	}
 	main_btnTraining.SetPos(70,236);
 	Widget_Add(fn_main, main_btnTraining);
 
@@ -137,17 +153,23 @@ void menu_main_init(void)
 
 	main_btnLoadGame = spawn(CMainButton);
 	main_btnLoadGame.SetImage(BTN_LOADGAME);
+	if (games[gameinfo_current].type != "multiplayer_only") {
+		// Loadgame disabled
+	}
 	main_btnLoadGame.SetPos(70,292);
 	Widget_Add(fn_main, main_btnLoadGame);
 
 	main_btnMultiplayer = spawn(CMainButton);
 	main_btnMultiplayer.SetImage(BTN_MULTIPLAYER);
 	main_btnMultiplayer.SetPos(70,320);
-	main_btnMultiplayer.SetExecute(btn_multiplayer_start);
+	if (games[gameinfo_current].type != "singleplayer_only") {
+		main_btnMultiplayer.SetExecute(btn_multiplayer_start);
+	}
 	Widget_Add(fn_main, main_btnMultiplayer);
 
 	main_btnCustomGame = spawn(CMainButton);
 	main_btnCustomGame.SetImage(BTN_CUSTOMGAME);
+	main_btnCustomGame.SetExecute(btn_customgame_start);
 	main_btnCustomGame.SetPos(70,348);
 	Widget_Add(fn_main, main_btnCustomGame);
 
@@ -266,9 +288,12 @@ void menu_main_draw(void)
 		WLabel_Static(235, 440, m_reslbl[IDS_MAIN_QUITHELP], 10, 10,
 						col_help,1.0f, 0, font_label);
 	} else {
-		drawpic([g_menuofs[0],g_menuofs[1] + 70], "logo_avi",
-				g_logosize, [1,1,1], 1.0f);
-		g_logosize = gecko_get_texture_extent("logo_avi");
+		/* Don't even attempt to display the logo.avi otherwise */
+		if (checkcommand("ffmpeg_videobitrate")) {
+			drawpic([g_menuofs[0],g_menuofs[1] + 70], "logo_avi",
+					g_logosize, [1,1,1], 1.0f);
+			g_logosize = gecko_get_texture_extent("logo_avi");
+		}
 
 		Widget_Draw(fn_main);
 		WLabel_Static(235, 216, m_reslbl[IDS_MAIN_NEWGAMEHELP], 10, 10,
