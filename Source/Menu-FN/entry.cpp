@@ -6,6 +6,8 @@
 *
 ****/
 
+var int g_initialized = FALSE;
+
 void m_init(void)
 {
 	vector g_btnsize;
@@ -17,7 +19,7 @@ void m_init(void)
 	font_label_p = loadfont( "label_p", "gfx/shell/arialbd.ttf", "16", -1 );
 
 	localcmd("plug_load ffmpeg\n");
-	
+
 	/* TODO: Shove these into defaults.cfg instead of forcing them */
 	localcmd("con_textsize -12\n");
 	localcmd("scr_conalpha 1\n");
@@ -36,21 +38,20 @@ void m_init(void)
 	Colors_Init();
 	games_init();
 	main_init();
+	g_initialized = TRUE;
 }
 
 void m_shutdown(void)
 {
+	g_initialized = FALSE;
 	/*int i = 0;
 	for (i = 0; i < g_bmp.length; i++) {
 		freepic(g_bmp[i]);
-	}
-	
-	entity e;
-	i = 1;
-	while ((e = edict_num(i)) != __NULL__) {
-		remove(e);
-		i++;
 	}*/
+
+	entity e;
+	while((e=nextent(__NULL__)))
+		remove(e);
 
 	memfree(g_sprays);
 	memfree(g_models);
@@ -64,6 +65,10 @@ void m_draw(vector screensize)
 	frametime = time - oldtime;
 
 	if (!g_active) {
+		return;
+	}
+	
+	if (g_initialized == FALSE) {
 		return;
 	}
 
