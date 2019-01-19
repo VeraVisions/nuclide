@@ -182,16 +182,16 @@ void customgame_btnactivate_start(void)
 	localcmd(sprintf("gamedir \"%s\"\n", games[nextgame].gamedir));
 	// TODO: Re-init important menu bits and bobs.
 
-	m_shutdown();
-	m_init();
+	//m_shutdown();
+	//m_init();
 }
 void customgame_btndeactivate_start(void)
 {
 	localcmd("gamedir \"\"\n");
 	// TODO: Re-init important menu bits and bobs.
 
-	m_shutdown();
-	m_init();
+	//m_shutdown();
+	//m_init();
 }
 
 void customgame_btndone_start(void)
