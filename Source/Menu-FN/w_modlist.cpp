@@ -107,7 +107,7 @@ void CModList::Input(float type, float x, float y, float devid)
 	pos[1] = m_y;
 
 	for ( int i = m_scroll; i < (visible + m_scroll); i++) {
-		if (gameinfo_current == i) {
+		if (games[i].gamedir == GAME_DIR) {
 			continue;
 		}
 		if (Util_CheckMouse(pos[0], pos[1], m_size[0], 29)) {
