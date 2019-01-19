@@ -1,6 +1,8 @@
 CC=fteqcc
 
 qc-progs:
-	$(CC) Client/progs.src
-	$(CC) Server/progs.src
-	$(CC) Menu-FN/progs.src
+	$(CC) menu-fn/progs.src
+	$(CC) client/valve.src
+	$(CC) server/valve.src
+	$(CC) client/cstrike.src
+	$(CC) server/cstrike.src

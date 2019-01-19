@@ -1,0 +1,36 @@
+#pragma target fte
+#pragma progs_dat  "../../valve/progs.dat"
+
+#define SSQC
+#define VALVE
+
+#includelist
+../builtins.h
+../defs.h
+../math.h
+../materials.h
+../events.h
+../entities.h
+defs.h
+
+../gs-entbase/server.src
+
+../shared/effects.c
+../shared/spraylogo.cpp
+../shared/pmove.c
+
+valve/player.c
+valve/spectator.c
+
+valve/client.c
+client.c
+
+valve/server.c
+server.c
+
+damage.c
+vox.c
+
+footsteps.c
+entry.c
+#endlist

@@ -1,8 +1,7 @@
 FTEMANIFEST 1
-game fn
+game valve
 name "FTEQW"
 protocolname "FTEQW"
 basegame logos
 basegame valve
-basegame fn
 disablehomedir 1
