@@ -24,6 +24,9 @@ void m_init(void)
 	localcmd("con_textsize -12\n");
 	localcmd("scr_conalpha 1\n");
 	localcmd("cl_idlefps 0\n");
+	localcmd("gl_font 0\n");
+	registercommand("menu_customgame");
+
 
 	shaderforname("logo_avi", "{\n{\nvideomap av:media/logo.avi\n}\n}");
 
@@ -160,6 +163,9 @@ float m_consolecommand(string cmd)
 {
 	tokenize(cmd);
 	switch (argv(0)) {
+		case "menu_customgame":
+			g_menupage = PAGE_CUSTOMGAME;
+			break;
 		case "togglemenu":
 			m_display();
 			break;

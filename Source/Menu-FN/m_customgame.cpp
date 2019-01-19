@@ -72,7 +72,7 @@ void games_init(void)
 
 	for (gameidx = 0; (gamedirname = getgamedirinfo(gameidx, 0)); gameidx++) {
 		gamedescription = getgamedirinfo(gameidx, 1);
-		county = tokenize(gamedescription);
+		county = tokenize_console(gamedescription);
 		
 		/* Fill in the defaults */
 		games[gameidx].game = gamedirname;
@@ -174,12 +174,10 @@ CMainButton customgame_btnDone;
 void customgame_btnactivate_start(void)
 {
 	int nextgame = customgame_lbMods.GetSelected();
-	if (!nextgame) {
-		return;
-	}
-	
+
 	gameinfo_current = nextgame;
 	localcmd(sprintf("gamedir \"%s\"\n", games[nextgame].gamedir));
+	localcmd("snd_restart\nwait\nmenu_restart\nmenu_customgame\n");
 	// TODO: Re-init important menu bits and bobs.
 
 	//m_shutdown();
