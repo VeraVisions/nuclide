@@ -186,10 +186,7 @@ void customgame_btnactivate_start(void)
 void customgame_btndeactivate_start(void)
 {
 	localcmd("gamedir \"\"\n");
-	// TODO: Re-init important menu bits and bobs.
-
-	//m_shutdown();
-	//m_init();
+	localcmd("snd_restart\nwait\nmenu_restart\nmenu_customgame\n");
 }
 
 void customgame_btndone_start(void)
