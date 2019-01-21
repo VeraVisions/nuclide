@@ -6,8 +6,6 @@
 *
 ****/
 
-#include "vgui.h"
-
 string sClassInfo[64] = {
 	_("VGUI_T1_TITLE"), "gfx/vgui/640_terror",
 	_("VGUI_T1_TXT1"),

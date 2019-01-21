@@ -6,50 +6,67 @@
 *
 ****/
 
-void Valve_ClientConnect(void)
+void Game_ClientConnect(void)
 {
-	bprint(sprintf("%s connected\n", self.classname));
+	bprint(sprintf("%s connected\n", self.netname));
 }
-void Valve_ClientDisconnect(void)
+void Game_ClientDisconnect(void)
 {
-	bprint(sprintf("%s disconnected\n", self.classname));
+	bprint(sprintf("%s disconnected\n", self.netname));
 }
-void Valve_ClientKill(void)
+void Game_ClientKill(void)
 {
 	
 }
 
-void Valve_PlayerPreThink(void)
+void Game_PlayerPreThink(void)
 {
 	
 }
-void Valve_PlayerPostThink(void)
+void Game_PlayerPostThink(void)
 {
-	
+	self.SendFlags = 1;
 }
-void Valve_SetChangeParms(void)
+void Game_RunClientCommand(void)
 {
-	
-}
-void Valve_RunClientCommand(void)
-{
+	Footsteps_Update();
 	QPhysics_Run(self);
 }
 
-void Valve_PutClientInServer(void)
+void Game_DecodeChangeParms(void)
+{
+	g_landmarkpos[0] = parm1;
+	g_landmarkpos[1] = parm2;
+	g_landmarkpos[2] = parm3;
+	self.angles[0] = parm4;
+	self.angles[1] = parm5;
+	self.angles[2] = parm6;
+}
+void Game_SetChangeParms(void)
+{
+	parm1 = g_landmarkpos[0];
+	parm2 = g_landmarkpos[1];
+	parm3 = g_landmarkpos[2];
+	parm4 = self.angles[0];
+	parm5 = self.angles[1];
+	parm6 = self.angles[2];
+}
+
+void Game_PutClientInServer(void)
 {
 	if ( cvar( "sv_playerslots" ) == 1 ) {
 		entity spot;
 		self.SendEntity = Player_SendEntity;
 
-		//Valve_DecodeChangeParms();
+		Game_DecodeChangeParms();
 
 		if (startspot) {
-			self.origin = Landmark_GetSpot();
+			setorigin(self, Landmark_GetSpot());
 			self.fixangle = TRUE;
 		} else {
 			spot = find( world, classname, "info_player_start" );
-			self.origin = spot.origin;
+			//self.origin = spot.origin;
+			setorigin(self, spot.origin);
 			self.angles = spot.angles;
 			self.fixangle = TRUE;
 		}
@@ -57,7 +74,7 @@ void Valve_PutClientInServer(void)
 	
 	self.classname = "player";
 	self.health = self.max_health = 100;
-	forceinfokey( self, "*dead", "0" );
+	//forceinfokey( self, "*dead", "0" );
 	self.takedamage = DAMAGE_YES;
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_WALK;
@@ -71,12 +88,12 @@ void Valve_PutClientInServer(void)
 	forceinfokey( self, "*spec", "0" );
 }
 
-void Valve_ParseClientCommand(string cmd)
+void Game_ParseClientCommand(string cmd)
 {
-
+	clientcommand(self, cmd);
 }
 
-void Valve_SetNewParms(void)
+void Game_SetNewParms(void)
 {
 
 }

@@ -6,12 +6,17 @@
 *
 ****/
 
-void Valve_StartFrame(void)
+void Game_StartFrame(void)
 {
 	
 }
 
-float Valve_ConsoleCmd(string cmd)
+float Game_ConsoleCmd(string cmd)
 {
+	return FALSE;
+}
 
+void Game_Worldspawn(void)
+{
+	
 }

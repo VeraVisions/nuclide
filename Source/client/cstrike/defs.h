@@ -6,50 +6,13 @@
 *
 ****/
 
-// flags for 2d drawing
-#define DRAWFLAG_NORMAL	0
-#define DRAWFLAG_ADDITIVE 1
-#define DRAWFLAG_MODULATE 2
-#define DRAWFLAG_2XMODULATE 3
-
-// Undocumented printcall types
-#define	PRINT_LOW		0
-#define	PRINT_MEDIUM	1
-#define	PRINT_HIGH		2
-#define	PRINT_CHAT		3
-
-var float FONT_16;
-var float FONT_CON;
-
 // Clientside cvars
-var vector autocvar_con_color = '255 150 0'; // autocvar of "con_color"
-var vector autocvar_vgui_color = '255 170 0'; // autocvar of "vgui_color"
 var vector autocvar_cross_color = '0 255 0'; // autocvar of "cross_color"
-var float autocvar_cl_bob = 0;
-var float autocvar_v_bob = 0.01;
-var float autocvar_v_bobcycle = 0.8;
-var float autocvar_v_bobup = 0.5;
-var int autocvar_v_bobclassic = FALSE;
-var int autocvar_v_lefthanded = FALSE;
-var vector autocvar_v_gunofs = [0,0,0];
-var int autocvar_cl_thirdperson = FALSE;
-var int autocvar_cl_radar = 1;
-var int autocvar_cl_smoothstairs = TRUE;
 
-var string autocvar_cl_logofile = "lambda";
-var vector autocvar_cl_logocolor = '255 0 0';
+var int autocvar_cl_radar = 1;
 
 // Particle stuff
-var float PARTICLE_SPARK;
-var float PARTICLE_PIECES_BLACK;
-var float PARTICLE_SMOKE_GREY;
-var float PARTICLE_SMOKE_BROWN;
 var float PARTICLE_SMOKEGRENADE;
-var float PARTICLE_BLOOD;
-var float DECAL_SHOT;
-var float DECAL_GLASS;
-
-var float SHADER_CULLED;
 
 .float flUpAngle;
 
@@ -63,6 +26,39 @@ string sShellModel [ 4 ] = {
 	"models/rshell_big.mdl",
 	"models/shotgunshell.mdl"
 };
+
+
+var string autocvar_skins_dir = "";
+string sViewModels[ CS_WEAPON_COUNT - 1 ] = {
+	"v_knife.mdl",
+	"v_usp.mdl",
+	"v_glock18.mdl",
+	"v_deagle.mdl",
+	"v_p228.mdl",
+	"v_elite.mdl",
+	"v_fiveseven.mdl",
+	"v_m3.mdl",
+	"v_xm1014.mdl",
+	"v_mp5.mdl",
+	"v_p90.mdl",
+	"v_ump45.mdl",
+	"v_mac10.mdl",
+	"v_tmp.mdl",
+	"v_ak47.mdl",
+	"v_sg552.mdl",
+	"v_m4a1.mdl",
+	"v_aug.mdl",
+	"v_scout.mdl",
+	"v_awp.mdl",
+	"v_g3sg1.mdl",
+	"v_sg550.mdl",
+	"v_m249.mdl",
+	"v_c4.mdl",
+	"v_flashbang.mdl",
+	"v_hegrenade.mdl",
+	"v_smokegrenade.mdl"
+};
+
 
 struct
 {
@@ -116,25 +112,6 @@ struct
 	float fHUDWeaponSelected;
 } seats[4], *pSeat;
 
-float fInputSendNext;
-
-vector vVideoMins;		//
-vector vVideoResolution;	// Updated every frame
-
-// Input globals, feel free to use them since they are updated upon input
-float fInputKeyCode;
-float fInputKeyASCII;
-float fInputKeyDown;
-
-var int iInputAttack2;
-var int iInputReload;
-var int iInputUse;
-var int iInputDuck;
-
-// Input globals for the mouse
-float fMouseClick;
-vector vMousePos;
-
 // Sound Stuff
 //.string sSoundSample;
 //.float fVolume;
@@ -142,10 +119,6 @@ vector vMousePos;
 void View_AddPunchAngle( vector vAdd );
 void View_PlayAnimation( int iSequence );
 string HUD_GetChatColorHEX( float fTeam );
-
-// This actually belongs in Builtins.h since its an undocumented global
-.float maxframe;
-float clframetime;
 
 // For the player entity
 .entity eGunModel;
@@ -157,12 +130,3 @@ float fWeaponEventPlayer;
 
 void Animation_ShootWeapon( entity ePlayer );
 void Animation_ReloadWeapon( entity ePlayer );
-
-void CSQC_DrawText( vector vPos, string sString, vector vSize, vector vColor, float fAlpha, float fFlags, float fFont ) {
-	drawfont = fFont;
-	drawstring( vPos, sString, vSize, vColor, fAlpha, fFlags );
-}
-
-#if defined(CSQC)
-int(float playernum, string keyname, optional void *outptr, int size) getplayerkeyblob = #0;
-#endif

@@ -6,62 +6,69 @@
 *
 ****/
 
-.float framerate;
-
-void Sprite_AnimateThink(void)
+class sprite
 {
-	if( self.frame >= self.maxframe ) {
-		if (self.health == 1) {
-			remove(self);
+	float framerate;
+	int loops;
+	int maxframe; 
+	
+	virtual void() think;
+};
+
+void sprite::think(void)
+{
+	if (frame >= maxframe) {
+		if (loops == 1) {
+			remove(this);
 		} else {
-			self.frame = 0;
+			frame = 0;
 		}
 	} else {
-		self.frame += 1;
+		frame += 1;
 	}
 
-	self.nextthink = time + ( 1 / self.framerate );
+	nextthink = time + (1 / framerate);
 }
 	
 void Sprite_Animated(void)
 {
-	self.origin_x = readcoord();
-	self.origin_y = readcoord();
-	self.origin_z = readcoord();
-	self.modelindex = readfloat();
-	self.framerate = readfloat();
-	self.scale = readfloat();
-	self.alpha = readfloat();
-	self.effects = readfloat();
-	self.colormod[0] = readfloat();
-	self.colormod[1] = readfloat();
-	self.colormod[2] = readfloat();
-	self.think = Sprite_AnimateThink;
-	self.drawmask = MASK_ENGINE;
-	self.nextthink = time + ( 1 / self.framerate );
-	self.maxframe = modelframecount( self.modelindex );
-	self.health = 0; /* repeats */
-	setorigin(self, self.origin);
+	spawnfunc_sprite();
+	sprite me = (sprite)self;
+	me.origin_x = readcoord();
+	me.origin_y = readcoord();
+	me.origin_z = readcoord();
+	me.modelindex = readfloat();
+	me.framerate = readfloat();
+	me.scale = readfloat();
+	me.alpha = readfloat();
+	me.effects = readfloat();
+	me.colormod[0] = readfloat();
+	me.colormod[1] = readfloat();
+	me.colormod[2] = readfloat();
+	me.drawmask = MASK_ENGINE;
+	me.nextthink = time + ( 1 / me.framerate );
+	me.maxframe = modelframecount( me.modelindex );
+	me.loops = 0; /* repeats */
+	setorigin(me, me.origin);
 }
 
 void Sprite_ParseEvent(void)
 {
-	entity sprite = spawn();
-	sprite.origin[0] = readcoord();
-	sprite.origin[1] = readcoord();
-	sprite.origin[2] = readcoord();
-	sprite.modelindex = readfloat();
-	sprite.framerate = readfloat();
-	sprite.scale = readfloat();
-	sprite.alpha = readfloat();
-	sprite.effects = readfloat();
-	sprite.colormod[0] = readfloat();
-	sprite.colormod[1] = readfloat();
-	sprite.colormod[2] = readfloat();
-	sprite.think = Sprite_AnimateThink;
-	sprite.drawmask = MASK_ENGINE;
-	sprite.nextthink = time + ( 1 / self.framerate );
-	sprite.maxframe = modelframecount( self.modelindex );
-	sprite.health = 1; /* does not repeat */
-	setorigin(sprite, self.origin);
+	sprite spr = spawn(sprite);
+	spr.origin[0] = readcoord();
+	spr.origin[1] = readcoord();
+	spr.origin[2] = readcoord();
+	spr.modelindex = readfloat();
+	spr.framerate = readfloat();
+	spr.scale = readfloat();
+	spr.alpha = readfloat();
+	spr.effects = readfloat();
+	spr.colormod[0] = readfloat();
+	spr.colormod[1] = readfloat();
+	spr.colormod[2] = readfloat();
+	spr.drawmask = MASK_ENGINE;
+	spr.nextthink = time + ( 1 / spr.framerate );
+	spr.maxframe = modelframecount( spr.modelindex );
+	spr.loops = 1; /* does not repeat */
+	setorigin(spr, spr.origin);
 }

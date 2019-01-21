@@ -6,8 +6,6 @@
 *
 ****/
 
-#include "vgui.h"
-
 // Radio Commands
 #define VGUIRADIO_COMMANDS 6
 float fRadioCommands[ VGUIRADIO_COMMANDS ] = {
@@ -73,7 +71,7 @@ void VGUI_Radio_Draw( void ) {
 	if ( pSeat->fVGUI_Display == VGUI_RADIO1 ) {
 		vSize_x = 312;
 		vSize_y = ( 10 * VGUIRADIO_COMMANDS ) + 64;
-		vPos = vVideoMins + [ 16, vVideoResolution_y - 148 - vSize_y ];
+		vPos = video_mins + [ 16, video_res_y - 148 - vSize_y ];
 		
 		VGUI_WindowSmall( _("RADIO_TITLE1"), vPos, vSize );
 		
@@ -86,7 +84,7 @@ void VGUI_Radio_Draw( void ) {
 	} else if ( pSeat->fVGUI_Display == VGUI_RADIO2 ) {
 		vSize_x = 312;
 		vSize_y = ( 10 * VGUIRADIO_GROUPCOMMANDS ) + 64;
-		vPos = vVideoMins + [ 16, vVideoResolution_y - 148 - vSize_y ];
+		vPos = video_mins + [ 16, video_res_y - 148 - vSize_y ];
 		
 		VGUI_WindowSmall( _("RADIO_TITLE2"), vPos, vSize );
 		
@@ -99,7 +97,7 @@ void VGUI_Radio_Draw( void ) {
 	} else {
 		vSize_x = 312;
 		vSize_y = ( 10 * VGUIRADIO_RESPONSES ) + 64;
-		vPos = vVideoMins + [ 16, vVideoResolution_y - 148 - vSize_y ];
+		vPos = video_mins + [ 16, video_res_y - 148 - vSize_y ];
 		
 		VGUI_WindowSmall( _("RADIO_TITLE3"), vPos, vSize );
 		

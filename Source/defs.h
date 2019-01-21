@@ -1,3 +1,10 @@
+/***
+*
+*	Copyright (c) 2016-2019 Marco 'eukara' Hladik. All rights reserved.
+*
+*	See the file LICENSE attached with the sources for usage details.
+*
+****/
 
 const vector VEC_HULL_MIN = '-16 -16 -36';
 const vector VEC_HULL_MAX = '16 16 36';

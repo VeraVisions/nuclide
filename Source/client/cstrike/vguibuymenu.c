@@ -6,8 +6,6 @@
 *
 ****/
 
-#include "vgui.h"
-
 vguiweaponobject_t vguiWeaponTable[CS_WEAPON_COUNT] = {
 	{ _("WEAPON_NONE"), "" },
 	{ _("WEAPON_KNIFE"), "" },

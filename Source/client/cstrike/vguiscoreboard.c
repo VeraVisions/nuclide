@@ -6,8 +6,6 @@
 *
 ****/
 
-#include "vgui.h"
-
 string sScoreTeams[4] = {
 	_("SCORE_TITLE_SPECTATOR"),
 	_("SCORE_TITLE_T"),
@@ -103,10 +101,10 @@ void VGUI_Scores_Show( void ) {
 	vector vSize;
 	
 	vSize_x = 540;
-	vSize_y = vVideoResolution_y - 112;
+	vSize_y = video_res_y - 112;
 	
-	vMainPos = vVideoMins;
-	vMainPos_x += ( vVideoResolution_x / 2 ) - (vSize_x / 2);
+	vMainPos = video_mins;
+	vMainPos_x += ( video_res_x / 2 ) - (vSize_x / 2);
 	vMainPos_y += 56;
 		
 	// Draw the background

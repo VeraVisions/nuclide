@@ -6,3 +6,7 @@
 *
 ****/
 
+void Empty(void)
+{
+	
+}

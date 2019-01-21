@@ -13,7 +13,7 @@ SpectatorThink
 Run every frame on every spectator
 =================
 */
-void Cstrike_SpectatorThink( void ) {
+void Game_SpectatorThink( void ) {
 	self.SendFlags = 1;
 }
 
@@ -24,7 +24,7 @@ ClientKill
 Suicide command 'kill' executes this function.
 =================
 */
-void Cstrike_ClientKill( void ) {
+void Game_ClientKill( void ) {
 	Damage_Apply( self, self, self.health, self.origin, TRUE );
 }
 
@@ -35,7 +35,7 @@ ClientConnect
 Run whenever a new client joins
 =================
 */
-void Cstrike_ClientConnect( void ) {}
+void Game_ClientConnect( void ) {}
 
 /*
 =================
@@ -44,7 +44,7 @@ SpectatorConnect
 Called when a spectator joins the game
 =================
 */
-void Cstrike_SpectatorConnect( void ) {
+void Game_SpectatorConnect( void ) {
 	//Spawn_MakeSpectator();
 	//Spawn_ObserverCam();
 	ClientConnect();
@@ -58,7 +58,7 @@ SpectatorDisconnect
 Called when a spectator leaves the game
 =================
 */
-void Cstrike_SpectatorDisconnect( void ) {
+void Game_SpectatorDisconnect( void ) {
 	Spray_RemoveAll( self );
 }
 
@@ -69,7 +69,7 @@ ClientDisconnect
 Run whenever a client quits
 =================
 */
-void Cstrike_ClientDisconnect( void ) {
+void Game_ClientDisconnect( void ) {
 	// We were part of the session
 	self.health = 0;
 	Rules_CountPlayers();
@@ -77,7 +77,7 @@ void Cstrike_ClientDisconnect( void ) {
 	Spray_RemoveAll( self );
 }
 
-void Cstrike_DecodeChangeParms(void)
+void Game_DecodeChangeParms(void)
 {
 	g_landmarkpos[0] = parm1;
 	g_landmarkpos[1] = parm2;
@@ -86,7 +86,7 @@ void Cstrike_DecodeChangeParms(void)
 	self.angles[1] = parm5;
 	self.angles[2] = parm6;
 }
-void Cstrike_SetChangeParms(void)
+void Game_SetChangeParms(void)
 {
 	parm1 = g_landmarkpos[0];
 	parm2 = g_landmarkpos[1];
@@ -103,13 +103,13 @@ PutClientInServer
 Puts a client into the world.
 =================
 */
-void Cstrike_PutClientInServer( void ) {
-	
+void Game_PutClientInServer(void)
+{
 	if ( cvar( "sv_playerslots" ) == 1 ) {
 		entity spot;
 		self.SendEntity = Player_SendEntity;
 
-		Cstrike_DecodeChangeParms();
+		Game_DecodeChangeParms();
 
 		if (startspot) {
 			self.origin = Landmark_GetSpot();
@@ -171,7 +171,7 @@ SV_RunClientCommand
 Funtion that can interrupt client commands before physics are run
 =================
 */
-void Cstrike_RunClientCommand( void ) {
+void Game_RunClientCommand( void ) {
 	/*if (clienttype(self) == CLIENTTYPE_BOT) {
 		((CBot)self).RunAI();
 	}*/
@@ -194,7 +194,7 @@ void Cstrike_RunClientCommand( void ) {
 	Input_Handle();
 }
 
-void Cstrike_SetNewParms(void)
+void Game_SetNewParms(void)
 {
 
 }
@@ -206,7 +206,8 @@ Client_SendEvent
 Send a game event
 =================
 */
-void Client_SendEvent( entity eClient, float fEVType ) {
+void Client_SendEvent( entity eClient, float fEVType )
+{
 	Weapon_UpdateCurrents();
 	
 	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );

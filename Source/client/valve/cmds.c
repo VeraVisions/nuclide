@@ -6,3 +6,11 @@
 *
 ****/
 
+float Game_ConsoleCommand(void)
+{
+	switch(argv(0)) {
+		default:
+		return FALSE;
+	}
+	return TRUE;
+}

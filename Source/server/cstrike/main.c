@@ -28,7 +28,7 @@ Intercepts 'cmd' calls. We use it to intercept
 chat messages and handle distribution ourselves.
 =================
 */
-void Cstrike_ParseClientCommand( string sCommand ) {
+void Game_ParseClientCommand( string sCommand ) {
 	tokenize( sCommand );
 
 	if ( argv( 1 ) == "timeleft" ) {
@@ -70,7 +70,7 @@ void Cstrike_ParseClientCommand( string sCommand ) {
 	clientcommand( self, sCommand );
 }
 
-float Cstrike_ConsoleCmd( string sCommand ) {
+float Game_ConsoleCmd( string sCommand ) {
 	/*CBot bot;
 	if ( !self ) {
 		for ( other = world; ( other = find( other, classname, "player" ) ); ) {
@@ -194,7 +194,7 @@ StartFrame
 Runs every frame... by worldspawn?
 =================
 */
-void Cstrike_StartFrame( void ) {
+void Game_StartFrame( void ) {
 	// We've got hostages, but no rescue zones, create some
 	if ( !iRescueZones && iHostagesMax > 0 ) {
 		Game_CreateRescueZones();
@@ -235,7 +235,7 @@ It's the map entity, literally
 =================
 */
 
-void Cstrike_worldspawn(void)
+void Game_Worldspawn(void)
 {
 	string sTemp;
 	int iMOTDLines = 0;
@@ -543,5 +543,4 @@ void Cstrike_worldspawn(void)
 	iBombRadius = 1024;
 	localcmd(sprintf("serverinfo slots %d\n", cvar("sv_playerslots")));
 	localcmd("teamplay 1\n");
-	PMove_Init();
 }

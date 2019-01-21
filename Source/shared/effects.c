@@ -17,22 +17,12 @@ void Effect_CreateExplosion( vector vPos ) {
 	msg_entity = self;
 	multicast( vPos, MULTICAST_PVS );
 #else
-	
-	static void Effect_CreateExplosion_Animate( void ) {
-		if ( self.frame >= self.maxframe ) {
-			remove( self );
-		} else {
-			self.frame += 1;
-		}
-		self.nextthink = time + 0.05f;
-	}
-	
-	entity eExplosion = spawn();
+	sprite eExplosion = spawn(sprite);
 	setorigin( eExplosion, vPos );
 	setmodel( eExplosion, "sprites/fexplo.spr" );
 	sound( eExplosion, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 3 ) + 3 ), 1, ATTN_NORM );
 	
-	eExplosion.think = Effect_CreateExplosion_Animate;
+	//eExplosion.think = Effect_CreateExplosion_Animate;
 	eExplosion.nextthink = time + 0.05f;
 	eExplosion.effects = EF_ADDITIVE;
 	eExplosion.drawmask = MASK_ENGINE;
@@ -106,31 +96,6 @@ void Effect_CreateSmoke( vector vPos ) {
 	eSmoke.frame = 200;
 	eSmoke.skin = getstatf( STAT_GAMETIME );
 #endif
-}
-#endif
-
-#ifdef CSQC
-.float framerate;
-void Effect_AnimatedSprite( vector vPos, float fIndex, float fFPS, float fScale, float fAlpha, float fEffects ) {
-	static void Effect_AnimatedSprite_Animate( void ) {
-		if( self.frame >= self.maxframe ) {
-			self.frame = 0;
-		} else {
-			self.frame += 1;
-		}
-		
-		self.nextthink = time + ( 1 / self.framerate );
-	}
-	self.modelindex = fIndex;
-	setorigin( self, vPos );
-	self.scale = fScale;
-	self.alpha = fAlpha;
-	self.effects = fEffects;
-	self.framerate = fFPS;
-	self.think = Effect_AnimatedSprite_Animate;
-	self.drawmask = MASK_ENGINE;
-	self.nextthink = time + ( 1 / self.framerate );
-	self.maxframe = modelframecount( self.modelindex );
 }
 #endif
 

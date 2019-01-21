@@ -12,154 +12,70 @@ void main(void)
 
 void StartFrame(void)
 {
-#ifdef CSTRIKE
-	Cstrike_StartFrame();
-#endif
-
-#ifdef VALVE
-	Valve_StartFrame();
-#endif
+	Game_StartFrame();
 }
 
 void ClientConnect(void)
 {
-#ifdef CSTRIKE
-	Cstrike_ClientConnect();
-#endif
-
-#ifdef VALVE
-	Valve_ClientConnect();
-#endif
+	Game_ClientConnect();
 }
 
 void ClientDisconnect(void)
 {
-#ifdef CSTRIKE
-	Cstrike_ClientDisconnect();
-#endif
-
-#ifdef VALVE
-	Valve_ClientDisconnect();
-#endif
+	Game_ClientDisconnect();
 }
 
 void ClientKill(void)
 {
-#ifdef CSTRIKE
-	Cstrike_ClientKill();
-#endif
-
-#ifdef VALVE
-	Valve_ClientKill();
-#endif
+	Game_ClientKill();
 }
 
 void SpectatorThink(void)
 {
-#ifdef CSTRIKE
-	Cstrike_SpectatorThink();
-#endif
-
-#ifdef VALVE
-	Valve_SpectatorThink();
-#endif
+	Game_SpectatorThink();
 }
 void SpectatorConnect(void)
 {
-#ifdef CSTRIKE
-	Cstrike_SpectatorConnect();
-#endif
-
-#ifdef VALVE
-	Valve_SpectatorConnect();
-#endif
+	Game_SpectatorConnect();
 }
 void SpectatorDisconnect(void)
 {
-#ifdef CSTRIKE
-	Cstrike_SpectatorDisconnect();
-#endif
-
-#ifdef VALVE
-	Valve_SpectatorDisconnect();
-#endif
+	Game_SpectatorDisconnect();
 }
 
 void PutClientInServer(void)
 {
-#ifdef CSTRIKE
-	Cstrike_PutClientInServer();
-#endif
-
-#ifdef VALVE
-	Valve_PutClientInServer();
-#endif
+	Game_PutClientInServer();
 }
 
 void PlayerPreThink(void)
 {
-#ifdef CSTRIKE
-	Cstrike_PlayerPreThink();
-#endif
-
-#ifdef VALVE
-	Valve_PlayerPreThink();
-#endif
+	Game_PlayerPreThink();
 }
 
 void PlayerPostThink(void)
 {
-#ifdef CSTRIKE
-	Cstrike_PlayerPostThink();
-#endif
-
-#ifdef VALVE
-	Valve_PlayerPostThink();
-#endif
+	Game_PlayerPostThink();
 }
 
 void SetNewParms(void)
 {
-#ifdef CSTRIKE
-	Cstrike_SetNewParms();
-#endif
-
-#ifdef VALVE
-	Valve_SetNewParms();
-#endif
+	Game_SetNewParms();
 }
 
 void SetChangeParms(void)
 {
-#ifdef CSTRIKE
-	Cstrike_SetChangeParms();
-#endif
-
-#ifdef VALVE
-	Valve_SetChangeParms();
-#endif
+	Game_SetChangeParms();
 }
 
 void SV_RunClientCommand( void )
 {
-#ifdef CSTRIKE
-	Cstrike_RunClientCommand();
-#endif
-
-#ifdef VALVE
-	Valve_RunClientCommand();
-#endif
+	Game_RunClientCommand();
 }
 
 void SV_ParseClientCommand(string cmd)
 {
-#ifdef CSTRIKE
-	Cstrike_ParseClientCommand(cmd);
-#endif
-
-#ifdef VALVE
-	Valve_ParseClientCommand(cmd);
-#endif
+	Game_ParseClientCommand(cmd);
 }
 
 void worldspawn(void)
@@ -170,11 +86,11 @@ void worldspawn(void)
 		return;
 	}
 	g_initialized = TRUE;
-	
+
 	// Let's load materials.txt because someone thought this was the best idea
 	filestream fileMaterial = fopen( "sound/materials.txt", FILE_READ );
 	hashMaterials = hash_createtab( 512, HASH_ADD );
-	
+
 	if ( fileMaterial >= 0 ) {
 		while ( ( sTemp = fgets( fileMaterial ) ) ) {			
 			// Tokenize and just parse this stuff in
@@ -187,10 +103,11 @@ void worldspawn(void)
 		error( "Failed to load sound/materials.txt!\n" );	
 	}
 
+	PMove_Init();
 	precache_sound( "weapons/explode3.wav" );
 	precache_sound( "weapons/explode4.wav" );
 	precache_sound( "weapons/explode5.wav" );
-	
+
 	precache_sound( "debris/glass1.wav" );
 	precache_sound( "debris/glass2.wav" );
 	precache_sound( "debris/glass3.wav" );
@@ -209,47 +126,47 @@ void worldspawn(void)
 	precache_sound( "debris/concrete1.wav" );
 	precache_sound( "debris/concrete2.wav" );
 	precache_sound( "debris/concrete3.wav" );
-	
+
 	precache_sound( "player/pl_metal1.wav" );
 	precache_sound( "player/pl_metal2.wav" );
 	precache_sound( "player/pl_metal3.wav" );
 	precache_sound( "player/pl_metal4.wav" );
-	
+
 	precache_sound( "player/pl_duct1.wav" );
 	precache_sound( "player/pl_duct2.wav" );
 	precache_sound( "player/pl_duct3.wav" );
 	precache_sound( "player/pl_duct4.wav" );
-	
+
 	precache_sound( "player/pl_dirt1.wav" );
 	precache_sound( "player/pl_dirt2.wav" );
 	precache_sound( "player/pl_dirt3.wav" );
 	precache_sound( "player/pl_dirt4.wav" );
-	
+
 	precache_sound( "player/pl_slosh1.wav" );
 	precache_sound( "player/pl_slosh2.wav" );
 	precache_sound( "player/pl_slosh3.wav" );
 	precache_sound( "player/pl_slosh4.wav" );
-	
+
 	precache_sound( "player/pl_tile1.wav" );
 	precache_sound( "player/pl_tile2.wav" );
 	precache_sound( "player/pl_tile3.wav" );
 	precache_sound( "player/pl_tile4.wav" );
-	
+
 	precache_sound( "player/pl_grate1.wav" );
 	precache_sound( "player/pl_grate2.wav" );
 	precache_sound( "player/pl_grate3.wav" );
 	precache_sound( "player/pl_grate4.wav" );
-	
+
 	precache_sound( "player/pl_snow1.wav" );
 	precache_sound( "player/pl_snow2.wav" );
 	precache_sound( "player/pl_snow3.wav" );
 	precache_sound( "player/pl_snow4.wav" );
-	
+
 	precache_sound( "player/pl_step1.wav" );
 	precache_sound( "player/pl_step2.wav" );
 	precache_sound( "player/pl_step3.wav" );
 	precache_sound( "player/pl_step4.wav" );
-	
+
 	precache_sound( "items/9mmclip1.wav" );
 	precache_sound( "items/gunpickup2.wav" );
 	precache_sound( "common/wpn_select.wav" );
@@ -268,10 +185,12 @@ void worldspawn(void)
 	lightstyle( 9, "aaaaaaaazzzzzzzz" );
 	lightstyle( 10, "mmamammmmammamamaaamammma" );
 	lightstyle( 11, "abcdefghijklmnopqrrqponmlkjihgfedcba" );
-	
-#ifdef CSTRIKE
-	Cstrike_worldspawn();
-#elif VALVE
-	Valve_worldspawn();
-#endif
+
+	Game_Worldspawn();
 }
+
+float ConsoleCmd(string cmd)
+{
+	return Game_ConsoleCmd(cmd);
+}
+

@@ -6,8 +6,6 @@
 *
 ****/
 
-#include "vgui.h"
-
 // Menus with their window titles and draw functions
 vguiwindow_t vguiMenus[11] = {
 	{ _("VGUI_TITLE_MOTD"), VGUI_MessageOfTheDay },
@@ -45,9 +43,9 @@ float CSQC_VGUI_Draw( void ) {
 	}
 
 	// Align the window to the center
-	vVGUIWindowPos = vVideoMins;
-	vVGUIWindowPos_x += ( vVideoResolution_x / 2 ) - 320;
-	vVGUIWindowPos_y += ( vVideoResolution_y / 2 ) - 240;
+	vVGUIWindowPos = video_mins;
+	vVGUIWindowPos_x += ( video_res_x / 2 ) - 320;
+	vVGUIWindowPos_y += ( video_res_y / 2 ) - 240;
 	VGUI_Window( vguiMenus[ pSeat->fVGUI_Display - 1 ].sTitle, vVGUIWindowPos, '640 480 0' );
 
 	iVGUIKey = 48;

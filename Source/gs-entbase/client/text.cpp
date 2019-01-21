@@ -41,9 +41,9 @@ void GameText_Draw(void)
 		strwidth = stringwidth(g_textchannels[i].m_strMessage, TRUE, [12,12]);
 
 		if (g_textchannels[i].m_flPosX == -1) {
-			rpos[0] = (vVideoResolution[0] / 2) - (strwidth/2);
+			rpos[0] = (video_res[0] / 2) - (strwidth/2);
 		} else {
-			rpos[0] = vVideoResolution[0] * g_textchannels[i].m_flPosX;
+			rpos[0] = video_res[0] * g_textchannels[i].m_flPosX;
 
 			if (g_textchannels[i].m_flPosX >= 0.5) {
 				rpos[0] -= strwidth;
@@ -51,9 +51,9 @@ void GameText_Draw(void)
 		}
 
 		if (g_textchannels[i].m_flPosY == -1) {
-			rpos[1] = (vVideoResolution[1] / 2) - 6;
+			rpos[1] = (video_res[1] / 2) - 6;
 		} else {
-			rpos[1] = ((vVideoResolution[1] - 12) * g_textchannels[i].m_flPosY);
+			rpos[1] = ((video_res[1] - 12) * g_textchannels[i].m_flPosY);
 		}
 
 		if (g_textchannels[i].m_flTime < g_textchannels[i].m_flFadeIn) {

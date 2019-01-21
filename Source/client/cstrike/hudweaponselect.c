@@ -312,10 +312,10 @@ void HUD_DrawWeaponSelect(void)
 		return;
 	}
 	
-	vector vSelectPos = vVideoMins + [160,12];
+	vector vSelectPos = video_mins + [160,12];
 	
 	for (int i = 0; i < 5; i++) {
-		vSelectPos[1] = vVideoMins[1] + 12;
+		vSelectPos[1] = video_mins[1] + 12;
 		HUD_DrawWeaponSelect_Num(vSelectPos, i);
 		
 		// Again, grenades are treated seperately

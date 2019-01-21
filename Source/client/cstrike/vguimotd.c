@@ -6,8 +6,6 @@
 *
 ****/
 
-#include "vgui.h"
-
 /*
 ====================
 VGUI_MessageOfTheDay

@@ -6,8 +6,6 @@
 *
 ****/
 
-#include "vgui.h"
-
 /*
 ====================
 HUD_GetChatColor
@@ -71,18 +69,18 @@ float VGUI_CheckMouse( vector vPos, vector vReg ) {
 	
 	vSMins = vPos;
 	vSMaxs = vPos;
-	vSMins_x = vPos_x;
-	vSMaxs_y = vPos_y - 1;
+	vSMins[0] = vPos[0];
+	vSMaxs[1] = vPos[1] - 1;
 
-	vSMaxs_x = vPos_x + vReg_x;
-	vSMaxs_y = vPos_y + vReg_y;
+	vSMaxs[0] = vPos[0] + vReg[0];
+	vSMaxs[1] = vPos[1] + vReg[1];
 
-	if ( vMousePos_x >= vSMins_x && vMousePos_x <= vSMaxs_x ) {
-		if (vMousePos_y >= vSMins_y && vMousePos_y <= vSMaxs_y ) {
+	if ( mouse_pos[0] >= vSMins[0] && mouse_pos[0] <= vSMaxs[0] ) {
+		if (mouse_pos[1] >= vSMins[1] && mouse_pos[1] <= vSMaxs[1] ) {
 			return 1;
 		}
 	}
-	
+
 	return 0;
 }
 
@@ -99,14 +97,14 @@ void VGUI_Window( string sTitle, vector vPosition, vector vSize ) {
 	drawfill( vPosition, vSize, VGUI_WINDOW_BGCOLOR, VGUI_WINDOW_BGALPHA );
 	
 	// Sides
-	drawfill( vPosition, [vSize_x, 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
-	drawfill( [vPosition_x, vPosition_y + vSize_y - 1], [vSize_x, 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
-	drawfill( vPosition, [1, vSize_y], vVGUIColor, VGUI_WINDOW_FGALPHA );
-	drawfill( [vPosition_x + vSize_x - 1, vPosition_y], [1, vSize_y], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( vPosition, [vSize[0], 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( [vPosition[0], vPosition[1] + vSize[1] - 1], [vSize[0], 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( vPosition, [1, vSize[1]], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( [vPosition[0] + vSize[0] - 1, vPosition[1]], [1, vSize[1]], vVGUIColor, VGUI_WINDOW_FGALPHA );
 
 	// Draw the window title
 	CSQC_DrawText( vPosition + '16 16', sTitle, '12 12', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_CON );
-	drawfill( vPosition + '0 48', [vSize_x, 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( vPosition + '0 48', [vSize[0], 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
 }
 
 
@@ -122,14 +120,14 @@ void VGUI_WindowSmall( string sTitle, vector vPosition, vector vSize ) {
 	drawfill( vPosition, vSize, VGUI_WINDOW_BGCOLOR, VGUI_WINDOW_BGALPHA );
 	
 	// Sides
-	drawfill( vPosition, [vSize_x, 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
-	drawfill( [vPosition_x, vPosition_y + vSize_y - 1], [vSize_x, 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
-	drawfill( vPosition, [1, vSize_y], vVGUIColor, VGUI_WINDOW_FGALPHA );
-	drawfill( [vPosition_x + vSize_x - 1, vPosition_y], [1, vSize_y], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( vPosition, [vSize[0], 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( [vPosition[0], vPosition[1] + vSize[1] - 1], [vSize[0], 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( vPosition, [1, vSize[1]], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( [vPosition[0] + vSize[0] - 1, vPosition[1]], [1, vSize[1]], vVGUIColor, VGUI_WINDOW_FGALPHA );
 
 	// Draw the window title
 	CSQC_DrawText( vPosition + '8 8', sTitle, '12 12', vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_CON );
-	drawfill( vPosition + '0 24', [vSize_x, 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( vPosition + '0 24', [vSize[0], 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
 }
 
 /*
@@ -146,14 +144,14 @@ float VGUI_Button( string sLabel, void() vFunction, vector vPosition, vector vSi
 		iVGUIKey++;
 	}
 	
-	drawfill( vPosition, [vSize_x, 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
-	drawfill( [vPosition_x, vPosition_y + vSize_y - 1], [vSize_x, 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
-	drawfill( vPosition, [1, vSize_y], vVGUIColor, VGUI_WINDOW_FGALPHA );
-	drawfill( [vPosition_x + vSize_x - 1, vPosition_y], [1, vSize_y], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( vPosition, [vSize[0], 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( [vPosition[0], vPosition[1] + vSize[1] - 1], [vSize[0], 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( vPosition, [1, vSize[1]], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( [vPosition[0] + vSize[0] - 1, vPosition[1]], [1, vSize[1]], vVGUIColor, VGUI_WINDOW_FGALPHA );
 
 	// Draw the button label
-	vLabelPos_x = vPosition_x + 16;
-	vLabelPos_y = vPosition_y + ( ( vSize_y / 2 ) - 4 );
+	vLabelPos[0] = vPosition[0] + 16;
+	vLabelPos[1] = vPosition[1] + ( ( vSize[1] / 2 ) - 4 );
 	
 	if ( ( iVGUIKey == fInputKeyCode ) ) {
 		vFunction();
@@ -187,14 +185,14 @@ Looks like a button, doesn't function though. Meant for dead buttons
 void VGUI_FakeButton( string sLabel, vector vPosition, vector vSize ) {
 	vector vLabelPos;
 	
-	drawfill( vPosition, [vSize_x, 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
-	drawfill( [vPosition_x, vPosition_y + vSize_y - 1], [vSize_x, 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
-	drawfill( vPosition, [1, vSize_y], vVGUIColor, VGUI_WINDOW_FGALPHA );
-	drawfill( [vPosition_x + vSize_x - 1, vPosition_y], [1, vSize_y], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( vPosition, [vSize[0], 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( [vPosition[0], vPosition[1] + vSize[1] - 1], [vSize[0], 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( vPosition, [1, vSize[1]], vVGUIColor, VGUI_WINDOW_FGALPHA );
+	drawfill( [vPosition[0] + vSize[0] - 1, vPosition[1]], [1, vSize[1]], vVGUIColor, VGUI_WINDOW_FGALPHA );
 
 	// Draw the button label
-	vLabelPos_x = vPosition_x + 16;
-	vLabelPos_y = vPosition_y + ( ( vSize_y / 2 ) - 4 );
+	vLabelPos[0] = vPosition[0] + 16;
+	vLabelPos[1] = vPosition[1] + ( ( vSize[1] / 2 ) - 4 );
 
 	CSQC_DrawText( vLabelPos, sLabel, '12 12', vVGUIColor * 0.5, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_CON );
 }
@@ -218,6 +216,6 @@ Right-aligned version of above
 ====================
 */
 void VGUI_RightText( vector vPos, string sText, vector vSize, vector vColor, float fFont ) {
-	vPos_x -= stringwidth( sText, FALSE, vSize );
+	vPos[0] -= stringwidth( sText, FALSE, vSize );
 	CSQC_DrawText( vPos, sText, vSize, vColor, 1, 0, fFont );
 }

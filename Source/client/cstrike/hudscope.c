@@ -32,12 +32,12 @@ void HUD_DrawScope( void ) {
 	static vector vScopePos;
 	
 	// Draw the scope in the middle, seperately from the border
-	vScopePos = ( vVideoResolution / 2 ) + '-128 -128';
+	vScopePos = ( video_res / 2 ) + '-128 -128';
 	drawpic( vScopePos, "sprites/sniper_scope.spr_0.tga", '256 256', '1 1 1', 1.0f, DRAWFLAG_NORMAL );
 	
 	// Border scale to fit the screen
-	fSBScale = vVideoResolution_y / 480;
-	fSBOffset = ( vVideoResolution_x / 2 ) - ( ( 640 * fSBScale ) / 2 );
+	fSBScale = video_res_y / 480;
+	fSBOffset = ( video_res_x / 2 ) - ( ( 640 * fSBScale ) / 2 );
 	
 	// Type 1 Border... more coming soon?
 	HUD_DrawScope_Pic( '0 0', '192 112', "sprites/top_left.spr_0.tga" );
@@ -51,7 +51,7 @@ void HUD_DrawScope( void ) {
 	
 	// Rect borders left and right
 	if ( fSBOffset > 0 ) {
-		drawfill( '0 0', [ fSBOffset, vVideoResolution_y ], '0 0 0', 1.0f );
-		drawfill( [ ( 640 * fSBScale ) + fSBOffset, 0 ], [ fSBOffset, vVideoResolution_y ], '0 0 0', 1.0f );
+		drawfill( '0 0', [ fSBOffset, video_res_y ], '0 0 0', 1.0f );
+		drawfill( [ ( 640 * fSBScale ) + fSBOffset, 0 ], [ fSBOffset, video_res_y ], '0 0 0', 1.0f );
 	}
 }

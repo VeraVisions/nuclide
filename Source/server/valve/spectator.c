@@ -6,15 +6,15 @@
 *
 ****/
 
-void Valve_SpectatorThink(void)
+void Game_SpectatorThink(void)
 {
 	
 }
-void Valve_SpectatorConnect(void)
+void Game_SpectatorConnect(void)
 {
 	
 }
-void Valve_SpectatorDisconnect(void)
+void Game_SpectatorDisconnect(void)
 {
 	
 }

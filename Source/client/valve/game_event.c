@@ -6,3 +6,7 @@
 *
 ****/
 
+void Game_Parse_Event(float fHeader)
+{
+	
+}

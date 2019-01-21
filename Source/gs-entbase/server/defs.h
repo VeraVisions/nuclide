@@ -6,7 +6,7 @@
 *
 ****/
 
-#define GS_DEVELOPER
+//#define GS_DEVELOPER
 
 .float gflags;
 
@@ -33,7 +33,7 @@ string Util_FixModel(string mdl)
 
 	// Kill the first /
 	newpath = substring(newpath, 1, strlen(newpath)-1);
-#if 0
+#if 1
 	return newpath;
 #else
 	return mdl;

@@ -119,12 +119,9 @@ CSQC_ConsoleCommand
 Can interject cmds and create new ones
 =================
 */
-float CSQC_ConsoleCommand(string sCMD) {
-	int s = (float)getproperty(VF_ACTIVESEAT);	//the engine will hide the p1 etc commands... which is fun...
-	pSeat = &seats[s];
-	
-	tokenize(sCMD);
-
+float Game_ConsoleCommand(void)
+{
+	/* This has already been tokenized */
 	switch (argv(0)) {
 	case "lastinv":
 		HUD_DrawWeaponSelect_Last();
@@ -167,33 +164,6 @@ float CSQC_ConsoleCommand(string sCMD) {
 		break;
 	case "overview_test":
 		pSeat.iOverview = 1 - pSeat.iOverview;
-		break;
-	case "vox_test":
-		Sound_PlayVOX(sCMD);
-		break;
-	case "+attack2":
-		iInputAttack2 = TRUE;
-		break;
-	case "-attack2":
-		iInputAttack2 = FALSE;
-		break;
-	case "+reload":
-		iInputReload = TRUE;
-		break;
-	case "-reload":
-		iInputReload = FALSE;
-		break;
-	case "+use":
-		iInputUse = TRUE;
-		break;
-	case "-use":
-		iInputUse = FALSE;
-		break;
-	case "+duck":
-		iInputDuck = TRUE;
-		break;
-	case "-duck":
-		iInputDuck = FALSE;
 		break;
 	case "buy":
 		if(getstatf(STAT_BUYZONE) == TRUE) {
@@ -396,17 +366,13 @@ float CSQC_ConsoleCommand(string sCMD) {
 
 /*
 =================
-CSQC_Parse_Event
+Game_Parse_Event
 
 Whenever we call a SVC_CGAMEPACKET on the SSQC, this is being run
 =================
 */
-void CSQC_Parse_Event(void) {
-	int s = (float)getproperty(VF_ACTIVESEAT);	//always 0, unless it was sent with a MULTICAST_ONE or MULTICAST_ONE_R to p2+
-	pSeat = &seats[s];
-	
-	float fHeader = readbyte();
-	
+void Game_Parse_Event(float fHeader) {
+	int s;
 	if (fHeader == EV_WEAPON_DRAW) {
 		fWeaponEventPlayer = readbyte();
 		for (s = 0; s < numclientseats; s++)	//lame loop
@@ -443,69 +409,12 @@ void CSQC_Parse_Event(void) {
 				break;
 			}
 		Weapon_Reload(getstatf(STAT_ACTIVEWEAPON));
-	} else if (fHeader == EV_MODELGIB) {
-		vector vPos;
-		vPos_x = readcoord();
-		vPos_y = readcoord();
-		vPos_z = readcoord();
-		
-		vector vSize;
-		vSize_x = readcoord();
-		vSize_y = readcoord();
-		vSize_z = readcoord();
-
-		float fStyle = readbyte();
-		Effect_BreakModel(vPos, vSize, '0 0 0', fStyle);
-	} else if (fHeader == EV_CAMERATRIGGER) {
-		pSeat->vCameraPos.x = readcoord();
-		pSeat->vCameraPos.y = readcoord();
-		pSeat->vCameraPos.z = readcoord();
-
-		pSeat->vCameraAngle.x = readcoord();
-		pSeat->vCameraAngle.y = readcoord();
-		pSeat->vCameraAngle.z = readcoord();
-		
-		pSeat->fCameraTime = time + readfloat();
 	} else if (fHeader == EV_RADIOMSG) {
 		Radio_PlayMessage(readbyte());
 	} else if (fHeader == EV_RADIOMSG2) {
 		Radio_PlayPlayerMessage(readbyte(), readbyte());
 	} else if (fHeader == EV_ORBITUARY) {
 		HUD_AddOrbituaries(readbyte(), readbyte(), readbyte(), readbyte(), readbyte(), readbyte());
-	} else if (fHeader == EV_IMPACT) {
-		int iType;
-		vector vOrigin, vNormal;
-		
-		iType = (int)readbyte();
-		vOrigin_x = readcoord();
-		vOrigin_y = readcoord();
-		vOrigin_z = readcoord();
-
-		vNormal_x = readcoord();
-		vNormal_y = readcoord();
-		vNormal_z = readcoord();
-		
-		Effect_Impact(iType, vOrigin, vNormal);
-	} else if (fHeader == EV_EXPLOSION) {
-		vector vExploPos;
-		
-		vExploPos_x = readcoord();
-		vExploPos_y = readcoord();
-		vExploPos_z = readcoord();
-		
-		Effect_CreateExplosion(vExploPos);
-	} else if (fHeader == EV_SPARK) {
-		vector vSparkPos, vSparkAngle;
-		
-		vSparkPos_x = readcoord();
-		vSparkPos_y = readcoord();
-		vSparkPos_z = readcoord();
-		
-		vSparkAngle_x = readcoord();
-		vSparkAngle_y = readcoord();
-		vSparkAngle_z = readcoord();
-		
-		Effect_CreateSpark(vSparkPos, vSparkAngle);
 	} else if (fHeader == EV_SMOKE) {
 		vector vSmokePos;
 		
@@ -531,121 +440,5 @@ void CSQC_Parse_Event(void) {
 		CSQC_Parse_Print(sprintf("%s%s^xF80: %s", HUD_GetChatColorHEXTeam(fTeam2), getplayerkeyvalue(fSender2, "name"), sMessage2), PRINT_CHAT);
 	} else if (fHeader == EV_CHAT_VOX) {
 		Sound_PlayVOX(readstring());
-	} else if (fHeader == EV_FADE) {
-		Fade_Parse();
-	} else if (fHeader == EV_SPRITE) {
-		Sprite_ParseEvent();
-	} else if (fHeader == EV_TEXT) {
-		GameText_Parse();
-	} else if (fHeader == EV_MESSAGE) {
-		GameMessage_Parse();
 	}
-}
-
-/*
-=================
-CSQC_InputEvent
-
-Updates all our input related globals for use in other functions
-=================
-*/
-float CSQC_InputEvent(float fEventType, float fKey, float fCharacter, float fDeviceID) {
-	switch(fEventType) {
-		case IE_KEYDOWN:
-			if (fKey == K_MOUSE1) {
-				fMouseClick = 1;
-			} else {
-				fInputKeyDown = 1;
-			}
-
-			fInputKeyCode = fKey;
-			fInputKeyASCII = fCharacter;
-			break;
-		case IE_KEYUP:
-			if (fKey == K_MOUSE1) {
-				fMouseClick = 0;
-			} else {
-				fInputKeyDown = 0;
-			}
-			fInputKeyCode = 0;
-			fInputKeyASCII = 0;
-			break;
-		case IE_MOUSEABS:
-			vMousePos_x = fKey;
-			vMousePos_y = fCharacter;
-			break;
-		case IE_MOUSEDELTA:
-			vMousePos_x += fKey;
-			vMousePos_y += fCharacter;
-			
-			if (vMousePos_x < 0) {
-				vMousePos_x = 0;
-			} else if (vMousePos_x > vVideoResolution_x) {
-				vMousePos_x = vVideoResolution_x;
-			}
-			
-			if (vMousePos_y < 0) {
-				vMousePos_y = 0;
-			} else if (vMousePos_y > vVideoResolution_y) {
-				vMousePos_y = vVideoResolution_y;
-			}
-			break;
-		default:
-			return TRUE;
-	}
-	return FALSE;
-}
-
-/*
-=================
-CSQC_Input_Frame
-
-Hijacks and controls what input globals are being sent to the server
-=================
-*/
-void CSQC_Input_Frame(void) {
-	int s = (float)getproperty(VF_ACTIVESEAT);
-	pSeat = &seats[s];
-	
-	// If we are inside a VGUI, don't let the client do stuff outside
-	if ((pSeat->fVGUI_Display != VGUI_NONE)) {
-		fInputSendNext = time + 0.2;
-	} else if ((pSeat->fHUDWeaponSelected) && (input_buttons & INPUT_BUTTON0)) {
-		HUD_DrawWeaponSelect_Trigger();
-		input_buttons = 0;
-		fInputSendNext = time + 0.2;
-	}
-	
-	if (fInputSendNext > time) {
-		input_impulse = 0;
-		input_buttons = 0;
-		return;
-	}
-	
-	if (input_impulse == 101) {
-		print("This aint Half-Life.\n");
-		input_impulse = 0;
-	}
-	
-	if (input_impulse == 201) {
-		sendevent("Spraylogo", "");
-	}
-	
-	if (iInputAttack2 == TRUE) {
-		input_buttons |= INPUT_BUTTON3;
-	} 
-
-	if (iInputReload == TRUE) {
-		input_buttons |= INPUT_BUTTON4;
-	} 
-	
-	if (iInputUse == TRUE) {
-		input_buttons |= INPUT_BUTTON5;
-	} 
-	
-	if (iInputDuck == TRUE) {
-		input_buttons |= INPUT_BUTTON8;
-	}
-	
-	input_angles += pSeat->vPunchAngle;
 }

@@ -152,7 +152,7 @@ void Overview_Draw( void ) {
 		return;
 	}
 	
-	drawfill( vVideoMins, vVideoResolution, '0 0 0', 1.0f, 0 );
+	drawfill( video_mins, video_res, '0 0 0', 1.0f, 0 );
 	
 	Overview_DrawLayer();
 	

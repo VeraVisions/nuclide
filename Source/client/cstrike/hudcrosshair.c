@@ -59,19 +59,19 @@ void HUD_DrawCrosshair(void) {
 
 	// Line positions
 	vector vVer1, vVer2, vHor1, vHor2;
-	vVer1 = vVer2 = vHor1 = vHor2 = vVideoMins;
+	vVer1 = vVer2 = vHor1 = vHor2 = video_mins;
 
 	// Vertical Lines
-	vVer1[0] += (vVideoResolution[0] / 2);
-	vVer1[1] += (vVideoResolution[1] / 2) - (iCrosshairDistance + iLineLength);
-	vVer2[0] += (vVideoResolution[0] / 2);
-	vVer2[1] += (vVideoResolution[1] / 2) + iCrosshairDistance + 1;
+	vVer1[0] += (video_res[0] / 2);
+	vVer1[1] += (video_res[1] / 2) - (iCrosshairDistance + iLineLength);
+	vVer2[0] += (video_res[0] / 2);
+	vVer2[1] += (video_res[1] / 2) + iCrosshairDistance + 1;
 
 	// Horizontal Lines
-	vHor1[0] += (vVideoResolution[0] / 2) - (iCrosshairDistance + iLineLength);
-	vHor1[1] += (vVideoResolution[1] / 2);
-	vHor2[0] += (vVideoResolution[0] / 2) + iCrosshairDistance + 1;
-	vHor2[1] += (vVideoResolution[1] / 2);
+	vHor1[0] += (video_res[0] / 2) - (iCrosshairDistance + iLineLength);
+	vHor1[1] += (video_res[1] / 2);
+	vHor2[0] += (video_res[0] / 2) + iCrosshairDistance + 1;
+	vHor2[1] += (video_res[1] / 2);
 
 	drawfill(vVer1, [1, iLineLength], vCrossColor, 1, DRAWFLAG_ADDITIVE);
 	drawfill(vVer2, [1, iLineLength], vCrossColor, 1, DRAWFLAG_ADDITIVE);
@@ -92,6 +92,6 @@ void HUD_DrawSimpleCrosshair(void)
 	static vector cross_pos;
 	
 	// Draw the scope in the middle, seperately from the border
-	cross_pos = (vVideoResolution / 2) + [-12,-12];
+	cross_pos = (video_res / 2) + [-12,-12];
 	drawsubpic(cross_pos, [24,24], "sprites/crosshairs.spr_0.tga", [0.1875,0], [0.1875, 0.1875], [1,1,1], 1, DRAWFLAG_NORMAL);
 }

@@ -41,6 +41,7 @@ float Player_SendEntity( entity ePEnt, float fChanged ) {
 	WriteByte( MSG_ENTITY, self.health );
 	WriteFloat( MSG_ENTITY, self.movetype );
 	WriteFloat( MSG_ENTITY, self.view_ofs[2] );
+	WriteFloat( MSG_ENTITY, self.viewzoom );
 	return TRUE;
 }
 
@@ -195,7 +196,7 @@ PlayerPreThink
 Run before physics
 =================
 */
-void Cstrike_PlayerPreThink( void ) { 
+void Game_PlayerPreThink( void ) { 
 	BaseGun_ShotMultiplierUpdate();
 }
 
@@ -206,7 +207,7 @@ PlayerPreThink
 Run after physics
 =================
 */
-void Cstrike_PlayerPostThink( void ) {
+void Game_PlayerPostThink( void ) {
 	Animation_PlayerUpdate();
 	Footsteps_Update();
 	

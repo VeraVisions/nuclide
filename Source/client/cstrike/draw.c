@@ -52,7 +52,7 @@ Just prints whatever is in the chat buffer and removes lines after some time.
 =================
 */
 void CSQC_DrawChat(void) {
-	vector vChatPos = vVideoMins + [16, vVideoResolution_y - 128];
+	vector vChatPos = video_mins + [16, video_res_y - 128];
 	
 	// Remove messages after a fChatTime has passed
 	if (fChatTime < time) {
@@ -73,7 +73,7 @@ void CSQC_DrawChat(void) {
 			sDraw = sprintf("%s\n%s\n", sDraw, sMSGBuffer[i]);
 		}
 		
-		drawtextfield(vChatPos, [vVideoResolution_x - 32, CHAT_LINES * 12], 1, sDraw);
+		drawtextfield(vChatPos, [video_res_x - 32, CHAT_LINES * 12], 1, sDraw);
 #endif
 	}
 }
@@ -107,10 +107,10 @@ void CSQC_DrawCenterprint(void) {
 		}
 	}
 	
-	vCenterPrintPos_y = vVideoMins_y + (vVideoResolution_y / 2) - (fCenterPrintLines - 4) - 69;
+	vCenterPrintPos_y = video_mins_y + (video_res_y / 2) - (fCenterPrintLines - 4) - 69;
 	
 	for (int i = 0; i < (fCenterPrintLines); i++) {
-		vCenterPrintPos_x = vVideoMins_x + (vVideoResolution_x / 2) - (stringwidth(sCenterPrintBuffer[i], TRUE, '12 12') / 2);
+		vCenterPrintPos_x = video_mins_x + (video_res_x / 2) - (stringwidth(sCenterPrintBuffer[i], TRUE, '12 12') / 2);
 		drawstring(vCenterPrintPos, sCenterPrintBuffer[i], '12 12', '1 1 1', fCenterPrintAlpha, 0);
 		vCenterPrintPos_y += 8;
 	}
@@ -136,31 +136,6 @@ float CSQC_Parse_CenterPrint(string sMessage) {
 	fCenterPrintTime = time + 3;
 	
 	return TRUE;
-}
-
-void CSQC_CalcViewport(int s, float fWinWidth, float fWinHeight) {
-	//FIXME: this is awkward. renderscene internally rounds to pixels.
-	//on the other hand, drawpic uses linear filtering and multisample and stuff.
-	//this means that there can be a pixel or so difference between scene and 2d.
-	//as a general rule, you won't notice unless there's some big drawfills.
-	switch (numclientseats) {
-	case 3:
-		if (!s) {
-	case 2:
-		vVideoResolution = [fWinWidth, fWinHeight * 0.5];
-		vVideoMins = [0, (s & 1) * vVideoResolution_y];
-		break;
-		}
-		s++;
-	case 4:
-		vVideoResolution = [fWinWidth, fWinHeight] * 0.5;
-		vVideoMins = [(s&1) * vVideoResolution_x, (s / 2i) * vVideoResolution_y];
-		break;
-	default:
-		vVideoResolution = [fWinWidth, fWinHeight];
-		vVideoMins = [0, 0];
-		break;
-	}
 }
 
 /*

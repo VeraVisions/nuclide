@@ -84,8 +84,9 @@ void CBaseTrigger :: InitPointTrigger ( void )
 void CBaseTrigger :: InitBrushTrigger ( void )
 {
 	precache_model( model );
-	setmodel( this, model );
 	movetype = MOVETYPE_NONE;
+	solid = SOLID_TRIGGER;
+	setmodel( this, model );
 #ifdef GS_DEVELOPER
 	alpha = 0.5f;
 	effects = EF_ADDITIVE;
@@ -93,7 +94,6 @@ void CBaseTrigger :: InitBrushTrigger ( void )
 	modelindex = 0;
 	model = "";
 #endif
-	solid = SOLID_TRIGGER;
 }
 
 void CBaseTrigger :: CBaseTrigger ( void )

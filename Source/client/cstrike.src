@@ -13,6 +13,12 @@
 ../events.h
 ../entities.h
 cstrike/defs.h
+defs.h
+vgui.h
+
+hud_voice.c
+sound.c
+text.c
 
 ../shared/cstrike/weaponak47.c
 ../shared/cstrike/weaponaug.c
@@ -46,15 +52,19 @@ cstrike/defs.h
 ../shared/cstrike/radio.c
 ../shared/cstrike/equipment.c
 ../shared/cstrike/animations.c
-../shared/effects.c
 
 ../shared/pmove.c
 ../gs-entbase/client.src
+../shared/effects.c
 ../shared/spraylogo.cpp
 
 cstrike/overview.c
 cstrike/player.c
+player.c
+predict.c
+events.c
 cstrike/view.c
+view.c
 cstrike/vguiobjects.c
 cstrike/vguispectator.c
 cstrike/vguiscoreboard.c
@@ -63,17 +73,19 @@ cstrike/vguibuymenu.c
 cstrike/vguiteamselect.c
 cstrike/vguiradio.c
 cstrike/vgui.c
-cstrike/damage.c
+damage.c
 cstrike/nightvision.c
 cstrike/hudcrosshair.c
 cstrike/hudscope.c
 cstrike/hudweaponselect.c
 cstrike/hudorbituaries.c
 cstrike/hud.c
-cstrike/sound.c
 cstrike/draw.c
 cstrike/entities.c
 cstrike/event.c
 cstrike/init.c
+
+entities.c
+
 entry.c
 #endlist

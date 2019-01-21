@@ -31,6 +31,7 @@ server.c
 damage.c
 vox.c
 
+valve/spawn.c
 footsteps.c
 entry.c
 #endlist
