@@ -15,10 +15,10 @@
 
 enum
 {
-	STATE_RAISED = 0,
-	STATE_LOWERED,
-	STATE_UP,
-	STATE_DOWN
+	DOORSTATE_RAISED,
+	DOORSTATE_LOWERED,
+	DOORSTATE_UP,
+	DOORSTATE_DOWN
 };
 
 class func_door:CBaseTrigger
@@ -77,9 +77,9 @@ void func_door::Use(void)
 
 void func_door::Arrived(void)
 {
-	m_iState = STATE_RAISED;
+	m_iState = DOORSTATE_RAISED;
 
-	if(m_iStopSnd > 0 && m_iStopSnd <= 8) {
+	if (m_iStopSnd > 0 && m_iStopSnd <= 8) {
 		sound(self, CHAN_VOICE, sprintf("doors/doorstop%i.wav", m_iStopSnd), 1.0, ATTN_NORM);
 	} else {
 		sound(self, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
@@ -100,7 +100,7 @@ void func_door::Arrived(void)
 
 void func_door::Returned(void)
 {
-	if(m_iStopSnd > 0 && m_iStopSnd <= 8) {
+	if (m_iStopSnd > 0 && m_iStopSnd <= 8) {
 		sound(self, CHAN_VOICE, sprintf("doors/doorstop%i.wav", m_iStopSnd), 1.0, ATTN_NORM);
 	} else {
 		sound(self, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
@@ -110,12 +110,12 @@ void func_door::Returned(void)
 		touch = Touch;
 	}
 
-	m_iState = STATE_LOWERED;
+	m_iState = DOORSTATE_LOWERED;
 }
 
 void func_door::MoveBack(void)
 {
-	if(m_iMoveSnd > 0 && m_iMoveSnd <= 10) {
+	if (m_iMoveSnd > 0 && m_iMoveSnd <= 10) {
 		sound(self, CHAN_VOICE, sprintf("doors/doormove%i.wav", m_iMoveSnd), 1.0, ATTN_NORM);
 	} else {
 		sound(self, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
@@ -125,44 +125,44 @@ void func_door::MoveBack(void)
 		touch = __NULL__;
 	}
 
-	m_iState = STATE_DOWN;
+	m_iState = DOORSTATE_DOWN;
 	MoveToDestination(m_vecPos1, Returned);
 }
 
 void func_door::MoveAway(void)
 {
-	if (m_iState == STATE_UP) {
+	if (m_iState == DOORSTATE_UP) {
 		return;
 	}
 
-	if(m_iMoveSnd > 0 && m_iMoveSnd <= 10) {
+	if (m_iMoveSnd > 0 && m_iMoveSnd <= 10) {
 		sound(self, CHAN_VOICE, sprintf("doors/doormove%i.wav", m_iMoveSnd), 1.0, ATTN_NORM);
 	} else {
 		sound(self, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
 	}
 
 	if (!(spawnflags & SF_MOV_TOGGLE)) {
-		if (m_iState == STATE_RAISED) {
+		if (m_iState == DOORSTATE_RAISED) {
 			nextthink = (ltime + m_flWait);
 			return;
 		}
 	}
 
-	m_iState = STATE_UP;
+	m_iState = DOORSTATE_UP;
 	MoveToDestination(m_vecPos2, Arrived);
 }
 
 void func_door::Trigger(void)
 {
-	if (m_flNextTrigger > ltime) {
+	/*if (m_flNextTrigger > time) {
 		if (!(spawnflags & SF_MOV_TOGGLE)) {
 			return;
 		}
 	}
-	m_flNextTrigger = ltime + m_flWait;
+	m_flNextTrigger = time + m_flWait;*/
 
 	// Only trigger stuff when we are done moving
-	if ((m_iState == STATE_RAISED) || (m_iState == STATE_LOWERED)) {
+	if ((m_iState == DOORSTATE_RAISED) || (m_iState == DOORSTATE_LOWERED)) {
 		if (m_flDelay > 0) {
 #ifdef GS_DEVELOPER
 			print(sprintf("func_door: Delayed trigger of `%s`\n", m_strTarget));
@@ -176,12 +176,14 @@ void func_door::Trigger(void)
 		}
 	}
 
-	if ((m_iState == STATE_UP) || (m_iState == STATE_RAISED)){
+	if ((m_iState == DOORSTATE_UP) || (m_iState == DOORSTATE_RAISED)){
+		dprint("func_door: Going back!\n");
 		MoveBack();
 		return;
 	}
 
 	MoveAway();
+	dprint("func_door: Going away!\n");
 }
 
 void func_door::Touch(void)
@@ -203,12 +205,12 @@ void func_door::Touch(void)
 
 void func_door::Blocked(void)
 {
-	if(m_iDamage) {
+	if (m_iDamage) {
 		//Damage_Apply(other, self, dmg, other.origin, FALSE);
 	}
 
 	if (m_flWait >= 0) {
-		if (m_iState == STATE_DOWN) {
+		if (m_iState == DOORSTATE_DOWN) {
 			MoveAway ();
 		} else {
 			MoveBack ();
@@ -279,9 +281,11 @@ void func_door::Respawn(void)
 	movetype = MOVETYPE_PUSH;
 	setorigin(this, m_oldOrigin);
 	setmodel(this, m_oldModel);
+	think = __NULL__;
+	nextthink = -1;
+	m_pMove = 0;
 
 	blocked = Blocked;
-	//Use = Trigger;
 
 	if (m_flWait == -1) {
 		spawnflags |= SF_MOV_TOGGLE;
@@ -303,14 +307,14 @@ void func_door::Respawn(void)
 		PlayerUse = __NULL__;
 	}
 
-	m_iState = STATE_LOWERED;
+	m_iState = DOORSTATE_LOWERED;
 	m_vecPos1 = m_oldOrigin;
 	m_vecPos2 = (m_vecPos1 + m_vecMoveDir * (fabs(m_vecMoveDir * size) - m_flLip));
 
 	if (spawnflags & SF_MOV_OPEN) {
 		setorigin(this, m_vecPos2);
 		m_vecPos2 = m_vecPos1;
-		m_vecPos1 = m_oldOrigin;
+		m_vecPos1 = origin;
 	}
 }
 
@@ -319,22 +323,22 @@ void func_door::func_door(void)
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
 		case "speed":
-			m_flSpeed = stof(argv(i + 1));
+			m_flSpeed = stof(argv(i+1));
 			break;
 		case "lip":
-			m_flLip = stof(argv(i + 1));
+			m_flLip = stof(argv(i+1));
 			break;
 		case "movesnd":
-			m_iMoveSnd = stoi(argv(i + 1));
+			m_iMoveSnd = stoi(argv(i+1));
 			break;
 		case "stopsnd":
-			m_iStopSnd = stoi(argv(i + 1));
+			m_iStopSnd = stoi(argv(i+1));
 			break;
 		case "delay":
-			m_flDelay = stof(argv(i + 1));
+			m_flDelay = stof(argv(i+1));
 			break;
 		case "wait":
-			m_flWait = stof(argv(i + 1));
+			m_flWait = stof(argv(i+1));
 			break;
 		default:
 			break;
@@ -354,9 +358,11 @@ void func_door::func_door(void)
 
 void func_water(void)
 {
-	setmodel(self, self.model);
+	spawnfunc_func_door();
 	self.classname = "func_water";
 	self.solid = SOLID_BSP;
 	self.skin = CONTENT_WATER;
+	self.effects |= EF_FULLBRIGHT;
+	self.spawnflags |= SF_MOV_TOGGLE;
 	setorigin(self, self.origin); // relink. have to do this.
 }
