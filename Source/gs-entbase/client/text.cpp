@@ -111,6 +111,8 @@ void GameMessage_Parse(void)
 	g_textchannels[0].m_flFadeIn = 0.5f;
 	g_textchannels[0].m_flFadeOut = 0.5f;
 	g_textchannels[0].m_flHoldTime = 4.0f;
+	g_textchannels[0].m_vecColor1 = [1,1,1];
+	g_textchannels[0].m_vecColor2 = [1,1,1];
 
 	strSound = readstring();
 	flVolume = readfloat();
