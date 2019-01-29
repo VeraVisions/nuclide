@@ -89,7 +89,7 @@ void CBaseTrigger :: InitBrushTrigger ( void )
 	setmodel( this, model );
 #ifdef GS_DEVELOPER
 	alpha = 0.5f;
-	effects = EF_ADDITIVE;
+	effects = EF_FLAG2;
 #else
 	modelindex = 0;
 	model = "";

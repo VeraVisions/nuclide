@@ -29,8 +29,16 @@ varying vec3 light;
 		vec3 n, s, t, w;
 		gl_Position = skeletaltransform_wnst(w,n,s,t);
 		tex_c = v_texcoord;
-		light = e_light_ambient + ( e_light_mul * dot( n, e_light_dir ) );
-		
+		light = e_light_ambient + (e_light_mul * dot(n, e_light_dir));
+
+#ifdef CHROME
+		vec3 viewc = normalize(e_eyepos - v_position.xyz);
+		float d = dot(n, viewc);
+		vec3 reflected = n * 2 * d - viewc;
+		tex_c.x = 0.5 + reflected.y * 0.5;
+		tex_c.y = 0.5 - reflected.z * 0.5;
+#endif
+
 		if (light.r > 1.0f) {
 			light.r = 1.0f;
 		}

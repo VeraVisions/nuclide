@@ -6,31 +6,6 @@
 *
 ****/
 
-class player
-{
-	entity p_model;
-	int p_hand_bone;
-	int p_model_bone;
-
-	vector netorigin;
-	vector netvelocity;
-	float netflags;
-	
-	float weapon;
-	float lastweapon;
-
-	float health;
-	float armor;
-	float pitch;
-	float viewzoom;
-	
-	vector view_ofs;
-	
-	virtual void() gun_offset;
-	virtual void() draw;
-	virtual float() predraw;
-};
-
 //.float bonecontrol1; //Halflife model format bone controller. On player models, this typically affects the spine's yaw.
 //.float bonecontrol2; //Halflife model format bone controller. On player models, this typically affects the spine's yaw.
 //.float bonecontrol3; //Halflife model format bone controller. On player models, this typically affects the spine's yaw.
@@ -67,13 +42,13 @@ void player::draw(void)
 	this.subblend2frac = this.pitch;
 
 	// Only bother updating the model if the weapon has changed
-	if (this.lastweapon != this.weapon) {
-		if (this.weapon) {
+	if (this.lastweapon != this.activeweapon) {
+		if (this.activeweapon) {
 			// FIXME: setmodel(this.p_model, sPModels[this.weapon - 1]);
 		} else {
 			setmodel(this.p_model, "");
 		}
-		this.lastweapon = this.weapon;
+		this.lastweapon = this.activeweapon;
 	    	
 		// Update the bone index of the current p_ model so we can calculate the offset
 		// Get the weapon bone ID for the current player model
@@ -81,7 +56,7 @@ void player::draw(void)
 		this.p_model_bone = gettagindex(this.p_model, "Bip01 R Hand");
 	}
 
-	//Animation_PlayerUpdate();
+	Animation_PlayerUpdate();
 	/*makevectors([0, this.angles[1], 0]);
 	float fDirection = dotproduct(this.velocity, v_forward);
 	

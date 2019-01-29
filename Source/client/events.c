@@ -13,8 +13,9 @@ View_ShellEject
 Spawns a shell tempentity. Looking fancy
 ====================
 */
-void Event_EjectShell( void ) {
-	static void Event_EjectShell_Death( void ) {
+void Event_EjectShell(void)
+{
+	static void Event_EjectShell_Death(void) {
 		remove( self );
 	}
 	vector vOrigin = pSeat->vPlayerOrigin;
@@ -45,7 +46,8 @@ Called by the engine whenever a model
 tries to play an event.
 ====================
 */
-void Event_ProcessModel( float fTimeStamp, int iCode, string sData ) {
+void Event_ProcessModel( float fTimeStamp, int iCode, string sData )
+{
 	if ( iCode == 5004 ) {
 		localsound( sData, CHAN_AUTO, 1.0 );
 	} else if ( iCode == 5001 ) {

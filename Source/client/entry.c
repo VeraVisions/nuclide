@@ -10,6 +10,35 @@ void CSQC_Init(float apilevel, string enginename, float engineversion)
 {
 	pSeat = &seats[0];
 
+	registercommand("vox_test");
+	registercommand("+attack2");
+	registercommand("-attack2");
+	registercommand("+reload");
+	registercommand("-reload");
+	registercommand("+use");
+	registercommand("-use");
+	registercommand("+duck");
+	registercommand("-duck");
+	
+	registercommand("slot1");
+	registercommand("slot2");
+	registercommand("slot3");
+	registercommand("slot4");
+	registercommand("slot5");
+	registercommand("slot6");
+	registercommand("slot7");
+	registercommand("slot8");
+	registercommand("slot9");
+	registercommand("slot10");
+	registercommand("lastinv");
+	registercommand("invnext");
+	registercommand("invprev");
+	registercommand("+showscores");
+	registercommand("-showscores");
+
+	precache_model("sprites/640_pain.spr");
+	precache_model("sprites/crosshairs.spr");
+
 	/* Fonts */
 	FONT_16 = loadfont("16", "fonts/default", "16", -1);
 	FONT_CON  = loadfont("font", "", "12", -1);
@@ -37,6 +66,9 @@ void CSQC_Init(float apilevel, string enginename, float engineversion)
 
 	/* VOX */
 	Sound_InitVOX();
+
+	/* View */
+	View_Init();
 	
 	/* Effects */
 	precache_sound("debris/bustglass1.wav");
@@ -159,14 +191,15 @@ void CSQC_UpdateView(float w, float h, float focus)
 
 			// The spectator sees things... differently
 			if (getplayerkeyvalue(player_localnum, "*spec") != "0") {
-				///VGUI_DrawSpectatorHUD();
+				VGUI_DrawSpectatorHUD();
 			} else {
 				HUD_Draw();
 			}
 
 			///HUD_DrawOrbituaries();
 			Voice_DrawHUD();
-			///CSQC_DrawChat();
+			Chat_Draw();
+			Print_Draw();
 
 #ifdef CSTRIKE
 			// Don't even try to draw centerprints and VGUI menus when scores are shown
@@ -191,9 +224,6 @@ void CSQC_UpdateView(float w, float h, float focus)
 	}
 
 	Sound_ProcessWordQue();
-	
-	CSQC_DrawText([16,16], "THIS IS A TEST.\n", [20,20], [1,1,1], 1.0f, 
-					0, FONT_20);
 }
 
 /*
@@ -264,7 +294,7 @@ void CSQC_Input_Frame(void)
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &seats[s];
 
-#ifdef CSTRIKE
+
 	// If we are inside a VGUI, don't let the client do stuff outside
 	if ((pSeat->fVGUI_Display != VGUI_NONE)) {
 		fInputSendNext = time + 0.2;
@@ -273,7 +303,7 @@ void CSQC_Input_Frame(void)
 		input_buttons = 0;
 		fInputSendNext = time + 0.2;
 	}
-#endif
+
 
 	if (fInputSendNext > time) {
 		input_impulse = 0;
@@ -305,8 +335,9 @@ void CSQC_Input_Frame(void)
 	if (iInputDuck == TRUE) {
 		input_buttons |= INPUT_BUTTON8;
 	}
-	
+
 	input_angles += pSeat->vPunchAngle;
+	Game_Input();
 }
 
 
@@ -437,9 +468,102 @@ float CSQC_ConsoleCommand(string sCMD)
 		case "-duck":
 			iInputDuck = FALSE;
 			break;
+		case "invnext":
+			HUD_DrawWeaponSelect_Back();
+			break;
+		case "invprev":
+			HUD_DrawWeaponSelect_Forward();
+			break;
+		case "lastinv":
+			HUD_DrawWeaponSelect_Last();
+			break;
+		case "+showscores":
+			pSeat->iShowScores = TRUE;
+			break;
+		case "-showscores":
+			pSeat->iShowScores = FALSE;
+			break;
+		case "slot1":
+			localcmd("impulse 1\n");
+			break;
+		case "slot2":
+			localcmd("impulse 2\n");
+			break;
+		case "slot3":
+			localcmd("impulse 3\n");
+			break;
+		case "slot4":
+			localcmd("impulse 4\n");
+			break;
+		case "slot5":
+			localcmd("impulse 5\n");
+			break;
+		case "slot6":
+			localcmd("impulse 6\n");
+			break;
+		case "slot7":
+			localcmd("impulse 7\n");
+			break;
+		case "slot8":
+			localcmd("impulse 8\n");
+			break;
+		case "slot9":
+			localcmd("impulse 9\n");
+			break;
+		case "slot10":
+			localcmd("impulse 10\n");
+			break;
 		default:
 			return Game_ConsoleCommand();
 	}
+	return TRUE;
+}
+
+void CSQC_Parse_Print(string sMessage, float fLevel)
+{
+	// This gives messages other than chat an orange tint
+	if (fLevel == PRINT_CHAT) {
+		Chat_Parse(sMessage);
+		return;
+	}
+
+	if (g_printlines < (4)) {
+		g_printbuffer[g_printlines + 1] = sMessage;
+		g_printlines++;
+	} else {
+		for (int i = 0; i < (4); i++) {
+			g_printbuffer[i] = g_printbuffer[i + 1];
+		}
+		g_printbuffer[4] = sMessage;
+	}
+
+	g_printtime = time + CHAT_TIME;
+
+	// Log to console
+	localcmd(sprintf("echo \"%s\"\n", sMessage));
+}
+
+
+/*
+=================
+CSQC_Parse_CenterPrint
+
+Catches every centerprint call and allows us to tinker with it.
+That's how we are able to add color, alpha and whatnot.
+Keep in mind that newlines need to be tokenized
+=================
+*/
+float CSQC_Parse_CenterPrint(string sMessage)
+{
+	fCenterPrintLines = tokenizebyseparator(sMessage, "\n");
+	
+	for(int i = 0; i < (fCenterPrintLines); i++) {
+		sCenterPrintBuffer[i] = sprintf("^xF80%s", argv(i));
+	}
+	
+	fCenterPrintAlpha = 1;
+	fCenterPrintTime = time + 3;
+	
 	return TRUE;
 }
 
@@ -452,7 +576,16 @@ Whenever the world is fully initialized...
 */
 void CSQC_WorldLoaded(void)
 {
-	
+	/*precache_pic("{shot1", TRUE);
+	precache_pic("{shot2", TRUE);
+	precache_pic("{shot3", TRUE);
+	precache_pic("{shot4", TRUE);
+	precache_pic("{shot5", TRUE);
+	precache_pic("{bigshot1", TRUE);
+	precache_pic("{bigshot2", TRUE);
+	precache_pic("{bigshot3", TRUE);
+	precache_pic("{bigshot4", TRUE);
+	precache_pic("{bigshot5", TRUE);*/
 }
 
 /*

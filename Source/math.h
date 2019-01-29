@@ -8,6 +8,15 @@
 
 #define MATH_PI 3.1415926
 
+float Math_Time(void)
+{
+#ifdef CSQC
+	return 0;
+#else
+	return 0;
+#endif
+}
+
 float Math_LerpAngle( float fStart, float fEnd, float fAmount ) {
 	float shortest_angle = ( ( ( ( fEnd - fStart ) % 360 ) + 540 ) % 360 ) - 180;
 	return shortest_angle * fAmount;
@@ -53,10 +62,6 @@ float Math_CRandom( void ) {
 }
 
 #if defined(SSQC) || defined(CSQC)
-#ifdef SSQC
-void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos, int iSkipArmor );
-#endif
-
 //.vector basevelocity;
 int QPhysics_IsStuck( entity eTarget, vector vOffset, vector vecMins, vector vecMaxs )
 {

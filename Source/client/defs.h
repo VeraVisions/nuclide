@@ -13,10 +13,10 @@
 #define DRAWFLAG_2XMODULATE 3
 
 // Undocumented printcall types
-#define	PRINT_LOW		0
-#define	PRINT_MEDIUM	1
-#define	PRINT_HIGH		2
-#define	PRINT_CHAT		3
+#define PRINT_LOW		0
+#define PRINT_MEDIUM	1
+#define PRINT_HIGH		2
+#define PRINT_CHAT		3
 
 var float FONT_16;
 var float FONT_20;
@@ -31,7 +31,7 @@ var float autocvar_cl_bob = 0;
 var float autocvar_v_bob = 0.01;
 var float autocvar_v_bobcycle = 0.8;
 var float autocvar_v_bobup = 0.5;
-var int autocvar_v_bobclassic = FALSE;
+var int autocvar_v_bobclassic = TRUE;
 var vector autocvar_v_gunofs = [0,0,0];
 var int autocvar_cl_thirdperson = FALSE;
 var int autocvar_cl_smoothstairs = TRUE;
@@ -71,6 +71,12 @@ vector mouse_pos;
 
 // This actually belongs in builtins.h since its an undocumented global
 float clframetime;
+
+
+
+void View_AddPunchAngle( vector vAdd );
+void View_PlayAnimation( int iSequence );
+void Game_Input(void);
 
 
 int(float playernum, string keyname, optional void *outptr, int size) getplayerkeyblob = #0;

@@ -69,8 +69,6 @@ void HUD_Init(void)
 	precache_model("sprites/640hud14.spr");
 	precache_model("sprites/640hud3.spr");
 	precache_model("sprites/640hud5.spr");
-	precache_model("sprites/640_pain.spr");
-	precache_model("sprites/crosshairs.spr");
 }
 
 /*

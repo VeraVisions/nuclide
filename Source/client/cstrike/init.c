@@ -38,7 +38,6 @@ void Client_Init(float apilevel, string enginename, float engineversion)
 	PARTICLE_SMOKEGRENADE	= particleeffectnum("smokegren");
 
 	Radio_InitSounds();
-	
 	CSQC_ConsoleCommand_Init();
 	CSQC_VGUI_Init();
 	Overview_Init();

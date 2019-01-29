@@ -16,32 +16,32 @@ var int iVOXCount;
 var int iVOXPos;
 var float fSampleTime = 0.0f;
 
-void Sound_PlayVOX( string sMessage ) {
-	if ( iVOXCount ) {
+void Sound_PlayVOX(string msg) {
+	if (iVOXCount) {
 		return;
 	}
 	
-	iVOXCount = tokenize( sMessage );
-	sndVOX = memalloc( sizeof( sound_t ) * iVOXCount );
+	iVOXCount = tokenize(msg);
+	sndVOX = memalloc(sizeof(sound_t) * iVOXCount);
 	
-	for ( int i = 0; i < iVOXCount; i++ ) {
-		sndVOX[i].sSample = sprintf( "vox/%s.wav", argv( i ) );
-		sndVOX[i].fLength = soundlength( sndVOX[i].sSample );
+	for (int i = 0; i < iVOXCount; i++) {
+		sndVOX[i].sSample = sprintf("vox/%s.wav", argv(i));
+		sndVOX[i].fLength = soundlength(sndVOX[i].sSample);
 	}
 	fSampleTime = time;
 }
 
-void Sound_ProcessWordQue( void ) {
-	if ( cltime < 2 ) {
+void Sound_ProcessWordQue(void) {
+	if (cltime < 2) {
 		return;
 	}
-	if ( iVOXCount ) {
-		if ( fSampleTime < time ) {
-			localcmd( sprintf( "play %s\n", sndVOX[ iVOXPos ].sSample ) );	
+	if (iVOXCount) {
+		if (fSampleTime < time) {
+			localcmd(sprintf("play %s\n", sndVOX[ iVOXPos ].sSample));	
 			iVOXPos++;
 			
-			if ( iVOXPos == iVOXCount ) {
-				memfree( sndVOX );
+			if (iVOXPos == iVOXCount) {
+				memfree(sndVOX);
 				iVOXCount = 0;
 				iVOXPos = 0;
 			} else {

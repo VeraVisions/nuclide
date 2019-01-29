@@ -115,9 +115,6 @@ struct
 // Sound Stuff
 //.string sSoundSample;
 //.float fVolume;
-
-void View_AddPunchAngle( vector vAdd );
-void View_PlayAnimation( int iSequence );
 string HUD_GetChatColorHEX( float fTeam );
 
 // For the player entity

@@ -13,8 +13,10 @@ void Effect_Impact( int iType, vector vPos, vector vNormal );
 void Effect_CreateExplosion( vector vPos );
 void Footsteps_Update( void );
 
+
+void TraceAttack_FireBullets( int iShots, vector vPos );
 void Damage_Radius( vector vOrigin, entity eAttacker, float fDamage, float fRadius, int iCheckClip );
-void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos, int iSkipArmor );
+void Damage_Apply( entity eTarget, entity eAttacker, float fDamage, vector vHitPos, int iSkipArmor );
 void Client_TriggerCamera( entity eTarget, vector vPos, vector vEndPos, float fResetTime );
 
 entity eActivator;

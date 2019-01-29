@@ -89,9 +89,9 @@ void CBaseEntity::RendermodeUpdate(void)
 	alpha = bound(0.001, ( m_renderamt / 255 ), 1.0);
 
 	if ( m_rendermode == RM_ADDITIVE ) {
-		effects = EF_ADDITIVE; // QWSSQC: EF_FLAG2
+		effects = EF_FLAG2; // SSQC: EF_ADDITIVE
 	} else if ( m_rendermode == RM_GLOW ) {
-		effects = EF_ADDITIVE | EF_FULLBRIGHT;
+		effects = EF_FLAG2 | EF_FULLBRIGHT;
 	}
 	
 }

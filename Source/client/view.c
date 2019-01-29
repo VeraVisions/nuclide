@@ -15,6 +15,19 @@ void View_Init(void)
 		precache_model(wm);
 	}
 #endif
+
+	for (int s = seats.length; s-- > numclientseats;) {
+		pSeat = &seats[s];
+		if( !pSeat->eViewModel ) {
+			pSeat->eViewModel = spawn();
+			pSeat->eViewModel.classname = "vm";
+			pSeat->eViewModel.renderflags = RF_DEPTHHACK;
+			
+			pSeat->eMuzzleflash = spawn();
+			pSeat->eMuzzleflash.classname = "mflash";
+			pSeat->eMuzzleflash.renderflags = RF_ADDITIVE;
+		}
+	}
 }
 
 void View_CalcViewport(int s, float fWinWidth, float fWinHeight) {
@@ -97,7 +110,7 @@ Gives the angle a bit of an offset/punch/kick
 */
 void View_AddPunchAngle( vector add )
 {
-	pSeat->vPunchAngle += add;
+	pSeat->vPunchAngle /*+*/= add;
 }
 
 /*
@@ -110,19 +123,12 @@ muzzleflash, dynamic lights and so on appear
 */
 void View_DrawViewModel( void )
 {
-	if( !pSeat->eViewModel ) {
-		pSeat->eViewModel = spawn();
-		pSeat->eViewModel.classname = "vm";
-		pSeat->eViewModel.renderflags = RF_VIEWMODEL | RF_DEPTHHACK;
-		
-		pSeat->eMuzzleflash = spawn();
-		pSeat->eMuzzleflash.classname = "mflash";
-		pSeat->eMuzzleflash.renderflags = RF_VIEWMODEL | RF_ADDITIVE;
-	}
 	entity eViewModel = pSeat->eViewModel;
 	entity eMuzzleflash = pSeat->eMuzzleflash;
+	
+	player pl = (player) self;
 
-	if ( getstatf( STAT_HEALTH ) <= 0 ) {
+	if ( pl.health <= 0 ) {
 		return;
 	}
 
@@ -136,8 +142,10 @@ void View_DrawViewModel( void )
 		processmodelevents( eViewModel.modelindex, eViewModel.frame, fBaseTime, eViewModel.frame1time, Event_ProcessModel );
 	}
 	
-	makevectors( '0 0 0');
-	eViewModel.origin = '0 0 -1' + ( v_forward * ( pSeat->fBob * 0.4 ) )
+	makevectors(view_angles);
+	eViewModel.angles = view_angles;
+	eViewModel.origin = pSeat->vPlayerOrigin + pl.view_ofs;
+	eViewModel.origin += '0 0 -1' + ( v_forward * ( pSeat->fBob * 0.4 ) )
 			+ ( v_forward * autocvar_v_gunofs[0] )
 			+ ( v_right * autocvar_v_gunofs[1] )
 			+ ( v_up * autocvar_v_gunofs[2] );
@@ -160,7 +168,7 @@ void View_DrawViewModel( void )
 	}
 
 	// Only bother when zoomed out
-	if ( getstatf( STAT_VIEWZOOM ) == 1.0f ) {
+	if ( pl.viewzoom == 1.0f ) {
 		// Update muzzleflash position and draw it
 		if ( eMuzzleflash.alpha > 0.0f ) {
 			makevectors(getproperty(VF_ANGLES));

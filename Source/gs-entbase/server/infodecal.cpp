@@ -46,7 +46,6 @@ void infodecal(void)
 		self.texture = sprintf( "materials/%s", self.texture );
 	}
 
-	self.texture = "";
 	if (!self.texture) {
 		remove(self);
 		return;

@@ -64,9 +64,9 @@ void func_ladder :: func_ladder ( void )
 
 #ifdef GS_DEVELOPER
 	alpha = 0.5f;
-	effects = EF_ADDITIVE;
+	effects = EF_FLAG2;
 #else
 	alpha = 0.0001f;
-	effects = EF_NODRAW;
+	//effects = EF_NODRAW;
 #endif
 }

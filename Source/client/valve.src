@@ -20,15 +20,38 @@ valve/init.c
 
 ../gs-entbase/client.src
 
-../shared/pmove.c
 sound.c
 text.c
-hud_voice.c
+voice.c
+
+../shared/valve/animations.c
+../shared/valve/player.cpp
 player.c
+../shared/pmove.c
 predict.c
 ../shared/effects.c
 ../shared/spraylogo.cpp
 
+../shared/valve/items.h
+../shared/valve/crosshair.h
+../shared/valve/weapons.h
+../shared/valve/w_crowbar.c
+../shared/valve/w_glock.c
+../shared/valve/w_python.c
+../shared/valve/w_mp5.c
+../shared/valve/w_crossbow.c
+../shared/valve/w_shotgun.c
+../shared/valve/w_rpg.c
+../shared/valve/w_gauss.c
+../shared/valve/w_egon.c
+../shared/valve/w_hornetgun.c
+../shared/valve/w_handgrenade.c
+../shared/valve/w_tripmine.c
+../shared/valve/w_satchel.c
+../shared/valve/w_snark.c
+../shared/valve/weapons.c
+
+valve/player.c
 entities.c
 
 valve/cmds.c
@@ -37,7 +60,10 @@ events.c
 valve/view.c
 view.c
 damage.c
+chat.c
 valve/hud.c
+valve/hud_weaponselect.c
 
+valve/input.c
 entry.c
 #endlist

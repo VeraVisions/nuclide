@@ -6,9 +6,13 @@
 *
 ****/
 
+#define AIRCONTROL
+
 #define PHY_JUMP_CHAINWINDOW	0.5
 #define PHY_JUMP_CHAIN			100
 #define PHY_JUMP_CHAINDECAY	50
+
+#define FL_JUMPRELEASED 4096
 
 /*FIXME: jumptime should use the time global, as time intervals are not predictable - decrement it based upon input_timelength*/
 .float jumptime;
@@ -29,10 +33,18 @@ void PMove_Init(void) {
 	localcmd("serverinfo phy_airstepheight 18\n");
 	localcmd("serverinfo phy_friction 4\n");
 	localcmd("serverinfo phy_edgefriction 1\n");
-	localcmd("serverinfo phy_accelerate 4\n");
 	localcmd("serverinfo phy_stopspeed 75\n");
 	localcmd("serverinfo phy_gravity 800\n");
+
+#ifdef CSTRIKE
+	localcmd("serverinfo phy_accelerate 4\n");
 	localcmd("serverinfo phy_maxspeed 240\n");
+#endif
+
+#ifdef VALVE
+	localcmd("serverinfo phy_accelerate 8\n");
+	localcmd("serverinfo phy_maxspeed 270\n");
+#endif
 }
 
 /*
@@ -657,6 +669,28 @@ PMove_Run
 */
 void PMove_Run(void)
 {
+
+#ifdef VALVE
+
+	self.maxspeed = (self.flags & FL_CROUCHING) ? 135 : 270;
+
+	if (input_buttons & INPUT_BUTTON5) {
+		input_movevalues *= 0.50;
+	}
+	
+	player pl = (player)self;
+
+	pl.w_attack_next -= input_timelength;
+	pl.w_idle_next -= input_timelength;
+
+	if (pl.w_attack_next <= 0) {
+		pl.w_attack_next = 0;
+	}
+	if (pl.w_idle_next <= 0) {
+		pl.w_idle_next = 0;
+	}
+#endif
+
 	PMove_WaterMove();
 
 	if (self.waterlevel >= 2) {

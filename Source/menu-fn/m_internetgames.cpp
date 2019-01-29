@@ -165,15 +165,15 @@ void menu_internetgames_draw(void)
 	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_INETGAMES],[460,80], [1,1,1], 1.0f, 1);
 	
 	/* Labels */
-	WLabel_Static(g_menuofs[0] + 252, g_menuofs[1] + 128, m_reslbl[IDS_SERVER_GAMESERVER], 10, 10, [1,1,1],
+	WLabel_Static(252, 128, m_reslbl[IDS_SERVER_GAMESERVER], 10, 10, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(g_menuofs[0] + 357, g_menuofs[1] + 128, m_reslbl[IDS_SERVER_SPEED], 10, 10, [1,1,1],
+	WLabel_Static(357, 128, m_reslbl[IDS_SERVER_SPEED], 10, 10, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(g_menuofs[0] + 407, g_menuofs[1] + 128, m_reslbl[IDS_SERVER_MAP], 10, 10, [1,1,1],
+	WLabel_Static(407, 128, m_reslbl[IDS_SERVER_MAP], 10, 10, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(g_menuofs[0] + 476, g_menuofs[1] + 128, m_reslbl[IDS_SERVER_GAME], 10, 10, [1,1,1],
+	WLabel_Static(476, 128, m_reslbl[IDS_SERVER_GAME], 10, 10, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(g_menuofs[0] + 552, g_menuofs[1] + 128, m_reslbl[IDS_SERVER_PLAYERS], 10, 10, [1,1,1],
+	WLabel_Static(552, 128, m_reslbl[IDS_SERVER_PLAYERS], 10, 10, [1,1,1],
 					1.0f, 0, font_arial);
 }
 

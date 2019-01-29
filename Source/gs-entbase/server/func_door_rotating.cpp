@@ -209,10 +209,8 @@ void func_door_rotating::Touch(void)
 	}
 
 	if (other.movetype == MOVETYPE_WALK) {
-		if (other.absmin[2] <= maxs[2] - 2) {
-			eActivator = other;
-			Trigger();
-		}
+		eActivator = other;
+		Trigger();
 	}
 	touch = __NULL__;
 }

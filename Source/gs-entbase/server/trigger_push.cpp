@@ -60,9 +60,10 @@ void trigger_push :: touch ( void )
 	if ( other.solid != SOLID_NOT && other.solid != SOLID_BSP ) {
 		if ( spawnflags & TP_ONCE ) {
 			other.velocity = other.velocity + (m_flSpeed * m_vecMoveDir);
-			if ( other.velocity[2] > 0 )
+			if ( other.velocity[2] > 0 ) {
 				other.flags &= ~FL_ONGROUND;
-			remove( self );
+			}
+			Hide();
 		} else {
 			/*vector vecPush = m_flSpeed * m_vecMoveDir;
 			if ( other.flags & FL_BASEVELOCITY ) {

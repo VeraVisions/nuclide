@@ -19,6 +19,9 @@ enum {
 	EV_CHAT,
 	EV_CHAT_TEAM,
 	EV_CHAT_VOX,
+#ifdef VALVE
+	EV_VIEWMODEL,
+#endif
 #ifdef CSTRIKE
 	EV_RADIOMSG,
 	EV_RADIOMSG2,

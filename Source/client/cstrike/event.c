@@ -15,39 +15,16 @@ Init all the cmds in one place
 */
 void CSQC_ConsoleCommand_Init(void)
 {
-	registercommand("slot1");
-	registercommand("slot2");
-	registercommand("slot3");
-	registercommand("slot4");
-	registercommand("slot5");
-	registercommand("slot6");
-	registercommand("slot7");
-	registercommand("slot8");
-	registercommand("slot9");
-	registercommand("slot10");
 	
 	registercommand("dev_testorbituary");
 	registercommand("minimap");
 	registercommand("overview_test");
-	registercommand("vox_test");
-	registercommand("+attack2");
-	registercommand("-attack2");
-	registercommand("+reload");
-	registercommand("-reload");
-	registercommand("+use");
-	registercommand("-use");
-	registercommand("+duck");
-	registercommand("-duck");
 	
 	registercommand("buy");
 	registercommand("chooseteam");
-	registercommand("lastinv");
-	registercommand("invnext");
-	registercommand("invprev");
-	registercommand("+showscores");
-	registercommand("-showscores");
-	registercommand("nightvision");
+
 	registercommand("drop");
+	registercommand("nightvision");
 	
 	registercommand("radio1");
 	registercommand("radio2");
@@ -123,39 +100,6 @@ float Game_ConsoleCommand(void)
 {
 	/* This has already been tokenized */
 	switch (argv(0)) {
-	case "lastinv":
-		HUD_DrawWeaponSelect_Last();
-		break;
-	case "slot1":
-		localcmd("impulse 1\n");
-		break;
-	case "slot2":
-		localcmd("impulse 2\n");
-		break;
-	case "slot3":
-		localcmd("impulse 3\n");
-		break;
-	case "slot4":
-		localcmd("impulse 4\n");
-		break;
-	case "slot5":
-		localcmd("impulse 5\n");
-		break;
-	case "slot6":
-		localcmd("impulse 6\n");
-		break;
-	case "slot7":
-		localcmd("impulse 7\n");
-		break;
-	case "slot8":
-		localcmd("impulse 8\n");
-		break;
-	case "slot9":
-		localcmd("impulse 9\n");
-		break;
-	case "slot10":
-		localcmd("impulse 10\n");
-		break;
 	case "dev_testorbituary":
 		HUD_AddOrbituaries(player_localnum, TEAM_T, player_localnum, TEAM_CT, floor(random(1, CS_WEAPON_COUNT)), FALSE);
 		break;
@@ -172,18 +116,6 @@ float Game_ConsoleCommand(void)
 		break;
 	case "chooseteam":
 		pSeat->fVGUI_Display = VGUI_TEAMSELECT;
-		break;
-	case "invnext":
-		HUD_DrawWeaponSelect_Back();
-		break;
-	case "invprev":
-		HUD_DrawWeaponSelect_Forward();
-		break;
-	case "+showscores":
-		pSeat->iShowScores = TRUE;
-		break;
-	case "-showscores":
-		pSeat->iShowScores = FALSE;
 		break;
 	case "nightvision":
 		Nightvision_Toggle();

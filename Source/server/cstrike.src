@@ -1,19 +1,19 @@
 #pragma target fte
 #pragma progs_dat  "../../cstrike/progs.dat"
 
-#define SSQC
+#define QWSSQC
 #define CSTRIKE
 
 #includelist
 ../builtins.h
 ../defs.h
+cstrike/defs.h
 ../shared/cstrike/defs.h
 ../math.h
 ../materials.h
 ../events.h
 ../entities.h
 defs.h
-cstrike/defs.h
 cstrike/defsfields.h
 
 ../gs-entbase/server.src
@@ -65,8 +65,8 @@ cstrike/info_map_parameters.cpp
 
 vox.c
 cstrike/ammo.c
-damage.c
-cstrike/traceattack.c
+cstrike/damage.c
+traceattack.c
 cstrike/rules.c
 cstrike/timer.c
 

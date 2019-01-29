@@ -16,6 +16,7 @@ class CScrollbar:CWidget
 	int m_scroll;
 	int m_minus;
 	int m_max;
+	float m_itemheight;
 	virtual void(int value) m_changed = 0;
 	
 	int m_up_hover;
@@ -30,6 +31,7 @@ class CScrollbar:CWidget
 	virtual void(int val) SetScroll;
 	virtual void(int val) SetMax;
 	virtual void(int val) SetHeight;
+	virtual void(int val) SetItemheight;
 	virtual void(void(int val) vFunc) SetCallback;
 };
 
@@ -37,6 +39,7 @@ void CScrollbar::CScrollbar(void)
 {
 	/* There's the physical length (t_length) and the actual length 
 	 * (border, etc. ignored) */
+	SetItemheight(15);
 	SetHeight(128);
 }
 
@@ -67,8 +70,8 @@ void CScrollbar::Draw(void)
 				[16,16], [1,1,1], 1.0f, 0);
 	}
 
-	barheight = m_theight * (m_theight / (m_max * 15));
-	barstep = (m_scroll * 15) * (m_theight / (m_max * 15));
+	barheight = m_theight * (m_theight / (m_max * m_itemheight));
+	barstep = (m_scroll * m_itemheight) * (m_theight / (m_max * m_itemheight));
 
 	if (!m_hold) {
 		drawfill([g_menuofs[0]+m_x,g_menuofs[1]+m_y+16], [16,m_theight], [0.25,0.25,0.25], 1.0f);
@@ -118,8 +121,8 @@ void CScrollbar::Input(float type, float x, float y, float devid)
 		SetScroll(m_scroll + 1);
 	}
 
-	barheight = m_theight * (m_theight / (m_max * 15));
-	barstep = (m_scroll * 15) * (m_theight / (m_max * 15));
+	barheight = m_theight * (m_theight / (m_max * m_itemheight));
+	barstep = (m_scroll * m_itemheight) * (m_theight / (m_max * m_itemheight));
 
 	if (Util_CheckMouse(m_x, m_y + 16 + barstep, 16, barheight)) {
 		m_hover = TRUE;
@@ -164,7 +167,7 @@ void CScrollbar::SetScroll(int val)
 
 void CScrollbar::SetMax(int val)
 {
-	m_minus = (m_height - 6) / 15;
+	m_minus = (m_height - 6) / m_itemheight;
 	m_max = val - m_minus;
 }
 
@@ -172,6 +175,11 @@ void CScrollbar::SetHeight(int val)
 {
 	m_height = val;
 	m_theight = m_height - 32;
+}
+
+void CScrollbar::SetItemheight(int val)
+{
+	m_itemheight = val;
 }
 
 void CScrollbar::SetCallback(void(int val) vFunc)

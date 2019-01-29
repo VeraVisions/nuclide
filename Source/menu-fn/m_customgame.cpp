@@ -163,6 +163,7 @@ void games_init(void)
 CWidget fn_customgame;
 CFrame customgame_frMods;
 CModList customgame_lbMods;
+CScrollbar customgame_sbMods;
 
 CMainButton customgame_btnActivate;
 CMainButton customgame_btnInstall;
@@ -177,7 +178,7 @@ void customgame_btnactivate_start(void)
 
 	gameinfo_current = nextgame;
 	localcmd(sprintf("gamedir \"%s\"\n", games[nextgame].gamedir));
-	localcmd("snd_restart\nwait\nmenu_restart\nmenu_customgame\n");
+	localcmd("snd_restart\nwait\nvid_reload\nmenu_restart\nmenu_customgame\n");
 	// TODO: Re-init important menu bits and bobs.
 
 	//m_shutdown();
@@ -186,7 +187,7 @@ void customgame_btnactivate_start(void)
 void customgame_btndeactivate_start(void)
 {
 	localcmd("gamedir \"\"\n");
-	localcmd("snd_restart\nwait\nmenu_restart\nmenu_customgame\n");
+	localcmd("snd_restart\nwait\nvid_reload\nmenu_restart\nmenu_customgame\n");
 }
 
 void customgame_btndone_start(void)
@@ -201,6 +202,10 @@ void customgame_btndone_start(void)
 	header.m_visible = TRUE;
 	header.SetHeader(HEAD_CUSTOM);
 	header.SetExecute(customgame_btndone_end);
+}
+void customgame_sbmods_changed(int val)
+{
+	customgame_lbMods.SetScroll(val);
 }
 
 void menu_customgame_init(void)
@@ -249,8 +254,15 @@ void menu_customgame_init(void)
 	customgame_lbMods.SetPos(144,159);
 	customgame_lbMods.SetSize(457,283);
 	Widget_Add(fn_customgame, customgame_lbMods);
+	
+	customgame_sbMods = spawn(CScrollbar);
+	customgame_sbMods.SetPos(141+463,156);
+	customgame_sbMods.SetItemheight(29);
+	customgame_sbMods.SetHeight(289);
+	customgame_sbMods.SetCallback(customgame_sbmods_changed);
+	customgame_sbMods.SetMax(gameinfo_count);
+	Widget_Add(fn_customgame, customgame_sbMods);
 
-	//customgame_lbMods.SetMax(gameinfo_count);
 }
 
 void menu_customgame_draw(void)
@@ -258,21 +270,21 @@ void menu_customgame_draw(void)
 	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_CUSTOM],[460,80], [1,1,1], 1.0f, 1);
 	Widget_Draw(fn_customgame);
 
-	WLabel_Static(g_menuofs[0] + 155, g_menuofs[1] + 143, m_reslbl[IDS_MODLIST_TYPE], 11, 11, [1,1,1],
+	WLabel_Static(155, 143, m_reslbl[IDS_MODLIST_TYPE], 11, 11, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(g_menuofs[0] + 201, g_menuofs[1] + 143, m_reslbl[IDS_MODLIST_NAME], 11, 11, [1,1,1],
+	WLabel_Static(201, 143, m_reslbl[IDS_MODLIST_NAME], 11, 11, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(g_menuofs[0] + 321, g_menuofs[1] + 143, m_reslbl[IDS_MODLIST_VERSION], 11, 11, [1,1,1],
+	WLabel_Static(321, 143, m_reslbl[IDS_MODLIST_VERSION], 11, 11, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(g_menuofs[0] + 371, g_menuofs[1] + 143, m_reslbl[IDS_MODLIST_SIZE], 11, 11, [1,1,1],
+	WLabel_Static(371, 143, m_reslbl[IDS_MODLIST_SIZE], 11, 11, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(g_menuofs[0] + 421, g_menuofs[1] + 143, m_reslbl[IDS_MODLIST_RATING], 11, 11, [1,1,1],
+	WLabel_Static(421, 143, m_reslbl[IDS_MODLIST_RATING], 11, 11, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(g_menuofs[0] + 471, g_menuofs[1] + 143, m_reslbl[IDS_MODLIST_INSTALLED], 11, 11, [1,1,1],
+	WLabel_Static(471, 143, m_reslbl[IDS_MODLIST_INSTALLED], 11, 11, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(g_menuofs[0] + 521, g_menuofs[1] + 143, m_reslbl[IDS_MODLIST_SERVERS], 11, 11, [1,1,1],
+	WLabel_Static(521, 143, m_reslbl[IDS_MODLIST_SERVERS], 11, 11, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(g_menuofs[0] + 571, g_menuofs[1] + 143, m_reslbl[IDS_MODLIST_PLAYERS], 11, 11, [1,1,1],
+	WLabel_Static(571, 143, m_reslbl[IDS_MODLIST_PLAYERS], 11, 11, [1,1,1],
 					1.0f, 0, font_arial);
 }
 

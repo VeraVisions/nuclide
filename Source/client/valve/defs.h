@@ -6,6 +6,8 @@
 *
 ****/
 
+vector g_hud_color;
+
 struct
 {
 //Viewmodel stuff
@@ -31,29 +33,16 @@ struct
 	vector vCameraAngle;
 	float fCameraTime;
 	
-// Flashbang'd
-	float fFlashTime;
-	float fFlashAlpha;
-	
 //UI fields
 	float fVGUI_Display;	// The VGUI menu currently being drawn
 	int iShowScores;	// This is seperated from the other VGUI stuff so we can check scores while buying and whatnot
 	
-	// Testing
-	int iOverview;
-	int iMapExpand;
-	float fMapLerp;
-	
-//crosshair
-	int iOldShotMultiplier;
-	float fCrosshairDistance;
-	float fDecreaseShotTime;
-	int iShotMultiplier;
-	
 //buy menu
 	// We can only carry one item per slot, so this is hacking around the last one
-	int iHUDGrenades;
-	int iHUDGrenadesSelected;
-	float fHUDWeaponSelectTime;
 	float fHUDWeaponSelected;
+	float fHUDWeaponSelectTime;
 } seats[4], *pSeat;
+
+void HUD_DrawAmmo1(void);
+void HUD_DrawAmmo2(void);
+void HUD_DrawAmmo3(void);

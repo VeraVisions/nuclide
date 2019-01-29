@@ -13,8 +13,6 @@
 #define NUMSIZE_Y 24/128
 #define HUD_ALPHA 0.5
 
-vector g_hud_color;
-
 float spr_hudnum[10] = {
 	0 / 256,
 	24 / 256,
@@ -34,15 +32,15 @@ float spr_health[4] = {
 	32 / 128 // size y
 };
 float spr_suit1[4] = {
-	10 / 256, // pos x
+	0 / 256, // pos x
 	24 / 128, // pos u
-	30 / 256, // size x
+	40 / 256, // size x
 	40 / 128 // size y
 };
 float spr_suit2[4] = {
-	50 / 256, // pos x
+	40 / 256, // pos x
 	24 / 128, // pos u
-	30 / 256, // size x
+	40 / 256, // size x
 	40 / 128 // size y
 };
 
@@ -60,6 +58,8 @@ float spr_flash2[4] = {
 	32 / 128 // size y
 };
 
+void HUD_DrawWeaponSelect(void);
+
 void HUD_Init(void)
 {
 	precache_model("sprites/640hud7.spr");
@@ -75,6 +75,12 @@ Draws a normal number
 void HUD_DrawNumber(int iNumber, vector vPos, float fAlpha, vector vColor) {
 	drawsubpic(vPos, [24,24], HUD_NUMS, [spr_hudnum[iNumber], 0],
 			   [NUMSIZE_X, NUMSIZE_Y], vColor, fAlpha, DRAWFLAG_ADDITIVE);
+}
+
+void HUD_DrawSeperator(vector pos)
+{
+	drawsubpic(pos, [2,24], HUD_NUMS, [240/256, 0],
+			   [2/256, 24/128], g_hud_color, HUD_ALPHA, DRAWFLAG_ADDITIVE);
 }
 
 /*
@@ -129,6 +135,7 @@ void HUD_DrawHealth(void) {
 			   [spr_health[2], spr_health[3]], [1,0,0], HUD_ALPHA, DRAWFLAG_ADDITIVE);
 		HUD_DrawNums(pl.health, pos + [72, 0], HUD_ALPHA, [1,0,0]);
 	}
+
 	fOldHealth = pl.health;
 }
 
@@ -147,7 +154,7 @@ void HUD_DrawArmor(void)
 	static float armoralpha;
 	player pl = (player)self;
 
-	pos = video_mins + [128, video_res[1] - 42];
+	pos = video_mins + [72+16+30, video_res[1] - 42];
 	
 	if (pl.armor != oldarmor) {
 		armoralpha = 1.0;
@@ -159,11 +166,98 @@ void HUD_DrawArmor(void)
 		armoralpha = HUD_ALPHA;
 	}
 
-	drawsubpic(pos + [0,-9], [30,40], HUD_NUMS, [spr_suit2[0], spr_suit2[1]],
+	drawsubpic(pos + [0,-9], [40,40], HUD_NUMS, [spr_suit2[0], spr_suit2[1]],
 			  [spr_suit2[2], spr_suit2[3]], g_hud_color, armoralpha, DRAWFLAG_ADDITIVE);
-	HUD_DrawNums(pl.armor, pos + [72, 0], armoralpha, g_hud_color);
+
+	float fwhat = pl.armor / 100;
+	if (fwhat > 0.0) {
+		drawsubpic(pos + [0,-9], [40,40*fwhat], HUD_NUMS, [spr_suit1[0], spr_suit1[1]],
+					[spr_suit1[2], spr_suit1[3]*fwhat], g_hud_color, armoralpha, DRAWFLAG_ADDITIVE);
+	}
+
+	HUD_DrawNums(pl.armor, pos + [80, 0], armoralpha, g_hud_color);
 
 	oldarmor = pl.armor;
+}
+
+void HUD_DrawAmmo1(void)
+{
+	player pl = (player)self;
+	vector pos;
+	static int old_ammo1;
+	static float ammo1_alpha;
+
+	if (pl.a_ammo1 != old_ammo1) {
+		ammo1_alpha = 1.0;
+		old_ammo1 = pl.a_ammo1;
+	}
+
+	if (ammo1_alpha >= HUD_ALPHA) {
+		ammo1_alpha -= frametime * 0.5;
+	} else {
+		ammo1_alpha = HUD_ALPHA;
+	}
+	
+	pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
+
+	/* Magazine/Clip */
+	if (pl.a_ammo1 != -1) {
+		HUD_DrawNums(pl.a_ammo1, pos + [-80,0], ammo1_alpha, g_hud_color);
+	}
+
+	HUD_DrawSeperator(pos + [-50,0]);
+}
+
+void HUD_DrawAmmo2(void)
+{
+	player pl = (player)self;
+	vector pos;
+
+	static int old_ammo2;
+	static float ammo2_alpha;
+
+	if (pl.a_ammo2 != old_ammo2) {
+		ammo2_alpha = 1.0;
+		old_ammo2 = pl.a_ammo2;
+	}
+
+	if (ammo2_alpha >= HUD_ALPHA) {
+		ammo2_alpha -= frametime * 0.5;
+	} else {
+		ammo2_alpha = HUD_ALPHA;
+	}
+
+	pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
+
+	/* Leftover Ammo */
+	HUD_DrawNums(pl.a_ammo2, pos, ammo2_alpha, g_hud_color);
+}
+
+void HUD_DrawAmmo3(void)
+{
+	player pl = (player)self;
+	vector pos;
+
+	static int old_ammo3;
+	static float ammo3_alpha;
+
+	if (pl.a_ammo3 != old_ammo3) {
+		ammo3_alpha = 1.0;
+		old_ammo3 = pl.a_ammo3;
+	}
+
+	if (ammo3_alpha >= HUD_ALPHA) {
+		ammo3_alpha -= frametime * 0.5;
+	} else {
+		ammo3_alpha = HUD_ALPHA;
+	}
+	
+	pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
+
+	/* Special */
+	if (pl.a_ammo3) {
+		HUD_DrawNums(pl.a_ammo3, pos + [0, -32], ammo3_alpha, g_hud_color);
+	}
 }
 
 void HUD_DrawFlashlight(void)
@@ -183,4 +277,11 @@ void HUD_Draw(void)
 	HUD_DrawArmor();
 	HUD_DrawFlashlight();
 	Damage_Draw();
+	Weapons_DrawCrosshair();
+	HUD_DrawWeaponSelect();
+}
+
+void VGUI_DrawSpectatorHUD(void)
+{
+	// FIXME
 }

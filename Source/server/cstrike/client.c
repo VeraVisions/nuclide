@@ -190,8 +190,6 @@ void Game_RunClientCommand( void ) {
 	self.fInVIPZone = FALSE;
 
 	QPhysics_Run( self );
-
-	Input_Handle();
 }
 
 void Game_SetNewParms(void)

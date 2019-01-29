@@ -121,7 +121,7 @@ void Animation_Print( string sWow ) {
 #ifdef CSQC
 	print( sprintf( "[DEBUG] %s", sWow ) );
 #else 
-	bprint( sprintf( "SSQC: %s", sWow )  );
+	bprint(PRINT_HIGH, sprintf( "SSQC: %s", sWow )  );
 #endif	
 }
 

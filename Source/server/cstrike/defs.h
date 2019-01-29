@@ -106,8 +106,6 @@ void Effect_CreateFlash(entity targ);
 void BaseMelee_Draw( void );
 int BaseMelee_Attack( void );
 
-void TraceAttack_FireBullets( int iShots, vector vPos );
-
 void Ammo_AutoFill(float fWeapon);
 void Ammo_BuyPrimary(void);
 void Ammo_BuySecondary(void);
@@ -116,5 +114,7 @@ void Input_Handle( void );
 
 void Animation_PlayerTop( float fFrame );
 void Animation_PlayerTopTemp( float fFrame, float fTime );
+
+void Damage_Apply( entity eTarget, entity eAttacker, float iDamage, vector vHitPos, int iSkipArmor );
 
 #define NULL __NULL__

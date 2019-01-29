@@ -6,7 +6,7 @@
 *
 ****/
 
-//#define GS_DEVELOPER
+#define GS_DEVELOPER
 
 .float gflags;
 

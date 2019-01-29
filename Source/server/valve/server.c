@@ -18,5 +18,7 @@ float Game_ConsoleCmd(string cmd)
 
 void Game_Worldspawn(void)
 {
-	
+	precache_file("decals.wad");
+	precache_model("models/player.mdl");
+	Weapons_Init();
 }

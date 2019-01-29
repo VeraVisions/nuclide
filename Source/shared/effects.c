@@ -122,17 +122,17 @@ void Effect_Impact( int iType, vector vPos, vector vNormal ) {
 		case IMPACT_EXPLOSION:
 			break;
 		case IMPACT_GLASS:
-			pointparticles( DECAL_GLASS, vPos, vNormal, 1 );
+			//pointparticles( DECAL_GLASS, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_PIECES_BLACK, vPos, vNormal, 1 );
 			break;
 		case IMPACT_WOOD:
-			pointparticles( DECAL_SHOT, vPos, vNormal, 1 );
+			//pointparticles( DECAL_SHOT, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_SPARK, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_PIECES_BLACK, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_SMOKE_BROWN, vPos, vNormal, 1 );
 			break;
 		case IMPACT_METAL:
-			pointparticles( DECAL_SHOT, vPos, vNormal, 1 );
+			//pointparticles( DECAL_SHOT, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_SPARK, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_SPARK, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_PIECES_BLACK, vPos, vNormal, 1 );
@@ -141,7 +141,7 @@ void Effect_Impact( int iType, vector vPos, vector vNormal ) {
 			pointparticles( PARTICLE_BLOOD, vPos, vNormal, 1 );
 			break;
 		case IMPACT_DEFAULT:
-			pointparticles( DECAL_SHOT, vPos, vNormal, 1 );
+			//pointparticles( DECAL_SHOT, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_SPARK, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_PIECES_BLACK, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_SMOKE_GREY, vPos, vNormal, 1 );

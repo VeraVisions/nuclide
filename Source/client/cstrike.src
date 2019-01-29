@@ -16,7 +16,7 @@ cstrike/defs.h
 defs.h
 vgui.h
 
-hud_voice.c
+voice.c
 sound.c
 text.c
 
@@ -59,7 +59,7 @@ text.c
 ../shared/spraylogo.cpp
 
 cstrike/overview.c
-cstrike/player.c
+../shared/valve/player.cpp
 player.c
 predict.c
 events.c
@@ -74,6 +74,7 @@ cstrike/vguiteamselect.c
 cstrike/vguiradio.c
 cstrike/vgui.c
 damage.c
+chat.c
 cstrike/nightvision.c
 cstrike/hudcrosshair.c
 cstrike/hudscope.c
@@ -85,7 +86,9 @@ cstrike/entities.c
 cstrike/event.c
 cstrike/init.c
 
+cstrike/player.c
 entities.c
 
+cstrike/input.c
 entry.c
 #endlist

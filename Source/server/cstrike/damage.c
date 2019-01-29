@@ -23,7 +23,7 @@ void Damage_CastOrbituary( entity eAttacker, entity eTarget, float fWeapon, floa
 	WriteByte( MSG_BROADCAST, fWeapon );
 	WriteByte( MSG_BROADCAST, fHeadShot );
 	msg_entity = self;
-	multicast( '0 0 0', MULTICAST_ALL );
+	multicast( [0,0,0], MULTICAST_ALL );
 }
 
 /*
@@ -86,7 +86,7 @@ Damage_Apply
 Generic function that applies damage, pain and suffering
 =================
 */
-void Damage_Apply( entity eTarget, entity eAttacker, int iDamage, vector vHitPos, int iSkipArmor ) {
+void Damage_Apply( entity eTarget, entity eAttacker, float iDamage, vector vHitPos, int iSkipArmor ) {
 #ifdef CSTRIKE
 	// Modify the damage based on the location
 	if ( trace_surface_id == BODY_HEAD ) {

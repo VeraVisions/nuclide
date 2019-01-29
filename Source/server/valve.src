@@ -1,12 +1,13 @@
 #pragma target fte
 #pragma progs_dat  "../../valve/progs.dat"
 
-#define SSQC
+#define QWSSQC
 #define VALVE
 
 #includelist
 ../builtins.h
 ../defs.h
+valve/defs.h
 ../math.h
 ../materials.h
 ../events.h
@@ -14,13 +15,36 @@
 defs.h
 
 ../gs-entbase/server.src
+valve/monster_rat.cpp
 
 ../shared/effects.c
 ../shared/spraylogo.cpp
-../shared/pmove.c
 
+../shared/valve/player.cpp
 valve/player.c
+../shared/pmove.c
 valve/spectator.c
+../shared/valve/items.h
+../shared/valve/crosshair.h
+../shared/valve/weapons.h
+../shared/valve/w_crowbar.c
+../shared/valve/w_glock.c
+../shared/valve/w_python.c
+../shared/valve/w_mp5.c
+../shared/valve/w_crossbow.c
+../shared/valve/w_shotgun.c
+../shared/valve/w_rpg.c
+../shared/valve/w_gauss.c
+../shared/valve/w_egon.c
+../shared/valve/w_hornetgun.c
+../shared/valve/w_handgrenade.c
+../shared/valve/w_tripmine.c
+../shared/valve/w_satchel.c
+../shared/valve/w_snark.c
+valve/items.cpp
+../shared/valve/weapons.c
+
+spawn.c
 
 valve/client.c
 client.c
@@ -28,8 +52,11 @@ client.c
 valve/server.c
 server.c
 
-damage.c
+valve/damage.c
+traceattack.c
 vox.c
+
+valve/input.c
 
 valve/spawn.c
 footsteps.c

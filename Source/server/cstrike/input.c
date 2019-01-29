@@ -35,8 +35,8 @@ void Input_Handle( void ) {
 		Weapon_Switch( SLOT_PRIMARY );
 	} else if ( self.impulse == 4 ) {
 		Weapon_Switch( SLOT_GRENADE );
-	} 
-	
+	}
+
 	if ( self.button5 ) {
 		Player_UseDown(); 
 	} else {

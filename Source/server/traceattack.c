@@ -24,11 +24,18 @@ void TraceAttack_FireSingle( vector vPos, vector vAngle ) {
 		TraceAttack_FireSingle( vPos, vAngle );
 		iTotalPenetrations = 1;
 	}
+
+#ifdef CSTRIKE
 	traceline( vPos, vPos + ( vAngle * wptTable[ self.weapon ].fRange ), MOVE_HITMODEL, self);
-		
+#else
+	traceline( vPos, vPos + ( vAngle * 8196 ), MOVE_HITMODEL, self);
+#endif
+
 	if (trace_fraction != 1.0) {
 		if ( trace_ent.takedamage == DAMAGE_YES ) {
+#ifdef CSTRIKE
 			Damage_Apply( trace_ent, self, wptTable[ self.weapon ].iDamage, trace_endpos, FALSE );
+#endif
 		}
 		
 		if ( trace_ent.iBleeds == TRUE ) {
@@ -75,18 +82,25 @@ void TraceAttack_FireSingleLagged( vector vPos, vector vAngle ) {
 		TraceAttack_FireSingle( vPos, vAngle );
 		iTotalPenetrations = 1;
 	}
+	
+#ifdef CSTRIKE
 	traceline( vPos, vPos + ( vAngle * wptTable[ self.weapon ].fRange ), MOVE_LAGGED | MOVE_HITMODEL, self);
-		
+#else
+	traceline( vPos, vPos + ( vAngle * 8196 ), MOVE_LAGGED | MOVE_HITMODEL, self);
+#endif
+
 	if (trace_fraction != 1.0) {
 		if ( trace_ent.takedamage == DAMAGE_YES ) {
+#ifdef CSTRIKE
 			Damage_Apply( trace_ent, self, wptTable[ self.weapon ].iDamage, trace_endpos, FALSE );
+#endif
 		}
-		
+
 		if ( trace_ent.iBleeds == TRUE ) {
 			Effect_Impact( IMPACT_FLESH, trace_endpos, trace_plane_normal );
 		} else {
 			string sTexture = getsurfacetexture( trace_ent, getsurfacenearpoint( trace_ent, trace_endpos ) );
-	
+
 			switch( (float)hash_get( hashMaterials, sTexture ) ) { 
 				case 'G':
 				case 'V':
@@ -128,14 +142,16 @@ Fire a given amount of shots
 void TraceAttack_FireBullets( int iShots, vector vPos ) {
 	vector vDir;
 	makevectors(self.v_angle);
-	
+
 	while ( iShots > 0 ) {
 		iTotalPenetrations = 0;
+#ifdef CSTRIKE
 		vDir = aim( self, 100000 ) + Math_CRandom()*self.fAccuracy*v_right + Math_CRandom()*self.fAccuracy*v_up;
+#else
+		vDir = aim( self, 100000 );
+#endif
 		TraceAttack_FireSingle( vPos, vDir );
 		TraceAttack_FireSingleLagged( vPos, vDir );
 		iShots--;
 	}
-	
-	dprint( sprintf( "[DEBUG] ACCURACY: %f, %d %d %d\n", self.fAccuracy, vDir_x, vDir_y, vDir_z ));
 }

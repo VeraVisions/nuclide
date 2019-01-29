@@ -51,6 +51,7 @@ void PutClientInServer(void)
 void PlayerPreThink(void)
 {
 	Game_PlayerPreThink();
+	Input_Handle();
 }
 
 void PlayerPostThink(void)
