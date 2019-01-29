@@ -236,25 +236,28 @@ Updates all our input related globals for use in other functions
 float CSQC_InputEvent(float fEventType, float fKey, float fCharacter,
 					   float fDeviceID)
 {
+	int s = (float)getproperty(VF_ACTIVESEAT);
+	pSeat = &seats[s];
+
 	switch(fEventType) {
 		case IE_KEYDOWN:
 			if (fKey == K_MOUSE1) {
 				fMouseClick = 1;
 			} else {
-				fInputKeyDown = 1;
+				pSeat->fInputKeyDown = 1;
 			}
 
-			fInputKeyCode = fKey;
-			fInputKeyASCII = fCharacter;
+			pSeat->fInputKeyCode = fKey;
+			pSeat->fInputKeyASCII = fCharacter;
 			break;
 		case IE_KEYUP:
 			if (fKey == K_MOUSE1) {
 				fMouseClick = 0;
 			} else {
-				fInputKeyDown = 0;
+				pSeat->fInputKeyDown = 0;
 			}
-			fInputKeyCode = 0;
-			fInputKeyASCII = 0;
+			pSeat->fInputKeyCode = 0;
+			pSeat->fInputKeyASCII = 0;
 			break;
 		case IE_MOUSEABS:
 			mouse_pos[0] = fKey;
@@ -297,15 +300,15 @@ void CSQC_Input_Frame(void)
 
 	// If we are inside a VGUI, don't let the client do stuff outside
 	if ((pSeat->fVGUI_Display != VGUI_NONE)) {
-		fInputSendNext = time + 0.2;
+		pSeat->fInputSendNext = time + 0.2;
 	} else if ((pSeat->fHUDWeaponSelected) && (input_buttons & INPUT_BUTTON0)) {
 		HUD_DrawWeaponSelect_Trigger();
 		input_buttons = 0;
-		fInputSendNext = time + 0.2;
+		pSeat->fInputSendNext = time + 0.2;
 	}
 
 
-	if (fInputSendNext > time) {
+	if (pSeat->fInputSendNext > time) {
 		input_impulse = 0;
 		input_buttons = 0;
 		return;
@@ -320,19 +323,19 @@ void CSQC_Input_Frame(void)
 		sendevent("Spraylogo", "");
 	}
 	
-	if (iInputAttack2 == TRUE) {
+	if (pSeat->iInputAttack2 == TRUE) {
 		input_buttons |= INPUT_BUTTON3;
 	} 
 
-	if (iInputReload == TRUE) {
+	if (pSeat->iInputReload == TRUE) {
 		input_buttons |= INPUT_BUTTON4;
 	} 
 	
-	if (iInputUse == TRUE) {
+	if (pSeat->iInputUse == TRUE) {
 		input_buttons |= INPUT_BUTTON5;
 	} 
 	
-	if (iInputDuck == TRUE) {
+	if (pSeat->iInputDuck == TRUE) {
 		input_buttons |= INPUT_BUTTON8;
 	}
 
@@ -445,28 +448,28 @@ float CSQC_ConsoleCommand(string sCMD)
 			Sound_PlayVOX(sCMD);
 			break;
 		case "+attack2":
-			iInputAttack2 = TRUE;
+			pSeat->iInputAttack2 = TRUE;
 			break;
 		case "-attack2":
-			iInputAttack2 = FALSE;
+			pSeat->iInputAttack2 = FALSE;
 			break;
 		case "+reload":
-			iInputReload = TRUE;
+			pSeat->iInputReload = TRUE;
 			break;
 		case "-reload":
-			iInputReload = FALSE;
+			pSeat->iInputReload = FALSE;
 			break;
 		case "+use":
-			iInputUse = TRUE;
+			pSeat->iInputUse = TRUE;
 			break;
 		case "-use":
-			iInputUse = FALSE;
+			pSeat->iInputUse = FALSE;
 			break;
 		case "+duck":
-			iInputDuck = TRUE;
+			pSeat->iInputDuck = TRUE;
 			break;
 		case "-duck":
-			iInputDuck = FALSE;
+			pSeat->iInputDuck = FALSE;
 			break;
 		case "invnext":
 			HUD_DrawWeaponSelect_Back();

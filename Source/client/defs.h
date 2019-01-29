@@ -50,20 +50,8 @@ var float DECAL_GLASS;
 
 var float SHADER_CULLED;
 
-float fInputSendNext;
-
 vector video_mins;
 vector video_res;
-
-// Input globals, feel free to use them since they are updated upon input
-float fInputKeyCode;
-float fInputKeyASCII;
-float fInputKeyDown;
-
-var int iInputAttack2;
-var int iInputReload;
-var int iInputUse;
-var int iInputDuck;
 
 // Input globals for the mouse
 float fMouseClick;

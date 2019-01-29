@@ -153,9 +153,9 @@ float VGUI_Button( string sLabel, void() vFunction, vector vPosition, vector vSi
 	vLabelPos[0] = vPosition[0] + 16;
 	vLabelPos[1] = vPosition[1] + ( ( vSize[1] / 2 ) - 4 );
 	
-	if ( ( iVGUIKey == fInputKeyCode ) ) {
+	if ( ( iVGUIKey == pSeat->fInputKeyCode ) ) {
 		vFunction();
-		fInputKeyCode = 0;
+		pSeat->fInputKeyCode = 0;
 		return TRUE;
 	}
 	

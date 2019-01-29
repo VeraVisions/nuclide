@@ -110,6 +110,18 @@ struct
 	int iHUDGrenadesSelected;
 	float fHUDWeaponSelectTime;
 	float fHUDWeaponSelected;
+
+// Input
+	float fInputKeyCode;
+	float fInputKeyASCII;
+	float fInputKeyDown;
+
+	int iInputAttack2;
+	int iInputReload;
+	int iInputUse;
+	int iInputDuck;
+
+	float fInputSendNext;
 } seats[4], *pSeat;
 
 // Sound Stuff

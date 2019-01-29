@@ -41,6 +41,18 @@ struct
 	// We can only carry one item per slot, so this is hacking around the last one
 	float fHUDWeaponSelected;
 	float fHUDWeaponSelectTime;
+
+// Input
+	float fInputKeyCode;
+	float fInputKeyASCII;
+	float fInputKeyDown;
+
+	int iInputAttack2;
+	int iInputReload;
+	int iInputUse;
+	int iInputDuck;
+
+	float fInputSendNext;
 } seats[4], *pSeat;
 
 void HUD_DrawAmmo1(void);
