@@ -21,7 +21,7 @@ void Effect_CreateExplosion( vector vPos ) {
 	setorigin( eExplosion, vPos );
 	setmodel( eExplosion, "sprites/fexplo.spr" );
 	sound( eExplosion, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 3 ) + 3 ), 1, ATTN_NORM );
-	
+
 	//eExplosion.think = Effect_CreateExplosion_Animate;
 	eExplosion.nextthink = time + 0.05f;
 	eExplosion.effects = EF_ADDITIVE;

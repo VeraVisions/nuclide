@@ -154,12 +154,12 @@ void func_door::MoveAway(void)
 
 void func_door::Trigger(void)
 {
-	/*if (m_flNextTrigger > time) {
+	if (m_flNextTrigger > time) {
 		if (!(spawnflags & SF_MOV_TOGGLE)) {
 			return;
 		}
 	}
-	m_flNextTrigger = time + m_flWait;*/
+	m_flNextTrigger = time + m_flWait;
 
 	// Only trigger stuff when we are done moving
 	if ((m_iState == DOORSTATE_RAISED) || (m_iState == DOORSTATE_LOWERED)) {
