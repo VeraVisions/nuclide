@@ -133,6 +133,10 @@ void View_DrawViewModel(void)
 	if (pl.health <= 0) {
 		return;
 	}
+	
+	if (cvar("r_drawviewmodel") == 0) {
+		return;
+	}
 
 	// Don't update when paused
 	if (serverkeyfloat("pausestate") == 0) {
