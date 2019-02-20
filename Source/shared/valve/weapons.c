@@ -36,10 +36,6 @@ void Weapons_Init(void)
 			g_weapons[i].precache();
 		}
 	}
-	
-#ifdef SSQC
-	Decals_Init();
-#endif
 }
 
 void Weapons_Draw(void)
@@ -189,55 +185,6 @@ void Weapons_PlaySound(entity t, float ch, string s, float vol, float at)
 {
 #ifdef SSQC
 	sound(t, ch, s, vol, at);
-#endif
-}
-
-#ifdef SSQC
-entity g_decals;
-#define DECALS_MAX 16
-void Decals_Init(void)
-{
-	entity nextdecal = spawn();
-	g_decals = nextdecal;
-	for ( int i = 0; i <= DECALS_MAX; i++ ) {
-		nextdecal.classname = "decal";
-		nextdecal.owner = spawn();
-		
-		if ( i == DECALS_MAX ) {
-			nextdecal.owner = g_decals;
-		} else {
-			nextdecal = nextdecal.owner;
-		}
-	}
-}
-
-entity Decals_Next(void)
-{
-	entity ret = g_decals;
-	g_decals = g_decals.owner;
-	return ret;
-}
-#endif
-
-void Weapons_PlaceDecal(void)
-{
-#ifdef SSQC
-	entity decal = Decals_Next();
-	decal.think = infodecal;
-	decal.texture = sprintf("{shot%d", floor(random(1,6)));
-	decal.nextthink = time /*+ 0.1f*/;
-	setorigin(decal, trace_endpos);
-#endif
-}
-void Weapons_PlaceBigDecal(void)
-{
-#ifdef SSQC
-	entity decal = Decals_Next();
-	decal.think = infodecal;
-	decal.texture = sprintf("{bigshot%d", floor(random(1,6)));
-	decal.nextthink = time /*+ 0.1f*/;
-	setorigin(decal, trace_endpos);
-	Effect_Impact(IMPACT_DEFAULT, trace_endpos, trace_plane_normal);
 #endif
 }
 

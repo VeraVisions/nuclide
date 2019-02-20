@@ -17,6 +17,7 @@ defs.h
 ../gs-entbase/server.src
 valve/monster_rat.cpp
 
+../shared/decals.c
 ../shared/effects.c
 ../shared/spraylogo.cpp
 

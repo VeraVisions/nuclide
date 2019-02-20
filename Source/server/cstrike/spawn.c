@@ -16,23 +16,24 @@ Spawn_FindSpawnPoint
 Recursive function that gets the next spawnpoint
 =================
 */
-entity Spawn_FindSpawnPoint( float fTeam ) {
+entity Spawn_FindSpawnPoint(float fTeam)
+{
 	entity eSpot, eLastSpawn;
 	entity eThing;
 	int iCount;
 	string sClassname;
 
-	if ( fTeam == TEAM_T ) {
+	if (fTeam == TEAM_T) {
 		sClassname = "info_player_deathmatch";
 		eSpot = eLastSpawn = eLastTSpawn;
-	} else if ( fTeam == TEAM_CT ) {
+	} else if (fTeam == TEAM_CT) {
 		sClassname = "info_player_start";
 		eSpot = eLastSpawn = eLastCTSpawn;
-	} else if ( fTeam == TEAM_VIP ) {
-		return find( world, classname, "info_vip_start" );
+	} else if (fTeam == TEAM_VIP) {
+		return find(world, classname, "info_vip_start");
 	}
 
-	while ( 1 ) {
+	while (1) {
 		eSpot = find(eSpot, classname, sClassname);
 		
 		if (eSpot == eLastSpawn)
@@ -67,33 +68,34 @@ Spawn_ObserverCam
 Look for the next spawnpoint
 =================
 */
-void Spawn_ObserverCam( void ) {
+void Spawn_ObserverCam(void)
+{
 	entity eTarget;
 
 	// Go find a camera if we aren't dead
-	entity eCamera = find ( world, classname, "trigger_camera" );
+	entity eCamera = find (world, classname, "trigger_camera");
 
-	if ( eCamera ) {
+	if (eCamera) {
 		self.origin = eCamera.origin;
 		
-		if ( eCamera.target ) {
-			eTarget = find( world, targetname, eCamera.target );
-			if ( eTarget ) {
-				self.angles = vectoangles( eTarget.origin - eCamera.origin );
+		if (eCamera.target) {
+			eTarget = find(world, targetname, eCamera.target);
+			if (eTarget) {
+				self.angles = vectoangles(eTarget.origin - eCamera.origin);
 				self.angles_x *= -1;
 			}
 		}
 	} else {
 		// Can't find a camera? Just do this lazy thing, CS seems to do the same
-		eCamera = find ( world, classname, "info_player_start" );
+		eCamera = find (world, classname, "info_player_start");
 		
-		if ( eCamera ) {
+		if (eCamera) {
 			self.origin = eCamera.origin;
 			
-			if ( eCamera.target ) {
-				eTarget = find( world, targetname, eCamera.target );
-				if ( eTarget ) {
-					self.angles = vectoangles( eTarget.origin - eCamera.origin );
+			if (eCamera.target) {
+				eTarget = find(world, targetname, eCamera.target);
+				if (eTarget) {
+					self.angles = vectoangles(eTarget.origin - eCamera.origin);
 					self.angles_x *= -1;
 				}
 			}
@@ -110,14 +112,15 @@ Spawn_RespawnClient
 Called whenever a player just needs his basic properties to be reset
 =================
 */
-void Spawn_RespawnClient( float fTeam ) {
+void Spawn_RespawnClient(float fTeam)
+{
 	entity eSpawn;
-	forceinfokey( self, "*spec", "0" );
-	eSpawn = Spawn_FindSpawnPoint( self.team );
+	forceinfokey(self, "*spec", "0");
+	eSpawn = Spawn_FindSpawnPoint(self.team);
 
 	self.classname = "player";
 	self.health = self.max_health = 100;
-	forceinfokey( self, "*dead", "0" );
+	forceinfokey(self, "*dead", "0");
 	Rules_CountPlayers();
 
 	self.takedamage = DAMAGE_YES;
@@ -135,12 +138,12 @@ void Spawn_RespawnClient( float fTeam ) {
 	self.fixangle = TRUE;
 
 	// Get the player-model from Defs.h's list
-	if ( self.team != TEAM_VIP ) {
-		setmodel( self, sCSPlayers[ self.fCharModel ] );
+	if (self.team != TEAM_VIP) {
+		setmodel(self, sCSPlayers[ self.fCharModel ]);
 	} else {
-		setmodel( self, "models/player/vip/vip.mdl" );
+		setmodel(self, "models/player/vip/vip.mdl");
 	}
-	setsize( self, VEC_HULL_MIN, VEC_HULL_MAX );
+	setsize(self, VEC_HULL_MIN, VEC_HULL_MAX);
 
 	self.view_ofs = VEC_PLAYER_VIEWPOS;
 	self.velocity = '0 0 0';
@@ -159,43 +162,44 @@ Spawn_CreateClient
 Called whenever a player becomes a completely new type of player
 =================
 */
-void Spawn_CreateClient( float fCharModel ) {
+void Spawn_CreateClient(float fCharModel)
+{
 	// What team are we on - 0= Spectator, < 5 Terrorists, CT rest
-	if( fCharModel == 0 ) {
+	if(fCharModel == 0) {
 		PutClientInServer();
 		Spawn_ObserverCam();
 		return;
-	} else if( fCharModel < 5 ) {
-		forceinfokey( self, "*team", "0" ); 
+	} else if(fCharModel < 5) {
+		forceinfokey(self, "*team", "0"); 
 		self.team = TEAM_T;
 		
-		Weapon_AddItem( WEAPON_KNIFE );
-		if ( autocvar_fcs_knifeonly == FALSE ) {
-			Weapon_AddItem( WEAPON_GLOCK18 );
-			Weapon_GiveAmmo( WEAPON_GLOCK18, 40 );
-			Weapon_Draw( WEAPON_GLOCK18 );
+		Weapon_AddItem(WEAPON_KNIFE);
+		if (autocvar_fcs_knifeonly == FALSE) {
+			Weapon_AddItem(WEAPON_GLOCK18);
+			Weapon_GiveAmmo(WEAPON_GLOCK18, 40);
+			Weapon_Draw(WEAPON_GLOCK18);
 		} else {
-			Weapon_Draw( WEAPON_KNIFE );
+			Weapon_Draw(WEAPON_KNIFE);
 		}
 	} else {
 		self.team = TEAM_CT;
 
-		Weapon_AddItem( WEAPON_KNIFE );
-		if ( autocvar_fcs_knifeonly == FALSE ) {
-			Weapon_AddItem( WEAPON_USP45 );
-			Weapon_GiveAmmo( WEAPON_USP45, 24 );
-			Weapon_Draw( WEAPON_USP45 );
+		Weapon_AddItem(WEAPON_KNIFE);
+		if (autocvar_fcs_knifeonly == FALSE) {
+			Weapon_AddItem(WEAPON_USP45);
+			Weapon_GiveAmmo(WEAPON_USP45, 24);
+			Weapon_Draw(WEAPON_USP45);
 		} else {
-			Weapon_Draw( WEAPON_KNIFE );
+			Weapon_Draw(WEAPON_KNIFE);
 		}
 	}
 
-	if( self.iInGame == FALSE ) {
+	if(self.iInGame == FALSE) {
 		self.iInGame = TRUE;
 	}
 
-	forceinfokey( self, "*team", ftos( self.team ) ); 
-	Spawn_RespawnClient( self.team );
+	forceinfokey(self, "*team", ftos(self.team)); 
+	Spawn_RespawnClient(self.team);
 	self.fAttackFinished = time + 1;
 }
 
@@ -206,7 +210,8 @@ Spawn_MakeSpectator
 Called on connect and whenever a player dies
 =================
 */
-void Spawn_MakeSpectator( void ) {
+void Spawn_MakeSpectator(void)
+{
 	self.classname = "spectator";
 
 	self.health = 0;
@@ -222,7 +227,7 @@ void Spawn_MakeSpectator( void ) {
 	setsize (self, '-16 -16 -16', '16 16 16');
 
 	self.view_ofs = self.velocity = '0 0 0';
-	forceinfokey( self, "*spec", "2" ); // Make sure we are known as a spectator
+	forceinfokey(self, "*spec", "2"); // Make sure we are known as a spectator
 
 	Ammo_Clear();
 
@@ -237,16 +242,16 @@ CSEv_GamePlayerSpawn_f
 Event Handling, called by the Client codebase via 'sendevent'
 =================
 */
-void CSEv_GamePlayerSpawn_f( float fChar ) {
-	
-	if ( self.team == TEAM_VIP ) {
-		centerprint( self, "You are the VIP!\nYou cannot switch roles now.\n" );
+void CSEv_GamePlayerSpawn_f(float fChar)
+{
+	if (self.team == TEAM_VIP) {
+		centerprint(self, "You are the VIP!\nYou cannot switch roles now.\n");
 		self.fAttackFinished = time + 1.0;
 		return;
 	}
 
 	// Hey, we are alive and are trying to switch teams, so subtract us from the Alive_Team counter.
-	if ( self.health > 0 ) {
+	if (self.health > 0) {
 		self.health = 0;
 		Rules_CountPlayers();
 		Rules_DeathCheck();
@@ -256,27 +261,27 @@ void CSEv_GamePlayerSpawn_f( float fChar ) {
 	Ammo_Clear();
 
 	// Spawn the players immediately when its in the freeze state
-	switch ( fGameState ) {
+	switch (fGameState) {
 		case GAME_FREEZE:
 			self.fCharModel = fChar;
-			Spawn_CreateClient( fChar );
+			Spawn_CreateClient(fChar);
 
-			if ( ( self.team == TEAM_T ) && ( iAlivePlayers_T == 1 ) ) {
-				if ( iBombZones > 0 ) {
+			if ((self.team == TEAM_T) && (iAlivePlayers_T == 1)) {
+				if (iBombZones > 0) {
 					Rules_MakeBomber();
 				}
-			} else if ( ( self.team == TEAM_CT ) && ( iAlivePlayers_CT == 1 ) ) {
-				if ( iVIPZones > 0 ) {
+			} else if ((self.team == TEAM_CT) && (iAlivePlayers_CT == 1)) {
+				if (iVIPZones > 0) {
 					Rules_MakeVIP();
 				}
 			}
 
 			break;
 		default:
-			if ( fChar == 0 ) {
+			if (fChar == 0) {
 				PutClientInServer();
 				return;
-			} else if( fChar < 5 ) {
+			} else if(fChar < 5) {
 				self.team = TEAM_T;
 			} else {
 				self.team = TEAM_CT;
@@ -286,20 +291,20 @@ void CSEv_GamePlayerSpawn_f( float fChar ) {
 			self.classname = "player";
 			self.fCharModel = fChar;
 			self.health = 0;
-			forceinfokey( self, "*dead", "1" );
-			forceinfokey( self, "*team", ftos( self.team ) ); 
+			forceinfokey(self, "*dead", "1");
+			forceinfokey(self, "*team", ftos(self.team)); 
 			break;
 	}
 
 	self.frags = 0;
 	self.fDeaths = 0;
-	forceinfokey( self, "*deaths", "0" );
+	forceinfokey(self, "*deaths", "0");
 
 	// Split up for readability and expandability?
-	if ( ( self.team == TEAM_T ) && ( iAlivePlayers_T == 0 ) ) {
-		Rules_RoundOver( FALSE, 0, FALSE );
-	} else if ( ( self.team == TEAM_CT ) && ( iAlivePlayers_CT == 0 ) ) {
-		Rules_RoundOver( FALSE, 0, FALSE );
+	if ((self.team == TEAM_T) && (iAlivePlayers_T == 0)) {
+		Rules_RoundOver(FALSE, 0, FALSE);
+	} else if ((self.team == TEAM_CT) && (iAlivePlayers_CT == 0)) {
+		Rules_RoundOver(FALSE, 0, FALSE);
 	}
 }
 
@@ -310,8 +315,9 @@ info_player_start
 Counter-Terrorist Spawnpoints
 =================
 */
-void info_player_start( void ) {
-	if ( autocvar_fcs_swapteams == TRUE ) {
+void info_player_start(void)
+{
+	if (autocvar_fcs_swapteams == TRUE) {
 		self.classname = "info_player_deathmatch";
 	}
 }
@@ -323,8 +329,9 @@ info_player_deathmatch
 Terrorist Spawnpoints
 =================
 */
-void info_player_deathmatch( void ) {
-	if ( autocvar_fcs_swapteams == TRUE ) {
+void info_player_deathmatch(void)
+{
+	if (autocvar_fcs_swapteams == TRUE) {
 		self.classname = "info_player_start";
 	}
 }
@@ -349,5 +356,6 @@ void info_player_terrorist(void)
 info_vip_start
 =================
 */
-void info_vip_start( void ) {
+void info_vip_start(void)
+{
 }

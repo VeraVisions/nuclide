@@ -188,6 +188,7 @@ void worldspawn(void)
 	lightstyle( 11, "abcdefghijklmnopqrrqponmlkjihgfedcba" );
 
 	Game_Worldspawn();
+	Decals_Init();
 }
 
 float ConsoleCmd(string cmd)

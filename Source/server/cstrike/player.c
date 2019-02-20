@@ -19,29 +19,30 @@ string sPainSounds[5] = {
 Player_SendEntity
 =================
 */
-float Player_SendEntity( entity ePEnt, float fChanged ) {
-	if ( self.health <= 0 && ePEnt != self ) {
+float Player_SendEntity(entity ePEnt, float fChanged)
+{
+	if (self.health <= 0 && ePEnt != self) {
 		return FALSE;
 	}
 
-	WriteByte( MSG_ENTITY, ENT_PLAYER );
-	WriteShort( MSG_ENTITY, self.modelindex );
-	WriteCoord( MSG_ENTITY, self.origin_x );
-	WriteCoord( MSG_ENTITY, self.origin_y );
-	WriteCoord( MSG_ENTITY, self.origin_z );
-	WriteCoord( MSG_ENTITY, self.v_angle_x );
-	WriteCoord( MSG_ENTITY, self.angles_y );
-	WriteCoord( MSG_ENTITY, self.angles_z );
-	WriteCoord( MSG_ENTITY, self.velocity_x );
-	WriteCoord( MSG_ENTITY, self.velocity_y );
-	WriteCoord( MSG_ENTITY, self.velocity_z );
-	WriteFloat( MSG_ENTITY, self.flags );
-	WriteFloat( MSG_ENTITY, self.pmove_flags );
-	WriteByte( MSG_ENTITY, self.weapon );
-	WriteByte( MSG_ENTITY, self.health );
-	WriteFloat( MSG_ENTITY, self.movetype );
-	WriteFloat( MSG_ENTITY, self.view_ofs[2] );
-	WriteFloat( MSG_ENTITY, self.viewzoom );
+	WriteByte(MSG_ENTITY, ENT_PLAYER);
+	WriteShort(MSG_ENTITY, self.modelindex);
+	WriteCoord(MSG_ENTITY, self.origin_x);
+	WriteCoord(MSG_ENTITY, self.origin_y);
+	WriteCoord(MSG_ENTITY, self.origin_z);
+	WriteCoord(MSG_ENTITY, self.v_angle_x);
+	WriteCoord(MSG_ENTITY, self.angles_y);
+	WriteCoord(MSG_ENTITY, self.angles_z);
+	WriteCoord(MSG_ENTITY, self.velocity_x);
+	WriteCoord(MSG_ENTITY, self.velocity_y);
+	WriteCoord(MSG_ENTITY, self.velocity_z);
+	WriteFloat(MSG_ENTITY, self.flags);
+	WriteFloat(MSG_ENTITY, self.pmove_flags);
+	WriteByte(MSG_ENTITY, self.weapon);
+	WriteByte(MSG_ENTITY, self.health);
+	WriteFloat(MSG_ENTITY, self.movetype);
+	WriteFloat(MSG_ENTITY, self.view_ofs[2]);
+	WriteFloat(MSG_ENTITY, self.viewzoom);
 	return TRUE;
 }
 
@@ -50,15 +51,16 @@ float Player_SendEntity( entity ePEnt, float fChanged ) {
 Player_Pain
 =================
 */
-void Player_Pain( int iHitBody ) {
+void Player_Pain(int iHitBody)
+{
 	/*
-	if ( iHitBody == BODY_HEAD ) {
-		Animation_PlayerTopTemp( ANIM_HEAD_FLINCH, 0.25f );
+	if (iHitBody == BODY_HEAD) {
+		Animation_PlayerTopTemp(ANIM_HEAD_FLINCH, 0.25f);
 	} else {
-		Animation_PlayerTopTemp( ANIM_GUT_FLINCH, 0.25f );
+		Animation_PlayerTopTemp(ANIM_GUT_FLINCH, 0.25f);
 	}*/
 	
-	sound( self, CHAN_VOICE, sPainSounds[ floor( random() * 5 ) ], 1, ATTN_IDLE );
+	sound(self, CHAN_VOICE, sPainSounds[ floor(random() * 5) ], 1, ATTN_IDLE);
 	self.velocity = '0 0 0';
 }
 
@@ -67,41 +69,42 @@ void Player_Pain( int iHitBody ) {
 Player_Death
 =================
 */
-void Player_Death( int iHitBody ) {
-	if ( iHitBody == BODY_HEAD ) {
-		sound( self, CHAN_VOICE, sprintf( "player/headshot%d.wav", floor( ( random() * 3 ) + 1 ) ), 1, ATTN_NORM );
+void Player_Death(int iHitBody)
+{
+	if (iHitBody == BODY_HEAD) {
+		sound(self, CHAN_VOICE, sprintf("player/headshot%d.wav", floor((random() * 3) + 1)), 1, ATTN_NORM);
 	} else {
-		sound( self, CHAN_VOICE, sprintf( "player/die%d.wav", floor( ( random() * 3 ) + 1 ) ), 1, ATTN_NORM );
+		sound(self, CHAN_VOICE, sprintf("player/die%d.wav", floor((random() * 3) + 1)), 1, ATTN_NORM);
 	}
 			
 	// Drop a corpse
 	entity eCorpse = spawn();
 	eCorpse.classname = "remove_me";
-	setorigin( eCorpse, self.origin );
-	setmodel( eCorpse, self.model );
-	setsize( eCorpse, self.mins, self.maxs );
+	setorigin(eCorpse, self.origin);
+	setmodel(eCorpse, self.model);
+	setsize(eCorpse, self.mins, self.maxs);
 	eCorpse.angles = [ 0, self.angles_y, 0 ];
 	eCorpse.movetype = MOVETYPE_BOUNCE;
 
 	// Drop primary weapon as well as the bomb if present
-	if ( self.fSlotPrimary ) {
-		Weapon_DropWeapon( SLOT_PRIMARY );
+	if (self.fSlotPrimary) {
+		Weapon_DropWeapon(SLOT_PRIMARY);
 	} else {
-		if ( self.fSlotSecondary ) {
-			Weapon_DropWeapon( SLOT_SECONDARY );
+		if (self.fSlotSecondary) {
+			Weapon_DropWeapon(SLOT_SECONDARY);
 		}
 	}
-	if ( self.fSlotGrenade ) {
-		Weapon_DropWeapon( SLOT_GRENADE );
+	if (self.fSlotGrenade) {
+		Weapon_DropWeapon(SLOT_GRENADE);
 	}
 	
 	// Make ourselves disappear
 	self.modelindex = 0;
 	
-	if ( self.flags & FL_CROUCHING ) {
+	if (self.flags & FL_CROUCHING) {
 		eCorpse.frame = ANIM_CROUCH_DIE;
 	} else {
-		switch ( iHitBody ) {
+		switch (iHitBody) {
 			case BODY_HEAD:
 				eCorpse.frame = ANIM_DIE_HEAD;
 				break;
@@ -117,7 +120,7 @@ void Player_Death( int iHitBody ) {
 				eCorpse.frame = ANIM_DIE_RIGHT;
 				break;
 			default:
-				eCorpse.frame = ANIM_DEATH1 + floor( random() * 3 );
+				eCorpse.frame = ANIM_DEATH1 + floor(random() * 3);
 				break;
 		}
 	}
@@ -125,13 +128,13 @@ void Player_Death( int iHitBody ) {
 	Spawn_MakeSpectator();
 	self.classname = "player";
 	self.health = 0;
-	forceinfokey( self, "*dead", "1" ); 
-	forceinfokey( self, "*team", ftos( self.team ) );
+	forceinfokey(self, "*dead", "1"); 
+	forceinfokey(self, "*team", ftos(self.team));
 
 	Rules_CountPlayers();
 
-	if ( self.team == TEAM_VIP ) {
-		Rules_RoundOver( TEAM_T, 2500, FALSE );
+	if (self.team == TEAM_VIP) {
+		Rules_RoundOver(TEAM_T, 2500, FALSE);
 		return;
 	}
 
@@ -140,10 +143,10 @@ void Player_Death( int iHitBody ) {
 
 /*
 ====================
-Player_UseDown
+UseWorkaround
 ====================
 */
-void UseWorkaround( entity eTarget )
+void UseWorkaround(entity eTarget)
 {
 	eActivator = self;
 	entity eOldSelf = self;
@@ -151,10 +154,17 @@ void UseWorkaround( entity eTarget )
 	self.PlayerUse();
 	self = eOldSelf;
 }
-void Player_UseDown( void ) {
-	if ( self.health <= 0 ) {
+
+/*
+====================
+Player_UseDown
+====================
+*/
+void Player_UseDown(void)
+{
+	if (self.health <= 0) {
 		return;
-	} else if ( !( self.flags & FL_USERELEASED ) ) {
+	} else if (!(self.flags & FL_USERELEASED)) {
 		return;
 	}
 	
@@ -162,18 +172,18 @@ void Player_UseDown( void ) {
 
 	makevectors(self.v_angle);
 	vSource = self.origin + self.view_ofs;
-	traceline ( vSource, vSource + ( v_forward * 64 ), FALSE, self);
+	traceline (vSource, vSource + (v_forward * 64), FALSE, self);
 	
 	if (trace_ent.PlayerUse) {
-		if ( ( trace_ent.classname != "c4bomb" ) && ( trace_ent.classname != "func_pushable" ) ) {
-			self.flags = ( self.flags - FL_USERELEASED );
-			sound( self, CHAN_ITEM, "common/wpn_select.wav", 0.25, ATTN_IDLE );
+		if ((trace_ent.classname != "c4bomb") && (trace_ent.classname != "func_pushable")) {
+			self.flags = (self.flags - FL_USERELEASED);
+			sound(self, CHAN_ITEM, "common/wpn_select.wav", 0.25, ATTN_IDLE);
 		} 
 		
 		UseWorkaround(trace_ent);
 	} else {
-		sound( self, CHAN_ITEM, "common/wpn_denyselect.wav", 0.25, ATTN_IDLE );
-		self.flags = ( self.flags - FL_USERELEASED );
+		sound(self, CHAN_ITEM, "common/wpn_denyselect.wav", 0.25, ATTN_IDLE);
+		self.flags = (self.flags - FL_USERELEASED);
 	}
 }
 
@@ -182,8 +192,9 @@ void Player_UseDown( void ) {
 Player_UseUp
 ====================
 */
-void Player_UseUp( void ) {
-	if ( !( self.frags & FL_USERELEASED ) ) {
+void Player_UseUp(void)
+{
+	if (!(self.frags & FL_USERELEASED)) {
 		self.flags = self.flags | FL_USERELEASED;
 		self.fProgressBar = 0;
 	}
@@ -196,7 +207,8 @@ PlayerPreThink
 Run before physics
 =================
 */
-void Game_PlayerPreThink( void ) { 
+void Game_PlayerPreThink(void)
+{ 
 	BaseGun_ShotMultiplierUpdate();
 }
 
@@ -207,7 +219,8 @@ PlayerPreThink
 Run after physics
 =================
 */
-void Game_PlayerPostThink( void ) {
+void Game_PlayerPostThink(void)
+{
 	Animation_PlayerUpdate();
 	Footsteps_Update();
 	

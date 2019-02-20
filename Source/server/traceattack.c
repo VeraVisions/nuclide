@@ -15,117 +15,118 @@ TraceAttack_FireSingle
 Fires a single shot that can penetrate some materials
 =================
 */
-void TraceAttack_FireSingle( vector vPos, vector vAngle ) {
-	static void TraceAttack_Penetrate( vector vPos, vector vAngle  ) {
-		if ( iTotalPenetrations > 0 ) {
+void TraceAttack_FireSingle(vector vPos, vector vAngle)
+{
+	static void TraceAttack_Penetrate(vector vPos, vector vAngle ) {
+		if (iTotalPenetrations > 0) {
 			return;
 		}
-		
-		TraceAttack_FireSingle( vPos, vAngle );
+
+		TraceAttack_FireSingle(vPos, vAngle);
 		iTotalPenetrations = 1;
 	}
 
 #ifdef CSTRIKE
-	traceline( vPos, vPos + ( vAngle * wptTable[ self.weapon ].fRange ), MOVE_HITMODEL, self);
+	traceline(vPos, vPos + (vAngle * wptTable[self.weapon].fRange), MOVE_HITMODEL, self);
 #else
-	traceline( vPos, vPos + ( vAngle * 8196 ), MOVE_HITMODEL, self);
+	traceline(vPos, vPos + (vAngle * 8196), MOVE_HITMODEL, self);
 #endif
 
 	if (trace_fraction != 1.0) {
-		if ( trace_ent.takedamage == DAMAGE_YES ) {
+		if (trace_ent.takedamage == DAMAGE_YES) {
 #ifdef CSTRIKE
-			Damage_Apply( trace_ent, self, wptTable[ self.weapon ].iDamage, trace_endpos, FALSE );
+			Damage_Apply(trace_ent, self, wptTable[self.weapon].iDamage, trace_endpos, FALSE);
 #endif
 		}
-		
-		if ( trace_ent.iBleeds == TRUE ) {
-			Effect_Impact( IMPACT_FLESH, trace_endpos, trace_plane_normal );
+
+		if (trace_ent.iBleeds == TRUE) {
+			Effect_Impact(IMPACT_FLESH, trace_endpos, trace_plane_normal);
 		} else {
-			string sTexture = getsurfacetexture( trace_ent, getsurfacenearpoint( trace_ent, trace_endpos ) );
-	
-			switch( (float)hash_get( hashMaterials, sTexture ) ) { 
+			string sTexture = getsurfacetexture(trace_ent, getsurfacenearpoint(trace_ent, trace_endpos));
+
+			switch((float)hash_get(hashMaterials, sTexture)) { 
 				case 'G':
 				case 'V':
-					Effect_Impact( IMPACT_METAL, trace_endpos, trace_plane_normal );
+					Effect_Impact(IMPACT_METAL, trace_endpos, trace_plane_normal);
 					break;
 				case 'M':
 				case 'P':
-					Effect_Impact( IMPACT_METAL, trace_endpos, trace_plane_normal );
+					Effect_Impact(IMPACT_METAL, trace_endpos, trace_plane_normal);
 					break;
 				case 'D':
 				case 'W':
-					Effect_Impact( IMPACT_WOOD, trace_endpos, trace_plane_normal );
+					Effect_Impact(IMPACT_WOOD, trace_endpos, trace_plane_normal);
 					break;
 				case 'Y':
-					Effect_Impact( IMPACT_GLASS, trace_endpos, trace_plane_normal );
+					Effect_Impact(IMPACT_GLASS, trace_endpos, trace_plane_normal);
 					break;
 				case 'N':
-					Effect_Impact( IMPACT_DEFAULT, trace_endpos, trace_plane_normal );
+					Effect_Impact(IMPACT_DEFAULT, trace_endpos, trace_plane_normal);
 					break;
 				case 'T':
 				default:
-					Effect_Impact( IMPACT_DEFAULT, trace_endpos, trace_plane_normal );
+					Effect_Impact(IMPACT_DEFAULT, trace_endpos, trace_plane_normal);
 					break;
 			 }
-			 
-			//TraceAttack_Penetrate( trace_endpos + ( v_forward * 2 ), vAngle );
+
+			//TraceAttack_Penetrate(trace_endpos + (v_forward * 2), vAngle);
 		}
 	}
 }
 
-void TraceAttack_FireSingleLagged( vector vPos, vector vAngle ) {
-	static void TraceAttack_Penetrate( vector vPos, vector vAngle  ) {
-		if ( iTotalPenetrations > 0 ) {
+void TraceAttack_FireSingleLagged(vector vPos, vector vAngle) {
+	static void TraceAttack_Penetrate(vector vPos, vector vAngle ) {
+		if (iTotalPenetrations > 0) {
 			return;
 		}
 		
-		TraceAttack_FireSingle( vPos, vAngle );
+		TraceAttack_FireSingle(vPos, vAngle);
 		iTotalPenetrations = 1;
 	}
 	
 #ifdef CSTRIKE
-	traceline( vPos, vPos + ( vAngle * wptTable[ self.weapon ].fRange ), MOVE_LAGGED | MOVE_HITMODEL, self);
+	traceline(vPos, vPos + (vAngle * wptTable[self.weapon].fRange), MOVE_LAGGED | MOVE_HITMODEL, self);
 #else
-	traceline( vPos, vPos + ( vAngle * 8196 ), MOVE_LAGGED | MOVE_HITMODEL, self);
+	traceline(vPos, vPos + (vAngle * 8196), MOVE_LAGGED | MOVE_HITMODEL, self);
 #endif
 
 	if (trace_fraction != 1.0) {
-		if ( trace_ent.takedamage == DAMAGE_YES ) {
+		if (trace_ent.takedamage == DAMAGE_YES) {
 #ifdef CSTRIKE
-			Damage_Apply( trace_ent, self, wptTable[ self.weapon ].iDamage, trace_endpos, FALSE );
+			Damage_Apply(trace_ent, self, wptTable[self.weapon].iDamage, trace_endpos, FALSE);
 #endif
 		}
 
-		if ( trace_ent.iBleeds == TRUE ) {
-			Effect_Impact( IMPACT_FLESH, trace_endpos, trace_plane_normal );
+		if (trace_ent.iBleeds == TRUE) {
+			Effect_Impact(IMPACT_FLESH, trace_endpos, trace_plane_normal);
 		} else {
-			string sTexture = getsurfacetexture( trace_ent, getsurfacenearpoint( trace_ent, trace_endpos ) );
+			string sTexture = getsurfacetexture(trace_ent, getsurfacenearpoint(trace_ent, trace_endpos));
 
-			switch( (float)hash_get( hashMaterials, sTexture ) ) { 
+			switch ((float)hash_get(hashMaterials, sTexture)) { 
 				case 'G':
 				case 'V':
-					Effect_Impact( IMPACT_METAL, trace_endpos, trace_plane_normal );
-					TraceAttack_Penetrate( trace_endpos + ( v_forward * 2 ), vAngle );
+					Effect_Impact(IMPACT_METAL, trace_endpos, trace_plane_normal);
+					TraceAttack_Penetrate(trace_endpos + (v_forward * 2), vAngle);
 					break;
 				case 'M':
 				case 'P':
-					Effect_Impact( IMPACT_METAL, trace_endpos, trace_plane_normal );
+					Effect_Impact(IMPACT_METAL, trace_endpos, trace_plane_normal);
 					break;
 				case 'D':
 				case 'W':
-					Effect_Impact( IMPACT_WOOD, trace_endpos, trace_plane_normal );
-					TraceAttack_Penetrate( trace_endpos + ( v_forward * 2 ), vAngle );
+					Effect_Impact(IMPACT_WOOD, trace_endpos, trace_plane_normal);
+					TraceAttack_Penetrate(trace_endpos + (v_forward * 2), vAngle);
 					break;
 				case 'Y':
-					Effect_Impact( IMPACT_GLASS, trace_endpos, trace_plane_normal );
+					Effect_Impact(IMPACT_GLASS, trace_endpos, trace_plane_normal);
 					break;
 				case 'N':
-					Effect_Impact( IMPACT_DEFAULT, trace_endpos, trace_plane_normal );
-					TraceAttack_Penetrate( trace_endpos + ( v_forward * 2 ), vAngle );
+					Effect_Impact(IMPACT_DEFAULT, trace_endpos, trace_plane_normal);
+					TraceAttack_Penetrate(trace_endpos + (v_forward * 2), vAngle);
 					break;
 				case 'T':
 				default:
-					Effect_Impact( IMPACT_DEFAULT, trace_endpos, trace_plane_normal );
+					Effect_Impact(IMPACT_DEFAULT, trace_endpos, trace_plane_normal);
 					break;
 			 }
 		}
@@ -139,19 +140,20 @@ TraceAttack_FireBullets
 Fire a given amount of shots
 =================
 */
-void TraceAttack_FireBullets( int iShots, vector vPos ) {
+void TraceAttack_FireBullets(int iShots, vector vPos)
+{
 	vector vDir;
 	makevectors(self.v_angle);
 
-	while ( iShots > 0 ) {
+	while (iShots > 0) {
 		iTotalPenetrations = 0;
 #ifdef CSTRIKE
-		vDir = aim( self, 100000 ) + Math_CRandom()*self.fAccuracy*v_right + Math_CRandom()*self.fAccuracy*v_up;
+		vDir = aim(self, 100000) + Math_CRandom()*self.fAccuracy*v_right + Math_CRandom()*self.fAccuracy*v_up;
 #else
-		vDir = aim( self, 100000 );
+		vDir = aim(self, 100000);
 #endif
-		TraceAttack_FireSingle( vPos, vDir );
-		TraceAttack_FireSingleLagged( vPos, vDir );
+		TraceAttack_FireSingle(vPos, vDir);
+		TraceAttack_FireSingleLagged(vPos, vDir);
 		iShots--;
 	}
 }

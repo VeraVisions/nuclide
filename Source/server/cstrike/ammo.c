@@ -27,7 +27,8 @@ Ammo_BuyPrimary
 Buy ammo for the primary weapon you're equipped with
 =================
 */
-void Ammo_BuyPrimary(void) {
+void Ammo_BuyPrimary(void)
+{
 	if ( !self.fSlotPrimary ) {
 		return;
 	}
@@ -55,7 +56,8 @@ Ammo_BuySecondary
 Buy ammo for the secondary weapon you're equipped with
 =================
 */
-void Ammo_BuySecondary(void) {	
+void Ammo_BuySecondary(void)
+{	
 	if ( !self.fSlotSecondary ) {
 		return;
 	}
@@ -112,7 +114,8 @@ CSEv_GamePlayerBuyAmmo_f
 Called from the client, checks if he can buy ammo and does if yes
 =================
 */
-void CSEv_GamePlayerBuyAmmo_f( float fType ) {
+void CSEv_GamePlayerBuyAmmo_f( float fType )
+{
 	if ( Rules_BuyingPossible() == FALSE ) {
 		return;
 	}

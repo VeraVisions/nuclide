@@ -23,11 +23,13 @@ void Effect_CreateExplosion( vector vPos ) {
 	sound( eExplosion, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 3 ) + 3 ), 1, ATTN_NORM );
 
 	//eExplosion.think = Effect_CreateExplosion_Animate;
-	eExplosion.nextthink = time + 0.05f;
 	eExplosion.effects = EF_ADDITIVE;
 	eExplosion.drawmask = MASK_ENGINE;
 	eExplosion.maxframe = modelframecount( eExplosion.modelindex );
-	
+	eExplosion.loops = 0;
+	eExplosion.framerate = 20;
+	eExplosion.nextthink = time + 0.05f;
+
 	te_explosion( vPos );
 #endif
 }
@@ -112,39 +114,54 @@ void Effect_Impact( int iType, vector vPos, vector vNormal ) {
 	WriteCoord( MSG_MULTICAST, vNormal_z );
 	msg_entity = self;
 	multicast( vPos, MULTICAST_PVS );
+	
+	switch (iType) {
+		case IMPACT_MELEE:
+			Decals_PlaceSmall(vPos);
+			break;
+		default:
+			Decals_PlaceBig(vPos);
+			break;
+	}
 #else
-	switch ( iType ) {
+	switch (iType) {
 		case IMPACT_MELEE:
 			/*pointparticles( DECAL_SHOT, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_PIECES_BLACK, vPos, vNormal, 1 );*/
 			pointsound( vPos, "weapons/knife_hitwall1.wav", 1, ATTN_STATIC );
+			//Decals_PlaceSmall(vPos);
 			break;
 		case IMPACT_EXPLOSION:
 			break;
 		case IMPACT_GLASS:
 			//pointparticles( DECAL_GLASS, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_PIECES_BLACK, vPos, vNormal, 1 );
+			//Decals_PlaceBig(vPos);
 			break;
 		case IMPACT_WOOD:
 			//pointparticles( DECAL_SHOT, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_SPARK, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_PIECES_BLACK, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_SMOKE_BROWN, vPos, vNormal, 1 );
+			//Decals_PlaceBig(vPos);
 			break;
 		case IMPACT_METAL:
 			//pointparticles( DECAL_SHOT, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_SPARK, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_SPARK, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_PIECES_BLACK, vPos, vNormal, 1 );
+			//Decals_PlaceBig(vPos);
 			break;
 		case IMPACT_FLESH:
 			pointparticles( PARTICLE_BLOOD, vPos, vNormal, 1 );
+			//Decals_PlaceBig(vPos);
 			break;
 		case IMPACT_DEFAULT:
 			//pointparticles( DECAL_SHOT, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_SPARK, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_PIECES_BLACK, vPos, vNormal, 1 );
 			pointparticles( PARTICLE_SMOKE_GREY, vPos, vNormal, 1 );
+			//Decals_PlaceBig(vPos);
 			break;
 		default:
 	}
@@ -287,7 +304,8 @@ void Effect_BreakModel( vector vMins, vector vMaxs, vector vVel, float fStyle ) 
 }
 
 #ifdef CSQC
-float Effect_Decal( void ) {
+float Effect_Decal(void)
+{
 	adddecal( self.classname, self.origin, self.mins, self.maxs, self.color, 1.0f );
 	addentity( self );
 	return PREDRAW_NEXT;

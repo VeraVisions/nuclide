@@ -25,7 +25,7 @@ void Input_Handle(void)
 		Weapons_Release();
 	}
 
-	if ( self.button5 ) {
+	if (self.button5) {
 		Player_UseDown(); 
 	} else {
 		Player_UseUp();

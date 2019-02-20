@@ -49,13 +49,13 @@ void CSQC_Init(float apilevel, string enginename, float engineversion)
 	SHADER_CULLED = shaderforname("mirror_cull");
 
 	/* Particles */
-	PARTICLE_SPARK 			= particleeffectnum("part_spark");
+	PARTICLE_SPARK 	= particleeffectnum("part_spark");
 	PARTICLE_PIECES_BLACK 	= particleeffectnum("part_pieces_black");
 	PARTICLE_SMOKE_GREY 	= particleeffectnum("part_smoke_grey");
 	PARTICLE_SMOKE_BROWN 	= particleeffectnum("part_smoke_brown");
-	PARTICLE_BLOOD 			= particleeffectnum("part_blood");
-	DECAL_SHOT 				= particleeffectnum("decal_shot");
-	DECAL_GLASS 			= particleeffectnum("decal_glass");
+	PARTICLE_BLOOD 	= particleeffectnum("part_blood");
+	DECAL_SHOT 		= particleeffectnum("decal_shot");
+	DECAL_GLASS 		= particleeffectnum("decal_glass");
 
 	/* 2D Pics */
 	precache_pic("gfx/vgui/icntlk_sv");
@@ -87,6 +87,7 @@ void CSQC_Init(float apilevel, string enginename, float engineversion)
 
 	/* Game specific inits */
 	HUD_Init();
+	Scores_Init();
 	Client_Init(apilevel, enginename, engineversion);
 }
 
@@ -159,7 +160,7 @@ void CSQC_UpdateView(float w, float h, float focus)
 				if (autocvar_cl_thirdperson == TRUE ) {
 					makevectors(view_angles);
 					vector vStart = [pSeat->vPlayerOrigin[0], pSeat->vPlayerOrigin[1], pSeat->vPlayerOrigin[2] + 16] + (v_right * 4);
-					vector vEnd = vStart + (v_forward * -48) + '0 0 16' + (v_right * 4);
+					vector vEnd = vStart + (v_forward * -48) + [0,0,16] + (v_right * 4);
 					traceline(vStart, vEnd, FALSE, self);
 					setproperty(VF_ORIGIN, trace_endpos + (v_forward * 5));
 				} else {
@@ -188,7 +189,6 @@ void CSQC_UpdateView(float w, float h, float focus)
 		if(focus == TRUE) {
 			GameText_Draw();
 
-
 			// The spectator sees things... differently
 			if (getplayerkeyvalue(player_localnum, "*spec") != "0") {
 				VGUI_DrawSpectatorHUD();
@@ -201,15 +201,15 @@ void CSQC_UpdateView(float w, float h, float focus)
 			Chat_Draw();
 			Print_Draw();
 
-#ifdef CSTRIKE
 			// Don't even try to draw centerprints and VGUI menus when scores are shown
-			if (pSeat->iShowScores == TRUE || getstatf(STAT_GAMESTATE) == GAME_OVER) {
-				VGUI_Scores_Show();
+			if (pSeat->iShowScores == TRUE) {
+				Scores_Draw();
 			} else {
 				CSQC_DrawCenterprint();
+#ifdef CSTRIKE
 				needcursor |= CSQC_VGUI_Draw();
-			}
 #endif
+			}
 		}
 
 		Predict_PostFrame((player)self);
@@ -218,9 +218,9 @@ void CSQC_UpdateView(float w, float h, float focus)
 	pSeat = (void*)0x70000000i;
 
 	if (needcursor) {
-		setcursormode(TRUE, "gfx/cursor", '0 0 0', 1.0f);
+		setcursormode(TRUE, "gfx/cursor", [0,0,0], 1.0f);
 	} else {
-		setcursormode(FALSE, "gfx/cursor", '0 0 0', 1.0f);
+		setcursormode(FALSE, "gfx/cursor", [0,0,0], 1.0f);
 	}
 
 	Sound_ProcessWordQue();
@@ -233,13 +233,12 @@ CSQC_InputEvent
 Updates all our input related globals for use in other functions
 =================
 */
-float CSQC_InputEvent(float fEventType, float fKey, float fCharacter,
-					   float fDeviceID)
+float CSQC_InputEvent(float fEventType, float fKey, float fCharacter, float fDeviceID)
 {
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &seats[s];
 
-	switch(fEventType) {
+	switch (fEventType) {
 		case IE_KEYDOWN:
 			if (fKey == K_MOUSE1) {
 				fMouseClick = 1;
@@ -351,7 +350,8 @@ CSQC_Parse_Event
 Whenever we call a SVC_CGAMEPACKET on the SSQC, this is being run
 =================
 */
-void CSQC_Parse_Event(void) {
+void CSQC_Parse_Event(void)
+{
 	/* always 0, unless it was sent with a MULTICAST_ONE or MULTICAST_ONE_R to p2+ */
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &seats[s];
@@ -402,7 +402,7 @@ void CSQC_Parse_Event(void) {
 			vSize_z = readcoord();
 
 			float fStyle = readbyte();
-			Effect_BreakModel(vPos, vSize, '0 0 0', fStyle);
+			Effect_BreakModel(vPos, vSize, [0,0,0], fStyle);
 			break;
 		case EV_CAMERATRIGGER:
 			pSeat->vCameraPos.x = readcoord();
@@ -560,7 +560,7 @@ float CSQC_Parse_CenterPrint(string sMessage)
 {
 	fCenterPrintLines = tokenizebyseparator(sMessage, "\n");
 	
-	for(int i = 0; i < (fCenterPrintLines); i++) {
+	for (int i = 0; i < (fCenterPrintLines); i++) {
 		sCenterPrintBuffer[i] = sprintf("^xF80%s", argv(i));
 	}
 	
@@ -579,7 +579,7 @@ Whenever the world is fully initialized...
 */
 void CSQC_WorldLoaded(void)
 {
-	/*precache_pic("{shot1", TRUE);
+	precache_pic("{shot1", TRUE);
 	precache_pic("{shot2", TRUE);
 	precache_pic("{shot3", TRUE);
 	precache_pic("{shot4", TRUE);
@@ -588,7 +588,7 @@ void CSQC_WorldLoaded(void)
 	precache_pic("{bigshot2", TRUE);
 	precache_pic("{bigshot3", TRUE);
 	precache_pic("{bigshot4", TRUE);
-	precache_pic("{bigshot5", TRUE);*/
+	precache_pic("{bigshot5", TRUE);
 }
 
 /*

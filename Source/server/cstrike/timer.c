@@ -13,7 +13,8 @@ Timer_Begin
 Initiates a new state timer
 =================
 */
-void Timer_Begin(float fTime, float fMode) {
+void Timer_Begin(float fTime, float fMode)
+{
 	if (fMode == GAME_FREEZE) {
 		fGameState = GAME_FREEZE;
 	} else if (fMode == GAME_ACTIVE) {
@@ -36,7 +37,8 @@ Timer_Update
 Called once every frame to check the status of things
 =================
 */
-void Timer_Update(void) {
+void Timer_Update(void)
+{
 	static float fVoxTimer;
 	
 	if ( cvar( "sv_playerslots" ) == 1 ) {

@@ -78,7 +78,7 @@ void Game_PutClientInServer(void)
 
 	pl.classname = "player";
 	pl.health = self.max_health = 100;
-	//forceinfokey( self, "*dead", "0" );
+	//forceinfokey(self, "*dead", "0");
 	pl.takedamage = DAMAGE_YES;
 	pl.solid = SOLID_SLIDEBOX;
 	pl.movetype = MOVETYPE_WALK;
@@ -93,9 +93,9 @@ void Game_PutClientInServer(void)
 	pl.customphysics = Empty;
 	pl.vPain = Player_Pain;
 	pl.vDeath = Player_Death;
-	forceinfokey(pl, "*spec", "0" );
+	forceinfokey(pl, "*spec", "0");
 
-	if ( cvar( "sv_playerslots" ) == 1 ) {
+	if (cvar("sv_playerslots") == 1) {
 		Game_DecodeChangeParms();
 		if (startspot) {
 			setorigin(pl, Landmark_GetSpot());
@@ -119,41 +119,41 @@ void Game_PutClientInServer(void)
 
 void SV_SendChat(entity eSender, string sMessage, entity eEnt, float fType)
 {
-	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
-	WriteByte( MSG_MULTICAST, fType == 0 ? EV_CHAT:EV_CHAT_TEAM );
-	WriteByte( MSG_MULTICAST, num_for_edict( eSender ) - 1 ); 
-	WriteByte( MSG_MULTICAST, eSender.team ); 
-	WriteString( MSG_MULTICAST, sMessage );
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, fType == 0 ? EV_CHAT:EV_CHAT_TEAM);
+	WriteByte(MSG_MULTICAST, num_for_edict(eSender) - 1); 
+	WriteByte(MSG_MULTICAST, eSender.team); 
+	WriteString(MSG_MULTICAST, sMessage);
 	if (eEnt) {
 		msg_entity = eEnt;
-		multicast( [0,0,0], MULTICAST_ONE );
+		multicast([0,0,0], MULTICAST_ONE);
 	} else {
-		multicast( [0,0,0], MULTICAST_ALL );
+		multicast([0,0,0], MULTICAST_ALL);
 	}
 }
 
 void Game_ParseClientCommand(string cmd)
 {
-	tokenize( cmd );
+	tokenize(cmd);
 
-	/*if ( argv( 1 ) == "timeleft" ) {
-		float fTimeLeft = cvar( "mp_timelimit" ) - ( time / 60 );
-		Vox_Singlecast( self, sprintf( "we have %s minutes remaining", Vox_TimeToString( fTimeLeft ) ) );
+	/*if (argv(1) == "timeleft") {
+		float fTimeLeft = cvar("mp_timelimit") - (time / 60);
+		Vox_Singlecast(self, sprintf("we have %s minutes remaining", Vox_TimeToString(fTimeLeft)));
 		return;
 	}*/
 	
-	string chat = substring( cmd, 4, strlen( cmd ) - 4 );
+	string chat = substring(cmd, 4, strlen(cmd) - 4);
 
 	// Players talk to players, spectators to spectators.
-	if ( argv( 0 ) == "say" ) {
-		localcmd( sprintf( "echo %s: %s\n", self.netname, chat ) );
-		SV_SendChat( self, chat, world, 0 );
+	if (argv(0) == "say") {
+		localcmd(sprintf("echo %s: %s\n", self.netname, chat));
+		SV_SendChat(self, chat, world, 0);
 		return;
-	} else if ( argv( 0 ) == "say_team" ) {
-		localcmd( sprintf( "echo [TEAM %d] %s: %s\n", self.team, self.netname, chat ) );
-		for ( entity eFind = world; ( eFind = find( eFind, classname, "player" ) ); ) { 
-			if ( eFind.team == self.team ) {
-				SV_SendChat( self, chat, eFind, 1 );
+	} else if (argv(0) == "say_team") {
+		localcmd(sprintf("echo [TEAM %d] %s: %s\n", self.team, self.netname, chat));
+		for (entity eFind = world; (eFind = find(eFind, classname, "player"));) { 
+			if (eFind.team == self.team) {
+				SV_SendChat(self, chat, eFind, 1);
 			}
 		}
 		return;

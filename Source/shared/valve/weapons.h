@@ -67,8 +67,8 @@ enum
 };
 
 void Weapons_DrawCrosshair(void);
-void Weapons_PlaceDecal(void);
-void Weapons_PlaceBigDecal(void);
+void Decals_PlaceSmall(vector pos);
+void Decals_PlaceBig(vector pos);
 void Weapons_MakeVectors(void);
 void Weapons_ViewAnimation(int i);
 void Weapons_ViewPunchAngle(vector add);

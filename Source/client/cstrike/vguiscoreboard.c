@@ -129,3 +129,14 @@ void VGUI_Scores_Show( void ) {
 	vOffset = VGUI_Scores_DrawTeam( vOffset, TEAM_T );
 	vOffset = VGUI_Scores_DrawTeam( vOffset, 0 );
 }
+
+void Scores_Init(void)
+{
+	
+}
+
+void Scores_Draw(void)
+{
+	VGUI_Scores_Show();
+}
+

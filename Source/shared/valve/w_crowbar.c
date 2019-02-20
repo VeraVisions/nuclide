@@ -90,7 +90,6 @@ void w_crowbar_primary(void)
 	if (trace_fraction >= 1.0) {
 		pl.w_attack_next = 0.5f;
 	} else {
-		Weapons_PlaceDecal();
 		pl.w_attack_next = 0.25f;
 	}
 #else
@@ -109,6 +108,7 @@ void w_crowbar_primary(void)
 			Weapons_PlaySound(pl, 8, "weapons/cbar_hit2.wav", 1, ATTN_NORM);
 		}
 		pl.w_attack_next = 0.25f;
+		Effect_Impact(IMPACT_MELEE, trace_endpos, trace_plane_normal);
 	}
 #endif
 	pl.w_idle_next = 2.5f;

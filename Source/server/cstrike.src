@@ -52,6 +52,7 @@ cstrike/money.c
 ../shared/cstrike/basemelee.c
 ../shared/cstrike/weapons.c
 ../shared/cstrike/equipment.c
+../shared/decals.c
 ../shared/effects.c
 ../shared/spraylogo.cpp
 ../shared/pmove.c

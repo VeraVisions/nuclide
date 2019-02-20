@@ -29,6 +29,7 @@ voice.c
 player.c
 ../shared/pmove.c
 predict.c
+../shared/decals.c
 ../shared/effects.c
 ../shared/spraylogo.cpp
 
@@ -63,6 +64,7 @@ damage.c
 chat.c
 valve/hud.c
 valve/hud_weaponselect.c
+valve/scoreboard.c
 
 valve/input.c
 entry.c

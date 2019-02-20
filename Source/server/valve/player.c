@@ -24,7 +24,7 @@ void Player_Death(void)
 UseWorkaround
 ====================
 */
-void UseWorkaround( entity eTarget )
+void UseWorkaround(entity eTarget)
 {
 	eActivator = self;
 	entity eOldSelf = self;
@@ -40,9 +40,9 @@ Player_UseDown
 */
 void Player_UseDown(void)
 {
-	if ( self.health <= 0 ) {
+	if (self.health <= 0) {
 		return;
-	} else if ( !( self.gflags & GF_USE_RELEASED ) ) {
+	} else if (!(self.gflags & GF_USE_RELEASED)) {
 		return;
 	}
 	
@@ -50,17 +50,17 @@ void Player_UseDown(void)
 
 	makevectors(self.v_angle);
 	vSource = self.origin + self.view_ofs;
-	traceline ( vSource, vSource + ( v_forward * 64 ), FALSE, self);
+	traceline (vSource, vSource + (v_forward * 64), FALSE, self);
 
 	if (trace_ent.PlayerUse) {
 		if (trace_ent.classname != "func_pushable") {
 			self.gflags &= ~GF_USE_RELEASED;
-			sound( self, CHAN_ITEM, "common/wpn_select.wav", 0.25, ATTN_IDLE );
+			sound(self, CHAN_ITEM, "common/wpn_select.wav", 0.25, ATTN_IDLE);
 		} 
 		
 		UseWorkaround(trace_ent);
 	} else {
-		sound( self, CHAN_ITEM, "common/wpn_denyselect.wav", 0.25, ATTN_IDLE );
+		sound(self, CHAN_ITEM, "common/wpn_denyselect.wav", 0.25, ATTN_IDLE);
 		self.gflags &= ~GF_USE_RELEASED;
 	}
 }
@@ -70,8 +70,8 @@ void Player_UseDown(void)
 Player_UseUp
 ====================
 */
-void Player_UseUp( void ) {
-	if ( !( self.gflags & GF_USE_RELEASED ) ) {
+void Player_UseUp(void) {
+	if (!(self.gflags & GF_USE_RELEASED)) {
 		self.gflags |= GF_USE_RELEASED;
 	}
 }

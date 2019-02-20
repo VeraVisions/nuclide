@@ -55,6 +55,7 @@ text.c
 
 ../shared/pmove.c
 ../gs-entbase/client.src
+../shared/decals.c
 ../shared/effects.c
 ../shared/spraylogo.cpp
 

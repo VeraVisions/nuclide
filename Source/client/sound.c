@@ -16,7 +16,8 @@ var int iVOXCount;
 var int iVOXPos;
 var float fSampleTime = 0.0f;
 
-void Sound_PlayVOX(string msg) {
+void Sound_PlayVOX(string msg)
+{
 	if (iVOXCount) {
 		return;
 	}
@@ -31,7 +32,8 @@ void Sound_PlayVOX(string msg) {
 	fSampleTime = time;
 }
 
-void Sound_ProcessWordQue(void) {
+void Sound_ProcessWordQue(void)
+{
 	if (cltime < 2) {
 		return;
 	}

@@ -18,7 +18,7 @@ class sprite
 void sprite::think(void)
 {
 	if (frame >= maxframe) {
-		if (loops == 1) {
+		if (loops == 0) {
 			remove(this);
 		} else {
 			frame = 0;
@@ -48,7 +48,7 @@ void Sprite_Animated(void)
 	me.drawmask = MASK_ENGINE;
 	me.nextthink = time + ( 1 / me.framerate );
 	me.maxframe = modelframecount( me.modelindex );
-	me.loops = 0; /* repeats */
+	me.loops = 1; /* repeats */
 	setorigin(me, me.origin);
 }
 
@@ -69,6 +69,6 @@ void Sprite_ParseEvent(void)
 	spr.drawmask = MASK_ENGINE;
 	spr.nextthink = time + ( 1 / spr.framerate );
 	spr.maxframe = modelframecount( spr.modelindex );
-	spr.loops = 1; /* does not repeat */
+	spr.loops = 0; /* does not repeat */
 	setorigin(spr, spr.origin);
 }

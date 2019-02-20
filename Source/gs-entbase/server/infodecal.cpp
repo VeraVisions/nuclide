@@ -47,6 +47,7 @@ void infodecal(void)
 	}
 
 	if (!self.texture) {
+		print("^1ERROR:^7 infodecal with no .texture\n");
 		remove(self);
 		return;
 	}
