@@ -27,22 +27,21 @@ If you're planning on merging or using any of this code in combination with the
 original Half-Life SDK, you're violating the Half-Life SDK License Agreement.
 This includes using it in combination with the original Half-Life binaries and
 libraries. Valve has spoken out against such projects for the reason above.
-They might not take action against you, but I certainly might.
+They might not take action against you, but I certainly ~might~.
 I hope this all does not discourage you from using it in your own project.
 As long as you comply with the license, you'll be fine!
 
+Why does this sound so harsh?
 Over the past decade enough Half-Life projects have sprung up that have violated 
-and abused the GPL, as well as other licenses, thus discouraging entities from
-releasing their sources in fear of such behaviour.
+and _abused_ the GPL, thus discouraging entities from releasing their sources in
+fear of such behaviour. This has done more harm than any good.
 
-In the hopes of making the community a better place, I WILL take action against
-any violation of our license. I hope that is clear.
+If anyone was to intentionally distribute content created with the Half-Life SDK
+with this component, it'd violate the Half-Life SDK AND the GPL.
 
-If anyone was to willingly distribute content created with the Half-Life SDK
-with this component, it'd violate the Half-Life SDK.
 I recommend that you use this menu without relying on Half-Life file formats.
 FreeCS gets around this by not actually shipping the CS content as part of the
-project.
+project. User superior formats such as IQM (instead of MDL) and Q3 BSP!
 
 Thanks to Spike for FTEQCC's advanced features and his engine, FTEQW, that makes
 FreeCS and other projects even possible.
