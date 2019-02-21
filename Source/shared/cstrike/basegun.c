@@ -175,8 +175,8 @@ float BaseGun_Reload( void ) {
 	
 	
 	self.think = BaseGun_FinishReload;
-	self.nextthink = time + wptTable[ self.weapon ].fReloadFinished;
-	self.fAttackFinished = self.nextthink;
+	self.nextthink = time + wptTable[ self.weapon ].fReloadFinished - 0.1f; // Hack - in some cases input might happen first
+	self.fAttackFinished = self.nextthink + 0.1f;
 	
 	Animation_ReloadWeapon( self );
 	Client_SendEvent( self, EV_WEAPON_RELOAD );

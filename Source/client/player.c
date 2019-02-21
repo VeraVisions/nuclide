@@ -6,14 +6,47 @@
 *
 ****/
 
-//.float bonecontrol1; //Halflife model format bone controller. On player models, this typically affects the spine's yaw.
-//.float bonecontrol2; //Halflife model format bone controller. On player models, this typically affects the spine's yaw.
-//.float bonecontrol3; //Halflife model format bone controller. On player models, this typically affects the spine's yaw.
-//.float bonecontrol4; //Halflife model format bone controller. On player models, this typically affects the spine's yaw.
-//.float bonecontrol5; //Halflife model format bone controller. This typically affects the mouth.
-//.float subblendfrac; //Weird animation value specific to halflife models. On player models, this typically affects the spine's pitch.
+//.float bonecontrol1; //Half-Life model format bone controller. On player models, this typically affects the spine's yaw.
+//.float bonecontrol2; //Half-Life model format bone controller. On player models, this typically affects the spine's yaw.
+//.float bonecontrol3; //Half-Life model format bone controller. On player models, this typically affects the spine's yaw.
+//.float bonecontrol4; //Half-Life model format bone controller. On player models, this typically affects the spine's yaw.
+//.float bonecontrol5; //Half-Life model format bone controller. This typically affects the mouth.
+//.float subblendfrac; //Weird animation value specific to Half-Life models. On player models, this typically affects the spine's pitch.
 //.float basesubblendfrac; // legs part.
 .float subblend2frac; // Up/Down
+
+// TODO: This needs to be redone.
+#ifdef CSTRIKE
+string sPModels[CS_WEAPON_COUNT - 1] = {
+	"models/p_knife.mdl",
+	"models/p_usp.mdl",
+	"models/p_glock18.mdl",
+	"models/p_deagle.mdl",
+	"models/p_p228.mdl",
+	"models/p_elite.mdl",
+	"models/p_fiveseven.mdl",
+	"models/p_m3.mdl",
+	"models/p_xm1014.mdl",
+	"models/p_mp5.mdl",
+	"models/p_p90.mdl",
+	"models/p_ump45.mdl",
+	"models/p_mac10.mdl",
+	"models/p_tmp.mdl",
+	"models/p_ak47.mdl",
+	"models/p_sg552.mdl",
+	"models/p_m4a1.mdl",
+	"models/p_aug.mdl",
+	"models/p_scout.mdl",
+	"models/p_awp.mdl",
+	"models/p_g3sg1.mdl",
+	"models/p_sg550.mdl",
+	"models/p_m249.mdl",
+	"models/p_c4.mdl",
+	"models/p_flashbang.mdl",
+	"models/p_hegrenade.mdl",
+	"models/p_smokegrenade.mdl"
+};
+#endif
 
 void player::gun_offset(void)
 {
@@ -44,7 +77,9 @@ void player::draw(void)
 	// Only bother updating the model if the weapon has changed
 	if (this.lastweapon != this.activeweapon) {
 		if (this.activeweapon) {
-			// FIXME: setmodel(this.p_model, sPModels[this.weapon - 1]);
+		#ifdef CSTRIKE
+			setmodel(this.p_model, sPModels[this.weapon - 1]);
+		#endif
 		} else {
 			setmodel(this.p_model, "");
 		}

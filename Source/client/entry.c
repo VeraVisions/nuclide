@@ -39,6 +39,10 @@ void CSQC_Init(float apilevel, string enginename, float engineversion)
 	precache_model("sprites/640_pain.spr");
 	precache_model("sprites/crosshairs.spr");
 
+	precache_model("sprites/muzzleflash1.spr");
+	precache_model("sprites/muzzleflash2.spr");
+	precache_model("sprites/muzzleflash3.spr");
+
 	/* Fonts */
 	FONT_16 = loadfont("16", "fonts/default", "16", -1);
 	FONT_CON  = loadfont("font", "", "12", -1);
