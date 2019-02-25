@@ -88,6 +88,7 @@ void CSQC_Init(float apilevel, string enginename, float engineversion)
 	precache_sound("debris/bustconcrete1.wav");
 	precache_sound("debris/bustconcrete2.wav");
 	precache_sound("debris/bustceiling.wav");
+	precache_sound("misc/talk.wav");
 
 	/* Game specific inits */
 	HUD_Init();
