@@ -74,6 +74,10 @@ void trigger_hurt :: Touch ( void )
 void trigger_hurt :: Respawn ( void )
 {
 	solid = SOLID_TRIGGER;
+#ifdef GS_DEVELOPER
+	alpha = 0.5f;
+#endif
+
 	if ( spawnflags & SF_HURT_OFF ) {
 		solid = SOLID_NOT;
 	}

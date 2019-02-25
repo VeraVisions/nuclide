@@ -83,10 +83,10 @@ void CBaseTrigger :: InitPointTrigger ( void )
 
 void CBaseTrigger :: InitBrushTrigger ( void )
 {
-	precache_model( model );
+	precache_model( m_oldModel );
 	movetype = MOVETYPE_NONE;
 	solid = SOLID_TRIGGER;
-	setmodel( this, model );
+	setmodel( this, m_oldModel );
 #ifdef GS_DEVELOPER
 	alpha = 0.5f;
 	effects = EF_FLAG2;

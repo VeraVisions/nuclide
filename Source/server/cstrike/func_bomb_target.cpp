@@ -10,6 +10,7 @@ class func_bomb_target:CBaseTrigger
 {
 	void() func_bomb_target;
 	virtual void() touch;
+	virtual void() Respawn;
 };
 
 void func_bomb_target::touch(void)
@@ -24,8 +25,17 @@ void func_bomb_target::touch(void)
 	}
 }
 
+void func_bomb_target::Respawn(void)
+{
+	solid = SOLID_TRIGGER;
+#ifdef GS_DEVELOPER
+	alpha = 0.5f;
+#endif
+}
+
 void func_bomb_target::func_bomb_target(void)
 {
+	func_bomb_target::Respawn();
 	CBaseTrigger::CBaseTrigger();
 	CBaseTrigger::InitBrushTrigger();
 	iBombZones++;

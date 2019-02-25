@@ -10,6 +10,7 @@ class trigger_teleport : CBaseTrigger
 {
 	void() trigger_teleport;
 	virtual void() touch;
+	virtual void() Respawn;
 };
 
 void trigger_teleport :: touch ( void )
@@ -21,6 +22,14 @@ void trigger_teleport :: touch ( void )
 			setorigin(other, eTarget.origin + [0,0,16]);
 		}
 	}
+}
+
+void trigger_teleport :: Respawn( void )
+{
+	solid = SOLID_TRIGGER;
+#ifdef GS_DEVELOPER
+	alpha = 0.5f;
+#endif
 }
 
 void trigger_teleport :: trigger_teleport ( void )
