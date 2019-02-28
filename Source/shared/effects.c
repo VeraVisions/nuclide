@@ -34,6 +34,51 @@ void Effect_CreateExplosion( vector vPos ) {
 #endif
 }
 
+void Effect_CreateBlood( vector vPos, vector vAngle ) {
+#ifdef SSQC
+	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
+	WriteByte( MSG_MULTICAST, EV_BLOOD );
+	WriteCoord( MSG_MULTICAST, vPos[0] ); 
+	WriteCoord( MSG_MULTICAST, vPos[1] ); 
+	WriteCoord( MSG_MULTICAST, vPos[2] );
+	WriteCoord( MSG_MULTICAST, vAngle[0] ); 
+	WriteCoord( MSG_MULTICAST, vAngle[1] ); 
+	WriteCoord( MSG_MULTICAST, vAngle[2] );
+	msg_entity = self;
+	multicast( vPos, MULTICAST_PVS );
+#else
+	sprite eBlood = spawn(sprite);
+	setorigin( eBlood, vPos );
+	setmodel( eBlood, "sprites/bloodspray.spr" );
+
+	//eExplosion.think = Effect_CreateExplosion_Animate;
+	//eBlood.effects = EF_ADDITIVE;
+	eBlood.drawmask = MASK_ENGINE;
+	eBlood.maxframe = modelframecount( eBlood.modelindex );
+	eBlood.loops = 0;
+	eBlood.scale = 0.5f;
+	eBlood.colormod = [1,0,0];
+	eBlood.framerate = 20;
+	eBlood.nextthink = time + 0.05f;
+	
+	for (int i = 0; i < 3; i++) {
+		sprite ePart = spawn(sprite);
+		setorigin(ePart, vPos);
+		setmodel( ePart, "sprites/blood.spr" );
+		ePart.movetype = MOVETYPE_BOUNCE;
+		ePart.gravity = 0.5f;
+		ePart.scale = 0.5f;
+		ePart.drawmask = MASK_ENGINE;
+		ePart.maxframe = modelframecount(ePart.modelindex);
+		ePart.loops = 0;
+		ePart.colormod = [1,0,0];
+		ePart.framerate = 15;
+		ePart.nextthink = time + 0.1f;
+		ePart.velocity = randomvec() * 64;
+	}
+#endif
+}
+
 void Effect_CreateSpark( vector vPos, vector vAngle ) {
 #ifdef SSQC
 	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );

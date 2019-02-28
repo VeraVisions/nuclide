@@ -57,7 +57,7 @@ void w_shotgun_holster(void)
 void w_shotgun_primary(void)
 {
 	player pl = (player)self;
-	if (pl.w_attack_next > Math_Time()) {
+	if (pl.w_attack_next > 0.0) {
 		return;
 	}
 
@@ -70,15 +70,15 @@ void w_shotgun_primary(void)
 void w_shotgun_secondary(void)
 {
 	player pl = (player)self;
-	if (pl.w_attack_next > Math_Time()) {
+	if (pl.w_attack_next > 0.0) {
 		return;
 	}
 
 	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/dbarrel1.wav", 1, ATTN_NORM);
 	Weapons_ViewAnimation(SHOTGUN_FIRE2);
 	Weapons_ViewPunchAngle([-10,0,0]);
-	pl.w_attack_next = Math_Time() + 1.5f;
-	pl.w_idle_next = Math_Time() + 2.5f;
+	pl.w_attack_next = 1.5f;
+	pl.w_idle_next = 2.5f;
 }
 void w_shotgun_reload(void)
 {
@@ -87,7 +87,7 @@ void w_shotgun_reload(void)
 void w_shotgun_release(void)
 {
 	player pl = (player)self;
-	if (pl.w_idle_next > Math_Time()) {
+	if (pl.w_idle_next > 0.0) {
 		return;
 	}
 
@@ -104,7 +104,7 @@ void w_shotgun_release(void)
 		break;
 	}
 
-	pl.w_idle_next = Math_Time() + 15.0f;
+	pl.w_idle_next = 15.0f;
 }
 void w_shotgun_crosshair(void)
 {

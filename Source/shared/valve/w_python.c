@@ -64,12 +64,12 @@ void w_python_holster(void)
 void w_python_primary(void)
 {
 	player pl = (player)self;
-	if (pl.w_attack_next > Math_Time()) {
+	if (pl.w_attack_next > 0.0) {
 		return;
 	}
 
 #ifdef SSQC
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 40);
 #endif
 
 	Weapons_ViewAnimation(PYTHON_FIRE1);
@@ -81,13 +81,13 @@ void w_python_primary(void)
 		Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/357_shot2.wav", 1, ATTN_NORM);
 	}
 	
-	pl.w_attack_next = Math_Time() + 0.75f;
-	pl.w_idle_next = Math_Time() + 10.0f;
+	pl.w_attack_next = 0.75f;
+	pl.w_idle_next = 10.0f;
 }
 void w_python_secondary(void)
 {
 	player pl = (player)self;
-	if (pl.w_attack_next > Math_Time()) {
+	if (pl.w_attack_next > 0.0) {
 		return;
 	}
 	/* Simple toggle of fovs */
@@ -96,17 +96,17 @@ void w_python_secondary(void)
 	} else {
 		pl.viewzoom = 1.0f;
 	}
-	pl.w_attack_next = Math_Time() + 0.5f;
+	pl.w_attack_next = 0.5f;
 }
 void w_python_reload(void)
 {
 	player pl = (player)self;
-	if (pl.w_attack_next > Math_Time()) {
+	if (pl.w_attack_next > 0.0) {
 		return;
 	}
 	Weapons_ViewAnimation(PYTHON_RELOAD);
-	pl.w_attack_next = Math_Time() + 3.25f;
-	pl.w_idle_next = Math_Time() + 10.0f;
+	pl.w_attack_next = 3.25f;
+	pl.w_idle_next = 10.0f;
 }
 void w_python_release(void)
 {

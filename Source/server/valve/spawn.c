@@ -15,3 +15,13 @@ void info_player_deathmatch(void)
 {
 	
 }
+
+void info_player_team1(void)
+{
+	self.classname = "info_player_deathmatch";
+}
+
+void info_player_team2(void)
+{
+	self.classname = "info_player_deathmatch";
+}

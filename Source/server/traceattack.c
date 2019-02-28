@@ -15,16 +15,16 @@ TraceAttack_FireSingle
 Fires a single shot that can penetrate some materials
 =================
 */
-void TraceAttack_FireSingle(vector vPos, vector vAngle)
+void TraceAttack_FireSingle(vector vPos, vector vAngle, int iDamage)
 {
-	static void TraceAttack_Penetrate(vector vPos, vector vAngle ) {
+	/*static void TraceAttack_Penetrate(vector vPos, vector vAngle ) {
 		if (iTotalPenetrations > 0) {
 			return;
 		}
 
-		TraceAttack_FireSingle(vPos, vAngle);
+		TraceAttack_FireSingle(vPos, vAngle, iDamage);
 		iTotalPenetrations = 1;
-	}
+	}*/
 
 #ifdef CSTRIKE
 	traceline(vPos, vPos + (vAngle * wptTable[self.weapon].fRange), MOVE_HITMODEL, self);
@@ -35,12 +35,12 @@ void TraceAttack_FireSingle(vector vPos, vector vAngle)
 	if (trace_fraction != 1.0) {
 		if (trace_ent.takedamage == DAMAGE_YES) {
 #ifdef CSTRIKE
-			Damage_Apply(trace_ent, self, wptTable[self.weapon].iDamage, trace_endpos, FALSE);
+			Damage_Apply(trace_ent, self, iDamage, trace_endpos, FALSE);
 #endif
 		}
 
 		if (trace_ent.iBleeds == TRUE) {
-			Effect_Impact(IMPACT_FLESH, trace_endpos, trace_plane_normal);
+			Effect_CreateBlood(trace_endpos, [0,0,0]);
 		} else {
 			string sTexture = getsurfacetexture(trace_ent, getsurfacenearpoint(trace_ent, trace_endpos));
 
@@ -74,15 +74,16 @@ void TraceAttack_FireSingle(vector vPos, vector vAngle)
 	}
 }
 
-void TraceAttack_FireSingleLagged(vector vPos, vector vAngle) {
-	static void TraceAttack_Penetrate(vector vPos, vector vAngle ) {
+void TraceAttack_FireSingleLagged(vector vPos, vector vAngle, int iDamage)
+{
+	/*static void TraceAttack_Penetrate(vector vPos, vector vAngle ) {
 		if (iTotalPenetrations > 0) {
 			return;
 		}
 		
-		TraceAttack_FireSingle(vPos, vAngle);
+		TraceAttack_FireSingle(vPos, vAngle, iDamage);
 		iTotalPenetrations = 1;
-	}
+	}*/
 	
 #ifdef CSTRIKE
 	traceline(vPos, vPos + (vAngle * wptTable[self.weapon].fRange), MOVE_LAGGED | MOVE_HITMODEL, self);
@@ -92,13 +93,13 @@ void TraceAttack_FireSingleLagged(vector vPos, vector vAngle) {
 
 	if (trace_fraction != 1.0) {
 		if (trace_ent.takedamage == DAMAGE_YES) {
-#ifdef CSTRIKE
-			Damage_Apply(trace_ent, self, wptTable[self.weapon].iDamage, trace_endpos, FALSE);
-#endif
+
+			Damage_Apply(trace_ent, self, iDamage, trace_endpos, FALSE);
+
 		}
 
 		if (trace_ent.iBleeds == TRUE) {
-			Effect_Impact(IMPACT_FLESH, trace_endpos, trace_plane_normal);
+			//Effect_CreateBlood(trace_endpos, [0,0,0]);
 		} else {
 			string sTexture = getsurfacetexture(trace_ent, getsurfacenearpoint(trace_ent, trace_endpos));
 
@@ -106,7 +107,7 @@ void TraceAttack_FireSingleLagged(vector vPos, vector vAngle) {
 				case 'G':
 				case 'V':
 					Effect_Impact(IMPACT_METAL, trace_endpos, trace_plane_normal);
-					TraceAttack_Penetrate(trace_endpos + (v_forward * 2), vAngle);
+					//TraceAttack_Penetrate(trace_endpos + (v_forward * 2), vAngle);
 					break;
 				case 'M':
 				case 'P':
@@ -115,14 +116,14 @@ void TraceAttack_FireSingleLagged(vector vPos, vector vAngle) {
 				case 'D':
 				case 'W':
 					Effect_Impact(IMPACT_WOOD, trace_endpos, trace_plane_normal);
-					TraceAttack_Penetrate(trace_endpos + (v_forward * 2), vAngle);
+					//TraceAttack_Penetrate(trace_endpos + (v_forward * 2), vAngle);
 					break;
 				case 'Y':
 					Effect_Impact(IMPACT_GLASS, trace_endpos, trace_plane_normal);
 					break;
 				case 'N':
 					Effect_Impact(IMPACT_DEFAULT, trace_endpos, trace_plane_normal);
-					TraceAttack_Penetrate(trace_endpos + (v_forward * 2), vAngle);
+					//TraceAttack_Penetrate(trace_endpos + (v_forward * 2), vAngle);
 					break;
 				case 'T':
 				default:
@@ -140,7 +141,7 @@ TraceAttack_FireBullets
 Fire a given amount of shots
 =================
 */
-void TraceAttack_FireBullets(int iShots, vector vPos)
+void TraceAttack_FireBullets(int iShots, vector vPos, int iDamage)
 {
 	vector vDir;
 	makevectors(self.v_angle);
@@ -152,8 +153,8 @@ void TraceAttack_FireBullets(int iShots, vector vPos)
 #else
 		vDir = aim(self, 100000);
 #endif
-		TraceAttack_FireSingle(vPos, vDir);
-		TraceAttack_FireSingleLagged(vPos, vDir);
+		//TraceAttack_FireSingle(vPos, vDir, iDamage);
+		TraceAttack_FireSingleLagged(vPos, vDir, iDamage);
 		iShots--;
 	}
 }

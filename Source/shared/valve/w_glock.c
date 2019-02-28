@@ -90,7 +90,7 @@ void w_glock_primary(void)
 		return;
 	}
 
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8);
 
 	pl.glock_mag--;
 
@@ -126,7 +126,7 @@ void w_glock_secondary(void)
 		return;
 	}
 
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8);
 
 	pl.glock_mag--;
 
@@ -188,7 +188,7 @@ void w_glock_release(void)
 		Weapons_ViewAnimation(GLOCK_IDLE3);
 		break;
 	}
-	pl.w_idle_next = Math_Time() + 10.0f;
+	pl.w_idle_next = 10.0f;
 #endif
 }
 void w_glock_hud(void)

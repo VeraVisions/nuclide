@@ -66,7 +66,7 @@ void w_tripmine_release(void)
 {
 	int r;
 	player pl = (player)self;
-	if (pl.w_idle_next > Math_Time()) {
+	if (pl.w_idle_next > 0.0) {
 		return;
 	}
 
@@ -75,15 +75,15 @@ void w_tripmine_release(void)
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(TRIPMINE_IDLE1);
-		pl.w_idle_next = Math_Time() + 3.0f;
+		pl.w_idle_next = 3.0f;
 		break;
 	case 1:
 		Weapons_ViewAnimation(TRIPMINE_IDLE2);
-		pl.w_idle_next = Math_Time() + 2.0f;
+		pl.w_idle_next = 2.0f;
 		break;
 	default:
 		Weapons_ViewAnimation(TRIPMINE_FIDGET);
-		pl.w_idle_next = Math_Time() + 3.333333f;
+		pl.w_idle_next = 3.333333f;
 		break;
 	}
 }

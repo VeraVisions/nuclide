@@ -93,6 +93,7 @@ void Game_PutClientInServer(void)
 	pl.customphysics = Empty;
 	pl.vPain = Player_Pain;
 	pl.vDeath = Player_Death;
+	pl.iBleeds = TRUE;
 	forceinfokey(pl, "*spec", "0");
 
 	if (cvar("sv_playerslots") == 1) {

@@ -311,16 +311,10 @@ void CSQC_Input_Frame(void)
 		pSeat->fInputSendNext = time + 0.2;
 	}
 
-
 	if (pSeat->fInputSendNext > time) {
 		input_impulse = 0;
 		input_buttons = 0;
 		return;
-	}
-	
-	if (input_impulse == 101) {
-		print("This aint Half-Life.\n");
-		input_impulse = 0;
 	}
 	
 	if (input_impulse == 201) {
@@ -343,7 +337,6 @@ void CSQC_Input_Frame(void)
 		input_buttons |= INPUT_BUTTON8;
 	}
 
-	input_angles += pSeat->vPunchAngle;
 	Game_Input();
 }
 
@@ -385,6 +378,20 @@ void CSQC_Parse_Event(void)
 			vSparkAngle_y = readcoord();
 			vSparkAngle_z = readcoord();
 			Effect_CreateSpark(vSparkPos, vSparkAngle);
+			break;
+		case EV_BLOOD:
+			vector vBloodPos;
+			vector vBloodAngle;
+			
+			vBloodPos[0] = readcoord();
+			vBloodPos[1] = readcoord();
+			vBloodPos[2] = readcoord();
+			
+			vBloodAngle[0] = readcoord();
+			vBloodAngle[1] = readcoord();
+			vBloodAngle[2] = readcoord();
+			
+			Effect_CreateBlood(vBloodPos, vBloodAngle);
 			break;
 		case EV_EXPLOSION:
 			vector vExploPos;

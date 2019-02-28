@@ -8,18 +8,17 @@
 
 void Player_ReadEntity(float flIsNew)
 {
-	player pl = (player)self;
-
 	if ( flIsNew == TRUE ) {
 		spawnfunc_player();
 			
-		pl.classname = "player";
-		pl.solid = SOLID_SLIDEBOX;
-		pl.drawmask = MASK_ENGINE;
-		pl.customphysics = Empty;
-		setsize( pl, VEC_HULL_MIN, VEC_HULL_MAX );
+		self.classname = "player";
+		self.solid = SOLID_SLIDEBOX;
+		self.drawmask = MASK_ENGINE;
+		self.customphysics = Empty;
+		setsize( self, VEC_HULL_MIN, VEC_HULL_MAX );
 	}
 
+	player pl = (player)self;
 	pl.modelindex = readshort();
 	pl.origin[0] = readcoord();
 	pl.origin[1] = readcoord();

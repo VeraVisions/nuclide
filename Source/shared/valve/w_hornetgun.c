@@ -61,26 +61,26 @@ void w_hornetgun_holster(void)
 void w_hornetgun_primary(void)
 {
 	player pl = (player)self;
-	if (pl.w_attack_next > Math_Time()) {
+	if (pl.w_attack_next > 0.0) {
 		return;
 	}
 	
 	Weapons_PlaySound(pl, CHAN_WEAPON, sprintf("agrunt/ag_fire%d.wav", floor(random(1,4))), 1, ATTN_NORM);
 	Weapons_ViewAnimation(HORNETGUN_SHOOT);
-	pl.w_attack_next = Math_Time() + 0.25;
-	pl.w_idle_next = Math_Time() + 2.5f;
+	pl.w_attack_next = 0.25;
+	pl.w_idle_next = 2.5f;
 }
 void w_hornetgun_secondary(void)
 {
 	player pl = (player)self;
-	if (pl.w_attack_next > Math_Time()) {
+	if (pl.w_attack_next > 0.0) {
 		return;
 	}
 	
 	Weapons_PlaySound(pl, CHAN_WEAPON, sprintf("agrunt/ag_fire%d.wav", floor(random(1,4))), 1, ATTN_NORM);
 	Weapons_ViewAnimation(HORNETGUN_SHOOT);
-	pl.w_attack_next = Math_Time() + 0.1;
-	pl.w_idle_next = Math_Time() + 2.5f;
+	pl.w_attack_next = 0.1;
+	pl.w_idle_next = 2.5f;
 }
 void w_hornetgun_reload(void)
 {
@@ -90,7 +90,7 @@ void w_hornetgun_release(void)
 {
 	int r;
 	player pl = (player)self;
-	if (pl.w_idle_next > Math_Time()) {
+	if (pl.w_idle_next > 0.0) {
 		return;
 	}
 
@@ -99,15 +99,15 @@ void w_hornetgun_release(void)
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(HORNETGUN_IDLE);
-		pl.w_idle_next = Math_Time() + 0.95f;
+		pl.w_idle_next = 0.95f;
 		break;
 	case 1:
 		Weapons_ViewAnimation(HORNETGUN_FIDGET1);
-		pl.w_idle_next = Math_Time() + 2.5f;
+		pl.w_idle_next = 2.5f;
 		break;
 	default:
 		Weapons_ViewAnimation(HORNETGUN_FIDGET2);
-		pl.w_idle_next = Math_Time() + 2.2f;
+		pl.w_idle_next = 2.2f;
 		break;
 	}
 }

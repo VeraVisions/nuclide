@@ -24,6 +24,9 @@ void w_crowbar_precache(void)
 	precache_sound("weapons/cbar_miss1.wav");
 	precache_sound("weapons/cbar_hit1.wav");
 	precache_sound("weapons/cbar_hit2.wav");
+	precache_sound("weapons/cbar_hitbod1.wav");
+	precache_sound("weapons/cbar_hitbod2.wav");
+	precache_sound("weapons/cbar_hitbod3.wav");
 	precache_model("models/v_crowbar.mdl");
 	precache_model("models/w_crowbar.mdl");
 	precache_model("models/p_crowbar.mdl");
@@ -102,13 +105,29 @@ void w_crowbar_primary(void)
 	if (trace_fraction >= 1.0) {
 		pl.w_attack_next = 0.5f;
 	} else {
-		if (random() < 0.5) {
-			Weapons_PlaySound(pl, 8, "weapons/cbar_hit1.wav", 1, ATTN_NORM);
-		} else {
-			Weapons_PlaySound(pl, 8, "weapons/cbar_hit2.wav", 1, ATTN_NORM);
-		}
 		pl.w_attack_next = 0.25f;
 		Effect_Impact(IMPACT_MELEE, trace_endpos, trace_plane_normal);
+		
+		if (trace_ent.takedamage) {
+			Damage_Apply(trace_ent, self, 10, trace_endpos, FALSE );
+			
+			// TODO: Better way to find if it bleeds?
+			if (trace_ent.iBleeds == 1) {
+				if (random() < 0.33) {
+					Weapons_PlaySound(pl, 8, "weapons/cbar_hitbod1.wav", 1, ATTN_NORM);
+				} else if (random() < 0.66) {
+					Weapons_PlaySound(pl, 8, "weapons/cbar_hitbod2.wav", 1, ATTN_NORM);
+				} else {
+					Weapons_PlaySound(pl, 8, "weapons/cbar_hitbod3.wav", 1, ATTN_NORM);
+				}
+			}
+		} else {
+			if (random() < 0.5) {
+				Weapons_PlaySound(pl, 8, "weapons/cbar_hit1.wav", 1, ATTN_NORM);
+			} else {
+				Weapons_PlaySound(pl, 8, "weapons/cbar_hit2.wav", 1, ATTN_NORM);
+			}
+		}
 	}
 #endif
 	pl.w_idle_next = 2.5f;

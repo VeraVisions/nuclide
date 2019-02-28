@@ -190,14 +190,14 @@ void Damage_Apply(entity eTarget, entity eAttacker, float iDamage, vector vHitPo
 	
 	entity eOld = self;
 	self = eTarget;
-	
+
 	if (self.health <= 0) {
 		self.health = 0;
 		self.vDeath(trace_surface_id);
 	} else {
 		self.vPain(trace_surface_id);
 	}
-	
+
 	self = eOld;
 #endif
 }

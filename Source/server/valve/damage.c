@@ -80,6 +80,10 @@ void Damage_Apply(entity eTarget, entity eAttacker, float fDamage, vector vHitPo
 	} else {
 		self.vPain(trace_surface_id);
 	}
+	
+	if (self.iBleeds == TRUE) {
+		Effect_CreateBlood(vHitPos, [0,0,0]);
+	} 
 
 	self = eOld;
 }

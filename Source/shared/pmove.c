@@ -669,9 +669,7 @@ PMove_Run
 */
 void PMove_Run(void)
 {
-
 #ifdef VALVE
-
 	self.maxspeed = (self.flags & FL_CROUCHING) ? 135 : 270;
 
 	if (input_buttons & INPUT_BUTTON5) {

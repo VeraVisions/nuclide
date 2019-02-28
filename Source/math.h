@@ -57,6 +57,11 @@ float Math_FixDelta( float fDelta ) {
 	return fDelta;
 }
 
+vector Math_Reflect( vector v1, vector v2 )
+{
+	return v1 - 2 * dotproduct( v1, v2 ) * v2;
+}
+
 float Math_CRandom( void ) {
 	return 2 * ( random() - 0.5 );
 }

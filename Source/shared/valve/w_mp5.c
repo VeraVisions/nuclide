@@ -25,6 +25,7 @@ void w_mp5_precache(void)
 	precache_model("models/v_9mmar.mdl");
 	precache_model("models/w_9mmar.mdl");
 	precache_model("models/p_9mmar.mdl");
+	precache_model("models/grenade.mdl");
 	precache_sound("weapons/hks1.wav");
 	precache_sound("weapons/hks2.wav");
 	precache_sound("weapons/glauncher.wav");
@@ -62,7 +63,7 @@ void w_mp5_holster(void)
 void w_mp5_primary(void)
 {
 	player pl = (player)self;
-	if (pl.w_attack_next) {
+	if (pl.w_attack_next > 0.0) {
 		return;
 	}
 
@@ -75,7 +76,7 @@ void w_mp5_primary(void)
 
 	Weapons_ViewPunchAngle([random(-2, 2),0,0]);
 #else
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 5);
 
 	if (random() < 0.5) {
 		Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/hks1.wav", 1, ATTN_NORM);
@@ -91,7 +92,7 @@ void w_mp5_secondary(void)
 {
 	player pl = (player)self;
 	
-	if (pl.w_attack_next) {
+	if (pl.w_attack_next > 0.0) {
 		return;
 	}
 
@@ -99,6 +100,27 @@ void w_mp5_secondary(void)
 	Weapons_ViewAnimation(MP5_GRENADE);
 	Weapons_ViewPunchAngle([-10,0,0]);
 #else
+
+	static void Grenade_ExplodeTouch(void) {
+		Effect_CreateExplosion( self.origin );
+		Damage_Radius( self.origin, self, 100, 256, TRUE );
+		sound( self, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 2 ) + 3 ), 1, ATTN_NORM );
+		remove(self);
+	}
+	makevectors(self.v_angle);
+	entity gren = spawn();
+	setmodel(gren, "models/grenade.mdl");
+	setorigin(gren, self.origin + self.view_ofs + (v_forward * 16));
+	gren.owner = self;
+	gren.velocity = v_forward * 800;
+	gren.angles = vectoangles(gren.velocity);
+	gren.avelocity[0] = random(-100, -500);
+	gren.gravity = 0.5f;
+	gren.movetype = MOVETYPE_BOUNCE;
+	gren.solid = SOLID_BBOX;
+	setsize(gren, [0,0,0], [0,0,0]);
+	gren.touch = Grenade_ExplodeTouch;
+
 	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/glauncher.wav", 1, ATTN_NORM);
 #endif
 
@@ -125,7 +147,7 @@ void w_mp5_release(void)
 {
 #ifdef CSQC
 	player pl = (player)self;
-	if (pl.w_idle_next) {
+	if (pl.w_idle_next > 0.0) {
 		return;
 	}
 

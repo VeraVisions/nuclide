@@ -54,15 +54,15 @@ void w_gauss_holster(void)
 void w_gauss_primary(void)
 {
 	player pl = (player)self;
-	if (pl.w_attack_next > Math_Time()) {
+	if (pl.w_attack_next > 0.0) {
 		return;
 	}
 
 	Weapons_ViewAnimation(GAUSS_FIRE2);
 	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/gauss2.wav", 1, ATTN_NORM);
 
-	pl.w_attack_next = Math_Time() + 0.2f;
-	pl.w_idle_next = Math_Time() + 2.5f;
+	pl.w_attack_next = 0.2f;
+	pl.w_idle_next = 2.5f;
 }
 void w_gauss_secondary(void)
 {
@@ -75,7 +75,7 @@ void w_gauss_reload(void)
 void w_gauss_release(void)
 {
 	player pl = (player)self;
-	if (pl.w_idle_next > Math_Time()) {
+	if (pl.w_idle_next > 0.0) {
 		return;
 	}
 	
@@ -84,15 +84,15 @@ void w_gauss_release(void)
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(GAUSS_IDLE1);
-		pl.w_idle_next = Math_Time() + 10.0f;
+		pl.w_idle_next = 10.0f;
 		break;
 	case 1:
 		Weapons_ViewAnimation(GAUSS_IDLE2);
-		pl.w_idle_next = Math_Time() + 10.0f;
+		pl.w_idle_next = 10.0f;
 		break;
 	case 2:
 		Weapons_ViewAnimation(GAUSS_FIDGET);
-		pl.w_idle_next = Math_Time() + 3.0f;
+		pl.w_idle_next = 3.0f;
 		break;
 	}
 

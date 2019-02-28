@@ -41,7 +41,7 @@ void w_snark_release(void)
 {
 	int r;
 	player pl = (player)self;
-	if (pl.w_idle_next > Math_Time()) {
+	if (pl.w_idle_next > 0.0) {
 		return;
 	}
 
@@ -50,15 +50,15 @@ void w_snark_release(void)
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(SNARK_IDLE);
-		pl.w_idle_next = Math_Time() + 1.875f;
+		pl.w_idle_next = 1.875f;
 		break;
 	case 1:
 		Weapons_ViewAnimation(SNARK_FIDGET1);
-		pl.w_idle_next = Math_Time() + 4.375f;
+		pl.w_idle_next = 4.375f;
 		break;
 	default:
 		Weapons_ViewAnimation(SNARK_FIDGET2);
-		pl.w_idle_next = Math_Time() + 5.0f;
+		pl.w_idle_next = 5.0f;
 		break;
 	}
 }
