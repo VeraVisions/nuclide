@@ -91,7 +91,8 @@ void infodecal(void)
 	}
 
 	if (frac == 1.0f) {
-		objerror(sprintf("infodecal tracing failed at %v\n", self.origin));
+		print(sprintf("infodecal tracing failed at %v\n", self.origin));
+		remove(self);
 		return;
 	}
 
