@@ -183,6 +183,16 @@ void CSQC_UpdateView(float w, float h, float focus)
 		setproperty(VF_ANGLES, view_angles + pSeat->vPunchAngle);
 		setproperty(VF_DRAWWORLD, 1);
 		renderscene();
+		
+		pl.w_attack_next -= clframetime;
+		pl.w_idle_next -= clframetime;
+
+		if (pl.w_attack_next <= 0) {
+			pl.w_attack_next = 0;
+		}
+		if (pl.w_idle_next <= 0) {
+			pl.w_idle_next = 0;
+		}
 
 		View_DropPunchAngle();
 		Fade_Update((int)video_mins[0],(int)video_mins[1], (int)w, (int)h);
@@ -336,8 +346,6 @@ void CSQC_Input_Frame(void)
 	if (pSeat->iInputDuck == TRUE) {
 		input_buttons |= INPUT_BUTTON8;
 	}
-
-	Game_Input();
 }
 
 
@@ -601,6 +609,9 @@ void CSQC_WorldLoaded(void)
 	precache_pic("{bigshot3", TRUE);
 	precache_pic("{bigshot4", TRUE);
 	precache_pic("{bigshot5", TRUE);
+	precache_pic("{scorch1", TRUE);
+	precache_pic("{scorch2", TRUE);
+	precache_pic("{scorch3", TRUE);
 }
 
 /*

@@ -40,7 +40,7 @@ void Player_ReadEntity(float flIsNew)
 	pl.a_ammo1 = readbyte();
 	pl.a_ammo2 = readbyte();
 	pl.a_ammo3 = readbyte();
-	pl.w_attack_next = readfloat();
-	pl.w_idle_next = readfloat();
+	//pl.w_attack_next = readfloat();
+	//pl.w_idle_next = readfloat();
 	setorigin( pl, pl.origin );
 }

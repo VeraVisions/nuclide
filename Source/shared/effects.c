@@ -31,6 +31,7 @@ void Effect_CreateExplosion( vector vPos ) {
 	eExplosion.nextthink = time + 0.05f;
 
 	te_explosion( vPos );
+	Decals_PlaceScorch(vPos);
 #endif
 }
 

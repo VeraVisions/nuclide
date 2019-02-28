@@ -16,6 +16,7 @@ void TraceAttack_FireBullets( int iShots, vector vPos, int iDamage);
 void Damage_Radius( vector vOrigin, entity eAttacker, float fDamage, float fRadius, int iCheckClip );
 void Damage_Apply( entity eTarget, entity eAttacker, float fDamage, vector vHitPos, int iSkipArmor );
 void Client_TriggerCamera( entity eTarget, vector vPos, vector vEndPos, float fResetTime );
+void Game_Input(void);
 
 entity eActivator;
 

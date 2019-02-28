@@ -21,11 +21,6 @@ void Predict_PreFrame(player pl)
 	pl.netvelocity = pl.velocity;
 	pl.netflags = pl.flags;
 
-#ifdef VALVE
-	pl.net_w_attack_next = pl.w_attack_next;
-	pl.net_w_idle_next = pl.w_idle_next;
-#endif
-
 	//self.netpmove_flags = self.pmove_flags;
 
 	//we want to predict an exact copy of the data in the new packet
@@ -63,11 +58,6 @@ void Predict_PostFrame(player pl)
 	pl.origin = pl.netorigin;
 	pl.velocity = pl.netvelocity;
 	pl.flags = pl.netflags;
-
-#ifdef VALVE
-	pl.w_attack_next = pl.net_w_attack_next;
-	pl.w_idle_next = pl.net_w_idle_next;
-#endif
 
 	//self.pmove_flags = self.netpmove_flags;
 	setorigin(pl, pl.origin);

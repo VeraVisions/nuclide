@@ -52,3 +52,15 @@ void Decals_PlaceBig(vector pos)
 	decal.nextthink = time /*+ 0.1f*/;
 #endif
 }
+void Decals_PlaceScorch(vector pos)
+{
+#ifdef CSQC
+	// TODO
+#else
+	entity decal = Decals_Next();
+	setorigin(decal, pos);
+	decal.texture = sprintf("{scorch%d", floor(random(1,3)));
+	decal.think = infodecal;
+	decal.nextthink = time /*+ 0.1f*/;
+#endif
+}

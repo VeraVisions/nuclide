@@ -110,8 +110,6 @@ void Ammo_AutoFill(float fWeapon);
 void Ammo_BuyPrimary(void);
 void Ammo_BuySecondary(void);
 
-void Input_Handle( void );
-
 void Animation_PlayerTop( float fFrame );
 void Animation_PlayerTopTemp( float fFrame, float fTime );
 

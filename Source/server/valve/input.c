@@ -13,7 +13,7 @@ Input_Handle
 Handles impulse and whatnot
 =================
 */
-void Input_Handle(void)
+void Game_Input(void)
 {
 	if (self.button0) {
 		Weapons_Primary();
@@ -48,6 +48,15 @@ void Input_Handle(void)
 			Weapons_AddItem(pl, WEAPON_SATCHEL);
 			Weapons_AddItem(pl, WEAPON_TRIPMINE);
 			Weapons_AddItem(pl, WEAPON_SNARK);
+		}
+		
+		if (self.impulse == 102) {
+			// Respawn all the entities
+			for (entity a = world; (a = findfloat(a, gflags, GF_CANRESPAWN));) {
+				CBaseEntity caw = (CBaseEntity)a;
+				caw.Respawn();
+			}
+			bprint(PRINT_HIGH, "Respawning all map entities...\n");
 		}
 	}
 	

@@ -13,7 +13,7 @@ Input_Handle
 Handles impulse and whatnot
 =================
 */
-void Input_Handle(void)
+void Game_Input(void)
 {
 	// Dead, specatator
 	if (self.health <= 0) {
