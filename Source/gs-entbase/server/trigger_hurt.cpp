@@ -21,14 +21,17 @@ class trigger_hurt : CBaseTrigger
 	
 	virtual void() Trigger;
 	virtual void() Touch;
+	virtual void() Respawn;
 };
 
 void trigger_hurt :: Trigger ( void )
 {
-	if ( solid == SOLID_NOT ) {
-		solid = SOLID_TRIGGER;
-	} else {
+	if ( solid != SOLID_NOT ) {
 		solid = SOLID_NOT;
+		touch = __NULL__;
+	} else {
+		solid = SOLID_TRIGGER;
+		touch = Touch;
 	}
 }
 
@@ -66,6 +69,7 @@ void trigger_hurt :: Touch ( void )
 	// Shut it down if used once
 	if ( spawnflags & SF_HURT_ONCE ) {
 		solid = SOLID_NOT;
+		touch = __NULL__;
 	}
 
 	m_flNextTrigger = time + 0.5;
@@ -73,15 +77,17 @@ void trigger_hurt :: Touch ( void )
 
 void trigger_hurt :: Respawn ( void )
 {
-	solid = SOLID_TRIGGER;
 #ifdef GS_DEVELOPER
 	alpha = 0.5f;
 #endif
 
 	if ( spawnflags & SF_HURT_OFF ) {
 		solid = SOLID_NOT;
+		touch = __NULL__;
+	} else {
+		solid = SOLID_TRIGGER;
+		touch = Touch;
 	}
-	touch = Touch;
 }
 
 void trigger_hurt :: trigger_hurt ( void )
@@ -99,7 +105,8 @@ void trigger_hurt :: trigger_hurt ( void )
 			break;
 		}
 	}
-	CBaseTrigger::InitBrushTrigger();
+
 	trigger_hurt::Respawn();
 	CBaseEntity::CBaseEntity();
+	CBaseTrigger::InitBrushTrigger();
 }
