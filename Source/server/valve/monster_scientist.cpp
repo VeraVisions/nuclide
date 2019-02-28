@@ -121,6 +121,8 @@ class monster_scientist:CBaseEntity
 	int m_iScared;
 	int m_iFear;
 	float m_flScreamTime;
+	float m_flChangePath;
+	float m_flTraceTime;
 	void() monster_scientist;
 
 	virtual void() touch;
@@ -132,6 +134,7 @@ class monster_scientist:CBaseEntity
 	virtual void() Physics;
 	virtual void() Scream;
 	virtual void() Gib;
+	virtual void() WarnOthers;
 };
 
 void monster_scientist::Gib(void)
@@ -142,6 +145,16 @@ void monster_scientist::Gib(void)
 		entity gib = spawn();
 		//gib.think = Util_Remove;
 		gib.nextthink = 10.0f;
+	}
+}
+
+void monster_scientist::WarnOthers(void)
+{
+	for ( entity b = world; ( b = find( b, ::classname, "monster_scientist" ) ); ) {
+		if ( vlen( b.origin - origin ) < 512 ) {
+			monster_scientist sci = (monster_scientist)b;
+			sci.m_iFear = TRUE;
+		}
 	}
 }
 
@@ -214,13 +227,21 @@ void monster_scientist::Physics(void)
 	} else if (m_iFear == TRUE) {
 		Scream();
 		input_movevalues = [240, 0, 0];
+		
+		
+		if (m_flTraceTime < time) {
+			traceline(self.origin, self.origin + (v_forward * 32), FALSE, this);
+			
+			if (trace_fraction < 1.0f) {
+				m_flChangePath = 0.0f;
+			}
+			m_flTraceTime = time + 0.5f;
+		}
 
-		makevectors(v_angle);
-		tracebox(origin, VEC_HULL_MIN, VEC_HULL_MAX, origin + (v_forward * 240), FALSE, this);
-
-		if (trace_fraction < 1) {
-			v_angle[1] -= 180 + (random(-45, 45));
+		if (m_flChangePath < time) {
+			v_angle[1] -= 180 + (random(-25, 25));
 			v_angle[1] = Math_FixDelta(v_angle[1]);
+			m_flChangePath = time + floor(random(2,10));
 		}
 	}
 
@@ -274,10 +295,12 @@ void monster_scientist::vPain(int iHitBody)
 	frame = SCIA_FLINCH + floor(random(0, 5));
 	m_iFear = TRUE;
 	//m_iScared = TRUE;
+	WarnOthers();
 }
 
 void monster_scientist::vDeath(int iHitBody)
 {
+	WarnOthers();
 	int rand = floor(random(0,sci_snddie.length));
 	sound(this, CHAN_VOICE, sci_snddie[rand], 1.0, ATTN_NORM);
 
