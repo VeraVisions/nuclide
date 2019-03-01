@@ -6,7 +6,6 @@
 *
 ****/
 
-
 void Empty(void) {}
 
 void Game_ClientConnect(void)

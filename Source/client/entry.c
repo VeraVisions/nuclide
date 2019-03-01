@@ -177,13 +177,19 @@ void CSQC_UpdateView(float w, float h, float focus)
 			View_DrawViewModel();
 		}
 
+		// TODO: Move this someplace less... entry-ish. like into a pre-draw.
+		if (pl.flags & FL_FLASHLIGHT) {
+			traceline(getproperty(VF_ORIGIN), getproperty(VF_ORIGIN) + (v_forward * 9000), FALSE, self);
+			dynamiclight_add(trace_endpos, 128, [1,1,1]);
+		}
+
 		addentities(MASK_ENGINE);
 		setproperty(VF_MIN, video_mins);
 		setproperty(VF_SIZE, video_res);
 		setproperty(VF_ANGLES, view_angles + pSeat->vPunchAngle);
 		setproperty(VF_DRAWWORLD, 1);
 		renderscene();
-		
+
 		pl.w_attack_next -= clframetime;
 		pl.w_idle_next -= clframetime;
 
@@ -196,6 +202,7 @@ void CSQC_UpdateView(float w, float h, float focus)
 
 		View_DropPunchAngle();
 		Fade_Update((int)video_mins[0],(int)video_mins[1], (int)w, (int)h);
+
 #ifdef CSTRIKE
 		Cstrike_PostDraw((int)video_mins[0],(int)video_mins[1], (int)w, (int)h);
 #endif

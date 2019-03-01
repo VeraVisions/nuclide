@@ -31,6 +31,15 @@ void Game_Input(void)
 		Player_UseUp();
 	}
 
+	if (self.impulse == 100) {
+		if (self.flags & FL_FLASHLIGHT) {
+			self.flags &= ~FL_FLASHLIGHT;
+		} else {
+			self.flags |= FL_FLASHLIGHT;
+		}
+		sound (self, CHAN_ITEM, "items/flashlight1.wav", 1, ATTN_IDLE);
+	}
+
 	if (cvar("sv_cheats") == 1) {
 		player pl = (player)self;
 		if (self.impulse == 101) {
