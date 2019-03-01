@@ -6,56 +6,56 @@
 *
 ****/
 
-void Effect_CreateExplosion( vector vPos ) {
+void Effect_CreateExplosion(vector vPos) {
 #ifdef SSQC
-	vPos_z += 48;
-	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
-	WriteByte( MSG_MULTICAST, EV_EXPLOSION );
-	WriteCoord( MSG_MULTICAST, vPos_x ); 
-	WriteCoord( MSG_MULTICAST, vPos_y ); 
-	WriteCoord( MSG_MULTICAST, vPos_z );
-	msg_entity = self;
-	multicast( vPos, MULTICAST_PVS );
 	Decals_PlaceScorch(vPos);
+	vPos[2] += 48;
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_EXPLOSION);
+	WriteCoord(MSG_MULTICAST, vPos[0]); 
+	WriteCoord(MSG_MULTICAST, vPos[1]); 
+	WriteCoord(MSG_MULTICAST, vPos[2]);
+	msg_entity = self;
+	multicast(vPos, MULTICAST_PVS);
 #else
 	sprite eExplosion = spawn(sprite);
-	setorigin( eExplosion, vPos );
-	setmodel( eExplosion, "sprites/fexplo.spr" );
-	sound( eExplosion, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 3 ) + 3 ), 1, ATTN_NORM );
+	setorigin(eExplosion, vPos);
+	setmodel(eExplosion, "sprites/fexplo.spr");
+	sound(eExplosion, CHAN_WEAPON, sprintf("weapons/explode%d.wav", floor(random() * 3) + 3), 1, ATTN_NORM);
 
 	//eExplosion.think = Effect_CreateExplosion_Animate;
 	eExplosion.effects = EF_ADDITIVE;
 	eExplosion.drawmask = MASK_ENGINE;
-	eExplosion.maxframe = modelframecount( eExplosion.modelindex );
+	eExplosion.maxframe = modelframecount(eExplosion.modelindex);
 	eExplosion.loops = 0;
 	eExplosion.framerate = 20;
 	eExplosion.nextthink = time + 0.05f;
 
-	te_explosion( vPos );
+	te_explosion(vPos);
 #endif
 }
 
-void Effect_CreateBlood( vector vPos, vector vAngle ) {
+void Effect_CreateBlood(vector vPos, vector vAngle) {
 #ifdef SSQC
-	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
-	WriteByte( MSG_MULTICAST, EV_BLOOD );
-	WriteCoord( MSG_MULTICAST, vPos[0] ); 
-	WriteCoord( MSG_MULTICAST, vPos[1] ); 
-	WriteCoord( MSG_MULTICAST, vPos[2] );
-	WriteCoord( MSG_MULTICAST, vAngle[0] ); 
-	WriteCoord( MSG_MULTICAST, vAngle[1] ); 
-	WriteCoord( MSG_MULTICAST, vAngle[2] );
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_BLOOD);
+	WriteCoord(MSG_MULTICAST, vPos[0]); 
+	WriteCoord(MSG_MULTICAST, vPos[1]); 
+	WriteCoord(MSG_MULTICAST, vPos[2]);
+	WriteCoord(MSG_MULTICAST, vAngle[0]); 
+	WriteCoord(MSG_MULTICAST, vAngle[1]); 
+	WriteCoord(MSG_MULTICAST, vAngle[2]);
 	msg_entity = self;
-	multicast( vPos, MULTICAST_PVS );
+	multicast(vPos, MULTICAST_PVS);
 #else
 	sprite eBlood = spawn(sprite);
-	setorigin( eBlood, vPos );
-	setmodel( eBlood, "sprites/bloodspray.spr" );
+	setorigin(eBlood, vPos);
+	setmodel(eBlood, "sprites/bloodspray.spr");
 
 	//eExplosion.think = Effect_CreateExplosion_Animate;
 	//eBlood.effects = EF_ADDITIVE;
 	eBlood.drawmask = MASK_ENGINE;
-	eBlood.maxframe = modelframecount( eBlood.modelindex );
+	eBlood.maxframe = modelframecount(eBlood.modelindex);
 	eBlood.loops = 0;
 	eBlood.scale = 0.5f;
 	eBlood.colormod = [1,0,0];
@@ -65,7 +65,7 @@ void Effect_CreateBlood( vector vPos, vector vAngle ) {
 	for (int i = 0; i < 3; i++) {
 		sprite ePart = spawn(sprite);
 		setorigin(ePart, vPos);
-		setmodel( ePart, "sprites/blood.spr" );
+		setmodel(ePart, "sprites/blood.spr");
 		ePart.movetype = MOVETYPE_BOUNCE;
 		ePart.gravity = 0.5f;
 		ePart.scale = 0.5f;
@@ -80,86 +80,86 @@ void Effect_CreateBlood( vector vPos, vector vAngle ) {
 #endif
 }
 
-void Effect_CreateSpark( vector vPos, vector vAngle ) {
+void Effect_CreateSpark(vector vPos, vector vAngle) {
 #ifdef SSQC
-	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
-	WriteByte( MSG_MULTICAST, EV_SPARK );
-	WriteCoord( MSG_MULTICAST, vPos_x ); 
-	WriteCoord( MSG_MULTICAST, vPos_y ); 
-	WriteCoord( MSG_MULTICAST, vPos_z );
-	WriteCoord( MSG_MULTICAST, vAngle_x ); 
-	WriteCoord( MSG_MULTICAST, vAngle_y ); 
-	WriteCoord( MSG_MULTICAST, vAngle_z );
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_SPARK);
+	WriteCoord(MSG_MULTICAST, vPos[0]); 
+	WriteCoord(MSG_MULTICAST, vPos[1]); 
+	WriteCoord(MSG_MULTICAST, vPos[2]);
+	WriteCoord(MSG_MULTICAST, vAngle[0]); 
+	WriteCoord(MSG_MULTICAST, vAngle[1]); 
+	WriteCoord(MSG_MULTICAST, vAngle[2]);
 	msg_entity = self;
-	multicast( vPos, MULTICAST_PVS );
+	multicast(vPos, MULTICAST_PVS);
 #else
-	pointparticles( PARTICLE_SPARK, vPos, vAngle, 1 );
-	pointsound( vPos, sprintf( "buttons/spark%d.wav", floor( random() * 6 ) + 1 ), 1, ATTN_STATIC );
+	pointparticles(PARTICLE_SPARK, vPos, vAngle, 1);
+	pointsound(vPos, sprintf("buttons/spark%d.wav", floor(random() * 6) + 1), 1, ATTN_STATIC);
 #endif
 }
 
 #ifdef CSTRIKE
 #ifdef SSQC
-void Effect_CreateFlash( entity eTarget ) {
-	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
-	WriteByte( MSG_MULTICAST, EV_FLASH );
+void Effect_CreateFlash(entity eTarget) {
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_FLASH);
 	msg_entity = eTarget;
-	multicast( '0 0 0', MULTICAST_ONE );
+	multicast([0,0,0], MULTICAST_ONE);
 }
 #endif
 #endif
 
 #ifdef CSTRIKE
-void Effect_CreateSmoke( vector vPos ) {
+void Effect_CreateSmoke(vector vPos) {
 #ifdef SSQC
-	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
-	WriteByte( MSG_MULTICAST, EV_SMOKE );
-	WriteCoord( MSG_MULTICAST, vPos_x ); 
-	WriteCoord( MSG_MULTICAST, vPos_y ); 
-	WriteCoord( MSG_MULTICAST, vPos_z );
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_SMOKE);
+	WriteCoord(MSG_MULTICAST, vPos[0]); 
+	WriteCoord(MSG_MULTICAST, vPos[1]); 
+	WriteCoord(MSG_MULTICAST, vPos[2]);
 	msg_entity = self;
-	multicast( '0 0 0', MULTICAST_ALL );
+	multicast([0,0,0], MULTICAST_ALL);
 #else
-	static void Effect_CreateSmoke_Think( void ) {
+	static void Effect_CreateSmoke_Think(void) {
 		// HACK: This should only ever happen when rounds restart!
 		// Any way this can go wrong?
-		if ( self.skin < getstatf( STAT_GAMETIME ) ) {
-			remove( self );
+		if (self.skin < getstatf(STAT_GAMETIME)) {
+			remove(self);
 		}
-		if ( self.frame <= 0 ) {
-			remove( self );
+		if (self.frame <= 0) {
+			remove(self);
 			return;
 		} 
 	
-		pointparticles( PARTICLE_SMOKEGRENADE, self.origin, '0 0 0', 1 );
+		pointparticles(PARTICLE_SMOKEGRENADE, self.origin, [0,0,0], 1);
 		self.frame--;
 		self.nextthink = time + 0.2f;
-		self.skin = getstatf( STAT_GAMETIME );
+		self.skin = getstatf(STAT_GAMETIME);
 	}
 	
 	entity eSmoke = spawn();
-	setorigin( eSmoke, vPos );
+	setorigin(eSmoke, vPos);
 	eSmoke.think = Effect_CreateSmoke_Think;
 	eSmoke.nextthink = time;
 	eSmoke.frame = 200;
-	eSmoke.skin = getstatf( STAT_GAMETIME );
+	eSmoke.skin = getstatf(STAT_GAMETIME);
 #endif
 }
 #endif
 
-void Effect_Impact( int iType, vector vPos, vector vNormal ) {
+void Effect_Impact(int iType, vector vPos, vector vNormal) {
 #ifdef SSQC
-	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
-	WriteByte( MSG_MULTICAST, EV_IMPACT );
-	WriteByte( MSG_MULTICAST, (float)iType );
-	WriteCoord( MSG_MULTICAST, vPos_x ); 
-	WriteCoord( MSG_MULTICAST, vPos_y ); 
-	WriteCoord( MSG_MULTICAST, vPos_z );
-	WriteCoord( MSG_MULTICAST, vNormal_x ); 
-	WriteCoord( MSG_MULTICAST, vNormal_y ); 
-	WriteCoord( MSG_MULTICAST, vNormal_z );
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_IMPACT);
+	WriteByte(MSG_MULTICAST, (float)iType);
+	WriteCoord(MSG_MULTICAST, vPos[0]); 
+	WriteCoord(MSG_MULTICAST, vPos[1]); 
+	WriteCoord(MSG_MULTICAST, vPos[2]);
+	WriteCoord(MSG_MULTICAST, vNormal[0]); 
+	WriteCoord(MSG_MULTICAST, vNormal[1]); 
+	WriteCoord(MSG_MULTICAST, vNormal[2]);
 	msg_entity = self;
-	multicast( vPos, MULTICAST_PVS );
+	multicast(vPos, MULTICAST_PVS);
 	
 	switch (iType) {
 		case IMPACT_MELEE:
@@ -172,88 +172,88 @@ void Effect_Impact( int iType, vector vPos, vector vNormal ) {
 #else
 	switch (iType) {
 		case IMPACT_MELEE:
-			/*pointparticles( DECAL_SHOT, vPos, vNormal, 1 );
-			pointparticles( PARTICLE_PIECES_BLACK, vPos, vNormal, 1 );*/
-			pointsound( vPos, "weapons/knife_hitwall1.wav", 1, ATTN_STATIC );
+			/*pointparticles(DECAL_SHOT, vPos, vNormal, 1);
+			pointparticles(PARTICLE_PIECES_BLACK, vPos, vNormal, 1);*/
+			pointsound(vPos, "weapons/knife_hitwall1.wav", 1, ATTN_STATIC);
 			//Decals_PlaceSmall(vPos);
 			break;
 		case IMPACT_EXPLOSION:
 			break;
 		case IMPACT_GLASS:
-			//pointparticles( DECAL_GLASS, vPos, vNormal, 1 );
-			pointparticles( PARTICLE_PIECES_BLACK, vPos, vNormal, 1 );
+			//pointparticles(DECAL_GLASS, vPos, vNormal, 1);
+			pointparticles(PARTICLE_PIECES_BLACK, vPos, vNormal, 1);
 			//Decals_PlaceBig(vPos);
 			break;
 		case IMPACT_WOOD:
-			//pointparticles( DECAL_SHOT, vPos, vNormal, 1 );
-			pointparticles( PARTICLE_SPARK, vPos, vNormal, 1 );
-			pointparticles( PARTICLE_PIECES_BLACK, vPos, vNormal, 1 );
-			pointparticles( PARTICLE_SMOKE_BROWN, vPos, vNormal, 1 );
+			//pointparticles(DECAL_SHOT, vPos, vNormal, 1);
+			pointparticles(PARTICLE_SPARK, vPos, vNormal, 1);
+			pointparticles(PARTICLE_PIECES_BLACK, vPos, vNormal, 1);
+			pointparticles(PARTICLE_SMOKE_BROWN, vPos, vNormal, 1);
 			//Decals_PlaceBig(vPos);
 			break;
 		case IMPACT_METAL:
-			//pointparticles( DECAL_SHOT, vPos, vNormal, 1 );
-			pointparticles( PARTICLE_SPARK, vPos, vNormal, 1 );
-			pointparticles( PARTICLE_SPARK, vPos, vNormal, 1 );
-			pointparticles( PARTICLE_PIECES_BLACK, vPos, vNormal, 1 );
+			//pointparticles(DECAL_SHOT, vPos, vNormal, 1);
+			pointparticles(PARTICLE_SPARK, vPos, vNormal, 1);
+			pointparticles(PARTICLE_SPARK, vPos, vNormal, 1);
+			pointparticles(PARTICLE_PIECES_BLACK, vPos, vNormal, 1);
 			//Decals_PlaceBig(vPos);
 			break;
 		case IMPACT_FLESH:
-			pointparticles( PARTICLE_BLOOD, vPos, vNormal, 1 );
+			pointparticles(PARTICLE_BLOOD, vPos, vNormal, 1);
 			//Decals_PlaceBig(vPos);
 			break;
 		case IMPACT_DEFAULT:
-			//pointparticles( DECAL_SHOT, vPos, vNormal, 1 );
-			pointparticles( PARTICLE_SPARK, vPos, vNormal, 1 );
-			pointparticles( PARTICLE_PIECES_BLACK, vPos, vNormal, 1 );
-			pointparticles( PARTICLE_SMOKE_GREY, vPos, vNormal, 1 );
+			//pointparticles(DECAL_SHOT, vPos, vNormal, 1);
+			pointparticles(PARTICLE_SPARK, vPos, vNormal, 1);
+			pointparticles(PARTICLE_PIECES_BLACK, vPos, vNormal, 1);
+			pointparticles(PARTICLE_SMOKE_GREY, vPos, vNormal, 1);
 			//Decals_PlaceBig(vPos);
 			break;
 		default:
 	}
 	
-	switch ( iType ) {
+	switch (iType) {
 		case IMPACT_METAL:
-			pointsound( vPos, sprintf( "weapons/ric_metal-%d.wav", floor( ( random() * 2 ) + 1 ) ), 1, ATTN_STATIC );
+			pointsound(vPos, sprintf("weapons/ric_metal-%d.wav", floor((random() * 2) + 1)), 1, ATTN_STATIC);
 			break;
 		case IMPACT_FLESH:
 			break;
 		default:
-			pointsound( vPos, sprintf( "weapons/ric%d.wav", floor( ( random() * 5 ) + 1 ) ), 1, ATTN_STATIC );
+			pointsound(vPos, sprintf("weapons/ric%d.wav", floor((random() * 5) + 1)), 1, ATTN_STATIC);
 			break;
 	}
 	
 #endif
 }
 
-void Effect_BreakModel( vector vMins, vector vMaxs, vector vVel, float fStyle ) {
+void Effect_BreakModel(vector vMins, vector vMaxs, vector vVel, float fStyle) {
 #ifdef SSQC
-	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
-	WriteByte( MSG_MULTICAST, EV_MODELGIB );
-	WriteCoord( MSG_MULTICAST, vMins_x); 
-	WriteCoord( MSG_MULTICAST, vMins_y); 
-	WriteCoord( MSG_MULTICAST, vMins_z);
-	WriteCoord( MSG_MULTICAST, vMaxs_x); 
-	WriteCoord( MSG_MULTICAST, vMaxs_y); 
-	WriteCoord( MSG_MULTICAST, vMaxs_z);
-	WriteByte( MSG_MULTICAST, fStyle );
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_MODELGIB);
+	WriteCoord(MSG_MULTICAST, vMins[0]); 
+	WriteCoord(MSG_MULTICAST, vMins[1]); 
+	WriteCoord(MSG_MULTICAST, vMins[2]);
+	WriteCoord(MSG_MULTICAST, vMaxs[0]); 
+	WriteCoord(MSG_MULTICAST, vMaxs[1]); 
+	WriteCoord(MSG_MULTICAST, vMaxs[2]);
+	WriteByte(MSG_MULTICAST, fStyle);
 
 	msg_entity = self;
 	
 	vector vWorldPos;
-	vWorldPos_x = vMins_x + ( 0.5 * ( vMaxs_x - vMins_x ) );	
-	vWorldPos_y = vMins_y + ( 0.5 * ( vMaxs_y - vMins_y ) );	
-	vWorldPos_z = vMins_z + ( 0.5 * ( vMaxs_z - vMins_z ) );
-	multicast( vWorldPos, MULTICAST_PVS );
+	vWorldPos[0] = vMins[0] + (0.5 * (vMaxs[0] - vMins[0]));	
+	vWorldPos[1] = vMins[1] + (0.5 * (vMaxs[1] - vMins[1]));	
+	vWorldPos[2] = vMins[2] + (0.5 * (vMaxs[2] - vMins[2]));
+	multicast(vWorldPos, MULTICAST_PVS);
 #else
-	static void Effect_BreakModel_Remove( void ) { remove( self ) ; }
+	static void Effect_BreakModel_Remove(void) { remove(self) ; }
 	
 	float fModelCount;
 	vector vPos;
 	string sModel = "";
 	float fCount = 20;
 	
-	switch ( fStyle ) {
+	switch (fStyle) {
 		case MATERIAL_GLASS:
 		case MATERIAL_GLASS_UNBREAKABLE:
 			sModel = "models/glassgibs.mdl";
@@ -291,54 +291,54 @@ void Effect_BreakModel( vector vMins, vector vMaxs, vector vVel, float fStyle ) 
 	}
 	
 	vector vWorldPos;
-	vWorldPos_x = vMins_x + ( 0.5 * ( vMaxs_x - vMins_x ) );	
-	vWorldPos_y = vMins_y + ( 0.5 * ( vMaxs_y - vMins_y ) );	
-	vWorldPos_z = vMins_z + ( 0.5 * ( vMaxs_z - vMins_z ) );
+	vWorldPos[0] = vMins[0] + (0.5 * (vMaxs[0] - vMins[0]));	
+	vWorldPos[1] = vMins[1] + (0.5 * (vMaxs[1] - vMins[1]));	
+	vWorldPos[2] = vMins[2] + (0.5 * (vMaxs[2] - vMins[2]));
 	
-	switch ( fStyle ) {
+	switch (fStyle) {
 		case MATERIAL_GLASS:
-			pointsound( vWorldPos, sprintf( "debris/bustglass%d.wav", random( 1, 4 ) ), 1.0f, ATTN_NORM );
+			pointsound(vWorldPos, sprintf("debris/bustglass%d.wav", random(1, 4)), 1.0f, ATTN_NORM);
 			break;
 		case MATERIAL_WOOD:
-			pointsound( vWorldPos, sprintf( "debris/bustcrate%d.wav", random( 1, 4 ) ), 1.0f, ATTN_NORM );
+			pointsound(vWorldPos, sprintf("debris/bustcrate%d.wav", random(1, 4)), 1.0f, ATTN_NORM);
 			break;
 		case MATERIAL_METAL:
 		case MATERIAL_COMPUTER:
-			pointsound( vWorldPos, sprintf( "debris/bustmetal%d.wav", random( 1, 3 ) ), 1.0f, ATTN_NORM );
+			pointsound(vWorldPos, sprintf("debris/bustmetal%d.wav", random(1, 3)), 1.0f, ATTN_NORM);
 			break;
 		case MATERIAL_FLESH:
-			pointsound( vWorldPos, sprintf( "debris/bustflesh%d.wav", random( 1, 3 ) ), 1.0f, ATTN_NORM );
+			pointsound(vWorldPos, sprintf("debris/bustflesh%d.wav", random(1, 3)), 1.0f, ATTN_NORM);
 			break;
 		case MATERIAL_CINDER:
 		case MATERIAL_ROCK:
-			pointsound( vWorldPos, sprintf( "debris/bustconcrete%d.wav", random( 1, 4 ) ), 1.0f, ATTN_NORM );
+			pointsound(vWorldPos, sprintf("debris/bustconcrete%d.wav", random(1, 4)), 1.0f, ATTN_NORM);
 			break;
 		case MATERIAL_TILE:
-			pointsound( vWorldPos, "debris/bustceiling.wav", 1.0f, ATTN_NORM );
+			pointsound(vWorldPos, "debris/bustceiling.wav", 1.0f, ATTN_NORM);
 			break;
 	}
 	
-	while ( fCount > 0 ) {
+	while (fCount > 0) {
 		entity eGib = spawn();
 		eGib.classname = "gib";
 		
-		vPos_x = vMins_x + ( random() * ( vMaxs_x - vMins_x ) );	
-		vPos_y = vMins_y + ( random() * ( vMaxs_y - vMins_y ) );	
-		vPos_z = vMins_z + ( random() * ( vMaxs_z - vMins_z ) );	
+		vPos[0] = vMins[0] + (random() * (vMaxs[0] - vMins[0]));	
+		vPos[1] = vMins[1] + (random() * (vMaxs[1] - vMins[1]));	
+		vPos[2] = vMins[2] + (random() * (vMaxs[2] - vMins[2]));	
 		
-		setorigin( eGib, vPos );
-		setmodel( eGib, sModel );
-		setcustomskin( eGib, "", sprintf( "geomset 0 %f\n", random( 1, fModelCount + 1 ) ) );
+		setorigin(eGib, vPos);
+		setmodel(eGib, sModel);
+		setcustomskin(eGib, "", sprintf("geomset 0 %f\n", random(1, fModelCount + 1)));
 		eGib.movetype = MOVETYPE_BOUNCE;
 		eGib.solid = SOLID_NOT;
 		
-		eGib.avelocity_x = random()*600;
-		eGib.avelocity_y = random()*600;
-		eGib.avelocity_z = random()*600;
+		eGib.avelocity[0] = random()*600;
+		eGib.avelocity[1] = random()*600;
+		eGib.avelocity[2] = random()*600;
 		eGib.think = Effect_BreakModel_Remove;
 		eGib.nextthink = time + 10;
 		
-		if ( ( fStyle == MATERIAL_GLASS ) || ( fStyle == MATERIAL_GLASS_UNBREAKABLE ) ) {
+		if ((fStyle == MATERIAL_GLASS) || (fStyle == MATERIAL_GLASS_UNBREAKABLE)) {
 			eGib.effects = EF_ADDITIVE;
 			eGib.alpha = 0.3;
 		}
@@ -352,8 +352,8 @@ void Effect_BreakModel( vector vMins, vector vMaxs, vector vVel, float fStyle ) 
 #ifdef CSQC
 float Effect_Decal(void)
 {
-	adddecal( self.classname, self.origin, self.mins, self.maxs, self.color, 1.0f );
-	addentity( self );
+	adddecal(self.classname, self.origin, self.mins, self.maxs, self.color, 1.0f);
+	addentity(self);
 	return PREDRAW_NEXT;
 }
 #endif
