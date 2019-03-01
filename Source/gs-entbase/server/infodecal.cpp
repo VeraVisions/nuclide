@@ -47,8 +47,13 @@ void infodecal(void)
 	}
 
 	if (!self.texture) {
-		print("^1ERROR:^7 infodecal with no .texture\n");
-		remove(self);
+		dprint("^1ERROR:^7 infodecal with no .texture\n");		
+		/* Tempdecals == decals that are not spawned by the map, but by the
+		 * decal-que (see shared/decals.c), so you can't remove them without
+		 * causing a pointer error - just abort. */
+		if (self.classname != "tempdecal") {
+			remove(self);
+		}
 		return;
 	}
 	
@@ -91,8 +96,11 @@ void infodecal(void)
 	}
 
 	if (frac == 1.0f) {
-		print(sprintf("infodecal tracing failed at %v\n", self.origin));
-		remove(self);
+		dprint(sprintf("infodecal tracing failed at %v\n", self.origin));
+
+		if (self.classname != "tempdecal") {
+			remove(self);
+		}
 		return;
 	}
 

@@ -16,6 +16,7 @@ void Effect_CreateExplosion( vector vPos ) {
 	WriteCoord( MSG_MULTICAST, vPos_z );
 	msg_entity = self;
 	multicast( vPos, MULTICAST_PVS );
+	Decals_PlaceScorch(vPos);
 #else
 	sprite eExplosion = spawn(sprite);
 	setorigin( eExplosion, vPos );
@@ -31,7 +32,6 @@ void Effect_CreateExplosion( vector vPos ) {
 	eExplosion.nextthink = time + 0.05f;
 
 	te_explosion( vPos );
-	Decals_PlaceScorch(vPos);
 #endif
 }
 

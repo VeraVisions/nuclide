@@ -47,6 +47,7 @@ void Decals_PlaceBig(vector pos)
 #else
 	entity decal = Decals_Next();
 	setorigin(decal, pos);
+	decal.classname = "tempdecal";
 	decal.texture = sprintf("{bigshot%d", floor(random(1,6)));
 	decal.think = infodecal;
 	decal.nextthink = time /*+ 0.1f*/;
