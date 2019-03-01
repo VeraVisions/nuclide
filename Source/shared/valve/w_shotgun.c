@@ -64,6 +64,16 @@ void w_shotgun_primary(void)
 	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/sbarrel1.wav", 1, ATTN_NORM);
 	Weapons_ViewAnimation(SHOTGUN_FIRE1);
 	Weapons_ViewPunchAngle([-5,0,0]);
+
+#ifdef SSQC
+	/* Singleplayer is more accurate */
+	if (cvar("sv_clientslots") == 1) {
+		TraceAttack_FireBullets(6, pl.origin + pl.view_ofs, 5, [0.08716,0.08716]);
+	} else {
+		TraceAttack_FireBullets(4, pl.origin + pl.view_ofs, 5, [0.08716,0.04362]);
+	}
+#endif
+
 	pl.w_attack_next = Math_Time() + 0.75;
 	pl.w_idle_next = Math_Time() + 2.5f;
 }
@@ -73,6 +83,15 @@ void w_shotgun_secondary(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
+
+#ifdef SSQC
+	/* Singleplayer is more accurate */
+	if (cvar("sv_clientslots") == 1) {
+		TraceAttack_FireBullets(12, pl.origin + pl.view_ofs, 5, [0.08716,0.08716]);
+	} else {
+		TraceAttack_FireBullets(8, pl.origin + pl.view_ofs, 5, [0.17365,0.04362]);
+	}
+#endif
 
 	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/dbarrel1.wav", 1, ATTN_NORM);
 	Weapons_ViewAnimation(SHOTGUN_FIRE2);

@@ -133,7 +133,7 @@ float BaseGun_PrimaryFire( void ) {
 	
 	BaseGun_ShotMultiplierHandle( wptTable[ self.weapon ].iBullets );
 	BaseGun_AccuracyCalc();
-	TraceAttack_FireBullets( wptTable[ self.weapon ].iBullets, ( self.origin + self.view_ofs ), wptTable[self.weapon].iDamage );
+	TraceAttack_FireBullets( wptTable[ self.weapon ].iBullets, ( self.origin + self.view_ofs ), wptTable[self.weapon].iDamage, [self.fAccuracy, self.fAccuracy] );
 	Animation_ShootWeapon( self );
 	
 	self.(wptTable[ self.weapon ].iMagfld) -= 1;

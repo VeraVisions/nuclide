@@ -12,8 +12,6 @@
 #define PHY_JUMP_CHAIN	100
 #define PHY_JUMP_CHAINDECAY	50
 
-#define FL_JUMPRELEASED 4096
-
 /*FIXME: jumptime should use the time global, as time intervals are not predictable - decrement it based upon input_timelength*/
 .float jumptime;
 .float waterlevel;

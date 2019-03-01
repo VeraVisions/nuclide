@@ -69,7 +69,7 @@ void w_python_primary(void)
 	}
 
 #ifdef SSQC
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 40);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 40, [0.00873, 0.00873]);
 #endif
 
 	Weapons_ViewAnimation(PYTHON_FIRE1);

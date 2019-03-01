@@ -76,7 +76,12 @@ void w_mp5_primary(void)
 
 	Weapons_ViewPunchAngle([random(-2, 2),0,0]);
 #else
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 5);
+	/* Singleplayer is more accurate */
+	if (cvar("sv_clientslots") == 1) {
+		TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.02618,0.02618]);
+	} else {
+		TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.05234,0.05234]);
+	}
 
 	if (random() < 0.5) {
 		Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/hks1.wav", 1, ATTN_NORM);

@@ -141,18 +141,16 @@ TraceAttack_FireBullets
 Fire a given amount of shots
 =================
 */
-void TraceAttack_FireBullets(int iShots, vector vPos, int iDamage)
+void TraceAttack_FireBullets(int iShots, vector vPos, int iDamage, vector vecAccuracy)
 {
 	vector vDir;
 	makevectors(self.v_angle);
 
 	while (iShots > 0) {
 		iTotalPenetrations = 0;
-#ifdef CSTRIKE
-		vDir = aim(self, 100000) + Math_CRandom()*self.fAccuracy*v_right + Math_CRandom()*self.fAccuracy*v_up;
-#else
-		vDir = aim(self, 100000);
-#endif
+
+		vDir = aim(self, 100000) + Math_CRandom()*vecAccuracy[0]*v_right + Math_CRandom()*vecAccuracy[1]*v_up;
+
 		//TraceAttack_FireSingle(vPos, vDir, iDamage);
 		TraceAttack_FireSingleLagged(vPos, vDir, iDamage);
 		iShots--;
