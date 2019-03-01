@@ -32,12 +32,7 @@ void Game_Input(void)
 	}
 
 	if (self.impulse == 100) {
-		if (self.flags & FL_FLASHLIGHT) {
-			self.flags &= ~FL_FLASHLIGHT;
-		} else {
-			self.flags |= FL_FLASHLIGHT;
-		}
-		sound (self, CHAN_ITEM, "items/flashlight1.wav", 1, ATTN_IDLE);
+		Flashlight_Toggle();
 	}
 
 	if (cvar("sv_cheats") == 1) {

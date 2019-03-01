@@ -57,9 +57,10 @@ valve/damage.c
 traceattack.c
 vox.c
 
+footsteps.c
+flashlight.c
 valve/input.c
 
 valve/spawn.c
-footsteps.c
 entry.c
 #endlist

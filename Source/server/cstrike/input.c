@@ -55,6 +55,10 @@ void Game_Input(void)
 	} else {
 		Weapon_Release();
 	}
-	
+
+	if (self.impulse == 100) {
+		Flashlight_Toggle();
+	}
+
 	self.impulse = 0; 
 }

@@ -78,6 +78,7 @@ cstrike/main.c
 cstrike/player.c
 cstrike/spawn.c
 footsteps.c
+flashlight.c
 cstrike/input.c
 cstrike/client.c
 client.c
