@@ -4,5 +4,6 @@ qc-progs:
 	$(CC) menu-fn/progs.src
 	$(CC) client/valve.src
 	$(CC) server/valve.src
+	$(CC) server/scihunt.src
 	$(CC) client/cstrike.src
 	$(CC) server/cstrike.src

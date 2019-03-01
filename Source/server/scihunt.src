@@ -1,5 +1,5 @@
 #pragma target fte
-#pragma progs_dat  "../../valve/progs.dat"
+#pragma progs_dat  "../../scihunt/progs.dat"
 
 #define QWSSQC
 #define VALVE
@@ -16,6 +16,7 @@ defs.h
 
 ../gs-entbase/server.src
 valve/monster_rat.cpp
+scihunt/monster_scientist.cpp
 
 ../shared/decals.c
 ../shared/effects.c
@@ -45,12 +46,13 @@ valve/spectator.c
 valve/items.cpp
 ../shared/valve/weapons.c
 
+scihunt/shdata_parse.c
 spawn.c
 
 valve/client.c
 client.c
 
-valve/server.c
+scihunt/server.c
 server.c
 
 valve/damage.c

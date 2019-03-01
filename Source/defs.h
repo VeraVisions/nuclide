@@ -35,9 +35,9 @@ const vector VEC_PLAYER_CVIEWPOS = [0,0,12];
 #define INPUT_BUTTON8	0x00000080
 
 #define FL_USERELEASED 	(1<<13)
-#define FL_CROUCHING 	(1<<19)
+#define FL_CROUCHING 		(1<<19)
 #define FL_SEMI_TOGGLED	(1<<15)
-#define FL_FROZEN 	(1<<17)
-#define FL_REMOVEME	(1<<18)
+#define FL_FROZEN 			(1<<17)
+#define FL_REMOVEME		(1<<18)
 
 #define clamp(d,min,max) bound(min,d,max)

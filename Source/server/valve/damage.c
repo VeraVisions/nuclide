@@ -67,7 +67,7 @@ void Damage_Apply(entity eTarget, entity eAttacker, float fDamage, vector vHitPo
 
 		if ((eTarget.flags & FL_CLIENT) && (eAttacker.flags & FL_CLIENT)) {
 			eAttacker.frags++;
-			Damage_CastOrbituary(eAttacker, eTarget, eAttacker.weapon);
+			//Damage_CastOrbituary(eAttacker, eTarget, eAttacker.weapon);
 		}
 	}
 
