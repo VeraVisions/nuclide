@@ -111,7 +111,7 @@ Draw the current amount of health
 =================
 */
 void HUD_DrawHealth(void) {
-	player pl = (player)self;
+	player pl = (player)pSeat->ePlayer;
 
 	static float fOldHealth;
 	static float fHealthAlpha;
@@ -152,7 +152,7 @@ void HUD_DrawArmor(void)
 	vector pos;
 	static float oldarmor;
 	static float armoralpha;
-	player pl = (player)self;
+	player pl = (player)pSeat->ePlayer;
 
 	pos = video_mins + [72+16+30, video_res[1] - 42];
 	
@@ -182,7 +182,7 @@ void HUD_DrawArmor(void)
 
 void HUD_DrawAmmo1(void)
 {
-	player pl = (player)self;
+	player pl = (player)pSeat->ePlayer;
 	vector pos;
 	static int old_ammo1;
 	static float ammo1_alpha;
@@ -210,7 +210,7 @@ void HUD_DrawAmmo1(void)
 
 void HUD_DrawAmmo2(void)
 {
-	player pl = (player)self;
+	player pl = (player)pSeat->ePlayer;
 	vector pos;
 
 	static int old_ammo2;
@@ -235,7 +235,7 @@ void HUD_DrawAmmo2(void)
 
 void HUD_DrawAmmo3(void)
 {
-	player pl = (player)self;
+	player pl = (player)pSeat->ePlayer;
 	vector pos;
 
 	static int old_ammo3;

@@ -8,7 +8,7 @@
 
 void View_UpdateWeapon(entity vm, entity mflash)
 {
-	player pl = (player)self;
+	player pl = (player)pSeat->ePlayer;
 	
 	if (pSeat->fLastWeapon != pl.activeweapon) {
 		pSeat->fLastWeapon = pl.activeweapon;

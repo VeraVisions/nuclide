@@ -58,5 +58,5 @@ void Chat_Parse(string msg)
 
 	// Log to console
 	localcmd(sprintf("echo \"%s\"\n", msg));
-	sound(self, CHAN_ITEM, "misc/talk.wav", 1.0, ATTN_NONE);
+	sound(pSeat->ePlayer, CHAN_ITEM, "misc/talk.wav", 1.0, ATTN_NONE);
 }

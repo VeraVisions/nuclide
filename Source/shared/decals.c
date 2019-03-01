@@ -1,4 +1,10 @@
-
+/***
+*
+*	Copyright (c) 2016-2019 Marco 'eukara' Hladik. All rights reserved.
+*
+*	See the file LICENSE attached with the sources for usage details.
+*
+****/
 
 #define DECALS_MAX 30
 
@@ -49,6 +55,7 @@ void Decals_PlaceSmall(vector pos)
 	decal.nextthink = time /*+ 0.1f*/;
 #endif
 }
+
 void Decals_PlaceBig(vector pos)
 {
 #ifdef CSQC
@@ -61,6 +68,7 @@ void Decals_PlaceBig(vector pos)
 	decal.nextthink = time /*+ 0.1f*/;
 #endif
 }
+
 void Decals_PlaceScorch(vector pos)
 {
 #ifdef CSQC
