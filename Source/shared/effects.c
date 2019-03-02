@@ -6,6 +6,61 @@
 *
 ****/
 
+#ifdef CSQC
+void Effects_Init(void)
+{
+	precache_model("sprites/fexplo.spr");
+	precache_model("sprites/bloodspray.spr");
+	precache_model("sprites/blood.spr");
+	precache_model("models/glassgibs.mdl");
+	precache_model("models/woodgibs.mdl");
+	precache_model("models/metalplategibs.mdl");
+	precache_model("models/fleshgibs.mdl");
+	precache_model("models/ceilinggibs.mdl");
+	precache_model("models/computergibs.mdl");
+	precache_model("models/rockgibs.mdl");
+	precache_model("models/cindergibs.mdl");
+	
+	precache_sound("debris/bustglass1.wav");
+	precache_sound("debris/bustglass2.wav");
+	precache_sound("debris/bustglass3.wav");
+	precache_sound("debris/bustcrate1.wav");
+	precache_sound("debris/bustcrate2.wav");
+	precache_sound("debris/bustcrate3.wav");
+	precache_sound("debris/bustmetal1.wav");
+	precache_sound("debris/bustmetal2.wav");
+	precache_sound("debris/bustflesh1.wav");
+	precache_sound("debris/bustflesh2.wav");
+	precache_sound("debris/bustconcrete1.wav");
+	precache_sound("debris/bustconcrete2.wav");
+	precache_sound("debris/bustceiling.wav");
+	precache_sound("weapons/explode3.wav");
+	precache_sound("weapons/explode4.wav");
+	precache_sound("weapons/explode5.wav");
+	precache_sound("buttons/spark1.wav");
+	precache_sound("buttons/spark2.wav");
+	precache_sound("buttons/spark3.wav");
+	precache_sound("buttons/spark4.wav");
+	precache_sound("buttons/spark5.wav");
+	precache_sound("buttons/spark6.wav");
+	precache_sound("weapons/knife_hitwall1.wav");
+	precache_sound("weapons/ric1.wav");
+	precache_sound("weapons/ric2.wav");
+	precache_sound("weapons/ric3.wav");
+	precache_sound("weapons/ric4.wav");
+	precache_sound("weapons/ric5.wav");
+
+	// Half-Life only has generic ric1-5
+#ifdef CSTRIKE
+	precache_sound("weapons/ric_metal-1.wav");
+	precache_sound("weapons/ric_metal-2.wav");
+	precache_sound("weapons/ric_conc-1.wav");
+	precache_sound("weapons/ric_conc-2.wav");
+#endif
+
+}
+#endif
+
 void Effect_CreateExplosion(vector vPos) {
 #ifdef SSQC
 	Decals_PlaceScorch(vPos);
@@ -213,9 +268,14 @@ void Effect_Impact(int iType, vector vPos, vector vNormal) {
 	}
 	
 	switch (iType) {
+#ifdef CSTRIKE
 		case IMPACT_METAL:
 			pointsound(vPos, sprintf("weapons/ric_metal-%d.wav", floor((random() * 2) + 1)), 1, ATTN_STATIC);
 			break;
+		case IMPACT_ROCK:
+			pointsound(vPos, sprintf("weapons/ric_conc-%d.wav", floor((random() * 2) + 1)), 1, ATTN_STATIC);
+			break;
+#endif
 		case IMPACT_FLESH:
 			break;
 		default:

@@ -75,19 +75,7 @@ void CSQC_Init(float apilevel, string enginename, float engineversion)
 	View_Init();
 	
 	/* Effects */
-	precache_sound("debris/bustglass1.wav");
-	precache_sound("debris/bustglass2.wav");
-	precache_sound("debris/bustglass3.wav");
-	precache_sound("debris/bustcrate1.wav");
-	precache_sound("debris/bustcrate2.wav");
-	precache_sound("debris/bustcrate3.wav");
-	precache_sound("debris/bustmetal1.wav");
-	precache_sound("debris/bustmetal2.wav");
-	precache_sound("debris/bustflesh1.wav");
-	precache_sound("debris/bustflesh2.wav");
-	precache_sound("debris/bustconcrete1.wav");
-	precache_sound("debris/bustconcrete2.wav");
-	precache_sound("debris/bustceiling.wav");
+	Effects_Init();
 	precache_sound("misc/talk.wav");
 
 	/* Game specific inits */
