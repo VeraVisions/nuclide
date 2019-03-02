@@ -136,6 +136,7 @@ void WeaponFLASHBANG_Throw( void ) {
 	eNade.avelocity = ( v_forward * 600 );
 	eNade.movetype = MOVETYPE_BOUNCE;
 	eNade.touch = Weapon_FLASHBANG_Touch;
+	eNade.gravity = 0.5f;
 	
 	eNade.think = WeaponFLASHBANG_Explode;
 	eNade.nextthink = time + 3.0f;

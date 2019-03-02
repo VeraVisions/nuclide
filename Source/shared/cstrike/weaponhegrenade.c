@@ -118,6 +118,7 @@ void WeaponHEGRENADE_Throw( void ) {
 	eNade.avelocity = ( v_forward * 1000 );
 	eNade.movetype = MOVETYPE_BOUNCE;
 	eNade.touch = Weapon_HEGRENADE_Touch;
+	eNade.gravity = 0.5f;
 	
 	eNade.think = WeaponHEGRENADE_Explode;
 	eNade.nextthink = time + 3.0f;

@@ -129,6 +129,7 @@ void WeaponSMOKEGRENADE_Throw( void ) {
 	eNade.touch = Weapon_SMOKEGRENADE_Touch;
 	eNade.think = WeaponSMOKEGRENADE_Explode;
 	eNade.nextthink = time + 3.0f;
+	eNade.gravity = 0.5f;
 	
 	self.iAmmo_SMOKEGRENADE--;
 	
