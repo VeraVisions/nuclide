@@ -126,7 +126,7 @@ void w_glock_secondary(void)
 		return;
 	}
 
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.1,0,1]);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.1,0.1]);
 
 	pl.glock_mag--;
 
