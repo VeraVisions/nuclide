@@ -674,9 +674,6 @@ void PMove_Run(void)
 		input_movevalues *= 0.50;
 	}
 #endif
-
-	Game_Input();
-
 	PMove_WaterMove();
 
 	if (self.waterlevel >= 2) {
@@ -702,4 +699,6 @@ void PMove_Run(void)
 	self.angles[0] *= -0.333;
 
 	touchtriggers();
+
+	Game_Input();
 }
