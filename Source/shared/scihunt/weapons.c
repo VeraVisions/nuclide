@@ -14,11 +14,14 @@ weapon_t w_null = {};
 weapon_t g_weapons[] = {
 	w_null,
 	w_crowbar,
+	w_hammer,
+	w_chainsaw,
 	w_glock,
 	w_python,
 	w_mp5,
 	w_shotgun,
 	w_crossbow,
+	w_cannon,
 	w_rpg,
 	w_gauss,
 	w_egon,
@@ -26,10 +29,7 @@ weapon_t g_weapons[] = {
 	w_handgrenade,
 	w_satchel,
 	w_tripmine,
-	w_snark,
-	w_cannon,
-	w_chainsaw,
-	w_hammer
+	w_snark
 };
 
 void Weapons_Init(void)
