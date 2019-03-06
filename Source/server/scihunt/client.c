@@ -121,12 +121,7 @@ void Game_PutClientInServer(void)
 		pl.angles = spot.angles;
 		pl.fixangle = TRUE;
 
-		pl.ammo_9mm = 68;
-		pl.ammo_buckshot = 34;
-		Weapons_AddItem(pl, WEAPON_CROWBAR);
-		Weapons_AddItem(pl, WEAPON_GLOCK);
-		Weapons_AddItem(pl, WEAPON_CANNON);
-		Weapons_AddItem(pl, WEAPON_CHAINSAW);
+		SHData_GetItems();
 	}
 }
 

@@ -6,6 +6,8 @@
 *
 ****/
 
+string g_shItemList;
+
 void SHData_New(void)
 {
 	entity new = spawn();
@@ -49,6 +51,32 @@ void SHData_NewAngles(void)
 		self.classname = "info_player_deathmatch";
 	}
 	self = oldself;
+}
+
+void SHData_GetItems(void)
+{
+	player pl = (player)self;
+
+	/* TODO: Parse the config files */
+	pl.ammo_9mm = 68;
+	pl.ammo_buckshot = 34;
+	Weapons_AddItem(pl, WEAPON_CROWBAR);
+	Weapons_AddItem(pl, WEAPON_GLOCK);
+	Weapons_AddItem(pl, WEAPON_PYTHON);
+	Weapons_AddItem(pl, WEAPON_MP5);
+	Weapons_AddItem(pl, WEAPON_SHOTGUN);
+	Weapons_AddItem(pl, WEAPON_CROSSBOW);
+	Weapons_AddItem(pl, WEAPON_RPG);
+	Weapons_AddItem(pl, WEAPON_GAUSS);
+	Weapons_AddItem(pl, WEAPON_EGON);
+	Weapons_AddItem(pl, WEAPON_HORNETGUN);
+	Weapons_AddItem(pl, WEAPON_HANDGRENADE);
+	Weapons_AddItem(pl, WEAPON_SATCHEL);
+	Weapons_AddItem(pl, WEAPON_TRIPMINE);
+	Weapons_AddItem(pl, WEAPON_SNARK);
+	Weapons_AddItem(pl, WEAPON_CANNON);
+	Weapons_AddItem(pl, WEAPON_CHAINSAW);
+	Weapons_AddItem(pl, WEAPON_HAMMER);
 }
 
 void SHData_Parse(string map)

@@ -84,6 +84,11 @@ void w_chainsaw_primary(void)
 		Effect_Impact(IMPACT_MELEE, trace_endpos, trace_plane_normal);
 		
 		if (trace_ent.takedamage) {
+			if (trace_ent.iBleeds) {
+				/* Push the player towards the victim */
+				pl.velocity = normalize(trace_ent.origin - pl.origin) * 240;
+			}
+
 			Damage_Apply(trace_ent, self, 10, trace_endpos, FALSE );
 			Weapons_PlaySound(pl, CHAN_WEAPON, "sh/chainsaw_cutintoflesh.wav", 1, ATTN_NORM);
 		} else {
