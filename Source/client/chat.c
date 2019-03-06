@@ -30,6 +30,13 @@ void Chat_Draw(void)
 
 	// Remove messages after a g_chattime has passed
 	if (g_chattime < time) {
+		for (int i = 0; i < g_chatlines; i++) {
+			if (g_chatbuffer[i+1] != __NULL__) {
+				g_chatbuffer[i] = g_chatbuffer[i+1];
+			} else {
+				break;
+			}
+		}
 		g_chatbuffer[g_chatlines] = __NULL__;
 		g_chatlines--;
 		g_chattime = time + CHAT_TIME;
