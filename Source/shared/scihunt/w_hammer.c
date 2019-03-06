@@ -21,11 +21,11 @@ enum
 
 void w_hammer_precache(void)
 {
-	precache_sound("weapons/ham_hitbod1.wav");
-	precache_sound("weapons/ham_hitbod2.wav");
-	precache_sound("weapons/ham_hitbod3.wav");
-	precache_sound("weapons/ham_hitw.wav");
-	precache_sound("weapons/ham_swing.wav");
+	precache_sound("sh/ham_hitbod1.wav");
+	precache_sound("sh/ham_hitbod2.wav");
+	precache_sound("sh/ham_hitbod3.wav");
+	precache_sound("sh/ham_hitw.wav");
+	precache_sound("sh/ham_swing.wav");
 	precache_model("models/p_hammer.mdl");
 	precache_model("models/v_hammer.mdl");
 }
@@ -62,69 +62,20 @@ void w_hammer_holster(void)
 void w_hammer_primary(void)
 {
 	player pl = (player)self;
-	
-	if (pl.w_attack_next) {
-		return;
-	}
 
 #ifdef CSQC
-	Weapons_MakeVectors();
-	vector src = pl.origin + pl.view_ofs;
-	traceline(src, src + (v_forward * 32), FALSE, pl);
-
-/** Launches ents, needs release, grab from idle
-    makevectors(pl.v_angle);
-    trace_ent.velocity = v_forward * 1200 + v_up * 240;
-**/
-	int r = floor(random(0,3));
-	switch (r) {
-	case 0:
-		Weapons_ViewAnimation(trace_fraction >= 1 ? CROWBAR_ATTACK1MISS:CROWBAR_ATTACK1HIT);
-		break;
-	case 1:
-		Weapons_ViewAnimation(trace_fraction >= 1 ? CROWBAR_ATTACK2MISS:CROWBAR_ATTACK2HIT);
-		break;
-	default:
-		Weapons_ViewAnimation(trace_fraction >= 1 ? CROWBAR_ATTACK3MISS:CROWBAR_ATTACK3HIT);
-	}
-
-	if (trace_fraction >= 1.0) {
-		pl.w_attack_next = 0.5f;
-	} else {
-		pl.w_attack_next = 0.25f;
+	if (!pl.w_attack_next) {
+		if (pSeat->eViewModel.frame != HAMMER_HOLSTER2) {
+			Weapons_ViewAnimation(HAMMER_HOLSTER2);
+			pl.w_attack_next = 0.5f;
+		}
 	}
 #else
-	Weapons_MakeVectors();
-	vector src = pl.origin + pl.view_ofs;
-	traceline(src, src + (v_forward * 32), FALSE, pl);
-
-	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/cbar_miss1.wav", 1, ATTN_NORM);
-
-	if (trace_fraction >= 1.0) {
-		pl.w_attack_next = 0.5f;
-	} else {
-		pl.w_attack_next = 0.25f;
-		Effect_Impact(IMPACT_MELEE, trace_endpos, trace_plane_normal);
-		
-		if (trace_ent.takedamage) {
-			Damage_Apply(trace_ent, self, 10, trace_endpos, FALSE );
-			
-			// TODO: Better way to find if it bleeds?
-			if (trace_ent.iBleeds == 1) {
-				if (random() < 0.33) {
-					Weapons_PlaySound(pl, 8, "weapons/cbar_hitbod1.wav", 1, ATTN_NORM);
-				} else if (random() < 0.66) {
-					Weapons_PlaySound(pl, 8, "weapons/cbar_hitbod2.wav", 1, ATTN_NORM);
-				} else {
-					Weapons_PlaySound(pl, 8, "weapons/cbar_hitbod3.wav", 1, ATTN_NORM);
-				}
-			}
-		} else {
-			if (random() < 0.5) {
-				Weapons_PlaySound(pl, 8, "weapons/cbar_hit1.wav", 1, ATTN_NORM);
-			} else {
-				Weapons_PlaySound(pl, 8, "weapons/cbar_hit2.wav", 1, ATTN_NORM);
-			}
+	if (!pl.w_attack_next) {
+		/* Hack */
+		if (pl.a_ammo1 != 1) {
+			pl.a_ammo1 = 1;
+			pl.w_attack_next = 0.5f;
 		}
 	}
 #endif
@@ -132,7 +83,25 @@ void w_hammer_primary(void)
 }
 void w_hammer_secondary(void)
 {
-	
+	player pl = (player)self;
+
+#ifdef CSQC
+	if (!pl.w_attack_next) {
+		if (pSeat->eViewModel.frame != HAMMER_HOLSTER3) {
+			Weapons_ViewAnimation(HAMMER_HOLSTER3);
+			pl.w_attack_next = 0.5f;
+		}
+	}
+#else
+	if (!pl.w_attack_next) {
+		/* Hack */
+		if (pl.a_ammo1 != 2) {
+			pl.a_ammo1 = 2;
+			pl.w_attack_next = 0.5f;
+		}
+	}
+#endif
+	pl.w_idle_next = 2.5f;
 }
 void w_hammer_reload(void)
 {
@@ -140,8 +109,22 @@ void w_hammer_reload(void)
 }
 void w_hammer_release(void)
 {
-#ifdef CSQC
 	player pl = (player)self;
+
+	if (pl.w_attack_next) {
+		return;
+	}
+
+#ifdef CSQC
+	if (pSeat->eViewModel.frame == HAMMER_HOLSTER2) {
+		Weapons_ViewAnimation(HAMMER_ATTACK1);
+		pl.w_attack_next = 1.0f;
+	} else if (pSeat->eViewModel.frame == HAMMER_HOLSTER3) {
+		Weapons_ViewAnimation(HAMMER_ATTACK2);
+		pl.w_attack_next = 0.75f;
+	}
+
+	/* Pure cosmetics start here */
 	if (pl.w_idle_next) {
 		return;
 	}
@@ -159,6 +142,59 @@ void w_hammer_release(void)
 		break;
 	}
 	pl.w_idle_next = 10.0f;
+#else
+	int hitsound = 0;
+	vector src = pl.origin + pl.view_ofs;
+	makevectors(pl.v_angle);
+	traceline(src, src + v_forward * 64, FALSE, self);
+
+	/* Standard attack */
+	if (pl.a_ammo1 == 1) {
+		if (trace_ent.takedamage) {
+			hitsound = floor(random(1, 4));
+			Damage_Apply(trace_ent, self, 100, trace_endpos, FALSE);
+
+			if (trace_ent.classname == "monster_scientist") {
+				trace_ent.movetype = MOVETYPE_TOSS;
+				trace_ent.velocity = v_forward * 768 + v_up * 256;
+			}
+		} else {
+			if (trace_fraction < 1.0) {
+				hitsound = 4;
+			} 
+		}
+	} else if (pl.a_ammo1 == 2) {
+		if (trace_ent.takedamage) {
+			hitsound = floor(random(1, 4));
+			Damage_Apply(trace_ent, self, 200, trace_endpos, FALSE);
+		} else {
+			if (trace_fraction < 1.0) {
+				hitsound = 4;
+			} 
+		}
+	} else {
+		return;
+	}
+
+	switch (hitsound) {
+	case 1:
+		Weapons_PlaySound(pl, CHAN_WEAPON, "sh/ham_hitbod1.wav", 1, ATTN_NORM);
+		break;
+	case 2:
+		Weapons_PlaySound(pl, CHAN_WEAPON, "sh/ham_hitbod2.wav", 1, ATTN_NORM);
+		break;
+	case 3:
+		Weapons_PlaySound(pl, CHAN_WEAPON, "sh/ham_hitbod3.wav", 1, ATTN_NORM);
+		break;
+	case 4:
+		Weapons_PlaySound(pl, CHAN_WEAPON, "sh/ham_hitw.wav", 1, ATTN_NORM);
+		break;
+	default:
+		Weapons_PlaySound(pl, CHAN_WEAPON, "sh/ham_swing.wav", 1, ATTN_NORM);
+	}
+
+	/* Reset the hack */
+	pl.a_ammo1 = 0;
 #endif
 }
 
@@ -188,6 +224,7 @@ weapon_t w_hammer =
 	w_hammer_precache,
 	__NULL__,
 	w_hammer_vmodel,
+	__NULL__,
 	w_hammer_pmodel,
 	w_hammer_deathmsg,
 	w_hammer_hudpic

@@ -17,7 +17,7 @@ class player
 	vector view_ofs;
 
 	/* Weapon specific */
-        int cannon_mag;
+	int cannon_mag;
 	int glock_mag;
 
 #ifdef CSQC
@@ -27,7 +27,7 @@ class player
 	int p_model_bone;
 	float pitch;
 	float lastweapon;
-	
+
 	/* Prediction */
 	vector netorigin;
 	vector netvelocity;
