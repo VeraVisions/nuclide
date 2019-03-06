@@ -163,6 +163,7 @@ void w_hammer_release(void)
 				hitsound = 4;
 			} 
 		}
+		pl.w_attack_next = 1.0f;
 	} else if (pl.a_ammo1 == 2) {
 		if (trace_ent.takedamage) {
 			hitsound = floor(random(1, 4));
@@ -172,6 +173,7 @@ void w_hammer_release(void)
 				hitsound = 4;
 			} 
 		}
+		pl.w_attack_next = 0.75f;
 	} else {
 		return;
 	}
