@@ -270,6 +270,7 @@ class monster_scientist:CBaseEntity
 	float m_flScreamTime;
 	float m_flChangePath;
 	float m_flTraceTime;
+	int m_iSeenPlayer;
 	void() monster_scientist;
 
 	virtual void() touch;
@@ -324,6 +325,19 @@ void monster_scientist::Physics(void)
 	input_movevalues = [0,0,0];
 	input_impulse = 0;
 	input_buttons = 0;
+
+	if (!m_iSeenPlayer) {
+		for ( entity b = world; ( b = find( b, ::classname, "player" ) ); ) {
+			if ( vlen( b.origin - origin ) < 256 ) {
+				if (random() < 0.5) {
+					int rand = floor(random(0,sci_sndsee.length));
+					sound(this, CHAN_VOICE, sci_sndsee[rand], 1.0, ATTN_NORM);
+				}
+				m_iSeenPlayer = TRUE;
+				break;
+			}
+		}
+	}
 	
 	/* Deal with a hostage being rescued when it's following someone else */
 	if (m_eRescuer.classname == "monster_scientist") {
@@ -504,7 +518,7 @@ void monster_scientist::Respawn(void)
 	frame = SCIA_IDLE1;
 	health = 50;
 	velocity = [0,0,0];
-	m_iUsed = m_iScared = m_iFear = FALSE;
+	m_iUsed = m_iScared = m_iFear = m_iSeenPlayer = FALSE;
 }
 
 void monster_scientist::monster_scientist(void)
@@ -523,6 +537,9 @@ void monster_scientist::monster_scientist(void)
 	}
 	for (int i = 0; i < sci_snduseno.length; i++) {
 		precache_sound(sci_snduseno[i]);
+	}
+	for (int i = 0; i < sci_sndsee.length; i++) {
+		precache_sound(sci_sndsee[i]);
 	}
 	precache_model("models/scientist.mdl");
 
