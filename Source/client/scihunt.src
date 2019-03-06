@@ -1,31 +1,38 @@
 #pragma target fte
-#pragma progs_dat  "../../scihunt/progs.dat"
+#pragma progs_dat  "../../scihunt/csprogs.dat"
 
-#define QWSSQC
+#define CSQC
 #define VALVE
 
 #includelist
 ../builtins.h
 ../defs.h
-valve/defs.h
 ../math.h
 ../materials.h
 ../events.h
 ../entities.h
+valve/defs.h
 defs.h
+vgui.h
 
-../gs-entbase/server.src
-valve/monster_rat.cpp
-scihunt/monster_scientist.cpp
+util.c
+scihunt/init.c
 
+../gs-entbase/client.src
+
+sound.c
+text.c
+voice.c
+
+../shared/valve/animations.c
+../shared/scihunt/player.cpp
+player.c
+../shared/pmove.c
+predict.c
 ../shared/decals.c
 ../shared/effects.c
 ../shared/spraylogo.cpp
 
-../shared/scihunt/player.cpp
-valve/player.c
-../shared/pmove.c
-valve/spectator.c
 ../shared/scihunt/items.h
 ../shared/valve/crosshair.h
 ../shared/scihunt/weapons.h
@@ -43,29 +50,26 @@ valve/spectator.c
 ../shared/valve/w_tripmine.c
 ../shared/valve/w_satchel.c
 ../shared/valve/w_snark.c
-valve/items.cpp
 ../shared/scihunt/w_cannon.c
 ../shared/scihunt/w_chainsaw.c
 ../shared/scihunt/w_hammer.c
 ../shared/scihunt/weapons.c
 
-scihunt/shdata_parse.c
-spawn.c
 
-scihunt/client.c
-client.c
+valve/player.c
+entities.c
 
-scihunt/server.c
-server.c
+valve/cmds.c
+valve/game_event.c
+events.c
+valve/view.c
+view.c
+damage.c
+chat.c
+valve/hud.c
+valve/hud_weaponselect.c
+valve/scoreboard.c
 
-valve/damage.c
-traceattack.c
-vox.c
-
-footsteps.c
-flashlight.c
-scihunt/input.c
-
-valve/spawn.c
+valve/input.c
 entry.c
 #endlist

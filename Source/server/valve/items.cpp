@@ -57,7 +57,7 @@ void itemweapon::Respawn(void)
 	
 	think = __NULL__;
 	nextthink = -1;
-	sound(this, CHAN_ITEM, "items/suitchargeok1.wav", 1, ATTN_NORM);
+	sound(this, CHAN_ITEM, "items/suitchargeok1.wav", 1, ATTN_NORM, 150);
 }
 
 void itemweapon::itemweapon(void)

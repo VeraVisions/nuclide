@@ -78,14 +78,9 @@ void SV_ParseClientCommand(string cmd)
 	Game_ParseClientCommand(cmd);
 }
 
-void worldspawn(void)
+void init(float prevprogs)
 {
 	string sTemp;
-
-	if (g_initialized) {
-		return;
-	}
-	g_initialized = TRUE;
 
 	// Let's load materials.txt because someone thought this was the best idea
 	filestream fileMaterial = fopen("sound/materials.txt", FILE_READ);
@@ -104,10 +99,13 @@ void worldspawn(void)
 	}
 
 	PMove_Init();
+}
+
+void initents(void)
+{
 	precache_sound("weapons/explode3.wav");
 	precache_sound("weapons/explode4.wav");
 	precache_sound("weapons/explode5.wav");
-
 	precache_sound("debris/glass1.wav");
 	precache_sound("debris/glass2.wav");
 	precache_sound("debris/glass3.wav");
@@ -173,7 +171,12 @@ void worldspawn(void)
 	precache_sound("common/wpn_denyselect.wav");
 	precache_sound("player/sprayer.wav");
 	precache_sound("items/flashlight1.wav");
+	Game_Worldspawn();
+	Decals_Init();
+}
 
+void worldspawn(void)
+{
 	lightstyle(0, "m");
 	lightstyle(1, "mmnmmommommnonmmonqnmmo");
 	lightstyle(2, "abcdefghijklmnopqrstuvwxyzyxwvutsrqponmlkjihgfedcba");
@@ -186,9 +189,6 @@ void worldspawn(void)
 	lightstyle(9, "aaaaaaaazzzzzzzz");
 	lightstyle(10, "mmamammmmammamamaaamammma");
 	lightstyle(11, "abcdefghijklmnopqrrqponmlkjihgfedcba");
-
-	Game_Worldspawn();
-	Decals_Init();
 }
 
 float ConsoleCmd(string cmd)

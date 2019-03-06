@@ -35,5 +35,3 @@ entity eActivator;
 string startspot;
 string __fullspawndata;
 hashtable hashMaterials;
-
-int g_initialized;

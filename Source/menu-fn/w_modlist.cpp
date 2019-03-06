@@ -55,9 +55,8 @@ void CModList::Draw(void)
 		}
 		if (m_selected == i) {
 			colo = ML_COL_2;
-			drawfill([g_menuofs[0] + m_x, g_menuofs[1] + pos
-			], [m_size[0], 29], 
-			 [84/255,45/255,0], 1.0f);
+			drawfill([g_menuofs[0] + m_x, g_menuofs[1] + pos], [m_size[0], 29], 
+					 [84/255,45/255,0], 1.0f);
 		} else {
 			colo = ML_COL_1;
 		}

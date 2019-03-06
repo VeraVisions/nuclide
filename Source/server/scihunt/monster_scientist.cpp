@@ -65,6 +65,106 @@ string sci_snddie[] = {
 	"scientist/sci_die4.wav"
 };
 
+string sci_sndchitchat[] = {
+	"scientist/absolutely.wav",
+	"scientist/absolutelynot.wav",
+	"scientist/administrator.wav",
+	"scientist/alienappeal.wav",
+	"scientist/alientrick.wav",
+	"scientist/allnominal.wav",
+	"scientist/areyouthink.wav",
+	"scientist/asexpected.wav",
+	"scientist/beverage.wav",
+	"scientist/bloodsample.wav",
+	"scientist/cantbeserious.wav",
+	"scientist/chaostheory.wav",
+	"scientist/completelywrong.wav",
+	"scientist/containfail.wav",
+	"scientist/correcttheory.wav",
+	"scientist/dine.wav",
+	"scientist/dontknow.wav",
+	"scientist/donuteater.wav",
+	"scientist/doyousmell.wav",
+	"scientist/evergetout.wav",
+	"scientist/everseen.wav",
+	"scientist/fascinating.wav",
+	"scientist/goodpaper.wav",
+	"scientist/headcrab.wav",
+	"scientist/hideglasses.wav",
+	"scientist/hopenominal.wav",
+	"scientist/howinteresting.wav",
+	"scientist/hungryyet.wav",
+	"scientist/ibelieveso.wav",
+	"scientist/idontthinkso.wav",
+	"scientist/importantspecies.wav",
+	"scientist/improbable.wav",
+	"scientist/imsure.wav",
+	"scientist/inconclusive.wav",
+	"scientist/ipredictedthis.wav",
+	"scientist/justasked.wav",
+	"scientist/lambdalab.wav",
+	"scientist/limitsok.wav",
+	"scientist/lowervoice.wav",
+	"scientist/luckwillchange.wav",
+	"scientist/needsleep.wav",
+	"scientist/neverseen.wav",
+	"scientist/nodoubt.wav",
+	"scientist/nogrant.wav",
+	"scientist/noguess.wav",
+	"scientist/noidea.wav",
+	"scientist/noo.wav",
+	"scientist/notcertain.wav",
+	"scientist/nothostile.wav",
+	"scientist/notsure.wav",
+	"scientist/ofcourse.wav",
+	"scientist/ofcoursenot.wav",
+	"scientist/organicmatter.wav",
+	"scientist/perculiarmarks.wav",
+	"scientist/perculiarodor.wav",
+	"scientist/perhaps.wav",
+	"scientist/positively.wav",
+	"scientist/repeat.wav",
+	"scientist/reportflux.wav",
+	"scientist/rescueus.wav",
+	"scientist/ridiculous.wav",
+	"scientist/right.wav",
+	"scientist/rightway.wav",
+	"scientist/rumorclean.wav",
+	"scientist/runtest.wav",
+	"scientist/seencup.wav",
+	"scientist/shakeunification.wav",
+	"scientist/shutdownchart.wav",
+	"scientist/shutup.wav",
+	"scientist/simulation.wav",
+	"scientist/smellburning.wav",
+	"scientist/softethics.wav",
+	"scientist/stimulating.wav",
+	"scientist/stopasking.wav",
+	"scientist/thatsodd.wav",
+	"scientist/theoretically.wav",
+	"scientist/uselessphd.wav",
+	"scientist/waithere.wav",
+	"scientist/whatnext.wav",
+	"scientist/whocansay.wav",
+	"scientist/whoresponsible.wav",
+	"scientist/whyaskme.wav",
+	"scientist/yees.wav"
+};
+
+string sci_sndhear[] = {
+	"scientist/hearsomething.wav",
+	"scientist/startle1.wav",
+	"scientist/startle2.wav",
+	"scientist/startle3.wav",
+	"scientist/startle4.wav",
+	"scientist/startle5.wav",
+	"scientist/startle6.wav",
+	"scientist/startle7.wav",
+	"scientist/startle8.wav",
+	"scientist/startle9.wav",
+	"scientist/whatissound.wav"
+};
+
 string sci_sndpain[] = {
 	"scientist/sci_pain1.wav",
 	"scientist/sci_pain2.wav",
@@ -76,6 +176,22 @@ string sci_sndpain[] = {
 	"scientist/sci_pain8.wav",
 	"scientist/sci_pain9.wav",
 	"scientist/sci_pain10.wav"
+};
+
+string sci_sndsee[] = {
+	"scientist/afellowsci.wav",
+	"scientist/ahfreeman.wav",
+	"scientist/freeman.wav",
+	"scientist/freemanalive.wav",
+	"scientist/goodtoseeyou.wav",
+	"scientist/greetings.wav",
+	"scientist/greetings2.wav",
+	"scientist/hello.wav",
+	"scientist/hellofreeman.wav",
+	"scientist/hellofromlab.wav",
+	"scientist/hellothere.wav",
+	"scientist/inmesstoo.wav",
+	"scientist/newhevsuit.wav"
 };
 
 string sci_sndscream[] = {
@@ -111,6 +227,37 @@ string sci_sndscream[] = {
 	"scientist/scream24.wav",
 	"scientist/scream25.wav"
 };
+
+string sci_sndstop[] = {
+	"scientist/stop1.wav",
+	"scientist/stop2.wav",
+	"scientist/stop3.wav",
+	"scientist/stop4.wav",
+	"scientist/sorryimleaving.wav"
+};
+
+string sci_snduse[] = {
+	"scientist/alright.wav",
+	"scientist/excellentteam.wav",
+	"scientist/fellowscientist.wav",
+	"scientist/fine.wav",
+	"scientist/hopeyouknow.wav",
+	"scientist/leadtheway.wav",
+	"scientist/letsgo.wav",
+	"scientist/yes3.wav",
+	"scientist/yesletsgo.wav"
+};
+
+string sci_snduseno[] = {
+	"scientist/beenaburden.wav",
+	"scientist/illwait.wav",
+	"scientist/illwaithere.wav",
+	"scientist/istay.wav",
+	"scientist/reconsider.wav",
+	"scientist/slowingyou.wav",
+	"scientist/whyleavehere.wav"
+};
+
 
 class monster_scientist:CBaseEntity
 {
@@ -154,6 +301,8 @@ void monster_scientist::WarnOthers(void)
 		if ( vlen( b.origin - origin ) < 512 ) {
 			monster_scientist sci = (monster_scientist)b;
 			sci.m_iFear = TRUE;
+			sci.m_eUser = world;
+			sci.m_eRescuer = world;
 		}
 	}
 }
@@ -274,15 +423,24 @@ void monster_scientist::touch(void)
 
 void monster_scientist::PlayerUse(void)
 {
+	if (m_iFear) {
+		return;
+	}
 	if ((m_eUser == world)) {
 		if (m_iUsed == FALSE) {
 			m_iUsed = TRUE;
 		}
 
+		int rand = floor(random(0,sci_snduse.length));
+		sound(this, CHAN_VOICE, sci_snduse[rand], 1.0, ATTN_NORM);
+			
 		m_eUser = eActivator;
 		m_eRescuer = m_eUser;
 		m_vecLastUserPos = m_eUser.origin;
 	} else {
+		int rand = floor(random(0,sci_snduseno.length));
+		sound(this, CHAN_VOICE, sci_snduseno[rand], 1.0, ATTN_NORM);
+
 		m_eUser = world;
 	}
 }
@@ -346,7 +504,7 @@ void monster_scientist::Respawn(void)
 	frame = SCIA_IDLE1;
 	health = 50;
 	velocity = [0,0,0];
-	m_iUsed = m_iScared = FALSE;
+	m_iUsed = m_iScared = m_iFear = FALSE;
 }
 
 void monster_scientist::monster_scientist(void)
@@ -359,6 +517,12 @@ void monster_scientist::monster_scientist(void)
 	}
 	for (int i = 0; i < sci_sndscream.length; i++) {
 		precache_sound(sci_sndscream[i]);
+	}
+	for (int i = 0; i < sci_snduse.length; i++) {
+		precache_sound(sci_snduse[i]);
+	}
+	for (int i = 0; i < sci_snduseno.length; i++) {
+		precache_sound(sci_snduseno[i]);
 	}
 	precache_model("models/scientist.mdl");
 
