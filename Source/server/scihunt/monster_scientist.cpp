@@ -58,6 +58,14 @@ enum {
 	SCIA_DEADTABLE3
 };
 
+enumflags
+{
+	SCIF_USED,
+	SCIF_SCARED,
+	SCIF_FEAR,
+	SCIF_SEEN
+};
+
 string sci_snddie[] = {
 	"scientist/sci_die1.wav",
 	"scientist/sci_die2.wav",
@@ -264,13 +272,12 @@ class monster_scientist:CBaseEntity
 	vector m_vecLastUserPos;
 	entity m_eUser;
 	entity m_eRescuer;
-	int m_iUsed;
-	int m_iScared;
-	int m_iFear;
+
 	float m_flScreamTime;
 	float m_flChangePath;
 	float m_flTraceTime;
-	int m_iSeenPlayer;
+	float m_flPitch;
+	int m_iFlags;
 	void() monster_scientist;
 
 	virtual void() touch;
@@ -298,10 +305,10 @@ void monster_scientist::Gib(void)
 
 void monster_scientist::WarnOthers(void)
 {
-	for ( entity b = world; ( b = find( b, ::classname, "monster_scientist" ) ); ) {
-		if ( vlen( b.origin - origin ) < 512 ) {
+	for (entity b = world; (b = find(b, ::classname, "monster_scientist"));) {
+		if (vlen(b.origin - origin) < 512) {
 			monster_scientist sci = (monster_scientist)b;
-			sci.m_iFear = TRUE;
+			sci.m_iFlags |= SCIF_FEAR | SCIF_SEEN;
 			sci.m_eUser = world;
 			sci.m_eRescuer = world;
 		}
@@ -315,7 +322,7 @@ void monster_scientist::Scream(void)
 	}
 
 	int rand = floor(random(0,sci_sndscream.length));
-	sound(this, CHAN_VOICE, sci_sndscream[rand], 1.0, ATTN_NORM);
+	sound(this, CHAN_VOICE, sci_sndscream[rand], 1.0, ATTN_NORM, m_flPitch);
 	m_flScreamTime = time + 5.0f;
 }
 
@@ -326,14 +333,22 @@ void monster_scientist::Physics(void)
 	input_impulse = 0;
 	input_buttons = 0;
 
-	if (!m_iSeenPlayer) {
-		for ( entity b = world; ( b = find( b, ::classname, "player" ) ); ) {
-			if ( vlen( b.origin - origin ) < 256 ) {
+	if (!(m_iFlags & SCIF_SEEN)) {
+		for (entity b = world; (b = find(b, ::classname, "player"));) {
+			/* Find players in a 256 unit radius */
+			if (vlen(b.origin - origin) < 256) {
+				/* If we can't physically see him, don't say hi. */
+				traceline(origin, b.origin, FALSE, this);
+				if (trace_ent != b) {
+					continue;
+				}
+
 				if (random() < 0.5) {
 					int rand = floor(random(0,sci_sndsee.length));
-					sound(this, CHAN_VOICE, sci_sndsee[rand], 1.0, ATTN_NORM);
+					sound(this, CHAN_VOICE, sci_sndsee[rand], 1.0, ATTN_NORM, m_flPitch);
 				}
-				m_iSeenPlayer = TRUE;
+
+				m_iFlags |= SCIF_SEEN;
 				break;
 			}
 		}
@@ -387,11 +402,10 @@ void monster_scientist::Physics(void)
 				}
 			}
 		}
-	} else if (m_iFear == TRUE) {
+	} else if (m_iFlags & SCIF_FEAR) {
 		Scream();
 		input_movevalues = [240, 0, 0];
-		
-		
+
 		if (m_flTraceTime < time) {
 			traceline(self.origin, self.origin + (v_forward * 32), FALSE, this);
 			
@@ -411,11 +425,11 @@ void monster_scientist::Physics(void)
 	spvel = vlen(velocity);
 
 	if (spvel < 5) {
-		frame = m_iScared ? SCIA_SCARED1:SCIA_IDLE1;
+		frame = (m_iFlags & SCIF_SCARED) ? SCIA_SCARED1:SCIA_IDLE1;
 	} else if (spvel <= 140) {
-		frame = m_iScared ? SCIA_WALKSCARED:SCIA_WALK;
+		frame = (m_iFlags & SCIF_SCARED) ? SCIA_WALKSCARED:SCIA_WALK;
 	} else if (spvel <= 240) {
-		frame = m_iScared ? SCIA_RUNSCARED:SCIA_RUN;
+		frame = (m_iFlags & SCIF_SCARED) ? SCIA_RUNSCARED:SCIA_RUN;
 	}
 
 	input_angles = angles = v_angle;
@@ -437,23 +451,25 @@ void monster_scientist::touch(void)
 
 void monster_scientist::PlayerUse(void)
 {
-	if (m_iFear) {
+	int r;
+
+	if (m_iFlags & SCIF_FEAR) {
 		return;
 	}
 	if ((m_eUser == world)) {
-		if (m_iUsed == FALSE) {
-			m_iUsed = TRUE;
+		if (!(m_iFlags & SCIF_USED)) {
+			m_iFlags |= SCIF_USED;
 		}
 
-		int rand = floor(random(0,sci_snduse.length));
-		sound(this, CHAN_VOICE, sci_snduse[rand], 1.0, ATTN_NORM);
-			
+		r = floor(random(0,sci_snduse.length));
+		sound(this, CHAN_VOICE, sci_snduse[r], 1.0, ATTN_NORM, m_flPitch);
+
 		m_eUser = eActivator;
 		m_eRescuer = m_eUser;
 		m_vecLastUserPos = m_eUser.origin;
 	} else {
-		int rand = floor(random(0,sci_snduseno.length));
-		sound(this, CHAN_VOICE, sci_snduseno[rand], 1.0, ATTN_NORM);
+		r = floor(random(0,sci_snduseno.length));
+		sound(this, CHAN_VOICE, sci_snduseno[r], 1.0, ATTN_NORM, m_flPitch);
 
 		m_eUser = world;
 	}
@@ -462,29 +478,32 @@ void monster_scientist::PlayerUse(void)
 void monster_scientist::vPain(int iHitBody)
 {
 	int rand = floor(random(0,sci_sndpain.length));
-	sound(this, CHAN_VOICE, sci_sndpain[rand], 1.0, ATTN_NORM);
+	sound(this, CHAN_VOICE, sci_sndpain[rand], 1.0, ATTN_NORM, m_flPitch);
 
 	frame = SCIA_FLINCH + floor(random(0, 5));
-	m_iFear = TRUE;
-	//m_iScared = TRUE;
+	m_iFlags |= SCIF_FEAR;
+
 	WarnOthers();
 }
 
 void monster_scientist::vDeath(int iHitBody)
 {
-	WarnOthers();
-	int rand = floor(random(0,sci_snddie.length));
-	sound(this, CHAN_VOICE, sci_snddie[rand], 1.0, ATTN_NORM);
+	int r;
+	r = floor(random(0,sci_snddie.length));
+	sound(this, CHAN_VOICE, sci_snddie[r], 1.0, ATTN_NORM, m_flPitch);
+
+	solid = SOLID_CORPSE;
+	takedamage = DAMAGE_NO;
+	frame = SCIA_DIE_SIMPLE + floor(random(0, 6));
 
 	m_eUser = world;
-	solid = SOLID_NOT;
-	takedamage = DAMAGE_NO;
 	customphysics = __NULL__;
-	m_iFear = FALSE;
-	frame = SCIA_DIE_SIMPLE + floor(random(0, 6));
-	
+	m_iFlags = 0x0;
+
 	think = Respawn;
 	nextthink = time + 10.0f;
+
+	WarnOthers();
 }
 
 void monster_scientist::Hide(void)
@@ -508,17 +527,15 @@ void monster_scientist::Respawn(void)
 	movetype = MOVETYPE_NONE;
 	setmodel(this, m_oldModel);
 	setsize(this, VEC_HULL_MIN + [0,0,36], VEC_HULL_MAX + [0,0,36]);
-
 	m_eUser = world;
-	iBleeds = TRUE;
 	takedamage = DAMAGE_YES;
+	iBleeds = TRUE;
 	style = SCI_IDLE;
 	customphysics = Physics;
-
 	frame = SCIA_IDLE1;
 	health = 50;
 	velocity = [0,0,0];
-	m_iUsed = m_iScared = m_iFear = m_iSeenPlayer = FALSE;
+	m_iFlags = 0x0;
 }
 
 void monster_scientist::monster_scientist(void)
@@ -541,13 +558,27 @@ void monster_scientist::monster_scientist(void)
 	for (int i = 0; i < sci_sndsee.length; i++) {
 		precache_sound(sci_sndsee[i]);
 	}
-	precache_model("models/scientist.mdl");
 
 	model = "models/scientist.mdl";
-
 	CBaseEntity::CBaseEntity();
-
 	precache_model(m_oldModel);
-	setmodel(this, m_oldModel);
 	Respawn();
+
+	/* This stuff needs to be persistent because we can't guarantee that
+	 * the client-side geomset refresh happens. Don't shove this into Respawn */
+	colormod[0] = floor(random(1,5));
+	switch (colormod[0]) {
+		case 1:
+			m_flPitch = 105; // Walter
+			break;
+		case 2:
+			m_flPitch = 100; // Einstein
+			break;
+		case 3:
+			m_flPitch = 95; // Luther
+			skin = 1;
+			break;
+		default:
+			m_flPitch = 100; // Slick
+	}
 }
