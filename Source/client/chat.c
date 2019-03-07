@@ -23,7 +23,7 @@ Just prints whatever is in the chat buffer and removes lines after some time.
 void Chat_Draw(void)
 {
 	vector pos = video_mins + [16, video_res_y - 128];
-	
+
 	if (g_chatlines < 0) {
 		return;
 	}
@@ -41,7 +41,6 @@ void Chat_Draw(void)
 		g_chatlines--;
 		g_chattime = time + CHAT_TIME;
 	}
-	
 
 	for (int i = 0; i < CHAT_LINES; i++) {
 		drawstring(pos, g_chatbuffer[i], [12,12], [1,1,1], 1.0f, 0);
@@ -62,8 +61,5 @@ void Chat_Parse(string msg)
 	}
 
 	g_chattime = time + CHAT_TIME;
-
-	// Log to console
-	localcmd(sprintf("echo \"%s\"\n", msg));
 	sound(pSeat->ePlayer, CHAN_ITEM, "misc/talk.wav", 1.0, ATTN_NONE);
 }
