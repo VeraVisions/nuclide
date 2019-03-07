@@ -321,6 +321,10 @@ void func_door_rotating::Respawn(void)
 		m_vecMoveDir = m_vecMoveDir * -1;
 	}
 
+	if (spawnflags & SF_ROT_PASSABLE) {
+		solid = SOLID_NOT;
+	}
+
 	if (m_strTargetName) {
 		m_iLocked = TRUE;
 	}
