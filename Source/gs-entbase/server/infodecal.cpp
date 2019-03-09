@@ -43,7 +43,13 @@ void infodecal(void)
 	vector vpos = self.origin;
 	
 	if (serverkeyfloat("*bspversion") != 30) {
+#if 1
+		remove(self);
+		return;
+#else
+		/* Source Engine Material support */
 		self.texture = sprintf( "materials/%s", self.texture );
+#endif
 	}
 
 	if (!self.texture) {
