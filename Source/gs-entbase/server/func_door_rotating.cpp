@@ -150,14 +150,14 @@ void func_door_rotating::Away(void)
 	if (!(spawnflags & SF_ROT_ONEWAY)) {
 		/* One way doors only work on the Y axis */
 		if (!(spawnflags & SF_ROT_ZAXIS || spawnflags & SF_ROT_XAXIS)) {
-			vector vDifference = eActivator.origin - origin;
+			vector vDifference = (eActivator.origin - eActivator.view_ofs) - origin;
 			vector vAngles = eActivator.angles;
 			vAngles[0] = vAngles[2] = 0;
 
 			makevectors(vAngles);
-			vector vNext = (eActivator.origin + (v_forward * 10)) - origin;
+			vAngles = (eActivator.origin + (v_forward * 10)) - origin;
 
-			if (((vDifference[0] * vNext[1]) - (vDifference[1] * vNext[0])) < 0) {
+			if (((vDifference[0] * vAngles[1]) - (vDifference[1] * vAngles[0])) < 0) {
 				fDirection = -1.0f;
 			}
 		}

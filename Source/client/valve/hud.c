@@ -263,10 +263,18 @@ void HUD_DrawAmmo3(void)
 void HUD_DrawFlashlight(void)
 {
 	vector pos;
+	player pl = (player)pSeat->ePlayer;
 	pos = video_mins + [video_res[0] - 48, 16];
-	
-	drawsubpic(pos, [32,32], HUD_NUMS, [spr_flash1[0], spr_flash1[1]],
+			  
+	if (pl.flags & FL_FLASHLIGHT) {
+		drawsubpic(pos, [32,32], HUD_NUMS, [spr_flash1[0], spr_flash1[1]],
+			  [spr_flash1[2], spr_flash1[3]], g_hud_color, 1.0, DRAWFLAG_ADDITIVE);
+		drawsubpic(pos, [48,32], HUD_NUMS, [spr_flash2[0], spr_flash2[1]],
+			  [spr_flash2[2], spr_flash2[3]], g_hud_color, 1.0, DRAWFLAG_ADDITIVE);
+	} else {
+		drawsubpic(pos, [32,32], HUD_NUMS, [spr_flash1[0], spr_flash1[1]],
 			  [spr_flash1[2], spr_flash1[3]], g_hud_color, HUD_ALPHA, DRAWFLAG_ADDITIVE);
+	}
 }
 
 void HUD_Draw(void)

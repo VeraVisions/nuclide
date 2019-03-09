@@ -12,6 +12,7 @@ var int autocvar_mp_flashlight = TRUE;
 
 void Effect_Impact( int iType, vector vPos, vector vNormal );
 void Effect_CreateExplosion( vector vPos );
+void Effect_GibHuman( vector vPos);
 void Footsteps_Update( void );
 
 void TraceAttack_FireBullets( int iShots, vector vPos, int iDamage, vector vecAccuracy);

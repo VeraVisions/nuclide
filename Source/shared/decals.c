@@ -81,3 +81,12 @@ void Decals_PlaceScorch(vector pos)
 	decal.nextthink = time /*+ 0.1f*/;
 #endif
 }
+
+#ifdef CSQC
+float Effect_Decal(void)
+{
+	adddecal(self.classname, self.origin, self.mins, self.maxs, self.color, 1.0f);
+	addentity(self);
+	return PREDRAW_NEXT;
+}
+#endif

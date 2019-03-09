@@ -374,13 +374,20 @@ void CSQC_Parse_Event(void)
 			break;
 		case EV_SPARK:
 			vector vSparkPos, vSparkAngle;
-			vSparkPos_x = readcoord();
-			vSparkPos_y = readcoord();
-			vSparkPos_z = readcoord();
-			vSparkAngle_x = readcoord();
-			vSparkAngle_y = readcoord();
-			vSparkAngle_z = readcoord();
+			vSparkPos[0] = readcoord();
+			vSparkPos[1] = readcoord();
+			vSparkPos[2] = readcoord();
+			vSparkAngle[0] = readcoord();
+			vSparkAngle[1] = readcoord();
+			vSparkAngle[2] = readcoord();
 			Effect_CreateSpark(vSparkPos, vSparkAngle);
+			break;
+		case EV_GIBHUMAN:
+			vector vGibPos, vGibAngle;
+			vGibPos[0] = readcoord();
+			vGibPos[1] = readcoord();
+			vGibPos[2] = readcoord();
+			Effect_GibHuman(vGibPos);
 			break;
 		case EV_BLOOD:
 			vector vBloodPos;
@@ -399,22 +406,22 @@ void CSQC_Parse_Event(void)
 		case EV_EXPLOSION:
 			vector vExploPos;
 			
-			vExploPos_x = readcoord();
-			vExploPos_y = readcoord();
-			vExploPos_z = readcoord();
+			vExploPos[0] = readcoord();
+			vExploPos[1] = readcoord();
+			vExploPos[2] = readcoord();
 			
 			Effect_CreateExplosion(vExploPos);
 			break;
 		case EV_MODELGIB:
 			vector vPos;
-			vPos_x = readcoord();
-			vPos_y = readcoord();
-			vPos_z = readcoord();
+			vPos[0] = readcoord();
+			vPos[1] = readcoord();
+			vPos[2] = readcoord();
 			
 			vector vSize;
-			vSize_x = readcoord();
-			vSize_y = readcoord();
-			vSize_z = readcoord();
+			vSize[0] = readcoord();
+			vSize[1] = readcoord();
+			vSize[2] = readcoord();
 
 			float fStyle = readbyte();
 			Effect_BreakModel(vPos, vSize, [0,0,0], fStyle);
@@ -435,13 +442,13 @@ void CSQC_Parse_Event(void)
 			vector vOrigin, vNormal;
 			
 			iType = (int)readbyte();
-			vOrigin_x = readcoord();
-			vOrigin_y = readcoord();
-			vOrigin_z = readcoord();
+			vOrigin[0] = readcoord();
+			vOrigin[1] = readcoord();
+			vOrigin[2] = readcoord();
 
-			vNormal_x = readcoord();
-			vNormal_y = readcoord();
-			vNormal_z = readcoord();
+			vNormal[0] = readcoord();
+			vNormal[1] = readcoord();
+			vNormal[2] = readcoord();
 			
 			Effect_Impact(iType, vOrigin, vNormal);
 			break;

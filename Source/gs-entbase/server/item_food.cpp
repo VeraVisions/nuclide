@@ -16,7 +16,7 @@ class item_food
 
 void item_food :: Touch ( void )
 {
-	if ( other.classname != "Player" ) {
+	if ( other.classname != "player" ) {
 		return;
 	}
 	
@@ -25,6 +25,7 @@ void item_food :: Touch ( void )
 		bevOwner.m_iReady = TRUE;
 	}
 	
+	Damage_Apply(other, this, -1, other.origin, FALSE);
 	solid = SOLID_NOT;
 	remove( this );
 }
@@ -32,7 +33,7 @@ void item_food :: Touch ( void )
 void item_food :: Setup ( void )
 {
 	solid = SOLID_TRIGGER;
-	setsize( this, '-8 -8 -8', '8 8 8' );
+	setsize( this, '-16 -16 -16', '16 16 16' );
 	touch = Touch;
 
 	if ( m_iIsCan ) {

@@ -8,3 +8,5 @@ qc-progs:
 	$(CC) server/scihunt.src
 	$(CC) client/cstrike.src
 	$(CC) server/cstrike.src
+	$(CC) client/rewolf.src
+	$(CC) server/rewolf.src

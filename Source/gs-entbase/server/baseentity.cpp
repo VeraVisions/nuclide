@@ -112,4 +112,5 @@ void CBaseEntity :: Hide ( void )
 	setmodel( this, "" );
 	solid = SOLID_NOT;
 	movetype = MOVETYPE_NONE;
+	takedamage = DAMAGE_NO;
 }

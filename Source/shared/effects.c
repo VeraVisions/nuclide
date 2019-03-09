@@ -7,6 +7,15 @@
 ****/
 
 #ifdef CSQC
+
+string g_hgibs[] = {
+	"models/gib_b_bone.mdl",
+	"models/gib_legbone.mdl",
+	"models/gib_lung.mdl",
+	"models/gib_skull.mdl",
+	"models/gib_b_gib.mdl"
+};
+
 void Effects_Init(void)
 {
 	precache_model("sprites/fexplo.spr");
@@ -49,6 +58,11 @@ void Effects_Init(void)
 	precache_sound("weapons/ric3.wav");
 	precache_sound("weapons/ric4.wav");
 	precache_sound("weapons/ric5.wav");
+	precache_sound("common/bodysplat.wav");
+
+	for (int i = 0; i < g_hgibs.length; i++) {
+		precache_model(g_hgibs[i]);
+	}
 
 	// Half-Life only has generic ric1-5
 #ifdef CSTRIKE
@@ -60,6 +74,41 @@ void Effects_Init(void)
 
 }
 #endif
+
+
+void Effect_GibHuman(vector pos) {
+#ifdef SSQC
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_GIBHUMAN);
+	WriteCoord(MSG_MULTICAST, pos[0]); 
+	WriteCoord(MSG_MULTICAST, pos[1]); 
+	WriteCoord(MSG_MULTICAST, pos[2]);
+	msg_entity = __NULL__;
+	multicast(pos, MULTICAST_PVS);
+#else
+	static void Gib_Remove(void) {
+		remove(self);
+	}
+	for (int i = 0; i < 5; i++) {
+		
+		vector vel;
+		vel[0] = random(-128,128);
+		vel[1] = random(-128,128);
+		vel[2] = (300 + random() * 64);
+	
+		entity gibb = spawn();
+		setmodel(gibb, g_hgibs[i]);
+		setorigin(gibb, pos);
+		gibb.movetype = MOVETYPE_BOUNCE;
+		gibb.velocity = vel;
+		gibb.avelocity = vectoangles(gibb.velocity);
+		gibb.think = Gib_Remove;
+		gibb.nextthink = time + 5.0f;
+		gibb.drawmask = MASK_ENGINE;
+	}
+	pointsound(pos, "common/bodysplat.wav", 1, ATTN_NORM);
+#endif
+}
 
 void Effect_CreateExplosion(vector vPos) {
 #ifdef SSQC
@@ -408,12 +457,3 @@ void Effect_BreakModel(vector vMins, vector vMaxs, vector vVel, float fStyle) {
 	}
 #endif
 }
-
-#ifdef CSQC
-float Effect_Decal(void)
-{
-	adddecal(self.classname, self.origin, self.mins, self.maxs, self.color, 1.0f);
-	addentity(self);
-	return PREDRAW_NEXT;
-}
-#endif

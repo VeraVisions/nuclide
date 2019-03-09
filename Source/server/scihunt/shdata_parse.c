@@ -6,7 +6,27 @@
 *
 ****/
 
+/* If only origin parameters are applied, make something up */
+var int autocvar_sh_sciyaw = TRUE;
+
+/* Limit the amount of scientists spawned */
+var int autocvar_sh_scimax = 30;
+
 string g_shItemList;
+
+void SHData_SpawnScientist(void)
+{
+	static int slimit = 0;
+	if (autocvar_sh_scimax) {
+		if (slimit >= autocvar_sh_scimax) {
+			dprint("shdata: scientist limit hit. ignored\n");
+			remove(self);
+			return;
+		}
+		slimit++;
+	}
+	spawnfunc_monster_scientist();
+}
 
 void SHData_New(void)
 {
@@ -14,13 +34,18 @@ void SHData_New(void)
 	new.origin[0] = stof(argv(1));
 	new.origin[1] = stof(argv(2));
 	new.origin[2] = stof(argv(3));
+
+	if (autocvar_sh_sciyaw) {
+		new.angles[1] = Math_FixDelta(random(0,360));
+	}
+
 	setorigin(new, new.origin);
 
 	entity oldself = self;
 	self = new;
 
 	if (argv(0) == "monster_scientist") {
-		spawnfunc_monster_scientist();
+		SHData_SpawnScientist();
 	} else if (argv(0) == "info_player_team1") {
 		self.classname = "info_player_deathmatch";
 	} else if (argv(0) == "info_player_team2") {
@@ -44,7 +69,7 @@ void SHData_NewAngles(void)
 	self = new;
 	
 	if (argv(0) == "monster_scientist") {
-		spawnfunc_monster_scientist();
+		SHData_SpawnScientist();
 	} else if (argv(0) == "info_player_team1") {
 		self.classname = "info_player_deathmatch";
 	} else if (argv(0) == "info_player_team2") {

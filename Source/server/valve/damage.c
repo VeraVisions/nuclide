@@ -75,7 +75,6 @@ void Damage_Apply(entity eTarget, entity eAttacker, float fDamage, vector vHitPo
 	self = eTarget;
 
 	if (self.health <= 0) {
-		self.health = 0;
 		self.vDeath(trace_surface_id);
 	} else {
 		self.vPain(trace_surface_id);
@@ -163,7 +162,7 @@ void Damage_Radius(vector vOrigin, entity eAttacker, float fDamage, float fRadiu
 			fDamage = rint(fDamage * fDiff);
 
 			if (fDiff > 0) {
-				Damage_Apply(eDChain, eAttacker, fDamage, eDChain.origin, 0);
+				Damage_Apply(eDChain, eAttacker, fDamage, vecRealPos, 0);
 				/*if (eDChain.movetype != MOVETYPE_NONE) {
 					vPush = vectoangles(vecRealPos - vOrigin);
 					makevectors(vPush);

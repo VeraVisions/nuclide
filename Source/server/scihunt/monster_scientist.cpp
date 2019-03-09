@@ -6,10 +6,14 @@
 *
 ****/
 
+var int autocvar_sh_scialert = FALSE;
+var int autocvar_sh_scispeed = 40;
+
 enum {
 	SCI_IDLE,
 	SCI_WALK,
-	SCI_RUN
+	SCI_RUN,
+	SCI_DEAD
 };
 
 enum {
@@ -63,7 +67,8 @@ enumflags
 	SCIF_USED,
 	SCIF_SCARED,
 	SCIF_FEAR,
-	SCIF_SEEN
+	SCIF_SEEN,
+	SCIF_FALLING
 };
 
 string sci_snddie[] = {
@@ -292,15 +297,13 @@ class monster_scientist:CBaseEntity
 	virtual void() WarnOthers;
 };
 
+
+
 void monster_scientist::Gib(void)
 {
+	takedamage = DAMAGE_NO;
+	Effect_GibHuman(this.origin);
 	Hide();
-	
-	for (int i = 0; i < 5; i++) {
-		entity gib = spawn();
-		//gib.think = Util_Remove;
-		gib.nextthink = 10.0f;
-	}
 }
 
 void monster_scientist::WarnOthers(void)
@@ -404,7 +407,8 @@ void monster_scientist::Physics(void)
 		}
 	} else if (m_iFlags & SCIF_FEAR) {
 		Scream();
-		input_movevalues = [240, 0, 0];
+		maxspeed = 240 * (autocvar_sh_scispeed/40);
+		input_movevalues = [maxspeed, 0, 0];
 
 		if (m_flTraceTime < time) {
 			traceline(self.origin, self.origin + (v_forward * 32), FALSE, this);
@@ -438,6 +442,15 @@ void monster_scientist::Physics(void)
 
 	runstandardplayerphysics(this);
 	Footsteps_Update();
+
+	if (!(flags & FL_ONGROUND) && velocity[2] < -100) {
+		if (!(m_iFlags & SCIF_FALLING)) {
+			sound(this, CHAN_VOICE, sci_sndscream[0], 1.0, ATTN_NORM, m_flPitch);
+		}
+		m_iFlags |= SCIF_FALLING;
+	} else {
+		m_iFlags -= (flags & SCIF_FALLING);
+	}
 
 	movetype = MOVETYPE_NONE;
 }
@@ -492,18 +505,27 @@ void monster_scientist::vDeath(int iHitBody)
 	r = floor(random(0,sci_snddie.length));
 	sound(this, CHAN_VOICE, sci_snddie[r], 1.0, ATTN_NORM, m_flPitch);
 
-	solid = SOLID_CORPSE;
-	takedamage = DAMAGE_NO;
-	frame = SCIA_DIE_SIMPLE + floor(random(0, 6));
+	WarnOthers();
+
+	think = Respawn;
+	nextthink = time + 10.0f;
 
 	m_eUser = world;
 	customphysics = __NULL__;
 	m_iFlags = 0x0;
 
-	think = Respawn;
-	nextthink = time + 10.0f;
+	if (health < -50) {
+		Gib();
+		return;
+	}
 
-	WarnOthers();
+	solid = SOLID_CORPSE;
+	//takedamage = DAMAGE_NO;
+	
+	if (style != SCI_DEAD) {
+		frame = SCIA_DIE_SIMPLE + floor(random(0, 6));
+		style = SCI_DEAD;
+	}
 }
 
 void monster_scientist::Hide(void)
@@ -536,6 +558,10 @@ void monster_scientist::Respawn(void)
 	health = 50;
 	velocity = [0,0,0];
 	m_iFlags = 0x0;
+	
+	if (autocvar_sh_scialert) {
+		m_iFlags |= SCIF_FEAR;
+	}
 }
 
 void monster_scientist::monster_scientist(void)
