@@ -43,7 +43,7 @@ void CBaseEntity :: CBaseEntity ( void )
 			return;
 		}
 	}
-	
+
 	/*m_renderamt = 255;
 	m_rendercolor = [1,1,1];
 	m_rendermode = 0;*/

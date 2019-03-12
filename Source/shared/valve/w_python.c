@@ -6,8 +6,6 @@
 *
 ****/
 
-.int python_cylinder;
-
 enum
 {
 	PYTHON_IDLE1,
@@ -32,7 +30,7 @@ void w_python_precache(void)
 void w_python_pickup(void)
 {
 	player pl = (player)self;
-	pl.python_cylinder = 6;
+	pl.python_mag = 6;
 }
 
 string w_python_vmodel(void)
@@ -54,7 +52,12 @@ string w_python_deathmsg(void)
 
 void w_python_draw(void)
 {
+#ifdef CSQC
 	Weapons_ViewAnimation(PYTHON_DRAW);
+#else
+	player pl = (player)self;
+	Weapons_UpdateAmmo(pl, pl.python_mag, pl.ammo_357, __NULL__);
+#endif
 }
 
 void w_python_holster(void)
@@ -137,6 +140,8 @@ void w_python_crosshair(void)
 	static vector cross_pos;
 	cross_pos = (video_res / 2) + [-12,-12];
 	drawsubpic(cross_pos, [24,24], "sprites/crosshairs.spr_0.tga", [48/128,0], [0.1875, 0.1875], [1,1,1], 1, DRAWFLAG_NORMAL);
+	HUD_DrawAmmo1();
+	HUD_DrawAmmo2();
 #endif
 }
 

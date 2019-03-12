@@ -6,18 +6,18 @@
 *
 ****/
 
-/* WEAPON ITEMS */
-class itemweapon:CBaseEntity
+/* PICKUP ITEMS */
+class item_pickup:CBaseEntity
 {
 	int id;
-	void() itemweapon;
+	void() item_pickup;
+
 	virtual void() touch;
 	virtual void(int i) setitem;
-	
 	virtual void() Respawn;
 };
 
-void itemweapon::touch(void)
+void item_pickup::touch(void)
 {
 	if (other.classname == "player") {
 		if (Weapons_IsPresent((player)other, id) == TRUE) {
@@ -36,14 +36,14 @@ void itemweapon::touch(void)
 	}
 }
 
-void itemweapon::setitem(int i)
+void item_pickup::setitem(int i)
 {
 	id = i;
 	m_oldModel = Weapons_GetWorldmodel(id);
 	setmodel(this, m_oldModel);
 }
 
-void itemweapon::Respawn(void)
+void item_pickup::Respawn(void)
 {
 	solid = SOLID_TRIGGER;
 	movetype = MOVETYPE_TOSS;
@@ -60,8 +60,9 @@ void itemweapon::Respawn(void)
 	sound(this, CHAN_ITEM, "items/suitchargeok1.wav", 1, ATTN_NORM, 150);
 }
 
-void itemweapon::itemweapon(void)
+void item_pickup::item_pickup(void)
 {
+	precache_sound("items/suitchargeok1.wav");
 	CBaseEntity::CBaseEntity();
 	Respawn();
 }

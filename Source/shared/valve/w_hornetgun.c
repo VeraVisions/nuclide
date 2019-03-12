@@ -52,7 +52,12 @@ string w_hornetgun_deathmsg(void)
 
 void w_hornetgun_draw(void)
 {
+#ifdef CSQC
 	Weapons_ViewAnimation(HORNETGUN_DRAW);
+#else
+	player pl = (player)self;
+	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_hornet, __NULL__);
+#endif
 }
 void w_hornetgun_holster(void)
 {

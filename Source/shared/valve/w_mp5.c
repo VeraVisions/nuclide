@@ -6,10 +6,8 @@
 *
 ****/
 
-.int mp5_mag;
-
-enum
-{
+/* Animations */
+enum {
 	MP5_IDLE1,
 	MP5_IDLE2,
 	MP5_GRENADE,
@@ -30,23 +28,28 @@ void w_mp5_precache(void)
 	precache_sound("weapons/hks2.wav");
 	precache_sound("weapons/glauncher.wav");
 }
+
 void w_mp5_pickup(void)
 {
 	player pl = (player)self;
 	pl.mp5_mag = 25;
 }
+
 string w_mp5_vmodel(void)
 {
 	return "models/v_9mmar.mdl";
 }
+
 string w_mp5_wmodel(void)
 {
 	return "models/w_9mmar.mdl";
 }
+
 string w_mp5_pmodel(void)
 {
 	return "models/p_9mmar.mdl";
 }
+
 string w_mp5_deathmsg(void)
 {
 	return "";
@@ -54,12 +57,19 @@ string w_mp5_deathmsg(void)
 
 void w_mp5_draw(void)
 {
+#ifdef CSQC
 	Weapons_ViewAnimation(MP5_DRAW);
+#else
+	player pl = (player)self;
+	Weapons_UpdateAmmo(pl, pl.mp5_mag, pl.ammo_9mm, pl.ammo_m203_grenade);
+#endif
 }
+
 void w_mp5_holster(void)
 {
 	Weapons_ViewAnimation(MP5_DRAW);
 }
+
 void w_mp5_primary(void)
 {
 	player pl = (player)self;
@@ -93,6 +103,7 @@ void w_mp5_primary(void)
 	pl.w_attack_next = 0.1f;
 	pl.w_idle_next = 10.0f;
 }
+
 void w_mp5_secondary(void)
 {
 	player pl = (player)self;
@@ -132,6 +143,7 @@ void w_mp5_secondary(void)
 	pl.w_attack_next = 1.0f;
 	pl.w_idle_next = 10.0f;
 }
+
 void w_mp5_reload(void)
 {
 	player pl = (player)self;
@@ -148,6 +160,7 @@ void w_mp5_reload(void)
 	pl.w_attack_next = 1.5f;
 	pl.w_idle_next = 10.0f;
 }
+
 void w_mp5_release(void)
 {
 #ifdef CSQC
@@ -165,12 +178,16 @@ void w_mp5_release(void)
 	pl.w_idle_next = 15.0f;
 #endif
 }
+
 void w_mp5_crosshair(void)
 {
 #ifdef CSQC
 	static vector cross_pos;
 	cross_pos = (video_res / 2) + [-12,-12];
 	drawsubpic(cross_pos, [24,24], "sprites/crosshairs.spr_0.tga", [24/128,48/128], [0.1875, 0.1875], [1,1,1], 1, DRAWFLAG_NORMAL);
+	HUD_DrawAmmo1();
+	HUD_DrawAmmo2();
+	HUD_DrawAmmo3();
 #endif
 }
 
@@ -185,8 +202,7 @@ void w_mp5_hudpic(int s, vector pos)
 #endif
 }
 
-weapon_t w_mp5 =
-{
+weapon_t w_mp5 = {
 	ITEM_MP5,
 	2,
 	0,
@@ -207,10 +223,13 @@ weapon_t w_mp5 =
 };
 
 #ifdef SSQC
-void weapon_9mmAR(void) {
+void weapon_9mmAR(void)
+{
 	Weapons_InitItem(WEAPON_MP5);
 }
-void weapon_mp5(void) {
+
+void weapon_mp5(void)
+{
 	Weapons_InitItem(WEAPON_MP5);
 }
 #endif

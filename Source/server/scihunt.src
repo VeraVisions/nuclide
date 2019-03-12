@@ -44,6 +44,7 @@ valve/spectator.c
 ../shared/valve/w_satchel.c
 ../shared/valve/w_snark.c
 valve/items.cpp
+valve/ammo.cpp
 ../shared/scihunt/w_cannon.c
 ../shared/scihunt/w_chainsaw.c
 ../shared/scihunt/w_hammer.c

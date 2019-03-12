@@ -44,7 +44,12 @@ string w_tripmine_deathmsg(void)
 
 void w_tripmine_draw(void)
 {
+#ifdef CSQC
 	Weapons_ViewAnimation(TRIPMINE_DRAW);
+#else
+	player pl = (player)self;
+	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_tripmine, __NULL__);
+#endif
 }
 void w_tripmine_holster(void)
 {

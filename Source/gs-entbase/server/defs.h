@@ -20,7 +20,7 @@ enumflags
 };
 
 void Effect_CreateSpark(vector pos, vector ang);
-void Effect_BreakModel(vector mins, vector maxs,vector vel, float mat);
+void Effect_BreakModel(int count, vector mins, vector maxs,vector vel, float mat);
 
 string Util_FixModel(string mdl)
 {	

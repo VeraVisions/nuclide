@@ -297,8 +297,6 @@ class monster_scientist:CBaseEntity
 	virtual void() WarnOthers;
 };
 
-
-
 void monster_scientist::Gib(void)
 {
 	takedamage = DAMAGE_NO;

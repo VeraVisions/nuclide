@@ -71,6 +71,8 @@ struct
 	float fLastWeapon;
 	float fBobTime;
 	float fBob;
+	float damage_alpha;
+	vector damage_pos;
 
 //Player fields
 	entity ePlayer;

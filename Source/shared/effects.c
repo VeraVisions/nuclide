@@ -335,7 +335,7 @@ void Effect_Impact(int iType, vector vPos, vector vNormal) {
 #endif
 }
 
-void Effect_BreakModel(vector vMins, vector vMaxs, vector vVel, float fStyle) {
+void Effect_BreakModel(int count, vector vMins, vector vMaxs, vector vVel, float fStyle) {
 #ifdef SSQC
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_MODELGIB);
@@ -346,6 +346,7 @@ void Effect_BreakModel(vector vMins, vector vMaxs, vector vVel, float fStyle) {
 	WriteCoord(MSG_MULTICAST, vMaxs[1]); 
 	WriteCoord(MSG_MULTICAST, vMaxs[2]);
 	WriteByte(MSG_MULTICAST, fStyle);
+	WriteByte(MSG_MULTICAST, count);
 
 	msg_entity = self;
 	
@@ -356,7 +357,7 @@ void Effect_BreakModel(vector vMins, vector vMaxs, vector vVel, float fStyle) {
 	multicast(vWorldPos, MULTICAST_PVS);
 #else
 	static void Effect_BreakModel_Remove(void) { remove(self) ; }
-	
+
 	float fModelCount;
 	vector vPos;
 	string sModel = "";

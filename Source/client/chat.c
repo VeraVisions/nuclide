@@ -9,6 +9,7 @@
 #define CHAT_LINES 5
 #define CHAT_TIME 	5
 
+var int g_chatpos[2];
 var float g_chattime;
 var int g_chatlines = -1;
 string g_chatbuffer[CHAT_LINES];
@@ -22,15 +23,17 @@ Just prints whatever is in the chat buffer and removes lines after some time.
 */
 void Chat_Draw(void)
 {
-	vector pos = video_mins + [16, video_res_y - 128];
+	int i;
+	g_chatpos[0] = video_mins[0] + 16;
+	g_chatpos[1] = video_mins[1] + video_res[1] - 128;
 
 	if (g_chatlines < 0) {
 		return;
 	}
 
-	// Remove messages after a g_chattime has passed
+	/* Remove messages after a g_chattime has passed */
 	if (g_chattime < time) {
-		for (int i = 0; i < g_chatlines; i++) {
+		for (i = 0; i < g_chatlines; i++) {
 			if (g_chatbuffer[i+1] != __NULL__) {
 				g_chatbuffer[i] = g_chatbuffer[i+1];
 			} else {
@@ -42,9 +45,9 @@ void Chat_Draw(void)
 		g_chattime = time + CHAT_TIME;
 	}
 
-	for (int i = 0; i < CHAT_LINES; i++) {
-		drawstring(pos, g_chatbuffer[i], [12,12], [1,1,1], 1.0f, 0);
-		pos_y += 14;
+	for (i = 0; i < CHAT_LINES; i++) {
+		drawstring([g_chatpos[0],g_chatpos[1]], g_chatbuffer[i], [12,12], [1,1,1], 1.0f, 0);
+		g_chatpos[1] += 14;
 	}
 }
 
@@ -61,5 +64,5 @@ void Chat_Parse(string msg)
 	}
 
 	g_chattime = time + CHAT_TIME;
-	sound(pSeat->ePlayer, CHAN_ITEM, "misc/talk.wav", 1.0, ATTN_NONE);
+	localsound("misc/talk.wav");
 }

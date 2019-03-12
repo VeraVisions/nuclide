@@ -168,7 +168,7 @@ void CSQC_UpdateView(float w, float h, float focus)
 		// TODO: Move this someplace less... entry-ish. like into a pre-draw.
 		if (pl.flags & FL_FLASHLIGHT) {
 			traceline(getproperty(VF_ORIGIN), getproperty(VF_ORIGIN) + (v_forward * 9000), FALSE, self);
-			dynamiclight_add(trace_endpos, 128, [1,1,1]);
+			dynamiclight_add(trace_endpos + (v_forward * -2), 128, [1,1,1]);
 		}
 
 		addentities(MASK_ENGINE);
@@ -424,7 +424,8 @@ void CSQC_Parse_Event(void)
 			vSize[2] = readcoord();
 
 			float fStyle = readbyte();
-			Effect_BreakModel(vPos, vSize, [0,0,0], fStyle);
+			int count = readbyte();
+			Effect_BreakModel(count, vPos, vSize, [0,0,0], fStyle);
 			break;
 		case EV_CAMERATRIGGER:
 			pSeat->vCameraPos.x = readcoord();

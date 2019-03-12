@@ -26,11 +26,7 @@ float infodecal_send(entity pvsent, float cflags)
 	WriteCoord(MSG_ENTITY, self.angles[0]);
 	WriteCoord(MSG_ENTITY, self.angles[1]);
 	WriteCoord(MSG_ENTITY, self.angles[2]);
-	/* Figure this thing out */
-	WriteByte(MSG_ENTITY, 255);
-	WriteByte(MSG_ENTITY, 0);
-	WriteByte(MSG_ENTITY, 0);
-	WriteString(MSG_ENTITY, self.texture );
+	WriteString(MSG_ENTITY, self.texture);
 	return TRUE;
 }
 
@@ -62,6 +58,9 @@ void infodecal(void)
 		}
 		return;
 	}
+	
+	/* Some maps have everything set to full-on uppercase */
+	self.texture = strtolower(self.texture);
 	
 	/*self.origin[0] = rint(self.origin[0]);
 	self.origin[1] = rint(self.origin[1]);

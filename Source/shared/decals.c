@@ -6,6 +6,8 @@
 *
 ****/
 
+#include "decals.h"
+
 #define DECALS_MAX 30
 
 #ifdef SSQC
@@ -76,17 +78,71 @@ void Decals_PlaceScorch(vector pos)
 #else
 	entity decal = Decals_Next(pos);
 	setorigin(decal, pos);
-	decal.texture = sprintf("{scorch%d", floor(random(1,3)));
+	decal.texture = sprintf("{scorch%d", floor(random(1,4)));
 	decal.think = infodecal;
 	decal.nextthink = time /*+ 0.1f*/;
 #endif
 }
 
 #ifdef CSQC
-float Effect_Decal(void)
+
+const string g_decalshader = \
+	"{\n" \
+		"polygonOffset\n" \
+		"{\n"\
+			"clampmap %s\n" \
+			"rgbgen vertex\n" \
+			"blendfunc GL_ZERO GL_SRC_COLOR\n" \
+		"}\n" \
+	"}";
+
+float Decal_PreDraw(void)
 {
 	adddecal(self.classname, self.origin, self.mins, self.maxs, self.color, 1.0f);
 	addentity(self);
 	return PREDRAW_NEXT;
+}
+
+void Decal_Parse(void)
+{
+	string decalname = "";
+	string decalshader = "";
+
+	self.origin[0] = readcoord();
+	self.origin[1] = readcoord();
+	self.origin[2] = readcoord();
+
+	self.angles[0] = readcoord();
+	self.angles[1] = readcoord();
+	self.angles[2] = readcoord();
+	self.classname = readstring();
+
+	for (int i = 0; i < g_decalwad.length; i++) {
+		if (self.classname == g_decalwad[i].name) {
+			self.color[0] = (g_decalwad[i].color[0] / 255);
+			self.color[1] = (g_decalwad[i].color[1] / 255);
+			self.color[2] = (g_decalwad[i].color[2] / 255);
+			break;
+		}
+	}
+
+	self.size = drawgetimagesize(self.classname);
+
+	if (serverkeyfloat("*bspversion") == 30) {
+		decalname = sprintf("decal_%s", self.classname);
+		decalshader = sprintf(g_decalshader, self.classname);
+		shaderforname(decalname, decalshader);
+		self.classname = decalname;
+	}
+		
+	makevectors(self.angles);
+	float surf = getsurfacenearpoint(world, self.origin);
+	vector s_dir = getsurfacepointattribute(world, surf, 0, SPA_S_AXIS);
+	vector t_dir = getsurfacepointattribute(world, surf, 0, SPA_T_AXIS);
+	self.mins = v_up / self.size[0];
+	self.maxs = t_dir / self.size[1];
+
+	self.predraw = Decal_PreDraw;
+	self.drawmask = MASK_ENGINE;
 }
 #endif

@@ -53,9 +53,10 @@ void w_glock_pickup(void)
 
 void w_glock_draw(void)
 {
-#ifdef SSQC
-	player pl = (player)self;
+#ifdef CSQC
 	Weapons_ViewAnimation(GLOCK_DRAW);
+#else
+	player pl = (player)self;
 	Weapons_UpdateAmmo(pl, pl.glock_mag, pl.ammo_9mm, __NULL__);
 #endif
 }

@@ -218,8 +218,8 @@ void Weapons_AddItem(player pl, int w)
 
 void Weapons_InitItem(int w)
 {
-	itemweapon it = (itemweapon)self;
-	spawnfunc_itemweapon();
+	item_pickup it = (item_pickup)self;
+	spawnfunc_item_pickup();
 	it.setitem(w);
 }
 

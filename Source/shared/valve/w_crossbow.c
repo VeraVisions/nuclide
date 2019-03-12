@@ -53,11 +53,16 @@ string w_crossbow_deathmsg(void)
 
 void w_crossbow_draw(void)
 {
+#ifdef CSQC
 	if (1/* has clip*/) {
 		Weapons_ViewAnimation(CROSSBOW_DRAW1);
 	} else {
 		Weapons_ViewAnimation(CROSSBOW_DRAW2);
 	}
+#else
+	player pl = (player)self;
+	Weapons_UpdateAmmo(pl, pl.crossbow_mag, pl.ammo_bolt, __NULL__);
+#endif
 }
 
 void w_crossbow_holster(void)
@@ -174,6 +179,8 @@ void w_crossbow_crosshair(void)
 	static vector cross_pos;
 	cross_pos = (video_res / 2) + [-12,-12];
 	drawsubpic(cross_pos, [24,24], "sprites/crosshairs.spr_0.tga", [72/128,0], [0.1875, 0.1875], [1,1,1], 1, DRAWFLAG_NORMAL);
+	HUD_DrawAmmo1();
+	HUD_DrawAmmo2();
 #endif
 }
 

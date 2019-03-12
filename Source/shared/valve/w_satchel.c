@@ -25,7 +25,12 @@ enum
 
 void w_satchel_draw(void)
 {
+#ifdef CSQC
 	Weapons_ViewAnimation(SATCHEL_DRAW);
+#else
+	player pl = (player)self;
+	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_satchel, __NULL__);
+#endif
 }
 
 void w_satchel_holster(void)

@@ -18,7 +18,12 @@ enum
 
 void w_snark_draw(void)
 {
+#ifdef CSQC
 	Weapons_ViewAnimation(SNARK_DRAW);
+#else
+	player pl = (player)self;
+	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_snark, __NULL__);
+#endif
 }
 
 void w_snark_holster(void)

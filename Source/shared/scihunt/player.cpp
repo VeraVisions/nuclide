@@ -19,6 +19,11 @@ class player
 	/* Weapon specific */
 	int cannon_mag;
 	int glock_mag;
+	int mp5_mag;
+	int python_mag;
+	int shotgun_mag;
+	int crossbow_mag;
+	int rpg_mag;
 
 #ifdef CSQC
 	/* External model */

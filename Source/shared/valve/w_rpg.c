@@ -45,7 +45,12 @@ string w_rpg_deathmsg(void)
 
 void w_rpg_draw(void)
 {
+#ifdef CSQC
 	Weapons_ViewAnimation(RPG_DRAW1);
+#else
+	player pl = (player)self;
+	Weapons_UpdateAmmo(pl, pl.rpg_mag, pl.ammo_rocket, __NULL__);
+#endif
 }
 
 void w_rpg_holster(void)

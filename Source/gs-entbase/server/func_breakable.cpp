@@ -80,7 +80,9 @@ void func_breakable::vDeath (entity attacker, int type, int damage)
 		return;
 	}
 	health = 0;
-	Effect_BreakModel(absmin, absmax, '0 0 0', m_iMaterial);
+	
+	print(sprintf("BREAK: %v [x] %v [=] %d\n", mins, maxs, vlen(mins - maxs)));
+	Effect_BreakModel(20, absmin, absmax, '0 0 0', m_iMaterial);
 
 	if (m_flExplodeMag) {
 		vector vWorldPos;

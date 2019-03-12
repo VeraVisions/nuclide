@@ -6,49 +6,50 @@
 *
 ****/
 
-var float g_flDamageAlpha;
-var vector g_vecDamageLocation;
-
 void Damage_Draw(void)
 {
 	float fForward;
 	float fRight;
 	vector vecMiddle;
 
-	if (g_flDamageAlpha <= 0.0) {
+	if (pSeat->damage_alpha <= 0.0) {
 		return;
 	}
 
-	vecMiddle = (video_res / 2);
+	vecMiddle = video_mins + (video_res / 2);
 	makevectors(getproperty(VF_CL_VIEWANGLES));
 
-	vector location = normalize(g_vecDamageLocation - getproperty(VF_ORIGIN));
+	vector location = normalize(pSeat->damage_pos - getproperty(VF_ORIGIN));
 	fForward = dotproduct(location, v_forward);
 	fRight = dotproduct(location, v_right);
 
 	if (fForward > 0.25) {
 		drawpic(vecMiddle + [-64,-70 - 32], "sprites/640_pain.spr_0.tga", 
-				[128,48], [1,1,1], fabs(fForward) * g_flDamageAlpha, DRAWFLAG_ADDITIVE);
+				[128,48], [1,1,1], fabs(fForward) * pSeat->damage_alpha, DRAWFLAG_ADDITIVE);
 	} else if (fForward < -0.25) {
 		drawpic(vecMiddle + [-64,70], "sprites/640_pain.spr_2.tga",
-				[128,48], [1,1,1], fabs(fForward) * g_flDamageAlpha, DRAWFLAG_ADDITIVE);
+				[128,48], [1,1,1], fabs(fForward) * pSeat->damage_alpha, DRAWFLAG_ADDITIVE);
 	}
 	if (fRight > 0.25) {
 		drawpic(vecMiddle + [70,-64], "sprites/640_pain.spr_1.tga",
-				[48,128], [1,1,1], fabs(fRight) * g_flDamageAlpha, DRAWFLAG_ADDITIVE);
+				[48,128], [1,1,1], fabs(fRight) * pSeat->damage_alpha, DRAWFLAG_ADDITIVE);
 	} else if (fRight < -0.25) {
 		drawpic(vecMiddle + [-70 - 32,-64], "sprites/640_pain.spr_3.tga",
-				[48,128], [1,1,1], fabs(fRight) * g_flDamageAlpha, DRAWFLAG_ADDITIVE);
+				[48,128], [1,1,1], fabs(fRight) * pSeat->damage_alpha, DRAWFLAG_ADDITIVE);
 	}
-	g_flDamageAlpha -= frametime;
+	pSeat->damage_alpha -= frametime;
 }
 
 float CSQC_Parse_Damage(float save, float take, vector org)
 {
+	int s = (float)getproperty(VF_ACTIVESEAT);
+	pSeat = &seats[s];
+
 	if (org) {
-		g_vecDamageLocation = org;
-		g_flDamageAlpha = 1.0f;
+		pSeat->damage_pos = org;
+		pSeat->damage_alpha = 1.0f;
 	}
-	sound(self, CHAN_VOICE, "player/pl_pain2.wav", 1, ATTN_NORM);
+
+	//sound(pSeat->ePlayer, CHAN_VOICE, "player/pl_pain2.wav", 1, ATTN_NORM);
 	return TRUE;
 }

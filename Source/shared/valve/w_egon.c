@@ -46,7 +46,12 @@ string w_egon_deathmsg(void)
 
 void w_egon_draw(void)
 {
+#ifdef CSQC
 	Weapons_ViewAnimation(EGON_DRAW);
+#else
+	player pl = (player)self;
+	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_uranium, __NULL__);
+#endif
 }
 
 void w_egon_holster(void)
