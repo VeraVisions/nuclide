@@ -23,7 +23,7 @@ void Player_ReadEntity(float flIsNew)
 	pl.origin[0] = readcoord();
 	pl.origin[1] = readcoord();
 	pl.origin[2] = readcoord();
-	pl.pitch = readcoord() / 90;
+	pl.pitch = readcoord();
 	pl.angles[1] = readcoord();
 	pl.angles[2] = readcoord();
 	pl.velocity[0] = readcoord();

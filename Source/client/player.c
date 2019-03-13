@@ -51,15 +51,25 @@ string sPModels[CS_WEAPON_COUNT - 1] = {
 void player::gun_offset(void)
 {
 	vector v1, v2;
-	this.p_model.angles = this.angles; // Set it to something consistent
-	gettaginfo(this, this.p_hand_bone); // Updates the v_ globals for the player hand bone angle
-	v1 = vectoangles(v_right, v_up); // Create angles from the v_ matrix
-	gettaginfo(this.p_model, this.p_model_bone); // Updates the v_ globals for the weapon hand bone angle
-	v2 = vectoangles(v_right, v_up); 
-	this.p_model.angles = this.angles + (v1 - v2); // The difference is applied
-	
-	// Fix the origin
-	setorigin(this.p_model, this.origin); // Set it to something consistent
+
+	/* Set it to something consistent */
+	this.p_model.angles = this.angles;
+
+	/* Updates the v_ globals for the player hand bone angle */
+	gettaginfo(this, this.p_hand_bone);
+
+	/* Create angles from the v_ matrix */
+	v1 = vectoangles(v_right, v_up);
+
+	/* Updates the v_ globals for the weapon hand bone angle */
+	gettaginfo(this.p_model, this.p_model_bone); 
+	v2 = vectoangles(v_right, v_up);
+
+	/* The difference is applied */
+	this.p_model.angles = this.angles + (v1 - v2);
+
+	/* Fix the origin */
+	setorigin(this.p_model, this.origin);
 	vector ofs = gettaginfo(this.p_model, this.p_model_bone) - gettaginfo(this, this.p_hand_bone);
 	setorigin(this.p_model, this.origin - ofs);
 }
@@ -72,9 +82,9 @@ void player::draw(void)
 		this.p_model.owner = this;
 	}
 
-	this.subblend2frac = this.pitch;
+	this.subblend2frac = this.pitch / 90;
 
-	// Only bother updating the model if the weapon has changed
+	/* Only bother updating the model if the weapon has changed */
 	if (this.lastweapon != this.activeweapon) {
 		if (this.activeweapon) {
 		#ifdef CSTRIKE
@@ -85,8 +95,8 @@ void player::draw(void)
 		}
 		this.lastweapon = this.activeweapon;
 	    	
-		// Update the bone index of the current p_ model so we can calculate the offset
-		// Get the weapon bone ID for the current player model
+		/* Update the bone index of the current p_ model so we can calculate the offset
+		 * and get the weapon bone ID for the current player model */
 		this.p_hand_bone = gettagindex(this, "Bip01 R Hand");
 		this.p_model_bone = gettagindex(this.p_model, "Bip01 R Hand");
 	}
@@ -150,6 +160,30 @@ void player::draw(void)
 
 float player::predraw(void)
 {
+	/* Handle the flashlights... */
+	if (flags & FL_FLASHLIGHT) {
+		vector src;
+		vector ang;
+		
+		if (this.entnum != player_localentnum) {
+			src = origin + view_ofs;
+			ang = [pitch, angles[1], angles[2]];
+		} else {
+			src = getproperty(VF_ORIGIN);
+			ang = getproperty(VF_CL_VIEWANGLES);
+		}
+
+		makevectors(ang);
+		traceline(src, src + (v_forward * 8096), FALSE, self);
+			
+		if (serverkeyfloat("*bspversion") == 30) {
+			dynamiclight_add(trace_endpos + (v_forward * -2), 128, [1,1,1]);
+		} else {
+			float p = dynamiclight_add(src, 512, [1,1,1], 0, "textures/flashlight");
+			dynamiclight_set(p, LFIELD_ANGLES, ang);
+		}
+	}
+
 	/* Run animations regardless of rendering the player */
 	draw();
 	gun_offset();

@@ -26,6 +26,22 @@ varying vec3 light;
 		return ( dot( normal, dir ) * 0.5 ) + 0.5;
 	}*/
 
+#ifdef CHROME
+	/* Rotate Light Vector */
+	vec3 rlv(vec3 axis, vec3 origin, vec3 lightpoint)
+	{
+		vec3 offs;
+		vec3 result;
+		offs[0] = lightpoint[0] - origin[0];
+		offs[1] = lightpoint[1] - origin[1];
+		offs[2] = lightpoint[2] - origin[2];
+		result[0] = dot(offs[0], axis[0]);
+		result[1] = dot(offs[1], axis[1]);
+		result[2] = dot(offs[2], axis[2]);
+		return result;
+	}
+#endif
+
 	void main ()
 	{
 		vec3 n, s, t, w;
@@ -34,9 +50,13 @@ varying vec3 light;
 		light = e_light_ambient + (e_light_mul * dot(n, e_light_dir));
 
 #ifdef CHROME
-		vec3 viewc = normalize(e_eyepos - v_position.xyz);
+		vec3 rorg = rlv(vec3(0,0,0), w, e_light_dir);
+		vec3 viewc = normalize(rorg - w);
 		float d = dot(n, viewc);
-		vec3 reflected = n * 2 * d - viewc;
+		vec3 reflected;
+		reflected.x = n.x * 2 * d - viewc.x;
+		reflected.y = n.y * 2 * d - viewc.y;
+		reflected.z = n.z * 2 * d - viewc.z;
 		tex_c.x = 0.5 + reflected.y * 0.5;
 		tex_c.y = 0.5 - reflected.z * 0.5;
 #endif

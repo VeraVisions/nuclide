@@ -1,0 +1,10 @@
+*~
+*.lno
+csqccore.txt
+ssqccore.txt
+menucore.txt
+conhistory.txt
+condump.txt
+config.cfg
+fte.cfg
+qkey
