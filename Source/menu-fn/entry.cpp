@@ -25,6 +25,7 @@ void m_init(void)
 	localcmd("con_textsize -12\n");
 	localcmd("scr_conalpha 1\n");
 	localcmd("cl_idlefps 0\n");
+	localcmd("r_shadow_realtime_dlight 0\n");
 	localcmd("gl_mindist 4\n"); // Thanks Valve for v_shotgun.mdl
 	localcmd("_pext_infoblobs 1\n");
 	
