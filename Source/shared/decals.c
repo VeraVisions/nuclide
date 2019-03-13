@@ -117,6 +117,8 @@ void Decal_Parse(void)
 	self.angles[2] = readcoord();
 	self.classname = readstring();
 
+	self.color = [1,1,1];
+
 	for (int i = 0; i < g_decalwad.length; i++) {
 		if (self.classname == g_decalwad[i].name) {
 			self.color[0] = (g_decalwad[i].color[0] / 255);
