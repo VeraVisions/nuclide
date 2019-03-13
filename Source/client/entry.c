@@ -82,6 +82,8 @@ void CSQC_Init(float apilevel, string enginename, float engineversion)
 	HUD_Init();
 	Scores_Init();
 	Client_Init(apilevel, enginename, engineversion);
+
+	DSP_Init();
 }
 
 void CSQC_UpdateView(float w, float h, float focus)
@@ -219,6 +221,7 @@ void CSQC_UpdateView(float w, float h, float focus)
 		Predict_PostFrame((player)self);
 	}
 
+	DSP_UpdateListener();
 	pSeat = (void*)0x70000000i;
 
 	if (needcursor) {
@@ -589,6 +592,66 @@ float CSQC_Parse_CenterPrint(string sMessage)
 
 /*
 =================
+CSQC_Ent_ParseMapEntity
+=================
+*/
+float CSQC_Ent_ParseMapEntity( void )
+{
+	CBaseEntity eEnt = __NULL__;
+	string strField, strValue;
+	__fullspawndata = "";
+	int iClass = FALSE;
+
+	while ( 1 ) {
+		strField = getentitytoken();
+
+		if ( !strField ) {
+			break;
+		}
+
+		if ( strField == "}" ) {
+			if ( !eEnt.classname ) {
+				break;
+			}
+			if ( iClass == TRUE ) {
+				eEnt.Init();
+				return TRUE;
+			}
+			if ( eEnt ) {
+				remove( eEnt );
+			}
+			return TRUE;
+		}
+
+		strValue = getentitytoken();
+
+		if ( !strValue ) {
+			break;
+		}
+
+		switch ( strField ) {
+			case "classname":
+				/*if ( strValue == "env_cubemap" ) {
+					iClass = TRUE;
+					eEnt = spawn(CEnvCubemap);
+				} else */if ( strValue == "env_sound" ) {
+					eEnt = spawn(env_sound);
+					iClass = TRUE;
+				} else {
+					eEnt.classname = strValue;
+				}
+				break;
+			default:
+				__fullspawndata = sprintf( "%s\"%s\" \"%s\" ", __fullspawndata, strField, strValue );
+				break;
+		}
+	}
+
+	return FALSE;
+}
+
+/*
+=================
 CSQC_WorldLoaded
 
 Whenever the world is fully initialized...
@@ -609,6 +672,27 @@ void CSQC_WorldLoaded(void)
 	precache_pic("{scorch1", TRUE);
 	precache_pic("{scorch2", TRUE);
 	precache_pic("{scorch3", TRUE);
+	
+	string strTokenized;
+
+	getentitytoken( 0 );
+	while ( 1 ) {
+		strTokenized = getentitytoken();
+		
+		if ( strTokenized == "" ) {
+			break;
+		}
+
+		if ( strTokenized != "{" ) {
+			print("^1[WARNING] ^7Bad entity data\n");
+			return;
+		}
+		
+		if ( !CSQC_Ent_ParseMapEntity() ) {
+			print("^1[WARNING] ^7Bad entity data\n");
+			return;
+		}
+	}
 }
 
 /*

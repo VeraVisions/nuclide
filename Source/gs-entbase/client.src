@@ -1,5 +1,7 @@
 #includelist
+../gs-entbase/client/baseentity.cpp
 ../gs-entbase/client/fade.cpp
 ../gs-entbase/client/sprite.cpp
 ../gs-entbase/client/text.cpp
+../gs-entbase/client/env_sound.cpp
 #endlist
