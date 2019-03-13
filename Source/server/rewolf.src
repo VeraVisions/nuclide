@@ -1,5 +1,5 @@
 #pragma target fte
-#pragma progs_dat  "../../rewolf/progs.dat"
+#pragma progs_dat  "../../rewolf/data.pk3dir/progs.dat"
 
 #define QWSSQC
 #define VALVE

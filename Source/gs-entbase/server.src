@@ -24,6 +24,7 @@
 ../gs-entbase/server/func_illusionary.cpp
 ../gs-entbase/server/func_ladder.cpp
 ../gs-entbase/server/func_train.cpp
+../gs-entbase/server/func_pushable.cpp
 ../gs-entbase/server/func_wall.cpp
 ../gs-entbase/server/func_wall_toggle.cpp
 ../gs-entbase/server/func_conveyor.cpp

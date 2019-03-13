@@ -1,5 +1,5 @@
 #pragma target fte
-#pragma progs_dat  "../../scihunt/csprogs.dat"
+#pragma progs_dat  "../../scihunt/data.pk3dir/csprogs.dat"
 
 #define CSQC
 #define VALVE

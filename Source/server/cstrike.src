@@ -1,5 +1,5 @@
 #pragma target fte
-#pragma progs_dat  "../../cstrike/progs.dat"
+#pragma progs_dat  "../../cstrike/data.pk3dir/progs.dat"
 
 #define QWSSQC
 #define CSTRIKE

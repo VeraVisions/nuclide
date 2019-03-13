@@ -1,5 +1,5 @@
 #pragma target fte
-#pragma progs_dat  "../../rewolf/csprogs.dat"
+#pragma progs_dat  "../../rewolf/data.pk3dir/csprogs.dat"
 
 #define CSQC
 #define VALVE

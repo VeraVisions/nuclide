@@ -24,14 +24,9 @@ varying vec2 lm_c;
 		vec4 diffuse_f = texture2D(s_diffuse, tex_c);
 		vec3 light = texture2D(s_lightmap, lm_c).rgb;
 
-		if (light.r > 1.0f) {
-			light.r = 1.0f;
-		}
-		if (light.g > 1.0f) {
-			light.g = 1.0f;
-		}
-		if (light.b > 1.0f) {
-			light.b = 1.0f;
+		if (diffuse_f.rgb == vec3(0,0,1)) {
+			diffuse_f.rgb = vec3(0,0,0);
+			discard;
 		}
 
 		if (diffuse_f.a < 0.5) {
@@ -55,5 +50,6 @@ varying vec2 lm_c;
 #endif
 
 		gl_FragColor = diffuse_f;
+		
 	}
 #endif

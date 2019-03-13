@@ -1,5 +1,5 @@
 #pragma target fte
-#pragma progs_dat  "../../scihunt/progs.dat"
+#pragma progs_dat  "../../scihunt/data.pk3dir/progs.dat"
 
 #define QWSSQC
 #define VALVE
