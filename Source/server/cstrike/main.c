@@ -515,7 +515,7 @@ void Game_Worldspawn(void)
 
 	clientstat(0, EV_FLOAT, health);
 	clientstat(10, EV_FLOAT, weapon);
-	clientstat(16, EV_FLOAT, view_ofs_z);
+	clientstat(16, EV_FLOAT, view_ofs[2]);
 	clientstat(21, EV_FLOAT, viewzoom);
 
 	/* FIXME: Turn those into bitflags */

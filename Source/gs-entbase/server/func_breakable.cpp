@@ -125,7 +125,7 @@ void func_breakable::PlayerTouch(void)
 		}
 	}
 
-	if ((spawnflags & SF_PRESSURE) && (other.absmin_z >= maxs_z - 2)) {
+	if ((spawnflags & SF_PRESSURE) && (other.absmin[2] >= maxs[2] - 2)) {
 		touch = __NULL__;
 		think = Trigger;
 

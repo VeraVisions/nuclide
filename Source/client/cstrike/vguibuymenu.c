@@ -138,7 +138,7 @@ void VGUI_BuyMenu_WeaponButton(float fWeapon) {
 		VGUI_FakeButton(vguiWeaponTable[fWeapon].sName, vVGUIButtonPos, [264,24]);
 	}
 
-	vVGUIButtonPos_y += 32;
+	vVGUIButtonPos[1] += 32;
 }
 
 /*
@@ -160,7 +160,7 @@ void VGUI_BuyMenu_EquipmentButton(float fID) {
 		VGUI_FakeButton(vguiEquipmentTable[fID].sName, vVGUIButtonPos, [180,24]);
 	}
 
-	vVGUIButtonPos_y += 32;
+	vVGUIButtonPos[1] += 32;
 }
 
 /*
@@ -176,7 +176,7 @@ void VGUI_BuyMenu_Handguns(vector vPos) {
 	VGUI_BuyMenu_WeaponButton(WEAPON_DEAGLE);
 	VGUI_BuyMenu_WeaponButton(WEAPON_P228);
 	
-	vVGUIButtonPos_y += 32;
+	vVGUIButtonPos[1] += 32;
 
 	if (stof(getplayerkeyvalue(player_localnum, "*team")) ==  TEAM_T) {
 		VGUI_BuyMenu_WeaponButton(WEAPON_ELITES);
@@ -214,7 +214,7 @@ void VGUI_BuyMenu_SMGs(vector vPos) {
 	VGUI_BuyMenu_WeaponButton(WEAPON_P90);
 	VGUI_BuyMenu_WeaponButton(WEAPON_UMP45);
 	
-	vVGUIButtonPos_y += 32;
+	vVGUIButtonPos[1] += 32;
 
 	if (stof(getplayerkeyvalue(player_localnum, "*team")) ==  TEAM_T) {
 		VGUI_BuyMenu_WeaponButton(WEAPON_MAC10);

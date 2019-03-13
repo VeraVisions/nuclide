@@ -31,7 +31,7 @@ void VGUI_MessageOfTheDay( vector vPos ) {
 		if ( sMOTDString[ i ] != "/" ) {
 			VGUI_Text( sMOTDString[ i ], vTextPos, '12 12', FONT_CON );
 		}
-		vTextPos_y += 14;
+		vTextPos[1] += 14;
 	}
 	
 	VGUI_Button( _("VGUI_OK"), MessageOfTheDay_ButtonOK, vPos + '16 440 0', '80 24 0' );

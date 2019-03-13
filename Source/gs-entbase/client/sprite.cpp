@@ -34,9 +34,9 @@ void Sprite_Animated(void)
 {
 	spawnfunc_sprite();
 	sprite me = (sprite)self;
-	me.origin_x = readcoord();
-	me.origin_y = readcoord();
-	me.origin_z = readcoord();
+	me.origin[0] = readcoord();
+	me.origin[1] = readcoord();
+	me.origin[2] = readcoord();
 	me.modelindex = readfloat();
 	me.framerate = readfloat();
 	me.scale = readfloat();

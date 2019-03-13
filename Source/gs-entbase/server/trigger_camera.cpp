@@ -20,7 +20,7 @@ void trigger_camera::Trigger(void)
 		entity e = find(world, CBaseTrigger::m_strTargetName, m_strTarget);
 		if (e) {
 			angles = vectoangles(e.origin - origin);
-			angles_x *= -1;
+			angles[0] *= -1;
 		}
 	}
 	Client_TriggerCamera(eActivator, origin, angles, m_flWait);

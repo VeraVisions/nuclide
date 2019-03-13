@@ -115,7 +115,7 @@ void VGUI_TeamSelect_Main( vector vPos ) {
 	vector vTextPos = vPos + '224 116 0';
 	for ( int i = 1; i < 35; i++ ) {
 		VGUI_Text( sMapString[ i ], vTextPos, '12 12', FONT_CON );
-		vTextPos_y += 14;
+		vTextPos[1] += 14;
 	}
 
 	VGUI_Button( _("VGUI_TEAM_T"), TeamSelect_Main_ButtonT, vPos + '16 116 0', '180 24 0' );

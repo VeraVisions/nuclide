@@ -82,9 +82,9 @@ void View_CalcBob(void)
 	}
 
 	vel = pSeat->vPlayerVelocity;
-	vel_z = 0;
+	vel[2] = 0;
 
-	float fBob = sqrt(vel_x * vel_x + vel_y * vel_y) * autocvar_v_bob;
+	float fBob = sqrt(vel[0] * vel[0] + vel[1] * vel[1]) * autocvar_v_bob;
 	fBob = fBob * 0.3 + fBob * 0.7 * sin(cycle);
 	pSeat->fBob = bound(-7, fBob, 4);
 }
@@ -170,7 +170,7 @@ void View_DrawViewModel(void)
 	
 	// Give the gun a tilt effect like in old HL/CS versions
 	if (autocvar_v_bobclassic == 1) {
-		eViewModel.angles_z = -pSeat->fBob;
+		eViewModel.angles[2] = -pSeat->fBob;
 	}
 
 	// Only bother when zoomed out

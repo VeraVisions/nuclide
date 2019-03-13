@@ -163,7 +163,7 @@ void WeaponC4BOMB_Drop( vector vBombPos, vector vNormal ) {
 	
 	// Align the bomb to the wall
 	vector vBombAngles = self.angles + '0 90 0';
-	vBombAngles_x *= -1;
+	vBombAngles[0] *= -1;
 	makevectors( vBombAngles );
 	vector vCoplanar = v_forward - ( v_forward * vNormal ) * vNormal;
 	eBomb.angles = vectoangles( vCoplanar, vNormal );

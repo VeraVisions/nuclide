@@ -20,12 +20,12 @@ void Spray_RemoveAll(entity entOwner)
 float Spray_SendEntity(entity ePVSEnt, float fChanged)
 {
 	WriteByte(MSG_ENTITY, ENT_SPRAY);
-	WriteCoord(MSG_ENTITY, self.origin_x);
-	WriteCoord(MSG_ENTITY, self.origin_y);
-	WriteCoord(MSG_ENTITY, self.origin_z);
-	WriteCoord(MSG_ENTITY, self.angles_x);
-	WriteCoord(MSG_ENTITY, self.angles_y);
-	WriteCoord(MSG_ENTITY, self.angles_z);
+	WriteCoord(MSG_ENTITY, self.origin[0]);
+	WriteCoord(MSG_ENTITY, self.origin[1]);
+	WriteCoord(MSG_ENTITY, self.origin[2]);
+	WriteCoord(MSG_ENTITY, self.angles[0]);
+	WriteCoord(MSG_ENTITY, self.angles[1]);
+	WriteCoord(MSG_ENTITY, self.angles[2]);
 	WriteEntity(MSG_ENTITY, self.owner);
 	return TRUE;
 } 
@@ -49,13 +49,13 @@ void CSEv_Spraylogo(void)
 		eSpray.solid = SOLID_NOT;
 		setorigin(eSpray, trace_endpos);
 		vector vSprayAngles = self.v_angle;
-		vSprayAngles_x *= -1;
+		vSprayAngles[0] *= -1;
 		makevectors(vSprayAngles);
 		
 		vector vecCoplanar = v_forward -(v_forward * trace_plane_normal) 
 							  * trace_plane_normal;
 
-		if (trace_plane_normal_z == 0) {
+		if (trace_plane_normal[2] == 0) {
 			vecCoplanar = '0 0 1';
 		}
 		

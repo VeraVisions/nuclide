@@ -350,9 +350,9 @@ void Game_Parse_Event(float fHeader) {
 	} else if (fHeader == EV_SMOKE) {
 		vector vSmokePos;
 		
-		vSmokePos_x = readcoord();
-		vSmokePos_y = readcoord();
-		vSmokePos_z = readcoord();
+		vSmokePos[0] = readcoord();
+		vSmokePos[1] = readcoord();
+		vSmokePos[2] = readcoord();
 
 		Effect_CreateSmoke(vSmokePos);
 	} else if (fHeader == EV_FLASH) {

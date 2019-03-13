@@ -82,7 +82,7 @@ void Spawn_ObserverCam(void)
 			eTarget = find(world, targetname, eCamera.target);
 			if (eTarget) {
 				self.angles = vectoangles(eTarget.origin - eCamera.origin);
-				self.angles_x *= -1;
+				self.angles[0] *= -1;
 			}
 		}
 	} else {
@@ -96,7 +96,7 @@ void Spawn_ObserverCam(void)
 				eTarget = find(world, targetname, eCamera.target);
 				if (eTarget) {
 					self.angles = vectoangles(eTarget.origin - eCamera.origin);
-					self.angles_x *= -1;
+					self.angles[0] *= -1;
 				}
 			}
 		}

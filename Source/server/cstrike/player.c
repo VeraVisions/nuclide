@@ -27,15 +27,15 @@ float Player_SendEntity(entity ePEnt, float fChanged)
 
 	WriteByte(MSG_ENTITY, ENT_PLAYER);
 	WriteShort(MSG_ENTITY, self.modelindex);
-	WriteCoord(MSG_ENTITY, self.origin_x);
-	WriteCoord(MSG_ENTITY, self.origin_y);
-	WriteCoord(MSG_ENTITY, self.origin_z);
-	WriteCoord(MSG_ENTITY, self.v_angle_x);
-	WriteCoord(MSG_ENTITY, self.angles_y);
-	WriteCoord(MSG_ENTITY, self.angles_z);
-	WriteCoord(MSG_ENTITY, self.velocity_x);
-	WriteCoord(MSG_ENTITY, self.velocity_y);
-	WriteCoord(MSG_ENTITY, self.velocity_z);
+	WriteCoord(MSG_ENTITY, self.origin[0]);
+	WriteCoord(MSG_ENTITY, self.origin[1]);
+	WriteCoord(MSG_ENTITY, self.origin[2]);
+	WriteCoord(MSG_ENTITY, self.v_angle[0]);
+	WriteCoord(MSG_ENTITY, self.angles[1]);
+	WriteCoord(MSG_ENTITY, self.angles[2]);
+	WriteCoord(MSG_ENTITY, self.velocity[0]);
+	WriteCoord(MSG_ENTITY, self.velocity[1]);
+	WriteCoord(MSG_ENTITY, self.velocity[2]);
 	WriteFloat(MSG_ENTITY, self.flags);
 	WriteFloat(MSG_ENTITY, self.pmove_flags);
 	WriteByte(MSG_ENTITY, self.weapon);
@@ -83,7 +83,7 @@ void Player_Death(int iHitBody)
 	setorigin(eCorpse, self.origin);
 	setmodel(eCorpse, self.model);
 	setsize(eCorpse, self.mins, self.maxs);
-	eCorpse.angles = [ 0, self.angles_y, 0 ];
+	eCorpse.angles = [ 0, self.angles[1], 0 ];
 	eCorpse.movetype = MOVETYPE_BOUNCE;
 
 	// Drop primary weapon as well as the bomb if present

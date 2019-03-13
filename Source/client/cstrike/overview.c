@@ -130,10 +130,10 @@ void Overview_DrawLayer( void ) {
 				R_BeginPolygon( "sprites/iplayerblue.spr_0.tga" );
 			}
 		}
-		R_PolygonVertex( [ eFind.absmax_x + 16, eFind.absmin_y - 16, ovMap.fHeight + 16 ], '1 0', '1 1 1', 1.0f ); // Top Right
-		R_PolygonVertex( [ eFind.absmin_x - 16, eFind.absmin_y - 16, ovMap.fHeight + 16 ], '0 0', '1 1 1', 1.0f ); // Top left
-		R_PolygonVertex( [ eFind.absmin_x - 16, eFind.absmax_y + 16, ovMap.fHeight + 16 ], '0 1', '1 1 1', 1.0f ); // Bottom left
-		R_PolygonVertex( [ eFind.absmax_x + 16, eFind.absmax_y + 16, ovMap.fHeight + 16 ], '1 1', '1 1 1', 1.0f ); // Bottom right
+		R_PolygonVertex( [ eFind.absmax[0] + 16, eFind.absmin[1] - 16, ovMap.fHeight + 16 ], '1 0', '1 1 1', 1.0f ); // Top Right
+		R_PolygonVertex( [ eFind.absmin[0] - 16, eFind.absmin[1] - 16, ovMap.fHeight + 16 ], '0 0', '1 1 1', 1.0f ); // Top left
+		R_PolygonVertex( [ eFind.absmin[0] - 16, eFind.absmax[1] + 16, ovMap.fHeight + 16 ], '0 1', '1 1 1', 1.0f ); // Bottom left
+		R_PolygonVertex( [ eFind.absmax[0] + 16, eFind.absmax[1] + 16, ovMap.fHeight + 16 ], '1 1', '1 1 1', 1.0f ); // Bottom right
 		R_EndPolygon();
 	}
 

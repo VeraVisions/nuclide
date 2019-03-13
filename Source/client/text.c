@@ -41,7 +41,7 @@ void Print_Draw(void) {
 
 	for (int i = 0; i < 5; i++) {
 		drawstring(pos, g_printbuffer[i], [12,12], [1,1,1], 1.0f, 0);
-		pos_y += 14;
+		pos[1] += 14;
 	}
 }
 
@@ -75,11 +75,11 @@ void CSQC_DrawCenterprint(void)
 		}
 	}
 	
-	vCenterPrintPos_y = video_mins_y + (video_res_y / 2) - (fCenterPrintLines - 4) - 69;
+	vCenterPrintPos[1] = video_mins[1] + (video_res[1] / 2) - (fCenterPrintLines - 4) - 69;
 	
 	for (int i = 0; i < (fCenterPrintLines); i++) {
-		vCenterPrintPos_x = video_mins_x + (video_res_x / 2) - (stringwidth(sCenterPrintBuffer[i], TRUE, '12 12') / 2);
+		vCenterPrintPos[0] = video_mins[0] + (video_res[0] / 2) - (stringwidth(sCenterPrintBuffer[i], TRUE, '12 12') / 2);
 		drawstring(vCenterPrintPos, sCenterPrintBuffer[i], '12 12', '1 1 1', fCenterPrintAlpha, 0);
-		vCenterPrintPos_y += 8;
+		vCenterPrintPos[1] += 8;
 	}
 }

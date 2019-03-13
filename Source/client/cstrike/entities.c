@@ -7,7 +7,7 @@
 ****/
 
 void CSQC_ambient_generic( string sSample, float fVolume, float fAttenuation, float fLoop, float lFORate ) {
-	//print( sprintf( "SOUND: %s, %f, %d\n%d %d %d", sSample, fVolume, fAttenuation, self.origin_x, self.origin_y, self.origin_z ) );
+	//print( sprintf( "SOUND: %s, %f, %d\n%d %d %d", sSample, fVolume, fAttenuation, self.origin[0], self.origin[1], self.origin[2] ) );
 	static void LFOHack (void) {
 		sound( self, CHAN_VOICE, self.classname, self.movetype, self.style, 0, 0 );
 		self.nextthink = self.solid + time;

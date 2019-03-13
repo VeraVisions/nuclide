@@ -29,7 +29,7 @@ float Math_Lerp( float fA, float fB, float fPercent ) {
 float Math_VectorNormalize( vector v ) {
 	float	length, ilength;
 
-	length = v_x*v_x + v_y*v_y + v_z*v_z;
+	length = v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
 	length = sqrt( length );		// FIXME
 
 	if ( length ) {
@@ -43,9 +43,9 @@ float Math_VectorNormalize( vector v ) {
 }
 
 void Math_VectorScale( vector in, float scale, __inout vector out ) {
-	out_x = in_x * scale;
-	out_y = in_y * scale;
-	out_z = in_z * scale;
+	out[0] = in[0] * scale;
+	out[1] = in[1] * scale;
+	out[2] = in[2] * scale;
 }
 
 float Math_FixDelta( float fDelta ) {
@@ -83,7 +83,7 @@ void QPhysics_Run ( entity eTarget )
 	entity eOld = self;
 	self = eTarget;
 
-	float flFallVel = ( self.flags & FL_ONGROUND ) ? 0 : -self.velocity_z;
+	float flFallVel = ( self.flags & FL_ONGROUND ) ? 0 : -self.velocity[2];
 
 #ifdef CSTRIKE
 	self.maxspeed = Game_GetMaxSpeed( self );

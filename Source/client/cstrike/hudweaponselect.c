@@ -327,7 +327,7 @@ void HUD_DrawWeaponSelect(void)
 					if (pSeat->iHUDGrenadesSelected == WEAPON_HEGRENADE) {
 						drawsubpic(vSelectPos + [0,20], [170,45], "sprites/640hud3.spr_0.tga", [0,0.703125], [0.6640625, 0.17578125], vHUDColor, 1, DRAWFLAG_ADDITIVE);
 					}
-					vSelectPos_y += 45;
+					vSelectPos[1] += 45;
 					ihasnade = TRUE;
 				}
 				if (getstati_punf(STAT_ITEM_FLASHBANG)) {
@@ -335,7 +335,7 @@ void HUD_DrawWeaponSelect(void)
 					if (pSeat->iHUDGrenadesSelected == WEAPON_FLASHBANG) {
 						drawsubpic(vSelectPos + [0,20], [170,45], "sprites/640hud3.spr_0.tga", [0,0.703125], [0.6640625, 0.17578125], vHUDColor, 1, DRAWFLAG_ADDITIVE);
 					}
-					vSelectPos_y += 45;
+					vSelectPos[1] += 45;
 					ihasnade = TRUE;
 				}
 				if (getstati_punf(STAT_ITEM_SMOKEGRENADE)) {
@@ -343,22 +343,22 @@ void HUD_DrawWeaponSelect(void)
 					if (pSeat->iHUDGrenadesSelected == WEAPON_SMOKEGRENADE) {
 						drawsubpic(vSelectPos + [0,20], [170,45], "sprites/640hud3.spr_0.tga", [0,0.703125], [0.6640625, 0.17578125], vHUDColor, 1, DRAWFLAG_ADDITIVE);
 					}
-					vSelectPos_y += 45;
+					vSelectPos[1] += 45;
 					ihasnade = TRUE;
 				}
 			}
 			if (ihasnade) {
-				vSelectPos_x += 170;
+				vSelectPos[0] += 170;
 			} else {
-				vSelectPos_x += 20;
+				vSelectPos[0] += 20;
 			}
 		} else {
 			if (wptTable[pSeat->fHUDWeaponSelected].iSlot == i) {
 				drawsubpic(vSelectPos + [0,20], [170,45], wpSymbolTable[pSeat->fHUDWeaponSelected].sSprite, wpSymbolTable[pSeat->fHUDWeaponSelected].vOrigin, [0.6640625, 0.17578125], vHUDColor, 1, DRAWFLAG_ADDITIVE);
 				drawsubpic(vSelectPos + [0,20], [170,45], "sprites/640hud3.spr_0.tga", [0,0.703125], [0.6640625, 0.17578125], vHUDColor, 1, DRAWFLAG_ADDITIVE);
-				vSelectPos_x += 170;
+				vSelectPos[0] += 170;
 			} else {
-				vSelectPos_x += 20;
+				vSelectPos[0] += 20;
 			}
 		}
 	}

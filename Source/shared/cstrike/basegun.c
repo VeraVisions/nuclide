@@ -64,8 +64,8 @@ void BaseGun_ShotMultiplierHandle( float fShots ) {
 		pSeat->iShotMultiplier += fShots;
 	}
 	
-	vPunch_x = -2 * ( pSeat->iShotMultiplier / 6 );
-	vPunch_y = random( -1, 1 );
+	vPunch[0] = -2 * ( pSeat->iShotMultiplier / 6 );
+	vPunch[1] = random( -1, 1 );
 	View_AddPunchAngle( vPunch );
 #endif
 }

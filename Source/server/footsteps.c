@@ -26,7 +26,7 @@ void Footsteps_Update( void ) {
 	}
 
 	if ( ( self.movetype == MOVETYPE_WALK ) && ( self.flags & FL_ONGROUND ) ) {
-		if ( ( self.velocity_x == 0 && self.velocity_y == 0 ) || self.fStepTime > time ) {
+		if ( ( self.velocity[0] == 0 && self.velocity[1] == 0 ) || self.fStepTime > time ) {
 			return;
 		}
 

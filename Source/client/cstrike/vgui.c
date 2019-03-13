@@ -44,8 +44,8 @@ float CSQC_VGUI_Draw( void ) {
 
 	// Align the window to the center
 	vVGUIWindowPos = video_mins;
-	vVGUIWindowPos_x += ( video_res_x / 2 ) - 320;
-	vVGUIWindowPos_y += ( video_res_y / 2 ) - 240;
+	vVGUIWindowPos[0] += ( video_res[0] / 2 ) - 320;
+	vVGUIWindowPos[1] += ( video_res[1] / 2 ) - 240;
 	VGUI_Window( vguiMenus[ pSeat->fVGUI_Display - 1 ].sTitle, vVGUIWindowPos, '640 480 0' );
 
 	iVGUIKey = 48;

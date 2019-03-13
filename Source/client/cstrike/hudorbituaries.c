@@ -72,7 +72,7 @@ This actually displays the contents of orbBuffer
 =================
 */
 void HUD_DrawOrbituaries( void ) {
-	vector vOrbPos = video_mins + [ video_res_x - 200, 56 ];
+	vector vOrbPos = video_mins + [ video_res[0] - 200, 56 ];
 	drawfont = FONT_CON;
 	if ( fOrbituaryTime < time && iOrbituaryScroll >= 0 ) {
 		// We are cheap, just clear the attacker and we're good.
@@ -87,7 +87,7 @@ void HUD_DrawOrbituaries( void ) {
 		}
 
 		// Calculate the position based on the saved offsets
-		vOrbPos_x = video_mins_x + video_res_x - ( orbBuffer[ i ].fOffset1 + orbBuffer[ i ].fOffset2 + orbBuffer[ i ].fOffset3 ) - 16;
+		vOrbPos[0] = video_mins[0] + video_res[0] - ( orbBuffer[ i ].fOffset1 + orbBuffer[ i ].fOffset2 + orbBuffer[ i ].fOffset3 ) - 16;
 
 		// Draw the attacker's name, shadow first
 		drawstring( vOrbPos, orbBuffer[ i ].sAttacker, '12 12', orbBuffer[ i ].vColor1, VGUI_WINDOW_FGALPHA, 0 );
@@ -101,7 +101,7 @@ void HUD_DrawOrbituaries( void ) {
 
 		// Draw the victim's name
 		drawstring( vOrbPos + [ orbBuffer[ i ].fOffset2 + orbBuffer[ i ].fOffset1, 0 ], orbBuffer[ i ].sVictim, '12 12', orbBuffer[ i ].vColor2, VGUI_WINDOW_FGALPHA, 0 );
-		vOrbPos_y += 18;
+		vOrbPos[1] += 18;
 	}
 }
 

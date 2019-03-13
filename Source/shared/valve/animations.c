@@ -143,9 +143,9 @@ void Animation_PlayerUpdate( void ) {
 		self.baseframe1time = 0.0f;
 	}
 	
-	self.bonecontrol1 = self.angles_x;
+	self.bonecontrol1 = self.angles[0];
 #endif
-	self.angles_x = self.angles_z = 0;
+	self.angles[0] = self.angles[2] = 0;
 	
 	if ( !( self.flags & FL_ONGROUND ) ) {
 		/*self.frame = ANIM_JUMP;*/
@@ -160,7 +160,7 @@ void Animation_PlayerUpdate( void ) {
 
 #ifdef SSQC
 	// On the CSQC it's done in Player.c
-	self.subblend2frac = self.v_angle_x / 90;
+	self.subblend2frac = self.v_angle[0] / 90;
 #endif
 }
 

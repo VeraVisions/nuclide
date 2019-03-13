@@ -23,7 +23,7 @@ class func_ladder:CBaseEntity
 void func_ladder::Sound(entity target)
 {
 	int r;
-	if ((target.velocity_z == 0) || (target.fStepTime > time)) {
+	if ((target.velocity[2] == 0) || (target.fStepTime > time)) {
 		return;
 	}
 	r = floor(random() * g_laddersnd.length);
@@ -42,7 +42,7 @@ void func_ladder::touch(void)
 	vPlayerVector = v_forward;
 	vPlayerVector = (vPlayerVector * 240);
 
-	if (other.movement_x > 0) {
+	if (other.movement[0] > 0) {
 		other.velocity = vPlayerVector;
 	} else {
 		other.velocity = [0,0,0];

@@ -77,7 +77,7 @@ string w_snark_vmodel(void)
 }
 string w_snark_wmodel(void)
 {
-	return "models/w_squeak.mdl";
+	return "models/w_sqknest.mdl";
 }
 string w_snark_pmodel(void)
 {

@@ -85,7 +85,7 @@ vector VGUI_Scores_DrawTeam( vector vPos, float fTeam ) {
 		
 		// Now we know the playercount, so let's calculate the position next to the Teamname String and print it
 		vector vCountPos = vPos + '24 6';
-		vCountPos_x += stringwidth( sScoreTeams[ fTeam ], FALSE, '12 12' ) + 8;
+		vCountPos[0] += stringwidth( sScoreTeams[ fTeam ], FALSE, '12 12' ) + 8;
 		CSQC_DrawText( vCountPos, sprintf( _("SCORE_PLAYERS"), iPlayerCount ), '12 12', vColor, 1.0f, 0, FONT_CON );
 	}
 	return vNewPos + '0 24';
@@ -100,21 +100,21 @@ void VGUI_Scores_Show( void ) {
 	vector vMainPos;
 	vector vSize;
 	
-	vSize_x = 540;
-	vSize_y = video_res_y - 112;
+	vSize[0] = 540;
+	vSize[1] = video_res[1] - 112;
 	
 	vMainPos = video_mins;
-	vMainPos_x += ( video_res_x / 2 ) - (vSize_x / 2);
-	vMainPos_y += 56;
+	vMainPos[0] += ( video_res[0] / 2 ) - (vSize[0] / 2);
+	vMainPos[1] += 56;
 		
 	// Draw the background
 	drawfill( vMainPos, vSize, VGUI_WINDOW_BGCOLOR, VGUI_WINDOW_BGALPHA );
 	
 	// Sides
-	drawfill( vMainPos, [vSize_x, 1], '0.35 0.35 0.35', 1.0f );
-	drawfill( [vMainPos_x, vMainPos_y + vSize_y - 1], [vSize_x, 1], '0.35 0.35 0.35', 1.0f );
-	drawfill( vMainPos, [1, vSize_y], '0.35 0.35 0.35', 1.0f );
-	drawfill( [vMainPos_x + vSize_x - 1, vMainPos_y], [1, vSize_y], '0.35 0.35 0.35', 1.0f );
+	drawfill( vMainPos, [vSize[0], 1], '0.35 0.35 0.35', 1.0f );
+	drawfill( [vMainPos[0], vMainPos[1] + vSize[1] - 1], [vSize[0], 1], '0.35 0.35 0.35', 1.0f );
+	drawfill( vMainPos, [1, vSize[1]], '0.35 0.35 0.35', 1.0f );
+	drawfill( [vMainPos[0] + vSize[0] - 1, vMainPos[1]], [1, vSize[1]], '0.35 0.35 0.35', 1.0f );
 	
 	// Server title
 	CSQC_DrawText( vMainPos + '24 13', serverkey( "hostname" ), '12 12', VGUI_WINDOW_FGCOLOR, 1.0f, 0, FONT_CON );
