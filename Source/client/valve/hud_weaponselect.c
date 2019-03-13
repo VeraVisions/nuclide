@@ -36,7 +36,7 @@ void HUD_DrawWeaponSelect_Forward(void)
 
 	pSeat->fHUDWeaponSelectTime = time + 3;
 	
-	if (!(pl.items & g_weapons[pSeat->fHUDWeaponSelected].id)) {
+	if (!(pl.g_items & g_weapons[pSeat->fHUDWeaponSelected].id)) {
 		HUD_DrawWeaponSelect_Forward();
 	}
 }
@@ -62,7 +62,7 @@ void HUD_DrawWeaponSelect_Back(void)
 
 	pSeat->fHUDWeaponSelectTime = time + 3;
 
-	if (!(pl.items & g_weapons[pSeat->fHUDWeaponSelected].id)) {
+	if (!(pl.g_items & g_weapons[pSeat->fHUDWeaponSelected].id)) {
 		HUD_DrawWeaponSelect_Back();
 	}
 }
@@ -89,7 +89,7 @@ int Weapon_InSlotPos(int slot, int pos)
 	player pl = (player)pSeat->ePlayer;
 	for (int i = 1; i < g_weapons.length; i++) {
 		if (g_weapons[i].slot == slot && g_weapons[i].slot_pos == pos) {
-			if (pl.items & g_weapons[i].id) {
+			if (pl.g_items & g_weapons[i].id) {
 				return i;
 			} else {
 				return -1;

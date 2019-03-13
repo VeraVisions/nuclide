@@ -193,7 +193,7 @@ void Weapons_PlaySound(entity t, float ch, string s, float vol, float at)
 
 int Weapons_IsPresent(player pl, int w)
 {
-	if (pl.items & g_weapons[w].id) {
+	if (pl.g_items & g_weapons[w].id) {
 		return TRUE;
 	} else {
 		return FALSE;
@@ -205,7 +205,7 @@ void Weapons_AddItem(player pl, int w)
 {
 	entity oldself = self;
 	self = pl;
-	pl.items |= g_weapons[w].id;
+	pl.g_items |= g_weapons[w].id;
 	pl.activeweapon = w;
 
 	if (g_weapons[w].pickup != __NULL__) {

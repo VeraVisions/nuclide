@@ -4,14 +4,22 @@ class player
 	float health;
 	float armor;
 
-	float w_attack_next; /* When the weapon is done firing */
-	float w_idle_next; /* When to play the next idle animation */
+	/* When the weapon is done firing */
+	float w_attack_next;
+	/* When to play the next idle animation */ 
+	float w_idle_next;
 
-	int a_ammo1; // Magazine/Clip
-	int a_ammo2; // Rest in the inventory
-	int a_ammo3; // Special ammo
+	/* Magazine/Clip */
+	int a_ammo1;
+	/* Rest in the inventory */
+	int a_ammo2;
+	/* Special ammo */
+	int a_ammo3;
 
-	float items;
+	/* We can't use the default .items field, because FTE will assume
+	 * effects of some bits. Such as invisibility, quad, etc. */
+	int g_items; 
+
 	float activeweapon;
 	float viewzoom;
 	vector view_ofs;
@@ -31,13 +39,13 @@ class player
 	int p_model_bone;
 	float pitch;
 	float lastweapon;
-	
+
 	/* Prediction */
 	vector netorigin;
 	vector netvelocity;
 	float netflags;
-	float net_w_attack_next; /* When the weapon is done firing */
-	float net_w_idle_next; /* When to play the next idle animation */
+	float net_w_attack_next;
+	float net_w_idle_next;
 
 	virtual void() gun_offset;
 	virtual void() draw;

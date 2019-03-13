@@ -8,6 +8,21 @@
 
 var int g_initialized = FALSE;
 
+void cvar_init(void)
+{
+	/* TODO: Shove these into defaults.cfg instead of forcing them */
+	localcmd("seta con_textsize -12\n");
+	localcmd("seta scr_conalpha 1\n");
+	localcmd("seta cl_idlefps 0\n");
+	localcmd("seta r_shadow_realtime_dlight 0\n");
+	localcmd("seta gl_mindist 4\n"); // Thanks Valve for v_shotgun.mdl
+	localcmd("seta _pext_infoblobs 1\n");
+	
+	/* Hack! */
+	localcmd("seta gl_font 0\n");
+	localcmd("seta gl_font CONCHARS?fmt=h\n");
+}
+
 void m_init(void)
 {
 	vector g_btnsize;
@@ -21,18 +36,7 @@ void m_init(void)
 
 	localcmd("plug_load ffmpeg\n");
 
-	/* TODO: Shove these into defaults.cfg instead of forcing them */
-	localcmd("con_textsize -12\n");
-	localcmd("scr_conalpha 1\n");
-	localcmd("cl_idlefps 0\n");
-	localcmd("r_shadow_realtime_dlight 0\n");
-	localcmd("gl_mindist 4\n"); // Thanks Valve for v_shotgun.mdl
-	localcmd("_pext_infoblobs 1\n");
-	
-	/* Hack! */
-	localcmd("gl_font 0\n");
-	localcmd("gl_font CONCHARS?fmt=h\n");
-
+	cvar_init();
 	shaderforname("logo_avi", "{\n{\nvideomap av:media/logo.avi\n}\n}");
 
 	for (int i = 0; i < g_bmp.length; i++) {

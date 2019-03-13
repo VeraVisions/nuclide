@@ -180,7 +180,7 @@ void customgame_btnactivate_start(void)
 	localcmd(sprintf("gamedir \"%s\"\n", games[nextgame].gamedir));
 	localcmd("snd_restart\nwait\nvid_reload\nmenu_restart\nmenu_customgame\n");
 	// TODO: Re-init important menu bits and bobs.
-
+	cvar_init();
 	//m_shutdown();
 	//m_init();
 }

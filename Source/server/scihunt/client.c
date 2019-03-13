@@ -57,7 +57,7 @@ void Game_DecodeChangeParms(void)
 	pl.velocity[0] = parm7;
 	pl.velocity[1] = parm8;
 	pl.velocity[2] = parm9;
-	pl.items = parm10;
+	pl.g_items = parm10;
 	pl.activeweapon = parm11;
 }
 void Game_SetChangeParms(void)
@@ -72,7 +72,7 @@ void Game_SetChangeParms(void)
 	parm7 = pl.velocity[0];
 	parm8 = pl.velocity[1];
 	parm9 = pl.velocity[2];
-	parm10 = pl.items;
+	parm10 = pl.g_items;
 	parm11 = pl.activeweapon;
 }
 

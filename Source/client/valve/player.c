@@ -31,7 +31,7 @@ void Player_ReadEntity(float flIsNew)
 	pl.velocity[2] = readcoord();
 	pl.flags = readfloat();
 	pl.activeweapon = readbyte();
-	pl.items = readfloat();
+	pl.g_items = readfloat();
 	pl.health = readbyte();
 	pl.armor = readbyte();
 	pl.movetype = readfloat();

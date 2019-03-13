@@ -15,7 +15,7 @@ void Player_Death(void)
 {
 	player pl = (player)self;
 	pl.movetype = MOVETYPE_NONE;
-	pl.health = pl.armor = pl.activeweapon = pl.items = 0;
+	pl.health = pl.armor = pl.activeweapon = pl.g_items = 0;
 	PutClientInServer();
 }
 
@@ -101,7 +101,7 @@ float Player_SendEntity(entity ePEnt, float fChanged)
 	WriteCoord(MSG_ENTITY, pl.velocity[2]);
 	WriteFloat(MSG_ENTITY, pl.flags);
 	WriteByte(MSG_ENTITY, pl.activeweapon);
-	WriteFloat(MSG_ENTITY, pl.items);
+	WriteFloat(MSG_ENTITY, pl.g_items);
 	WriteByte(MSG_ENTITY, pl.health);
 	WriteByte(MSG_ENTITY, pl.armor);
 	WriteFloat(MSG_ENTITY, pl.movetype);
