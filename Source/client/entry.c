@@ -82,7 +82,6 @@ void CSQC_Init(float apilevel, string enginename, float engineversion)
 	HUD_Init();
 	Scores_Init();
 	Client_Init(apilevel, enginename, engineversion);
-
 	DSP_Init();
 }
 
@@ -152,7 +151,7 @@ void CSQC_UpdateView(float w, float h, float focus)
 			setproperty(VF_CL_VIEWANGLES, pSeat->vCameraAngle);
 		} else {
 			if (pl.health) {
-				if (autocvar_cl_thirdperson == TRUE ) {
+				if (autocvar_cl_thirdperson == TRUE) {
 					makevectors(view_angles);
 					vector vStart = [pSeat->vPlayerOrigin[0], pSeat->vPlayerOrigin[1], pSeat->vPlayerOrigin[2] + 16] + (v_right * 4);
 					vector vEnd = vStart + (v_forward * -48) + [0,0,16] + (v_right * 4);
@@ -380,7 +379,7 @@ void CSQC_Parse_Event(void)
 			Effect_CreateSpark(vSparkPos, vSparkAngle);
 			break;
 		case EV_GIBHUMAN:
-			vector vGibPos, vGibAngle;
+			vector vGibPos;
 			vGibPos[0] = readcoord();
 			vGibPos[1] = readcoord();
 			vGibPos[2] = readcoord();
@@ -595,46 +594,49 @@ float CSQC_Parse_CenterPrint(string sMessage)
 CSQC_Ent_ParseMapEntity
 =================
 */
-float CSQC_Ent_ParseMapEntity( void )
+float CSQC_Ent_ParseMapEntity(void)
 {
 	CBaseEntity eEnt = __NULL__;
 	string strField, strValue;
 	__fullspawndata = "";
 	int iClass = FALSE;
 
-	while ( 1 ) {
+	while (1) {
 		strField = getentitytoken();
 
-		if ( !strField ) {
+		if (!strField) {
 			break;
 		}
 
-		if ( strField == "}" ) {
-			if ( !eEnt.classname ) {
+		if (strField == "}") {
+			if (!eEnt.classname) {
 				break;
 			}
-			if ( iClass == TRUE ) {
+			if (iClass == TRUE) {
 				eEnt.Init();
 				return TRUE;
 			}
-			if ( eEnt ) {
-				remove( eEnt );
+			if (eEnt) {
+				remove(eEnt);
 			}
 			return TRUE;
 		}
 
 		strValue = getentitytoken();
 
-		if ( !strValue ) {
+		if (!strValue) {
 			break;
 		}
 
-		switch ( strField ) {
+		switch (strField) {
 			case "classname":
-				/*if ( strValue == "env_cubemap" ) {
+				/*if (strValue == "env_cubemap") {
 					iClass = TRUE;
 					eEnt = spawn(CEnvCubemap);
-				} else */if ( strValue == "env_sound" ) {
+				} else */if (strValue == "worldspawn") {
+					eEnt = spawn(worldspawn);
+					iClass = TRUE;
+				} else if (strValue == "env_sound") {
 					eEnt = spawn(env_sound);
 					iClass = TRUE;
 				} else {
@@ -642,7 +644,7 @@ float CSQC_Ent_ParseMapEntity( void )
 				}
 				break;
 			default:
-				__fullspawndata = sprintf( "%s\"%s\" \"%s\" ", __fullspawndata, strField, strValue );
+				__fullspawndata = sprintf("%s\"%s\" \"%s\" ", __fullspawndata, strField, strValue);
 				break;
 		}
 	}
@@ -674,25 +676,27 @@ void CSQC_WorldLoaded(void)
 	precache_pic("{scorch3", TRUE);
 	
 	string strTokenized;
-
-	getentitytoken( 0 );
-	while ( 1 ) {
+	getentitytoken(0);
+	while (1) {
 		strTokenized = getentitytoken();
-		
-		if ( strTokenized == "" ) {
+		if (strTokenized == "") {
 			break;
 		}
-
-		if ( strTokenized != "{" ) {
+		if (strTokenized != "{") {
 			print("^1[WARNING] ^7Bad entity data\n");
 			return;
 		}
-		
-		if ( !CSQC_Ent_ParseMapEntity() ) {
+		if (!CSQC_Ent_ParseMapEntity()) {
 			print("^1[WARNING] ^7Bad entity data\n");
 			return;
 		}
 	}
+}
+
+void CSQC_RendererRestarted(string rstr)
+{
+	Sky_Update();
+	Game_RendererRestarted(rstr);
 }
 
 /*

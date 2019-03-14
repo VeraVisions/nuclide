@@ -12,8 +12,6 @@ var int autocvar_sh_sciyaw = TRUE;
 /* Limit the amount of scientists spawned */
 var int autocvar_sh_scimax = 30;
 
-string g_shItemList;
-
 void SHData_SpawnScientist(void)
 {
 	static int slimit = 0;

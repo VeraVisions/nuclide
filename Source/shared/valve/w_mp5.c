@@ -87,7 +87,7 @@ void w_mp5_primary(void)
 	Weapons_ViewPunchAngle([random(-2, 2),0,0]);
 #else
 	/* Singleplayer is more accurate */
-	if (cvar("sv_clientslots") == 1) {
+	if (cvar("sv_playerslots") == 1) {
 		TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.02618,0.02618]);
 	} else {
 		TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.05234,0.05234]);

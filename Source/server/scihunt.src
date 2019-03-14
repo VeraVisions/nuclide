@@ -43,12 +43,16 @@ valve/spectator.c
 ../shared/valve/w_tripmine.c
 ../shared/valve/w_satchel.c
 ../shared/valve/w_snark.c
-valve/items.cpp
-valve/ammo.cpp
 ../shared/scihunt/w_cannon.c
 ../shared/scihunt/w_chainsaw.c
 ../shared/scihunt/w_hammer.c
+valve/items.cpp
+valve/ammo.cpp
+valve/item_longjump.cpp
+valve/item_suit.cpp
+valve/item_healthkit.cpp
 ../shared/scihunt/weapons.c
+../shared/valve/weapon_common.c
 
 scihunt/shdata_parse.c
 spawn.c

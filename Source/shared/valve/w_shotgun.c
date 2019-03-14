@@ -72,7 +72,7 @@ void w_shotgun_primary(void)
 
 #ifdef SSQC
 	/* Singleplayer is more accurate */
-	if (cvar("sv_clientslots") == 1) {
+	if (cvar("sv_playerslots") == 1) {
 		TraceAttack_FireBullets(6, pl.origin + pl.view_ofs, 5, [0.08716,0.08716]);
 	} else {
 		TraceAttack_FireBullets(4, pl.origin + pl.view_ofs, 5, [0.08716,0.04362]);
@@ -91,7 +91,7 @@ void w_shotgun_secondary(void)
 
 #ifdef SSQC
 	/* Singleplayer is more accurate */
-	if (cvar("sv_clientslots") == 1) {
+	if (cvar("sv_playerslots") == 1) {
 		TraceAttack_FireBullets(12, pl.origin + pl.view_ofs, 5, [0.08716,0.08716]);
 	} else {
 		TraceAttack_FireBullets(8, pl.origin + pl.view_ofs, 5, [0.17365,0.04362]);

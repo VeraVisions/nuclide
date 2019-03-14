@@ -17,7 +17,7 @@ class sprite
 
 void sprite::think(void)
 {
-	if (frame >= maxframe) {
+	if (frame >= (maxframe-1)) {
 		if (loops == 0) {
 			remove(this);
 		} else {

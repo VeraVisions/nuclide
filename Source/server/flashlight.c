@@ -8,7 +8,7 @@
 
 void Flashlight_Toggle(void)
 {
-	if (cvar("sv_clientslots") != 1) {
+	if (cvar("sv_playerslots") != 1) {
 		if (cvar("mp_flashlight") != 1) {
 			return;
 		}

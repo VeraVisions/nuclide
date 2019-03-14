@@ -13,6 +13,11 @@ typedef struct
 	int flags;
 } decal_t;
 
+enumflags
+{
+	DFLAG_ADDITIVE
+};
+
 #define COLOR_REDBLOOD [114,25,7]
 #define COLOR_YELLOWBLOOD [248,224,122]
 
@@ -20,6 +25,10 @@ decal_t g_decalwad[] =
 {
 	{ "{bigblood1", COLOR_REDBLOOD, 0 },
 	{ "{bigblood2", COLOR_REDBLOOD, 0 },
+	{ "{bproof1", [255,255,255], DFLAG_ADDITIVE },
+	{ "{break1", [255,255,255], DFLAG_ADDITIVE },
+	{ "{break2", [255,255,255], DFLAG_ADDITIVE },
+	{ "{break3", [255,255,255], DFLAG_ADDITIVE },
 	{ "{blood1", COLOR_REDBLOOD, 0 },
 	{ "{blood2", COLOR_REDBLOOD, 0 },
 	{ "{blood3", COLOR_REDBLOOD, 0 },

@@ -51,6 +51,7 @@ predict.c
 ../shared/valve/w_satchel.c
 ../shared/valve/w_snark.c
 ../shared/valve/weapons.c
+../shared/valve/weapon_common.c
 
 valve/player.c
 entities.c

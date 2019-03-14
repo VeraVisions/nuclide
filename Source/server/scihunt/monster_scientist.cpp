@@ -219,7 +219,7 @@ string sci_sndscream[] = {
 	"scientist/evergetout.wav",
 	"scientist/scream8.wav",
 	"scientist/scream9.wav",
-	"scientist/scream10.wav"
+	"scientist/scream10.wav",
 	"scientist/scream11.wav",
 	"scientist/getoutalive.wav",
 	"scientist/scream12.wav",

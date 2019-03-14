@@ -671,7 +671,7 @@ void PMove_Run(void)
 	self.maxspeed = (self.flags & FL_CROUCHING) ? 135 : 270;
 
 	if (input_buttons & INPUT_BUTTON5) {
-		input_movevalues *= 0.50;
+		input_movevalues *= 0.25;
 	}
 #endif
 	PMove_WaterMove();

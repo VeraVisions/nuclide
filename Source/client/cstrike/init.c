@@ -45,7 +45,7 @@ void Client_Init(float apilevel, string enginename, float engineversion)
 	pSeat.iOverview = FALSE;
 }
 
-void CSQC_RendererRestarted(string sDescr)
+void Game_RendererRestarted(string rstr)
 {
 	Overview_Init();
 }

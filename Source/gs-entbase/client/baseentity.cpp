@@ -15,6 +15,7 @@ class CBaseEntity {
 	void() CBaseEntity;
 
 	virtual void() Init;
+	virtual void() Initialized;
 	virtual void(string, string) SpawnKey;
 };
 
@@ -62,9 +63,13 @@ void CBaseEntity::Init(void)
 		//dprint(sprintf("SpawnData: %s %s\n", argv(i), argv(i+1)));
 		SpawnKey(argv(i), argv(i+1));
 	}
+	Initialized();
+}
+
+void CBaseEntity::Initialized(void)
+{
 }
 
 void CBaseEntity::CBaseEntity(void)
 {
-	Init();
 }

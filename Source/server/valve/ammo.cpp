@@ -32,16 +32,18 @@ void item_ammo::Respawn(void)
 {
 	solid = SOLID_TRIGGER;
 	movetype = MOVETYPE_TOSS;
-	setsize(this, [-24,-24,-16], [24,24,16]);
-	setorigin(this, origin);
 
 	if (m_oldModel) {
 		setmodel(this, m_oldModel);
 	}
 
+	setsize(this, [-8,-8,0], [8,8,48]);
+	setorigin(this, origin);
+
 	think = __NULL__;
 	nextthink = -1;
 	sound(this, CHAN_ITEM, "items/suitchargeok1.wav", 1, ATTN_NORM, 150);
+	droptofloor();
 }
 
 void item_ammo::item_ammo(void)

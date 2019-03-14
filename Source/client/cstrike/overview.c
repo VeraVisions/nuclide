@@ -97,7 +97,7 @@ void Overview_Init( void ) {
 				iImageSrc[ i ] = 0x00000000i;
 			}
 		}	
-		r_uploadimage( ovMap.sImagePath, iImageWidth, iImageHeight, iImageSrc );
+		r_uploadimage( ovMap.sImagePath, iImageWidth, iImageHeight, (void*)iImageSrc );
 		memfree( iImageSrc );
 	}
 }

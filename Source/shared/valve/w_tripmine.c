@@ -26,11 +26,11 @@ void w_tripmine_precache(void)
 }
 string w_tripmine_vmodel(void)
 {
-	return "models/w_tripmine.mdl";
+	return "models/v_tripmine.mdl";
 }
 string w_tripmine_wmodel(void)
 {
-	return "models/w_tripmine.mdl";
+	return "models/v_tripmine.mdl";
 }
 string w_tripmine_pmodel(void)
 {

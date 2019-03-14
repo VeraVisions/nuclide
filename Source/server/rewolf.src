@@ -43,8 +43,12 @@ valve/spectator.c
 ../shared/valve/w_satchel.c
 ../shared/valve/w_snark.c
 valve/items.cpp
+valve/item_longjump.cpp
+valve/item_suit.cpp
+valve/item_healthkit.cpp
 valve/ammo.cpp
 ../shared/valve/weapons.c
+../shared/valve/weapon_common.c
 
 spawn.c
 

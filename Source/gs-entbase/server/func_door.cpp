@@ -177,13 +177,11 @@ void func_door::Trigger(void)
 	}
 
 	if ((m_iState == DOORSTATE_UP) || (m_iState == DOORSTATE_RAISED)){
-		dprint("func_door: Going back!\n");
 		MoveBack();
 		return;
 	}
 
 	MoveAway();
-	dprint("func_door: Going away!\n");
 }
 
 void func_door::Touch(void)

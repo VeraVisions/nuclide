@@ -52,8 +52,9 @@ void Damage_Apply(entity eTarget, entity eAttacker, float fDamage, vector vHitPo
 			eTarget.armor -= flArmor;
 		}
 		fDamage = flNewDamage;
-	} 
-
+	}
+	
+	fDamage = rint(fDamage);
 	eTarget.health -= fDamage;
 	eTarget.dmg_take = fDamage;
 	eTarget.dmg_inflictor = eAttacker;
@@ -97,35 +98,28 @@ from a plain geographical standpoint
 */
 float Damage_CheckAttack(entity eTarget, vector vAttackPos)
 {
-	if (eTarget.movetype == MOVETYPE_PUSH) {
-		traceline(vAttackPos, 0.5 * (eTarget.absmin + eTarget.absmax), TRUE, self);
-		
-		if (trace_fraction == 1) {
-			return TRUE;
-		} 
-		if (trace_ent == eTarget) {
-			return TRUE;
-		}
-		return FALSE;
+	/* We're lazy. Who cares */
+	if (eTarget.solid == SOLID_BSP) {
+		return TRUE;
 	}
 	
 	traceline(vAttackPos, eTarget.origin, TRUE, self);
 	if (trace_fraction == 1) {
 		return TRUE;
 	}
-	traceline(vAttackPos, eTarget.origin + '15 15 0', TRUE, self);
+	traceline(vAttackPos, eTarget.origin + [15,15,0], TRUE, self);
 	if (trace_fraction == 1) {
 		return TRUE;
 	}
-	traceline(vAttackPos, eTarget.origin + '-15 -15 0', TRUE, self);
+	traceline(vAttackPos, eTarget.origin + [-15,-15,0], TRUE, self);
 	if (trace_fraction == 1) {
 		return TRUE;
 	}
-	traceline(vAttackPos, eTarget.origin + '-15 15 0', TRUE, self);
+	traceline(vAttackPos, eTarget.origin + [-15,15,0], TRUE, self);
 	if (trace_fraction == 1) {
 		return TRUE;
 	}
-	traceline(vAttackPos, eTarget.origin + '15 -15 0', TRUE, self);
+	traceline(vAttackPos, eTarget.origin + [15,-15,0], TRUE, self);
 	if (trace_fraction == 1) {
 		return TRUE;
 	}
@@ -140,33 +134,33 @@ Damage_Radius
 Even more pain and suffering, mostly used for explosives
 =================
 */
-void Damage_Radius(vector vOrigin, entity eAttacker, float fDamage, float fRadius, int iCheckClip)
+void Damage_Radius(vector org, entity eAttacker, float fDamage, float fRadius, int iCheckClip)
 {
-	for (entity eDChain = world; (eDChain = findfloat(eDChain, takedamage, DAMAGE_YES));) {
+	for (entity c = world; (c = findfloat(c, takedamage, DAMAGE_YES));) {
 		vector vecRealPos;
-		vecRealPos[0] = eDChain.absmin[0] + (0.5 * (eDChain.absmax[0] - eDChain.absmin[0]));
-		vecRealPos[1] = eDChain.absmin[1] + (0.5 * (eDChain.absmax[1] - eDChain.absmin[1]));
-		vecRealPos[2] = eDChain.absmin[2] + (0.5 * (eDChain.absmax[2] - eDChain.absmin[2]));
+		vecRealPos[0] = c.absmin[0] + (0.5 * (c.absmax[0] - c.absmin[0]));
+		vecRealPos[1] = c.absmin[1] + (0.5 * (c.absmax[1] - c.absmin[1]));
+		vecRealPos[2] = c.absmin[2] + (0.5 * (c.absmax[2] - c.absmin[2]));
 
-		float fDist = vlen(vOrigin - vecRealPos);
+		float fDist = vlen(org - vecRealPos);
 		//vector vPush;
 
 		if (fDist > fRadius) {
 			continue;
 		}
 
-		if (Damage_CheckAttack(eDChain, vOrigin) || iCheckClip == FALSE) {
-			float fDiff = vlen(vOrigin - vecRealPos);
+		if (Damage_CheckAttack(c, org) || iCheckClip == FALSE) {
+			float fDiff = vlen(org - vecRealPos);
 
 			fDiff = (fRadius - fDiff) / fRadius;
 			fDamage = rint(fDamage * fDiff);
 
 			if (fDiff > 0) {
-				Damage_Apply(eDChain, eAttacker, fDamage, vecRealPos, 0);
-				/*if (eDChain.movetype != MOVETYPE_NONE) {
-					vPush = vectoangles(vecRealPos - vOrigin);
+				Damage_Apply(c, eAttacker, fDamage, vecRealPos, 0);
+				/*if (c.movetype != MOVETYPE_NONE) {
+					vPush = vectoangles(vecRealPos - org);
 					makevectors(vPush);
-					eDChain.velocity += (v_forward * fDamage * 5) + (v_up * fDamage * 2.5);
+					c.velocity += (v_forward * fDamage * 5) + (v_up * fDamage * 2.5);
 				}*/
 			}
 			

@@ -71,6 +71,19 @@ void Decals_PlaceBig(vector pos)
 #endif
 }
 
+void Decals_PlaceGlass(vector pos)
+{
+#ifdef CSQC
+	// TODO
+#else
+	entity decal = Decals_Next(pos);
+	setorigin(decal, pos);
+	decal.texture = sprintf("{break%d", floor(random(1,4)));
+	decal.think = infodecal;
+	decal.nextthink = time /*+ 0.1f*/;
+#endif
+}
+
 void Decals_PlaceScorch(vector pos)
 {
 #ifdef CSQC
@@ -89,10 +102,20 @@ void Decals_PlaceScorch(vector pos)
 const string g_decalshader = \
 	"{\n" \
 		"polygonOffset\n" \
-		"{\n"\
+		"{\n" \
 			"clampmap %s\n" \
 			"rgbgen vertex\n" \
 			"blendfunc GL_ZERO GL_SRC_COLOR\n" \
+		"}\n" \
+	"}";
+
+const string g_decalshader_add = \
+	"{\n" \
+		"polygonOffset\n" \
+		"{\n" \
+			"clampmap %s\n" \
+			"rgbgen vertex\n" \
+			"blendfunc add\n" \
 		"}\n" \
 	"}";
 
@@ -124,6 +147,7 @@ void Decal_Parse(void)
 			self.color[0] = (g_decalwad[i].color[0] / 255);
 			self.color[1] = (g_decalwad[i].color[1] / 255);
 			self.color[2] = (g_decalwad[i].color[2] / 255);
+			self.style = g_decalwad[i].flags;
 			break;
 		}
 	}
@@ -132,11 +156,16 @@ void Decal_Parse(void)
 
 	if (serverkeyfloat("*bspversion") == 30) {
 		decalname = sprintf("decal_%s", self.classname);
-		decalshader = sprintf(g_decalshader, self.classname);
+		
+		if (self.style & DFLAG_ADDITIVE) {
+			decalshader = sprintf(g_decalshader_add, self.classname);
+		} else {
+			decalshader = sprintf(g_decalshader, self.classname);
+		}
 		shaderforname(decalname, decalshader);
 		self.classname = decalname;
 	}
-		
+
 	makevectors(self.angles);
 	float surf = getsurfacenearpoint(world, self.origin);
 	vector s_dir = getsurfacepointattribute(world, surf, 0, SPA_S_AXIS);

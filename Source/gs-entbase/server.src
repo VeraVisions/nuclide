@@ -47,7 +47,6 @@
 ../gs-entbase/server/env_beverage.cpp
 ../gs-entbase/server/env_global.cpp
 ../gs-entbase/server/item_food.cpp
-../gs-entbase/server/item_suit.cpp
 ../gs-entbase/server/path_corner.cpp
 ../gs-entbase/server/path_track.cpp
 ../gs-entbase/server/multi_manager.cpp

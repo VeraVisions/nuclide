@@ -54,6 +54,7 @@ predict.c
 ../shared/scihunt/w_chainsaw.c
 ../shared/scihunt/w_hammer.c
 ../shared/scihunt/weapons.c
+../shared/valve/weapon_common.c
 
 
 valve/player.c

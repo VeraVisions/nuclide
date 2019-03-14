@@ -266,6 +266,9 @@ void Effect_Impact(int iType, vector vPos, vector vNormal) {
 	multicast(vPos, MULTICAST_PVS);
 	
 	switch (iType) {
+		case IMPACT_GLASS:
+			Decals_PlaceGlass(vPos);
+			break;
 		case IMPACT_MELEE:
 			Decals_PlaceSmall(vPos);
 			break;

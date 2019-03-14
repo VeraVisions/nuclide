@@ -52,3 +52,8 @@ void Client_Init(float apilevel, string enginename, float engineversion)
 	/* FIXME: Replace with manual networking once I've got time? */
 	deltalisten("models/scientist.mdl", Scientist_Update, 0);
 }
+
+void Game_RendererRestarted(string rstr)
+{
+	
+}
