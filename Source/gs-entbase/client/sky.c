@@ -16,4 +16,6 @@ void Sky_Update(void)
 void Sky_Set(string name)
 {
 	g_skyname = name;
+	print(sprintf("[SKY] Set to %s", g_skyname));
+	Sky_Update();
 }
