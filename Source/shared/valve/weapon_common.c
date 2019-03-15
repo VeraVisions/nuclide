@@ -141,6 +141,15 @@ void Weapons_MakeVectors(void)
 #endif
 }
 
+vector Weapons_GetCameraPos(void)
+{
+#ifdef SSQC
+	return self.origin + self.view_ofs;
+#else
+	return pSeat->vPlayerOrigin + self.view_ofs;
+#endif
+}
+
 void Weapons_ViewAnimation(int i)
 {
 #ifdef CSQC

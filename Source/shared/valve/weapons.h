@@ -70,6 +70,7 @@ void Weapons_DrawCrosshair(void);
 void Decals_PlaceSmall(vector pos);
 void Decals_PlaceBig(vector pos);
 void Weapons_MakeVectors(void);
+vector Weapons_GetCameraPos(void);
 void Weapons_ViewAnimation(int i);
 void Weapons_ViewPunchAngle(vector add);
 void Weapons_PlaySound(entity t, float ch, string s, float vol, float at);
