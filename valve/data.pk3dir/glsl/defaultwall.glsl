@@ -48,7 +48,6 @@ varying vec2 lm_c;
 		float m = (diffuse_f.r + diffuse_f.g + diffuse_f.b) / 3.0f;
 		diffuse_f.rgb = vec3(m,m,m);
 #endif
-
 		gl_FragColor = diffuse_f;
 		
 	}

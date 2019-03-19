@@ -43,8 +43,9 @@ void env_explosion::Trigger(void)
 	Effect_CreateExplosion(origin);
 
 	if (!(spawnflags & ENVEXPLO_NODAMAGE)) {
-		Damage_Radius(origin, this, 500, m_iMagnitude, TRUE);
+		Damage_Radius(origin, this, m_iMagnitude, m_iMagnitude * 2.5f, TRUE);
 	}
+
 	// TODO: Respawn after round instead?
 	if (!(spawnflags & ENVEXPLO_REPEATABLE)) {
 		remove(this);

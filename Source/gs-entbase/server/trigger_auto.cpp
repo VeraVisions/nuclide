@@ -6,37 +6,43 @@
 *
 ****/
 
-class trigger_auto : CBaseTrigger
+class trigger_auto:CBaseTrigger
 {
 	float m_flDelay;
-	
+
 	void() trigger_auto;
 	virtual void() think;
+	virtual void() Respawn;
 };
 
-void trigger_auto :: think ( void )
+void trigger_auto::think(void)
 {
 	// This is weird, because ents may not be spawned yet.
 	// However, Half-Life doesn't care about this, either.
 	// So why should we?
-	CBaseTrigger::UseTargets_Delay( m_flDelay );
+	CBaseTrigger::UseTargets_Delay(m_flDelay);
 
-	if ( spawnflags & 1 ) {
-		remove( this );
+	if (spawnflags & 1) {
+		remove(this);
 	}
 }
 
-void trigger_auto :: trigger_auto ( void )
+void trigger_auto::Respawn(void)
 {
-	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
-		switch ( argv( i ) ) {
+	nextthink = time + 0.2f;
+}
+
+void trigger_auto::trigger_auto(void)
+{
+	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
+		switch (argv(i)) {
 		case "delay":
-			m_flDelay = stof( argv( i + 1 ) );
+			m_flDelay = stof(argv(i+1));
 			break;
 		default:
 			break;
 		}
 	}
 	CBaseTrigger::CBaseTrigger();
-	nextthink = time + 0.2f;
+	Respawn();
 }

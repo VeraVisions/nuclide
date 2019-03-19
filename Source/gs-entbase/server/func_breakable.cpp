@@ -31,6 +31,7 @@ class func_breakable:CBaseTrigger
 
 	void() func_breakable;
 	virtual void() Respawn;
+	virtual void() Explode;
 	virtual void() Trigger;
 	virtual void() PlayerTouch;
 	/*virtual void() PressureDeath;*/
@@ -74,6 +75,20 @@ void func_breakable::vPain (entity attacker, int type, int damage)
 	}
 }
 
+
+void func_breakable::Explode(void)
+{
+	vector vWorldPos;
+	vWorldPos[0] = absmin[0] + ( 0.5 * ( absmax[0] - absmin[0] ) );	
+	vWorldPos[1] = absmin[1] + ( 0.5 * ( absmax[1] - absmin[1] ) );	
+	vWorldPos[2] = absmin[2] + ( 0.5 * ( absmax[2] - absmin[2] ) );
+	Effect_BreakModel(20, absmin, absmax, '0 0 0', m_iMaterial);
+	Effect_CreateExplosion(vWorldPos);
+	Damage_Radius(vWorldPos, this, m_flExplodeMag, m_flExplodeMag * 2.5f, TRUE);
+	CBaseTrigger::UseTargets();
+	CBaseEntity::Hide();
+}
+
 void func_breakable::vDeath (entity attacker, int type, int damage)
 {
 	if (m_iMaterial == MATERIAL_GLASS_UNBREAKABLE) {
@@ -82,18 +97,21 @@ void func_breakable::vDeath (entity attacker, int type, int damage)
 	health = 0;
 	
 	print(sprintf("BREAK: %v [x] %v [=] %d\n", mins, maxs, vlen(mins - maxs)));
-	Effect_BreakModel(20, absmin, absmax, '0 0 0', m_iMaterial);
 
+	/* This may seem totally absurd. That's because it is. It's very
+	 * unreliable but exploding breakables in close proximity it WILL cause
+	 * an OVERFLOW because we'll be busy running through thousands
+	 * of entities in total when one breakable damages another in a frame. 
+	 * The only way around this is to set a hard-coded limit of loops per
+	 * frame and that would break functionality. */
 	if (m_flExplodeMag) {
-		vector vWorldPos;
-		vWorldPos[0] = absmin[0] + ( 0.5 * ( absmax[0] - absmin[0] ) );	
-		vWorldPos[1] = absmin[1] + ( 0.5 * ( absmax[1] - absmin[1] ) );	
-		vWorldPos[2] = absmin[2] + ( 0.5 * ( absmax[2] - absmin[2] ) );
-		Effect_CreateExplosion(vWorldPos);
+		think = Explode;
+		nextthink = time + random(0.0,0.5);
+	} else {
+		Effect_BreakModel(20, absmin, absmax, '0 0 0', m_iMaterial);
+		CBaseTrigger::UseTargets();
+		CBaseEntity::Hide();
 	}
-
-	CBaseTrigger::UseTargets();
-	CBaseEntity::Hide();
 }
 
 void func_breakable::Trigger(void)

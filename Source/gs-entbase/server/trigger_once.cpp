@@ -26,7 +26,7 @@ void trigger_once::touch(void)
 {
 	eActivator = other;
 
-	if ( m_flDelay > 0 ) {
+	if (m_flDelay > 0) {
 		CBaseTrigger::UseTargets_Delay(m_flDelay);
 	} else {
 		CBaseTrigger::UseTargets();
@@ -37,6 +37,7 @@ void trigger_once::touch(void)
 #endif
 }
 
+/* TODO: Make this redundant */
 void trigger_once::Respawn(void)
 {
 	solid = SOLID_TRIGGER;
@@ -47,10 +48,10 @@ void trigger_once::Respawn(void)
 
 void trigger_once::trigger_once(void)
 {
-	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
-		switch ( argv( i ) ) {
+	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
+		switch (argv(i)) {
 		case "delay":
-			m_flDelay = stof( argv( i + 1 ) );
+			m_flDelay = stof(argv(i + 1));
 			break;
 		default:
 			break;

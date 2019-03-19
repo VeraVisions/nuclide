@@ -15,7 +15,7 @@ Footsteps_Update
 Run every frame for each player, plays material based footsteps
 =================
 */
-void Footsteps_Update( void ) {
+void Footsteps_Update(void) {
 	float fSpeed;
 	float fVol;
 	string sMaterial = "";
@@ -24,20 +24,24 @@ void Footsteps_Update( void ) {
 	if (self.flags & FL_CROUCHING) {
 		return;
 	}
+	
+	if (!g_hlbsp_materials) {
+		return;
+	}
 
-	if ( ( self.movetype == MOVETYPE_WALK ) && ( self.flags & FL_ONGROUND ) ) {
-		if ( ( self.velocity[0] == 0 && self.velocity[1] == 0 ) || self.fStepTime > time ) {
+	if ((self.movetype == MOVETYPE_WALK) && (self.flags & FL_ONGROUND)) {
+		if ((self.velocity[0] == 0 && self.velocity[1] == 0) || self.fStepTime > time) {
 			return;
 		}
 
-		fSpeed = vlen( self.velocity );
-		traceline( self.origin + self.view_ofs, self.origin + '0 0 -48', FALSE, self );
-		sTexture = getsurfacetexture( trace_ent, getsurfacenearpoint( trace_ent, trace_endpos ) );
+		fSpeed = vlen(self.velocity);
+		traceline(self.origin + self.view_ofs, self.origin + '0 0 -48', FALSE, self);
+		sTexture = getsurfacetexture(trace_ent, getsurfacenearpoint(trace_ent, trace_endpos));
 
-		if ( fSpeed < 140 ) {
+		if (fSpeed < 140) {
 			self.fStepTime = time + 0.35;
 			fVol = 0.15f;
-		} else if ( fSpeed < 270 ) {
+		} else if (fSpeed < 270) {
 			self.fStepTime = time + 0.35;
 			fVol = 0.35f;
 		} else {
@@ -45,7 +49,7 @@ void Footsteps_Update( void ) {
 			fVol = 0.75;
 		}
 		
-		switch( (float)hash_get( hashMaterials, sTexture ) ) { 
+		switch((float)hash_get(hashMaterials, sTexture)) { 
 			case 'M':
 				sMaterial = "metal";
 				break;
@@ -81,17 +85,17 @@ void Footsteps_Update( void ) {
 				break;
          }
 
-		if ( self.iStep ) {
-			if ( random() < 0.5f ) {
-				sound( self, CHAN_BODY, sprintf( "player/pl_%s1.wav", sMaterial), fVol, ATTN_STATIC );
+		if (self.iStep) {
+			if (random() < 0.5f) {
+				sound(self, CHAN_BODY, sprintf("player/pl_%s1.wav", sMaterial), fVol, ATTN_STATIC);
 			} else {
-				sound( self, CHAN_BODY, sprintf( "player/pl_%s2.wav", sMaterial), fVol, ATTN_STATIC );
+				sound(self, CHAN_BODY, sprintf("player/pl_%s2.wav", sMaterial), fVol, ATTN_STATIC);
 			}
 		} else {
-			if ( random() < 0.5f ) {
-				sound( self, CHAN_BODY, sprintf( "player/pl_%s3.wav", sMaterial), fVol, ATTN_STATIC );
+			if (random() < 0.5f) {
+				sound(self, CHAN_BODY, sprintf("player/pl_%s3.wav", sMaterial), fVol, ATTN_STATIC);
 			} else {
-				sound( self, CHAN_BODY, sprintf( "player/pl_%s4.wav", sMaterial), fVol, ATTN_STATIC );
+				sound(self, CHAN_BODY, sprintf("player/pl_%s4.wav", sMaterial), fVol, ATTN_STATIC);
 			}
 		}
 

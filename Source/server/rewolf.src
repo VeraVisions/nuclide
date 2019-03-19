@@ -17,6 +17,12 @@ defs.h
 ../gs-entbase/server.src
 valve/monster_rat.cpp
 valve/monster_scientist_dead.cpp
+rewolf/gunman_cycler.cpp
+rewolf/monster_human_bandit.cpp
+rewolf/monster_human_chopper.cpp
+rewolf/monster_human_demoman.cpp
+rewolf/monster_human_gunman.cpp
+rewolf/monster_human_unarmed.cpp
 
 ../shared/decals.c
 ../shared/effects.c
@@ -52,6 +58,7 @@ valve/ammo.cpp
 ../shared/valve/weapon_common.c
 
 spawn.c
+vox.c
 
 valve/client.c
 client.c
@@ -61,7 +68,6 @@ server.c
 
 valve/damage.c
 traceattack.c
-vox.c
 
 footsteps.c
 flashlight.c

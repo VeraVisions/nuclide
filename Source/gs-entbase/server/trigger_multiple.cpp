@@ -14,7 +14,7 @@ enumflags
 	TM_PUSHABLES
 };
 
-class trigger_multiple : CBaseTrigger
+class trigger_multiple:CBaseTrigger
 {
 	float m_flDelay;
 	float m_flWait;
@@ -23,7 +23,7 @@ class trigger_multiple : CBaseTrigger
 	virtual void() Respawn;
 };
 
-void trigger_multiple :: touch ( void )
+void trigger_multiple::touch(void)
 {
 	eActivator = other;
 	
@@ -31,8 +31,8 @@ void trigger_multiple :: touch ( void )
 		return;
 	}
 
-	if ( m_flDelay > 0 ) {
-		CBaseTrigger::UseTargets_Delay( m_flDelay );
+	if (m_flDelay > 0) {
+		CBaseTrigger::UseTargets_Delay(m_flDelay);
 	} else {
 		CBaseTrigger::UseTargets();
 	}
@@ -49,7 +49,8 @@ void trigger_multiple :: touch ( void )
 #endif
 }
 
-void trigger_multiple :: Respawn ( void )
+/* TODO: Make this redundant */
+void trigger_multiple::Respawn(void)
 {
 	solid = SOLID_TRIGGER;
 #ifdef GS_DEVELOPER
@@ -57,15 +58,15 @@ void trigger_multiple :: Respawn ( void )
 #endif
 }
 
-void trigger_multiple :: trigger_multiple ( void )
+void trigger_multiple::trigger_multiple(void)
 {
-	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
-		switch ( argv( i ) ) {
+	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
+		switch (argv(i)) {
 		case "delay":
-			m_flDelay = stof( argv( i + 1 ) );
+			m_flDelay = stof(argv(i+1));
 			break;
 		case "wait":
-			m_flWait = stof( argv( i + 1 ) );
+			m_flWait = stof(argv(i+1));
 			break;
 		default:
 			break;

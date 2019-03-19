@@ -94,8 +94,10 @@ void init(float prevprogs)
 			}
 		}
 		fclose(fileMaterial);
+		g_hlbsp_materials = TRUE;
 	} else {
-		error("Failed to load sound/materials.txt!\n");	
+		error("Failed to load sound/materials.txt!\n");
+		g_hlbsp_materials = FALSE;
 	}
 
 	PMove_Init();

@@ -11,7 +11,7 @@ class info_null
 	void() info_null;
 };
 
-void info_null :: info_null ( void )
+void info_null::info_null(void)
 {
 	remove( self );
 }
@@ -21,36 +21,11 @@ class info_notnull:CBaseTrigger
 	void() info_notnull;
 };
 
-void info_notnull :: info_notnull ( void )
+void info_notnull::info_notnull(void)
 {
 	CBaseTrigger::CBaseTrigger();
 }
 
-CLASSEXPORT( info_node, info_notnull )
-CLASSEXPORT( info_target, info_notnull )
-CLASSEXPORT( env_sound, info_null )
-
-/*class CSuit : CBaseTrigger
-{
-	void CSuit;
-	virtual void() Trigger;
-};
-
-void CSuit :: Trigger ( void )
-{
-	CBaseTrigger::UseTargets();
-	remove( self );
-}
-
-void CSuit :: CSuit ( void )
-{
-	CBaseTrigger::CBaseTrigger();
-	
-	solid = SOLID_TRIGGER;
-	model = "models/w_suit.mdl";
-	precache_model( model );
-	setmodel( this, model );
-	touch = Trigger;
-}
-SPAWNEXPORT item_suit ( void ) { spawnfunc_CSuit(); }
-SPAWNEXPORT world_items ( void ) { spawnfunc_CSuit(); }*/
+CLASSEXPORT(info_node, info_notnull)
+CLASSEXPORT(info_target, info_notnull)
+CLASSEXPORT(env_sound, info_null)

@@ -20,22 +20,24 @@ enumflags
 	FR_LRADIUS
 };
 
-class CFuncRotating : CBaseTrigger
+class func_rotating : CBaseTrigger
 {
 	vector m_vecMoveDir;
 	float m_flSpeed;
-	void() CFuncRotating;
+	float m_flDamage;
+	void() func_rotating;
 	virtual void() Respawn;
 	virtual void() Trigger;
 	virtual void() Rotate;
+	virtual void() Blocked;
 	virtual void() SetMovementDirection;
 };
 
-void CFuncRotating :: Rotate( void )
+void func_rotating :: Rotate( void )
 {
 	nextthink = ltime + 10.0f;
 }
-void CFuncRotating :: Trigger ( void )
+void func_rotating :: Trigger ( void )
 {
 	if ( vlen( avelocity ) ) {
 		avelocity = [0,0,0];
@@ -44,14 +46,18 @@ void CFuncRotating :: Trigger ( void )
 	}
 }
 
-void CFuncRotating :: Blocked ( void )
+void func_rotating :: Blocked ( void )
 {
-	if ( spawnflags & FR_FANPAIN ) {
-//		Damage_Apply( other, this, m_iDamage, other.origin, FALSE );
+	if (avelocity == [0,0,0]) {
+		return;
+	}
+
+	if (other.takedamage == DAMAGE_YES) {
+		Damage_Apply(other, this, m_flDamage, other.origin, TRUE);
 	}
 }
 
-void CFuncRotating :: Respawn ( void )
+void func_rotating :: Respawn ( void )
 {
 	movetype = MOVETYPE_PUSH;
 	setorigin( this, origin );
@@ -68,9 +74,15 @@ void CFuncRotating :: Respawn ( void )
 		think = Rotate;
 		nextthink = ltime + 1.5f;
 	}
+	
+	blocked = Blocked;
+	
+	if (spawnflags & FR_FANPAIN) {
+		touch = Blocked;
+	}
 }
 
-void CFuncRotating :: SetMovementDirection ( void )
+void func_rotating :: SetMovementDirection ( void )
 {
 	if ( spawnflags & FR_ZAXIS ) {
 		m_vecMoveDir = '0 0 1';
@@ -85,7 +97,7 @@ void CFuncRotating :: SetMovementDirection ( void )
 	}
 }
 
-void CFuncRotating :: CFuncRotating ( void )
+void func_rotating :: func_rotating ( void )
 {
 	precache_model( model );
 	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
@@ -96,18 +108,19 @@ void CFuncRotating :: CFuncRotating ( void )
 		case "speed":
 			m_flSpeed = stof( argv( i + 1 ) );
 			break;
+		case "dmg":
+			m_flDamage = stof( argv( i + 1 ) );
+			break;
 		default:
 			break;
 		}
 	}
-	
+
 	if ( !m_flSpeed ) {
 		m_flSpeed = 100;
 	}
 
 	CBaseTrigger::CBaseTrigger();
-	CFuncRotating::SetMovementDirection();
-	CFuncRotating::Respawn();
+	func_rotating::SetMovementDirection();
+	func_rotating::Respawn();
 }
-
-CLASSEXPORT( func_rotating, CFuncRotating )

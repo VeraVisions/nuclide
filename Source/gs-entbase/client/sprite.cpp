@@ -46,8 +46,8 @@ void Sprite_Animated(void)
 	me.colormod[1] = readfloat();
 	me.colormod[2] = readfloat();
 	me.drawmask = MASK_ENGINE;
-	me.nextthink = time + ( 1 / me.framerate );
-	me.maxframe = modelframecount( me.modelindex );
+	me.nextthink = time + (1 / me.framerate);
+	me.maxframe = modelframecount(me.modelindex);
 	me.loops = 1; /* repeats */
 	setorigin(me, me.origin);
 }
@@ -67,8 +67,8 @@ void Sprite_ParseEvent(void)
 	spr.colormod[1] = readfloat();
 	spr.colormod[2] = readfloat();
 	spr.drawmask = MASK_ENGINE;
-	spr.nextthink = time + ( 1 / spr.framerate );
-	spr.maxframe = modelframecount( spr.modelindex );
+	spr.nextthink = time + (1 / spr.framerate);
+	spr.maxframe = modelframecount(spr.modelindex);
 	spr.loops = 0; /* does not repeat */
 	setorigin(spr, spr.origin);
 }

@@ -279,6 +279,7 @@ class monster_scientist:CBaseEntity
 	entity m_eRescuer;
 
 	float m_flScreamTime;
+	float m_flPainTime;
 	float m_flChangePath;
 	float m_flTraceTime;
 	float m_flPitch;
@@ -424,19 +425,23 @@ void monster_scientist::Physics(void)
 		}
 	}
 
-	spvel = vlen(velocity);
-
-	if (spvel < 5) {
-		frame = (m_iFlags & SCIF_SCARED) ? SCIA_SCARED1:SCIA_IDLE1;
-	} else if (spvel <= 140) {
-		frame = (m_iFlags & SCIF_SCARED) ? SCIA_WALKSCARED:SCIA_WALK;
-	} else if (spvel <= 240) {
-		frame = (m_iFlags & SCIF_SCARED) ? SCIA_RUNSCARED:SCIA_RUN;
-	}
-
 	input_angles = angles = v_angle;
 	input_timelength = frametime;
 	movetype = MOVETYPE_WALK;
+	
+	if (m_flPainTime > time) {
+		input_movevalues = [0,0,0];
+	} else {
+		spvel = vlen(velocity);
+
+		if (spvel < 5) {
+			frame = (m_iFlags & SCIF_SCARED) ? SCIA_SCARED1:SCIA_IDLE1;
+		} else if (spvel <= 140) {
+			frame = (m_iFlags & SCIF_SCARED) ? SCIA_WALKSCARED:SCIA_WALK;
+		} else if (spvel <= 240) {
+			frame = (m_iFlags & SCIF_SCARED) ? SCIA_RUNSCARED:SCIA_RUN;
+		}
+	}
 
 	runstandardplayerphysics(this);
 	Footsteps_Update();
@@ -488,13 +493,24 @@ void monster_scientist::PlayerUse(void)
 
 void monster_scientist::vPain(int iHitBody)
 {
+	
+	WarnOthers();
+
+	if (m_flPainTime > time) {
+		return;
+	}
+
+	if (random() < 0.75f) {
+		return;
+	}
+
 	int rand = floor(random(0,sci_sndpain.length));
 	sound(this, CHAN_VOICE, sci_sndpain[rand], 1.0, ATTN_NORM, m_flPitch);
 
 	frame = SCIA_FLINCH + floor(random(0, 5));
 	m_iFlags |= SCIF_FEAR;
 
-	WarnOthers();
+	m_flPainTime = time + 1.0f;
 }
 
 void monster_scientist::vDeath(int iHitBody)
@@ -519,7 +535,7 @@ void monster_scientist::vDeath(int iHitBody)
 
 	solid = SOLID_CORPSE;
 	//takedamage = DAMAGE_NO;
-	
+
 	if (style != SCI_DEAD) {
 		frame = SCIA_DIE_SIMPLE + floor(random(0, 6));
 		style = SCI_DEAD;
@@ -606,3 +622,5 @@ void monster_scientist::monster_scientist(void)
 			m_flPitch = 100; // Slick
 	}
 }
+
+CLASSEXPORT(qreate_arcade, monster_scientist)

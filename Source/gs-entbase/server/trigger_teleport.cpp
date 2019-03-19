@@ -6,16 +6,17 @@
 *
 ****/
 
-class trigger_teleport : CBaseTrigger
+class trigger_teleport:CBaseTrigger
 {
 	void() trigger_teleport;
+
 	virtual void() touch;
 	virtual void() Respawn;
 };
 
-void trigger_teleport :: touch ( void )
+void trigger_teleport::touch(void)
 {
-	if ( other.health > 0 || other.solid == SOLID_SLIDEBOX ) {
+	if (other.health > 0 || other.solid == SOLID_SLIDEBOX) {
 		entity eTarget = find(world, CBaseTrigger::m_strTargetName, m_strTarget);
 
 		if (eTarget) {
@@ -24,7 +25,8 @@ void trigger_teleport :: touch ( void )
 	}
 }
 
-void trigger_teleport :: Respawn( void )
+/* TODO: Make this redundant */
+void trigger_teleport::Respawn(void)
 {
 	solid = SOLID_TRIGGER;
 #ifdef GS_DEVELOPER
@@ -32,10 +34,10 @@ void trigger_teleport :: Respawn( void )
 #endif
 }
 
-void trigger_teleport :: trigger_teleport ( void )
+void trigger_teleport::trigger_teleport(void)
 {
 	CBaseTrigger::CBaseTrigger();
 	CBaseTrigger::InitBrushTrigger();
 }
 
-CLASSEXPORT( info_teleport_destination, info_notnull )
+CLASSEXPORT(info_teleport_destination, info_notnull)

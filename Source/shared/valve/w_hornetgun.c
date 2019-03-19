@@ -69,21 +69,29 @@ void w_hornetgun_primary(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-	
+
+#ifdef SSQC
 	Weapons_PlaySound(pl, CHAN_WEAPON, sprintf("agrunt/ag_fire%d.wav", floor(random(1,4))), 1, ATTN_NORM);
+#else
 	Weapons_ViewAnimation(HORNETGUN_SHOOT);
+#endif
+
 	pl.w_attack_next = 0.25;
 	pl.w_idle_next = 2.5f;
 }
 void w_hornetgun_secondary(void)
 {
 	player pl = (player)self;
-	if (pl.w_attack_next > 0.0) {
+	if (pl.w_attack_next) {
 		return;
 	}
-	
+
+#ifdef SSQC
 	Weapons_PlaySound(pl, CHAN_WEAPON, sprintf("agrunt/ag_fire%d.wav", floor(random(1,4))), 1, ATTN_NORM);
+#else
 	Weapons_ViewAnimation(HORNETGUN_SHOOT);
+#endif
+
 	pl.w_attack_next = 0.1;
 	pl.w_idle_next = 2.5f;
 }
@@ -93,6 +101,7 @@ void w_hornetgun_reload(void)
 }
 void w_hornetgun_release(void)
 {
+#ifdef CSQC
 	int r;
 	player pl = (player)self;
 	if (pl.w_idle_next > 0.0) {
@@ -115,6 +124,7 @@ void w_hornetgun_release(void)
 		pl.w_idle_next = 2.2f;
 		break;
 	}
+#endif
 }
 void w_hornetgun_crosshair(void)
 {

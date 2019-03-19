@@ -6,6 +6,8 @@
 *
 ****/
 
+var int autocvar_v_cambob = FALSE;
+
 void View_Init(void)
 {
 #ifdef CSTRIKE
@@ -66,7 +68,7 @@ void View_CalcBob(void)
 	float cycle;
 
 	vector vel;
-	
+
 	if (self.flags & FL_ONGROUND == -1) {
 		return;	
 	}
@@ -87,6 +89,52 @@ void View_CalcBob(void)
 	float fBob = sqrt(vel[0] * vel[0] + vel[1] * vel[1]) * autocvar_v_bob;
 	fBob = fBob * 0.3 + fBob * 0.7 * sin(cycle);
 	pSeat->fBob = bound(-7, fBob, 4);
+}
+
+/*
+=================
+View_CalcCameraBob
+=================
+*/
+
+void View_CalcCamBob(void)
+{
+	float flPlayerSpeed;
+
+	if (!autocvar_v_cambob) {
+		return;
+	}
+
+	flPlayerSpeed = vlen(pSeat->vPlayerVelocity);
+
+	if (flPlayerSpeed < 5) {
+		pSeat->flCamMove = 0;
+		pSeat->flCamTime = 0;
+	} else if (pSeat->fPlayerFlags & FL_ONGROUND) {
+		if ( flPlayerSpeed > 210 ) {
+			pSeat->flCamMove = clframetime * 3;
+		} else if (flPlayerSpeed > 100) {
+			pSeat->flCamMove = clframetime * 1.5;
+		} else {
+			pSeat->flCamMove = clframetime;
+		}
+	}
+
+	pSeat->flCamTime = (pSeat->flCamTime += pSeat->flCamMove);
+	pSeat->iCamCycle = (int)pSeat->flCamTime;
+	pSeat->flCamFracSin = fabs(sin(pSeat->flCamTime * M_PI));
+	pSeat->flCamDelta = pSeat->flCamFracSin * 0.002 * flPlayerSpeed;
+
+	if ((pSeat->fPlayerFlags & FL_CROUCHING) && (pSeat->fPlayerFlags & FL_ONGROUND)) {
+		pSeat->flCamDelta *= 6;
+	}
+	view_angles[0] += pSeat->flCamDelta;
+
+	if (pSeat->iCamCycle & 1) {
+		pSeat->flCamDelta = -pSeat->flCamDelta;
+	}
+
+	view_angles[2] += pSeat->flCamDelta;
 }
 
 /*
@@ -184,6 +232,7 @@ void View_DrawViewModel(void)
 		}
 		addentity(eViewModel);
 	}
+	View_CalcCamBob();
 }
 
 void View_PostDraw(void)

@@ -24,10 +24,8 @@ enum
 
 void w_crossbow_precache(void)
 {
-#ifdef CSQC
-	precache_model("models/v_crossbow.mdl");
 	precache_model("models/crossbow_bolt.mdl");
-#else
+	precache_model("models/v_crossbow.mdl");
 	precache_model("models/w_crossbow.mdl");
 	precache_model("models/p_crossbow.mdl");
 	precache_sound("weapons/xbow_reload1.wav");
@@ -35,7 +33,6 @@ void w_crossbow_precache(void)
 	precache_sound("weapons/xbow_hit1.wav");
 	precache_sound("weapons/xbow_hitbod1.wav");
 	precache_sound("weapons/xbow_hitbod2.wav");
-#endif
 }
 string w_crossbow_vmodel(void)
 {
@@ -90,23 +87,12 @@ void w_crossbow_holster(void)
 void w_crossbow_primary(void)
 {
 	player pl = (player)self;
-	if (pl.w_attack_next > 0.0) {
+	if (pl.w_attack_next) {
 		return;
 	}
 
-#ifdef CSQC
-	if (pl.a_ammo1) {
-		Weapons_ViewAnimation(CROSSBOW_FIRE1);
-		Weapons_PlaySound(pl, CHAN_ITEM, "weapons/xbow_reload1.wav", 1, ATTN_NORM);
-	} else {
-		Weapons_ViewAnimation(CROSSBOW_FIRE3);
-	}
-	
-	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/xbow_fire1.wav", 1, ATTN_NORM);
-#endif
-
-	static void Crossbolt_Touch(void) {
 #ifdef SSQC
+	static void Crossbolt_Touch(void) {
 		Effect_CreateSpark(self.origin, trace_plane_normal);
 		
 		if (other.takedamage == DAMAGE_YES) {
@@ -119,46 +105,49 @@ void w_crossbow_primary(void)
 		} else {
 			Weapons_PlaySound(self, CHAN_WEAPON, "weapons/xbow_hit1.wav", 1, ATTN_NORM);
 		}
-#endif
 		remove(self);
 	}
 	Weapons_MakeVectors();
 	entity bolt = spawn();
-
-#ifdef SSQC
-	static float bolt_nosend(entity pvsent, float fl) {
-		return FALSE;
-	}
-	bolt.SendEntity = bolt_nosend;
-	bolt.SendFlags = 1;
-#else
 	setmodel(bolt, "models/crossbow_bolt.mdl");
-	bolt.drawmask = MASK_ENGINE;
-#endif
 	setorigin(bolt, Weapons_GetCameraPos() + (v_forward * 16));
 	bolt.owner = self;
 	bolt.velocity = v_forward * 2000;
 	bolt.movetype = MOVETYPE_FLY;
 	bolt.solid = SOLID_BBOX;
+	//bolt.flags |= FL_LAGGEDMOVE;
 	bolt.gravity = 0.5f;
 	bolt.angles = vectoangles(bolt.velocity);
 	bolt.avelocity[2] = 10;
 	bolt.touch = Crossbolt_Touch;
 	setsize(bolt, [0,0,0], [0,0,0]);
 
+	if (pl.crossbow_mag) {	
+		Weapons_PlaySound(pl, CHAN_ITEM, "weapons/xbow_reload1.wav", 1, ATTN_NORM);
+	}
+
+	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/xbow_fire1.wav", 1, ATTN_NORM);
+#else
+	if (pl.a_ammo1) {
+		Weapons_ViewAnimation(CROSSBOW_FIRE1);
+	} else {
+		Weapons_ViewAnimation(CROSSBOW_FIRE3);
+	}
 	Weapons_ViewPunchAngle([-2,0,0]);
+#endif
+
 	pl.w_attack_next = 0.75f;
 	pl.w_idle_next = 10.0f;
 }
 void w_crossbow_secondary(void)
 {
 	player pl = (player)self;
-	if (pl.w_attack_next > 0.0) {
+	if (pl.w_attack_next) {
 		return;
 	}
 	/* Simple toggle of fovs */
 	if (pl.viewzoom == 1.0f) {
-		pl.viewzoom = 0.2;
+		pl.viewzoom = 0.2f;
 	} else {
 		pl.viewzoom = 1.0f;
 	}

@@ -6,6 +6,8 @@
 *
 ****/
 
+var int autocvar_cl_decals = TRUE;
+
 #include "decals.h"
 
 #define DECALS_MAX 30
@@ -14,6 +16,9 @@
 entity g_decals;
 void Decals_Init(void)
 {
+	if (serverkeyfloat("*bspversion") != 30) {
+		return;
+	}
 	entity nextdecal = spawn();
 	g_decals = nextdecal;
 	for (int i = 0; i <= DECALS_MAX; i++) {
@@ -47,6 +52,9 @@ entity Decals_Next(vector pos)
 
 void Decals_PlaceSmall(vector pos)
 {
+	if (serverkeyfloat("*bspversion") != 30) {
+		return;
+	}
 #ifdef CSQC
 	// TODO
 #else
@@ -60,6 +68,9 @@ void Decals_PlaceSmall(vector pos)
 
 void Decals_PlaceBig(vector pos)
 {
+	if (serverkeyfloat("*bspversion") != 30) {
+		return;
+	}
 #ifdef CSQC
 	// TODO
 #else
@@ -73,6 +84,9 @@ void Decals_PlaceBig(vector pos)
 
 void Decals_PlaceGlass(vector pos)
 {
+	if (serverkeyfloat("*bspversion") != 30) {
+		return;
+	}
 #ifdef CSQC
 	// TODO
 #else
@@ -86,6 +100,9 @@ void Decals_PlaceGlass(vector pos)
 
 void Decals_PlaceScorch(vector pos)
 {
+	if (serverkeyfloat("*bspversion") != 30) {
+		return;
+	}
 #ifdef CSQC
 	// TODO
 #else
@@ -121,6 +138,10 @@ const string g_decalshader_add = \
 
 float Decal_PreDraw(void)
 {
+	if (!autocvar_cl_decals) {
+		return PREDRAW_NEXT;
+	}
+
 	adddecal(self.classname, self.origin, self.mins, self.maxs, self.color, 1.0f);
 	addentity(self);
 	return PREDRAW_NEXT;

@@ -16,6 +16,5 @@ class cycler_sprite:CBaseTrigger
 void cycler_sprite::cycler_sprite(void)
 {
 	CBaseEntity::CBaseEntity();
-	precache_model(m_oldModel);
-	Respawn();
+	CBaseEntity::Respawn();
 }

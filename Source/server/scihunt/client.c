@@ -104,6 +104,7 @@ void Game_PutClientInServer(void)
 	pl.vDeath = Player_Death;
 	pl.iBleeds = TRUE;
 	forceinfokey(pl, "*spec", "0");
+	forceinfokey(self, "*deaths", ftos(self.deaths));
 
 	if (cvar("sv_playerslots") == 1) {
 		Game_DecodeChangeParms();

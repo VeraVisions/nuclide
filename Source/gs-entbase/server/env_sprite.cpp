@@ -94,6 +94,10 @@ void env_sprite::env_sprite(void)
 	if (!m_flFramerate) {
 		m_flFramerate = 10;
 	}
+	
+	if (!m_flScale) {
+		m_flScale = 1.0f;
+	}
 
 	CBaseTrigger::CBaseTrigger();
 	precache_model(m_oldModel);

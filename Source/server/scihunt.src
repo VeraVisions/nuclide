@@ -57,6 +57,7 @@ valve/item_healthkit.cpp
 
 scihunt/shdata_parse.c
 spawn.c
+vox.c
 
 scihunt/client.c
 client.c
@@ -66,7 +67,6 @@ server.c
 
 valve/damage.c
 traceattack.c
-vox.c
 
 footsteps.c
 flashlight.c

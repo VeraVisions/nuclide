@@ -23,7 +23,7 @@ void w_python_precache(void)
 	precache_model("models/v_357.mdl");
 	precache_model("models/w_357.mdl");
 	precache_model("models/p_357.mdl");
-	
+
 	precache_sound("weapons/357_shot1.wav");
 	precache_sound("weapons/357_shot2.wav");
 }
@@ -62,7 +62,9 @@ void w_python_draw(void)
 
 void w_python_holster(void)
 {
+#ifdef CSQC
 	Weapons_ViewAnimation(PYTHON_HOLSTER);
+#endif
 }
 void w_python_primary(void)
 {
@@ -73,17 +75,17 @@ void w_python_primary(void)
 
 #ifdef SSQC
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 40, [0.00873, 0.00873]);
-#endif
-
-	Weapons_ViewAnimation(PYTHON_FIRE1);
-	Weapons_ViewPunchAngle([-10,0,0]);
 
 	if (random() < 0.5) {
 		Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/357_shot1.wav", 1, ATTN_NORM);
 	} else {
 		Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/357_shot2.wav", 1, ATTN_NORM);
 	}
-	
+#else
+	Weapons_ViewAnimation(PYTHON_FIRE1);
+	Weapons_ViewPunchAngle([-10,0,0]);
+#endif
+
 	pl.w_attack_next = 0.75f;
 	pl.w_idle_next = 10.0f;
 }
@@ -107,19 +109,24 @@ void w_python_reload(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
+
+#ifdef CSQC
 	Weapons_ViewAnimation(PYTHON_RELOAD);
+#endif
+
 	pl.w_attack_next = 3.25f;
 	pl.w_idle_next = 10.0f;
 }
 void w_python_release(void)
 {
+
+#ifdef CSQC
 	player pl = (player)self;
 	if (pl.w_idle_next > Math_Time()) {
 		return;
 	}
 
 	int r = floor(random(0,3));
-
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(PYTHON_IDLE1);
@@ -133,6 +140,7 @@ void w_python_release(void)
 	}
 
 	pl.w_idle_next = Math_Time() + 15.0f;
+#endif
 }
 void w_python_crosshair(void)
 {

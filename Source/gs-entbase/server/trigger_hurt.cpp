@@ -26,8 +26,6 @@ class trigger_hurt:CBaseTrigger
 
 void trigger_hurt::Trigger(void)
 {
-
-
 	if (solid != SOLID_NOT) {
 #ifdef GS_DEVELOPER
 	print("trigger_hurt: de-activated.\n");

@@ -48,6 +48,13 @@ void game_printinfo(int i)
 	print("==================================\n");
 }
 
+void games_set(int id)
+{
+	gameinfo_current = id;
+	setwindowcaption(games[id].game);
+	cvar_set("com_fullgamename", games[id].game);
+}
+
 void games_init(void)
 {
 	int gameidx;
@@ -145,7 +152,7 @@ void games_init(void)
 			}
 		}
 		if (games[gameidx].gamedir == cvar_string("game")) {
-			gameinfo_current = gameidx;
+			games_set(gameidx);
 		}
 		game_printinfo(gameidx);
 	}
@@ -176,7 +183,7 @@ void customgame_btnactivate_start(void)
 {
 	int nextgame = customgame_lbMods.GetSelected();
 
-	gameinfo_current = nextgame;
+	games_set(nextgame);
 	localcmd(sprintf("gamedir \"%s\"\n", games[nextgame].gamedir));
 	localcmd("snd_restart\nwait\nvid_reload\nmenu_restart\nmenu_customgame\n");
 	// TODO: Re-init important menu bits and bobs.

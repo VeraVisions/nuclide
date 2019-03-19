@@ -85,7 +85,8 @@ reverbinfo_t reverbPresets [35] = {
 	{ 1.0000f, 0.7000f, 0.3162f, 0.4477f, 1.0000f, 1.5100f, 1.2500f, 1.1400f, 0.8913f, 0.0200f, [0,0,0], 1.4125f, 0.0300f, [0,0,0], 0.1790f, 0.1500f, 0.8950f, 0.1900f, 0.9920f, 5000.0000f, 250.0000f, 0.0000f, 0x0 }
 };
 
-class env_sound:CBaseEntity {
+class env_sound:CBaseEntity
+{
 	int m_iRoomType;
 	int m_iRadius;
 
@@ -222,7 +223,7 @@ void env_sound::env_sound(void)
 	}
 }
 
-void env_sound::SpawnKey (string strField, string strKey)
+void env_sound::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
 		case "roomtype":

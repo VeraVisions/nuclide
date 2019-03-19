@@ -36,7 +36,7 @@ Generic function that applies damage, pain and suffering
 void Damage_Apply(entity eTarget, entity eAttacker, float fDamage, vector vHitPos, int a)
 {
 	// Apply the damage finally
-	if (eTarget.armor) {
+	if (eTarget.armor && fDamage > 0) {
 		float flArmor;
 		float flNewDamage;
 
@@ -56,18 +56,27 @@ void Damage_Apply(entity eTarget, entity eAttacker, float fDamage, vector vHitPo
 	
 	fDamage = rint(fDamage);
 	eTarget.health -= fDamage;
-	eTarget.dmg_take = fDamage;
-	eTarget.dmg_inflictor = eAttacker;
+	
+	if (fDamage > 0) {
+		eTarget.dmg_take = fDamage;
+		eTarget.dmg_inflictor = eAttacker;
+	} else if (eTarget.max_health && eTarget.health > eTarget.max_health) {
+		eTarget.health = eTarget.max_health;
+	}
 
 	// Target is dead and a client....
 	if (eTarget.health <= 0) {
 		if (eTarget.flags & FL_CLIENT) {
-			//eTarget.fDeaths++;
-			//forceinfokey(eTarget, "*deaths", ftos(eTarget.fDeaths));
+			eTarget.deaths++;
+			forceinfokey(eTarget, "*deaths", ftos(eTarget.deaths));
 		}
 
 		if ((eTarget.flags & FL_CLIENT) && (eAttacker.flags & FL_CLIENT)) {
-			eAttacker.frags++;
+			if (eTarget == eAttacker) {
+				eAttacker.frags--;
+			} else {
+				eAttacker.frags++;
+			}
 			//Damage_CastOrbituary(eAttacker, eTarget, eAttacker.weapon);
 		}
 	}
@@ -80,8 +89,8 @@ void Damage_Apply(entity eTarget, entity eAttacker, float fDamage, vector vHitPo
 	} else {
 		self.vPain(trace_surface_id);
 	}
-	
-	if (self.iBleeds == TRUE) {
+
+	if (self.iBleeds == TRUE && fDamage > 0) {
 		Effect_CreateBlood(vHitPos, [0,0,0]);
 	} 
 
@@ -157,11 +166,6 @@ void Damage_Radius(vector org, entity eAttacker, float fDamage, float fRadius, i
 
 			if (fDiff > 0) {
 				Damage_Apply(c, eAttacker, fDamage, vecRealPos, 0);
-				/*if (c.movetype != MOVETYPE_NONE) {
-					vPush = vectoangles(vecRealPos - org);
-					makevectors(vPush);
-					c.velocity += (v_forward * fDamage * 5) + (v_up * fDamage * 2.5);
-				}*/
 			}
 			
 		}

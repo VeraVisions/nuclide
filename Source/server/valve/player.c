@@ -6,15 +6,17 @@
 *
 ****/
 
-void Player_Pain(void)
+void Player_Pain(int hit)
 {
 	
 }
 
-void Player_Death(void)
+void Player_Death(int hit)
 {
 	player pl = (player)self;
 	pl.movetype = MOVETYPE_NONE;
+	pl.solid = SOLID_NOT;
+	pl.takedamage = DAMAGE_NO;
 	pl.health = pl.armor = pl.activeweapon = pl.g_items = 0;
 	PutClientInServer();
 }

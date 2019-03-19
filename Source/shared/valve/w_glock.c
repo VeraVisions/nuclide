@@ -62,7 +62,7 @@ void w_glock_draw(void)
 }
 void w_glock_holster(void)
 {
-#ifdef SSQC
+#ifdef CSQC
 	Weapons_ViewAnimation(GLOCK_HOLSTER);
 #endif
 }

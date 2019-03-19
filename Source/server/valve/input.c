@@ -38,6 +38,8 @@ void Game_Input(void)
 	if (cvar("sv_cheats") == 1) {
 		player pl = (player)self;
 		if (self.impulse == 101) {
+			pl.health = 100;
+			pl.armor = 100;
 			Weapons_AddItem(pl, WEAPON_CROWBAR);
 			Weapons_AddItem(pl, WEAPON_GLOCK);
 			Weapons_AddItem(pl, WEAPON_PYTHON);

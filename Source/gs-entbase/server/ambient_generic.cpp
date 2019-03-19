@@ -6,8 +6,7 @@
 *
 ****/
 
-enumflags
-{
+enumflags {
 	AS_ARADIUS,
 	AS_SRADIUS,
 	AS_MRADIUS,
@@ -22,15 +21,10 @@ class ambient_generic:CBaseTrigger
 	string m_strSoundPath;
 	float m_flVolume;
 	float m_flRadius;
-	int m_iToggleSwitch;
-
 	float m_flPitch;
+	int m_iToggleSwitch;
 	int m_iLoop;
 
-/*	int m_iPreset;
-	float m_flVolume_Start;
-	float m_flFadeIn;
-	float m_flFadeOut;*/ // TODO: Do this in CSQC
 	void() ambient_generic;
 	
 	virtual void() Respawn;
@@ -42,6 +36,7 @@ void ambient_generic::UseNormal(void)
 {
 	sound(this, CHAN_VOICE, m_strActivePath, m_flVolume, m_flRadius, m_flPitch);
 }
+
 void ambient_generic::UseLoop(void)
 {
 	if (m_iToggleSwitch == TRUE) {
@@ -50,7 +45,6 @@ void ambient_generic::UseLoop(void)
 		m_strActivePath = m_strSoundPath;
 	}
 	m_iToggleSwitch = 1 - m_iToggleSwitch;
-	
 	UseNormal();
 }
 
@@ -71,13 +65,13 @@ void ambient_generic::Respawn(void)
 		m_iToggleSwitch = TRUE;
 		UseNormal();
 	}
-	
+
 	if (m_iLoop) {
 		Trigger = UseLoop;
 	}
 }
 
-void ambient_generic::ambient_generic (void)
+void ambient_generic::ambient_generic(void)
 {
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
@@ -92,7 +86,6 @@ void ambient_generic::ambient_generic (void)
 			break;
 		case "volume":
 			m_flVolume = stof(argv(i+1));
-			//volume = __NULL__;
 			break;
 		case "pitch":
 			m_flPitch = stof(argv(i+1));
@@ -103,7 +96,7 @@ void ambient_generic::ambient_generic (void)
 	}
 
 	if (!m_strSoundPath) {
-		objerror("ambient_generic: No sound file specified. Aborting.");
+		objerror("ambient_generic: No sound file specified!");
 	}
 
 	precache_sound(m_strSoundPath);
@@ -125,6 +118,6 @@ void ambient_generic::ambient_generic (void)
 		m_flRadius = ATTN_STATIC;
 	}
 
-	ambient_generic::Respawn();
 	CBaseTrigger::CBaseTrigger();
+	ambient_generic::Respawn();
 }

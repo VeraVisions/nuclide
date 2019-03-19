@@ -16,6 +16,7 @@ defs.h
 
 ../gs-entbase/server.src
 valve/monster_rat.cpp
+valve/monster_scientist.cpp
 valve/monster_scientist_dead.cpp
 
 ../shared/decals.c
@@ -47,11 +48,14 @@ valve/items.cpp
 valve/item_longjump.cpp
 valve/item_suit.cpp
 valve/item_healthkit.cpp
+valve/item_battery.cpp
+valve/world_items.cpp
 valve/ammo.cpp
 ../shared/valve/weapons.c
 ../shared/valve/weapon_common.c
 
 spawn.c
+vox.c
 
 valve/client.c
 client.c
@@ -61,7 +65,6 @@ server.c
 
 valve/damage.c
 traceattack.c
-vox.c
 
 footsteps.c
 flashlight.c

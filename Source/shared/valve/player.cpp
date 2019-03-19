@@ -31,6 +31,7 @@ class player
 	int shotgun_mag;
 	int crossbow_mag;
 	int rpg_mag;
+	int satchel_chg;
 
 #ifdef CSQC
 	/* External model */

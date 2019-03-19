@@ -28,6 +28,7 @@ Notes
 class cycler:CBaseTrigger
 {
 	void() cycler;
+	virtual void() Respawn;
 	virtual void(entity, int, int) vPain;
 };
 
@@ -41,12 +42,16 @@ void cycler::vPain(entity attacker, int type, int damage)
 	health = 9999;
 }
 
-void cycler::cycler(void)
+void cycler::Respawn(void)
 {
-	CBaseEntity::CBaseEntity();
-	precache_model(m_oldModel);
-	setmodel(this, m_oldModel);
+	CBaseEntity::Respawn();
 	solid = SOLID_BBOX;
 	takedamage = DAMAGE_YES;
 	health = 9999;
+}
+
+void cycler::cycler(void)
+{
+	CBaseEntity::CBaseEntity();
+	Respawn();
 }

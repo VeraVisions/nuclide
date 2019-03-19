@@ -630,16 +630,78 @@ float CSQC_Ent_ParseMapEntity(void)
 
 		switch (strField) {
 			case "classname":
-				/*if (strValue == "env_cubemap") {
-					iClass = TRUE;
-					eEnt = spawn(CEnvCubemap);
-				} else */if (strValue == "worldspawn") {
+				switch (strValue) {
+				case "worldspawn":
 					eEnt = spawn(worldspawn);
 					iClass = TRUE;
-				} else if (strValue == "env_sound") {
+					break;
+				case "env_sound":
 					eEnt = spawn(env_sound);
 					iClass = TRUE;
-				} else {
+					break;
+				#ifdef REWOLF
+				case "decore_asteroid":
+					eEnt = spawn(decore_asteroid);
+					iClass = TRUE;
+					break;
+				case "decore_baboon":
+					eEnt = spawn(decore_baboon);
+					iClass = TRUE;
+					break;
+				case "decore_bodygib":
+					eEnt = spawn(decore_bodygib);
+					iClass = TRUE;
+					break;
+				case "decore_butterflyflock":
+					eEnt = spawn(decore_butterflyflock);
+					iClass = TRUE;
+					break;
+				case "decore_explodable":
+					eEnt = spawn(decore_explodable);
+					iClass = TRUE;
+					break;
+				case "decore_foot":
+					eEnt = spawn(decore_foot);
+					iClass = TRUE;
+					break;
+				case "decore_goldskull":
+					eEnt = spawn(decore_goldskull);
+					iClass = TRUE;
+					break;
+				case "decore_hatgib":
+					eEnt = spawn(decore_hatgib);
+					iClass = TRUE;
+					break;
+				case "decore_nest":
+					eEnt = spawn(decore_nest);
+					iClass = TRUE;
+					break;
+				case "decore_pteradon":
+					eEnt = spawn(decore_pteradon);
+					iClass = TRUE;
+					break;
+				case "decore_torch":
+					eEnt = spawn(decore_torch);
+					iClass = TRUE;
+					break;
+				case "decore_spacedebris":
+					eEnt = spawn(decore_spacedebris);
+					iClass = TRUE;
+					break;
+				case "decore_swampplants":
+					eEnt = spawn(decore_swampplants);
+					iClass = TRUE;
+					break;
+				case "decore_mushroom":
+					eEnt = spawn(decore_mushroom);
+					iClass = TRUE;
+					break;
+				case "decore_mushroom2":
+					eEnt = spawn(decore_mushroom2);
+					iClass = TRUE;
+					break;
+				#endif
+				default:
 					eEnt.classname = strValue;
 				}
 				break;

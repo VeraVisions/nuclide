@@ -6,6 +6,12 @@
 *
 ****/
 
+/* FIXME: Remove this once the builtin exists */
+float getchannellevel(entity foo, float chanid)
+{
+	return bound(0, cos(time), 1) * 100;
+}
+
 /* This really shouldn't be here, but it'll be fine for the time being */
 .int initedsci;
 float Scientist_PreDraw(void)
@@ -15,6 +21,8 @@ float Scientist_PreDraw(void)
 		setcustomskin(self, "", sprintf("geomset 1 %d\n", self.colormod[0]));
 		self.initedsci = TRUE;
 	}
+	
+	self.bonecontrol5 = getchannellevel(self, CHAN_VOICE);
 
 	/* HACK: We're abusing this networked field, so reset */
 	self.colormod = [0,0,0];

@@ -2,6 +2,7 @@
 ../gs-entbase/server/defs.h
 ../gs-entbase/server/baseentity.cpp
 ../gs-entbase/server/basetrigger.cpp
+../gs-entbase/server/basemonster.cpp
 ../gs-entbase/server/ambient_generic.cpp
 ../gs-entbase/server/cycler.cpp
 ../gs-entbase/server/cycler_sprite.cpp
@@ -24,6 +25,7 @@
 ../gs-entbase/server/func_illusionary.cpp
 ../gs-entbase/server/func_ladder.cpp
 ../gs-entbase/server/func_train.cpp
+../gs-entbase/server/func_tracktrain.cpp
 ../gs-entbase/server/func_pushable.cpp
 ../gs-entbase/server/func_wall.cpp
 ../gs-entbase/server/func_wall_toggle.cpp

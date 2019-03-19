@@ -8,10 +8,11 @@
 
 string __fullspawndata;
 
-class CBaseEntity {
+class CBaseEntity
+{
 	string targetname;
 	string target;
-	
+
 	void() CBaseEntity;
 
 	virtual void() Init;
@@ -19,8 +20,9 @@ class CBaseEntity {
 	virtual void(string, string) SpawnKey;
 };
 
-void CBaseEntity :: SpawnKey (string strField, string strKey) {
-	switch ( strField ) {
+void CBaseEntity::SpawnKey(string strField, string strKey)
+{
+	switch (strField) {
 		case "targetname":
 			targetname = strKey;
 			break;
@@ -28,29 +30,29 @@ void CBaseEntity :: SpawnKey (string strField, string strKey) {
 			target = strKey;
 			break;
 		case "origin":
-			origin = stov( strKey );
-			setorigin( this, origin );
+			origin = stov(strKey);
+			setorigin(this, origin);
 			break;
 		case "angles":
-			angles = stov( strKey );
+			angles = stov(strKey);
 			break;
 		case "model":
 			model = strKey;
 			break;
 		case "style":
-			style = stof( strKey );
+			style = stof(strKey);
 			break;
 		case "color":
-			color = stov( strKey );
+			color = stov(strKey);
 			break;
 		case "movetype":
-			movetype = stof( strKey );
+			movetype = stof(strKey);
 			break;
 		case "solid":
-			solid = stof( strKey );
+			solid = stof(strKey);
 			break;
 		case "scale":
-			scale = stof( strKey );
+			scale = stof(strKey);
 			break;
 		default:
 			//dprint(sprintf("Unknown field %s, value %s\n", strField, strKey));

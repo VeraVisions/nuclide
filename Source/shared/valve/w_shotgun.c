@@ -57,18 +57,16 @@ void w_shotgun_draw(void)
 
 void w_shotgun_holster(void)
 {
+#ifdef CSQC
 	Weapons_ViewAnimation(SHOTGUN_HOLSTER);
+#endif
 }
 void w_shotgun_primary(void)
 {
 	player pl = (player)self;
-	if (pl.w_attack_next > 0.0) {
+	if (pl.w_attack_next) {
 		return;
 	}
-
-	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/sbarrel1.wav", 1, ATTN_NORM);
-	Weapons_ViewAnimation(SHOTGUN_FIRE1);
-	Weapons_ViewPunchAngle([-5,0,0]);
 
 #ifdef SSQC
 	/* Singleplayer is more accurate */
@@ -77,15 +75,19 @@ void w_shotgun_primary(void)
 	} else {
 		TraceAttack_FireBullets(4, pl.origin + pl.view_ofs, 5, [0.08716,0.04362]);
 	}
+	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/sbarrel1.wav", 1, ATTN_NORM);
+#else
+	Weapons_ViewAnimation(SHOTGUN_FIRE1);
+	Weapons_ViewPunchAngle([-5,0,0]);
 #endif
 
-	pl.w_attack_next = Math_Time() + 0.75;
-	pl.w_idle_next = Math_Time() + 2.5f;
+	pl.w_attack_next = 0.75;
+	pl.w_idle_next = 2.5f;
 }
 void w_shotgun_secondary(void)
 {
 	player pl = (player)self;
-	if (pl.w_attack_next > 0.0) {
+	if (pl.w_attack_next) {
 		return;
 	}
 
@@ -96,11 +98,12 @@ void w_shotgun_secondary(void)
 	} else {
 		TraceAttack_FireBullets(8, pl.origin + pl.view_ofs, 5, [0.17365,0.04362]);
 	}
-#endif
-
 	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/dbarrel1.wav", 1, ATTN_NORM);
+#else
 	Weapons_ViewAnimation(SHOTGUN_FIRE2);
 	Weapons_ViewPunchAngle([-10,0,0]);
+#endif
+
 	pl.w_attack_next = 1.5f;
 	pl.w_idle_next = 2.5f;
 }
@@ -110,8 +113,9 @@ void w_shotgun_reload(void)
 }
 void w_shotgun_release(void)
 {
+#ifdef CSQC
 	player pl = (player)self;
-	if (pl.w_idle_next > 0.0) {
+	if (pl.w_idle_next) {
 		return;
 	}
 
@@ -129,6 +133,7 @@ void w_shotgun_release(void)
 	}
 
 	pl.w_idle_next = 15.0f;
+#endif
 }
 void w_shotgun_crosshair(void)
 {

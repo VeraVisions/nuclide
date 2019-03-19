@@ -2583,7 +2583,7 @@ float(string conname, float inevtype, float parama, float paramb, float paramc) 
 		Forwards input events to the named console. Mouse updates should be absolute only. */
 
 #endif
-#ifdef CSQC
+#if defined(CSQC) || defined(MENU)
 void(string newcaption) setwindowcaption = #0:setwindowcaption; /* Part of FTE_CSQC_WINDOWCAPTION
 		Replaces the title of the game window, as seen when task switching or just running in windowed mode. */
 

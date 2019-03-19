@@ -10,6 +10,9 @@ var string g_skyname = "desert";
 
 void Sky_Update(void)
 {
+	if (serverkeyfloat("*bspversion") != 30) {
+		return;
+	}
 	localcmd(sprintf("sky %s\n", g_skyname));
 }
 

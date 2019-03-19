@@ -6,4 +6,4 @@
 *
 ****/
 
-CLASSEXPORT( trigger_relay, trigger_once )
+CLASSEXPORT(trigger_relay, trigger_once)

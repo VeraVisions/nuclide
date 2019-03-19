@@ -24,6 +24,7 @@ gametext_t g_textchannels[5];
 
 void GameText_Draw(void)
 {
+	drawfont = FONT_20;
 	for (int i = 0; i < 5; i++) {
 		float a = 0.0f;
 		vector rpos;
@@ -37,8 +38,7 @@ void GameText_Draw(void)
 		if (g_textchannels[i].m_flTime > mtime) {
 			continue;
 		}
-
-		strwidth = stringwidth(g_textchannels[i].m_strMessage, TRUE, [12,12]);
+		strwidth = stringwidth(g_textchannels[i].m_strMessage, TRUE, [20,20]);
 
 		if (g_textchannels[i].m_flPosX == -1) {
 			rpos[0] = (video_res[0] / 2) - (strwidth/2);
@@ -67,13 +67,15 @@ void GameText_Draw(void)
 		}
 
 		if (g_textchannels[i].m_flPosX >= 0.5) {
-			drawstring(rpos, g_textchannels[i].m_strMessage, '12 12', g_textchannels[i].m_vecColor2, a, 0 );
+			drawstring(rpos, g_textchannels[i].m_strMessage, '20 20', g_textchannels[i].m_vecColor2, a, DRAWFLAG_ADDITIVE );
 		} else {
-			drawstring(rpos, g_textchannels[i].m_strMessage, '12 12', g_textchannels[i].m_vecColor2, a, 0 );
+			drawstring(rpos, g_textchannels[i].m_strMessage, '20 20', g_textchannels[i].m_vecColor2, a, DRAWFLAG_ADDITIVE );
 		}
 
 		g_textchannels[i].m_flTime += clframetime;
 	}
+
+	drawfont = FONT_CON;
 }
 
 void GameText_Parse(void)

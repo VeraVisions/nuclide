@@ -67,7 +67,9 @@ void w_mp5_draw(void)
 
 void w_mp5_holster(void)
 {
+#ifdef CSQC
 	Weapons_ViewAnimation(MP5_DRAW);
+#endif
 }
 
 void w_mp5_primary(void)
@@ -119,7 +121,7 @@ void w_mp5_secondary(void)
 
 	static void Grenade_ExplodeTouch(void) {
 		Effect_CreateExplosion( self.origin );
-		Damage_Radius( self.origin, self, 100, 256, TRUE );
+		Damage_Radius( self.origin, self.owner, 100, 100 * 2.5f, TRUE );
 		sound( self, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 2 ) + 3 ), 1, ATTN_NORM );
 		remove(self);
 	}

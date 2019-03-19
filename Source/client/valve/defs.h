@@ -21,6 +21,13 @@ struct
 	float fBob;
 	float damage_alpha;
 	vector damage_pos;
+	
+	/* Camera Bob */
+	float flCamMove;
+	float flCamTime;
+	int iCamCycle;
+	float flCamFracSin;
+	float flCamDelta;
 
 //Player fields
 	entity ePlayer;

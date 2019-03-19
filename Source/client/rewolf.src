@@ -3,6 +3,7 @@
 
 #define CSQC
 #define VALVE
+#define REWOLF
 
 #includelist
 ../builtins.h
@@ -16,9 +17,11 @@ defs.h
 vgui.h
 
 util.c
-valve/init.c
+rewolf/init.c
 
 ../gs-entbase/client.src
+
+rewolf/decore.cpp
 
 sound.c
 text.c
@@ -63,7 +66,7 @@ valve/view.c
 view.c
 damage.c
 chat.c
-valve/hud.c
+rewolf/hud.c
 valve/hud_weaponselect.c
 valve/scoreboard.c
 

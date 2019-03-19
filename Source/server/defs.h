@@ -9,6 +9,7 @@
 #define CLASSEXPORT(classname,classa) void classname ( void ) { spawnfunc_##classa(); }
 
 var int autocvar_mp_flashlight = TRUE;
+var int g_hlbsp_materials = FALSE;
 
 void Effect_Impact( int iType, vector vPos, vector vNormal );
 void Effect_CreateExplosion( vector vPos );
@@ -31,6 +32,7 @@ entity eActivator;
 .entity eUser;
 .float material;
 .float armor;
+.float deaths;
 .float fStepTime;
 
 string startspot;

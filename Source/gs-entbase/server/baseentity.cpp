@@ -50,6 +50,7 @@ void CBaseEntity :: CBaseEntity ( void )
 
 	gflags |= GF_CANRESPAWN;
 	m_oldModel = Util_FixModel(model);
+	precache_model(m_oldModel);
 	m_oldSolid = solid;
 	m_oldHealth = health;
 	m_oldOrigin = origin;

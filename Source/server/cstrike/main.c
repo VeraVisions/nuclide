@@ -16,9 +16,9 @@ void SV_SendChat(entity eSender, string sMessage, entity eEnt, float fType)
 
 	if (eEnt) {
 		msg_entity = eEnt;
-		multicast('0 0 0', MULTICAST_ONE);
+		multicast([0,0,0], MULTICAST_ONE);
 	} else {
-		multicast('0 0 0', MULTICAST_ALL);
+		multicast([0,0,0], MULTICAST_ALL);
 	}
 }
 
@@ -40,33 +40,31 @@ void Game_ParseClientCommand(string sCommand)
 		return;
 	}
 
-	string chat = substring(sCommand, 4, strlen(sCommand) - 4);
-
 	// Players talk to players, spectators to spectators.
 	if (self.health ) {
 		if (argv(0) == "say") {
-			localcmd(sprintf("echo %s: %s\n", self.netname, chat));
-			SV_SendChat(self, chat, world, 0);
+			localcmd(sprintf("echo %s: %s\n", self.netname, argv(1)));
+			SV_SendChat(self, argv(1), world, 0);
 			return;
 		} else if (argv(0) == "say_team") {
-			localcmd(sprintf("echo [TEAM %d] %s: %s\n", self.team, self.netname, chat));
+			localcmd(sprintf("echo [TEAM %d] %s: %s\n", self.team, self.netname, argv(1)));
 			for (entity eFind = world; (eFind = find(eFind, classname, "player"));) { 
 				if (eFind.team == self.team) {
-					SV_SendChat(self, chat, eFind, 1);
+					SV_SendChat(self, argv(1), eFind, 1);
 				}
 			}
 			return;
 		} 
 	} else {
 		if (argv(0) == "say") {
-			localcmd(sprintf("echo [DEAD] %s: %s\n", self.netname, chat));
+			localcmd(sprintf("echo [DEAD] %s: %s\n", self.netname, argv(1)));
 			for (entity eFind = world; (eFind = find(eFind, classname, "spectator"));) { 
-				SV_SendChat(self, chat, eFind, 1);
+				SV_SendChat(self, argv(1), eFind, 1);
 			}
 			return;	
 		} else if (argv(0) == "say_team") {
-			localcmd(sprintf("echo [DEAD] %s: %s\n", self.netname, chat));
-			return;	
+			localcmd(sprintf("echo [DEAD] %s: %s\n", self.netname, argv(1)));
+			return;
 		} 
 	}
 
@@ -75,108 +73,8 @@ void Game_ParseClientCommand(string sCommand)
 
 float Game_ConsoleCmd(string sCommand)
 {
-	/*CBot bot;
-	if (!self) {
-		for (other = world; (other = find(other, classname, "player"));) {
-			if (clienttype(other) == CLIENTTYPE_REAL) {
-				self = other;
-				break;
-			}
-		}
-	}*/
 	tokenize(sCommand);
 	switch (argv(0)) {
-	/*case "bot_add":
-		bot = (CBot)spawnclient();
-		if (!bot) {
-			print("Server is full\n");
-			return TRUE;
-		}
-		bot.CreateRandom();
-		break;
-	case "bot_follow":
-		if (!self) {
-			return TRUE;
-		}
-		for (other = world; (other = find(other, classname, "Player"));) {
-			if (clienttype(other) != CLIENTTYPE_BOT) {
-				continue;
-			}
-			bot = (CBot)other;
-			if (bot.route) {
-//				RT_RouteChange(bot.route, bot.origin, self.origin);
-			} else {
-//				RT_Destroy(bot.route);
-	//			bot.route = RT_RouteCreate(bot.origin, self.origin);
-			}
-		}
-		break;
-	case "bot_kill":
-		if (!self) {
-			return TRUE;
-		}
-		for (other = world; (other = find(other, classname, "Player"));) {
-			if (clienttype(other) != CLIENTTYPE_BOT) {
-				continue;
-			}
-			if (argv(1)) {
-				if (other.netname == argv(1)) {
-					//Damage_Apply(other, other, 500, DAMAGE_SUICIDE, 0);
-					break;
-				}
-			} else {
-				//Damage_Apply(other, other, 500, DAMAGE_SUICIDE, 0);
-			}
-		}
-		break;
-	case "bot_kick":
-		if (!self) {
-			return TRUE;
-		}
-		for (other = world; (other = find(other, classname, "Player"));) {
-			if (clienttype(other) != CLIENTTYPE_BOT) {
-				continue;
-			}
-			if (argv(1)) {
-				if (other.netname == argv(1)) {
-					dropclient(other);
-					break;
-				}
-			} else {
-				dropclient(other);
-			}
-		}
-		break;
-	case "way_add":
-		if (!self) {
-			return TRUE;
-		}
-		Way_Waypoint_Create(self, TRUE);
-		break;
-	case "way_delete":
-		if (!self) {
-			return TRUE;
-		}
-		Way_Waypoint_Delete(Way_FindClosestWaypoint(self.origin));
-		break;
-	case "way_radius":
-		if (!self) {
-			return TRUE;
-		}
-		Way_Waypoint_SetRadius(Way_FindClosestWaypoint(self.origin), stof(argv(1)));
-		break;
-	case "way_makejump":
-		if (!self) {
-			return TRUE;
-		}
-		Way_Waypoint_MakeJump(Way_FindClosestWaypoint(self.origin));
-		break;
-	case "way_save":
-		Way_DumpWaypoints(argv(1));
-		break;
-	case "way_load":
-		Way_ReadWaypoints(argv(1));
-		break;*/
 	case "vox":
 		Vox_Broadcast(argv(1));
 		break;
@@ -338,23 +236,18 @@ void Game_Worldspawn(void)
 	precache_sound("hostage/hos3.wav");
 	precache_sound("hostage/hos4.wav");
 	precache_sound("hostage/hos5.wav");
-
 	precache_sound("player/pl_pain2.wav");
 	precache_sound("player/pl_pain4.wav");
 	precache_sound("player/pl_pain5.wav");
 	precache_sound("player/pl_pain6.wav");
 	precache_sound("player/pl_pain7.wav");
-
 	precache_sound("player/die1.wav");
 	precache_sound("player/die2.wav");
 	precache_sound("player/die3.wav");
-
 	precache_sound("player/headshot1.wav");
 	precache_sound("player/headshot2.wav");
 	precache_sound("player/headshot3.wav");
-
 	precache_sound("items/tr_kevlar.wav");
-
 	precache_sound("weapons/ak47-1.wav");
 	precache_sound("weapons/ak47-2.wav");
 	precache_sound("weapons/ak47_boltpull.wav");
