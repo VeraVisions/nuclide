@@ -2,7 +2,7 @@
 !!permu FRAMEBLEND
 !!permu SKELETAL
 !!permu FOG
-!!samps diffuse
+!!samps diffuse reflectcube
 !!cvardf gl_affinemodels=0
 !!cvardf gl_fake16bit=0
 !!cvardf gl_monochrome=0
@@ -14,6 +14,11 @@
 	#define affine noperspective
 #else
 	#define affine
+#endif
+
+#ifdef REFLECTCUBE
+varying vec3 eyevector;
+varying mat3 invsurface;
 #endif
 
 affine varying vec2 tex_c;
@@ -60,16 +65,16 @@ varying vec3 light;
 		tex_c.x = 0.5 + reflected.y * 0.5;
 		tex_c.y = 0.5 - reflected.z * 0.5;
 #endif
-
-		if (light.r > 1.0f) {
-			light.r = 1.0f;
-		}
-		if (light.g > 1.0f) {
-			light.g = 1.0f;
-		}
-		if (light.b > 1.0f) {
-			light.b = 1.0f;
-		}
+	
+#ifdef REFLECTCUBE
+		invsurface[0] = v_svector;
+		invsurface[1] = v_tvector;
+		invsurface[2] = v_normal;
+		vec3 eyeminusvertex = e_eyepos - v_position.xyz;
+		eyevector.x = dot( eyeminusvertex, v_svector.xyz );
+		eyevector.y = dot( eyeminusvertex, v_tvector.xyz );
+		eyevector.z = dot( eyeminusvertex, v_normal.xyz );
+#endif
 	}
 #endif
 
@@ -79,6 +84,17 @@ varying vec3 light;
 	{
 		vec4 diffuse_f = texture2D(s_diffuse, tex_c);
 		diffuse_f.rgb *= light;
+
+#ifdef REFLECTCUBE
+		vec3 cube_c;
+		vec4 out_f = vec4( 1.0, 1.0, 1.0, 1.0 );
+
+		cube_c = reflect( normalize( -eyevector ), vec3( 0, 0, 1 ) );
+		cube_c = cube_c.x * invsurface[0] + cube_c.y * invsurface[1] + cube_c.z * invsurface[2];
+		cube_c = ( m_model * vec4( cube_c.xyz, 0.0 ) ).xyz;
+		out_f.rgb = mix( textureCube( s_reflectcube, cube_c ).rgb, diffuse_f.rgb, diffuse_f.a );
+		diffuse_f = out_f;
+#endif
 		diffuse_f *= e_colourident;
 
 #if gl_brighten == 1

@@ -35,6 +35,7 @@ void CSQC_Init(float apilevel, string enginename, float engineversion)
 	registercommand("invprev");
 	registercommand("+showscores");
 	registercommand("-showscores");
+	registercommand("buildcubemaps");
 
 	precache_model("sprites/640_pain.spr");
 	precache_model("sprites/crosshairs.spr");
@@ -97,6 +98,18 @@ void CSQC_UpdateView(float w, float h, float focus)
 
 	video_res[0] = w;
 	video_res[1] = h;
+	
+	if ( g_iCubeProcess == TRUE ) {
+		clearscene();
+		setproperty( VF_DRAWWORLD, TRUE );
+		setproperty( VF_DRAWENGINESBAR, FALSE );
+		setproperty( VF_DRAWCROSSHAIR, FALSE );
+		setproperty( VF_ENVMAP, "$whiteimage" );
+		setproperty( VF_ORIGIN, g_vecCubePos );
+		setproperty( VF_AFOV, 90 );
+		renderscene();
+		return;
+	}
 
 	clearscene();
 	setproperty(VF_DRAWENGINESBAR, 0);
@@ -463,80 +476,83 @@ float CSQC_ConsoleCommand(string sCMD)
 	tokenize(sCMD);
 	
 	switch (argv(0)) {
-		case "vox_test":
-			Sound_PlayVOX(sCMD);
-			break;
-		case "+attack2":
-			pSeat->iInputAttack2 = TRUE;
-			break;
-		case "-attack2":
-			pSeat->iInputAttack2 = FALSE;
-			break;
-		case "+reload":
-			pSeat->iInputReload = TRUE;
-			break;
-		case "-reload":
-			pSeat->iInputReload = FALSE;
-			break;
-		case "+use":
-			pSeat->iInputUse = TRUE;
-			break;
-		case "-use":
-			pSeat->iInputUse = FALSE;
-			break;
-		case "+duck":
-			pSeat->iInputDuck = TRUE;
-			break;
-		case "-duck":
-			pSeat->iInputDuck = FALSE;
-			break;
-		case "invnext":
-			HUD_DrawWeaponSelect_Back();
-			break;
-		case "invprev":
-			HUD_DrawWeaponSelect_Forward();
-			break;
-		case "lastinv":
-			HUD_DrawWeaponSelect_Last();
-			break;
-		case "+showscores":
-			pSeat->iShowScores = TRUE;
-			break;
-		case "-showscores":
-			pSeat->iShowScores = FALSE;
-			break;
-		case "slot1":
-			localcmd("impulse 1\n");
-			break;
-		case "slot2":
-			localcmd("impulse 2\n");
-			break;
-		case "slot3":
-			localcmd("impulse 3\n");
-			break;
-		case "slot4":
-			localcmd("impulse 4\n");
-			break;
-		case "slot5":
-			localcmd("impulse 5\n");
-			break;
-		case "slot6":
-			localcmd("impulse 6\n");
-			break;
-		case "slot7":
-			localcmd("impulse 7\n");
-			break;
-		case "slot8":
-			localcmd("impulse 8\n");
-			break;
-		case "slot9":
-			localcmd("impulse 9\n");
-			break;
-		case "slot10":
-			localcmd("impulse 10\n");
-			break;
-		default:
-			return Game_ConsoleCommand();
+	case "buildcubemaps":
+		CMap_Build();
+		break;
+	case "vox_test":
+		Sound_PlayVOX(sCMD);
+		break;
+	case "+attack2":
+		pSeat->iInputAttack2 = TRUE;
+		break;
+	case "-attack2":
+		pSeat->iInputAttack2 = FALSE;
+		break;
+	case "+reload":
+		pSeat->iInputReload = TRUE;
+		break;
+	case "-reload":
+		pSeat->iInputReload = FALSE;
+		break;
+	case "+use":
+		pSeat->iInputUse = TRUE;
+		break;
+	case "-use":
+		pSeat->iInputUse = FALSE;
+		break;
+	case "+duck":
+		pSeat->iInputDuck = TRUE;
+		break;
+	case "-duck":
+		pSeat->iInputDuck = FALSE;
+		break;
+	case "invnext":
+		HUD_DrawWeaponSelect_Back();
+		break;
+	case "invprev":
+		HUD_DrawWeaponSelect_Forward();
+		break;
+	case "lastinv":
+		HUD_DrawWeaponSelect_Last();
+		break;
+	case "+showscores":
+		pSeat->iShowScores = TRUE;
+		break;
+	case "-showscores":
+		pSeat->iShowScores = FALSE;
+		break;
+	case "slot1":
+		localcmd("impulse 1\n");
+		break;
+	case "slot2":
+		localcmd("impulse 2\n");
+		break;
+	case "slot3":
+		localcmd("impulse 3\n");
+		break;
+	case "slot4":
+		localcmd("impulse 4\n");
+		break;
+	case "slot5":
+		localcmd("impulse 5\n");
+		break;
+	case "slot6":
+		localcmd("impulse 6\n");
+		break;
+	case "slot7":
+		localcmd("impulse 7\n");
+		break;
+	case "slot8":
+		localcmd("impulse 8\n");
+		break;
+	case "slot9":
+		localcmd("impulse 9\n");
+		break;
+	case "slot10":
+		localcmd("impulse 10\n");
+		break;
+	default:
+		return Game_ConsoleCommand();
 	}
 	return TRUE;
 }
@@ -637,6 +653,10 @@ float CSQC_Ent_ParseMapEntity(void)
 					break;
 				case "env_sound":
 					eEnt = spawn(env_sound);
+					iClass = TRUE;
+					break;
+				case "env_cubemap":
+					eEnt = spawn(env_cubemap);
 					iClass = TRUE;
 					break;
 				#ifdef REWOLF

@@ -4,6 +4,7 @@
 ../gs-entbase/client/fade.cpp
 ../gs-entbase/client/sprite.cpp
 ../gs-entbase/client/text.cpp
+../gs-entbase/client/env_cubemap.cpp
 ../gs-entbase/client/env_sound.cpp
 ../gs-entbase/client/worldspawn.cpp
 #endlist
