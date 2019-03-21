@@ -74,3 +74,102 @@ void Money_ResetTeamReward(void)
 	iMoneyReward_T = 0;
 	iMoneyReward_CT = 0;
 }
+
+int iLosses_CT;
+int iLosses_T;
+int iWinstreak_CT;
+int iWinstreak_T;
+int iBonus_CT;
+int iBonus_T;
+
+int Money_GetLosses(int team)
+{
+	if (team == TEAM_T) {
+		return iLosses_T;
+	} else {
+		return iLosses_CT;
+	}
+}
+int Money_HasBonus(int team)
+{
+	if (team == TEAM_T) {
+		return iBonus_T;
+	} else {
+		return iBonus_CT;
+	}
+}
+
+void Money_HandleRoundReward(int winner)
+{
+	int loser;
+
+	if (winner == TEAM_CT) {
+		iWinstreak_CT++;
+		iWinstreak_T = 0;
+		iLosses_T++;
+		iLosses_CT = 0;
+		loser = TEAM_T;
+
+		if (iWinstreak_CT >= 2) {
+			iBonus_CT = TRUE;
+		}
+	} else if (winner == TEAM_T) {
+		iWinstreak_T++;
+		iWinstreak_CT = 0;
+		iLosses_CT++;
+		iLosses_T = 0;
+		loser = TEAM_CT;
+
+		if (iWinstreak_T >= 2) {
+			iBonus_T = TRUE;
+		}
+	}
+
+	/*  After the condition of a team winning two consecutive rounds is
+	 *  satisfied then the loss bonus money changes to above where their
+	 *  first loss means they receive $1500 and not $1400. */
+	if (Money_HasBonus(loser)) {
+		switch (Money_GetLosses(loser)) {
+		case 1:
+			Money_QueTeamReward(loser, 1500);
+			break;
+		case 2:
+			Money_QueTeamReward(loser, 2000);
+			break;
+		case 3:
+			Money_QueTeamReward(loser, 2500);
+			break;
+		default:
+			Money_QueTeamReward(loser, 3000);
+			break;
+		}
+	} else {
+		switch (Money_GetLosses(loser)) {
+		case 1:
+			Money_QueTeamReward(loser, 1400);
+			break;
+		case 2:
+			Money_QueTeamReward(loser, 1900);
+			break;
+		case 3:
+			Money_QueTeamReward(loser, 2400);
+			break;
+		case 4:
+			Money_QueTeamReward(loser, 2900);
+			break;
+		default:
+			Money_QueTeamReward(loser, 3400);
+			break;
+		}
+	}
+}
+
+void Money_ResetRoundReward(void)
+{
+	iLosses_CT =
+	iLosses_T =
+	iWinstreak_CT =
+	iWinstreak_T =
+	iBonus_CT =
+	iBonus_T = 0;
+}

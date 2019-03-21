@@ -125,6 +125,8 @@ void WeaponHEGRENADE_Throw( void ) {
 	
 	self.iAmmo_HEGRENADE--;
 	
+	Radio_TeamMessage(RADIO_CT_FIREINHOLE, self.team);
+	
 	if ( !self.iAmmo_HEGRENADE ) {
 		Weapon_SwitchBest();
 	} else {

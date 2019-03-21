@@ -114,19 +114,24 @@ void WeaponXM1014_Secondary( void ) {
 void WeaponXM1014_Reload( void ) {
 #ifdef SSQC
 	// Can we reload the gun even if we wanted to?
-	if ( ( self.(wptXM1014.iMagfld) != wptXM1014.iMagSize ) && ( self.(wptXM1014.iCaliberfld) > 0 ) ) {
-		self.iMode_XM1014 = 1 - self.iMode_XM1014;
-			
-		if ( self.iMode_XM1014 == TRUE ) {
-			self.think = WeaponXM1014_Secondary;
-			self.nextthink = time + 0.8;
-		} else {
-			self.think = WeaponXM1014_ReloadNULL;
-		}
-			
-		Client_SendEvent( self, EV_WEAPON_RELOAD );
-		self.fAttackFinished = time + 0.5;
+	if (self.(wptXM1014.iMagfld) == wptXM1014.iMagSize) {
+		return;
 	}
+	if (self.(wptXM1014.iCaliberfld) <= 0) {
+		return;
+	}
+
+	self.iMode_XM1014 = 1 - self.iMode_XM1014;
+
+	if ( self.iMode_XM1014 == TRUE ) {
+		self.think = WeaponXM1014_Secondary;
+		self.nextthink = time + 0.8;
+	} else {
+		self.think = WeaponXM1014_ReloadNULL;
+	}
+
+	Client_SendEvent( self, EV_WEAPON_RELOAD );
+	self.fAttackFinished = time + 0.5;
 #else
 	iWeaponMode_XM1014 = 1 - iWeaponMode_XM1014;
 	

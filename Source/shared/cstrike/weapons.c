@@ -239,8 +239,15 @@ void Weapon_Release( void ) {
 	} else if ( self.weapon == WEAPON_C4BOMB ) {
 		WeaponC4BOMB_Release();
 	} else {
-		if (self.(wptTable[ self.weapon ].iMagfld) == 0 && self.(wptTable[ self.weapon ].iCaliberfld)) {
-			Weapon_Reload(self.weapon);
+		if (self.weapon == WEAPON_XM1014) {
+			return;
+		} else if (self.weapon == WEAPON_M3) {
+			return;
+		}
+		if (self.(wptTable[ self.weapon ].iMagfld) <= 0) {
+			if (self.(wptTable[ self.weapon ].iCaliberfld)) {
+				Weapon_Reload(self.weapon);
+			}
 		}
 	}
 }

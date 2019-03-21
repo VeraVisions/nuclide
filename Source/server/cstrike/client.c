@@ -154,10 +154,10 @@ void Game_PutClientInServer(void)
 	Spawn_MakeSpectator();
 	Spawn_ObserverCam();
 	self.SendEntity = Player_SendEntity;
-	
+
 	// Because we don't want to reset these when we die
 	Money_AddMoney(self, autocvar_mp_startmoney);
-	
+
 	if (cvar("mp_timelimit") > 0) {
 		if (autocvar_fcs_voxannounce == TRUE) {
 			float fTimeLeft = cvar("mp_timelimit") - (time / 60);

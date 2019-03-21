@@ -67,7 +67,9 @@ static void WeaponC4BOMB_Use( void ) {
 	// Takes 10 seconds to defuse that thing!
 	if ( fDefuseProgress > 10 ) {
 		sound( self, CHAN_VOICE, "weapons/c4_disarmed.wav", 1.0, ATTN_NORM );
-		Rules_RoundOver( TEAM_CT, 3500, TRUE );
+		/* In Bomb Defusal, all Counter-Terrorists receive $3600 if
+		 *  they won by defusing the bomb.  */
+		Rules_RoundOver( TEAM_CT, 3600, TRUE );
 		Radio_BroadcastMessage( RADIO_BOMBDEF );
 		eActivator.fProgressBar = 0;
 		iBombPlanted = FALSE;
@@ -100,7 +102,8 @@ static void WeaponC4BOMB_Think( void ) {
 		
 	// If our time has passed, explode
 	if ( self.fAttackFinished < time ) {
-		// Terrorists win
+		/* In Bomb Defusal, all Terrorists receive $3500
+		 * if they won by detonating the bomb. */
 		Rules_RoundOver( TEAM_T, 3500, FALSE );
 			
 		// Make it explode and hurt things

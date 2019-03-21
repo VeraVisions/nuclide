@@ -29,6 +29,9 @@ void func_vip_safetyzone::touch(void)
 {
 	if (other.classname == "player") {
 		if (other.team == TEAM_VIP) {
+			/* In Assassination, all Counter-Terrorists receive a $2500
+			 *  reward if they won by successfully guaranteeing
+			 *  the escape of the VIP. */
 			Rules_RoundOver(TEAM_CT, 2500, FALSE);
 			VIP_Rescue(other);
 		}

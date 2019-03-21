@@ -209,16 +209,15 @@ void Rules_RoundOver( int iTeamWon, int iMoneyReward, float fSilent ) {
 			Radio_BroadcastMessage( RADIO_TERWIN );
 		}
 		iWon_T++;
-		
-		// FIXME: Calculate the proper loss values
-		Money_QueTeamReward( TEAM_CT, 1400 );
+
+		Money_HandleRoundReward(TEAM_T);
 	} else if ( iTeamWon == TEAM_CT ) {
 		if ( fSilent == FALSE ) {
 			Radio_BroadcastMessage( RADIO_CTWIN );
 		}
 		iWon_CT++;
-		// FIXME: Calculate the proper loss values
-		Money_QueTeamReward( TEAM_T, 1400 );
+
+		Money_HandleRoundReward(TEAM_CT);
 	} else {
 		if ( fSilent == FALSE ) {
 			Radio_BroadcastMessage( RADIO_ROUNDDRAW );
@@ -243,6 +242,8 @@ void Rules_TimeOver( void ) {
 	if ( iVIPZones > 0 ) {
 		Rules_RoundOver( TEAM_T, 3250, FALSE );
 	} else if ( iBombZones > 0 ) {
+		/* In Bomb Defusal, all Counter-Terrorists receive $3250
+		 *  if they won running down the time. */
 		Rules_RoundOver( TEAM_CT, 3250, FALSE );
 	} else if ( iHostagesMax > 0 ) {
 		// TODO: Broadcast_Print: Hostages have not been rescued!
@@ -313,12 +314,23 @@ void Rules_DeathCheck(void)
 			Rules_RoundOver( FALSE, 0, FALSE );
 		}
 	} else {
+		int winner;
 		if ( ( self.team == TEAM_T ) && ( iAlivePlayers_T == 0 ) ) {
-			if ( iBombPlanted == FALSE ) {
-				Rules_RoundOver( TEAM_CT, 3600, FALSE );
-			}
+			winner = TEAM_CT;
 		} else if ( ( self.team == TEAM_CT ) && ( iAlivePlayers_CT == 0 ) ) {
-			Rules_RoundOver( TEAM_T, 3600, FALSE );
+			winner = TEAM_T;
+		} else {
+			return;
+		}
+
+		if (iBombZones > 0) {
+			/* In Bomb Defusal, the winning team receives $3250
+			 *  if they won by eliminating the enemy team. */
+			Rules_RoundOver(winner, 3250, FALSE);
+		} else {
+			/* In Hostage Rescue, the winning team receives $3600
+			 *  if they won by eliminating the enemy team. */
+			Rules_RoundOver(winner, 3600, FALSE);
 		}
 	}
 }

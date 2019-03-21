@@ -142,6 +142,7 @@ void WeaponFLASHBANG_Throw( void ) {
 	eNade.nextthink = time + 3.0f;
 	
 	self.iAmmo_FLASHBANG--;
+	Radio_TeamMessage(RADIO_CT_FIREINHOLE, self.team);
 	
 	if ( !self.iAmmo_FLASHBANG ) {
 		Weapon_SwitchBest();

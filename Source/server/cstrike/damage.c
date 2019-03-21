@@ -73,11 +73,11 @@ int Damage_ShouldDamage(float fTargetTeam, float fAttackerTeam)
 	} else if (fAttackerTeam == TEAM_VIP) {
 		fAttackerTeam = TEAM_CT;
 	}
-	
+
 	if (fTargetTeam == fAttackerTeam) {
 		return FALSE;
 	}
-	
+
 	return TRUE;
 #endif
 }
@@ -91,9 +91,9 @@ Generic function that applies damage, pain and suffering
 */
 void Damage_Apply(entity eTarget, entity eAttacker, float iDamage, vector vHitPos, int iSkipArmor)
 {
-#ifdef CSTRIKE
-	// Modify the damage based on the location
-	if (trace_surface_id == BODY_HEAD) {
+	/* Modify the damage based on the location */
+	switch (trace_surface_id) {
+	case BODY_HEAD:
 		if (eTarget.iEquipment & EQUIPMENT_HELMET) {
 			sound(self, CHAN_ITEM, "weapons/ric_metal-2.wav", 1, ATTN_IDLE);
 			iDamage = 0;
@@ -101,13 +101,16 @@ void Damage_Apply(entity eTarget, entity eAttacker, float iDamage, vector vHitPo
 		} else {
 			iDamage *= 4;
 		}
-	} else if (trace_surface_id == BODY_STOMACH) {
+		break;
+	case BODY_STOMACH:
 		iDamage *= 0.9;
-	} else if (trace_surface_id == BODY_LEGLEFT) {
+		break;
+	case BODY_LEGLEFT:
+	case BODY_LEGRIGHT:
 		iDamage *= 0.4;
-	} else if (trace_surface_id == BODY_LEGRIGHT) {
-		iDamage *= 0.4;
+		break;
 	}
+
 	dprint(sprintf("[DEBUG] Hit Bodypart: %s\n", Damage_GetHitLocation(trace_surface_id)));
 
 	if (eTarget != eAttacker) {
@@ -120,15 +123,15 @@ void Damage_Apply(entity eTarget, entity eAttacker, float iDamage, vector vHitPo
 
 	eTarget.velocity = [0,0,0];
 
-	// Apply the damage finally
+	/* Apply the damage finally */
 	if (eTarget.armor) {
 		float fRatio = 0.5;
 		
 		if (eAttacker.weapon) { 
 			fRatio *= wptTable[eAttacker.weapon].fWeaponArmorRatio;
 		}
-		
-		// Simple implementation of how kevlar damage is calculated
+
+		/* Simple implementation of how kevlar damage is calculated */
 		float fNewDmg = iDamage * fRatio;
 		float fNewArmor = (iDamage - fNewDmg) / 2;
 		
@@ -158,8 +161,8 @@ void Damage_Apply(entity eTarget, entity eAttacker, float iDamage, vector vHitPo
 		eTarget.dmg_take = (float)iDamage;
 	}
 	eTarget.dmg_inflictor = eAttacker;
-	
-	// Special monetary punishment for hostage murderers
+
+	/* Special monetary punishment for hostage murderers */
 	if (eTarget.classname == "hostage_entity") {
 		if (eTarget.health > 0) {
 			Money_AddMoney(eAttacker, autocvar_fcs_penalty_pain); // Pain
@@ -168,26 +171,29 @@ void Damage_Apply(entity eTarget, entity eAttacker, float iDamage, vector vHitPo
 		}
 	}
 
-	// Target is dead and a client....
+	/* Target is dead and a client.... */
 	if (eTarget.health <= 0) {
 		if (eTarget.flags & FL_CLIENT) {
 			eTarget.fDeaths++;
 			forceinfokey(eTarget, "*deaths", ftos(eTarget.fDeaths));
 		}
-		
+
 		if ((eTarget.flags & FL_CLIENT)  && (eAttacker.flags & FL_CLIENT)) {
-			// Don't encourage them to kill their own team members for $$$
+			/* Don't encourage them to kill their own team members for $$$ */
 			if (Damage_ShouldDamage(eTarget.team, eAttacker.team) == TRUE) {
 				eAttacker.frags++;
 				Money_AddMoney(eAttacker, autocvar_fcs_reward_kill);
 			} else {
 				eAttacker.frags--;
+				/* Team killer */
+				if (eTarget != eAttacker) {
+					Money_AddMoney(eAttacker, -3300);
+				}
 			}
-			
 			Damage_CastOrbituary(eAttacker, eTarget, eAttacker.weapon, trace_surface_id == BODY_HEAD ? TRUE:FALSE);
 		}
 	}
-	
+
 	entity eOld = self;
 	self = eTarget;
 
@@ -199,7 +205,6 @@ void Damage_Apply(entity eTarget, entity eAttacker, float iDamage, vector vHitPo
 	}
 
 	self = eOld;
-#endif
 }
 
 /*
@@ -212,16 +217,8 @@ from a plain geographical standpoint
 */
 float Damage_CheckAttack(entity eTarget, vector vAttackPos)
 {
-	if (eTarget.movetype == MOVETYPE_PUSH) {
-		traceline(vAttackPos, 0.5 * (eTarget.absmin + eTarget.absmax), TRUE, self);
-		
-		if (trace_fraction == 1) {
-			return TRUE;
-		} 
-		if (trace_ent == eTarget) {
-			return TRUE;
-		}
-		return FALSE;
+	if (eTarget.solid == SOLID_BSP) {
+		return TRUE;
 	}
 	
 	traceline(vAttackPos, eTarget.origin, TRUE, self);
@@ -255,34 +252,28 @@ Damage_Radius
 Even more pain and suffering, mostly used for explosives
 =================
 */
-void Damage_Radius(vector vOrigin, entity eAttacker, float fDamage, float fRadius, int iCheckClip)
+void Damage_Radius(vector org, entity eAttacker, float fDamage, float fRadius, int iCheckClip)
 {
-	for (entity eDChain = world; (eDChain = findfloat(eDChain, takedamage, DAMAGE_YES));) {
+	for (entity c = world; (c = findfloat(c, takedamage, DAMAGE_YES));) {
 		vector vecRealPos;
-		vecRealPos[0] = eDChain.absmin[0] + (0.5 * (eDChain.absmax[0] - eDChain.absmin[0]));
-		vecRealPos[1] = eDChain.absmin[1] + (0.5 * (eDChain.absmax[1] - eDChain.absmin[1]));
-		vecRealPos[2] = eDChain.absmin[2] + (0.5 * (eDChain.absmax[2] - eDChain.absmin[2]));
+		vecRealPos[0] = c.absmin[0] + (0.5 * (c.absmax[0] - c.absmin[0]));
+		vecRealPos[1] = c.absmin[1] + (0.5 * (c.absmax[1] - c.absmin[1]));
+		vecRealPos[2] = c.absmin[2] + (0.5 * (c.absmax[2] - c.absmin[2]));
 
-		float fDist = vlen(vOrigin - vecRealPos);
-		//vector vPush;
+		float fDist = vlen(org - vecRealPos);
 
 		if (fDist > fRadius) {
 			continue;
 		}
 
-		if (Damage_CheckAttack(eDChain, vOrigin) || iCheckClip == FALSE) {
-			float fDiff = vlen(vOrigin - vecRealPos);
+		if (Damage_CheckAttack(c, org) || iCheckClip == FALSE) {
+			float fDiff = vlen(org - vecRealPos);
 
 			fDiff = (fRadius - fDiff) / fRadius;
 			fDamage = rint(fDamage * fDiff);
 
 			if (fDiff > 0) {
-				Damage_Apply(eDChain, eAttacker, fDamage, eDChain.origin, TRUE);
-				/*if (eDChain.movetype != MOVETYPE_NONE) {
-					vPush = vectoangles(vecRealPos - vOrigin);
-					makevectors(vPush);
-					eDChain.velocity += (v_forward * fDamage * 5) + (v_up * fDamage * 2.5);
-				}*/
+				Damage_Apply(c, eAttacker, fDamage, vecRealPos, 0);
 			}
 			
 		}

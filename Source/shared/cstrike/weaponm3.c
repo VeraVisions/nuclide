@@ -116,22 +116,27 @@ void WeaponM3_Secondary( void ) {
 void WeaponM3_Reload( void ) {
 #ifdef SSQC
 	// Can we reload the gun even if we wanted to?
-	if ( ( self.(wptM3.iMagfld) != wptM3.iMagSize ) && ( self.(wptM3.iCaliberfld) > 0 ) ) {
-		self.iMode_M3 = 1 - self.iMode_M3;
-			
-		if ( self.iMode_M3 == TRUE ) {
-			self.think = WeaponM3_Secondary;
-			self.nextthink = time + 0.8;
-		} else {
-			self.think = WeaponM3_ReloadNULL;
-		}
-			
-		Client_SendEvent( self, EV_WEAPON_RELOAD );
-		self.fAttackFinished = time + 1.0;
+	if (( self.(wptM3.iMagfld) == wptM3.iMagSize )) {
+		return;
 	}
+	if (self.(wptM3.iCaliberfld) <= 0) {
+		return;
+	}
+
+	self.iMode_M3 = 1 - self.iMode_M3;
+
+	if (self.iMode_M3) {
+		self.think = WeaponM3_Secondary;
+		self.nextthink = time + 0.8;
+	} else {
+		self.think = WeaponM3_ReloadNULL;
+	}
+	
+	Client_SendEvent( self, EV_WEAPON_RELOAD );
+	self.fAttackFinished = time + 1.0;
 #else
 	iWeaponMode_M3 = 1 - iWeaponMode_M3;
-	
+
 	if ( iWeaponMode_M3 == TRUE ) {
 		View_PlayAnimation( ANIM_M3_RELOAD_START );
 	} else {

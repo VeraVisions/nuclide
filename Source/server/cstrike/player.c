@@ -133,6 +133,8 @@ void Player_Death(int iHitBody)
 
 	Rules_CountPlayers();
 
+	/* In Assassination, all Terrorists receive a $2500
+	 *  reward if they won by killing the VIP. */
 	if (self.team == TEAM_VIP) {
 		Rules_RoundOver(TEAM_T, 2500, FALSE);
 		return;

@@ -132,6 +132,7 @@ void WeaponSMOKEGRENADE_Throw( void ) {
 	eNade.gravity = 0.5f;
 	
 	self.iAmmo_SMOKEGRENADE--;
+	Radio_TeamMessage(RADIO_CT_FIREINHOLE, self.team);
 	
 	if ( !self.iAmmo_SMOKEGRENADE ) {
 		Weapon_SwitchBest();

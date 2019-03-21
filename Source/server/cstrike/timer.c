@@ -45,7 +45,7 @@ void Timer_Update(void)
 		fGameTime = -1;
 		return;
 	}
-	
+
 	// This map has been played enough we think
 	if (fGameState != GAME_OVER) {
 		if (cvar("mp_timelimit") > 0) {
@@ -106,6 +106,7 @@ void Timer_Update(void)
 		if (fGameTime <= 0) {
 			if (iWon_T == 0 && iWon_CT == 0) {
 				Money_ResetTeamReward();
+				Money_ResetRoundReward();
 				Rules_Restart(TRUE);
 			} else {
 				if (autocvar_mp_halftime == TRUE && (autocvar_mp_winlimit / 2 == iRounds)) {
