@@ -14,7 +14,7 @@ class func_hostage_rescue
 
 void func_hostage_rescue::touch(void)
 {
-	if ((other.classname == "player" ) && (other.team == TEAM_CT)) {
+	if ((other.classname == "player") && (other.team == TEAM_CT)) {
 		/* This will be cleared every frame inside SV_RunClientCommand */
 		other.fInHostageZone = TRUE; 
 	} else if (other.classname == "hostage_entity") {
@@ -28,7 +28,10 @@ void func_hostage_rescue::touch(void)
 		iHostagesRescued++;
 
 		Money_AddMoney(hosty.m_eRescuer, 1000);
-		Money_QueTeamReward(TEAM_CT, 800);
+		
+		/* In Hostage Rescue, all Counter-Terrorists receive an $850
+		 * bonus for every hostage they rescue, even if they lose the round. */
+		Money_QueTeamReward(TEAM_CT, 850);
 
 		CBaseEntity targa = (CBaseEntity)other;
 		targa.Hide();
@@ -41,7 +44,7 @@ void func_hostage_rescue::touch(void)
 	}
 }
 
-void func_hostage_rescue::func_hostage_rescue( void )
+void func_hostage_rescue::func_hostage_rescue(void)
 {
 	angles = '0 0 0';
 	movetype = MOVETYPE_NONE;

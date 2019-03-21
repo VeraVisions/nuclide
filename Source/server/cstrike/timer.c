@@ -41,7 +41,7 @@ void Timer_Update(void)
 {
 	static float fVoxTimer;
 	
-	if ( cvar( "sv_playerslots" ) == 1 ) {
+	if (cvar("sv_playerslots") == 1) {
 		fGameTime = -1;
 		return;
 	}

@@ -32,10 +32,10 @@ void func_train::GoToTarget(void)
 	}
 
 	vector vecWorldPos;
-	vecWorldPos[0] = absmin[0] + ( 0.5 * ( absmax[0] - absmin[0] ) );	
-	vecWorldPos[1] = absmin[1] + ( 0.5 * ( absmax[1] - absmin[1] ) );	
-	vecWorldPos[2] = absmin[2] + ( 0.5 * ( absmax[2] - absmin[2] ) );
-	
+	vecWorldPos[0] = absmin[0] + (0.5 * (absmax[0] - absmin[0]));	
+	vecWorldPos[1] = absmin[1] + (0.5 * (absmax[1] - absmin[1]));	
+	vecWorldPos[2] = absmin[2] + (0.5 * (absmax[2] - absmin[2]));
+
 	vel_to_pos = (f.origin - vecWorldPos);
 	flTravelTime = (vlen(vel_to_pos) / m_flSpeed);
 
@@ -65,7 +65,7 @@ void func_train::NextPath(void)
 
 	m_strTarget = current_target.m_strTarget;
 	velocity = [0,0,0];
-	
+
 	if (m_strTarget) {
 		GoToTarget();
 	}
@@ -89,9 +89,9 @@ void func_train::Find(void)
 
 	print("^2func_train^7: Successfully found first target.\n");
 	vector vecWorldPos;
-	vecWorldPos[0] = absmin[0] + ( 0.5 * ( absmax[0] - absmin[0] ) );	
-	vecWorldPos[1] = absmin[1] + ( 0.5 * ( absmax[1] - absmin[1] ) );	
-	vecWorldPos[2] = absmin[2] + ( 0.5 * ( absmax[2] - absmin[2] ) );
+	vecWorldPos[0] = absmin[0] + (0.5 * (absmax[0] - absmin[0]));	
+	vecWorldPos[1] = absmin[1] + (0.5 * (absmax[1] - absmin[1]));	
+	vecWorldPos[2] = absmin[2] + (0.5 * (absmax[2] - absmin[2]));
 
 	vecWorldPos = f.origin - vecWorldPos;
 	setorigin(this, vecWorldPos);
@@ -113,8 +113,8 @@ void func_train::Respawn(void)
 
 void func_train::func_train(void)
 {
-	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
-		switch ( argv( i ) ) {
+	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
+		switch (argv(i)) {
 		case "speed":
 			m_flSpeed = stof(argv(i+1));
 			break;

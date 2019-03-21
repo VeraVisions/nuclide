@@ -13,8 +13,8 @@ class info_map_parameters
 
 void info_map_parameters::info_map_parameters(void)
 {
-	for (int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2) {
-		switch ( argv( i ) ) {
+	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
+		switch (argv(i)) {
 		case "bombradius":
 			iBombRadius = stoi(argv(i + 1));
 #ifdef GS_DEVELOPER

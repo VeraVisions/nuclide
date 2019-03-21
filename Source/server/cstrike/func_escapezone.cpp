@@ -24,7 +24,7 @@ void Escape_Touch(entity targ)
 	self = targ;
 	Spawn_MakeSpectator();
 	self.classname = "player";
-	forceinfokey( self, "*dead", "0" );
+	forceinfokey(self, "*dead", "0");
 	self.health = 0;
 	Rules_CountPlayers();
 	self = eOld;
@@ -62,10 +62,10 @@ void func_escapezone::func_escapezone(void)
 	movetype = MOVETYPE_NONE;
 	solid = SOLID_TRIGGER;
 
-	if ( model ) {
-		setmodel( self, model );
+	if (model) {
+		setmodel(self, model);
 	} else {
-		setsize( self, mins, maxs );
+		setsize(self, mins, maxs);
 	}
 
 	model = 0;

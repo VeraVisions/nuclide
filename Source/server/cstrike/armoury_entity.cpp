@@ -156,8 +156,8 @@ void armoury_entity::armoury_entity(void)
 		return;
 	}
 
-	for (int i = 1; i < (tokenize( __fullspawndata ) - 1); i += 2) {
-		switch ( argv( i ) ) {
+	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
+		switch (argv(i)) {
 		case "count":
 			m_iCount = stoi(argv(i + 1));
 			break;

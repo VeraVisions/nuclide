@@ -15,7 +15,7 @@ class func_buyzone
 void func_buyzone::touch(void)
 {
 	/* This will be cleared every frame inside SV_RunClientCommand */
-	if((other.classname == "player" ) && (other.team == self.team)) {
+	if((other.classname == "player") && (other.team == self.team)) {
 		other.fInBuyZone = TRUE;
 	}
 }
@@ -23,7 +23,7 @@ void func_buyzone::touch(void)
 void func_buyzone::func_buyzone(void)
 {
 	if (autocvar_fcs_knifeonly == TRUE) {
-		remove( self );
+		remove(self);
 		return;
 	}
 
@@ -58,14 +58,14 @@ Game_CreateBuyZones
 Called by StartFrame if we somehow got no buy zones
 =================
 */
-void Game_CreateBuyZones( void ) {
+void Game_CreateBuyZones(void) {
 	entity a;
 
-	if ( autocvar_fcs_knifeonly == TRUE ) {
+	if (autocvar_fcs_knifeonly == TRUE) {
 		return;
 	}
 
-	if ( iBuyRestriction == BUY_T || iBuyRestriction == BUY_BOTH ) {
+	if (iBuyRestriction == BUY_T || iBuyRestriction == BUY_BOTH) {
 		for (a = world; (a = find(a, classname, "info_player_deathmatch"));) {
 			func_buyzone zone = spawn(func_buyzone);
 			setorigin(zone, a.origin);
@@ -73,7 +73,7 @@ void Game_CreateBuyZones( void ) {
 		}
 	}
 
-	if ( iBuyRestriction == BUY_CT || iBuyRestriction == BUY_BOTH ) {
+	if (iBuyRestriction == BUY_CT || iBuyRestriction == BUY_BOTH) {
 		for (a = world; (a = find(a, classname, "info_player_start"));) {
 			func_buyzone zone = spawn(func_buyzone);
 			setorigin(zone, a.origin);

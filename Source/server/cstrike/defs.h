@@ -81,38 +81,38 @@ int iBombRadius; // For info_map_parameters
 int iHostagesRescued;
 int iBombPlanted;
 
-void Rules_RoundOver( int iTeamWon, int iMoneyReward, float fSilent );
-float Rules_BuyingPossible( void );
-void Timer_Begin( float fTime, float fMode);
-void Spawn_RespawnClient( float fTeam );
-void Spawn_CreateClient( float fTeam );
-void Spawn_MakeSpectator( void );
-void Client_SendEvent( entity eClient, float fEVType );
+void Rules_RoundOver(int iTeamWon, int iMoneyReward, float fSilent);
+float Rules_BuyingPossible(void);
+void Timer_Begin(float fTime, float fMode);
+void Spawn_RespawnClient(float fTeam);
+void Spawn_CreateClient(float fTeam);
+void Spawn_MakeSpectator(void);
+void Client_SendEvent(entity eClient, float fEVType);
 
-void Weapon_Draw( float fWeapon );
-void Weapon_SwitchBest( void );
-void Weapon_UpdateCurrents( void );
-void Weapon_DropWeapon( int iSlot );
-float Weapon_GetAnimType( float fWeapon );
-float Weapon_GetFireRate( float fWeapon );
-float Weapon_GetReloadTime( float fWeapon );
-void Weapon_Reload( float fWeapon );
+void Weapon_Draw(float fWeapon);
+void Weapon_SwitchBest(void);
+void Weapon_UpdateCurrents(void);
+void Weapon_DropWeapon(int iSlot);
+float Weapon_GetAnimType(float fWeapon);
+float Weapon_GetFireRate(float fWeapon);
+float Weapon_GetReloadTime(float fWeapon);
+void Weapon_Reload(float fWeapon);
 
-void BaseGun_AccuracyCalc( void );
-void BaseGun_Draw( void );
-float BaseGun_PrimaryFire( void );
-float BaseGun_Reload( void );
+void BaseGun_AccuracyCalc(void);
+void BaseGun_Draw(void);
+float BaseGun_PrimaryFire(void);
+float BaseGun_Reload(void);
 void Effect_CreateFlash(entity targ);
-void BaseMelee_Draw( void );
-int BaseMelee_Attack( void );
+void BaseMelee_Draw(void);
+int BaseMelee_Attack(void);
 
 void Ammo_AutoFill(float fWeapon);
 void Ammo_BuyPrimary(void);
 void Ammo_BuySecondary(void);
 
-void Animation_PlayerTop( float fFrame );
-void Animation_PlayerTopTemp( float fFrame, float fTime );
+void Animation_PlayerTop(float fFrame);
+void Animation_PlayerTopTemp(float fFrame, float fTime);
 
-void Damage_Apply( entity eTarget, entity eAttacker, float iDamage, vector vHitPos, int iSkipArmor );
+void Damage_Apply(entity eTarget, entity eAttacker, float iDamage, vector vHitPos, int iSkipArmor);
 
 #define NULL __NULL__
