@@ -29,6 +29,9 @@ struct
 	float flCamFracSin;
 	float flCamDelta;
 
+	int iZoomed;
+	float flZoomTime;
+
 //Player fields
 	entity ePlayer;
 	vector vPlayerOrigin;

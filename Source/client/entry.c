@@ -20,6 +20,10 @@ void CSQC_Init(float apilevel, string enginename, float engineversion)
 	registercommand("+duck");
 	registercommand("-duck");
 	
+	/* Requested by Slacer */
+	registercommand("+zoomin");
+	registercommand("-zoomin");
+	
 	registercommand("slot1");
 	registercommand("slot2");
 	registercommand("slot3");
@@ -152,10 +156,24 @@ void CSQC_UpdateView(float w, float h, float focus)
 		} else {
 			setproperty(VF_VIEWENTITY, (float)player_localentnum);
 		}
-	
+
+		float oldzoom = pl.viewzoom;
+		if (pl.viewzoom == 1.0f) {
+			pl.viewzoom = 1.0 - (0.5 * pSeat->flZoomTime);
+
+			/* +zoomin requested by Slacer */
+			if (pSeat->iZoomed) {
+				pSeat->flZoomTime += frametime * 15;
+			} else {
+				pSeat->flZoomTime -= frametime * 15;
+			}
+			pSeat->flZoomTime = bound(0, pSeat->flZoomTime, 1);
+		}
+
 		setproperty(VF_AFOV, cvar("fov") * pl.viewzoom);
 		setsensitivityscaler(pl.viewzoom);
-
+		pl.viewzoom = oldzoom;
+		
 		View_Stairsmooth();
 
 		// When Cameratime is active, draw on the forced coords instead
@@ -476,6 +494,12 @@ float CSQC_ConsoleCommand(string sCMD)
 	tokenize(sCMD);
 	
 	switch (argv(0)) {
+	case "+zoomin":
+		pSeat->iZoomed = TRUE;
+		break;
+	case "-zoomin":
+		pSeat->iZoomed = FALSE;
+		break;
 	case "buildcubemaps":
 		CMap_Build();
 		break;
