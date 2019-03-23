@@ -115,7 +115,7 @@ void CMap_Check(void)
 =================
 CMap_Build
 
-	Called upon 'dev_buildcubemaps'
+	Called upon 'buildcubemaps'
 =================
 */
 void CMap_Build(void)

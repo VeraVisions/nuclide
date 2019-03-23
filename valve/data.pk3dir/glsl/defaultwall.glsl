@@ -1,5 +1,5 @@
 !!ver 110
-!!samps diffuse lightmap reflectcube
+!!samps diffuse lightmap reflectcube normalmap
 !!cvardf gl_fake16bit=0
 !!cvardf gl_monochrome=0
 !!cvardf gl_brighten=0
@@ -45,13 +45,16 @@ varying mat3 invsurface;
 		}
 
 #ifdef REFLECTCUBE
+	#ifdef BUMP
+			vec3 normal_f = normalize(texture2D(s_normalmap, tex_c).rgb - 0.5);
+	#else
+			vec3 normal_f = vec4(0, 0, 1);
+	#endif
 		vec3 cube_c;
 		vec4 out_f = vec4( 1.0, 1.0, 1.0, 1.0 );
-
-		// Modulate the final pixel with the lightmap value
 		diffuse_f.rgb *= light.rgb * e_lmscale.rgb;
 
-		cube_c = reflect( normalize(-eyevector), vec3(0, 0, 1));
+		cube_c = reflect( normalize(-eyevector), normal_f);
 		cube_c = cube_c.x * invsurface[0] + cube_c.y * invsurface[1] + cube_c.z * invsurface[2];
 		cube_c = ( m_model * vec4(cube_c.xyz, 0.0)).xyz;
 		out_f.rgb = mix( textureCube(s_reflectcube, cube_c ).rgb, diffuse_f.rgb, diffuse_f.a);
