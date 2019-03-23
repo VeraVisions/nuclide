@@ -46,7 +46,17 @@ varying mat3 invsurface;
 
 #ifdef REFLECTCUBE
 	#ifdef BUMP
+		#ifndef FLATTENNORM
 			vec3 normal_f = normalize(texture2D(s_normalmap, tex_c).rgb - 0.5);
+		#else
+			// For very flat surfaces and gentle surface distortions, the 8-bit precision per channel in the normalmap
+			// can be insufficient. This is a hack to instead have very wobbly normalmaps that make use of the 8 bits
+			// and then scale the wobblyness back once in the floating-point domain.
+			vec3 normal_f = texture2D(s_normalmap, tex_c).rgb - 0.5;
+			normal_f.x *= 0.0625;
+			normal_f.y *= 0.0625;
+			normal_f = normalize(normal_f);
+		#endif
 	#else
 			vec3 normal_f = vec3(0, 0, 1);
 	#endif
