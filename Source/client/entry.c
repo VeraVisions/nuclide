@@ -780,7 +780,14 @@ void CSQC_WorldLoaded(void)
 	precache_pic("{scorch1", TRUE);
 	precache_pic("{scorch2", TRUE);
 	precache_pic("{scorch3", TRUE);
-	
+
+	/* Primarily for the flashlight */
+	if (serverkeyfloat("*bspversion") == 46) {
+		localcmd("r_shadow_realtime_dlight 1\n");
+	} else {
+		localcmd("r_shadow_realtime_dlight 0\n");
+	}
+
 	string strTokenized;
 	getentitytoken(0);
 	while (1) {

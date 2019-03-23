@@ -48,7 +48,7 @@ varying mat3 invsurface;
 	#ifdef BUMP
 			vec3 normal_f = normalize(texture2D(s_normalmap, tex_c).rgb - 0.5);
 	#else
-			vec3 normal_f = vec4(0, 0, 1);
+			vec3 normal_f = vec3(0, 0, 1);
 	#endif
 		vec3 cube_c;
 		vec4 out_f = vec4( 1.0, 1.0, 1.0, 1.0 );
