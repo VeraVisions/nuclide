@@ -247,5 +247,5 @@ void DSP_Init(void)
 void DSP_UpdateListener(void)
 {
 	makevectors(getproperty(VF_CL_VIEWANGLES));
-	SetListener(getproperty(VF_ORIGIN), v_forward, v_right, v_up, 10);
+	SetListener(getproperty(VF_ORIGIN), v_forward, v_right, v_up, 12);
 }
