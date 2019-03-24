@@ -40,7 +40,7 @@ void Player_ReadEntity(float flIsNew)
 	pl.velocity[2] = readcoord();
 	pl.flags = readfloat();
 	pl.pmove_flags = readfloat();
-	pl.weapon = readbyte();
+	pl.activeweapon = readbyte();
 	pl.health = readbyte();
 	pl.movetype = readfloat();
 	pl.view_ofs[2] = readfloat();

@@ -136,6 +136,7 @@ void Game_PutClientInServer(void)
 		self.vPain = Player_Pain;
 		self.vDeath = Player_Death;
 		self.iBleeds = TRUE;
+		self.pvsflags = PVSF_IGNOREPVS;
 		self.fSlotGrenade = 0;
 		self.viewzoom = 1.0;
 		setmodel(self, "models/player/vip/vip.mdl");

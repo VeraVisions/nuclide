@@ -21,8 +21,33 @@ Player_SendEntity
 */
 float Player_SendEntity(entity ePEnt, float fChanged)
 {
+	/* If dead */
 	if (self.health <= 0 && ePEnt != self) {
 		return FALSE;
+	}
+
+	/* Fix CT/VIP team */
+	float t1, t2;
+	t1 = ePEnt.team;
+	t2 = self.team;
+	if (t1 == TEAM_VIP) {
+		t1 = TEAM_CT;
+	} else if (t2 == TEAM_VIP) {
+		t2 = TEAM_CT;
+	}
+
+	/* Always make team-mates visible */
+	if (t1 != t2 && ePEnt.health > 0) {
+		/* Can we even see them? */
+		if (!checkpvs(ePEnt.origin, self)) {
+			return FALSE;
+		} else {
+			/* We're in the same PVS, but we might still not be able to see them */
+			traceline(self.origin, ePEnt.origin, FALSE, self);
+			if (trace_ent != ePEnt) {
+				return FALSE;
+			}
+		}
 	}
 
 	WriteByte(MSG_ENTITY, ENT_PLAYER);

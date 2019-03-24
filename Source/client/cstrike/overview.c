@@ -119,7 +119,7 @@ void Overview_DrawLayer( void ) {
 		R_PolygonVertex( [ ovMap.vVert2[0], ovMap.vVert2[1], ovMap.fHeight ], '0 1', '1 1 1', 1.0f ); // Bottom left
 		R_EndPolygon();
 	}
-	
+
 	for ( entity eFind = world; ( eFind = find( eFind, classname, "player" ) ); ) {
 		if ( getplayerkeyvalue( eFind.entnum - 1, "*team" ) == "1" ) {
 			R_BeginPolygon( "sprites/iplayerred.spr_0.tga" );
@@ -130,10 +130,12 @@ void Overview_DrawLayer( void ) {
 				R_BeginPolygon( "sprites/iplayerblue.spr_0.tga" );
 			}
 		}
-		R_PolygonVertex( [ eFind.absmax[0] + 16, eFind.absmin[1] - 16, ovMap.fHeight + 16 ], '1 0', '1 1 1', 1.0f ); // Top Right
-		R_PolygonVertex( [ eFind.absmin[0] - 16, eFind.absmin[1] - 16, ovMap.fHeight + 16 ], '0 0', '1 1 1', 1.0f ); // Top left
-		R_PolygonVertex( [ eFind.absmin[0] - 16, eFind.absmax[1] + 16, ovMap.fHeight + 16 ], '0 1', '1 1 1', 1.0f ); // Bottom left
-		R_PolygonVertex( [ eFind.absmax[0] + 16, eFind.absmax[1] + 16, ovMap.fHeight + 16 ], '1 1', '1 1 1', 1.0f ); // Bottom right
+		float psize;
+		psize = Math_Lerp(64, 16, pSeat.fMapLerp);
+		R_PolygonVertex( [ eFind.absmax[0] + psize, eFind.absmin[1] - psize, ovMap.fHeight + 16 ], '1 0', '1 1 1', 1.0f ); // Top Right
+		R_PolygonVertex( [ eFind.absmin[0] - psize, eFind.absmin[1] - psize, ovMap.fHeight + 16 ], '0 0', '1 1 1', 1.0f ); // Top left
+		R_PolygonVertex( [ eFind.absmin[0] - psize, eFind.absmax[1] + psize, ovMap.fHeight + 16 ], '0 1', '1 1 1', 1.0f ); // Bottom left
+		R_PolygonVertex( [ eFind.absmax[0] + psize, eFind.absmax[1] + psize, ovMap.fHeight + 16 ], '1 1', '1 1 1', 1.0f ); // Bottom right
 		R_EndPolygon();
 	}
 

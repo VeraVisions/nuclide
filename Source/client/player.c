@@ -88,7 +88,7 @@ void player::draw(void)
 	if (this.lastweapon != this.activeweapon) {
 		if (this.activeweapon) {
 		#ifdef CSTRIKE
-			setmodel(this.p_model, sPModels[this.weapon - 1]);
+			setmodel(this.p_model, sPModels[this.activeweapon - 1]);
 		#endif
 		} else {
 			setmodel(this.p_model, "");
