@@ -24,15 +24,16 @@ var int autocvar_mp_friendlyfire = FALSE;
 
 // New, FreeCS exclusive variables
 var int autocvar_fcs_voxannounce = FALSE;
-var int autocvar_fcs_knifeonly = FALSE; // Disallows buying and spawning with weps
-var int autocvar_fcs_swapteams = FALSE; // Swaps spawnpoints
-var int autocvar_fcs_nopickups = FALSE; // Disable weapon items
+var int autocvar_fcs_knifeonly = FALSE; /* Disallows buying and spawning with weps */
+var int autocvar_fcs_swapteams = FALSE; /* Swaps spawnpoints */
+var int autocvar_fcs_nopickups = FALSE; /* Disable weapon items */
 var int autocvar_fcs_reward_kill = 300;
 var int autocvar_fcs_penalty_pain = -150;
 var int autocvar_fcs_penalty_kill = -1500;
 var int autocvar_fcs_maxmoney = 16000;
-var int autocvar_fcs_fillweapons = FALSE; // This will automatically get ammo for the weapon you buy
-var int autocvar_fcs_fix_bombtimer = FALSE;
+var int autocvar_fcs_fillweapons = FALSE; /* This will automatically get ammo for the weapon you buy */
+var int autocvar_fcs_fix_bombtimer = FALSE; /* If true, the bomb-timer will dictate the round-end */
+var int autocvar_fcs_bombaltthrow = FALSE; /* Randomize the bomb-throw every time ever so slightly */
 
 // Mapcycle features
 var string autocvar_mapcyclefile = "mapcycle.txt";

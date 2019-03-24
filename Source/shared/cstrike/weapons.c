@@ -501,9 +501,16 @@ void Weapon_DropWeapon( int iSlot ) {
 	eDrop.nextthink = time + 1.0f;
 	eDrop.health = self.(wptTable[ fWeapon ].iMagfld);
 	setsize( eDrop, '-16 -16 0', '16 16 16' );
-	
+
 	makevectors( self.v_angle );
-	eDrop.velocity = aim( self, 10000 ) * 256;
+
+	if (fWeapon == WEAPON_C4BOMB && autocvar_fcs_bombaltthrow) {
+		eDrop.velocity = v_forward * random(32, 96);
+		eDrop.velocity += v_right * random(-64, 64);
+		eDrop.velocity[2] = 0;
+	} else {
+		eDrop.velocity = self.velocity + v_forward * 256;
+	}
 
 	self.weapon = 0;
 	Weapon_SwitchBest();
