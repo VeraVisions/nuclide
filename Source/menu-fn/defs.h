@@ -56,6 +56,7 @@ typedef struct
 	string gamedll;
 	string startmap;
 	string trainingmap;
+	string fallback_dir;
 } gameinfo_t;
 
 var int gameinfo_current = -1;

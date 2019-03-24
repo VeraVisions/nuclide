@@ -32,6 +32,7 @@ void game_printinfo(int i)
 	print("==================================\n");
 	print(sprintf("game: %s\n", games[i].game));
 	print(sprintf("gamedir: %s\n", games[i].gamedir));
+	print(sprintf("fallback_dir: %s\n", games[i].fallback_dir));
 	print(sprintf("url_info: %s\n", games[i].url_info));
 	print(sprintf("url_dl: %s\n", games[i].url_dl));
 	print(sprintf("version: %s\n", games[i].version));
@@ -106,6 +107,9 @@ void games_init(void)
 					break;
 				case "gamedir":
 					games[gameidx].gamedir = argv(i + 1);
+					break;
+				case "fallback_dir":
+					games[gameidx].fallback_dir = argv(i + 1);
 					break;
 				case "url_info":
 					games[gameidx].url_info = argv(i + 1);
@@ -184,7 +188,13 @@ void customgame_btnactivate_start(void)
 	int nextgame = customgame_lbMods.GetSelected();
 
 	games_set(nextgame);
-	localcmd(sprintf("gamedir \"%s\"\n", games[nextgame].gamedir));
+
+	if (games[nextgame].fallback_dir) {
+		localcmd(sprintf("gamedir \"%s;%s\"\n", games[nextgame].fallback_dir, games[nextgame].gamedir));
+	} else {
+		localcmd(sprintf("gamedir \"%s\"\n", games[nextgame].gamedir));
+	}
+
 	localcmd("snd_restart\nwait\nvid_reload\nmenu_restart\nmenu_customgame\n");
 	// TODO: Re-init important menu bits and bobs.
 	cvar_init();
