@@ -8,6 +8,8 @@ class player
 	vector netorigin;
 	vector netvelocity;
 	float netflags;
+	float netjumptime;
+	float netteleport_time;
 	
 	float activeweapon;
 	float weapons;

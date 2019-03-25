@@ -47,6 +47,8 @@ class player
 	float netflags;
 	float net_w_attack_next;
 	float net_w_idle_next;
+	float netjumptime;
+	float netteleport_time;
 
 	virtual void() gun_offset;
 	virtual void() draw;

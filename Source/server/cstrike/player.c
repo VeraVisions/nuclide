@@ -68,6 +68,8 @@ float Player_SendEntity(entity ePEnt, float fChanged)
 	WriteFloat(MSG_ENTITY, self.movetype);
 	WriteFloat(MSG_ENTITY, self.view_ofs[2]);
 	WriteFloat(MSG_ENTITY, self.viewzoom);
+	WriteFloat(MSG_ENTITY, self.jumptime);
+	WriteFloat(MSG_ENTITY, self.teleport_time);
 	return TRUE;
 }
 

@@ -20,6 +20,8 @@ void Predict_PreFrame(player pl)
 	pl.netorigin = pl.origin;
 	pl.netvelocity = pl.velocity;
 	pl.netflags = pl.flags;
+	pl.netjumptime = pl.jumptime;
+	pl.netteleport_time = pl.teleport_time;
 
 	//self.netpmove_flags = self.pmove_flags;
 
@@ -58,6 +60,8 @@ void Predict_PostFrame(player pl)
 	pl.origin = pl.netorigin;
 	pl.velocity = pl.netvelocity;
 	pl.flags = pl.netflags;
+	pl.jumptime = pl.netjumptime;
+	pl.teleport_time = pl.netteleport_time;
 
 	//self.pmove_flags = self.netpmove_flags;
 	setorigin(pl, pl.origin);

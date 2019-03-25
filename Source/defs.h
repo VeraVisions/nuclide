@@ -60,3 +60,6 @@ const vector VEC_PLAYER_CVIEWPOS = [0,0,12];
 #define FL_FLASHLIGHT 			(1<<21)
 
 #define clamp(d,min,max) bound(min,d,max)
+
+.float jumptime;
+.float teleport_time;

@@ -13,10 +13,8 @@
 #define PHY_JUMP_CHAINDECAY	50
 
 /*FIXME: jumptime should use the time global, as time intervals are not predictable - decrement it based upon input_timelength*/
-.float jumptime;
 .float waterlevel;
 .float watertype;
-.float teleport_time;
 .float maxspeed;
 .vector view_ofs;
 int trace_endcontentsi;
@@ -27,6 +25,7 @@ PMove_Init
 =================
 */
 void PMove_Init(void) {
+#ifdef SSQC
 	localcmd("serverinfo phy_stepheight 18\n");
 	localcmd("serverinfo phy_airstepheight 18\n");
 	localcmd("serverinfo phy_friction 4\n");
@@ -42,6 +41,7 @@ void PMove_Init(void) {
 #ifdef VALVE
 	localcmd("serverinfo phy_accelerate 8\n");
 	localcmd("serverinfo phy_maxspeed 270\n");
+#endif
 #endif
 }
 
@@ -190,7 +190,7 @@ void PMove_WaterMove(void)
 	}
 
 	if (!(self.flags & FL_WATERJUMP)) {
-		self.velocity = self.velocity - 0.8 * self.waterlevel * frametime * self.velocity;
+		self.velocity = self.velocity - 0.8 * self.waterlevel * input_timelength * self.velocity;
 	}
 }
 

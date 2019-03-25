@@ -45,5 +45,7 @@ void Player_ReadEntity(float flIsNew)
 	pl.movetype = readfloat();
 	pl.view_ofs[2] = readfloat();
 	pl.viewzoom = readfloat();
+	pl.jumptime = readfloat();
+	pl.teleport_time = readfloat();
 	setorigin( pl, pl.origin );
 }
