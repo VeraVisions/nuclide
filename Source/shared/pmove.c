@@ -32,6 +32,7 @@ void PMove_Init(void) {
 	localcmd("serverinfo phy_edgefriction 1\n");
 	localcmd("serverinfo phy_stopspeed 75\n");
 	localcmd("serverinfo phy_gravity 800\n");
+	localcmd("serverinfo phy_airaccelerate 10\n");
 
 #ifdef CSTRIKE
 	localcmd("serverinfo phy_accelerate 4\n");
@@ -471,7 +472,7 @@ void PMove_Run_Acceleration(float flMovetime, float flBefore)
 			}
 
 			if (flFriction > 0) {
-				self.velocity = self.velocity + vecWishDir * (min(flFriction, serverkeyfloat("phy_accelerate")) * flWishSpeed * flMovetime);
+				self.velocity = self.velocity + vecWishDir * (min(flFriction, serverkeyfloat("phy_airaccelerate")) * flWishSpeed * flMovetime);
 			}
 		}
 	}
