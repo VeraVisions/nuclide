@@ -6,19 +6,16 @@
 *
 ****/
 
-int iTotalPenetrations;
+#ifdef CSTRIKE
+#define PENETRATION
+#endif
+
+#ifdef PENETRATION
+var int iTotalPenetrations;
+#endif
 
 void TraceAttack_FireSingle(vector vPos, vector vAngle, int iDamage)
 {
-	/*static void TraceAttack_Penetrate(vector vPos, vector vAngle ) {
-		if (iTotalPenetrations > 0) {
-			return;
-		}
-		
-		TraceAttack_FireSingle(vPos, vAngle, iDamage);
-		iTotalPenetrations = 1;
-	}*/
-	
 #ifdef CSTRIKE
 	traceline(vPos, vPos + (vAngle * wptTable[self.weapon].fRange), MOVE_LAGGED | MOVE_HITMODEL, self);
 #else
@@ -29,7 +26,7 @@ void TraceAttack_FireSingle(vector vPos, vector vAngle, int iDamage)
 		if (trace_ent.takedamage == DAMAGE_YES) {
 
 			Damage_Apply(trace_ent, self, iDamage, trace_endpos, FALSE);
-			
+
 			/*if (trace_ent.health <= 0 && trace_ent.iBleeds == TRUE) {
 				makevectors(self.v_angle);
 				trace_ent.movetype = MOVETYPE_BOUNCE;
@@ -40,11 +37,10 @@ void TraceAttack_FireSingle(vector vPos, vector vAngle, int iDamage)
 		if (trace_ent.iBleeds != TRUE) {
 			string sTexture = getsurfacetexture(trace_ent, getsurfacenearpoint(trace_ent, trace_endpos));
 
-			switch ((float)hash_get(hashMaterials, sTexture)) { 
+			switch ((float)hash_get(hashMaterials, sTexture)) {
 				case 'G':
 				case 'V':
 					Effect_Impact(IMPACT_METAL, trace_endpos, trace_plane_normal);
-					//TraceAttack_Penetrate(trace_endpos + (v_forward * 2), vAngle);
 					break;
 				case 'M':
 				case 'P':
@@ -53,20 +49,25 @@ void TraceAttack_FireSingle(vector vPos, vector vAngle, int iDamage)
 				case 'D':
 				case 'W':
 					Effect_Impact(IMPACT_WOOD, trace_endpos, trace_plane_normal);
-					//TraceAttack_Penetrate(trace_endpos + (v_forward * 2), vAngle);
 					break;
 				case 'Y':
 					Effect_Impact(IMPACT_GLASS, trace_endpos, trace_plane_normal);
 					break;
 				case 'N':
 					Effect_Impact(IMPACT_DEFAULT, trace_endpos, trace_plane_normal);
-					//TraceAttack_Penetrate(trace_endpos + (v_forward * 2), vAngle);
 					break;
 				case 'T':
 				default:
 					Effect_Impact(IMPACT_DEFAULT, trace_endpos, trace_plane_normal);
 					break;
 			 }
+
+#ifdef PENETRATION
+			if (iTotalPenetrations > 0) {
+				iTotalPenetrations -= 1;
+				TraceAttack_FireSingle(trace_endpos + (v_forward * 2), vAngle, iDamage);
+			}
+#endif
 		}
 	}
 }
@@ -84,7 +85,9 @@ void TraceAttack_FireBullets(int iShots, vector vPos, int iDamage, vector vecAcc
 	makevectors(self.v_angle);
 
 	while (iShots > 0) {
-		iTotalPenetrations = 0;
+#ifdef PENETRATION
+		iTotalPenetrations = 4;
+#endif
 		vDir = aim(self, 100000) + Math_CRandom()*vecAccuracy[0]*v_right + Math_CRandom()*vecAccuracy[1]*v_up;
 		TraceAttack_FireSingle(vPos, vDir, iDamage);
 		iShots--;

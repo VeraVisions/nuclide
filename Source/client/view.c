@@ -208,7 +208,7 @@ void View_DrawViewModel(void)
 	if (autocvar_v_lefthanded) {
 		v_right *= -1;
 		eViewModel.renderflags |= RF_USEAXIS;
-		eViewModel.forceshader = SHADER_CULLED;
+		//eViewModel.forceshader = SHADER_CULLED;
 	} else {
 		if (eViewModel.forceshader) {
 			eViewModel.forceshader = 0;

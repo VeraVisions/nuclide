@@ -115,8 +115,8 @@ float Player_SendEntity(entity ePEnt, float fChanged)
 	WriteByte(MSG_ENTITY, pl.a_ammo1);
 	WriteByte(MSG_ENTITY, pl.a_ammo2);
 	WriteByte(MSG_ENTITY, pl.a_ammo3);
-	//WriteFloat(MSG_ENTITY, pl.w_attack_next);
-	//WriteFloat(MSG_ENTITY, pl.w_idle_next);
+	WriteFloat(MSG_ENTITY, pl.w_attack_next);
+	WriteFloat(MSG_ENTITY, pl.w_idle_next);
 	return TRUE;
 }
 

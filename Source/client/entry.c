@@ -137,6 +137,11 @@ void CSQC_UpdateView(float w, float h, float focus)
 		setproperty(VF_ACTIVESEAT, (float)s);
 
 		pSeat->ePlayer = self = findfloat(world, entnum, player_localentnum);
+
+		if (!self) {
+			continue;
+		}
+
 		pl = (player)self;
 
 		Predict_PreFrame((player)self);
@@ -203,16 +208,6 @@ void CSQC_UpdateView(float w, float h, float focus)
 		setproperty(VF_ANGLES, view_angles + pSeat->vPunchAngle);
 		setproperty(VF_DRAWWORLD, 1);
 		renderscene();
-
-		pl.w_attack_next -= clframetime;
-		pl.w_idle_next -= clframetime;
-
-		if (pl.w_attack_next <= 0) {
-			pl.w_attack_next = 0;
-		}
-		if (pl.w_idle_next <= 0) {
-			pl.w_idle_next = 0;
-		}
 
 		View_DropPunchAngle();
 		Fade_Update((int)video_mins[0],(int)video_mins[1], (int)w, (int)h);
@@ -681,6 +676,10 @@ float CSQC_Ent_ParseMapEntity(void)
 					break;
 				case "env_cubemap":
 					eEnt = spawn(env_cubemap);
+					iClass = TRUE;
+					break;
+				case "env_glow":
+					eEnt = spawn(env_glow);
 					iClass = TRUE;
 					break;
 				#ifdef REWOLF

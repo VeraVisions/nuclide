@@ -22,6 +22,11 @@ void Predict_PreFrame(player pl)
 	pl.netflags = pl.flags;
 	pl.netjumptime = pl.jumptime;
 	pl.netteleport_time = pl.teleport_time;
+	
+#ifdef VALVE
+	pl.net_w_attack_next = pl.w_attack_next;
+	pl.net_w_idle_next = pl.w_idle_next;
+#endif
 
 	//self.netpmove_flags = self.pmove_flags;
 
@@ -62,6 +67,11 @@ void Predict_PostFrame(player pl)
 	pl.flags = pl.netflags;
 	pl.jumptime = pl.netjumptime;
 	pl.teleport_time = pl.netteleport_time;
+	
+#ifdef VALVE
+	pl.w_attack_next = pl.net_w_attack_next;
+	pl.w_idle_next = pl.net_w_idle_next;
+#endif
 
 	//self.pmove_flags = self.netpmove_flags;
 	setorigin(pl, pl.origin);

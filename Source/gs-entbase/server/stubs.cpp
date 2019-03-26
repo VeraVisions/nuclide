@@ -29,3 +29,8 @@ void info_notnull::info_notnull(void)
 CLASSEXPORT(info_node, info_notnull)
 CLASSEXPORT(info_target, info_notnull)
 CLASSEXPORT(env_sound, info_null)
+
+void env_glow(void)
+{
+	precache_model(self.model);
+}

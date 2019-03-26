@@ -12,7 +12,6 @@
 ../gs-entbase/server/env_spark.cpp
 ../gs-entbase/server/env_explosion.cpp
 ../gs-entbase/server/env_render.cpp
-../gs-entbase/server/env_glow.cpp
 ../gs-entbase/server/env_shake.cpp
 ../gs-entbase/server/env_message.cpp
 ../gs-entbase/server/game_text.cpp

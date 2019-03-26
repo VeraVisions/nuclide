@@ -24,8 +24,8 @@ void Weapons_Draw(void)
 	player pl = (player)self;
 	int i = pl.activeweapon;
 
-	pl.w_attack_next = Math_Time() + 0.5f;
-	pl.w_idle_next = Math_Time() + 2.5f;
+	pl.w_attack_next = 0.5f;
+	pl.w_idle_next = 2.5f;
 
 	if (g_weapons[i].draw != __NULL__) {
 		g_weapons[i].draw();
