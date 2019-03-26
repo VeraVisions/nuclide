@@ -56,7 +56,7 @@ float env_glow::predraw(void)
 		R_EndPolygon();
 		addentity(this);
 	}
-	
+
 	return PREDRAW_NEXT;
 }
 

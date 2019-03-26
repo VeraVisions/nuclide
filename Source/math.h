@@ -91,6 +91,11 @@ void QPhysics_Run ( entity eTarget )
 
 	PMove_Run();
 #ifdef SSQC
+
+	if (self.waterlevel != 0) {
+		flFallVel = 0;
+	}
+
 	if ( ( self.flags & FL_ONGROUND ) && self.movetype == MOVETYPE_WALK && ( flFallVel > 580 )) {
 		float fFallDamage = ( flFallVel - 580 ) * ( 100 / ( 1024 - 580 ) );
 		Damage_Apply( self, world, fFallDamage, self.origin, FALSE );
