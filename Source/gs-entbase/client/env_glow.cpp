@@ -13,6 +13,7 @@ class env_glow:CBaseEntity
 	float m_flMaxAlpha;
 	string m_strSprite;
 	vector m_vecSize;
+	float m_flScale;
 	void() env_glow;
 	virtual void() customphysics;
 	virtual float() predraw;
@@ -31,7 +32,7 @@ float env_glow::predraw(void)
 		pSeat = &seats[s];
 		
 		/* Scale the glow somewhat with the players distance */
-		fsize = m_vecSize;
+		fsize = m_vecSize * m_flScale;
 		fsize *= vlen(pSeat->vPlayerOrigin - origin) / 256;
 		
 		/* Fade out when the player is starting to move away */
@@ -84,6 +85,7 @@ void env_glow::customphysics(void)
 
 void env_glow::env_glow(void)
 {
+	m_flScale = 1.0f;
 	m_flMaxAlpha = 1.0f;
 	m_vecColor = [1,1,1];
 	drawmask = MASK_ENGINE;
@@ -101,10 +103,16 @@ void env_glow::SpawnKey(string strField, string strKey)
 			m_strSprite = sprintf("%s_0.tga", strKey);
 			m_vecSize = drawgetimagesize(m_strSprite) / 2;
 			break;
+		case "scale":
+			m_flScale = stof(strKey);
+			break;
+		case "rendercolor":
 		case "rendercolour":
 			m_vecColor = stov(strKey) / 255;
+			break;
 		case "renderamt":
 			m_flMaxAlpha = stof(strKey) / 255;
+			break;
 		default:
 			CBaseEntity::SpawnKey(strField, strKey);
 	}
