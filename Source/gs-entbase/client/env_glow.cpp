@@ -86,24 +86,25 @@ void env_glow::env_glow(void)
 {
 	m_flMaxAlpha = 1.0f;
 	m_vecColor = [1,1,1];
+	drawmask = MASK_ENGINE;
 	Init();
 }
 
 void env_glow::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
+		case "shader":
+			m_strSprite = strKey;
+			m_vecSize = drawgetimagesize(m_strSprite) / 2;
+			break;
 		case "model":
-			precache_model(strKey);
 			m_strSprite = sprintf("%s_0.tga", strKey);
 			m_vecSize = drawgetimagesize(m_strSprite) / 2;
-			drawmask = MASK_ENGINE;
 			break;
 		case "rendercolour":
 			m_vecColor = stov(strKey) / 255;
 		case "renderamt":
 			m_flMaxAlpha = stof(strKey) / 255;
-		case "radius":
-			break;
 		default:
 			CBaseEntity::SpawnKey(strField, strKey);
 	}

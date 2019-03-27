@@ -32,5 +32,7 @@ CLASSEXPORT(env_sound, info_null)
 
 void env_glow(void)
 {
-	precache_model(self.model);
+	if (self.model) {
+		precache_model(self.model);
+	}
 }

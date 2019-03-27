@@ -453,7 +453,6 @@ void Effect_BreakModel(int count, vector vMins, vector vMaxs, vector vVel, float
 		
 		if ((fStyle == MATERIAL_GLASS) || (fStyle == MATERIAL_GLASS_UNBREAKABLE)) {
 			eGib.effects = EF_ADDITIVE;
-			eGib.alpha = 0.3;
 		}
 		
 		fCount--;
