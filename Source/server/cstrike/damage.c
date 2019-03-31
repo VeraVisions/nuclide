@@ -91,6 +91,10 @@ Generic function that applies damage, pain and suffering
 */
 void Damage_Apply(entity eTarget, entity eAttacker, float iDamage, vector vHitPos, int iSkipArmor)
 {
+	if (eTarget.flags & FL_GODMODE) {
+		return;
+	}
+
 	/* Modify the damage based on the location */
 	switch (trace_surface_id) {
 	case BODY_HEAD:

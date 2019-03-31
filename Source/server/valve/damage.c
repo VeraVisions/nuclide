@@ -35,6 +35,10 @@ Generic function that applies damage, pain and suffering
 */
 void Damage_Apply(entity eTarget, entity eAttacker, float fDamage, vector vHitPos, int a)
 {
+	if (eTarget.flags & FL_GODMODE) {
+		return;
+	}
+
 	// Apply the damage finally
 	if (eTarget.armor && fDamage > 0) {
 		float flArmor;
