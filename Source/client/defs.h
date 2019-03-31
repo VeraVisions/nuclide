@@ -38,6 +38,7 @@ var int autocvar_cl_smoothstairs = TRUE;
 var int autocvar_v_lefthanded = FALSE;
 var string autocvar_cl_logofile = "lambda";
 var vector autocvar_cl_logocolor = '255 0 0';
+var float autocvar_zoom_sensitivity = 1.0f;
 
 // Particle stuff
 var float PARTICLE_SPARK;

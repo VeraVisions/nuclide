@@ -176,7 +176,13 @@ void CSQC_UpdateView(float w, float h, float focus)
 		}
 
 		setproperty(VF_AFOV, cvar("fov") * pl.viewzoom);
-		setsensitivityscaler(pl.viewzoom);
+
+		if (autocvar_zoom_sensitivity && pl.viewzoom < 1.0f) {
+			setsensitivityscaler(pl.viewzoom * autocvar_zoom_sensitivity);
+		} else {
+			setsensitivityscaler(pl.viewzoom);
+		}
+
 		pl.viewzoom = oldzoom;
 		
 		View_Stairsmooth();
