@@ -62,7 +62,10 @@ varying mat3 invsurface;
 	#endif
 		vec3 cube_c;
 		vec4 out_f = vec4( 1.0, 1.0, 1.0, 1.0 );
+
+#ifdef LIGHTMAP
 		diffuse_f.rgb *= light.rgb * e_lmscale.rgb;
+#endif
 
 		cube_c = reflect( normalize(-eyevector), normal_f);
 		cube_c = cube_c.x * invsurface[0] + cube_c.y * invsurface[1] + cube_c.z * invsurface[2];
