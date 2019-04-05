@@ -213,6 +213,24 @@ void CSQC_UpdateView(float w, float h, float focus)
 		setproperty(VF_SIZE, video_res);
 		setproperty(VF_ANGLES, view_angles + pSeat->vPunchAngle);
 		setproperty(VF_DRAWWORLD, 1);
+
+		if (g_skyscale != 0 && g_skypos) {
+			vector porg;
+			vector realpos;
+
+			porg = getproperty(VF_ORIGIN);
+			if (autocvar_dev_skyscale) {
+				realpos[0] = porg[0] / autocvar_dev_skyscale;
+				realpos[1] = porg[1] / autocvar_dev_skyscale;
+				realpos[2] = porg[2] / autocvar_dev_skyscale;
+			} else {
+				realpos[0] = porg[0] / g_skyscale;
+				realpos[1] = porg[1] / g_skyscale;
+				realpos[2] = porg[2] / g_skyscale;
+			}
+			setproperty(VF_SKYROOM_CAMERA, g_skypos + realpos);
+		}
+
 		renderscene();
 
 		View_DropPunchAngle();
@@ -686,6 +704,10 @@ float CSQC_Ent_ParseMapEntity(void)
 					break;
 				case "env_glow":
 					eEnt = spawn(env_glow);
+					iClass = TRUE;
+					break;
+				case "sky_camera":
+					eEnt = spawn(sky_camera);
 					iClass = TRUE;
 					break;
 				#ifdef REWOLF

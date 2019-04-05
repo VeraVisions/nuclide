@@ -97,6 +97,7 @@ void env_glow::SpawnKey(string strField, string strKey)
 	switch (strField) {
 		case "shader":
 			m_strSprite = strKey;
+			precache_pic(m_strSprite);
 			m_vecSize = drawgetimagesize(m_strSprite) / 2;
 			break;
 		case "model":

@@ -1155,6 +1155,7 @@ const float VF_RT_DEPTH = 210;	/* The texture name to use as a depth buffer. Als
 const float VF_RT_RIPPLE = 211;	/* The texture name to use as a ripplemap (target for shaders with 'sort ripple'). Also used for shaders that specify $ripplemap. 1-based. Additional arguments are: format, sizexy. */
 const float VF_ENVMAP = 220;	/* The cubemap name to use as a fallback for $reflectcube, if a shader was unable to load one. Note that this doesn't automatically change shader permutations or anything. */
 const float VF_USERDATA = 221;	/* Pointer (and byte size) to an array of vec4s. This data is then globally visible to all glsl via the w_user uniform. */
+const float VF_SKYROOM_CAMERA = 222;
 #endif
 #ifdef CSQC
 const float RF_VIEWMODEL = 1;	/* Specifies that the entity is a view model, and that its origin is relative to the current view position. These entities are also subject to viewweapon bob. */
