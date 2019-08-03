@@ -6,11 +6,7 @@
 *
 ****/
 
-/* FIXME: Remove this once the builtin exists */
-float getchannellevel(entity foo, float chanid)
-{
-	return bound(0, cos(time), 1) * 100;
-}
+float(entity foo, float chanid) getchannellevel = #0;
 
 /* This really shouldn't be here, but it'll be fine for the time being */
 .int initedsci;

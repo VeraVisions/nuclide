@@ -151,3 +151,54 @@ float fWeaponEventPlayer;
 
 void Animation_ShootWeapon( entity ePlayer );
 void Animation_ReloadWeapon( entity ePlayer );
+
+/*
+====================
+HUD_GetChatColor
+
+Returns an RGB color vector for the specified team
+====================
+*/
+vector HUD_GetChatColor( float fTeam ) {
+	if ( fTeam == TEAM_CT ) {
+		return '0.45 0.60 0.75';
+	} else if ( fTeam == TEAM_T ) {
+		return '0.75 0.1875 0.1875';
+	} else {
+		return '0.75 0.75 0.75';
+	}
+}
+
+/*
+====================
+HUD_GetChatColor
+
+Returns a HEX color string prefix for the specified team
+====================
+*/
+string HUD_GetChatColorHEX( float fTeam ) {
+	if ( fTeam == TEAM_CT ) {
+		return "^x7AC";
+	} else if ( fTeam == TEAM_T ) {
+		return "^xC33";
+	} else {
+		return "^xCCC";
+	}
+}
+
+/*
+====================
+HUD_GetChatColor
+
+Returns a HEX color string prefix with teamname
+====================
+*/
+string HUD_GetChatColorHEXTeam( float fTeam ) {
+	if ( fTeam == TEAM_CT ) {
+		return "^x7AC(Counter-Terrorist) ";
+	} else if ( fTeam == TEAM_T ) {
+		return "^xC33(Terrorist) ";
+	} else {
+		return "^xCCC(Spectator) ";
+	}
+}

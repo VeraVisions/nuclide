@@ -90,7 +90,7 @@ void HUD_DrawOrbituaries( void ) {
 		vOrbPos[0] = video_mins[0] + video_res[0] - ( orbBuffer[ i ].fOffset1 + orbBuffer[ i ].fOffset2 + orbBuffer[ i ].fOffset3 ) - 16;
 
 		// Draw the attacker's name, shadow first
-		drawstring( vOrbPos, orbBuffer[ i ].sAttacker, '12 12', orbBuffer[ i ].vColor1, VGUI_WINDOW_FGALPHA, 0 );
+		//drawstring( vOrbPos, orbBuffer[ i ].sAttacker, '12 12', orbBuffer[ i ].vColor1, VGUI_WINDOW_FGALPHA, 0 );
 
 		// Draw the weapon icon
 		if ( orbBuffer[ i ].fHeadShot == TRUE ) {
@@ -100,7 +100,7 @@ void HUD_DrawOrbituaries( void ) {
 		}
 
 		// Draw the victim's name
-		drawstring( vOrbPos + [ orbBuffer[ i ].fOffset2 + orbBuffer[ i ].fOffset1, 0 ], orbBuffer[ i ].sVictim, '12 12', orbBuffer[ i ].vColor2, VGUI_WINDOW_FGALPHA, 0 );
+		//drawstring( vOrbPos + [ orbBuffer[ i ].fOffset2 + orbBuffer[ i ].fOffset1, 0 ], orbBuffer[ i ].sVictim, '12 12', orbBuffer[ i ].vColor2, VGUI_WINDOW_FGALPHA, 0 );
 		vOrbPos[1] += 18;
 	}
 }
@@ -117,9 +117,9 @@ void HUD_AddOrbituaries( float fAttacker, float fAttackerTeam, float fVictim, fl
 	if ( iOrbituaryScroll < ( ORBITUARY_LINES - 1 ) ) {
 		// Fill up the buffer
 		orbBuffer[ iOrbituaryScroll + 1 ].sAttacker = getplayerkeyvalue( fAttacker, "name" );
-		orbBuffer[ iOrbituaryScroll + 1 ].vColor1 = HUD_GetChatColor( fAttackerTeam );
+		//orbBuffer[ iOrbituaryScroll + 1 ].vColor1 = HUD_GetChatColor( fAttackerTeam );
 		orbBuffer[ iOrbituaryScroll + 1 ].sVictim = getplayerkeyvalue( fVictim, "name" );
-		orbBuffer[ iOrbituaryScroll + 1 ].vColor2 = HUD_GetChatColor( fVictimTeam );
+		//orbBuffer[ iOrbituaryScroll + 1 ].vColor2 = HUD_GetChatColor( fVictimTeam );
 		orbBuffer[ iOrbituaryScroll + 1 ].fWeapon = fWeapon;
 		orbBuffer[ iOrbituaryScroll + 1 ].fHeadShot = fHeadshot;
 											

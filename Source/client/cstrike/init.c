@@ -17,11 +17,6 @@ void Client_Init(float apilevel, string enginename, float engineversion)
 {
 	precache_model("sprites/fexplo.spr");
 	precache_model("sprites/muzzleflash1.spr");
-	
-	precache_sound("common/wpn_hudon.wav");
-	precache_sound("common/wpn_hudoff.wav");
-	precache_sound("common/wpn_moveselect.wav");
-	precache_sound("common/wpn_select.wav");
 	precache_sound("player/pl_pain2.wav");
 
 	precache_model("sprites/iplayerred.spr");
@@ -35,13 +30,12 @@ void Client_Init(float apilevel, string enginename, float engineversion)
 	precache_model("models/shotgunshell.mdl");
 	precache_pic( sprintf( "overviews/%s.bmp", mapname ) );
 
-	PARTICLE_SMOKEGRENADE	= particleeffectnum("smokegren");
+	PARTICLE_SMOKEGRENADE = particleeffectnum("smokegren");
 
 	Radio_InitSounds();
 	CSQC_ConsoleCommand_Init();
-	CSQC_VGUI_Init();
 	Overview_Init();
-	
+
 	pSeat.iOverview = FALSE;
 }
 

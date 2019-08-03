@@ -1,6 +1,5 @@
 #pragma target fte
 #pragma progs_dat  "../../valve/data.pk3dir/menu.dat"
-
 #define MENU
 
 #includelist

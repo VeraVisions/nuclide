@@ -13,7 +13,8 @@
 ../entities.h
 valve/defs.h
 defs.h
-vgui.h
+
+../vgui/include.src
 
 util.c
 valve/init.c
@@ -63,6 +64,9 @@ valve/view.c
 view.c
 damage.c
 chat.c
+
+vgui.cpp
+
 valve/hud.c
 valve/hud_weaponselect.c
 valve/scoreboard.c

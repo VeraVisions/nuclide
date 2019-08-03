@@ -208,7 +208,15 @@ void WeaponC4BOMB_PrimaryFire( void ) {
 	source = self.origin + self.view_ofs;
 	makevectors( self.v_angle );
 	other = world;
-	traceline( source, source + ( v_forward * 64 ), MOVE_OTHERONLY, self );
+	
+	/* Threshold */
+	float vel = vlen(self.velocity);
+	if (!(self.flags & FL_ONGROUND) || vel > 5) {
+		WeaponC4BOMB_Release();
+		return;
+	}
+
+	traceline( source, source + [0,0,-64], MOVE_OTHERONLY, self );
 
 	// If we aren't aiming at a place or look in the wrong location... stop it
 	if ( trace_fraction == 1 || self.fInBombZone == FALSE ) {
@@ -232,6 +240,13 @@ void WeaponC4BOMB_PrimaryFire( void ) {
 		WeaponC4BOMB_Drop( trace_endpos, trace_plane_normal );
 	}
 #else
+	/* Threshold */
+	float vel = vlen(self.velocity);
+	if (!(self.flags & FL_ONGROUND) || vel > 5) {
+		WeaponC4BOMB_Release();
+		return;
+	}
+
 	View_PlayAnimation( ANIM_C4_ENTERCODE );
 #endif
 }

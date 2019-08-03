@@ -21,6 +21,7 @@ void CSQC_ConsoleCommand_Init(void)
 	registercommand("overview_test");
 	
 	registercommand("buy");
+	registercommand("motd");
 	registercommand("chooseteam");
 
 	registercommand("drop");
@@ -109,13 +110,16 @@ float Game_ConsoleCommand(void)
 	case "overview_test":
 		pSeat.iOverview = 1 - pSeat.iOverview;
 		break;
+	case "motd":
+		VGUI_MessageOfTheDay();
+		break;
 	case "buy":
 		if(getstatf(STAT_BUYZONE) == TRUE) {
-			pSeat->fVGUI_Display = VGUI_BM_MAIN;
+			VGUI_BuyMenu();
 		}
 		break;
 	case "chooseteam":
-		pSeat->fVGUI_Display = VGUI_TEAMSELECT;
+		//pSeat->fVGUI_Display = VGUI_TEAMSELECT;
 		break;
 	case "nightvision":
 		Nightvision_Toggle();
@@ -282,13 +286,13 @@ float Game_ConsoleCommand(void)
 		sendevent("RadioMessage", "f", RADIO_ENEMYDOWN);
 		break;
 	case "radio1":
-		VGUI_Radio_Toggle(VGUI_RADIO1);
+		//VGUI_Radio_Toggle(VGUI_RADIO1);
 		break;
 	case "radio2":
-		VGUI_Radio_Toggle(VGUI_RADIO2);
+		//VGUI_Radio_Toggle(VGUI_RADIO2);
 		break;
 	case "radio3":
-		VGUI_Radio_Toggle(VGUI_RADIO3);
+		//VGUI_Radio_Toggle(VGUI_RADIO3);
 		break;
 	default:
 		return FALSE;

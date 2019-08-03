@@ -1,4 +1,5 @@
 #includelist
+../gs-entbase/materials.h
 ../gs-entbase/server/defs.h
 ../gs-entbase/server/baseentity.cpp
 ../gs-entbase/server/basetrigger.cpp

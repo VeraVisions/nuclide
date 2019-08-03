@@ -54,7 +54,7 @@ void Game_ParseClientCommand(string sCommand)
 				}
 			}
 			return;
-		} 
+		}
 	} else {
 		if (argv(0) == "say") {
 			localcmd(sprintf("echo [DEAD] %s: %s\n", self.netname, argv(1)));

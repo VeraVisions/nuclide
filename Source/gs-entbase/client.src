@@ -1,4 +1,5 @@
 #includelist
+../gs-entbase/materials.h
 ../gs-entbase/client/sky.c
 ../gs-entbase/client/baseentity.cpp
 ../gs-entbase/client/fade.cpp

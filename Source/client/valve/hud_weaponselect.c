@@ -6,7 +6,8 @@
 *
 ****/
 
-vector vHUDSlotNumPos[6] = {
+vector vHUDSlotNumPos[6] =
+{
 	[168 / 255,72 / 128],
 	[188 / 255,72 / 128],
 	[208 / 255,72 / 128],
@@ -18,11 +19,11 @@ vector vHUDSlotNumPos[6] = {
 void HUD_DrawWeaponSelect_Forward(void)
 {
 	player pl = (player)pSeat->ePlayer;
-	
+
 	if (!pl.activeweapon) {
 		return;
 	}
-	
+
 	if (pSeat->fHUDWeaponSelectTime < time) {
 		pSeat->fHUDWeaponSelected = pl.activeweapon;
 		sound(pSeat->ePlayer, CHAN_ITEM, "common/wpn_hudon.wav", 0.5, ATTN_NONE);
@@ -35,7 +36,7 @@ void HUD_DrawWeaponSelect_Forward(void)
 	}
 
 	pSeat->fHUDWeaponSelectTime = time + 3;
-	
+
 	if (!(pl.g_items & g_weapons[pSeat->fHUDWeaponSelected].id)) {
 		HUD_DrawWeaponSelect_Forward();
 	}
@@ -84,7 +85,7 @@ void HUD_DrawWeaponSelect_Num(vector vPos, float fValue)
 	drawsubpic(vPos, [20,20], "sprites/640hud7.spr_0.tga", vHUDSlotNumPos[fValue], [20/255, 20/128], g_hud_color, 1, DRAWFLAG_ADDITIVE);
 }
 
-int Weapon_InSlotPos(int slot, int pos)
+int HUD_InSlotPos(int slot, int pos)
 {
 	player pl = (player)pSeat->ePlayer;
 	for (int i = 1; i < g_weapons.length; i++) {
@@ -98,6 +99,7 @@ int Weapon_InSlotPos(int slot, int pos)
 	}
 	return -1;
 }
+
 void HUD_DrawWeaponSelect(void)
 {
 	player pl = (player)pSeat->ePlayer;
@@ -112,41 +114,40 @@ void HUD_DrawWeaponSelect(void)
 		return;
 	}
 
-	vector vSelectPos = video_mins + [16,16];
+	vector vecPos = video_mins + [16,16];
 
+	int b;
 	int wantslot = g_weapons[pSeat->fHUDWeaponSelected].slot;
 	int wantpos = g_weapons[pSeat->fHUDWeaponSelected].slot_pos;
-	int b;
 	for (int i = 0; i < 5; i++) {
 		int slot_selected = 0;
-		vSelectPos[1] = video_mins[1] + 16;
-		HUD_DrawWeaponSelect_Num(vSelectPos, i);
-		vSelectPos[1] += 20;
+		vecPos[1] = video_mins[1] + 16;
+		HUD_DrawWeaponSelect_Num(vecPos, i);
+		vecPos[1] += 20;
 		for (int x = 0; x < 32; x++) {
 			if (i == wantslot) {
 				slot_selected = TRUE;
 				if (x == wantpos) {
 					// Selected Sprite
-					Weapons_HUDPic(pSeat->fHUDWeaponSelected, 1, vSelectPos);
-					drawsubpic(vSelectPos, [170,45], "sprites/640hud3.spr_0.tga", 
+					Weapons_HUDPic(pSeat->fHUDWeaponSelected, 1, vecPos);
+					drawsubpic(vecPos, [170,45], "sprites/640hud3.spr_0.tga", 
 								[0,180/256], [170/256,45/256], g_hud_color, 1, DRAWFLAG_ADDITIVE);
-					vSelectPos[1] += 50;
-				} else if ((b=Weapon_InSlotPos(i, x)) != -1) {
+					vecPos[1] += 50;
+				} else if ((b=HUD_InSlotPos(i, x)) != -1) {
 					// Unselected Sprite
-					Weapons_HUDPic(b, 0, vSelectPos);
-					vSelectPos[1] += 50;
+					Weapons_HUDPic(b, 0, vecPos);
+					vecPos[1] += 50;
 				}
-			} else if (Weapon_InSlotPos(i, x) != -1) {
-				HUD_DrawWeaponSelect_Num(vSelectPos, 5);
-				vSelectPos[1] += 25;
+			} else if (HUD_InSlotPos(i, x) != -1) {
+				HUD_DrawWeaponSelect_Num(vecPos, 5);
+				vecPos[1] += 25;
 			}
 		}
-		
+
 		if (slot_selected == TRUE) {
-			vSelectPos[0] += 175;
+			vecPos[0] += 175;
 		} else {
-			vSelectPos[0] += 25;
+			vecPos[0] += 25;
 		}
 	}
 }
-

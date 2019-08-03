@@ -65,4 +65,8 @@ void Chat_Parse(string msg)
 
 	g_chattime = time + CHAT_TIME;
 	localsound("misc/talk.wav");
+	
+	/* Log to client console */
+	print(msg);
+	print("\n");
 }

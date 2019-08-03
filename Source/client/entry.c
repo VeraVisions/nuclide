@@ -83,9 +83,18 @@ void CSQC_Init(float apilevel, string enginename, float engineversion)
 	Effects_Init();
 	precache_sound("misc/talk.wav");
 
+	precache_sound("common/wpn_hudon.wav");
+	precache_sound("common/wpn_hudoff.wav");
+	precache_sound("common/wpn_moveselect.wav");
+	precache_sound("common/wpn_select.wav");
+
+	/* VGUI */
+	VGUI_Init();
+
 	/* Game specific inits */
 	HUD_Init();
-	Scores_Init();
+
+	//Scores_Init();
 	Client_Init(apilevel, enginename, engineversion);
 	DSP_Init();
 }
@@ -126,7 +135,6 @@ void CSQC_UpdateView(float w, float h, float focus)
 
 	for (s = seats.length; s-- > numclientseats;) {
 		pSeat = &seats[s];
-		pSeat->fVGUI_Display = VGUI_MOTD;
 		pSeat->ePlayer = world;
 	}
 
@@ -241,12 +249,12 @@ void CSQC_UpdateView(float w, float h, float focus)
 #endif
 		View_PostDraw();
 
-		if(focus == TRUE) {
+		if (focus == TRUE) {
 			GameText_Draw();
 
 			// The spectator sees things... differently
 			if (getplayerkeyvalue(player_localnum, "*spec") != "0") {
-				VGUI_DrawSpectatorHUD();
+				//VGUI_DrawSpectatorHUD();
 			} else {
 				HUD_Draw();
 			}
@@ -258,12 +266,10 @@ void CSQC_UpdateView(float w, float h, float focus)
 
 			// Don't even try to draw centerprints and VGUI menus when scores are shown
 			if (pSeat->iShowScores == TRUE) {
-				Scores_Draw();
+				//Scores_Draw();
 			} else {
 				CSQC_DrawCenterprint();
-#ifdef CSTRIKE
-				needcursor |= CSQC_VGUI_Draw();
-#endif
+				needcursor |= VGUI_Draw();
 			}
 		}
 
@@ -337,6 +343,8 @@ float CSQC_InputEvent(float fEventType, float fKey, float fCharacter, float fDev
 		default:
 			return TRUE;
 	}
+	
+	VGUI_Input(fEventType, fKey, fCharacter, fDeviceID);
 	return FALSE;
 }
 
@@ -354,9 +362,7 @@ void CSQC_Input_Frame(void)
 
 
 	// If we are inside a VGUI, don't let the client do stuff outside
-	if ((pSeat->fVGUI_Display != VGUI_NONE)) {
-		pSeat->fInputSendNext = time + 0.2;
-	} else if ((pSeat->fHUDWeaponSelected) && (input_buttons & INPUT_BUTTON0)) {
+	if ((pSeat->fHUDWeaponSelected) && (input_buttons & INPUT_BUTTON0)) {
 		HUD_DrawWeaponSelect_Trigger();
 		input_buttons = 0;
 		pSeat->fInputSendNext = time + 0.2;

@@ -1,0 +1,223 @@
+/***
+*
+*	Copyright (c) 2016-2019 Marco 'eukara' Hladik. All rights reserved.
+*
+*	See the file LICENSE attached with the sources for usage details.
+*
+****/
+
+enumflags
+{
+	WINDOW_VISIBLE,
+	WINDOW_DRAGGING,
+	WINDOW_RESIZING,
+	WINDOW_CANRESIZE
+};
+
+class CUIWindow : CUIWidget
+{
+	vector m_vecOrigin;
+	vector m_vecColor;
+	float m_flAlpha;
+	vector m_vecSize;
+	vector m_vecMinSize;
+	vector m_vecMaxSize;
+	vector m_vecDragOffset;
+	string m_strTitle;
+	string m_strIcon;
+
+	CUIButton m_btnClose;
+	
+	virtual void() m_vResizeCB = 0;
+	virtual void() m_vMoveCB = 0;
+
+	void() CUIWindow;
+	
+	virtual void( string ) SetTitle;
+	virtual string() GetTitle;
+	
+	virtual void( string ) SetIcon;
+	virtual string() GetIcon;
+	
+	virtual void( vector ) SetSize;
+	virtual vector() GetSize;
+	
+	virtual void( vector ) SetMinSize;
+	virtual vector() GetMinSize;
+	
+	virtual void( vector ) SetMaxSize;
+	virtual vector() GetMaxSize;
+	
+	
+	virtual void( void() vFunc ) CallOnResize;
+	virtual void( void() vFunc ) CallOnMove;
+	
+	virtual void() Draw;
+	virtual void() Hide;
+	virtual void( float, float, float, float ) Input;
+};
+
+void CUIWindow :: CUIWindow ( void )
+{
+	static void WindowButtonClose ( void ) {
+		m_parent.m_iFlags -= ( m_parent.m_iFlags & WINDOW_VISIBLE );
+	}
+	m_vecColor = UI_MAINCOLOR;
+	m_flAlpha = 1.0f;
+
+	m_vecMinSize = '64 64';
+	m_vecMaxSize = '640 480'; // TODO: Make this the screen res
+
+	m_strTitle = "Window";
+	
+	SetIcon( "textures/gfx/icon" );
+
+	m_btnClose = spawn( CUIButton );
+	m_btnClose.SetTitle( __NULL__ );
+	m_btnClose.m_strIcon = "textures/ui/steam/icon_close";
+	m_btnClose.SetFunc( WindowButtonClose );
+	m_btnClose.SetSize( '20 20' );
+	Add( m_btnClose );
+	SetSize( '320 240' );
+}
+
+void CUIWindow :: SetTitle ( string strName )
+{
+	m_strTitle = strName;
+}
+string CUIWindow :: GetTitle ( void )
+{
+	return m_strTitle;
+}
+
+void CUIWindow :: SetIcon ( string strName )
+{
+	m_strIcon = strName;
+}
+string CUIWindow :: GetIcon ( void )
+{
+	return m_strIcon;
+}
+
+void CUIWindow :: SetSize ( vector vecNewSize )
+{
+	m_vecSize[0] = bound( m_vecMinSize[0], vecNewSize[0], m_vecMaxSize[0] );
+	m_vecSize[1] = bound( m_vecMinSize[1], vecNewSize[1], m_vecMaxSize[1] );
+	m_btnClose.SetPos( [ m_vecSize[0] - 24, 4 ] );
+}
+vector CUIWindow :: GetSize ( void )
+{
+	return m_vecSize;
+}
+
+void CUIWindow :: SetMinSize ( vector vecNewSize )
+{
+	m_vecMinSize = vecNewSize;
+}
+vector CUIWindow :: GetMinSize ( void )
+{
+	return m_vecMinSize;
+}
+
+void CUIWindow :: SetMaxSize ( vector vecNewSize )
+{
+	m_vecMaxSize = vecNewSize;
+}
+vector CUIWindow :: GetMaxSize ( void )
+{
+	return m_vecMaxSize;
+}
+
+void CUIWindow :: SetPos ( vector vecNewPos )
+{
+	m_vecOrigin[0] = bound( 0, vecNewPos[0], video_res[0] - 32 );
+	m_vecOrigin[1] = bound( 0, vecNewPos[1], video_res[1] - 32 );
+}
+vector CUIWindow :: GetPos ( void )
+{
+	return m_vecOrigin;
+}
+
+void CUIWindow :: CallOnMove ( void() vFunc )
+{
+	m_vMoveCB = vFunc;
+}
+void CUIWindow :: CallOnResize ( void() vFunc )
+{
+	m_vResizeCB = vFunc;
+}
+
+void CUIWindow :: Hide ( void )
+{
+	m_iFlags -= ( m_iFlags & WINDOW_VISIBLE );
+}
+void CUIWindow :: Show ( void )
+{
+	m_iFlags |= WINDOW_VISIBLE;
+}
+
+void CUIWindow :: Draw ( void )
+{
+	drawfill( m_vecOrigin, m_vecSize, m_vecColor, m_flAlpha );
+	drawfill( m_vecOrigin, [m_vecSize[0], 1], '1 1 1', 0.5f );
+	drawfill( m_vecOrigin + [ 0, m_vecSize[1] - 1], [m_vecSize[0], 1], '0 0 0', 0.5f );
+	drawfill( m_vecOrigin + [ 0, 1], [1, m_vecSize[1] - 2], '1 1 1', 0.5f );
+	drawfill( m_vecOrigin + [ m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], '0 0 0', 0.5f );
+
+	if ( m_strTitle ) {
+		Font_DrawText( m_vecOrigin + [ 26, 8 ], m_strTitle, g_fntDefault );
+		drawpic( m_vecOrigin + [ 4, 4 ], m_strIcon, '16 16', '1 1 1', 1.0f );
+	}
+
+	if ( m_iFlags & WINDOW_CANRESIZE ) {
+		drawpic( m_vecOrigin + m_vecSize - '16 16', "textures/ui/steam/icon_resizer", '16 16', '1 1 1', 1.0f );
+	}
+	
+#ifdef UI_DEVELOPER
+	if ( m_iFlags & WINDOW_DRAGGING ) {
+		Font_DrawText( [ 8, video_res[1] - 18 ], sprintf( "Window Position: %d, %d\n", m_vecOrigin[0], m_vecOrigin[1] ), g_fntDefault );
+	}
+	if ( m_iFlags & WINDOW_RESIZING ) {
+		Font_DrawText( [ 8, video_res[1] - 18 ], sprintf( "Window Size: %d, %d\n", m_vecSize[0], m_vecSize[1] ), g_fntDefault );
+	}
+#endif
+}
+
+void CUIWindow :: Input ( float flEVType, float flKey, float flChar, float flDevID )
+{
+	if ( flEVType == IE_KEYDOWN ) {
+		if ( flKey == K_MOUSE1 ) {
+			if ( m_iFlags & WINDOW_CANRESIZE && Util_MouseAbove( getmousepos(), m_vecOrigin + ( m_vecSize - '16 16' ), '16 16' ) ) {
+				m_iFlags |= WINDOW_RESIZING;
+			} else if ( Util_MouseAbove( getmousepos(), m_vecOrigin, [ m_vecSize[0] - 32, 16 ] ) ) {
+				m_iFlags |= WINDOW_DRAGGING;
+				m_vecDragOffset = m_vecOrigin - getmousepos();
+			}
+		}
+	} else if ( flEVType == IE_KEYUP ) {
+		if ( flKey == K_MOUSE1 ) {
+			m_iFlags -= ( m_iFlags & WINDOW_DRAGGING );
+			m_iFlags -= ( m_iFlags & WINDOW_RESIZING );
+		}
+	}
+
+	if ( m_iFlags & WINDOW_RESIZING ) {
+		if ( flEVType == IE_MOUSEABS ) {
+			vector vNewScale = [ flKey, flChar ] - m_vecOrigin - m_vecSize;
+			SetSize( GetSize() + vNewScale );
+			
+			if ( m_vResizeCB ) {
+				m_vResizeCB();
+			}
+		}
+	} else if ( m_iFlags & WINDOW_DRAGGING ) {
+		if ( flEVType == IE_MOUSEABS ) {
+			vector vNewPos = [ flKey, flChar ] - m_vecOrigin;
+			SetPos( GetPos() + vNewPos + m_vecDragOffset );
+			
+			if ( m_vMoveCB ) {
+				m_vMoveCB();
+			}
+		}
+	}
+}

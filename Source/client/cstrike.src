@@ -14,7 +14,8 @@
 ../entities.h
 cstrike/defs.h
 defs.h
-vgui.h
+
+../vgui/include.src
 
 voice.c
 sound.c
@@ -66,14 +67,6 @@ predict.c
 events.c
 cstrike/view.c
 view.c
-cstrike/vguiobjects.c
-cstrike/vguispectator.c
-cstrike/vguiscoreboard.c
-cstrike/vguimotd.c
-cstrike/vguibuymenu.c
-cstrike/vguiteamselect.c
-cstrike/vguiradio.c
-cstrike/vgui.c
 damage.c
 chat.c
 cstrike/nightvision.c
@@ -82,6 +75,11 @@ cstrike/hudscope.c
 cstrike/hudweaponselect.c
 cstrike/hudorbituaries.c
 cstrike/hud.c
+
+vgui.cpp
+cstrike/vgui_buymenu.cpp
+cstrike/vgui_motd.cpp
+
 cstrike/draw.c
 cstrike/entities.c
 cstrike/event.c

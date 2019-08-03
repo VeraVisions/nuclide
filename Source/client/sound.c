@@ -6,49 +6,49 @@
 *
 ****/
 
+var int g_voxcount;
+var int g_voxpos;
+var float g_voxtime = 0.0f;
+
 typedef struct {
-	string sSample;
-	float fLength;
+	string sample;
+	float len;
 } sound_t;
 
-sound_t *sndVOX;
-var int iVOXCount;
-var int iVOXPos;
-var float fSampleTime = 0.0f;
+sound_t *g_voxque;
 
 void Sound_PlayVOX(string msg)
 {
-	if (iVOXCount) {
+	if (g_voxcount) {
 		return;
 	}
-	
-	iVOXCount = tokenize(msg);
-	sndVOX = memalloc(sizeof(sound_t) * iVOXCount);
-	
-	for (int i = 0; i < iVOXCount; i++) {
-		sndVOX[i].sSample = sprintf("vox/%s.wav", argv(i));
-		sndVOX[i].fLength = soundlength(sndVOX[i].sSample);
+
+	g_voxcount = tokenize(msg);
+	g_voxque = memalloc(sizeof(sound_t) * g_voxcount);
+
+	for (int i = 0; i < g_voxcount; i++) {
+		g_voxque[i].sample = sprintf("vox/%s.wav", argv(i));
+		g_voxque[i].len = soundlength(g_voxque[i].sample);
 	}
-	fSampleTime = time;
+	g_voxtime = time;
 }
 
 void Sound_ProcessWordQue(void)
 {
-	if (cltime < 2) {
+	if (cltime < 2 || !g_voxcount) {
 		return;
 	}
-	if (iVOXCount) {
-		if (fSampleTime < time) {
-			localcmd(sprintf("play %s\n", sndVOX[ iVOXPos ].sSample));	
-			iVOXPos++;
-			
-			if (iVOXPos == iVOXCount) {
-				memfree(sndVOX);
-				iVOXCount = 0;
-				iVOXPos = 0;
-			} else {
-				fSampleTime = time + sndVOX[ iVOXPos - 1 ].fLength;
-			}
+
+	if (g_voxtime < time) {
+		localcmd(sprintf("play %s\n", g_voxque[g_voxpos].sample));	
+		g_voxpos++;
+
+		if (g_voxpos == g_voxcount) {
+			memfree(g_voxque);
+			g_voxcount = 0;
+			g_voxpos = 0;
+		} else {
+			g_voxtime = time + g_voxque[g_voxpos - 1].len;
 		}
 	}
 }

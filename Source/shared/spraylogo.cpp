@@ -99,7 +99,7 @@ float CSpraylogo::predraw(void)
 						getplayerkeyvalue(m_iOwnerID, "name")));
 
 		shaderforname(m_strLogoname, 
-		sprintf("{\ncull disable\npolygonOffset\n{\nmap $rt:%s\nblendFunc add}\n}\n", 
+		sprintf("{\ncull disable\npolygonOffset\n{\nmap $rt:%s\nblendFunc add\n}\n}", 
 				 m_strLogopath));
 	} else {
 		makevectors(m_vecAngles);
@@ -123,9 +123,9 @@ void Spraylogo_Parse(void)
 	spSelf.m_vecAngles[2] = readcoord();
 	spSelf.m_iInitialized = FALSE;
 	spSelf.m_iOwnerID = readentitynum() - 1;
-	spSelf.m_strLogoname = sprintf("spray_%s", 
-							getplayerkeyvalue(spSelf.m_iOwnerID, "name"));
-	spSelf.m_strLogopath = sprintf("simg_%s", 
-							getplayerkeyvalue(spSelf.m_iOwnerID, "name"));
+	spSelf.m_strLogoname = sprintf("spray_%i",
+							spSelf.m_iOwnerID);
+	spSelf.m_strLogopath = sprintf("simg_%i",
+							spSelf.m_iOwnerID);
 }
 #endif
