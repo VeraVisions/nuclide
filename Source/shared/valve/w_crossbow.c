@@ -204,6 +204,13 @@ void w_crossbow_crosshair(void)
 #endif
 }
 
+float w_crossbow_aimanim(void)
+{
+#ifdef SSQC
+	return self.flags & FL_CROUCHING ? ANIM_CR_AIMBOW : ANIM_AIMBOW;
+#endif
+}
+
 void w_crossbow_hudpic(int s, vector pos)
 {
 #ifdef CSQC
@@ -233,6 +240,7 @@ weapon_t w_crossbow =
 	w_crossbow_wmodel,
 	w_crossbow_pmodel,
 	w_crossbow_deathmsg,
+	w_crossbow_aimanim,
 	w_crossbow_hudpic
 };
 

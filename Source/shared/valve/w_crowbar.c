@@ -100,6 +100,11 @@ void w_crowbar_primary(void)
 	vector src = pl.origin + pl.view_ofs;
 	traceline(src, src + (v_forward * 32), FALSE, pl);
 
+	if (self.flags & FL_CROUCHING)
+		Animation_PlayerTopTemp(ANIM_SHOOTCROWBAR, 0.5f);
+	else
+		Animation_PlayerTopTemp(ANIM_CR_SHOOTCROWBAR, 0.42f);
+
 	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/cbar_miss1.wav", 1, ATTN_NORM);
 
 	if (trace_fraction >= 1.0) {
@@ -153,6 +158,13 @@ void w_crowbar_release(void)
 #endif
 }
 
+float w_crowbar_aimanim(void)
+{
+#ifdef SSQC
+	return self.flags & FL_CROUCHING ? ANIM_CR_AIMCROWBAR : ANIM_AIMCROWBAR;
+#endif
+}
+
 void w_crowbar_hudpic(int s, vector pos)
 {
 #ifdef CSQC
@@ -182,6 +194,7 @@ weapon_t w_crowbar =
 	w_crowbar_wmodel,
 	w_crowbar_pmodel,
 	w_crowbar_deathmsg,
+	w_crowbar_aimanim,
 	w_crowbar_hudpic
 };
 

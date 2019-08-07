@@ -164,6 +164,14 @@ void w_satchel_release(void)
 #endif
 }
 
+float w_satchel_aimanim(void)
+{
+#ifdef SSQC
+	return self.flags & FL_CROUCHING ? ANIM_CR_AIMSQUEAK : ANIM_AIMSQUEAK;
+#endif
+}
+
+
 void w_satchel_hudpic(int s, vector pos)
 {
 #ifdef CSQC
@@ -193,6 +201,7 @@ weapon_t w_satchel =
 	w_satchel_wmodel,
 	w_satchel_pmodel,
 	w_satchel_deathmsg,
+	w_satchel_aimanim,
 	w_satchel_hudpic
 };
 

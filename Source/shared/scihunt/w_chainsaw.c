@@ -137,6 +137,13 @@ void w_chainsaw_release(void)
 #endif
 }
 
+float w_chainsaw_aimanim(void)
+{
+#ifdef SSQC
+	return self.flags & FL_CROUCHING ? ANIM_CR_AIMSQUEAK : ANIM_AIMSQUEAK;
+#endif
+}
+
 void w_chainsaw_hudpic(int s, vector pos)
 {
 #ifdef CSQC
@@ -166,6 +173,7 @@ weapon_t w_chainsaw =
 	__NULL__,
 	w_chainsaw_pmodel,
 	w_chainsaw_deathmsg,
+	w_chainsaw_aimanim,
 	w_chainsaw_hudpic
 };
 

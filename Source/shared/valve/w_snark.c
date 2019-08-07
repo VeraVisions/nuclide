@@ -87,6 +87,15 @@ string w_snark_deathmsg(void)
 {
 	return "";
 }
+
+
+float w_snark_aimanim(void)
+{
+#ifdef SSQC
+	return self.flags & FL_CROUCHING ? ANIM_CR_AIMSQUEAK : ANIM_AIMSQUEAK;
+#endif
+}
+
 void w_snark_hudpic(int s, vector pos)
 {
 #ifdef CSQC
@@ -116,6 +125,7 @@ weapon_t w_snark =
 	w_snark_wmodel,
 	w_snark_pmodel,
 	w_snark_deathmsg,
+	w_snark_aimanim,
 	w_snark_hudpic
 };
 

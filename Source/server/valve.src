@@ -12,6 +12,7 @@ valve/defs.h
 ../materials.h
 ../events.h
 ../entities.h
+../shared/valve/animations.h
 defs.h
 
 ../gs-entbase/server.src

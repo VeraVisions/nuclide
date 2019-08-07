@@ -122,6 +122,17 @@ string Weapons_GetDeathmessage(int id)
 	return "";
 }
 
+#ifdef SSQC
+float Weapons_GetAim(int id)
+{
+	if (g_weapons[id].aimanim != __NULL__) {
+		return g_weapons[id].aimanim();
+	}
+	
+	return 0;
+}
+#endif
+
 #ifdef CSQC
 void Weapons_HUDPic(int id, int s, vector pos)
 {

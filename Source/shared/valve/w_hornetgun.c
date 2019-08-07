@@ -135,6 +135,13 @@ void w_hornetgun_crosshair(void)
 #endif
 }
 
+float w_hornetgun_aimanim(void)
+{
+#ifdef SSQC
+	return self.flags & FL_CROUCHING ? ANIM_CR_AIMHIVE : ANIM_AIMHIVE;
+#endif
+}
+
 void w_hornetgun_hudpic(int s, vector pos)
 {
 #ifdef CSQC
@@ -164,6 +171,7 @@ weapon_t w_hornetgun =
 	w_hornetgun_wmodel,
 	w_hornetgun_pmodel,
 	w_hornetgun_deathmsg,
+	w_hornetgun_aimanim,
 	w_hornetgun_hudpic
 };
 

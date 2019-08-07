@@ -94,7 +94,12 @@ void w_glock_primary(void)
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.01,0,01]);
 
 	pl.glock_mag--;
-
+	
+	if (self.flags & FL_CROUCHING)
+		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
+	else
+		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
+	
 	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/pl_gun3.wav", 1, ATTN_NORM);
 	Weapons_UpdateAmmo(pl, pl.glock_mag, pl.ammo_9mm, __NULL__);
 #endif
@@ -130,6 +135,12 @@ void w_glock_secondary(void)
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.1,0.1]);
 
 	pl.glock_mag--;
+
+
+	if (self.flags & FL_CROUCHING)
+		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
+	else
+		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
 
 	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/pl_gun3.wav", 1, ATTN_NORM);
 	Weapons_UpdateAmmo(pl, pl.glock_mag, pl.ammo_9mm, __NULL__);
@@ -192,6 +203,14 @@ void w_glock_release(void)
 	pl.w_idle_next = 10.0f;
 #endif
 }
+
+float w_glock_aimanim(void)
+{
+#ifdef SSQC
+	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
+#endif
+}
+
 void w_glock_hud(void)
 {
 #ifdef CSQC
@@ -231,6 +250,7 @@ weapon_t w_glock =
 	w_glock_wmodel,
 	w_glock_pmodel,
 	w_glock_deathmsg,
+	w_glock_aimanim,
 	w_glock_hudpic
 };
 

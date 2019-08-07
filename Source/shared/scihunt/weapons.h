@@ -26,6 +26,7 @@ typedef struct
 	string() wmodel;
 	string() pmodel;
 	string() deathmsg;
+	float() aimanim;
 	void(int, vector) hudpic;
 } weapon_t;
 

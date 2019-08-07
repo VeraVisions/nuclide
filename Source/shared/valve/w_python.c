@@ -153,6 +153,13 @@ void w_python_crosshair(void)
 #endif
 }
 
+float w_python_aimanim(void)
+{
+#ifdef SSQC
+	return self.flags & FL_CROUCHING ? ANIM_CR_AIMPYTHON : ANIM_AIMPYTHON;
+#endif
+}
+
 void w_python_hudpic(int s, vector pos)
 {
 #ifdef CSQC
@@ -182,6 +189,7 @@ weapon_t w_python =
 	w_python_wmodel,
 	w_python_pmodel,
 	w_python_deathmsg,
+	w_python_aimanim,
 	w_python_hudpic
 };
 

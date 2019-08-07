@@ -193,6 +193,13 @@ void w_cannon_crosshair(void)
 #endif
 }
 
+float w_cannon_aimanim(void)
+{
+#ifdef SSQC
+	return self.flags & FL_CROUCHING ? ANIM_CR_AIMSHOTGUN : ANIM_AIMSHOTGUN;
+#endif
+}
+
 void w_cannon_hudpic(int s, vector pos)
 {
 #ifdef CSQC
@@ -222,5 +229,6 @@ weapon_t w_cannon =
 	__NULL__,
 	w_cannon_pmodel,
 	w_cannon_deathmsg,
+	w_cannon_aimanim,
 	w_cannon_hudpic
 };

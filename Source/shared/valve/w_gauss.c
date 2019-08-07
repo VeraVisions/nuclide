@@ -112,6 +112,13 @@ void w_gauss_crosshair(void)
 #endif
 }
 
+float w_gauss_aimanim(void)
+{
+#ifdef SSQC
+	return self.flags & FL_CROUCHING ? ANIM_CR_AIMGAUSS : ANIM_AIMGAUSS;
+#endif
+}
+
 void w_gauss_hudpic(int s, vector pos)
 {
 #ifdef CSQC
@@ -141,6 +148,7 @@ weapon_t w_gauss =
 	w_gauss_wmodel,
 	w_gauss_pmodel,
 	w_gauss_deathmsg,
+	w_gauss_aimanim,
 	w_gauss_hudpic
 };
 

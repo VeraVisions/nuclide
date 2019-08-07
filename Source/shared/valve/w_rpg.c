@@ -74,6 +74,13 @@ void w_rpg_release(void)
 	
 }
 
+float w_rpg_aimanim(void)
+{
+#ifdef SSQC
+	return self.flags & FL_CROUCHING ? ANIM_CR_AIMRPG : ANIM_AIMRPG;
+#endif
+}
+
 void w_rpg_hudpic(int s, vector pos)
 {
 #ifdef CSQC
@@ -115,6 +122,7 @@ weapon_t w_rpg =
 	w_rpg_wmodel,
 	w_rpg_pmodel,
 	w_rpg_deathmsg,
+	w_rpg_aimanim,
 	w_rpg_hudpic
 };
 

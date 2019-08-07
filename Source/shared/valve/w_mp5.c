@@ -193,6 +193,13 @@ void w_mp5_crosshair(void)
 #endif
 }
 
+float w_mp5_aimanim(void)
+{
+#ifdef SSQC
+	return self.flags & ANIM_CR_AIMMP5 ? ANIM_CR_AIMCROWBAR : ANIM_AIMMP5;
+#endif
+}
+
 void w_mp5_hudpic(int s, vector pos)
 {
 #ifdef CSQC
@@ -221,6 +228,7 @@ weapon_t w_mp5 = {
 	w_mp5_wmodel,
 	w_mp5_pmodel,
 	w_mp5_deathmsg,
+	w_mp5_aimanim,
 	w_mp5_hudpic
 };
 

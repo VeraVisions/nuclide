@@ -92,6 +92,13 @@ void w_tripmine_release(void)
 	}
 }
 
+float w_tripmine_aimanim(void)
+{
+#ifdef SSQC
+	return self.flags & FL_CROUCHING ? ANIM_CR_AIMTRIPMINE : ANIM_AIMTRIPMINE;
+#endif
+}
+
 void w_tripmine_hudpic(int s, vector pos)
 {
 #ifdef CSQC
@@ -121,6 +128,7 @@ weapon_t w_tripmine =
 	w_tripmine_wmodel,
 	w_tripmine_pmodel,
 	w_tripmine_deathmsg,
+	w_tripmine_aimanim,
 	w_tripmine_hudpic
 };
 

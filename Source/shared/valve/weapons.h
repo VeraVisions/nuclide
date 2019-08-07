@@ -26,6 +26,7 @@ typedef struct
 	string() wmodel;
 	string() pmodel;
 	string() deathmsg;
+	float() aimanim;
 	void(int, vector) hudpic;
 } weapon_t;
 
@@ -78,6 +79,7 @@ int Weapons_IsPresent(player pl, int w);
 
 #ifdef SSQC
 void Weapons_InitItem(int w);
+float Weapons_GetAim(int w);
 void Weapons_AddItem(player pl, int w);
 string Weapons_GetWorldmodel(int id);
 void Weapons_UpdateAmmo(player pl, int a1, int a2, int a3);

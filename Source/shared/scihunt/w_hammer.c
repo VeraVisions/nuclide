@@ -200,6 +200,13 @@ void w_hammer_release(void)
 #endif
 }
 
+float w_hammer_aimanim(void)
+{
+#ifdef SSQC
+	return self.flags & FL_CROUCHING ? ANIM_CR_AIMCROWBAR : ANIM_AIMCROWBAR;
+#endif
+}
+
 void w_hammer_hudpic(int s, vector pos)
 {
 #ifdef CSQC
@@ -229,5 +236,6 @@ weapon_t w_hammer =
 	__NULL__,
 	w_hammer_pmodel,
 	w_hammer_deathmsg,
+	w_hammer_aimanim,
 	w_hammer_hudpic
 };

@@ -83,6 +83,13 @@ void w_egon_crosshair(void)
 #endif
 }
 
+float w_egon_aimanim(void)
+{
+#ifdef SSQC
+	return self.flags & FL_CROUCHING ? ANIM_CR_AIMEGON : ANIM_AIMEGON;
+#endif
+}
+
 void w_egon_hudpic(int s, vector pos)
 {
 #ifdef CSQC
@@ -112,6 +119,7 @@ weapon_t w_egon =
 	w_egon_wmodel,
 	w_egon_pmodel,
 	w_egon_deathmsg,
+	w_egon_aimanim,
 	w_egon_hudpic
 };
 
