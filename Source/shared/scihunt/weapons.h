@@ -87,5 +87,6 @@ string Weapons_GetWorldmodel(int id);
 void Weapons_UpdateAmmo(player pl, int a1, int a2, int a3);
 void Weapons_ReloadWeapon(player pl, .int mag, .int ammo, int max);
 #else
+string Weapons_GetPlayermodel(int id);
 void Weapons_HUDPic(int w, int s, vector pos);
 #endif

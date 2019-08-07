@@ -132,6 +132,10 @@ enum {
 	Q2ANIM_DEATH3,
 };
 
-void Animation_PlayerTop(float);
+enum {
+	PLAYERTYPE_HL,
+	PLAYERTYPE_Q2
+};
 
+void Animation_PlayerTop(float);
 void Animation_PlayerTopTemp(float, float);

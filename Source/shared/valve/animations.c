@@ -15,6 +15,7 @@
 .float frame_last;
 .float baseframe_last;
 #else
+.float subblendfrac;
 .float subblend2frac;
 #endif
 
@@ -28,15 +29,31 @@ void Animation_Print( string sWow ) {
 
 void Animation_Q2PlayerUpdate_Run(int id)
 {
-	if (self.frame_time > time) {
+#ifdef CSQC
+	/* Interpolation */
+	self.lerpfrac -= clframetime * 10;
+	if (self.lerpfrac < 0.0) {
+		self.lerpfrac = 0.0f;
+	}
+
+	if (self.frame_time > cltime) {
 		return;
 	}
-	if (self.frame >= q2_anims[id].start && self.frame <= q2_anims[id].end) {
-		self.frame += q2_anims[id].start;
+
+	/* Next animationf rame inbound, reset interpolation */
+	self.frame2 = self.frame;
+	self.lerpfrac = 1.0f;
+
+	/* Either advance frame (if we're in framgroup) or start new one */
+	if (self.frame >= q2_anims[id].start && self.frame < q2_anims[id].end) {
+		self.frame += 1;
 	} else {
 		self.frame = q2_anims[id].start;
 	}
-	self.frame_time = time + 0.1f;
+
+	/* Q2 runs at 10 Hz */
+	self.frame_time = cltime + 0.1f;
+#endif
 }
 
 void Animation_Q2PlayerUpdate(void)
@@ -68,6 +85,7 @@ depending on what the player is doing
 */
 void Animation_PlayerUpdate( void ) {
 	self.basebone = 16;
+
 #ifdef SSQC
 	// TODO: Make this faster
 	if ( self.frame_time < time ) {
@@ -143,7 +161,7 @@ void Animation_PlayerUpdate( void ) {
 		self.baseframe1time = 0.0f;
 	}
 	
-	self.bonecontrol1 = self.angles[0];
+	self.subblend2frac = self.angles[0];
 #endif
 	self.angles[0] = self.angles[2] = 0;
 	
@@ -160,6 +178,7 @@ void Animation_PlayerUpdate( void ) {
 
 #ifdef SSQC
 	// On the CSQC it's done in Player.c
+	self.subblendfrac = 
 	self.subblend2frac = self.v_angle[0] / 90;
 #endif
 }

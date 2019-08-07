@@ -74,6 +74,10 @@ void player::gun_offset(void)
 	setorigin(this.p_model, this.origin - ofs);
 }
 
+#ifdef VALVE
+string Weapons_GetPlayermodel(int);
+#endif
+
 void player::draw(void)
 {
 	if (!this.p_model) {
@@ -82,6 +86,7 @@ void player::draw(void)
 		this.p_model.owner = this;
 	}
 
+	this.subblendfrac =
 	this.subblend2frac = this.pitch / 90;
 
 	/* Only bother updating the model if the weapon has changed */
@@ -89,6 +94,8 @@ void player::draw(void)
 		if (this.activeweapon) {
 		#ifdef CSTRIKE
 			setmodel(this.p_model, sPModels[this.activeweapon - 1]);
+		#else
+			setmodel(this. p_model, Weapons_GetPlayermodel(this.activeweapon));
 		#endif
 		} else {
 			setmodel(this.p_model, "");
@@ -162,7 +169,7 @@ void player::draw(void)
 	}
 
 	/* Turn torso */
-	this.subblendfrac = (a)/-120;
+	this.bonecontrol2 = (a)/-120;
 
 	/* Correct the legs */
 	this.angles[1] -= a;
@@ -211,27 +218,45 @@ float player::predraw(void)
 		removeentity(this);
 		removeentity(this.p_model);
 	}
-
 	return PREDRAW_NEXT;
 }
 
 void player::set_model(void)
 {
-	int i = tokenizebyseparator(getplayerkeyvalue(entnum-1, "model"), "/");
-	string out;
-	
+#ifdef VALVE
+	string modelout;
+	string skinpath;
+	string skinout;
+	int i;
+
+	i = tokenizebyseparator(getplayerkeyvalue(entnum-1, "model"), "/");	
 	if (i == 1) {
-		playertype = 0;
-		out = sprintf("models/player/%s/%s.mdl", argv(0), argv(0));
-		print(sprintf("HL Player: %s\n", out));
+		playertype = PLAYERTYPE_HL;
+		modelout = sprintf("models/player/%s/%s.mdl", argv(0), argv(0));
 	} else {
-		playertype = 1;
-		out = sprintf("players/%s/tris.md2", argv(0));
-		print(sprintf("Q2 Player: %s\n", out));
+		playertype = PLAYERTYPE_Q2;
+		modelout = sprintf("players/%s/tris.md2", argv(0));
+		skinout = sprintf("players/%s/%s.pcx", argv(0), argv(1));
+		skinpath = sprintf("players/%s/%s.skin", argv(0), argv(1));
+		
+		/* If the skin doesn't exist, make sure we fail */
+		if (whichpack(skinout)) {
+		} else {
+			print( sprintf( "Skin %s does not exist.\n", skinout ) );
+			skinpath = __NULL__;
+			skinout = __NULL__;
+			modelout = __NULL__;
+		}
 	}
 
-	if (whichpack(out))
-		setmodel(this, out);
-	else
+	if (modelout && whichpack(modelout)) {
+		setmodel(this, modelout);
+		if (playertype == PLAYERTYPE_Q2) {
+			setcustomskin(this, skinpath, sprintf("replace \"\" \"%s\"", skinout));
+		}
+	} else {
 		setmodel(this, "models/player.mdl");
+		playertype = PLAYERTYPE_HL;
+	}
+#endif
 }

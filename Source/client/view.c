@@ -182,7 +182,7 @@ void View_DrawViewModel(void)
 		return;
 	}
 	
-	if (cvar("r_drawviewmodel") == 0) {
+	if (cvar("r_drawviewmodel") == 0 || autocvar_cl_thirdperson == TRUE) {
 		return;
 	}
 
