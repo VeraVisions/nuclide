@@ -59,6 +59,7 @@ scihunt/shdata_parse.c
 spawn.c
 vox.c
 
+../shared/valve/animations.c
 scihunt/client.c
 client.c
 

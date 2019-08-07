@@ -60,6 +60,7 @@ valve/ammo.cpp
 spawn.c
 vox.c
 
+../shared/valve/animations.c
 valve/client.c
 client.c
 

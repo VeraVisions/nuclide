@@ -278,7 +278,7 @@ void CSQC_UpdateView(float w, float h, float focus)
 
 	DSP_UpdateListener();
 	pSeat = (void*)0x70000000i;
-
+needcursor = 0;
 	if (needcursor) {
 		setcursormode(TRUE, "gfx/cursor", [0,0,0], 1.0f);
 	} else {

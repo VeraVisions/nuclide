@@ -39,6 +39,8 @@ void Player_ReadEntity(float flIsNew)
 	pl.viewzoom = readfloat();
 	pl.jumptime = readfloat();
 	pl.teleport_time = readfloat();
+	pl.baseframe = readbyte();
+	pl.frame = readbyte();
 	pl.a_ammo1 = readbyte();
 	pl.a_ammo2 = readbyte();
 	pl.a_ammo3 = readbyte();

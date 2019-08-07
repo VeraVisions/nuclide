@@ -10,6 +10,82 @@
 .float baseframe_old;
 .float fWasCrouching;
 
+enum {
+	ANIM_LOOKIDLE,
+	ANIM_IDLE,
+	ANIM_DEEPIDLE,
+	ANIM_RUN2,
+	ANIM_WALK2HANDED,
+	ANIM_2HANDSHOT,
+	ANIM_CRAWL,
+	ANIM_CROUCHIDLE,
+	ANIM_JUMP,
+	ANIM_LONGJUMP,
+	ANIM_SWIM,
+	ANIM_TREADWATER,
+	ANIM_RUN,
+	ANIM_WALK,
+	ANIM_AIM2,
+	ANIM_SHOOT2,
+	ANIM_AIM1,
+	ANIM_SHOOT1,
+	ANIM_DIESIMPLE,
+	ANIM_DIEBACKWARDS1,
+	ANIM_DIEBACKWARDS2,
+	ANIM_DIEFORWARD,
+	ANIM_DIEHEADSHOT,
+	ANIM_DIESPIN,
+	ANIM_DIEGUTSHOT,
+	ANIM_AIMCROWBAR,
+	ANIM_SHOOTCROWBAR,
+	ANIM_CR_AIMCROWBAR,
+	ANIM_CR_SHOOTCROWBAR,
+	ANIM_AIMTRIPMINE,
+	ANIM_SHOOTTRIPMINE,
+	ANIM_CR_AIMTRIPMINE,
+	ANIM_CR_SHOOTTRIPMINE,
+	ANIM_AIM1HAND,
+	ANIM_SHOOT1HAND,
+	ANIM_CR_AIM1HAND,
+	ANIM_CR_SHOOT1HAND,
+	ANIM_AIMPYTHON,
+	ANIM_SHOOTPYTHON,
+	ANIM_CR_AIMPYTHON,
+	ANIM_CR_SHOOTPYTHON,
+	ANIM_AIMSHOTGUN,
+	ANIM_SHOOTSHOTGUN,
+	ANIM_CR_AIMSHOTGUN,
+	ANIM_CR_SHOOTSHOTGUN,
+	ANIM_AIMGAUSS,
+	ANIM_SHOOTGAUSS,
+	ANIM_CR_AIMGAUSS,
+	ANIM_CR_SHOOTGAUSS,
+	ANIM_AIMMP5,
+	ANIM_SHOOTMP5,
+	ANIM_CR_AIMMP5,
+	ANIM_CR_SHOOTMP5,
+	ANIM_AIMRPG,
+	ANIM_SHOOTRPG,
+	ANIM_CR_AIMRPG,
+	ANIM_CR_SHOOTRPG,
+	ANIM_AIMEGON,
+	ANIM_SHOOTEGON,
+	ANIM_CR_AIMEGON,
+	ANIM_CR_SHOOTEGON,
+	ANIM_AIMSQUEAK,
+	ANIM_SHOOTSQUEAK,
+	ANIM_CR_AIMSQUEAK,
+	ANIM_CR_SHOOTSQUEAK,
+	ANIM_AIMHIVE,
+	ANIM_SHOOTHIVE,
+	ANIM_CR_AIMHIVE,
+	ANIM_CR_SHOOTHIVE,
+	ANIM_AIMBOW,
+	ANIM_SHOOTBOW,
+	ANIM_CR_AIMBOW,
+	ANIM_CR_SHOOTBOW
+};
+
 // For lerping, sigh
 #ifdef CSQC
 .float frame_last;
@@ -35,69 +111,81 @@ depending on what the player is doing
 =================
 */
 void Animation_PlayerUpdate( void ) {
-	self.basebone = 40;
-	/*
+	self.basebone = 16;
+#ifdef SSQC
 	// TODO: Make this faster
 	if ( self.baseframe_time < time ) {
-		switch ( Weapon_GetAnimType( self.weapon ) ) {
-			case ATYPE_AK47:
-				self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_AIM_AK47 : ANIM_AIM_AK47;
-				break;
-			case ATYPE_C4:
-				self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_AIM_C4 : ANIM_AIM_C4;
-				break;
-			case ATYPE_CARBINE:
-				self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_AIM_CARBINE : ANIM_AIM_CARBINE;
-				break;
-			case ATYPE_DUALPISTOLS:
-				self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_AIM_DUALPISTOLS : ANIM_AIM_DUALPISTOLS;
-				break;
-			case ATYPE_GRENADE:
-				self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_AIM_GRENADE : ANIM_AIM_GRENADE;
-				break;
-			case ATYPE_KNIFE:
-				self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_AIM_KNIFE : ANIM_AIM_KNIFE;
-				break;
-			case ATYPE_MP5:
-				self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_AIM_MP5 : ANIM_AIM_MP5;
-				break;
-			case ATYPE_ONEHAND:
-				self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_AIM_ONEHAND : ANIM_AIM_ONEHAND;
-				break;
-			case ATYPE_PARA:
-				self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_AIM_PARA : ANIM_AIM_PARA;
-				break;
-			case ATYPE_RIFLE:
-				self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_AIM_RIFLE : ANIM_AIM_RIFLE;
-				break;
-			case ATYPE_SHOTGUN:
-				self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_AIM_SHOTGUN : ANIM_AIM_SHOTGUN;
-				break;
+		player pl = (player)self;
+		int i = pl.activeweapon;
+		switch ( i ) {
+			case WEAPON_CROWBAR:
+				self.frame = self.flags & FL_CROUCHING ? ANIM_CR_AIMCROWBAR : ANIM_AIMCROWBAR;
+			break;
+			case WEAPON_GLOCK:
+				self.frame = self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
+			break;
+			case WEAPON_PYTHON:
+				self.frame = self.flags & FL_CROUCHING ? ANIM_CR_AIMPYTHON : ANIM_AIMPYTHON;
+			break;
+			case WEAPON_MP5:
+				self.frame = self.flags & FL_CROUCHING ? ANIM_CR_AIMMP5 : ANIM_AIMMP5;
+			break;
+			case WEAPON_SHOTGUN:
+				self.frame = self.flags & FL_CROUCHING ? ANIM_CR_AIMSHOTGUN : ANIM_AIMSHOTGUN;
+			break;
+			case WEAPON_CROSSBOW:
+				self.frame = self.flags & FL_CROUCHING ? ANIM_CR_AIMBOW : ANIM_AIMBOW;
+			break;
+			case WEAPON_RPG:
+				self.frame = self.flags & FL_CROUCHING ? ANIM_CR_AIMRPG : ANIM_AIMRPG;
+			break;
+			case WEAPON_GAUSS:
+				self.frame = self.flags & FL_CROUCHING ? ANIM_CR_AIMGAUSS : ANIM_AIMGAUSS;
+			break;
+			case WEAPON_EGON:
+				self.frame = self.flags & FL_CROUCHING ? ANIM_CR_AIMEGON : ANIM_AIMEGON;
+			break;
+			case WEAPON_HORNETGUN:
+				self.frame = self.flags & FL_CROUCHING ? ANIM_CR_AIMHIVE : ANIM_AIMHIVE;
+			break;
+			case WEAPON_HANDGRENADE:
+				self.frame = self.flags & FL_CROUCHING ? ANIM_CR_AIMCROWBAR : ANIM_AIMCROWBAR;
+			break;
+			case WEAPON_SATCHEL:
+				self.frame = self.flags & FL_CROUCHING ? ANIM_CR_AIMCROWBAR : ANIM_AIMCROWBAR;
+			break;
+			case WEAPON_TRIPMINE:
+				self.frame = self.flags & FL_CROUCHING ? ANIM_CR_AIMTRIPMINE : ANIM_AIMTRIPMINE;
+			break;
+			case WEAPON_SNARK:
+				self.frame = self.flags & FL_CROUCHING ? ANIM_CR_AIMSQUEAK : ANIM_AIMSQUEAK;
+			break;
 		}
-		self.baseframe_old = self.baseframe;
+		self.baseframe_old = self.frame;
 	}
 	
 	if ( !( self.flags & FL_ONGROUND ) ) {
-		self.frame = ANIM_JUMP;
+		self.baseframe = ANIM_JUMP;
 	} else if ( vlen( self.velocity ) == 0 ) {
 		if ( self.flags & FL_CROUCHING ) {
-			self.frame = ANIM_IDLE_CROUCH;
+			self.baseframe = ANIM_CROUCHIDLE;
 		} else {
-			self.frame = ANIM_IDLE;
+			self.baseframe = ANIM_IDLE;
 		}
 	} else if ( vlen( self.velocity ) < 150 ) {
 		if ( self.flags & FL_CROUCHING ) {
-			self.frame = ANIM_RUN_CROUCH;
+			self.baseframe = ANIM_CRAWL;
 		} else {
-			self.frame = ANIM_WALK;
+			self.baseframe = ANIM_WALK;
 		}
 	} else if ( vlen( self.velocity ) > 150 ) {
 		if ( self.flags & FL_CROUCHING ) {
-			self.frame = ANIM_RUN_CROUCH;
+			self.baseframe = ANIM_CRAWL;
 		} else {
-			self.frame = ANIM_RUN;
+			self.baseframe = ANIM_RUN;
 		}
-	}*/
+	}
+#endif
 
 #ifdef CSQC
 	// Lerp it down!

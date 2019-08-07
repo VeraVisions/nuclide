@@ -27,9 +27,10 @@ void Game_PlayerPreThink(void)
 {
 	
 }
+
 void Game_PlayerPostThink(void)
 {
-
+	Animation_PlayerUpdate();
 	self.SendFlags = 1;
 }
 void Game_RunClientCommand(void)

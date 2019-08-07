@@ -112,6 +112,9 @@ float Player_SendEntity(entity ePEnt, float fChanged)
 	WriteFloat(MSG_ENTITY, pl.jumptime);
 	WriteFloat(MSG_ENTITY, pl.teleport_time);
 
+	WriteByte(MSG_ENTITY, pl.baseframe);
+	WriteByte(MSG_ENTITY, pl.frame);
+
 	WriteByte(MSG_ENTITY, pl.a_ammo1);
 	WriteByte(MSG_ENTITY, pl.a_ammo2);
 	WriteByte(MSG_ENTITY, pl.a_ammo3);
