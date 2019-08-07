@@ -26,6 +26,38 @@ void Animation_Print( string sWow ) {
 #endif	
 }
 
+void Animation_Q2PlayerUpdate_Run(int id)
+{
+	if (self.frame_time > time) {
+		return;
+	}
+	if (self.frame >= q2_anims[id].start && self.frame <= q2_anims[id].end) {
+		self.frame += q2_anims[id].start;
+	} else {
+		self.frame = q2_anims[id].start;
+	}
+	self.frame_time = time + 0.1f;
+}
+
+void Animation_Q2PlayerUpdate(void)
+{
+	if ( !( self.flags & FL_ONGROUND ) ) {
+		Animation_Q2PlayerUpdate_Run(Q2ANIM_JUMP);
+	} else if ( vlen( self.velocity ) == 0 ) {
+		if ( self.flags & FL_CROUCHING ) {
+			Animation_Q2PlayerUpdate_Run(Q2ANIM_CR_STAND);
+		} else {
+			Animation_Q2PlayerUpdate_Run(Q2ANIM_STAND);
+		}
+	} else {
+		if ( self.flags & FL_CROUCHING ) {
+			Animation_Q2PlayerUpdate_Run(Q2ANIM_CR_WALK);
+		} else {
+			Animation_Q2PlayerUpdate_Run(Q2ANIM_RUN);
+		}
+	}
+}
+
 /*
 =================
 Animation_PlayerUpdate

@@ -101,7 +101,17 @@ void player::draw(void)
 		this.p_model_bone = gettagindex(this.p_model, "Bip01 R Hand");
 	}
 
+#warning "FIXME: Clean this mess up"
+#ifdef VALVE
+	if (playertype == 0) {
+		Animation_PlayerUpdate();
+	} else {
+		Animation_Q2PlayerUpdate();
+		return;
+	}
+#else
 	Animation_PlayerUpdate();
+#endif
 	/*makevectors([0, this.angles[1], 0]);
 	float fDirection = dotproduct(this.velocity, v_forward);
 	
@@ -190,12 +200,38 @@ float player::predraw(void)
 
 	if (autocvar_cl_thirdperson == TRUE || this.entnum != player_localentnum) {
 		Voice_Draw3D(this);
-		addentity(this);
-		addentity(this.p_model);
+		
+		if (playertype == 0) {
+			addentity(this);
+			addentity(this.p_model);
+		} else {
+			addentity(this);
+		}
 	} else {
 		removeentity(this);
 		removeentity(this.p_model);
 	}
 
 	return PREDRAW_NEXT;
+}
+
+void player::set_model(void)
+{
+	int i = tokenizebyseparator(getplayerkeyvalue(entnum-1, "model"), "/");
+	string out;
+	
+	if (i == 1) {
+		playertype = 0;
+		out = sprintf("models/player/%s/%s.mdl", argv(0), argv(0));
+		print(sprintf("HL Player: %s\n", out));
+	} else {
+		playertype = 1;
+		out = sprintf("players/%s/tris.md2", argv(0));
+		print(sprintf("Q2 Player: %s\n", out));
+	}
+
+	if (whichpack(out))
+		setmodel(this, out);
+	else
+		setmodel(this, "models/player.mdl");
 }

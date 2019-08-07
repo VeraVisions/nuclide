@@ -37,6 +37,7 @@ class player
 #ifdef CSQC
 	/* External model */
 	entity p_model;
+	int playertype;
 	int p_hand_bone;
 	int p_model_bone;
 	float pitch;
@@ -51,6 +52,7 @@ class player
 	float netjumptime;
 	float netteleport_time;
 
+	virtual void() set_model;
 	virtual void() gun_offset;
 	virtual void() draw;
 	virtual float() predraw;

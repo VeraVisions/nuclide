@@ -25,6 +25,7 @@ sound.c
 text.c
 voice.c
 
+../shared/valve/animations.h
 ../shared/valve/animations.c
 ../shared/scihunt/player.cpp
 player.c
