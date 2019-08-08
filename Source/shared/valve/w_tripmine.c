@@ -56,7 +56,36 @@ void w_tripmine_holster(void)
 }
 void w_tripmine_primary(void)
 {
+	player pl = (player)self;
+	if (pl.w_attack_next > 0.0) {
+		return;
+	}
+
 	
+	Weapons_MakeVectors();
+	traceline(Weapons_GetCameraPos(), Weapons_GetCameraPos() + v_forward * 64, FALSE, pl);
+
+	if (trace_fraction == 1.0f) {
+		return;
+	}
+	
+#ifdef CSQC
+	Weapons_ViewAnimation(TRIPMINE_FIRE2);
+#else
+	entity mine = spawn();
+	setmodel(mine, "models/v_tripmine.mdl");
+	setorigin(mine, trace_endpos);
+	mine.frame = TRIPMINE_WORLD;
+	vector norm = trace_plane_normal;
+   	norm_x = 0 - norm_x;
+   	norm_y = 0 - norm_y;
+	
+   	mine.angles = vectoangles( [0,0,0.5] - norm );
+   	setorigin(mine, trace_endpos - (v_forward * 4));
+#endif
+
+	pl.w_attack_next = 0.5f;
+	pl.w_idle_next = 2.5f;
 }
 void w_tripmine_secondary(void)
 {

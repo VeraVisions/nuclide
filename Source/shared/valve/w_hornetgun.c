@@ -63,6 +63,33 @@ void w_hornetgun_holster(void)
 {
 	
 }
+
+#ifdef SSQC
+void w_hornetgun_shoothornet(void)
+{
+	static void Hornet_Touch(void) {
+		if (other.takedamage == DAMAGE_YES) {
+			Damage_Apply(other, self.owner, 10, trace_endpos, FALSE);
+		} else {
+		}
+		remove(self);
+	}
+	Weapons_MakeVectors();
+	entity bolt = spawn();
+	setmodel(bolt, "models/hornet.mdl");
+	setorigin(bolt, Weapons_GetCameraPos() + (v_forward * 16) + (v_up * -8));
+	bolt.owner = self;
+	bolt.velocity = v_forward * 1000;
+	bolt.movetype = MOVETYPE_FLY;
+	bolt.solid = SOLID_BBOX;
+	//bolt.flags |= FL_LAGGEDMOVE;
+	bolt.gravity = 0.5f;
+	bolt.angles = vectoangles(bolt.velocity);
+	bolt.touch = Hornet_Touch;
+	setsize(bolt, [0,0,0], [0,0,0]);
+}
+#endif
+
 void w_hornetgun_primary(void)
 {
 	player pl = (player)self;
@@ -71,6 +98,7 @@ void w_hornetgun_primary(void)
 	}
 
 #ifdef SSQC
+	w_hornetgun_shoothornet();
 	Weapons_PlaySound(pl, CHAN_WEAPON, sprintf("agrunt/ag_fire%d.wav", floor(random(1,4))), 1, ATTN_NORM);
 #else
 	Weapons_ViewAnimation(HORNETGUN_SHOOT);
@@ -87,6 +115,7 @@ void w_hornetgun_secondary(void)
 	}
 
 #ifdef SSQC
+	w_hornetgun_shoothornet();
 	Weapons_PlaySound(pl, CHAN_WEAPON, sprintf("agrunt/ag_fire%d.wav", floor(random(1,4))), 1, ATTN_NORM);
 #else
 	Weapons_ViewAnimation(HORNETGUN_SHOOT);

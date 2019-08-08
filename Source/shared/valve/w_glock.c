@@ -119,13 +119,13 @@ void w_glock_secondary(void)
 	if (!pl.a_ammo1) {
 		return;
 	}
-	
+
 	if (pl.a_ammo1) {
 		Weapons_ViewAnimation(GLOCK_SHOOT);
 	} else {
 		Weapons_ViewAnimation(GLOCK_SHOOT_EMPTY);
 	}
-
+ 
 	Weapons_ViewPunchAngle([-2,0,0]);
 #else
 	if (!pl.glock_mag) {
@@ -157,6 +157,9 @@ void w_glock_reload(void)
 	}
 #ifdef CSQC
 	if (pl.a_ammo1 >= 18) {
+		return;
+	}
+	if (!pl.a_ammo2) {
 		return;
 	}
 
