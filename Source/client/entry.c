@@ -39,6 +39,7 @@ void CSQC_Init(float apilevel, string enginename, float engineversion)
 	registercommand("invprev");
 	registercommand("+showscores");
 	registercommand("-showscores");
+	registercommand("wave");
 	registercommand("buildcubemaps");
 
 	precache_model("sprites/640_pain.spr");
@@ -412,6 +413,11 @@ void CSQC_Parse_Event(void)
 	float fHeader = readbyte();
 	
 	switch (fHeader) {
+		case EV_TAUNT:
+#ifdef VALVE
+			Animation_Q2PlayerTaunt();
+#endif
+			break;
 		case EV_FADE:
 			Fade_Parse();
 			break;
@@ -519,6 +525,12 @@ float CSQC_ConsoleCommand(string sCMD)
 	tokenize(sCMD);
 	
 	switch (argv(0)) {
+	case "wave":
+		float numt = stof(argv(1));
+		if (numt >= 0 && numt <= 4) {
+			sendevent("Taunt", "f", numt);
+		}
+		break;
 	case "+zoomin":
 		pSeat->iZoomed = TRUE;
 		break;

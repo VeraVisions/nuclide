@@ -14,6 +14,7 @@
 #ifdef CSQC
 .float frame_last;
 .float baseframe_last;
+.float q2frameoverride;
 #else
 .float subblendfrac;
 .float subblend2frac;
@@ -25,6 +26,41 @@ void Animation_Print( string sWow ) {
 #else 
 	bprint(PRINT_HIGH, sprintf( "SSQC: %s", sWow )  );
 #endif	
+}
+
+int Animation_Q2PlayerUpdate_Taunt(void)
+{
+#ifdef CSQC
+	if (!self.q2frameoverride) {
+		return 0;
+	}
+
+	/* Interpolation */
+	self.lerpfrac -= clframetime * 10;
+	if (self.lerpfrac < 0.0) {
+		self.lerpfrac = 0.0f;
+	}
+	if (self.frame_time > cltime) {
+		return 1;
+	}
+
+	/* Next animationf rame inbound, reset interpolation */
+	self.frame2 = self.frame;
+	self.lerpfrac = 1.0f;
+
+	/* Either advance frame (if we're in framgroup) or start new one */
+	if (self.frame >= q2_anims[self.q2frameoverride].start && self.frame < q2_anims[self.q2frameoverride].end) {
+		self.frame += 1;
+	} else if (self.frame == q2_anims[self.q2frameoverride].end) {
+		self.q2frameoverride = 0;
+	} else {
+		self.frame = q2_anims[self.q2frameoverride].start;
+	}
+
+	/* Q2 runs at 10 Hz */
+	self.frame_time = cltime + 0.1f;
+#endif
+	return 1;
 }
 
 void Animation_Q2PlayerUpdate_Run(int id)
@@ -58,6 +94,9 @@ void Animation_Q2PlayerUpdate_Run(int id)
 
 void Animation_Q2PlayerUpdate(void)
 {
+	if (Animation_Q2PlayerUpdate_Taunt() == 1) {
+		return;
+	}
 	if ( !( self.flags & FL_ONGROUND ) ) {
 		Animation_Q2PlayerUpdate_Run(Q2ANIM_JUMP);
 	} else if ( vlen( self.velocity ) == 0 ) {
@@ -74,6 +113,15 @@ void Animation_Q2PlayerUpdate(void)
 		}
 	}
 }
+
+#ifdef CSQC
+void Animation_Q2PlayerTaunt(void)
+{
+	entity boo = findfloat( world, entnum, readentitynum() );
+	boo.q2frameoverride = Q2ANIM_FLIP + readbyte();
+	print( sprintf("Taunt %d %s!\n", boo.q2frameoverride, boo.model));
+}
+#endif
 
 /*
 =================

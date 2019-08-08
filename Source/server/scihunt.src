@@ -3,6 +3,7 @@
 
 #define QWSSQC
 #define VALVE
+#define SCIHUNT
 
 #includelist
 ../builtins.h
