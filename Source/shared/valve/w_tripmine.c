@@ -23,6 +23,9 @@ void w_tripmine_precache(void)
 {
 	precache_model("models/v_tripmine.mdl");
 	precache_model("models/p_tripmine.mdl");
+	precache_sound("weapons/mine_deploy.wav");
+	precache_sound("weapons/mine_charge.wav");
+	precache_sound("weapons/mine_activate.wav");
 }
 string w_tripmine_vmodel(void)
 {
@@ -54,13 +57,49 @@ void w_tripmine_holster(void)
 {
 	
 }
+
+#ifdef SSQC
+void w_tripmine_trip(int unused)
+{
+	/* This is to prevent infinite loops in Damage_Radius */
+	self.vDeath =
+	self.vPain = __NULL__;
+	self.takedamage = DAMAGE_NO;
+
+	Effect_CreateExplosion(self.origin);
+	Damage_Radius(self.origin, self.owner, 150, 150 * 2.5f, TRUE);
+	sound(self, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 2 ) + 3 ), 1, ATTN_NORM);
+	remove(self);
+}
+void w_tripmine_ready(void)
+{
+	makevectors(self.angles);
+	traceline(self.origin, self.origin + v_forward * 2048, FALSE, self);
+
+	if (!self.health) {
+		self.health = 1;
+		self.vDeath =
+		self.vPain = w_tripmine_trip;
+		self.takedamage = DAMAGE_YES;
+		self.solid = SOLID_BBOX;
+		setsize(self, [-8,-8,-8], [8,8,8]);
+		self.armor = trace_plane_dist;
+		sound(self, CHAN_WEAPON, "weapons/mine_activate.wav", 1, ATTN_NORM);
+	}
+
+	if (trace_plane_dist != self.armor) {
+		w_tripmine_trip(0);
+	}
+	self.nextthink = time;
+}
+#endif
+
 void w_tripmine_primary(void)
 {
 	player pl = (player)self;
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-
 	
 	Weapons_MakeVectors();
 	traceline(Weapons_GetCameraPos(), Weapons_GetCameraPos() + v_forward * 64, FALSE, pl);
@@ -76,12 +115,13 @@ void w_tripmine_primary(void)
 	setmodel(mine, "models/v_tripmine.mdl");
 	setorigin(mine, trace_endpos);
 	mine.frame = TRIPMINE_WORLD;
-	vector norm = trace_plane_normal;
-   	norm_x = 0 - norm_x;
-   	norm_y = 0 - norm_y;
-	
-   	mine.angles = vectoangles( [0,0,0.5] - norm );
+   	mine.angles = vectoangles( trace_plane_normal );
    	setorigin(mine, trace_endpos - (v_forward * 4));
+	mine.think = w_tripmine_ready;
+	mine.nextthink = time + 4.0f;
+	//mine.owner = pl;
+	sound(mine, CHAN_WEAPON, "weapons/mine_charge.wav", 1, ATTN_NORM);
+	sound(self, CHAN_WEAPON, "weapons/mine_deploy.wav", 1, ATTN_NORM);
 #endif
 
 	pl.w_attack_next = 0.5f;

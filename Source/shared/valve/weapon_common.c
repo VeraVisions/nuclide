@@ -174,6 +174,14 @@ void Weapons_ViewAnimation(int i)
 #endif
 }
 
+#ifdef CSQC
+int View_GetAnimation(void);
+int Weapons_GetAnimation(void)
+{
+	return View_GetAnimation();
+}
+#endif
+
 void Weapons_ViewPunchAngle(vector add)
 {
 #ifdef CSQC
@@ -243,6 +251,3 @@ void Weapons_ReloadWeapon(player pl, .int mag, .int ammo, int max)
 	}
 } 
 #endif
-
-
-

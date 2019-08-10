@@ -108,8 +108,19 @@ void CSQC_UpdateView(float w, float h, float focus)
 
 	if (w == 0 || h == 0) {
 		return;
+	} else {
+		/* First time we can effectively call VGUI
+		*  because until now we don't know the video res.
+		*/
+		if (!video_res[0] && !video_res[1]) {
+			video_res[0] = w;
+			video_res[1] = h;
+			Client_InitDone();
+		}
 	}
 
+	/* While the init above may have already happened,
+	   people are able to resize windows dynamically too. */
 	video_res[0] = w;
 	video_res[1] = h;
 	
@@ -242,6 +253,13 @@ void CSQC_UpdateView(float w, float h, float focus)
 
 		renderscene();
 
+	
+		/* Run this on all players */
+		for (entity b = world; (b = find(b, ::classname, "player"));) {
+			player pf = (player) b;
+			pf.postdraw();
+		}
+
 		View_DropPunchAngle();
 		Fade_Update((int)video_mins[0],(int)video_mins[1], (int)w, (int)h);
 
@@ -279,12 +297,6 @@ void CSQC_UpdateView(float w, float h, float focus)
 
 	DSP_UpdateListener();
 	pSeat = (void*)0x70000000i;
-needcursor = 0;
-	if (needcursor) {
-		setcursormode(TRUE, "gfx/cursor", [0,0,0], 1.0f);
-	} else {
-		setcursormode(FALSE, "gfx/cursor", [0,0,0], 1.0f);
-	}
 
 	Sound_ProcessWordQue();
 }
@@ -346,6 +358,13 @@ float CSQC_InputEvent(float fEventType, float fKey, float fCharacter, float fDev
 	}
 	
 	VGUI_Input(fEventType, fKey, fCharacter, fDeviceID);
+
+	if (g_vguiWidgetCount) {
+		setcursormode(TRUE, "gfx/cursor", [0,0,0], 1.0f);
+	} else {
+		setcursormode(FALSE, "gfx/cursor", [0,0,0], 1.0f);
+	}
+
 	return FALSE;
 }
 
@@ -363,6 +382,13 @@ void CSQC_Input_Frame(void)
 
 
 	// If we are inside a VGUI, don't let the client do stuff outside
+	if (g_vguiWidgetCount) {
+		input_impulse = 0;
+		input_buttons = 0;
+		return;
+	}
+	
+	/* The HUD needs more time */
 	if ((pSeat->fHUDWeaponSelected) && (input_buttons & INPUT_BUTTON0)) {
 		HUD_DrawWeaponSelect_Trigger();
 		input_buttons = 0;

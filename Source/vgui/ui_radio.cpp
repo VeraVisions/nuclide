@@ -71,6 +71,7 @@ void CUIRadio :: SetFunc ( void() vFunc )
 
 void CUIRadio :: Draw ( void )
 {
+#ifndef CLASSIC_VGUI
 	drawfill( m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, m_vecColor, m_flAlpha );
 	
 	if ( m_iFlags & RADIO_DOWN ) {
@@ -79,13 +80,25 @@ void CUIRadio :: Draw ( void )
 		drawfill( m_parent.m_vecOrigin + m_vecOrigin + [ 0, 1], [1, m_vecSize[1] - 2], '0 0 0', 0.5f );
 		drawfill( m_parent.m_vecOrigin + m_vecOrigin + [ m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], '1 1 1', 0.5f );
 	}
-	
 	if ( m_iFlags & RADIO_ACTIVE ) {
 		drawpic( m_parent.m_vecOrigin + m_vecOrigin, "textures/ui/steam/icon_radiosel", '16 16', '1 1 1', 1.0f );
 	} else {
 		drawpic( m_parent.m_vecOrigin + m_vecOrigin, "textures/ui/steam/icon_radiounsel", '16 16', '1 1 1', 1.0f );
 	}
-	
+#else
+	if ( m_iFlags & RADIO_DOWN ) {
+		drawfill( m_parent.m_vecOrigin + m_vecOrigin, [m_vecSize[0], 1], m_vecColor, 1.0f );
+		drawfill( m_parent.m_vecOrigin + m_vecOrigin + [ 0, m_vecSize[1] - 1], [m_vecSize[0], 1], m_vecColor, 1.0f );
+		drawfill( m_parent.m_vecOrigin + m_vecOrigin + [ 0, 1], [1, m_vecSize[1] - 2], m_vecColor, 1.0f );
+		drawfill( m_parent.m_vecOrigin + m_vecOrigin + [ m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], m_vecColor, 1.0f );
+	}
+	if ( m_iFlags & RADIO_ACTIVE ) {
+		drawpic( m_parent.m_vecOrigin + m_vecOrigin, "textures/ui/steam/icon_radiosel", '16 16', m_vecColor, 1.0f );
+	} else {
+		drawpic( m_parent.m_vecOrigin + m_vecOrigin, "textures/ui/steam/icon_radiounsel", '16 16', m_vecColor, 1.0f );
+	}
+#endif
+
 	if ( m_strTitle ) {
 		Font_DrawText( m_parent.m_vecOrigin + m_vecOrigin + [ 24, 3 ], m_strTitle, g_fntDefault );
 	}

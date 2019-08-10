@@ -1,3 +1,5 @@
+#define CLASSIC_VGUI
+
 #includelist
 ../vgui/font.cpp
 ../vgui/ui.cpp

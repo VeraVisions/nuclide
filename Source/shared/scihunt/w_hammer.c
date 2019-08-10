@@ -152,10 +152,16 @@ void w_hammer_release(void)
 	if (pl.a_ammo1 == 1) {
 		if (trace_ent.takedamage) {
 			hitsound = floor(random(1, 4));
-			Damage_Apply(trace_ent, self, 100, trace_endpos, FALSE);
+
+			if (trace_ent.classname == "player")
+				Damage_Apply(trace_ent, self, 50, trace_endpos, FALSE);
+			else
+				Damage_Apply(trace_ent, self, 100, trace_endpos, FALSE);
 
 			if (trace_ent.classname == "monster_scientist") {
 				trace_ent.movetype = MOVETYPE_TOSS;
+				trace_ent.velocity = v_forward * 768 + v_up * 256;
+			} else if (trace_ent.classname == "player") {
 				trace_ent.velocity = v_forward * 768 + v_up * 256;
 			}
 		} else {

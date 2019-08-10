@@ -46,10 +46,11 @@ string w_egon_deathmsg(void)
 
 void w_egon_draw(void)
 {
+	player pl = (player)self;
 #ifdef CSQC
 	Weapons_ViewAnimation(EGON_DRAW);
+	pl.w_idle_next = 1.0f;
 #else
-	player pl = (player)self;
 	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_uranium, __NULL__);
 #endif
 }
@@ -60,7 +61,26 @@ void w_egon_holster(void)
 }
 void w_egon_primary(void)
 {
-	
+	player pl = (player)self;
+	if (pl.w_attack_next > 0.0) {
+		return;
+	}
+
+#ifdef CSQC
+	if (Weapons_GetAnimation() == EGON_IDLE1)
+		Weapons_ViewAnimation(EGON_ALTFIREON);
+	else if (Weapons_GetAnimation() == EGON_ALTFIREON)
+		Weapons_ViewAnimation(EGON_ALTFIRECYCLE);
+#else
+	Weapons_MakeVectors();
+	vector src = Weapons_GetCameraPos();
+	vector endpos = src + v_forward * 1024;
+	traceline(src, endpos, FALSE, pl);
+	Damage_Radius(trace_endpos, pl, 10, 64, TRUE);
+#endif
+
+	pl.w_attack_next = 0.2f;
+	pl.w_idle_next = 2.5f;
 }
 void w_egon_secondary(void)
 {
@@ -72,7 +92,18 @@ void w_egon_reload(void)
 }
 void w_egon_release(void)
 {
-	
+#ifdef CSQC
+	player pl = (player)self;
+	if (Weapons_GetAnimation() == EGON_ALTFIRECYCLE) {
+		Weapons_ViewAnimation(EGON_ALTFIREOFF);
+		pl.w_idle_next = 1.0f;
+	} else {
+		if (pl.w_idle_next > 0.0f) {
+			return;
+		}
+		Weapons_ViewAnimation(EGON_IDLE1);
+	}
+#endif	
 }
 void w_egon_crosshair(void)
 {

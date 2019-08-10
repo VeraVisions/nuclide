@@ -57,7 +57,17 @@ void w_handgrenade_holster(void)
 }
 void w_handgrenade_primary(void)
 {
-	
+	player pl = (player)self;
+	if (pl.w_attack_next > 0.0) {
+		return;
+	}
+
+#ifdef CSQC
+	Weapons_ViewAnimation(HANDGRENADE_PULLPIN);
+#endif
+
+	pl.w_attack_next = 0.2f;
+	pl.w_idle_next = 2.5f;
 }
 void w_handgrenade_secondary(void)
 {

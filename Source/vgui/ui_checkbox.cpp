@@ -65,8 +65,9 @@ void CUICheckbox :: SetValue ( int iValue )
 
 void CUICheckbox :: Draw ( void )
 {
+#ifndef CLASSIC_VGUI
 	drawfill( m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, m_vecColor, m_flAlpha );
-	
+
 	if ( m_iFlags & CHECKBOX_DOWN ) {
 		drawfill( m_parent.m_vecOrigin + m_vecOrigin, [m_vecSize[0], 1], '0 0 0', 0.5f );
 		drawfill( m_parent.m_vecOrigin + m_vecOrigin + [ 0, m_vecSize[1] - 1], [m_vecSize[0], 1], '1 1 1', 0.5f );
@@ -79,7 +80,20 @@ void CUICheckbox :: Draw ( void )
 	} else {
 		drawpic( m_parent.m_vecOrigin + m_vecOrigin, "textures/ui/steam/icon_emptybox", '16 16', '1 1 1', 1.0f );
 	}
+#else
+	if ( m_iFlags & CHECKBOX_DOWN ) {
+		drawfill( m_parent.m_vecOrigin + m_vecOrigin, [m_vecSize[0], 1], m_vecColor, 1.0f );
+		drawfill( m_parent.m_vecOrigin + m_vecOrigin + [ 0, m_vecSize[1] - 1], [m_vecSize[0], 1], m_vecColor, 1.0f );
+		drawfill( m_parent.m_vecOrigin + m_vecOrigin + [ 0, 1], [1, m_vecSize[1] - 2], m_vecColor, 1.0f );
+		drawfill( m_parent.m_vecOrigin + m_vecOrigin + [ m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], m_vecColor, 1.0f );
+	}
 	
+	if ( m_iFlags & CHECKBOX_CHECKED ) {
+		drawpic( m_parent.m_vecOrigin + m_vecOrigin, "textures/ui/steam/icon_checked", '16 16', m_vecColor, 1.0f );
+	} else {
+		drawpic( m_parent.m_vecOrigin + m_vecOrigin, "textures/ui/steam/icon_emptybox", '16 16', m_vecColor, 1.0f );
+	}
+#endif
 	if ( m_strTitle ) {
 		Font_DrawText( m_parent.m_vecOrigin + m_vecOrigin + [ 24, 3 ], m_strTitle, g_fntDefault );
 	}

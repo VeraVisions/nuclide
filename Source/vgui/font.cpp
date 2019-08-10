@@ -25,10 +25,16 @@ typedef struct
 
 void Font_Load ( string strFile, font_s &fntNew )
 {
+#ifdef CLASSIC_VGUI
+	fntNew.iID = (int)loadfont( "", "gfx/conchars", "12", -1, 0, 0 );
+	fntNew.iScale = 12;
+	fntNew.vecColor = [255,200,0] / 255;
+	fntNew.flAlpha = 1.0f;
+	fntNew.iFlags = 0;
+#else
 	string strTemp;
 	string strFontPath;
 	filestream fileFont = fopen( strFile, FILE_READ );
-
 	fntNew.iID = FONT_DEFAULT;
 	fntNew.iScale = 8;
 	fntNew.vecColor = '1 1 1';
@@ -65,6 +71,7 @@ void Font_Load ( string strFile, font_s &fntNew )
 	}
 
 	fntNew.iID = (int)loadfont( "", strFontPath, ftos( (float)fntNew.iScale ), -1, 0, 0 );
+#endif
 }
 
 void Font_DrawText ( vector vecOrigin, string strText, font_s fnt )
@@ -77,4 +84,20 @@ void Font_DrawField ( vector vecOrigin, vector vecSize, string strText, font_s f
 {
 	drawfont = (float)fnt.iID;
 	drawtextfield( vecOrigin, vecSize, (float)iAlignFlags, strText );
+}
+
+string Font_RGBtoHex(vector vecColor)
+{
+	static string numtohex(float x) {
+		x = rint(x * 15);
+		if (x <= 9)
+			return ftos(x);
+		else {
+			x -= 10;
+			return sprintf("%c", 'A' + x);
+		}
+		
+	}
+
+	return sprintf("^x%s%s%s", numtohex(vecColor[0]), numtohex(vecColor[1]), numtohex(vecColor[2]));
 }

@@ -39,6 +39,11 @@ void Client_Init(float apilevel, string enginename, float engineversion)
 	pSeat.iOverview = FALSE;
 }
 
+void Client_InitDone(void)
+{
+	VGUI_ChooseTeam();
+}
+
 void Game_RendererRestarted(string rstr)
 {
 	Overview_Init();

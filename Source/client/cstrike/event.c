@@ -119,7 +119,7 @@ float Game_ConsoleCommand(void)
 		}
 		break;
 	case "chooseteam":
-		//pSeat->fVGUI_Display = VGUI_TEAMSELECT;
+		VGUI_ChooseTeam();
 		break;
 	case "nightvision":
 		Nightvision_Toggle();

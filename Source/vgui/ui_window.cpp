@@ -69,8 +69,6 @@ void CUIWindow :: CUIWindow ( void )
 	m_vecMaxSize = '640 480'; // TODO: Make this the screen res
 
 	m_strTitle = "Window";
-	
-	SetIcon( "textures/gfx/icon" );
 
 	m_btnClose = spawn( CUIButton );
 	m_btnClose.SetTitle( __NULL__ );
@@ -158,19 +156,36 @@ void CUIWindow :: Show ( void )
 
 void CUIWindow :: Draw ( void )
 {
+
+#ifdef CLASSIC_VGUI
+	drawfill( m_vecOrigin, m_vecSize, [0,0,0], 0.5);
+	drawfill( m_vecOrigin, [m_vecSize[0], 1], m_vecColor, 1.0f );
+	drawfill( m_vecOrigin + [ 0, m_vecSize[1] - 1], [m_vecSize[0], 1], m_vecColor, 1.0f );
+	drawfill( m_vecOrigin + [ 0, 1], [1, m_vecSize[1] - 2], m_vecColor, 1.0f );
+	drawfill( m_vecOrigin + [ m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], m_vecColor, 1.0f );
+
+	if ( m_iFlags & WINDOW_CANRESIZE ) {
+		drawpic( m_vecOrigin + m_vecSize - '16 16', "textures/ui/steam/icon_resizer", '16 16', m_vecColor, 1.0f );
+	}
+#else
 	drawfill( m_vecOrigin, m_vecSize, m_vecColor, m_flAlpha );
 	drawfill( m_vecOrigin, [m_vecSize[0], 1], '1 1 1', 0.5f );
 	drawfill( m_vecOrigin + [ 0, m_vecSize[1] - 1], [m_vecSize[0], 1], '0 0 0', 0.5f );
 	drawfill( m_vecOrigin + [ 0, 1], [1, m_vecSize[1] - 2], '1 1 1', 0.5f );
 	drawfill( m_vecOrigin + [ m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], '0 0 0', 0.5f );
 
-	if ( m_strTitle ) {
-		Font_DrawText( m_vecOrigin + [ 26, 8 ], m_strTitle, g_fntDefault );
-		drawpic( m_vecOrigin + [ 4, 4 ], m_strIcon, '16 16', '1 1 1', 1.0f );
-	}
-
 	if ( m_iFlags & WINDOW_CANRESIZE ) {
 		drawpic( m_vecOrigin + m_vecSize - '16 16', "textures/ui/steam/icon_resizer", '16 16', '1 1 1', 1.0f );
+	}
+#endif
+
+	if ( m_strTitle ) {
+		if ( m_strIcon ) {
+			Font_DrawText( m_vecOrigin + [ 26, 8 ], m_strTitle, g_fntDefault );
+			drawpic( m_vecOrigin + [ 4, 4 ], m_strIcon, '16 16', '1 1 1', 1.0f );
+		} else {
+			Font_DrawText( m_vecOrigin + [ 8, 8 ], m_strTitle, g_fntDefault );
+		}
 	}
 	
 #ifdef UI_DEVELOPER

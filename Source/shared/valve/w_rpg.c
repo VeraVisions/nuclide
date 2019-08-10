@@ -25,6 +25,9 @@ void w_rpg_precache(void)
 	precache_model("models/v_rpg.mdl");
 	precache_model("models/w_rpg.mdl");
 	precache_model("models/p_rpg.mdl");
+	precache_model("models/rpgrocket.mdl");
+	precache_model("sprites/laserdot.spr");
+	precache_sound("weapons/rocketfire1.wav");
 }
 string w_rpg_vmodel(void)
 {
@@ -59,7 +62,53 @@ void w_rpg_holster(void)
 }
 void w_rpg_primary(void)
 {
-	
+	player pl = (player)self;
+	if (pl.w_attack_next > 0.0) {
+		return;
+	}
+
+#ifdef CSQC
+	Weapons_ViewAnimation(RPG_FIRE2);
+#else
+	static void Rocket_Touch(void) {
+		Effect_CreateExplosion(self.origin);
+		Damage_Radius(self.origin, self.owner, 150, 150 * 2.5f, TRUE);
+		sound(self, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 2 ) + 3 ), 1, ATTN_NORM);
+		remove(self);
+	}
+	static void Rocket_BuildSpeed(void){
+		/* Calculate new direction */
+		makevectors(self.owner.v_angle);
+		traceline(self.owner.origin, self.owner.origin + v_forward * 8096, FALSE, self.owner);
+		self.angles = vectoangles(trace_endpos - self.origin);
+
+		/* Increase speed towards it */
+		makevectors(self.angles);
+		self.velocity += (v_forward * 2000) * frametime;
+		self.nextthink = time;
+	}
+
+	Weapons_MakeVectors();
+	entity rocket = spawn();
+	setmodel(rocket, "models/rpgrocket.mdl");
+	setorigin(rocket, Weapons_GetCameraPos() + (v_forward * 16));
+	rocket.owner = self;
+	rocket.movetype = MOVETYPE_FLY;
+	rocket.solid = SOLID_BBOX;
+	//bolt.flags |= FL_LAGGEDMOVE;
+	rocket.gravity = 0.5f;
+	rocket.velocity = (v_forward * 250);
+	rocket.angles = vectoangles(rocket.velocity);
+	rocket.avelocity[2] = 10;
+	rocket.touch = Rocket_Touch;
+	rocket.think = Rocket_BuildSpeed;
+	rocket.nextthink = time + 0.15f;
+	setsize(rocket, [0,0,0], [0,0,0]);
+	sound(self, CHAN_WEAPON, "weapons/rocketfire1.wav", 1, ATTN_NORM);
+#endif
+
+	pl.w_attack_next = 1.0f;
+	pl.w_idle_next = 2.5f;
 }
 void w_rpg_secondary(void)
 {
@@ -94,13 +143,28 @@ void w_rpg_hudpic(int s, vector pos)
 
 void w_rpg_laser(void)
 {
+#ifdef CSQC
 	player pl = (player)self;
 
 	Weapons_MakeVectors();
 	vector src = pl.origin + pl.view_ofs;
 	traceline(src, src + (v_forward * 8192), FALSE, pl);
-#ifdef CSQC
-	// Draw laser at laserpos
+
+	/*makevectors(vectoangles(trace_endpos - pl.origin));
+	vector forg = trace_endpos + (v_forward * -16);
+	vector fsize = [64, 64];
+	
+	makevectors(view_angles);
+	R_BeginPolygon("sprites/640hud7.spr_0.tga", 1, 0);
+	R_PolygonVertex(forg + v_right * fsize[0] - v_up * fsize[1], [1,1], [1,1,1], 1.0f);
+	R_PolygonVertex(forg - v_right * fsize[0] - v_up * fsize[1], [0,1], [1,1,1], 1.0f);
+	R_PolygonVertex(forg - v_right * fsize[0] + v_up * fsize[1], [0,0], [1,1,1], 1.0f);
+	R_PolygonVertex(forg + v_right * fsize[0] + v_up * fsize[1], [1,0], [1,1,1], 1.0f);
+	R_EndPolygon();*/
+	static vector cross_pos;
+	vector lasersize = [8,8] * (1-trace_fraction);
+	cross_pos = (video_res / 2) - (lasersize/2);
+	drawpic(cross_pos, "sprites/laserdot.spr_0.tga", lasersize, [1,1,1], 1.0f, DRAWFLAG_ADDITIVE);
 #endif
 }
 

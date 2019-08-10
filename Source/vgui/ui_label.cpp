@@ -30,7 +30,11 @@ void CUILabel :: SetSize ( vector vecSize )
 }
 void CUILabel :: SetTitle ( string strName )
 {
+#ifndef CLASSIC_VGUI
 	m_strTitle = strName;
+#else
+	m_strTitle = sprintf("%s%s", Font_RGBtoHex(UI_MAINCOLOR), strName);
+#endif
 	SetSize( [ stringwidth( m_strTitle, TRUE, [ g_fntDefault.iScale, g_fntDefault.iScale ] ), 16 ] );
 }
 void CUILabel :: Draw ( void )

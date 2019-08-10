@@ -7,13 +7,14 @@
 ****/
 
 font_s g_fntDefault;
+var int g_vguiWidgetCount;
 
-#if 0
+#ifdef CLASSIC_VGUI
+	#define UI_MAINCOLOR '255 200 0' / 255
+	#define UI_MAINALPHA 255
+#else
 	var vector UI_MAINCOLOR;
 	var float UI_MAINALPHA;
-#else
-	#define UI_MAINCOLOR '76 88 68' / 255
-	#define UI_MAINALPHA 255
 #endif
 
 int Util_MouseAbove(vector vecMousePos, vector vecPos, vector vecSize)
@@ -43,7 +44,6 @@ class CUIWidget
 	virtual void( ) Draw;
 	virtual void( float, float, float, float ) Input;
 };
-
 
 void CUIWidget :: SetPos ( vector vecPos )
 {
@@ -97,9 +97,12 @@ void CUIWidget :: Draw ( void )
 void CUIWidget :: Input ( float flEVType, float flKey, float flChar, float flDevID )
 {
 	CUIWidget wNext = this;
+
+	g_vguiWidgetCount = 0;
 	do {
 		wNext = wNext.m_next;
 		if ( wNext && wNext.m_iFlags & 1 && wNext.m_parent.m_iFlags & 1 ) {
+			g_vguiWidgetCount++;
 			wNext.Input( flEVType, flKey, flChar, flDevID );
 		}
 	} while ( wNext );
@@ -107,7 +110,8 @@ void CUIWidget :: Input ( float flEVType, float flKey, float flChar, float flDev
 
 void UISystem_Init ( void )
 {
-	/*string strTemp;
+#ifndef CLASSIC_VGUI
+	string strTemp;
 	string strUIFile = "scripts/ui_style.txt";
 	filestream fileUI = fopen( strUIFile, FILE_READ );
 	
@@ -130,8 +134,8 @@ void UISystem_Init ( void )
 		fclose( fileUI );
 	} else {
 		error( sprintf( "[MENU] Cannot load UI file %s!", strUIFile ) );
-	}*/
-
+	}
+#endif
 	Font_Load( "scripts/ui_font.txt", g_fntDefault );
 	precache_pic( "textures/ui/steam/icon_radiosel" );
 	precache_pic( "textures/ui/steam/icon_radiounsel" );

@@ -6,10 +6,11 @@
 *
 ****/
 
-CUIWidget g_uiDesktop; 
+CUIWidget g_uiDesktop;
 
 void VGUI_Init(void)
 {
+	UISystem_Init();
 	g_uiDesktop = spawn( CUIWidget );
 	g_uiDesktop.FlagAdd( 1 );
 }

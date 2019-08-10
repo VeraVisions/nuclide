@@ -57,11 +57,26 @@ void CUIScrollbar :: Draw ( void )
 {
 	vector vecSize = [ 20, m_iLength ];
 
-	drawfill( m_parent.m_vecOrigin + m_vecOrigin, vecSize, '0 0 0', 0.5f );
-	drawfill( m_parent.m_vecOrigin + m_vecOrigin, [vecSize[0], 1], '0 0 0', 0.5f );
-	drawfill( m_parent.m_vecOrigin + m_vecOrigin + [ 0, vecSize[1] - 1], [vecSize[0], 1], '1 1 1', 0.5f );
-	drawfill( m_parent.m_vecOrigin + m_vecOrigin + [ 0, 1], [1, vecSize[1] - 2], '0 0 0', 0.5f );
-	drawfill( m_parent.m_vecOrigin + m_vecOrigin + [ vecSize[0] - 1, 1], [1, vecSize[1] - 2], '1 1 1', 0.5f );
+#ifndef CLASSIC_VGUI
+	drawfill( m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, m_vecColor, m_flAlpha );
+
+	if ( m_iFlags & BUTTON_DOWN ) {
+		drawfill( m_parent.m_vecOrigin + m_vecOrigin + [ 0, vecSize[1] - 1], [vecSize[0], 1], '1 1 1', 0.5f );
+		drawfill( m_parent.m_vecOrigin + m_vecOrigin, [vecSize[0], 1], '0 0 0', 0.5f );
+		drawfill( m_parent.m_vecOrigin + m_vecOrigin + [ 0, 1], [1, vecSize[1] - 2], '0 0 0', 0.5f );
+		drawfill( m_parent.m_vecOrigin + m_vecOrigin + [ vecSize[0] - 1, 1], [1, vecSize[1] - 2], '1 1 1', 0.5f );
+	} else {
+		drawfill( m_parent.m_vecOrigin + m_vecOrigin + [ 0, vecSize[1] - 1], [vecSize[0], 1], '0 0 0', 0.5f );
+		drawfill( m_parent.m_vecOrigin + m_vecOrigin, [vecSize[0], 1], '1 1 1', 0.5f );
+		drawfill( m_parent.m_vecOrigin + m_vecOrigin + [ 0, 1], [1, vecSize[1] - 2], '1 1 1', 0.5f );
+		drawfill( m_parent.m_vecOrigin + m_vecOrigin + [ vecSize[0] - 1, 1], [1, vecSize[1] - 2], '0 0 0', 0.5f );
+	}
+#else
+	drawfill( m_parent.m_vecOrigin + m_vecOrigin + [ 0, vecSize[1] - 1], [vecSize[0], 1], m_vecColor, 1.0f );
+	drawfill( m_parent.m_vecOrigin + m_vecOrigin, [vecSize[0], 1], m_vecColor, 1.0f );
+	drawfill( m_parent.m_vecOrigin + m_vecOrigin + [ 0, 1], [1, vecSize[1] - 2], m_vecColor, 1.0f );
+	drawfill( m_parent.m_vecOrigin + m_vecOrigin + [ vecSize[0] - 1, 1], [1, vecSize[1] - 2], m_vecColor, 1.0f );
+#endif
 
 	vector vecUpPos = m_parent.m_vecOrigin + m_vecOrigin;
 	vector vecDownPos = m_parent.m_vecOrigin + m_vecOrigin + [ 0, m_iLength - 20 ];
@@ -84,6 +99,7 @@ void CUIScrollbar :: Draw ( void )
 	}
 
 	// Button UP
+#ifndef CLASSIC_VGUI
 	drawfill( vecUpPos, '20 20', m_vecColor, m_flAlpha );
 	if ( m_iFlags & SCROLLBAR_UP_DOWN ) {
 		drawfill( vecUpPos, [20, 1], '0 0 0', 0.5f );
@@ -97,8 +113,23 @@ void CUIScrollbar :: Draw ( void )
 		drawfill( vecUpPos + [ 19, 1], [1, 18], '0 0 0', 0.5f );
 	}
 	drawpic( vecUpPos + '2 2', "textures/ui/steam/icon_up", '16 16', '1 1 1', 1.0f );
-
+#else
+	if ( m_iFlags & SCROLLBAR_UP_DOWN ) {
+		drawfill( vecUpPos, '20 20', m_vecColor, 0.25f );
+		drawfill( vecUpPos, [20, 1], m_vecColor, 1.0f );
+		drawfill( vecUpPos + [ 0, 19], [20, 1], m_vecColor, 1.0f );
+		drawfill( vecUpPos + [ 0, 1], [1, 18], m_vecColor, 1.0f );
+		drawfill( vecUpPos + [ 19, 1], [1, 18], m_vecColor, 1.0f );
+	} else {
+		drawfill( vecUpPos, [20, 1], '1 1 1', 0.5f );
+		drawfill( vecUpPos + [ 0, 19], [20, 1], m_vecColor, 1.0f );
+		drawfill( vecUpPos + [ 0, 1], [1, 18], m_vecColor, 1.0f );
+		drawfill( vecUpPos + [ 19, 1], [1, 18], m_vecColor, 1.0f );
+	}
+	drawpic( vecUpPos + '2 2', "textures/ui/steam/icon_up", '16 16', m_vecColor, 1.0f );
+#endif
 	// Button DOWN
+#ifndef CLASSIC_VGUI
 	drawfill( vecDownPos, '20 20', m_vecColor, m_flAlpha );
 	if ( m_iFlags & SCROLLBAR_DN_DOWN ) {
 		drawfill( vecDownPos, [20, 1], '0 0 0', 0.5f );
@@ -112,6 +143,21 @@ void CUIScrollbar :: Draw ( void )
 		drawfill( vecDownPos + [ 19, 1], [1, 18], '0 0 0', 0.5f );
 	}
 	drawpic( vecDownPos + '2 2', "textures/ui/steam/icon_down", '16 16', '1 1 1', 1.0f );
+#else
+	if ( m_iFlags & SCROLLBAR_DN_DOWN ) {
+		drawfill( vecDownPos, '20 20', m_vecColor, 0.25f );
+		drawfill( vecDownPos, [20, 1], m_vecColor, 1.0f );
+		drawfill( vecDownPos + [ 0, 19], [20, 1], m_vecColor, 1.0f );
+		drawfill( vecDownPos + [ 0, 1], [1, 18], m_vecColor, 1.0f );
+		drawfill( vecDownPos + [ 19, 1], [1, 18], m_vecColor, 1.0f );
+	} else {
+		drawfill( vecDownPos, [20, 1], m_vecColor, 1.0f );
+		drawfill( vecDownPos+ [ 0, 19], [20, 1], m_vecColor, 1.0f );
+		drawfill( vecDownPos + [ 0, 1], [1, 18], m_vecColor, 1.0f );
+		drawfill( vecDownPos + [ 19, 1], [1, 18], m_vecColor, 1.0f );
+	}
+	drawpic( vecDownPos + '2 2', "textures/ui/steam/icon_down", '16 16', m_vecColor, 1.0f );
+#endif
 }
 
 void CUIScrollbar :: Input ( float flEVType, float flKey, float flChar, float flDevID )

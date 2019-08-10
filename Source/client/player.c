@@ -51,7 +51,21 @@ string sPModels[CS_WEAPON_COUNT - 1] = {
 void player::gun_offset(void)
 {
 	vector v1, v2;
-
+#ifdef VALVE
+	if (playertype == PLAYERTYPE_Q2) {
+		p_model.scale = 1.4;
+		if (flags & FL_CROUCHING) {
+			setorigin(p_model, origin + [0,0, 16]);
+		} else {
+			setorigin(p_model, origin + [0,0, -2]);
+		}
+		p_model.angles = this.angles;
+		p_model.frame = frame;
+		p_model.frame2 = frame2;
+		p_model.lerpfrac = lerpfrac;
+		return;
+	}
+#endif
 	/* Set it to something consistent */
 	this.p_model.angles = this.angles;
 
@@ -89,30 +103,33 @@ void player::draw(void)
 	this.subblendfrac =
 	this.subblend2frac = this.pitch / 90;
 
-	/* Only bother updating the model if the weapon has changed */
-	if (this.lastweapon != this.activeweapon) {
-		if (this.activeweapon) {
-		#ifdef CSTRIKE
-			setmodel(this.p_model, sPModels[this.activeweapon - 1]);
-		#else
-			setmodel(this. p_model, Weapons_GetPlayermodel(this.activeweapon));
-		#endif
-		} else {
-			setmodel(this.p_model, "");
-		}
-		this.lastweapon = this.activeweapon;
-	    	
-		/* Update the bone index of the current p_ model so we can calculate the offset
-		 * and get the weapon bone ID for the current player model */
-		this.p_hand_bone = gettagindex(this, "Bip01 R Hand");
-		this.p_model_bone = gettagindex(this.p_model, "Bip01 R Hand");
-	}
-
 #warning "FIXME: Clean this mess up"
 #ifdef VALVE
-	if (playertype == 0) {
+	if (playertype == PLAYERTYPE_HL) {
+		/* Only bother updating the model if the weapon has changed */
+		if (this.lastweapon != this.activeweapon) {
+			if (this.activeweapon) {
+			#ifdef CSTRIKE
+				setmodel(this.p_model, sPModels[this.activeweapon - 1]);
+			#else
+				setmodel(this. p_model, Weapons_GetPlayermodel(this.activeweapon));
+			#endif
+			} else {
+				setmodel(this.p_model, "");
+			}
+			this.lastweapon = this.activeweapon;
+	    	
+			/* Update the bone index of the current p_ model so we can calculate the offset
+			 * and get the weapon bone ID for the current player model */
+			this.p_hand_bone = gettagindex(this, "Bip01 R Hand");
+			this.p_model_bone = gettagindex(this.p_model, "Bip01 R Hand");
+		}
 		Animation_PlayerUpdate();
 	} else {
+		if (!this.p_model.modelindex) {
+			tokenizebyseparator(getplayerkeyvalue(entnum-1, "model"), "/");
+			setmodel(this.p_model, sprintf("players/%s/weapon.md2", argv(0)));
+		}
 		Animation_Q2PlayerUpdate();
 		return;
 	}
@@ -175,6 +192,8 @@ void player::draw(void)
 	this.angles[1] -= a;
 }
 
+var float autocvar_standheight = 0;
+var float autocvar_crouchheight = 0;
 float player::predraw(void)
 {
 	/* Handle the flashlights... */
@@ -205,20 +224,42 @@ float player::predraw(void)
 	draw();
 	gun_offset();
 
+#ifdef VALVE
+	/* Size of appearance and bounding box is different from game to game */
+	if (playertype == PLAYERTYPE_Q2) {
+		scale = 1.4;
+		if (flags & FL_CROUCHING) {
+			setorigin(this, this.origin + [0,0, 16]);
+		} else {
+			setorigin(this, this.origin + [0,0, -2]);
+		}
+	}
+#endif
+
 	if (autocvar_cl_thirdperson == TRUE || this.entnum != player_localentnum) {
 		Voice_Draw3D(this);
-		
-		if (playertype == 0) {
-			addentity(this);
-			addentity(this.p_model);
-		} else {
-			addentity(this);
-		}
+		addentity(this);
+		addentity(this.p_model);
 	} else {
 		removeentity(this);
 		removeentity(this.p_model);
 	}
 	return PREDRAW_NEXT;
+}
+
+float player::postdraw(void)
+{
+#ifdef VALVE
+	/* Correct offsets */
+	if (playertype == PLAYERTYPE_Q2) {
+		if (flags & FL_CROUCHING) {
+			setorigin(this, this.origin - [0,0, 16]);
+		} else {
+			setorigin(this, this.origin - [0,0, -2]);
+		}
+		scale = 1.0;
+	}
+#endif
 }
 
 void player::set_model(void)

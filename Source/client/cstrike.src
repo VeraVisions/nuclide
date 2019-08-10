@@ -78,6 +78,7 @@ cstrike/hud.c
 
 vgui.cpp
 cstrike/vgui_buymenu.cpp
+cstrike/vgui_chooseteam.cpp
 cstrike/vgui_motd.cpp
 
 cstrike/draw.c

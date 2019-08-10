@@ -286,3 +286,7 @@ void View_PlayAnimation(int iSequence)
 	pSeat->eViewModel.frame = (float)iSequence;
 	pSeat->eViewModel.frame1time = 0.0f;
 }
+int View_GetAnimation(void)
+{
+	return pSeat->eViewModel.frame;
+}

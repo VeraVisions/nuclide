@@ -57,6 +57,10 @@ void Client_Init(float apilevel, string enginename, float engineversion)
 	deltalisten("models/scientist.mdl", Scientist_Update, 0);
 }
 
+void Client_InitDone(void)
+{
+}
+
 void Game_RendererRestarted(string rstr)
 {
 	

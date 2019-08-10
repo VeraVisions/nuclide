@@ -21,6 +21,7 @@ void w_hornetgun_precache(void)
 	precache_model("models/v_hgun.mdl");
 	precache_model("models/w_hgun.mdl");
 	precache_model("models/p_hgun.mdl");
+	precache_model("models/hornet.mdl");
 	
 	precache_sound("agrunt/ag_fire1.wav");
 	precache_sound("agrunt/ag_fire2.wav");

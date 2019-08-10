@@ -23,6 +23,10 @@ void Client_Init(float apilevel, string enginename, float engineversion)
 	precache_model("sprites/640hud6.spr");
 }
 
+void Client_InitDone(void)
+{
+}
+
 void Game_RendererRestarted(string rstr)
 {
 	
