@@ -18,7 +18,7 @@ float Scientist_PreDraw(void)
 		self.initedsci = TRUE;
 	}
 	
-	//self.bonecontrol5 = getchannellevel(self, CHAN_VOICE);
+	self.bonecontrol5 = getchannellevel(self, CHAN_VOICE) * 20;
 
 	/* HACK: We're abusing this networked field, so reset */
 	self.colormod = [0,0,0];
