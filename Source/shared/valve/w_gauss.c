@@ -24,6 +24,11 @@ void w_gauss_precache(void)
 	precache_model("models/v_gauss.mdl");
 	precache_model("models/w_gauss.mdl");
 	precache_model("models/p_gauss.mdl");
+	precache_sound("weapons/gauss2.wav");
+	precache_sound("weapons/electro4.wav");
+	precache_sound("weapons/electro5.wav");
+	precache_sound("weapons/electro6.wav");
+	precache_sound("ambience/pulsemachine.wav");
 }
 string w_gauss_vmodel(void)
 {
@@ -56,6 +61,57 @@ void w_gauss_holster(void)
 {
 	Weapons_ViewAnimation(GAUSS_HOLSTER);
 }
+
+void w_gauss_fire(int one)
+{
+	player pl = (player)self;
+	int iLoop = 10;
+	int iDamage;
+
+	Weapons_MakeVectors();
+	vector src = Weapons_GetCameraPos();
+	vector endpos = src + v_forward * 1024;
+	traceline(src, endpos, FALSE, pl);
+#ifdef SSQC
+	sound(pl, CHAN_WEAPON, "weapons/gauss2.wav", 1, ATTN_NORM);
+	iDamage = one ? 20 : 200;
+
+	if (trace_ent.takedamage == DAMAGE_YES) {
+		Damage_Apply(trace_ent, self, iDamage, trace_endpos, FALSE);
+		sound(trace_ent, CHAN_ITEM, sprintf("weapons/electro%d.wav", random(0,3)+4), 1, ATTN_NORM);
+	}
+#else
+	te_beam(world, src, trace_endpos);
+#endif
+	if (one) {
+		return;
+	}
+
+	// reflection equation:
+	vector dir = v_forward;
+	while (iLoop > 0) {
+		float n;
+		vector r;
+		n = -dotproduct(trace_plane_normal, dir);
+		r = 2 * trace_plane_normal * n + dir;
+		dir = r;
+		src = trace_endpos + (dir * 1);
+		endpos = trace_endpos + (dir * 8192);
+		traceline(src, endpos, FALSE, pl);
+		te_beam(world, src, trace_endpos);
+		iLoop--;
+#ifdef SSQC
+		if (trace_ent.takedamage == DAMAGE_YES) {
+			Damage_Apply(trace_ent, self, iDamage, trace_endpos, FALSE);
+			sound(trace_ent, CHAN_ITEM, sprintf("weapons/electro%d.wav", random(0,3)+4), 1, ATTN_NORM);
+		}
+#else
+		te_beam(world, src, trace_endpos);
+#endif
+	}
+
+}
+
 void w_gauss_primary(void)
 {
 	player pl = (player)self;
@@ -63,15 +119,40 @@ void w_gauss_primary(void)
 		return;
 	}
 
+#ifdef CSQC
 	Weapons_ViewAnimation(GAUSS_FIRE2);
-	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/gauss2.wav", 1, ATTN_NORM);
+#endif
+	w_gauss_fire(1);
 
 	pl.w_attack_next = 0.2f;
 	pl.w_idle_next = 2.5f;
 }
 void w_gauss_secondary(void)
 {
-	
+	player pl = (player)self;
+
+#ifdef CSQC
+	if (pl.a_ammo3)
+		soundupdate(pl, CHAN_WEAPON, "", 2, ATTN_NORM, 150, 0, 0);
+#endif
+	if (pl.w_attack_next) {
+		return;
+	}
+
+	if (pl.a_ammo3 == 1) {
+#ifdef CSQC
+		Weapons_ViewAnimation(GAUSS_SPIN);
+#endif
+		pl.a_ammo3 = 2;
+		pl.w_idle_next = 0.0f;
+	} else if (!pl.a_ammo3) {
+#ifdef CSQC	
+		Weapons_ViewAnimation(GAUSS_SPINUP);
+		sound(pl, CHAN_WEAPON, "ambience/pulsemachine.wav", 2, ATTN_NORM);
+#endif
+		pl.a_ammo3 = 1;
+	}
+	pl.w_attack_next = 1.0f;
 }
 void w_gauss_reload(void)
 {
@@ -84,8 +165,25 @@ void w_gauss_release(void)
 		return;
 	}
 	
+	if (pl.a_ammo3 == 1) {
+		pl.w_attack_next = 0.0f;
+		pl.w_idle_next = 4.0f;
+		w_gauss_primary();
+		pl.a_ammo3 = 0;
+		return;
+	} else if (pl.a_ammo3 == 2) {
+		w_gauss_fire(0);
+#ifdef CSQC
+		Weapons_ViewAnimation(GAUSS_FIRE1);
+		soundupdate(pl, CHAN_WEAPON, "", -1, ATTN_NORM, 0, 0, 0);
+#endif
+		pl.w_attack_next = 1.5f;
+		pl.w_idle_next = 4.0f;
+		pl.a_ammo3 = 0;
+		return;
+	}
+
 	int r = floor(random(0,3));
-	
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(GAUSS_IDLE1);

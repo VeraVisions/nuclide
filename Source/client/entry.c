@@ -439,6 +439,14 @@ void CSQC_Parse_Event(void)
 	float fHeader = readbyte();
 	
 	switch (fHeader) {
+		case EV_SPEAK:
+			string msg;
+			float pit;
+			entity t = findfloat( world, entnum, readentitynum() );
+			msg = readstring();
+			pit = readfloat();
+			sound(t, CHAN_VOICE, msg, 1.0, ATTN_NORM, pit);
+			break;
 		case EV_TAUNT:
 #ifdef VALVE
 			Animation_Q2PlayerTaunt();

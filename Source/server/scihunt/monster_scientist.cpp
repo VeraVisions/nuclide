@@ -296,7 +296,19 @@ class monster_scientist:CBaseEntity
 	virtual void() Scream;
 	virtual void() Gib;
 	virtual void() WarnOthers;
+	virtual void(string) Speak;
 };
+
+void monster_scientist::Speak(string msg)
+{
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_SPEAK);
+	WriteEntity(MSG_MULTICAST, this);
+	WriteString(MSG_MULTICAST, msg);
+	WriteFloat(MSG_MULTICAST, m_flPitch);
+	msg_entity = this;
+	multicast(origin, MULTICAST_PVS);
+}
 
 void monster_scientist::Gib(void)
 {
@@ -324,7 +336,7 @@ void monster_scientist::Scream(void)
 	}
 
 	int rand = floor(random(0,sci_sndscream.length));
-	sound(this, CHAN_VOICE, sci_sndscream[rand], 1.0, ATTN_NORM, m_flPitch);
+	Speak(sci_sndscream[rand]);
 	m_flScreamTime = time + 5.0f;
 }
 
@@ -347,7 +359,7 @@ void monster_scientist::Physics(void)
 
 				if (random() < 0.5) {
 					int rand = floor(random(0,sci_sndsee.length));
-					sound(this, CHAN_VOICE, sci_sndsee[rand], 1.0, ATTN_NORM, m_flPitch);
+					Speak(sci_sndsee[rand]);
 				}
 
 				m_iFlags |= SCIF_SEEN;
@@ -448,7 +460,7 @@ void monster_scientist::Physics(void)
 
 	if (!(flags & FL_ONGROUND) && velocity[2] < -100) {
 		if (!(m_iFlags & SCIF_FALLING)) {
-			sound(this, CHAN_VOICE, sci_sndscream[0], 1.0, ATTN_NORM, m_flPitch);
+			Speak(sci_sndscream[0]);
 		}
 		m_iFlags |= SCIF_FALLING;
 	} else {
@@ -478,14 +490,14 @@ void monster_scientist::PlayerUse(void)
 		}
 
 		r = floor(random(0,sci_snduse.length));
-		sound(this, CHAN_VOICE, sci_snduse[r], 1.0, ATTN_NORM, m_flPitch);
+		Speak(sci_snduse[r]);
 
 		m_eUser = eActivator;
 		m_eRescuer = m_eUser;
 		m_vecLastUserPos = m_eUser.origin;
 	} else {
 		r = floor(random(0,sci_snduseno.length));
-		sound(this, CHAN_VOICE, sci_snduseno[r], 1.0, ATTN_NORM, m_flPitch);
+		Speak(sci_snduseno[r]);
 
 		m_eUser = world;
 	}
@@ -505,7 +517,7 @@ void monster_scientist::vPain(int iHitBody)
 	}
 
 	int rand = floor(random(0,sci_sndpain.length));
-	sound(this, CHAN_VOICE, sci_sndpain[rand], 1.0, ATTN_NORM, m_flPitch);
+	Speak(sci_sndpain[rand]);
 
 	frame = SCIA_FLINCH + floor(random(0, 5));
 	m_iFlags |= SCIF_FEAR;
@@ -517,7 +529,7 @@ void monster_scientist::vDeath(int iHitBody)
 {
 	int r;
 	r = floor(random(0,sci_snddie.length));
-	sound(this, CHAN_VOICE, sci_snddie[r], 1.0, ATTN_NORM, m_flPitch);
+	Speak(sci_snddie[r]);
 
 	WarnOthers();
 
