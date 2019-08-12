@@ -574,5 +574,6 @@ void Strings_Init(void)
 				m_reslbl[stof(argv(0))] = argv(1);
 			}
 		}
+		fclose(stringslst);
 	}
 }

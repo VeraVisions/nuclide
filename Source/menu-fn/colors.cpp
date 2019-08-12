@@ -118,5 +118,6 @@ void Colors_Init(void)
 				break;
 			}
 		}
+		fclose(fs_colors);
 	}
 }
