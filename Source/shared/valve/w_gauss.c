@@ -62,6 +62,60 @@ void w_gauss_holster(void)
 	Weapons_ViewAnimation(GAUSS_HOLSTER);
 }
 
+#ifdef CSQC
+void w_gauss_placeorbs(vector org)
+{	
+	static float glow_think(void) {
+		if (self.alpha <= 0.0f) {
+			remove(self);
+		}
+		self.alpha -= (clframetime * 0.25);
+		addentity(self);
+		return PREDRAW_NEXT;
+	}
+	entity glow = spawn();
+	glow.drawmask = MASK_ENGINE;
+	setmodel(glow, "sprites/yelflare1.spr");
+	setsize(glow, [0,0,0], [0,0,0]);
+	setorigin(glow, org);
+	glow.predraw = glow_think;
+	glow.effects = EF_ADDITIVE;
+	glow.alpha = 1.0f;
+	glow.scale = 0.25f;
+	glow.colormod = [255, 255, 0] / 255;
+	glow.movetype = MOVETYPE_BOUNCE;
+	glow.velocity[0] = random() - 0.5;
+	glow.velocity[1] = random() - 0.5;
+	glow.velocity[2] = random() * 8;
+	glow.velocity *= 64;
+}
+void w_gauss_placeimpact(vector org)
+{	
+	static float glow_think(void) {
+		if (self.alpha <= 0.0f) {
+			remove(self);
+			return;
+		}
+		self.alpha -= (clframetime * 0.5);
+		dynamiclight_add(self.origin, 256 * self.alpha, self.colormod);
+		addentity(self);
+		return PREDRAW_NEXT;
+	}
+	entity glow = spawn();
+	glow.drawmask = MASK_ENGINE;
+	setmodel(glow, "sprites/yelflare1.spr");
+	setorigin(glow, org);
+	glow.predraw = glow_think;
+	glow.effects = EF_ADDITIVE;
+	glow.alpha = 1.0f;
+	glow.colormod = [255, 200, 0] / 255;
+	
+	for (int i = 0; i < 3; i++) {
+		w_gauss_placeorbs(org);
+	}
+}
+#endif
+
 void w_gauss_fire(int one)
 {
 	player pl = (player)self;
@@ -76,15 +130,32 @@ void w_gauss_fire(int one)
 	sound(pl, CHAN_WEAPON, "weapons/gauss2.wav", 1, ATTN_NORM);
 	iDamage = one ? 20 : 200;
 
+	if (getsurfacetexture(trace_ent, getsurfacenearpoint(trace_ent, trace_endpos)) == "sky") {
+		return;
+	}
+
 	if (trace_ent.takedamage == DAMAGE_YES) {
 		Damage_Apply(trace_ent, self, iDamage, trace_endpos, FALSE);
 		sound(trace_ent, CHAN_ITEM, sprintf("weapons/electro%d.wav", random(0,3)+4), 1, ATTN_NORM);
 	}
 #else
-	te_beam(world, src, trace_endpos);
+	te_beam(world, gettaginfo(pSeat->eViewModel, 33), trace_endpos);
+
+	if (getsurfacetexture(trace_ent, getsurfacenearpoint(trace_ent, trace_endpos)) != "sky") {
+		w_gauss_placeimpact(trace_endpos);
+	} else {
+		return;
+	}
 #endif
 	if (one) {
 		return;
+	} else {
+		/* Apply force */
+		if (pl.flags & FL_ONGROUND) {
+			pl.velocity += v_forward * -400;
+		} else {	
+			pl.velocity += v_forward * -800;
+		}
 	}
 
 	// reflection equation:
@@ -105,8 +176,19 @@ void w_gauss_fire(int one)
 			Damage_Apply(trace_ent, self, iDamage, trace_endpos, FALSE);
 			sound(trace_ent, CHAN_ITEM, sprintf("weapons/electro%d.wav", random(0,3)+4), 1, ATTN_NORM);
 		}
+		
+		if (getsurfacetexture(trace_ent, getsurfacenearpoint(trace_ent, trace_endpos)) != "sky") {
+			Decals_PlaceGauss(trace_endpos);
+		} else {
+			break;
+		}
 #else
-		te_beam(world, src, trace_endpos);
+		if (getsurfacetexture(trace_ent, getsurfacenearpoint(trace_ent, trace_endpos)) != "sky") {
+			te_beam(world, src, trace_endpos);
+			w_gauss_placeimpact(trace_endpos);
+		} else {
+			break;
+		}
 #endif
 	}
 
@@ -132,11 +214,21 @@ void w_gauss_secondary(void)
 	player pl = (player)self;
 
 #ifdef CSQC
+	print(sprintf("%i\n", pl.a_ammo2));
+
 	if (pl.a_ammo3)
-		soundupdate(pl, CHAN_WEAPON, "", 2, ATTN_NORM, 150, 0, 0);
+		soundupdate(pl, CHAN_WEAPON, "", 2, ATTN_NORM, 100 + (200 * (pl.a_ammo2/255)), 0, 0);
 #endif
+	
 	if (pl.w_attack_next) {
 		return;
+	}
+	pl.w_attack_next = 0.1f;
+
+	/* Set pitch sound shift */
+	pl.a_ammo2 += 16;
+	if (pl.a_ammo2 > 255) {
+		pl.a_ammo2 = 255;
 	}
 
 	if (pl.a_ammo3 == 1) {
@@ -152,7 +244,7 @@ void w_gauss_secondary(void)
 #endif
 		pl.a_ammo3 = 1;
 	}
-	pl.w_attack_next = 1.0f;
+	
 }
 void w_gauss_reload(void)
 {
@@ -165,6 +257,9 @@ void w_gauss_release(void)
 		return;
 	}
 	
+	/* Reset the pitch sound shift */
+	pl.a_ammo2 = 0;
+
 	if (pl.a_ammo3 == 1) {
 		pl.w_attack_next = 0.0f;
 		pl.w_idle_next = 4.0f;

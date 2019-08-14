@@ -13,6 +13,7 @@
 ../events.h
 ../entities.h
 valve/defs.h
+valve/particles.h
 defs.h
 
 ../vgui/include.src

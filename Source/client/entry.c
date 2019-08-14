@@ -95,7 +95,7 @@ void CSQC_Init(float apilevel, string enginename, float engineversion)
 	/* Game specific inits */
 	HUD_Init();
 
-	//Scores_Init();
+	Scores_Init();
 	Client_Init(apilevel, enginename, engineversion);
 	DSP_Init();
 }
@@ -103,7 +103,6 @@ void CSQC_Init(float apilevel, string enginename, float engineversion)
 void CSQC_UpdateView(float w, float h, float focus)
 {
 	player pl;
-	float needcursor;
 	int s;
 
 	if (w == 0 || h == 0) {
@@ -285,10 +284,10 @@ void CSQC_UpdateView(float w, float h, float focus)
 
 			// Don't even try to draw centerprints and VGUI menus when scores are shown
 			if (pSeat->iShowScores == TRUE) {
-				//Scores_Draw();
+				Scores_Draw();
 			} else {
+				VGUI_Draw();
 				CSQC_DrawCenterprint();
-				needcursor |= VGUI_Draw();
 			}
 		}
 

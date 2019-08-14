@@ -16,6 +16,8 @@ valve/defs.h
 ../shared/valve/animations.h
 defs.h
 
+plugins.c
+
 ../gs-entbase/server.src
 valve/monster_rat.cpp
 scihunt/monster_scientist.cpp

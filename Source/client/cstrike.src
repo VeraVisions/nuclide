@@ -80,6 +80,7 @@ vgui.cpp
 cstrike/vgui_buymenu.cpp
 cstrike/vgui_chooseteam.cpp
 cstrike/vgui_motd.cpp
+valve/scoreboard.c
 
 cstrike/draw.c
 cstrike/entities.c

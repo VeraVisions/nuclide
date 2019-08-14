@@ -54,6 +54,9 @@ void w_handgrenade_throw(void)
 	
 	static void WeaponFrag_Throw_Touch( void )
 	{
+		if (other.takedamage == DAMAGE_YES) {
+			Damage_Apply(other, self.owner, 15, self.origin, FALSE);
+		}
 		sound( self, CHAN_BODY, "weapons/grenade/land.wav", 1, ATTN_NORM );
 		self.frame = 0;
 	}
@@ -89,7 +92,7 @@ void w_handgrenade_throw(void)
 	setmodel( eGrenade, "models/w_grenade.mdl" );
 	eGrenade.frame = 1;
 	setorigin( eGrenade, vecSrc );
-	setsize( eGrenade, [-4,-4,-4], [4,4,4] );
+	setsize( eGrenade, [0,0,0], [0,0,0] );
 }
 #endif
 

@@ -114,6 +114,38 @@ void Decals_PlaceScorch(vector pos)
 #endif
 }
 
+void Decals_PlaceDent(vector pos)
+{
+	if (serverkeyfloat("*bspversion") != 30) {
+		return;
+	}
+#ifdef CSQC
+	// TODO
+#else
+	entity decal = Decals_Next(pos);
+	setorigin(decal, pos);
+	decal.texture = sprintf("{dent%d", floor(random(1,7)));
+	decal.think = infodecal;
+	decal.nextthink = time /*+ 0.1f*/;
+#endif
+}
+
+void Decals_PlaceGauss(vector pos)
+{
+	if (serverkeyfloat("*bspversion") != 30) {
+		return;
+	}
+#ifdef CSQC
+	// TODO
+#else
+	entity decal = Decals_Next(pos);
+	setorigin(decal, pos);
+	decal.texture = "{gaussshot1";
+	decal.think = infodecal;
+	decal.nextthink = time /*+ 0.1f*/;
+#endif
+}
+
 #ifdef CSQC
 
 const string g_decalshader = \

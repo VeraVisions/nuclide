@@ -11,5 +11,8 @@ enum {
 	ENT_AMBIENTSOUND,
 	ENT_SPRITE,
 	ENT_SPRAY,
+#ifdef VALVE
+	ENT_TRIPMINE,
+#endif
 	ENT_DECAL
 };

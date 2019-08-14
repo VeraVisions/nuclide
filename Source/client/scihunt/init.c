@@ -53,6 +53,8 @@ void Client_Init(float apilevel, string enginename, float engineversion)
 	precache_model("sprites/hammer.spr");
 	precache_model("sprites/w_cannon.spr");
 
+	BEAM_TRIPMINE = particleeffectnum("beam_tripmine");
+
 	/* FIXME: Replace with manual networking once I've got time? */
 	deltalisten("models/scientist.mdl", Scientist_Update, 0);
 }

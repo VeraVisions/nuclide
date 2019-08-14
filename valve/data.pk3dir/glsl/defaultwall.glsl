@@ -39,11 +39,6 @@ varying mat3 invsurface;
 		vec4 diffuse_f = texture2D(s_diffuse, tex_c);
 		vec3 light = texture2D(s_lightmap, lm_c).rgb;
 
-		if (diffuse_f.rgb == vec3(0,0,1)) {
-			diffuse_f.rgb = vec3(0,0,0);
-			discard;
-		}
-
 #ifdef REFLECTCUBE
 	#ifdef BUMP
 		#ifndef FLATTENNORM

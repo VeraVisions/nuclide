@@ -77,6 +77,7 @@ void w_tripmine_ready(void)
 	traceline(self.origin, self.origin + v_forward * 2048, FALSE, self);
 
 	if (!self.health) {
+		self.SendFlags = 1;
 		self.health = 1;
 		self.vDeath =
 		self.vPain = w_tripmine_trip;
@@ -91,6 +92,55 @@ void w_tripmine_ready(void)
 		w_tripmine_trip(0);
 	}
 	self.nextthink = time;
+}
+#endif
+
+#ifdef SSQC
+float w_tripmine_sendentity(entity pvsent, float flags)
+{
+	WriteByte(MSG_ENTITY, ENT_TRIPMINE);
+	WriteCoord(MSG_ENTITY, self.origin[0]);
+	WriteCoord(MSG_ENTITY, self.origin[1]);
+	WriteCoord(MSG_ENTITY, self.origin[2]);
+	WriteCoord(MSG_ENTITY, self.angles[0]);
+	WriteCoord(MSG_ENTITY, self.angles[1]);
+	WriteCoord(MSG_ENTITY, self.angles[2]);
+	WriteFloat(MSG_ENTITY, self.armor);
+	WriteByte(MSG_ENTITY, self.health);
+	WriteShort(MSG_ENTITY, self.modelindex);
+	return TRUE;
+}
+#else
+.float health;
+.float armor;
+float w_tripmine_predraw(void)
+{
+	if (self.health) {
+		makevectors(self.angles);
+		traceline(self.origin, self.origin + v_forward * 8196, FALSE, self);
+		trailparticles(BEAM_TRIPMINE, self, self.origin, trace_endpos);
+	}
+	addentity(self);
+	return PREDRAW_NEXT;
+}
+float w_tripmine_parse(void)
+{
+	self.origin[0] = readcoord();
+	self.origin[1] = readcoord();
+	self.origin[2] = readcoord();
+	self.angles[0] = readcoord();
+	self.angles[1] = readcoord();
+	self.angles[2] = readcoord();
+	self.armor = readfloat();
+	self.health = readbyte();
+	self.modelindex = readshort();
+	self.solid = SOLID_BBOX;
+	self.movetype = MOVETYPE_NONE;
+	self.predraw = w_tripmine_predraw;
+	self.drawmask = MASK_ENGINE;
+	self.frame = TRIPMINE_WORLD;
+	setcustomskin(self, "", "geomset 0 2\ngeomset 1 2\n");
+	setorigin(self, self.origin);
 }
 #endif
 
@@ -114,11 +164,12 @@ void w_tripmine_primary(void)
 	entity mine = spawn();
 	setmodel(mine, "models/v_tripmine.mdl");
 	setorigin(mine, trace_endpos);
-	mine.frame = TRIPMINE_WORLD;
    	mine.angles = vectoangles( trace_plane_normal );
-   	setorigin(mine, trace_endpos - (v_forward * 4));
+   	setorigin(mine, trace_endpos - (v_forward * 8));
 	mine.think = w_tripmine_ready;
 	mine.nextthink = time + 4.0f;
+	mine.SendEntity = w_tripmine_sendentity;
+	mine.SendFlags = 1;
 	//mine.owner = pl;
 	sound(mine, CHAN_WEAPON, "weapons/mine_charge.wav", 1, ATTN_NORM);
 	sound(self, CHAN_WEAPON, "weapons/mine_deploy.wav", 1, ATTN_NORM);

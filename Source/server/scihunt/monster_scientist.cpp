@@ -512,7 +512,7 @@ void monster_scientist::vPain(int iHitBody)
 		return;
 	}
 
-	if (random() < 0.75f) {
+	if (random() < 0.25f) {
 		return;
 	}
 
@@ -522,7 +522,7 @@ void monster_scientist::vPain(int iHitBody)
 	frame = SCIA_FLINCH + floor(random(0, 5));
 	m_iFlags |= SCIF_FEAR;
 
-	m_flPainTime = time + 1.0f;
+	m_flPainTime = time + 0.25f;
 }
 
 void monster_scientist::vDeath(int iHitBody)

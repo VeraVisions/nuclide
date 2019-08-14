@@ -31,6 +31,11 @@ void CSQC_Ent_Update(float new)
 	case ENT_DECAL:
 		Decal_Parse();
 		break;
+#ifdef VALVE
+	case ENT_TRIPMINE:
+		w_tripmine_parse();
+		break;
+#endif
 	default:
 		error("Unknown entity type update received.\n");
 	}

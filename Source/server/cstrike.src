@@ -16,6 +16,8 @@ cstrike/defs.h
 defs.h
 cstrike/defsfields.h
 
+plugins.c
+
 ../gs-entbase/server.src
 
 cstrike/money.c

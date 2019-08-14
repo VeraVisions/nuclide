@@ -70,12 +70,16 @@ void SetChangeParms(void)
 
 void SV_RunClientCommand(void)
 {
-	Game_RunClientCommand();
+	if (!Plugin_RunClientCommand()) {
+		Game_RunClientCommand();
+	}
 }
 
 void SV_ParseClientCommand(string cmd)
 {
-	Game_ParseClientCommand(cmd);
+	if (!Plugin_ParseClientCommand(cmd)) {
+		Game_ParseClientCommand(cmd);
+	}
 }
 
 void init(float prevprogs)
@@ -101,6 +105,7 @@ void init(float prevprogs)
 	}
 
 	PMove_Init();
+	Plugin_Init();
 }
 
 void initents(void)
