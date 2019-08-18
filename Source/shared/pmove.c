@@ -62,6 +62,15 @@ int PMove_Contents(vector org)
 	return trace_endcontentsi;
 }
 
+float PMove_Gravity(entity ent)
+{
+	if (ent.gravity) {
+		return serverkeyfloat("phy_gravity") * ent.gravity; 
+	} else {
+		return serverkeyfloat("phy_gravity");
+	}
+}
+
 /*
 =================
 PMove_Categorize
@@ -258,7 +267,7 @@ void PMove_Run_Acceleration(float flMovetime, float flBefore)
 
 	// Corpses
 	if (self.movetype == MOVETYPE_TOSS) {
-		self.velocity[2] = self.velocity[2] - (serverkeyfloat("phy_gravity") * flMovetime);
+		self.velocity[2] = self.velocity[2] - (PMove_Gravity(self) * flMovetime);
 		return;
 	}
 
@@ -463,7 +472,7 @@ void PMove_Run_Acceleration(float flMovetime, float flBefore)
 			}
 		} else {
 			/* apply gravity */
-			self.velocity[2] = self.velocity[2] - (serverkeyfloat("phy_gravity") * flMovetime);
+			self.velocity[2] = self.velocity[2] - (PMove_Gravity(self) * flMovetime);
 
 			if (flWishSpeed < 30) {
 				flFriction = flWishSpeed - (self.velocity * vecWishDir);

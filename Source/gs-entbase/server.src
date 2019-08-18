@@ -39,6 +39,7 @@
 ../gs-entbase/server/trigger_camera.cpp
 ../gs-entbase/server/trigger_hurt.cpp
 ../gs-entbase/server/trigger_changelevel.cpp
+../gs-entbase/server/trigger_gravity.cpp
 ../gs-entbase/server/trigger_once.cpp
 ../gs-entbase/server/trigger_multiple.cpp
 ../gs-entbase/server/trigger_push.cpp

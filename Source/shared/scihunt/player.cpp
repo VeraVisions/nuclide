@@ -56,6 +56,7 @@ class player
 	virtual void() gun_offset;
 	virtual void() draw;
 	virtual float() predraw;
+	virtual void() postdraw;
 #else
 	int ammo_9mm;
 	int ammo_357;

@@ -103,7 +103,7 @@ void player::draw(void)
 	this.subblendfrac =
 	this.subblend2frac = this.pitch / 90;
 
-#warning "FIXME: Clean this mess up"
+#warning "FIXME: This ifdef needs to go in the future"
 #ifdef VALVE
 	if (playertype == PLAYERTYPE_HL) {
 		/* Only bother updating the model if the weapon has changed */
@@ -136,6 +136,7 @@ void player::draw(void)
 #else
 	Animation_PlayerUpdate();
 #endif
+
 	/*makevectors([0, this.angles[1], 0]);
 	float fDirection = dotproduct(this.velocity, v_forward);
 	
@@ -247,7 +248,7 @@ float player::predraw(void)
 	return PREDRAW_NEXT;
 }
 
-float player::postdraw(void)
+void player::postdraw(void)
 {
 #ifdef VALVE
 	/* Correct offsets */
@@ -266,8 +267,8 @@ void player::set_model(void)
 {
 #ifdef VALVE
 	string modelout;
-	string skinpath;
-	string skinout;
+	string skinpath = "";
+	string skinout = "";
 	int i;
 
 	i = tokenizebyseparator(getplayerkeyvalue(entnum-1, "model"), "/");	
@@ -296,7 +297,8 @@ void player::set_model(void)
 			setcustomskin(this, skinpath, sprintf("replace \"\" \"%s\"", skinout));
 		}
 	} else {
-		setmodel(this, "models/player.mdl");
+		modelout = "models/player.mdl";
+		setmodel(this, modelout);
 		playertype = PLAYERTYPE_HL;
 	}
 #endif

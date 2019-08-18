@@ -207,6 +207,21 @@ int Weapons_IsPresent(player pl, int w)
 }
 
 #ifdef SSQC
+
+void Weapons_SwitchBest(player pl)
+{
+	entity oldself = self;
+	self = pl;
+	for (int i = 0; i < g_weapons.length; i++) {
+		if (pl.g_items & g_weapons[i].id) {
+			pl.activeweapon = i;
+			break;
+		}
+	}
+	Weapons_Draw();
+	self = oldself;
+}
+
 void Weapons_AddItem(player pl, int w)
 {
 	entity oldself = self;
@@ -220,6 +235,12 @@ void Weapons_AddItem(player pl, int w)
 
 	Weapons_Draw();
 	self = oldself;
+}
+
+void Weapons_RemoveItem(player pl, int w)
+{
+	pl.g_items &= ~g_weapons[w].id;
+	Weapons_SwitchBest(pl);
 }
 
 void Weapons_InitItem(int w)

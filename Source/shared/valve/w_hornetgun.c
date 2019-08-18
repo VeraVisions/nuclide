@@ -131,30 +131,30 @@ void w_hornetgun_reload(void)
 }
 void w_hornetgun_release(void)
 {
-#ifdef CSQC
-	int r;
 	player pl = (player)self;
-	if (pl.w_idle_next > 0.0) {
+
+	if (pl.w_idle_next) {
 		return;
 	}
+
+#ifdef CSQC
+	int r;
 
 	r = floor(random(0,3));
 
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(HORNETGUN_IDLE);
-		pl.w_idle_next = 0.95f;
 		break;
 	case 1:
 		Weapons_ViewAnimation(HORNETGUN_FIDGET1);
-		pl.w_idle_next = 2.5f;
 		break;
 	default:
 		Weapons_ViewAnimation(HORNETGUN_FIDGET2);
-		pl.w_idle_next = 2.2f;
 		break;
 	}
 #endif
+	pl.w_idle_next = 2.5f;
 }
 void w_hornetgun_crosshair(void)
 {
@@ -167,9 +167,7 @@ void w_hornetgun_crosshair(void)
 
 float w_hornetgun_aimanim(void)
 {
-#ifdef SSQC
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIMHIVE : ANIM_AIMHIVE;
-#endif
 }
 
 void w_hornetgun_hudpic(int s, vector pos)

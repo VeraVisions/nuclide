@@ -83,6 +83,10 @@ void SHData_GetItems(void)
 	/* TODO: Parse the config files */
 	pl.ammo_9mm = 68;
 	pl.ammo_buckshot = 34;
+	pl.ammo_bolt = 50;
+	pl.ammo_357 = 36;
+	pl.ammo_m203_grenade = 3;
+	pl.ammo_rocket = 5;
 	Weapons_AddItem(pl, WEAPON_CROWBAR);
 	Weapons_AddItem(pl, WEAPON_GLOCK);
 	Weapons_AddItem(pl, WEAPON_PYTHON);

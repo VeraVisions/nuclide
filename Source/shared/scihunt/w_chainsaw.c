@@ -66,6 +66,7 @@ void w_chainsaw_primary(void)
 		return;
 	}
 
+	pl.a_ammo3 = 1; 
 #ifdef CSQC
 	if (pSeat->eViewModel.frame == CHAINSAW_STARTFIRE || pSeat->eViewModel.frame == CHAINSAW_CONTINUEFIRE) {
 		Weapons_ViewAnimation(CHAINSAW_CONTINUEFIRE);
@@ -111,20 +112,20 @@ void w_chainsaw_reload(void)
 }
 void w_chainsaw_release(void)
 {
-#ifdef CSQC
 	player pl = (player)self;
 
 	if (pl.w_idle_next) {
 		return;
 	}
 
-	if (pSeat->eViewModel.frame == CHAINSAW_CONTINUEFIRE) {
-		Weapons_ViewAnimation(CHAINSAW_STOPFIRE);
+	if (pl.a_ammo3 == 1) {
+		pl.a_ammo3 = 0;
 		pl.w_idle_next = 1.0f;
 	} else {
 		pl.w_idle_next = 10.0f;
 	}
 
+#ifdef CSQC
 	int r = floor(random(0,2));
 	switch (r) {
 	case 0:
@@ -139,9 +140,7 @@ void w_chainsaw_release(void)
 
 float w_chainsaw_aimanim(void)
 {
-#ifdef SSQC
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIMSQUEAK : ANIM_AIMSQUEAK;
-#endif
 }
 
 void w_chainsaw_hudpic(int s, vector pos)

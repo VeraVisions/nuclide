@@ -91,9 +91,7 @@ string w_snark_deathmsg(void)
 
 float w_snark_aimanim(void)
 {
-#ifdef SSQC
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIMSQUEAK : ANIM_AIMSQUEAK;
-#endif
 }
 
 void w_snark_hudpic(int s, vector pos)

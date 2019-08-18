@@ -208,9 +208,7 @@ void w_hammer_release(void)
 
 float w_hammer_aimanim(void)
 {
-#ifdef SSQC
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIMCROWBAR : ANIM_AIMCROWBAR;
-#endif
 }
 
 void w_hammer_hudpic(int s, vector pos)

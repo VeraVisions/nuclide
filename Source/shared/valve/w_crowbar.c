@@ -160,11 +160,8 @@ void w_crowbar_release(void)
 
 float w_crowbar_aimanim(void)
 {
-#ifdef SSQC
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIMCROWBAR : ANIM_AIMCROWBAR;
-#endif
 }
-
 void w_crowbar_hudpic(int s, vector pos)
 {
 #ifdef CSQC

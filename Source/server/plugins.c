@@ -22,7 +22,7 @@ Funtion that can interrupt client commands before physics are run
 */
 int Plugin_RunClientCommand(void)
 {
-	int(void) vFunc = externvalue( -2, "FMX_RunClientCommand" );
+	int(void) vFunc = externvalue(-2, "FMX_RunClientCommand");
 
 	if (vFunc || g_plugins_enabled == 0) {
 		return vFunc();
@@ -41,7 +41,7 @@ chat messages and handle distribution ourselves.
 */
 int Plugin_ParseClientCommand(string msg)
 {
-	int(void) vFunc = externvalue( -2, "FMX_ParseClientCommand" );
+	int(string msg) vFunc = externvalue(-2, "FMX_ParseClientCommand");
 
 	if (vFunc || g_plugins_enabled == 0) {
 		return vFunc(msg);

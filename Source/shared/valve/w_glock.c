@@ -209,9 +209,7 @@ void w_glock_release(void)
 
 float w_glock_aimanim(void)
 {
-#ifdef SSQC
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
-#endif
 }
 
 void w_glock_hud(void)

@@ -73,6 +73,18 @@ void w_python_primary(void)
 		return;
 	}
 
+	/* Ammo check */
+#ifdef CSQC
+	if (pl.a_ammo1 <= 0) {
+		return;
+	}
+#else
+	if (pl.python_mag <= 0) {
+		return;
+	}
+#endif
+
+	/* Actual firing */
 #ifdef SSQC
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 40, [0.00873, 0.00873]);
 
@@ -81,7 +93,10 @@ void w_python_primary(void)
 	} else {
 		Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/357_shot2.wav", 1, ATTN_NORM);
 	}
+	pl.python_mag--;
+	Weapons_UpdateAmmo(pl, pl.python_mag, pl.ammo_357, __NULL__);
 #else
+	pl.a_ammo1--;
 	Weapons_ViewAnimation(PYTHON_FIRE1);
 	Weapons_ViewPunchAngle([-10,0,0]);
 #endif
@@ -110,8 +125,29 @@ void w_python_reload(void)
 		return;
 	}
 
+	/* Ammo check */
+#ifdef CSQC
+	if (pl.a_ammo1 >= 6) {
+		return;
+	}
+	if (pl.a_ammo2 <= 0) {
+		return;
+	}
+#else
+	if (pl.python_mag >= 6) {
+		return;
+	}
+	if (pl.ammo_357 <= 0) {
+		return;
+	}
+#endif
+
+	/* Audio-Visual bit */
 #ifdef CSQC
 	Weapons_ViewAnimation(PYTHON_RELOAD);
+#else
+	Weapons_ReloadWeapon(pl, player::python_mag, player::ammo_357, 6);
+	Weapons_UpdateAmmo(pl, pl.python_mag, pl.ammo_357, __NULL__);	
 #endif
 
 	pl.w_attack_next = 3.25f;
@@ -155,9 +191,7 @@ void w_python_crosshair(void)
 
 float w_python_aimanim(void)
 {
-#ifdef SSQC
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIMPYTHON : ANIM_AIMPYTHON;
-#endif
 }
 
 void w_python_hudpic(int s, vector pos)

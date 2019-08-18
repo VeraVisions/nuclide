@@ -50,7 +50,6 @@ string w_crossbow_deathmsg(void)
 {
 	return "";
 }
-
 void w_crossbow_pickup(void)
 {
 #ifdef SSQC
@@ -58,7 +57,6 @@ void w_crossbow_pickup(void)
 	pl.crossbow_mag = bound(0, pl.crossbow_mag + 5, 5);
 #endif
 }
-
 void w_crossbow_draw(void)
 {
 	player pl = (player)self;
@@ -107,6 +105,11 @@ void w_crossbow_primary(void)
 		}
 		remove(self);
 	}
+	
+	if (!pl.crossbow_mag) {
+		return;
+	}	
+	
 	Weapons_MakeVectors();
 	entity bolt = spawn();
 	setmodel(bolt, "models/crossbow_bolt.mdl");
@@ -126,6 +129,8 @@ void w_crossbow_primary(void)
 		Weapons_PlaySound(pl, CHAN_ITEM, "weapons/xbow_reload1.wav", 1, ATTN_NORM);
 	}
 
+	pl.crossbow_mag--;
+	Weapons_UpdateAmmo(pl, pl.crossbow_mag, pl.ammo_bolt, __NULL__);
 	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/xbow_fire1.wav", 1, ATTN_NORM);
 #else
 	if (pl.a_ammo1) {
@@ -159,8 +164,27 @@ void w_crossbow_reload(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
+	
+#ifdef SSQC
+	if (pl.ammo_bolt <= 0) {
+		return;
+	}
+	if (pl.crossbow_mag >= 5) {
+		return;
+	}
+#else
+	if (pl.a_ammo1 >= 5) {
+		return;
+	}
+	if (pl.a_ammo2 <= 0) {
+		return;
+	}
+#endif
 
-#ifdef CSQC
+#ifdef SSQC
+	Weapons_ReloadWeapon(pl, player::crossbow_mag, player::ammo_bolt, 5);
+	Weapons_UpdateAmmo(pl, pl.crossbow_mag, pl.ammo_bolt, __NULL__);
+#else
 	Weapons_PlaySound(pl, CHAN_ITEM, "weapons/xbow_reload1.wav", 1, ATTN_NORM);
 	Weapons_ViewAnimation(CROSSBOW_RELOAD);
 #endif
@@ -206,9 +230,7 @@ void w_crossbow_crosshair(void)
 
 float w_crossbow_aimanim(void)
 {
-#ifdef SSQC
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIMBOW : ANIM_AIMBOW;
-#endif
 }
 
 void w_crossbow_hudpic(int s, vector pos)

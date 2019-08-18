@@ -113,12 +113,13 @@ void w_shotgun_reload(void)
 }
 void w_shotgun_release(void)
 {
-#ifdef CSQC
 	player pl = (player)self;
+
 	if (pl.w_idle_next) {
 		return;
 	}
 
+#ifdef CSQC
 	int r = floor(random(0,3));
 	switch (r) {
 	case 0:
@@ -131,9 +132,8 @@ void w_shotgun_release(void)
 		Weapons_ViewAnimation(SHOTGUN_IDLE3);
 		break;
 	}
-
-	pl.w_idle_next = 15.0f;
 #endif
+	pl.w_idle_next = 15.0f;
 }
 void w_shotgun_crosshair(void)
 {
@@ -148,9 +148,7 @@ void w_shotgun_crosshair(void)
 
 float w_shotgun_aimanim(void)
 {
-#ifdef SSQC
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIMSHOTGUN : ANIM_AIMSHOTGUN;
-#endif
 }
 
 void w_shotgun_hudpic(int s, vector pos)

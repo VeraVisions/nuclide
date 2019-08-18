@@ -195,9 +195,7 @@ void w_cannon_crosshair(void)
 
 float w_cannon_aimanim(void)
 {
-#ifdef SSQC
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIMSHOTGUN : ANIM_AIMSHOTGUN;
-#endif
 }
 
 void w_cannon_hudpic(int s, vector pos)

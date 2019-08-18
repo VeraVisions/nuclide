@@ -255,9 +255,9 @@ void HUD_DrawAmmo3(void)
 	pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
 
 	/* Special */
-	if (pl.a_ammo3) {
+	//if (pl.a_ammo3) {
 		HUD_DrawNums(pl.a_ammo3, pos + [0, -32], ammo3_alpha, g_hud_color);
-	}
+	//}
 }
 
 void HUD_DrawFlashlight(void)

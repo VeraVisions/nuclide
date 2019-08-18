@@ -17,7 +17,6 @@ var float PARTICLE_SMOKEGRENADE;
 .float flUpAngle;
 
 vector vHUDColor; // Defined in HUD_Draw (HUD.c)
-vector vVGUIColor; // Defined in HUD_Draw (VGUI.c)
 vector vCrossColor; // Defined in HUD_Draw (HUDCrosshair.c)
 
 string sShellModel [ 4 ] = {

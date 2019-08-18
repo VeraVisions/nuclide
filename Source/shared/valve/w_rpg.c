@@ -46,6 +46,14 @@ string w_rpg_deathmsg(void)
 	return "";
 }
 
+void w_rpg_pickup(void)
+{
+#ifdef SSQC
+	player pl = (player)self;
+	pl.rpg_mag = bound(0, pl.rpg_mag + 1, 1);
+#endif
+}
+
 void w_rpg_draw(void)
 {
 #ifdef CSQC
@@ -67,8 +75,20 @@ void w_rpg_primary(void)
 		return;
 	}
 
+	/* Ammo check */
+#ifdef CSQC
+	if (pl.a_ammo1 <= 0) {
+		return;
+	}
+#else
+	if (pl.rpg_mag <= 0) {
+		return;
+	}
+#endif
+
 #ifdef CSQC
 	Weapons_ViewAnimation(RPG_FIRE2);
+	pl.a_ammo1--;
 #else
 	static void Rocket_Touch(void) {
 		Effect_CreateExplosion(self.origin);
@@ -105,6 +125,8 @@ void w_rpg_primary(void)
 	rocket.nextthink = time + 0.15f;
 	setsize(rocket, [0,0,0], [0,0,0]);
 	sound(self, CHAN_WEAPON, "weapons/rocketfire1.wav", 1, ATTN_NORM);
+	pl.rpg_mag--;
+	Weapons_UpdateAmmo(pl, pl.rpg_mag, pl.ammo_rocket, __NULL__);
 #endif
 
 	pl.w_attack_next = 1.0f;
@@ -116,7 +138,41 @@ void w_rpg_secondary(void)
 }
 void w_rpg_reload(void)
 {
+	player pl = (player)self;
 	
+
+	if (pl.w_attack_next > 0) {
+		return;
+	}
+
+	/* Ammo check */
+#ifdef CSQC
+	if (pl.a_ammo1 >= 1) {
+		return;
+	}
+	if (pl.a_ammo2 <= 0) {
+		return;
+	}
+#else
+	if (pl.rpg_mag >= 1) {
+		return;
+	}
+	if (pl.ammo_rocket <= 0) {
+		return;
+	}
+#endif
+
+	/* Audio-Visual Bit */
+#ifdef CSQC
+	Weapons_ViewAnimation(RPG_RELOAD);
+#else
+	Weapons_ReloadWeapon(pl, player::rpg_mag, player::ammo_rocket, 1);
+	Weapons_UpdateAmmo(pl, pl.rpg_mag, pl.ammo_rocket, __NULL__);
+#endif
+	
+
+	pl.w_attack_next = 2.25f;
+	pl.w_idle_next = 10.0f;
 }
 void w_rpg_release(void)
 {
@@ -125,9 +181,7 @@ void w_rpg_release(void)
 
 float w_rpg_aimanim(void)
 {
-#ifdef SSQC
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIMRPG : ANIM_AIMRPG;
-#endif
 }
 
 void w_rpg_hudpic(int s, vector pos)
@@ -165,6 +219,8 @@ void w_rpg_laser(void)
 	vector lasersize = [8,8] * (1-trace_fraction);
 	cross_pos = (video_res / 2) - (lasersize/2);
 	drawpic(cross_pos, "sprites/laserdot.spr_0.tga", lasersize, [1,1,1], 1.0f, DRAWFLAG_ADDITIVE);
+	HUD_DrawAmmo1();
+	HUD_DrawAmmo2();
 #endif
 }
 
@@ -181,7 +237,7 @@ weapon_t w_rpg =
 	w_rpg_release,
 	w_rpg_laser,
 	w_rpg_precache,
-	__NULL__,
+	w_rpg_pickup,
 	w_rpg_vmodel,
 	w_rpg_wmodel,
 	w_rpg_pmodel,

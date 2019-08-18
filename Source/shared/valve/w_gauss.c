@@ -25,6 +25,7 @@ void w_gauss_precache(void)
 	precache_model("models/w_gauss.mdl");
 	precache_model("models/p_gauss.mdl");
 	precache_sound("weapons/gauss2.wav");
+	precache_model("sprites/yelflare1.spr");
 	precache_sound("weapons/electro4.wav");
 	precache_sound("weapons/electro5.wav");
 	precache_sound("weapons/electro6.wav");
@@ -68,6 +69,7 @@ void w_gauss_placeorbs(vector org)
 	static float glow_think(void) {
 		if (self.alpha <= 0.0f) {
 			remove(self);
+			return PREDRAW_NEXT;
 		}
 		self.alpha -= (clframetime * 0.25);
 		addentity(self);
@@ -94,7 +96,7 @@ void w_gauss_placeimpact(vector org)
 	static float glow_think(void) {
 		if (self.alpha <= 0.0f) {
 			remove(self);
-			return;
+			return PREDRAW_NEXT;
 		}
 		self.alpha -= (clframetime * 0.5);
 		dynamiclight_add(self.origin, 256 * self.alpha, self.colormod);
@@ -120,7 +122,6 @@ void w_gauss_fire(int one)
 {
 	player pl = (player)self;
 	int iLoop = 10;
-	int iDamage;
 
 	Weapons_MakeVectors();
 	vector src = Weapons_GetCameraPos();
@@ -128,7 +129,7 @@ void w_gauss_fire(int one)
 	traceline(src, endpos, FALSE, pl);
 #ifdef SSQC
 	sound(pl, CHAN_WEAPON, "weapons/gauss2.wav", 1, ATTN_NORM);
-	iDamage = one ? 20 : 200;
+	int iDamage = one ? 20 : 200;
 
 	if (getsurfacetexture(trace_ent, getsurfacenearpoint(trace_ent, trace_endpos)) == "sky") {
 		return;
@@ -214,8 +215,6 @@ void w_gauss_secondary(void)
 	player pl = (player)self;
 
 #ifdef CSQC
-	print(sprintf("%i\n", pl.a_ammo2));
-
 	if (pl.a_ammo3)
 		soundupdate(pl, CHAN_WEAPON, "", 2, ATTN_NORM, 100 + (200 * (pl.a_ammo2/255)), 0, 0);
 #endif
@@ -307,9 +306,7 @@ void w_gauss_crosshair(void)
 
 float w_gauss_aimanim(void)
 {
-#ifdef SSQC
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIMGAUSS : ANIM_AIMGAUSS;
-#endif
 }
 
 void w_gauss_hudpic(int s, vector pos)

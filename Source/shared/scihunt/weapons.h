@@ -83,6 +83,7 @@ int Weapons_IsPresent(player pl, int w);
 #ifdef SSQC
 void Weapons_InitItem(int w);
 void Weapons_AddItem(player pl, int w);
+void Weapons_RemoveItem(player pl, int w);
 string Weapons_GetWorldmodel(int id);
 void Weapons_UpdateAmmo(player pl, int a1, int a2, int a3);
 void Weapons_ReloadWeapon(player pl, .int mag, .int ammo, int max);

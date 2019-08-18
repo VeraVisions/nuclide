@@ -20,6 +20,7 @@ enum
 
 void w_handgrenade_precache(void)
 {
+	precache_sound("weapons/grenade/land.wav");
 	precache_model("models/v_grenade.mdl");
 	precache_model("models/w_grenade.mdl");
 	precache_model("models/p_grenade.mdl");
@@ -153,9 +154,7 @@ void w_handgrenade_release(void)
 }
 float w_handgrenade_aimanim(void)
 {
-#ifdef SSQC
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIMCROWBAR : ANIM_AIMCROWBAR;
-#endif
 }
 void w_handgrenade_hudpic(int s, vector pos)
 {

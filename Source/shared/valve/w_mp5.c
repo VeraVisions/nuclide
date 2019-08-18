@@ -79,6 +79,18 @@ void w_mp5_primary(void)
 		return;
 	}
 
+	/* Ammo check */
+#ifdef CSQC
+	if (pl.a_ammo1 <= 0) {
+		return;
+	}
+#else
+	if (pl.mp5_mag <= 0) {
+		return;
+	}
+#endif
+
+	/* Actual firing */	
 #ifdef CSQC
 	if (random() < 0.5) {
 		Weapons_ViewAnimation(MP5_FIRE1);
@@ -86,6 +98,7 @@ void w_mp5_primary(void)
 		Weapons_ViewAnimation(MP5_FIRE2);
 	}
 
+	pl.a_ammo1--;
 	Weapons_ViewPunchAngle([random(-2, 2),0,0]);
 #else
 	/* Singleplayer is more accurate */
@@ -100,6 +113,9 @@ void w_mp5_primary(void)
 	} else {
 		Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/hks2.wav", 1, ATTN_NORM);
 	}
+	
+	pl.mp5_mag--;
+	Weapons_UpdateAmmo(pl, pl.mp5_mag, pl.ammo_9mm, pl.ammo_m203_grenade);
 #endif
 
 	pl.w_attack_next = 0.1f;
@@ -115,8 +131,12 @@ void w_mp5_secondary(void)
 	}
 
 #ifdef CSQC
+	if (pl.a_ammo3 <= 0) {
+		return;
+	}
 	Weapons_ViewAnimation(MP5_GRENADE);
 	Weapons_ViewPunchAngle([-10,0,0]);
+	pl.a_ammo3--;
 #else
 
 	static void Grenade_ExplodeTouch(void) {
@@ -125,6 +145,11 @@ void w_mp5_secondary(void)
 		sound( self, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 2 ) + 3 ), 1, ATTN_NORM );
 		remove(self);
 	}
+	
+	if (pl.ammo_m203_grenade <= 0) {
+		return;
+	}
+
 	makevectors(self.v_angle);
 	entity gren = spawn();
 	setmodel(gren, "models/grenade.mdl");
@@ -138,8 +163,9 @@ void w_mp5_secondary(void)
 	gren.solid = SOLID_BBOX;
 	setsize(gren, [0,0,0], [0,0,0]);
 	gren.touch = Grenade_ExplodeTouch;
-
 	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/glauncher.wav", 1, ATTN_NORM);
+	pl.ammo_m203_grenade--;
+	Weapons_UpdateAmmo(pl, pl.mp5_mag, pl.ammo_9mm, pl.ammo_m203_grenade);
 #endif
 
 	pl.w_attack_next = 1.0f;
@@ -153,10 +179,28 @@ void w_mp5_reload(void)
 		return;
 	}
 
+	/* Ammo check */
+#ifdef CSQC
+	if (pl.a_ammo1 >= 50) {
+		return;
+	}
+	if (pl.a_ammo2 <= 0) {
+		return;
+	}
+#else
+	if (pl.mp5_mag >= 50) {
+		return;
+	}
+	if (pl.ammo_9mm <= 0) {
+		return;
+	}
+#endif
+
 #ifdef CSQC
 	Weapons_ViewAnimation(MP5_RELOAD);
 #else
-
+	Weapons_ReloadWeapon(pl, player::mp5_mag, player::ammo_9mm, 50);
+	Weapons_UpdateAmmo(pl, pl.mp5_mag, pl.ammo_9mm, pl.ammo_m203_grenade);
 #endif
 
 	pl.w_attack_next = 1.5f;
@@ -195,11 +239,8 @@ void w_mp5_crosshair(void)
 
 float w_mp5_aimanim(void)
 {
-#ifdef SSQC
 	return self.flags & ANIM_CR_AIMMP5 ? ANIM_CR_AIMCROWBAR : ANIM_AIMMP5;
-#endif
 }
-
 void w_mp5_hudpic(int s, vector pos)
 {
 #ifdef CSQC

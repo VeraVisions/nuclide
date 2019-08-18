@@ -166,9 +166,7 @@ void w_satchel_release(void)
 
 float w_satchel_aimanim(void)
 {
-#ifdef SSQC
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIMSQUEAK : ANIM_AIMSQUEAK;
-#endif
 }
 
 
