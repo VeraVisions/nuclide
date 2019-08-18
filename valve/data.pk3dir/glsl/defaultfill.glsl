@@ -1,5 +1,4 @@
 !!ver 100-450
-!!cvardf gl_fake16bit=0
 
 #ifdef VERTEX_SHADER
 attribute vec4 v_colour;

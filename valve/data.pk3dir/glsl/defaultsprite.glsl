@@ -1,9 +1,5 @@
 !!permu FOG
 !!samps 1
-!!cvardf gl_fake16bit=0
-!!cvardf gl_monochrome=0
-//used by both particles and sprites.
-//note the fog blending mode is all that differs from defaultadditivesprite
 
 #include "sys/fog.h"
 #ifdef VERTEX_SHADER
@@ -18,6 +14,7 @@ void main ()
 	gl_Position = ftetransform();
 }
 #endif
+
 #ifdef FRAGMENT_SHADER
 varying vec2 tc;
 varying vec4 vc;
@@ -33,15 +30,6 @@ void main ()
 #endif
 
 	col = fog4blend(col * vc * e_colourident * e_vlscale);
-
-#if gl_fake16bit == 1
-	col.rgb = floor(col.rgb * vec3(32,64,32))/vec3(32,64,32);
-#endif
-
-#if gl_monochrome == 1
-		float m = (col.r + col.g + col.b) / 3.0f;
-		col.rgb = vec3(m,m,m);
-#endif
 
 	gl_FragColor = col;
 }

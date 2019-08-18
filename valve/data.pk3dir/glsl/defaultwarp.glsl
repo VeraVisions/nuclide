@@ -2,13 +2,8 @@
 !!permu FOG
 !!cvarf r_wateralpha
 !!samps diffuse lightmap
-!!cvardf gl_fake16bit=0
-!!cvardf gl_monochrome=0
 
 #include "sys/defs.h"
-
-//this is the shader that's responsible for drawing default q1 turbulant water surfaces
-//this is expected to be moderately fast.
 
 #include "sys/fog.h"
 varying vec2 tc;
@@ -44,15 +39,6 @@ void main ()
 
 #ifdef LIT
 	ts *= (texture2D(s_lightmap, lm0) * e_lmscale).rgb;
-#endif
-
-#if gl_fake16bit == 1
-		ts.rgb = floor(ts.rgb * vec3(32,64,32))/vec3(32,64,32);
-#endif
-
-#if gl_monochrome == 1
-		float m = (ts.r + ts.g + ts.b) / 3.0f;
-		ts.rgb = vec3(m,m,m);
 #endif
 
 	gl_FragColor = fog4(vec4(ts, USEALPHA) * e_colourident);

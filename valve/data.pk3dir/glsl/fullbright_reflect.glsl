@@ -1,7 +1,5 @@
 !!ver 110
 !!samps diffuse reflectcube normalmap
-!!cvardf gl_fake16bit=0
-!!cvardf gl_monochrome=0
 
 #include "sys/defs.h"
 
@@ -59,14 +57,6 @@ varying mat3 invsurface;
 		out_f.rgb = mix( textureCube(s_reflectcube, cube_c ).rgb, diffuse_f.rgb, diffuse_f.a);
 		diffuse_f = out_f * e_colourident;
 
-#if gl_fake16bit == 1
-		diffuse_f.rgb = floor(diffuse_f.rgb * vec3(32,64,32))/vec3(32,64,32);
-#endif
-
-#if gl_monochrome == 1
-		float m = (diffuse_f.r + diffuse_f.g + diffuse_f.b) / 3.0f;
-		diffuse_f.rgb = vec3(m,m,m);
-#endif
 		gl_FragColor = diffuse_f;
 	}
 #endif

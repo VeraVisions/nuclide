@@ -1,8 +1,5 @@
 !!ver 110
 !!samps diffuse lightmap reflectcube normalmap
-!!cvardf gl_fake16bit=0
-!!cvardf gl_monochrome=0
-!!cvardf gl_brighten=0
 
 #include "sys/defs.h"
 
@@ -72,18 +69,6 @@ varying mat3 invsurface;
 #endif
 		diffuse_f *= e_colourident;
 
-#if gl_brighten == 1
-		diffuse_f.rgb += vec3(0.1f,0.1f,0.1f) * 0.9f;
-#endif
-
-#if gl_fake16bit == 1
-		diffuse_f.rgb = floor(diffuse_f.rgb * vec3(32,64,32))/vec3(32,64,32);
-#endif
-
-#if gl_monochrome == 1
-		float m = (diffuse_f.r + diffuse_f.g + diffuse_f.b) / 3.0f;
-		diffuse_f.rgb = vec3(m,m,m);
-#endif
 		gl_FragColor = diffuse_f;
 		
 	}
