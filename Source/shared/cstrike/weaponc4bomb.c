@@ -53,10 +53,8 @@ var float fBeepTime; // Used for the beeping sounds that last 1.5 seconds
 var float fDefuseProgress; // Used to track... the progress
 
 static void WeaponC4BOMB_Use( void ) {
-	if ( cvar( "developer" ) == 0 ) {
-		if ( eActivator.team != TEAM_CT ) {
-			return;
-		}
+	if ( eActivator.team != TEAM_CT ) {
+		return;
 	}
 		
 	// On first use, play defusing sound
@@ -85,7 +83,8 @@ static void WeaponC4BOMB_Use( void ) {
 	} else {
 		fDefuseProgress += 0.01;
 	}
-		
+
+	eActivator.gflags |= GF_USE_RELEASED;	
 	eActivator.fProgressBar = fDefuseProgress * 0.1;
 		
 	// Make sure WeaponC4BOMB_Think knows who the user is
@@ -216,7 +215,7 @@ void WeaponC4BOMB_PrimaryFire( void ) {
 		return;
 	}
 
-	traceline( source, source + [0,0,-64], MOVE_OTHERONLY, self );
+	traceline(source, source + [0,0,-64], MOVE_OTHERONLY, self);
 
 	// If we aren't aiming at a place or look in the wrong location... stop it
 	if ( trace_fraction == 1 || self.fInBombZone == FALSE ) {

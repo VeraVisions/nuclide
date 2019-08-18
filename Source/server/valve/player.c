@@ -55,12 +55,14 @@ void Player_UseDown(void)
 	traceline (vSource, vSource + (v_forward * 64), FALSE, self);
 
 	if (trace_ent.PlayerUse) {
-		if (trace_ent.classname != "func_pushable") {
-			self.gflags &= ~GF_USE_RELEASED;
-			sound(self, CHAN_ITEM, "common/wpn_select.wav", 0.25, ATTN_IDLE);
-		} 
+		self.gflags &= ~GF_USE_RELEASED;
 		
 		UseWorkaround(trace_ent);
+
+		/* Some entities want to support Use spamming */
+		if (!(self.gflags & GF_USE_RELEASED)) {
+			sound(self, CHAN_ITEM, "common/wpn_select.wav", 0.25, ATTN_IDLE);
+		}
 	} else {
 		sound(self, CHAN_ITEM, "common/wpn_denyselect.wav", 0.25, ATTN_IDLE);
 		self.gflags &= ~GF_USE_RELEASED;

@@ -16,14 +16,13 @@ class func_recharge:CBaseTrigger
 
 void func_recharge::PlayerUse(void)
 {
-	eActivator.gflags &= ~GF_USE_RELEASED;
-
+	eActivator.gflags |= GF_USE_RELEASED;
 	if (m_flDelay > time) {
 		return;
 	}
 
-	eActivator.armor = bound(0, eActivator.armor += 15, 100);
-	m_flDelay = time + 1.0f;
+	eActivator.armor = bound(0, eActivator.armor += 1, 100);
+	m_flDelay = time + 0.1f;
 }
 
 void func_recharge::func_recharge(void)

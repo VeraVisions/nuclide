@@ -191,28 +191,30 @@ Player_UseDown
 */
 void Player_UseDown(void)
 {
-	if (self.health <= 0) {
+    if (self.health <= 0) {
 		return;
-	} else if (!(self.flags & FL_USERELEASED)) {
+	} else if (!(self.gflags & GF_USE_RELEASED)) {
 		return;
 	}
-	
+
 	vector vSource;
 
 	makevectors(self.v_angle);
 	vSource = self.origin + self.view_ofs;
 	traceline (vSource, vSource + (v_forward * 64), FALSE, self);
-	
+
 	if (trace_ent.PlayerUse) {
-		if ((trace_ent.classname != "c4bomb") && (trace_ent.classname != "func_pushable")) {
-			self.flags = (self.flags - FL_USERELEASED);
-			sound(self, CHAN_ITEM, "common/wpn_select.wav", 0.25, ATTN_IDLE);
-		} 
-		
+		self.gflags &= ~GF_USE_RELEASED;
+
 		UseWorkaround(trace_ent);
+
+		/* Some entities want to support Use spamming */
+		if (!(self.gflags & GF_USE_RELEASED)) {
+			sound(self, CHAN_ITEM, "common/wpn_select.wav", 0.25, ATTN_IDLE);
+		}
 	} else {
 		sound(self, CHAN_ITEM, "common/wpn_denyselect.wav", 0.25, ATTN_IDLE);
-		self.flags = (self.flags - FL_USERELEASED);
+		self.gflags &= ~GF_USE_RELEASED;
 	}
 }
 
@@ -223,8 +225,8 @@ Player_UseUp
 */
 void Player_UseUp(void)
 {
-	if (!(self.frags & FL_USERELEASED)) {
-		self.flags = self.flags | FL_USERELEASED;
+	if (!(self.gflags & GF_USE_RELEASED)) {
+		self.gflags |= GF_USE_RELEASED;
 		self.fProgressBar = 0;
 	}
 }
