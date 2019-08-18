@@ -47,6 +47,14 @@ void w_satchel_precache(void)
 	precache_model("models/p_satchel.mdl");
 }
 
+void w_satchel_pickup(void)
+{
+#ifdef SSQC
+	player pl = (player)self;
+	pl.ammo_satchel = bound(0, pl.ammo_satchel + 1, 15);
+#endif
+}
+
 void w_satchel_draw(void)
 {
 #ifdef CSQC
@@ -101,6 +109,17 @@ void w_satchel_primary(void)
 		return;
 	}
 
+	/* Ammo check */
+#ifdef CSQC
+	if (pl.a_ammo1 <= 0 && pl.a_ammo2 <= 0) {
+		return;
+	}
+#else
+	if (pl.satchel_chg <= 0 && pl.ammo_satchel <= 0) {
+        return;
+	}
+#endif
+
 #ifdef SSQC
 	if (!pl.satchel_chg) {
 		vector throw;
@@ -109,9 +128,14 @@ void w_satchel_primary(void)
 		throw = pl.velocity + (v_forward * 274);
 		s_satchel_drop(self, pl.origin, throw);
 		pl.satchel_chg++;
+		pl.ammo_satchel--;
 	} else {
 		s_satchel_detonate(pl);
 		pl.satchel_chg = 0;
+
+		if (pl.ammo_satchel <= 0) {
+			Weapons_RemoveItem(pl, WEAPON_SATCHEL);
+		}
 	}
 	Weapons_UpdateAmmo(pl, pl.satchel_chg, pl.ammo_satchel, __NULL__);
 #else
@@ -133,14 +157,27 @@ void w_satchel_secondary(void)
 		return;
 	}
 
+    /* Ammo check */
+#ifdef CSQC
+	if (pl.a_ammo2 <= 0) {
+		return;
+	}
+#else
+	if (pl.ammo_satchel <= 0) {
+		return;
+	}
+#endif
+
 #ifdef SSQC
 	vector throw;
 	Weapons_MakeVectors();
 	throw = pl.velocity + (v_forward * 274);
 	s_satchel_drop(self, pl.origin, throw);
 	pl.satchel_chg++;
+	pl.ammo_satchel--;
 	Weapons_UpdateAmmo(pl, pl.satchel_chg, pl.ammo_satchel, __NULL__);
 #else
+	pl.a_ammo2--;
 	Weapons_ViewAnimation(RADIO_DRAW);
 #endif
 
@@ -169,6 +206,12 @@ float w_satchel_aimanim(void)
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIMSQUEAK : ANIM_AIMSQUEAK;
 }
 
+void w_satchel_hud(void)
+{
+#ifdef CSQC
+	HUD_DrawAmmo2();
+#endif
+}
 
 void w_satchel_hudpic(int s, vector pos)
 {
@@ -192,9 +235,9 @@ weapon_t w_satchel =
 	w_satchel_secondary,
 	w_satchel_reload,
 	w_satchel_release,
-	__NULL__,
+	w_satchel_hud,
 	w_satchel_precache,
-	__NULL__,
+	w_satchel_pickup,
 	w_satchel_vmodel,
 	w_satchel_wmodel,
 	w_satchel_pmodel,
