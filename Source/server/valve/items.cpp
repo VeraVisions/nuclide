@@ -20,9 +20,10 @@ class item_pickup:CBaseEntity
 void item_pickup::touch(void)
 {
 	if (other.classname == "player") {
-		if (Weapons_IsPresent((player)other, id) == TRUE) {
+		/*if (Weapons_IsPresent((player)other, id) == TRUE) {
 			return;
-		}
+		}*/
+
 		sound(other, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_NORM);
 		Weapons_AddItem((player)other, id);
 
