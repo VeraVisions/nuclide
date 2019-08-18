@@ -29,9 +29,6 @@ void trigger_gravity::Respawn(void)
 
 void trigger_gravity::trigger_gravity(void)
 {
-	print(__fullspawndata);
-	print("\n");
-
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
 		case "gravity":
