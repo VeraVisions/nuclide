@@ -42,6 +42,15 @@ string w_handgrenade_deathmsg(void)
 	return "";
 }
 
+void w_handgrenade_pickup(void)
+{
+#ifdef SSQC
+    player pl = (player)self;
+	pl.ammo_handgrenade = bound(0, pl.ammo_handgrenade + 1, 10);
+#endif
+}
+
+
 #ifdef SSQC
 void w_handgrenade_throw(void)
 {
@@ -117,18 +126,30 @@ void w_handgrenade_primary(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
+	
+	/* We're abusing this network variable for the holding check */
+	if (pl.a_ammo3 > 0) {
+        return;
+	}
 
-	if (pl.a_ammo3) {
+	/* Ammo check */
+#ifdef CSQC
+	if (pl.a_ammo2 <= 0) {
 		return;
 	}
+#else
+	if (pl.ammo_handgrenade <= 0) {
+		return;
+	}
+#endif
 
 #ifdef CSQC
 	Weapons_ViewAnimation(HANDGRENADE_PULLPIN);
 #endif
 	pl.a_ammo3 = 1;
 
-	pl.w_attack_next = 0.2f;
-	pl.w_idle_next = 2.5f;
+	pl.w_attack_next = 0.5f;
+	pl.w_idle_next = 0.5f;
 }
 void w_handgrenade_secondary(void)
 {
@@ -138,18 +159,45 @@ void w_handgrenade_reload(void)
 {
 	
 }
+
+void w_handgrenade_hud(void)
+{
+#ifdef CSQC
+	HUD_DrawAmmo2();
+#endif
+}
+
+
 void w_handgrenade_release(void)
 {
 	player pl = (player)self;
-	if (pl.a_ammo3) {
+	
+	if (pl.w_idle_next > 0.0) {
+		return;
+	}
+
+	if (pl.a_ammo3 == 1) {
 #ifdef CSQC
+		pl.a_ammo2--;
 		Weapons_ViewAnimation(HANDGRENADE_THROW1);
 #else
-		pl.a_ammo3 = 0;
+		pl.ammo_handgrenade--;
+		Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_handgrenade, __NULL__);
 		w_handgrenade_throw();
 #endif
-		pl.w_attack_next = 0.2f;
-		pl.w_idle_next = 2.5f;
+		pl.a_ammo3 = 2;
+		pl.w_attack_next = 1.0f;
+		pl.w_idle_next = 0.5f;
+	} else if (pl.a_ammo3 == 2) {
+#ifdef CSQC
+		//Weapons_ViewAnimation(HANDGRENADE_DRAW);
+#else
+		if (!pl.ammo_handgrenade) {
+			Weapons_RemoveItem(pl, WEAPON_HANDGRENADE);
+		}
+#endif
+		pl.w_idle_next = 0.5f;
+		pl.a_ammo3 = 0;
 	}
 }
 float w_handgrenade_aimanim(void)
@@ -178,9 +226,9 @@ weapon_t w_handgrenade =
 	w_handgrenade_secondary,
 	w_handgrenade_reload,
 	w_handgrenade_release,
-	__NULL__,
+	w_handgrenade_hud,
 	w_handgrenade_precache,
-	__NULL__,
+	w_handgrenade_pickup,
 	w_handgrenade_vmodel,
 	w_handgrenade_wmodel,
 	w_handgrenade_pmodel,
