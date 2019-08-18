@@ -69,7 +69,9 @@ void w_snark_release(void)
 }
 void w_snark_precache(void)
 {
-	
+	precache_model("models/w_squeak.mdl");
+	precache_model("models/p_squeak.mdl");
+	precache_model("models/v_squeak.mdl");	
 }
 string w_snark_vmodel(void)
 {
