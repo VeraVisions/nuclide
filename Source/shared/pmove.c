@@ -407,7 +407,7 @@ void PMove_Run_Acceleration(float flMovetime, float flBefore)
 			} else {
 	#ifdef VALVE
 				if (self.flags & FL_CROUCHING && Items_CheckItem(self, 0x00008000)) {
-					self.velocity += v_forward * 512;
+					self.velocity = v_forward * 512;
 					self.velocity[2] += 100;
 				}
 	#endif
