@@ -18,7 +18,23 @@ void Player_Death(int hit)
 	pl.solid = SOLID_NOT;
 	pl.takedamage = DAMAGE_NO;
 	pl.health = pl.armor = pl.activeweapon = pl.g_items = 0;
-	PutClientInServer();
+	
+	pl.think = PutClientInServer;
+	pl.nextthink = time + 4.0f;
+	sound(pl, CHAN_AUTO, "fvox/flatline.wav", 1.0, ATTN_NORM);
+
+	/* Let's handle corpses on the clientside */
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+    WriteByte(MSG_MULTICAST, EV_CORPSE);
+	WriteByte(MSG_MULTICAST, num_for_edict(pl) - 1);
+	WriteCoord(MSG_MULTICAST, pl.origin[0]);
+	WriteCoord(MSG_MULTICAST, pl.origin[1]);
+	WriteCoord(MSG_MULTICAST, pl.origin[2]);
+	WriteCoord(MSG_MULTICAST, pl.angles[0]);
+	WriteCoord(MSG_MULTICAST, pl.angles[1]);
+	WriteCoord(MSG_MULTICAST, pl.angles[2]);
+	msg_entity = pl;
+	multicast(pl.origin, MULTICAST_PVS);
 }
 
 /*
@@ -97,9 +113,9 @@ float Player_SendEntity(entity ePEnt, float fChanged)
 	WriteCoord(MSG_ENTITY, pl.origin[0]);
 	WriteCoord(MSG_ENTITY, pl.origin[1]);
 	WriteCoord(MSG_ENTITY, pl.origin[2]);
-	WriteCoord(MSG_ENTITY, pl.v_angle[0]);
-	WriteCoord(MSG_ENTITY, pl.angles[1]);
-	WriteCoord(MSG_ENTITY, pl.angles[2]);
+	WriteFloat(MSG_ENTITY, pl.v_angle[0]);
+	WriteFloat(MSG_ENTITY, pl.angles[1]);
+	WriteFloat(MSG_ENTITY, pl.angles[2]);
 	WriteCoord(MSG_ENTITY, pl.velocity[0]);
 	WriteCoord(MSG_ENTITY, pl.velocity[1]);
 	WriteCoord(MSG_ENTITY, pl.velocity[2]);
@@ -108,7 +124,7 @@ float Player_SendEntity(entity ePEnt, float fChanged)
 	WriteFloat(MSG_ENTITY, pl.g_items);
 	WriteByte(MSG_ENTITY, pl.health);
 	WriteByte(MSG_ENTITY, pl.armor);
-	WriteFloat(MSG_ENTITY, pl.movetype);
+	WriteByte(MSG_ENTITY, pl.movetype);
 	WriteFloat(MSG_ENTITY, pl.view_ofs[2]);
 	WriteFloat(MSG_ENTITY, pl.viewzoom);
 	WriteFloat(MSG_ENTITY, pl.jumptime);
