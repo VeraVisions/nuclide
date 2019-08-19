@@ -35,6 +35,8 @@ void w_shotgun_precache(void)
 	precache_model("models/p_shotgun.mdl");
 	precache_sound("weapons/sbarrel1.wav");
 	precache_sound("weapons/dbarrel1.wav");
+	precache_sound("weapons/reload3.wav");
+	precache_sound("weapons/scock1.wav");
 }
 string w_shotgun_vmodel(void)
 {
@@ -213,7 +215,7 @@ void w_shotgun_release(void)
 		Weapons_ViewAnimation(SHOTGUN_START_RELOAD);
 #endif
 		pl.a_ammo3 = SHOTTY_RELOAD;
-		pl.w_idle_next = 0.5f;
+		pl.w_idle_next = 0.65f;
 	} else if (pl.a_ammo3 == SHOTTY_RELOAD) {
 #ifdef CSQC
 		Weapons_ViewAnimation(SHOTGUN_RELOAD);
@@ -227,7 +229,7 @@ void w_shotgun_release(void)
 		pl.shotgun_mag++;
 		pl.ammo_buckshot--;
 		Weapons_UpdateAmmo(pl, pl.shotgun_mag, pl.ammo_buckshot, pl.a_ammo3);
-	
+	 	sound(pl, CHAN_WEAPON, "weapons/reload3.wav", 1.0, ATTN_NORM);	
 		if (pl.ammo_buckshot <= 0 || pl.shotgun_mag >= 8) {
 			pl.a_ammo3 = SHOTTY_RELOAD_END;
 		}
@@ -236,6 +238,8 @@ void w_shotgun_release(void)
 	} else if (pl.a_ammo3 == SHOTTY_RELOAD_END) {
 #ifdef CSQC
 		Weapons_ViewAnimation(SHOTGUN_PUMP);
+#else
+		sound(pl, CHAN_WEAPON, "weapons/scock1.wav", 1.0, ATTN_NORM);
 #endif
 		pl.a_ammo3 = SHOTTY_IDLE;
 		pl.w_idle_next = 10.0f;
