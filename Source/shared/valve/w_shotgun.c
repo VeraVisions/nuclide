@@ -20,6 +20,14 @@ enum
 	SHOTGUN_IDLE3
 };
 
+enum
+{
+	SHOTTY_IDLE,
+	SHOTTY_RELOAD_START,
+	SHOTTY_RELOAD,
+	SHOTTY_RELOAD_END
+};
+
 void w_shotgun_precache(void)
 {
 	precache_model("models/v_shotgun.mdl");
@@ -45,6 +53,14 @@ string w_shotgun_deathmsg(void)
 	return "";
 }
 
+void w_shotgun_pickup(void)
+{
+#ifdef SSQC
+	player pl = (player)self;
+	pl.shotgun_mag = bound(0, pl.shotgun_mag + 8, 8);
+#endif
+}
+
 void w_shotgun_draw(void)
 {
 #ifdef CSQC
@@ -68,6 +84,21 @@ void w_shotgun_primary(void)
 		return;
 	}
 
+	if (pl.a_ammo3 > SHOTTY_IDLE) {
+		return;
+	}
+
+	/* Ammo check */
+#ifdef SSQC
+	if (pl.shotgun_mag <= 0) {
+		return;
+	}
+#else
+	if (pl.a_ammo1 <= 0) {
+		return;
+	}
+#endif
+
 #ifdef SSQC
 	/* Singleplayer is more accurate */
 	if (cvar("sv_playerslots") == 1) {
@@ -76,9 +107,12 @@ void w_shotgun_primary(void)
 		TraceAttack_FireBullets(4, pl.origin + pl.view_ofs, 5, [0.08716,0.04362]);
 	}
 	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/sbarrel1.wav", 1, ATTN_NORM);
+	pl.shotgun_mag--;
+	Weapons_UpdateAmmo(pl, pl.shotgun_mag, pl.ammo_buckshot, __NULL__);
 #else
 	Weapons_ViewAnimation(SHOTGUN_FIRE1);
 	Weapons_ViewPunchAngle([-5,0,0]);
+	pl.a_ammo1--;
 #endif
 
 	pl.w_attack_next = 0.75;
@@ -91,6 +125,21 @@ void w_shotgun_secondary(void)
 		return;
 	}
 
+	if (pl.a_ammo3 > SHOTTY_IDLE) {
+		return;
+	}
+
+	/* Ammo check */
+#ifdef CSQC
+	if (pl.a_ammo1 <= 1) {
+		return;
+	}
+#else
+	if (pl.shotgun_mag <= 1) {
+		return;
+	}
+#endif
+
 #ifdef SSQC
 	/* Singleplayer is more accurate */
 	if (cvar("sv_playerslots") == 1) {
@@ -99,9 +148,12 @@ void w_shotgun_secondary(void)
 		TraceAttack_FireBullets(8, pl.origin + pl.view_ofs, 5, [0.17365,0.04362]);
 	}
 	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/dbarrel1.wav", 1, ATTN_NORM);
+	pl.shotgun_mag -= 2;
+	Weapons_UpdateAmmo(pl, pl.shotgun_mag, pl.ammo_buckshot, __NULL__);
 #else
 	Weapons_ViewAnimation(SHOTGUN_FIRE2);
 	Weapons_ViewPunchAngle([-10,0,0]);
+	pl.a_ammo1 -= 2;
 #endif
 
 	pl.w_attack_next = 1.5f;
@@ -109,31 +161,86 @@ void w_shotgun_secondary(void)
 }
 void w_shotgun_reload(void)
 {
+	player pl = (player)self;
+#ifdef CSQC
+	if (pl.a_ammo1 >= 8) {
+		return;
+	}
+	if (pl.a_ammo2 <= 0) { 
+		return;
+	}
+#else
+	if (pl.shotgun_mag >= 8) {
+		return;
+	}
+	if (pl.ammo_buckshot <= 0) {
+		return;
+	}
+#endif
 	
+	if (pl.a_ammo3 > SHOTTY_IDLE) {
+		return;
+	}
+	pl.a_ammo3 = SHOTTY_RELOAD_START;
+	pl.w_idle_next = 0.0f;
 }
 void w_shotgun_release(void)
 {
 	player pl = (player)self;
 
-	if (pl.w_idle_next) {
+	if (pl.w_idle_next > 0.0) {
 		return;
 	}
 
+	if (pl.a_ammo3 == SHOTTY_IDLE) {
 #ifdef CSQC
-	int r = floor(random(0,3));
-	switch (r) {
-	case 0:
-		Weapons_ViewAnimation(SHOTGUN_IDLE1);
-		break;
-	case 1:
-		Weapons_ViewAnimation(SHOTGUN_IDLE2);
-		break;
-	case 2:
-		Weapons_ViewAnimation(SHOTGUN_IDLE3);
-		break;
-	}
+		int r = floor(random(0,3));
+		switch (r) {
+		case 0:
+			Weapons_ViewAnimation(SHOTGUN_IDLE1);
+			break;
+		case 1:
+			Weapons_ViewAnimation(SHOTGUN_IDLE2);
+			break;
+		case 2:
+			Weapons_ViewAnimation(SHOTGUN_IDLE3);
+			break;
+		}
 #endif
-	pl.w_idle_next = 15.0f;
+		pl.w_idle_next = 15.0f;
+	} else if (pl.a_ammo3 == SHOTTY_RELOAD_START) {
+#ifdef CSQC
+		Weapons_ViewAnimation(SHOTGUN_START_RELOAD);
+#endif
+		pl.a_ammo3 = SHOTTY_RELOAD;
+		pl.w_idle_next = 0.5f;
+	} else if (pl.a_ammo3 == SHOTTY_RELOAD) {
+#ifdef CSQC
+		Weapons_ViewAnimation(SHOTGUN_RELOAD);
+		pl.a_ammo1++;
+		pl.a_ammo2--;
+
+		if (pl.a_ammo2 <= 0 || pl.a_ammo1 >= 8) {
+			pl.a_ammo3 = SHOTTY_RELOAD_END;
+		}
+#else
+		pl.shotgun_mag++;
+		pl.ammo_buckshot--;
+		Weapons_UpdateAmmo(pl, pl.shotgun_mag, pl.ammo_buckshot, pl.a_ammo3);
+	
+		if (pl.ammo_buckshot <= 0 || pl.shotgun_mag >= 8) {
+			pl.a_ammo3 = SHOTTY_RELOAD_END;
+		}
+#endif
+		pl.w_idle_next = 0.5f;	
+	} else if (pl.a_ammo3 == SHOTTY_RELOAD_END) {
+#ifdef CSQC
+		Weapons_ViewAnimation(SHOTGUN_PUMP);
+#endif
+		pl.a_ammo3 = SHOTTY_IDLE;
+		pl.w_idle_next = 10.0f;
+		pl.w_attack_next = 0.5f;
+	}
 }
 void w_shotgun_crosshair(void)
 {
@@ -175,7 +282,7 @@ weapon_t w_shotgun =
 	w_shotgun_release,
 	w_shotgun_crosshair,
 	w_shotgun_precache,
-	__NULL__,
+	w_shotgun_pickup,
 	w_shotgun_vmodel,
 	w_shotgun_wmodel,
 	w_shotgun_pmodel,
