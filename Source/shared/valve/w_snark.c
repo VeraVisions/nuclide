@@ -20,7 +20,7 @@ void w_snark_pickup(void)
 {
 #ifdef SSQC
 	player pl = (player)self;
-	pl.ammo_snark = bound(0, pl.ammo_snark + 1, 10);
+	pl.ammo_snark = bound(0, pl.ammo_snark + 5, 10);
 #endif
 }
 
