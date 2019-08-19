@@ -19,6 +19,13 @@
 .vector view_ofs;
 int trace_endcontentsi;
 
+#ifdef VALVE
+int Items_CheckItem(entity pl, int i) {
+    player pm = (player)pl;
+	return pm.g_items & i ? TRUE:FALSE;
+}
+#endif
+
 /*
 =================
 PMove_Init
@@ -398,6 +405,12 @@ void PMove_Run_Acceleration(float flMovetime, float flBefore)
 					self.velocity[2] = 50;
 				}
 			} else {
+	#ifdef VALVE
+				if (self.flags & FL_CROUCHING && Items_CheckItem(self, 0x00008000)) {
+					self.velocity += v_forward * 512;
+					self.velocity[2] += 100;
+				}
+	#endif
 				self.velocity[2] += 240;
 			}
 
@@ -485,12 +498,7 @@ void PMove_Run_Acceleration(float flMovetime, float flBefore)
 			}
 		}
 	}
-
-	/*if (self.gflags & GF_FROZEN) {
-		self.velocity[0] = self.velocity[1] = 0;
-	}*/
 }
-
 /*
 =================
 PMove_Rebound
