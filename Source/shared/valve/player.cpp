@@ -1,4 +1,3 @@
-
 class player
 {
 	float health;
@@ -50,8 +49,11 @@ class player
 	float net_w_idle_next;
 	float netjumptime;
 	float netteleport_time;
+	int net_ammo1;
+	int net_ammo2;
+	int net_ammo3;
 
-	virtual void() set_model;
+	virtual void(string) set_model;
 	virtual void() gun_offset;
 	virtual void() draw;
 	virtual float() predraw;
@@ -71,3 +73,4 @@ class player
 	int ammo_hornet;
 #endif
 };
+
