@@ -69,7 +69,7 @@ valve/view.c
 view.c
 damage.c
 chat.c
-
+corpse.c
 vgui.cpp
 
 rewolf/hud.c

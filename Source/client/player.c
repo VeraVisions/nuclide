@@ -263,7 +263,7 @@ void player::postdraw(void)
 #endif
 }
 
-void player::set_model(void)
+void player::set_model(string mpath)
 {
 #ifdef VALVE
 	string modelout;
@@ -271,7 +271,7 @@ void player::set_model(void)
 	string skinout = "";
 	int i;
 
-	i = tokenizebyseparator(getplayerkeyvalue(entnum-1, "model"), "/");	
+	i = tokenizebyseparator(mpath, "/");	
 	if (i == 1) {
 		playertype = PLAYERTYPE_HL;
 		modelout = sprintf("models/player/%s/%s.mdl", argv(0), argv(0));

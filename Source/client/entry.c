@@ -438,6 +438,9 @@ void CSQC_Parse_Event(void)
 	float fHeader = readbyte();
 	
 	switch (fHeader) {
+		case EV_CORPSE:
+			Corpse_Parse();
+			break;
 		case EV_SPEAK:
 			string msg;
 			float pit;

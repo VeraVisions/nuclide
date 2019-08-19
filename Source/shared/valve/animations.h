@@ -107,7 +107,7 @@ q2_anim_t q2_anims[] = {
 	{ "cr_death", 173, 177 },
 	{ "death1", 178, 183 },
 	{ "death2", 184, 189 },
-	{ "death2", 190, 197 }
+	{ "death3", 190, 197 }
 };
 
 enum {

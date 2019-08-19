@@ -87,6 +87,7 @@ void SHData_GetItems(void)
 	pl.ammo_357 = 36;
 	pl.ammo_m203_grenade = 3;
 	pl.ammo_rocket = 5;
+	pl.ammo_snark = 10;
 	Weapons_AddItem(pl, WEAPON_CROWBAR);
 	Weapons_AddItem(pl, WEAPON_GLOCK);
 	Weapons_AddItem(pl, WEAPON_PYTHON);

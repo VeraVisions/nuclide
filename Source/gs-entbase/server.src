@@ -55,6 +55,7 @@
 ../gs-entbase/server/multi_manager.cpp
 ../gs-entbase/server/monster_furniture.cpp
 ../gs-entbase/server/monster_generic.cpp
+../gs-entbase/server/monstermaker.cpp
 ../gs-entbase/server/multisource.cpp
 ../gs-entbase/server/scripted_sequence.cpp
 #endlist
