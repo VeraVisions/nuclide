@@ -25,7 +25,7 @@ enum
 
 string w_satchel_vmodel(void)
 {
-	return "models/v_satchel_radio.mdl";
+	return "models/v_satchel.mdl";
 }
 string w_satchel_wmodel(void)
 {
@@ -139,15 +139,18 @@ void w_satchel_primary(void)
 	}
 	Weapons_UpdateAmmo(pl, pl.satchel_chg, pl.ammo_satchel, __NULL__);
 #else
-	if (!pl.a_ammo1) {
+	setmodel(pSeat->eViewModel, "models/v_satchel_radio.mdl");
+	if (pl.a_ammo1 <= 0) {
 		Weapons_ViewAnimation(RADIO_DRAW);
 	} else {
 		Weapons_ViewAnimation(RADIO_USE);
 	}
+	pl.a_ammo1++;
+	pl.a_ammo2--;
 #endif
 
 	pl.w_attack_next = 1.0f;
-	pl.w_idle_next = 2.5f;
+	pl.w_idle_next = 1.0f;
 }
 void w_satchel_secondary(void)
 {
@@ -177,7 +180,9 @@ void w_satchel_secondary(void)
 	pl.ammo_satchel--;
 	Weapons_UpdateAmmo(pl, pl.satchel_chg, pl.ammo_satchel, __NULL__);
 #else
+	pl.a_ammo1++;
 	pl.a_ammo2--;
+	setmodel(pSeat->eViewModel, "models/v_satchel_radio.mdl");
 	Weapons_ViewAnimation(RADIO_DRAW);
 #endif
 
@@ -190,15 +195,20 @@ void w_satchel_reload(void)
 }
 void w_satchel_release(void)
 {
-#ifdef CSQC
 	player pl = (player)self;
-	if (pl.w_idle_next) {
+
+	if (pl.w_idle_next > 0.0) {
 		return;
 	}
 
-	Weapons_ViewAnimation(RADIO_FIDGET);
-	pl.w_idle_next = 15.0f;
+#ifdef CSQC
+	if (pl.a_ammo1 <= 0) {
+		Weapons_ViewAnimation(SATCHEL_FIDGET);
+	} else {
+		Weapons_ViewAnimation(RADIO_FIDGET);
+	}
 #endif
+	pl.w_idle_next = 15.0f;
 }
 
 float w_satchel_aimanim(void)
