@@ -83,7 +83,7 @@ void w_snark_deploy(void)
 			if (trace_ent.classname == "player") {
 				float pit = 100 + random(0,10);
 				sound(self, CHAN_BODY, "squeek/sqk_deploy1.wav", 1.0, ATTN_NORM, pit);
-				Damage_Apply(trace_ent, self, 5, trace_endpos, FALSE);
+				Damage_Apply(trace_ent, self, 10, trace_endpos, FALSE);
 			}
 
 			if (self.aiment.health <= 0) {
@@ -136,7 +136,6 @@ void w_snark_primary(void)
 		return;
 	}
 #endif
-
 
 	/* Audio-Visual Bit */
 #ifdef CSQC
