@@ -55,7 +55,7 @@ void item_pickup::Respawn(void)
 		setmodel(this, m_oldModel);
 	}
 
-	setsize(this, [-24,-24,0], [24,24,48]);
+	setsize(this, [-16,-16,0], [16,16,16]);
 	
 	think = __NULL__;
 	nextthink = -1;

@@ -43,7 +43,7 @@ void item_battery::Respawn(void)
 	movetype = MOVETYPE_TOSS;
 	setmodel(this, m_oldModel);
 
-	setsize(this, [-8,-8,0], [8,8,48]);
+	setsize(this, [-16,-16,0], [16,16,16]);
 	setorigin(this, m_oldOrigin);
 
 	think = __NULL__;

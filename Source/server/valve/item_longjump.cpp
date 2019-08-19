@@ -41,7 +41,7 @@ void item_longjump::Respawn(void)
 {
 	solid = SOLID_TRIGGER;
 	movetype = MOVETYPE_TOSS;
-	setsize(this, VEC_HULL_MIN, VEC_HULL_MAX);
+	setsize(this, [-16,-16,0],[16,16,16]);
 	setorigin(this, m_oldOrigin);
 	setmodel(this, m_oldModel);
 
