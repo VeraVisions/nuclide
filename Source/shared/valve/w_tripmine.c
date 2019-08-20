@@ -53,9 +53,8 @@ void w_tripmine_pickup(void)
 
 void w_tripmine_draw(void)
 {
-#ifdef CSQC
 	Weapons_ViewAnimation(TRIPMINE_DRAW);
-#else
+#ifdef SSQC
 	player pl = (player)self;
 	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_tripmine, __NULL__);
 #endif
@@ -175,9 +174,8 @@ void w_tripmine_primary(void)
 		return;
 	}
 	
-#ifdef CSQC
 	Weapons_ViewAnimation(TRIPMINE_FIRE2);
-#else
+#ifdef SSQC
 	entity mine = spawn();
 	setmodel(mine, "models/v_tripmine.mdl");
 	setorigin(mine, trace_endpos);
@@ -197,7 +195,6 @@ void w_tripmine_primary(void)
 	} else {
 		Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_tripmine, __NULL__);
 	}
-	
 #endif
 
 	pl.w_attack_next = 0.5f;
@@ -224,17 +221,15 @@ void w_tripmine_release(void)
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(TRIPMINE_IDLE1);
-		pl.w_idle_next = 3.0f;
 		break;
 	case 1:
 		Weapons_ViewAnimation(TRIPMINE_IDLE2);
-		pl.w_idle_next = 2.0f;
 		break;
 	default:
 		Weapons_ViewAnimation(TRIPMINE_FIDGET);
-		pl.w_idle_next = 3.333333f;
 		break;
 	}
+	pl.w_idle_next = 3.0f;
 }
 
 float w_tripmine_aimanim(void)

@@ -99,7 +99,7 @@ float CSpraylogo::predraw(void)
 						getplayerkeyvalue(m_iOwnerID, "name")));
 
 		shaderforname(m_strLogoname, 
-		sprintf("{\ncull disable\npolygonOffset\n{\nmap $rt:%s\nblendFunc add\n}\n}", 
+		sprintf("{\ncull disable\npolygonOffset\n{\nmap $rt:%s\n}\n}", 
 				 m_strLogopath));
 	} else {
 		makevectors(m_vecAngles);

@@ -167,12 +167,14 @@ void Weapons_ViewAnimation(int i)
 #ifdef CSQC
 	View_PlayAnimation(i);
 #else
-	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
+	/*WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
 	WriteByte( MSG_MULTICAST, EV_VIEWMODEL );
 	WriteByte( MSG_MULTICAST, i );
 	msg_entity = self;
-	multicast( [0,0,0], MULTICAST_ONE );
+	multicast( [0,0,0], MULTICAST_ONE );*/
 #endif
+	player pl = (player)self;
+	pl.weapontime = 0.0f;
 }
 
 #ifdef CSQC

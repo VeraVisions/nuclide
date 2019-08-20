@@ -44,19 +44,16 @@ string w_chainsaw_deathmsg(void)
 
 void w_chainsaw_draw(void)
 {
-#ifdef CSQC
-	Weapons_ViewAnimation(CHAINSAW_DEPLOY);
-#else
+#ifdef SSQC
 	player pl = (player)self;
 	Weapons_UpdateAmmo(pl, __NULL__, __NULL__, __NULL__);
 #endif
+	Weapons_ViewAnimation(CHAINSAW_DEPLOY);
 }
 
 void w_chainsaw_holster(void)
 {
-#ifdef CSQC
 	Weapons_ViewAnimation(CHAINSAW_HOLSTER);
-#endif
 }
 void w_chainsaw_primary(void)
 {
@@ -67,13 +64,7 @@ void w_chainsaw_primary(void)
 	}
 
 	pl.a_ammo3 = 1; 
-#ifdef CSQC
-	if (pSeat->eViewModel.frame == CHAINSAW_STARTFIRE || pSeat->eViewModel.frame == CHAINSAW_CONTINUEFIRE) {
-		Weapons_ViewAnimation(CHAINSAW_CONTINUEFIRE);
-	} else {
-		Weapons_ViewAnimation(CHAINSAW_STARTFIRE);
-	}
-#else
+#ifdef SSQC
 	Weapons_MakeVectors();
 	vector src = pl.origin + pl.view_ofs;
 	traceline(src, src + (v_forward * 32), FALSE, pl);
@@ -125,7 +116,6 @@ void w_chainsaw_release(void)
 		pl.w_idle_next = 10.0f;
 	}
 
-#ifdef CSQC
 	int r = floor(random(0,2));
 	switch (r) {
 	case 0:
@@ -135,7 +125,6 @@ void w_chainsaw_release(void)
 		Weapons_ViewAnimation(CHAINSAW_IDLE2);
 		break;
 	}
-#endif
 }
 
 float w_chainsaw_aimanim(void)

@@ -51,19 +51,16 @@ string w_crowbar_deathmsg(void)
 
 void w_crowbar_draw(void)
 {
-#ifdef CSQC
-	Weapons_ViewAnimation(CROWBAR_DRAW);
-#else
+#ifdef SSQC
 	player pl = (player)self;
 	Weapons_UpdateAmmo(pl, __NULL__, __NULL__, __NULL__);
 #endif
+	Weapons_ViewAnimation(CROWBAR_DRAW);
 }
 
 void w_crowbar_holster(void)
 {
-#ifdef CSQC
 	Weapons_ViewAnimation(CROWBAR_HOLSTER);
-#endif
 }
 void w_crowbar_primary(void)
 {
@@ -73,34 +70,30 @@ void w_crowbar_primary(void)
 		return;
 	}
 
-#ifdef CSQC
 	Weapons_MakeVectors();
-	vector src = pl.origin + pl.view_ofs;
-	traceline(src, src + (v_forward * 32), FALSE, pl);
+    vector src = pl.origin + pl.view_ofs;
+    traceline(src, src + (v_forward * 32), FALSE, pl);
 
-	int r = floor(random(0,3));
-	switch (r) {
-	case 0:
-		Weapons_ViewAnimation(trace_fraction >= 1 ? CROWBAR_ATTACK1MISS:CROWBAR_ATTACK1HIT);
-		break;
-	case 1:
-		Weapons_ViewAnimation(trace_fraction >= 1 ? CROWBAR_ATTACK2MISS:CROWBAR_ATTACK2HIT);
-		break;
-	default:
-		Weapons_ViewAnimation(trace_fraction >= 1 ? CROWBAR_ATTACK3MISS:CROWBAR_ATTACK3HIT);
-	}
+    int r = floor(random(0,3));
+    switch (r) {
+    case 0:
+        Weapons_ViewAnimation(trace_fraction >= 1 ? CROWBAR_ATTACK1MISS:CROWBAR_ATTACK1HIT);
+        break;
+    case 1:
+        Weapons_ViewAnimation(trace_fraction >= 1 ? CROWBAR_ATTACK2MISS:CROWBAR_ATTACK2HIT);
+        break;
+    default:
+        Weapons_ViewAnimation(trace_fraction >= 1 ? CROWBAR_ATTACK3MISS:CROWBAR_ATTACK3HIT);
+    }
 
-	if (trace_fraction >= 1.0) {
-		pl.w_attack_next = 0.5f;
-	} else {
-		pl.w_attack_next = 0.25f;
-	}
-#else
-	Weapons_MakeVectors();
-	vector src = pl.origin + pl.view_ofs;
-	traceline(src, src + (v_forward * 32), FALSE, pl);
+    if (trace_fraction >= 1.0) {
+        pl.w_attack_next = 0.5f;
+    } else {
+        pl.w_attack_next = 0.25f;
+    }
 
-	if (self.flags & FL_CROUCHING)
+#ifdef SSQC
+	if (pl.flags & FL_CROUCHING)	
 		Animation_PlayerTopTemp(ANIM_SHOOTCROWBAR, 0.5f);
 	else
 		Animation_PlayerTopTemp(ANIM_CR_SHOOTCROWBAR, 0.42f);
@@ -108,9 +101,7 @@ void w_crowbar_primary(void)
 	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/cbar_miss1.wav", 1, ATTN_NORM);
 
 	if (trace_fraction >= 1.0) {
-		pl.w_attack_next = 0.5f;
 	} else {
-		pl.w_attack_next = 0.25f;
 		Effect_Impact(IMPACT_MELEE, trace_endpos, trace_plane_normal);
 		
 		if (trace_ent.takedamage) {
@@ -147,7 +138,6 @@ void w_crowbar_reload(void)
 }
 void w_crowbar_release(void)
 {
-#ifdef CSQC
 	player pl = (player)self;
 	if (pl.w_idle_next) {
 		return;
@@ -155,7 +145,6 @@ void w_crowbar_release(void)
 
 	Weapons_ViewAnimation(CROWBAR_IDLE);
 	pl.w_idle_next = 15.0f;
-#endif
 }
 
 float w_crowbar_aimanim(void)

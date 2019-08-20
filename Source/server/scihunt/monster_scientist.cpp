@@ -439,7 +439,6 @@ void monster_scientist::Physics(void)
 
 	input_angles = angles = v_angle;
 	input_timelength = frametime;
-	movetype = MOVETYPE_WALK;
 	
 	if (m_flPainTime > time) {
 		input_movevalues = [0,0,0];
@@ -466,8 +465,6 @@ void monster_scientist::Physics(void)
 	} else {
 		m_iFlags -= (flags & SCIF_FALLING);
 	}
-
-	movetype = MOVETYPE_NONE;
 }
 
 void monster_scientist::touch(void)
@@ -545,6 +542,7 @@ void monster_scientist::vDeath(int iHitBody)
 		return;
 	}
 
+	movetype = MOVETYPE_NONE;
 	solid = SOLID_CORPSE;
 	//takedamage = DAMAGE_NO;
 
@@ -572,7 +570,7 @@ void monster_scientist::Respawn(void)
 	setorigin(this, m_oldOrigin);
 	angles = v_angle;
 	solid = SOLID_SLIDEBOX;
-	movetype = MOVETYPE_NONE;
+	movetype = MOVETYPE_WALK;
 	setmodel(this, m_oldModel);
 	setsize(this, VEC_HULL_MIN + [0,0,36], VEC_HULL_MAX + [0,0,36]);
 	m_eUser = world;

@@ -720,9 +720,10 @@ void PMove_Run(void)
 
 #ifdef VALVE
 	player pl = (player)self;
+	
 	pl.w_attack_next -= input_timelength;
 	pl.w_idle_next -= input_timelength;
-
+	pl.weapontime += input_timelength;	
 	if (pl.w_attack_next <= 0) {
 		pl.w_attack_next = 0;
 	}

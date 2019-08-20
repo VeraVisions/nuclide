@@ -23,6 +23,7 @@ class player
 	float activeweapon;
 	float viewzoom;
 	vector view_ofs;
+	float weapontime;
 
 	/* Weapon specific */
 	int glock_mag;
@@ -49,12 +50,12 @@ class player
 	float netflags;
 	float net_w_attack_next;
 	float net_w_idle_next;
+	float net_weapontime;
 	float netjumptime;
 	float netteleport_time;
 	int net_ammo1;
     int net_ammo2;
     int net_ammo3;
-	virtual void(string) set_model;
 	virtual void() gun_offset;
 	virtual void() draw;
 	virtual float() predraw;

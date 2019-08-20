@@ -26,9 +26,8 @@ void w_snark_pickup(void)
 
 void w_snark_draw(void)
 {
-#ifdef CSQC
 	Weapons_ViewAnimation(SNARK_DRAW);
-#else
+#ifdef SSQC
 	player pl = (player)self;
 	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_snark, __NULL__);
 #endif
@@ -56,13 +55,12 @@ void w_snark_deploy(void)
 
 		if (self.weapon <= 0.0 && self.aiment == __NULL__) {
 			float shortest = 999999;
-			for (entity ef = world; (ef = find(ef, classname, "player"));) {
+			for (entity ef = world; (ef = findfloat(ef, movetype, MOVETYPE_WALK));) {
 				float len = vlen(ef.origin - self.origin);
-				if (len < shortest && ef.health > 0) {
+				if (ef.classname != "snark" && len < shortest && ef.health > 0) {
 					self.owner = __NULL__;
 					self.aiment = ef;
 					shortest = len;
-					setsize(self, [-16,-16,0],[16,16,32]);
 				}
 			}
 		} 
@@ -80,7 +78,7 @@ void w_snark_deploy(void)
 			makevectors(self.angles);
 			traceline(self.origin, self.origin + (v_forward * 128), 0, self);
 			
-			if (trace_ent.classname == "player") {
+			if (trace_ent.takedamage == DAMAGE_YES) {
 				float pit = 100 + random(0,10);
 				sound(self, CHAN_BODY, "squeek/sqk_deploy1.wav", 1.0, ATTN_NORM, pit);
 				Damage_Apply(trace_ent, self, 10, trace_endpos, FALSE);
@@ -102,6 +100,7 @@ void w_snark_deploy(void)
 	static void snark_pain(int i) { }
 	entity snark = spawn();
 	snark.owner = self;
+	snark.classname = "snark";
 	setmodel(snark, "models/w_squeak.mdl");
 	makevectors(self.v_angle);
 	setorigin(snark, self.origin + v_forward * 32);
@@ -137,9 +136,10 @@ void w_snark_primary(void)
 	}
 #endif
 
+	Weapons_ViewAnimation(SNARK_THROW);
+
 	/* Audio-Visual Bit */
 #ifdef CSQC
-	Weapons_ViewAnimation(SNARK_THROW);
 	pl.a_ammo2--;
 #else
 	w_snark_deploy();

@@ -11,9 +11,11 @@ void Player_Pain(int hit)
 	
 }
 
+void weaponbox_spawn(player);
 void Player_Death(int hit)
 {
 	player pl = (player)self;
+	weaponbox_spawn(pl);
 	pl.movetype = MOVETYPE_NONE;
 	pl.solid = SOLID_NOT;
 	pl.takedamage = DAMAGE_NO;
@@ -24,17 +26,16 @@ void Player_Death(int hit)
 	sound(pl, CHAN_AUTO, "fvox/flatline.wav", 1.0, ATTN_NORM);
 
 	/* Let's handle corpses on the clientside */
-	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
-    WriteByte(MSG_MULTICAST, EV_CORPSE);
-	WriteByte(MSG_MULTICAST, num_for_edict(pl) - 1);
-	WriteCoord(MSG_MULTICAST, pl.origin[0]);
-	WriteCoord(MSG_MULTICAST, pl.origin[1]);
-	WriteCoord(MSG_MULTICAST, pl.origin[2]);
-	WriteCoord(MSG_MULTICAST, pl.angles[0]);
-	WriteCoord(MSG_MULTICAST, pl.angles[1]);
-	WriteCoord(MSG_MULTICAST, pl.angles[2]);
-	msg_entity = pl;
-	multicast(pl.origin, MULTICAST_PVS);
+	entity corpse = spawn();
+	setorigin(corpse, pl.origin + [0,0,32]);
+	setmodel(corpse, pl.model);
+	setsize(corpse, VEC_HULL_MIN, VEC_HULL_MAX);
+	corpse.movetype = MOVETYPE_TOSS;
+	corpse.solid = SOLID_TRIGGER;
+	corpse.modelindex = pl.modelindex;
+	corpse.frame = ANIM_DIESIMPLE;
+	corpse.angles = pl.angles;
+	corpse.velocity = pl.velocity;
 }
 
 /*
@@ -121,6 +122,7 @@ float Player_SendEntity(entity ePEnt, float fChanged)
 	WriteCoord(MSG_ENTITY, pl.velocity[2]);
 	WriteFloat(MSG_ENTITY, pl.flags);
 	WriteByte(MSG_ENTITY, pl.activeweapon);
+	WriteFloat(MSG_ENTITY, pl.weapontime);
 	WriteFloat(MSG_ENTITY, pl.g_items);
 	WriteByte(MSG_ENTITY, pl.health);
 	WriteByte(MSG_ENTITY, pl.armor);

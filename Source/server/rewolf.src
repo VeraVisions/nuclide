@@ -56,8 +56,11 @@ valve/items.cpp
 valve/item_longjump.cpp
 valve/item_suit.cpp
 valve/item_healthkit.cpp
+valve/item_battery.cpp
+valve/item_weaponbox.cpp
+valve/world_items.cpp
 valve/ammo.cpp
-../shared/valve/weapons.c
+../shared/valve/weapons.c 
 ../shared/valve/weapon_common.c
 
 spawn.c

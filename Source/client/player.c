@@ -51,21 +51,6 @@ string sPModels[CS_WEAPON_COUNT - 1] = {
 void player::gun_offset(void)
 {
 	vector v1, v2;
-#ifdef VALVE
-	if (playertype == PLAYERTYPE_Q2) {
-		p_model.scale = 1.4;
-		if (flags & FL_CROUCHING) {
-			setorigin(p_model, origin + [0,0, 16]);
-		} else {
-			setorigin(p_model, origin + [0,0, -2]);
-		}
-		p_model.angles = this.angles;
-		p_model.frame = frame;
-		p_model.frame2 = frame2;
-		p_model.lerpfrac = lerpfrac;
-		return;
-	}
-#endif
 	/* Set it to something consistent */
 	this.p_model.angles = this.angles;
 
@@ -103,39 +88,7 @@ void player::draw(void)
 	this.subblendfrac =
 	this.subblend2frac = this.pitch / 90;
 
-#warning "FIXME: This ifdef needs to go in the future"
-#ifdef VALVE
-	if (playertype == PLAYERTYPE_HL) {
-		/* Only bother updating the model if the weapon has changed */
-		if (this.lastweapon != this.activeweapon) {
-			if (this.activeweapon) {
-			#ifdef CSTRIKE
-				setmodel(this.p_model, sPModels[this.activeweapon - 1]);
-			#else
-				setmodel(this. p_model, Weapons_GetPlayermodel(this.activeweapon));
-			#endif
-			} else {
-				setmodel(this.p_model, "");
-			}
-			this.lastweapon = this.activeweapon;
-	    	
-			/* Update the bone index of the current p_ model so we can calculate the offset
-			 * and get the weapon bone ID for the current player model */
-			this.p_hand_bone = gettagindex(this, "Bip01 R Hand");
-			this.p_model_bone = gettagindex(this.p_model, "Bip01 R Hand");
-		}
-		Animation_PlayerUpdate();
-	} else {
-		if (!this.p_model.modelindex) {
-			tokenizebyseparator(getplayerkeyvalue(entnum-1, "model"), "/");
-			setmodel(this.p_model, sprintf("players/%s/weapon.md2", argv(0)));
-		}
-		Animation_Q2PlayerUpdate();
-		return;
-	}
-#else
 	Animation_PlayerUpdate();
-#endif
 
 	/*makevectors([0, this.angles[1], 0]);
 	float fDirection = dotproduct(this.velocity, v_forward);
@@ -225,18 +178,6 @@ float player::predraw(void)
 	draw();
 	gun_offset();
 
-#ifdef VALVE
-	/* Size of appearance and bounding box is different from game to game */
-	if (playertype == PLAYERTYPE_Q2) {
-		scale = 1.4;
-		if (flags & FL_CROUCHING) {
-			setorigin(this, this.origin + [0,0, 16]);
-		} else {
-			setorigin(this, this.origin + [0,0, -2]);
-		}
-	}
-#endif
-
 	if (autocvar_cl_thirdperson == TRUE || this.entnum != player_localentnum) {
 		Voice_Draw3D(this);
 		addentity(this);
@@ -250,56 +191,4 @@ float player::predraw(void)
 
 void player::postdraw(void)
 {
-#ifdef VALVE
-	/* Correct offsets */
-	if (playertype == PLAYERTYPE_Q2) {
-		if (flags & FL_CROUCHING) {
-			setorigin(this, this.origin - [0,0, 16]);
-		} else {
-			setorigin(this, this.origin - [0,0, -2]);
-		}
-		scale = 1.0;
-	}
-#endif
-}
-
-void player::set_model(string mpath)
-{
-#ifdef VALVE
-	string modelout;
-	string skinpath = "";
-	string skinout = "";
-	int i;
-
-	i = tokenizebyseparator(mpath, "/");	
-	if (i == 1) {
-		playertype = PLAYERTYPE_HL;
-		modelout = sprintf("models/player/%s/%s.mdl", argv(0), argv(0));
-	} else {
-		playertype = PLAYERTYPE_Q2;
-		modelout = sprintf("players/%s/tris.md2", argv(0));
-		skinout = sprintf("players/%s/%s.pcx", argv(0), argv(1));
-		skinpath = sprintf("players/%s/%s.skin", argv(0), argv(1));
-		
-		/* If the skin doesn't exist, make sure we fail */
-		if (whichpack(skinout)) {
-		} else {
-			print( sprintf( "Skin %s does not exist.\n", skinout ) );
-			skinpath = __NULL__;
-			skinout = __NULL__;
-			modelout = __NULL__;
-		}
-	}
-
-	if (modelout && whichpack(modelout)) {
-		setmodel(this, modelout);
-		if (playertype == PLAYERTYPE_Q2) {
-			setcustomskin(this, skinpath, sprintf("replace \"\" \"%s\"", skinout));
-		}
-	} else {
-		modelout = "models/player.mdl";
-		setmodel(this, modelout);
-		playertype = PLAYERTYPE_HL;
-	}
-#endif
 }

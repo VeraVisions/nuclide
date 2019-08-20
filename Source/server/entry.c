@@ -171,7 +171,7 @@ void initents(void)
 	precache_sound("player/pl_step2.wav");
 	precache_sound("player/pl_step3.wav");
 	precache_sound("player/pl_step4.wav");
-
+	precache_sound("player/pl_fallpain3.wav");
 	precache_sound("items/9mmclip1.wav");
 	precache_sound("items/gunpickup2.wav");
 	precache_sound("common/wpn_select.wav");

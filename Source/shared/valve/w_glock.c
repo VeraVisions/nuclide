@@ -53,18 +53,15 @@ void w_glock_pickup(void)
 
 void w_glock_draw(void)
 {
-#ifdef CSQC
 	Weapons_ViewAnimation(GLOCK_DRAW);
-#else
+#ifdef SSQC
 	player pl = (player)self;
 	Weapons_UpdateAmmo(pl, pl.glock_mag, pl.ammo_9mm, __NULL__);
 #endif
 }
 void w_glock_holster(void)
 {
-#ifdef CSQC
 	Weapons_ViewAnimation(GLOCK_HOLSTER);
-#endif
 }
 void w_glock_primary(void)
 {
@@ -77,12 +74,6 @@ void w_glock_primary(void)
 #ifdef CSQC
 	if (!pl.a_ammo1) {
 		return;
-	}
-
-	if (pl.a_ammo1) {
-		Weapons_ViewAnimation(GLOCK_SHOOT);
-	} else {
-		Weapons_ViewAnimation(GLOCK_SHOOT_EMPTY);
 	}
 
 	Weapons_ViewPunchAngle([-2,0,0]);
@@ -104,6 +95,12 @@ void w_glock_primary(void)
 	Weapons_UpdateAmmo(pl, pl.glock_mag, pl.ammo_9mm, __NULL__);
 #endif
 
+	if (pl.a_ammo1) {
+        Weapons_ViewAnimation(GLOCK_SHOOT);
+    } else {
+        Weapons_ViewAnimation(GLOCK_SHOOT_EMPTY);
+    }
+
 	pl.w_attack_next = 0.3f;
 	pl.w_idle_next = 5.0f;
 }
@@ -120,12 +117,6 @@ void w_glock_secondary(void)
 		return;
 	}
 
-	if (pl.a_ammo1) {
-		Weapons_ViewAnimation(GLOCK_SHOOT);
-	} else {
-		Weapons_ViewAnimation(GLOCK_SHOOT_EMPTY);
-	}
- 
 	Weapons_ViewPunchAngle([-2,0,0]);
 #else
 	if (!pl.glock_mag) {
@@ -146,6 +137,12 @@ void w_glock_secondary(void)
 	Weapons_UpdateAmmo(pl, pl.glock_mag, pl.ammo_9mm, __NULL__);
 #endif
 
+	if (pl.a_ammo1) {
+        Weapons_ViewAnimation(GLOCK_SHOOT);
+    } else {
+        Weapons_ViewAnimation(GLOCK_SHOOT_EMPTY);
+    }
+
 	pl.w_attack_next = 0.2f;
 	pl.w_idle_next = 5.0f;
 }
@@ -163,11 +160,6 @@ void w_glock_reload(void)
 		return;
 	}
 
-	if (pl.a_ammo1) {
-		Weapons_ViewAnimation(GLOCK_RELOAD);
-	} else {
-		Weapons_ViewAnimation(GLOCK_RELOAD_EMPTY);
-	}
 #else
 	if (pl.glock_mag >= 18) {
 		return;
@@ -180,12 +172,17 @@ void w_glock_reload(void)
 	Weapons_UpdateAmmo(pl, pl.glock_mag, pl.ammo_9mm, __NULL__);
 #endif
 
+	if (pl.a_ammo1) {
+        Weapons_ViewAnimation(GLOCK_RELOAD);
+    } else {
+        Weapons_ViewAnimation(GLOCK_RELOAD_EMPTY);
+    }
+
 	pl.w_attack_next = 2.0f;
 	pl.w_idle_next = 10.0f;
 }
 void w_glock_release(void)
 {
-#ifdef CSQC
 	player pl = (player)self;
 	if (pl.w_idle_next > 0) {
 		return;
@@ -204,7 +201,6 @@ void w_glock_release(void)
 		break;
 	}
 	pl.w_idle_next = 10.0f;
-#endif
 }
 
 float w_glock_aimanim(void)

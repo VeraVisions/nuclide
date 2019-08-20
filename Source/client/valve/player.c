@@ -16,10 +16,9 @@ void Player_ReadEntity(float flIsNew)
 		pl.drawmask = MASK_ENGINE;
 		pl.customphysics = Empty;
 		setsize( pl, VEC_HULL_MIN, VEC_HULL_MAX );
-		pl.set_model(getplayerkeyvalue(pl.entnum - 1, "model"));
 	}
 
-	readshort();
+	pl.modelindex = readshort();
 	pl.origin[0] = readcoord();
 	pl.origin[1] = readcoord();
 	pl.origin[2] = readcoord();
@@ -31,6 +30,7 @@ void Player_ReadEntity(float flIsNew)
 	pl.velocity[2] = readcoord();
 	pl.flags = readfloat();
 	pl.activeweapon = readbyte();
+	pl.weapontime = readfloat();
 	pl.g_items = readfloat();
 	pl.health = readbyte();
 	pl.armor = readbyte();
@@ -40,13 +40,8 @@ void Player_ReadEntity(float flIsNew)
 	pl.jumptime = readfloat();
 	pl.teleport_time = readfloat();
 	
-	if (pl.playertype == 0) {
-		pl.baseframe = readbyte();
-		pl.frame = readbyte();
-	} else {
-		readbyte();
-		readbyte();
-	}
+	pl.baseframe = readbyte();
+	pl.frame = readbyte();
 
 	pl.a_ammo1 = readbyte();
 	pl.a_ammo2 = readbyte();

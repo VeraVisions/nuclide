@@ -44,6 +44,14 @@ string w_egon_deathmsg(void)
 	return "";
 }
 
+void w_egon_pickup(void)
+{
+#ifdef SSQC
+	player pl = (player)self;
+	pl.ammo_uranium = bound(0, pl.ammo_uranium +20, 100);
+#endif
+}
+
 void w_egon_draw(void)
 {
 	player pl = (player)self;
@@ -66,17 +74,32 @@ void w_egon_primary(void)
 		return;
 	}
 
+	/* Ammo check */
+#ifdef CSQC
+	if (pl.a_ammo2 <= 0) {
+		return;
+	}
+#else
+	if (pl.ammo_uranium <= 0) {
+		return;
+	}
+#endif
+
 #ifdef CSQC
 	if (Weapons_GetAnimation() == EGON_IDLE1)
 		Weapons_ViewAnimation(EGON_ALTFIREON);
 	else if (Weapons_GetAnimation() == EGON_ALTFIREON)
 		Weapons_ViewAnimation(EGON_ALTFIRECYCLE);
+	
+	pl.a_ammo2--;
 #else
 	Weapons_MakeVectors();
 	vector src = Weapons_GetCameraPos();
 	vector endpos = src + v_forward * 1024;
 	traceline(src, endpos, FALSE, pl);
-	Damage_Radius(trace_endpos, pl, 10, 64, TRUE);
+	Damage_Radius(trace_endpos, pl, 14, 64, TRUE);
+	pl.ammo_uranium--;
+	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_uranium, __NULL__);
 #endif
 
 	pl.w_attack_next = 0.2f;
@@ -111,6 +134,7 @@ void w_egon_crosshair(void)
 	static vector cross_pos;
 	cross_pos = (video_res / 2) + [-12,-12];
 	drawsubpic(cross_pos, [24,24], "sprites/crosshairs.spr_0.tga", [72/128,48/128], [0.1875, 0.1875], [1,1,1], 1, DRAWFLAG_NORMAL);
+	HUD_DrawAmmo2();
 #endif
 }
 
@@ -143,7 +167,7 @@ weapon_t w_egon =
 	w_egon_release,
 	w_egon_crosshair,
 	w_egon_precache,
-	__NULL__,
+	w_egon_pickup,
 	w_egon_vmodel,
 	w_egon_wmodel,
 	w_egon_pmodel,

@@ -45,9 +45,8 @@ string w_hammer_deathmsg(void)
 
 void w_hammer_draw(void)
 {
-#ifdef CSQC
 	Weapons_ViewAnimation(HAMMER_DRAW);
-#else
+#ifdef SSQC
 	player pl = (player)self;
 	Weapons_UpdateAmmo(pl, __NULL__, __NULL__, __NULL__);
 #endif
@@ -55,52 +54,34 @@ void w_hammer_draw(void)
 
 void w_hammer_holster(void)
 {
-#ifdef CSQC
 	Weapons_ViewAnimation(HAMMER_HOLSTER);
-#endif
 }
 void w_hammer_primary(void)
 {
 	player pl = (player)self;
 
-#ifdef CSQC
-	if (!pl.w_attack_next) {
-		if (pSeat->eViewModel.frame != HAMMER_HOLSTER2) {
-			Weapons_ViewAnimation(HAMMER_HOLSTER2);
-			pl.w_attack_next = 0.5f;
-		}
-	}
-#else
 	if (!pl.w_attack_next) {
 		/* Hack */
 		if (pl.a_ammo1 != 1) {
+			Weapons_ViewAnimation(HAMMER_HOLSTER2);
 			pl.a_ammo1 = 1;
 			pl.w_attack_next = 0.5f;
 		}
 	}
-#endif
 	pl.w_idle_next = 2.5f;
 }
 void w_hammer_secondary(void)
 {
 	player pl = (player)self;
 
-#ifdef CSQC
-	if (!pl.w_attack_next) {
-		if (pSeat->eViewModel.frame != HAMMER_HOLSTER3) {
-			Weapons_ViewAnimation(HAMMER_HOLSTER3);
-			pl.w_attack_next = 0.5f;
-		}
-	}
-#else
 	if (!pl.w_attack_next) {
 		/* Hack */
 		if (pl.a_ammo1 != 2) {
+			Weapons_ViewAnimation(HAMMER_HOLSTER3);
 			pl.a_ammo1 = 2;
 			pl.w_attack_next = 0.5f;
 		}
 	}
-#endif
 	pl.w_idle_next = 2.5f;
 }
 void w_hammer_reload(void)
@@ -115,11 +96,10 @@ void w_hammer_release(void)
 		return;
 	}
 
-#ifdef CSQC
-	if (pSeat->eViewModel.frame == HAMMER_HOLSTER2) {
+	if (pl.a_ammo1 == 1) {
 		Weapons_ViewAnimation(HAMMER_ATTACK1);
 		pl.w_attack_next = 1.0f;
-	} else if (pSeat->eViewModel.frame == HAMMER_HOLSTER3) {
+	} else if (pl.a_ammo1 == 2) {
 		Weapons_ViewAnimation(HAMMER_ATTACK2);
 		pl.w_attack_next = 0.75f;
 	}
@@ -142,7 +122,8 @@ void w_hammer_release(void)
 		break;
 	}
 	pl.w_idle_next = 10.0f;
-#else
+
+#ifdef SSQC
 	int hitsound = 0;
 	vector src = pl.origin + pl.view_ofs;
 	makevectors(pl.v_angle);
@@ -202,8 +183,8 @@ void w_hammer_release(void)
 	}
 
 	/* Reset the hack */
-	pl.a_ammo1 = 0;
 #endif
+	pl.a_ammo1 = 0;
 }
 
 float w_hammer_aimanim(void)

@@ -75,7 +75,6 @@ cstrike/hudscope.c
 cstrike/hudweaponselect.c
 cstrike/hudorbituaries.c
 cstrike/hud.c
-corpse.c
 vgui.cpp
 cstrike/vgui_buymenu.cpp
 cstrike/vgui_chooseteam.cpp

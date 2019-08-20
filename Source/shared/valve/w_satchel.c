@@ -51,15 +51,14 @@ void w_satchel_pickup(void)
 {
 #ifdef SSQC
 	player pl = (player)self;
-	pl.ammo_satchel = bound(0, pl.ammo_satchel + 1, 15);
+	pl.ammo_satchel = bound(0, pl.ammo_satchel + 1, 5);
 #endif
 }
 
 void w_satchel_draw(void)
 {
-#ifdef CSQC
 	Weapons_ViewAnimation(SATCHEL_DRAW);
-#else
+#ifdef SSQC
 	player pl = (player)self;
 	Weapons_UpdateAmmo(pl, pl.satchel_chg, pl.ammo_satchel, __NULL__);
 #endif
@@ -120,6 +119,12 @@ void w_satchel_primary(void)
 	}
 #endif
 
+	if (pl.a_ammo1 <= 0) {
+        Weapons_ViewAnimation(RADIO_DRAW);
+    } else {
+        Weapons_ViewAnimation(RADIO_USE);
+    }
+
 #ifdef SSQC
 	if (!pl.satchel_chg) {
 		vector throw;
@@ -140,11 +145,6 @@ void w_satchel_primary(void)
 	Weapons_UpdateAmmo(pl, pl.satchel_chg, pl.ammo_satchel, __NULL__);
 #else
 	setmodel(pSeat->eViewModel, "models/v_satchel_radio.mdl");
-	if (pl.a_ammo1 <= 0) {
-		Weapons_ViewAnimation(RADIO_DRAW);
-	} else {
-		Weapons_ViewAnimation(RADIO_USE);
-	}
 	pl.a_ammo1++;
 	pl.a_ammo2--;
 #endif
@@ -183,8 +183,9 @@ void w_satchel_secondary(void)
 	pl.a_ammo1++;
 	pl.a_ammo2--;
 	setmodel(pSeat->eViewModel, "models/v_satchel_radio.mdl");
-	Weapons_ViewAnimation(RADIO_DRAW);
 #endif
+
+	Weapons_ViewAnimation(RADIO_DRAW);
 
 	pl.w_attack_next = 1.0f;
 	pl.w_idle_next = 2.5f;
@@ -201,13 +202,11 @@ void w_satchel_release(void)
 		return;
 	}
 
-#ifdef CSQC
 	if (pl.a_ammo1 <= 0) {
 		Weapons_ViewAnimation(SATCHEL_FIDGET);
 	} else {
 		Weapons_ViewAnimation(RADIO_FIDGET);
 	}
-#endif
 	pl.w_idle_next = 15.0f;
 }
 

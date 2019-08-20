@@ -52,9 +52,8 @@ string w_python_deathmsg(void)
 
 void w_python_draw(void)
 {
-#ifdef CSQC
 	Weapons_ViewAnimation(PYTHON_DRAW);
-#else
+#ifdef SSQC
 	player pl = (player)self;
 	Weapons_UpdateAmmo(pl, pl.python_mag, pl.ammo_357, __NULL__);
 #endif
@@ -62,9 +61,7 @@ void w_python_draw(void)
 
 void w_python_holster(void)
 {
-#ifdef CSQC
 	Weapons_ViewAnimation(PYTHON_HOLSTER);
-#endif
 }
 void w_python_primary(void)
 {
@@ -97,10 +94,9 @@ void w_python_primary(void)
 	Weapons_UpdateAmmo(pl, pl.python_mag, pl.ammo_357, __NULL__);
 #else
 	pl.a_ammo1--;
-	Weapons_ViewAnimation(PYTHON_FIRE1);
 	Weapons_ViewPunchAngle([-10,0,0]);
 #endif
-
+	Weapons_ViewAnimation(PYTHON_FIRE1);
 	pl.w_attack_next = 0.75f;
 	pl.w_idle_next = 10.0f;
 }
@@ -143,25 +139,21 @@ void w_python_reload(void)
 #endif
 
 	/* Audio-Visual bit */
-#ifdef CSQC
 	Weapons_ViewAnimation(PYTHON_RELOAD);
-#else
+#ifdef SSQC
 	Weapons_ReloadWeapon(pl, player::python_mag, player::ammo_357, 6);
 	Weapons_UpdateAmmo(pl, pl.python_mag, pl.ammo_357, __NULL__);	
 #endif
-
 	pl.w_attack_next = 3.25f;
 	pl.w_idle_next = 10.0f;
 }
 void w_python_release(void)
 {
 
-#ifdef CSQC
 	player pl = (player)self;
-	if (pl.w_idle_next > Math_Time()) {
+	if (pl.w_idle_next) {
 		return;
 	}
-
 	int r = floor(random(0,3));
 	switch (r) {
 	case 0:
@@ -174,9 +166,7 @@ void w_python_release(void)
 		Weapons_ViewAnimation(PYTHON_IDLE3);
 		break;
 	}
-
-	pl.w_idle_next = Math_Time() + 15.0f;
-#endif
+	pl.w_idle_next = 15.0f;
 }
 void w_python_crosshair(void)
 {

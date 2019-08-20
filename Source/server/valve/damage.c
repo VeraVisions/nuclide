@@ -170,8 +170,11 @@ void Damage_Radius(vector org, entity eAttacker, float fDamage, float fRadius, i
 
 			if (fDiff > 0) {
 				Damage_Apply(c, eAttacker, fDamage, vecRealPos, 0);
+				if (c.movetype == MOVETYPE_WALK) {
+					makevectors(vectoangles(c.origin - org));
+					c.velocity += v_forward * (fDamage * 5); 
+				}
 			}
-			
 		}
 	}
 }

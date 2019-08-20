@@ -57,9 +57,8 @@ string w_mp5_deathmsg(void)
 
 void w_mp5_draw(void)
 {
-#ifdef CSQC
 	Weapons_ViewAnimation(MP5_DRAW);
-#else
+#ifdef SSQC
 	player pl = (player)self;
 	Weapons_UpdateAmmo(pl, pl.mp5_mag, pl.ammo_9mm, pl.ammo_m203_grenade);
 #endif
@@ -67,9 +66,7 @@ void w_mp5_draw(void)
 
 void w_mp5_holster(void)
 {
-#ifdef CSQC
 	Weapons_ViewAnimation(MP5_DRAW);
-#endif
 }
 
 void w_mp5_primary(void)
@@ -90,14 +87,14 @@ void w_mp5_primary(void)
 	}
 #endif
 
+	if (random() < 0.5) {
+        Weapons_ViewAnimation(MP5_FIRE1);
+    } else {
+        Weapons_ViewAnimation(MP5_FIRE2);
+    }
+
 	/* Actual firing */	
 #ifdef CSQC
-	if (random() < 0.5) {
-		Weapons_ViewAnimation(MP5_FIRE1);
-	} else {
-		Weapons_ViewAnimation(MP5_FIRE2);
-	}
-
 	pl.a_ammo1--;
 	Weapons_ViewPunchAngle([random(-2, 2),0,0]);
 #else
@@ -134,7 +131,6 @@ void w_mp5_secondary(void)
 	if (pl.a_ammo3 <= 0) {
 		return;
 	}
-	Weapons_ViewAnimation(MP5_GRENADE);
 	Weapons_ViewPunchAngle([-10,0,0]);
 	pl.a_ammo3--;
 #else
@@ -167,7 +163,7 @@ void w_mp5_secondary(void)
 	pl.ammo_m203_grenade--;
 	Weapons_UpdateAmmo(pl, pl.mp5_mag, pl.ammo_9mm, pl.ammo_m203_grenade);
 #endif
-
+	Weapons_ViewAnimation(MP5_GRENADE);
 	pl.w_attack_next = 1.0f;
 	pl.w_idle_next = 10.0f;
 }
@@ -196,9 +192,9 @@ void w_mp5_reload(void)
 	}
 #endif
 
-#ifdef CSQC
 	Weapons_ViewAnimation(MP5_RELOAD);
-#else
+
+#ifdef SSQC
 	Weapons_ReloadWeapon(pl, player::mp5_mag, player::ammo_9mm, 50);
 	Weapons_UpdateAmmo(pl, pl.mp5_mag, pl.ammo_9mm, pl.ammo_m203_grenade);
 #endif
@@ -209,7 +205,6 @@ void w_mp5_reload(void)
 
 void w_mp5_release(void)
 {
-#ifdef CSQC
 	player pl = (player)self;
 	if (pl.w_idle_next > 0.0) {
 		return;
@@ -222,7 +217,6 @@ void w_mp5_release(void)
 	}
 
 	pl.w_idle_next = 15.0f;
-#endif
 }
 
 void w_mp5_crosshair(void)

@@ -191,9 +191,9 @@ void View_DrawViewModel(void)
 		View_CalcBob();
 		View_UpdateWeapon(eViewModel, eMuzzleflash);
 		float fBaseTime = eViewModel.frame1time;
-		eViewModel.frame1time += clframetime;
-		eViewModel.frame2time += clframetime;
-		processmodelevents(eViewModel.modelindex, eViewModel.frame, fBaseTime, eViewModel.frame1time, Event_ProcessModel);
+		eViewModel.frame2time = pl.weapontime;
+    	eViewModel.frame1time = pl.weapontime;
+		//processmodelevents(eViewModel.modelindex, eViewModel.frame, fBaseTime, eViewModel.frame1time, Event_ProcessModel);
 	}
 	
 	makevectors(view_angles);

@@ -54,8 +54,6 @@ void w_cannon_reload(void)
 	if (!pl.a_ammo2) {
 		return;
 	}
-
-	Weapons_ViewAnimation(CANNON_RELOAD);
 #else
 	if (pl.cannon_mag >= 2) {
 		return;
@@ -66,8 +64,8 @@ void w_cannon_reload(void)
 
 	Weapons_ReloadWeapon(pl, player::cannon_mag, player::ammo_buckshot, 2);
 	Weapons_UpdateAmmo(pl, pl.cannon_mag, pl.ammo_buckshot, __NULL__);
-
 #endif
+	Weapons_ViewAnimation(CANNON_RELOAD);
 
 	pl.w_attack_next = 3.0f;
 	pl.w_idle_next = 3.0f;
@@ -85,16 +83,14 @@ void w_cannon_draw(void)
 {
 #ifdef SSQC
 	player pl = (player)self;
-	Weapons_ViewAnimation(CANNON_DEPLOY);
 	Weapons_UpdateAmmo(pl, pl.cannon_mag, pl.ammo_buckshot, __NULL__);
 #endif
+	Weapons_ViewAnimation(CANNON_DEPLOY);
 }
 
 void w_cannon_holster(void)
 {
-#ifdef SSQC
 	Weapons_ViewAnimation(CANNON_PUTAWAY);
-#endif
 }
 void w_cannon_primary(void)
 {
@@ -110,7 +106,6 @@ void w_cannon_primary(void)
 		return;
 	}
 
-	Weapons_ViewAnimation(CANNON_FIREBOTH);
 	Weapons_ViewPunchAngle([-5,0,0]);
 #else
 	if (pl.cannon_mag != 2) {
@@ -123,7 +118,7 @@ void w_cannon_primary(void)
 	Weapons_PlaySound(pl, CHAN_WEAPON, "cannon/fire.wav", 1, ATTN_NORM);
 	Weapons_UpdateAmmo(pl, pl.cannon_mag, pl.ammo_buckshot, __NULL__);
 #endif
-
+	Weapons_ViewAnimation(CANNON_FIREBOTH);
 	pl.w_attack_next = 1.5f;
 	pl.w_idle_next = 2.5f;
 }
@@ -141,12 +136,6 @@ void w_cannon_secondary(void)
 		return;
 	}
 
-	if (pl.a_ammo1 == 2) {
-		Weapons_ViewAnimation(CANNON_FIRELEFT);
-	} else {
-		Weapons_ViewAnimation(CANNON_FIRERIGHT);
-	}
-
 	Weapons_ViewPunchAngle([-5,0,0]);
 #else
 	if (!pl.cannon_mag) {
@@ -159,6 +148,12 @@ void w_cannon_secondary(void)
 	Weapons_PlaySound(pl, CHAN_WEAPON, "cannon/fire.wav", 1, ATTN_NORM);
 	Weapons_UpdateAmmo(pl, pl.cannon_mag, pl.ammo_buckshot, __NULL__);
 #endif
+
+	if (pl.a_ammo1 == 2) {
+        Weapons_ViewAnimation(CANNON_FIRELEFT);
+    } else {
+        Weapons_ViewAnimation(CANNON_FIRERIGHT);
+    }
 
 	pl.w_attack_next = 1.5f;
 	pl.w_idle_next = 2.5f;

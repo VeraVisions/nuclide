@@ -56,9 +56,8 @@ void w_rpg_pickup(void)
 
 void w_rpg_draw(void)
 {
-#ifdef CSQC
 	Weapons_ViewAnimation(RPG_DRAW1);
-#else
+#ifdef SSQC
 	player pl = (player)self;
 	Weapons_UpdateAmmo(pl, pl.rpg_mag, pl.ammo_rocket, __NULL__);
 #endif
@@ -86,8 +85,9 @@ void w_rpg_primary(void)
 	}
 #endif
 
-#ifdef CSQC
 	Weapons_ViewAnimation(RPG_FIRE2);
+
+#ifdef CSQC
 	pl.a_ammo1--;
 #else
 	static void Rocket_Touch(void) {
@@ -163,13 +163,11 @@ void w_rpg_reload(void)
 #endif
 
 	/* Audio-Visual Bit */
-#ifdef CSQC
-	Weapons_ViewAnimation(RPG_RELOAD);
-#else
+#ifdef SSQC
 	Weapons_ReloadWeapon(pl, player::rpg_mag, player::ammo_rocket, 1);
 	Weapons_UpdateAmmo(pl, pl.rpg_mag, pl.ammo_rocket, __NULL__);
 #endif
-	
+	Weapons_ViewAnimation(RPG_RELOAD);	
 
 	pl.w_attack_next = 2.25f;
 	pl.w_idle_next = 10.0f;

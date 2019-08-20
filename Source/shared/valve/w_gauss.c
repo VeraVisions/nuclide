@@ -19,6 +19,8 @@ enum
 	GAUSS_DRAW
 };
 
+void w_gauss_release(void);
+
 void w_gauss_precache(void)
 {
 	precache_model("models/v_gauss.mdl");
@@ -48,11 +50,18 @@ string w_gauss_deathmsg(void)
 	return "";
 }
 
+void w_gauss_pickup(void)
+{
+#ifdef SSQC
+    player pl = (player)self;
+    pl.ammo_uranium = bound(0, pl.ammo_uranium +20, 100);
+#endif
+}
+
 void w_gauss_draw(void)
 {
-#ifdef CSQC
 	Weapons_ViewAnimation(GAUSS_DRAW);
-#else
+#ifdef SSQC
 	player pl = (player)self;
 	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_uranium, __NULL__);
 #endif
@@ -202,8 +211,23 @@ void w_gauss_primary(void)
 		return;
 	}
 
+	/* Ammo check */
 #ifdef CSQC
+	if (pl.a_ammo2 < 2) {
+		return;
+	}
+#else
+	if (pl.ammo_uranium < 2) {
+		return;
+	}
+#endif
+
 	Weapons_ViewAnimation(GAUSS_FIRE2);
+#ifdef CSQC
+	pl.a_ammo2 -= 2;
+#else
+	pl.ammo_uranium -= 2;
+	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_uranium, __NULL__);	
 #endif
 	w_gauss_fire(1);
 
@@ -216,7 +240,7 @@ void w_gauss_secondary(void)
 
 #ifdef CSQC
 	if (pl.a_ammo3)
-		soundupdate(pl, CHAN_WEAPON, "", 2, ATTN_NORM, 100 + (200 * (pl.a_ammo2/255)), 0, 0);
+		soundupdate(pl, CHAN_WEAPON, "", 2, ATTN_NORM, 100 + (200 * (pl.a_ammo1/255)), 0, 0);
 #endif
 	
 	if (pl.w_attack_next) {
@@ -224,75 +248,98 @@ void w_gauss_secondary(void)
 	}
 	pl.w_attack_next = 0.1f;
 
+	/* Ammo check */
+#ifdef CSQC
+    if (pl.a_ammo2 <= 0) {
+        if (pl.a_ammo3 > 0) {
+			w_gauss_release();
+		}
+		return;
+    }
+#else
+    if (pl.ammo_uranium <= 0) {
+        if (pl.a_ammo3 > 0) {
+            w_gauss_release();
+        }
+		return;
+    }
+#endif
+
+#ifdef CSQC
+    if (pl.a_ammo1 < 255)
+		pl.a_ammo2--;
+#else
+	if (pl.a_ammo1 < 255)
+		pl.ammo_uranium--;
+    Weapons_UpdateAmmo(pl, pl.a_ammo1, pl.ammo_uranium, pl.a_ammo3);
+#endif
+	
 	/* Set pitch sound shift */
-	pl.a_ammo2 += 16;
-	if (pl.a_ammo2 > 255) {
-		pl.a_ammo2 = 255;
+	pl.a_ammo1 += 16;
+	if (pl.a_ammo1 > 255) {
+		pl.a_ammo1 = 255;
 	}
 
 	if (pl.a_ammo3 == 1) {
-#ifdef CSQC
 		Weapons_ViewAnimation(GAUSS_SPIN);
-#endif
 		pl.a_ammo3 = 2;
 		pl.w_idle_next = 0.0f;
 	} else if (!pl.a_ammo3) {
-#ifdef CSQC	
 		Weapons_ViewAnimation(GAUSS_SPINUP);
+#ifdef CSQC
 		sound(pl, CHAN_WEAPON, "ambience/pulsemachine.wav", 2, ATTN_NORM);
 #endif
 		pl.a_ammo3 = 1;
 	}
-	
 }
+
+void w_gauss_release(void)
+{
+    player pl = (player)self;
+    if (pl.w_idle_next > 0.0) {
+        return;
+    }
+  
+    /* Reset the pitch sound shift */
+    pl.a_ammo1 = 0;
+
+    if (pl.a_ammo3 == 1) {
+        pl.w_attack_next = 0.0f;
+        pl.w_idle_next = 4.0f;
+        w_gauss_primary();
+        pl.a_ammo3 = 0;
+        return;
+    } else if (pl.a_ammo3 == 2) {
+        w_gauss_fire(0);
+        Weapons_ViewAnimation(GAUSS_FIRE1);
+
+#ifdef CSQC	 
+		soundupdate(pl, CHAN_WEAPON, "", -1, ATTN_NORM, 0, 0, 0);
+#endif
+        pl.w_attack_next = 1.5f;
+        pl.w_idle_next = 4.0f;
+        pl.a_ammo3 = 0;
+        return;
+    }
+
+    int r = floor(random(0,3));
+    switch (r) {
+    case 0:
+        Weapons_ViewAnimation(GAUSS_IDLE1);
+        break;
+    case 1:
+        Weapons_ViewAnimation(GAUSS_IDLE2);
+        break;
+    case 2:
+        Weapons_ViewAnimation(GAUSS_FIDGET);
+        break;
+    }
+	pl.w_idle_next = 3.0f;
+}
+
 void w_gauss_reload(void)
 {
 	
-}
-void w_gauss_release(void)
-{
-	player pl = (player)self;
-	if (pl.w_idle_next > 0.0) {
-		return;
-	}
-	
-	/* Reset the pitch sound shift */
-	pl.a_ammo2 = 0;
-
-	if (pl.a_ammo3 == 1) {
-		pl.w_attack_next = 0.0f;
-		pl.w_idle_next = 4.0f;
-		w_gauss_primary();
-		pl.a_ammo3 = 0;
-		return;
-	} else if (pl.a_ammo3 == 2) {
-		w_gauss_fire(0);
-#ifdef CSQC
-		Weapons_ViewAnimation(GAUSS_FIRE1);
-		soundupdate(pl, CHAN_WEAPON, "", -1, ATTN_NORM, 0, 0, 0);
-#endif
-		pl.w_attack_next = 1.5f;
-		pl.w_idle_next = 4.0f;
-		pl.a_ammo3 = 0;
-		return;
-	}
-
-	int r = floor(random(0,3));
-	switch (r) {
-	case 0:
-		Weapons_ViewAnimation(GAUSS_IDLE1);
-		pl.w_idle_next = 10.0f;
-		break;
-	case 1:
-		Weapons_ViewAnimation(GAUSS_IDLE2);
-		pl.w_idle_next = 10.0f;
-		break;
-	case 2:
-		Weapons_ViewAnimation(GAUSS_FIDGET);
-		pl.w_idle_next = 3.0f;
-		break;
-	}
-
 }
 
 void w_gauss_crosshair(void)
@@ -301,6 +348,7 @@ void w_gauss_crosshair(void)
 	static vector cross_pos;
 	cross_pos = (video_res / 2) + [-12,-12];
 	drawsubpic(cross_pos, [24,24], "sprites/crosshairs.spr_0.tga", [48/128,48/128], [0.1875, 0.1875], [1,1,1], 1, DRAWFLAG_NORMAL);
+	HUD_DrawAmmo2();
 #endif
 }
 
@@ -333,7 +381,7 @@ weapon_t w_gauss =
 	w_gauss_release,
 	w_gauss_crosshair,
 	w_gauss_precache,
-	__NULL__,
+	w_gauss_pickup,
 	w_gauss_vmodel,
 	w_gauss_wmodel,
 	w_gauss_pmodel,

@@ -22,6 +22,7 @@ class player
 	float activeweapon;
 	float viewzoom;
 	vector view_ofs;
+	float weapontime;
 
 	/* Weapon specific */
 	int glock_mag;
@@ -35,7 +36,6 @@ class player
 #ifdef CSQC
 	/* External model */
 	entity p_model;
-	int playertype;
 	int p_hand_bone;
 	int p_model_bone;
 	float pitch;
@@ -49,11 +49,11 @@ class player
 	float net_w_idle_next;
 	float netjumptime;
 	float netteleport_time;
+	float net_weapontime;
 	int net_ammo1;
 	int net_ammo2;
 	int net_ammo3;
 
-	virtual void(string) set_model;
 	virtual void() gun_offset;
 	virtual void() draw;
 	virtual float() predraw;
