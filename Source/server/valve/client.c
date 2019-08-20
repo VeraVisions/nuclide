@@ -16,11 +16,19 @@ void Game_ClientConnect(void)
 void Game_ClientDisconnect(void)
 {
 	bprint(PRINT_HIGH, sprintf("%s disconnected\n", self.netname));
+	
+	/* Make this unusable */
+	self.solid = SOLID_NOT;
+	self.movetype = MOVETYPE_NONE;
+	self.modelindex = 0;
+	self.health = 0;
+	self.takedamage = 0;
+	self.SendFlags = 1;
 }
 
 void Game_ClientKill(void)
 {
-	
+	Damage_Apply(self, self, self.health, self.origin, TRUE);	
 }
 
 void Game_PlayerPreThink(void)
@@ -86,7 +94,18 @@ void Game_PutClientInServer(void)
 	pl.movetype = MOVETYPE_WALK;
 	pl.flags = FL_CLIENT;
 	pl.viewzoom = 1.0;
-	setmodel(pl, "models/player.mdl");
+	pl.model = "models/player.mdl";
+	
+	string mymodel = infokey(pl, "model");
+	
+	if (mymodel) {
+		mymodel = sprintf("models/player/%s/%s.mdl", mymodel, mymodel);
+		if (whichpack(mymodel)) {
+			pl.model = mymodel;
+		}
+	} 
+	setmodel(pl, pl.model);
+	
 	setsize(pl, VEC_HULL_MIN, VEC_HULL_MAX);
 	pl.view_ofs = VEC_PLAYER_VIEWPOS;
 	pl.velocity = [0,0,0];

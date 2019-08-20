@@ -12,15 +12,24 @@ void Game_ClientConnect(void)
 {
 	bprint(PRINT_HIGH, sprintf("%s connected\n", self.netname));
 }
+
 void Game_ClientDisconnect(void)
 {
-	bprint(PRINT_HIGH, sprintf("%s disconnected\n", self.netname));
-}
-void Game_ClientKill(void)
-{
-	
+    bprint(PRINT_HIGH, sprintf("%s disconnected\n", self.netname));
+
+    /* Make this unusable */
+    self.solid = SOLID_NOT;
+    self.movetype = MOVETYPE_NONE;
+    self.modelindex = 0;
+    self.health = 0;
+    self.takedamage = 0;
+    self.SendFlags = 1;
 }
 
+void Game_ClientKill(void)
+{
+    Damage_Apply(self, self, self.health, self.origin, TRUE);
+}
 void Game_PlayerPreThink(void)
 {
 	
