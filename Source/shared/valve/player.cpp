@@ -1,3 +1,4 @@
+int input_sequence;
 class player
 {
 	float health;
@@ -53,6 +54,7 @@ class player
 	int net_ammo1;
 	int net_ammo2;
 	int net_ammo3;
+	int sequence;
 
 	virtual void() gun_offset;
 	virtual void() draw;

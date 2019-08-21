@@ -73,7 +73,7 @@ void w_crowbar_primary(void)
     vector src = pl.origin + pl.view_ofs;
     traceline(src, src + (v_forward * 32), FALSE, pl);
 
-    int r = floor(random(0,3));
+    int r = (float)input_sequence%3;
     switch (r) {
     case 0:
         Weapons_ViewAnimation(trace_fraction >= 1 ? CROWBAR_ATTACK1MISS:CROWBAR_ATTACK1HIT);

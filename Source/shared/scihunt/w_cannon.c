@@ -28,9 +28,11 @@ void w_cannon_precache(void)
 	precache_sound("cannon/fire.wav");
 	precache_sound("cannon/open.wav");
 }
-string w_cannon_vmodel(void)
+void w_cannon_updateammo(player pl)
 {
-	return "models/v_cannon.mdl";
+#ifdef SSQC
+	Weapons_UpdateAmmo(pl, pl.cannon_mag, pl.ammo_buckshot, __NULL__);
+#endif
 }
 string w_cannon_pmodel(void)
 {
@@ -218,7 +220,7 @@ weapon_t w_cannon =
 	w_cannon_crosshair,
 	w_cannon_precache,
 	w_cannon_pickup,
-	w_cannon_vmodel,
+	w_cannon_updateammo,
 	__NULL__,
 	w_cannon_pmodel,
 	w_cannon_deathmsg,

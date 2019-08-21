@@ -29,9 +29,11 @@ void w_chainsaw_precache(void)
 	precache_model("models/p_saw.mdl");
 }
 
-string w_chainsaw_vmodel(void)
+void w_chainsaw_updateammo(player pl)
 {
-	return "models/v_chainsaw.mdl";
+#ifdef SSQC
+	Weapons_UpdateAmmo(pl, __NULL__, __NULL__, __NULL__);
+#endif
 }
 string w_chainsaw_pmodel(void)
 {
@@ -157,7 +159,7 @@ weapon_t w_chainsaw =
 	__NULL__,
 	w_chainsaw_precache,
 	__NULL__,
-	w_chainsaw_vmodel,
+	w_chainsaw_updateammo,
 	__NULL__,
 	w_chainsaw_pmodel,
 	w_chainsaw_deathmsg,

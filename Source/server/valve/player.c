@@ -19,6 +19,7 @@ void Player_Death(int hit)
 	pl.movetype = MOVETYPE_NONE;
 	pl.solid = SOLID_NOT;
 	pl.takedamage = DAMAGE_NO;
+	pl.flags &= ~FL_FLASHLIGHT;
 	pl.health = pl.armor = pl.activeweapon = pl.g_items = 0;
 	
 	pl.think = PutClientInServer;
@@ -138,8 +139,8 @@ float Player_SendEntity(entity ePEnt, float fChanged)
 	WriteByte(MSG_ENTITY, pl.a_ammo1);
 	WriteByte(MSG_ENTITY, pl.a_ammo2);
 	WriteByte(MSG_ENTITY, pl.a_ammo3);
-	//WriteFloat(MSG_ENTITY, pl.w_attack_next);
-	//WriteFloat(MSG_ENTITY, pl.w_idle_next);
+	WriteFloat(MSG_ENTITY, pl.w_attack_next);
+	WriteFloat(MSG_ENTITY, pl.w_idle_next);
 	return TRUE;
 }
 

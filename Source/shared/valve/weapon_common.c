@@ -38,9 +38,7 @@ void Weapons_Draw(void)
 	if (g_weapons[i].draw != __NULL__) {
 		g_weapons[i].draw();
 	}
-#ifdef CSQC
-	View_UpdateWeapon(pSeat->eViewModel, pSeat->eMuzzleflash);
-#else
+#ifdef SSQC
 	if (g_weapons[i].updateammo != __NULL__) {
 		g_weapons[i].updateammo(pl);
 	}

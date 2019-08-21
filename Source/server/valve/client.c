@@ -11,6 +11,19 @@ void Empty(void) {}
 void Game_ClientConnect(void)
 {
 	bprint(PRINT_HIGH, sprintf("%s connected\n", self.netname));
+
+	int playercount = 0;
+	for (entity eFind = world; (eFind = find(eFind, classname, "player"));) {
+		playercount++;
+	}
+
+	/* We're the first. */	
+	if (playercount == 0) {
+		for (entity a = world; (a = findfloat(a, gflags, GF_CANRESPAWN));) {
+         	CBaseEntity caw = (CBaseEntity)a;
+            caw.Respawn();
+         }		
+	}
 }
 
 void Game_ClientDisconnect(void)

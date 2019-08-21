@@ -193,7 +193,7 @@ void View_DrawViewModel(void)
 		float fBaseTime = eViewModel.frame1time;
 		eViewModel.frame2time = pl.weapontime;
     	eViewModel.frame1time = pl.weapontime;
-		//processmodelevents(eViewModel.modelindex, eViewModel.frame, fBaseTime, eViewModel.frame1time, Event_ProcessModel);
+		processmodelevents(eViewModel.modelindex, eViewModel.frame, fBaseTime, eViewModel.frame1time, Event_ProcessModel);
 	}
 	
 	makevectors(view_angles);

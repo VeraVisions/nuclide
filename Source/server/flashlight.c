@@ -14,6 +14,10 @@ void Flashlight_Toggle(void)
 		}
 	}
 	
+	if (self.health <= 0) {
+		return;
+	}
+
 	if (self.flags & FL_FLASHLIGHT) {
 		self.flags &= ~FL_FLASHLIGHT;
 	} else {

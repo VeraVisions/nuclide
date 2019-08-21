@@ -22,14 +22,14 @@ void Predict_PreFrame(player pl)
 	pl.netflags = pl.flags;
 	pl.netjumptime = pl.jumptime;
 	pl.netteleport_time = pl.teleport_time;
-	
+
 #ifdef VALVE
-	//pl.net_w_attack_next = pl.w_attack_next;
-	//pl.net_w_idle_next = pl.w_idle_next;
+	pl.net_w_attack_next = pl.w_attack_next;
+	pl.net_w_idle_next = pl.w_idle_next;
 	pl.net_ammo1 = pl.a_ammo1;
 	pl.net_ammo2 = pl.a_ammo2;
 	pl.net_ammo3 = pl.a_ammo3;
-	//pl.net_weapontime = pSeat->eViewModel.frame1time;
+	pl.net_weapontime = pl.weapontime;
 #endif
 
 	//self.netpmove_flags = self.pmove_flags;
@@ -37,8 +37,9 @@ void Predict_PreFrame(player pl)
 	//we want to predict an exact copy of the data in the new packet
 	/*for (; self.pmove_frame <= servercommandframe; self.pmove_frame++) {
 		float flSuccess = getinputstate(self.pmove_frame);*/
-	for ( int i = servercommandframe + 1; i <= clientcommandframe; i++ ) {
+	for ( int i = pl.sequence + 1; i <= clientcommandframe; i++ ) {
 		float flSuccess = getinputstate( i );
+		input_sequence = i;
 		if (flSuccess == FALSE) {
 			continue;
 		}
@@ -60,8 +61,8 @@ void Predict_PreFrame(player pl)
 Predict_PostFrame
 
 We're part way through parsing new player data.
-Propagate our pmove state to whatever the current frame before its stomped on 
-(so any non-networked state updates locally).
+Rewind our pmove state back to before we started predicting. 
+(to give consistent state instead of accumulating errors)
 =================
 */
 void Predict_PostFrame(player pl)
@@ -73,13 +74,12 @@ void Predict_PostFrame(player pl)
 	pl.teleport_time = pl.netteleport_time;
 	
 #ifdef VALVE
-	//pl.w_attack_next = pl.net_w_attack_next;
-	//pl.w_idle_next = pl.net_w_idle_next;
+	pl.w_attack_next = pl.net_w_attack_next;
+	pl.w_idle_next = pl.net_w_idle_next;
 	pl.a_ammo1 = pl.net_ammo1;
 	pl.a_ammo2 = pl.net_ammo2;
 	pl.a_ammo3 = pl.net_ammo3;
-	//pSeat->eViewModel.frame1time = pl.net_weapontime;
-	//pSeat->eViewModel.frame2time = pl.net_weapontime;
+	pl.weapontime = pl.net_weapontime;
 #endif
 
 	//self.pmove_flags = self.netpmove_flags;

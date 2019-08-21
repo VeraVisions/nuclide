@@ -30,9 +30,11 @@ void w_hammer_precache(void)
 	precache_model("models/v_hammer.mdl");
 }
 
-string w_hammer_vmodel(void)
+void w_hammer_updateammo(player pl)
 {
-	return "models/v_hammer.mdl";
+#ifdef SSQC
+	Weapons_UpdateAmmo(pl, __NULL__, __NULL__, __NULL__);
+#endif
 }
 string w_hammer_pmodel(void)
 {
@@ -217,7 +219,7 @@ weapon_t w_hammer =
 	__NULL__,
 	w_hammer_precache,
 	__NULL__,
-	w_hammer_vmodel,
+	w_hammer_updateammo,
 	__NULL__,
 	w_hammer_pmodel,
 	w_hammer_deathmsg,

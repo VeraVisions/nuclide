@@ -231,6 +231,7 @@ void Game_Worldspawn(void)
 	precache_model("models/player/vip/vip.mdl");
 	precache_model("models/w_c4.mdl");
 
+	precache_sound("misc/null.wav");
 	precache_sound("hostage/hos1.wav");
 	precache_sound("hostage/hos2.wav");
 	precache_sound("hostage/hos3.wav");

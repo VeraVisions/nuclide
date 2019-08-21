@@ -110,7 +110,7 @@ void w_handgrenade_throw(void)
 
 void w_handgrenade_draw(void)
 {
-	Weapons_SetModel("models/v_crowbar.mdl");
+	Weapons_SetModel("models/v_grenade.mdl");
 	Weapons_ViewAnimation(HANDGRENADE_DRAW);
 #ifdef SSQC
 	player pl = (player)self;
