@@ -27,9 +27,11 @@ void w_tripmine_precache(void)
 	precache_sound("weapons/mine_charge.wav");
 	precache_sound("weapons/mine_activate.wav");
 }
-string w_tripmine_vmodel(void)
+void w_tripmine_updateammo(player pl)
 {
-	return "models/v_tripmine.mdl";
+#ifdef SSQC
+	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_tripmine, __NULL__);
+#endif
 }
 string w_tripmine_wmodel(void)
 {
@@ -53,6 +55,7 @@ void w_tripmine_pickup(void)
 
 void w_tripmine_draw(void)
 {
+	Weapons_SetModel("models/v_tripmine.mdl");
 	Weapons_ViewAnimation(TRIPMINE_DRAW);
 #ifdef SSQC
 	player pl = (player)self;
@@ -269,7 +272,7 @@ weapon_t w_tripmine =
 	w_tripmine_hud,
 	w_tripmine_precache,
 	w_tripmine_pickup,
-	w_tripmine_vmodel,
+	w_tripmine_updateammo,
 	w_tripmine_wmodel,
 	w_tripmine_pmodel,
 	w_tripmine_deathmsg,

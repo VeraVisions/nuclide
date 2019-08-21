@@ -35,9 +35,11 @@ void w_mp5_pickup(void)
 	pl.mp5_mag = 25;
 }
 
-string w_mp5_vmodel(void)
+void w_mp5_updateammo(player pl)
 {
-	return "models/v_9mmar.mdl";
+#ifdef SSQC
+	Weapons_UpdateAmmo(pl, pl.mp5_mag, pl.ammo_9mm, pl.ammo_m203_grenade);
+#endif
 }
 
 string w_mp5_wmodel(void)
@@ -57,6 +59,7 @@ string w_mp5_deathmsg(void)
 
 void w_mp5_draw(void)
 {
+	Weapons_SetModel("models/v_9mmar.mdl");
 	Weapons_ViewAnimation(MP5_DRAW);
 #ifdef SSQC
 	player pl = (player)self;
@@ -259,7 +262,7 @@ weapon_t w_mp5 = {
 	w_mp5_crosshair,
 	w_mp5_precache,
 	w_mp5_pickup,
-	w_mp5_vmodel,
+	w_mp5_updateammo,
 	w_mp5_wmodel,
 	w_mp5_pmodel,
 	w_mp5_deathmsg,

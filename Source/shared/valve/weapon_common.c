@@ -19,6 +19,13 @@ void Weapons_Init(void)
 	}
 }
 
+void Weapons_SetModel(string mdl)
+{
+#ifdef CSQC
+	setmodel(pSeat->eViewModel, mdl);
+#endif	
+}
+
 void Weapons_Draw(void)
 {
 	player pl = (player)self;
@@ -31,6 +38,13 @@ void Weapons_Draw(void)
 	if (g_weapons[i].draw != __NULL__) {
 		g_weapons[i].draw();
 	}
+#ifdef CSQC
+	View_UpdateWeapon(pSeat->eViewModel, pSeat->eMuzzleflash);
+#else
+	if (g_weapons[i].updateammo != __NULL__) {
+		g_weapons[i].updateammo(pl);
+	}
+#endif
 }
 
 void Weapons_Holster(void)
@@ -85,15 +99,6 @@ void Weapons_DrawCrosshair(void)
 	if (g_weapons[i].crosshair != __NULL__) {
 		g_weapons[i].crosshair();
 	}
-}
-
-string Weapons_GetViewmodel(int id)
-{
-	if (g_weapons[id].vmodel != __NULL__) {
-		return g_weapons[id].vmodel();
-	}
-	
-	return "";
 }
 
 string Weapons_GetWorldmodel(int id)
@@ -210,6 +215,13 @@ int Weapons_IsPresent(player pl, int w)
 }
 
 #ifdef SSQC
+
+void Weapons_RefreshAmmo(player pl)
+{
+	if (g_weapons[pl.activeweapon].updateammo != __NULL__) {
+		g_weapons[pl.activeweapon].updateammo(pl);
+    }
+}
 
 void Weapons_SwitchBest(player pl)
 {

@@ -26,9 +26,11 @@ void w_glock_precache(void)
 	precache_model("models/p_9mmhandgun.mdl");
 	precache_sound("weapons/pl_gun3.wav");
 }
-string w_glock_vmodel(void)
+void w_glock_updateammo(player pl)
 {
-	return "models/v_9mmhandgun.mdl";
+#ifdef SSQC
+	Weapons_UpdateAmmo(pl, pl.glock_mag, pl.ammo_9mm, __NULL__);
+#endif
 }
 string w_glock_wmodel(void)
 {
@@ -53,6 +55,7 @@ void w_glock_pickup(void)
 
 void w_glock_draw(void)
 {
+	Weapons_SetModel("models/v_9mmhandgun.mdl");
 	Weapons_ViewAnimation(GLOCK_DRAW);
 #ifdef SSQC
 	player pl = (player)self;
@@ -243,7 +246,7 @@ weapon_t w_glock =
 	w_glock_hud,
 	w_glock_precache,
 	w_glock_pickup,
-	w_glock_vmodel,
+	w_glock_updateammo,
 	w_glock_wmodel,
 	w_glock_pmodel,
 	w_glock_deathmsg,

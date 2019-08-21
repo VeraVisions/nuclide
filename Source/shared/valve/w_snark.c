@@ -26,6 +26,7 @@ void w_snark_pickup(void)
 
 void w_snark_draw(void)
 {
+	Weapons_SetModel("models/v_squeak.mdl");
 	Weapons_ViewAnimation(SNARK_DRAW);
 #ifdef SSQC
 	player pl = (player)self;
@@ -200,9 +201,11 @@ void w_snark_precache(void)
     precache_sound("squeek/sqk_hunt2.wav");
     precache_sound("squeek/sqk_hunt3.wav");
 }
-string w_snark_vmodel(void)
+void w_snark_updateammo(player pl)
 {
-	return "models/v_squeak.mdl";
+#ifdef SSQC
+	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_snark, __NULL__);
+#endif
 }
 string w_snark_wmodel(void)
 {
@@ -255,7 +258,7 @@ weapon_t w_snark =
 	w_snark_hud,
 	w_snark_precache,
 	w_snark_pickup,
-	w_snark_vmodel,
+	w_snark_updateammo,
 	w_snark_wmodel,
 	w_snark_pmodel,
 	w_snark_deathmsg,

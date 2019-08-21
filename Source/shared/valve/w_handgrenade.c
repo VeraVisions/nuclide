@@ -25,9 +25,11 @@ void w_handgrenade_precache(void)
 	precache_model("models/w_grenade.mdl");
 	precache_model("models/p_grenade.mdl");
 }
-string w_handgrenade_vmodel(void)
+void w_handgrenade_updateammo(player pl)
 {
-	return "models/v_grenade.mdl";
+#ifdef SSQC
+	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_handgrenade, __NULL__);
+#endif
 }
 string w_handgrenade_wmodel(void)
 {
@@ -108,9 +110,9 @@ void w_handgrenade_throw(void)
 
 void w_handgrenade_draw(void)
 {
-#ifdef CSQC
+	Weapons_SetModel("models/v_crowbar.mdl");
 	Weapons_ViewAnimation(HANDGRENADE_DRAW);
-#else
+#ifdef SSQC
 	player pl = (player)self;
 	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_handgrenade, __NULL__);
 #endif
@@ -229,7 +231,7 @@ weapon_t w_handgrenade =
 	w_handgrenade_hud,
 	w_handgrenade_precache,
 	w_handgrenade_pickup,
-	w_handgrenade_vmodel,
+	w_handgrenade_updateammo,
 	w_handgrenade_wmodel,
 	w_handgrenade_pmodel,
 	w_handgrenade_deathmsg,

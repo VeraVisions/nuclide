@@ -22,7 +22,7 @@ typedef struct
 
 	void() precache;
 	void() pickup;
-	string() vmodel;
+	void(player) updateammo;
 	string() wmodel;
 	string() pmodel;
 	string() deathmsg;
@@ -79,8 +79,9 @@ vector Weapons_GetCameraPos(void);
 void Weapons_ViewPunchAngle(vector add);
 void Weapons_PlaySound(entity t, float ch, string s, float vol, float at);
 int Weapons_IsPresent(player pl, int w);
-
+void Weapons_SetModel(string);
 #ifdef SSQC
+void Weapons_RefreshAmmo(player);
 void Weapons_InitItem(int w);
 void Weapons_AddItem(player pl, int w);
 void Weapons_RemoveItem(player pl, int w);

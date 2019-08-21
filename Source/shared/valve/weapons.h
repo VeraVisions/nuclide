@@ -22,7 +22,7 @@ typedef struct
 
 	void() precache;
 	void() pickup;
-	string() vmodel;
+	void(player) updateammo;
 	string() wmodel;
 	string() pmodel;
 	string() deathmsg;
@@ -68,25 +68,26 @@ enum
 };
 
 void Weapons_DrawCrosshair(void);
-void Decals_PlaceSmall(vector pos);
-void Decals_PlaceBig(vector pos);
+void Decals_PlaceSmall(vector);
+void Decals_PlaceBig(vector);
 void Weapons_MakeVectors(void);
 vector Weapons_GetCameraPos(void);
-void Weapons_ViewAnimation(int i);
-void Weapons_ViewPunchAngle(vector add);
-void Weapons_PlaySound(entity t, float ch, string s, float vol, float at);
-int Weapons_IsPresent(player pl, int w);
-
+void Weapons_ViewAnimation(int);
+void Weapons_ViewPunchAngle(vector);
+void Weapons_PlaySound(entity, float, string, float, float);
+int Weapons_IsPresent(player, int);
+void Weapons_SetModel(string);
 #ifdef SSQC
-void Weapons_InitItem(int w);
-float Weapons_GetAim(int w);
-void Weapons_AddItem(player pl, int w);
-void Weapons_RemoveItem(player pl, int w);
-string Weapons_GetWorldmodel(int id);
-void Weapons_UpdateAmmo(player pl, int a1, int a2, int a3);
-void Weapons_ReloadWeapon(player pl, .int mag, .int ammo, int max);
+void Weapons_RefreshAmmo(player);
+void Weapons_InitItem(int);
+float Weapons_GetAim(int);
+void Weapons_AddItem(player, int);
+void Weapons_RemoveItem(player, int);
+string Weapons_GetWorldmodel(int);
+void Weapons_UpdateAmmo(player, int, int, int);
+void Weapons_ReloadWeapon(player, .int, .int, int);
 #else
-string Weapons_GetPlayermodel(int id);
+string Weapons_GetPlayermodel(int);
 int Weapons_GetAnimation(void);
-void Weapons_HUDPic(int w, int s, vector pos);
+void Weapons_HUDPic(int, int, vector);
 #endif

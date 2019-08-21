@@ -34,9 +34,11 @@ void w_hornetgun_pickup(void)
 	pl.ammo_hornet = 8;
 #endif
 }
-string w_hornetgun_vmodel(void)
+void w_hornetgun_updateammo(player pl)
 {
-	return "models/v_hgun.mdl";
+#ifdef SSQC
+	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_hornet, __NULL__);
+#endif
 }
 string w_hornetgun_wmodel(void)
 {
@@ -53,6 +55,7 @@ string w_hornetgun_deathmsg(void)
 
 void w_hornetgun_draw(void)
 {
+	Weapons_SetModel("models/v_hgun.mdl");
 	Weapons_ViewAnimation(HORNETGUN_DRAW);
 #ifdef SSQC
 	player pl = (player)self;
@@ -236,7 +239,7 @@ weapon_t w_hornetgun =
 	w_hornetgun_crosshair,
 	w_hornetgun_precache,
 	w_hornetgun_pickup,
-	w_hornetgun_vmodel,
+	w_hornetgun_updateammo,
 	w_hornetgun_wmodel,
 	w_hornetgun_pmodel,
 	w_hornetgun_deathmsg,

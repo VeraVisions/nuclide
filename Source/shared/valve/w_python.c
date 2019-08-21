@@ -33,9 +33,11 @@ void w_python_pickup(void)
 	pl.python_mag = 6;
 }
 
-string w_python_vmodel(void)
+void w_python_updateammo(player pl)
 {
-	return "models/v_357.mdl";
+#ifdef SSQC
+	Weapons_UpdateAmmo(pl, pl.python_mag, pl.ammo_357, __NULL__);
+#endif
 }
 string w_python_wmodel(void)
 {
@@ -52,6 +54,7 @@ string w_python_deathmsg(void)
 
 void w_python_draw(void)
 {
+	Weapons_SetModel("models/v_357.mdl");
 	Weapons_ViewAnimation(PYTHON_DRAW);
 #ifdef SSQC
 	player pl = (player)self;
@@ -209,7 +212,7 @@ weapon_t w_python =
 	w_python_crosshair,
 	w_python_precache,
 	w_python_pickup,
-	w_python_vmodel,
+	w_python_updateammo,
 	w_python_wmodel,
 	w_python_pmodel,
 	w_python_deathmsg,

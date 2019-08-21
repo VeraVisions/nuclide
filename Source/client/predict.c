@@ -24,12 +24,12 @@ void Predict_PreFrame(player pl)
 	pl.netteleport_time = pl.teleport_time;
 	
 #ifdef VALVE
-	pl.net_w_attack_next = pl.w_attack_next;
-	pl.net_w_idle_next = pl.w_idle_next;
+	//pl.net_w_attack_next = pl.w_attack_next;
+	//pl.net_w_idle_next = pl.w_idle_next;
 	pl.net_ammo1 = pl.a_ammo1;
 	pl.net_ammo2 = pl.a_ammo2;
 	pl.net_ammo3 = pl.a_ammo3;
-	pl.net_weapontime = pSeat->eViewModel.frame1time;
+	//pl.net_weapontime = pSeat->eViewModel.frame1time;
 #endif
 
 	//self.netpmove_flags = self.pmove_flags;
@@ -73,13 +73,13 @@ void Predict_PostFrame(player pl)
 	pl.teleport_time = pl.netteleport_time;
 	
 #ifdef VALVE
-	pl.w_attack_next = pl.net_w_attack_next;
-	pl.w_idle_next = pl.net_w_idle_next;
+	//pl.w_attack_next = pl.net_w_attack_next;
+	//pl.w_idle_next = pl.net_w_idle_next;
 	pl.a_ammo1 = pl.net_ammo1;
 	pl.a_ammo2 = pl.net_ammo2;
 	pl.a_ammo3 = pl.net_ammo3;
-	pSeat->eViewModel.frame1time = pl.net_weapontime;
-	pSeat->eViewModel.frame2time = pl.net_weapontime;
+	//pSeat->eViewModel.frame1time = pl.net_weapontime;
+	//pSeat->eViewModel.frame2time = pl.net_weapontime;
 #endif
 
 	//self.pmove_flags = self.netpmove_flags;

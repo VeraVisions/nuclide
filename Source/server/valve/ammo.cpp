@@ -16,8 +16,9 @@ class item_ammo:CBaseEntity
 void item_ammo::touch(void)
 {
 	if (other.classname == "player") {
+		player pl = (player)other;
 		sound(other, CHAN_ITEM, "items/9mmclip1.wav", 1, ATTN_NORM);
-
+		
 		if (cvar("sv_playerslots") == 1) {
 			remove(self);
 		} else {

@@ -32,9 +32,11 @@ void w_crowbar_precache(void)
 	precache_model("models/p_crowbar.mdl");
 }
 
-string w_crowbar_vmodel(void)
+void w_crowbar_updateammo(player pl)
 {
-	return "models/v_crowbar.mdl";
+#ifdef SSQC
+	Weapons_UpdateAmmo(pl, __NULL__, __NULL__, __NULL__);
+#endif
 }
 string w_crowbar_wmodel(void)
 {
@@ -51,10 +53,7 @@ string w_crowbar_deathmsg(void)
 
 void w_crowbar_draw(void)
 {
-#ifdef SSQC
-	player pl = (player)self;
-	Weapons_UpdateAmmo(pl, __NULL__, __NULL__, __NULL__);
-#endif
+	Weapons_SetModel("models/v_crowbar.mdl");
 	Weapons_ViewAnimation(CROWBAR_DRAW);
 }
 
@@ -176,7 +175,7 @@ weapon_t w_crowbar =
 	__NULL__,
 	w_crowbar_precache,
 	__NULL__,
-	w_crowbar_vmodel,
+	w_crowbar_updateammo,
 	w_crowbar_wmodel,
 	w_crowbar_pmodel,
 	w_crowbar_deathmsg,

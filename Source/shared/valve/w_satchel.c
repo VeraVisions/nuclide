@@ -23,9 +23,11 @@ enum
 	RADIO_HOLSTER
 };
 
-string w_satchel_vmodel(void)
+void w_satchel_updateammo(player pl)
 {
-	return "models/v_satchel.mdl";
+#ifdef SSQC
+	Weapons_UpdateAmmo(pl, pl.satchel_chg, pl.ammo_satchel, __NULL__);
+#endif
 }
 string w_satchel_wmodel(void)
 {
@@ -57,6 +59,7 @@ void w_satchel_pickup(void)
 
 void w_satchel_draw(void)
 {
+	Weapons_SetModel("models/v_satchel.mdl");
 	Weapons_ViewAnimation(SATCHEL_DRAW);
 #ifdef SSQC
 	player pl = (player)self;
@@ -247,7 +250,7 @@ weapon_t w_satchel =
 	w_satchel_hud,
 	w_satchel_precache,
 	w_satchel_pickup,
-	w_satchel_vmodel,
+	w_satchel_updateammo,
 	w_satchel_wmodel,
 	w_satchel_pmodel,
 	w_satchel_deathmsg,

@@ -27,9 +27,11 @@ void w_egon_precache(void)
 	precache_model("models/w_egon.mdl");
 	precache_model("models/p_egon.mdl");
 }
-string w_egon_vmodel(void)
+void w_egon_updateammo(player pl)
 {
-	return "models/v_egon.mdl";
+#ifdef SSQC
+	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_uranium, __NULL__);
+#endif
 }
 string w_egon_wmodel(void)
 {
@@ -55,12 +57,9 @@ void w_egon_pickup(void)
 void w_egon_draw(void)
 {
 	player pl = (player)self;
-#ifdef CSQC
+	Weapons_SetModel("models/v_egon.mdl");
 	Weapons_ViewAnimation(EGON_DRAW);
 	pl.w_idle_next = 1.0f;
-#else
-	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_uranium, __NULL__);
-#endif
 }
 
 void w_egon_holster(void)
@@ -168,7 +167,7 @@ weapon_t w_egon =
 	w_egon_crosshair,
 	w_egon_precache,
 	w_egon_pickup,
-	w_egon_vmodel,
+	w_egon_updateammo,
 	w_egon_wmodel,
 	w_egon_pmodel,
 	w_egon_deathmsg,

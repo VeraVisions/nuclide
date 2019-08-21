@@ -34,9 +34,11 @@ void w_crossbow_precache(void)
 	precache_sound("weapons/xbow_hitbod1.wav");
 	precache_sound("weapons/xbow_hitbod2.wav");
 }
-string w_crossbow_vmodel(void)
+void w_crossbow_updateammo(player pl)
 {
-	return "models/v_crossbow.mdl";
+#ifdef SSQC
+	Weapons_UpdateAmmo(pl, pl.crossbow_mag, pl.ammo_bolt, __NULL__);
+#endif
 }
 string w_crossbow_wmodel(void)
 {
@@ -61,9 +63,7 @@ void w_crossbow_draw(void)
 {
 	player pl = (player)self;
 
-#ifdef SSQC
-	Weapons_UpdateAmmo(pl, pl.crossbow_mag, pl.ammo_bolt, __NULL__);
-#endif
+	Weapons_SetModel("models/v_crossbow.mdl");
 
 	if (pl.a_ammo1) {
         Weapons_ViewAnimation(CROSSBOW_DRAW1);
@@ -258,7 +258,7 @@ weapon_t w_crossbow =
 	w_crossbow_crosshair,
 	w_crossbow_precache,
 	w_crossbow_pickup,
-	w_crossbow_vmodel,
+	w_crossbow_updateammo,
 	w_crossbow_wmodel,
 	w_crossbow_pmodel,
 	w_crossbow_deathmsg,

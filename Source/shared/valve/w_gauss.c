@@ -33,9 +33,11 @@ void w_gauss_precache(void)
 	precache_sound("weapons/electro6.wav");
 	precache_sound("ambience/pulsemachine.wav");
 }
-string w_gauss_vmodel(void)
+void w_gauss_updateammo(player pl)
 {
-	return "models/v_gauss.mdl";
+#ifdef SSQC
+	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_uranium, __NULL__);
+#endif
 }
 string w_gauss_wmodel(void)
 {
@@ -60,11 +62,8 @@ void w_gauss_pickup(void)
 
 void w_gauss_draw(void)
 {
+	Weapons_SetModel("models/v_gauss.mdl");
 	Weapons_ViewAnimation(GAUSS_DRAW);
-#ifdef SSQC
-	player pl = (player)self;
-	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_uranium, __NULL__);
-#endif
 }
 
 void w_gauss_holster(void)
@@ -382,7 +381,7 @@ weapon_t w_gauss =
 	w_gauss_crosshair,
 	w_gauss_precache,
 	w_gauss_pickup,
-	w_gauss_vmodel,
+	w_gauss_updateammo,
 	w_gauss_wmodel,
 	w_gauss_pmodel,
 	w_gauss_deathmsg,

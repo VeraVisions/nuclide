@@ -62,7 +62,7 @@ vector mouse_pos;
 float clframetime;
 
 
-
+void View_UpdateWeapon(entity, entity);
 void View_AddPunchAngle( vector vAdd );
 void View_PlayAnimation( int iSequence );
 void Game_Input(void);

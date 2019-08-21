@@ -38,9 +38,11 @@ void w_shotgun_precache(void)
 	precache_sound("weapons/reload3.wav");
 	precache_sound("weapons/scock1.wav");
 }
-string w_shotgun_vmodel(void)
+void w_shotgun_updateammo(player pl)
 {
-	return "models/v_shotgun.mdl";
+#ifdef SSQC
+	Weapons_UpdateAmmo(pl, pl.shotgun_mag, pl.ammo_buckshot, __NULL__);
+#endif
 }
 string w_shotgun_wmodel(void)
 {
@@ -65,6 +67,7 @@ void w_shotgun_pickup(void)
 
 void w_shotgun_draw(void)
 {
+	Weapons_SetModel("models/v_shotgun.mdl");
 	Weapons_ViewAnimation(SHOTGUN_DRAW);
 #ifdef SSQC
 	player pl = (player)self;
@@ -278,7 +281,7 @@ weapon_t w_shotgun =
 	w_shotgun_crosshair,
 	w_shotgun_precache,
 	w_shotgun_pickup,
-	w_shotgun_vmodel,
+	w_shotgun_updateammo,
 	w_shotgun_wmodel,
 	w_shotgun_pmodel,
 	w_shotgun_deathmsg,

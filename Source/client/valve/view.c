@@ -13,13 +13,11 @@ void View_UpdateWeapon(entity vm, entity mflash)
 	if (pSeat->fLastWeapon != pl.activeweapon) {
 		pSeat->fLastWeapon = pl.activeweapon;
 		if (pl.activeweapon) {
-			setmodel(vm, g_weapons[pl.activeweapon].vmodel());
-
+			Weapons_Draw();
 			skel_delete( mflash.skeletonindex );
 			mflash.skeletonindex = skel_create( vm.modelindex );
 			pSeat->fNumBones = skel_get_numbones( mflash.skeletonindex ) + 1;
 			pSeat->fEjectBone = pSeat->fNumBones + 1;
 		}
-		Weapons_Draw();
 	}
 }

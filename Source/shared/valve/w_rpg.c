@@ -29,9 +29,11 @@ void w_rpg_precache(void)
 	precache_model("sprites/laserdot.spr");
 	precache_sound("weapons/rocketfire1.wav");
 }
-string w_rpg_vmodel(void)
+void w_rpg_updateammo(player pl)
 {
-	return "models/v_rpg.mdl";
+#ifdef SSQC
+	Weapons_UpdateAmmo(pl, pl.rpg_mag, pl.ammo_rocket, __NULL__);
+#endif
 }
 string w_rpg_wmodel(void)
 {
@@ -56,6 +58,7 @@ void w_rpg_pickup(void)
 
 void w_rpg_draw(void)
 {
+	Weapons_SetModel("models/v_rpg.mdl");
 	Weapons_ViewAnimation(RPG_DRAW1);
 #ifdef SSQC
 	player pl = (player)self;
@@ -236,7 +239,7 @@ weapon_t w_rpg =
 	w_rpg_laser,
 	w_rpg_precache,
 	w_rpg_pickup,
-	w_rpg_vmodel,
+	w_rpg_updateammo,
 	w_rpg_wmodel,
 	w_rpg_pmodel,
 	w_rpg_deathmsg,
