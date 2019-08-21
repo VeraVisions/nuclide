@@ -83,11 +83,12 @@ void w_cannon_pickup(void)
 
 void w_cannon_draw(void)
 {
+	Weapons_SetModel("models/v_cannon.mdl");
+	Weapons_ViewAnimation(CANNON_DEPLOY);
 #ifdef SSQC
 	player pl = (player)self;
 	Weapons_UpdateAmmo(pl, pl.cannon_mag, pl.ammo_buckshot, __NULL__);
 #endif
-	Weapons_ViewAnimation(CANNON_DEPLOY);
 }
 
 void w_cannon_holster(void)

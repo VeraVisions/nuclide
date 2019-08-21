@@ -47,6 +47,7 @@ string w_hammer_deathmsg(void)
 
 void w_hammer_draw(void)
 {
+	Weapons_SetModel("models/v_hammer.mdl");
 	Weapons_ViewAnimation(HAMMER_DRAW);
 #ifdef SSQC
 	player pl = (player)self;
@@ -98,13 +99,74 @@ void w_hammer_release(void)
 		return;
 	}
 
+#ifdef SSQC
+    int hitsound = 0;
+    vector src = pl.origin + pl.view_ofs;
+    makevectors(pl.v_angle);
+    traceline(src, src + v_forward * 64, FALSE, self);
+#endif
+
 	if (pl.a_ammo1 == 1) {
+#ifdef SSQC
+		if (trace_ent.takedamage) {
+            hitsound = floor(random(1, 4));
+    
+            if (trace_ent.classname == "player")
+                Damage_Apply(trace_ent, self, 50, trace_endpos, FALSE);
+            else
+                Damage_Apply(trace_ent, self, 100, trace_endpos, FALSE);
+
+            if (trace_ent.classname == "monster_scientist") {
+                trace_ent.movetype = MOVETYPE_TOSS;
+                trace_ent.velocity = v_forward * 768 + v_up * 256;
+            } else if (trace_ent.classname == "player") {
+                trace_ent.velocity = v_forward * 768 + v_up * 256;
+            }
+        } else {
+            if (trace_fraction < 1.0) {
+                hitsound = 4;
+            }
+        }
+#endif
 		Weapons_ViewAnimation(HAMMER_ATTACK1);
 		pl.w_attack_next = 1.0f;
 	} else if (pl.a_ammo1 == 2) {
+#ifdef SSQC
+		if (trace_ent.takedamage) {
+            hitsound = floor(random(1, 4));
+            Damage_Apply(trace_ent, self, 200, trace_endpos, FALSE);
+        } else {
+            if (trace_fraction < 1.0) {
+                hitsound = 4;
+            }   
+        }
+#endif
 		Weapons_ViewAnimation(HAMMER_ATTACK2);
 		pl.w_attack_next = 0.75f;
 	}
+
+#ifdef SSQC
+	switch (hitsound) {
+    case 1:
+        Weapons_PlaySound(pl, CHAN_WEAPON, "sh/ham_hitbod1.wav", 1, ATTN_NORM);
+        break;
+    case 2:
+        Weapons_PlaySound(pl, CHAN_WEAPON, "sh/ham_hitbod2.wav", 1, ATTN_NORM);
+        break;
+    case 3:
+        Weapons_PlaySound(pl, CHAN_WEAPON, "sh/ham_hitbod3.wav", 1, ATTN_NORM);
+        break;
+    case 4:
+        Weapons_PlaySound(pl, CHAN_WEAPON, "sh/ham_hitw.wav", 1, ATTN_NORM);
+        break;
+    default:
+        Weapons_PlaySound(pl, CHAN_WEAPON, "sh/ham_swing.wav", 1, ATTN_NORM);
+    }
+#endif
+
+    /* Reset the hack */
+    pl.a_ammo1 = 0;
+
 
 	/* Pure cosmetics start here */
 	if (pl.w_idle_next) {
@@ -124,69 +186,6 @@ void w_hammer_release(void)
 		break;
 	}
 	pl.w_idle_next = 10.0f;
-
-#ifdef SSQC
-	int hitsound = 0;
-	vector src = pl.origin + pl.view_ofs;
-	makevectors(pl.v_angle);
-	traceline(src, src + v_forward * 64, FALSE, self);
-
-	/* Standard attack */
-	if (pl.a_ammo1 == 1) {
-		if (trace_ent.takedamage) {
-			hitsound = floor(random(1, 4));
-
-			if (trace_ent.classname == "player")
-				Damage_Apply(trace_ent, self, 50, trace_endpos, FALSE);
-			else
-				Damage_Apply(trace_ent, self, 100, trace_endpos, FALSE);
-
-			if (trace_ent.classname == "monster_scientist") {
-				trace_ent.movetype = MOVETYPE_TOSS;
-				trace_ent.velocity = v_forward * 768 + v_up * 256;
-			} else if (trace_ent.classname == "player") {
-				trace_ent.velocity = v_forward * 768 + v_up * 256;
-			}
-		} else {
-			if (trace_fraction < 1.0) {
-				hitsound = 4;
-			} 
-		}
-		pl.w_attack_next = 1.0f;
-	} else if (pl.a_ammo1 == 2) {
-		if (trace_ent.takedamage) {
-			hitsound = floor(random(1, 4));
-			Damage_Apply(trace_ent, self, 200, trace_endpos, FALSE);
-		} else {
-			if (trace_fraction < 1.0) {
-				hitsound = 4;
-			} 
-		}
-		pl.w_attack_next = 0.75f;
-	} else {
-		return;
-	}
-
-	switch (hitsound) {
-	case 1:
-		Weapons_PlaySound(pl, CHAN_WEAPON, "sh/ham_hitbod1.wav", 1, ATTN_NORM);
-		break;
-	case 2:
-		Weapons_PlaySound(pl, CHAN_WEAPON, "sh/ham_hitbod2.wav", 1, ATTN_NORM);
-		break;
-	case 3:
-		Weapons_PlaySound(pl, CHAN_WEAPON, "sh/ham_hitbod3.wav", 1, ATTN_NORM);
-		break;
-	case 4:
-		Weapons_PlaySound(pl, CHAN_WEAPON, "sh/ham_hitw.wav", 1, ATTN_NORM);
-		break;
-	default:
-		Weapons_PlaySound(pl, CHAN_WEAPON, "sh/ham_swing.wav", 1, ATTN_NORM);
-	}
-
-	/* Reset the hack */
-#endif
-	pl.a_ammo1 = 0;
 }
 
 float w_hammer_aimanim(void)

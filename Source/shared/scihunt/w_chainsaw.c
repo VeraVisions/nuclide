@@ -46,11 +46,12 @@ string w_chainsaw_deathmsg(void)
 
 void w_chainsaw_draw(void)
 {
+	Weapons_SetModel("models/v_chainsaw.mdl");
+	Weapons_ViewAnimation(CHAINSAW_DEPLOY);
 #ifdef SSQC
 	player pl = (player)self;
 	Weapons_UpdateAmmo(pl, __NULL__, __NULL__, __NULL__);
 #endif
-	Weapons_ViewAnimation(CHAINSAW_DEPLOY);
 }
 
 void w_chainsaw_holster(void)
