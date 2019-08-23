@@ -325,11 +325,12 @@ void Rules_DeathCheck(void)
 		} else {
 			return;
 		}
-
 		if (iBombZones > 0) {
 			/* In Bomb Defusal, the winning team receives $3250
 			 * if they won by eliminating the enemy team. */
-			Rules_RoundOver(winner, 3250, FALSE);
+			if (!iBombPlanted || iAlivePlayers_CT == 0) {
+				Rules_RoundOver(winner, 3250, FALSE);
+			}
 		} else {
 			/* In Hostage Rescue, the winning team receives $3600
 			 * if they won by eliminating the enemy team. */
