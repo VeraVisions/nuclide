@@ -197,7 +197,7 @@ void Radio_BroadcastMessage( float fMessage ) {
 	WriteByte( MSG_MULTICAST, EV_RADIOMSG );
 	WriteByte( MSG_MULTICAST, fMessage );
 	msg_entity = self;
-	multicast( '0 0 0', MSG_BROADCAST );
+	multicast( '0 0 0', MULTICAST_ALL );
 }
 
 /*

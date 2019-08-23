@@ -15,14 +15,14 @@ Sends a message to the clients to display a death message
 */
 void Damage_CastOrbituary(entity eAttacker, entity eTarget, float fWeapon, float fHeadShot)
 {
-	WriteByte(MSG_BROADCAST, SVC_CGAMEPACKET);
-	WriteByte(MSG_BROADCAST, EV_ORBITUARY);
-	WriteByte(MSG_BROADCAST, num_for_edict(eAttacker) - 1);
-	WriteByte(MSG_BROADCAST, eAttacker.team);
-	WriteByte(MSG_BROADCAST, num_for_edict(eTarget) - 1);
-	WriteByte(MSG_BROADCAST, eTarget.team);
-	WriteByte(MSG_BROADCAST, fWeapon);
-	WriteByte(MSG_BROADCAST, fHeadShot);
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_ORBITUARY);
+	WriteByte(MSG_MULTICAST, num_for_edict(eAttacker) - 1);
+	WriteByte(MSG_MULTICAST, eAttacker.team);
+	WriteByte(MSG_MULTICAST, num_for_edict(eTarget) - 1);
+	WriteByte(MSG_MULTICAST, eTarget.team);
+	WriteByte(MSG_MULTICAST, fWeapon);
+	WriteByte(MSG_MULTICAST, fHeadShot);
 	msg_entity = self;
 	multicast([0,0,0], MULTICAST_ALL);
 }
