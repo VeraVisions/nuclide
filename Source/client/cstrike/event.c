@@ -286,13 +286,13 @@ float Game_ConsoleCommand(void)
 		sendevent("RadioMessage", "f", RADIO_ENEMYDOWN);
 		break;
 	case "radio1":
-		//VGUI_Radio_Toggle(VGUI_RADIO1);
+		VGUI_RadioCommands();
 		break;
 	case "radio2":
-		//VGUI_Radio_Toggle(VGUI_RADIO2);
+		VGUI_RadioGroup();	
 		break;
 	case "radio3":
-		//VGUI_Radio_Toggle(VGUI_RADIO3);
+	 	VGUI_RadioResponse();	
 		break;
 	default:
 		return FALSE;

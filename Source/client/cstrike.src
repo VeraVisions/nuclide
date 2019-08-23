@@ -79,6 +79,7 @@ vgui.cpp
 cstrike/vgui_buymenu.cpp
 cstrike/vgui_chooseteam.cpp
 cstrike/vgui_motd.cpp
+cstrike/vgui_radio.cpp
 valve/scoreboard.c
 
 cstrike/draw.c
