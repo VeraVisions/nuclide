@@ -54,6 +54,7 @@ text.c
 ../shared/cstrike/equipment.c
 ../shared/cstrike/animations.c
 
+../shared/valve/player.cpp
 ../shared/pmove.c
 ../gs-entbase/client.src
 ../shared/decals.c
@@ -61,7 +62,6 @@ text.c
 ../shared/spraylogo.cpp
 
 cstrike/overview.c
-../shared/valve/player.cpp
 player.c
 predict.c
 events.c

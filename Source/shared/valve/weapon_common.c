@@ -176,8 +176,6 @@ void Weapons_ViewAnimation(int i)
 	msg_entity = self;
 	multicast( [0,0,0], MULTICAST_ONE );*/
 #endif
-	player pl = (player)self;
-	pl.weapontime = 0.0f;
 }
 
 #ifdef CSQC

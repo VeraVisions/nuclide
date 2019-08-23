@@ -29,8 +29,8 @@ void Predict_PreFrame(player pl)
 	pl.net_ammo1 = pl.a_ammo1;
 	pl.net_ammo2 = pl.a_ammo2;
 	pl.net_ammo3 = pl.a_ammo3;
-	pl.net_weapontime = pl.weapontime;
 #endif
+	pl.net_weapontime = pl.weapontime;
 
 	//self.netpmove_flags = self.pmove_flags;
 
@@ -79,8 +79,8 @@ void Predict_PostFrame(player pl)
 	pl.a_ammo1 = pl.net_ammo1;
 	pl.a_ammo2 = pl.net_ammo2;
 	pl.a_ammo3 = pl.net_ammo3;
-	pl.weapontime = pl.net_weapontime;
 #endif
+	pl.weapontime = pl.net_weapontime;
 
 	//self.pmove_flags = self.netpmove_flags;
 	setorigin(pl, pl.origin);

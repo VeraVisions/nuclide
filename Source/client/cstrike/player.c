@@ -26,8 +26,19 @@ void Player_ReadEntity(float flIsNew)
 		pl.drawmask = MASK_ENGINE;
 		pl.customphysics = Empty;
 		setsize( pl, VEC_HULL_MIN, VEC_HULL_MAX );
-	}
-
+	}else {
+        if (pl.entnum == player_localentnum) // FIXME: Splitscreen
+        {
+            pSeat = &seats[0];  //FIXME: splitscreen
+            for (int i = pl.sequence+1; i <= servercommandframe; i++) {
+                if (!getinputstate(i))
+                    break;  //erk?... too old?
+                input_sequence = i;
+                QPhysics_Run(pl);
+            }
+        }
+    }
+	pl.sequence = servercommandframe;
 	pl.modelindex = readshort();
 	pl.origin[0] = readcoord();
 	pl.origin[1] = readcoord();

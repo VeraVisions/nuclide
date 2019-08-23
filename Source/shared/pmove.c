@@ -718,13 +718,11 @@ void PMove_Run(void)
 
 	touchtriggers();
 
-#ifdef VALVE
 	player pl = (player)self;
-	
+#ifdef VALVE
 	pl.w_attack_next = max(0, pl.w_attack_next-input_timelength);
 	pl.w_idle_next = max(0, pl.w_idle_next-input_timelength);
-	pl.weapontime += input_timelength;
 #endif
-
+	pl.weapontime += input_timelength;
 	Game_Input();
 }

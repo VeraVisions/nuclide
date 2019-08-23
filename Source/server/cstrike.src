@@ -57,6 +57,7 @@ cstrike/money.c
 ../shared/decals.c
 ../shared/effects.c
 ../shared/spraylogo.cpp
+../shared/valve/player.cpp
 ../shared/pmove.c
 
 cstrike/armoury_entity.cpp

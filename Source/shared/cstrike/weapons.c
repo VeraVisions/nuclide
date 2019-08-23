@@ -101,7 +101,7 @@ void Weapon_Draw( float fWeapon ) {
 		return;
 	}
 #endif
-	
+		
 	wpnFuncTable[ fWeapon ].vDraw();
 }
 

@@ -19,6 +19,7 @@ class player
 	float armor;
 	float pitch;
 	float viewzoom;
+	float weapontime;
 	
 	vector view_ofs;
 
