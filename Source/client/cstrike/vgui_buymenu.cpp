@@ -336,13 +336,13 @@ void VGUI_BuyMG(void)
 	winBuyMG.SetPos( ( video_res / 2 ) - ( winBuyMG.GetSize() / 2 ) );
 }
 
-void VGUI_BuyEquipment_1 (void) { sendevent("PlayerBuyEquipment", "f", EQUIPMENT_KEVLAR); }
-void VGUI_BuyEquipment_2 (void) { sendevent("PlayerBuyEquipment", "f", EQUIPMENT_HELMET); }
-void VGUI_BuyEquipment_3 (void) { sendevent("PlayerBuyEquipment", "f", 3); }
-void VGUI_BuyEquipment_4 (void) { sendevent("PlayerBuyEquipment", "f", 4); }
-void VGUI_BuyEquipment_5 (void) { sendevent("PlayerBuyEquipment", "f", 5); }
-void VGUI_BuyEquipment_6 (void) { sendevent("PlayerBuyEquipment", "f", EQUIPMENT_DEFUSALKIT); }
-void VGUI_BuyEquipment_7 (void) { sendevent("PlayerBuyEquipment", "f", EQUIPMENT_NIGHTVISION); }
+void VGUI_BuyEquipment_1 (void) { sendevent("PlayerBuyEquipment", "f", 0); }
+void VGUI_BuyEquipment_2 (void) { sendevent("PlayerBuyEquipment", "f", 1); }
+void VGUI_BuyEquipment_3 (void) { sendevent("PlayerBuyEquipment", "f", 2); }
+void VGUI_BuyEquipment_4 (void) { sendevent("PlayerBuyEquipment", "f", 3); }
+void VGUI_BuyEquipment_5 (void) { sendevent("PlayerBuyEquipment", "f", 4); }
+void VGUI_BuyEquipment_6 (void) { sendevent("PlayerBuyEquipment", "f", 5); }
+void VGUI_BuyEquipment_7 (void) { sendevent("PlayerBuyEquipment", "f", 6); }
 
 btnarr_t buy_equipment[] = {
 	{"Kevlar", VGUI_BuyEquipment_1 },
