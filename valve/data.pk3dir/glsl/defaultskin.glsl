@@ -4,6 +4,7 @@
 !!permu FOG
 !!samps diffuse reflectcube
 !!cvardf gl_affinemodels=0
+!!cvardf gl_ldr=0
 
 #include "sys/defs.h"
 
@@ -24,9 +25,9 @@ varying vec3 light;
 #ifdef VERTEX_SHADER
 	#include "sys/skeletal.h"
 
-	/*float hl( vec3 normal, vec3 dir ) {
+	float hl( vec3 normal, vec3 dir ) {
 		return ( dot( normal, dir ) * 0.5 ) + 0.5;
-	}*/
+	}
 
 #ifdef CHROME
 	/* Rotate Light Vector */
@@ -49,8 +50,13 @@ varying vec3 light;
 		vec3 n, s, t, w;
 		gl_Position = skeletaltransform_wnst(w,n,s,t);
 		tex_c = v_texcoord;
-		light = e_light_ambient + (e_light_mul * dot(n, e_light_dir));
-
+		light = e_light_ambient + (e_light_mul * hl(n, e_light_dir)); 
+		
+		if (gl_ldr == 1.0) {
+			if (light.r > 1.0) light.r = 1.0;
+			if (light.g > 1.0) light.g = 1.0;
+			if (light.b > 1.0) light.b = 1.0;
+		}
 #ifdef CHROME
 		vec3 rorg = rlv(vec3(0,0,0), w, e_light_dir);
 		vec3 viewc = normalize(rorg - w);
@@ -92,8 +98,9 @@ varying vec3 light;
 		out_f.rgb = mix( textureCube( s_reflectcube, cube_c ).rgb, diffuse_f.rgb, diffuse_f.a );
 		diffuse_f = out_f;
 #endif
+
 		diffuse_f *= e_colourident;
 
-		gl_FragColor = diffuse_f * e_colourident;
+		gl_FragColor = diffuse_f;
 	}
 #endif
