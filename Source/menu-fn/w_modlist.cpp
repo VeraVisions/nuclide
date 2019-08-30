@@ -62,7 +62,7 @@ void CModList::Draw(void)
 		}
 
 		if (games[i].type != "") {
-			WLabel_Static(m_x + 2, m_y + 3, sprintf("%.8s...",games[i].type),
+			WLabel_Static(m_x + 2, pos + 3, sprintf("%.8s...",games[i].type),
 						  11, 11, colo, 1.0f, 0, font_arial);
 		}
 		
