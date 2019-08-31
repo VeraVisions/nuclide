@@ -198,7 +198,7 @@ void HUD_DrawAmmo1(void)
 		ammo1_alpha = HUD_ALPHA;
 	}
 	
-	pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
+	pos = video_mins + [video_res[0] - 72, video_res[1] - 42];
 
 	/* Magazine/Clip */
 	if (pl.a_ammo1 != -1) {
@@ -227,7 +227,7 @@ void HUD_DrawAmmo2(void)
 		ammo2_alpha = HUD_ALPHA;
 	}
 
-	pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
+	pos = video_mins + [video_res[0] - 72, video_res[1] - 42];
 
 	/* Leftover Ammo */
 	HUD_DrawNums(pl.a_ammo2, pos, ammo2_alpha, g_hud_color);
@@ -252,7 +252,7 @@ void HUD_DrawAmmo3(void)
 		ammo3_alpha = HUD_ALPHA;
 	}
 	
-	pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
+	pos = video_mins + [video_res[0] - 72, video_res[1] - 42];
 
 	/* Special */
 	//if (pl.a_ammo3) {

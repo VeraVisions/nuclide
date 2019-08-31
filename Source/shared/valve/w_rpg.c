@@ -222,6 +222,8 @@ void w_rpg_laser(void)
 	drawpic(cross_pos, "sprites/laserdot.spr_0.tga", lasersize, [1,1,1], 1.0f, DRAWFLAG_ADDITIVE);
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
+	vector aicon_pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [120/256,72/128], [24/256, 24/128], g_hud_color, 1, DRAWFLAG_ADDITIVE);
 #endif
 }
 

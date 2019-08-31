@@ -66,10 +66,10 @@ void w_crossbow_draw(void)
 	Weapons_SetModel("models/v_crossbow.mdl");
 
 	if (pl.a_ammo1) {
-        Weapons_ViewAnimation(CROSSBOW_DRAW1);
-    } else {
-        Weapons_ViewAnimation(CROSSBOW_DRAW2);
-    }
+		Weapons_ViewAnimation(CROSSBOW_DRAW1);
+	} else {
+		Weapons_ViewAnimation(CROSSBOW_DRAW2);
+	}
 }
 
 void w_crossbow_holster(void)
@@ -225,6 +225,8 @@ void w_crossbow_crosshair(void)
 	drawsubpic(cross_pos, [24,24], "sprites/crosshairs.spr_0.tga", [72/128,0], [0.1875, 0.1875], [1,1,1], 1, DRAWFLAG_NORMAL);
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
+	vector aicon_pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [96/256,72/128], [24/256, 24/128], g_hud_color, 1, DRAWFLAG_ADDITIVE);
 #endif
 }
 
