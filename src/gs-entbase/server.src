@@ -25,6 +25,7 @@ server/func_door_rotating.cpp
 server/func_illusionary.cpp
 server/func_ladder.cpp
 server/func_train.cpp
+server/func_guntarget.cpp
 server/func_tracktrain.cpp
 server/func_pushable.cpp
 server/func_wall.cpp
@@ -35,6 +36,7 @@ server/light.cpp
 server/stubs.cpp
 server/infodecal.cpp
 server/trigger_auto.cpp
+server/trigger_autosave.cpp
 server/trigger_cdaudio.cpp
 server/trigger_camera.cpp
 server/trigger_hurt.cpp

@@ -14,19 +14,23 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class func_train:CBaseTrigger
+#define SF_GUNTARGET_ON
+
+class func_guntarget:CBaseTrigger
 {
 	float m_flSpeed;
 
-	void() func_train;
-	virtual void() Find;
-	virtual void() NextPath;
-	virtual void() GoToTarget;
-	virtual void() Trigger;
+	void() func_guntarget;
+	
 	virtual void() Respawn;
+	virtual void() NextPath;
+	virtual void() Move;
+	virtual void() Stop;
+	virtual void() Trigger;
+	virtual void(int) vDeath;
 };
 
-void func_train::GoToTarget(void)
+void func_guntarget::Move(void)
 {
 	float flTravelTime;
 	vector vel_to_pos;
@@ -35,13 +39,13 @@ void func_train::GoToTarget(void)
 	f = find(world, CBaseTrigger::m_strTargetName, m_strTarget);
 
 	if (!f) {
-		print("^1func_train^7: Trigger-Target not found! Removing.\n");
+		print("^1func_guntarget^7: Path node not found!\n");
 		return;
 	}
 
 	vector vecWorldPos;
-	vecWorldPos[0] = absmin[0] + (0.5 * (absmax[0] - absmin[0]));	
-	vecWorldPos[1] = absmin[1] + (0.5 * (absmax[1] - absmin[1]));	
+	vecWorldPos[0] = absmin[0] + (0.5 * (absmax[0] - absmin[0]));
+	vecWorldPos[1] = absmin[1] + (0.5 * (absmax[1] - absmin[1]));
 	vecWorldPos[2] = absmin[2] + (0.5 * (absmax[2] - absmin[2]));
 
 	vel_to_pos = (f.origin - vecWorldPos);
@@ -49,7 +53,6 @@ void func_train::GoToTarget(void)
 
 	if (!flTravelTime) {
 		NextPath();
-		print(sprintf("TRAIN %s SPEED: %f\n", m_strTargetName, flTravelTime));
 		return;
 	}
 
@@ -58,11 +61,11 @@ void func_train::GoToTarget(void)
 	nextthink = (ltime + flTravelTime);
 }
 
-void func_train::NextPath(void)
+void func_guntarget::NextPath(void)
 {
 	CBaseTrigger current_target;
 
-	print(sprintf("^2func_train^7: Talking to current target %s... ", m_strTarget));
+	print(sprintf("^2func_guntarget^7: Talking to current target %s... ", m_strTarget));
 	current_target = (CBaseTrigger)find(world, CBaseTrigger::m_strTargetName, m_strTarget);
 
 	if (!current_target) {
@@ -75,53 +78,57 @@ void func_train::NextPath(void)
 	velocity = [0,0,0];
 
 	if (m_strTarget) {
-		GoToTarget();
+		Move();
 	}
 }
 
-void func_train::Trigger(void)
+void func_guntarget::vDeath(int iHitBody)
 {
-	GoToTarget();
+	Stop();
 }
 
-void func_train::Find(void)
+void func_guntarget::Stop(void)
 {
-	entity f = find(world, CBaseTrigger::m_strTargetName, m_strTarget);
+	takedamage = DAMAGE_NO;
+	velocity = [0,0,0];
+	nextthink = 0;
+	think = __NULL__;
+}
 
-	if (!f) {
-		print(sprintf("^1func_train^7: End-Target %s not found! Removing.\n",m_strTarget));
-		remove(this);
-		return;
+void func_guntarget::Trigger(void)
+{
+	flags = (1<<FL_FROZEN) | flags;
+
+	if (flags & FL_FROZEN) {
+		takedamage = DAMAGE_NO;
+		Stop();
+	} else {
+		takedamage = DAMAGE_YES;
+		NextPath();
 	}
-
-	print("^2func_train^7: Successfully found first target.\n");
-	vector vecWorldPos;
-	vecWorldPos[0] = absmin[0] + (0.5 * (absmax[0] - absmin[0]));	
-	vecWorldPos[1] = absmin[1] + (0.5 * (absmax[1] - absmin[1]));	
-	vecWorldPos[2] = absmin[2] + (0.5 * (absmax[2] - absmin[2]));
-
-	vecWorldPos = f.origin - vecWorldPos;
-	setorigin(this, vecWorldPos);
 }
 
-void func_train::Respawn(void)
+void func_guntarget::Respawn(void)
 {
 	solid = SOLID_BSP;
 	movetype = MOVETYPE_PUSH;
-	//blocked = Blocked;
 
 	setmodel(this, m_oldModel);
 	setorigin(this, m_oldOrigin);
 
-	/* Make sure we got some time for the paths to spawn */
-	nextthink = ltime + 0.1f;
-	think = Find;
+	if (spawnflags & 1) {
+		think = Trigger;
+		nextthink = time + 0.1f;
+	}
 }
 
-void func_train::func_train(void)
+void func_guntarget::func_guntarget(void)
 {
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
+		case "health":
+			health = stof(argv(i+1));
+			break;
 		case "speed":
 			m_flSpeed = stof(argv(i+1));
 			break;

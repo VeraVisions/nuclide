@@ -58,10 +58,14 @@ float env_glow::predraw(void)
 		/* Project it, always facing the player */
 		makevectors(view_angles);
 		R_BeginPolygon(m_strSprite, 1, 0);
-		R_PolygonVertex(forg + v_right * fsize[0] - v_up * fsize[1], [1,1], m_vecColor, falpha);
-		R_PolygonVertex(forg - v_right * fsize[0] - v_up * fsize[1], [0,1], m_vecColor, falpha);
-		R_PolygonVertex(forg - v_right * fsize[0] + v_up * fsize[1], [0,0], m_vecColor, falpha);
-		R_PolygonVertex(forg + v_right * fsize[0] + v_up * fsize[1], [1,0], m_vecColor, falpha);
+		R_PolygonVertex(forg + v_right * fsize[0] - v_up * fsize[1],
+			[1,1], m_vecColor, falpha);
+		R_PolygonVertex(forg - v_right * fsize[0] - v_up * fsize[1],
+			[0,1], m_vecColor, falpha);
+		R_PolygonVertex(forg - v_right * fsize[0] + v_up * fsize[1],
+			[0,0], m_vecColor, falpha);
+		R_PolygonVertex(forg + v_right * fsize[0] + v_up * fsize[1],
+			[1,0], m_vecColor, falpha);
 		R_EndPolygon();
 		addentity(this);
 	}

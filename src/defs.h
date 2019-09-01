@@ -59,7 +59,7 @@ const vector VEC_PLAYER_CVIEWPOS = [0,0,12];
 #define FLQW_LAGGEDMOVE		(1<<16)
 
 // FreeCS flags
-#define FL_FLASHLIGHT           (1<<17)
+#define FL_FLASHLIGHT		(1<<17)
 #define FL_REMOVEME		(1<<18)
 #define FL_CROUCHING 		(1<<19)
 #define FL_SEMI_TOGGLED		(1<<20)

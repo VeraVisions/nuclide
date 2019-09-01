@@ -14,13 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define AIRCONTROL
-
 #define PHY_JUMP_CHAINWINDOW	0.5
-#define PHY_JUMP_CHAIN	100
+#define PHY_JUMP_CHAIN		100
 #define PHY_JUMP_CHAINDECAY	50
 
-/*FIXME: jumptime should use the time global, as time intervals are not predictable - decrement it based upon input_timelength*/
+/* FIXME: jumptime should use the time global, as time intervals are not
+ * predictable - decrement it based upon input_timelength */
 .float waterlevel;
 .float watertype;
 .float maxspeed;
@@ -34,12 +33,12 @@ int Items_CheckItem(entity pl, int i) {
 }
 #endif
 
-/*
-=================
-PMove_Init
-=================
-*/
-void PMove_Init(void) {
+/* serverinfo keys are the only way both client and server are kept in sync
+ * about physics variables. so none of the traditional cvars will work.
+ * otherwise we could not have reliable prediction code for player movement.
+ */
+void
+PMove_Init(void) {
 #ifdef SSQC
 	localcmd("serverinfo phy_stepheight 18\n");
 	localcmd("serverinfo phy_airstepheight 18\n");
@@ -61,14 +60,11 @@ void PMove_Init(void) {
 #endif
 }
 
-/*
-=================
-PMove_Contents
-
-Wrapper that emulates pointcontents' behaviour
-=================
-*/
-int PMove_Contents(vector org)
+/* pointcontents reimplementation, only way we can effectively trace 
+ * against ladders and liquids that are defined in the game-logic.
+ */
+int
+PMove_Contents(vector org)
 {
 	int oldhitcontents = self.hitcontentsmaski;
 	self.hitcontentsmaski = -1;
@@ -77,7 +73,9 @@ int PMove_Contents(vector org)
 	return trace_endcontentsi;
 }
 
-float PMove_Gravity(entity ent)
+/* used for trigger_gravity type entities */
+float
+PMove_Gravity(entity ent)
 {
 	if (ent.gravity) {
 		return serverkeyfloat("phy_gravity") * ent.gravity; 
@@ -86,15 +84,9 @@ float PMove_Gravity(entity ent)
 	}
 }
 
-/*
-=================
-PMove_Categorize
-
-	Figures out where we are in the game world.
-	Whether we are in water, on the ground etc.
-=================
-*/
-void PMove_Categorize(void)
+/* figure out where we are in the geometry. void, solid, liquid, etc. */
+void
+PMove_Categorize(void)
 {
 	int contents;
 
@@ -108,7 +100,8 @@ void PMove_Categorize(void)
 		self.view_ofs = VEC_PLAYER_VIEWPOS;
 	}
 
-	tracebox(self.origin, self.mins, self.maxs, self.origin - '0 0 0.25', FALSE, self);
+	tracebox(self.origin, self.mins, self.maxs, self.origin - [0,0,0.25],
+		FALSE, self);
 
 	if (!trace_startsolid) {
 		if ((trace_fraction < 1) && (trace_plane_normal[2] > 0.7)) {
@@ -118,10 +111,10 @@ void PMove_Categorize(void)
 		}
 	}
 
-	// Ladder content testing
+	/* ladder content testing */
 	int oldhitcontents = self.hitcontentsmaski;
 	self.hitcontentsmaski = CONTENTBIT_FTELADDER;
-	tracebox( self.origin, self.mins, self.maxs, self.origin, FALSE, self );
+	tracebox(self.origin, self.mins, self.maxs, self.origin, FALSE, self);
 	self.hitcontentsmaski = oldhitcontents;
 
 	if (trace_endcontentsi & CONTENTBIT_FTELADDER) {
@@ -140,10 +133,15 @@ void PMove_Categorize(void)
 		contents = CONTENT_LAVA;
 	}
 
+	/* how far underwater are we? */
 	if (contents < CONTENT_SOLID && !(self.flags & FL_ONLADDER)) {
 		self.watertype = contents;
-		if (PMove_Contents(self.origin + (self.mins + self.maxs) * 0.5) & CONTENTBITS_FLUID) {
-			if (PMove_Contents(self.origin + self.maxs - '0 0 1') & CONTENTBITS_FLUID) {
+		if (PMove_Contents(self.origin + (self.mins + self.maxs) * 0.5) 
+			& CONTENTBITS_FLUID)
+		{
+			if (PMove_Contents(self.origin + self.maxs - '0 0 1')
+				& CONTENTBITS_FLUID)
+			{
 				self.waterlevel = 3;
 			} else {
 				self.waterlevel = 2;
@@ -157,12 +155,9 @@ void PMove_Categorize(void)
 	}
 }
 
-/*
-===========
-PMove_WaterMove
-============
-*/
-void PMove_WaterMove(void)
+/* this is technically run every frame, not just when we're in water */
+void
+PMove_WaterMove(void)
 {
 	if (self.movetype == MOVETYPE_NOCLIP) {
 		return;
@@ -231,7 +226,9 @@ void PMove_WaterMove(void)
 	}
 }
 
-void PMove_CheckWaterJump(void)
+/* spammed whenever we're near a ledge, getting out of a pool or something */
+void
+PMove_CheckWaterJump(void)
 {
 	vector vStart;
 	vector vEnd;
@@ -259,28 +256,29 @@ void PMove_CheckWaterJump(void)
 	}
 }
 
-int QPMove_IsStuck(entity eTarget, vector vOffset, vector vecMins, vector vecMaxs)
+/* simple bounds check */
+int
+QPMove_IsStuck(entity eTarget, vector vOffset, vector vecMins, vector vecMaxs)
 {
+	vector bound;
+
 	if (eTarget.solid != SOLID_SLIDEBOX) {
 		return FALSE;
 	}
-	tracebox(eTarget.origin + vOffset, vecMins, vecMaxs, eTarget.origin + vOffset, FALSE, eTarget);
+
+	bound = eTarget.origin + vOffset;
+	tracebox(bound, vecMins, vecMaxs, bound, FALSE, eTarget);
 	return trace_startsolid;
 }
 
-/*
-=================
-PMove_Run_Acceleration
-
-	This function applies the velocity changes the player wishes to apply
-=================
-*/
-void PMove_Run_Acceleration(float flMovetime, float flBefore)
+/* two-pass acceleration */
+void
+PMove_Run_Acceleration(float move_time, float premove)
 {
 	vector vecWishVel;
-	vector vecWishDir;
+	vector wish_dir;
 	vector vecTemp;
-	float flWishSpeed;
+	float wish_speed;
 	float flFriction;
 	float flJumptimeDelta;
 	float flChainBonus;
@@ -289,12 +287,12 @@ void PMove_Run_Acceleration(float flMovetime, float flBefore)
 	PMove_Categorize();
 
 	// Update the timer
-	self.jumptime -= flMovetime;
-	self.teleport_time -= flMovetime;
+	self.jumptime -= move_time;
+	self.teleport_time -= move_time;
 
 	// Corpses
 	if (self.movetype == MOVETYPE_TOSS) {
-		self.velocity[2] = self.velocity[2] - (PMove_Gravity(self) * flMovetime);
+		self.velocity[2] = self.velocity[2] - (PMove_Gravity(self) * move_time);
 		return;
 	}
 
@@ -347,17 +345,17 @@ void PMove_Run_Acceleration(float flMovetime, float flBefore)
 				vecWishVel += v_up * input_movevalues[2];
 			}
 
-			flWishSpeed = vlen(vecWishVel);
+			wish_speed = vlen(vecWishVel);
 
-			if (flWishSpeed > self.maxspeed) {
-				flWishSpeed = self.maxspeed;
+			if (wish_speed > self.maxspeed) {
+				wish_speed = self.maxspeed;
 			}
 
-			flWishSpeed = flWishSpeed * 0.7;
+			wish_speed = wish_speed * 0.7;
 
 			// water friction
 			if (self.velocity != [0,0,0]) {
-				flFriction = vlen(self.velocity) * (1 - flMovetime * serverkeyfloat("phy_friction"));
+				flFriction = vlen(self.velocity) * (1 - move_time * serverkeyfloat("phy_friction"));
 				if (flFriction > 0) {
 					self.velocity = normalize(self.velocity) * flFriction;
 				} else {
@@ -368,11 +366,11 @@ void PMove_Run_Acceleration(float flMovetime, float flBefore)
 			}
 
 			// water acceleration
-			if (flWishSpeed <= flFriction) {
+			if (wish_speed <= flFriction) {
 				return;
 			}
 
-			flFriction = min(flWishSpeed - flFriction, serverkeyfloat("phy_accelerate") * flWishSpeed * flMovetime);
+			flFriction = min(wish_speed - flFriction, serverkeyfloat("phy_accelerate") * wish_speed * move_time);
 			self.velocity = self.velocity + normalize(vecWishVel) * flFriction;
 			return;
 		}
@@ -396,22 +394,22 @@ void PMove_Run_Acceleration(float flMovetime, float flBefore)
 		vecWishVel[2] = 0;
 	}
 
-	vecWishDir = normalize(vecWishVel);
-	flWishSpeed = vlen(vecWishVel);
+	wish_dir = normalize(vecWishVel);
+	wish_speed = vlen(vecWishVel);
 	
-	if (flWishSpeed > self.maxspeed) {
-		flWishSpeed = self.maxspeed;
+	if (wish_speed > self.maxspeed) {
+		wish_speed = self.maxspeed;
 	}
 
 	if (self.movetype == MOVETYPE_NOCLIP) {
 		self.flags &= ~FL_ONGROUND;
-		self.velocity = vecWishDir * flWishSpeed;
+		self.velocity = wish_dir * wish_speed;
 	} else {
 		/*FIXME: pogostick*/
 		if (self.flags & FL_ONGROUND)
 		if (!(self.flags & FL_WATERJUMP))
 		if (self.flags & FL_JUMPRELEASED)
-		if (input_buttons & INPUT_BUTTON2 && flBefore) {
+		if (input_buttons & INPUT_BUTTON2 && premove) {
 			if (self.velocity[2] < 0) {
 				self.velocity[2] = 0;
 			}
@@ -445,6 +443,7 @@ void PMove_Run_Acceleration(float flMovetime, float flBefore)
 			self.flags &= ~FL_ONGROUND;
 			self.flags &= ~FL_JUMPRELEASED;
 		}
+
 		// not pressing jump, set released flag
 		if (!(input_buttons & INPUT_BUTTON2)) {
 			self.flags |= FL_JUMPRELEASED;
@@ -471,21 +470,20 @@ void PMove_Run_Acceleration(float flMovetime, float flBefore)
 
 				// if the leading edge is over a dropoff, increase friction
 				vecTemp = self.origin + normalize(vecTemp) * 16 + '0 0 1' * VEC_HULL_MIN[2];
-
 				traceline(vecTemp, vecTemp + '0 0 -34', TRUE, self);
 
 				// apply friction
 				if (trace_fraction == 1.0) {
 					if (flFriction < serverkeyfloat("phy_stopspeed")) {
-						flFriction = 1 - flMovetime * (serverkeyfloat("phy_stopspeed") / flFriction) * serverkeyfloat("phy_friction") * serverkeyfloat("phy_edgefriction");
+						flFriction = 1 - move_time * (serverkeyfloat("phy_stopspeed") / flFriction) * serverkeyfloat("phy_friction") * serverkeyfloat("phy_edgefriction");
 					} else {
-						flFriction = 1 - flMovetime * serverkeyfloat("phy_friction") * serverkeyfloat("phy_edgefriction");
+						flFriction = 1 - move_time * serverkeyfloat("phy_friction") * serverkeyfloat("phy_edgefriction");
 					}
 				} else {
 					if (flFriction < serverkeyfloat("phy_stopspeed")) {
-						flFriction = 1 - flMovetime * (serverkeyfloat("phy_stopspeed") / flFriction) * serverkeyfloat("phy_friction");
+						flFriction = 1 - move_time * (serverkeyfloat("phy_stopspeed") / flFriction) * serverkeyfloat("phy_friction");
 					} else {
-						flFriction = 1 - flMovetime * serverkeyfloat("phy_friction");
+						flFriction = 1 - move_time * serverkeyfloat("phy_friction");
 					}
 				}
 
@@ -496,49 +494,32 @@ void PMove_Run_Acceleration(float flMovetime, float flBefore)
 				}
 			}
 
-			/*if (self.flags & FL_ONLADDER) {
-				vector vPlayerVector;
-
-				makevectors(input_angles);
-				vPlayerVector = v_forward;
-				vPlayerVector = (vPlayerVector * 240);
-
-				if (input_movevalues[0] > 0) {
-					self.velocity = vPlayerVector;
-				} else {
-					self.velocity = [0,0,0];
-				}
-			}*/
-
 			// acceleration
-			flFriction = flWishSpeed - (self.velocity * vecWishDir);
+			flFriction = wish_speed - (self.velocity * wish_dir);
 			if (flFriction > 0) {
-				self.velocity = self.velocity + vecWishDir * min(flFriction, serverkeyfloat("phy_accelerate") * flMovetime * flWishSpeed);
+				self.velocity = self.velocity + wish_dir * min(flFriction, serverkeyfloat("phy_accelerate") * move_time * wish_speed);
 			}
 		} else {
 			/* apply gravity */
-			self.velocity[2] = self.velocity[2] - (PMove_Gravity(self) * flMovetime);
+			self.velocity[2] = self.velocity[2] - (PMove_Gravity(self) * move_time);
 
-			if (flWishSpeed < 30) {
-				flFriction = flWishSpeed - (self.velocity * vecWishDir);
+			if (wish_speed < 30) {
+				flFriction = wish_speed - (self.velocity * wish_dir);
 			} else {
-				flFriction = 30 - (self.velocity * vecWishDir);
+				flFriction = 30 - (self.velocity * wish_dir);
 			}
 
 			if (flFriction > 0) {
-				self.velocity = self.velocity + vecWishDir * (min(flFriction, serverkeyfloat("phy_airaccelerate")) * flWishSpeed * flMovetime);
+				float fric;
+				fric = min(flFriction, serverkeyfloat("phy_airaccelerate") * wish_speed * move_time);
+				self.velocity += wish_dir * fric;
 			}
 		}
 	}
 }
-/*
-=================
-PMove_Rebound
 
-	Calls somethings touch() function upon hit.
-=================
-*/
-void PMove_DoTouch(entity tother)
+void
+PMove_DoTouch(entity tother)
 {
 	entity oself = self;
 	if (tother.touch) {
@@ -549,31 +530,20 @@ void PMove_DoTouch(entity tother)
 	self = oself;
 }
 
-/*
-=================
-PMove_Rebound
-
-	This function 'bounces' off any surfaces that were hit
-=================
-*/
-static void PMove_Rebound(vector vecNormal)
+/* bounce us back off a place normal */
+static void
+PMove_Rebound(vector normal)
 {
-	self.velocity = self.velocity - vecNormal * (self.velocity * vecNormal);
+	self.velocity = self.velocity - normal * (self.velocity * normal);
 }
 
-/*
-=================
-PMove_Fix_Origin
-
-	Incase BSP precision messes up, this function will attempt
-	to correct the origin to stop it from being invalid.
-=================
-*/
-float PMove_Fix_Origin(void)
+/* brute force unstuck function */
+float
+PMove_Fix_Origin(void)
 {
 	float x, y, z;
 	vector norg, oorg = self.origin;
-	
+
 	for (z = 0; z < 3; z++) {
 		norg[2] = oorg[2] + ((z==2)?-1:z)*0.0125;
 		for (x = 0; x < 3; x++) {
@@ -583,42 +553,37 @@ float PMove_Fix_Origin(void)
 
 				tracebox(norg, self.mins, self.maxs, norg, FALSE, self);
 				if (!trace_startsolid) {
-					//dprint("[PHYSICS] Unstuck\n");
 					self.origin = norg;
 					return TRUE;
 				}
 			}
 		}
 	}
-	//dprint("[PHYSICS] Stuck\n");
 	return FALSE;
 }
 
-/*
-=================
-PMove_Run_Move
-
-	This function is responsible for moving the entity 
-	forwards according to the various inputs/state.
-=================
-*/
-void PMove_Run_Move(void)
+/* move the player based on the given acceleration */
+void
+PMove_Run_Move(void)
 {
-	vector vecDestPos;
-	vector vecSavePlane;
-	float flStepped;
-	float flMoveTime;
-	int iAttempts;
+	vector dest;
+	vector saved_plane;
+	float stepped;
+	float move_time;
+	int i;
 
+	/* no friction for the deceased */
 	if (self.movetype == MOVETYPE_NOCLIP) {
 		self.origin = self.origin + self.velocity * input_timelength;
 		return;
 	}
 
-	// we need to bounce off surfaces (in order to slide along them), so we need at 2 attempts
-	for (iAttempts = 3, flMoveTime = input_timelength; flMoveTime > 0 && iAttempts; iAttempts--) {
-		vecDestPos = self.origin + (self.velocity * flMoveTime);
-		tracebox(self.origin, self.mins, self.maxs, vecDestPos, FALSE, self);
+	/* we need to bounce off surfaces (in order to slide along them), 
+	 * so we need at 2 attempts
+	 */
+	for (i = 3, move_time = input_timelength; move_time > 0 && i; i--) {
+		dest = self.origin + (self.velocity * move_time);
+		tracebox(self.origin, self.mins, self.maxs, dest, FALSE, self);
 
 		if (trace_startsolid) {
 			if (!PMove_Fix_Origin()) {
@@ -629,73 +594,71 @@ void PMove_Run_Move(void)
 
 		self.origin = trace_endpos;
 
-		if (trace_fraction < 1) {
-			vecSavePlane = trace_plane_normal;
-			flMoveTime -= flMoveTime * trace_fraction;
-
-			if (flMoveTime) {
-				// step up if we can
-				trace_endpos = self.origin;
-
-				if (self.flags & FL_ONGROUND) {
-					trace_endpos[2] += serverkeyfloat("phy_stepheight");
-				} else {
-					trace_endpos[2] += serverkeyfloat("phy_airstepheight");
-				}
-
-				tracebox(self.origin, self.mins, self.maxs, trace_endpos, FALSE, self);
-				flStepped = trace_endpos[2] - self.origin[2];
-
-				float roof_fraction = trace_fraction;
-				vector roof_plane_normal = trace_plane_normal;
-
-				vecDestPos = trace_endpos + self.velocity*flMoveTime;
-				vecDestPos[2] = trace_endpos[2]; /*only horizontally*/
-
-				// move forwards
-				tracebox(trace_endpos, self.mins, self.maxs, vecDestPos, FALSE, self);
-
-				// if we got anywhere, make this raised-step move count
-				if (trace_fraction != 0) {
-					float fwfrac = trace_fraction;
-					vector fwplane = trace_plane_normal;
-
-					// move down
-					vecDestPos = trace_endpos;
-					vecDestPos[2] -= flStepped + 1;
-					tracebox(trace_endpos, self.mins, self.maxs, vecDestPos, FALSE, self);
-
-					if (trace_fraction < 1 && trace_plane_normal[2] > 0.7f) {
-						flMoveTime -= flMoveTime * fwfrac;
-						/* bounce off the ceiling if we hit it while airstepping */
-						if (roof_fraction < 1) {
-							PMove_Rebound(roof_plane_normal);
-						}
-						/* FIXME: you probably want this: && self.velocity[2] < 0 */
-						if (trace_fraction < 1) {
-							PMove_Rebound(trace_plane_normal);
-						} else if (fwfrac < 1) {
-							PMove_Rebound(fwplane);
-						}
-						self.origin = trace_endpos;
-						continue;
-					}
-				}
-			}
-
-			//stepping failed, just bounce off
-			PMove_Rebound(vecSavePlane);
-			PMove_DoTouch(trace_ent);
-		} else {
+		if (trace_fraction > 1) {
 			break;
 		}
+		saved_plane = trace_plane_normal;
+		move_time -= move_time * trace_fraction;
+
+		if (move_time) {
+			/* step up if we can */
+			trace_endpos = self.origin;
+
+			if (self.flags & FL_ONGROUND) {
+				trace_endpos[2] += serverkeyfloat("phy_stepheight");
+			} else {
+				trace_endpos[2] += serverkeyfloat("phy_airstepheight");
+			}
+
+			tracebox(self.origin, self.mins, self.maxs, trace_endpos, FALSE, self);
+			stepped = trace_endpos[2] - self.origin[2];
+
+			float roof_fraction = trace_fraction;
+			vector roof_plane_normal = trace_plane_normal;
+
+			dest = trace_endpos + self.velocity*move_time;
+			dest[2] = trace_endpos[2]; /*only horizontally*/
+
+			/* move forwards */
+			tracebox(trace_endpos, self.mins, self.maxs, dest, FALSE, self);
+
+			/* if we got anywhere, make this raised-step move count */
+			if (trace_fraction != 0) {
+				float fwfrac = trace_fraction;
+				vector fwplane = trace_plane_normal;
+
+				/* move down */
+				dest = trace_endpos;
+				dest[2] -= stepped + 1;
+				tracebox(trace_endpos, self.mins, self.maxs, dest, FALSE, self);
+
+				if (trace_fraction < 1 && trace_plane_normal[2] > 0.7f) {
+					move_time -= move_time * fwfrac;
+					/* bounce off the ceiling */
+					if (roof_fraction < 1) {
+						PMove_Rebound(roof_plane_normal);
+					}
+					if (trace_fraction < 1) {
+						PMove_Rebound(trace_plane_normal);
+					} else if (fwfrac < 1) {
+						PMove_Rebound(fwplane);
+					}
+					self.origin = trace_endpos;
+					continue;
+				}
+			}
+		}
+
+		/* stepping failed, just bounce off */
+		PMove_Rebound(saved_plane);
+		PMove_DoTouch(trace_ent);
 	}
 
 	/* touch whatever is below */
 	if (self.flags & FL_ONGROUND) {
-		vecDestPos = self.origin;
-		vecDestPos[2] -= serverkeyfloat("phy_stepheight");
-		tracebox(self.origin, self.mins, self.maxs, vecDestPos, FALSE, self);
+		dest = self.origin;
+		dest[2] -= serverkeyfloat("phy_stepheight");
+		tracebox(self.origin, self.mins, self.maxs, dest, FALSE, self);
 		if (trace_fraction >= 1) {
 			return;
 		}
@@ -708,14 +671,9 @@ void PMove_Run_Move(void)
 	}
 }
 
-/*
-=================
-PMove_Run
-
-	Runs the physics for one input frame.
-=================
-*/
-void PMove_Run(void)
+/* it all starts here */
+void
+PMove_Run(void)
 {
 #ifdef VALVE
 	self.maxspeed = (self.flags & FL_CROUCHING) ? 135 : 270;
@@ -737,9 +695,10 @@ void PMove_Run(void)
 		input_movevalues[2] = -240;
 	}
 
-	/* Call accelerate before and after the actual move, 
-	 * with half the move each time. 
-	 * This reduces framerate dependance. */
+	/* call accelerate before and after the actual move, 
+	 * with half the move each time. this reduces framerate dependence. 
+	 * and makes controlling jumps slightly easier
+	 */
 	PMove_Run_Acceleration(input_timelength / 2, TRUE);
 	PMove_Run_Move();
 	PMove_Run_Acceleration(input_timelength / 2, FALSE);
@@ -752,8 +711,8 @@ void PMove_Run(void)
 
 	player pl = (player)self;
 #ifdef VALVE
-	pl.w_attack_next = max(0, pl.w_attack_next-input_timelength);
-	pl.w_idle_next = max(0, pl.w_idle_next-input_timelength);
+	pl.w_attack_next = max(0, pl.w_attack_next - input_timelength);
+	pl.w_idle_next = max(0, pl.w_idle_next - input_timelength);
 #endif
 	pl.weapontime += input_timelength;
 	Game_Input();

@@ -23,7 +23,6 @@ Entry point for drawing on the client
 */
 void Cstrike_PreDraw(void)
 {
-
 	Nightvision_PreDraw();
 }
 

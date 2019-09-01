@@ -189,7 +189,6 @@ void Game_ParseClientCommand(string cmd)
 		return;
 	}
 
-	// Players talk to players, spectators to spectators.
 	if (argv(0) == "say") {
 		localcmd(sprintf("echo [SERVER] %s: %s\n", self.netname, argv(1)));
 		SV_SendChat(self, argv(1), world, 0);

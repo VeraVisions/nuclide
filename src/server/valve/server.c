@@ -41,6 +41,6 @@ void Game_Worldspawn(void)
 	precache_model("models/player/zombie/zombie.mdl");
 	precache_model("models/player/helmet/helmet.mdl");
 	precache_model("models/player/recon/recon.mdl");
-    precache_model("models/player/robo/robo.mdl");	
+	precache_model("models/player/robo/robo.mdl");	
 	Weapons_Init();
 }
