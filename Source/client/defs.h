@@ -1,71 +1,71 @@
-/***
-*
-*	Copyright (c) 2016-2019 Marco 'eukara' Hladik. All rights reserved.
-*
-*	See the file LICENSE attached with the sources for usage details.
-*
-****/
+/*
+ * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
+ *
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
+ * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
+ * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 
-// flags for 2d drawing
-#define DRAWFLAG_NORMAL	0
-#define DRAWFLAG_ADDITIVE 1
-#define DRAWFLAG_MODULATE 2
-#define DRAWFLAG_2XMODULATE 3
+/* flags for 2d drawing */
+#define DRAWFLAG_NORMAL		0
+#define DRAWFLAG_ADDITIVE	1
+#define DRAWFLAG_MODULATE	2
+#define DRAWFLAG_2XMODULATE	3
 
-// Undocumented printcall types
-#define PRINT_LOW		0
+/* undocumented printcall types */
+#define PRINT_LOW	0
 #define PRINT_MEDIUM	1
-#define PRINT_HIGH		2
-#define PRINT_CHAT		3
+#define PRINT_HIGH	2
+#define PRINT_CHAT	3
 
+/* fonts */
 var float FONT_16;
 var float FONT_20;
 var float FONT_CON;
 
-/* Clientside CVARS */
-
-var vector autocvar_con_color = '255 150 0'; // autocvar of "con_color"
-var vector autocvar_vgui_color = '255 170 0'; // autocvar of "vgui_color"
-
+/* clientside cvars */
 var float autocvar_cl_bob = 0;
 var float autocvar_v_bob = 0.01;
 var float autocvar_v_bobcycle = 0.8;
 var float autocvar_v_bobup = 0.5;
-var int autocvar_v_bobclassic = TRUE;
-var vector autocvar_v_gunofs = [0,0,0];
-var int autocvar_cl_thirdperson = FALSE;
+var float autocvar_zoom_sensitivity = 1.0f;
 var int autocvar_cl_smoothstairs = TRUE;
+var int autocvar_cl_thirdperson = FALSE;
+var int autocvar_v_bobclassic = TRUE;
 var int autocvar_v_lefthanded = FALSE;
 var string autocvar_cl_logofile = "lambda";
-var vector autocvar_cl_logocolor = '255 0 0';
-var float autocvar_zoom_sensitivity = 1.0f;
+var vector autocvar_cl_logocolor = [255,0,0];
+var vector autocvar_con_color = [255,150,0];
+var vector autocvar_vgui_color = [255,170,0];
+var vector autocvar_v_gunofs = [0,0,0];
 
-// Particle stuff
-var float PARTICLE_SPARK;
-var float PARTICLE_PIECES_BLACK;
-var float PARTICLE_SMOKE_GREY;
-var float PARTICLE_SMOKE_BROWN;
+/* particle descriptors */
 var float PARTICLE_BLOOD;
+var float PARTICLE_PIECES_BLACK;
+var float PARTICLE_SMOKE_BROWN;
+var float PARTICLE_SMOKE_GREY;
+var float PARTICLE_SPARK;
 var float DECAL_SHOT;
 var float DECAL_GLASS;
 
-var float SHADER_CULLED;
-
+/* misc globals */
 vector video_mins;
 vector video_res;
-
-// Input globals for the mouse
-float fMouseClick;
 vector mouse_pos;
 
-// This actually belongs in builtins.h since its an undocumented global
+/* this actually belongs in builtins.h since its an undocumented global */
 float clframetime;
 
-
+/* prototypes */
 void View_UpdateWeapon(entity, entity);
 void View_AddPunchAngle( vector vAdd );
 void View_PlayAnimation( int iSequence );
 void Game_Input(void);
-
-
-int(float playernum, string keyname, optional void *outptr, int size) getplayerkeyblob = #0;

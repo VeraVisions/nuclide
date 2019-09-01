@@ -1,30 +1,36 @@
-/***
-*
-*	Copyright (c) 2016-2019 Marco 'eukara' Hladik. All rights reserved.
-*
-*	See the file LICENSE attached with the sources for usage details.
-*
-****/
+/*
+ * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
+ *
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
+ * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
+ * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 
 var int g_initialized = FALSE;
 
-const string AGPL_TEXT = "\
+const string LICENSE_TEXT = "\
 ========================================================================\
-The FREE-CS PROJECT \
-Copyright (C) 2016-2019  Marco Hladik <marco@icculus.org> \
+Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>\
 \
-This program is free software: you can redistribute it and/or modify\
-it under the terms of the GNU Affero General Public License as\
-published by the Free Software Foundation, either version 3 of the\
-License, or (at your option) any later version.\
+Permission to use, copy, modify, and distribute this software for any\
+purpose with or without fee is hereby granted, provided that the above\
+copyright notice and this permission notice appear in all copies.\
 \
-This program is distributed in the hope that it will be useful,\
-but WITHOUT ANY WARRANTY; without even the implied warranty of\
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\
-GNU Affero General Public License for more details.\
-\
-You should have received a copy of the GNU Affero General Public License\
-along with this program.  If not, see <https://www.gnu.org/licenses/>.\
+THE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\
+WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER\
+IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING\
+OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.\
 ========================================================================";
 
 void cvar_init(void)
@@ -47,7 +53,7 @@ void m_init(void)
 {
 	vector g_btnsize;
 
-	print(AGPL_TEXT);
+	print(LICENSE_TEXT);
 	print("\n\n");
 
 	registercommand("menu_customgame");

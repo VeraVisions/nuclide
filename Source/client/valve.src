@@ -37,7 +37,6 @@ predict.c
 ../shared/spraylogo.cpp
 
 ../shared/valve/items.h
-../shared/valve/crosshair.h
 ../shared/valve/weapons.h
 ../shared/valve/w_crowbar.c
 ../shared/valve/w_glock.c
@@ -57,6 +56,7 @@ predict.c
 ../shared/valve/weapon_common.c
 
 valve/player.c
+valve/entities.c
 entities.c
 
 valve/cmds.c

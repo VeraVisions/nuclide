@@ -37,7 +37,6 @@ predict.c
 ../shared/spraylogo.cpp
 
 ../shared/scihunt/items.h
-../shared/valve/crosshair.h
 ../shared/scihunt/weapons.h
 ../shared/valve/w_crowbar.c
 ../shared/valve/w_glock.c
@@ -61,6 +60,7 @@ predict.c
 
 
 valve/player.c
+valve/entities.c
 entities.c
 
 valve/cmds.c

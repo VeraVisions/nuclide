@@ -1,10 +1,18 @@
-/***
-*
-*	Copyright (c) 2016-2019 Marco 'eukara' Hladik. All rights reserved.
-*
-*	See the file LICENSE attached with the sources for usage details.
-*
-****/
+/*
+ * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
+ *
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
+ * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
+ * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 
 #define AIRCONTROL
 
@@ -110,6 +118,18 @@ void PMove_Categorize(void)
 		}
 	}
 
+	// Ladder content testing
+	int oldhitcontents = self.hitcontentsmaski;
+	self.hitcontentsmaski = CONTENTBIT_FTELADDER;
+	tracebox( self.origin, self.mins, self.maxs, self.origin, FALSE, self );
+	self.hitcontentsmaski = oldhitcontents;
+
+	if (trace_endcontentsi & CONTENTBIT_FTELADDER) {
+		self.flags |= FL_ONLADDER;
+	} else {
+		self.flags &= ~FL_ONLADDER;
+	}
+
 	contents = PMove_Contents(self.origin + self.mins + [0,0,1]);
 
 	if (contents & CONTENTBIT_WATER) {
@@ -120,7 +140,7 @@ void PMove_Categorize(void)
 		contents = CONTENT_LAVA;
 	}
 
-	if (contents < CONTENT_SOLID) {
+	if (contents < CONTENT_SOLID && !(self.flags & FL_ONLADDER)) {
 		self.watertype = contents;
 		if (PMove_Contents(self.origin + (self.mins + self.maxs) * 0.5) & CONTENTBITS_FLUID) {
 			if (PMove_Contents(self.origin + self.maxs - '0 0 1') & CONTENTBITS_FLUID) {
@@ -430,7 +450,19 @@ void PMove_Run_Acceleration(float flMovetime, float flBefore)
 			self.flags |= FL_JUMPRELEASED;
 		}
 
-		if (self.flags & FL_ONGROUND) {
+		if (self.flags & FL_ONLADDER) {
+			vector vPlayerVector;
+
+			makevectors(input_angles);
+			vPlayerVector = v_forward;
+			vPlayerVector = (vPlayerVector * 240);
+
+			if (input_movevalues[0] > 0) {
+				self.velocity = vPlayerVector;
+			} else {
+				self.velocity = [0,0,0];
+			}
+		} else if (self.flags & FL_ONGROUND) {
 			// friction
 			if (self.velocity[0] || self.velocity[1]) {
 				vecTemp = self.velocity;

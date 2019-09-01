@@ -9,5 +9,7 @@
 ../gs-entbase/client/env_glow.cpp
 ../gs-entbase/client/env_sound.cpp
 ../gs-entbase/client/sky_camera.cpp
+../gs-entbase/server/func_ladder.cpp
+../gs-entbase/server/trigger_gravity.cpp
 ../gs-entbase/client/worldspawn.cpp
 #endlist

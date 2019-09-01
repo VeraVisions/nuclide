@@ -1,55 +1,84 @@
-/***
-*
-*	Copyright (c) 2016-2019 Marco 'eukara' Hladik. All rights reserved.
-*
-*	See the file LICENSE attached with the sources for usage details.
-*
-****/
+/*
+ * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
+ *
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
+ * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
+ * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 
-void Damage_Draw(void)
+void
+Damage_Draw(void)
 {
-	float fForward;
-	float fRight;
-	vector vecMiddle;
+	vector center;
+	vector rel_pos;
+	float fw, fw_alpha;
+	float rt, rt_alpha;
 
 	if (pSeat->damage_alpha <= 0.0) {
 		return;
 	}
 
-	vecMiddle = video_mins + (video_res / 2);
+	center = video_mins + (video_res / 2);
+
+	/* the pos relative to the player + view_dir determines which
+	 * and how bright each indicator is drawn. so first get the relative
+	 * position between us and the attacker, then calculate the strength
+	 * of each direction based on a dotproduct tested against our
+	 * camera direction.
+	 */
+	rel_pos = normalize(pSeat->damage_pos - getproperty(VF_ORIGIN));
 	makevectors(getproperty(VF_CL_VIEWANGLES));
+	fw = dotproduct(rel_pos, v_forward);
+	rt = dotproduct(rel_pos, v_right);
 
-	vector location = normalize(pSeat->damage_pos - getproperty(VF_ORIGIN));
-	fForward = dotproduct(location, v_forward);
-	fRight = dotproduct(location, v_right);
+	fw_alpha = fabs(fw) * pSeat->damage_alpha;
+	if (fw > 0.25f) {
+		drawpic(center + [-64,-102], "sprites/640_pain.spr_0.tga", 
+			[128,48], [1,1,1], fw_alpha, DRAWFLAG_ADDITIVE);
+	} else if (fw < -0.25f) {
+		drawpic(center + [-64,70], "sprites/640_pain.spr_2.tga",
+			[128,48], [1,1,1], fw_alpha, DRAWFLAG_ADDITIVE);
+	}
 
-	if (fForward > 0.25) {
-		drawpic(vecMiddle + [-64,-70 - 32], "sprites/640_pain.spr_0.tga", 
-				[128,48], [1,1,1], fabs(fForward) * pSeat->damage_alpha, DRAWFLAG_ADDITIVE);
-	} else if (fForward < -0.25) {
-		drawpic(vecMiddle + [-64,70], "sprites/640_pain.spr_2.tga",
-				[128,48], [1,1,1], fabs(fForward) * pSeat->damage_alpha, DRAWFLAG_ADDITIVE);
+	rt_alpha = fabs(rt) * pSeat->damage_alpha;
+	if (rt > 0.25f) {
+		drawpic(center + [70,-64], "sprites/640_pain.spr_1.tga",
+			[48,128], [1,1,1], rt_alpha, DRAWFLAG_ADDITIVE);
+	} else if (rt < -0.25f) {
+		drawpic(center + [-102,-64], "sprites/640_pain.spr_3.tga",
+			[48,128], [1,1,1], rt_alpha, DRAWFLAG_ADDITIVE);
 	}
-	if (fRight > 0.25) {
-		drawpic(vecMiddle + [70,-64], "sprites/640_pain.spr_1.tga",
-				[48,128], [1,1,1], fabs(fRight) * pSeat->damage_alpha, DRAWFLAG_ADDITIVE);
-	} else if (fRight < -0.25) {
-		drawpic(vecMiddle + [-70 - 32,-64], "sprites/640_pain.spr_3.tga",
-				[48,128], [1,1,1], fabs(fRight) * pSeat->damage_alpha, DRAWFLAG_ADDITIVE);
-	}
-	pSeat->damage_alpha -= frametime;
+
+	pSeat->damage_alpha -= clframetime;
 }
 
-float CSQC_Parse_Damage(float save, float take, vector org)
+/*
+ * engine specific callback for when dmg_ fields are set on the client side.
+ * might want to replace it at some point? probably not...
+ * hence why 'save' and 'take' are unused.
+ */
+float
+CSQC_Parse_Damage(float save, float take, vector abs_pos)
 {
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &seats[s];
 
-	if (org) {
-		pSeat->damage_pos = org;
+	/* FIXME: while a player shooting you from [0,0,0] is unlikely, it's
+	 * not impossible. we only do this to lazily seperate players from
+	 * entities belonging to world
+	 */
+	if (abs_pos) {
+		pSeat->damage_pos = abs_pos;
 		pSeat->damage_alpha = 1.0f;
 	}
 
-	//sound(pSeat->ePlayer, CHAN_VOICE, "player/pl_pain2.wav", 1, ATTN_NORM);
 	return TRUE;
 }

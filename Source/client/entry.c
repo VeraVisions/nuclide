@@ -1,12 +1,21 @@
-/***
-*
-*	Copyright (c) 2016-2019 Marco 'eukara' Hladik. All rights reserved.
-*
-*	See the file LICENSE attached with the sources for usage details.
-*
-****/
+/*
+ * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
+ *
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
+ * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
+ * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 
-void CSQC_Init(float apilevel, string enginename, float engineversion)
+void
+CSQC_Init(float apilevel, string enginename, float engineversion)
 {
 	pSeat = &seats[0];
 
@@ -19,11 +28,11 @@ void CSQC_Init(float apilevel, string enginename, float engineversion)
 	registercommand("-use");
 	registercommand("+duck");
 	registercommand("-duck");
-	
+
 	/* Requested by Slacer */
 	registercommand("+zoomin");
 	registercommand("-zoomin");
-	
+
 	registercommand("slot1");
 	registercommand("slot2");
 	registercommand("slot3");
@@ -50,21 +59,18 @@ void CSQC_Init(float apilevel, string enginename, float engineversion)
 
 	/* Fonts */
 	FONT_16 = loadfont("16", "fonts/default", "16", -1);
-	FONT_CON  = loadfont("font", "", "12", -1);
-	FONT_20  = loadfont("cr", "creditsfont?fmt=h", "20", -1);
+	FONT_20 = loadfont("cr", "creditsfont?fmt=h", "20", -1);
+	FONT_CON = loadfont("font", "", "12", -1);
 	drawfont = FONT_CON;
 
-	/* Materials */
-	SHADER_CULLED = shaderforname("mirror_cull");
-
 	/* Particles */
-	PARTICLE_SPARK 			= particleeffectnum("part_spark");
+	PARTICLE_SPARK 		= particleeffectnum("part_spark");
 	PARTICLE_PIECES_BLACK 	= particleeffectnum("part_pieces_black");
 	PARTICLE_SMOKE_GREY 	= particleeffectnum("part_smoke_grey");
 	PARTICLE_SMOKE_BROWN 	= particleeffectnum("part_smoke_brown");
-	PARTICLE_BLOOD 			= particleeffectnum("part_blood");
-	DECAL_SHOT 				= particleeffectnum("decal_shot");
-	DECAL_GLASS 			= particleeffectnum("decal_glass");
+	PARTICLE_BLOOD 		= particleeffectnum("part_blood");
+	DECAL_SHOT 		= particleeffectnum("decal_shot");
+	DECAL_GLASS 		= particleeffectnum("decal_glass");
 
 	/* 2D Pics */
 	precache_pic("gfx/vgui/icntlk_sv");
@@ -78,7 +84,7 @@ void CSQC_Init(float apilevel, string enginename, float engineversion)
 
 	/* View */
 	View_Init();
-	
+
 	/* Effects */
 	Effects_Init();
 	precache_sound("misc/talk.wav");
@@ -97,9 +103,11 @@ void CSQC_Init(float apilevel, string enginename, float engineversion)
 	Scores_Init();
 	Client_Init(apilevel, enginename, engineversion);
 	DSP_Init();
+	CSQC_RendererRestarted("init");
 }
 
-void CSQC_UpdateView(float w, float h, float focus)
+void
+CSQC_UpdateView(float w, float h, float focus)
 {
 	player pl;
 	int s;
@@ -121,7 +129,7 @@ void CSQC_UpdateView(float w, float h, float focus)
 	   people are able to resize windows dynamically too. */
 	video_res[0] = w;
 	video_res[1] = h;
-	
+
 	if ( g_iCubeProcess == TRUE ) {
 		clearscene();
 		setproperty( VF_DRAWWORLD, TRUE );
@@ -251,7 +259,6 @@ void CSQC_UpdateView(float w, float h, float focus)
 
 		renderscene();
 
-	
 		/* Run this on all players */
 		for (entity b = world; (b = find(b, ::classname, "player"));) {
 			player pf = (player) b;
@@ -306,30 +313,16 @@ CSQC_InputEvent
 Updates all our input related globals for use in other functions
 =================
 */
-float CSQC_InputEvent(float fEventType, float fKey, float fCharacter, float fDeviceID)
+float
+CSQC_InputEvent(float fEventType, float fKey, float fCharacter, float fDeviceID)
 {
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &seats[s];
 
 	switch (fEventType) {
 		case IE_KEYDOWN:
-			if (fKey == K_MOUSE1) {
-				fMouseClick = 1;
-			} else {
-				pSeat->fInputKeyDown = 1;
-			}
-
-			pSeat->fInputKeyCode = fKey;
-			pSeat->fInputKeyASCII = fCharacter;
 			break;
 		case IE_KEYUP:
-			if (fKey == K_MOUSE1) {
-				fMouseClick = 0;
-			} else {
-				pSeat->fInputKeyDown = 0;
-			}
-			pSeat->fInputKeyCode = 0;
-			pSeat->fInputKeyASCII = 0;
 			break;
 		case IE_MOUSEABS:
 			mouse_pos[0] = fKey;
@@ -354,7 +347,7 @@ float CSQC_InputEvent(float fEventType, float fKey, float fCharacter, float fDev
 		default:
 			return TRUE;
 	}
-	
+
 	VGUI_Input(fEventType, fKey, fCharacter, fDeviceID);
 
 	if (g_vguiWidgetCount) {
@@ -373,19 +366,19 @@ CSQC_Input_Frame
 Hijacks and controls what input globals are being sent to the server
 =================
 */
-void CSQC_Input_Frame(void)
+void
+CSQC_Input_Frame(void)
 {
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &seats[s];
 
-
 	// If we are inside a VGUI, don't let the client do stuff outside
-	if (g_vguiWidgetCount) {
+	if (g_vguiWidgetCount > 0) {
 		input_impulse = 0;
 		input_buttons = 0;
 		return;
 	}
-	
+
 	/* The HUD needs more time */
 	if ((pSeat->fHUDWeaponSelected) && (input_buttons & INPUT_BUTTON0)) {
 		HUD_DrawWeaponSelect_Trigger();
@@ -393,16 +386,18 @@ void CSQC_Input_Frame(void)
 		pSeat->fInputSendNext = time + 0.2;
 	}
 
+	/* prevent accidental input packets */
 	if (pSeat->fInputSendNext > time) {
 		input_impulse = 0;
 		input_buttons = 0;
 		return;
 	}
-	
+
+	/* compat*/
 	if (input_impulse == 201) {
 		sendevent("Spraylogo", "");
 	}
-	
+
 	if (pSeat->iInputAttack2 == TRUE) {
 		input_buttons |= INPUT_BUTTON3;
 	} 
@@ -410,11 +405,11 @@ void CSQC_Input_Frame(void)
 	if (pSeat->iInputReload == TRUE) {
 		input_buttons |= INPUT_BUTTON4;
 	} 
-	
+
 	if (pSeat->iInputUse == TRUE) {
 		input_buttons |= INPUT_BUTTON5;
 	} 
-	
+
 	if (pSeat->iInputDuck == TRUE) {
 		input_buttons |= INPUT_BUTTON8;
 	}
@@ -428,122 +423,124 @@ CSQC_Parse_Event
 Whenever we call a SVC_CGAMEPACKET on the SSQC, this is being run
 =================
 */
-void CSQC_Parse_Event(void)
+void
+CSQC_Parse_Event(void)
 {
 	/* always 0, unless it was sent with a MULTICAST_ONE or MULTICAST_ONE_R to p2+ */
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &seats[s];
-	
+
 	float fHeader = readbyte();
-	
+
 	switch (fHeader) {
-		case EV_SPEAK:
-			string msg;
-			float pit;
-			entity t = findfloat( world, entnum, readentitynum() );
-			msg = readstring();
-			pit = readfloat();
-			sound(t, CHAN_VOICE, msg, 1.0, ATTN_NORM, pit);
-			break;
-		case EV_FADE:
-			Fade_Parse();
-			break;
-		case EV_SPRITE:
-			Sprite_ParseEvent();
-			break;
-		case EV_TEXT:
-			GameText_Parse();
-			break;
-		case EV_MESSAGE:
-			GameMessage_Parse();
-			break;
-		case EV_SPARK:
-			vector vSparkPos, vSparkAngle;
-			vSparkPos[0] = readcoord();
-			vSparkPos[1] = readcoord();
-			vSparkPos[2] = readcoord();
-			vSparkAngle[0] = readcoord();
-			vSparkAngle[1] = readcoord();
-			vSparkAngle[2] = readcoord();
-			Effect_CreateSpark(vSparkPos, vSparkAngle);
-			break;
-		case EV_GIBHUMAN:
-			vector vGibPos;
-			vGibPos[0] = readcoord();
-			vGibPos[1] = readcoord();
-			vGibPos[2] = readcoord();
-			Effect_GibHuman(vGibPos);
-			break;
-		case EV_BLOOD:
-			vector vBloodPos;
-			vector vBloodAngle;
-			
-			vBloodPos[0] = readcoord();
-			vBloodPos[1] = readcoord();
-			vBloodPos[2] = readcoord();
-			
-			vBloodAngle[0] = readcoord();
-			vBloodAngle[1] = readcoord();
-			vBloodAngle[2] = readcoord();
-			
-			Effect_CreateBlood(vBloodPos, vBloodAngle);
-			break;
-		case EV_EXPLOSION:
-			vector vExploPos;
-			
-			vExploPos[0] = readcoord();
-			vExploPos[1] = readcoord();
-			vExploPos[2] = readcoord();
-			
-			Effect_CreateExplosion(vExploPos);
-			break;
-		case EV_MODELGIB:
-			vector vPos;
-			vPos[0] = readcoord();
-			vPos[1] = readcoord();
-			vPos[2] = readcoord();
-			
-			vector vSize;
-			vSize[0] = readcoord();
-			vSize[1] = readcoord();
-			vSize[2] = readcoord();
+	case EV_SPEAK:
+		string msg;
+		float pit;
+		entity t = findfloat( world, entnum, readentitynum() );
+		msg = readstring();
+		pit = readfloat();
+		sound(t, CHAN_VOICE, msg, 1.0, ATTN_NORM, pit);
+		break;
+	case EV_FADE:
+		Fade_Parse();
+		break;
+	case EV_SPRITE:
+		Sprite_ParseEvent();
+		break;
+	case EV_TEXT:
+		GameText_Parse();
+		break;
+	case EV_MESSAGE:
+		GameMessage_Parse();
+		break;
+	case EV_SPARK:
+		vector vSparkPos, vSparkAngle;
+		vSparkPos[0] = readcoord();
+		vSparkPos[1] = readcoord();
+		vSparkPos[2] = readcoord();
+		vSparkAngle[0] = readcoord();
+		vSparkAngle[1] = readcoord();
+		vSparkAngle[2] = readcoord();
+		Effect_CreateSpark(vSparkPos, vSparkAngle);
+		break;
+	case EV_GIBHUMAN:
+		vector vGibPos;
+		vGibPos[0] = readcoord();
+		vGibPos[1] = readcoord();
+		vGibPos[2] = readcoord();
+		Effect_GibHuman(vGibPos);
+		break;
+	case EV_BLOOD:
+		vector vBloodPos;
+		vector vBloodAngle;
 
-			float fStyle = readbyte();
-			int count = readbyte();
-			Effect_BreakModel(count, vPos, vSize, [0,0,0], fStyle);
-			break;
-		case EV_CAMERATRIGGER:
-			pSeat->vCameraPos.x = readcoord();
-			pSeat->vCameraPos.y = readcoord();
-			pSeat->vCameraPos.z = readcoord();
+		vBloodPos[0] = readcoord();
+		vBloodPos[1] = readcoord();
+		vBloodPos[2] = readcoord();
 
-			pSeat->vCameraAngle.x = readcoord();
-			pSeat->vCameraAngle.y = readcoord();
-			pSeat->vCameraAngle.z = readcoord();
-			
-			pSeat->fCameraTime = time + readfloat();
-			break;
-		case EV_IMPACT:
-			int iType;
-			vector vOrigin, vNormal;
-			
-			iType = (int)readbyte();
-			vOrigin[0] = readcoord();
-			vOrigin[1] = readcoord();
-			vOrigin[2] = readcoord();
+		vBloodAngle[0] = readcoord();
+		vBloodAngle[1] = readcoord();
+		vBloodAngle[2] = readcoord();
 
-			vNormal[0] = readcoord();
-			vNormal[1] = readcoord();
-			vNormal[2] = readcoord();
-			
-			Effect_Impact(iType, vOrigin, vNormal);
-			break;
-		default:
+		Effect_CreateBlood(vBloodPos, vBloodAngle);
+		break;
+	case EV_EXPLOSION:
+		vector vExploPos;
+
+		vExploPos[0] = readcoord();
+		vExploPos[1] = readcoord();
+		vExploPos[2] = readcoord();
+
+		Effect_CreateExplosion(vExploPos);
+		break;
+	case EV_MODELGIB:
+		vector vPos;
+		vPos[0] = readcoord();
+		vPos[1] = readcoord();
+		vPos[2] = readcoord();
+
+		vector vSize;
+		vSize[0] = readcoord();
+		vSize[1] = readcoord();
+		vSize[2] = readcoord();
+
+		float fStyle = readbyte();
+		int count = readbyte();
+		Effect_BreakModel(count, vPos, vSize, [0,0,0], fStyle);
+		break;
+	case EV_CAMERATRIGGER:
+		pSeat->vCameraPos.x = readcoord();
+		pSeat->vCameraPos.y = readcoord();
+		pSeat->vCameraPos.z = readcoord();
+
+		pSeat->vCameraAngle.x = readcoord();
+		pSeat->vCameraAngle.y = readcoord();
+		pSeat->vCameraAngle.z = readcoord();
+
+		pSeat->fCameraTime = time + readfloat();
+		break;
+	case EV_IMPACT:
+		int iType;
+		vector vOrigin, vNormal;
+
+		iType = (int)readbyte();
+		vOrigin[0] = readcoord();
+		vOrigin[1] = readcoord();
+		vOrigin[2] = readcoord();
+
+		vNormal[0] = readcoord();
+		vNormal[1] = readcoord();
+		vNormal[2] = readcoord();
+
+		Effect_Impact(iType, vOrigin, vNormal);
+		break;
+	default:
 		Game_Parse_Event(fHeader);
 	}
 }
 
-float CSQC_ConsoleCommand(string sCMD)
+float
+CSQC_ConsoleCommand(string sCMD)
 {
 	/* the engine will hide the p1 etc commands... which is fun... */
 	int s = (float)getproperty(VF_ACTIVESEAT);
@@ -673,17 +670,18 @@ That's how we are able to add color, alpha and whatnot.
 Keep in mind that newlines need to be tokenized
 =================
 */
-float CSQC_Parse_CenterPrint(string sMessage)
+float
+CSQC_Parse_CenterPrint(string sMessage)
 {
 	fCenterPrintLines = tokenizebyseparator(sMessage, "\n");
-	
+
 	for (int i = 0; i < (fCenterPrintLines); i++) {
 		sCenterPrintBuffer[i] = sprintf("^xF80%s", argv(i));
 	}
-	
+
 	fCenterPrintAlpha = 1;
 	fCenterPrintTime = time + 3;
-	
+
 	return TRUE;
 }
 
@@ -692,12 +690,16 @@ float CSQC_Parse_CenterPrint(string sMessage)
 CSQC_Ent_ParseMapEntity
 =================
 */
-float CSQC_Ent_ParseMapEntity(void)
+float
+CSQC_Ent_ParseMapEntity(void)
 {
+	entity eOld;
 	CBaseEntity eEnt = __NULL__;
 	string strField, strValue;
 	__fullspawndata = "";
 	int iClass = FALSE;
+
+	eOld = self;
 
 	while (1) {
 		strField = getentitytoken();
@@ -721,103 +723,29 @@ float CSQC_Ent_ParseMapEntity(void)
 		}
 
 		strValue = getentitytoken();
-
 		if (!strValue) {
 			break;
 		}
 
 		switch (strField) {
-			case "classname":
-				switch (strValue) {
-				case "worldspawn":
-					eEnt = spawn(worldspawn);
-					iClass = TRUE;
-					break;
-				case "env_sound":
-					eEnt = spawn(env_sound);
-					iClass = TRUE;
-					break;
-				case "env_cubemap":
-					eEnt = spawn(env_cubemap);
-					iClass = TRUE;
-					break;
-				case "env_glow":
-					eEnt = spawn(env_glow);
-					iClass = TRUE;
-					break;
-				case "sky_camera":
-					eEnt = spawn(sky_camera);
-					iClass = TRUE;
-					break;
-				#ifdef REWOLF
-				case "decore_asteroid":
-					eEnt = spawn(decore_asteroid);
-					iClass = TRUE;
-					break;
-				case "decore_baboon":
-					eEnt = spawn(decore_baboon);
-					iClass = TRUE;
-					break;
-				case "decore_bodygib":
-					eEnt = spawn(decore_bodygib);
-					iClass = TRUE;
-					break;
-				case "decore_butterflyflock":
-					eEnt = spawn(decore_butterflyflock);
-					iClass = TRUE;
-					break;
-				case "decore_explodable":
-					eEnt = spawn(decore_explodable);
-					iClass = TRUE;
-					break;
-				case "decore_foot":
-					eEnt = spawn(decore_foot);
-					iClass = TRUE;
-					break;
-				case "decore_goldskull":
-					eEnt = spawn(decore_goldskull);
-					iClass = TRUE;
-					break;
-				case "decore_hatgib":
-					eEnt = spawn(decore_hatgib);
-					iClass = TRUE;
-					break;
-				case "decore_nest":
-					eEnt = spawn(decore_nest);
-					iClass = TRUE;
-					break;
-				case "decore_pteradon":
-					eEnt = spawn(decore_pteradon);
-					iClass = TRUE;
-					break;
-				case "decore_torch":
-					eEnt = spawn(decore_torch);
-					iClass = TRUE;
-					break;
-				case "decore_spacedebris":
-					eEnt = spawn(decore_spacedebris);
-					iClass = TRUE;
-					break;
-				case "decore_swampplants":
-					eEnt = spawn(decore_swampplants);
-					iClass = TRUE;
-					break;
-				case "decore_mushroom":
-					eEnt = spawn(decore_mushroom);
-					iClass = TRUE;
-					break;
-				case "decore_mushroom2":
-					eEnt = spawn(decore_mushroom2);
-					iClass = TRUE;
-					break;
-				#endif
-				default:
-					eEnt.classname = strValue;
-				}
-				break;
-			default:
-				__fullspawndata = sprintf("%s\"%s\" \"%s\" ", __fullspawndata, strField, strValue);
-				break;
+		case "classname":
+			print(strcat("[CSQC] Spawnfunc search for ", strValue));
+			eEnt = (CBaseEntity)spawn();
+			if (isfunction(strcat("spawnfunc_", strValue))) {
+				self = eEnt;
+				callfunction(strcat("spawnfunc_", strValue));
+				self = eOld;
+				iClass = TRUE;
+				print(" [^2FOUND^7]");
+			} else {
+				eEnt.classname = strValue;
+			}
+			print("\n");
+			break;
+		default:
+			__fullspawndata = sprintf("%s\"%s\" \"%s\" ",
+				__fullspawndata, strField, strValue);
+			break;
 		}
 	}
 
@@ -831,7 +759,8 @@ CSQC_WorldLoaded
 Whenever the world is fully initialized...
 =================
 */
-void CSQC_WorldLoaded(void)
+void
+CSQC_WorldLoaded(void)
 {
 	precache_pic("{shot1", TRUE);
 	precache_pic("{shot2", TRUE);
@@ -872,7 +801,8 @@ void CSQC_WorldLoaded(void)
 	}
 }
 
-void CSQC_RendererRestarted(string rstr)
+void
+CSQC_RendererRestarted(string rstr)
 {
 	Sky_Update();
 	Game_RendererRestarted(rstr);
@@ -885,7 +815,8 @@ CSQC_Shutdown
 Incase you need to free something
 =================
 */
-void CSQC_Shutdown(void)
+void
+CSQC_Shutdown(void)
 {
 	
 }

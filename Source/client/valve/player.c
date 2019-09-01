@@ -1,10 +1,18 @@
-/***
-*
-*	Copyright (c) 2016-2019 Marco 'eukara' Hladik. All rights reserved.
-*
-*	See the file LICENSE attached with the sources for usage details.
-*
-****/
+/*
+ * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
+ *
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
+ * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
+ * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 
 //FOR DEBUGGING ONLY, remove when prediction is trusted (along with the extra network bloat).
 static void warnifdiff(string name, __inout float expected, float got)
@@ -12,8 +20,8 @@ static void warnifdiff(string name, __inout float expected, float got)
 	//this should only fire from prediction misses.
 	//this hopefully only happens when the server's anti-time-banking logic does its thing, or for things caused by other players/ents getting in the way.
 
-	if (expected != got)
-		print(sprintf("%s differs, expected %g, got %g\n", name, expected, got));
+	//if (expected != got)
+		//print(sprintf("%s differs, expected %g, got %g\n", name, expected, got));
 
 	//enable the following line if you want to see if it actually makes a difference.
 	//expected = got;

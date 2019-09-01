@@ -32,7 +32,6 @@ valve/player.c
 ../shared/pmove.c
 valve/spectator.c
 ../shared/scihunt/items.h
-../shared/valve/crosshair.h
 ../shared/scihunt/weapons.h
 ../shared/valve/w_crowbar.c
 ../shared/valve/w_glock.c

@@ -36,7 +36,6 @@ valve/player.c
 ../shared/pmove.c
 valve/spectator.c
 ../shared/valve/items.h
-../shared/valve/crosshair.h
 ../shared/valve/weapons.h
 ../shared/valve/w_crowbar.c
 ../shared/valve/w_glock.c
