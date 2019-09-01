@@ -805,6 +805,7 @@ void
 CSQC_RendererRestarted(string rstr)
 {
 	Sky_Update();
+	Decal_Reload();
 	Game_RendererRestarted(rstr);
 }
 

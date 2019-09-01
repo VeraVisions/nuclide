@@ -156,7 +156,13 @@ void Decals_PlaceGauss(vector pos)
 
 #ifdef CSQC
 
-const string g_decalshader = \
+class decal
+{
+	string m_strShader;
+	string m_strTexture;
+};
+
+const string g_decal_shader = \
 	"{\n" \
 		"polygonOffset\n" \
 		"{\n" \
@@ -166,7 +172,7 @@ const string g_decalshader = \
 		"}\n" \
 	"}";
 
-const string g_decalshader_add = \
+const string g_decal_shader_add = \
 	"{\n" \
 		"polygonOffset\n" \
 		"{\n" \
@@ -178,63 +184,79 @@ const string g_decalshader_add = \
 
 float Decal_PreDraw(void)
 {
+	decal dcl = (decal)self;
 	if (!autocvar_cl_decals) {
 		return PREDRAW_NEXT;
 	}
 
-	adddecal(self.classname, self.origin, self.mins, self.maxs, self.color, 1.0f);
-	addentity(self);
+	adddecal(dcl.m_strShader, dcl.origin, dcl.mins, dcl.maxs, dcl.color, 1.0f);
+	addentity(dcl);
 	return PREDRAW_NEXT;
+}
+
+void Decal_MakeShader(decal target)
+{
+	string shader_buff;
+	target.m_strShader = sprintf("decal_%s", target.m_strTexture);
+
+	if (target.style & DFLAG_ADDITIVE) {
+		shader_buff = sprintf(g_decal_shader_add, target.m_strTexture);
+	} else {
+		shader_buff = sprintf(g_decal_shader, target.m_strTexture);
+	}
+	shaderforname(target.m_strShader, shader_buff);
+}
+
+void Decal_Reload(void)
+{
+	for (entity b = world; (b = find(b, ::classname, "decal"));) {
+		Decal_MakeShader((decal)b);
+	}
 }
 
 void Decal_Parse(void)
 {
-	string decalname = "";
-	string decalshader = "";
+	decal new;
 
-	self.origin[0] = readcoord();
-	self.origin[1] = readcoord();
-	self.origin[2] = readcoord();
+	/* convert us to an object of type decal */
+	spawnfunc_decal();
+	new = (decal)self;
 
-	self.angles[0] = readcoord();
-	self.angles[1] = readcoord();
-	self.angles[2] = readcoord();
-	self.classname = readstring();
+	new.origin[0] = readcoord();
+	new.origin[1] = readcoord();
+	new.origin[2] = readcoord();
 
-	self.color = [1,1,1];
+	new.angles[0] = readcoord();
+	new.angles[1] = readcoord();
+	new.angles[2] = readcoord();
+	new.m_strTexture = readstring();
+
+	new.color = [1,1,1];
 
 	for (int i = 0; i < g_decalwad.length; i++) {
-		if (self.classname == g_decalwad[i].name) {
-			self.color[0] = (g_decalwad[i].color[0] / 255);
-			self.color[1] = (g_decalwad[i].color[1] / 255);
-			self.color[2] = (g_decalwad[i].color[2] / 255);
-			self.style = g_decalwad[i].flags;
+		if (new.m_strTexture == g_decalwad[i].name) {
+			new.color[0] = (g_decalwad[i].color[0] / 255);
+			new.color[1] = (g_decalwad[i].color[1] / 255);
+			new.color[2] = (g_decalwad[i].color[2] / 255);
+			new.style = g_decalwad[i].flags;
 			break;
 		}
 	}
 
-	self.size = drawgetimagesize(self.classname);
+	new.size = drawgetimagesize(new.m_strTexture);
 
 	if (serverkeyfloat("*bspversion") == 30) {
-		decalname = sprintf("decal_%s", self.classname);
-		
-		if (self.style & DFLAG_ADDITIVE) {
-			decalshader = sprintf(g_decalshader_add, self.classname);
-		} else {
-			decalshader = sprintf(g_decalshader, self.classname);
-		}
-		shaderforname(decalname, decalshader);
-		self.classname = decalname;
+		Decal_MakeShader(new);
 	}
 
-	makevectors(self.angles);
-	float surf = getsurfacenearpoint(world, self.origin);
+	makevectors(new.angles);
+	float surf = getsurfacenearpoint(world, new.origin);
 	vector s_dir = getsurfacepointattribute(world, surf, 0, SPA_S_AXIS);
 	vector t_dir = getsurfacepointattribute(world, surf, 0, SPA_T_AXIS);
-	self.mins = v_up / self.size[0];
-	self.maxs = t_dir / self.size[1];
+	new.mins = v_up / new.size[0];
+	new.maxs = t_dir / new.size[1];
 
-	self.predraw = Decal_PreDraw;
-	self.drawmask = MASK_ENGINE;
+	new.predraw = Decal_PreDraw;
+	new.drawmask = MASK_ENGINE;
 }
 #endif
