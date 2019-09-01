@@ -49,7 +49,10 @@ void Client_Init(float apilevel, string enginename, float engineversion)
 
 void Client_InitDone(void)
 {
-	VGUI_ChooseTeam();
+	/* don't open this in singleplayer */
+	if (serverkeyfloat("slots") > 1) {
+		VGUI_ChooseTeam();
+	}
 }
 
 void Game_RendererRestarted(string rstr)
