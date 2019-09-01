@@ -152,6 +152,7 @@ void Game_PutClientInServer(void)
 		setorigin(pl, spot.origin);
 		pl.angles = spot.angles;
 		pl.fixangle = TRUE;
+		pl.g_items |= ITEM_SUIT;
 
 		SHData_GetItems();
 	}
@@ -176,24 +177,21 @@ void Game_ParseClientCommand(string cmd)
 {
 	tokenize(cmd);
 
-	/*if (argv(1) == "timeleft") {
+	if (argv(1) == "timeleft") {
 		float fTimeLeft = cvar("mp_timelimit") - (time / 60);
 		Vox_Singlecast(self, sprintf("we have %s minutes remaining", Vox_TimeToString(fTimeLeft)));
 		return;
-	}*/
-	
-	string chat = substring(cmd, 4, strlen(cmd) - 4);
+	}
 
-	// Players talk to players, spectators to spectators.
 	if (argv(0) == "say") {
-		localcmd(sprintf("echo %s: %s\n", self.netname, chat));
-		SV_SendChat(self, chat, world, 0);
+		localcmd(sprintf("echo [SERVER] %s: %s\n", self.netname, argv(1)));
+		SV_SendChat(self, argv(1), world, 0);
 		return;
 	} else if (argv(0) == "say_team") {
-		localcmd(sprintf("echo [TEAM %d] %s: %s\n", self.team, self.netname, chat));
+		localcmd(sprintf("echo [TEAM %d] %s: %s\n", self.team, self.netname, argv(1)));
 		for (entity eFind = world; (eFind = find(eFind, classname, "player"));) { 
 			if (eFind.team == self.team) {
-				SV_SendChat(self, chat, eFind, 1);
+				SV_SendChat(self, argv(1), eFind, 1);
 			}
 		}
 		return;
