@@ -104,6 +104,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	Client_Init(apilevel, enginename, engineversion);
 	DSP_Init();
 	CSQC_RendererRestarted("init");
+	Titles_Init();
 }
 
 void
@@ -729,18 +730,15 @@ CSQC_Ent_ParseMapEntity(void)
 
 		switch (strField) {
 		case "classname":
-			print(strcat("[CSQC] Spawnfunc search for ", strValue));
 			eEnt = (CBaseEntity)spawn();
 			if (isfunction(strcat("spawnfunc_", strValue))) {
 				self = eEnt;
 				callfunction(strcat("spawnfunc_", strValue));
 				self = eOld;
 				iClass = TRUE;
-				print(" [^2FOUND^7]");
 			} else {
 				eEnt.classname = strValue;
 			}
-			print("\n");
 			break;
 		default:
 			__fullspawndata = sprintf("%s\"%s\" \"%s\" ",
