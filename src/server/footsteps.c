@@ -28,11 +28,7 @@ void Footsteps_Update(void) {
 	float fVol;
 	string sMaterial = "";
 	string sTexture = "";
-	
-	if (self.flags & FL_CROUCHING) {
-		return;
-	}
-	
+
 	if (!g_hlbsp_materials) {
 		return;
 	}
@@ -46,17 +42,16 @@ void Footsteps_Update(void) {
 		traceline(self.origin + self.view_ofs, self.origin + '0 0 -48', FALSE, self);
 		sTexture = getsurfacetexture(trace_ent, getsurfacenearpoint(trace_ent, trace_endpos));
 
-		if (fSpeed < 140) {
-			self.fStepTime = time + 0.35;
-			fVol = 0.15f;
+		if (fSpeed < 150) {
+			return;
 		} else if (fSpeed < 270) {
-			self.fStepTime = time + 0.35;
 			fVol = 0.35f;
 		} else {
-			self.fStepTime = time + 0.35;
 			fVol = 0.75;
 		}
-		
+
+		self.fStepTime = time + 0.35;
+
 		switch((float)hash_get(hashMaterials, sTexture)) { 
 			case 'M':
 				sMaterial = "metal";
@@ -91,7 +86,7 @@ void Footsteps_Update(void) {
 			default:
 				sMaterial = "step";
 				break;
-         }
+	}
 
 		if (self.iStep) {
 			if (random() < 0.5f) {
