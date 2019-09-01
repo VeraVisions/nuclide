@@ -93,8 +93,8 @@ GameText_DrawMessage(int i, float timer, int highlight)
 	timer = max(0, timer);
 
 	if (highlight) {
-		mtime = g_textchannels[i].m_flFadeIn + g_textchannels[i].m_flFadeOut;
-		btime = g_textchannels[i].m_flFadeIn;
+		btime = g_textchannels[i].m_flFadeIn * strlen(g_textchannels[i].m_strMessage);
+		mtime = btime + g_textchannels[i].m_flFadeOut;
 	} else {
 		mtime = g_textchannels[i].m_flFadeIn + g_textchannels[i].m_flHoldTime + g_textchannels[i].m_flFadeOut;
 		btime = g_textchannels[i].m_flFadeIn + g_textchannels[i].m_flHoldTime;
