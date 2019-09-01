@@ -21,7 +21,14 @@ void Flashlight_Toggle(void)
 			return;
 		}
 	}
-	
+
+#ifdef VALVE
+	player pl = (player)self;
+	if (!(pl.g_items & ITEM_SUIT)) {
+		return;
+	}
+#endif
+
 	if (self.health <= 0) {
 		return;
 	}
