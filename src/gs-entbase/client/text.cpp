@@ -30,63 +30,114 @@ typedef struct
 } gametext_t;
 gametext_t g_textchannels[5];
 
-void GameText_Draw(void)
+/* for effect 2 */
+int GameText_CharCount(float fadein, float timer, string msg)
 {
-	drawfont = FONT_20;
-	for (int i = 0; i < 5; i++) {
-		float a = 0.0f;
-		vector rpos;
-		float mtime;
-		float btime;
-		float strwidth;
+	float len = (timer / fadein);
 
-		mtime = g_textchannels[i].m_flFadeIn + g_textchannels[i].m_flHoldTime + g_textchannels[i].m_flFadeOut;
-		btime = g_textchannels[i].m_flFadeIn + g_textchannels[i].m_flHoldTime;
+	if (!fadein || len > strlen(msg))
+		return strlen(msg);
+	else 
+		return len;
+}
 
-		if (g_textchannels[i].m_flTime > mtime) {
-			continue;
-		}
-		strwidth = stringwidth(g_textchannels[i].m_strMessage, TRUE, [20,20]);
+/* the engine its drawstring doesn't like newlines that much */
+void
+GameText_DrawString(vector pos, string msg, vector col, float alpha)
+{
+	vector rpos;
+	int c = tokenizebyseparator(msg, "\n");
+	
+	for (int i = 0; i < c; i++) {
+		float strwidth = stringwidth(argv(i), TRUE, [20,20]);
 
-		if (g_textchannels[i].m_flPosX == -1) {
+		if (pos[0] == -1) {
 			rpos[0] = (video_res[0] / 2) - (strwidth/2);
 		} else {
-			rpos[0] = video_res[0] * g_textchannels[i].m_flPosX;
+			rpos[0] = video_res[0] * pos[0];
 
-			if (g_textchannels[i].m_flPosX >= 0.5) {
+			if (pos[0] >= 0.5) {
 				rpos[0] -= strwidth;
 			}
 		}
 
-		if (g_textchannels[i].m_flPosY == -1) {
+		if (pos[1] == -1) {
 			rpos[1] = (video_res[1] / 2) - 6;
 		} else {
-			rpos[1] = ((video_res[1] - 12) * g_textchannels[i].m_flPosY);
+			rpos[1] = ((video_res[1] - 12) * pos[1]);
 		}
+		rpos[1] += 20 * i;
+		drawstring(rpos, argv(i), '20 20', col, alpha,
+			DRAWFLAG_ADDITIVE);
+	}
+}
 
-		if (g_textchannels[i].m_flTime < g_textchannels[i].m_flFadeIn) {
-			a = (g_textchannels[i].m_flTime / g_textchannels[i].m_flFadeIn);
-		} else if (g_textchannels[i].m_flTime < btime) {
-			a = 1.0f;
-		} else if (g_textchannels[i].m_flTime < mtime) {
-			if (g_textchannels[i].m_flFadeOut) {
-				a = 1 - (g_textchannels[i].m_flTime - btime) / g_textchannels[i].m_flFadeOut;
-			}
+void
+GameText_DrawMessage(int i, float timer, int highlight)
+{
+	float a = 0.0f;
+	vector rpos;
+	float mtime;
+	float btime;
+	string finalstring;
+
+	if (g_textchannels[i].m_iEffect == 2) {
+		/* scan out */
+		finalstring = substring(g_textchannels[i].m_strMessage, 0,
+			GameText_CharCount(g_textchannels[i].m_flFadeIn, timer,
+				g_textchannels[i].m_strMessage));
+	} else {
+		finalstring = g_textchannels[i].m_strMessage;
+	}
+
+	timer = max(0, timer);
+
+	if (highlight) {
+		mtime = g_textchannels[i].m_flFadeIn + g_textchannels[i].m_flFadeOut;
+		btime = g_textchannels[i].m_flFadeIn;
+	} else {
+		mtime = g_textchannels[i].m_flFadeIn + g_textchannels[i].m_flHoldTime + g_textchannels[i].m_flFadeOut;
+		btime = g_textchannels[i].m_flFadeIn + g_textchannels[i].m_flHoldTime;
+	}
+
+	if (timer > mtime) {
+		return;
+	}
+
+	if (timer < g_textchannels[i].m_flFadeIn) {
+		a = (timer / g_textchannels[i].m_flFadeIn);
+	} else if (timer < btime) {
+		a = 1.0f;
+	} else if (timer < mtime) {
+		if (g_textchannels[i].m_flFadeOut) {
+			a = 1 - (timer - btime) / g_textchannels[i].m_flFadeOut;
 		}
+	}
 
-		if (g_textchannels[i].m_flPosX >= 0.5) {
-			drawstring(rpos, g_textchannels[i].m_strMessage, '20 20', g_textchannels[i].m_vecColor2, a, DRAWFLAG_ADDITIVE );
-		} else {
-			drawstring(rpos, g_textchannels[i].m_strMessage, '20 20', g_textchannels[i].m_vecColor2, a, DRAWFLAG_ADDITIVE );
-		}
+	rpos[0] = g_textchannels[i].m_flPosX;
+	rpos[1] = g_textchannels[i].m_flPosY;
+	if (highlight) {
+		GameText_DrawString(rpos, finalstring, g_textchannels[i].m_vecColor2, a);
+	} else {
+		GameText_DrawString(rpos, finalstring, g_textchannels[i].m_vecColor1, a);
+	}
+}
 
+void
+GameText_Draw(void)
+{
+	drawfont = FONT_20;
+	for (int i = 0; i < 5; i++) {
+		GameText_DrawMessage(i, g_textchannels[i].m_flTime - g_textchannels[i].m_flFXTime, 0);
+		GameText_DrawMessage(i, g_textchannels[i].m_flTime, 1);
 		g_textchannels[i].m_flTime += clframetime;
 	}
 
 	drawfont = FONT_CON;
 }
 
-void GameText_Parse(void)
+void
+GameText_Parse(void)
 {
 	int chan = readbyte();
 	g_textchannels[chan].m_strMessage = readstring();
@@ -123,24 +174,19 @@ typedef struct titles_s
 static titles_t *g_titles;
 static int g_titles_count;
 
-void GameMessage_Parse(void)
+void
+GameMessage_Setup(string message)
 {
-	string strSound;
-	float flVolume;
-	int iAttenuation;
-	string findme;
 	int findid = -1;
 
-	findme = readstring();
-
 	for (int i = 0; i < g_titles_count; i++) {
-		if (g_titles[i].m_strName == findme) {
+		if (g_titles[i].m_strName == message) {
 			findid = i;
 		}
 	}
 
 	if (findid < 0) {
-		g_textchannels[0].m_strMessage = findme;
+		g_textchannels[0].m_strMessage = message;
 		g_textchannels[0].m_flTime = 0.0f;
 		g_textchannels[0].m_flPosX = -1;
 		g_textchannels[0].m_flPosY = 0.75f;
@@ -159,7 +205,20 @@ void GameMessage_Parse(void)
 		g_textchannels[0].m_flHoldTime = g_titles[findid].m_flHoldTime;
 		g_textchannels[0].m_vecColor1 = g_titles[findid].m_vecColor1;
 		g_textchannels[0].m_vecColor2 = g_titles[findid].m_vecColor2;
+		g_textchannels[0].m_iEffect = g_titles[findid].m_iEffect;
 	}
+}
+
+void
+GameMessage_Parse(void)
+{
+	string strSound;
+	float flVolume;
+	int iAttenuation;
+	string findme;
+
+	findme = strtoupper(readstring());
+	GameMessage_Setup(findme);
 
 	strSound = readstring();
 	flVolume = readfloat();
@@ -168,7 +227,8 @@ void GameMessage_Parse(void)
 	sound(self, CHAN_ITEM, strSound, flVolume, iAttenuation);
 }
 
-void Titles_Init(void)
+void
+Titles_Init(void)
 {
 	float t_position[2];
 	int t_effect;
@@ -213,7 +273,7 @@ void Titles_Init(void)
 					t_color[1] = stof(argv(2)) / 255;
 					t_color[2] = stof(argv(3)) / 255;
 				} else {
-					t_color = stov(argv(1));
+					t_color = stov(argv(1)) / 255;
 				}
 				break;
 			case "$color2":
@@ -222,7 +282,7 @@ void Titles_Init(void)
 					t_color2[1] = stof(argv(2)) / 255;
 					t_color2[2] = stof(argv(3)) / 255;
 				} else {
-					t_color2 = stov(argv(1));
+					t_color2 = stov(argv(1)) / 255;
 				}
 				break;
 			case "$fxtime":
@@ -243,7 +303,6 @@ void Titles_Init(void)
 			case "}":
 				int id = g_titles_count - 1;
 				braced = FALSE;
-
 				g_titles[id].m_strName = t_name;
 				g_titles[id].m_strMessage = t_message;
 				g_titles[id].m_flPosX = t_position[0];
@@ -255,7 +314,6 @@ void Titles_Init(void)
 				g_titles[id].m_flFadeOut = t_fadeout;
 				g_titles[id].m_flHoldTime = t_holdtime;
 				g_titles[id].m_flFXTime = t_fxtime;
-
 				t_message = "";
 				t_name = "";
 				break;
@@ -263,11 +321,12 @@ void Titles_Init(void)
 				if (braced) {
 					t_message = sprintf("%s%s\n", t_message, temp);
 				} else {
-					t_name = argv(0);
+					t_name = strtoupper(argv(0));
 					g_titles = memrealloc(g_titles, sizeof(titles_t), g_titles_count, ++g_titles_count);
-					dprint(sprintf("[TITLES] Found %s\n", t_name));
+					dprint(sprintf("[^1TITLES^7] Found ^2%s\n", t_name));
 				}
 			}
 		}
+		fclose(fs_titles);
 	}
 }

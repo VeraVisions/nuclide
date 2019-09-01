@@ -19,6 +19,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 {
 	pSeat = &seats[0];
 
+	registercommand("titles_test");
 	registercommand("vox_test");
 	registercommand("+attack2");
 	registercommand("-attack2");
@@ -558,6 +559,9 @@ CSQC_ConsoleCommand(string sCMD)
 		break;
 	case "buildcubemaps":
 		CMap_Build();
+		break;
+	case "titles_test":
+		GameMessage_Setup(argv(1));
 		break;
 	case "vox_test":
 		Sound_PlayVOX(sCMD);
