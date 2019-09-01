@@ -160,6 +160,7 @@ void Game_PutClientInServer(void)
 		pl.ammo_9mm = 68;
 		Weapons_AddItem(pl, WEAPON_CROWBAR);
 		Weapons_AddItem(pl, WEAPON_GLOCK);
+		pl.g_items |= ITEM_SUIT;
 	}
 }
 
