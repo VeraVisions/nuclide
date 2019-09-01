@@ -17,17 +17,17 @@
 class item_weaponbox
 {
 	int ammo_9mm;
-    int ammo_357;
-    int ammo_buckshot;
-    int ammo_m203_grenade;
-    int ammo_bolt;
-    int ammo_rocket;
-    int ammo_uranium;
-    int ammo_handgrenade;
-    int ammo_satchel;
-    int ammo_tripmine;
-    int ammo_snark;
-    int ammo_hornet;
+	int ammo_357;
+	int ammo_buckshot;
+	int ammo_m203_grenade;
+	int ammo_bolt;
+	int ammo_rocket;
+	int ammo_uranium;
+	int ammo_handgrenade;
+	int ammo_satchel;
+	int ammo_tripmine;
+	int ammo_snark;
+	int ammo_hornet;
 	int weapon_items;
 
 	void(void) item_weaponbox;
@@ -40,22 +40,23 @@ void item_weaponbox::touch(void)
 	if (other.classname != "player") {
 		return;
 	}
-	
+
 	player pl = (player)other;
+	sound(pl, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_NORM);
 	pl.ammo_9mm += ammo_9mm;
-    pl.ammo_357 += ammo_357;
-    pl.ammo_buckshot += ammo_buckshot;
-    pl.ammo_m203_grenade += ammo_m203_grenade;
-    pl.ammo_bolt += ammo_bolt;
-    pl.ammo_rocket += ammo_rocket;
-    pl.ammo_uranium += ammo_uranium;
-    pl.ammo_handgrenade += ammo_handgrenade;
-    pl.ammo_satchel += ammo_satchel;
-    pl.ammo_tripmine += ammo_tripmine;
-    pl.ammo_snark += ammo_snark;
-    pl.ammo_hornet += ammo_hornet;
-    pl.g_items |= weapon_items;
-	remove(this);	
+	pl.ammo_357 += ammo_357;
+	pl.ammo_buckshot += ammo_buckshot;
+	pl.ammo_m203_grenade += ammo_m203_grenade;
+	pl.ammo_bolt += ammo_bolt;
+	pl.ammo_rocket += ammo_rocket;
+	pl.ammo_uranium += ammo_uranium;
+	pl.ammo_handgrenade += ammo_handgrenade;
+	pl.ammo_satchel += ammo_satchel;
+	pl.ammo_tripmine += ammo_tripmine;
+	pl.ammo_snark += ammo_snark;
+	pl.ammo_hornet += ammo_hornet;
+	pl.g_items |= weapon_items;
+	remove(this);
 }
 
 void item_weaponbox::setup(player pl)
@@ -63,23 +64,23 @@ void item_weaponbox::setup(player pl)
 	/* TODO: Should the magazine bits be transferred too? */
 	ammo_9mm = pl.ammo_9mm;
 	ammo_357 = pl.ammo_357;
-    ammo_buckshot = pl.ammo_buckshot;
-    ammo_m203_grenade = pl.ammo_m203_grenade;
-    ammo_bolt = pl.ammo_bolt;
-    ammo_rocket = pl.ammo_rocket;
-    ammo_uranium = pl.ammo_uranium;
-    ammo_handgrenade = pl.ammo_handgrenade;
-    ammo_satchel = pl.ammo_satchel;
-    ammo_tripmine = pl.ammo_tripmine;
-    ammo_snark = pl.ammo_snark;
-    ammo_hornet = pl.ammo_hornet;
-    weapon_items = pl.g_items;
+	ammo_buckshot = pl.ammo_buckshot;
+	ammo_m203_grenade = pl.ammo_m203_grenade;
+	ammo_bolt = pl.ammo_bolt;
+	ammo_rocket = pl.ammo_rocket;
+	ammo_uranium = pl.ammo_uranium;
+	ammo_handgrenade = pl.ammo_handgrenade;
+	ammo_satchel = pl.ammo_satchel;
+	ammo_tripmine = pl.ammo_tripmine;
+	ammo_snark = pl.ammo_snark;
+	ammo_hornet = pl.ammo_hornet;
+	weapon_items = pl.g_items;
 }
 
 void item_weaponbox::item_weaponbox(void)
 {
 	setmodel(this, "models/w_weaponbox.mdl");
-    setsize(this, [-16,-16,0], [16,16,16]);
+	setsize(this, [-16,-16,0], [16,16,16]);
 	solid = SOLID_TRIGGER;
 	movetype = MOVETYPE_TOSS;
 }

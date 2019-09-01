@@ -63,6 +63,7 @@ money.c
 armoury_entity.cpp
 hostage_entity.cpp
 func_hostage_rescue.cpp
+item_suit.cpp
 info_hostage_rescue.cpp
 func_vip_safetyzone.cpp
 info_map_parameters.cpp
