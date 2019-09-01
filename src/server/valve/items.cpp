@@ -15,7 +15,7 @@
  */
 
 /* PICKUP ITEMS */
-class item_pickup:CBaseEntity
+class item_pickup:CBaseTrigger
 {
 	int id;
 	void() item_pickup;
@@ -34,6 +34,8 @@ void item_pickup::touch(void)
 
 		sound(other, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_NORM);
 		Weapons_AddItem((player)other, id);
+
+		CBaseTrigger::UseTargets();
 
 		if (cvar("sv_playerslots") == 1) {
 			remove(self);
@@ -74,6 +76,6 @@ void item_pickup::Respawn(void)
 void item_pickup::item_pickup(void)
 {
 	precache_sound("items/suitchargeok1.wav");
-	CBaseEntity::CBaseEntity();
+	CBaseTrigger::CBaseTrigger();
 	Respawn();
 }
