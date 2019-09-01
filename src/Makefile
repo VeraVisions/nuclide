@@ -3,14 +3,14 @@ CC=fteqcc
 qc-progs:
 	$(CC) menu-fn/progs.src
 	mkdir -p ../valve/data.pk3dir
-	$(CC) client/valve.src
-	$(CC) server/valve.src
+	$(CC) client/valve/progs.src
+	$(CC) server/valve/progs.src
 	mkdir -p ../scihunt/data.pk3dir
-	$(CC) client/scihunt.src
-	$(CC) server/scihunt.src
+	$(CC) client/scihunt/progs.src
+	$(CC) server/scihunt/progs.src
 	mkdir -p ../cstrike/data.pk3dir
-	$(CC) client/cstrike.src
-	$(CC) server/cstrike.src
+	$(CC) client/cstrike/progs.src
+	$(CC) server/cstrike/progs.src
 	mkdir -p ../rewolf/data.pk3dir
-	$(CC) client/rewolf.src
-	$(CC) server/rewolf.src
+	$(CC) client/rewolf/progs.src
+	$(CC) server/rewolf/progs.src

@@ -1,84 +1,84 @@
 #pragma target fte
-#pragma progs_dat  "../../rewolf/data.pk3dir/progs.dat"
+#pragma progs_dat  "../../../rewolf/data.pk3dir/progs.dat"
 
 #define QWSSQC
 #define VALVE
 
 #includelist
-../builtins.h
+../../builtins.h
+../../defs.h
+../valve/defs.h
+../../math.h
+../../materials.h
+../../events.h
+../../entities.h
+../../shared/valve/animations.h
 ../defs.h
-valve/defs.h
-../math.h
-../materials.h
-../events.h
-../entities.h
-../shared/valve/animations.h
-defs.h
 
-plugins.c
+../plugins.c
 
-../gs-entbase/server.src
-valve/monster_rat.cpp
-valve/monster_scientist_dead.cpp
-rewolf/gunman_cycler.cpp
-rewolf/monster_human_bandit.cpp
-rewolf/monster_human_chopper.cpp
-rewolf/monster_human_demoman.cpp
-rewolf/monster_human_gunman.cpp
-rewolf/monster_human_unarmed.cpp
+../../gs-entbase/server.src
+../valve/monster_rat.cpp
+../valve/monster_scientist_dead.cpp
+gunman_cycler.cpp
+monster_human_bandit.cpp
+monster_human_chopper.cpp
+monster_human_demoman.cpp
+monster_human_gunman.cpp
+monster_human_unarmed.cpp
 
-../shared/decals.c
-../shared/effects.c
-../shared/spraylogo.cpp
+../../shared/decals.c
+../../shared/effects.c
+../../shared/spraylogo.cpp
 
-../shared/valve/player.cpp
-valve/player.c
-../shared/pmove.c
-valve/spectator.c
-../shared/valve/items.h
-../shared/valve/weapons.h
-../shared/valve/w_crowbar.c
-../shared/valve/w_glock.c
-../shared/valve/w_python.c
-../shared/valve/w_mp5.c
-../shared/valve/w_crossbow.c
-../shared/valve/w_shotgun.c
-../shared/valve/w_rpg.c
-../shared/valve/w_gauss.c
-../shared/valve/w_egon.c
-../shared/valve/w_hornetgun.c
-../shared/valve/w_handgrenade.c
-../shared/valve/w_tripmine.c
-../shared/valve/w_satchel.c
-../shared/valve/w_snark.c
-valve/items.cpp
-valve/item_longjump.cpp
-valve/item_suit.cpp
-valve/item_healthkit.cpp
-valve/item_battery.cpp
-valve/item_weaponbox.cpp
-valve/world_items.cpp
-valve/ammo.cpp
-../shared/valve/weapons.c 
-../shared/valve/weapon_common.c
+../../shared/valve/player.cpp
+../valve/player.c
+../../shared/pmove.c
+../valve/spectator.c
+../../shared/valve/items.h
+../../shared/valve/weapons.h
+../../shared/valve/w_crowbar.c
+../../shared/valve/w_glock.c
+../../shared/valve/w_python.c
+../../shared/valve/w_mp5.c
+../../shared/valve/w_crossbow.c
+../../shared/valve/w_shotgun.c
+../../shared/valve/w_rpg.c
+../../shared/valve/w_gauss.c
+../../shared/valve/w_egon.c
+../../shared/valve/w_hornetgun.c
+../../shared/valve/w_handgrenade.c
+../../shared/valve/w_tripmine.c
+../../shared/valve/w_satchel.c
+../../shared/valve/w_snark.c
+../valve/items.cpp
+../valve/item_longjump.cpp
+../valve/item_suit.cpp
+../valve/item_healthkit.cpp
+../valve/item_battery.cpp
+../valve/item_weaponbox.cpp
+../valve/world_items.cpp
+../valve/ammo.cpp
+../../shared/valve/weapons.c 
+../../shared/valve/weapon_common.c
 
-spawn.c
-vox.c
+../spawn.c
+../vox.c
 
-../shared/valve/animations.c
-valve/client.c
-client.c
+../../shared/valve/animations.c
+../valve/client.c
+../client.c
 
-valve/server.c
-server.c
+../valve/server.c
+../server.c
 
-valve/damage.c
-traceattack.c
+../valve/damage.c
+../traceattack.c
 
-footsteps.c
-flashlight.c
-valve/input.c
+../footsteps.c
+../flashlight.c
+../valve/input.c
 
-valve/spawn.c
-entry.c
+../valve/spawn.c
+../entry.c
 #endlist

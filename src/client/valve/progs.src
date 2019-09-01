@@ -1,77 +1,77 @@
 #pragma target fte
-#pragma progs_dat  "../../valve/data.pk3dir/csprogs.dat"
+#pragma progs_dat  "../../../valve/data.pk3dir/csprogs.dat"
 
 #define CSQC
 #define VALVE
 
 #includelist
-../builtins.h
-../defs.h
-../math.h
-../materials.h
-../events.h
-../entities.h
-valve/defs.h
-valve/particles.h
+../../builtins.h
+../../defs.h
+../../math.h
+../../materials.h
+../../events.h
+../../entities.h
 defs.h
+particles.h
+../defs.h
 
-../vgui/include.src
+../../vgui/include.src
 
-util.c
-valve/init.c
+../util.c
+init.c
 
-../gs-entbase/client.src
+../../gs-entbase/client.src
 
-sound.c
-text.c
-voice.c
+../sound.c
+../text.c
+../voice.c
 
-../shared/valve/animations.h
-../shared/valve/animations.c
-../shared/valve/player.cpp
+../../shared/valve/animations.h
+../../shared/valve/animations.c
+../../shared/valve/player.cpp
+../player.c
+../../shared/pmove.c
+../predict.c
+../../shared/decals.c
+../../shared/effects.c
+../../shared/spraylogo.cpp
+
+../../shared/valve/items.h
+../../shared/valve/weapons.h
+../../shared/valve/w_crowbar.c
+../../shared/valve/w_glock.c
+../../shared/valve/w_python.c
+../../shared/valve/w_mp5.c
+../../shared/valve/w_crossbow.c
+../../shared/valve/w_shotgun.c
+../../shared/valve/w_rpg.c
+../../shared/valve/w_gauss.c
+../../shared/valve/w_egon.c
+../../shared/valve/w_hornetgun.c
+../../shared/valve/w_handgrenade.c
+../../shared/valve/w_tripmine.c
+../../shared/valve/w_satchel.c
+../../shared/valve/w_snark.c
+../../shared/valve/weapons.c
+../../shared/valve/weapon_common.c
+
 player.c
-../shared/pmove.c
-predict.c
-../shared/decals.c
-../shared/effects.c
-../shared/spraylogo.cpp
-
-../shared/valve/items.h
-../shared/valve/weapons.h
-../shared/valve/w_crowbar.c
-../shared/valve/w_glock.c
-../shared/valve/w_python.c
-../shared/valve/w_mp5.c
-../shared/valve/w_crossbow.c
-../shared/valve/w_shotgun.c
-../shared/valve/w_rpg.c
-../shared/valve/w_gauss.c
-../shared/valve/w_egon.c
-../shared/valve/w_hornetgun.c
-../shared/valve/w_handgrenade.c
-../shared/valve/w_tripmine.c
-../shared/valve/w_satchel.c
-../shared/valve/w_snark.c
-../shared/valve/weapons.c
-../shared/valve/weapon_common.c
-
-valve/player.c
-valve/entities.c
 entities.c
+../entities.c
 
-valve/cmds.c
-valve/game_event.c
-events.c
-valve/view.c
+cmds.c
+game_event.c
+../events.c
 view.c
-damage.c
-chat.c
-vgui.cpp
+../view.c
+../damage.c
+../chat.c
+../vgui.cpp
 
-valve/hud.c
-valve/hud_weaponselect.c
-valve/scoreboard.c
+hud.c
+hud_weaponselect.c
+scoreboard.c
 
-valve/input.c
-entry.c
+input.c
+../entry.c
 #endlist
