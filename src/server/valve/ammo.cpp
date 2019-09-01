@@ -26,7 +26,8 @@ void item_ammo::touch(void)
 	if (other.classname == "player") {
 		player pl = (player)other;
 		sound(other, CHAN_ITEM, "items/9mmclip1.wav", 1, ATTN_NORM);
-		
+		Weapons_RefreshAmmo(pl);
+
 		if (cvar("sv_playerslots") == 1) {
 			remove(self);
 		} else {
@@ -114,6 +115,7 @@ void ammo_9mmAR::touch(void)
 		}
 	}
 }
+CLASSEXPORT(ammo_mp5clip, ammo_9mmAR)
 
 /*
  * Ammo for the 9mm Handgun and the 9mm AR.
@@ -192,6 +194,7 @@ void ammo_ARgrenades::touch(void)
 		}
 	}
 }
+CLASSEXPORT(ammo_mp5grenades, ammo_ARgrenades)
 
 /*
  * Ammo for the Shotgun.
