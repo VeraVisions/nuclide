@@ -287,6 +287,12 @@ void HUD_DrawFlashlight(void)
 
 void HUD_Draw(void)
 {
+	player pl = (player)pSeat->ePlayer;
+
+	if (!(pl.g_items & ITEM_SUIT)) {
+		return;
+	}
+
 	g_hud_color = autocvar_con_color * (1 / 255);
 	
 	HUD_DrawHealth();
