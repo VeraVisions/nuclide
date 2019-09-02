@@ -106,6 +106,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	DSP_Init();
 	CSQC_RendererRestarted("init");
 	Titles_Init();
+	Sentences_Init();
 }
 
 void
@@ -442,6 +443,9 @@ CSQC_Parse_Event(void)
 		msg = readstring();
 		pit = readfloat();
 		sound(t, CHAN_VOICE, msg, 1.0, ATTN_NORM, pit);
+		break;
+	case EV_SENTENCE:
+		Sentences_Parse();
 		break;
 	case EV_FADE:
 		Fade_Parse();

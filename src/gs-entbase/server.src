@@ -59,5 +59,6 @@ server/monster_furniture.cpp
 server/monster_generic.cpp
 server/monstermaker.cpp
 server/multisource.cpp
+server/scripted_sentence.cpp
 server/scripted_sequence.cpp
 #endlist

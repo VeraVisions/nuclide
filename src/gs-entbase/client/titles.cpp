@@ -61,7 +61,7 @@ Titles_Init(void)
 	fs_titles = fopen("titles.txt", FILE_READ);
 
 	if (fs_titles < 0) {
-		print("^1WARNING: ^7Could NOT load titles.lst");
+		print("^1WARNING: ^7Could NOT load titles.txt");
 		return;
 	}
 
