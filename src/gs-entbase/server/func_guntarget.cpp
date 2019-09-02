@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define SF_GUNTARGET_ON
+#define SF_GUNTARGET_ON 1
 
 class func_guntarget:CBaseTrigger
 {
@@ -116,7 +116,7 @@ void func_guntarget::Respawn(void)
 	setmodel(this, m_oldModel);
 	setorigin(this, m_oldOrigin);
 
-	if (spawnflags & 1) {
+	if (spawnflags & SF_GUNTARGET_ON) {
 		think = Trigger;
 		nextthink = time + 0.1f;
 	}
