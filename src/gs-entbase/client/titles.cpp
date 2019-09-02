@@ -52,11 +52,11 @@ Titles_Init(void)
 	float t_fadeout;
 	string t_name = "";
 	string t_message = "";
-
 	filestream fs_titles;
 	string temp;
 	int c;
 	int braced;
+	int id = 0;
 
 	fs_titles = fopen("titles.txt", FILE_READ);
 
@@ -65,13 +65,49 @@ Titles_Init(void)
 		return;
 	}
 
+	/* fill in some sane defaults */
+	t_position[0] = 0;
+	t_position[1] = -1;
+	t_effect = 1;
+	t_color = [1,1,1];
+	t_color2 = [1,1,1];
+	t_fxtime = 0.5f;
+	t_holdtime = 2.5f;
+	t_fadein = 1.0f;
+	t_fadeout = 1.0f;
+	g_titles_count = 0;
+
+	/* first pass, count entries */
+	while ((temp = fgets(fs_titles))) {
+		c = tokenize_console(temp);
+
+		switch(argv(0)) {
+		case "{":
+			braced = TRUE;
+			break;
+		case "}":
+			/* skip broken syntax */
+			if (braced == FALSE) {
+				break;
+			}
+			g_titles_count++;
+			braced = FALSE;
+			break;
+		default:
+			break;
+		}
+	}
+
+	print(sprintf("[^1TITLES^7] Found %i titles\n", g_titles_count));
+	g_titles = memalloc(sizeof(titles_t) * g_titles_count);
+	fseek(fs_titles, 0);
+
+	/* insert info into the tree */
 	while ((temp = fgets(fs_titles))) {
 		/* tons of comments/garbage in those files,
 		 * so tokenize appropriately */
 		c = tokenize_console(temp);
-		if (c < 1) {
-			continue;
-		}
+		
 		switch(argv(0)) {
 		case "$position":
 			t_position[0] = stof(argv(1));
@@ -112,10 +148,19 @@ Titles_Init(void)
 			break;
 		case "{":
 			braced = TRUE;
+			print(sprintf("[^1TITLES^7] Found ^2%s\n",
+				t_name));
+			print(sprintf("%s\n",
+					temp));
 			break;
 		case "}":
+			/* skip broken syntax */
+			if (braced == FALSE) {
+				break;
+			}
+			print(sprintf("%s\n",
+					temp));
 			/* time to dump the info */
-			int id = g_titles_count - 1;
 			g_titles[id].m_strName = t_name;
 			g_titles[id].m_strMessage = t_message;
 			g_titles[id].m_flPosX = t_position[0];
@@ -130,20 +175,15 @@ Titles_Init(void)
 			t_message = "";
 			t_name = "";
 			braced = FALSE;
+			id++;
 			break;
 		default:
-			if (braced) {
+			if (braced == TRUE) {
 				/* append string entry after another */
 				t_message = sprintf("%s%s\n", t_message, temp);
 			} else {
 				/* name/identifer of our message */
-				t_name = strtoupper(argv(0));
-				g_titles =
-					memrealloc(g_titles, sizeof(titles_t),
-						g_titles_count,
-						++g_titles_count);
-				dprint(sprintf("[^1TITLES^7] Found ^2%s\n",
-					t_name));
+				t_name = strtoupper(temp);
 			}
 		}
 	}
