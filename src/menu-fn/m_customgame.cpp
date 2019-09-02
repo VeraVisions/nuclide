@@ -14,49 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*
-game:			The name of the mod
-url_info:		The mod's informational web site
-url_dl:			The ftp site from where the mod can be downloaded
-version:		The mod's version number
-size:			The size, in bytes, of the mod
-svonly:			“1” if the mod is a server only mod ( no client side content or code ), “0” otherwise
-cldll:			1 if the mod requires a matching client.dll
-type:			If this mod is "multiplayer_only", then the single player buttons ( New Game/Hazard Course/Load game etc.) are disabled in the Half-Life launcher
-hlversion:		The version of Half-Life for which the mod was generated.  Revisions to Half-Life will require updates by mod authors.
-nomodels:		Set to “1” if model bitmaps should not be shown in the Multiplayer | Customize menu of the Half-Life launcher
-mpentity:		When a user chooses to create a listen server from the interface, each BSP file in the maps\ folder for the mod is searched.  The entity data for the BSP is scanned for the presence of the string identified by mpentity.  For insance, in Half-Life, the string is "info_player_deathmatch" ( which is also the default if no string is specified )
-gamedll:		The game DLL to load for running a server for this mod.
-startmap:		When a user chooses "New Game" for a single player mod, this is the map that is loaded.
-trainingmap:	When a user chooses "Hazard Course" for a single player mod, this is the map that is loaded.
-*/
-
-//string(string s) setwindowcaption = #0;
-
-void game_printinfo(int i)
-{
-	print("==================================\n");
-	print(sprintf("GAME ID %i\n", i));
-	print("==================================\n");
-	print(sprintf("game: %s\n", games[i].game));
-	print(sprintf("gamedir: %s\n", games[i].gamedir));
-	print(sprintf("fallback_dir: %s\n", games[i].fallback_dir));
-	print(sprintf("url_info: %s\n", games[i].url_info));
-	print(sprintf("url_dl: %s\n", games[i].url_dl));
-	print(sprintf("version: %s\n", games[i].version));
-	print(sprintf("size: %i bytes\n", games[i].size));
-	print(sprintf("svonly: %i\n", games[i].svonly));
-	print(sprintf("cldll: %i\n", games[i].cldll));
-	print(sprintf("type: %s\n", games[i].type));
-	print(sprintf("hlversion: %s\n", games[i].hlversion));
-	print(sprintf("nomodels: %i\n", games[i].nomodels));
-	print(sprintf("mpentity: %s\n", games[i].mpentity));
-	print(sprintf("gamedll: %s\n", games[i].gamedll));
-	print(sprintf("startmap: %s\n", games[i].startmap));
-	print(sprintf("trainingmap: %s\n", games[i].trainingmap));
-	print("==================================\n");
-}
-
 void games_set(int id)
 {
 	gameinfo_current = id;
@@ -66,116 +23,109 @@ void games_set(int id)
 
 void games_init(void)
 {
-	int gameidx;
+	int id;
 	float county;
 	string gamedirname;
 	string gamedescription;
 	gameinfo_count = 0;
 
-	for (gameidx = 0; (gamedirname = getgamedirinfo(gameidx, 0)); gameidx++) {
+	for (id = 0; (gamedirname = getgamedirinfo(id, 0)); id++) {
 		gameinfo_count++;
 	}
 
-	print(sprintf("[MENU] Scanned %i game directories.\n", gameinfo_count));
-
 	if (!gameinfo_count) {
-		print("^1FATAL ERROR: NO VALID GAME DIRECTORIES HAVE BEEN FOUND!\n");
+		print("^1FATAL ERROR: NO VALID MOD DIRECTORIES FOUND!\n");
 		crash();
 		return;
 	}
 
 	games = memalloc(sizeof(gameinfo_t) * gameinfo_count);
 
-	for (gameidx = 0; (gamedirname = getgamedirinfo(gameidx, 0)); gameidx++) {
-		gamedescription = getgamedirinfo(gameidx, 1);
+	for (id = 0; (gamedirname = getgamedirinfo(id, 0)); id++) {
+		gamedescription = getgamedirinfo(id, 1);
 		county = tokenize_console(gamedescription);
-		
+
 		/* Fill in the defaults */
-		games[gameidx].game = gamedirname;
-		games[gameidx].gamedir = gamedirname;
-		games[gameidx].url_info = "";
-		games[gameidx].url_dl = "";
-		games[gameidx].version = "1.0";
-		games[gameidx].size = 0;
-		games[gameidx].svonly = 0;
-		games[gameidx].cldll = 1;
-		games[gameidx].type = "";
-		games[gameidx].hlversion = "1110";
-		games[gameidx].nomodels = 0;
-		games[gameidx].mpentity = "info_player_deathmatch";
-		games[gameidx].gamedll = "progs.dat";
-		games[gameidx].startmap = "c0a0";
-		games[gameidx].trainingmap = "t0a0";
+		games[id].game = gamedirname;
+		games[id].gamedir = gamedirname;
+		games[id].url_info = "";
+		games[id].url_dl = "";
+		games[id].version = "1.0";
+		games[id].size = 0;
+		games[id].type = "";
+		games[id].nomodels = 0;
+		games[id].mpentity = "info_player_deathmatch";
+		games[id].gamedll = "progs.dat";
+		games[id].startmap = "c0a0";
+		games[id].trainingmap = "t0a0";
+		games[id].cldll = 1;
+		games[id].hlversion = "1110";
+		games[id].svonly = 0;
 
 		for ( int i = 0; i < county; i+=2 ) {
 			switch( argv(i) ) {
-				case "game":
-					games[gameidx].game = argv(i + 1);
-					print(sprintf("[GAME] Found %s (%s)\n", games[gameidx].game, gamedirname));
-					break;
-				case "gamedir":
-					games[gameidx].gamedir = argv(i + 1);
-					break;
-				case "fallback_dir":
-					games[gameidx].fallback_dir = argv(i + 1);
-					break;
-				case "url_info":
-					games[gameidx].url_info = argv(i + 1);
-					break;
-				case "url_dl":
-					games[gameidx].url_dl = argv(i + 1);
-					break;
-				case "version":
-					games[gameidx].version = argv(i + 1);
-					break;
-				case "size":
-					games[gameidx].size = stof(argv(i + 1));
-					break;
-				case "svonly":
-					games[gameidx].svonly = stof(argv(i + 1));
-					break;
-				case "cldll":
-					games[gameidx].cldll = stof(argv(i + 1));
-					break;
-				case "type":
-					games[gameidx].type = argv(i + 1);
-					break;
-				case "hlversion":
-					games[gameidx].hlversion = argv(i + 1);
-					break;
-				case "nomodels":
-					games[gameidx].nomodels = stof(argv(i + 1));
-					break;
-				case "mpentity":
-					games[gameidx].mpentity = argv(i + 1);
-					break;
-				case "gamedll":
-					games[gameidx].gamedll = argv(i + 1);
-					break;
-				case "startmap":
-					games[gameidx].startmap = argv(i + 1);
-					break;
-				case "trainingmap":
-				case "trainmap":
-					games[gameidx].trainingmap = argv(i + 1);
-					break;
-				default:
-					break;
+			case "game":
+				games[id].game = argv(i+1);
+				break;
+			case "gamedir":
+				games[id].gamedir = argv(i+1);
+				break;
+			case "fallback_dir":
+				games[id].fallback_dir = argv(i+1);
+				break;
+			case "url_info":
+				games[id].url_info = argv(i+1);
+				break;
+			case "url_dl":
+				games[id].url_dl = argv(i+1);
+				break;
+			case "version":
+				games[id].version = argv(i+1);
+				break;
+			case "size":
+				games[id].size = stof(argv(i+1));
+				break;
+			case "svonly":
+				games[id].svonly = stof(argv(i+1));
+				break;
+			case "cldll":
+				games[id].cldll = stof(argv(i+1));
+				break;
+			case "type":
+				games[id].type = argv(i+1);
+				break;
+			case "hlversion":
+				games[id].hlversion = argv(i+1);
+				break;
+			case "nomodels":
+				games[id].nomodels = stof(argv(i+1));
+				break;
+			case "mpentity":
+				games[id].mpentity = argv(i+1);
+				break;
+			case "gamedll":
+				games[id].gamedll = argv(i+1);
+				break;
+			case "startmap":
+				games[id].startmap = argv(i+1);
+				break;
+			case "trainingmap":
+			case "trainmap":
+				games[id].trainingmap = argv(i+1);
+				break;
+			default:
+				break;
 			}
 		}
-		if (games[gameidx].gamedir == cvar_string("game")) {
-			games_set(gameidx);
+		if (games[id].gamedir == cvar_string("game")) {
+			games_set(id);
 		}
-		game_printinfo(gameidx);
 	}
-	
+
 	if (gameinfo_current == -1) {
-		print("^1FATAL ERROR: NO MODINFO.TXT FOR RUNNING GAME DETECTED!\n");
+		print("^1FATAL ERROR: NO MODINFO.TXT FOR CURRENT MOD FOUND!\n");
 		crash();
 		return;
-	} else {
-		//cvar_set("fs_gamename", games[gameinfo_current].game);
-		print("[MENU] Found game we're running! Great success.\n");
 	}
 }
 
@@ -212,7 +162,9 @@ void customgame_btnactivate_start(void)
 void customgame_btndeactivate_start(void)
 {
 	localcmd("gamedir \"\"\n");
-	localcmd("snd_restart\nwait\nvid_reload\nmenu_restart\nmenu_customgame\n");
+	localcmd("snd_restart\nwait\nvid_reload\n");
+	localcmd("menu_restart\n");
+	localcmd("menu_customgame\n");
 }
 
 void customgame_btndone_start(void)
