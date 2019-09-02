@@ -16,12 +16,14 @@
 
 void info_player_start(void)
 {
-	
+	self.solid = SOLID_TRIGGER;
+	setsize(self, VEC_HULL_MIN, VEC_HULL_MAX);
 }
 
 void info_player_deathmatch(void)
 {
-	
+	self.solid = SOLID_TRIGGER;
+	setsize(self, VEC_HULL_MIN, VEC_HULL_MAX);
 }
 
 void info_player_team1(void)
