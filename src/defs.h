@@ -78,3 +78,8 @@ void* memrealloc( __variant *oldptr, int elementsize, int oldelements, int newel
 	memfree( oldptr );
 	return n;
 }
+
+void Empty(void)
+{
+	
+}

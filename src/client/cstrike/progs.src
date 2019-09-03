@@ -20,6 +20,7 @@ defs.h
 ../voice.c
 ../sound.c
 ../text.c
+../util.c
 
 ../../shared/cstrike/weaponak47.c
 ../../shared/cstrike/weaponaug.c
@@ -80,7 +81,7 @@ vgui_buymenu.cpp
 vgui_chooseteam.cpp
 vgui_motd.cpp
 vgui_radio.cpp
-../valve/scoreboard.c
+scoreboard.c
 
 draw.c
 entities.c

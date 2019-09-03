@@ -233,7 +233,6 @@ enum {
 	ATYPE_AK47
 };
 
-void Empty( void ) { }
 void BaseGun_ShotMultiplierHandle( float fShots );
 void Effect_CreateSmoke(vector pos);
 

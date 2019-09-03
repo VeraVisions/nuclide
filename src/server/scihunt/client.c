@@ -14,42 +14,40 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void Empty(void) {}
-
 void Game_ClientConnect(void)
 {
 	bprint(PRINT_HIGH, sprintf("%s connected\n", self.netname));
 
 	int playercount = 0;
-    for (entity eFind = world; (eFind = find(eFind, classname, "player"));) {
-        playercount++;
-    }
+	for (entity eFind = world; (eFind = find(eFind, classname, "player"));) {
+		playercount++;
+	}
 
-    /* We're the first. */
-    if (playercount == 0) {
-        for (entity a = world; (a = findfloat(a, gflags, GF_CANRESPAWN));) {
-            CBaseEntity caw = (CBaseEntity)a;
-            caw.Respawn();
-         }
-    }
+	/* We're the first. */
+	if (playercount == 0) {
+		for (entity a = world; (a = findfloat(a, gflags, GF_CANRESPAWN));) {
+			CBaseEntity caw = (CBaseEntity)a;
+			caw.Respawn();
+		}
+	}
 }
 
 void Game_ClientDisconnect(void)
 {
-    bprint(PRINT_HIGH, sprintf("%s disconnected\n", self.netname));
+	bprint(PRINT_HIGH, sprintf("%s disconnected\n", self.netname));
 
-    /* Make this unusable */
-    self.solid = SOLID_NOT;
-    self.movetype = MOVETYPE_NONE;
-    self.modelindex = 0;
-    self.health = 0;
-    self.takedamage = 0;
-    self.SendFlags = 1;
+	/* Make this unusable */
+	self.solid = SOLID_NOT;
+	self.movetype = MOVETYPE_NONE;
+	self.modelindex = 0;
+	self.health = 0;
+	self.takedamage = 0;
+	self.SendFlags = 1;
 }
 
 void Game_ClientKill(void)
 {
-    Damage_Apply(self, self, self.health, self.origin, TRUE);
+	Damage_Apply(self, self, self.health, self.origin, TRUE);
 }
 void Game_PlayerPreThink(void)
 {

@@ -105,5 +105,3 @@ void scripted_sequence::scripted_sequence(void)
 		}
 	}
 }
-
-

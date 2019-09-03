@@ -14,8 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void Empty(void) {}
-
 void Game_ClientConnect(void)
 {
 	bprint(PRINT_HIGH, sprintf("%s connected\n", self.netname));
