@@ -21,12 +21,13 @@ Damage_CastOrbituary
 Sends a message to the clients to display a death message
 =================
 */
-void Damage_CastOrbituary(entity eAttacker, entity eTarget, float fWeapon)
+void
+Damage_CastOrbituary(entity eCulprit, entity eTarget, float fWeapon)
 {
 	WriteByte(MSG_BROADCAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_BROADCAST, EV_ORBITUARY);
-	WriteByte(MSG_BROADCAST, num_for_edict(eAttacker) - 1);
-	WriteByte(MSG_BROADCAST, eAttacker.team);
+	WriteByte(MSG_BROADCAST, num_for_edict(eCulprit) - 1);
+	WriteByte(MSG_BROADCAST, eCulprit.team);
 	WriteByte(MSG_BROADCAST, num_for_edict(eTarget) - 1);
 	WriteByte(MSG_BROADCAST, eTarget.team);
 	WriteByte(MSG_BROADCAST, fWeapon);
@@ -41,37 +42,39 @@ Damage_Apply
 Generic function that applies damage, pain and suffering
 =================
 */
-void Damage_Apply(entity eTarget, entity eAttacker, float fDamage, vector vHitPos, int a)
+void
+Damage_Apply(entity eTarget, entity eCulprit, float fDmg, vector pos, int a)
 {
 	if (eTarget.flags & FL_GODMODE) {
 		return;
 	}
 
-	// Apply the damage finally
-	if (eTarget.armor && fDamage > 0) {
+	/* skip armor */
+	if (!a)
+	if (eTarget.armor && fDmg > 0) {
 		float flArmor;
 		float flNewDamage;
 
-		flNewDamage = fDamage * 0.2;
-		flArmor = (fDamage - flNewDamage) * 0.5;
+		flNewDamage = fDmg * 0.2;
+		flArmor = (fDmg - flNewDamage) * 0.5;
 
 		if (flArmor > eTarget.armor) {
 			flArmor = eTarget.armor;
 			flArmor *= (1/0.5);
-			flNewDamage = fDamage - flArmor;
+			flNewDamage = fDmg - flArmor;
 			eTarget.armor = 0;
 		} else {
 			eTarget.armor -= flArmor;
 		}
-		fDamage = flNewDamage;
+		fDmg = flNewDamage;
 	}
-	
-	fDamage = rint(fDamage);
-	eTarget.health -= fDamage;
-	
-	if (fDamage > 0) {
-		eTarget.dmg_take = fDamage;
-		eTarget.dmg_inflictor = eAttacker;
+
+	fDmg = rint(fDmg);
+	eTarget.health -= fDmg;
+
+	if (fDmg > 0) {
+		eTarget.dmg_take = fDmg;
+		eTarget.dmg_inflictor = eCulprit;
 	} else if (eTarget.max_health && eTarget.health > eTarget.max_health) {
 		eTarget.health = eTarget.max_health;
 	}
@@ -83,13 +86,13 @@ void Damage_Apply(entity eTarget, entity eAttacker, float fDamage, vector vHitPo
 			forceinfokey(eTarget, "*deaths", ftos(eTarget.deaths));
 		}
 
-		if ((eTarget.flags & FL_CLIENT) && (eAttacker.flags & FL_CLIENT)) {
-			if (eTarget == eAttacker) {
-				eAttacker.frags--;
+		if ((eTarget.flags & FL_CLIENT) && (eCulprit.flags & FL_CLIENT)) {
+			if (eTarget == eCulprit) {
+				eCulprit.frags--;
 			} else {
-				eAttacker.frags++;
+				eCulprit.frags++;
 			}
-			//Damage_CastOrbituary(eAttacker, eTarget, eAttacker.weapon);
+			//Damage_CastOrbituary(eCulprit, eTarget, eCulprit.weapon);
 		}
 	}
 
@@ -102,8 +105,8 @@ void Damage_Apply(entity eTarget, entity eAttacker, float fDamage, vector vHitPo
 		self.vPain(trace_surface_id);
 	}
 
-	if (self.iBleeds == TRUE && fDamage > 0) {
-		Effect_CreateBlood(vHitPos, [0,0,0]);
+	if (self.iBleeds == TRUE && fDmg > 0) {
+		Effect_CreateBlood(pos, [0,0,0]);
 	} 
 
 	self = eOld;
@@ -111,36 +114,37 @@ void Damage_Apply(entity eTarget, entity eAttacker, float fDamage, vector vHitPo
 
 /*
 =================
-Damage_CheckAttack
+Damage_CheckTrace
 
 This verifies that the entity is actually able to receive some damage,
 from a plain geographical standpoint
 =================
 */
-float Damage_CheckAttack(entity eTarget, vector vAttackPos)
+float
+Damage_CheckTrace(entity eTarget, vector vecHitPos)
 {
 	/* We're lazy. Who cares */
 	if (eTarget.solid == SOLID_BSP) {
 		return TRUE;
 	}
-	
-	traceline(vAttackPos, eTarget.origin, TRUE, self);
+
+	traceline(vecHitPos, eTarget.origin, 1, self);
 	if (trace_fraction == 1) {
 		return TRUE;
 	}
-	traceline(vAttackPos, eTarget.origin + [15,15,0], TRUE, self);
+	traceline(vecHitPos, eTarget.origin + [15,15,0], 1, self);
 	if (trace_fraction == 1) {
 		return TRUE;
 	}
-	traceline(vAttackPos, eTarget.origin + [-15,-15,0], TRUE, self);
+	traceline(vecHitPos, eTarget.origin + [-15,-15,0], 1, self);
 	if (trace_fraction == 1) {
 		return TRUE;
 	}
-	traceline(vAttackPos, eTarget.origin + [-15,15,0], TRUE, self);
+	traceline(vecHitPos, eTarget.origin + [-15,15,0], 1, self);
 	if (trace_fraction == 1) {
 		return TRUE;
 	}
-	traceline(vAttackPos, eTarget.origin + [15,-15,0], TRUE, self);
+	traceline(vecHitPos, eTarget.origin + [15,-15,0], 1, self);
 	if (trace_fraction == 1) {
 		return TRUE;
 	}
@@ -155,33 +159,44 @@ Damage_Radius
 Even more pain and suffering, mostly used for explosives
 =================
 */
-void Damage_Radius(vector org, entity eAttacker, float fDamage, float fRadius, int iCheckClip)
+void
+Damage_Radius(vector org, entity attacker, float dmg, float radius, int check)
 {
-	for (entity c = world; (c = findfloat(c, takedamage, DAMAGE_YES));) {
-		vector vecRealPos;
-		vecRealPos[0] = c.absmin[0] + (0.5 * (c.absmax[0] - c.absmin[0]));
-		vecRealPos[1] = c.absmin[1] + (0.5 * (c.absmax[1] - c.absmin[1]));
-		vecRealPos[2] = c.absmin[2] + (0.5 * (c.absmax[2] - c.absmin[2]));
+	float new_dmg;
+	float dist;
+	float diff;
+	vector pos;
 
-		float fDist = vlen(org - vecRealPos);
-		//vector vPush;
+	for (entity e = world; (e = findfloat(e, takedamage, DAMAGE_YES));) {
+		pos[0] = e.absmin[0] + (0.5 * (e.absmax[0] - e.absmin[0]));
+		pos[1] = e.absmin[1] + (0.5 * (e.absmax[1] - e.absmin[1]));
+		pos[2] = e.absmin[2] + (0.5 * (e.absmax[2] - e.absmin[2]));
 
-		if (fDist > fRadius) {
+		/* don't bother if it's not anywhere near us */
+		dist = vlen(org - pos);
+		if (dist > radius) {
 			continue;
 		}
 
-		if (Damage_CheckAttack(c, org) || iCheckClip == FALSE) {
-			float fDiff = vlen(org - vecRealPos);
+		/* can we physically hit this thing? */
+		if (Damage_CheckTrace(e, org) == FALSE) {
+			if (check == TRUE) {
+				continue;
+			}
+		}
 
-			fDiff = (fRadius - fDiff) / fRadius;
-			fDamage = rint(fDamage * fDiff);
+		/* calculate new damage values */
+		diff = vlen(org - pos);
+		diff = (radius - diff) / radius;
+		new_dmg = rint(dmg * diff);
 
-			if (fDiff > 0) {
-				Damage_Apply(c, eAttacker, fDamage, vecRealPos, 0);
-				if (c.movetype == MOVETYPE_WALK) {
-					makevectors(vectoangles(c.origin - org));
-					c.velocity += v_forward * (fDamage * 5); 
-				}
+		if (diff > 0) {
+			Damage_Apply(e, attacker, new_dmg, pos, 0);
+
+			/* approximate, feel free to tweak */
+			if (e.movetype == MOVETYPE_WALK) {
+				makevectors(vectoangles(e.origin - org));
+				e.velocity += v_forward * (new_dmg * 5); 
 			}
 		}
 	}

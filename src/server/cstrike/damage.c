@@ -227,29 +227,31 @@ This verifies that the entity is actually able to receive some damage,
 from a plain geographical standpoint
 =================
 */
-float Damage_CheckAttack(entity eTarget, vector vAttackPos)
+float
+Damage_CheckTrace(entity eTarget, vector vecHitPos)
 {
+	/* We're lazy. Who cares */
 	if (eTarget.solid == SOLID_BSP) {
 		return TRUE;
 	}
-	
-	traceline(vAttackPos, eTarget.origin, TRUE, self);
+
+	traceline(vecHitPos, eTarget.origin, 1, self);
 	if (trace_fraction == 1) {
 		return TRUE;
 	}
-	traceline(vAttackPos, eTarget.origin + '15 15 0', TRUE, self);
+	traceline(vecHitPos, eTarget.origin + [15,15,0], 1, self);
 	if (trace_fraction == 1) {
 		return TRUE;
 	}
-	traceline(vAttackPos, eTarget.origin + '-15 -15 0', TRUE, self);
+	traceline(vecHitPos, eTarget.origin + [-15,-15,0], 1, self);
 	if (trace_fraction == 1) {
 		return TRUE;
 	}
-	traceline(vAttackPos, eTarget.origin + '-15 15 0', TRUE, self);
+	traceline(vecHitPos, eTarget.origin + [-15,15,0], 1, self);
 	if (trace_fraction == 1) {
 		return TRUE;
 	}
-	traceline(vAttackPos, eTarget.origin + '15 -15 0', TRUE, self);
+	traceline(vecHitPos, eTarget.origin + [15,-15,0], 1, self);
 	if (trace_fraction == 1) {
 		return TRUE;
 	}
@@ -264,30 +266,45 @@ Damage_Radius
 Even more pain and suffering, mostly used for explosives
 =================
 */
-void Damage_Radius(vector org, entity eAttacker, float fDamage, float fRadius, int iCheckClip)
+void
+Damage_Radius(vector org, entity attacker, float dmg, float radius, int check)
 {
-	for (entity c = world; (c = findfloat(c, takedamage, DAMAGE_YES));) {
-		vector vecRealPos;
-		vecRealPos[0] = c.absmin[0] + (0.5 * (c.absmax[0] - c.absmin[0]));
-		vecRealPos[1] = c.absmin[1] + (0.5 * (c.absmax[1] - c.absmin[1]));
-		vecRealPos[2] = c.absmin[2] + (0.5 * (c.absmax[2] - c.absmin[2]));
+	float new_dmg;
+	float dist;
+	float diff;
+	vector pos;
 
-		float fDist = vlen(org - vecRealPos);
+	for (entity e = world; (e = findfloat(e, takedamage, DAMAGE_YES));) {
+		pos[0] = e.absmin[0] + (0.5 * (e.absmax[0] - e.absmin[0]));
+		pos[1] = e.absmin[1] + (0.5 * (e.absmax[1] - e.absmin[1]));
+		pos[2] = e.absmin[2] + (0.5 * (e.absmax[2] - e.absmin[2]));
 
-		if (fDist > fRadius) {
+		/* don't bother if it's not anywhere near us */
+		dist = vlen(org - pos);
+		if (dist > radius) {
 			continue;
 		}
 
-		if (Damage_CheckAttack(c, org) || iCheckClip == FALSE) {
-			float fDiff = vlen(org - vecRealPos);
-
-			fDiff = (fRadius - fDiff) / fRadius;
-			fDamage = rint(fDamage * fDiff);
-
-			if (fDiff > 0) {
-				Damage_Apply(c, eAttacker, fDamage, vecRealPos, 0);
+		/* can we physically hit this thing? */
+		if (Damage_CheckTrace(e, org) == FALSE) {
+			if (check == TRUE) {
+				continue;
 			}
-			
+		}
+
+		/* calculate new damage values */
+		diff = vlen(org - pos);
+		diff = (radius - diff) / radius;
+		new_dmg = rint(dmg * diff);
+
+		if (diff > 0) {
+			Damage_Apply(e, attacker, new_dmg, pos, 0);
+
+			/* approximate, feel free to tweak */
+			if (e.movetype == MOVETYPE_WALK) {
+				makevectors(vectoangles(e.origin - org));
+				e.velocity += v_forward * (new_dmg * 5); 
+			}
 		}
 	}
 }
