@@ -577,9 +577,13 @@ void Strings_Init(void)
 	if (stringslst >= 0) {
 		int lc;
 		while((lstline = fgets(stringslst))) {
-			lc = tokenize(lstline);
+			lc = tokenize_console(lstline);
 			if (lc == 2) {
-				m_reslbl[stof(argv(0))] = argv(1);
+				float i = stof(argv(0));
+				/* you never know the vile stuff mods do. */
+				if (i < m_reslbl.length) {
+					m_reslbl[stof(argv(0))] = argv(1);
+				}
 			}
 		}
 		fclose(stringslst);
