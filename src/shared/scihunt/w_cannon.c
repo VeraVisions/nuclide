@@ -117,6 +117,7 @@ void w_cannon_primary(void)
 		return;
 	}
 
+	View_SetMuzzleflash(MUZZLE_SMALL);
 	Weapons_ViewPunchAngle([-5,0,0]);
 #else
 	if (pl.cannon_mag != 2) {
