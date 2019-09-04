@@ -26,6 +26,16 @@ void trigger_autosave::touch(void)
 {
 	eActivator = other;
 
+	/* saved text */
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_MESSAGE);
+	WriteString(MSG_MULTICAST, "GAMESAVED");
+	WriteString(MSG_MULTICAST, "common/menu2.wav");
+	WriteFloat(MSG_MULTICAST, 1.0);
+	WriteByte(MSG_MULTICAST, ATTN_NONE);
+	msg_entity = this;
+	multicast(origin, MULTICAST_ALL);
+
 	localcmd("save autosave");
 	Hide();
 
