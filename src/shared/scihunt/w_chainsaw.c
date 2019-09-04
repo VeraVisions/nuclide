@@ -74,7 +74,9 @@ void w_chainsaw_primary(void)
 		return;
 	}
 
-	pl.a_ammo3 = 1; 
+	pl.a_ammo3 = 1;
+	Weapons_ViewAnimation(CHAINSAW_CONTINUEFIRE);
+
 #ifdef SSQC
 	Weapons_MakeVectors();
 	vector src = pl.origin + pl.view_ofs;
@@ -82,7 +84,7 @@ void w_chainsaw_primary(void)
 	
 	if (trace_fraction >= 1.0) {
 		Weapons_PlaySound(pl, CHAN_WEAPON, "sh/chainsaw_idle2.wav", 1, ATTN_NORM);
-		pl.w_attack_next = 0.16f;
+		pl.w_attack_next = 0.2f;
 	} else {
 		Effect_Impact(IMPACT_MELEE, trace_endpos, trace_plane_normal);
 		
@@ -102,16 +104,9 @@ void w_chainsaw_primary(void)
 	}
 #endif
 
-	pl.w_idle_next = 0.2f;
+	pl.w_idle_next = 0.0f;
 }
-void w_chainsaw_secondary(void)
-{
-	
-}
-void w_chainsaw_reload(void)
-{
-	
-}
+
 void w_chainsaw_release(void)
 {
 	player pl = (player)self;
@@ -123,18 +118,16 @@ void w_chainsaw_release(void)
 	if (pl.a_ammo3 == 1) {
 		pl.a_ammo3 = 0;
 		pl.w_idle_next = 1.0f;
+		Weapons_ViewAnimation(CHAINSAW_STOPFIRE);
+		return;
 	} else {
 		pl.w_idle_next = 10.0f;
 	}
 
-	int r = floor(random(0,2));
-	switch (r) {
-	case 0:
+	if (random() < 0.5) {
 		Weapons_ViewAnimation(CHAINSAW_IDLE1);
-		break;
-	case 1:
+	} else {
 		Weapons_ViewAnimation(CHAINSAW_IDLE2);
-		break;
 	}
 }
 
@@ -162,8 +155,8 @@ weapon_t w_chainsaw =
 	w_chainsaw_draw,
 	w_chainsaw_holster,
 	w_chainsaw_primary,
-	w_chainsaw_secondary,
-	w_chainsaw_reload,
+	w_chainsaw_release,
+	w_chainsaw_release,
 	w_chainsaw_release,
 	__NULL__,
 	w_chainsaw_precache,
