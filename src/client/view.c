@@ -15,6 +15,7 @@
  */
 
 var int autocvar_v_cambob = FALSE;
+var int autocvar_v_camroll = TRUE;
 
 void View_Init(void)
 {
@@ -97,6 +98,16 @@ void View_CalcBob(void)
 	float fBob = sqrt(vel[0] * vel[0] + vel[1] * vel[1]) * autocvar_v_bob;
 	fBob = fBob * 0.3 + fBob * 0.7 * sin(cycle);
 	pSeat->fBob = bound(-7, fBob, 4);
+}
+
+float View_CalcRoll(void)
+{
+	float roll;
+	makevectors(view_angles);
+	
+	roll = dotproduct(pSeat->vPlayerVelocity, v_right);
+	roll *= 0.02f;
+	return autocvar_v_camroll ? roll : 0;
 }
 
 /*
@@ -238,6 +249,7 @@ void View_DrawViewModel(void)
 		addentity(eViewModel);
 	}
 	View_CalcCamBob();
+	view_angles[2] = View_CalcRoll();
 }
 
 void View_PostDraw(void)
