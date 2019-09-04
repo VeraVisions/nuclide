@@ -14,7 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-var int autocvar_v_cambob = FALSE;
 var int autocvar_v_camroll = TRUE;
 
 void
@@ -120,47 +119,6 @@ View_CalcRoll(void)
 	return autocvar_v_camroll ? roll : 0;
 }
 
-void
-View_CalcCamBob(void)
-{
-	float flPlayerSpeed;
-
-	if (!autocvar_v_cambob) {
-		return;
-	}
-
-	flPlayerSpeed = vlen(pSeat->vPlayerVelocity);
-
-	if (flPlayerSpeed < 5) {
-		pSeat->flCamMove = 0;
-		pSeat->flCamTime = 0;
-	} else if (pSeat->fPlayerFlags & FL_ONGROUND) {
-		if ( flPlayerSpeed > 210 ) {
-			pSeat->flCamMove = clframetime * 3;
-		} else if (flPlayerSpeed > 100) {
-			pSeat->flCamMove = clframetime * 1.5;
-		} else {
-			pSeat->flCamMove = clframetime;
-		}
-	}
-
-	pSeat->flCamTime = (pSeat->flCamTime += pSeat->flCamMove);
-	pSeat->iCamCycle = (int)pSeat->flCamTime;
-	pSeat->flCamFracSin = fabs(sin(pSeat->flCamTime * M_PI));
-	pSeat->flCamDelta = pSeat->flCamFracSin * 0.002 * flPlayerSpeed;
-
-	if ((pSeat->fPlayerFlags & FL_CROUCHING) && (pSeat->fPlayerFlags & FL_ONGROUND)) {
-		pSeat->flCamDelta *= 6;
-	}
-	view_angles[0] += pSeat->flCamDelta;
-
-	if (pSeat->iCamCycle & 1) {
-		pSeat->flCamDelta = -pSeat->flCamDelta;
-	}
-
-	view_angles[2] += pSeat->flCamDelta;
-}
-
 /*
 ====================
 View_DropPunchAngle
@@ -254,7 +212,6 @@ void View_DrawViewModel(void)
 		}
 		addentity(eViewModel);
 	}
-	View_CalcCamBob();
 
 	if (pl.movetype == MOVETYPE_WALK) {
 		view_angles[2] = View_CalcRoll();
