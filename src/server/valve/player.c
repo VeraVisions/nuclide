@@ -114,6 +114,7 @@ Player_SendEntity
 float Player_SendEntity(entity ePEnt, float fChanged)
 {
 	player pl = (player)self;
+
 	if (pl.health <= 0 && ePEnt != pl) {
 		return FALSE;
 	}

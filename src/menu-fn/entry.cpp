@@ -17,7 +17,7 @@
 var int g_initialized = FALSE;
 
 const string LICENSE_TEXT = "\
-========================================================================\
+==============================================================================\
 Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>\
 \
 Permission to use, copy, modify, and distribute this software for any\
@@ -31,7 +31,7 @@ ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\
 WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER\
 IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING\
 OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.\
-========================================================================";
+==============================================================================";
 
 void cvar_init(void)
 {
@@ -134,10 +134,12 @@ void m_draw(vector screensize)
 	oldtime = time;
 }
 
-/*void m_drawloading(vector screensize, float opaque)
+void m_drawloading(vector screensize, float opaque)
 {
-	
-}*/
+	vector pos;
+	pos = (screensize / 2) - [32,32];
+	drawpic(pos, "gfx/lambda64", [64,64], [1,1,1], 1.0f);
+}
 
 float Menu_InputEvent(float evtype, float scanx, float chary, float devid)
 {

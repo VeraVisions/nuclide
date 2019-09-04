@@ -61,6 +61,7 @@ defs.h
 ../../shared/decals.c
 ../../shared/effects.c
 ../../shared/spraylogo.cpp
+../npc.c
 
 overview.c
 ../player.c
@@ -74,6 +75,7 @@ nightvision.c
 hudcrosshair.c
 hudscope.c
 hudweaponselect.c
+../obituary.c
 hudorbituaries.c
 hud.c
 ../vgui.cpp

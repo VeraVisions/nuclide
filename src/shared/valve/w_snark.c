@@ -109,6 +109,7 @@ void w_snark_deploy(void)
 	static void snark_pain(int i) { }
 	entity snark = spawn();
 	snark.owner = self;
+	snark.netname = "Snark";
 	snark.classname = "snark";
 	setmodel(snark, "models/w_squeak.mdl");
 	makevectors(self.v_angle);
@@ -259,6 +260,9 @@ weapon_t w_snark =
 	ITEM_SNARK,
 	4,
 	3,
+	"sprites/640hud1.spr_0.tga",
+	[32,16],
+	[192,208],
 	w_snark_draw,
 	w_snark_holster,
 	w_snark_primary,

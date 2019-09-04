@@ -246,7 +246,13 @@ string sci_sndscream[] = {
 	"scientist/youinsane.wav",
 	"scientist/scream23.wav",
 	"scientist/scream24.wav",
-	"scientist/scream25.wav"
+	"scientist/scream25.wav",
+	"scientist/whatyoudoing.wav",
+	"scientist/canttakemore.wav",
+	"scientist/madness.wav",
+	"scientist/noplease.wav",
+	"scientist/getoutofhere.wav",
+	"scientist/sorryimleaving.wav",
 };
 
 string sci_sndstop[] = {
@@ -279,13 +285,28 @@ string sci_snduseno[] = {
 	"scientist/whyleavehere.wav"
 };
 
+string sci_sndidle[] = {
+	"scientist/hideglasses.wav",
+	"scientist/weartie.wav",
+	"scientist/runtest.wav",
+	"scientist/limitsok.wav",
+	"scientist/asexpected.wav",
+	"scientist/thatsodd.wav",
+	"scientist/allnominal.wav",
+	"scientist/shutdownchart.wav",
+	"scientist/reportflux.wav",
+	"scientist/simulation.wav",
+	"scientist/hopenominal.wav",
+};
 
 class monster_scientist:CBaseEntity
 {
+	int m_iBody;
 	vector m_vecLastUserPos;
 	entity m_eUser;
 	entity m_eRescuer;
 
+	float m_flScaredTime;
 	float m_flScreamTime;
 	float m_flPainTime;
 	float m_flChangePath;
@@ -303,9 +324,33 @@ class monster_scientist:CBaseEntity
 	virtual void() Physics;
 	virtual void() Scream;
 	virtual void() Gib;
+	virtual float(entity, float) SendEntity;
 	virtual void() WarnOthers;
 	virtual void(string) Speak;
+	virtual void() IdleChat;
 };
+
+float monster_scientist::SendEntity(entity ePEnt, float fChanged)
+{
+	if (modelindex == 0) {
+		return FALSE;
+	}
+
+	WriteByte(MSG_ENTITY, ENT_NPC);
+	WriteShort(MSG_ENTITY, modelindex);
+	WriteCoord(MSG_ENTITY, origin[0]);
+	WriteCoord(MSG_ENTITY, origin[1]);
+	WriteCoord(MSG_ENTITY, origin[2]);
+	WriteFloat(MSG_ENTITY, angles[1]);
+	WriteFloat(MSG_ENTITY, angles[2]);
+	WriteCoord(MSG_ENTITY, velocity[0]);
+	WriteCoord(MSG_ENTITY, velocity[1]);
+	WriteCoord(MSG_ENTITY, velocity[2]);
+	WriteByte(MSG_ENTITY, frame);
+	WriteByte(MSG_ENTITY, skin);
+	WriteByte(MSG_ENTITY, m_iBody);
+	return TRUE;
+}
 
 void monster_scientist::Speak(string msg)
 {
@@ -330,9 +375,11 @@ void monster_scientist::WarnOthers(void)
 	for (entity b = world; (b = find(b, ::classname, "monster_scientist"));) {
 		if (vlen(b.origin - origin) < 512) {
 			monster_scientist sci = (monster_scientist)b;
-			sci.m_iFlags |= SCIF_FEAR | SCIF_SEEN;
+			sci.m_iFlags |= SCIF_SCARED | SCIF_FEAR | SCIF_SEEN;
 			sci.m_eUser = world;
 			sci.m_eRescuer = world;
+			sci.m_flScaredTime = time + 2.5f;
+			sci.Scream();
 		}
 	}
 }
@@ -346,6 +393,17 @@ void monster_scientist::Scream(void)
 	int rand = floor(random(0,sci_sndscream.length));
 	Speak(sci_sndscream[rand]);
 	m_flScreamTime = time + 5.0f;
+}
+
+void monster_scientist::IdleChat(void)
+{
+	if (m_flScreamTime > time) {
+		return;
+	}
+
+	int rand = floor(random(0,sci_sndchitchat.length));
+	Speak(sci_sndchitchat[rand]);
+	m_flScreamTime = time + 5.0f + random(0,20);
 }
 
 void monster_scientist::Physics(void)
@@ -425,12 +483,13 @@ void monster_scientist::Physics(void)
 			}
 		}
 	} else if (m_iFlags & SCIF_FEAR) {
+		m_iFlags |= SCIF_SEEN;
 		Scream();
 		maxspeed = 240 * (autocvar_sh_scispeed/40);
 		input_movevalues = [maxspeed, 0, 0];
 
 		if (m_flTraceTime < time) {
-			traceline(self.origin, self.origin + (v_forward * 32), FALSE, this);
+			traceline(origin, origin + (v_forward * 64), FALSE, this);
 			
 			if (trace_fraction < 1.0f) {
 				m_flChangePath = 0.0f;
@@ -439,10 +498,33 @@ void monster_scientist::Physics(void)
 		}
 
 		if (m_flChangePath < time) {
-			v_angle[1] -= 180 + (random(-25, 25));
-			v_angle[1] = Math_FixDelta(v_angle[1]);
+			float add;
+			vector pos;
+
+			pos = origin + [0,0,-18];
+			if (random() < 0.5) {
+				add = 45;
+			} else {
+				add = -45;
+			}
+
+			/* test every 45 degrees */
+			for (int i = 0; i < 8; i++) {
+				v_angle[1] = Math_FixDelta(v_angle[1] + add);
+				makevectors(v_angle);
+				traceline(pos, pos + (v_forward * 64), FALSE, this);
+				if (trace_fraction >= 1.0f) {
+					break;
+				}
+			}
 			m_flChangePath = time + floor(random(2,10));
 		}
+	} else {
+		IdleChat();
+	}
+
+	if (m_flScaredTime < time && m_iFlags & SCIF_SCARED) {
+		m_iFlags &= ~SCIF_SCARED;
 	}
 
 	input_angles = angles = v_angle;
@@ -464,6 +546,7 @@ void monster_scientist::Physics(void)
 
 	runstandardplayerphysics(this);
 	Footsteps_Update();
+	SendFlags = 1;
 
 	if (!(flags & FL_ONGROUND) && velocity[2] < -100) {
 		if (!(m_iFlags & SCIF_FALLING)) {
@@ -541,6 +624,7 @@ void monster_scientist::vDeath(int iHitBody)
 	think = Respawn;
 	nextthink = time + 10.0f;
 
+	SendFlags = 1;
 	m_eUser = world;
 	customphysics = __NULL__;
 	m_iFlags = 0x0;
@@ -550,6 +634,7 @@ void monster_scientist::vDeath(int iHitBody)
 		return;
 	}
 
+	flags &= ~FL_MONSTER;
 	movetype = MOVETYPE_NONE;
 	solid = SOLID_CORPSE;
 	//takedamage = DAMAGE_NO;
@@ -575,6 +660,7 @@ void monster_scientist::Respawn(void)
 	v_angle[1] = Math_FixDelta(m_oldAngle[1]);
 	v_angle[2] = Math_FixDelta(m_oldAngle[2]);
 
+	flags |= FL_MONSTER;
 	setorigin(this, m_oldOrigin);
 	angles = v_angle;
 	solid = SOLID_SLIDEBOX;
@@ -616,6 +702,9 @@ void monster_scientist::monster_scientist(void)
 	for (int i = 0; i < sci_sndsee.length; i++) {
 		precache_sound(sci_sndsee[i]);
 	}
+	for (int i = 0; i < sci_sndidle.length; i++) {
+		precache_sound(sci_sndidle[i]);
+	}
 
 	model = "models/scientist.mdl";
 	CBaseEntity::CBaseEntity();
@@ -624,20 +713,24 @@ void monster_scientist::monster_scientist(void)
 
 	/* This stuff needs to be persistent because we can't guarantee that
 	 * the client-side geomset refresh happens. Don't shove this into Respawn */
-	colormod[0] = floor(random(1,5));
-	switch (colormod[0]) {
+	m_iBody = floor(random(1,5));
+	switch (m_iBody) {
 		case 1:
-			m_flPitch = 105; // Walter
+			m_flPitch = 105;
+			netname = "Walter";
 			break;
 		case 2:
-			m_flPitch = 100; // Einstein
+			m_flPitch = 100;
+			netname = "Einstein";
 			break;
 		case 3:
-			m_flPitch = 95; // Luther
+			m_flPitch = 95;
+			netname = "Luther";
 			skin = 1;
 			break;
 		default:
-			m_flPitch = 100; // Slick
+			m_flPitch = 100;
+			netname = "Slick";
 	}
 }
 

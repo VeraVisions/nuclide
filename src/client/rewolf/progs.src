@@ -38,23 +38,24 @@ decore.cpp
 ../../shared/decals.c
 ../../shared/effects.c
 ../../shared/spraylogo.cpp
+../npc.c
 
 ../../shared/valve/items.h
 ../../shared/valve/weapons.h
-../../shared/valve/w_crowbar.c
-../../shared/valve/w_glock.c
-../../shared/valve/w_python.c
-../../shared/valve/w_mp5.c
 ../../shared/valve/w_crossbow.c
-../../shared/valve/w_shotgun.c
-../../shared/valve/w_rpg.c
-../../shared/valve/w_gauss.c
+../../shared/valve/w_crowbar.c
 ../../shared/valve/w_egon.c
-../../shared/valve/w_hornetgun.c
+../../shared/valve/w_gauss.c
+../../shared/valve/w_glock.c
 ../../shared/valve/w_handgrenade.c
-../../shared/valve/w_tripmine.c
+../../shared/valve/w_hornetgun.c
+../../shared/valve/w_mp5.c
+../../shared/valve/w_python.c
+../../shared/valve/w_rpg.c
 ../../shared/valve/w_satchel.c
+../../shared/valve/w_shotgun.c
 ../../shared/valve/w_snark.c
+../../shared/valve/w_tripmine.c
 ../../shared/valve/weapons.c
 ../../shared/valve/weapon_common.c
 
@@ -68,6 +69,7 @@ decore.cpp
 ../valve/view.c
 ../view.c
 ../damage.c
+../obituary.c
 ../chat.c
 ../vgui.cpp
 

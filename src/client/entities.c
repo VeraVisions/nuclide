@@ -30,6 +30,9 @@ void CSQC_Ent_Update(float new)
 	case ENT_PLAYER:
 		Player_ReadEntity(new);
 		break;
+	case ENT_NPC:
+		NPC_ReadEntity(new);
+		break;
 	case ENT_SPRITE:
 		Sprite_Animated();
 		break;

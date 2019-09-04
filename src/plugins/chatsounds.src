@@ -1,0 +1,8 @@
+#pragma target fte
+#pragma PROGS_DAT  "../../valve/data.pk3dir/p_chatsounds.dat"
+#define QWSSQC
+
+#includelist
+../builtins.h
+chatsounds.c
+#endlist

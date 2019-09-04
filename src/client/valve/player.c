@@ -37,31 +37,30 @@ void Player_ReadEntity(float flIsNew)
 		pl.drawmask = MASK_ENGINE;
 		pl.customphysics = Empty;
 		setsize( pl, VEC_HULL_MIN, VEC_HULL_MAX );
-
-		print(sprintf("Player %g is csqc ent %i\n", pl.entnum, pl));
-	}
-	else
-	{
-		if (pl.entnum == player_localentnum) //FIXME: splitscreen
-		{
-			pSeat = &seats[0];	//FIXME: splitscreen
-			for (int i = pl.sequence+1; i <= servercommandframe; i++) 
-			{
-				if (!getinputstate(i))
+	} else {
+		int i;
+		//FIXME: splitscreen
+		if (pl.entnum == player_localentnum) {
+			//FIXME: splitscreen
+			pSeat = &seats[0];
+			for (i = pl.sequence+1; i <= servercommandframe; i++) {
+				if (!getinputstate(i)) {
 					break;	//erk?... too old?
+				}
 				input_sequence = i;
 				QPhysics_Run(pl);
 			}
 
-			//any differences in things that are read below are now officially from prediction misses.
+			/* any differences in things that are read below are now
+			 * officially from prediction misses. */
 		}
 	}
-	pl.sequence = servercommandframe; 
 
-	pl.modelindex = readshort();	//make conditional
+	pl.sequence = servercommandframe; 
+	pl.modelindex = readshort();	// TODO: make conditional
 	pl.origin[0] = readcoord();
 	pl.origin[1] = readcoord();
-	pl.origin[2] = readcoord();	//make conditional
+	pl.origin[2] = readcoord();	// TODO: make conditional
 	pl.pitch = readfloat();
 	pl.angles[1] = readfloat();
 	pl.angles[2] = readfloat();
@@ -69,23 +68,23 @@ void Player_ReadEntity(float flIsNew)
 	pl.velocity[1] = readcoord();
 	pl.velocity[2] = readcoord();
 	pl.flags = readfloat(); //make mostly conditional
-	pl.activeweapon = readbyte(); //make conditional
+	pl.activeweapon = readbyte(); // TODO: make conditional
 	warnifdiff("weapontime", pl.weapontime, readfloat());	//remove
-	pl.g_items = readfloat(); //make conditional
-	pl.health = readbyte(); //make conditional
-	pl.armor = readbyte(); //make conditional
-	pl.movetype = readbyte(); //make conditional
-	pl.view_ofs[2] = readfloat(); //make conditional
-	pl.viewzoom = readfloat();		//remove? or make conditional
+	pl.g_items = readfloat(); // TODO: make conditional
+	pl.health = readbyte(); // TODO: make conditional
+	pl.armor = readbyte(); // TODO: make conditional
+	pl.movetype = readbyte(); // TODO: make conditional
+	pl.view_ofs[2] = readfloat(); // TODO: make conditional
+	pl.viewzoom = readfloat();	//remove? or make conditional
 	warnifdiff("jumptime", pl.jumptime, readfloat());	//remove
 	warnifdiff("teletime", pl.teleport_time, readfloat());	//remove
 	
-	pl.baseframe = readbyte();	//make conditional
-	pl.frame = readbyte();		//make conditional
+	pl.baseframe = readbyte();	// TODO: make conditional
+	pl.frame = readbyte();		// TODO: make conditional
 
-	pl.a_ammo1 = readbyte(); //make conditional
-	pl.a_ammo2 = readbyte(); //make conditional
-	pl.a_ammo3 = readbyte(); //make conditional
+	pl.a_ammo1 = readbyte(); // TODO: make conditional
+	pl.a_ammo2 = readbyte(); // TODO: make conditional
+	pl.a_ammo3 = readbyte(); // TODO: make conditional
 	warnifdiff("attack_next", pl.w_attack_next, readfloat());	//remove
 	warnifdiff("idle_next", pl.w_idle_next, readfloat());	//remove
 	setorigin( pl, pl.origin );

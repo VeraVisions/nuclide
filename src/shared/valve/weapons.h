@@ -19,6 +19,9 @@ typedef struct
 	int id; /* bitflag id */
 	int slot;
 	int slot_pos;
+	string ki_spr;
+	vector ki_size;
+	vector ki_xy;
 
 	void() draw;
 	void() holster;

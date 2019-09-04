@@ -119,6 +119,7 @@ void CBaseEntity :: Respawn ( void )
 void CBaseEntity :: Hide ( void )
 {
 	setmodel( this, "" );
+	modelindex = 0;
 	solid = SOLID_NOT;
 	movetype = MOVETYPE_NONE;
 	takedamage = DAMAGE_NO;

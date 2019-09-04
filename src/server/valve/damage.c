@@ -16,16 +16,16 @@
 
 /* someone dieded */
 void
-Damage_CastObituary(entity eCulprit, entity eTarget, float weapon, float flags)
+Damage_Obituary(entity eCulprit, entity eTarget, float weapon, float flags)
 {
-	/*WriteByte(MSG_BROADCAST, SVC_CGAMEPACKET);
-	WriteByte(MSG_BROADCAST, EV_OBITUARY);
-	WriteByte(MSG_BROADCAST, num_for_edict(eCulprit) - 1);
-	WriteByte(MSG_BROADCAST, num_for_edict(eTarget) - 1);
-	WriteByte(MSG_BROADCAST, weapon);
-	WriteByte(MSG_BROADCAST, flags);
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_OBITUARY);
+	WriteString(MSG_MULTICAST, eCulprit.netname);
+	WriteString(MSG_MULTICAST, eTarget.netname);
+	WriteByte(MSG_MULTICAST, weapon);
+	WriteByte(MSG_MULTICAST, flags);
 	msg_entity = self;
-	multicast([0,0,0], MULTICAST_ALL);*/
+	multicast([0,0,0], MULTICAST_ALL);
 }
 
 /* generic function that applies damage, pain and suffering */
@@ -73,19 +73,28 @@ Damage_Apply(entity eTarget, entity eCulprit, float fDmg, vector pos, int a)
 			forceinfokey(eTarget, "*deaths", ftos(eTarget.deaths));
 		}
 
-		if (eCulprit.flags & FL_CLIENT) {
-			if (eTarget == eCulprit) {
+		if (eTarget.flags & FL_CLIENT || eTarget.flags & FL_MONSTER)
+		if (eCulprit.flags & FL_CLIENT)
+			if (eTarget == eCulprit)
 				eCulprit.frags--;
-			} else {
+			else
 				eCulprit.frags++;
-			}
-		}
 	}
 
 	entity eOld = self;
 	self = eTarget;
 
 	if (self.health <= 0) {
+		if (eTarget.flags & FL_MONSTER || eTarget.flags & FL_CLIENT) {
+			float w = 0;
+			/* FIXME: this is unreliable. the culprit might have
+			 * already switched weapons. FIX THIS */
+			if (eCulprit.flags & FL_CLIENT) {
+				player pl = (player)eCulprit;
+				w = pl.activeweapon;
+			}
+			Damage_Obituary(eCulprit, eTarget, w, 0);
+		}
 		self.vDeath(trace_surface_id);
 	} else {
 		self.vPain(trace_surface_id);

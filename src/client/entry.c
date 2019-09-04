@@ -286,6 +286,7 @@ CSQC_UpdateView(float w, float h, float focus)
 				HUD_Draw();
 			}
 
+			Obituary_Draw();
 			///HUD_DrawOrbituaries();
 			Voice_DrawHUD();
 			Chat_Draw();
@@ -436,6 +437,9 @@ CSQC_Parse_Event(void)
 	float fHeader = readbyte();
 
 	switch (fHeader) {
+	case EV_OBITUARY:
+		Obituary_Parse();
+		break;
 	case EV_SPEAK:
 		string msg;
 		float pit;

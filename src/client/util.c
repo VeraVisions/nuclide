@@ -18,6 +18,6 @@
 void
 drawstring_r(vector p, string t, vector s, vector c, float a, float f)
 {
-	p[0] -= stringwidth(t, FALSE, s);
+	p[0] -= stringwidth(t, TRUE, s);
 	drawstring(p, t, s, c, a, f);
 }

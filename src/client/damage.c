@@ -80,5 +80,7 @@ CSQC_Parse_Damage(float save, float take, vector abs_pos)
 		pSeat->damage_alpha = 1.0f;
 	}
 
+	View_AddPunchAngle([take,0,0]);
+
 	return TRUE;
 }

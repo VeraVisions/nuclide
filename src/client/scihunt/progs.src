@@ -18,7 +18,6 @@
 ../../vgui/include.src
 
 ../util.c
-init.c
 
 ../../gs-entbase/client.src
 
@@ -35,23 +34,25 @@ init.c
 ../../shared/decals.c
 ../../shared/effects.c
 ../../shared/spraylogo.cpp
+../npc.c
+init.c
 
 ../../shared/scihunt/items.h
 ../../shared/scihunt/weapons.h
-../../shared/valve/w_crowbar.c
-../../shared/valve/w_glock.c
-../../shared/valve/w_python.c
-../../shared/valve/w_mp5.c
 ../../shared/valve/w_crossbow.c
-../../shared/valve/w_shotgun.c
-../../shared/valve/w_rpg.c
-../../shared/valve/w_gauss.c
+../../shared/valve/w_crowbar.c
 ../../shared/valve/w_egon.c
-../../shared/valve/w_hornetgun.c
+../../shared/valve/w_gauss.c
+../../shared/valve/w_glock.c
 ../../shared/valve/w_handgrenade.c
-../../shared/valve/w_tripmine.c
+../../shared/valve/w_hornetgun.c
+../../shared/valve/w_mp5.c
+../../shared/valve/w_python.c
+../../shared/valve/w_rpg.c
 ../../shared/valve/w_satchel.c
+../../shared/valve/w_shotgun.c
 ../../shared/valve/w_snark.c
+../../shared/valve/w_tripmine.c
 ../../shared/scihunt/w_cannon.c
 ../../shared/scihunt/w_chainsaw.c
 ../../shared/scihunt/w_hammer.c
@@ -68,6 +69,7 @@ init.c
 ../valve/view.c
 ../view.c
 ../damage.c
+../obituary.c
 ../chat.c
 ../vgui.cpp
 
