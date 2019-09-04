@@ -104,7 +104,7 @@ float View_CalcRoll(void)
 {
 	float roll;
 	makevectors(view_angles);
-	
+
 	roll = dotproduct(pSeat->vPlayerVelocity, v_right);
 	roll *= 0.02f;
 	return autocvar_v_camroll ? roll : 0;
@@ -249,7 +249,10 @@ void View_DrawViewModel(void)
 		addentity(eViewModel);
 	}
 	View_CalcCamBob();
-	view_angles[2] = View_CalcRoll();
+
+	if (pl.movetype == MOVETYPE_WALK) {
+		view_angles[2] = View_CalcRoll();
+	}
 }
 
 void View_PostDraw(void)
