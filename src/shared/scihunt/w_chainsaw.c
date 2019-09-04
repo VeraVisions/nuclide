@@ -168,4 +168,3 @@ weapon_t w_chainsaw =
 	w_chainsaw_aimanim,
 	w_chainsaw_hudpic
 };
-

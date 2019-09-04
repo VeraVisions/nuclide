@@ -179,21 +179,22 @@ void hostage_entity::touch(void)
 void hostage_entity::PlayerUse(void)
 {
 	if (eActivator.team == TEAM_CT) {
-		if ((m_eUser == world)) {
-			/* Only give cash to the CT for using it for the first time */
-			if (m_iUsed == FALSE) {
-				int rand = floor(random(0,5));
-				sound(this, CHAN_VOICE, g_hostsnd[rand], 1.0, ATTN_IDLE);
-				Money_AddMoney(eActivator, 150);
-				m_iUsed = TRUE;
-			}
-
-			m_eUser = eActivator;
-			m_eRescuer = m_eUser;
-			m_vecLastUserPos = m_eUser.origin;
-		} else {
+		if (m_eUser != world) {
 			m_eUser = world;
+			return;
 		}
+
+		/* only give cash to the CT for using it for the first time */
+		if (m_iUsed == FALSE) {
+			int r = floor(random(0,5));
+			sound(this, CHAN_VOICE, g_hostsnd[r], 1.0, ATTN_IDLE);
+			Money_AddMoney(eActivator, 150);
+			m_iUsed = TRUE;
+		}
+
+		m_eUser = eActivator;
+		m_eRescuer = m_eUser;
+		m_vecLastUserPos = m_eUser.origin;
 	}
 }
 

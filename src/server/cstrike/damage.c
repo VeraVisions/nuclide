@@ -24,7 +24,7 @@ Sends a message to the clients to display a death message
 void Damage_CastOrbituary(entity eAttacker, entity eTarget, float fWeapon, float fHeadShot)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
-	WriteByte(MSG_MULTICAST, EV_ORBITUARY);
+	WriteByte(MSG_MULTICAST, EV_OLDREMOVEME);
 	WriteByte(MSG_MULTICAST, num_for_edict(eAttacker) - 1);
 	WriteByte(MSG_MULTICAST, eAttacker.team);
 	WriteByte(MSG_MULTICAST, num_for_edict(eTarget) - 1);
@@ -101,26 +101,6 @@ void Damage_Apply(entity eTarget, entity eAttacker, float iDamage, vector vHitPo
 {
 	if (eTarget.flags & FL_GODMODE) {
 		return;
-	}
-
-	/* Modify the damage based on the location */
-	switch (trace_surface_id) {
-	case BODY_HEAD:
-		if (eTarget.iEquipment & EQUIPMENT_HELMET) {
-			sound(self, CHAN_ITEM, "weapons/ric_metal-2.wav", 1, ATTN_IDLE);
-			iDamage = 0;
-			eTarget.iEquipment -= EQUIPMENT_HELMET;
-		} else {
-			iDamage *= 4;
-		}
-		break;
-	case BODY_STOMACH:
-		iDamage *= 0.9;
-		break;
-	case BODY_LEGLEFT:
-	case BODY_LEGRIGHT:
-		iDamage *= 0.4;
-		break;
 	}
 
 	dprint(sprintf("[DEBUG] Hit Bodypart: %s\n", Damage_GetHitLocation(trace_surface_id)));

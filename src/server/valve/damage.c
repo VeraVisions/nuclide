@@ -14,34 +14,21 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*
-=================
-Damage_CastOrbituary
-
-Sends a message to the clients to display a death message
-=================
-*/
+/* someone dieded */
 void
-Damage_CastOrbituary(entity eCulprit, entity eTarget, float fWeapon)
+Damage_CastObituary(entity eCulprit, entity eTarget, float weapon, float flags)
 {
-	WriteByte(MSG_BROADCAST, SVC_CGAMEPACKET);
-	WriteByte(MSG_BROADCAST, EV_ORBITUARY);
+	/*WriteByte(MSG_BROADCAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_BROADCAST, EV_OBITUARY);
 	WriteByte(MSG_BROADCAST, num_for_edict(eCulprit) - 1);
-	WriteByte(MSG_BROADCAST, eCulprit.team);
 	WriteByte(MSG_BROADCAST, num_for_edict(eTarget) - 1);
-	WriteByte(MSG_BROADCAST, eTarget.team);
-	WriteByte(MSG_BROADCAST, fWeapon);
+	WriteByte(MSG_BROADCAST, weapon);
+	WriteByte(MSG_BROADCAST, flags);
 	msg_entity = self;
-	multicast([0,0,0], MULTICAST_ALL);
+	multicast([0,0,0], MULTICAST_ALL);*/
 }
 
-/*
-=================
-Damage_Apply
-
-Generic function that applies damage, pain and suffering
-=================
-*/
+/* generic function that applies damage, pain and suffering */
 void
 Damage_Apply(entity eTarget, entity eCulprit, float fDmg, vector pos, int a)
 {
@@ -86,13 +73,12 @@ Damage_Apply(entity eTarget, entity eCulprit, float fDmg, vector pos, int a)
 			forceinfokey(eTarget, "*deaths", ftos(eTarget.deaths));
 		}
 
-		if ((eTarget.flags & FL_CLIENT) && (eCulprit.flags & FL_CLIENT)) {
+		if (eCulprit.flags & FL_CLIENT) {
 			if (eTarget == eCulprit) {
 				eCulprit.frags--;
 			} else {
 				eCulprit.frags++;
 			}
-			//Damage_CastOrbituary(eCulprit, eTarget, eCulprit.weapon);
 		}
 	}
 
@@ -105,21 +91,10 @@ Damage_Apply(entity eTarget, entity eCulprit, float fDmg, vector pos, int a)
 		self.vPain(trace_surface_id);
 	}
 
-	if (self.iBleeds == TRUE && fDmg > 0) {
-		Effect_CreateBlood(pos, [0,0,0]);
-	} 
-
 	self = eOld;
 }
 
-/*
-=================
-Damage_CheckTrace
-
-This verifies that the entity is actually able to receive some damage,
-from a plain geographical standpoint
-=================
-*/
+/* physical check of whether or not we can trace important parts of an ent */
 float
 Damage_CheckTrace(entity eTarget, vector vecHitPos)
 {
@@ -152,13 +127,7 @@ Damage_CheckTrace(entity eTarget, vector vecHitPos)
 	return FALSE;
 }
 
-/*
-=================
-Damage_Radius
-
-Even more pain and suffering, mostly used for explosives
-=================
-*/
+/* even more pain and suffering, mostly used for explosives */
 void
 Damage_Radius(vector org, entity attacker, float dmg, float radius, int check)
 {

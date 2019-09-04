@@ -47,18 +47,6 @@ var string autocvar_mapcyclefile = "mapcycle.txt";
 var int iMapCycleCount;
 string *sMapCycle;
 
-// Hit Group standards
-enum {
-	BODY_DEFAULT,
-	BODY_HEAD,
-	BODY_CHEST,
-	BODY_STOMACH,
-	BODY_ARMLEFT,
-	BODY_ARMRIGHT,
-	BODY_LEGLEFT,
-	BODY_LEGRIGHT
-};
-
 // Grenade states
 enum {
 	GRENADE_UNREADY,

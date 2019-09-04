@@ -66,6 +66,18 @@ const vector VEC_PLAYER_CVIEWPOS = [0,0,12];
 #define FL_FROZEN 		(1<<21)
 #define FL_ONLADDER		(1<<13)
 
+/* global hitmesh definitions */
+enum {
+	BODY_DEFAULT,
+	BODY_HEAD,
+	BODY_CHEST,
+	BODY_STOMACH,
+	BODY_ARMLEFT,
+	BODY_ARMRIGHT,
+	BODY_LEGLEFT,
+	BODY_LEGRIGHT
+};
+
 #define clamp(d,min,max) bound(min,d,max)
 
 .float jumptime;

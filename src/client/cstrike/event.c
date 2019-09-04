@@ -357,7 +357,7 @@ void Game_Parse_Event(float fHeader) {
 		Radio_PlayMessage(readbyte());
 	} else if (fHeader == EV_RADIOMSG2) {
 		Radio_PlayPlayerMessage(readbyte(), readbyte());
-	} else if (fHeader == EV_ORBITUARY) {
+	} else if (fHeader == EV_OLDREMOVEME) {
 		HUD_AddOrbituaries(readbyte(), readbyte(), readbyte(), readbyte(), readbyte(), readbyte());
 	} else if (fHeader == EV_SMOKE) {
 		vector vSmokePos;
