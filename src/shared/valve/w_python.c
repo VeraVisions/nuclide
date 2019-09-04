@@ -105,6 +105,7 @@ void w_python_primary(void)
 	Weapons_UpdateAmmo(pl, pl.python_mag, pl.ammo_357, __NULL__);
 #else
 	pl.a_ammo1--;
+	View_SetMuzzleflash(MUZZLE_SMALL);
 	Weapons_ViewPunchAngle([-10,0,0]);
 #endif
 	Weapons_ViewAnimation(PYTHON_FIRE1);

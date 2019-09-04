@@ -56,6 +56,11 @@ var float PARTICLE_SPARK;
 var float DECAL_SHOT;
 var float DECAL_GLASS;
 
+/* muzzleflash indices */
+var int MUZZLE_SMALL;
+var int MUZZLE_RIFLE;
+var int MUZZLE_WEIRD;
+
 /* misc globals */
 vector video_mins;
 vector video_res;
@@ -65,7 +70,8 @@ vector mouse_pos;
 float clframetime;
 
 /* prototypes */
+void View_SetMuzzleflash(int);
 void View_UpdateWeapon(entity, entity);
-void View_AddPunchAngle( vector vAdd );
-void View_PlayAnimation( int iSequence );
+void View_AddPunchAngle(vector);
+void View_PlayAnimation(int);
 void Game_Input(void);

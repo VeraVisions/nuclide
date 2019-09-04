@@ -120,6 +120,7 @@ void w_shotgun_primary(void)
 	pl.shotgun_mag--;
 	Weapons_UpdateAmmo(pl, pl.shotgun_mag, pl.ammo_buckshot, __NULL__);
 #else
+	View_SetMuzzleflash(MUZZLE_WEIRD);
 	Weapons_ViewPunchAngle([-5,0,0]);
 	pl.a_ammo1--;
 #endif

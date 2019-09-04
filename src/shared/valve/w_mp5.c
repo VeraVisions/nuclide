@@ -99,14 +99,15 @@ void w_mp5_primary(void)
 #endif
 
 	if (random() < 0.5) {
-        Weapons_ViewAnimation(MP5_FIRE1);
-    } else {
-        Weapons_ViewAnimation(MP5_FIRE2);
-    }
+		Weapons_ViewAnimation(MP5_FIRE1);
+	} else {
+		Weapons_ViewAnimation(MP5_FIRE2);
+	}
 
-	/* Actual firing */	
+	/* Actual firing */
 #ifdef CSQC
 	pl.a_ammo1--;
+	View_SetMuzzleflash(MUZZLE_RIFLE);
 	Weapons_ViewPunchAngle([random(-2, 2),0,0]);
 #else
 	/* Singleplayer is more accurate */

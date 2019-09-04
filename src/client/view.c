@@ -17,7 +17,8 @@
 var int autocvar_v_cambob = FALSE;
 var int autocvar_v_camroll = TRUE;
 
-void View_Init(void)
+void
+View_Init(void)
 {
 #ifdef CSTRIKE
 	string wm;
@@ -39,9 +40,21 @@ void View_Init(void)
 			pSeat->eMuzzleflash.renderflags = RF_ADDITIVE;
 		}
 	}
+
+	/* there's also muzzleflash.spr, but that's just MUZZLE_SMALL again */
+	MUZZLE_RIFLE = (int)getmodelindex("sprites/muzzleflash1.spr");
+	MUZZLE_SMALL = (int)getmodelindex("sprites/muzzleflash2.spr");
+	MUZZLE_WEIRD = (int)getmodelindex("sprites/muzzleflash3.spr");
 }
 
-void View_CalcViewport(int s, float fWinWidth, float fWinHeight)
+void
+View_SetMuzzleflash(int index)
+{
+	pSeat->eMuzzleflash.modelindex = (float)index;
+}
+
+void 
+View_CalcViewport(int s, float fWinWidth, float fWinHeight)
 {
 	//FIXME: this is awkward. renderscene internally rounds to pixels.
 	//on the other hand, drawpic uses linear filtering and multisample and stuff.
@@ -67,12 +80,8 @@ void View_CalcViewport(int s, float fWinWidth, float fWinHeight)
 	}
 }
 
-/*
-====================
-View_CalcBob
-====================
-*/
-void View_CalcBob(void)
+void
+View_CalcBob(void)
 {
 	float cycle;
 
@@ -100,7 +109,8 @@ void View_CalcBob(void)
 	pSeat->fBob = bound(-7, fBob, 4);
 }
 
-float View_CalcRoll(void)
+float
+View_CalcRoll(void)
 {
 	float roll;
 	makevectors(view_angles);
@@ -110,13 +120,8 @@ float View_CalcRoll(void)
 	return autocvar_v_camroll ? roll : 0;
 }
 
-/*
-=================
-View_CalcCameraBob
-=================
-*/
-
-void View_CalcCamBob(void)
+void
+View_CalcCamBob(void)
 {
 	float flPlayerSpeed;
 
@@ -210,8 +215,9 @@ void View_DrawViewModel(void)
 	float fBaseTime = eViewModel.frame1time;
 	eViewModel.frame2time = pl.weapontime;
     	eViewModel.frame1time = pl.weapontime;
-	processmodelevents(eViewModel.modelindex, eViewModel.frame, fBaseTime, eViewModel.frame1time, Event_ProcessModel);
-	
+	processmodelevents(eViewModel.modelindex, eViewModel.frame, fBaseTime,
+		eViewModel.frame1time, Event_ProcessModel);
+
 	makevectors(view_angles);
 	eViewModel.angles = view_angles;
 	eViewModel.origin = pSeat->vPlayerOrigin + pl.view_ofs;
@@ -219,7 +225,7 @@ void View_DrawViewModel(void)
 			+ (v_forward * autocvar_v_gunofs[0])
 			+ (v_right * autocvar_v_gunofs[1])
 			+ (v_up * autocvar_v_gunofs[2]);
-	
+
 	// Left-handed weapons
 	if (autocvar_v_lefthanded) {
 		v_right *= -1;
@@ -231,7 +237,7 @@ void View_DrawViewModel(void)
 			eViewModel.renderflags -= RF_USEAXIS;
 		}
 	}
-	
+
 	// Give the gun a tilt effect like in old HL/CS versions
 	if (autocvar_v_bobclassic == 1) {
 		eViewModel.angles[2] = -pSeat->fBob;

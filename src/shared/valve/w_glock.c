@@ -87,6 +87,7 @@ void w_glock_primary(void)
 		return;
 	}
 
+	View_SetMuzzleflash(MUZZLE_SMALL);
 	Weapons_ViewPunchAngle([-2,0,0]);
 #else
 	if (!pl.glock_mag) {
@@ -107,10 +108,10 @@ void w_glock_primary(void)
 #endif
 
 	if (pl.a_ammo1) {
-        Weapons_ViewAnimation(GLOCK_SHOOT);
-    } else {
-        Weapons_ViewAnimation(GLOCK_SHOOT_EMPTY);
-    }
+		Weapons_ViewAnimation(GLOCK_SHOOT);
+	} else {
+		Weapons_ViewAnimation(GLOCK_SHOOT_EMPTY);
+	}
 
 	pl.w_attack_next = 0.3f;
 	pl.w_idle_next = 5.0f;

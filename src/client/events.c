@@ -64,27 +64,27 @@ void Event_ProcessModel(float fTimeStamp, int iCode, string sData)
 		localsound(sData, CHAN_AUTO, 1.0);
 	} else if (iCode == 5001) {
 		pSeat->eMuzzleflash.alpha = 1.0f;
-		pSeat->eMuzzleflash.scale = 0.5;
+		pSeat->eMuzzleflash.scale = 0.25;
 		pSeat->eMuzzleflash.skin = pSeat->fNumBones;
-		setmodel(pSeat->eMuzzleflash, sprintf("sprites/muzzleflash%s.spr", substring(sData, 1, 1)));
+		//setmodel(pSeat->eMuzzleflash, sprintf("sprites/muzzleflash%s.spr", substring(sData, 1, 1)));
 		Event_EjectShell();
 	} else if(iCode == 5011) {
 		pSeat->eMuzzleflash.alpha = 1.0f;
-		pSeat->eMuzzleflash.scale = 0.5;
+		pSeat->eMuzzleflash.scale = 0.25;
 		pSeat->eMuzzleflash.skin = pSeat->fNumBones + 1;
-		setmodel(pSeat->eMuzzleflash, sprintf("sprites/muzzleflash%s.spr", substring(sData, 1, 1)));
+		//setmodel(pSeat->eMuzzleflash, sprintf("sprites/muzzleflash%s.spr", substring(sData, 1, 1)));
 		Event_EjectShell();
 	} else if (iCode == 5021) {
 		pSeat->eMuzzleflash.alpha = 1.0f;
-		pSeat->eMuzzleflash.scale = 0.5;
+		pSeat->eMuzzleflash.scale = 0.25;
 		pSeat->eMuzzleflash.skin = pSeat->fNumBones + 2;
-		setmodel(pSeat->eMuzzleflash, sprintf("sprites/muzzleflash%s.spr", substring(sData, 1, 1)));
+		//setmodel(pSeat->eMuzzleflash, sprintf("sprites/muzzleflash%s.spr", substring(sData, 1, 1)));
 		Event_EjectShell();
 	} else if (iCode == 5031) {
 		pSeat->eMuzzleflash.alpha = 1.0f;
-		pSeat->eMuzzleflash.scale = 0.5;
+		pSeat->eMuzzleflash.scale = 0.25;
 		pSeat->eMuzzleflash.skin = pSeat->fNumBones + 3;
-		setmodel(pSeat->eMuzzleflash, sprintf("sprites/muzzleflash%s.spr", substring(sData, 1, 1)));
+		//setmodel(pSeat->eMuzzleflash, sprintf("sprites/muzzleflash%s.spr", substring(sData, 1, 1)));
 		Event_EjectShell();
 	}
 }
