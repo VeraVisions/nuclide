@@ -115,7 +115,7 @@ View_CalcRoll(void)
 	makevectors(view_angles);
 
 	roll = dotproduct(pSeat->vPlayerVelocity, v_right);
-	roll *= 0.02f;
+	roll *= 0.015f;
 	return autocvar_v_camroll ? roll : 0;
 }
 
