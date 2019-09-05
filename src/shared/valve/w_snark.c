@@ -155,11 +155,10 @@ void w_snark_primary(void)
 	w_snark_deploy();
 	pl.ammo_snark--;
 	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_snark, __NULL__);
-	
+
 	if (pl.a_ammo2 <= 0) {
 		Weapons_RemoveItem(pl, WEAPON_SNARK);
 	}
-
 #endif
 
 	pl.w_idle_next = 1.0f;
@@ -248,9 +247,13 @@ void w_snark_hudpic(int s, vector pos)
 {
 #ifdef CSQC
 	if (s) {
-		drawsubpic(pos, [170,45], "sprites/640hud6.spr_0.tga", [0,135/256], [170/256,45/256], g_hud_color, 1, DRAWFLAG_ADDITIVE);
+		drawsubpic(pos, [170,45], "sprites/640hud6.spr_0.tga",
+			[0,135/256], [170/256,45/256],
+			g_hud_color, 1, DRAWFLAG_ADDITIVE);
 	} else {
-		drawsubpic(pos, [170,45], "sprites/640hud3.spr_0.tga", [0,135/256], [170/256,45/256], g_hud_color, 1, DRAWFLAG_ADDITIVE);
+		drawsubpic(pos, [170,45], "sprites/640hud3.spr_0.tga",
+			[0,135/256], [170/256,45/256],
+			g_hud_color, 1, DRAWFLAG_ADDITIVE);
 	}
 #endif
 }

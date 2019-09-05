@@ -140,9 +140,13 @@ void w_chainsaw_hudpic(int s, vector pos)
 {
 #ifdef CSQC
 	if (s) {
-		drawsubpic(pos, [170,45], "sprites/chainsaw.spr_0.tga", [0,48/256], [170/256,45/256], g_hud_color, 1, DRAWFLAG_ADDITIVE);
+		drawsubpic(pos, [170,45], "sprites/chainsaw.spr_0.tga",
+			[0,48/256], [170/256,45/256],
+			g_hud_color, 1, DRAWFLAG_ADDITIVE);
 	} else {
-		drawsubpic(pos, [170,45], "sprites/chainsaw.spr_0.tga", [0,0], [170/256,45/256], g_hud_color, 1, DRAWFLAG_ADDITIVE);
+		drawsubpic(pos, [170,45], "sprites/chainsaw.spr_0.tga",
+			[0,0], [170/256,45/256],
+			g_hud_color, 1, DRAWFLAG_ADDITIVE);
 	}
 #endif
 }

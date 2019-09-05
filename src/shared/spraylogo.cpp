@@ -59,14 +59,14 @@ void CSEv_Spraylogo(void)
 		vector vSprayAngles = self.v_angle;
 		vSprayAngles[0] *= -1;
 		makevectors(vSprayAngles);
-		
+
 		vector vecCoplanar = v_forward -(v_forward * trace_plane_normal) 
 							  * trace_plane_normal;
 
 		if (trace_plane_normal[2] == 0) {
 			vecCoplanar = '0 0 1';
 		}
-		
+
 		eSpray.angles = vectoangles(vecCoplanar, trace_plane_normal);
 		eSpray.SendEntity = Spray_SendEntity;
 		eSpray.SendFlags = 1;
@@ -104,15 +104,16 @@ float CSpraylogo::predraw(void)
 		memfree(image);
 
 		print(sprintf("[CLIENT] Spray from player: %s\n",
-						getplayerkeyvalue(m_iOwnerID, "name")));
+			getplayerkeyvalue(m_iOwnerID, "name")));
 
 		shaderforname(m_strLogoname, 
-		sprintf("{\ncull disable\npolygonOffset\n{\nmap $rt:%s\nblendfunc blend\n}\n}", 
+			sprintf("{\ncull disable\npolygonOffset\n{\nmap $rt:%s\nblendfunc gl_one gl_one_minus_src_alpha\nrgbGen vertex\n}\n}", 
 				 m_strLogopath));
 	} else {
+		vector light = getlight(m_vecPosition) / 255;
 		makevectors(m_vecAngles);
 		adddecal(m_strLogoname, m_vecPosition, 
-				 v_up / 64, v_forward / 64, '1 0 0', 1.0f);
+				 v_up / 64, v_forward / 64, light, 1.0f);
 		addentity(this);
 	}
 	return PREDRAW_NEXT;
@@ -132,8 +133,8 @@ void Spraylogo_Parse(void)
 	spSelf.m_iInitialized = FALSE;
 	spSelf.m_iOwnerID = readentitynum() - 1;
 	spSelf.m_strLogoname = sprintf("spray_%i",
-							spSelf.m_iOwnerID);
+		spSelf.m_iOwnerID);
 	spSelf.m_strLogopath = sprintf("simg_%i",
-							spSelf.m_iOwnerID);
+		spSelf.m_iOwnerID);
 }
 #endif
