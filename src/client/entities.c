@@ -37,7 +37,7 @@ void CSQC_Ent_Update(float new)
 		Sprite_Animated();
 		break;
 	case ENT_SPRAY:
-		Spraylogo_Parse();
+		Spray_Parse();
 		break;
 	case ENT_DECAL:
 		Decal_Parse();

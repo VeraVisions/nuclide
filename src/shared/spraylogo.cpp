@@ -15,8 +15,8 @@
  */
 
 #ifdef SSQC
-.float nextspray;
-void Spray_RemoveAll(entity entOwner)
+void
+Spray_RemoveAll(entity entOwner)
 {
 	for (entity eFind = world;(eFind = find(eFind, classname, "Spray"));) {
 		if (eFind.owner == entOwner) {
@@ -25,7 +25,8 @@ void Spray_RemoveAll(entity entOwner)
 	}
 }
 
-float Spray_SendEntity(entity ePVSEnt, float fChanged)
+float
+Spray_SendEntity(entity ePVSEnt, float fChanged)
 {
 	WriteByte(MSG_ENTITY, ENT_SPRAY);
 	WriteCoord(MSG_ENTITY, self.origin[0]);
@@ -38,88 +39,116 @@ float Spray_SendEntity(entity ePVSEnt, float fChanged)
 	return TRUE;
 }
 
-void CSEv_Spraylogo(void)
+void
+CSEv_Spraylogo(void)
 {
-	if (self.nextspray > time) {
-		return;
-	}
-	self.nextspray = time + 30.0f;
+	entity spray;
+	vector src;
+	vector co;
+
+	src = self.origin + self.view_ofs;
 
 	makevectors(self.v_angle);
-	traceline(self.origin + self.view_ofs, 
-			  self.origin + self.view_ofs + v_forward * 128, FALSE, self);
-	
-	if (trace_fraction != 1.0f) {
-		Spray_RemoveAll(self);
-		entity eSpray = spawn(); 
-		eSpray.classname = "Spray";
-		eSpray.owner = self;
-		eSpray.solid = SOLID_NOT;
-		setorigin(eSpray, trace_endpos);
-		vector vSprayAngles = self.v_angle;
-		vSprayAngles[0] *= -1;
-		makevectors(vSprayAngles);
+	traceline(src, src + v_forward * 128, FALSE, self);
 
-		vector vecCoplanar = v_forward -(v_forward * trace_plane_normal) 
-							  * trace_plane_normal;
-
-		if (trace_plane_normal[2] == 0) {
-			vecCoplanar = '0 0 1';
-		}
-
-		eSpray.angles = vectoangles(vecCoplanar, trace_plane_normal);
-		eSpray.SendEntity = Spray_SendEntity;
-		eSpray.SendFlags = 1;
-		sound(self, CHAN_VOICE, "player/sprayer.wav", 1.0, ATTN_NORM);
+	if (trace_fraction >= 1.0f) {
+		return;
 	}
+
+	/* we only allow one active spray */
+	Spray_RemoveAll(self);
+
+	/* spawn the new one */
+	spray = spawn(); 
+	spray.classname = "Spray";
+	spray.owner = self;
+	spray.solid = SOLID_NOT;
+	setorigin(spray, trace_endpos);
+
+	/* calculate the rotation by taking our current view and mapping it
+	 * against the surface we're looking at */
+	makevectors([self.v_angle[0] * -1, self.v_angle[1], self.v_angle[2]]);
+	co = v_forward -(v_forward * trace_plane_normal) * trace_plane_normal;
+
+	/* quick fix */
+	if (trace_plane_normal[2] == 0) {
+		co = '0 0 1';
+	}
+
+	/* apply the angles and apply networking */
+	spray.angles = vectoangles(co, trace_plane_normal);
+	spray.SendEntity = Spray_SendEntity;
+	spray.SendFlags = 1;
+	sound(self, CHAN_VOICE, "player/sprayer.wav", 1.0, ATTN_NORM);
 }
 #endif
 
 #ifdef CSQC
-
 class CSpraylogo
 {
 	vector m_vecPosition;
 	vector m_vecAngles;
 	int m_iOwnerID;
-	string m_strLogoname;
-	string m_strLogopath;
+	string m_strName;
+	string m_m_strPath;
 	int m_iInitialized;
 	virtual float(void) predraw;
 };
 
-float CSpraylogo::predraw(void)
+const string g_spray_mat = \
+	"{\n" \
+		"cull disable\n" \
+		"polygonOffset\n" \
+		"{\n" \
+			"map $rt:%s\n" \
+			"blendfunc gl_one gl_one_minus_src_alpha\n" \
+			"rgbGen vertex\n" \
+		"}\n" \
+	"}";
+
+float
+CSpraylogo::predraw(void)
 {
-	int iSize = getplayerkeyblob(m_iOwnerID, "spray", __NULL__, 0);
-	
+	int iSize;
+
+	/* TODO: Don't query this & width/height every frame */
+	iSize = getplayerkeyblob(m_iOwnerID, "spray", __NULL__, 0);
+
 	if (iSize <= 0) {
 		return PREDRAW_NEXT;
 	}
+
 	if (m_iInitialized == FALSE) {
 		void *image;
 		m_iInitialized = TRUE;
+
+		/* load the blob */
 		image = memalloc(iSize + 1);
 		getplayerkeyblob(m_iOwnerID, "spray", image, iSize);
-		r_uploadimage(m_strLogopath, 64, 64, image, iSize, 0);
+		r_uploadimage(m_m_strPath, 64, 64, image, iSize, 0);
 		memfree(image);
 
-		print(sprintf("[CLIENT] Spray from player: %s\n",
-			getplayerkeyvalue(m_iOwnerID, "name")));
-
-		shaderforname(m_strLogoname, 
-			sprintf("{\ncull disable\npolygonOffset\n{\nmap $rt:%s\nblendfunc gl_one gl_one_minus_src_alpha\nrgbGen vertex\n}\n}", 
-				 m_strLogopath));
+		/* push the material into memory */
+		shaderforname(m_strName, sprintf(g_spray_mat, m_m_strPath));
 	} else {
-		vector light = getlight(m_vecPosition) / 255;
+		vector width;
+		vector height;
+		vector light;
+
+		light = getlight(m_vecPosition) / 255;
+
+		/* TODO: handle spray dimensions independently */
 		makevectors(m_vecAngles);
-		adddecal(m_strLogoname, m_vecPosition, 
-				 v_up / 64, v_forward / 64, light, 1.0f);
+		width = v_up / 64;
+		height = v_forward / 64;
+		adddecal(m_strName, m_vecPosition, width, height, light, 1.0f);
 		addentity(this);
 	}
 	return PREDRAW_NEXT;
 }
 
-void Spraylogo_Parse(void)
+void
+Spray_Parse(void)
 {
 	spawnfunc_CSpraylogo();
 	CSpraylogo spSelf =(CSpraylogo)self;
@@ -132,9 +161,7 @@ void Spraylogo_Parse(void)
 	spSelf.m_vecAngles[2] = readcoord();
 	spSelf.m_iInitialized = FALSE;
 	spSelf.m_iOwnerID = readentitynum() - 1;
-	spSelf.m_strLogoname = sprintf("spray_%i",
-		spSelf.m_iOwnerID);
-	spSelf.m_strLogopath = sprintf("simg_%i",
-		spSelf.m_iOwnerID);
+	spSelf.m_strName = sprintf("spray_%i", spSelf.m_iOwnerID);
+	spSelf.m_m_strPath = sprintf("simg_%i", spSelf.m_iOwnerID);
 }
 #endif
