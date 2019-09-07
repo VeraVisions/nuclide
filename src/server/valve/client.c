@@ -47,7 +47,7 @@ Game_ClientDisconnect(void)
 	self.modelindex = 0;
 	self.health = 0;
 	self.takedamage = 0;
-	self.SendFlags = 1;
+	self.SendFlags = PLAYER_MODELINDEX;
 }
 
 void

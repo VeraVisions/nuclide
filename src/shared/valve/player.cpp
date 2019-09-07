@@ -101,7 +101,7 @@ class player
 	int old_health;
 	int old_armor;
 	int old_movetype;
-	int old_viewofs;
+	float old_viewofs;
 	int old_baseframe;
 	int old_frame;
 	int old_a_ammo1;
