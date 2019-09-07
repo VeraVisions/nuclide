@@ -14,6 +14,16 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED env_glow (1 0 0) (-8 -8 -8) (8 8 8)
+"shader"        Material to use for the glare/glow effect.
+"model"         Sprite model to use for the glare/glow (idTech 2 BSPs only)
+"scale"         Scale multiplier.
+"rendercolor"   Material color override in RGB8.
+"renderamt"     Material alpha override in A8.
+
+Client-side glare/glow orb effect like the flares in 1997's Unreal.
+*/
+
 class env_glow:CBaseEntity
 {
 	vector m_vecColor;

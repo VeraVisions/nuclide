@@ -14,6 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED monstermaker (1 0 0) (-8 -8 -8) (8 8 8)
+"targetname"    Name
+"target"        Target when triggered.
+"killtarget"    Target to kill when triggered.
+
+All it does right now is spawn snarks, regardless of what monster you want to
+spawn.
+*/
+
 #ifdef VALVE
 void() w_snark_deploy;
 #endif

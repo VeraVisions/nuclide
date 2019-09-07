@@ -14,6 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED trigger_multiple (0 .5 .8) ? TM_MONSTERS TM_NOCLIENTS TM_PUSHABLES
+"targetname"    Name
+"target"        Target when triggered.
+"killtarget"    Target to kill when triggered.
+"delay"         Delay until target is triggered.
+"wait"          Time until this entity can trigger again
+
+A trigger volume which works more than once. 
+
+None of the spawnflags are implemented yet.
+*/
+
 // TODO: These are missing
 enumflags
 {

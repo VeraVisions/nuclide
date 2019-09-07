@@ -14,9 +14,26 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define SF_HURT_ONCE 			1 // Turn off once it fired the first time
-#define SF_HURT_OFF 			2 // Needs to be triggered in order to work again
-#define SF_HURT_NOPLAYERS 		8 // Don't hurt players
+/*QUAKED trigger_hurt (0 .5 .8) ? SF_HURT_ONCE SF_HURT_OFF x SF_HURT_NOPLAYERS SF_HURT_FIREONPLAYER SF_HURT_TOUCHPLAYER
+"targetname"    Name
+"target"        Target when triggered.
+"delay"         Delay until target is triggered.
+"killtarget"    Target to kill when triggered.
+"dmg"           Damage inflicted.
+
+Trigger volume that damages everything it touches.
+
+If SF_HURT_ONCE is set, it'll stop once it's been triggered the first time.
+If SF_HURT_OFF is set, it needs to be triggered in order to work again.
+If SF_HURT_NOPLAYERS is set, it will only NPCs.
+If SF_HURT_TOUCHPLAYER is set, it'll only hurt players.
+If SF_HURT_FIREONPLAYER is set, it'll only trigger a target if a player
+activates it.
+*/
+
+#define SF_HURT_ONCE 		1 // Turn off once it fired the first time
+#define SF_HURT_OFF 		2 // Needs to be triggered in order to work again
+#define SF_HURT_NOPLAYERS 	8 // Don't hurt players
 #define SF_HURT_FIREONPLAYER 	16 // Only call UseTarget functions when it's a player
 #define SF_HURT_TOUCHPLAYER 	32 // Only hurt players
 

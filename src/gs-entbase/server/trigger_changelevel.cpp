@@ -14,6 +14,23 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED trigger_changelevel (0 .5 .8) ? LC_NOINTERMISSION LC_USEONLY
+"targetname"    Name
+"map"           Next .bsp file name to transition to.
+"landmark"      Landmark name to target.
+"changedelay"   Time in seconds until the transition happens.
+
+When a Landmark is specified, you will have to position two info_landmark
+entities across your two levels with the same name. They'll mark a translation
+point for the coordinates in your levels.
+
+When LC_NOINTERMISSION is set, there'll be no stats screen at the end of the
+level.
+
+When LC_USEONLY is set, it will not act as a trigger volume people can step in.
+It'll have to be triggered by another entity.
+*/
+
 vector g_landmarkpos;
 
 enumflags

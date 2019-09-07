@@ -14,6 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED env_shake (1 0 0) (-8 -8 -8) (8 8 8) EVS_GLOBAL
+"targetname"    Name
+"target"        Target when triggered.
+"killtarget"    Target to kill when triggered.
+"radius"        Radius of the quake/shake effect.
+"amplitude"     Amplitude of the effect.
+"duration"      Duration of the effect in seconds.
+"frequency"     The frequency of the shake.
+
+Causes an earthquake/shaking effect when triggered.
+Affects all clients (radius ignored) when EVS_GLOBAL is set.
+*/
+
 #define EVS_GLOBAL 1
 
 class env_shake : CBaseTrigger
@@ -29,14 +42,14 @@ class env_shake : CBaseTrigger
 
 void env_shake :: Trigger (void)
 {
-	for (entity eClients = world; (eClients = find(eClients, ::classname, "Player"));) {
+	for (entity e = world; (e = find(e, ::classname, "Player"));) {
 		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 		WriteByte(MSG_MULTICAST, EV_SHAKE);
 		WriteFloat(MSG_MULTICAST, m_flRadius);
 		WriteFloat(MSG_MULTICAST, m_flAmplitude);
 		WriteFloat(MSG_MULTICAST, m_flDuration);
 		WriteFloat(MSG_MULTICAST, m_flFrequency);
-		msg_entity = eClients;
+		msg_entity = e;
 		multicast('0 0 0', MULTICAST_ONE_R);
 	}
 }

@@ -14,6 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED trigger_auto (1 0 0) (-8 -8 -8) (8 8 8) TA_USEONCE
+"targetname"    Name
+"target"        Target when triggered.
+"killtarget"    Target to kill when triggered.
+"delay"         Time in seconds until it triggers its target.
+
+Will automatically start working when the level has spawned.
+If TA_USEONCE is set, it'll remove itself from the level permanently.
+It will not survive round respawns, etc.
+*/
+
 class trigger_auto:CBaseTrigger
 {
 	float m_flDelay;

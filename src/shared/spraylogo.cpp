@@ -36,7 +36,7 @@ float Spray_SendEntity(entity ePVSEnt, float fChanged)
 	WriteCoord(MSG_ENTITY, self.angles[2]);
 	WriteEntity(MSG_ENTITY, self.owner);
 	return TRUE;
-} 
+}
 
 void CSEv_Spraylogo(void)
 {

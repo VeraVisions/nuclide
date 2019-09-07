@@ -14,6 +14,16 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED env_spark (1 0 0) (-8 -8 -8) (8 8 8) x x x x x EVSPARK_TOGGLE EVSPARK_STARTON
+"targetname"    Name
+"target"        Target when triggered.
+"killtarget"    Target to kill when triggered.
+"angles"        Sets the pitch, yaw and roll angles of the spark.
+"MaxDelay"      Delay between sparks when start-on (or toggle) is set
+
+Creates a series (or just one) spark effect with sound when triggered.
+*/
+
 enumflags
 {
 	EVSPARK_UNUSED1,

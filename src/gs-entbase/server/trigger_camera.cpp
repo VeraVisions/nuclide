@@ -14,6 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED trigger_camera (1 0 0) (-8 -8 -8) (8 8 8)
+"targetname"    Name
+"angles"        Sets the pitch, yaw and roll angles of the camera
+"target"        Which entity we're aiming at. Overrides angles.
+"wait"          How long to hold onto the target.
+
+Causes the activators first-person camera to switch to the view of this entity.
+*/
+
 class trigger_camera:CBaseTrigger
 {
 	float m_flWait;

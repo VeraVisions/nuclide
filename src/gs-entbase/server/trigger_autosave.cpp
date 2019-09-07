@@ -14,6 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED trigger_autosave (0 .5 .8) ?
+"targetname"    Name
+
+Volume that'll save the current game when a client enters its bounds.
+This entity does not work in multiplayer.
+*/
+
 class trigger_autosave:CBaseTrigger
 {
 	float m_flDelay;

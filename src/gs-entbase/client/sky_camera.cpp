@@ -14,8 +14,16 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-var int autocvar_dev_skyscale = 0;
+/*QUAKED sky_camera (1 0 0) (-8 -8 -8) (8 8 8)
+"scale"    Scale modifier. Default is '16'.
 
+Defines the position of a skyroom camera.
+You want to put this into a dedicated room that contains a 3D skybox.
+The scale modifier is more like a divider. You want to keep these
+divisable by 2 to avoid any precision funkyness.
+*/
+
+var int autocvar_dev_skyscale = 0;
 var vector g_skypos;
 var int g_skyscale;
 

@@ -14,11 +14,26 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED func_recharge (0 .5 .8) ?
+"targetname"    Name
+"target"        Target when triggered.
+"killtarget"    Target to kill when triggered.
+"snd_first"     Sound to play when first used.
+"snd_charging"  Sound to play when first charging.
+"snd_done"      Sound to play when first finished charging.
+
+Brush that fills up your armor when used, to a maximum of 100 points.
+*/
+
 class func_recharge:CBaseTrigger
 {
 	entity m_eUser;
 	float m_flDelay;
 	float m_flCheck;
+
+	string m_strSndFirst;
+	string m_strSndCharging;
+	string m_strSndDone;
 
 	void() func_recharge;
 	virtual void() customphysics;
@@ -36,7 +51,7 @@ void func_recharge::PlayerUse(void)
 
 	/* First time */
 	if (m_eUser == world) {
-		sound(this, CHAN_VOICE, "items/suitchargeok1.wav", 1.0, ATTN_NORM);
+		sound(this, CHAN_VOICE, m_strSndFirst, 1.0, ATTN_NORM);
 	}
 	
 	if (m_flDelay > time) {
@@ -45,10 +60,10 @@ void func_recharge::PlayerUse(void)
 
 	if (eActivator.armor >= 100) {
 		eActivator.gflags &= ~GF_USE_RELEASED;
-		sound(this, CHAN_VOICE, "items/suitchargeno1.wav", 1.0, ATTN_NORM);
+		sound(this, CHAN_VOICE, m_strSndDone, 1.0, ATTN_NORM);
 	} else {
 		if (m_eUser == world) {
-			sound(this, CHAN_ITEM, "items/suitcharge1.wav", 1.0, ATTN_NORM);
+			sound(this, CHAN_ITEM, m_strSndCharging, 1.0, ATTN_NORM);
 		}
 		eActivator.armor = bound(0, eActivator.armor += 1, 100);
 	}
@@ -71,10 +86,29 @@ void func_recharge::customphysics(void)
 
 void func_recharge::func_recharge(void)
 {
-	precache_sound("items/suitchargeok1.wav");
-	precache_sound("items/suitchargeno1.wav");
-	precache_sound("items/suitcharge1.wav");
+	m_strSndFirst = "items/suitchargeok1.wav";
+	m_strSndCharging = "items/suitcharge1.wav";
+	m_strSndDone = "items/suitchargeno1.wav";
 
+	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
+		switch (argv(i)) {
+		case "snd_first":
+			m_strSndFirst = argv(i+1);
+			break;
+		case "snd_charging":
+			m_strSndCharging = argv(i+1);
+			break;
+		case "snd_done":
+			m_strSndDone = argv(i+1);
+			break;
+		default:
+			break;
+		}
+	}
+
+	precache_sound(m_strSndFirst);
+	precache_sound(m_strSndCharging);
+	precache_sound(m_strSndDone);
 
 	solid = SOLID_BSP;
 	movetype = MOVETYPE_PUSH;

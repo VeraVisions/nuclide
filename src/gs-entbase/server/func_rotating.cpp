@@ -14,6 +14,16 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED func_rotating (0 .5 .8) ? FR_STARTON FR_REVERSE FR_ZAXIS FR_XAXIS FR_ACCDCC FR_FANPAIN FR_NOTSOLID FR_SMALLRADIUS FR_MRADIUS FR_LRADIUS
+"targetname"    Name
+"target"        Target when triggered.
+"killtarget"    Target to kill when triggered.
+"speed"         Speed in units per second.
+"dmg"           Damage applied to entity blocking its rotational path.
+
+Rotating brush object. Useful for fans, etc.
+*/
+
 enumflags
 {
 	FR_STARTON,
@@ -45,6 +55,7 @@ void func_rotating :: Rotate( void )
 {
 	nextthink = ltime + 10.0f;
 }
+
 void func_rotating :: Trigger ( void )
 {
 	if ( vlen( avelocity ) ) {

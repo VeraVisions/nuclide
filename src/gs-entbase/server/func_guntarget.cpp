@@ -14,6 +14,16 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED func_guntarget (0 .5 .8) ?
+"targetname"    Name
+"target"        Target when triggered.
+"killtarget"    Target to kill when triggered.
+"health"        Health until it stops and triggers its targets.
+"speed"         Speed in units per second at which it moves.
+
+Gun targets brushes that trigger a target once they 'die'.
+*/
+
 #define SF_GUNTARGET_ON 1
 
 class func_guntarget:CBaseTrigger

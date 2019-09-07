@@ -14,6 +14,14 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED trigger_teleport (0 .5 .8) ?
+"targetname"    Name
+"target"        Which target to teleport to.
+
+Teleportation volume. Teleports anything it touches to the position of
+any entity set as the "target". Works best with info_teleport_destination.
+*/
+
 class trigger_teleport:CBaseTrigger
 {
 	void() trigger_teleport;
@@ -48,4 +56,9 @@ void trigger_teleport::trigger_teleport(void)
 	CBaseTrigger::InitBrushTrigger();
 }
 
+/*QUAKED info_teleport_destination (1 0 0) (-8 -8 -8) (8 8 8)
+"targetname"    Name
+
+Entity designed to designate a destination for a trigger_teleport.
+*/
 CLASSEXPORT(info_teleport_destination, info_notnull)

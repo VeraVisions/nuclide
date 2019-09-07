@@ -14,6 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED func_ladder (0 .5 .8) ?
+"targetname"    Name
+
+Ladder volume. Climb up ladders with this one simple brush.
+*/
+
 string g_laddersnd[] = {
 	"player/pl_ladder1.wav",
 	"player/pl_ladder2.wav",

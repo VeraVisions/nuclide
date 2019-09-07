@@ -14,6 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED func_train (0 .5 .8) ?
+"targetname"    Name
+"target"        Target when triggered.
+"killtarget"    Target to kill when triggered.
+
+Moving platform following along path_* entities.
+Very unfinished.
+*/
+
 class func_train:CBaseTrigger
 {
 	float m_flSpeed;

@@ -14,6 +14,14 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED func_wall_toggle (0 .5 .8) ? FTW_STARTHIDDEN
+"targetname"    Name
+
+Brush that can be hidden and reappear when triggered.
+
+If FTW_STARTHIDDEN is set, it'll start hidden.
+*/
+
 enumflags
 {
 	FTW_STARTHIDDEN

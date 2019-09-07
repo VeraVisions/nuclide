@@ -14,6 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED trigger_cdaudio (0 .5 .8) ?
+"targetname"    Name
+"health"        Music track to play.
+
+Switches the background music track when triggered.
+*/
+
 class trigger_cdaudio : CBaseTrigger
 {
 	int m_iCDTrack;

@@ -14,6 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED env_fade (1 0 0) (-8 -8 -8) (8 8 8) EVF_FADEDROM EVF_MODULATE EVF_ONLYUSER
+"targetname"    Name
+"target"        Target when triggered.
+"killtarget"    Target to kill when triggered.
+"rendercolor"   RGB8 Color of the fade effect.
+"renderamt"     A8 alpha value we'll hit at max.
+"duration"      Duration of the effect in seconds.
+"holdtime"      How long we'll hold on the max color/alpha.
+
+When triggered, creates a colored overlay that blinds all players, or just
+the one who triggered it if EVF_ONLYUSER is set.
+*/
+
 enumflags
 {
 	EVF_FADEDROM,

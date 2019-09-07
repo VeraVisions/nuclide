@@ -14,6 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED trigger_push (0 .5 .8) ? TP_ONCE TP_STARTOFF
+"targetname"    Name
+"speed"         The speed (units per second) it'll apply to touchers.
+"angles"        Sets the direction of the push.
+
+Pushes anything in its volume into a direction of your choosing.
+
+If TP_ONCE is set, It'll only emit a single push once before disabling itself.
+If TP_STARTOFF is set, it needs to be triggered first in order to function.
+*/
+
 #define TP_ONCE		1
 #define TP_STARTOFF	2
 #define TP_AAAA		4

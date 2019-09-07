@@ -14,11 +14,25 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*
-	Flags
-		Only Trigger (1) - Entity can only be activated (broken) by being triggered.
-		Touch (2) - Brush will break on touch.
-		Pressure (4) - Brush will break when pressured (e.g. player walking on it).
+/*QUAKED func_breakable (0 .5 .8) ? SF_TRIGGER SF_TOUCH SF_PRESSURE
+"targetname"        Name
+"target"            Target when triggered.
+"killtarget"        Target to kill when triggered.
+"material"          Material it's made of.
+"delay"             Delay in seconds of when it breaks under pressure.
+"explodemagnitude"  Strength of the explosion.
+
+Brush volume that can break into lots of little pieces.
+
+When SF_TOUCH is set, it'll break when an entity runs into it at high
+velocities (damage is speed in units * 0.01).
+
+When SF_PRESSURE is set, it'll collapse once someone is standing on top of it.
+At that point the "delay" key will decide after how many seconds the object
+breaks.
+
+The strength of the explosion decides the radius (magnitude * 2.5) and the
+maximum damage the explosion will do (you have to stand in the center for that).
 */
 
 enumflags

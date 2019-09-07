@@ -14,6 +14,14 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED monster_furniture (1 0 0) (-8 -8 -8) (8 8 8)
+"targetname"    Name
+"angles"        Sets the pitch, yaw and roll angles of the model.
+"model"         Model file that will be displayed by the entity.
+
+Decorative, does nothing yet.
+*/
+
 enumflags
 {
 	MF_WAITTILSEEN,

@@ -14,6 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED trigger_endsection (0 .5 .8) ?
+"targetname"    Name
+
+This trigger shuts down the server.
+Useful for when a singleplayer game ends, as it takes you to the main menu.
+*/
+
 class trigger_endsection:CBaseTrigger
 {
 	void() trigger_endsection;

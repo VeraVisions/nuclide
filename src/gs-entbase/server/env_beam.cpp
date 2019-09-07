@@ -14,6 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED env_beam (1 0 0) (-8 -8 -8) (8 8 8)
+"targetname"    Name
+
+This entity is incomplete. Purely stub.
+*/
+
 class env_beam {
 	void() env_beam;
 };

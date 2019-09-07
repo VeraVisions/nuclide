@@ -14,6 +14,49 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED env_sound (1 0 0) (-8 -8 -8) (8 8 8)
+"radius"    Radius in units.
+"roomtype"  Roomtype value:
+                0 = DEFAULT
+                1 = PADDEDCELL
+                2 = ROOM
+                3 = BATHROOM
+                4 = LIVINGROOM
+                5 = STONEROOM
+                6 = AUDITORIUM
+                7 = CONCERTHALL
+                8 = CAVE
+                9 = ARENA
+                10 = HANGAR
+                11 = CARPETEDHALLWAY
+                12 = HALLWAY
+                13 = STONECORRIDOR
+                14 = ALLEY
+                15 = FOREST
+                16 = CITY
+                17 = MOUNTAINS
+                18 = QUARRY
+                19 = PLAIN
+                20 = PARKINGLOT
+                21 = SEWERPIPE
+                22 = UNDERWATER
+                23 = DRUGGED
+                24 = DIZZY
+                25 = PSYCHOTIC
+                26 = CITYSTREETS
+                27 = SUBWAY
+                28 = MUSEUM
+                29 = LIBRARY
+                30 = UNDERPASS
+                31 = ABANDONED
+                32 = DUSTYROOM
+                33 = CHAPEL
+                34 = SMALLWATERROOM
+
+Client-side environmental reverb modifier.
+This works only with the OpenAL sound backend.
+*/
+
 int g_iDSP;
 float g_flDSPCheck;
 

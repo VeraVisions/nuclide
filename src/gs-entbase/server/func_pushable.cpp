@@ -14,6 +14,14 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED func_pushable (0 .5 .8) ? SF_TRIGGER SF_TOUCH SF_PRESSURE
+"targetname"    Name
+"target"        Target when triggered.
+"killtarget"    Target to kill when triggered.
+
+STUB!
+*/
+
 class func_pushable:func_breakable
 {
 	

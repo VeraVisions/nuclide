@@ -14,6 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED infodecal (1 0 0) (-8 -8 -8) (8 8 8)
+"texture"    Name of the texture inside decals.wad it projects onto a surface.
+
+This entity only works on BSP version 30 levels.
+Projects a decals.wad texture onto the nearest surface.
+It'll automatically figure out the surface based on distance.
+The texture will be aligned along the surface texture normals.
+*/
+
 /* We need to save trace infos temporarily in order to figure out what to
  * project the decal against. Half-Life's infodecal entity only stores origin,
  * but not angles. So we have to figure them out ourselves. */

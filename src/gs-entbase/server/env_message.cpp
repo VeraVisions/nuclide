@@ -14,6 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED env_message (1 0 0) (-8 -8 -8) (8 8 8) EMF_ONCE EMF_ALLPLAYERS
+"targetname"            Name
+"target"                Target when triggered.
+"killtarget"            Target to kill when triggered.
+"message"               Message to send to players
+"messagesound"          PCM sample to play when triggered
+"messagevolume"         PCM sample volume
+"messageattenuation"    PCM sample attenuation
+
+Sends a message to either one or all players, depending on if EMF_ALLPLAYERS
+is set. An optional sound effect can be supplied as well.
+*/
+
 enumflags
 {
 	EMF_ONCE,

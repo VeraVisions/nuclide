@@ -14,4 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED trigger_relay (0 .5 .8) ?
+"targetname"    Name
+"target"        Target when triggered.
+"killtarget"    Target to kill when triggered.
+
+See trigger_once.
+*/
+
 CLASSEXPORT(trigger_relay, trigger_once)

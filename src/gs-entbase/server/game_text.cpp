@@ -14,6 +14,33 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED game_text (1 0 0) (-8 -8 -8) (8 8 8) GTF_ALLPLAYERS
+"targetname"    Name
+"x"             Horizontal position of text. 
+                    (0 - 1.0 = left to right, -1 = center)
+"y"             Vertical position of text.
+                    (0 - 1.0 = top to bottom, -1 = center)
+"effect"        Effect to apply to the text.
+                    Valid values:
+                        0 = Fade In/Out
+                        1 = Credits
+                        2 = Scan Out
+"color"         The main colour in RGB8.
+"color2"        The highlight colour in RGB8.
+"fadein"        Time taken to fade in each character.
+"fadeout"       Time taken to fade out message.
+"holdtime"      Length of time to hold message on screen after fading in.
+"fxtime"        Time the highlight lags behind the leading edge of the text in
+                seconds.
+"channel"       Message channel to use. Meant for overriding messages.
+
+This entity displays a message of your choice on-screen.
+Line breaks can be added with a \n character.
+
+If GTF_ALLPLAYERS is set, it'll display the message to not just the activator,
+but all players on the level.
+*/
+
 enumflags
 {
 	GTF_ALLPLAYERS

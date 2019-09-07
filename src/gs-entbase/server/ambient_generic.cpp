@@ -14,6 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED ambient_generic (1 0 0) (-8 -8 -8) (8 8 8) AS_SRADIUS AS_MRADIUS AS_LRADIUS AS_SILENT AS_NOTTOGGLED
+"targetname"    Name
+"target"        Target when triggered.
+"killtarget"    Target to kill when triggered.
+"message"       Sound file to play
+"volume"        Playback volume from 0.0 to 1.0
+"pitch"         Playback pitch from 0.0 to 2.0
+
+Plays a sound sample of whatever format the engine is configured to support.
+If you want it to loop, you have to give the file itself a loop flag.
+
+TODO: Add a forced loop flag for non .wav samples?
+*/
+
 enumflags {
 	AS_ARADIUS,
 	AS_SRADIUS,

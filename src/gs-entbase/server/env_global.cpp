@@ -14,6 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED env_global (1 0 0) (-8 -8 -8) (8 8 8) GLOBAL_SETSPAWN
+"targetname"    Name
+"target"        Target when triggered.
+"killtarget"    Target to kill when triggered.
+"globalstate"   The variable name in which we hold information in.
+"initialstate"  Initial mode: 0 = off, 1 = on, 2 = dead
+"triggermode"   Mode when triggered: 0 = off, 1 = on, 2 = dead
+
+Sets/kills a global variable that carries across levels.
+Without GLOBAL_SETSPAWN set, it'll only modify existing
+values when triggered.
+*/
+
 #define GLOBAL_SETSPAWN 1
 
 enum

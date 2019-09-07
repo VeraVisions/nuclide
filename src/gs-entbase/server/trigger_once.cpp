@@ -14,6 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED trigger_once (0 .5 .8) ? TO_MONSTERS TO_NOCLIENTS TO_PUSHABLES
+"targetname"    Name
+"target"        Target when triggered.
+"killtarget"    Target to kill when triggered.
+"delay"         Delay until target is triggered.
+
+A trigger volume which works only once.
+
+None of the spawnflags are implemented yet.
+*/
+
 // TODO: These are missing
 enumflags
 {

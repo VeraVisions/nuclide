@@ -14,6 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED trigger_gravity (0 .5 .8) ?
+"targetname"    Name
+"gravity"       Gravity multiplier.
+
+Volume that permanently adds a multiplier that affects an entities' gravity.
+*/
+
 #ifdef CSQC
 class trigger_gravity:CBaseEntity
 #else

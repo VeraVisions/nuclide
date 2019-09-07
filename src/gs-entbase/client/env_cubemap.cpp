@@ -14,12 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*
-===============================================================================
+/*QUAKED env_cubemap (1 0 0) (-8 -8 -8) (8 8 8)
+"scale"    Texture dimension at which to render the cubemap. Default is '32'.
 
-	Cubemap Entity Development Functions
-
-===============================================================================
+Specifies a location for which a cubemap will be generated when the 
+buildcubemaps console command is executed.
 */
 
 int g_iCubeProcess;

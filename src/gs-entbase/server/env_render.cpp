@@ -14,6 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED env_render (1 0 0) (-8 -8 -8) (8 8 8) SF_NORENDERFX SF_NORENDERAMT SF_NORENDERMODE SF_NORENDERCOLOR
+"targetname"    Name
+"target"        Target when triggered.
+"killtarget"    Target to kill when triggered.
+"rendermode"    Render-Mode the target changes to
+"renderamt"     Render-Alpha the target changes to
+"rendercolor"   Render-Color the target changes to
+
+Changes the visual appearance of a target.
+*/
+
 enumflags {
 	SF_NORENDERFX,
 	SF_NORENDERAMT,

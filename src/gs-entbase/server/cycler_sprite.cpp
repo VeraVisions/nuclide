@@ -14,7 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* https://twhl.info/wiki/page/cycler_sprite_(Half-Life) */
+/*QUAKED cycler_sprite (1 0 0) (-8 -8 -8) (8 8 8)
+"targetname"    Name
+"target"        Target when triggered.
+"killtarget"    Target to kill when triggered.
+"angles"        Sets the pitch, yaw and roll angles of the model.
+"model"         Model file that will be displayed by the entity.
+
+Decorative, does nothing yet.
+*/
 
 class cycler_sprite:CBaseTrigger
 {

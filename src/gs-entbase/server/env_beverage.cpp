@@ -14,7 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-// Dependency from item_food.cpp
+/*QUAKED env_beverage (1 0 0) (-8 -8 -8) (8 8 8)
+"targetname"    Name
+"target"        Target when triggered.
+"killtarget"    Target to kill when triggered.
+"health"        Amount of soda-cans that can be dispensed at maximum
+"angles"        Sets the pitch, yaw and roll angles of the soda
+
+Upon triggered, the entity will spawn item_food in its place in
+the shape of a soda can.
+*/
+
+/* dependency from item_food.cpp */
 void item_sodacan( void );
 
 // TODO: Implement support for skins

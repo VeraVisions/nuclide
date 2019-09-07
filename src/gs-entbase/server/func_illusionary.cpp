@@ -14,8 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED func_illusionary (0 .5 .8) ?
+"targetname"    Name
+
+Brush that lets light to pass through it and is non-solid.
+On idTech 2 BSPs, it will change texture variants when triggered.
+*/
+
 class func_illusionary : CBaseEntity
 {
+	void() func_illusionary;
+
 	virtual void() Use;
 };
 
@@ -28,7 +37,7 @@ void func_illusionary :: func_illusionary ( void )
 	solid = SOLID_NOT;
 	setmodel( this, model );
 
-	// FIXME: Add support for (skin) -1 = Empty, -7 = Volumetric light
+	// TODO: Add support for (skin) -1 = Empty, -7 = Volumetric light
 	if (skin < 0 ) {
 		skin = 0;
 	}

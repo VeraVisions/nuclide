@@ -14,12 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED func_door (0 .5 .8) ?
+"targetname"    Name
+"target"        Target when triggered.
+"killtarget"    Target to kill when triggered.
+
+STUB!
+*/
+
 // TODO: Finish these
 #define SF_MOV_OPEN		1
 #define SF_MOV_UNLINK 		4
-#define SF_MOV_PASSABLE	8
+#define SF_MOV_PASSABLE		8
 #define SF_MOV_TOGGLE		32
-#define SF_MOV_USE			256
+#define SF_MOV_USE		256
 
 enum
 {
