@@ -37,7 +37,7 @@ void Effects_Init(void)
 	precache_model("models/computergibs.mdl");
 	precache_model("models/rockgibs.mdl");
 	precache_model("models/cindergibs.mdl");
-	
+
 	precache_sound("debris/bustglass1.wav");
 	precache_sound("debris/bustglass2.wav");
 	precache_sound("debris/bustglass3.wav");
@@ -60,7 +60,6 @@ void Effects_Init(void)
 	precache_sound("buttons/spark4.wav");
 	precache_sound("buttons/spark5.wav");
 	precache_sound("buttons/spark6.wav");
-	precache_sound("weapons/knife_hitwall1.wav");
 	precache_sound("weapons/ric1.wav");
 	precache_sound("weapons/ric2.wav");
 	precache_sound("weapons/ric3.wav");
@@ -78,6 +77,7 @@ void Effects_Init(void)
 	precache_sound("weapons/ric_metal-2.wav");
 	precache_sound("weapons/ric_conc-1.wav");
 	precache_sound("weapons/ric_conc-2.wav");
+	precache_sound("weapons/knife_hitwall1.wav");
 #endif
 
 }

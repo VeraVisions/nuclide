@@ -171,11 +171,6 @@ void initents(void)
 	precache_sound("player/pl_grate3.wav");
 	precache_sound("player/pl_grate4.wav");
 
-	precache_sound("player/pl_snow1.wav");
-	precache_sound("player/pl_snow2.wav");
-	precache_sound("player/pl_snow3.wav");
-	precache_sound("player/pl_snow4.wav");
-
 	precache_sound("player/pl_step1.wav");
 	precache_sound("player/pl_step2.wav");
 	precache_sound("player/pl_step3.wav");
@@ -187,6 +182,8 @@ void initents(void)
 	precache_sound("common/wpn_denyselect.wav");
 	precache_sound("player/sprayer.wav");
 	precache_sound("items/flashlight1.wav");
+	precache_sound("common/null.wav");
+
 	Game_Worldspawn();
 	Decals_Init();
 }

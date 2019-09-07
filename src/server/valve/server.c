@@ -28,8 +28,6 @@ void Game_Worldspawn(void)
 {
 	precache_model("models/player.mdl");
 	precache_model("models/w_weaponbox.mdl");
-
-	precache_sound("misc/null.wav");
 	precache_sound("fvox/flatline.wav");
 	
 	/* TODO: Scan and precache models/player/.mdl */

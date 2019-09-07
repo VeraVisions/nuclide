@@ -80,7 +80,7 @@ void func_healthcharger::customphysics(void)
 	}
 
 	if (m_eUser) {
-		sound(this, CHAN_ITEM, "misc/null.wav", 1.0, ATTN_NORM);
+		sound(this, CHAN_ITEM, "common/null.wav", 1.0, ATTN_NORM);
 		m_eUser = world;
 	}
 }

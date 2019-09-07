@@ -41,10 +41,9 @@ Obituary_KillIcon(int id, float w)
 #ifdef VALVE
 	vector spr_size;
 
+	/* fill in the entries and calculate some in advance */
 	if (w > 0) {
 		spr_size = drawgetimagesize(g_weapons[w].ki_spr);
-		print(sprintf("Weapon death: %d\n", w));
-		/* fill in the entries and calculate some in advance */
 		g_obituary[id].strImage = g_weapons[w].ki_spr;
 		g_obituary[id].vecPos = g_weapons[w].ki_xy;
 		g_obituary[id].vecSize = g_weapons[w].ki_size;
@@ -53,7 +52,6 @@ Obituary_KillIcon(int id, float w)
 		g_obituary[id].vecWH[0] = g_weapons[w].ki_size[0] / spr_size[0];
 		g_obituary[id].vecWH[1] = g_weapons[w].ki_size[1] / spr_size[1];
 	} else {
-		/* fill in the entries and calculate some in advance */
 		g_obituary[id].strImage = "sprites/640hud1.spr_0.tga";
 		g_obituary[id].vecPos = [192,224];
 		g_obituary[id].vecSize = [32,16];
@@ -98,7 +96,8 @@ Obituary_Add(string attacker, string victim, float weapon, float flags)
 	g_obituary_time = OBITUARY_TIME;
 }
 
-void Obituary_Draw(void)
+void
+Obituary_Draw(void)
 {
 	int i;
 	vector vecPos;
@@ -142,9 +141,18 @@ void Obituary_Draw(void)
 		v = g_obituary[i].strVictim;
 		drawstring_r(vecItem + [0,2], v, [12,12], [1,1,1], 1.0f, 0);
 		vecItem[0] -= stringwidth(v, TRUE, [12,12]) + 4;
-		
 		vecItem[0] -= g_obituary[i].vecSize[0];
-		drawsubpic(vecItem, g_obituary[i].vecSize, g_obituary[i].strImage, g_obituary[i].vecXY, g_obituary[i].vecWH, g_hud_color, 1.0f, DRAWFLAG_ADDITIVE);
+
+		drawsubpic(
+			vecItem,
+			g_obituary[i].vecSize,
+			g_obituary[i].strImage,
+			g_obituary[i].vecXY,
+			g_obituary[i].vecWH,
+			g_hud_color,
+			1.0f,
+			DRAWFLAG_ADDITIVE
+		);
 
 		a = g_obituary[i].strAttacker;
 		drawstring_r(vecItem + [-4,2], a, [12,12], [1,1,1], 1.0f, 0);

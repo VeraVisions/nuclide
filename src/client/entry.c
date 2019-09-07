@@ -88,7 +88,6 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 
 	/* Effects */
 	Effects_Init();
-	precache_sound("misc/talk.wav");
 
 	precache_sound("common/wpn_hudon.wav");
 	precache_sound("common/wpn_hudoff.wav");
