@@ -5,14 +5,14 @@
 #define CSTRIKE
 
 #includelist
-../../builtins.h
-../../defs.h
+../../shared/fteextensions.qc
+../../shared/defs.h
 defs.h
 ../../shared/cstrike/defs.h
-../../math.h
-../../materials.h
-../../events.h
-../../entities.h
+../../shared/math.h
+../../shared/materials.h
+../../shared/events.h
+../../shared/entities.h
 ../defs.h
 defsfields.h
 

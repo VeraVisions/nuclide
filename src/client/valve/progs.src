@@ -5,12 +5,12 @@
 #define VALVE
 
 #includelist
-../../builtins.h
-../../defs.h
-../../math.h
-../../materials.h
-../../events.h
-../../entities.h
+../../shared/fteextensions.qc
+../../shared/defs.h
+../../shared/math.h
+../../shared/materials.h
+../../shared/events.h
+../../shared/entities.h
 defs.h
 particles.h
 ../defs.h

@@ -3,8 +3,8 @@
 #define MENU
 
 #includelist
-../builtins.h
-../math.h
+../shared/fteextensions.qc
+../shared/math.h
 defs.h
 bitmaps.h
 strings.h
