@@ -17,7 +17,6 @@
 class monster_npc
 {
 	int body;
-	int inited;
 	float frame_last;
 
 	virtual float() predraw;
@@ -26,12 +25,6 @@ class monster_npc
 float
 monster_npc::predraw(void)
 {
-	/* Only do this once whenever the ent pops into view */
-	if (!inited) {
-		setcustomskin(this, "", sprintf("geomset 1 %i\n", body));
-		inited = TRUE;
-	}
-
 	if (lerpfrac > 0) {
 		lerpfrac -= frametime * 5;
 		if (lerpfrac < 0) {
@@ -58,28 +51,50 @@ monster_npc::predraw(void)
 void
 NPC_ReadEntity(float new)
 {
+	float fl;
 	monster_npc pl = (monster_npc)self;
-	if (new == TRUE) {
+
+	if (new) {
 		spawnfunc_monster_npc();
 		pl.classname = "npc";
 		pl.solid = SOLID_SLIDEBOX;
+		pl.movetype = MOVETYPE_NONE;
 		pl.drawmask = MASK_ENGINE;
 		pl.customphysics = Empty;
-		setsize( pl, VEC_HULL_MIN, VEC_HULL_MAX );
+		setsize(pl, VEC_HULL_MIN + [0,0,36], VEC_HULL_MAX + [0,0,36]);
 	}
 
-	/* TODO: make these conditional */
-	pl.modelindex = readshort();
-	pl.origin[0] = readcoord();
-	pl.origin[1] = readcoord();
-	pl.origin[2] = readcoord();
-	pl.angles[1] = readfloat();
-	pl.angles[2] = readfloat();
-	pl.velocity[0] = readcoord();
-	pl.velocity[1] = readcoord();
-	pl.velocity[2] = readcoord();
-	pl.frame = readbyte();
-	pl.skin = readbyte();
-	pl.body = readbyte();
+	fl = readshort();
+
+	if (fl & NPC_MODELINDEX)
+		pl.modelindex = readshort();
+	if (fl & NPC_ORIGIN_X)
+		pl.origin[0] = readcoord();
+	if (fl & NPC_ORIGIN_Y)
+		pl.origin[1] = readcoord();
+	if (fl & NPC_ORIGIN_Z)
+		pl.origin[2] = readcoord();
+	if (fl & NPC_ANGLES_X)
+		pl.angles[0] = readfloat();
+	if (fl & NPC_ANGLES_Y)
+		pl.angles[1] = readfloat();
+	if (fl & NPC_ANGLES_Z)
+		pl.angles[2] = readfloat();
+	if (fl & NPC_VELOCITY_X)
+		pl.velocity[0] = readcoord();
+	if (fl & NPC_VELOCITY_Y)
+		pl.velocity[1] = readcoord();
+	if (fl & NPC_VELOCITY_Z)
+		pl.velocity[2] = readcoord();
+	if (fl & NPC_FRAME)
+		pl.frame = readbyte();
+	if (fl & NPC_SKIN)
+		pl.skin = readbyte();
+	if (fl & NPC_BODY)
+		pl.body = readbyte();
+
+	if (new) {
+		setcustomskin(pl, "", sprintf("geomset 1 %i\n", pl.body));
+	}
 }
 

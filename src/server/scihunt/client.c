@@ -55,8 +55,70 @@ void Game_PlayerPreThink(void)
 }
 void Game_PlayerPostThink(void)
 {
+	player pl = (player)self;
 	Animation_PlayerUpdate();
-	self.SendFlags = 1;
+
+	if (pl.old_modelindex != pl.modelindex)
+		pl.SendFlags |= PLAYER_MODELINDEX;
+	if (pl.old_origin[0] != pl.origin[0])
+		pl.SendFlags |= PLAYER_ORIGIN;
+	if (pl.old_origin[1] != pl.origin[1])
+		pl.SendFlags |= PLAYER_ORIGIN;
+	if (pl.old_origin[2] != pl.origin[2])
+		pl.SendFlags |= PLAYER_ORIGIN_Z;
+	if (pl.old_angles[0] != pl.angles[0])
+		pl.SendFlags |= PLAYER_ANGLES_X;
+	if (pl.old_angles[1] != pl.angles[1])
+		pl.SendFlags |= PLAYER_ANGLES_Y;
+	if (pl.old_angles[2] != pl.angles[2])
+		pl.SendFlags |= PLAYER_ANGLES_Z;
+	if (pl.old_velocity[0] != pl.velocity[0])
+		pl.SendFlags |= PLAYER_VELOCITY;
+	if (pl.old_velocity[1] != pl.velocity[1])
+		pl.SendFlags |= PLAYER_VELOCITY;
+	if (pl.old_velocity[2] != pl.velocity[2])
+		pl.SendFlags |= PLAYER_VELOCITY_Z;
+	if (pl.old_flags != pl.flags)
+		pl.SendFlags |= PLAYER_FLAGS;
+	if (pl.old_activeweapon != pl.activeweapon)
+		pl.SendFlags |= PLAYER_WEAPON;
+	if (pl.old_items != pl.g_items)
+		pl.SendFlags |= PLAYER_ITEMS;
+	if (pl.old_health != pl.health)
+		pl.SendFlags |= PLAYER_HEALTH;
+	if (pl.old_armor != pl.armor)
+		pl.SendFlags |= PLAYER_ARMOR;
+	if (pl.old_movetype != pl.movetype)
+		pl.SendFlags |= PLAYER_MOVETYPE;
+	if (pl.old_viewofs != pl.view_ofs[2])
+		pl.SendFlags |= PLAYER_VIEWOFS;
+	if (pl.old_baseframe != pl.baseframe)
+		pl.SendFlags |= PLAYER_BASEFRAME;
+	if (pl.old_frame != pl.frame)
+		pl.SendFlags |= PLAYER_FRAME;
+	if (pl.old_a_ammo1 != pl.a_ammo1)
+		pl.SendFlags |= PLAYER_AMMO1;
+	if (pl.old_a_ammo2 != pl.a_ammo2)
+		pl.SendFlags |= PLAYER_AMMO2;
+	if (pl.old_a_ammo3 != pl.a_ammo3)
+		pl.SendFlags |= PLAYER_AMMO3;
+
+	pl.old_modelindex = pl.modelindex;
+	pl.old_origin = pl.origin;
+	pl.old_angles = pl.angles;
+	pl.old_velocity = pl.velocity;
+	pl.old_flags = pl.flags;
+	pl.old_activeweapon = pl.activeweapon;
+	pl.old_items = pl.g_items;
+	pl.old_health = pl.health;
+	pl.old_armor = pl.armor;
+	pl.old_movetype = pl.movetype;
+	pl.old_viewofs = pl.view_ofs[2];
+	pl.old_baseframe = pl.baseframe;
+	pl.old_frame = pl.frame;
+	pl.old_a_ammo1 = pl.a_ammo1;
+	pl.old_a_ammo2 = pl.a_ammo2;
+	pl.old_a_ammo3 = pl.a_ammo3;
 }
 void Game_RunClientCommand(void)
 {
@@ -106,7 +168,6 @@ void Game_PutClientInServer(void)
 
 	pl.classname = "player";
 	pl.health = self.max_health = 100;
-	//forceinfokey(self, "*dead", "0");
 	pl.takedamage = DAMAGE_YES;
 	pl.solid = SOLID_SLIDEBOX;
 	pl.movetype = MOVETYPE_WALK;
@@ -115,19 +176,40 @@ void Game_PutClientInServer(void)
 	pl.model = "models/player.mdl";
 
 	string mymodel = infokey(pl, "model");
-    if (mymodel) {
-        mymodel = sprintf("models/player/%s/%s.mdl", mymodel, mymodel);
-        if (whichpack(mymodel)) {
-            pl.model = mymodel;
-        }   
-    }
-    setmodel(pl, pl.model);
+	if (mymodel) {
+		mymodel = sprintf("models/player/%s/%s.mdl", mymodel, mymodel);
+		if (whichpack(mymodel)) {
+			pl.model = mymodel;
+		}   
+	}
+	setmodel(pl, pl.model);
 
 	setsize(pl, VEC_HULL_MIN, VEC_HULL_MAX);
 	pl.view_ofs = VEC_PLAYER_VIEWPOS;
 	pl.velocity = [0,0,0];
 	pl.frame = 1;
 	pl.SendEntity = Player_SendEntity;
+	pl.SendFlags = PLAYER_MODELINDEX |
+		PLAYER_ORIGIN |
+		PLAYER_ORIGIN_Z |
+		PLAYER_ANGLES_X |
+		PLAYER_ANGLES_Y |
+		PLAYER_ANGLES_Z |
+		PLAYER_VELOCITY |
+		PLAYER_VELOCITY_Z |
+		PLAYER_FLAGS |
+		PLAYER_WEAPON |
+		PLAYER_ITEMS |
+		PLAYER_HEALTH |
+		PLAYER_ARMOR |
+		PLAYER_MOVETYPE |
+		PLAYER_VIEWOFS |
+		PLAYER_BASEFRAME |
+		PLAYER_FRAME |
+		PLAYER_AMMO1 |
+		PLAYER_AMMO2 |
+		PLAYER_AMMO3;
+
 	pl.customphysics = Empty;
 	pl.vPain = Player_Pain;
 	pl.vDeath = Player_Death;

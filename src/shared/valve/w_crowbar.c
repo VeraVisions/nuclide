@@ -16,18 +16,19 @@
 
 enum
 {
-	CROWBAR_IDLE,
-	CROWBAR_DRAW,
-	CROWBAR_HOLSTER,
-	CROWBAR_ATTACK1HIT,
-	CROWBAR_ATTACK1MISS,
-	CROWBAR_ATTACK2MISS,
-	CROWBAR_ATTACK2HIT,
-	CROWBAR_ATTACK3MISS,
-	CROWBAR_ATTACK3HIT
+	CBAR_IDLE,
+	CBAR_DRAW,
+	CBAR_HOLSTER,
+	CBAR_ATTACK1HIT,
+	CBAR_ATTACK1MISS,
+	CBAR_ATTACK2MISS,
+	CBAR_ATTACK2HIT,
+	CBAR_ATTACK3MISS,
+	CBAR_ATTACK3HIT
 };
 
-void w_crowbar_precache(void)
+void
+w_crowbar_precache(void)
 {
 	precache_sound("weapons/cbar_miss1.wav");
 	precache_sound("weapons/cbar_hit1.wav");
@@ -40,162 +41,203 @@ void w_crowbar_precache(void)
 	precache_model("models/p_crowbar.mdl");
 }
 
-void w_crowbar_updateammo(player pl)
+void
+w_crowbar_updateammo(player pl)
 {
 #ifdef SSQC
 	Weapons_UpdateAmmo(pl, __NULL__, __NULL__, __NULL__);
 #endif
 }
-string w_crowbar_wmodel(void)
+
+string
+w_crowbar_wmodel(void)
 {
 	return "models/w_crowbar.mdl";
 }
-string w_crowbar_pmodel(void)
+string
+w_crowbar_pmodel(void)
 {
 	return "models/p_crowbar.mdl";
 }
-string w_crowbar_deathmsg(void)
+
+string
+w_crowbar_deathmsg(void)
 {
 	return "%s was assaulted by %s's Crowbar.";
 }
 
-void w_crowbar_draw(void)
+void
+w_CBAR_DRAW(void)
 {
 	Weapons_SetModel("models/v_crowbar.mdl");
-	Weapons_ViewAnimation(CROWBAR_DRAW);
+	Weapons_ViewAnimation(CBAR_DRAW);
 }
 
-void w_crowbar_holster(void)
+void
+w_CBAR_HOLSTER(void)
 {
-	Weapons_ViewAnimation(CROWBAR_HOLSTER);
+	Weapons_ViewAnimation(CBAR_HOLSTER);
 }
-void w_crowbar_primary(void)
+
+void
+w_crowbar_primary(void)
 {
+	int anim = 0;
+	vector src;
 	player pl = (player)self;
-	
+
 	if (pl.w_attack_next) {
 		return;
 	}
 
 	Weapons_MakeVectors();
-    vector src = pl.origin + pl.view_ofs;
-    traceline(src, src + (v_forward * 32), FALSE, pl);
+	src = pl.origin + pl.view_ofs;
+	traceline(src, src + (v_forward * 32), FALSE, pl);
 
-    int r = (float)input_sequence%3;
-    switch (r) {
-    case 0:
-        Weapons_ViewAnimation(trace_fraction >= 1 ? CROWBAR_ATTACK1MISS:CROWBAR_ATTACK1HIT);
-        break;
-    case 1:
-        Weapons_ViewAnimation(trace_fraction >= 1 ? CROWBAR_ATTACK2MISS:CROWBAR_ATTACK2HIT);
-        break;
-    default:
-        Weapons_ViewAnimation(trace_fraction >= 1 ? CROWBAR_ATTACK3MISS:CROWBAR_ATTACK3HIT);
-    }
-
-    if (trace_fraction >= 1.0) {
-        pl.w_attack_next = 0.5f;
-    } else {
-        pl.w_attack_next = 0.25f;
-    }
-
-#ifdef SSQC
-	if (pl.flags & FL_CROUCHING)	
-		Animation_PlayerTopTemp(ANIM_SHOOTCROWBAR, 0.5f);
-	else
-		Animation_PlayerTopTemp(ANIM_CR_SHOOTCROWBAR, 0.42f);
-
-	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/cbar_miss1.wav", 1, ATTN_NORM);
+	int r = (float)input_sequence % 3;
+	switch (r) {
+	case 0:
+		anim = trace_fraction >= 1 ? CBAR_ATTACK1MISS:CBAR_ATTACK1HIT;
+		break;
+	case 1:
+		anim = trace_fraction >= 1 ? CBAR_ATTACK2MISS:CBAR_ATTACK2HIT;
+		break;
+	default:
+		anim = trace_fraction >= 1 ? CBAR_ATTACK3MISS:CBAR_ATTACK3HIT;
+	}
+	Weapons_ViewAnimation(anim);
 
 	if (trace_fraction >= 1.0) {
+		pl.w_attack_next = 0.5f;
+	} else {
+		pl.w_attack_next = 0.25f;
+	}
+
+	pl.w_idle_next = 2.5f;
+
+#ifdef SSQC
+	if (pl.flags & FL_CROUCHING) {
+		Animation_PlayerTopTemp(ANIM_SHOOTCROWBAR, 0.5f);
+	} else {
+		Animation_PlayerTopTemp(ANIM_CR_SHOOTCROWBAR, 0.42f);
+	}
+
+	sound(pl, CHAN_WEAPON, "weapons/cbar_miss1.wav", 1, ATTN_NORM);
+
+	if (trace_fraction >= 1.0) {
+		return;
+	}
+
+	/* don't bother with decals, we got squibs */
+	if (trace_ent.iBleeds) {
+		Effect_CreateBlood(trace_endpos, [0,0,0]);
 	} else {
 		Effect_Impact(IMPACT_MELEE, trace_endpos, trace_plane_normal);
-		
-		if (trace_ent.takedamage) {
-			Damage_Apply(trace_ent, self, 10, trace_endpos, FALSE );
-			
-			// TODO: Better way to find if it bleeds?
-			if (trace_ent.iBleeds == 1) {
-				if (random() < 0.33) {
-					Weapons_PlaySound(pl, 8, "weapons/cbar_hitbod1.wav", 1, ATTN_NORM);
-				} else if (random() < 0.66) {
-					Weapons_PlaySound(pl, 8, "weapons/cbar_hitbod2.wav", 1, ATTN_NORM);
-				} else {
-					Weapons_PlaySound(pl, 8, "weapons/cbar_hitbod3.wav", 1, ATTN_NORM);
-				}
-			}
+	}
+
+	if (trace_ent.takedamage) {
+		Damage_Apply(trace_ent, self, 10, trace_endpos, FALSE );
+
+		if (!trace_ent.iBleeds) {
+			return;
+		}
+
+		if (random() < 0.33) {
+			sound(pl, 8, "weapons/cbar_hitbod1.wav", 1, ATTN_NORM);
+		} else if (random() < 0.66) {
+			sound(pl, 8, "weapons/cbar_hitbod2.wav", 1, ATTN_NORM);
 		} else {
-			if (random() < 0.5) {
-				Weapons_PlaySound(pl, 8, "weapons/cbar_hit1.wav", 1, ATTN_NORM);
-			} else {
-				Weapons_PlaySound(pl, 8, "weapons/cbar_hit2.wav", 1, ATTN_NORM);
-			}
+			sound(pl, 8, "weapons/cbar_hitbod3.wav", 1, ATTN_NORM);
+		}
+	} else {
+		if (random() < 0.5) {
+			sound(pl, 8, "weapons/cbar_hit1.wav", 1, ATTN_NORM);
+		} else {
+			sound(pl, 8, "weapons/cbar_hit2.wav", 1, ATTN_NORM);
 		}
 	}
 #endif
-	pl.w_idle_next = 2.5f;
 }
-void w_crowbar_secondary(void)
-{
-	
-}
-void w_crowbar_reload(void)
-{
-	
-}
-void w_crowbar_release(void)
+
+void
+w_crowbar_release(void)
 {
 	player pl = (player)self;
+
 	if (pl.w_idle_next) {
 		return;
 	}
 
-	Weapons_ViewAnimation(CROWBAR_IDLE);
+	Weapons_ViewAnimation(CBAR_IDLE);
 	pl.w_idle_next = 15.0f;
 }
 
-float w_crowbar_aimanim(void)
+float
+w_crowbar_aimanim(void)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIMCROWBAR : ANIM_AIMCROWBAR;
 }
-void w_crowbar_hudpic(int s, vector pos)
+
+void
+w_crowbar_hudpic(int selected, vector pos)
 {
 #ifdef CSQC
-	if (s) {
-		drawsubpic(pos, [170,45], "sprites/640hud4.spr_0.tga", [0,0], [170/256,45/256], g_hud_color, 1, DRAWFLAG_ADDITIVE);
+	if (selected) {
+		drawsubpic(
+			pos,
+			[170,45],
+			"sprites/640hud4.spr_0.tga",
+			[0,0],
+			[170/256,45/256],
+			g_hud_color,
+			1.0f,
+			DRAWFLAG_ADDITIVE
+		);
 	} else {
-		drawsubpic(pos, [170,45], "sprites/640hud1.spr_0.tga", [0,0], [170/256,45/256], g_hud_color, 1, DRAWFLAG_ADDITIVE);
+		drawsubpic(
+			pos,
+			[170,45],
+			"sprites/640hud1.spr_0.tga",
+			[0,0],
+			[170/256,45/256],
+			g_hud_color,
+			1.0f,
+			DRAWFLAG_ADDITIVE
+		);
 	}
 #endif
 }
 
 weapon_t w_crowbar =
 {
-	ITEM_CROWBAR,
-	0,
-	0,
-	"sprites/640hud1.spr_0.tga",
-	[48,16],
-	[192,0],
-	w_crowbar_draw,
-	w_crowbar_holster,
-	w_crowbar_primary,
-	w_crowbar_secondary,
-	w_crowbar_reload,
-	w_crowbar_release,
-	__NULL__,
-	w_crowbar_precache,
-	__NULL__,
-	w_crowbar_updateammo,
-	w_crowbar_wmodel,
-	w_crowbar_pmodel,
-	w_crowbar_deathmsg,
-	w_crowbar_aimanim,
-	w_crowbar_hudpic
+	.id		= ITEM_CROWBAR,
+	.slot		= 0,
+	.slot_pos	= 0,
+	.ki_spr		= "sprites/640hud1.spr_0.tga",
+	.ki_size	= [48,16],
+	.ki_xy		= [192,0],
+	.draw		= w_CBAR_DRAW,
+	.holster	= w_CBAR_HOLSTER,
+	.primary	= w_crowbar_primary,
+	.secondary	= __NULL__,
+	.reload		= __NULL__,
+	.release	= w_crowbar_release,
+	.crosshair	= __NULL__,
+	.precache	= w_crowbar_precache,
+	.pickup		= __NULL__,
+	.updateammo	= w_crowbar_updateammo,
+	.wmodel		= w_crowbar_wmodel,
+	.pmodel		= w_crowbar_pmodel,
+	.deathmsg	= w_crowbar_deathmsg,
+	.aimanim	= w_crowbar_aimanim,
+	.hudpic		= w_crowbar_hudpic
 };
 
+/* entity definitions for pickups */
 #ifdef SSQC
-void weapon_crowbar(void) {
+void
+weapon_crowbar(void)
+{
 	Weapons_InitItem(WEAPON_CROWBAR);
 }
 #endif

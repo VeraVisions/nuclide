@@ -120,36 +120,72 @@ float Player_SendEntity(entity ePEnt, float fChanged)
 	}
 
 	WriteByte(MSG_ENTITY, ENT_PLAYER);
-	WriteShort(MSG_ENTITY, pl.modelindex);
-	WriteCoord(MSG_ENTITY, pl.origin[0]);
-	WriteCoord(MSG_ENTITY, pl.origin[1]);
-	WriteCoord(MSG_ENTITY, pl.origin[2]);
-	WriteFloat(MSG_ENTITY, pl.v_angle[0]);
-	WriteFloat(MSG_ENTITY, pl.angles[1]);
-	WriteFloat(MSG_ENTITY, pl.angles[2]);
-	WriteCoord(MSG_ENTITY, pl.velocity[0]);
-	WriteCoord(MSG_ENTITY, pl.velocity[1]);
-	WriteCoord(MSG_ENTITY, pl.velocity[2]);
-	WriteFloat(MSG_ENTITY, pl.flags);
-	WriteByte(MSG_ENTITY, pl.activeweapon);
-	WriteFloat(MSG_ENTITY, pl.weapontime);
-	WriteFloat(MSG_ENTITY, pl.g_items);
-	WriteByte(MSG_ENTITY, pl.health);
-	WriteByte(MSG_ENTITY, pl.armor);
-	WriteByte(MSG_ENTITY, pl.movetype);
-	WriteFloat(MSG_ENTITY, pl.view_ofs[2]);
-	WriteFloat(MSG_ENTITY, pl.viewzoom);
-	WriteFloat(MSG_ENTITY, pl.jumptime);
-	WriteFloat(MSG_ENTITY, pl.teleport_time);
+	WriteFloat(MSG_ENTITY, fChanged);
 
-	WriteByte(MSG_ENTITY, pl.baseframe);
-	WriteByte(MSG_ENTITY, pl.frame);
+	/* really trying to get our moneys worth with 23 bits of mantissa */
+	if (fChanged & PLAYER_MODELINDEX) {
+		WriteShort(MSG_ENTITY, pl.modelindex);
+	}
+	if (fChanged & PLAYER_ORIGIN) {
+		WriteCoord(MSG_ENTITY, pl.origin[0]);
+		WriteCoord(MSG_ENTITY, pl.origin[1]);
+	}
+	if (fChanged & PLAYER_ORIGIN_Z) {
+		WriteCoord(MSG_ENTITY, pl.origin[2]);
+	}
+	if (fChanged & PLAYER_ANGLES_X) {
+		WriteFloat(MSG_ENTITY, pl.v_angle[0]);
+	}
+	if (fChanged & PLAYER_ANGLES_Y) {
+		WriteFloat(MSG_ENTITY, pl.angles[1]);
+	}
+	if (fChanged & PLAYER_ANGLES_Z) {
+		WriteFloat(MSG_ENTITY, pl.angles[2]);
+	}
+	if (fChanged & PLAYER_VELOCITY) {
+		WriteCoord(MSG_ENTITY, pl.velocity[0]);
+		WriteCoord(MSG_ENTITY, pl.velocity[1]);
+	}
+	if (fChanged & PLAYER_VELOCITY_Z) {
+		WriteCoord(MSG_ENTITY, pl.velocity[2]);
+	}
+	if (fChanged & PLAYER_FLAGS) {
+		WriteFloat(MSG_ENTITY, pl.flags);
+	}
+	if (fChanged & PLAYER_WEAPON) {
+		WriteByte(MSG_ENTITY, pl.activeweapon);
+	}
+	if (fChanged & PLAYER_ITEMS) {
+		WriteFloat(MSG_ENTITY, pl.g_items);
+	}
+	if (fChanged & PLAYER_HEALTH) {
+		WriteByte(MSG_ENTITY, pl.health);
+	}
+	if (fChanged & PLAYER_ARMOR) {
+		WriteByte(MSG_ENTITY, pl.armor);
+	}
+	if (fChanged & PLAYER_MOVETYPE) {
+		WriteByte(MSG_ENTITY, pl.movetype);
+	}
+	if (fChanged & PLAYER_VIEWOFS) {
+		WriteFloat(MSG_ENTITY, pl.view_ofs[2]);
+	}
+	if (fChanged & PLAYER_BASEFRAME) {
+		WriteByte(MSG_ENTITY, pl.baseframe);
+	}
+	if (fChanged & PLAYER_FRAME) {
+		WriteByte(MSG_ENTITY, pl.frame);
+	}
+	if (fChanged & PLAYER_AMMO1) {
+		WriteByte(MSG_ENTITY, pl.a_ammo1);
+	}
+	if (fChanged & PLAYER_AMMO2) {
+		WriteByte(MSG_ENTITY, pl.a_ammo2);
+	}
+	if (fChanged & PLAYER_AMMO3) {
+		WriteByte(MSG_ENTITY, pl.a_ammo3);
+	}
 
-	WriteByte(MSG_ENTITY, pl.a_ammo1);
-	WriteByte(MSG_ENTITY, pl.a_ammo2);
-	WriteByte(MSG_ENTITY, pl.a_ammo3);
-	WriteFloat(MSG_ENTITY, pl.w_attack_next);
-	WriteFloat(MSG_ENTITY, pl.w_idle_next);
 	return TRUE;
 }
 

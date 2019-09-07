@@ -14,29 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-//FOR DEBUGGING ONLY, remove when prediction is trusted (along with the extra network bloat).
-static void warnifdiff(string name, __inout float expected, float got)
+void
+Player_ReadEntity(float new)
 {
-	//this should only fire from prediction misses.
-	//this hopefully only happens when the server's anti-time-banking logic does its thing, or for things caused by other players/ents getting in the way.
-
-	//if (expected != got)
-		//print(sprintf("%s differs, expected %g, got %g\n", name, expected, got));
-
-	//enable the following line if you want to see if it actually makes a difference.
-	//expected = got;
-}
-
-void Player_ReadEntity(float flIsNew)
-{
+	float fl;
 	player pl = (player)self;
-	if ( flIsNew == TRUE ) {
+
+	if (new == TRUE) {
 		spawnfunc_player();
 		pl.classname = "player";
 		pl.solid = SOLID_SLIDEBOX;
 		pl.drawmask = MASK_ENGINE;
 		pl.customphysics = Empty;
-		setsize( pl, VEC_HULL_MIN, VEC_HULL_MAX );
+		setsize(pl, VEC_HULL_MIN, VEC_HULL_MAX);
 	} else {
 		int i;
 		//FIXME: splitscreen
@@ -56,36 +46,58 @@ void Player_ReadEntity(float flIsNew)
 		}
 	}
 
-	pl.sequence = servercommandframe; 
-	pl.modelindex = readshort();	// TODO: make conditional
-	pl.origin[0] = readcoord();
-	pl.origin[1] = readcoord();
-	pl.origin[2] = readcoord();	// TODO: make conditional
-	pl.pitch = readfloat();
-	pl.angles[1] = readfloat();
-	pl.angles[2] = readfloat();
-	pl.velocity[0] = readcoord();
-	pl.velocity[1] = readcoord();
-	pl.velocity[2] = readcoord();
-	pl.flags = readfloat(); //make mostly conditional
-	pl.activeweapon = readbyte(); // TODO: make conditional
-	warnifdiff("weapontime", pl.weapontime, readfloat());	//remove
-	pl.g_items = readfloat(); // TODO: make conditional
-	pl.health = readbyte(); // TODO: make conditional
-	pl.armor = readbyte(); // TODO: make conditional
-	pl.movetype = readbyte(); // TODO: make conditional
-	pl.view_ofs[2] = readfloat(); // TODO: make conditional
-	pl.viewzoom = readfloat();	//remove? or make conditional
-	warnifdiff("jumptime", pl.jumptime, readfloat());	//remove
-	warnifdiff("teletime", pl.teleport_time, readfloat());	//remove
-	
-	pl.baseframe = readbyte();	// TODO: make conditional
-	pl.frame = readbyte();		// TODO: make conditional
+	pl.sequence = servercommandframe;
 
-	pl.a_ammo1 = readbyte(); // TODO: make conditional
-	pl.a_ammo2 = readbyte(); // TODO: make conditional
-	pl.a_ammo3 = readbyte(); // TODO: make conditional
-	warnifdiff("attack_next", pl.w_attack_next, readfloat());	//remove
-	warnifdiff("idle_next", pl.w_idle_next, readfloat());	//remove
-	setorigin( pl, pl.origin );
+	fl = readfloat();
+
+	if (fl & PLAYER_MODELINDEX)
+		pl.modelindex = readshort();
+
+	if (fl & PLAYER_ORIGIN) {
+		pl.origin[0] = readcoord();
+		pl.origin[1] = readcoord();
+	}
+
+	if (fl & PLAYER_ORIGIN_Z)
+		pl.origin[2] = readcoord();
+	if (fl & PLAYER_ANGLES_X)
+		pl.pitch = readfloat();
+	if (fl & PLAYER_ANGLES_Y)
+		pl.angles[1] = readfloat();
+	if (fl & PLAYER_ANGLES_Z)
+		pl.angles[2] = readfloat();
+
+	if (fl & PLAYER_VELOCITY) {
+		pl.velocity[0] = readcoord();
+		pl.velocity[1] = readcoord();
+	}
+
+	if (fl & PLAYER_VELOCITY_Z)
+		pl.velocity[2] = readcoord();
+	if (fl & PLAYER_FLAGS)
+		pl.flags = readfloat();
+	if (fl & PLAYER_WEAPON)
+		pl.activeweapon = readbyte();
+	if (fl & PLAYER_ITEMS)
+		pl.g_items = readfloat();
+	if (fl & PLAYER_HEALTH)
+		pl.health = readbyte();
+	if (fl & PLAYER_ARMOR)
+		pl.armor = readbyte();
+	if (fl & PLAYER_MOVETYPE)
+		pl.movetype = readbyte();
+	if (fl & PLAYER_VIEWOFS)
+		pl.view_ofs[2] = readfloat();
+	if (fl & PLAYER_BASEFRAME)
+		pl.baseframe = readbyte();
+	if (fl & PLAYER_FRAME)
+		pl.frame = readbyte();
+	if (fl & PLAYER_AMMO1)
+		pl.a_ammo1 = readbyte();
+	if (fl & PLAYER_AMMO2)
+		pl.a_ammo2 = readbyte();
+	if (fl & PLAYER_AMMO3)
+		pl.a_ammo3 = readbyte();
+
+	setorigin(pl, pl.origin);
 }

@@ -89,6 +89,24 @@ class player
 	int ammo_tripmine;
 	int ammo_snark;
 	int ammo_hornet;
+
+	/* conditional networking */
+	int old_modelindex;
+	vector old_origin;
+	vector old_angles;
+	vector old_velocity;
+	int old_flags;
+	int old_activeweapon;
+	int old_items;
+	int old_health;
+	int old_armor;
+	int old_movetype;
+	int old_viewofs;
+	int old_baseframe;
+	int old_frame;
+	int old_a_ammo1;
+	int old_a_ammo2;
+	int old_a_ammo3;
 #endif
 };
 

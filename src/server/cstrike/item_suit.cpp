@@ -24,23 +24,24 @@ class item_suit:CBaseTrigger
 
 void item_suit::touch(void)
 {
-	if (other.classname == "player") {
-		player pl = (player)other;
-		/*if (pl.g_items & ITEM_SUIT) {
-			return;
-		}*/
-		sound(other, CHAN_ITEM, "items/tr_kevlar.wav", 1, ATTN_NORM);
-		/*pl.g_items |= ITEM_SUIT;*/
+	if (other.classname != "player") {
+		return;
+	}
+	player pl = (player)other;
+	/*if (pl.g_items & ITEM_SUIT) {
+		return;
+	}*/
+	sound(other, CHAN_ITEM, "items/tr_kevlar.wav", 1, ATTN_NORM);
+	/*pl.g_items |= ITEM_SUIT;*/
 
-		CBaseTrigger::UseTargets();
+	CBaseTrigger::UseTargets();
 	
-		if (cvar("sv_playerslots") == 1) {
-			remove(self);
-		} else {
-			Hide();
-			think = Respawn;
-			nextthink = time + 30.0f;
-		}
+	if (cvar("sv_playerslots") == 1) {
+		remove(self);
+	} else {
+		Hide();
+		think = Respawn;
+		nextthink = time + 30.0f;
 	}
 }
 
@@ -54,7 +55,6 @@ void item_suit::Respawn(void)
 
 	think = __NULL__;
 	nextthink = -1;
-	sound(this, CHAN_ITEM, "items/suitchargeok1.wav", 1, ATTN_NORM, 150);
 }
 
 void item_suit::item_suit(void)

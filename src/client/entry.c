@@ -99,7 +99,6 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 
 	/* Game specific inits */
 	HUD_Init();
-
 	Scores_Init();
 	Client_Init(apilevel, enginename, engineversion);
 	DSP_Init();
@@ -209,6 +208,10 @@ CSQC_UpdateView(float w, float h, float focus)
 			setsensitivityscaler(pl.viewzoom * autocvar_zoom_sensitivity);
 		} else {
 			setsensitivityscaler(pl.viewzoom);
+		}
+		
+		if (pl.viewzoom <= 0.0f) {
+			setsensitivityscaler(1.0f);
 		}
 
 		pl.viewzoom = oldzoom;
