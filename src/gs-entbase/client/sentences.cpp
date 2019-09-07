@@ -94,14 +94,14 @@ Sentences_Init(void)
 		}
 	}
 
-	for (int a=0; a < g_sentences_count; a++) {
+	/*for (int a=0; a < g_sentences_count; a++) {
 		print(sprintf("[^1SENTENCES^7] Found ^2%s\n",
 			g_sentences[a].m_strID));
 		for (int b = 0; b < g_sentences[a].m_count; b++) {
 			print(sprintf("\tSample ^2%s\n",
 				g_sentences[a].m_samples[b].m_strSnd));
 		}
-	}
+	}*/
 }
 
 void
@@ -119,7 +119,6 @@ Sentences_Parse(void)
 
 	for (int a = 0; a < g_sentences_count; a++) {
 		if (g_sentences[a].m_strID == sentence) {
-			print("Time to play...\n");
 			sound(world, CHAN_VOICE, 
 				g_sentences[a].m_samples[0].m_strSnd, 1.0,
 				ATTN_NONE);

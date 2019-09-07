@@ -98,7 +98,7 @@ Titles_Init(void)
 		}
 	}
 
-	print(sprintf("[^1TITLES^7] Found %i titles\n", g_titles_count));
+	/*print(sprintf("[^1TITLES^7] Found %i titles\n", g_titles_count));*/
 	g_titles = memalloc(sizeof(titles_t) * g_titles_count);
 	fseek(fs_titles, 0);
 
@@ -148,18 +148,18 @@ Titles_Init(void)
 			break;
 		case "{":
 			braced = TRUE;
-			print(sprintf("[^1TITLES^7] Found ^2%s\n",
+			/*print(sprintf("[^1TITLES^7] Found ^2%s\n",
 				t_name));
 			print(sprintf("%s\n",
-					temp));
+					temp));*/
 			break;
 		case "}":
 			/* skip broken syntax */
 			if (braced == FALSE) {
 				break;
 			}
-			print(sprintf("%s\n",
-					temp));
+			/*print(sprintf("%s\n",
+					temp));*/
 			/* time to dump the info */
 			g_titles[id].m_strName = t_name;
 			g_titles[id].m_strMessage = t_message;

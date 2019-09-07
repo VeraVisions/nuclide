@@ -14,9 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+void HUD_DrawWeaponSelect(void);
+
 /* Use first frame for drawing (needs precache) */
 #define HUD_NUMS "sprites/640hud7.spr_0.tga"
-
 #define NUMSIZE_X 24/256
 #define NUMSIZE_Y 24/128
 #define HUD_ALPHA 0.5
@@ -33,18 +34,22 @@ float spr_hudnum[10] = {
 	(24*8) / 256,
 	(24*9) / 256
 };
+
+/* pre-calculated sprite definitions */
 float spr_health[4] = {
 	80 / 256, // pos x
 	24 / 128, // pos u
 	32 / 256, // size x
 	32 / 128 // size y
 };
+
 float spr_suit1[4] = {
 	0 / 256, // pos x
 	24 / 128, // pos u
 	40 / 256, // size x
 	40 / 128 // size y
 };
+
 float spr_suit2[4] = {
 	40 / 256, // pos x
 	24 / 128, // pos u
@@ -52,13 +57,13 @@ float spr_suit2[4] = {
 	40 / 128 // size y
 };
 
-
 float spr_flash1[4] = {
 	160 / 256, // pos x
 	24 / 128, // pos u
 	32 / 256, // size x
 	32 / 128 // size y
 };
+
 float spr_flash2[4] = {
 	112 / 256, // pos x
 	24 / 128, // pos u
@@ -66,244 +71,323 @@ float spr_flash2[4] = {
 	32 / 128 // size y
 };
 
-void HUD_DrawWeaponSelect(void);
-
-void HUD_Init(void)
+/* precaches */
+void
+HUD_Init(void)
 {
 	precache_model("sprites/640hud7.spr");
+	precache_model("sprites/640_logo.spr");
 }
 
-/*
-=================
-HUD_DrawNumber
-
-Draws a normal number
-=================
-*/
-void HUD_DrawNumber(int iNumber, vector vPos, float fAlpha, vector vColor) {
-	drawsubpic(vPos, [24,24], HUD_NUMS, [spr_hudnum[iNumber], 0],
-			   [NUMSIZE_X, NUMSIZE_Y], vColor, fAlpha, DRAWFLAG_ADDITIVE);
-}
-
-void HUD_DrawSeperator(vector pos)
+/* seperator for mainly ammo */
+void
+HUD_DrawSeperator(vector pos)
 {
-	drawsubpic(pos, [2,24], HUD_NUMS, [240/256, 0],
-			   [2/256, 24/128], g_hud_color, HUD_ALPHA, DRAWFLAG_ADDITIVE);
+	drawsubpic(pos,
+		[2,24],
+		HUD_NUMS,
+		[240/256, 0],
+		[2/256, 24/128],
+		g_hud_color,
+		HUD_ALPHA,
+		DRAWFLAG_ADDITIVE
+	);
 }
 
-/*
-=================
-HUD_DrawNums
+/* handle single/multiple digits */
+void
+HUD_DrawNumber(int iNumber, vector vPos, float fAlpha, vector vColor)
+{
+	drawsubpic(vPos,
+		[24,24],
+		HUD_NUMS,
+		[spr_hudnum[iNumber], 0],
+		[NUMSIZE_X, NUMSIZE_Y],
+		vColor,
+		fAlpha,
+		DRAWFLAG_ADDITIVE
+	);
+}
 
-Draws numerals quickly for health, armor etc.
-=================
-*/
-void HUD_DrawNums(float fNumber, vector vPos, float fAlpha, vector vColor) {
-	int iNumber = fNumber;
-	if (iNumber > 0) {
-		while (iNumber > 0) {
-			HUD_DrawNumber((float)iNumber % 10, vPos, fAlpha, vColor);
-			iNumber = iNumber / 10;
+void
+HUD_DrawNums(float fNumber, vector vPos, float fAlpha, vector vColor)
+{
+	int i = fNumber;
+	if (i > 0) {
+		while (i > 0) {
+			HUD_DrawNumber((float)i % 10, vPos, fAlpha, vColor);
+			i = i / 10;
 			vPos[0] -= 20;
-		} 
+		}
 	} else {
 		HUD_DrawNumber(0, vPos, fAlpha, vColor);
 	}
 }
 
-/*
-=================
-HUD_DrawHealth
-
-Draw the current amount of health
-=================
-*/
-void HUD_DrawHealth(void) {
+/* health */
+void
+HUD_DrawHealth(void)
+{
+	vector pos;
 	player pl = (player)pSeat->ePlayer;
 
-	static float fOldHealth;
-	static float fHealthAlpha;
-	if (pl.health != fOldHealth) {
-		fHealthAlpha = 1.0;
+	if (pl.health != pSeat->health_old) {
+		pSeat->health_alpha = 1.0;
 	}
-	
-	if (fHealthAlpha >= HUD_ALPHA) {
-		fHealthAlpha -= frametime * 0.5;
+
+	if (pSeat->health_alpha >= HUD_ALPHA) {
+		pSeat->health_alpha -= clframetime * 0.5;
 	} else {
-		fHealthAlpha = HUD_ALPHA;
+		pSeat->health_alpha = HUD_ALPHA;
 	}
-	
-	vector pos = video_mins + [16, video_res[1] - 42];
+
+	pos = video_mins + [88, video_res[1] - 42];
 	if (pl.health > 25) {
-		drawsubpic(pos + [0,-4], [32,32], HUD_NUMS, [spr_health[0], spr_health[1]],
-			   [spr_health[2], spr_health[3]], g_hud_color, HUD_ALPHA, DRAWFLAG_ADDITIVE);
-		HUD_DrawNums(pl.health, pos + [72, 0], HUD_ALPHA, g_hud_color);
+		drawsubpic(
+			pos + [-72,-4],
+			[32,32],
+			HUD_NUMS,
+			[spr_health[0], spr_health[1]],
+			[spr_health[2], spr_health[3]],
+			g_hud_color,
+			pSeat->health_alpha,
+			DRAWFLAG_ADDITIVE
+		);
+		HUD_DrawNums(pl.health, pos, pSeat->health_alpha, g_hud_color);
 	} else {
-		drawsubpic(pos + [0,-4], [32,32], HUD_NUMS, [spr_health[0], spr_health[1]],
-			   [spr_health[2], spr_health[3]], [1,0,0], HUD_ALPHA, DRAWFLAG_ADDITIVE);
-		HUD_DrawNums(pl.health, pos + [72, 0], HUD_ALPHA, [1,0,0]);
+		drawsubpic(
+			pos + [-72,-4],
+			[32,32],
+			HUD_NUMS,
+			[spr_health[0], spr_health[1]],
+			[spr_health[2], spr_health[3]],
+			[1,0,0],
+			pSeat->health_alpha,
+			DRAWFLAG_ADDITIVE
+		);
+		HUD_DrawNums(pl.health, pos, pSeat->health_alpha, [1,0,0]);
 	}
 
-	fOldHealth = pl.health;
+	pSeat->health_old = pl.health;
 }
 
-
-/*
-=================
-HUD_DrawArmor
-
-Draw the current amount of armor
-=================
-*/
-void HUD_DrawArmor(void)
+/* armor/suit charge */
+void
+HUD_DrawArmor(void)
 {
 	vector pos;
-	static float oldarmor;
-	static float armoralpha;
 	player pl = (player)pSeat->ePlayer;
 
-	pos = video_mins + [72+16+30, video_res[1] - 42];
+	pos = video_mins + [198, video_res[1] - 42];
 	
-	if (pl.armor != oldarmor) {
-		armoralpha = 1.0;
+	if (pl.armor != pSeat->armor_old) {
+		pSeat->armor_alpha = 1.0;
 	}
 
-	if (armoralpha >= HUD_ALPHA) {
-		armoralpha -= frametime * 0.5;
+	if (pSeat->armor_alpha >= HUD_ALPHA) {
+		pSeat->armor_alpha -= clframetime * 0.5;
 	} else {
-		armoralpha = HUD_ALPHA;
+		pSeat->armor_alpha = HUD_ALPHA;
 	}
 
-	drawsubpic(pos + [0,-9], [40,40], HUD_NUMS, [spr_suit2[0], spr_suit2[1]],
-			  [spr_suit2[2], spr_suit2[3]], g_hud_color, armoralpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(
+		pos + [-80,-9],
+		[40,40],
+		HUD_NUMS,
+		[spr_suit2[0], spr_suit2[1]],
+		[spr_suit2[2], spr_suit2[3]],
+		g_hud_color,
+		pSeat->armor_alpha,
+		DRAWFLAG_ADDITIVE
+	);
 
-	float fwhat = pl.armor / 100;
-	if (fwhat > 0.0) {
-		drawsubpic(pos + [0,-9], [40,40*fwhat], HUD_NUMS, [spr_suit1[0], spr_suit1[1]],
-					[spr_suit1[2], spr_suit1[3]*fwhat], g_hud_color, armoralpha, DRAWFLAG_ADDITIVE);
+	if (pl.armor > 0) {
+		drawsubpic(
+			pos + [-80,-9],
+			[40, 40 * (pl.armor / 100)],
+			HUD_NUMS,
+			[spr_suit1[0],
+			spr_suit1[1]],
+			[spr_suit1[2], spr_suit1[3] * (pl.armor / 100)],
+			g_hud_color,
+			pSeat->armor_alpha,
+			DRAWFLAG_ADDITIVE
+		);
 	}
 
-	HUD_DrawNums(pl.armor, pos + [80, 0], armoralpha, g_hud_color);
-
-	oldarmor = pl.armor;
+	HUD_DrawNums(pl.armor, pos, pSeat->armor_alpha, g_hud_color);
+	pSeat->armor_old = pl.armor;
 }
 
-void HUD_DrawAmmo1(void)
-{
-	player pl = (player)pSeat->ePlayer;
-	vector pos;
-	static int old_ammo1;
-	static float ammo1_alpha;
-
-	if (pl.a_ammo1 != old_ammo1) {
-		ammo1_alpha = 1.0;
-		old_ammo1 = pl.a_ammo1;
-	}
-
-	if (ammo1_alpha >= HUD_ALPHA) {
-		ammo1_alpha -= frametime * 0.5;
-	} else {
-		ammo1_alpha = HUD_ALPHA;
-	}
-	
-	pos = video_mins + [video_res[0] - 72, video_res[1] - 42];
-
-	/* Magazine/Clip */
-	if (pl.a_ammo1 != -1) {
-		HUD_DrawNums(pl.a_ammo1, pos + [-80,0], ammo1_alpha, g_hud_color);
-	}
-
-	HUD_DrawSeperator(pos + [-50,0]);
-}
-
-void HUD_DrawAmmo2(void)
+/* magazine/clip ammo */
+void
+HUD_DrawAmmo1(void)
 {
 	player pl = (player)pSeat->ePlayer;
 	vector pos;
 
-	static int old_ammo2;
-	static float ammo2_alpha;
-
-	if (pl.a_ammo2 != old_ammo2) {
-		ammo2_alpha = 1.0;
-		old_ammo2 = pl.a_ammo2;
+	if (pl.a_ammo1 != pSeat->ammo1_old) {
+		pSeat->ammo1_alpha = 1.0;
+		pSeat->ammo1_old = pl.a_ammo1;
 	}
 
-	if (ammo2_alpha >= HUD_ALPHA) {
-		ammo2_alpha -= frametime * 0.5;
+	if (pSeat->ammo1_alpha >= HUD_ALPHA) {
+		pSeat->ammo1_alpha -= clframetime * 0.5;
 	} else {
-		ammo2_alpha = HUD_ALPHA;
+		pSeat->ammo1_alpha = HUD_ALPHA;
 	}
 
-	pos = video_mins + [video_res[0] - 72, video_res[1] - 42];
-
-	/* Leftover Ammo */
-	HUD_DrawNums(pl.a_ammo2, pos, ammo2_alpha, g_hud_color);
+	pos = video_mins + [video_res[0] - 152, video_res[1] - 42];
+	HUD_DrawNums(pl.a_ammo1, pos, pSeat->ammo1_alpha, g_hud_color);
+	HUD_DrawSeperator(pos + [30,0]);
 }
 
-void HUD_DrawAmmo3(void)
+/* leftover type ammo */
+void
+HUD_DrawAmmo2(void)
 {
 	player pl = (player)pSeat->ePlayer;
 	vector pos;
 
-	static int old_ammo3;
-	static float ammo3_alpha;
-
-	if (pl.a_ammo3 != old_ammo3) {
-		ammo3_alpha = 1.0;
-		old_ammo3 = pl.a_ammo3;
+	if (pl.a_ammo2 != pSeat->ammo2_old) {
+		pSeat->ammo2_alpha = 1.0;
+		pSeat->ammo2_old = pl.a_ammo2;
 	}
 
-	if (ammo3_alpha >= HUD_ALPHA) {
-		ammo3_alpha -= frametime * 0.5;
+	if (pSeat->ammo2_alpha >= HUD_ALPHA) {
+		pSeat->ammo2_alpha -= clframetime * 0.5;
 	} else {
-		ammo3_alpha = HUD_ALPHA;
+		pSeat->ammo2_alpha = HUD_ALPHA;
 	}
-	
-	pos = video_mins + [video_res[0] - 72, video_res[1] - 42];
 
-	/* Special */
-	//if (pl.a_ammo3) {
-		HUD_DrawNums(pl.a_ammo3, pos + [0, -32], ammo3_alpha, g_hud_color);
-	//}
+	pos = video_mins + [video_res[0] - 72, video_res[1] - 42];
+	HUD_DrawNums(pl.a_ammo2, pos, pSeat->ammo2_alpha, g_hud_color);
 }
 
-void HUD_DrawFlashlight(void)
+/* special ammo */
+void
+HUD_DrawAmmo3(void)
+{
+	player pl = (player)pSeat->ePlayer;
+	vector pos;
+
+	if (pl.a_ammo3 != pSeat->ammo3_old) {
+		pSeat->ammo3_alpha = 1.0;
+		pSeat->ammo3_old = pl.a_ammo3;
+	}
+
+	if (pSeat->ammo3_alpha >= HUD_ALPHA) {
+		pSeat->ammo3_alpha -= clframetime * 0.5;
+	} else {
+		pSeat->ammo3_alpha = HUD_ALPHA;
+	}
+
+	pos = video_mins + [video_res[0] - 72, video_res[1] - 74];
+	HUD_DrawNums(pl.a_ammo3, pos, pSeat->ammo3_alpha, g_hud_color);
+}
+
+/* flashlight/torch indicator */
+void
+HUD_DrawFlashlight(void)
 {
 	vector pos;
 	player pl = (player)pSeat->ePlayer;
 	pos = video_mins + [video_res[0] - 48, 16];
-			  
+
+	/* both on, draw both sprites at full intensity */
 	if (pl.flags & FL_FLASHLIGHT) {
-		drawsubpic(pos, [32,32], HUD_NUMS, [spr_flash1[0], spr_flash1[1]],
-			  [spr_flash1[2], spr_flash1[3]], g_hud_color, 1.0, DRAWFLAG_ADDITIVE);
-		drawsubpic(pos, [48,32], HUD_NUMS, [spr_flash2[0], spr_flash2[1]],
-			  [spr_flash2[2], spr_flash2[3]], g_hud_color, 1.0, DRAWFLAG_ADDITIVE);
+		drawsubpic(
+			pos,
+			[32,32],
+			HUD_NUMS,
+			[spr_flash1[0], spr_flash1[1]],
+			[spr_flash1[2], spr_flash1[3]],
+			g_hud_color,
+			1.0f,
+			DRAWFLAG_ADDITIVE
+		);
+
+		drawsubpic(
+			pos,
+			[48,32],
+			HUD_NUMS,
+			[spr_flash2[0], spr_flash2[1]],
+			[spr_flash2[2], spr_flash2[3]],
+			g_hud_color,
+			1.0f,
+			DRAWFLAG_ADDITIVE
+		);
 	} else {
-		drawsubpic(pos, [32,32], HUD_NUMS, [spr_flash1[0], spr_flash1[1]],
-			  [spr_flash1[2], spr_flash1[3]], g_hud_color, HUD_ALPHA, DRAWFLAG_ADDITIVE);
+		drawsubpic(
+			pos,
+			[32,32],
+			HUD_NUMS,
+			[spr_flash1[0], spr_flash1[1]],
+			[spr_flash1[2], spr_flash1[3]],
+			g_hud_color,
+			HUD_ALPHA,
+			DRAWFLAG_ADDITIVE
+		);
 	}
 }
 
-void HUD_Draw(void)
+/* logo animation used during e3 1998 */
+void
+HUD_DrawLogo(void)
+{
+	vector pos;
+	static int f;
+	static float frame_timer;
+
+	frame_timer -= clframetime;
+	pos = [video_res[0] - 262, 48];
+
+	drawpic(
+		pos,
+		sprintf("sprites/640_logo.spr_%i.tga", f),
+		[256, 48],
+		[1,1,1],
+		1.0f,
+		DRAWFLAG_ADDITIVE
+	);
+
+	if (frame_timer > 0) {
+		return;
+	}
+
+	frame_timer = 0.1f;
+
+	f++;
+	if (f == 31) {
+		f = 0;
+	}
+}
+
+/* main entry */
+void
+HUD_Draw(void)
 {
 	player pl = (player)pSeat->ePlayer;
+
+	g_hud_color = autocvar_con_color * (1 / 255);
+
+	/* little point in not drawing these, even if you don't have a suit */
+	Weapons_DrawCrosshair();
+	HUD_DrawWeaponSelect();
 
 	if (!(pl.g_items & ITEM_SUIT)) {
 		return;
 	}
 
-	g_hud_color = autocvar_con_color * (1 / 255);
-	
 	HUD_DrawHealth();
 	HUD_DrawArmor();
 	HUD_DrawFlashlight();
 	Damage_Draw();
-	Weapons_DrawCrosshair();
-	HUD_DrawWeaponSelect();
 }
 
-void VGUI_DrawSpectatorHUD(void)
+/* specatator main entry */
+void
+VGUI_DrawSpectatorHUD(void)
 {
 	// FIXME
 }

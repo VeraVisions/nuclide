@@ -29,13 +29,6 @@ struct
 	float fBob;
 	float damage_alpha;
 	vector damage_pos;
-	
-	/* Camera Bob */
-	float flCamMove;
-	float flCamTime;
-	int iCamCycle;
-	float flCamFracSin;
-	float flCamDelta;
 
 	int iZoomed;
 	float flZoomTime;
@@ -52,12 +45,22 @@ struct
 	vector vCameraPos;
 	vector vCameraAngle;
 	float fCameraTime;
-	
+
+/* hud.c */
+	float health_old;
+	float health_alpha;
+	float armor_old;
+	float armor_alpha;
+	float ammo1_old;
+	float ammo1_alpha;
+	float ammo2_old;
+	float ammo2_alpha;
+	float ammo3_old;
+	float ammo3_alpha;
+
 //UI fields
-	float fVGUI_Display;	// The VGUI menu currently being drawn
 	int iShowScores;	// This is seperated from the other VGUI stuff so we can check scores while buying and whatnot
-	
-//buy menu
+
 	// We can only carry one item per slot, so this is hacking around the last one
 	float fHUDWeaponSelected;
 	float fHUDWeaponSelectTime;
