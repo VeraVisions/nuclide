@@ -112,6 +112,7 @@ void w_python_primary(void)
 	pl.w_attack_next = 0.75f;
 	pl.w_idle_next = 10.0f;
 }
+
 void w_python_secondary(void)
 {
 	player pl = (player)self;
@@ -120,12 +121,13 @@ void w_python_secondary(void)
 	}
 	/* Simple toggle of fovs */
 	if (pl.viewzoom == 1.0f) {
-		pl.viewzoom = 0.5;
+		pl.viewzoom = 0.5f;
 	} else {
 		pl.viewzoom = 1.0f;
 	}
 	pl.w_attack_next = 0.5f;
 }
+
 void w_python_reload(void)
 {
 	player pl = (player)self;

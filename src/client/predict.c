@@ -30,6 +30,7 @@ void Predict_PreFrame(player pl)
 	pl.netflags = pl.flags;
 	pl.netjumptime = pl.jumptime;
 	pl.netteleport_time = pl.teleport_time;
+	pl.netviewzoom = pl.viewzoom;
 
 #ifdef VALVE
 	pl.net_w_attack_next = pl.w_attack_next;
@@ -80,6 +81,7 @@ void Predict_PostFrame(player pl)
 	pl.flags = pl.netflags;
 	pl.jumptime = pl.netjumptime;
 	pl.teleport_time = pl.netteleport_time;
+	pl.viewzoom = pl.netviewzoom;
 	
 #ifdef VALVE
 	pl.w_attack_next = pl.net_w_attack_next;

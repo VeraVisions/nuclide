@@ -69,6 +69,7 @@ class player
 	float net_weapontime;
 	float netjumptime;
 	float netteleport_time;
+	float netviewzoom;
 	int net_ammo1;
     int net_ammo2;
     int net_ammo3;
