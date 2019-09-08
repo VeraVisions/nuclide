@@ -54,7 +54,8 @@ void monster_generic :: monster_generic ( void )
 	precache_model( model );
 	setmodel( this, model );
 	CBaseEntity::CBaseEntity();
-	
+	droptofloor();
+
 #if 0
 	self.movetype = MOVETYPE_NOCLIP;
 	self.solid = SOLID_NOT;
