@@ -58,7 +58,7 @@ void Game_PlayerPostThink(void)
 	player pl = (player)self;
 	Animation_PlayerUpdate();
 
-	pl.SendFlags = PLAYER_KEEPALIVE;
+	pl.SendFlags |= PLAYER_KEEPALIVE;
 
 	if (pl.old_modelindex != pl.modelindex)
 		pl.SendFlags |= PLAYER_MODELINDEX;
@@ -191,26 +191,7 @@ void Game_PutClientInServer(void)
 	pl.velocity = [0,0,0];
 	pl.frame = 1;
 	pl.SendEntity = Player_SendEntity;
-	pl.SendFlags = PLAYER_MODELINDEX |
-		PLAYER_ORIGIN |
-		PLAYER_ORIGIN_Z |
-		PLAYER_ANGLES_X |
-		PLAYER_ANGLES_Y |
-		PLAYER_ANGLES_Z |
-		PLAYER_VELOCITY |
-		PLAYER_VELOCITY_Z |
-		PLAYER_FLAGS |
-		PLAYER_WEAPON |
-		PLAYER_ITEMS |
-		PLAYER_HEALTH |
-		PLAYER_ARMOR |
-		PLAYER_MOVETYPE |
-		PLAYER_VIEWOFS |
-		PLAYER_BASEFRAME |
-		PLAYER_FRAME |
-		PLAYER_AMMO1 |
-		PLAYER_AMMO2 |
-		PLAYER_AMMO3;
+	pl.SendFlags = UPDATE_ALL;
 
 	pl.customphysics = Empty;
 	pl.vPain = Player_Pain;

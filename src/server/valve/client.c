@@ -68,7 +68,7 @@ Game_PlayerPostThink(void)
 	player pl = (player)self;
 	Animation_PlayerUpdate();
 
-	pl.SendFlags = PLAYER_KEEPALIVE;
+	pl.SendFlags |= PLAYER_KEEPALIVE;
 
 	if (pl.old_modelindex != pl.modelindex) {
 		pl.SendFlags |= PLAYER_MODELINDEX;
@@ -177,6 +177,7 @@ Game_DecodeChangeParms(void)
 	pl.g_items = parm10;
 	pl.activeweapon = parm11;
 }
+
 void
 Game_SetChangeParms(void)
 {
@@ -228,6 +229,8 @@ Game_PutClientInServer(void)
 	pl.velocity = [0,0,0];
 	pl.frame = 1;
 	pl.SendEntity = Player_SendEntity;
+	pl.SendFlags = UPDATE_ALL;
+
 	pl.customphysics = Empty;
 	pl.vPain = Player_Pain;
 	pl.vDeath = Player_Death;

@@ -66,6 +66,8 @@ const vector VEC_PLAYER_CVIEWPOS = [0,0,12];
 #define FL_FROZEN 		(1<<21)
 #define FL_ONLADDER		(1<<13)
 
+#define UPDATE_ALL	16777215
+
 /* global hitmesh definitions */
 enum {
 	BODY_DEFAULT,
