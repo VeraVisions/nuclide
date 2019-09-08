@@ -1,0 +1,8 @@
+gamedir "gearbox"
+game "Opposing Force"
+size "96000000"
+startmap "of0a0"
+trainmap "ofboot0"
+type "Single"
+url_info "www.gearboxsoftware.com"
+version "1"
