@@ -44,6 +44,7 @@ enumflags {
 };
 
 enumflags {
+	PLAYER_KEEPALIVE,
 	PLAYER_MODELINDEX,
 	PLAYER_ORIGIN,
 	PLAYER_ORIGIN_Z,

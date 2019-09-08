@@ -68,6 +68,8 @@ Game_PlayerPostThink(void)
 	player pl = (player)self;
 	Animation_PlayerUpdate();
 
+	pl.SendFlags = PLAYER_KEEPALIVE;
+
 	if (pl.old_modelindex != pl.modelindex) {
 		pl.SendFlags |= PLAYER_MODELINDEX;
 	}
