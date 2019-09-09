@@ -27,21 +27,39 @@ again before it has finished triggering it's previous list of entities.
 
 #define MM_MULTITHREADED 1
 
+class multi_manager_sub:CBaseTrigger
+{
+	int m_iValue;
+	virtual int() GetValue;
+};
+
+int multi_manager_sub::GetValue(void)
+{
+	return m_iValue;
+}
+
 class multi_manager : CBaseTrigger
 {
-	CBaseTrigger m_eTriggers[16];
+	multi_manager_sub m_eTriggers[16];
 	string m_strBuffer;
 	int m_iBusy;
+	int m_iValue;
+
 	virtual void() Trigger;
+	virtual int() GetValue;
 };
+
+int multi_manager :: GetValue (void)
+{
+	return m_iValue;
+}
 
 void multi_manager :: Trigger (void)
 {
 	static void mm_enttrigger (void) {
-		CBaseTrigger wow = (CBaseTrigger) self;
-		wow.m_strTarget = wow.netname;
+		multi_manager_sub wow = (multi_manager_sub)self;
 		
-		entity eFind = find(world, CBaseTrigger::m_strTargetName, self.netname);
+		entity eFind = find(world, CBaseTrigger::m_strTargetName, wow.m_strTarget);
 
 #ifdef GS_DEVELOPER
 		print(sprintf("multi_manager: %s (%s)\n", wow.m_strTarget, eFind.classname));
@@ -49,7 +67,9 @@ void multi_manager :: Trigger (void)
 
 		CBaseTrigger::UseTargets();
 	}
-	
+
+	m_iValue = TRUE;
+
 	/* If not multi-threaded, we have to watch out 'til all triggers are done. */
 	if (!(spawnflags & MM_MULTITHREADED)) {
 		for (int i = 0; i < 16; i++) {
@@ -59,6 +79,7 @@ void multi_manager :: Trigger (void)
 		}
 	}
 
+	/* time to trigger our sub triggers */
 	int iFields = tokenizebyseparator(m_strBuffer, " ");
 	int b = 0;
 	for (int i = 0; i < iFields; i+=2) {
@@ -69,12 +90,21 @@ void multi_manager :: Trigger (void)
 
 		// HACK: Avoid infinite loops
 		if (m_strTargetName != argv(i)) {
-			entity eTemp = m_eTriggers[b];
-			eTemp.netname = argv(i);
-			eTemp.think = mm_enttrigger;
-			eTemp.nextthink = time + stof(argv(i + 1));
+			m_eTriggers[b].think = mm_enttrigger;
+			m_eTriggers[b].nextthink = time + stof(argv(i + 1));
+			m_eTriggers[b].m_iValue = TRUE;
 			b++;
 		}
+	}
+}
+
+void multi_manager::Respawn(void)
+{
+	m_iValue = FALSE;
+
+	/* Mark them inactive */
+	for (int b = 0; b < 16; b++) {
+		m_eTriggers[b].m_iValue = FALSE;
 	}
 }
 
@@ -103,9 +133,24 @@ void multi_manager :: multi_manager (void)
 			}
 		}
 	}
-	
+
 	for (int b = 0; b < 16; b++) {
-		m_eTriggers[b] = spawn(CBaseTrigger);
+		m_eTriggers[b] = spawn(multi_manager_sub);
+	}
+
+	/* set up our triggers */
+	iFields = tokenizebyseparator(m_strBuffer, " ");
+	int b = 0;
+	for (int i = 0; i < iFields; i+=2) {
+		if (b >= 16) {
+			break;
+		}
+
+		// HACK: Avoid infinite loops
+		if (m_strTargetName != argv(i)) {
+			m_eTriggers[b].m_strTarget = argv(i);
+			b++;
+		}
 	}
 
 	CBaseTrigger::CBaseTrigger();

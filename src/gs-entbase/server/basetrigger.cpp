@@ -26,11 +26,14 @@ class CBaseTrigger : CBaseEntity
 	string m_strTargetName;
 	string m_strKillTarget;
 	string m_strMessage;
+	string m_strMaster;
 	int m_iUseType;
+
 	void() CBaseTrigger;
 	virtual void() Trigger;
 	virtual void() UseTargets;
 	virtual int() GetValue;
+	virtual int() GetMaster;
 	virtual void( float del ) UseTargets_Delay;
 	virtual void() InitBrushTrigger;
 	virtual void() InitPointTrigger;
@@ -58,6 +61,25 @@ void CBaseTrigger :: UseTargets ( void )
 int CBaseTrigger :: GetValue ( void )
 {
 	return TRUE;
+}
+
+int CBaseTrigger :: GetMaster ( void )
+{
+	CBaseTrigger t;
+
+	/* default to success */
+	if (!m_strMaster) {
+		return TRUE;
+	}
+
+	t = (CBaseTrigger)find(world, CBaseTrigger::m_strTarget, m_strMaster);
+
+	/* we couldn't find it, so let's not even bother going further */
+	if (!t) {
+		return FALSE;
+	}
+
+	return t.GetValue();
 }
 
 void CBaseTrigger :: UseTargets_Delay ( float fDelay )
@@ -121,6 +143,9 @@ void CBaseTrigger :: CBaseTrigger ( void )
 			break;
 		case "message":
 			m_strMessage = argv( i + 1);
+			break;
+		case "master":
+			m_strMaster = argv(i+1);
 			break;
 		default:
 			break;

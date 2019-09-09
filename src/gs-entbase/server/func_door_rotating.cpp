@@ -183,6 +183,10 @@ void func_door_rotating::Away(void)
 
 void func_door_rotating::Trigger(void)
 {
+	if (GetMaster() == FALSE) {
+		return;
+	}
+
 	if (m_flNextAction > time) {
 		return;
 	}

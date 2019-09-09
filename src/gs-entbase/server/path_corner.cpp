@@ -52,7 +52,8 @@ class path_corner:CBaseTrigger
 	virtual void() Respawn;
 };
 
-void path_corner::Trigger(void)
+void
+path_corner::Trigger(void)
 {
 	entity a;
 
@@ -67,12 +68,14 @@ void path_corner::Trigger(void)
 	}
 }
 
-void path_corner::Respawn(void)
+void
+path_corner::Respawn(void)
 {
 	m_iFired = FALSE;
 }
 
-void path_corner::path_corner(void)
+void
+path_corner::path_corner(void)
 {
 	CBaseTrigger::CBaseTrigger();
 

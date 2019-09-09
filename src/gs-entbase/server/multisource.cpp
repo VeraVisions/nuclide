@@ -29,32 +29,49 @@ class multisource : CBaseTrigger
 	virtual void() Trigger;
 };
 
-int multisource :: GetValue ( void )
+int
+multisource::GetValue(void)
 {
-	int iWillTrigger = TRUE;
-	
-	for ( entity eTemp = world; ( eTemp = find( eTemp, CBaseTrigger::m_strTarget, m_strTargetName ) ); ) {
-		CBaseTrigger tTemp = (CBaseTrigger) eTemp;
-		if ( tTemp.GetValue() == FALSE ) {
-			iWillTrigger = FALSE;
-			break;
+	entity a;
+	int out = TRUE;
+
+	/* normal triggers */
+	for (a = world; (a = find(a, CBaseTrigger::m_strTarget, m_strTargetName));) {
+		CBaseTrigger tTemp = (CBaseTrigger) a;
+#ifdef GS_DEVELOPER
+		print("[^1MULTISOURCE^7] ");
+		print(tTemp.classname);
+		if (tTemp.GetValue() == FALSE) {
+			print(" is ^1OFF^7, name: ");
+			out = FALSE;
+		} else {
+			print(" is ^2ON^7, name: ");
 		}
+		print(tTemp.m_strTargetName);
+		print("\n");
+#else
+		/* exit out immediately as there's no point unless in-dev */
+		if (tTemp.GetValue() == FALSE) {
+			return FALSE;
+		}
+#endif
 	}
-	
-	return iWillTrigger;
+
+	return out;
 }
 
-void multisource :: Trigger ( void )
+void
+multisource::Trigger(void)
 {
-	if ( GetValue() == FALSE ) {
+	if (GetValue() == FALSE) {
 		return;
 	}
-	
-	//dprint( sprintf( "multisource: Trigger of %s\n", m_strTarget ) );
+
 	CBaseTrigger::UseTargets();
 }
 
-void multisource :: multisource ( void )
+void
+multisource::multisource(void)
 {
 	CBaseTrigger::CBaseTrigger();
 }

@@ -29,6 +29,7 @@ Gun targets brushes that trigger a target once they 'die'.
 class func_guntarget:CBaseTrigger
 {
 	float m_flSpeed;
+	string m_strFire;
 
 	void() func_guntarget;
 	
@@ -38,17 +39,27 @@ class func_guntarget:CBaseTrigger
 	virtual void() Stop;
 	virtual void() Trigger;
 	virtual void(int) vDeath;
+	virtual int() GetValue;
 };
+
+int func_guntarget::GetValue(void)
+{
+	if (health <= 0) {
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
 
 void func_guntarget::Move(void)
 {
 	float flTravelTime;
 	vector vel_to_pos;
-	entity f;
+	path_corner node;
 
-	f = find(world, CBaseTrigger::m_strTargetName, m_strTarget);
+	node = (path_corner)find(world, CBaseTrigger::m_strTargetName, m_strTarget);
 
-	if (!f) {
+	if (!node) {
 		print("^1func_guntarget^7: Path node not found!\n");
 		return;
 	}
@@ -58,7 +69,7 @@ void func_guntarget::Move(void)
 	vecWorldPos[1] = absmin[1] + (0.5 * (absmax[1] - absmin[1]));
 	vecWorldPos[2] = absmin[2] + (0.5 * (absmax[2] - absmin[2]));
 
-	vel_to_pos = (f.origin - vecWorldPos);
+	vel_to_pos = (node.origin - vecWorldPos);
 	flTravelTime = (vlen(vel_to_pos) / m_flSpeed);
 
 	if (!flTravelTime) {
@@ -73,18 +84,18 @@ void func_guntarget::Move(void)
 
 void func_guntarget::NextPath(void)
 {
-	CBaseTrigger current_target;
+	path_corner node;
 
 	print(sprintf("^2func_guntarget^7: Talking to current target %s... ", m_strTarget));
-	current_target = (CBaseTrigger)find(world, CBaseTrigger::m_strTargetName, m_strTarget);
+	node = (path_corner)find(world, path_corner::m_strTargetName, m_strTarget);
 
-	if (!current_target) {
+	if (!node) {
 		print("^1FAILED.\n");
 	} else {
 		print("^2SUCCESS.\n");
 	}
 
-	m_strTarget = current_target.m_strTarget;
+	m_strTarget = node.m_strTarget;
 	velocity = [0,0,0];
 
 	if (m_strTarget) {
@@ -94,7 +105,17 @@ void func_guntarget::NextPath(void)
 
 void func_guntarget::vDeath(int iHitBody)
 {
+	entity a;
 	Stop();
+
+	if (!m_strFire) {
+		return;
+	}
+
+	for (a = world; (a = find(a, CBaseTrigger::m_strTargetName, m_strFire));) {
+		CBaseTrigger trigger = (CBaseTrigger)a;
+		trigger.Trigger();
+	}
 }
 
 void func_guntarget::Stop(void)
@@ -122,13 +143,12 @@ void func_guntarget::Respawn(void)
 {
 	solid = SOLID_BSP;
 	movetype = MOVETYPE_PUSH;
-
 	setmodel(this, m_oldModel);
 	setorigin(this, m_oldOrigin);
 
 	if (spawnflags & SF_GUNTARGET_ON) {
 		think = Trigger;
-		nextthink = time + 0.1f;
+		nextthink = ltime + 0.25f;
 	}
 }
 
@@ -141,6 +161,9 @@ void func_guntarget::func_guntarget(void)
 			break;
 		case "speed":
 			m_flSpeed = stof(argv(i+1));
+			break;
+		case "message":
+			m_strFire = argv(i+1);
 			break;
 		default:
 			break;
