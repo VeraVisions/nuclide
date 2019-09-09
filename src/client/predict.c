@@ -25,12 +25,12 @@ Propagate our pmove state to whatever the current frame before its stomped on
 */
 void Predict_PreFrame(player pl)
 {
-	pl.netorigin = pl.origin;
-	pl.netvelocity = pl.velocity;
-	pl.netflags = pl.flags;
-	pl.netjumptime = pl.jumptime;
-	pl.netteleport_time = pl.teleport_time;
-	pl.netviewzoom = pl.viewzoom;
+	pl.net_origin = pl.origin;
+	pl.net_velocity = pl.velocity;
+	pl.net_flags = pl.flags;
+	pl.net_jumptime = pl.jumptime;
+	pl.net_teleport_time = pl.teleport_time;
+	pl.net_viewzoom = pl.viewzoom;
 
 #ifdef VALVE
 	pl.net_w_attack_next = pl.w_attack_next;
@@ -76,13 +76,13 @@ Rewind our pmove state back to before we started predicting.
 */
 void Predict_PostFrame(player pl)
 {
-	pl.origin = pl.netorigin;
-	pl.velocity = pl.netvelocity;
-	pl.flags = pl.netflags;
-	pl.jumptime = pl.netjumptime;
-	pl.teleport_time = pl.netteleport_time;
-	pl.viewzoom = pl.netviewzoom;
-	
+	pl.origin = pl.net_origin;
+	pl.velocity = pl.net_velocity;
+	pl.flags = pl.net_flags;
+	pl.jumptime = pl.net_jumptime;
+	pl.teleport_time = pl.net_teleport_time;
+	pl.viewzoom = pl.net_viewzoom;
+
 #ifdef VALVE
 	pl.w_attack_next = pl.net_w_attack_next;
 	pl.w_idle_next = pl.net_w_idle_next;

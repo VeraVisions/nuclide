@@ -38,7 +38,7 @@ View_UpdateWeapon(entity vm, entity mflash)
 	 * vile but it'll have to do for now */
 	pl.net_w_attack_next = pl.w_attack_next;
 	pl.net_w_idle_next = pl.w_idle_next;
-	pl.netviewzoom = pl.viewzoom;
+	pl.net_viewzoom = pl.viewzoom;
 	pl.net_weapontime = pl.weapontime;
 
 	/* figure out when the attachments start. in FTE attachments for

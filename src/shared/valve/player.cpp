@@ -33,7 +33,8 @@ class player
 	int a_ammo3;
 
 	/* We can't use the default .items field, because FTE will assume
-	 * effects of some bits. Such as invisibility, quad, etc. */
+	 * effects of some bits. Such as invisibility, quad, etc. 
+	 * also, modders probably want 32 bits for items. */
 	int g_items; 
 
 	float activeweapon;
@@ -59,15 +60,15 @@ class player
 	float lastweapon;
 
 	/* Prediction */
-	vector netorigin;
-	vector netvelocity;
-	float netflags;
+	vector net_origin;
+	vector net_velocity;
+	float net_flags;
 	float net_w_attack_next;
 	float net_w_idle_next;
-	float netjumptime;
-	float netteleport_time;
+	float net_jumptime;
+	float net_teleport_time;
 	float net_weapontime;
-	float netviewzoom;
+	float net_viewzoom;
 	int net_ammo1;
 	int net_ammo2;
 	int net_ammo3;

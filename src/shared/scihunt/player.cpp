@@ -61,18 +61,18 @@ class player
 	float lastweapon;
 
 	/* Prediction */
-	vector netorigin;
-	vector netvelocity;
-	float netflags;
+	vector net_origin;
+	vector net_velocity;
+	float net_flags;
 	float net_w_attack_next;
 	float net_w_idle_next;
+	float net_jumptime;
+	float net_teleport_time;
 	float net_weapontime;
-	float netjumptime;
-	float netteleport_time;
-	float netviewzoom;
+	float net_viewzoom;
 	int net_ammo1;
-    int net_ammo2;
-    int net_ammo3;
+	int net_ammo2;
+	int net_ammo3;
 	int sequence;
 	
 	virtual void() gun_offset;
