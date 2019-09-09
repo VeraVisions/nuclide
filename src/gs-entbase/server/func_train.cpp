@@ -29,6 +29,10 @@ See the entity definition for path_corner to find out more.
 Upon level entry, the func_train will spawn right where its first path_corner
 node is. This is so you can light the func_train somewhere else - like a lonely
 box somewhere outside the playable area.
+
+Marking the func_train with the flag TRAIN_NOTSOLID will make entities not
+collide with the train. This is best used for things in the distance or for
+when lasers are following this train as a sort of guide.
 */
 
 #define TRAIN_NOTSOLID 8

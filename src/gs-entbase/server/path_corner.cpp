@@ -14,12 +14,24 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED path_corner (1 0 0) (-8 -8 -8) (8 8 8)
+/*QUAKED path_corner (1 0 0) (-8 -8 -8) (8 8 8) PC_WAIT PC_TELEPORT PC_FIREONCE
 "targetname"    Name
-"target"        Target when triggered.
-"killtarget"    Target to kill when triggered.
+"target"        Next node.
+"message"       Target to trigger when a train passes this node.
+"speed"         New speed for passing train.
+"yaw_speed"     New yaw rotation for passing train. Currently unused.
+"wait"          Waiting time until we go to the next node.
 
-STUB!
+Node entities used for func_trains and func_guntargets.
+
+When the PC_WAIT flag is set, the train will stop moving once it's passed this
+node. The train will have to be triggered again for it to continue moving.
+This is useful for elevators.
+
+When the PC_TELEPORT flag is set, the train passing this node will immediately
+teleport to the position of the next node (target).
+
+With the PC_FIREONCE flag set, it'll only fire its target (message) once.
 */
 
 enumflags {
@@ -30,49 +42,63 @@ enumflags {
 
 class path_corner:CBaseTrigger
 {
+	int m_iFired;
 	float m_flSpeed;
 	float m_flYawSpeed;
 	float m_flWait;
 
 	void() path_corner;
 	virtual void() Trigger;
+	virtual void() Respawn;
 };
 
 void path_corner::Trigger(void)
 {
-	for ( entity eFind = world; ( eFind = find( eFind, CBaseTrigger::m_strTargetName, m_strMessage));) {
-		CBaseTrigger trigger = (CBaseTrigger) eFind;
-		trigger.Trigger();
+	entity a;
+
+	if ((spawnflags & PC_FIREONCE) && (m_iFired)) {
+		return;
 	}
+
+	for (a = world; (a = find(a, CBaseTrigger::m_strTargetName, m_strMessage));) {
+		CBaseTrigger trigger = (CBaseTrigger)a;
+		trigger.Trigger();
+		m_iFired = TRUE;
+	}
+}
+
+void path_corner::Respawn(void)
+{
+	m_iFired = FALSE;
 }
 
 void path_corner::path_corner(void)
 {
 	CBaseTrigger::CBaseTrigger();
 
-	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
-		switch ( argv( i ) ) {
+	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
+		switch (argv(i)) {
 		case "speed":
-			m_flSpeed = stof(argv( i + 1 ));
+			m_flSpeed = stof(argv(i+1));
 			break;
 		case "yaw_speed":
 			m_flYawSpeed = stof(argv(i+1));
 			break;
 		case "wait":
-			m_flWait = stof(argv( i + 1 ));
+			m_flWait = stof(argv(i+1));
 			break;
 		case "message":
-			m_strMessage = argv( i + 1);
+			m_strMessage = argv(i+1);
 			break;
 		default:
 			break;
 		}
 	}
 
-	if (!m_flSpeed)
+	if (!m_flSpeed) {
 		m_flSpeed = 100;
-
-	if (!m_flWait)
+	}
+	if (!m_flWait) {
 		m_flWait = 1.0f;
-
+	}
 }
