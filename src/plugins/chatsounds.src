@@ -3,6 +3,6 @@
 #define QWSSQC
 
 #includelist
-../builtins.h
+../shared/fteextensions.qc
 chatsounds.c
 #endlist

@@ -15,34 +15,99 @@ PERFORMANCE OF THIS SOFTWARE.
 
 var int autocvar_chatplug_suppresschat = 0;
 
-entity csndemitter; 
+/* our sound boogeyman */
+static entity emitter;
+static int g_sounds;
 
+/* where we save our lists */
 typedef struct {
 	string sentence;
 	string sample;
 } chatsentence_t;
-chatsentence_t *g_chatsounds;
-var int g_chatsounds_count;
+static chatsentence_t *g_table;
 
-int ChatLookUp(string cmd)
+void
+ChatPlay(int id)
 {
-	for (int i = 0; i < g_chatsounds_count; i++) {
-		int sc = tokenizebyseparator(g_chatsounds[i].sentence, ";");
+	int r, count, flags;
+	count = tokenizebyseparator(g_table[id].sample, ";");
+	r = random(0, count);
+	flags = SOUNDFLAG_NOREVERB; /* this should be enough for now */
+	sound(emitter, CHAN_BODY, argv(r), 1.0f, ATTN_NONE, 100, flags);
+}
+
+int
+ChatLookUp(string cmd)
+{
+	int i;
+	for (i = 0; i < g_sounds; i++) {
+		int sc = tokenizebyseparator(g_table[i].sentence, ";");
 		for (int c = 0; c < sc; c++) {
 			if (cmd == argv(c)) {
-				int count = tokenizebyseparator(g_chatsounds[i].sample, ";");
-				int r = random(0, count);
-				sound(csndemitter, CHAN_BODY, argv(r), 1.0f, ATTN_NONE, 100, SOUNDFLAG_NOREVERB);
+				ChatPlay(i);
 				break;
 			}
 		}
 	}
 
-	/* Some jokester might set it to non 0/1 */
+	/* some joker might set it to non 0/1 */
 	return autocvar_chatplug_suppresschat == 1 ? TRUE : FALSE;
 }
 
-int FMX_ParseClientCommand(string cmd)
+void
+initents(void)
+{
+	/* why waste entity slots? */
+	if (g_sounds > 0) {
+		emitter = spawn();
+	}
+}
+
+void
+init(float prevprogs)
+{
+	string temp;
+	int i = 0;
+	int c = 0;
+	filestream chatfile;
+	chatfile = fopen("chatsounds.txt", FILE_READ);
+
+	if (chatfile < 0) {
+		print("Chat Sound Plugin: chatsounds.txt not found.\n");
+		return;
+	}
+
+	/* count lines */
+	while ((temp = fgets(chatfile))) {
+		c = tokenize_console(temp);
+		if (c != 2) {
+			continue;
+		}
+		g_sounds++;
+	}
+	fseek(chatfile, 0);
+
+	g_table = memalloc(sizeof(chatsentence_t) * g_sounds);
+	while ((temp = fgets(chatfile))) {
+		c = tokenize_console(temp);
+		if (c != 2 ) {
+			continue;
+		}
+		g_table[i].sentence = strtolower(argv(0));
+		g_table[i].sample = strtolower(argv(1));
+		c = tokenizebyseparator(g_table[i].sample, ";");
+		for (int x = 0; x < c; x++) {
+			precache_sound(argv(x));
+			print(sprintf("Caching: %s\n", argv(x)));
+		}
+		i++;
+	}
+	fclose(chatfile);
+}
+
+/* plugin hook */
+int
+FMX_ParseClientCommand(string cmd)
 {
 	tokenize(cmd);
 	switch (argv(0)) {
@@ -53,54 +118,4 @@ int FMX_ParseClientCommand(string cmd)
 			return FALSE;
 	}
 	return TRUE;
-}
-
-void initents(void)
-{
-	/* Why waste entity slots? */
-	if (g_chatsounds_count > 0) {
-		csndemitter = spawn();
-	}
-}
-
-void init(float prevprogs)
-{
-	filestream chatfile;
-	chatfile = fopen("chatsounds.txt", FILE_READ);
-
-	if (chatfile >= 0) {
-		string temp;
-		int i = 0;
-		int c = 0;
-
-		/* count lines */
-		while ((temp = fgets(chatfile))) {
-			c = tokenize_console(temp);
-			if (c != 2) {
-				continue;
-			}
-			g_chatsounds_count++;
-		}
-		fseek(chatfile, 0);
-		print(sprintf("Chat Sound Plugin: %i record(s) initialized\n", g_chatsounds_count));
-		
-		g_chatsounds = memalloc(sizeof(chatsentence_t) * g_chatsounds_count);
-		while ((temp = fgets(chatfile))) {
-			c = tokenize_console(temp);
-			if (c != 2 ) {
-				continue;
-			}
-			g_chatsounds[i].sentence = strtolower(argv(0));
-			g_chatsounds[i].sample = strtolower(argv(1));
-			c = tokenizebyseparator(g_chatsounds[i].sample, ";");
-			for (int x = 0; x < c; x++) {
-				precache_sound(argv(x));
-				print(sprintf("Caching: %s\n", argv(x)));
-			}
-			i++;
-		}
-		fclose(chatfile);
-	} else {
-		print("Chat Sound Plugin: chatsounds.txt not found.\n");
-	}
 }
