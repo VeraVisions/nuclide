@@ -43,6 +43,7 @@ class func_door:CBaseTrigger
 	vector m_vecPos2;
 	vector m_vecDest;
 	vector m_vecMoveDir;
+	string m_strFire;
 	float m_flSpeed;
 	float m_flLip;
 	float m_iState;
@@ -124,6 +125,15 @@ void func_door::Returned(void)
 
 	if (!(spawnflags & SF_MOV_USE)) {
 		touch = Touch;
+	}
+
+	if (m_strFire) {
+		CBaseTrigger t;
+		t = (CBaseTrigger)find(world, CBaseTrigger::m_strTargetName, m_strFire);
+		
+		if (t) {
+			t.Trigger();
+		}
 	}
 
 	m_iState = DOORSTATE_LOWERED;
@@ -353,6 +363,10 @@ void func_door::func_door(void)
 			break;
 		case "wait":
 			m_flWait = stof(argv(i+1));
+			break;
+		case "netname":
+			m_strFire = argv(i+1);
+			netname = __NULL__;
 			break;
 		default:
 			break;
