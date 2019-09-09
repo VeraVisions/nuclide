@@ -16,49 +16,50 @@
 
 extern vector g_hud_color;
 
-#define OBITUARY_LINES 4
-#define OBITUARY_TIME 5
+#define OBITUARY_LINES	4
+#define OBITUARY_TIME	5
 
 typedef struct {
-	string strAttacker;
-	string strVictim;
+	string attacker;
+	string victim;
 
 	/* icon */
-	string strImage;
-	vector vecPos;
-	vector vecSize;
-	vector vecXY;
-	vector vecWH;
+	string mtr;
+	vector pos;
+	vector size;
+	vector coord;
+	vector bounds;
 } obituary_t;
 
-obituary_t g_obituary[OBITUARY_LINES];
+static obituary_t g_obituary[OBITUARY_LINES];
 static int g_obituary_count;
-float g_obituary_time;
+static float g_obituary_time;
 
 void
 Obituary_KillIcon(int id, float w)
 {
 #ifdef VALVE
-	vector spr_size;
+	vector mtrsize;
 
 	/* fill in the entries and calculate some in advance */
 	if (w > 0) {
-		spr_size = drawgetimagesize(g_weapons[w].ki_spr);
-		g_obituary[id].strImage = g_weapons[w].ki_spr;
-		g_obituary[id].vecPos = g_weapons[w].ki_xy;
-		g_obituary[id].vecSize = g_weapons[w].ki_size;
-		g_obituary[id].vecXY[0] = g_weapons[w].ki_xy[0] / spr_size[0];
-		g_obituary[id].vecXY[1] = g_weapons[w].ki_xy[1] / spr_size[1];
-		g_obituary[id].vecWH[0] = g_weapons[w].ki_size[0] / spr_size[0];
-		g_obituary[id].vecWH[1] = g_weapons[w].ki_size[1] / spr_size[1];
+		mtrsize = drawgetimagesize(g_weapons[w].ki_spr);
+		g_obituary[id].mtr = g_weapons[w].ki_spr;
+		g_obituary[id].pos = g_weapons[w].ki_xy;
+		g_obituary[id].size = g_weapons[w].ki_size;
+		g_obituary[id].coord[0] = g_weapons[w].ki_xy[0] / mtrsize[0];
+		g_obituary[id].coord[1] = g_weapons[w].ki_xy[1] / mtrsize[1];
+		g_obituary[id].bounds[0] = g_weapons[w].ki_size[0] / mtrsize[0];
+		g_obituary[id].bounds[1] = g_weapons[w].ki_size[1] / mtrsize[1];
 	} else {
-		g_obituary[id].strImage = "sprites/640hud1.spr_0.tga";
-		g_obituary[id].vecPos = [192,224];
-		g_obituary[id].vecSize = [32,16];
-		g_obituary[id].vecXY[0] = 192 / 256;
-		g_obituary[id].vecXY[1] = 224 / 256;
-		g_obituary[id].vecWH[0] = 32 / 256;
-		g_obituary[id].vecWH[1] = 16 / 256;
+		/* generic splat icon */
+		g_obituary[id].mtr = "sprites/640hud1.spr_0.tga";
+		g_obituary[id].pos = [192,224];
+		g_obituary[id].size = [32,16];
+		g_obituary[id].coord[0] = 192 / 256;
+		g_obituary[id].coord[1] = 224 / 256;
+		g_obituary[id].bounds[0] = 32 / 256;
+		g_obituary[id].bounds[1] = 16 / 256;
 	}
 #endif
 }
@@ -73,23 +74,23 @@ Obituary_Add(string attacker, string victim, float weapon, float flags)
 	/* we're not full yet, so fill up the buffer */
 	if (g_obituary_count < x) {
 		y = g_obituary_count;
-		g_obituary[y].strAttacker = attacker;
-		g_obituary[y].strVictim = victim;
+		g_obituary[y].attacker = attacker;
+		g_obituary[y].victim = victim;
 		Obituary_KillIcon(y, weapon);
 		g_obituary_count++;
 	} else {
 		for (i = 0; i < (x-1); i++) {
-			g_obituary[i].strAttacker = g_obituary[i+1].strAttacker;
-			g_obituary[i].strVictim = g_obituary[i+1].strVictim;
-			g_obituary[i].strImage = g_obituary[i+1].strImage;
-			g_obituary[i].vecPos = g_obituary[i+1].vecPos;
-			g_obituary[i].vecSize = g_obituary[i+1].vecSize;
-			g_obituary[i].vecXY = g_obituary[i+1].vecXY;
-			g_obituary[i].vecWH = g_obituary[i+1].vecWH;
+			g_obituary[i].attacker = g_obituary[i+1].attacker;
+			g_obituary[i].victim = g_obituary[i+1].victim;
+			g_obituary[i].mtr = g_obituary[i+1].mtr;
+			g_obituary[i].pos = g_obituary[i+1].pos;
+			g_obituary[i].size = g_obituary[i+1].size;
+			g_obituary[i].coord = g_obituary[i+1].coord;
+			g_obituary[i].bounds = g_obituary[i+1].bounds;
 		}
 		/* after rearranging, add the newest to the bottom. */
-		g_obituary[x-1].strAttacker = attacker;
-		g_obituary[x-1].strVictim = victim;
+		g_obituary[x-1].attacker = attacker;
+		g_obituary[x-1].victim = victim;
 		Obituary_KillIcon(x-1, weapon);
 	}
 
@@ -100,65 +101,64 @@ void
 Obituary_Draw(void)
 {
 	int i;
-	vector vecPos;
+	vector pos;
+	vector item;
 	drawfont = FONT_CON;
-
-	vecPos = video_mins + [video_res[0] - 18, 56];
+	pos = video_mins + [video_res[0] - 18, 56];
 
 	if (g_obituary_time <= 0 && g_obituary_count > 0) {
 		for (i = 0; i < (OBITUARY_LINES-1); i++) {
-			g_obituary[i].strAttacker = g_obituary[i+1].strAttacker;
-			g_obituary[i].strVictim = g_obituary[i+1].strVictim;
-			g_obituary[i].strImage = g_obituary[i+1].strImage;
-			g_obituary[i].vecPos = g_obituary[i+1].vecPos;
-			g_obituary[i].vecSize = g_obituary[i+1].vecSize;
-			g_obituary[i].vecXY = g_obituary[i+1].vecXY;
-			g_obituary[i].vecWH = g_obituary[i+1].vecWH;
+			g_obituary[i].attacker = g_obituary[i+1].attacker;
+			g_obituary[i].victim = g_obituary[i+1].victim;
+			g_obituary[i].mtr = g_obituary[i+1].mtr;
+			g_obituary[i].pos = g_obituary[i+1].pos;
+			g_obituary[i].size = g_obituary[i+1].size;
+			g_obituary[i].coord = g_obituary[i+1].coord;
+			g_obituary[i].bounds = g_obituary[i+1].bounds;
 		}
-		g_obituary[OBITUARY_LINES-1].strAttacker = "";
+		g_obituary[OBITUARY_LINES-1].attacker = "";
 
 		g_obituary_time = OBITUARY_TIME;
 		g_obituary_count--;
 	}
 
-	g_obituary_time -= clframetime;
-
-	if (g_obituary_time <= 0) {
+	if (g_obituary_count <= 0) { 
 		return;
 	}
 
-	vector vecItem = vecPos;
+	item = pos;
 	for (i = 0; i < OBITUARY_LINES; i++) {
 		string a, v;
 
-		if (!g_obituary[i].strAttacker) {
-			return;
+		if (!g_obituary[i].attacker) {
+			break;
 		}
 
-		vecItem[0] = vecPos[0];
+		item[0] = pos[0];
 		
 		
-		v = g_obituary[i].strVictim;
-		drawstring_r(vecItem + [0,2], v, [12,12], [1,1,1], 1.0f, 0);
-		vecItem[0] -= stringwidth(v, TRUE, [12,12]) + 4;
-		vecItem[0] -= g_obituary[i].vecSize[0];
+		v = g_obituary[i].victim;
+		drawstring_r(item + [0,2], v, [12,12], [1,1,1], 1.0f, 0);
+		item[0] -= stringwidth(v, TRUE, [12,12]) + 4;
+		item[0] -= g_obituary[i].size[0];
 
 		drawsubpic(
-			vecItem,
-			g_obituary[i].vecSize,
-			g_obituary[i].strImage,
-			g_obituary[i].vecXY,
-			g_obituary[i].vecWH,
+			item,
+			g_obituary[i].size,
+			g_obituary[i].mtr,
+			g_obituary[i].coord,
+			g_obituary[i].bounds,
 			g_hud_color,
 			1.0f,
 			DRAWFLAG_ADDITIVE
 		);
 
-		a = g_obituary[i].strAttacker;
-		drawstring_r(vecItem + [-4,2], a, [12,12], [1,1,1], 1.0f, 0);
-		
-		vecItem[1] += 18;
+		a = g_obituary[i].attacker;
+		drawstring_r(item + [-4,2], a, [12,12], [1,1,1], 1.0f, 0);
+		item[1] += 18;
 	}
+
+	g_obituary_time = max(0, g_obituary_time - clframetime);
 }
 
 void
