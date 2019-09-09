@@ -22,17 +22,57 @@
 STUB!
 */
 
+enumflags {
+	PC_WAIT,
+	PC_TELEPORT,
+	PC_FIREONCE
+};
+
 class path_corner:CBaseTrigger
 {
 	float m_flSpeed;
+	float m_flYawSpeed;
 	float m_flWait;
 
 	void() path_corner;
+	virtual void() Trigger;
 };
+
+void path_corner::Trigger(void)
+{
+	for ( entity eFind = world; ( eFind = find( eFind, CBaseTrigger::m_strTargetName, m_strMessage));) {
+		CBaseTrigger trigger = (CBaseTrigger) eFind;
+		trigger.Trigger();
+	}
+}
 
 void path_corner::path_corner(void)
 {
 	CBaseTrigger::CBaseTrigger();
-	m_flSpeed = 100;
-	m_flWait = 1.0f;
+
+	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
+		switch ( argv( i ) ) {
+		case "speed":
+			m_flSpeed = stof(argv( i + 1 ));
+			break;
+		case "yaw_speed":
+			m_flYawSpeed = stof(argv(i+1));
+			break;
+		case "wait":
+			m_flWait = stof(argv( i + 1 ));
+			break;
+		case "message":
+			m_strMessage = argv( i + 1);
+			break;
+		default:
+			break;
+		}
+	}
+
+	if (!m_flSpeed)
+		m_flSpeed = 100;
+
+	if (!m_flWait)
+		m_flWait = 1.0f;
+
 }

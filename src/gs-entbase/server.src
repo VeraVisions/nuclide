@@ -16,6 +16,8 @@ server/env_render.cpp
 server/env_shake.cpp
 server/env_message.cpp
 server/game_text.cpp
+server/path_corner.cpp
+server/path_track.cpp
 server/func_recharge.cpp
 server/func_healthcharger.cpp
 server/func_breakable.cpp
@@ -52,8 +54,6 @@ server/env_shooter.cpp
 server/env_beverage.cpp
 server/env_global.cpp
 server/item_food.cpp
-server/path_corner.cpp
-server/path_track.cpp
 server/multi_manager.cpp
 server/monster_furniture.cpp
 server/monster_generic.cpp
