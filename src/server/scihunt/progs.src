@@ -57,6 +57,11 @@ monster_scientist.cpp
 ../valve/item_battery.cpp
 ../valve/item_weaponbox.cpp
 ../valve/world_items.cpp
+../valve/xen_spore_small.cpp
+../valve/xen_spore_medium.cpp
+../valve/xen_spore_large.cpp
+../valve/xen_hair.cpp
+../valve/xen_plantlight.cpp
 ../valve/ammo.cpp
 ../../shared/scihunt/weapons.c 
 ../../shared/valve/weapon_common.c

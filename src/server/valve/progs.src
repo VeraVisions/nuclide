@@ -53,6 +53,11 @@ item_healthkit.cpp
 item_battery.cpp
 item_weaponbox.cpp
 world_items.cpp
+xen_spore_small.cpp
+xen_spore_medium.cpp
+xen_spore_large.cpp
+xen_hair.cpp
+xen_plantlight.cpp
 ammo.cpp
 ../../shared/valve/weapons.c
 ../../shared/valve/weapon_common.c
