@@ -14,13 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED func_train (0 .5 .8) ? x x x TRAIN_NOTSOLID
+/*QUAKED func_train (0 .5 .8) ? TRAIN_WAIT x x TRAIN_NOTSOLID
 "targetname"    Name
 "target"        First node.
 "killtarget"    Target to kill when triggered.
-"dmg"		Damage to inflict upon a person blocking the way.
-"snd_move"	Path to sound sample which plays when it's moving.
-"snd_stop"	Path to sound sample which plays when it stops moving.
+"dmg"           Damage to inflict upon a person blocking the way.
+"snd_move"      Path to sound sample which plays when it's moving.
+"snd_stop"      Path to sound sample which plays when it stops moving.
 
 Moving platform following along path_corner entities, aka nodes.
 Most of its behaviour is controlled by the path_corner entities it passes over.
@@ -35,7 +35,12 @@ collide with the train. This is best used for things in the distance or for
 when lasers are following this train as a sort of guide.
 */
 
-#define TRAIN_NOTSOLID 8
+enumflags {
+	TRAIN_WAIT,
+	TRAIN_UNUSED1,
+	TRAIN_UNUSED2,
+	TRAIN_NOTSOLID
+};
 
 string g_strTrainMoveSnd[] = {
 	"common/null.wav",
@@ -160,7 +165,7 @@ func_train::NextPath(void)
 	}
 
 	/* stop until triggered again */
-	if (eNode.spawnflags & PC_WAIT) {
+	if (eNode.spawnflags & PC_WAIT || spawnflags & TRAIN_WAIT) {
 		return;
 	}
 
