@@ -78,6 +78,6 @@ void Game_Input(void)
 			bprint(PRINT_HIGH, "Respawning all map entities...\n");
 		}
 	}
-	
+
 	self.impulse = 0;
 }

@@ -71,50 +71,6 @@ entity Spawn_FindSpawnPoint(float fTeam)
 
 /*
 =================
-Spawn_ObserverCam
-
-Look for the next spawnpoint
-=================
-*/
-void Spawn_ObserverCam(void)
-{
-	entity eTarget;
-
-	// Go find a camera if we aren't dead
-	entity eCamera = find (world, classname, "trigger_camera");
-
-	if (eCamera) {
-		self.origin = eCamera.origin;
-		
-		if (eCamera.target) {
-			eTarget = find(world, targetname, eCamera.target);
-			if (eTarget) {
-				self.angles = vectoangles(eTarget.origin - eCamera.origin);
-				self.angles[0] *= -1;
-			}
-		}
-	} else {
-		// Can't find a camera? Just do this lazy thing, CS seems to do the same
-		eCamera = find (world, classname, "info_player_start");
-		
-		if (eCamera) {
-			self.origin = eCamera.origin;
-			
-			if (eCamera.target) {
-				eTarget = find(world, targetname, eCamera.target);
-				if (eTarget) {
-					self.angles = vectoangles(eTarget.origin - eCamera.origin);
-					self.angles[0] *= -1;
-				}
-			}
-		}
-	}
-
-	self.fixangle = TRUE;
-}
-
-/*
-=================
 Spawn_RespawnClient
 
 Called whenever a player just needs his basic properties to be reset

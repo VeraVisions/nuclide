@@ -198,68 +198,23 @@ Game_SetChangeParms(void)
 void
 Game_PutClientInServer(void)
 {
-	if (self.classname != "player") {
-		spawnfunc_player();
-	}
 	player pl = (player)self;
 
-	entity spot;
-	pl.classname = "player";
-	pl.health = self.max_health = 100;
-
-	pl.takedamage = DAMAGE_YES;
-	pl.solid = SOLID_SLIDEBOX;
-	pl.movetype = MOVETYPE_WALK;
-	pl.flags = FL_CLIENT;
-	pl.viewzoom = 1.0;
-	pl.model = "models/player.mdl";
-	
-	string mymodel = infokey(pl, "model");
-
-	if (mymodel) {
-		mymodel = sprintf("models/player/%s/%s.mdl", mymodel, mymodel);
-		if (whichpack(mymodel)) {
-			pl.model = mymodel;
-		}
-	} 
-	setmodel(pl, pl.model);
-
-	setsize(pl, VEC_HULL_MIN, VEC_HULL_MAX);
-	pl.view_ofs = VEC_PLAYER_VIEWPOS;
-	pl.velocity = [0,0,0];
-	pl.gravity = __NULL__;
-	pl.frame = 1;
+	pl.classname = "spectator";
+	pl.health = 0;
+	pl.armor = 0;
+	pl.takedamage = DAMAGE_NO;
+	pl.solid = SOLID_NOT;
+	pl.movetype = MOVETYPE_NOCLIP;
 	pl.SendEntity = Player_SendEntity;
-	pl.SendFlags = UPDATE_ALL;
-
-	pl.customphysics = Empty;
-	pl.vPain = Player_Pain;
-	pl.vDeath = Player_Death;
-	pl.iBleeds = TRUE;
-	forceinfokey(pl, "*spec", "0");
-	forceinfokey(self, "*deaths", ftos(self.deaths));
-
-	if (cvar("sv_playerslots") == 1) {
-		Game_DecodeChangeParms();
-
-		if (startspot != "") {
-			setorigin(pl, Landmark_GetSpot());
-		} else {
-			spot = find(world, classname, "info_player_start");
-			setorigin(pl, spot.origin);
-			pl.angles = spot.angles;
-			pl.fixangle = TRUE;
-		}
-	} else {
-		spot = Spawn_SelectRandom("info_player_deathmatch");
-		setorigin(pl, spot.origin);
-		pl.angles = spot.angles;
-		pl.fixangle = TRUE;
-
-		pl.ammo_9mm = 68;
-		Weapons_AddItem(pl, WEAPON_CROWBAR);
-		pl.g_items |= ITEM_SUIT;
-	}
+	pl.flags = FL_CLIENT;
+	pl.weapon = 0;
+	pl.viewzoom = 1.0f;
+	pl.model = 0;
+	setsize (pl, '-16 -16 -16', '16 16 16');
+	pl.view_ofs = pl.velocity = '0 0 0';
+	forceinfokey(pl, "*spec", "2");
+	Spawn_ObserverCam();
 }
 
 void

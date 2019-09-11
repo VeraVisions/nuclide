@@ -16,6 +16,8 @@
 ../defs.h
 
 ../../vgui/include.src
+../vgui.cpp
+vgui_chooseteam.cpp
 
 ../util.c
 init.c
@@ -75,7 +77,6 @@ entities.c
 ../damage.c
 ../obituary.c
 ../chat.c
-../vgui.cpp
 
 ../valve/hud.c
 ../valve/hud_weaponselect.c

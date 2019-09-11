@@ -80,6 +80,7 @@ func_buyzone.cpp
 func_escapezone.cpp
 main.c
 player.c
+../spawn.c
 spawn.c
 ../footsteps.c
 ../flashlight.c

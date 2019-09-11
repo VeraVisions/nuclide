@@ -15,6 +15,7 @@
 ../../shared/valve/animations.h
 ../defs.h
 ../plugins.c
+../logging.c
 ../../gs-entbase/server.src
 ../../shared/decals.c
 ../../shared/effects.c
@@ -49,10 +50,14 @@
 ../../shared/tfc/w_wrench.c
 ../valve/items.cpp
 ../valve/item_weaponbox.cpp
+info_tfgoal.cpp
+item_tfgoal.cpp
+info_player_teamspawn.cpp
 ../../shared/tfc/weapons.c
 ../../shared/valve/weapon_common.c
 
 ../spawn.c
+spawn.c
 ../vox.c
 ../../shared/valve/animations.c
 client.c
