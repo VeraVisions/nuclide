@@ -25,23 +25,27 @@ class item_suit:CBaseTrigger
 void item_suit::touch(void)
 {
 	if (other.classname == "player") {
-		player pl = (player)other;
-		if (pl.g_items & ITEM_SUIT) {
-			return;
-		}
-		sound(other, CHAN_ITEM, "fvox/bell.wav", 1, ATTN_NORM);
-		sound(other, CHAN_VOICE, "fvox/hev_logon.wav", 1, ATTN_NORM);
-		pl.g_items |= ITEM_SUIT;
+		return;
+	}
 
-		CBaseTrigger::UseTargets();
+	player pl = (player)other;
+	if (pl.g_items & ITEM_SUIT) {
+		return;
+	}
+
+	Logging_Pickup(other, this, __NULL__);
+	sound(other, CHAN_ITEM, "fvox/bell.wav", 1, ATTN_NORM);
+	sound(other, CHAN_VOICE, "fvox/hev_logon.wav", 1, ATTN_NORM);
+	pl.g_items |= ITEM_SUIT;
+
+	CBaseTrigger::UseTargets();
 	
-		if (cvar("sv_playerslots") == 1) {
-			remove(self);
-		} else {
-			Hide();
-			think = Respawn;
-			nextthink = time + 30.0f;
-		}
+	if (cvar("sv_playerslots") == 1) {
+		remove(self);
+	} else {
+		Hide();
+		think = Respawn;
+		nextthink = time + 30.0f;
 	}
 }
 

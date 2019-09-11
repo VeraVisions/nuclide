@@ -27,23 +27,26 @@ class item_pickup:CBaseTrigger
 
 void item_pickup::touch(void)
 {
-	if (other.classname == "player") {
-		/*if (Weapons_IsPresent((player)other, id) == TRUE) {
-			return;
-		}*/
+	if (other.classname != "player") {
+		return;
+	}
 
-		sound(other, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_NORM);
-		Weapons_AddItem((player)other, id);
+	/*if (Weapons_IsPresent((player)other, id) == TRUE) {
+		return;
+	}*/
 
-		CBaseTrigger::UseTargets();
+	Logging_Pickup(other, this, __NULL__);
+	sound(other, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_NORM);
+	Weapons_AddItem((player)other, id);
 
-		if (cvar("sv_playerslots") == 1) {
-			remove(self);
-		} else {
-			Hide();
-			think = Respawn;
-			nextthink = time + 30.0f;
-		}
+	CBaseTrigger::UseTargets();
+
+	if (cvar("sv_playerslots") == 1) {
+		remove(self);
+	} else {
+		Hide();
+		think = Respawn;
+		nextthink = time + 30.0f;
 	}
 }
 

@@ -23,25 +23,28 @@ class item_battery:CBaseEntity
 
 void item_battery::touch(void)
 {
-	if (other.classname == "player") {
-		if (other.armor >= 100) {
-			return;
-		}
-		/* Move this somewhere else? */
-		other.armor += 15;
-		if (other.armor > 100) {
-			other.armor = 100;
-		}
+	if (other.classname != "player") {
+		return;
+	}
+	
+	if (other.armor >= 100) {
+		return;
+	}
+	/* Move this somewhere else? */
+	other.armor += 15;
+	if (other.armor > 100) {
+		other.armor = 100;
+	}
 
-		sound(other, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_NORM);
+	Logging_Pickup(other, this, __NULL__);
+	sound(other, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_NORM);
 
-		if (cvar("sv_playerslots") == 1) {
-			remove(self);
-		} else {
-			Hide();
-			think = Respawn;
-			nextthink = time + 20.0f;
-		}
+	if (cvar("sv_playerslots") == 1) {
+		remove(self);
+	} else {
+		Hide();
+		think = Respawn;
+		nextthink = time + 20.0f;
 	}
 }
 

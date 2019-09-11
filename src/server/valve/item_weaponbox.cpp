@@ -42,6 +42,7 @@ void item_weaponbox::touch(void)
 	}
 
 	player pl = (player)other;
+	Logging_Pickup(other, this, __NULL__);
 	sound(pl, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_NORM);
 	pl.ammo_9mm += ammo_9mm;
 	pl.ammo_357 += ammo_357;

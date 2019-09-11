@@ -24,24 +24,28 @@ class item_longjump:CBaseTrigger
 
 void item_longjump::touch(void)
 {
-	if (other.classname == "player") {
-		player pl = (player)other;
-		if (pl.g_items & ITEM_LONGJUMP) {
-			return;
-		}
-		sound(other, CHAN_ITEM, "fvox/blip.wav", 1, ATTN_NORM);
-		sound(other, CHAN_VOICE, "fvox/powermove_on.wav", 1, ATTN_NORM);
-		pl.g_items |= ITEM_LONGJUMP;
+	if (other.classname != "player") {
+		return;
+	}
+	
+	player pl = (player)other;
+	if (pl.g_items & ITEM_LONGJUMP) {
+		return;
+	}
 
-		CBaseTrigger::UseTargets();
+	Logging_Pickup(other, this, __NULL__);
+	sound(other, CHAN_ITEM, "fvox/blip.wav", 1, ATTN_NORM);
+	sound(other, CHAN_VOICE, "fvox/powermove_on.wav", 1, ATTN_NORM);
+	pl.g_items |= ITEM_LONGJUMP;
 
-		if (cvar("sv_playerslots") == 1) {
-			remove(self);
-		} else {
-			Hide();
-			think = Respawn;
-			nextthink = time + 30.0f;
-		}
+	CBaseTrigger::UseTargets();
+
+	if (cvar("sv_playerslots") == 1) {
+		remove(self);
+	} else {
+		Hide();
+		think = Respawn;
+		nextthink = time + 30.0f;
 	}
 }
 

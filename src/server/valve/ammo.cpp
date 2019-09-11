@@ -23,18 +23,21 @@ class item_ammo:CBaseEntity
 
 void item_ammo::touch(void)
 {
-	if (other.classname == "player") {
-		player pl = (player)other;
-		sound(other, CHAN_ITEM, "items/9mmclip1.wav", 1, ATTN_NORM);
-		Weapons_RefreshAmmo(pl);
+	if (other.classname != "player") {
+		return;
+	}
 
-		if (cvar("sv_playerslots") == 1) {
-			remove(self);
-		} else {
-			Hide();
-			think = Respawn;
-			nextthink = time + 20.0f;
-		}
+	player pl = (player)other;
+	sound(other, CHAN_ITEM, "items/9mmclip1.wav", 1, ATTN_NORM);
+	Weapons_RefreshAmmo(pl);
+	Logging_Pickup(other, this, __NULL__);
+
+	if (cvar("sv_playerslots") == 1) {
+		remove(self);
+	} else {
+		Hide();
+		think = Respawn;
+		nextthink = time + 20.0f;
 	}
 }
 

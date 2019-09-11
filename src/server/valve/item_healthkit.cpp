@@ -23,20 +23,23 @@ class item_healthkit:CBaseEntity
 
 void item_healthkit::touch(void)
 {
-	if (other.classname == "player") {
-		if (other.health >= other.max_health) {
-			return;
-		}
-		Damage_Apply(other, this, -20, this.origin, TRUE);
-		sound(this, CHAN_ITEM, "items/smallmedkit1.wav", 1, ATTN_NORM);
+	if (other.classname != "player") {
+		return;
+	}
+	
+	if (other.health >= other.max_health) {
+		return;
+	}
+	Damage_Apply(other, this, -20, this.origin, TRUE);
+	sound(this, CHAN_ITEM, "items/smallmedkit1.wav", 1, ATTN_NORM);
+	Logging_Pickup(other, this, __NULL__);
 
-		if (cvar("sv_playerslots") == 1) {
-			remove(self);
-		} else {
-			Hide();
-			think = Respawn;
-			nextthink = time + 20.0f;
-		}
+	if (cvar("sv_playerslots") == 1) {
+		remove(self);
+	} else {
+		Hide();
+		think = Respawn;
+		nextthink = time + 20.0f;
 	}
 }
 
