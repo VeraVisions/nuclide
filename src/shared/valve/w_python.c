@@ -34,6 +34,7 @@ void w_python_precache(void)
 
 	precache_sound("weapons/357_shot1.wav");
 	precache_sound("weapons/357_shot2.wav");
+	precache_sound("weapons/357_reload1.wav");
 }
 void w_python_pickup(void)
 {
@@ -155,8 +156,9 @@ void w_python_reload(void)
 	/* Audio-Visual bit */
 	Weapons_ViewAnimation(PYTHON_RELOAD);
 #ifdef SSQC
+	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/357_reload1.wav", 1, ATTN_NORM);
 	Weapons_ReloadWeapon(pl, player::python_mag, player::ammo_357, 6);
-	Weapons_UpdateAmmo(pl, pl.python_mag, pl.ammo_357, __NULL__);	
+	Weapons_UpdateAmmo(pl, pl.python_mag, pl.ammo_357, __NULL__);
 #endif
 	pl.w_attack_next = 3.25f;
 	pl.w_idle_next = 10.0f;
