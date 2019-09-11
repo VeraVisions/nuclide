@@ -129,6 +129,7 @@ void w_glock_secondary(void)
 		return;
 	}
 
+	View_SetMuzzleflash(MUZZLE_SMALL);
 	Weapons_ViewPunchAngle([-2,0,0]);
 #else
 	if (!pl.glock_mag) {

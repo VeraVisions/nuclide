@@ -85,7 +85,7 @@ Player_ReadEntity(float new)
 	if (fl & PLAYER_WEAPON)
 		pl.activeweapon = readbyte();
 	if (fl & PLAYER_ITEMS)
-		pl.g_items = readfloat();
+		pl.g_items = (__variant)readfloat();
 	if (fl & PLAYER_HEALTH)
 		pl.health = readbyte();
 	if (fl & PLAYER_ARMOR)

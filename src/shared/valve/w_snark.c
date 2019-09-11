@@ -119,7 +119,7 @@ void w_snark_deploy(void)
 	snark.frame = 3; /* running like crazy. */
 	snark.customphysics = snark_ai;
 	snark.angles = self.angles;
-	snark.health = 30;
+	snark.health = 20;
 	snark.vPain = snark_pain;
 	snark.takedamage = DAMAGE_YES;
 	snark.aiment = __NULL__;

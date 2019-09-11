@@ -164,7 +164,7 @@ float Player_SendEntity(entity ePEnt, float fChanged)
 		WriteByte(MSG_ENTITY, pl.activeweapon);
 	}
 	if (fChanged & PLAYER_ITEMS) {
-		WriteFloat(MSG_ENTITY, pl.g_items);
+		WriteFloat(MSG_ENTITY, (__variant)pl.g_items);
 	}
 	if (fChanged & PLAYER_HEALTH) {
 		WriteByte(MSG_ENTITY, pl.health);

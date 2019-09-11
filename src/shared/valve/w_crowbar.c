@@ -45,7 +45,7 @@ void
 w_crowbar_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, __NULL__, __NULL__, __NULL__);
+	Weapons_UpdateAmmo(pl, -1, -1, -1);
 #endif
 }
 
@@ -83,6 +83,7 @@ void
 w_crowbar_primary(void)
 {
 	int anim = 0;
+	int r;
 	vector src;
 	player pl = (player)self;
 
@@ -94,7 +95,15 @@ w_crowbar_primary(void)
 	src = pl.origin + pl.view_ofs;
 	traceline(src, src + (v_forward * 32), FALSE, pl);
 
-	int r = (float)input_sequence % 3;
+	if (trace_fraction >= 1.0) {
+		pl.w_attack_next = 0.5f;
+	} else {
+		pl.w_attack_next = 0.25f;
+	}
+	pl.w_idle_next = 2.5f;
+
+#ifdef CSQC
+	r = floor(random(0,3));
 	switch (r) {
 	case 0:
 		anim = trace_fraction >= 1 ? CBAR_ATTACK1MISS:CBAR_ATTACK1HIT;
@@ -106,16 +115,7 @@ w_crowbar_primary(void)
 		anim = trace_fraction >= 1 ? CBAR_ATTACK3MISS:CBAR_ATTACK3HIT;
 	}
 	Weapons_ViewAnimation(anim);
-
-	if (trace_fraction >= 1.0) {
-		pl.w_attack_next = 0.5f;
-	} else {
-		pl.w_attack_next = 0.25f;
-	}
-
-	pl.w_idle_next = 2.5f;
-
-#ifdef SSQC
+#else
 	if (pl.flags & FL_CROUCHING) {
 		Animation_PlayerTopTemp(ANIM_SHOOTCROWBAR, 0.5f);
 	} else {
@@ -142,12 +142,17 @@ w_crowbar_primary(void)
 			return;
 		}
 
-		if (random() < 0.33) {
+		r = floor(random(0,3));
+		switch (r) {
+		case 0:
 			sound(pl, 8, "weapons/cbar_hitbod1.wav", 1, ATTN_NORM);
-		} else if (random() < 0.66) {
+			break;
+		case 1:
 			sound(pl, 8, "weapons/cbar_hitbod2.wav", 1, ATTN_NORM);
-		} else {
+			break;
+		case 2:
 			sound(pl, 8, "weapons/cbar_hitbod3.wav", 1, ATTN_NORM);
+			break;
 		}
 	} else {
 		if (random() < 0.5) {

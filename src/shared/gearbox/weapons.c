@@ -14,4 +14,31 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void Damage_Apply(entity, entity, float, vector, int);
+weapon_t w_null = {};
+weapon_t g_weapons[] = {
+	w_null,
+	w_crowbar,
+	w_pipewrench,
+	w_knife,
+	w_grapple,
+	w_glock,
+	w_python,
+	w_eagle,
+	w_mp5,
+	w_shotgun,
+	w_crossbow,
+	w_rpg,
+	w_gauss,
+	w_egon,
+	w_hornetgun,
+	w_handgrenade,
+	w_satchel,
+	w_tripmine,
+	w_snark,
+	w_penguin,
+	w_m249,
+	w_displacer,
+	w_sniperrifle,
+	w_sporelauncher,
+	w_shockrifle
+};

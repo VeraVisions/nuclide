@@ -269,6 +269,17 @@ void Weapons_InitItem(int w)
 
 void Weapons_UpdateAmmo(player pl, int a1, int a2, int a3)
 {
+	/* no change */
+	if (a1 == -1) {
+		a1 = pl.a_ammo1;
+	}
+	if (a2 == -1) {
+		a2 = pl.a_ammo2;
+	}
+	if (a3 == -1) {
+		a3 = pl.a_ammo3;
+	}
+
 	/* Networked as bytes, since we don't need more. Clamp to avoid errors */
 	pl.a_ammo1 = bound(0, a1, 255);
 	pl.a_ammo2 = bound(0, a2, 255);

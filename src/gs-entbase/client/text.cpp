@@ -67,6 +67,7 @@ GameText_DrawString(vector pos, string msg, vector col, float alpha)
 			rpos[1] = ((video_res[1] - 12) * pos[1]);
 		}
 		rpos[1] += 20 * i;
+		rpos[1] -= (20 * c) / 2;
 		drawstring(rpos, argv(i), '20 20', col, alpha,
 			DRAWFLAG_ADDITIVE);
 	}
