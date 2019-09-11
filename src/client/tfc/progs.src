@@ -1,9 +1,8 @@
 #pragma target fte
-#pragma progs_dat  "../../../rewolf/data.pk3dir/csprogs.dat"
+#pragma progs_dat  "../../../tfc/data.pk3dir/csprogs.dat"
 
 #define CSQC
 #define VALVE
-#define REWOLF
 
 #includelist
 ../../shared/fteextensions.qc
@@ -23,8 +22,6 @@ init.c
 
 ../../gs-entbase/client.src
 
-decore.cpp
-
 ../sound.c
 ../text.c
 ../voice.c
@@ -40,28 +37,34 @@ decore.cpp
 ../../shared/spraylogo.cpp
 ../npc.c
 
-../../shared/valve/items.h
+../../shared/tfc/items.h
 ../../shared/valve/weapon_common.h
-../../shared/valve/weapons.h
-../../shared/valve/w_crossbow.c
-../../shared/valve/w_crowbar.c
-../../shared/valve/w_egon.c
-../../shared/valve/w_gauss.c
-../../shared/valve/w_glock.c
-../../shared/valve/w_handgrenade.c
-../../shared/valve/w_hornetgun.c
-../../shared/valve/w_mp5.c
-../../shared/valve/w_python.c
-../../shared/valve/w_rpg.c
-../../shared/valve/w_satchel.c
-../../shared/valve/w_shotgun.c
-../../shared/valve/w_snark.c
-../../shared/valve/w_tripmine.c
-../../shared/valve/weapons.c
+../../shared/tfc/weapons.h
+../../shared/tfc/w_asscan.c
+../../shared/tfc/w_autorifle.c
+../../shared/tfc/w_crowbar.c
+../../shared/tfc/w_dbs.c
+../../shared/tfc/w_flamer.c
+../../shared/tfc/w_glauncher.c
+../../shared/tfc/w_grapple.c
+../../shared/tfc/w_incendiary.c
+../../shared/tfc/w_knife.c
+../../shared/tfc/w_medkit.c
+../../shared/tfc/w_nailgun.c
+../../shared/tfc/w_pipebomb.c
+../../shared/tfc/w_railgun.c
+../../shared/tfc/w_rpg.c
+../../shared/tfc/w_sbs.c
+../../shared/tfc/w_sniper.c
+../../shared/tfc/w_supernail.c
+../../shared/tfc/w_tranquil.c
+../../shared/tfc/w_umbrella.c
+../../shared/tfc/w_wrench.c
+../../shared/tfc/weapons.c
 ../../shared/valve/weapon_common.c
 
 ../valve/player.c
-../valve/entities.c
+entities.c
 ../entities.c
 
 ../valve/cmds.c
@@ -74,7 +77,7 @@ decore.cpp
 ../chat.c
 ../vgui.cpp
 
-hud.c
+../valve/hud.c
 ../valve/hud_weaponselect.c
 ../valve/scoreboard.c
 

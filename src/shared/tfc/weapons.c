@@ -14,42 +14,27 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* weapon Indices for the weapon table */
-enum
-{
-	WEAPON_NONE,
-	WEAPON_CROWBAR,
-	WEAPON_HAMMER,
-	WEAPON_CHAINSAW,
-	WEAPON_GLOCK,
-	WEAPON_PYTHON,
-	WEAPON_MP5,
-	WEAPON_SHOTGUN,
-	WEAPON_CROSSBOW,
-	WEAPON_CANNON,
-	WEAPON_RPG,
-	WEAPON_GAUSS,
-	WEAPON_EGON,
-	WEAPON_HORNETGUN,
-	WEAPON_HANDGRENADE,
-	WEAPON_SATCHEL,
-	WEAPON_TRIPMINE,
-	WEAPON_SNARK
-};
-
-/* what the weapons do support and stuff */
-enum
-{
-	AMMO_9MM,
-	AMMO_357,
-	AMMO_BUCKSHOT,
-	AMMO_M203_GRENADE,
-	AMMO_BOLT,
-	AMMO_ROCKET,
-	AMMO_URANIUM,
-	AMMO_HANDGRENADE,
-	AMMO_SATCHEL,
-	AMMO_TRIPMINE,
-	AMMO_SNARK,
-	AMMO_HORNET
+weapon_t w_null = {};
+weapon_t g_weapons[] = {
+	w_null,
+	w_crowbar,
+	w_medkit,
+	w_knife,
+	w_wrench,
+	w_umbrella,
+	w_sbs,
+	w_sniper,
+	w_tranquil,
+	w_railgun,
+	w_autorifle,
+	w_dbs,
+	w_nailgun,
+	w_glauncher,
+	w_supernail,
+	w_flamer,
+	w_rpg,
+	w_pipebomb,
+	w_asscan,
+	w_incendiary,
+	w_grapple
 };

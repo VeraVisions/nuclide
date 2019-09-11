@@ -36,7 +36,7 @@ w_crowbar_precache(void)
 	precache_sound("weapons/cbar_hitbod1.wav");
 	precache_sound("weapons/cbar_hitbod2.wav");
 	precache_sound("weapons/cbar_hitbod3.wav");
-	precache_model("models/v_crowbar.mdl");
+	precache_model("models/v_tfc_crowbar.mdl");
 	precache_model("models/w_crowbar.mdl");
 	precache_model("models/p_crowbar.mdl");
 }
@@ -69,7 +69,7 @@ w_crowbar_deathmsg(void)
 void
 w_crowbar_draw(void)
 {
-	Weapons_SetModel("models/v_crowbar.mdl");
+	Weapons_SetModel("models/v_tfc_crowbar.mdl");
 	Weapons_ViewAnimation(CBAR_DRAW);
 }
 
@@ -232,12 +232,3 @@ weapon_t w_crowbar =
 	.aimanim	= w_crowbar_aimanim,
 	.hudpic		= w_crowbar_hudpic
 };
-
-/* entity definitions for pickups */
-#ifdef SSQC
-void
-weapon_crowbar(void)
-{
-	Weapons_InitItem(WEAPON_CROWBAR);
-}
-#endif

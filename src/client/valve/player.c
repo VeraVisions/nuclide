@@ -50,6 +50,12 @@ Player_ReadEntity(float new)
 
 	fl = readfloat();
 
+	/* HACK: we need to make this more reliable */
+	if (fl == UPDATE_ALL) {
+		/* we respawned */
+		pl.gravity = __NULL__;
+	}
+
 	if (fl & PLAYER_MODELINDEX)
 		pl.modelindex = readshort();
 

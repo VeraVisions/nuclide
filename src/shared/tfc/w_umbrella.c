@@ -14,21 +14,24 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/* stat wise is this the same as the crowbar, but we might tweak it, so it's a
+ * seperate weapon entry. who knows what modders/servers come up with, too */
+
 enum
 {
-	CBAR_IDLE,
-	CBAR_DRAW,
-	CBAR_HOLSTER,
-	CBAR_ATTACK1HIT,
-	CBAR_ATTACK1MISS,
-	CBAR_ATTACK2MISS,
-	CBAR_ATTACK2HIT,
-	CBAR_ATTACK3MISS,
-	CBAR_ATTACK3HIT
+	UMBRELLA_IDLE,
+	UMBRELLA_DRAW,
+	UMBRELLA_HOLSTER,
+	UMBRELLA_ATTACK1HIT,
+	UMBRELLA_ATTACK1MISS,
+	UMBRELLA_ATTACK2MISS,
+	UMBRELLA_ATTACK2HIT,
+	UMBRELLA_ATTACK3MISS,
+	UMBRELLA_ATTACK3HIT
 };
 
 void
-w_crowbar_precache(void)
+w_umbrella_precache(void)
 {
 	precache_sound("weapons/cbar_miss1.wav");
 	precache_sound("weapons/cbar_hit1.wav");
@@ -36,13 +39,13 @@ w_crowbar_precache(void)
 	precache_sound("weapons/cbar_hitbod1.wav");
 	precache_sound("weapons/cbar_hitbod2.wav");
 	precache_sound("weapons/cbar_hitbod3.wav");
-	precache_model("models/v_crowbar.mdl");
-	precache_model("models/w_crowbar.mdl");
-	precache_model("models/p_crowbar.mdl");
+	precache_model("models/v_umbrella.mdl");
+	precache_model("models/w_umbrella.mdl");
+	precache_model("models/p_umbrella.mdl");
 }
 
 void
-w_crowbar_updateammo(player pl)
+w_umbrella_updateammo(player pl)
 {
 #ifdef SSQC
 	Weapons_UpdateAmmo(pl, __NULL__, __NULL__, __NULL__);
@@ -50,37 +53,37 @@ w_crowbar_updateammo(player pl)
 }
 
 string
-w_crowbar_wmodel(void)
+w_umbrella_wmodel(void)
 {
-	return "models/w_crowbar.mdl";
+	return "models/w_umbrella.mdl";
 }
 string
-w_crowbar_pmodel(void)
+w_umbrella_pmodel(void)
 {
-	return "models/p_crowbar.mdl";
+	return "models/p_umbrella.mdl";
 }
 
 string
-w_crowbar_deathmsg(void)
+w_umbrella_deathmsg(void)
 {
-	return "%s was assaulted by %s's Crowbar.";
+	return "%s was assaulted by %s's Umbrella.";
 }
 
 void
-w_crowbar_draw(void)
+w_umbrella_draw(void)
 {
-	Weapons_SetModel("models/v_crowbar.mdl");
-	Weapons_ViewAnimation(CBAR_DRAW);
+	Weapons_SetModel("models/v_umbrella.mdl");
+	Weapons_ViewAnimation(UMBRELLA_DRAW);
 }
 
 void
-w_crowbar_holster(void)
+w_umbrella_holster(void)
 {
-	Weapons_ViewAnimation(CBAR_HOLSTER);
+	Weapons_ViewAnimation(UMBRELLA_HOLSTER);
 }
 
 void
-w_crowbar_primary(void)
+w_umbrella_primary(void)
 {
 	int anim = 0;
 	vector src;
@@ -97,13 +100,13 @@ w_crowbar_primary(void)
 	int r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
-		anim = trace_fraction >= 1 ? CBAR_ATTACK1MISS:CBAR_ATTACK1HIT;
+		anim = trace_fraction >= 1 ? UMBRELLA_ATTACK1MISS:UMBRELLA_ATTACK1HIT;
 		break;
 	case 1:
-		anim = trace_fraction >= 1 ? CBAR_ATTACK2MISS:CBAR_ATTACK2HIT;
+		anim = trace_fraction >= 1 ? UMBRELLA_ATTACK2MISS:UMBRELLA_ATTACK2HIT;
 		break;
 	default:
-		anim = trace_fraction >= 1 ? CBAR_ATTACK3MISS:CBAR_ATTACK3HIT;
+		anim = trace_fraction >= 1 ? UMBRELLA_ATTACK3MISS:UMBRELLA_ATTACK3HIT;
 	}
 	Weapons_ViewAnimation(anim);
 
@@ -160,7 +163,7 @@ w_crowbar_primary(void)
 }
 
 void
-w_crowbar_release(void)
+w_umbrella_release(void)
 {
 	player pl = (player)self;
 
@@ -168,18 +171,18 @@ w_crowbar_release(void)
 		return;
 	}
 
-	Weapons_ViewAnimation(CBAR_IDLE);
+	Weapons_ViewAnimation(UMBRELLA_IDLE);
 	pl.w_idle_next = 15.0f;
 }
 
 float
-w_crowbar_aimanim(void)
+w_umbrella_aimanim(void)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIMCROWBAR : ANIM_AIMCROWBAR;
 }
 
 void
-w_crowbar_hudpic(int selected, vector pos)
+w_umbrella_hudpic(int selected, vector pos)
 {
 #ifdef CSQC
 	if (selected) {
@@ -208,36 +211,27 @@ w_crowbar_hudpic(int selected, vector pos)
 #endif
 }
 
-weapon_t w_crowbar =
+weapon_t w_umbrella =
 {
-	.id		= ITEM_CROWBAR,
+	.id		= ITEM_UMBRELLA,
 	.slot		= 0,
-	.slot_pos	= 0,
+	.slot_pos	= 4,
 	.ki_spr		= "sprites/640hud1.spr_0.tga",
 	.ki_size	= [48,16],
 	.ki_xy		= [192,0],
-	.draw		= w_crowbar_draw,
-	.holster	= w_crowbar_holster,
-	.primary	= w_crowbar_primary,
+	.draw		= w_umbrella_draw,
+	.holster	= w_umbrella_holster,
+	.primary	= w_umbrella_primary,
 	.secondary	= __NULL__,
 	.reload		= __NULL__,
-	.release	= w_crowbar_release,
+	.release	= w_umbrella_release,
 	.crosshair	= __NULL__,
-	.precache	= w_crowbar_precache,
+	.precache	= w_umbrella_precache,
 	.pickup		= __NULL__,
-	.updateammo	= w_crowbar_updateammo,
-	.wmodel		= w_crowbar_wmodel,
-	.pmodel		= w_crowbar_pmodel,
-	.deathmsg	= w_crowbar_deathmsg,
-	.aimanim	= w_crowbar_aimanim,
-	.hudpic		= w_crowbar_hudpic
+	.updateammo	= w_umbrella_updateammo,
+	.wmodel		= w_umbrella_wmodel,
+	.pmodel		= w_umbrella_pmodel,
+	.deathmsg	= w_umbrella_deathmsg,
+	.aimanim	= w_umbrella_aimanim,
+	.hudpic		= w_umbrella_hudpic
 };
-
-/* entity definitions for pickups */
-#ifdef SSQC
-void
-weapon_crowbar(void)
-{
-	Weapons_InitItem(WEAPON_CROWBAR);
-}
-#endif

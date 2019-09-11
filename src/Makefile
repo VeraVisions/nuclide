@@ -14,3 +14,6 @@ qc-progs:
 	mkdir -p ../rewolf/data.pk3dir
 	$(CC) client/rewolf/progs.src
 	$(CC) server/rewolf/progs.src
+	mkdir -p ../tfc/data.pk3dir
+	$(CC) client/tfc/progs.src
+	$(CC) server/tfc/progs.src

@@ -14,34 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-typedef struct
-{
-	int id; /* bitflag id */
-	int slot;
-	int slot_pos;
-	string ki_spr;
-	vector ki_size;
-	vector ki_xy;
-
-	void() draw;
-	void() holster;
-	void() primary;
-	void() secondary;
-	void() reload;
-	void() release;
-	void() crosshair;
-
-	void() precache;
-	void() pickup;
-	void(player) updateammo;
-	string() wmodel;
-	string() pmodel;
-	string() deathmsg;
-	float() aimanim;
-	void(int, vector) hudpic;
-} weapon_t;
-
-/* Weapon Indices for the weapon table */
+/* weapon Indices for the weapon table */
 enum
 {
 	WEAPON_NONE,
@@ -77,28 +50,3 @@ enum
 	AMMO_SNARK,
 	AMMO_HORNET
 };
-
-void Weapons_DrawCrosshair(void);
-void Decals_PlaceSmall(vector);
-void Decals_PlaceBig(vector);
-void Weapons_MakeVectors(void);
-vector Weapons_GetCameraPos(void);
-void Weapons_ViewAnimation(int);
-void Weapons_ViewPunchAngle(vector);
-void Weapons_PlaySound(entity, float, string, float, float);
-int Weapons_IsPresent(player, int);
-void Weapons_SetModel(string);
-#ifdef SSQC
-void Weapons_RefreshAmmo(player);
-void Weapons_InitItem(int);
-float Weapons_GetAim(int);
-void Weapons_AddItem(player, int);
-void Weapons_RemoveItem(player, int);
-string Weapons_GetWorldmodel(int);
-void Weapons_UpdateAmmo(player, int, int, int);
-void Weapons_ReloadWeapon(player, .int, .int, int);
-#else
-string Weapons_GetPlayermodel(int);
-int Weapons_GetAnimation(void);
-void Weapons_HUDPic(int, int, vector);
-#endif

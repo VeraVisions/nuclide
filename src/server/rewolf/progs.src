@@ -36,6 +36,7 @@ monster_human_unarmed.cpp
 ../../shared/pmove.c
 ../valve/spectator.c
 ../../shared/valve/items.h
+../../shared/valve/weapon_common.h
 ../../shared/valve/weapons.h
 ../../shared/valve/w_crossbow.c
 ../../shared/valve/w_crowbar.c

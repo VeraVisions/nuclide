@@ -199,6 +199,30 @@ void Decal_MakeShader(decal target)
 	string shader_buff;
 	target.m_strShader = sprintf("decal_%s", target.m_strTexture);
 
+	if (target.style & DFLAG_INVERT) {
+		int i;
+		int *buff;
+		vector res;
+		int w, h;
+
+		res = drawgetimagesize(target.m_strTexture);
+		w = (int)res[0];
+		h = (int)res[1];
+		buff = r_readimage(target.m_strTexture, w, h);
+
+		/* we can only upload this under a new name */
+		target.m_strTexture = sprintf("%s_inv", target.m_strTexture);
+
+		if (buff != __NULL__) {
+			for (i = 0; i < ( w * h ); i++) {
+				//buff[i] = ~buff[i];
+			}
+			
+			r_uploadimage(target.m_strTexture, w, h, (void*)buff);
+			memfree(buff);
+		}
+	}
+
 	if (target.style & DFLAG_ADDITIVE) {
 		shader_buff = sprintf(g_decal_shader_add, target.m_strTexture);
 	} else {

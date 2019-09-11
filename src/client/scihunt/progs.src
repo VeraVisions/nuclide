@@ -38,6 +38,7 @@
 init.c
 
 ../../shared/scihunt/items.h
+../../shared/valve/weapon_common.h
 ../../shared/scihunt/weapons.h
 ../../shared/valve/w_crossbow.c
 ../../shared/valve/w_crowbar.c

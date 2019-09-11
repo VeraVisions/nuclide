@@ -31,6 +31,7 @@ player.c
 ../../shared/pmove.c
 spectator.c
 ../../shared/valve/items.h
+../../shared/valve/weapon_common.h
 ../../shared/valve/weapons.h
 ../../shared/valve/w_crossbow.c
 ../../shared/valve/w_crowbar.c

@@ -189,6 +189,7 @@ void Game_PutClientInServer(void)
 	setsize(pl, VEC_HULL_MIN, VEC_HULL_MAX);
 	pl.view_ofs = VEC_PLAYER_VIEWPOS;
 	pl.velocity = [0,0,0];
+	pl.gravity = __NULL__;
 	pl.frame = 1;
 	pl.SendEntity = Player_SendEntity;
 	pl.SendFlags = UPDATE_ALL;

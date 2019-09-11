@@ -49,19 +49,24 @@ void Game_Input(void)
 			pl.health = 100;
 			pl.armor = 100;
 			Weapons_AddItem(pl, WEAPON_CROWBAR);
-			Weapons_AddItem(pl, WEAPON_GLOCK);
-			Weapons_AddItem(pl, WEAPON_PYTHON);
-			Weapons_AddItem(pl, WEAPON_MP5);
-			Weapons_AddItem(pl, WEAPON_SHOTGUN);
-			Weapons_AddItem(pl, WEAPON_CROSSBOW);
+			Weapons_AddItem(pl, WEAPON_MEDKIT);
+			Weapons_AddItem(pl, WEAPON_KNIFE);
+			Weapons_AddItem(pl, WEAPON_WRENCH);
+			Weapons_AddItem(pl, WEAPON_UMBRELLA);
+			Weapons_AddItem(pl, WEAPON_SBS);
+			Weapons_AddItem(pl, WEAPON_SNIPER);
+			Weapons_AddItem(pl, WEAPON_TRANQUIL);
+			Weapons_AddItem(pl, WEAPON_RAILGUN);
+			Weapons_AddItem(pl, WEAPON_AUTORIFLE);
+			Weapons_AddItem(pl, WEAPON_DBS);
+			Weapons_AddItem(pl, WEAPON_NAILGUN);
+			Weapons_AddItem(pl, WEAPON_GLAUNCHER);
+			Weapons_AddItem(pl, WEAPON_SUPERNAIL);
+			Weapons_AddItem(pl, WEAPON_FLAMER);
 			Weapons_AddItem(pl, WEAPON_RPG);
-			Weapons_AddItem(pl, WEAPON_GAUSS);
-			Weapons_AddItem(pl, WEAPON_EGON);
-			Weapons_AddItem(pl, WEAPON_HORNETGUN);
-			Weapons_AddItem(pl, WEAPON_HANDGRENADE);
-			Weapons_AddItem(pl, WEAPON_SATCHEL);
-			Weapons_AddItem(pl, WEAPON_TRIPMINE);
-			Weapons_AddItem(pl, WEAPON_SNARK);
+			Weapons_AddItem(pl, WEAPON_PIPEBOMB);
+			Weapons_AddItem(pl, WEAPON_ASSCAN);
+			Weapons_AddItem(pl, WEAPON_INCENDIARY);
 		}
 
 		if (self.impulse == 102) {

@@ -24,7 +24,8 @@ string g_hgibs[] = {
 	"models/gib_b_gib.mdl"
 };
 
-void Effects_Init(void)
+void
+Effects_Init(void)
 {
 	precache_model("sprites/fexplo.spr");
 	precache_model("sprites/bloodspray.spr");
@@ -79,12 +80,13 @@ void Effects_Init(void)
 	precache_sound("weapons/ric_conc-2.wav");
 	precache_sound("weapons/knife_hitwall1.wav");
 #endif
-
 }
 #endif
 
 
-void Effect_GibHuman(vector pos) {
+void
+Effect_GibHuman(vector pos)
+{
 #ifdef SSQC
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_GIBHUMAN);
@@ -118,7 +120,9 @@ void Effect_GibHuman(vector pos) {
 #endif
 }
 
-void Effect_CreateExplosion(vector vPos) {
+void
+Effect_CreateExplosion(vector vPos)
+{
 #ifdef SSQC
 	Decals_PlaceScorch(vPos);
 	vPos[2] += 48;

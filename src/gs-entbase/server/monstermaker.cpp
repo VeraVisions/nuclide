@@ -23,10 +23,6 @@ All it does right now is spawn snarks, regardless of what monster you want to
 spawn.
 */
 
-#ifdef VALVE
-void() w_snark_deploy;
-#endif
-
 class monstermaker : CBaseTrigger
 {
 	void() monstermaker;
@@ -35,9 +31,7 @@ class monstermaker : CBaseTrigger
 
 void monstermaker :: Trigger ( void )
 {
-#ifdef VALVE
-	w_snark_deploy();
-#endif
+
 }
 
 void monstermaker :: monstermaker ( void )

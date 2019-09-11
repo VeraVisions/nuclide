@@ -163,11 +163,11 @@ void w_python_reload(void)
 }
 void w_python_release(void)
 {
-
 	player pl = (player)self;
 	if (pl.w_idle_next) {
 		return;
 	}
+
 	int r = floor(random(0,3));
 	switch (r) {
 	case 0:

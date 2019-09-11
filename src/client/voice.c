@@ -33,7 +33,7 @@ void Voice_DrawHUD(void) {
 			drawfill([pos[0] + 143, pos[1]], [1, 24], UI_MAINCOLOR, 1.0f);
 
 			drawfont = FONT_CON;
-			drawstring([pos[0] + 28, pos[1] + 8], getplayerkeyvalue(i, "name"), [12,12], UI_MAINCOLOR, 1.0f, DRAWFLAG_NORMAL);
+			drawstring([pos[0] + 28, pos[1] + 8], getplayerkeyvalue(i, "name"), [12,12], [1,1,1], 1.0f, DRAWFLAG_NORMAL);
 
 			drawpic(pos + [2,0], "gfx/vgui/icntlk_sv.tga", [24,24], UI_MAINCOLOR, 1, DRAWFLAG_NORMAL);
 			pos[1] -= 32;

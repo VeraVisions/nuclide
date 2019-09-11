@@ -23,7 +23,8 @@ typedef struct
 
 enumflags
 {
-	DFLAG_ADDITIVE
+	DFLAG_ADDITIVE,
+	DFLAG_INVERT
 };
 
 #define COLOR_REDBLOOD [114,25,7]
@@ -31,27 +32,27 @@ enumflags
 
 decal_t g_decalwad[] =
 {
-	{ "{bigblood1", COLOR_REDBLOOD, 0 },
-	{ "{bigblood2", COLOR_REDBLOOD, 0 },
+	{ "{bigblood1", COLOR_REDBLOOD, DFLAG_INVERT },
+	{ "{bigblood2", COLOR_REDBLOOD, DFLAG_INVERT },
 	{ "{bproof1", [255,255,255], DFLAG_ADDITIVE },
 	{ "{break1", [255,255,255], DFLAG_ADDITIVE },
 	{ "{break2", [255,255,255], DFLAG_ADDITIVE },
 	{ "{break3", [255,255,255], DFLAG_ADDITIVE },
-	{ "{blood1", COLOR_REDBLOOD, 0 },
-	{ "{blood2", COLOR_REDBLOOD, 0 },
-	{ "{blood3", COLOR_REDBLOOD, 0 },
-	{ "{blood4", COLOR_REDBLOOD, 0 },
-	{ "{blood5", COLOR_REDBLOOD, 0 },
-	{ "{blood6", COLOR_REDBLOOD, 0 },
-	{ "{blood7", COLOR_REDBLOOD, 0 },
-	{ "{blood8", COLOR_REDBLOOD, 0 },
-	{ "{bloodhand1", COLOR_REDBLOOD, 0 },
-	{ "{bloodhand2", COLOR_REDBLOOD, 0 },
-	{ "{bloodhand3", COLOR_REDBLOOD, 0 },
-	{ "{bloodhand4", COLOR_REDBLOOD, 0 },
-	{ "{bloodhand5", COLOR_REDBLOOD, 0 },
-	{ "{bloodhand6", COLOR_REDBLOOD, 0 },
-	{ "{hand1", COLOR_REDBLOOD, 0 },
+	{ "{blood1", COLOR_REDBLOOD, DFLAG_INVERT },
+	{ "{blood2", COLOR_REDBLOOD, DFLAG_INVERT },
+	{ "{blood3", COLOR_REDBLOOD, DFLAG_INVERT },
+	{ "{blood4", COLOR_REDBLOOD, DFLAG_INVERT },
+	{ "{blood5", COLOR_REDBLOOD, DFLAG_INVERT },
+	{ "{blood6", COLOR_REDBLOOD, DFLAG_INVERT },
+	{ "{blood7", COLOR_REDBLOOD, DFLAG_INVERT },
+	{ "{blood8", COLOR_REDBLOOD, DFLAG_INVERT },
+	{ "{bloodhand1", COLOR_REDBLOOD, DFLAG_INVERT },
+	{ "{bloodhand2", COLOR_REDBLOOD, DFLAG_INVERT },
+	{ "{bloodhand3", COLOR_REDBLOOD, DFLAG_INVERT },
+	{ "{bloodhand4", COLOR_REDBLOOD, DFLAG_INVERT },
+	{ "{bloodhand5", COLOR_REDBLOOD, DFLAG_INVERT },
+	{ "{bloodhand6", COLOR_REDBLOOD, DFLAG_INVERT },
+	{ "{hand1", COLOR_REDBLOOD, DFLAG_INVERT },
 	{ "{shot1", [255,255,255], 0 },
 	{ "{shot2", [255,255,255], 0 },
 	{ "{shot3", [255,255,255], 0 },
@@ -66,12 +67,12 @@ decal_t g_decalwad[] =
 	{ "{scorch1", [255,255,255], 0 },
 	{ "{scorch2", [255,255,255], 0 },
 	{ "{scorch3", [255,255,255], 0 },
-	{ "{yblood1", COLOR_YELLOWBLOOD, 0 },
-	{ "{yblood2", COLOR_YELLOWBLOOD, 0 },
-	{ "{yblood3", COLOR_YELLOWBLOOD, 0 },
-	{ "{yblood4", COLOR_YELLOWBLOOD, 0 },
-	{ "{yblood5", COLOR_YELLOWBLOOD, 0 },
-	{ "{yblood6", COLOR_YELLOWBLOOD, 0 },
-	{ "{yblood7", COLOR_YELLOWBLOOD, 0 },
-	{ "{yblood8", COLOR_YELLOWBLOOD, 0 }
+	{ "{yblood1", COLOR_YELLOWBLOOD, DFLAG_INVERT },
+	{ "{yblood2", COLOR_YELLOWBLOOD, DFLAG_INVERT },
+	{ "{yblood3", COLOR_YELLOWBLOOD, DFLAG_INVERT },
+	{ "{yblood4", COLOR_YELLOWBLOOD, DFLAG_INVERT },
+	{ "{yblood5", COLOR_YELLOWBLOOD, DFLAG_INVERT },
+	{ "{yblood6", COLOR_YELLOWBLOOD, DFLAG_INVERT },
+	{ "{yblood7", COLOR_YELLOWBLOOD, DFLAG_INVERT },
+	{ "{yblood8", COLOR_YELLOWBLOOD, DFLAG_INVERT }
 };

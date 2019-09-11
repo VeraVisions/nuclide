@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/* TODO: Move these into the player info struct! */
 float g_flFadeDuration;
 float g_flFadeHold;
 float g_flFadeMaxAlpha;
@@ -38,9 +39,19 @@ enumflags
 	EVF_ONLYUSER
 };
 
+const string mat_fade_modulate =
+	"{\n" \
+		"{\n" \
+			"map $whiteimage\n" \
+			"rgbGen vertex\n" \
+			"blendFunc GL_DST_COLOR GL_ONE_MINUS_SRC_ALPHA\n" \
+			"alphaGen vertex\n" \
+		"}\n" \
+	"}\n";
+
 void Fade_Init(void)
 {
-	shaderforname("fade_modulate","{\n{\nmap $whiteimage\nrgbGen vertex\nblendFunc GL_DST_COLOR GL_ONE_MINUS_SRC_ALPHA\nalphaGen vertex\n}\n}\n");
+	shaderforname("fade_modulate", mat_fade_modulate);
 }
 
 void Fade_Update (int x, int y, int w, int h)
@@ -50,13 +61,13 @@ void Fade_Update (int x, int y, int w, int h)
 	}
 	if (g_flFadeStyle & EVF_FADEDROM) {
 		if (g_flFadeTime > g_flFadeHold) {
-			g_flFadeAlpha -= (frametime * (1.0f / g_flFadeDuration)) * g_flFadeMaxAlpha;
+			g_flFadeAlpha -= (clframetime * (1.0f / g_flFadeDuration)) * g_flFadeMaxAlpha;
 		}
 	} else {
 		if (g_flFadeTime < g_flFadeDuration) {
-			g_flFadeAlpha += (frametime * (1.0f / g_flFadeDuration)) * g_flFadeMaxAlpha;
+			g_flFadeAlpha += (clframetime * (1.0f / g_flFadeDuration)) * g_flFadeMaxAlpha;
 		} else {
-			g_flFadeAlpha -= (frametime * (1.0f / g_flFadeHold)) * g_flFadeMaxAlpha;
+			g_flFadeAlpha -= (clframetime * (1.0f / g_flFadeHold)) * g_flFadeMaxAlpha;
 		}
 	}
 
@@ -77,7 +88,7 @@ void Fade_Update (int x, int y, int w, int h)
 		drawfill([x, y], [w, h], g_vecFadeColor, g_flFadeAlpha, 0);
 	}
 
-	g_flFadeTime += frametime;
+	g_flFadeTime += clframetime;
 }
 
 void Fade_Parse (void)

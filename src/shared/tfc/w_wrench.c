@@ -16,19 +16,19 @@
 
 enum
 {
-	CBAR_IDLE,
-	CBAR_DRAW,
-	CBAR_HOLSTER,
-	CBAR_ATTACK1HIT,
-	CBAR_ATTACK1MISS,
-	CBAR_ATTACK2MISS,
-	CBAR_ATTACK2HIT,
-	CBAR_ATTACK3MISS,
-	CBAR_ATTACK3HIT
+	WRENCH_IDLE,
+	WRENCH_DRAW,
+	WRENCH_HOLSTER,
+	WRENCH_ATTACK1HIT,
+	WRENCH_ATTACK1MISS,
+	WRENCH_ATTACK2MISS,
+	WRENCH_ATTACK2HIT,
+	WRENCH_ATTACK3MISS,
+	WRENCH_ATTACK3HIT
 };
 
 void
-w_crowbar_precache(void)
+w_wrench_precache(void)
 {
 	precache_sound("weapons/cbar_miss1.wav");
 	precache_sound("weapons/cbar_hit1.wav");
@@ -36,13 +36,13 @@ w_crowbar_precache(void)
 	precache_sound("weapons/cbar_hitbod1.wav");
 	precache_sound("weapons/cbar_hitbod2.wav");
 	precache_sound("weapons/cbar_hitbod3.wav");
-	precache_model("models/v_crowbar.mdl");
-	precache_model("models/w_crowbar.mdl");
-	precache_model("models/p_crowbar.mdl");
+	precache_model("models/v_tfc_spanner.mdl");
+	precache_model("models/w_wrench.mdl");
+	precache_model("models/p_wrench.mdl");
 }
 
 void
-w_crowbar_updateammo(player pl)
+w_wrench_updateammo(player pl)
 {
 #ifdef SSQC
 	Weapons_UpdateAmmo(pl, __NULL__, __NULL__, __NULL__);
@@ -50,37 +50,37 @@ w_crowbar_updateammo(player pl)
 }
 
 string
-w_crowbar_wmodel(void)
+w_wrench_wmodel(void)
 {
-	return "models/w_crowbar.mdl";
+	return "models/w_wrench.mdl";
 }
 string
-w_crowbar_pmodel(void)
+w_wrench_pmodel(void)
 {
-	return "models/p_crowbar.mdl";
+	return "models/p_wrench.mdl";
 }
 
 string
-w_crowbar_deathmsg(void)
+w_wrench_deathmsg(void)
 {
-	return "%s was assaulted by %s's Crowbar.";
+	return "%s was assaulted by %s's Wrench.";
 }
 
 void
-w_crowbar_draw(void)
+w_wrench_draw(void)
 {
-	Weapons_SetModel("models/v_crowbar.mdl");
-	Weapons_ViewAnimation(CBAR_DRAW);
+	Weapons_SetModel("models/v_tfc_spanner.mdl");
+	Weapons_ViewAnimation(WRENCH_DRAW);
 }
 
 void
-w_crowbar_holster(void)
+w_wrench_holster(void)
 {
-	Weapons_ViewAnimation(CBAR_HOLSTER);
+	Weapons_ViewAnimation(WRENCH_HOLSTER);
 }
 
 void
-w_crowbar_primary(void)
+w_wrench_primary(void)
 {
 	int anim = 0;
 	vector src;
@@ -97,13 +97,13 @@ w_crowbar_primary(void)
 	int r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
-		anim = trace_fraction >= 1 ? CBAR_ATTACK1MISS:CBAR_ATTACK1HIT;
+		anim = trace_fraction >= 1 ? WRENCH_ATTACK1MISS:WRENCH_ATTACK1HIT;
 		break;
 	case 1:
-		anim = trace_fraction >= 1 ? CBAR_ATTACK2MISS:CBAR_ATTACK2HIT;
+		anim = trace_fraction >= 1 ? WRENCH_ATTACK2MISS:WRENCH_ATTACK2HIT;
 		break;
 	default:
-		anim = trace_fraction >= 1 ? CBAR_ATTACK3MISS:CBAR_ATTACK3HIT;
+		anim = trace_fraction >= 1 ? WRENCH_ATTACK3MISS:WRENCH_ATTACK3HIT;
 	}
 	Weapons_ViewAnimation(anim);
 
@@ -160,7 +160,7 @@ w_crowbar_primary(void)
 }
 
 void
-w_crowbar_release(void)
+w_wrench_release(void)
 {
 	player pl = (player)self;
 
@@ -168,26 +168,26 @@ w_crowbar_release(void)
 		return;
 	}
 
-	Weapons_ViewAnimation(CBAR_IDLE);
+	Weapons_ViewAnimation(WRENCH_IDLE);
 	pl.w_idle_next = 15.0f;
 }
 
 float
-w_crowbar_aimanim(void)
+w_wrench_aimanim(void)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIMCROWBAR : ANIM_AIMCROWBAR;
 }
 
 void
-w_crowbar_hudpic(int selected, vector pos)
+w_wrench_hudpic(int selected, vector pos)
 {
 #ifdef CSQC
 	if (selected) {
 		drawsubpic(
 			pos,
 			[170,45],
-			"sprites/640hud4.spr_0.tga",
-			[0,0],
+			"sprites/tfchud04.spr_0.tga",
+			[0,180/256],
 			[170/256,45/256],
 			g_hud_color,
 			1.0f,
@@ -197,8 +197,8 @@ w_crowbar_hudpic(int selected, vector pos)
 		drawsubpic(
 			pos,
 			[170,45],
-			"sprites/640hud1.spr_0.tga",
-			[0,0],
+			"sprites/tfchud03.spr_0.tga",
+			[0,135/256],
 			[170/256,45/256],
 			g_hud_color,
 			1.0f,
@@ -208,36 +208,27 @@ w_crowbar_hudpic(int selected, vector pos)
 #endif
 }
 
-weapon_t w_crowbar =
+weapon_t w_wrench =
 {
-	.id		= ITEM_CROWBAR,
+	.id		= ITEM_WRENCH,
 	.slot		= 0,
-	.slot_pos	= 0,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
+	.slot_pos	= 3,
+	.ki_spr		= "sprites/tfc_dmsg.spr_0.tga",
 	.ki_size	= [48,16],
-	.ki_xy		= [192,0],
-	.draw		= w_crowbar_draw,
-	.holster	= w_crowbar_holster,
-	.primary	= w_crowbar_primary,
+	.ki_xy		= [0,48],
+	.draw		= w_wrench_draw,
+	.holster	= w_wrench_holster,
+	.primary	= w_wrench_primary,
 	.secondary	= __NULL__,
 	.reload		= __NULL__,
-	.release	= w_crowbar_release,
+	.release	= w_wrench_release,
 	.crosshair	= __NULL__,
-	.precache	= w_crowbar_precache,
+	.precache	= w_wrench_precache,
 	.pickup		= __NULL__,
-	.updateammo	= w_crowbar_updateammo,
-	.wmodel		= w_crowbar_wmodel,
-	.pmodel		= w_crowbar_pmodel,
-	.deathmsg	= w_crowbar_deathmsg,
-	.aimanim	= w_crowbar_aimanim,
-	.hudpic		= w_crowbar_hudpic
+	.updateammo	= w_wrench_updateammo,
+	.wmodel		= w_wrench_wmodel,
+	.pmodel		= w_wrench_pmodel,
+	.deathmsg	= w_wrench_deathmsg,
+	.aimanim	= w_wrench_aimanim,
+	.hudpic		= w_wrench_hudpic
 };
-
-/* entity definitions for pickups */
-#ifdef SSQC
-void
-weapon_crowbar(void)
-{
-	Weapons_InitItem(WEAPON_CROWBAR);
-}
-#endif
