@@ -17,14 +17,11 @@
 enum
 {
 	WRENCH_IDLE,
+	WRENCH_ATTACK1,
+	WRENCH_ATTACK2,
+	WRENCH_USE,
 	WRENCH_DRAW,
-	WRENCH_HOLSTER,
-	WRENCH_ATTACK1HIT,
-	WRENCH_ATTACK1MISS,
-	WRENCH_ATTACK2MISS,
-	WRENCH_ATTACK2HIT,
-	WRENCH_ATTACK3MISS,
-	WRENCH_ATTACK3HIT
+	WRENCH_HOLSTER
 };
 
 void
@@ -37,8 +34,7 @@ w_wrench_precache(void)
 	precache_sound("weapons/cbar_hitbod2.wav");
 	precache_sound("weapons/cbar_hitbod3.wav");
 	precache_model("models/v_tfc_spanner.mdl");
-	precache_model("models/w_wrench.mdl");
-	precache_model("models/p_wrench.mdl");
+	precache_model("models/p_spanner.mdl");
 }
 
 void
@@ -52,18 +48,18 @@ w_wrench_updateammo(player pl)
 string
 w_wrench_wmodel(void)
 {
-	return "models/w_wrench.mdl";
+	return "models/ball.mdl";
 }
 string
 w_wrench_pmodel(void)
 {
-	return "models/p_wrench.mdl";
+	return "models/p_spanner.mdl";
 }
 
 string
 w_wrench_deathmsg(void)
 {
-	return "%s was assaulted by %s's Wrench.";
+	return "%s was assaulted by %s's wrench.";
 }
 
 void
@@ -94,23 +90,20 @@ w_wrench_primary(void)
 	src = pl.origin + pl.view_ofs;
 	traceline(src, src + (v_forward * 32), FALSE, pl);
 
-	int r = (float)input_sequence % 3;
+	int r = (float)input_sequence % 2;
 	switch (r) {
 	case 0:
-		anim = trace_fraction >= 1 ? WRENCH_ATTACK1MISS:WRENCH_ATTACK1HIT;
-		break;
-	case 1:
-		anim = trace_fraction >= 1 ? WRENCH_ATTACK2MISS:WRENCH_ATTACK2HIT;
+		anim = WRENCH_ATTACK1;
 		break;
 	default:
-		anim = trace_fraction >= 1 ? WRENCH_ATTACK3MISS:WRENCH_ATTACK3HIT;
+		anim = WRENCH_ATTACK2;
 	}
 	Weapons_ViewAnimation(anim);
 
-	if (trace_fraction >= 1.0) {
-		pl.w_attack_next = 0.5f;
-	} else {
+	if (trace_fraction < 1.0) {
 		pl.w_attack_next = 0.25f;
+	} else {
+		pl.w_attack_next = 0.5f;
 	}
 
 	pl.w_idle_next = 2.5f;
