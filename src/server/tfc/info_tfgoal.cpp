@@ -77,3 +77,5 @@ info_tfgoal::info_tfgoal(void)
 	CBaseEntity::CBaseEntity();
 	info_tfgoal::Respawn();
 }
+
+CLASSEXPORT(i_t_g, info_tfgoal)
