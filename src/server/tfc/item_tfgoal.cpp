@@ -45,6 +45,8 @@ item_tfgoal::Respawn(void)
 	solid = SOLID_TRIGGER;
 	movetype = MOVETYPE_NONE;
 	setmodel(this, m_oldModel);
+	setsize(this, VEC_HULL_MIN, VEC_HULL_MAX);
+	setorigin(this, m_oldOrigin);
 }
 
 void
@@ -67,4 +69,3 @@ item_tfgoal::item_tfgoal(void)
 	CBaseEntity::CBaseEntity();
 	item_tfgoal::Respawn();
 }
-
