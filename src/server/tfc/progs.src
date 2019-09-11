@@ -50,6 +50,7 @@
 ../../shared/tfc/w_wrench.c
 ../valve/items.cpp
 ../valve/item_weaponbox.cpp
+../valve/item_healthkit.cpp
 info_tfgoal.cpp
 item_tfgoal.cpp
 info_player_teamspawn.cpp
