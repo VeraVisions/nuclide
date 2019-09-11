@@ -14,14 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*
-=================
-Input_Handle
-
-Handles impulse and whatnot
-=================
-*/
-void Game_Input(void)
+void
+Game_Input(void)
 {
 	if (input_buttons & INPUT_BUTTON0) {
 		Weapons_Primary();
@@ -45,30 +39,6 @@ void Game_Input(void)
 
 	if (cvar("sv_cheats") == 1) {
 		player pl = (player)self;
-		if (self.impulse == 101) {
-			pl.health = 100;
-			pl.armor = 100;
-			Weapons_AddItem(pl, WEAPON_CROWBAR);
-			Weapons_AddItem(pl, WEAPON_MEDKIT);
-			Weapons_AddItem(pl, WEAPON_KNIFE);
-			Weapons_AddItem(pl, WEAPON_WRENCH);
-			Weapons_AddItem(pl, WEAPON_UMBRELLA);
-			Weapons_AddItem(pl, WEAPON_SBS);
-			Weapons_AddItem(pl, WEAPON_SNIPER);
-			Weapons_AddItem(pl, WEAPON_TRANQUIL);
-			Weapons_AddItem(pl, WEAPON_RAILGUN);
-			Weapons_AddItem(pl, WEAPON_AUTORIFLE);
-			Weapons_AddItem(pl, WEAPON_DBS);
-			Weapons_AddItem(pl, WEAPON_NAILGUN);
-			Weapons_AddItem(pl, WEAPON_GLAUNCHER);
-			Weapons_AddItem(pl, WEAPON_SUPERNAIL);
-			Weapons_AddItem(pl, WEAPON_FLAMER);
-			Weapons_AddItem(pl, WEAPON_RPG);
-			Weapons_AddItem(pl, WEAPON_PIPEBOMB);
-			Weapons_AddItem(pl, WEAPON_ASSCAN);
-			Weapons_AddItem(pl, WEAPON_INCENDIARY);
-		}
-
 		if (self.impulse == 102) {
 			// Respawn all the entities
 			for (entity a = world; (a = findfloat(a, gflags, GF_CANRESPAWN));) {

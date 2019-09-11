@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
+ *
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
+ * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
+ * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 
 enum {
 	CLASS_SCOUT = 1,
@@ -98,55 +113,64 @@ CSEv_TeamJoin_f(float f)
 		Weapons_AddItem(pl, WEAPON_CROWBAR);
 		Weapons_AddItem(pl, WEAPON_SBS);
 		Weapons_AddItem(pl, WEAPON_NAILGUN);
+		env_message_single(pl, "HELP_SCOUT");
 		break;
 	case CLASS_SNIPER:
 		Weapons_AddItem(pl, WEAPON_CROWBAR);
 		Weapons_AddItem(pl, WEAPON_SNIPER);
 		Weapons_AddItem(pl, WEAPON_AUTORIFLE);
 		Weapons_AddItem(pl, WEAPON_NAILGUN);
+		env_message_single(pl, "HELP_SNIPER");
 		break;
 	case CLASS_SOLDIER:
 		Weapons_AddItem(pl, WEAPON_CROWBAR);
 		Weapons_AddItem(pl, WEAPON_SBS);
 		Weapons_AddItem(pl, WEAPON_DBS);
 		Weapons_AddItem(pl, WEAPON_RPG);
+		env_message_single(pl, "HELP_SOLDIER");
 		break;
 	case CLASS_DEMO:
 		Weapons_AddItem(pl, WEAPON_CROWBAR);
 		Weapons_AddItem(pl, WEAPON_SBS);
 		Weapons_AddItem(pl, WEAPON_GLAUNCHER);
 		Weapons_AddItem(pl, WEAPON_PIPEBOMB);
+		env_message_single(pl, "HELP_DEMOMAN");
 		break;
 	case CLASS_MEDIC:
 		Weapons_AddItem(pl, WEAPON_MEDKIT);
 		Weapons_AddItem(pl, WEAPON_SBS);
 		Weapons_AddItem(pl, WEAPON_DBS);
 		Weapons_AddItem(pl, WEAPON_SUPERNAIL);
+		env_message_single(pl, "HELP_MEDIC");
 		break;
 	case CLASS_HVYWEAPON:
 		Weapons_AddItem(pl, WEAPON_CROWBAR);
 		Weapons_AddItem(pl, WEAPON_SBS);
 		Weapons_AddItem(pl, WEAPON_DBS);
 		Weapons_AddItem(pl, WEAPON_ASSCAN);
+		env_message_single(pl, "HELP_HWGUY");
 		break;
 	case CLASS_PYRO:
 		Weapons_AddItem(pl, WEAPON_CROWBAR);
 		Weapons_AddItem(pl, WEAPON_SBS);
 		Weapons_AddItem(pl, WEAPON_FLAMER);
 		Weapons_AddItem(pl, WEAPON_INCENDIARY);
+		env_message_single(pl, "HELP_PYRO");
 		break;
 	case CLASS_SPY:
 		Weapons_AddItem(pl, WEAPON_KNIFE);
 		Weapons_AddItem(pl, WEAPON_TRANQUIL);
 		Weapons_AddItem(pl, WEAPON_DBS);
 		Weapons_AddItem(pl, WEAPON_NAILGUN);
+		env_message_single(pl, "HELP_SPY");
 		break;
 	case CLASS_ENGINEER:
 		Weapons_AddItem(pl, WEAPON_WRENCH);
 		Weapons_AddItem(pl, WEAPON_RAILGUN);
 		Weapons_AddItem(pl, WEAPON_DBS);
+		env_message_single(pl, "HELP_ENGINEER");
 		break;
 	}
-	
+
 	pl.g_items |= ITEM_SUIT;
 } 
