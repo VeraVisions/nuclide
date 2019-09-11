@@ -30,7 +30,7 @@ is set. An optional sound effect can be supplied as well.
 enumflags
 {
 	EMF_ONCE,
-    EMF_ALLPLAYERS
+	EMF_ALLPLAYERS
 };
 
 class env_message:CBaseTrigger
@@ -91,4 +91,17 @@ void env_message::env_message(void)
 	}
 	CBaseTrigger::CBaseTrigger();
 	env_message::Respawn();
+}
+
+void
+env_message_single(entity target, string msg)
+{
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_MESSAGE);
+	WriteString(MSG_MULTICAST, msg);
+	WriteString(MSG_MULTICAST, "misc/talk.wav");
+	WriteFloat(MSG_MULTICAST, 1.0);
+	WriteByte(MSG_MULTICAST, ATTN_NORM);
+	msg_entity = target;
+	multicast([0,0,0], MULTICAST_ONE_R);
 }
