@@ -21,6 +21,9 @@ enum {
 	MP5_GRENADE,
 	MP5_RELOAD,
 	MP5_DRAW,
+#ifdef GEARBOX
+	MP5_DEPLOY, /* not sure what this is about */
+#endif
 	MP5_FIRE1,
 	MP5_FIRE2,
 	MP5_FIRE3

@@ -134,7 +134,7 @@ w_m249_primary(void)
 	Weapons_UpdateAmmo(pl, pl.m249_mag, pl.ammo_556, __NULL__);
 #endif
 
-	pl.w_attack_next = 0.1f;
+	pl.w_attack_next = 0.075f;
 	pl.w_idle_next = 10.0f;
 }
 
@@ -178,6 +178,7 @@ void
 w_m249_release(void)
 {
 	player pl = (player)self;
+
 	if (pl.w_idle_next > 0.0) {
 		return;
 	}

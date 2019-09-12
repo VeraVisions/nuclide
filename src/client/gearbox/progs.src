@@ -3,6 +3,7 @@
 
 #define CSQC
 #define VALVE
+#define GEARBOX
 
 #includelist
 ../../shared/fteextensions.qc

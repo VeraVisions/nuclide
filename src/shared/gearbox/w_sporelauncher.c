@@ -170,6 +170,7 @@ void
 w_sporelauncher_reload(void)
 {
 	player pl = (player)self;
+
 #ifdef CSQC
 	if (pl.a_ammo1 >= 5) {
 		return;

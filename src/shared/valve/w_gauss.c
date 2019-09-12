@@ -302,46 +302,49 @@ void w_gauss_secondary(void)
 
 void w_gauss_release(void)
 {
-    player pl = (player)self;
-    if (pl.w_idle_next > 0.0) {
-        return;
-    }
-  
-    /* Reset the pitch sound shift */
-    pl.a_ammo1 = 0;
+	player pl = (player)self;
+	if (pl.w_idle_next > 0.0) {
+		return;
+	}
 
-    if (pl.a_ammo3 == 1) {
-        pl.w_attack_next = 0.0f;
-        pl.w_idle_next = 4.0f;
-        w_gauss_primary();
-        pl.a_ammo3 = 0;
-        return;
-    } else if (pl.a_ammo3 == 2) {
-        w_gauss_fire(0);
-        Weapons_ViewAnimation(GAUSS_FIRE1);
+	/* Reset the pitch sound shift */
+	pl.a_ammo1 = 0;
 
+	if (pl.a_ammo3 == 1) {
+		pl.w_attack_next = 0.0f;
+		pl.w_idle_next = 4.0f;
+		w_gauss_primary();
+		pl.a_ammo3 = 0;
+		return;
+	} else if (pl.a_ammo3 == 2) {
+		w_gauss_fire(0);
+		Weapons_ViewAnimation(GAUSS_FIRE1);
 #ifdef CSQC	 
 		soundupdate(pl, CHAN_WEAPON, "", -1, ATTN_NORM, 0, 0, 0);
 #endif
-        pl.w_attack_next = 1.5f;
-        pl.w_idle_next = 4.0f;
-        pl.a_ammo3 = 0;
-        return;
-    }
+		pl.w_attack_next = 1.5f;
+		pl.w_idle_next = 4.0f;
+		pl.a_ammo3 = 0;
+		return;
+	}
 
-    int r = floor(random(0,3));
-    switch (r) {
-    case 0:
-        Weapons_ViewAnimation(GAUSS_IDLE1);
-        break;
-    case 1:
-        Weapons_ViewAnimation(GAUSS_IDLE2);
-        break;
-    case 2:
-        Weapons_ViewAnimation(GAUSS_FIDGET);
-        break;
-    }
-	pl.w_idle_next = 3.0f;
+	int r = (float)input_sequence % 3;
+	switch (r) {
+	case 1:
+		Weapons_ViewAnimation(GAUSS_IDLE2);
+		pl.w_idle_next = 4.0f;
+		break;
+#ifndef GEARBOX
+	case 2:
+		Weapons_ViewAnimation(GAUSS_FIDGET);
+		pl.w_idle_next = 3.0f;
+		break;
+#endif
+	default:
+		Weapons_ViewAnimation(GAUSS_IDLE1);
+		pl.w_idle_next = 4.0f;
+		break;
+	}
 }
 
 void w_gauss_reload(void)

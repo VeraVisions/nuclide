@@ -127,13 +127,13 @@ w_shockrifle_release(void)
 	#ifdef CSQC
 		if (pl.a_ammo2 < 10) {
 			pl.a_ammo2 = bound(0, pl.a_ammo2 + 1, 10);
-			pl.w_idle_next = 0.5f;
+			pl.w_idle_next = 0.35f;
 		}
 	#else
 		if (pl.ammo_shock < 10) {
 			pl.ammo_shock = bound(0, pl.ammo_shock + 1, 10);
 			Weapons_UpdateAmmo(pl, -1, pl.ammo_shock, -1);
-			pl.w_idle_next = 0.5f;
+			pl.w_idle_next = 0.35f;
 		}
 	#endif
 
@@ -183,7 +183,7 @@ w_shockrifle_primary(void)
 
 	Weapons_ViewAnimation(SHOCKRIFLE_SHOOT);
 	pl.w_attack_next = 0.1f;
-	pl.w_idle_next = 0.75f;
+	pl.w_idle_next = 0.5f;
 }
 
 void

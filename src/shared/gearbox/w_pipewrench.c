@@ -108,9 +108,9 @@ w_pipewrench_primary(void)
 	traceline(src, src + (v_forward * 32), FALSE, pl);
 
 	if (trace_fraction >= 1.0) {
-		pl.w_attack_next = 0.9f;
-	} else {
 		pl.w_attack_next = 0.7f;
+	} else {
+		pl.w_attack_next = 0.53f;
 	}
 	pl.w_idle_next = 2.5f;
 
@@ -181,7 +181,7 @@ w_pipewrench_secondary(void)
 		if (pl.a_ammo1 != 1) {
 			Weapons_ViewAnimation(PIPE_ATTACKBIGWIND);
 			pl.a_ammo1 = 1;
-			pl.w_attack_next = 0.86f;
+			pl.w_attack_next = 0.75f;
 		}
 	}
 	pl.w_idle_next = 2.5f;
