@@ -273,12 +273,12 @@ void w_gauss_secondary(void)
 #endif
 
 #ifdef CSQC
-    if (pl.a_ammo1 < 255)
+	if (pl.a_ammo1 < 255)
 		pl.a_ammo2--;
 #else
 	if (pl.a_ammo1 < 255)
 		pl.ammo_uranium--;
-    Weapons_UpdateAmmo(pl, pl.a_ammo1, pl.ammo_uranium, pl.a_ammo3);
+	Weapons_UpdateAmmo(pl, pl.a_ammo1, pl.ammo_uranium, pl.a_ammo3);
 #endif
 	
 	/* Set pitch sound shift */

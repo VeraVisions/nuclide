@@ -42,6 +42,9 @@ class player
 	vector view_ofs;
 	float weapontime;
 
+	/* special for opfor */
+	entity hook;
+
 	/* Weapon specific */
 	int glock_mag;
 	int mp5_mag;

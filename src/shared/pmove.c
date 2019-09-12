@@ -675,6 +675,7 @@ PMove_Run_Move(void)
 void
 PMove_Run(void)
 {
+	player pl = (player)self;
 #ifdef VALVE
 	self.maxspeed = (self.flags & FL_CROUCHING) ? 135 : 270;
 
@@ -695,6 +696,14 @@ PMove_Run(void)
 		input_movevalues[2] = -240;
 	}
 
+	/* grappling hook stuff */
+#ifdef GEARBOX
+	if (pl.hook.skin == 1) {
+		pl.velocity = (pl.hook.origin - pl.origin);
+		pl.velocity = (pl.velocity * (1 / (vlen(pl.velocity) / 1000)));
+	}
+#endif
+
 	/* call accelerate before and after the actual move, 
 	 * with half the move each time. this reduces framerate dependence. 
 	 * and makes controlling jumps slightly easier
@@ -709,7 +718,6 @@ PMove_Run(void)
 
 	touchtriggers();
 
-	player pl = (player)self;
 #ifdef VALVE
 	pl.w_attack_next = max(0, pl.w_attack_next - input_timelength);
 	pl.w_idle_next = max(0, pl.w_idle_next - input_timelength);

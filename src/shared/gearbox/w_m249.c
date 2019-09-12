@@ -18,7 +18,7 @@
 enum {
 	M249_IDLE1,
 	M249_IDLE2,
-	M249_RELOAD,
+	M249_RELOAD1,
 	M249_RELOAD2,
 	M249_HOLSTER,
 	M249_DRAW,
@@ -89,10 +89,38 @@ w_m249_holster(void)
 }
 
 void
+w_m249_release(void)
+{
+	player pl = (player)self;
+
+	if (pl.w_idle_next > 0.0) {
+		return;
+	}
+
+	if (pl.a_ammo3 == 1) {
+		Weapons_ViewAnimation(M249_RELOAD2);
+		pl.a_ammo3 = 0;
+		pl.w_attack_next = 2.45f;
+		pl.w_idle_next = 15.0f;
+		return;
+	}
+
+	if (random() < 0.5) {
+		Weapons_ViewAnimation(M249_IDLE1);
+	} else {
+		Weapons_ViewAnimation(M249_IDLE2);
+	}
+
+	pl.w_idle_next = 15.0f;
+}
+
+void
 w_m249_primary(void)
 {
 	player pl = (player)self;
+
 	if (pl.w_attack_next > 0.0) {
+		w_m249_release();
 		return;
 	}
 
@@ -114,9 +142,9 @@ w_m249_primary(void)
 #ifdef CSQC
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
-	Weapons_ViewPunchAngle([-10,0,0]);
+	Weapons_ViewPunchAngle([-5,0,0]);
 #else
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.05234,0.05234]);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.052,0.052]);
 
 	int r = (float)input_sequence % 3;
 	switch (r) {
@@ -143,10 +171,10 @@ w_m249_reload(void)
 {
 	player pl = (player)self;
 	if (pl.w_attack_next) {
+		w_m249_release();
 		return;
 	}
 
-	/* ammo check */
 #ifdef CSQC
 	if (pl.a_ammo1 >= 50) {
 		return;
@@ -154,6 +182,7 @@ w_m249_reload(void)
 	if (pl.a_ammo2 <= 0) {
 		return;
 	}
+	Weapons_ViewAnimation(M249_RELOAD1);
 #else
 	if (pl.m249_mag >= 50) {
 		return;
@@ -161,35 +190,13 @@ w_m249_reload(void)
 	if (pl.ammo_556 <= 0) {
 		return;
 	}
-#endif
-
-	Weapons_ViewAnimation(M249_RELOAD2);
-
-#ifdef SSQC
 	Weapons_ReloadWeapon(pl, player::m249_mag, player::ammo_556, 50);
 	Weapons_UpdateAmmo(pl, pl.m249_mag, pl.ammo_556, __NULL__);
 #endif
 
-	pl.w_attack_next = 1.5f;
-	pl.w_idle_next = 10.0f;
-}
-
-void
-w_m249_release(void)
-{
-	player pl = (player)self;
-
-	if (pl.w_idle_next > 0.0) {
-		return;
-	}
-
-	if (random() < 0.5) {
-		Weapons_ViewAnimation(M249_IDLE1);
-	} else {
-		Weapons_ViewAnimation(M249_IDLE2);
-	}
-
-	pl.w_idle_next = 15.0f;
+	pl.a_ammo3 = 1;
+	pl.w_attack_next = 10.0f;
+	pl.w_idle_next = 1.5f;
 }
 
 void

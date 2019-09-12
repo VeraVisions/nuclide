@@ -149,10 +149,10 @@ void w_crossbow_primary(void)
 	Weapons_ViewPunchAngle([-2,0,0]);
 #endif
 	if (pl.a_ammo1) {
-        Weapons_ViewAnimation(CROSSBOW_FIRE1);
-    } else {
-        Weapons_ViewAnimation(CROSSBOW_FIRE3);
-    }
+		Weapons_ViewAnimation(CROSSBOW_FIRE1);
+	} else {
+		Weapons_ViewAnimation(CROSSBOW_FIRE3);
+	}
 	pl.w_attack_next = 0.75f;
 	pl.w_idle_next = 10.0f;
 }

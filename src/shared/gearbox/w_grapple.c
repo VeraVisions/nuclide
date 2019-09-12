@@ -16,7 +16,7 @@
 
 enum
 {
-	BARN_IDLE,
+	BARN_IDLE1,
 	BARN_IDLE2,
 	BARN_IDLE3,
 	BARN_COUGH,
@@ -40,7 +40,7 @@ w_grapple_precache(void)
 	precache_sound("weapons/bgrapple_wait.wav");
 	precache_model("models/v_bgrap.mdl");
 	precache_model("models/v_bgrap_tonguetip.mdl");
-	precache_model("models/w_grapple.mdl");
+	precache_model("models/w_bgrap.mdl");
 	precache_model("models/p_bgrap.mdl");
 }
 
@@ -48,7 +48,7 @@ void
 w_grapple_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, __NULL__, __NULL__, __NULL__);
+	Weapons_UpdateAmmo(pl, -1, -1, -1);
 #endif
 }
 
@@ -83,10 +83,48 @@ w_grapple_holster(void)
 	Weapons_ViewAnimation(BARN_HOLSTER);
 }
 
+void Grapple_Touch(void)
+{
+	player pl = (player)self.owner;
+	pl.hook.movetype = MOVETYPE_NONE;
+	pl.hook.touch = __NULL__;
+	pl.hook.velocity = [0,0,0];
+	pl.hook.solid = SOLID_NOT;
+	pl.hook.skin = 1; /* grappled */
+	pl.a_ammo1 = 1;
+}
+
 void
 w_grapple_primary(void)
 {
-/* TODO, 25 damage */
+	player pl = (player)self;
+
+	if (pl.hook != __NULL__) {
+		/* play the looping reel anim once */
+		if (pl.a_ammo1 == 1) {
+			pl.a_ammo1 = 2;
+			Weapons_ViewAnimation(BARN_FIRETRAVEL);
+		}
+		return;
+	}
+
+	Weapons_MakeVectors();
+	pl.hook = spawn();
+
+#ifdef CSQC
+	setmodel(pl.hook, "models/v_bgrap_tonguetip.mdl");
+	pl.hook.drawmask = MASK_ENGINE;
+#endif
+	setorigin(pl.hook, Weapons_GetCameraPos() + (v_forward * 16));
+	pl.hook.owner = self;
+	pl.hook.velocity = v_forward * 800;
+	pl.hook.movetype = MOVETYPE_FLYMISSILE;
+	pl.hook.solid = SOLID_BBOX;
+	pl.hook.angles = vectoangles(pl.hook.velocity);
+	pl.hook.touch = Grapple_Touch;
+	pl.hook.skin = 0; /* ungrappled */
+	setsize(pl.hook, [0,0,0], [0,0,0]);
+	Weapons_ViewAnimation(BARN_FIRE);
 }
 
 void
@@ -99,7 +137,37 @@ w_grapple_secondary(void)
 void
 w_grapple_release(void)
 {
+	player pl = (player)self;
 
+	if (pl.hook != __NULL__) {
+		pl.hook.skin = 0; /* ungrappled */
+		remove(pl.hook);
+		pl.hook = __NULL__;
+		Weapons_ViewAnimation(BARN_FIRERELEASE);
+		pl.w_idle_next = 1.0f;
+	}
+
+	if (pl.w_idle_next > 0.0) {
+		return;
+	}
+
+	int r = (float)input_sequence % 3;
+	switch (r) {
+	case 1:
+		Weapons_ViewAnimation(BARN_IDLE1);
+		pl.w_idle_next = 2.566667f;
+		break;
+
+	case 2:
+		Weapons_ViewAnimation(BARN_IDLE2);
+		pl.w_idle_next = 10.0f;
+		break;
+
+	default:
+		Weapons_ViewAnimation(BARN_IDLE3);
+		pl.w_idle_next = 1.35f;
+		break;
+	}
 }
 
 float
