@@ -38,6 +38,7 @@ w_eagle_precache(void)
 
 	precache_sound("weapons/desert_eagle_fire.wav");
 	precache_sound("weapons/desert_eagle_sight.wav");
+	precache_sound("weapons/desert_eagle_sight2.wav");
 }
 void
 w_eagle_pickup(void)
@@ -50,7 +51,7 @@ void
 w_eagle_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, pl.eagle_mag, pl.ammo_357, 0);
+	Weapons_UpdateAmmo(pl, pl.eagle_mag, pl.ammo_357, -1);
 #endif
 }
 
@@ -86,6 +87,30 @@ void
 w_eagle_holster(void)
 {
 	Weapons_ViewAnimation(EAGLE_HOLSTER);
+}
+
+void
+w_eagle_release(void)
+{
+	player pl = (player)self;
+
+	if (pl.w_idle_next) {
+		return;
+	}
+
+	/* these idles don't support the 'empty' animation style */
+#ifdef CSQC
+	if (pl.a_ammo1 <= 0) {
+		return;
+	}
+#else
+	if (pl.eagle_mag <= 0) {
+		return;
+	}
+#endif
+
+	Weapons_ViewAnimation(EAGLE_IDLE1 + floor(random(0,5)));
+	pl.w_idle_next = 15.0f;
 }
 
 void
@@ -150,10 +175,15 @@ w_eagle_secondary(void)
 	pl.a_ammo3 = 1 - pl.a_ammo3;
 
 #ifdef SSQC
-	sound(pl, CHAN_WEAPON, "weapons/desert_eagle_sight.wav", 1, ATTN_NORM);
+	if (pl.a_ammo3) {
+		sound(pl, 8, "weapons/desert_eagle_sight.wav", 1, ATTN_NORM);
+	} else {
+		sound(pl, 8, "weapons/desert_eagle_sight2.wav", 1, ATTN_NORM);
+	}
 #endif
 
-	pl.w_attack_next = 0.5f;
+	pl.w_attack_next = 1.0f;
+	w_eagle_release();
 }
 
 void
@@ -184,9 +214,9 @@ w_eagle_reload(void)
 	/* Audio-Visual bit */
 #ifdef CSQC
 	if (pl.a_ammo1 <= 0) {
-		Weapons_ViewAnimation(EAGLE_RELOAD_NOSHOT);
-	} else {
 		Weapons_ViewAnimation(EAGLE_RELOAD);
+	} else {
+		Weapons_ViewAnimation(EAGLE_RELOAD_NOSHOT);
 	}
 #else
 	Weapons_ReloadWeapon(pl, player::eagle_mag, player::ammo_357, 7);
@@ -195,19 +225,6 @@ w_eagle_reload(void)
 
 	pl.w_attack_next = 1.64f;
 	pl.w_idle_next = 10.0f;
-}
-
-void
-w_eagle_release(void)
-{
-	player pl = (player)self;
-
-	if (pl.w_idle_next) {
-		return;
-	}
-
-	Weapons_ViewAnimation(EAGLE_IDLE1 + floor(random(0,5)));
-	pl.w_idle_next = 15.0f;
 }
 
 void
@@ -221,13 +238,16 @@ w_eagle_crosshair(void)
 	/* crosshair/laser */
 	if (pl.a_ammo3 == 1) {
 		float lerp;
+		vector jitter;
 		Weapons_MakeVectors();
 		vector src = pl.origin + pl.view_ofs;
-		traceline(src, src + (v_forward * 64), FALSE, pl);
-		lerp = Math_Lerp(24,8, trace_fraction);
+		traceline(src, src + (v_forward * 256), FALSE, pl);
+		lerp = Math_Lerp(18,6, trace_fraction);
+		jitter[0] = (random(0,2) - 2) * (1 - trace_fraction);
+		jitter[1] = (random(0,2) - 2) * (1 - trace_fraction);
 		cross_pos = (video_res / 2) + ([-lerp,-lerp] / 2);
 		drawsubpic(
-			cross_pos,
+			cross_pos + jitter,
 			[lerp,lerp],
 			"sprites/laserdot.spr_0.tga",
 			[0,0],
