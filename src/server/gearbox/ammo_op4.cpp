@@ -18,49 +18,25 @@
  * Ammo for the M249.
  * A single ammo_556 will provide 50 bullets.
  */
-/*class ammo_556:item_ammo
-{
-	void() ammo_556;
-	virtual void() touch;
-};
-
-void ammo_556::ammo_556(void)
-{
-	model = "models/w_357ammobox.mdl";
-	item_ammo::item_ammo();
-}
-void ammo_556::touch(void)
-{
-	if (other.classname == "player") {
-		player pl = (player)other;
-		if (pl.ammo_556 < 200) {
-			pl.ammo_556 = bound(0, pl.ammo_556 + 6, 36);
-			item_ammo::touch();
-		}
-	}
-}*/
-
-/*
- * Ammo for the M249.
- * A single ammo_556 will provide 50 bullets.
- */
 class ammo_556:item_ammo
 {
 	void() ammo_556;
 	virtual void() touch;
 };
 
-void ammo_556::ammo_556(void)
+void
+ammo_556::ammo_556(void)
 {
 	model = "models/w_saw_clip.mdl";
 	item_ammo::item_ammo();
 }
-void ammo_556::touch(void)
+void
+ammo_556::touch(void)
 {
 	if (other.classname == "player") {
 		player pl = (player)other;
 		if (pl.ammo_556 < 200) {
-			pl.ammo_556 = bound(0, pl.ammo_556 + 6, 36);
+			pl.ammo_556 = bound(0, pl.ammo_556 + 50, 200);
 			item_ammo::touch();
 		}
 	}
@@ -76,16 +52,18 @@ class ammo_762:item_ammo
 	virtual void() touch;
 };
 
-void ammo_762::ammo_762(void)
+void
+ammo_762::ammo_762(void)
 {
-	model = "models/w_40a1clip.mdl";
+	model = "models/w_m40a1clip.mdl";
 	item_ammo::item_ammo();
 }
-void ammo_762::touch(void)
+void
+ammo_762::touch(void)
 {
 	if (other.classname == "player") {
 		player pl = (player)other;
-		if (pl.ammo_762 < 200) {
+		if (pl.ammo_762 < 15) {
 			pl.ammo_762 = bound(0, pl.ammo_762 + 5, 15);
 			item_ammo::touch();
 		}
@@ -106,16 +84,19 @@ class ammo_spore:item_ammo
 	virtual void() touch;
 };
 
-void ammo_spore::ammo_spore(void)
+void
+ammo_spore::ammo_spore(void)
 {
 	model = "models/spore_ammo.mdl";
 	item_ammo::item_ammo();
 }
-void ammo_spore::touch(void)
+
+void
+ammo_spore::touch(void)
 {
 	if (other.classname == "player") {
 		player pl = (player)other;
-		if (pl.ammo_spore < 200) {
+		if (pl.ammo_spore < 20) {
 			pl.ammo_spore = bound(0, pl.ammo_spore + 1, 20);
 			item_ammo::touch();
 		}
