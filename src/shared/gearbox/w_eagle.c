@@ -50,7 +50,7 @@ void
 w_eagle_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, pl.eagle_mag, pl.ammo_357, -1);
+	Weapons_UpdateAmmo(pl, pl.eagle_mag, pl.ammo_357, 0);
 #endif
 }
 
@@ -112,7 +112,7 @@ w_eagle_primary(void)
 #ifdef SSQC
 		TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 34, [0, 0]);
 #endif
-		pl.w_attack_next = 0.75f;
+		pl.w_attack_next = 0.5f;
 	} else {
 #ifdef SSQC
 		TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 34,  [0.1,0.1]);
