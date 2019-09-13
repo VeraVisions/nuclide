@@ -57,7 +57,16 @@ defs.h
 
 ../../shared/valve/player.cpp
 ../../shared/pmove.c
+
+../sky.c
+../fade.cpp
+../sprite.cpp
+../titles.cpp
+../text.cpp
+../sentences.cpp
+
 ../../gs-entbase/client.src
+
 ../../shared/decals.c
 ../../shared/effects.c
 ../../shared/spraylogo.cpp

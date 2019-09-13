@@ -20,6 +20,13 @@ particles.h
 ../util.c
 init.c
 
+../sky.c
+../fade.cpp
+../sprite.cpp
+../titles.cpp
+../text.cpp
+../sentences.cpp
+
 ../../gs-entbase/client.src
 
 ../sound.c

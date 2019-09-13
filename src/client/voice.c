@@ -25,19 +25,38 @@ void Voice_DrawHUD(void) {
 	vector pos = video_mins + [video_res[0] - 160, video_res[1] - 136];
 
 	for (int i = -1; i > -32; i--) {
-		if (getplayerkeyfloat(i, INFOKEY_P_VOIPSPEAKING) == 1) {
-			drawfill(pos, [144,24], [0,0,0], 0.5f);
-			drawfill(pos, [144, 1], UI_MAINCOLOR, 1.0f);
-			drawfill([pos[0], pos[1] + 23], [144, 1], UI_MAINCOLOR, 1.0f);
-			drawfill(pos, [1, 24], UI_MAINCOLOR, 1.0f);
-			drawfill([pos[0] + 143, pos[1]], [1, 24], UI_MAINCOLOR, 1.0f);
-
-			drawfont = FONT_CON;
-			drawstring([pos[0] + 28, pos[1] + 8], getplayerkeyvalue(i, "name"), [12,12], [1,1,1], 1.0f, DRAWFLAG_NORMAL);
-
-			drawpic(pos + [2,0], "gfx/vgui/icntlk_sv.tga", [24,24], UI_MAINCOLOR, 1, DRAWFLAG_NORMAL);
-			pos[1] -= 32;
+		if (getplayerkeyfloat(i, INFOKEY_P_VOIPSPEAKING) != 1) {
+			continue;
 		}
+
+		/* borders */
+		drawfill(pos, [144,24], [0,0,0], 0.5f);
+		drawfill(pos, [144, 1], UI_MAINCOLOR, 1.0f);
+		drawfill([pos[0], pos[1] + 23], [144, 1], UI_MAINCOLOR, 1.0f);
+		drawfill(pos, [1, 24], UI_MAINCOLOR, 1.0f);
+		drawfill([pos[0] + 143, pos[1]], [1, 24], UI_MAINCOLOR, 1.0f);
+
+		/* icon */
+		drawpic(
+			pos + [2,0],
+			"gfx/vgui/icntlk_sv.tga",
+			[24,24],
+			UI_MAINCOLOR,
+			1.0f,
+			DRAWFLAG_NORMAL
+		);
+
+		/* speaker name */
+		drawfont = FONT_CON;
+		drawstring(
+			[pos[0] + 28, pos[1] + 8],
+			getplayerkeyvalue(i, "name"),
+			[12,12],
+			[1,1,1],
+			1.0f,
+			DRAWFLAG_NORMAL
+		);
+		pos[1] -= 32;
 	}
 }
 

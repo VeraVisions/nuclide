@@ -1,12 +1,6 @@
 #includelist
 materials.h
-client/sky.c
 client/baseentity.cpp
-client/fade.cpp
-client/sprite.cpp
-client/titles.cpp
-client/text.cpp
-client/sentences.cpp
 client/env_cubemap.cpp
 client/env_glow.cpp
 client/env_sound.cpp
