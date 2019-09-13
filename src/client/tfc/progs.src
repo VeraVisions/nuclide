@@ -23,16 +23,16 @@ vgui_chooseteam.cpp
 init.c
 
 ../sky.c
-../fade.cpp
+../fade.c
 ../sprite.cpp
-../titles.cpp
-../text.cpp
-../sentences.cpp
+../titles.c
+../text.c
+../sentences.c
 
 ../../gs-entbase/client.src
 
 ../sound.c
-../text.c
+../prints.c
 ../voice.c
 
 ../../shared/valve/animations.h

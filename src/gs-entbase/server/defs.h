@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-//#define GS_DEVELOPER
+#define GS_DEVELOPER
 
 .float gflags;
 
@@ -27,8 +27,8 @@ enumflags
 	GF_SEMI_TOGGLED
 };
 
-void Effect_CreateSpark(vector pos, vector ang);
-void Effect_BreakModel(int count, vector mins, vector maxs,vector vel, float mat);
+void Effect_CreateSpark(vector, vector);
+void Effect_BreakModel(int, vector, vector, vector, float);
 
 /* This is required because people who use Hammer do awful things
    to get their models to update. We get a multitude of juicy
@@ -49,7 +49,7 @@ string Util_FixModel(string mdl)
 		newpath = sprintf("%s/%s", newpath, argv(i));
 	}
 
-	// Kill the first /
+	/* Kill the first / */
 	newpath = substring(newpath, 1, strlen(newpath)-1);
 
 	/* Now we need to fix \/ because I hate people */
@@ -58,7 +58,7 @@ string Util_FixModel(string mdl)
 	for (int i = 0; i < c; i++) {
 		mdl = sprintf("%s/%s", mdl, argv(i));
 	}
-	// Kill the first / again
+	/* Kill the first / again */
 	mdl = substring(mdl, 1, strlen(mdl)-1);
 
 	return mdl;

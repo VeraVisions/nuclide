@@ -19,7 +19,7 @@ defs.h
 
 ../voice.c
 ../sound.c
-../text.c
+../prints.c
 ../util.c
 
 ../../shared/cstrike/weaponak47.c
@@ -59,11 +59,11 @@ defs.h
 ../../shared/pmove.c
 
 ../sky.c
-../fade.cpp
+../fade.c
 ../sprite.cpp
-../titles.cpp
-../text.cpp
-../sentences.cpp
+../titles.c
+../text.c
+../sentences.c
 
 ../../gs-entbase/client.src
 
