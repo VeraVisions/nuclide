@@ -56,14 +56,19 @@ string w_handgrenade_deathmsg(void)
 	return "";
 }
 
-void w_handgrenade_pickup(void)
+int w_handgrenade_pickup(int new)
 {
 #ifdef SSQC
-    player pl = (player)self;
-	pl.ammo_handgrenade = bound(0, pl.ammo_handgrenade + 1, 10);
-#endif
-}
+	player pl = (player)self;
 
+	if (pl.ammo_handgrenade < 10) {
+		pl.ammo_handgrenade = bound(0, pl.ammo_handgrenade + 1, 10);
+	} else {
+		return FALSE;
+	}
+#endif
+	return TRUE;
+}
 
 #ifdef SSQC
 void w_handgrenade_throw(void)

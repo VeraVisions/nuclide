@@ -157,12 +157,10 @@ w_grapple_release(void)
 		Weapons_ViewAnimation(BARN_IDLE1);
 		pl.w_idle_next = 2.566667f;
 		break;
-
 	case 2:
 		Weapons_ViewAnimation(BARN_IDLE2);
 		pl.w_idle_next = 10.0f;
 		break;
-
 	default:
 		Weapons_ViewAnimation(BARN_IDLE3);
 		pl.w_idle_next = 1.35f;

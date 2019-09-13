@@ -53,12 +53,22 @@ string w_glock_deathmsg(void)
 	return "";
 }
 
-void w_glock_pickup(void)
+int w_glock_pickup(int new)
 {
 #ifdef SSQC
 	player pl = (player)self;
-	pl.glock_mag = bound(0, pl.glock_mag + 18, 18);
+
+	if (new) {
+		pl.glock_mag = 18;
+	} else {
+		if (pl.ammo_9mm < 250) {
+			pl.ammo_9mm = bound(0, pl.ammo_9mm + 18, 250);
+		} else {
+			return FALSE;
+		}
+	}
 #endif
+	return TRUE;
 }
 
 void w_glock_draw(void)

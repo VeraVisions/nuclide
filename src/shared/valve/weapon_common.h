@@ -32,7 +32,7 @@ typedef struct
 	void() crosshair;
 
 	void() precache;
-	void() pickup;
+	int(int) pickup;
 	void(player) updateammo;
 	string() wmodel;
 	string() pmodel;
@@ -55,7 +55,7 @@ void Weapons_SetModel(string);
 void Weapons_RefreshAmmo(player);
 void Weapons_InitItem(int);
 float Weapons_GetAim(int);
-void Weapons_AddItem(player, int);
+int Weapons_AddItem(player, int);
 void Weapons_RemoveItem(player, int);
 string Weapons_GetWorldmodel(int);
 void Weapons_UpdateAmmo(player, int, int, int);

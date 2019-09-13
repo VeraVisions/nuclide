@@ -38,11 +38,23 @@ w_m249_precache(void)
 	precache_sound("weapons/saw_reload2.wav");
 }
 
-void 
-w_m249_pickup(void)
+int 
+w_m249_pickup(int new)
 {
+#ifdef SSQC
 	player pl = (player)self;
-	pl.m249_mag = 50;
+
+	if (new) {
+		pl.m249_mag = 50;
+	} else {
+		if (pl.ammo_556 < 200) {
+			pl.ammo_556 = bound(0, pl.ammo_556 + 50, 200);
+		} else {
+			return FALSE;
+		}
+	}
+#endif
+	return TRUE;
 }
 
 void

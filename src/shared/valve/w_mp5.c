@@ -40,10 +40,22 @@ void w_mp5_precache(void)
 	precache_sound("weapons/glauncher.wav");
 }
 
-void w_mp5_pickup(void)
+int w_mp5_pickup(int new)
 {
+#ifdef SSQC
 	player pl = (player)self;
-	pl.mp5_mag = 25;
+
+	if (new) {
+		pl.mp5_mag = 25;
+	} else {
+		if (pl.ammo_9mm < 250) {
+			pl.ammo_9mm = bound(0, pl.ammo_9mm + 25, 250);
+		} else {
+			return FALSE;
+		}
+	}
+#endif
+	return TRUE;
 }
 
 void w_mp5_updateammo(player pl)

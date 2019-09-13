@@ -36,13 +36,20 @@ w_shockrifle_precache(void)
 	precache_sound("weapons/shock_impact.wav");
 	precache_sound("weapons/shock_recharge.wav");
 }
-void
-w_shockrifle_pickup(void)
+
+int
+w_shockrifle_pickup(int new)
 {
 #ifdef SSQC
 	player pl = (player)self;
-	pl.ammo_shock = 10;
+
+	/* only pick it up once */
+	if (new) {
+		pl.ammo_shock = 10;
+		return TRUE;
+	}
 #endif
+	return FALSE;
 }
 
 void

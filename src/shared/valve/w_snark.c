@@ -24,12 +24,18 @@ enum
 	SNARK_THROW
 };
 
-void w_snark_pickup(void)
+int w_snark_pickup(int new)
 {
 #ifdef SSQC
 	player pl = (player)self;
-	pl.ammo_snark = bound(0, pl.ammo_snark + 5, 10);
+
+	if (pl.ammo_snark < 10) {
+		pl.ammo_snark = bound(0, pl.ammo_snark + 5, 10);
+	} else {
+		return FALSE;
+	}
 #endif
+	return TRUE;
 }
 
 void w_snark_draw(void)

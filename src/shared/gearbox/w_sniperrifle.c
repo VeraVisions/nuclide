@@ -37,11 +37,23 @@ w_sniperrifle_precache(void)
 	precache_sound("weapons/sniper_fire.wav");
 }
 
-void
-w_sniperrifle_pickup(void)
+int
+w_sniperrifle_pickup(int new)
 {
+#ifdef SSQC
 	player pl = (player)self;
-	pl.sniper_mag = 5;
+
+	if (new) {
+		pl.sniper_mag = 5;
+	} else {
+		if (pl.ammo_762 < 15) {
+			pl.ammo_762 = bound(0, pl.ammo_762 + 5, 15);
+		} else {
+			return FALSE;
+		}
+	}
+#endif
+	return TRUE;
 }
 
 void

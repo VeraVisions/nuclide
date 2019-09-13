@@ -54,12 +54,18 @@ string w_egon_deathmsg(void)
 	return "";
 }
 
-void w_egon_pickup(void)
+int w_egon_pickup(int new)
 {
 #ifdef SSQC
 	player pl = (player)self;
-	pl.ammo_uranium = bound(0, pl.ammo_uranium +20, 100);
+
+	if (pl.ammo_uranium < 100) {
+		pl.ammo_uranium = bound(0, pl.ammo_uranium + 20, 100);
+	} else {
+		return FALSE;
+	}
 #endif
+	return TRUE;
 }
 
 void w_egon_draw(void)

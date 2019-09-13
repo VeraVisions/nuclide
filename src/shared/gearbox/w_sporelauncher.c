@@ -71,13 +71,23 @@ w_sporelauncher_deathmsg(void)
 	return "";
 }
 
-void
-w_sporelauncher_pickup(void)
+int
+w_sporelauncher_pickup(int new)
 {
 #ifdef SSQC
 	player pl = (player)self;
-	pl.sporelauncher_mag = bound(0, pl.sporelauncher_mag + 5, 5);
+
+	if (new) {
+		pl.sporelauncher_mag = 5;
+	} else {
+		if (pl.ammo_spore < 20) {
+			pl.ammo_spore = bound(0, pl.ammo_spore + 5, 20);
+		} else {
+			return FALSE;
+		}
+	}
 #endif
+	return TRUE;
 }
 
 void

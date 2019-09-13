@@ -35,12 +35,18 @@ void w_hornetgun_precache(void)
 	precache_sound("agrunt/ag_fire2.wav");
 	precache_sound("agrunt/ag_fire3.wav");
 }
-void w_hornetgun_pickup(void)
+int w_hornetgun_pickup(int new)
 {
 #ifdef SSQC
 	player pl = (player)self;
-	pl.ammo_hornet = 8;
+
+	/* only pick it up once */
+	if (new) {
+		pl.ammo_hornet = 8;
+		return TRUE;
+	}
 #endif
+	return FALSE;
 }
 void w_hornetgun_updateammo(player pl)
 {

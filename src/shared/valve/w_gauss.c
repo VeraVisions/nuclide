@@ -60,12 +60,18 @@ string w_gauss_deathmsg(void)
 	return "";
 }
 
-void w_gauss_pickup(void)
+int w_gauss_pickup(int new)
 {
 #ifdef SSQC
-    player pl = (player)self;
-    pl.ammo_uranium = bound(0, pl.ammo_uranium +20, 100);
+	player pl = (player)self;
+
+	if (pl.ammo_uranium < 100) {
+		pl.ammo_uranium = bound(0, pl.ammo_uranium + 20, 100);
+	} else {
+		return FALSE;
+	}
 #endif
+	return TRUE;
 }
 
 void w_gauss_draw(void)

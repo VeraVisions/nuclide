@@ -56,12 +56,22 @@ string w_rpg_deathmsg(void)
 	return "";
 }
 
-void w_rpg_pickup(void)
+int w_rpg_pickup(int new)
 {
 #ifdef SSQC
 	player pl = (player)self;
-	pl.rpg_mag = bound(0, pl.rpg_mag + 1, 1);
+
+	if (new) {
+		pl.rpg_mag = 1;
+	} else {
+		if (pl.ammo_rocket < 5) {
+			pl.ammo_rocket = bound(0, pl.ammo_rocket + 1, 5);
+		} else {
+			return FALSE;
+		}
+	}
 #endif
+	return TRUE;
 }
 
 void w_rpg_draw(void)

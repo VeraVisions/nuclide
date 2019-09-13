@@ -36,10 +36,22 @@ void w_python_precache(void)
 	precache_sound("weapons/357_shot2.wav");
 	precache_sound("weapons/357_reload1.wav");
 }
-void w_python_pickup(void)
+int w_python_pickup(int new)
 {
+#ifdef SSQC
 	player pl = (player)self;
-	pl.python_mag = 6;
+
+	if (new) {
+		pl.python_mag = 6;
+	} else {
+		if (pl.ammo_357 < 36) {
+			pl.ammo_357 = bound(0, pl.ammo_357 + 6, 36);
+		} else {
+			return FALSE;
+		}
+	}
+#endif
+	return TRUE;
 }
 
 void w_python_updateammo(player pl)

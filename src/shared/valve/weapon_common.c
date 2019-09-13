@@ -239,19 +239,45 @@ void Weapons_SwitchBest(player pl)
 	self = oldself;
 }
 
-void Weapons_AddItem(player pl, int w)
+/* returns TRUE if weapon pickup gets removed from this world */
+int Weapons_AddItem(player pl, int w)
 {
+	int value;
 	entity oldself = self;
 	self = pl;
-	pl.g_items |= g_weapons[w].id;
-	pl.activeweapon = w;
 
-	if (g_weapons[w].pickup != __NULL__) {
-		g_weapons[w].pickup();
+	/* in case programmer decided not to add a pickup callback */
+	if (g_weapons[w].pickup == __NULL__) {
+		if (pl.g_items & g_weapons[w].id) {
+			/* already present, skip */
+			value = FALSE;
+		} else {
+			/* new to our arsenal */
+			pl.g_items |= g_weapons[w].id;
+			value = TRUE;
+
+			/* it's new, so autoswitch? */
+			pl.activeweapon = w;
+			Weapons_Draw();
+		}
+	} else {
+		/* Call team pickup */
+		if (pl.g_items & g_weapons[w].id) {
+			value = g_weapons[w].pickup(FALSE);
+		} else {
+			/* new to our arsenal */
+			pl.g_items |= g_weapons[w].id;
+			value = g_weapons[w].pickup(TRUE);
+
+			/* it's new, so autoswitch? */
+			pl.activeweapon = w;
+			Weapons_Draw();
+		}
 	}
 
-	Weapons_Draw();
+	Weapons_RefreshAmmo(pl);
 	self = oldself;
+	return value;
 }
 
 void Weapons_RemoveItem(player pl, int w)

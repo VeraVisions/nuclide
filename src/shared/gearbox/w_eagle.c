@@ -40,11 +40,24 @@ w_eagle_precache(void)
 	precache_sound("weapons/desert_eagle_sight.wav");
 	precache_sound("weapons/desert_eagle_sight2.wav");
 }
-void
-w_eagle_pickup(void)
+
+int
+w_eagle_pickup(int new)
 {
+#ifdef SSQC
 	player pl = (player)self;
-	pl.eagle_mag = 7;
+
+	if (new) {
+		pl.eagle_mag = 7;
+	} else {
+		if (pl.ammo_357 < 36) {
+			pl.ammo_357 = bound(0, pl.ammo_357 + 7, 36);
+		} else {
+			return FALSE;
+		}
+	}
+#endif
+	return TRUE;
 }
 
 void
@@ -153,7 +166,7 @@ w_eagle_primary(void)
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_SMALL);
 	Weapons_ViewPunchAngle([-10,0,0]);
-	
+
 	if (pl.a_ammo1 <= 0) {
 		Weapons_ViewAnimation(EAGLE_SHOOT_EMPTY);
 	} else {

@@ -31,13 +31,13 @@ void item_pickup::touch(void)
 		return;
 	}
 
-	/*if (Weapons_IsPresent((player)other, id) == TRUE) {
+	/* don't remove if AddItem fails */
+	if (Weapons_AddItem((player)other, id) == FALSE) {
 		return;
-	}*/
+	}
 
 	Logging_Pickup(other, this, __NULL__);
 	sound(other, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_NORM);
-	Weapons_AddItem((player)other, id);
 
 	CBaseTrigger::UseTargets();
 

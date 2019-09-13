@@ -24,13 +24,19 @@ enum
 	PENGUIN_THROW
 };
 
-void
-w_penguin_pickup(void)
+int
+w_penguin_pickup(int new)
 {
 #ifdef SSQC
 	player pl = (player)self;
-	pl.ammo_penguin = bound(0, pl.ammo_penguin + 5, 10);
+
+	if (pl.ammo_penguin < 10) {
+		pl.ammo_penguin = bound(0, pl.ammo_penguin + 5, 10);
+	} else {
+		return FALSE;
+	}
 #endif
+	return TRUE;
 }
 
 void

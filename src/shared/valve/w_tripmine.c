@@ -53,12 +53,18 @@ string w_tripmine_deathmsg(void)
 {
 	return "";
 }
-void w_tripmine_pickup(void)
+int w_tripmine_pickup(int new)
 {
 #ifdef SSQC
 	player pl = (player)self;
-	pl.ammo_tripmine = bound(0, pl.ammo_tripmine + 1, 10);
+
+	if (pl.ammo_tripmine < 10) {
+		pl.ammo_tripmine = bound(0, pl.ammo_tripmine + 1, 10);
+	} else {
+		return FALSE;
+	}
 #endif
+	return TRUE;
 }
 
 void w_tripmine_draw(void)

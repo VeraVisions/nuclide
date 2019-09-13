@@ -81,12 +81,22 @@ void w_cannon_reload(void)
 	pl.w_idle_next = 3.0f;
 }
 
-void w_cannon_pickup(void)
+int w_cannon_pickup(int new)
 {
 #ifdef SSQC
 	player pl = (player)self;
-	pl.cannon_mag = bound(0, pl.cannon_mag + 2, 2);
+
+	if (new) {
+		pl.cannon_mag = 2;
+	} else {
+		if (pl.ammo_buckshot < 125) {
+			pl.ammo_buckshot = bound(0, pl.ammo_buckshot + 2, 125);
+		} else {
+			return FALSE;
+		}
+	}
 #endif
+	return TRUE;
 }
 
 void w_cannon_draw(void)

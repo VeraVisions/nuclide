@@ -57,12 +57,18 @@ void w_satchel_precache(void)
 	precache_model("models/p_satchel.mdl");
 }
 
-void w_satchel_pickup(void)
+int w_satchel_pickup(int new)
 {
 #ifdef SSQC
 	player pl = (player)self;
-	pl.ammo_satchel = bound(0, pl.ammo_satchel + 1, 5);
+
+	if (pl.ammo_satchel < 5) {
+		pl.ammo_satchel = bound(0, pl.ammo_satchel + 1, 5);
+	} else {
+		return FALSE;
+	}
 #endif
+	return TRUE;
 }
 
 void w_satchel_draw(void)

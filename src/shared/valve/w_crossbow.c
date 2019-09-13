@@ -60,12 +60,22 @@ string w_crossbow_deathmsg(void)
 {
 	return "";
 }
-void w_crossbow_pickup(void)
+int w_crossbow_pickup(int new)
 {
 #ifdef SSQC
 	player pl = (player)self;
-	pl.crossbow_mag = bound(0, pl.crossbow_mag + 5, 5);
+
+	if (new) {
+		pl.crossbow_mag = 5;
+	} else {
+		if (pl.ammo_bolt < 50) {
+			pl.ammo_bolt = bound(0, pl.ammo_bolt + 5, 50);
+		} else {
+			return FALSE;
+		}
+	}
 #endif
+	return TRUE;
 }
 void w_crossbow_draw(void)
 {

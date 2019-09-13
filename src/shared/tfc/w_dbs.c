@@ -68,13 +68,14 @@ string w_dbs_deathmsg(void)
 	return "";
 }
 
-void
-w_dbs_pickup(void)
+int
+w_dbs_pickup(int new)
 {
 #ifdef SSQC
 	player pl = (player)self;
 	pl.shotgun_mag = bound(0, pl.shotgun_mag + 8, 8);
 #endif
+	return TRUE;
 }
 
 void

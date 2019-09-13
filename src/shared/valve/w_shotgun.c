@@ -65,12 +65,22 @@ string w_shotgun_deathmsg(void)
 	return "";
 }
 
-void w_shotgun_pickup(void)
+int w_shotgun_pickup(int new)
 {
 #ifdef SSQC
 	player pl = (player)self;
-	pl.shotgun_mag = bound(0, pl.shotgun_mag + 8, 8);
+
+	if (new) {
+		pl.shotgun_mag = 8;
+	} else {
+		if (pl.ammo_buckshot < 125) {
+			pl.ammo_buckshot = bound(0, pl.ammo_buckshot + 8, 125);
+		} else {
+			return FALSE;
+		}
+	}
 #endif
+	return TRUE;
 }
 
 void w_shotgun_draw(void)
