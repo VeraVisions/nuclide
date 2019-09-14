@@ -16,12 +16,12 @@
 
 vector vHUDSlotNumPos[6] =
 {
-	[168 / 255,72 / 128],
-	[188 / 255,72 / 128],
-	[208 / 255,72 / 128],
-	[168 / 255,92 / 128],
-	[188 / 255,92 / 128],
-	[208 / 255,92 / 128]
+	[168 / 255, 72 / 128],
+	[188 / 255, 72 / 128],
+	[208 / 255, 72 / 128],
+	[168 / 255, 92 / 128],
+	[188 / 255, 92 / 128],
+	[208 / 255, 92 / 128]
 };
 
 void HUD_DrawWeaponSelect_Forward(void)
@@ -45,7 +45,7 @@ void HUD_DrawWeaponSelect_Forward(void)
 
 	pSeat->fHUDWeaponSelectTime = time + 3;
 
-	if (!(pl.g_items & g_weapons[pSeat->fHUDWeaponSelected].id)) {
+	if not (pl.g_items & g_weapons[pSeat->fHUDWeaponSelected].id) {
 		HUD_DrawWeaponSelect_Forward();
 	}
 }
@@ -71,7 +71,7 @@ void HUD_DrawWeaponSelect_Back(void)
 
 	pSeat->fHUDWeaponSelectTime = time + 3;
 
-	if (!(pl.g_items & g_weapons[pSeat->fHUDWeaponSelected].id)) {
+	if not (pl.g_items & g_weapons[pSeat->fHUDWeaponSelected].id) {
 		HUD_DrawWeaponSelect_Back();
 	}
 }
