@@ -39,12 +39,3 @@ enum
 	WEAPON_INCENDIARY,
 	WEAPON_GRAPPLE
 };
-
-/* What the weapons do support and stuff */
-enum
-{
-	AMMO_SHELLS,
-	AMMO_NAILS,
-	AMMO_ROCKETS,
-	AMMO_CELLS
-};
