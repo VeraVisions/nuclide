@@ -26,7 +26,8 @@ enum
 	PYTHON_IDLE3
 };
 
-void w_python_precache(void)
+void
+w_python_precache(void)
 {
 	precache_model("models/v_357.mdl");
 	precache_model("models/w_357.mdl");
@@ -36,7 +37,9 @@ void w_python_precache(void)
 	precache_sound("weapons/357_shot2.wav");
 	precache_sound("weapons/357_reload1.wav");
 }
-int w_python_pickup(int new)
+
+int
+w_python_pickup(int new)
 {
 #ifdef SSQC
 	player pl = (player)self;
@@ -54,42 +57,54 @@ int w_python_pickup(int new)
 	return TRUE;
 }
 
-void w_python_updateammo(player pl)
+void
+w_python_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, pl.python_mag, pl.ammo_357, __NULL__);
+	Weapons_UpdateAmmo(pl, pl.python_mag, pl.ammo_357, -1);
 #endif
 }
-string w_python_wmodel(void)
+
+string
+w_python_wmodel(void)
 {
 	return "models/w_357.mdl";
 }
-string w_python_pmodel(void)
+
+string
+w_python_pmodel(void)
 {
 	return "models/p_357.mdl";
 }
-string w_python_deathmsg(void)
+
+string
+w_python_deathmsg(void)
 {
 	return "";
 }
 
-void w_python_draw(void)
+void
+w_python_draw(void)
 {
+#ifdef CSQC
 	Weapons_SetModel("models/v_357.mdl");
 	Weapons_ViewAnimation(PYTHON_DRAW);
-#ifdef SSQC
-	player pl = (player)self;
-	Weapons_UpdateAmmo(pl, pl.python_mag, pl.ammo_357, __NULL__);
 #endif
 }
 
-void w_python_holster(void)
+void
+w_python_holster(void)
 {
+#ifdef CSQC
 	Weapons_ViewAnimation(PYTHON_HOLSTER);
+#endif
 }
-void w_python_primary(void)
+
+void
+w_python_primary(void)
 {
 	player pl = (player)self;
+
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
@@ -106,42 +121,47 @@ void w_python_primary(void)
 #endif
 
 	/* Actual firing */
-#ifdef SSQC
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 40, [0.00873, 0.00873]);
-
-	if (random() < 0.5) {
-		Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/357_shot1.wav", 1, ATTN_NORM);
-	} else {
-		Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/357_shot2.wav", 1, ATTN_NORM);
-	}
-	pl.python_mag--;
-	Weapons_UpdateAmmo(pl, pl.python_mag, pl.ammo_357, __NULL__);
-#else
+#ifdef CSQC
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_SMALL);
 	Weapons_ViewPunchAngle([-10,0,0]);
-#endif
 	Weapons_ViewAnimation(PYTHON_FIRE1);
+#else
+	pl.python_mag--;
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 40, [0.008, 0.008]);
+
+	if (random() < 0.5) {
+		sound(pl, CHAN_WEAPON, "weapons/357_shot1.wav", 1, ATTN_NORM);
+	} else {
+		sound(pl, CHAN_WEAPON, "weapons/357_shot2.wav", 1, ATTN_NORM);
+	}
+#endif
+
 	pl.w_attack_next = 0.75f;
 	pl.w_idle_next = 10.0f;
 }
 
-void w_python_secondary(void)
+void
+w_python_secondary(void)
 {
 	player pl = (player)self;
+
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
+
 	/* Simple toggle of fovs */
 	if (pl.viewzoom == 1.0f) {
 		pl.viewzoom = 0.5f;
 	} else {
 		pl.viewzoom = 1.0f;
 	}
+
 	pl.w_attack_next = 0.5f;
 }
 
-void w_python_reload(void)
+void
+w_python_reload(void)
 {
 	player pl = (player)self;
 	if (pl.w_attack_next > 0.0) {
@@ -166,62 +186,117 @@ void w_python_reload(void)
 #endif
 
 	/* Audio-Visual bit */
+#ifdef CSQC
 	Weapons_ViewAnimation(PYTHON_RELOAD);
-#ifdef SSQC
-	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/357_reload1.wav", 1, ATTN_NORM);
+#else
+	sound(pl, CHAN_WEAPON, "weapons/357_reload1.wav", 1, ATTN_NORM);
 	Weapons_ReloadWeapon(pl, player::python_mag, player::ammo_357, 6);
-	Weapons_UpdateAmmo(pl, pl.python_mag, pl.ammo_357, __NULL__);
 #endif
+
 	pl.w_attack_next = 3.25f;
 	pl.w_idle_next = 10.0f;
 }
-void w_python_release(void)
+
+void
+w_python_release(void)
 {
 	player pl = (player)self;
-	if (pl.w_idle_next) {
+
+#ifdef CSQC
+	if (pl.w_idle_next > 0.0) {
 		return;
 	}
 
-	int r = floor(random(0,3));
+	int r = floor(random(0, 4));
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(PYTHON_IDLE1);
+		pl.w_idle_next = 2.33f;
 		break;
 	case 1:
-		Weapons_ViewAnimation(PYTHON_IDLE2);
+		Weapons_ViewAnimation(PYTHON_FIDGET);
+		pl.w_idle_next = 5.66f;
 		break;
 	case 2:
+		Weapons_ViewAnimation(PYTHON_IDLE2);
+		pl.w_idle_next = 2.0f;
+		break;
+	default:
 		Weapons_ViewAnimation(PYTHON_IDLE3);
+		pl.w_idle_next = 2.93f;
 		break;
 	}
-	pl.w_idle_next = 15.0f;
-}
-void w_python_crosshair(void)
-{
-#ifdef CSQC
-	static vector cross_pos;
-	cross_pos = (video_res / 2) + [-12,-12];
-	drawsubpic(cross_pos, [24,24], "sprites/crosshairs.spr_0.tga", [48/128,0], [0.1875, 0.1875], [1,1,1], 1, DRAWFLAG_NORMAL);
-	HUD_DrawAmmo1();
-	HUD_DrawAmmo2();
-
-	vector aicon_pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [24/256,72/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
-float w_python_aimanim(void)
+void
+w_python_crosshair(void)
+{
+#ifdef CSQC
+	vector cross_pos;
+	vector aicon_pos;
+
+	cross_pos = (video_res / 2) + [-12,-12];
+	drawsubpic(
+		cross_pos,
+		[24,24],
+		"sprites/crosshairs.spr_0.tga",
+		[48/128,0],
+		[0.1875, 0.1875],
+		[1,1,1],
+		1,
+		DRAWFLAG_NORMAL
+	);
+
+	HUD_DrawAmmo1();
+	HUD_DrawAmmo2();
+
+	aicon_pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
+	drawsubpic(
+		aicon_pos,
+		[24,24],
+		"sprites/640hud7.spr_0.tga",
+		[24/256,72/128],
+		[24/256, 24/128],
+		g_hud_color,
+		pSeat->ammo2_alpha,
+		DRAWFLAG_ADDITIVE
+	);
+#endif
+}
+
+float
+w_python_aimanim(void)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIMPYTHON : ANIM_AIMPYTHON;
 }
 
-void w_python_hudpic(int s, vector pos)
+void
+w_python_hudpic(int selected, vector pos)
 {
 #ifdef CSQC
-	if (s) {
-		drawsubpic(pos, [170,45], "sprites/640hud4.spr_0.tga", [0,90/256], [170/256,45/256], g_hud_color, 1, DRAWFLAG_ADDITIVE);
+	if (selected) {
+		drawsubpic(
+			pos,
+			[170,45],
+			"sprites/640hud4.spr_0.tga",
+			[0,90/256],
+			[170/256,45/256],
+			g_hud_color,
+			1.0f,
+			DRAWFLAG_ADDITIVE
+		);
 	} else {
-		drawsubpic(pos, [170,45], "sprites/640hud1.spr_0.tga", [0,90/256], [170/256,45/256], g_hud_color, 1, DRAWFLAG_ADDITIVE);
+		drawsubpic(
+			pos,
+			[170,45],
+			"sprites/640hud1.spr_0.tga",
+			[0,90/256],
+			[170/256,45/256],
+			g_hud_color,
+			1.0f,
+			DRAWFLAG_ADDITIVE
+		);
 	}
 #endif
 }
@@ -251,11 +326,17 @@ weapon_t w_python =
 	w_python_hudpic
 };
 
+/* pickups */
 #ifdef SSQC
-void weapon_357(void) {
+void
+weapon_357(void)
+{
 	Weapons_InitItem(WEAPON_PYTHON);
 }
-void weapon_python(void) {
+
+void
+weapon_python(void)
+{
 	Weapons_InitItem(WEAPON_PYTHON);
 }
 #endif
