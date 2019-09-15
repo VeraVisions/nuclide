@@ -18,6 +18,7 @@
 
 ../plugins.c
 ../logging.c
+../nodes.c
 
 ../../gs-entbase/server.src
 ../valve/monster_rat.cpp

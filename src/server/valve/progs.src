@@ -16,6 +16,7 @@ defs.h
 ../defs.h
 ../plugins.c
 ../logging.c
+../nodes.c
 ../../gs-entbase/server.src
 monster_rat.cpp
 monster_scientist.cpp

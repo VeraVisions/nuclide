@@ -17,6 +17,7 @@
 ../defs.h
 ../plugins.c
 ../logging.c
+../nodes.c
 ../../gs-entbase/server.src
 ../valve/monster_rat.cpp
 ../valve/monster_scientist.cpp
@@ -69,7 +70,7 @@
 ../valve/xen_plantlight.cpp
 ../valve/ammo.cpp
 ../gearbox/ammo_op4.cpp
-../../shared/gearbox/weapons.c 
+../../shared/gearbox/weapons.c
 ../../shared/valve/weapon_common.c
 ../spawn.c
 ../vox.c
