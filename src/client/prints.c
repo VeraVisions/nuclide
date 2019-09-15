@@ -18,28 +18,15 @@ float g_printtime;
 string g_printbuffer[5];
 var int g_printlines = -1;
 
-void CSQC_DrawText(vector pos, string txt, vector sz, vector col, float a, 
-					float fl, float fnt)
+void
+Print_Draw(void)
 {
-	drawfont = fnt;
-	drawstring(pos, txt, sz, col, a, fl);
-}
-
-/*
-=================
-Chat_Draw
-
-Just prints whatever is in the chat buffer and removes lines after some time.
-=================
-*/
-void Print_Draw(void) {
 	vector pos = video_mins + [16, 16];
-	
+
 	if (g_printlines < 0) {
 		return;
 	}
 
-	// Remove messages after a g_chattime has passed
 	if (g_printtime < time) {
 		g_printbuffer[g_printlines] = __NULL__;
 		g_printlines--;
@@ -53,20 +40,14 @@ void Print_Draw(void) {
 	}
 }
 
-/*
-=================
-CSQC_DrawCenterprint
-
-Read centerprints from a buffer and display them with alpha and whatnot
-=================
-*/
 float fCenterPrintAlpha;
 float fCenterPrintTime;
 float fCenterPrintLines;
 string sCenterPrintBuffer[18];
 
-void CSQC_DrawCenterprint(void)
-{	
+void
+CSQC_DrawCenterprint(void)
+{
 	if (fCenterPrintAlpha <= 0) {
 		return;
 	}

@@ -27,33 +27,43 @@ enum
 	GLOCK_HOLSTER
 };
 
-void w_glock_precache(void)
+void
+w_glock_precache(void)
 {
 	precache_model("models/v_9mmhandgun.mdl");
 	precache_model("models/w_9mmhandgun.mdl");
 	precache_model("models/p_9mmhandgun.mdl");
 	precache_sound("weapons/pl_gun3.wav");
 }
-void w_glock_updateammo(player pl)
+
+void
+w_glock_updateammo(player pl)
 {
 #ifdef SSQC
 	Weapons_UpdateAmmo(pl, pl.glock_mag, pl.ammo_9mm, __NULL__);
 #endif
 }
-string w_glock_wmodel(void)
+
+string
+w_glock_wmodel(void)
 {
 	return "models/w_9mmhandgun.mdl";
 }
-string w_glock_pmodel(void)
+
+string
+w_glock_pmodel(void)
 {
 	return "models/p_9mmhandgun.mdl";
 }
-string w_glock_deathmsg(void)
+
+string
+w_glock_deathmsg(void)
 {
 	return "";
 }
 
-int w_glock_pickup(int new)
+int
+w_glock_pickup(int new)
 {
 #ifdef SSQC
 	player pl = (player)self;
@@ -71,20 +81,28 @@ int w_glock_pickup(int new)
 	return TRUE;
 }
 
-void w_glock_draw(void)
+void
+w_glock_draw(void)
 {
+#ifdef CSQC
 	Weapons_SetModel("models/v_9mmhandgun.mdl");
 	Weapons_ViewAnimation(GLOCK_DRAW);
-#ifdef SSQC
+#else
 	player pl = (player)self;
 	Weapons_UpdateAmmo(pl, pl.glock_mag, pl.ammo_9mm, __NULL__);
 #endif
 }
-void w_glock_holster(void)
+
+void
+w_glock_holster(void)
 {
+#ifdef CSQC
 	Weapons_ViewAnimation(GLOCK_HOLSTER);
+#endif
 }
-void w_glock_primary(void)
+
+void
+w_glock_primary(void)
 {
 	player pl = (player)self;
 
@@ -92,41 +110,47 @@ void w_glock_primary(void)
 		return;
 	}
 
+	
+	/* ammo check */
 #ifdef CSQC
 	if (!pl.a_ammo1) {
 		return;
 	}
-
-	View_SetMuzzleflash(MUZZLE_SMALL);
-	Weapons_ViewPunchAngle([-2,0,0]);
 #else
 	if (!pl.glock_mag) {
 		return;
 	}
-
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.01,0,01]);
-
-	pl.glock_mag--;
-	
-	if (self.flags & FL_CROUCHING)
-		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
-	else
-		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
-	
-	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/pl_gun3.wav", 1, ATTN_NORM);
-	Weapons_UpdateAmmo(pl, pl.glock_mag, pl.ammo_9mm, __NULL__);
 #endif
+
+	/* actual firing */
+#ifdef CSQC
+	pl.a_ammo1--;
+	View_SetMuzzleflash(MUZZLE_SMALL);
+	Weapons_ViewPunchAngle([-2,0,0]);
 
 	if (pl.a_ammo1) {
 		Weapons_ViewAnimation(GLOCK_SHOOT);
 	} else {
 		Weapons_ViewAnimation(GLOCK_SHOOT_EMPTY);
 	}
+#else
+	pl.glock_mag--;
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.01,0,01]);
+	sound(pl, CHAN_WEAPON, "weapons/pl_gun3.wav", 1.0f, ATTN_NORM);
+	Weapons_UpdateAmmo(pl, pl.glock_mag, pl.ammo_9mm, __NULL__);
+
+	if (self.flags & FL_CROUCHING)
+		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
+	else
+		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
+#endif
 
 	pl.w_attack_next = 0.3f;
 	pl.w_idle_next = 5.0f;
 }
-void w_glock_secondary(void)
+
+void
+w_glock_secondary(void)
 {
 	player pl = (player)self;
 
@@ -134,42 +158,45 @@ void w_glock_secondary(void)
 		return;
 	}
 
+	/* ammo check */
 #ifdef CSQC
 	if (!pl.a_ammo1) {
 		return;
 	}
-
-	View_SetMuzzleflash(MUZZLE_SMALL);
-	Weapons_ViewPunchAngle([-2,0,0]);
 #else
 	if (!pl.glock_mag) {
 		return;
 	}
+#endif
 
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.1,0.1]);
+#ifdef CSQC
+	pl.a_ammo1--;
+	View_SetMuzzleflash(MUZZLE_SMALL);
+	Weapons_ViewPunchAngle([-2,0,0]);
 
+	if (pl.a_ammo1) {
+		Weapons_ViewAnimation(GLOCK_SHOOT);
+	} else {
+		Weapons_ViewAnimation(GLOCK_SHOOT_EMPTY);
+	}
+#else
 	pl.glock_mag--;
-
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.1,0.1]);
+	sound(pl, CHAN_WEAPON, "weapons/pl_gun3.wav", 1.0f, ATTN_NORM);
+	Weapons_UpdateAmmo(pl, pl.glock_mag, pl.ammo_9mm, __NULL__);
 
 	if (self.flags & FL_CROUCHING)
 		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
 	else
 		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
-
-	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/pl_gun3.wav", 1, ATTN_NORM);
-	Weapons_UpdateAmmo(pl, pl.glock_mag, pl.ammo_9mm, __NULL__);
 #endif
-
-	if (pl.a_ammo1) {
-        Weapons_ViewAnimation(GLOCK_SHOOT);
-    } else {
-        Weapons_ViewAnimation(GLOCK_SHOOT_EMPTY);
-    }
 
 	pl.w_attack_next = 0.2f;
 	pl.w_idle_next = 5.0f;
 }
-void w_glock_reload(void)
+
+void
+w_glock_reload(void)
 {
 	player pl = (player)self;
 	if (pl.w_attack_next > 0) {
@@ -196,60 +223,111 @@ void w_glock_reload(void)
 #endif
 
 	if (pl.a_ammo1) {
-        Weapons_ViewAnimation(GLOCK_RELOAD);
-    } else {
-        Weapons_ViewAnimation(GLOCK_RELOAD_EMPTY);
-    }
+		Weapons_ViewAnimation(GLOCK_RELOAD);
+	} else {
+		Weapons_ViewAnimation(GLOCK_RELOAD_EMPTY);
+	}
 
 	pl.w_attack_next = 2.0f;
 	pl.w_idle_next = 10.0f;
 }
-void w_glock_release(void)
+
+void
+w_glock_release(void)
 {
 	player pl = (player)self;
-	if (pl.w_idle_next > 0) {
+	int r;
+
+	if (pl.w_idle_next > 0.0) {
 		return;
 	}
 
-	int r = floor(random(0,3));
+	r = floor(random(0,3));
 	switch (r) {
-	case 0:
-		Weapons_ViewAnimation(GLOCK_IDLE1);
-		break;
 	case 1:
 		Weapons_ViewAnimation(GLOCK_IDLE2);
+		pl.w_idle_next = 2.5f;
 		break;
 	case 2:
 		Weapons_ViewAnimation(GLOCK_IDLE3);
+		pl.w_idle_next = 3.5f;
+		break;
+	default:
+		Weapons_ViewAnimation(GLOCK_IDLE1);
+		pl.w_idle_next = 3.75f;
 		break;
 	}
-	pl.w_idle_next = 10.0f;
 }
 
-float w_glock_aimanim(void)
+float
+w_glock_aimanim(void)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
 
-void w_glock_hud(void)
+void
+w_glock_hud(void)
 {
 #ifdef CSQC
-	static vector cross_pos;
+	vector cross_pos;
+	vector aicon_pos;
+
 	cross_pos = (video_res / 2) + [-12,-12];
-	drawsubpic(cross_pos, [24,24], "sprites/crosshairs.spr_0.tga", [0.1875,0], [0.1875, 0.1875], [1,1,1], 1, DRAWFLAG_NORMAL);
+	aicon_pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
+
+	drawsubpic(
+		cross_pos,
+		[24,24],
+		"sprites/crosshairs.spr_0.tga",
+		[0.1875,0],
+		[0.1875, 0.1875],
+		[1,1,1],
+		1.0f,
+		DRAWFLAG_NORMAL
+	);
+
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
-	vector aicon_pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [0,72/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+
+	drawsubpic(
+		aicon_pos,
+		[24,24],
+		"sprites/640hud7.spr_0.tga",
+		[0,72/128],
+		[24/256, 24/128],
+		g_hud_color,
+		pSeat->ammo2_alpha,
+		DRAWFLAG_ADDITIVE
+	);
 #endif
 }
-void w_glock_hudpic(int s, vector pos)
+
+void
+w_glock_hudpic(int selected, vector pos)
 {
 #ifdef CSQC
-	if (s) {
-		drawsubpic(pos, [170,45], "sprites/640hud4.spr_0.tga", [0,45/256], [170/256,45/256], g_hud_color, 1, DRAWFLAG_ADDITIVE);
+	if (selected) {
+		drawsubpic(
+			pos,
+			[170,45],
+			"sprites/640hud4.spr_0.tga",
+			[0,45/256],
+			[170/256,45/256],
+			g_hud_color,
+			1.0f,
+			DRAWFLAG_ADDITIVE
+		);
 	} else {
-		drawsubpic(pos, [170,45], "sprites/640hud1.spr_0.tga", [0,45/256], [170/256,45/256], g_hud_color, 1, DRAWFLAG_ADDITIVE);
+		drawsubpic(
+			pos,
+			[170,45],
+			"sprites/640hud1.spr_0.tga",
+			[0,45/256],
+			[170/256,45/256],
+			g_hud_color,
+			1.0f,
+			DRAWFLAG_ADDITIVE
+		);
 	}
 #endif
 }
@@ -279,11 +357,16 @@ weapon_t w_glock =
 	w_glock_hudpic
 };
 
+/* pickups */
 #ifdef SSQC
-void weapon_9mmhandgun(void) {
+void
+weapon_9mmhandgun(void)
+{
 	Weapons_InitItem(WEAPON_GLOCK);
 }
-void weapon_glock(void) {
+void
+weapon_glock(void)
+{
 	Weapons_InitItem(WEAPON_GLOCK);
 }
 #endif
