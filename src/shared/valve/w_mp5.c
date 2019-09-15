@@ -29,7 +29,8 @@ enum {
 	MP5_FIRE3
 };
 
-void w_mp5_precache(void)
+void
+w_mp5_precache(void)
 {
 	precache_model("models/v_9mmar.mdl");
 	precache_model("models/w_9mmar.mdl");
@@ -40,7 +41,8 @@ void w_mp5_precache(void)
 	precache_sound("weapons/glauncher.wav");
 }
 
-int w_mp5_pickup(int new)
+int
+w_mp5_pickup(int new)
 {
 #ifdef SSQC
 	player pl = (player)self;
@@ -58,46 +60,52 @@ int w_mp5_pickup(int new)
 	return TRUE;
 }
 
-void w_mp5_updateammo(player pl)
+void
+w_mp5_updateammo(player pl)
 {
 #ifdef SSQC
 	Weapons_UpdateAmmo(pl, pl.mp5_mag, pl.ammo_9mm, pl.ammo_m203_grenade);
 #endif
 }
 
-string w_mp5_wmodel(void)
+string
+w_mp5_wmodel(void)
 {
 	return "models/w_9mmar.mdl";
 }
 
-string w_mp5_pmodel(void)
+string
+w_mp5_pmodel(void)
 {
 	return "models/p_9mmar.mdl";
 }
 
-string w_mp5_deathmsg(void)
+string
+w_mp5_deathmsg(void)
 {
 	return "";
 }
 
-void w_mp5_draw(void)
+void
+w_mp5_draw(void)
 {
+#ifdef CSQC
 	Weapons_SetModel("models/v_9mmar.mdl");
 	Weapons_ViewAnimation(MP5_DRAW);
-#ifdef SSQC
-	player pl = (player)self;
-	Weapons_UpdateAmmo(pl, pl.mp5_mag, pl.ammo_9mm, pl.ammo_m203_grenade);
 #endif
 }
 
-void w_mp5_holster(void)
+void
+w_mp5_holster(void)
 {
 	Weapons_ViewAnimation(MP5_DRAW);
 }
 
-void w_mp5_primary(void)
+void
+w_mp5_primary(void)
 {
 	player pl = (player)self;
+
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
@@ -113,43 +121,43 @@ void w_mp5_primary(void)
 	}
 #endif
 
+	/* Actual firing */
+#ifdef CSQC
 	if (random() < 0.5) {
 		Weapons_ViewAnimation(MP5_FIRE1);
 	} else {
 		Weapons_ViewAnimation(MP5_FIRE2);
 	}
 
-	/* Actual firing */
-#ifdef CSQC
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 	Weapons_ViewPunchAngle([random(-2, 2),0,0]);
 #else
-	/* Singleplayer is more accurate */
+	/* singleplayer is more accurate */
 	if (cvar("sv_playerslots") == 1) {
-		TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.02618,0.02618]);
+		TraceAttack_FireBullets(1, Weapons_GetCameraPos(), 8, [0.025,0.025]);
 	} else {
-		TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.05234,0.05234]);
+		TraceAttack_FireBullets(1, Weapons_GetCameraPos(), 8, [0.05,0.05]);
 	}
 
 	if (random() < 0.5) {
-		Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/hks1.wav", 1, ATTN_NORM);
+		sound(pl, CHAN_WEAPON, "weapons/hks1.wav", 1.0f, ATTN_NORM);
 	} else {
-		Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/hks2.wav", 1, ATTN_NORM);
+		sound(pl, CHAN_WEAPON, "weapons/hks2.wav", 1.0f, ATTN_NORM);
 	}
-	
+
 	pl.mp5_mag--;
-	Weapons_UpdateAmmo(pl, pl.mp5_mag, pl.ammo_9mm, pl.ammo_m203_grenade);
 #endif
 
 	pl.w_attack_next = 0.1f;
 	pl.w_idle_next = 10.0f;
 }
 
-void w_mp5_secondary(void)
+void
+w_mp5_secondary(void)
 {
 	player pl = (player)self;
-	
+
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
@@ -158,44 +166,51 @@ void w_mp5_secondary(void)
 	if (pl.a_ammo3 <= 0) {
 		return;
 	}
-	Weapons_ViewPunchAngle([-10,0,0]);
+ 
 	pl.a_ammo3--;
+	Weapons_ViewPunchAngle([-10,0,0]);
+	Weapons_ViewAnimation(MP5_GRENADE);
 #else
-
 	static void Grenade_ExplodeTouch(void) {
-		Effect_CreateExplosion( self.origin );
-		Damage_Radius( self.origin, self.owner, 100, 100 * 2.5f, TRUE );
-		sound( self, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 2 ) + 3 ), 1, ATTN_NORM );
+		Effect_CreateExplosion(self.origin);
+		Damage_Radius(self.origin, self.owner, 100, 100 * 2.5f, TRUE);
+
+		if (random() < 0.5) {
+			sound(self, 1, "weapons/explode3.wav", 1, ATTN_NORM);
+		} else {
+			sound(self, 1, "weapons/explode4.wav", 1, ATTN_NORM);
+		}
 		remove(self);
 	}
-	
+
 	if (pl.ammo_m203_grenade <= 0) {
 		return;
 	}
 
-	makevectors(self.v_angle);
+	Weapons_MakeVectors();
 	entity gren = spawn();
 	setmodel(gren, "models/grenade.mdl");
-	setorigin(gren, self.origin + self.view_ofs + (v_forward * 16));
+	setorigin(gren, Weapons_GetCameraPos() + (v_forward * 16));
 	gren.owner = self;
 	gren.velocity = v_forward * 800;
 	gren.angles = vectoangles(gren.velocity);
 	gren.avelocity[0] = random(-100, -500);
 	gren.gravity = 0.5f;
 	gren.movetype = MOVETYPE_BOUNCE;
+	//gren.flags |= FL_LAGGEDMOVE;
 	gren.solid = SOLID_BBOX;
 	setsize(gren, [0,0,0], [0,0,0]);
 	gren.touch = Grenade_ExplodeTouch;
-	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/glauncher.wav", 1, ATTN_NORM);
+	sound(pl, CHAN_WEAPON, "weapons/glauncher.wav", 1.0f, ATTN_NORM);
 	pl.ammo_m203_grenade--;
-	Weapons_UpdateAmmo(pl, pl.mp5_mag, pl.ammo_9mm, pl.ammo_m203_grenade);
 #endif
-	Weapons_ViewAnimation(MP5_GRENADE);
+
 	pl.w_attack_next = 1.0f;
 	pl.w_idle_next = 10.0f;
 }
 
-void w_mp5_reload(void)
+void
+w_mp5_reload(void)
 {
 	player pl = (player)self;
 	if (pl.w_attack_next) {
@@ -219,18 +234,18 @@ void w_mp5_reload(void)
 	}
 #endif
 
+#ifdef CSQC
 	Weapons_ViewAnimation(MP5_RELOAD);
-
-#ifdef SSQC
+#else
 	Weapons_ReloadWeapon(pl, player::mp5_mag, player::ammo_9mm, 50);
-	Weapons_UpdateAmmo(pl, pl.mp5_mag, pl.ammo_9mm, pl.ammo_m203_grenade);
 #endif
 
 	pl.w_attack_next = 1.5f;
 	pl.w_idle_next = 10.0f;
 }
 
-void w_mp5_release(void)
+void
+w_mp5_release(void)
 {
 	player pl = (player)self;
 	if (pl.w_idle_next > 0.0) {
@@ -246,33 +261,88 @@ void w_mp5_release(void)
 	pl.w_idle_next = 15.0f;
 }
 
-void w_mp5_crosshair(void)
+void
+w_mp5_crosshair(void)
 {
 #ifdef CSQC
-	static vector cross_pos;
+	vector cross_pos;
+	vector aicon_pos;
+
 	cross_pos = (video_res / 2) + [-12,-12];
-	drawsubpic(cross_pos, [24,24], "sprites/crosshairs.spr_0.tga", [24/128,48/128], [0.1875, 0.1875], [1,1,1], 1, DRAWFLAG_NORMAL);
+
+	drawsubpic(
+		cross_pos,
+		[24,24],
+		"sprites/crosshairs.spr_0.tga",
+		[24/128,48/128],
+		[0.1875, 0.1875],
+		[1,1,1],
+		1.0f,
+		DRAWFLAG_NORMAL
+	);
+
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	HUD_DrawAmmo3();
-	vector aicon_pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [0,72/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+
+	aicon_pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
+	drawsubpic(
+		aicon_pos,
+		[24,24],
+		"sprites/640hud7.spr_0.tga",
+		[0,72/128],
+		[24/256, 24/128],
+		g_hud_color,
+		pSeat->ammo2_alpha,
+		DRAWFLAG_ADDITIVE
+	);
+
 	aicon_pos = video_mins + [video_res[0] - 48, video_res[1] - 74];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [48/256,72/128], [24/256, 24/128], g_hud_color, pSeat->ammo3_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(
+		aicon_pos,
+		[24,24],
+		"sprites/640hud7.spr_0.tga",
+		[48/256,72/128],
+		[24/256, 24/128],
+		g_hud_color,
+		pSeat->ammo3_alpha,
+		DRAWFLAG_ADDITIVE
+	);
 #endif
 }
 
-float w_mp5_aimanim(void)
+float
+w_mp5_aimanim(void)
 {
 	return self.flags & ANIM_CR_AIMMP5 ? ANIM_CR_AIMCROWBAR : ANIM_AIMMP5;
 }
-void w_mp5_hudpic(int s, vector pos)
+
+void
+w_mp5_hudpic(int selected, vector pos)
 {
 #ifdef CSQC
-	if (s) {
-		drawsubpic(pos, [170,45], "sprites/640hud4.spr_0.tga", [0,135/256], [170/256,45/256], g_hud_color, 1, DRAWFLAG_ADDITIVE);
+	if (selected) {
+		drawsubpic(
+			pos,
+			[170,45],
+			"sprites/640hud4.spr_0.tga",
+			[0,135/256],
+			[170/256,45/256],
+			g_hud_color,
+			1.0f,
+			DRAWFLAG_ADDITIVE
+		);
 	} else {
-		drawsubpic(pos, [170,45], "sprites/640hud1.spr_0.tga", [0,135/256], [170/256,45/256], g_hud_color, 1, DRAWFLAG_ADDITIVE);
+		drawsubpic(
+			pos,
+			[170,45],
+			"sprites/640hud1.spr_0.tga",
+			[0,135/256],
+			[170/256,45/256],
+			g_hud_color,
+			1.0f,
+			DRAWFLAG_ADDITIVE
+		);
 	}
 #endif
 }
@@ -302,14 +372,15 @@ weapon_t w_mp5 = {
 };
 
 #ifdef SSQC
-void weapon_9mmAR(void)
+void
+weapon_9mmAR(void)
 {
 	Weapons_InitItem(WEAPON_MP5);
 }
 
-void weapon_mp5(void)
+void
+weapon_mp5(void)
 {
 	Weapons_InitItem(WEAPON_MP5);
 }
 #endif
-
