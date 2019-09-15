@@ -25,6 +25,10 @@ enum
 	DISP_HOLSTER
 };
 
+#ifdef SSQC
+entity Spawn_SelectRandom(string);
+#endif
+
 void
 w_displacer_precache(void)
 {
@@ -45,7 +49,7 @@ void
 w_displacer_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, -1, -1, -1);
+	Weapons_UpdateAmmo(pl, -1, pl.ammo_uranium, -1);
 #endif
 }
 
@@ -54,6 +58,7 @@ w_displacer_wmodel(void)
 {
 	return "models/w_displacer.mdl";
 }
+
 string
 w_displacer_pmodel(void)
 {
@@ -66,41 +71,246 @@ w_displacer_deathmsg(void)
 	return "%s was assaulted by %s's Displacer.";
 }
 
+int
+w_displacer_pickup(int new)
+{
+#ifdef SSQC
+	player pl = (player)self;
+
+	if (pl.ammo_uranium < 100) {
+		pl.ammo_uranium = bound(0, pl.ammo_uranium + 40, 100);
+	} else {
+		return FALSE;
+	}
+#endif
+	return TRUE;
+}
+
 void
 w_displacer_draw(void)
 {
+#ifdef CSQC
 	Weapons_SetModel("models/v_displacer.mdl");
 	Weapons_ViewAnimation(DISP_DRAW);
+#endif
 }
 
 void
 w_displacer_holster(void)
 {
+#ifdef CSQC
 	Weapons_ViewAnimation(DISP_HOLSTER);
+#endif
 }
 
 void
-w_displacer_primary(void)
+w_displacer_teleport(entity target)
 {
-/* TODO, 250 damage */
+#ifdef SSQC
+	player pl = (player)target;
+	/* TODO, 250 damage */
+	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/displacer_teleport.wav", 1, ATTN_NORM);
+	
+	/* FIXME: This will teleport upon your standard spawn positions
+	 * in other game modes, such as CTF (your team spawns), no clue
+	 * about singleplayer */
+	entity spot = Spawn_SelectRandom("info_player_deathmatch");
+	setorigin(pl, spot.origin);
+#endif
 }
 
 void
-w_displacer_secondary(void)
+w_displacer_fireball(void)
 {
-/* TODO, self teleport */
+	player pl = (player)self;
+
+	static void displacerball_touch(void)
+	{
+#ifdef SSQC
+		if (other.flags & FL_CLIENT) {
+			w_displacer_teleport(other);
+		}
+		Damage_Radius(self.origin, self.owner, 250, 250 * 2.5f, TRUE);
+		sound(self, 1, "weapons/displacer_impact.wav", 1, ATTN_NORM);
+#endif
+		remove(self);
+	}
+#ifdef CSQC
+	static float displacerball_predraw(void)
+	{
+		
+		addentity(self);
+		return PREDRAW_NEXT;
+	}
+#endif
+
+	Weapons_MakeVectors();
+	entity ball = spawn();
+	
+#ifdef CSQC
+	setmodel(ball, "sprites/exit1.spr");
+	ball.drawmask = MASK_ENGINE;
+	ball.predraw = displacerball_predraw;
+#endif
+
+	setorigin(ball, Weapons_GetCameraPos() + (v_forward * 16));
+	ball.owner = self;
+	ball.velocity = v_forward * 500;
+	ball.movetype = MOVETYPE_FLYMISSILE;
+	ball.solid = SOLID_BBOX;
+	ball.angles = vectoangles(ball.velocity);
+	ball.touch = displacerball_touch;
+	setsize(ball, [0,0,0], [0,0,0]);
+
+#ifdef SSQC
+	sound(pl, CHAN_WEAPON, "weapons/displacer_fire.wav", 1, ATTN_NORM);
+#endif
 }
 
 void
 w_displacer_release(void)
 {
+	player pl = (player)self;
 
+	if (pl.w_idle_next > 0.0) {
+		return;
+	}
+
+	if (pl.a_ammo3 == 1) {
+		Weapons_ViewAnimation(DISP_FIRE);
+		w_displacer_fireball();
+		pl.a_ammo3 = 0;
+		pl.w_idle_next = pl.w_attack_next = 1.0f;
+		return;
+	} else if (pl.a_ammo3 == 2) {
+		Weapons_ViewAnimation(DISP_FIRE);
+		w_displacer_teleport(pl);
+		pl.a_ammo3 = 0;
+		pl.w_idle_next = pl.w_attack_next = 1.0f;
+		return;
+	}
+
+	if (random() < 0.5) {
+		Weapons_ViewAnimation(DISP_IDLE1);
+	} else {
+		Weapons_ViewAnimation(DISP_IDLE2);
+	}
+	
+	pl.w_idle_next = 3.0f;
+}
+
+void
+w_displacer_primary(void)
+{
+	player pl = (player)self;
+
+	if (pl.w_attack_next > 0.0) {
+		return;
+	}
+
+	/* ammo check */
+#ifdef CSQC
+	if (pl.a_ammo2 < 20) {
+		return;
+	}
+#else
+	if (pl.ammo_uranium < 20) {
+		return;
+	}
+#endif
+
+	/* we're already in spinning mode */
+	if (pl.a_ammo3 > 0) {
+		w_displacer_release();
+		return;
+	}
+
+	pl.a_ammo3 = 1;
+
+#ifdef CSQC
+	Weapons_ViewAnimation(DISP_SPINUP);
+#else
+	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/displacer_spin.wav", 1, ATTN_NORM);
+#endif
+	pl.w_idle_next = pl.w_attack_next = 1.0f;
+}
+
+void
+w_displacer_secondary(void)
+{
+	player pl = (player)self;
+
+	if (pl.w_attack_next > 0.0) {
+		return;
+	}
+
+	/* ammo check */
+#ifdef CSQC
+	if (pl.a_ammo2 < 60) {
+		return;
+	}
+#else
+	if (pl.ammo_uranium < 60) {
+		return;
+	}
+#endif
+
+	/* we're already in spinning mode */
+	if (pl.a_ammo3 > 0) {
+		w_displacer_release();
+		return;
+	}
+
+	pl.a_ammo3 = 2;
+
+#ifdef CSQC
+	Weapons_ViewAnimation(DISP_SPINUP);
+#else
+	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/displacer_spin2.wav", 1, ATTN_NORM);
+#endif
+	pl.w_idle_next = pl.w_attack_next = 1.0f;
 }
 
 float
 w_displacer_aimanim(void)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIMSQUEAK : ANIM_AIMSQUEAK;
+}
+
+void
+w_displacer_hud(void)
+{
+#ifdef CSQC
+	vector cross_pos;
+	vector aicon_pos;
+
+	cross_pos = (video_res / 2) + [-12,-12];
+	aicon_pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
+
+	drawsubpic(
+		cross_pos,
+		[24,24],
+		"sprites/ofch1.spr_0.tga",
+		[48/72,0],
+		[24/72,24/72],
+		[1,1,1],
+		1,
+		DRAWFLAG_NORMAL
+	);
+
+	drawsubpic(
+		aicon_pos,
+		[24,24],
+		"sprites/640hud7.spr_0.tga",
+		[0,96/128], // was [24/256,72/128]... which makes 0 sense
+		[24/256, 24/128],
+		g_hud_color,
+		pSeat->ammo2_alpha,
+		DRAWFLAG_ADDITIVE
+	);
+
+	HUD_DrawAmmo2();
+#endif
 }
 
 void
@@ -147,9 +357,9 @@ weapon_t w_displacer =
 	.secondary	= w_displacer_secondary,
 	.reload		= __NULL__,
 	.release	= w_displacer_release,
-	.crosshair	= __NULL__,
+	.crosshair	= w_displacer_hud,
 	.precache	= w_displacer_precache,
-	.pickup		= __NULL__,
+	.pickup		= w_displacer_pickup,
 	.updateammo	= w_displacer_updateammo,
 	.wmodel		= w_displacer_wmodel,
 	.pmodel		= w_displacer_pmodel,
