@@ -69,6 +69,11 @@ void Weapons_Primary(void)
 	if (g_weapons[i].primary != __NULL__) {
 		g_weapons[i].primary();
 	}
+#ifdef SSQC
+	if (g_weapons[i].updateammo != __NULL__) {
+		g_weapons[i].updateammo(pl);
+	}
+#endif
 }
 
 void Weapons_Secondary(void)
@@ -78,6 +83,11 @@ void Weapons_Secondary(void)
 	if (g_weapons[i].secondary != __NULL__) {
 		g_weapons[i].secondary();
 	}
+#ifdef SSQC
+	if (g_weapons[i].updateammo != __NULL__) {
+		g_weapons[i].updateammo(pl);
+	}
+#endif
 }
 
 void Weapons_Reload(void)
@@ -87,6 +97,11 @@ void Weapons_Reload(void)
 	if (g_weapons[i].reload != __NULL__) {
 		g_weapons[i].reload();
 	}
+#ifdef SSQC
+	if (g_weapons[i].updateammo != __NULL__) {
+		g_weapons[i].updateammo(pl);
+	}
+#endif
 }
 
 void Weapons_Release(void)
