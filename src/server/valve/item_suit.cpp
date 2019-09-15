@@ -24,7 +24,7 @@ class item_suit:CBaseTrigger
 
 void item_suit::touch(void)
 {
-	if (other.classname == "player") {
+	if (other.classname != "player") {
 		return;
 	}
 
