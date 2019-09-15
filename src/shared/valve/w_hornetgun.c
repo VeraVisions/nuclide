@@ -24,7 +24,8 @@ enum
 	HORNETGUN_SHOOT
 };
 
-void w_hornetgun_precache(void)
+void
+w_hornetgun_precache(void)
 {
 	precache_model("models/v_hgun.mdl");
 	precache_model("models/w_hgun.mdl");
@@ -35,7 +36,9 @@ void w_hornetgun_precache(void)
 	precache_sound("agrunt/ag_fire2.wav");
 	precache_sound("agrunt/ag_fire3.wav");
 }
-int w_hornetgun_pickup(int new)
+
+int
+w_hornetgun_pickup(int new)
 {
 #ifdef SSQC
 	player pl = (player)self;
@@ -48,7 +51,9 @@ int w_hornetgun_pickup(int new)
 #endif
 	return FALSE;
 }
-void w_hornetgun_updateammo(player pl)
+
+void
+w_hornetgun_updateammo(player pl)
 {
 #ifdef SSQC
 	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_hornet, __NULL__);
@@ -67,7 +72,8 @@ string w_hornetgun_deathmsg(void)
 	return "";
 }
 
-void w_hornetgun_draw(void)
+void
+w_hornetgun_draw(void)
 {
 	Weapons_SetModel("models/v_hgun.mdl");
 	Weapons_ViewAnimation(HORNETGUN_DRAW);
@@ -76,21 +82,24 @@ void w_hornetgun_draw(void)
 	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_hornet, __NULL__);
 #endif
 }
-void w_hornetgun_holster(void)
+
+void
+w_hornetgun_holster(void)
 {
 	
 }
 
 #ifdef SSQC
-void w_hornetgun_shoothornet(void)
+void
+w_hornetgun_shoothornet(void)
 {
 	static void Hornet_Touch(void) {
 		if (other.takedamage == DAMAGE_YES) {
 			Damage_Apply(other, self.owner, 10, trace_endpos, FALSE);
-		} else {
 		}
 		remove(self);
 	}
+
 	Weapons_MakeVectors();
 	entity bolt = spawn();
 	setmodel(bolt, "models/hornet.mdl");
@@ -107,38 +116,53 @@ void w_hornetgun_shoothornet(void)
 }
 #endif
 
-void w_hornetgun_release(void)
+void
+w_hornetgun_release(void)
 {
-    player pl = (player)self;
+	player pl = (player)self;
 
-    if (pl.w_idle_next) {
-        return;
-    }
-
-	int r;
-    r = floor(random(0,3));
-    switch (r) {
-    case 0:
-        Weapons_ViewAnimation(HORNETGUN_IDLE);
-        break;
-    case 1:
-        Weapons_ViewAnimation(HORNETGUN_FIDGET1);
-        break;
-    default:
-        Weapons_ViewAnimation(HORNETGUN_FIDGET2);
-        break;
-    }
+	if (pl.w_idle_next > 0.0) {
+		return;
+	}
 
 #ifdef CSQC
-    pl.a_ammo2 = bound(0, pl.a_ammo2 + 1, 8);
+	if (pl.a_ammo2 < 8) {
+		pl.a_ammo2 = bound(0, pl.a_ammo2 + 1, 8);
+		pl.w_idle_next = 0.35f;
+	}
 #else
-    pl.ammo_hornet = bound(0, pl.ammo_hornet + 1, 8);
-    Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_hornet, __NULL__);
+	if (pl.ammo_hornet < 8) {
+		pl.ammo_hornet = bound(0, pl.ammo_hornet + 1, 8);
+		Weapons_UpdateAmmo(pl, -1, pl.ammo_hornet, -1);
+		pl.w_idle_next = 0.35f;
+		return;
+	}
 #endif
-    pl.w_idle_next = 1.0f;
+
+	if (pl.w_idle_next > 0.0) {
+		return;
+	}
+
+	int r;
+	r = floor(random(0,3));
+	switch (r) {
+	case 0:
+		Weapons_ViewAnimation(HORNETGUN_IDLE);
+		pl.w_idle_next = 1.875f;
+		break;
+	case 1:
+		Weapons_ViewAnimation(HORNETGUN_FIDGET1);
+		pl.w_idle_next = 2.5f;
+		break;
+	default:
+		Weapons_ViewAnimation(HORNETGUN_FIDGET2);
+		pl.w_idle_next = 2.1875f;
+		break;
+	}
 }
 
-void w_hornetgun_primary(void)
+void
+w_hornetgun_primary(void)
 {
 	player pl = (player)self;
 	if (pl.w_attack_next > 0.0) {
@@ -174,7 +198,9 @@ void w_hornetgun_primary(void)
 	pl.w_attack_next = 0.25;
 	pl.w_idle_next = 1.0f;
 }
-void w_hornetgun_secondary(void)
+
+void
+w_hornetgun_secondary(void)
 {
 	player pl = (player)self;
 	if (pl.w_attack_next) {
@@ -208,35 +234,81 @@ void w_hornetgun_secondary(void)
 	pl.w_attack_next = 0.1;
 	pl.w_idle_next = 1.0f;
 }
-void w_hornetgun_reload(void)
+
+void
+w_hornetgun_reload(void)
 {
 	
 }
 
-void w_hornetgun_crosshair(void)
+void
+w_hornetgun_crosshair(void)
 {
 #ifdef CSQC
-	static vector cross_pos;
+	vector cross_pos;
+	vector aicon_pos;
+
 	cross_pos = (video_res / 2) + [-12,-12];
-	drawsubpic(cross_pos, [24,24], "sprites/crosshairs.spr_0.tga", [72/128,24/128], [0.1875, 0.1875], [1,1,1], 1, DRAWFLAG_NORMAL);
+	aicon_pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
+
+	drawsubpic(
+		cross_pos,
+		[24,24],
+		"sprites/crosshairs.spr_0.tga",
+		[72/128,24/128],
+		[0.1875, 0.1875],
+		[1,1,1],
+		1.0f,
+		DRAWFLAG_NORMAL
+	);
+
 	HUD_DrawAmmo2();
-	vector aicon_pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [24/256,96/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+
+	drawsubpic(
+		aicon_pos,
+		[24,24],
+		"sprites/640hud7.spr_0.tga",
+		[24/256,96/128],
+		[24/256, 24/128],
+		g_hud_color,
+		pSeat->ammo2_alpha,
+		DRAWFLAG_ADDITIVE
+	);
 #endif
 }
 
-float w_hornetgun_aimanim(void)
+float
+w_hornetgun_aimanim(void)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIMHIVE : ANIM_AIMHIVE;
 }
 
-void w_hornetgun_hudpic(int s, vector pos)
+void
+w_hornetgun_hudpic(int selected, vector pos)
 {
 #ifdef CSQC
-	if (s) {
-		drawsubpic(pos, [170,45], "sprites/640hud5.spr_0.tga", [0,180/256], [170/256,45/256], g_hud_color, 1, DRAWFLAG_ADDITIVE);
+	if (selected) {
+		drawsubpic(
+			pos,
+			[170,45],
+			"sprites/640hud5.spr_0.tga",
+			[0,180/256],
+			[170/256,45/256],
+			g_hud_color,
+			1.0f,
+			DRAWFLAG_ADDITIVE
+		);
 	} else {
-		drawsubpic(pos, [170,45], "sprites/640hud2.spr_0.tga", [0,180/256], [170/256,45/256], g_hud_color, 1, DRAWFLAG_ADDITIVE);
+		drawsubpic(
+			pos,
+			[170,45],
+			"sprites/640hud2.spr_0.tga",
+			[0,180/256],
+			[170/256,45/256],
+			g_hud_color,
+			1.0f,
+			DRAWFLAG_ADDITIVE
+		);
 	}
 #endif
 }
@@ -267,7 +339,9 @@ weapon_t w_hornetgun =
 };
 
 #ifdef SSQC
-void weapon_hornetgun(void) {
+void
+weapon_hornetgun(void)
+{
 	Weapons_InitItem(WEAPON_HORNETGUN);
 }
 #endif
