@@ -40,7 +40,7 @@ void
 w_glock_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, pl.glock_mag, pl.ammo_9mm, __NULL__);
+	Weapons_UpdateAmmo(pl, pl.glock_mag, pl.ammo_9mm, -1);
 #endif
 }
 
@@ -87,9 +87,6 @@ w_glock_draw(void)
 #ifdef CSQC
 	Weapons_SetModel("models/v_9mmhandgun.mdl");
 	Weapons_ViewAnimation(GLOCK_DRAW);
-#else
-	player pl = (player)self;
-	Weapons_UpdateAmmo(pl, pl.glock_mag, pl.ammo_9mm, __NULL__);
 #endif
 }
 
@@ -110,7 +107,6 @@ w_glock_primary(void)
 		return;
 	}
 
-	
 	/* ammo check */
 #ifdef CSQC
 	if (!pl.a_ammo1) {
@@ -137,7 +133,6 @@ w_glock_primary(void)
 	pl.glock_mag--;
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.01,0,01]);
 	sound(pl, CHAN_WEAPON, "weapons/pl_gun3.wav", 1.0f, ATTN_NORM);
-	Weapons_UpdateAmmo(pl, pl.glock_mag, pl.ammo_9mm, __NULL__);
 
 	if (self.flags & FL_CROUCHING)
 		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
@@ -183,7 +178,6 @@ w_glock_secondary(void)
 	pl.glock_mag--;
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.1,0.1]);
 	sound(pl, CHAN_WEAPON, "weapons/pl_gun3.wav", 1.0f, ATTN_NORM);
-	Weapons_UpdateAmmo(pl, pl.glock_mag, pl.ammo_9mm, __NULL__);
 
 	if (self.flags & FL_CROUCHING)
 		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
@@ -199,34 +193,34 @@ void
 w_glock_reload(void)
 {
 	player pl = (player)self;
-	if (pl.w_attack_next > 0) {
+
+	if (pl.w_attack_next > 0.0) {
 		return;
 	}
+
 #ifdef CSQC
 	if (pl.a_ammo1 >= 18) {
 		return;
 	}
-	if (!pl.a_ammo2) {
+	if (pl.a_ammo2 <= 0) {
 		return;
 	}
-
-#else
-	if (pl.glock_mag >= 18) {
-		return;
-	}
-	if (!pl.ammo_9mm) {
-		return;
-	}
-
-	Weapons_ReloadWeapon(pl, player::glock_mag, player::ammo_9mm, 18);
-	Weapons_UpdateAmmo(pl, pl.glock_mag, pl.ammo_9mm, __NULL__);
-#endif
 
 	if (pl.a_ammo1) {
 		Weapons_ViewAnimation(GLOCK_RELOAD);
 	} else {
 		Weapons_ViewAnimation(GLOCK_RELOAD_EMPTY);
 	}
+#else
+	if (pl.glock_mag >= 18) {
+		return;
+	}
+	if (pl.ammo_9mm <= 0) {
+		return;
+	}
+
+	Weapons_ReloadWeapon(pl, player::glock_mag, player::ammo_9mm, 18);
+#endif
 
 	pl.w_attack_next = 2.0f;
 	pl.w_idle_next = 10.0f;
@@ -364,6 +358,7 @@ weapon_9mmhandgun(void)
 {
 	Weapons_InitItem(WEAPON_GLOCK);
 }
+
 void
 weapon_glock(void)
 {
