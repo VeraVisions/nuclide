@@ -173,7 +173,7 @@ float player::predraw(void)
 
 		makevectors(ang);
 		traceline(src, src + (v_forward * 8096), FALSE, self);
-			
+
 		if (serverkeyfloat("*bspversion") == 30) {
 			dynamiclight_add(trace_endpos + (v_forward * -2), 128, [1,1,1]);
 		} else {

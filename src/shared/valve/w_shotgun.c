@@ -73,8 +73,8 @@ int w_shotgun_pickup(int new)
 	if (new) {
 		pl.shotgun_mag = 8;
 	} else {
-		if (pl.ammo_buckshot < 125) {
-			pl.ammo_buckshot = bound(0, pl.ammo_buckshot + 8, 125);
+		if (pl.ammo_buckshot < MAX_A_BUCKSHOT) {
+			pl.ammo_buckshot = bound(0, pl.ammo_buckshot + 8, MAX_A_BUCKSHOT);
 		} else {
 			return FALSE;
 		}

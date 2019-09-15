@@ -50,7 +50,6 @@
 ../../shared/tfc/w_umbrella.c
 ../../shared/tfc/w_wrench.c
 ../valve/items.cpp
-../valve/item_weaponbox.cpp
 ../valve/item_healthkit.cpp
 info_tfgoal.cpp
 item_tfgoal.cpp

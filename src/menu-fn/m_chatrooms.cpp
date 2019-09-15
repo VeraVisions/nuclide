@@ -34,7 +34,7 @@ void cr_btncancel_start(void)
 }
 
 void menu_chatrooms_init(void)
-{	
+{
 	fn_chatrooms = spawn(CWidget);
 	cr_btnJoin = spawn(CMainButton);
 	cr_btnJoin.SetImage(BTN_JOIN);

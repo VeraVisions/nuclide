@@ -47,8 +47,8 @@ w_python_pickup(int new)
 	if (new) {
 		pl.python_mag = 6;
 	} else {
-		if (pl.ammo_357 < 36) {
-			pl.ammo_357 = bound(0, pl.ammo_357 + 6, 36);
+		if (pl.ammo_357 < MAX_A_357) {
+			pl.ammo_357 = bound(0, pl.ammo_357 + 6, MAX_A_357);
 		} else {
 			return FALSE;
 		}

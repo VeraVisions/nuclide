@@ -29,8 +29,8 @@ int w_snark_pickup(int new)
 #ifdef SSQC
 	player pl = (player)self;
 
-	if (pl.ammo_snark < 10) {
-		pl.ammo_snark = bound(0, pl.ammo_snark + 5, 10);
+	if (pl.ammo_snark < MAX_A_SNARK) {
+		pl.ammo_snark = bound(0, pl.ammo_snark + 5, MAX_A_SNARK);
 	} else {
 		return FALSE;
 	}

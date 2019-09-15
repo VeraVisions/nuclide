@@ -33,6 +33,7 @@ Game_ClientConnect(void)
 			CBaseEntity caw = (CBaseEntity)a;
 			caw.Respawn();
 		}
+		Nodes_Init();
 	}
 }
 
@@ -53,7 +54,7 @@ Game_ClientDisconnect(void)
 void
 Game_ClientKill(void)
 {
-	Damage_Apply(self, self, self.health, self.origin, TRUE);	
+	Damage_Apply(self, self, self.health, self.origin, TRUE);
 }
 
 void
@@ -176,6 +177,27 @@ Game_DecodeChangeParms(void)
 	pl.velocity[2] = parm9;
 	pl.g_items = parm10;
 	pl.activeweapon = parm11;
+
+	pl.ammo_9mm = parm12;
+	pl.ammo_357 = parm13;
+	pl.ammo_buckshot = parm14;
+	pl.ammo_m203_grenade = parm15;
+	pl.ammo_bolt = parm16;
+	pl.ammo_rocket = parm17;
+	pl.ammo_uranium = parm18;
+	pl.ammo_handgrenade = parm19;
+	pl.ammo_satchel = parm20;
+	pl.ammo_tripmine = parm21;
+	pl.ammo_snark = parm22;
+	pl.ammo_hornet = parm23;
+
+	pl.glock_mag = parm24;
+	pl.mp5_mag = parm25;
+	pl.python_mag = parm26;
+	pl.shotgun_mag = parm27;
+	pl.crossbow_mag = parm28;
+	pl.rpg_mag = parm29;
+	pl.satchel_chg = parm30;
 }
 
 void
@@ -193,6 +215,27 @@ Game_SetChangeParms(void)
 	parm9 = pl.velocity[2];
 	parm10 = pl.g_items;
 	parm11 = pl.activeweapon;
+
+	parm12 = pl.ammo_9mm;
+	parm13 = pl.ammo_357;
+	parm14 = pl.ammo_buckshot;
+	parm15 = pl.ammo_m203_grenade;
+	parm16 = pl.ammo_bolt;
+	parm17 = pl.ammo_rocket;
+	parm18 = pl.ammo_uranium;
+	parm19 = pl.ammo_handgrenade;
+	parm20 = pl.ammo_satchel;
+	parm21 = pl.ammo_tripmine;
+	parm22 = pl.ammo_snark;
+	parm23 = pl.ammo_hornet;
+
+	parm24 = pl.glock_mag;
+	parm25 = pl.mp5_mag;
+	parm26 = pl.python_mag;
+	parm27 = pl.shotgun_mag;
+	parm28 = pl.crossbow_mag;
+	parm29 = pl.rpg_mag;
+	parm30 = pl.satchel_chg;
 }
 
 void
@@ -242,7 +285,7 @@ Game_PutClientInServer(void)
 	if (cvar("sv_playerslots") == 1) {
 		Game_DecodeChangeParms();
 
-		if (startspot != "") {
+		if (startspot) {
 			setorigin(pl, Landmark_GetSpot());
 		} else {
 			spot = find(world, classname, "info_player_start");
@@ -250,6 +293,7 @@ Game_PutClientInServer(void)
 			pl.angles = spot.angles;
 			pl.fixangle = TRUE;
 		}
+		Weapons_RefreshAmmo(pl);
 	} else {
 		spot = Spawn_SelectRandom("info_player_deathmatch");
 		setorigin(pl, spot.origin);

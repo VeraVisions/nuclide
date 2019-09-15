@@ -14,6 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+void weaponbox_spawn(player temp)
+{
+	
+}
+
 var int autocvar_sv_networkeverything = FALSE;
 
 void

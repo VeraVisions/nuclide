@@ -62,8 +62,8 @@ int w_satchel_pickup(int new)
 #ifdef SSQC
 	player pl = (player)self;
 
-	if (pl.ammo_satchel < 5) {
-		pl.ammo_satchel = bound(0, pl.ammo_satchel + 1, 5);
+	if (pl.ammo_satchel < MAX_A_SATCHEL) {
+		pl.ammo_satchel = bound(0, pl.ammo_satchel + 1, MAX_A_SATCHEL);
 	} else {
 		return FALSE;
 	}

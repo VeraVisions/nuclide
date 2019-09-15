@@ -45,7 +45,7 @@ w_hornetgun_pickup(int new)
 
 	/* only pick it up once */
 	if (new) {
-		pl.ammo_hornet = 8;
+		pl.ammo_hornet = MAX_A_HORNET;
 		return TRUE;
 	}
 #endif
@@ -56,7 +56,7 @@ void
 w_hornetgun_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_hornet, __NULL__);
+	Weapons_UpdateAmmo(pl, -1, pl.ammo_hornet, -1);
 #endif
 }
 string w_hornetgun_wmodel(void)
@@ -126,13 +126,13 @@ w_hornetgun_release(void)
 	}
 
 #ifdef CSQC
-	if (pl.a_ammo2 < 8) {
-		pl.a_ammo2 = bound(0, pl.a_ammo2 + 1, 8);
+	if (pl.a_ammo2 < MAX_A_HORNET) {
+		pl.a_ammo2 = bound(0, pl.a_ammo2 + 1, MAX_A_HORNET);
 		pl.w_idle_next = 0.35f;
 	}
 #else
-	if (pl.ammo_hornet < 8) {
-		pl.ammo_hornet = bound(0, pl.ammo_hornet + 1, 8);
+	if (pl.ammo_hornet < MAX_A_HORNET) {
+		pl.ammo_hornet = bound(0, pl.ammo_hornet + 1, MAX_A_HORNET);
 		Weapons_UpdateAmmo(pl, -1, pl.ammo_hornet, -1);
 		pl.w_idle_next = 0.35f;
 		return;
@@ -236,12 +236,6 @@ w_hornetgun_secondary(void)
 }
 
 void
-w_hornetgun_reload(void)
-{
-	
-}
-
-void
 w_hornetgun_crosshair(void)
 {
 #ifdef CSQC
@@ -325,7 +319,7 @@ weapon_t w_hornetgun =
 	w_hornetgun_holster,
 	w_hornetgun_primary,
 	w_hornetgun_secondary,
-	w_hornetgun_reload,
+	__NULL__,
 	w_hornetgun_release,
 	w_hornetgun_crosshair,
 	w_hornetgun_precache,

@@ -36,3 +36,16 @@ enum
 	WEAPON_TRIPMINE,
 	WEAPON_SNARK
 };
+
+#define MAX_A_9MM		250
+#define MAX_A_357		36
+#define MAX_A_BUCKSHOT		125
+#define MAX_A_M203_GRENADE	10
+#define MAX_A_BOLT		50
+#define MAX_A_ROCKET		5
+#define MAX_A_URANIUM		100
+#define MAX_A_HANDGRENADE	10
+#define MAX_A_SATCHEL		5
+#define MAX_A_TRIPMINE		10
+#define MAX_A_SNARK		10
+#define MAX_A_HORNET		8

@@ -64,8 +64,8 @@ int w_rpg_pickup(int new)
 	if (new) {
 		pl.rpg_mag = 1;
 	} else {
-		if (pl.ammo_rocket < 5) {
-			pl.ammo_rocket = bound(0, pl.ammo_rocket + 1, 5);
+		if (pl.ammo_rocket < MAX_A_ROCKET) {
+			pl.ammo_rocket = bound(0, pl.ammo_rocket + 1, MAX_A_ROCKET);
 		} else {
 			return FALSE;
 		}

@@ -61,8 +61,8 @@ int w_handgrenade_pickup(int new)
 #ifdef SSQC
 	player pl = (player)self;
 
-	if (pl.ammo_handgrenade < 10) {
-		pl.ammo_handgrenade = bound(0, pl.ammo_handgrenade + 1, 10);
+	if (pl.ammo_handgrenade < MAX_A_HANDGRENADE) {
+		pl.ammo_handgrenade = bound(0, pl.ammo_handgrenade + 1, MAX_A_HANDGRENADE);
 	} else {
 		return FALSE;
 	}

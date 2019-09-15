@@ -58,8 +58,8 @@ int w_tripmine_pickup(int new)
 #ifdef SSQC
 	player pl = (player)self;
 
-	if (pl.ammo_tripmine < 10) {
-		pl.ammo_tripmine = bound(0, pl.ammo_tripmine + 1, 10);
+	if (pl.ammo_tripmine < MAX_A_TRIPMINE) {
+		pl.ammo_tripmine = bound(0, pl.ammo_tripmine + 1, MAX_A_TRIPMINE);
 	} else {
 		return FALSE;
 	}

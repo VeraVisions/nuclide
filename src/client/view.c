@@ -224,7 +224,7 @@ void View_PostDraw(void)
 
 	// Take away alpha once it has drawn fully at least once
 	if (eMuzzleflash.alpha > 0.0f) {
-		eMuzzleflash.alpha -= (clframetime * 16);			
+		eMuzzleflash.alpha -= (clframetime * 16);
 	}
 }
 

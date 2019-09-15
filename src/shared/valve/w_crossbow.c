@@ -79,8 +79,8 @@ w_crossbow_pickup(int new)
 	if (new) {
 		pl.crossbow_mag = 5;
 	} else {
-		if (pl.ammo_bolt < 50) {
-			pl.ammo_bolt = bound(0, pl.ammo_bolt + 5, 50);
+		if (pl.ammo_bolt < MAX_A_BOLT) {
+			pl.ammo_bolt = bound(0, pl.ammo_bolt + 5, MAX_A_BOLT);
 		} else {
 			return FALSE;
 		}

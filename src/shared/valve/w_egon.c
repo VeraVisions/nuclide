@@ -59,8 +59,8 @@ int w_egon_pickup(int new)
 #ifdef SSQC
 	player pl = (player)self;
 
-	if (pl.ammo_uranium < 100) {
-		pl.ammo_uranium = bound(0, pl.ammo_uranium + 20, 100);
+	if (pl.ammo_uranium < MAX_A_URANIUM) {
+		pl.ammo_uranium = bound(0, pl.ammo_uranium + 20, MAX_A_URANIUM);
 	} else {
 		return FALSE;
 	}

@@ -48,7 +48,7 @@ monster_human_unarmed.cpp
 ../valve/item_suit.cpp
 ../valve/item_healthkit.cpp
 ../valve/item_battery.cpp
-../valve/item_weaponbox.cpp
+
 ../valve/world_items.cpp
 ../valve/ammo.cpp
 ../../shared/rewolf/weapons.c 

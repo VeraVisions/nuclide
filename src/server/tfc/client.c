@@ -16,6 +16,11 @@
 
 var int autocvar_sv_networkeverything = FALSE;
 
+void weaponbox_spawn(player temp)
+{
+	
+}
+
 void
 Game_ClientConnect(void)
 {
