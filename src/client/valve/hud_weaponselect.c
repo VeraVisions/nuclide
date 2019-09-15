@@ -16,12 +16,12 @@
 
 vector vHUDSlotNumPos[6] =
 {
-	[168 / 255, 72 / 128],
-	[188 / 255, 72 / 128],
-	[208 / 255, 72 / 128],
-	[168 / 255, 92 / 128],
-	[188 / 255, 92 / 128],
-	[208 / 255, 92 / 128]
+	[168 / 256, 72 / 128],
+	[188 / 256, 72 / 128],
+	[208 / 256, 72 / 128],
+	[168 / 256, 92 / 128],
+	[188 / 256, 92 / 128],
+	[208 / 256, 92 / 128]
 };
 
 void HUD_DrawWeaponSelect_Forward(void)
@@ -92,7 +92,7 @@ void HUD_DrawWeaponSelect_Last(void)
 
 void HUD_DrawWeaponSelect_Num(vector vPos, float fValue)
 {
-	drawsubpic(vPos, [20,20], "sprites/640hud7.spr_0.tga", vHUDSlotNumPos[fValue], [20/255, 20/128], g_hud_color, 1, DRAWFLAG_ADDITIVE);
+	drawsubpic(vPos, [20,20], "sprites/640hud7.spr_0.tga", vHUDSlotNumPos[fValue], [20/256, 20/128], g_hud_color, 1, DRAWFLAG_ADDITIVE);
 }
 
 int HUD_InSlotPos(int slot, int pos)
