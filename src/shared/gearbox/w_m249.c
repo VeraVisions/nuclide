@@ -61,7 +61,7 @@ void
 w_m249_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, pl.m249_mag, pl.ammo_556, __NULL__);
+	Weapons_UpdateAmmo(pl, pl.m249_mag, pl.ammo_556, -1);
 #endif
 }
 
@@ -86,11 +86,9 @@ w_m249_deathmsg(void)
 void
 w_m249_draw(void)
 {
+#ifdef CSQC
 	Weapons_SetModel("models/v_saw.mdl");
 	Weapons_ViewAnimation(M249_DRAW);
-#ifdef SSQC
-	player pl = (player)self;
-	Weapons_UpdateAmmo(pl, pl.m249_mag, pl.ammo_556, __NULL__);
 #endif
 }
 
@@ -131,8 +129,12 @@ w_m249_primary(void)
 {
 	player pl = (player)self;
 
-	if (pl.w_attack_next > 0.0) {
+	if (pl.a_ammo3 == 1) {
 		w_m249_release();
+		return;
+	}
+
+	if (pl.w_attack_next > 0.0) {
 		return;
 	}
 
@@ -148,7 +150,7 @@ w_m249_primary(void)
 #endif
 
 	Weapons_ViewAnimation(M249_FIRE);
-	pl.velocity += v_forward * -30;
+	pl.velocity += v_forward * -64;
 
 	/* actual firing */
 #ifdef CSQC
@@ -171,7 +173,6 @@ w_m249_primary(void)
 	}
 
 	pl.m249_mag--;
-	Weapons_UpdateAmmo(pl, pl.m249_mag, pl.ammo_556, __NULL__);
 #endif
 
 	pl.w_attack_next = 0.075f;
@@ -182,7 +183,8 @@ void
 w_m249_reload(void)
 {
 	player pl = (player)self;
-	if (pl.w_attack_next) {
+
+	if (pl.w_attack_next > 0.0) {
 		w_m249_release();
 		return;
 	}
@@ -207,8 +209,7 @@ w_m249_reload(void)
 #endif
 
 	pl.a_ammo3 = 1;
-	pl.w_attack_next = 10.0f;
-	pl.w_idle_next = 1.5f;
+	pl.w_attack_next = pl.w_idle_next = 1.5f;
 }
 
 void
