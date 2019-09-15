@@ -30,7 +30,8 @@ enum
 	CROSSBOW_HOLSTER2
 };
 
-void w_crossbow_precache(void)
+void
+w_crossbow_precache(void)
 {
 	precache_model("models/crossbow_bolt.mdl");
 	precache_model("models/v_crossbow.mdl");
@@ -42,25 +43,35 @@ void w_crossbow_precache(void)
 	precache_sound("weapons/xbow_hitbod1.wav");
 	precache_sound("weapons/xbow_hitbod2.wav");
 }
-void w_crossbow_updateammo(player pl)
+
+void
+w_crossbow_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, pl.crossbow_mag, pl.ammo_bolt, __NULL__);
+	Weapons_UpdateAmmo(pl, pl.crossbow_mag, pl.ammo_bolt, -1);
 #endif
 }
-string w_crossbow_wmodel(void)
+
+string
+w_crossbow_wmodel(void)
 {
 	return "models/w_crossbow.mdl";
 }
-string w_crossbow_pmodel(void)
+
+string
+w_crossbow_pmodel(void)
 {
 	return "models/p_crossbow.mdl";
 }
-string w_crossbow_deathmsg(void)
+
+string
+w_crossbow_deathmsg(void)
 {
 	return "";
 }
-int w_crossbow_pickup(int new)
+
+int
+w_crossbow_pickup(int new)
 {
 #ifdef SSQC
 	player pl = (player)self;
@@ -77,68 +88,101 @@ int w_crossbow_pickup(int new)
 #endif
 	return TRUE;
 }
-void w_crossbow_draw(void)
-{
-	player pl = (player)self;
 
+void
+w_crossbow_draw(void)
+{
+#ifdef CSQC
 	Weapons_SetModel("models/v_crossbow.mdl");
-
-	if (pl.a_ammo1) {
-		Weapons_ViewAnimation(CROSSBOW_DRAW1);
-	} else {
-		Weapons_ViewAnimation(CROSSBOW_DRAW2);
-	}
+	Weapons_ViewAnimation(CROSSBOW_DRAW1);
+#endif
 }
 
-void w_crossbow_holster(void)
+void
+w_crossbow_holster(void)
 {
-	player pl = (player)self;
-	if (pl.a_ammo1) {
-		Weapons_ViewAnimation(CROSSBOW_HOLSTER1);
-	} else {
-		Weapons_ViewAnimation(CROSSBOW_HOLSTER2);
-	}
+#ifdef CSQC
+	Weapons_ViewAnimation(CROSSBOW_HOLSTER1);
+#endif
 }
-void w_crossbow_primary(void)
-{
-	player pl = (player)self;
-	if (pl.w_attack_next) {
-		return;
-	}
 
 #ifdef SSQC
-	static void Crossbolt_Touch(void) {
-		Effect_CreateSpark(self.origin, trace_plane_normal);
-		
-		if (self.weapon) {
-			Effect_CreateExplosion(self.origin);
-			Damage_Radius(self.origin, self.owner, 40, 40 * 2.5, TRUE);
-			sound(self, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 2 ) + 3 ), 1, ATTN_NORM);
-		}
-		if (other.takedamage == DAMAGE_YES) {
-			Damage_Apply(other, self.owner, 50, trace_endpos, FALSE);
-			if (random() < 0.5) {
-				Weapons_PlaySound(self, CHAN_WEAPON, "weapons/xbow_hitbod1.wav", 1, ATTN_NORM);
-			} else {
-				Weapons_PlaySound(self, CHAN_WEAPON, "weapons/xbow_hitbod2.wav", 1, ATTN_NORM);
-			}
+void Crossbolt_Touch(void) {
+	/* explode mode, multiplayer */
+	if (self.weapon) {
+		Effect_CreateExplosion(self.origin);
+		Damage_Radius(self.origin, self.owner, 50, 50 * 2.5f, TRUE);
+		if (random() < 0.5) {
+			sound(self, 1, "weapons/explode3.wav", 1.0f, ATTN_NORM);
 		} else {
-			Weapons_PlaySound(self, CHAN_WEAPON, "weapons/xbow_hit1.wav", 1, ATTN_NORM);
+			sound(self, 1, "weapons/explode4.wav", 1.0f, ATTN_NORM);
 		}
 		remove(self);
-	}
-	
-	if (!pl.crossbow_mag) {
 		return;
-	}	
-	
+	}
+
+	/* walls, etc. */
+	if (other.takedamage != DAMAGE_YES) {
+		sound(self, 1, "weapons/xbow_hit1.wav", 1.0f, ATTN_NORM);
+		remove(self);
+		return;
+	}
+
+	/* anything else that can take damage */
+	Damage_Apply(other, self.owner, 50, trace_endpos, FALSE);
+	if (random() < 0.5) {
+		sound(self, 1, "weapons/xbow_hitbod1.wav", 1.0f, ATTN_NORM);
+	} else {
+		sound(self, 1, "weapons/xbow_hitbod2.wav", 1.0f, ATTN_NORM);
+	}
+
+	if (other.iBleeds == TRUE) {
+		Effect_CreateSpark(self.origin, trace_plane_normal);
+	} else {
+		Effect_CreateBlood(self.origin, [0,0,0]);
+	}
+	remove(self);
+}
+#endif
+
+void
+w_crossbow_primary(void)
+{
+	player pl = (player)self;
+
+	if (pl.w_attack_next > 0.0) {
+		return;
+	}
+
+	/* ammo check */
+#ifdef CSQC
+	if (pl.a_ammo1 <= 0) {
+		return;
+	}
+#else
+	if (pl.crossbow_mag <= 0) {
+		return;
+	}
+#endif
+
+#ifdef CSQC
+	pl.a_ammo1--;
+
+	if (pl.a_ammo1) {
+		Weapons_ViewAnimation(CROSSBOW_FIRE1);
+	} else {
+		Weapons_ViewAnimation(CROSSBOW_FIRE3);
+	}
+
+	Weapons_ViewPunchAngle([-2,0,0]);
+#else
 	Weapons_MakeVectors();
 	entity bolt = spawn();
 	setmodel(bolt, "models/crossbow_bolt.mdl");
 	setorigin(bolt, Weapons_GetCameraPos() + (v_forward * 16));
 	bolt.owner = self;
 	bolt.velocity = v_forward * 2000;
-	bolt.movetype = MOVETYPE_FLY;
+	bolt.movetype = MOVETYPE_FLYMISSILE;
 	bolt.solid = SOLID_BBOX;
 	//bolt.flags |= FL_LAGGEDMOVE;
 	bolt.gravity = 0.5f;
@@ -148,25 +192,22 @@ void w_crossbow_primary(void)
 	bolt.weapon = pl.viewzoom == 1.0 ? 1 : 0;
 	setsize(bolt, [0,0,0], [0,0,0]);
 
-	if (pl.crossbow_mag) {	
-		Weapons_PlaySound(pl, CHAN_ITEM, "weapons/xbow_reload1.wav", 1, ATTN_NORM);
+	pl.crossbow_mag--;
+
+	if (pl.crossbow_mag > 0) {
+		sound(pl, 8, "weapons/xbow_reload1.wav", 1.0f, ATTN_NORM);
 	}
 
-	pl.crossbow_mag--;
-	Weapons_UpdateAmmo(pl, pl.crossbow_mag, pl.ammo_bolt, __NULL__);
-	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/xbow_fire1.wav", 1, ATTN_NORM);
-#else
-	Weapons_ViewPunchAngle([-2,0,0]);
+	sound(pl, CHAN_WEAPON, "weapons/xbow_fire1.wav", 1.0f, ATTN_NORM);
+	Weapons_UpdateAmmo(pl, pl.crossbow_mag, pl.ammo_bolt, -1);
 #endif
-	if (pl.a_ammo1) {
-		Weapons_ViewAnimation(CROSSBOW_FIRE1);
-	} else {
-		Weapons_ViewAnimation(CROSSBOW_FIRE3);
-	}
+
 	pl.w_attack_next = 0.75f;
 	pl.w_idle_next = 10.0f;
 }
-void w_crossbow_secondary(void)
+
+void
+w_crossbow_secondary(void)
 {
 	player pl = (player)self;
 	if (pl.w_attack_next) {
@@ -180,13 +221,16 @@ void w_crossbow_secondary(void)
 	}
 	pl.w_attack_next = 0.5f;
 }
-void w_crossbow_reload(void)
+
+void
+w_crossbow_reload(void)
 {
 	player pl = (player)self;
+
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-	
+
 #ifdef SSQC
 	if (pl.ammo_bolt <= 0) {
 		return;
@@ -205,21 +249,25 @@ void w_crossbow_reload(void)
 
 #ifdef SSQC
 	Weapons_ReloadWeapon(pl, player::crossbow_mag, player::ammo_bolt, 5);
-	Weapons_UpdateAmmo(pl, pl.crossbow_mag, pl.ammo_bolt, __NULL__);
+	sound(pl, CHAN_ITEM, "weapons/xbow_reload1.wav", 1.0f, ATTN_NORM);
 #else
-	Weapons_PlaySound(pl, CHAN_ITEM, "weapons/xbow_reload1.wav", 1, ATTN_NORM);
-#endif
 	Weapons_ViewAnimation(CROSSBOW_RELOAD);
+#endif
+
 	pl.w_attack_next = 4.5f;
 	pl.w_idle_next = 10.0f;
 }
-void w_crossbow_release(void)
+
+void
+w_crossbow_release(void)
 {
 	player pl = (player)self;
+
 	if (pl.w_idle_next > 0.0) {
 		return;
 	}
 
+#ifdef CSQC
 	if (random() < 0.75) {
 		if (pl.a_ammo1) {
 			Weapons_ViewAnimation(CROSSBOW_IDLE1);
@@ -233,33 +281,79 @@ void w_crossbow_release(void)
 			Weapons_ViewAnimation(CROSSBOW_FIDGET2);
 		}
 	}
+#endif
+
 	pl.w_idle_next = 3.0f;
 }
-void w_crossbow_crosshair(void)
+
+void
+w_crossbow_crosshair(void)
 {
 #ifdef CSQC
-	static vector cross_pos;
+	vector cross_pos;
+	vector aicon_pos;
+
 	cross_pos = (video_res / 2) + [-12,-12];
-	drawsubpic(cross_pos, [24,24], "sprites/crosshairs.spr_0.tga", [72/128,0], [0.1875, 0.1875], [1,1,1], 1, DRAWFLAG_NORMAL);
+	drawsubpic(
+		cross_pos,
+		[24,24],
+		"sprites/crosshairs.spr_0.tga",
+		[72/128,0],
+		[0.1875, 0.1875],
+		[1,1,1],
+		1,
+		DRAWFLAG_NORMAL
+	);
+
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
-	vector aicon_pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [96/256,72/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+
+	aicon_pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
+	drawsubpic(
+		aicon_pos,
+		[24,24],
+		"sprites/640hud7.spr_0.tga",
+		[96/256,72/128],
+		[24/256, 24/128],
+		g_hud_color,
+		pSeat->ammo2_alpha,
+		DRAWFLAG_ADDITIVE
+	);
 #endif
 }
 
-float w_crossbow_aimanim(void)
+float
+w_crossbow_aimanim(void)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIMBOW : ANIM_AIMBOW;
 }
 
-void w_crossbow_hudpic(int s, vector pos)
+void
+w_crossbow_hudpic(int selected, vector pos)
 {
 #ifdef CSQC
-	if (s) {
-		drawsubpic(pos, [170,45], "sprites/640hud5.spr_0.tga", [0,0], [170/256,45/256], g_hud_color, 1, DRAWFLAG_ADDITIVE);
+	if (selected) {
+		drawsubpic(
+			pos,
+			[170,45],
+			"sprites/640hud5.spr_0.tga",
+			[0,0],
+			[170/256,45/256],
+			g_hud_color,
+			1.0f,
+			DRAWFLAG_ADDITIVE
+		);
 	} else {
-		drawsubpic(pos, [170,45], "sprites/640hud2.spr_0.tga", [0,0], [170/256,45/256], g_hud_color, 1, DRAWFLAG_ADDITIVE);
+		drawsubpic(
+			pos,
+			[170,45],
+			"sprites/640hud2.spr_0.tga",
+			[0,0],
+			[170/256,45/256],
+			g_hud_color,
+			1.0f,
+			DRAWFLAG_ADDITIVE
+		);
 	}
 #endif
 }
@@ -290,7 +384,9 @@ weapon_t w_crossbow =
 };
 
 #ifdef SSQC
-void weapon_crossbow(void) {
+void
+weapon_crossbow(void)
+{
 	Weapons_InitItem(WEAPON_CROSSBOW);
 }
 #endif
