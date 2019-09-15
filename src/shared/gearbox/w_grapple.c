@@ -38,6 +38,7 @@ w_grapple_precache(void)
 	precache_sound("weapons/bgrapple_pull.wav");
 	precache_sound("weapons/bgrapple_release.wav");
 	precache_sound("weapons/bgrapple_wait.wav");
+	precache_model("sprites/_tongue.spr");
 	precache_model("models/v_bgrap.mdl");
 	precache_model("models/v_bgrap_tonguetip.mdl");
 	precache_model("models/w_bgrap.mdl");
@@ -83,6 +84,7 @@ w_grapple_holster(void)
 	Weapons_ViewAnimation(BARN_HOLSTER);
 }
 
+/* called once the tongue hits a wall */
 void Grapple_Touch(void)
 {
 	player pl = (player)self.owner;
@@ -90,10 +92,38 @@ void Grapple_Touch(void)
 	pl.hook.touch = __NULL__;
 	pl.hook.velocity = [0,0,0];
 	pl.hook.solid = SOLID_NOT;
-	pl.hook.skin = 1; /* grappled */
 	pl.a_ammo1 = 1;
 }
 
+#ifdef CSQC
+/* draw the tongue from a to b */
+float
+grapple_predraw(void)
+{
+	vector forg = gettaginfo(pSeat->eViewModel, pSeat->fNumBones);
+	vector morg = self.origin;
+	vector fsize = [3,3];
+
+	vector col1 = getlight(forg) / 255;
+	vector col2 = getlight(morg) / 255;
+
+	makevectors(view_angles);
+	R_BeginPolygon("sprites/_tongue.spr_0.tga", 0, 0);
+		R_PolygonVertex(forg + v_right * fsize[0] - v_up * fsize[1],
+			[1,1], col1, 1.0f);
+		R_PolygonVertex(forg - v_right * fsize[0] - v_up * fsize[1],
+			[0,1], col1, 1.0f);
+		R_PolygonVertex(morg - v_right * fsize[0] + v_up * fsize[1],
+			[0,0], col2, 1.0f);
+		R_PolygonVertex(morg + v_right * fsize[0] + v_up * fsize[1],
+			[1,0], col2, 1.0f);
+	R_EndPolygon();
+	addentity(self);
+	return PREDRAW_NEXT;
+}
+#endif
+
+/* spawn and pull */
 void
 w_grapple_primary(void)
 {
@@ -104,7 +134,23 @@ w_grapple_primary(void)
 		if (pl.a_ammo1 == 1) {
 			pl.a_ammo1 = 2;
 			Weapons_ViewAnimation(BARN_FIRETRAVEL);
+		} else if (pl.a_ammo1 == 2) {
+			pl.hook.skin = 1; /* grappled */
 		}
+
+		if (pl.w_attack_next > 0.0) {
+			return;
+		}
+
+#ifdef SSQC
+		Weapons_MakeVectors();
+		vector src = Weapons_GetCameraPos();
+		traceline(src, src + (v_forward * 32), FALSE, pl);
+		if (trace_ent.takedamage == DAMAGE_YES && trace_ent.iBleeds) {
+			Damage_Apply(trace_ent, pl, 25, trace_endpos, FALSE);
+		}
+#endif
+		pl.w_attack_next = 0.5f;
 		return;
 	}
 
@@ -112,8 +158,12 @@ w_grapple_primary(void)
 	pl.hook = spawn();
 
 #ifdef CSQC
-	setmodel(pl.hook, "models/v_bgrap_tonguetip.mdl");
+	/*setmodel(pl.hook, "models/v_bgrap_tonguetip.mdl");*/
 	pl.hook.drawmask = MASK_ENGINE;
+	pl.hook.predraw = grapple_predraw;
+#else
+	sound(pl, CHAN_WEAPON, "weapons/bgrapple_fire.wav", 1.0, ATTN_NORM);
+	sound(pl, CHAN_VOICE, "weapons/bgrapple_pull.wav", 1.0, ATTN_NORM);
 #endif
 	setorigin(pl.hook, Weapons_GetCameraPos() + (v_forward * 16));
 	pl.hook.owner = self;
@@ -122,29 +172,39 @@ w_grapple_primary(void)
 	pl.hook.solid = SOLID_BBOX;
 	pl.hook.angles = vectoangles(pl.hook.velocity);
 	pl.hook.touch = Grapple_Touch;
-	pl.hook.skin = 0; /* ungrappled */
 	setsize(pl.hook, [0,0,0], [0,0,0]);
 	Weapons_ViewAnimation(BARN_FIRE);
 }
 
+/* let go, hang */
 void
 w_grapple_secondary(void)
 {
-/* TODO, special CTF alt fire */
+	player pl = (player)self;
+	if (pl.hook == __NULL__) {
+		return;
+	}
+
+	pl.hook.skin = 0; /* ungrappled */
 }
 
-
+/* de-spawn and play idle anims */
 void
 w_grapple_release(void)
 {
 	player pl = (player)self;
 
 	if (pl.hook != __NULL__) {
+		pl.a_ammo1 = 0; /* cache */
 		pl.hook.skin = 0; /* ungrappled */
 		remove(pl.hook);
-		pl.hook = __NULL__;
+#ifdef CSQC
 		Weapons_ViewAnimation(BARN_FIRERELEASE);
+#else
+		sound(pl, CHAN_VOICE, "weapons/bgrapple_release.wav", 1.0, ATTN_NORM);
+#endif
 		pl.w_idle_next = 1.0f;
+		pl.hook = __NULL__;
 	}
 
 	if (pl.w_idle_next > 0.0) {
