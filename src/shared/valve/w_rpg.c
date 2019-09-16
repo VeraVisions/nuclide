@@ -40,7 +40,7 @@ void w_rpg_precache(void)
 void w_rpg_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, pl.rpg_mag, pl.ammo_rocket, __NULL__);
+	Weapons_UpdateAmmo(pl, pl.rpg_mag, pl.ammo_rocket, -1);
 #endif
 }
 string w_rpg_wmodel(void)
@@ -76,11 +76,9 @@ int w_rpg_pickup(int new)
 
 void w_rpg_draw(void)
 {
+#ifdef CSQC
 	Weapons_SetModel("models/v_rpg.mdl");
 	Weapons_ViewAnimation(RPG_DRAW1);
-#ifdef SSQC
-	player pl = (player)self;
-	Weapons_UpdateAmmo(pl, pl.rpg_mag, pl.ammo_rocket, __NULL__);
 #endif
 }
 
@@ -88,6 +86,12 @@ void w_rpg_holster(void)
 {
 	
 }
+
+void w_rpg_release(void)
+{
+	
+}
+
 void w_rpg_primary(void)
 {
 	player pl = (player)self;
@@ -119,9 +123,11 @@ void w_rpg_primary(void)
 	}
 	static void Rocket_BuildSpeed(void){
 		/* Calculate new direction */
-		makevectors(self.owner.v_angle);
-		traceline(self.owner.origin, self.owner.origin + v_forward * 8096, FALSE, self.owner);
-		self.angles = vectoangles(trace_endpos - self.origin);
+		if (self.weapon) {
+			makevectors(self.owner.v_angle);
+			traceline(self.owner.origin, self.owner.origin + v_forward * 8096, FALSE, self.owner);
+			self.angles = vectoangles(trace_endpos - self.origin);
+		}
 
 		/* Increase speed towards it */
 		makevectors(self.angles);
@@ -144,19 +150,35 @@ void w_rpg_primary(void)
 	rocket.touch = Rocket_Touch;
 	rocket.think = Rocket_BuildSpeed;
 	rocket.nextthink = time + 0.15f;
+
+	if (pl.a_ammo3 > 0) {
+		rocket.weapon = 1;
+	}
+
 	setsize(rocket, [0,0,0], [0,0,0]);
 	sound(self, CHAN_WEAPON, "weapons/rocketfire1.wav", 1, ATTN_NORM);
 	pl.rpg_mag--;
-	Weapons_UpdateAmmo(pl, pl.rpg_mag, pl.ammo_rocket, __NULL__);
 #endif
 
 	pl.w_attack_next = 1.0f;
 	pl.w_idle_next = 2.5f;
 }
+
 void w_rpg_secondary(void)
 {
-	
+	player pl = (player)self;
+
+	if (pl.w_attack_next > 0.0) {
+		return;
+	}
+
+	/* toggle laser */
+	pl.a_ammo3 = 1 - pl.a_ammo3;
+
+	pl.w_attack_next = 1.0f;
+	w_rpg_release();
 }
+
 void w_rpg_reload(void)
 {
 	player pl = (player)self;
@@ -184,18 +206,14 @@ void w_rpg_reload(void)
 #endif
 
 	/* Audio-Visual Bit */
-#ifdef SSQC
+#ifdef CSQC
+	Weapons_ViewAnimation(RPG_RELOAD);
+#else
 	Weapons_ReloadWeapon(pl, player::rpg_mag, player::ammo_rocket, 1);
-	Weapons_UpdateAmmo(pl, pl.rpg_mag, pl.ammo_rocket, __NULL__);
 #endif
-	Weapons_ViewAnimation(RPG_RELOAD);	
 
 	pl.w_attack_next = 2.25f;
 	pl.w_idle_next = 10.0f;
-}
-void w_rpg_release(void)
-{
-	
 }
 
 float w_rpg_aimanim(void)
@@ -214,34 +232,64 @@ void w_rpg_hudpic(int s, vector pos)
 #endif
 }
 
-void w_rpg_laser(void)
+void w_rpg_hud(void)
 {
 #ifdef CSQC
 	player pl = (player)self;
+	vector cross_pos;
+	vector aicon_pos;
 
-	Weapons_MakeVectors();
-	vector src = pl.origin + pl.view_ofs;
-	traceline(src, src + (v_forward * 8192), FALSE, pl);
+	/* crosshair/laser */
+	if (pl.a_ammo3 == 1) {
+		float lerp;
+		vector jitter;
+		Weapons_MakeVectors();
+		vector src = pl.origin + pl.view_ofs;
+		traceline(src, src + (v_forward * 256), FALSE, pl);
+		lerp = Math_Lerp(18,6, trace_fraction);
+		jitter[0] = (random(0,2) - 2) * (1 - trace_fraction);
+		jitter[1] = (random(0,2) - 2) * (1 - trace_fraction);
+		cross_pos = (video_res / 2) + ([-lerp,-lerp] / 2);
+		drawsubpic(
+			cross_pos + jitter,
+			[lerp,lerp],
+			"sprites/laserdot.spr_0.tga",
+			[0,0],
+			[1.0, 1.0],
+			[1,1,1],
+			1.0f,
+			DRAWFLAG_ADDITIVE
+		);
+	} else {
+		cross_pos = (video_res / 2) + [-12,-12];
+		drawsubpic(
+			cross_pos,
+			[24,24],
+			"sprites/crosshairs.spr_0.tga",
+			[0,0],
+			[0.1875, 0.1875],
+			[1,1,1],
+			1,
+			DRAWFLAG_NORMAL
+		);
+	}
 
-	/*makevectors(vectoangles(trace_endpos - pl.origin));
-	vector forg = trace_endpos + (v_forward * -16);
-	vector fsize = [64, 64];
-	
-	makevectors(view_angles);
-	R_BeginPolygon("sprites/640hud7.spr_0.tga", 1, 0);
-	R_PolygonVertex(forg + v_right * fsize[0] - v_up * fsize[1], [1,1], [1,1,1], 1.0f);
-	R_PolygonVertex(forg - v_right * fsize[0] - v_up * fsize[1], [0,1], [1,1,1], 1.0f);
-	R_PolygonVertex(forg - v_right * fsize[0] + v_up * fsize[1], [0,0], [1,1,1], 1.0f);
-	R_PolygonVertex(forg + v_right * fsize[0] + v_up * fsize[1], [1,0], [1,1,1], 1.0f);
-	R_EndPolygon();*/
-	static vector cross_pos;
-	vector lasersize = [8,8] * (1-trace_fraction);
-	cross_pos = (video_res / 2) - (lasersize/2);
-	drawpic(cross_pos, "sprites/laserdot.spr_0.tga", lasersize, [1,1,1], 1.0f, DRAWFLAG_ADDITIVE);
+	/* ammo counters */
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
-	vector aicon_pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [120/256,72/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+
+	/* ammo icon */
+	aicon_pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
+	drawsubpic(
+		aicon_pos,
+		[24,24],
+		"sprites/640hud7.spr_0.tga",
+		[120/256,72/128],
+		[24/256, 24/128],
+		g_hud_color,
+		pSeat->ammo2_alpha,
+		DRAWFLAG_ADDITIVE
+	);
 #endif
 }
 
@@ -259,7 +307,7 @@ weapon_t w_rpg =
 	w_rpg_secondary,
 	w_rpg_reload,
 	w_rpg_release,
-	w_rpg_laser,
+	w_rpg_hud,
 	w_rpg_precache,
 	w_rpg_pickup,
 	w_rpg_updateammo,
