@@ -128,6 +128,7 @@ void
 w_m249_primary(void)
 {
 	player pl = (player)self;
+	vector push;
 
 	if (pl.a_ammo3 == 1) {
 		w_m249_release();
@@ -150,7 +151,10 @@ w_m249_primary(void)
 #endif
 
 	Weapons_ViewAnimation(M249_FIRE);
-	pl.velocity += v_forward * -64;
+
+	push = v_forward * -64;
+	push[2] *= 0.25f; /* gravity duh */
+	pl.velocity += push;
 
 	/* actual firing */
 #ifdef CSQC
