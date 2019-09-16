@@ -44,7 +44,7 @@ void w_gauss_precache(void)
 void w_gauss_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_uranium, __NULL__);
+	Weapons_UpdateAmmo(pl, -1, pl.ammo_uranium, -1);
 #endif
 }
 string w_gauss_wmodel(void)
@@ -240,7 +240,6 @@ void w_gauss_primary(void)
 	pl.a_ammo2 -= 2;
 #else
 	pl.ammo_uranium -= 2;
-	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_uranium, __NULL__);	
 #endif
 	w_gauss_fire(1);
 
@@ -284,9 +283,8 @@ void w_gauss_secondary(void)
 #else
 	if (pl.a_ammo1 < 255)
 		pl.ammo_uranium--;
-	Weapons_UpdateAmmo(pl, pl.a_ammo1, pl.ammo_uranium, pl.a_ammo3);
 #endif
-	
+
 	/* Set pitch sound shift */
 	pl.a_ammo1 += 16;
 	if (pl.a_ammo1 > 255) {
@@ -325,7 +323,7 @@ void w_gauss_release(void)
 	} else if (pl.a_ammo3 == 2) {
 		w_gauss_fire(0);
 		Weapons_ViewAnimation(GAUSS_FIRE1);
-#ifdef CSQC	 
+#ifdef CSQC
 		soundupdate(pl, CHAN_WEAPON, "", -1, ATTN_NORM, 0, 0, 0);
 #endif
 		pl.w_attack_next = 1.5f;
@@ -353,20 +351,38 @@ void w_gauss_release(void)
 	}
 }
 
-void w_gauss_reload(void)
-{
-	
-}
-
 void w_gauss_crosshair(void)
 {
 #ifdef CSQC
-	static vector cross_pos;
+	vector cross_pos;
+	vector aicon_pos;
+
 	cross_pos = (video_res / 2) + [-12,-12];
-	drawsubpic(cross_pos, [24,24], "sprites/crosshairs.spr_0.tga", [48/128,48/128], [0.1875, 0.1875], [1,1,1], 1, DRAWFLAG_NORMAL);
+	aicon_pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
+
+	drawsubpic(
+		cross_pos,
+		[24,24],
+		"sprites/crosshairs.spr_0.tga",
+		[48/128,48/128],
+		[0.1875, 0.1875],
+		[1,1,1],
+		1,
+		DRAWFLAG_NORMAL
+	);
+
+	drawsubpic(
+		aicon_pos,
+		[24,24],
+		"sprites/640hud7.spr_0.tga",
+		[0,96/128],
+		[24/256,24/128],
+		g_hud_color,
+		pSeat->ammo2_alpha,
+		DRAWFLAG_ADDITIVE
+	);
+
 	HUD_DrawAmmo2();
-	vector aicon_pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [0,96/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
@@ -375,13 +391,31 @@ float w_gauss_aimanim(void)
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIMGAUSS : ANIM_AIMGAUSS;
 }
 
-void w_gauss_hudpic(int s, vector pos)
+void w_gauss_hudpic(int selected, vector pos)
 {
 #ifdef CSQC
-	if (s) {
-		drawsubpic(pos, [170,45], "sprites/640hud5.spr_0.tga", [0,90/256], [170/256,45/256], g_hud_color, 1, DRAWFLAG_ADDITIVE);
+	if (selected) {
+		drawsubpic(
+			pos,
+			[170,45],
+			"sprites/640hud5.spr_0.tga",
+			[0,90/256],
+			[170/256,45/256],
+			g_hud_color,
+			1.0f,
+			DRAWFLAG_ADDITIVE
+		);
 	} else {
-		drawsubpic(pos, [170,45], "sprites/640hud2.spr_0.tga", [0,90/256], [170/256,45/256], g_hud_color, 1, DRAWFLAG_ADDITIVE);
+		drawsubpic(
+			pos,
+			[170,45],
+			"sprites/640hud2.spr_0.tga",
+			[0,90/256],
+			[170/256,45/256],
+			g_hud_color,
+			1.0f,
+			DRAWFLAG_ADDITIVE
+		);
 	}
 #endif
 }
@@ -398,7 +432,7 @@ weapon_t w_gauss =
 	w_gauss_holster,
 	w_gauss_primary,
 	w_gauss_secondary,
-	w_gauss_reload,
+	__NULL__,
 	w_gauss_release,
 	w_gauss_crosshair,
 	w_gauss_precache,
