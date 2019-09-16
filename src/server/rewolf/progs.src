@@ -50,7 +50,7 @@ monster_human_unarmed.cpp
 ../valve/item_battery.cpp
 
 ../valve/world_items.cpp
-../valve/ammo.cpp
+
 ../../shared/rewolf/weapons.c 
 ../../shared/valve/weapon_common.c
 ../spawn.c
