@@ -40,7 +40,7 @@ void w_handgrenade_precache(void)
 void w_handgrenade_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_handgrenade, __NULL__);
+	Weapons_UpdateAmmo(pl, -1, pl.ammo_handgrenade, -1);
 #endif
 }
 string w_handgrenade_wmodel(void)
@@ -131,10 +131,6 @@ void w_handgrenade_draw(void)
 {
 	Weapons_SetModel("models/v_grenade.mdl");
 	Weapons_ViewAnimation(HANDGRENADE_DRAW);
-#ifdef SSQC
-	player pl = (player)self;
-	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_handgrenade, __NULL__);
-#endif
 }
 
 void w_handgrenade_holster(void)
@@ -205,7 +201,6 @@ void w_handgrenade_release(void)
 		Weapons_ViewAnimation(HANDGRENADE_THROW1);
 #else
 		pl.ammo_handgrenade--;
-		Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_handgrenade, __NULL__);
 		w_handgrenade_throw();
 #endif
 		pl.a_ammo3 = 2;
