@@ -27,6 +27,14 @@ enum
 	SPORE_IDLE2
 };
 
+enum
+{
+	SLSTATE_IDLE,
+	SLSTATE_RELOAD_START,
+	SLSTATE_RELOAD,
+	SLSTATE_RELOAD_END
+};
+
 void
 w_sporelauncher_precache(void)
 {
@@ -176,6 +184,61 @@ w_sporelauncher_primary(void)
 	pl.w_idle_next = 10.0f;
 }
 
+void w_sporelauncher_release(void)
+{
+	player pl = (player)self;
+
+	if (pl.w_idle_next > 0.0) {
+		return;
+	}
+
+	if (pl.a_ammo3 == SLSTATE_IDLE) {
+		int r = floor(random(0,3));
+		switch (r) {
+		case 0:
+			Weapons_ViewAnimation(SPORE_IDLE1);
+			pl.w_idle_next = 2.0f;
+			break;
+		case 1:
+			Weapons_ViewAnimation(SPORE_FIDGET);
+			pl.w_idle_next = 4.0f;
+			break;
+		case 2:
+			Weapons_ViewAnimation(SPORE_IDLE2);
+			pl.w_idle_next = 4.0f;
+			break;
+		}
+	} else if (pl.a_ammo3 == SLSTATE_RELOAD_START) {
+		Weapons_ViewAnimation(SPORE_RELOAD1);
+		pl.a_ammo3 = SLSTATE_RELOAD;
+		pl.w_idle_next = 0.65f;
+	} else if (pl.a_ammo3 == SLSTATE_RELOAD) {
+		Weapons_ViewAnimation(SPORE_RELOAD2);
+#ifdef CSQC
+		pl.a_ammo1++;
+		pl.a_ammo2--;
+
+		if (pl.a_ammo2 <= 0 || pl.a_ammo1 >= 5) {
+			pl.a_ammo3 = SLSTATE_RELOAD_END;
+		}
+#else
+		pl.sporelauncher_mag++;
+		pl.ammo_spore--;
+
+		if (pl.ammo_spore <= 0 || pl.sporelauncher_mag >= 5) {
+			pl.a_ammo3 = SLSTATE_RELOAD_END;
+		}
+#endif
+		pl.w_idle_next = 1.0f;
+	} else if (pl.a_ammo3 == SLSTATE_RELOAD_END) {
+		Weapons_ViewAnimation(SPORE_RELOAD3);
+
+		pl.a_ammo3 = SLSTATE_IDLE;
+		pl.w_idle_next = 10.0f;
+		pl.w_attack_next = 0.5f;
+	}
+}
+
 void
 w_sporelauncher_reload(void)
 {
@@ -189,18 +252,19 @@ w_sporelauncher_reload(void)
 		return;
 	}
 #else
-	if (pl.shotgun_mag >= 5) {
+	if (pl.sporelauncher_mag >= 5) {
 		return;
 	}
-	if (pl.ammo_buckshot <= 0) {
+	if (pl.ammo_spore <= 0) {
 		return;
 	}
 #endif
-	
-	if (pl.a_ammo3 > SHOTTY_IDLE) {
+
+	if (pl.a_ammo3 > SLSTATE_IDLE) {
 		return;
 	}
-	pl.a_ammo3 = SPORE_RELOAD1;
+
+	pl.a_ammo3 = SLSTATE_RELOAD_START;
 	pl.w_idle_next = 0.0f;
 }
 
@@ -250,13 +314,31 @@ w_sporelauncher_aimanim(void)
 }
 
 void
-w_sporelauncher_hudpic(int s, vector pos)
+w_sporelauncher_hudpic(int selected, vector pos)
 {
 #ifdef CSQC
-	if (s) {
-		drawsubpic(pos, [170,45], "sprites/640hudof04.spr_0.tga", [0,0], [170/256,45/256], g_hud_color, 1, DRAWFLAG_ADDITIVE);
+	if (selected) {
+		drawsubpic(
+			pos,
+			[170,45],
+			"sprites/640hudof04.spr_0.tga",
+			[0,0],
+			[170/256,45/256],
+			g_hud_color,
+			1.0f,
+			DRAWFLAG_ADDITIVE
+		);
 	} else {
-		drawsubpic(pos, [170,45], "sprites/640hudof03.spr_0.tga", [0,0], [170/256,45/256], g_hud_color, 1, DRAWFLAG_ADDITIVE);
+		drawsubpic(
+			pos,
+			[170,45],
+			"sprites/640hudof03.spr_0.tga",
+			[0,0],
+			[170/256,45/256],
+			g_hud_color,
+			1.0f,
+			DRAWFLAG_ADDITIVE
+		);
 	}
 #endif
 }
@@ -274,7 +356,7 @@ weapon_t w_sporelauncher =
 	.primary	= w_sporelauncher_primary,
 	.secondary	= w_sporelauncher_primary,
 	.reload		= w_sporelauncher_reload,
-	.release	= __NULL__,
+	.release	= w_sporelauncher_release,
 	.crosshair	= w_sporelauncher_crosshair,
 	.precache	= w_sporelauncher_precache,
 	.pickup		= w_sporelauncher_pickup,
