@@ -30,8 +30,8 @@ w_penguin_pickup(int new)
 #ifdef SSQC
 	player pl = (player)self;
 
-	if (pl.ammo_penguin < 10) {
-		pl.ammo_penguin = bound(0, pl.ammo_penguin + 5, 10);
+	if (pl.ammo_penguin < 9) {
+		pl.ammo_penguin = bound(0, pl.ammo_penguin + 3, 9);
 	} else {
 		return FALSE;
 	}
@@ -57,6 +57,22 @@ w_penguin_holster(void)
 }
 
 #ifdef SSQC
+void penguin_squeak(entity p)
+{
+	int r = floor(random(1,4));
+
+	switch (r) {
+	case 1:
+		sound(p, CHAN_VOICE, "squeek/sqk_hunt1.wav", 1.0, ATTN_NORM);
+		break;
+	case 2:
+		sound(p, CHAN_VOICE, "squeek/sqk_hunt2.wav", 1.0, ATTN_NORM);
+		break;
+	default:
+		sound(p, CHAN_VOICE, "squeek/sqk_hunt3.wav", 1.0, ATTN_NORM);
+	}
+}
+
 void
 penguin_ai(void)
 {
@@ -89,7 +105,7 @@ penguin_ai(void)
 
 	if (self.aiment && self.weapon <= 0.0) {
 		self.weapon = 0.5f + random();
-		sound(self, CHAN_VOICE, sprintf("squeek/sqk_hunt%d.wav",floor(random(1,4))), 1.0, ATTN_NORM);
+		penguin_squeak(self);
 		input_buttons = 2;
 		Damage_Apply(self, world, 1, self.origin, TRUE);
 
@@ -113,11 +129,20 @@ penguin_ai(void)
 void
 penguin_die(int i)
 {
+	/* clear this first to avoid infinite recursion */
+	self.customphysics = __NULL__;
+	self.vDeath = Empty;
+
+	/* now we can explodededededed */
 	Effect_CreateExplosion(self.origin);
 	Damage_Radius(self.origin, self.owner, 150, 150 * 2.5f, TRUE);
-	sound(self, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 2 ) + 3 ), 1, ATTN_NORM);
-	self.customphysics = __NULL__;
-	self.vDeath = __NULL__;
+
+	if (random() < 0.5) {
+		sound(self, 1, "weapons/explode3.wav", 1.0f, ATTN_NORM);
+	} else {
+		sound(self, 1, "weapons/explode4.wav", 1.0f, ATTN_NORM);
+	}
+
 	remove(self);
 }
 
@@ -148,6 +173,7 @@ w_penguin_deploy(void)
 	pingu.aiment = __NULL__;
 	pingu.vDeath = penguin_die;
 	pingu.weapon = 3.0f;
+	penguin_squeak(pingu);
 }
 #endif
 
@@ -185,8 +211,8 @@ w_penguin_primary(void)
 	}
 #endif
 
-	pl.w_idle_next = 1.0f;
-	pl.w_attack_next = 0.25f;
+	pl.w_idle_next = 2.0f;
+	pl.w_attack_next = 2.0f;
 
 }
 
@@ -253,7 +279,7 @@ w_penguin_updateammo(player pl)
 string
 w_penguin_wmodel(void)
 {
-	return "models/w_sqknest.mdl";
+	return "models/w_penguinnest.mdl";
 }
 
 string
@@ -281,7 +307,7 @@ w_penguin_hud(void)
 #ifdef CSQC
 	HUD_DrawAmmo2();
 	vector aicon_pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [96/256,96/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [144/256,72/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
@@ -315,7 +341,7 @@ weapon_t w_penguin =
 	.secondary	= w_penguin_secondary,
 	.reload		= w_penguin_reload,
 	.release	= w_penguin_release,
-	.crosshair	= __NULL__,
+	.crosshair	= w_penguin_hud,
 	.precache	= w_penguin_precache,
 	.pickup		= w_penguin_pickup,
 	.updateammo	= w_penguin_updateammo,
@@ -325,3 +351,11 @@ weapon_t w_penguin =
 	.aimanim	= w_penguin_aimanim,
 	.hudpic		= w_penguin_hudpic
 };
+
+#ifdef SSQC
+void
+weapon_penguin(void)
+{
+	Weapons_InitItem(WEAPON_PENGUIN);
+}
+#endif
