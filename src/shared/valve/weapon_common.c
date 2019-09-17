@@ -43,6 +43,9 @@ void Weapons_Draw(void)
 	pl.w_idle_next = 2.5f;
 	pl.viewzoom = 1.0f;
 
+	/* make sure this is all wiped */
+	pl.a_ammo1 = pl.a_ammo2 = pl.a_ammo3 = 0;
+
 	if (g_weapons[i].draw != __NULL__) {
 		g_weapons[i].draw();
 	}
