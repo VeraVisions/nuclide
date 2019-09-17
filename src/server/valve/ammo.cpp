@@ -23,7 +23,7 @@ class item_ammo:CBaseEntity
 
 void item_ammo::touch(void)
 {
-	if (other.flags & FL_CLIENT) {
+	if not (other.flags & FL_CLIENT) {
 		return;
 	}
 
@@ -84,6 +84,9 @@ void ammo_357::ammo_357(void)
 }
 void ammo_357::touch(void)
 {
+	if not (other.flags & FL_CLIENT) {
+		return;
+	}
 	if (other.classname == "player") {
 		player pl = (player)other;
 		if (pl.ammo_357 < MAX_A_357) {
@@ -110,6 +113,9 @@ void ammo_9mmAR::ammo_9mmAR(void)
 }
 void ammo_9mmAR::touch(void)
 {
+	if not (other.flags & FL_CLIENT) {
+		return;
+	}
 	if (other.classname == "player") {
 		player pl = (player)other;
 		if (pl.ammo_9mm < MAX_A_9MM) {
@@ -137,6 +143,9 @@ void ammo_9mmbox::ammo_9mmbox(void)
 }
 void ammo_9mmbox::touch(void)
 {
+	if not (other.flags & FL_CLIENT) {
+		return;
+	}
 	if (other.classname == "player") {
 		player pl = (player)other;
 		if (pl.ammo_9mm < MAX_A_9MM) {
@@ -163,6 +172,9 @@ void ammo_9mmclip::ammo_9mmclip(void)
 }
 void ammo_9mmclip::touch(void)
 {
+	if not (other.flags & FL_CLIENT) {
+		return;
+	}
 	if (other.classname == "player") {
 		player pl = (player)other;
 		if (pl.ammo_9mm < MAX_A_9MM) {
@@ -189,6 +201,9 @@ void ammo_ARgrenades::ammo_ARgrenades(void)
 }
 void ammo_ARgrenades::touch(void)
 {
+	if not (other.flags & FL_CLIENT) {
+		return;
+	}
 	if (other.classname == "player") {
 		player pl = (player)other;
 		if (pl.ammo_m203_grenade < MAX_A_M203_GRENADE) {
@@ -216,6 +231,9 @@ void ammo_buckshot::ammo_buckshot(void)
 }
 void ammo_buckshot::touch(void)
 {
+	if not (other.flags & FL_CLIENT) {
+		return;
+	}
 	if (other.classname == "player") {
 		player pl = (player)other;
 		if (pl.ammo_buckshot < MAX_A_BUCKSHOT) {
@@ -242,6 +260,9 @@ void ammo_crossbow::ammo_crossbow(void)
 }
 void ammo_crossbow::touch(void)
 {
+	if not (other.flags & FL_CLIENT) {
+		return;
+	}
 	if (other.classname == "player") {
 		player pl = (player)other;
 		if (pl.ammo_bolt < MAX_A_BOLT) {
@@ -268,12 +289,14 @@ void ammo_gaussclip::ammo_gaussclip(void)
 }
 void ammo_gaussclip::touch(void)
 {
-	if (other.classname == "player") {
-		player pl = (player)other;
-		if (pl.ammo_uranium < MAX_A_URANIUM) {
-			pl.ammo_uranium = bound(0, pl.ammo_uranium + 20, MAX_A_URANIUM);
-			item_ammo::touch();
-		}
+	if not (other.flags & FL_CLIENT) {
+		return;
+	}
+
+	player pl = (player)other;
+	if (pl.ammo_uranium < MAX_A_URANIUM) {
+		pl.ammo_uranium = bound(0, pl.ammo_uranium + 20, MAX_A_URANIUM);
+		item_ammo::touch();
 	}
 }
 
@@ -294,11 +317,13 @@ void ammo_rpgclip::ammo_rpgclip(void)
 }
 void ammo_rpgclip::touch(void)
 {
-	if (other.classname == "player") {
-		player pl = (player)other;
-		if (pl.ammo_rocket < MAX_A_ROCKET) {
-			pl.ammo_rocket = bound(0, pl.ammo_rocket + 1, MAX_A_ROCKET);
-			item_ammo::touch();
-		}
+	if not (other.flags & FL_CLIENT) {
+		return;
+	}
+
+	player pl = (player)other;
+	if (pl.ammo_rocket < MAX_A_ROCKET) {
+		pl.ammo_rocket = bound(0, pl.ammo_rocket + 1, MAX_A_ROCKET);
+		item_ammo::touch();
 	}
 }
