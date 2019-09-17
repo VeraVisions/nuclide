@@ -41,7 +41,7 @@ void item_food :: Touch ( void )
 		bevOwner.m_iReady = TRUE;
 	}
 	
-	Damage_Apply(other, this, -1, other.origin, FALSE);
+	Damage_Apply(other, this, -1, other.origin, FALSE, 0);
 	solid = SOLID_NOT;
 	remove( this );
 }

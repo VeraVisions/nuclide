@@ -120,9 +120,9 @@ void w_hammer_release(void)
 			hitsound = floor(random(1, 4));
     
 			if (trace_ent.classname == "player")
-				Damage_Apply(trace_ent, self, 50, trace_endpos, FALSE);
+				Damage_Apply(trace_ent, self, 50, trace_endpos, FALSE, WEAPON_HAMMER);
 			else
-				Damage_Apply(trace_ent, self, 100, trace_endpos, FALSE);
+				Damage_Apply(trace_ent, self, 100, trace_endpos, FALSE, WEAPON_HAMMER);
 
 			if (trace_ent.classname == "monster_scientist") {
 				trace_ent.movetype = MOVETYPE_TOSS;
@@ -142,7 +142,7 @@ void w_hammer_release(void)
 #ifdef SSQC
 	if (trace_ent.takedamage) {
 		hitsound = floor(random(1, 4));
-		Damage_Apply(trace_ent, self, 200, trace_endpos, FALSE);
+		Damage_Apply(trace_ent, self, 200, trace_endpos, FALSE, WEAPON_HAMMER);
 	} else {
 		if (trace_fraction < 1.0) {
 			hitsound = 4;

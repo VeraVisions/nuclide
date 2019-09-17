@@ -38,7 +38,7 @@ void w_tripmine_precache(void)
 void w_tripmine_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_tripmine, __NULL__);
+	Weapons_UpdateAmmo(pl, -1, pl.ammo_tripmine, -1);
 #endif
 }
 string w_tripmine_wmodel(void)
@@ -69,11 +69,9 @@ int w_tripmine_pickup(int new)
 
 void w_tripmine_draw(void)
 {
+#ifdef CSQC
 	Weapons_SetModel("models/v_tripmine.mdl");
 	Weapons_ViewAnimation(TRIPMINE_DRAW);
-#ifdef SSQC
-	player pl = (player)self;
-	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_tripmine, __NULL__);
 #endif
 }
 void w_tripmine_holster(void)
@@ -170,6 +168,8 @@ void w_tripmine_parse(void)
 void w_tripmine_primary(void)
 {
 	player pl = (player)self;
+	vector src;
+
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
@@ -184,52 +184,55 @@ void w_tripmine_primary(void)
 	}
 #endif
 
+	src = Weapons_GetCameraPos();
 	Weapons_MakeVectors();
-	traceline(Weapons_GetCameraPos(), Weapons_GetCameraPos() + v_forward * 64, FALSE, pl);
+	traceline(src, src + v_forward * 64, FALSE, pl);
 
-	if (trace_fraction == 1.0f) {
+	if (trace_fraction == 1.0) {
 		return;
 	}
-	
+
+#ifdef CSQC
+	pl.a_ammo2--;
 	Weapons_ViewAnimation(TRIPMINE_FIRE2);
-#ifdef SSQC
+#else
 	entity mine = spawn();
 	setmodel(mine, "models/v_tripmine.mdl");
 	setorigin(mine, trace_endpos);
-   	mine.angles = vectoangles( trace_plane_normal );
-   	setorigin(mine, trace_endpos - (v_forward * 8));
+	mine.angles = vectoangles( trace_plane_normal );
+	setorigin(mine, trace_endpos - (v_forward * 8));
 	mine.think = w_tripmine_ready;
 	mine.nextthink = time + 4.0f;
 	mine.SendEntity = w_tripmine_sendentity;
 	mine.SendFlags = 1;
-	//mine.owner = pl;
 	sound(mine, CHAN_WEAPON, "weapons/mine_charge.wav", 1, ATTN_NORM);
-	sound(self, CHAN_WEAPON, "weapons/mine_deploy.wav", 1, ATTN_NORM);
-
 	pl.ammo_tripmine--;
-	if (pl.ammo_tripmine <= 0) {
-		Weapons_RemoveItem(pl, WEAPON_TRIPMINE);
-	} else {
-		Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_tripmine, __NULL__);
-	}
+	sound(self, CHAN_WEAPON, "weapons/mine_deploy.wav", 1, ATTN_NORM);
 #endif
 
-	pl.w_attack_next = 0.5f;
-	pl.w_idle_next = 2.5f;
+	pl.a_ammo3 = 1;
+	pl.w_attack_next =
+	pl.w_idle_next = 0.5f;
 }
-void w_tripmine_secondary(void)
-{
-	
-}
-void w_tripmine_reload(void)
-{
-	
-}
+
 void w_tripmine_release(void)
 {
 	int r;
 	player pl = (player)self;
 	if (pl.w_idle_next > 0.0) {
+		return;
+	}
+
+	if (pl.a_ammo3 == 1) {
+		Weapons_ViewAnimation(TRIPMINE_DRAW);
+#ifdef SSQC
+		if (pl.ammo_tripmine <= 0) {
+			Weapons_RemoveItem(pl, WEAPON_TRIPMINE);
+		}
+#endif
+		pl.a_ammo3 = 0;
+		pl.w_attack_next = 0.5f;
+		pl.w_idle_next = 3.0f;
 		return;
 	}
 
@@ -285,8 +288,8 @@ weapon_t w_tripmine =
 	w_tripmine_draw,
 	w_tripmine_holster,
 	w_tripmine_primary,
-	w_tripmine_secondary,
-	w_tripmine_reload,
+	w_tripmine_release,
+	w_tripmine_release,
 	w_tripmine_release,
 	w_tripmine_hud,
 	w_tripmine_precache,

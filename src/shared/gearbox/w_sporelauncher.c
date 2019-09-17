@@ -131,7 +131,7 @@ w_sporelauncher_primary(void)
 		string hitsnd;
 
 		if (other.takedamage == DAMAGE_YES) {
-			Damage_Apply(other, self.owner, 50, trace_endpos, FALSE);
+			Damage_Apply(other, self.owner, 50, trace_endpos, FALSE, WEAPON_SPORELAUNCHER);
 		}
 
 		r = floor(random(0,3));

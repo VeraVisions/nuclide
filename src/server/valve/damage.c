@@ -16,12 +16,12 @@
 
 /* someone dieded */
 void
-Damage_Obituary(entity eCulprit, entity eTarget, float weapon, float flags)
+Damage_Obituary(entity c, entity t, float weapon, float flags)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_OBITUARY);
-	WriteString(MSG_MULTICAST, eCulprit.netname);
-	WriteString(MSG_MULTICAST, eTarget.netname);
+	WriteString(MSG_MULTICAST, c.netname);
+	WriteString(MSG_MULTICAST, t.netname);
 	WriteByte(MSG_MULTICAST, weapon);
 	WriteByte(MSG_MULTICAST, flags);
 	msg_entity = self;
@@ -30,70 +30,63 @@ Damage_Obituary(entity eCulprit, entity eTarget, float weapon, float flags)
 
 /* generic function that applies damage, pain and suffering */
 void
-Damage_Apply(entity eTarget, entity eCulprit, float fDmg, vector pos, int a)
+Damage_Apply(entity t, entity c, float dmg, vector pos, int a, int w)
 {
-	if (eTarget.flags & FL_GODMODE) {
+	if (t.flags & FL_GODMODE) {
 		return;
 	}
 
 	/* skip armor */
 	if (!a)
-	if (eTarget.armor && fDmg > 0) {
+	if (t.armor && dmg > 0) {
 		float flArmor;
 		float flNewDamage;
 
-		flNewDamage = fDmg * 0.2;
-		flArmor = (fDmg - flNewDamage) * 0.5;
+		flNewDamage = dmg * 0.2;
+		flArmor = (dmg - flNewDamage) * 0.5;
 
-		if (flArmor > eTarget.armor) {
-			flArmor = eTarget.armor;
+		if (flArmor > t.armor) {
+			flArmor = t.armor;
 			flArmor *= (1/0.5);
-			flNewDamage = fDmg - flArmor;
-			eTarget.armor = 0;
+			flNewDamage = dmg - flArmor;
+			t.armor = 0;
 		} else {
-			eTarget.armor -= flArmor;
+			t.armor -= flArmor;
 		}
-		fDmg = flNewDamage;
+		dmg = flNewDamage;
 	}
 
-	fDmg = rint(fDmg);
-	eTarget.health -= fDmg;
+	dmg = rint(dmg);
+	t.health -= dmg;
 
-	if (fDmg > 0) {
-		eTarget.dmg_take = fDmg;
-		eTarget.dmg_inflictor = eCulprit;
-	} else if (eTarget.max_health && eTarget.health > eTarget.max_health) {
-		eTarget.health = eTarget.max_health;
+	if (dmg > 0) {
+		t.dmg_take = dmg;
+		t.dmg_inflictor = c;
+	} else if (t.max_health && t.health > t.max_health) {
+		t.health = t.max_health;
 	}
 
 	// Target is dead and a client....
-	if (eTarget.health <= 0) {
-		if (eTarget.flags & FL_CLIENT) {
-			eTarget.deaths++;
-			forceinfokey(eTarget, "*deaths", ftos(eTarget.deaths));
+	if (t.health <= 0) {
+		if (t.flags & FL_CLIENT) {
+			t.deaths++;
+			forceinfokey(t, "*deaths", ftos(t.deaths));
 		}
 
-		if (eTarget.flags & FL_CLIENT || eTarget.flags & FL_MONSTER)
-		if (eCulprit.flags & FL_CLIENT)
-			if (eTarget == eCulprit)
-				eCulprit.frags--;
+		if (t.flags & FL_CLIENT || t.flags & FL_MONSTER)
+		if (c.flags & FL_CLIENT)
+			if (t == c)
+				c.frags--;
 			else
-				eCulprit.frags++;
+				c.frags++;
 	}
 
 	entity eOld = self;
-	self = eTarget;
+	self = t;
 
 	if (self.health <= 0) {
-		if (eTarget.flags & FL_MONSTER || eTarget.flags & FL_CLIENT) {
-			float w = 0;
-			/* FIXME: this is unreliable. the culprit might have
-			 * already switched weapons. FIX THIS */
-			if (eCulprit.flags & FL_CLIENT) {
-				player pl = (player)eCulprit;
-				w = pl.activeweapon;
-			}
-			Damage_Obituary(eCulprit, eTarget, w, 0);
+		if (t.flags & FL_MONSTER || t.flags & FL_CLIENT) {
+			Damage_Obituary(c, t, w, 0);
 		}
 		self.vDeath(trace_surface_id);
 	} else {
@@ -105,30 +98,30 @@ Damage_Apply(entity eTarget, entity eCulprit, float fDmg, vector pos, int a)
 
 /* physical check of whether or not we can trace important parts of an ent */
 float
-Damage_CheckTrace(entity eTarget, vector vecHitPos)
+Damage_CheckTrace(entity t, vector vecHitPos)
 {
 	/* We're lazy. Who cares */
-	if (eTarget.solid == SOLID_BSP) {
+	if (t.solid == SOLID_BSP) {
 		return TRUE;
 	}
 
-	traceline(vecHitPos, eTarget.origin, 1, self);
+	traceline(vecHitPos, t.origin, 1, self);
 	if (trace_fraction == 1) {
 		return TRUE;
 	}
-	traceline(vecHitPos, eTarget.origin + [15,15,0], 1, self);
+	traceline(vecHitPos, t.origin + [15,15,0], 1, self);
 	if (trace_fraction == 1) {
 		return TRUE;
 	}
-	traceline(vecHitPos, eTarget.origin + [-15,-15,0], 1, self);
+	traceline(vecHitPos, t.origin + [-15,-15,0], 1, self);
 	if (trace_fraction == 1) {
 		return TRUE;
 	}
-	traceline(vecHitPos, eTarget.origin + [-15,15,0], 1, self);
+	traceline(vecHitPos, t.origin + [-15,15,0], 1, self);
 	if (trace_fraction == 1) {
 		return TRUE;
 	}
-	traceline(vecHitPos, eTarget.origin + [15,-15,0], 1, self);
+	traceline(vecHitPos, t.origin + [15,-15,0], 1, self);
 	if (trace_fraction == 1) {
 		return TRUE;
 	}
@@ -169,7 +162,7 @@ Damage_Radius(vector org, entity attacker, float dmg, float radius, int check)
 		new_dmg = rint(dmg * diff);
 
 		if (diff > 0) {
-			Damage_Apply(e, attacker, new_dmg, pos, 0);
+			Damage_Apply(e, attacker, new_dmg, pos, FALSE, 0);
 
 			/* approximate, feel free to tweak */
 			if (e.movetype == MOVETYPE_WALK) {

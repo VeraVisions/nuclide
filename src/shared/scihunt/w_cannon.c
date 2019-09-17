@@ -135,7 +135,7 @@ void w_cannon_primary(void)
 		return;
 	}
 
-	TraceAttack_FireBullets(20, pl.origin + pl.view_ofs, 5, [0.08716,0.04362]);
+	TraceAttack_FireBullets(20, pl.origin + pl.view_ofs, 5, [0.08716,0.04362], WEAPON_CANNON);
 	pl.cannon_mag -= 2;
 	Weapons_PlaySound(pl, CHAN_WEAPON, "cannon/fire.wav", 1, ATTN_NORM);
 	Weapons_UpdateAmmo(pl, pl.cannon_mag, pl.ammo_buckshot, __NULL__);
@@ -165,7 +165,7 @@ void w_cannon_secondary(void)
 		return;
 	}
 
-	TraceAttack_FireBullets(10, pl.origin + pl.view_ofs, 5, [0.08716,0.04362]);
+	TraceAttack_FireBullets(10, pl.origin + pl.view_ofs, 5, [0.08716,0.04362], WEAPON_CANNON);
 	pl.cannon_mag--;
 	Weapons_PlaySound(pl, CHAN_WEAPON, "cannon/fire.wav", 1, ATTN_NORM);
 	Weapons_UpdateAmmo(pl, pl.cannon_mag, pl.ammo_buckshot, __NULL__);

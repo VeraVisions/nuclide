@@ -145,7 +145,7 @@ void w_egon_crosshair(void)
 {
 #ifdef CSQC
 	static vector cross_pos;
-	cross_pos = (video_res / 2) + [-12,-12];
+	cross_pos = video_mins + (video_res / 2) + [-12,-12];
 	drawsubpic(cross_pos, [24,24], "sprites/crosshairs.spr_0.tga", [72/128,48/128], [0.1875, 0.1875], [1,1,1], 1, DRAWFLAG_NORMAL);
 	HUD_DrawAmmo2();
 	vector aicon_pos = video_mins + [video_res[0] - 48, video_res[1] - 42];

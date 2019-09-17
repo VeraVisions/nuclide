@@ -144,7 +144,7 @@ Nodes_Init(void)
 	dprint("[^2NODES^7] Rebuilding node tree...");
 
 	/* run through the ents and rebuild the tree */
-	for (entity a = world; a = find(a, ::classname, "info_node");) {
+	for (entity a = world; (a = find(a, ::classname, "info_node"));) {
 		int iID = g_iNodes++;
 		g_pNodes = memrealloc(g_pNodes, sizeof(node_t), iID, g_iNodes);
 		node_t *n = g_pNodes + iID;

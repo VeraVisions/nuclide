@@ -97,7 +97,7 @@ Damage_Apply
 Generic function that applies damage, pain and suffering
 =================
 */
-void Damage_Apply(entity eTarget, entity eAttacker, float iDamage, vector vHitPos, int iSkipArmor)
+void Damage_Apply(entity eTarget, entity eAttacker, float iDamage, vector vHitPos, int iSkipArmor, int iWeapon)
 {
 	if (eTarget.flags & FL_GODMODE) {
 		return;
@@ -278,7 +278,7 @@ Damage_Radius(vector org, entity attacker, float dmg, float radius, int check)
 		new_dmg = rint(dmg * diff);
 
 		if (diff > 0) {
-			Damage_Apply(e, attacker, new_dmg, pos, 0);
+			Damage_Apply(e, attacker, new_dmg, pos, FALSE, 0);
 
 			/* approximate, feel free to tweak */
 			if (e.movetype == MOVETYPE_WALK) {

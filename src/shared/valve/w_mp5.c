@@ -135,9 +135,9 @@ w_mp5_primary(void)
 #else
 	/* singleplayer is more accurate */
 	if (cvar("sv_playerslots") == 1) {
-		TraceAttack_FireBullets(1, Weapons_GetCameraPos(), 8, [0.025,0.025]);
+		TraceAttack_FireBullets(1, Weapons_GetCameraPos(), 8, [0.025,0.025], WEAPON_MP5);
 	} else {
-		TraceAttack_FireBullets(1, Weapons_GetCameraPos(), 8, [0.05,0.05]);
+		TraceAttack_FireBullets(1, Weapons_GetCameraPos(), 8, [0.05,0.05], WEAPON_MP5);
 	}
 
 	if (random() < 0.5) {
@@ -268,7 +268,7 @@ w_mp5_crosshair(void)
 	vector cross_pos;
 	vector aicon_pos;
 
-	cross_pos = (video_res / 2) + [-12,-12];
+	cross_pos = video_mins + (video_res / 2) + [-12,-12];
 
 	drawsubpic(
 		cross_pos,

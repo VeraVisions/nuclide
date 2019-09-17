@@ -84,7 +84,7 @@ void w_handgrenade_throw(void)
 	static void WeaponFrag_Throw_Touch( void )
 	{
 		if (other.takedamage == DAMAGE_YES) {
-			Damage_Apply(other, self.owner, 15, self.origin, FALSE);
+			Damage_Apply(other, self.owner, 15, self.origin, FALSE, WEAPON_HANDGRENADE);
 		}
 		int r = floor(random(0,6));
 		string sample = sprintf("weapons/g_bounce%i.wav", r);
@@ -113,24 +113,24 @@ void w_handgrenade_throw(void)
 	eGrenade.owner = pl;
 	eGrenade.classname = "remove_me";
 	eGrenade.solid = SOLID_BBOX;
-	//eGrenade.angles = vectoangles( vDir );
+	eGrenade.frame = 1;
 	eGrenade.velocity = vecThrow;
 	eGrenade.movetype = MOVETYPE_BOUNCE;
 	eGrenade.think = WeaponFrag_Throw_Explode;
 	eGrenade.touch = WeaponFrag_Throw_Touch;
 	eGrenade.nextthink = time + 4.0f;
-	eGrenade.frame = 1;
 	setmodel( eGrenade, "models/w_grenade.mdl" );
-	eGrenade.frame = 1;
-	setorigin( eGrenade, vecSrc );
 	setsize( eGrenade, [0,0,0], [0,0,0] );
+	setorigin( eGrenade, vecSrc );
 }
 #endif
 
 void w_handgrenade_draw(void)
 {
+#ifdef CSQC
 	Weapons_SetModel("models/v_grenade.mdl");
 	Weapons_ViewAnimation(HANDGRENADE_DRAW);
+#endif
 }
 
 void w_handgrenade_holster(void)
@@ -146,7 +146,7 @@ void w_handgrenade_primary(void)
 	
 	/* We're abusing this network variable for the holding check */
 	if (pl.a_ammo3 > 0) {
-        return;
+		return;
 	}
 
 	/* Ammo check */
@@ -163,18 +163,10 @@ void w_handgrenade_primary(void)
 #ifdef CSQC
 	Weapons_ViewAnimation(HANDGRENADE_PULLPIN);
 #endif
-	pl.a_ammo3 = 1;
 
+	pl.a_ammo3 = 1;
 	pl.w_attack_next = 0.5f;
 	pl.w_idle_next = 0.5f;
-}
-void w_handgrenade_secondary(void)
-{
-	
-}
-void w_handgrenade_reload(void)
-{
-	
 }
 
 void w_handgrenade_hud(void)
@@ -208,21 +200,26 @@ void w_handgrenade_release(void)
 		pl.w_idle_next = 0.5f;
 	} else if (pl.a_ammo3 == 2) {
 #ifdef CSQC
-		//Weapons_ViewAnimation(HANDGRENADE_DRAW);
+		Weapons_ViewAnimation(HANDGRENADE_DRAW);
 #else
 		if (!pl.ammo_handgrenade) {
 			Weapons_RemoveItem(pl, WEAPON_HANDGRENADE);
 		}
 #endif
+		pl.w_attack_next = 0.5f;
 		pl.w_idle_next = 0.5f;
 		pl.a_ammo3 = 0;
 	}
 }
-float w_handgrenade_aimanim(void)
+
+float
+w_handgrenade_aimanim(void)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIMCROWBAR : ANIM_AIMCROWBAR;
 }
-void w_handgrenade_hudpic(int s, vector pos)
+
+void
+w_handgrenade_hudpic(int s, vector pos)
 {
 #ifdef CSQC
 	if (s) {
@@ -244,8 +241,8 @@ weapon_t w_handgrenade =
 	w_handgrenade_draw,
 	w_handgrenade_holster,
 	w_handgrenade_primary,
-	w_handgrenade_secondary,
-	w_handgrenade_reload,
+	w_handgrenade_release,
+	w_handgrenade_release,
 	w_handgrenade_release,
 	w_handgrenade_hud,
 	w_handgrenade_precache,

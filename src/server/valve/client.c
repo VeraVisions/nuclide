@@ -54,7 +54,7 @@ Game_ClientDisconnect(void)
 void
 Game_ClientKill(void)
 {
-	Damage_Apply(self, self, self.health, self.origin, TRUE);
+	Damage_Apply(self, self, self.health, self.origin, TRUE, WEAPON_NONE);
 }
 
 void
@@ -162,6 +162,42 @@ Game_RunClientCommand(void)
 	QPhysics_Run(self);
 }
 
+
+void
+Game_SetNewParms(void)
+{
+	parm1 =
+	parm2 =
+	parm3 =
+	parm4 =
+	parm5 =
+	parm6 =
+	parm7 =
+	parm8 =
+	parm9 =
+	parm10 =
+	parm11 =
+	parm12 =
+	parm13 =
+	parm14 =
+	parm15 =
+	parm16 =
+	parm17 =
+	parm18 =
+	parm19 =
+	parm20 =
+	parm21 =
+	parm22 =
+	parm23 =
+	parm24 =
+	parm25 =
+	parm26 =
+	parm27 =
+	parm28 =
+	parm29 =
+	parm30 = 0;
+}
+
 void
 Game_DecodeChangeParms(void)
 {
@@ -204,6 +240,7 @@ void
 Game_SetChangeParms(void)
 {
 	player pl = (player)self;
+
 	parm1 = g_landmarkpos[0];
 	parm2 = g_landmarkpos[1];
 	parm3 = g_landmarkpos[2];
@@ -215,7 +252,6 @@ Game_SetChangeParms(void)
 	parm9 = pl.velocity[2];
 	parm10 = pl.g_items;
 	parm11 = pl.activeweapon;
-
 	parm12 = pl.ammo_9mm;
 	parm13 = pl.ammo_357;
 	parm14 = pl.ammo_buckshot;
@@ -228,7 +264,6 @@ Game_SetChangeParms(void)
 	parm21 = pl.ammo_tripmine;
 	parm22 = pl.ammo_snark;
 	parm23 = pl.ammo_hornet;
-
 	parm24 = pl.glock_mag;
 	parm25 = pl.mp5_mag;
 	parm26 = pl.python_mag;
@@ -355,10 +390,4 @@ Game_ParseClientCommand(string cmd)
 	}
 
 	clientcommand(self, cmd);
-}
-
-void
-Game_SetNewParms(void)
-{
-
 }

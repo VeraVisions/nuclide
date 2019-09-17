@@ -128,7 +128,7 @@ w_python_primary(void)
 	Weapons_ViewAnimation(PYTHON_FIRE1);
 #else
 	pl.python_mag--;
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 40, [0.008, 0.008]);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 40, [0.008, 0.008], WEAPON_PYTHON);
 
 	if (random() < 0.5) {
 		sound(pl, CHAN_WEAPON, "weapons/357_shot1.wav", 1, ATTN_NORM);
@@ -236,7 +236,7 @@ w_python_crosshair(void)
 	vector cross_pos;
 	vector aicon_pos;
 
-	cross_pos = (video_res / 2) + [-12,-12];
+	cross_pos = video_mins + (video_res / 2) + [-12,-12];
 	drawsubpic(
 		cross_pos,
 		[24,24],

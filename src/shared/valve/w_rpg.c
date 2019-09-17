@@ -249,7 +249,7 @@ void w_rpg_hud(void)
 		lerp = Math_Lerp(18,6, trace_fraction);
 		jitter[0] = (random(0,2) - 2) * (1 - trace_fraction);
 		jitter[1] = (random(0,2) - 2) * (1 - trace_fraction);
-		cross_pos = (video_res / 2) + ([-lerp,-lerp] / 2);
+		cross_pos = video_mins + (video_res / 2) + ([-lerp,-lerp] / 2);
 		drawsubpic(
 			cross_pos + jitter,
 			[lerp,lerp],
@@ -261,7 +261,7 @@ void w_rpg_hud(void)
 			DRAWFLAG_ADDITIVE
 		);
 	} else {
-		cross_pos = (video_res / 2) + [-12,-12];
+		cross_pos = video_mins + (video_res / 2) + [-12,-12];
 		drawsubpic(
 			cross_pos,
 			[24,24],

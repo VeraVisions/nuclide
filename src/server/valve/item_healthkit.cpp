@@ -30,7 +30,7 @@ void item_healthkit::touch(void)
 	if (other.health >= other.max_health) {
 		return;
 	}
-	Damage_Apply(other, this, -20, this.origin, TRUE);
+	Damage_Apply(other, this, -20, this.origin, TRUE, 0);
 	sound(this, CHAN_ITEM, "items/smallmedkit1.wav", 1, ATTN_NORM);
 	Logging_Pickup(other, this, __NULL__);
 

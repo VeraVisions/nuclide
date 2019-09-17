@@ -107,7 +107,7 @@ penguin_ai(void)
 		self.weapon = 0.5f + random();
 		penguin_squeak(self);
 		input_buttons = 2;
-		Damage_Apply(self, world, 1, self.origin, TRUE);
+		Damage_Apply(self, world, 1, self.origin, TRUE, 0);
 
 		makevectors(self.angles);
 		traceline(self.origin, self.origin + (v_forward * 128), 0, self);
@@ -115,7 +115,7 @@ penguin_ai(void)
 		if (trace_ent.takedamage == DAMAGE_YES) {
 			float pit = 100 + random(0,10);
 			sound(self, CHAN_BODY, "squeek/sqk_deploy1.wav", 1.0, ATTN_NORM, pit);
-			Damage_Apply(trace_ent, self, 10, trace_endpos, FALSE);
+			Damage_Apply(trace_ent, self.goalentity, 10, trace_endpos, FALSE, WEAPON_PENGUIN);
 		}
 
 		if (self.aiment.health <= 0) {
@@ -157,6 +157,7 @@ w_penguin_deploy(void)
 {
 	entity pingu = spawn();
 	pingu.owner = self;
+	pingu.goalentity = self;
 	pingu.netname = "Penguin";
 	pingu.classname = "snark"; /* so snarks and pingus don't attack e/o */
 	setmodel(pingu, "models/w_penguin.mdl");

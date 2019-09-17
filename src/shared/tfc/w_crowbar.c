@@ -136,7 +136,7 @@ w_crowbar_primary(void)
 	}
 
 	if (trace_ent.takedamage) {
-		Damage_Apply(trace_ent, self, 10, trace_endpos, FALSE );
+		Damage_Apply(trace_ent, self, 10, trace_endpos, FALSE, WEAPON_CROWBAR);
 
 		if (!trace_ent.iBleeds) {
 			return;

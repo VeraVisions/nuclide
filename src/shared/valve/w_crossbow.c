@@ -123,20 +123,21 @@ void Crossbolt_Touch(void) {
 
 	/* walls, etc. */
 	if (other.takedamage != DAMAGE_YES) {
+		Effect_CreateSpark(self.origin, trace_plane_normal);
 		sound(self, 1, "weapons/xbow_hit1.wav", 1.0f, ATTN_NORM);
 		remove(self);
 		return;
 	}
 
 	/* anything else that can take damage */
-	Damage_Apply(other, self.owner, 50, trace_endpos, FALSE);
+	Damage_Apply(other, self.owner, 50, trace_endpos, FALSE, WEAPON_CROSSBOW);
 	if (random() < 0.5) {
 		sound(self, 1, "weapons/xbow_hitbod1.wav", 1.0f, ATTN_NORM);
 	} else {
 		sound(self, 1, "weapons/xbow_hitbod2.wav", 1.0f, ATTN_NORM);
 	}
 
-	if (other.iBleeds == TRUE) {
+	if (other.iBleeds == FALSE) {
 		Effect_CreateSpark(self.origin, trace_plane_normal);
 	} else {
 		Effect_CreateBlood(self.origin, [0,0,0]);
@@ -293,7 +294,7 @@ w_crossbow_crosshair(void)
 	vector cross_pos;
 	vector aicon_pos;
 
-	cross_pos = (video_res / 2) + [-12,-12];
+	cross_pos = video_mins + (video_res / 2) + [-12,-12];
 	drawsubpic(
 		cross_pos,
 		[24,24],

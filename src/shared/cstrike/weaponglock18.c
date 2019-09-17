@@ -94,7 +94,7 @@ void WeaponGLOCK18_PrimaryFire( void ) {
 			if ( self.iMag_GLOCK18 ) {
 				BaseGun_ShotMultiplierHandle( 1 );
 				BaseGun_AccuracyCalc();
-				TraceAttack_FireBullets( 1, ( self.origin + self.view_ofs ), 25, [self.fAccuracy,self.fAccuracy]);
+				TraceAttack_FireBullets( 1, ( self.origin + self.view_ofs ), 25, [self.fAccuracy,self.fAccuracy], WEAPON_GLOCK18);
 				self.iMag_GLOCK18 -= 1;
 			}
 		}

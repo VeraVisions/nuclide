@@ -14,6 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifdef CSQC
+var int PART_SHOCKPIECE;
+#endif
+
 enum
 {
 	SHOCKRIFLE_IDLE1,
@@ -35,6 +39,10 @@ w_shockrifle_precache(void)
 	precache_sound("weapons/shock_fire.wav");
 	precache_sound("weapons/shock_impact.wav");
 	precache_sound("weapons/shock_recharge.wav");
+
+#ifdef CSQC
+	PART_SHOCKPIECE = particleeffectnum("shockrifle.shockrifle_piece");
+#endif
 }
 
 int
@@ -101,8 +109,13 @@ w_shockrifle_shoothornet(void)
 {
 	static void Hornet_Touch(void) {
 		if (other.takedamage == DAMAGE_YES) {
-			Damage_Apply(other, self.owner, 10, trace_endpos, FALSE);
+			Damage_Apply(other, self.owner, 10, trace_endpos, FALSE, WEAPON_SHOCKRIFLE);
+		}
+		
+		if (other.iBleeds) {
+			Effect_CreateBlood(trace_endpos, [0,0,0]);
 		} else {
+			Effect_CreateSpark(self.origin, trace_plane_normal);
 		}
 		remove(self);
 	}
@@ -153,6 +166,7 @@ w_shockrifle_release(void)
 	} else {
 		Weapons_ViewAnimation(SHOCKRIFLE_IDLE2);
 	}
+
 	pl.w_idle_next = 3.333333f;
 }
 
@@ -185,6 +199,9 @@ w_shockrifle_primary(void)
 	pl.ammo_shock--;
 	Weapons_UpdateAmmo(pl, -1, pl.ammo_shock, -1);
 #else
+	Weapons_MakeVectors();
+	vector src = Weapons_GetCameraPos() + (v_forward * 16) + (v_up * -8);
+	pointparticles(PART_SHOCKPIECE, src, v_forward * 1000, 1);
 	pl.a_ammo2--;
 #endif
 
@@ -278,8 +295,8 @@ weapon_t w_shockrifle =
 	.draw		= w_shockrifle_draw,
 	.holster	= w_shockrifle_holster,
 	.primary	= w_shockrifle_primary,
-	.secondary	= __NULL__,
-	.reload		= __NULL__,
+	.secondary	= w_shockrifle_release,
+	.reload		= w_shockrifle_release,
 	.release	= w_shockrifle_release,
 	.crosshair	= w_shockrifle_crosshair,
 	.precache	= w_shockrifle_precache,

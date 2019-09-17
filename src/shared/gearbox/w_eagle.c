@@ -148,12 +148,12 @@ w_eagle_primary(void)
 	/* Actual firing */
 	if (pl.a_ammo3 == 1) {
 #ifdef SSQC
-		TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 34, [0, 0]);
+		TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 34, [0, 0], WEAPON_EAGLE);
 #endif
 		pl.w_attack_next = 0.5f;
 	} else {
 #ifdef SSQC
-		TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 34,  [0.1,0.1]);
+		TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 34,  [0.1,0.1], WEAPON_EAGLE);
 #endif
 		pl.w_attack_next = 0.2f;
 	}

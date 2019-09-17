@@ -162,7 +162,7 @@ w_m249_primary(void)
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 	Weapons_ViewPunchAngle([-5,0,0]);
 #else
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.052,0.052]);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.052,0.052], WEAPON_M249);
 
 	int r = (float)input_sequence % 3;
 	switch (r) {

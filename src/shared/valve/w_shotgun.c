@@ -122,9 +122,9 @@ void w_shotgun_primary(void)
 #ifdef SSQC
 	/* Singleplayer is more accurate */
 	if (cvar("sv_playerslots") == 1) {
-		TraceAttack_FireBullets(6, pl.origin + pl.view_ofs, 5, [0.08716,0.08716]);
+		TraceAttack_FireBullets(6, pl.origin + pl.view_ofs, 5, [0.08716,0.08716], WEAPON_SHOTGUN);
 	} else {
-		TraceAttack_FireBullets(4, pl.origin + pl.view_ofs, 5, [0.08716,0.04362]);
+		TraceAttack_FireBullets(4, pl.origin + pl.view_ofs, 5, [0.08716,0.04362], WEAPON_SHOTGUN);
 	}
 	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/sbarrel1.wav", 1, ATTN_NORM);
 	pl.shotgun_mag--;
@@ -164,9 +164,9 @@ void w_shotgun_secondary(void)
 #ifdef SSQC
 	/* Singleplayer is more accurate */
 	if (cvar("sv_playerslots") == 1) {
-		TraceAttack_FireBullets(12, pl.origin + pl.view_ofs, 5, [0.08716,0.08716]);
+		TraceAttack_FireBullets(12, pl.origin + pl.view_ofs, 5, [0.08716,0.08716], WEAPON_SHOTGUN);
 	} else {
-		TraceAttack_FireBullets(8, pl.origin + pl.view_ofs, 5, [0.17365,0.04362]);
+		TraceAttack_FireBullets(8, pl.origin + pl.view_ofs, 5, [0.17365,0.04362], WEAPON_SHOTGUN);
 	}
 	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/dbarrel1.wav", 1, ATTN_NORM);
 	pl.shotgun_mag -= 2;
@@ -263,7 +263,7 @@ void w_shotgun_crosshair(void)
 {
 #ifdef CSQC
 	static vector cross_pos;
-	cross_pos = (video_res / 2) + [-12,-12];
+	cross_pos = video_mins + (video_res / 2) + [-12,-12];
 	drawsubpic(cross_pos, [24,24], "sprites/crosshairs.spr_0.tga", [48/128,24/128], [0.1875, 0.1875], [1,1,1], 1, DRAWFLAG_NORMAL);
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();

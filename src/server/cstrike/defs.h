@@ -109,6 +109,6 @@ void Ammo_BuySecondary(void);
 void Animation_PlayerTop(float fFrame);
 void Animation_PlayerTopTemp(float fFrame, float fTime);
 
-void Damage_Apply(entity eTarget, entity eAttacker, float iDamage, vector vHitPos, int iSkipArmor);
+void Damage_Apply(entity, entity, float, vector, int, int);
 
 #define NULL __NULL__

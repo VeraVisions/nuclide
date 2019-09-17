@@ -95,7 +95,7 @@ w_hornetgun_shoothornet(void)
 {
 	static void Hornet_Touch(void) {
 		if (other.takedamage == DAMAGE_YES) {
-			Damage_Apply(other, self.owner, 10, trace_endpos, FALSE);
+			Damage_Apply(other, self.owner, 10, trace_endpos, FALSE, WEAPON_HORNETGUN);
 		}
 		remove(self);
 	}
@@ -242,7 +242,7 @@ w_hornetgun_crosshair(void)
 	vector cross_pos;
 	vector aicon_pos;
 
-	cross_pos = (video_res / 2) + [-12,-12];
+	cross_pos = video_mins + (video_res / 2) + [-12,-12];
 	aicon_pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
 
 	drawsubpic(

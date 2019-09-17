@@ -131,7 +131,7 @@ w_glock_primary(void)
 	}
 #else
 	pl.glock_mag--;
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.01,0,01]);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.01,0,01], WEAPON_GLOCK);
 	sound(pl, CHAN_WEAPON, "weapons/pl_gun3.wav", 1.0f, ATTN_NORM);
 
 	if (self.flags & FL_CROUCHING)
@@ -176,7 +176,7 @@ w_glock_secondary(void)
 	}
 #else
 	pl.glock_mag--;
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.1,0.1]);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.1,0.1], WEAPON_GLOCK);
 	sound(pl, CHAN_WEAPON, "weapons/pl_gun3.wav", 1.0f, ATTN_NORM);
 
 	if (self.flags & FL_CROUCHING)
@@ -266,7 +266,7 @@ w_glock_hud(void)
 	vector cross_pos;
 	vector aicon_pos;
 
-	cross_pos = (video_res / 2) + [-12,-12];
+	cross_pos = video_mins + (video_res / 2) + [-12,-12];
 	aicon_pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
 
 	drawsubpic(

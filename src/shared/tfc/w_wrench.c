@@ -129,7 +129,7 @@ w_wrench_primary(void)
 	}
 
 	if (trace_ent.takedamage) {
-		Damage_Apply(trace_ent, self, 10, trace_endpos, FALSE );
+		Damage_Apply(trace_ent, self, 10, trace_endpos, FALSE, WEAPON_WRENCH);
 
 		if (!trace_ent.iBleeds) {
 			return;

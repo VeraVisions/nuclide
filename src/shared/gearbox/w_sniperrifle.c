@@ -120,7 +120,7 @@ w_sniperrifle_primary(void)
 
 	/* Actual firing */
 #ifdef SSQC
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 40, [0.00873, 0.00873]);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 40, [0.00873, 0.00873], WEAPON_SNIPERRIFLE);
 	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/sniper_fire.wav", 1, ATTN_NORM);
 
 	pl.sniper_mag--;
@@ -213,9 +213,9 @@ w_sniperrifle_crosshair(void)
 #ifdef CSQC
 	player pl = (player)self;
 	static vector cross_pos;
-	
+
 	if (pl.viewzoom == 1.0f) {
-		cross_pos = (video_res / 2) + [-12,-12];
+		cross_pos = video_mins + (video_res / 2) + [-12,-12];
 		drawsubpic(
 			cross_pos,
 			[24,24],
@@ -227,7 +227,7 @@ w_sniperrifle_crosshair(void)
 			DRAWFLAG_NORMAL
 		);
 	} else {
-		cross_pos = (video_res / 2) + [-128,-128];
+		cross_pos = video_mins + (video_res / 2) + [-128,-128];
 		drawsubpic(
 			cross_pos,
 			[256,256],

@@ -24,7 +24,7 @@
 
 /* cast a single bullet shot */
 void
-TraceAttack_FireSingle(vector vPos, vector vAngle, int iDamage)
+TraceAttack_FireSingle(vector vPos, vector vAngle, int iDamage, int iWeapon)
 {
 	string tex;
 	vector range;
@@ -70,7 +70,7 @@ TraceAttack_FireSingle(vector vPos, vector vAngle, int iDamage)
 			iDamage *= 3;
 		}
 #endif
-		Damage_Apply(trace_ent, self, iDamage, trace_endpos, FALSE);
+		Damage_Apply(trace_ent, self, iDamage, trace_endpos, FALSE, iWeapon);
 	}
 
 	if (trace_ent.iBleeds == TRUE) {
@@ -110,14 +110,14 @@ TraceAttack_FireSingle(vector vPos, vector vAngle, int iDamage)
 #ifdef PENETRATION
 	if (iTotalPenetrations > 0) {
 		iTotalPenetrations -= 1;
-		TraceAttack_FireSingle(trace_endpos + (v_forward * 2), vAngle, iDamage);
+		TraceAttack_FireSingle(trace_endpos + (v_forward * 2), vAngle, iDamage, iWeapon);
 	}
 #endif
 }
 
 /* fire a given amount of shots */
 void
-TraceAttack_FireBullets(int iShots, vector vPos, int iDamage, vector vecSpread)
+TraceAttack_FireBullets(int iShots, vector vPos, int iDamage, vector vecSpread, int iWeapon)
 {
 	vector vDir;
 	makevectors(self.v_angle);
@@ -129,7 +129,7 @@ TraceAttack_FireBullets(int iShots, vector vPos, int iDamage, vector vecSpread)
 		vDir = aim(self, 100000);
 		vDir += Math_CRandom() * vecSpread[0] * v_right;
 		vDir += Math_CRandom() * vecSpread[1] * v_up;
-		TraceAttack_FireSingle(vPos, vDir, iDamage);
+		TraceAttack_FireSingle(vPos, vDir, iDamage, iWeapon);
 		iShots--;
 	}
 }

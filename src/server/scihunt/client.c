@@ -47,7 +47,7 @@ void Game_ClientDisconnect(void)
 
 void Game_ClientKill(void)
 {
-	Damage_Apply(self, self, self.health, self.origin, TRUE);
+	Damage_Apply(self, self, self.health, self.origin, TRUE, 0);
 }
 void Game_PlayerPreThink(void)
 {

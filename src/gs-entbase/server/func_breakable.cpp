@@ -157,10 +157,10 @@ void func_breakable::PlayerTouch(void)
 
 		if (fDamage >= health) {
 			touch = __NULL__;
-			Damage_Apply(this, other, fDamage, absmin, FALSE);
+			Damage_Apply(this, other, fDamage, absmin, FALSE, 0);
 			
 			if ((m_iMaterial == MATERIAL_GLASS) || (m_iMaterial == MATERIAL_COMPUTER)) {
-				Damage_Apply(other, this, fDamage / 4, other.origin, FALSE);
+				Damage_Apply(other, this, fDamage / 4, other.origin, FALSE, 0);
 			}
 		}
 	}

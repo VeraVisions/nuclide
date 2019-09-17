@@ -57,7 +57,7 @@ void
 w_pipewrench_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, __NULL__, __NULL__, __NULL__);
+	Weapons_UpdateAmmo(pl, -1, -1, -1);
 #endif
 }
 
@@ -104,7 +104,7 @@ w_pipewrench_primary(void)
 	}
 
 	Weapons_MakeVectors();
-	src = pl.origin + pl.view_ofs;
+	src = Weapons_GetCameraPos();
 	traceline(src, src + (v_forward * 32), FALSE, pl);
 
 	if (trace_fraction >= 1.0) {
@@ -148,7 +148,7 @@ w_pipewrench_primary(void)
 	}
 
 	if (trace_ent.takedamage) {
-		Damage_Apply(trace_ent, self, 10, trace_endpos, FALSE );
+		Damage_Apply(trace_ent, self, 10, trace_endpos, FALSE, WEAPON_PIPEWRENCH);
 
 		if (!trace_ent.iBleeds) {
 			return;
@@ -193,28 +193,35 @@ w_pipewrench_release(void)
 	vector src;
 	player pl = (player)self;
 
-	if (pl.w_attack_next > 0.0f) {
+	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-
-	src = pl.origin + pl.view_ofs;
-	Weapons_MakeVectors();
-	traceline(src, src + v_forward * 64, FALSE, self);
 
 	if (pl.a_ammo1 == 1) {
 	#ifdef SSQC
 		int hitsound = 0;
 		string snd;
 	#endif
+		/* attack! */
+		Weapons_MakeVectors();
+		src = Weapons_GetCameraPos();
+		traceline(src, src + (v_forward * 64), FALSE, pl);
+
 		if (trace_fraction < 1.0) {
 		#ifdef SSQC
 			if (trace_ent.takedamage == DAMAGE_YES) {
 				hitsound = floor(random(1, 2));
 				/* TODO Damage is 45 - 200+ (?) */
-				Damage_Apply(trace_ent, self, 200, trace_endpos, FALSE);
-			}
- else {
+				Damage_Apply(trace_ent, pl, 200, trace_endpos, FALSE, WEAPON_PIPEWRENCH);
+			} else {
 				hitsound = 3;
+			}
+
+			/* don't bother with decals, we got squibs */
+			if (trace_ent.iBleeds) {
+				Effect_CreateBlood(trace_endpos, [0,0,0]);
+			} else {
+				Effect_Impact(IMPACT_MELEE, trace_endpos, trace_plane_normal);
 			}
 		#endif
 			Weapons_ViewAnimation(PIPE_ATTACKBIGHIT);
@@ -222,7 +229,6 @@ w_pipewrench_release(void)
 		} else {
 			Weapons_ViewAnimation(PIPE_ATTACKBIGMISS);
 		}
-
 #ifdef SSQC
 		snd = "weapons/pwrench_big_miss.wav";
 		switch (hitsound) {
@@ -244,7 +250,7 @@ w_pipewrench_release(void)
 	}
 
 	/* Pure cosmetics start here */
-	if (pl.w_idle_next) {
+	if (pl.w_idle_next > 0.0) {
 		return;
 	}
 
@@ -313,7 +319,7 @@ weapon_t w_pipewrench =
 	.holster	= w_pipewrench_holster,
 	.primary	= w_pipewrench_primary,
 	.secondary	= w_pipewrench_secondary,
-	.reload		= __NULL__,
+	.reload		= w_pipewrench_release,
 	.release	= w_pipewrench_release,
 	.crosshair	= __NULL__,
 	.precache	= w_pipewrench_precache,

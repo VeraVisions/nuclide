@@ -118,7 +118,7 @@ w_sbs_primary(void)
 #endif
 
 #ifdef SSQC
-	TraceAttack_FireBullets(4, pl.origin + pl.view_ofs, 6, [0.17365,0.04362]);
+	TraceAttack_FireBullets(4, pl.origin + pl.view_ofs, 6, [0.17365,0.04362], WEAPON_SBS);
 	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/sbarrel1.wav", 1, ATTN_NORM);
 	pl.shotgun_mag--;
 	Weapons_UpdateAmmo(pl, pl.shotgun_mag, pl.ammo_shells, __NULL__);

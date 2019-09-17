@@ -114,7 +114,7 @@ void WeaponSMOKEGRENADE_Throw( void ) {
 			return;
 		}
 		if ( other.classname == "func_breakable" ) {
-			Damage_Apply( other, self, 50, self.origin, FALSE );
+			Damage_Apply( other, self, 50, self.origin, FALSE, 0);
 			self.velocity = Caliber_Reflect( self.velocity, trace_plane_normal );
 		}
 		sound( self, CHAN_WEAPON, sprintf( "weapons/grenade_hit%d.wav", floor( random() * 3 ) + 1 ), 1, ATTN_NORM );

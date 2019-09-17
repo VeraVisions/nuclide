@@ -158,7 +158,7 @@ void w_gauss_fire(int one)
 	}
 
 	if (trace_ent.takedamage == DAMAGE_YES) {
-		Damage_Apply(trace_ent, self, iDamage, trace_endpos, FALSE);
+		Damage_Apply(trace_ent, self, iDamage, trace_endpos, FALSE, WEAPON_GAUSS);
 		sound(trace_ent, CHAN_ITEM, sprintf("weapons/electro%d.wav", random(0,3)+4), 1, ATTN_NORM);
 	}
 #else
@@ -196,7 +196,7 @@ void w_gauss_fire(int one)
 		iLoop--;
 #ifdef SSQC
 		if (trace_ent.takedamage == DAMAGE_YES) {
-			Damage_Apply(trace_ent, self, iDamage, trace_endpos, FALSE);
+			Damage_Apply(trace_ent, self, iDamage, trace_endpos, FALSE, WEAPON_GAUSS);
 			sound(trace_ent, CHAN_ITEM, sprintf("weapons/electro%d.wav", random(0,3)+4), 1, ATTN_NORM);
 		}
 		
@@ -357,7 +357,7 @@ void w_gauss_crosshair(void)
 	vector cross_pos;
 	vector aicon_pos;
 
-	cross_pos = (video_res / 2) + [-12,-12];
+	cross_pos = video_mins + (video_res / 2) + [-12,-12];
 	aicon_pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
 
 	drawsubpic(

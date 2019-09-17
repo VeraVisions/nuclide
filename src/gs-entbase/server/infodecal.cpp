@@ -53,6 +53,7 @@ void infodecal(void)
 	int i = 0;
 	int b = 0;
 	float frac = 1.0f;
+	vector endpos = [0,0,0];
 	vector vpos = self.origin;
 	
 	if (serverkeyfloat("*bspversion") != 30) {
@@ -113,6 +114,7 @@ void infodecal(void)
 	for (i = 0; i < 6; i++) {
 		if ( tmp[i].fraction < frac ) {
 			frac = tmp[i].fraction;
+			endpos = tmp[i].endpos;
 			b = i;
 		}
 	}
@@ -123,6 +125,11 @@ void infodecal(void)
 		if (self.classname != "tempdecal") {
 			remove(self);
 		}
+		return;
+	}
+
+	/* FIXME: more universal check? */
+	if (getsurfacetexture(trace_ent, getsurfacenearpoint(trace_ent, endpos)) == "sky") {
 		return;
 	}
 

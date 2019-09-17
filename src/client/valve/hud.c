@@ -345,7 +345,7 @@ HUD_DrawLogo(void)
 	drawpic(
 		pos,
 		sprintf("sprites/640_logo.spr_%i.tga", f),
-		[256, 48],
+		[256,48],
 		[1,1,1],
 		1.0f,
 		DRAWFLAG_ADDITIVE
