@@ -207,7 +207,7 @@ w_python_release(void)
 		return;
 	}
 
-	int r = floor(random(0, 4));
+	int r = (float)input_sequence % 4;
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(PYTHON_IDLE1);

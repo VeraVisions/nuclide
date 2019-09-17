@@ -190,7 +190,8 @@ w_displacer_release(void)
 		return;
 	}
 
-	if (random() < 0.5) {
+	int r = (float)input_sequence % 3;
+	if (r == 1) {
 		Weapons_ViewAnimation(DISP_IDLE1);
 	} else {
 		Weapons_ViewAnimation(DISP_IDLE2);

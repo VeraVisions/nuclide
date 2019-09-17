@@ -107,7 +107,7 @@ w_knife_primary(void)
 	pl.w_idle_next = 2.5f;
 
 #ifdef CSQC
-	r = floor(random(0,3));
+	r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
 		anim = trace_fraction >= 1 ? KNIFE_ATTACK1MISS:KNIFE_ATTACK1HIT;
@@ -126,7 +126,7 @@ w_knife_primary(void)
 		Animation_PlayerTopTemp(ANIM_CR_SHOOTCROWBAR, 0.42f);
 	}
 
-	r = floor(random(0,3));
+	r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
 		sound(pl, CHAN_WEAPON, "weapons/knife1.wav", 1, ATTN_NORM);
@@ -134,9 +134,8 @@ w_knife_primary(void)
 	case 1:
 		sound(pl, CHAN_WEAPON, "weapons/knife2.wav", 1, ATTN_NORM);
 		break;
-	case 2:
+	default:
 		sound(pl, CHAN_WEAPON, "weapons/knife3.wav", 1, ATTN_NORM);
-		break;
 	}
 
 	if (trace_fraction >= 1.0) {
@@ -195,7 +194,6 @@ w_knife_release(void)
 	default:
 		Weapons_ViewAnimation(KNIFE_IDLE3);
 		pl.w_idle_next = 5.3f;
-		break;
 	}
 }
 

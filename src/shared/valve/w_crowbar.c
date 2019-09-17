@@ -103,7 +103,7 @@ w_crowbar_primary(void)
 	pl.w_idle_next = 2.5f;
 
 #ifdef CSQC
-	r = floor(random(0,3));
+	r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
 		anim = trace_fraction >= 1 ? CBAR_ATTACK1MISS:CBAR_ATTACK1HIT;
@@ -142,7 +142,7 @@ w_crowbar_primary(void)
 			return;
 		}
 
-		r = floor(random(0,3));
+		r = (float)input_sequence % 3;
 		switch (r) {
 		case 0:
 			sound(pl, 8, "weapons/cbar_hitbod1.wav", 1, ATTN_NORM);
@@ -150,12 +150,13 @@ w_crowbar_primary(void)
 		case 1:
 			sound(pl, 8, "weapons/cbar_hitbod2.wav", 1, ATTN_NORM);
 			break;
-		case 2:
+		default:
 			sound(pl, 8, "weapons/cbar_hitbod3.wav", 1, ATTN_NORM);
 			break;
 		}
 	} else {
-		if (random() < 0.5) {
+		r = (float)input_sequence % 2;
+		if (r == 1) {
 			sound(pl, 8, "weapons/cbar_hit1.wav", 1, ATTN_NORM);
 		} else {
 			sound(pl, 8, "weapons/cbar_hit2.wav", 1, ATTN_NORM);

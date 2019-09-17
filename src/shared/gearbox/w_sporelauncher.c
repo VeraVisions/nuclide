@@ -193,7 +193,7 @@ void w_sporelauncher_release(void)
 	}
 
 	if (pl.a_ammo3 == SLSTATE_IDLE) {
-		int r = floor(random(0,3));
+		int r = (float)input_sequence % 3;
 		switch (r) {
 		case 0:
 			Weapons_ViewAnimation(SPORE_IDLE1);

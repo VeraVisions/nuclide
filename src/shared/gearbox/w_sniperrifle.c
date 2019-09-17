@@ -200,7 +200,8 @@ w_sniperrifle_release(void)
 		return;
 	}
 
-	if (random() < 0.5) {
+	int r = (float)input_sequence % 2;
+	if (r == 1) {
 		Weapons_ViewAnimation(SNIPER_IDLE1);
 	} else {
 		Weapons_ViewAnimation(SNIPER_IDLE2);

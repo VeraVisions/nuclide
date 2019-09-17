@@ -181,7 +181,7 @@ w_penguin_deploy(void)
 void
 w_penguin_primary(void)
 {
-	player pl = (player)self;	
+	player pl = (player)self;
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
@@ -238,7 +238,7 @@ w_penguin_release(void)
 		return;
 	}
 
-	r = floor(random(0,3));
+	r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(PENGUIN_IDLE);

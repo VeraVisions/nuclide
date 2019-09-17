@@ -144,7 +144,7 @@ w_hornetgun_release(void)
 	}
 
 	int r;
-	r = floor(random(0,3));
+	r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(HORNETGUN_IDLE);

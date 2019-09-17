@@ -115,7 +115,7 @@ w_pipewrench_primary(void)
 	pl.w_idle_next = 2.5f;
 
 #ifdef CSQC
-	int r = floor(random(0,3));
+	int r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
 		anim = trace_fraction >= 1 ? PIPE_ATTACK1MISS:PIPE_ATTACK1HIT;

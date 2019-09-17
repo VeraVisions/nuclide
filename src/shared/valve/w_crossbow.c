@@ -269,7 +269,8 @@ w_crossbow_release(void)
 	}
 
 #ifdef CSQC
-	if (random() < 0.75) {
+	int r = (float)input_sequence % 2;
+	if (r == 1) {
 		if (pl.a_ammo1) {
 			Weapons_ViewAnimation(CROSSBOW_IDLE1);
 		} else {

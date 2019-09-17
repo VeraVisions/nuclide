@@ -122,8 +122,24 @@ w_eagle_release(void)
 	}
 #endif
 
-	Weapons_ViewAnimation(EAGLE_IDLE1 + floor(random(0,5)));
-	pl.w_idle_next = 15.0f;
+	int r = (float)input_sequence % 4;
+	switch (r) {
+	case 0:
+		Weapons_ViewAnimation(EAGLE_IDLE1);
+		pl.w_idle_next = 2.5f;
+		break;
+	case 1:
+		Weapons_ViewAnimation(EAGLE_IDLE2);
+		pl.w_idle_next = 2.5f;
+		break;
+	case 2:
+		Weapons_ViewAnimation(EAGLE_IDLE3);
+		pl.w_idle_next = 1.633333f;
+		break;
+	default:
+		Weapons_ViewAnimation(EAGLE_IDLE4);
+		pl.w_idle_next = 2.5f;
+	}
 }
 
 void
