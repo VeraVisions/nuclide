@@ -175,7 +175,7 @@ void w_tripmine_primary(void)
 	}
 
 #ifdef CSQC
-	if (pl.a_ammo1 <= 0) {
+	if (pl.a_ammo2 <= 0) {
 		return;
 	}
 #else
@@ -188,7 +188,7 @@ void w_tripmine_primary(void)
 	Weapons_MakeVectors();
 	traceline(src, src + v_forward * 64, FALSE, pl);
 
-	if (trace_fraction == 1.0) {
+	if (trace_fraction >= 1.0) {
 		return;
 	}
 
@@ -196,17 +196,18 @@ void w_tripmine_primary(void)
 	pl.a_ammo2--;
 	Weapons_ViewAnimation(TRIPMINE_FIRE2);
 #else
+	pl.ammo_tripmine--;
+
 	entity mine = spawn();
 	setmodel(mine, "models/v_tripmine.mdl");
 	setorigin(mine, trace_endpos);
 	mine.angles = vectoangles( trace_plane_normal );
-	setorigin(mine, trace_endpos - (v_forward * 8));
 	mine.think = w_tripmine_ready;
 	mine.nextthink = time + 4.0f;
 	mine.SendEntity = w_tripmine_sendentity;
 	mine.SendFlags = 1;
+	setorigin(mine, trace_endpos - (v_forward * 8));
 	sound(mine, CHAN_WEAPON, "weapons/mine_charge.wav", 1, ATTN_NORM);
-	pl.ammo_tripmine--;
 	sound(self, CHAN_WEAPON, "weapons/mine_deploy.wav", 1, ATTN_NORM);
 #endif
 
