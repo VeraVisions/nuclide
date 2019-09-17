@@ -49,7 +49,7 @@ void w_shotgun_precache(void)
 void w_shotgun_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, pl.shotgun_mag, pl.ammo_buckshot, __NULL__);
+	Weapons_UpdateAmmo(pl, pl.shotgun_mag, pl.ammo_buckshot, -1);
 #endif
 }
 string w_shotgun_wmodel(void)
