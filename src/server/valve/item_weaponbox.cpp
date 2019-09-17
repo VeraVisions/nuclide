@@ -59,18 +59,18 @@ void item_weaponbox::touch(void)
 	pl.ammo_hornet += ammo_hornet;
 
 	/* cull */
-	pl.ammo_9mm = max(pl.ammo_9mm, MAX_A_9MM);
-	pl.ammo_357 = max(pl.ammo_357, MAX_A_357);
-	pl.ammo_buckshot = max(pl.ammo_buckshot, MAX_A_BUCKSHOT);
-	pl.ammo_m203_grenade = max(pl.ammo_m203_grenade, MAX_A_M203_GRENADE);
-	pl.ammo_bolt = max(pl.ammo_bolt, MAX_A_BOLT);
-	pl.ammo_rocket = max(pl.ammo_rocket, MAX_A_ROCKET);
-	pl.ammo_uranium = max(pl.ammo_uranium, MAX_A_URANIUM);
-	pl.ammo_handgrenade = max(pl.ammo_handgrenade, MAX_A_HANDGRENADE);
-	pl.ammo_satchel = max(pl.ammo_satchel, MAX_A_SATCHEL);
-	pl.ammo_tripmine = max(pl.ammo_tripmine, MAX_A_TRIPMINE);
-	pl.ammo_snark = max(pl.ammo_snark, MAX_A_SNARK);
-	pl.ammo_hornet = max(pl.ammo_hornet, MAX_A_HORNET);
+	pl.ammo_9mm = min(pl.ammo_9mm, MAX_A_9MM);
+	pl.ammo_357 = min(pl.ammo_357, MAX_A_357);
+	pl.ammo_buckshot = min(pl.ammo_buckshot, MAX_A_BUCKSHOT);
+	pl.ammo_m203_grenade = min(pl.ammo_m203_grenade, MAX_A_M203_GRENADE);
+	pl.ammo_bolt = min(pl.ammo_bolt, MAX_A_BOLT);
+	pl.ammo_rocket = min(pl.ammo_rocket, MAX_A_ROCKET);
+	pl.ammo_uranium = min(pl.ammo_uranium, MAX_A_URANIUM);
+	pl.ammo_handgrenade = min(pl.ammo_handgrenade, MAX_A_HANDGRENADE);
+	pl.ammo_satchel = min(pl.ammo_satchel, MAX_A_SATCHEL);
+	pl.ammo_tripmine = min(pl.ammo_tripmine, MAX_A_TRIPMINE);
+	pl.ammo_snark = min(pl.ammo_snark, MAX_A_SNARK);
+	pl.ammo_hornet = min(pl.ammo_hornet, MAX_A_HORNET);
 
 	pl.g_items |= weapon_items;
 	Weapons_RefreshAmmo(pl);

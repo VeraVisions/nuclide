@@ -330,6 +330,8 @@ Game_PutClientInServer(void)
 		}
 		Weapons_RefreshAmmo(pl);
 	} else {
+		Game_SetNewParms();
+		Game_DecodeChangeParms();
 		spot = Spawn_SelectRandom("info_player_deathmatch");
 		setorigin(pl, spot.origin);
 		pl.angles = spot.angles;

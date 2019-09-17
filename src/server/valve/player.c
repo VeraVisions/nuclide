@@ -29,7 +29,7 @@ void Player_Death(int hit)
 	pl.takedamage = DAMAGE_NO;
 	pl.flags &= ~FL_FLASHLIGHT;
 	pl.armor = pl.activeweapon = pl.g_items = 0;
-	
+
 	pl.think = PutClientInServer;
 	pl.nextthink = time + 4.0f;
 	sound(pl, CHAN_AUTO, "fvox/flatline.wav", 1.0, ATTN_NORM);
