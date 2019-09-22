@@ -88,6 +88,13 @@ w_python_draw(void)
 {
 #ifdef CSQC
 	Weapons_SetModel("models/v_357.mdl");
+
+	/* singleplayer doesn't do scope */
+	if (cvar("sv_playerslots") == 1) {
+		Weapons_SetGeomset("geomset 4 1\n");
+	} else {
+		Weapons_SetGeomset("geomset 4 2\n");
+	}
 	Weapons_ViewAnimation(PYTHON_DRAW);
 #endif
 }
@@ -147,6 +154,11 @@ w_python_secondary(void)
 	player pl = (player)self;
 
 	if (pl.w_attack_next > 0.0) {
+		return;
+	}
+
+	/* singleplayer doesn't do scope */
+	if (cvar("sv_playerslots") == 1) {
 		return;
 	}
 

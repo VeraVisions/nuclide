@@ -39,8 +39,12 @@ class player
 
 	float activeweapon;
 	float viewzoom;
+	vector punchangle;
 	vector view_ofs;
 	float weapontime;
+
+	/* any mods that use hooks */
+	entity hook;
 
 	/* Weapon specific */
 	int glock_mag;
@@ -69,6 +73,7 @@ class player
 	float net_teleport_time;
 	float net_weapontime;
 	float net_viewzoom;
+	vector net_punchangle;
 	int net_ammo1;
 	int net_ammo2;
 	int net_ammo3;

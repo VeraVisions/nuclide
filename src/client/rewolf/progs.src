@@ -38,7 +38,7 @@ decore.cpp
 
 ../../shared/valve/animations.h
 ../../shared/valve/animations.c
-../../shared/valve/player.cpp
+../../shared/rewolf/player.cpp
 ../player.c
 ../../shared/pmove.c
 ../predict.c
@@ -52,6 +52,8 @@ decore.cpp
 ../../shared/rewolf/weapons.h
 ../../shared/rewolf/w_fists.c
 ../../shared/rewolf/w_gausspistol.c
+../../shared/rewolf/w_grenade.c
+../../shared/rewolf/w_shotgun.c
 ../../shared/rewolf/w_beamgun.c
 ../../shared/rewolf/w_chemicalgun.c
 ../../shared/rewolf/w_dml.c
@@ -75,7 +77,7 @@ entities.c
 ../vgui.cpp
 
 hud.c
-../valve/hud_weaponselect.c
+hud_weaponselect.c
 ../valve/scoreboard.c
 
 ../valve/input.c

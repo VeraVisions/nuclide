@@ -43,6 +43,7 @@ w_displacer_precache(void)
 	precache_model("models/v_displacer.mdl");
 	precache_model("models/w_displacer.mdl");
 	precache_model("models/p_displacer.mdl");
+	precache_model("sprites/exit1.spr");
 }
 
 void

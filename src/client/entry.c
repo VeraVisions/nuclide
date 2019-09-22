@@ -242,7 +242,7 @@ CSQC_UpdateView(float w, float h, float focus)
 		addentities(MASK_ENGINE);
 		setproperty(VF_MIN, video_mins);
 		setproperty(VF_SIZE, video_res);
-		setproperty(VF_ANGLES, view_angles + pSeat->vPunchAngle);
+		setproperty(VF_ANGLES, view_angles + pl.punchangle);
 		setproperty(VF_DRAWWORLD, 1);
 
 		if (g_skyscale != 0 && g_skypos) {
@@ -270,7 +270,6 @@ CSQC_UpdateView(float w, float h, float focus)
 			pf.postdraw();
 		}
 
-		View_DropPunchAngle();
 		Fade_Update((int)video_mins[0],(int)video_mins[1], (int)w, (int)h);
 
 #ifdef CSTRIKE

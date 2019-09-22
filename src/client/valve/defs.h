@@ -18,12 +18,11 @@ vector g_hud_color;
 
 struct
 {
-//Viewmodel stuff
+	/* viewmodel stuff */
 	entity eViewModel;
 	entity eMuzzleflash;
 	float fNumBones;
 	float fEjectBone;
-	vector vPunchAngle;
 	float fLastWeapon;
 	float fBobTime;
 	float fBob;
@@ -33,20 +32,23 @@ struct
 	int iZoomed;
 	float flZoomTime;
 
-//Player fields
+	/* player fields */
 	entity ePlayer;
 	vector vPlayerOrigin;
 	vector vPlayerOriginOld;
 	vector vPlayerVelocity;
 	float fPlayerFlags;
 	
-// Camera Fields
-	//entity ePlayerEnt;
+	/* camera fields */
 	vector vCameraPos;
 	vector vCameraAngle;
 	float fCameraTime;
+	
+	/* punchangle */
+	vector punchangle;
+	vector net_punchangle;
 
-/* hud.c */
+	/* hud.c */
 	float health_old;
 	float health_alpha;
 	float armor_old;
@@ -58,10 +60,9 @@ struct
 	float ammo3_old;
 	float ammo3_alpha;
 
-//UI fields
-	int iShowScores;	// This is seperated from the other VGUI stuff so we can check scores while buying and whatnot
-
-	// We can only carry one item per slot, so this is hacking around the last one
+	/* This is seperated from the other VGUI stuff so we can check scores
+	 * while buying and whatnot */
+	int iShowScores;
 	float fHUDWeaponSelected;
 	float fHUDWeaponSelectTime;
 

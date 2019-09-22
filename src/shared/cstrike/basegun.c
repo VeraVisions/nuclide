@@ -74,7 +74,8 @@ void BaseGun_ShotMultiplierHandle( float fShots ) {
 	
 	vPunch[0] = -2 * ( pSeat->iShotMultiplier / 6 );
 	vPunch[1] = random( -1, 1 );
-	View_AddPunchAngle( vPunch );
+	/*player pl = (player)self;
+	pl.punchangle += vPunch;*/
 #endif
 }
 

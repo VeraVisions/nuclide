@@ -31,7 +31,14 @@ void Weapons_SetModel(string mdl)
 {
 #ifdef CSQC
 	setmodel(pSeat->eViewModel, mdl);
-#endif	
+#endif
+}
+
+void Weapons_SetGeomset(string set)
+{
+#ifdef CSQC
+	setcustomskin(pSeat->eViewModel, "", set);
+#endif
 }
 
 void Weapons_Draw(void)
@@ -213,8 +220,8 @@ int Weapons_GetAnimation(void)
 void Weapons_ViewPunchAngle(vector add)
 {
 #ifdef CSQC
-	View_AddPunchAngle(add);
-
+	player pl = (player)self;
+	pl.punchangle += add;
 #endif
 }
 

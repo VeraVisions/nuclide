@@ -74,7 +74,7 @@ struct
 	entity eMuzzleflash;
 	float fNumBones;
 	float fEjectBone;
-	vector vPunchAngle;
+	vector punchangle;
 	float fLastWeapon;
 	float fBobTime;
 	float fBob;

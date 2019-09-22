@@ -29,7 +29,7 @@ monster_human_unarmed.cpp
 ../../shared/decals.c
 ../../shared/effects.c
 ../../shared/spraylogo.cpp
-../../shared/valve/player.cpp
+../../shared/rewolf/player.cpp
 ../valve/player.c
 ../../shared/pmove.c
 ../valve/spectator.c
@@ -38,6 +38,8 @@ monster_human_unarmed.cpp
 ../../shared/rewolf/weapons.h
 ../../shared/rewolf/w_fists.c
 ../../shared/rewolf/w_gausspistol.c
+../../shared/rewolf/w_grenade.c
+../../shared/rewolf/w_shotgun.c
 ../../shared/rewolf/w_beamgun.c
 ../../shared/rewolf/w_chemicalgun.c
 ../../shared/rewolf/w_dml.c

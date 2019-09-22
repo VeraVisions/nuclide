@@ -31,6 +31,7 @@ void Predict_PreFrame(player pl)
 	pl.net_jumptime = pl.jumptime;
 	pl.net_teleport_time = pl.teleport_time;
 	pl.net_viewzoom = pl.viewzoom;
+	pl.net_punchangle = pl.punchangle;
 
 #ifdef VALVE
 	pl.net_w_attack_next = pl.w_attack_next;
@@ -82,6 +83,8 @@ void Predict_PostFrame(player pl)
 	pl.jumptime = pl.net_jumptime;
 	pl.teleport_time = pl.net_teleport_time;
 	pl.viewzoom = pl.net_viewzoom;
+	pl.punchangle = pl.net_punchangle;
+	//pl.hook.origin = pl.net_hookpos;
 
 #ifdef VALVE
 	pl.w_attack_next = pl.net_w_attack_next;

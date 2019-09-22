@@ -121,32 +121,6 @@ View_CalcRoll(void)
 
 /*
 ====================
-View_DropPunchAngle
-
-Quickly lerp to the original viewposition
-====================
-*/
-void View_DropPunchAngle(void)
-{
-	float lerp;
-	lerp = 1.0f - (clframetime * 4);
-	pSeat->vPunchAngle *= lerp;
-}
-
-/*
-====================
-View_AddPunchAngle
-
-Gives the angle a bit of an offset/punch/kick
-====================
-*/
-void View_AddPunchAngle(vector add)
-{
-	pSeat->vPunchAngle = add;
-}
-
-/*
-====================
 View_DrawViewModel
 
 Really convoluted function that makes the gun,
@@ -208,8 +182,11 @@ void View_DrawViewModel(void)
 			makevectors(getproperty(VF_ANGLES));
 			eMuzzleflash.origin = gettaginfo(eViewModel, eMuzzleflash.skin);
 			dynamiclight_add(pSeat->vPlayerOrigin + (v_forward * 32), 400 * eMuzzleflash.alpha, [1,0.45,0]);
+			
+			setorigin(eMuzzleflash, eMuzzleflash.origin);
 			addentity(eMuzzleflash);
 		}
+		setorigin(eViewModel, eViewModel.origin);
 		addentity(eViewModel);
 	}
 

@@ -15,13 +15,60 @@
  */
 
 weapon_t w_null = {};
+
 weapon_t g_weapons[] = {
 	w_null,
 	w_fists,
+	w_aicore,
 	w_gausspistol,
-	w_beamgun,
-	w_chemicalgun,
-	w_dml,
+	w_shotgun,
 	w_minigun,
-	w_aicore
+	w_beamgun,
+	w_dml,
+	w_grenade,
+	w_chemicalgun
 };
+
+#ifdef CSQC
+int(player) gp_inputforward[] = {
+	__NULL__,
+	__NULL__,
+	__NULL__,
+	w_gausspistol_hudforward,
+	w_shotgun_hudforward,
+	__NULL__,
+	w_beamgun_hudforward,
+	w_dml_hudforward,
+	w_grenade_hudforward,
+	w_chemgun_hudforward
+}
+
+int(player) gp_inputback[] = {
+	__NULL__,
+	__NULL__,
+	__NULL__,
+	w_gausspistol_hudback,
+	w_shotgun_hudback,
+	__NULL__,
+	w_beamgun_hudback,
+	w_dml_hudback,
+	w_grenade_hudback,
+	w_chemgun_hudback
+}
+
+int Weapons_InputForward(player pl)
+{
+	if (gp_inputforward[pl.activeweapon] != __NULL__) {
+		return gp_inputforward[pl.activeweapon](pl);
+	}
+	return TRUE;
+}
+
+int Weapons_InputBack(player pl)
+{
+	if (gp_inputback[pl.activeweapon] != __NULL__) {
+		return gp_inputback[pl.activeweapon](pl);
+	}
+	return TRUE;
+}
+#endif

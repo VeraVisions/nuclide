@@ -675,6 +675,7 @@ PMove_Run_Move(void)
 void
 PMove_Run(void)
 {
+	float punch;
 	player pl = (player)self;
 #ifdef VALVE
 	self.maxspeed = (self.flags & FL_CROUCHING) ? 135 : 270;
@@ -697,12 +698,10 @@ PMove_Run(void)
 	}
 
 	/* grappling hook stuff */
-#ifdef GEARBOX
 	if (pl.hook.skin == 1) {
 		pl.velocity = (pl.hook.origin - pl.origin);
 		pl.velocity = (pl.velocity * (1 / (vlen(pl.velocity) / 1000)));
 	}
-#endif
 
 	/* call accelerate before and after the actual move, 
 	 * with half the move each time. this reduces framerate dependence. 
@@ -723,5 +722,11 @@ PMove_Run(void)
 	pl.w_idle_next = max(0, pl.w_idle_next - input_timelength);
 #endif
 	pl.weapontime += input_timelength;
+
+	punch = max(0, 1.0f - (input_timelength * 4));
+	pl.punchangle[0] *= punch;
+	pl.punchangle[1] *= punch;
+	pl.punchangle[2] *= punch;
+
 	Game_Input();
 }

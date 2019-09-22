@@ -87,10 +87,6 @@ void w_shotgun_draw(void)
 {
 	Weapons_SetModel("models/v_shotgun.mdl");
 	Weapons_ViewAnimation(SHOTGUN_DRAW);
-#ifdef SSQC
-	player pl = (player)self;
-	Weapons_UpdateAmmo(pl, pl.shotgun_mag, pl.ammo_buckshot, __NULL__);
-#endif
 }
 
 void w_shotgun_holster(void)
@@ -128,7 +124,6 @@ void w_shotgun_primary(void)
 	}
 	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/sbarrel1.wav", 1, ATTN_NORM);
 	pl.shotgun_mag--;
-	Weapons_UpdateAmmo(pl, pl.shotgun_mag, pl.ammo_buckshot, __NULL__);
 #else
 	View_SetMuzzleflash(MUZZLE_WEIRD);
 	Weapons_ViewPunchAngle([-5,0,0]);

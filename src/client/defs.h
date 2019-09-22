@@ -72,6 +72,5 @@ float clframetime;
 /* prototypes */
 void View_SetMuzzleflash(int);
 void View_UpdateWeapon(entity, entity);
-void View_AddPunchAngle(vector);
 void View_PlayAnimation(int);
 void Game_Input(void);

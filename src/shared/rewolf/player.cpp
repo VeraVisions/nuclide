@@ -33,7 +33,8 @@ class player
 	int a_ammo3;
 
 	/* We can't use the default .items field, because FTE will assume
-	 * effects of some bits. Such as invisibility, quad, etc. */
+	 * effects of some bits. Such as invisibility, quad, etc. 
+	 * also, modders probably want 32 bits for items. */
 	int g_items; 
 
 	float activeweapon;
@@ -45,20 +46,9 @@ class player
 	/* any mods that use hooks */
 	entity hook;
 
-	/* Weapon specific */
-	int glock_mag;
-	int mp5_mag;
-	int python_mag;
-	int shotgun_mag;
-	int crossbow_mag;
-	int rpg_mag;
-	int satchel_chg;
-	int cannon_mag;
-
 #ifdef CSQC
 	/* External model */
 	entity p_model;
-	int playertype;
 	int p_hand_bone;
 	int p_model_bone;
 	float pitch;
@@ -79,24 +69,40 @@ class player
 	int net_ammo2;
 	int net_ammo3;
 	int sequence;
-	
+
 	virtual void() gun_offset;
 	virtual void() draw;
 	virtual float() predraw;
 	virtual void() postdraw;
 #else
-	int ammo_9mm;
-	int ammo_357;
-	int ammo_buckshot;
-	int ammo_m203_grenade;
-	int ammo_bolt;
-	int ammo_rocket;
-	int ammo_uranium;
-	int ammo_handgrenade;
-	int ammo_satchel;
-	int ammo_tripmine;
-	int ammo_snark;
-	int ammo_hornet;
+	int ammo_battery; // beamgun
+	int ammo_chem; // chemicalgun
+	int ammo_rocket; // dml / grenades
+	int ammo_gauss; // gauspistol
+	int ammo_minigun; // minigun
+	int ammo_buckshot; // shotgun
+
+	int fist_mode; // knife/fists
+	int gauss_mode;
+	int shotgun_shells;
+	int shotgun_spread;
+	
+	int dml_launch; /* when fired, when targeted */
+	int dml_flightpath; /* guided, homing, spiral */
+	int dml_detonate; /* on impact, in proximity, timed, when tripped */
+	int dml_payload; /* explosive, cluster */
+
+	int chem_acid;
+	int chem_neutral;
+	int chem_base;
+	int chem_pressure;
+
+	int beam_range; /* TOUCH TAZER, SHORT TAZER, MEDIUM BEAM, LONG BEAM */
+	int beam_poweracc; /* LOW HIGHEST, MEDIUM HIGH, HIGH MEDIUM, HIGHEST LOW */
+	int beam_lightning; /* BEAM, CHAIN, BALL */
+
+	int gren_detonate; /* when tripped (tripmine), timed, on impact */
+	int gren_payload; /* cluster, explosive */
 
 	/* conditional networking */
 	int old_modelindex;
@@ -109,7 +115,7 @@ class player
 	int old_health;
 	int old_armor;
 	int old_movetype;
-	int old_viewofs;
+	float old_viewofs;
 	int old_baseframe;
 	int old_frame;
 	int old_a_ammo1;
@@ -117,3 +123,4 @@ class player
 	int old_a_ammo3;
 #endif
 };
+

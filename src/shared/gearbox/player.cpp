@@ -39,10 +39,11 @@ class player
 
 	float activeweapon;
 	float viewzoom;
+	vector punchangle;
 	vector view_ofs;
 	float weapontime;
 
-	/* special for opfor */
+	/* any mods that use hooks */
 	entity hook;
 
 	/* Weapon specific */
@@ -76,6 +77,8 @@ class player
 	float net_teleport_time;
 	float net_weapontime;
 	float net_viewzoom;
+	vector net_punchangle;
+	vector net_hookpos;
 	int net_ammo1;
 	int net_ammo2;
 	int net_ammo3;

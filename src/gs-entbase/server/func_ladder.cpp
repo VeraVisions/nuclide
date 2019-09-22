@@ -52,6 +52,7 @@ void func_ladder :: func_ladder ( void )
 	#endif
 #else
 	Init();
+	setorigin(this, origin);
 #endif
 }
 
@@ -61,4 +62,5 @@ void func_ladder :: Initialized (void)
 	movetype = MOVETYPE_NONE;
 	skin = CONTENT_LADDER;
 	solid = SOLID_BSP;
+	setorigin(this, origin);
 }

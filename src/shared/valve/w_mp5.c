@@ -131,7 +131,8 @@ w_mp5_primary(void)
 
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
-	Weapons_ViewPunchAngle([random(-2, 2),0,0]);
+	int r = (float)input_sequence % 4;
+	Weapons_ViewPunchAngle([r-2,0,0]);
 #else
 	/* singleplayer is more accurate */
 	if (cvar("sv_playerslots") == 1) {
