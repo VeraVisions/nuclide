@@ -95,7 +95,7 @@ w_hornetgun_shoothornet(void)
 {
 	static void Hornet_Touch(void) {
 		if (other.takedamage == DAMAGE_YES) {
-			Damage_Apply(other, self.owner, 10, trace_endpos, FALSE, WEAPON_HORNETGUN);
+			Damage_Apply(other, self.owner, 10, WEAPON_HORNETGUN, DMG_GENERIC);
 		}
 		remove(self);
 	}

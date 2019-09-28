@@ -70,7 +70,7 @@ TraceAttack_FireSingle(vector vPos, vector vAngle, int iDamage, int iWeapon)
 			iDamage *= 3;
 		}
 #endif
-		Damage_Apply(trace_ent, self, iDamage, trace_endpos, FALSE, iWeapon);
+		Damage_Apply(trace_ent, self, iDamage, iWeapon, DMG_BULLET);
 	}
 
 	if (trace_ent.iBleeds == TRUE) {

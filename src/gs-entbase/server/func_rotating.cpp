@@ -72,7 +72,7 @@ void func_rotating :: Blocked ( void )
 	}
 
 	if (other.takedamage == DAMAGE_YES) {
-		Damage_Apply(other, this, m_flDamage, other.origin, TRUE, 0);
+		Damage_Apply(other, this, m_flDamage, 0, DMG_CRUSH);
 	}
 }
 

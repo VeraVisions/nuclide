@@ -131,7 +131,7 @@ w_displacer_fireball(void)
 		if (other.flags & FL_CLIENT) {
 			w_displacer_teleport(other);
 		}
-		Damage_Radius(self.origin, self.owner, 250, 250 * 2.5f, TRUE);
+		Damage_Radius(self.origin, self.owner, 250, 250 * 2.5f, TRUE, WEAPON_DISPLACER);
 		sound(self, 1, "weapons/displacer_impact.wav", 1, ATTN_NORM);
 #endif
 		remove(self);

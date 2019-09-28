@@ -16,17 +16,6 @@
 
 //#define GS_DEVELOPER
 
-.float gflags;
-
-enumflags
-{
-	GF_CANRESPAWN,
-	GF_USE_RELEASED,
-	GF_IN_VEHICLE,
-	GF_FROZEN,
-	GF_SEMI_TOGGLED
-};
-
 void Effect_CreateSpark(vector, vector);
 void Effect_BreakModel(int, vector, vector, vector, float);
 

@@ -383,7 +383,7 @@ weapon_t w_chemicalgun =
 /* entity definitions for pickups */
 #ifdef SSQC
 void
-weapon_chemgun(void)
+weapon_SPchemicalgun(void)
 {
 	Weapons_InitItem(WEAPON_CHEMICALGUN);
 }

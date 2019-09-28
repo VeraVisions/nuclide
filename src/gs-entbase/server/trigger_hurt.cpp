@@ -94,7 +94,7 @@ void trigger_hurt::Touch(void)
 		}
 	}
 
-	Damage_Apply(other, this, m_iDamage, other.origin, FALSE, 0);
+	Damage_Apply(other, this, m_iDamage, 0, DMG_GENERIC);
 
 	// Shut it down if used once
 	if (spawnflags & SF_HURT_ONCE) {

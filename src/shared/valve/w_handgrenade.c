@@ -76,7 +76,7 @@ void w_handgrenade_throw(void)
 	static void WeaponFrag_Throw_Explode( void )
 	{
 		Effect_CreateExplosion(self.origin);
-		Damage_Radius(self.origin, self.owner, 150, 150 * 2.5f, TRUE);
+		Damage_Radius(self.origin, self.owner, 150, 150 * 2.5f, TRUE, WEAPON_HANDGRENADE);
 		sound(self, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 2 ) + 3 ), 1, ATTN_NORM);
 		remove(self);
 	}
@@ -84,7 +84,7 @@ void w_handgrenade_throw(void)
 	static void WeaponFrag_Throw_Touch( void )
 	{
 		if (other.takedamage == DAMAGE_YES) {
-			Damage_Apply(other, self.owner, 15, self.origin, FALSE, WEAPON_HANDGRENADE);
+			Damage_Apply(other, self.owner, 15, WEAPON_HANDGRENADE, DMG_BLUNT);
 		}
 		int r = floor(random(0,6));
 		string sample = sprintf("weapons/g_bounce%i.wav", r);

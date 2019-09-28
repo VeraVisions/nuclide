@@ -238,7 +238,7 @@ void func_door_rotating::Touch(void)
 void func_door_rotating::Blocked(void)
 {
 	if (m_iDamage) {
-		Damage_Apply(other, this, m_iDamage, other.origin, FALSE, 0);
+		Damage_Apply(other, this, m_iDamage, 0, DMG_CRUSH);
 	}
 
 	if (m_flWait >= 0) {

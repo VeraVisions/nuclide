@@ -7,5 +7,6 @@ client/env_sound.cpp
 client/sky_camera.cpp
 server/func_ladder.cpp
 server/trigger_gravity.cpp
+client/point_message.cpp
 client/worldspawn.cpp
 #endlist

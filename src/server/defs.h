@@ -25,8 +25,8 @@ void Effect_GibHuman( vector vPos);
 void Footsteps_Update( void );
 void Vox_Broadcast(string sMessage);
 void TraceAttack_FireBullets(int , vector, int, vector, int);
-void Damage_Radius( vector vOrigin, entity eAttacker, float fDamage, float fRadius, int iCheckClip );
-void Damage_Apply( entity, entity, float, vector, int, int);
+void Damage_Radius( vector, entity, float, float, int, int);
+void Damage_Apply( entity, entity, float, int, int);
 void Client_TriggerCamera( entity eTarget, vector vPos, vector vEndPos, float fResetTime );
 void Game_Input(void);
 
@@ -46,3 +46,14 @@ entity eActivator;
 string startspot;
 string __fullspawndata;
 hashtable hashMaterials;
+
+.float gflags;
+
+enumflags
+{
+	GF_CANRESPAWN,
+	GF_USE_RELEASED,
+	GF_IN_VEHICLE,
+	GF_FROZEN,
+	GF_SEMI_TOGGLED
+};

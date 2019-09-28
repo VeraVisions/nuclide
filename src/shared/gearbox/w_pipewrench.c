@@ -148,7 +148,7 @@ w_pipewrench_primary(void)
 	}
 
 	if (trace_ent.takedamage) {
-		Damage_Apply(trace_ent, self, 10, trace_endpos, FALSE, WEAPON_PIPEWRENCH);
+		Damage_Apply(trace_ent, self, 10, WEAPON_PIPEWRENCH, DMG_BLUNT);
 
 		if (!trace_ent.iBleeds) {
 			return;
@@ -212,7 +212,7 @@ w_pipewrench_release(void)
 			if (trace_ent.takedamage == DAMAGE_YES) {
 				hitsound = floor(random(1, 2));
 				/* TODO Damage is 45 - 200+ (?) */
-				Damage_Apply(trace_ent, pl, 200, trace_endpos, FALSE, WEAPON_PIPEWRENCH);
+				Damage_Apply(trace_ent, pl, 200, WEAPON_PIPEWRENCH, DMG_BLUNT);
 			} else {
 				hitsound = 3;
 			}

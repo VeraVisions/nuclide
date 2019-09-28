@@ -107,7 +107,7 @@ penguin_ai(void)
 		self.weapon = 0.5f + random();
 		penguin_squeak(self);
 		input_buttons = 2;
-		Damage_Apply(self, world, 1, self.origin, TRUE, 0);
+		Damage_Apply(self, world, 1, 0, DMG_GENERIC);
 
 		makevectors(self.angles);
 		traceline(self.origin, self.origin + (v_forward * 128), 0, self);
@@ -115,7 +115,7 @@ penguin_ai(void)
 		if (trace_ent.takedamage == DAMAGE_YES) {
 			float pit = 100 + random(0,10);
 			sound(self, CHAN_BODY, "squeek/sqk_deploy1.wav", 1.0, ATTN_NORM, pit);
-			Damage_Apply(trace_ent, self.goalentity, 10, trace_endpos, FALSE, WEAPON_PENGUIN);
+			Damage_Apply(trace_ent, self.goalentity, 10, WEAPON_PENGUIN, DMG_GENERIC);
 		}
 
 		if (self.aiment.health <= 0) {
@@ -135,7 +135,7 @@ penguin_die(int i)
 
 	/* now we can explodededededed */
 	Effect_CreateExplosion(self.origin);
-	Damage_Radius(self.origin, self.owner, 150, 150 * 2.5f, TRUE);
+	Damage_Radius(self.origin, self.owner, 150, 150 * 2.5f, TRUE, WEAPON_PENGUIN);
 
 	if (random() < 0.5) {
 		sound(self, 1, "weapons/explode3.wav", 1.0f, ATTN_NORM);

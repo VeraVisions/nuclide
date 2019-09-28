@@ -106,7 +106,7 @@ void func_breakable::Explode(void)
 	vWorldPos[2] = absmin[2] + ( 0.5 * ( absmax[2] - absmin[2] ) );
 	Effect_BreakModel(20, absmin, absmax, '0 0 0', m_iMaterial);
 	Effect_CreateExplosion(vWorldPos);
-	Damage_Radius(vWorldPos, this, m_flExplodeMag, m_flExplodeMag * 2.5f, TRUE);
+	Damage_Radius(vWorldPos, this, m_flExplodeMag, m_flExplodeMag * 2.5f, TRUE, 0);
 	CBaseTrigger::UseTargets();
 	CBaseEntity::Hide();
 }
@@ -157,10 +157,10 @@ void func_breakable::PlayerTouch(void)
 
 		if (fDamage >= health) {
 			touch = __NULL__;
-			Damage_Apply(this, other, fDamage, absmin, FALSE, 0);
+			Damage_Apply(this, other, fDamage, 0, DMG_CRUSH);
 			
 			if ((m_iMaterial == MATERIAL_GLASS) || (m_iMaterial == MATERIAL_COMPUTER)) {
-				Damage_Apply(other, this, fDamage / 4, other.origin, FALSE, 0);
+				Damage_Apply(other, this, fDamage / 4, 0, DMG_CRUSH);
 			}
 		}
 	}

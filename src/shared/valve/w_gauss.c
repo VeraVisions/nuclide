@@ -158,7 +158,7 @@ void w_gauss_fire(int one)
 	}
 
 	if (trace_ent.takedamage == DAMAGE_YES) {
-		Damage_Apply(trace_ent, self, iDamage, trace_endpos, FALSE, WEAPON_GAUSS);
+		Damage_Apply(trace_ent, self, iDamage, WEAPON_GAUSS, DMG_ELECTRO);
 		sound(trace_ent, CHAN_ITEM, sprintf("weapons/electro%d.wav", random(0,3)+4), 1, ATTN_NORM);
 	}
 #else
@@ -196,7 +196,7 @@ void w_gauss_fire(int one)
 		iLoop--;
 #ifdef SSQC
 		if (trace_ent.takedamage == DAMAGE_YES) {
-			Damage_Apply(trace_ent, self, iDamage, trace_endpos, FALSE, WEAPON_GAUSS);
+			Damage_Apply(trace_ent, self, iDamage, WEAPON_GAUSS, DMG_ELECTRO);
 			sound(trace_ent, CHAN_ITEM, sprintf("weapons/electro%d.wav", random(0,3)+4), 1, ATTN_NORM);
 		}
 		

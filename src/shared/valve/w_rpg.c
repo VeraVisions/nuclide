@@ -117,7 +117,7 @@ void w_rpg_primary(void)
 #else
 	static void Rocket_Touch(void) {
 		Effect_CreateExplosion(self.origin);
-		Damage_Radius(self.origin, self.owner, 150, 150 * 2.5f, TRUE);
+		Damage_Radius(self.origin, self.owner, 150, 150 * 2.5f, TRUE, WEAPON_RPG);
 		sound(self, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 2 ) + 3 ), 1, ATTN_NORM);
 		remove(self);
 	}

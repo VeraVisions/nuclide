@@ -58,7 +58,7 @@ Game_ClientDisconnect(void)
 void
 Game_ClientKill(void)
 {
-	Damage_Apply(self, self, self.health, self.origin, TRUE, 0);
+	Damage_Apply(self, self, self.health, 0, DMG_SKIP_ARMOR);
 }
 
 void

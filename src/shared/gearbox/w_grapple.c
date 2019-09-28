@@ -147,7 +147,7 @@ w_grapple_primary(void)
 		vector src = Weapons_GetCameraPos();
 		traceline(src, src + (v_forward * 32), FALSE, pl);
 		if (trace_ent.takedamage == DAMAGE_YES && trace_ent.iBleeds) {
-			Damage_Apply(trace_ent, pl, 25, trace_endpos, FALSE, WEAPON_GRAPPLE);
+			Damage_Apply(trace_ent, pl, 25, WEAPON_GRAPPLE, DMG_GENERIC);
 		}
 #endif
 		pl.w_attack_next = 0.5f;

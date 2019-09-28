@@ -88,7 +88,7 @@ void w_tripmine_trip(int unused)
 	self.takedamage = DAMAGE_NO;
 
 	Effect_CreateExplosion(self.origin);
-	Damage_Radius(self.origin, self.owner, 150, 150 * 2.5f, TRUE);
+	Damage_Radius(self.origin, self.owner, 150, 150 * 2.5f, TRUE, WEAPON_TRIPMINE);
 	sound(self, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 2 ) + 3 ), 1, ATTN_NORM);
 	remove(self);
 }

@@ -110,7 +110,7 @@ void w_egon_primary(void)
 	vector src = Weapons_GetCameraPos();
 	vector endpos = src + v_forward * 1024;
 	traceline(src, endpos, FALSE, pl);
-	Damage_Radius(trace_endpos, pl, 14, 64, TRUE);
+	Damage_Radius(trace_endpos, pl, 14, 64, TRUE, DMG_ELECTRO);
 	pl.ammo_uranium--;
 	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_uranium, __NULL__);
 #endif

@@ -109,7 +109,7 @@ w_shockrifle_shoothornet(void)
 {
 	static void Hornet_Touch(void) {
 		if (other.takedamage == DAMAGE_YES) {
-			Damage_Apply(other, self.owner, 10, trace_endpos, FALSE, WEAPON_SHOCKRIFLE);
+			Damage_Apply(other, self.owner, 10, WEAPON_SHOCKRIFLE, DMG_ELECTRO);
 		}
 		
 		if (other.iBleeds) {

@@ -150,7 +150,7 @@ w_knife_primary(void)
 	}
 
 	if (trace_ent.takedamage) {
-		Damage_Apply(trace_ent, self, 10, trace_endpos, FALSE, WEAPON_KNIFE);
+		Damage_Apply(trace_ent, self, 10, WEAPON_KNIFE, DMG_SLASH);
 
 		if (!trace_ent.iBleeds) {
 			return;

@@ -88,7 +88,7 @@ void w_snark_deploy(void)
 			self.weapon = 0.5f + random();
 			sound(self, CHAN_VOICE, sprintf("squeek/sqk_hunt%d.wav",floor(random(1,4))), 1.0, ATTN_NORM);
 			input_buttons = 2;
-			Damage_Apply(self, world, 1, self.origin, TRUE, 0);
+			Damage_Apply(self, world, 1, 0, DMG_GENERIC);
 			
 			makevectors(self.angles);
 			traceline(self.origin, self.origin + (v_forward * 128), 0, self);
@@ -96,7 +96,7 @@ void w_snark_deploy(void)
 			if (trace_ent.takedamage == DAMAGE_YES) {
 				float pit = 100 + random(0,10);
 				sound(self, CHAN_BODY, "squeek/sqk_deploy1.wav", 1.0, ATTN_NORM, pit);
-				Damage_Apply(trace_ent, self.goalentity, 10, trace_endpos, FALSE, WEAPON_SNARK);
+				Damage_Apply(trace_ent, self.goalentity, 10, WEAPON_SNARK, DMG_GENERIC);
 			}
 
 			if (self.aiment.health <= 0) {

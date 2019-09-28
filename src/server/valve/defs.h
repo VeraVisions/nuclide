@@ -14,4 +14,4 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void Damage_Apply(entity, entity, float, vector, int, int);
+void Damage_Apply(entity, entity, float, int, int);

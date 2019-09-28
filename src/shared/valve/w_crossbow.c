@@ -111,7 +111,7 @@ void Crossbolt_Touch(void) {
 	/* explode mode, multiplayer */
 	if (self.weapon) {
 		Effect_CreateExplosion(self.origin);
-		Damage_Radius(self.origin, self.owner, 50, 50 * 2.5f, TRUE);
+		Damage_Radius(self.origin, self.owner, 50, 50 * 2.5f, TRUE, WEAPON_CROSSBOW);
 		if (random() < 0.5) {
 			sound(self, 1, "weapons/explode3.wav", 1.0f, ATTN_NORM);
 		} else {
@@ -130,7 +130,7 @@ void Crossbolt_Touch(void) {
 	}
 
 	/* anything else that can take damage */
-	Damage_Apply(other, self.owner, 50, trace_endpos, FALSE, WEAPON_CROSSBOW);
+	Damage_Apply(other, self.owner, 50, WEAPON_CROSSBOW, DMG_BLUNT);
 	if (random() < 0.5) {
 		sound(self, 1, "weapons/xbow_hitbod1.wav", 1.0f, ATTN_NORM);
 	} else {

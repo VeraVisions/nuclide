@@ -174,7 +174,7 @@ w_mp5_secondary(void)
 #else
 	static void Grenade_ExplodeTouch(void) {
 		Effect_CreateExplosion(self.origin);
-		Damage_Radius(self.origin, self.owner, 100, 100 * 2.5f, TRUE);
+		Damage_Radius(self.origin, self.owner, 100, 100 * 2.5f, TRUE, WEAPON_MP5);
 
 		if (random() < 0.5) {
 			sound(self, 1, "weapons/explode3.wav", 1, ATTN_NORM);

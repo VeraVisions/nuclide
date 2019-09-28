@@ -30,14 +30,14 @@ Damage_Obituary(entity c, entity t, float weapon, float flags)
 
 /* generic function that applies damage, pain and suffering */
 void
-Damage_Apply(entity t, entity c, float dmg, vector pos, int a, int w)
+Damage_Apply(entity t, entity c, float dmg, int w, int type)
 {
 	if (t.flags & FL_GODMODE) {
 		return;
 	}
 
 	/* skip armor */
-	if (!a)
+	if not (type & DMG_SKIP_ARMOR)
 	if (t.armor && dmg > 0) {
 		float flArmor;
 		float flNewDamage;
@@ -131,7 +131,7 @@ Damage_CheckTrace(entity t, vector vecHitPos)
 
 /* even more pain and suffering, mostly used for explosives */
 void
-Damage_Radius(vector org, entity attacker, float dmg, float radius, int check)
+Damage_Radius(vector org, entity attacker, float dmg, float r, int check, int w)
 {
 	float new_dmg;
 	float dist;
@@ -145,7 +145,7 @@ Damage_Radius(vector org, entity attacker, float dmg, float radius, int check)
 
 		/* don't bother if it's not anywhere near us */
 		dist = vlen(org - pos);
-		if (dist > radius) {
+		if (dist > r) {
 			continue;
 		}
 
@@ -158,11 +158,11 @@ Damage_Radius(vector org, entity attacker, float dmg, float radius, int check)
 
 		/* calculate new damage values */
 		diff = vlen(org - pos);
-		diff = (radius - diff) / radius;
+		diff = (r - diff) / r;
 		new_dmg = rint(dmg * diff);
 
 		if (diff > 0) {
-			Damage_Apply(e, attacker, new_dmg, pos, FALSE, 0);
+			Damage_Apply(e, attacker, new_dmg, w, DMG_EXPLODE);
 
 			/* approximate, feel free to tweak */
 			if (e.movetype == MOVETYPE_WALK) {
