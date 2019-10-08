@@ -30,7 +30,7 @@ class prop_rope:CBaseEntity
 
 void prop_rope::draw_segment(vector start, vector end)
 {
-	vector fsize = [3,3];
+	vector fsize = [2,2];
 	vector lit1 = /*[0.1,0.1,0.1] */ getlight(start) / 255;
 	vector lit2 = /*[0.1,0.1,0.1] */ getlight(end) / 255;
 
@@ -75,12 +75,11 @@ float prop_rope::predraw(void)
 	vector pos2;
 	float travel;
 	float segments;
+	float sc;
 
 	if (checkpvs(getproperty(VF_ORIGIN), this) == FALSE) {
 		return;
 	}
-
-	pos1 = origin;
 
 	entity x = find(world, ::targetname, target);
 
@@ -90,19 +89,45 @@ float prop_rope::predraw(void)
 		return PREDRAW_NEXT;
 	}
 
+	/* draw the start/end without segments */
+	if (autocvar_rope_debug == TRUE) {
+		R_BeginPolygon("", 0, 0);
+		R_PolygonVertex(origin, [0,1], [0,1,0], 1.0f);
+		R_PolygonVertex(x.origin, [1,1], [0,1,0], 1.0f);
+		R_EndPolygon();
+	}
+
 	segments = 16;
 
 	travel = vlen(origin - x.origin) / segments;
 
-	float sc = 0;
-	for (float i = 0; i < segments; i++) {
+	sc = 0;
+	pos1 = origin;
+	for (float i = 0; i < segments / 2; i++) {
 		float sag = cos(sc) * m_flSag - 1;
 
 		/* get the direction */
 		makevectors(vectoangles(x.origin - origin));
 
 		/* travel further and sag */
-		pos2 = pos1 + (v_forward * travel) + (v_up * -sag);
+		pos2 = pos1 + (v_forward * travel) + (v_up * -sag) + ((v_right * sin(time)) * m_flSwingFactor);
+
+		draw_segment(pos1, pos2);
+		pos1 = pos2;
+
+		sc += (M_PI * (1 / segments));
+	}
+
+	sc = 0;
+	pos1 = x.origin;
+	for (float i = 0; i < segments / 2; i++) {
+		float sag = cos(sc) * m_flSag - 1;
+
+		/* get the direction */
+		makevectors(vectoangles(origin - x.origin));
+
+		/* travel further and sag */
+		pos2 = pos1 + (v_forward * travel) + (v_up * -sag) - ((v_right * sin(time)) * m_flSwingFactor);
 
 		draw_segment(pos1, pos2);
 		pos1 = pos2;
@@ -124,6 +149,9 @@ void prop_rope::SpawnKey(string strField, string strKey)
 		m_strShader = strKey;
 		precache_pic(m_strShader);
 		break;
+	case "swingfactor":
+		m_flSwingFactor = stof(strKey);
+		break;
 	default:
 		CBaseEntity::SpawnKey(strField, strKey);
 	}
@@ -131,7 +159,7 @@ void prop_rope::SpawnKey(string strField, string strKey)
 
 void prop_rope::prop_rope(void)
 {
-	m_flSwingFactor = 1.0f;
+	m_flSwingFactor = random();
 	m_flSag = 15.0f;
 	drawmask = MASK_ENGINE;
 	Init();
