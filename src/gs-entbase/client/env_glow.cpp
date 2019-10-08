@@ -40,21 +40,29 @@ class env_glow:CBaseEntity
 
 float env_glow::predraw(void)
 {
+	vector vecPlayer;
+
+#ifdef WASTES
+	vecPlayer = viewClient.vecPlayerOrigin;
+#else
+	int s = (float)getproperty(VF_ACTIVESEAT);
+	pSeat = &seats[s];
+	vecPlayer = pSeat->vPlayerOrigin;
+#endif
+
 	m_flAlpha = bound(0, m_flAlpha, 1.0f);
 
 	if (m_flAlpha > 0) {
 		vector forg;
 		vector fsize;
 		float falpha;
-		int s = (float)getproperty(VF_ACTIVESEAT);
-		pSeat = &seats[s];
 		
 		/* Scale the glow somewhat with the players distance */
 		fsize = m_vecSize * m_flScale;
-		fsize *= vlen(pSeat->vPlayerOrigin - origin) / 256;
+		fsize *= vlen(vecPlayer - origin) / 256;
 		
 		/* Fade out when the player is starting to move away */
-		falpha = 1 - bound(0, vlen(pSeat->vPlayerOrigin - origin) / 1024, 1);
+		falpha = 1 - bound(0, vlen(vecPlayer - origin) / 1024, 1);
 		falpha *= m_flAlpha;
 		
 		/* Clamp the alpha by the glows' renderamt value */
@@ -62,7 +70,7 @@ float env_glow::predraw(void)
 		makevectors(view_angles);
 		
 		/* Nudge this slightly towards the camera */
-		makevectors(vectoangles(origin - pSeat->vPlayerOrigin));
+		makevectors(vectoangles(origin - vecPlayer));
 		forg = origin + (v_forward * -16);
 
 		/* Project it, always facing the player */
@@ -85,24 +93,31 @@ float env_glow::predraw(void)
 
 void env_glow::customphysics(void)
 {
+	vector vecPlayer;
+
+#ifdef WASTES
+	vecPlayer = viewClient.vecPlayerOrigin;
+#else
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &seats[s];
+	vecPlayer = pSeat->vPlayerOrigin;
+#endif
 
-	if (checkpvs(pSeat->vPlayerOrigin, this) == FALSE) {
-		m_flAlpha -= frametime;
+	if (checkpvs(vecPlayer, this) == FALSE) {
+		m_flAlpha -= clframetime;
 		return;
 	}
 
 	other = world;
-	traceline(this.origin, pSeat->vPlayerOrigin, MOVE_OTHERONLY, this);
+	traceline(this.origin, vecPlayer, MOVE_OTHERONLY, this);
 
 	/* If we can't trace against the player, or are two close, fade out */
-	if (trace_fraction < 1.0f || vlen(origin - pSeat->vPlayerOrigin) < 128) {
-		m_flAlpha -= frametime; 
+	if (trace_fraction < 1.0f || vlen(origin - vecPlayer) < 128) {
+		m_flAlpha -= clframetime; 
 		return;
 	}
 
-	m_flAlpha += frametime; 
+	m_flAlpha += clframetime; 
 }
 
 void env_glow::env_glow(void)
@@ -111,32 +126,33 @@ void env_glow::env_glow(void)
 	m_flMaxAlpha = 1.0f;
 	m_vecColor = [1,1,1];
 	drawmask = MASK_ENGINE;
+	setorigin(this, origin);
 	Init();
 }
 
 void env_glow::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
-		case "shader":
-			m_strSprite = strKey;
-			precache_pic(m_strSprite);
-			m_vecSize = drawgetimagesize(m_strSprite) / 2;
-			break;
-		case "model":
-			m_strSprite = sprintf("%s_0.tga", strKey);
-			m_vecSize = drawgetimagesize(m_strSprite) / 2;
-			break;
-		case "scale":
-			m_flScale = stof(strKey);
-			break;
-		case "rendercolor":
-		case "rendercolour":
-			m_vecColor = stov(strKey) / 255;
-			break;
-		case "renderamt":
-			m_flMaxAlpha = stof(strKey) / 255;
-			break;
-		default:
-			CBaseEntity::SpawnKey(strField, strKey);
+	case "shader":
+		m_strSprite = strKey;
+		precache_pic(m_strSprite);
+		m_vecSize = drawgetimagesize(m_strSprite) / 2;
+		break;
+	case "model":
+		m_strSprite = sprintf("%s_0.tga", strKey);
+		m_vecSize = drawgetimagesize(m_strSprite) / 2;
+		break;
+	case "scale":
+		m_flScale = stof(strKey);
+		break;
+	case "rendercolor":
+	case "rendercolour":
+		m_vecColor = stov(strKey) / 255;
+		break;
+	case "renderamt":
+		m_flMaxAlpha = stof(strKey) / 255;
+		break;
+	default:
+		CBaseEntity::SpawnKey(strField, strKey);
 	}
 }

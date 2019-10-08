@@ -4,9 +4,14 @@ client/baseentity.cpp
 client/env_cubemap.cpp
 client/env_glow.cpp
 client/env_sound.cpp
+client/env_soundscape.cpp
+client/env_particle.cpp
 client/sky_camera.cpp
 server/func_ladder.cpp
 server/trigger_gravity.cpp
+client/info_notnull.cpp
 client/point_message.cpp
+client/prop_dynamic.cpp
+client/prop_rope.cpp
 client/worldspawn.cpp
 #endlist

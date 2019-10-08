@@ -148,21 +148,28 @@ class env_sound:CBaseEntity
 
 void env_sound::customphysics(void)
 {
+	vector vecPlayer;
+
+#ifdef WASTES
+	vecPlayer = viewClient.vecPlayerOrigin;
+#else
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &seats[s];
-
-	if (checkpvs(pSeat->vPlayerOrigin, this) == FALSE) {
+	vecPlayer = pSeat->vPlayerOrigin;
+#endif
+	
+	if (checkpvs(vecPlayer, this) == FALSE) {
 		return;
 	}
 
-	float fDist = vlen(pSeat->vPlayerOrigin - this.origin);
+	float fDist = vlen(vecPlayer - this.origin);
 
 	if (g_flDSPCheck > time) {
 		return;
 	}
 
 	other = world;
-	traceline(this.origin, pSeat->vPlayerOrigin, MOVE_OTHERONLY, this);
+	traceline(this.origin, vecPlayer, MOVE_OTHERONLY, this);
 
 	if (trace_fraction < 1.0f) {
 		return;

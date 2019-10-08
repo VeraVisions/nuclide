@@ -93,7 +93,7 @@ CMap_Shoot(void)
 			strReflectcube,
 			tmp.m_iSize));
 		self.think = CMap_Check;
-		self.nextthink = time;
+		self.nextthink = time + 0.5f;
 	} else {
 		print("^2Cubemaps done...\n");
 		localcmd("mod_findcubemaps\nvid_reload\n");
@@ -112,18 +112,9 @@ CMap_Check
 void
 CMap_Check(void)
 {
-	if (whichpack(sprintf(
-		"textures/env/%s_%d_%d_%d.dds",
-		mapname, 
-		g_vecCubePos[0], 
-		g_vecCubePos[1], 
-		g_vecCubePos[2])))
-	{
-		self.owner = find(self.owner, classname, "env_cubemap");
-		self.think = CMap_Shoot;
-		self.nextthink = time + 0.25f; /* because sigh */
-	}
-	self.nextthink = time;
+	self.owner = find(self.owner, classname, "env_cubemap");
+	self.think = CMap_Shoot;
+	self.nextthink = time + 0.25f; /* because sigh */
 }
 
 /*
