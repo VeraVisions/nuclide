@@ -36,6 +36,7 @@ void func_illusionary :: func_illusionary ( void )
 	movetype = MOVETYPE_PUSH;
 	solid = SOLID_NOT;
 	setmodel( this, model );
+	setorigin(this, origin);
 
 	// TODO: Add support for (skin) -1 = Empty, -7 = Volumetric light
 	if (skin < 0 ) {

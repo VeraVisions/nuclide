@@ -97,7 +97,7 @@ void init(float prevprogs)
 
 	// Let's load materials.txt because someone thought this was the best idea
 	filestream fileMaterial = fopen("sound/materials.txt", FILE_READ);
-	hashMaterials = hash_createtab(512, HASH_ADD);
+	hashMaterials = hash_createtab(2, HASH_ADD);
 
 	if (fileMaterial >= 0) {
 		while ((sTemp = fgets(fileMaterial))) {			

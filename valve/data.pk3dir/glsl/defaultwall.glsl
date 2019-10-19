@@ -34,7 +34,7 @@ varying mat3 invsurface;
 	void main ( void )
 	{
 		vec4 diffuse_f = texture2D(s_diffuse, tex_c);
-		vec3 light = texture2D(s_lightmap, lm_c).rgb;
+		vec3 light = texture2D(s_lightmap, lm_c).rgb * e_lmscale.rgb;
 
 #ifdef REFLECTCUBE
 	#ifdef BUMP
@@ -54,7 +54,7 @@ varying mat3 invsurface;
 	#endif
 		vec3 cube_c;
 		vec4 out_f = vec4( 1.0, 1.0, 1.0, 1.0 );
-		diffuse_f.rgb *= light.rgb * e_lmscale.rgb;
+		diffuse_f.rgb *= light.rgb;
 
 		cube_c = reflect( normalize(-eyevector), normal_f);
 		cube_c = cube_c.x * invsurface[0] + cube_c.y * invsurface[1] + cube_c.z * invsurface[2];

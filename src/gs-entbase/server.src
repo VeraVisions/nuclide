@@ -4,6 +4,7 @@ server/defs.h
 server/baseentity.cpp
 server/basetrigger.cpp
 server/basemonster.cpp
+server/basephysics.cpp
 server/ambient_generic.cpp
 server/cycler.cpp
 server/cycler_sprite.cpp

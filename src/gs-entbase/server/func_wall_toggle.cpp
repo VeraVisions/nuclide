@@ -41,6 +41,7 @@ void func_wall_toggle::func_wall_toggle(void)
 	solid = SOLID_BSP;
 	setmodel(this, model);
 	CBaseTrigger::CBaseTrigger();
+	setorigin(this, origin);
 	
 	if (spawnflags & FTW_STARTHIDDEN) {
 		Trigger();

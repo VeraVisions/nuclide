@@ -42,6 +42,20 @@ enumflags
 	SF_PRESSURE
 };
 
+enum
+{
+	BREAKMT_GLASS,
+	BREAKMT_WOOD,
+	BREAKMT_METAL,
+	BREAKMT_FLESH,
+	BREAKMT_CINDER,
+	BREAKMT_TILE,
+	BREAKMT_COMPUTER,
+	BREAKMT_GLASS_UNBREAKABLE,
+	BREAKMT_ROCK,
+	BREAKMT_NONE
+};
+
 class func_breakable:CBaseTrigger
 {
 	float m_iMaterial;
@@ -71,18 +85,18 @@ void func_breakable::vPain (entity attacker, int type, int damage)
 	}
 
 	switch (m_iMaterial) {
-		case MATERIAL_GLASS:
-		case MATERIAL_COMPUTER:
-		case MATERIAL_GLASS_UNBREAKABLE:
+		case BREAKMT_GLASS:
+		case BREAKMT_COMPUTER:
+		case BREAKMT_GLASS_UNBREAKABLE:
 			sound(self, CHAN_VOICE, sprintf("debris/glass%d.wav", random(1, 4)), 1.0, ATTN_NORM);
 			break;
-		case MATERIAL_WOOD:
+		case BREAKMT_WOOD:
 			sound(self, CHAN_VOICE, sprintf("debris/wood%d.wav", random(1, 4)), 1.0, ATTN_NORM);
 			break;
-		case MATERIAL_METAL:
+		case BREAKMT_METAL:
 			sound(self, CHAN_VOICE, sprintf("debris/metal%d.wav", random(1, 4)), 1.0, ATTN_NORM);
 			break;
-		case MATERIAL_FLESH:
+		case BREAKMT_FLESH:
 			float fRand  = floor(random(1, 8));
 			/* There never was a flesh4.wav */
 			if (fRand == 4) {
@@ -90,8 +104,8 @@ void func_breakable::vPain (entity attacker, int type, int damage)
 			}
 			sound(self, CHAN_VOICE, sprintf("debris/flesh%d.wav", fRand), 1.0, ATTN_NORM);
 			break;
-		case MATERIAL_CINDER:
-		case MATERIAL_ROCK:
+		case BREAKMT_CINDER:
+		case BREAKMT_ROCK:
 			sound(self, CHAN_VOICE, sprintf("debris/concrete%d.wav", random(1, 4)), 1.0, ATTN_NORM);
 			break;
 	}
@@ -113,7 +127,7 @@ void func_breakable::Explode(void)
 
 void func_breakable::vDeath (entity attacker, int type, int damage)
 {
-	if (m_iMaterial == MATERIAL_GLASS_UNBREAKABLE) {
+	if (m_iMaterial == BREAKMT_GLASS_UNBREAKABLE) {
 		return;
 	}
 	health = 0;
@@ -159,7 +173,7 @@ void func_breakable::PlayerTouch(void)
 			touch = __NULL__;
 			Damage_Apply(this, other, fDamage, 0, DMG_CRUSH);
 			
-			if ((m_iMaterial == MATERIAL_GLASS) || (m_iMaterial == MATERIAL_COMPUTER)) {
+			if ((m_iMaterial == BREAKMT_GLASS) || (m_iMaterial == BREAKMT_COMPUTER)) {
 				Damage_Apply(other, this, fDamage / 4, 0, DMG_CRUSH);
 			}
 		}

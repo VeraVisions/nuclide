@@ -25,10 +25,12 @@ Client-side decorative model entity.
 */
 
 
-class prop_dynamic:CBaseEntity {
+class prop_dynamic:CBaseEntity
+{
+	void() prop_dynamic;
+
 	virtual void() Init;
 	virtual void() PhysicsFrame;
-	/*virtual float() predraw;*/
 	virtual void(string, string) SpawnKey;
 };
 
@@ -46,14 +48,6 @@ void prop_dynamic::SpawnKey(string strField, string strKey)
 	}
 }
 
-/*float prop_dynamic::predraw(void)
-{
-	if (checkpvs(viewClient.vecPlayerOrigin, this) == TRUE) {
-		addentity(this);
-	}
-	return PREDRAW_NEXT;
-}*/
-
 void prop_dynamic::Init(void)
 {
 	CBaseEntity::Init();
@@ -63,6 +57,11 @@ void prop_dynamic::Init(void)
 	setorigin(this, origin);
 	setsize(this, mins * scale, maxs * scale);
 	drawmask = MASK_ENGINE;
+}
+
+void prop_dynamic::prop_dynamic(void)
+{
+	scale = 1.0f;
 }
 
 void prop_dynamic::PhysicsFrame(void)

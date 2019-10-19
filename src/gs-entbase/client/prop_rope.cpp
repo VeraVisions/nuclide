@@ -24,11 +24,11 @@ class prop_rope:CBaseEntity
 
 	void() prop_rope;
 	virtual float() predraw;
-	virtual void(vector, vector) draw_segment;
+	virtual void(vector, vector, int) draw_segment;
 	virtual void(string, string) SpawnKey;
 };
 
-void prop_rope::draw_segment(vector start, vector end)
+void prop_rope::draw_segment(vector start, vector end, int flip)
 {
 	vector fsize = [2,2];
 	vector lit1 = /*[0.1,0.1,0.1] */ getlight(start) / 255;
@@ -59,14 +59,23 @@ void prop_rope::draw_segment(vector start, vector end)
 	tex3 = end - tangent * fsize[0];
 	tex4 = end + tangent * fsize[1];
 
-	R_BeginPolygon(m_strShader, 0, 0);
-		R_PolygonVertex(tex1, [1,1], lit1, 1.0f);
-		R_PolygonVertex(tex2, [0,1], lit1, 1.0f);
+	if (!flip) {
+		R_BeginPolygon(m_strShader, 0, 0);
+			R_PolygonVertex(tex1, [0,1], lit1, 1.0f);
+			R_PolygonVertex(tex2, [1,1], lit1, 1.0f);
 
-		R_PolygonVertex(tex3, [1,0], lit2, 1.0f);
-		R_PolygonVertex(tex4, [0,0], lit2, 1.0f);
-	R_EndPolygon();
+			R_PolygonVertex(tex3, [1,0], lit2, 1.0f);
+			R_PolygonVertex(tex4, [0,0], lit2, 1.0f);
+		R_EndPolygon();
+	} else {
+		R_BeginPolygon(m_strShader, 0, 0);
+			R_PolygonVertex(tex1, [1,0], lit1, 1.0f);
+			R_PolygonVertex(tex2, [0,0], lit1, 1.0f);
 
+			R_PolygonVertex(tex3, [0,1], lit2, 1.0f);
+			R_PolygonVertex(tex4, [1,1], lit2, 1.0f);
+		R_EndPolygon();
+	}
 }
 
 float prop_rope::predraw(void)
@@ -78,7 +87,7 @@ float prop_rope::predraw(void)
 	float sc;
 
 	if (checkpvs(getproperty(VF_ORIGIN), this) == FALSE) {
-		return;
+		return PREDRAW_NEXT;
 	}
 
 	entity x = find(world, ::targetname, target);
@@ -104,7 +113,7 @@ float prop_rope::predraw(void)
 	sc = 0;
 	pos1 = origin;
 	for (float i = 0; i < segments / 2; i++) {
-		float sag = cos(sc) * m_flSag - 1;
+		float sag = cos(sc) * m_flSag;
 
 		/* get the direction */
 		makevectors(vectoangles(x.origin - origin));
@@ -112,7 +121,7 @@ float prop_rope::predraw(void)
 		/* travel further and sag */
 		pos2 = pos1 + (v_forward * travel) + (v_up * -sag) + ((v_right * sin(time)) * m_flSwingFactor);
 
-		draw_segment(pos1, pos2);
+		draw_segment(pos1, pos2, 0);
 		pos1 = pos2;
 
 		sc += (M_PI * (1 / segments));
@@ -121,7 +130,7 @@ float prop_rope::predraw(void)
 	sc = 0;
 	pos1 = x.origin;
 	for (float i = 0; i < segments / 2; i++) {
-		float sag = cos(sc) * m_flSag - 1;
+		float sag = cos(sc) * m_flSag;
 
 		/* get the direction */
 		makevectors(vectoangles(origin - x.origin));
@@ -129,7 +138,7 @@ float prop_rope::predraw(void)
 		/* travel further and sag */
 		pos2 = pos1 + (v_forward * travel) + (v_up * -sag) - ((v_right * sin(time)) * m_flSwingFactor);
 
-		draw_segment(pos1, pos2);
+		draw_segment(pos1, pos2, 1);
 		pos1 = pos2;
 
 		sc += (M_PI * (1 / segments));
@@ -161,6 +170,7 @@ void prop_rope::prop_rope(void)
 {
 	m_flSwingFactor = random();
 	m_flSag = 15.0f;
+	m_strShader = "textures/props/wire_default";
 	drawmask = MASK_ENGINE;
 	Init();
 }

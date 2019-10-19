@@ -34,6 +34,7 @@ void func_wall :: func_wall ( void )
 	movetype = MOVETYPE_PUSH;
 	solid = SOLID_BSP;
 	setmodel( this, model );
+	setorigin(this, origin);
 	CBaseTrigger::CBaseTrigger();
 }
 
@@ -42,3 +43,5 @@ void func_wall :: Trigger ( void )
 	frame = 1 - frame;
 }
 
+CLASSEXPORT(func_physbox, func_wall)
+CLASSEXPORT(func_physbox_multiplayer, func_wall)
