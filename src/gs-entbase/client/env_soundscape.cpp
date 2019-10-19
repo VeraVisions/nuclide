@@ -21,15 +21,17 @@
 Client-side environmental soundscape modifier.
 */
 
-int g_iSoundscape;
 float g_flSoundscapeCheck;
 int Sound_Precache(string shader);
+entity g_entSoundScape;
 
 class env_soundscape:CBaseEntity
 {
 	int m_iShader;
 	int m_iRadius;
+	float m_flVolume;
 
+	void() env_soundscape;
 	virtual void() customphysics;
 	virtual void(string, string) SpawnKey;
 };
@@ -64,12 +66,10 @@ void env_soundscape::customphysics(void)
 	}
 
 	if (fDist <= m_iRadius) {
-		if (g_iSoundscape == m_iShader) {
+		if (g_entSoundScape == this) {
 			return;
 		}
-		dprint(sprintf("[DSP] Soundscape changed to %i\n", m_iShader));
-		g_iSoundscape = m_iShader;
-		g_flSoundscapeCheck = time + 0.5;
+		g_entSoundScape = this;
 	}
 }
 
@@ -87,7 +87,31 @@ void env_soundscape::SpawnKey(string strField, string strKey)
 	}
 }
 
+void env_soundscape::env_soundscape(void)
+{
+	m_iRadius = 1024;
+}
+
+void DSP_ResetSoundscape(void)
+{
+	g_entSoundScape = world;
+}
+
 void DSP_UpdateSoundscape(void)
 {
-	
+	if (!g_entSoundScape) {
+		return;
+	}
+
+	for ( entity e = world; ( e = find( e, classname, "env_soundscape" ) ); ) {
+		env_soundscape t = (env_soundscape)e;
+		
+		if (t != g_entSoundScape) {
+			t.m_flVolume = bound(0, t.m_flVolume - clframetime, 1.0);
+		} else {
+			t.m_flVolume = bound(0, t.m_flVolume + clframetime, 1.0);
+		}
+
+		Sound_Update(self, 10 + t.m_iShader, t.m_iShader, t.m_flVolume);
+	}
 }
