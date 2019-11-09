@@ -71,7 +71,22 @@ class func_door_rotating:CBaseTrigger
 	virtual void() SetMovementDirection;
 	virtual void(vector angle, void() func) RotToDest;
 	virtual void() RotToDest_End;
+
+#ifdef GS_BULLET_PHYSICS
+	virtual void() Unhinge;
+#endif
 };
+
+#ifdef GS_BULLET_PHYSICS
+void func_door_rotating::Unhinge(void)
+{
+	takedamage = DAMAGE_NO;
+	touch = think = __NULL__;
+	solid = SOLID_PHYSICS_BOX;
+	movetype = MOVETYPE_PHYSICS;
+	physics_enable(this, TRUE);
+}
+#endif
 
 void func_door_rotating::Precache(void)
 {
@@ -311,6 +326,12 @@ void func_door_rotating::Respawn(void)
 		m_flDistance = 90;
 	}
 	
+#ifdef GS_BULLET_PHYSICS
+	takedamage = DAMAGE_YES;
+	health = 100;
+	vDeath = func_door_rotating::Unhinge;
+#endif
+
 	solid = SOLID_BSP;
 	movetype = MOVETYPE_PUSH;
 	setorigin(this, m_oldOrigin);

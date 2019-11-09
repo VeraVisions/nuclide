@@ -90,7 +90,7 @@ float prop_rope::predraw(void)
 		return PREDRAW_NEXT;
 	}
 
-	entity x = find(world, ::targetname, target);
+	entity x = find(world, CBaseEntity::targetname, target);
 
 	if (!x) {
 		print("prop_rope without target.\n");

@@ -21,22 +21,27 @@ class CBasePhysics:CBaseEntity
 
 void CBasePhysics::touch(void)
 {
+#ifdef GS_BULLET_PHYSICS
 	makevectors(vectoangles(origin - other.origin));
 	physics_addforce(this, v_forward * 128, other.origin);
 	physics_enable(this, TRUE);
+#endif
 }
 
 void CBasePhysics::vPain(entity eAttacker, int iType, int iDamage)
 {
+#ifdef GS_BULLET_PHYSICS
 	iDamage *= 5;
 	makevectors(vectoangles(origin - trace_endpos));
 	physics_addforce(this, v_forward * iDamage, trace_endpos);
 	health = 100000;
 	physics_enable(this, TRUE);
+#endif
 }
 
 void CBasePhysics::Respawn(void)
 {
+#ifdef GS_BULLET_PHYSICS
 	movetype = MOVETYPE_PHYSICS;
 	solid = SOLID_PHYSICS_BOX + m_iShape; // SOLID_PHYSICS_TRIMESH
 	setmodel(this, m_oldModel);
@@ -44,6 +49,12 @@ void CBasePhysics::Respawn(void)
 	physics_enable(this, FALSE);
 	takedamage = DAMAGE_YES;
 	health = 100000;
+#else
+	movetype = MOVETYPE_NONE;
+	solid = SOLID_BBOX;
+	setmodel(this, m_oldModel);
+	setorigin(this, m_oldOrigin);
+#endif
 }
 
 void CBasePhysics::CBasePhysics(void)

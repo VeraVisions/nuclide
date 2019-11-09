@@ -35,6 +35,7 @@ class CBaseEntity
 	float m_rendermode;
 	float m_renderamt;
 	vector m_rendercolor;
+	string m_parent;
 	
 	void() CBaseEntity;
 	virtual void() Respawn;

@@ -57,7 +57,6 @@ Client-side environmental reverb modifier.
 This works only with the OpenAL sound backend.
 */
 
-int g_iDSP;
 float g_flDSPCheck;
 
 enum {
@@ -136,149 +135,121 @@ reverbinfo_t reverbPresets [35] = {
 	{ 1.0000f, 0.7000f, 0.3162f, 0.4477f, 1.0000f, 1.5100f, 1.2500f, 1.1400f, 0.8913f, 0.0200f, [0,0,0], 1.4125f, 0.0300f, [0,0,0], 0.1790f, 0.1500f, 0.8950f, 0.1900f, 0.9920f, 5000.0000f, 250.0000f, 0.0000f, 0x0 }
 };
 
+int g_iDSP;
+int g_iDSPold;
+float g_flDSPTime;
+
 class env_sound:CBaseEntity
 {
 	int m_iRoomType;
 	int m_iRadius;
 
 	void() env_sound;
-	virtual void() customphysics;
 	virtual void(string, string) SpawnKey;
 };
 
-void env_sound::customphysics(void)
-{
-	vector vecPlayer;
-
-#ifdef WASTES
-	vecPlayer = viewClient.vecPlayerOrigin;
-#else
-	int s = (float)getproperty(VF_ACTIVESEAT);
-	pSeat = &seats[s];
-	vecPlayer = pSeat->vPlayerOrigin;
-#endif
-	
-	if (checkpvs(vecPlayer, this) == FALSE) {
-		return;
-	}
-
-	float fDist = vlen(vecPlayer - this.origin);
-
-	if (g_flDSPCheck > time) {
-		return;
-	}
-
-	other = world;
-	traceline(this.origin, vecPlayer, MOVE_OTHERONLY, this);
-
-	if (trace_fraction < 1.0f) {
-		return;
-	}
-
-	if (fDist <= m_iRadius) {
-		if (g_iDSP == m_iRoomType) {
-			return;
-		}
-		setup_reverb(12, &reverbPresets[m_iRoomType], sizeof(reverbinfo_t));
-		dprint(sprintf("[DSP] Environment changed to %i\n", m_iRoomType));
-		g_iDSP = m_iRoomType;
-		g_flDSPCheck = time + 0.5;
-	}
-}
-
 void env_sound::env_sound(void)
 {
+	m_iRadius = 256;
 	Init();
 
+	movetype = MOVETYPE_NONE;
+	solid = SOLID_TRIGGER;
+	geomtype = GEOMTYPE_CAPSULE;
+	setsize(this, [-m_iRadius,-m_iRadius,-m_iRadius], [m_iRadius,m_iRadius,m_iRadius]);
+	setorigin(this, origin);
+
 	/* Valve BSP, convert their env_sound */
-	if (serverkeyfloat("*bspversion") == 30) {
-		switch(m_iRoomType) {
-			case 0:
-			case 1:
-				m_iRoomType = DSP_DEFAULT;
-				break;
-			case 2:
-				m_iRoomType = DSP_SEWERPIPE;
-				break;
-			case 3:
-				m_iRoomType = DSP_SEWERPIPE;
-				break;
-			case 4:
-				m_iRoomType = DSP_SEWERPIPE;
-				break;
-			case 5:
-				m_iRoomType = DSP_HALLWAY;
-				break;
-			case 6:
-				m_iRoomType = DSP_UNDERPASS;
-				break;
-			case 7:
-				m_iRoomType = DSP_SUBWAY;
-				break;
-			case 8:
-				m_iRoomType = DSP_BATHROOM;
-				break;
-			case 9:
-				m_iRoomType = DSP_LIVINGROOM;
-				break;
-			case 10:
-				m_iRoomType = DSP_AUDITORIUM;
-				break;
-			case 11:
-				m_iRoomType = DSP_QUARRY;
-				break;
-			case 12:
-				m_iRoomType = DSP_FOREST;
-				break;
-			case 13:
-				m_iRoomType = DSP_MOUNTAINS;
-				break;
-			case 14:
-				m_iRoomType = DSP_UNDERWATER;
-				break;
-			case 15:
-				m_iRoomType = DSP_UNDERWATER;
-				break;
-			case 16:
-				m_iRoomType = DSP_UNDERWATER;
-				break;
-			case 17:
-				m_iRoomType = DSP_PARKINGLOT;
-				break;
-			case 18:
-				m_iRoomType = DSP_CAVE;
-				break;
-			case 19:
-				m_iRoomType = DSP_ABANDONED;
-				break;
-			case 20:
-				m_iRoomType = DSP_CHAPEL;
-				break;
-			case 21:
-				m_iRoomType = DSP_CONCERTHALL;
-				break;
-			case 22:
-				m_iRoomType = DSP_MUSEUM;
-				break;
-			case 23:
-				m_iRoomType = DSP_CAVE;
-				break;
-			case 24:
-				m_iRoomType = DSP_CAVE;
-				break;
-			case 25:
-				m_iRoomType = DSP_CAVE;
-				break;
-			case 26:
-				m_iRoomType = DSP_DRUGGED;
-				break;
-			case 27:
-				m_iRoomType = DSP_DIZZY;
-				break;
-			case 28:
-				m_iRoomType = DSP_PSYCHOTIC;
-				break;
-		}
+	if (serverkeyfloat("*bspversion") != 30) {
+		return;
+	}
+
+	switch(m_iRoomType) {
+	case 0:
+	case 1:
+		m_iRoomType = DSP_DEFAULT;
+		break;
+	case 2:
+		m_iRoomType = DSP_SEWERPIPE;
+		break;
+	case 3:
+		m_iRoomType = DSP_SEWERPIPE;
+		break;
+	case 4:
+		m_iRoomType = DSP_SEWERPIPE;
+		break;
+	case 5:
+		m_iRoomType = DSP_HALLWAY;
+		break;
+	case 6:
+		m_iRoomType = DSP_UNDERPASS;
+		break;
+	case 7:
+		m_iRoomType = DSP_SUBWAY;
+		break;
+	case 8:
+		m_iRoomType = DSP_BATHROOM;
+		break;
+	case 9:
+		m_iRoomType = DSP_LIVINGROOM;
+		break;
+	case 10:
+		m_iRoomType = DSP_AUDITORIUM;
+		break;
+	case 11:
+		m_iRoomType = DSP_QUARRY;
+		break;
+	case 12:
+		m_iRoomType = DSP_FOREST;
+		break;
+	case 13:
+		m_iRoomType = DSP_MOUNTAINS;
+		break;
+	case 14:
+		m_iRoomType = DSP_UNDERWATER;
+		break;
+	case 15:
+		m_iRoomType = DSP_UNDERWATER;
+		break;
+	case 16:
+		m_iRoomType = DSP_UNDERWATER;
+		break;
+	case 17:
+		m_iRoomType = DSP_PARKINGLOT;
+		break;
+	case 18:
+		m_iRoomType = DSP_CAVE;
+		break;
+	case 19:
+		m_iRoomType = DSP_ABANDONED;
+		break;
+	case 20:
+		m_iRoomType = DSP_CHAPEL;
+		break;
+	case 21:
+		m_iRoomType = DSP_CONCERTHALL;
+		break;
+	case 22:
+		m_iRoomType = DSP_MUSEUM;
+		break;
+	case 23:
+		m_iRoomType = DSP_CAVE;
+		break;
+	case 24:
+		m_iRoomType = DSP_CAVE;
+		break;
+	case 25:
+		m_iRoomType = DSP_CAVE;
+		break;
+	case 26:
+		m_iRoomType = DSP_DRUGGED;
+		break;
+	case 27:
+		m_iRoomType = DSP_DIZZY;
+		break;
+	case 28:
+		m_iRoomType = DSP_PSYCHOTIC;
+		break;
 	}
 }
 
@@ -296,15 +267,106 @@ void env_sound::SpawnKey(string strField, string strKey)
 	}
 }
 
+void DSP_SetEnvironment(int id)
+{
+	if (g_iDSP == id) {
+		return;
+	}
+
+	g_iDSPold = g_iDSP;
+	g_iDSP = id;
+	g_flDSPTime = 0.0f;
+	print(sprintf("Environment changed to %i.\n", g_iDSP));
+}
+
+reverbinfo_t mix;
+void DSP_Interpolate(int id)
+{
+	mix.flDensity = Math_Lerp(mix.flDensity, reverbPresets[id].flDensity, g_flDSPTime);
+	mix.flDiffusion = Math_Lerp(mix.flDiffusion, reverbPresets[id].flDiffusion, g_flDSPTime);
+	mix.flGain = Math_Lerp(mix.flGain, reverbPresets[id].flGain, g_flDSPTime);
+	mix.flGainHF = Math_Lerp(mix.flGainHF, reverbPresets[id].flGainHF, g_flDSPTime);
+	mix.flGainLF = Math_Lerp(mix.flGainLF, reverbPresets[id].flGainLF, g_flDSPTime);
+	mix.flDecayTime = Math_Lerp(mix.flDecayTime, reverbPresets[id].flDecayTime, g_flDSPTime);
+	mix.flDecayHFRatio = Math_Lerp(mix.flDecayHFRatio, reverbPresets[id].flDecayHFRatio, g_flDSPTime);
+	mix.flDecayLFRatio = Math_Lerp(mix.flDecayLFRatio, reverbPresets[id].flDecayLFRatio, g_flDSPTime);
+	mix.flReflectionsGain = Math_Lerp(mix.flReflectionsGain, reverbPresets[id].flReflectionsGain, g_flDSPTime);
+	mix.flReflectionsDelay = Math_Lerp(mix.flReflectionsDelay, reverbPresets[id].flReflectionsDelay, g_flDSPTime);
+	mix.flReflectionsPan[0] = Math_Lerp(mix.flReflectionsPan[0], reverbPresets[id].flReflectionsPan[0], g_flDSPTime);
+	mix.flReflectionsPan[1] = Math_Lerp(mix.flReflectionsPan[1], reverbPresets[id].flReflectionsPan[1], g_flDSPTime);
+	mix.flReflectionsPan[1] = Math_Lerp(mix.flReflectionsPan[2], reverbPresets[id].flReflectionsPan[2], g_flDSPTime);
+	mix.flLateReverbGain = Math_Lerp(mix.flLateReverbGain, reverbPresets[id].flLateReverbGain, g_flDSPTime);
+	mix.flLateReverbDelay = Math_Lerp(mix.flLateReverbDelay, reverbPresets[id].flLateReverbDelay, g_flDSPTime);
+	mix.flLateReverbPan[0] = Math_Lerp(mix.flLateReverbPan[0], reverbPresets[id].flLateReverbPan[0], g_flDSPTime);
+	mix.flLateReverbPan[1] = Math_Lerp(mix.flLateReverbPan[1], reverbPresets[id].flLateReverbPan[1], g_flDSPTime);
+	mix.flLateReverbPan[2] = Math_Lerp(mix.flLateReverbPan[2], reverbPresets[id].flLateReverbPan[2], g_flDSPTime);
+	mix.flEchoTime = Math_Lerp(mix.flEchoTime, reverbPresets[id].flEchoTime, g_flDSPTime);
+	mix.flEchoDepth = Math_Lerp(mix.flEchoDepth, reverbPresets[id].flEchoDepth, g_flDSPTime);
+	mix.flModulationTime = Math_Lerp(mix.flModulationTime, reverbPresets[id].flModulationTime, g_flDSPTime);
+	mix.flModulationDepth = Math_Lerp(mix.flModulationDepth, reverbPresets[id].flModulationDepth, g_flDSPTime);
+	mix.flAirAbsorptionGainHF = Math_Lerp(mix.flAirAbsorptionGainHF, reverbPresets[id].flAirAbsorptionGainHF, g_flDSPTime);
+	mix.flHFReference = Math_Lerp(mix.flHFReference, reverbPresets[id].flHFReference, g_flDSPTime);
+	mix.flLFReference = Math_Lerp(mix.flLFReference, reverbPresets[id].flLFReference, g_flDSPTime);
+	mix.flRoomRolloffFactor = Math_Lerp(mix.flRoomRolloffFactor, reverbPresets[id].flRoomRolloffFactor, g_flDSPTime);
+	mix.iDecayHFLimit = Math_Lerp(mix.iDecayHFLimit, reverbPresets[id].iDecayHFLimit, g_flDSPTime);
+}
+
+var int autocvar_dsp_environments = TRUE;
+void DSP_UpdateListener(void)
+{
+	vector vecPlayer;
+	
+	if (autocvar_dsp_environments == FALSE) {
+		return;
+	}
+
+#ifdef WASTES
+	vecPlayer = viewClient.vecPlayerOrigin;
+#else
+	int s = (float)getproperty(VF_ACTIVESEAT);
+	pSeat = &seats[s];
+	vecPlayer = pSeat->vPlayerOrigin;
+#endif
+
+	float bestdist = 999999;
+	for ( entity e = world; ( e = find( e, classname, "env_sound" ) ); ) {
+		env_sound scape = (env_sound)e;
+		
+		other = world;
+		traceline(scape.origin, vecPlayer, MOVE_OTHERONLY, scape);
+		if (trace_fraction < 1.0f) {
+			continue;
+		}
+
+		float dist = vlen(e.origin - vecPlayer);
+		if (dist > scape.m_iRadius) {
+			continue;
+		}
+
+		if (dist > bestdist) {
+			continue;
+		}
+
+		bestdist = dist;
+		DSP_SetEnvironment(scape.m_iRoomType);
+	}
+
+	if (g_flDSPTime < 1.0) {
+		DSP_Interpolate(g_iDSP);
+		setup_reverb(12, &mix, sizeof(reverbinfo_t));
+	}
+
+	makevectors(getproperty(VF_CL_VIEWANGLES));
+	SetListener(getproperty(VF_ORIGIN), v_forward, v_right, v_up, 12);
+	g_flDSPTime += clframetime;
+}
+
 void DSP_Init(void)
 {
 	g_iDSP = 0;
+	g_flDSPTime = 1.0f;
+	DSP_Interpolate(g_iDSP);
+
 	setup_reverb(12, &reverbPresets[g_iDSP], sizeof(reverbinfo_t));
 	setup_reverb(10, &reverbPresets[DSP_UNDERWATER], sizeof(reverbinfo_t));
-}
-
-void DSP_UpdateListener(void)
-{
-	makevectors(getproperty(VF_CL_VIEWANGLES));
-	SetListener(getproperty(VF_ORIGIN), v_forward, v_right, v_up, 12);
 }

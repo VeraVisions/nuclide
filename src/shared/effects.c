@@ -379,37 +379,37 @@ void Effect_BreakModel(int count, vector vMins, vector vMaxs, vector vVel, float
 	float fCount = 20;
 	
 	switch (fStyle) {
-		case MATERIAL_GLASS:
-		case MATERIAL_GLASS_UNBREAKABLE:
+		case GSMATERIAL_GLASS:
+		case GSMATERIAL_GLASS_UNBREAKABLE:
 			sModel = "models/glassgibs.mdl";
 			fModelCount = 8;
 			break;
-		case MATERIAL_WOOD:
+		case GSMATERIAL_WOOD:
 			sModel = "models/woodgibs.mdl";
 			fModelCount = 3;
 			break;
-		case MATERIAL_METAL:
+		case GSMATERIAL_METAL:
 			sModel = "models/metalplategibs.mdl";
 			fModelCount = 13;
 			break;
-		case MATERIAL_FLESH:
+		case GSMATERIAL_FLESH:
 			sModel = "models/fleshgibs.mdl";
 			fModelCount = 4;
 			break;
-		case MATERIAL_TILE:
+		case GSMATERIAL_TILE:
 			sModel = "models/ceilinggibs.mdl";
 			fModelCount = 4;
 			break;
-		case MATERIAL_COMPUTER:
+		case GSMATERIAL_COMPUTER:
 			sModel = "models/computergibs.mdl";
 			fModelCount = 15;
 			break;
-		case MATERIAL_ROCK:
+		case GSMATERIAL_ROCK:
 			sModel = "models/rockgibs.mdl";
 			fModelCount = 3;
 			break;
 		default:
-		case MATERIAL_CINDER:
+		case GSMATERIAL_CINDER:
 			sModel = "models/cindergibs.mdl";
 			fModelCount = 9;
 			break;
@@ -421,24 +421,24 @@ void Effect_BreakModel(int count, vector vMins, vector vMaxs, vector vVel, float
 	vWorldPos[2] = vMins[2] + (0.5 * (vMaxs[2] - vMins[2]));
 	
 	switch (fStyle) {
-		case MATERIAL_GLASS:
+		case GSMATERIAL_GLASS:
 			pointsound(vWorldPos, sprintf("debris/bustglass%d.wav", random(1, 4)), 1.0f, ATTN_NORM);
 			break;
-		case MATERIAL_WOOD:
+		case GSMATERIAL_WOOD:
 			pointsound(vWorldPos, sprintf("debris/bustcrate%d.wav", random(1, 4)), 1.0f, ATTN_NORM);
 			break;
-		case MATERIAL_METAL:
-		case MATERIAL_COMPUTER:
+		case GSMATERIAL_METAL:
+		case GSMATERIAL_COMPUTER:
 			pointsound(vWorldPos, sprintf("debris/bustmetal%d.wav", random(1, 3)), 1.0f, ATTN_NORM);
 			break;
-		case MATERIAL_FLESH:
+		case GSMATERIAL_FLESH:
 			pointsound(vWorldPos, sprintf("debris/bustflesh%d.wav", random(1, 3)), 1.0f, ATTN_NORM);
 			break;
-		case MATERIAL_CINDER:
-		case MATERIAL_ROCK:
+		case GSMATERIAL_CINDER:
+		case GSMATERIAL_ROCK:
 			pointsound(vWorldPos, sprintf("debris/bustconcrete%d.wav", random(1, 4)), 1.0f, ATTN_NORM);
 			break;
-		case MATERIAL_TILE:
+		case GSMATERIAL_TILE:
 			pointsound(vWorldPos, "debris/bustceiling.wav", 1.0f, ATTN_NORM);
 			break;
 	}
@@ -463,7 +463,7 @@ void Effect_BreakModel(int count, vector vMins, vector vMaxs, vector vVel, float
 		eGib.think = Effect_BreakModel_Remove;
 		eGib.nextthink = time + 10;
 		
-		if ((fStyle == MATERIAL_GLASS) || (fStyle == MATERIAL_GLASS_UNBREAKABLE)) {
+		if ((fStyle == GSMATERIAL_GLASS) || (fStyle == GSMATERIAL_GLASS_UNBREAKABLE)) {
 			eGib.effects = EF_ADDITIVE;
 		}
 		

@@ -94,7 +94,7 @@ void w_chainsaw_primary(void)
 				pl.velocity = normalize(trace_ent.origin - pl.origin) * 240;
 			}
 
-			Damage_Apply(trace_ent, self, 10, trace_endpos, FALSE, WEAPON_CHAINSAW);
+			Damage_Apply(trace_ent, self, 10, WEAPON_CHAINSAW, DMG_BLUNT);
 			Weapons_PlaySound(pl, CHAN_WEAPON, "sh/chainsaw_cutintoflesh.wav", 1, ATTN_NORM);
 		} else {
 			Effect_CreateSpark(trace_endpos, trace_plane_normal);

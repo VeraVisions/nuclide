@@ -52,7 +52,7 @@ void CModList::Draw(void)
 	drawfill([g_menuofs[0] + m_x, g_menuofs[1] + m_y], [m_size[0], m_size[1]], 
 			 [0,0,0], 1.0f);
 
-	visible = floor(m_size[1] / 15);
+	visible = floor(m_size[1] / 29) + 1;
 	visible = bound(0, visible, gameinfo_count);
 	pos = m_y;
 
@@ -108,7 +108,7 @@ void CModList::Input(float type, float x, float y, float devid)
 	int visible;
 	int pos[2];
 
-	visible = floor(m_size[1] / 29);
+	visible = floor(m_size[1] / 29) + 1;
 	visible = bound(0, visible, gameinfo_count);
 
 	pos[0] = m_x;

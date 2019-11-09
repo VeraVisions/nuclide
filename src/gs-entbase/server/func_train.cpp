@@ -89,7 +89,19 @@ class func_train:CBaseTrigger
 void
 func_train::Blocked(void)
 {
-	Damage_Apply(other, this, m_flDamage, 0, DMG_CRUSH);
+	/* HACK: Make corpses gib instantly */
+//#ifdef WASTES
+	if (other.classname == "Corpse") {
+		Damage_Apply(other, this, 500, 0, DMG_EXPLODE);
+		return;
+	}
+//#endif
+
+	if (other.takedamage != DAMAGE_NO) {
+		Damage_Apply(other, this, m_flDamage, 0, DMG_CRUSH);
+	} else {
+		remove(other);
+	}
 }
 
 void

@@ -29,34 +29,44 @@ enumflags
 
 class func_wall_toggle:CBaseTrigger
 {
+	int m_oldmodelindex;
+	int m_iVisible;
+
 	void() func_wall_toggle;
+	virtual void() Respawn;
 	virtual void() Trigger;
 };
 
-void func_wall_toggle::func_wall_toggle(void)
+void func_wall_toggle::Trigger(void)
 {
-	precache_model(model);
-	//angles = '0 0 0';
+	m_iVisible = 1 - m_iVisible;
+
+	if (m_iVisible) {
+		modelindex = m_oldmodelindex;
+		solid = SOLID_BSP;
+	} else {
+		modelindex = 0;
+		solid = SOLID_NOT;
+	}
+}
+
+void func_wall_toggle::Respawn(void)
+{
 	movetype = MOVETYPE_PUSH;
 	solid = SOLID_BSP;
-	setmodel(this, model);
-	CBaseTrigger::CBaseTrigger();
+	setmodel(this, m_oldModel);
 	setorigin(this, origin);
-	
+	m_iVisible = 1;
+	m_oldmodelindex = modelindex;
+
 	if (spawnflags & FTW_STARTHIDDEN) {
 		Trigger();
 	}
 }
 
-void func_wall_toggle::Trigger(void)
+void func_wall_toggle::func_wall_toggle(void)
 {
-	if (solid == SOLID_BSP) {
-		solid = SOLID_NOT;
-		modelindex = 0;
-		model = "";
-	} else {
-		solid = SOLID_BSP;
-		model = m_oldModel;
-		setmodel(this, model);
-	}
+	precache_model(model);
+	CBaseTrigger::CBaseTrigger();
+	Respawn();
 }

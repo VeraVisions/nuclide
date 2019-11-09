@@ -14,7 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-//#define GS_DEVELOPER
+#define GS_DEVELOPER
+
+#ifdef WASTES
+#define GS_BULLET_PHYSICS
+#endif
 
 void Effect_CreateSpark(vector, vector);
 void Effect_BreakModel(int, vector, vector, vector, float);

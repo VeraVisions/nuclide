@@ -41,7 +41,7 @@ void w_hammer_precache(void)
 void w_hammer_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, __NULL__, __NULL__, __NULL__);
+	Weapons_UpdateAmmo(pl, -1, -1, -1);
 #endif
 }
 string w_hammer_pmodel(void)
@@ -59,7 +59,7 @@ void w_hammer_draw(void)
 	Weapons_ViewAnimation(HAMMER_DRAW);
 #ifdef SSQC
 	player pl = (player)self;
-	Weapons_UpdateAmmo(pl, __NULL__, __NULL__, __NULL__);
+	Weapons_UpdateAmmo(pl, -1, -1, -1);
 #endif
 }
 
@@ -120,9 +120,9 @@ void w_hammer_release(void)
 			hitsound = floor(random(1, 4));
     
 			if (trace_ent.classname == "player")
-				Damage_Apply(trace_ent, self, 50, trace_endpos, FALSE, WEAPON_HAMMER);
+				Damage_Apply(trace_ent, self, 50, WEAPON_HAMMER, DMG_BLUNT);
 			else
-				Damage_Apply(trace_ent, self, 100, trace_endpos, FALSE, WEAPON_HAMMER);
+				Damage_Apply(trace_ent, self, 100, WEAPON_HAMMER, DMG_BLUNT);
 
 			if (trace_ent.classname == "monster_scientist") {
 				trace_ent.movetype = MOVETYPE_TOSS;
@@ -142,7 +142,7 @@ void w_hammer_release(void)
 #ifdef SSQC
 	if (trace_ent.takedamage) {
 		hitsound = floor(random(1, 4));
-		Damage_Apply(trace_ent, self, 200, trace_endpos, FALSE, WEAPON_HAMMER);
+		Damage_Apply(trace_ent, self, 200, WEAPON_HAMMER, DMG_BLUNT);
 	} else {
 		if (trace_fraction < 1.0) {
 			hitsound = 4;

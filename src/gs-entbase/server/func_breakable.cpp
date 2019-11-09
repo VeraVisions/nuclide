@@ -39,7 +39,8 @@ enumflags
 {
 	SF_TRIGGER,
 	SF_TOUCH,
-	SF_PRESSURE
+	SF_PRESSURE,
+	SF_ISMODEL
 };
 
 enum
@@ -131,8 +132,6 @@ void func_breakable::vDeath (entity attacker, int type, int damage)
 		return;
 	}
 	health = 0;
-	
-	print(sprintf("BREAK: %v [x] %v [=] %d\n", mins, maxs, vlen(mins - maxs)));
 
 	/* This may seem totally absurd. That's because it is. It's very
 	 * unreliable but exploding breakables in close proximity it WILL cause
@@ -194,10 +193,15 @@ void func_breakable::PlayerTouch(void)
 
 void func_breakable::Respawn(void)
 {
-	precache_model(m_oldModel);
 	angles = [0,0,0];
 	movetype = MOVETYPE_NONE;
-	solid = SOLID_BSP;
+
+	if (spawnflags & SF_ISMODEL) {
+		solid = SOLID_BBOX;
+	} else {
+		solid = SOLID_BSP;
+	}
+
 	setmodel(this, m_oldModel);
 	setorigin(this, m_oldOrigin);
 	touch = PlayerTouch;
@@ -218,11 +222,18 @@ void func_breakable::Respawn(void)
 
 void func_breakable::func_breakable(void)
 {
+	precache_model(model);
 	CBaseEntity::CBaseEntity();
 	func_breakable::Respawn();
 
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
+		case "vvm_model":
+			model = argv(i + 1);
+			m_oldModel = model;
+			precache_model(model);
+			spawnflags |= SF_ISMODEL;
+			break;
 		case "material":
 			m_iMaterial = stof(argv(i + 1));
 			break;
@@ -237,3 +248,6 @@ void func_breakable::func_breakable(void)
 		}
 	}
 }
+
+CLASSEXPORT(func_physbox, func_breakable)
+CLASSEXPORT(func_physbox_multiplayer, func_breakable)

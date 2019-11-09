@@ -31,6 +31,18 @@ class func_illusionary : CBaseEntity
 void func_illusionary :: func_illusionary ( void )
 {
 	CBaseEntity::CBaseEntity();
+
+	int nfields = tokenize( __fullspawndata );
+	for ( int i = 1; i < ( nfields - 1 ); i += 2 ) {
+		switch ( argv( i ) ) {
+		case "color":
+			colormod = stov( argv( i + 1 ) );
+			break;
+		default:
+			break;
+		}
+	}
+
 	precache_model( model );
 	//angles = '0 0 0';
 	movetype = MOVETYPE_PUSH;

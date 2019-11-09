@@ -59,7 +59,7 @@ float env_glow::predraw(void)
 		
 		/* Scale the glow somewhat with the players distance */
 		fsize = m_vecSize * m_flScale;
-		fsize *= vlen(vecPlayer - origin) / 256;
+		fsize *= bound(1, vlen(vecPlayer - origin) / 256, 4);
 		
 		/* Fade out when the player is starting to move away */
 		falpha = 1 - bound(0, vlen(vecPlayer - origin) / 1024, 1);

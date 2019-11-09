@@ -14,8 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-
-/*QUAKED prop_dynamic (1 0 0) (-8 -8 -8) (8 8 8)
+/*QUAKED prop_dynamic (1 0 0) (-8 -8 -8) (8 8 8) SF_BASIC_COL
 "model"       Model file that will be displayed by the entity.
 "modelscale"  Scale modifier of the model. Default is '1'.
 "angles"      Sets the pitch, yaw and roll angles of the model.
@@ -24,13 +23,11 @@
 Client-side decorative model entity.
 */
 
-
 class prop_dynamic:CBaseEntity
 {
 	void() prop_dynamic;
 
 	virtual void() Init;
-	virtual void() PhysicsFrame;
 	virtual void(string, string) SpawnKey;
 };
 
@@ -55,6 +52,8 @@ void prop_dynamic::Init(void)
 	precache_model(model);
 	setmodel(this, model);
 	setorigin(this, origin);
+	solid = SOLID_NOT;
+	movetype = MOVETYPE_NONE;
 	setsize(this, mins * scale, maxs * scale);
 	drawmask = MASK_ENGINE;
 }
@@ -62,9 +61,4 @@ void prop_dynamic::Init(void)
 void prop_dynamic::prop_dynamic(void)
 {
 	scale = 1.0f;
-}
-
-void prop_dynamic::PhysicsFrame(void)
-{
-	//angles[1] += clframetime * 60;
 }

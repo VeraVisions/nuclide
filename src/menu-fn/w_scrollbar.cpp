@@ -78,7 +78,7 @@ void CScrollbar::Draw(void)
 				[16,16], [1,1,1], 1.0f, 0);
 	}
 
-	barheight = m_theight * (m_theight / (m_max * m_itemheight));
+	barheight = 20 /*m_theight * (m_theight / (m_max * m_itemheight))*/;
 	barstep = (m_scroll * m_itemheight) * (m_theight / (m_max * m_itemheight));
 
 	if (!m_hold) {
@@ -129,7 +129,7 @@ void CScrollbar::Input(float type, float x, float y, float devid)
 		SetScroll(m_scroll + 1);
 	}
 
-	barheight = m_theight * (m_theight / (m_max * m_itemheight));
+	barheight = 20 /*m_theight * (m_theight / (m_max * m_itemheight))*/;
 	barstep = (m_scroll * m_itemheight) * (m_theight / (m_max * m_itemheight));
 
 	if (Util_CheckMouse(m_x, m_y + 16 + barstep, 16, barheight)) {

@@ -35,6 +35,10 @@ void worldspawn::SpawnKey(string strField, string strKey)
 		case "skyname":
 			Sky_Set(strKey);
 			break;
+		case "ambientsound":
+			g_ambientsound = spawn(env_soundscape);
+			g_ambientsound.m_iShader = Sound_Precache(strKey);
+			break;
 		default:
 			break;
 	}

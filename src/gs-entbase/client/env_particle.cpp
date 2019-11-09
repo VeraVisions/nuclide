@@ -42,7 +42,17 @@ class env_particle:CBaseEntity
 
 void env_particle::customphysics(void)
 {
-	if (checkpvs(viewClient.vecPlayerOrigin, this) == FALSE) {
+	vector vecPlayer;
+
+#ifdef WASTES
+	vecPlayer = viewClient.vecPlayerOrigin;
+#else
+	int s = (float)getproperty(VF_ACTIVESEAT);
+	pSeat = &seats[s];
+	vecPlayer = pSeat->vPlayerOrigin;
+#endif
+	
+	if (checkpvs(vecPlayer, this) == FALSE) {
 		return;
 	}
 
@@ -55,7 +65,7 @@ void env_particle::customphysics(void)
 	}
 
 	if (m_strTarget) {
-		m_eTarget = find(world, ::targetname, m_strTarget);
+		m_eTarget = find(world, CBaseEntity::targetname, m_strTarget);
 		makevectors(vectoangles(m_eTarget.origin - origin) * -1);
 		angles = v_forward;
 	}

@@ -42,6 +42,3 @@ void func_wall :: Trigger ( void )
 {
 	frame = 1 - frame;
 }
-
-CLASSEXPORT(func_physbox, func_wall)
-CLASSEXPORT(func_physbox_multiplayer, func_wall)

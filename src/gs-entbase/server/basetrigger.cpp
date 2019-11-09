@@ -37,7 +37,20 @@ class CBaseTrigger : CBaseEntity
 	virtual void( float del ) UseTargets_Delay;
 	virtual void() InitBrushTrigger;
 	virtual void() InitPointTrigger;
+	virtual void() ParentUpdate;
 };
+
+void CBaseTrigger::ParentUpdate(void)
+{
+	entity p = find(world, CBaseTrigger::m_strTarget, m_parent);
+
+	if (!p) {
+		return;
+	}
+	
+	setorigin(this, p.origin);
+	nextthink = time;
+}
 
 void CBaseTrigger :: UseTargets ( void )
 {
@@ -146,6 +159,11 @@ void CBaseTrigger :: CBaseTrigger ( void )
 			break;
 		case "master":
 			m_strMaster = argv(i+1);
+			break;
+		case "parentname":
+			m_parent = argv(i+1);
+			think = ParentUpdate;
+			nextthink = time;
 			break;
 		default:
 			break;
