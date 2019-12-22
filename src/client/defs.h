@@ -66,6 +66,9 @@ vector video_mins;
 vector video_res;
 vector mouse_pos;
 
+/* TODO: Move these into gs-entbase/client/defs.h? */
+vector g_vecSunDir;
+
 /* this actually belongs in builtins.h since its an undocumented global */
 float clframetime;
 
