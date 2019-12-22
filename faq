@@ -1,0 +1,59 @@
+Q: Why does this project exist?
+A: >I< wanted a free variant of the best version of Counter-Strike in 2016 as
+   as I was preparing to move away from x86 hardware and moving to other
+   operating systems that could never run Wine/Windows software.
+   In the end, I aim to support more mods. Including Half-Life.
+
+Q: Can I help at this moment?
+A: Not really. Unless you've got crashes etc. to report that are really bad
+   and not documented, feel free to report them. I know what needs doing and
+   it'll get done in time.
+   If a crash to console happens, it's most likely my bug. If the whole engine
+   comes crashing down, it's FTEQW's fault. Not mine.
+
+Q: It doesn't work with my Half-Life/Counter-Strike version.
+A: This is designed for the disc version of Half-Life, released before Steam.
+   Supporting both is a bit annoying right now. I might add support for the
+   Steam UI one day.
+
+Q: I don't like how you're doing [insert thing here]!
+A: Too bad!
+
+Q: Why Counter-Strike 1.5? Not any earlier/later version?
+A: The best and last free to distribute version, no shield, no gambling.
+
+Q: Can I connect to 1.5 servers using FreeCS?
+A: The protocol is different. While it would not be impossible to do, there
+   is no intention in doing so. 1.5 is a dead game server wise, the protocol
+   is complete garbage and we'd lose a bunch security benefits and fixes by
+   attempting to be compatible. It's pointless. I can crash a 1.5 server/client
+   within seconds - you want me to re-implement that too?...
+
+Q: How about CS:S?
+A: One thing at a time.
+
+Q: What's it with support for 'valve', 'scihunt', 'tfc', 'rewolf', 'gearbox'?
+A: Other mods. They do kinda keep the codebase in check too, since
+   there's a lot of shared code between them and they do help keep specifics
+   into their own source tree.
+
+Q: Make a wiki/discord/youtube/twitter/facebook etc. and spend time on
+   maintaining that, instead of working on the project, to build 'hype'.
+A: I'm sure you are the first one to suggest such an idea... No thanks.
+
+Q: X#sh3D? Why not use that instead of FTE QuakeWorld?
+A: There are enough GPL violators around, I do not need to contribute to that
+   cesspool. 'From scratch' my a$$.
+
+Q: [insert thing here] isn't 100% exact as in the original 1.5.
+A: Sometimes bugs get fixed, sometimes very minor details get streamlined in
+   order to get more work done in other areas. FreeCS will most likely never
+   be done in that accuracy aspect, but it'll get better with time.
+
+Q: Why do this when you can just run a VM?
+A: FreeCS isn't just making CS more portable. It also fixes bugs. It optimises
+   the netcode greatly. It's got much better lag compensation and client-side
+   player and weapon prediction than CS ever did.
+
+Q: I still don't get it - why not play CS on Steam?
+A: This is clearly not intended for you, then!
