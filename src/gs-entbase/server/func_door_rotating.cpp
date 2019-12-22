@@ -325,7 +325,7 @@ void func_door_rotating::Respawn(void)
 	if (!m_flDistance) {
 		m_flDistance = 90;
 	}
-	
+
 #ifdef GS_BULLET_PHYSICS
 	takedamage = DAMAGE_YES;
 	health = 100;
@@ -334,8 +334,8 @@ void func_door_rotating::Respawn(void)
 
 	solid = SOLID_BSP;
 	movetype = MOVETYPE_PUSH;
-	setorigin(this, m_oldOrigin);
 	setmodel(this, m_oldModel);
+	setorigin(this, m_oldOrigin);
 	think = __NULL__;
 	nextthink = -1;
 	m_pMove = 0;

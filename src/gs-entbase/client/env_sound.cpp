@@ -14,6 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/* this is causing crashes on OpenAL 1.19.1 when enabled */
+//#define DSP_LERP
+
 /*QUAKED env_sound (1 0 0) (-8 -8 -8) (8 8 8)
 "radius"    Radius in units.
 "roomtype"  Roomtype value:
@@ -276,7 +279,6 @@ void DSP_SetEnvironment(int id)
 	g_iDSPold = g_iDSP;
 	g_iDSP = id;
 	g_flDSPTime = 0.0f;
-	print(sprintf("Environment changed to %i.\n", g_iDSP));
 }
 
 reverbinfo_t mix;
@@ -314,6 +316,8 @@ void DSP_Interpolate(int id)
 var int autocvar_dsp_environments = TRUE;
 void DSP_UpdateListener(void)
 {
+	static int old_dsp;
+
 	vector vecPlayer;
 	
 	if (autocvar_dsp_environments == FALSE) {
@@ -351,14 +355,27 @@ void DSP_UpdateListener(void)
 		DSP_SetEnvironment(scape.m_iRoomType);
 	}
 
-	if (g_flDSPTime < 1.0) {
-		DSP_Interpolate(g_iDSP);
-		setup_reverb(12, &mix, sizeof(reverbinfo_t));
-	}
-
 	makevectors(getproperty(VF_CL_VIEWANGLES));
 	SetListener(getproperty(VF_ORIGIN), v_forward, v_right, v_up, 12);
+
+	if (old_dsp == g_iDSP) {
+		return;
+	}
+
+#ifdef DSP_LERP
+	if (g_flDSPTime < 1.0)
+	{
+		DSP_Interpolate(g_iDSP);
+		setup_reverb(12, &mix, sizeof(reverbinfo_t));
+	} else {
+		old_dsp = g_iDSP;
+	}
 	g_flDSPTime += clframetime;
+#else
+	print(sprintf("[DSP] Environment changed to %i.\n", g_iDSP));
+	old_dsp = g_iDSP;
+	setup_reverb(12, &reverbPresets[g_iDSP], sizeof(reverbinfo_t));
+#endif
 }
 
 void DSP_Init(void)

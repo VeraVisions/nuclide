@@ -22,8 +22,6 @@ enum {
 class CBaseTrigger : CBaseEntity
 {
 	int m_strGlobalState;
-	string m_strTarget;
-	string m_strTargetName;
 	string m_strKillTarget;
 	string m_strMessage;
 	string m_strMaster;
@@ -37,20 +35,7 @@ class CBaseTrigger : CBaseEntity
 	virtual void( float del ) UseTargets_Delay;
 	virtual void() InitBrushTrigger;
 	virtual void() InitPointTrigger;
-	virtual void() ParentUpdate;
 };
-
-void CBaseTrigger::ParentUpdate(void)
-{
-	entity p = find(world, CBaseTrigger::m_strTarget, m_parent);
-
-	if (!p) {
-		return;
-	}
-	
-	setorigin(this, p.origin);
-	nextthink = time;
-}
 
 void CBaseTrigger :: UseTargets ( void )
 {
@@ -143,14 +128,6 @@ void CBaseTrigger :: CBaseTrigger ( void )
 {
 	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
 		switch ( argv( i ) ) {
-		case "target":
-			m_strTarget = argv( i + 1 );
-			target = __NULL__;
-			break;
-		case "targetname":
-			m_strTargetName = argv( i + 1 );
-			targetname = __NULL__;
-			break;
 		case "killtarget":
 			m_strKillTarget = argv( i + 1 );
 			break;
@@ -159,11 +136,6 @@ void CBaseTrigger :: CBaseTrigger ( void )
 			break;
 		case "master":
 			m_strMaster = argv(i+1);
-			break;
-		case "parentname":
-			m_parent = argv(i+1);
-			think = ParentUpdate;
-			nextthink = time;
 			break;
 		default:
 			break;

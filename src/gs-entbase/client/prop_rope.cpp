@@ -14,6 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#define ROPE_RIBBON
+
+void(float radius, vector texcoordbias) R_EndPolygonRibbon = #0;
+
 var int autocvar_rope_debug = FALSE;
 
 class prop_rope:CBaseEntity
@@ -24,10 +28,14 @@ class prop_rope:CBaseEntity
 
 	void() prop_rope;
 	virtual float() predraw;
-	virtual void(vector, vector, int) draw_segment;
 	virtual void(string, string) SpawnKey;
+
+#ifndef ROPE_RIBBON
+	virtual void(vector, vector, int) draw_segment;
+#endif
 };
 
+#ifndef ROPE_RIBBON
 void prop_rope::draw_segment(vector start, vector end, int flip)
 {
 	vector fsize = [2,2];
@@ -77,6 +85,7 @@ void prop_rope::draw_segment(vector start, vector end, int flip)
 		R_EndPolygon();
 	}
 }
+#endif
 
 float prop_rope::predraw(void)
 {
@@ -121,7 +130,16 @@ float prop_rope::predraw(void)
 		/* travel further and sag */
 		pos2 = pos1 + (v_forward * travel) + (v_up * -sag) + ((v_right * sin(time)) * m_flSwingFactor);
 
+#ifndef ROPE_RIBBON
 		draw_segment(pos1, pos2, 0);
+#else
+		vector lit1 = /*[0.1,0.1,0.1] */ getlight(pos1) / 255;
+		vector lit2 = /*[0.1,0.1,0.1] */ getlight(pos2) / 255;
+		R_BeginPolygon(m_strShader, 0, 0);
+			R_PolygonVertex(pos1, [0,0], lit1, 1.0f);
+			R_PolygonVertex(pos2, [0,1], lit2, 1.0f);
+		R_EndPolygonRibbon(2, [1,0]);
+#endif
 		pos1 = pos2;
 
 		sc += (M_PI * (1 / segments));
@@ -138,7 +156,17 @@ float prop_rope::predraw(void)
 		/* travel further and sag */
 		pos2 = pos1 + (v_forward * travel) + (v_up * -sag) - ((v_right * sin(time)) * m_flSwingFactor);
 
-		draw_segment(pos1, pos2, 1);
+#ifndef ROPE_RIBBON
+		draw_segment(pos1, pos2, 0);
+#else
+		vector lit1 = /*[0.1,0.1,0.1] */ getlight(pos1) / 255;
+		vector lit2 = /*[0.1,0.1,0.1] */ getlight(pos2) / 255;
+
+		R_BeginPolygon(m_strShader, 0, 0);
+			R_PolygonVertex(pos1, [0,0], lit1, 1.0f);
+			R_PolygonVertex(pos2, [0,1], lit2, 1.0f);
+		R_EndPolygonRibbon(2, [-1,0]);
+#endif
 		pos1 = pos2;
 
 		sc += (M_PI * (1 / segments));

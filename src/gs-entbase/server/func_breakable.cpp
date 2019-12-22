@@ -248,6 +248,3 @@ void func_breakable::func_breakable(void)
 		}
 	}
 }
-
-CLASSEXPORT(func_physbox, func_breakable)
-CLASSEXPORT(func_physbox_multiplayer, func_breakable)

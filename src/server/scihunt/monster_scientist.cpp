@@ -438,7 +438,8 @@ void monster_scientist::Physics(void)
 	input_movevalues = [0,0,0];
 	input_impulse = 0;
 	input_buttons = 0;
-
+	
+	if (style != SCI_DEAD) {
 	if (!(m_iFlags & SCIF_SEEN)) {
 		for (entity b = world; (b = find(b, ::classname, "player"));) {
 			/* Find players in a 256 unit radius */
@@ -553,9 +554,6 @@ void monster_scientist::Physics(void)
 		m_iFlags &= ~SCIF_SCARED;
 	}
 
-	input_angles = angles = v_angle;
-	input_timelength = frametime;
-	
 	if (m_flPainTime > time) {
 		input_movevalues = [0,0,0];
 	} else {
@@ -569,6 +567,11 @@ void monster_scientist::Physics(void)
 			frame = (m_iFlags & SCIF_SCARED) ? SCIA_RUNSCARED:SCIA_RUN;
 		}
 	}
+
+	}
+
+	input_angles = angles = v_angle;
+	input_timelength = frametime;
 
 	runstandardplayerphysics(this);
 	Footsteps_Update();
@@ -686,7 +689,7 @@ void monster_scientist::vDeath(int iHitBody)
 
 	SendFlags |= NPC_FRAME;
 	m_eUser = world;
-	customphysics = __NULL__;
+	//customphysics = __NULL__;
 	m_iFlags = 0x0;
 
 	if (health < -50) {

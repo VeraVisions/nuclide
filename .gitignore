@@ -1,5 +1,14 @@
 *~
+darkstar/
+hunger/
+noffice/
+pvk/
+ship/
+src/client/cstrike.new
+src/server/cstrike.new
+src/shared/cstrike.new
 *.lno
+*.pk3
 csqccore.txt
 ssqccore.txt
 menucore.txt

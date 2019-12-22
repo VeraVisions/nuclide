@@ -39,4 +39,5 @@ void func_physbox::func_physbox(void)
 	}
 }
 
+CLASSEXPORT(func_physbox, func_physbox)
 CLASSEXPORT(func_physbox_multiplayer, func_physbox)

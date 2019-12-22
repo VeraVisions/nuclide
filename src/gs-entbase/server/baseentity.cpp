@@ -26,6 +26,8 @@ enum
 
 class CBaseEntity
 {
+	string m_strTarget;
+	string m_strTargetName;
 	string m_oldModel;
 	float m_oldSolid;
 	float m_oldHealth;
@@ -41,7 +43,23 @@ class CBaseEntity
 	virtual void() Respawn;
 	virtual void() Hide;
 	virtual void() RendermodeUpdate;
+	virtual void() ParentUpdate;
 };
+
+/* Make sure StartFrame calls this */
+void CBaseEntity::ParentUpdate(void)
+{
+	if (m_parent) {
+		entity p = find(world, CBaseEntity::m_strTargetName, m_parent);
+
+		if (!p) {
+			return;
+		}
+
+		setorigin(this, p.origin);
+		nextthink = time;
+	}
+}
 
 void CBaseEntity :: CBaseEntity ( void )
 {
@@ -64,10 +82,19 @@ void CBaseEntity :: CBaseEntity ( void )
 	m_oldHealth = health;
 	m_oldOrigin = origin;
 	m_oldAngle = angles;
+	effects |= EF_NOSHADOW;
 
 	int nfields = tokenize( __fullspawndata );
 	for ( int i = 1; i < ( nfields - 1 ); i += 2 ) {
 		switch ( argv( i ) ) {
+		case "targetname":
+			m_strTargetName = argv( i + 1 );
+			targetname = __NULL__;
+			break;
+		case "target":
+			m_strTarget = argv( i + 1 );
+			target = __NULL__;
+			break;
 		case "renderamt":
 			m_renderamt = stof( argv( i + 1 ) );
 			break;
@@ -76,6 +103,9 @@ void CBaseEntity :: CBaseEntity ( void )
 			break;
 		case "rendermode":
 			m_rendermode = stof( argv( i + 1 ) );
+			break;
+		case "parentname":
+			m_parent = argv(i+1);
 			break;
 		default:
 			break;

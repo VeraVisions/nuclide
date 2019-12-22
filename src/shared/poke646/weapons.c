@@ -14,35 +14,14 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* We only want to load this because we're in desperate need for the skyname
- * variable. Some maps like crossfire do not supply one because GS assumes
- * the default is 'desert'... so once this is done we'll kill it. */
-
-class worldspawn:CBaseEntity
-{
-	virtual void(string, string) SpawnKey;
-	virtual void() Initialized;
+weapon_t w_null = {};
+weapon_t g_weapons[] = {
+	w_null,
+	w_heaterpipe,
+	w_bradnailer,
+	w_nailgun,
+	w_shotgun,
+	w_cmlwbr,
+	w_xs,
+	w_pipebomb
 };
-
-void worldspawn::Initialized(void)
-{
-	remove(this);
-}
-
-void worldspawn::SpawnKey(string strField, string strKey)
-{
-	switch (strField) {
-		case "sun_pos":
-			g_vecSunDir = stov(strKey);
-			break;
-		case "skyname":
-			Sky_Set(strKey);
-			break;
-		case "ambientsound":
-			g_ambientsound = spawn(env_soundscape);
-			g_ambientsound.m_iShader = Sound_Precache(strKey);
-			break;
-		default:
-			break;
-	}
-}

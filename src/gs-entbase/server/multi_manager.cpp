@@ -121,6 +121,8 @@ void multi_manager :: multi_manager (void)
 		case "origin":
 		case "targetname":
 		case "spawnflags":
+		case "angle":
+		case "angles":
 			continue;
 			break;
 		default:
