@@ -230,7 +230,7 @@ void func_door::Touch(void)
 void func_door::Blocked(void)
 {
 	if (m_iDamage) {
-		//Damage_Apply(other, self, dmg, other.origin, FALSE);
+		Damage_Apply(other, this, m_iDamage, 0, DMG_CRUSH);
 	}
 
 	if (m_flWait >= 0) {
@@ -368,6 +368,8 @@ void func_door::func_door(void)
 			m_strFire = argv(i+1);
 			netname = __NULL__;
 			break;
+		case "dmg":
+			m_iDamage = stoi(argv(i+1));
 		default:
 			break;
 		}
