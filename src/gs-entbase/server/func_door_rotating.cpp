@@ -46,7 +46,7 @@ class func_door_rotating:CBaseTrigger
 	int m_iLocked;
 	float m_flDistance;
 	float m_flSpeed;
-	float m_flLip;
+	/*float m_flLip;*/
 	float m_iState;
 	float m_flNextAction;
 	float m_flWait;
@@ -274,10 +274,6 @@ void func_door_rotating::SetMovementDirection(void)
 	} else {
 		m_vecMoveDir = [0,1,0];
 	}
-
-	if (spawnflags & SF_ROT_BACKWARDS) {
-		m_vecMoveDir *= 1;
-	}
 }
 
 void func_door_rotating::RotToDest_End(void)
@@ -313,19 +309,6 @@ void func_door_rotating::Respawn(void)
 {
 	func_door_rotating::SetMovementDirection();
 
-	if (!m_flSpeed) {
-		m_flSpeed = 100;
-	}
-	if (!m_flLip) {
-		m_flLip = 90;
-	}
-	if (!m_flDelay) {
-		m_flDelay = 4;
-	}
-	if (!m_flDistance) {
-		m_flDistance = 90;
-	}
-
 #ifdef GS_BULLET_PHYSICS
 	takedamage = DAMAGE_YES;
 	health = 100;
@@ -353,7 +336,12 @@ void func_door_rotating::Respawn(void)
 
 	m_iState = STATE_LOWERED;
 	m_vecPos1 = m_oldAngle;
-	m_vecPos2 = m_oldAngle + m_vecMoveDir * m_flDistance;
+
+	if (spawnflags & SF_ROT_BACKWARDS) {
+		m_vecPos2 = m_oldAngle + m_vecMoveDir * -m_flDistance;
+	} else {
+		m_vecPos2 = m_oldAngle + m_vecMoveDir * m_flDistance;
+	}
 
 	if (spawnflags & SF_ROT_OPEN) {
 		vector vTemp = m_vecPos2;
@@ -375,14 +363,18 @@ void func_door_rotating::Respawn(void)
 
 void func_door_rotating::func_door_rotating(void)
 {
+	m_flSpeed = 100;
+	m_flDelay = 4;
+	m_flDistance = 90;
+
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
 		case "speed":
 			m_flSpeed = stof(argv(i+1));
 			break;
-		case "lip":
+		/*case "lip":
 			m_flLip = stof(argv(i+1));
-			break;
+			break;*/
 		case "movesnd":
 			m_iMoveSnd = stoi(argv(i+1));
 			break;
