@@ -52,8 +52,10 @@ server/trigger_teleport.cpp
 server/trigger_transition.cpp
 server/trigger_relay.cpp
 server/env_shooter.cpp
+server/gibshooter.cpp
 server/env_beverage.cpp
 server/env_global.cpp
+server/env_laser.cpp
 server/item_food.cpp
 server/multi_manager.cpp
 server/monster_furniture.cpp
