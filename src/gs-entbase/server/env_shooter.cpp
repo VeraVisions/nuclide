@@ -95,6 +95,7 @@ void env_shooter :: env_shooter ( void )
 		case "m_iGibs":
 			m_iGibs = stoi( argv( i + 1 ) );
 			break;
+		case "delay":
 		case "m_flDelay":
 			m_flDelay = stof( argv( i + 1 ) );
 			break;
