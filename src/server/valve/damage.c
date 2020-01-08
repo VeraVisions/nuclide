@@ -20,7 +20,11 @@ Damage_Obituary(entity c, entity t, float weapon, float flags)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_OBITUARY);
-	WriteString(MSG_MULTICAST, c.netname);
+	if (c.netname) {
+		WriteString(MSG_MULTICAST, c.netname);
+	} else {
+		WriteString(MSG_MULTICAST, c.classname);
+	}
 	WriteString(MSG_MULTICAST, t.netname);
 	WriteByte(MSG_MULTICAST, weapon);
 	WriteByte(MSG_MULTICAST, flags);

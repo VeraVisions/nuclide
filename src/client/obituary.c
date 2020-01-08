@@ -173,6 +173,11 @@ Obituary_Parse(void)
 	victim = readstring();
 	weapon = readbyte();
 	flags = readbyte();
+	
+	if (!attacker) {
+		return;
+	}
 
 	Obituary_Add(attacker, victim, weapon, flags);
+	//print("Obituary received\n");
 }

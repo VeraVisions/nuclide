@@ -96,5 +96,7 @@ NPC_ReadEntity(float new)
 	if (new) {
 		setcustomskin(pl, "", sprintf("geomset 1 %i\n", pl.body));
 	}
+
+	setorigin(pl, pl.origin);
 }
 

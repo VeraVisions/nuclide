@@ -337,7 +337,7 @@ void func_door_rotating::Respawn(void)
 	setmodel(this, m_oldModel);
 	setorigin(this, m_oldOrigin);
 	think = __NULL__;
-	nextthink = -1;
+	nextthink = 0;
 	m_pMove = 0;
 	avelocity = [0,0,0];
 
