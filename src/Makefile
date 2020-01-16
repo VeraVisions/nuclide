@@ -4,6 +4,7 @@ all:
 	make menu
 	make games
 	make mods
+	make plugins
 
 menu:
 	$(CC) menu-fn/progs.src
@@ -35,3 +36,6 @@ mods:
 	mkdir -p ../hunger/data.pk3dir
 	$(CC) client/hunger/progs.src
 	$(CC) server/hunger/progs.src
+	
+plugins:
+	$(CC) plugins/chatsounds.src

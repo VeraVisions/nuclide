@@ -88,6 +88,7 @@ w_taurus_draw(void)
 {
 #ifdef CSQC
 	Weapons_SetModel("models/v_taurus.mdl");
+	Weapons_ViewAnimation(TAURUS_DRAW);
 #endif
 }
 

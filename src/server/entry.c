@@ -21,6 +21,11 @@ void main(void)
 
 void StartFrame(void)
 {
+	for (entity a = world; (a = findfloat(a, gflags, GF_CANRESPAWN));) {
+		CBaseEntity ent = (CBaseEntity)a;
+		ent.ParentUpdate();
+	}
+
 	Game_StartFrame();
 }
 

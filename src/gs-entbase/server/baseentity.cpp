@@ -24,6 +24,21 @@ enum
 	RM_ADDITIVE
 };
 
+// keep in sync with client/baseentity.cpp
+enumflags
+{
+	BASEFL_CHANGED_ORIGIN,
+	BASEFL_CHANGED_ANGLES,
+	BASEFL_CHANGED_MODELINDEX,
+	BASEFL_CHANGED_SIZE,
+	BASEFL_CHANGED_SOLID,
+	BASEFL_CHANGED_FRAME,
+	BASEFL_CHANGED_SKIN,
+	BASEFL_CHANGED_MOVETYPE,
+	BASEFL_CHANGED_ALPHA,
+	BASEFL_CHANGED_EFFECTS
+};
+
 class CBaseEntity
 {
 	string m_strTarget;
@@ -33,6 +48,18 @@ class CBaseEntity
 	float m_oldHealth;
 	vector m_oldOrigin;
 	vector m_oldAngle;
+	
+	vector oldnet_origin;
+	vector oldnet_angles;
+	float oldnet_modelindex;
+	vector oldnet_mins;
+	vector oldnet_maxs;
+	float oldnet_solid;
+	float oldnet_movetype;
+	float oldnet_alpha;
+	float oldnet_frame;
+	float oldnet_skin;
+	float oldnet_effects;
 	
 	float m_rendermode;
 	float m_renderamt;
@@ -44,11 +71,108 @@ class CBaseEntity
 	virtual void() Hide;
 	virtual void() RendermodeUpdate;
 	virtual void() ParentUpdate;
+	virtual float(entity, float) SendEntity;
 };
+
+/* Make sure StartFrame calls this */
+float CBaseEntity::SendEntity(entity ePEnt, float fChanged)
+{
+	WriteByte(MSG_ENTITY, ENT_ENTITY);
+	WriteFloat(MSG_ENTITY, fChanged);
+
+	/* really trying to get our moneys worth with 23 bits of mantissa */
+	if (fChanged & BASEFL_CHANGED_ORIGIN) {
+		WriteCoord(MSG_ENTITY, origin[0]);
+		WriteCoord(MSG_ENTITY, origin[1]);
+		WriteCoord(MSG_ENTITY, origin[2]);
+	}
+	if (fChanged & BASEFL_CHANGED_ANGLES) {
+		WriteFloat(MSG_ENTITY, angles[0]);
+		WriteFloat(MSG_ENTITY, angles[1]);
+		WriteFloat(MSG_ENTITY, angles[2]);
+	}
+	if (fChanged & BASEFL_CHANGED_MODELINDEX) {
+		WriteShort(MSG_ENTITY, modelindex);
+	}
+	if (fChanged & BASEFL_CHANGED_SOLID) {
+		WriteByte(MSG_ENTITY, solid);
+	}
+	if (fChanged & BASEFL_CHANGED_MOVETYPE) {
+		WriteByte(MSG_ENTITY, movetype);
+	}
+	if (fChanged & BASEFL_CHANGED_SIZE) {
+		WriteCoord(MSG_ENTITY, mins[0]);
+		WriteCoord(MSG_ENTITY, mins[1]);
+		WriteCoord(MSG_ENTITY, mins[2]);
+		WriteCoord(MSG_ENTITY, maxs[0]);
+		WriteCoord(MSG_ENTITY, maxs[1]);
+		WriteCoord(MSG_ENTITY, maxs[2]);
+	}
+	if (fChanged & BASEFL_CHANGED_FRAME) {
+		WriteByte(MSG_ENTITY, frame);
+	}
+	if (fChanged & BASEFL_CHANGED_SKIN) {
+		WriteByte(MSG_ENTITY, skin);
+	}
+	if (fChanged & BASEFL_CHANGED_ALPHA) {
+		WriteFloat(MSG_ENTITY, alpha);
+	}
+	if (fChanged & BASEFL_CHANGED_EFFECTS) {
+		WriteFloat(MSG_ENTITY, effects);
+	}
+
+	return TRUE;
+}
 
 /* Make sure StartFrame calls this */
 void CBaseEntity::ParentUpdate(void)
 {
+	/* Check our fields for networking */
+	if (origin != oldnet_origin) {
+		SendFlags |= BASEFL_CHANGED_ORIGIN;
+		oldnet_origin = origin;
+	}
+	if (angles != oldnet_angles) {
+		SendFlags |= BASEFL_CHANGED_ANGLES;
+		oldnet_angles = angles;
+	}
+	if (modelindex != oldnet_modelindex) {
+		SendFlags |= BASEFL_CHANGED_MODELINDEX;
+		oldnet_modelindex = modelindex;
+	}
+	if (mins != oldnet_mins) {
+		SendFlags |= BASEFL_CHANGED_SIZE;
+		oldnet_mins = mins;
+	}
+	if (maxs != oldnet_maxs) {
+		SendFlags |= BASEFL_CHANGED_SIZE;
+		oldnet_maxs = maxs;
+	}
+	if (solid != oldnet_solid) {
+		SendFlags |= BASEFL_CHANGED_SOLID;
+		oldnet_solid = solid;
+	}
+	if (movetype != oldnet_movetype) {
+		SendFlags |= BASEFL_CHANGED_MOVETYPE;
+		oldnet_movetype = movetype;
+	}
+	if (frame != oldnet_frame) {
+		SendFlags |= BASEFL_CHANGED_FRAME;
+		oldnet_frame = frame;
+	}
+	if (skin != oldnet_skin) {
+		SendFlags |= BASEFL_CHANGED_SKIN;
+		oldnet_skin = skin;
+	}
+	if (alpha != oldnet_alpha) {
+		SendFlags |= BASEFL_CHANGED_ALPHA;
+		oldnet_alpha = alpha;
+	}
+	if (effects != oldnet_effects) {
+		SendFlags |= BASEFL_CHANGED_EFFECTS;
+		oldnet_effects = effects;
+	}
+	
 	if (m_parent) {
 		entity p = find(world, CBaseEntity::m_strTargetName, m_parent);
 

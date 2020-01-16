@@ -78,7 +78,7 @@ init(float prevprogs)
 		print(sprintf("Found %s\n", search_getfilename(list, i)));
 	}
 	search_end(list);
-	
+
 	chatfile = fopen("chatsounds.txt", FILE_READ);
 
 	if (chatfile < 0) {

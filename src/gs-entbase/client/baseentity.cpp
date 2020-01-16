@@ -16,6 +16,21 @@
 
 string __fullspawndata;
 
+// keep in sync with client/baseentity.cpp
+enumflags
+{
+	BASEFL_CHANGED_ORIGIN,
+	BASEFL_CHANGED_ANGLES,
+	BASEFL_CHANGED_MODELINDEX,
+	BASEFL_CHANGED_SIZE,
+	BASEFL_CHANGED_SOLID,
+	BASEFL_CHANGED_FRAME,
+	BASEFL_CHANGED_SKIN,
+	BASEFL_CHANGED_MOVETYPE,
+	BASEFL_CHANGED_ALPHA,
+	BASEFL_CHANGED_EFFECTS
+};
+
 class CBaseEntity
 {
 	string targetname;
@@ -26,7 +41,55 @@ class CBaseEntity
 	virtual void() Init;
 	virtual void() Initialized;
 	virtual void(string, string) SpawnKey;
+	virtual void(float flChanged) ReadEntity;
 };
+
+void CBaseEntity::ReadEntity(float flChanged)
+{
+	if (flChanged & BASEFL_CHANGED_ORIGIN) {
+		origin[0] = readcoord();
+		origin[1] = readcoord();
+		origin[2] = readcoord();
+	}
+	if (flChanged & BASEFL_CHANGED_ANGLES) {
+		angles[0] = readfloat();
+		angles[1] = readfloat();
+		angles[2] = readfloat();
+	}
+	if (flChanged & BASEFL_CHANGED_MODELINDEX) {
+		modelindex = readshort();
+	}
+	if (flChanged & BASEFL_CHANGED_SOLID) {
+		solid = readbyte();
+	}
+	if (flChanged & BASEFL_CHANGED_MOVETYPE) {
+		movetype = readbyte();
+	}
+	if (flChanged & BASEFL_CHANGED_SIZE) {
+		mins[0] = readcoord();
+		mins[1] = readcoord();
+		mins[2] = readcoord();
+		maxs[0] = readcoord();
+		maxs[1] = readcoord();
+		maxs[2] = readcoord();
+	}
+	if (flChanged & BASEFL_CHANGED_FRAME) {
+		frame = readbyte();
+	}
+	if (flChanged & BASEFL_CHANGED_SKIN) {
+		skin = readbyte();
+	}
+	if (flChanged & BASEFL_CHANGED_ALPHA) {
+		alpha = readfloat();
+	}
+	if (flChanged & BASEFL_CHANGED_EFFECTS) {
+		effects = readfloat();
+	}
+
+	drawmask = MASK_ENGINE;
+	setorigin(this, origin);
+	setsize(this, mins, maxs);
+}
 
 void CBaseEntity::SpawnKey(string strField, string strKey)
 {

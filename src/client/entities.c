@@ -27,6 +27,11 @@ void CSQC_Ent_Update(float new)
 	t = readbyte();
 
 	switch (t) {
+	case ENT_ENTITY:
+		CBaseEntity me = (CBaseEntity)self;
+		spawnfunc_CBaseEntity();
+		me.ReadEntity(readfloat());
+		break;
 	case ENT_PLAYER:
 		Player_ReadEntity(new);
 		break;
