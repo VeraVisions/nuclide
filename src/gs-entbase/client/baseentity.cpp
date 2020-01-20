@@ -64,6 +64,10 @@ void CBaseEntity::ReadEntity(float flChanged)
 	}
 	if (flChanged & BASEFL_CHANGED_MOVETYPE) {
 		movetype = readbyte();
+
+		if (movetype == MOVETYPE_PHYSICS) {
+			movetype = MOVETYPE_NONE;
+		}
 	}
 	if (flChanged & BASEFL_CHANGED_SIZE) {
 		mins[0] = readcoord();
@@ -86,7 +90,12 @@ void CBaseEntity::ReadEntity(float flChanged)
 		effects = readfloat();
 	}
 
-	drawmask = MASK_ENGINE;
+	if (modelindex) {
+		drawmask = MASK_ENGINE;
+	} else {
+		drawmask = 0;
+	}
+
 	setorigin(this, origin);
 	setsize(this, mins, maxs);
 }
