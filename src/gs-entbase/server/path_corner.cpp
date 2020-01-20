@@ -34,6 +34,10 @@ teleport to the position of the next node (target).
 With the PC_FIREONCE flag set, it'll only fire its target (message) once.
 */
 
+#ifdef DEVELOPER
+var int autocvar_dev_cornerspeed = 0;
+#endif
+
 enumflags {
 	PC_WAIT,
 	PC_TELEPORT,
@@ -71,6 +75,12 @@ path_corner::Trigger(void)
 void
 path_corner::Respawn(void)
 {
+#ifdef DEVELOPER
+	if (autocvar_dev_cornerspeed != 0) {
+		m_flSpeed = autocvar_dev_cornerspeed;
+	}
+#endif
+
 	m_iFired = FALSE;
 }
 

@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED func_rotating (0 .5 .8) ? FR_STARTON FR_REVERSE FR_ZAXIS FR_XAXIS FR_ACCDCC FR_FANPAIN FR_NOTSOLID FR_SMALLRADIUS FR_MRADIUS FR_LRADIUS
+/*QUAKED func_rotating (0 .5 .8) ? FR_STARTON FR_REVERSE FR_ZAXIS FR_XAXIS FR_ACCDCC FR_FANPAIN FR_NOTSOLID FR_SMALLRADIUS FR_MRADIUS FR_LRADIUS FR_TOGGLEDIR
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
@@ -24,18 +24,23 @@
 Rotating brush object. Useful for fans, etc.
 */
 
+#ifdef DEVELOPER
+var int autocvar_dev_rotspeed = 0;
+#endif
+
 enumflags
 {
-	FR_STARTON,
-	FR_REVERSE,
-	FR_ZAXIS,
-	FR_XAXIS,
-	FR_ACCDCC,
-	FR_FANPAIN,
-	FR_NOTSOLID,
-	FR_SMALLRADIUS,
-	FR_MRADIUS,
-	FR_LRADIUS
+	FR_STARTON, // 1
+	FR_REVERSE, // 2
+	FR_ZAXIS, // 4
+	FR_XAXIS, // 8
+	FR_ACCDCC, // 16
+	FR_FANPAIN, // 32
+	FR_NOTSOLID, // 64
+	FR_SMALLRADIUS, // 128
+	FR_MRADIUS, // 256
+	FR_LRADIUS, // 512
+	FR_TOGGLEDIR // 1024
 };
 
 class func_rotating : CBaseTrigger
@@ -43,6 +48,8 @@ class func_rotating : CBaseTrigger
 	vector m_vecMoveDir;
 	float m_flSpeed;
 	float m_flDamage;
+	float m_flDir;
+
 	void() func_rotating;
 	virtual void() Respawn;
 	virtual void() Trigger;
@@ -61,7 +68,16 @@ void func_rotating :: Trigger ( void )
 	if ( vlen( avelocity ) ) {
 		avelocity = [0,0,0];
 	} else {
-		avelocity = m_vecMoveDir * m_flSpeed;
+		float flSpeed;
+
+		if (spawnflags & FR_TOGGLEDIR && m_flDir) {
+			flSpeed = m_flSpeed * -1;
+		} else {
+			flSpeed = m_flSpeed;
+		}
+
+		avelocity = m_vecMoveDir * flSpeed;
+		m_flDir = 1 - m_flDir;
 	}
 }
 
@@ -78,6 +94,14 @@ void func_rotating :: Blocked ( void )
 
 void func_rotating :: Respawn ( void )
 {
+#ifdef DEVELOPER
+	if (autocvar_dev_rotspeed != 0) {
+		m_flSpeed = autocvar_dev_rotspeed;
+	}
+#endif
+
+	m_flDir = 0; /* Reset */
+
 	movetype = MOVETYPE_PUSH;
 	setorigin( this, origin );
 	setmodel( this, model );
