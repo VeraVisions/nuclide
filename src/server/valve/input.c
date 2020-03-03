@@ -69,6 +69,17 @@ void Game_Input(void)
 			for (entity a = world; (a = findfloat(a, gflags, GF_CANRESPAWN));) {
 				CBaseEntity caw = (CBaseEntity)a;
 				caw.Respawn();
+				caw.SendFlags |= 
+					BASEFL_CHANGED_ORIGIN |
+					BASEFL_CHANGED_ANGLES |
+					BASEFL_CHANGED_MODELINDEX |
+					BASEFL_CHANGED_SIZE |
+					BASEFL_CHANGED_SOLID |
+					BASEFL_CHANGED_FRAME |
+					BASEFL_CHANGED_SKIN |
+					BASEFL_CHANGED_MOVETYPE |
+					BASEFL_CHANGED_ALPHA |
+					BASEFL_CHANGED_EFFECTS;
 			}
 			bprint(PRINT_HIGH, "Respawning all map entities...\n");
 		}
