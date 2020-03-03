@@ -25,6 +25,7 @@ class prop_rope:CBaseEntity
 	string m_strShader;
 	float m_flSag;
 	float m_flSwingFactor;
+	int m_iSegments;
 
 	void() prop_rope;
 	virtual float() predraw;
@@ -95,11 +96,13 @@ float prop_rope::predraw(void)
 	float segments;
 	float sc;
 
-	if (checkpvs(getproperty(VF_ORIGIN), this) == FALSE) {
-		return PREDRAW_NEXT;
-	}
-
 	entity x = find(world, CBaseEntity::targetname, target);
+
+	if (checkpvs(getproperty(VF_ORIGIN), this) == FALSE) {
+		if (checkpvs(getproperty(VF_ORIGIN), x) == FALSE) {
+			return PREDRAW_NEXT;
+		}
+	}
 
 	if (!x) {
 		print("prop_rope without target.\n");
@@ -115,7 +118,7 @@ float prop_rope::predraw(void)
 		R_EndPolygon();
 	}
 
-	segments = 16;
+	segments = m_iSegments;
 
 	travel = vlen(origin - x.origin) / segments;
 
@@ -182,6 +185,9 @@ void prop_rope::SpawnKey(string strField, string strKey)
 	case "sag":
 		m_flSag = stof(strKey);
 		break;
+	case "segments":
+		m_iSegments = stoi(strKey);
+		break;
 	case "shader":
 		m_strShader = strKey;
 		precache_pic(m_strShader);
@@ -198,6 +204,7 @@ void prop_rope::prop_rope(void)
 {
 	m_flSwingFactor = random();
 	m_flSag = 15.0f;
+	m_iSegments = 16;
 	m_strShader = "textures/props/wire_default";
 	drawmask = MASK_ENGINE;
 	Init();
