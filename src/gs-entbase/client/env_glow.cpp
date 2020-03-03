@@ -145,6 +145,9 @@ void env_glow::SpawnKey(string strField, string strKey)
 	case "scale":
 		m_flScale = stof(strKey);
 		break;
+	case "color":
+		m_vecColor = stov(strKey);
+		break;
 	case "rendercolor":
 	case "rendercolour":
 		m_vecColor = stov(strKey) / 255;
