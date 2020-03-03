@@ -79,6 +79,10 @@ void DSP_UpdateSoundscape(void)
 {
 	vector vecPlayer;
 
+	if (!g_iWorldInitialized) {
+		return;
+	}
+
 	if (autocvar_dsp_soundscapes == FALSE) {
 		return;
 	}
@@ -90,7 +94,7 @@ void DSP_UpdateSoundscape(void)
 	pSeat = &seats[s];
 	vecPlayer = pSeat->vPlayerOrigin;
 #endif
-	
+
 	float bestdist = 999999;
 	for ( entity e = world; ( e = find( e, classname, "env_soundscape" ) ); ) {
 		env_soundscape scape = (env_soundscape)e;
@@ -126,7 +130,7 @@ void DSP_UpdateSoundscape(void)
 	float newvol;
 	for ( entity e = world; ( e = find( e, classname, "env_soundscape" ) ); ) {
 		env_soundscape t = (env_soundscape)e;
-		
+
 		if (g_ambientsound) {
 			if (e == g_ambientsound) {
 				continue;

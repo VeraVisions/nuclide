@@ -319,7 +319,11 @@ void DSP_UpdateListener(void)
 	static int old_dsp;
 
 	vector vecPlayer;
-	
+
+	if (!g_iWorldInitialized) {
+		return;
+	}
+
 	if (autocvar_dsp_environments == FALSE) {
 		return;
 	}
@@ -372,7 +376,9 @@ void DSP_UpdateListener(void)
 	}
 	g_flDSPTime += clframetime;
 #else
+	#ifdef DEVELOPER
 	print(sprintf("[DSP] Environment changed to %i.\n", g_iDSP));
+	#endif
 	old_dsp = g_iDSP;
 	setup_reverb(12, &reverbPresets[g_iDSP], sizeof(reverbinfo_t));
 #endif
