@@ -40,7 +40,8 @@ activates it.
 class trigger_hurt:CBaseTrigger
 {
 	float	m_flNextTrigger;
-	int		m_iDamage;
+	float	m_flNextDmg;
+	int	m_iDamage;
 	float	m_flDelay;
 	void()	trigger_hurt;
 	
@@ -78,19 +79,23 @@ void trigger_hurt::Touch(void)
 		return;
 	}
 
-	if (spawnflags & SF_HURT_FIREONPLAYER) {
-		if (other.flags & FL_CLIENT) {
+	if (m_strTarget) {
+		if (spawnflags & SF_HURT_FIREONPLAYER) {
+			if (other.flags & FL_CLIENT) {
+				eActivator = other;
+				if (m_flDelay > 0) {
+					CBaseTrigger::UseTargets_Delay(m_flDelay);
+				} else {
+					CBaseTrigger::UseTargets();
+				}
+			}
+		} else {
+			eActivator = other;
 			if (m_flDelay > 0) {
 				CBaseTrigger::UseTargets_Delay(m_flDelay);
 			} else {
 				CBaseTrigger::UseTargets();
 			}
-		}
-	} else {
-		if (m_flDelay > 0) {
-			CBaseTrigger::UseTargets_Delay(m_flDelay);
-		} else {
-			CBaseTrigger::UseTargets();
 		}
 	}
 
@@ -101,7 +106,7 @@ void trigger_hurt::Touch(void)
 		Trigger();
 	}
 
-	m_flNextTrigger = time + 0.5;
+	m_flNextTrigger = time + m_flNextDmg;
 }
 
 void trigger_hurt::Respawn(void)
@@ -110,7 +115,9 @@ void trigger_hurt::Respawn(void)
 	alpha = 0.5f;
 #endif
 
-	m_flNextTrigger = 0;
+	/* reset */
+	m_flNextDmg = 0.5f;
+	m_flNextTrigger = 0.0f;
 
 	if (spawnflags & SF_HURT_OFF) {
 		solid = SOLID_NOT;
@@ -129,6 +136,7 @@ void trigger_hurt::trigger_hurt(void)
 			m_iDamage = stoi(argv(i+1));
 			break;
 		case "wait":
+			m_flNextDmg = stof(argv(i+1));
 		case "delay":
 			m_flDelay = stof(argv(i+1));
 			break;

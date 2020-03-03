@@ -46,7 +46,13 @@ class trigger_multiple:CBaseTrigger
 void trigger_multiple::touch(void)
 {
 	eActivator = other;
-	
+
+	if (Rules_IsTeamPlay() == TRUE) {
+		if (m_iTeam > 0 && eActivator.team != m_iTeam + 1) {
+			return;
+		}
+	}
+
 	if (other.movetype != MOVETYPE_WALK) {
 		return;
 	}

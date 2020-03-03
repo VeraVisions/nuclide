@@ -246,6 +246,7 @@ void func_button::Trigger(void)
 void func_button::Touch(void)
 {
 	if (other.movetype == MOVETYPE_WALK) {
+		eActivator = other;
 		func_button::Trigger();
     
 		if (!(spawnflags & SF_BTT_TOUCH_ONLY)) {

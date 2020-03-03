@@ -77,6 +77,7 @@ class func_train:CBaseTrigger
 	float m_flDamage;
 	string m_strMoveSnd;
 	string m_strStopSnd;
+	string m_strOldTarget; /* specific to trains? */
 
 	void() func_train;
 	virtual void() NextPath;
@@ -118,8 +119,8 @@ func_train::GoToTarget(void)
 		return;
 	}
 
-	vecWorldPos[0] = absmin[0] + (0.5 * (absmax[0] - absmin[0]));	
-	vecWorldPos[1] = absmin[1] + (0.5 * (absmax[1] - absmin[1]));	
+	vecWorldPos[0] = absmin[0] + (0.5 * (absmax[0] - absmin[0]));
+	vecWorldPos[1] = absmin[1] + (0.5 * (absmax[1] - absmin[1]));
 	vecWorldPos[2] = absmin[2] + (0.5 * (absmax[2] - absmin[2]));
 
 	vecVelocity = (eNode.origin - vecWorldPos);
@@ -206,6 +207,7 @@ func_train::Respawn(void)
 
 	/* let's wait 1/4 a second to give the path_corner entities a chance to
 	 * spawn in case they're after us in the ent lump */
+	m_strTarget = m_strOldTarget;
 	think = NextPath;
 	nextthink = ltime + 0.25f;
 }
@@ -216,6 +218,9 @@ func_train::func_train(void)
 	int a;
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
+		case "target":
+			m_strOldTarget = argv(i+1);
+			break;
 		case "dmg":
 			m_flDamage = stof(argv(i+1));
 			break;

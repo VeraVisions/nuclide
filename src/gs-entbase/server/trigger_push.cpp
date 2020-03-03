@@ -69,6 +69,8 @@ void trigger_push::Trigger(void)
 
 void trigger_push::touch(void)
 {
+	eActivator = other;
+
 	switch(other.movetype) {
 	case MOVETYPE_NONE:
 	case MOVETYPE_PUSH:

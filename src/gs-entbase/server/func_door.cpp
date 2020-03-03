@@ -64,6 +64,7 @@ class func_door:CBaseTrigger
 	virtual void() Precache;
 	virtual void() Arrived;
 	virtual void() Returned;
+	virtual void() Respawn;
 	virtual void() Trigger;
 	virtual void() Blocked;
 	virtual void() Touch;
@@ -222,6 +223,7 @@ void func_door::Touch(void)
 
 	if (other.movetype == MOVETYPE_WALK) {
 		if (other.absmin[2] <= maxs[2] - 2) {
+			eActivator = other;
 			Trigger();
 		}
 	}
@@ -299,17 +301,25 @@ void func_door::MoveToDestination(vector vDestination, void() func)
 
 void func_door::Respawn(void)
 {
-	func_door::SetMovementDirection();
+	/* reset */
+	origin = m_oldOrigin;
+	angles = m_oldAngle;
+	m_vecPos1 = [0,0,0];
+	m_vecPos2 = [0,0,0];
+	m_vecDest = [0,0,0];
+	m_vecMoveDir = [0,0,0];
 
-	solid = SOLID_BSP;
-	movetype = MOVETYPE_PUSH;
-	setorigin(this, m_oldOrigin);
-	setmodel(this, m_oldModel);
-	think = __NULL__;
-	nextthink = -1;
-	m_pMove = 0;
+	/* angles to vecMoveDir */
+	SetMovementDirection();
 
 	blocked = Blocked;
+	solid = SOLID_BSP;
+	movetype = MOVETYPE_PUSH;
+	setmodel(this, model);
+	setorigin(this, origin);
+	think = __NULL__;
+	nextthink = 0;
+	m_pMove = 0;
 
 	if (m_flWait == -1) {
 		spawnflags |= SF_MOV_TOGGLE;
@@ -340,10 +350,17 @@ void func_door::Respawn(void)
 		m_vecPos2 = m_vecPos1;
 		m_vecPos1 = origin;
 	}
+
+	if (m_strTargetName) {
+		m_iLocked = TRUE;
+	}
+	angles = [0,0,0];
 }
 
 void func_door::func_door(void)
 {
+	CBaseTrigger::CBaseTrigger();
+
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
 		case "speed":
@@ -375,15 +392,8 @@ void func_door::func_door(void)
 		}
 	}
 
-	CBaseTrigger::CBaseTrigger();
 	func_door::Precache();
 	func_door::Respawn();
-
-	angles = [0,0,0];
-
-	if (m_strTargetName) {
-		m_iLocked = TRUE;
-	}
 }
 
 void func_water(void)

@@ -33,6 +33,7 @@ class trigger_teleport:CBaseTrigger
 void trigger_teleport::touch(void)
 {
 	if (other.health > 0 || other.solid == SOLID_SLIDEBOX) {
+		eActivator = other;
 		entity eTarget = find(world, CBaseTrigger::m_strTargetName, m_strTarget);
 
 		if (eTarget) {

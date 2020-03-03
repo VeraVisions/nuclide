@@ -26,6 +26,7 @@ class CBaseTrigger : CBaseEntity
 	string m_strMessage;
 	string m_strMaster;
 	int m_iUseType;
+	int m_iTeam;
 
 	void() CBaseTrigger;
 	virtual void() Trigger;
@@ -46,6 +47,10 @@ void CBaseTrigger :: UseTargets ( void )
 				this.classname, eFind.classname, trigger.m_strTargetName ) );
 #endif
 		trigger.Trigger();
+	}
+
+	if (m_strMessage && eActivator.flags & FL_CLIENT) {
+		centerprint(eActivator, m_strMessage);
 	}
 
 	if ( m_strKillTarget ) {
@@ -83,6 +88,7 @@ int CBaseTrigger :: GetMaster ( void )
 void CBaseTrigger :: UseTargets_Delay ( float fDelay )
 {
 	static void Entities_UseTargets_Delay_Think( void ) {
+		eActivator = self.owner;
 		CBaseTrigger::UseTargets();
 		remove( self );
 	}
@@ -92,7 +98,7 @@ void CBaseTrigger :: UseTargets_Delay ( float fDelay )
 #endif
 
 	CBaseTrigger eTimer = spawn( CBaseTrigger );
-	eTimer.owner = self;
+	eTimer.owner = eActivator;
 	eTimer.think = Entities_UseTargets_Delay_Think;
 	eTimer.m_strTarget = m_strTarget;
 	eTimer.nextthink = time + fDelay;
@@ -126,6 +132,9 @@ void CBaseTrigger :: InitBrushTrigger ( void )
 
 void CBaseTrigger :: CBaseTrigger ( void )
 {
+	CBaseEntity::CBaseEntity();
+	m_strMessage = "";
+
 	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
 		switch ( argv( i ) ) {
 		case "killtarget":
@@ -137,9 +146,11 @@ void CBaseTrigger :: CBaseTrigger ( void )
 		case "master":
 			m_strMaster = argv(i+1);
 			break;
+		case "team_no":
+			m_iTeam = stoi(argv(i+1));
+			break;
 		default:
 			break;
 		}
 	}
-	CBaseEntity::CBaseEntity();
 }
