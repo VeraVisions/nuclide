@@ -26,6 +26,7 @@ server/func_button.cpp
 server/func_door.cpp
 server/func_door_rotating.cpp
 server/func_illusionary.cpp
+server/func_lod.cpp
 server/func_ladder.cpp
 server/func_train.cpp
 server/func_guntarget.cpp
