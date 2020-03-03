@@ -50,6 +50,7 @@ void CBasePhysics::TouchThink(void)
 
 	/* continue testing next frame */
 	nextthink = time;
+	effects &= ~EF_NOSHADOW;
 #endif
 }
 
@@ -97,6 +98,7 @@ void CBasePhysics::Respawn(void)
 	setmodel(this, m_oldModel);
 	setorigin(this, m_oldOrigin);
 #endif
+	effects &= ~EF_NOSHADOW;
 }
 
 void CBasePhysics::CBasePhysics(void)
