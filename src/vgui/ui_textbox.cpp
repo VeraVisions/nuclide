@@ -19,7 +19,7 @@ enumflags
 	TEXTBOX_VISIBLE,
 	TEXTBOX_HOVER,
 	TEXTBOX_DOWN,
-	TEXTBOX_FOCUS,
+	TEXTBOX_FOCUS
 };
 
 class CUITextBox : CUIWidget
@@ -103,9 +103,13 @@ void CUITextBox :: Input ( float flEVType, float flKey, float flChar, float flDe
 				m_strText = substring( m_strText, 0, strlen( m_strText ) - 1 );
 			}
 			break;
+		case K_ENTER:
+			break;
 		default:
 			if ( m_iFlags & TEXTBOX_FOCUS ) {
-				m_strText = sprintf( "%s%s", m_strText, chr2str( flChar ) );
+				if ((flChar >= 48 && flChar <= 57) || (flChar >= 65 && flChar <= 90) || (flChar >= 97 && flChar <= 122)) {
+					m_strText = sprintf( "%s%s", m_strText, chr2str( flChar ) );
+				}
 			}
 		}
 	} else if ( flEVType == IE_KEYUP ) {

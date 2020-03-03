@@ -84,9 +84,9 @@ void CUICheckbox :: Draw ( void )
 	}
 	
 	if ( m_iFlags & CHECKBOX_CHECKED ) {
-		drawpic( m_parent.m_vecOrigin + m_vecOrigin, "textures/ui/steam/icon_checked", '16 16', '1 1 1', 1.0f );
+		drawpic( m_parent.m_vecOrigin + m_vecOrigin, "textures/ui/steam/icon_checked", '16 16', '1 1 1', 1.0f, 0);
 	} else {
-		drawpic( m_parent.m_vecOrigin + m_vecOrigin, "textures/ui/steam/icon_emptybox", '16 16', '1 1 1', 1.0f );
+		drawpic( m_parent.m_vecOrigin + m_vecOrigin, "textures/ui/steam/icon_emptybox", '16 16', '1 1 1', 1.0f, 0);
 	}
 #else
 	if ( m_iFlags & CHECKBOX_DOWN ) {
@@ -97,9 +97,9 @@ void CUICheckbox :: Draw ( void )
 	}
 	
 	if ( m_iFlags & CHECKBOX_CHECKED ) {
-		drawpic( m_parent.m_vecOrigin + m_vecOrigin, "textures/ui/steam/icon_checked", '16 16', m_vecColor, 1.0f );
+		drawpic( m_parent.m_vecOrigin + m_vecOrigin, "textures/ui/steam/icon_checked", '16 16', m_vecColor, 1.0f, 0);
 	} else {
-		drawpic( m_parent.m_vecOrigin + m_vecOrigin, "textures/ui/steam/icon_emptybox", '16 16', m_vecColor, 1.0f );
+		drawpic( m_parent.m_vecOrigin + m_vecOrigin, "textures/ui/steam/icon_emptybox", '16 16', m_vecColor, 1.0f, 0);
 	}
 #endif
 	if ( m_strTitle ) {

@@ -43,7 +43,7 @@ void Font_Load ( string strFile, font_s &fntNew )
 	string strTemp;
 	string strFontPath;
 	filestream fileFont = fopen( strFile, FILE_READ );
-	fntNew.iID = FONT_DEFAULT;
+	fntNew.iID = 0;
 	fntNew.iScale = 8;
 	fntNew.vecColor = '1 1 1';
 	fntNew.flAlpha = 1.0f;

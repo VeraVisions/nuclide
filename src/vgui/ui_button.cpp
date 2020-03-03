@@ -73,6 +73,7 @@ void CUIButton :: SetTitle ( string strName )
 {
 	m_strTitle = strName;
 	m_strTitleActive = sprintf( "^3%s", m_strTitle );
+	drawfont = g_fntDefault.iID;
 	SetSize( [ stringwidth( m_strTitle, TRUE, [ g_fntDefault.iScale, g_fntDefault.iScale ] ) + 16, 24 ] );
 }
 void CUIButton :: SetIcon ( string strName )
@@ -119,7 +120,7 @@ void CUIButton :: Draw ( void )
 		}
 	}
 	if ( m_strIcon ) {
-		drawpic( m_parent.m_vecOrigin + m_vecOrigin + '2 2', m_strIcon, '16 16', '1 1 1', 1.0f );
+		drawpic( m_parent.m_vecOrigin + m_vecOrigin + '2 2', m_strIcon, '16 16', '1 1 1', 1.0f, 0);
 	}
 }
 
