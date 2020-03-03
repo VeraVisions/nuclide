@@ -5,3 +5,4 @@ protocolname "FTEQW"
 basegame logos
 basegame valve
 disablehomedir 1
+rtcbroker master.frag-net.com:27950
