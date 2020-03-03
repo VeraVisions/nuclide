@@ -116,8 +116,8 @@ void func_breakable::vPain (entity attacker, int type, int damage)
 void func_breakable::Explode(void)
 {
 	vector vWorldPos;
-	vWorldPos[0] = absmin[0] + ( 0.5 * ( absmax[0] - absmin[0] ) );	
-	vWorldPos[1] = absmin[1] + ( 0.5 * ( absmax[1] - absmin[1] ) );	
+	vWorldPos[0] = absmin[0] + ( 0.5 * ( absmax[0] - absmin[0] ) );
+	vWorldPos[1] = absmin[1] + ( 0.5 * ( absmax[1] - absmin[1] ) );
 	vWorldPos[2] = absmin[2] + ( 0.5 * ( absmax[2] - absmin[2] ) );
 	Effect_BreakModel(20, absmin, absmax, '0 0 0', m_iMaterial);
 	Effect_CreateExplosion(vWorldPos);
@@ -132,6 +132,8 @@ void func_breakable::vDeath (entity attacker, int type, int damage)
 		return;
 	}
 	health = 0;
+
+	eActivator = attacker;
 
 	/* This may seem totally absurd. That's because it is. It's very
 	 * unreliable but exploding breakables in close proximity it WILL cause
@@ -193,7 +195,6 @@ void func_breakable::PlayerTouch(void)
 
 void func_breakable::Respawn(void)
 {
-	angles = [0,0,0];
 	movetype = MOVETYPE_NONE;
 
 	if (spawnflags & SF_ISMODEL) {
@@ -222,14 +223,30 @@ void func_breakable::Respawn(void)
 
 void func_breakable::func_breakable(void)
 {
+	vector vvm_angles = [0,0,0];
 	precache_model(model);
 	CBaseEntity::CBaseEntity();
-	func_breakable::Respawn();
 
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
+		case "vvm_angles":
+			vvm_angles = stov(argv(i+1));
+			break;
 		case "vvm_model":
-			model = argv(i + 1);
+			vector realorg;
+			// hack, gotta get the world pos */
+			solid = SOLID_BSP;
+			setmodel(this, model);
+			realorg[0] = absmin[0] + ( 0.5 * ( absmax[0] - absmin[0] ) );
+			realorg[1] = absmin[1] + ( 0.5 * ( absmax[1] - absmin[1] ) );
+			realorg[2] = absmin[2] + ( 0.5 * ( absmax[2] - absmin[2] ) );
+
+			/* change the origin */
+			origin = realorg;
+			m_oldOrigin = origin;
+
+			/* Now we can fake being a point entity. */
+			model = argv(i+1);
 			m_oldModel = model;
 			precache_model(model);
 			spawnflags |= SF_ISMODEL;
@@ -247,4 +264,7 @@ void func_breakable::func_breakable(void)
 			break;
 		}
 	}
+
+	angles = vvm_angles;
+	func_breakable::Respawn();
 }
