@@ -238,7 +238,11 @@ w_fists_wmodel(void)
 string
 w_fists_pmodel(void)
 {
-	return "";
+/*	if (pl.a_ammo3 == HS_KNIFE) {
+		return "";
+	} else {
+		return "";
+	}*/
 }
 
 string
