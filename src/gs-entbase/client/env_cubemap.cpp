@@ -83,13 +83,13 @@ CMap_Shoot(void)
 		print("^3Cubemap processing...\n");
 		g_vecCubePos = tmp.origin;
 		strReflectcube = sprintf(
-					"env/%s_%d_%d_%d.dds",
+					"env/%s_%d_%d_%d",
 					mapname,
 					g_vecCubePos[0],
 					g_vecCubePos[1],
 					g_vecCubePos[2]);
 		localcmd(sprintf(
-			"screenshot_cubemap %s %i\n",
+			"screenshot_cubemap %s.ktx %i\n",
 			strReflectcube,
 			tmp.m_iSize));
 		self.think = CMap_Check;
@@ -131,6 +131,13 @@ CMap_Build(void)
 		return;
 	}
 
+	localcmd("r_speeds 0\n");
+	localcmd("show_fps 0\n");
+	localcmd("r_showfields 0\n");
+	localcmd("r_showshaders 0\n");
+	localcmd("r_showbboxes 0\n");
+	localcmd("r_wireframe 0\n");
+	localcmd("r_hdr_irisadaptation 0\n");
 	print("^4Building cubemaps...\n");
 	g_eCubeCycle = spawn();
 	g_eCubeCycle.owner = find(world, classname, "env_cubemap");
