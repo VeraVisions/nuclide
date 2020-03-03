@@ -6,6 +6,8 @@ client/env_glow.cpp
 client/env_sound.cpp
 client/env_soundscape.cpp
 client/env_particle.cpp
+client/func_lod.cpp
+client/func_dustmotes.cpp
 client/sky_camera.cpp
 server/func_ladder.cpp
 server/trigger_gravity.cpp
