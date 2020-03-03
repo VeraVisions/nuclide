@@ -77,6 +77,10 @@ class CBaseEntity
 /* Make sure StartFrame calls this */
 float CBaseEntity::SendEntity(entity ePEnt, float fChanged)
 {
+	if (!modelindex) {
+		return FALSE;
+	}
+
 	WriteByte(MSG_ENTITY, ENT_ENTITY);
 	WriteFloat(MSG_ENTITY, fChanged);
 
@@ -201,7 +205,11 @@ void CBaseEntity :: CBaseEntity ( void )
 
 	gflags |= GF_CANRESPAWN;
 	m_oldModel = Util_FixModel(model);
-	precache_model(m_oldModel);
+
+	if (m_oldModel != "") {
+		precache_model(m_oldModel);
+	}
+
 	m_oldSolid = solid;
 	m_oldHealth = health;
 	m_oldOrigin = origin;
@@ -211,6 +219,11 @@ void CBaseEntity :: CBaseEntity ( void )
 	int nfields = tokenize( __fullspawndata );
 	for ( int i = 1; i < ( nfields - 1 ); i += 2 ) {
 		switch ( argv( i ) ) {
+		case "shadows":
+			if (stof(argv( i + 1 )) == 1) {
+				effects &= ~EF_NOSHADOW;
+			}
+			break;
 		case "targetname":
 			m_strTargetName = argv( i + 1 );
 			targetname = __NULL__;
@@ -268,7 +281,10 @@ void CBaseEntity :: Respawn ( void )
 	origin = m_oldOrigin;
 	angles = m_oldAngle;
 	setorigin( this, origin );
-	setmodel( this, model );
+
+	if (model != "") {
+		setmodel(this, model);
+	}
 }
 
 void CBaseEntity :: Hide ( void )

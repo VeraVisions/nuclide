@@ -42,7 +42,15 @@ class CBaseEntity
 	virtual void() Initialized;
 	virtual void(string, string) SpawnKey;
 	virtual void(float flChanged) ReadEntity;
+	virtual float(void) predraw;
 };
+
+float CBaseEntity::predraw(void)
+{
+	frame1time += clframetime;
+	addentity(this);
+	return PREDRAW_NEXT;
+}
 
 void CBaseEntity::ReadEntity(float flChanged)
 {
@@ -78,6 +86,7 @@ void CBaseEntity::ReadEntity(float flChanged)
 		maxs[2] = readcoord();
 	}
 	if (flChanged & BASEFL_CHANGED_FRAME) {
+		frame1time = 0.0;
 		frame = readbyte();
 	}
 	if (flChanged & BASEFL_CHANGED_SKIN) {
@@ -103,6 +112,11 @@ void CBaseEntity::ReadEntity(float flChanged)
 void CBaseEntity::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
+		case "shadows":
+			if (stof(strKey) == 1) {
+				effects &= ~EF_NOSHADOW;
+			}
+			break;
 		case "targetname":
 			targetname = strKey;
 			break;
@@ -141,6 +155,7 @@ void CBaseEntity::SpawnKey(string strField, string strKey)
 
 void CBaseEntity::Init(void)
 {
+	effects |= EF_NOSHADOW;
 	for (int i = 0; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		//dprint(sprintf("SpawnData: %s %s\n", argv(i), argv(i+1)));
 		SpawnKey(argv(i), argv(i+1));
