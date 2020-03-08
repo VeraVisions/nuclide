@@ -21,7 +21,6 @@
 ../util.c
 init.c
 
-../sky.c
 ../fade.c
 ../sprite.cpp
 ../titles.c
@@ -32,6 +31,7 @@ init.c
 
 decore.cpp
 
+../sky.c
 ../sound.c
 ../prints.c
 ../voice.c

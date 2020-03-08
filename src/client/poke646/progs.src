@@ -17,7 +17,6 @@
 ../defs.h
 ../../vgui/include.src
 ../util.c
-../sky.c
 ../fade.c
 ../sprite.cpp
 ../titles.c
@@ -25,6 +24,8 @@
 ../sentences.c
 
 ../../gs-entbase/client.src
+
+../sky.c
 ../sound.c
 ../prints.c
 ../voice.c

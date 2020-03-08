@@ -58,7 +58,6 @@ defs.h
 ../../shared/valve/player.cpp
 ../../shared/pmove.c
 
-../sky.c
 ../fade.c
 ../sprite.cpp
 ../titles.c
@@ -72,6 +71,7 @@ defs.h
 ../../shared/spraylogo.cpp
 ../npc.c
 
+../sky.c
 overview.c
 ../player.c
 ../predict.c

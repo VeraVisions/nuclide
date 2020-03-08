@@ -14,19 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-var string g_skyname = "desert";
-
 void Sky_Update(void)
 {
 	if (serverkeyfloat("*bspversion") != 30) {
 		return;
 	}
-	localcmd(sprintf("sky %s\n", g_skyname));
-}
-
-void Sky_Set(string name)
-{
-	g_skyname = name;
-	dprint(sprintf("[SKY] Set to %s\n", g_skyname));
-	Sky_Update();
+	localcmd(sprintf("sky %s\n", g_strSkyName));
 }

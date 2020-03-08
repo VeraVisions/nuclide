@@ -810,6 +810,7 @@ CSQC_WorldLoaded(void)
 			return;
 		}
 	}
+	Sky_Update();
 }
 
 void
