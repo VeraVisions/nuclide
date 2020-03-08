@@ -116,13 +116,13 @@ w_chemicalgun_updateammo(player pl)
 string
 w_chemicalgun_wmodel(void)
 {
-	return "";
+	return "models/w_chemgun.mdl";
 }
 
 string
 w_chemicalgun_pmodel(void)
 {
-	return "";
+	return "models/p_hgun.mdl";
 }
 
 string

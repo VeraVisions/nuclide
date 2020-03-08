@@ -82,7 +82,7 @@ w_aicore_wmodel(void)
 string
 w_aicore_pmodel(void)
 {
-	return "";
+	return "models/w_aicore.mdl";
 }
 
 string

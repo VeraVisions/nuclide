@@ -120,13 +120,13 @@ w_beamgun_updateammo(player pl)
 string
 w_beamgun_wmodel(void)
 {
-	return "";
+	return "models/w_beam.mdl";
 }
 
 string
 w_beamgun_pmodel(void)
 {
-	return "";
+	return "models/p_egon.mdl";
 }
 
 string

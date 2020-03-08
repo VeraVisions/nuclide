@@ -192,13 +192,13 @@ w_dml_updateammo(player pl)
 string
 w_dml_wmodel(void)
 {
-	return "";
+	return "models/w_dml.mdl";
 }
 
 string
 w_dml_pmodel(void)
 {
-	return "";
+	return "models/p_crossbow.mdl";
 }
 
 string

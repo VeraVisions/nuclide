@@ -122,13 +122,13 @@ w_grenade_updateammo(player pl)
 string
 w_grenade_wmodel(void)
 {
-	return "";
+	return "models/w_grenade.mdl";
 }
 
 string
 w_grenade_pmodel(void)
 {
-	return "";
+	return "models/p_grenade.mdl";
 }
 
 string

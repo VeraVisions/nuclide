@@ -192,13 +192,13 @@ w_shotgun_updateammo(player pl)
 string
 w_shotgun_wmodel(void)
 {
-	return "";
+	return "models/w_shotgun.mdl";
 }
 
 string
 w_shotgun_pmodel(void)
 {
-	return "";
+	return "models/p_shotgun.mdl";
 }
 
 string

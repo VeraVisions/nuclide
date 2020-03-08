@@ -181,7 +181,7 @@ w_gausspistol_wmodel(void)
 string
 w_gausspistol_pmodel(void)
 {
-	return "models/p_gauss.mdl";
+	return "models/p_357.mdl";
 }
 
 string
