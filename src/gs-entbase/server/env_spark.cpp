@@ -111,5 +111,4 @@ void env_spark::env_spark(void)
 		precache_sound(spark_snd[i]);
 	}
 	CBaseTrigger::CBaseTrigger();
-	Respawn();
 }

@@ -128,7 +128,6 @@ void CBasePhysics::CBasePhysics(void)
 			break;
 		}
 	}
-	CBasePhysics::Respawn();
 }
 
 CLASSEXPORT(prop_physics, CBasePhysics)

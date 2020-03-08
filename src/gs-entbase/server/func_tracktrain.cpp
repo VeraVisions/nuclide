@@ -131,5 +131,4 @@ void func_tracktrain::func_tracktrain(void)
 	//}
 
 	CBaseTrigger::CBaseTrigger();
-	Respawn();
 }

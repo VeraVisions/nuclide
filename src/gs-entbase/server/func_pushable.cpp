@@ -22,7 +22,16 @@
 STUB!
 */
 
-class func_pushable:func_breakable
+class func_pushable : func_breakable
 {
-	
+	virtual void() touch;
 };
+
+void func_pushable :: touch ( void )
+{
+	if (other.movetype == MOVETYPE_WALK) {
+		
+	}
+	
+	velocity = other.velocity * 0.25;
+}

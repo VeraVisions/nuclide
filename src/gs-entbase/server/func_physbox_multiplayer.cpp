@@ -26,7 +26,6 @@ void func_physbox::func_physbox(void)
 {
 	CBaseEntity::CBaseEntity();
 	precache_model(m_oldModel);
-	func_physbox::Respawn();
 
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {

@@ -68,6 +68,8 @@ vector mouse_pos;
 
 /* TODO: Move these into gs-entbase/client/defs.h? */
 vector g_vecSunDir;
+vector g_vecLensPos;
+int g_iWorldInitialized;
 
 /* this actually belongs in builtins.h since its an undocumented global */
 float clframetime;

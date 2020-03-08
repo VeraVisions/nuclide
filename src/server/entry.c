@@ -122,6 +122,15 @@ void init(float prevprogs)
 	Plugin_Init();
 }
 
+void init_respawn(void)
+{
+	for (entity a = world; (a = findfloat(a, gflags, GF_CANRESPAWN));) {
+		CBaseEntity ent = (CBaseEntity)a;
+		ent.Respawn();
+	}
+	remove(self);
+}
+
 void initents(void)
 {
 	precache_sound("weapons/explode3.wav");
@@ -191,6 +200,10 @@ void initents(void)
 
 	Game_Worldspawn();
 	Decals_Init();
+	
+	entity respawntimer = spawn();
+	respawntimer.think = init_respawn;
+	respawntimer.nextthink = time + 0.1f;
 }
 
 void worldspawn(void)

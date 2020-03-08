@@ -63,5 +63,4 @@ void trigger_auto::trigger_auto(void)
 		}
 	}
 	CBaseTrigger::CBaseTrigger();
-	Respawn();
 }

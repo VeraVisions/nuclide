@@ -99,7 +99,6 @@ void trigger_multiple::trigger_multiple(void)
 		}
 	}
 
-	trigger_multiple::Respawn();
 	CBaseEntity::CBaseEntity();
 	CBaseTrigger::InitBrushTrigger();
 }

@@ -128,5 +128,4 @@ void trigger_push::trigger_push(void)
 	
 	CBaseTrigger::CBaseTrigger();
 	CBaseTrigger::InitBrushTrigger();
-	trigger_push::Respawn();
 }

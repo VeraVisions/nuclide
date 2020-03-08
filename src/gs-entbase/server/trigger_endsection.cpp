@@ -47,5 +47,4 @@ void trigger_endsection::trigger_endsection(void)
 {
 	CBaseEntity::CBaseEntity();
 	CBaseTrigger::InitBrushTrigger();
-	trigger_endsection::Respawn();
 }

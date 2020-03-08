@@ -393,7 +393,6 @@ void func_door::func_door(void)
 	}
 
 	func_door::Precache();
-	func_door::Respawn();
 }
 
 void func_water(void)

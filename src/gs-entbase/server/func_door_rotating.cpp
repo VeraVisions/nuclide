@@ -397,5 +397,4 @@ void func_door_rotating::func_door_rotating(void)
 
 	func_door_rotating::Precache();
 	CBaseEntity::CBaseEntity();
-	func_door_rotating::Respawn();
 }

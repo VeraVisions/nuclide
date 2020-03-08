@@ -204,21 +204,20 @@ void CBaseEntity :: CBaseEntity ( void )
 	m_rendermode = 0;*/
 
 	gflags |= GF_CANRESPAWN;
-	m_oldModel = Util_FixModel(model);
-
-	if (m_oldModel != "") {
-		precache_model(m_oldModel);
-	}
-
-	m_oldSolid = solid;
-	m_oldHealth = health;
-	m_oldOrigin = origin;
-	m_oldAngle = angles;
 	effects |= EF_NOSHADOW;
 
 	int nfields = tokenize( __fullspawndata );
 	for ( int i = 1; i < ( nfields - 1 ); i += 2 ) {
 		switch ( argv( i ) ) {
+		case "origin":
+			origin = stov(argv(i+1));
+			break;
+		case "angles":
+			angles = stov(argv(i+1));
+			break;
+		case "solid":
+			solid = stof(argv(i+1));
+			break;
 		case "shadows":
 			if (stof(argv( i + 1 )) == 1) {
 				effects &= ~EF_NOSHADOW;
@@ -244,10 +243,24 @@ void CBaseEntity :: CBaseEntity ( void )
 		case "parentname":
 			m_parent = argv(i+1);
 			break;
+		case "model":
+			model = argv(i+1);
+			break;
 		default:
 			break;
 		}
 	}
+
+	m_oldModel = Util_FixModel(model);
+
+	if (m_oldModel != "") {
+		precache_model(m_oldModel);
+	}
+
+	m_oldSolid = solid;
+	m_oldHealth = health;
+	m_oldOrigin = origin;
+	m_oldAngle = angles;
 
 	RendermodeUpdate();
 }

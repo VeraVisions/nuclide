@@ -405,6 +405,4 @@ void func_button::func_button(void)
 			break;
 		}
 	}
-
-	func_button::Respawn();
 }

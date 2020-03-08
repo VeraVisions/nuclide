@@ -123,7 +123,6 @@ void env_sprite::env_sprite(void)
 
 	CBaseTrigger::CBaseTrigger();
 	precache_model(m_oldModel);
-	Respawn();
 
 	m_iToggled = ((spawnflags & ENVS_STARTON) > 0);
 

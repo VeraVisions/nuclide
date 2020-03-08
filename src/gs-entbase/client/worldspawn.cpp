@@ -14,9 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* We only want to load this because we're in desperate need for the skyname
- * variable. Some maps like crossfire do not supply one because GS assumes
- * the default is 'desert'... so once this is done we'll kill it. */
+/* High Dynamic Range - Iris Adaption */
+var float g_flHDRIrisMinValue = 0.0;
+var float g_flHDRIrisMaxValue = 1.75;
+var float g_flHDRIrisMultiplier = 1.25;
+var float g_flHDRIrisFadeUp = 0.1;
+var float g_flHDRIrisFadeDown = 0.5;
+
+#ifdef VALVE
+var string g_strSkyName = "desert";
+#else
+var string g_strSkyName = "";
+#endif
 
 class worldspawn:CBaseEntity
 {
@@ -32,17 +41,43 @@ void worldspawn::Initialized(void)
 void worldspawn::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
-		case "sun_pos":
-			g_vecSunDir = stov(strKey);
+	case "lf_pos":
+		g_vecLensPos = stov(strKey);
+		break;
+	case "sun_pos":
+		g_vecSunDir = stov(strKey);
+		break;
+	case "skyname":
+		g_strSkyName = strKey;
+		break;
+	case "ambientsound":
+		if (g_ambientsound) {
 			break;
-		case "skyname":
-			Sky_Set(strKey);
-			break;
-		case "ambientsound":
-			g_ambientsound = spawn(env_soundscape);
-			g_ambientsound.m_iShader = Sound_Precache(strKey);
-			break;
-		default:
-			break;
+		}
+		g_ambientsound = spawn(env_soundscape);
+		g_ambientsound.m_iShader = Sound_Precache(strKey);
+		break;
+	case "hdr_iris_minvalue":
+		g_flHDRIrisMinValue = stof(strKey);
+			cvar_set("r_hdr_irisadaptation_minvalue", ftos(g_flHDRIrisMinValue));
+		break;
+	case "hdr_iris_maxvalue":
+		g_flHDRIrisMaxValue = stof(strKey);
+		cvar_set("r_hdr_irisadaptation_maxvalue", ftos(g_flHDRIrisMaxValue));
+		break;
+	case "hdr_iris_multiplier":
+		g_flHDRIrisMultiplier = stof(strKey);
+		cvar_set("r_hdr_irisadaptation_multiplier", ftos(g_flHDRIrisMultiplier));
+		break;
+	case "hdr_iris_fade_up":
+		g_flHDRIrisFadeUp = stof(strKey);
+		cvar_set("r_hdr_irisadaptation_fade_up", ftos(g_flHDRIrisFadeUp));
+		break;
+	case "hdr_iris_fade_down":
+		g_flHDRIrisFadeDown = stof(strKey);
+		cvar_set("r_hdr_irisadaptation_fade_down", ftos(g_flHDRIrisFadeDown));
+		break;
+	default:
+		break;
 	}
 }

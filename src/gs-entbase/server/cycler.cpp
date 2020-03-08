@@ -54,5 +54,4 @@ void cycler::Respawn(void)
 void cycler::cycler(void)
 {
 	CBaseEntity::CBaseEntity();
-	Respawn();
 }

@@ -175,5 +175,4 @@ void func_guntarget::func_guntarget(void)
 	}
 
 	CBaseTrigger::CBaseTrigger();
-	Respawn();
 }

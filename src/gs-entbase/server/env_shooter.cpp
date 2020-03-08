@@ -127,5 +127,4 @@ void env_shooter :: env_shooter ( void )
 	
 	precache_model( m_strShootModel );
 	CBaseTrigger::CBaseTrigger();
-	env_shooter::Respawn();
 }

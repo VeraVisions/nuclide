@@ -47,6 +47,9 @@ void CSQC_Ent_Update(float new)
 	case ENT_DECAL:
 		Decal_Parse();
 		break;
+	case ENT_AMBIENTSOUND:
+		Sound_ParseLoopingEntity(self, new);
+		break;
 	default:
 		if (Game_Entity_Update(t, new) == FALSE) {
 			error("Unknown entity type update received.\n");

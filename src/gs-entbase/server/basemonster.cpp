@@ -105,5 +105,4 @@ void CBaseMonster::CBaseMonster(void)
 {
 	CBaseEntity::CBaseEntity();
 	precache_model(m_oldModel);
-	Respawn();
 }

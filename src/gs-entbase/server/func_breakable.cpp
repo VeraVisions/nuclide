@@ -195,6 +195,8 @@ void func_breakable::PlayerTouch(void)
 
 void func_breakable::Respawn(void)
 {
+	CBaseEntity::Respawn();
+
 	movetype = MOVETYPE_NONE;
 
 	if (spawnflags & SF_ISMODEL) {
@@ -266,5 +268,4 @@ void func_breakable::func_breakable(void)
 	}
 
 	angles = vvm_angles;
-	func_breakable::Respawn();
 }

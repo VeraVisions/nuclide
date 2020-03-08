@@ -67,5 +67,4 @@ void gibshooter2 :: gibshooter2 ( void )
 
 	precache_model( m_strShootModel );
 	CBaseTrigger::CBaseTrigger();
-	env_shooter::Respawn();
 }

@@ -26,11 +26,5 @@ Decorative, does nothing yet.
 
 class cycler_sprite:CBaseTrigger
 {
-	void() cycler_sprite;
-};
 
-void cycler_sprite::cycler_sprite(void)
-{
-	CBaseEntity::CBaseEntity();
-	CBaseEntity::Respawn();
-}
+};

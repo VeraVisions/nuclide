@@ -90,7 +90,6 @@ void env_message::env_message(void)
 		}
 	}
 	CBaseTrigger::CBaseTrigger();
-	env_message::Respawn();
 }
 
 void

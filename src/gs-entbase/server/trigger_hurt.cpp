@@ -147,5 +147,4 @@ void trigger_hurt::trigger_hurt(void)
 
 	CBaseEntity::CBaseEntity();
 	CBaseTrigger::InitBrushTrigger();
-	trigger_hurt::Respawn();
 }

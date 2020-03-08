@@ -114,5 +114,4 @@ void env_laser::env_laser(void)
 	}
 
 	CBaseTrigger::CBaseTrigger();
-	env_laser::Respawn();
 }

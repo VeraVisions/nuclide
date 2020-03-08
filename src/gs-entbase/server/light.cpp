@@ -105,8 +105,6 @@ void light::light(void)
 	if (!m_strPattern) {
 		m_strPattern = "m";
 	}
-
-	light::Respawn();
 }
 
 CLASSEXPORT(light_spot, light)

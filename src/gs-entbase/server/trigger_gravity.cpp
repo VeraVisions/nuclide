@@ -66,7 +66,6 @@ void trigger_gravity::trigger_gravity(void)
 	}
 	CBaseEntity::CBaseEntity();
 	CBaseTrigger::InitBrushTrigger();
-	trigger_gravity::Respawn();
 #endif
 }
 

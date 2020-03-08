@@ -255,5 +255,4 @@ func_train::func_train(void)
 	}
 
 	CBaseTrigger::CBaseTrigger();
-	Respawn();
 }

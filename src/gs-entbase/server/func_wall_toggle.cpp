@@ -68,5 +68,4 @@ void func_wall_toggle::func_wall_toggle(void)
 {
 	precache_model(model);
 	CBaseTrigger::CBaseTrigger();
-	Respawn();
 }

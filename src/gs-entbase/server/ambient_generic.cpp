@@ -37,6 +37,11 @@ enumflags {
 	AS_NOTTOGGLED
 };
 
+enumflags {
+	AG_INFO,
+	AG_SAMPLE
+};
+
 class ambient_generic:CBaseTrigger
 {
 	string m_strActivePath;
@@ -52,7 +57,35 @@ class ambient_generic:CBaseTrigger
 	virtual void() Respawn;
 	virtual void() UseNormal;
 	virtual void() UseLoop;
+	virtual float(entity, float) SendEntity;
 };
+
+float ambient_generic::SendEntity(entity ePEnt, float fChanged)
+{
+	/* only override when we're doing the toggle guff */
+	if (m_iLoop == FALSE) {
+		return FALSE;
+	}
+
+	WriteByte(MSG_ENTITY, ENT_AMBIENTSOUND);
+	WriteFloat(MSG_ENTITY, fChanged);
+
+	if (fChanged & AG_INFO) {
+		WriteCoord(MSG_ENTITY, origin[0]);
+		WriteCoord(MSG_ENTITY, origin[1]);
+		WriteCoord(MSG_ENTITY, origin[2]);
+		WriteFloat(MSG_ENTITY, m_flVolume);
+		WriteByte(MSG_ENTITY, m_flRadius);
+		WriteFloat(MSG_ENTITY, m_flPitch);
+	}
+
+	/* TODO: work with soundindices? */
+	if (fChanged & AG_SAMPLE) {
+		WriteString(MSG_ENTITY, m_strActivePath);
+	}
+
+	return TRUE;
+}
 
 void ambient_generic::UseNormal(void)
 {
@@ -67,7 +100,7 @@ void ambient_generic::UseLoop(void)
 		m_strActivePath = m_strSoundPath;
 	}
 	m_iToggleSwitch = 1 - m_iToggleSwitch;
-	UseNormal();
+	SendFlags |= AG_SAMPLE;
 }
 
 void ambient_generic::Respawn(void)
@@ -79,17 +112,18 @@ void ambient_generic::Respawn(void)
 		m_iLoop = FALSE;
 	} else {
 		m_iLoop = TRUE;
-	}
 
-	if (spawnflags & AS_SILENT) {
-		m_iToggleSwitch = FALSE;
-	} else {
-		m_iToggleSwitch = TRUE;
-		UseNormal();
-	}
+		/* set our sample up */
+		if (spawnflags & AS_SILENT) {
+			m_iToggleSwitch = FALSE;
+			m_strActivePath = "common/null.wav";
+		} else {
+			m_iToggleSwitch = TRUE;
+			m_strActivePath = m_strSoundPath;
+		}
 
-	if (m_iLoop) {
 		Trigger = UseLoop;
+		SendFlags |= AG_SAMPLE;
 	}
 }
 
@@ -140,6 +174,6 @@ void ambient_generic::ambient_generic(void)
 		m_flRadius = ATTN_STATIC;
 	}
 
+	pvsflags = PVSF_USEPHS;
 	CBaseTrigger::CBaseTrigger();
-	ambient_generic::Respawn();
 }

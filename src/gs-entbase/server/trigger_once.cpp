@@ -76,7 +76,7 @@ void trigger_once::trigger_once(void)
 			break;
 		}
 	}
-	trigger_once::Respawn();
+
 	CBaseEntity::CBaseEntity();
 	CBaseTrigger::InitBrushTrigger();
 }

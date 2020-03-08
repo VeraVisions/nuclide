@@ -124,7 +124,6 @@ void trigger_changelevel::trigger_changelevel(void)
 	}
 	CBaseTrigger::CBaseTrigger();
 	CBaseTrigger::InitBrushTrigger();
-	trigger_changelevel::Respawn();
 }
 
 vector Landmark_GetSpot(void)

@@ -165,5 +165,4 @@ void func_rotating :: func_rotating ( void )
 
 	CBaseTrigger::CBaseTrigger();
 	func_rotating::SetMovementDirection();
-	func_rotating::Respawn();
 }

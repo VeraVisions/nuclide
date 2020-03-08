@@ -78,6 +78,7 @@
 ../server.c
 ../valve/damage.c
 ../traceattack.c
+../valve/rules.c
 ../footsteps.c
 ../flashlight.c
 input.c

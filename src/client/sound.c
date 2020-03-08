@@ -18,6 +18,43 @@ var int g_voxcount;
 var int g_voxpos;
 var float g_voxtime = 0.0f;
 
+var int g_iSoundStyleCurrent;
+
+class CCSAmbientSound {
+	float m_flVolume;
+	float m_flAttn;
+	float m_flPitch;
+	string m_strSample;
+};
+
+void Sound_ParseLoopingEntity(entity sndent, float isNew)
+{
+	float flFlags;
+	CCSAmbientSound new = (CCSAmbientSound)sndent;
+
+	if (isNew) {
+		spawnfunc_CCSAmbientSound();
+	}
+
+	flFlags = readfloat();
+
+	if (flFlags & 1) {
+		new.origin[0] = readcoord();
+		new.origin[1] = readcoord();
+		new.origin[2] = readcoord();
+		setorigin( new, new.origin );
+		new.m_flVolume = readfloat();
+		new.m_flAttn = readbyte();
+		new.m_flPitch = readfloat();
+	}
+
+	if (flFlags & 2) {
+		new.m_strSample = readstring();
+	}
+	sound(new, CHAN_VOICE, new.m_strSample, new.m_flVolume, new.m_flAttn, new.m_flPitch);
+}
+
+
 typedef struct {
 	string sample;
 	float len;

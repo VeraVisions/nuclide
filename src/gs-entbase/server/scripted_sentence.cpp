@@ -85,5 +85,4 @@ void scripted_sentence::scripted_sentence(void)
 	}
 
 	CBaseTrigger::CBaseTrigger();
-	scripted_sentence::Respawn();
 }

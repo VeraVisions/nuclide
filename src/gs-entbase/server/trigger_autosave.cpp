@@ -83,5 +83,4 @@ void trigger_autosave::trigger_autosave(void)
 	}
 	CBaseEntity::CBaseEntity();
 	CBaseTrigger::InitBrushTrigger();
-	trigger_autosave::Respawn();
 }

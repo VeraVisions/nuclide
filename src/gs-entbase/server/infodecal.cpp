@@ -56,6 +56,11 @@ void infodecal(void)
 	vector endpos = [0,0,0];
 	vector vpos = self.origin;
 	
+#ifdef WASTES
+	remove(self);
+	return;
+#endif
+	
 	if (serverkeyfloat("*bspversion") != 30) {
 #if 1
 		remove(self);
