@@ -43,7 +43,7 @@ class func_recharge:CBaseTrigger
 void func_recharge::PlayerUse(void)
 {
 	eActivator.gflags |= GF_USE_RELEASED;
-	
+
 	/* First come first serve */ 
 	if (m_eUser && eActivator != m_eUser) {
 		return;
@@ -53,7 +53,7 @@ void func_recharge::PlayerUse(void)
 	if (m_eUser == world) {
 		sound(this, CHAN_VOICE, m_strSndFirst, 1.0, ATTN_NORM);
 	}
-	
+
 	if (m_flDelay > time) {
 		return;
 	}
@@ -78,6 +78,7 @@ void func_recharge::customphysics(void)
 	if (m_flCheck > time) {
 		return;
 	}
+
 	if (m_eUser) {
 		sound(this, CHAN_ITEM, "common/null.wav", 1.0, ATTN_NORM);
 		m_eUser = world;

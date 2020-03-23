@@ -33,7 +33,7 @@ class CBaseTrigger : CBaseEntity
 	virtual void() UseTargets;
 	virtual int() GetValue;
 	virtual int() GetMaster;
-	virtual void( float del ) UseTargets_Delay;
+	virtual void( float ) UseTargets_Delay;
 	virtual void() InitBrushTrigger;
 	virtual void() InitPointTrigger;
 };
@@ -43,10 +43,12 @@ void CBaseTrigger :: UseTargets ( void )
 	for ( entity eFind = world; ( eFind = find( eFind, CBaseTrigger::m_strTargetName, m_strTarget ) ); ) {
 		CBaseTrigger trigger = (CBaseTrigger) eFind;
 #ifdef GS_DEVELOPER
-		print( sprintf( "%s: Triggering %s `%s`\n", 
-				this.classname, eFind.classname, trigger.m_strTargetName ) );
+		print( sprintf( "^2%s::^3UseTargets^7: Triggering %s `%s`\n", 
+			this.classname, eFind.classname, trigger.m_strTargetName ) );
 #endif
-		trigger.Trigger();
+		if (trigger.Trigger != __NULL__) {
+			trigger.Trigger();
+		}
 	}
 
 	if (m_strMessage && eActivator.flags & FL_CLIENT) {
@@ -94,7 +96,8 @@ void CBaseTrigger :: UseTargets_Delay ( float fDelay )
 	}
 
 #ifdef GS_DEVELOPER
-	print( sprintf( "CBaseTrigger: Delaying trigger of `%s`\n", m_strTarget ) );
+		print( sprintf( "^2%s::^3UseTargets_Delay^7: Triggering `%s`\n", 
+			this.classname, m_strTarget ) );
 #endif
 
 	CBaseTrigger eTimer = spawn( CBaseTrigger );

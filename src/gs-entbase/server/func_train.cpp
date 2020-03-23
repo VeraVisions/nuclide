@@ -162,7 +162,7 @@ func_train::NextPath(void)
 	}
 	/* make the loopy noise stop */
 	if (m_strMoveSnd) {
-		sound(this, CHAN_VOICE, "common/null.wav", 0.0, ATTN_NORM);
+		sound(this, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
 	}
 
 	setorigin(this, eNode.origin - (mins + maxs) * 0.5);

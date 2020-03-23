@@ -185,7 +185,6 @@ void CBaseEntity::ParentUpdate(void)
 		}
 
 		setorigin(this, p.origin);
-		nextthink = time;
 	}
 }
 
@@ -231,11 +230,17 @@ void CBaseEntity :: CBaseEntity ( void )
 			m_strTarget = argv( i + 1 );
 			target = __NULL__;
 			break;
+		case "color":
+			m_rendercolor = stov( argv( i + 1 ) );
+			break;
+		case "alpha":
+			m_renderamt = stof( argv( i + 1 ) ) / 255;
+			break;
 		case "renderamt":
-			m_renderamt = stof( argv( i + 1 ) );
+			m_renderamt = stof( argv( i + 1 ) ) / 255;
 			break;
 		case "rendercolor":
-			m_rendercolor = stov( argv( i + 1 ) );
+			m_rendercolor = stov( argv( i + 1 ) ) / 255;
 			break;
 		case "rendermode":
 			m_rendermode = stof( argv( i + 1 ) );
@@ -275,7 +280,7 @@ void CBaseEntity::RendermodeUpdate(void)
 		return;
 	}
 
-	colormod = m_rendercolor / 255;
+	colormod = m_rendercolor;
 	alpha = bound(0.001, ( m_renderamt / 255 ), 1.0);
 
 	if ( m_rendermode == RM_ADDITIVE ) {

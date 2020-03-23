@@ -21,24 +21,65 @@ Dustmote emitting brush volume.
 
 class func_dustmotes:CBaseEntity
 {
+	int m_iCount;
+	int m_iPart;
+	float m_flNexTime;
+
 	void() func_dustmotes;
+	virtual void() Init;
+	virtual float() predraw;
 	virtual void(string, string) SpawnKey;
 };
 
-void func_dustmotes::customphysics(void)
+float func_dustmotes::predraw(void)
 {
+	if (m_flNexTime > cltime) {
+		return PREDRAW_NEXT;
+	}
 
+	if (checkpvs(getproperty(VF_ORIGIN), this) == FALSE) {
+		return PREDRAW_NEXT;
+	}
+
+	for ( int i = 0; i < m_iCount; i++) {
+		vector vPos;
+		vPos[0] = mins[0] + ( random() * ( maxs[0] - mins[0] ) );
+		vPos[1] = mins[1] + ( random() * ( maxs[1] - mins[1] ) );
+		vPos[2] = mins[2] + ( random() * ( maxs[2] - mins[2] ) );
+		pointparticles( PART_DUSTMOTE, vPos, [0,0,0], 1 );
+	}
+	
+	m_flNexTime = cltime + 3.0f;
+
+	addentity(self);
+	return PREDRAW_NEXT;
 }
 
 void func_dustmotes::func_dustmotes(void)
 {
-	drawmask = MASK_ENGINE;
+	solid = SOLID_NOT;
 	Init();
+	m_iCount = vlen(size) / 10;
+}
+
+void func_dustmotes::Init(void)
+{
+	CBaseEntity::Init();
+
+	precache_model(model);
+	setmodel(this, model);
+	setorigin(this, origin);
+	movetype = MOVETYPE_NONE;
+	drawmask = MASK_ENGINE;
 }
 
 void func_dustmotes::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
+	case "count":
+	case "SpawnRate":
+		m_iCount = stoi(strKey);
+		break;
 	default:
 		CBaseEntity::SpawnKey(strField, strKey);
 	}

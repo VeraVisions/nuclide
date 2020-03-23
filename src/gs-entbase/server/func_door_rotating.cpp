@@ -215,14 +215,8 @@ void func_door_rotating::Trigger(void)
 	Away();
 
 	if (m_flDelay) {
-#ifdef GS_DEVELOPER
-		print(sprintf("func_door_rotating: Delayed trigger of `%s`\n", m_strTarget));
-#endif
 		CBaseTrigger::UseTargets_Delay(m_flDelay);
 	} else {
-#ifdef GS_DEVELOPER
-		print(sprintf("func_door_rotating: Normal trigger of `%s`\n", m_strTarget));
-#endif
 		CBaseTrigger::UseTargets();
 	}
 }

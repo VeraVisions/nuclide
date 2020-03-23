@@ -35,6 +35,7 @@ class CBaseEntity
 {
 	string targetname;
 	string target;
+	float spawnflags;
 
 	void() CBaseEntity;
 
@@ -112,6 +113,11 @@ void CBaseEntity::ReadEntity(float flChanged)
 void CBaseEntity::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
+		/* compiler specific stuff */
+		case "angle":
+		case "_minlight":
+		case "_cs":
+			break;
 		case "shadows":
 			if (stof(strKey) == 1) {
 				effects &= ~EF_NOSHADOW;
@@ -148,8 +154,14 @@ void CBaseEntity::SpawnKey(string strField, string strKey)
 		case "scale":
 			scale = stof(strKey);
 			break;
+		case "spawnflags":
+			spawnflags = stof(strKey);
+			break;
 		default:
-			//dprint(sprintf("Unknown field %s, value %s\n", strField, strKey));
+#ifdef GS_DEVELOPER
+			print( sprintf( "%s::SpawnKey: Unknown '%s' value '%s'\n", 
+				this.classname, strField, strKey ) );
+#endif
 	}
 }
 
@@ -157,7 +169,6 @@ void CBaseEntity::Init(void)
 {
 	effects |= EF_NOSHADOW;
 	for (int i = 0; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		//dprint(sprintf("SpawnData: %s %s\n", argv(i), argv(i+1)));
 		SpawnKey(argv(i), argv(i+1));
 	}
 	Initialized();

@@ -96,7 +96,7 @@ CMap_Shoot(void)
 		self.nextthink = time + 0.5f;
 	} else {
 		print("^2Cubemaps done...\n");
-		localcmd("mod_findcubemaps\nvid_reload\n");
+		localcmd("vid_reload\n");
 		g_iCubeProcess = FALSE;
 		remove(self);
 	}
@@ -138,6 +138,7 @@ CMap_Build(void)
 	localcmd("r_showbboxes 0\n");
 	localcmd("r_wireframe 0\n");
 	localcmd("r_hdr_irisadaptation 0\n");
+	localcmd("r_postprocshader \"\"0\n");
 	print("^4Building cubemaps...\n");
 	g_eCubeCycle = spawn();
 	g_eCubeCycle.owner = find(world, classname, "env_cubemap");

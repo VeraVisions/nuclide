@@ -24,6 +24,11 @@ void func_physbox::Respawn(void)
 
 void func_physbox::func_physbox(void)
 {
+	if (!model) {
+		remove(this);
+		return;
+	}
+
 	CBaseEntity::CBaseEntity();
 	precache_model(m_oldModel);
 

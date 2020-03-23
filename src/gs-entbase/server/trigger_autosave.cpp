@@ -43,6 +43,11 @@ void trigger_autosave::touch(void)
 	msg_entity = this;
 	multicast(origin, MULTICAST_ALL);
 
+#ifdef GS_DEVELOPER
+	print( sprintf( "%s::touch: Called autosave\n", 
+		this.classname) );
+#endif
+
 	localcmd("save autosave");
 	Hide();
 
@@ -72,6 +77,7 @@ void trigger_autosave::trigger_autosave(void)
 		remove(this);
 		return;
 	}
+
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
 		case "delay":

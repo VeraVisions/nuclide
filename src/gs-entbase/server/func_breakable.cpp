@@ -119,7 +119,7 @@ void func_breakable::Explode(void)
 	vWorldPos[0] = absmin[0] + ( 0.5 * ( absmax[0] - absmin[0] ) );
 	vWorldPos[1] = absmin[1] + ( 0.5 * ( absmax[1] - absmin[1] ) );
 	vWorldPos[2] = absmin[2] + ( 0.5 * ( absmax[2] - absmin[2] ) );
-	Effect_BreakModel(20, absmin, absmax, '0 0 0', m_iMaterial);
+	Effect_BreakModel(vlen(size) / 10, absmin, absmax, '0 0 0', m_iMaterial);
 	Effect_CreateExplosion(vWorldPos);
 	Damage_Radius(vWorldPos, this, m_flExplodeMag, m_flExplodeMag * 2.5f, TRUE, 0);
 	CBaseTrigger::UseTargets();
@@ -132,7 +132,6 @@ void func_breakable::vDeath (entity attacker, int type, int damage)
 		return;
 	}
 	health = 0;
-
 	eActivator = attacker;
 
 	/* This may seem totally absurd. That's because it is. It's very
@@ -145,7 +144,7 @@ void func_breakable::vDeath (entity attacker, int type, int damage)
 		think = Explode;
 		nextthink = time + random(0.0,0.5);
 	} else {
-		Effect_BreakModel(20, absmin, absmax, '0 0 0', m_iMaterial);
+		Effect_BreakModel(vlen(size) / 10, absmin, absmax, '0 0 0', m_iMaterial);
 		CBaseTrigger::UseTargets();
 		CBaseEntity::Hide();
 	}

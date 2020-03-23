@@ -40,7 +40,13 @@ void trigger_camera::Trigger(void)
 			angles[0] *= -1;
 		}
 	}
+
 	Client_TriggerCamera(eActivator, origin, angles, m_flWait);
+
+#ifdef GS_DEVELOPER
+	print( sprintf( "%s::Trigger: Camera at %v, %v, for %f sec/s requested\n", 
+		this.classname, origin, angles, m_flWait ) );
+#endif
 }
 
 void trigger_camera::trigger_camera(void)

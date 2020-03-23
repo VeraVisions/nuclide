@@ -70,8 +70,16 @@ void trigger_changelevel::Change(void)
 	if (m_strLandmark) {
 		entity landmark = find(world, CBaseTrigger::m_strTargetName, m_strLandmark);
 		g_landmarkpos = m_activator.origin - landmark.origin;
+#ifdef GS_DEVELOPER
+		print( sprintf( "%s::Change: Change to `%s` using landmark '%s'\n", 
+			this.classname, m_strMap, m_strLandmark ) );
+#endif
 		changelevel(m_strMap, m_strLandmark);
 	} else {
+#ifdef GS_DEVELOPER
+		print( sprintf( "%s::Change: Change to `%s`\n", 
+			this.classname, m_strMap ) );
+#endif
 		changelevel(m_strMap);
 	}
 }
@@ -91,9 +99,17 @@ void trigger_changelevel::Trigger(void)
 
 	m_activator = other;
 	if (m_flChangeDelay) {
+#ifdef GS_DEVELOPER
+		print( sprintf( "%s::Trigger: Delayed change to `%s` in %d sec/s\n", 
+			this.classname, m_strMap, m_flChangeDelay ) );
+#endif
 		think = Change;
 		nextthink = time + m_flChangeDelay;
 	} else {
+#ifdef GS_DEVELOPER
+		print( sprintf( "%s::Trigger: Change to `%s`\n", 
+			this.classname, m_strMap ) );
+#endif
 		Change();
 	}
 }
@@ -131,7 +147,7 @@ vector Landmark_GetSpot(void)
 	entity landmark = find(world, CBaseTrigger::m_strTargetName, startspot);
 
 	if (!landmark) {
-		print(sprintf("^1ERROR^7: Cannot find startspot \"%s\"!\n",startspot));
+		print(sprintf("^1ERROR^7: Landmark_GetSpot: Cannot find startspot '%s'!\n",startspot));
 		return __NULL__;
 	}
 

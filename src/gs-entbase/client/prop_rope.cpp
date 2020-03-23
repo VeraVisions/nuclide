@@ -14,6 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED prop_rope (1 0 0) (-8 -8 -8) (8 8 8) ROPE_HALF
+"sag"         Multiplier on how much sagginess will be applied to the rope.
+"segments"    Number of total segments. Default is 16.
+"material"    The texture to use on the rope.
+"swingfactor" Multiplier on how much the rope swings about.
+
+Client-side decorative entity. Connect the entity to a named info_notnull
+and watch it swing around.
+
+Set spawnflag to 1 (ROPE_HALF) to cut it off half-way. Useful for vertically
+swinging ropes.
+*/
+
 #define ROPE_RIBBON
 
 void(float radius, vector texcoordbias) R_EndPolygonRibbon = #0;
@@ -105,7 +118,10 @@ float prop_rope::predraw(void)
 	}
 
 	if (!x) {
-		print("prop_rope without target.\n");
+#ifdef GS_DEVELOPER
+		print( sprintf( "%s::predraw: Unknown target '%s'\n", 
+			this.classname, target ) );
+#endif
 		remove(this);
 		return PREDRAW_NEXT;
 	}
@@ -146,6 +162,12 @@ float prop_rope::predraw(void)
 		pos1 = pos2;
 
 		sc += (M_PI * (1 / segments));
+	}
+
+	/* only drawing one segment. */
+	if (spawnflags & 1) {
+		addentity(this);
+		return PREDRAW_NEXT;
 	}
 
 	sc = 0;

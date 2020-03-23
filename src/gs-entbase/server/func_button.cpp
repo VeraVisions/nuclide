@@ -231,14 +231,8 @@ void func_button::Trigger(void)
 	func_button::MoveAway();
 	
 	if (m_flDelay) {
-#ifdef GS_DEVELOPER
-		dprint(sprintf("func_button: Delayed trigger of `%s`\n", m_strTarget));
-#endif
 		CBaseTrigger::UseTargets_Delay(m_flDelay);
 	} else {
-#ifdef GS_DEVELOPER
-		print(sprintf("func_button: Normal trigger of `%s`\n", m_strTarget));
-#endif
 		CBaseTrigger::UseTargets();
 	}
 }

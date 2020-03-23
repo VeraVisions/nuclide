@@ -1,3 +1,7 @@
+#ifdef DEVELOPER
+#define GS_DEVELOPER
+#endif
+
 #includelist
 materials.h
 client/baseentity.cpp

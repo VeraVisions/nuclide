@@ -30,7 +30,10 @@ class trigger_cdaudio : CBaseTrigger
 
 void trigger_cdaudio :: Trigger ( void )
 {
-	//dprint( sprintf( "trigger_cdaudio: Now playing CD track %i", m_iCDTrack ) );
+#ifdef GS_DEVELOPER
+	print( sprintf( "%s::Trigger: CD Track %i requested\n", 
+		this.classname, m_iCDTrack ) );
+#endif
 	WriteByte( MSG_ALL, 32 ); // aka SVC_CDTRACK
 	WriteByte( MSG_ALL, m_iCDTrack );
 	remove( this );

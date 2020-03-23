@@ -58,9 +58,9 @@ void trigger_multiple::touch(void)
 	}
 
 	if (m_flDelay > 0) {
-		CBaseTrigger::UseTargets_Delay(m_flDelay);
+		UseTargets_Delay(m_flDelay);
 	} else {
-		CBaseTrigger::UseTargets();
+		UseTargets();
 	}
 	
 	/* This is effectively a trigger_once...*/
@@ -86,6 +86,8 @@ void trigger_multiple::Respawn(void)
 
 void trigger_multiple::trigger_multiple(void)
 {
+	CBaseEntity::CBaseEntity();
+
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
 		case "delay":
@@ -98,7 +100,5 @@ void trigger_multiple::trigger_multiple(void)
 			break;
 		}
 	}
-
-	CBaseEntity::CBaseEntity();
-	CBaseTrigger::InitBrushTrigger();
+	InitBrushTrigger();
 }

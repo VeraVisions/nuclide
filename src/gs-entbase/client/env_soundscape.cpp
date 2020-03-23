@@ -21,7 +21,6 @@
 Client-side environmental soundscape modifier.
 */
 
-float g_flSoundscapeCheck;
 int Sound_Precache(string shader);
 
 int g_scapes;
@@ -70,7 +69,7 @@ void env_soundscape::env_soundscape(void)
 
 void DSP_ResetSoundscape(void)
 {
-	g_entSoundScape = world;
+	g_entSoundScape = __NULL__;
 }
 
 var int autocvar_dsp_soundscapes = TRUE;
@@ -155,7 +154,7 @@ void DSP_UpdateSoundscape(void)
 	}
 
 	/* is no soundscape active? increase the default volume */
-	if (g_entSoundScape == world) {
+	if (g_entSoundScape == __NULL__) {
 		newvol = bound(0, g_ambientsound.m_flVolume + clframetime, 1.0);
 	} else{
 		newvol = bound(0, g_ambientsound.m_flVolume - clframetime, 1.0);

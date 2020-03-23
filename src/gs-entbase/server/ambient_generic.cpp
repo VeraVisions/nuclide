@@ -90,15 +90,29 @@ float ambient_generic::SendEntity(entity ePEnt, float fChanged)
 void ambient_generic::UseNormal(void)
 {
 	sound(this, CHAN_VOICE, m_strActivePath, m_flVolume, m_flRadius, m_flPitch);
+
+#ifdef GS_DEVELOPER
+	print( sprintf( "%s::UseNormal: Play `%s`\n", 
+		this.classname, m_strActivePath ) );
+#endif
 }
 
 void ambient_generic::UseLoop(void)
 {
 	if (m_iToggleSwitch == TRUE) {
+#ifdef GS_DEVELOPER
+		print( sprintf( "%s::UseLoop: Stop `%s`\n", 
+			this.classname, m_strActivePath ) );
+#endif
 		m_strActivePath = "common/null.wav";
 	} else {
 		m_strActivePath = m_strSoundPath;
+#ifdef GS_DEVELOPER
+		print( sprintf( "%s::UseLoop: Play `%s`\n", 
+			this.classname, m_strActivePath ) );
+#endif
 	}
+
 	m_iToggleSwitch = 1 - m_iToggleSwitch;
 	SendFlags |= AG_SAMPLE;
 }

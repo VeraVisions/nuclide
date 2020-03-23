@@ -54,13 +54,15 @@ void trigger_hurt::Trigger(void)
 {
 	if (solid != SOLID_NOT) {
 #ifdef GS_DEVELOPER
-	print("trigger_hurt: de-activated.\n");
+		print( sprintf( "%s::Trigger: Deactivated\n", 
+			this.classname ) );
 #endif
 		solid = SOLID_NOT;
 		touch = __NULL__;
 	} else {
 #ifdef GS_DEVELOPER
-	print("trigger_hurt: activated.\n");
+		print( sprintf( "%s::Trigger: Activated\n", 
+			this.classname ) );
 #endif
 		solid = SOLID_TRIGGER;
 		touch = Touch;
@@ -100,6 +102,11 @@ void trigger_hurt::Touch(void)
 	}
 
 	Damage_Apply(other, this, m_iDamage, 0, DMG_GENERIC);
+
+#ifdef GS_DEVELOPER
+	print( sprintf( "%s::Touch: Hurting '%s' with %i\n", 
+		this.classname, other.netname, m_iDamage ) );
+#endif
 
 	// Shut it down if used once
 	if (spawnflags & SF_HURT_ONCE) {

@@ -191,14 +191,8 @@ void func_door::Trigger(void)
 	// Only trigger stuff when we are done moving
 	if ((m_iState == DOORSTATE_RAISED) || (m_iState == DOORSTATE_LOWERED)) {
 		if (m_flDelay > 0) {
-#ifdef GS_DEVELOPER
-			print(sprintf("func_door: Delayed trigger of `%s`\n", m_strTarget));
-#endif
 			CBaseTrigger::UseTargets_Delay(m_flDelay);
 		} else {
-#ifdef GS_DEVELOPER
-			dprint(sprintf("func_door: Normal trigger of `%s`\n", m_strTarget));
-#endif
 			CBaseTrigger::UseTargets();
 		}
 	}

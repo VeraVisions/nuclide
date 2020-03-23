@@ -32,7 +32,6 @@ Print_Draw(void)
 		g_printlines--;
 		g_printtime = time + 5;
 	}
-	
 
 	for (int i = 0; i < 5; i++) {
 		drawstring(pos, g_printbuffer[i], [12,12], [1,1,1], 1.0f, 0);

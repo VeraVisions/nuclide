@@ -14,13 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifdef DEVELOPER
-#define GS_DEVELOPER
+#ifdef WASTES
+#define GS_BULLET_PHYSICS
 #endif
 
-#ifdef WASTES
-//#define GS_BULLET_PHYSICS
-#endif
+.float delay;
+.float wait;
+.float wait;
 
 void Effect_CreateSpark(vector, vector);
 void Effect_BreakModel(int, vector, vector, vector, float);

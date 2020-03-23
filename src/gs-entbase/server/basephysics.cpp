@@ -58,7 +58,7 @@ void CBasePhysics::touch(void)
 {
 #ifdef GS_BULLET_PHYSICS
 	makevectors(vectoangles(origin - other.origin));
-	physics_addforce(this, v_forward * 128, other.origin);
+	physics_addforce(this, v_forward, other.origin);
 	physics_enable(this, TRUE);
 #endif
 }
@@ -66,7 +66,6 @@ void CBasePhysics::touch(void)
 void CBasePhysics::vPain(entity eAttacker, int iType, int iDamage)
 {
 #ifdef GS_BULLET_PHYSICS
-	iDamage *= 5;
 	makevectors(vectoangles(origin - trace_endpos));
 	physics_addforce(this, v_forward * iDamage, trace_endpos);
 	health = 100000;
@@ -78,10 +77,11 @@ void CBasePhysics::Respawn(void)
 {
 #ifdef GS_BULLET_PHYSICS
 	movetype = MOVETYPE_PHYSICS;
-	solid = SOLID_PHYSICS_BOX + m_iShape; // SOLID_PHYSICS_TRIMESH
+	solid = SOLID_PHYSICS_BOX + m_iShape;
+	geomtype = GEOMTYPE_BOX;
 	setmodel(this, m_oldModel);
 	setorigin(this, m_oldOrigin);
-	physics_enable(this, FALSE);
+	physics_enable(this, TRUE);
 	takedamage = DAMAGE_YES;
 	health = 100000;
 	mass = m_flMass;

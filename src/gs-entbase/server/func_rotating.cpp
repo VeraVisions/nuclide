@@ -24,7 +24,7 @@
 Rotating brush object. Useful for fans, etc.
 */
 
-#ifdef DEVELOPER
+#ifdef GS_DEVELOPER
 var int autocvar_dev_rotspeed = 0;
 #endif
 
@@ -94,7 +94,7 @@ void func_rotating :: Blocked ( void )
 
 void func_rotating :: Respawn ( void )
 {
-#ifdef DEVELOPER
+#ifdef GS_DEVELOPER
 	if (autocvar_dev_rotspeed != 0) {
 		m_flSpeed = autocvar_dev_rotspeed;
 	}

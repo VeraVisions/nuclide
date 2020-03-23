@@ -25,8 +25,8 @@ Used for zoo and test maps in which less interactive overlays are desired.
 
 class point_message:CBaseEntity
 {
-	float radius;
-	string message;
+	float m_flRadius;
+	string m_strMessage;
 	void() point_message;
 	virtual void(string, string) SpawnKey;
 };
@@ -35,10 +35,10 @@ void point_message::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
 		case "radius":
-			radius = stof(strKey);
+			m_flRadius = stof(strKey);
 			break;
 		case "message":
-			message = strKey;
+			m_strMessage = strKey;
 			break;
 		case "origin":
 			origin = stov( strKey );
@@ -51,7 +51,58 @@ void point_message::SpawnKey(string strField, string strKey)
 
 void point_message::point_message(void)
 {
-	radius = 512;
-	message = "No message";
+	m_flRadius = 512;
+	m_strMessage = "No message";
 	Init();
+}
+
+int PointMessage_Visible( vector p1, vector p2, vector ang)
+{
+	vector delta;
+	float fov;
+
+	makevectors( ang );
+	delta = normalize ( p1 - p2 );
+	fov = delta * v_forward;
+
+	if ( fov > 0.3 ) {
+		traceline( p2, p1, TRUE, self );
+		if ( trace_fraction == 1.0 ) {
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+void PointMessage_Draw(void)
+{
+	string msg;
+	float distance;
+	vector vecPlayer;
+
+#ifdef WASTES
+	vecPlayer = viewClient.vecPlayerOrigin;
+	vecPlayer += [ 0, 0, getstatf( ST_VIEWHEIGHT ) ];
+#else
+	int s = (float)getproperty(VF_ACTIVESEAT);
+	pSeat = &seats[s];
+	vecPlayer = pSeat->vPlayerOrigin;
+#endif
+
+#ifdef WASTES
+	for ( entity eFind = world; ( eFind = find( eFind, ::classname, "point_message" ) ); ) {
+		point_message m = (point_message)eFind;
+		msg = m.m_strMessage;
+		distance = vlen(m.origin - vecPlayer);
+
+		if (distance > m.m_flRadius) {
+			continue;
+		}
+
+		if ( PointMessage_Visible( m.origin, vecPlayer, getproperty( VF_ANGLES )) == TRUE ) {
+			vector vTemp = project( m.origin ) - [ ( stringwidth( msg, FALSE,[8,8] ) / 2 ), 0];
+			Gfx_String( vTemp, msg, [8,8], autocvar_hud_color, 1.0f, FNT_GAME);
+		}
+	}
+#endif
 }

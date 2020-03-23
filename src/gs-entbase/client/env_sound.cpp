@@ -60,8 +60,6 @@ Client-side environmental reverb modifier.
 This works only with the OpenAL sound backend.
 */
 
-float g_flDSPCheck;
-
 enum {
 	DSP_DEFAULT,
 	DSP_PADDEDCELL,
@@ -376,9 +374,12 @@ void DSP_UpdateListener(void)
 	}
 	g_flDSPTime += clframetime;
 #else
-	#ifdef DEVELOPER
-	print(sprintf("[DSP] Environment changed to %i.\n", g_iDSP));
-	#endif
+
+#ifdef GS_DEVELOPER
+	print( sprintf( "DSP_UpdateListener: Changed style to %i\n", 
+		g_iDSP ) );
+#endif
+
 	old_dsp = g_iDSP;
 	setup_reverb(12, &reverbPresets[g_iDSP], sizeof(reverbinfo_t));
 #endif

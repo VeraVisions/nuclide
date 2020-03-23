@@ -37,7 +37,18 @@ void trigger_teleport::touch(void)
 		entity eTarget = find(world, CBaseTrigger::m_strTargetName, m_strTarget);
 
 		if (eTarget) {
-			setorigin(other, eTarget.origin + [0,0,16]);
+			vector endpos = eTarget.origin + [0,0,16];
+			setorigin(other, endpos);
+			
+#ifdef GS_DEVELOPER
+			print( sprintf( "%s::touch: Teleported '%s' to `%v`\n", 
+				this.classname, other.netname, endpos ) );
+#endif
+		} else {
+#ifdef GS_DEVELOPER
+			print( sprintf( "%s::touch: Failed to teleport '%s'\n", 
+				this.classname, other.netname ) );
+#endif
 		}
 	}
 }
