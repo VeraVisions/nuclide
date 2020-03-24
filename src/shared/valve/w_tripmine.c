@@ -83,7 +83,7 @@ void w_tripmine_holster(void)
 void w_tripmine_trip(int walkthrough)
 {
 	if (!walkthrough) {
-		self.owner = g_eAttacker;
+		self.real_owner = g_eAttacker;
 	}
 
 	/* This is to prevent infinite loops in Damage_Radius */
@@ -92,7 +92,7 @@ void w_tripmine_trip(int walkthrough)
 	self.takedamage = DAMAGE_NO;
 
 	Effect_CreateExplosion(self.origin);
-	Damage_Radius(self.origin, self.owner, 150, 150 * 2.5f, TRUE, WEAPON_TRIPMINE);
+	Damage_Radius(self.origin, self.real_owner, 150, 150 * 2.5f, TRUE, WEAPON_TRIPMINE);
 	sound(self, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 2 ) + 3 ), 1, ATTN_NORM);
 	remove(self);
 }
@@ -210,7 +210,7 @@ void w_tripmine_primary(void)
 	mine.nextthink = time + 4.0f;
 	mine.SendEntity = w_tripmine_sendentity;
 	mine.SendFlags = 1;
-	mine.owner = self;
+	mine.real_owner = self;
 	setorigin(mine, trace_endpos - (v_forward * 8));
 	sound(mine, CHAN_WEAPON, "weapons/mine_charge.wav", 1, ATTN_NORM);
 	sound(self, CHAN_WEAPON, "weapons/mine_deploy.wav", 1, ATTN_NORM);

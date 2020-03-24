@@ -34,7 +34,7 @@ int Rules_IsTeamPlay(void);
 entity eActivator;
 entity g_eAttacker;
 
-// Generic entity fields
+/* Generic entity fields */
 .void() PlayerUse;
 .int iBleeds;
 .void(int iHitBody) vPain;
@@ -44,6 +44,10 @@ entity g_eAttacker;
 .float armor;
 .float deaths;
 .float fStepTime;
+
+/* in idTech the .owner field causes collisions to fail against set entity,
+ * we don't want this all of the time. so use this as a fallback */
+.entity real_owner;
 
 string startspot;
 string __fullspawndata;

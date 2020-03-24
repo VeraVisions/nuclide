@@ -51,6 +51,11 @@ string w_satchel_deathmsg(void)
 }
 void w_satchel_precache(void)
 {
+	precache_sound("weapons/g_bounce1.wav");
+	precache_sound("weapons/g_bounce2.wav");
+	precache_sound("weapons/g_bounce3.wav");
+	precache_sound("weapons/g_bounce4.wav");
+	precache_sound("weapons/g_bounce5.wav");
 	precache_model("models/w_satchel.mdl");
 	precache_model("models/v_satchel.mdl");
 	precache_model("models/v_satchel_radio.mdl");
@@ -89,6 +94,12 @@ void w_satchel_holster(void)
 #ifdef SSQC
 void s_satchel_drop(entity master, vector src, vector vel)
 {
+	static void s_satchel_touch(void)
+	{
+		int r = floor(random(1,6));
+		string sample = sprintf("weapons/g_bounce%i.wav", r);
+		sound(self, CHAN_BODY, sample, 1, ATTN_NORM);
+	}
 	entity satch;
 	satch = spawn();
 	satch.owner = master;
@@ -100,6 +111,7 @@ void s_satchel_drop(entity master, vector src, vector vel)
 	satch.friction = 0.8f;
 	satch.velocity = vel;
 	satch.avelocity = [0,400,0];
+	satch.touch = s_satchel_touch;
 	setmodel(satch, "models/w_satchel.mdl");
 	setsize(satch, [-4,-4,-4], [4,4,4]);
 	setorigin(satch, src);
