@@ -31,11 +31,14 @@ class CListBox:CWidget
 
 	virtual void(string m) AddEntry;
 	virtual void() Clear;
-	virtual void(int w, int h) SetSize;
+	virtual void(int, int) SetSize;
 	virtual void(void(int val) func) SetChanged;
+	virtual string(int) GetItem;
+	virtual void(int, string) SetItem;
 	virtual void(int i) SetSelected;
 	virtual string() GetSelectedItem;
 	virtual int() GetSelected;
+	virtual int() GetCount;
 };
 
 void CListBox::CListBox(void)
@@ -134,10 +137,26 @@ int CListBox::GetSelected(void)
 	return m_selected;
 }
 
+string CListBox::GetItem(int i)
+{
+	return m_entries[i];
+}
+
+void CListBox::SetItem(int i, string s)
+{
+	m_entries[i] = s;
+}
+
+
 string CListBox::GetSelectedItem(void)
 {
 	if (m_selected == -1) {
 		return __NULL__;
 	}
 	return m_entries[m_selected];
+}
+
+int CListBox::GetCount(void)
+{
+	return m_count;
 }

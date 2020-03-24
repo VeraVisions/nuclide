@@ -119,7 +119,7 @@ void mp_btncustomize_start(void)
 void menu_multiplayer_init(void)
 {
 	fn_multiplayer = spawn(CWidget);
-	mp_dgConnect = spawn(CDialog);	
+	mp_dgConnect = spawn(CDialog);
 	
 	mp_btnQuickstart = spawn(CMainButton);
 	mp_btnQuickstart.SetImage(BTN_QUICKSTART);

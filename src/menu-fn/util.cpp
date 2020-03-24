@@ -35,6 +35,25 @@ int Util_CheckMouse(int x, int y, int sx, int sy) {
 	return FALSE;
 }
 
+string Util_CmdToKey(string cmd)
+{
+	float fBindKey = tokenize( findkeysforcommand( cmd ) );
+	string sBindTx = "";
+	float j, k;
+	
+	for( j = 0; j < fBindKey; ++j ) {
+		k = stof( argv( j ) );
+		if( k != -1 ) {
+			if( sBindTx != "" ) {
+				sBindTx = strcat( sBindTx, ", " );
+			}
+			sBindTx = strcat( sBindTx, keynumtostring( k ) );
+		}
+	}
+
+	return sBindTx;
+}
+
 float lerp( float fA, float fB, float fPercent ) {
 	return ( fA * ( 1 - fPercent ) ) + ( fB * fPercent );
 }
