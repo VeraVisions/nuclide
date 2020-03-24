@@ -1,7 +1,7 @@
 FTEMANIFEST 1
 game valve
-name "FTEQW"
-protocolname "FTEQW"
+name "Nuclide"
+protocolname "Nuclide"
 basegame logos
 basegame valve
 disablehomedir 1

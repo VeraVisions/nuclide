@@ -58,6 +58,32 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	precache_model("sprites/muzzleflash2.spr");
 	precache_model("sprites/muzzleflash3.spr");
 
+	/* VOX */
+	Sound_InitVOX();
+
+	/* Effects */
+	Effects_Init();
+
+	precache_sound("common/wpn_hudon.wav");
+	precache_sound("common/wpn_hudoff.wav");
+	precache_sound("common/wpn_moveselect.wav");
+	precache_sound("common/wpn_select.wav");
+
+	/* VGUI */
+	VGUI_Init();
+
+	/* Game specific inits */
+	Client_Init(apilevel, enginename, engineversion);
+	DSP_Init();
+	CSQC_RendererRestarted("init");
+	Titles_Init();
+	Sentences_Init();
+}
+
+/* Rendering Caches */
+void
+CSQC_RendererRestarted(string rstr)
+{
 	/* Fonts */
 	FONT_16 = loadfont("16", "fonts/default", "16", -1);
 	FONT_20 = loadfont("cr", "creditsfont?fmt=h", "20", -1);
@@ -78,34 +104,16 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	precache_pic("gfx/vgui/icntlk_sv");
 	precache_pic("gfx/vgui/icntlk_pl");
 
+	/* View */
+	Scores_Init();
+	View_Init();
+	HUD_Init();
+
 	/* GS-Entbase */
 	Fade_Init();
-
-	/* VOX */
-	Sound_InitVOX();
-
-	/* View */
-	View_Init();
-
-	/* Effects */
-	Effects_Init();
-
-	precache_sound("common/wpn_hudon.wav");
-	precache_sound("common/wpn_hudoff.wav");
-	precache_sound("common/wpn_moveselect.wav");
-	precache_sound("common/wpn_select.wav");
-
-	/* VGUI */
-	VGUI_Init();
-
-	/* Game specific inits */
-	HUD_Init();
-	Scores_Init();
-	Client_Init(apilevel, enginename, engineversion);
-	DSP_Init();
-	CSQC_RendererRestarted("init");
-	Titles_Init();
-	Sentences_Init();
+	Sky_Update();
+	Decal_Reload();
+	Game_RendererRestarted(rstr);
 }
 
 void
@@ -812,14 +820,6 @@ CSQC_WorldLoaded(void)
 		}
 	}
 	Sky_Update();
-}
-
-void
-CSQC_RendererRestarted(string rstr)
-{
-	Sky_Update();
-	Decal_Reload();
-	Game_RendererRestarted(rstr);
 }
 
 /*

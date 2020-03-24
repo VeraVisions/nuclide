@@ -8,6 +8,13 @@ src/server/cstrike.new
 src/shared/cstrike.new
 *.lno
 *.pk3
+*.dat
+*.way
+*.lvc
+*.fsv
+*.pak
+*.pk3
+*.pk4
 csqccore.txt
 ssqccore.txt
 menucore.txt
@@ -16,3 +23,7 @@ condump.txt
 config.cfg
 fte.cfg
 qkey
+installed.lst
+*.kdev4
+hl2/*
+*.ico
