@@ -33,7 +33,7 @@ void Footsteps_Update(void) {
 		return;
 	}
 
-	if ((self.movetype == MOVETYPE_WALK) && (self.flags & FL_ONGROUND)) {
+	if (self.movetype == MOVETYPE_WALK) {
 		if ((self.velocity[0] == 0 && self.velocity[1] == 0) || self.fStepTime > time) {
 			return;
 		}
@@ -52,41 +52,48 @@ void Footsteps_Update(void) {
 
 		self.fStepTime = time + 0.35;
 
-		switch((float)hash_get(hashMaterials, sTexture)) { 
-			case 'M':
-				sMaterial = "metal";
-				break;
-			case 'V':
-				sMaterial = "duct";
-				break;
-			case 'D':
-				sMaterial = "dirt";
-				break;
-			case 'S':
-				sMaterial = "slosh";
-				break;
-			case 'T':
-				sMaterial = "tile";
-				break;
-			case 'G':
-				sMaterial = "grate";
-				break;
-			case 'W':
-				sMaterial = "step";
-				break;
-			case 'P':
-				sMaterial = "step";
-				break;
-			case 'Y':
-				sMaterial = "step";
-				break;
-			case 'N':
-				sMaterial = "snow";
-				break;
-			default:
-				sMaterial = "step";
-				break;
-	}
+		if (self.flags & FL_ONGROUND) {
+				switch((float)hash_get(hashMaterials, sTexture)) { 
+				case 'M':
+						sMaterial = "metal";
+						break;
+				case 'V':
+						sMaterial = "duct";
+						break;
+				case 'D':
+						sMaterial = "dirt";
+						break;
+				case 'S':
+						sMaterial = "slosh";
+						break;
+				case 'T':
+						sMaterial = "tile";
+						break;
+				case 'G':
+						sMaterial = "grate";
+						break;
+				case 'W':
+						sMaterial = "step";
+						break;
+				case 'P':
+						sMaterial = "step";
+						break;
+				case 'Y':
+						sMaterial = "step";
+						break;
+				case 'N':
+						sMaterial = "snow";
+						break;
+				default:
+						sMaterial = "step";
+						break;
+				}
+		} else if (self.flags & FL_ONLADDER) {
+			sMaterial = "ladder";
+		} else {
+			self.fStepTime = 0.0f;
+			return;
+		}
 
 		if (self.iStep) {
 			if (random() < 0.5f) {
