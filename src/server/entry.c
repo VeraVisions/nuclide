@@ -185,6 +185,11 @@ void initents(void)
 	precache_sound("player/pl_grate3.wav");
 	precache_sound("player/pl_grate4.wav");
 
+	precache_sound("player/pl_ladder1.wav");
+	precache_sound("player/pl_ladder2.wav");
+	precache_sound("player/pl_ladder3.wav");
+	precache_sound("player/pl_ladder4.wav");
+
 	precache_sound("player/pl_step1.wav");
 	precache_sound("player/pl_step2.wav");
 	precache_sound("player/pl_step3.wav");
