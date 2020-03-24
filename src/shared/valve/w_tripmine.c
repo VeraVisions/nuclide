@@ -225,6 +225,7 @@ void w_tripmine_release(void)
 {
 	int r;
 	player pl = (player)self;
+
 	if (pl.w_idle_next > 0.0) {
 		return;
 	}
@@ -242,20 +243,21 @@ void w_tripmine_release(void)
 		return;
 	}
 
-	r = (float)input_sequence % 3;
-
+	int r = (float)input_sequence % 3;
 	switch (r) {
-	case 0:
-		Weapons_ViewAnimation(TRIPMINE_IDLE1);
-		break;
 	case 1:
+		Weapons_ViewAnimation(TRIPMINE_IDLE1);
+		pl.w_idle_next = 3.0f;
+		break;
+	case 2:
 		Weapons_ViewAnimation(TRIPMINE_IDLE2);
+		pl.w_idle_next = 2.0f;
 		break;
 	default:
 		Weapons_ViewAnimation(TRIPMINE_FIDGET);
+		pl.w_idle_next = 3.34f;
 		break;
 	}
-	pl.w_idle_next = 3.0f;
 }
 
 float w_tripmine_aimanim(void)
