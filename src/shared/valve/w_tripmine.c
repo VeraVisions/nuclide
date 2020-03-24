@@ -80,8 +80,12 @@ void w_tripmine_holster(void)
 }
 
 #ifdef SSQC
-void w_tripmine_trip(int unused)
+void w_tripmine_trip(int walkthrough)
 {
+	if (!walkthrough) {
+		self.owner = g_eAttacker;
+	}
+
 	/* This is to prevent infinite loops in Damage_Radius */
 	self.vDeath =
 	self.vPain = __NULL__;
@@ -110,7 +114,7 @@ void w_tripmine_ready(void)
 	}
 
 	if (trace_plane_dist != self.armor) {
-		w_tripmine_trip(0);
+		w_tripmine_trip(1);
 	}
 	self.nextthink = time;
 }
@@ -206,6 +210,7 @@ void w_tripmine_primary(void)
 	mine.nextthink = time + 4.0f;
 	mine.SendEntity = w_tripmine_sendentity;
 	mine.SendFlags = 1;
+	mine.owner = self;
 	setorigin(mine, trace_endpos - (v_forward * 8));
 	sound(mine, CHAN_WEAPON, "weapons/mine_charge.wav", 1, ATTN_NORM);
 	sound(self, CHAN_WEAPON, "weapons/mine_deploy.wav", 1, ATTN_NORM);

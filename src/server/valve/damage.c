@@ -85,6 +85,9 @@ Damage_Apply(entity t, entity c, float dmg, int w, int type)
 				c.frags++;
 	}
 
+	/* set this global in case we need it later */
+	g_eAttacker = c;
+
 	entity eOld = self;
 	self = t;
 
