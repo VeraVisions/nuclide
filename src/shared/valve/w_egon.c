@@ -120,7 +120,7 @@ void w_egon_primary(void)
 }
 void w_egon_secondary(void)
 {
-	
+	w_egon_primary();
 }
 void w_egon_reload(void)
 {
@@ -137,7 +137,14 @@ void w_egon_release(void)
 		if (pl.w_idle_next > 0.0f) {
 			return;
 		}
-		Weapons_ViewAnimation(EGON_IDLE1);
+		int r = (float)input_sequence % 3;
+		if (r == 1) {
+			Weapons_ViewAnimation(EGON_FIDGET1);
+			pl.w_idle_next = 2.666667f;
+		} else {
+			Weapons_ViewAnimation(EGON_IDLE1);
+			pl.w_idle_next = 2.0f;
+		}
 	}
 #endif	
 }
