@@ -208,19 +208,21 @@ void w_shotgun_release(void)
 	}
 
 	if (pl.a_ammo3 == SHOTTY_IDLE) {
-		int r = floor(random(0,3));
+		int r = (float)input_sequence % 3;
 		switch (r) {
-		case 0:
-			Weapons_ViewAnimation(SHOTGUN_IDLE1);
-			break;
 		case 1:
 			Weapons_ViewAnimation(SHOTGUN_IDLE2);
+			pl.w_idle_next = 2.222222f;
 			break;
 		case 2:
 			Weapons_ViewAnimation(SHOTGUN_IDLE3);
+			pl.w_idle_next = 5.0f;
+			break;
+		default:
+			Weapons_ViewAnimation(SHOTGUN_IDLE1);
+			pl.w_idle_next = 2.222222f;
 			break;
 		}
-		pl.w_idle_next = 15.0f;
 	} else if (pl.a_ammo3 == SHOTTY_RELOAD_START) {
 		Weapons_ViewAnimation(SHOTGUN_START_RELOAD);
 		pl.a_ammo3 = SHOTTY_RELOAD;
