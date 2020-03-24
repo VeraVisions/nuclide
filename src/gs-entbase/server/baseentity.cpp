@@ -116,7 +116,7 @@ float CBaseEntity::SendEntity(entity ePEnt, float fChanged)
 		WriteByte(MSG_ENTITY, frame);
 	}
 	if (fChanged & BASEFL_CHANGED_SKIN) {
-		WriteByte(MSG_ENTITY, skin);
+		WriteByte(MSG_ENTITY, skin + 128);
 	}
 	if (fChanged & BASEFL_CHANGED_ALPHA) {
 		WriteFloat(MSG_ENTITY, alpha);

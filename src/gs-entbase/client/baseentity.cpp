@@ -91,7 +91,7 @@ void CBaseEntity::ReadEntity(float flChanged)
 		frame = readbyte();
 	}
 	if (flChanged & BASEFL_CHANGED_SKIN) {
-		skin = readbyte();
+		skin = readbyte() - 128;
 	}
 	if (flChanged & BASEFL_CHANGED_ALPHA) {
 		alpha = readfloat();
