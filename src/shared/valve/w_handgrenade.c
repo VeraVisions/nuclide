@@ -207,6 +207,15 @@ void w_handgrenade_release(void)
 		pl.w_attack_next = 0.5f;
 		pl.w_idle_next = 0.5f;
 		pl.a_ammo3 = 0;
+	} else {
+		int r = (float)input_sequence % 8;
+		if (r == 1) {
+			Weapons_ViewAnimation(HANDGRENADE_FIDGET);
+			pl.w_idle_next = 2.5f;
+		} else {
+			Weapons_ViewAnimation(HANDGRENADE_IDLE);
+			pl.w_idle_next = 3.0f;
+		}
 	}
 }
 
