@@ -30,6 +30,9 @@ class trigger_cdaudio : CBaseTrigger
 
 void trigger_cdaudio :: Trigger ( void )
 {
+	if (!other.flags & FL_CLIENT) {
+		return;
+	}
 #ifdef GS_DEVELOPER
 	print( sprintf( "%s::Trigger: CD Track %i requested\n", 
 		this.classname, m_iCDTrack ) );
