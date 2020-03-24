@@ -53,6 +53,7 @@ var float PARTICLE_PIECES_BLACK;
 var float PARTICLE_SMOKE_BROWN;
 var float PARTICLE_SMOKE_GREY;
 var float PARTICLE_SPARK;
+var float PART_DUSTMOTE;
 var float DECAL_SHOT;
 var float DECAL_GLASS;
 

@@ -214,8 +214,8 @@ if (selected) {
 		drawsubpic(
 			pos,
 			[170,45],
-			"sprites/640hud5.spr_0.tga",
-			[0,135/256],
+			"sprites/tfchud04.spr_0.tga",
+			[0,45/256],
 			[170/256,45/256],
 			g_hud_color,
 			1.0f,
@@ -225,8 +225,8 @@ if (selected) {
 		drawsubpic(
 			pos,
 			[170,45],
-			"sprites/640hud2.spr_0.tga",
-			[0,135/256],
+			"sprites/tfchud03.spr_0.tga",
+			[0,0/256],
 			[170/256,45/256],
 			g_hud_color,
 			1.0f,

@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED prop_dynamic (1 0 0) (-8 -8 -8) (8 8 8) SF_BASIC_COL
+/*QUAKED prop_dynamic (0 0.2 1) (-8 -8 -8) (8 8 8) SF_BASIC_COL
 "model"       Model file that will be displayed by the entity.
 "modelscale"  Scale modifier of the model. Default is '1'.
 "angles"      Sets the pitch, yaw and roll angles of the model.

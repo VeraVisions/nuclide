@@ -72,6 +72,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	PARTICLE_BLOOD 		= particleeffectnum("part_blood");
 	DECAL_SHOT 		= particleeffectnum("decal_shot");
 	DECAL_GLASS 		= particleeffectnum("decal_glass");
+	PART_DUSTMOTE = particleeffectnum("volume.dustmote");
 
 	/* 2D Pics */
 	precache_pic("gfx/vgui/icntlk_sv");

@@ -17,7 +17,7 @@
 /* this is causing crashes on OpenAL 1.19.1 when enabled */
 //#define DSP_LERP
 
-/*QUAKED env_sound (1 0 0) (-8 -8 -8) (8 8 8)
+/*QUAKED env_sound (0 1 0.5) (-8 -8 -8) (8 8 8)
 "radius"    Radius in units.
 "roomtype"  Roomtype value:
                 0 = DEFAULT

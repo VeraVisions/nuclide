@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED point_message (1 0 0) (-8 -8 -8) (8 8 8)
+/*QUAKED point_message (0.2 1 0.2) (-8 -8 -8) (8 8 8)
 "message"       The message to display.
 "radius"        The radius in which it will appear.
 

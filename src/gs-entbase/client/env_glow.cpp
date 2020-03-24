@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED env_glow (1 0 0) (-8 -8 -8) (8 8 8)
+/*QUAKED env_glow (0 0.5 1) (-8 -8 -8) (8 8 8)
 "shader"        Material to use for the glare/glow effect.
 "model"         Sprite model to use for the glare/glow (idTech 2 BSPs only)
 "scale"         Scale multiplier.

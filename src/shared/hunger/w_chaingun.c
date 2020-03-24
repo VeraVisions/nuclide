@@ -32,6 +32,7 @@ w_chaingun_precache(void)
 	precache_model("models/v_tfac.mdl");
 	precache_model("models/w_tfac.mdl");
 	precache_model("models/p_tfac.mdl");
+	precache_sound("weapons/asscan1.wav");
 	precache_sound("weapons/asscan3.wav");
 }
 

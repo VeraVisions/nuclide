@@ -14,6 +14,16 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED func_lod (1 0 0) (-8 -8 -8) (8 8 8) ?
+"targetname"    Name
+"DisappearDist"    Distance in units for of when the func_lod will "pop" out of view.
+"Solid" 
+0 = Solid
+1 = Nonsolid
+
+Level of Detail brush entity, disappears at a set distance. Useful for when VIS is impossible or not enough.
+*/
+
 #ifdef DEVELOPER
 var int autocvar_dev_loddistance = 0;
 #endif

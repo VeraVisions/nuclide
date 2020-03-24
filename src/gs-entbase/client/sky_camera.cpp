@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED sky_camera (1 0 0) (-8 -8 -8) (8 8 8)
+/*QUAKED sky_camera (1 0.3 1) (-8 -8 -8) (8 8 8)
 "scale"    Scale modifier. Default is '16'.
 
 Defines the position of a skyroom camera.

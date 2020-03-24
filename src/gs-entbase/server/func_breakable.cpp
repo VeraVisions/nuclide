@@ -24,6 +24,19 @@
 
 Brush volume that can break into lots of little pieces.
 
+Material list:
+
+0 = Glass
+1 = Wood
+2 = Metal
+3 = Flesh
+4 = Cinder
+5 = Tile
+6 = Computer
+7 = Glass (Unbreakable)
+8 = Rock
+9 = None
+
 When SF_TOUCH is set, it'll break when an entity runs into it at high
 velocities (damage is speed in units * 0.01).
 

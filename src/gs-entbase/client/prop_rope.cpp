@@ -14,11 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED prop_rope (1 0 0) (-8 -8 -8) (8 8 8) ROPE_HALF
+/*QUAKED prop_rope (1 1 0.5) (-8 -8 -8) (8 8 8) ROPE_HALF
 "sag"         Multiplier on how much sagginess will be applied to the rope.
 "segments"    Number of total segments. Default is 16.
 "material"    The texture to use on the rope.
 "swingfactor" Multiplier on how much the rope swings about.
+"target"      The info_notnull to connect the rope to.
 
 Client-side decorative entity. Connect the entity to a named info_notnull
 and watch it swing around.

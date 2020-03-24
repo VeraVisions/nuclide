@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED env_soundscape (1 0 0) (-8 -8 -8) (8 8 8)
+/*QUAKED env_soundscape (0 1 0.3) (-8 -8 -8) (8 8 8)
 "radius"    Radius in units.
 "shader"    Sound shader to play.
 

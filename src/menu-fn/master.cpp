@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define MASTER_DNS "frag-net.com"
+#define MASTER_DNS "master.frag-net.com"
 #define MASTER_PORT 27950
 
 float srv_fldAdress;
@@ -54,7 +54,15 @@ void Master_GetInternetList(void)
 {
 	print("Updating host cache...\n");
 	string url = sprintf("%s:%d",MASTER_DNS,MASTER_PORT);
-	cvar_set("net_masterextra1", url);
+	cvar_set("net_master1", url);
+	localcmd("net_master2 \"\"\n");
+	localcmd("net_master3 \"\"\n");
+	localcmd("net_master4 \"\"\n");
+	localcmd("net_master5 \"\"\n");
+	localcmd("net_master6 \"\"\n");
+	localcmd("net_master7 \"\"\n");
+	localcmd("net_master8 \"\"\n");
+	localcmd("net_masterextra1 \"\"\n");
 	localcmd("net_masterextra2 \"\"\n");
 	localcmd("net_masterextra3 \"\"\n");
 	localcmd("net_masterextra4 \"\"\n");
@@ -70,6 +78,14 @@ void Master_GetInternetList(void)
 
 void Master_GetLANList(void)
 {
+	localcmd("net_master1 \"localhost\"\n");
+	localcmd("net_master2 \"\"\n");
+	localcmd("net_master3 \"\"\n");
+	localcmd("net_master4 \"\"\n");
+	localcmd("net_master5 \"\"\n");
+	localcmd("net_master6 \"\"\n");
+	localcmd("net_master7 \"\"\n");
+	localcmd("net_master8 \"\"\n");
 	localcmd("net_masterextra1 \"\"\n");
 	localcmd("net_masterextra2 \"\"\n");
 	localcmd("net_masterextra3 \"\"\n");

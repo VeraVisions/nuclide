@@ -204,16 +204,23 @@ w_glock_secondary(void)
 	pl.a_ammo3 = 1 - pl.a_ammo3;
 
 	if (pl.a_ammo3) {
-		Weapons_SetGeomset("geomset 1 2\n");
 		Weapons_ViewAnimation(GLOCK_SILENCER);
 		pl.w_attack_next = 3.3f;
 		pl.w_idle_next = pl.w_attack_next;
 	} else {
-		Weapons_SetGeomset("geomset 1 0\n");
 		Weapons_ViewAnimation(GLOCK_HOLSTER);
 		pl.w_attack_next = 0.94f;
 		pl.w_idle_next = pl.w_attack_next;
 	}
+	/* toggle silencer on client */
+#ifdef CSQC
+
+	if (pl.a_ammo3) {
+		Weapons_SetGeomset("geomset 1 2\n");
+	} else {
+		Weapons_SetGeomset("geomset 1 0\n");
+	}
+#endif
 }
 void
 w_glock_reload(void)

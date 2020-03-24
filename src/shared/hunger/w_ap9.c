@@ -300,7 +300,7 @@ w_ap9_hudpic(int selected, vector pos)
 		drawsubpic(
 			pos,
 			[170,45],
-			"sprites/tfchud05.spr_0.tga",
+			"sprites/tfchud04.spr_0.tga",
 			[0,90/256],
 			[170/256,45/256],
 			g_hud_color,
@@ -311,7 +311,7 @@ w_ap9_hudpic(int selected, vector pos)
 		drawsubpic(
 			pos,
 			[170,45],
-			"sprites/tfchud06.spr_0.tga",
+			"sprites/tfchud05.spr_0.tga",
 			[0,0],
 			[170/256,45/256],
 			g_hud_color,
