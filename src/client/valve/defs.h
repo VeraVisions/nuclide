@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+var int autocvar_cl_autoweaponswitch = TRUE;
+
 vector g_hud_color;
 
 struct
@@ -59,6 +61,8 @@ struct
 	float ammo2_alpha;
 	float ammo3_old;
 	float ammo3_alpha;
+	int pickup_weapon;
+	float pickup_alpha;
 
 	/* This is seperated from the other VGUI stuff so we can check scores
 	 * while buying and whatnot */
@@ -77,3 +81,4 @@ struct
 void HUD_DrawAmmo1(void);
 void HUD_DrawAmmo2(void);
 void HUD_DrawAmmo3(void);
+void HUD_WeaponPickupNotify(int);

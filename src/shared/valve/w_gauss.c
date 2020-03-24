@@ -391,7 +391,7 @@ float w_gauss_aimanim(void)
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIMGAUSS : ANIM_AIMGAUSS;
 }
 
-void w_gauss_hudpic(int selected, vector pos)
+void w_gauss_hudpic(int selected, vector pos, float a)
 {
 #ifdef CSQC
 	if (selected) {
@@ -402,7 +402,7 @@ void w_gauss_hudpic(int selected, vector pos)
 			[0,90/256],
 			[170/256,45/256],
 			g_hud_color,
-			1.0f,
+			a,
 			DRAWFLAG_ADDITIVE
 		);
 	} else {
@@ -413,7 +413,7 @@ void w_gauss_hudpic(int selected, vector pos)
 			[0,90/256],
 			[170/256,45/256],
 			g_hud_color,
-			1.0f,
+			a,
 			DRAWFLAG_ADDITIVE
 		);
 	}

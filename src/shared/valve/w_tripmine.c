@@ -274,13 +274,13 @@ void w_tripmine_hud(void)
 #endif
 }
 
-void w_tripmine_hudpic(int s, vector pos)
+void w_tripmine_hudpic(int selected, vector pos, float a)
 {
 #ifdef CSQC
-	if (s) {
-		drawsubpic(pos, [170,45], "sprites/640hud6.spr_0.tga", [0,90/256], [170/256,45/256], g_hud_color, 1, DRAWFLAG_ADDITIVE);
+	if (selected) {
+		drawsubpic(pos, [170,45], "sprites/640hud6.spr_0.tga", [0,90/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	} else {
-		drawsubpic(pos, [170,45], "sprites/640hud3.spr_0.tga", [0,90/256], [170/256,45/256], g_hud_color, 1, DRAWFLAG_ADDITIVE);
+		drawsubpic(pos, [170,45], "sprites/640hud3.spr_0.tga", [0,90/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	}
 #endif
 }

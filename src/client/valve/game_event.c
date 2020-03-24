@@ -32,5 +32,13 @@ void Game_Parse_Event(float fHeader)
 		Sound_PlayVOX(readstring());
 	} else if (fHeader == EV_VIEWMODEL) {
 		View_PlayAnimation(readbyte());
+	} else if (fHeader == EV_WEAPON_PICKUP) {
+		float w = readbyte();
+
+		if (autocvar_cl_autoweaponswitch == 1) {
+			sendevent("PlayerSwitchWeapon", "f", w);
+		}
+
+		HUD_WeaponPickupNotify(w);
 	}
 }

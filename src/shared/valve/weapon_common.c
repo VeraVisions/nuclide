@@ -171,10 +171,10 @@ float Weapons_GetAim(int id)
 #endif
 
 #ifdef CSQC
-void Weapons_HUDPic(int id, int s, vector pos)
+void Weapons_HUDPic(int id, int s, vector pos, float a)
 {
 	if (g_weapons[id].hudpic != __NULL__) {
-		g_weapons[id].hudpic(s, pos);
+		g_weapons[id].hudpic(s, pos, a);
 	}
 }
 #endif
@@ -242,6 +242,14 @@ int Weapons_IsPresent(player pl, int w)
 }
 
 #ifdef SSQC
+void Weapons_PickupNotify(player pl, int w)
+{
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_WEAPON_PICKUP);
+	WriteByte(MSG_MULTICAST, w);
+	msg_entity = (entity)pl;
+	multicast([0,0,0], MULTICAST_ONE);
+}
 
 void Weapons_RefreshAmmo(player pl)
 {
@@ -282,8 +290,12 @@ int Weapons_AddItem(player pl, int w)
 			value = TRUE;
 
 			/* it's new, so autoswitch? */
-			pl.activeweapon = w;
-			Weapons_Draw();
+			if (pl.activeweapon == 0) {
+				pl.activeweapon = w;
+				Weapons_Draw();
+			} else {
+				Weapons_PickupNotify(pl, w);
+			}
 		}
 	} else {
 		/* Call team pickup */
@@ -295,8 +307,12 @@ int Weapons_AddItem(player pl, int w)
 			value = g_weapons[w].pickup(TRUE);
 
 			/* it's new, so autoswitch? */
-			pl.activeweapon = w;
-			Weapons_Draw();
+			if (pl.activeweapon == 0) {
+				pl.activeweapon = w;
+				Weapons_Draw();
+			} else {
+				Weapons_PickupNotify(pl, w);
+			}
 		}
 	}
 

@@ -363,6 +363,29 @@ HUD_DrawLogo(void)
 	}
 }
 
+/* weapon/ammo pickup notifications */
+
+void
+HUD_DrawNotify(void)
+{
+	vector pos;
+	
+	if (pSeat->pickup_alpha <= 0.0f) {
+		return;
+	}
+
+	pos = video_mins + [video_res[0] - 192, video_res[1] - 128];
+	Weapons_HUDPic(pSeat->pickup_weapon, 1, pos, pSeat->pickup_alpha);
+	pSeat->pickup_alpha -= frametime;
+}
+
+void
+HUD_WeaponPickupNotify(int w)
+{
+	pSeat->pickup_weapon = w;
+	pSeat->pickup_alpha = 1.0f;
+}
+
 /* main entry */
 void
 HUD_Draw(void)
@@ -382,6 +405,7 @@ HUD_Draw(void)
 	HUD_DrawHealth();
 	HUD_DrawArmor();
 	HUD_DrawFlashlight();
+	HUD_DrawNotify();
 	Damage_Draw();
 }
 

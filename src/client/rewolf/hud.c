@@ -249,6 +249,12 @@ void HUD_DrawAmmo3(void)
 	}
 }
 
+void
+HUD_WeaponPickupNotify(int w)
+{
+	
+}
+
 void HUD_Draw(void)
 {
 	g_hud_color = autocvar_con_color * (1 / 255);

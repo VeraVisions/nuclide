@@ -38,7 +38,7 @@ typedef struct
 	string() pmodel;
 	string() deathmsg;
 	float() aimanim;
-	void(int, vector) hudpic;
+	void(int, vector, float) hudpic;
 } weapon_t;
 
 void Weapons_DrawCrosshair(void);
@@ -64,5 +64,5 @@ void Weapons_ReloadWeapon(player, .int, .int, int);
 #else
 string Weapons_GetPlayermodel(int);
 int Weapons_GetAnimation(void);
-void Weapons_HUDPic(int, int, vector);
+void Weapons_HUDPic(int, int, vector, float);
 #endif

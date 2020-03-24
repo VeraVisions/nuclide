@@ -252,17 +252,17 @@ void w_snark_hud(void)
 #endif
 }
 
-void w_snark_hudpic(int s, vector pos)
+void w_snark_hudpic(int selected, vector pos, float a)
 {
 #ifdef CSQC
-	if (s) {
+	if (selected) {
 		drawsubpic(pos, [170,45], "sprites/640hud6.spr_0.tga",
 			[0,135/256], [170/256,45/256],
-			g_hud_color, 1, DRAWFLAG_ADDITIVE);
+			g_hud_color, a, DRAWFLAG_ADDITIVE);
 	} else {
 		drawsubpic(pos, [170,45], "sprites/640hud3.spr_0.tga",
 			[0,135/256], [170/256,45/256],
-			g_hud_color, 1, DRAWFLAG_ADDITIVE);
+			g_hud_color, a, DRAWFLAG_ADDITIVE);
 	}
 #endif
 }
