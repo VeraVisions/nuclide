@@ -89,7 +89,28 @@ void w_rpg_holster(void)
 
 void w_rpg_release(void)
 {
-	
+	player pl = (player)self;
+	if (pl.w_idle_next > 0.0) {
+		return;
+	}
+
+	int r = (float)input_sequence % 3;
+
+	if (pl.a_ammo1 > 0) {
+		if (r == 1) {
+			Weapons_ViewAnimation(RPG_FIDGET);
+		} else {
+			Weapons_ViewAnimation(RPG_IDLE);
+		}
+	} else {
+		if (r == 1) {
+			Weapons_ViewAnimation(RPG_FIDGET_UL);
+		} else {
+			Weapons_ViewAnimation(RPG_IDLE_UL);
+		}
+	}
+
+	pl.w_idle_next = 6.0f;
 }
 
 void w_rpg_primary(void)
@@ -150,6 +171,7 @@ void w_rpg_primary(void)
 	rocket.touch = Rocket_Touch;
 	rocket.think = Rocket_BuildSpeed;
 	rocket.nextthink = time + 0.15f;
+	rocket.traileffectnum = particleeffectnum("weapon_rpg.trail");
 
 	if (pl.a_ammo3 > 0) {
 		rocket.weapon = 1;

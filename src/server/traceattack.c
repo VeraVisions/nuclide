@@ -74,7 +74,7 @@ TraceAttack_FireSingle(vector vPos, vector vAngle, int iDamage, int iWeapon)
 	}
 
 	if (trace_ent.iBleeds == TRUE) {
-		Effect_CreateBlood(trace_endpos, [0,0,0]);
+		Effect_CreateBlood(trace_endpos, [1,0,0]);
 		return;
 	}
 

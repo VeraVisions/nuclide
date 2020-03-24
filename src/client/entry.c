@@ -492,17 +492,17 @@ CSQC_Parse_Event(void)
 		break;
 	case EV_BLOOD:
 		vector vBloodPos;
-		vector vBloodAngle;
+		vector vBloodColor;
 
 		vBloodPos[0] = readcoord();
 		vBloodPos[1] = readcoord();
 		vBloodPos[2] = readcoord();
 
-		vBloodAngle[0] = readcoord();
-		vBloodAngle[1] = readcoord();
-		vBloodAngle[2] = readcoord();
+		vBloodColor[0] = readbyte() / 255;
+		vBloodColor[1] = readbyte() / 255;
+		vBloodColor[2] = readbyte() / 255;
 
-		Effect_CreateBlood(vBloodPos, vBloodAngle);
+		Effect_CreateBlood(vBloodPos, vBloodColor);
 		break;
 	case EV_EXPLOSION:
 		vector vExploPos;

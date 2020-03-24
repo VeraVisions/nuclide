@@ -142,7 +142,7 @@ w_pipewrench_primary(void)
 
 	/* don't bother with decals, we got squibs */
 	if (trace_ent.iBleeds) {
-		Effect_CreateBlood(trace_endpos, [0,0,0]);
+		Effect_CreateBlood(trace_endpos, [1,0,0]);
 	} else {
 		Effect_Impact(IMPACT_MELEE, trace_endpos, trace_plane_normal);
 	}
@@ -219,7 +219,7 @@ w_pipewrench_release(void)
 
 			/* don't bother with decals, we got squibs */
 			if (trace_ent.iBleeds) {
-				Effect_CreateBlood(trace_endpos, [0,0,0]);
+				Effect_CreateBlood(trace_endpos, [1,0,0]);
 			} else {
 				Effect_Impact(IMPACT_MELEE, trace_endpos, trace_plane_normal);
 			}

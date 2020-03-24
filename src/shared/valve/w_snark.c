@@ -97,6 +97,7 @@ void w_snark_deploy(void)
 				float pit = 100 + random(0,10);
 				sound(self, CHAN_BODY, "squeek/sqk_deploy1.wav", 1.0, ATTN_NORM, pit);
 				Damage_Apply(trace_ent, self.goalentity, 10, WEAPON_SNARK, DMG_GENERIC);
+				Effect_CreateBlood(self.origin + [0,0,16], [1,0,0]);
 			}
 
 			if (self.aiment.health <= 0) {
@@ -107,6 +108,7 @@ void w_snark_deploy(void)
 		runstandardplayerphysics(self);
 	}
 	static void snark_die(int i) {
+		Effect_CreateBlood(self.origin + [0,0,16], [203,183,15] / 255);
 		sound(self, CHAN_VOICE, "squeek/sqk_die1.wav", 1.0, ATTN_NORM);
 		sound(self, CHAN_BODY, "squeek/sqk_blast1.wav", 1.0, ATTN_NORM);
 		self.customphysics = __NULL__;
@@ -131,7 +133,7 @@ void w_snark_deploy(void)
 	snark.takedamage = DAMAGE_YES;
 	snark.aiment = __NULL__;
 	snark.vDeath = snark_die;
-	snark.weapon = 3.0f;
+	snark.weapon = 1.0f;
 }
 #endif
 

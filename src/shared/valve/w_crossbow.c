@@ -140,7 +140,7 @@ void Crossbolt_Touch(void) {
 	if (other.iBleeds == FALSE) {
 		Effect_CreateSpark(self.origin, trace_plane_normal);
 	} else {
-		Effect_CreateBlood(self.origin, [0,0,0]);
+		Effect_CreateBlood(self.origin, [1,0,0]);
 	}
 	remove(self);
 }
