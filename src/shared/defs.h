@@ -41,31 +41,32 @@ const vector VEC_PLAYER_CVIEWPOS = [0,0,12];
 #define INPUT_BUTTON7 0x00000040
 #define INPUT_BUTTON8 0x00000080
 
-// Engine reserved flags
-#define FL_FLY			(1<<0)
-#define FL_SWIM			(1<<1)
-#define FL_GLIMPSE		(1<<2)
-#define FL_CLIENT		(1<<3)
-#define FL_INWATER		(1<<4)
-#define FL_MONSTER		(1<<5)
-#define FL_GODMODE		(1<<6)
-#define FL_NOTARGET		(1<<7)
-#define FL_ITEM			(1<<8)
-#define FL_ONGROUND		(1<<9)
-#define FL_PARTIALGROUND	(1<<10)
-#define FL_WATERJUMP		(1<<11)
-#define FL_JUMPRELEASED		(1<<12)
+/* engine reserved */
+#define FL_FLY				(1<<0)
+#define FL_SWIM				(1<<1)
+#define FL_GLIMPSE			(1<<2)
+#define FL_CLIENT			(1<<3)
+#define FL_INWATER			(1<<4)
+#define FL_MONSTER			(1<<5)
+#define FL_GODMODE			(1<<6)
+#define FL_NOTARGET			(1<<7)
+#define FL_ITEM				(1<<8)
+#define FL_ONGROUND				(1<<9)
+#define FL_PARTIALGROUND		(1<<10)
+#define FL_WATERJUMP			(1<<11)
+#define FL_JUMPRELEASED			(1<<12)
 #define FL_FINDABLE_NONSOLID	(1<<14)
-#define FLQW_LAGGEDMOVE		(1<<16)
+#define FLQW_LAGGEDMOVE			(1<<16)
 
-// FreeCS flags
+/* nuclide */
+#define FL_ONLADDER			(1<<13)
 #define FL_FLASHLIGHT		(1<<17)
-#define FL_REMOVEME		(1<<18)
+#define FL_REMOVEME			(1<<18)
 #define FL_CROUCHING 		(1<<19)
 #define FL_SEMI_TOGGLED		(1<<20)
-#define FL_FROZEN 		(1<<21)
-#define FL_ONLADDER		(1<<13)
-
+#define FL_FROZEN 			(1<<21)
+#define FL_VOTED 			(1<<22)
+#define FL_RESERVED			(1<<23)
 #define UPDATE_ALL	16777215
 
 /* global hitmesh definitions */

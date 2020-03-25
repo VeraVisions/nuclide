@@ -37,6 +37,7 @@ void w_rpg_precache(void)
 	precache_model("sprites/laserdot.spr");
 	precache_sound("weapons/rocketfire1.wav");
 }
+
 void w_rpg_updateammo(player pl)
 {
 #ifdef SSQC
@@ -85,32 +86,6 @@ void w_rpg_draw(void)
 void w_rpg_holster(void)
 {
 	
-}
-
-void w_rpg_release(void)
-{
-	player pl = (player)self;
-	if (pl.w_idle_next > 0.0) {
-		return;
-	}
-
-	int r = (float)input_sequence % 3;
-
-	if (pl.a_ammo1 > 0) {
-		if (r == 1) {
-			Weapons_ViewAnimation(RPG_FIDGET);
-		} else {
-			Weapons_ViewAnimation(RPG_IDLE);
-		}
-	} else {
-		if (r == 1) {
-			Weapons_ViewAnimation(RPG_FIDGET_UL);
-		} else {
-			Weapons_ViewAnimation(RPG_IDLE_UL);
-		}
-	}
-
-	pl.w_idle_next = 6.0f;
 }
 
 void w_rpg_primary(void)
@@ -182,23 +157,8 @@ void w_rpg_primary(void)
 	pl.rpg_mag--;
 #endif
 
-	pl.w_attack_next = 1.0f;
+	pl.w_attack_next = 
 	pl.w_idle_next = 2.5f;
-}
-
-void w_rpg_secondary(void)
-{
-	player pl = (player)self;
-
-	if (pl.w_attack_next > 0.0) {
-		return;
-	}
-
-	/* toggle laser */
-	pl.a_ammo3 = 1 - pl.a_ammo3;
-
-	pl.w_attack_next = 1.0f;
-	w_rpg_release();
 }
 
 void w_rpg_reload(void)
@@ -236,6 +196,57 @@ void w_rpg_reload(void)
 
 	pl.w_attack_next = 2.25f;
 	pl.w_idle_next = 10.0f;
+}
+
+void w_rpg_release(void)
+{
+	player pl = (player)self;
+	if (pl.w_idle_next > 0.0) {
+		return;
+	}
+
+#ifdef CSQC
+	if (pl.a_ammo1 <= 0 && pl.a_ammo2 > 0) {
+		w_rpg_reload();
+	}
+#else
+	if (pl.rpg_mag <= 0 && pl.ammo_rocket > 0) {
+		w_rpg_reload();
+	}
+#endif
+
+	int r = (float)input_sequence % 3;
+
+	if (pl.a_ammo1 > 0) {
+		if (r == 1) {
+			Weapons_ViewAnimation(RPG_FIDGET);
+		} else {
+			Weapons_ViewAnimation(RPG_IDLE);
+		}
+	} else {
+		if (r == 1) {
+			Weapons_ViewAnimation(RPG_FIDGET_UL);
+		} else {
+			Weapons_ViewAnimation(RPG_IDLE_UL);
+		}
+	}
+
+	pl.w_idle_next = 6.0f;
+}
+
+void w_rpg_secondary(void)
+{
+	player pl = (player)self;
+
+	if (pl.w_attack_next > 0.0) {
+		return;
+	}
+
+	/* toggle laser */
+	pl.a_ammo3 = 1 - pl.a_ammo3;
+
+	pl.w_attack_next = 1.0f;
+	w_rpg_release();
 }
 
 float w_rpg_aimanim(void)

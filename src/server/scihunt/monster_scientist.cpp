@@ -299,9 +299,8 @@ string sci_sndidle[] = {
 	"scientist/hopenominal.wav",
 };
 
-class monster_scientist:CBaseEntity
+class monster_scientist:CBaseMonster
 {
-	int body;
 	vector m_vecLastUserPos;
 	entity m_eUser;
 	entity m_eRescuer;
@@ -311,17 +310,7 @@ class monster_scientist:CBaseEntity
 	float m_flPainTime;
 	float m_flChangePath;
 	float m_flTraceTime;
-	float m_flPitch;
 	int m_iFlags;
-
-	int old_modelindex;
-	vector old_origin;
-	vector old_angles;
-	vector old_velocity;
-	int old_frame;
-	int old_skin;
-	int old_body;
-
 	void() monster_scientist;
 
 	virtual void() touch;
@@ -332,69 +321,9 @@ class monster_scientist:CBaseEntity
 	virtual void(int) vDeath;
 	virtual void() Physics;
 	virtual void() Scream;
-	virtual void() Gib;
-	virtual float(entity, float) SendEntity;
 	virtual void() WarnOthers;
-	virtual void(string) Speak;
 	virtual void() IdleChat;
 };
-
-float monster_scientist::SendEntity(entity ePEnt, float fChanged)
-{
-	if (modelindex == 0) {
-		return FALSE;
-	}
-
-	WriteByte(MSG_ENTITY, ENT_NPC);
-	WriteShort(MSG_ENTITY, fChanged);
-
-	if (fChanged & NPC_MODELINDEX)
-		WriteShort(MSG_ENTITY, modelindex);
-	if (fChanged & NPC_ORIGIN_X)
-		WriteCoord(MSG_ENTITY, origin[0]);
-	if (fChanged & NPC_ORIGIN_Y)
-		WriteCoord(MSG_ENTITY, origin[1]);
-	if (fChanged & NPC_ORIGIN_Z)
-		WriteCoord(MSG_ENTITY, origin[2]);
-	if (fChanged & NPC_ANGLES_X)
-		WriteFloat(MSG_ENTITY, angles[0]);
-	if (fChanged & NPC_ANGLES_Y)
-		WriteFloat(MSG_ENTITY, angles[1]);
-	if (fChanged & NPC_ANGLES_Z)
-		WriteFloat(MSG_ENTITY, angles[2]);
-	if (fChanged & NPC_VELOCITY_X)
-		WriteCoord(MSG_ENTITY, velocity[0]);
-	if (fChanged & NPC_VELOCITY_Y)
-		WriteCoord(MSG_ENTITY, velocity[1]);
-	if (fChanged & NPC_VELOCITY_Z)
-		WriteCoord(MSG_ENTITY, velocity[2]);
-	if (fChanged & NPC_FRAME)
-		WriteByte(MSG_ENTITY, frame);
-	if (fChanged & NPC_SKIN)
-		WriteByte(MSG_ENTITY, skin);
-	if (fChanged & NPC_BODY)
-		WriteByte(MSG_ENTITY, body);
-
-	return TRUE;
-}
-
-void monster_scientist::Speak(string msg)
-{
-	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
-	WriteByte(MSG_MULTICAST, EV_SPEAK);
-	WriteEntity(MSG_MULTICAST, this);
-	WriteString(MSG_MULTICAST, msg);
-	WriteFloat(MSG_MULTICAST, m_flPitch);
-	msg_entity = this;
-	multicast(origin, MULTICAST_PVS);
-}
-
-void monster_scientist::Gib(void)
-{
-	takedamage = DAMAGE_NO;
-	Effect_GibHuman(this.origin);
-	Hide();
-}
 
 void monster_scientist::WarnOthers(void)
 {
@@ -576,41 +505,6 @@ void monster_scientist::Physics(void)
 	runstandardplayerphysics(this);
 	Footsteps_Update();
 
-	if (modelindex != old_modelindex)
-		SendFlags |= NPC_MODELINDEX;
-	if (origin[0] != old_origin[0])
-		SendFlags |= NPC_ORIGIN_X;
-	if (origin[1] != old_origin[1])
-		SendFlags |= NPC_ORIGIN_Y;
-	if (origin[2] != old_origin[2])
-		SendFlags |= NPC_ORIGIN_Z;
-	if (angles[0] != old_angles[0])
-		SendFlags |= NPC_ANGLES_X;
-	if (angles[1] != old_angles[1])
-		SendFlags |= NPC_ANGLES_Y;
-	if (angles[2] != old_angles[2])
-		SendFlags |= NPC_ANGLES_Z;
-	if (velocity[0] != old_velocity[0])
-		SendFlags |= NPC_VELOCITY_X;
-	if (velocity[1] != old_velocity[1])
-		SendFlags |= NPC_VELOCITY_Y;
-	if (velocity[2] != old_velocity[2])
-		SendFlags |= NPC_VELOCITY_Z;
-	if (frame != old_frame)
-		SendFlags |= NPC_FRAME;
-	if (skin != old_skin)
-		SendFlags |= NPC_SKIN;
-	if (body != old_body)
-		SendFlags |= NPC_BODY;
-
-	old_modelindex = modelindex;
-	old_origin = origin;
-	old_angles = angles,
-	old_velocity = velocity,
-	old_frame = frame;
-	old_skin = skin;
-	old_body = body;
-
 	if (!(flags & FL_ONGROUND) && velocity[2] < -100) {
 		if (!(m_iFlags & SCIF_FALLING)) {
 			Speak(sci_sndscream[0]);
@@ -687,7 +581,6 @@ void monster_scientist::vDeath(int iHitBody)
 	think = Respawn;
 	nextthink = time + 10.0f;
 
-	SendFlags |= NPC_FRAME;
 	m_eUser = world;
 	//customphysics = __NULL__;
 	m_iFlags = 0x0;
@@ -736,6 +629,7 @@ void monster_scientist::Respawn(void)
 	style = SCI_IDLE;
 	customphysics = Physics;
 	frame = SCIA_IDLE1;
+	SendFlags |= NPC_FRAME | NPC_BODY;
 	health = 50;
 	velocity = [0,0,0];
 	m_iFlags = 0x0;
@@ -770,14 +664,28 @@ void monster_scientist::monster_scientist(void)
 		precache_sound(sci_sndidle[i]);
 	}
 
+	body = -1;
+	for (int i = 1; i < (tokenize(__fullspawndata)-1); i += 2) {
+		switch (argv(i)) {
+		case "body":
+			body = stoi(argv(i+1)) + 1;
+			break;
+		default:
+			break;
+		}
+	}
+
 	model = "models/scientist.mdl";
 	CBaseEntity::CBaseEntity();
 	precache_model(m_oldModel);
 	Respawn();
 
-	/* This stuff needs to be persistent because we can't guarantee that
-	 * the client-side geomset refresh happens. Don't shove this into Respawn */
-	body = floor(random(1,5));
+	if (body == -1) {
+		/* This stuff needs to be persistent because we can't guarantee that
+		* the client-side geomset refresh happens. Don't shove this into Respawn */
+		body = floor(random(1,5));
+	}
+
 	switch (body) {
 		case 1:
 			m_flPitch = 105;
@@ -796,6 +704,5 @@ void monster_scientist::monster_scientist(void)
 			m_flPitch = 100;
 			netname = "Slick";
 	}
+	SendFlags |= NPC_FRAME | NPC_BODY;
 }
-
-CLASSEXPORT(qreate_arcade, monster_scientist)

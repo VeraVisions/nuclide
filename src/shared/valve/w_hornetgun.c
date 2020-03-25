@@ -160,18 +160,17 @@ w_hornetgun_release(void)
 	int r;
 	r = (float)input_sequence % 3;
 	switch (r) {
-	case 0:
-		Weapons_ViewAnimation(HORNETGUN_IDLE);
-		pl.w_idle_next = 1.875f;
-		break;
 	case 1:
 		Weapons_ViewAnimation(HORNETGUN_FIDGET1);
 		pl.w_idle_next = 2.5f;
 		break;
-	default:
+	case 2:
 		Weapons_ViewAnimation(HORNETGUN_FIDGET2);
 		pl.w_idle_next = 2.1875f;
 		break;
+	default:
+		Weapons_ViewAnimation(HORNETGUN_IDLE);
+		pl.w_idle_next = 1.875f;
 	}
 }
 

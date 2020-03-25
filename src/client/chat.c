@@ -30,6 +30,25 @@ void
 Chat_Draw(void)
 {
 	int i;
+
+	/* the voting stuff resides here too, for now */
+	if (serverkey("vote_cmd")) {
+		string tempstr;
+		vector temppos;
+		tempstr = sprintf("^3Vote: %s", serverkey("vote_cmd"));
+		temppos[0] = (video_res[0]/2) - (stringwidth(tempstr, TRUE, [12,12]) / 2);
+		temppos[1] = 96;
+		drawstring(temppos, tempstr, [12,12], [1,1,1], 1.0f, 0);
+
+		tempstr = sprintf(
+			"^2Yes: %s    ^1No: %s",
+					serverkey("votes_y"),
+					serverkey("votes_n")
+			);
+		temppos[0] = (video_res[0]/2) - (stringwidth(tempstr, TRUE, [12,12]) / 2);
+		drawstring(temppos + [0,16], tempstr, [12,12], [1,1,1], 1.0f, 0);
+	}
+
 	g_chatpos[0] = video_mins[0] + 16;
 	g_chatpos[1] = video_mins[1] + video_res[1] - 128;
 

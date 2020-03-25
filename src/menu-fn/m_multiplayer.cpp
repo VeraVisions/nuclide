@@ -162,12 +162,14 @@ void menu_multiplayer_init(void)
 	//mp_btnControls.SetExecute(btn_console);
 	mp_btnControls.SetPos(50,332);
 	Widget_Add(fn_multiplayer, mp_btnControls);
-	
+
 	mp_btnDone = spawn(CMainButton);
 	mp_btnDone.SetImage(BTN_DONE);
 	mp_btnDone.SetExecute(mp_btndone_start);
 	mp_btnDone.SetPos(50,364);
 	Widget_Add(fn_multiplayer, mp_btnDone);
+
+	Master_UpdateCache();
 }
 
 void menu_multiplayer_draw(void)
@@ -197,7 +199,6 @@ void menu_multiplayer_draw(void)
 			g_connected = TRUE;
 			g_connectstatus = CONNECT_NONE;
 			mp_btninet_start();
-			inet_btnrefresh();
 		}
 		mp_dgConnect.Draw();
 		WField_Static(162, 180, m_reslbl[IDS_WON_LOGIN], 320, 260,

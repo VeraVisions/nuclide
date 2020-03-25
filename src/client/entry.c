@@ -29,6 +29,8 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	registercommand("-use");
 	registercommand("+duck");
 	registercommand("-duck");
+	registercommand( "callvote" );
+	registercommand( "vote" );
 
 	/* Requested by Slacer */
 	registercommand("+zoomin");
@@ -569,6 +571,16 @@ CSQC_ConsoleCommand(string sCMD)
 	tokenize(sCMD);
 	
 	switch (argv(0)) {
+	case "vote":
+		if (argv(1) == "yes") {
+			sendevent("VoteY", "");
+		} else if (argv(1) == "no") {
+			sendevent("VoteN", "");
+		}
+		break;
+	case "callvote":
+		sendevent("CallVote", "s", substring(sCMD, 9, strlen(sCMD)-9));
+		break;
 	case "+zoomin":
 		pSeat->iZoomed = TRUE;
 		break;

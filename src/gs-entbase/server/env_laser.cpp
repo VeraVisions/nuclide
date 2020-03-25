@@ -19,8 +19,17 @@
 "target"                Target when triggered.
 "killtarget"            Target to kill when triggered.
 
-Shoots a frickin beam.
+Shoots a frickin lazer.
 */
+
+enumflags
+{
+	ENVLASER_CHANGED_ORIGIN,
+	ENVLASER_CHANGED_ANGLES,
+	ENVLASER_CHANGED_TEXTURE,
+	ENVLASER_CHANGED_ENDTEXTURE,
+	ENVLASER_CHANGED_STATE
+};
 
 enumflags
 {
@@ -36,6 +45,7 @@ enumflags
 class env_laser:CBaseTrigger
 {
 	int m_iState;
+	int m_iStateOld;
 	float m_flDPS;
 	string m_strLaserDest;
 	string m_strBeamTex;
@@ -46,6 +56,8 @@ class env_laser:CBaseTrigger
 	virtual void() think;
 	virtual void() Trigger;
 	virtual void() Respawn;
+	virtual void() ParentUpdate;
+	virtual float(entity, float) SendEntity;
 };
 
 void env_laser::think(void)
@@ -59,6 +71,7 @@ void env_laser::think(void)
 	}
 
 	t = (CBaseTrigger)find(world, CBaseEntity::m_strTargetName, m_strLaserDest);
+	angles = t.origin;
 
 	if (!t) {
 		print("env_laser without valid target. Aborting\n");
@@ -66,7 +79,6 @@ void env_laser::think(void)
 	}
 
 	traceline(origin, t.origin, FALSE, this);
-	te_beam(world, origin, t.origin);
 
 	if (trace_ent.takedamage) {
 		Damage_Apply(trace_ent, this, rint(m_flDPS), 0, DMG_GENERIC);
@@ -92,15 +104,81 @@ void env_laser::Respawn(void)
 	}
 }
 
+float env_laser::SendEntity(entity ePEnt, float fChanged)
+{
+	WriteByte(MSG_ENTITY, ENT_ENVLASER);
+	WriteFloat(MSG_ENTITY, fChanged);
+
+	if (fChanged & ENVLASER_CHANGED_ORIGIN) {
+		WriteCoord(MSG_ENTITY, origin[0]);
+		WriteCoord(MSG_ENTITY, origin[1]);
+		WriteCoord(MSG_ENTITY, origin[2]);
+	}
+	if (fChanged & ENVLASER_CHANGED_ANGLES) {
+		WriteCoord(MSG_ENTITY, angles[0]);
+		WriteCoord(MSG_ENTITY, angles[1]);
+		WriteCoord(MSG_ENTITY, angles[2]);
+	}
+	if (fChanged & ENVLASER_CHANGED_TEXTURE) {
+		WriteString(MSG_ENTITY, m_strBeamTex);
+	}
+	if (fChanged & ENVLASER_CHANGED_ENDTEXTURE) {
+		WriteString(MSG_ENTITY, m_strEndTex);
+	}
+	if (fChanged & ENVLASER_CHANGED_STATE) {
+		WriteByte(MSG_ENTITY, m_iState);
+	}
+
+	return TRUE;
+}
+
+void env_laser::ParentUpdate(void)
+{
+	/* Check our fields for networking */
+	if (origin != oldnet_origin) {
+		SendFlags |= ENVLASER_CHANGED_ORIGIN;
+		SendFlags |= ENVLASER_CHANGED_ANGLES;
+		SendFlags |= ENVLASER_CHANGED_STATE;
+		SendFlags |= ENVLASER_CHANGED_TEXTURE;
+		oldnet_origin = origin;
+	}
+	if (angles != oldnet_angles) {
+		SendFlags |= ENVLASER_CHANGED_ORIGIN;
+		SendFlags |= ENVLASER_CHANGED_ANGLES;
+		SendFlags |= ENVLASER_CHANGED_STATE;
+		SendFlags |= ENVLASER_CHANGED_TEXTURE;
+		oldnet_angles = angles;
+	}
+	if (m_iState != m_iStateOld) {
+		SendFlags |= ENVLASER_CHANGED_ORIGIN;
+		SendFlags |= ENVLASER_CHANGED_ANGLES;
+		SendFlags |= ENVLASER_CHANGED_STATE;
+		SendFlags |= ENVLASER_CHANGED_TEXTURE;
+		m_iStateOld = m_iState;
+	}
+
+	if (m_parent) {
+		entity p = find(world, CBaseEntity::m_strTargetName, m_parent);
+
+		if (!p) {
+			return;
+		}
+
+		setorigin(this, p.origin);
+	}
+}
+
 void env_laser::env_laser(void)
 {
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
 		case "texture":
 			m_strBeamTex = argv(i + 1);
+			precache_model(m_strBeamTex);
 			break;
 		case "EndSprite":
 			m_strEndTex = argv(i + 1);
+			precache_model(m_strEndTex);
 			break;
 		case "LaserTarget":
 			m_strLaserDest = argv(i + 1);
@@ -114,4 +192,6 @@ void env_laser::env_laser(void)
 	}
 
 	CBaseTrigger::CBaseTrigger();
+	gflags = GF_CANRESPAWN;
+	pvsflags = PVSF_IGNOREPVS;
 }

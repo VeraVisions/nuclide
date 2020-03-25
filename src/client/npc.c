@@ -93,7 +93,7 @@ NPC_ReadEntity(float new)
 	if (fl & NPC_BODY)
 		pl.body = readbyte();
 
-	if (new) {
+	if (new || (fl & NPC_BODY)) {
 		setcustomskin(pl, "", sprintf("geomset 1 %i\n", pl.body));
 	}
 

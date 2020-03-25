@@ -14,6 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED monster_scientist_dead (0 0.8 0.8) (-16 -16 0) (16 16 72)
+
+Monster.
+*/
+
 enum {
 	DSCIA_LYING1 = 37,
 	DSCIA_LYING2,
@@ -24,7 +29,7 @@ enum {
 	DSCIA_DEADHANG
 };
 
-class monster_scientist_dead:CBaseEntity
+class monster_scientist_dead:CBaseMonster
 {
 	int m_iPose;
 	void() monster_scientist_dead;
@@ -79,6 +84,7 @@ void monster_scientist_dead::Respawn(void)
 	health = 0;
 	velocity = [0,0,0];
 	iBleeds = TRUE;
+	SendFlags |= NPC_BODY;
 	
 	switch (m_iPose) {
 	case 1:
@@ -112,6 +118,13 @@ void monster_scientist_dead::monster_scientist_dead(void)
 		switch (argv(i)) {
 		case "pose":
 			m_iPose = stoi(argv(i+1));
+			break;
+		case "body":
+			body = stoi(argv(i+1)) + 1;
+			break;
+		case "skin":
+			skin = stoi(argv(i+1));
+			break;
 		default:
 			break;
 		}

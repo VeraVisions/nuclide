@@ -22,18 +22,24 @@ CMainButton lan_btnRefresh;
 CMainButton lan_btnDone;
 
 CFrame lan_frServers;
-CServerList lan_lbServers;
+CListBox lan_lbServers_Name;
+CListBox lan_lbServers_Ping;
+CListBox lan_lbServers_Map;
+CListBox lan_lbServers_Game;
+CListBox lan_lbServers_Players;
+CListBox lan_lbServers_Addresses;
 CScrollbar lan_sbServers;
 
 /* Button Callbacks */
 void lan_btnjoin(void)
 {
-	string addr = lan_lbServers.GetSelectedItem();
+	string addr = lan_lbServers_Addresses.GetSelectedItem();
 	
 	if (addr) {
 		localcmd(sprintf("connect %s\n", addr));
 	}
 }
+
 void lan_btncreate_start(void)
 {
 	static void lan_btncreate_end(void) {
@@ -62,26 +68,67 @@ void lan_btndone_start(void)
 	header.SetHeader(HEAD_LAN);
 	header.SetExecute(lan_btndone_end);
 }
+
 void lan_btnrefresh(void)
 {
 	int count = 0;
 	int added = 0;
 
-	//Master_RefreshCache();
+	Master_RefreshCache();
 	count = gethostcachevalue(SLIST_HOSTCACHEVIEWCOUNT);
-	lan_lbServers.Clear();
+	lan_lbServers_Name.Clear();
+	lan_lbServers_Ping.Clear();
+	lan_lbServers_Map.Clear();
+	lan_lbServers_Game.Clear();
+	lan_lbServers_Players.Clear();
+	lan_lbServers_Addresses.Clear();
 
 	for (int i = 0; i < count; i++) {
-		string address = gethostcachestring(srv_fldAdress, i);
+		string address;
+		string players;
+		string ping;
+
+		address = gethostcachestring(srv_fldAdress, i);
 		if (!address || !Server_IsLan(address)) {
 			continue;
 		}
-		lan_lbServers.AddEntry(address);
+
+		players = sprintf("%d/%d",
+						stof(gethostcachestring(srv_fldPlayers, i)),
+						stof(gethostcachestring(srv_fldMaxplayers, i))
+					);
+		ping = sprintf("%d", gethostcachevalue(srv_fldPing, i));
+		lan_lbServers_Name.AddEntry(gethostcachestring(srv_fldName, i));
+		lan_lbServers_Ping.AddEntry(ping);
+		lan_lbServers_Map.AddEntry(gethostcachestring(srv_fldMap, i));
+		lan_lbServers_Game.AddEntry(gethostcachestring(srv_fldGame, i));
+		lan_lbServers_Players.AddEntry(players);
+		lan_lbServers_Addresses.AddEntry(address);
 		print(sprintf("Adding %s to the LAN server list\n", address));
 		added++;
 	}
 	print(sprintf("Added %i LAN servers.\n", added));
 	lan_sbServers.SetMax(added);
+}
+
+void lan_lb_clicked(int val)
+{
+	lan_lbServers_Name.SetSelected(val);
+	lan_lbServers_Ping.SetSelected(val);
+	lan_lbServers_Map.SetSelected(val);
+	lan_lbServers_Game.SetSelected(val);
+	lan_lbServers_Players.SetSelected(val);
+	lan_lbServers_Addresses.SetSelected(val);
+}
+
+void lan_lb_changed(int val)
+{
+	lan_lbServers_Name.SetScroll(val);
+	lan_lbServers_Ping.SetScroll(val);
+	lan_lbServers_Map.SetScroll(val);
+	lan_lbServers_Game.SetScroll(val);
+	lan_lbServers_Players.SetScroll(val);
+	lan_lbServers_Addresses.SetScroll(val);
 }
 
 void menu_langames_init(void)
@@ -123,15 +170,42 @@ void menu_langames_init(void)
 	lan_frServers.SetSize(434-16,309);
 	Widget_Add(fn_lan, lan_frServers);
 
-	lan_lbServers = spawn(CServerList);
-	lan_lbServers.SetPos(196+3,140+3);
-	lan_lbServers.SetSize(434-6-16,309-6);
-	Widget_Add(fn_lan, lan_lbServers);
+	lan_lbServers_Name = spawn(CListBox);
+	lan_lbServers_Name.SetPos(199,140+3);
+	lan_lbServers_Name.SetSize(178,309-6);
+	lan_lbServers_Name.SetChanged(lan_lb_clicked);
+	Widget_Add(fn_lan, lan_lbServers_Name);
+
+	lan_lbServers_Ping = spawn(CListBox);
+	lan_lbServers_Ping.SetPos(377,140+3);
+	lan_lbServers_Ping.SetSize(45,309-6);
+	lan_lbServers_Ping.SetChanged(lan_lb_clicked);
+	Widget_Add(fn_lan, lan_lbServers_Ping);
+
+	lan_lbServers_Map = spawn(CListBox);
+	lan_lbServers_Map.SetPos(422,140+3);
+	lan_lbServers_Map.SetSize(75,309-6);
+	lan_lbServers_Map.SetChanged(lan_lb_clicked);
+	Widget_Add(fn_lan, lan_lbServers_Map);
+
+	lan_lbServers_Game = spawn(CListBox);
+	lan_lbServers_Game.SetPos(497,140+3);
+	lan_lbServers_Game.SetSize(75,309-6);
+	lan_lbServers_Game.SetChanged(lan_lb_clicked);
+	Widget_Add(fn_lan, lan_lbServers_Game);
+
+	lan_lbServers_Players = spawn(CListBox);
+	lan_lbServers_Players.SetPos(572,140+3);
+	lan_lbServers_Players.SetSize(42,309-6);
+	lan_lbServers_Players.SetChanged(lan_lb_clicked);
+	Widget_Add(fn_lan, lan_lbServers_Players);
+
+	lan_lbServers_Addresses = spawn(CListBox);
 
 	lan_sbServers = spawn(CScrollbar);
 	lan_sbServers.SetPos(614,141);
 	lan_sbServers.SetHeight(309);
-	//lan_sbServers.SetCallback(vm_sbres_changed);
+	lan_sbServers.SetCallback(lan_lb_changed);
 	//xlan_sbServers.SetMax(g_resolutions.length);
 	Widget_Add(fn_lan, lan_sbServers);
 }

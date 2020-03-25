@@ -214,22 +214,22 @@ w_python_release(void)
 {
 	player pl = (player)self;
 
-#ifdef CSQC
 	if (pl.w_idle_next > 0.0) {
 		return;
 	}
 
 	int r = (float)input_sequence % 4;
+
 	switch (r) {
-	case 0:
+	case 1:
 		Weapons_ViewAnimation(PYTHON_IDLE1);
 		pl.w_idle_next = 2.33f;
 		break;
-	case 1:
+	case 2:
 		Weapons_ViewAnimation(PYTHON_FIDGET);
 		pl.w_idle_next = 5.66f;
 		break;
-	case 2:
+	case 3:
 		Weapons_ViewAnimation(PYTHON_IDLE2);
 		pl.w_idle_next = 2.0f;
 		break;
@@ -238,7 +238,6 @@ w_python_release(void)
 		pl.w_idle_next = 2.93f;
 		break;
 	}
-#endif
 }
 
 void

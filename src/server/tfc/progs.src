@@ -72,5 +72,6 @@ client.c
 ../flashlight.c
 input.c
 ../valve/spawn.c
+../vote.c
 ../entry.c
 #endlist

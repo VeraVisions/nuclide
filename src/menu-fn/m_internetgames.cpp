@@ -26,13 +26,18 @@ CMainButton inet_btnChatRooms;
 CMainButton inet_btnDone;
 
 CFrame inet_frServers;
-CServerList inet_lbServers;
+CListBox inet_lbServers_Name;
+CListBox inet_lbServers_Ping;
+CListBox inet_lbServers_Map;
+CListBox inet_lbServers_Game;
+CListBox inet_lbServers_Players;
+CListBox inet_lbServers_Addresses;
 CScrollbar inet_sbServers;
 
 /* Button Callbacks */
 void inet_btnjoin(void)
 {
-	string addr = inet_lbServers.GetSelectedItem();
+	string addr = inet_lbServers_Addresses.GetSelectedItem();
 	
 	if (addr) {
 		localcmd(sprintf("connect %s\n", addr));
@@ -43,7 +48,7 @@ void inet_btncreate_start(void)
 	static void inet_btncreate_end(void) {
 		g_menupage = PAGE_CREATEGAMEINET;
 	}
-	cvar_set("sv_public", "1");
+	cvar_set("sv_public", "2");
 	localsound("../media/launch_upmenu1.wav");
 	header.SetStartEndPos(30,172,45,45);
 	header.SetStartEndSize(156,26,460,80);
@@ -72,22 +77,63 @@ void inet_btnrefresh(void)
 	int count = 0;
 	int added = 0;
 
-	//Master_RefreshCache();
-	count = gethostcachevalue(SLIST_HOSTCACHEVIEWCOUNT);
-	inet_lbServers.Clear();
+	Master_RefreshCache();
+	count = gethostcachevalue(SLIST_HOSTCACHETOTALCOUNT);
+
+	inet_lbServers_Name.Clear();
+	inet_lbServers_Ping.Clear();
+	inet_lbServers_Map.Clear();
+	inet_lbServers_Game.Clear();
+	inet_lbServers_Players.Clear();
+	inet_lbServers_Addresses.Clear();
 
 	for (int i = 0; i < count; i++) {
-		string address = gethostcachestring(srv_fldAdress, i);
+		string address;
+		string players;
+		string ping;
+
+		address = gethostcachestring(srv_fldAdress, i);
+
+		/* skip LAN */
 		if (!address || Server_IsLan(address)) {
 			continue;
 		}
-		inet_lbServers.AddEntry(address);
+
+		players = sprintf("%d/%d",
+						stof(gethostcachestring(srv_fldPlayers, i)),
+						stof(gethostcachestring(srv_fldMaxplayers, i))
+					);
+		ping = sprintf("%d", gethostcachevalue(srv_fldPing, i));
+		inet_lbServers_Name.AddEntry(gethostcachestring(srv_fldName, i));
+		inet_lbServers_Ping.AddEntry(ping);
+		inet_lbServers_Map.AddEntry(gethostcachestring(srv_fldMap, i));
+		inet_lbServers_Game.AddEntry(gethostcachestring(srv_fldGame, i));
+		inet_lbServers_Players.AddEntry(players);
+		inet_lbServers_Addresses.AddEntry(address);
 		print(sprintf("Adding %s to the Internet server list\n", address));
 		added++;
 	}
-	
 	print(sprintf("Added %i Internet servers.\n", added));
 	inet_sbServers.SetMax(added);
+}
+
+void inet_lb_clicked(int val)
+{
+	inet_lbServers_Name.SetSelected(val);
+	inet_lbServers_Ping.SetSelected(val);
+	inet_lbServers_Map.SetSelected(val);
+	inet_lbServers_Game.SetSelected(val);
+	inet_lbServers_Players.SetSelected(val);
+	inet_lbServers_Addresses.SetSelected(val);
+}
+void inet_lb_changed(int val)
+{
+	inet_lbServers_Name.SetScroll(val);
+	inet_lbServers_Ping.SetScroll(val);
+	inet_lbServers_Map.SetScroll(val);
+	inet_lbServers_Game.SetScroll(val);
+	inet_lbServers_Players.SetScroll(val);
+	inet_lbServers_Addresses.SetScroll(val);
 }
 
 void menu_internetgames_init(void)
@@ -147,15 +193,42 @@ void menu_internetgames_init(void)
 	inet_frServers.SetSize(464-16,294);
 	Widget_Add(fn_inet, inet_frServers);
 
-	inet_lbServers = spawn(CServerList);
-	inet_lbServers.SetPos(166+3,141+3);
-	inet_lbServers.SetSize(464-6-16,294-6);
-	Widget_Add(fn_inet, inet_lbServers);
+	inet_lbServers_Name = spawn(CListBox);
+	inet_lbServers_Name.SetPos(166+3,141+3);
+	inet_lbServers_Name.SetSize(188,294-6);
+	inet_lbServers_Name.SetChanged(inet_lb_clicked);
+	Widget_Add(fn_inet, inet_lbServers_Name);
+
+	inet_lbServers_Ping = spawn(CListBox);
+	inet_lbServers_Ping.SetPos(357,141+3);
+	inet_lbServers_Ping.SetSize(50,294-6);
+	inet_lbServers_Ping.SetChanged(inet_lb_clicked);
+	Widget_Add(fn_inet, inet_lbServers_Ping);
+
+	inet_lbServers_Map = spawn(CListBox);
+	inet_lbServers_Map.SetPos(407,141+3);
+	inet_lbServers_Map.SetSize(69,294-6);
+	inet_lbServers_Map.SetChanged(inet_lb_clicked);
+	Widget_Add(fn_inet, inet_lbServers_Map);
+
+	inet_lbServers_Game = spawn(CListBox);
+	inet_lbServers_Game.SetPos(476,141+3);
+	inet_lbServers_Game.SetSize(76,294-6);
+	inet_lbServers_Game.SetChanged(inet_lb_clicked);
+	Widget_Add(fn_inet, inet_lbServers_Game);
+
+	inet_lbServers_Players = spawn(CListBox);
+	inet_lbServers_Players.SetPos(552,141+3);
+	inet_lbServers_Players.SetSize(62,294-6);
+	inet_lbServers_Players.SetChanged(inet_lb_clicked);
+	Widget_Add(fn_inet, inet_lbServers_Players);
+
+	inet_lbServers_Addresses = spawn(CListBox);
 
 	inet_sbServers = spawn(CScrollbar);
 	inet_sbServers.SetPos(614,141);
 	inet_sbServers.SetHeight(294);
-	//inet_sbServers.SetCallback(vm_sbres_changed);
+	inet_sbServers.SetCallback(inet_lb_changed);
 	//xinet_sbServers.SetMax(g_resolutions.length);
 	Widget_Add(fn_inet, inet_sbServers);
 
@@ -169,9 +242,9 @@ void menu_internetgames_init(void)
 void menu_internetgames_draw(void)
 {
 	Widget_Draw(fn_inet);
-	Master_ResortCache();
+	resorthostcache();
 	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_INETGAMES],[460,80], [1,1,1], 1.0f, 1);
-	
+
 	/* Labels */
 	WLabel_Static(252, 128, m_reslbl[IDS_SERVER_GAMESERVER], 10, 10, [1,1,1],
 					1.0f, 0, font_arial);

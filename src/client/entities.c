@@ -29,7 +29,9 @@ void CSQC_Ent_Update(float new)
 	switch (t) {
 	case ENT_ENTITY:
 		CBaseEntity me = (CBaseEntity)self;
-		spawnfunc_CBaseEntity();
+		if (new) {
+			spawnfunc_CBaseEntity();
+		}
 		me.ReadEntity(readfloat());
 		break;
 	case ENT_PLAYER:
@@ -49,6 +51,13 @@ void CSQC_Ent_Update(float new)
 		break;
 	case ENT_AMBIENTSOUND:
 		Sound_ParseLoopingEntity(self, new);
+		break;
+	case ENT_ENVLASER:
+		env_laser l = (env_laser)self;
+		if (new) {
+			spawnfunc_env_laser();
+		}
+		l.ReadEntity(readfloat());
 		break;
 	default:
 		if (Game_Entity_Update(t, new) == FALSE) {

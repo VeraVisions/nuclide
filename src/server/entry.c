@@ -27,6 +27,7 @@ void StartFrame(void)
 	}
 
 	Game_StartFrame();
+	Vote_Frame();
 }
 
 void ClientConnect(float csqc_active)

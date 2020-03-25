@@ -14,13 +14,26 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED monster_rat (0 0.8 0.8) (-6 -6 0) (6 6 6)
+
+Monster.
+*/
+
 class monster_rat:CBaseEntity
 {
 	void() monster_rat;
+	virtual void() Respawn;
 };
+
+void monster_rat::Respawn(void)
+{
+	CBaseMonster::Respawn();
+	setsize(this, [-6,-6,-0], [6,6,6]);
+}
 
 void monster_rat::monster_rat(void)
 {
+	netname = "Rat";
 	CBaseEntity::CBaseEntity();
 	precache_model("models/bigrat.mdl");
 	solid = SOLID_SLIDEBOX;

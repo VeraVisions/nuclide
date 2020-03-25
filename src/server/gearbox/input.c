@@ -42,6 +42,7 @@ Game_Input(void)
 		if (self.impulse == 101) {
 			pl.health = 100;
 			pl.armor = 100;
+			pl.g_items |= ITEM_SUIT;
 			Weapons_AddItem(pl, WEAPON_CROWBAR);
 			Weapons_AddItem(pl, WEAPON_GLOCK);
 			Weapons_AddItem(pl, WEAPON_PYTHON);

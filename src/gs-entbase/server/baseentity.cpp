@@ -202,7 +202,7 @@ void CBaseEntity :: CBaseEntity ( void )
 	m_rendercolor = [1,1,1];
 	m_rendermode = 0;*/
 
-	gflags |= GF_CANRESPAWN;
+	gflags = GF_CANRESPAWN;
 	effects |= EF_NOSHADOW;
 
 	int nfields = tokenize( __fullspawndata );
@@ -234,7 +234,7 @@ void CBaseEntity :: CBaseEntity ( void )
 			m_rendercolor = stov( argv( i + 1 ) );
 			break;
 		case "alpha":
-			m_renderamt = stof( argv( i + 1 ) ) / 255;
+			m_renderamt = stof( argv( i + 1 ) );
 			break;
 		case "renderamt":
 			m_renderamt = stof( argv( i + 1 ) ) / 255;
@@ -281,7 +281,7 @@ void CBaseEntity::RendermodeUpdate(void)
 	}
 
 	colormod = m_rendercolor;
-	alpha = bound(0.001, ( m_renderamt / 255 ), 1.0);
+	alpha = bound(0.001, m_renderamt, 1.0);
 
 	if ( m_rendermode == RM_ADDITIVE ) {
 		effects = EF_FLAG2; // SSQC: EF_ADDITIVE
