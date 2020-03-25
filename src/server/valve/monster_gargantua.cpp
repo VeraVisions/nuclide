@@ -23,18 +23,13 @@ Gargantua
 class monster_gargantua:CBaseMonster
 {
 	void() monster_gargantua;
-	virtual void() Respawn;
 };
-
-void monster_gargantua::Respawn(void)
-{
-	CBaseMonster::Respawn();
-	setsize(this, [-32,-32,0], [32,32,128]);
-}
 
 void monster_gargantua::monster_gargantua(void)
 {
 	netname = "Gargantua";
 	model = "models/garg.mdl";
+	base_mins = [-32,-32,0];
+	base_maxs = [32,32,128];
 	CBaseMonster::CBaseMonster();
 }

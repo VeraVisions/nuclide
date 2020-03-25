@@ -27,8 +27,6 @@ class monster_hevsuit_dead:CBaseMonster
 
 	virtual void() Hide;
 	virtual void() Respawn;
-	virtual void(int) vPain;
-	virtual void(int) vDeath;
 	virtual void() Gib;
 };
 
@@ -37,19 +35,6 @@ void monster_hevsuit_dead::Gib(void)
 	takedamage = DAMAGE_NO;
 	Effect_GibHuman(this.origin);
 	Hide();
-}
-
-void monster_hevsuit_dead::vPain(int iHitBody)
-{
-
-}
-
-void monster_hevsuit_dead::vDeath(int iHitBody)
-{
-	if (health < -50) {
-		Gib();
-		return;
-	}
 }
 
 void monster_hevsuit_dead::Hide(void)

@@ -39,5 +39,7 @@ void monster_apache::monster_apache(void)
 {
 	netname = "Apache";
 	model = "models/apache.mdl";
+	base_mins = [-16,-16,0];
+	base_maxs = [16,16,72];
 	CBaseMonster::CBaseMonster();
 }

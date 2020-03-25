@@ -23,18 +23,13 @@ Bullsquid
 class monster_bullchicken:CBaseMonster
 {
 	void() monster_bullchicken;
-	virtual void() Respawn;
 };
-
-void monster_bullchicken::Respawn(void)
-{
-	CBaseMonster::Respawn();
-	setsize(this, [-32,-32,0], [32,32,64]);
-}
 
 void monster_bullchicken::monster_bullchicken(void)
 {
 	netname = "Bullsquid";
 	model = "models/bullsquid.mdl";
+	base_mins = [-32,-32,0];
+	base_maxs = [32,32,64];
 	CBaseMonster::CBaseMonster();
 }

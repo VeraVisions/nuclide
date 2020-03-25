@@ -20,25 +20,16 @@ Rat
 
 */
 
-class monster_rat:CBaseEntity
+class monster_rat:CBaseMonster
 {
 	void() monster_rat;
-	virtual void() Respawn;
 };
-
-void monster_rat::Respawn(void)
-{
-	CBaseMonster::Respawn();
-	setsize(this, [-6,-6,-0], [6,6,6]);
-}
 
 void monster_rat::monster_rat(void)
 {
 	netname = "Rat";
-	CBaseEntity::CBaseEntity();
-	precache_model("models/bigrat.mdl");
-	solid = SOLID_SLIDEBOX;
-	movetype = MOVETYPE_WALK;
-	setmodel(this, "models/bigrat.mdl");
-	setorigin(this, origin);
+	model = "models/bigrat.mdl";
+	base_mins = [-6,-6,-0];
+	base_maxs = [6,6,6];
+	CBaseMonster::CBaseMonster();
 }

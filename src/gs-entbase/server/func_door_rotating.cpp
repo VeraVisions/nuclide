@@ -306,7 +306,7 @@ void func_door_rotating::Respawn(void)
 #ifdef GS_BULLET_PHYSICS
 	takedamage = DAMAGE_YES;
 	health = 100;
-	vDeath = func_door_rotating::Unhinge;
+	Death = func_door_rotating::Unhinge;
 #endif
 
 	solid = SOLID_BSP;

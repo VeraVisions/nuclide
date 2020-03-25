@@ -83,8 +83,8 @@ CSEv_TeamJoin_f(float f)
 	pl.armor = pl.activeweapon = pl.g_items = 0;
 
 	pl.customphysics = Empty;
-	pl.vPain = Player_Pain;
-	pl.vDeath = Player_Death;
+	pl.Pain = Player_Pain;
+	pl.Death = Player_Death;
 	pl.iBleeds = TRUE;
 	forceinfokey(pl, "*spec", "0");
 	forceinfokey(self, "*deaths", ftos(self.deaths));

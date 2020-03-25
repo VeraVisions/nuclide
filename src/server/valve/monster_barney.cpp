@@ -134,8 +134,8 @@ class monster_barney:CBaseMonster
 	virtual void() Hide;
 	virtual void() Respawn;
 	virtual void() PlayerUse;
-	virtual void(int) vPain;
-	virtual void(int) vDeath;
+	virtual void(int) Pain;
+	virtual void(int) Death;
 	virtual void() Physics;
 	virtual void() Scream;
 	virtual void() WarnOthers;
@@ -361,7 +361,7 @@ void monster_barney::PlayerUse(void)
 	}
 }
 
-void monster_barney::vPain(int iHitBody)
+void monster_barney::Pain(int iHitBody)
 {
 	
 	WarnOthers();
@@ -383,7 +383,7 @@ void monster_barney::vPain(int iHitBody)
 	m_flPainTime = time + 0.25f;
 }
 
-void monster_barney::vDeath(int iHitBody)
+void monster_barney::Death(int iHitBody)
 {
 	int r;
 	r = floor(random(0,barney_snddie.length));

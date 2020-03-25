@@ -23,18 +23,13 @@ Barnacle
 class monster_barnacle:CBaseMonster
 {
 	void() monster_barnacle;
-	virtual void() Respawn;
 };
-
-void monster_barnacle::Respawn(void)
-{
-	CBaseMonster::Respawn();
-	setsize(this, [-16,-16,-36], [16,16,0]);
-}
 
 void monster_barnacle::monster_barnacle(void)
 {
 	netname = "Barnacle";
 	model = "models/barnacle.mdl";
+	base_mins = [-16,-16,-36];
+	base_maxs = [16,16,0];
 	CBaseMonster::CBaseMonster();
 }

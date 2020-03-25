@@ -141,8 +141,8 @@ void Game_PutClientInServer(void)
 		self.solid = SOLID_SLIDEBOX;
 		self.movetype = MOVETYPE_WALK;
 		self.flags = FL_CLIENT;
-		self.vPain = Player_Pain;
-		self.vDeath = Player_Death;
+		self.Pain = Player_Pain;
+		self.Death = Player_Death;
 		self.iBleeds = TRUE;
 		self.pvsflags = PVSF_IGNOREPVS;
 		self.fSlotGrenade = 0;

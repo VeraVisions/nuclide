@@ -29,5 +29,7 @@ void monster_alien_slave::monster_alien_slave(void)
 {
 	netname = "Alien Slave";
 	model = "models/islave.mdl";
+	base_mins = [-16,-16,0];
+	base_maxs = [16,16,72];
 	CBaseMonster::CBaseMonster();
 }

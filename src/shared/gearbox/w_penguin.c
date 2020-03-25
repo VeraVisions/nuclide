@@ -130,8 +130,7 @@ void
 penguin_die(int i)
 {
 	/* clear this first to avoid infinite recursion */
-	self.customphysics = __NULL__;
-	self.vDeath = __NULL__;
+	self.health = 0;
 
 	/* now we can explodededededed */
 	Effect_CreateExplosion(self.origin);
@@ -155,7 +154,7 @@ penguin_pain(int i)
 void
 w_penguin_deploy(void)
 {
-	entity pingu = spawn();
+	CBaseEntity pingu = spawn(CBaseEntity);
 	pingu.owner = self;
 	pingu.goalentity = self;
 	pingu.netname = "Penguin";
@@ -169,10 +168,10 @@ w_penguin_deploy(void)
 	pingu.customphysics = penguin_ai;
 	pingu.angles = self.angles;
 	pingu.health = 20;
-	pingu.vPain = penguin_pain;
+	pingu.Pain = penguin_pain;
 	pingu.takedamage = DAMAGE_YES;
 	pingu.aiment = __NULL__;
-	pingu.vDeath = penguin_die;
+	pingu.Death = penguin_die;
 	pingu.weapon = 3.0f;
 	penguin_squeak(pingu);
 }

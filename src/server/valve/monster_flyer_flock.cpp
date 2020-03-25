@@ -23,18 +23,13 @@ Boid
 class monster_flyer_flock:CBaseMonster
 {
 	void() monster_flyer_flock;
-	virtual void() Respawn;
 };
-
-void monster_flyer_flock::Respawn(void)
-{
-	CBaseMonster::Respawn();
-	setsize(this, [-16,-16,0], [16,16,16]);
-}
 
 void monster_flyer_flock::monster_flyer_flock(void)
 {
 	netname = "Boid";
 	model = "models/aflock.mdl";
+	base_mins = [-16,-16,0];
+	base_maxs = [16,16,16];
 	CBaseMonster::CBaseMonster();
 }

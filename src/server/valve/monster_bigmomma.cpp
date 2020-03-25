@@ -23,18 +23,13 @@ Gonarch
 class monster_bigmomma:CBaseMonster
 {
 	void() monster_bigmomma;
-	virtual void() Respawn;
 };
-
-void monster_bigmomma::Respawn(void)
-{
-	CBaseMonster::Respawn();
-	setsize(this, [-95,-95,0], [95,95,190]);
-}
 
 void monster_bigmomma::monster_bigmomma(void)
 {
 	netname = "Gonarch";
 	model = "models/big_mom.mdl";
+	base_mins = [-95,-95,0];
+	base_maxs = [95,95,190];
 	CBaseMonster::CBaseMonster();
 }

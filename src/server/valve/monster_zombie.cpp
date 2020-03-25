@@ -67,31 +67,58 @@ enum {
 	ZOMA_RISESNACK
 };
 
-enum {
-	ZOMB_IDLE,
-	ZOMB_WALK,
-	ZOMB_DEAD
+string zom_sndattack[] = {
+	"zombie/zo_attack1.wav",
+	"zombie/zo_attack2.wav"
+};
+
+string zom_sndclaw[] = {
+	"zombie/claw_strike1.wav",
+	"zombie/claw_strike2.wav",
+	"zombie/claw_strike3.wav"
+};
+
+string zom_sndclawmiss[] = {
+	"zombie/claw_miss1.wav",
+	"zombie/claw_miss2.wav"
+};
+
+string zom_sndidle[] = {
+	"zombie/zo_idle1.wav",
+	"zombie/zo_idle2.wav",
+	"zombie/zo_idle3.wav",
+	"zombie/zo_idle4.wav"
+};
+
+string zom_sndpain[] = {
+	"zombie/zo_pain1.wav",
+	"zombie/zo_pain2.wav"
+};
+
+string zom_sndsee[] = {
+	"zombie/zo_alert10.wav",
+	"zombie/zo_alert20.wav",
+	"zombie/zo_alert30.wav"
 };
 
 class monster_zombie:CBaseMonster
 {
-	float m_flScaredTime;
-	float m_flScreamTime;
+	float m_flIdleTime;
 	float m_flPainTime;
-	float m_flChangePath;
-	float m_flTraceTime;
-	float m_flPitch;
-	int m_iFlags;
 
 	void() monster_zombie;
 
-	virtual void(int) vPain;
-	virtual void(int) vDeath;
+	virtual void(int) Pain;
+	virtual void(int) Death;
+	virtual void(void) IdleNoise;
 	virtual void(void) Respawn;
 };
 
-void monster_zombie::vPain(int iHitBody)
+void
+monster_zombie::Pain(int iHitBody)
 {
+	CBaseMonster::Pain(iHitBody);
+
 	if (m_flPainTime > time) {
 		return;
 	}
@@ -100,64 +127,87 @@ void monster_zombie::vPain(int iHitBody)
 		return;
 	}
 
-	int rand = floor(random(0,sci_sndpain.length));
-	Speak(sci_sndpain[rand]);
+	int rand = floor(random(0,zom_sndpain.length));
+	Speak(zom_sndpain[rand]);
 	frame = ZOMA_FLINCH + floor(random(0, 2));
 	m_flPainTime = time + 0.25f;
 }
 
-void monster_zombie::vDeath(int iHitBody)
+void
+monster_zombie::Death(int iHitBody)
 {
-	think = Respawn;
-	nextthink = time + 10.0f;
+	/* if we're already dead (corpse) don't change animations */
+	if (style != MONSTER_DEAD) {
+		/* headshots == different animation */
+		if (iHitBody == BODY_HEAD) {
+			if (random() < 0.5) {
+				frame = ZOMA_DIEHS;
+			} else {
+				frame = ZOMA_DIEHS2;
+			}
+		} else {
+			frame = ZOMA_DIE + floor(random(0, 3));
+		}
 
-	SendFlags |= NPC_FRAME;
-	m_iFlags = 0x0;
+		/* the sound */
+		int rand = floor(random(0,zom_sndpain.length));
+		Speak(zom_sndpain[rand]);
+	}
 
-	if (health < -50) {
-		Gib();
+	/* set the functional differences */
+	CBaseMonster::Death(iHitBody);
+}
+
+void
+monster_zombie::IdleNoise(void)
+{
+	/* don't make noise if we're dead (corpse) */
+	if (style == MONSTER_DEAD) {
 		return;
 	}
 
-	flags &= ~FL_MONSTER;
-	movetype = MOVETYPE_NONE;
-	solid = SOLID_CORPSE;
-
-	if (style != ZOMB_DEAD) {
-		frame = ZOMA_DIE + floor(random(0, 3));
-		style = ZOMB_DEAD;
+	if (m_flIdleTime > time) {
+		return;
 	}
+	m_flIdleTime = time + 2.0f + random(0,5);
+
+	int rand = floor(random(0, zom_sndidle.length));
+	Speak(zom_sndidle[rand]);
 }
 
-void monster_zombie::Respawn(void)
+void
+monster_zombie::Respawn(void)
 {
-	v_angle[0] = Math_FixDelta(m_oldAngle[0]);
-	v_angle[1] = Math_FixDelta(m_oldAngle[1]);
-	v_angle[2] = Math_FixDelta(m_oldAngle[2]);
-
-	setorigin(this, m_oldOrigin);
-	angles = v_angle;
-	solid = SOLID_SLIDEBOX;
-	movetype = MOVETYPE_WALK;
-	setmodel(this, m_oldModel);
-	setsize(this, VEC_HULL_MIN + [0,0,36], VEC_HULL_MAX + [0,0,36]);
-	takedamage = DAMAGE_YES;
-	iBleeds = TRUE;
-	customphysics = Physics;
+	CBaseMonster::Respawn();
 	frame = ZOMA_IDLE;
-	SendFlags |= NPC_FRAME;
-	health = 50;
-	velocity = [0,0,0];
-	m_iFlags = 0x0;
-	SendFlags = 0xff;
-	style = ZOMB_IDLE;
-	netname = "Zombie";
 }
 
-void monster_zombie::monster_zombie(void)
+void
+monster_zombie::monster_zombie(void)
 {
+	for (int i = 0; i < zom_sndattack.length; i++) {
+		precache_sound(zom_sndattack[i]);
+	}
+	for (int i = 0; i < zom_sndclaw.length; i++) {
+		precache_sound(zom_sndclaw[i]);
+	}
+	for (int i = 0; i < zom_sndclawmiss.length; i++) {
+		precache_sound(zom_sndclawmiss[i]);
+	}
+	for (int i = 0; i < zom_sndidle.length; i++) {
+		precache_sound(zom_sndidle[i]);
+	}
+	for (int i = 0; i < zom_sndpain.length; i++) {
+		precache_sound(zom_sndpain[i]);
+	}
+	for (int i = 0; i < zom_sndsee.length; i++) {
+		precache_sound(zom_sndsee[i]);
+	}
+
+	netname = "Zombie";
 	model = "models/zombie.mdl";
-	CBaseEntity::CBaseEntity();
-	precache_model(m_oldModel);
-	Respawn();
+	base_health = 50;
+	base_mins = [-16,-16,0];
+	base_maxs = [16,16,72];
+	CBaseMonster::CBaseMonster();
 }

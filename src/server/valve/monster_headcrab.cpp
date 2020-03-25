@@ -23,18 +23,13 @@ Headcrab
 class monster_headcrab:CBaseMonster
 {
 	void() monster_headcrab;
-	virtual void() Respawn;
 };
-
-void monster_headcrab::Respawn(void)
-{
-	CBaseMonster::Respawn();
-	setsize(this, [-16,-16,0], [16,16,36]);
-}
 
 void monster_headcrab::monster_headcrab(void)
 {
 	netname = "Headcrab";
 	model = "models/headcrab.mdl";
+	base_mins = [-16,-16,0];
+	base_maxs = [16,16,36];
 	CBaseMonster::CBaseMonster();
 }

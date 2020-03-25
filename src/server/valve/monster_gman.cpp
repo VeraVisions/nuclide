@@ -29,7 +29,6 @@ class monster_gman:CBaseMonster
 void monster_gman::Respawn(void)
 {
 	CBaseMonster::Respawn();
-	movetype = MOVETYPE_NONE;
 	takedamage = DAMAGE_NO;
 	iBleeds = FALSE;
 }
@@ -38,5 +37,7 @@ void monster_gman::monster_gman(void)
 {
 	netname = "G-Man";
 	model = "models/gman.mdl";
+	base_mins = [-16,-16,0];
+	base_maxs = [16,16,72];
 	CBaseMonster::CBaseMonster();
 }

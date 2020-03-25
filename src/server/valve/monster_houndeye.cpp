@@ -23,18 +23,13 @@ Houndeye
 class monster_houndeye:CBaseMonster
 {
 	void() monster_houndeye;
-	virtual void() Respawn;
 };
-
-void monster_houndeye::Respawn(void)
-{
-	CBaseMonster::Respawn();
-	setsize(this, [-16,-16,0], [16,16,36]);
-}
 
 void monster_houndeye::monster_houndeye(void)
 {
 	netname = "Houndeye";
 	model = "models/houndeye.mdl";
+	base_mins = [-16,-16,0];
+	base_maxs = [16,16,36];
 	CBaseMonster::CBaseMonster();
 }

@@ -18,7 +18,7 @@ class CBasePhysics:CBaseEntity
 	virtual void() Respawn;
 	virtual void() touch;
 	virtual void() TouchThink;
-	virtual void(entity, int, int) vPain;
+	virtual void(int) Pain;
 };
 
 void CBasePhysics::TouchThink(void)
@@ -63,11 +63,11 @@ void CBasePhysics::touch(void)
 #endif
 }
 
-void CBasePhysics::vPain(entity eAttacker, int iType, int iDamage)
+void CBasePhysics::Pain(int body)
 {
 #ifdef GS_BULLET_PHYSICS
 	makevectors(vectoangles(origin - trace_endpos));
-	physics_addforce(this, v_forward * iDamage, trace_endpos);
+	physics_addforce(this, v_forward * 20, trace_endpos);
 	health = 100000;
 	physics_enable(this, TRUE);
 #endif

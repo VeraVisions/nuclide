@@ -14,12 +14,23 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+enum {
+	MONSTER_IDLE,
+	MONSTER_WALK,
+	MONSTER_RUN,
+	MONSTER_DEAD
+};
+
 class CBaseMonster:CBaseEntity
 {
 	int body;
 	int oldnet_body;
 	vector oldnet_velocity;
 	float m_flPitch;
+	int m_iFlags;
+	vector base_mins;
+	vector base_maxs;
+	int base_health;
 
 	void() CBaseMonster;
 
@@ -27,9 +38,10 @@ class CBaseMonster:CBaseEntity
 	virtual void() Hide;
 	virtual void() Respawn;
 	virtual void() PlayerUse;
-	virtual void(int) vPain;
-	virtual void(int) vDeath;
+	virtual void(int) Pain;
+	virtual void(int) Death;
 	virtual void() Physics;
+	virtual void() IdleNoise;
 	virtual void() Gib;
 	virtual void(string) Speak;
 	virtual float(entity, float) SendEntity;
@@ -93,6 +105,11 @@ void CBaseMonster::Gib(void)
 	Hide();
 }
 
+void CBaseMonster::IdleNoise(void)
+{
+
+}
+
 void CBaseMonster::Physics(void)
 {
 	input_movevalues = [0,0,0];
@@ -105,6 +122,8 @@ void CBaseMonster::Physics(void)
 
 	runstandardplayerphysics(this);
 	movetype = MOVETYPE_NONE;
+
+	IdleNoise();
 }
 
 void CBaseMonster::touch(void)
@@ -157,21 +176,27 @@ void CBaseMonster::ParentUpdate(void)
 	oldnet_body = body;
 }
 
-void CBaseMonster::vPain(int iHitBody)
+void CBaseMonster::Pain(int iHitBody)
 {
 
 }
 
-void CBaseMonster::vDeath(int iHitBody)
+void CBaseMonster::Death(int iHitBody)
 {
-	customphysics = __NULL__;
+	m_iFlags = 0x0;
 
 	if (health < -50) {
 		Gib();
 		return;
 	}
 
+	/* make sure we're not causing any more obituaries */
+	flags &= ~FL_MONSTER;
+
+	/* gibbing action */
+	movetype = MOVETYPE_NONE;
 	solid = SOLID_CORPSE;
+	style = MONSTER_DEAD;
 }
 
 void CBaseMonster::Hide(void)
@@ -184,22 +209,26 @@ void CBaseMonster::Hide(void)
 
 void CBaseMonster::Respawn(void)
 {
-	flags |= FL_MONSTER;
-	setorigin(this, m_oldOrigin);
+	v_angle[0] = Math_FixDelta(m_oldAngle[0]);
+	v_angle[1] = Math_FixDelta(m_oldAngle[1]);
+	v_angle[2] = Math_FixDelta(m_oldAngle[2]);
 	angles = v_angle;
 	solid = SOLID_SLIDEBOX;
-	movetype = MOVETYPE_NONE;
-	setmodel(this, m_oldModel);
-	setsize(this, VEC_HULL_MIN + [0,0,36], VEC_HULL_MAX + [0,0,36]);
+	movetype = MOVETYPE_WALK;
 	takedamage = DAMAGE_YES;
 	iBleeds = TRUE;
 	customphysics = Physics;
-	health = 100;
 	velocity = [0,0,0];
+	m_iFlags = 0x0;
+	SendFlags = 0xff;
+	style = MONSTER_IDLE;
+	health = base_health;
+	setmodel(this, m_oldModel);
+	setsize(this, base_mins, base_maxs);
+	setorigin(this, m_oldOrigin);
 }
 
 void CBaseMonster::CBaseMonster(void)
 {
 	CBaseEntity::CBaseEntity();
-	precache_model(m_oldModel);
 }

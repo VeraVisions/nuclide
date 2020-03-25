@@ -27,8 +27,6 @@ class monster_barney_dead:CBaseEntity
 
 	virtual void() Hide;
 	virtual void() Respawn;
-	virtual void(int) vPain;
-	virtual void(int) vDeath;
 	virtual void() Gib;
 };
 
@@ -37,19 +35,6 @@ void monster_barney_dead::Gib(void)
 	takedamage = DAMAGE_NO;
 	Effect_GibHuman(this.origin);
 	Hide();
-}
-
-void monster_barney_dead::vPain(int iHitBody)
-{
-
-}
-
-void monster_barney_dead::vDeath(int iHitBody)
-{
-	if (health < -50) {
-		Gib();
-		return;
-	}
 }
 
 void monster_barney_dead::Hide(void)
@@ -81,7 +66,7 @@ void monster_barney_dead::Respawn(void)
 void monster_barney_dead::monster_barney_dead(void)
 {
 	model = "models/barney.mdl";
-	
+
 	for (int i = 1; i < (tokenize(__fullspawndata)-1); i += 2) {
 		switch (argv(i)) {
 		case "pose":
@@ -90,7 +75,7 @@ void monster_barney_dead::monster_barney_dead(void)
 			break;
 		}
 	}
-	
+
 	CBaseEntity::CBaseEntity();
 	precache_model(m_oldModel);
 	Respawn();

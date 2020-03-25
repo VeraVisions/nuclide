@@ -59,7 +59,7 @@ void Game_Input(void)
 			// Respawn all the entities
 			for (entity a = world; (a = find(a, classname, "func_breakable"));) {
 				func_breakable caw = (func_breakable)a;
-				caw.vDeath(world, 0, 0);
+				caw.Death(0);
 			}
 			bprint(PRINT_HIGH, "BREAK EVERYTHING!\n");
 		}

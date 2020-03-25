@@ -29,5 +29,7 @@ void monster_human_grunt::monster_human_grunt(void)
 {
 	netname = "Grunt";
 	model = "models/hgrunt.mdl";
+	base_mins = [-16,-16,0];
+	base_maxs = [16,16,72];
 	CBaseMonster::CBaseMonster();
 }

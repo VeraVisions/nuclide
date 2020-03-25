@@ -29,5 +29,7 @@ void monster_alien_controller::monster_alien_controller(void)
 {
 	netname = "Alien Controller";
 	model = "models/controller.mdl";
+	base_mins = [-16,-16,0];
+	base_maxs = [16,16,72];
 	CBaseMonster::CBaseMonster();
 }

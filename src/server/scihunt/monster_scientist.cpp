@@ -317,8 +317,8 @@ class monster_scientist:CBaseMonster
 	virtual void() Hide;
 	virtual void() Respawn;
 	virtual void() PlayerUse;
-	virtual void(int) vPain;
-	virtual void(int) vDeath;
+	virtual void(int) Pain;
+	virtual void(int) Death;
 	virtual void() Physics;
 	virtual void() Scream;
 	virtual void() WarnOthers;
@@ -548,7 +548,7 @@ void monster_scientist::PlayerUse(void)
 	}
 }
 
-void monster_scientist::vPain(int iHitBody)
+void monster_scientist::Pain(int iHitBody)
 {
 	
 	WarnOthers();
@@ -570,7 +570,7 @@ void monster_scientist::vPain(int iHitBody)
 	m_flPainTime = time + 0.25f;
 }
 
-void monster_scientist::vDeath(int iHitBody)
+void monster_scientist::Death(int iHitBody)
 {
 	int r;
 	r = floor(random(0,sci_snddie.length));

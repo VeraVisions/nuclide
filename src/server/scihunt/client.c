@@ -195,8 +195,8 @@ void Game_PutClientInServer(void)
 	pl.SendFlags = UPDATE_ALL;
 
 	pl.customphysics = Empty;
-	pl.vPain = Player_Pain;
-	pl.vDeath = Player_Death;
+	pl.Pain = Player_Pain;
+	pl.Death = Player_Death;
 	pl.iBleeds = TRUE;
 	forceinfokey(pl, "*spec", "0");
 	forceinfokey(self, "*deaths", ftos(self.deaths));

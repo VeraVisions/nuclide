@@ -88,19 +88,16 @@ Damage_Apply(entity t, entity c, float dmg, int w, int type)
 	/* set this global in case we need it later */
 	g_eAttacker = c;
 
-	entity eOld = self;
-	self = t;
+	CBaseEntity s = (CBaseEntity)t;
 
-	if (self.health <= 0) {
+	if (s.health <= 0) {
 		if (t.flags & FL_MONSTER || t.flags & FL_CLIENT) {
 			Damage_Obituary(c, t, w, 0);
 		}
-		self.vDeath(trace_surface_id);
+		s.Death(trace_surface_id);
 	} else {
-		self.vPain(trace_surface_id);
+		s.Pain(trace_surface_id);
 	}
-
-	self = eOld;
 }
 
 /* physical check of whether or not we can trace important parts of an ent */

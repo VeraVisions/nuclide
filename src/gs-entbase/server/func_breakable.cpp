@@ -85,11 +85,11 @@ class func_breakable:CBaseTrigger
 	virtual void() Trigger;
 	virtual void() PlayerTouch;
 	/*virtual void() PressureDeath;*/
-	virtual void(entity eAttacker, int iType, int iDamage) vPain;
-	virtual void(entity eAttacker, int iType, int iDamage) vDeath;
+	virtual void(int) Pain;
+	virtual void(int) Death;
 };
 
-void func_breakable::vPain (entity attacker, int type, int damage)
+void func_breakable::Pain (int body)
 {
 	if (spawnflags & SF_TRIGGER) {
 		return;
@@ -139,13 +139,13 @@ void func_breakable::Explode(void)
 	CBaseEntity::Hide();
 }
 
-void func_breakable::vDeath (entity attacker, int type, int damage)
+void func_breakable::Death(int body)
 {
 	if (m_iMaterial == BREAKMT_GLASS_UNBREAKABLE) {
 		return;
 	}
 	health = 0;
-	eActivator = attacker;
+	eActivator = g_eAttacker;
 
 	/* This may seem totally absurd. That's because it is. It's very
 	 * unreliable but exploding breakables in close proximity it WILL cause
@@ -165,12 +165,12 @@ void func_breakable::vDeath (entity attacker, int type, int damage)
 
 void func_breakable::Trigger(void)
 {
-	func_breakable::vDeath(world, 0, 0);
+	func_breakable::Death(0);
 }
 
 /*void func_breakable::PressureDeath(void)
 {
-	func_breakable::vDeath(m_pressAttacker, m_pressType, m_pressDamage);
+	func_breakable::Death(m_pressAttacker, m_pressType, m_pressDamage);
 }*/
 
 void func_breakable::PlayerTouch(void)

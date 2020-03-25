@@ -23,18 +23,13 @@ Leech
 class monster_leech:CBaseMonster
 {
 	void() monster_leech;
-	virtual void() Respawn;
 };
-
-void monster_leech::Respawn(void)
-{
-	CBaseMonster::Respawn();
-	setsize(this, [-6,-6,0], [6,6,6]);
-}
 
 void monster_leech::monster_leech(void)
 {
 	netname = "Leech";
 	model = "models/leech.mdl";
+	base_mins = [-6,-6,0];
+	base_maxs = [6,6,6];
 	CBaseMonster::CBaseMonster();
 }

@@ -29,5 +29,7 @@ void monster_human_assassin::monster_human_assassin(void)
 {
 	netname = "Assassin";
 	model = "models/hassassin.mdl";
+	base_mins = [-16,-16,0];
+	base_maxs = [16,16,72];
 	CBaseMonster::CBaseMonster();
 }

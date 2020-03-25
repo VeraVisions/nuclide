@@ -23,18 +23,13 @@ Tentacle
 class monster_tentacle:CBaseMonster
 {
 	void() monster_tentacle;
-	virtual void() Respawn;
 };
-
-void monster_tentacle::Respawn(void)
-{
-	CBaseMonster::Respawn();
-	setsize(this, [-32,-32,0], [32,32,64]);
-}
 
 void monster_tentacle::monster_tentacle(void)
 {
 	netname = "Tentacle";
 	model = "models/tentacle2.mdl";
+	base_mins = [-32,-32,0];
+	base_maxs = [32,32,64];
 	CBaseMonster::CBaseMonster();
 }

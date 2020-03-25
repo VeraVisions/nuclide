@@ -29,15 +29,15 @@ class monster_osprey:CBaseMonster
 void monster_osprey::Respawn(void)
 {
 	CBaseMonster::Respawn();
-	movetype = MOVETYPE_NONE;
 	takedamage = DAMAGE_NO;
 	iBleeds = FALSE;
-	setsize(this, [-480,-480,-112], [480,480,24]);
 }
 
 void monster_osprey::monster_osprey(void)
 {
 	netname = "Osprey";
 	model = "models/osprey.mdl";
+	base_mins = [-480,-480,-112];
+	base_maxs = [480,480,24];
 	CBaseMonster::CBaseMonster();
 }

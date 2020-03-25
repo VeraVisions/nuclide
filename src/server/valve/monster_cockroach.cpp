@@ -23,18 +23,13 @@ Cockroach
 class monster_cockroach:CBaseMonster
 {
 	void() monster_cockroach;
-	virtual void() Respawn;
 };
-
-void monster_cockroach::Respawn(void)
-{
-	CBaseMonster::Respawn();
-	setsize(this, [-1,-1,0], [1,1,1]);
-}
 
 void monster_cockroach::monster_cockroach(void)
 {
 	netname = "Cockroach";
 	model = "models/roach.mdl";
+	base_mins = [-1,-1,0];
+	base_maxs = [1,1,1];
 	CBaseMonster::CBaseMonster();
 }

@@ -23,18 +23,13 @@ Nihilanth
 class monster_nihilanth:CBaseMonster
 {
 	void() monster_nihilanth;
-	virtual void() Respawn;
 };
-
-void monster_nihilanth::Respawn(void)
-{
-	CBaseMonster::Respawn();
-	setsize(this, [-192,-192,-32], [192,192,384]);
-}
 
 void monster_nihilanth::monster_nihilanth(void)
 {
 	netname = "Nihilanth";
 	model = "models/nihilanth.mdl";
+	base_mins = [-192,-192,-32];
+	base_maxs = [192,192,384];
 	CBaseMonster::CBaseMonster();
 }

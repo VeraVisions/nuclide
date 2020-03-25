@@ -72,6 +72,8 @@ class CBaseEntity
 	virtual void() RendermodeUpdate;
 	virtual void() ParentUpdate;
 	virtual float(entity, float) SendEntity;
+	virtual void(int iHitBody) Pain;
+	virtual void(int iHitBody) Death;
 };
 
 /* Make sure StartFrame calls this */
@@ -126,6 +128,16 @@ float CBaseEntity::SendEntity(entity ePEnt, float fChanged)
 	}
 
 	return TRUE;
+}
+
+void CBaseEntity::Pain(int body)
+{
+	
+}
+
+void CBaseEntity::Death(int body)
+{
+	
 }
 
 /* Make sure StartFrame calls this */

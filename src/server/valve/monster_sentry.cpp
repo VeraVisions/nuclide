@@ -29,5 +29,7 @@ void monster_sentry::monster_sentry(void)
 {
 	netname = "Sentry";
 	model = "models/sentry.mdl";
+	base_mins = [-16,-16,0];
+	base_maxs = [16,16,72];
 	CBaseMonster::CBaseMonster();
 }

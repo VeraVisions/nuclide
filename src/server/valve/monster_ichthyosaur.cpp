@@ -23,18 +23,13 @@ Ichthyosaur
 class monster_ichthyosaur:CBaseMonster
 {
 	void() monster_ichthyosaur;
-	virtual void() Respawn;
 };
-
-void monster_ichthyosaur::Respawn(void)
-{
-	CBaseMonster::Respawn();
-	setsize(this, [-32,-32,0], [32,32,64]);
-}
 
 void monster_ichthyosaur::monster_ichthyosaur(void)
 {
 	netname = "Ichthyosaur";
 	model = "models/icky.mdl";
+	base_mins = [-32,-32,0];
+	base_maxs = [32,32,64];
 	CBaseMonster::CBaseMonster();
 }

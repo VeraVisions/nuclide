@@ -23,18 +23,13 @@ Automatic Turret (small)
 class monster_miniturret:CBaseMonster
 {
 	void() monster_miniturret;
-	virtual void() Respawn;
 };
-
-void monster_miniturret::Respawn(void)
-{
-	CBaseMonster::Respawn();
-	setsize(this, [-16,-16,-32], [16,16,32]);
-}
 
 void monster_miniturret::monster_miniturret(void)
 {
 	netname = "Mini-Turret";
 	model = "models/miniturret.mdl";
+	base_mins = [-16,-16,-32];
+	base_maxs = [16,16,32];
 	CBaseMonster::CBaseMonster();
 }

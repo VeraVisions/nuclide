@@ -37,8 +37,6 @@ entity g_eAttacker;
 /* Generic entity fields */
 .void() PlayerUse;
 .int iBleeds;
-.void(int iHitBody) vPain;
-.void(int iHitBody) vDeath;
 .entity eUser;
 .float material;
 .float armor;

@@ -68,11 +68,11 @@ class func_button:CBaseTrigger
 	virtual void() Blocked;
 	virtual void() Trigger;
 	virtual void() Use;
-	virtual void(entity eAttacker, int iType, int iDamage) vPain;
-	virtual void(entity eAttacker, int iType, int iDamage) vDeath;
+	virtual void(int) Pain;
+	virtual void(int) Death;
 	
 	virtual void() SetMovementDirection;
-	virtual void(vector vdest, void() func) MoveToDestination;
+	virtual void(vector, void()) MoveToDestination;
 	virtual void() MoveToDestination_End;
 };
 
@@ -254,12 +254,12 @@ void func_button::Use(void)
 	Trigger();
 }
 
-void func_button::vPain (entity attacker, int type, int damage)
+void func_button::Pain (int body)
 {
 	Trigger();
 }
 
-void func_button::vDeath (entity attacker, int type, int damage)
+void func_button::Death (int body)
 {
 	Trigger();
 }

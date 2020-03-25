@@ -82,41 +82,44 @@ void w_tripmine_holster(void)
 #ifdef SSQC
 void w_tripmine_trip(int walkthrough)
 {
+	CBaseEntity mine = (CBaseEntity)self;
+
 	if (!walkthrough) {
-		self.real_owner = g_eAttacker;
+		mine.real_owner = g_eAttacker;
 	}
 
 	/* This is to prevent infinite loops in Damage_Radius */
-	self.vDeath =
-	self.vPain = __NULL__;
-	self.takedamage = DAMAGE_NO;
+	mine.Death =
+	mine.Pain = __NULL__;
+	mine.takedamage = DAMAGE_NO;
 
-	Effect_CreateExplosion(self.origin);
-	Damage_Radius(self.origin, self.real_owner, 150, 150 * 2.5f, TRUE, WEAPON_TRIPMINE);
-	sound(self, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 2 ) + 3 ), 1, ATTN_NORM);
-	remove(self);
+	Effect_CreateExplosion(mine.origin);
+	Damage_Radius(mine.origin, mine.real_owner, 150, 150 * 2.5f, TRUE, WEAPON_TRIPMINE);
+	sound(mine, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 2 ) + 3 ), 1, ATTN_NORM);
+	remove(mine);
 }
 void w_tripmine_ready(void)
 {
-	makevectors(self.angles);
-	traceline(self.origin, self.origin + v_forward * 2048, FALSE, self);
+	CBaseEntity mine = (CBaseEntity)self;
+	makevectors(mine.angles);
+	traceline(mine.origin, mine.origin + v_forward * 2048, FALSE, mine);
 
-	if (!self.health) {
-		self.SendFlags = 1;
-		self.health = 1;
-		self.vDeath =
-		self.vPain = w_tripmine_trip;
-		self.takedamage = DAMAGE_YES;
-		self.solid = SOLID_BBOX;
-		setsize(self, [-8,-8,-8], [8,8,8]);
-		self.armor = trace_plane_dist;
-		sound(self, CHAN_WEAPON, "weapons/mine_activate.wav", 1, ATTN_NORM);
+	if (!mine.health) {
+		mine.SendFlags = 1;
+		mine.health = 1;
+		mine.Death =
+		mine.Pain = w_tripmine_trip;
+		mine.takedamage = DAMAGE_YES;
+		mine.solid = SOLID_BBOX;
+		setsize(mine, [-8,-8,-8], [8,8,8]);
+		mine.armor = trace_plane_dist;
+		sound(mine, CHAN_WEAPON, "weapons/mine_activate.wav", 1, ATTN_NORM);
 	}
 
-	if (trace_plane_dist != self.armor) {
+	if (trace_plane_dist != mine.armor) {
 		w_tripmine_trip(1);
 	}
-	self.nextthink = time;
+	mine.nextthink = time;
 }
 #endif
 

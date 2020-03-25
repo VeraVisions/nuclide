@@ -37,8 +37,8 @@ class monster_sitting_scientist:CBaseMonster
 
 	virtual void() Hide;
 	virtual void() Respawn;
-	virtual void(int) vPain;
-	virtual void(int) vDeath;
+	virtual void(int) Pain;
+	virtual void(int) Death;
 	virtual void() Gib;
 };
 
@@ -49,12 +49,12 @@ void monster_sitting_scientist::Gib(void)
 	Hide();
 }
 
-void monster_sitting_scientist::vPain(int iHitBody)
+void monster_sitting_scientist::Pain(int iHitBody)
 {
 
 }
 
-void monster_sitting_scientist::vDeath(int iHitBody)
+void monster_sitting_scientist::Death(int iHitBody)
 {
 	if (health < -50) {
 		Gib();

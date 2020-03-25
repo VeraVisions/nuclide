@@ -23,18 +23,13 @@ Alien Grunt
 class monster_alien_grunt:CBaseMonster
 {
 	void() monster_alien_grunt;
-	virtual void() Respawn;
 };
-
-void monster_alien_grunt::Respawn(void)
-{
-	CBaseMonster::Respawn();
-	setsize(this, [-32,-32,0], [32,32,64]);
-}
 
 void monster_alien_grunt::monster_alien_grunt(void)
 {
 	netname = "Alien Grunt";
 	model = "models/agrunt.mdl";
+	base_mins = [-32,-32,0];
+	base_maxs = [32,32,64];
 	CBaseMonster::CBaseMonster();
 }

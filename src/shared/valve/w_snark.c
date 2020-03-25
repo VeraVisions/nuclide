@@ -115,7 +115,7 @@ void w_snark_deploy(void)
 		remove(self);
 	}
 	static void snark_pain(int i) { }
-	entity snark = spawn();
+	CBaseEntity snark = spawn(CBaseEntity);
 	snark.owner = self;
 	snark.goalentity = self;
 	snark.netname = "Snark";
@@ -129,10 +129,10 @@ void w_snark_deploy(void)
 	snark.customphysics = snark_ai;
 	snark.angles = self.angles;
 	snark.health = 20;
-	snark.vPain = snark_pain;
+	snark.Pain = snark_pain;
 	snark.takedamage = DAMAGE_YES;
 	snark.aiment = __NULL__;
-	snark.vDeath = snark_die;
+	snark.Death = snark_die;
 	snark.weapon = 1.0f;
 }
 #endif

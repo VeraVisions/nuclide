@@ -87,8 +87,8 @@ class hostage_entity:CBaseEntity
 	virtual void() Hide;
 	virtual void() Respawn;
 	virtual void() PlayerUse;
-	virtual void(int) vPain;
-	virtual void(int) vDeath;
+	virtual void(int) Pain;
+	virtual void(int) Death;
 	virtual void() Physics;
 };
 
@@ -198,13 +198,13 @@ void hostage_entity::PlayerUse(void)
 	}
 }
 
-void hostage_entity::vPain(int iHitBody)
+void hostage_entity::Pain(int iHitBody)
 {
 	frame = HOSA_FLINCH + floor(random(0, 5));
 	//m_iScared = TRUE;
 }
 
-void hostage_entity::vDeath(int iHitBody)
+void hostage_entity::Death(int iHitBody)
 {
 	solid = SOLID_NOT;
 	takedamage = DAMAGE_NO;

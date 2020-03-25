@@ -21,10 +21,10 @@ Scientist
 */
 
 enum {
-	SCI_IDLE,
-	SCI_WALK,
-	SCI_RUN,
-	SCI_DEAD
+	MONSTER_IDLE,
+	MONSTER_WALK,
+	MONSTER_RUN,
+	MONSTER_DEAD
 };
 
 enum {
@@ -320,8 +320,8 @@ class monster_scientist:CBaseMonster
 	virtual void() Hide;
 	virtual void() Respawn;
 	virtual void() PlayerUse;
-	virtual void(int) vPain;
-	virtual void(int) vDeath;
+	virtual void(int) Pain;
+	virtual void(int) Death;
 	virtual void() Physics;
 	virtual void() Scream;
 	virtual void() WarnOthers;
@@ -371,7 +371,7 @@ void monster_scientist::Physics(void)
 	input_impulse = 0;
 	input_buttons = 0;
 	
-	if (style != SCI_DEAD) {
+	if (style != MONSTER_DEAD) {
 	if (!(m_iFlags & SCIF_SEEN)) {
 		for (entity b = world; (b = find(b, ::classname, "player"));) {
 			/* Find players in a 256 unit radius */
@@ -551,7 +551,7 @@ void monster_scientist::PlayerUse(void)
 	}
 }
 
-void monster_scientist::vPain(int iHitBody)
+void monster_scientist::Pain(int iHitBody)
 {
 	
 	WarnOthers();
@@ -573,7 +573,7 @@ void monster_scientist::vPain(int iHitBody)
 	m_flPainTime = time + 0.25f;
 }
 
-void monster_scientist::vDeath(int iHitBody)
+void monster_scientist::Death(int iHitBody)
 {
 	int r;
 	r = floor(random(0,sci_snddie.length));
@@ -598,9 +598,9 @@ void monster_scientist::vDeath(int iHitBody)
 	solid = SOLID_CORPSE;
 	//takedamage = DAMAGE_NO;
 
-	if (style != SCI_DEAD) {
+	if (style != MONSTER_DEAD) {
 		frame = SCIA_DIE_SIMPLE + floor(random(0, 6));
-		style = SCI_DEAD;
+		style = MONSTER_DEAD;
 	}
 }
 
@@ -629,7 +629,7 @@ void monster_scientist::Respawn(void)
 	m_eUser = world;
 	takedamage = DAMAGE_YES;
 	iBleeds = TRUE;
-	style = SCI_IDLE;
+	style = MONSTER_IDLE;
 	customphysics = Physics;
 	frame = SCIA_IDLE1;
 	SendFlags |= NPC_FRAME;
