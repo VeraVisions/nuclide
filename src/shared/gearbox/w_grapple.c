@@ -235,7 +235,7 @@ w_grapple_aimanim(void)
 }
 
 void
-w_grapple_hudpic(int selected, vector pos)
+w_grapple_hudpic(int selected, vector pos, float a)
 {
 #ifdef CSQC
 	if (selected) {
@@ -246,7 +246,7 @@ w_grapple_hudpic(int selected, vector pos)
 			[0,45/256],
 			[170/256,45/256],
 			g_hud_color,
-			1.0f,
+			a,
 			DRAWFLAG_ADDITIVE
 		);
 	} else {
@@ -257,7 +257,7 @@ w_grapple_hudpic(int selected, vector pos)
 			[0,45/256],
 			[170/256,45/256],
 			g_hud_color,
-			1.0f,
+			a,
 			DRAWFLAG_ADDITIVE
 		);
 	}

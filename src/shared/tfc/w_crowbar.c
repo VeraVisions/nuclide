@@ -179,7 +179,7 @@ w_crowbar_aimanim(void)
 }
 
 void
-w_crowbar_hudpic(int selected, vector pos)
+w_crowbar_hudpic(int selected, vector pos, float a)
 {
 #ifdef CSQC
 	if (selected) {
@@ -190,7 +190,7 @@ w_crowbar_hudpic(int selected, vector pos)
 			[0,0],
 			[170/256,45/256],
 			g_hud_color,
-			1.0f,
+			a,
 			DRAWFLAG_ADDITIVE
 		);
 	} else {
@@ -201,7 +201,7 @@ w_crowbar_hudpic(int selected, vector pos)
 			[0,0],
 			[170/256,45/256],
 			g_hud_color,
-			1.0f,
+			a,
 			DRAWFLAG_ADDITIVE
 		);
 	}

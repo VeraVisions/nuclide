@@ -81,7 +81,6 @@ void
 w_spanner_primary(void)
 {
 	int anim = 0;
-	int r;
 	vector src;
 	player pl = (player)self;
 
@@ -128,6 +127,7 @@ w_spanner_primary(void)
 	}
 
 	if (trace_ent.takedamage) {
+		int r;
 		Damage_Apply(trace_ent, self, 10, WEAPON_SPANNER, DMG_BLUNT );
 
 		if (!trace_ent.iBleeds) {
@@ -176,7 +176,7 @@ w_spanner_aimanim(void)
 }
 
 void
-w_spanner_hudpic(int selected, vector pos)
+w_spanner_hudpic(int selected, vector pos, float a)
 {
 #ifdef CSQC
 	if (selected) {
@@ -187,7 +187,7 @@ w_spanner_hudpic(int selected, vector pos)
 			[0,180/256],
 			[170/256,45/256],
 			g_hud_color,
-			1.0f,
+			a,
 			DRAWFLAG_ADDITIVE
 		);
 	} else {
@@ -198,7 +198,7 @@ w_spanner_hudpic(int selected, vector pos)
 			[0,135/256],
 			[170/256,45/256],
 			g_hud_color,
-			1.0f,
+			a,
 			DRAWFLAG_ADDITIVE
 		);
 	}

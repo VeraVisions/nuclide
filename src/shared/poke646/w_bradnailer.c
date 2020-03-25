@@ -62,6 +62,7 @@ int
 w_bradnailer_pickup(int new)
 {
 /* TODO */
+	return TRUE;
 }
 
 void
@@ -202,7 +203,7 @@ w_bradnailer_release(void)
 }
 
 void
-w_bradnailer_hudpic(int selected, vector pos)
+w_bradnailer_hudpic(int selected, vector pos, float a)
 {
 #ifdef CSQC
 	if (selected) {
@@ -213,7 +214,7 @@ w_bradnailer_hudpic(int selected, vector pos)
 			[0,45/256],
 			[170/256,45/256],
 			g_hud_color,
-			1.0f,
+			a,
 			DRAWFLAG_ADDITIVE
 		);
 	} else {
@@ -224,7 +225,7 @@ w_bradnailer_hudpic(int selected, vector pos)
 			[0,45/256],
 			[170/256,45/256],
 			g_hud_color,
-			1.0f,
+			a,
 			DRAWFLAG_ADDITIVE
 		);
 	}

@@ -227,7 +227,7 @@ w_beamgun_hud(void)
 }
 
 void
-w_beamgun_hudpic(int selected, vector pos)
+w_beamgun_hudpic(int selected, vector pos, float a)
 {
 #ifdef CSQC
 	drawpic(
@@ -235,7 +235,7 @@ w_beamgun_hudpic(int selected, vector pos)
 		"gfx/vgui/640_weapon_beamgun0.tga",
 		[170,43],
 		[1,1,1],
-		1.0f,
+		a,
 		DRAWFLAG_NORMAL
 	);
 #endif

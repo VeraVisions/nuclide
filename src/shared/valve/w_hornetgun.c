@@ -102,14 +102,15 @@ void
 w_hornetgun_shoothornet(void)
 {
 	static void Hornet_Touch(void) {
+		string snd;
 		int r = floor(random(1,4));
 		if (other.takedamage == DAMAGE_YES) {
 			Damage_Apply(other, self.owner, 10, WEAPON_HORNETGUN, DMG_GENERIC);
-			string sample = sprintf("hornet/ag_hornethit%i.wav", r);
+			snd = sprintf("hornet/ag_hornethit%i.wav", r);
 		} else {
-			string sample = sprintf("hornet/ag_buzz%i.wav", r);
+			snd = sprintf("hornet/ag_buzz%i.wav", r);
 		}
-		sound(self, CHAN_BODY, sample, 1, ATTN_NORM);
+		sound(self, CHAN_BODY, snd, 1, ATTN_NORM);
 		remove(self);
 	}
 

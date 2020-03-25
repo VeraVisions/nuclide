@@ -61,7 +61,7 @@ w_medkit_aimanim(void)
 }
 
 void
-w_medkit_hudpic(int selected, vector pos)
+w_medkit_hudpic(int selected, vector pos, float a)
 {
 #ifdef CSQC
 	if (selected) {
@@ -72,7 +72,7 @@ w_medkit_hudpic(int selected, vector pos)
 			[0,180/256],
 			[170/256,45/256],
 			g_hud_color,
-			1.0f,
+			a,
 			DRAWFLAG_ADDITIVE
 		);
 	} else {
@@ -83,7 +83,7 @@ w_medkit_hudpic(int selected, vector pos)
 			[0,90/256],
 			[170/256,45/256],
 			g_hud_color,
-			1.0f,
+			a,
 			DRAWFLAG_ADDITIVE
 		);
 	}

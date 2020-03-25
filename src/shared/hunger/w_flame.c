@@ -206,7 +206,7 @@ w_flame_aimanim(void)
 }
 
 void 
-w_flame_hudpic(int selected, vector pos)
+w_flame_hudpic(int selected, vector pos, float a)
 {
 #ifdef CSQC
 
@@ -218,7 +218,7 @@ if (selected) {
 			[0,45/256],
 			[170/256,45/256],
 			g_hud_color,
-			1.0f,
+			a,
 			DRAWFLAG_ADDITIVE
 		);
 	} else {
@@ -229,7 +229,7 @@ if (selected) {
 			[0,0/256],
 			[170/256,45/256],
 			g_hud_color,
-			1.0f,
+			a,
 			DRAWFLAG_ADDITIVE
 		);
 	}

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -31,7 +31,8 @@ typedef struct
 	int iFlags;
 } font_s;
 
-void Font_Load ( string strFile, font_s &fntNew )
+void
+Font_Load ( string strFile, font_s &fntNew )
 {
 #ifdef CLASSIC_VGUI
 	fntNew.iID = (int)loadfont( "", "gfx/conchars", "12", -1, 0, 0 );
@@ -82,19 +83,22 @@ void Font_Load ( string strFile, font_s &fntNew )
 #endif
 }
 
-void Font_DrawText ( vector vecOrigin, string strText, font_s fnt )
+void
+Font_DrawText ( vector vecOrigin, string strText, font_s fnt )
 {
 	drawfont = (float)fnt.iID;
 	drawstring( vecOrigin, strText, [ fnt.iScale, fnt.iScale ], fnt.vecColor, fnt.flAlpha, (float)fnt.iFlags );
 }
 
-void Font_DrawField ( vector vecOrigin, vector vecSize, string strText, font_s fnt, int iAlignFlags )
+void
+Font_DrawField ( vector vecOrigin, vector vecSize, string strText, font_s fnt, int iAlignFlags )
 {
 	drawfont = (float)fnt.iID;
 	drawtextfield( vecOrigin, vecSize, (float)iAlignFlags, strText );
 }
 
-string Font_RGBtoHex(vector vecColor)
+string
+Font_RGBtoHex(vector vecColor)
 {
 	static string numtohex(float x) {
 		x = rint(x * 15);

@@ -30,7 +30,7 @@ class trigger_cdaudio : CBaseTrigger
 
 void trigger_cdaudio :: Trigger ( void )
 {
-	if (!other.flags & FL_CLIENT) {
+	if (!(other.flags & FL_CLIENT)) {
 		return;
 	}
 #ifdef GS_DEVELOPER

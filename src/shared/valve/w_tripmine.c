@@ -223,7 +223,6 @@ void w_tripmine_primary(void)
 
 void w_tripmine_release(void)
 {
-	int r;
 	player pl = (player)self;
 
 	if (pl.w_idle_next > 0.0) {

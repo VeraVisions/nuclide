@@ -184,7 +184,7 @@ w_shovel_aimanim(void)
 }
 
 void
-w_shovel_hudpic(int selected, vector pos)
+w_shovel_hudpic(int selected, vector pos, float a)
 {
 #ifdef CSQC
 	if (selected) {
@@ -195,7 +195,7 @@ w_shovel_hudpic(int selected, vector pos)
 			[0,135/256],
 			[170/256,45/256],
 			g_hud_color,
-			1.0f,
+			a,
 			DRAWFLAG_ADDITIVE
 		);
 	} else {
@@ -206,7 +206,7 @@ w_shovel_hudpic(int selected, vector pos)
 			[0,90/256],
 			[170/256,45/256],
 			g_hud_color,
-			1.0f,
+			a,
 			DRAWFLAG_ADDITIVE
 		);
 	}

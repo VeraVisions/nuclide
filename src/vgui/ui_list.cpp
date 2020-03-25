@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -49,7 +49,7 @@ class CUIList : CUIWidget
 
 void CUIList :: CUIList ( void )
 {
-	m_vecSize = '96 16';
+	m_vecSize = [96,16];
 	m_iFlags = 1;
 	m_iSelected = -1;
 }

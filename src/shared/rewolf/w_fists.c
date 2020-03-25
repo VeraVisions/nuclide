@@ -243,6 +243,7 @@ w_fists_pmodel(void)
 	} else {
 		return "";
 	}*/
+	return "";
 }
 
 string
@@ -273,7 +274,7 @@ w_fists_pickup(int new)
 }
 
 void
-w_fists_hudpic(int selected, vector pos)
+w_fists_hudpic(int selected, vector pos, float a)
 {
 #ifdef CSQC
 	drawpic(
@@ -281,7 +282,7 @@ w_fists_hudpic(int selected, vector pos)
 		"gfx/vgui/640_weapon_fists0.tga",
 		[170,43],
 		[1,1,1],
-		1.0f,
+		a,
 		DRAWFLAG_NORMAL
 	);
 #endif

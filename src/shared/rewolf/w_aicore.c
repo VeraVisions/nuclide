@@ -98,7 +98,7 @@ w_aicore_aimanim(void)
 }
 
 void
-w_aicore_hudpic(int selected, vector pos)
+w_aicore_hudpic(int selected, vector pos, float a)
 {
 #ifdef CSQC
 	drawpic(
@@ -106,7 +106,7 @@ w_aicore_hudpic(int selected, vector pos)
 		"gfx/vgui/640_weapon_aicore0.tga",
 		[170,43],
 		[1,1,1],
-		1.0f,
+		a,
 		DRAWFLAG_NORMAL
 	);
 #endif

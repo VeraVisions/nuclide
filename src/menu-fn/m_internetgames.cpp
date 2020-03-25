@@ -103,7 +103,7 @@ void inet_btnrefresh(void)
 						stof(gethostcachestring(srv_fldPlayers, i)),
 						stof(gethostcachestring(srv_fldMaxplayers, i))
 					);
-		ping = sprintf("%d", gethostcachevalue(srv_fldPing, i));
+		ping = sprintf("%d", stof(gethostcachestring(srv_fldPing, i)));
 		inet_lbServers_Name.AddEntry(gethostcachestring(srv_fldName, i));
 		inet_lbServers_Ping.AddEntry(ping);
 		inet_lbServers_Map.AddEntry(gethostcachestring(srv_fldMap, i));

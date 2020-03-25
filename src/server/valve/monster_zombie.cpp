@@ -107,8 +107,6 @@ void monster_zombie::vPain(int iHitBody)
 
 void monster_zombie::vDeath(int iHitBody)
 {
-	int r;
-
 	think = Respawn;
 	nextthink = time + 10.0f;
 

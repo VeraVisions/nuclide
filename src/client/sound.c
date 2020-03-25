@@ -18,8 +18,6 @@ var int g_voxcount;
 var int g_voxpos;
 var float g_voxtime = 0.0f;
 
-var int g_iSoundStyleCurrent;
-
 class CCSAmbientSound {
 	float m_flVolume;
 	float m_flAttn;

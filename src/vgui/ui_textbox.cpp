@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -42,7 +42,7 @@ void CUITextBox :: CUITextBox ( void )
 {
 	m_vecColor = UI_MAINCOLOR;
 	m_flAlpha = 1.0f;
-	m_vecSize = '96 24';
+	m_vecSize = [96,24];
 	m_iFlags = BUTTON_VISIBLE;
 }
 

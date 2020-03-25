@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -42,7 +42,7 @@ void CUICheckbox :: CUICheckbox ( void )
 {
 	m_vecColor = UI_MAINCOLOR;
 	m_flAlpha = 1.0f;
-	m_vecSize = '96 18';
+	m_vecSize = [96,18];
 	m_iFlags = CHECKBOX_VISIBLE;
 }
 
@@ -77,16 +77,16 @@ void CUICheckbox :: Draw ( void )
 	drawfill( m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, m_vecColor, m_flAlpha );
 
 	if ( m_iFlags & CHECKBOX_DOWN ) {
-		drawfill( m_parent.m_vecOrigin + m_vecOrigin, [m_vecSize[0], 1], '0 0 0', 0.5f );
-		drawfill( m_parent.m_vecOrigin + m_vecOrigin + [ 0, m_vecSize[1] - 1], [m_vecSize[0], 1], '1 1 1', 0.5f );
-		drawfill( m_parent.m_vecOrigin + m_vecOrigin + [ 0, 1], [1, m_vecSize[1] - 2], '0 0 0', 0.5f );
-		drawfill( m_parent.m_vecOrigin + m_vecOrigin + [ m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], '1 1 1', 0.5f );
+		drawfill( m_parent.m_vecOrigin + m_vecOrigin, [m_vecSize[0], 1], [0,0,0], 0.5f );
+		drawfill( m_parent.m_vecOrigin + m_vecOrigin + [ 0, m_vecSize[1] - 1], [m_vecSize[0], 1], [1,1,1], 0.5f );
+		drawfill( m_parent.m_vecOrigin + m_vecOrigin + [ 0, 1], [1, m_vecSize[1] - 2], [0,0,0], 0.5f );
+		drawfill( m_parent.m_vecOrigin + m_vecOrigin + [ m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], [1,1,1], 0.5f );
 	}
 	
 	if ( m_iFlags & CHECKBOX_CHECKED ) {
-		drawpic( m_parent.m_vecOrigin + m_vecOrigin, "textures/ui/steam/icon_checked", '16 16', '1 1 1', 1.0f, 0);
+		drawpic( m_parent.m_vecOrigin + m_vecOrigin, "textures/ui/steam/icon_checked", [16,16], [1,1,1], 1.0f, 0);
 	} else {
-		drawpic( m_parent.m_vecOrigin + m_vecOrigin, "textures/ui/steam/icon_emptybox", '16 16', '1 1 1', 1.0f, 0);
+		drawpic( m_parent.m_vecOrigin + m_vecOrigin, "textures/ui/steam/icon_emptybox", [16,16], [1,1,1], 1.0f, 0);
 	}
 #else
 	if ( m_iFlags & CHECKBOX_DOWN ) {
@@ -97,9 +97,9 @@ void CUICheckbox :: Draw ( void )
 	}
 	
 	if ( m_iFlags & CHECKBOX_CHECKED ) {
-		drawpic( m_parent.m_vecOrigin + m_vecOrigin, "textures/ui/steam/icon_checked", '16 16', m_vecColor, 1.0f, 0);
+		drawpic( m_parent.m_vecOrigin + m_vecOrigin, "textures/ui/steam/icon_checked", [16,16], m_vecColor, 1.0f, 0);
 	} else {
-		drawpic( m_parent.m_vecOrigin + m_vecOrigin, "textures/ui/steam/icon_emptybox", '16 16', m_vecColor, 1.0f, 0);
+		drawpic( m_parent.m_vecOrigin + m_vecOrigin, "textures/ui/steam/icon_emptybox", [16,16], m_vecColor, 1.0f, 0);
 	}
 #endif
 	if ( m_strTitle ) {

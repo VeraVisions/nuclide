@@ -223,13 +223,13 @@ w_handgrenade_aimanim(void)
 }
 
 void
-w_handgrenade_hudpic(int s, vector pos)
+w_handgrenade_hudpic(int s, vector pos, float a)
 {
 #ifdef CSQC
 	if (s) {
-		drawsubpic(pos, [170,45], "sprites/640hud6.spr_0.tga", [0,0], [170/256,45/256], g_hud_color, 1, DRAWFLAG_ADDITIVE);
+		drawsubpic(pos, [170,45], "sprites/640hud6.spr_0.tga", [0,0], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	} else {
-		drawsubpic(pos, [170,45], "sprites/640hud3.spr_0.tga", [0,0], [170/256,45/256], g_hud_color, 1, DRAWFLAG_ADDITIVE);
+		drawsubpic(pos, [170,45], "sprites/640hud3.spr_0.tga", [0,0], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	}
 #endif
 }

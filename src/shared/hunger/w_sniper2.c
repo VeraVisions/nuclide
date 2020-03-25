@@ -273,7 +273,7 @@ w_sniper2_aimanim(void)
 }
 
 void
-w_sniper2_hudpic(int selected, vector pos)
+w_sniper2_hudpic(int selected, vector pos, float a)
 {
 #ifdef CSQC
 	if (selected) {
@@ -284,7 +284,7 @@ w_sniper2_hudpic(int selected, vector pos)
 			[0,45/256],
 			[170/256,45/256],
 			g_hud_color,
-			1.0f,
+			a,
 			DRAWFLAG_ADDITIVE
 		);
 	} else {
@@ -295,7 +295,7 @@ w_sniper2_hudpic(int selected, vector pos)
 			[0,45/256],
 			[170/256,45/256],
 			g_hud_color,
-			1.0f,
+			a,
 			DRAWFLAG_ADDITIVE
 		);
 	}

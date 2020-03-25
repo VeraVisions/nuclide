@@ -202,13 +202,13 @@ float w_hammer_aimanim(void)
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIMCROWBAR : ANIM_AIMCROWBAR;
 }
 
-void w_hammer_hudpic(int s, vector pos)
+void w_hammer_hudpic(int s, vector pos, float a)
 {
 #ifdef CSQC
 	if (s) {
-		drawsubpic(pos, [170,45], "sprites/hammer.spr_0.tga", [0,48/256], [170/256,45/256], g_hud_color, 1, DRAWFLAG_ADDITIVE);
+		drawsubpic(pos, [170,45], "sprites/hammer.spr_0.tga", [0,48/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	} else {
-		drawsubpic(pos, [170,45], "sprites/hammer.spr_0.tga", [0,0], [170/256,45/256], g_hud_color, 1, DRAWFLAG_ADDITIVE);
+		drawsubpic(pos, [170,45], "sprites/hammer.spr_0.tga", [0,0], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	}
 #endif
 }

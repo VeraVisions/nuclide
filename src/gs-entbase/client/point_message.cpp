@@ -76,8 +76,6 @@ int PointMessage_Visible( vector p1, vector p2, vector ang)
 
 void PointMessage_Draw(void)
 {
-	string msg;
-	float distance;
 	vector vecPlayer;
 
 #ifdef WASTES

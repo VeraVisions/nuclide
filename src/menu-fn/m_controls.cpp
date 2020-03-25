@@ -94,7 +94,7 @@ void menu_controls_update(void)
 
 	c = ctrl_lbActBind3.GetCount();
 
-	for (int i = 0; i < c; i++) {
+	for (i = 0; i < c; i++) {
 		string cmd = ctrl_lbActBind3.GetItem(i);
 
 		if (cmd == " ") {

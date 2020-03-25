@@ -136,17 +136,17 @@ float w_chainsaw_aimanim(void)
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIMSQUEAK : ANIM_AIMSQUEAK;
 }
 
-void w_chainsaw_hudpic(int s, vector pos)
+void w_chainsaw_hudpic(int s, vector pos, float a)
 {
 #ifdef CSQC
 	if (s) {
 		drawsubpic(pos, [170,45], "sprites/chainsaw.spr_0.tga",
 			[0,48/256], [170/256,45/256],
-			g_hud_color, 1, DRAWFLAG_ADDITIVE);
+			g_hud_color, a, DRAWFLAG_ADDITIVE);
 	} else {
 		drawsubpic(pos, [170,45], "sprites/chainsaw.spr_0.tga",
 			[0,0], [170/256,45/256],
-			g_hud_color, 1, DRAWFLAG_ADDITIVE);
+			g_hud_color, a, DRAWFLAG_ADDITIVE);
 	}
 #endif
 }
