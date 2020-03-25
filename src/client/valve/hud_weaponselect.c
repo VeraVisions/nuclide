@@ -110,7 +110,7 @@ int HUD_InSlotPos(int slot, int pos)
 	return -1;
 }
 
-int HUD_SlotSelect(int slot)
+void HUD_SlotSelect(int slot)
 {
 	player pl = (player)pSeat->ePlayer;
 	int curslot = g_weapons[pSeat->fHUDWeaponSelected].slot;

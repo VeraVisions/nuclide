@@ -148,7 +148,9 @@ vector Landmark_GetSpot(void)
 
 	if (!landmark) {
 		print(sprintf("^1ERROR^7: Landmark_GetSpot: Cannot find startspot '%s'!\n",startspot));
-		return __NULL__;
+		/* return something useful? */
+		landmark = find(world, ::classname, "info_player_start");
+		return landmark.origin;
 	}
 
 	return landmark.origin + g_landmarkpos;

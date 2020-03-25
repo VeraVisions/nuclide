@@ -203,7 +203,7 @@ void Game_PutClientInServer(void)
 
 	if (cvar("sv_playerslots") == 1) {
 		Game_DecodeChangeParms();
-		if (startspot) {
+		if (startspot != "") {
 			setorigin(pl, Landmark_GetSpot());
 		} else {
 			spot = find(world, classname, "info_player_start");
