@@ -16,7 +16,8 @@
 
 /*QUAKED monster_rat (0 0.8 0.8) (-6 -6 0) (6 6 6)
 
-Monster.
+Rat
+
 */
 
 class monster_rat:CBaseEntity

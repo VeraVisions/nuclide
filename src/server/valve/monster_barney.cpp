@@ -16,7 +16,8 @@
 
 /*QUAKED monster_barney (0 0.8 0.8) (-16 -16 0) (16 16 72)
 
-Monster.
+Barney Calhoun
+
 */
 
 enum {

@@ -16,7 +16,8 @@
 
 /*QUAKED monster_gman (0 0.8 0.8) (-16 -16 0) (16 16 72)
 
-Monster.
+G-Man
+
 */
 
 class monster_gman:CBaseMonster

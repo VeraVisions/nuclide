@@ -16,7 +16,8 @@
 
 /*QUAKED monster_miniturret (0 0.8 0.8) (-16 -16 -32) (16 16 32)
 
-Monster.
+Automatic Turret (small)
+
 */
 
 class monster_miniturret:CBaseMonster

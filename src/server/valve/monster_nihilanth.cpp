@@ -16,7 +16,8 @@
 
 /*QUAKED monster_nihilanth (0 0.8 0.8) (-192 -192 0) (192 192 384)
 
-Monster.
+Nihilanth
+
 */
 
 class monster_nihilanth:CBaseMonster

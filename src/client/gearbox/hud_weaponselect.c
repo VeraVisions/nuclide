@@ -116,6 +116,43 @@ int HUD_InSlotPos(int slot, int pos)
 	return -1;
 }
 
+int HUD_SlotSelect(int slot)
+{
+	player pl = (player)pSeat->ePlayer;
+	int curslot = g_weapons[pSeat->fHUDWeaponSelected].slot;
+	int i;
+
+	if (pSeat->fHUDWeaponSelectTime < time) {
+		sound(pSeat->ePlayer, CHAN_ITEM, "common/wpn_hudon.wav", 0.5, ATTN_NONE);
+	} else {
+		sound(pSeat->ePlayer, CHAN_ITEM, "common/wpn_moveselect.wav", 0.5, ATTN_NONE);
+	}
+
+	/* weren't in that slot? select the first one then */
+	if (curslot != slot) {
+		for (i = 1; i < g_weapons.length; i++) {
+			if (g_weapons[i].slot == slot) {
+				pSeat->fHUDWeaponSelected = i;
+				pSeat->fHUDWeaponSelectTime = time + 3;
+				break;
+			}
+		}
+	} else {
+		/* increment our current selected weapon by 1 */
+		pSeat->fHUDWeaponSelected++;
+		pSeat->fHUDWeaponSelectTime = time + 3;
+
+		/* reset when out of bounds or outside slot area */
+		if (pSeat->fHUDWeaponSelected >= g_weapons.length) {
+			pSeat->fHUDWeaponSelected = 0;
+			HUD_SlotSelect(slot);
+		} else if (g_weapons[pSeat->fHUDWeaponSelected].slot != slot) {
+			pSeat->fHUDWeaponSelected = 0;
+			HUD_SlotSelect(slot);
+		}
+	}
+}
+
 void HUD_DrawWeaponSelect(void)
 {
 	player pl = (player)pSeat->ePlayer;

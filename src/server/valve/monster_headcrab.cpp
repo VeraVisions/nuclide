@@ -16,7 +16,8 @@
 
 /*QUAKED monster_headcrab (0 0.8 0.8) (-16 -16 0) (16 16 36)
 
-Monster.
+Headcrab
+
 */
 
 class monster_headcrab:CBaseMonster

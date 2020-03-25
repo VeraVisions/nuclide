@@ -16,7 +16,8 @@
 
 /*QUAKED monster_hevsuit_dead (0 0.8 0.8) (-16 -16 0) (16 16 72)
 
-Monster.
+HEV-Suit/Player's corpse
+
 */
 
 class monster_hevsuit_dead:CBaseMonster

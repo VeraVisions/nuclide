@@ -16,7 +16,8 @@
 
 /*QUAKED monster_flyer_flock (0 0.8 0.8) (-16 -16 0) (16 16 16)
 
-Monster.
+Boid
+
 */
 
 class monster_flyer_flock:CBaseMonster
@@ -33,7 +34,7 @@ void monster_flyer_flock::Respawn(void)
 
 void monster_flyer_flock::monster_flyer_flock(void)
 {
-	netname = "Flyer";
+	netname = "Boid";
 	model = "models/aflock.mdl";
 	CBaseMonster::CBaseMonster();
 }

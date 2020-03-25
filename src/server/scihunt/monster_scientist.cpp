@@ -617,24 +617,22 @@ void monster_scientist::Respawn(void)
 	v_angle[2] = Math_FixDelta(m_oldAngle[2]);
 
 	flags |= FL_MONSTER;
-	setorigin(this, m_oldOrigin);
 	angles = v_angle;
 	solid = SOLID_SLIDEBOX;
 	movetype = MOVETYPE_WALK;
 	setmodel(this, m_oldModel);
 	setsize(this, VEC_HULL_MIN + [0,0,36], VEC_HULL_MAX + [0,0,36]);
-	m_eUser = world;
+	setorigin(this, m_oldOrigin);
 	takedamage = DAMAGE_YES;
 	iBleeds = TRUE;
 	style = SCI_IDLE;
-	customphysics = Physics;
 	frame = SCIA_IDLE1;
-	SendFlags |= NPC_FRAME | NPC_BODY;
 	health = 50;
 	velocity = [0,0,0];
 	m_iFlags = 0x0;
-	SendFlags = 0xff;
-	
+	m_eUser = world;
+	customphysics = Physics;
+
 	if (autocvar_sh_scialert) {
 		m_iFlags |= SCIF_FEAR;
 	}
@@ -678,7 +676,6 @@ void monster_scientist::monster_scientist(void)
 	model = "models/scientist.mdl";
 	CBaseEntity::CBaseEntity();
 	precache_model(m_oldModel);
-	Respawn();
 
 	if (body == -1) {
 		/* This stuff needs to be persistent because we can't guarantee that
@@ -704,5 +701,4 @@ void monster_scientist::monster_scientist(void)
 			m_flPitch = 100;
 			netname = "Slick";
 	}
-	SendFlags |= NPC_FRAME | NPC_BODY;
 }

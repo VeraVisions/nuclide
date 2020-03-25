@@ -16,7 +16,8 @@
 
 /*QUAKED monster_alien_slave (0 0.8 0.8) (-16 -16 0) (16 16 72)
 
-Monster.
+Alien Slave
+
 */
 
 class monster_alien_slave:CBaseMonster

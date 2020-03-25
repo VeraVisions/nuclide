@@ -16,7 +16,8 @@
 
 /*QUAKED monster_human_grunt (0 0.8 0.8) (-16 -16 0) (16 16 72)
 
-Monster.
+HECU - Human Grunt
+
 */
 
 class monster_human_grunt:CBaseMonster

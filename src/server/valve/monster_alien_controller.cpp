@@ -16,7 +16,8 @@
 
 /*QUAKED monster_alien_controller (0 0.8 0.8) (-16 -16 0) (16 16 72)
 
-Monster.
+Alien Controller
+
 */
 
 class monster_alien_controller:CBaseMonster

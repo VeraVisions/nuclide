@@ -16,7 +16,8 @@
 
 /*QUAKED monster_sitting_scientist (0 0.8 0.8) (-14 -14 0) (14 14 36)
 
-Monster.
+Sitting scientists
+
 */
 
 enum {

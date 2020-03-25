@@ -16,7 +16,8 @@
 
 /*QUAKED monster_bigmomma (0 0.8 0.8) (-95 -95 0) (95 95 190)
 
-Monster.
+Gonarch
+
 */
 
 class monster_bigmomma:CBaseMonster
@@ -33,7 +34,7 @@ void monster_bigmomma::Respawn(void)
 
 void monster_bigmomma::monster_bigmomma(void)
 {
-	netname = "Big Momma";
+	netname = "Gonarch";
 	model = "models/big_mom.mdl";
 	CBaseMonster::CBaseMonster();
 }

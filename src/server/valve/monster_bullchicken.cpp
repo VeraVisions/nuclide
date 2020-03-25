@@ -16,7 +16,8 @@
 
 /*QUAKED monster_bullchicken (0 0.8 0.8) (-32 -32 0) (32 32 64)
 
-Monster.
+Bullsquid
+
 */
 
 class monster_bullchicken:CBaseMonster

@@ -636,34 +636,34 @@ CSQC_ConsoleCommand(string sCMD)
 		pSeat->iShowScores = FALSE;
 		break;
 	case "slot1":
-		localcmd("impulse 1\n");
+		HUD_SlotSelect(0);
 		break;
 	case "slot2":
-		localcmd("impulse 2\n");
+		HUD_SlotSelect(1);
 		break;
 	case "slot3":
-		localcmd("impulse 3\n");
+		HUD_SlotSelect(2);
 		break;
 	case "slot4":
-		localcmd("impulse 4\n");
+		HUD_SlotSelect(3);
 		break;
 	case "slot5":
-		localcmd("impulse 5\n");
+		HUD_SlotSelect(4);
 		break;
 	case "slot6":
-		localcmd("impulse 6\n");
+		HUD_SlotSelect(5);
 		break;
 	case "slot7":
-		localcmd("impulse 7\n");
+		HUD_SlotSelect(6);
 		break;
 	case "slot8":
-		localcmd("impulse 8\n");
+		HUD_SlotSelect(7);
 		break;
 	case "slot9":
-		localcmd("impulse 9\n");
+		HUD_SlotSelect(8);
 		break;
 	case "slot10":
-		localcmd("impulse 10\n");
+		HUD_SlotSelect(9);
 		break;
 	default:
 		return Game_ConsoleCommand();

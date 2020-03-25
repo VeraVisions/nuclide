@@ -16,7 +16,8 @@
 
 /*QUAKED monster_apache (0 0.8 0.8) (-300 -300 -172) (300 300 8)
 
-Monster.
+Boeing AH-64 Apache
+
 */
 
 class monster_apache:CBaseMonster

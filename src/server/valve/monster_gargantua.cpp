@@ -16,7 +16,8 @@
 
 /*QUAKED monster_gargantua (0 0.8 0.8) (-32 -32 0) (32 32 128)
 
-Monster.
+Gargantua
+
 */
 
 class monster_gargantua:CBaseMonster

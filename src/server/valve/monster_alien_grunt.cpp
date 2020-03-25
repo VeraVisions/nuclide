@@ -16,7 +16,8 @@
 
 /*QUAKED monster_alien_grunt (0 0.8 0.8) (-32 -32 0) (32 32 64)
 
-Monster.
+Alien Grunt
+
 */
 
 class monster_alien_grunt:CBaseMonster

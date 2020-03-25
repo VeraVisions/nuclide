@@ -16,7 +16,8 @@
 
 /*QUAKED monster_barney_dead (0 0.8 0.8) (-16 -16 0) (16 16 72)
 
-Monster.
+Barney's corpse
+
 */
 
 class monster_barney_dead:CBaseEntity

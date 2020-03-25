@@ -16,7 +16,8 @@
 
 /*QUAKED monster_houndeye (0 0.8 0.8) (-16 -16 0) (16 16 36)
 
-Monster.
+Houndeye
+
 */
 
 class monster_houndeye:CBaseMonster

@@ -16,7 +16,8 @@
 
 /*QUAKED monster_hgrunt_dead (0 0.8 0.8) (-16 -16 0) (16 16 72)
 
-Monster.
+Human Grunt's corpse
+
 */
 
 class monster_hgrunt_dead:CBaseMonster

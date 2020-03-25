@@ -16,7 +16,8 @@
 
 /*QUAKED monster_barnacle (0 0.8 0.8) (-16 -16 -36) (16 16 0)
 
-Monster.
+Barnacle
+
 */
 
 class monster_barnacle:CBaseMonster

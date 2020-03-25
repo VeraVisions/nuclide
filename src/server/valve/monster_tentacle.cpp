@@ -16,7 +16,8 @@
 
 /*QUAKED monster_tentacle (0 0.8 0.8) (-32 -32 0) (32 32 64)
 
-Monster.
+Tentacle
+
 */
 
 class monster_tentacle:CBaseMonster
