@@ -317,7 +317,7 @@ Game_PutClientInServer(void)
 	forceinfokey(pl, "*spec", "0");
 	forceinfokey(self, "*deaths", ftos(self.deaths));
 
-	if (cvar("sv_playerslots") == 1) {
+	if (cvar("sv_playerslots") == 1 || cvar("coop") == 1) {
 		Game_DecodeChangeParms();
 
 		if (startspot != "") {
