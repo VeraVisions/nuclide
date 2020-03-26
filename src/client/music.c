@@ -17,18 +17,21 @@
 /* we're forced to support a few different paths */
 enum
 {
-	MUSIC_CDSTYLE,
+	MUSIC_AUTO,
+	MUSIC_FLAC,
 	MUSIC_STEAMHL
 };
 
-var int autocvar_cl_musicstyle = MUSIC_CDSTYLE;
+var int autocvar_cl_musicstyle = MUSIC_AUTO;
 
 /* some installs may have the music in media/, others may be in music/ */
 string
 Music_GetPath(int id)
 {
-	if (autocvar_cl_musicstyle == MUSIC_CDSTYLE) {
+	if (autocvar_cl_musicstyle == MUSIC_AUTO) {
 		return sprintf("%i", id);
+	} else if (autocvar_cl_musicstyle == MUSIC_FLAC) {
+		return sprintf("music/track%02i.flac", id);
 	} else if (autocvar_cl_musicstyle == MUSIC_STEAMHL) {
 		/* this doesn't happen often enough for it to be in RAM all the time */
 		switch (id) {
@@ -115,6 +118,8 @@ Music_GetPath(int id)
 			break;
 		}
 	}
+
+	return "";
 }
 
 /* EV_MUSICTRACK */

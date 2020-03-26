@@ -164,7 +164,6 @@ Game_RunClientCommand(void)
 void
 Game_PutClientInServer(player pl)
 {
-	entity spot;
 	pl.classname = "player";
 	pl.health = pl.max_health = 100;
 	pl.takedamage = DAMAGE_YES;
