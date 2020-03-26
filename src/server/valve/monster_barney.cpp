@@ -68,20 +68,12 @@ string barney_sndpain[] = {
 	"barney/ba_pain1.wav"
 };
 
-string barney_sndscream[] = {
-	"barney/ba_pain1.wav",
-	"barney/ba_pain1.wav",
-	"barney/ba_pain1.wav"
-};
-
 class monster_barney:CBaseNPC
 {
 	vector m_vecLastUserPos;
 	entity m_eUser;
 	entity m_eRescuer;
 
-	float m_flScaredTime;
-	float m_flScreamTime;
 	float m_flPainTime;
 	float m_flChangePath;
 	float m_flTraceTime;
@@ -95,9 +87,7 @@ class monster_barney:CBaseNPC
 	virtual void(int) Pain;
 	virtual void(int) Death;
 	virtual void() Physics;
-	virtual void() Scream;
 	virtual void() WarnOthers;
-	virtual void() IdleChat;
 };
 
 void monster_barney::WarnOthers(void)
@@ -108,31 +98,8 @@ void monster_barney::WarnOthers(void)
 			sci.m_iFlags |= BARNF_SEEN;
 			sci.m_eUser = world;
 			sci.m_eRescuer = world;
-			sci.m_flScaredTime = time + 2.5f;
-			sci.Scream();
 		}
 	}
-}
-
-void monster_barney::Scream(void)
-{
-	if (m_flScreamTime > time) {
-		return;
-	}
-
-	int rand = floor(random(0,barney_sndscream.length));
-	Speak(barney_sndscream[rand]);
-	m_flScreamTime = time + 5.0f;
-}
-
-void monster_barney::IdleChat(void)
-{
-	if (m_flScreamTime > time) {
-		return;
-	}
-
-	Sentence(m_talkPlayerIdle);
-	m_flScreamTime = time + 5.0f + random(0,20);
 }
 
 void monster_barney::Physics(void)
@@ -210,7 +177,6 @@ void monster_barney::Physics(void)
 		}
 	} else if (m_iFlags & BARNF_FEAR) {
 		m_iFlags |= BARNF_SEEN;
-		Scream();
 		maxspeed = 240;
 		input_movevalues = [maxspeed, 0, 0];
 
@@ -246,7 +212,7 @@ void monster_barney::Physics(void)
 			m_flChangePath = time + floor(random(2,10));
 		}
 	} else {
-		IdleChat();
+		//Sentence(m_talkPlayerIdle);
 	}
 
 	if (m_flPainTime > time) {
@@ -272,9 +238,6 @@ void monster_barney::Physics(void)
 	Footsteps_Update();
 
 	if (!(flags & FL_ONGROUND) && velocity[2] < -100) {
-		if (!(m_iFlags & BARNF_FALLING)) {
-			Speak(barney_sndscream[0]);
-		}
 		m_iFlags |= BARNF_FALLING;
 	} else {
 		m_iFlags -= (flags & BARNF_FALLING);
@@ -403,9 +366,6 @@ void monster_barney::monster_barney(void)
 	for (int i = 0; i < barney_snddie.length; i++) {
 		precache_sound(barney_snddie[i]);
 	}
-	for (int i = 0; i < barney_sndscream.length; i++) {
-		precache_sound(barney_sndscream[i]);
-	}
 
 	m_talkAnswer = "!BA_ANSWER";
 	m_talkAsk = "";
@@ -414,7 +374,7 @@ void monster_barney::monster_barney(void)
 	m_talkIdle = "";
 	m_talkSmelling = "!BA_SMELL";
 	m_talkStare = "!BA_STARE";
-	m_talkSurvived = "!BA_ANSWER";
+	m_talkSurvived = "!BA_WOUND";
 	m_talkWounded = "!BA_WOUND";
 
 	m_talkPlayerAsk = "!BA_QUESTION";

@@ -21,73 +21,73 @@ Tentacle
 */
 
 enum {
-	TENT_IDLEPIT,
-	TENT_RISE,
-	TENT_TOFLOOR1,
-	TENT_IDLE,
-	TENT_PISSED,
-	TENT_SMALLRISE,
-	TENT_WAVE,
-	TENT_STRIKE,
-	TENT_TAP,
-	TENT_ROTATE,
-	TENT_REAR,
-	TENT_REARIDLE,
-	TENT_TOLEV1,
-	TENT_IDELLEV1,
-	TENT_FIDGETLEV1,
-	TENT_SNAPLEV1,
-	TENT_STRIKELEV1,
-	TENT_TAPLEV1,
-	TENT_ROTATELEV1,
-	TENT_REARLEV1,
-	TENT_REARIDELLEV1,
-	TENT_TOLEV2,
-	TENT_IDLELEV2,
-	TENT_FIDGETLEV2,
-	TENT_SNAPLEV2,
-	TENT_SWINGLEV2,
-	TENT_TUTLEV2,
-	TENT_STRIKELEV2,
-	TENT_TAPLEV2,
-	TENT_ROTATELEV2,
-	TENT_REARLEV2,
-	TENT_FREAKDIE,
-	TENT_REARIDLE2,
-	TENT_TOLEV3,
-	TENT_IDLELEV3,
-	TENT_FIDGETLEV3,
-	TENT_SIDELEV3,
-	TENT_SWIPELEV3,
-	TENT_STRIKELEV3,
-	TENT_TAPLEV3,
-	TENT_ROTATELEV3,
-	TENT_REARLEV3,
-	TENT_REARIDLELEV3,
-	TENT_DOORLEV1,
-	TENT_ENGINELEV3,
-	TENT_ENGINEIDLE,
-	TENT_ENGINESWAY,
-	TENT_ENGINESWAT,
-	TENT_ENGINEBOB,
-	TENT_ENGINEDEATH,
-	TENT_ENGINEDEATH2,
-	TENT_ENGINEDEATH3,
-	TENT_GRABIDLE,
-	TENT_GRAB
+	TE_IDLEPIT,
+	TE_RISE,
+	TE_TOFLOOR1,
+	TE_IDLE,
+	TE_PISSED,
+	TE_SMALLRISE,
+	TE_WAVE,
+	TE_STRIKE,
+	TE_TAP,
+	TE_ROTATE,
+	TE_REAR,
+	TE_REARIDLE,
+	TE_TOLEV1,
+	TE_IDELLEV1,
+	TE_FIDGETLEV1,
+	TE_SNAPLEV1,
+	TE_STRIKELEV1,
+	TE_TAPLEV1,
+	TE_ROTATELEV1,
+	TE_REARLEV1,
+	TE_REARIDELLEV1,
+	TE_TOLEV2,
+	TE_IDLELEV2,
+	TE_FIDGETLEV2,
+	TE_SNAPLEV2,
+	TE_SWINGLEV2,
+	TE_TUTLEV2,
+	TE_STRIKELEV2,
+	TE_TAPLEV2,
+	TE_ROTATELEV2,
+	TE_REARLEV2,
+	TE_FREAKDIE,
+	TE_REARIDLE2,
+	TE_TOLEV3,
+	TE_IDLELEV3,
+	TE_FIDGETLEV3,
+	TE_SIDELEV3,
+	TE_SWIPELEV3,
+	TE_STRIKELEV3,
+	TE_TAPLEV3,
+	TE_ROTATELEV3,
+	TE_REARLEV3,
+	TE_REARIDLELEV3,
+	TE_DOORLEV1,
+	TE_ENGINELEV3,
+	TE_ENGINEIDLE,
+	TE_ENGINESWAY,
+	TE_ENGINESWAT,
+	TE_ENGINEBOB,
+	TE_ENGINEDEATH,
+	TE_ENGINEDEATH2,
+	TE_ENGINEDEATH3,
+	TE_GRABIDLE,
+	TE_GRAB
 };
 
-string tent_sndattack[] = {
+string te_sndattack[] = {
 	"tentacle/te_strike1.wav",
 	"tentacle/te_strike2.wav"
 };
 
-string tent_snddeath[] = {
+string te_snddeath[] = {
 	"tentacle/te_death2.wav"
 };
 
 /* includes some cut sounds, might be interesting */
-string tent_sndidle[] = {
+string te_sndidle[] = {
 	"tentacle/te_roar1.wav",
 	"tentacle/te_roar2.wav",
 	"tentacle/te_search1.wav",
@@ -97,7 +97,7 @@ string tent_sndidle[] = {
 };
 
 /* cut sounds, listing here because why not */
-string tent_sndsee[] = {
+string te_sndsee[] = {
 	"tentacle/te_alert1.wav",
 	"tentacle/te_alert2.wav"
 };
@@ -123,19 +123,21 @@ monster_tentacle::IdleNoise(void)
 	if (m_flIdleTime > time) {
 		return;
 	}
+	/* timing needs to adjusted as sounds conflict */
 	m_flIdleTime = time + 2.0f + random(0,5);
 
-	int rand = floor(random(0, tent_sndidle.length));
-	Sound(tent_sndidle[rand]);
+	int rand = floor(random(0, te_sndidle.length));
+	Sound(te_sndidle[rand]);
 }
 
 void
 monster_tentacle::Respawn(void)
 {
 	CBaseMonster::Respawn();
+	/* not entirely true, takes damage then retreats and reheals */
 	takedamage = DAMAGE_NO;
 	iBleeds = FALSE;
-	frame = TENT_IDLEPIT;
+	frame = TE_IDLE;
 }
 
 void

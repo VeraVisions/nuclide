@@ -45,6 +45,7 @@ class monster_gman:CBaseMonster
 
 void monster_gman::Respawn(void)
 {
+	/* he can't die, he's the G-Man! */
 	CBaseMonster::Respawn();
 	frame = GMAN_IDLE;
 	takedamage = DAMAGE_NO;

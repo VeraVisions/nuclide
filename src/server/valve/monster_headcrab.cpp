@@ -21,41 +21,45 @@ Headcrab
 */
 
 enum {
-	HCBA_IDLE1,
-	HCBA_IDLE2,
-	HCBA_IDLE3,
-	HCBA_WALK,
-	HCBA_RUN,
-	HCBA_ANGRY,
-	HCBA_FLINCH,
-	HCBA_DEATH,
-	HCBA_180_LEFT,
-	HCBA_180_RIGHT,
-	HCBA_JUMP,
-	HCBA_JUMP_VARIATION1,
-	HCBA_JUMP_VARIATION2,
-	HCBA_YAW_ADJUSTMENT,
-	HCBA_HEADCRABBED1,
-	HCBA_HEADCRABBED2,
-	HCBA_HEADIDLE,
-	HCBA_CRASHIDLE,
-	HCBA_CRASH,
-	HCBA_STRUGGLEIDLE,
-	HCBA_STRUGGLE
+	HC_IDLE1,
+	HC_IDLE2,
+	HC_IDLE3,
+	HC_WALK,
+	HC_RUN,
+	HC_ANGRY,
+	HC_FLINCH,
+	HC_DIE,
+	HC_180_LEFT,
+	HC_180_RIGHT,
+	HC_JUMP,
+	HC_JUMP_VARIATION1,
+	HC_JUMP_VARIATION2,
+	HC_YAW_ADJUSTMENT,
+	HC_HEADCRABBED1,
+	HC_HEADCRABBED2,
+	HC_HEADIDLE,
+	HC_CRASHIDLE,
+	HC_CRASH,
+	HC_STRUGGLEIDLE,
+	HC_STRUGGLE
 };
 
-string hcb_sndattack[] = {
+/* these attack sounds are actually the cry when it jumps
+ * hc_headbite is when the crab actually hits an ent
+ */
+
+string hc_sndattack[] = {
 	"headcrab/hc_attack1.wav",
 	"headcrab/hc_attack2.wav",
 	"headcrab/hc_attack3.wav"
 };
 
-string hcb_snddie[] = {
+string hc_snddie[] = {
 	"headcrab/hc_die1.wav",
 	"headcrab/hc_die2.wav"
 };
 
-string hcb_sndidle[] = {
+string hc_sndidle[] = {
 	"headcrab/hc_idle1.wav",
 	"headcrab/hc_idle2.wav",
 	"headcrab/hc_idle3.wav",
@@ -63,13 +67,13 @@ string hcb_sndidle[] = {
 	"headcrab/hc_idle5.wav"
 };
 
-string hcb_sndpain[] = {
+string hc_sndpain[] = {
 	"headcrab/hc_pain1.wav",
 	"headcrab/hc_pain2.wav",
 	"headcrab/hc_pain3.wav"
 };
 
-string hcb_sndsee[] = {
+string hc_sndsee[] = {
 	"headcrab/hc_alert1.wav",
 	"headcrab/hc_alert2.wav"
 };
@@ -100,9 +104,9 @@ monster_headcrab::Pain(int iHitBody)
 		return;
 	}
 
-	int rand = floor(random(0,hcb_sndpain.length));
-	Sound(hcb_sndpain[rand]);
-	frame = HCBA_FLINCH;
+	int rand = floor(random(0,hc_sndpain.length));
+	Sound(hc_sndpain[rand]);
+	frame = HC_FLINCH;
 	m_flPainTime = time + 0.25f;
 }
 
@@ -111,11 +115,11 @@ monster_headcrab::Death(int iHitBody)
 {
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
-		frame = HCBA_DEATH;
+		frame = HC_DIE;
 
 		/* the sound */
-		int rand = floor(random(0,hcb_sndpain.length));
-		Sound(hcb_sndpain[rand]);
+		int rand = floor(random(0,hc_snddie.length));
+		Sound(hc_snddie[rand]);
 	}
 
 	/* set the functional differences */
@@ -135,34 +139,34 @@ monster_headcrab::IdleNoise(void)
 	}
 	m_flIdleTime = time + 2.0f + random(0,5);
 
-	int rand = floor(random(0, hcb_sndidle.length));
-	Sound(hcb_sndidle[rand]);
+	int rand = floor(random(0, hc_sndidle.length));
+	Sound(hc_sndidle[rand]);
 }
 
 void
 monster_headcrab::Respawn(void)
 {
 	CBaseMonster::Respawn();
-	frame = HCBA_IDLE1;
+	frame = HC_IDLE1;
 }
 
 void
 monster_headcrab::monster_headcrab(void)
 {
-	for (int i = 0; i < hcb_sndattack.length; i++) {
-		precache_sound(hcb_sndattack[i]);
+	for (int i = 0; i < hc_sndattack.length; i++) {
+		precache_sound(hc_sndattack[i]);
 	}
-	for (int i = 0; i < hcb_snddie.length; i++) {
-		precache_sound(hcb_snddie[i]);
+	for (int i = 0; i < hc_snddie.length; i++) {
+		precache_sound(hc_snddie[i]);
 	}
-	for (int i = 0; i < hcb_sndidle.length; i++) {
-		precache_sound(hcb_sndidle[i]);
+	for (int i = 0; i < hc_sndidle.length; i++) {
+		precache_sound(hc_sndidle[i]);
 	}
-	for (int i = 0; i < hcb_sndpain.length; i++) {
-		precache_sound(hcb_sndpain[i]);
+	for (int i = 0; i < hc_sndpain.length; i++) {
+		precache_sound(hc_sndpain[i]);
 	}
-	for (int i = 0; i < hcb_sndsee.length; i++) {
-		precache_sound(hcb_sndsee[i]);
+	for (int i = 0; i < hc_sndsee.length; i++) {
+		precache_sound(hc_sndsee[i]);
 	}
 	netname = "Headcrab";
 	model = "models/headcrab.mdl";

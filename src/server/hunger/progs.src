@@ -26,7 +26,6 @@
 ../valve/monster_alien_controller.cpp
 ../valve/monster_alien_grunt.cpp
 ../valve/monster_alien_slave.cpp
-../valve/monster_babycrab.cpp
 ../valve/monster_barnacle.cpp
 ../valve/monster_barney.cpp
 ../valve/monster_barney_dead.cpp
@@ -38,6 +37,7 @@
 ../valve/monster_gargantua.cpp
 ../valve/monster_gman.cpp
 ../valve/monster_headcrab.cpp
+../valve/monster_babycrab.cpp
 ../valve/monster_hevsuit_dead.cpp
 ../valve/monster_houndeye.cpp
 ../valve/monster_human_grunt.cpp

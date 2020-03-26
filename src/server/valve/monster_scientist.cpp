@@ -89,6 +89,10 @@ string sci_snddie[] = {
 	"scientist/sci_die4.wav"
 };
 
+/* chat and idle sounds are handled via sentences.txt
+ * this should be deleted and redone at some point
+ */
+
 string sci_sndchitchat[] = {
 	"scientist/absolutely.wav",
 	"scientist/absolutelynot.wav",

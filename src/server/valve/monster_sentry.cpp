@@ -20,15 +20,69 @@ Sentry Gun
 
 */
 
+enum {
+	SENT_IDLE,
+	SENT_FIRE,
+	SENT_SPIN,
+	SENT_DEPLOY,
+	SENT_RETIRE,
+	SENT_DIE
+};
+
+/* seems to use tu_ping for it's active idle state
+ * tu_alert for it's deploy sound?
+ */
+
+string sent_snddie[] = {
+	"turret/tu_die1.wav",
+	"turret/tu_die2.wav",
+	"turret/tu_die3.wav"
+};
+
 class monster_sentry:CBaseMonster
 {
+
 	void() monster_sentry;
+	
+	virtual void(int) Death;
+	virtual void(void) Respawn;
+
 };
+
+void
+monster_sentry::Death(int iHitBody)
+{
+	/* if we're already dead (corpse) don't change animations */
+	if (style != MONSTER_DEAD) {
+			frame = SENT_DIE;
+
+		/* the sound */
+		int rand = floor(random(0,sent_snddie.length));
+		Sound(sent_snddie[rand]);
+	}
+
+	/* set the functional differences */
+	CBaseMonster::Death(iHitBody);
+}
+
+void
+monster_sentry::Respawn(void)
+{
+	CBaseMonster::Respawn();
+	frame = SENT_IDLE;
+	iBleeds = FALSE;
+}
 
 void monster_sentry::monster_sentry(void)
 {
+	
+	for (int i = 0; i < con_sndattack.length; i++) {
+		precache_sound(con_sndattack[i]);
+	}
+	
 	netname = "Sentry";
 	model = "models/sentry.mdl";
+	base_health = Skill_GetValue("sentry_health");
 	base_mins = [-16,-16,0];
 	base_maxs = [16,16,72];
 	CBaseMonster::CBaseMonster();

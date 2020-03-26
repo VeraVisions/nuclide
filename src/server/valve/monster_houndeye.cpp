@@ -132,8 +132,8 @@ monster_houndeye::Death(int iHitBody)
 		frame = HE_DIE + floor(random(0, 4));
 
 		/* the sound */
-		int rand = floor(random(0,he_sndpain.length));
-		Sound(he_sndpain[rand]);
+		int rand = floor(random(0,he_snddie.length));
+		Sound(he_snddie[rand]);
 	}
 
 	/* set the functional differences */
@@ -185,6 +185,7 @@ monster_houndeye::monster_houndeye(void)
 
 	netname = "Houndeye";
 	model = "models/houndeye.mdl";
+	base_health = Skill_GetValue("houndeye_health");
 	base_mins = [-16,-16,0];
 	base_maxs = [16,16,36];
 	CBaseMonster::CBaseMonster();

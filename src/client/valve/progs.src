@@ -11,14 +11,14 @@
 ../../shared/materials.h
 ../../shared/events.h
 ../../shared/entities.h
-defs.h
-particles.h
+../valve/defs.h
+../valve/particles.h
 ../defs.h
 
 ../../vgui/include.src
 
 ../util.c
-init.c
+../valve/init.c
 
 ../fade.c
 ../sprite.cpp
@@ -64,24 +64,24 @@ init.c
 ../../shared/valve/weapons.c
 ../../shared/valve/weapon_common.c
 
-player.c
-entities.c
+../valve/player.c
+../valve/entities.c
 ../entities.c
 
-cmds.c
-game_event.c
+../valve/cmds.c
+../valve/game_event.c
 ../events.c
-view.c
+../valve/view.c
 ../view.c
 ../damage.c
 ../obituary.c
 ../chat.c
 ../vgui.cpp
 
-hud.c
-hud_weaponselect.c
-scoreboard.c
+../valve/hud.c
+../valve/hud_weaponselect.c
+../valve/scoreboard.c
 
-input.c
+../valve/input.c
 ../entry.c
 #endlist

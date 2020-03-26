@@ -41,6 +41,9 @@ class player:CBaseEntity
 	vector view_ofs;
 	float weapontime;
 
+	/* any mods that use hooks */
+	entity hook;
+
 	/* Weapon specific */
 	int usp45_mag;
 	int glock18_mag;

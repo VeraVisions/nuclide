@@ -55,7 +55,17 @@ monster_human_assassin::Death(int iHitBody)
 {
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
-		frame = HAS_DIE + floor(random(0, 3));
+		/* headshots == different animation */
+		/* this animation may not have been used, but it looks cool */
+		if (iHitBody == BODY_HEAD) {
+			if (random() < 0.5) {
+				frame = HAS_DIERUN;
+			} else {
+				frame = HAS_DIEBACK;
+			}
+		} else {
+			frame = HAS_DIE + floor(random(0, 3));
+		}
 	}
 
 	/* set the functional differences */
@@ -74,6 +84,7 @@ monster_human_assassin::monster_human_assassin(void)
 {
 	netname = "Assassin";
 	model = "models/hassassin.mdl";
+	base_health = Skill_GetValue("hassassin_health");
 	base_mins = [-16,-16,0];
 	base_maxs = [16,16,72];
 	CBaseMonster::CBaseMonster();

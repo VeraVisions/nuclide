@@ -47,15 +47,129 @@ enum {
 	BULL_FALL
 };
 
+/* the growls are used in combination with the bite sounds
+ * for close range attacks
+ */
+
+string bull_sndattack[] = {
+	"bullchicken/bc_attackgrowl1.wav",
+	"bullchicken/bc_attackgrowl2.wav",
+	"bullchicken/bc_attackgrowl3.wav"
+};
+
+string bull_sndattackbite[] = {
+	"bullchicken/bc_bite1.wav",
+	"bullchicken/bc_bite2.wav",
+	"bullchicken/bc_bite3.wav"
+};
+
+string bull_sndattackshoot[] = {
+	"bullchicken/bc_attack1.wav",
+	"bullchicken/bc_attack2.wav",
+	"bullchicken/bc_attack3.wav"
+};
+
+string bull_snddie[] = {
+	"bullchicken/bc_die1.wav",
+	"bullchicken/bc_die2.wav",
+	"bullchicken/bc_die3.wav"
+};
+
+string bull_sndidle[] = {
+	"bullchicken/bc_idle1.wav",
+	"bullchicken/bc_idle2.wav",
+	"bullchicken/bc_idle3.wav",
+	"bullchicken/bc_idle4.wav",
+	"bullchicken/bc_idle5.wav"
+};
+
+string bull_sndpain[] = {
+	"bullchicken/bc_pain1.wav",
+	"bullchicken/bc_pain2.wav",
+	"bullchicken/bc_pain3.wav",
+	"bullchicken/bc_pain4.wav"
+};
+
+
 class monster_bullchicken:CBaseMonster
 {
+	float m_flPainTime;
+
 	void() monster_bullchicken;
+
+	virtual void(int) Death;
+	virtual void(int) Pain;
+	virtual void(void) Respawn;
 };
+
+void
+monster_bullchicken::Pain(int iHitBody)
+{
+	CBaseMonster::Pain(iHitBody);
+
+	if (m_flPainTime > time) {
+		return;
+	}
+
+	if (random() < 0.25f) {
+		return;
+	}
+
+	int rand = floor(random(0,bull_sndpain.length));
+	Sound(bull_sndpain[rand]);
+	frame = (random() < 0.5) ? BULL_FLINCH : BULL_FLINCH2;
+	m_flPainTime = time + 0.25f;
+}
+
+void
+monster_bullchicken::Death(int iHitBody)
+{
+	/* if we're already dead (corpse) don't change animations */
+	if (style != MONSTER_DEAD) {
+
+	/* two different animations */
+	frame = (random() < 0.5) ? BULL_DIE : BULL_DIE2;
+
+		/* the sound */
+		int rand = floor(random(0,bull_snddie.length));
+		Sound(bull_snddie[rand]);
+	}
+
+	/* set the functional differences */
+	CBaseMonster::Death(iHitBody);
+}
+
+void
+monster_bullchicken::Respawn(void)
+{
+	CBaseMonster::Respawn();
+	frame = BULL_IDLE;
+}
 
 void monster_bullchicken::monster_bullchicken(void)
 {
+	for (int i = 0; i <bull_sndattack.length; i++) {
+		precache_sound(bull_sndattack[i]);
+	}
+	for (int i = 0; i <bull_sndattackbite.length; i++) {
+		precache_sound(bull_sndattackbite[i]);
+	}
+	for (int i = 0; i <bull_sndattackshoot.length; i++) {
+		precache_sound(bull_sndattackshoot[i]);
+	}
+	for (int i = 0; i < bull_snddie.length; i++) {
+		precache_sound(bull_snddie[i]);
+	}
+	for (int i = 0; i < bull_sndidle.length; i++) {
+		precache_sound(bull_sndidle[i]);
+	}
+	for (int i = 0; i < bull_sndpain.length; i++) {
+		precache_sound(bull_sndpain[i]);
+	}
+
 	netname = "Bullsquid";
 	model = "models/bullsquid.mdl";
+	base_health = Skill_GetValue("bullsquid_health");
 	base_mins = [-32,-32,0];
 	base_maxs = [32,32,64];
 	CBaseMonster::CBaseMonster();

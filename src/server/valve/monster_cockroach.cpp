@@ -23,7 +23,28 @@ Cockroach
 class monster_cockroach:CBaseMonster
 {
 	void() monster_cockroach;
+	virtual void(int) Death;
 };
+
+void
+monster_cockroach::Death(int iHitBody)
+{
+	/* if we're already dead (corpse) don't change animations */
+	if (style != MONSTER_DEAD) {
+		/* the sound */
+		if (random() < 0.5) {
+			Sound("roach/rch_die.wav");
+		} else {
+			Sound("roach/rch_smash.wav");
+		}
+	}
+
+	/* make sure we gib this thing */
+	health = -100;
+
+	/* set the functional differences */
+	CBaseMonster::Death(iHitBody);
+}
 
 void monster_cockroach::monster_cockroach(void)
 {

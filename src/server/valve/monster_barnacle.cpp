@@ -21,24 +21,74 @@ Barnacle
 */
 
 enum {
-	BARN_IDLE,
-	BARN_IDLE2,
-	BARN_IDLE3,
-	BARN_FLINCH,
-	BARN_ATTACK,
-	BARN_CHEW,
-	BARN_DEATH
+	BCL_IDLE,
+	BCL_IDLE2,
+	BCL_IDLE3,
+	BCL_FLINCH,
+	BCL_ATTACK,
+	BCL_CHEW,
+	BCL_DIE
+};
+
+/* bcl_alert2 is played when the barnacle is pulling up an ent
+ * bcl_bite3 is played when an entity is in it's mouth, bcl_tongue1 unused?
+ */
+
+string bcl_sndchew[] = {
+	"barnacle/bcl_chew1.wav",
+	"barnacle/bcl_chew2.wav",
+	"barnacle/bcl_chew3.wav"
+};
+
+string bcl_snddie[] = {
+	"barnacle/bcl_die1.wav",
+	"barnacle/bcl_die3.wav"
 };
 
 class monster_barnacle:CBaseMonster
 {
+
 	void() monster_barnacle;
+
+	virtual void(int) Death;
+	virtual void(void) Respawn;
 };
+
+void
+monster_barnacle::Death(int iHitBody)
+{
+	/* if we're already dead (corpse) don't change animations */
+	if (style != MONSTER_DEAD) {
+		frame = BCL_DIE;
+
+		/* the sound */
+		int rand = floor(random(0,bcl_snddie.length));
+		Sound(bcl_snddie[rand]);
+	}
+
+	/* set the functional differences */
+	CBaseMonster::Death(iHitBody);
+}
+
+void
+monster_barnacle::Respawn(void)
+{
+	CBaseMonster::Respawn();
+	frame = BCL_IDLE;
+}
 
 void monster_barnacle::monster_barnacle(void)
 {
+	for (int i = 0; i < bcl_sndchew.length; i++) {
+		precache_sound(bcl_sndchew[i]);
+	}
+	for (int i = 0; i < bcl_snddie.length; i++) {
+		precache_sound(bcl_snddie[i]);
+	}
+
 	netname = "Barnacle";
 	model = "models/barnacle.mdl";
+	base_health = Skill_GetValue("barnacle_health");
 	base_mins = [-16,-16,-36];
 	base_maxs = [16,16,0];
 	CBaseMonster::CBaseMonster();

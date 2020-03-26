@@ -364,7 +364,6 @@ HUD_DrawLogo(void)
 }
 
 /* weapon/ammo pickup notifications */
-
 void
 HUD_DrawNotify(void)
 {

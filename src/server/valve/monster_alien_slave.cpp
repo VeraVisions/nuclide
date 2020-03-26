@@ -53,6 +53,8 @@ enum {
 	SLV_JABBER
 };
 
+/* chat & idle sounds are handled via sentences.txt */
+
 string slv_snddie[] = {
 	"aslave/slv_die1.wav",
 	"aslave/slv_die2.wav"
@@ -133,6 +135,7 @@ monster_alien_slave::monster_alien_slave(void)
 
 	netname = "Alien Slave";
 	model = "models/islave.mdl";
+	base_health = Skill_GetValue("islave_health");
 	base_mins = [-16,-16,0];
 	base_maxs = [16,16,72];
 	CBaseMonster::CBaseMonster();
