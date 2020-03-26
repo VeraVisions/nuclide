@@ -119,7 +119,9 @@ void CListBox::SetSize(int w, int h)
 
 void CListBox::SetScroll(int i)
 {
-	m_scroll = i;
+	if (i >= 0 && i < LB_MAX_ENTRIES) {
+		m_scroll = i;
+	}
 }
 
 void CListBox::SetChanged(void(int val) func)

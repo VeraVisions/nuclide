@@ -133,7 +133,6 @@ void inet_lb_changed(int val)
 	inet_lbServers_Map.SetScroll(val);
 	inet_lbServers_Game.SetScroll(val);
 	inet_lbServers_Players.SetScroll(val);
-	inet_lbServers_Addresses.SetScroll(val);
 }
 
 void menu_internetgames_init(void)
