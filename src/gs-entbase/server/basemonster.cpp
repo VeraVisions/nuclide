@@ -212,6 +212,7 @@ void CBaseMonster::Respawn(void)
 	v_angle[0] = Math_FixDelta(m_oldAngle[0]);
 	v_angle[1] = Math_FixDelta(m_oldAngle[1]);
 	v_angle[2] = Math_FixDelta(m_oldAngle[2]);
+	flags |= FL_MONSTER;
 	angles = v_angle;
 	solid = SOLID_SLIDEBOX;
 	movetype = MOVETYPE_WALK;
