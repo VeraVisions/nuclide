@@ -299,7 +299,7 @@ string sci_sndidle[] = {
 	"scientist/hopenominal.wav",
 };
 
-class monster_scientist:CBaseMonster
+class monster_scientist:CBaseNPC
 {
 	vector m_vecLastUserPos;
 	entity m_eUser;

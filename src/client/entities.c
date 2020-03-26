@@ -38,7 +38,11 @@ void CSQC_Ent_Update(float new)
 		Player_ReadEntity(new);
 		break;
 	case ENT_NPC:
-		NPC_ReadEntity(new);
+		CBaseNPC n = (CBaseNPC)self;
+		if (new) {
+			spawnfunc_CBaseNPC();
+		}
+		n.ReadEntity(readshort());
 		break;
 	case ENT_SPRITE:
 		Sprite_Animated();

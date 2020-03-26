@@ -128,7 +128,7 @@ monster_zombie::Pain(int iHitBody)
 	}
 
 	int rand = floor(random(0,zom_sndpain.length));
-	Speak(zom_sndpain[rand]);
+	Sound(zom_sndpain[rand]);
 	frame = ZOMA_FLINCH + floor(random(0, 2));
 	m_flPainTime = time + 0.25f;
 }
@@ -151,7 +151,7 @@ monster_zombie::Death(int iHitBody)
 
 		/* the sound */
 		int rand = floor(random(0,zom_sndpain.length));
-		Speak(zom_sndpain[rand]);
+		Sound(zom_sndpain[rand]);
 	}
 
 	/* set the functional differences */
@@ -172,7 +172,7 @@ monster_zombie::IdleNoise(void)
 	m_flIdleTime = time + 2.0f + random(0,5);
 
 	int rand = floor(random(0, zom_sndidle.length));
-	Speak(zom_sndidle[rand]);
+	Sound(zom_sndidle[rand]);
 }
 
 void

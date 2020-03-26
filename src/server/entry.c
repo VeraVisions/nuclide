@@ -206,7 +206,8 @@ void initents(void)
 
 	Game_Worldspawn();
 	Decals_Init();
-	
+	Sentences_Init();
+
 	entity respawntimer = spawn();
 	respawntimer.think = init_respawn;
 	respawntimer.nextthink = time + 0.1f;

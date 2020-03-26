@@ -53,8 +53,10 @@ void Sound_ParseLoopingEntity(entity sndent, float isNew)
 }
 
 
-typedef struct {
-	string sample;
+typedef struct
+{
+	string m_strSnd;
+	float m_flPitch;
 	float len;
 } sound_t;
 
@@ -70,8 +72,8 @@ void Sound_PlayVOX(string msg)
 	g_voxque = memalloc(sizeof(sound_t) * g_voxcount);
 
 	for (int i = 0; i < g_voxcount; i++) {
-		g_voxque[i].sample = sprintf("vox/%s.wav", argv(i));
-		g_voxque[i].len = soundlength(g_voxque[i].sample);
+		g_voxque[i].m_strSnd = sprintf("vox/%s.wav", argv(i));
+		g_voxque[i].len = soundlength(g_voxque[i].m_strSnd);
 	}
 	g_voxtime = time;
 }
@@ -83,7 +85,7 @@ void Sound_ProcessWordQue(void)
 	}
 
 	if (g_voxtime < time) {
-		localcmd(sprintf("play %s\n", g_voxque[g_voxpos].sample));	
+		localcmd(sprintf("play %s\n", g_voxque[g_voxpos].m_strSnd));
 		g_voxpos++;
 
 		if (g_voxpos == g_voxcount) {

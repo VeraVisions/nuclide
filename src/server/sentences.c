@@ -23,35 +23,15 @@
  * we'll just default to those whenever there's no custom value set.
  */
 
-#define DYNAMIC_SENTENCES 0
-
 typedef struct
 {
-	string m_strID;
-	string m_strSamples;
-} sentences_t;
+	string m_strSnd;
+	float m_flPitch;
+	float len;
+} sound_t;
 
-#ifdef DYNAMIC_SENTENCES
-	sentences_t *g_sentences;
-	int g_sentences_count;
-#else
-	sentences_t g_sentences[1024];
-	int g_sentences_count;
-#endif
-
-string g_sentences_path;
-
-void
-Sentences_Path(string word)
-{
-	int c = tokenizebyseparator(word, "/");
-
-	if (c > 1) {
-		g_sentences_path = sprintf("%s/", argv(0));
-	} else {
-		g_sentences_path =  "";
-	}
-}
+string *g_sentences;
+int g_sentences_count;
 
 void
 Sentences_Init(void)
@@ -85,47 +65,53 @@ Sentences_Init(void)
 		/* starts of at 0, for every line increases */
 		int x = g_sentences_count;
 
-		/* default path is vox */
-		g_sentences_path = "vox/";
-
 		/* allocate memory and increase count */
-#ifdef DYNAMIC_SENTENCES
 		g_sentences = memrealloc(g_sentences,
-				sizeof(sentences_t),
+				sizeof(string),
 				g_sentences_count,
 				++g_sentences_count);
-#else
-		g_sentences_count++;
-#endif
 
-		/* loop through the parts of the line */
-		for (i=0; i < c; i++) {
-			/* first entry is the id, prefix with ! as well */
-			if (i==0) {
-				g_sentences[x].m_strID = strcat("!", argv(0));
-			} else {
-				/* check whether or not our keyword contains a path */
-				Sentences_Path(argv(i));
-				//Sentencens_Pitch(argv(i));
-				g_sentences[x].m_strSamples = 
-					sprintf(
-						"%s %s%s",
-						g_sentences[x].m_strSamples,
-						g_sentences_path,
-						argv(i)
-					);
-			}
-		}
-		print(sprintf("%s\n", g_sentences[x].m_strSamples));
+		g_sentences[x] = strcat("!", argv(0));
 	}
 }
 
 string
-Sentences_GetSamples(string msg)
+Sentences_GetSamples(string word)
 {
+	int len;
+	int gc;
+
+	/* you never know what NPCs might do */
+	if (word == "") {
+		print("^1ERROR: No sentence supplied.\n");
+		return "";
+	}
+
+	/* check if the word is present at all */
 	for (int i = 0; i < g_sentences_count; i++) {
-		if (g_sentences[i].m_strID == msg) {
-			return g_sentences[i].m_strSamples;
+		if (g_sentences[i] == word) {
+			print(sprintf("^2Sentences: Found %s\n", word));
+			return word;
 		}
 	}
+
+	/* it may be a random group of words. */
+	len = strlen(word);
+	for (int i = 0; i < g_sentences_count; i++) {
+		string sub = substring(g_sentences[i], 0, len);
+		if (sub == word) {
+			gc++;
+		}
+	}
+
+	/* if we've got one, choose a random sample of them */
+	if (gc) {
+		int r = floor(random(0, gc));
+		print(sprintf("^2Sentences: Choosing %s%i\n", word, r));
+		return sprintf("%s%i", word, r);
+	}
+
+	/* we've somehow messed up catastrophically */
+	print(sprintf("^1ERROR: Invalid sentence keyword %s\n", word));
+	return "";
 }

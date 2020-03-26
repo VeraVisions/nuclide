@@ -87,7 +87,7 @@ monster_alien_slave::Pain(int iHitBody)
 	}
 
 	int rand = floor(random(0,slv_sndpain.length));
-	Speak(slv_sndpain[rand]);
+	Sound(slv_sndpain[rand]);
 	frame = SLV_FLINCH + floor(random(0, 2));
 	m_flPainTime = time + 0.25f;
 }
@@ -110,7 +110,7 @@ monster_alien_slave::Death(int iHitBody)
 
 		/* the sound */
 		int rand = floor(random(0,slv_sndpain.length));
-		Speak(slv_sndpain[rand]);
+		Sound(slv_sndpain[rand]);
 	}
 
 	/* set the functional differences */

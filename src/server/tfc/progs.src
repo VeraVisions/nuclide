@@ -18,6 +18,7 @@
 ../logging.c
 ../nodes.c
 ../skill.c
+../sentences.c
 ../../gs-entbase/server.src
 ../../shared/decals.c
 ../../shared/effects.c

@@ -95,7 +95,7 @@ monster_alien_controller::Pain(int iHitBody)
 	}
 
 	int rand = floor(random(0,con_sndpain.length));
-	Speak(con_sndpain[rand]);
+	Sound(con_sndpain[rand]);
 	frame = CON_FLINCH + floor(random(0, 2));
 	m_flPainTime = time + 0.25f;
 }
@@ -109,7 +109,7 @@ monster_alien_controller::Death(int iHitBody)
 
 		/* the sound */
 		int rand = floor(random(0,con_sndpain.length));
-		Speak(con_sndpain[rand]);
+		Sound(con_sndpain[rand]);
 	}
 
 	/* set the functional differences */
@@ -130,7 +130,7 @@ monster_alien_controller::IdleNoise(void)
 	m_flIdleTime = time + 2.0f + random(0,5);
 
 	int rand = floor(random(0, con_sndidle.length));
-	Speak(con_sndidle[rand]);
+	Sound(con_sndidle[rand]);
 }
 
 void

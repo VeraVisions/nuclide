@@ -24,12 +24,12 @@ init.c
 ../sprite.cpp
 ../titles.c
 ../text.c
-../sentences.c
 
 ../../gs-entbase/client.src
 
 ../sky.c
 ../sound.c
+../sentences.c
 ../prints.c
 ../voice.c
 

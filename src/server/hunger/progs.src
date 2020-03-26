@@ -19,6 +19,7 @@
 ../logging.c
 ../nodes.c
 ../skill.c
+../sentences.c
 ../../gs-entbase/server.src
 
 ../valve/monster_apache.cpp

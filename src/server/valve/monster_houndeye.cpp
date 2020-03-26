@@ -119,7 +119,7 @@ monster_houndeye::Pain(int iHitBody)
 	}
 
 	int rand = floor(random(0,he_sndpain.length));
-	Speak(he_sndpain[rand]);
+	Sound(he_sndpain[rand]);
 	frame = HE_FLINCH + floor(random(0, 2));
 	m_flPainTime = time + 0.25f;
 }
@@ -133,7 +133,7 @@ monster_houndeye::Death(int iHitBody)
 
 		/* the sound */
 		int rand = floor(random(0,he_sndpain.length));
-		Speak(he_sndpain[rand]);
+		Sound(he_sndpain[rand]);
 	}
 
 	/* set the functional differences */
@@ -154,7 +154,7 @@ monster_houndeye::IdleNoise(void)
 	m_flIdleTime = time + 2.0f + random(0,5);
 
 	int rand = floor(random(0, he_sndidle.length));
-	Speak(he_sndidle[rand]);
+	Sound(he_sndidle[rand]);
 }
 
 void

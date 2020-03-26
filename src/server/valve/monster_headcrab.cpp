@@ -101,7 +101,7 @@ monster_headcrab::Pain(int iHitBody)
 	}
 
 	int rand = floor(random(0,hcb_sndpain.length));
-	Speak(hcb_sndpain[rand]);
+	Sound(hcb_sndpain[rand]);
 	frame = HCBA_FLINCH;
 	m_flPainTime = time + 0.25f;
 }
@@ -115,7 +115,7 @@ monster_headcrab::Death(int iHitBody)
 
 		/* the sound */
 		int rand = floor(random(0,hcb_sndpain.length));
-		Speak(hcb_sndpain[rand]);
+		Sound(hcb_sndpain[rand]);
 	}
 
 	/* set the functional differences */
@@ -136,7 +136,7 @@ monster_headcrab::IdleNoise(void)
 	m_flIdleTime = time + 2.0f + random(0,5);
 
 	int rand = floor(random(0, hcb_sndidle.length));
-	Speak(hcb_sndidle[rand]);
+	Sound(hcb_sndidle[rand]);
 }
 
 void

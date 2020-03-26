@@ -93,7 +93,7 @@ monster_ichthyosaur::Pain(int iHitBody)
 	}
 
 	int rand = floor(random(0,ichy_sndpain.length));
-	Speak(ichy_sndpain[rand]);
+	Sound(ichy_sndpain[rand]);
 	frame = ICHY_FLINCH + floor(random(0, 2));
 	m_flPainTime = time + 0.25f;
 }
@@ -119,7 +119,7 @@ monster_ichthyosaur::Death(int iHitBody)
 
 		/* the sound */
 		int rand = floor(random(0,ichy_sndpain.length));
-		Speak(ichy_sndpain[rand]);
+		Sound(ichy_sndpain[rand]);
 	}
 
 	/* set the functional differences */
@@ -140,7 +140,7 @@ monster_ichthyosaur::IdleNoise(void)
 	m_flIdleTime = time + 2.0f + random(0,5);
 
 	int rand = floor(random(0, ichy_sndidle.length));
-	Speak(ichy_sndidle[rand]);
+	Sound(ichy_sndidle[rand]);
 }
 
 void

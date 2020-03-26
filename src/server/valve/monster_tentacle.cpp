@@ -126,7 +126,7 @@ monster_tentacle::IdleNoise(void)
 	m_flIdleTime = time + 2.0f + random(0,5);
 
 	int rand = floor(random(0, tent_sndidle.length));
-	Speak(tent_sndidle[rand]);
+	Sound(tent_sndidle[rand]);
 }
 
 void

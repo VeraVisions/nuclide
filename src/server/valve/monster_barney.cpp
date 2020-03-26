@@ -62,25 +62,7 @@ string barney_snddie[] = {
 	"barney/ba_die2.wav"
 };
 
-string barney_sndchitchat[] = {
-	"barney/ba_pain1.wav",
-	"barney/ba_pain1.wav",
-	"barney/ba_pain1.wav"
-};
-
-string barney_sndhear[] = {
-	"barney/ba_pain1.wav",
-	"barney/ba_pain1.wav",
-	"barney/ba_pain1.wav"
-};
-
 string barney_sndpain[] = {
-	"barney/ba_pain1.wav",
-	"barney/ba_pain1.wav",
-	"barney/ba_pain1.wav"
-};
-
-string barney_sndsee[] = {
 	"barney/ba_pain1.wav",
 	"barney/ba_pain1.wav",
 	"barney/ba_pain1.wav"
@@ -92,31 +74,7 @@ string barney_sndscream[] = {
 	"barney/ba_pain1.wav"
 };
 
-string barney_sndstop[] = {
-	"barney/ba_pain1.wav",
-	"barney/ba_pain1.wav",
-	"barney/ba_pain1.wav"
-};
-
-string barney_snduse[] = {
-	"barney/ba_pain1.wav",
-	"barney/ba_pain1.wav",
-	"barney/ba_pain1.wav"
-};
-
-string barney_snduseno[] = {
-	"barney/ba_pain1.wav",
-	"barney/ba_pain1.wav",
-	"barney/ba_pain1.wav"
-};
-
-string barney_sndidle[] = {
-	"barney/ba_pain1.wav",
-	"barney/ba_pain1.wav",
-	"barney/ba_pain1.wav"
-};
-
-class monster_barney:CBaseMonster
+class monster_barney:CBaseNPC
 {
 	vector m_vecLastUserPos;
 	entity m_eUser;
@@ -173,8 +131,7 @@ void monster_barney::IdleChat(void)
 		return;
 	}
 
-	int rand = floor(random(0,barney_sndchitchat.length));
-	Speak(barney_sndchitchat[rand]);
+	Sentence(m_talkPlayerIdle);
 	m_flScreamTime = time + 5.0f + random(0,20);
 }
 
@@ -196,11 +153,7 @@ void monster_barney::Physics(void)
 					continue;
 				}
 
-				if (random() < 0.5) {
-					int rand = floor(random(0,barney_sndsee.length));
-					Speak(barney_sndsee[rand]);
-				}
-
+				Sentence(m_talkPlayerGreet);
 				m_iFlags |= BARNF_SEEN;
 				break;
 			}
@@ -347,16 +300,12 @@ void monster_barney::PlayerUse(void)
 			m_iFlags |= BARNF_USED;
 		}
 
-		r = floor(random(0,barney_snduse.length));
-		Speak(barney_snduse[r]);
-
+		Sentence(m_talkFollow);
 		m_eUser = eActivator;
 		m_eRescuer = m_eUser;
 		m_vecLastUserPos = m_eUser.origin;
 	} else {
-		r = floor(random(0,barney_snduseno.length));
-		Speak(barney_snduseno[r]);
-
+		Sentence(m_talkUnfollow);
 		m_eUser = world;
 	}
 }
@@ -459,18 +408,26 @@ void monster_barney::monster_barney(void)
 	for (int i = 0; i < barney_sndscream.length; i++) {
 		precache_sound(barney_sndscream[i]);
 	}
-	for (int i = 0; i < barney_snduse.length; i++) {
-		precache_sound(barney_snduse[i]);
-	}
-	for (int i = 0; i < barney_snduseno.length; i++) {
-		precache_sound(barney_snduseno[i]);
-	}
-	for (int i = 0; i < barney_sndsee.length; i++) {
-		precache_sound(barney_sndsee[i]);
-	}
-	for (int i = 0; i < barney_sndidle.length; i++) {
-		precache_sound(barney_sndidle[i]);
-	}
+
+	m_talkAnswer = "!BA_ANSWER";
+	m_talkAsk = "";
+	m_talkAllyShot = "!BA_SCARED";
+	m_talkGreet = "";
+	m_talkIdle = "";
+	m_talkSmelling = "!BA_SMELL";
+	m_talkStare = "!BA_STARE";
+	m_talkSurvived = "!BA_ANSWER";
+	m_talkWounded = "!BA_WOUND";
+
+	m_talkPlayerAsk = "!BA_QUESTION";
+	m_talkPlayerGreet = "!BA_HELLO";
+	m_talkPlayerIdle = "!BA_IDLE";
+	m_talkPlayerWounded1 = "!BA_CUREA";
+	m_talkPlayerWounded2 = "!BA_CUREB";
+	m_talkPlayerWounded3 = "!BA_CUREC";
+	m_talkUnfollow = "!BA_WAIT";
+	m_talkFollow = "!BA_OK";
+	m_talkStopFollow = "!BA_STOP";
 
 	model = "models/barney.mdl";
 	netname = "Barney";

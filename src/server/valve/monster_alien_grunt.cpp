@@ -112,7 +112,7 @@ monster_alien_grunt::Pain(int iHitBody)
 	}
 
 	int rand = floor(random(0,ag_sndpain.length));
-	Speak(ag_sndpain[rand]);
+	Sound(ag_sndpain[rand]);
 	frame = AG_FLINCH + floor(random(0, 2));
 	m_flPainTime = time + 0.25f;
 }
@@ -135,7 +135,7 @@ monster_alien_grunt::Death(int iHitBody)
 
 		/* the sound */
 		int rand = floor(random(0,ag_sndpain.length));
-		Speak(ag_sndpain[rand]);
+		Sound(ag_sndpain[rand]);
 	}
 
 	/* set the functional differences */
@@ -156,7 +156,7 @@ monster_alien_grunt::IdleNoise(void)
 	m_flIdleTime = time + 2.0f + random(0,5);
 
 	int rand = floor(random(0, ag_sndidle.length));
-	Speak(ag_sndidle[rand]);
+	Sound(ag_sndidle[rand]);
 }
 
 void

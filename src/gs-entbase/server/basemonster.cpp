@@ -43,20 +43,14 @@ class CBaseMonster:CBaseEntity
 	virtual void() Physics;
 	virtual void() IdleNoise;
 	virtual void() Gib;
-	virtual void(string) Speak;
+	virtual void(string) Sound;
 	virtual float(entity, float) SendEntity;
 	virtual void() ParentUpdate;
 };
 
-void CBaseMonster::Speak(string msg)
+void CBaseMonster::Sound(string msg)
 {
-	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
-	WriteByte(MSG_MULTICAST, EV_SPEAK);
-	WriteEntity(MSG_MULTICAST, this);
-	WriteString(MSG_MULTICAST, msg);
-	WriteFloat(MSG_MULTICAST, m_flPitch);
-	msg_entity = this;
-	multicast(origin, MULTICAST_PVS);
+	sound(this, CHAN_VOICE, msg, 1.0, ATTN_NORM);
 }
 
 float CBaseMonster::SendEntity(entity ePEnt, float fChanged)
