@@ -461,7 +461,7 @@ CSQC_Parse_Event(void)
 		sound(t, CHAN_VOICE, msg, 1.0, ATTN_NORM, pit);
 		break;
 	case EV_SENTENCE:
-		CBaseNPC_ParseSentence();
+		CBaseEntity_ParseSentence();
 		break;
 	case EV_FADE:
 		Fade_Parse();

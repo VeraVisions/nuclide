@@ -15,6 +15,7 @@
  */
 
 string __fullspawndata;
+string Sentences_GetSamples(string);
 
 // keep in sync with client/baseentity.cpp
 enumflags
@@ -33,24 +34,84 @@ enumflags
 
 class CBaseEntity
 {
+	float m_flSentenceTime;
+	sound_t *m_pSentenceQue;
+	int m_iSentenceCount;
+	int m_iSentencePos;
+
 	string targetname;
 	string target;
 	float spawnflags;
 
 	void() CBaseEntity;
-
 	virtual void() Init;
 	virtual void() Initialized;
 	virtual void(string, string) SpawnKey;
+	virtual void(string) Sentence;
+	virtual void() ProcessWordQue;
 	virtual void(float flChanged) ReadEntity;
 	virtual float(void) predraw;
 };
 
-float CBaseEntity::predraw(void)
+float
+CBaseEntity::predraw(void)
 {
 	frame1time += clframetime;
+	ProcessWordQue();
 	addentity(this);
 	return PREDRAW_NEXT;
+}
+
+void
+CBaseEntity::ProcessWordQue(void)
+{
+	if (time < 1 || !m_iSentenceCount) {
+		return;
+	}
+
+	if (m_flSentenceTime > time) {
+		return;
+	}
+
+	sound(this, CHAN_VOICE, m_pSentenceQue[m_iSentencePos].m_strSnd, 1.0, ATTN_NORM);
+	print(sprintf("^2CBaseNPC: Speaking %s\n", m_pSentenceQue[m_iSentencePos].m_strSnd));
+	m_iSentencePos++;
+
+	if (m_iSentenceCount == m_iSentenceCount) {
+		memfree(m_pSentenceQue);
+		m_iSentenceCount = 0;
+		m_iSentencePos = 0;
+		m_pSentenceQue = 0;
+	} else {
+		m_flSentenceTime = time + m_pSentenceQue[m_iSentenceCount - 1].len;
+	}
+}
+
+/* we'll pass it a sentences.txt word (e.g. !BA_TEST) and start queing it */
+void
+CBaseEntity::Sentence(string msg)
+{
+	/* not defined */
+	if (msg == "") {
+		return;
+	}
+
+	if (m_iSentenceCount) {
+		memfree(m_pSentenceQue);
+		m_iSentenceCount = 0;
+		m_pSentenceQue = 0;
+		m_iSentencePos = 0;
+	}
+
+	m_iSentenceCount = tokenize(Sentences_GetSamples(msg));
+	m_pSentenceQue = memalloc(sizeof(sound_t) * m_iSentenceCount);
+
+	for (int i = 0; i < m_iSentenceCount; i++) {
+		m_pSentenceQue[i].m_strSnd = sprintf("%s.wav", argv(i));
+		m_pSentenceQue[i].len = soundlength(m_pSentenceQue[i].m_strSnd);
+		m_pSentenceQue[i].m_flPitch = 100;
+	}
+	m_flSentenceTime = time;
 }
 
 void CBaseEntity::ReadEntity(float flChanged)
@@ -180,4 +241,27 @@ void CBaseEntity::Initialized(void)
 
 void CBaseEntity::CBaseEntity(void)
 {
+}
+
+/* our EV_SENTENCE event */
+void
+CBaseEntity_ParseSentence(void)
+{
+	entity ent;
+	CBaseEntity targ;
+	string sentence;
+	float e;
+
+	/* parse packets */
+	e = readentitynum();
+	sentence = readstring();
+
+	ent = findfloat(world, entnum, e);
+
+	if (ent) {
+		targ = (CBaseEntity)ent;
+		targ.Sentence(sentence);
+	} else {
+		print(sprintf("^1CBaseNPC_ParseSentence: Entity %d not in PVS\n", e));
+	}
 }

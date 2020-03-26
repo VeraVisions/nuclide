@@ -290,8 +290,6 @@ void monster_barney::touch(void)
 
 void monster_barney::PlayerUse(void)
 {
-	int r;
-
 	if (m_iFlags & BARNF_FEAR) {
 		return;
 	}

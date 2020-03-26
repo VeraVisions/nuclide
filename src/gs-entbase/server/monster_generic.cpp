@@ -34,7 +34,7 @@ enumflags
 	MF_FADECORPSE
 };
 
-class monster_generic : CBaseEntity
+class monster_generic:CBaseEntity
 {
 	void() monster_generic;
 	//virtual void() Respawn;

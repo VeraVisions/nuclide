@@ -14,8 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-float Skill_GetValue(string var)
+float Skill_GetValue(string variable)
 {
 	float skill = cvar("skill");
-	return cvar(sprintf("sk_%s%d", var, skill));
+	return cvar(sprintf("sk_%s%d", variable, skill));
 }

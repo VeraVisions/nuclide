@@ -42,7 +42,7 @@ void CSQC_Ent_Update(float new)
 		if (new) {
 			spawnfunc_CBaseNPC();
 		}
-		n.ReadEntity(readshort());
+		n.ReadEntity(readfloat());
 		break;
 	case ENT_SPRITE:
 		Sprite_Animated();

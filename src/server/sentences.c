@@ -23,13 +23,6 @@
  * we'll just default to those whenever there's no custom value set.
  */
 
-typedef struct
-{
-	string m_strSnd;
-	float m_flPitch;
-	float len;
-} sound_t;
-
 string *g_sentences;
 int g_sentences_count;
 
@@ -38,7 +31,7 @@ Sentences_Init(void)
 {
 	filestream fs_sentences;
 	string temp;
-	int c, i;
+	int c;
 
 	fs_sentences = fopen("sound/sentences.txt", FILE_READ);
 

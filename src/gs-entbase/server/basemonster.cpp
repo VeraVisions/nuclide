@@ -60,7 +60,7 @@ float CBaseMonster::SendEntity(entity ePEnt, float fChanged)
 	}
 
 	WriteByte(MSG_ENTITY, ENT_NPC);
-	WriteShort(MSG_ENTITY, fChanged);
+	WriteFloat(MSG_ENTITY, fChanged);
 
 	if (fChanged & NPC_MODELINDEX)
 		WriteShort(MSG_ENTITY, modelindex);

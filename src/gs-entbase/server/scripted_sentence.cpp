@@ -43,13 +43,20 @@ class scripted_sentence:CBaseTrigger
 
 void scripted_sentence::Trigger(void)
 {
+	entity speaker = find(world, CBaseEntity::m_strTargetName, m_strSpeaker);
+
+	if (!speaker) {
+		return;
+	}
+
+	print(sprintf("Speaking on %s\n", m_strSpeaker));
+
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_SENTENCE);
-	WriteEntity(MSG_MULTICAST, find(world, ::classname, m_strSpeaker));
+	WriteEntity(MSG_MULTICAST, speaker);
 	WriteString(MSG_MULTICAST, m_strSentence);
-	WriteFloat(MSG_MULTICAST, m_flPitch);
-	msg_entity = this;
-	multicast(origin, MULTICAST_PHS);
+	msg_entity = speaker;
+	multicast(speaker.origin, MULTICAST_PVS);
 }
 
 /* TODO: Make this redundant */

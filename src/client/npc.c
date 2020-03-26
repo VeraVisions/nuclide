@@ -14,28 +14,14 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class CBaseNPC
+class CBaseNPC:CBaseEntity
 {
-	float m_flSentenceTime;
-	sound_t *m_pSentenceQue;
-	int m_iSentenceCount;
-	int m_iSentencePos;
-
 	int body;
 	float frame_last;
 
 	virtual float() predraw;
-	virtual void(string) Speak;
-	virtual void(string) Sentence;
-	virtual void() ProcessWordQue;
 	virtual void(float flChanged) ReadEntity;
 };
-
-void
-CBaseNPC::Speak(string msg)
-{
-	sound(this, CHAN_VOICE, msg, 1.0, ATTN_NORM);
-}
 
 float
 CBaseNPC::predraw(void)
@@ -63,60 +49,6 @@ CBaseNPC::predraw(void)
 
 	addentity(this);
 	return PREDRAW_NEXT;
-}
-
-void
-CBaseNPC::ProcessWordQue(void)
-{
-	if (time < 2 || !m_iSentenceCount) {
-		return;
-	}
-
-	if (m_flSentenceTime > time) {
-		return;
-	}
-	Speak(m_pSentenceQue[m_iSentencePos].m_strSnd);
-	dprint(sprintf("^2CBaseNPC: Speaking %s\n", m_pSentenceQue[m_iSentencePos].m_strSnd));
-	m_iSentencePos++;
-
-	if (m_iSentenceCount == m_iSentenceCount) {
-		memfree(m_pSentenceQue);
-		m_iSentenceCount = 0;
-		m_iSentencePos = 0;
-		m_pSentenceQue = 0;
-	} else {
-		m_flSentenceTime = time + m_pSentenceQue[m_iSentenceCount - 1].len;
-	}
-}
-
-/* we'll pass it a sentences.txt word (e.g. !BA_TEST) and start queing it */
-void
-CBaseNPC::Sentence(string msg)
-{
-	/* not defined */
-	if (msg == "") {
-		return;
-	}
-
-	if (m_iSentenceCount) {
-		dprint(sprintf("^1CBaseNPC::Sentence: Freeing que for new sentence\n", m_iSentenceCount));
-		memfree(m_pSentenceQue);
-		m_iSentenceCount = 0;
-		m_pSentenceQue = 0;
-		m_iSentencePos = 0;
-	}
-
-	m_iSentenceCount = tokenize(Sentences_GetSamples(msg));
-	dprint(sprintf("^2CBaseNPC::Sentence: Speaking %i word/s\n", m_iSentenceCount));
-	m_pSentenceQue = memalloc(sizeof(sound_t) * m_iSentenceCount);
-
-	for (int i = 0; i < m_iSentenceCount; i++) {
-		dprint(sprintf("^2CBaseNPC::Sentence: Constructing... %s\n", m_pSentenceQue[i].m_strSnd));
-		m_pSentenceQue[i].m_strSnd = sprintf("%s.wav", argv(i));
-		m_pSentenceQue[i].len = soundlength(m_pSentenceQue[i].m_strSnd);
-		m_pSentenceQue[i].m_flPitch = 100;
-	}
-	m_flSentenceTime = time;
 }
 
 void
@@ -163,27 +95,4 @@ CBaseNPC::CBaseNPC(void)
 	drawmask = MASK_ENGINE;
 	customphysics = Empty;
 	setsize(this, VEC_HULL_MIN + [0,0,36], VEC_HULL_MAX + [0,0,36]);
-}
-
-/* our EV_SENTENCE event */
-void
-CBaseNPC_ParseSentence(void)
-{
-	entity ent;
-	CBaseNPC targ;
-	string sentence;
-	float e;
-
-	/* parse packets */
-	e = readentitynum();
-	sentence = readstring();
-
-	ent = findfloat(world, entnum, e);
-
-	if (ent) {
-		targ = (CBaseNPC)ent;
-		targ.Sentence(sentence);
-	} else {
-		dprint(sprintf("^1CBaseNPC_ParseSentence: Entity %d not in PVS\n", e));
-	}
 }

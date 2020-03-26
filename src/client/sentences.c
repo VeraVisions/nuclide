@@ -23,7 +23,12 @@
  * we'll just default to those whenever there's no custom value set.
  */
 
-#define DYNAMIC_SENTENCES 0
+/* sentences are the voice-acting backbone of the sound system.
+ * http://articles.thewavelength.net/230/
+ * has pretty good documentation of how the format is meant to work */
+
+/* enable this if you want to use memalloc */
+#define DYNAMIC_SENTENCES 1
 
 typedef struct
 {

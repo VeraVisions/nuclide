@@ -52,14 +52,6 @@ void Sound_ParseLoopingEntity(entity sndent, float isNew)
 	sound(new, CHAN_VOICE, new.m_strSample, new.m_flVolume, new.m_flAttn, new.m_flPitch);
 }
 
-
-typedef struct
-{
-	string m_strSnd;
-	float m_flPitch;
-	float len;
-} sound_t;
-
 sound_t *g_voxque;
 
 void Sound_PlayVOX(string msg)

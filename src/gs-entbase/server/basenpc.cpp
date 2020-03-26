@@ -63,7 +63,7 @@ CBaseNPC::Sentence(string sentence)
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_SENTENCE);
 	WriteEntity(MSG_MULTICAST, this);
-	WriteString(MSG_MULTICAST, Sentences_GetSamples(sentence));
+	WriteString(MSG_MULTICAST, seq);
 	msg_entity = this;
 	multicast(origin, MULTICAST_PVS);
 }
