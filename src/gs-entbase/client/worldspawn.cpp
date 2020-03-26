@@ -41,6 +41,9 @@ void worldspawn::Initialized(void)
 void worldspawn::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
+	case "chaptertitle":
+		GameMessage_Setup(strKey);
+		break;
 	case "lf_pos":
 		g_vecLensPos = stov(strKey);
 		break;

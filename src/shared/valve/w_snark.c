@@ -24,6 +24,102 @@ enum
 	SNARK_THROW
 };
 
+#ifdef SSQC
+class monster_snark:CBaseMonster
+{
+	void() monster_snark;
+	virtual void() customphysics;
+	virtual void(int) Death;
+	virtual void(int) Pain;
+};
+
+void
+monster_snark::customphysics(void)
+{
+	input_movevalues = [250,0,0];
+	input_buttons = 0;
+	input_impulse = 0;
+	input_angles = self.angles;
+	input_timelength = frametime;
+	
+	if (self.health <= 0) {
+		return;
+	}
+
+	if (self.weapon <= 0.0 && self.aiment == __NULL__) {
+		float shortest = 999999;
+		for (entity ef = world; (ef = findfloat(ef, ::movetype, MOVETYPE_WALK));) {
+			float len = vlen(ef.origin - self.origin);
+			if (ef.classname != "snark" && len < shortest && ef.health > 0) {
+				self.owner = __NULL__;
+				self.aiment = ef;
+				shortest = len;
+			}
+		}
+	} 
+
+	if (self.aiment) {
+		self.angles = input_angles = vectoangles(self.aiment.origin - self.origin);
+	}
+
+	if (self.aiment && self.weapon <= 0.0) {
+		self.weapon = 0.5f + random();
+		sound(self, CHAN_VOICE, sprintf("squeek/sqk_hunt%d.wav",floor(random(1,4))), 1.0, ATTN_NORM);
+		input_buttons = 2;
+		Damage_Apply(self, world, 1, 0, DMG_GENERIC);
+			
+		makevectors(self.angles);
+		traceline(self.origin, self.origin + (v_forward * 128), 0, self);
+			
+		if (trace_ent.takedamage == DAMAGE_YES) {
+			float pit = 100 + random(0,10);
+			sound(self, CHAN_BODY, "squeek/sqk_deploy1.wav", 1.0, ATTN_NORM, pit);
+			Damage_Apply(trace_ent, self.goalentity, 10, WEAPON_SNARK, DMG_GENERIC);
+			Effect_CreateBlood(self.origin + [0,0,16], [1,0,0]);
+		}
+
+		if (self.aiment.health <= 0) {
+			self.aiment = __NULL__;
+		}
+	}
+	self.weapon -= frametime;	
+	runstandardplayerphysics(self);
+}
+
+void
+monster_snark::Death(int i)
+{
+	Effect_CreateBlood(self.origin + [0,0,16], [203,183,15] / 255);
+	sound(self, CHAN_VOICE, "squeek/sqk_die1.wav", 1.0, ATTN_NORM);
+	sound(self, CHAN_BODY, "squeek/sqk_blast1.wav", 1.0, ATTN_NORM);
+	self.customphysics = __NULL__;
+	remove(self);
+}
+
+void
+monster_snark::Pain(int i)
+{
+	
+}
+
+void
+monster_snark::monster_snark(void)
+{
+	netname = "Snark";
+	classname = "snark";
+	setmodel(this, "models/w_squeak.mdl");
+	flags |= FL_MONSTER;
+	solid = SOLID_BBOX;
+	movetype = MOVETYPE_WALK;
+	frame = 3; /* running like crazy. */
+	angles = goalentity.angles;
+	health = 20;
+	takedamage = DAMAGE_YES;
+	aiment = __NULL__;
+	weapon = 1.0f;
+}
+#endif
+
 int w_snark_pickup(int new)
 {
 #ifdef SSQC
@@ -56,84 +152,9 @@ void w_snark_holster(void)
 #ifdef SSQC
 void w_snark_deploy(void)
 {
-	static void snark_ai(void)
-	{
-		input_movevalues = [250,0,0];
-		input_buttons = 0;
-		input_impulse = 0;
-		input_angles = self.angles;
-		input_timelength = frametime;
-	
-		if (self.health <= 0) {
-			return;
-		}
-
-		if (self.weapon <= 0.0 && self.aiment == __NULL__) {
-			float shortest = 999999;
-			for (entity ef = world; (ef = findfloat(ef, movetype, MOVETYPE_WALK));) {
-				float len = vlen(ef.origin - self.origin);
-				if (ef.classname != "snark" && len < shortest && ef.health > 0) {
-					self.owner = __NULL__;
-					self.aiment = ef;
-					shortest = len;
-				}
-			}
-		} 
-
-		if (self.aiment) {
-			self.angles = input_angles = vectoangles(self.aiment.origin - self.origin);
-		}
-
-		if (self.aiment && self.weapon <= 0.0) {
-			self.weapon = 0.5f + random();
-			sound(self, CHAN_VOICE, sprintf("squeek/sqk_hunt%d.wav",floor(random(1,4))), 1.0, ATTN_NORM);
-			input_buttons = 2;
-			Damage_Apply(self, world, 1, 0, DMG_GENERIC);
-			
-			makevectors(self.angles);
-			traceline(self.origin, self.origin + (v_forward * 128), 0, self);
-			
-			if (trace_ent.takedamage == DAMAGE_YES) {
-				float pit = 100 + random(0,10);
-				sound(self, CHAN_BODY, "squeek/sqk_deploy1.wav", 1.0, ATTN_NORM, pit);
-				Damage_Apply(trace_ent, self.goalentity, 10, WEAPON_SNARK, DMG_GENERIC);
-				Effect_CreateBlood(self.origin + [0,0,16], [1,0,0]);
-			}
-
-			if (self.aiment.health <= 0) {
-				self.aiment = __NULL__;
-			}
-		}
-		self.weapon -= frametime;	
-		runstandardplayerphysics(self);
-	}
-	static void snark_die(int i) {
-		Effect_CreateBlood(self.origin + [0,0,16], [203,183,15] / 255);
-		sound(self, CHAN_VOICE, "squeek/sqk_die1.wav", 1.0, ATTN_NORM);
-		sound(self, CHAN_BODY, "squeek/sqk_blast1.wav", 1.0, ATTN_NORM);
-		self.customphysics = __NULL__;
-		remove(self);
-	}
-	static void snark_pain(int i) { }
-	CBaseEntity snark = spawn(CBaseEntity);
-	snark.owner = self;
-	snark.goalentity = self;
-	snark.netname = "Snark";
-	snark.classname = "snark";
-	setmodel(snark, "models/w_squeak.mdl");
+	monster_snark snark = spawn(monster_snark, owner: self, goalentity: self);
 	makevectors(self.v_angle);
 	setorigin(snark, self.origin + v_forward * 32);
-	snark.solid = SOLID_BBOX;
-	snark.movetype = MOVETYPE_WALK;
-	snark.frame = 3; /* running like crazy. */
-	snark.customphysics = snark_ai;
-	snark.angles = self.angles;
-	snark.health = 20;
-	snark.Pain = snark_pain;
-	snark.takedamage = DAMAGE_YES;
-	snark.aiment = __NULL__;
-	snark.Death = snark_die;
-	snark.weapon = 1.0f;
 }
 #endif
 

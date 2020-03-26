@@ -24,9 +24,9 @@ games:
 	$(CC) server/tfc/progs.src
 	
 mods:
-	#mkdir -p ../cstrike/data.pk3dir
-	#$(CC) client/cstrike/progs.src
-	#$(CC) server/cstrike/progs.src
+	mkdir -p ../cstrike/data.pk3dir
+	##$(CC) client/cstrike.new/progs.src
+	##$(CC) server/cstrike.new/progs.src
 	mkdir -p ../scihunt/data.pk3dir
 	$(CC) client/scihunt/progs.src
 	$(CC) server/scihunt/progs.src

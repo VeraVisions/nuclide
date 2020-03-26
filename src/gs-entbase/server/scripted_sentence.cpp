@@ -49,7 +49,7 @@ void scripted_sentence::Trigger(void)
 		return;
 	}
 
-	print(sprintf("Speaking on %s\n", m_strSpeaker));
+	dprint(sprintf("^2scripted_sentence::Trigger^7: %s on %s\n", m_strSentence, m_strSpeaker));
 
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_SENTENCE);

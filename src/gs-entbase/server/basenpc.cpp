@@ -54,8 +54,6 @@ CBaseNPC::Sentence(string sentence)
 {
 	string seq = Sentences_GetSamples(sentence);
 
-	print(sprintf("^2CBaseNPC::Sentence: Attempting %s\n", seq));
-
 	if (seq == "") {
 		return;
 	}

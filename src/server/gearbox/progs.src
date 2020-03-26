@@ -110,6 +110,7 @@
 ../spawn.c
 ../vox.c
 ../../shared/valve/animations.c
+../valve/gamerules.c
 ../valve/client.c
 ../client.c
 ../valve/server.c

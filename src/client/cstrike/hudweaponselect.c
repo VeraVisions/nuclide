@@ -372,6 +372,10 @@ void HUD_DrawWeaponSelect(void)
 	}
 }
 
+void HUD_SlotSelect(int i)
+{
+	
+}
 
 var float fHUDWeaponLast;
 /*

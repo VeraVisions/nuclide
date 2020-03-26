@@ -14,6 +14,96 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/* MONSTER_TRIPMINE SEGMENT 
+ * 
+ * Because not being able to place it around levels would be boring.
+ * Some maps, such as subtransit and a few singleplayer chapters have this. */
+
+#ifdef SSQC
+class monster_tripmine:CBaseMonster
+{
+	void() monster_tripmine;
+	virtual float(entity, float) SendEntity;
+	virtual void(int) Trip;
+	virtual void() Ready;
+};
+
+float
+monster_tripmine::SendEntity(entity pvsent, float flags)
+{
+	WriteByte(MSG_ENTITY, ENT_TRIPMINE);
+	WriteCoord(MSG_ENTITY, self.origin[0]);
+	WriteCoord(MSG_ENTITY, self.origin[1]);
+	WriteCoord(MSG_ENTITY, self.origin[2]);
+	WriteCoord(MSG_ENTITY, self.angles[0]);
+	WriteCoord(MSG_ENTITY, self.angles[1]);
+	WriteCoord(MSG_ENTITY, self.angles[2]);
+	WriteFloat(MSG_ENTITY, self.armor);
+	WriteByte(MSG_ENTITY, self.health);
+	WriteShort(MSG_ENTITY, self.modelindex);
+	return TRUE;
+}
+
+void
+monster_tripmine::Trip(int walkthrough)
+{
+	if (!walkthrough) {
+		real_owner = g_eAttacker;
+	}
+
+	/* This is to prevent infinite loops in Damage_Radius */
+	Death =
+	Pain = __NULL__;
+	takedamage = DAMAGE_NO;
+
+	Effect_CreateExplosion(origin);
+	Damage_Radius(origin, real_owner, 150, 150 * 2.5f, TRUE, WEAPON_TRIPMINE);
+	sound(this, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 2 ) + 3 ), 1, ATTN_NORM);
+	remove(this);
+}
+
+void
+monster_tripmine::Ready(void)
+{
+	makevectors(angles);
+	traceline(origin, origin + v_forward * 2048, FALSE, this);
+
+	if (!health) {
+		SendFlags = 1;
+		health = 1;
+		Death =
+		Pain = Trip;
+		takedamage = DAMAGE_YES;
+		solid = SOLID_BBOX;
+		setsize(this, [-8,-8,-8], [8,8,8]);
+		armor = trace_plane_dist;
+		sound(this, CHAN_WEAPON, "weapons/mine_activate.wav", 1.0f, ATTN_NORM);
+	}
+
+	if (trace_plane_dist != armor) {
+		Trip(1);
+	}
+	nextthink = time;
+}
+
+void
+monster_tripmine::monster_tripmine(void)
+{
+	setmodel(this, "models/v_tripmine.mdl");
+	setorigin(this, origin);
+	SendFlags = 1; /* force update */
+
+	/* ready in 4 seconds flat */
+	think = Ready;
+	nextthink = time + 4.0f;
+}
+#endif
+
+/* The WEAPON_TRIPMINE code
+ * 
+ * Here is where the actual 'weapon' logic happens that the player itself
+ * runs. It obviously won't work without MONSTER_TRIPMINE */
+
 enum
 {
 	TRIPMINE_IDLE1,
@@ -79,66 +169,7 @@ void w_tripmine_holster(void)
 	
 }
 
-#ifdef SSQC
-void w_tripmine_trip(int walkthrough)
-{
-	CBaseEntity mine = (CBaseEntity)self;
-
-	if (!walkthrough) {
-		mine.real_owner = g_eAttacker;
-	}
-
-	/* This is to prevent infinite loops in Damage_Radius */
-	mine.Death =
-	mine.Pain = __NULL__;
-	mine.takedamage = DAMAGE_NO;
-
-	Effect_CreateExplosion(mine.origin);
-	Damage_Radius(mine.origin, mine.real_owner, 150, 150 * 2.5f, TRUE, WEAPON_TRIPMINE);
-	sound(mine, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 2 ) + 3 ), 1, ATTN_NORM);
-	remove(mine);
-}
-void w_tripmine_ready(void)
-{
-	CBaseEntity mine = (CBaseEntity)self;
-	makevectors(mine.angles);
-	traceline(mine.origin, mine.origin + v_forward * 2048, FALSE, mine);
-
-	if (!mine.health) {
-		mine.SendFlags = 1;
-		mine.health = 1;
-		mine.Death =
-		mine.Pain = w_tripmine_trip;
-		mine.takedamage = DAMAGE_YES;
-		mine.solid = SOLID_BBOX;
-		setsize(mine, [-8,-8,-8], [8,8,8]);
-		mine.armor = trace_plane_dist;
-		sound(mine, CHAN_WEAPON, "weapons/mine_activate.wav", 1, ATTN_NORM);
-	}
-
-	if (trace_plane_dist != mine.armor) {
-		w_tripmine_trip(1);
-	}
-	mine.nextthink = time;
-}
-#endif
-
-#ifdef SSQC
-float w_tripmine_sendentity(entity pvsent, float flags)
-{
-	WriteByte(MSG_ENTITY, ENT_TRIPMINE);
-	WriteCoord(MSG_ENTITY, self.origin[0]);
-	WriteCoord(MSG_ENTITY, self.origin[1]);
-	WriteCoord(MSG_ENTITY, self.origin[2]);
-	WriteCoord(MSG_ENTITY, self.angles[0]);
-	WriteCoord(MSG_ENTITY, self.angles[1]);
-	WriteCoord(MSG_ENTITY, self.angles[2]);
-	WriteFloat(MSG_ENTITY, self.armor);
-	WriteByte(MSG_ENTITY, self.health);
-	WriteShort(MSG_ENTITY, self.modelindex);
-	return TRUE;
-}
-#else
+#ifdef CSQC
 .float health;
 .float armor;
 float w_tripmine_predraw(void)
@@ -204,19 +235,11 @@ void w_tripmine_primary(void)
 	Weapons_ViewAnimation(TRIPMINE_FIRE2);
 #else
 	pl.ammo_tripmine--;
-
-	entity mine = spawn();
-	setmodel(mine, "models/v_tripmine.mdl");
-	setorigin(mine, trace_endpos);
-	mine.angles = vectoangles( trace_plane_normal );
-	mine.think = w_tripmine_ready;
-	mine.nextthink = time + 4.0f;
-	mine.SendEntity = w_tripmine_sendentity;
-	mine.SendFlags = 1;
-	mine.real_owner = self;
+	vector ang = vectoangles( trace_plane_normal );
+	monster_tripmine mine = spawn(monster_tripmine, real_owner: self, angles: ang);
 	setorigin(mine, trace_endpos - (v_forward * 8));
-	sound(mine, CHAN_WEAPON, "weapons/mine_charge.wav", 1, ATTN_NORM);
-	sound(self, CHAN_WEAPON, "weapons/mine_deploy.wav", 1, ATTN_NORM);
+	sound(self, CHAN_WEAPON, "weapons/mine_deploy.wav", 1.0f, ATTN_NORM);
+	sound(mine, CHAN_WEAPON, "weapons/mine_charge.wav", 1.0f, ATTN_NORM);
 #endif
 
 	pl.a_ammo3 = 1;

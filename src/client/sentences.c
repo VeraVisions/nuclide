@@ -111,17 +111,14 @@ Sentences_Init(void)
 			} else {
 				/* check whether or not our keyword contains a path */
 				Sentences_Path(argv(i));
-				//Sentencens_Pitch(argv(i));
-				g_sentences[x].m_strSamples = 
-					sprintf(
-						"%s %s%s",
-						g_sentences[x].m_strSamples,
-						g_sentences_path,
-						argv(i)
-					);
+
+				if (i == 1) {
+					g_sentences[x].m_strSamples = sprintf("%s%s", g_sentences_path, argv(i));
+				} else {
+					g_sentences[x].m_strSamples = sprintf("%s %s%s", g_sentences[x].m_strSamples, g_sentences_path, argv(i));
+				}
 			}
 		}
-		print(sprintf("%s\n", g_sentences[x].m_strSamples));
 	}
 }
 

@@ -114,6 +114,9 @@ class player:CBaseEntity
 	int old_a_ammo1;
 	int old_a_ammo2;
 	int old_a_ammo3;
+
+	virtual void(int) Pain;
+	virtual void(int) Death;
 #endif
 };
 

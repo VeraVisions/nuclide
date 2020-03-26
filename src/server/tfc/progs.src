@@ -63,7 +63,8 @@ info_player_teamspawn.cpp
 spawn.c
 ../vox.c
 ../../shared/valve/animations.c
-client.c
+../tfc/gamerules.c
+../valve/client.c
 ../client.c
 ../valve/server.c
 ../server.c

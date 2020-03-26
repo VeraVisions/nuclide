@@ -98,7 +98,8 @@ ammo.cpp
 ../spawn.c
 ../vox.c
 ../../shared/valve/animations.c
-client.c
+../valve/gamerules.c
+../valve/client.c
 ../client.c
 server.c
 ../server.c

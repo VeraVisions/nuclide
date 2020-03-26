@@ -449,6 +449,12 @@ CSQC_Parse_Event(void)
 	float fHeader = readbyte();
 
 	switch (fHeader) {
+	case EV_MUSICTRACK:
+		Music_ParseTrack();
+		break;
+	case EV_MUSICLOOP:
+		Music_ParseLoop();
+		break;
 	case EV_OBITUARY:
 		Obituary_Parse();
 		break;

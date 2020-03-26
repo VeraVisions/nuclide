@@ -42,7 +42,8 @@ void ClientDisconnect(void)
 
 void ClientKill(void)
 {
-	Game_ClientKill();
+	player pl = (player)self;
+	Game_ClientKill(pl);
 }
 
 void SpectatorThink(void)
@@ -60,27 +61,38 @@ void SpectatorDisconnect(void)
 
 void PutClientInServer(void)
 {
-	Game_PutClientInServer();
+	player pl;
+
+	/* make sure you never change the classname. ever. */
+	if (self.classname != "player") {
+		spawnfunc_player();
+	}
+
+	pl = (player)self;
+	Game_PutClientInServer(pl);
 }
 
 void PlayerPreThink(void)
 {
-	Game_PlayerPreThink();
+	player pl = (player)self;
+	Game_PlayerPreThink(pl);
 }
 
 void PlayerPostThink(void)
 {
-	Game_PlayerPostThink();
+	player pl = (player)self;
+	Game_PlayerPostThink(pl);
 }
 
 void SetNewParms(void)
 {
-	Game_SetNewParms();
+	Gamerules_SetNewParms();
 }
 
 void SetChangeParms(void)
 {
-	Game_SetChangeParms();
+	player pl = (player)self;
+	Gamerules_SetChangeParms(pl);
 }
 
 void SV_RunClientCommand(void)

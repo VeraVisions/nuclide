@@ -108,7 +108,8 @@ shdata_parse.c
 ../vox.c
 
 ../../shared/valve/animations.c
-client.c
+../scihunt/gamerules.c
+../valve/client.c
 ../client.c
 
 server.c

@@ -26,6 +26,7 @@
 ../../gs-entbase/client.src
 ../sky.c
 ../sound.c
+../music.c
 ../prints.c
 ../voice.c
 ../../shared/valve/animations.h

@@ -59,7 +59,8 @@
 ../spawn.c
 ../vox.c
 ../../shared/valve/animations.c
-client.c
+../poke646/gamerules.c
+../valve/client.c
 ../client.c
 ../valve/server.c
 ../server.c

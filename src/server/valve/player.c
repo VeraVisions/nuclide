@@ -14,45 +14,45 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void Player_Pain(int hit)
+void weaponbox_spawn(player);
+
+void player::Pain(int hit)
 {
 	
 }
 
-void weaponbox_spawn(player);
-void Player_Death(int hit)
+void player::Death(int hit)
 {
-	player pl = (player)self;
-	weaponbox_spawn(pl);
-	pl.movetype = MOVETYPE_NONE;
-	pl.solid = SOLID_NOT;
-	pl.takedamage = DAMAGE_NO;
-	pl.flags &= ~FL_FLASHLIGHT;
-	pl.armor = pl.activeweapon = pl.g_items = 0;
+	weaponbox_spawn(this);
+	movetype = MOVETYPE_NONE;
+	solid = SOLID_NOT;
+	takedamage = DAMAGE_NO;
+	flags &= ~FL_FLASHLIGHT;
+	armor = activeweapon = g_items = 0;
 
-	pl.think = PutClientInServer;
-	pl.nextthink = time + 4.0f;
-	sound(pl, CHAN_AUTO, "fvox/flatline.wav", 1.0, ATTN_NORM);
+	think = PutClientInServer;
+	nextthink = time + 4.0f;
+	sound(this, CHAN_AUTO, "fvox/flatline.wav", 1.0, ATTN_NORM);
 
-	if (pl.health < -50) {
-		pl.health = 0;
-		Effect_GibHuman(pl.origin);
+	if (health < -50) {
+		health = 0;
+		Effect_GibHuman(origin);
 		return;
 	}
 
-	pl.health = 0;
+	health = 0;
 
 	/* Let's handle corpses on the clientside */
 	entity corpse = spawn();
-	setorigin(corpse, pl.origin + [0,0,32]);
-	setmodel(corpse, pl.model);
+	setorigin(corpse, origin + [0,0,32]);
+	setmodel(corpse, model);
 	setsize(corpse, VEC_HULL_MIN, VEC_HULL_MAX);
 	corpse.movetype = MOVETYPE_TOSS;
 	corpse.solid = SOLID_TRIGGER;
-	corpse.modelindex = pl.modelindex;
+	corpse.modelindex = modelindex;
 	corpse.frame = ANIM_DIESIMPLE;
-	corpse.angles = pl.angles;
-	corpse.velocity = pl.velocity;
+	corpse.angles = angles;
+	corpse.velocity = velocity;
 }
 
 /*

@@ -37,8 +37,13 @@ void trigger_cdaudio :: Trigger ( void )
 	print( sprintf( "%s::Trigger: CD Track %i requested\n", 
 		this.classname, m_iCDTrack ) );
 #endif
-	WriteByte( MSG_ALL, 32 ); // aka SVC_CDTRACK
-	WriteByte( MSG_ALL, m_iCDTrack );
+
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_MUSICTRACK);
+	WriteByte(MSG_MULTICAST, m_iCDTrack);
+	msg_entity = world;
+	multicast([0,0,0], MULTICAST_ALL_R);
+
 	remove( this );
 }
 

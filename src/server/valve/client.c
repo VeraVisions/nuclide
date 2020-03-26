@@ -14,8 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-var int autocvar_sv_networkeverything = FALSE;
-
 void
 Game_ClientConnect(void)
 {
@@ -52,91 +50,89 @@ Game_ClientDisconnect(void)
 }
 
 void
-Game_ClientKill(void)
+Game_ClientKill(player pl)
 {
-	Damage_Apply(self, self, self.health, WEAPON_NONE, DMG_SKIP_ARMOR);
+	Damage_Apply(pl, pl, pl.health, WEAPON_NONE, DMG_SKIP_ARMOR);
 }
 
 void
-Game_PlayerPreThink(void)
+Game_PlayerPreThink(player pl)
 {
 	
 }
 
+/* we check what fields have changed over the course of the frame and network
+ * only the ones that have actually changed */
 void
-Game_PlayerPostThink(void)
+Game_PlayerPostThink(player pl)
 {
-	player pl = (player)self;
 	Animation_PlayerUpdate();
 
-	pl.SendFlags |= PLAYER_KEEPALIVE;
-
-	if (pl.old_modelindex != pl.modelindex) {
+	if (pl.old_modelindex != pl.modelindex)
 		pl.SendFlags |= PLAYER_MODELINDEX;
-	}
-	if (pl.old_origin[0] != pl.origin[0]) {
+
+	if (pl.old_origin[0] != pl.origin[0])
 		pl.SendFlags |= PLAYER_ORIGIN;
-	}
-	if (pl.old_origin[1] != pl.origin[1]) {
+
+	if (pl.old_origin[1] != pl.origin[1])
 		pl.SendFlags |= PLAYER_ORIGIN;
-	}
-	if (pl.old_origin[2] != pl.origin[2]) {
+
+	if (pl.old_origin[2] != pl.origin[2])
 		pl.SendFlags |= PLAYER_ORIGIN_Z;
-	}
-	if (pl.old_angles[0] != pl.angles[0]) {
+
+	if (pl.old_angles[0] != pl.angles[0])
 		pl.SendFlags |= PLAYER_ANGLES_X;
-	}
-	if (pl.old_angles[1] != pl.angles[1]) {
+
+	if (pl.old_angles[1] != pl.angles[1])
 		pl.SendFlags |= PLAYER_ANGLES_Y;
-	}
-	if (pl.old_angles[2] != pl.angles[2]) {
+
+	if (pl.old_angles[2] != pl.angles[2])
 		pl.SendFlags |= PLAYER_ANGLES_Z;
-	}
-	if (pl.old_velocity[0] != pl.velocity[0]) {
+
+	if (pl.old_velocity[0] != pl.velocity[0])
 		pl.SendFlags |= PLAYER_VELOCITY;
-	}
-	if (pl.old_velocity[1] != pl.velocity[1]) {
+
+	if (pl.old_velocity[1] != pl.velocity[1])
 		pl.SendFlags |= PLAYER_VELOCITY;
-	}
-	if (pl.old_velocity[2] != pl.velocity[2]) {
+
+	if (pl.old_velocity[2] != pl.velocity[2])
 		pl.SendFlags |= PLAYER_VELOCITY_Z;
-	}
-	if (pl.old_flags != pl.flags) {
+
+	if (pl.old_flags != pl.flags)
 		pl.SendFlags |= PLAYER_FLAGS;
-	}
-	if (pl.old_activeweapon != pl.activeweapon) {
+
+	if (pl.old_activeweapon != pl.activeweapon)
 		pl.SendFlags |= PLAYER_WEAPON;
-	}
-	if (pl.old_items != pl.g_items) {
+
+	if (pl.old_items != pl.g_items)
 		pl.SendFlags |= PLAYER_ITEMS;
-	}
-	if (pl.old_health != pl.health) {
+
+	if (pl.old_health != pl.health)
 		pl.SendFlags |= PLAYER_HEALTH;
-	}
-	if (pl.old_armor != pl.armor) {
+
+	if (pl.old_armor != pl.armor)
 		pl.SendFlags |= PLAYER_ARMOR;
-	}
-	if (pl.old_movetype != pl.movetype) {
+
+	if (pl.old_movetype != pl.movetype)
 		pl.SendFlags |= PLAYER_MOVETYPE;
-	}
-	if (pl.old_viewofs != pl.view_ofs[2]) {
+
+	if (pl.old_viewofs != pl.view_ofs[2])
 		pl.SendFlags |= PLAYER_VIEWOFS;
-	}
-	if (pl.old_baseframe != pl.baseframe) {
+
+	if (pl.old_baseframe != pl.baseframe)
 		pl.SendFlags |= PLAYER_BASEFRAME;
-	}
-	if (pl.old_frame != pl.frame) {
+
+	if (pl.old_frame != pl.frame)
 		pl.SendFlags |= PLAYER_FRAME;
-	}
-	if (pl.old_a_ammo1 != pl.a_ammo1) {
+
+	if (pl.old_a_ammo1 != pl.a_ammo1)
 		pl.SendFlags |= PLAYER_AMMO1;
-	}
-	if (pl.old_a_ammo2 != pl.a_ammo2) {
+
+	if (pl.old_a_ammo2 != pl.a_ammo2)
 		pl.SendFlags |= PLAYER_AMMO2;
-	}
-	if (pl.old_a_ammo3 != pl.a_ammo3) {
+
+	if (pl.old_a_ammo3 != pl.a_ammo3)
 		pl.SendFlags |= PLAYER_AMMO3;
-	}
 
 	pl.old_modelindex = pl.modelindex;
 	pl.old_origin = pl.origin;
@@ -155,6 +151,8 @@ Game_PlayerPostThink(void)
 	pl.old_a_ammo2 = pl.a_ammo2;
 	pl.old_a_ammo3 = pl.a_ammo3;
 }
+
+/* called every input frame */
 void
 Game_RunClientCommand(void)
 {
@@ -162,136 +160,19 @@ Game_RunClientCommand(void)
 	QPhysics_Run(self);
 }
 
-
+/* called whenever we respawn, or connect */
 void
-Game_SetNewParms(void)
+Game_PutClientInServer(player pl)
 {
-	parm1 =
-	parm2 =
-	parm3 =
-	parm4 =
-	parm5 =
-	parm6 =
-	parm7 =
-	parm8 =
-	parm9 =
-	parm10 =
-	parm11 =
-	parm12 =
-	parm13 =
-	parm14 =
-	parm15 =
-	parm16 =
-	parm17 =
-	parm18 =
-	parm19 =
-	parm20 =
-	parm21 =
-	parm22 =
-	parm23 =
-	parm24 =
-	parm25 =
-	parm26 =
-	parm27 =
-	parm28 =
-	parm29 =
-	parm30 = 0;
-}
-
-void
-Game_DecodeChangeParms(void)
-{
-	player pl = (player)self;
-	g_landmarkpos[0] = parm1;
-	g_landmarkpos[1] = parm2;
-	g_landmarkpos[2] = parm3;
-	pl.angles[0] = parm4;
-	pl.angles[1] = parm5;
-	pl.angles[2] = parm6;
-	pl.velocity[0] = parm7;
-	pl.velocity[1] = parm8;
-	pl.velocity[2] = parm9;
-	pl.g_items = parm10;
-	pl.activeweapon = parm11;
-
-	pl.ammo_9mm = parm12;
-	pl.ammo_357 = parm13;
-	pl.ammo_buckshot = parm14;
-	pl.ammo_m203_grenade = parm15;
-	pl.ammo_bolt = parm16;
-	pl.ammo_rocket = parm17;
-	pl.ammo_uranium = parm18;
-	pl.ammo_handgrenade = parm19;
-	pl.ammo_satchel = parm20;
-	pl.ammo_tripmine = parm21;
-	pl.ammo_snark = parm22;
-	pl.ammo_hornet = parm23;
-
-	pl.glock_mag = parm24;
-	pl.mp5_mag = parm25;
-	pl.python_mag = parm26;
-	pl.shotgun_mag = parm27;
-	pl.crossbow_mag = parm28;
-	pl.rpg_mag = parm29;
-	pl.satchel_chg = parm30;
-}
-
-void
-Game_SetChangeParms(void)
-{
-	player pl = (player)self;
-
-	parm1 = g_landmarkpos[0];
-	parm2 = g_landmarkpos[1];
-	parm3 = g_landmarkpos[2];
-	parm4 = pl.angles[0];
-	parm5 = pl.angles[1];
-	parm6 = pl.angles[2];
-	parm7 = pl.velocity[0];
-	parm8 = pl.velocity[1];
-	parm9 = pl.velocity[2];
-	parm10 = pl.g_items;
-	parm11 = pl.activeweapon;
-	parm12 = pl.ammo_9mm;
-	parm13 = pl.ammo_357;
-	parm14 = pl.ammo_buckshot;
-	parm15 = pl.ammo_m203_grenade;
-	parm16 = pl.ammo_bolt;
-	parm17 = pl.ammo_rocket;
-	parm18 = pl.ammo_uranium;
-	parm19 = pl.ammo_handgrenade;
-	parm20 = pl.ammo_satchel;
-	parm21 = pl.ammo_tripmine;
-	parm22 = pl.ammo_snark;
-	parm23 = pl.ammo_hornet;
-	parm24 = pl.glock_mag;
-	parm25 = pl.mp5_mag;
-	parm26 = pl.python_mag;
-	parm27 = pl.shotgun_mag;
-	parm28 = pl.crossbow_mag;
-	parm29 = pl.rpg_mag;
-	parm30 = pl.satchel_chg;
-}
-
-void
-Game_PutClientInServer(void)
-{
-	if (self.classname != "player") {
-		spawnfunc_player();
-	}
-	player pl = (player)self;
-
 	entity spot;
 	pl.classname = "player";
-	pl.health = self.max_health = 100;
-
+	pl.health = pl.max_health = 100;
 	pl.takedamage = DAMAGE_YES;
 	pl.solid = SOLID_SLIDEBOX;
 	pl.movetype = MOVETYPE_WALK;
 	pl.flags = FL_CLIENT;
 	pl.viewzoom = 1.0;
 	pl.model = "models/player.mdl";
-	
 	string mymodel = infokey(pl, "model");
 
 	if (mymodel) {
@@ -309,41 +190,16 @@ Game_PutClientInServer(void)
 	pl.frame = 1;
 	pl.SendEntity = Player_SendEntity;
 	pl.SendFlags = UPDATE_ALL;
-
 	pl.customphysics = Empty;
-	pl.Pain = Player_Pain;
-	pl.Death = Player_Death;
 	pl.iBleeds = TRUE;
 	forceinfokey(pl, "*spec", "0");
-	forceinfokey(self, "*deaths", ftos(self.deaths));
+	forceinfokey(pl, "*deaths", ftos(pl.deaths));
 
-	if (cvar("sv_playerslots") == 1 || cvar("coop") == 1) {
-		Game_DecodeChangeParms();
-
-		if (startspot != "") {
-			setorigin(pl, Landmark_GetSpot());
-		} else {
-			spot = find(world, classname, "info_player_start");
-			setorigin(pl, spot.origin);
-			pl.angles = spot.angles;
-			pl.fixangle = TRUE;
-		}
-		Weapons_RefreshAmmo(pl);
-	} else {
-		Game_SetNewParms();
-		Game_DecodeChangeParms();
-		spot = Spawn_SelectRandom("info_player_deathmatch");
-		setorigin(pl, spot.origin);
-		pl.angles = spot.angles;
-		pl.fixangle = TRUE;
-
-		pl.ammo_9mm = 68;
-		Weapons_AddItem(pl, WEAPON_CROWBAR);
-		Weapons_AddItem(pl, WEAPON_GLOCK);
-		pl.g_items |= ITEM_SUIT;
-	}
+	/* this is where the mods want to deviate */
+	Gamerules_Spawn(pl);
 }
 
+/* custom chat packet */
 void
 SV_SendChat(entity sender, string msg, entity eEnt, float fType)
 {
@@ -362,6 +218,7 @@ SV_SendChat(entity sender, string msg, entity eEnt, float fType)
 	localcmd(sprintf("echo [SERVER] %s: %s\n", sender.netname, msg));
 }
 
+/* client cmd overrides happen here */
 void
 Game_ParseClientCommand(string cmd)
 {

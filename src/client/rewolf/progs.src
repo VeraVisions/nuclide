@@ -32,6 +32,7 @@ init.c
 decore.cpp
 
 ../sky.c
+../music.c
 ../sound.c
 ../prints.c
 ../voice.c

@@ -21,30 +21,56 @@ Baby Headcrab
 */
 
 enum {
-	BHCB_IDLE,
-	BHCB_IDLE2,
-	BHCB_IDLE3,
-	BHCB_WALK,
-	BHCB_RUN,
-	BHCB_ANGRY,
-	BHCB_FLINCH,
-	BHCB_DIEBACK,
-	BHCB_LEFT,
-	BHCB_RIGHT,
-	BHCB_JUMP,
-	BHCB_JUMP2,
-	BHCB_JUMP3
+	BHC_IDLE,
+	BHC_IDLE2,
+	BHC_IDLE3,
+	BHC_WALK,
+	BHC_RUN,
+	BHC_ANGRY,
+	BHC_FLINCH,
+	BHC_DIEBACK,
+	BHC_LEFT,
+	BHC_RIGHT,
+	BHC_JUMP,
+	BHC_JUMP2,
+	BHC_JUMP3
 };
 
-class monster_babycrab:CBaseMonster
+class monster_babycrab:monster_headcrab
 {
 	void() monster_babycrab;
+	virtual void(void) Respawn;
 };
 
-void monster_babycrab::monster_babycrab(void)
+void
+monster_babycrab::Respawn(void)
 {
+	CBaseMonster::Respawn();
+	frame = BHC_IDLE;
+}
+
+void
+monster_babycrab::monster_babycrab(void)
+{
+	for (int i = 0; i < hc_sndattack.length; i++) {
+		precache_sound(hc_sndattack[i]);
+	}
+	for (int i = 0; i < hc_snddie.length; i++) {
+		precache_sound(hc_snddie[i]);
+	}
+	for (int i = 0; i < hc_sndidle.length; i++) {
+		precache_sound(hc_sndidle[i]);
+	}
+	for (int i = 0; i < hc_sndpain.length; i++) {
+		precache_sound(hc_sndpain[i]);
+	}
+	for (int i = 0; i < hc_sndsee.length; i++) {
+		precache_sound(hc_sndsee[i]);
+	}
+
 	netname = "Baby Headcrab";
 	model = "models/baby_headcrab.mdl";
+	base_health = Skill_GetValue ("headcrab_health") /4;
 	base_mins = [-16,-16,0];
 	base_maxs = [16,16,36];
 	CBaseMonster::CBaseMonster();

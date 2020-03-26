@@ -31,6 +31,7 @@ init.c
 ../../gs-entbase/client.src
 
 ../sky.c
+../music.c
 ../sound.c
 ../prints.c
 ../voice.c
