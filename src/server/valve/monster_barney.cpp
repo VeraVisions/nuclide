@@ -473,6 +473,7 @@ void monster_barney::monster_barney(void)
 	}
 
 	model = "models/barney.mdl";
+	netname = "Barney";
 	CBaseEntity::CBaseEntity();
 	precache_model(m_oldModel);
 	Respawn();
