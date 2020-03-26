@@ -20,13 +20,152 @@ Ichthyosaur
 
 */
 
-class monster_ichthyosaur:CBaseMonster
-{
-	void() monster_ichthyosaur;
+enum {
+	ICHY_IDLE,
+	ICHY_SWIM,
+	ICHY_THRUST,
+	ICHY_DIE1,
+	ICHY_DIE2,
+	ICHY_FLINCH,
+	ICHY_FLINCH2,
+	ICHY_DIE3,
+	ICHY_BITER,
+	ICHY_BITEL,
+	ICHY_ATTACK,
+	ICHY_RIGHT,
+	ICHY_LEFT,
+	ICHY_180,
+	ICHY_HITCAGE,
+	ICHY_JUMP
 };
 
-void monster_ichthyosaur::monster_ichthyosaur(void)
+string ichy_sndattack[] = {
+	"ichy/ichy_attack1.wav",
+	"ichy/ichy_attack2.wav"
+};
+
+string ichy_sndidle[] = {
+	"ichy/ichy_idle1.wav",
+	"ichy/ichy_idle2.wav",
+	"ichy/ichy_idle3.wav",
+	"ichy/ichy_idle4.wav"
+};
+
+string ichy_sndpain[] = {
+	"ichy/ichy_pain1.wav",
+	"ichy/ichy_pain2.wav",
+	"ichy/ichy_pain3.wav",
+	"ichy/ichy_pain4.wav",
+	"ichy/ichy_pain5.wav"
+};
+
+string ichy_sndsee[] = {
+	"ichy/ichy_alert1.wav",
+	"ichy/ichy_alert2.wav",
+	"ichy/ichy_alert3.wav"
+};
+
+
+class monster_ichthyosaur:CBaseMonster
 {
+	float m_flIdleTime;
+	float m_flPainTime;
+
+	void() monster_ichthyosaur;
+
+	virtual void(int) Pain;
+	virtual void(int) Death;
+	virtual void(void) IdleNoise;
+	virtual void(void) Respawn;
+};
+
+void
+monster_ichthyosaur::Pain(int iHitBody)
+{
+	CBaseMonster::Pain(iHitBody);
+
+	if (m_flPainTime > time) {
+		return;
+	}
+
+	if (random() < 0.25f) {
+		return;
+	}
+
+	int rand = floor(random(0,ichy_sndpain.length));
+	Speak(ichy_sndpain[rand]);
+	frame = ICHY_FLINCH + floor(random(0, 2));
+	m_flPainTime = time + 0.25f;
+}
+
+void
+monster_ichthyosaur::Death(int iHitBody)
+{
+	/* if we're already dead (corpse) don't change animations */
+	if (style != MONSTER_DEAD) {
+		int r = floor(random(0,3));
+
+		switch (r) {
+		case 1:
+			frame = ICHY_DIE2;
+			break;
+		case 2:
+			frame = ICHY_DIE3;
+			break;
+		default:
+			frame = ICHY_DIE1;
+			break;
+		}
+
+		/* the sound */
+		int rand = floor(random(0,ichy_sndpain.length));
+		Speak(ichy_sndpain[rand]);
+	}
+
+	/* set the functional differences */
+	CBaseMonster::Death(iHitBody);
+}
+
+void
+monster_ichthyosaur::IdleNoise(void)
+{
+	/* don't make noise if we're dead (corpse) */
+	if (style == MONSTER_DEAD) {
+		return;
+	}
+
+	if (m_flIdleTime > time) {
+		return;
+	}
+	m_flIdleTime = time + 2.0f + random(0,5);
+
+	int rand = floor(random(0, ichy_sndidle.length));
+	Speak(ichy_sndidle[rand]);
+}
+
+void
+monster_ichthyosaur::Respawn(void)
+{
+	CBaseMonster::Respawn();
+	frame = ICHY_IDLE;
+}
+
+void
+monster_ichthyosaur::monster_ichthyosaur(void)
+{
+	for (int i = 0; i < ichy_sndattack.length; i++) {
+		precache_sound(ichy_sndattack[i]);
+	}
+	for (int i = 0; i < ichy_sndidle.length; i++) {
+		precache_sound(ichy_sndidle[i]);
+	}
+	for (int i = 0; i < ichy_sndpain.length; i++) {
+		precache_sound(ichy_sndpain[i]);
+	}
+	for (int i = 0; i < ichy_sndsee.length; i++) {
+		precache_sound(ichy_sndsee[i]);
+	}
+	
 	netname = "Ichthyosaur";
 	model = "models/icky.mdl";
 	base_mins = [-32,-32,0];

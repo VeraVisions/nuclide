@@ -20,6 +20,17 @@ Leech
 
 */
 
+enum {
+	LE_SWIM,
+	LE_SWIM2,
+	LE_ATTACK,
+	LE_HOVER,
+	LE_LEFT,
+	LE_RIGHT,
+	LE_DIE,
+	LE_DIEEND
+};
+
 class monster_leech:CBaseMonster
 {
 	void() monster_leech;

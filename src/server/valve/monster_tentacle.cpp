@@ -20,12 +20,126 @@ Tentacle
 
 */
 
-class monster_tentacle:CBaseMonster
-{
-	void() monster_tentacle;
+enum {
+	TENT_IDLEPIT,
+	TENT_RISE,
+	TENT_TOFLOOR1,
+	TENT_IDLE,
+	TENT_PISSED,
+	TENT_SMALLRISE,
+	TENT_WAVE,
+	TENT_STRIKE,
+	TENT_TAP,
+	TENT_ROTATE,
+	TENT_REAR,
+	TENT_REARIDLE,
+	TENT_TOLEV1,
+	TENT_IDELLEV1,
+	TENT_FIDGETLEV1,
+	TENT_SNAPLEV1,
+	TENT_STRIKELEV1,
+	TENT_TAPLEV1,
+	TENT_ROTATELEV1,
+	TENT_REARLEV1,
+	TENT_REARIDELLEV1,
+	TENT_TOLEV2,
+	TENT_IDLELEV2,
+	TENT_FIDGETLEV2,
+	TENT_SNAPLEV2,
+	TENT_SWINGLEV2,
+	TENT_TUTLEV2,
+	TENT_STRIKELEV2,
+	TENT_TAPLEV2,
+	TENT_ROTATELEV2,
+	TENT_REARLEV2,
+	TENT_FREAKDIE,
+	TENT_REARIDLE2,
+	TENT_TOLEV3,
+	TENT_IDLELEV3,
+	TENT_FIDGETLEV3,
+	TENT_SIDELEV3,
+	TENT_SWIPELEV3,
+	TENT_STRIKELEV3,
+	TENT_TAPLEV3,
+	TENT_ROTATELEV3,
+	TENT_REARLEV3,
+	TENT_REARIDLELEV3,
+	TENT_DOORLEV1,
+	TENT_ENGINELEV3,
+	TENT_ENGINEIDLE,
+	TENT_ENGINESWAY,
+	TENT_ENGINESWAT,
+	TENT_ENGINEBOB,
+	TENT_ENGINEDEATH,
+	TENT_ENGINEDEATH2,
+	TENT_ENGINEDEATH3,
+	TENT_GRABIDLE,
+	TENT_GRAB
 };
 
-void monster_tentacle::monster_tentacle(void)
+string tent_sndattack[] = {
+	"tentacle/te_strike1.wav",
+	"tentacle/te_strike2.wav"
+};
+
+string tent_snddeath[] = {
+	"tentacle/te_death2.wav"
+};
+
+/* includes some cut sounds, might be interesting */
+string tent_sndidle[] = {
+	"tentacle/te_roar1.wav",
+	"tentacle/te_roar2.wav",
+	"tentacle/te_search1.wav",
+	"tentacle/te_search2.wav",
+	"tentacle/te_sing1.wav",
+	"tentacle/te_sing2.wav"
+};
+
+/* cut sounds, listing here because why not */
+string tent_sndsee[] = {
+	"tentacle/te_alert1.wav",
+	"tentacle/te_alert2.wav"
+};
+
+class monster_tentacle:CBaseMonster
+{
+	float m_flIdleTime;
+
+	void() monster_tentacle;
+
+	virtual void(void) IdleNoise;
+	virtual void(void) Respawn;
+};
+
+void
+monster_tentacle::IdleNoise(void)
+{
+	/* don't make noise if we're dead (corpse) */
+	if (style == MONSTER_DEAD) {
+		return;
+	}
+
+	if (m_flIdleTime > time) {
+		return;
+	}
+	m_flIdleTime = time + 2.0f + random(0,5);
+
+	int rand = floor(random(0, tent_sndidle.length));
+	Speak(tent_sndidle[rand]);
+}
+
+void
+monster_tentacle::Respawn(void)
+{
+	CBaseMonster::Respawn();
+	takedamage = DAMAGE_NO;
+	iBleeds = FALSE;
+	frame = TENT_IDLEPIT;
+}
+
+void
+monster_tentacle::monster_tentacle(void)
 {
 	netname = "Tentacle";
 	model = "models/tentacle2.mdl";

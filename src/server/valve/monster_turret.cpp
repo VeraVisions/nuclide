@@ -20,6 +20,15 @@ Automatic Turret (large)
 
 */
 
+enum {
+	TUR_IDLE,
+	TUR_FIRE,
+	TUR_SPIN,
+	TUR_DEPLOY,
+	TUR_RETIRE,
+	TUR_DIE
+};
+
 class monster_turret:CBaseMonster
 {
 	void() monster_turret;

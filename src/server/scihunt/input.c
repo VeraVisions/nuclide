@@ -63,7 +63,6 @@ void Game_Input(void)
 			}
 			bprint(PRINT_HIGH, "BREAK EVERYTHING!\n");
 		}
-		
 	}
 	
 	self.impulse = 0;

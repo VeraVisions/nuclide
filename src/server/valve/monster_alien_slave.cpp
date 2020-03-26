@@ -20,13 +20,117 @@ Alien Slave
 
 */
 
-class monster_alien_slave:CBaseMonster
-{
-	void() monster_alien_slave;
+enum {
+	SLV_IDLE,
+	SLV_IDLE2,
+	SLV_IDLE3,
+	SLV_CROUCH,
+	SLV_WALK,
+	SLV_WALK2,
+	SLV_RUN,
+	SLV_RIGHT,
+	SLV_LEFT,
+	SLV_JUMP,
+	SLV_STAIRUP,
+	SLV_ATTACK,
+	SLV_ATTACKZAP,
+	SLV_FLINCH,
+	SLV_FLINCHLA,
+	SLV_FLINCHRA,
+	SLV_FLINCHL,
+	SLV_FLINCHR,
+	SLV_DIEHS,
+	SLV_DIE,
+	SLV_DIEBACK,
+	SLV_DIEFORWARD,
+	SLV_COLLAR,
+	SLV_COLLAR2,
+	SLV_PUSHUP,
+	SLV_GRAB,
+	SLV_UPDOWN,
+	SLV_DOWNUP,
+	SLV_JIBBER,
+	SLV_JABBER
 };
 
-void monster_alien_slave::monster_alien_slave(void)
+string slv_snddie[] = {
+	"aslave/slv_die1.wav",
+	"aslave/slv_die2.wav"
+};
+
+string slv_sndpain[] = {
+	"aslave/slv_pain1.wav",
+	"aslave/slv_pain2.wav"
+};
+
+class monster_alien_slave:CBaseMonster
 {
+	float m_flPainTime;
+	
+	void() monster_alien_slave;
+	
+	virtual void(int) Death;
+	virtual void(void) Respawn;
+};
+
+void
+monster_alien_slave::Pain(int iHitBody)
+{
+	CBaseMonster::Pain(iHitBody);
+
+	if (m_flPainTime > time) {
+		return;
+	}
+
+	if (random() < 0.25f) {
+		return;
+	}
+
+	int rand = floor(random(0,slv_sndpain.length));
+	Speak(slv_sndpain[rand]);
+	frame = SLV_FLINCH + floor(random(0, 2));
+	m_flPainTime = time + 0.25f;
+}
+
+void
+monster_alien_slave::Death(int iHitBody)
+{
+	/* if we're already dead (corpse) don't change animations */
+	if (style != MONSTER_DEAD) {
+		/* headshots == different animation */
+		if (iHitBody == BODY_HEAD) {
+			if (random() < 0.5) {
+				frame = SLV_DIEHS;
+			} else {
+				frame = SLV_DIEBACK;
+			}
+		} else {
+			frame = SLV_DIE + floor(random(0, 3));
+		}
+
+		/* the sound */
+		int rand = floor(random(0,slv_sndpain.length));
+		Speak(slv_sndpain[rand]);
+	}
+
+	/* set the functional differences */
+	CBaseMonster::Death(iHitBody);
+}
+
+void
+monster_alien_slave::Respawn(void)
+{
+	CBaseMonster::Respawn();
+	frame = SLV_IDLE;
+}
+
+void
+monster_alien_slave::monster_alien_slave(void)
+{
+	for (int i = 0; i < slv_sndpain.length; i++) {
+		precache_sound(slv_sndpain[i]);
+	}
+
 	netname = "Alien Slave";
 	model = "models/islave.mdl";
 	base_mins = [-16,-16,0];

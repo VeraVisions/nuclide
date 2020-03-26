@@ -20,12 +20,57 @@ Black Ops - Assassin
 
 */
 
-class monster_human_assassin:CBaseMonster
-{
-	void() monster_human_assassin;
+enum {
+	HAS_IDLE,
+	HAS_IDLE3,
+	HAS_IDLE2,
+	HAS_RUN,
+	HAS_WALK,
+	HAS_SHOOT,
+	HAS_NADETHROW,
+	HAS_KICK,
+	HAS_KICK2,
+	HAS_DIERUN,
+	HAS_DIEBACK,
+	HAS_DIE,
+	HAS_JUMP,
+	HAS_UP,
+	HAS_UNUSED,
+	HAS_ATTACKDOWN,
+	HAS_LAND
 };
 
-void monster_human_assassin::monster_human_assassin(void)
+class monster_human_assassin:CBaseMonster
+{
+	float m_flIdleTime;
+
+	void() monster_human_assassin;
+
+	virtual void(int) Death;
+	virtual void(void) Respawn;
+};
+
+void
+monster_human_assassin::Death(int iHitBody)
+{
+	/* if we're already dead (corpse) don't change animations */
+	if (style != MONSTER_DEAD) {
+		frame = HAS_DIE + floor(random(0, 3));
+	}
+
+	/* set the functional differences */
+	CBaseMonster::Death(iHitBody);
+}
+
+void
+monster_human_assassin::Respawn(void)
+{
+	CBaseMonster::Respawn();
+	frame = HAS_IDLE;
+}
+
+void 
+monster_human_assassin::monster_human_assassin(void)
 {
 	netname = "Assassin";
 	model = "models/hassassin.mdl";

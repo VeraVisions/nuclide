@@ -20,6 +20,23 @@ G-Man
 
 */
 
+enum {
+	GMAN_IDLE,
+	GMAN_IDLETIE,
+	GMAN_IDLELOOK,
+	GMAN_IDLE2,
+	GMAN_OPEN,
+	GMAN_STAND,
+	GMAN_WALK,
+	GMAN_YES,
+	GMAN_NO,
+	GMAN_NOBIG,
+	GMAN_YESBIG,
+	GMAN_LISTEN,
+	GMAN_LOOKDOWN,
+	GMAN_LOOKDOWN2
+};
+
 class monster_gman:CBaseMonster
 {
 	void() monster_gman;
@@ -29,6 +46,7 @@ class monster_gman:CBaseMonster
 void monster_gman::Respawn(void)
 {
 	CBaseMonster::Respawn();
+	frame = GMAN_IDLE;
 	takedamage = DAMAGE_NO;
 	iBleeds = FALSE;
 }

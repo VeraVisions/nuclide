@@ -17,6 +17,7 @@ defs.h
 ../plugins.c
 ../logging.c
 ../nodes.c
+../skill.c
 ../../gs-entbase/server.src
 
 ../valve/monster_apache.cpp

@@ -20,6 +20,16 @@ Barnacle
 
 */
 
+enum {
+	BARN_IDLE,
+	BARN_IDLE2,
+	BARN_IDLE3,
+	BARN_FLINCH,
+	BARN_ATTACK,
+	BARN_CHEW,
+	BARN_DEATH
+};
+
 class monster_barnacle:CBaseMonster
 {
 	void() monster_barnacle;

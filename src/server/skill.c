@@ -14,46 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED monster_nihilanth (0 0.8 0.8) (-192 -192 0) (192 192 384)
-
-Nihilanth
-
-*/
-
-enum {
-	NIH_IDLE,
-	NIH_ATTACK,
-	NIH_ATTACK2,
-	NIH_THROW,
-	NIH_BLOCK,
-	NIH_RECHARGE,
-	NIH_IDLEOPEN,
-	NIH_ATTACKOPEN,
-	NIH_ATTACKOPEN2,
-	NIH_FLINCH,
-	NIH_FLINCH2,
-	NIH_FALL,
-	NIH_DIE,
-	NIH_FORWARD,
-	NIH_BACK,
-	NIH_UP,
-	NIH_DOWN,
-	NIH_RIGHT,
-	NIH_LEFT,
-	NIH_WALK2,
-	NIH_SHOOT
-};
-
-class monster_nihilanth:CBaseMonster
+float Skill_GetValue(string var)
 {
-	void() monster_nihilanth;
-};
-
-void monster_nihilanth::monster_nihilanth(void)
-{
-	netname = "Nihilanth";
-	model = "models/nihilanth.mdl";
-	base_mins = [-192,-192,-32];
-	base_maxs = [192,192,384];
-	CBaseMonster::CBaseMonster();
+	float skill = cvar("skill");
+	return cvar(sprintf("sk_%s%d", var, skill));
 }

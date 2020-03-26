@@ -20,6 +20,31 @@ Gargantua
 
 */
 
+enum {
+	GARG_IDLE,
+	GARG_IDLE2,
+	GARG_IDLE3,
+	GARG_IDLE4,
+	GARG_WALK,
+	GARG_RUN,
+	GARG_SHOOT,
+	GARG_SHOOT2,
+	GARG_ATTACK,
+	GARG_STOMP,
+	GARG_LEFT,
+	GARG_RIGHT,
+	GARG_FLINCH,
+	GARG_FLINCH2,
+	GARG_DIE,
+	GARG_BITEHEAD,
+	GARG_THROW,
+	GARG_SMASH,
+	GARG_ROLLCAR,
+	GARG_KICKCAR,
+	GARG_PUSHCAR,
+	GARG_BUST
+};
+
 class monster_gargantua:CBaseMonster
 {
 	void() monster_gargantua;

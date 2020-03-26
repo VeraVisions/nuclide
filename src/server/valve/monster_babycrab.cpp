@@ -20,6 +20,22 @@ Baby Headcrab
 
 */
 
+enum {
+	BHCB_IDLE,
+	BHCB_IDLE2,
+	BHCB_IDLE3,
+	BHCB_WALK,
+	BHCB_RUN,
+	BHCB_ANGRY,
+	BHCB_FLINCH,
+	BHCB_DIEBACK,
+	BHCB_LEFT,
+	BHCB_RIGHT,
+	BHCB_JUMP,
+	BHCB_JUMP2,
+	BHCB_JUMP3
+};
+
 class monster_babycrab:CBaseMonster
 {
 	void() monster_babycrab;

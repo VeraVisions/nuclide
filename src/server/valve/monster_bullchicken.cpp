@@ -20,6 +20,33 @@ Bullsquid
 
 */
 
+enum {
+	BULL_WALK,
+	BULL_RUN,
+	BULL_SURPIRSE,
+	BULL_FLINCH,
+	BULL_FLINCH2,
+	BULL_LEFT,
+	BULL_RIGHT,
+	BULL_IDLE,
+	BULL_WHIP,
+	BULL_BITE,
+	BULL_RANGE,
+	BULL_LOOK,
+	BULL_SEECRAB,
+	BULL_EAT,
+	BULL_INSPECT,
+	BULL_SNIFF,
+	BULL_DIE,
+	BULL_DIE2,
+	BULL_JUMP,
+	BULL_DRAGIDLE,
+	BULL_DRAG,
+	BULL_SCARE,
+	BULL_FALLIDLE,
+	BULL_FALL
+};
+
 class monster_bullchicken:CBaseMonster
 {
 	void() monster_bullchicken;
