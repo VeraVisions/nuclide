@@ -25,7 +25,7 @@ void ng_btneasy_start(void)
 {
 	static void ng_btneasy_end(void) {
 		g_menupage = PAGE_MAIN;
-		localcmd("maxplayers 1\n");
+		localcmd("set skill 1; maxplayers 1\n");
 		localcmd(sprintf("map %s\n", games[gameinfo_current].startmap));
 	}
 	localsound("../media/launch_upmenu1.wav");
@@ -35,6 +35,36 @@ void ng_btneasy_start(void)
 	header.m_visible = TRUE;
 	header.SetHeader(HEAD_NEWGAME);
 	header.SetExecute(ng_btneasy_end);
+}
+void ng_btnnormal_start(void)
+{
+	static void ng_btnnormal_end(void) {
+		g_menupage = PAGE_MAIN;
+		localcmd("set skill 2; maxplayers 1\n");
+		localcmd(sprintf("map %s\n", games[gameinfo_current].startmap));
+	}
+	localsound("../media/launch_upmenu1.wav");
+	header.SetStartEndPos(45,45,70,208);
+	header.SetStartEndSize(460,80,156,26);
+	header.m_lerp = 0.0f;
+	header.m_visible = TRUE;
+	header.SetHeader(HEAD_NEWGAME);
+	header.SetExecute(ng_btnnormal_end);
+}
+void ng_btnhard_start(void)
+{
+	static void ng_btnhard_end(void) {
+		g_menupage = PAGE_MAIN;
+		localcmd("set skill 3; maxplayers 1\n");
+		localcmd(sprintf("map %s\n", games[gameinfo_current].startmap));
+	}
+	localsound("../media/launch_upmenu1.wav");
+	header.SetStartEndPos(45,45,70,208);
+	header.SetStartEndSize(460,80,156,26);
+	header.m_lerp = 0.0f;
+	header.m_visible = TRUE;
+	header.SetHeader(HEAD_NEWGAME);
+	header.SetExecute(ng_btnhard_end);
 }
 
 void ng_btncancel_start(void)
@@ -68,9 +98,9 @@ void menu_newgame_init(void)
 	ng_btnEasy.SetImage(BTN_EASY);
 	ng_btnEasy.SetExecute(ng_btneasy_start);
 	ng_btnMedium.SetImage(BTN_MEDIUM);
-	ng_btnMedium.SetExecute(ng_btneasy_start);
+	ng_btnMedium.SetExecute(ng_btnnormal_start);
 	ng_btnDifficult.SetImage(BTN_DIFFICULT);
-	ng_btnDifficult.SetExecute(ng_btneasy_start);
+	ng_btnDifficult.SetExecute(ng_btnhard_start);
 	ng_btnCancel.SetImage(BTN_CANCEL);
 	ng_btnCancel.SetExecute(ng_btncancel_start);
 	
