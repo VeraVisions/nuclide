@@ -65,20 +65,35 @@ string slv_sndpain[] = {
 	"aslave/slv_pain2.wav"
 };
 
-class monster_alien_slave:CBaseMonster
+class monster_alien_slave:CBaseNPC
 {
+	float m_flIdleTime;
 	float m_flPainTime;
-	
+
 	void() monster_alien_slave;
 	
 	virtual void(int) Death;
+	virtual void(int) Pain;
+	virtual void(void) IdleChat;
 	virtual void(void) Respawn;
 };
+
+void 
+monster_alien_slave::IdleChat(void)
+{
+	if (m_flIdleTime > time) {
+		return;
+	}
+
+	Sentence(m_talkIdle);
+
+	m_flIdleTime = time + 5.0f + random(0,20);
+}
 
 void
 monster_alien_slave::Pain(int iHitBody)
 {
-	CBaseMonster::Pain(iHitBody);
+	CBaseNPC::Pain(iHitBody);
 
 	if (m_flPainTime > time) {
 		return;
@@ -116,13 +131,13 @@ monster_alien_slave::Death(int iHitBody)
 	}
 
 	/* set the functional differences */
-	CBaseMonster::Death(iHitBody);
+	CBaseNPC::Death(iHitBody);
 }
 
 void
 monster_alien_slave::Respawn(void)
 {
-	CBaseMonster::Respawn();
+	CBaseNPC::Respawn();
 	frame = SLV_IDLE;
 }
 
@@ -133,10 +148,30 @@ monster_alien_slave::monster_alien_slave(void)
 		precache_sound(slv_sndpain[i]);
 	}
 
+	m_talkAnswer = "";
+	m_talkAsk = "";
+	m_talkAllyShot = "";
+	m_talkGreet = "SLV_ALERT";
+	m_talkIdle = "!SLV_IDLE";
+	m_talkSmelling = "";
+	m_talkStare = "";
+	m_talkSurvived = "";
+	m_talkWounded = "";
+
+	m_talkPlayerAsk = "";
+	m_talkPlayerGreet = "!SLV_ALERT";
+	m_talkPlayerIdle = "";
+	m_talkPlayerWounded1 = "";
+	m_talkPlayerWounded2 = "";
+	m_talkPlayerWounded3 = "";
+	m_talkUnfollow = "";
+	m_talkFollow = "";
+	m_talkStopFollow = "";
+
 	netname = "Alien Slave";
 	model = "models/islave.mdl";
 	base_health = Skill_GetValue("islave_health");
 	base_mins = [-16,-16,0];
 	base_maxs = [16,16,72];
-	CBaseMonster::CBaseMonster();
+	CBaseNPC::CBaseNPC();
 }

@@ -93,14 +93,34 @@ string bull_sndpain[] = {
 
 class monster_bullchicken:CBaseMonster
 {
+	float m_flIdleTime;
 	float m_flPainTime;
 
 	void() monster_bullchicken;
 
 	virtual void(int) Death;
 	virtual void(int) Pain;
+	virtual void(void) IdleNoise;
 	virtual void(void) Respawn;
 };
+
+void
+monster_bullchicken::IdleNoise(void)
+{
+	/* don't make noise if we're dead (corpse) */
+	if (style == MONSTER_DEAD) {
+		return;
+	}
+
+	if (m_flIdleTime > time) {
+		return;
+	}
+	/* timing needs to adjusted as sounds conflict */
+	m_flIdleTime = time + 2.0f + random(0,5);
+
+	int rand = floor(random(0, bull_sndidle.length));
+	Sound(bull_sndidle[rand]);
+}
 
 void
 monster_bullchicken::Pain(int iHitBody)

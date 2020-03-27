@@ -32,7 +32,7 @@ enum {
 	GR_LEFTARMFLINCH,
 	GR_LAUNCHNADE,
 	GR_THROWNADE,
-	GR_IDLE1,
+	GR_IDLE,
 	GR_IDLE2,
 	GR_COMBATIDLE,
 	GR_FRONTKICK,
@@ -122,13 +122,133 @@ string gr_sndpain[] = {
 	"hgrunt/gr_pain5.wav"
 };
 
-class monster_human_grunt:CBaseMonster
+class monster_human_grunt:CBaseNPC
 {
+	float m_flIdleTime;
+	float m_flPainTime;
+	
 	void() monster_human_grunt;
+	
+	virtual void() Scream;
+	virtual void() IdleChat;
+	virtual void() Respawn;
+	virtual void(int) Pain;
+	virtual void(int) Death;
+
 };
+
+void monster_human_grunt::Scream(void)
+{
+	if (m_flIdleTime > time) {
+		return;
+	}
+
+	Sentence(m_talkAllyShot);
+	m_flIdleTime = time + 5.0f;
+}
+
+void monster_human_grunt::IdleChat(void)
+{
+	if (m_flIdleTime > time) {
+		return;
+	}
+
+	Sentence(m_talkIdle);
+	
+	/* Sentence(m_talkPlayerIdle); */
+	/* come up with logic to make them repsone to questions
+	 * Sentence(m_talkAsk);
+	 * Sentence(m_talkAnswer);
+	 */
+	m_flIdleTime = time + 5.0f + random(0,20);
+}
+
+void
+monster_human_grunt::Pain(int iHitBody)
+{
+	CBaseMonster::Pain(iHitBody);
+
+	if (m_flPainTime > time) {
+		return;
+	}
+
+	if (random() < 0.25f) {
+		return;
+	}
+
+	int rand = floor(random(0,gr_sndpain.length));
+	Sound(gr_sndpain[rand]);
+	frame = GR_FLINCH;
+	m_flPainTime = time + 0.25f;
+}
+
+void
+monster_human_grunt::Death(int iHitBody)
+{
+	/* if we're already dead (corpse) don't change animations */
+	if (style != MONSTER_DEAD) {
+		/* headshots == different animation */
+		/* this animation may not have been used, but it looks cool */
+		if (iHitBody == BODY_HEAD) {
+			if (random() < 0.5) {
+				frame = GR_DIEHS;
+			} else {
+				frame = GR_DIEBACK;
+			}
+		} else {
+			frame = GR_DIE;
+		}
+	}
+
+	/* set the functional differences */
+	CBaseMonster::Death(iHitBody);
+}
+
+void
+monster_human_grunt::Respawn(void)
+{
+	CBaseMonster::Respawn();
+	frame = GR_IDLE;
+}
+
 
 void monster_human_grunt::monster_human_grunt(void)
 {
+	for (int i = 0; i < gr_sndpain.length; i++) {
+		precache_sound(gr_sndpain[i]);
+	}
+	for (int i = 0; i < gr_snddie.length; i++) {
+		precache_sound(gr_snddie[i]);
+	}
+
+	/* Adding some into other slots in hopes it feels right
+	 * listed below are other setences that might need their own:
+	 * !HG_MONST - Monster HG_ALERT
+	 * !HG_GREN - Grenade toss
+	 * !HG_CHECK - Sector check question
+	 * !HG_CLEAR - Sector clear response */
+	
+	m_talkAnswer = "!HG_ANSWER";
+	m_talkAsk = "!HG_QUEST";
+	m_talkAllyShot = "!HG_COVER";
+	m_talkGreet = "";
+	m_talkIdle = "!HG_IDLE";
+	m_talkSmelling = "";
+	m_talkStare = "";
+	m_talkSurvived = "!HG_CLEAR";
+	m_talkWounded = "!HG_CHECK";
+
+	m_talkPlayerAsk = "";
+	m_talkPlayerGreet = "!HG_ALERT";
+	m_talkPlayerIdle = "!HG_CHARGE";
+	m_talkPlayerWounded1 = "";
+	m_talkPlayerWounded2 = "";
+	m_talkPlayerWounded3 = "";
+	m_talkUnfollow = "";
+	m_talkFollow = "";
+	m_talkStopFollow = "";
+
+	
 	netname = "Grunt";
 	model = "models/hgrunt.mdl";
 	base_health = Skill_GetValue("hgrunt_health");
