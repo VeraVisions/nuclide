@@ -21,36 +21,145 @@ Nihilanth
 */
 
 enum {
-	NIH_IDLE,
-	NIH_ATTACK,
-	NIH_ATTACK2,
-	NIH_THROW,
-	NIH_BLOCK,
-	NIH_RECHARGE,
-	NIH_IDLEOPEN,
-	NIH_ATTACKOPEN,
-	NIH_ATTACKOPEN2,
-	NIH_FLINCH,
-	NIH_FLINCH2,
-	NIH_FALL,
-	NIH_DIE,
-	NIH_FORWARD,
-	NIH_BACK,
-	NIH_UP,
-	NIH_DOWN,
-	NIH_RIGHT,
-	NIH_LEFT,
-	NIH_WALK2,
-	NIH_SHOOT
+	NIL_IDLE,
+	NIL_ATTACK,
+	NIL_ATTACK2,
+	NIL_THROW,
+	NIL_BLOCK,
+	NIL_RECHARGE,
+	NIL_IDLEOPEN,
+	NIL_ATTACKOPEN,
+	NIL_ATTACKOPEN2,
+	NIL_FLINCH,
+	NIL_FLINCH2,
+	NIL_FALL,
+	NIL_DIE,
+	NIL_FORWARD,
+	NIL_BACK,
+	NIL_UP,
+	NIL_DOWN,
+	NIL_RIGHT,
+	NIL_LEFT,
+	NIL_WALK2,
+	NIL_SHOOT
+};
+
+/* other sounds
+ * x_ballattack1 - the portal he casts
+ * x_shoot1 - ?
+ * x_teleattack1 - portal's move sound 
+ * nih_die2 - used in map not code? */
+
+/* these attack sounds are his growls */
+string nil_sndattack[] = {
+	"x/x_attack1.wav",
+	"x/x_attack2.wav",
+	"x/x_attack3.wav"
+};
+
+string nil_sndidle[] = {
+	"x/x_laugh1.wav",
+	"x/x_laugh2.wav"
+};
+
+string nil_sndpain[] = {
+	"x/x_pain1.wav",
+	"x/x_pain2.wav",
+	"x/x_pain3.wav"
+};
+
+string nil_sndrecharge[] = {
+	"x/x_recharge1.wav",
+	"x/x_recharge2.wav",
+	"x/x_recharge3.wav"
 };
 
 class monster_nihilanth:CBaseMonster
 {
+	float m_flIdleTime;
+	float m_flPainTime;
+
 	void() monster_nihilanth;
+
+	virtual void(int) Death;
+	virtual void(int) Pain;
+	virtual void(void) IdleNoise;
+	virtual void(void) Respawn;
 };
+
+void
+monster_nihilanth::IdleNoise(void)
+{
+	/* don't make noise if we're dead (corpse) */
+	if (style == MONSTER_DEAD) {
+		return;
+	}
+
+	if (m_flIdleTime > time) {
+		return;
+	}
+	/* timing needs to adjusted as sounds conflict */
+	m_flIdleTime = time + 2.0f + random(0,5);
+
+	int rand = floor(random(0, nil_sndidle.length));
+	Sound(nil_sndidle[rand]);
+}
+
+void
+monster_nihilanth::Pain(int iHitBody)
+{
+	CBaseMonster::Pain(iHitBody);
+
+	if (m_flPainTime > time) {
+		return;
+	}
+
+	if (random() < 0.25f) {
+		return;
+	}
+
+	int rand = floor(random(0,nil_sndpain.length));
+	Sound(nil_sndpain[rand]);
+
+	frame = (random() < 0.5) ? NIL_FLINCH : NIL_FLINCH2;
+	m_flPainTime = time + 0.25f;
+}
+
+void
+monster_nihilanth::Death(int iHitBody)
+{
+	/* if we're already dead (corpse) don't change animations */
+	if (style != MONSTER_DEAD) {
+		frame = NIL_DIE;
+		Sound("x/x_die1.wav");
+	}
+
+	/* set the functional differences */
+	CBaseMonster::Death(iHitBody);
+}
+
+void
+monster_nihilanth::Respawn(void)
+{
+	CBaseMonster::Respawn();
+	frame = NIL_IDLE;
+}
 
 void monster_nihilanth::monster_nihilanth(void)
 {
+	for (int i = 0; i <nil_sndattack.length; i++) {
+		precache_sound(nil_sndattack[i]);
+	}
+	for (int i = 0; i < nil_sndidle.length; i++) {
+		precache_sound(nil_sndidle[i]);
+	}
+	for (int i = 0; i < nil_sndpain.length; i++) {
+		precache_sound(nil_sndpain[i]);
+	}
+	for (int i = 0; i < nil_sndrecharge.length; i++) {
+		precache_sound(nil_sndrecharge[i]);
+	}
+
 	netname = "Nihilanth";
 	model = "models/nihilanth.mdl";
 	base_health = Skill_GetValue("nihilanth_health");

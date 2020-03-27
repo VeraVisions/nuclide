@@ -85,7 +85,7 @@ class scripted_sequence:CBaseTrigger
 	float m_flSearchRadius;
 	/* How we move to perform m_iActionAnim */
 	int m_iMove;
-	
+
 	void() scripted_sequence;
 	virtual void() Trigger;
 	virtual void() Respawn;
@@ -93,7 +93,26 @@ class scripted_sequence:CBaseTrigger
 
 void scripted_sequence::Trigger(void)
 {
-	
+	CBaseMonster f;
+
+	print(sprintf("^2scripted_sequence::Trigger^7: with spawnflags %d\n", spawnflags));
+	if (m_iMove == SS_WALK) {
+		f = (CBaseMonster)find(world, CBaseEntity::m_strTargetName, m_strMonster);
+		if (f) {
+			f.NewRoute(origin);
+			f.style = MONSTER_INSEQUENCE;
+			f.m_flSequenceSpeed = 64;
+			f.m_strRouteEnded = m_strTarget;
+		}
+	} else if (m_iMove == SS_RUN) {
+		f = (CBaseMonster)find(world, CBaseEntity::m_strTargetName, m_strMonster);
+		if (f) {
+			f.NewRoute(origin);
+			f.style = MONSTER_INSEQUENCE;
+			f.m_flSequenceSpeed = 256;
+			f.m_strRouteEnded = m_strTarget;
+		}
+	}
 }
 
 void scripted_sequence::Respawn(void)
@@ -106,6 +125,9 @@ void scripted_sequence::scripted_sequence(void)
 	int nfields = tokenize(__fullspawndata);
 	for (int i = 1; i < (nfields-1); i += 2) {
 		switch (argv(i)) {
+		case "target":
+			m_strTarget = argv(i+1);
+			break;
 		case "m_iszEntity":
 			m_strMonster = argv(i+1);
 			break;

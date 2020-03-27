@@ -22,18 +22,6 @@
 Decorative, does nothing yet.
 */
 
-enumflags 
-{
-	MF_WAITTILLSEEN,
-	MF_GAG,
-	MF_MONSTERCLIP,
-	MF_PRISONER,
-	MF_UNUSED,
-	MF_WAITFORSCRIPT,
-	MF_PREDISASTER,
-	MF_FADECORPSE
-};
-
 class monster_generic:CBaseEntity
 {
 	void() monster_generic;

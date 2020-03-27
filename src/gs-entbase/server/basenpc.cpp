@@ -472,6 +472,8 @@ CBaseNPC::Physics(void)
 	}
 
 	input_angles = angles = v_angle;
+	CheckRoute();
+	WalkRoute();
 	input_timelength = frametime;
 
 	runstandardplayerphysics(this);

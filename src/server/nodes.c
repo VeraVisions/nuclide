@@ -15,6 +15,7 @@
  */
 
 /* parse info_node entities and convert them to FTE compatible routing data */
+#define NODE_DEBUG 1
 
 typedef struct node_s {
 	vector origin;
@@ -73,6 +74,45 @@ Nodes_Save(string filename)
 	}
 
 	g_nodes_present = TRUE;
+	fclose(wayfile);
+}
+
+void
+Nodes_Load(string filename)
+{
+	float wayfile = fopen(filename, FILE_READ);
+
+	if (wayfile < 0) {
+		return;
+	}
+
+	/* wipe whatever we've got */
+	for (int i = 0; i < g_iNodes; i++) {
+		memfree(g_pNodes[i].nb);
+	}
+	memfree(g_pNodes);
+	g_iNodes = 0;
+
+	tokenize(fgets(wayfile));
+	g_iNodes = stoi(argv(0));
+	g_pNodes = memalloc(sizeof(*g_pNodes) * g_iNodes);
+
+	for (int i = 0; i < g_iNodes; i++) {
+		tokenize(fgets(wayfile));
+		g_pNodes[i].origin[0] = stof(argv(0));
+		g_pNodes[i].origin[1] = stof(argv(1));
+		g_pNodes[i].origin[2] = stof(argv(2));
+		g_pNodes[i].radius = stof(argv(3));
+		g_pNodes[i].nb_count = stoi(argv(4));
+		g_pNodes[i].nb = memalloc(sizeof(*g_pNodes[i].nb) * g_pNodes[i].nb_count);
+		
+		for (int j = 0; j < g_pNodes[i].nb_count; j++) {
+			tokenize(fgets(wayfile));
+			g_pNodes[i].nb[j].node = stoi(argv(0));
+			g_pNodes[i].nb[j].dist = stof(argv(1));
+			g_pNodes[i].nb[j].flags = stoh(argv(2));
+		}
+	}
 	fclose(wayfile);
 }
 
@@ -138,6 +178,9 @@ Nodes_Init(void)
 	/* skip if present. TODO: check if they're out of date? */
 	if (whichpack(sprintf("data/%s.way", mapname))) {
 		g_nodes_present = TRUE;
+#ifdef NODE_DEBUG
+		Nodes_Load(sprintf("%s.way", mapname));
+#endif
 		return;
 	}
 
@@ -159,8 +202,8 @@ Nodes_Init(void)
 
 	Nodes_Save(sprintf("%s.way", mapname));
 
-#ifndef GS_DEVELOPER
 	/* we don't need these any longer */
+#ifndef NODE_DEBUG
 	for (int i = 0; i < g_iNodes; i++) {
 		memfree(g_pNodes[i].nb);
 	}
@@ -169,11 +212,11 @@ Nodes_Init(void)
 #endif
 }
 
+#ifdef NODE_DEBUG
 /* draws debug graphics of our node tree */
 void
 SV_AddDebugPolygons(void)
 {
-#ifdef GS_DEVELOPER
 	if (!g_iNodes) {
 		return;
 	}
@@ -232,5 +275,5 @@ SV_AddDebugPolygons(void)
 			R_EndPolygon();
 		}
 	}
-#endif
 }
+#endif

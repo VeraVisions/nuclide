@@ -14,11 +14,26 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+
+typedef struct
+{
+	vector dest;
+	int linkflags;
+} nodeslist_t;
+
+/* Begin calculating a route. The callback function will be called once the
+ * route has finished being calculated. The route must be memfreed once it is
+ * no longer needed. The route must be followed in reverse order (ie: the
+ * first node that must be reached is at index numnodes-1).
+ * If no route is available then the callback will be called with no nodes. */
+void(entity, vector, int, void(entity, vector, int, nodeslist_t *)) route_calculate = #0:route_calculate; 
+
 enum {
 	MONSTER_IDLE,
 	MONSTER_WALK,
 	MONSTER_RUN,
-	MONSTER_DEAD
+	MONSTER_DEAD,
+	MONSTER_INSEQUENCE
 };
 
 enumflags {
@@ -44,6 +59,15 @@ class CBaseMonster:CBaseEntity
 	vector base_mins;
 	vector base_maxs;
 	int base_health;
+	float m_flSequenceSpeed;
+
+	/* pathfinding */
+	int m_iNodes;
+	int m_iCurNode;
+	nodeslist_t *m_pRoute;
+
+	/* sequences */
+	string m_strRouteEnded;
 
 	void() CBaseMonster;
 
@@ -59,6 +83,11 @@ class CBaseMonster:CBaseEntity
 	virtual void(string) Sound;
 	virtual float(entity, float) SendEntity;
 	virtual void() ParentUpdate;
+
+	virtual void() ClearRoute;
+	virtual void() CheckRoute;
+	virtual void() WalkRoute;
+	virtual void(vector) NewRoute;
 };
 
 void CBaseMonster::Sound(string msg)
@@ -117,6 +146,87 @@ void CBaseMonster::IdleNoise(void)
 
 }
 
+void CBaseMonster::ClearRoute(void)
+{
+	if (m_iNodes) {
+		m_iNodes = 0;
+		memfree(m_pRoute);
+	}
+}
+
+void CBaseMonster::CheckRoute(void)
+{
+	float flDist;
+
+	if (!m_iNodes) {
+		return;
+	}
+
+	flDist = floor( vlen( m_pRoute[m_iCurNode].dest - origin ) );
+
+	if ( flDist < 64 ) {
+		print(sprintf("CBaseMonster::CheckNode: %s reached node\n", this.netname));
+		m_iCurNode--;
+		velocity = [0,0,0]; /* clamp friction */
+	}
+	
+	if (m_iCurNode < 0) {
+		print(sprintf("CBaseMonster::CheckNode: %s reached end\n", this.netname));
+		/* trigger when required */
+		if (m_strRouteEnded) {
+			for ( entity t = world; ( t = find( t, CBaseTrigger::m_strTargetName, m_strRouteEnded) ); ) {
+				CBaseTrigger trigger = (CBaseTrigger) t;
+				if (trigger.Trigger != __NULL__) {
+					trigger.Trigger();
+				}
+			}
+		}
+		ClearRoute();
+	}
+
+	/*if ( flDist == m_flLastDist ) {
+		m_flNodeGiveup += frametime;
+	} else {
+		m_flNodeGiveup = bound( 0, m_flNodeGiveup - frametime, 1.0 );
+	}
+
+	m_flLastDist = flDist;
+
+	if ( m_flNodeGiveup >= 1.0f ) {
+		print(sprintf("CBaseMonster::CheckNode: %s gave up route\n",
+			this.netname));
+		ClearRoute();
+	}*/
+}
+
+void CBaseMonster::WalkRoute(void)
+{
+	if (m_iNodes) {
+		vector endangles;
+		endangles = vectoangles(m_pRoute[m_iCurNode].dest - origin);
+		input_angles[1] = endangles[1];
+		input_movevalues = [m_flSequenceSpeed, 0, 0];
+	}
+}
+
+void CBaseMonster::NewRoute(vector destination)
+{
+	/* engine calls this upon successfully creating a route */
+	static void NewRoute_RouteCB(entity ent, vector dest, int numnodes, nodeslist_t *nodelist)
+	{
+		CBaseMonster p = (CBaseMonster)ent;
+		p.m_iNodes = numnodes;
+		p.m_iCurNode = numnodes - 1;
+		p.m_pRoute = nodelist;
+	}
+
+	ClearRoute();
+
+	if (!m_iNodes) {
+		route_calculate(this, destination, 0, NewRoute_RouteCB);
+	}
+}
+
 void CBaseMonster::Physics(void)
 {
 	input_movevalues = [0,0,0];
@@ -127,10 +237,19 @@ void CBaseMonster::Physics(void)
 	input_timelength = frametime;
 	movetype = MOVETYPE_WALK;
 
+	CheckRoute();
+	WalkRoute();
 	runstandardplayerphysics(this);
 	movetype = MOVETYPE_NONE;
-
 	IdleNoise();
+
+	/* support for think/nextthink */
+	if (think && nextthink > 0) {
+		if (nextthink < time) {
+			think();
+			nextthink = 0.0f;
+		}
+	}
 }
 
 void CBaseMonster::touch(void)

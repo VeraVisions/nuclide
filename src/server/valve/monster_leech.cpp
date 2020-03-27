@@ -21,23 +21,75 @@ Leech
 */
 
 enum {
-	LE_SWIM,
-	LE_SWIM2,
-	LE_ATTACK,
-	LE_HOVER,
-	LE_LEFT,
-	LE_RIGHT,
-	LE_DIE,
-	LE_DIEEND
+	LEECH_SWIM,
+	LEECH_SWIM2,
+	LEECH_ATTACK,
+	LEECH_HOVER,
+	LEECH_LEFT,
+	LEECH_RIGHT,
+	LEECH_DIE,
+	LEECH_DIEEND
+};
+
+string leech_sndattack[] = {
+	"leech/leech_bite1.wav",
+	"leech/leech_bite2.wav",
+	"leech/leech_bite3.wav"
+};
+
+string leech_sndsee[] = {
+	"leech/leech_alert1.wav",
+	"leech/leech_alert2.wav"
 };
 
 class monster_leech:CBaseMonster
 {
+	float m_flIdleTime;
+	float m_flPainTime;
+
 	void() monster_leech;
+
+	virtual void(int) Death;
+	virtual void() DeathEnd;
+	virtual void() Respawn;
 };
+
+void
+monster_leech::DeathEnd(void)
+{
+	frame = LEECH_DIEEND;
+}
+
+void
+monster_leech::Death(int iHitBody)
+{
+	/* if we're already dead (corpse) don't change animations */
+	if (style != MONSTER_DEAD) {
+		frame = LEECH_DIE;
+		think = DeathEnd;
+		nextthink = time + 1.0f;
+	}
+
+	/* set the functional differences */
+	CBaseMonster::Death(iHitBody);
+}
+
+void
+monster_leech::Respawn(void)
+{
+	CBaseMonster::Respawn();
+	frame = LEECH_SWIM;
+}
 
 void monster_leech::monster_leech(void)
 {
+	for (int i = 0; i <leech_sndattack.length; i++) {
+		precache_sound(leech_sndattack[i]);
+	}
+	for (int i = 0; i < leech_sndsee.length; i++) {
+		precache_sound(leech_sndsee[i]);
+	}
+
 	netname = "Leech";
 	model = "models/leech.mdl";
 	base_mins = [-6,-6,0];
