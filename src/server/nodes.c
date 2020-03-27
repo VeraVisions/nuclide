@@ -15,7 +15,7 @@
  */
 
 /* parse info_node entities and convert them to FTE compatible routing data */
-#define NODE_DEBUG 1
+#define NODE_DEBUG
 
 typedef struct node_s {
 	vector origin;

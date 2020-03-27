@@ -174,8 +174,8 @@ void CBaseMonster::CheckRoute(void)
 		print(sprintf("CBaseMonster::CheckNode: %s reached end\n", this.netname));
 		/* trigger when required */
 		if (m_strRouteEnded) {
-			for ( entity t = world; ( t = find( t, CBaseTrigger::m_strTargetName, m_strRouteEnded) ); ) {
-				CBaseTrigger trigger = (CBaseTrigger) t;
+			for (entity t = world; (t = find(t, CBaseTrigger::m_strTargetName, m_strRouteEnded));) {
+				CBaseTrigger trigger = (CBaseTrigger)t;
 				if (trigger.Trigger != __NULL__) {
 					trigger.Trigger();
 				}

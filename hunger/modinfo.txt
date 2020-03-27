@@ -1,15 +1,6 @@
-// They Hunger Info File
 game "They Hunger"
-gamedir "hunger"
 url_info "www.planethalflife.com/manke"
-url_dl ""
 version "3.0"
-hlversion "1100"
 size "142600000"
-type "Single"
 startmap "thintro"
 trainmap "they30"
-gamedll "dlls\einar.dll"
-cldll "1"
-svonly "0"
-

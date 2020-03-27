@@ -56,7 +56,6 @@ float env_laser::predraw(void)
 
 void env_laser::ReadEntity(float flChanged)
 {
-	print("FUCK!\n");
 	if (flChanged & ENVLASER_CHANGED_ORIGIN) {
 		origin[0] = readcoord();
 		origin[1] = readcoord();

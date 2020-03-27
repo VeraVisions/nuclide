@@ -22,7 +22,7 @@
 Decorative, does nothing yet.
 */
 
-class monster_generic:CBaseEntity
+class monster_generic:CBaseMonster
 {
 	void() monster_generic;
 	//virtual void() Respawn;

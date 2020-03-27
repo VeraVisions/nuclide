@@ -177,7 +177,7 @@ float player::predraw(void)
 		if (serverkeyfloat("*bspversion") == 30) {
 			dynamiclight_add(trace_endpos + (v_forward * -2), 128, [1,1,1]);
 		} else {
-			float p = dynamiclight_add(src, 512, [1,1,1], 0, "textures/flashlight");
+			float p = dynamiclight_add(src, 0, [1,1,1], 0, "textures/flashlight");
 			dynamiclight_set(p, LFIELD_ANGLES, ang);
 		}
 	}

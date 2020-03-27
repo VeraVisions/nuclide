@@ -815,7 +815,7 @@ CSQC_WorldLoaded(void)
 	precache_pic("{scorch3", TRUE);
 
 	/* Primarily for the flashlight */
-	if (serverkeyfloat("*bspversion") == 46) {
+	if (serverkeyfloat("*bspversion") != 30) {
 		localcmd("r_shadow_realtime_dlight 1\n");
 	} else {
 		localcmd("r_shadow_realtime_dlight 0\n");
