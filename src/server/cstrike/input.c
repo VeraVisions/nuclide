@@ -14,36 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*
-=================
-Input_Handle
-
-Handles impulse and whatnot
-=================
-*/
-void Game_Input(void)
+void
+Game_Input(void)
 {
-	// Dead, specatator
-	if (self.health <= 0) {
-		/*if (self.button2) {
-			if (infokey(self, "*spectator") == "0") {
-				forceinfokey(self, "*spectator", "1");
-			} else {
-				forceinfokey(self, "*spectator", "1");
-			}
-		}*/
-		return;
-	}
-	
-	// TODO: Make this fast switch only
-	if (self.impulse == 3) {
-		Weapon_Switch(SLOT_MELEE);
-	} else if (self.impulse == 2) {
-		Weapon_Switch(SLOT_SECONDARY);
-	} else if (self.impulse == 1) {
-		Weapon_Switch(SLOT_PRIMARY);
-	} else if (self.impulse == 4) {
-		Weapon_Switch(SLOT_GRENADE);
+	if (input_buttons & INPUT_BUTTON0) {
+		Weapons_Primary();
+	} else if (input_buttons & INPUT_BUTTON4) {
+		Weapons_Reload();
+	} else if (input_buttons & INPUT_BUTTON3) {
+		Weapons_Secondary();
+	} else {
+		Weapons_Release();
 	}
 
 	if (input_buttons & INPUT_BUTTON5) {
@@ -51,22 +32,55 @@ void Game_Input(void)
 	} else {
 		Player_UseUp();
 	}
-	
-	if (input_buttons & INPUT_BUTTON0) {
-		if (fGameState != GAME_FREEZE) {
-			Weapon_PrimaryAttack(self.weapon);
-		}
-	} else if (input_buttons & INPUT_BUTTON4) {
-		Weapon_Reload(self.weapon);
-	} else if (input_buttons & INPUT_BUTTON3) {
-		Weapon_SecondaryAttack(self.weapon);
-	} else {
-		Weapon_Release();
-	}
 
 	if (self.impulse == 100) {
 		Flashlight_Toggle();
 	}
 
-	self.impulse = 0; 
+	if (cvar("sv_cheats") == 1) {
+		player pl = (player)self;
+		if (self.impulse == 101) {
+			pl.health = 100;
+			pl.armor = 100;
+
+			Weapons_AddItem(pl, WEAPON_M3);
+			Weapons_AddItem(pl, WEAPON_XM1014);
+			Weapons_AddItem(pl, WEAPON_MP5);
+			Weapons_AddItem(pl, WEAPON_P90);
+			Weapons_AddItem(pl, WEAPON_UMP45);
+			Weapons_AddItem(pl, WEAPON_MAC10);
+			Weapons_AddItem(pl, WEAPON_TMP);
+			Weapons_AddItem(pl, WEAPON_AK47);
+			Weapons_AddItem(pl, WEAPON_SG552);
+			Weapons_AddItem(pl, WEAPON_M4A1);
+			Weapons_AddItem(pl, WEAPON_AUG);
+			Weapons_AddItem(pl, WEAPON_SCOUT);
+			Weapons_AddItem(pl, WEAPON_AWP);
+			Weapons_AddItem(pl, WEAPON_G3SG1);
+			Weapons_AddItem(pl, WEAPON_SG550);
+			Weapons_AddItem(pl, WEAPON_PARA);
+			Weapons_AddItem(pl, WEAPON_C4BOMB);
+			Weapons_AddItem(pl, WEAPON_FLASHBANG);
+			Weapons_AddItem(pl, WEAPON_HEGRENADE);
+			Weapons_AddItem(pl, WEAPON_SMOKEGRENADE);
+			Weapons_AddItem(pl, WEAPON_USP45);
+			Weapons_AddItem(pl, WEAPON_GLOCK18);
+			Weapons_AddItem(pl, WEAPON_DEAGLE);
+			Weapons_AddItem(pl, WEAPON_P228);
+			Weapons_AddItem(pl, WEAPON_ELITES);
+			Weapons_AddItem(pl, WEAPON_FIVESEVEN);
+			Weapons_AddItem(pl, WEAPON_KNIFE);
+		}
+
+		if (self.impulse == 102) {
+			// Respawn all the entities
+			for (entity a = world; (a = findfloat(a, gflags, GF_CANRESPAWN));) {
+				CBaseEntity caw = (CBaseEntity)a;
+				caw.Respawn();
+			}
+			bprint(PRINT_HIGH, "Respawning all map entities...\n");
+		}
+	}
+
+	self.impulse = 0;
 }

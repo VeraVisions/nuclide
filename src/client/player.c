@@ -23,39 +23,6 @@
 //.float basesubblendfrac; // legs part.
 .float subblend2frac; // Up/Down
 
-// TODO: This needs to be redone.
-#ifdef CSTRIKE
-string sPModels[CS_WEAPON_COUNT - 1] = {
-	"models/p_knife.mdl",
-	"models/p_usp.mdl",
-	"models/p_glock18.mdl",
-	"models/p_deagle.mdl",
-	"models/p_p228.mdl",
-	"models/p_elite.mdl",
-	"models/p_fiveseven.mdl",
-	"models/p_m3.mdl",
-	"models/p_xm1014.mdl",
-	"models/p_mp5.mdl",
-	"models/p_p90.mdl",
-	"models/p_ump45.mdl",
-	"models/p_mac10.mdl",
-	"models/p_tmp.mdl",
-	"models/p_ak47.mdl",
-	"models/p_sg552.mdl",
-	"models/p_m4a1.mdl",
-	"models/p_aug.mdl",
-	"models/p_scout.mdl",
-	"models/p_awp.mdl",
-	"models/p_g3sg1.mdl",
-	"models/p_sg550.mdl",
-	"models/p_m249.mdl",
-	"models/p_c4.mdl",
-	"models/p_flashbang.mdl",
-	"models/p_hegrenade.mdl",
-	"models/p_smokegrenade.mdl"
-};
-#endif
-
 void player::gun_offset(void)
 {
 	vector v1, v2;
@@ -81,9 +48,7 @@ void player::gun_offset(void)
 	setorigin(this.p_model, this.origin - ofs);
 }
 
-#ifdef VALVE
 string Weapons_GetPlayermodel(int);
-#endif
 
 void player::draw(void)
 {
@@ -174,11 +139,12 @@ float player::predraw(void)
 		makevectors(ang);
 		traceline(src, src + (v_forward * 8096), FALSE, self);
 
-		if (serverkeyfloat("*bspversion") == 30) {
+		/*if (serverkeyfloat("*bspversion") == 30) {
 			dynamiclight_add(trace_endpos + (v_forward * -2), 128, [1,1,1]);
-		} else {
-			float p = dynamiclight_add(src, 0, [1,1,1], 0, "textures/flashlight");
+		} else */{
+			float p = dynamiclight_add(src, 512, [1,1,1], 0, "textures/flashlight");
 			dynamiclight_set(p, LFIELD_ANGLES, ang);
+			dynamiclight_set(p, LFIELD_FLAGS, 3);
 		}
 	}
 

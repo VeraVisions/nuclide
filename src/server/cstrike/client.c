@@ -14,218 +14,304 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*
-=================
-SpectatorThink
+var int autocvar_sv_networkeverything = FALSE;
 
-Run every frame on every spectator
-=================
-*/
-void Game_SpectatorThink(void)
+void
+Game_ClientConnect(void)
 {
-	self.SendFlags = 1;
-}
+	entity a;
+	bprint(PRINT_HIGH, sprintf("%s connected\n", self.netname));
 
-/*
-=================
-ClientKill
-
-Suicide command 'kill' executes this function.
-=================
-*/
-void Game_ClientKill(void)
-{
-	Damage_Apply(self, self, self.health, self.origin, TRUE, 0);
-}
-
-/*
-=================
-ClientConnect
-
-Run whenever a new client joins
-=================
-*/
-void Game_ClientConnect(void) {}
-
-/*
-=================
-SpectatorConnect
-
-Called when a spectator joins the game
-=================
-*/
-void Game_SpectatorConnect(void)
-{
-	//Spawn_MakeSpectator();
-	//Spawn_ObserverCam();
-	ClientConnect();
-	PutClientInServer();
-}
-
-/*
-=================
-SpectatorDisconnect
-
-Called when a spectator leaves the game
-=================
-*/
-void Game_SpectatorDisconnect(void)
-{
-	Spray_RemoveAll(self);
-}
-
-/*
-=================
-ClientDisconnect
-
-Run whenever a client quits
-=================
-*/
-void Game_ClientDisconnect(void)
-{
-	// We were part of the session
-	self.health = 0;
-	Rules_CountPlayers();
-	Rules_DeathCheck();
-	Spray_RemoveAll(self);
-}
-
-void Game_DecodeChangeParms(void)
-{
-	g_landmarkpos[0] = parm1;
-	g_landmarkpos[1] = parm2;
-	g_landmarkpos[2] = parm3;
-	self.angles[0] = parm4;
-	self.angles[1] = parm5;
-	self.angles[2] = parm6;
-}
-void Game_SetChangeParms(void)
-{
-	parm1 = g_landmarkpos[0];
-	parm2 = g_landmarkpos[1];
-	parm3 = g_landmarkpos[2];
-	parm4 = self.angles[0];
-	parm5 = self.angles[1];
-	parm6 = self.angles[2];
-}
-
-/*
-=================
-PutClientInServer
-
-Puts a client into the world.
-=================
-*/
-void Game_PutClientInServer(void)
-{
-	if (cvar("sv_playerslots") == 1) {
-		entity spot;
-		self.SendEntity = Player_SendEntity;
-
-		Game_DecodeChangeParms();
-
-		if (startspot) {
-			self.origin = Landmark_GetSpot();
-			self.fixangle = TRUE;
-		} else {
-			spot = find(world, classname, "info_player_start");
-			self.origin = spot.origin;
-			self.angles = spot.angles;
-			self.fixangle = TRUE;
-		}
-
-		self.classname = "player";
-		self.health = self.max_health = 100;
-		forceinfokey(self, "*dead", "0");
-		self.takedamage = DAMAGE_YES;
-		self.solid = SOLID_SLIDEBOX;
-		self.movetype = MOVETYPE_WALK;
-		self.flags = FL_CLIENT;
-		self.Pain = Player_Pain;
-		self.Death = Player_Death;
-		self.iBleeds = TRUE;
-		self.pvsflags = PVSF_IGNOREPVS;
-		self.fSlotGrenade = 0;
-		self.viewzoom = 1.0;
-		setmodel(self, "models/player/vip/vip.mdl");
-		setsize(self, VEC_HULL_MIN, VEC_HULL_MAX);
-		self.view_ofs = VEC_PLAYER_VIEWPOS;
-		self.velocity = '0 0 0';
-		self.frame = 1; // Idle frame
-		self.fBombProgress = 0;
-		self.team = TEAM_CT;
-		forceinfokey(self, "*spec", "0"); 
-		return;
+	int playercount = 0;
+	for (a = world; (a = find(a, classname, "player"));) {
+		playercount++;
 	}
 
-	entity eTarget = world;
-
-	Spawn_MakeSpectator();
-	Spawn_ObserverCam();
-	self.SendEntity = Player_SendEntity;
-
-	// Because we don't want to reset these when we die
-	Money_AddMoney(self, autocvar_mp_startmoney);
-
-	if (cvar("mp_timelimit") > 0) {
-		if (autocvar_fcs_voxannounce == TRUE) {
-			float fTimeLeft = cvar("mp_timelimit") - (time / 60);
-			Vox_Singlecast(self, sprintf("we have %s minutes remaining", Vox_TimeToString(fTimeLeft)));
+	/* we're the first. respawn all entities? */	
+	if (playercount == 0) {
+		for (a = world; (a = findfloat(a, gflags, GF_CANRESPAWN));) {
+			CBaseEntity caw = (CBaseEntity)a;
+			caw.Respawn();
 		}
 	}
+}
+
+void
+Game_ClientDisconnect(void)
+{
+	bprint(PRINT_HIGH, sprintf("%s disconnected\n", self.netname));
 	
-	self.team = 0;
-	forceinfokey(self, "*team", "0"); 
+	/* Make this unusable */
+	self.solid = SOLID_NOT;
+	self.movetype = MOVETYPE_NONE;
+	self.modelindex = 0;
+	self.health = 0;
+	self.takedamage = 0;
+	self.SendFlags = PLAYER_MODELINDEX;
 }
 
-/*
-=================
-SV_RunClientCommand
-
-Funtion that can interrupt client commands before physics are run
-=================
-*/
-void Game_RunClientCommand(void)
+void
+Game_ClientKill(void)
 {
-	/*if (clienttype(self) == CLIENTTYPE_BOT) {
-		((CBot)self).RunAI();
-	}*/
+	Damage_Apply(self, self, self.health, WEAPON_NONE, DMG_SKIP_ARMOR);
+}
 
-	if (fGameState == GAME_FREEZE && self.health > 0) {
-		input_movevalues = '0 0 0';
-		//input_buttons = 0;
-		input_impulse = 0;
+void
+Game_PlayerPreThink(void)
+{
+	
+}
+
+void
+Game_PlayerPostThink(void)
+{
+	player pl = (player)self;
+	Animation_PlayerUpdate();
+
+	pl.SendFlags |= PLAYER_KEEPALIVE;
+
+	if (pl.old_modelindex != pl.modelindex) {
+		pl.SendFlags |= PLAYER_MODELINDEX;
+	}
+	if (pl.old_origin[0] != pl.origin[0]) {
+		pl.SendFlags |= PLAYER_ORIGIN;
+	}
+	if (pl.old_origin[1] != pl.origin[1]) {
+		pl.SendFlags |= PLAYER_ORIGIN;
+	}
+	if (pl.old_origin[2] != pl.origin[2]) {
+		pl.SendFlags |= PLAYER_ORIGIN_Z;
+	}
+	if (pl.old_angles[0] != pl.angles[0]) {
+		pl.SendFlags |= PLAYER_ANGLES_X;
+	}
+	if (pl.old_angles[1] != pl.angles[1]) {
+		pl.SendFlags |= PLAYER_ANGLES_Y;
+	}
+	if (pl.old_angles[2] != pl.angles[2]) {
+		pl.SendFlags |= PLAYER_ANGLES_Z;
+	}
+	if (pl.old_velocity[0] != pl.velocity[0]) {
+		pl.SendFlags |= PLAYER_VELOCITY;
+	}
+	if (pl.old_velocity[1] != pl.velocity[1]) {
+		pl.SendFlags |= PLAYER_VELOCITY;
+	}
+	if (pl.old_velocity[2] != pl.velocity[2]) {
+		pl.SendFlags |= PLAYER_VELOCITY_Z;
+	}
+	if (pl.old_flags != pl.flags) {
+		pl.SendFlags |= PLAYER_FLAGS;
+	}
+	if (pl.old_activeweapon != pl.activeweapon) {
+		pl.SendFlags |= PLAYER_WEAPON;
+	}
+	if (pl.old_items != pl.g_items) {
+		pl.SendFlags |= PLAYER_ITEMS;
+	}
+	if (pl.old_health != pl.health) {
+		pl.SendFlags |= PLAYER_HEALTH;
+	}
+	if (pl.old_armor != pl.armor) {
+		pl.SendFlags |= PLAYER_ARMOR;
+	}
+	if (pl.old_movetype != pl.movetype) {
+		pl.SendFlags |= PLAYER_MOVETYPE;
+	}
+	if (pl.old_viewofs != pl.view_ofs[2]) {
+		pl.SendFlags |= PLAYER_VIEWOFS;
+	}
+	if (pl.old_baseframe != pl.baseframe) {
+		pl.SendFlags |= PLAYER_BASEFRAME;
+	}
+	if (pl.old_frame != pl.frame) {
+		pl.SendFlags |= PLAYER_FRAME;
+	}
+	if (pl.old_a_ammo1 != pl.a_ammo1) {
+		pl.SendFlags |= PLAYER_AMMO1;
+	}
+	if (pl.old_a_ammo2 != pl.a_ammo2) {
+		pl.SendFlags |= PLAYER_AMMO2;
+	}
+	if (pl.old_a_ammo3 != pl.a_ammo3) {
+		pl.SendFlags |= PLAYER_AMMO3;
 	}
 
-	// The individual zones will just override this behavior
-	self.fInBombZone = FALSE;
-	self.fInBuyZone = FALSE;
-	self.fInHostageZone = FALSE;
-	self.fInEscapeZone = FALSE;
-	self.fInVIPZone = FALSE;
+	pl.old_modelindex = pl.modelindex;
+	pl.old_origin = pl.origin;
+	pl.old_angles = pl.angles;
+	pl.old_velocity = pl.velocity;
+	pl.old_flags = pl.flags;
+	pl.old_activeweapon = pl.activeweapon;
+	pl.old_items = pl.g_items;
+	pl.old_health = pl.health;
+	pl.old_armor = pl.armor;
+	pl.old_movetype = pl.movetype;
+	pl.old_viewofs = pl.view_ofs[2];
+	pl.old_baseframe = pl.baseframe;
+	pl.old_frame = pl.frame;
+	pl.old_a_ammo1 = pl.a_ammo1;
+	pl.old_a_ammo2 = pl.a_ammo2;
+	pl.old_a_ammo3 = pl.a_ammo3;
+}
 
+void
+Game_RunClientCommand(void)
+{
+	Footsteps_Update();
 	QPhysics_Run(self);
 }
 
-void Game_SetNewParms(void)
+void
+Game_DecodeChangeParms(void)
 {
-
+	player pl = (player)self;
+	g_landmarkpos[0] = parm1;
+	g_landmarkpos[1] = parm2;
+	g_landmarkpos[2] = parm3;
+	pl.angles[0] = parm4;
+	pl.angles[1] = parm5;
+	pl.angles[2] = parm6;
+	pl.velocity[0] = parm7;
+	pl.velocity[1] = parm8;
+	pl.velocity[2] = parm9;
+	pl.g_items = parm10;
+	pl.activeweapon = parm11;
 }
 
-/*
-=================
-Client_SendEvent
-
-Send a game event
-=================
-*/
-void Client_SendEvent(entity eClient, float fEVType)
+void
+Game_SetChangeParms(void)
 {
-	Weapon_UpdateCurrents();
+	player pl = (player)self;
+	parm1 = g_landmarkpos[0];
+	parm2 = g_landmarkpos[1];
+	parm3 = g_landmarkpos[2];
+	parm4 = pl.angles[0];
+	parm5 = pl.angles[1];
+	parm6 = pl.angles[2];
+	parm7 = pl.velocity[0];
+	parm8 = pl.velocity[1];
+	parm9 = pl.velocity[2];
+	parm10 = pl.g_items;
+	parm11 = pl.activeweapon;
+}
+
+void
+Game_PutClientInServer(void)
+{
+	if (self.classname != "player") {
+		spawnfunc_player();
+	}
+	player pl = (player)self;
+
+	entity spot;
+	pl.classname = "player";
+	pl.health = self.max_health = 100;
+
+	pl.takedamage = DAMAGE_YES;
+	pl.solid = SOLID_SLIDEBOX;
+	pl.movetype = MOVETYPE_WALK;
+	pl.flags = FL_CLIENT;
+	pl.viewzoom = 1.0;
+	pl.model = "models/player.mdl";
 	
+	string mymodel = infokey(pl, "model");
+
+	if (mymodel) {
+		mymodel = sprintf("models/player/%s/%s.mdl", mymodel, mymodel);
+		if (whichpack(mymodel)) {
+			pl.model = mymodel;
+		}
+	} 
+	setmodel(pl, pl.model);
+
+	setsize(pl, VEC_HULL_MIN, VEC_HULL_MAX);
+	pl.view_ofs = VEC_PLAYER_VIEWPOS;
+	pl.velocity = [0,0,0];
+	pl.gravity = __NULL__;
+	pl.frame = 1;
+	pl.SendEntity = Player_SendEntity;
+	pl.SendFlags = UPDATE_ALL;
+
+	pl.customphysics = Empty;
+	pl.Pain = Player_Pain;
+	pl.Death = Player_Death;
+	pl.iBleeds = TRUE;
+	forceinfokey(pl, "*spec", "0");
+	forceinfokey(self, "*deaths", ftos(self.deaths));
+
+	if (cvar("sv_playerslots") == 1) {
+		Game_DecodeChangeParms();
+
+		if (startspot != "") {
+			setorigin(pl, Landmark_GetSpot());
+		} else {
+			spot = find(world, classname, "info_player_start");
+			setorigin(pl, spot.origin);
+			pl.angles = spot.angles;
+			pl.fixangle = TRUE;
+		}
+	} else {
+		spot = Spawn_SelectRandom("info_player_deathmatch");
+		setorigin(pl, spot.origin);
+		pl.angles = spot.angles;
+		pl.fixangle = TRUE;
+		pl.g_items |= ITEM_SUIT;
+	}
+}
+
+void
+SV_SendChat(entity sender, string msg, entity eEnt, float fType)
+{
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
-	WriteByte(MSG_MULTICAST, fEVType);
-	WriteByte(MSG_MULTICAST, num_for_edict(eClient));
-	msg_entity = eClient;
-	multicast(self.origin, MULTICAST_PVS);
+	WriteByte(MSG_MULTICAST, fType == 0 ? EV_CHAT:EV_CHAT_TEAM);
+	WriteByte(MSG_MULTICAST, num_for_edict(sender) - 1); 
+	WriteByte(MSG_MULTICAST, sender.team); 
+	WriteString(MSG_MULTICAST, msg);
+	if (eEnt) {
+		msg_entity = eEnt;
+		multicast([0,0,0], MULTICAST_ONE);
+	} else {
+		multicast([0,0,0], MULTICAST_ALL);
+	}
+
+	localcmd(sprintf("echo [SERVER] %s: %s\n", sender.netname, msg));
+}
+
+void
+Game_ParseClientCommand(string cmd)
+{
+	tokenize(cmd);
+
+	if (argv(1) == "timeleft") {
+		string msg;
+		string timestring;
+		float timeleft;
+		timeleft = cvar("mp_timelimit") - (time / 60);
+		timestring = Vox_TimeToString(timeleft);
+		msg = sprintf("we have %s minutes remaining", timestring);
+		Vox_Singlecast(self, msg);
+		return;
+	}
+
+	if (argv(0) == "say") {
+		SV_SendChat(self, argv(1), world, 0);
+		return;
+	} else if (argv(0) == "say_team") {
+		entity a;
+		for (a = world; (a = find(a, classname, "player"));) { 
+			if (a.team == self.team) {
+				SV_SendChat(self, argv(1), a, 1);
+			}
+		}
+		return;
+	}
+
+	clientcommand(self, cmd);
+}
+
+void
+Game_SetNewParms(void)
+{
+
 }

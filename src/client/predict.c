@@ -32,14 +32,11 @@ void Predict_PreFrame(player pl)
 	pl.net_teleport_time = pl.teleport_time;
 	pl.net_viewzoom = pl.viewzoom;
 	pl.net_punchangle = pl.punchangle;
-
-#ifdef VALVE
 	pl.net_w_attack_next = pl.w_attack_next;
 	pl.net_w_idle_next = pl.w_idle_next;
 	pl.net_ammo1 = pl.a_ammo1;
 	pl.net_ammo2 = pl.a_ammo2;
 	pl.net_ammo3 = pl.a_ammo3;
-#endif
 	pl.net_weapontime = pl.weapontime;
 
 	//self.netpmove_flags = self.pmove_flags;
@@ -86,13 +83,12 @@ void Predict_PostFrame(player pl)
 	pl.punchangle = pl.net_punchangle;
 	//pl.hook.origin = pl.net_hookpos;
 
-#ifdef VALVE
 	pl.w_attack_next = pl.net_w_attack_next;
 	pl.w_idle_next = pl.net_w_idle_next;
 	pl.a_ammo1 = pl.net_ammo1;
 	pl.a_ammo2 = pl.net_ammo2;
 	pl.a_ammo3 = pl.net_ammo3;
-#endif
+
 	pl.weapontime = pl.net_weapontime;
 
 	//self.pmove_flags = self.netpmove_flags;

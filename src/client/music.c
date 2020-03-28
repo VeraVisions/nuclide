@@ -63,7 +63,6 @@ Music_GetPath(int id)
 	} else if (autocvar_cl_musicstyle == MUSIC_FLAC) {
 		return sprintf("music/track%02i.flac", id);
 	} else if (autocvar_cl_musicstyle == MUSIC_STEAMHL) {
-		/* this doesn't happen often enough for it to be in RAM all the time */
 		if (id >= 2 && id <= 28) {
 			return g_steamhltracks[id - 2];
 		}
@@ -94,6 +93,6 @@ Music_ParseLoop(void)
 
 	track = readbyte();
 	path = Music_GetPath(track);
-	dprint(sprintf("^2Music_ParseTrack:^7 Looping track %i from %s\n", track, path));
+	dprint(sprintf("^2Music_ParseLoop:^7 Looping track %i from %s\n", track, path));
 	localcmd(sprintf("music %s\n", path));
 }

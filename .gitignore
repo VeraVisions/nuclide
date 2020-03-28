@@ -6,6 +6,9 @@ ship/
 src/client/cstrike.new
 src/server/cstrike.new
 src/shared/cstrike.new
+src/client/hl2
+src/server/hl2
+src/shared/hl2
 *.lno
 *.pk3
 *.dat

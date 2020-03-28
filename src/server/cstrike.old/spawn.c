@@ -91,8 +91,8 @@ void Spawn_RespawnClient(float fTeam)
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_WALK;
 	self.flags = FL_CLIENT;
-	self.Pain = Player_Pain;
-	self.Death = Player_Death;
+	//self.Pain = Player_Pain;
+	//self.Death = Player_Death;
 	self.iBleeds = TRUE;
 	self.fSlotC4Bomb = 0; // Clear the C4
 	self.viewzoom = 1.0; // Clear scopes

@@ -14,168 +14,44 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-string sPainSounds[5] = {
-	"player/pl_pain2.wav",
-	"player/pl_pain4.wav",
-	"player/pl_pain5.wav",
-	"player/pl_pain6.wav",
-	"player/pl_pain7.wav"
-};
-
-/*
-=================
-Player_SendEntity
-=================
-*/
-float Player_SendEntity(entity ePEnt, float fChanged)
+void Player_Pain(int hit)
 {
-	/* If dead */
-	if (self.health <= 0 && ePEnt != self) {
-		return FALSE;
-	}
-
-	/* Fix CT/VIP team */
-	float t1, t2;
-	t1 = ePEnt.team;
-	t2 = self.team;
-	if (t1 == TEAM_VIP) {
-		t1 = TEAM_CT;
-	} else if (t2 == TEAM_VIP) {
-		t2 = TEAM_CT;
-	}
-
-	/* Always make team-mates visible */
-	if (t1 != t2 && ePEnt.health > 0) {
-		/* Can we even see them? */
-		if (!checkpvs(ePEnt.origin, self)) {
-			return FALSE;
-		} else {
-			/* We're in the same PVS, but we might still not be able to see them */
-			traceline(self.origin, ePEnt.origin, FALSE, self);
-			if (trace_ent != ePEnt) {
-				return FALSE;
-			}
-		}
-	}
-
-	WriteByte(MSG_ENTITY, ENT_PLAYER);
-	WriteShort(MSG_ENTITY, self.modelindex);
-	WriteCoord(MSG_ENTITY, self.origin[0]);
-	WriteCoord(MSG_ENTITY, self.origin[1]);
-	WriteCoord(MSG_ENTITY, self.origin[2]);
-	WriteCoord(MSG_ENTITY, self.v_angle[0]);
-	WriteCoord(MSG_ENTITY, self.angles[1]);
-	WriteCoord(MSG_ENTITY, self.angles[2]);
-	WriteCoord(MSG_ENTITY, self.velocity[0]);
-	WriteCoord(MSG_ENTITY, self.velocity[1]);
-	WriteCoord(MSG_ENTITY, self.velocity[2]);
-	WriteFloat(MSG_ENTITY, self.flags);
-	WriteFloat(MSG_ENTITY, self.pmove_flags);
-	WriteByte(MSG_ENTITY, self.weapon);
-	WriteByte(MSG_ENTITY, self.health);
-	WriteFloat(MSG_ENTITY, self.movetype);
-	WriteFloat(MSG_ENTITY, self.view_ofs[2]);
-	WriteFloat(MSG_ENTITY, self.viewzoom);
-	WriteFloat(MSG_ENTITY, self.jumptime);
-	WriteFloat(MSG_ENTITY, self.teleport_time);
-	return TRUE;
+	
 }
 
-/*
-=================
-Player_Pain
-=================
-*/
-void Player_Pain(int iHitBody)
+void Player_Death(int hit)
 {
-	/*
-	if (iHitBody == BODY_HEAD) {
-		Animation_PlayerTopTemp(ANIM_HEAD_FLINCH, 0.25f);
-	} else {
-		Animation_PlayerTopTemp(ANIM_GUT_FLINCH, 0.25f);
-	}*/
+	player pl = (player)self;
+
+	pl.movetype = MOVETYPE_NONE;
+	pl.solid = SOLID_NOT;
+	pl.takedamage = DAMAGE_NO;
+	pl.flags &= ~FL_FLASHLIGHT;
+	pl.armor = pl.activeweapon = pl.g_items = 0;
 	
-	sound(self, CHAN_VOICE, sPainSounds[ floor(random() * 5) ], 1, ATTN_IDLE);
-	self.velocity = '0 0 0';
-}
+	pl.think = PutClientInServer;
+	pl.nextthink = time + 4.0f;
+	sound(pl, CHAN_AUTO, "fvox/flatline.wav", 1.0, ATTN_NORM);
 
-/*
-=================
-Player_Death
-=================
-*/
-void Player_Death(int iHitBody)
-{
-	if (iHitBody == BODY_HEAD) {
-		sound(self, CHAN_VOICE, sprintf("player/headshot%d.wav", floor((random() * 3) + 1)), 1, ATTN_NORM);
-	} else {
-		sound(self, CHAN_VOICE, sprintf("player/die%d.wav", floor((random() * 3) + 1)), 1, ATTN_NORM);
-	}
-			
-	// Drop a corpse
-	entity eCorpse = spawn();
-	eCorpse.classname = "remove_me";
-	setorigin(eCorpse, self.origin);
-	setmodel(eCorpse, self.model);
-	setsize(eCorpse, self.mins, self.maxs);
-	eCorpse.angles = [ 0, self.angles[1], 0 ];
-	eCorpse.movetype = MOVETYPE_BOUNCE;
-
-	// Drop primary weapon as well as the bomb if present
-	if (self.fSlotPrimary) {
-		Weapon_DropWeapon(SLOT_PRIMARY);
-	} else {
-		if (self.fSlotSecondary) {
-			Weapon_DropWeapon(SLOT_SECONDARY);
-		}
-	}
-	if (self.fSlotGrenade) {
-		Weapon_DropWeapon(SLOT_GRENADE);
-	}
-	
-	// Make ourselves disappear
-	self.modelindex = 0;
-	
-	if (self.flags & FL_CROUCHING) {
-		eCorpse.frame = ANIM_CROUCH_DIE;
-	} else {
-		switch (iHitBody) {
-			case BODY_HEAD:
-				eCorpse.frame = ANIM_DIE_HEAD;
-				break;
-			case BODY_STOMACH:
-				eCorpse.frame = ANIM_DIE_GUT;
-				break;
-			case BODY_LEGLEFT:
-			case BODY_ARMLEFT:
-				eCorpse.frame = ANIM_DIE_LEFT;
-				break;
-			case BODY_LEGRIGHT:
-			case BODY_ARMRIGHT:
-				eCorpse.frame = ANIM_DIE_RIGHT;
-				break;
-			default:
-				eCorpse.frame = ANIM_DEATH1 + floor(random() * 3);
-				break;
-		}
-	}
-
-	Spawn_MakeSpectator();
-	self.classname = "player";
-	self.health = 0;
-	forceinfokey(self, "*dead", "1"); 
-	forceinfokey(self, "*team", ftos(self.team));
-
-	Rules_CountPlayers();
-
-	/* In Assassination, all Terrorists receive a $2500
-	 *  reward if they won by killing the VIP. */
-	if (self.team == TEAM_VIP) {
-		Rules_RoundOver(TEAM_T, 2500, FALSE);
+	if (pl.health < -50) {
+		pl.health = 0;
+		Effect_GibHuman(pl.origin);
 		return;
 	}
 
-	Rules_DeathCheck();
+	pl.health = 0;
+
+	/* Let's handle corpses on the clientside */
+	entity corpse = spawn();
+	setorigin(corpse, pl.origin + [0,0,32]);
+	setmodel(corpse, pl.model);
+	setsize(corpse, VEC_HULL_MIN, VEC_HULL_MAX);
+	corpse.movetype = MOVETYPE_TOSS;
+	corpse.solid = SOLID_TRIGGER;
+	corpse.modelindex = pl.modelindex;
+	corpse.frame = ANIM_DIESIMPLE;
+	corpse.angles = pl.angles;
+	corpse.velocity = pl.velocity;
 }
 
 /*
@@ -199,12 +75,12 @@ Player_UseDown
 */
 void Player_UseDown(void)
 {
-    if (self.health <= 0) {
+	if (self.health <= 0) {
 		return;
 	} else if (!(self.gflags & GF_USE_RELEASED)) {
 		return;
 	}
-
+	
 	vector vSource;
 
 	makevectors(self.v_angle);
@@ -213,7 +89,7 @@ void Player_UseDown(void)
 
 	if (trace_ent.PlayerUse) {
 		self.gflags &= ~GF_USE_RELEASED;
-
+		
 		UseWorkaround(trace_ent);
 
 		/* Some entities want to support Use spamming */
@@ -231,37 +107,99 @@ void Player_UseDown(void)
 Player_UseUp
 ====================
 */
-void Player_UseUp(void)
-{
+void Player_UseUp(void) {
 	if (!(self.gflags & GF_USE_RELEASED)) {
 		self.gflags |= GF_USE_RELEASED;
-		self.fProgressBar = 0;
 	}
 }
 
 /*
 =================
-PlayerPreThink
-
-Run before physics
+Player_SendEntity
 =================
 */
-void Game_PlayerPreThink(void)
-{ 
-	BaseGun_ShotMultiplierUpdate();
+float Player_SendEntity(entity ePEnt, float fChanged)
+{
+	player pl = (player)self;
+
+	if (pl.health <= 0 && ePEnt != pl) {
+		return FALSE;
+	}
+
+	WriteByte(MSG_ENTITY, ENT_PLAYER);
+	WriteFloat(MSG_ENTITY, fChanged);
+
+	/* really trying to get our moneys worth with 23 bits of mantissa */
+	if (fChanged & PLAYER_MODELINDEX) {
+		WriteShort(MSG_ENTITY, pl.modelindex);
+	}
+	if (fChanged & PLAYER_ORIGIN) {
+		WriteCoord(MSG_ENTITY, pl.origin[0]);
+		WriteCoord(MSG_ENTITY, pl.origin[1]);
+	}
+	if (fChanged & PLAYER_ORIGIN_Z) {
+		WriteCoord(MSG_ENTITY, pl.origin[2]);
+	}
+	if (fChanged & PLAYER_ANGLES_X) {
+		WriteFloat(MSG_ENTITY, pl.v_angle[0]);
+	}
+	if (fChanged & PLAYER_ANGLES_Y) {
+		WriteFloat(MSG_ENTITY, pl.angles[1]);
+	}
+	if (fChanged & PLAYER_ANGLES_Z) {
+		WriteFloat(MSG_ENTITY, pl.angles[2]);
+	}
+	if (fChanged & PLAYER_VELOCITY) {
+		WriteCoord(MSG_ENTITY, pl.velocity[0]);
+		WriteCoord(MSG_ENTITY, pl.velocity[1]);
+	}
+	if (fChanged & PLAYER_VELOCITY_Z) {
+		WriteCoord(MSG_ENTITY, pl.velocity[2]);
+	}
+	if (fChanged & PLAYER_FLAGS) {
+		WriteFloat(MSG_ENTITY, pl.flags);
+	}
+	if (fChanged & PLAYER_WEAPON) {
+		WriteByte(MSG_ENTITY, pl.activeweapon);
+	}
+	if (fChanged & PLAYER_ITEMS) {
+		WriteFloat(MSG_ENTITY, (__variant)pl.g_items);
+	}
+	if (fChanged & PLAYER_HEALTH) {
+		WriteByte(MSG_ENTITY, pl.health);
+	}
+	if (fChanged & PLAYER_ARMOR) {
+		WriteByte(MSG_ENTITY, pl.armor);
+	}
+	if (fChanged & PLAYER_MOVETYPE) {
+		WriteByte(MSG_ENTITY, pl.movetype);
+	}
+	if (fChanged & PLAYER_VIEWOFS) {
+		WriteFloat(MSG_ENTITY, pl.view_ofs[2]);
+	}
+	if (fChanged & PLAYER_BASEFRAME) {
+		WriteByte(MSG_ENTITY, pl.baseframe);
+	}
+	if (fChanged & PLAYER_FRAME) {
+		WriteByte(MSG_ENTITY, pl.frame);
+	}
+	if (fChanged & PLAYER_AMMO1) {
+		WriteByte(MSG_ENTITY, pl.a_ammo1);
+	}
+	if (fChanged & PLAYER_AMMO2) {
+		WriteByte(MSG_ENTITY, pl.a_ammo2);
+	}
+	if (fChanged & PLAYER_AMMO3) {
+		WriteByte(MSG_ENTITY, pl.a_ammo3);
+	}
+
+	return TRUE;
 }
 
-/*
-=================
-PlayerPreThink
-
-Run after physics
-=================
-*/
-void Game_PlayerPostThink(void)
+void Weapons_Draw(void);
+void CSEv_PlayerSwitchWeapon_f(float w)
 {
-	Animation_PlayerUpdate();
-	Footsteps_Update();
-	
-	self.SendFlags = 1;
+	player pl = (player)self;
+	pl.activeweapon = (int)w;
+	Weapons_Draw();
 }

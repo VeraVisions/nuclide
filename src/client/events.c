@@ -36,7 +36,7 @@ void Event_EjectShell(void)
 	
 	entity eShell = spawn();
 	setorigin(eShell, vOrigin);
-#ifdef CSTRIKE
+#if 0
 	setmodel(eShell, sShellModel[wptTable[getstati(STAT_ACTIVEWEAPON)].iShellType]);
 #endif
 	eShell.movetype = MOVETYPE_BOUNCE;

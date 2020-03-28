@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-int input_sequence;
+noref int input_sequence;
 class player:CBaseEntity
 {
 	float health;

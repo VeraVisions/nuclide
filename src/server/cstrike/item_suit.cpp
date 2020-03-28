@@ -24,18 +24,21 @@ class item_suit:CBaseTrigger
 
 void item_suit::touch(void)
 {
-	if (other.classname != "player") {
+	player pl = (player)other;
+
+	if (pl.classname != "player") {
 		return;
 	}
-	player pl = (player)other;
-	/*if (pl.g_items & ITEM_SUIT) {
+
+	if (pl.g_items & ITEM_SUIT) {
 		return;
-	}*/
+	}
+
 	sound(other, CHAN_ITEM, "items/tr_kevlar.wav", 1, ATTN_NORM);
-	/*pl.g_items |= ITEM_SUIT;*/
+	pl.g_items |= ITEM_SUIT;
 
 	CBaseTrigger::UseTargets();
-	
+
 	if (cvar("sv_playerslots") == 1) {
 		remove(self);
 	} else {

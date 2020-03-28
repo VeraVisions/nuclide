@@ -14,6 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+float(entity foo, float chanid) getchannellevel = #0;
+
+
 /*
 =================
 Client_Init
@@ -23,39 +26,43 @@ Comparable to worldspawn in SSQC in that it's mostly used for precaches
 */
 void Client_Init(float apilevel, string enginename, float engineversion)
 {
-	precache_model("sprites/fexplo.spr");
-	precache_model("sprites/muzzleflash1.spr");
-	precache_sound("player/pl_pain2.wav");
+	precache_model("sprites/640hud1.spr");
+	precache_model("sprites/640hud2.spr");
+	precache_model("sprites/640hud3.spr");
+	precache_model("sprites/640hud4.spr");
+	precache_model("sprites/640hud5.spr");
+	precache_model("sprites/640hud6.spr");
+	precache_model("sprites/640hud7.spr");
+	precache_model("sprites/640hud10.spr");
+	precache_model("sprites/640hud11.spr");
+	precache_model("sprites/640hud12.spr");
+	precache_model("sprites/640hud13.spr");
+	precache_model("sprites/640hud14.spr");
+	precache_model("sprites/640hud15.spr");
+	precache_model("sprites/640hud16.spr");
+	precache_model("sprites/hud640_01.spr");
+	precache_model("sprites/hud640_02.spr");
+	precache_model("sprites/hud640_04.spr");
+	precache_model("sprites/bottom.spr");
+	precache_model("sprites/bottom_left.spr");
+	precache_model("sprites/bottom_right.spr");
+	precache_model("sprites/left.spr");
+	precache_model("sprites/radar640.spr");
+	precache_model("sprites/right.spr");
+	precache_model("sprites/sniper_scope.spr");
+	precache_model("sprites/top.spr");
+	precache_model("sprites/top_left.spr");
+	precache_model("sprites/top_right.spr");
 
-	precache_model("sprites/iplayerred.spr");
-	precache_model("sprites/iplayerblue.spr");
-	precache_model("sprites/iplayervip.spr");
-	precache_model("sprites/ihostage.spr");
-	
-	precache_model("models/pshell.mdl");
-	precache_model("models/rshell.mdl");
-	precache_model("models/rshell_big.mdl");
-	precache_model("models/shotgunshell.mdl");
-	precache_pic( sprintf( "overviews/%s.bmp", mapname ) );
-
-	PARTICLE_SMOKEGRENADE = particleeffectnum("smokegren");
-
-	Radio_InitSounds();
-	CSQC_ConsoleCommand_Init();
-	Overview_Init();
-
-	pSeat.iOverview = FALSE;
+	BEAM_TRIPMINE = particleeffectnum("beam_tripmine");
 }
 
 void Client_InitDone(void)
 {
-	/* don't open this in singleplayer */
-	if (serverkeyfloat("slots") > 1) {
-		VGUI_ChooseTeam();
-	}
+	/* change this to the motd */
+	//VGUI_ChooseTeam();
 }
 
 void Game_RendererRestarted(string rstr)
 {
-	Overview_Init();
 }

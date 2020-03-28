@@ -19,14 +19,6 @@ var int autocvar_v_camroll = TRUE;
 void
 View_Init(void)
 {
-#ifdef CSTRIKE
-	string wm;
-	for (int i = 0; i < (CS_WEAPON_COUNT - 1); i++) {
-		wm = sprintf("models/%s", sViewModels[i]);
-		precache_model(wm);
-	}
-#endif
-
 	for (int s = seats.length; s-- > numclientseats;) {
 		pSeat = &seats[s];
 		if(!pSeat->eViewModel) {

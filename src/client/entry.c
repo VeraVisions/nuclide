@@ -188,11 +188,6 @@ CSQC_UpdateView(float w, float h, float focus)
 		pSeat->vPlayerVelocity = pl.velocity;
 		pSeat->fPlayerFlags = pl.flags;
 
-		// Render 3D Game Loop
-#ifdef CSTRIKE
-		Cstrike_PreDraw();
-#endif
-
 		// Don't hide the player entity
 		if (autocvar_cl_thirdperson == TRUE && pl.health) {
 			setproperty(VF_VIEWENTITY, (float)0);
@@ -247,7 +242,6 @@ CSQC_UpdateView(float w, float h, float focus)
 			} else {
 				setproperty(VF_ORIGIN, pSeat->vPlayerOrigin);
 			}
-			View_DrawViewModel();
 		}
 
 		addentities(MASK_ENGINE);
@@ -273,6 +267,18 @@ CSQC_UpdateView(float w, float h, float focus)
 			setproperty(VF_SKYROOM_CAMERA, g_skypos + realpos);
 		}
 
+		/* draw the world/entities */
+		renderscene();
+
+		/* Now we draw the viewmodel in a second pass */
+		clearscene();
+		setproperty(VF_MIN, video_mins);
+		setproperty(VF_SIZE, video_res);
+		setproperty(VF_ANGLES, view_angles + pl.punchangle);
+		setproperty(VF_DRAWWORLD, 0);
+		setproperty(VF_AFOV, cvar("cl_viewmodelfov"));
+		setproperty(VF_ORIGIN, pSeat->vPlayerOrigin + pl.view_ofs);
+		View_DrawViewModel();
 		renderscene();
 
 		/* Run this on all players */

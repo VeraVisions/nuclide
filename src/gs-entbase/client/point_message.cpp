@@ -88,6 +88,8 @@ void PointMessage_Draw(void)
 #endif
 
 #ifdef WASTES
+	string msg;
+	float distance;
 	for ( entity eFind = world; ( eFind = find( eFind, ::classname, "point_message" ) ); ) {
 		point_message m = (point_message)eFind;
 		msg = m.m_strMessage;

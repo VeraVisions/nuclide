@@ -14,19 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-equipmentinfo_t eqptTable [ CS_EQUIPMENT_COUNT ] = {
-	{ EQUIPMENT_KEVLAR, 650 },
-	{ EQUIPMENT_HELMET, 1000 },
-	{ WEAPON_FLASHBANG, 300 },
-	{ WEAPON_HEGRENADE, 300 },
-	{ WEAPON_SMOKEGRENADE, 300 },
-	{ EQUIPMENT_DEFUSALKIT, 200 },
-	{ EQUIPMENT_NIGHTVISION, 1250 },
-};
-
 #ifdef SSQC
 void CSEv_PlayerBuyEquipment_f( float fID ) {
-	if ( Rules_BuyingPossible() == FALSE ) {
+/*	if ( Rules_BuyingPossible() == FALSE ) {
 		return;
 	}
 	
@@ -119,6 +109,6 @@ void CSEv_PlayerBuyEquipment_f( float fID ) {
 		centerprint( self, "You have insufficient funds!" );
 	}
 	
-	self.fAttackFinished = time + 1.0;
+	self.fAttackFinished = time + 1.0;*/
 }
 #endif

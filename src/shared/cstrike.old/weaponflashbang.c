@@ -124,7 +124,7 @@ void WeaponFLASHBANG_Throw( void ) {
 			return;
 		}
 		if ( other.classname == "func_breakable" ) {
-			Damage_Apply( other, self, 50, self.origin, FALSE, 0);
+			Damage_Apply( other, self, 50, FALSE, 0);
 		}
 		sound( self, CHAN_WEAPON, sprintf( "weapons/grenade_hit%d.wav", floor( random() * 3 ) + 1 ), 1, ATTN_NORM );
 	}

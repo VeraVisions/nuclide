@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+var int autocvar_fcs_nopickups = FALSE;
+
 int iArmouryItems[19] = {
 	WEAPON_MP5,
 	WEAPON_TMP,
@@ -37,24 +39,24 @@ int iArmouryItems[19] = {
 };
 
 string sArmouryModels[19] = {
-	"models/w_mp5.mdl",       
-	"models/w_tmp.mdl",        
-	"models/w_p90.mdl",    
-	"models/w_mac10.mdl",       
-	"models/w_ak47.mdl",       
-	"models/w_sg552.mdl",       
-	"models/w_m4a1.mdl",       
-	"models/w_aug.mdl",        
-	"models/w_scout.mdl",      
-	"models/w_g3sg1.mdl",      
-	"models/w_awp.mdl",         
-	"models/w_m3.mdl",          
-	"models/w_xm1014.mdl",    
-	"models/w_m249.mdl",        
-	"models/w_flashbang.mdl",   
-	"models/w_hegrenade.mdl",  
+	"models/w_mp5.mdl",
+	"models/w_tmp.mdl",
+	"models/w_p90.mdl",
+	"models/w_mac10.mdl",
+	"models/w_ak47.mdl",
+	"models/w_sg552.mdl",
+	"models/w_m4a1.mdl",
+	"models/w_aug.mdl",
+	"models/w_scout.mdl",
+	"models/w_g3sg1.mdl",
+	"models/w_awp.mdl",
+	"models/w_m3.mdl",
+	"models/w_xm1014.mdl",
+	"models/w_m249.mdl",
+	"models/w_flashbang.mdl",
+	"models/w_hegrenade.mdl",
 	"models/w_kevlar.mdl",
-	"models/w_assault.mdl",     
+	"models/w_assault.mdl",
 	"models/w_smokegrenade.mdl"
 };
 
@@ -69,71 +71,14 @@ class armoury_entity:CBaseEntity
 	virtual void() Respawn;
 };
 
-int amoury_entity_pickup(armoury_entity item, entity player)
+int
+amoury_entity_pickup(armoury_entity item, entity player)
 {
-	entity eOld = self;
-	self = player;
-
-	// Only MP5 til PARA
-	if (item.m_iItem < 14) {
-		if (Weapon_SlotEmpty(Weapon_GetSlot(iArmouryItems[item.m_iItem]))) {
-			Weapon_AddItem(iArmouryItems[item.m_iItem]);
-			Weapon_Draw(iArmouryItems[item.m_iItem]);
-		} else {
-			self = eOld;
-			return FALSE;
-		}
-	} else {
-		// Equipment
-		if (iArmouryItems[item.m_iItem] == EQUIPMENT_KEVLAR) {
-			if (self.armor != 100) {
-				self.armor = 100;
-			} else {
-				self = eOld;
-				return FALSE;
-			}
-		} else if (iArmouryItems[item.m_iItem] == EQUIPMENT_HELMET) {
-			if (self.armor == 100) {
-				if (!(self.iEquipment & EQUIPMENT_HELMET)) {
-					sound(self, CHAN_ITEM, "items/tr_kevlar.wav", 1, ATTN_IDLE);
-				} else {
-					self = eOld;
-					return FALSE;
-				}
-			} else {
-				if (self.iEquipment & EQUIPMENT_HELMET) {
-					self.armor = 100;
-					sound(self, CHAN_ITEM, "items/tr_kevlar.wav", 1, ATTN_IDLE);
-				} else {
-					self.armor = 100;
-					self.iEquipment = self.iEquipment | EQUIPMENT_HELMET;
-					sound(self, CHAN_ITEM, "items/tr_kevlar.wav", 1, ATTN_IDLE);
-				}
-			}
-		} else {
-			int iNades = self.iAmmo_FLASHBANG + self.iAmmo_HEGRENADE + self.iAmmo_SMOKEGRENADE;
-			if (iNades < 3) {
-				if (iArmouryItems[item.m_iItem]  == WEAPON_FLASHBANG) {
-					self.iAmmo_FLASHBANG++;
-					sound(self, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_IDLE);
-				} else if (iArmouryItems[item.m_iItem]  == WEAPON_HEGRENADE) {
-					self.iAmmo_HEGRENADE++;
-					sound(self, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_IDLE);
-				} else if (iArmouryItems[item.m_iItem]  == WEAPON_SMOKEGRENADE) {
-					self.iAmmo_SMOKEGRENADE++;
-					sound(self, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_IDLE);
-				}
-			} else {
-				self = eOld;
-				return FALSE;
-			}
-		}
-	}
-	self = eOld;
-	return TRUE;
+	
 }
 
-void armoury_entity::touch(void)
+void
+armoury_entity::touch(void)
 {
 	if (other.classname != "player") {
 		return;
@@ -141,23 +86,24 @@ void armoury_entity::touch(void)
 
 	if (amoury_entity_pickup(this, other)) {
 		m_iLeft--;
-			
 		if (m_iLeft <= 0) {
 			Hide();
 		}
 	}
 }
 
-void armoury_entity::Respawn(void)
+void
+armoury_entity::Respawn(void)
 {
-	CBaseEntity::Respawn();
-
+	setmodel(this, m_oldModel);
+	setsize(this, [-16,-16,0], [16,16,16]);
 	solid = SOLID_TRIGGER;
 	m_iLeft = m_iCount;
 	droptofloor();
 }
 
-void armoury_entity::armoury_entity(void)
+void
+armoury_entity::armoury_entity(void)
 {
 	if (autocvar_fcs_nopickups == TRUE) {
 		remove(this);
@@ -170,20 +116,15 @@ void armoury_entity::armoury_entity(void)
 			m_iCount = stoi(argv(i + 1));
 			break;
 		case "item":
-			m_iItem = stoi(argv(i + 1));
+			m_iItem = iArmouryItems[stoi(argv(i + 1))];
+			model = sArmouryModels[m_iItem];
 			break;
 		default:
 			break;
 		}
 	}
-	
-	model = sArmouryModels[m_iItem];
 
+	precache_model(model);
 	CBaseEntity::CBaseEntity();
-
-	precache_model(m_oldModel);
-	setmodel(this, m_oldModel);
-	setsize(this, [-16,-16,0], [16,16,16]);
-
 	armoury_entity::Respawn();
 }
