@@ -45,7 +45,12 @@ void CSQC_Ent_Update(float new)
 		n.ReadEntity(readfloat());
 		break;
 	case ENT_SPRITE:
-		Sprite_Animated();
+		env_sprite spr = (env_sprite)self;
+		if (new) {
+			spawnfunc_env_sprite();
+		}
+		spr.ReadEntity(readfloat());
+		break;
 		break;
 	case ENT_SPRAY:
 		Spray_Parse();

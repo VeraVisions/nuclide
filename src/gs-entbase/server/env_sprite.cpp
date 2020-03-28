@@ -55,6 +55,7 @@ float env_sprite::Network(entity pvsent, float flags)
 		return FALSE;
 	}
 	WriteByte(MSG_ENTITY, ENT_SPRITE);
+	WriteFloat(MSG_ENTITY, 666);
 	WriteCoord(MSG_ENTITY, origin[0]);
 	WriteCoord(MSG_ENTITY, origin[1]);
 	WriteCoord(MSG_ENTITY, origin[2]);

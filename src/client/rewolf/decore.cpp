@@ -129,7 +129,7 @@ class decore_torch:CBaseDecor
 		CBaseDecor::Initialized();
 		this.effects |= EF_FULLBRIGHT;
 
-		sprite flame = spawn(sprite);
+		env_sprite flame = spawn(env_sprite);
 		setorigin(flame, origin + [0,0,24]);
 		setmodel(flame, "sprites/torch.spr");
 		flame.effects = EF_ADDITIVE;

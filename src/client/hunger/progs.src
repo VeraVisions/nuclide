@@ -18,7 +18,6 @@
 ../../vgui/include.src
 ../util.c
 ../fade.c
-../sprite.cpp
 ../titles.c
 ../text.c
 ../sentences.c

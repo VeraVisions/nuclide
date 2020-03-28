@@ -14,16 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class sprite
+class env_sprite:CBaseEntity
 {
 	float framerate;
 	int loops;
 	int maxframe; 
-	
+
+	virtual void() Init;
+	virtual void() Initialized;
+	virtual void(float flChanged) ReadEntity;
 	virtual void() think;
 };
 
-void sprite::think(void)
+void env_sprite::think(void)
 {
 	if (frame >= (maxframe-1)) {
 		if (loops == 0) {
@@ -37,32 +40,41 @@ void sprite::think(void)
 
 	nextthink = time + (1 / framerate);
 }
-	
-void Sprite_Animated(void)
+
+void env_sprite::ReadEntity(float flChanged)
 {
-	spawnfunc_sprite();
-	sprite me = (sprite)self;
-	me.origin[0] = readcoord();
-	me.origin[1] = readcoord();
-	me.origin[2] = readcoord();
-	me.modelindex = readfloat();
-	me.framerate = readfloat();
-	me.scale = readfloat();
-	me.alpha = readfloat();
-	me.effects = readfloat();
-	me.colormod[0] = readfloat();
-	me.colormod[1] = readfloat();
-	me.colormod[2] = readfloat();
-	me.drawmask = MASK_ENGINE;
-	me.nextthink = time + (1 / me.framerate);
-	me.maxframe = modelframecount(me.modelindex);
-	me.loops = 1; /* repeats */
-	setorigin(me, me.origin);
+	origin[0] = readcoord();
+	origin[1] = readcoord();
+	origin[2] = readcoord();
+	modelindex = readfloat();
+	framerate = readfloat();
+	scale = readfloat();
+	alpha = readfloat();
+	effects = readfloat();
+	colormod[0] = readfloat();
+	colormod[1] = readfloat();
+	colormod[2] = readfloat();
+	drawmask = MASK_ENGINE;
+	nextthink = time + (1 / framerate);
+	maxframe = modelframecount(modelindex);
+	loops = 1; /* repeats */
+	setorigin(this, origin);
 }
 
-void Sprite_ParseEvent(void)
+/* make sure we're not spawning on the client-side */
+void env_sprite::Init(void)
 {
-	sprite spr = spawn(sprite);
+}
+void env_sprite::Initialized(void)
+{
+}
+void env_sprite::env_sprite(void)
+{
+}
+
+void EnvSprite_ParseEvent(void)
+{
+	env_sprite spr = spawn(env_sprite);
 	spr.origin[0] = readcoord();
 	spr.origin[1] = readcoord();
 	spr.origin[2] = readcoord();

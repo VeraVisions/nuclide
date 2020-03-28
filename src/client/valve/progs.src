@@ -21,7 +21,6 @@
 ../valve/init.c
 
 ../fade.c
-../sprite.cpp
 ../titles.c
 ../text.c
 

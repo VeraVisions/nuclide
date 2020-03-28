@@ -23,7 +23,6 @@ vgui_chooseteam.cpp
 init.c
 
 ../fade.c
-../sprite.cpp
 ../titles.c
 ../text.c
 ../sentences.c

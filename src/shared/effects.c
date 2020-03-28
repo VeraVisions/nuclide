@@ -134,7 +134,7 @@ Effect_CreateExplosion(vector vPos)
 	msg_entity = self;
 	multicast(vPos, MULTICAST_PVS);
 #else
-	sprite eExplosion = spawn(sprite);
+	env_sprite eExplosion = spawn(env_sprite);
 	setorigin(eExplosion, vPos);
 	setmodel(eExplosion, "sprites/fexplo.spr");
 	sound(eExplosion, CHAN_WEAPON, sprintf("weapons/explode%d.wav", floor(random() * 3) + 3), 1, ATTN_NORM);
@@ -164,7 +164,7 @@ void Effect_CreateBlood(vector pos, vector color) {
 	msg_entity = self;
 	multicast(pos, MULTICAST_PVS);
 #else
-	sprite eBlood = spawn(sprite);
+	env_sprite eBlood = spawn(env_sprite);
 	setorigin(eBlood, pos);
 	setmodel(eBlood, "sprites/bloodspray.spr");
 
@@ -179,7 +179,7 @@ void Effect_CreateBlood(vector pos, vector color) {
 	eBlood.nextthink = time + 0.05f;
 	
 	for (int i = 0; i < 3; i++) {
-		sprite ePart = spawn(sprite);
+		env_sprite ePart = spawn(env_sprite);
 		setorigin(ePart, pos);
 		setmodel(ePart, "sprites/blood.spr");
 		ePart.movetype = MOVETYPE_BOUNCE;

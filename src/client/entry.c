@@ -479,7 +479,7 @@ CSQC_Parse_Event(void)
 		Fade_Parse();
 		break;
 	case EV_SPRITE:
-		Sprite_ParseEvent();
+		EnvSprite_ParseEvent();
 		break;
 	case EV_TEXT:
 		GameText_Parse();
