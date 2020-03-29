@@ -91,12 +91,10 @@ void
 func_train::Blocked(void)
 {
 	/* HACK: Make corpses gib instantly */
-//#ifdef WASTES
-	if (other.classname == "Corpse") {
+	if (other.solid == SOLID_CORPSE) {
 		Damage_Apply(other, this, 500, 0, DMG_EXPLODE);
 		return;
 	}
-//#endif
 
 	if (other.takedamage != DAMAGE_NO) {
 		Damage_Apply(other, this, m_flDamage, 0, DMG_CRUSH);
@@ -127,7 +125,9 @@ func_train::GoToTarget(void)
 	flTravelTime = (vlen(vecVelocity) / m_flSpeed);
 
 	if (!flTravelTime) {
-		NextPath();
+		print("^1func_train::GoToTarget^7: Distance short, going next\n");
+		think = NextPath;
+		nextthink = ltime;
 		return;
 	}
 
@@ -171,9 +171,11 @@ func_train::NextPath(void)
 	m_strTarget = eNode.m_strTarget;
 	velocity = [0,0,0];
 
-	/* warp */
+	/* warp next frame */
 	if (eNode.spawnflags & PC_TELEPORT) {
-		NextPath();
+		print(sprintf("^1func_train::NextPath^7: Node %s wants %s to teleport\n", eNode.m_strTargetName, m_strTargetName));
+		think = NextPath;
+		nextthink = ltime;
 		return;
 	}
 
