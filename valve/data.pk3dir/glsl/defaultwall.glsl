@@ -63,9 +63,11 @@ varying mat3 invsurface;
 		diffuse_f = out_f;
 #else
 		diffuse_f.rgb *= light.rgb;
-		if (diffuse_f.a < 0.5) {
+#ifdef MASK
+		if (diffuse_f.a < e_colourident.a) {
 			discard;
 		}
+#endif
 #endif
 		diffuse_f *= e_colourident;
 
