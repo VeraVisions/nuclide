@@ -16,8 +16,6 @@
 
 var int autocvar_cl_decals = TRUE;
 
-#include "decals.h"
-
 #define DECALS_MAX 30
 
 #ifdef SSQC
@@ -168,17 +166,7 @@ const string g_decal_shader = \
 		"{\n" \
 			"clampmap %s\n" \
 			"rgbgen vertex\n" \
-			"blendfunc GL_ZERO GL_SRC_COLOR\n" \
-		"}\n" \
-	"}";
-
-const string g_decal_shader_add = \
-	"{\n" \
-		"polygonOffset\n" \
-		"{\n" \
-			"clampmap %s\n" \
-			"rgbgen vertex\n" \
-			"blendfunc add\n" \
+			"blendfunc blend\n" \
 		"}\n" \
 	"}";
 
@@ -198,36 +186,7 @@ void Decal_MakeShader(decal target)
 {
 	string shader_buff;
 	target.m_strShader = sprintf("decal_%s", target.m_strTexture);
-
-	if (target.style & DFLAG_INVERT) {
-		int i;
-		int *buff;
-		vector res;
-		int w, h;
-
-		res = drawgetimagesize(target.m_strTexture);
-		w = (int)res[0];
-		h = (int)res[1];
-		buff = r_readimage(target.m_strTexture, w, h);
-
-		/* we can only upload this under a new name */
-		target.m_strTexture = sprintf("%s_inv", target.m_strTexture);
-
-		if (buff != __NULL__) {
-			for (i = 0; i < ( w * h ); i++) {
-				//buff[i] = ~buff[i];
-			}
-			
-			r_uploadimage(target.m_strTexture, w, h, (void*)buff);
-			memfree(buff);
-		}
-	}
-
-	if (target.style & DFLAG_ADDITIVE) {
-		shader_buff = sprintf(g_decal_shader_add, target.m_strTexture);
-	} else {
-		shader_buff = sprintf(g_decal_shader, target.m_strTexture);
-	}
+	shader_buff = sprintf(g_decal_shader, target.m_strTexture);
 	shaderforname(target.m_strShader, shader_buff);
 }
 
@@ -256,16 +215,6 @@ void Decal_Parse(void)
 	new.m_strTexture = readstring();
 
 	new.color = [1,1,1];
-
-	for (int i = 0; i < g_decalwad.length; i++) {
-		if (new.m_strTexture == g_decalwad[i].name) {
-			new.color[0] = (g_decalwad[i].color[0] / 255);
-			new.color[1] = (g_decalwad[i].color[1] / 255);
-			new.color[2] = (g_decalwad[i].color[2] / 255);
-			new.style = g_decalwad[i].flags;
-			break;
-		}
-	}
 
 	new.size = drawgetimagesize(new.m_strTexture);
 
