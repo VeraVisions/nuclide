@@ -165,7 +165,8 @@ void func_breakable::Death(int body)
 
 void func_breakable::Trigger(void)
 {
-	func_breakable::Death(0);
+	if (health > 0)
+		func_breakable::Death(0);
 }
 
 /*void func_breakable::PressureDeath(void)

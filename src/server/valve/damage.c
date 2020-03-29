@@ -40,6 +40,11 @@ Damage_Apply(entity t, entity c, float dmg, int w, int type)
 		return;
 	}
 
+	/* already dead, please avoid recursion */
+	if (t.health <= 0) {
+		return;
+	}
+
 	/* skip armor */
 	if not (type & DMG_SKIP_ARMOR)
 	if (t.armor && dmg > 0) {
