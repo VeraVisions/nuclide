@@ -202,3 +202,5 @@ void scripted_sequence::scripted_sequence(void)
 		}
 	}
 }
+
+CLASSEXPORT(aiscripted_sequence, scripted_sequence)
