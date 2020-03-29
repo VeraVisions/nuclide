@@ -152,8 +152,6 @@ monster_scientist::Pain(int iHitBody)
 void
 monster_scientist::Death(int iHitBody)
 {
-	CBaseNPC::Death(iHitBody);
-
 	WarnAllies();
 
 	int r = floor(random(0,sci_snddie.length));
@@ -163,6 +161,9 @@ monster_scientist::Death(int iHitBody)
 		frame = SCIA_DIE_SIMPLE + floor(random(0, 6));
 		style = MONSTER_DEAD;
 	}
+
+	/* now mark our state as 'dead' */
+	CBaseNPC::Death(iHitBody);
 }
 
 void

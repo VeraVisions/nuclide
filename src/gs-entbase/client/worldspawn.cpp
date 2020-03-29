@@ -16,8 +16,8 @@
 
 /* High Dynamic Range - Iris Adaption */
 var float g_flHDRIrisMinValue = 0.0;
-var float g_flHDRIrisMaxValue = 1.75;
-var float g_flHDRIrisMultiplier = 1.25;
+var float g_flHDRIrisMaxValue = 2.0;
+var float g_flHDRIrisMultiplier = 1.0;
 var float g_flHDRIrisFadeUp = 0.1;
 var float g_flHDRIrisFadeDown = 0.5;
 

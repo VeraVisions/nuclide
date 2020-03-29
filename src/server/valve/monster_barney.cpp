@@ -119,8 +119,6 @@ monster_barney::Pain(int iHitBody)
 void 
 monster_barney::Death(int iHitBody)
 {
-	CBaseNPC::Death(iHitBody);
-
 	WarnAllies();
 
 	int r = floor(random(0,ba_snddie.length));
@@ -130,6 +128,9 @@ monster_barney::Death(int iHitBody)
 		frame = 25 + floor(random(0, 6));
 		style = MONSTER_DEAD;
 	}
+
+	/* now mark our state as 'dead' */
+	CBaseNPC::Death(iHitBody);
 }
 
 void

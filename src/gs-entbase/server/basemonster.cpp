@@ -32,8 +32,13 @@ enum {
 	MONSTER_IDLE,
 	MONSTER_WALK,
 	MONSTER_RUN,
-	MONSTER_DEAD,
-	MONSTER_INSEQUENCE
+	MONSTER_DEAD
+};
+
+enum {
+	SEQUENCESTATE_NONE,
+	SEQUENCESTATE_ACTIVE,
+	SEQUENCESTATE_ENDING
 };
 
 enumflags {
@@ -59,6 +64,9 @@ class CBaseMonster:CBaseEntity
 	vector base_mins;
 	vector base_maxs;
 	int base_health;
+
+	int m_iSequenceState;
+	float m_flSequenceEnd;
 	float m_flSequenceSpeed;
 
 	/* pathfinding */
@@ -79,6 +87,7 @@ class CBaseMonster:CBaseEntity
 	virtual void(int) Death;
 	virtual void() Physics;
 	virtual void() IdleNoise;
+	virtual void() FreeState;
 	virtual void() Gib;
 	virtual void(string) Sound;
 	virtual float(entity, float) SendEntity;
@@ -154,6 +163,22 @@ void CBaseMonster::ClearRoute(void)
 	}
 }
 
+void CBaseMonster::FreeState(void)
+{
+	m_flSequenceEnd = 0;
+	m_iSequenceState = SEQUENCESTATE_NONE;
+
+	/* trigger when required */
+	if (m_strRouteEnded) {
+		for (entity t = world; (t = find(t, CBaseTrigger::m_strTargetName, m_strRouteEnded));) {
+			CBaseTrigger trigger = (CBaseTrigger)t;
+			if (trigger.Trigger != __NULL__) {
+				trigger.Trigger();
+			}
+		}
+	}
+}
+
 void CBaseMonster::CheckRoute(void)
 {
 	float flDist;
@@ -165,20 +190,21 @@ void CBaseMonster::CheckRoute(void)
 	flDist = floor( vlen( m_pRoute[m_iCurNode].dest - origin ) );
 
 	if ( flDist < 64 ) {
-		print(sprintf("CBaseMonster::CheckNode: %s reached node\n", this.netname));
+		print(sprintf("^2CBaseMonster::CheckRoute^7: %s reached node\n", this.netname));
 		m_iCurNode--;
 		velocity = [0,0,0]; /* clamp friction */
 	}
 	
 	if (m_iCurNode < 0) {
-		print(sprintf("CBaseMonster::CheckNode: %s reached end\n", this.netname));
-		/* trigger when required */
-		if (m_strRouteEnded) {
-			for (entity t = world; (t = find(t, CBaseTrigger::m_strTargetName, m_strRouteEnded));) {
-				CBaseTrigger trigger = (CBaseTrigger)t;
-				if (trigger.Trigger != __NULL__) {
-					trigger.Trigger();
-				}
+		print(sprintf("^2CBaseMonster::CheckRoute^7: %s reached end\n", this.netname));
+		/* mark that we've ended a sequence, if we're in one and que anim */
+		if (m_iSequenceState == SEQUENCESTATE_ACTIVE) {
+			if (m_flSequenceEnd) {
+				float duration = frameduration(modelindex, m_flSequenceEnd);
+				m_iSequenceState = SEQUENCESTATE_ENDING;
+				think = FreeState;
+				nextthink = time + duration;
+				print(sprintf("^2CBaseMonster::CheckRoute^7: %s overriding anim for %f seconds (modelindex %d, frame %d)\n", this.netname, duration, modelindex, m_flSequenceEnd));
 			}
 		}
 		ClearRoute();
@@ -232,16 +258,20 @@ void CBaseMonster::Physics(void)
 	input_movevalues = [0,0,0];
 	input_impulse = 0;
 	input_buttons = 0;
-
 	input_angles = angles = v_angle;
 	input_timelength = frametime;
-	movetype = MOVETYPE_WALK;
 
-	CheckRoute();
-	WalkRoute();
-	runstandardplayerphysics(this);
-	movetype = MOVETYPE_NONE;
-	IdleNoise();
+	/* override whatever we did above with this */
+	if (m_iSequenceState == SEQUENCESTATE_ACTIVE) {
+		frame = m_flSequenceEnd;
+	} else {
+		movetype = MOVETYPE_WALK;
+		CheckRoute();
+		WalkRoute();
+		runstandardplayerphysics(this);
+		movetype = MOVETYPE_NONE;
+		IdleNoise();
+	}
 
 	/* support for think/nextthink */
 	if (think && nextthink > 0) {

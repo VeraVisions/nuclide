@@ -37,6 +37,8 @@ Allow a monster to be selected and given an action to perform.
 This is done in the form of olaying an animation.
 */
 
+float(float modidx, string framename) frameforname = #276;
+float(float modidx, float framenum) frameduration = #277;
 /*
  * Scripted Sequences
  * ==================
@@ -96,23 +98,52 @@ void scripted_sequence::Trigger(void)
 	CBaseMonster f;
 
 	print(sprintf("^2scripted_sequence::Trigger^7: with spawnflags %d\n", spawnflags));
-	if (m_iMove == SS_WALK) {
-		f = (CBaseMonster)find(world, CBaseEntity::m_strTargetName, m_strMonster);
-		if (f) {
-			f.NewRoute(origin);
-			f.style = MONSTER_INSEQUENCE;
-			f.m_flSequenceSpeed = 64;
-			f.m_strRouteEnded = m_strTarget;
-		}
-	} else if (m_iMove == SS_RUN) {
-		f = (CBaseMonster)find(world, CBaseEntity::m_strTargetName, m_strMonster);
-		if (f) {
-			f.NewRoute(origin);
-			f.style = MONSTER_INSEQUENCE;
-			f.m_flSequenceSpeed = 256;
-			f.m_strRouteEnded = m_strTarget;
+	f = (CBaseMonster)find(world, CBaseEntity::m_strTargetName, m_strMonster);
+
+	/* target doesn't exist/hasn't spawned */
+	if (!f) {
+		print(sprintf("^1scripted_sequence::Trigger^7: Unknown target %s\n", m_strMonster));
+		return;
+	}
+
+	/* if we're told an anim, we better have it... or else. */
+	if (m_strActionAnim) {
+		f.m_flSequenceEnd = frameforname(f.modelindex, m_strActionAnim);
+		if (f.m_flSequenceEnd == -1) {
+			print(sprintf("^1scripted_sequence::Trigger^7: Framegroup %s not found!\n", m_strActionAnim));
+			return;
 		}
 	}
+
+	/* entity to trigger after sequence ends */
+	f.m_strRouteEnded = m_strTarget;
+
+	/* mark the state */
+	f.m_iSequenceState = SEQUENCESTATE_ACTIVE;
+
+	if (m_iMove == SS_WALK) {
+		f.NewRoute(origin);
+		f.m_flSequenceSpeed = 64;
+	} else if (m_iMove == SS_RUN) {
+		f.NewRoute(origin);
+		f.m_flSequenceSpeed = 256;
+	} else if (m_iMove == SS_NO) {
+		f.m_iSequenceState = SEQUENCESTATE_ENDING;
+		f.think = CBaseMonster::FreeState;
+		f.nextthink = time + frameduration(f.modelindex, f.m_flSequenceEnd);
+	} else if (m_iMove == SS_INSTANTANEOUS) {
+		setorigin(f, this.origin);
+		f.m_iSequenceState = SEQUENCESTATE_ENDING;
+		f.think = CBaseMonster::FreeState;
+		f.nextthink = time + frameduration(f.modelindex, f.m_flSequenceEnd);
+	} else if (m_iMove == SS_TURNTOFACE) {
+		/* turn instantly, only affect YAW. */
+		vector newangle = vectoangles(origin - f.origin);
+		f.angles[1] = newangle[1];
+		f.m_iSequenceState = SEQUENCESTATE_ENDING;
+		f.think = CBaseMonster::FreeState;
+		f.nextthink = time + frameduration(f.modelindex, f.m_flSequenceEnd);
+	} 
 }
 
 void scripted_sequence::Respawn(void)

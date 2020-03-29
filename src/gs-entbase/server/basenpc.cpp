@@ -439,50 +439,61 @@ CBaseNPC::Physics(void)
 	input_movevalues = [0,0,0];
 	input_impulse = 0;
 	input_buttons = 0;
-	
-	if (style != MONSTER_DEAD) {
-		TalkPlayerGreet();
-		FollowChain();
-
-		if (m_eFollowing != world) {
-			FollowPlayer();
-		} else if (m_iFlags & MONSTER_FEAR) {
-			PanicFrame();
-		} else {
-			if (random() < 0.5) {
-				TalkPlayerAsk();
-			} else {
-				TalkPlayerIdle();
-			}
-		}
-
-		if (m_flPainTime > time) {
-			input_movevalues = [0,0,0];
-		} else {
-			spvel = vlen(velocity);
-
-			if (spvel < 5) {
-				frame = AnimIdle();
-			} else if (spvel <= 140) {
-				frame = AnimWalk();
-			} else if (spvel <= 240) {
-				frame = AnimRun();
-			}
-		}
-	}
-
 	input_angles = angles = v_angle;
-	CheckRoute();
-	WalkRoute();
 	input_timelength = frametime;
 
-	runstandardplayerphysics(this);
-	Footsteps_Update();
+	/* override whatever we did above with this */
+	if (m_iSequenceState == SEQUENCESTATE_ENDING) {
+		frame = m_flSequenceEnd;
+	} else {
+		if (style != MONSTER_DEAD) {
+			TalkPlayerGreet();
+			FollowChain();
+
+			if (m_eFollowing != world) {
+				FollowPlayer();
+			} else if (m_iFlags & MONSTER_FEAR) {
+				PanicFrame();
+			} else {
+				if (random() < 0.5) {
+					TalkPlayerAsk();
+				} else {
+					TalkPlayerIdle();
+				}
+			}
+
+			if (m_flPainTime > time) {
+				input_movevalues = [0,0,0];
+			} else {
+				spvel = vlen(velocity);
+
+				if (spvel < 5) {
+					frame = AnimIdle();
+				} else if (spvel <= 140) {
+					frame = AnimWalk();
+				} else if (spvel <= 240) {
+					frame = AnimRun();
+				}
+			}
+		}
+		CheckRoute();
+		WalkRoute();
+		runstandardplayerphysics(this);
+		Footsteps_Update();
+	}
 
 	if (!(flags & FL_ONGROUND) && velocity[2] < -100) {
 		m_iFlags |= MONSTER_FALLING;
 	} else {
 		m_iFlags &= ~MONSTER_FALLING;
+	}
+
+	/* support for think/nextthink */
+	if (think && nextthink > 0) {
+		if (nextthink < time) {
+			think();
+			nextthink = 0.0f;
+		}
 	}
 }
 
