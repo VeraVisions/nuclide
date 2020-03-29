@@ -166,6 +166,9 @@ CBaseNPC::Speak(string sentence)
 void
 CBaseNPC::TalkPlayerGreet(void)
 {
+	if (m_iSequenceState != SEQUENCESTATE_NONE)
+		return;
+
 	if (m_flNextSentence > time) {
 		return;
 	}
@@ -193,6 +196,9 @@ CBaseNPC::TalkPlayerGreet(void)
 void
 CBaseNPC::TalkPlayerIdle(void)
 {
+	if (m_iSequenceState != SEQUENCESTATE_NONE)
+		return;
+
 	if (spawnflags & MSF_PREDISASTER) {
 		return;
 	}
@@ -219,6 +225,9 @@ CBaseNPC::TalkPlayerIdle(void)
 void
 CBaseNPC::TalkPlayerAsk(void)
 {
+	if (m_iSequenceState != SEQUENCESTATE_NONE)
+		return;
+
 	if (spawnflags & MSF_PREDISASTER) {
 		return;
 	}
@@ -245,6 +254,9 @@ CBaseNPC::TalkPlayerAsk(void)
 void
 CBaseNPC::TalkPlayerWounded1(void)
 {
+	if (m_iSequenceState != SEQUENCESTATE_NONE)
+		return;
+
 	if (m_flNextSentence > time) {
 		return;
 	}
@@ -270,6 +282,9 @@ CBaseNPC::TalkPlayerWounded1(void)
 void
 CBaseNPC::TalkPlayerWounded2(void)
 {
+	if (m_iSequenceState != SEQUENCESTATE_NONE)
+		return;
+
 	if (m_flNextSentence > time) {
 		return;
 	}
@@ -296,6 +311,9 @@ CBaseNPC::TalkPlayerWounded2(void)
 void
 CBaseNPC::TalkPlayerWounded3(void)
 {
+	if (m_iSequenceState != SEQUENCESTATE_NONE)
+		return;
+
 	if (m_flNextSentence > time) {
 		return;
 	}
@@ -318,6 +336,9 @@ CBaseNPC::TalkPlayerWounded3(void)
 void
 CBaseNPC::TalkUnfollow(void)
 {
+	if (m_iSequenceState != SEQUENCESTATE_NONE)
+		return;
+
 	Sentence(m_talkUnfollow);
 	m_flNextSentence = time + 10.0;
 }
@@ -325,6 +346,9 @@ CBaseNPC::TalkUnfollow(void)
 void
 CBaseNPC::TalkFollow(void)
 {
+	if (m_iSequenceState != SEQUENCESTATE_NONE)
+		return;
+
 	Sentence(m_talkFollow);
 	m_flNextSentence = time + 10.0;
 }
@@ -332,6 +356,9 @@ CBaseNPC::TalkFollow(void)
 void
 CBaseNPC::TalkStopFollow(void)
 {
+	if (m_iSequenceState != SEQUENCESTATE_NONE)
+		return;
+
 	Sentence(m_talkStopFollow);
 	m_flNextSentence = time + 10.0;
 }
