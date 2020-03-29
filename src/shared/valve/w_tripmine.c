@@ -74,8 +74,6 @@ monster_tripmine::Ready(void)
 		Death =
 		Pain = Trip;
 		takedamage = DAMAGE_YES;
-		solid = SOLID_BBOX;
-		setsize(this, [-8,-8,-8], [8,8,8]);
 		armor = trace_plane_dist;
 		sound(this, CHAN_WEAPON, "weapons/mine_activate.wav", 1.0f, ATTN_NORM);
 	}
@@ -90,12 +88,21 @@ void
 monster_tripmine::monster_tripmine(void)
 {
 	setmodel(this, "models/v_tripmine.mdl");
+	solid = SOLID_NOT;
+	movetype = MOVETYPE_NONE;
+	setsize(this, [-8,-8,-8], [8,8,8]);
 	setorigin(this, origin);
 	SendFlags = 1; /* force update */
 
 	/* ready in 4 seconds flat */
 	think = Ready;
-	nextthink = time + 4.0f;
+
+	/* fast beam */
+	if (spawnflags & 1) {
+		nextthink = time;
+	} else {
+		nextthink = time + 4.0f;
+	}
 }
 #endif
 
