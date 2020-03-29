@@ -65,14 +65,17 @@ class CBaseMonster:CBaseEntity
 	vector base_maxs;
 	int base_health;
 
+	int m_iSequenceRemove;
 	int m_iSequenceState;
 	float m_flSequenceEnd;
 	float m_flSequenceSpeed;
+	vector m_vecSequenceAngle;
 
 	/* pathfinding */
 	int m_iNodes;
 	int m_iCurNode;
 	nodeslist_t *m_pRoute;
+	vector m_vecLastNode;
 
 	/* sequences */
 	string m_strRouteEnded;
@@ -177,26 +180,42 @@ void CBaseMonster::FreeState(void)
 			}
 		}
 	}
+
+	if (m_iSequenceRemove) {
+		Hide();
+	}
 }
 
 void CBaseMonster::CheckRoute(void)
 {
 	float flDist;
+	vector evenpos;
 
 	if (!m_iNodes) {
 		return;
 	}
 
-	flDist = floor( vlen( m_pRoute[m_iCurNode].dest - origin ) );
+	/* level out position/node stuff */
+	if (m_iCurNode < 0) {
+		evenpos = m_vecLastNode;
+		evenpos[2] = origin[2];
+	} else {
+		evenpos = m_pRoute[m_iCurNode].dest;
+		evenpos[2] = origin[2];
+	}
 
-	if ( flDist < 64 ) {
+	flDist = floor( vlen( evenpos - origin ) );
+
+	if ( flDist < 8 ) {
 		print(sprintf("^2CBaseMonster::CheckRoute^7: %s reached node\n", this.netname));
 		m_iCurNode--;
 		velocity = [0,0,0]; /* clamp friction */
 	}
 	
-	if (m_iCurNode < 0) {
+	if (m_iCurNode < -1) {
+		ClearRoute();
 		print(sprintf("^2CBaseMonster::CheckRoute^7: %s reached end\n", this.netname));
+
 		/* mark that we've ended a sequence, if we're in one and que anim */
 		if (m_iSequenceState == SEQUENCESTATE_ACTIVE) {
 			if (m_flSequenceEnd) {
@@ -205,9 +224,12 @@ void CBaseMonster::CheckRoute(void)
 				think = FreeState;
 				nextthink = time + duration;
 				print(sprintf("^2CBaseMonster::CheckRoute^7: %s overriding anim for %f seconds (modelindex %d, frame %d)\n", this.netname, duration, modelindex, m_flSequenceEnd));
+			} else {
+				/* we still need to trigger targets */
+				think = FreeState;
+				nextthink = time;
 			}
 		}
-		ClearRoute();
 	}
 
 	/*if ( flDist == m_flLastDist ) {
@@ -229,7 +251,12 @@ void CBaseMonster::WalkRoute(void)
 {
 	if (m_iNodes) {
 		vector endangles;
-		endangles = vectoangles(m_pRoute[m_iCurNode].dest - origin);
+		/* we're on our last node */
+		if (m_iCurNode < 0) {
+			endangles = vectoangles(m_vecLastNode - origin);
+		} else {
+			endangles = vectoangles(m_pRoute[m_iCurNode].dest - origin);
+		}
 		input_angles[1] = endangles[1];
 		input_movevalues = [m_flSequenceSpeed, 0, 0];
 	}
@@ -250,6 +277,7 @@ void CBaseMonster::NewRoute(vector destination)
 
 	if (!m_iNodes) {
 		route_calculate(this, destination, 0, NewRoute_RouteCB);
+		m_vecLastNode = destination;
 	}
 }
 
@@ -262,7 +290,8 @@ void CBaseMonster::Physics(void)
 	input_timelength = frametime;
 
 	/* override whatever we did above with this */
-	if (m_iSequenceState == SEQUENCESTATE_ACTIVE) {
+	if (m_iSequenceState == SEQUENCESTATE_ENDING) {
+		input_angles = angles = v_angle = m_vecSequenceAngle;
 		frame = m_flSequenceEnd;
 	} else {
 		movetype = MOVETYPE_WALK;

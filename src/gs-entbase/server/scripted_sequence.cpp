@@ -77,6 +77,8 @@ enum {
 
 class scripted_sequence:CBaseTrigger
 {
+	int m_iEnabled;
+
 	/* Target name OR classname description */
 	string m_strMonster;
 	/* After the monster has moved to the action point, play this animation */
@@ -97,13 +99,28 @@ void scripted_sequence::Trigger(void)
 {
 	CBaseMonster f;
 
+	if (!m_iEnabled) {
+		return;
+	}
+
 	print(sprintf("^2scripted_sequence::Trigger^7: with spawnflags %d\n", spawnflags));
 	f = (CBaseMonster)find(world, CBaseEntity::m_strTargetName, m_strMonster);
 
 	/* target doesn't exist/hasn't spawned */
 	if (!f) {
-		print(sprintf("^1scripted_sequence::Trigger^7: Unknown target %s\n", m_strMonster));
-		return;
+		/* time to look for a classname instead */
+		for (entity c = world; (c = find(c, ::classname, m_strMonster));) {
+			/* within radius */
+			if (vlen(origin - c.origin) < m_flSearchRadius) {
+				f = c;
+				break;
+			}
+		}
+
+		if (!f) {
+			print(sprintf("^1scripted_sequence::Trigger^7: Unknown target %s\n", m_strMonster));
+			return;
+		}
 	}
 
 	/* if we're told an anim, we better have it... or else. */
@@ -121,6 +138,9 @@ void scripted_sequence::Trigger(void)
 	/* mark the state */
 	f.m_iSequenceState = SEQUENCESTATE_ACTIVE;
 
+	/* seems to be active at all times? contrary to SS_TURNTOFACE existing? */
+	f.m_vecSequenceAngle = angles;
+
 	if (m_iMove == SS_WALK) {
 		f.NewRoute(origin);
 		f.m_flSequenceSpeed = 64;
@@ -137,18 +157,19 @@ void scripted_sequence::Trigger(void)
 		f.think = CBaseMonster::FreeState;
 		f.nextthink = time + frameduration(f.modelindex, f.m_flSequenceEnd);
 	} else if (m_iMove == SS_TURNTOFACE) {
-		/* turn instantly, only affect YAW. */
-		vector newangle = vectoangles(origin - f.origin);
-		f.angles[1] = newangle[1];
 		f.m_iSequenceState = SEQUENCESTATE_ENDING;
 		f.think = CBaseMonster::FreeState;
 		f.nextthink = time + frameduration(f.modelindex, f.m_flSequenceEnd);
-	} 
+	}
+
+	if (!(spawnflags & SSFL_REPEATABLE)) {
+		m_iEnabled = FALSE;
+	}
 }
 
 void scripted_sequence::Respawn(void)
 {
-	
+	m_iEnabled = TRUE;
 }
 
 void scripted_sequence::scripted_sequence(void)

@@ -385,7 +385,7 @@ CBaseNPC::FollowPlayer(void)
 			v_angle = vectoangles(m_vecLastUserPos - origin);
 			v_angle[0] = 0;
 			v_angle[1] = Math_FixDelta(v_angle[1]);
-				v_angle[2] = 0;
+			v_angle[2] = 0;
 		} else {
 			m_vecLastUserPos = m_eFollowingChain.origin;
 		}
@@ -471,6 +471,7 @@ CBaseNPC::Physics(void)
 
 	/* override whatever we did above with this */
 	if (m_iSequenceState == SEQUENCESTATE_ENDING) {
+		input_angles = angles = v_angle = m_vecSequenceAngle;
 		frame = m_flSequenceEnd;
 	} else {
 		if (style != MONSTER_DEAD) {
