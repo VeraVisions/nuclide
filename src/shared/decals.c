@@ -214,8 +214,6 @@ void Decal_Parse(void)
 	new.angles[2] = readcoord();
 	new.m_strTexture = readstring();
 
-	new.color = [1,1,1];
-
 	new.size = drawgetimagesize(new.m_strTexture);
 
 	if (serverkeyfloat("*bspversion") == 30) {
@@ -228,6 +226,7 @@ void Decal_Parse(void)
 	vector t_dir = getsurfacepointattribute(world, surf, 0, SPA_T_AXIS);
 	new.mins = v_up / new.size[0];
 	new.maxs = t_dir / new.size[1];
+	new.color = getlight(new.origin) / 255;
 
 	new.predraw = Decal_PreDraw;
 	new.drawmask = MASK_ENGINE;
