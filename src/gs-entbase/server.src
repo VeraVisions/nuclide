@@ -3,6 +3,7 @@
 #endif
 
 #includelist
+baseentity.h
 materials.h
 server/defs.h
 server/baseentity.cpp

@@ -14,31 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-enum
-{ 
-	RM_NORMAL,
-	RM_COLOR,
-	RM_TEXTURE,
-	RM_GLOW,
-	RM_SOLID,
-	RM_ADDITIVE
-};
-
-// keep in sync with client/baseentity.cpp
-enumflags
-{
-	BASEFL_CHANGED_ORIGIN,
-	BASEFL_CHANGED_ANGLES,
-	BASEFL_CHANGED_MODELINDEX,
-	BASEFL_CHANGED_SIZE,
-	BASEFL_CHANGED_SOLID,
-	BASEFL_CHANGED_FRAME,
-	BASEFL_CHANGED_SKIN,
-	BASEFL_CHANGED_MOVETYPE,
-	BASEFL_CHANGED_ALPHA,
-	BASEFL_CHANGED_EFFECTS
-};
-
 class CBaseEntity
 {
 	string m_strTarget;
@@ -49,6 +24,9 @@ class CBaseEntity
 	vector m_oldOrigin;
 	vector m_oldAngle;
 	
+	int m_iBody;
+	int oldnet_body;
+
 	vector oldnet_origin;
 	vector oldnet_angles;
 	float oldnet_modelindex;
@@ -56,20 +34,29 @@ class CBaseEntity
 	vector oldnet_maxs;
 	float oldnet_solid;
 	float oldnet_movetype;
-	float oldnet_alpha;
 	float oldnet_frame;
 	float oldnet_skin;
 	float oldnet_effects;
-	
-	float m_rendermode;
-	float m_renderamt;
-	vector m_rendercolor;
+
+#ifdef GS_RENDERFX
+	int m_iRenderFX;
+	float m_iRenderMode;
+	float m_flRenderAmt;
+	vector m_vecRenderColor;
+
+	int m_old_iRenderFX;
+	float m_old_iRenderMode;
+	float m_old_flRenderAmt;
+	vector m_old_vecRenderColor;
+#else
+	float oldnet_alpha;
+#endif
+
 	string m_parent;
 	
 	void() CBaseEntity;
 	virtual void() Respawn;
 	virtual void() Hide;
-	virtual void() RendermodeUpdate;
 	virtual void() ParentUpdate;
 	virtual float(entity, float) SendEntity;
 	virtual void(int iHitBody) Pain;
@@ -120,12 +107,33 @@ float CBaseEntity::SendEntity(entity ePEnt, float fChanged)
 	if (fChanged & BASEFL_CHANGED_SKIN) {
 		WriteByte(MSG_ENTITY, skin + 128);
 	}
-	if (fChanged & BASEFL_CHANGED_ALPHA) {
-		WriteFloat(MSG_ENTITY, alpha);
-	}
 	if (fChanged & BASEFL_CHANGED_EFFECTS) {
 		WriteFloat(MSG_ENTITY, effects);
 	}
+	if (fChanged & BASEFL_CHANGED_BODY) {
+		WriteByte(MSG_ENTITY, m_iBody);
+	}
+
+#ifdef GS_RENDERFX
+	if (fChanged & BASEFL_CHANGED_RENDERFX) {
+		WriteByte(MSG_ENTITY, m_iRenderFX);
+	}
+	if (fChanged & BASEFL_CHANGED_RENDERMODE) {
+		WriteByte(MSG_ENTITY, m_iRenderMode);
+	}
+	if (fChanged & BASEFL_CHANGED_RENDERCOLOR) {
+		WriteFloat(MSG_ENTITY, m_vecRenderColor[0]);
+		WriteFloat(MSG_ENTITY, m_vecRenderColor[1]);
+		WriteFloat(MSG_ENTITY, m_vecRenderColor[2]);
+	}
+	if (fChanged & BASEFL_CHANGED_RENDERAMT) {
+		WriteFloat(MSG_ENTITY, m_flRenderAmt);
+	}
+#else
+	if (fChanged & BASEFL_CHANGED_ALPHA) {
+		WriteFloat(MSG_ENTITY, alpha);
+	}
+#endif
 
 	return TRUE;
 }
@@ -180,15 +188,34 @@ void CBaseEntity::ParentUpdate(void)
 		SendFlags |= BASEFL_CHANGED_SKIN;
 		oldnet_skin = skin;
 	}
-	if (alpha != oldnet_alpha) {
-		SendFlags |= BASEFL_CHANGED_ALPHA;
-		oldnet_alpha = alpha;
-	}
 	if (effects != oldnet_effects) {
 		SendFlags |= BASEFL_CHANGED_EFFECTS;
 		oldnet_effects = effects;
 	}
-	
+#ifdef GS_RENDERFX
+	if (m_old_iRenderFX != m_iRenderFX) {
+		SendFlags |= BASEFL_CHANGED_RENDERFX;
+		m_old_iRenderFX = m_iRenderFX;
+	}
+	if (m_old_iRenderMode != m_iRenderMode) {
+		SendFlags |= BASEFL_CHANGED_RENDERMODE;
+		m_old_iRenderMode = m_iRenderMode;
+	}
+	if (m_old_flRenderAmt != m_flRenderAmt) {
+		SendFlags |= BASEFL_CHANGED_RENDERAMT;
+		m_old_flRenderAmt = m_flRenderAmt;
+	}
+	if (m_old_vecRenderColor != m_vecRenderColor) {
+		SendFlags |= BASEFL_CHANGED_RENDERCOLOR;
+		m_old_vecRenderColor = m_vecRenderColor;
+	}
+#else
+	if (alpha != oldnet_alpha) {
+		SendFlags |= BASEFL_CHANGED_ALPHA;
+		oldnet_alpha = alpha;
+	}
+#endif
+
 	if (m_parent) {
 		entity p = find(world, CBaseEntity::m_strTargetName, m_parent);
 
@@ -210,9 +237,9 @@ void CBaseEntity :: CBaseEntity ( void )
 		}
 	}
 
-	/*m_renderamt = 255;
-	m_rendercolor = [1,1,1];
-	m_rendermode = 0;*/
+	/*m_flRenderAmt = 255;
+	m_vecRenderColor = [1,1,1];
+	m_iRenderMode = 0;*/
 
 	gflags = GF_CANRESPAWN;
 	effects |= EF_NOSHADOW;
@@ -243,19 +270,22 @@ void CBaseEntity :: CBaseEntity ( void )
 			target = __NULL__;
 			break;
 		case "color":
-			m_rendercolor = stov( argv( i + 1 ) );
+			m_vecRenderColor = stov( argv( i + 1 ) );
 			break;
 		case "alpha":
-			m_renderamt = stof( argv( i + 1 ) );
+			m_flRenderAmt = stof( argv( i + 1 ) );
 			break;
 		case "renderamt":
-			m_renderamt = stof( argv( i + 1 ) ) / 255;
+			m_flRenderAmt = stof( argv( i + 1 ) ) / 255;
 			break;
 		case "rendercolor":
-			m_rendercolor = stov( argv( i + 1 ) ) / 255;
+			m_vecRenderColor = stov( argv( i + 1 ) ) / 255;
 			break;
 		case "rendermode":
-			m_rendermode = stof( argv( i + 1 ) );
+			m_iRenderMode = stoi( argv( i + 1 ) );
+			break;
+		case "renderfx":
+			m_iRenderFX = stoi( argv( i + 1 ) );
 			break;
 		case "parentname":
 			m_parent = argv(i+1);
@@ -278,29 +308,6 @@ void CBaseEntity :: CBaseEntity ( void )
 	m_oldHealth = health;
 	m_oldOrigin = origin;
 	m_oldAngle = angles;
-
-	RendermodeUpdate();
-}
-
-void CBaseEntity::RendermodeUpdate(void)
-{
-	if (m_rendermode == RM_NORMAL) {
-		return;
-	}
-	
-	if (m_rendermode == RM_SOLID && m_renderamt != 0) {
-		return;
-	}
-
-	colormod = m_rendercolor;
-	alpha = bound(0.001, m_renderamt, 1.0);
-
-	if ( m_rendermode == RM_ADDITIVE ) {
-		effects = EF_FLAG2; // SSQC: EF_ADDITIVE
-	} else if ( m_rendermode == RM_GLOW ) {
-		effects = EF_FLAG2 | EF_FULLBRIGHT;
-	}
-	
 }
 
 void CBaseEntity :: Respawn ( void )

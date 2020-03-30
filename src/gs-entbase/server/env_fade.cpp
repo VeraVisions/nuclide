@@ -47,10 +47,10 @@ void env_fade :: Trigger (void)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_FADE);
-	WriteByte(MSG_MULTICAST, m_rendercolor[0]);
-	WriteByte(MSG_MULTICAST, m_rendercolor[1]);
-	WriteByte(MSG_MULTICAST, m_rendercolor[2]);
-	WriteByte(MSG_MULTICAST, m_renderamt);
+	WriteFloat(MSG_MULTICAST, m_vecRenderColor[0]);
+	WriteFloat(MSG_MULTICAST, m_vecRenderColor[1]);
+	WriteFloat(MSG_MULTICAST, m_vecRenderColor[2]);
+	WriteFloat(MSG_MULTICAST, m_flRenderAmt);
 	WriteFloat(MSG_MULTICAST, m_flFadeDuration);
 	WriteFloat(MSG_MULTICAST, m_flFadeHold);
 	WriteByte(MSG_MULTICAST, spawnflags);

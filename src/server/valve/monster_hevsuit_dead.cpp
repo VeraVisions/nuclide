@@ -67,7 +67,7 @@ void monster_hevsuit_dead::Respawn(void)
 void monster_hevsuit_dead::monster_hevsuit_dead(void)
 {
 	model = "models/player.mdl";
-	body = 2;
+	m_iBody = 2;
 
 	for (int i = 1; i < (tokenize(__fullspawndata)-1); i += 2) {
 		switch (argv(i)) {
@@ -75,7 +75,7 @@ void monster_hevsuit_dead::monster_hevsuit_dead(void)
 			m_iPose = stoi(argv(i+1));
 			break;
 		case "body":
-			body = stoi(argv(i+1)) + 1;
+			m_iBody = stoi(argv(i+1)) + 1;
 			break;
 		case "skin":
 			skin = stoi(argv(i+1));

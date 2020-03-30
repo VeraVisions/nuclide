@@ -214,11 +214,11 @@ monster_scientist::monster_scientist(void)
 	m_talkStopFollow = "!SC_STOP";
 
 	/* by default a random character etc. is chosen */
-	body = -1;
+	m_iBody = -1;
 	for (int i = 1; i < (tokenize(__fullspawndata)-1); i += 2) {
 		switch (argv(i)) {
 		case "body":
-			body = stoi(argv(i+1)) + 1;
+			m_iBody = stoi(argv(i+1)) + 1;
 			break;
 		default:
 			break;
@@ -231,11 +231,11 @@ monster_scientist::monster_scientist(void)
 	base_health = Skill_GetValue("scientist_health");
 
 	/* has the body not been overriden, etc. choose a character for us */
-	if (body == -1) {
-		body = floor(random(1,5));
+	if (m_iBody == -1) {
+		m_iBody = floor(random(1,5));
 	}
 
-	switch (body) {
+	switch (m_iBody) {
 		case 1:
 			m_flPitch = 105;
 			netname = "Walter";

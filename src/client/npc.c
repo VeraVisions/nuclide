@@ -26,6 +26,10 @@ class CBaseNPC:CBaseEntity
 float
 CBaseNPC::predraw(void)
 {
+#ifdef GS_RENDERFX
+	RenderFXPass();
+#endif
+
 	if (lerpfrac > 0) {
 		lerpfrac -= frametime * 5;
 		if (lerpfrac < 0) {
@@ -43,7 +47,7 @@ CBaseNPC::predraw(void)
 
 	frame2time += clframetime;
 	frame1time += clframetime;
-	bonecontrol5 = getchannellevel(this, CHAN_VOICE) * 20;
+	
 
 	ProcessWordQue();
 

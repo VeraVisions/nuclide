@@ -74,7 +74,7 @@ void monster_hgrunt_dead::monster_hgrunt_dead(void)
 			m_iPose = stoi(argv(i+1));
 			break;
 		case "body":
-			body = stoi(argv(i+1)) + 1;
+			m_iBody = stoi(argv(i+1)) + 1;
 			break;
 		case "skin":
 			skin = stoi(argv(i+1));

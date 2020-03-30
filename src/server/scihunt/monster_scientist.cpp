@@ -662,11 +662,11 @@ void monster_scientist::monster_scientist(void)
 		precache_sound(sci_sndidle[i]);
 	}
 
-	body = -1;
+	m_iBody = -1;
 	for (int i = 1; i < (tokenize(__fullspawndata)-1); i += 2) {
 		switch (argv(i)) {
 		case "body":
-			body = stoi(argv(i+1)) + 1;
+			m_iBody = stoi(argv(i+1)) + 1;
 			break;
 		default:
 			break;
@@ -677,13 +677,13 @@ void monster_scientist::monster_scientist(void)
 	CBaseEntity::CBaseEntity();
 	precache_model(m_oldModel);
 
-	if (body == -1) {
+	if (m_iBody == -1) {
 		/* This stuff needs to be persistent because we can't guarantee that
 		* the client-side geomset refresh happens. Don't shove this into Respawn */
-		body = floor(random(1,5));
+		m_iBody = floor(random(1,5));
 	}
 
-	switch (body) {
+	switch (m_iBody) {
 		case 1:
 			m_flPitch = 105;
 			netname = "Walter";

@@ -158,7 +158,7 @@ void View_DrawViewModel(void)
 	} else {
 		if (eViewModel.forceshader) {
 			eViewModel.forceshader = 0;
-			eViewModel.renderflags -= RF_USEAXIS;
+			eViewModel.renderflags &= ~RF_USEAXIS;
 		}
 	}
 

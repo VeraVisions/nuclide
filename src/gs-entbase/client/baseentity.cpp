@@ -17,23 +17,16 @@
 string __fullspawndata;
 string Sentences_GetSamples(string);
 
-// keep in sync with client/baseentity.cpp
-enumflags
-{
-	BASEFL_CHANGED_ORIGIN,
-	BASEFL_CHANGED_ANGLES,
-	BASEFL_CHANGED_MODELINDEX,
-	BASEFL_CHANGED_SIZE,
-	BASEFL_CHANGED_SOLID,
-	BASEFL_CHANGED_FRAME,
-	BASEFL_CHANGED_SKIN,
-	BASEFL_CHANGED_MOVETYPE,
-	BASEFL_CHANGED_ALPHA,
-	BASEFL_CHANGED_EFFECTS
-};
-
 class CBaseEntity
 {
+#ifdef GS_RENDERFX
+	int m_iRenderFX;
+	float m_iRenderMode;
+	float m_flRenderAmt;
+	vector m_vecRenderColor;
+#endif
+
+	int m_iBody;
 	float m_flSentenceTime;
 	sound_t *m_pSentenceQue;
 	int m_iSentenceCount;
@@ -51,11 +44,51 @@ class CBaseEntity
 	virtual void() ProcessWordQue;
 	virtual void(float flChanged) ReadEntity;
 	virtual float(void) predraw;
+
+#ifdef GS_RENDERFX
+	virtual void() RenderFXPass;
+#endif
 };
+
+#ifdef GS_RENDERFX
+void
+CBaseEntity::RenderFXPass(void)
+{
+	if (m_iRenderFX == RFX_HOLOGRAM) {
+		scale = 1.0 * random();
+	}
+
+	switch (m_iRenderMode) {
+	case RM_NORMAL:
+		break;
+	case RM_COLOR:
+		break;
+	case RM_TEXTURE:
+		break;
+	case RM_GLOW:
+		effects = EF_ADDITIVE | EF_FULLBRIGHT;
+		break;
+	case RM_SOLID:
+		break;
+	case RM_ADDITIVE:
+		effects = EF_ADDITIVE;
+		break;
+	}
+
+	colormod = m_vecRenderColor;
+	alpha = m_flRenderAmt;
+}
+#endif
 
 float
 CBaseEntity::predraw(void)
 {
+#ifdef GS_RENDERFX
+	RenderFXPass();
+#endif
+
+	/* mouth flapping action */
+	bonecontrol5 = getchannellevel(this, CHAN_VOICE) * 20;
 	frame1time += clframetime;
 	ProcessWordQue();
 	addentity(this);
@@ -154,12 +187,34 @@ void CBaseEntity::ReadEntity(float flChanged)
 	if (flChanged & BASEFL_CHANGED_SKIN) {
 		skin = readbyte() - 128;
 	}
-	if (flChanged & BASEFL_CHANGED_ALPHA) {
-		alpha = readfloat();
-	}
 	if (flChanged & BASEFL_CHANGED_EFFECTS) {
 		effects = readfloat();
 	}
+	if (flChanged & BASEFL_CHANGED_BODY) {
+		m_iBody = readbyte();
+		setcustomskin(this, "", sprintf("geomset 1 %i\n", m_iBody));
+	}
+
+#ifdef GS_RENDERFX
+	if (flChanged & BASEFL_CHANGED_RENDERFX) {
+		m_iRenderFX = readbyte();
+	}
+	if (flChanged & BASEFL_CHANGED_RENDERMODE) {
+		m_iRenderMode = readbyte();
+	}
+	if (flChanged & BASEFL_CHANGED_RENDERCOLOR) {
+		m_vecRenderColor[0] = readfloat();
+		m_vecRenderColor[1] = readfloat();
+		m_vecRenderColor[2] = readfloat();
+	}
+	if (flChanged & BASEFL_CHANGED_RENDERAMT) {
+		m_flRenderAmt = readfloat();
+	}
+#else
+	if (flChanged & BASEFL_CHANGED_ALPHA) {
+		alpha = readfloat();
+	}
+#endif
 
 	if (modelindex) {
 		drawmask = MASK_ENGINE;

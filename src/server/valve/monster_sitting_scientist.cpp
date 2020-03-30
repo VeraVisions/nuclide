@@ -100,7 +100,7 @@ void monster_sitting_scientist::monster_sitting_scientist(void)
 			m_iPose = stoi(argv(i+1));
 			break;
 		case "body":
-			body = stoi(argv(i+1)) + 1;
+			m_iBody = stoi(argv(i+1)) + 1;
 			break;
 		case "skin":
 			skin = stoi(argv(i+1));
@@ -110,13 +110,13 @@ void monster_sitting_scientist::monster_sitting_scientist(void)
 		}
 	}
 
-	if (body == -1) {
+	if (m_iBody == -1) {
 		/* This stuff needs to be persistent because we can't guarantee that
 		* the client-side geomset refresh happens. Don't shove this into Respawn */
-		body = floor(random(1,5));
+		m_iBody = floor(random(1,5));
 	}
 
-	switch (body) {
+	switch (m_iBody) {
 		case 1:
 			m_flPitch = 105;
 			netname = "Walter";

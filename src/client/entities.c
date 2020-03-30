@@ -37,13 +37,6 @@ void CSQC_Ent_Update(float new)
 	case ENT_PLAYER:
 		Player_ReadEntity(new);
 		break;
-	case ENT_NPC:
-		CBaseNPC n = (CBaseNPC)self;
-		if (new) {
-			spawnfunc_CBaseNPC();
-		}
-		n.ReadEntity(readfloat());
-		break;
 	case ENT_SPRITE:
 		env_sprite spr = (env_sprite)self;
 		if (new) {

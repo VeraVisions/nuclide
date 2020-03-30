@@ -3,6 +3,7 @@
 #endif
 
 #includelist
+baseentity.h
 materials.h
 client/baseentity.cpp
 client/env_cubemap.cpp

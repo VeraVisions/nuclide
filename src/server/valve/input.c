@@ -79,7 +79,6 @@ void Game_Input(void)
 					BASEFL_CHANGED_FRAME |
 					BASEFL_CHANGED_SKIN |
 					BASEFL_CHANGED_MOVETYPE |
-					BASEFL_CHANGED_ALPHA |
 					BASEFL_CHANGED_EFFECTS;
 			}
 			bprint(PRINT_HIGH, "Respawning all map entities...\n");

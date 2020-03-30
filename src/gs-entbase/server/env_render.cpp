@@ -43,15 +43,17 @@ void env_render::Trigger(void)
 		(eFind = find(eFind, CBaseTrigger::m_strTargetName, m_strTarget));) {
 		CBaseEntity trigger = (CBaseEntity) eFind;
 		if (!(spawnflags & SF_NORENDERMODE)) {
-			trigger.m_rendermode = m_rendermode;
+			trigger.m_iRenderMode = m_iRenderMode;
 		}
 		if (!(spawnflags & SF_NORENDERCOLOR)) {
-			trigger.m_rendercolor = m_rendercolor;
+			trigger.m_vecRenderColor = m_vecRenderColor;
 		}
 		if (!(spawnflags & SF_NORENDERAMT)) {
-			trigger.m_renderamt = m_renderamt;
+			trigger.m_flRenderAmt = m_flRenderAmt;
 		}
-		trigger.RendermodeUpdate();
+		if (!(spawnflags & SF_NORENDERFX)) {
+			trigger.m_iRenderFX = m_iRenderFX;
+		}
 	}
 }
 

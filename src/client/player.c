@@ -59,8 +59,7 @@ void player::draw(void)
 	}
 
 	this.subblendfrac =
-	this.subblend2frac = this.pitch / 90;
-
+	this.subblend2frac = this.pitch;
 	Animation_PlayerUpdate();
 
 	/*makevectors([0, this.angles[1], 0]);
@@ -113,7 +112,7 @@ void player::draw(void)
 	}
 
 	/* Turn torso */
-	this.bonecontrol2 = (a)/-120;
+	this.basesubblendfrac = (a)/-120;
 
 	/* Correct the legs */
 	this.angles[1] -= a;
@@ -139,9 +138,9 @@ float player::predraw(void)
 		makevectors(ang);
 		traceline(src, src + (v_forward * 8096), FALSE, self);
 
-		/*if (serverkeyfloat("*bspversion") == 30) {
+		if (serverkeyfloat("*bspversion") == 30) {
 			dynamiclight_add(trace_endpos + (v_forward * -2), 128, [1,1,1]);
-		} else */{
+		} else {
 			float p = dynamiclight_add(src, 512, [1,1,1], 0, "textures/flashlight");
 			dynamiclight_set(p, LFIELD_ANGLES, ang);
 			dynamiclight_set(p, LFIELD_FLAGS, 3);

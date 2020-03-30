@@ -69,5 +69,4 @@ void item_suit::item_suit(void)
 	precache_sound("fvox/hev_logon.wav");
 	precache_sound("fvox/bell.wav");
 	CBaseTrigger::CBaseTrigger();
-	Respawn();
 }
