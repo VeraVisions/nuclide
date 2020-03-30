@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED monster_generic (1 0 0) (-8 -8 -8) (8 8 8)
+/*QUAKED monster_generic (1 0 0) (-8 -8 -8) (8 8 8) x x MGF_NONSOLID
 "targetname"    Name
 "angles"        Sets the pitch, yaw and roll angles of the model.
 "model"         Model file that will be displayed by the entity.
@@ -22,9 +22,12 @@
 Decorative, does nothing yet.
 */
 
+#define MGF_NONSOLID 4
+
 class monster_generic:CBaseNPC
 {
 	void() monster_generic;
+
 	virtual void() Respawn;
 };
 
@@ -32,15 +35,25 @@ void
 monster_generic::Respawn(void)
 {
 	CBaseNPC::Respawn();
-	takedamage = DAMAGE_NO;
-	iBleeds = FALSE;
-	solid = SOLID_NOT;
+
+	if (spawnflags & MGF_NONSOLID) {
+		takedamage = DAMAGE_NO;
+		iBleeds = FALSE;
+		solid = SOLID_NOT;
+	}
 }
 
 void
 monster_generic::monster_generic(void)
 {
-	base_mins = VEC_HULL_MIN;
-	base_maxs = VEC_HULL_MAX;
+	/* hackhackhackhackack */
+	if (model == "models/player.mdl" || model == "models/holo.mdl") {
+		base_mins = VEC_HULL_MIN;
+		base_maxs = VEC_HULL_MAX;
+	} else {
+		base_mins = [-16,-16,0];
+		base_maxs = [16,16,72];
+	}
+
 	CBaseNPC::CBaseNPC();
 }

@@ -92,7 +92,6 @@ string garg_sndpain[] = {
 	"garg/gar_pain3.wav"
 };
 
-
 class monster_gargantua:CBaseMonster
 {
 	float m_flIdleTime;
@@ -189,7 +188,7 @@ void monster_gargantua::monster_gargantua(void)
 	for (int i = 0; i < garg_sndstep.length; i++) {
 		precache_sound(garg_sndstep[i]);
 	}
-	
+
 	netname = "Gargantua";
 	model = "models/garg.mdl";
 	base_health = Skill_GetValue("gargantua_health");

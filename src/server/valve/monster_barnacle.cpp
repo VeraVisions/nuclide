@@ -47,7 +47,6 @@ string bcl_snddie[] = {
 
 class monster_barnacle:CBaseMonster
 {
-
 	void() monster_barnacle;
 
 	virtual void(int) Death;

@@ -156,7 +156,7 @@ void CBaseMonster::FreeState(void)
 
 	/* trigger when required */
 	if (m_strRouteEnded) {
-		CBaseTrigger trigger;
+		CBaseTrigger trigger = 0;
 		trigger = (CBaseTrigger)find(trigger, CBaseTrigger::m_strTargetName, m_strRouteEnded);
 		if (!trigger) {
 			print(sprintf("^1CBaseMonster::FreeState^7: %s doesn't exist. Won't trigger\n", m_strRouteEnded));

@@ -33,6 +33,11 @@ It'll have to be triggered by another entity.
 
 vector g_landmarkpos;
 
+class info_landmark:CBaseTrigger
+{
+	
+};
+
 enumflags
 {
 	LC_NOINTERMISSION,
@@ -68,12 +73,18 @@ int trigger_changelevel::IsInside(entity ePlayer, entity eVolume)
 void trigger_changelevel::Change(void)
 {
 	if (m_strLandmark) {
-		entity landmark = find(world, CBaseTrigger::m_strTargetName, m_strLandmark);
-		g_landmarkpos = m_activator.origin - landmark.origin;
-#ifdef GS_DEVELOPER
-		print( sprintf( "%s::Change: Change to `%s` using landmark '%s'\n", 
-			this.classname, m_strMap, m_strLandmark ) );
-#endif
+		info_landmark landmark;
+
+		/* a trigger_transition may share the same targetname, thus we do this */
+		for (entity e = world; (e = find(e, ::classname, "info_landmark"));) {
+			info_landmark lm = (info_landmark)e;
+			/* found it */
+			if (lm.m_strTargetName == m_strLandmark) {
+				print(sprintf("^2trigger_changelevel::Change^7: Found landmark for %s\n", m_strLandmark));
+				landmark = lm;
+				g_landmarkpos = m_activator.origin - landmark.origin;
+			}
+		}
 		changelevel(m_strMap, m_strLandmark);
 	} else {
 #ifdef GS_DEVELOPER
@@ -90,14 +101,9 @@ void trigger_changelevel::Trigger(void)
 		return;
 	}
 
-	/*eVolume = find(world, ::targetname, m_strLandmark);
-	if (eVolume && eVolume.classname == "CTriggerVolume") {
-		if (IsInside(other, eVolume) == FALSE) {
-			return;
-		}
-	}*/
+	/* eActivator == player who triggered the damn thing */
+	m_activator = eActivator;
 
-	m_activator = other;
 	if (m_flChangeDelay) {
 #ifdef GS_DEVELOPER
 		print( sprintf( "%s::Trigger: Delayed change to `%s` in %d sec/s\n", 
@@ -144,19 +150,23 @@ void trigger_changelevel::trigger_changelevel(void)
 
 vector Landmark_GetSpot(void)
 {
-	entity landmark = find(world, CBaseTrigger::m_strTargetName, startspot);
+	info_landmark landmark;
 
-	if (!landmark) {
-		print(sprintf("^1ERROR^7: Landmark_GetSpot: Cannot find startspot '%s'!\n",startspot));
-		/* return something useful? */
-		landmark = find(world, ::classname, "info_player_start");
-		return landmark.origin;
+	/* a trigger_transition may share the same targetname, thus we do this */
+	for (entity e = world; (e = find(e, ::classname, "info_landmark"));) {
+		info_landmark lm = (info_landmark)e;
+		/* found it */
+		if (lm.m_strTargetName == startspot) {
+			print(sprintf("^2Landmark_GetSpot^7: Found landmark for %s\n", startspot));
+			landmark = lm;
+			return landmark.origin + g_landmarkpos;
+		}
 	}
 
-	return landmark.origin + g_landmarkpos;
+	/* return something useful at least */
+	if (!landmark) {
+		entity ips = find(world, ::classname, "info_player_start");
+		print(sprintf("^1ERROR^7: Landmark_GetSpot: Cannot find startspot '%s'!\n",startspot));
+		return ips.origin;
+	}
 }
-
-class info_landmark:CBaseTrigger
-{
-	
-};
