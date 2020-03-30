@@ -267,19 +267,22 @@ CSQC_UpdateView(float w, float h, float focus)
 			setproperty(VF_SKYROOM_CAMERA, g_skypos + realpos);
 		}
 
-		/* draw the world/entities */
-		renderscene();
-
-		/* Now we draw the viewmodel in a second pass */
-		clearscene();
-		setproperty(VF_MIN, video_mins);
-		setproperty(VF_SIZE, video_res);
-		setproperty(VF_ANGLES, view_angles + pl.punchangle);
-		setproperty(VF_DRAWWORLD, 0);
-		setproperty(VF_AFOV, cvar("cl_viewmodelfov"));
-		setproperty(VF_ORIGIN, pSeat->vPlayerOrigin + pl.view_ofs);
-		View_DrawViewModel();
-		renderscene();
+		/* draw the viewmodel in a second pass if desired */
+		if (autocvar_r_viewmodelpass) {
+			renderscene();
+			clearscene();
+			setproperty(VF_MIN, video_mins);
+			setproperty(VF_SIZE, video_res);
+			setproperty(VF_ANGLES, view_angles + pl.punchangle);
+			setproperty(VF_DRAWWORLD, 0);
+			setproperty(VF_AFOV, autocvar_r_viewmodelfov);
+			setproperty(VF_ORIGIN, pSeat->vPlayerOrigin + pl.view_ofs);
+			View_DrawViewModel();
+			renderscene();
+		} else {
+			View_DrawViewModel();
+			renderscene();
+		}
 
 		/* Run this on all players */
 		for (entity b = world; (b = find(b, ::classname, "player"));) {

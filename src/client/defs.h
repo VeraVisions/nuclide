@@ -46,6 +46,8 @@ var vector autocvar_cl_logocolor = [255,0,0];
 var vector autocvar_con_color = [255,150,0];
 var vector autocvar_vgui_color = [255,170,0];
 var vector autocvar_v_gunofs = [0,0,0];
+var int autocvar_r_viewmodelpass = 0;
+var float autocvar_r_viewmodelfov = 90.0f;
 
 /* particle descriptors */
 var float PARTICLE_BLOOD;
