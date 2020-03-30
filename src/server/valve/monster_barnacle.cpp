@@ -52,7 +52,14 @@ class monster_barnacle:CBaseMonster
 
 	virtual void(int) Death;
 	virtual void(void) Respawn;
+	virtual void() Physics;
 };
+
+void
+monster_barnacle::Physics(void)
+{
+	
+}
 
 void
 monster_barnacle::Death(int iHitBody)
@@ -88,8 +95,8 @@ void monster_barnacle::monster_barnacle(void)
 
 	netname = "Barnacle";
 	model = "models/barnacle.mdl";
-	base_health = Skill_GetValue("barnacle_health");
 	base_mins = [-16,-16,-36];
 	base_maxs = [16,16,0];
+	base_health = Skill_GetValue("barnacle_health");
 	CBaseMonster::CBaseMonster();
 }
