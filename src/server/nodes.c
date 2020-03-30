@@ -213,6 +213,10 @@ Nodes_Init(void)
 }
 
 #ifdef NODE_DEBUG
+#define SEQUENCE_RECT_COLOR [1.0,0.0,0.0]
+#define NODE_RECT_COLOR [1.0,0.5,0.0]
+#define NODE_RECT_ALPHA 1.0f
+#define NODE_LINE_ALPHA 0.25f
 /* draws debug graphics of our node tree */
 void
 SV_AddDebugPolygons(void)
@@ -227,12 +231,18 @@ SV_AddDebugPolygons(void)
 	R_BeginPolygon("", 0, 0);
 	for (int i = 0; i < g_iNodes; i++) {
 		node_t *w = g_pNodes + i;
-		vector org = w->origin;
-		vector rgb = [1,1,1];
-		R_PolygonVertex(org + v_right * 8 - v_up * 8, [1,1], rgb, 1.0f);
-		R_PolygonVertex(org - v_right * 8 - v_up * 8, [0,1], rgb, 1.0f);
-		R_PolygonVertex(org - v_right * 8 + v_up * 8, [0,0], rgb, 1.0f);
-		R_PolygonVertex(org + v_right * 8 + v_up * 8, [1,0], rgb, 1.0f);
+		R_PolygonVertex(w->origin + v_right * 2 - v_up * 2, [1,1], NODE_RECT_COLOR, NODE_RECT_ALPHA);
+		R_PolygonVertex(w->origin - v_right * 2 - v_up * 2, [0,1], NODE_RECT_COLOR, NODE_RECT_ALPHA);
+		R_PolygonVertex(w->origin - v_right * 2 + v_up * 2, [0,0], NODE_RECT_COLOR, NODE_RECT_ALPHA);
+		R_PolygonVertex(w->origin + v_right * 2 + v_up * 2, [1,0], NODE_RECT_COLOR, NODE_RECT_ALPHA);
+		R_EndPolygon();
+	}
+
+	for (entity s = world; (s = find(s, ::classname, "scripted_sequence")); ) {
+		R_PolygonVertex(s.origin + v_right * 2 - v_up * 2, [1,1], SEQUENCE_RECT_COLOR, NODE_RECT_ALPHA);
+		R_PolygonVertex(s.origin - v_right * 2 - v_up * 2, [0,1], SEQUENCE_RECT_COLOR, NODE_RECT_ALPHA);
+		R_PolygonVertex(s.origin - v_right * 2 + v_up * 2, [0,0], SEQUENCE_RECT_COLOR, NODE_RECT_ALPHA);
+		R_PolygonVertex(s.origin + v_right * 2 + v_up * 2, [1,0], SEQUENCE_RECT_COLOR, NODE_RECT_ALPHA);
 		R_EndPolygon();
 	}
 
@@ -270,8 +280,8 @@ SV_AddDebugPolygons(void)
 
 			node_t *w2 = &g_pNodes[k];
 
-			R_PolygonVertex(org, [0,1], [1,0,1], 1.0f);
-			R_PolygonVertex(w2->origin, [1,1], [0,1,0], 1.0f);
+			R_PolygonVertex(org, [0,1], [1,1,1], NODE_LINE_ALPHA);
+			R_PolygonVertex(w2->origin, [1,1], [1,1,1], NODE_LINE_ALPHA);
 			R_EndPolygon();
 		}
 	}
