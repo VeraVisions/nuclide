@@ -93,10 +93,10 @@ void Fade_Update (int x, int y, int w, int h)
 
 void Fade_Parse (void)
 {
-	g_vecFadeColor[0] = readbyte() / 255;
-	g_vecFadeColor[1] = readbyte() / 255;
-	g_vecFadeColor[2] = readbyte() / 255;
-	g_flFadeMaxAlpha = readbyte() / 255;
+	g_vecFadeColor[0] = readfloat();
+	g_vecFadeColor[1] = readfloat();
+	g_vecFadeColor[2] = readfloat();
+	g_flFadeMaxAlpha = readfloat();
 	g_flFadeDuration = readfloat();
 	g_flFadeHold = readfloat();
 	g_flFadeStyle = readbyte();
