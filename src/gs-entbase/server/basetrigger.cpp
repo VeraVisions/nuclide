@@ -125,8 +125,7 @@ void CBaseTrigger :: InitBrushTrigger ( void )
 	solid = SOLID_TRIGGER;
 	setmodel( this, m_oldModel );
 #ifdef GS_DEVELOPER
-	alpha = 0.5f;
-	effects = EF_FLAG2;
+	m_flRenderAmt = 0.0f;
 #else
 	modelindex = 0;
 	model = "";

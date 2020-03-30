@@ -237,9 +237,7 @@ void CBaseEntity :: CBaseEntity ( void )
 		}
 	}
 
-	/*m_flRenderAmt = 255;
-	m_vecRenderColor = [1,1,1];
-	m_iRenderMode = 0;*/
+	m_flRenderAmt = 1.0f;
 
 	gflags = GF_CANRESPAWN;
 	effects |= EF_NOSHADOW;

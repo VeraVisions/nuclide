@@ -54,29 +54,56 @@ class CBaseEntity
 void
 CBaseEntity::RenderFXPass(void)
 {
-	if (m_iRenderFX == RFX_HOLOGRAM) {
-		scale = 1.0 * random();
-	}
+	colormod = m_vecRenderColor;
+	alpha = m_flRenderAmt;
 
 	switch (m_iRenderMode) {
 	case RM_NORMAL:
+		alpha = 1.0f;
 		break;
 	case RM_COLOR:
 		break;
 	case RM_TEXTURE:
 		break;
 	case RM_GLOW:
-		effects = EF_ADDITIVE | EF_FULLBRIGHT;
+		effects = EF_FULLBRIGHT;
 		break;
 	case RM_SOLID:
+		alpha = 1.0f;
 		break;
 	case RM_ADDITIVE:
 		effects = EF_ADDITIVE;
 		break;
 	}
 
-	colormod = m_vecRenderColor;
-	alpha = m_flRenderAmt;
+	/* messy hologram imitation */
+	if (m_iRenderFX == RFX_HOLOGRAM) {
+		float dist;
+		float r;
+
+		r = random() * 0.5f;
+		makevectors(angles);
+		
+		if (cltime & 1) {
+			v_right *= 0.75 + r;
+			renderflags |= RF_USEAXIS;
+		} else if (cltime & 2) {
+			v_up *= 1.0 - (random() * 0.2f);
+			renderflags |= RF_USEAXIS;
+		}
+		
+		dist = vlen(getproperty(VF_ORIGIN) - origin);
+		if (dist < 256) {
+			float distalpha = dist / 256;
+			alpha = 1.0 - distalpha;
+			alpha -= r;
+			alpha *= m_flRenderAmt;
+		} else {
+			alpha = 0.00001f;
+		}
+		colormod *= 0.5;
+		effects = EF_ADDITIVE;
+	}
 }
 #endif
 
@@ -91,7 +118,10 @@ CBaseEntity::predraw(void)
 	bonecontrol5 = getchannellevel(this, CHAN_VOICE) * 20;
 	frame1time += clframetime;
 	ProcessWordQue();
-	addentity(this);
+
+	if (alpha > 0.0)
+		addentity(this);
+
 	return PREDRAW_NEXT;
 }
 
