@@ -68,13 +68,13 @@ void CScrollbar::Draw(void)
 	}
 
 	if (m_dn_hold) {
-		drawpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y+m_height-16], g_bmp[DNARROWP],
+		drawpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y+m_height + 4], g_bmp[DNARROWP],
 				[16,16], [1,1,1], 1.0f, 0);
 	} else if (m_dn_hover) {
-		drawpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y+m_height-16], g_bmp[DNARROWF],
+		drawpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y+m_height + 4], g_bmp[DNARROWF],
 				[16,16], [1,1,1], 1.0f, 0);
 	} else {
-		drawpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y+m_height-16], g_bmp[DNARROWD],
+		drawpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y+m_height + 4], g_bmp[DNARROWD],
 				[16,16], [1,1,1], 1.0f, 0);
 	}
 
@@ -82,7 +82,7 @@ void CScrollbar::Draw(void)
 	barstep = (m_scroll * m_itemheight) * (m_theight / (m_max * m_itemheight));
 
 	if (!m_hold) {
-		drawfill([g_menuofs[0]+m_x,g_menuofs[1]+m_y+16], [16,m_theight], [0.25,0.25,0.25], 1.0f);
+		drawfill([g_menuofs[0]+m_x,g_menuofs[1]+m_y+16], [16,m_theight+20], [0.25,0.25,0.25], 1.0f);
 		if (!m_hover) {
 			drawfill([g_menuofs[0]+m_x+4,g_menuofs[1]+m_y+16+4+barstep], [8,barheight-8], [0,0,0], 1.0f);
 		} else {
@@ -115,7 +115,7 @@ void CScrollbar::Input(float type, float x, float y, float devid)
 	}
 
 	/* Down Arrow */
-	if (Util_CheckMouse(m_x, m_y + m_height - 16, 16, 16)) {
+	if (Util_CheckMouse(m_x, m_y + m_height + 4, 16, 16)) {
 		m_dn_hover = TRUE;
 	} else {
 		m_dn_hover = FALSE;
@@ -175,13 +175,13 @@ void CScrollbar::SetScroll(int val)
 
 void CScrollbar::SetMax(int val)
 {
-	m_minus = (m_height - 6) / m_itemheight;
+	m_minus = (m_height + 20) / m_itemheight;
 	m_max = val - m_minus;
 }
 
 void CScrollbar::SetHeight(int val)
 {
-	m_height = val;
+	m_height = val - 20;
 	m_theight = m_height - 32;
 }
 
