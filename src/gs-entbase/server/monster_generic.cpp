@@ -22,33 +22,25 @@
 Decorative, does nothing yet.
 */
 
-class monster_generic:CBaseMonster
+class monster_generic:CBaseNPC
 {
 	void() monster_generic;
-	//virtual void() Respawn;
+	virtual void() Respawn;
 };
 
-void monster_generic :: monster_generic ( void )
+void
+monster_generic::Respawn(void)
 {
-	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
-		switch ( argv( i ) ) {
-		case "sequence":
-			frame = stof( argv( i + 1 ) );
-			break;
-		default:
-			break;
-		}
-	}
-	precache_model( model );
-	setmodel( this, model );
-	CBaseEntity::CBaseEntity();
-	droptofloor();
-
-#if 0
-	self.movetype = MOVETYPE_NOCLIP;
-	self.solid = SOLID_NOT;
-	self.avelocity = '0 90 0 ';
-	self.modelflags = MF_ROTATE;
-#endif
+	CBaseNPC::Respawn();
+	takedamage = DAMAGE_NO;
+	iBleeds = FALSE;
+	solid = SOLID_NOT;
 }
 
+void
+monster_generic::monster_generic(void)
+{
+	base_mins = VEC_HULL_MIN;
+	base_maxs = VEC_HULL_MAX;
+	CBaseNPC::CBaseNPC();
+}
