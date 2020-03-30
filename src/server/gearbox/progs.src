@@ -57,6 +57,9 @@
 ../valve/monster_turret.cpp
 ../valve/monster_zombie.cpp
 
+../gearbox/monster_drillsergeant.cpp
+../gearbox/monster_recruit.cpp
+
 ../../shared/decals.c
 ../../shared/effects.c
 ../../shared/spraylogo.cpp
