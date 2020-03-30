@@ -58,7 +58,7 @@ class monster_barnacle:CBaseMonster
 void
 monster_barnacle::Physics(void)
 {
-	
+	movetype = MOVETYPE_NONE;
 }
 
 void

@@ -180,9 +180,17 @@ monster_headcrab::monster_headcrab(void)
 	for (int i = 0; i < hc_sndsee.length; i++) {
 		precache_sound(hc_sndsee[i]);
 	}
-	netname = "Headcrab";
-	model = "models/headcrab.mdl";
-	base_health = Skill_GetValue("headcrab_health");
+
+	if (classname == "monster_babycrab") {
+		netname = "Baby Headcrab";
+		model = "models/baby_headcrab.mdl";
+		base_health = Skill_GetValue ("headcrab_health") /4;
+	} else {
+		netname = "Headcrab";
+		model = "models/headcrab.mdl";
+		base_health = Skill_GetValue("headcrab_health");
+	}
+
 	base_mins = [-16,-16,0];
 	base_maxs = [16,16,36];
 	CBaseMonster::CBaseMonster();
