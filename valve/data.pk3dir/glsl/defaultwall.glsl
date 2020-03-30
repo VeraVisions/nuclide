@@ -1,10 +1,18 @@
 !!ver 110
-!!samps diffuse lightmap reflectcube normalmap
+!!permu LIGHTSTYLED
+!!samps diffuse reflectcube normalmap
+
+!!samps lightmap
+!!samps =LIGHTSTYLED lightmap1 lightmap2 lightmap3
 
 #include "sys/defs.h"
 
 varying vec2 tex_c;
-varying vec2 lm_c;
+
+varying vec2 lm0;
+#ifdef LIGHTSTYLED
+varying vec2 lm1, lm2, lm3;
+#endif
 
 #ifdef REFLECTCUBE
 varying vec3 eyevector;
@@ -12,10 +20,20 @@ varying mat3 invsurface;
 #endif
 
 #ifdef VERTEX_SHADER
+	void lightmapped_init(void)
+	{
+		lm0 = v_lmcoord;
+		#ifdef LIGHTSTYLED
+		lm1 = v_lmcoord2;
+		lm2 = v_lmcoord3;
+		lm3 = v_lmcoord4;
+		#endif
+	}
+
 	void main ()
 	{
+		lightmapped_init();
 		tex_c = v_texcoord;
-		lm_c = v_lmcoord;
 		gl_Position = ftetransform();
 		
 #ifdef REFLECTCUBE
@@ -31,10 +49,34 @@ varying mat3 invsurface;
 #endif
 
 #ifdef FRAGMENT_SHADER
+
+	vec3 lightmap_fragment(void)
+	{
+		vec3 lightmaps;
+
+#ifdef LIGHTSTYLED
+		lightmaps  = texture2D(s_lightmap0, lm0).rgb * e_lmscale[0].rgb;
+		lightmaps += texture2D(s_lightmap1, lm1).rgb * e_lmscale[1].rgb;
+		lightmaps += texture2D(s_lightmap2, lm2).rgb * e_lmscale[2].rgb;
+		lightmaps += texture2D(s_lightmap3, lm3).rgb * e_lmscale[3].rgb;
+#else
+		lightmaps  = texture2D(s_lightmap, lm0).rgb * e_lmscale.rgb;
+#endif
+		return lightmaps;
+	}
+
 	void main ( void )
 	{
 		vec4 diffuse_f = texture2D(s_diffuse, tex_c);
-		vec3 light = texture2D(s_lightmap, lm_c).rgb * e_lmscale.rgb;
+
+/* get the alphatesting out of the way first */
+#ifdef MASK
+		if (diffuse_f.a < 0.6) {
+			discard;
+		}
+#endif
+		/* lighting */
+		diffuse_f.rgb *= lightmap_fragment();
 
 #ifdef REFLECTCUBE
 	#ifdef BUMP
@@ -53,24 +95,14 @@ varying mat3 invsurface;
 			vec3 normal_f = vec3(0, 0, 1);
 	#endif
 		vec3 cube_c;
-		vec4 out_f = vec4( 1.0, 1.0, 1.0, 1.0 );
-		diffuse_f.rgb *= light.rgb;
 
 		cube_c = reflect( normalize(-eyevector), normal_f);
 		cube_c = cube_c.x * invsurface[0] + cube_c.y * invsurface[1] + cube_c.z * invsurface[2];
 		cube_c = ( m_model * vec4(cube_c.xyz, 0.0)).xyz;
-		out_f.rgb = mix( textureCube(s_reflectcube, cube_c ).rgb, diffuse_f.rgb, diffuse_f.a);
-		diffuse_f = out_f;
-#else
-		diffuse_f.rgb *= light.rgb;
-#ifdef MASK
-		if (diffuse_f.a < e_colourident.a) {
-			discard;
-		}
+		diffuse_f.rgb = mix( textureCube(s_reflectcube, cube_c ).rgb, diffuse_f.rgb, diffuse_f.a);
 #endif
-#endif
-		diffuse_f *= e_colourident;
 
+		diffuse_f *= e_colourident;
 		gl_FragColor = diffuse_f;
 		
 	}

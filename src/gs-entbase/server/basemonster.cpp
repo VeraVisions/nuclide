@@ -312,10 +312,9 @@ void CBaseMonster::Physics(void)
 	}
 
 	/* support for think/nextthink */
-	if (think && nextthink > 0.0) {
+	if (think && nextthink > 0.0f) {
 		if (nextthink < time) {
 			nextthink = 0.0f;
-			print("^2CBaseMonster::Physics: Trigger think()\n");
 			think();
 		}
 	}
