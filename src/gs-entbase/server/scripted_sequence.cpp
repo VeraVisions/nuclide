@@ -118,7 +118,7 @@ void scripted_sequence::Trigger(void)
 		for (entity c = world; (c = find(c, ::classname, m_strMonster));) {
 			/* within radius */
 			if (vlen(origin - c.origin) < m_flSearchRadius) {
-				f = c;
+				f = (CBaseMonster)c;
 				break;
 			}
 		}
@@ -144,7 +144,10 @@ void scripted_sequence::Trigger(void)
 	}
 
 	/* entity to trigger after sequence ends */
-	f.m_strRouteEnded = m_strTarget;
+	if (m_strTarget) {
+		print(sprintf("\tTrigger when finished: %s\n", m_strTarget));
+		f.m_strRouteEnded = m_strTarget;
+	}
 
 	/* mark the state */
 	f.m_iSequenceState = SEQUENCESTATE_ACTIVE;
@@ -177,7 +180,7 @@ void scripted_sequence::Trigger(void)
 		f.nextthink = time + duration;
 		print(sprintf(
 			"\tAnimation: %s Duration: %f seconds (modelindex %d, frame %d)\n",
-			f.m_strTargetName,
+			m_strActionAnim,
 			duration,
 			f.modelindex,
 			f.m_flSequenceEnd

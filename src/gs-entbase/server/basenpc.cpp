@@ -519,10 +519,9 @@ CBaseNPC::Physics(void)
 	/* support for think/nextthink */
 	if (think && nextthink > 0.0) {
 		if (nextthink < time) {
-			print("^2CBaseNPC::Physics: Trigger think()\n");
-			think();
 			nextthink = 0.0f;
-			think = __NULL__;
+			print("^2CBaseMonster::Physics: Trigger think()\n");
+			think();
 		}
 	}
 }

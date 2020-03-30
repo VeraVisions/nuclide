@@ -175,16 +175,19 @@ void CBaseMonster::FreeState(void)
 
 	/* trigger when required */
 	if (m_strRouteEnded) {
-		for (entity t = world; (t = find(t, CBaseTrigger::m_strTargetName, m_strRouteEnded));) {
-			CBaseTrigger trigger = (CBaseTrigger)t;
-			if (trigger.Trigger != __NULL__) {
-				print(sprintf("^2CBaseMonster::FreeState^7: %s triggered %f\n", m_strRouteEnded, time));
-				trigger.Trigger();
-			}
+		CBaseTrigger trigger;
+		trigger = (CBaseTrigger)find(trigger, CBaseTrigger::m_strTargetName, m_strRouteEnded);
+		if (!trigger) {
+			print(sprintf("^1CBaseMonster::FreeState^7: %s doesn't exist. Won't trigger\n", m_strRouteEnded));
+		}
+
+		if (trigger.Trigger != __NULL__) {
+			print(sprintf("^2CBaseMonster::FreeState^7: %s triggered %f\n", m_strRouteEnded, time));
+			trigger.Trigger();
+		} else {
+			print(sprintf("^1CBaseMonster::FreeState^7: %s not a valid trigger\n", m_strRouteEnded));
 		}
 	}
-
-	m_strRouteEnded = "";
 
 	if (m_iSequenceRemove) {
 		Hide();
@@ -311,10 +314,9 @@ void CBaseMonster::Physics(void)
 	/* support for think/nextthink */
 	if (think && nextthink > 0.0) {
 		if (nextthink < time) {
+			nextthink = 0.0f;
 			print("^2CBaseMonster::Physics: Trigger think()\n");
 			think();
-			nextthink = 0.0f;
-			think = __NULL__;
 		}
 	}
 }
