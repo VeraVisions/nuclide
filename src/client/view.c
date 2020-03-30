@@ -144,6 +144,16 @@ void View_DrawViewModel(void)
 
 	makevectors(view_angles);
 	eViewModel.angles = view_angles;
+
+	// Give the gun a tilt effect like in old HL/CS versions
+	if (autocvar_v_bobclassic == 1) {
+		eViewModel.angles[2] = -pSeat->fBob;
+	}
+
+	/* now apply the scale hack */
+	eViewModel.scale = autocvar_r_viewmodelscale;
+	pSeat->fBob *= autocvar_r_viewmodelscale;
+	
 	eViewModel.origin = pSeat->vPlayerOrigin + pl.view_ofs;
 	eViewModel.origin += [0,0,-1] + (v_forward * (pSeat->fBob * 0.4))
 			+ (v_forward * autocvar_v_gunofs[0])
@@ -160,11 +170,6 @@ void View_DrawViewModel(void)
 			eViewModel.forceshader = 0;
 			eViewModel.renderflags &= ~RF_USEAXIS;
 		}
-	}
-
-	// Give the gun a tilt effect like in old HL/CS versions
-	if (autocvar_v_bobclassic == 1) {
-		eViewModel.angles[2] = -pSeat->fBob;
 	}
 
 	// Only bother when zoomed out

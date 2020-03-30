@@ -1,5 +1,7 @@
+!!ver 130
 !!permu FOG
 !!samps 1
+!!cvardf gl_mono=0
 
 #include "sys/fog.h"
 #ifdef VERTEX_SHADER
@@ -30,6 +32,11 @@ void main ()
 #endif
 
 	col = fog4blend(col * vc * e_colourident * e_vlscale);
+
+	if (gl_mono == 1.0) {
+		float bw = (col.r + col.g + col.b) / 3.0;
+		col.rgb = vec3(bw, bw, bw) * 1.5;
+	}
 
 	gl_FragColor = col;
 }

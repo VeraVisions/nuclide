@@ -83,7 +83,7 @@ CBaseEntity::RenderFXPass(void)
 
 		r = random() * 0.5f;
 		makevectors(angles);
-		
+
 		if (cltime & 1) {
 			v_right *= 0.75 + r;
 			renderflags |= RF_USEAXIS;
@@ -91,7 +91,7 @@ CBaseEntity::RenderFXPass(void)
 			v_up *= 1.0 - (random() * 0.2f);
 			renderflags |= RF_USEAXIS;
 		}
-		
+
 		dist = vlen(getproperty(VF_ORIGIN) - origin);
 		if (dist < 256) {
 			float distalpha = dist / 256;

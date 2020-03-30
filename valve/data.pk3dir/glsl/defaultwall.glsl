@@ -1,9 +1,10 @@
-!!ver 110
+!!ver 130
 !!permu LIGHTSTYLED
 !!samps diffuse reflectcube normalmap
 
 !!samps lightmap
 !!samps =LIGHTSTYLED lightmap1 lightmap2 lightmap3
+!!cvardf gl_mono=0
 
 #include "sys/defs.h"
 
@@ -103,6 +104,12 @@ varying mat3 invsurface;
 #endif
 
 		diffuse_f *= e_colourident;
+
+		if (gl_mono == 1.0) {
+			float bw = (diffuse_f.r + diffuse_f.g + diffuse_f.b) / 3.0;
+			diffuse_f.rgb = vec3(bw, bw, bw);
+		}
+
 		gl_FragColor = diffuse_f;
 		
 	}

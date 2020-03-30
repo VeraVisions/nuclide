@@ -6,6 +6,7 @@
 !!cvardf gl_affinemodels=0
 !!cvardf gl_ldr=1
 !!cvardf gl_halflambert=1
+!!cvardf gl_mono=0
 
 #include "sys/defs.h"
 
@@ -107,6 +108,11 @@ varying vec3 light;
 #endif
 
 		diffuse_f *= e_colourident;
+
+		if (gl_mono == 1.0) {
+			float bw = (diffuse_f.r + diffuse_f.g + diffuse_f.b) / 3.0;
+			diffuse_f.rgb = vec3(bw, bw, bw);
+		}
 
 		gl_FragColor = diffuse_f;
 	}

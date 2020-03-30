@@ -2,6 +2,7 @@
 !!permu FOG
 !!cvarf r_wateralpha
 !!samps diffuse lightmap
+!!cvardf gl_mono=0
 
 #include "sys/defs.h"
 
@@ -41,6 +42,10 @@ void main ()
 	ts *= (texture2D(s_lightmap, lm0) * e_lmscale).rgb;
 #endif
 
+	if (gl_mono == 1.0) {
+		float bw = (ts.r + ts.g + ts.b) / 3.0;
+		ts.rgb = vec3(bw, bw, bw);
+	}
 	gl_FragColor = fog4(vec4(ts, USEALPHA) * e_colourident);
 }
 #endif
