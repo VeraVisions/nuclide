@@ -102,7 +102,31 @@ class CBaseMonster:CBaseEntity
 	virtual void() CheckRoute;
 	virtual void() WalkRoute;
 	virtual void(vector) NewRoute;
+
+	/* animation cycles */
+	float m_flAnimTime;
+	virtual int() AnimIdle;
+	virtual int() AnimWalk;
+	virtual int() AnimRun;
 };
+
+int
+CBaseMonster::AnimIdle(void)
+{
+	return 0;
+}
+
+int
+CBaseMonster::AnimWalk(void)
+{
+	return 0;
+}
+
+int
+CBaseMonster::AnimRun(void)
+{
+	return 0;
+}
 
 void CBaseMonster::Sound(string msg)
 {
@@ -280,6 +304,13 @@ void CBaseMonster::NewRoute(vector destination)
 		p.m_iNodes = numnodes;
 		p.m_iCurNode = numnodes - 1;
 		p.m_pRoute = nodelist;
+
+		/* we can walk there directly */
+		tracebox(p.origin, p.mins, p.maxs, dest, TRUE, this);
+		if (trace_fraction == 1.0) {
+			print("^2CBaseMonster::NewRoute^7: Walking directly to last node\n");
+			p.m_iCurNode = -1;
+		}
 	}
 
 	ClearRoute();
@@ -309,6 +340,22 @@ void CBaseMonster::Physics(void)
 		runstandardplayerphysics(this);
 		movetype = MOVETYPE_NONE;
 		IdleNoise();
+
+		if (style != MONSTER_DEAD) {
+			if (m_flAnimTime > time) {
+				input_movevalues = [0,0,0];
+			} else {
+				float spvel = vlen(velocity);
+
+				if (spvel < 5) {
+					frame = AnimIdle();
+				} else if (spvel <= 140) {
+					frame = AnimWalk();
+				} else if (spvel <= 240) {
+					frame = AnimRun();
+				}
+			}
+		}
 	}
 
 	/* support for think/nextthink */
@@ -322,6 +369,10 @@ void CBaseMonster::Physics(void)
 
 void CBaseMonster::touch(void)
 {
+	if (movetype != MOVETYPE_WALK) {
+		return;
+	}
+
 	if (other.movetype == MOVETYPE_WALK) {
 		velocity = normalize(other.origin - origin) * -128;
 	}

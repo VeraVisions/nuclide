@@ -104,7 +104,6 @@ string zo_sndsee[] = {
 class monster_zombie:CBaseMonster
 {
 	float m_flIdleTime;
-	float m_flPainTime;
 
 	void() monster_zombie;
 
@@ -119,7 +118,7 @@ monster_zombie::Pain(int iHitBody)
 {
 	CBaseMonster::Pain(iHitBody);
 
-	if (m_flPainTime > time) {
+	if (m_flAnimTime > time) {
 		return;
 	}
 
@@ -130,7 +129,7 @@ monster_zombie::Pain(int iHitBody)
 	int rand = floor(random(0,zo_sndpain.length));
 	Sound(zo_sndpain[rand]);
 	frame = ZO_FLINCH + floor(random(0, 2));
-	m_flPainTime = time + 0.25f;
+	m_flAnimTime = time + 0.25f;
 }
 
 void

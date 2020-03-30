@@ -81,22 +81,41 @@ string hc_sndsee[] = {
 class monster_headcrab:CBaseMonster
 {
 	float m_flIdleTime;
-	float m_flPainTime;
 
 	void() monster_headcrab;
 
 	virtual void(int) Pain;
 	virtual void(int) Death;
 	virtual void(void) IdleNoise;
-	virtual void(void) Respawn;
+	virtual int() AnimIdle;
+	virtual int() AnimWalk;
+	virtual int() AnimRun;
 };
+
+int
+monster_headcrab::AnimIdle(void)
+{
+	return HC_IDLE1;
+}
+
+int
+monster_headcrab::AnimWalk(void)
+{
+	return HC_WALK;
+}
+
+int
+monster_headcrab::AnimRun(void)
+{
+	return HC_RUN;
+}
 
 void
 monster_headcrab::Pain(int iHitBody)
 {
 	CBaseMonster::Pain(iHitBody);
 
-	if (m_flPainTime > time) {
+	if (m_flAnimTime > time) {
 		return;
 	}
 
@@ -107,7 +126,7 @@ monster_headcrab::Pain(int iHitBody)
 	int rand = floor(random(0,hc_sndpain.length));
 	Sound(hc_sndpain[rand]);
 	frame = HC_FLINCH;
-	m_flPainTime = time + 0.25f;
+	m_flAnimTime = time + 0.25f;
 }
 
 void
@@ -141,13 +160,6 @@ monster_headcrab::IdleNoise(void)
 
 	int rand = floor(random(0, hc_sndidle.length));
 	Sound(hc_sndidle[rand]);
-}
-
-void
-monster_headcrab::Respawn(void)
-{
-	CBaseMonster::Respawn();
-	frame = HC_IDLE1;
 }
 
 void

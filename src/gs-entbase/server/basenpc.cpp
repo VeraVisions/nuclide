@@ -42,9 +42,6 @@ class CBaseNPC:CBaseMonster
 	float m_flChangePath;
 	float m_flTraceTime;
 
-	/* damage/combat related */
-	float m_flPainTime;
-
 	/* sentences identifiers */
 	string m_talkAnswer; /* random answer to whenever a question is asked */
 	string m_talkAsk; /* asks a random generic question */
@@ -75,9 +72,6 @@ class CBaseNPC:CBaseMonster
 	virtual void() FollowPlayer;
 	virtual void() FollowChain;
 	virtual void() Physics;
-	virtual int() AnimIdle;
-	virtual int() AnimWalk;
-	virtual int() AnimRun;
 	virtual void() PlayerUse;
 	virtual void() PanicFrame;
 	virtual void() Hide;
@@ -102,24 +96,6 @@ class CBaseNPC:CBaseMonster
 	virtual void() TalkFollow;
 	virtual void() TalkStopFollow;
 };
-
-int
-CBaseNPC::AnimIdle(void)
-{
-	return 0;
-}
-
-int
-CBaseNPC::AnimWalk(void)
-{
-	return 0;
-}
-
-int
-CBaseNPC::AnimRun(void)
-{
-	return 0;
-}
 
 void
 CBaseNPC::WarnAllies(void)
@@ -490,7 +466,7 @@ CBaseNPC::Physics(void)
 				}
 			}
 
-			if (m_flPainTime > time) {
+			if (m_flAnimTime > time) {
 				input_movevalues = [0,0,0];
 			} else {
 				spvel = vlen(velocity);

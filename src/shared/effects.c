@@ -366,8 +366,8 @@ void Effect_BreakModel(int count, vector vMins, vector vMaxs, vector vVel, float
 	msg_entity = self;
 	
 	vector vWorldPos;
-	vWorldPos[0] = vMins[0] + (0.5 * (vMaxs[0] - vMins[0]));	
-	vWorldPos[1] = vMins[1] + (0.5 * (vMaxs[1] - vMins[1]));	
+	vWorldPos[0] = vMins[0] + (0.5 * (vMaxs[0] - vMins[0]));
+	vWorldPos[1] = vMins[1] + (0.5 * (vMaxs[1] - vMins[1]));
 	vWorldPos[2] = vMins[2] + (0.5 * (vMaxs[2] - vMins[2]));
 	multicast(vWorldPos, MULTICAST_PVS);
 #else
@@ -376,8 +376,7 @@ void Effect_BreakModel(int count, vector vMins, vector vMaxs, vector vVel, float
 	float fModelCount;
 	vector vPos;
 	string sModel = "";
-	float fCount = 20;
-	
+
 	switch (fStyle) {
 		case GSMATERIAL_GLASS:
 		case GSMATERIAL_GLASS_UNBREAKABLE:
@@ -416,8 +415,8 @@ void Effect_BreakModel(int count, vector vMins, vector vMaxs, vector vVel, float
 	}
 	
 	vector vWorldPos;
-	vWorldPos[0] = vMins[0] + (0.5 * (vMaxs[0] - vMins[0]));	
-	vWorldPos[1] = vMins[1] + (0.5 * (vMaxs[1] - vMins[1]));	
+	vWorldPos[0] = vMins[0] + (0.5 * (vMaxs[0] - vMins[0]));
+	vWorldPos[1] = vMins[1] + (0.5 * (vMaxs[1] - vMins[1]));
 	vWorldPos[2] = vMins[2] + (0.5 * (vMaxs[2] - vMins[2]));
 	
 	switch (fStyle) {
@@ -443,7 +442,7 @@ void Effect_BreakModel(int count, vector vMins, vector vMaxs, vector vVel, float
 			break;
 	}
 	
-	while (fCount > 0) {
+	for (int i = 0; i < count; i++) {
 		entity eGib = spawn();
 		eGib.classname = "gib";
 		
@@ -466,8 +465,7 @@ void Effect_BreakModel(int count, vector vMins, vector vMaxs, vector vVel, float
 		if ((fStyle == GSMATERIAL_GLASS) || (fStyle == GSMATERIAL_GLASS_UNBREAKABLE)) {
 			eGib.effects = EF_ADDITIVE;
 		}
-		
-		fCount--;
+
 		eGib.drawmask = MASK_ENGINE;
 	}
 #endif

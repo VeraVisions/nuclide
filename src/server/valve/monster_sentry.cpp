@@ -41,7 +41,6 @@ string sent_snddie[] = {
 
 class monster_sentry:CBaseMonster
 {
-
 	void() monster_sentry;
 	
 	virtual void(int) Death;

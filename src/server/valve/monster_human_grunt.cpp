@@ -125,7 +125,6 @@ string gr_sndpain[] = {
 class monster_human_grunt:CBaseNPC
 {
 	float m_flIdleTime;
-	float m_flPainTime;
 	
 	void() monster_human_grunt;
 	
@@ -134,8 +133,28 @@ class monster_human_grunt:CBaseNPC
 	virtual void() Respawn;
 	virtual void(int) Pain;
 	virtual void(int) Death;
-
+	virtual int() AnimIdle;
+	virtual int() AnimWalk;
+	virtual int() AnimRun;
 };
+
+int
+monster_human_grunt::AnimIdle(void)
+{
+	return GR_IDLE;
+}
+
+int
+monster_human_grunt::AnimWalk(void)
+{
+	return GR_WALK;
+}
+
+int
+monster_human_grunt::AnimRun(void)
+{
+	return GR_RUN;
+}
 
 void monster_human_grunt::Scream(void)
 {
@@ -168,7 +187,7 @@ monster_human_grunt::Pain(int iHitBody)
 {
 	CBaseMonster::Pain(iHitBody);
 
-	if (m_flPainTime > time) {
+	if (m_flAnimTime > time) {
 		return;
 	}
 
@@ -179,7 +198,7 @@ monster_human_grunt::Pain(int iHitBody)
 	int rand = floor(random(0,gr_sndpain.length));
 	Sound(gr_sndpain[rand]);
 	frame = GR_FLINCH;
-	m_flPainTime = time + 0.25f;
+	m_flAnimTime = time + 0.25f;
 }
 
 void

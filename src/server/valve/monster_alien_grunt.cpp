@@ -186,5 +186,6 @@ monster_alien_grunt::monster_alien_grunt(void)
 	model = "models/agrunt.mdl";
 	base_mins = [-32,-32,0];
 	base_maxs = [32,32,64];
+	base_health = Skill_GetValue("agrunt_health");
 	CBaseMonster::CBaseMonster();
 }

@@ -94,15 +94,34 @@ string bull_sndpain[] = {
 class monster_bullchicken:CBaseMonster
 {
 	float m_flIdleTime;
-	float m_flPainTime;
 
 	void() monster_bullchicken;
 
 	virtual void(int) Death;
 	virtual void(int) Pain;
-	virtual void(void) IdleNoise;
-	virtual void(void) Respawn;
+	virtual void() IdleNoise;
+	virtual int() AnimIdle;
+	virtual int() AnimWalk;
+	virtual int() AnimRun;
 };
+
+int
+monster_bullchicken::AnimIdle(void)
+{
+	return BULL_IDLE;
+}
+
+int
+monster_bullchicken::AnimWalk(void)
+{
+	return BULL_WALK;
+}
+
+int
+monster_bullchicken::AnimRun(void)
+{
+	return BULL_RUN;
+}
 
 void
 monster_bullchicken::IdleNoise(void)
@@ -127,7 +146,7 @@ monster_bullchicken::Pain(int iHitBody)
 {
 	CBaseMonster::Pain(iHitBody);
 
-	if (m_flPainTime > time) {
+	if (m_flAnimTime > time) {
 		return;
 	}
 
@@ -138,7 +157,7 @@ monster_bullchicken::Pain(int iHitBody)
 	int rand = floor(random(0,bull_sndpain.length));
 	Sound(bull_sndpain[rand]);
 	frame = (random() < 0.5) ? BULL_FLINCH : BULL_FLINCH2;
-	m_flPainTime = time + 0.25f;
+	m_flAnimTime = time + 0.25f;
 }
 
 void
@@ -157,13 +176,6 @@ monster_bullchicken::Death(int iHitBody)
 
 	/* set the functional differences */
 	CBaseMonster::Death(iHitBody);
-}
-
-void
-monster_bullchicken::Respawn(void)
-{
-	CBaseMonster::Respawn();
-	frame = BULL_IDLE;
 }
 
 void monster_bullchicken::monster_bullchicken(void)

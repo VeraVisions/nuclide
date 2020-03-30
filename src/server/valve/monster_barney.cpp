@@ -100,7 +100,7 @@ monster_barney::Pain(int iHitBody)
 {
 	WarnAllies();
 
-	if (m_flPainTime > time) {
+	if (m_flAnimTime > time) {
 		return;
 	}
 
@@ -113,7 +113,7 @@ monster_barney::Pain(int iHitBody)
 
 	frame = BA_FLINCH_LA + floor(random(0, 5));
 	m_iFlags |= MONSTER_FEAR;
-	m_flPainTime = time + 0.25f;
+	m_flAnimTime = time + 0.25f;
 }
 
 void 
@@ -176,7 +176,7 @@ monster_barney::monster_barney(void)
 
 	model = "models/barney.mdl";
 	netname = "Barney";
-	base_health = 50;
+	base_health = Skill_GetValue("barney_health");
 	base_mins = [-16,-16,0];
 	base_maxs = [16,16,72];
 	CBaseNPC::CBaseNPC();

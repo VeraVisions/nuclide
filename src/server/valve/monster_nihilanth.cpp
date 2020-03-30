@@ -77,7 +77,6 @@ string nil_sndrecharge[] = {
 class monster_nihilanth:CBaseMonster
 {
 	float m_flIdleTime;
-	float m_flPainTime;
 
 	void() monster_nihilanth;
 
@@ -110,7 +109,7 @@ monster_nihilanth::Pain(int iHitBody)
 {
 	CBaseMonster::Pain(iHitBody);
 
-	if (m_flPainTime > time) {
+	if (m_flAnimTime > time) {
 		return;
 	}
 
@@ -122,7 +121,7 @@ monster_nihilanth::Pain(int iHitBody)
 	Sound(nil_sndpain[rand]);
 
 	frame = (random() < 0.5) ? NIL_FLINCH : NIL_FLINCH2;
-	m_flPainTime = time + 0.25f;
+	m_flAnimTime = time + 0.25f;
 }
 
 void

@@ -45,7 +45,6 @@ string leech_sndsee[] = {
 class monster_leech:CBaseMonster
 {
 	float m_flIdleTime;
-	float m_flPainTime;
 
 	void() monster_leech;
 

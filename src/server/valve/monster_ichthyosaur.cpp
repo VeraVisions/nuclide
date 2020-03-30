@@ -69,7 +69,6 @@ string ichy_sndsee[] = {
 class monster_ichthyosaur:CBaseMonster
 {
 	float m_flIdleTime;
-	float m_flPainTime;
 
 	void() monster_ichthyosaur;
 
@@ -84,7 +83,7 @@ monster_ichthyosaur::Pain(int iHitBody)
 {
 	CBaseMonster::Pain(iHitBody);
 
-	if (m_flPainTime > time) {
+	if (m_flAnimTime > time) {
 		return;
 	}
 
@@ -95,7 +94,7 @@ monster_ichthyosaur::Pain(int iHitBody)
 	int rand = floor(random(0,ichy_sndpain.length));
 	Sound(ichy_sndpain[rand]);
 	frame = ICHY_FLINCH + floor(random(0, 2));
-	m_flPainTime = time + 0.25f;
+	m_flAnimTime = time + 0.25f;
 }
 
 void

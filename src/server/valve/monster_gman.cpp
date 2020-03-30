@@ -40,8 +40,30 @@ enum {
 class monster_gman:CBaseMonster
 {
 	void() monster_gman;
+
 	virtual void() Respawn;
+	virtual int() AnimIdle;
+	virtual int() AnimWalk;
+	virtual int() AnimRun;
 };
+
+int
+monster_gman::AnimIdle(void)
+{
+	return GMAN_IDLE;
+}
+
+int
+monster_gman::AnimWalk(void)
+{
+	return GMAN_WALK;
+}
+
+int
+monster_gman::AnimRun(void)
+{
+	return GMAN_WALK;
+}
 
 void monster_gman::Respawn(void)
 {

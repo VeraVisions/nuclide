@@ -133,7 +133,7 @@ monster_scientist::Pain(int iHitBody)
 {
 	WarnAllies();
 
-	if (m_flPainTime > time) {
+	if (m_flAnimTime > time) {
 		return;
 	}
 
@@ -146,7 +146,7 @@ monster_scientist::Pain(int iHitBody)
 
 	frame = SCIA_FLINCH + floor(random(0, 6));
 	m_iFlags |= MONSTER_FEAR;
-	m_flPainTime = time + 0.25f;
+	m_flAnimTime = time + 0.25f;
 }
 
 void
@@ -228,6 +228,7 @@ monster_scientist::monster_scientist(void)
 	model = "models/scientist.mdl";
 	base_mins = [-16,-16,0];
 	base_maxs = [16,16,72];
+	base_health = Skill_GetValue("scientist_health");
 
 	/* has the body not been overriden, etc. choose a character for us */
 	if (body == -1) {

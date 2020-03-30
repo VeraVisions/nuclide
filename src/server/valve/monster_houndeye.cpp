@@ -95,7 +95,6 @@ string he_sndsee[] = {
 class monster_houndeye:CBaseMonster
 {
 	float m_flIdleTime;
-	float m_flPainTime;
 
 	void() monster_houndeye;
 
@@ -110,7 +109,7 @@ monster_houndeye::Pain(int iHitBody)
 {
 	CBaseMonster::Pain(iHitBody);
 
-	if (m_flPainTime > time) {
+	if (m_flAnimTime > time) {
 		return;
 	}
 
@@ -121,7 +120,7 @@ monster_houndeye::Pain(int iHitBody)
 	int rand = floor(random(0,he_sndpain.length));
 	Sound(he_sndpain[rand]);
 	frame = HE_FLINCH + floor(random(0, 2));
-	m_flPainTime = time + 0.25f;
+	m_flAnimTime = time + 0.25f;
 }
 
 void

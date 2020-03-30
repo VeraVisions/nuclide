@@ -92,7 +92,6 @@ string gon_sndstep[] = {
 class monster_bigmomma:CBaseMonster
 {
 	float m_flIdleTime;
-	float m_flPainTime;
 
 	void() monster_bigmomma;
 
@@ -125,7 +124,7 @@ monster_bigmomma::Pain(int iHitBody)
 {
 	CBaseMonster::Pain(iHitBody);
 
-	if (m_flPainTime > time) {
+	if (m_flAnimTime > time) {
 		return;
 	}
 
@@ -136,7 +135,7 @@ monster_bigmomma::Pain(int iHitBody)
 	int rand = floor(random(0,gon_sndpain.length));
 	Sound(gon_sndpain[rand]);
 	frame = GON_FLINCH;
-	m_flPainTime = time + 0.25f;
+	m_flAnimTime = time + 0.25f;
 }
 
 void
