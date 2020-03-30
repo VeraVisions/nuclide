@@ -98,9 +98,15 @@ class scripted_sequence:CBaseTrigger
 void scripted_sequence::Trigger(void)
 {
 	CBaseMonster f;
+	float duration;
 
 	if (!m_iEnabled) {
 		return;
+	}
+
+	/* aaaaand it's gone */
+	if (!(spawnflags & SSFL_REPEATABLE)) {
+		m_iEnabled = FALSE;
 	}
 
 	print(sprintf("^2scripted_sequence::Trigger^7: with spawnflags %d\n", spawnflags));
@@ -117,17 +123,22 @@ void scripted_sequence::Trigger(void)
 			}
 		}
 
+		/* cancel out. this trigger is broken. */
 		if (!f) {
 			print(sprintf("^1scripted_sequence::Trigger^7: Unknown target %s\n", m_strMonster));
 			return;
 		}
 	}
 
+	print(sprintf("\tName: %s\n", m_strTargetName));
+	print(sprintf("\tTarget: %s\n", m_strMonster));
+	print(sprintf("\tStarted: %f\n", time));
+
 	/* if we're told an anim, we better have it... or else. */
 	if (m_strActionAnim) {
 		f.m_flSequenceEnd = frameforname(f.modelindex, m_strActionAnim);
 		if (f.m_flSequenceEnd == -1) {
-			print(sprintf("^1scripted_sequence::Trigger^7: Framegroup %s not found!\n", m_strActionAnim));
+			print(sprintf("^1ERROR: Framegroup %s not found!\n", m_strActionAnim));
 			return;
 		}
 	}
@@ -141,30 +152,48 @@ void scripted_sequence::Trigger(void)
 	/* seems to be active at all times? contrary to SS_TURNTOFACE existing? */
 	f.m_vecSequenceAngle = angles;
 
-	if (m_iMove == SS_WALK) {
+	if (m_iMove == SS_NO) {
+		print("\tType: SS_NO\n");
+	} else if (m_iMove == SS_WALK) {
 		f.NewRoute(origin);
 		f.m_flSequenceSpeed = 64;
+		print("\tType: SS_WALK\n");
+		return;
 	} else if (m_iMove == SS_RUN) {
 		f.NewRoute(origin);
-		f.m_flSequenceSpeed = 256;
-	} else if (m_iMove == SS_NO) {
-		f.m_iSequenceState = SEQUENCESTATE_ENDING;
-		f.think = CBaseMonster::FreeState;
-		f.nextthink = time + frameduration(f.modelindex, f.m_flSequenceEnd);
+		f.m_flSequenceSpeed = 200;
+		print("\tType: SS_RUN\n");
+		return;
 	} else if (m_iMove == SS_INSTANTANEOUS) {
 		setorigin(f, this.origin);
-		f.m_iSequenceState = SEQUENCESTATE_ENDING;
-		f.think = CBaseMonster::FreeState;
-		f.nextthink = time + frameduration(f.modelindex, f.m_flSequenceEnd);
+		print("\tType: SS_INSTANTANEOUS\n");
 	} else if (m_iMove == SS_TURNTOFACE) {
-		f.m_iSequenceState = SEQUENCESTATE_ENDING;
-		f.think = CBaseMonster::FreeState;
-		f.nextthink = time + frameduration(f.modelindex, f.m_flSequenceEnd);
+		print("\tType: SS_TURNTOFACE\n");
 	}
 
-	if (!(spawnflags & SSFL_REPEATABLE)) {
-		m_iEnabled = FALSE;
+	/* all the non-moving targets will do this at least */
+	if (m_strActionAnim) {
+		duration = frameduration(f.modelindex, f.m_flSequenceEnd);
+		f.nextthink = time + duration;
+		print(sprintf(
+			"\tAnimation: %s Duration: %f seconds (modelindex %d, frame %d)\n",
+			f.m_strTargetName,
+			duration,
+			f.modelindex,
+			f.m_flSequenceEnd
+		));
+	} else {
+		f.nextthink = time;
+		print(sprintf(
+			"\t^1WARNING: %s skipping animation on script type %i\n",
+			f.m_strTargetName,
+			m_iMove
+		));
 	}
+
+	f.m_iSequenceState = SEQUENCESTATE_ENDING;
+	f.think = CBaseMonster::FreeState;
+	print(sprintf("\tEnding: %f\n", f.nextthink));
 }
 
 void scripted_sequence::Respawn(void)

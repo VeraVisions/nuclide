@@ -73,7 +73,7 @@ CBaseEntity::ProcessWordQue(void)
 		return;
 	}
 
-	sound(this, CHAN_VOICE, m_pSentenceQue[m_iSentencePos].m_strSnd, 1.0, ATTN_NORM);
+	sound(this, CHAN_VOICE, m_pSentenceQue[m_iSentencePos].m_strSnd, 1.0, ATTN_NORM, 100, SOUNDFLAG_FOLLOW);
 	dprint(sprintf("^2CBaseEntity::ProcessWordQue^7: Speaking %s\n", m_pSentenceQue[m_iSentencePos].m_strSnd));
 	m_iSentencePos++;
 

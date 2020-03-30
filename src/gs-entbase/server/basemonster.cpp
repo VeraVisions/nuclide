@@ -90,11 +90,13 @@ class CBaseMonster:CBaseEntity
 	virtual void(int) Death;
 	virtual void() Physics;
 	virtual void() IdleNoise;
-	virtual void() FreeState;
 	virtual void() Gib;
 	virtual void(string) Sound;
 	virtual float(entity, float) SendEntity;
 	virtual void() ParentUpdate;
+
+	/* sequences */
+	virtual void() FreeState;
 
 	virtual void() ClearRoute;
 	virtual void() CheckRoute;
@@ -176,10 +178,13 @@ void CBaseMonster::FreeState(void)
 		for (entity t = world; (t = find(t, CBaseTrigger::m_strTargetName, m_strRouteEnded));) {
 			CBaseTrigger trigger = (CBaseTrigger)t;
 			if (trigger.Trigger != __NULL__) {
+				print(sprintf("^2CBaseMonster::FreeState^7: %s triggered %f\n", m_strRouteEnded, time));
 				trigger.Trigger();
 			}
 		}
 	}
+
+	m_strRouteEnded = "";
 
 	if (m_iSequenceRemove) {
 		Hide();
@@ -207,14 +212,14 @@ void CBaseMonster::CheckRoute(void)
 	flDist = floor( vlen( evenpos - origin ) );
 
 	if ( flDist < 8 ) {
-		print(sprintf("^2CBaseMonster::CheckRoute^7: %s reached node\n", this.netname));
+		print(sprintf("^2CBaseMonster::CheckRoute^7: %s reached node\n", this.m_strTargetName));
 		m_iCurNode--;
 		velocity = [0,0,0]; /* clamp friction */
 	}
 	
 	if (m_iCurNode < -1) {
 		ClearRoute();
-		print(sprintf("^2CBaseMonster::CheckRoute^7: %s reached end\n", this.netname));
+		print(sprintf("^2CBaseMonster::CheckRoute^7: %s reached end\n", this.m_strTargetName));
 
 		/* mark that we've ended a sequence, if we're in one and que anim */
 		if (m_iSequenceState == SEQUENCESTATE_ACTIVE) {
@@ -223,11 +228,12 @@ void CBaseMonster::CheckRoute(void)
 				m_iSequenceState = SEQUENCESTATE_ENDING;
 				think = FreeState;
 				nextthink = time + duration;
-				print(sprintf("^2CBaseMonster::CheckRoute^7: %s overriding anim for %f seconds (modelindex %d, frame %d)\n", this.netname, duration, modelindex, m_flSequenceEnd));
+				print(sprintf("^2CBaseMonster::CheckRoute^7: %s overriding anim for %f seconds (modelindex %d, frame %d)\n", this.m_strTargetName, duration, modelindex, m_flSequenceEnd));
 			} else {
 				/* we still need to trigger targets */
 				think = FreeState;
 				nextthink = time;
+				print(sprintf("^2CBaseMonster::CheckRoute^7: %s has no anim, finished sequence.\n", this.m_strTargetName));
 			}
 		}
 	}
@@ -303,10 +309,12 @@ void CBaseMonster::Physics(void)
 	}
 
 	/* support for think/nextthink */
-	if (think && nextthink > 0) {
+	if (think && nextthink > 0.0) {
 		if (nextthink < time) {
+			print("^2CBaseMonster::Physics: Trigger think()\n");
 			think();
 			nextthink = 0.0f;
+			think = __NULL__;
 		}
 	}
 }
