@@ -35,6 +35,7 @@ void create_btnok_start(void)
 {
 	static string startmap;
 	static void create_btnok_end(void) {
+		localcmd("stopmusic\n");
 		localcmd(sprintf("hostname %s\n", create_tbHostname.m_text));
 		localcmd(sprintf("sv_playerslots %s\n", create_tbMaxplayers.m_text));
 		localcmd(sprintf("password %s\n", create_tbPassword.m_text));

@@ -14,20 +14,47 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define INTRO_TIME 6
+enum {
+	INTRO_START,
+	INTRO_FADETOWHITE,
+	INTRO_FADETOMENU,
+	INTRO_DONE
+};
+
+#define INTRO_TIME 8
 float g_intro_progress;
+int g_intro_stage;
+
+void m_intro_skip(void)
+{
+	g_intro_progress = INTRO_TIME;
+}
 
 void m_intro_draw(void)
 {
-	
 	if (clientstate() == 2) {
 		g_intro_progress = INTRO_TIME;
+		g_intro_stage = INTRO_DONE;
 	}
 
-	if (g_intro_progress > 5.0f) {
+	if (g_intro_progress > 7.0f) {
+		float alpha = (8 - g_intro_progress);
+		drawfill([0,0], [g_vidsize[0],g_vidsize[1]], [1,1,1], alpha);
+		
+		if (g_intro_stage != INTRO_FADETOMENU) {
+			g_intro_stage = INTRO_FADETOMENU;
+		}
+	} else if (g_intro_progress > 5.0f) {
 		float alpha = (6 - g_intro_progress);
 		drawpic([g_menuofs[0],g_menuofs[1]], g_bmp[SPLASH8BIT],
-				[640,480], [1,1,1], alpha, 0);
+				[640,480], [1,1,1], 1.0f, 0);
+		drawfill([0,0], [g_vidsize[0],g_vidsize[1]], [1,1,1], 1.0 - alpha);
+		
+		if (g_intro_stage != INTRO_FADETOWHITE) {
+			localcmd("play debris/beamstart5.wav\n");
+			localcmd("music music/track03.flac\n");
+			g_intro_stage = INTRO_FADETOWHITE;
+		}
 	} else {
 		drawpic([g_menuofs[0],g_menuofs[1]], g_bmp[SPLASH8BIT],
 				[640,480], [1,1,1], 1.0f);
@@ -40,14 +67,15 @@ void m_intro_draw(void)
 	g_intro_progress += frametime;
 }
 
-
 void m_intro_input(float evtype, float scanx, float chary, float devid)
-{	
+{
 	if (evtype == IE_KEYDOWN) {
 		if (scanx == K_ESCAPE) {
-			g_intro_progress = INTRO_TIME;
+			m_intro_skip();
 		} else if (scanx == K_ENTER) {
-			g_intro_progress = INTRO_TIME;
+			m_intro_skip();
+		} else if (scanx == K_SPACE) {
+			m_intro_skip();
 		}
 	}
 }

@@ -25,6 +25,7 @@ void ng_btneasy_start(void)
 {
 	static void ng_btneasy_end(void) {
 		g_menupage = PAGE_MAIN;
+		localcmd("stopmusic\n");
 		localcmd("set skill 1; maxplayers 1\n");
 		localcmd(sprintf("map %s\n", games[gameinfo_current].startmap));
 	}
@@ -40,6 +41,7 @@ void ng_btnnormal_start(void)
 {
 	static void ng_btnnormal_end(void) {
 		g_menupage = PAGE_MAIN;
+		localcmd("stopmusic\n");
 		localcmd("set skill 2; maxplayers 1\n");
 		localcmd(sprintf("map %s\n", games[gameinfo_current].startmap));
 	}
@@ -55,6 +57,7 @@ void ng_btnhard_start(void)
 {
 	static void ng_btnhard_end(void) {
 		g_menupage = PAGE_MAIN;
+		localcmd("stopmusic\n");
 		localcmd("set skill 3; maxplayers 1\n");
 		localcmd(sprintf("map %s\n", games[gameinfo_current].startmap));
 	}

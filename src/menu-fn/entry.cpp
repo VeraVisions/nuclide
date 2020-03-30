@@ -81,6 +81,10 @@ void m_init(void)
 	Colors_Init();
 	Strings_Init();
 	g_initialized = TRUE;
+
+	if (cvar_string("game") != "valve") {
+		m_intro_skip();
+	}
 }
 
 void m_shutdown(void)
@@ -206,6 +210,7 @@ float m_consolecommand(string cmd)
 	switch (argv(0)) {
 		case "menu_customgame":
 			g_menupage = PAGE_CUSTOMGAME;
+			m_intro_skip();
 			break;
 		case "togglemenu":
 			m_display();

@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-var int autocvar_menu_intro = FALSE;
+var int autocvar_menu_intro = TRUE;
 
 #define KEY_UNKNOWN 		-1
 #define KEY_GAME 			0
