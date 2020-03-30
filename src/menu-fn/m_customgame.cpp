@@ -153,7 +153,7 @@ void customgame_btnactivate_start(void)
 		localcmd(sprintf("gamedir \"%s\"\n", games[nextgame].gamedir));
 	}
 
-	localcmd("snd_restart\nwait\nvid_reload\nmenu_restart\nmenu_customgame\n");
+	localcmd("stopmusic\nsnd_restart\nwait\nvid_reload\nmenu_restart\nmenu_customgame\n");
 	// TODO: Re-init important menu bits and bobs.
 	cvar_init();
 	//m_shutdown();
@@ -162,7 +162,7 @@ void customgame_btnactivate_start(void)
 void customgame_btndeactivate_start(void)
 {
 	localcmd("gamedir \"\"\n");
-	localcmd("snd_restart\nwait\nvid_reload\n");
+	localcmd("stopmusic\nsnd_restart\nwait\nvid_reload\n");
 	localcmd("menu_restart\n");
 	localcmd("menu_customgame\n");
 }
@@ -237,7 +237,7 @@ void menu_customgame_init(void)
 	customgame_sbMods.SetItemheight(29);
 	customgame_sbMods.SetHeight(289);
 	customgame_sbMods.SetCallback(customgame_sbmods_changed);
-	customgame_sbMods.SetMax(gameinfo_count);
+	customgame_sbMods.SetMax(gameinfo_count-1); /* don't show our current game */
 	Widget_Add(fn_customgame, customgame_sbMods);
 
 }
