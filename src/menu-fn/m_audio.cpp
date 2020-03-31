@@ -23,6 +23,11 @@ CCheckBox au_cxHQSound;
 CCheckBox au_cxA3DSound;
 CCheckBox au_cxEAXSound;
 
+/* in the original WON menu, there is no music control */
+#ifndef ACCURATE
+CSlider au_sldMusicVolume;
+#endif
+
 /* Button Callbacks */
 void au_btndone_start(void)
 {
@@ -45,9 +50,16 @@ void au_sldsuitvolume_changed(float val)
 {
 	cvar_set("suitvolume", ftos(val));
 }
+
+#ifndef ACCURATE
+void au_sldmusicvolume_changed(float val)
+{
+	cvar_set("bgmvolume", ftos(val));
+}
+#endif
+
 void au_cxcdmusic_changed(float val)
 {
-	
 }
 void au_cxhqsound_changed(float val)
 {
@@ -83,6 +95,14 @@ void menu_audio_init(void)
 	au_sldSuitVolume.SetValue(cvar("suitvolume"));
 	au_sldSuitVolume.SetCallback(au_sldsuitvolume_changed);
 	Widget_Add(fn_audio, au_sldSuitVolume);
+
+#ifndef ACCURATE
+	au_sldMusicVolume = spawn(CSlider);
+	au_sldMusicVolume.SetPos(395,168);
+	au_sldMusicVolume.SetValue(cvar("bgmvolume"));
+	au_sldMusicVolume.SetCallback(au_sldmusicvolume_changed);
+	Widget_Add(fn_audio, au_sldMusicVolume);
+#endif
 	
 	au_cxCDMusic = spawn(CCheckBox);
 	au_cxCDMusic.SetPos(208,244);
@@ -125,8 +145,13 @@ void menu_audio_draw(void)
 	WLabel_Static(232, 347, m_reslbl[IDS_AUDIO_EAX], 12, 12, [0.75,0.75,0.75],
 					1.0f, 0, font_label_b);
 
+#ifdef ACCURATE
 	WField_Static(395, 133, m_reslbl[IDS_AUDIO_CDHINT], 169, 64, col_help,
 					1.0f, 1, font_label);
+#else
+	WLabel_Static(395, 143, "Music volume:", 14, 14, [1,1,1],
+					1.0f, 0, font_label_b);
+#endif
 }
 
 void menu_audio_input(float evtype, float scanx, float chary, float devid)

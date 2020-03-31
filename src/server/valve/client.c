@@ -13,6 +13,7 @@
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+var int autocvar_sv_playerkeepalive = TRUE;
 
 void
 Game_ClientConnect(void)
@@ -67,6 +68,9 @@ void
 Game_PlayerPostThink(player pl)
 {
 	Animation_PlayerUpdate();
+
+	if (autocvar_sv_playerkeepalive)
+		pl.SendFlags |= PLAYER_KEEPALIVE;
 
 	if (pl.old_modelindex != pl.modelindex)
 		pl.SendFlags |= PLAYER_MODELINDEX;

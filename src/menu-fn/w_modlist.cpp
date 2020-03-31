@@ -28,7 +28,7 @@ class CModList:CWidget
 
 	int m_scroll;
 	int m_selected;
-	//virtual void(int val) m_execute = 0;
+	virtual void() m_changed = 0;
 
 	void() CModList;
 	virtual void() Draw;
@@ -73,10 +73,12 @@ void CModList::Draw(void)
 			WLabel_Static(m_x + 2, pos + 3, sprintf("%.8s...",games[i].type),
 						  11, 11, colo, 1.0f, 0, font_arial);
 		}
-		
+
 		/* Game */
+		drawsetcliparea(g_menuofs[0] + m_x + 57, g_menuofs[1] + pos + 3, 112,30);
 		WLabel_Static(m_x + 57, pos + 3, games[i].game, 11, 11, colo,
 					1.0f, 0, font_arial);
+		drawresetcliparea();
 		/* URL */
 		WLabel_Static(m_x + 2, pos + 18, sprintf("Info: %s", games[i].url_info), 11, 11, ML_COL_4,
 					1.0f, 0, font_arial);
@@ -91,7 +93,7 @@ void CModList::Draw(void)
 		WLabel_Static(m_x + 277, pos + 3, "0.0", 11, 11, colo,
 					1.0f, 0, font_arial);
 		/* Installed */
-		WLabel_Static(m_x + 327, pos + 3, "Yes", 11, 11, ML_COL_3,
+		WLabel_Static(m_x + 327, pos + 3, (games[i].installed == 1) ? "Yes" : "No", 11, 11, ML_COL_3,
 					1.0f, 0, font_arial);
 		/* Servers */
 		WLabel_Static(m_x + 377, pos + 3, "0", 11, 11, ML_COL_3,
@@ -121,10 +123,7 @@ void CModList::Input(float type, float x, float y, float devid)
 		if (Util_CheckMouse(pos[0], pos[1], m_size[0], 29)) {
 			if (type == IE_KEYDOWN) {
 				if (x == K_MOUSE1) {
-					m_selected = i;
-					/*if (m_execute) {
-						m_execute(i);
-					}*/
+					SetSelected(i);
 					break;
 				}
 			}
@@ -144,14 +143,18 @@ void CModList::SetScroll(int i)
 	m_scroll = i;
 }
 
-/*void CModList::SetChanged(void(int val) func)
+void CModList::SetChanged(void() func)
 {
-	m_execute = func;
-}*/
+	m_changed = func;
+}
 
 void CModList::SetSelected(int i)
 {
 	m_selected = i;
+
+	if (m_changed) {
+		m_changed();
+	}
 }
 
 int CModList::GetSelected(void)

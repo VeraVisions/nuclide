@@ -13,6 +13,7 @@ util.cpp
 colors.cpp
 master.cpp
 servers.cpp
+modserver.cpp
 
 widgets.cpp
 w_checkbox.cpp
@@ -39,6 +40,7 @@ m_advancedcustomize.cpp
 m_advancedmpoptions.cpp
 m_audio.cpp
 m_chatrooms.cpp
+m_chatroomslist.cpp
 m_configuration.cpp
 m_contentcontrol.cpp
 m_controls.cpp

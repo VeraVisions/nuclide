@@ -143,11 +143,7 @@ void CMainButton::Draw(void)
 
 void CMainButton::Input(float type, float x, float y, float devid)
 {
-	if (Util_CheckMouse(m_x, m_y, m_length, 26) == TRUE) {
-		m_hover = TRUE;
-	} else {
-		m_hover = FALSE;
-	}
+	m_hover = Util_CheckMouse(m_x, m_y, m_length, 26);
 
 	if (m_hover && type == IE_KEYDOWN && x == K_MOUSE1) {
 		localsound("../media/launch_select2.wav");

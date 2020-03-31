@@ -27,11 +27,14 @@ class CTextBox:CWidget
 	string m_text;
 	int m_length;
 	int m_flags;
+	virtual void(string) m_onEnter = 0;
 
 	void() CTextBox;
 	virtual void() Draw;
-	virtual void(float type, float x, float y, float devid) Input;
-	virtual void(string txt) SetText;
+	virtual void(float, float, float, float) Input;
+	virtual void(void(string) vFunc) SetCallOnEnter;
+	virtual void(string) SetText;
+	virtual void(int) SetLength;
 };
 
 void CTextBox::CTextBox(void)
@@ -79,6 +82,9 @@ void CTextBox::Input(float type, float x, float y, float devid)
 			}
 			break;
 		case K_ENTER:
+			if (m_onEnter) {
+				m_onEnter(m_text);
+			}
 			break;
 		default:
 			if (m_flags & TEXTBOX_FOCUS) {
@@ -97,7 +103,17 @@ void CTextBox::Input(float type, float x, float y, float devid)
 	}
 }
 
+void CTextBox::SetCallOnEnter(void(string) vFunc)
+{
+	m_onEnter = vFunc;
+}
+
 void CTextBox::SetText(string txt)
 {
 	m_text = txt;
+}
+
+void CTextBox::SetLength(int len)
+{
+	m_length = len;
 }

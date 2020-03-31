@@ -59,9 +59,9 @@ void m_init(void)
 	registercommand("menu_customgame");
 	font_console = loadfont( "font", "", "12", -1 );
 	font_label = loadfont( "label", "gfx/shell/mssansserif.ttf", "10 12 14", -1 );
-	font_arial = loadfont( "label", "gfx/shell/arial.ttf", "14 11", -1 );
+	font_arial = loadfont( "label", "gfx/shell/arial.ttf", "14 11 12", -1 );
 	font_label_b = loadfont( "label_b", "gfx/shell/arialbd.ttf", "14 12", -1 );
-	font_label_p = loadfont( "label_p", "gfx/shell/arialbd.ttf", "16", -1 );
+	font_label_p = loadfont( "label_p", "gfx/shell/arialbd.ttf", "16 21", -1 );
 
 	localcmd("plug_load ffmpeg\n");
 
@@ -74,6 +74,7 @@ void m_init(void)
 
 	g_btnsize = drawgetimagesize(g_bmp[BTNS_MAIN]);
 	g_btnofs = 26 / g_btnsize[1];
+	precache_pic("gfx/shell/fragnet");
 
 	games_init();
 	main_init();

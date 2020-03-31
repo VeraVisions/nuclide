@@ -139,7 +139,7 @@ void menu_creategame_init(void)
 		g_maps[i] = substring(search_getfilename(mapsearch, i), 5, -1);
 		create_lbMaps.AddEntry(g_maps[i]);
 	}
-	
+
 	create_sbMaps.SetMax(g_mapcount);
 	search_end(mapsearch);
 }

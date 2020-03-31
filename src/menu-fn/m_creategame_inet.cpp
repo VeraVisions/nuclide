@@ -85,6 +85,7 @@ void menu_creategameinet_init(void)
 void menu_creategameinet_draw(void)
 {
 	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_CREATEGAME],[460,80], [1,1,1], 1.0f, 1);
+	drawpic([g_menuofs[0]+550,g_menuofs[1]+10], "gfx/shell/fragnet",[80,80], [1,1,1], 1.0f, 0);
 
 	WLabel_Static(216, 143, m_reslbl[IDS_CREATESERVER_NAME], 14, 14, [1,1,1],
 					1.0f, 0, font_arial);

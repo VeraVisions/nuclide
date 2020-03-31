@@ -32,6 +32,7 @@ menupage_t g_mpage[] = {
 	{ menu_internetgames_init, menu_internetgames_draw, menu_internetgames_input },
 	{ menu_addserver_init, menu_addserver_draw, menu_addserver_input },
 	{ menu_chatrooms_init, menu_chatrooms_draw, menu_chatrooms_input },
+	{ menu_chatroomslist_init, menu_chatroomslist_draw, menu_chatroomslist_input },
 	{ menu_creategame_init, menu_creategame_draw, menu_creategame_input },
 	{ menu_creategameinet_init, menu_creategameinet_draw, menu_creategameinet_input },
 	{ menu_advancedmpoptions_init, menu_advancedmpoptions_draw, menu_advancedmpoptions_input },

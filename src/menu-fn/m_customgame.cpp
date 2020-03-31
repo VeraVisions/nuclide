@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/* local game/mod info parsing */
 void games_set(int id)
 {
 	gameinfo_current = id;
@@ -61,6 +62,7 @@ void games_init(void)
 		games[id].cldll = 1;
 		games[id].hlversion = "1110";
 		games[id].svonly = 0;
+		games[id].installed = 1;
 
 		for ( int i = 0; i < county; i+=2 ) {
 			switch( argv(i) ) {
@@ -129,10 +131,12 @@ void games_init(void)
 	}
 }
 
+/* the menu specific code */
 CWidget fn_customgame;
 CFrame customgame_frMods;
 CModList customgame_lbMods;
 CScrollbar customgame_sbMods;
+CDialog customgame_dlgWait;
 
 CMainButton customgame_btnActivate;
 CMainButton customgame_btnInstall;
@@ -147,6 +151,7 @@ void customgame_btnactivate_start(void)
 
 	games_set(nextgame);
 
+	/* some games/mods inherit other directories */
 	if (games[nextgame].fallback_dir) {
 		localcmd(sprintf("gamedir \"%s;%s\"\n", games[nextgame].fallback_dir, games[nextgame].gamedir));
 	} else {
@@ -154,10 +159,12 @@ void customgame_btnactivate_start(void)
 	}
 
 	localcmd("stopmusic\nsnd_restart\nwait\nvid_reload\nmenu_restart\nmenu_customgame\n");
-	// TODO: Re-init important menu bits and bobs.
 	cvar_init();
-	//m_shutdown();
-	//m_init();
+}
+void customgame_btninstall_start(void)
+{
+	int gid = customgame_lbMods.GetSelected();
+	localcmd(sprintf("fs_changegame %s\n", games[gid].url_dl));
 }
 void customgame_btndeactivate_start(void)
 {
@@ -185,9 +192,23 @@ void customgame_sbmods_changed(int val)
 	customgame_lbMods.SetScroll(val);
 }
 
+void customgame_lbmods_changed(void)
+{
+	int gid = customgame_lbMods.GetSelected();
+
+	if (games[gid].installed == TRUE) {
+		customgame_btnActivate.SetExecute(customgame_btnactivate_start);
+		customgame_btnInstall.SetExecute(__NULL__);
+	} else {
+		customgame_btnActivate.SetExecute(__NULL__);
+		customgame_btnInstall.SetExecute(customgame_btninstall_start);
+	}
+}
+
 void menu_customgame_init(void)
 {
 	fn_customgame = spawn(CWidget);
+	customgame_dlgWait = spawn(CDialog);
 
 	customgame_btnActivate = spawn(CMainButton);
 	customgame_btnActivate.SetImage(BTN_ACTIVATE);
@@ -208,6 +229,7 @@ void menu_customgame_init(void)
 	customgame_btnRefresh = spawn(CMainButton);
 	customgame_btnRefresh.SetImage(BTN_REFRESHLIST);
 	customgame_btnRefresh.SetPos(15,236);
+	customgame_btnRefresh.SetExecute(ModServer_Refresh);
 	Widget_Add(fn_customgame, customgame_btnRefresh);
 
 	customgame_btnDeactivate = spawn(CMainButton);
@@ -230,6 +252,7 @@ void menu_customgame_init(void)
 	customgame_lbMods = spawn(CModList);
 	customgame_lbMods.SetPos(144,159);
 	customgame_lbMods.SetSize(457,283);
+	customgame_lbMods.SetChanged(customgame_lbmods_changed);
 	Widget_Add(fn_customgame, customgame_lbMods);
 	
 	customgame_sbMods = spawn(CScrollbar);
@@ -239,7 +262,6 @@ void menu_customgame_init(void)
 	customgame_sbMods.SetCallback(customgame_sbmods_changed);
 	customgame_sbMods.SetMax(gameinfo_count-1); /* don't show our current game */
 	Widget_Add(fn_customgame, customgame_sbMods);
-
 }
 
 void menu_customgame_draw(void)
@@ -263,6 +285,13 @@ void menu_customgame_draw(void)
 					1.0f, 0, font_arial);
 	WLabel_Static(571, 143, m_reslbl[IDS_MODLIST_PLAYERS], 11, 11, [1,1,1],
 					1.0f, 0, font_arial);
+
+	if (g_iModServerLoading) {
+		customgame_dlgWait.Draw();
+		WField_Static(162, 180, m_reslbl[IDS_MODREQ_TITLE], 320, 260,
+			col_prompt_text, 1.0f, 2, font_label_p);
+	}
+	customgame_sbMods.SetMax(gameinfo_count-1); /* don't show our current game */
 }
 
 void menu_customgame_input(float evtype, float scanx, float chary, float devid)

@@ -16,13 +16,13 @@
 
 var int autocvar_menu_intro = TRUE;
 
-#define KEY_UNKNOWN 		-1
-#define KEY_GAME 			0
-#define KEY_MENU 			2
-#define KEY_MENU_GRABBED 	3
+#define KEY_UNKNOWN			-1
+#define KEY_GAME			0
+#define KEY_MENU			2
+#define KEY_MENU_GRABBED	3
 
-#define TARGET_MENU 		1
-#define TARGET_CLIENT 		2
+#define TARGET_MENU			1
+#define TARGET_CLIENT		2
 
 /* Basic Menu Globals */
 int g_vidsize[2];
@@ -60,6 +60,7 @@ typedef struct
 	string type;
 	string hlversion;
 	int nomodels;
+	int installed;
 	string mpentity;
 	string gamedll;
 	string startmap;
@@ -92,6 +93,7 @@ enum {
 	PAGE_INTERNETGAMES,
 	PAGE_ADDSERVER,
 	PAGE_CHATROOMS,
+	PAGE_CHATROOMS_LIST,
 	PAGE_CREATEGAME,
 	PAGE_CREATEGAMEINET,
 	PAGE_ADVANCEDMPOPTIONS,

@@ -54,24 +54,40 @@ void cz_btnadvanced_start(void)
 	header.SetExecute(cz_btnadvanced_end);
 }
 
+void cz_cbModelChanged(void)
+{
+	string mdl = cz_psModel.GetPic();
+	tokenizebyseparator(mdl, "/");
+	localcmd(sprintf("seta _cl_playermodel %s\n", argv(2)));
+	localcmd(sprintf("setinfo model %s\n", argv(2)));
+}
+
+void cz_cbSprayChanged(void)
+{
+	string mdl = cz_psSpray.GetPic();
+	localcmd(sprintf("seta _cl_playerspray %s\n", mdl));
+	localcmd(sprintf("setinfoblob spray %s\n", mdl));
+}
+
 void menu_customize_init(void)
 {
+	/* scan and cache the sprays */
 	searchhandle searchy = search_begin("*.bmp", TRUE, TRUE);
-	g_sprays = memalloc(sizeof(string) * search_getsize(searchy));
-	for (int i = 0; i < search_getsize(searchy); i++) {
-		precache_pic(search_getfilename(searchy, i));
+	g_sprayscount = search_getsize(searchy);
+	g_sprays = memalloc(sizeof(string) * g_sprayscount);
+	for (int i = 0; i < g_sprayscount; i++) {
 		g_sprays[i] = search_getfilename(searchy, i);
-		//g_sprays[i] = substring(search_getfilename(searchy, i), 0, -5);
+		precache_pic(g_sprays[i]);
 	}
 	search_end(searchy);
-	
+
+	/* scan and cache the models */
 	searchy = search_begin("models/player/*/*.bmp", TRUE, TRUE);
-	g_models = memalloc(sizeof(string) * search_getsize(searchy));
-	for (int i = 0; i < search_getsize(searchy); i++) {
+	g_modelcount = search_getsize(searchy);
+	g_models = memalloc(sizeof(string) * g_modelcount);
+	for (int i = 0; i < g_modelcount; i++) {
 		g_models[i] = search_getfilename(searchy, i);
-		//tokenizebyseparator(search_getfilename(searchy, i),"/");
-		//precache_pic(argv(2));
-		//g_models[i] = argv(2);
+		precache_pic(g_models[i]);
 	}
 	search_end(searchy);
 	
@@ -98,10 +114,11 @@ void menu_customize_init(void)
 	cz_psSpray.SetSize(99,124);
 	cz_psSpray.SetPicSize(64,64);
 	cz_psSpray.SetPicOffset(14,14);
-	cz_psSpray.SetMax(g_sprayscount);
 	cz_psSpray.SetPics(g_sprays);
-	cz_psSpray.SetValueS("logo");
-	//Widget_Add(fn_customize, cz_psSpray);
+	cz_psSpray.SetMax(g_sprayscount);
+	cz_psSpray.SetCallback(cz_cbSprayChanged);
+	cz_psSpray.SetValueS(cvar_string("_cl_playerspray"));
+	Widget_Add(fn_customize, cz_psSpray);
 	
 	cz_psModel = spawn(CPictureSwitch);
 	cz_psModel.SetPos(410,160);
@@ -109,8 +126,9 @@ void menu_customize_init(void)
 	cz_psModel.SetPicSize(164,190);
 	cz_psModel.SetPics(g_models);
 	cz_psModel.SetMax(g_modelcount);
-	cz_psSpray.SetValueS("model");
-	//Widget_Add(fn_customize, cz_psModel);
+	cz_psModel.SetCallback(cz_cbModelChanged);
+	cz_psModel.SetValueS(sprintf("models/player/%s/%s.bmp", cvar_string("_cl_playermodel"), cvar_string("_cl_playermodel")));
+	Widget_Add(fn_customize, cz_psModel);
 }
 
 void menu_customize_draw(void)
@@ -119,7 +137,7 @@ void menu_customize_draw(void)
 	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_CUSTOMIZE],[460,80], [1,1,1], 1.0f, 1);
 	WLabel_Static(212, 140, m_reslbl[IDS_PLAYERINFO_NAME], 14, 14, [1,1,1],
 					1.0f, 0, font_arial);
-	WLabel_Static(410, 140, sprintf(m_reslbl[IDS_MODEL_NAME], "barney"), 14, 14, [1,1,1],
+	WLabel_Static(410, 140, sprintf(m_reslbl[IDS_MODEL_NAME], cvar_string("_cl_playermodel")), 14, 14, [1,1,1],
 					1.0f, 0, font_arial);
 	WLabel_Static(212, 203, m_reslbl[IDS_PROFILE_LOGO], 14, 14, [1,1,1],
 					1.0f, 0, font_arial);

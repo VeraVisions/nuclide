@@ -72,6 +72,32 @@ void mp_btninet_start(void)
 	}
 }
 
+/* this is from m_chatrooms.cpp */
+void cr_btnservers_start(void)
+{
+	static void cr_btnservers_end(void) {
+		g_menupage = PAGE_INTERNETGAMES;
+	}
+
+	/* hack - jump to here so we draw the connection thing */
+	g_menupage = PAGE_MULTIPLAYER;
+	cvar_set("sv_public", "1");
+	localsound("../media/launch_upmenu1.wav");
+
+	if (g_connected == TRUE) {
+		header.SetStartEndPos(252,70,45,45);
+		header.SetStartEndSize(156,26,460,80);
+		header.m_lerp = 0.0f;
+		header.m_visible = TRUE;
+		header.SetHeader(HEAD_INETGAMES);
+		header.SetExecute(cr_btnservers_end);
+	} else {
+		Master_GetInternetList();
+		g_connectstatus = CONNECT_INTERNET;
+		g_connecttimer = 8.0f;
+	}
+}
+
 void mp_btnlan_start(void)
 {
 	static void mp_btnlan_end(void) {
