@@ -38,7 +38,6 @@ class scripted_sentence:CBaseTrigger
 
 	void() scripted_sentence;
 	virtual void() Trigger;
-	virtual void() Respawn;
 };
 
 void scripted_sentence::Trigger(void)
@@ -46,6 +45,7 @@ void scripted_sentence::Trigger(void)
 	entity speaker = find(world, CBaseEntity::m_strTargetName, m_strSpeaker);
 
 	if (!speaker) {
+		print(sprintf("^1scripted_sentence::Trigger^7: Couldn't find %s!\n", m_strSpeaker));
 		return;
 	}
 
@@ -59,21 +59,13 @@ void scripted_sentence::Trigger(void)
 	multicast(speaker.origin, MULTICAST_PVS);
 }
 
-/* TODO: Make this redundant */
-void scripted_sentence::Respawn(void)
-{
-	solid = SOLID_TRIGGER;
-#ifdef GS_DEVELOPER
-	alpha = 0.5f;
-#endif
-}
-
 void scripted_sentence::scripted_sentence(void)
 {
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
 		case "entity":
 			m_strSpeaker = argv(i+1);
+			break;
 		case "sentence":
 			m_strSentence = argv(i+1);
 			break;
