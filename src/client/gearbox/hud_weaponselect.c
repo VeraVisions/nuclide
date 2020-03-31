@@ -122,6 +122,11 @@ void HUD_SlotSelect(int slot)
 	int curslot = g_weapons[pSeat->fHUDWeaponSelected].slot;
 	int i;
 
+	/* hack to see if we have ANY weapons at all. */
+	if (!pl.activeweapon) {
+		return;
+	}
+
 	if (pSeat->fHUDWeaponSelectTime < time) {
 		sound(pSeat->ePlayer, CHAN_ITEM, "common/wpn_hudon.wav", 0.5, ATTN_NONE);
 	} else {
