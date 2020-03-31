@@ -168,7 +168,7 @@ monster_zombie::IdleNoise(void)
 	if (m_flIdleTime > time) {
 		return;
 	}
-	m_flIdleTime = time + 2.0f + random(0,5);
+	m_flIdleTime = time + random(2,10);
 
 	int rand = floor(random(0, zo_sndidle.length));
 	Sound(zo_sndidle[rand]);

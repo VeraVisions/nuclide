@@ -144,7 +144,7 @@ void trigger_changelevel::trigger_changelevel(void)
 
 vector Landmark_GetSpot(void)
 {
-	info_landmark landmark;
+	info_landmark landmark = world;
 
 	/* a trigger_transition may share the same targetname, thus we do this */
 	for (entity e = world; (e = find(e, ::classname, "info_landmark"));) {
@@ -158,9 +158,7 @@ vector Landmark_GetSpot(void)
 	}
 
 	/* return something useful at least */
-	if (!landmark) {
-		entity ips = find(world, ::classname, "info_player_start");
-		print(sprintf("^1ERROR^7: Landmark_GetSpot: Cannot find startspot '%s'!\n",startspot));
-		return ips.origin;
-	}
+	entity ips = find(world, ::classname, "info_player_start");
+	print(sprintf("^1ERROR^7: Landmark_GetSpot: Cannot find startspot '%s'!\n",startspot));
+	return ips.origin;
 }

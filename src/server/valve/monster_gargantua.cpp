@@ -116,7 +116,7 @@ monster_gargantua::IdleNoise(void)
 		return;
 	}
 	/* timing needs to adjusted as sounds conflict */
-	m_flIdleTime = time + 2.0f + random(0,5);
+	m_flIdleTime = time + random(2,10);
 
 	int rand = floor(random(0, garg_sndidle.length));
 	Sound(garg_sndidle[rand]);

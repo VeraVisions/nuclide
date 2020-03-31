@@ -51,21 +51,20 @@ Game_ClientDisconnect(void)
 }
 
 void
-Game_ClientKill(void)
+Game_ClientKill(player pl)
 {
-	Damage_Apply(self, self, self.health, WEAPON_NONE, DMG_SKIP_ARMOR);
+	Damage_Apply(pl, pl, pl.health, WEAPON_NONE, DMG_SKIP_ARMOR);
 }
 
 void
-Game_PlayerPreThink(void)
+Game_PlayerPreThink(player pl)
 {
 	
 }
 
 void
-Game_PlayerPostThink(void)
+Game_PlayerPostThink(player pl)
 {
-	player pl = (player)self;
 	Animation_PlayerUpdate();
 
 	pl.SendFlags |= PLAYER_KEEPALIVE;
@@ -197,13 +196,8 @@ Game_SetChangeParms(void)
 }
 
 void
-Game_PutClientInServer(void)
+Game_PutClientInServer(player pl)
 {
-	if (self.classname != "player") {
-		spawnfunc_player();
-	}
-	player pl = (player)self;
-
 	entity spot;
 	pl.classname = "player";
 	pl.health = self.max_health = 100;

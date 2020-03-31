@@ -44,7 +44,7 @@ void trigger_camera::Trigger(void)
 	Client_TriggerCamera(eActivator, origin, angles, m_flWait);
 
 	dprint( sprintf( "^2trigger_camera::^3Trigger^7: Camera at %v, %v, for %f sec/s requested\n", 
-		this.classname, origin, angles, m_flWait ) );
+		origin, angles, m_flWait ) );
 }
 
 void trigger_camera::trigger_camera(void)

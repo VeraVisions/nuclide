@@ -135,7 +135,7 @@ monster_bullchicken::IdleNoise(void)
 		return;
 	}
 	/* timing needs to adjusted as sounds conflict */
-	m_flIdleTime = time + 2.0f + random(0,5);
+	m_flIdleTime = time + random(2,10);
 
 	int rand = floor(random(0, bull_sndidle.length));
 	Sound(bull_sndidle[rand]);
