@@ -133,7 +133,7 @@ void HUD_SlotSelect(int slot)
 	/* weren't in that slot? select the first one then */
 	if (curslot != slot) {
 		for (i = 1; i < g_weapons.length; i++) {
-			if (g_weapons[i].slot == slot) {
+			if (g_weapons[i].slot == slot && pl.g_items & g_weapons[i].id) {
 				pSeat->fHUDWeaponSelected = i;
 				pSeat->fHUDWeaponSelectTime = time + 3;
 				break;
