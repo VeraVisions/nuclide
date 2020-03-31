@@ -16,7 +16,6 @@ client/env_laser.cpp
 client/func_lod.cpp
 client/func_dustmotes.cpp
 client/sky_camera.cpp
-server/func_ladder.cpp
 server/trigger_gravity.cpp
 client/info_notnull.cpp
 client/point_message.cpp

@@ -69,7 +69,6 @@ CBaseEntity::RenderFXPass(void)
 		effects = EF_FULLBRIGHT;
 		break;
 	case RM_SOLID:
-		alpha = 1.0f;
 		break;
 	case RM_ADDITIVE:
 		effects = EF_ADDITIVE;
@@ -110,6 +109,10 @@ CBaseEntity::RenderFXPass(void)
 float
 CBaseEntity::predraw(void)
 {
+	if (!modelindex) {
+		return PREDRAW_NEXT;
+	}
+
 #ifdef GS_RENDERFX
 	RenderFXPass();
 #endif
@@ -137,7 +140,7 @@ CBaseEntity::ProcessWordQue(void)
 	}
 
 	sound(this, CHAN_VOICE, m_pSentenceQue[m_iSentencePos].m_strSnd, 1.0, ATTN_NORM, 100, SOUNDFLAG_FOLLOW);
-	dprint(sprintf("^2CBaseEntity::ProcessWordQue^7: Speaking %s\n", m_pSentenceQue[m_iSentencePos].m_strSnd));
+	dprint(sprintf("^2CBaseEntity::^3ProcessWordQue^7: Speaking %s\n", m_pSentenceQue[m_iSentencePos].m_strSnd));
 	m_iSentencePos++;
 
 	if (m_iSentenceCount == m_iSentenceCount) {
@@ -347,6 +350,6 @@ CBaseEntity_ParseSentence(void)
 		targ = (CBaseEntity)ent;
 		targ.Sentence(sentence);
 	} else {
-		print(sprintf("^1CBaseNPC_ParseSentence^7: Entity %d not in PVS\n", e));
+		print(sprintf("^3CBaseNPC_ParseSentence^7: Entity %d not in PVS\n", e));
 	}
 }

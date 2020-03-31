@@ -281,10 +281,10 @@ void func_button::Blocked(void)
 
 void func_button::SetMovementDirection(void)
 {
-	if (m_oldAngle == '0 -1 0') {
-		m_vecMoveDir = '0 0 1';
-	} else if (m_oldAngle == '0 -2 0') {
-		m_vecMoveDir = '0 0 -1';
+	if (m_oldAngle == [0,-1,0]) {
+		m_vecMoveDir = [0,0,1];
+	} else if (m_oldAngle == [0,-2,0]) {
+		m_vecMoveDir = [0,0,-1];
 	} else {
 		makevectors(m_oldAngle);
 		m_vecMoveDir = v_forward;

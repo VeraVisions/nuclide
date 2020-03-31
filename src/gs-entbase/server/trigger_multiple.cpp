@@ -69,18 +69,17 @@ void trigger_multiple::touch(void)
 		nextthink = time + m_flWait;
 	}
 	solid = SOLID_NOT;
-	
-#ifdef GS_DEVELOPER
-	alpha = 0.001f;
-#endif
 }
 
-/* TODO: Make this redundant */
 void trigger_multiple::Respawn(void)
 {
 	solid = SOLID_TRIGGER;
 #ifdef GS_DEVELOPER
-	alpha = 0.5f;
+	m_iRenderMode = RM_SOLID;
+	m_flRenderAmt = 0.25f;
+#else
+	m_iRenderMode = RM_SOLID;
+	m_flRenderAmt = 0.0f;
 #endif
 }
 

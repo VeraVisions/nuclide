@@ -37,6 +37,7 @@ class trigger_once:CBaseTrigger
 {
 	float m_flDelay;
 	void() trigger_once;
+
 	virtual void() touch;
 	virtual void() Respawn;
 };
@@ -51,17 +52,17 @@ void trigger_once::touch(void)
 		CBaseTrigger::UseTargets();
 	}
 	solid = SOLID_NOT;
-#ifdef GS_DEVELOPER
-	alpha = 0.001f;
-#endif
 }
 
-/* TODO: Make this redundant */
 void trigger_once::Respawn(void)
 {
 	solid = SOLID_TRIGGER;
 #ifdef GS_DEVELOPER
-	alpha = 0.5f;
+	m_iRenderMode = RM_SOLID;
+	m_flRenderAmt = 0.25f;
+#else
+	m_iRenderMode = RM_SOLID;
+	m_flRenderAmt = 0.0f;
 #endif
 }
 
@@ -77,6 +78,6 @@ void trigger_once::trigger_once(void)
 		}
 	}
 
-	CBaseEntity::CBaseEntity();
-	CBaseTrigger::InitBrushTrigger();
+	CBaseTrigger::CBaseTrigger();
+	InitBrushTrigger();
 }

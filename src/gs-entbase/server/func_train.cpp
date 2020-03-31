@@ -125,7 +125,7 @@ func_train::GoToTarget(void)
 	flTravelTime = (vlen(vecVelocity) / m_flSpeed);
 
 	if (!flTravelTime) {
-		print("^1func_train::GoToTarget^7: Distance short, going next\n");
+		print("^1func_train::^3GoToTarget^7: Distance short, going next\n");
 		think = NextPath;
 		nextthink = ltime;
 		return;
@@ -173,7 +173,7 @@ func_train::NextPath(void)
 
 	/* warp next frame */
 	if (eNode.spawnflags & PC_TELEPORT) {
-		print(sprintf("^1func_train::NextPath^7: Node %s wants %s to teleport\n", eNode.m_strTargetName, m_strTargetName));
+		print(sprintf("^1func_train::^3NextPath^7: Node %s wants %s to teleport\n", eNode.m_strTargetName, m_strTargetName));
 		think = NextPath;
 		nextthink = ltime;
 		return;

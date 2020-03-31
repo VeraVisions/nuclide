@@ -53,12 +53,12 @@ class trigger_hurt:CBaseTrigger
 void trigger_hurt::Trigger(void)
 {
 	if (solid != SOLID_NOT) {
-		dprint( sprintf( "trigger_hurt::Trigger: %s deactivated\n", 
+		dprint( sprintf( "trigger_hurt::^3Trigger: %s deactivated\n", 
 			m_strTargetName ) );
 		solid = SOLID_NOT;
 		touch = __NULL__;
 	} else {
-		dprint( sprintf( "trigger_hurt::Trigger: %s activated\n", 
+		dprint( sprintf( "trigger_hurt::^3Trigger: %s activated\n", 
 			m_strTargetName ) );
 		solid = SOLID_TRIGGER;
 		touch = Touch;
@@ -99,7 +99,7 @@ void trigger_hurt::Touch(void)
 
 	Damage_Apply(other, this, m_iDamage, 0, DMG_GENERIC);
 
-	dprint( sprintf( "^2trigger_hurt::Touch^7: Hurting '%s' with %i\n", 
+	dprint( sprintf( "^2trigger_hurt::^3Touch^7: Hurting '%s' with %i\n", 
 		other.netname, m_iDamage ) );
 
 	// Shut it down if used once

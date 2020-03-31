@@ -30,35 +30,31 @@ string g_laddersnd[] = {
 class func_ladder:CBaseEntity
 {
 	void() func_ladder;
-#ifdef CSQC
-	virtual void() Initialized;
-#endif
+
+	virtual void() Respawn;
 };
 
-void func_ladder :: func_ladder ( void )
+
+void func_ladder::Respawn(void)
 {
-#ifdef SSQC
-	setmodel( this, model );
+	setmodel( this, m_oldModel );
 	movetype = MOVETYPE_NONE;
 	skin = CONTENT_LADDER;
 	solid = SOLID_BSP;
 
-	#ifdef GS_DEVELOPER
-		m_flRenderAmt = 0.5f;
-	#else
-		m_flRenderAmt = 0.0001f;
-	#endif
+#ifdef GS_DEVELOPER
+	m_iRenderMode = RM_SOLID;
+	m_flRenderAmt = 0.25f;
 #else
-	Init();
-	setorigin(this, origin);
+	m_iRenderMode = RM_SOLID;
+	m_flRenderAmt = 0.0f;
 #endif
 }
 
-void func_ladder :: Initialized (void)
+void func_ladder :: func_ladder ( void )
 {
-	setmodel( this, model );
+	setmodel( this, m_oldModel );
 	movetype = MOVETYPE_NONE;
 	skin = CONTENT_LADDER;
 	solid = SOLID_BSP;
-	setorigin(this, origin);
 }

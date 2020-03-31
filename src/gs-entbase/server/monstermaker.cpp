@@ -25,13 +25,28 @@ spawn.
 
 class monstermaker : CBaseTrigger
 {
+	string m_strMonster;
+
 	void() monstermaker;
 	virtual void() Trigger;
 };
 
-void monstermaker :: Trigger ( void )
+void monstermaker::Trigger ( void )
 {
+	static void monstermaker_spawnunit(void) {
+		callfunction(self.classname);
+	}
 
+	if (isfunction(strcat("spawnfunc_", m_strMonster))) {
+		entity unit = spawn();
+		unit.classname = strcat("spawnfunc_", m_strMonster);
+		unit.think = monstermaker_spawnunit;
+		unit.nextthink = time + 0.1f;
+		print(sprintf("^2monstermaker::^3Trigger^7: Spawning %s\n", m_strMonster));
+		setorigin(unit, origin);
+	} else {
+		print(sprintf("^1monstermaker::^3Trigger^7: cannot call spawnfunction for %s\n", m_strMonster));
+	}
 }
 
 void monstermaker :: monstermaker ( void )
@@ -40,6 +55,9 @@ void monstermaker :: monstermaker ( void )
 
 	for ( int i = 1; i < (  tokenize( __fullspawndata ) - 1 ); i += 2 ) {
 		switch ( argv( i ) ) {
+		case "monstertype":
+			m_strMonster = argv(i+1);
+			break;
 		default:
 			break;
 		}

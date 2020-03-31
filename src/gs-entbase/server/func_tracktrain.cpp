@@ -44,7 +44,7 @@ void func_tracktrain::GoToTarget(void)
 	f = find(world, CBaseTrigger::m_strTargetName, m_strTarget);
 
 	if (!f) {
-		dprint(sprintf("^1func_tracktrain::GoToTarget^7: Trigger-Target for %s not found! Removing.\n", m_strTargetName));
+		dprint(sprintf("^1func_tracktrain::^3GoToTarget^7: Trigger-Target for %s not found! Removing.\n", m_strTargetName));
 		return;
 	}
 
@@ -83,7 +83,7 @@ void func_tracktrain::Find(void)
 	entity f = find(world, CBaseTrigger::m_strTargetName, m_strTarget);
 
 	if (!f) {
-		dprint(sprintf("^1func_tracktrain::GoToTarget^7: Trigger-Target %s for %s not found! Removing.\n", m_strTarget, m_strTargetName));
+		dprint(sprintf("^1func_tracktrain::^3GoToTarget^7: Trigger-Target %s for %s not found! Removing.\n", m_strTarget, m_strTargetName));
 		remove(this);
 		return;
 	}

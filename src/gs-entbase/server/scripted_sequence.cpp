@@ -109,7 +109,7 @@ void scripted_sequence::Trigger(void)
 		m_iEnabled = FALSE;
 	}
 
-	dprint(sprintf("^2scripted_sequence::Trigger^7: with spawnflags %d\n", spawnflags));
+	dprint(sprintf("^2scripted_sequence::^3Trigger^7: with spawnflags %d\n", spawnflags));
 	f = (CBaseMonster)find(world, CBaseEntity::m_strTargetName, m_strMonster);
 
 	/* target doesn't exist/hasn't spawned */
@@ -125,7 +125,7 @@ void scripted_sequence::Trigger(void)
 
 		/* cancel out. this trigger is broken. */
 		if (!f) {
-			dprint(sprintf("^1scripted_sequence::Trigger^7: Unknown target %s\n", m_strMonster));
+			dprint(sprintf("^1scripted_sequence::^3Trigger^7: Unknown target %s\n", m_strMonster));
 			return;
 		}
 	}

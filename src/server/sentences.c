@@ -76,14 +76,13 @@ Sentences_GetSamples(string word)
 
 	/* you never know what NPCs might do */
 	if (word == "") {
-		print("^1ERROR: No sentence supplied.\n");
 		return "";
 	}
 
 	/* check if the word is present at all */
 	for (int i = 0; i < g_sentences_count; i++) {
 		if (g_sentences[i] == word) {
-			print(sprintf("^2Sentences: Found %s\n", word));
+			print(sprintf("^3Sentences_GetSamples^7: Found %s\n", word));
 			return word;
 		}
 	}
@@ -100,7 +99,7 @@ Sentences_GetSamples(string word)
 	/* if we've got one, choose a random sample of them */
 	if (gc) {
 		int r = floor(random(0, gc));
-		print(sprintf("^2Sentences: Choosing %s%i\n", word, r));
+		print(sprintf("^3Sentences_GetSamples^7: Choosing %s%i\n", word, r));
 		return sprintf("%s%i", word, r);
 	}
 

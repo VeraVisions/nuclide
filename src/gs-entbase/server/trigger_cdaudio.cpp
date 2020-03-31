@@ -25,7 +25,9 @@ class trigger_cdaudio : CBaseTrigger
 {
 	int m_iCDTrack;
 	void() trigger_cdaudio;
+
 	virtual void() Trigger;
+	virtual void() Respawn;
 };
 
 void trigger_cdaudio :: Trigger ( void )
@@ -34,7 +36,7 @@ void trigger_cdaudio :: Trigger ( void )
 		return;
 	}
 
-	dprint( sprintf( "^2trigger_cdaudio::Trigger^7: CD Track %i requested\n", 
+	dprint( sprintf( "^2trigger_cdaudio::^3Trigger^7: CD Track %i requested\n", 
 		m_iCDTrack ) );
 
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
@@ -44,6 +46,18 @@ void trigger_cdaudio :: Trigger ( void )
 	multicast([0,0,0], MULTICAST_ALL_R);
 
 	remove( this );
+}
+
+void trigger_cdaudio::Respawn(void)
+{
+	solid = SOLID_TRIGGER;
+#ifdef GS_DEVELOPER
+	m_iRenderMode = RM_SOLID;
+	m_flRenderAmt = 0.25f;
+#else
+	m_iRenderMode = RM_SOLID;
+	m_flRenderAmt = 0.0f;
+#endif
 }
 
 void trigger_cdaudio :: trigger_cdaudio ( void )

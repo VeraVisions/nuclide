@@ -90,20 +90,20 @@ float ambient_generic::SendEntity(entity ePEnt, float fChanged)
 void ambient_generic::UseNormal(void)
 {
 	sound(this, CHAN_VOICE, m_strActivePath, m_flVolume, m_flRadius, m_flPitch);
-	print( sprintf( "%s::UseNormal: Play `%s`\n", 
-		this.classname, m_strActivePath ) );
+	dprint( sprintf( "^2ambient_generic::^3UseNormal^7: %s plays `%s`\n", 
+		m_strTarget, m_strActivePath ) );
 }
 
 void ambient_generic::UseLoop(void)
 {
 	if (m_iToggleSwitch == TRUE) {
-		dprint( sprintf( "%s::UseLoop: Stop `%s`\n", 
-			this.classname, m_strActivePath ) );
+		dprint( sprintf( "^2ambient_generic::^3UseLoop^7: %s stops `%s`\n", 
+			m_strTarget, m_strActivePath ) );
 		m_strActivePath = "common/null.wav";
 	} else {
 		m_strActivePath = m_strSoundPath;
-		dprint( sprintf( "%s::UseLoop: Play `%s`\n", 
-			this.classname, m_strActivePath ) );
+		dprint( sprintf( "^2ambient_generic::^3UseLoop^7: %s plays `%s`\n", 
+			m_strTarget, m_strActivePath ) );
 	}
 
 	m_iToggleSwitch = 1 - m_iToggleSwitch;

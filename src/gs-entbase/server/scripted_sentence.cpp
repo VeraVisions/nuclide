@@ -45,11 +45,11 @@ void scripted_sentence::Trigger(void)
 	entity speaker = find(world, CBaseEntity::m_strTargetName, m_strSpeaker);
 
 	if (!speaker) {
-		print(sprintf("^1scripted_sentence::Trigger^7: Couldn't find %s!\n", m_strSpeaker));
+		print(sprintf("^1scripted_sentence::^3Trigger^7: Couldn't find %s!\n", m_strSpeaker));
 		return;
 	}
 
-	dprint(sprintf("^2scripted_sentence::Trigger^7: %s on %s\n", m_strSentence, m_strSpeaker));
+	dprint(sprintf("^2scripted_sentence::^3Trigger^7: %s on %s\n", m_strSentence, m_strSpeaker));
 
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_SENTENCE);

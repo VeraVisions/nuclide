@@ -117,10 +117,11 @@ void CBaseTrigger :: InitPointTrigger ( void )
 void CBaseTrigger :: InitBrushTrigger ( void )
 {
 	precache_model( m_oldModel );
+	setmodel( this, m_oldModel );
 	movetype = MOVETYPE_NONE;
 	solid = SOLID_TRIGGER;
-	setmodel( this, m_oldModel );
 #ifdef GS_DEVELOPER
+	m_iRenderMode = RM_SOLID;
 	m_flRenderAmt = 0.25f;
 #else
 	modelindex = 0;

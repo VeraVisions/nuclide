@@ -60,7 +60,7 @@ void func_guntarget::Move(void)
 	node = (path_corner)find(world, CBaseTrigger::m_strTargetName, m_strTarget);
 
 	if (!node) {
-		dprint(sprintf("^1func_guntarget::Move^7: Path node for %s not found!\n", m_strTargetName));
+		dprint(sprintf("^1func_guntarget::^3Move^7: Path node for %s not found!\n", m_strTargetName));
 		return;
 	}
 
@@ -86,7 +86,7 @@ void func_guntarget::NextPath(void)
 {
 	path_corner node;
 
-	print(sprintf("^2func_guntarget^7: Talking to current target %s... ", m_strTarget));
+	print(sprintf("^2func_guntarget::^3NextPath^7: Talking to current target %s... ", m_strTarget));
 	node = (path_corner)find(world, path_corner::m_strTargetName, m_strTarget);
 
 	if (!node) {

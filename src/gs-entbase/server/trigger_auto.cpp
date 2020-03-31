@@ -30,11 +30,11 @@ class trigger_auto:CBaseTrigger
 	float m_flDelay;
 
 	void() trigger_auto;
-	virtual void() think;
+	virtual void() Processing;
 	virtual void() Respawn;
 };
 
-void trigger_auto::think(void)
+void trigger_auto::Processing(void)
 {
 	// This is weird, because ents may not be spawned yet.
 	// However, Half-Life doesn't care about this, either.
@@ -42,9 +42,9 @@ void trigger_auto::think(void)
 	CBaseTrigger::UseTargets_Delay(m_flDelay);
 
 	if (spawnflags & 1) {
-		dprint( sprintf( "%s::think: %s removed self after trigger\n", 
-			m_strTargetName, this.classname ) );
-		remove(this);
+		dprint( sprintf( "^2trigger_auto::^3think^7: %s triggerer removed self\n", 
+			m_strTarget) );
+		think = __NULL__;
 	}
 }
 
@@ -64,5 +64,6 @@ void trigger_auto::trigger_auto(void)
 			break;
 		}
 	}
+	think = Processing;
 	CBaseTrigger::CBaseTrigger();
 }
