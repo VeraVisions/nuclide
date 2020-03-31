@@ -42,10 +42,8 @@ void CBaseTrigger :: UseTargets ( void )
 {
 	for ( entity eFind = world; ( eFind = find( eFind, CBaseTrigger::m_strTargetName, m_strTarget ) ); ) {
 		CBaseTrigger trigger = (CBaseTrigger) eFind;
-#ifdef GS_DEVELOPER
-		print( sprintf( "^2%s::^3UseTargets^7: Triggering %s `%s`\n", 
+		dprint( sprintf( "^2%s::^3UseTargets^7: Triggering %s `%s`\n", 
 			this.classname, eFind.classname, trigger.m_strTargetName ) );
-#endif
 		if (trigger.Trigger != __NULL__) {
 			trigger.Trigger();
 		}
@@ -95,10 +93,8 @@ void CBaseTrigger :: UseTargets_Delay ( float fDelay )
 		remove( self );
 	}
 
-#ifdef GS_DEVELOPER
-		print( sprintf( "^2%s::^3UseTargets_Delay^7: Triggering `%s`\n", 
-			this.classname, m_strTarget ) );
-#endif
+	dprint( sprintf( "^2%s::^3UseTargets_Delay^7: Triggering `%s`\n", 
+		this.classname, m_strTarget ) );
 
 	CBaseTrigger eTimer = spawn( CBaseTrigger );
 	eTimer.owner = eActivator;
@@ -125,7 +121,7 @@ void CBaseTrigger :: InitBrushTrigger ( void )
 	solid = SOLID_TRIGGER;
 	setmodel( this, m_oldModel );
 #ifdef GS_DEVELOPER
-	m_flRenderAmt = 0.0f;
+	m_flRenderAmt = 0.25f;
 #else
 	modelindex = 0;
 	model = "";

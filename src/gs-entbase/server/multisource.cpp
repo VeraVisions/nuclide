@@ -39,16 +39,16 @@ multisource::GetValue(void)
 	for (a = world; (a = find(a, CBaseTrigger::m_strTarget, m_strTargetName));) {
 		CBaseTrigger tTemp = (CBaseTrigger) a;
 #ifdef GS_DEVELOPER
-		print("[^1MULTISOURCE^7] ");
-		print(tTemp.classname);
+		dprint("[^1MULTISOURCE^7] ");
+		dprint(tTemp.classname);
 		if (tTemp.GetValue() == FALSE) {
-			print(" is ^1OFF^7, name: ");
+			dprint(" is ^1OFF^7, name: ");
 			out = FALSE;
 		} else {
-			print(" is ^2ON^7, name: ");
+			dprint(" is ^2ON^7, name: ");
 		}
-		print(tTemp.m_strTargetName);
-		print("\n");
+		dprint(tTemp.m_strTargetName);
+		dprint("\n");
 #else
 		/* exit out immediately as there's no point unless in-dev */
 		if (tTemp.GetValue() == FALSE) {

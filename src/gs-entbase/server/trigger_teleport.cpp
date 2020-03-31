@@ -27,7 +27,6 @@ class trigger_teleport:CBaseTrigger
 	void() trigger_teleport;
 
 	virtual void() touch;
-	virtual void() Respawn;
 };
 
 void trigger_teleport::touch(void)
@@ -39,27 +38,13 @@ void trigger_teleport::touch(void)
 		if (eTarget) {
 			vector endpos = eTarget.origin + [0,0,16];
 			setorigin(other, endpos);
-			
-#ifdef GS_DEVELOPER
-			print( sprintf( "%s::touch: Teleported '%s' to `%v`\n", 
-				this.classname, other.netname, endpos ) );
-#endif
+			dprint( sprintf( "^2trigger_teleport::touch^7: Teleported '%s' to `%v`\n", 
+				other.netname, endpos ) );
 		} else {
-#ifdef GS_DEVELOPER
-			print( sprintf( "%s::touch: Failed to teleport '%s'\n", 
-				this.classname, other.netname ) );
-#endif
+			print( sprintf( "^2trigger_teleport::touch^7: Failed to teleport '%s'\n", 
+				other.netname ) );
 		}
 	}
-}
-
-/* TODO: Make this redundant */
-void trigger_teleport::Respawn(void)
-{
-	solid = SOLID_TRIGGER;
-#ifdef GS_DEVELOPER
-	alpha = 0.5f;
-#endif
 }
 
 void trigger_teleport::trigger_teleport(void)

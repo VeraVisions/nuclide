@@ -109,7 +109,7 @@ void scripted_sequence::Trigger(void)
 		m_iEnabled = FALSE;
 	}
 
-	print(sprintf("^2scripted_sequence::Trigger^7: with spawnflags %d\n", spawnflags));
+	dprint(sprintf("^2scripted_sequence::Trigger^7: with spawnflags %d\n", spawnflags));
 	f = (CBaseMonster)find(world, CBaseEntity::m_strTargetName, m_strMonster);
 
 	/* target doesn't exist/hasn't spawned */
@@ -125,14 +125,14 @@ void scripted_sequence::Trigger(void)
 
 		/* cancel out. this trigger is broken. */
 		if (!f) {
-			print(sprintf("^1scripted_sequence::Trigger^7: Unknown target %s\n", m_strMonster));
+			dprint(sprintf("^1scripted_sequence::Trigger^7: Unknown target %s\n", m_strMonster));
 			return;
 		}
 	}
 
-	print(sprintf("\tName: %s\n", m_strTargetName));
-	print(sprintf("\tTarget: %s\n", m_strMonster));
-	print(sprintf("\tStarted: %f\n", time));
+	dprint(sprintf("\tName: %s\n", m_strTargetName));
+	dprint(sprintf("\tTarget: %s\n", m_strMonster));
+	dprint(sprintf("\tStarted: %f\n", time));
 
 	/* if we're told an anim, we better have it... or else. */
 	if (m_strActionAnim) {
@@ -145,7 +145,7 @@ void scripted_sequence::Trigger(void)
 
 	/* entity to trigger after sequence ends */
 	if (m_strTarget) {
-		print(sprintf("\tTrigger when finished: %s\n", m_strTarget));
+		dprint(sprintf("\tTrigger when finished: %s\n", m_strTarget));
 		f.m_strRouteEnded = m_strTarget;
 	}
 
@@ -156,29 +156,29 @@ void scripted_sequence::Trigger(void)
 	f.m_vecSequenceAngle = angles;
 
 	if (m_iMove == SS_NO) {
-		print("\tType: SS_NO\n");
+		dprint("\tType: SS_NO\n");
 	} else if (m_iMove == SS_WALK) {
 		f.NewRoute(origin);
 		f.m_flSequenceSpeed = 64;
-		print("\tType: SS_WALK\n");
+		dprint("\tType: SS_WALK\n");
 		return;
 	} else if (m_iMove == SS_RUN) {
 		f.NewRoute(origin);
 		f.m_flSequenceSpeed = 200;
-		print("\tType: SS_RUN\n");
+		dprint("\tType: SS_RUN\n");
 		return;
 	} else if (m_iMove == SS_INSTANTANEOUS) {
 		setorigin(f, this.origin);
-		print("\tType: SS_INSTANTANEOUS\n");
+		dprint("\tType: SS_INSTANTANEOUS\n");
 	} else if (m_iMove == SS_TURNTOFACE) {
-		print("\tType: SS_TURNTOFACE\n");
+		dprint("\tType: SS_TURNTOFACE\n");
 	}
 
 	/* all the non-moving targets will do this at least */
 	if (m_strActionAnim) {
 		duration = frameduration(f.modelindex, f.m_flSequenceEnd);
 		f.nextthink = time + duration;
-		print(sprintf(
+		dprint(sprintf(
 			"\tAnimation: %s Duration: %f seconds (modelindex %d, frame %d)\n",
 			m_strActionAnim,
 			duration,
@@ -187,7 +187,7 @@ void scripted_sequence::Trigger(void)
 		));
 	} else {
 		f.nextthink = time;
-		print(sprintf(
+		dprint(sprintf(
 			"\t^1WARNING: %s skipping animation on script type %i\n",
 			f.m_strTargetName,
 			m_iMove
@@ -196,7 +196,7 @@ void scripted_sequence::Trigger(void)
 
 	f.m_iSequenceState = SEQUENCESTATE_ENDING;
 	f.think = CBaseMonster::FreeState;
-	print(sprintf("\tEnding: %f\n", f.nextthink));
+	dprint(sprintf("\tEnding: %f\n", f.nextthink));
 }
 
 void scripted_sequence::Respawn(void)

@@ -74,7 +74,7 @@ void env_laser::think(void)
 	angles = t.origin;
 
 	if (!t) {
-		print("env_laser without valid target. Aborting\n");
+		print(sprintf("^1env_laser::think^7: %s has no valid target. Aborting\n", m_strTargetName));
 		return;
 	}
 

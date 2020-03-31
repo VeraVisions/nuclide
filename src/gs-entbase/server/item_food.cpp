@@ -49,7 +49,7 @@ void item_food :: Touch ( void )
 void item_food :: Setup ( void )
 {
 	solid = SOLID_TRIGGER;
-	setsize( this, '-16 -16 -16', '16 16 16' );
+	setsize( this, [-16,-16,-16], [16,16,16]);
 	touch = Touch;
 
 	if ( m_iIsCan ) {
@@ -69,7 +69,7 @@ void item_food :: item_food ( void )
 		setmodel( this, "models/can.mdl" );
 	}
 
-	setsize( this, '0 0 0', '0 0 0' );
+	setsize( this, [0,0,0], [0,0,0]);
 	think = Setup;
 	nextthink = time + 1.0f;
 }

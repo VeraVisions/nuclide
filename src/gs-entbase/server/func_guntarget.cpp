@@ -60,7 +60,7 @@ void func_guntarget::Move(void)
 	node = (path_corner)find(world, CBaseTrigger::m_strTargetName, m_strTarget);
 
 	if (!node) {
-		print("^1func_guntarget^7: Path node not found!\n");
+		dprint(sprintf("^1func_guntarget::Move^7: Path node for %s not found!\n", m_strTargetName));
 		return;
 	}
 

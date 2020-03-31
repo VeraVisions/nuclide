@@ -33,10 +33,9 @@ void trigger_cdaudio :: Trigger ( void )
 	if (!(other.flags & FL_CLIENT)) {
 		return;
 	}
-#ifdef GS_DEVELOPER
-	print( sprintf( "%s::Trigger: CD Track %i requested\n", 
-		this.classname, m_iCDTrack ) );
-#endif
+
+	dprint( sprintf( "^2trigger_cdaudio::Trigger^7: CD Track %i requested\n", 
+		m_iCDTrack ) );
 
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_MUSICTRACK);

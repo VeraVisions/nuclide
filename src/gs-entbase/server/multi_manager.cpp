@@ -61,10 +61,8 @@ void multi_manager :: Trigger (void)
 		
 		entity eFind = find(world, CBaseTrigger::m_strTargetName, wow.m_strTarget);
 
-#ifdef GS_DEVELOPER
-		print( sprintf( "%s::Trigger: %s (%s)\n", 
+		dprint( sprintf( "^2%s::Trigger^7: %s (%s)\n", 
 			this.classname, wow.m_strTarget, eFind.classname ) );
-#endif
 
 		CBaseTrigger::UseTargets();
 	}

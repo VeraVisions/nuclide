@@ -45,17 +45,16 @@ class trigger_push:CBaseTrigger
 
 void trigger_push::SetMovementDirection(void)
 {
-	if (angles == '0 -1 0') {
-		m_vecMoveDir = '0 0 1';
-	} else if (angles == '0 -2 0') {
-		m_vecMoveDir = '0 0 -1';
+	if (angles == [0,-1,0]) {
+		m_vecMoveDir = [0,0,1];
+	} else if (angles == [0,-2,0]) {
+		m_vecMoveDir = [0,0,-1];
 	} else {
 		makevectors(angles);
 		m_vecMoveDir = v_forward;
 	}
 
-	angles = '0 0 0';
-	//m_vecMoveDir *= 1;
+	angles = [0,0,0];
 }
 
 void trigger_push::Trigger(void)
@@ -100,7 +99,7 @@ void trigger_push::touch(void)
 
 void trigger_push::Respawn(void)
 {
-	if (angles == '0 0 0') {
+	if (angles == [0,0,0]) {
 		angles[1] = 360;
 	}
 	SetMovementDirection();

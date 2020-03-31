@@ -128,11 +128,11 @@ void func_rotating :: Respawn ( void )
 void func_rotating :: SetMovementDirection ( void )
 {
 	if ( spawnflags & FR_ZAXIS ) {
-		m_vecMoveDir = '0 0 1';
+		m_vecMoveDir = [0,0,1];
 	} else if ( spawnflags & FR_XAXIS ) {
-		m_vecMoveDir = '1 0 0';
+		m_vecMoveDir = [1,0,0];
 	} else {
-		m_vecMoveDir = '0 1 0';
+		m_vecMoveDir = [0,1,0];
 	}
 
 	if ( spawnflags & FR_REVERSE ) {

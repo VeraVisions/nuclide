@@ -284,7 +284,7 @@ void func_door_rotating::RotToDest(vector vDestAngle, void() func)
 	float flTravelLength, flTravelTime;
 
 	if (!m_flSpeed) {
-		print("^1func_door_rotating^7: No speed defined for moving entity!");
+		dprint(sprintf("^1func_door_rotating::RotToDest^7: No speed defined for %s!", m_strTargetName));
 		func_door_rotating::Respawn();
 		return;
 	}

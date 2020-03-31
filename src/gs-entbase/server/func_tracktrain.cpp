@@ -44,7 +44,7 @@ void func_tracktrain::GoToTarget(void)
 	f = find(world, CBaseTrigger::m_strTargetName, m_strTarget);
 
 	if (!f) {
-		print("func_tracktrain::GoToTarget: Trigger-Target not found! Removing.\n");
+		dprint(sprintf("^1func_tracktrain::GoToTarget^7: Trigger-Target for %s not found! Removing.\n", m_strTargetName));
 		return;
 	}
 
@@ -65,14 +65,7 @@ void func_tracktrain::NextPath(void)
 {
 	CBaseTrigger current_target;
 
-	print(sprintf("func_tracktrain::NextPath: Talking to current target %s... ", m_strTarget));
 	current_target = (CBaseTrigger)find(world, CBaseTrigger::m_strTargetName, m_strTarget);
-
-	if (!current_target) {
-		print("^1FAILED.\n");
-	} else {
-		print("^2SUCCESS.\n");
-	}
 
 	m_strTarget = current_target.m_strTarget;
 	velocity = [0,0,0];
@@ -90,12 +83,11 @@ void func_tracktrain::Find(void)
 	entity f = find(world, CBaseTrigger::m_strTargetName, m_strTarget);
 
 	if (!f) {
-		print(sprintf("func_tracktrain::Find: End-Target %s not found! Removing.\n",m_strTarget));
+		dprint(sprintf("^1func_tracktrain::GoToTarget^7: Trigger-Target %s for %s not found! Removing.\n", m_strTarget, m_strTargetName));
 		remove(this);
 		return;
 	}
 
-	print("func_tracktrain::Find: Successfully found first target.\n");
 	setorigin(this, f.origin);
 }
 

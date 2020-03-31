@@ -26,7 +26,6 @@ class trigger_autosave:CBaseTrigger
 	float m_flDelay;
 	void() trigger_autosave;
 	virtual void() touch;
-	virtual void() Respawn;
 };
 
 void trigger_autosave::touch(void)
@@ -43,10 +42,8 @@ void trigger_autosave::touch(void)
 	msg_entity = this;
 	multicast(origin, MULTICAST_ALL);
 
-#ifdef GS_DEVELOPER
-	print( sprintf( "%s::touch: Called autosave\n", 
-		this.classname) );
-#endif
+	dprint( sprintf( "^2trigger_autosave::touch^7: %s called autosave\n", 
+		other.netname) );
 
 	localcmd("save autosave");
 	Hide();
@@ -57,18 +54,6 @@ void trigger_autosave::touch(void)
 		CBaseTrigger::UseTargets();
 	}
 	solid = SOLID_NOT;
-#ifdef GS_DEVELOPER
-	alpha = 0.001f;
-#endif
-}
-
-/* TODO: Make this redundant */
-void trigger_autosave::Respawn(void)
-{
-	solid = SOLID_TRIGGER;
-#ifdef GS_DEVELOPER
-	alpha = 0.5f;
-#endif
 }
 
 void trigger_autosave::trigger_autosave(void)

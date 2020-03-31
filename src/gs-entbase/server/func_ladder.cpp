@@ -44,11 +44,9 @@ void func_ladder :: func_ladder ( void )
 	solid = SOLID_BSP;
 
 	#ifdef GS_DEVELOPER
-		alpha = 0.5f;
-		effects = EF_FLAG2;
+		m_flRenderAmt = 0.5f;
 	#else
-		alpha = 0.0001f;
-		//effects = EF_NODRAW;
+		m_flRenderAmt = 0.0001f;
 	#endif
 #else
 	Init();

@@ -159,14 +159,14 @@ void CBaseMonster::FreeState(void)
 		CBaseTrigger trigger = 0;
 		trigger = (CBaseTrigger)find(trigger, CBaseTrigger::m_strTargetName, m_strRouteEnded);
 		if (!trigger) {
-			print(sprintf("^1CBaseMonster::FreeState^7: %s doesn't exist. Won't trigger\n", m_strRouteEnded));
+			dprint(sprintf("^1CBaseMonster::FreeState^7: %s doesn't exist. Won't trigger\n", m_strRouteEnded));
 		}
 
 		if (trigger.Trigger != __NULL__) {
-			print(sprintf("^2CBaseMonster::FreeState^7: %s triggered %f\n", m_strRouteEnded, time));
+			dprint(sprintf("^2CBaseMonster::FreeState^7: %s triggered %f\n", m_strRouteEnded, time));
 			trigger.Trigger();
 		} else {
-			print(sprintf("^1CBaseMonster::FreeState^7: %s not a valid trigger\n", m_strRouteEnded));
+			dprint(sprintf("^1CBaseMonster::FreeState^7: %s not a valid trigger\n", m_strRouteEnded));
 		}
 	}
 
@@ -196,14 +196,14 @@ void CBaseMonster::CheckRoute(void)
 	flDist = floor( vlen( evenpos - origin ) );
 
 	if ( flDist < 8 ) {
-		print(sprintf("^2CBaseMonster::CheckRoute^7: %s reached node\n", this.m_strTargetName));
+		dprint(sprintf("^2CBaseMonster::CheckRoute^7: %s reached node\n", this.m_strTargetName));
 		m_iCurNode--;
 		velocity = [0,0,0]; /* clamp friction */
 	}
 	
 	if (m_iCurNode < -1) {
 		ClearRoute();
-		print(sprintf("^2CBaseMonster::CheckRoute^7: %s reached end\n", this.m_strTargetName));
+		dprint(sprintf("^2CBaseMonster::CheckRoute^7: %s reached end\n", this.m_strTargetName));
 
 		/* mark that we've ended a sequence, if we're in one and que anim */
 		if (m_iSequenceState == SEQUENCESTATE_ACTIVE) {
@@ -212,12 +212,12 @@ void CBaseMonster::CheckRoute(void)
 				m_iSequenceState = SEQUENCESTATE_ENDING;
 				think = FreeState;
 				nextthink = time + duration;
-				print(sprintf("^2CBaseMonster::CheckRoute^7: %s overriding anim for %f seconds (modelindex %d, frame %d)\n", this.m_strTargetName, duration, modelindex, m_flSequenceEnd));
+				dprint(sprintf("^2CBaseMonster::CheckRoute^7: %s overriding anim for %f seconds (modelindex %d, frame %d)\n", this.m_strTargetName, duration, modelindex, m_flSequenceEnd));
 			} else {
 				/* we still need to trigger targets */
 				think = FreeState;
 				nextthink = time;
-				print(sprintf("^2CBaseMonster::CheckRoute^7: %s has no anim, finished sequence.\n", this.m_strTargetName));
+				dprint(sprintf("^2CBaseMonster::CheckRoute^7: %s has no anim, finished sequence.\n", this.m_strTargetName));
 			}
 		}
 	}
@@ -265,7 +265,7 @@ void CBaseMonster::NewRoute(vector destination)
 		/* we can walk there directly */
 		tracebox(p.origin, p.mins, p.maxs, dest, TRUE, this);
 		if (trace_fraction == 1.0) {
-			print("^2CBaseMonster::NewRoute^7: Walking directly to last node\n");
+			dprint("^2CBaseMonster::NewRoute^7: Walking directly to last node\n");
 			p.m_iCurNode = -1;
 		}
 	}

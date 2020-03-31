@@ -42,10 +42,8 @@ void trigger_auto::think(void)
 	CBaseTrigger::UseTargets_Delay(m_flDelay);
 
 	if (spawnflags & 1) {
-#ifdef GS_DEVELOPER
-		print( sprintf( "%s::think: Removed self after trigger\n", 
-			this.classname ) );
-#endif
+		dprint( sprintf( "%s::think: %s removed self after trigger\n", 
+			m_strTargetName, this.classname ) );
 		remove(this);
 	}
 }

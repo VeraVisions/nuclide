@@ -80,17 +80,15 @@ void trigger_changelevel::Change(void)
 			info_landmark lm = (info_landmark)e;
 			/* found it */
 			if (lm.m_strTargetName == m_strLandmark) {
-				print(sprintf("^2trigger_changelevel::Change^7: Found landmark for %s\n", m_strLandmark));
+				dprint(sprintf("^2trigger_changelevel::Change^7: Found landmark for %s\n", m_strLandmark));
 				landmark = lm;
 				g_landmarkpos = m_activator.origin - landmark.origin;
 			}
 		}
 		changelevel(m_strMap, m_strLandmark);
 	} else {
-#ifdef GS_DEVELOPER
-		print( sprintf( "%s::Change: Change to `%s`\n", 
-			this.classname, m_strMap ) );
-#endif
+		dprint( sprintf( "^2trigger_changelevel::Change^7: Change to `%s`\n", 
+			m_strMap ) );
 		changelevel(m_strMap);
 	}
 }
@@ -105,17 +103,13 @@ void trigger_changelevel::Trigger(void)
 	m_activator = eActivator;
 
 	if (m_flChangeDelay) {
-#ifdef GS_DEVELOPER
-		print( sprintf( "%s::Trigger: Delayed change to `%s` in %d sec/s\n", 
-			this.classname, m_strMap, m_flChangeDelay ) );
-#endif
+		dprint( sprintf( "^2trigger_changelevel::Trigger^7: Delayed change to `%s` in %d sec/s\n", 
+			m_strMap, m_flChangeDelay ) );
 		think = Change;
 		nextthink = time + m_flChangeDelay;
 	} else {
-#ifdef GS_DEVELOPER
-		print( sprintf( "%s::Trigger: Change to `%s`\n", 
-			this.classname, m_strMap ) );
-#endif
+		dprint( sprintf( "^2trigger_changelevel::Trigger^7: Change to `%s` requested\n", 
+			m_strMap ) );
 		Change();
 	}
 }
@@ -157,7 +151,7 @@ vector Landmark_GetSpot(void)
 		info_landmark lm = (info_landmark)e;
 		/* found it */
 		if (lm.m_strTargetName == startspot) {
-			print(sprintf("^2Landmark_GetSpot^7: Found landmark for %s\n", startspot));
+			dprint(sprintf("^2Landmark_GetSpot^7: Found landmark for %s\n", startspot));
 			landmark = lm;
 			return landmark.origin + g_landmarkpos;
 		}

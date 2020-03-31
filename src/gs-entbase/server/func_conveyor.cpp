@@ -22,7 +22,7 @@
 STUB!
 */
 
-#define SF_CONVEYOR_VISUAL	1
+#define SF_CONVEYOR_VISUAL		1
 #define SF_CONVEYOR_NOTSOLID	2
 
 class func_conveyor : func_wall
@@ -38,16 +38,16 @@ class func_conveyor : func_wall
 
 void func_conveyor :: SetMovementDirection ( void )
 {
-	if ( angles == '0 -1 0' ) {
-		m_vecMoveDir = '0 0 1';
-	} else if ( angles == '0 -2 0' ) {
-		m_vecMoveDir = '0 0 -1';
+	if ( angles == [0,-1,0] ) {
+		m_vecMoveDir = [0,0,1];
+	} else if ( angles == [0,-2,0] ) {
+		m_vecMoveDir = [0,0,-1];
 	} else {
 		makevectors( angles );
 		m_vecMoveDir = v_forward;
 	}
 
-	angles = '0 0 0';
+	angles = [0,0,0];
 }
 
 
