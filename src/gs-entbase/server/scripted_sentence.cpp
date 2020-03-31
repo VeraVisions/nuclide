@@ -35,6 +35,7 @@ class scripted_sentence:CBaseTrigger
 	float m_flDelay;
 	float m_flWait;
 	float m_flPitch;
+	float m_flDuration;
 
 	void() scripted_sentence;
 	virtual void() Trigger;
@@ -51,12 +52,14 @@ void scripted_sentence::Trigger(void)
 
 	dprint(sprintf("^2scripted_sentence::^3Trigger^7: %s on %s\n", m_strSentence, m_strSpeaker));
 
+	CBaseNPC npc = (CBaseNPC)speaker;
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_SENTENCE);
-	WriteEntity(MSG_MULTICAST, speaker);
+	WriteEntity(MSG_MULTICAST, npc);
 	WriteString(MSG_MULTICAST, m_strSentence);
-	msg_entity = speaker;
-	multicast(speaker.origin, MULTICAST_PVS);
+	msg_entity = npc;
+	multicast(npc.origin, MULTICAST_PVS);
+	npc.m_flNextSentence = time + m_flDuration;
 }
 
 void scripted_sentence::scripted_sentence(void)
@@ -72,6 +75,8 @@ void scripted_sentence::scripted_sentence(void)
 		case "pitch":
 			m_flPitch = stof(argv(i+1));
 			break;
+		case "duration":
+			m_flDuration = stof(argv(i+1));
 		case "delay":
 			m_flDelay = stof(argv(i+1));
 			break;
