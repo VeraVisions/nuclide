@@ -225,6 +225,9 @@ SV_AddDebugPolygons(void)
 		return;
 	}
 
+	if (cvar("developer") != 1)
+		return;
+
 	makevectors(self.v_angle);
 
 	/* draw the rectangles */

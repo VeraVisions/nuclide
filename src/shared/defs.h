@@ -142,3 +142,9 @@ void Sound_Update(entity a, int b, int c, float d)
 {
 	
 }
+
+__wrap void dprint(string m)
+{
+	if (cvar("developer") == 1)
+		return prior(m);
+}

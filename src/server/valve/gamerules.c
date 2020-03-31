@@ -110,7 +110,7 @@ Gamerules_Spawn(player pl)
 
 	if (cvar("sv_playerslots") == 1 || cvar("coop") == 1) {
 		if (startspot != "") {
-			print(sprintf("^1Gamerules_Spawn: Startspot is %s\n", startspot));
+			print(sprintf("^3Gamerules_Spawn^7: Startspot is %s\n", startspot));
 			Gamerules_DecodeChangeParms(pl);
 			setorigin(pl, Landmark_GetSpot());
 		} else {

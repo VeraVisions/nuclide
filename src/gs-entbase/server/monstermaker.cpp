@@ -42,7 +42,7 @@ void monstermaker::Trigger ( void )
 		unit.classname = strcat("spawnfunc_", m_strMonster);
 		unit.think = monstermaker_spawnunit;
 		unit.nextthink = time + 0.1f;
-		print(sprintf("^2monstermaker::^3Trigger^7: Spawning %s\n", m_strMonster));
+		dprint(sprintf("^2monstermaker::^3Trigger^7: Spawning %s\n", m_strMonster));
 		setorigin(unit, origin);
 	} else {
 		print(sprintf("^1monstermaker::^3Trigger^7: cannot call spawnfunction for %s\n", m_strMonster));
