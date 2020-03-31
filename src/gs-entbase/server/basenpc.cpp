@@ -442,8 +442,8 @@ CBaseNPC::Physics(void)
 	input_movevalues = [0,0,0];
 	input_impulse = 0;
 	input_buttons = 0;
-	input_angles = angles = v_angle;
 	input_timelength = frametime;
+	input_angles = angles = v_angle;
 
 	/* override whatever we did above with this */
 	if (m_iSequenceState == SEQUENCESTATE_ENDING) {
@@ -456,6 +456,7 @@ CBaseNPC::Physics(void)
 
 			if (m_eFollowing != world) {
 				FollowPlayer();
+				input_angles = angles = v_angle;
 			} else if (m_iFlags & MONSTER_FEAR) {
 				PanicFrame();
 			} else {
