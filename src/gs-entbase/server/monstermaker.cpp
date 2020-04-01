@@ -116,7 +116,7 @@ monstermaker::Spawner(void)
 	}
 
 	/* too many alive at a time */
-	if ((m_iMaxChildren > 0) && c >= m_iMaxChildren) || (m_flDelay == 0 && c >= 1)) {
+	if ((m_iMaxChildren > 0 && c >= m_iMaxChildren) || (m_flDelay == 0 && c >= 1)) {
 		nextthink = time + m_flDelay;
 		return;
 	}

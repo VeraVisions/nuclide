@@ -151,7 +151,6 @@ void Decals_PlaceGauss(vector pos)
 	decal.nextthink = time /*+ 0.1f*/;
 #endif
 }
-
 #ifdef CSQC
 
 class decal
@@ -228,6 +227,56 @@ void Decal_Parse(void)
 	new.maxs = t_dir / new.size[1];
 	new.color = getlight(new.origin) / 255;
 
+	new.predraw = Decal_PreDraw;
+	new.drawmask = MASK_ENGINE;
+}
+
+/* this is like Decal_Parse, but better */
+void
+Decals_Place(vector org, string dname)
+{
+	decal new;
+
+	new = spawn(decal);
+	decal_pickwall(new, org);
+
+	/* we never hit any wall. */
+	if (g_tracedDecal.fraction == 1.0f) {
+		dprint(sprintf("infodecal tracing failed at %v\n", org));
+		remove(new);
+		return;
+	}
+
+	new.origin = g_tracedDecal.endpos;
+
+	/* FIXME: more universal check? */
+	if (getsurfacetexture(trace_ent, getsurfacenearpoint(trace_ent, g_tracedDecal.endpos)) == "sky") {
+		return;
+	}
+
+	makevectors(vectoangles(g_tracedDecal.endpos - self.origin ));
+	vector cpl = v_forward - (v_forward * g_tracedDecal.normal) * g_tracedDecal.normal;
+
+	if (g_tracedDecal.normal[2] == 0) {
+		cpl = [0, 0, 1];
+	}
+
+	new.angles = vectoangles(cpl, g_tracedDecal.normal);
+	new.m_strTexture = dname;
+
+	new.size = drawgetimagesize(new.m_strTexture);
+
+	if (serverkeyfloat("*bspversion") == 30) {
+		Decal_MakeShader(new);
+	}
+
+	makevectors(new.angles);
+	float surf = getsurfacenearpoint(world, new.origin);
+	vector s_dir = getsurfacepointattribute(world, surf, 0, SPA_S_AXIS);
+	vector t_dir = getsurfacepointattribute(world, surf, 0, SPA_T_AXIS);
+	new.mins = v_up / new.size[0];
+	new.maxs = t_dir / new.size[1];
+	new.color = getlight(new.origin) / 255;
 	new.predraw = Decal_PreDraw;
 	new.drawmask = MASK_ENGINE;
 }

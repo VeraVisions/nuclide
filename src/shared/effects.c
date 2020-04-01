@@ -99,6 +99,10 @@ Effect_GibHuman(vector pos)
 	static void Gib_Remove(void) {
 		remove(self);
 	}
+	static void Gib_Touch(void)
+	{
+		Decals_Place(self.origin, sprintf("{blood%d", floor(random(1,9))));
+	}
 	for (int i = 0; i < 5; i++) {
 		
 		vector vel;
@@ -110,9 +114,12 @@ Effect_GibHuman(vector pos)
 		setmodel(gibb, g_hgibs[i]);
 		setorigin(gibb, pos);
 		gibb.movetype = MOVETYPE_BOUNCE;
+		gibb.solid = SOLID_BBOX;
+		setsize(gibb, [0,0,0], [0,0,0]);
 		gibb.velocity = vel;
 		gibb.avelocity = vectoangles(gibb.velocity);
 		gibb.think = Gib_Remove;
+		gibb.touch = Gib_Touch;
 		gibb.nextthink = time + 5.0f;
 		gibb.drawmask = MASK_ENGINE;
 	}
@@ -164,6 +171,11 @@ void Effect_CreateBlood(vector pos, vector color) {
 	msg_entity = self;
 	multicast(pos, MULTICAST_PVS);
 #else
+	static void Blood_Touch(void)
+	{
+		Decals_Place(self.origin, sprintf("{blood%d", floor(random(1,9))));
+	}
+
 	env_sprite eBlood = spawn(env_sprite);
 	setorigin(eBlood, pos);
 	setmodel(eBlood, "sprites/bloodspray.spr");
@@ -192,6 +204,9 @@ void Effect_CreateBlood(vector pos, vector color) {
 		ePart.framerate = 15;
 		ePart.nextthink = time + 0.1f;
 		ePart.velocity = randomvec() * 64;
+		ePart.touch = Blood_Touch;
+		ePart.solid = SOLID_BBOX;
+		setsize(ePart, [0,0,0], [0,0,0]);
 	}
 #endif
 }
