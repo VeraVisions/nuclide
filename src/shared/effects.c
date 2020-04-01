@@ -174,6 +174,7 @@ void Effect_CreateBlood(vector pos, vector color) {
 	static void Blood_Touch(void)
 	{
 		Decals_Place(self.origin, sprintf("{blood%d", floor(random(1,9))));
+		self.touch = __NULL__;
 	}
 
 	env_sprite eBlood = spawn(env_sprite);
