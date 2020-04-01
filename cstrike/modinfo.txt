@@ -1,8 +1,0 @@
-game "Counter-Strike"
-nohimodel "1"
-nomodels "1"
-size "184000000"
-trainmap "tr_1"
-type "multiplayer_only"
-url_info "www.counter-strike.net"
-version "1.5"

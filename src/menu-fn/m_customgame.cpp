@@ -31,6 +31,11 @@ void games_init(void)
 	gameinfo_count = 0;
 
 	for (id = 0; (gamedirname = getgamedirinfo(id, 0)); id++) {
+		/* skip any manifest (or modinfo) without cvars setting things */
+		if (getgamedirinfo(id, 2) == "") {
+			continue;
+		}
+
 		gameinfo_count++;
 	}
 
@@ -43,7 +48,13 @@ void games_init(void)
 	games = memalloc(sizeof(gameinfo_t) * gameinfo_count);
 
 	for (id = 0; (gamedirname = getgamedirinfo(id, 0)); id++) {
-		gamedescription = getgamedirinfo(id, 1);
+		gamedescription = getgamedirinfo(id, 2);
+
+		/* CONT: skip any manifest (or modinfo) without cvars setting things */
+		if (gamedescription == "") {
+			continue;
+		}
+
 		county = tokenize_console(gamedescription);
 
 		/* Fill in the defaults */
@@ -64,55 +75,54 @@ void games_init(void)
 		games[id].svonly = 0;
 		games[id].installed = 1;
 
-		for ( int i = 0; i < county; i+=2 ) {
+		for ( int i = 0; i < county; i++ ) {
 			switch( argv(i) ) {
-			case "game":
+			case "gameinfo_game":
 				games[id].game = argv(i+1);
 				break;
-			case "gamedir":
+			case "gameinfo_gamedir":
 				games[id].gamedir = argv(i+1);
 				break;
-			case "fallback_dir":
+			case "gameinfo_fallback_dir":
 				games[id].fallback_dir = argv(i+1);
 				break;
-			case "url_info":
+			case "gameinfo_url_info":
 				games[id].url_info = argv(i+1);
 				break;
-			case "url_dl":
+			case "gameinfo_url_dl":
 				games[id].url_dl = argv(i+1);
 				break;
-			case "version":
+			case "gameinfo_version":
 				games[id].version = argv(i+1);
 				break;
-			case "size":
-				games[id].size = stof(argv(i+1));
+			case "gameinfo_size":
+				games[id].size = (int)stof(argv(i+1));
 				break;
-			case "svonly":
-				games[id].svonly = stof(argv(i+1));
+			case "gameinfo_svonly":
+				games[id].svonly = (int)stof(argv(i+1));
 				break;
-			case "cldll":
-				games[id].cldll = stof(argv(i+1));
+			case "gameinfo_cldll":
+				games[id].cldll = (int)stof(argv(i+1));
 				break;
-			case "type":
+			case "gameinfo_type":
 				games[id].type = argv(i+1);
 				break;
-			case "hlversion":
+			case "gameinfo_hlversion":
 				games[id].hlversion = argv(i+1);
 				break;
-			case "nomodels":
-				games[id].nomodels = stof(argv(i+1));
+			case "gameinfo_nomodels":
+				games[id].nomodels = (int)stof(argv(i+1));
 				break;
-			case "mpentity":
+			case "gameinfo_mpentity":
 				games[id].mpentity = argv(i+1);
 				break;
-			case "gamedll":
+			case "gameinfo_gamedll":
 				games[id].gamedll = argv(i+1);
 				break;
-			case "startmap":
+			case "gameinfo_startmap":
 				games[id].startmap = argv(i+1);
 				break;
-			case "trainingmap":
-			case "trainmap":
+			case "gameinfo_trainingmap":
 				games[id].trainingmap = argv(i+1);
 				break;
 			default:
@@ -164,7 +174,8 @@ void customgame_btnactivate_start(void)
 void customgame_btninstall_start(void)
 {
 	int gid = customgame_lbMods.GetSelected();
-	localcmd(sprintf("fs_changegame %s\n", games[gid].url_dl));
+	print(sprintf("Requesting download for http://www.frag-net.com/mods/%s.fmf...\n", games[gid].gamedir));
+	localcmd(sprintf("fs_changegame http://www.frag-net.com/mods/%s.fmf\n", games[gid].game));
 }
 void customgame_btndeactivate_start(void)
 {

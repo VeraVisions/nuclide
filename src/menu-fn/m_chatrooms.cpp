@@ -58,7 +58,7 @@ void cr_btndone_start(void)
 	static void cr_btndone_end(void) {
 		g_menupage = PAGE_MULTIPLAYER;
 	}
-	cr_closeconnection();
+	//cr_closeconnection();
 	localsound("../media/launch_dnmenu1.wav");
 	header.SetStartEndPos(45,45,50,239);
 	header.SetStartEndSize(460,80,156,26);
@@ -85,7 +85,7 @@ void cr_btnlistrooms_start(void)
 /* 'Done' button */
 void cr_btnservers_prepare(void)
 {
-	cr_closeconnection();
+	//cr_closeconnection();
 	cr_btnservers_start();
 }
 
@@ -174,13 +174,6 @@ void menu_chatrooms_draw(void)
 	int tab_id;
 	string tmp;
 
-	/* establish the connection */
-	if (!g_iIRCActive) {
-		cr_makeconnection();
-		g_iIRCActive = TRUE;
-		g_irc.timer = 10.0f;
-	}
-
 	Widget_Draw(fn_chatrooms);
 	drawpic([g_menuofs[0]+550,g_menuofs[1]+10], "gfx/shell/fragnet",[80,80], [1,1,1], 1.0f, 0);
 
@@ -209,6 +202,13 @@ void menu_chatrooms_draw(void)
 		}
 	}
 	g_irc.cur_tab = g_irc.show_tab;
+
+	/* establish the connection if nothing is found */
+	if (!g_iIRCActive && !g_irc.show_tab) {
+		cr_makeconnection();
+		g_iIRCActive = TRUE;
+		g_irc.timer = 10.0f;
+	}
 
 	/* draw the irc-log buffer when ready */
 	if (g_irc.show_tab) {

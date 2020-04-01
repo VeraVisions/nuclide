@@ -119,7 +119,11 @@ void menu_customize_init(void)
 	cz_psSpray.SetCallback(cz_cbSprayChanged);
 	cz_psSpray.SetValueS(cvar_string("_cl_playerspray"));
 	Widget_Add(fn_customize, cz_psSpray);
-	
+
+	if (games[gameinfo_current].nomodels == 1) {
+		return;
+	}
+
 	cz_psModel = spawn(CPictureSwitch);
 	cz_psModel.SetPos(410,160);
 	cz_psModel.SetSize(170,221);

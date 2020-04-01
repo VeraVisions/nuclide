@@ -1,8 +1,0 @@
-game "Team Fortress"
-mpentity "info_tfdetect"
-nomodels "1"
-size "37000000"
-type "multiplayer_only"
-url_dl ""
-url_info "www.teamfortressclassic.com"
-version "1.5"

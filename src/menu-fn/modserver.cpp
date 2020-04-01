@@ -26,7 +26,13 @@ void*
 memrealloc(__variant *oldptr, int elementsize, int old_num, int new_num)
 {
 	void *n = memalloc(elementsize * new_num);
-	memcpy(n, oldptr, elementsize * min(old_num, new_num));
+
+	if (!n) {
+		print("^1memrealloc^7: Out of memory\n");
+		return 0;
+	}
+
+	memcpy(n, oldptr, elementsize * old_num);
 	memfree(oldptr);
 	return n;
 }
@@ -64,7 +70,7 @@ ModServer_ParseList(string data)
 		}
 
 		print(sprintf("^2ModServer_ParseList^7: Querying mod-data for %s\n", gamedir));
-		uri_get(sprintf("http://www.frag-net.com/mods/%s.txt",gamedir), 101);
+		uri_get(sprintf("http://www.frag-net.com/mods/%s.fmf",uri_escape(gamedir)), MODSERVER_REQ_ITEM);
 		finalcount++;
 	}
 
@@ -109,55 +115,54 @@ ModServer_ParseItem(string data)
 	games[id].svonly = 0;
 	games[id].installed = 0;
 
-	for (int i = 0; i < c; i+=2) {
+	for (int i = 0; i < c; i++) {
 		switch( argv(i) ) {
-		case "game":
+		case "gameinfo_game":
 			games[id].game = argv(i+1);
 			break;
-		case "gamedir":
+		case "gameinfo_gamedir":
 			games[id].gamedir = argv(i+1);
 			break;
-		case "fallback_dir":
+		case "gameinfo_fallback_dir":
 			games[id].fallback_dir = argv(i+1);
 			break;
-		case "url_info":
+		case "gameinfo_url_info":
 			games[id].url_info = argv(i+1);
 			break;
-		case "url_dl":
+		case "gameinfo_url_dl":
 			games[id].url_dl = argv(i+1);
 			break;
-		case "version":
+		case "gameinfo_version":
 			games[id].version = argv(i+1);
 			break;
-		case "size":
+		case "gameinfo_size":
 			games[id].size = stof(argv(i+1));
 			break;
-		case "svonly":
+		case "gameinfo_svonly":
 			games[id].svonly = stof(argv(i+1));
 			break;
-		case "cldll":
+		case "gameinfo_cldll":
 			games[id].cldll = stof(argv(i+1));
 			break;
-		case "type":
+		case "gameinfo_type":
 			games[id].type = argv(i+1);
 			break;
-		case "hlversion":
+		case "gameinfo_hlversion":
 			games[id].hlversion = argv(i+1);
 			break;
-		case "nomodels":
+		case "gameinfo_nomodels":
 			games[id].nomodels = stof(argv(i+1));
 			break;
-		case "mpentity":
+		case "gameinfo_mpentity":
 			games[id].mpentity = argv(i+1);
 			break;
-		case "gamedll":
+		case "gameinfo_gamedll":
 			games[id].gamedll = argv(i+1);
 			break;
-		case "startmap":
+		case "gameinfo_startmap":
 			games[id].startmap = argv(i+1);
 			break;
-		case "trainingmap":
-		case "trainmap":
+		case "gameinfo_trainingmap":
 			games[id].trainingmap = argv(i+1);
 			break;
 		default:

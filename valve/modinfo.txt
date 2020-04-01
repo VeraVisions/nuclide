@@ -1,5 +1,0 @@
-game "Half-Life"
-mpentity "info_player_deathmatch"
-size "496200000"
-url_info "www.valvesoftware.com"
-version "1.0"

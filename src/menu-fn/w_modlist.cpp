@@ -70,8 +70,10 @@ void CModList::Draw(void)
 		}
 
 		if (games[i].type != "") {
-			WLabel_Static(m_x + 2, pos + 3, sprintf("%.8s...",games[i].type),
+			drawsetcliparea(g_menuofs[0] + m_x + 2, g_menuofs[1] + pos + 3, 50,30);
+			WLabel_Static(m_x + 2, pos + 3, games[i].type,
 						  11, 11, colo, 1.0f, 0, font_arial);
+			drawresetcliparea();
 		}
 
 		/* Game */
@@ -92,15 +94,29 @@ void CModList::Draw(void)
 		/* Rating */
 		WLabel_Static(m_x + 277, pos + 3, "0.0", 11, 11, colo,
 					1.0f, 0, font_arial);
-		/* Installed */
-		WLabel_Static(m_x + 327, pos + 3, (games[i].installed == 1) ? "Yes" : "No", 11, 11, ML_COL_3,
-					1.0f, 0, font_arial);
-		/* Servers */
-		WLabel_Static(m_x + 377, pos + 3, "0", 11, 11, ML_COL_3,
-					1.0f, 0, font_arial);
-		/* Players */
-		WLabel_Static(m_x + 427, pos + 3, "0", 11, 11, ML_COL_3,
-					1.0f, 0, font_arial);
+
+		if (games[i].installed == 1) {
+			/* Installed */
+			WLabel_Static(m_x + 327, pos + 3, "Yes", 11, 11, ML_COL_3,
+						1.0f, 0, font_arial);
+			/* Servers */
+			WLabel_Static(m_x + 377, pos + 3, "0", 11, 11, ML_COL_3,
+						1.0f, 0, font_arial);
+			/* Players */
+			WLabel_Static(m_x + 427, pos + 3, "0", 11, 11, ML_COL_3,
+						1.0f, 0, font_arial);
+		} else {
+			/* Installed */
+			WLabel_Static(m_x + 327, pos + 3, "No", 11, 11, ML_COL_4,
+						1.0f, 0, font_arial);
+			/* Servers */
+			WLabel_Static(m_x + 377, pos + 3, "0", 11, 11, ML_COL_4,
+						1.0f, 0, font_arial);
+			/* Players */
+			WLabel_Static(m_x + 427, pos + 3, "0", 11, 11, ML_COL_4,
+						1.0f, 0, font_arial);
+		}
+
 		pos += 29;
 	}
 }

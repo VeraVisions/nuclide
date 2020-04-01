@@ -1,6 +1,0 @@
-game "They Hunger"
-url_info "www.planethalflife.com/manke"
-version "3.0"
-size "142600000"
-startmap "thintro"
-trainmap "they30"

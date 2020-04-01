@@ -6,3 +6,21 @@ basegame logos
 basegame valve
 disablehomedir 1
 rtcbroker master.frag-net.com:27950
+
+// hastily converted
+-seta gameinfo_game "Nuclide"
+-seta gameinfo_gamedir "valve"
+-seta gameinfo_fallback_dir ""
+-seta gameinfo_mpentity "info_player_deathmatch"
+-seta gameinfo_size "496200000"
+-seta gameinfo_url_info "www.icculus.org/~marco/"
+-seta gameinfo_version "1.0"
+-seta gameinfo_url_dl ""
+-seta gameinfo_type ""
+-seta gameinfo_nomodels 0
+-seta gameinfo_gamedll "progs.dat"
+-seta gameinfo_startmap "c0a0"
+-seta gameinfo_trainingmap "t0a0"
+-seta gameinfo_cldll 1
+-seta gameinfo_hlversion "1110"
+-seta gameinfo_svonly "0"

@@ -1,7 +1,0 @@
-game "Scientist Hunt"
-mpentity "info_player_deathmatch"
-size "800000"
-startmap "c1a0"
-type "multiplayer_only"
-url_info "www.richwhitehouse.com"
-version "1.0"
