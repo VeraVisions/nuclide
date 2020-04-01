@@ -240,7 +240,7 @@ w_shotgun_hud(void)
 	vector pos;
 	player pl = (player)self;
 
-	pos = video_mins + [video_res[0] - 125, video_res[1] - 42];
+	pos = g_hudmins + [g_hudres[0] - 125, g_hudres[1] - 42];
 	for (int i = 0; i < 3; i++) {
 		drawpic(
 			pos,
@@ -272,7 +272,7 @@ w_shotgun_hud(void)
 		
 		shellstr = sprintf("SHELLS: %i", getstati(40));
 		spreadstr = sprintf("SPREAD: %s", gsmodes[getstati(41)]);
-		pos = video_mins + (video_res / 2) + [-48,-16];
+		pos = g_hudmins + (g_hudres / 2) + [-48,-16];
 
 		drawfont = FONT_20;
 		drawstring(pos, shellstr, [20,20], col1, 1.0f,
@@ -283,7 +283,7 @@ w_shotgun_hud(void)
 	}
 
 	/* crosshair */
-	pos = video_mins + (video_res / 2) + [-15,-15];
+	pos = g_hudmins + (g_hudres / 2) + [-15,-15];
 	drawsubpic(
 		pos,
 		[31,31],

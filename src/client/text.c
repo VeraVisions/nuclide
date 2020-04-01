@@ -52,9 +52,9 @@ GameText_DrawString(vector pos, string msg, vector col, float alpha)
 		float strwidth = stringwidth(argv(i), TRUE, [20,20]);
 
 		if (pos[0] == -1) {
-			rpos[0] = (video_res[0] / 2) - (strwidth/2);
+			rpos[0] = g_hudmins[0] + (g_hudres[0] / 2) - (strwidth/2);
 		} else {
-			rpos[0] = video_res[0] * pos[0];
+			rpos[0] = g_hudmins[0] + g_hudres[0] * pos[0];
 
 			if (pos[0] >= 0.5) {
 				rpos[0] -= strwidth;
@@ -62,9 +62,9 @@ GameText_DrawString(vector pos, string msg, vector col, float alpha)
 		}
 
 		if (pos[1] == -1) {
-			rpos[1] = (video_res[1] / 2) - 6;
+			rpos[1] = g_hudmins[1] + (g_hudres[1] / 2) - 6;
 		} else {
-			rpos[1] = ((video_res[1] - 12) * pos[1]);
+			rpos[1] = g_hudmins[1] + ((g_hudres[1] - 12) * pos[1]);
 		}
 		rpos[1] += 20 * i;
 		rpos[1] -= (20 * c) / 2;

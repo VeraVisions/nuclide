@@ -216,7 +216,7 @@ w_sniperrifle_crosshair(void)
 	static vector cross_pos;
 
 	if (pl.viewzoom == 1.0f) {
-		cross_pos = video_mins + (video_res / 2) + [-12,-12];
+		cross_pos = g_hudmins + (g_hudres / 2) + [-12,-12];
 		drawsubpic(
 			cross_pos,
 			[24,24],
@@ -228,7 +228,7 @@ w_sniperrifle_crosshair(void)
 			DRAWFLAG_NORMAL
 		);
 	} else {
-		cross_pos = video_mins + (video_res / 2) + [-128,-128];
+		cross_pos = g_hudmins + (g_hudres / 2) + [-128,-128];
 		drawsubpic(
 			cross_pos,
 			[256,256],
@@ -244,7 +244,7 @@ w_sniperrifle_crosshair(void)
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 
-	vector aicon_pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
+	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
 	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [24/256,72/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
 #endif
 }

@@ -14,6 +14,14 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED item_healthkit (0 0 0.8) (-16 -16 0) (16 16 36)
+
+HALF-LIFE (1998) ENTITY
+
+Healthkit item.
+Adds 20 of health to the player.
+
+*/
 class item_healthkit:CBaseEntity
 {
 	void() item_healthkit;
@@ -50,7 +58,7 @@ void item_healthkit::Respawn(void)
 	setmodel(this, m_oldModel);
 	
 
-	setsize(this, [-16,-16,0], [16,16,16]);
+	setsize(this, [-16,-16,0], [16,16,36]);
 	setorigin(this, m_oldOrigin);
 
 	think = __NULL__;

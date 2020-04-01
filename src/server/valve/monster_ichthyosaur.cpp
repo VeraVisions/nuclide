@@ -16,6 +16,8 @@
 
 /*QUAKED monster_ichthyosaur (0 0.8 0.8) (-32 -32 0) (32 32 64)
 
+HALF-LIFE (1998) ENTITY
+
 Ichthyosaur
 
 */

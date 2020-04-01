@@ -262,8 +262,8 @@ w_ap9_hud(void)
 	vector cross_pos;
 	vector aicon_pos;
 
-	cross_pos = (video_res / 2) + [-12,-12];
-	aicon_pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
+	cross_pos = (g_hudres / 2) + [-12,-12];
+	aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
 
 	drawsubpic(
 		cross_pos,

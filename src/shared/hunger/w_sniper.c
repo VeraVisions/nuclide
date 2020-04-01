@@ -236,13 +236,13 @@ w_sniper_crosshair(void)
 
 	if (pl.viewzoom < 1.0f) {
 		drawfill(
-			video_mins,
-			video_res,
+			g_hudmins,
+			g_hudres,
 			[0,0.2,0],
 			1.0f,
 			DRAWFLAG_ADDITIVE
 		);
-		cross_pos = video_mins + (video_res / 2) + [-128,-104];
+		cross_pos = g_hudmins + (g_hudres / 2) + [-128,-104];
 		drawpic(
 			cross_pos,
 			"sprites/nmxhair2.spr_0.tga",
@@ -253,7 +253,7 @@ w_sniper_crosshair(void)
 		);
 	} else {
 
-		cross_pos = video_mins + (video_res / 2) + [-12,-12];
+		cross_pos = g_hudmins + (g_hudres / 2) + [-12,-12];
 		drawsubpic(
 			cross_pos,
 			[24,24],
@@ -269,7 +269,7 @@ w_sniper_crosshair(void)
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 
-	aicon_pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
+	aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
 	drawsubpic(
 		aicon_pos,
 		[24,24],

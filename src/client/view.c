@@ -69,6 +69,17 @@ View_CalcViewport(int s, float fWinWidth, float fWinHeight)
 		video_mins = [0, 0];
 		break;
 	}
+
+	/* generate usable hud variables */
+	if (autocvar_cl_hudaspect <= 0) {
+		g_hudmins = video_mins;
+		g_hudres = video_res;
+	} else {
+		g_hudmins = video_mins;
+		g_hudmins[0] += (video_res[0] / 2) - ((video_res[1] * autocvar_cl_hudaspect) / 2);
+		g_hudres[0] = video_res[1] * autocvar_cl_hudaspect;
+		g_hudres[1] = video_res[1];
+	}
 }
 
 void

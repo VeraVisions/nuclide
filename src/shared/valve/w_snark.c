@@ -276,7 +276,7 @@ void w_snark_hud(void)
 {
 #ifdef CSQC
 	HUD_DrawAmmo2();
-	vector aicon_pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
+	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
 	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [96/256,96/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
 #endif
 }

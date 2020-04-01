@@ -229,7 +229,7 @@ w_chaingun_hud(void)
 #ifdef CSQC
 	/* crosshair */
 	drawsubpic(
-		video_mins + (video_res / 2) + [-12,-12],
+		g_hudmins + (g_hudres / 2) + [-12,-12],
 		[24,24],
 		"sprites/crosshairs.spr_0.tga",
 		[24/128,0], 
@@ -241,7 +241,7 @@ w_chaingun_hud(void)
 
 	/* ammo icon */
 	drawsubpic(
-		video_mins + [video_res[0] - 48, video_res[1] - 42],
+		g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42],
 		[24,24],
 		"sprites/640hud7.spr_0.tga",
 		[0,72/128],

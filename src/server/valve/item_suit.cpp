@@ -14,6 +14,14 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED item_suit (0 0 0.8) (-16 -16 0) (16 16 36)
+
+HALF-LIFE (1998) ENTITY
+
+HEV Suit
+Provides the player with armor, a flashlight and a Heads-Up-Display.
+
+*/
 class item_suit:CBaseTrigger
 {
 	void() item_suit;

@@ -218,7 +218,7 @@ w_gausspistol_hud(void)
 	vector pos;
 	player pl = (player)self;
 
-	pos = video_mins + [video_res[0] - 125, video_res[1] - 42];
+	pos = g_hudmins + [g_hudres[0] - 125, g_hudres[1] - 42];
 	for (int i = 0; i < 3; i++) {
 		drawpic(
 			pos,
@@ -235,7 +235,7 @@ w_gausspistol_hud(void)
 	
 	/* menu */
 	if (pl.a_ammo1 > 0) {
-		pos = video_mins + (video_res / 2) + [-96,-72];
+		pos = g_hudmins + (g_hudres / 2) + [-96,-72];
 
 		/* far left */
 		if (pl.a_ammo3 == GM_SINGLE) {
@@ -317,7 +317,7 @@ w_gausspistol_hud(void)
 		return;
 	}
 
-	pos = video_mins + (video_res / 2) + [-15,-15];
+	pos = g_hudmins + (g_hudres / 2) + [-15,-15];
 	drawsubpic(
 		pos,
 		[31,31],

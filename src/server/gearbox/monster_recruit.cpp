@@ -16,9 +16,10 @@
 
 /*QUAKED monster_recruit (0 0.8 0.8) (-16 -16 0) (16 16 72)
 
-Recruit
+HALF-LIFE: OPPOSING FORCE (1999) ENTITY
 
-Opposing Force Boot-Camp Training
+Recruit
+...from the Opposing Force Boot-Camp Training
 
 */
 

@@ -53,8 +53,10 @@ void Animation_PlayerUpdate( void ) {
 		self.frame = Weapons_GetAim(pl.activeweapon);
 		self.frame_old = self.frame;
 	}
-	
-	if ( !( self.flags & FL_ONGROUND ) ) {
+
+	/* in order to appear jumping, we want to not be on ground, 
+	 * but also make sure we're not just going down a ramp */
+	if ( !( self.flags & FL_ONGROUND ) && (self.velocity[2] > 0 || self.baseframe == ANIM_JUMP) ) {
 		self.baseframe = ANIM_JUMP;
 	} else if ( vlen( self.velocity ) == 0 ) {
 		if ( self.flags & FL_CROUCHING ) {

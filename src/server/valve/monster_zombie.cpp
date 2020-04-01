@@ -16,6 +16,8 @@
 
 /*QUAKED monster_zombie (0 0.8 0.8) (-16 -16 0) (16 16 72)
 
+HALF-LIFE (1998) ENTITY
+
 Zombie
 
 */

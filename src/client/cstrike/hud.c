@@ -105,7 +105,7 @@ HUD_DrawHealth(void)
 		pSeat->health_alpha = HUD_ALPHA;
 	}
 
-	pos = video_mins + [88, video_res[1] - 42];
+	pos = g_hudmins + [88, g_hudres[1] - 42];
 	if (pl.health > 25) {
 		drawsubpic(
 			pos + [-72,1],
@@ -142,7 +142,7 @@ HUD_DrawArmor(void)
 	vector pos;
 	player pl = (player)pSeat->ePlayer;
 
-	pos = video_mins + [198, video_res[1] - 42];
+	pos = g_hudmins + [198, g_hudres[1] - 42];
 	
 	if (pl.armor != pSeat->armor_old) {
 		pSeat->armor_alpha = 1.0;
@@ -201,7 +201,7 @@ HUD_DrawAmmo1(void)
 		pSeat->ammo1_alpha = HUD_ALPHA;
 	}
 
-	pos = video_mins + [video_res[0] - 152, video_res[1] - 42];
+	pos = g_hudmins + [g_hudres[0] - 152, g_hudres[1] - 42];
 	HUD_DrawNums(pl.a_ammo1, pos, pSeat->ammo1_alpha, g_hud_color);
 	HUD_DrawSeperator(pos + [30,0]);
 }
@@ -224,7 +224,7 @@ HUD_DrawAmmo2(void)
 		pSeat->ammo2_alpha = HUD_ALPHA;
 	}
 
-	pos = video_mins + [video_res[0] - 72, video_res[1] - 42];
+	pos = g_hudmins + [g_hudres[0] - 72, g_hudres[1] - 42];
 	HUD_DrawNums(pl.a_ammo2, pos, pSeat->ammo2_alpha, g_hud_color);
 }
 
@@ -246,7 +246,7 @@ HUD_DrawAmmo3(void)
 		pSeat->ammo3_alpha = HUD_ALPHA;
 	}
 
-	pos = video_mins + [video_res[0] - 72, video_res[1] - 74];
+	pos = g_hudmins + [g_hudres[0] - 72, g_hudres[1] - 74];
 	HUD_DrawNums(pl.a_ammo3, pos, pSeat->ammo3_alpha, g_hud_color);
 }
 
@@ -256,7 +256,7 @@ HUD_DrawFlashlight(void)
 {
 	vector pos;
 	player pl = (player)pSeat->ePlayer;
-	pos = video_mins + [video_res[0] - 48, 16];
+	pos = g_hudmins + [g_hudres[0] - 48, 16];
 
 	/* both on, draw both sprites at full intensity */
 	if (pl.flags & FL_FLASHLIGHT) {
@@ -304,7 +304,7 @@ HUD_DrawLogo(void)
 	static float frame_timer;
 
 	frame_timer -= clframetime;
-	pos = [video_res[0] - 262, 48];
+	pos = [g_hudres[0] - 262, 48];
 
 	drawpic(
 		pos,
@@ -337,7 +337,7 @@ HUD_DrawNotify(void)
 		return;
 	}
 
-	pos = video_mins + [video_res[0] - 192, video_res[1] - 128];
+	pos = g_hudmins + [g_hudres[0] - 192, g_hudres[1] - 128];
 	Weapons_HUDPic(pSeat->pickup_weapon, 1, pos, pSeat->pickup_alpha);
 	pSeat->pickup_alpha -= frametime;
 }

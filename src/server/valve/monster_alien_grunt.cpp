@@ -16,6 +16,8 @@
 
 /*QUAKED monster_alien_grunt (0 0.8 0.8) (-32 -32 0) (32 32 64)
 
+HALF-LIFE (1998) ENTITY
+
 Alien Grunt
 
 */

@@ -16,6 +16,8 @@
 
 /*QUAKED monster_cockroach (0 0.8 0.8) (-4 -4 0) (4 4 4)
 
+HALF-LIFE (1998) ENTITY
+
 Cockroach
 
 */

@@ -14,8 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-extern vector g_hud_color;
-
 #define OBITUARY_LINES	4
 #define OBITUARY_TIME	5
 
@@ -104,7 +102,7 @@ Obituary_Draw(void)
 	vector pos;
 	vector item;
 	drawfont = FONT_CON;
-	pos = video_mins + [video_res[0] - 18, 56];
+	pos = g_hudmins + [g_hudres[0] - 18, 56];
 
 	if (g_obituary_time <= 0 && g_obituary_count > 0) {
 		for (i = 0; i < (OBITUARY_LINES-1); i++) {

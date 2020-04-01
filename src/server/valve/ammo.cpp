@@ -67,10 +67,14 @@ void item_ammo::item_ammo(void)
 	item_ammo::Respawn();
 }
 
-/*
- * Ammo for the .357 Magnum Revolver.
- * A single ammo_357 will provide 6 bullets.
- */
+/*QUAKED ammo_357 (0 0 0.8) (-16 -16 0) (16 16 32)
+
+HALF-LIFE (1998) ENTITY
+
+Ammo for the .357 Magnum Revolver.
+A single ammo_357 will provide 6 bullets.
+
+*/
 class ammo_357:item_ammo
 {
 	void() ammo_357;
@@ -96,10 +100,14 @@ void ammo_357::touch(void)
 	}
 }
 
-/*
- * Ammo for the 9mm Handgun and the 9mm AR.
- * A single ammo_9mmAR will provide 50 bullets.
- */
+/*QUAKED ammo_9mmAR (0 0 0.8) (-16 -16 0) (16 16 32)
+
+HALF-LIFE (1998) ENTITY
+
+Ammo for the 9mm Handgun and the 9mm AR.
+A single ammo_9mmAR will provide 50 bullets.
+
+*/
 class ammo_9mmAR:item_ammo
 {
 	void() ammo_9mmAR;
@@ -126,10 +134,14 @@ void ammo_9mmAR::touch(void)
 }
 CLASSEXPORT(ammo_mp5clip, ammo_9mmAR)
 
-/*
- * Ammo for the 9mm Handgun and the 9mm AR.
- * A single ammo_9mmbox will provide 200 bullets.
- */
+/*QUAKED ammo_9mmbox (0 0 0.8) (-16 -16 0) (16 16 32)
+
+HALF-LIFE (1998) ENTITY
+
+Ammo for the 9mm Handgun and the 9mm AR.
+A single ammo_9mmbox will provide 200 bullets.
+
+*/
 class ammo_9mmbox:item_ammo
 {
 	void() ammo_9mmbox;
@@ -155,10 +167,14 @@ void ammo_9mmbox::touch(void)
 	}
 }
 
-/*
- * Ammo for the 9mm Handgun and the 9mm AR.
- * A single ammo_9mmclip will provide 17 bullets.
- */
+/*QUAKED ammo_9mmclip (0 0 0.8) (-16 -16 0) (16 16 32)
+
+HALF-LIFE (1998) ENTITY
+
+Ammo for the 9mm Handgun and the 9mm AR.
+A single ammo_9mmclip will provide 17 bullets.
+
+*/
 class ammo_9mmclip:item_ammo
 {
 	void() ammo_9mmclip;
@@ -184,10 +200,14 @@ void ammo_9mmclip::touch(void)
 	}
 }
 
-/*
- * Ammo for the 9mm AR's secondary fire.
- * A single ammo_ARgrenades will provide 2 AR grenades.
- */
+/*QUAKED ammo_ARgrenades (0 0 0.8) (-16 -16 0) (16 16 32)
+
+HALF-LIFE (1998) ENTITY
+
+Ammo for the 9mm AR's secondary fire.
+A single ammo_ARgrenades will provide 2 AR grenades.
+
+*/
 class ammo_ARgrenades:item_ammo
 {
 	void() ammo_ARgrenades;
@@ -214,10 +234,14 @@ void ammo_ARgrenades::touch(void)
 }
 CLASSEXPORT(ammo_mp5grenades, ammo_ARgrenades)
 
-/*
- * Ammo for the Shotgun.
- * A single ammo_buckshot will provide 12 shells.
- */
+/*QUAKED ammo_buckshot (0 0 0.8) (-16 -16 0) (16 16 32)
+
+HALF-LIFE (1998) ENTITY
+
+Ammo for the Shotgun.
+A single ammo_buckshot will provide 12 shells.
+
+*/
 class ammo_buckshot:item_ammo
 {
 	void() ammo_buckshot;
@@ -243,10 +267,14 @@ void ammo_buckshot::touch(void)
 	}
 }
 
-/*
- * Ammo for the Crossbow.
- * A single ammo_crossbow will provide 5 bolts.
- */
+/*QUAKED ammo_crossbow (0 0 0.8) (-16 -16 0) (16 16 32)
+
+HALF-LIFE (1998) ENTITY
+
+Ammo for the Crossbow.
+A single ammo_crossbow will provide 5 bolts.
+
+*/
 class ammo_crossbow:item_ammo
 {
 	void() ammo_crossbow;
@@ -272,10 +300,14 @@ void ammo_crossbow::touch(void)
 	}
 }
 
-/*
- * Ammo for the Tau Cannon and the Gluon Gun.
- * A single ammo_gaussclip will provide 20 cells.
- */
+/*QUAKED ammo_gaussclip (0 0 0.8) (-16 -16 0) (16 16 32)
+
+HALF-LIFE (1998) ENTITY
+
+Ammo for the Tau Cannon and the Gluon Gun.
+A single ammo_gaussclip will provide 20 cells.
+
+*/
 class ammo_gaussclip:item_ammo
 {
 	void() ammo_gaussclip;
@@ -300,10 +332,14 @@ void ammo_gaussclip::touch(void)
 	}
 }
 
-/*
- * Ammo for the RPG.
- * A single ammo_rpgclip will provide 1 rocket.
- */
+/*QUAKED ammo_rpgclip (0 0 0.8) (-16 -16 0) (16 16 32)
+
+HALF-LIFE (1998) ENTITY
+
+Ammo for the RPG.
+A single ammo_rpgclip will provide 1 rocket.
+
+*/
 class ammo_rpgclip:item_ammo
 {
 	void() ammo_rpgclip;

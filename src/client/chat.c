@@ -36,7 +36,7 @@ Chat_Draw(void)
 		string tempstr;
 		vector temppos;
 		tempstr = sprintf("^3Vote: %s", serverkey("vote_cmd"));
-		temppos[0] = (video_res[0]/2) - (stringwidth(tempstr, TRUE, [12,12]) / 2);
+		temppos[0] = (g_hudres[0]/2) - (stringwidth(tempstr, TRUE, [12,12]) / 2);
 		temppos[1] = 96;
 		drawstring(temppos, tempstr, [12,12], [1,1,1], 1.0f, 0);
 
@@ -45,12 +45,12 @@ Chat_Draw(void)
 					serverkey("votes_y"),
 					serverkey("votes_n")
 			);
-		temppos[0] = (video_res[0]/2) - (stringwidth(tempstr, TRUE, [12,12]) / 2);
+		temppos[0] = (g_hudres[0]/2) - (stringwidth(tempstr, TRUE, [12,12]) / 2);
 		drawstring(temppos + [0,16], tempstr, [12,12], [1,1,1], 1.0f, 0);
 	}
 
-	g_chatpos[0] = video_mins[0] + 16;
-	g_chatpos[1] = video_mins[1] + video_res[1] - 128;
+	g_chatpos[0] = g_hudmins[0] + 16;
+	g_chatpos[1] = g_hudmins[1] + g_hudres[1] - 128;
 
 	if (g_chatlines < 0) {
 		return;

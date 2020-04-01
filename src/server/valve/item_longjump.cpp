@@ -14,6 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED item_longjump (0 0 0.8) (-16 -16 0) (16 16 36)
+
+HALF-LIFE (1998) ENTITY
+
+Longjump module.
+Allows the player to jump longer distance by holding crouch
+and pressing jump.
+
+*/
 class item_longjump:CBaseTrigger
 {
 	void() item_longjump;

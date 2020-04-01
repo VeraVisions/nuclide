@@ -14,6 +14,14 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED item_battery (0 0 0.8) (-16 -16 0) (16 16 36)
+
+HALF-LIFE (1998) ENTITY
+
+HEV Suit energy battery.
+Adds 15 of armor/battery-power to the HEV Suit.
+
+*/
 class item_battery:CBaseEntity
 {
 	void() item_battery;
@@ -54,7 +62,7 @@ void item_battery::Respawn(void)
 	movetype = MOVETYPE_TOSS;
 	setmodel(this, m_oldModel);
 
-	setsize(this, [-16,-16,0], [16,16,16]);
+	setsize(this, [-16,-16,0], [16,16,36]);
 	setorigin(this, m_oldOrigin);
 
 	think = __NULL__;

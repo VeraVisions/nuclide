@@ -251,7 +251,7 @@ w_chemicalgun_hud(void)
 	vector pos;
 	player pl = (player)self;
 
-	pos = video_mins + [video_res[0] - 125, video_res[1] - 42];
+	pos = g_hudmins + [g_hudres[0] - 125, g_hudres[1] - 42];
 	for (int i = 0; i < 3; i++) {
 		drawpic(
 			pos,
@@ -291,7 +291,7 @@ w_chemicalgun_hud(void)
 		txt2 = "NEUTRAL:";
 		txt3 = "BASE:";
 		txt4 = "PRESSURE:";
-		pos = video_mins + (video_res / 2) + [-128,-96];
+		pos = g_hudmins + (g_hudres / 2) + [-128,-96];
 
 		drawfont = FONT_20;
 		drawstring(pos + [0,8], txt1, [20,20], col1, 1.0f,

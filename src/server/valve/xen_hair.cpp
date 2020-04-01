@@ -14,6 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED xen_hair (0 0.8 0.8) (-16 -16 0) (16 16 72)
+
+HALF-LIFE (1998) ENTITY
+
+Xen Hair
+
+*/
 class xen_hair:CBaseEntity
 {
 	void() xen_hair;

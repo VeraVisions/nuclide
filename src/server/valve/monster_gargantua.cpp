@@ -16,6 +16,8 @@
 
 /*QUAKED monster_gargantua (0 0.8 0.8) (-32 -32 0) (32 32 128)
 
+HALF-LIFE (1998) ENTITY
+
 Gargantua
 
 */

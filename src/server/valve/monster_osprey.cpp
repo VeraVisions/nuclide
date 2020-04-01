@@ -16,6 +16,8 @@
 
 /*QUAKED monster_osprey (0 0.8 0.8) (-480 -480 -112) (480 480 24)
 
+HALF-LIFE (1998) ENTITY
+
 Bell Boeing VV-22 Osprey
 
 */

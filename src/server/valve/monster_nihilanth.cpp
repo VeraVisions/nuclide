@@ -16,6 +16,8 @@
 
 /*QUAKED monster_nihilanth (0 0.8 0.8) (-192 -192 0) (192 192 384)
 
+HALF-LIFE (1998) ENTITY
+
 Nihilanth
 
 */

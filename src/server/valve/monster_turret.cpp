@@ -16,6 +16,8 @@
 
 /*QUAKED monster_turret (0 0.8 0.8) (-16 -16 0) (16 16 72)
 
+HALF-LIFE (1998) ENTITY
+
 Automatic Turret (large)
 
 */

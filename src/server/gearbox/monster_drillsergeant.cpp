@@ -16,9 +16,10 @@
 
 /*QUAKED monster_drillsergeant (0 0.8 0.8) (-16 -16 0) (16 16 72)
 
-Drill Sergeant
+HALF-LIFE: OPPOSING FORCE (1999) ENTITY
 
-Opposing Force Boot-Camp Training
+Drill Sergeant
+...from the Opposing Force Boot-Camp Training
 
 */
 

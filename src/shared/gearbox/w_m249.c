@@ -224,7 +224,7 @@ w_m249_crosshair(void)
 	vector aicon_pos;
 
 	/* crosshair */
-	cross_pos = (video_res / 2) + [-12,-12];
+	cross_pos = (g_hudres / 2) + [-12,-12];
 	drawsubpic(
 		cross_pos,
 		[24,24],
@@ -241,7 +241,7 @@ w_m249_crosshair(void)
 	HUD_DrawAmmo2();
 
 	/* ammo icon */
-	aicon_pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
+	aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
 	drawsubpic(
 		aicon_pos,
 		[24,24],

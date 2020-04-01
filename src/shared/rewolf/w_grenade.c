@@ -179,7 +179,7 @@ w_grenade_hud(void)
 		
 		txt1 = sprintf("DETONATE: %s", dmodes[getstati(49)]);
 		txt2 = sprintf("PAYLOAD: %s", pmodes[getstati(50)]);
-		pos = video_mins + (video_res / 2) + [-48,-16];
+		pos = g_hudmins + (g_hudres / 2) + [-48,-16];
 
 		drawfont = FONT_20;
 		drawstring(pos, txt1, [20,20], col1, 1.0f,

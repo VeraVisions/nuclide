@@ -16,6 +16,8 @@
 
 /*QUAKED monster_leech (0 0.8 0.8) (-6 -6 0) (6 6 6)
 
+HALF-LIFE (1998) ENTITY
+
 Leech
 
 */

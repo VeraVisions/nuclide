@@ -161,7 +161,7 @@ w_medkit_crosshair(void)
 #ifdef CSQC
 	vector aicon_pos;
 
-	aicon_pos = video_mins + [video_res[0] - 48, video_res[1] - 42];
+	aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
 
 	HUD_DrawAmmo2();
 

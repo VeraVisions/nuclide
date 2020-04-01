@@ -214,7 +214,7 @@ w_minigun_hud(void)
 {
 #ifdef CSQC
 	vector pos;
-	pos = video_mins + (video_res / 2) + [-23,-15];
+	pos = g_hudmins + (g_hudres / 2) + [-23,-15];
 
 	drawsubpic(
 		pos,
@@ -227,7 +227,7 @@ w_minigun_hud(void)
 		DRAWFLAG_NORMAL
 	);
 
-	pos = video_mins + [video_res[0] - 125, video_res[1] - 42];
+	pos = g_hudmins + [g_hudres[0] - 125, g_hudres[1] - 42];
 	for (int i = 0; i < 3; i++) {
 		drawpic(
 			pos,

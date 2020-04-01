@@ -193,7 +193,7 @@ w_beamgun_hud(void)
 		txt2 = sprintf("POWER: %s", pmodes[getstati(47)]);
 		txt3 = sprintf("ACCURACY: %s", amodes[getstati(47)]);
 		txt4 = sprintf("LIGHTNING: %s", lmodes[getstati(48)]);
-		pos = video_mins + (video_res / 2) + [-80,-48];
+		pos = g_hudmins + (g_hudres / 2) + [-80,-48];
 
 		drawfont = FONT_20;
 		drawstring(pos, txt1, [20,20], col1, 1.0f,
@@ -210,7 +210,7 @@ w_beamgun_hud(void)
 		return;
 	}
 
-	pos = video_mins + (video_res / 2) + [-15,-15];
+	pos = g_hudmins + (g_hudres / 2) + [-15,-15];
 	drawsubpic(
 		pos,
 		[31,31],

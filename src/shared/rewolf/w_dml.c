@@ -263,7 +263,7 @@ w_dml_hud(void)
 	lerp = Math_Lerp(18,6, trace_fraction);
 	jitter[0] = (random(0,2) - 2) * (1 - trace_fraction);
 	jitter[1] = (random(0,2) - 2) * (1 - trace_fraction);
-	pos = (video_res / 2) + ([-lerp,-lerp] / 2);
+	pos = (g_hudres / 2) + ([-lerp,-lerp] / 2);
 	drawsubpic(
 		pos + jitter,
 		[lerp,lerp],
@@ -300,7 +300,7 @@ w_dml_hud(void)
 		txt2 = sprintf("FLIGHTPATH: %s", fmodes[getstati(43)]);
 		txt3 = sprintf("DETONATE: %s", dmodes[getstati(44)]);
 		txt4 = sprintf("PAYLOAD: %s", pmodes[getstati(45)]);
-		pos = video_mins + (video_res / 2) + [-80,-48];
+		pos = g_hudmins + (g_hudres / 2) + [-80,-48];
 
 		drawfont = FONT_20;
 		drawstring(pos, txt1, [20,20], col1, 1.0f,
@@ -317,7 +317,7 @@ w_dml_hud(void)
 		return;
 	}
 
-	pos = video_mins + (video_res / 2) + [-32,-15];
+	pos = g_hudmins + (g_hudres / 2) + [-32,-15];
 	drawsubpic(
 		pos,
 		[63,31],

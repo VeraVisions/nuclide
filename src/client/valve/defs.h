@@ -17,6 +17,8 @@
 var int autocvar_cl_autoweaponswitch = TRUE;
 
 vector g_hud_color;
+vector g_hudmins;
+vector g_hudres;
 
 struct
 {

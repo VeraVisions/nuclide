@@ -14,10 +14,14 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*
- * Ammo for the M249.
- * A single ammo_556 will provide 50 bullets.
- */
+/*QUAKED ammo_556 (0 0 0.8) (-16 -16 0) (16 16 32)
+
+HALF-LIFE: OPPOSING FORCE (1999) ENTITY
+
+Ammo for the M249.
+A single ammo_556 will provide 50 bullets.
+
+*/
 class ammo_556:item_ammo
 {
 	void() ammo_556;
@@ -42,10 +46,14 @@ ammo_556::touch(void)
 	}
 }
 
-/*
- * Ammo for the M-40A1 Sniper.
- * A single ammo_762 will provide 5 bullets.
- */
+/*QUAKED ammo_762 (0 0 0.8) (-16 -16 0) (16 16 32)
+
+HALF-LIFE: OPPOSING FORCE (1999) ENTITY
+
+Ammo for the M-40A1 Sniper.
+A single ammo_762 will provide 5 bullets.
+
+*/
 class ammo_762:item_ammo
 {
 	void() ammo_762;
@@ -70,14 +78,18 @@ ammo_762::touch(void)
 	}
 }
 
-/*
- * Ammo for the Spore Launcher.
- * A single ammo_spore will provide 1 spore.
- * TODO
- * It needs to be static (no pickup), and needs to
- * fire a projectile upon inflicted damage.
- */
+/*QUAKED ammo_spore (0 0 0.8) (-16 -16 0) (16 16 32)
 
+HALF-LIFE: OPPOSING FORCE (1999) ENTITY
+
+Ammo for the Spore Launcher.
+A single ammo_spore will provide 1 spore.
+
+TODO:
+It needs to be static (no pickup), and needs to
+fire a projectile upon inflicted damage.
+
+*/
 class ammo_spore:item_ammo
 {
 	void() ammo_spore;

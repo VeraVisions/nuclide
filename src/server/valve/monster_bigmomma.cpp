@@ -16,6 +16,8 @@
 
 /*QUAKED monster_bigmomma (0 0.8 0.8) (-95 -95 0) (95 95 190)
 
+HALF-LIFE (1998) ENTITY
+
 Gonarch
 
 */
