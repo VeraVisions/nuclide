@@ -17,6 +17,8 @@
 #define SCORE_HEADER_C [255/255,156/255,0]
 #define SCORE_LINE_C [255/255,200/255,0]
 
+var int autocvar_cl_centerscores = FALSE;
+
 void Scores_Init(void)
 {
 	
@@ -28,7 +30,21 @@ void Scores_Draw(void)
 	player pl;
 	
 	pl = (player)pSeat->ePlayer;
-	pos = video_mins + [(video_res[0] / 2) - 145, 30];
+
+	if (autocvar_cl_centerscores) {
+		int c = 10;
+		
+		/* calculate all valid entries */
+		for (int i = -1; i > -32; i--) {
+			if (getplayerkeyvalue(i, "name")) {
+				break;
+			}
+			c += 10;
+		}
+		pos = video_mins + [(video_res[0] / 2) - 145, (video_res[1] / 2) - c];
+	} else {
+		pos = video_mins + [(video_res[0] / 2) - 145, 30];
+	}
 
 	drawfill(pos, [290, 1], SCORE_LINE_C, 1.0f, DRAWFLAG_ADDITIVE);
 
