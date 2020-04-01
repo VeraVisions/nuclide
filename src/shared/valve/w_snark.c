@@ -108,7 +108,6 @@ void
 monster_snark::Respawn(void)
 {
 	netname = "Snark";
-	classname = "snark";
 	setmodel(this, "models/w_squeak.mdl");
 	flags |= FL_MONSTER;
 	solid = SOLID_BBOX;

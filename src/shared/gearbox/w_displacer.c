@@ -286,7 +286,7 @@ w_displacer_hud(void)
 	vector cross_pos;
 	vector aicon_pos;
 
-	cross_pos = (g_hudres / 2) + [-12,-12];
+	cross_pos = g_hudmins + (g_hudres / 2) + [-12,-12];
 	aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
 
 	drawsubpic(

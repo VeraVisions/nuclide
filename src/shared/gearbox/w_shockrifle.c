@@ -218,7 +218,7 @@ w_shockrifle_crosshair(void)
 	vector aicon_pos;
 
 	/* crosshair */
-	cross_pos = (g_hudres / 2) + [-12,-12];
+	cross_pos = g_hudmins + (g_hudres / 2) + [-12,-12];
 	drawsubpic(
 		cross_pos,
 		[24,24],
