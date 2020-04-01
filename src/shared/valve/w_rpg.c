@@ -110,6 +110,7 @@ void w_rpg_primary(void)
 
 #ifdef CSQC
 	pl.a_ammo1--;
+	Weapons_ViewPunchAngle([-10,0,0]);
 #else
 	static void Rocket_Touch(void) {
 		Effect_CreateExplosion(self.origin);
