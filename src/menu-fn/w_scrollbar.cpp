@@ -81,6 +81,12 @@ void CScrollbar::Draw(void)
 	barheight = 20 /*m_theight * (m_theight / (m_max * m_itemheight))*/;
 	barstep = (m_scroll * m_itemheight) * (m_theight / (m_max * m_itemheight));
 
+	/* too few entries? don't even bother */
+	if (m_max * m_itemheight < m_height) {
+		drawfill([g_menuofs[0]+m_x,g_menuofs[1]+m_y+16], [16,m_theight+20], [0.25,0.25,0.25], 1.0f);
+		return;
+	}
+
 	if (!m_hold) {
 		drawfill([g_menuofs[0]+m_x,g_menuofs[1]+m_y+16], [16,m_theight+20], [0.25,0.25,0.25], 1.0f);
 		if (!m_hover) {
@@ -98,6 +104,11 @@ void CScrollbar::Input(float type, float x, float y, float devid)
 {
 	int barheight = 0;
 	int barstep = 0;
+
+	/* too few entries? don't even bother */
+	if (m_max * m_itemheight < m_height) {
+		return;
+	}
 
 	/* Up Arrow */
 	if (Util_CheckMouse(m_x, m_y, 16, 16)) {
