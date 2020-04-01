@@ -44,7 +44,7 @@ depending on what the player is doing
 =================
 */
 void Animation_PlayerUpdate( void ) {
-	self.basebone = 16;
+	self.basebone = gettagindex(self, "Bip01 Spine");
 
 #ifdef SSQC
 	// TODO: Make this faster
@@ -158,4 +158,7 @@ void Animation_PlayerTop( float fFrame ) {
 void Animation_PlayerTopTemp( float fFrame, float fTime ) {
 	self.frame = fFrame;
 	self.frame_time = time + fTime;
+#ifdef SSQC
+	self.SendFlags |= PLAYER_FRAME;
+#endif
 }

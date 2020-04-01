@@ -289,12 +289,10 @@ void CBaseMonster::Physics(void)
 	if (m_iSequenceState == SEQUENCESTATE_ENDING) {
 		input_angles = angles = v_angle = m_vecSequenceAngle;
 		frame = m_flSequenceEnd;
-	} else {
-		movetype = MOVETYPE_WALK;
+	} else if (movetype == MOVETYPE_WALK) {
 		CheckRoute();
 		WalkRoute();
 		runstandardplayerphysics(this);
-		movetype = MOVETYPE_NONE;
 		IdleNoise();
 
 		if (style != MONSTER_DEAD) {

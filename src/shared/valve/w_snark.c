@@ -28,9 +28,11 @@ enum
 class monster_snark:CBaseMonster
 {
 	void() monster_snark;
+
 	virtual void() customphysics;
 	virtual void(int) Death;
 	virtual void(int) Pain;
+	virtual void() Respawn;
 };
 
 void
@@ -103,7 +105,7 @@ monster_snark::Pain(int i)
 }
 
 void
-monster_snark::monster_snark(void)
+monster_snark::Respawn(void)
 {
 	netname = "Snark";
 	classname = "snark";
@@ -117,6 +119,12 @@ monster_snark::monster_snark(void)
 	takedamage = DAMAGE_YES;
 	aiment = __NULL__;
 	weapon = 1.0f;
+}
+
+void
+monster_snark::monster_snark(void)
+{
+	Respawn();
 }
 #endif
 

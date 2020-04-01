@@ -23,9 +23,11 @@
 class monster_tripmine:CBaseMonster
 {
 	void() monster_tripmine;
+
 	virtual float(entity, float) SendEntity;
 	virtual void(int) Trip;
 	virtual void() Ready;
+	virtual void() Respawn;
 };
 
 float
@@ -69,7 +71,7 @@ monster_tripmine::Ready(void)
 	traceline(origin, origin + v_forward * 2048, FALSE, this);
 
 	if (!health) {
-		SendFlags = 1;
+		SendFlags = -1;
 		health = 1;
 		Death =
 		Pain = Trip;
@@ -85,7 +87,7 @@ monster_tripmine::Ready(void)
 }
 
 void
-monster_tripmine::monster_tripmine(void)
+monster_tripmine::Respawn(void)
 {
 	setmodel(this, "models/v_tripmine.mdl");
 	solid = SOLID_NOT;
@@ -103,6 +105,12 @@ monster_tripmine::monster_tripmine(void)
 	} else {
 		nextthink = time + 4.0f;
 	}
+}
+
+void
+monster_tripmine::monster_tripmine(void)
+{
+	Respawn();
 }
 #endif
 

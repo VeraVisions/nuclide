@@ -63,60 +63,50 @@ void player::draw(void)
 
 	Animation_PlayerUpdate();
 
-	/*makevectors([0, this.angles[1], 0]);
+	makevectors([0, this.angles[1], 0]);
 	float fDirection = dotproduct(this.velocity, v_forward);
-	
-	if (fDirection != 0)
-	print(sprintf("fDirection: %d\n", fDirection));
 
 	if (fDirection < 0) {
 		this.baseframe1time -= clframetime;
 		this.baseframe2time -= clframetime;
 		this.frame2time -= clframetime;
 		this.frame1time -= clframetime;
-	} else {*/
+	} else {
 		this.baseframe1time += clframetime;
 		this.baseframe2time += clframetime;
 		this.frame2time += clframetime;
 		this.frame1time += clframetime;
-	/*}*/
+	}
 	this.bonecontrol5 = getplayerkeyfloat(this.entnum - 1, "voiploudness");
 
-	makevectors([0, this.angles[1], 0]);
-	float fCorrect = dotproduct(this.velocity, v_right);
+	/* hack, we can't play the animations in reverse the normal way */
+	if (this.baseframe1time < 0.0f) {
+		this.baseframe1time = 10.0f;
+	}
 
-	float a, s;
-	if (this.velocity[0] == 0 && this.velocity[1] == 0) {
-		a = 0;
-		s = 0;
-	} else {
-		a = this.angles[1] - vectoyaw(this.velocity);
-		s = vlen(this.velocity);
-		if (s < 100) {
-			a *= s/100;
-		}
-	}
-	s /= 400;
-	
-	/* Clamp */
-	if (a < -180) {
-		a += 360;
-	}
-	if (a > 180) {
-		a -= 360;
-	}
-	if (a > 120) {
-		a = 120;
-	}
-	if (a < -120) {
-		a = -120;
-	}
+	makevectors([0, this.angles[1], 0]);
+	float fCorrect = dotproduct(this.velocity, v_right) * 0.25f;
 
 	/* Turn torso */
-	this.basesubblendfrac = (a)/-120;
+	this.bonecontrol1 = fCorrect;
+	this.bonecontrol2 = this.bonecontrol1 * 0.5;
+	this.bonecontrol3 = this.bonecontrol2 * 0.5;
+	this.bonecontrol4 = this.bonecontrol3 * 0.5;
 
 	/* Correct the legs */
-	this.angles[1] -= a;
+	this.angles[1] -= fCorrect;
+
+	if (cvar("bonetest") == 1) {
+		this.bonecontrol1 = cvar("bonecontrol1");
+		this.bonecontrol2 = cvar("bonecontrol2");
+		this.bonecontrol3 = cvar("bonecontrol3");
+		this.bonecontrol4 = cvar("bonecontrol4");
+		this.bonecontrol5 = cvar("bonecontrol5");
+		this.subblendfrac = cvar("subblendfrac");
+		this.subblend2frac = cvar("subblend2frac");
+		this.basesubblendfrac = cvar("basesubblendfrac");
+		this.basesubblend2frac = cvar("basesubblend2frac");
+	}
 }
 
 var float autocvar_standheight = 0;

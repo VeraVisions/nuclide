@@ -123,6 +123,10 @@ void trigger_hurt::Respawn(void)
 		solid = SOLID_TRIGGER;
 		touch = Touch;
 	}
+	setmodel (this, m_oldModel);
+	self.movetype = MOVETYPE_NONE;
+	self.modelindex = 0;
+	self.model = "";
 }
 
 void trigger_hurt::trigger_hurt(void)
