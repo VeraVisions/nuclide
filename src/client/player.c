@@ -59,7 +59,8 @@ void player::draw(void)
 	}
 
 	this.subblendfrac =
-	this.subblend2frac = this.pitch;
+	this.subblend2frac = (this.pitch / 90);
+
 	Animation_PlayerUpdate();
 
 	/*makevectors([0, this.angles[1], 0]);

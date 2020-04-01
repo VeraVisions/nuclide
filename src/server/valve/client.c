@@ -84,7 +84,7 @@ Game_PlayerPostThink(player pl)
 	if (pl.old_origin[2] != pl.origin[2])
 		pl.SendFlags |= PLAYER_ORIGIN_Z;
 
-	if (pl.old_angles[0] != pl.angles[0])
+	if (pl.old_angles[0] != pl.v_angle[0])
 		pl.SendFlags |= PLAYER_ANGLES_X;
 
 	if (pl.old_angles[1] != pl.angles[1])
@@ -141,6 +141,7 @@ Game_PlayerPostThink(player pl)
 	pl.old_modelindex = pl.modelindex;
 	pl.old_origin = pl.origin;
 	pl.old_angles = pl.angles;
+	pl.old_angles[0] = pl.v_angle[0];
 	pl.old_velocity = pl.velocity;
 	pl.old_flags = pl.flags;
 	pl.old_activeweapon = pl.activeweapon;
