@@ -94,7 +94,7 @@ varying vec3 light;
 	void main ()
 	{
 		vec4 diffuse_f = texture2D(s_diffuse, tex_c);
-		diffuse_f.rgb *= light;
+		diffuse_f.rgb *= light * e_lmscale;
 
 #ifdef REFLECTCUBE
 		vec3 cube_c;
