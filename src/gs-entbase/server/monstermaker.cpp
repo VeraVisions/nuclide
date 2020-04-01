@@ -45,7 +45,7 @@ class monstermaker:CBaseTrigger
 {
 	string m_strMonster;
 	int m_iMonsterSpawned;
-	int m_iMonsterCount;
+	int m_iTotalMonsters;
 	float m_flDelay;
 	int m_iMaxChildren;
 	int m_iEnabled;
@@ -116,7 +116,7 @@ monstermaker::Spawner(void)
 	}
 
 	/* too many alive at a time */
-	if ((c >= m_iMaxChildren) || (m_flDelay == 0 && c >= 1)) {
+	if ((m_iMaxChildren > 0) && c >= m_iMaxChildren) || (m_flDelay == 0 && c >= 1)) {
 		nextthink = time + m_flDelay;
 		return;
 	}
@@ -145,7 +145,7 @@ monstermaker::Spawner(void)
 	}
 
 	/* shut off for good when we've spawned all we ever wanted */
-	if (m_iMonsterSpawned >= m_iMonsterCount) {
+	if ((m_iTotalMonsters > 0) && m_iMonsterSpawned >= m_iTotalMonsters) {
 		think = __NULL__;
 		return;
 	}
@@ -190,7 +190,7 @@ monstermaker::monstermaker(void)
 			m_strMonster = argv(i+1);
 			break;
 		case "monstercount":
-			m_iMonsterCount = stoi(argv(i+1));
+			m_iTotalMonsters = stoi(argv(i+1));
 			break;
 		case "child_alivemax":
 		case "m_imaxlivechildren":
