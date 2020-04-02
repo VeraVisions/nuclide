@@ -8,6 +8,10 @@
 !!cvardf gl_halflambert=1
 !!cvardf gl_mono=0
 
+!!permu FAKESHADOWS
+!!cvardf r_glsl_pcf
+!!samps =FAKESHADOWS shadowmap
+
 #include "sys/defs.h"
 
 #if gl_affinemodels == 1
@@ -19,6 +23,10 @@
 #ifdef REFLECTCUBE
 varying vec3 eyevector;
 varying mat3 invsurface;
+#endif
+
+#ifdef FAKESHADOWS
+	varying vec4 vtexprojcoord;
 #endif
 
 affine varying vec2 tex_c;
@@ -62,6 +70,8 @@ varying vec3 light;
 			light = e_light_ambient + (e_light_mul * lambert(n, e_light_dir));
 		}
 		
+		light *= e_lmscale.r;
+		
 		if (gl_ldr == 1.0) {
 			light *= 0.75;
 		}
@@ -70,9 +80,9 @@ varying vec3 light;
 		vec3 viewc = normalize(rorg - w);
 		float d = dot(n, viewc);
 		vec3 reflected;
-		reflected.x = n.x * 2 * d - viewc.x;
-		reflected.y = n.y * 2 * d - viewc.y;
-		reflected.z = n.z * 2 * d - viewc.z;
+		reflected.x = n.x * 2.0 * d - viewc.x;
+		reflected.y = n.y * 2.0 * d - viewc.y;
+		reflected.z = n.z * 2.0 * d - viewc.z;
 		tex_c.x = 0.5 + reflected.y * 0.5;
 		tex_c.y = 0.5 - reflected.z * 0.5;
 #endif
@@ -91,10 +101,11 @@ varying vec3 light;
 
 
 #ifdef FRAGMENT_SHADER
+	#include "sys/pcf.h"
 	void main ()
 	{
 		vec4 diffuse_f = texture2D(s_diffuse, tex_c);
-		diffuse_f.rgb *= light * e_lmscale;
+		diffuse_f.rgb *= light;
 
 #ifdef REFLECTCUBE
 		vec3 cube_c;
@@ -113,7 +124,9 @@ varying vec3 light;
 			float bw = (diffuse_f.r + diffuse_f.g + diffuse_f.b) / 3.0;
 			diffuse_f.rgb = vec3(bw, bw, bw);
 		}
-
+	#ifdef FAKESHADOWS
+		diffuse_f.rgb *= ShadowmapFilter(s_shadowmap, vtexprojcoord);
+	#endif
 		gl_FragColor = diffuse_f;
 	}
 #endif

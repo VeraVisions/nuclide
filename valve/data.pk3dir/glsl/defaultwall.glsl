@@ -2,6 +2,10 @@
 !!permu LIGHTSTYLED
 !!samps diffuse reflectcube normalmap
 
+!!permu FAKESHADOWS
+!!cvardf r_glsl_pcf
+!!samps =FAKESHADOWS shadowmap
+
 !!samps lightmap
 !!samps =LIGHTSTYLED lightmap1 lightmap2 lightmap3
 !!cvardf gl_mono=0
@@ -18,6 +22,10 @@ varying vec2 lm1, lm2, lm3;
 #ifdef REFLECTCUBE
 varying vec3 eyevector;
 varying mat3 invsurface;
+#endif
+
+#ifdef FAKESHADOWS
+	varying vec4 vtexprojcoord;
 #endif
 
 #ifdef VERTEX_SHADER
@@ -50,6 +58,7 @@ varying mat3 invsurface;
 #endif
 
 #ifdef FRAGMENT_SHADER
+	#include "sys/pcf.h"
 
 	vec3 lightmap_fragment(void)
 	{
@@ -109,6 +118,10 @@ varying mat3 invsurface;
 			float bw = (diffuse_f.r + diffuse_f.g + diffuse_f.b) / 3.0;
 			diffuse_f.rgb = vec3(bw, bw, bw);
 		}
+
+	#ifdef FAKESHADOWS
+		diffuse_f.rgb *= ShadowmapFilter(s_shadowmap, vtexprojcoord);
+	#endif
 
 		gl_FragColor = diffuse_f;
 		
