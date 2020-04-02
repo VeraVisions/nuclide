@@ -85,7 +85,7 @@ void w_handgrenade_throw(void)
 		if (other.takedamage == DAMAGE_YES) {
 			Damage_Apply(other, self.owner, 15, WEAPON_HANDGRENADE, DMG_BLUNT);
 		} else {
-			Sound_Play(other, CHAN_BODY, "weapon_handgrenade.bounce");
+			Sound_Play(self, CHAN_BODY, "weapon_handgrenade.bounce");
 		}
 		self.frame = 0;
 	}

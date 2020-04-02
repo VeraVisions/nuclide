@@ -34,9 +34,9 @@ weapon_glock.fire
 
 weapon_handgrenade.bounce
 {
-	sample squeek/grenade_hit1.wav
-	sample squeek/grenade_hit2.wav
-	sample squeek/grenade_hit3.wav
+	sample weapons/grenade_hit1.wav
+	sample weapons/grenade_hit2.wav
+	sample weapons/grenade_hit3.wav
 }
 
 weapon_hornetgun.fire
