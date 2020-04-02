@@ -14,6 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/* because some people apparently prefer the worse quality one */
+var int autocvar_cl_tonguemode = 0;
+
 enum
 {
 	BARN_IDLE1,
@@ -39,6 +42,7 @@ w_grapple_precache(void)
 	precache_sound("weapons/bgrapple_release.wav");
 	precache_sound("weapons/bgrapple_wait.wav");
 	precache_model("sprites/_tongue.spr");
+	precache_model("sprites/tongue.spr");
 	precache_model("models/v_bgrap.mdl");
 	precache_model("models/v_bgrap_tonguetip.mdl");
 	precache_model("models/w_bgrap.mdl");
@@ -108,7 +112,9 @@ grapple_predraw(void)
 	vector col2 = getlight(morg) / 255;
 
 	makevectors(view_angles);
-	R_BeginPolygon("sprites/_tongue.spr_0.tga", 0, 0);
+	
+	
+	R_BeginPolygon(autocvar_cl_tonguemode == 1 ? "sprites/_tongue.spr_0.tga" : "sprites/tongue.spr_0.tga", 0, 0);
 		R_PolygonVertex(forg + v_right * fsize[0] - v_up * fsize[1],
 			[1,1], col1, 1.0f);
 		R_PolygonVertex(forg - v_right * fsize[0] - v_up * fsize[1],
@@ -167,7 +173,7 @@ w_grapple_primary(void)
 #endif
 	setorigin(pl.hook, Weapons_GetCameraPos() + (v_forward * 16));
 	pl.hook.owner = self;
-	pl.hook.velocity = v_forward * 800;
+	pl.hook.velocity = v_forward * 1500;
 	pl.hook.movetype = MOVETYPE_FLYMISSILE;
 	pl.hook.solid = SOLID_BBOX;
 	pl.hook.angles = vectoangles(pl.hook.velocity);
