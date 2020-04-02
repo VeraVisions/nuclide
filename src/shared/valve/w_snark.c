@@ -66,7 +66,7 @@ monster_snark::customphysics(void)
 
 	if (self.aiment && self.weapon <= 0.0) {
 		self.weapon = 0.5f + random();
-		sound(self, CHAN_VOICE, sprintf("squeek/sqk_hunt%d.wav",floor(random(1,4))), 1.0, ATTN_NORM);
+		Sound_Play(self, CHAN_VOICE, "weapon_snark.hunt");
 		input_buttons = 2;
 		Damage_Apply(self, world, 1, 0, DMG_GENERIC);
 			
@@ -74,8 +74,7 @@ monster_snark::customphysics(void)
 		traceline(self.origin, self.origin + (v_forward * 128), 0, self);
 			
 		if (trace_ent.takedamage == DAMAGE_YES) {
-			float pit = 100 + random(0,10);
-			sound(self, CHAN_BODY, "squeek/sqk_deploy1.wav", 1.0, ATTN_NORM, pit);
+			Sound_Play(self, CHAN_BODY, "weapon_snark.deploy");
 			Damage_Apply(trace_ent, self.goalentity, 10, WEAPON_SNARK, DMG_GENERIC);
 			Effect_CreateBlood(self.origin + [0,0,16], [1,0,0]);
 		}
@@ -92,8 +91,8 @@ void
 monster_snark::Death(int i)
 {
 	Effect_CreateBlood(self.origin + [0,0,16], [203,183,15] / 255);
-	sound(self, CHAN_VOICE, "squeek/sqk_die1.wav", 1.0, ATTN_NORM);
-	sound(self, CHAN_BODY, "squeek/sqk_blast1.wav", 1.0, ATTN_NORM);
+	Sound_Play(self, CHAN_VOICE, "weapon_snark.die");
+	Sound_Play(self, CHAN_BODY, "weapon_snark.blast");
 	self.customphysics = __NULL__;
 	remove(self);
 }
@@ -238,13 +237,14 @@ void w_snark_precache(void)
 {
 	precache_model("models/w_squeak.mdl");
 	precache_model("models/p_squeak.mdl");
-	precache_model("models/v_squeak.mdl");	
-	precache_sound("squeek/sqk_deploy1.wav");
-	precache_sound("squeek/sqk_die1.wav");
-	precache_sound("squeek/sqk_blast1.wav");
-	precache_sound("squeek/sqk_hunt1.wav");
-	precache_sound("squeek/sqk_hunt2.wav");
-	precache_sound("squeek/sqk_hunt3.wav");
+	precache_model("models/v_squeak.mdl");
+
+#ifdef SSQC
+	Sound_Precache("weapon_snark.deploy");
+	Sound_Precache("weapon_snark.die");
+	Sound_Precache("weapon_snark.blast");
+	Sound_Precache("weapon_snark.hunt");
+#endif
 }
 void w_snark_updateammo(player pl)
 {

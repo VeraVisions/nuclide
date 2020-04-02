@@ -28,9 +28,10 @@ enum
 
 void w_handgrenade_precache(void)
 {
-	precache_sound("weapons/grenade_hit1.wav");
-	precache_sound("weapons/grenade_hit2.wav");
-	precache_sound("weapons/grenade_hit3.wav");
+#ifdef SSQC
+	Sound_Precache("weapon_handgrenade.bounce");
+#endif
+
 	precache_model("models/v_grenade.mdl");
 	precache_model("models/w_grenade.mdl");
 	precache_model("models/p_grenade.mdl");
@@ -83,10 +84,9 @@ void w_handgrenade_throw(void)
 	{
 		if (other.takedamage == DAMAGE_YES) {
 			Damage_Apply(other, self.owner, 15, WEAPON_HANDGRENADE, DMG_BLUNT);
+		} else {
+			Sound_Play(other, CHAN_BODY, "weapon_handgrenade.bounce");
 		}
-		int r = floor(random(1,4));
-		string sample = sprintf("weapons/grenade_hit%i.wav", r);
-		sound( self, CHAN_BODY, sample, 1, ATTN_NORM );
 		self.frame = 0;
 	}
 

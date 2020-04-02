@@ -38,13 +38,16 @@ enum
 
 void w_shotgun_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_shotgun.single");
+	Sound_Precache("weapon_shotgun.double");
+	Sound_Precache("weapon_shotgun.reload");
+	Sound_Precache("weapon_shotgun.cock");
+#endif
+
 	precache_model("models/v_shotgun.mdl");
 	precache_model("models/w_shotgun.mdl");
 	precache_model("models/p_shotgun.mdl");
-	precache_sound("weapons/sbarrel1.wav");
-	precache_sound("weapons/dbarrel1.wav");
-	precache_sound("weapons/reload3.wav");
-	precache_sound("weapons/scock1.wav");
 }
 void w_shotgun_updateammo(player pl)
 {
@@ -122,7 +125,7 @@ void w_shotgun_primary(void)
 	} else {
 		TraceAttack_FireBullets(4, pl.origin + pl.view_ofs, 5, [0.08716,0.04362], WEAPON_SHOTGUN);
 	}
-	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/sbarrel1.wav", 1, ATTN_NORM);
+	Sound_Play(pl, CHAN_WEAPON, "weapon_shotgun.single");
 	pl.shotgun_mag--;
 #else
 	View_SetMuzzleflash(MUZZLE_WEIRD);
@@ -163,7 +166,7 @@ void w_shotgun_secondary(void)
 	} else {
 		TraceAttack_FireBullets(8, pl.origin + pl.view_ofs, 5, [0.17365,0.04362], WEAPON_SHOTGUN);
 	}
-	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/dbarrel1.wav", 1, ATTN_NORM);
+	Sound_Play(pl, CHAN_WEAPON, "weapon_shotgun.double");
 	pl.shotgun_mag -= 2;
 	Weapons_UpdateAmmo(pl, pl.shotgun_mag, pl.ammo_buckshot, __NULL__);
 #else
@@ -240,7 +243,7 @@ void w_shotgun_release(void)
 		pl.shotgun_mag++;
 		pl.ammo_buckshot--;
 		Weapons_UpdateAmmo(pl, pl.shotgun_mag, pl.ammo_buckshot, pl.a_ammo3);
-	 	sound(pl, CHAN_WEAPON, "weapons/reload3.wav", 1.0, ATTN_NORM);	
+		Sound_Play(pl, CHAN_WEAPON, "weapon_shotgun.reload");
 		if (pl.ammo_buckshot <= 0 || pl.shotgun_mag >= 8) {
 			pl.a_ammo3 = SHOTTY_RELOAD_END;
 		}
@@ -249,7 +252,7 @@ void w_shotgun_release(void)
 	} else if (pl.a_ammo3 == SHOTTY_RELOAD_END) {
 		Weapons_ViewAnimation(SHOTGUN_PUMP);
 #ifdef SSQC
-		sound(pl, CHAN_WEAPON, "weapons/scock1.wav", 1.0, ATTN_NORM);
+		Sound_Play(pl, CHAN_WEAPON, "weapon_shotgun.cock");
 #endif
 		pl.a_ammo3 = SHOTTY_IDLE;
 		pl.w_idle_next = 10.0f;

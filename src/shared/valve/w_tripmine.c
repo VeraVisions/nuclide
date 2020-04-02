@@ -77,7 +77,7 @@ monster_tripmine::Ready(void)
 		Pain = Trip;
 		takedamage = DAMAGE_YES;
 		armor = trace_plane_dist;
-		sound(this, CHAN_WEAPON, "weapons/mine_activate.wav", 1.0f, ATTN_NORM);
+		Sound_Play(this, CHAN_WEAPON, "weapon_tripmine.activate");
 	}
 
 	if (trace_plane_dist != armor) {
@@ -136,9 +136,12 @@ void w_tripmine_precache(void)
 {
 	precache_model("models/v_tripmine.mdl");
 	precache_model("models/p_tripmine.mdl");
-	precache_sound("weapons/mine_deploy.wav");
-	precache_sound("weapons/mine_charge.wav");
-	precache_sound("weapons/mine_activate.wav");
+
+#ifdef SSQC
+	Sound_Precache("weapon_tripmine.deploy");
+	Sound_Precache("weapon_tripmine.charge");
+	Sound_Precache("weapon_tripmine.activate");
+#endif
 }
 void w_tripmine_updateammo(player pl)
 {
@@ -253,8 +256,9 @@ void w_tripmine_primary(void)
 	vector ang = vectoangles( trace_plane_normal );
 	monster_tripmine mine = spawn(monster_tripmine, real_owner: self, angles: ang);
 	setorigin(mine, trace_endpos - (v_forward * 8));
-	sound(self, CHAN_WEAPON, "weapons/mine_deploy.wav", 1.0f, ATTN_NORM);
-	sound(mine, CHAN_WEAPON, "weapons/mine_charge.wav", 1.0f, ATTN_NORM);
+
+	Sound_Play(self, CHAN_WEAPON, "weapon_tripmine.deploy");
+	Sound_Play(mine, CHAN_WEAPON, "weapon_tripmine.charge");
 #endif
 
 	pl.a_ammo3 = 1;

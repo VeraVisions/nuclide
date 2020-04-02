@@ -33,9 +33,10 @@ w_python_precache(void)
 	precache_model("models/w_357.mdl");
 	precache_model("models/p_357.mdl");
 
-	precache_sound("weapons/357_shot1.wav");
-	precache_sound("weapons/357_shot2.wav");
-	precache_sound("weapons/357_reload1.wav");
+#ifdef SSQC
+	Sound_Precache("weapon_357.shoot");
+	Sound_Precache("weapon_357.reload");
+#endif
 }
 
 int
@@ -136,12 +137,7 @@ w_python_primary(void)
 #else
 	pl.python_mag--;
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 40, [0.008, 0.008], WEAPON_PYTHON);
-
-	if (random() < 0.5) {
-		sound(pl, CHAN_WEAPON, "weapons/357_shot1.wav", 1, ATTN_NORM);
-	} else {
-		sound(pl, CHAN_WEAPON, "weapons/357_shot2.wav", 1, ATTN_NORM);
-	}
+	Sound_Play(pl, CHAN_WEAPON, "weapon_357.shoot");
 #endif
 
 	pl.w_attack_next = 0.75f;
@@ -201,7 +197,7 @@ w_python_reload(void)
 #ifdef CSQC
 	Weapons_ViewAnimation(PYTHON_RELOAD);
 #else
-	sound(pl, CHAN_WEAPON, "weapons/357_reload1.wav", 1, ATTN_NORM);
+	Sound_Play(pl, CHAN_WEAPON, "weapon_357.reload");
 	Weapons_ReloadWeapon(pl, player::python_mag, player::ammo_357, 6);
 #endif
 

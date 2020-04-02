@@ -30,12 +30,12 @@ enum
 void
 w_crowbar_precache(void)
 {
-	precache_sound("weapons/cbar_miss1.wav");
-	precache_sound("weapons/cbar_hit1.wav");
-	precache_sound("weapons/cbar_hit2.wav");
-	precache_sound("weapons/cbar_hitbod1.wav");
-	precache_sound("weapons/cbar_hitbod2.wav");
-	precache_sound("weapons/cbar_hitbod3.wav");
+#ifdef SSQC
+	Sound_Precache("weapon_crowbar.hit");
+	Sound_Precache("weapon_crowbar.miss");
+	Sound_Precache("weapon_crowbar.hitbody");
+#endif
+
 	precache_model("models/v_crowbar.mdl");
 	precache_model("models/w_crowbar.mdl");
 	precache_model("models/p_crowbar.mdl");
@@ -83,7 +83,6 @@ void
 w_crowbar_primary(void)
 {
 	int anim = 0;
-	int r;
 	vector src;
 	player pl = (player)self;
 
@@ -103,7 +102,7 @@ w_crowbar_primary(void)
 	pl.w_idle_next = 2.5f;
 
 #ifdef CSQC
-	r = (float)input_sequence % 3;
+	int r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
 		anim = trace_fraction >= 1 ? CBAR_ATTACK1MISS:CBAR_ATTACK1HIT;
@@ -122,7 +121,7 @@ w_crowbar_primary(void)
 		Animation_PlayerTopTemp(ANIM_CR_SHOOTCROWBAR, 0.42f);
 	}
 
-	sound(pl, CHAN_WEAPON, "weapons/cbar_miss1.wav", 1, ATTN_NORM);
+	Sound_Play(self, CHAN_WEAPON, "weapon_crowbar.miss");
 
 	if (trace_fraction >= 1.0) {
 		return;
@@ -142,25 +141,9 @@ w_crowbar_primary(void)
 			return;
 		}
 
-		r = (float)input_sequence % 3;
-		switch (r) {
-		case 0:
-			sound(pl, 8, "weapons/cbar_hitbod1.wav", 1, ATTN_NORM);
-			break;
-		case 1:
-			sound(pl, 8, "weapons/cbar_hitbod2.wav", 1, ATTN_NORM);
-			break;
-		default:
-			sound(pl, 8, "weapons/cbar_hitbod3.wav", 1, ATTN_NORM);
-			break;
-		}
+		Sound_Play(self, CHAN_WEAPON, "weapon_crowbar.hitbody");
 	} else {
-		r = (float)input_sequence % 2;
-		if (r == 1) {
-			sound(pl, 8, "weapons/cbar_hit1.wav", 1, ATTN_NORM);
-		} else {
-			sound(pl, 8, "weapons/cbar_hit2.wav", 1, ATTN_NORM);
-		}
+		Sound_Play(self, CHAN_WEAPON, "weapon_crowbar.hit");
 	}
 #endif
 }

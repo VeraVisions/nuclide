@@ -181,7 +181,7 @@ void Decals_Init(void)
 		if (i == max) {
 			nextdecal.owner = g_decals;
 		} else {
-			nextdecal = nextdecal.owner;
+			nextdecal = (decal)nextdecal.owner;
 		}
 	}
 }

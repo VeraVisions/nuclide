@@ -30,12 +30,14 @@ enum
 
 void w_rpg_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_rpg.shoot");
+#endif
 	precache_model("models/v_rpg.mdl");
 	precache_model("models/w_rpg.mdl");
 	precache_model("models/p_rpg.mdl");
 	precache_model("models/rpgrocket.mdl");
 	precache_model("sprites/laserdot.spr");
-	precache_sound("weapons/rocketfire1.wav");
 }
 
 void w_rpg_updateammo(player pl)
@@ -154,7 +156,7 @@ void w_rpg_primary(void)
 	}
 
 	setsize(rocket, [0,0,0], [0,0,0]);
-	sound(self, CHAN_WEAPON, "weapons/rocketfire1.wav", 1, ATTN_NORM);
+	Sound_Play(pl, CHAN_WEAPON, "weapon_rpg.shoot");
 	pl.rpg_mag--;
 #endif
 

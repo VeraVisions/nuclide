@@ -32,13 +32,15 @@ enum {
 void
 w_mp5_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_mp5.shoot");
+	Sound_Precache("weapon_mp5.gl");
+#endif
+
 	precache_model("models/v_9mmar.mdl");
 	precache_model("models/w_9mmar.mdl");
 	precache_model("models/p_9mmar.mdl");
 	precache_model("models/grenade.mdl");
-	precache_sound("weapons/hks1.wav");
-	precache_sound("weapons/hks2.wav");
-	precache_sound("weapons/glauncher.wav");
 }
 
 int
@@ -141,11 +143,7 @@ w_mp5_primary(void)
 		TraceAttack_FireBullets(1, Weapons_GetCameraPos(), 8, [0.05,0.05], WEAPON_MP5);
 	}
 
-	if (random() < 0.5) {
-		sound(pl, CHAN_WEAPON, "weapons/hks1.wav", 1.0f, ATTN_NORM);
-	} else {
-		sound(pl, CHAN_WEAPON, "weapons/hks2.wav", 1.0f, ATTN_NORM);
-	}
+	Sound_Play(pl, CHAN_WEAPON, "weapon_mp5.shoot");
 
 	pl.mp5_mag--;
 #endif
@@ -202,7 +200,7 @@ w_mp5_secondary(void)
 	gren.solid = SOLID_BBOX;
 	setsize(gren, [0,0,0], [0,0,0]);
 	gren.touch = Grenade_ExplodeTouch;
-	sound(pl, CHAN_WEAPON, "weapons/glauncher.wav", 1.0f, ATTN_NORM);
+	Sound_Play(pl, CHAN_WEAPON, "weapon_mp5.gl");
 	pl.ammo_m203_grenade--;
 #endif
 

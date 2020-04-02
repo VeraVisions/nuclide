@@ -30,10 +30,13 @@ enum
 void
 w_glock_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_glock.fire");
+#endif
+
 	precache_model("models/v_9mmhandgun.mdl");
 	precache_model("models/w_9mmhandgun.mdl");
 	precache_model("models/p_9mmhandgun.mdl");
-	precache_sound("weapons/pl_gun3.wav");
 }
 
 void
@@ -132,7 +135,7 @@ w_glock_primary(void)
 #else
 	pl.glock_mag--;
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.01,0,01], WEAPON_GLOCK);
-	sound(pl, CHAN_WEAPON, "weapons/pl_gun3.wav", 1.0f, ATTN_NORM);
+	Sound_Play(pl, CHAN_WEAPON, "weapon_glock.fire");
 
 	if (self.flags & FL_CROUCHING)
 		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
@@ -177,7 +180,7 @@ w_glock_secondary(void)
 #else
 	pl.glock_mag--;
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.1,0.1], WEAPON_GLOCK);
-	sound(pl, CHAN_WEAPON, "weapons/pl_gun3.wav", 1.0f, ATTN_NORM);
+	Sound_Play(pl, CHAN_WEAPON, "weapon_glock.fire");
 
 	if (self.flags & FL_CROUCHING)
 		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);

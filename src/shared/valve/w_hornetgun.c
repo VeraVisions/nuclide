@@ -32,17 +32,11 @@ w_hornetgun_precache(void)
 	precache_model("models/p_hgun.mdl");
 	precache_model("models/hornet.mdl");
 	
-	precache_sound("agrunt/ag_fire1.wav");
-	precache_sound("agrunt/ag_fire2.wav");
-	precache_sound("agrunt/ag_fire3.wav");
-	
-	precache_sound("hornet/ag_buzz1.wav");
-	precache_sound("hornet/ag_buzz2.wav");
-	precache_sound("hornet/ag_buzz3.wav");
-	
-	precache_sound("hornet/ag_hornethit1.wav");
-	precache_sound("hornet/ag_hornethit2.wav");
-	precache_sound("hornet/ag_hornethit3.wav");
+#ifdef SSQC
+	Sound_Precache("weapon_hornetgun.fire");
+	Sound_Precache("weapon_hornetgun.buzz");
+	Sound_Precache("weapon_hornetgun.hit");
+#endif
 }
 
 int
@@ -102,15 +96,12 @@ void
 w_hornetgun_shoothornet(void)
 {
 	static void Hornet_Touch(void) {
-		string snd;
-		int r = floor(random(1,4));
 		if (other.takedamage == DAMAGE_YES) {
 			Damage_Apply(other, self.owner, 10, WEAPON_HORNETGUN, DMG_GENERIC);
-			snd = sprintf("hornet/ag_hornethit%i.wav", r);
+			Sound_Play(other, CHAN_VOICE, "weapon_hornetgun.hit");
 		} else {
-			snd = sprintf("hornet/ag_buzz%i.wav", r);
+			Sound_Play(self, CHAN_VOICE, "weapon_hornetgun.buzz");
 		}
-		sound(self, CHAN_BODY, snd, 1, ATTN_NORM);
 		remove(self);
 	}
 
@@ -199,8 +190,8 @@ w_hornetgun_primary(void)
 
 #ifdef SSQC
 	w_hornetgun_shoothornet();
-	Weapons_PlaySound(pl, CHAN_WEAPON, sprintf("agrunt/ag_fire%d.wav", floor(random(1,4))), 1, ATTN_NORM);
-	
+	Sound_Play(pl, CHAN_WEAPON, "weapon_hornetgun.fire");
+
 	pl.ammo_hornet--;
 	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_hornet, __NULL__);
 #else
