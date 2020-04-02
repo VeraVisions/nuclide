@@ -700,7 +700,7 @@ PMove_Run(void)
 	/* grappling hook stuff */
 	if (pl.hook.skin == 1) {
 		pl.velocity = (pl.hook.origin - pl.origin);
-		pl.velocity = (pl.velocity * (1 / (vlen(pl.velocity) / 1000)));
+		pl.velocity = (pl.velocity * (1 / (vlen(pl.velocity) / 750)));
 	}
 
 	/* call accelerate before and after the actual move, 
