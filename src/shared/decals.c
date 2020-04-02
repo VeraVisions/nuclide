@@ -14,151 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-var int autocvar_cl_decals = TRUE;
+var int autocvar_r_drawdecals = TRUE;
+var int autocvar_sp_decals = 4096;
+var int autocvar_mp_decals = 300;
+var int autocvar_cl_decals = 512;
 
-#define DECALS_MAX 30
-
-#ifdef SSQC
-entity g_decals;
-void Decals_Init(void)
-{
-	if (serverkeyfloat("*bspversion") != 30) {
-		return;
-	}
-	entity nextdecal = spawn();
-	g_decals = nextdecal;
-	for (int i = 0; i <= DECALS_MAX; i++) {
-		nextdecal.classname = "tempdecal";
-		nextdecal.owner = spawn();
-		
-		if (i == DECALS_MAX) {
-			nextdecal.owner = g_decals;
-		} else {
-			nextdecal = nextdecal.owner;
-		}
-	}
-}
-
-entity Decals_Next(vector pos)
-{
-	entity ret = g_decals;
-	g_decals = g_decals.owner;
-
-	/* Check for a tempdecal within a radius of 8 units and overwrite that one
-	 * instead */
-	for (entity b = world; (b = find(b, ::classname, "tempdecal"));) {
-		if (vlen(b.origin - pos) < 8) {
-			return b;
-		}
-	}
-
-	return ret;
-}
-#endif
-
-void Decals_PlaceSmall(vector pos)
-{
-	if (serverkeyfloat("*bspversion") != 30) {
-		return;
-	}
 #ifdef CSQC
-	// TODO
-#else
-	entity decal = Decals_Next(pos);
-	setorigin(decal, pos);
-	decal.texture = sprintf("{shot%d", floor(random(1,6)));
-	decal.think = infodecal;
-	decal.nextthink = time /*+ 0.1f*/;
-#endif
-}
-
-void Decals_PlaceBig(vector pos)
-{
-	if (serverkeyfloat("*bspversion") != 30) {
-		return;
-	}
-#ifdef CSQC
-	// TODO
-#else
-	entity decal = Decals_Next(pos);
-	setorigin(decal, pos);
-	decal.texture = sprintf("{bigshot%d", floor(random(1,6)));
-	decal.think = infodecal;
-	decal.nextthink = time /*+ 0.1f*/;
-#endif
-}
-
-void Decals_PlaceGlass(vector pos)
-{
-	if (serverkeyfloat("*bspversion") != 30) {
-		return;
-	}
-#ifdef CSQC
-	// TODO
-#else
-	entity decal = Decals_Next(pos);
-	setorigin(decal, pos);
-	decal.texture = sprintf("{break%d", floor(random(1,4)));
-	decal.think = infodecal;
-	decal.nextthink = time /*+ 0.1f*/;
-#endif
-}
-
-void Decals_PlaceScorch(vector pos)
-{
-	if (serverkeyfloat("*bspversion") != 30) {
-		return;
-	}
-#ifdef CSQC
-	// TODO
-#else
-	entity decal = Decals_Next(pos);
-	setorigin(decal, pos);
-	decal.texture = sprintf("{scorch%d", floor(random(1,4)));
-	decal.think = infodecal;
-	decal.nextthink = time /*+ 0.1f*/;
-#endif
-}
-
-void Decals_PlaceDent(vector pos)
-{
-	if (serverkeyfloat("*bspversion") != 30) {
-		return;
-	}
-#ifdef CSQC
-	// TODO
-#else
-	entity decal = Decals_Next(pos);
-	setorigin(decal, pos);
-	decal.texture = sprintf("{dent%d", floor(random(1,7)));
-	decal.think = infodecal;
-	decal.nextthink = time /*+ 0.1f*/;
-#endif
-}
-
-void Decals_PlaceGauss(vector pos)
-{
-	if (serverkeyfloat("*bspversion") != 30) {
-		return;
-	}
-#ifdef CSQC
-	// TODO
-#else
-	entity decal = Decals_Next(pos);
-	setorigin(decal, pos);
-	decal.texture = "{gaussshot1";
-	decal.think = infodecal;
-	decal.nextthink = time /*+ 0.1f*/;
-#endif
-}
-#ifdef CSQC
-
-class decal
-{
-	string m_strShader;
-	string m_strTexture;
-};
-
 const string g_decal_shader = \
 	"{\n" \
 		"polygonOffset\n" \
@@ -168,86 +29,94 @@ const string g_decal_shader = \
 			"blendfunc blend\n" \
 		"}\n" \
 	"}";
+#endif
 
-float Decal_PreDraw(void)
+#ifdef SSQC
+float
+decal::SendEntity(entity pvsent, float changedflags)
+{
+	WriteByte(MSG_ENTITY, ENT_DECAL);
+	WriteCoord(MSG_ENTITY, origin[0]);
+	WriteCoord(MSG_ENTITY, origin[1]);
+	WriteCoord(MSG_ENTITY, origin[2]);
+	WriteCoord(MSG_ENTITY, angles[0]);
+	WriteCoord(MSG_ENTITY, angles[1]);
+	WriteCoord(MSG_ENTITY, angles[2]);
+	WriteString(MSG_ENTITY, m_strTexture);
+	return TRUE;
+}
+#else
+void
+decal::ReadEntity(void)
+{
+	origin[0] = readcoord();
+	origin[1] = readcoord();
+	origin[2] = readcoord();
+
+	angles[0] = readcoord();
+	angles[1] = readcoord();
+	angles[2] = readcoord();
+	m_strTexture = readstring();
+
+	size = drawgetimagesize(m_strTexture);
+
+	if (serverkeyfloat("*bspversion") == 30) {
+		BuildShader();
+	}
+
+	makevectors(angles);
+	float surf = getsurfacenearpoint(world, origin);
+	vector s_dir = getsurfacepointattribute(world, surf, 0, SPA_S_AXIS);
+	vector t_dir = getsurfacepointattribute(world, surf, 0, SPA_T_AXIS);
+	mins = v_up / size[0];
+	maxs = t_dir / size[1];
+	color = getlight(origin) / 255;
+	drawmask = MASK_ENGINE;
+}
+
+float
+decal::predraw(void)
 {
 	decal dcl = (decal)self;
-	if (!autocvar_cl_decals) {
+	if (!autocvar_r_drawdecals) {
 		return PREDRAW_NEXT;
 	}
+
+	/* don't draw us, unnecessary */
+	/*if (checkpvs(getproperty(VF_ORIGIN), this) == FALSE) {
+		return PREDRAW_NEXT;
+	}*/
 
 	adddecal(dcl.m_strShader, dcl.origin, dcl.mins, dcl.maxs, dcl.color, 1.0f);
 	addentity(dcl);
 	return PREDRAW_NEXT;
 }
 
-void Decal_MakeShader(decal target)
+void
+decal::BuildShader(void)
 {
 	string shader_buff;
-	target.m_strShader = sprintf("decal_%s", target.m_strTexture);
-	shader_buff = sprintf(g_decal_shader, target.m_strTexture);
-	shaderforname(target.m_strShader, shader_buff);
+	m_strShader = sprintf("decal_%s", m_strTexture);
+	shader_buff = sprintf(g_decal_shader, m_strTexture);
+	shaderforname(m_strShader, shader_buff);
 }
-
-void Decal_Reload(void)
-{
-	for (entity b = world; (b = find(b, ::classname, "decal"));) {
-		Decal_MakeShader((decal)b);
-	}
-}
-
-void Decal_Parse(void)
-{
-	decal new;
-
-	/* convert us to an object of type decal */
-	spawnfunc_decal();
-	new = (decal)self;
-
-	new.origin[0] = readcoord();
-	new.origin[1] = readcoord();
-	new.origin[2] = readcoord();
-
-	new.angles[0] = readcoord();
-	new.angles[1] = readcoord();
-	new.angles[2] = readcoord();
-	new.m_strTexture = readstring();
-
-	new.size = drawgetimagesize(new.m_strTexture);
-
-	if (serverkeyfloat("*bspversion") == 30) {
-		Decal_MakeShader(new);
-	}
-
-	makevectors(new.angles);
-	float surf = getsurfacenearpoint(world, new.origin);
-	vector s_dir = getsurfacepointattribute(world, surf, 0, SPA_S_AXIS);
-	vector t_dir = getsurfacepointattribute(world, surf, 0, SPA_T_AXIS);
-	new.mins = v_up / new.size[0];
-	new.maxs = t_dir / new.size[1];
-	new.color = getlight(new.origin) / 255;
-
-	new.predraw = Decal_PreDraw;
-	new.drawmask = MASK_ENGINE;
-}
+#endif
 
 /* this is like Decal_Parse, but better */
 void
-Decals_Place(vector org, string dname)
+decal::Place(vector org, string dname)
 {
-	decal new;
-
-	new = spawn(decal);
-	decal_pickwall(new, org);
+	decal_pickwall(this, org);
 
 	/* we never hit any wall. */
 	if (g_tracedDecal.fraction == 1.0f) {
-		dprint(sprintf("infodecal tracing failed at %v\n", org));
-		remove(new);
+		print(sprintf("^1infodecal tracing failed at %v\n", org));
+		if (classname != "tempdecal")
+			remove(this);
 		return;
 	}
 
-	new.origin = g_tracedDecal.endpos;
+	origin = g_tracedDecal.endpos;
 
 	/* FIXME: more universal check? */
 	if (getsurfacetexture(trace_ent, getsurfacenearpoint(trace_ent, g_tracedDecal.endpos)) == "sky") {
@@ -261,23 +130,185 @@ Decals_Place(vector org, string dname)
 		cpl = [0, 0, 1];
 	}
 
-	new.angles = vectoangles(cpl, g_tracedDecal.normal);
-	new.m_strTexture = dname;
+	angles = vectoangles(cpl, g_tracedDecal.normal);
+	m_strTexture = dname;
 
-	new.size = drawgetimagesize(new.m_strTexture);
+#ifdef SSQC
+	self.angles = vectoangles(cpl, g_tracedDecal.normal);
+	self.solid = SOLID_NOT;
+	self.pvsflags = PVSF_NOREMOVE | PVSF_IGNOREPVS;
+	self.SendFlags = 1;
+#else
+	size = drawgetimagesize(m_strTexture);
 
 	if (serverkeyfloat("*bspversion") == 30) {
-		Decal_MakeShader(new);
+		BuildShader();
 	}
 
-	makevectors(new.angles);
-	float surf = getsurfacenearpoint(world, new.origin);
+	makevectors(angles);
+	float surf = getsurfacenearpoint(world, origin);
 	vector s_dir = getsurfacepointattribute(world, surf, 0, SPA_S_AXIS);
 	vector t_dir = getsurfacepointattribute(world, surf, 0, SPA_T_AXIS);
-	new.mins = v_up / new.size[0];
-	new.maxs = t_dir / new.size[1];
-	new.color = getlight(new.origin) / 255;
-	new.predraw = Decal_PreDraw;
-	new.drawmask = MASK_ENGINE;
+	mins = v_up / size[0];
+	maxs = t_dir / size[1];
+	color = getlight(origin) / 255;
+	drawmask = MASK_ENGINE;
+#endif
+}
+
+decal g_decals;
+void Decals_Init(void)
+{
+	int max;
+
+#ifdef SSQC
+	max = cvar("sv_playerslots") == 1 ? autocvar_sp_decals : autocvar_mp_decals;
+#else
+	max = autocvar_cl_decals;
+#endif
+
+	/* let's not glitch this up */
+	if (max <= 0) {
+		max = 5;
+	}
+
+	decal nextdecal = spawn(decal);
+	g_decals = nextdecal;
+	for (int i = 0; i <= max; i++) {
+		nextdecal.classname = "tempdecal";
+		nextdecal.owner = spawn(decal);
+
+		if (i == max) {
+			nextdecal.owner = g_decals;
+		} else {
+			nextdecal = nextdecal.owner;
+		}
+	}
+}
+
+decal Decals_Next(vector pos)
+{
+	decal ret = g_decals;
+	g_decals = g_decals.owner;
+
+	/* Check for a tempdecal within a radius of 8 units and overwrite that one
+	 * instead */
+	for (entity b = world; (b = find(b, ::classname, "tempdecal"));) {
+		if (vlen(b.origin - pos) < 8) {
+			return b;
+		}
+	}
+
+	return ret;
+}
+
+/* Generalized Decal Placing Function */
+void Decals_Place(vector pos, string dname)
+{
+	if (serverkeyfloat("*bspversion") != 30) {
+		return;
+	}
+
+	decal x = Decals_Next(pos);
+	x.Place(pos, dname);
+}
+
+
+#ifdef CSQC
+void Decal_Reload(void)
+{
+	for (entity b = world; (b = find(b, ::classname, "decal"));) {
+		decal d = (decal)b;
+		d.BuildShader();
+	}
+}
+
+void Decal_Parse(void)
+{
+	decal new;
+
+	/* convert us to an object of type decal */
+	spawnfunc_decal();
+	new = (decal)self;
+	new.ReadEntity();
 }
 #endif
+
+/* TODO: THROW THESE OUT */
+void Decals_PlaceSmall(vector pos)
+{
+	if (serverkeyfloat("*bspversion") != 30) {
+		return;
+	}
+#ifdef CSQC
+	// TODO
+#else
+	decal x = Decals_Next(pos);
+	x.Place(pos, sprintf("{shot%d", floor(random(1,6))));
+#endif
+}
+
+void Decals_PlaceBig(vector pos)
+{
+	if (serverkeyfloat("*bspversion") != 30) {
+		return;
+	}
+#ifdef CSQC
+	// TODO
+#else
+	decal x = Decals_Next(pos);
+	x.Place(pos, sprintf("{bigshot%d", floor(random(1,6))));
+#endif
+}
+
+void Decals_PlaceGlass(vector pos)
+{
+	if (serverkeyfloat("*bspversion") != 30) {
+		return;
+	}
+#ifdef CSQC
+	// TODO
+#else
+	decal x = Decals_Next(pos);
+	x.Place(pos, sprintf("{break%d", floor(random(1,4))));
+#endif
+}
+
+void Decals_PlaceScorch(vector pos)
+{
+	if (serverkeyfloat("*bspversion") != 30) {
+		return;
+	}
+#ifdef CSQC
+	// TODO
+#else
+	decal x = Decals_Next(pos);
+	x.Place(pos, sprintf("{scorch%d", floor(random(1,4))));
+#endif
+}
+
+void Decals_PlaceDent(vector pos)
+{
+	if (serverkeyfloat("*bspversion") != 30) {
+		return;
+	}
+#ifdef CSQC
+	// TODO
+#else
+	decal x = Decals_Next(pos);
+	x.Place(pos, sprintf("{dent%d", floor(random(1,7))));
+#endif
+}
+
+void Decals_PlaceGauss(vector pos)
+{
+	if (serverkeyfloat("*bspversion") != 30) {
+		return;
+	}
+#ifdef CSQC
+	// TODO
+#else
+	decal x = Decals_Next(pos);
+	x.Place(pos, "{gaussshot1");
+#endif
+}

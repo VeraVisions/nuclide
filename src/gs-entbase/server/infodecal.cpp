@@ -14,91 +14,67 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED infodecal (1 0 0) (-8 -8 -8) (8 8 8)
+/*QUAKED infodecal (1 0 0) (-2 -2 -2) (2 2 2)
+"targetname" Name
 "texture"    Name of the texture inside decals.wad it projects onto a surface.
 
-This entity only works on BSP version 30 levels.
+This entity currently only works on BSP version 30 levels.
 Projects a decals.wad texture onto the nearest surface.
 It'll automatically figure out the surface based on distance.
 The texture will be aligned along the surface texture normals.
+
+If a targetname is supplied, it will have to be triggered by an entity in order
+to appear. Afterwards it cannot be triggered again.
+
+It will pick the nearest wall (currently checking a distance of 128 units,
+which is probably overkill). No angle has to be supplied.
 */
 
-/* We need to save trace infos temporarily in order to figure out what to
- * project the decal against. Half-Life's infodecal entity only stores origin,
- * but not angles. So we have to figure them out ourselves. */
-.string texture;
 
-float infodecal_send(entity pvsent, float cflags)
+class infodecal:CBaseTrigger
 {
-	WriteByte(MSG_ENTITY, ENT_DECAL);
-	WriteCoord(MSG_ENTITY, self.origin[0]);
-	WriteCoord(MSG_ENTITY, self.origin[1]);
-	WriteCoord(MSG_ENTITY, self.origin[2]);
-	WriteCoord(MSG_ENTITY, self.angles[0]);
-	WriteCoord(MSG_ENTITY, self.angles[1]);
-	WriteCoord(MSG_ENTITY, self.angles[2]);
-	WriteString(MSG_ENTITY, self.texture);
-	return TRUE;
+	string m_strTexture;
+
+	void() infodecal;
+	virtual void() Trigger;
+	virtual void() Respawn;
+};
+
+void
+infodecal::Trigger(void)
+{
+	decal new = spawn(decal);
+	new.Place(origin, m_strTexture);
+	remove(this);
 }
 
-void infodecal(void)
+void
+infodecal::Respawn(void)
 {
-#ifdef WASTES
-	remove(self);
-	return;
-#endif
-	
+	/* this will be invisible by default */
+	if (!m_strTargetName) {
+		/* spawn automatically, remove self */
+		Trigger();
+	}
+}
+
+void
+infodecal::infodecal(void)
+{
 	if (serverkeyfloat("*bspversion") != 30) {
-#if 1
 		remove(self);
 		return;
-#else
-		/* Source Engine Material support */
-		self.texture = sprintf( "materials/%s", self.texture );
-#endif
 	}
 
-	if (!self.texture) {
-		dprint("^1ERROR:^7 infodecal with no .texture\n");		
-		/* Tempdecals == decals that are not spawned by the map, but by the
-		 * decal-que (see shared/decals.c), so you can't remove them without
-		 * causing a pointer error - just abort. */
-		if (self.classname != "tempdecal") {
-			remove(self);
+	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
+		switch (argv(i)) {
+		case "material":
+		case "texture":
+			m_strTexture = strtolower(argv(i + 1));
+			break;
+		default:
+			break;
 		}
-		return;
 	}
-	
-	/* Some maps have everything set to full-on uppercase */
-	self.texture = strtolower(self.texture);
-	decal_pickwall(self, self.origin);
-
-	if (g_tracedDecal.fraction == 1.0f) {
-		dprint(sprintf("infodecal tracing failed at %v\n", self.origin));
-
-		if (self.classname != "tempdecal") {
-			remove(self);
-		}
-		return;
-	}
-
-	self.origin = g_tracedDecal.endpos;
-
-	/* FIXME: more universal check? */
-	if (getsurfacetexture(trace_ent, getsurfacenearpoint(trace_ent, g_tracedDecal.endpos)) == "sky") {
-		return;
-	}
-
-	makevectors(vectoangles(g_tracedDecal.endpos - self.origin ));
-	vector cpl = v_forward - (v_forward * g_tracedDecal.normal) * g_tracedDecal.normal;
-
-	if (g_tracedDecal.normal[2] == 0) {
-		cpl = [0, 0, 1];
-	}
-
-	self.angles = vectoangles(cpl, g_tracedDecal.normal);
-	self.solid = SOLID_NOT;
-	self.pvsflags = PVSF_NOREMOVE | PVSF_IGNOREPVS;
-	self.SendEntity = infodecal_send;
-	self.SendFlags = 1;
+	CBaseTrigger::CBaseTrigger();
 }

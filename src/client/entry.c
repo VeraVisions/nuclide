@@ -80,6 +80,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	CSQC_RendererRestarted("init");
 	Titles_Init();
 	Sentences_Init();
+	Decals_Init();
 }
 
 /* Rendering Caches */
