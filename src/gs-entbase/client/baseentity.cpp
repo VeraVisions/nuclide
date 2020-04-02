@@ -149,7 +149,7 @@ CBaseEntity::ProcessWordQue(void)
 		m_iSentencePos = 0;
 		m_pSentenceQue = 0;
 	} else {
-		m_flSentenceTime = time + m_pSentenceQue[m_iSentenceCount - 1].len;
+		m_flSentenceTime = time + m_pSentenceQue[m_iSentenceCount - 1].m_flLength;
 	}
 }
 
@@ -174,7 +174,7 @@ CBaseEntity::Sentence(string msg)
 
 	for (int i = 0; i < m_iSentenceCount; i++) {
 		m_pSentenceQue[i].m_strSnd = sprintf("%s.wav", argv(i));
-		m_pSentenceQue[i].len = soundlength(m_pSentenceQue[i].m_strSnd);
+		m_pSentenceQue[i].m_flLength = soundlength(m_pSentenceQue[i].m_strSnd);
 		m_pSentenceQue[i].m_flPitch = 100;
 	}
 	m_flSentenceTime = time;

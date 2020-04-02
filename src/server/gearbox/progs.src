@@ -13,6 +13,7 @@
 ../../shared/materials.h
 ../../shared/events.h
 ../../shared/entities.h
+../../shared/sound.c
 ../../shared/valve/animations.h
 ../defs.h
 ../plugins.c

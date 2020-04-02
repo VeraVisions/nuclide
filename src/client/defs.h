@@ -84,12 +84,3 @@ void View_SetMuzzleflash(int);
 void View_UpdateWeapon(entity, entity);
 void View_PlayAnimation(int);
 void Game_Input(void);
-
-
-
-typedef struct
-{
-	string m_strSnd;
-	float m_flPitch;
-	float len;
-} sound_t;

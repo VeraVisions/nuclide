@@ -133,16 +133,6 @@ void Util_Destroy(void)
 	remove(self);
 }
 
-int Sound_Precache(string s)
-{
-	return -1;
-}
-
-void Sound_Update(entity a, int b, int c, float d)
-{
-	
-}
-
 __wrap void dprint(string m)
 {
 	if (cvar("developer") == 1)

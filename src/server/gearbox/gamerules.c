@@ -51,6 +51,17 @@ Gamerules_DecodeChangeParms(player pl)
 	pl.crossbow_mag = parm28;
 	pl.rpg_mag = parm29;
 	pl.satchel_chg = parm30;
+
+	/* near gearbox additions */
+	pl.ammo_556 = parm31;
+	pl.ammo_762 = parm32;
+	pl.ammo_spore = parm33;
+	pl.ammo_shock = parm34;
+	pl.ammo_penguin = parm35;
+	pl.eagle_mag = parm36;
+	pl.sniper_mag = parm37;
+	pl.m249_mag = parm38;
+	pl.sporelauncher_mag = parm39;
 }
 
 /* prepare the client-info for level-transition */
@@ -87,6 +98,17 @@ Gamerules_SetChangeParms(player pl)
 	parm28 = pl.crossbow_mag;
 	parm29 = pl.rpg_mag;
 	parm30 = pl.satchel_chg;
+
+	/* near gearbox additions */
+	parm31 = pl.ammo_556;
+	parm32 = pl.ammo_762;
+	parm33 = pl.ammo_spore;
+	parm34 = pl.ammo_shock;
+	parm35 = pl.ammo_penguin;
+	parm36 = pl.eagle_mag;
+	parm37 = pl.sniper_mag;
+	parm38 = pl.m249_mag;
+	parm39 = pl.sporelauncher_mag;
 }
 
 /* yuck, whenever 'changelevel' does not happen. */
@@ -97,7 +119,8 @@ Gamerules_SetNewParms(void)
 	parm8 = parm9 = parm10 = parm11 = parm12 = parm13 = parm14 =
 	parm15 = parm16 = parm17 = parm18 = parm19 = parm20 = parm21 =
 	parm22 = parm23 = parm24 = parm25 = parm26 = parm27 = parm28 =
-	parm29 = parm30 = 0;
+	parm29 = parm30 = parm31 = parm32 = parm33 = parm34 = parm35 =
+	parm36 = parm37 = parm39 = parm39 = 0;
 }
 
 /* called when the player first spawns/respawns */

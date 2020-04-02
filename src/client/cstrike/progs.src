@@ -11,6 +11,7 @@
 ../../shared/materials.h
 ../../shared/events.h
 ../../shared/entities.h
+../../shared/sound.c
 ../valve/defs.h
 ../cstrike/defs.h
 ../valve/particles.h

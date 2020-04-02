@@ -65,7 +65,7 @@ void Sound_PlayVOX(string msg)
 
 	for (int i = 0; i < g_voxcount; i++) {
 		g_voxque[i].m_strSnd = sprintf("vox/%s.wav", argv(i));
-		g_voxque[i].len = soundlength(g_voxque[i].m_strSnd);
+		g_voxque[i].m_flLength = soundlength(g_voxque[i].m_strSnd);
 	}
 	g_voxtime = time;
 }
@@ -85,7 +85,7 @@ void Sound_ProcessWordQue(void)
 			g_voxcount = 0;
 			g_voxpos = 0;
 		} else {
-			g_voxtime = time + g_voxque[g_voxpos - 1].len;
+			g_voxtime = time + g_voxque[g_voxpos - 1].m_flLength;
 		}
 	}
 }

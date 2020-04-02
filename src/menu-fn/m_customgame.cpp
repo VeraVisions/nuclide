@@ -47,6 +47,9 @@ void games_init(void)
 
 	games = memalloc(sizeof(gameinfo_t) * gameinfo_count);
 
+	if (!games)
+		error(sprintf("Attempting to allocate mod data for %i entries failed\n", gameinfo_count));
+
 	for (id = 0; (gamedirname = getgamedirinfo(id, 0)); id++) {
 		gamedescription = getgamedirinfo(id, 2);
 
