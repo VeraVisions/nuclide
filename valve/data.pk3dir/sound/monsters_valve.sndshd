@@ -1,0 +1,39 @@
+monster_zombie.alert
+{
+	sample zombie/zo_alert10.wav
+	sample zombie/zo_alert20.wav
+	sample zombie/zo_alert30.wav
+}
+
+monster_zombie.attack
+{
+	sample zombie/zo_attack1.wav
+	sample zombie/zo_attack2.wav
+}
+
+monster_zombie.claw
+{
+	sample zombie/claw_strike1.wav
+	sample zombie/claw_strike2.wav
+	sample zombie/claw_strike3.wav
+}
+
+monster_zombie.clawmiss
+{
+	sample zombie/claw_miss1.wav
+	sample zombie/claw_miss2.wav
+}
+
+monster_zombie.idle
+{
+	sample zombie/zo_idle1.wav
+	sample zombie/zo_idle2.wav
+	sample zombie/zo_idle3.wav
+	sample zombie/zo_idle4.wav
+}
+
+monster_zombie.pain
+{
+	sample zombie/zo_pain1.wav
+	sample zombie/zo_pain2.wav
+}

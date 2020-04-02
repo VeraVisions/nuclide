@@ -69,40 +69,6 @@ enum {
 	ZO_RISESNACK
 };
 
-string zo_sndattack[] = {
-	"zombie/zo_attack1.wav",
-	"zombie/zo_attack2.wav"
-};
-
-string zo_sndclaw[] = {
-	"zombie/claw_strike1.wav",
-	"zombie/claw_strike2.wav",
-	"zombie/claw_strike3.wav"
-};
-
-string zo_sndclawmiss[] = {
-	"zombie/claw_miss1.wav",
-	"zombie/claw_miss2.wav"
-};
-
-string zo_sndidle[] = {
-	"zombie/zo_idle1.wav",
-	"zombie/zo_idle2.wav",
-	"zombie/zo_idle3.wav",
-	"zombie/zo_idle4.wav"
-};
-
-string zo_sndpain[] = {
-	"zombie/zo_pain1.wav",
-	"zombie/zo_pain2.wav"
-};
-
-string zo_sndsee[] = {
-	"zombie/zo_alert10.wav",
-	"zombie/zo_alert20.wav",
-	"zombie/zo_alert30.wav"
-};
-
 class monster_zombie:CBaseMonster
 {
 	float m_flIdleTime;
@@ -128,8 +94,7 @@ monster_zombie::Pain(int iHitBody)
 		return;
 	}
 
-	int rand = floor(random(0,zo_sndpain.length));
-	Sound(zo_sndpain[rand]);
+	Sound_Play(this, CHAN_VOICE, "monster_zombie.pain");
 	frame = ZO_FLINCH + floor(random(0, 2));
 	m_flAnimTime = time + 0.25f;
 }
@@ -150,9 +115,7 @@ monster_zombie::Death(int iHitBody)
 			 frame = ZO_DIE + floor(random(0, 3));
 		}
 
-		/* the sound */
-		int rand = floor(random(0,zo_sndpain.length));
-		Sound(zo_sndpain[rand]);
+		Sound_Play(this, CHAN_VOICE, "monster_zombie.pain");
 	}
 
 	/* set the functional differences */
@@ -172,8 +135,7 @@ monster_zombie::IdleNoise(void)
 	}
 	m_flIdleTime = time + random(2,10);
 
-	int rand = floor(random(0, zo_sndidle.length));
-	Sound(zo_sndidle[rand]);
+	Sound_Play(this, CHAN_VOICE, "monster_zombie.idle");
 }
 
 void
@@ -186,25 +148,12 @@ monster_zombie::Respawn(void)
 void
 monster_zombie::monster_zombie(void)
 {
-	for (int i = 0; i < zo_sndattack.length; i++) {
-		precache_sound(zo_sndattack[i]);
-	}
-	for (int i = 0; i < zo_sndclaw.length; i++) {
-		precache_sound(zo_sndclaw[i]);
-	}
-	for (int i = 0; i < zo_sndclawmiss.length; i++) {
-		precache_sound(zo_sndclawmiss[i]);
-	}
-	for (int i = 0; i < zo_sndidle.length; i++) {
-		precache_sound(zo_sndidle[i]);
-	}
-	for (int i = 0; i < zo_sndpain.length; i++) {
-		precache_sound(zo_sndpain[i]);
-	}
-	for (int i = 0; i < zo_sndsee.length; i++) {
-		precache_sound(zo_sndsee[i]);
-	}
-
+	Sound_Precache("monster_zombie.alert");
+	Sound_Precache("monster_zombie.attack");
+	Sound_Precache("monster_zombie.claw");
+	Sound_Precache("monster_zombie.clawmiss");
+	Sound_Precache("monster_zombie.idle");
+	Sound_Precache("monster_zombie.pain");
 	netname = "Zombie";
 	model = "models/zombie.mdl";
 	base_health = Skill_GetValue("zombie_health");
