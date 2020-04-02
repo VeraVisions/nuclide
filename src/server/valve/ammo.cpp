@@ -64,7 +64,6 @@ void item_ammo::item_ammo(void)
 	m_oldModel = model;
 	setmodel(this, m_oldModel);
 	CBaseEntity::CBaseEntity();
-	item_ammo::Respawn();
 }
 
 /*QUAKED ammo_357 (0 0 0.8) (-16 -16 0) (16 16 32)

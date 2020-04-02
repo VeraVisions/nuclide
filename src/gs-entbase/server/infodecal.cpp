@@ -30,7 +30,6 @@ It will pick the nearest wall (currently checking a distance of 128 units,
 which is probably overkill). No angle has to be supplied.
 */
 
-
 class infodecal:CBaseTrigger
 {
 	string m_strTexture;

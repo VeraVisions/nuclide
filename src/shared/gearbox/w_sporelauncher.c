@@ -35,6 +35,98 @@ enum
 	SLSTATE_RELOAD_END
 };
 
+#ifdef SSQC
+void Sporelauncher_Fire(entity spawner, vector org, vector dir)
+{
+	static void Spore_Touch(void) {
+		int r;
+		string hitsnd;
+
+		if (other.takedamage == DAMAGE_YES) {
+			Damage_Apply(other, self.owner, 50, WEAPON_SPORELAUNCHER, DMG_GENERIC);
+		} else {
+			Decals_Place(self.origin, sprintf("{yblood%d", floor(random(1,7))));
+		}
+
+		r = floor(random(0,3));
+		hitsnd = "weapons/spore_hit1.wav";
+		switch (r) {
+		case 0:
+			hitsnd = "weapons/spore_hit2.wav";
+			break;
+		case 1:
+			hitsnd = "weapons/spore_hit3.wav";
+			break;
+		}
+		sound(self, CHAN_BODY, hitsnd, 1.0f, ATTN_NORM);
+		remove(self);
+	}
+	
+	entity blob = spawn();
+	setmodel(blob, "models/spore.mdl");
+	blob.owner = spawner;
+	blob.velocity = dir * 2000;
+	blob.movetype = MOVETYPE_BOUNCE;
+	blob.solid = SOLID_BBOX;
+	//bolt.flags |= FL_LAGGEDMOVE;
+	blob.gravity = 0.5f;
+	blob.angles = vectoangles(blob.velocity);
+	blob.avelocity[2] = 10;
+	blob.touch = Spore_Touch;
+	setsize(blob, [0,0,0], [0,0,0]);
+	setorigin(blob, org);
+	
+	sound(spawner, CHAN_WEAPON, "weapons/splauncher_fire.wav", 1, ATTN_NORM);
+}
+void Sporelauncher_AltFire(entity spawner, vector org, vector dir)
+{
+	static void Spore_Explode(void) {
+		int r;
+		string hitsnd;
+
+		Damage_Radius(self.origin, self.owner, 100, 256, 1, WEAPON_SPORELAUNCHER);
+		r = floor(random(0,3));
+		hitsnd = "weapons/spore_hit1.wav";
+		switch (r) {
+		case 0:
+			hitsnd = "weapons/spore_hit2.wav";
+			break;
+		case 1:
+			hitsnd = "weapons/spore_hit3.wav";
+			break;
+		}
+		sound(self, CHAN_BODY, hitsnd, 1.0f, ATTN_NORM);
+		remove(self);
+	}
+	static void Spore_Touch(void) {
+		Decals_Place(self.origin, sprintf("{yblood%d", floor(random(1,7))));
+		if (other.takedamage == DAMAGE_YES) {
+			Spore_Explode();
+		} else if (self.think == __NULL__) {
+			self.think = Spore_Explode;
+			self.nextthink = time + 2.0f;
+		}
+		self.velocity *= 0.5f;
+	}
+	
+	entity blob = spawn();
+	setmodel(blob, "models/spore.mdl");
+	blob.owner = spawner;
+	blob.velocity = dir * 2000;
+	blob.movetype = MOVETYPE_BOUNCE;
+	blob.solid = SOLID_BBOX;
+	//bolt.flags |= FL_LAGGEDMOVE;
+	blob.gravity = 0.5f;
+	blob.angles = vectoangles(blob.velocity);
+	blob.avelocity[2] = 10;
+	blob.touch = Spore_Touch;
+	setsize(blob, [0,0,0], [0,0,0]);
+	setorigin(blob, org);
+	
+	sound(spawner, CHAN_WEAPON, "weapons/splauncher_fire.wav", 1, ATTN_NORM);
+}
+#endif
+
 void
 w_sporelauncher_precache(void)
 {
@@ -126,51 +218,47 @@ w_sporelauncher_primary(void)
 	}
 
 #ifdef SSQC
-	static void Spore_Touch(void) {
-		int r;
-		string hitsnd;
-
-		if (other.takedamage == DAMAGE_YES) {
-			Damage_Apply(other, self.owner, 50, WEAPON_SPORELAUNCHER, DMG_GENERIC);
-		}
-
-		r = floor(random(0,3));
-		hitsnd = "weapons/spore_hit1.wav";
-		switch (r) {
-		case 0:
-			hitsnd = "weapons/spore_hit2.wav";
-			break;
-		case 1:
-			hitsnd = "weapons/spore_hit3.wav";
-			break;
-		}
-		sound(self, CHAN_BODY, hitsnd, 1.0f, ATTN_NORM);
-		remove(self);
+	if (pl.sporelauncher_mag <= 0) {
+		return;
 	}
 
+	Weapons_MakeVectors();
+	Sporelauncher_Fire(self, Weapons_GetCameraPos() + (v_forward * 16), v_forward);
+
+	pl.sporelauncher_mag--;
+	Weapons_UpdateAmmo(pl, pl.sporelauncher_mag, pl.ammo_spore, -1);
+#else
+	if (pl.a_ammo1 <= 0) {
+		return;
+	}
+
+	Weapons_ViewPunchAngle([-2,0,0]);
+	Weapons_ViewAnimation(SPORE_FIRE);
+#endif
+
+	pl.w_attack_next = 0.75f;
+	pl.w_idle_next = 10.0f;
+}
+
+void
+w_sporelauncher_secondary(void)
+{
+	player pl = (player)self;
+
+	if (pl.w_attack_next > 0.0) {
+		return;
+	}
+
+#ifdef SSQC
 	if (pl.sporelauncher_mag <= 0) {
 		return;
 	}
 	
 	Weapons_MakeVectors();
-	entity blob = spawn();
-	setmodel(blob, "models/spore.mdl");
-	setorigin(blob, Weapons_GetCameraPos() + (v_forward * 16));
-	blob.owner = self;
-	blob.velocity = v_forward * 2000;
-	blob.movetype = MOVETYPE_BOUNCE;
-	blob.solid = SOLID_BBOX;
-	//bolt.flags |= FL_LAGGEDMOVE;
-	blob.gravity = 0.5f;
-	blob.angles = vectoangles(blob.velocity);
-	blob.avelocity[2] = 10;
-	blob.touch = Spore_Touch;
-	blob.weapon = pl.viewzoom == 1.0 ? 1 : 0;
-	setsize(blob, [0,0,0], [0,0,0]);
+	Sporelauncher_AltFire(self, Weapons_GetCameraPos() + (v_forward * 16), v_forward);
 
 	pl.sporelauncher_mag--;
 	Weapons_UpdateAmmo(pl, pl.sporelauncher_mag, pl.ammo_spore, -1);
-	sound(self, CHAN_WEAPON, "weapons/splauncher_fire.wav", 1, ATTN_NORM);
 #else
 	if (pl.a_ammo1 <= 0) {
 		return;
@@ -354,7 +442,7 @@ weapon_t w_sporelauncher =
 	.draw		= w_sporelauncher_draw,
 	.holster	= w_sporelauncher_holster,
 	.primary	= w_sporelauncher_primary,
-	.secondary	= w_sporelauncher_primary,
+	.secondary	= w_sporelauncher_secondary,
 	.reload		= w_sporelauncher_reload,
 	.release	= w_sporelauncher_release,
 	.crosshair	= w_sporelauncher_crosshair,

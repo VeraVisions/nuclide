@@ -192,6 +192,10 @@ void CBaseEntity::ParentUpdate(void)
 		SendFlags |= BASEFL_CHANGED_EFFECTS;
 		oldnet_effects = effects;
 	}
+	if (m_iBody != oldnet_body) {
+		SendFlags |= BASEFL_CHANGED_BODY;
+		oldnet_body = m_iBody;
+	}
 #ifdef GS_RENDERFX
 	if (m_old_iRenderFX != m_iRenderFX) {
 		SendFlags |= BASEFL_CHANGED_RENDERFX;

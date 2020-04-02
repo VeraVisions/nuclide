@@ -123,7 +123,7 @@ decal::Place(vector org, string dname)
 		return;
 	}
 
-	makevectors(vectoangles(g_tracedDecal.endpos - self.origin ));
+	makevectors(vectoangles(g_tracedDecal.endpos - origin ));
 	vector cpl = v_forward - (v_forward * g_tracedDecal.normal) * g_tracedDecal.normal;
 
 	if (g_tracedDecal.normal[2] == 0) {
@@ -134,10 +134,10 @@ decal::Place(vector org, string dname)
 	m_strTexture = dname;
 
 #ifdef SSQC
-	self.angles = vectoangles(cpl, g_tracedDecal.normal);
-	self.solid = SOLID_NOT;
-	self.pvsflags = PVSF_NOREMOVE | PVSF_IGNOREPVS;
-	self.SendFlags = 1;
+	angles = vectoangles(cpl, g_tracedDecal.normal);
+	solid = SOLID_NOT;
+	pvsflags = PVSF_NOREMOVE | PVSF_IGNOREPVS;
+	SendFlags = 1;
 #else
 	size = drawgetimagesize(m_strTexture);
 
@@ -189,7 +189,7 @@ void Decals_Init(void)
 decal Decals_Next(vector pos)
 {
 	decal ret = g_decals;
-	g_decals = g_decals.owner;
+	g_decals = (decal)g_decals.owner;
 
 	/* Check for a tempdecal within a radius of 8 units and overwrite that one
 	 * instead */
