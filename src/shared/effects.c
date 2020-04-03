@@ -292,57 +292,46 @@ void Effect_Impact(int iType, vector vPos, vector vNormal) {
 	WriteCoord(MSG_MULTICAST, vNormal[2]);
 	msg_entity = self;
 	multicast(vPos, MULTICAST_PVS);
-	
-	switch (iType) {
-		case IMPACT_GLASS:
-			Decals_PlaceGlass(vPos);
-			break;
-		case IMPACT_MELEE:
-			Decals_PlaceSmall(vPos);
-			break;
-		default:
-			Decals_PlaceBig(vPos);
-			break;
-	}
 #else
+	/* decals */
+	switch (iType) {
+	case IMPACT_GLASS:
+		Decals_PlaceGlass(vPos);
+		break;
+	case IMPACT_MELEE:
+		Decals_PlaceSmall(vPos);
+		break;
+	default:
+		Decals_PlaceBig(vPos);
+		break;
+	}
+
 	switch (iType) {
 		case IMPACT_MELEE:
-			/*pointparticles(DECAL_SHOT, vPos, vNormal, 1);
-			pointparticles(PARTICLE_PIECES_BLACK, vPos, vNormal, 1);*/
 			pointsound(vPos, "weapons/knife_hitwall1.wav", 1, ATTN_STATIC);
-			//Decals_PlaceSmall(vPos);
 			break;
 		case IMPACT_EXPLOSION:
 			break;
 		case IMPACT_GLASS:
-			//pointparticles(DECAL_GLASS, vPos, vNormal, 1);
 			pointparticles(PARTICLE_PIECES_BLACK, vPos, vNormal, 1);
-			//Decals_PlaceBig(vPos);
 			break;
 		case IMPACT_WOOD:
-			//pointparticles(DECAL_SHOT, vPos, vNormal, 1);
 			pointparticles(PARTICLE_SPARK, vPos, vNormal, 1);
 			pointparticles(PARTICLE_PIECES_BLACK, vPos, vNormal, 1);
 			pointparticles(PARTICLE_SMOKE_BROWN, vPos, vNormal, 1);
-			//Decals_PlaceBig(vPos);
 			break;
 		case IMPACT_METAL:
-			//pointparticles(DECAL_SHOT, vPos, vNormal, 1);
 			pointparticles(PARTICLE_SPARK, vPos, vNormal, 1);
 			pointparticles(PARTICLE_SPARK, vPos, vNormal, 1);
 			pointparticles(PARTICLE_PIECES_BLACK, vPos, vNormal, 1);
-			//Decals_PlaceBig(vPos);
 			break;
 		case IMPACT_FLESH:
 			pointparticles(PARTICLE_BLOOD, vPos, vNormal, 1);
-			//Decals_PlaceBig(vPos);
 			break;
 		case IMPACT_DEFAULT:
-			//pointparticles(DECAL_SHOT, vPos, vNormal, 1);
 			pointparticles(PARTICLE_SPARK, vPos, vNormal, 1);
 			pointparticles(PARTICLE_PIECES_BLACK, vPos, vNormal, 1);
 			pointparticles(PARTICLE_SMOKE_GREY, vPos, vNormal, 1);
-			//Decals_PlaceBig(vPos);
 			break;
 		default:
 	}

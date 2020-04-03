@@ -240,12 +240,8 @@ void Decals_PlaceSmall(vector pos)
 	if (serverkeyfloat("*bspversion") != 30) {
 		return;
 	}
-#ifdef CSQC
-	// TODO
-#else
 	decal x = Decals_Next(pos);
 	x.Place(pos, sprintf("{shot%d", floor(random(1,6))));
-#endif
 }
 
 void Decals_PlaceBig(vector pos)
@@ -253,12 +249,8 @@ void Decals_PlaceBig(vector pos)
 	if (serverkeyfloat("*bspversion") != 30) {
 		return;
 	}
-#ifdef CSQC
-	// TODO
-#else
 	decal x = Decals_Next(pos);
 	x.Place(pos, sprintf("{bigshot%d", floor(random(1,6))));
-#endif
 }
 
 void Decals_PlaceGlass(vector pos)
@@ -266,12 +258,8 @@ void Decals_PlaceGlass(vector pos)
 	if (serverkeyfloat("*bspversion") != 30) {
 		return;
 	}
-#ifdef CSQC
-	// TODO
-#else
 	decal x = Decals_Next(pos);
 	x.Place(pos, sprintf("{break%d", floor(random(1,4))));
-#endif
 }
 
 void Decals_PlaceScorch(vector pos)
@@ -279,12 +267,8 @@ void Decals_PlaceScorch(vector pos)
 	if (serverkeyfloat("*bspversion") != 30) {
 		return;
 	}
-#ifdef CSQC
-	// TODO
-#else
 	decal x = Decals_Next(pos);
 	x.Place(pos, sprintf("{scorch%d", floor(random(1,4))));
-#endif
 }
 
 void Decals_PlaceDent(vector pos)
@@ -292,12 +276,8 @@ void Decals_PlaceDent(vector pos)
 	if (serverkeyfloat("*bspversion") != 30) {
 		return;
 	}
-#ifdef CSQC
-	// TODO
-#else
 	decal x = Decals_Next(pos);
 	x.Place(pos, sprintf("{dent%d", floor(random(1,7))));
-#endif
 }
 
 void Decals_PlaceGauss(vector pos)
@@ -305,10 +285,7 @@ void Decals_PlaceGauss(vector pos)
 	if (serverkeyfloat("*bspversion") != 30) {
 		return;
 	}
-#ifdef CSQC
-	// TODO
-#else
+
 	decal x = Decals_Next(pos);
 	x.Place(pos, "{gaussshot1");
-#endif
 }
