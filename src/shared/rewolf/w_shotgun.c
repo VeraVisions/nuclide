@@ -104,7 +104,7 @@ w_shotgun_primary(void)
 	pellets = pl.shotgun_shells * 4;
 
 	TraceAttack_FireBullets(pellets, src, 5, spread, WEAPON_SHOTGUN);
-	sound(self, CHAN_WEAPON, "weapons/sbarrel1.wav", 1, ATTN_NORM);
+	Sound_Play(pl, CHAN_WEAPON, "weapon_shotgun.fire");
 #else
 	View_SetMuzzleflash(MUZZLE_SMALL);
 	Weapons_ViewPunchAngle([-5,0,0]);
@@ -318,9 +318,9 @@ w_shotgun_precache(void)
 	precache_model("models/v_shotgun.mdl");
 	precache_model("models/w_shotgun.mdl");
 	precache_model("models/p_shotgun.mdl");
-	precache_sound("weapons/sbarrel1.wav");
 
 #ifdef SSQC
+	Sound_Precache("weapon_shotgun.fire");
 	clientstat(40, EV_INTEGER, player::shotgun_shells);
 	clientstat(41, EV_INTEGER, player::shotgun_spread);
 #endif

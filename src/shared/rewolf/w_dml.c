@@ -94,8 +94,9 @@ w_dml_release(void)
 		} else {
 			Weapons_ViewAnimation(DML_RELOADLEFT);
 		}
-		
-		sound(pl, CHAN_WEAPON, "weapons/dml_reload.wav", 1.0f, ATTN_NORM);
+#ifdef SSQC
+		Sound_Play(pl, CHAN_WEAPON, "weapon_dml.reload");
+#endif
 		pl.w_attack_next = 1.6f;
 		pl.w_idle_next = pl.w_attack_next;
 		pl.a_ammo3 = DS_FULL;
@@ -131,7 +132,9 @@ w_dml_primary(void)
 		pl.a_ammo1 = 0;
 		pl.flags &= ~FL_SEMI_TOGGLED;
 		Weapons_ViewAnimation(DML_CUSTOMIZE);
-		sound(pl, 8, "weapons/dml_customize.wav", 1.0f, ATTN_NORM);
+#ifdef SSQC
+		Sound_Play(pl, 8, "weapon_dml.customize");
+#endif
 		pl.w_attack_next = 4.0f;
 		pl.w_idle_next = 5.0f;
 		return;
@@ -149,7 +152,7 @@ w_dml_primary(void)
 	src = Weapons_GetCameraPos();
 
 #ifdef SSQC
-	sound(pl, CHAN_WEAPON, "weapons/dml_fire.wav", 1.0f, ATTN_NORM);
+	Sound_Play(pl, CHAN_WEAPON, "weapon_dml.fire");
 #endif
 
 	Weapons_ViewAnimation(DML_FIRE);
@@ -353,11 +356,12 @@ w_dml_precache(void)
 {
 	precache_model("models/v_dml.mdl");
 	precache_model("sprites/laserdot.spr");
-	precache_sound("weapons/dml_reload.wav");
-	precache_sound("weapons/dml_customize.wav");
-	precache_sound("weapons/dml_fire.wav");
 
 #ifdef SSQC
+	Sound_Precache("weapon_dml.customize");
+	Sound_Precache("weapon_dml.fire");
+	Sound_Precache("weapon_dml.reload");
+
 	clientstat(42, EV_INTEGER, player::dml_launch);
 	clientstat(43, EV_INTEGER, player::dml_flightpath);
 	clientstat(44, EV_INTEGER, player::dml_detonate);

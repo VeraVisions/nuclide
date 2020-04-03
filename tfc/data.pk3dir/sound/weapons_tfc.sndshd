@@ -1,0 +1,14 @@
+weapon_sbs.cock
+{
+	sample weapons/scock1.wav
+}
+
+weapon_sbs.fire
+{
+	sample weapons/sbarrel1.wav
+}
+
+weapon_sbs.reload
+{
+	sample weapons/reload3.wav
+}

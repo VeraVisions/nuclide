@@ -93,17 +93,7 @@ w_minigun_primary(void)
 	src = Weapons_GetCameraPos();
 
 #ifdef SSQC
-	int r = floor(random(0,3));
-	switch (r) {
-	case 0:
-		sound(pl, CHAN_WEAPON, "weapons/hks1.wav", 1.0f, ATTN_NORM);
-		break;
-	case 1:
-		sound(pl, CHAN_WEAPON, "weapons/hks2.wav", 1.0f, ATTN_NORM);
-		break;
-	default:
-		sound(pl, CHAN_WEAPON, "weapons/hks3.wav", 1.0f, ATTN_NORM);
-	}
+	Sound_Play(pl, CHAN_WEAPON, "weapon_minigun.fire");
 #else
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 	Weapons_ViewPunchAngle([-2,0,0]);
@@ -145,9 +135,9 @@ w_minigun_secondary(void)
 
 #ifdef SSQC
 	if (pl.a_ammo3 == 0) {
-		sound(pl, 8, "weapons/MechaSpinUp.wav", 1.0f, ATTN_NORM);
+		Sound_Play(pl, 8, "weapon_minigun.spinup");
 	} else {
-		sound(pl, 8, "weapons/MechaSpinDown.wav", 1.0f, ATTN_NORM);
+		Sound_Play(pl, 8, "weapon_minigun.spindown");
 	}
 #else
 	if (pl.a_ammo3 == 0) {
@@ -261,14 +251,14 @@ w_minigun_hudpic(int selected, vector pos, float a)
 void
 w_minigun_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_minigun.fire");
+	Sound_Precache("weapon_minigun.spindown");
+	Sound_Precache("weapon_minigun.spinup");
+#endif
 	precache_model("models/v_mechagun.mdl");
 	precache_model("models/w_mechagun.mdl");
 	precache_model("models/p_9mmar.mdl");
-	precache_sound("weapons/MechaSpinDown.wav");
-	precache_sound("weapons/MechaSpinUp.wav");
-	precache_sound("weapons/hks1.wav");
-	precache_sound("weapons/hks2.wav");
-	precache_sound("weapons/hks3.wav");
 }
 
 weapon_t w_minigun =

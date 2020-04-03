@@ -54,7 +54,9 @@ w_fists_draw(void)
 	Weapons_SetModel("models/v_hands.mdl");
 	Weapons_SetGeomset("geomset 1 2\n");
 	Weapons_ViewAnimation(KNIFE_DRAW);
-	sound(pl, CHAN_WEAPON, "weapons/KnifeDraw.wav", 1.0f, ATTN_NORM);
+#ifdef SSQC
+	Sound_Play(pl, CHAN_WEAPON, "weapon_fists.knifedraw");
+#endif
 }
 
 void
@@ -74,9 +76,11 @@ w_fists_release(void)
 	}
 
 	if (pl.a_ammo3 == HS_FISTS_TO_KNIFE) {
+#ifdef SSQC
+		Sound_Play(pl, CHAN_WEAPON, "weapon_fists.knifedraw");
+#endif
 		Weapons_ViewAnimation(KNIFE_DRAW);
 		Weapons_SetGeomset("geomset 1 2\n");
-		sound(pl, CHAN_WEAPON, "weapons/KnifeDraw.wav", 1.0f, ATTN_NORM);
 		pl.a_ammo3 = HS_KNIFE;
 		pl.w_attack_next = 0.75f;
 		pl.w_idle_next = pl.w_attack_next;
@@ -125,58 +129,6 @@ w_fists_release(void)
 }
 
 void
-w_fists_leftsound(void)
-{
-	player pl = (player)self;
-	int r;
-	r = (float)input_sequence % 3;
-
-	switch (r) {
-	case 0:
-		sound(pl, CHAN_WEAPON, "weapons/LeftPunch.wav", 1.0f, ATTN_NORM);
-		break;
-	case 1:
-		sound(pl, CHAN_WEAPON, "weapons/LeftPunch2.wav", 1.0f, ATTN_NORM);
-		break;
-	default:
-		sound(pl, CHAN_WEAPON, "weapons/LeftPunch3.wav", 1.0f, ATTN_NORM);
-	}
-}
-
-void
-w_fists_rightsound(void)
-{
-	player pl = (player)self;
-	int r;
-	r = (float)input_sequence % 3;
-	switch (r) {
-	case 0:
-		sound(pl, CHAN_WEAPON, "weapons/RightPunch.wav", 1.0f, ATTN_NORM);
-		break;
-	case 1:
-		sound(pl, CHAN_WEAPON, "weapons/RightPunch2.wav", 1.0f, ATTN_NORM);
-		break;
-	default:
-		sound(pl, CHAN_WEAPON, "weapons/RightPunch3.wav", 1.0f, ATTN_NORM);
-	}
-}
-
-void
-w_fists_misssound(void)
-{
-	player pl = (player)self;
-	int r;
-	r = (float)input_sequence % 2;
-	switch (r) {
-	case 0:
-		sound(pl, CHAN_WEAPON, "weapons/cbar_miss1.wav", 1.0f, ATTN_NORM);
-		break;
-	default:
-		sound(pl, CHAN_WEAPON, "weapons/cbar_miss2.wav", 1.0f, ATTN_NORM);
-	}
-}
-
-void
 w_fists_primary(void)
 {
 	player pl = (player)self;
@@ -185,9 +137,11 @@ w_fists_primary(void)
 	}
 
 	pl.a_ammo1 = 1 - pl.a_ammo1;
-	w_fists_misssound();
 
 	if (pl.a_ammo3 == HS_KNIFE) {
+		#ifdef SSQC
+		Sound_Play(pl, 8, "weapon_fists.missknife");
+		#endif
 		if (pl.a_ammo1 == 1) {
 			Weapons_ViewAnimation(KNIFE_ATTACK1);
 		} else {
@@ -198,8 +152,14 @@ w_fists_primary(void)
 	} else {
 		if (pl.a_ammo1 == 1) {
 			Weapons_ViewAnimation(FISTS_RIGHT);
+			#ifdef SSQC
+			Sound_Play(pl, CHAN_WEAPON, "weapon_fists.hitright");
+			#endif
 		} else {
 			Weapons_ViewAnimation(FISTS_LEFT);
+			#ifdef SSQC
+			Sound_Play(pl, CHAN_WEAPON, "weapon_fists.hitleft");
+			#endif
 		}
 		pl.w_attack_next = 0.25f;
 		pl.w_idle_next = pl.w_attack_next;
@@ -291,16 +251,14 @@ w_fists_hudpic(int selected, vector pos, float a)
 void
 w_fists_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_fists.knifedraw");
+	Sound_Precache("weapon_fists.hitleft");
+	Sound_Precache("weapon_fists.hitright");
+	Sound_Precache("weapon_fists.missknife");
+#endif
+
 	precache_model("models/v_hands.mdl");
-	precache_sound("weapons/KnifeDraw.wav");
-	precache_sound("weapons/LeftPunch.wav");
-	precache_sound("weapons/LeftPunch2.wav");
-	precache_sound("weapons/LeftPunch3.wav");
-	precache_sound("weapons/RightPunch.wav");
-	precache_sound("weapons/RightPunch2.wav");
-	precache_sound("weapons/RightPunch3.wav");
-	precache_sound("weapons/cbar_miss1.wav");
-	precache_sound("weapons/cbar_miss2.wav");
 }
 
 weapon_t w_fists =

@@ -1,0 +1,20 @@
+weapon_ak47.fire
+{
+	sample weapons/ak47-1.wav
+	sample weapons/ak47-2.wav
+}
+weapon_aug.fire
+{
+	sample weapons/aug-1.wav
+	sample weapons/aug-2.wav
+}
+weapon_awp.fire
+{
+	sample weapons/awp-1.wav
+	sample weapons/awp-2.wav
+}
+weapon_deagle.fire
+{
+	sample weapons/deagle-1.wav
+	sample weapons/deagle-2.wav
+}

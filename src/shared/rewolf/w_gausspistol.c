@@ -111,7 +111,7 @@ w_gausspistol_primary(void)
 	case GM_FAST:
 		Weapons_ViewAnimation(GP_FIREFAST);
 #ifdef SSQC
-		sound(self, CHAN_WEAPON, "weapons/gauss_fire4.wav", 1, ATTN_NORM);
+		Sound_Play(pl, CHAN_WEAPON, "weapon_gausspistol.firefast");
 #endif
 		pl.w_attack_next = 0.15f;
 		pl.w_idle_next = 2.5f;
@@ -120,8 +120,8 @@ w_gausspistol_primary(void)
 		take = 10;
 		Weapons_ViewAnimation(GP_FIRECHARGE);
 #ifdef SSQC
-		sound(self, CHAN_WEAPON, "weapons/gauss_fire2.wav", 1, ATTN_NORM);
-		sound(self, 8, "weapons/gauss_charge.wav", 1, ATTN_NORM);
+		Sound_Play(pl, CHAN_WEAPON, "weapon_gausspistol.firecharge");
+		Sound_Play(pl, 8, "weapon_gausspistol.charge");
 #endif
 		pl.w_attack_next = 2.0f;
 		pl.w_idle_next = 5.0f;
@@ -130,7 +130,7 @@ w_gausspistol_primary(void)
 		pl.flags &= ~FL_SEMI_TOGGLED;
 		Weapons_ViewAnimation(GP_FIRESINGLE);
 #ifdef SSQC
-		sound(self, CHAN_WEAPON, "weapons/gauss_fire1.wav", 1, ATTN_NORM);
+		Sound_Play(pl, CHAN_WEAPON, "weapon_gausspistol.firesingle");
 #endif
 		pl.w_attack_next = 0.15f;
 		pl.w_idle_next = 2.5f;
@@ -349,13 +349,17 @@ w_gausspistol_hudpic(int selected, vector pos, float a)
 void
 w_gausspistol_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_gausspistol.charge");
+	Sound_Precache("weapon_gausspistol.firecharge");
+	Sound_Precache("weapon_gausspistol.firefast");
+	Sound_Precache("weapon_gausspistol.firesingle");
+#endif
+
 	precache_model("models/v_guasspistol.mdl");
 	precache_model("sprites/gausshud1.spr");
 	precache_model("sprites/gausshud2.spr");
-	precache_sound("weapons/gauss_fire4.wav");
-	precache_sound("weapons/gauss_fire2.wav");
-	precache_sound("weapons/gauss_fire1.wav");
-	precache_sound("weapons/gauss_charge.wav");
+
 }
 
 weapon_t w_gausspistol =

@@ -1,6 +1,0 @@
-game "Gunman Chronicles"
-mpentity "info_player_deathmatch"
-size "496200000"
-startmap "city1a"
-url_info "www.gunmanchronicles.com"
-version "1.0"

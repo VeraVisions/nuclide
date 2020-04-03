@@ -26,6 +26,9 @@ enum {
 void
 w_ak47_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_ak47.fire");
+#endif
 	precache_model("models/v_ak47.mdl");
 	precache_model("models/w_ak47.mdl");
 	precache_model("models/p_ak47.mdl");
@@ -127,12 +130,9 @@ w_ak47_primary(void)
 		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
 	else
 		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
-
-	if (random() < 0.5) {
-		sound(pl, CHAN_WEAPON, "weapons/ak47-1.wav", 1.0f, ATTN_NORM);
-	} else {
-		sound(pl, CHAN_WEAPON, "weapons/ak47-2.wav", 1.0f, ATTN_NORM);
-	}
+	
+	Sound_Play(pl, CHAN_WEAPON, "weapon_ak47.fire");
+	
 #endif
 
 	pl.w_attack_next = 0.0955f;

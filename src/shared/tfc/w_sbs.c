@@ -39,12 +39,14 @@ enum
 void
 w_sbs_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_sbs.cock");
+	Sound_Precache("weapon_sbs.fire");
+	Sound_Precache("weapon_sbs.reload");
+#endif
 	precache_model("models/v_tfc_12gauge.mdl");
 	precache_model("models/p_shotgun.mdl");
-	precache_sound("weapons/sbarrel1.wav");
 	precache_sound("weapons/dbarrel1.wav");
-	precache_sound("weapons/reload3.wav");
-	precache_sound("weapons/scock1.wav");
 }
 
 void
@@ -119,7 +121,7 @@ w_sbs_primary(void)
 
 #ifdef SSQC
 	TraceAttack_FireBullets(4, pl.origin + pl.view_ofs, 6, [0.17365,0.04362], WEAPON_SBS);
-	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/sbarrel1.wav", 1, ATTN_NORM);
+	Sound_Play(pl, CHAN_WEAPON, "weapon_sbs.fire");
 	pl.shotgun_mag--;
 	Weapons_UpdateAmmo(pl, pl.shotgun_mag, pl.ammo_shells, __NULL__);
 #else
@@ -200,7 +202,7 @@ w_sbs_release(void)
 		pl.shotgun_mag++;
 		pl.ammo_shells--;
 		Weapons_UpdateAmmo(pl, pl.shotgun_mag, pl.ammo_shells, pl.a_ammo3);
-	 	sound(pl, CHAN_WEAPON, "weapons/reload3.wav", 1.0, ATTN_NORM);	
+	 	Sound_Play(pl, CHAN_WEAPON, "weapon_sbs.reload");
 		if (pl.ammo_shells <= 0 || pl.shotgun_mag >= 8) {
 			pl.a_ammo3 = SBS_RELOAD_END;
 		}
@@ -209,7 +211,7 @@ w_sbs_release(void)
 	} else if (pl.a_ammo3 == SBS_RELOAD_END) {
 		Weapons_ViewAnimation(SBS_PUMP);
 #ifdef SSQC
-		sound(pl, CHAN_WEAPON, "weapons/scock1.wav", 1.0, ATTN_NORM);
+		Sound_Play(pl, CHAN_WEAPON, "weapon_sbs.cock");
 #endif
 		pl.a_ammo3 = SBS_IDLE;
 		pl.w_idle_next = 10.0f;

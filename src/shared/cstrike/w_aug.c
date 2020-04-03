@@ -26,6 +26,9 @@ enum {
 void
 w_aug_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_aug.fire");
+#endif
 	precache_model("models/v_aug.mdl");
 	precache_model("models/w_aug.mdl");
 	precache_model("models/p_aug.mdl");
@@ -128,11 +131,7 @@ w_aug_primary(void)
 	else
 		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
 
-	if (random() < 0.5) {
-		sound(pl, CHAN_WEAPON, "weapons/aug-1.wav", 1.0f, ATTN_NORM);
-	} else {
-		sound(pl, CHAN_WEAPON, "weapons/aug-2.wav", 1.0f, ATTN_NORM);
-	}
+	Sound_Play(pl, CHAN_WEAPON, "weapon_aug.fire");
 #endif
 
 	pl.w_attack_next = 0.0955f;
