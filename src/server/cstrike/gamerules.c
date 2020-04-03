@@ -75,7 +75,6 @@ Gamerules_Spawn(player pl)
 			spot = find(world, classname, "info_player_start");
 			setorigin(pl, spot.origin);
 			pl.angles = spot.angles;
-			pl.fixangle = TRUE;
 		}
 		Weapons_RefreshAmmo(pl);
 	} else {
@@ -84,6 +83,6 @@ Gamerules_Spawn(player pl)
 		spot = Spawn_SelectRandom("info_player_deathmatch");
 		setorigin(pl, spot.origin);
 		pl.angles = spot.angles;
-		pl.fixangle = TRUE;
 	}
+	Client_FixAngle(pl, pl.angles);
 }

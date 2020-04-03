@@ -14,29 +14,23 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void Client_TriggerCamera(entity target, vector pos, vector end, float wait)
+class CBaseFX
 {
-	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
-	WriteByte(MSG_MULTICAST, EV_CAMERATRIGGER);
-	WriteCoord(MSG_MULTICAST, pos[0]);
-	WriteCoord(MSG_MULTICAST, pos[1]);
-	WriteCoord(MSG_MULTICAST, pos[2]);
-	WriteCoord(MSG_MULTICAST, end[0]);
-	WriteCoord(MSG_MULTICAST, end[1]);
-	WriteCoord(MSG_MULTICAST, end[2]);
-	WriteFloat(MSG_MULTICAST, wait);
-	msg_entity = target;
-	multicast([0,0,0], MULTICAST_ONE);
+	int m_iBaseJoint;
+
+	void() CBaseFX;
+
+	virtual void() Draw;
+};
+
+void
+CBaseFX::Draw(void)
+{
+	
 }
 
-void Client_FixAngle(entity target, vector ang)
+void
+CBaseFX::CBaseFX(void)
 {
-	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
-	WriteByte(MSG_MULTICAST, EV_ANGLE);
-	WriteFloat(MSG_MULTICAST, ang[0]);
-	WriteFloat(MSG_MULTICAST, ang[1]);
-	WriteFloat(MSG_MULTICAST, ang[2]);
-	msg_entity = target;
-	multicast([0,0,0], MULTICAST_ONE);
+	drawmask = MASK_ENGINE;
 }
-

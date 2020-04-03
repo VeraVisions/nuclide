@@ -78,6 +78,7 @@ struct
 	int iInputDuck;
 
 	float fInputSendNext;
+	entity pWeaponFX;
 } seats[4], *pSeat;
 
 void HUD_DrawAmmo1(void);

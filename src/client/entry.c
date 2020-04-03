@@ -245,6 +245,13 @@ CSQC_UpdateView(float w, float h, float focus)
 			}
 		}
 
+		Predict_PostFrame((player)self);
+
+		if (pSeat->pWeaponFX) {
+			CBaseFX p = (CBaseFX)pSeat->pWeaponFX;
+			p.Draw();
+		}
+
 		addentities(MASK_ENGINE);
 		setproperty(VF_MIN, video_mins);
 		setproperty(VF_SIZE, video_res);
@@ -322,8 +329,6 @@ CSQC_UpdateView(float w, float h, float focus)
 				CSQC_DrawCenterprint();
 			}
 		}
-
-		Predict_PostFrame((player)self);
 	}
 
 	DSP_UpdateListener();
@@ -571,6 +576,14 @@ CSQC_Parse_Event(void)
 		vNormal[2] = readcoord();
 
 		Effect_Impact(iType, vOrigin, vNormal);
+		break;
+	case EV_ANGLE:
+		vector a;
+		a[0] = readfloat();
+		a[1] = readfloat();
+		a[2] = readfloat();
+		setproperty(VF_CL_VIEWANGLES, a);
+		setproperty(VF_ANGLES, a);
 		break;
 	default:
 		Game_Parse_Event(fHeader);

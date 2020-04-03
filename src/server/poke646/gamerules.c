@@ -74,7 +74,6 @@ Gamerules_Spawn(player pl)
 			Gamerules_SetNewParms();
 			spot = find(world, classname, "info_player_start");
 			setorigin(pl, spot.origin);
-			pl.angles = spot.angles;
 			pl.fixangle = TRUE;
 		}
 	} else {
@@ -82,9 +81,9 @@ Gamerules_Spawn(player pl)
 		spot = Spawn_SelectRandom("info_player_deathmatch");
 		setorigin(pl, spot.origin);
 		pl.angles = spot.angles;
-		pl.fixangle = TRUE;
 		pl.g_items |= ITEM_SUIT;
 	}
+	Client_FixAngle(pl, pl.angles);
 }
 
 void weaponbox_spawn(player pl)

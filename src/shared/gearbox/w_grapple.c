@@ -123,8 +123,7 @@ grapple_predraw(void)
 	vector col2 = getlight(morg) / 255;
 
 	makevectors(view_angles);
-	
-	
+
 	R_BeginPolygon(autocvar_cl_tonguemode == 1 ? "sprites/_tongue.spr_0.tga" : "sprites/tongue.spr_0.tga", 0, 0);
 		R_PolygonVertex(forg + v_right * fsize[0] - v_up * fsize[1],
 			[1,1], col1, 1.0f);

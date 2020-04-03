@@ -6,6 +6,7 @@
 baseentity.h
 decals.h
 materials.h
+../client/fx.c
 client/baseentity.cpp
 client/env_cubemap.cpp
 client/env_glow.cpp

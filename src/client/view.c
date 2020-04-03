@@ -29,6 +29,7 @@ View_Init(void)
 			pSeat->eMuzzleflash = spawn();
 			pSeat->eMuzzleflash.classname = "mflash";
 			pSeat->eMuzzleflash.renderflags = RF_ADDITIVE;
+			pSeat->pWeaponFX = spawn(CBaseFX);
 		}
 	}
 

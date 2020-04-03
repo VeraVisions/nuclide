@@ -28,6 +28,7 @@ void TraceAttack_FireBullets(int , vector, int, vector, int);
 void Damage_Radius( vector, entity, float, float, int, int);
 void Damage_Apply( entity, entity, float, int, int);
 void Client_TriggerCamera( entity eTarget, vector vPos, vector vEndPos, float fResetTime );
+void Client_FixAngle(entity, vector);
 void Game_Input(void);
 int Rules_IsTeamPlay(void);
 

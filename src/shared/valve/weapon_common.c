@@ -76,9 +76,11 @@ void Weapons_Primary(void)
 {
 	player pl = (player)self;
 	int i = pl.activeweapon;
+
 	if (g_weapons[i].primary != __NULL__) {
 		g_weapons[i].primary();
 	}
+
 #ifdef SSQC
 	if (g_weapons[i].updateammo != __NULL__) {
 		g_weapons[i].updateammo(pl);
