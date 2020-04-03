@@ -71,13 +71,31 @@ void cz_cbSprayChanged(void)
 
 void menu_customize_init(void)
 {
+	int sid = 0;
+	g_sprayscount = 0;
+
 	/* scan and cache the sprays */
-	searchhandle searchy = search_begin("*.bmp", TRUE, TRUE);
-	g_sprayscount = search_getsize(searchy);
+	searchhandle searchy = search_begin("*.*", TRUE, TRUE);
+	for (int i = 0; i < search_getsize(searchy); i++) {
+		string filename = search_getfilename(searchy, i);
+		string extension = substring(filename, strlen(filename) - 3, 3);
+
+		if (extension == "bmp" || extension == "png" || extension == "jpg") {
+			g_sprayscount++;
+		}
+	}
+
+	/* only allocate what we truly need */
 	g_sprays = memalloc(sizeof(string) * g_sprayscount);
-	for (int i = 0; i < g_sprayscount; i++) {
-		g_sprays[i] = search_getfilename(searchy, i);
-		precache_pic(g_sprays[i]);
+	for (int i = 0; i < search_getsize(searchy); i++) {
+		string filename = search_getfilename(searchy, i);
+		string extension = substring(filename, strlen(filename) - 3, 3);
+		
+		if (extension == "bmp" || extension == "png" || extension == "jpg") {
+			g_sprays[sid] = filename;
+			precache_pic(g_sprays[sid]);
+			sid++;
+		}
 	}
 	search_end(searchy);
 
