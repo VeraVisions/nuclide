@@ -14,8 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED weapon_grapple (0 0 1) (-16 -16 0) (16 16 32)
+"model" "models/w_bgrap.mdl"
+
+HALF-LIFE: OPPOSING FORCE (1999) ENTITY
+
+Barnacle Grappling-Hook Weapon
+
+*/
+
+#ifdef CSQC
 /* because some people apparently prefer the worse quality one */
 var int autocvar_cl_tonguemode = 0;
+#endif
 
 enum
 {

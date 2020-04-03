@@ -14,6 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED weapon_sporelauncher (0 0 1) (-16 -16 0) (16 16 32)
+"model" "models/w_spore_launcher.mdl"
+
+HALF-LIFE: OPPOSING FORCE (1999) ENTITY
+
+Sporelauncher Weapon
+
+*/
+
 enum
 {
 	SPORE_IDLE1,

@@ -168,45 +168,41 @@ void initents(void)
 	precache_sound("debris/concrete2.wav");
 	precache_sound("debris/concrete3.wav");
 
-	precache_sound("player/pl_metal1.wav");
-	precache_sound("player/pl_metal2.wav");
-	precache_sound("player/pl_metal3.wav");
-	precache_sound("player/pl_metal4.wav");
+	Sound_Precache("step_default.left");
+	Sound_Precache("step_default.right");
+	Sound_Precache("step_alien.left");
+	Sound_Precache("step_alien.right");
+	Sound_Precache("step_bloodyflesh.left");
+	Sound_Precache("step_bloodyflesh.right");
+	Sound_Precache("step_computer.left");
+	Sound_Precache("step_computer.right");
+	Sound_Precache("step_concrete.left");
+	Sound_Precache("step_concrete.right");
+	Sound_Precache("step_dirt.left");
+	Sound_Precache("step_dirt.right");
+	Sound_Precache("step_flesh.left");
+	Sound_Precache("step_flesh.right");
+	Sound_Precache("step_foliage.left");
+	Sound_Precache("step_foliage.right");
+	Sound_Precache("step_glass.left");
+	Sound_Precache("step_glass.right");
+	Sound_Precache("step_grate.left");
+	Sound_Precache("step_grate.right");
+	Sound_Precache("step_metal.left");
+	Sound_Precache("step_metal.right");
+	Sound_Precache("step_slosh.left");
+	Sound_Precache("step_slosh.right");
+	Sound_Precache("step_snow.left");
+	Sound_Precache("step_snow.right");
+	Sound_Precache("step_tile.left");
+	Sound_Precache("step_tile.right");
+	Sound_Precache("step_vent.left");
+	Sound_Precache("step_vent.right");
+	Sound_Precache("step_wood.left");
+	Sound_Precache("step_wood.right");
+	Sound_Precache("step_ladder.left");
+	Sound_Precache("step_ladder.right");
 
-	precache_sound("player/pl_duct1.wav");
-	precache_sound("player/pl_duct2.wav");
-	precache_sound("player/pl_duct3.wav");
-	precache_sound("player/pl_duct4.wav");
-
-	precache_sound("player/pl_dirt1.wav");
-	precache_sound("player/pl_dirt2.wav");
-	precache_sound("player/pl_dirt3.wav");
-	precache_sound("player/pl_dirt4.wav");
-
-	precache_sound("player/pl_slosh1.wav");
-	precache_sound("player/pl_slosh2.wav");
-	precache_sound("player/pl_slosh3.wav");
-	precache_sound("player/pl_slosh4.wav");
-
-	precache_sound("player/pl_tile1.wav");
-	precache_sound("player/pl_tile2.wav");
-	precache_sound("player/pl_tile3.wav");
-	precache_sound("player/pl_tile4.wav");
-
-	precache_sound("player/pl_grate1.wav");
-	precache_sound("player/pl_grate2.wav");
-	precache_sound("player/pl_grate3.wav");
-	precache_sound("player/pl_grate4.wav");
-
-	precache_sound("player/pl_ladder1.wav");
-	precache_sound("player/pl_ladder2.wav");
-	precache_sound("player/pl_ladder3.wav");
-	precache_sound("player/pl_ladder4.wav");
-
-	precache_sound("player/pl_step1.wav");
-	precache_sound("player/pl_step2.wav");
-	precache_sound("player/pl_step3.wav");
-	precache_sound("player/pl_step4.wav");
 	precache_sound("player/pl_fallpain3.wav");
 	precache_sound("items/9mmclip1.wav");
 	precache_sound("items/gunpickup2.wav");

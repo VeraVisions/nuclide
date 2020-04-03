@@ -14,6 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED weapon_gauss (0 0 1) (-16 -16 0) (16 16 32)
+"model" "models/w_gauss.mdl"
+
+HALF-LIFE (1998) ENTITY
+
+Gauss Weapon
+
+*/
+
 enum
 {
 	GAUSS_IDLE1,

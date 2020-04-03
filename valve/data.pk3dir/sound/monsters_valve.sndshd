@@ -89,7 +89,7 @@ monster_alien_slave.pain
 	sample aslave/slv_pain2.wav
 }
 
-/* bcl_bite3 is played when an entity is in it's mouth bcl_tongue1 unused? */
+// bcl_bite3 is played when an entity is in it's mouth bcl_tongue1 unused?
 monster_barnacle.attackchew
 {
 	sample barnacle/bcl_chew1.wav
@@ -128,7 +128,7 @@ monster_bigmomma.alert
 	sample gonarch/gon_alert3.wav
 }
 
-/* the groans for when she spits? */
+// the groans for when she spits?
 monster_bigmomma.attack
 {
 	sample gonarch/gon_attack1.wav
@@ -136,7 +136,7 @@ monster_bigmomma.attack
 	sample gonarch/gon_attack3.wav
 }
 
-/* mourns the death of her children */
+/ mourns the death of her children
 monster_bigmomma.child
 {
 	sample gonarch/gon_childdie1.wav
@@ -166,7 +166,7 @@ monster_bigmomma.pain
 	sample gonarch/gon_pain5.wav
 }
 
-/* has unique foot step sounds */
+// has unique foot step sounds
 monster_bigmomma.step
 {
 	sample gonarch/gon_step1.wav
@@ -232,7 +232,7 @@ monster_gargantua.alert
 	sample garg/gar_alert3.wav
 }
 
-/* similar to bullsquid groans during and after attacks */
+// similar to bullsquid groans during and after attacks
 monster_gargantua.attack
 {
 	sample garg/gar_attack1.wav
@@ -281,7 +281,7 @@ monster_gargantua.pain
 	sample garg/gar_pain3.wav
 }
 
-/* has unique foot step sounds */
+// has unique foot step sounds
 monster_gargantua.step
 {
 	sample garg/gar_step1.wav
@@ -294,7 +294,7 @@ monster_headcrab.alert
 	sample headcrab/hc_alert2.wav
 }
 
-/* these attack sounds are actually the cry when it jumps */
+// these attack sounds are actually the cry when it jumps
 monster_headcrab.attack
 {
 	sample headcrab/hc_attack1.wav
@@ -350,7 +350,7 @@ monster_houndeye.die
 	sample houndeye/he_die3.wav
 }
 
-/* Not sure where the hunt sounds are actually used */
+// Not sure where the hunt sounds are actually used
 monster_houndeye.idle
 {
 	sample houndeye/he_hunt1.wav
@@ -439,11 +439,11 @@ monster_leech.attack
 	sample leech/leech_bite3.wav
 }
 
-/* other sounds
- * x_shoot1 - ?
- * nih_die2 - used in map not code? */
+// other sounds
+// * x_shoot1 - ?
+// * nih_die2 - used in map not code?
 
-/* these attack sounds are his growls */
+// these attack sounds are his growls
 monster_nihilanth.attack
 {
 	sample x/x_attack1.wav
@@ -530,7 +530,7 @@ monster_sentry.retract
 	sample turret/tu_retract.wav
 }
 
-/* cut sounds listing here because why not */
+// cut sounds listing here because why not
 monster_tentacle.alert
 {
 	sample tentacle/te_alert1.wav
@@ -548,7 +548,7 @@ monster_tentacle.die
 	sample tentacle/te_death2.wav
 }
 
-/* includes some cut sounds might be interesting */
+// includes some cut sounds might be interesting
 monster_tentacle.idle
 {
 	sample tentacle/te_roar1.wav

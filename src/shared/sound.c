@@ -24,6 +24,7 @@ enumflags
 	SNDFL_NOREVERB,	/* skip reverb */
 	SNDFL_OMNI,	/* volume on all channels is equal */
 	SNDFL_PRIVATE,	/* only play on target */
+	SNDFL_STEP, /* volume is calculated from entity speed */
 	SNDFL_FOLLOW
 };
 
@@ -57,6 +58,25 @@ void
 Sound_ParseField(int i, int a)
 {
 	switch (argv(0)) {
+	case "attenuation":
+		if (a == 2) {
+			switch(argv(1)) {
+			case "idle":
+				g_sounds[i].dist_max = ATTN_IDLE;
+				break;
+			case "static":
+				g_sounds[i].dist_max = ATTN_STATIC;
+				break;
+			case "none":
+				g_sounds[i].dist_max = ATTN_NONE;
+				break;
+			case "normal":
+				g_sounds[i].dist_max = ATTN_NORM;
+			default:
+				break;
+			}
+		}
+		break;
 	case "dist_min":
 		if (a == 2) {
 			dprint("\tMin distance set\n");
@@ -133,6 +153,9 @@ Sound_ParseField(int i, int a)
 	case "follow":
 		dprint("\tSound set to follow\n");
 		g_sounds[i].flags |= SNDFL_FOLLOW;
+		break;
+	case "footstep":
+		g_sounds[i].flags |= SNDFL_STEP;
 		break;
 	case "sample":
 		if (a == 2) {
@@ -266,6 +289,7 @@ void
 Sound_Play(entity target, int chan, string shader)
 {
 	int r;
+	float volume;
 	float radius;
 	float pitch;
 	int flags;
@@ -284,6 +308,7 @@ Sound_Play(entity target, int chan, string shader)
 	/* set pitch */
 	pitch = random(g_sounds[sample].pitch_min, g_sounds[sample].pitch_max);
 	radius = g_sounds[sample].dist_max;
+	volume = g_sounds[sample].volume;
 
 	/* flags */
 	if (g_sounds[sample].flags & SNDFL_NOREVERB) {
@@ -301,8 +326,18 @@ Sound_Play(entity target, int chan, string shader)
 		}
 		r = g_sounds[sample].playc++;
 	}
-	if (g_sounds[sample].flags & SOUNDFLAG_FOLLOW) {
+	if (g_sounds[sample].flags & SNDFL_FOLLOW) {
 		flags |= SOUNDFLAG_FOLLOW;
+	}
+	if (g_sounds[sample].flags & SNDFL_STEP) {
+		float s = vlen(target.velocity);
+		if (s < 120) {
+			return;
+		} else if (s < 270) {
+			volume = 0.35f;
+		} else {
+			volume = 0.75;
+		}
 	}
 #ifdef CSQC
 	if (g_sounds[sample].flags & SNDFL_OMNI) {
@@ -323,7 +358,7 @@ Sound_Play(entity target, int chan, string shader)
 		target,
 		chan, 
 		argv(r),
-		g_sounds[sample].volume,
+		volume,
 		radius,
 		pitch,
 		flags,
@@ -471,7 +506,7 @@ Sound_Speak(entity target, string shader)
 		}
 		r = g_sounds[sample].playc++;
 	}
-	if (g_sounds[sample].flags & SOUNDFLAG_FOLLOW) {
+	if (g_sounds[sample].flags & SNDFL_FOLLOW) {
 		flags |= SOUNDFLAG_FOLLOW;
 	}
 

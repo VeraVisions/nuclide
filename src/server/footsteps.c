@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,7 +14,122 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/* TODO: Move this into the player class. Monsters will call steps via
+ * modelevents. */
 .int iStep;
+
+/* HLBSP materials.txt character id's */
+#define MATID_ALIEN			'H'
+#define MATID_BLOODYFLESH	'B'
+#define MATID_COMPUTER		'P'
+#define MATID_CONCRETE		'C'
+#define MATID_DIRT			'D'
+#define MATID_FLESH			'F'
+#define MATID_FOLIAGE		'O'
+#define MATID_GLASS			'Y'
+#define MATID_GRATE			'G'
+#define MATID_METAL			'M'
+#define MATID_SLOSH			'S'
+#define MATID_SNOW			'N'
+#define MATID_TILE			'T'
+#define MATID_VENT			'V'
+#define MATID_WOOD			'W'
+
+/* Valve Half-Life BSP */
+void
+Footsteps_HLBSP(entity target)
+{
+	string mat_name = "";
+	string tex_name = "";
+
+	if (!g_hlbsp_materials) {
+		return;
+	}
+
+	traceline(target.origin + target.view_ofs, target.origin + [0,0,-48], FALSE, target);
+	tex_name = getsurfacetexture(trace_ent, getsurfacenearpoint(trace_ent, trace_endpos));
+
+	if (target.flags & FL_ONGROUND) {
+		switch((float)hash_get(hashMaterials, tex_name)) { 
+		case MATID_ALIEN:
+			mat_name = "step_alien";
+			break;
+		case MATID_BLOODYFLESH:
+			mat_name = "step_bloodyflesh";
+			break;
+		case MATID_COMPUTER:
+			mat_name = "step_computer";
+			break;
+		case MATID_CONCRETE:
+			mat_name = "step_concrete";
+			break;
+		case MATID_DIRT:
+			mat_name = "step_dirt";
+			break;
+		case MATID_FLESH:
+			mat_name = "step_flesh";
+			break;
+		case MATID_FOLIAGE:
+			mat_name = "step_foliage";
+			break;
+		case MATID_GLASS:
+			mat_name = "step_glass";
+			break;
+		case MATID_GRATE:
+			mat_name = "step_grate";
+			break;
+		case MATID_METAL:
+			mat_name = "step_metal";
+			break;
+		case MATID_SLOSH:
+			mat_name = "step_slosh";
+			break;
+		case MATID_SNOW:
+			mat_name = "step_snow";
+			break;
+		case MATID_TILE:
+			mat_name = "step_tile";
+			break;
+		case MATID_VENT:
+			mat_name = "step_vent";
+			break;
+		case MATID_WOOD:
+			mat_name = "step_wood";
+			break;
+		default:
+			mat_name = "step_default";
+			break;
+		}
+	} else if (target.flags & FL_ONLADDER) {
+		mat_name = "step_ladder";
+	}
+
+	if (target.iStep) {
+		Sound_Play(target, CHAN_BODY, sprintf("%s.left", mat_name));
+	} else {
+		Sound_Play(target, CHAN_BODY, sprintf("%s.right", mat_name));
+	}
+}
+
+/* Vera Visions BSP / Modified RFBSP */
+void
+Footsteps_VVBSP(entity target)
+{
+	string mat_name = "";
+
+	/* WIP */
+	if (target.flags & FL_ONGROUND) {
+		mat_name = "step_default";
+	} else if (target.flags & FL_ONLADDER) {
+		mat_name = "step_ladder";
+	}
+
+	if (target.iStep) {
+		Sound_Play(target, CHAN_BODY, sprintf("%s.left", mat_name));
+	} else {
+		Sound_Play(target, CHAN_BODY, sprintf("%s.right", mat_name));
+	}
+}
 
 /*
 =================
@@ -23,92 +138,34 @@ Footsteps_Update
 Run every frame for each player, plays material based footsteps
 =================
 */
-void Footsteps_Update(void) {
-	float fSpeed;
-	float fVol;
-	string sMaterial = "";
-	string sTexture = "";
-
-	if (!g_hlbsp_materials) {
-		return;
-	}
-
+void
+Footsteps_Update(void)
+{
 	if (self.movetype == MOVETYPE_WALK) {
 		if ((self.velocity[0] == 0 && self.velocity[1] == 0) || self.fStepTime > time) {
 			return;
 		}
 
-		fSpeed = vlen(self.velocity);
-		traceline(self.origin + self.view_ofs, self.origin + '0 0 -48', FALSE, self);
-		sTexture = getsurfacetexture(trace_ent, getsurfacenearpoint(trace_ent, trace_endpos));
-
-		if (fSpeed < 150) {
-			return;
-		} else if (fSpeed < 270) {
-			fVol = 0.35f;
-		} else {
-			fVol = 0.75;
-		}
-
-		self.fStepTime = time + 0.35;
-
-		if (self.flags & FL_ONGROUND) {
-				switch((float)hash_get(hashMaterials, sTexture)) { 
-				case 'M':
-						sMaterial = "metal";
-						break;
-				case 'V':
-						sMaterial = "duct";
-						break;
-				case 'D':
-						sMaterial = "dirt";
-						break;
-				case 'S':
-						sMaterial = "slosh";
-						break;
-				case 'T':
-						sMaterial = "tile";
-						break;
-				case 'G':
-						sMaterial = "grate";
-						break;
-				case 'W':
-						sMaterial = "step";
-						break;
-				case 'P':
-						sMaterial = "step";
-						break;
-				case 'Y':
-						sMaterial = "step";
-						break;
-				case 'N':
-						sMaterial = "snow";
-						break;
-				default:
-						sMaterial = "step";
-						break;
-				}
-		} else if (self.flags & FL_ONLADDER) {
-			sMaterial = "ladder";
-		} else {
+		/* make it so we step once we land */
+		if (!self.flags & FL_ONGROUND) {
 			self.fStepTime = 0.0f;
 			return;
 		}
 
-		if (self.iStep) {
-			if (random() < 0.5f) {
-				sound(self, CHAN_BODY, sprintf("player/pl_%s1.wav", sMaterial), fVol, ATTN_STATIC);
-			} else {
-				sound(self, CHAN_BODY, sprintf("player/pl_%s2.wav", sMaterial), fVol, ATTN_STATIC);
-			}
-		} else {
-			if (random() < 0.5f) {
-				sound(self, CHAN_BODY, sprintf("player/pl_%s3.wav", sMaterial), fVol, ATTN_STATIC);
-			} else {
-				sound(self, CHAN_BODY, sprintf("player/pl_%s4.wav", sMaterial), fVol, ATTN_STATIC);
-			}
+		/* the footsteps call might overwrite this later */
+		self.fStepTime = time + 0.35;
+
+		switch (serverkeyfloat("*bspversion")) {
+		case 30:
+			Footsteps_HLBSP(self);
+			break;
+		case 1:
+			Footsteps_VVBSP(self);
+			break;
+		default:
 		}
 
+		/* switch between feet */
 		self.iStep = 1 - self.iStep;
 	}
 }

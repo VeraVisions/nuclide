@@ -14,6 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED weapon_shockrifle (0 0 1) (-16 -16 0) (16 16 32)
+"model" "models/w_shock.mdl"
+
+HALF-LIFE: OPPOSING FORCE (1999) ENTITY
+
+Shockrifle Weapon
+
+*/
+
 #ifdef CSQC
 var int PART_SHOCKPIECE;
 #endif

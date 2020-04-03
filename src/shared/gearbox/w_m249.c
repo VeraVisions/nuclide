@@ -14,6 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED weapon_m249 (0 0 1) (-16 -16 0) (16 16 32)
+"model" "models/w_saw.mdl"
+
+HALF-LIFE: OPPOSING FORCE (1999) ENTITY
+
+M249 Weapon
+
+*/
+
 /* Animations */
 enum {
 	M249_IDLE1,
