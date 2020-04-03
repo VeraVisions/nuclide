@@ -49,6 +49,7 @@ monster_tripmine::SendEntity(entity pvsent, float flags)
 void
 monster_tripmine::Trip(int walkthrough)
 {
+	float dmg
 	if (!walkthrough) {
 		real_owner = g_eAttacker;
 	}
@@ -57,9 +58,9 @@ monster_tripmine::Trip(int walkthrough)
 	Death =
 	Pain = __NULL__;
 	takedamage = DAMAGE_NO;
-
+	dmg = Skill_GetValue("plr_tripmine");
 	Effect_CreateExplosion(origin);
-	Damage_Radius(origin, real_owner, 150, 150 * 2.5f, TRUE, WEAPON_TRIPMINE);
+	Damage_Radius(origin, real_owner, dmg, dmg * 2.5f, TRUE, WEAPON_TRIPMINE);
 	sound(this, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 2 ) + 3 ), 1, ATTN_NORM);
 	remove(this);
 }

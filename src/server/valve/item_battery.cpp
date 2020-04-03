@@ -19,7 +19,12 @@
 HALF-LIFE (1998) ENTITY
 
 HEV Suit energy battery.
-Adds 15 of armor/battery-power to the HEV Suit.
+It adds the following energy values to the HEV Suit by default:
+Skill 1 (Easy):   15
+Skill 2 (Medium): 15
+Skill 3 (Hard):   10
+
+The values can be tweaked in the skill.cfg file.
 
 */
 class item_battery:CBaseEntity
@@ -39,7 +44,7 @@ void item_battery::touch(void)
 		return;
 	}
 	/* Move this somewhere else? */
-	other.armor += 15;
+	other.armor += Skill_GetValue("battery");
 	if (other.armor > 100) {
 		other.armor = 100;
 	}

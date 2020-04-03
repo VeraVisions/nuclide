@@ -97,7 +97,7 @@ w_hornetgun_shoothornet(void)
 {
 	static void Hornet_Touch(void) {
 		if (other.takedamage == DAMAGE_YES) {
-			Damage_Apply(other, self.owner, 10, WEAPON_HORNETGUN, DMG_GENERIC);
+			Damage_Apply(other, self.owner, Skill_GetValue("plr_hornet"), WEAPON_HORNETGUN, DMG_GENERIC);
 			Sound_Play(other, CHAN_VOICE, "weapon_hornetgun.hit");
 		} else {
 			Sound_Play(self, CHAN_VOICE, "weapon_hornetgun.buzz");

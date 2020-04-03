@@ -74,8 +74,9 @@ void w_handgrenade_throw(void)
 {
 	static void WeaponFrag_Throw_Explode( void )
 	{
+		float dmg = Skill_GetValue("plr_hand_grenade");
 		Effect_CreateExplosion(self.origin);
-		Damage_Radius(self.origin, self.owner, 150, 150 * 2.5f, TRUE, WEAPON_HANDGRENADE);
+		Damage_Radius(self.origin, self.owner, dmg, dmg * 2.5f, TRUE, WEAPON_HANDGRENADE);
 		sound(self, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 2 ) + 3 ), 1, ATTN_NORM);
 		remove(self);
 	}

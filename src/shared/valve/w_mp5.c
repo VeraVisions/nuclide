@@ -138,9 +138,9 @@ w_mp5_primary(void)
 #else
 	/* singleplayer is more accurate */
 	if (cvar("sv_playerslots") == 1) {
-		TraceAttack_FireBullets(1, Weapons_GetCameraPos(), 8, [0.025,0.025], WEAPON_MP5);
+		TraceAttack_FireBullets(1, Weapons_GetCameraPos(), Skill_GetValue("plr_9mmAR_bullet"), [0.025,0.025], WEAPON_MP5);
 	} else {
-		TraceAttack_FireBullets(1, Weapons_GetCameraPos(), 8, [0.05,0.05], WEAPON_MP5);
+		TraceAttack_FireBullets(1, Weapons_GetCameraPos(), Skill_GetValue("plr_9mmAR_bullet"), [0.05,0.05], WEAPON_MP5);
 	}
 
 	Sound_Play(pl, CHAN_WEAPON, "weapon_mp5.shoot");
@@ -171,8 +171,9 @@ w_mp5_secondary(void)
 	Weapons_ViewAnimation(MP5_GRENADE);
 #else
 	static void Grenade_ExplodeTouch(void) {
+		float dmg = Skill_GetValue("plr_9mmAR_grenade");
 		Effect_CreateExplosion(self.origin);
-		Damage_Radius(self.origin, self.owner, 100, 100 * 2.5f, TRUE, WEAPON_MP5);
+		Damage_Radius(self.origin, self.owner, dmg, dmg * 2.5f, TRUE, WEAPON_MP5);
 
 		if (random() < 0.5) {
 			sound(self, 1, "weapons/explode3.wav", 1, ATTN_NORM);

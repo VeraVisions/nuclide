@@ -121,9 +121,9 @@ void w_shotgun_primary(void)
 #ifdef SSQC
 	/* Singleplayer is more accurate */
 	if (cvar("sv_playerslots") == 1) {
-		TraceAttack_FireBullets(6, pl.origin + pl.view_ofs, 5, [0.08716,0.08716], WEAPON_SHOTGUN);
+		TraceAttack_FireBullets(6, pl.origin + pl.view_ofs, Skill_GetValue("plr_buckshot"), [0.08716,0.08716], WEAPON_SHOTGUN);
 	} else {
-		TraceAttack_FireBullets(4, pl.origin + pl.view_ofs, 5, [0.08716,0.04362], WEAPON_SHOTGUN);
+		TraceAttack_FireBullets(4, pl.origin + pl.view_ofs, Skill_GetValue("plr_buckshot"), [0.08716,0.04362], WEAPON_SHOTGUN);
 	}
 	Sound_Play(pl, CHAN_WEAPON, "weapon_shotgun.single");
 	pl.shotgun_mag--;
