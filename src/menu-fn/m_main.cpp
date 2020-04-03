@@ -140,7 +140,7 @@ void menu_main_init(void)
 
 	main_btnNewGame = spawn(CMainButton);
 	main_btnNewGame.SetImage(BTN_NEWGAME);
-	if (games[gameinfo_current].type != "multiplayer_only") {
+	if (games[gameinfo_current].type != "Multiplayer") {
 		main_btnNewGame.SetExecute(btn_newgame_start);
 	}
 	main_btnNewGame.SetPos(70,208);
@@ -148,7 +148,7 @@ void menu_main_init(void)
 
 	main_btnTraining = spawn(CMainButton);
 	main_btnTraining.SetImage(BTN_TRAINING);
-	if (games[gameinfo_current].type != "multiplayer_only") {
+	if (games[gameinfo_current].type != "Multiplayer") {
 		main_btnTraining.SetExecute(btn_training);
 	}
 	main_btnTraining.SetPos(70,236);
@@ -162,7 +162,7 @@ void menu_main_init(void)
 
 	main_btnLoadGame = spawn(CMainButton);
 	main_btnLoadGame.SetImage(BTN_LOADGAME);
-	if (games[gameinfo_current].type != "multiplayer_only") {
+	if (games[gameinfo_current].type != "Multiplayer") {
 		// Loadgame disabled
 	}
 	main_btnLoadGame.SetPos(70,292);
@@ -171,7 +171,7 @@ void menu_main_init(void)
 	main_btnMultiplayer = spawn(CMainButton);
 	main_btnMultiplayer.SetImage(BTN_MULTIPLAYER);
 	main_btnMultiplayer.SetPos(70,320);
-	if (games[gameinfo_current].type != "singleplayer_only") {
+	if (games[gameinfo_current].type != "Singleplayer") {
 		main_btnMultiplayer.SetExecute(btn_multiplayer_start);
 	}
 	Widget_Add(fn_main, main_btnMultiplayer);

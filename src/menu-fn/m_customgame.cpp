@@ -108,7 +108,22 @@ void games_init(void)
 				games[id].cldll = (int)stof(argv(i+1));
 				break;
 			case "gameinfo_type":
-				games[id].type = argv(i+1);
+				switch (strtolower(argv(i+1))) {
+					case "multiplayer_only":
+					case "mp":
+					case "multi":
+					case "multiplayer":
+						games[id].type = "Multiplayer";
+						break;
+					case "singleplayer_only":
+					case "sp":
+					case "single":
+					case "singleplayer":
+						games[id].type = "Singleplayer";
+						break;
+					default:
+						games[id].type = "Both";
+				}
 				break;
 			case "gameinfo_hlversion":
 				games[id].hlversion = argv(i+1);
