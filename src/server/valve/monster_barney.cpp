@@ -43,18 +43,6 @@ enum {
 	BA_FLINCH_SML
 };
 
-string ba_snddie[] = {
-	"barney/ba_die1.wav",
-	"barney/ba_die1.wav",
-	"barney/ba_die2.wav"
-};
-
-string ba_sndpain[] = {
-	"barney/ba_pain1.wav",
-	"barney/ba_pain1.wav",
-	"barney/ba_pain1.wav"
-};
-
 class monster_barney:CBaseNPC
 {
 	void() monster_barney;
@@ -110,8 +98,7 @@ monster_barney::Pain(int iHitBody)
 		return;
 	}
 
-	int rand = floor(random(0,ba_sndpain.length));
-	Speak(ba_sndpain[rand]);
+	Sound_Speak(this, "monster_barney.pain");
 
 	frame = BA_FLINCH_LA + floor(random(0, 5));
 	m_iFlags |= MONSTER_FEAR;
@@ -123,8 +110,7 @@ monster_barney::Death(int iHitBody)
 {
 	WarnAllies();
 
-	int r = floor(random(0,ba_snddie.length));
-	Speak(ba_snddie[r]);
+	Sound_Speak(this, "monster_barney.die");
 
 	if (style != MONSTER_DEAD) {
 		frame = 25 + floor(random(0, 6));
@@ -145,12 +131,8 @@ monster_barney::Respawn(void)
 void
 monster_barney::monster_barney(void)
 {
-	for (int i = 0; i < ba_sndpain.length; i++) {
-		precache_sound(ba_sndpain[i]);
-	}
-	for (int i = 0; i < ba_snddie.length; i++) {
-		precache_sound(ba_snddie[i]);
-	}
+	Sound_Precache("monster_barney.die");
+	Sound_Precache("monster_barney.pain");
 
 	/* TODO
 	 * BA_MAD - When player gets too naughty

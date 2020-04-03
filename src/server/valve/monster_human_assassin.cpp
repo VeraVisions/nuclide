@@ -66,7 +66,7 @@ monster_human_assassin::Death(int iHitBody)
 				frame = HAS_DIEBACK;
 			}
 		} else {
-			frame = HAS_DIE + floor(random(0, 3));
+			frame = HAS_DIE;
 		}
 	}
 

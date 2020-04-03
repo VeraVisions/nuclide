@@ -46,36 +46,6 @@ enum {
 	NIL_SHOOT
 };
 
-/* other sounds
- * x_ballattack1 - the portal he casts
- * x_shoot1 - ?
- * x_teleattack1 - portal's move sound 
- * nih_die2 - used in map not code? */
-
-/* these attack sounds are his growls */
-string nil_sndattack[] = {
-	"x/x_attack1.wav",
-	"x/x_attack2.wav",
-	"x/x_attack3.wav"
-};
-
-string nil_sndidle[] = {
-	"x/x_laugh1.wav",
-	"x/x_laugh2.wav"
-};
-
-string nil_sndpain[] = {
-	"x/x_pain1.wav",
-	"x/x_pain2.wav",
-	"x/x_pain3.wav"
-};
-
-string nil_sndrecharge[] = {
-	"x/x_recharge1.wav",
-	"x/x_recharge2.wav",
-	"x/x_recharge3.wav"
-};
-
 class monster_nihilanth:CBaseMonster
 {
 	float m_flIdleTime;
@@ -102,8 +72,7 @@ monster_nihilanth::IdleNoise(void)
 	/* timing needs to adjusted as sounds conflict */
 	m_flIdleTime = time + random(2,10);
 
-	int rand = floor(random(0, nil_sndidle.length));
-	Sound(nil_sndidle[rand]);
+	Sound_Play(this, CHAN_VOICE, "monster_nihilanth.idle");
 }
 
 void
@@ -119,8 +88,7 @@ monster_nihilanth::Pain(int iHitBody)
 		return;
 	}
 
-	int rand = floor(random(0,nil_sndpain.length));
-	Sound(nil_sndpain[rand]);
+	Sound_Play(this, CHAN_VOICE, "monster_nihilanth.pain");
 
 	frame = (random() < 0.5) ? NIL_FLINCH : NIL_FLINCH2;
 	m_flAnimTime = time + 0.25f;
@@ -132,7 +100,7 @@ monster_nihilanth::Death(int iHitBody)
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
 		frame = NIL_DIE;
-		Sound("x/x_die1.wav");
+		Sound_Play(this, CHAN_VOICE, "monster_nihilanth.die");
 	}
 
 	/* set the functional differences */
@@ -148,19 +116,13 @@ monster_nihilanth::Respawn(void)
 
 void monster_nihilanth::monster_nihilanth(void)
 {
-	for (int i = 0; i <nil_sndattack.length; i++) {
-		precache_sound(nil_sndattack[i]);
-	}
-	for (int i = 0; i < nil_sndidle.length; i++) {
-		precache_sound(nil_sndidle[i]);
-	}
-	for (int i = 0; i < nil_sndpain.length; i++) {
-		precache_sound(nil_sndpain[i]);
-	}
-	for (int i = 0; i < nil_sndrecharge.length; i++) {
-		precache_sound(nil_sndrecharge[i]);
-	}
-
+	Sound_Precache("monster_nihilanth.attack");
+	Sound_Precache("monster_nihilanth.attackball");
+	Sound_Precache("monster_nihilanth.attackballmove");
+	Sound_Precache("monster_nihilanth.die");
+	Sound_Precache("monster_nihilanth.idle");
+	Sound_Precache("monster_nihilanth.pain");
+	Sound_Precache("monster_nihilanth.recharge");
 	netname = "Nihilanth";
 	model = "models/nihilanth.mdl";
 	base_health = Skill_GetValue("nihilanth_health");

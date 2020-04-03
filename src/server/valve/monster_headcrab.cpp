@@ -46,39 +46,7 @@ enum {
 	HC_STRUGGLE
 };
 
-/* these attack sounds are actually the cry when it jumps
- * hc_headbite is when the crab actually hits an ent
- */
 
-string hc_sndattack[] = {
-	"headcrab/hc_attack1.wav",
-	"headcrab/hc_attack2.wav",
-	"headcrab/hc_attack3.wav"
-};
-
-string hc_snddie[] = {
-	"headcrab/hc_die1.wav",
-	"headcrab/hc_die2.wav"
-};
-
-string hc_sndidle[] = {
-	"headcrab/hc_idle1.wav",
-	"headcrab/hc_idle2.wav",
-	"headcrab/hc_idle3.wav",
-	"headcrab/hc_idle4.wav",
-	"headcrab/hc_idle5.wav"
-};
-
-string hc_sndpain[] = {
-	"headcrab/hc_pain1.wav",
-	"headcrab/hc_pain2.wav",
-	"headcrab/hc_pain3.wav"
-};
-
-string hc_sndsee[] = {
-	"headcrab/hc_alert1.wav",
-	"headcrab/hc_alert2.wav"
-};
 
 class monster_headcrab:CBaseMonster
 {
@@ -125,8 +93,7 @@ monster_headcrab::Pain(int iHitBody)
 		return;
 	}
 
-	int rand = floor(random(0,hc_sndpain.length));
-	Sound(hc_sndpain[rand]);
+	Sound_Play(this, CHAN_VOICE, "monster_headcrab.pain");
 	frame = HC_FLINCH;
 	m_flAnimTime = time + 0.25f;
 }
@@ -138,9 +105,7 @@ monster_headcrab::Death(int iHitBody)
 	if (style != MONSTER_DEAD) {
 		frame = HC_DIE;
 
-		/* the sound */
-		int rand = floor(random(0,hc_snddie.length));
-		Sound(hc_snddie[rand]);
+		Sound_Play(this, CHAN_VOICE, "monster_headcrab.die");
 	}
 
 	/* set the functional differences */
@@ -160,29 +125,18 @@ monster_headcrab::IdleNoise(void)
 	}
 	m_flIdleTime = time + random(2,10);
 
-	int rand = floor(random(0, hc_sndidle.length));
-	Sound(hc_sndidle[rand]);
+	Sound_Play(this, CHAN_VOICE, "monster_headcrab.idle");
 }
 
 void
 monster_headcrab::monster_headcrab(void)
 {
-	for (int i = 0; i < hc_sndattack.length; i++) {
-		precache_sound(hc_sndattack[i]);
-	}
-	for (int i = 0; i < hc_snddie.length; i++) {
-		precache_sound(hc_snddie[i]);
-	}
-	for (int i = 0; i < hc_sndidle.length; i++) {
-		precache_sound(hc_sndidle[i]);
-	}
-	for (int i = 0; i < hc_sndpain.length; i++) {
-		precache_sound(hc_sndpain[i]);
-	}
-	for (int i = 0; i < hc_sndsee.length; i++) {
-		precache_sound(hc_sndsee[i]);
-	}
-
+	Sound_Precache("monster_headcrab.alert");
+	Sound_Precache("monster_headcrab.attack");
+	Sound_Precache("monster_headcrab.attackhit");
+	Sound_Precache("monster_headcrab.die");
+	Sound_Precache("monster_headcrab.idle");
+	Sound_Precache("monster_headcrab.pain");
 	if (classname == "monster_babycrab") {
 		netname = "Baby Headcrab";
 		model = "models/baby_headcrab.mdl";

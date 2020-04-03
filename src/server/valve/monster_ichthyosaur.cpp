@@ -41,33 +41,6 @@ enum {
 	ICHY_JUMP
 };
 
-string ichy_sndattack[] = {
-	"ichy/ichy_attack1.wav",
-	"ichy/ichy_attack2.wav"
-};
-
-string ichy_sndidle[] = {
-	"ichy/ichy_idle1.wav",
-	"ichy/ichy_idle2.wav",
-	"ichy/ichy_idle3.wav",
-	"ichy/ichy_idle4.wav"
-};
-
-string ichy_sndpain[] = {
-	"ichy/ichy_pain1.wav",
-	"ichy/ichy_pain2.wav",
-	"ichy/ichy_pain3.wav",
-	"ichy/ichy_pain4.wav",
-	"ichy/ichy_pain5.wav"
-};
-
-string ichy_sndsee[] = {
-	"ichy/ichy_alert1.wav",
-	"ichy/ichy_alert2.wav",
-	"ichy/ichy_alert3.wav"
-};
-
-
 class monster_ichthyosaur:CBaseMonster
 {
 	float m_flIdleTime;
@@ -93,8 +66,7 @@ monster_ichthyosaur::Pain(int iHitBody)
 		return;
 	}
 
-	int rand = floor(random(0,ichy_sndpain.length));
-	Sound(ichy_sndpain[rand]);
+	Sound_Play(this, CHAN_VOICE, "monster_ichthyosaur.pain");
 	frame = ICHY_FLINCH + floor(random(0, 2));
 	m_flAnimTime = time + 0.25f;
 }
@@ -118,9 +90,7 @@ monster_ichthyosaur::Death(int iHitBody)
 			break;
 		}
 
-		/* the sound */
-		int rand = floor(random(0,ichy_sndpain.length));
-		Sound(ichy_sndpain[rand]);
+		Sound_Play(this, CHAN_VOICE, "monster_ichthyosaur.die");
 	}
 
 	/* set the functional differences */
@@ -140,8 +110,7 @@ monster_ichthyosaur::IdleNoise(void)
 	}
 	m_flIdleTime = time + random(2,10);
 
-	int rand = floor(random(0, ichy_sndidle.length));
-	Sound(ichy_sndidle[rand]);
+	Sound_Play(this, CHAN_VOICE, "monster_ichthyosaur.idle");
 }
 
 void
@@ -154,19 +123,11 @@ monster_ichthyosaur::Respawn(void)
 void
 monster_ichthyosaur::monster_ichthyosaur(void)
 {
-	for (int i = 0; i < ichy_sndattack.length; i++) {
-		precache_sound(ichy_sndattack[i]);
-	}
-	for (int i = 0; i < ichy_sndidle.length; i++) {
-		precache_sound(ichy_sndidle[i]);
-	}
-	for (int i = 0; i < ichy_sndpain.length; i++) {
-		precache_sound(ichy_sndpain[i]);
-	}
-	for (int i = 0; i < ichy_sndsee.length; i++) {
-		precache_sound(ichy_sndsee[i]);
-	}
-	
+	Sound_Precache("monster_ichthyosaur.alert");
+	Sound_Precache("monster_ichthyosaur.attack");
+	Sound_Precache("monster_ichthyosaur.die");
+	Sound_Precache("monster_ichthyosaur.idle");
+	Sound_Precache("monster_ichthyosaur.pain");
 	netname = "Ichthyosaur";
 	model = "models/icky.mdl";
 	base_mins = [-32,-32,0];

@@ -57,36 +57,6 @@ enum {
 	AG_LAND
 };
 
-string ag_sndattack[] = {
-	"agrunt/ag_attack1.wav",
-	"agrunt/ag_attack2.wav",
-	"agrunt/ag_attack3.wav"
-};
-
-string ag_sndidle[] = {
-	"agrunt/ag_idle1.wav",
-	"agrunt/ag_idle2.wav",
-	"agrunt/ag_idle3.wav",
-	"agrunt/ag_idle4.wav",
-	"agrunt/ag_idle5.wav"
-};
-
-string ag_sndpain[] = {
-	"agrunt/ag_pain1.wav",
-	"agrunt/ag_pain2.wav",
-	"agrunt/ag_pain3.wav",
-	"agrunt/ag_pain4.wav",
-	"agrunt/ag_pain5.wav"
-};
-
-string ag_sndsee[] = {
-	"agrunt/ag_alert1.wav",
-	"agrunt/ag_alert2.wav",
-	"agrunt/ag_alert3.wav",
-	"agrunt/ag_alert4.wav",
-	"agrunt/ag_alert5.wav"
-};
-
 class monster_alien_grunt:CBaseMonster
 {
 	float m_flIdleTime;
@@ -113,8 +83,7 @@ monster_alien_grunt::Pain(int iHitBody)
 		return;
 	}
 
-	int rand = floor(random(0,ag_sndpain.length));
-	Sound(ag_sndpain[rand]);
+	Sound_Play(this, CHAN_VOICE, "monster_alien_grunt.pain");
 	frame = AG_FLINCH + floor(random(0, 2));
 	m_flPainTime = time + 0.25f;
 }
@@ -132,12 +101,10 @@ monster_alien_grunt::Death(int iHitBody)
 				frame = AG_DIEFORWARD;
 			}
 		} else {
-			frame = AG_DIE + floor(random(0, 3));
+			frame = AG_DIE + floor(random(0, 2));
 		}
 
-		/* the sound */
-		int rand = floor(random(0,ag_sndpain.length));
-		Sound(ag_sndpain[rand]);
+		Sound_Play(this, CHAN_VOICE, "monster_alien_grunt.die");
 	}
 
 	/* set the functional differences */
@@ -157,8 +124,7 @@ monster_alien_grunt::IdleNoise(void)
 	}
 	m_flIdleTime = time + random(2,10);
 
-	int rand = floor(random(0, ag_sndidle.length));
-	Sound(ag_sndidle[rand]);
+	Sound_Play(this, CHAN_VOICE, "monster_alien_grunt.idle");
 }
 
 void
@@ -171,19 +137,11 @@ monster_alien_grunt::Respawn(void)
 void
 monster_alien_grunt::monster_alien_grunt(void)
 {
-	for (int i = 0; i < ag_sndattack.length; i++) {
-		precache_sound(ag_sndattack[i]);
-	}
-	for (int i = 0; i < ag_sndidle.length; i++) {
-		precache_sound(ag_sndidle[i]);
-	}
-	for (int i = 0; i < ag_sndpain.length; i++) {
-		precache_sound(ag_sndpain[i]);
-	}
-	for (int i = 0; i < ag_sndsee.length; i++) {
-		precache_sound(ag_sndsee[i]);
-	}
-
+	Sound_Precache("monster_alien_grunt.alert");
+	Sound_Precache("monster_alien_grunt.attack");
+	Sound_Precache("monster_alien_grunt.die");
+	Sound_Precache("monster_alien_grunt.idle");
+	Sound_Precache("monster_alien_grunt.pain");
 	netname = "Alien Grunt";
 	model = "models/agrunt.mdl";
 	base_mins = [-32,-32,0];

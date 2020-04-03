@@ -79,31 +79,6 @@ enum {
 	TE_GRAB
 };
 
-string te_sndattack[] = {
-	"tentacle/te_strike1.wav",
-	"tentacle/te_strike2.wav"
-};
-
-string te_snddeath[] = {
-	"tentacle/te_death2.wav"
-};
-
-/* includes some cut sounds, might be interesting */
-string te_sndidle[] = {
-	"tentacle/te_roar1.wav",
-	"tentacle/te_roar2.wav",
-	"tentacle/te_search1.wav",
-	"tentacle/te_search2.wav",
-	"tentacle/te_sing1.wav",
-	"tentacle/te_sing2.wav"
-};
-
-/* cut sounds, listing here because why not */
-string te_sndsee[] = {
-	"tentacle/te_alert1.wav",
-	"tentacle/te_alert2.wav"
-};
-
 class monster_tentacle:CBaseMonster
 {
 	float m_flIdleTime;
@@ -128,8 +103,7 @@ monster_tentacle::IdleNoise(void)
 	/* timing needs to adjusted as sounds conflict */
 	m_flIdleTime = time + random(2,10);
 
-	int rand = floor(random(0, te_sndidle.length));
-	Sound(te_sndidle[rand]);
+	Sound_Play(this, CHAN_VOICE, "monster_tentacle.idle");
 }
 
 void
@@ -145,6 +119,10 @@ monster_tentacle::Respawn(void)
 void
 monster_tentacle::monster_tentacle(void)
 {
+	Sound_Precache("monster_tentacle.alert");
+	Sound_Precache("monster_tentacle.attack");
+	Sound_Precache("monster_tentacle.die");
+	Sound_Precache("monster_tentacle.idle");
 	netname = "Tentacle";
 	model = "models/tentacle2.mdl";
 	base_mins = [-32,-32,0];

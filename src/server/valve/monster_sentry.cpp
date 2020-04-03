@@ -31,15 +31,6 @@ enum {
 	SENT_DIE
 };
 
-/* seems to use tu_ping for it's active idle state
- * tu_alert for it's deploy sound?
- */
-
-string sent_snddie[] = {
-	"turret/tu_die1.wav",
-	"turret/tu_die2.wav",
-	"turret/tu_die3.wav"
-};
 
 class monster_sentry:CBaseMonster
 {
@@ -55,11 +46,8 @@ monster_sentry::Death(int iHitBody)
 {
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
-			frame = SENT_DIE;
-
-		/* the sound */
-		int rand = floor(random(0,sent_snddie.length));
-		Sound(sent_snddie[rand]);
+		frame = SENT_DIE;
+		Sound_Play(this, CHAN_VOICE, "monster_sentry.die");
 	}
 
 	/* set the functional differences */
@@ -76,11 +64,10 @@ monster_sentry::Respawn(void)
 
 void monster_sentry::monster_sentry(void)
 {
-	
-	for (int i = 0; i < con_sndattack.length; i++) {
-		precache_sound(con_sndattack[i]);
-	}
-	
+	Sound_Precache("monster_sentry.alert");
+	Sound_Precache("monster_sentry.die");
+	Sound_Precache("monster_sentry.idle");
+	Sound_Precache("monster_sentry.retract");
 	netname = "Sentry";
 	model = "models/sentry.mdl";
 	base_health = Skill_GetValue("sentry_health");

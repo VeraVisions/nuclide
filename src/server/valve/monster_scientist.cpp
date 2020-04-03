@@ -68,26 +68,6 @@ enum {
 	SCIA_DEADTABLE3
 };
 
-string sci_snddie[] = {
-	"scientist/sci_die1.wav",
-	"scientist/sci_die2.wav",
-	"scientist/sci_die3.wav",
-	"scientist/sci_die4.wav"
-};
-
-string sci_sndpain[] = {
-	"scientist/sci_pain1.wav",
-	"scientist/sci_pain2.wav",
-	"scientist/sci_pain3.wav",
-	"scientist/sci_pain4.wav",
-	"scientist/sci_pain5.wav",
-	"scientist/sci_pain6.wav",
-	"scientist/sci_pain7.wav",
-	"scientist/sci_pain8.wav",
-	"scientist/sci_pain9.wav",
-	"scientist/sci_pain10.wav"
-};
-
 class monster_scientist:CBaseNPC
 {
 	void() monster_scientist;
@@ -143,8 +123,7 @@ monster_scientist::Pain(int iHitBody)
 		return;
 	}
 
-	int rand = floor(random(0,sci_sndpain.length));
-	Speak(sci_sndpain[rand]);
+	Sound_Speak(this, "monster_scientist.pain");
 
 	frame = SCIA_FLINCH + floor(random(0, 6));
 	m_iFlags |= MONSTER_FEAR;
@@ -156,8 +135,7 @@ monster_scientist::Death(int iHitBody)
 {
 	WarnAllies();
 
-	int r = floor(random(0,sci_snddie.length));
-	Speak(sci_snddie[r]);
+	Sound_Speak(this, "monster_scientist.die");
 
 	if (style != MONSTER_DEAD) {
 		frame = SCIA_DIE_SIMPLE + floor(random(0, 6));
@@ -178,12 +156,8 @@ monster_scientist::Respawn(void)
 void
 monster_scientist::monster_scientist(void)
 {
-	for (int i = 0; i < sci_sndpain.length; i++) {
-		precache_sound(sci_sndpain[i]);
-	}
-	for (int i = 0; i < sci_snddie.length; i++) {
-		precache_sound(sci_snddie[i]);
-	}
+	Sound_Precache("monster_scientist.die");
+	Sound_Precache("monster_scientist.pain");
 
 	if (spawnflags & MSF_PREDISASTER) {
 		m_talkAsk = "";

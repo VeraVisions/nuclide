@@ -56,44 +56,6 @@ enum {
 	HE_JUMPWINDOW
 };
 
-string he_sndattack[] = {
-	"houndeye/he_attack1.wav",
-	"houndeye/he_attack2.wav",
-	"houndeye/he_attack3.wav"
-};
-
-string he_snddie[] = {
-	"houndeye/he_die1.wav",
-	"houndeye/he_die2.wav",
-	"houndeye/he_die3.wav"
-};
-
-/* Not sure where the hunt sounds are actually used */
-string he_sndidle[] = {
-	"houndeye/he_hunt1.wav",
-	"houndeye/he_hunt2.wav",
-	"houndeye/he_hunt3.wav",
-	"houndeye/he_hunt4.wav",
-	"houndeye/he_idle1.wav",
-	"houndeye/he_idle2.wav",
-	"houndeye/he_idle3.wav",
-	"houndeye/he_idle4.wav",
-};
-
-string he_sndpain[] = {
-	"houndeye/he_pain1.wav",
-	"houndeye/he_pain2.wav",
-	"houndeye/he_pain3.wav",
-	"houndeye/he_pain4.wav",
-	"houndeye/he_pain5.wav"
-};
-
-string he_sndsee[] = {
-	"houndeye/he_alert1.wav",
-	"houndeye/he_alert2.wav",
-	"houndeye/he_alert3.wav"
-};
-
 class monster_houndeye:CBaseMonster
 {
 	float m_flIdleTime;
@@ -119,8 +81,7 @@ monster_houndeye::Pain(int iHitBody)
 		return;
 	}
 
-	int rand = floor(random(0,he_sndpain.length));
-	Sound(he_sndpain[rand]);
+	Sound_Play(this, CHAN_VOICE, "monster_houndeye.pain");
 	frame = HE_FLINCH + floor(random(0, 2));
 	m_flAnimTime = time + 0.25f;
 }
@@ -132,9 +93,7 @@ monster_houndeye::Death(int iHitBody)
 	if (style != MONSTER_DEAD) {
 		frame = HE_DIE + floor(random(0, 4));
 
-		/* the sound */
-		int rand = floor(random(0,he_snddie.length));
-		Sound(he_snddie[rand]);
+		Sound_Play(this, CHAN_VOICE, "monster_houndeye.die");
 	}
 
 	/* set the functional differences */
@@ -154,8 +113,7 @@ monster_houndeye::IdleNoise(void)
 	}
 	m_flIdleTime = time + random(2,10);
 
-	int rand = floor(random(0, he_sndidle.length));
-	Sound(he_sndidle[rand]);
+	Sound_Play(this, CHAN_VOICE, "monster_houndeye.idle");
 }
 
 void
@@ -168,22 +126,11 @@ monster_houndeye::Respawn(void)
 void
 monster_houndeye::monster_houndeye(void)
 {
-	for (int i = 0; i < he_sndattack.length; i++) {
-		precache_sound(he_sndattack[i]);
-	}
-	for (int i = 0; i < he_snddie.length; i++) {
-		precache_sound(he_snddie[i]);
-	}
-	for (int i = 0; i < he_sndidle.length; i++) {
-		precache_sound(he_sndidle[i]);
-	}
-	for (int i = 0; i < he_sndpain.length; i++) {
-		precache_sound(he_sndpain[i]);
-	}
-	for (int i = 0; i < he_sndsee.length; i++) {
-		precache_sound(he_sndsee[i]);
-	}
-
+	Sound_Precache("monster_houndeye.alert");
+	Sound_Precache("monster_houndeye.attack");
+	Sound_Precache("monster_houndeye.die");
+	Sound_Precache("monster_houndeye.idle");
+	Sound_Precache("monster_houndeye.pain");
 	netname = "Houndeye";
 	model = "models/houndeye.mdl";
 	base_health = Skill_GetValue("houndeye_health");

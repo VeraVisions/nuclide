@@ -44,32 +44,6 @@ enum {
 	CON_DIE
 };
 
-string con_sndattack[] = {
-	"controller/con_attack1.wav",
-	"controller/con_attack2.wav",
-	"controller/con_attack3.wav"
-};
-
-string con_sndidle[] = {
-	"controller/con_idle1.wav",
-	"controller/con_idle2.wav",
-	"controller/con_idle3.wav",
-	"controller/con_idle4.wav",
-	"controller/con_idle5.wav"
-};
-
-string con_sndpain[] = {
-	"controller/con_pain1.wav",
-	"controller/con_pain2.wav",
-	"controller/con_pain3.wav"
-};
-
-string con_sndsee[] = {
-	"controller/con_alert1.wav",
-	"controller/con_alert2.wav",
-	"controller/con_alert3.wav"
-};
-
 class monster_alien_controller:CBaseMonster
 {
 	float m_flIdleTime;
@@ -96,8 +70,7 @@ monster_alien_controller::Pain(int iHitBody)
 		return;
 	}
 
-	int rand = floor(random(0,con_sndpain.length));
-	Sound(con_sndpain[rand]);
+	Sound_Play(this, CHAN_VOICE, "monster_alien_controller.die");
 	frame = CON_FLINCH + floor(random(0, 2));
 	m_flPainTime = time + 0.25f;
 }
@@ -108,10 +81,7 @@ monster_alien_controller::Death(int iHitBody)
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
 		frame = CON_DIE;
-
-		/* the sound */
-		int rand = floor(random(0,con_sndpain.length));
-		Sound(con_sndpain[rand]);
+		Sound_Play(this, CHAN_VOICE, "monster_alien_controller.die");
 	}
 
 	/* set the functional differences */
@@ -131,8 +101,7 @@ monster_alien_controller::IdleNoise(void)
 	}
 	m_flIdleTime = time + random(2,10);
 
-	int rand = floor(random(0, con_sndidle.length));
-	Sound(con_sndidle[rand]);
+	Sound_Play(this, CHAN_VOICE, "monster_alien_controller.idle");
 }
 
 void
@@ -145,19 +114,11 @@ monster_alien_controller::Respawn(void)
 void
 monster_alien_controller::monster_alien_controller(void)
 {
-	for (int i = 0; i < con_sndattack.length; i++) {
-		precache_sound(con_sndattack[i]);
-	}
-	for (int i = 0; i < con_sndidle.length; i++) {
-		precache_sound(con_sndidle[i]);
-	}
-	for (int i = 0; i < con_sndpain.length; i++) {
-		precache_sound(con_sndpain[i]);
-	}
-	for (int i = 0; i < con_sndsee.length; i++) {
-		precache_sound(con_sndsee[i]);
-	}
-
+	Sound_Precache("monster_alien_controller.alert");
+	Sound_Precache("monster_alien_controller.attack");
+	Sound_Precache("monster_alien_controller.die");
+	Sound_Precache("monster_alien_controller.idle");
+	Sound_Precache("monster_alien_controller.pain");
 	netname = "Alien Controller";
 	model = "models/controller.mdl";
 	base_mins = [-16,-16,0];

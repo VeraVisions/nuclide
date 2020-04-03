@@ -33,12 +33,7 @@ monster_cockroach::Death(int iHitBody)
 {
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
-		/* the sound */
-		if (random() < 0.5) {
-			Sound("roach/rch_die.wav");
-		} else {
-			Sound("roach/rch_smash.wav");
-		}
+		Sound_Play(this, CHAN_VOICE, "monster_cockroach.die");
 	}
 
 	/* make sure we gib this thing */
@@ -50,6 +45,7 @@ monster_cockroach::Death(int iHitBody)
 
 void monster_cockroach::monster_cockroach(void)
 {
+	Sound_Precache("monster_cockroach.die");
 	netname = "Cockroach";
 	model = "models/roach.mdl";
 	base_mins = [-1,-1,0];

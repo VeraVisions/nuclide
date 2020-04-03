@@ -55,18 +55,6 @@ enum {
 	SLV_JABBER
 };
 
-/* chat & idle sounds are handled via sentences.txt */
-
-string slv_snddie[] = {
-	"aslave/slv_die1.wav",
-	"aslave/slv_die2.wav"
-};
-
-string slv_sndpain[] = {
-	"aslave/slv_pain1.wav",
-	"aslave/slv_pain2.wav"
-};
-
 class monster_alien_slave:CBaseNPC
 {
 	float m_flIdleTime;
@@ -105,8 +93,7 @@ monster_alien_slave::Pain(int iHitBody)
 		return;
 	}
 
-	int rand = floor(random(0,slv_sndpain.length));
-	Sound(slv_sndpain[rand]);
+	Sound_Play(this, CHAN_VOICE, "monster_alien_slave.pain");
 	frame = SLV_FLINCH + floor(random(0, 2));
 	m_flPainTime = time + 0.25f;
 }
@@ -127,9 +114,7 @@ monster_alien_slave::Death(int iHitBody)
 			frame = SLV_DIE + floor(random(0, 3));
 		}
 
-		/* the sound */
-		int rand = floor(random(0,slv_sndpain.length));
-		Sound(slv_sndpain[rand]);
+		Sound_Play(this, CHAN_VOICE, "monster_alien_slave.die");
 	}
 
 	/* set the functional differences */
@@ -146,9 +131,8 @@ monster_alien_slave::Respawn(void)
 void
 monster_alien_slave::monster_alien_slave(void)
 {
-	for (int i = 0; i < slv_sndpain.length; i++) {
-		precache_sound(slv_sndpain[i]);
-	}
+	Sound_Precache("monster_alien_slave.die");
+	Sound_Precache("monster_alien_slave.pain");
 
 	m_talkAnswer = "";
 	m_talkAsk = "";

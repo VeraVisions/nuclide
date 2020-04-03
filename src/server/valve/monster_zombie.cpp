@@ -150,8 +150,8 @@ monster_zombie::monster_zombie(void)
 {
 	Sound_Precache("monster_zombie.alert");
 	Sound_Precache("monster_zombie.attack");
-	Sound_Precache("monster_zombie.claw");
-	Sound_Precache("monster_zombie.clawmiss");
+	Sound_Precache("monster_zombie.attackhit");
+	Sound_Precache("monster_zombie.attackmiss");
 	Sound_Precache("monster_zombie.idle");
 	Sound_Precache("monster_zombie.pain");
 	netname = "Zombie";

@@ -45,52 +45,6 @@ enum {
 	GON_FALLDIE
 };
 
-/* the attack sounds are for when she spits? */
-string gon_sndattack[] = {
-	"gonarch/gon_attack1.wav",
-	"gonarch/gon_attack2.wav",
-	"gonarch/gon_attack3.wav"
-};
-
-/* mourns the death of her children */
-string gon_sndchild[] = {
-	"gonarch/gon_childdie1.wav",
-	"gonarch/gon_childdie2.wav",
-	"gonarch/gon_childdie3.wav"
-};
-
-string gon_snddie[] = {
-	"gonarch/gon_die1.wav",
-	"gonarch/gon_die2.wav",
-	"gonarch/gon_die3.wav"
-};
-
-string gon_sndidle[] = {
-	"gonarch/gon_sack1.wav",
-	"gonarch/gon_sack2.wav",
-	"gonarch/gon_sack3.wav"
-};
-
-string gon_sndpain[] = {
-	"gonarch/gon_pain2.wav",
-	"gonarch/gon_pain3.wav",
-	"gonarch/gon_pain4.wav",
-	"gonarch/gon_pain5.wav"
-};
-
-string gon_sndsee[] = {
-	"gonarch/gon_alert1.wav",
-	"gonarch/gon_alert2.wav",
-	"gonarch/gon_alert3.wav"
-};
-
-/* has unique foot step sounds */
-string gon_sndstep[] = {
-	"gonarch/gon_step1.wav",
-	"gonarch/gon_step2.wav",
-	"gonarch/gon_step3.wav"
-};
-
 class monster_bigmomma:CBaseMonster
 {
 	float m_flIdleTime;
@@ -117,8 +71,7 @@ monster_bigmomma::IdleNoise(void)
 	/* timing needs to adjusted as sounds conflict */
 	m_flIdleTime = time + random(2,10);
 
-	int rand = floor(random(0, gon_sndidle.length));
-	Sound(gon_sndidle[rand]);
+	Sound_Play(this, CHAN_VOICE, "monster_bigmomma.idle");
 }
 
 void
@@ -134,8 +87,7 @@ monster_bigmomma::Pain(int iHitBody)
 		return;
 	}
 
-	int rand = floor(random(0,gon_sndpain.length));
-	Sound(gon_sndpain[rand]);
+	Sound_Play(this, CHAN_VOICE, "monster_bigmomma.pain");
 	frame = GON_FLINCH;
 	m_flAnimTime = time + 0.25f;
 }
@@ -146,7 +98,7 @@ monster_bigmomma::Death(int iHitBody)
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
 		frame = GON_DIE;
-		Sound("gonarch/gon_die1.wav");
+		Sound_Play(this, CHAN_VOICE, "monster_bigmomma.die");
 	}
 
 	/* set the functional differences */
@@ -162,27 +114,13 @@ monster_bigmomma::Respawn(void)
 
 void monster_bigmomma::monster_bigmomma(void)
 {
-	for (int i = 0; i <gon_sndattack.length; i++) {
-		precache_sound(gon_sndattack[i]);
-	}
-	for (int i = 0; i <gon_sndchild.length; i++) {
-		precache_sound(gon_sndchild[i]);
-	}
-	for (int i = 0; i < gon_sndidle.length; i++) {
-		precache_sound(gon_sndidle[i]);
-	}
-	for (int i = 0; i < gon_sndpain.length; i++) {
-		precache_sound(gon_sndpain[i]);
-	}
-	for (int i = 0; i <gon_sndsee.length; i++) {
-		precache_sound(gon_sndsee[i]);
-	}
-	for (int i = 0; i <gon_sndstep.length; i++) {
-		precache_sound(gon_sndstep[i]);
-	}
-
-	precache_sound("gonarch/gon_die1.wav");
-
+	Sound_Precache("monster_bigmomma.alert");
+	Sound_Precache("monster_bigmomma.attack");
+	Sound_Precache("monster_bigmomma.child");
+	Sound_Precache("monster_bigmomma.die");
+	Sound_Precache("monster_bigmomma.idle");
+	Sound_Precache("monster_bigmomma.pain");
+	Sound_Precache("monster_bigmomma.step");
 	netname = "Gonarch";
 	model = "models/big_mom.mdl";
 	/* health is based on factor, for it's not killable until last stage */

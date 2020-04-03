@@ -47,53 +47,6 @@ enum {
 	GARG_BUST
 };
 
-/* Flame thrower sounds
- * gar_flameoff1
- * gar_flameon1
- * gar_flamerun1 */
-
-/* similar to bullsquid, groans during and after attacks */
-
-string garg_sndattack[] = {
-	"garg/gar_attack1.wav",
-	"garg/gar_attack2.wav",
-	"garg/gar_attack3.wav"
-};
-
-string garg_sndalert[] = {
-	"garg/gar_alert1.wav",
-	"garg/gar_alert2.wav",
-	"garg/gar_alert3.wav"
-};
-
-string garg_snddie[] = {
-	"garg/gar_die1.wav",
-	"garg/gar_die2.wav"
-};
-
-string garg_sndidle[] = {
-	"garg/gar_idle1.wav",
-	"garg/gar_idle2.wav",
-	"garg/gar_idle3.wav",
-	"garg/gar_idle4.wav",
-	"garg/gar_idle5.wav",
-	"garg/gar_breathe1.wav",
-	"garg/gar_breathe2.wav",
-	"garg/gar_breathe3.wav"
-};
-
-/* has unique foot step sounds */
-string garg_sndstep[] = {
-	"garg/gar_step1.wav",
-	"garg/gar_step2.wav"
-};
-
-string garg_sndpain[] = {
-	"garg/gar_pain1.wav",
-	"garg/gar_pain2.wav",
-	"garg/gar_pain3.wav"
-};
-
 class monster_gargantua:CBaseMonster
 {
 	float m_flIdleTime;
@@ -120,8 +73,7 @@ monster_gargantua::IdleNoise(void)
 	/* timing needs to adjusted as sounds conflict */
 	m_flIdleTime = time + random(2,10);
 
-	int rand = floor(random(0, garg_sndidle.length));
-	Sound(garg_sndidle[rand]);
+	Sound_Play(this, CHAN_VOICE, "monster_gargantua.idle");
 }
 
 void
@@ -137,8 +89,7 @@ monster_gargantua::Pain(int iHitBody)
 		return;
 	}
 
-	int rand = floor(random(0,garg_sndpain.length));
-	Sound(garg_sndpain[rand]);
+	Sound_Play(this, CHAN_VOICE, "monster_gargantua.pain");
 	frame = (random() < 0.5) ? GARG_FLINCH : GARG_FLINCH2;
 	m_flAnimTime = time + 0.25f;
 }
@@ -151,9 +102,7 @@ monster_gargantua::Death(int iHitBody)
 
 	frame = GARG_DIE;
 
-		/* the sound */
-		int rand = floor(random(0,garg_snddie.length));
-		Sound(garg_snddie[rand]);
+		Sound_Play(this, CHAN_VOICE, "monster_gargantua.die");
 	}
 
 	/* set the functional differences */
@@ -172,25 +121,15 @@ monster_gargantua::Respawn(void)
 
 void monster_gargantua::monster_gargantua(void)
 {
-	for (int i = 0; i <garg_sndalert.length; i++) {
-		precache_sound(garg_sndattack[i]);
-	}
-	for (int i = 0; i <garg_sndattack.length; i++) {
-		precache_sound(garg_sndattack[i]);
-	}
-	for (int i = 0; i < garg_snddie.length; i++) {
-		precache_sound(garg_snddie[i]);
-	}
-	for (int i = 0; i < garg_sndidle.length; i++) {
-		precache_sound(garg_sndidle[i]);
-	}
-	for (int i = 0; i < garg_sndpain.length; i++) {
-		precache_sound(garg_sndpain[i]);
-	}
-	for (int i = 0; i < garg_sndstep.length; i++) {
-		precache_sound(garg_sndstep[i]);
-	}
-
+	Sound_Precache("monster_gargantua.alert");
+	Sound_Precache("monster_gargantua.attack");
+	Sound_Precache("monster_gargantua.attackflame");
+	Sound_Precache("monster_gargantua.attackflameon");
+	Sound_Precache("monster_gargantua.attackflameoff");
+	Sound_Precache("monster_gargantua.die");
+	Sound_Precache("monster_gargantua.idle");
+	Sound_Precache("monster_gargantua.pain");
+	Sound_Precache("monster_gargantua.step");
 	netname = "Gargantua";
 	model = "models/garg.mdl";
 	base_health = Skill_GetValue("gargantua_health");

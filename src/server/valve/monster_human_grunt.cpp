@@ -108,22 +108,6 @@ enum {
 	GR_PLUNGER
 };
 
-/* chat & idle sounds are handled via sentences.txt */
-
-string gr_snddie[] = {
-	"hgrunt/gr_die1.wav",
-	"hgrunt/gr_die2.wav",
-	"hgrunt/gr_die3.wav"
-};
-
-string gr_sndpain[] = {
-	"hgrunt/gr_pain1.wav",
-	"hgrunt/gr_pain2.wav",
-	"hgrunt/gr_pain3.wav",
-	"hgrunt/gr_pain4.wav",
-	"hgrunt/gr_pain5.wav"
-};
-
 class monster_human_grunt:CBaseNPC
 {
 	float m_flIdleTime;
@@ -197,8 +181,7 @@ monster_human_grunt::Pain(int iHitBody)
 		return;
 	}
 
-	int rand = floor(random(0,gr_sndpain.length));
-	Sound(gr_sndpain[rand]);
+	Sound_Play(this, CHAN_VOICE, "monster_human_grunt.pain");
 	frame = GR_FLINCH;
 	m_flAnimTime = time + 0.25f;
 }
@@ -221,6 +204,7 @@ monster_human_grunt::Death(int iHitBody)
 		}
 	}
 
+	Sound_Play(this, CHAN_VOICE, "monster_human_grunt.die");
 	/* set the functional differences */
 	CBaseMonster::Death(iHitBody);
 }
@@ -235,12 +219,8 @@ monster_human_grunt::Respawn(void)
 
 void monster_human_grunt::monster_human_grunt(void)
 {
-	for (int i = 0; i < gr_sndpain.length; i++) {
-		precache_sound(gr_sndpain[i]);
-	}
-	for (int i = 0; i < gr_snddie.length; i++) {
-		precache_sound(gr_snddie[i]);
-	}
+	Sound_Precache("monster_human_grunt.die");
+	Sound_Precache("monster_human_grunt.pain");
 
 	/* Adding some into other slots in hopes it feels right
 	 * listed below are other setences that might need their own:

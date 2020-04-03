@@ -431,4 +431,61 @@ Sound_Update(entity target, int channel, int sample, float volume)
 		g_sounds[sample].offset
 	);
 }
+#else
+void
+Sound_Speak(entity target, string shader)
+{
+	int r;
+	float radius;
+	float pitch;
+	int flags;
+	int sample;
+
+	sample = (int)hash_get(g_hashsounds, shader);
+
+	if (sample < 0) {
+		return;
+	}
+
+	/* pick a sample */
+	r = floor(random(0,  g_sounds[sample].sample_count));
+	tokenizebyseparator(g_sounds[sample].samples, "\n");
+
+	/* set pitch */
+	pitch = random(g_sounds[sample].pitch_min, g_sounds[sample].pitch_max);
+	radius = g_sounds[sample].dist_max;
+
+	/* flags */
+	if (g_sounds[sample].flags & SNDFL_NOREVERB) {
+		flags |= SOUNDFLAG_NOREVERB;
+	}
+	if (g_sounds[sample].flags & SNDFL_GLOBAL) {
+		radius = ATTN_NONE;
+	}
+	if (g_sounds[sample].flags & SNDFL_LOOPING) {
+		flags |= SOUNDFLAG_FORCELOOP;
+	}
+	if (g_sounds[sample].flags & SNDFL_NODUPS) {
+		if (g_sounds[sample].playc >= g_sounds[sample].sample_count) {
+			g_sounds[sample].playc = 0;
+		}
+		r = g_sounds[sample].playc++;
+	}
+	if (g_sounds[sample].flags & SOUNDFLAG_FOLLOW) {
+		flags |= SOUNDFLAG_FOLLOW;
+	}
+
+	if (g_sounds[sample].flags & SNDFL_PRIVATE) {
+		flags |= SOUNDFLAG_UNICAST;
+		msg_entity = target;
+	}
+
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_SPEAK);
+	WriteEntity(MSG_MULTICAST, target);
+	WriteString(MSG_MULTICAST, argv(r));
+	WriteFloat(MSG_MULTICAST, pitch);
+	msg_entity = target;
+	multicast(target.origin, MULTICAST_PVS);
+}
 #endif

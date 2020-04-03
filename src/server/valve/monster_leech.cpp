@@ -33,17 +33,6 @@ enum {
 	LEECH_DIEEND
 };
 
-string leech_sndattack[] = {
-	"leech/leech_bite1.wav",
-	"leech/leech_bite2.wav",
-	"leech/leech_bite3.wav"
-};
-
-string leech_sndsee[] = {
-	"leech/leech_alert1.wav",
-	"leech/leech_alert2.wav"
-};
-
 class monster_leech:CBaseMonster
 {
 	float m_flIdleTime;
@@ -84,13 +73,8 @@ monster_leech::Respawn(void)
 
 void monster_leech::monster_leech(void)
 {
-	for (int i = 0; i <leech_sndattack.length; i++) {
-		precache_sound(leech_sndattack[i]);
-	}
-	for (int i = 0; i < leech_sndsee.length; i++) {
-		precache_sound(leech_sndsee[i]);
-	}
-
+	Sound_Precache("monster_leech.alert");
+	Sound_Precache("monster_leech.attack");
 	netname = "Leech";
 	model = "models/leech.mdl";
 	base_mins = [-6,-6,0];

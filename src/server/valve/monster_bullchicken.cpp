@@ -53,46 +53,6 @@ enum {
  * for close range attacks
  */
 
-string bull_sndattack[] = {
-	"bullchicken/bc_attackgrowl1.wav",
-	"bullchicken/bc_attackgrowl2.wav",
-	"bullchicken/bc_attackgrowl3.wav"
-};
-
-string bull_sndattackbite[] = {
-	"bullchicken/bc_bite1.wav",
-	"bullchicken/bc_bite2.wav",
-	"bullchicken/bc_bite3.wav"
-};
-
-string bull_sndattackshoot[] = {
-	"bullchicken/bc_attack1.wav",
-	"bullchicken/bc_attack2.wav",
-	"bullchicken/bc_attack3.wav"
-};
-
-string bull_snddie[] = {
-	"bullchicken/bc_die1.wav",
-	"bullchicken/bc_die2.wav",
-	"bullchicken/bc_die3.wav"
-};
-
-string bull_sndidle[] = {
-	"bullchicken/bc_idle1.wav",
-	"bullchicken/bc_idle2.wav",
-	"bullchicken/bc_idle3.wav",
-	"bullchicken/bc_idle4.wav",
-	"bullchicken/bc_idle5.wav"
-};
-
-string bull_sndpain[] = {
-	"bullchicken/bc_pain1.wav",
-	"bullchicken/bc_pain2.wav",
-	"bullchicken/bc_pain3.wav",
-	"bullchicken/bc_pain4.wav"
-};
-
-
 class monster_bullchicken:CBaseMonster
 {
 	float m_flIdleTime;
@@ -139,8 +99,7 @@ monster_bullchicken::IdleNoise(void)
 	/* timing needs to adjusted as sounds conflict */
 	m_flIdleTime = time + random(2,10);
 
-	int rand = floor(random(0, bull_sndidle.length));
-	Sound(bull_sndidle[rand]);
+	Sound_Play(this, CHAN_VOICE, "monster_bullchicken.idle");
 }
 
 void
@@ -156,8 +115,7 @@ monster_bullchicken::Pain(int iHitBody)
 		return;
 	}
 
-	int rand = floor(random(0,bull_sndpain.length));
-	Sound(bull_sndpain[rand]);
+	Sound_Play(this, CHAN_VOICE, "monster_bullchicken.pain");
 	frame = (random() < 0.5) ? BULL_FLINCH : BULL_FLINCH2;
 	m_flAnimTime = time + 0.25f;
 }
@@ -171,9 +129,7 @@ monster_bullchicken::Death(int iHitBody)
 	/* two different animations */
 	frame = (random() < 0.5) ? BULL_DIE : BULL_DIE2;
 
-		/* the sound */
-		int rand = floor(random(0,bull_snddie.length));
-		Sound(bull_snddie[rand]);
+		Sound_Play(this, CHAN_VOICE, "monster_bullchicken.die");
 	}
 
 	/* set the functional differences */
@@ -182,25 +138,13 @@ monster_bullchicken::Death(int iHitBody)
 
 void monster_bullchicken::monster_bullchicken(void)
 {
-	for (int i = 0; i <bull_sndattack.length; i++) {
-		precache_sound(bull_sndattack[i]);
-	}
-	for (int i = 0; i <bull_sndattackbite.length; i++) {
-		precache_sound(bull_sndattackbite[i]);
-	}
-	for (int i = 0; i <bull_sndattackshoot.length; i++) {
-		precache_sound(bull_sndattackshoot[i]);
-	}
-	for (int i = 0; i < bull_snddie.length; i++) {
-		precache_sound(bull_snddie[i]);
-	}
-	for (int i = 0; i < bull_sndidle.length; i++) {
-		precache_sound(bull_sndidle[i]);
-	}
-	for (int i = 0; i < bull_sndpain.length; i++) {
-		precache_sound(bull_sndpain[i]);
-	}
-
+	Sound_Precache("monster_bullchicken.alert");
+	Sound_Precache("monster_bullchicken.attack");
+	Sound_Precache("monster_bullchicken.attackbite");
+	Sound_Precache("monster_bullchicken.attackshoot");
+	Sound_Precache("monster_bullchicken.die");
+	Sound_Precache("monster_bullchicken.idle");
+	Sound_Precache("monster_bullchicken.pain");
 	netname = "Bullsquid";
 	model = "models/bullsquid.mdl";
 	base_health = Skill_GetValue("bullsquid_health");
