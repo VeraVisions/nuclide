@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class monster_human_bandit:CBaseMonster
+class monster_human_bandit:CBaseNPC
 {
 	void() monster_human_bandit;
 };
@@ -22,5 +22,7 @@ class monster_human_bandit:CBaseMonster
 void monster_human_bandit::monster_human_bandit(void)
 {
 	model = "models/bandit.mdl";
-	CBaseMonster::CBaseMonster();
+	base_mins = [-16,-16,0];
+	base_maxs = [16,16,72];
+	CBaseNPC::CBaseNPC();
 }

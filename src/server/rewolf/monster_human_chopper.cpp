@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class monster_human_chopper:CBaseEntity
+class monster_human_chopper:CBaseNPC
 {
 	void() monster_human_chopper;
 };
@@ -22,7 +22,7 @@ class monster_human_chopper:CBaseEntity
 void monster_human_chopper::monster_human_chopper(void)
 {
 	model = "models/chopper.mdl";
-	CBaseEntity::CBaseEntity();
-	setmodel(this, m_oldModel);
-	setorigin(this, origin);
+	base_mins = [-16,-16,0];
+	base_maxs = [16,16,72];
+	CBaseNPC::CBaseNPC();
 }

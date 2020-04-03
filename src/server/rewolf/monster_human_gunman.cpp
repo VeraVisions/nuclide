@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class monster_human_gunman:CBaseMonster
+class monster_human_gunman:CBaseNPC
 {
 	void() monster_human_gunman;
 };
@@ -22,5 +22,7 @@ class monster_human_gunman:CBaseMonster
 void monster_human_gunman::monster_human_gunman(void)
 {
 	model = "models/gunmantrooper.mdl";
-	CBaseMonster::CBaseMonster();
+	base_mins = [-16,-16,0];
+	base_maxs = [16,16,72];
+	CBaseNPC::CBaseNPC();
 }

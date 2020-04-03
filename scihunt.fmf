@@ -1,0 +1,35 @@
+FTEMANIFEST 1
+GAME scihunt
+NAME "Scientist Hunt"
+BASEGAME logos
+BASEGAME valve
+BASEGAME scihunt
+
+// custom game menu variables
+-seta gameinfo_game "Scientist Hunt"
+-seta gameinfo_type "Multiplayer"
+-seta gameinfo_gamedir "scihunt"
+-seta gameinfo_fallback_dir ""
+-seta gameinfo_mpentity "info_player_deathmatch"
+-seta gameinfo_size "12869244"
+-seta gameinfo_version "1.0"
+-seta gameinfo_hlversion "1110"
+-seta gameinfo_nomodels 0
+-seta gameinfo_gamedll "progs.dat"
+-seta gameinfo_startmap "c1a0"
+-seta gameinfo_trainingmap "map t0a0"
+-seta gameinfo_cldll 1
+-seta gameinfo_svonly "0"
+-seta gameinfo_url_info "www.richwhitehouse.com"
+-seta gameinfo_url_dl "http://www.frag-net.com/mods/scihunt.fmf"
+
+// download/update packaging information
+PACKAGE scihunt/pak0.pk3 0xc1cbd5c1 "http://www.frag-net.com/files/scihunt_pak0.pk3"
+
+// do we want this? I don't want to automatically update it
+// UPDATEURL http://www.frag-net.com/mods/scihunt.fmf
+
+// you don't really want to change these
+RTCBROKER master.frag-net.com:27950
+PROTOCOLNAME "Nuclide"
+MAINCONFIG nuclide.cfg

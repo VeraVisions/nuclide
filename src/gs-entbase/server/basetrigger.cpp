@@ -49,9 +49,15 @@ void CBaseTrigger :: UseTargets ( void )
 		}
 	}
 
-	if (m_strMessage && eActivator.flags & FL_CLIENT) {
-		centerprint(eActivator, m_strMessage);
-	}
+	/* hack: check to see if this is a sound file */
+	/*if (whichpack(m_strMessage)) {
+		print(m_strMessage);
+		print("\n");
+	} else {
+		if (m_strMessage && eActivator.flags & FL_CLIENT) {
+			centerprint(eActivator, m_strMessage);
+		}
+	}*/
 
 	if ( m_strKillTarget ) {
 		entity eKill = find( world, CBaseTrigger::m_strTargetName, m_strKillTarget );

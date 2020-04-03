@@ -1,23 +1,23 @@
 FTEMANIFEST 1
-GAME valve
-NAME "Half-Life"
+GAME rewolf
+NAME "Gunman Chronicles"
 BASEGAME logos
-BASEGAME valve
+BASEGAME rewolf
 
 // custom game menu variables
--seta gameinfo_game "Nuclide"
--seta gameinfo_gamedir "valve"
+-seta gameinfo_game "Gunman Chronicles"
+-seta gameinfo_gamedir "rewolf"
 -seta gameinfo_fallback_dir ""
 -seta gameinfo_mpentity "info_player_deathmatch"
--seta gameinfo_size "496200000"
--seta gameinfo_url_info "www.icculus.org/~marco/"
+-seta gameinfo_size "212803108"
+-seta gameinfo_url_info "www.gunmanchronicles.com"
 -seta gameinfo_version "1.0"
 -seta gameinfo_url_dl ""
 -seta gameinfo_type "Both"
 -seta gameinfo_nomodels 0
 -seta gameinfo_gamedll "progs.dat"
--seta gameinfo_startmap "c0a0"
--seta gameinfo_trainingmap "map t0a0"
+-seta gameinfo_startmap "city1a"
+-seta gameinfo_trainingmap "playvideo av:media/rewolf.bik"
 -seta gameinfo_cldll 1
 -seta gameinfo_hlversion "1110"
 -seta gameinfo_svonly "0"
