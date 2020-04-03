@@ -147,7 +147,7 @@ Footsteps_Update(void)
 		}
 
 		/* make it so we step once we land */
-		if (!self.flags & FL_ONGROUND) {
+		if (!(self.flags & FL_ONGROUND)) {
 			self.fStepTime = 0.0f;
 			return;
 		}

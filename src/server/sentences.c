@@ -66,6 +66,8 @@ Sentences_Init(void)
 
 		g_sentences[x] = strcat("!", argv(0));
 	}
+
+	fclose(fs_sentences);
 }
 
 string

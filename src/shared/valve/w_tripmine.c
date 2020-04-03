@@ -58,7 +58,7 @@ monster_tripmine::SendEntity(entity pvsent, float flags)
 void
 monster_tripmine::Trip(int walkthrough)
 {
-	float dmg
+	float dmg;
 	if (!walkthrough) {
 		real_owner = g_eAttacker;
 	}
