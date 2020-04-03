@@ -62,7 +62,7 @@ m_viewgameinfo.cpp
 m_viewreadme.cpp
 m_intro.cpp
 m_main.cpp
-
+music.cpp
 menu.cpp
 entry.cpp
 #endlist

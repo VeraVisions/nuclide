@@ -85,6 +85,7 @@ void m_init(void)
 
 	if (cvar_string("game") != "valve") {
 		m_intro_skip();
+		Music_MenuStart();
 	}
 }
 
@@ -209,6 +210,12 @@ float m_consolecommand(string cmd)
 {
 	tokenize(cmd);
 	switch (argv(0)) {
+		case "menu_musictrack":
+			Music_ParseTrack(argv(1));
+			break;
+		case "menu_musicloop":
+			Music_ParseLoop(argv(1));
+			break;
 		case "menu_customgame":
 			g_menupage = PAGE_CUSTOMGAME;
 			m_intro_skip();

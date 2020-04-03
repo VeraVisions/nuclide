@@ -143,6 +143,9 @@ void games_init(void)
 			case "gameinfo_trainingmap":
 				games[id].trainingmap = argv(i+1);
 				break;
+			case "gameinfo_menutrack":
+				cvar_set("gameinfo_menutrack", argv(i+1));
+				break;
 			default:
 				break;
 			}

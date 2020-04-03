@@ -22,6 +22,7 @@ BASEGAME scihunt
 -seta gameinfo_svonly "0"
 -seta gameinfo_url_info "www.richwhitehouse.com"
 -seta gameinfo_url_dl "http://www.frag-net.com/mods/scihunt.fmf"
+-seta gameinfo_menutrack "sound/Hondo2/pca.wav"
 
 // download/update packaging information
 PACKAGE scihunt/pak0.pk3 0xc1cbd5c1 "http://www.frag-net.com/files/scihunt_pak0.pk3"

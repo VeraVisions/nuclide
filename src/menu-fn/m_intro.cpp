@@ -52,7 +52,7 @@ void m_intro_draw(void)
 		
 		if (g_intro_stage != INTRO_FADETOWHITE) {
 			localcmd("play debris/beamstart5.wav\n");
-			localcmd("music music/track03.flac\n");
+			localcmd("menu_musicloop 3\n");
 			g_intro_stage = INTRO_FADETOWHITE;
 		}
 	} else {
