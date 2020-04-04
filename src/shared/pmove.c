@@ -25,6 +25,7 @@
 .float maxspeed;
 .vector view_ofs;
 int trace_endcontentsi;
+.vector basevelocity;
 
 #ifdef VALVE
 int Items_CheckItem(entity pl, int i) {
@@ -84,6 +85,7 @@ PMove_Gravity(entity ent)
 	}
 }
 
+.entity groundentity;
 /* figure out where we are in the geometry. void, solid, liquid, etc. */
 void
 PMove_Categorize(void)
@@ -106,10 +108,18 @@ PMove_Categorize(void)
 	if (!trace_startsolid) {
 		if ((trace_fraction < 1) && (trace_plane_normal[2] > 0.7)) {
 			self.flags |= FL_ONGROUND;
+			self.groundentity = trace_ent;
+
+			if (self.groundentity) {
+				self.basevelocity += self.groundentity.velocity;
+			}
 		} else {
 			self.flags &= ~FL_ONGROUND;
 		}
 	}
+
+	if (self.basevelocity[2] > 0)
+		self.flags &= ~FL_ONGROUND;
 
 	/* ladder content testing */
 	int oldhitcontents = self.hitcontentsmaski;
@@ -271,120 +281,262 @@ QPMove_IsStuck(entity eTarget, vector vOffset, vector vecMins, vector vecMaxs)
 	return trace_startsolid;
 }
 
-/* two-pass acceleration */
 void
-PMove_Run_Acceleration(float move_time, float premove)
+PMove_AccelToss(float move_time, float premove)
 {
-	vector vecWishVel;
-	vector wish_dir;
-	vector vecTemp;
-	float wish_speed;
-	float flFriction;
-	float flJumptimeDelta;
-	float flChainBonus;
+	self.velocity[2] = self.velocity[2] - (PMove_Gravity(self) * move_time);
+}
+
+void
+PMove_AccelMove(float move_time, float premove)
+{
 	int iFixCrouch = FALSE;
+	if (input_buttons & INPUT_BUTTON8) {
+			self.flags |= FL_CROUCHING;
+	} else {
+		// If we aren't holding down duck anymore and 'attempt' to stand up, prevent it
+		if (self.flags & FL_CROUCHING) {
+			if (QPMove_IsStuck(self, '0 0 36', VEC_HULL_MIN, VEC_HULL_MAX) == FALSE) {
+				self.flags &= ~FL_CROUCHING;
+				iFixCrouch = TRUE;
+			}
+		} else {
+			self.flags &= ~FL_CROUCHING;
+		}
+	}
 
-	PMove_Categorize();
+	if (self.flags & FL_CROUCHING) {
+		setsize(self, VEC_CHULL_MIN, VEC_CHULL_MAX);
+		self.view_ofs = VEC_PLAYER_CVIEWPOS;
+	} else {
+		setsize(self, VEC_HULL_MIN, VEC_HULL_MAX);
+		if (iFixCrouch && QPMove_IsStuck(self, [0,0,0], VEC_HULL_MIN, VEC_HULL_MAX)) {
+			for (int i = 0; i < 36; i++) {
+				self.origin[2] += 1;
+				if (QPMove_IsStuck(self, [0,0,0], self.mins, self.maxs) == FALSE) {
+					break;
+				}
+			}
+		}
+		setorigin(self, self.origin);
+		self.view_ofs = VEC_PLAYER_VIEWPOS;
+	}
+}
 
-	// Update the timer
-	self.jumptime -= move_time;
-	self.teleport_time -= move_time;
+void
+PMove_AccelWater(float move_time, float premove)
+{
+	float flFriction;
+	float wish_speed;
+	vector vecWishVel;
 
-	// Corpses
-	if (self.movetype == MOVETYPE_TOSS) {
-		self.velocity[2] = self.velocity[2] - (PMove_Gravity(self) * move_time);
+	self.flags &= ~FL_ONGROUND;
+
+	if (input_movevalues == [0,0,0]) {
+		vecWishVel = [0,0,-60]; // drift towards bottom
+	} else {
+		vecWishVel = v_forward * input_movevalues[0];
+		vecWishVel += v_right * input_movevalues[1];
+		vecWishVel += v_up * input_movevalues[2];
+	}
+
+	wish_speed = vlen(vecWishVel);
+
+	if (wish_speed > self.maxspeed) {
+		wish_speed = self.maxspeed;
+	}
+
+	wish_speed = wish_speed * 0.7;
+
+	// water friction
+	if (self.velocity != [0,0,0]) {
+		flFriction = vlen(self.velocity) * (1 - move_time * serverkeyfloat("phy_friction"));
+		if (flFriction > 0) {
+			self.velocity = normalize(self.velocity) * flFriction;
+		} else {
+			self.velocity = [0,0,0];
+		}
+	} else {
+		flFriction = 0;
+	}
+
+	// water acceleration
+	if (wish_speed <= flFriction) {
 		return;
 	}
 
-	if (self.movetype == MOVETYPE_WALK) {
-		// Crouching
-		if (input_buttons & INPUT_BUTTON8) {
-			self.flags |= FL_CROUCHING;
-		} else {
-			// If we aren't holding down duck anymore and 'attempt' to stand up, prevent it
-			if (self.flags & FL_CROUCHING) {
-				if (QPMove_IsStuck(self, '0 0 36', VEC_HULL_MIN, VEC_HULL_MAX) == FALSE) {
-					self.flags &= ~FL_CROUCHING;
-					iFixCrouch = TRUE;
-				}
-			} else {
-				self.flags &= ~FL_CROUCHING;
-			}
-		}
+	flFriction = min(wish_speed - flFriction, serverkeyfloat("phy_accelerate") * wish_speed * move_time);
+	self.velocity = self.velocity + normalize(vecWishVel) * flFriction;
+	return;
+}
 
-		if (self.flags & FL_CROUCHING) {
-			setsize(self, VEC_CHULL_MIN, VEC_CHULL_MAX);
-			self.view_ofs = VEC_PLAYER_CVIEWPOS;
-		} else {
-			setsize(self, VEC_HULL_MIN, VEC_HULL_MAX);
-			if (iFixCrouch && QPMove_IsStuck(self, [0,0,0], VEC_HULL_MIN, VEC_HULL_MAX)) {
-				for (int i = 0; i < 36; i++) {
-					self.origin[2] += 1;
-					if (QPMove_IsStuck(self, [0,0,0], self.mins, self.maxs) == FALSE) {
-						break;
-					}
-				}
-			}
-			setorigin(self, self.origin);
-			self.view_ofs = VEC_PLAYER_VIEWPOS;
-		}
-	}
+void
+PMove_AccelLadder(float move_time, float premove, vector wish_dir, float wish_speed)
+{
+	vector vPlayerVector;
 
 	makevectors(input_angles);
+	vPlayerVector = v_forward;
+	vPlayerVector = (vPlayerVector * 240);
 
-	// swim
-	if (self.waterlevel >= 2) {
-		if (self.movetype != MOVETYPE_NOCLIP) {
-			self.flags &= ~FL_ONGROUND;
+	if (input_movevalues[0] > 0) {
+		self.velocity = vPlayerVector;
+	} else {
+		self.velocity = [0,0,0];
+	}
+}
 
-			if (input_movevalues == [0,0,0]) {
-				vecWishVel = [0,0,-60]; // drift towards bottom
+void
+PMove_AccelFriction(float move_time, float premove, vector wish_dir, float wish_speed)
+{
+	float flFriction;
+	vector vecWishVel;
+	vector vecTemp;
+
+	// friction
+	if (self.velocity[0] || self.velocity[1]) {
+		vecTemp = self.velocity;
+		vecTemp[2] = 0;
+		flFriction = vlen(vecTemp);
+
+		// if the leading edge is over a dropoff, increase friction
+		vecTemp = self.origin + normalize(vecTemp) * 16 + '0 0 1' * VEC_HULL_MIN[2];
+		traceline(vecTemp, vecTemp + '0 0 -34', TRUE, self);
+
+		// apply friction
+		if (trace_fraction == 1.0) {
+			if (flFriction < serverkeyfloat("phy_stopspeed")) {
+				flFriction = 1 - move_time * (serverkeyfloat("phy_stopspeed") / flFriction) * serverkeyfloat("phy_friction") * serverkeyfloat("phy_edgefriction");
 			} else {
-				vecWishVel = v_forward * input_movevalues[0];
-				vecWishVel += v_right * input_movevalues[1];
-				vecWishVel += v_up * input_movevalues[2];
+				flFriction = 1 - move_time * serverkeyfloat("phy_friction") * serverkeyfloat("phy_edgefriction");
 			}
-
-			wish_speed = vlen(vecWishVel);
-
-			if (wish_speed > self.maxspeed) {
-				wish_speed = self.maxspeed;
-			}
-
-			wish_speed = wish_speed * 0.7;
-
-			// water friction
-			if (self.velocity != [0,0,0]) {
-				flFriction = vlen(self.velocity) * (1 - move_time * serverkeyfloat("phy_friction"));
-				if (flFriction > 0) {
-					self.velocity = normalize(self.velocity) * flFriction;
-				} else {
-					self.velocity = [0,0,0];
-				}
+		} else {
+			if (flFriction < serverkeyfloat("phy_stopspeed")) {
+				flFriction = 1 - move_time * (serverkeyfloat("phy_stopspeed") / flFriction) * serverkeyfloat("phy_friction");
 			} else {
-				flFriction = 0;
+				flFriction = 1 - move_time * serverkeyfloat("phy_friction");
 			}
+		}
 
-			// water acceleration
-			if (wish_speed <= flFriction) {
-				return;
-			}
-
-			flFriction = min(wish_speed - flFriction, serverkeyfloat("phy_accelerate") * wish_speed * move_time);
-			self.velocity = self.velocity + normalize(vecWishVel) * flFriction;
-			return;
+		if (flFriction < 0) {
+			self.velocity = [0,0,0];
+		} else {
+			self.velocity = self.velocity * flFriction;
 		}
 	}
 
-	// hack to not let you back into teleporter
+	// acceleration
+	flFriction = wish_speed - (self.velocity * wish_dir);
+	if (flFriction > 0) {
+		self.velocity += wish_dir * min(flFriction, serverkeyfloat("phy_accelerate") * move_time * wish_speed);
+	}
+}
+
+void
+PMove_AccelGravity(float move_time, float premove, vector wish_dir, float wish_speed)
+{
+	float flFriction;
+
+	/* apply gravity */
+	self.velocity[2] = self.velocity[2] - (PMove_Gravity(self) * move_time);
+
+	if (wish_speed < 30) {
+		flFriction = wish_speed - (self.velocity * wish_dir);
+	} else {
+		flFriction = 30 - (self.velocity * wish_dir);
+	}
+
+	if (flFriction > 0) {
+		float fric;
+		fric = min(flFriction, serverkeyfloat("phy_airaccelerate") * wish_speed * move_time);
+		self.velocity += wish_dir * fric;
+	}
+}
+
+void
+PMove_AccelJump(float move_time, float premove)
+{
+	float flJumptimeDelta;
+	float flChainBonus;
+
+	if (!(self.flags & FL_ONGROUND))
+		return;
+	if (self.flags & FL_WATERJUMP)
+		return;
+	if (!(self.flags & FL_JUMPRELEASED))
+		return;
+
+	if (input_buttons & INPUT_BUTTON2 && premove) {
+		if (self.velocity[2] < 0) {
+			self.velocity[2] = 0;
+		}
+
+		if (self.waterlevel >= 2) {
+			if (self.watertype == CONTENT_WATER) {
+				self.velocity[2] = 100;
+			} else if (self.watertype == CONTENT_SLIME) {
+				self.velocity[2] = 80;
+			} else {
+				self.velocity[2] = 50;
+			}
+		} else {
+	#ifdef VALVE
+			if (self.flags & FL_CROUCHING && Items_CheckItem(self, 0x00008000)) {
+				self.velocity = v_forward * 512;
+				self.velocity[2] += 100;
+			}
+	#endif
+			self.velocity[2] += 240;
+		}
+
+		if (self.jumptime > 0) {
+			flJumptimeDelta = 0 - (self.jumptime - PHY_JUMP_CHAINWINDOW);
+			flChainBonus = PHY_JUMP_CHAIN - (((PHY_JUMP_CHAINWINDOW - (PHY_JUMP_CHAINWINDOW - flJumptimeDelta)) * 2) * PHY_JUMP_CHAINDECAY);
+			self.velocity[2] += flChainBonus;
+		}
+		self.jumptime = PHY_JUMP_CHAINWINDOW;
+		self.flags &= ~FL_ONGROUND;
+		self.flags &= ~FL_JUMPRELEASED;
+	}
+}
+
+/* two-pass acceleration */
+void
+PMove_Acceleration(float move_time, float premove)
+{
+	vector vecWishVel;
+	vector wish_dir;
+	float wish_speed;
+	float flFriction;
+
+	self.jumptime -= move_time;
+	self.teleport_time -= move_time;
+
+	makevectors(input_angles);
+	PMove_Categorize();
+
+	if (self.movetype != MOVETYPE_NOCLIP) {
+		if (self.movetype == MOVETYPE_TOSS) {
+			PMove_AccelToss(move_time, premove);
+			return;
+		}
+
+		if (self.movetype == MOVETYPE_WALK) {
+			PMove_AccelMove(move_time, premove);
+			
+		}
+
+		if (self.waterlevel >= 2) {
+			PMove_AccelWater(move_time, premove);
+		}
+	}
+
 	if (self.teleport_time > 0 && input_movevalues[0] < 0) {
 		vecWishVel = v_right * input_movevalues[1];
 	} else {
-		if (self.movetype == MOVETYPE_NOCLIP) {
-		} else if (self.flags & FL_ONGROUND) {
+		if (self.flags & FL_ONGROUND) {
 			makevectors (input_angles[1] * [0,1,0]);
 		}
-
 		vecWishVel = v_forward * input_movevalues[0] + v_right * input_movevalues[1];
 	}
 
@@ -396,7 +548,7 @@ PMove_Run_Acceleration(float move_time, float premove)
 
 	wish_dir = normalize(vecWishVel);
 	wish_speed = vlen(vecWishVel);
-	
+
 	if (wish_speed > self.maxspeed) {
 		wish_speed = self.maxspeed;
 	}
@@ -405,115 +557,19 @@ PMove_Run_Acceleration(float move_time, float premove)
 		self.flags &= ~FL_ONGROUND;
 		self.velocity = wish_dir * wish_speed;
 	} else {
-		/*FIXME: pogostick*/
-		if (self.flags & FL_ONGROUND)
-		if (!(self.flags & FL_WATERJUMP))
-		if (self.flags & FL_JUMPRELEASED)
-		if (input_buttons & INPUT_BUTTON2 && premove) {
-			if (self.velocity[2] < 0) {
-				self.velocity[2] = 0;
-			}
+		PMove_AccelJump(move_time, premove);
 
-			if (self.waterlevel >= 2) {
-				if (self.watertype == CONTENT_WATER) {
-					self.velocity[2] = 100;
-				} else if (self.watertype == CONTENT_SLIME) {
-					self.velocity[2] = 80;
-				} else {
-					self.velocity[2] = 50;
-				}
-			} else {
-	#ifdef VALVE
-				if (self.flags & FL_CROUCHING && Items_CheckItem(self, 0x00008000)) {
-					self.velocity = v_forward * 512;
-					self.velocity[2] += 100;
-				}
-	#endif
-				self.velocity[2] += 240;
-			}
-
-			if (self.jumptime > 0) {
-				// time since last jump
-				flJumptimeDelta = 0 - (self.jumptime - PHY_JUMP_CHAINWINDOW);
-				//self.velocity[2] += PHY_JUMP_CHAIN;
-				flChainBonus = PHY_JUMP_CHAIN - (((PHY_JUMP_CHAINWINDOW - (PHY_JUMP_CHAINWINDOW - flJumptimeDelta)) * 2) * PHY_JUMP_CHAINDECAY);
-				self.velocity[2] += flChainBonus;
-			}
-			self.jumptime = PHY_JUMP_CHAINWINDOW;
-			self.flags &= ~FL_ONGROUND;
-			self.flags &= ~FL_JUMPRELEASED;
-		}
-
-		// not pressing jump, set released flag
+		/* unset jump-key whenever it's not set */
 		if (!(input_buttons & INPUT_BUTTON2)) {
 			self.flags |= FL_JUMPRELEASED;
 		}
 
 		if (self.flags & FL_ONLADDER) {
-			vector vPlayerVector;
-
-			makevectors(input_angles);
-			vPlayerVector = v_forward;
-			vPlayerVector = (vPlayerVector * 240);
-
-			if (input_movevalues[0] > 0) {
-				self.velocity = vPlayerVector;
-			} else {
-				self.velocity = [0,0,0];
-			}
+			PMove_AccelLadder(move_time, premove, wish_dir, wish_speed);
 		} else if (self.flags & FL_ONGROUND) {
-			// friction
-			if (self.velocity[0] || self.velocity[1]) {
-				vecTemp = self.velocity;
-				vecTemp[2] = 0;
-				flFriction = vlen(vecTemp);
-
-				// if the leading edge is over a dropoff, increase friction
-				vecTemp = self.origin + normalize(vecTemp) * 16 + '0 0 1' * VEC_HULL_MIN[2];
-				traceline(vecTemp, vecTemp + '0 0 -34', TRUE, self);
-
-				// apply friction
-				if (trace_fraction == 1.0) {
-					if (flFriction < serverkeyfloat("phy_stopspeed")) {
-						flFriction = 1 - move_time * (serverkeyfloat("phy_stopspeed") / flFriction) * serverkeyfloat("phy_friction") * serverkeyfloat("phy_edgefriction");
-					} else {
-						flFriction = 1 - move_time * serverkeyfloat("phy_friction") * serverkeyfloat("phy_edgefriction");
-					}
-				} else {
-					if (flFriction < serverkeyfloat("phy_stopspeed")) {
-						flFriction = 1 - move_time * (serverkeyfloat("phy_stopspeed") / flFriction) * serverkeyfloat("phy_friction");
-					} else {
-						flFriction = 1 - move_time * serverkeyfloat("phy_friction");
-					}
-				}
-
-				if (flFriction < 0) {
-					self.velocity = [0,0,0];
-				} else {
-					self.velocity = self.velocity * flFriction;
-				}
-			}
-
-			// acceleration
-			flFriction = wish_speed - (self.velocity * wish_dir);
-			if (flFriction > 0) {
-				self.velocity = self.velocity + wish_dir * min(flFriction, serverkeyfloat("phy_accelerate") * move_time * wish_speed);
-			}
+			PMove_AccelFriction(move_time, premove, wish_dir, wish_speed);
 		} else {
-			/* apply gravity */
-			self.velocity[2] = self.velocity[2] - (PMove_Gravity(self) * move_time);
-
-			if (wish_speed < 30) {
-				flFriction = wish_speed - (self.velocity * wish_dir);
-			} else {
-				flFriction = 30 - (self.velocity * wish_dir);
-			}
-
-			if (flFriction > 0) {
-				float fric;
-				fric = min(flFriction, serverkeyfloat("phy_airaccelerate") * wish_speed * move_time);
-				self.velocity += wish_dir * fric;
-			}
+			PMove_AccelGravity(move_time, premove, wish_dir, wish_speed);
 		}
 	}
 }
@@ -564,7 +620,7 @@ PMove_Fix_Origin(void)
 
 /* move the player based on the given acceleration */
 void
-PMove_Run_Move(void)
+PMove_Move(void)
 {
 	vector dest;
 	vector saved_plane;
@@ -578,11 +634,17 @@ PMove_Run_Move(void)
 		return;
 	}
 
+	if (!(self.flags & FL_ONGROUND)) {
+		self.basevelocity[2] = 0;
+	}
+	self.velocity += self.basevelocity;
+
 	/* we need to bounce off surfaces (in order to slide along them), 
 	 * so we need at 2 attempts
 	 */
 	for (i = 3, move_time = input_timelength; move_time > 0 && i; i--) {
 		dest = self.origin + (self.velocity * move_time);
+
 		tracebox(self.origin, self.mins, self.maxs, dest, FALSE, self);
 
 		if (trace_startsolid) {
@@ -669,6 +731,8 @@ PMove_Run_Move(void)
 		}*/
 		PMove_DoTouch(trace_ent);
 	}
+
+	self.velocity -= self.basevelocity;
 }
 
 /* it all starts here */
@@ -707,13 +771,17 @@ PMove_Run(void)
 	 * with half the move each time. this reduces framerate dependence. 
 	 * and makes controlling jumps slightly easier
 	 */
-	PMove_Run_Acceleration(input_timelength / 2, TRUE);
-	PMove_Run_Move();
-	PMove_Run_Acceleration(input_timelength / 2, FALSE);
+	PMove_Acceleration(input_timelength / 2, TRUE);
+	PMove_Move();
+	PMove_Acceleration(input_timelength / 2, FALSE);
 
 	/* NOTE: should clip to network precision here if lower than a float */
 	self.angles = input_angles;
 	self.angles[0] *= -0.333;
+
+	/* clear base-velocity and ground-entity */
+	self.basevelocity = [0,0,0];
+	self.groundentity = __NULL__;
 
 	touchtriggers();
 
