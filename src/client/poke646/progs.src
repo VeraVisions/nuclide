@@ -43,6 +43,7 @@
 init.c
 ../../shared/poke646/items.h
 ../../shared/valve/weapon_common.h
+../../shared/valve/w_satchel.c
 ../../shared/poke646/weapons.h
 ../../shared/poke646/w_bradnailer.c
 ../../shared/poke646/w_cmlwbr.c
@@ -56,6 +57,8 @@ init.c
 ../valve/player.c
 entities.c
 ../entities.c
+../fx_lensflare.c
+../fx_gunsmoke.c
 ../valve/cmds.c
 ../valve/game_event.c
 ../events.c

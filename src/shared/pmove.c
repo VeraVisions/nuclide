@@ -15,8 +15,8 @@
  */
 
 #define PHY_JUMP_CHAINWINDOW	0.5
-#define PHY_JUMP_CHAIN		100
-#define PHY_JUMP_CHAINDECAY	50
+#define PHY_JUMP_CHAIN			100
+#define PHY_JUMP_CHAINDECAY		50
 
 /* FIXME: jumptime should use the time global, as time intervals are not
  * predictable - decrement it based upon input_timelength */
@@ -102,12 +102,12 @@ PMove_Categorize(void)
 		self.view_ofs = VEC_PLAYER_VIEWPOS;
 	}
 
-	tracebox(self.origin, self.mins, self.maxs, self.origin - [0,0,0.25],
-		FALSE, self);
+	tracebox(self.origin, self.mins, self.maxs, self.origin - [0,0,0.25], FALSE, self);
 
 	if (!trace_startsolid) {
 		if ((trace_fraction < 1) && (trace_plane_normal[2] > 0.7)) {
 			self.flags |= FL_ONGROUND;
+			self.flags &= ~FL_WATERJUMP;
 			self.groundentity = trace_ent;
 
 			if (self.groundentity) {
@@ -118,8 +118,8 @@ PMove_Categorize(void)
 		}
 	}
 
-	if (self.basevelocity[2] > 0)
-		self.flags &= ~FL_ONGROUND;
+	/*if (self.basevelocity[2] > 0)
+		self.flags &= ~FL_ONGROUND;*/
 
 	/* ladder content testing */
 	int oldhitcontents = self.hitcontentsmaski;
@@ -258,7 +258,7 @@ PMove_CheckWaterJump(void)
 		traceline(vStart, vEnd, TRUE, self);
 		
 		if (trace_fraction == 1) {
-			//self.flags = self.flags | FL_WATERJUMP;
+			self.flags |= FL_WATERJUMP;
 			self.velocity[2] = 350;
 			self.flags &= ~FL_JUMPRELEASED;
 			return;
@@ -390,7 +390,6 @@ void
 PMove_AccelFriction(float move_time, float premove, vector wish_dir, float wish_speed)
 {
 	float flFriction;
-	vector vecWishVel;
 	vector vecTemp;
 
 	// friction
@@ -459,9 +458,15 @@ PMove_AccelJump(float move_time, float premove)
 	float flJumptimeDelta;
 	float flChainBonus;
 
-	if (!(self.flags & FL_ONGROUND))
+	/* unset jump-key whenever it's not set */
+	if (!(input_buttons & INPUT_BUTTON2)) {
+		self.flags |= FL_JUMPRELEASED;
 		return;
+	}
+
 	if (self.flags & FL_WATERJUMP)
+		return;
+	if (!(self.flags & FL_ONGROUND))
 		return;
 	if (!(self.flags & FL_JUMPRELEASED))
 		return;
@@ -480,6 +485,7 @@ PMove_AccelJump(float move_time, float premove)
 				self.velocity[2] = 50;
 			}
 		} else {
+			/* Half-Life: Longjump module */
 	#ifdef VALVE
 			if (self.flags & FL_CROUCHING && Items_CheckItem(self, 0x00008000)) {
 				self.velocity = v_forward * 512;
@@ -507,23 +513,22 @@ PMove_Acceleration(float move_time, float premove)
 	vector vecWishVel;
 	vector wish_dir;
 	float wish_speed;
-	float flFriction;
 
 	self.jumptime -= move_time;
 	self.teleport_time -= move_time;
 
 	makevectors(input_angles);
+
+	/* figure out where we are in the world */
 	PMove_Categorize();
 
+	/* everything but MOVETYPE_NOCLIP has acceleration */
 	if (self.movetype != MOVETYPE_NOCLIP) {
 		if (self.movetype == MOVETYPE_TOSS) {
 			PMove_AccelToss(move_time, premove);
 			return;
-		}
-
-		if (self.movetype == MOVETYPE_WALK) {
+		} else if (self.movetype == MOVETYPE_WALK) {
 			PMove_AccelMove(move_time, premove);
-			
 		}
 
 		if (self.waterlevel >= 2) {
@@ -531,11 +536,12 @@ PMove_Acceleration(float move_time, float premove)
 		}
 	}
 
-	if (self.teleport_time > 0 && input_movevalues[0] < 0) {
+	/*if (self.teleport_time > 0 && input_movevalues[0] < 0) {
 		vecWishVel = v_right * input_movevalues[1];
-	} else {
+	} else */ {
+		/* on the ground, only yaw matters in terms of direction */
 		if (self.flags & FL_ONGROUND) {
-			makevectors (input_angles[1] * [0,1,0]);
+			makevectors(input_angles[1] * [0,1,0]);
 		}
 		vecWishVel = v_forward * input_movevalues[0] + v_right * input_movevalues[1];
 	}
@@ -559,11 +565,6 @@ PMove_Acceleration(float move_time, float premove)
 	} else {
 		PMove_AccelJump(move_time, premove);
 
-		/* unset jump-key whenever it's not set */
-		if (!(input_buttons & INPUT_BUTTON2)) {
-			self.flags |= FL_JUMPRELEASED;
-		}
-
 		if (self.flags & FL_ONLADDER) {
 			PMove_AccelLadder(move_time, premove, wish_dir, wish_speed);
 		} else if (self.flags & FL_ONGROUND) {
@@ -574,6 +575,7 @@ PMove_Acceleration(float move_time, float premove)
 	}
 }
 
+/* touch other solid entities */
 void
 PMove_DoTouch(entity tother)
 {
@@ -634,14 +636,14 @@ PMove_Move(void)
 		return;
 	}
 
+	/* hacky attempt at base-velocity, this needs to be cleared/wiped at the end */
 	if (!(self.flags & FL_ONGROUND)) {
 		self.basevelocity[2] = 0;
 	}
 	self.velocity += self.basevelocity;
 
 	/* we need to bounce off surfaces (in order to slide along them), 
-	 * so we need at 2 attempts
-	 */
+	 * so we need at 2 attempts */
 	for (i = 3, move_time = input_timelength; move_time > 0 && i; i--) {
 		dest = self.origin + (self.velocity * move_time);
 
@@ -730,8 +732,10 @@ PMove_Move(void)
 			}
 		}*/
 		PMove_DoTouch(trace_ent);
+		self.groundentity = trace_ent;
 	}
 
+	/* make sure that the basevelocity we've applied is discarded by next frame */
 	self.velocity -= self.basevelocity;
 }
 
@@ -741,22 +745,29 @@ PMove_Run(void)
 {
 	float punch;
 	player pl = (player)self;
-#ifdef VALVE
+
+	/* maxspeed changes when crouching, TODO: make this game-specific */
 	self.maxspeed = (self.flags & FL_CROUCHING) ? 135 : 270;
 
+	/* when pressing the 'use' button, we also walk slower for precision */
 	if (input_buttons & INPUT_BUTTON5) {
 		input_movevalues *= 0.25;
 	}
-#endif
+
+	/* establish which water elements we're dealing in */
 	PMove_WaterMove();
 
+	/* we might need to apply extra-velocity to get out of water-volumes */
 	if (self.waterlevel >= 2) {
 		PMove_CheckWaterJump();
 	}
 
+	/* move camera up (noclip, fly) when holding jump */
 	if (input_buttons & INPUT_BUTTON2) {
 		input_movevalues[2] = 240;
-	}	
+	}
+
+	/* move camera down (noclip, fly) when holding crouching */
 	if (input_buttons & INPUT_BUTTON8) {
 		input_movevalues[2] = -240;
 	}
@@ -769,8 +780,7 @@ PMove_Run(void)
 
 	/* call accelerate before and after the actual move, 
 	 * with half the move each time. this reduces framerate dependence. 
-	 * and makes controlling jumps slightly easier
-	 */
+	 * and makes controlling jumps slightly easier */
 	PMove_Acceleration(input_timelength / 2, TRUE);
 	PMove_Move();
 	PMove_Acceleration(input_timelength / 2, FALSE);
@@ -783,18 +793,18 @@ PMove_Run(void)
 	self.basevelocity = [0,0,0];
 	self.groundentity = __NULL__;
 
-	touchtriggers();
-
-#ifdef VALVE
+	/* timers, these are predicted and shared across client and server */
 	pl.w_attack_next = max(0, pl.w_attack_next - input_timelength);
 	pl.w_idle_next = max(0, pl.w_idle_next - input_timelength);
-#endif
 	pl.weapontime += input_timelength;
-
 	punch = max(0, 1.0f - (input_timelength * 4));
 	pl.punchangle[0] *= punch;
 	pl.punchangle[1] *= punch;
 	pl.punchangle[2] *= punch;
 
+	/* weapon/item logic of what the player controls */
 	Game_Input();
+
+	/* activate any SOLID_TRIGGER entities */
+	touchtriggers();
 }

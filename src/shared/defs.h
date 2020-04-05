@@ -114,6 +114,7 @@ enumflags
 
 .float jumptime;
 .float teleport_time;
+.vector basevelocity;
 
 void* memrealloc( __variant *oldptr, int elementsize, int oldelements, int newelements )
 {

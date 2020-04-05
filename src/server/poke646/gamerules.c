@@ -30,6 +30,19 @@ Gamerules_DecodeChangeParms(player pl)
 	pl.velocity[2] = parm9;
 	pl.g_items = parm10;
 	pl.activeweapon = parm11;
+
+	pl.ammo_nail = parm12;
+	pl.ammo_buckshot = parm13;
+	pl.ammo_bolts = parm14;
+	pl.ammo_xencandy = parm15;
+	pl.ammo_satchel = parm16;
+	
+	pl.bradnailer_mag = parm17;
+	pl.nailgun_mag = parm18;
+	pl.shotgun_mag = parm19;
+	pl.cmlwbr_mag = parm20;
+	pl.xs_mag = parm21;
+	pl.satchel_chg = parm22;
 }
 
 /* prepare the client-info for level-transition */
@@ -47,6 +60,17 @@ Gamerules_SetChangeParms(player pl)
 	parm9 = pl.velocity[2];
 	parm10 = pl.g_items;
 	parm11 = pl.activeweapon;
+	parm12 = pl.ammo_nail;
+	parm13 = pl.ammo_buckshot;
+	parm14 = pl.ammo_bolts;
+	parm15 = pl.ammo_xencandy;
+	parm16 = pl.ammo_satchel;
+	parm17 = pl.bradnailer_mag;
+	parm18 = pl.nailgun_mag;
+	parm19 = pl.shotgun_mag;
+	parm20 = pl.cmlwbr_mag;
+	parm21 = pl.xs_mag;
+	parm22 = pl.satchel_chg;
 }
 
 /* yuck, whenever 'changelevel' does not happen. */

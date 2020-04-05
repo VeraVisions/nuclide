@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
- * Copyright (c) 2019 Gethyn ThomasQuail <xylemon@posteo.net>
+ * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2019-2020 Gethyn ThomasQuail <xylemon@posteo.net>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -17,23 +17,22 @@
 
 enum
 {
-	SPAN_IDLE,
-	SPAN_ATTACK1,
-	SPAN_ATTACK2,
-	SPAN_UNUSED,
-	SPAN_DRAW,
-	SPAN_HOLSTER
+	CBAR_IDLE,
+	CBAR_ATTACK1,
+	CBAR_ATTACK2,
+	CBAR_UNUSED,
+	CBAR_DRAW,
+	CBAR_HOLSTER
 };
 
 void
 w_spanner_precache(void)
 {
-	precache_sound("weapons/cbar_miss1.wav");
-	precache_sound("weapons/cbar_hit1.wav");
-	precache_sound("weapons/cbar_hit2.wav");
-	precache_sound("weapons/cbar_hitbod1.wav");
-	precache_sound("weapons/cbar_hitbod2.wav");
-	precache_sound("weapons/cbar_hitbod3.wav");
+#ifdef SSQC
+	Sound_Precache("weapon_crowbar.hit");
+	Sound_Precache("weapon_crowbar.miss");
+	Sound_Precache("weapon_crowbar.hitbody");
+#endif
 	precache_model("models/v_tfc_spanner.mdl");
 	precache_model("models/backpack.mdl");
 	precache_model("models/p_spanner.mdl");
@@ -42,9 +41,7 @@ w_spanner_precache(void)
 void
 w_spanner_updateammo(player pl)
 {
-#ifdef SSQC
-	Weapons_UpdateAmmo(pl, -1, -1, -1);
-#endif
+	w_crowbar_updateammo(pl);
 }
 
 string
@@ -61,20 +58,20 @@ w_spanner_pmodel(void)
 string
 w_spanner_deathmsg(void)
 {
-	return "%s was assaulted by %s's Crowbar.";
+	return "%s was retooled by %'s Wrench.";
 }
 
 void
 w_spanner_draw(void)
 {
 	Weapons_SetModel("models/v_tfc_spanner.mdl");
-	Weapons_ViewAnimation(SPAN_DRAW);
+	Weapons_ViewAnimation(CBAR_DRAW);
 }
 
 void
 w_spanner_holster(void)
 {
-	Weapons_ViewAnimation(SPAN_HOLSTER);
+	w_crowbar_holster();
 }
 
 void
@@ -100,12 +97,11 @@ w_spanner_primary(void)
 	pl.w_idle_next = 2.5f;
 
 #ifdef CSQC
-
 	if (random() < 0.5) {
-		Weapons_ViewAnimation(SPAN_ATTACK1);
-		} else {
-		Weapons_ViewAnimation(SPAN_ATTACK2);
-		}
+		Weapons_ViewAnimation(CBAR_ATTACK1);
+	} else {
+		Weapons_ViewAnimation(CBAR_ATTACK2);
+	}
 #else
 	if (pl.flags & FL_CROUCHING) {
 		Animation_PlayerTopTemp(ANIM_SHOOTCROWBAR, 0.5f);
@@ -113,7 +109,7 @@ w_spanner_primary(void)
 		Animation_PlayerTopTemp(ANIM_CR_SHOOTCROWBAR, 0.42f);
 	}
 
-	sound(pl, CHAN_WEAPON, "weapons/cbar_miss1.wav", 1, ATTN_NORM);
+	Sound_Play(self, CHAN_WEAPON, "weapon_crowbar.miss");
 
 	if (trace_fraction >= 1.0) {
 		return;
@@ -127,31 +123,15 @@ w_spanner_primary(void)
 	}
 
 	if (trace_ent.takedamage) {
-		int r;
-		Damage_Apply(trace_ent, self, 10, WEAPON_SPANNER, DMG_BLUNT );
+		Damage_Apply(trace_ent, pl, Skill_GetValue("plr_crowbar"), WEAPON_CROWBAR, DMG_BLUNT);
 
 		if (!trace_ent.iBleeds) {
 			return;
 		}
 
-		r = floor(random(0,3));
-		switch (r) {
-		case 0:
-			sound(pl, 8, "weapons/cbar_hitbod1.wav", 1, ATTN_NORM);
-			break;
-		case 1:
-			sound(pl, 8, "weapons/cbar_hitbod2.wav", 1, ATTN_NORM);
-			break;
-		case 2:
-			sound(pl, 8, "weapons/cbar_hitbod3.wav", 1, ATTN_NORM);
-			break;
-		}
+		Sound_Play(self, CHAN_WEAPON, "weapon_crowbar.hitbody");
 	} else {
-		if (random() < 0.5) {
-			sound(pl, 8, "weapons/cbar_hit1.wav", 1, ATTN_NORM);
-		} else {
-			sound(pl, 8, "weapons/cbar_hit2.wav", 1, ATTN_NORM);
-		}
+		Sound_Play(self, CHAN_WEAPON, "weapon_crowbar.hit");
 	}
 #endif
 }
@@ -159,20 +139,13 @@ w_spanner_primary(void)
 void
 w_spanner_release(void)
 {
-	player pl = (player)self;
-
-	if (pl.w_idle_next) {
-		return;
-	}
-
-	Weapons_ViewAnimation(SPAN_IDLE);
-	pl.w_idle_next = 15.0f;
+	w_crowbar_release();
 }
 
 float
 w_spanner_aimanim(void)
 {
-	return self.flags & FL_CROUCHING ? ANIM_CR_AIMCROWBAR : ANIM_AIMCROWBAR;
+	return w_crowbar_aimanim();
 }
 
 void

@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
- * Copyright (c) 2019 Gethyn ThomasQuail <xylemon@posteo.net>
+ * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2019-2020 Gethyn ThomasQuail <xylemon@posteo.net>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -29,11 +29,15 @@ enum {
 void
 w_chaingun_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_chaingun.fire");
+	Sound_Precache("weapon_chaingun.reload");
+	Sound_Precache("weapon_chaingun.spindown");
+	Sound_Precache("weapon_chaingun.spinup");
+#endif
 	precache_model("models/v_tfac.mdl");
 	precache_model("models/w_tfac.mdl");
 	precache_model("models/p_tfac.mdl");
-	precache_sound("weapons/asscan1.wav");
-	precache_sound("weapons/asscan3.wav");
 }
 
 int
@@ -78,7 +82,7 @@ w_chaingun_pmodel(void)
 string
 w_chaingun_deathmsg(void)
 {
-	return "";
+	return "%s was rolled over by %s' Chaingun.";
 }
 
 void
@@ -108,6 +112,7 @@ w_chaingun_release(void)
 	/* end firing */
 	if (pl.a_ammo3 == 1) {
 		pl.a_ammo3 = 0;
+		Sound_Play(pl, CHAN_WEAPON, "weapon_chaingun.spindown");
 		Weapons_ViewAnimation(CHAINGUN_SPINDOWN);
 		pl.w_attack_next = 1.0f;
 		pl.w_idle_next = pl.w_attack_next;
@@ -163,7 +168,7 @@ w_chaingun_primary(void)
 	if (pl.a_ammo3 == 0) {
 		pl.a_ammo3 = 1;
 		Weapons_ViewAnimation(CHAINGUN_SPINUP);
-		sound(pl, CHAN_WEAPON, "weapons/asscan1.wav", 1.0f, ATTN_NORM);
+		Sound_Play(pl, CHAN_WEAPON, "weapon_chaingun.spinup");
 		pl.w_attack_next = 0.5f;
 		pl.w_idle_next = pl.w_attack_next;
 		return;
@@ -178,7 +183,7 @@ w_chaingun_primary(void)
 #else
 	pl.chaingun_mag--;
 	TraceAttack_FireBullets(1, Weapons_GetCameraPos(), 8, [0.15,0.15], WEAPON_CHAINGUN);
-	sound(pl, CHAN_WEAPON, "weapons/asscan3.wav", 1.0f, ATTN_NORM);
+	Sound_Play(pl, CHAN_WEAPON, "weapon_chaingun.fire");
 #endif
 
 	pl.w_attack_next = 0.1f;
@@ -214,7 +219,7 @@ w_chaingun_reload(void)
 #ifdef CSQC
 	Weapons_ViewAnimation(CHAINGUN_HOLSTER);
 #else
-	sound(pl, CHAN_WEAPON, "weapons/reload3.wav", 1, ATTN_NORM);
+	Sound_Play(pl, CHAN_WEAPON, "weapon_chaingun.reload");
 	Weapons_ReloadWeapon(pl, player::chaingun_mag, player::ammo_9mm, 100);
 #endif
 
@@ -226,40 +231,13 @@ w_chaingun_reload(void)
 void
 w_chaingun_hud(void)
 {
-#ifdef CSQC
-	/* crosshair */
-	drawsubpic(
-		g_hudmins + (g_hudres / 2) + [-12,-12],
-		[24,24],
-		"sprites/crosshairs.spr_0.tga",
-		[24/128,0], 
-		[24/128, 24/128],
-		[1,1,1],
-		1,
-		DRAWFLAG_NORMAL
-	);
-
-	/* ammo icon */
-	drawsubpic(
-		g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42],
-		[24,24],
-		"sprites/640hud7.spr_0.tga",
-		[0,72/128],
-		[24/256, 24/128],
-		g_hud_color,
-		pSeat->ammo2_alpha,
-		DRAWFLAG_ADDITIVE
-	);
-
-	HUD_DrawAmmo1();
-	HUD_DrawAmmo2();
-#endif
+	w_glock_hud();
 }
 
 float
 w_chaingun_aimanim(void)
 {
-	return self.flags & FL_CROUCHING ? ANIM_CR_AIMMP5 : ANIM_AIMMP5;
+	return w_mp5_aimanim();
 }
 
 void

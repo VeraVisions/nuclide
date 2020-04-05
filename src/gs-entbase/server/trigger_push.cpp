@@ -25,14 +25,14 @@ If TP_ONCE is set, It'll only emit a single push once before disabling itself.
 If TP_STARTOFF is set, it needs to be triggered first in order to function.
 */
 
-#define TP_ONCE		1
-#define TP_STARTOFF	2
-#define TP_AAAA		4
+enumflags {
+	TP_ONCE,
+	TP_STARTOFF
+};
 
 class trigger_push:CBaseTrigger
 {
 	vector m_vecMoveDir;
-	float m_flDelay;
 	float m_flSpeed;
 
 	void() trigger_push;
@@ -45,12 +45,12 @@ class trigger_push:CBaseTrigger
 
 void trigger_push::SetMovementDirection(void)
 {
-	if (angles == [0,-1,0]) {
+	if (m_oldAngle == [0,-1,0]) {
 		m_vecMoveDir = [0,0,1];
 	} else if (angles == [0,-2,0]) {
 		m_vecMoveDir = [0,0,-1];
 	} else {
-		makevectors(angles);
+		makevectors(m_oldAngle);
 		m_vecMoveDir = v_forward;
 	}
 
@@ -79,42 +79,33 @@ void trigger_push::touch(void)
 	}
 
 	if (other.solid != SOLID_NOT && other.solid != SOLID_BSP) {
+		vector vecPush;
+		vecPush = (m_flSpeed * m_vecMoveDir);
+
 		if (spawnflags & TP_ONCE) {
-			other.velocity = other.velocity + (m_flSpeed * m_vecMoveDir);
+			other.velocity += vecPush;
 			if (other.velocity[2] > 0) {
 				other.flags &= ~FL_ONGROUND;
 			}
 			Hide();
 		} else {
-			/*vector vecPush = m_flSpeed * m_vecMoveDir;
-			if (other.flags & FL_BASEVELOCITY) {
-				vecPush = vecPush + other.basevelocity;
-			}
-
-			other.basevelocity = vecPush;
-			other.flags |= FL_BASEVELOCITY;*/
+			other.basevelocity += vecPush;
 		}
 	}
 }
 
 void trigger_push::Respawn(void)
 {
-	if (angles == [0,0,0]) {
-		angles[1] = 360;
-	}
 	SetMovementDirection();
-
-	if (m_flSpeed == 0) {
-		m_flSpeed = 100;
-	}
 
 	if (spawnflags & TP_STARTOFF) {
 		solid = SOLID_NOT;
 	}
 }
-	
+
 void trigger_push::trigger_push(void)
 {
+	m_flSpeed = 100;
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
 		case "speed":

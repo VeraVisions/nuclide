@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
- * Copyright (c) 2019 Gethyn ThomasQuail <xylemon@posteo.net>
+ * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2019-2020 Gethyn ThomasQuail <xylemon@posteo.net>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -28,6 +28,9 @@ enum
 void
 w_medkit_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_medkit.heal");
+#endif
 	precache_model("models/v_tfc_medkit.mdl");
 	precache_model("models/w_tfc_medkit.mdl");
 	precache_model("models/p_tfc_medkit.mdl");
@@ -46,6 +49,7 @@ w_medkit_wmodel(void)
 {
 	return "models/w_tfc_medkit.mdl";
 }
+
 string
 w_medkit_pmodel(void)
 {
@@ -55,7 +59,7 @@ w_medkit_pmodel(void)
 string
 w_medkit_deathmsg(void)
 {
-	return "%s was somehow killed by %s's Medkit.";
+	return "%s was somehow healed to death by %s's Medkit.";
 }
 
 int
@@ -105,15 +109,15 @@ w_medkit_primary(void)
 	}
 
 	/* We want to only give health to the player & skip armor */
-	Damage_Apply(pl, pl, -15, WEAPON_MEDKIT, DMG_GENERIC );
+	Damage_Apply(pl, pl, -15, WEAPON_MEDKIT, DMG_GENERIC);
 	pl.ammo_medkit--;
-	
+
 	if (self.flags & FL_CROUCHING)
 		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
 	else
 		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
-	
-	Weapons_PlaySound(pl, CHAN_WEAPON, "items/smallmedkit1.wav", 1, ATTN_NORM);
+
+	Sound_Play(pl, CHAN_WEAPON, "weapon_medkit.heal");
 #endif
 
 	if (pl.health >= 100) {
@@ -136,13 +140,13 @@ w_medkit_release(void)
 		return;
 	}
 
-	r = floor(random(0,2));
+	int r = (float)input_sequence % 2;
 	switch (r) {
-	case 1:
+	case 0:
 		Weapons_ViewAnimation(MEDKIT_IDLE1);
 		pl.w_idle_next = 1.16f;
 		break;
-	case 2:
+	default:
 		Weapons_ViewAnimation(MEDKIT_IDLE2);
 		pl.w_idle_next = 2.36f;
 		break;
@@ -152,7 +156,7 @@ w_medkit_release(void)
 float
 w_medkit_aimanim(void)
 {
-	return self.flags & FL_CROUCHING ? ANIM_CR_AIMSQUEAK : ANIM_AIMSQUEAK;
+	return w_snark_aimanim();
 }
 
 void
@@ -160,7 +164,6 @@ w_medkit_crosshair(void)
 {
 #ifdef CSQC
 	vector aicon_pos;
-
 	aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
 
 	HUD_DrawAmmo2();
@@ -210,7 +213,7 @@ w_medkit_hudpic(int selected, vector pos, float a)
 
 weapon_t w_medkit =
 {
-	.id		= ITEM_MEDKIT2,
+	.id			= ITEM_MEDKIT2,
 	.slot		= 4,
 	.slot_pos	= 4,
 	.ki_spr		= "sprites/tfc_dmsg.spr_0.tga",
@@ -235,7 +238,8 @@ weapon_t w_medkit =
 
 #ifdef SSQC
 void
-weapon_th_medkit(void) {
+weapon_th_medkit(void)
+{
 	Weapons_InitItem(WEAPON_MEDKIT);
 }
 #endif

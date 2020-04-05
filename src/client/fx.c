@@ -34,3 +34,12 @@ CBaseFX::CBaseFX(void)
 {
 	drawmask = MASK_ENGINE;
 }
+
+
+void FX_Init(void)
+{
+	precache_pic("textures/fx/flare1");
+	precache_pic("textures/fx/flare2");
+	precache_pic("textures/fx/flare3");
+	precache_pic("textures/fx/flare4");
+}

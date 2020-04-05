@@ -42,15 +42,18 @@ enum
 void
 w_crossbow_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_crossbow.fire");
+	Sound_Precache("weapon_crossbow.hit");
+	Sound_Precache("weapon_crossbow.hitbody");
+	Sound_Precache("weapon_crossbow.reload");
+#endif
 	precache_model("models/crossbow_bolt.mdl");
 	precache_model("models/v_crossbow.mdl");
 	precache_model("models/w_crossbow.mdl");
 	precache_model("models/p_crossbow.mdl");
 	precache_sound("weapons/xbow_reload1.wav");
 	precache_sound("weapons/xbow_fire1.wav");
-	precache_sound("weapons/xbow_hit1.wav");
-	precache_sound("weapons/xbow_hitbod1.wav");
-	precache_sound("weapons/xbow_hitbod2.wav");
 }
 
 void
@@ -134,18 +137,14 @@ void Crossbolt_Touch(void) {
 	/* walls, etc. */
 	if (other.takedamage != DAMAGE_YES) {
 		Effect_CreateSpark(self.origin, trace_plane_normal);
-		sound(self, 1, "weapons/xbow_hit1.wav", 1.0f, ATTN_NORM);
+		Sound_Play(self, 1, "weapon_crossbow.hit");
 		remove(self);
 		return;
 	}
 
 	/* anything else that can take damage */
 	Damage_Apply(other, self.owner, Skill_GetValue("plr_xbow_bolt_monster"), WEAPON_CROSSBOW, DMG_BLUNT);
-	if (random() < 0.5) {
-		sound(self, 1, "weapons/xbow_hitbod1.wav", 1.0f, ATTN_NORM);
-	} else {
-		sound(self, 1, "weapons/xbow_hitbod2.wav", 1.0f, ATTN_NORM);
-	}
+	Sound_Play(self, 1, "weapon_crossbow.hitbody");
 
 	if (other.iBleeds == FALSE) {
 		Effect_CreateSpark(self.origin, trace_plane_normal);
@@ -206,10 +205,10 @@ w_crossbow_primary(void)
 	pl.crossbow_mag--;
 
 	if (pl.crossbow_mag > 0) {
-		sound(pl, 8, "weapons/xbow_reload1.wav", 1.0f, ATTN_NORM);
+		Sound_Play(pl, 8, "weapon_crossbow.hitbody");
 	}
 
-	sound(pl, CHAN_WEAPON, "weapons/xbow_fire1.wav", 1.0f, ATTN_NORM);
+	Sound_Play(pl, CHAN_WEAPON, "weapon_crossbow.fire");
 	Weapons_UpdateAmmo(pl, pl.crossbow_mag, pl.ammo_bolt, -1);
 #endif
 

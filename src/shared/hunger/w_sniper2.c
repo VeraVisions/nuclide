@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
- * Copyright (c) 2019 Gethyn ThomasQuail <xylemon@posteo.net>
+ * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2019-2020 Gethyn ThomasQuail <xylemon@posteo.net>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -26,11 +26,12 @@ enum
 void
 w_sniper2_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_sniper.fire");
+#endif
 	precache_model("models/v_hkg36.mdl");
 	precache_model("models/w_hkg36.mdl");
 	precache_model("models/p_hkg36.mdl");
-
-	precache_sound("weapons/sniper.wav");
 }
 
 int
@@ -75,7 +76,7 @@ w_sniper2_pmodel(void)
 string
 w_sniper2_deathmsg(void)
 {
-	return "";
+	return "%s was taken out by %s's Sniper.";
 }
 
 void
@@ -146,7 +147,7 @@ w_sniper2_primary(void)
 	pl.sniper_mag--;
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 40, [0.008, 0.008], WEAPON_SNIPER);
 
-	sound(pl, CHAN_WEAPON, "weapons/sniper.wav", 1, ATTN_NORM);
+	Sound_Play(pl, CHAN_WEAPON, "weapon_sniper.fire");
 #endif
 
 
@@ -163,20 +164,7 @@ w_sniper2_primary(void)
 void
 w_sniper2_secondary(void)
 {
-	player pl = (player)self;
-
-	if (pl.w_attack_next > 0.0) {
-		return;
-	}
-
-	/* Simple toggle of fovs */
-	if (pl.viewzoom == 1.0f) {
-		pl.viewzoom = 0.25f;
-	} else {
-		pl.viewzoom = 1.0f;
-	}
-
-	pl.w_attack_next = 0.5f;
+	w_sniper_secondary();
 }
 
 void
@@ -213,98 +201,25 @@ void
 w_sniper2_crosshair(void)
 {
 #ifdef CSQC
-	player pl = (player)self;
-	static vector cross_pos;
-	vector aicon_pos;
-
-	if (pl.viewzoom < 1.0f) {
-		drawfill(
-			g_hudmins,
-			g_hudres,
-			[0.2,0,0],
-			1.0f,
-			DRAWFLAG_ADDITIVE
-		);
-		cross_pos = g_hudmins + (g_hudres / 2) + [-128,-104];
-		drawpic(
-			cross_pos,
-			"sprites/nmxhair2.spr_0.tga",
-			[256,208],
-			[1,1,1],
-			1.0f,
-			DRAWFLAG_NORMAL
-		);
-	} else {
-
-		cross_pos = g_hudmins + (g_hudres / 2) + [-12,-12];
-		drawsubpic(
-			cross_pos,
-			[24,24],
-			"sprites/crosshairs.spr_0.tga",
-			[48/128,0],
-			[24/128,24/128],
-			[1,1,1],
-			1.0f,
-			DRAWFLAG_NORMAL
-		);
-	}
-
-	HUD_DrawAmmo1();
-	HUD_DrawAmmo2();
-
-	aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(
-		aicon_pos,
-		[24,24],
-		"sprites/640hud7.spr_0.tga",
-		[24/256,72/128],
-		[24/256, 24/128],
-		g_hud_color,
-		pSeat->ammo2_alpha,
-		DRAWFLAG_ADDITIVE
-	);
+	w_sniper_crosshair();
 #endif
 }
 
 float
 w_sniper2_aimanim(void)
 {
-	return self.flags & FL_CROUCHING ? ANIM_CR_AIMPYTHON : ANIM_AIMPYTHON;
+	return w_crossbow_aimanim();
 }
 
 void
 w_sniper2_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
-	if (selected) {
-		drawsubpic(
-			pos,
-			[170,45],
-			"sprites/tfchud02.spr_0.tga",
-			[0,45/256],
-			[170/256,45/256],
-			g_hud_color,
-			a,
-			DRAWFLAG_ADDITIVE
-		);
-	} else {
-		drawsubpic(
-			pos,
-			[170,45],
-			"sprites/tfchud01.spr_0.tga",
-			[0,45/256],
-			[170/256,45/256],
-			g_hud_color,
-			a,
-			DRAWFLAG_ADDITIVE
-		);
-	}
-#endif
+	w_sniper_hudpic(selected, pos, a);
 }
 
 weapon_t w_sniper2 =
 {
-	.id		= ITEM_SNIPER2,
+	.id			= ITEM_SNIPER2,
 	.slot		= 2,
 	.slot_pos	= 4,
 	.ki_spr		= "sprites/tfc_dmsg.spr_0.tga",

@@ -1,0 +1,10 @@
+weapon_bradnailer.fire
+{
+	sample weapons/bradnailer.wav
+}
+
+weapon_bradnailer.hitbody
+{
+	sample weapons/brad_hit1.wav
+	sample weapons/brad_hit2.wav
+}

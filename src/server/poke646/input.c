@@ -48,7 +48,7 @@ Game_Input(void)
 			Weapons_AddItem(pl, WEAPON_SHOTGUN);
 			Weapons_AddItem(pl, WEAPON_CMLWBR);
 			Weapons_AddItem(pl, WEAPON_XS);
-			Weapons_AddItem(pl, WEAPON_PIPEBOMB);
+			Weapons_AddItem(pl, WEAPON_SATCHEL);
 		}
 
 		if (self.impulse == 102) {

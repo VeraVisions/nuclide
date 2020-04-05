@@ -106,7 +106,7 @@ ammo_spore::ammo_spore(void)
 }
 
 void
-ammo_spore::Death(int)
+ammo_spore::Death(int a)
 {
 	makevectors(m_oldAngle);
 	Sporelauncher_AltFire(this, origin, v_forward);
@@ -166,7 +166,6 @@ ammo_spore::touch(void)
 	player pl = (player)other;
 	if (pl.ammo_spore < 20) {
 		pl.ammo_spore = bound(0, pl.ammo_spore + 1, 20);
-		player pl = (player)other;
 		Weapons_RefreshAmmo(pl);
 		Logging_Pickup(other, this, __NULL__);
 		frame = 2;

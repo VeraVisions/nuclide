@@ -75,7 +75,6 @@ float Math_CRandom( void ) {
 }
 
 #if defined(SSQC) || defined(CSQC)
-//.vector basevelocity;
 int QPhysics_IsStuck( entity eTarget, vector vOffset, vector vecMins, vector vecMaxs )
 {
 	if ( eTarget.solid != SOLID_SLIDEBOX ) {
@@ -92,7 +91,6 @@ void QPhysics_Run ( entity eTarget )
 	self = eTarget;
 
 	float flFallVel = ( self.flags & FL_ONGROUND ) ? 0 : -self.velocity[2];
-
 #ifdef CSTRIKE
 	self.maxspeed = Game_GetMaxSpeed( self );
 #endif

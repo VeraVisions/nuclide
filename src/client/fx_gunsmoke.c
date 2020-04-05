@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,21 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* Weapon Indices for the weapon table */
-enum
+void FX_Gunsmoke(vector inworldpos)
 {
-	WEAPON_NONE,
-	WEAPON_HEATERPIPE,
-	WEAPON_BRADNAILER,
-	WEAPON_NAILGUN,
-	WEAPON_SHOTGUN,
-	WEAPON_CMLWBR,
-	WEAPON_XS,
-	WEAPON_SATCHEL
-};
-
-#define MAX_A_NAIL		250
-#define MAX_A_BUCKSHOT		125
-#define MAX_A_BOLT		50
-#define MAX_A_XENCANDY		15
-#define MAX_A_SATCHEL		5
+	
+}

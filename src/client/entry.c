@@ -19,6 +19,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 {
 	pSeat = &seats[0];
 
+	registercommand("fx_lenspos");
 	registercommand("titles_test");
 	registercommand("vox_test");
 	registercommand("+attack2");
@@ -117,6 +118,7 @@ CSQC_RendererRestarted(string rstr)
 	Sky_Update();
 	Decal_Reload();
 	Game_RendererRestarted(rstr);
+	FX_Init();
 }
 
 void
@@ -291,6 +293,8 @@ CSQC_UpdateView(float w, float h, float focus)
 			View_DrawViewModel();
 			renderscene();
 		}
+
+		FX_LensFlare();
 
 		/* Run this on all players */
 		for (entity b = world; (b = find(b, ::classname, "player"));) {
@@ -693,6 +697,10 @@ CSQC_ConsoleCommand(string sCMD)
 		break;
 	case "slot10":
 		HUD_SlotSelect(9);
+		break;
+	case "fx_lenspos":
+		makevectors(getproperty(VF_ANGLES));
+		g_vecLensPos = vectoangles(v_forward);
 		break;
 	default:
 		return Game_ConsoleCommand();

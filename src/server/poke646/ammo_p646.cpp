@@ -23,12 +23,12 @@ class item_ammo:CBaseEntity
 
 void item_ammo::touch(void)
 {
-	if (other.classname != "player") {
+	if not (other.flags & FL_CLIENT) {
 		return;
 	}
 
 	player pl = (player)other;
-	sound(other, CHAN_ITEM, "items/9mmclip1.wav", 1, ATTN_NORM);
+	Sound_Play(other, CHAN_ITEM, "ammo.pickup");
 	Weapons_RefreshAmmo(pl);
 	Logging_Pickup(other, this, __NULL__);
 
@@ -55,7 +55,7 @@ void item_ammo::Respawn(void)
 
 	think = __NULL__;
 	nextthink = -1;
-	sound(this, CHAN_ITEM, "items/suitchargeok1.wav", 1, ATTN_NORM, 150);
+	Sound_Play(this, CHAN_ITEM, "ammo.respawn");
 	droptofloor();
 }
 
@@ -64,7 +64,6 @@ void item_ammo::item_ammo(void)
 	m_oldModel = model;
 	setmodel(this, m_oldModel);
 	CBaseEntity::CBaseEntity();
-	item_ammo::Respawn();
 }
 
 /*
@@ -84,53 +83,102 @@ ammo_bolts::ammo_bolts(void)
 	model = "models/w_crossbow_clip.mdl";
 }
 
-/*
- * Ammo for the nailguns.
- * A single ammo_nailclip will provide 25 nails.
- */
+/*QUAKED ammo_nailclip (0 0 0.8) (-16 -16 0) (16 16 32)
 
-class 
-ammo_nailclip:item_ammo
+Poke646 (2001) ENTITY
+
+Ammo for the nailguns.
+A single ammo_nailclip will provide 25 nails.
+
+*/
+class ammo_nailclip:item_ammo
 {
 	void() ammo_nailclip;
+	virtual void() touch;
 };
 
-void 
-ammo_nailclip::ammo_nailclip(void)
+void ammo_nailclip::ammo_nailclip(void)
 {
 	model = "models/w_nailclip.mdl";
+	item_ammo::item_ammo();
+}
+void ammo_nailclip::touch(void)
+{
+	if not (other.flags & FL_CLIENT) {
+		return;
+	}
+	if (other.classname == "player") {
+		player pl = (player)other;
+		if (pl.ammo_nail < MAX_A_NAIL) {
+			pl.ammo_nail = bound(0, pl.ammo_nail + 25, MAX_A_NAIL);
+			item_ammo::touch();
+		}
+	}
 }
 
-/*
- * Ammo for the Nailgun.
- * A single ammo_nailround will provide 50 nails.
- */
+/*QUAKED ammo_nailround (0 0 0.8) (-16 -16 0) (16 16 32)
 
-class 
-ammo_nailround:item_ammo
+Poke646 (2001) ENTITY
+
+Ammo for the nailguns.
+A single ammo_nailround will provide 50 nails.
+
+*/
+class ammo_nailround:item_ammo
 {
 	void() ammo_nailround;
+	virtual void() touch;
 };
 
-void 
-ammo_nailround::ammo_nailround(void)
+void ammo_nailround::ammo_nailround(void)
 {
 	model = "models/w_nailround.mdl";
+	item_ammo::item_ammo();
+}
+void ammo_nailround::touch(void)
+{
+	if not (other.flags & FL_CLIENT) {
+		return;
+	}
+	if (other.classname == "player") {
+		player pl = (player)other;
+		if (pl.ammo_nail < MAX_A_NAIL) {
+			pl.ammo_nail = bound(0, pl.ammo_nail + 50, MAX_A_NAIL);
+			item_ammo::touch();
+		}
+	}
 }
 
-/*
- * Ammo for the alien.
- * A single ammo_xencandy will provide 20 snacks.
- */
+/*QUAKED ammo_xencandy (0 0 0.8) (-16 -16 0) (16 16 32)
 
-class 
-ammo_xencandy:item_ammo
+Poke646 (2001) ENTITY
+
+Ammo for the alien.
+A single ammo_xencandy will provide 20 snacks.
+
+*/
+
+class ammo_xencandy:item_ammo
 {
 	void() ammo_xencandy;
+	virtual void() touch;
 };
 
-void
-ammo_xencandy::ammo_xencandy(void)
+void ammo_xencandy::ammo_xencandy(void)
 {
 	model = "models/w_xencandy.mdl";
+	item_ammo::item_ammo();
+}
+void ammo_xencandy::touch(void)
+{
+	if not (other.flags & FL_CLIENT) {
+		return;
+	}
+	if (other.classname == "player") {
+		player pl = (player)other;
+		if (pl.ammo_xencandy < MAX_A_XENCANDY) {
+			pl.ammo_xencandy = bound(0, pl.ammo_xencandy + 20, MAX_A_XENCANDY);
+			item_ammo::touch();
+		}
+	}
 }

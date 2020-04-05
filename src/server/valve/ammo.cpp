@@ -28,7 +28,7 @@ void item_ammo::touch(void)
 	}
 
 	player pl = (player)other;
-	sound(other, CHAN_ITEM, "items/9mmclip1.wav", 1, ATTN_NORM);
+	Sound_Play(other, CHAN_ITEM, "ammo.pickup");
 	Weapons_RefreshAmmo(pl);
 	Logging_Pickup(other, this, __NULL__);
 
@@ -55,7 +55,7 @@ void item_ammo::Respawn(void)
 
 	think = __NULL__;
 	nextthink = -1;
-	sound(this, CHAN_ITEM, "items/suitchargeok1.wav", 1, ATTN_NORM, 150);
+	Sound_Play(this, CHAN_ITEM, "ammo.respawn");
 	droptofloor();
 }
 

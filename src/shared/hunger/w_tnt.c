@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -26,61 +26,50 @@ enum
 	HANDGRENADE_DRAW
 };
 
-/* It's just the grenade with a different model, they could
- * have just renamed the model itself... why.
- */
-
-void w_handgrenade_precache(void)
+void w_tnt_precache(void)
 {
-	precache_sound("weapons/g_bounce1.wav");
-	precache_sound("weapons/g_bounce2.wav");
-	precache_sound("weapons/g_bounce3.wav");
-	precache_sound("weapons/g_bounce4.wav");
-	precache_sound("weapons/g_bounce5.wav");
+#ifdef SSQC
+	Sound_Precache("weapon_handgrenade.bounce");
+#endif
+
 	precache_model("models/v_tnt.mdl");
 	precache_model("models/w_tnt.mdl");
 	precache_model("models/p_tnt.mdl");
 }
-void w_handgrenade_updateammo(player pl)
+
+void w_tnt_updateammo(player pl)
 {
-#ifdef SSQC
-	Weapons_UpdateAmmo(pl, -1, pl.ammo_handgrenade, -1);
-#endif
+	w_handgrenade_updateammo(pl);
 }
-string w_handgrenade_wmodel(void)
+
+string w_tnt_wmodel(void)
 {
 	return "models/w_tnt.mdl";
 }
-string w_handgrenade_pmodel(void)
+
+string w_tnt_pmodel(void)
 {
 	return "models/p_tnt.mdl";
 }
-string w_handgrenade_deathmsg(void)
+
+string w_tnt_deathmsg(void)
 {
-	return "";
+	return w_handgrenade_deathmsg();
 }
 
-int w_handgrenade_pickup(int new)
+int w_tnt_pickup(int new)
 {
-#ifdef SSQC
-	player pl = (player)self;
-
-	if (pl.ammo_handgrenade < MAX_A_HANDGRENADE) {
-		pl.ammo_handgrenade = bound(0, pl.ammo_handgrenade + 1, MAX_A_HANDGRENADE);
-	} else {
-		return FALSE;
-	}
-#endif
-	return TRUE;
+	return w_handgrenade_pickup(new);
 }
 
 #ifdef SSQC
-void w_handgrenade_throw(void)
+void w_tnt_throw(void)
 {
 	static void WeaponFrag_Throw_Explode( void )
 	{
+		float dmg = Skill_GetValue("plr_hand_grenade");
 		Effect_CreateExplosion(self.origin);
-		Damage_Radius(self.origin, self.owner, 150, 150 * 2.5f, TRUE, WEAPON_HANDGRENADE);
+		Damage_Radius(self.origin, self.owner, dmg, dmg * 2.5f, TRUE, WEAPON_HANDGRENADE);
 		sound(self, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 2 ) + 3 ), 1, ATTN_NORM);
 		remove(self);
 	}
@@ -89,10 +78,9 @@ void w_handgrenade_throw(void)
 	{
 		if (other.takedamage == DAMAGE_YES) {
 			Damage_Apply(other, self.owner, 15, WEAPON_HANDGRENADE, DMG_BLUNT);
+		} else {
+			Sound_Play(self, CHAN_BODY, "weapon_handgrenade.bounce");
 		}
-		int r = floor(random(0,6));
-		string sample = sprintf("weapons/g_bounce%i.wav", r);
-		sound( self, CHAN_BODY, sample, 1, ATTN_NORM );
 		self.frame = 0;
 	}
 
@@ -129,7 +117,7 @@ void w_handgrenade_throw(void)
 }
 #endif
 
-void w_handgrenade_draw(void)
+void w_tnt_draw(void)
 {
 #ifdef CSQC
 	Weapons_SetModel("models/v_tnt.mdl");
@@ -137,43 +125,16 @@ void w_handgrenade_draw(void)
 #endif
 }
 
-void w_handgrenade_holster(void)
+void w_tnt_holster(void)
 {
 	
 }
-void w_handgrenade_primary(void)
+void w_tnt_primary(void)
 {
-	player pl = (player)self;
-	if (pl.w_attack_next > 0.0) {
-		return;
-	}
-	
-	/* We're abusing this network variable for the holding check */
-	if (pl.a_ammo3 > 0) {
-		return;
-	}
-
-	/* Ammo check */
-#ifdef CSQC
-	if (pl.a_ammo2 <= 0) {
-		return;
-	}
-#else
-	if (pl.ammo_handgrenade <= 0) {
-		return;
-	}
-#endif
-
-#ifdef CSQC
-	Weapons_ViewAnimation(HANDGRENADE_PULLPIN);
-#endif
-
-	pl.a_ammo3 = 1;
-	pl.w_attack_next = 0.5f;
-	pl.w_idle_next = 0.5f;
+	w_handgrenade_primary();
 }
 
-void w_handgrenade_hud(void)
+void w_tnt_hud(void)
 {
 #ifdef CSQC
 	HUD_DrawAmmo2();
@@ -183,7 +144,7 @@ void w_handgrenade_hud(void)
 }
 
 
-void w_handgrenade_release(void)
+void w_tnt_release(void)
 {
 	player pl = (player)self;
 	
@@ -197,7 +158,7 @@ void w_handgrenade_release(void)
 		Weapons_ViewAnimation(HANDGRENADE_THROW1);
 #else
 		pl.ammo_handgrenade--;
-		w_handgrenade_throw();
+		w_tnt_throw();
 #endif
 		pl.a_ammo3 = 2;
 		pl.w_attack_next = 1.0f;
@@ -213,54 +174,51 @@ void w_handgrenade_release(void)
 		pl.w_attack_next = 0.5f;
 		pl.w_idle_next = 0.5f;
 		pl.a_ammo3 = 0;
+	} else {
+		int r = (float)input_sequence % 8;
+		if (r == 1) {
+			Weapons_ViewAnimation(HANDGRENADE_FIDGET);
+			pl.w_idle_next = 2.5f;
+		} else {
+			Weapons_ViewAnimation(HANDGRENADE_IDLE);
+			pl.w_idle_next = 3.0f;
+		}
 	}
 }
 
 float
-w_handgrenade_aimanim(void)
+w_tnt_aimanim(void)
 {
-	return self.flags & FL_CROUCHING ? ANIM_CR_AIMCROWBAR : ANIM_AIMCROWBAR;
+	return w_handgrenade_aimanim();
 }
 
 void
-w_handgrenade_hudpic(int s, vector pos, float a)
+w_tnt_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
-	if (s) {
-		drawsubpic(pos, [170,45], "sprites/640hud6.spr_0.tga", [0,0], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
-	} else {
-		drawsubpic(pos, [170,45], "sprites/640hud3.spr_0.tga", [0,0], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
-	}
-#endif
+	w_handgrenade_hudpic(selected, pos, a);
 }
 
-weapon_t w_handgrenade =
+weapon_t w_tnt =
 {
-	ITEM_HANDGRENADE,
-	4,
-	0,
-	"sprites/640hud1.spr_0.tga",
-	[32,16],
-	[192,160],
-	w_handgrenade_draw,
-	w_handgrenade_holster,
-	w_handgrenade_primary,
-	w_handgrenade_release,
-	w_handgrenade_release,
-	w_handgrenade_release,
-	w_handgrenade_hud,
-	w_handgrenade_precache,
-	w_handgrenade_pickup,
-	w_handgrenade_updateammo,
-	w_handgrenade_wmodel,
-	w_handgrenade_pmodel,
-	w_handgrenade_deathmsg,
-	w_handgrenade_aimanim,
-	w_handgrenade_hudpic
+	.id		= ITEM_HANDGRENADE,
+	.slot		= 4,
+	.slot_pos	= 0,
+	.ki_spr		= "sprites/640hud1.spr_0.tga",
+	.ki_size	= [32,16],
+	.ki_xy		= [192,160],
+	.draw		= w_tnt_draw,
+	.holster	= w_tnt_holster,
+	.primary	= w_tnt_primary,
+	.secondary	= w_tnt_release,
+	.reload		= w_tnt_release,
+	.release	= w_tnt_release,
+	.crosshair	= w_tnt_hud,
+	.precache	= w_tnt_precache,
+	.pickup		= w_tnt_pickup,
+	.updateammo	= w_tnt_updateammo,
+	.wmodel		= w_tnt_wmodel,
+	.pmodel		= w_tnt_pmodel,
+	.deathmsg	= w_tnt_deathmsg,
+	.aimanim	= w_tnt_aimanim,
+	.hudpic		= w_tnt_hudpic
 };
-
-#ifdef SSQC
-void weapon_handgrenade(void) {
-	Weapons_InitItem(WEAPON_HANDGRENADE);
-}
-#endif

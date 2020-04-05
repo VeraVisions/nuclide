@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2019-2020 Gethyn ThomasQuail <xylemon@posteo.net>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,61 +15,68 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED weapon_pipebomb (0 0 1) (-16 -16 0) (16 16 32)
+"model" "models/w_pipebomb.mdl"
+
+Poke646 (2001) ENTITY
+
+Pipebomb Weapon, literal copy of Half-Life's Satchel Weapon
+
+*/
+
 enum
 {
-	PIPEB_IDLE,
-	PIPEB_FIDGET,
-	PIPEB_DRAW,
-	PIPEB_THROW
+	SATCHEL_IDLE,
+	SATCHEL_FIDGET,
+	SATCHEL_DRAW,
+	SATCHEL_THROW
 };
 
 enum
 {
-	WATCH_IDLE,
-	WATCH_FIDGET,
-	WATCH_DRAW,
-	WATCH_USE,
-	WATCH_HOLSTER
+	RADIO_IDLE,
+	RADIO_FIDGET,
+	RADIO_DRAW,
+	RADIO_USE,
+	RADIO_HOLSTER
 };
 
 void w_pipebomb_updateammo(player pl)
 {
-#ifdef SSQC
-	Weapons_UpdateAmmo(pl, pl.satchel_chg, pl.ammo_satchel, __NULL__);
-#endif
+	w_satchel_updateammo(pl);
 }
 string w_pipebomb_wmodel(void)
 {
 	return "models/w_pipebomb.mdl";
 }
+string w_pipebomb_pmodel(void)
+{
+	return "models/p_pipebomb.mdl";
+}
+string w_pipebomb_deathmsg(void)
+{
+	return "%s blew up %s with a pipebomb.";
+}
 void w_pipebomb_precache(void)
 {
-	precache_sound("weapons/pb_bounce1.wav");
-	precache_sound("weapons/pb_bounce2.wav");	precache_sound("weapons/pb_bounce3.wav");
-
+#ifdef SSQC
+	Sound_Precache("weapon_satchel.bounce");
+#endif
+	precache_model("models/w_pipebomb.mdl");
 	precache_model("models/v_pipebomb.mdl");
 	precache_model("models/v_pipebomb_watch.mdl");
-	precache_model("models/w_pipebomb.mdl");
+	precache_model("models/p_pipebomb.mdl");
 }
 
 int w_pipebomb_pickup(int new)
 {
-#ifdef SSQC
-	player pl = (player)self;
-
-	if (pl.ammo_satchel < 5) {
-		pl.ammo_satchel = bound(0, pl.ammo_satchel + 1, 5);
-	} else {
-		return FALSE;
-	}
-#endif
-	return TRUE;
+	return w_satchel_pickup(new);
 }
 
 void w_pipebomb_draw(void)
 {
 	Weapons_SetModel("models/v_pipebomb.mdl");
-	Weapons_ViewAnimation(PIPEB_DRAW);
+	Weapons_ViewAnimation(SATCHEL_DRAW);
 #ifdef SSQC
 	player pl = (player)self;
 	Weapons_UpdateAmmo(pl, pl.satchel_chg, pl.ammo_satchel, __NULL__);
@@ -83,6 +91,11 @@ void w_pipebomb_holster(void)
 #ifdef SSQC
 void s_pipebomb_drop(entity master, vector src, vector vel)
 {
+	static void s_pipebomb_touch(void)
+	{
+		if (other == world)
+			Sound_Play(self, CHAN_BODY, "weapon_satchel.bounce");
+	}
 	entity satch;
 	satch = spawn();
 	satch.owner = master;
@@ -94,7 +107,8 @@ void s_pipebomb_drop(entity master, vector src, vector vel)
 	satch.friction = 0.8f;
 	satch.velocity = vel;
 	satch.avelocity = [0,400,0];
-	setmodel(satch, "models/w_pipebomb.mdl");
+	satch.touch = s_pipebomb_touch;
+	setmodel(satch, "models/w_satchel.mdl");
 	setsize(satch, [-4,-4,-4], [4,4,4]);
 	setorigin(satch, src);
 }
@@ -102,8 +116,9 @@ void s_pipebomb_detonate(entity master)
 {
 	for (entity b = world; (b = find(b, ::classname, "satchel"));) {
 		if (b.owner == master) {
+			float dmg = Skill_GetValue("plr_satchel");
 			Effect_CreateExplosion(b.origin);
-			Damage_Radius(b.origin, master, 150, 150 * 2.5f, TRUE, WEAPON_PIPEBOMB);
+			Damage_Radius(b.origin, master, dmg, dmg * 2.5f, TRUE, WEAPON_SATCHEL);
 			sound(b, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 2 ) + 3 ), 1, ATTN_NORM);
 			remove(b);
 		}
@@ -131,9 +146,9 @@ void w_pipebomb_primary(void)
 #endif
 
 	if (pl.a_ammo1 <= 0) {
-        Weapons_ViewAnimation(WATCH_DRAW);
+        Weapons_ViewAnimation(RADIO_DRAW);
     } else {
-        Weapons_ViewAnimation(WATCH_USE);
+        Weapons_ViewAnimation(RADIO_USE);
     }
 
 #ifdef SSQC
@@ -150,7 +165,7 @@ void w_pipebomb_primary(void)
 		pl.satchel_chg = 0;
 
 		if (pl.ammo_satchel <= 0) {
-			Weapons_RemoveItem(pl, WEAPON_PIPEBOMB);
+			Weapons_RemoveItem(pl, WEAPON_SATCHEL);
 		}
 	}
 	Weapons_UpdateAmmo(pl, pl.satchel_chg, pl.ammo_satchel, __NULL__);
@@ -196,54 +211,34 @@ void w_pipebomb_secondary(void)
 	setmodel(pSeat->eViewModel, "models/v_pipebomb_watch.mdl");
 #endif
 
-	Weapons_ViewAnimation(WATCH_DRAW);
+	Weapons_ViewAnimation(RADIO_DRAW);
 
 	pl.w_attack_next = 1.0f;
 	pl.w_idle_next = 2.5f;
 }
-void
-w_pipebomb_reload(void)
+void w_pipebomb_reload(void)
 {
 	
 }
-void
-w_pipebomb_release(void)
+void w_pipebomb_release(void)
 {
-	player pl = (player)self;
-
-	if (pl.w_idle_next > 0.0) {
-		return;
-	}
-
-	if (pl.a_ammo1 <= 0) {
-		Weapons_ViewAnimation(PIPEB_FIDGET);
-	} else {
-		Weapons_ViewAnimation(WATCH_FIDGET);
-	}
-	pl.w_idle_next = 15.0f;
+	w_satchel_release();
 }
 
-float
-w_pipebomb_aimanim(void)
+float w_pipebomb_aimanim(void)
 {
-	return self.flags & FL_CROUCHING ? ANIM_CR_AIMSQUEAK : ANIM_AIMSQUEAK;
+	return w_satchel_aimanim();
 }
 
-void
-w_pipebomb_hud(void)
+void w_pipebomb_hud(void)
+{
+	w_satchel_holster();
+}
+
+void w_pipebomb_hudpic(int selected, vector pos, float a)
 {
 #ifdef CSQC
-	HUD_DrawAmmo2();
-	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [72/256,96/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
-#endif
-}
-
-void
-w_pipebomb_hudpic(int s, vector pos, float a)
-{
-#ifdef CSQC
-	if (s) {
+	if (selected) {
 		drawsubpic(pos, [170,45], "sprites/640hud6.spr_0.tga", [0,45/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	} else {
 		drawsubpic(pos, [170,45], "sprites/640hud3.spr_0.tga", [0,45/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
@@ -253,9 +248,9 @@ w_pipebomb_hudpic(int s, vector pos, float a)
 
 weapon_t w_pipebomb =
 {
-	.id		= ITEM_PIPEBOMB,
+	.id		= ITEM_SATCHEL,
 	.slot		= 4,
-	.slot_pos	= 0,
+	.slot_pos	= 1,
 	.ki_spr		= __NULL__,
 	.ki_size	= __NULL__,
 	.ki_xy		= __NULL__,
@@ -265,20 +260,19 @@ weapon_t w_pipebomb =
 	.secondary	= w_pipebomb_secondary,
 	.reload		= __NULL__,
 	.release	= w_pipebomb_release,
-	.crosshair	= __NULL__,
+	.crosshair	= w_pipebomb_hud,
 	.precache	= w_pipebomb_precache,
-	.pickup		= __NULL__,
+	.pickup		= w_pipebomb_pickup,
 	.updateammo	= w_pipebomb_updateammo,
 	.wmodel		= w_pipebomb_wmodel,
 	.pmodel		= __NULL__,
 	.deathmsg	= __NULL__,
-	.aimanim	= __NULL__,
+	.aimanim	= w_pipebomb_aimanim,
 	.hudpic		= w_pipebomb_hudpic
 };
 
 #ifdef SSQC
 void weapon_pipebomb(void) {
-	Weapons_InitItem(WEAPON_PIPEBOMB);
+	Weapons_InitItem(WEAPON_SATCHEL);
 }
 #endif
-

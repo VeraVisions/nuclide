@@ -68,7 +68,8 @@
 ../valve/player.c
 ../valve/entities.c
 ../entities.c
-
+../fx_lensflare.c
+../fx_gunsmoke.c
 ../valve/cmds.c
 ../valve/game_event.c
 ../events.c

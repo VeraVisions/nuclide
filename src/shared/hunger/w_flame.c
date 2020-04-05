@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2019-2020 Gethyn ThomasQuail <xylemon@posteo.net>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,28 +17,31 @@
 
 enum
 {
-	FLAME_IDLE1,
-	FLAME_FIDGET1,
-	FLAME_ALTFIREON,
-	FLAME_ALTFIRECYCLE,
-	FLAME_ALTFIREOFF,
-	FLAME_FIRE1,
-	FLAME_FIRE2,
-	FLAME_FIRE3,
-	FLAME_FIRE4,
-	FLAME_DRAW,
-	FLAME_HOLSTER
+	EGON_IDLE1,
+	EGON_FIDGET1,
+	EGON_ALTFIREON,
+	EGON_ALTFIRECYCLE,
+	EGON_ALTFIREOFF,
+	EGON_FIRE1,
+	EGON_FIRE2,
+	EGON_FIRE3,
+	EGON_FIRE4,
+	EGON_DRAW,
+	EGON_HOLSTER
 };
 
 void
 w_flame_precache(void)
 {
-	precache_model("sound/weapons/flmfire2.wav");
+#ifdef SSQC
+	Sound_Precache("weapon_flame.fire");
+#endif
 	precache_model("sprites/fthrow.spr");
 	precache_model("models/v_egon.mdl");
 	precache_model("models/w_egon.mdl");
 	precache_model("models/p_egon.mdl");
 }
+
 void
 w_flame_updateammo(player pl)
 {
@@ -45,20 +49,23 @@ w_flame_updateammo(player pl)
 	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_gas, __NULL__);
 #endif
 }
+
 string
 w_flame_wmodel(void)
 {
-	return "models/w_egon.mdl";
+	return w_egon_wmodel();
 }
+
 string
 w_flame_pmodel(void)
 {
-	return "models/p_egon.mdl";
+	return w_egon_pmodel();
 }
+
 string
 w_flame_deathmsg(void)
 {
-	return "";
+	return "%s burned to a crisp by %s's Flamethrower.";
 }
 
 int
@@ -66,7 +73,6 @@ w_flame_pickup(int new)
 {
 #ifdef SSQC
 	player pl = (player)self;
-
 	if (pl.ammo_gas < MAX_A_GAS) {
 		pl.ammo_gas = bound(0, pl.ammo_gas + 20, MAX_A_GAS);
 	} else {
@@ -79,38 +85,34 @@ w_flame_pickup(int new)
 void
 w_flame_draw(void)
 {
-	player pl = (player)self;
-	Weapons_SetModel("models/v_egon.mdl");
-	Weapons_ViewAnimation(FLAME_DRAW);
-	pl.w_idle_next = 1.0f;
+	w_egon_draw();
 }
 
 void
 w_flame_holster(void)
 {
-	Weapons_ViewAnimation(FLAME_HOLSTER);
+	w_egon_holster();
 }
 
 
 #ifdef SSQC
 void
-Flame_Touch(void) {
-
+Flame_Touch(void)
+{
 	if (other.takedamage != DAMAGE_YES) {
 		remove(self);
 		return;
 	}
 
-
 	/* anything else that can take damage */
-	Damage_Apply(other, self.owner, 40, WEAPON_FLAME, DMG_BURN);
-
+	Damage_Apply(other, self.owner, 40, WEAPON_EGON, DMG_BURN);
 	remove(self);
 }
 #endif
 
 
-void w_flame_primary(void)
+void
+w_flame_primary(void)
 {
 	player pl = (player)self;
 	if (pl.w_attack_next > 0.0) {
@@ -129,15 +131,15 @@ void w_flame_primary(void)
 #endif
 
 #ifdef CSQC
-	if (Weapons_GetAnimation() == FLAME_IDLE1)
-		Weapons_ViewAnimation(FLAME_ALTFIREON);
-	else if (Weapons_GetAnimation() == FLAME_ALTFIREON)
-		Weapons_ViewAnimation(FLAME_ALTFIRECYCLE);
-	
+	if (Weapons_GetAnimation() == EGON_IDLE1)
+		Weapons_ViewAnimation(EGON_ALTFIREON);
+	else if (Weapons_GetAnimation() == EGON_ALTFIREON)
+		Weapons_ViewAnimation(EGON_ALTFIRECYCLE);
+
 	pl.a_ammo2--;
 #else
 
-	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/flmfire2.wav", 1, ATTN_NORM);
+	Sound_Play(pl, CHAN_WEAPON, "weapon_flame.fire");
 	Weapons_MakeVectors();
 	entity flame = spawn();
 	setmodel(flame, "sprites/fthrow.spr");
@@ -160,32 +162,24 @@ void w_flame_primary(void)
 	pl.w_attack_next = 0.2f;
 	pl.w_idle_next = 2.5f;
 }
+
 void
 w_flame_secondary(void)
 {
-	
+	w_egon_secondary();
 }
+
 void
 w_flame_reload(void)
 {
-	
 }
+
 void
 w_flame_release(void)
 {
-#ifdef CSQC
-	player pl = (player)self;
-	if (Weapons_GetAnimation() == FLAME_ALTFIRECYCLE) {
-		Weapons_ViewAnimation(FLAME_ALTFIREOFF);
-		pl.w_idle_next = 1.0f;
-	} else {
-		if (pl.w_idle_next > 0.0f) {
-			return;
-		}
-		Weapons_ViewAnimation(FLAME_IDLE1);
-	}
-#endif	
+	w_egon_release();
 }
+
 void
 w_flame_crosshair(void)
 {
@@ -202,15 +196,14 @@ w_flame_crosshair(void)
 float
 w_flame_aimanim(void)
 {
-	return self.flags & FL_CROUCHING ? ANIM_CR_AIMEGON : ANIM_AIMEGON;
+	return w_egon_aimanim();
 }
 
 void 
 w_flame_hudpic(int selected, vector pos, float a)
 {
 #ifdef CSQC
-
-if (selected) {
+	if (selected) {
 		drawsubpic(
 			pos,
 			[170,45],
@@ -238,16 +231,16 @@ if (selected) {
 
 weapon_t w_flame =
 {
-	.id		= ITEM_FLAME,
+	.id		= ITEM_EGON,
 	.slot		= 3,
 	.slot_pos	= 2,
 	.ki_spr		= "sprites/640hud1.spr_0.tga",
 	.ki_size	= [32,16],
 	.ki_xy		= [0,192],
 	.draw		= w_flame_draw,
-	.holster	= __NULL__,
+	.holster	= w_egon_holster,
 	.primary	= w_flame_primary,
-	.secondary	= __NULL__,
+	.secondary	= w_flame_secondary,
 	.reload		= __NULL__,
 	.release	= w_flame_release,
 	.crosshair	= w_flame_crosshair,
@@ -260,11 +253,3 @@ weapon_t w_flame =
 	.aimanim	= w_flame_aimanim,
 	.hudpic		= w_flame_hudpic
 };
-
-
-#ifdef SSQC
-void
-weapon_egon(void) {
-	Weapons_InitItem(WEAPON_FLAME);
-}
-#endif

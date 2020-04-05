@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2019-2020 Gethyn ThomasQuail <xylemon@posteo.net>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -32,10 +33,12 @@ enum
 void
 w_taurus_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_taurus.fire");
+#endif
 	precache_model("models/v_taurus.mdl");
 	precache_model("models/w_taurus.mdl");
 	precache_model("models/p_taurus.mdl");
-	precache_sound("weapons/tau_fire.wav");
 }
 
 void
@@ -61,7 +64,7 @@ w_taurus_pmodel(void)
 string
 w_taurus_deathmsg(void)
 {
-	return "";
+	return "%s is seeing blue from %s's Taurus.";
 }
 
 int
@@ -134,7 +137,7 @@ w_taurus_primary(void)
 #else
 	pl.taurus_mag--;
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 12, [0.01,0,01], WEAPON_TAURUS);
-	sound(pl, CHAN_WEAPON, "weapons/tau_fire.wav", 1.0f, ATTN_NORM);
+	Sound_Play(pl, CHAN_WEAPON, "weapon_taurus.fire");
 
 	if (self.flags & FL_CROUCHING)
 		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
@@ -219,74 +222,19 @@ w_taurus_release(void)
 float
 w_taurus_aimanim(void)
 {
-	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
+	return w_glock_aimanim();
 }
 
 void
 w_taurus_hud(void)
 {
-#ifdef CSQC
-	vector cross_pos;
-	vector aicon_pos;
-
-	cross_pos = g_hudmins + (g_hudres / 2) + [-12,-12];
-	aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-
-	drawsubpic(
-		cross_pos,
-		[24,24],
-		"sprites/crosshairs.spr_0.tga",
-		[0.1875,0],
-		[0.1875, 0.1875],
-		[1,1,1],
-		1.0f,
-		DRAWFLAG_NORMAL
-	);
-
-	HUD_DrawAmmo1();
-	HUD_DrawAmmo2();
-
-	drawsubpic(
-		aicon_pos,
-		[24,24],
-		"sprites/640hud7.spr_0.tga",
-		[0,72/128],
-		[24/256, 24/128],
-		g_hud_color,
-		pSeat->ammo2_alpha,
-		DRAWFLAG_ADDITIVE
-	);
-#endif
+	w_glock_hud();
 }
 
 void
 w_taurus_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
-	if (selected) {
-		drawsubpic(
-			pos,
-			[170,45],
-			"sprites/640hud4.spr_0.tga",
-			[0,45/256],
-			[170/256,45/256],
-			g_hud_color,
-			a,
-			DRAWFLAG_ADDITIVE
-		);
-	} else {
-		drawsubpic(
-			pos,
-			[170,45],
-			"sprites/640hud1.spr_0.tga",
-			[0,45/256],
-			[170/256,45/256],
-			g_hud_color,
-			a,
-			DRAWFLAG_ADDITIVE
-		);
-	}
-#endif
+	w_glock_hudpic(selected, pos, a);
 }
 
 weapon_t w_taurus =

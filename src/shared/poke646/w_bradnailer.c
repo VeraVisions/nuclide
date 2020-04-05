@@ -14,6 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED weapon_bradnailer (0 0 1) (-16 -16 0) (16 16 32)
+"model" "models/w_bradnailer.mdl"
+
+Poke646 (2001) ENTITY
+
+Handheld Nailgun that kills like a pistol
+
+*/
+
 enum
 {
 	BNAIL_IDLE1,
@@ -34,10 +43,10 @@ enum
 void
 w_bradnailer_precache(void)
 {
-	precache_sound("weapons/brad_hit1.wav");
-	precache_sound("weapons/brad_hit2.wav");
-	precache_sound("weapons/bradnailer.wav");
-
+#ifdef SSQC
+	Sound_Precache("weapon_bradnailer.fire");
+	Sound_Precache("weapon_bradnailer.hitbody");
+#endif
 
 	precache_model("models/nail.mdl");
 	precache_model("models/v_bradnailer.mdl");
@@ -48,7 +57,7 @@ void
 w_bradnailer_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, __NULL__, __NULL__, __NULL__);
+	Weapons_UpdateAmmo(pl, pl.bradnailer_mag, pl.ammo_nail, -1);
 #endif
 }
 

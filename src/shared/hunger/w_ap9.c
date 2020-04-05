@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
- * Copyright (c) 2019 Gethyn ThomasQuail <xylemon@posteo.net>
+ * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2019-2020 Gethyn ThomasQuail <xylemon@posteo.net>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -25,17 +25,18 @@ enum
 	AP9_SHOOT3
 };
 
-
 void
 w_ap9_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_ap9.fire");
+#endif
 	precache_model("models/v_ap9.mdl");
 	precache_model("models/w_ap9.mdl");
 	precache_model("models/p_ap9.mdl");
 	precache_sound("weapons/ap9_bolt.wav");
 	precache_sound("weapons/ap9_clipin.wav");
 	precache_sound("weapons/ap9_clipout.wav");
-	precache_sound("weapons/ap9_fire.wav");
 }
 
 void
@@ -61,7 +62,7 @@ w_ap9_pmodel(void)
 string
 w_ap9_deathmsg(void)
 {
-	return "";
+	return "%s was unloaded into from %s's AP9.";
 }
 
 int
@@ -140,7 +141,7 @@ w_ap9_primary(void)
 #else
 	pl.ap9_mag--;
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.1,0.1], WEAPON_AP9);
-	sound(pl, CHAN_WEAPON, "weapons/ap9_fire.wav", 1.0f, ATTN_NORM);
+	Sound_Play(pl, CHAN_WEAPON, "weapon_ap9.fire");
 
 	if (self.flags & FL_CROUCHING)
 		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
@@ -192,7 +193,7 @@ w_ap9_secondary(void)
 #else
 	pl.ap9_mag -= 3;
 	TraceAttack_FireBullets(3, pl.origin + pl.view_ofs, 8, [0.02,0.02], WEAPON_AP9);
-	sound(pl, CHAN_WEAPON, "weapons/ap9_fire.wav", 1.0f, ATTN_NORM);
+	Sound_Play(pl, CHAN_WEAPON, "weapon_ap9.fire");
 
 	if (self.flags & FL_CROUCHING)
 		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
@@ -252,44 +253,13 @@ w_ap9_release(void)
 float
 w_ap9_aimanim(void)
 {
-	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
+	return w_glock_aimanim();
 }
 
 void
 w_ap9_hud(void)
 {
-#ifdef CSQC
-	vector cross_pos;
-	vector aicon_pos;
-
-	cross_pos = (g_hudres / 2) + [-12,-12];
-	aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-
-	drawsubpic(
-		cross_pos,
-		[24,24],
-		"sprites/crosshairs.spr_0.tga",
-		[0.1875,0],
-		[0.1875, 0.1875],
-		[1,1,1],
-		1.0f,
-		DRAWFLAG_NORMAL
-	);
-
-	HUD_DrawAmmo1();
-	HUD_DrawAmmo2();
-
-	drawsubpic(
-		aicon_pos,
-		[24,24],
-		"sprites/640hud7.spr_0.tga",
-		[0,72/128],
-		[24/256, 24/128],
-		g_hud_color,
-		pSeat->ammo2_alpha,
-		DRAWFLAG_ADDITIVE
-	);
-#endif
+	w_glock_hud();
 }
 
 void
@@ -300,8 +270,8 @@ w_ap9_hudpic(int selected, vector pos, float a)
 		drawsubpic(
 			pos,
 			[170,45],
-			"sprites/tfchud04.spr_0.tga",
-			[0,90/256],
+			"sprites/tfchud05.spr_0.tga",
+			[0,0],
 			[170/256,45/256],
 			g_hud_color,
 			a,
@@ -350,7 +320,8 @@ weapon_t w_ap9 =
 /* pickups */
 #ifdef SSQC
 void
-weapon_th_ap9(void) {
+weapon_th_ap9(void)
+{
 	Weapons_InitItem(WEAPON_AP9);
 }
 #endif

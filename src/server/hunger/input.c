@@ -63,7 +63,7 @@ void Game_Input(void)
 			Weapons_AddItem(pl, WEAPON_SNIPER2);
 			Weapons_AddItem(pl, WEAPON_RPG);
 			Weapons_AddItem(pl, WEAPON_GAUSS);
-			Weapons_AddItem(pl, WEAPON_FLAME);
+			Weapons_AddItem(pl, WEAPON_EGON);
 			Weapons_AddItem(pl, WEAPON_CHAINGUN);
 			Weapons_AddItem(pl, WEAPON_HANDGRENADE);
 			Weapons_AddItem(pl, WEAPON_SATCHEL);

@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
- * Copyright (c) 2019 Gethyn ThomasQuail <xylemon@posteo.net>
+ * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2019-2020 Gethyn ThomasQuail <xylemon@posteo.net>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -28,12 +28,13 @@ enum
 void
 w_sniper_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_sniper.fire");
+	Sound_Precache("weapon_sniper.reload");
+#endif
 	precache_model("models/v_tfc_sniper.mdl");
 	precache_model("models/w_isotopebox.mdl");
 	precache_model("models/p_sniper.mdl");
-
-	precache_sound("weapons/sniper.wav");
-	precache_sound("weapons/reload3.wav");
 }
 
 int
@@ -78,7 +79,7 @@ w_sniper_pmodel(void)
 string
 w_sniper_deathmsg(void)
 {
-	return "";
+	return "%s was taken out by %s's Sniper.";
 }
 
 void
@@ -160,7 +161,7 @@ w_sniper_primary(void)
 	pl.sniper_mag--;
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 40, [0.008, 0.008], WEAPON_SNIPER);
 
-	sound(pl, CHAN_WEAPON, "weapons/sniper.wav", 1, ATTN_NORM);
+	Sound_Play(pl, CHAN_WEAPON, "weapon_sniper.fire");
 #endif
 
 
@@ -217,7 +218,7 @@ w_sniper_reload(void)
 	if (pl.ammo_sniper <= 0) {
 		return;
 	}
-	sound(pl, CHAN_WEAPON, "weapons/reload3.wav", 1, ATTN_NORM);
+	Sound_Play(pl, CHAN_WEAPON, "weapon_sniper.reload");
 	Weapons_ReloadWeapon(pl, player::sniper_mag, player::ammo_sniper, 5);
 #endif
 
@@ -286,7 +287,7 @@ w_sniper_crosshair(void)
 float
 w_sniper_aimanim(void)
 {
-	return self.flags & FL_CROUCHING ? ANIM_CR_AIMPYTHON : ANIM_AIMPYTHON;
+	return w_crossbow_aimanim();
 }
 
 void

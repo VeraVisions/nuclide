@@ -9,6 +9,27 @@ weapon_357.reload
 	sample weapons/357_reload1.wav
 }
 
+weapon_crossbow.fire
+{
+	sample weapons/xbow_fire1.wav
+}
+
+weapon_crossbow.hit
+{
+	sample weapons/xbow_hit1.wav
+}
+
+weapon_crossbow.hitbody
+{
+	sample weapons/xbow_hitbod1.wav
+	sample weapons/xbow_hitbod2.wav
+}
+
+weapon_crossbow.reload
+{
+	sample weapons/xbow_reload1.wav
+}
+
 weapon_crowbar.hit
 {
 	sample weapons/cbar_hit1.wav

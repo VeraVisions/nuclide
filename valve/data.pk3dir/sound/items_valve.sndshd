@@ -1,0 +1,9 @@
+ammo.pickup
+{
+	sample items/9mmclip1.wav
+}
+
+ammo.respawn
+{
+	sample items/suitchargeok1.wav
+}

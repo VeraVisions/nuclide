@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2019-2020 Gethyn ThomasQuail <xylemon@posteo.net>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,26 +17,25 @@
 
 enum
 {
-	SHOVEL_IDLE,
-	SHOVEL_DRAW,
-	SHOVEL_HOLSTER,
-	SHOVEL_ATTACK1HIT,
-	SHOVEL_ATTACK1MISS,
-	SHOVEL_ATTACK2MISS,
-	SHOVEL_ATTACK2HIT,
-	SHOVEL_ATTACK3MISS,
-	SHOVEL_ATTACK3HIT
+	CBAR_IDLE,
+	CBAR_DRAW,
+	CBAR_HOLSTER,
+	CBAR_ATTACK1HIT,
+	CBAR_ATTACK1MISS,
+	CBAR_ATTACK2MISS,
+	CBAR_ATTACK2HIT,
+	CBAR_ATTACK3MISS,
+	CBAR_ATTACK3HIT
 };
 
 void
 w_shovel_precache(void)
 {
-	precache_sound("weapons/cbar_miss1.wav");
-	precache_sound("weapons/cbar_hit1.wav");
-	precache_sound("weapons/cbar_hit2.wav");
-	precache_sound("weapons/cbar_hitbod1.wav");
-	precache_sound("weapons/cbar_hitbod2.wav");
-	precache_sound("weapons/cbar_hitbod3.wav");
+#ifdef SSQC
+	Sound_Precache("weapon_crowbar.hit");
+	Sound_Precache("weapon_crowbar.miss");
+	Sound_Precache("weapon_crowbar.hitbody");
+#endif
 	precache_model("models/v_shovel.mdl");
 	precache_model("models/w_shovel.mdl");
 	precache_model("models/p_shovel.mdl");
@@ -44,9 +44,7 @@ w_shovel_precache(void)
 void
 w_shovel_updateammo(player pl)
 {
-#ifdef SSQC
-	Weapons_UpdateAmmo(pl, -1, -1, -1);
-#endif
+	w_crowbar_updateammo(pl);
 }
 
 string
@@ -63,124 +61,38 @@ w_shovel_pmodel(void)
 string
 w_shovel_deathmsg(void)
 {
-	return "%s was assaulted by %s's Crowbar.";
+	return "%s was buried by %s's Shovel.";
 }
 
 void
 w_shovel_draw(void)
 {
 	Weapons_SetModel("models/v_shovel.mdl");
-	Weapons_ViewAnimation(SHOVEL_DRAW);
+	Weapons_ViewAnimation(CBAR_DRAW);
 }
 
 void
 w_shovel_holster(void)
 {
-	Weapons_ViewAnimation(SHOVEL_HOLSTER);
+	w_crowbar_holster();
 }
 
 void
 w_shovel_primary(void)
 {
-	int anim = 0;
-	int r;
-	vector src;
-	player pl = (player)self;
-
-	if (pl.w_attack_next) {
-		return;
-	}
-
-	Weapons_MakeVectors();
-	src = pl.origin + pl.view_ofs;
-	traceline(src, src + (v_forward * 32), FALSE, pl);
-
-	if (trace_fraction >= 1.0) {
-		pl.w_attack_next = 0.5f;
-	} else {
-		pl.w_attack_next = 0.25f;
-	}
-	pl.w_idle_next = 2.5f;
-
-#ifdef CSQC
-	r = floor(random(0,3));
-	switch (r) {
-	case 0:
-		anim = trace_fraction >= 1 ? SHOVEL_ATTACK1MISS:SHOVEL_ATTACK1HIT;
-		break;
-	case 1:
-		anim = trace_fraction >= 1 ? SHOVEL_ATTACK2MISS:SHOVEL_ATTACK2HIT;
-		break;
-	default:
-		anim = trace_fraction >= 1 ? SHOVEL_ATTACK3MISS:SHOVEL_ATTACK3HIT;
-	}
-	Weapons_ViewAnimation(anim);
-#else
-	if (pl.flags & FL_CROUCHING) {
-		Animation_PlayerTopTemp(ANIM_SHOOTCROWBAR, 0.5f);
-	} else {
-		Animation_PlayerTopTemp(ANIM_CR_SHOOTCROWBAR, 0.42f);
-	}
-
-	sound(pl, CHAN_WEAPON, "weapons/cbar_miss1.wav", 1, ATTN_NORM);
-
-	if (trace_fraction >= 1.0) {
-		return;
-	}
-
-	/* don't bother with decals, we got squibs */
-	if (trace_ent.iBleeds) {
-		Effect_CreateBlood(trace_endpos, [1,0,0]);
-	} else {
-		Effect_Impact(IMPACT_MELEE, trace_endpos, trace_plane_normal);
-	}
-
-	if (trace_ent.takedamage) {
-		Damage_Apply(trace_ent, self, 10, WEAPON_SHOVEL, DMG_BLUNT );
-
-		if (!trace_ent.iBleeds) {
-			return;
-		}
-
-		r = floor(random(0,3));
-		switch (r) {
-		case 0:
-			sound(pl, 8, "weapons/cbar_hitbod1.wav", 1, ATTN_NORM);
-			break;
-		case 1:
-			sound(pl, 8, "weapons/cbar_hitbod2.wav", 1, ATTN_NORM);
-			break;
-		case 2:
-			sound(pl, 8, "weapons/cbar_hitbod3.wav", 1, ATTN_NORM);
-			break;
-		}
-	} else {
-		if (random() < 0.5) {
-			sound(pl, 8, "weapons/cbar_hit1.wav", 1, ATTN_NORM);
-		} else {
-			sound(pl, 8, "weapons/cbar_hit2.wav", 1, ATTN_NORM);
-		}
-	}
-#endif
+	w_crowbar_primary();
 }
 
 void
 w_shovel_release(void)
 {
-	player pl = (player)self;
-
-	if (pl.w_idle_next) {
-		return;
-	}
-
-	Weapons_ViewAnimation(SHOVEL_IDLE);
-	pl.w_idle_next = 15.0f;
+	w_crowbar_release();
 }
 
 float
 w_shovel_aimanim(void)
 {
-	return self.flags & FL_CROUCHING ? ANIM_CR_AIMCROWBAR : ANIM_AIMCROWBAR;
+	return w_crowbar_aimanim();
 }
 
 void

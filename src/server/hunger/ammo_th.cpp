@@ -15,12 +15,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED ammo_th_ap9 (0 0 0.8) (-16 -16 0) (16 16 32)
 
+THEY HUNGER (1999) ENTITY
 
+Ammo for the Flamethrower.
+A single ammo_egonclip will provide 25, er, gas.
 
-/*
- * Ammo for the Flamethrower.
- * A single ammo_egonclip will provide 25, er, gas.
  */
 class ammo_egonclip:item_ammo
 {
@@ -42,15 +43,20 @@ void ammo_egonclip::touch(void)
 		player pl = (player)other;
 		if (pl.ammo_gas < MAX_A_GAS) {
 			pl.ammo_gas = bound(0, pl.ammo_gas + 25, MAX_A_GAS);
+			Sound_Play(other, CHAN_ITEM, "ammo_gas.pickup");
 			item_ammo::touch();
 		}
 	}
 }
 
-/*
- * Ammo for the AP9.
- * A single ammo_th_ap9 will provide 40 bullets.
- */
+/*QUAKED ammo_th_ap9 (0 0 0.8) (-16 -16 0) (16 16 32)
+
+THEY HUNGER (1999) ENTITY
+
+Ammo for the AP9.
+A single ammo_th_ap9 will provide 40 bullets.
+
+*/
 class ammo_th_ap9:item_ammo
 {
 	void() ammo_th_ap9;
@@ -76,34 +82,27 @@ void ammo_th_ap9::touch(void)
 	}
 }
 
-/*
- * Ammo for the Snipers.
- * A single ammo_th_sniper will provide 5 bullets.
- */
-class ammo_einar1:item_ammo
-{
-	void() ammo_einar1;
-	virtual void() touch;
-};
 
-void ammo_einar1::ammo_einar1(void)
-{
-	model = "models/w_antidote.mdl";
-	item_ammo::item_ammo();
-}
-void ammo_einar1::touch(void)
-{
-	if not (other.flags & FL_CLIENT) {
-		return;
-	}
-	if (other.classname == "player") {
-		player pl = (player)other;
-		if (pl.ammo_sniper < MAX_A_SNIPER) {
-			pl.ammo_sniper = bound(0, pl.ammo_sniper + 5, MAX_A_SNIPER);
-			item_ammo::touch();
-		}
-	}
-}
+/*QUAKED ammo_einar1 (0 0 0.8) (-16 -16 0) (16 16 32)
+
+THEY HUNGER (1999) ENTITY
+
+Ammo for the Snipers.
+A single ammo_th_sniper will provide 5 bullets.
+
+Same as ammo_th_sniper
+
+*/
+/*QUAKED ammo_th_sniper (0 0 0.8) (-16 -16 0) (16 16 32)
+
+THEY HUNGER (1999) ENTITY
+
+Ammo for the Snipers.
+A single ammo_th_sniper will provide 5 bullets.
+
+Same as ammo_einar1
+
+*/
 
 class ammo_th_sniper:item_ammo
 {
@@ -130,3 +129,4 @@ void ammo_th_sniper::touch(void)
 	}
 }
 
+CLASSEXPORT(ammo_einar1, ammo_th_sniper)

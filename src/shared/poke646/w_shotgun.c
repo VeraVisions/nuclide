@@ -247,7 +247,7 @@ weapon_t w_shotgun =
 {
 	.id		= ITEM_SHOTGUN,
 	.slot		= 2,
-	.slot_pos	= 0,
+	.slot_pos	= 1,
 	.ki_spr		= __NULL__,
 	.ki_size	= __NULL__,
 	.ki_xy		= __NULL__,
