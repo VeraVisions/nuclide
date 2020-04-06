@@ -247,8 +247,6 @@ CSQC_UpdateView(float w, float h, float focus)
 			}
 		}
 
-		Predict_PostFrame((player)self);
-
 		if (pSeat->pWeaponFX) {
 			CBaseFX p = (CBaseFX)pSeat->pWeaponFX;
 			p.Draw();
@@ -333,6 +331,8 @@ CSQC_UpdateView(float w, float h, float focus)
 				CSQC_DrawCenterprint();
 			}
 		}
+
+		Predict_PostFrame((player)self);
 	}
 
 	DSP_UpdateListener();
