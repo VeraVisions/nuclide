@@ -155,10 +155,6 @@ void w_snark_draw(void)
 {
 	Weapons_SetModel("models/v_squeak.mdl");
 	Weapons_ViewAnimation(SNARK_DRAW);
-#ifdef SSQC
-	player pl = (player)self;
-	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_snark, __NULL__);
-#endif
 }
 
 void w_snark_holster(void)
@@ -201,7 +197,6 @@ void w_snark_primary(void)
 #else
 	w_snark_deploy();
 	pl.ammo_snark--;
-	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_snark, __NULL__);
 
 	if (pl.a_ammo2 <= 0) {
 		Weapons_RemoveItem(pl, WEAPON_SNARK);

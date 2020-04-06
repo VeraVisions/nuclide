@@ -793,6 +793,9 @@ PMove_Run(void)
 	self.basevelocity = [0,0,0];
 	self.groundentity = __NULL__;
 
+	/* activate any SOLID_TRIGGER entities */
+	touchtriggers();
+
 	/* timers, these are predicted and shared across client and server */
 	pl.w_attack_next = max(0, pl.w_attack_next - input_timelength);
 	pl.w_idle_next = max(0, pl.w_idle_next - input_timelength);
@@ -804,7 +807,4 @@ PMove_Run(void)
 
 	/* weapon/item logic of what the player controls */
 	Game_Input();
-
-	/* activate any SOLID_TRIGGER entities */
-	touchtriggers();
 }

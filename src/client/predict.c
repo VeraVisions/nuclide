@@ -45,20 +45,10 @@ void Predict_PreFrame(player pl)
 	/*for (; self.pmove_frame <= servercommandframe; self.pmove_frame++) {
 		float flSuccess = getinputstate(self.pmove_frame);*/
 	for ( int i = pl.sequence + 1; i <= clientcommandframe; i++ ) {
-		float flSuccess = getinputstate( i );
+		if (!getinputstate(i)) {
+			break;	//erk?... too old?
+		}
 		input_sequence = i;
-		if (flSuccess == FALSE) {
-			continue;
-		}
-
-		if (i==clientcommandframe){
-			CSQC_Input_Frame();
-		}
-
-		// Partial frames are the worst
-		if (input_timelength == 0) {
-			break;
-		}
 		QPhysics_Run(pl);
 	}
 }
