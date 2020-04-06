@@ -1,26 +1,28 @@
 FTEMANIFEST 1
-GAME rewolf
-NAME "Gunman Chronicles"
+GAME valve_dayone
+NAME "Half-Life: Day One"
 BASEGAME logos
-BASEGAME rewolf
+BASEGAME valve_dayone
 
 // custom game menu variables
--set gameinfo_game "Gunman Chronicles"
--set gameinfo_gamedir "rewolf"
+-set gameinfo_game "Half-Life: Day One"
+-set gameinfo_gamedir "valve_dayone"
 -set gameinfo_fallback_dir ""
 -set gameinfo_mpentity "info_player_deathmatch"
--set gameinfo_size "212803108"
--set gameinfo_url_info "www.gunmanchronicles.com"
+-set gameinfo_size "97652826"
+-set gameinfo_url_info "www.icculus.org/~marco/"
 -set gameinfo_version "1.0"
 -set gameinfo_url_dl ""
--set gameinfo_type "Both"
+-set gameinfo_type "Singleplayer"
 -set gameinfo_nomodels 0
 -set gameinfo_gamedll "progs.dat"
--set gameinfo_startmap "city1a"
--set gameinfo_trainingmap "playvideo av:media/rewolf.bik"
+-set gameinfo_startmap "c0a0"
+-set gameinfo_trainingmap "map t0a0"
 -set gameinfo_cldll 1
 -set gameinfo_hlversion "1110"
 -set gameinfo_svonly "0"
+
+PACKAGE valve_dayone/pak0.pk3 0x141b84fb "http://www.frag-net.com/dl/141b84fb/pak0.pk3"
 
 // you don't really want to change these
 RTCBROKER master.frag-net.com:27950

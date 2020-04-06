@@ -5,22 +5,22 @@ BASEGAME logos
 BASEGAME valve
 
 // custom game menu variables
--seta gameinfo_game "Nuclide"
--seta gameinfo_gamedir "valve"
--seta gameinfo_fallback_dir ""
--seta gameinfo_mpentity "info_player_deathmatch"
--seta gameinfo_size "496200000"
--seta gameinfo_url_info "www.icculus.org/~marco/"
--seta gameinfo_version "1.0"
--seta gameinfo_url_dl ""
--seta gameinfo_type "Both"
--seta gameinfo_nomodels 0
--seta gameinfo_gamedll "progs.dat"
--seta gameinfo_startmap "c0a0"
--seta gameinfo_trainingmap "map t0a0"
--seta gameinfo_cldll 1
--seta gameinfo_hlversion "1110"
--seta gameinfo_svonly "0"
+-set gameinfo_game "Nuclide"
+-set gameinfo_gamedir "valve"
+-set gameinfo_fallback_dir ""
+-set gameinfo_mpentity "info_player_deathmatch"
+-set gameinfo_size "496200000"
+-set gameinfo_url_info "www.icculus.org/~marco/"
+-set gameinfo_version "1.0"
+-set gameinfo_url_dl ""
+-set gameinfo_type "Both"
+-set gameinfo_nomodels 0
+-set gameinfo_gamedll "progs.dat"
+-set gameinfo_startmap "c0a0"
+-set gameinfo_trainingmap "map t0a0"
+-set gameinfo_cldll 1
+-set gameinfo_hlversion "1110"
+-set gameinfo_svonly "0"
 
 // you don't really want to change these
 RTCBROKER master.frag-net.com:27950

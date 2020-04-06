@@ -1,26 +1,28 @@
 FTEMANIFEST 1
-GAME rewolf
-NAME "Gunman Chronicles"
+GAME rewolf_demo
+NAME "Gunman Demo"
 BASEGAME logos
-BASEGAME rewolf
+BASEGAME rewolf_demo
 
 // custom game menu variables
--set gameinfo_game "Gunman Chronicles"
--set gameinfo_gamedir "rewolf"
+-set gameinfo_game "Gunman Demo"
+-set gameinfo_gamedir "rewolf_demo"
 -set gameinfo_fallback_dir ""
 -set gameinfo_mpentity "info_player_deathmatch"
--set gameinfo_size "212803108"
+-set gameinfo_size "58303552"
 -set gameinfo_url_info "www.gunmanchronicles.com"
 -set gameinfo_version "1.0"
 -set gameinfo_url_dl ""
--set gameinfo_type "Both"
+-set gameinfo_type "Singleplayer"
 -set gameinfo_nomodels 0
 -set gameinfo_gamedll "progs.dat"
--set gameinfo_startmap "city1a"
--set gameinfo_trainingmap "playvideo av:media/rewolf.bik"
+-set gameinfo_startmap "demo1"
+-set gameinfo_trainingmap "demo1"
 -set gameinfo_cldll 1
 -set gameinfo_hlversion "1110"
 -set gameinfo_svonly "0"
+
+PACKAGE rewolf_demo/pak0.pk3 0x105f03e9 "http://www.frag-net.com/dl/105f03e9/pak0.pk3"
 
 // you don't really want to change these
 RTCBROKER master.frag-net.com:27950

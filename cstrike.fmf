@@ -1,18 +1,18 @@
 FTEMANIFEST 1
-GAME scihunt
-NAME "Scientist Hunt"
+GAME cstrike
+NAME "Counter-Strike"
 BASEGAME logos
 BASEGAME valve
-BASEGAME scihunt
+BASEGAME cstrike
 
 // custom game menu variables
--set gameinfo_game "Scientist Hunt"
+-set gameinfo_game "Counter-Strike"
 -set gameinfo_type "Multiplayer"
--set gameinfo_gamedir "scihunt"
+-set gameinfo_gamedir "cstrike"
 -set gameinfo_fallback_dir ""
 -set gameinfo_mpentity "info_player_deathmatch"
--set gameinfo_size "12869244"
--set gameinfo_version "1.0"
+-set gameinfo_size "184000000"
+-set gameinfo_version "1.5"
 -set gameinfo_hlversion "1110"
 -set gameinfo_nomodels 0
 -set gameinfo_gamedll "progs.dat"
@@ -20,15 +20,15 @@ BASEGAME scihunt
 -set gameinfo_trainingmap "map t0a0"
 -set gameinfo_cldll 1
 -set gameinfo_svonly "0"
--set gameinfo_url_info "www.richwhitehouse.com"
--set gameinfo_url_dl "http://www.frag-net.com/mods/scihunt.fmf"
--set gameinfo_menutrack "sound/Hondo2/pca.wav"
+-set gameinfo_url_info "www.counter-strike.net"
+-set gameinfo_url_dl "http://www.frag-net.com/mods/cstrike.fmf"
+-set gameinfo_menutrack "sound/ambience/Opera.wav"
 
 // download/update packaging information
-PACKAGE scihunt/pak0.pk3 0xc1cbd5c1 "http://www.frag-net.com/dl/c1cbd5c1/pak0.pk3"
+// PACKAGE cstrike/pak0.pk3 0xc1cbd5c1 "http://www.frag-net.com/files/cstrike_pak0.pk3"
 
 // do we want this? I don't want to automatically update it
-// UPDATEURL http://www.frag-net.com/mods/scihunt.fmf
+// UPDATEURL http://www.frag-net.com/mods/cstrike.fmf
 
 // you don't really want to change these
 RTCBROKER master.frag-net.com:27950
