@@ -26,6 +26,12 @@ enum {
 void
 w_knife_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_knife.hit");
+	Sound_Precache("weapon_knife.hitbody");
+	Sound_Precache("weapon_knife.hithard");
+	Sound_Precache("weapon_knife.miss");
+#endif
 	precache_model("models/v_knife.mdl");
 	precache_model("models/w_knife.mdl");
 	precache_model("models/p_knife.mdl");
@@ -79,7 +85,7 @@ w_knife_primary(void)
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 	Weapons_ViewPunchAngle([-2,0,0]);
 
-	int r = floor(random(0,3));
+	int r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(KNIFE_SHOOT1);
@@ -93,7 +99,7 @@ w_knife_primary(void)
 	}
 #endif
 
-	pl.w_attack_next = 0.0955f;
+	pl.w_attack_next = 0.7f;
 }
 
 float

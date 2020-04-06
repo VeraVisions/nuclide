@@ -93,7 +93,7 @@ w_ak47_primary(void)
 {
 	player pl = (player)self;
 
-	if (pl.w_attack_next > 0.0) {
+	if (pl.w_attack_next > 0) {
 		return;
 	}
 
@@ -105,7 +105,7 @@ w_ak47_primary(void)
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 	Weapons_ViewPunchAngle([-2,0,0]);
 
-	int r = floor(random(0,3));
+	int r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(AK47_SHOOT1);
@@ -122,7 +122,7 @@ w_ak47_primary(void)
 		return;
 	}
 
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.01,0,01], WEAPON_AK47);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 36, [0.35,0,1.25], WEAPON_AK47);
 
 	pl.ak47_mag--;
 
@@ -220,27 +220,27 @@ w_ak47_hudpic(int selected, vector pos, float a)
 
 weapon_t w_ak47 =
 {
-	ITEM_AK47,
-	0,
-	7,
-	"sprites/640hud1.spr_0.tga",
-	[32,16],
-	[192,16],
-	w_ak47_draw,
-	__NULL__,
-	w_ak47_primary,
-	__NULL__,
-	w_ak47_reload,
-	__NULL__,
-	w_ak47_hud,
-	w_ak47_precache,
-	w_ak47_pickup,
-	w_ak47_updateammo,
-	w_ak47_wmodel,
-	w_ak47_pmodel,
-	w_ak47_deathmsg,
-	w_ak47_aimanim,
-	w_ak47_hudpic
+	.id		= ITEM_AK47,
+	.slot		= 0,
+	.slot_pos	= 7,
+	.ki_spr		= "sprites/640hud1.spr_0.tga",
+	.ki_size	= [32,16],
+	.ki_xy		= [192,16],
+	.draw		= w_ak47_draw,
+	.holster	= __NULL__,
+	.primary	= w_ak47_primary,
+	.secondary	= __NULL__,
+	.reload		= w_ak47_reload,
+	.release	= __NULL__,
+	.crosshair	= w_ak47_hud,
+	.precache	= w_ak47_precache,
+	.pickup		= w_ak47_pickup,
+	.updateammo	= w_ak47_updateammo,
+	.wmodel		= w_ak47_wmodel,
+	.pmodel		= w_ak47_pmodel,
+	.deathmsg	= w_ak47_deathmsg,
+	.aimanim	= w_ak47_aimanim,
+	.hudpic		= w_ak47_hudpic
 };
 
 #ifdef SSQC

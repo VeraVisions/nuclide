@@ -26,6 +26,9 @@ enum {
 void
 w_g3sg1_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_g3sg1.fire");
+#endif
 	precache_model("models/v_g3sg1.mdl");
 	precache_model("models/w_g3sg1.mdl");
 	precache_model("models/p_g3sg1.mdl");
@@ -64,10 +67,10 @@ w_g3sg1_pickup(int new)
 	player pl = (player)self;
 
 	if (new) {
-		pl.g3sg1_mag = 30;
+		pl.g3sg1_mag = 20;
 	} else {
-		if (pl.ammo_762mm < 90) {
-			pl.ammo_762mm = bound(0, pl.ammo_762mm + 30, 90);
+		if (pl.ammo_762mm < 60) {
+			pl.ammo_762mm = bound(0, pl.ammo_762mm + 20, 60);
 		} else {
 			return FALSE;
 		}
@@ -102,7 +105,7 @@ w_g3sg1_primary(void)
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 	Weapons_ViewPunchAngle([-2,0,0]);
 
-	int r = floor(random(0,3));
+	int r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(G3SG1_SHOOT1);
@@ -119,7 +122,7 @@ w_g3sg1_primary(void)
 		return;
 	}
 
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.01,0,01], WEAPON_G3SG1);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 80, [0.01,0,01], WEAPON_G3SG1);
 
 	pl.g3sg1_mag--;
 
@@ -128,14 +131,10 @@ w_g3sg1_primary(void)
 	else
 		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
 
-	if (random() < 0.5) {
-		sound(pl, CHAN_WEAPON, "weapons/g3sg1-1.wav", 1.0f, ATTN_NORM);
-	} else {
-		sound(pl, CHAN_WEAPON, "weapons/g3sg1-2.wav", 1.0f, ATTN_NORM);
-	}
+	Sound_Play(pl, CHAN_WEAPON, "weapon_g3sg1.fire");
 #endif
 
-	pl.w_attack_next = 0.0955f;
+	pl.w_attack_next = 0.25f;
 }
 
 void
@@ -148,21 +147,21 @@ w_g3sg1_reload(void)
 	}
 
 #ifdef CSQC
-	if (pl.a_ammo1 >= 30) {
+	if (pl.a_ammo1 >= 20) {
 		return;
 	}
 	if (!pl.a_ammo2) {
 		return;
 	}
 #else
-	if (pl.g3sg1_mag >= 30) {
+	if (pl.g3sg1_mag >= 20) {
 		return;
 	}
 	if (!pl.ammo_762mm) {
 		return;
 	}
 
-	Weapons_ReloadWeapon(pl, player::g3sg1_mag, player::ammo_762mm, 30);
+	Weapons_ReloadWeapon(pl, player::g3sg1_mag, player::ammo_762mm, 20);
 	Weapons_UpdateAmmo(pl, pl.g3sg1_mag, pl.ammo_762mm, -1);
 #endif
 
@@ -173,7 +172,7 @@ w_g3sg1_reload(void)
 float
 w_g3sg1_aimanim(void)
 {
-	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
+	return w_ak47_aimanim();
 }
 
 void

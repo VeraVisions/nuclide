@@ -26,11 +26,12 @@ enum {
 void
 w_elites_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_elites.fire");
+#endif
 	precache_model("models/v_elites.mdl");
 	precache_model("models/w_elites.mdl");
 	precache_model("models/p_elites.mdl");
-	precache_sound("weapons/elites-1.wav");
-	precache_sound("weapons/elites-2.wav");
 }
 
 void
@@ -104,7 +105,7 @@ w_elites_primary(void)
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 	Weapons_ViewPunchAngle([-2,0,0]);
 
-	int r = floor(random(0,3));
+	int r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(ELITES_SHOOT1);
@@ -121,7 +122,7 @@ w_elites_primary(void)
 		return;
 	}
 
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.01,0,01], WEAPON_ELITES);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 45, [0.01,0,01], WEAPON_ELITES);
 
 	pl.elites_mag--;
 
@@ -130,14 +131,10 @@ w_elites_primary(void)
 	else
 		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
 
-	if (random() < 0.5) {
-		sound(pl, CHAN_WEAPON, "weapons/elites-1.wav", 1.0f, ATTN_NORM);
-	} else {
-		sound(pl, CHAN_WEAPON, "weapons/elites-2.wav", 1.0f, ATTN_NORM);
-	}
+	Sound_Play(pl, CHAN_WEAPON, "weapon_elites.fire");
 #endif
 
-	pl.w_attack_next = 0.0955f;
+	pl.w_attack_next = 0.15f;
 }
 
 void

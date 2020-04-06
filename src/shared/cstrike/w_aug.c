@@ -105,7 +105,7 @@ w_aug_primary(void)
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 	Weapons_ViewPunchAngle([-2,0,0]);
 
-	int r = floor(random(0,3));
+	int r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(AUG_SHOOT1);
@@ -122,7 +122,7 @@ w_aug_primary(void)
 		return;
 	}
 
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.01,0,01], WEAPON_AUG);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 32, [0.01,0,01], WEAPON_AUG);
 
 	pl.aug_mag--;
 
@@ -134,7 +134,7 @@ w_aug_primary(void)
 	Sound_Play(pl, CHAN_WEAPON, "weapon_aug.fire");
 #endif
 
-	pl.w_attack_next = 0.0955f;
+	pl.w_attack_next = 0.0825f;
 }
 
 void
@@ -172,7 +172,7 @@ w_aug_reload(void)
 float
 w_aug_aimanim(void)
 {
-	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
+	return w_ak47_aimanim();
 }
 
 void

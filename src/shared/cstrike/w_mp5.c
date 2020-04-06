@@ -26,6 +26,9 @@ enum {
 void
 w_mp5_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_mp5.fire");
+#endif
 	precache_model("models/v_mp5.mdl");
 	precache_model("models/w_mp5.mdl");
 	precache_model("models/p_mp5.mdl");
@@ -35,7 +38,7 @@ void
 w_mp5_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, pl.mp5_mag, pl.ammo_762mm, -1);
+	Weapons_UpdateAmmo(pl, pl.mp5_mag, pl.ammo_9mm, -1);
 #endif
 }
 
@@ -66,8 +69,8 @@ w_mp5_pickup(int new)
 	if (new) {
 		pl.mp5_mag = 30;
 	} else {
-		if (pl.ammo_762mm < 90) {
-			pl.ammo_762mm = bound(0, pl.ammo_762mm + 30, 90);
+		if (pl.ammo_9mm < AMMO_MAX_9MM) {
+			pl.ammo_9mm = bound(0, pl.ammo_9mm + 30, AMMO_MAX_9MM);
 		} else {
 			return FALSE;
 		}
@@ -79,10 +82,8 @@ w_mp5_pickup(int new)
 void
 w_mp5_draw(void)
 {
-#ifdef CSQC
 	Weapons_SetModel("models/v_mp5.mdl");
 	Weapons_ViewAnimation(MP5_DRAW);
-#endif
 }
 
 void
@@ -102,7 +103,7 @@ w_mp5_primary(void)
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 	Weapons_ViewPunchAngle([-2,0,0]);
 
-	int r = floor(random(0,3));
+	int r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(MP5_SHOOT1);
@@ -119,7 +120,7 @@ w_mp5_primary(void)
 		return;
 	}
 
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.01,0,01], WEAPON_MP5);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 26, [0.01,0,01], WEAPON_MP5);
 
 	pl.mp5_mag--;
 
@@ -128,14 +129,10 @@ w_mp5_primary(void)
 	else
 		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
 
-	if (random() < 0.5) {
-		sound(pl, CHAN_WEAPON, "weapons/mp5-1.wav", 1.0f, ATTN_NORM);
-	} else {
-		sound(pl, CHAN_WEAPON, "weapons/mp5-2.wav", 1.0f, ATTN_NORM);
-	}
+	Sound_Play(pl, CHAN_WEAPON, "weapon_mp5.fire");
 #endif
 
-	pl.w_attack_next = 0.0955f;
+	pl.w_attack_next = 0.08f;
 }
 
 void
@@ -158,12 +155,12 @@ w_mp5_reload(void)
 	if (pl.mp5_mag >= 30) {
 		return;
 	}
-	if (!pl.ammo_762mm) {
+	if (!pl.ammo_9mm) {
 		return;
 	}
 
-	Weapons_ReloadWeapon(pl, player::mp5_mag, player::ammo_762mm, 30);
-	Weapons_UpdateAmmo(pl, pl.mp5_mag, pl.ammo_762mm, -1);
+	Weapons_ReloadWeapon(pl, player::mp5_mag, player::ammo_9mm, 30);
+	Weapons_UpdateAmmo(pl, pl.mp5_mag, pl.ammo_9mm, -1);
 #endif
 
 	Weapons_ViewAnimation(MP5_RELOAD);
@@ -173,14 +170,13 @@ w_mp5_reload(void)
 float
 w_mp5_aimanim(void)
 {
-	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
+	return w_ak47_aimanim();
 }
 
 void
 w_mp5_hud(void)
 {
 #ifdef CSQC
-
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];

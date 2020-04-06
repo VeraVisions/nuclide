@@ -196,7 +196,7 @@ void customgame_btninstall_start(void)
 {
 	int gid = customgame_lbMods.GetSelected();
 	print(sprintf("Requesting download for http://www.frag-net.com/mods/%s.fmf...\n", games[gid].gamedir));
-	localcmd(sprintf("fs_changegame http://www.frag-net.com/mods/%s.fmf\n", games[gid].game));
+	localcmd(sprintf("fs_changegame %s http://www.frag-net.com/mods/%s.fmf\n", games[gid].gamedir, games[gid].gamedir));
 }
 void customgame_btndeactivate_start(void)
 {

@@ -26,6 +26,12 @@ enum {
 void
 w_c4bomb_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_c4bomb.disarm");
+	Sound_Precache("weapon_c4bomb.disarmed");
+	Sound_Precache("weapon_c4bomb.explode");
+	Sound_Precache("weapon_c4bomb.plant");
+#endif
 	precache_model("models/v_c4bomb.mdl");
 	precache_model("models/w_c4bomb.mdl");
 	precache_model("models/p_c4bomb.mdl");
@@ -79,7 +85,7 @@ w_c4bomb_primary(void)
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 	Weapons_ViewPunchAngle([-2,0,0]);
 
-	int r = floor(random(0,3));
+	int r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(C4BOMB_SHOOT1);

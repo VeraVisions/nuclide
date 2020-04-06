@@ -38,7 +38,7 @@ void
 w_deagle_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, pl.deagle_mag, pl.ammo_762mm, -1);
+	Weapons_UpdateAmmo(pl, pl.deagle_mag, pl.ammo_50ae, -1);
 #endif
 }
 
@@ -67,10 +67,10 @@ w_deagle_pickup(int new)
 	player pl = (player)self;
 
 	if (new) {
-		pl.deagle_mag = 30;
+		pl.deagle_mag = 7;
 	} else {
-		if (pl.ammo_762mm < 90) {
-			pl.ammo_762mm = bound(0, pl.ammo_762mm + 30, 90);
+		if (pl.ammo_50ae < AMMO_MAX_50AE) {
+			pl.ammo_50ae = bound(0, pl.ammo_50ae + 7, AMMO_MAX_50AE);
 		} else {
 			return FALSE;
 		}
@@ -82,10 +82,8 @@ w_deagle_pickup(int new)
 void
 w_deagle_draw(void)
 {
-#ifdef CSQC
 	Weapons_SetModel("models/v_deagle.mdl");
 	Weapons_ViewAnimation(DEAGLE_DRAW);
-#endif
 }
 
 void
@@ -105,7 +103,7 @@ w_deagle_primary(void)
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 	Weapons_ViewPunchAngle([-2,0,0]);
 
-	int r = floor(random(0,3));
+	int r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(DEAGLE_SHOOT1);
@@ -122,7 +120,7 @@ w_deagle_primary(void)
 		return;
 	}
 
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.01,0,01], WEAPON_DEAGLE);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 54, [0.01,0,01], WEAPON_DEAGLE);
 
 	pl.deagle_mag--;
 
@@ -134,7 +132,7 @@ w_deagle_primary(void)
 	Sound_Play(pl, CHAN_WEAPON, "weapon_deagle.fire");
 #endif
 
-	pl.w_attack_next = 0.0955f;
+	pl.w_attack_next = 0.15f;
 }
 
 void
@@ -147,22 +145,22 @@ w_deagle_reload(void)
 	}
 
 #ifdef CSQC
-	if (pl.a_ammo1 >= 30) {
+	if (pl.a_ammo1 >= 7) {
 		return;
 	}
 	if (!pl.a_ammo2) {
 		return;
 	}
 #else
-	if (pl.deagle_mag >= 30) {
+	if (pl.deagle_mag >= 7) {
 		return;
 	}
-	if (!pl.ammo_762mm) {
+	if (!pl.ammo_50ae) {
 		return;
 	}
 
-	Weapons_ReloadWeapon(pl, player::deagle_mag, player::ammo_762mm, 30);
-	Weapons_UpdateAmmo(pl, pl.deagle_mag, pl.ammo_762mm, -1);
+	Weapons_ReloadWeapon(pl, player::deagle_mag, player::ammo_50ae, 7);
+	Weapons_UpdateAmmo(pl, pl.deagle_mag, pl.ammo_50ae, -1);
 #endif
 
 	Weapons_ViewAnimation(DEAGLE_RELOAD);
@@ -179,7 +177,6 @@ void
 w_deagle_hud(void)
 {
 #ifdef CSQC
-
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];

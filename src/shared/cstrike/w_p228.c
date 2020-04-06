@@ -26,6 +26,9 @@ enum {
 void
 w_p228_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_p228.fire");
+#endif
 	precache_model("models/v_p228.mdl");
 	precache_model("models/w_p228.mdl");
 	precache_model("models/p_p228.mdl");
@@ -66,10 +69,10 @@ w_p228_pickup(int new)
 	player pl = (player)self;
 
 	if (new) {
-		pl.p228_mag = 30;
+		pl.p228_mag = 13;
 	} else {
-		if (pl.ammo_762mm < 90) {
-			pl.ammo_762mm = bound(0, pl.ammo_762mm + 30, 90);
+		if (pl.ammo_762mm < 26) {
+			pl.ammo_762mm = bound(0, pl.ammo_762mm + 13, 26);
 		} else {
 			return FALSE;
 		}
@@ -104,7 +107,7 @@ w_p228_primary(void)
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 	Weapons_ViewPunchAngle([-2,0,0]);
 
-	int r = floor(random(0,3));
+	int r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(P228_SHOOT1);
@@ -121,7 +124,7 @@ w_p228_primary(void)
 		return;
 	}
 
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.01,0,01], WEAPON_P228);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 40, [0.01,0,01], WEAPON_P228);
 
 	pl.p228_mag--;
 
@@ -130,14 +133,10 @@ w_p228_primary(void)
 	else
 		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
 
-	if (random() < 0.5) {
-		sound(pl, CHAN_WEAPON, "weapons/p228-1.wav", 1.0f, ATTN_NORM);
-	} else {
-		sound(pl, CHAN_WEAPON, "weapons/p228-2.wav", 1.0f, ATTN_NORM);
-	}
+	Sound_Play(pl, CHAN_WEAPON, "weapon_p228.fire");
 #endif
 
-	pl.w_attack_next = 0.0955f;
+	pl.w_attack_next = 0.15f;
 }
 
 void
@@ -175,7 +174,7 @@ w_p228_reload(void)
 float
 w_p228_aimanim(void)
 {
-	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
+	return w_deagle_aimanim();
 }
 
 void

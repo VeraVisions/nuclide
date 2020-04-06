@@ -26,11 +26,12 @@ enum {
 void
 w_fiveseven_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_fiveseven.fire");
+#endif
 	precache_model("models/v_fiveseven.mdl");
 	precache_model("models/w_fiveseven.mdl");
 	precache_model("models/p_fiveseven.mdl");
-	precache_sound("weapons/fiveseven-1.wav");
-	precache_sound("weapons/fiveseven-2.wav");
 }
 
 void
@@ -66,10 +67,10 @@ w_fiveseven_pickup(int new)
 	player pl = (player)self;
 
 	if (new) {
-		pl.fiveseven_mag = 30;
+		pl.fiveseven_mag = 20;
 	} else {
-		if (pl.ammo_762mm < 90) {
-			pl.ammo_762mm = bound(0, pl.ammo_762mm + 30, 90);
+		if (pl.ammo_762mm < 40) {
+			pl.ammo_762mm = bound(0, pl.ammo_762mm + 20, 40);
 		} else {
 			return FALSE;
 		}
@@ -104,7 +105,7 @@ w_fiveseven_primary(void)
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 	Weapons_ViewPunchAngle([-2,0,0]);
 
-	int r = floor(random(0,3));
+	int r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(FIVESEVEN_SHOOT1);
@@ -121,7 +122,7 @@ w_fiveseven_primary(void)
 		return;
 	}
 
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.01,0,01], WEAPON_FIVESEVEN);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 25, [0.01,0,01], WEAPON_FIVESEVEN);
 
 	pl.fiveseven_mag--;
 
@@ -130,14 +131,10 @@ w_fiveseven_primary(void)
 	else
 		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
 
-	if (random() < 0.5) {
-		sound(pl, CHAN_WEAPON, "weapons/fiveseven-1.wav", 1.0f, ATTN_NORM);
-	} else {
-		sound(pl, CHAN_WEAPON, "weapons/fiveseven-2.wav", 1.0f, ATTN_NORM);
-	}
+	Sound_Play(pl, CHAN_WEAPON, "weapon_fiveseven.fire");
 #endif
 
-	pl.w_attack_next = 0.0955f;
+	pl.w_attack_next = 0.15f;
 }
 
 void
@@ -150,21 +147,21 @@ w_fiveseven_reload(void)
 	}
 
 #ifdef CSQC
-	if (pl.a_ammo1 >= 30) {
+	if (pl.a_ammo1 >= 20) {
 		return;
 	}
 	if (!pl.a_ammo2) {
 		return;
 	}
 #else
-	if (pl.fiveseven_mag >= 30) {
+	if (pl.fiveseven_mag >= 20) {
 		return;
 	}
 	if (!pl.ammo_762mm) {
 		return;
 	}
 
-	Weapons_ReloadWeapon(pl, player::fiveseven_mag, player::ammo_762mm, 30);
+	Weapons_ReloadWeapon(pl, player::fiveseven_mag, player::ammo_762mm, 20);
 	Weapons_UpdateAmmo(pl, pl.fiveseven_mag, pl.ammo_762mm, -1);
 #endif
 
@@ -175,7 +172,7 @@ w_fiveseven_reload(void)
 float
 w_fiveseven_aimanim(void)
 {
-	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
+	return w_deagle_aimanim();
 }
 
 void

@@ -26,6 +26,9 @@ enum {
 void
 w_xm1014_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_xm1014.fire");
+#endif
 	precache_model("models/v_xm1014.mdl");
 	precache_model("models/w_xm1014.mdl");
 	precache_model("models/p_xm1014.mdl");
@@ -35,7 +38,7 @@ void
 w_xm1014_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, pl.xm1014_mag, pl.ammo_762mm, -1);
+	Weapons_UpdateAmmo(pl, pl.xm1014_mag, pl.ammo_buckshot, -1);
 #endif
 }
 
@@ -64,10 +67,10 @@ w_xm1014_pickup(int new)
 	player pl = (player)self;
 
 	if (new) {
-		pl.xm1014_mag = 30;
+		pl.xm1014_mag = 7;
 	} else {
-		if (pl.ammo_762mm < 90) {
-			pl.ammo_762mm = bound(0, pl.ammo_762mm + 30, 90);
+		if (pl.ammo_buckshot < AMMO_MAX_BUCKSHOT) {
+			pl.ammo_buckshot = bound(0, pl.ammo_buckshot + 7, AMMO_MAX_BUCKSHOT);
 		} else {
 			return FALSE;
 		}
@@ -79,10 +82,8 @@ w_xm1014_pickup(int new)
 void
 w_xm1014_draw(void)
 {
-#ifdef CSQC
 	Weapons_SetModel("models/v_xm1014.mdl");
 	Weapons_ViewAnimation(XM1014_DRAW);
-#endif
 }
 
 void
@@ -102,7 +103,7 @@ w_xm1014_primary(void)
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 	Weapons_ViewPunchAngle([-2,0,0]);
 
-	int r = floor(random(0,3));
+	int r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(XM1014_SHOOT1);
@@ -119,7 +120,7 @@ w_xm1014_primary(void)
 		return;
 	}
 
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.01,0,01], WEAPON_XM1014);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 22, [0.01,0,01], WEAPON_XM1014);
 
 	pl.xm1014_mag--;
 
@@ -128,14 +129,10 @@ w_xm1014_primary(void)
 	else
 		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
 
-	if (random() < 0.5) {
-		sound(pl, CHAN_WEAPON, "weapons/xm1014-1.wav", 1.0f, ATTN_NORM);
-	} else {
-		sound(pl, CHAN_WEAPON, "weapons/xm1014-2.wav", 1.0f, ATTN_NORM);
-	}
+	Sound_Play(pl, CHAN_WEAPON, "weapon_xm1014.fire");
 #endif
 
-	pl.w_attack_next = 0.0955f;
+	pl.w_attack_next = 0.25f;
 }
 
 void
@@ -148,22 +145,21 @@ w_xm1014_reload(void)
 	}
 
 #ifdef CSQC
-	if (pl.a_ammo1 >= 30) {
+	if (pl.a_ammo1 >= 7) {
 		return;
 	}
 	if (!pl.a_ammo2) {
 		return;
 	}
 #else
-	if (pl.xm1014_mag >= 30) {
+	if (pl.xm1014_mag >= 7) {
 		return;
 	}
-	if (!pl.ammo_762mm) {
+	if (!pl.ammo_buckshot) {
 		return;
 	}
 
-	Weapons_ReloadWeapon(pl, player::xm1014_mag, player::ammo_762mm, 30);
-	Weapons_UpdateAmmo(pl, pl.xm1014_mag, pl.ammo_762mm, -1);
+	Weapons_ReloadWeapon(pl, player::xm1014_mag, player::ammo_buckshot, 7);
 #endif
 
 	Weapons_ViewAnimation(XM1014_RELOAD);
@@ -173,7 +169,7 @@ w_xm1014_reload(void)
 float
 w_xm1014_aimanim(void)
 {
-	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
+	return w_ak47_aimanim();
 }
 
 void

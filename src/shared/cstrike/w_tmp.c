@@ -26,6 +26,9 @@ enum {
 void
 w_tmp_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_tmp.fire");
+#endif
 	precache_model("models/v_tmp.mdl");
 	precache_model("models/w_tmp.mdl");
 	precache_model("models/p_tmp.mdl");
@@ -102,7 +105,7 @@ w_tmp_primary(void)
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 	Weapons_ViewPunchAngle([-2,0,0]);
 
-	int r = floor(random(0,3));
+	int r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(TMP_SHOOT1);
@@ -119,7 +122,7 @@ w_tmp_primary(void)
 		return;
 	}
 
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.01,0,01], WEAPON_TMP);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 26, [0.01,0,01], WEAPON_TMP);
 
 	pl.tmp_mag--;
 
@@ -128,14 +131,10 @@ w_tmp_primary(void)
 	else
 		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
 
-	if (random() < 0.5) {
-		sound(pl, CHAN_WEAPON, "weapons/tmp-1.wav", 1.0f, ATTN_NORM);
-	} else {
-		sound(pl, CHAN_WEAPON, "weapons/tmp-2.wav", 1.0f, ATTN_NORM);
-	}
+	Sound_Play(pl, CHAN_WEAPON, "weapon_tmp.fire");
 #endif
 
-	pl.w_attack_next = 0.0955f;
+	pl.w_attack_next = 0.07f;
 }
 
 void
@@ -173,7 +172,7 @@ w_tmp_reload(void)
 float
 w_tmp_aimanim(void)
 {
-	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
+	return w_ak47_aimanim();
 }
 
 void

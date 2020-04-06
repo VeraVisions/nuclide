@@ -16,16 +16,28 @@
 
 enum {
 	M4A1_IDLE,
-	M4A1_RELOAD,
-	M4A1_DRAW,
 	M4A1_SHOOT1,
 	M4A1_SHOOT2,
-	M4A1_SHOOT3
+	M4A1_SHOOT3,
+	M4A1_RELOAD,
+	M4A1_DRAW,
+	M4A1_ADDSIL,
+	M4A1_IDLEUNSIL,
+	M4A1_SHOOT1UNSIL,
+	M4A1_SHOOT2UNSIL,
+	M4A1_SHOOT3UNSIL,
+	M4A1_RELOADUNSIL,
+	M4A1_DRAWUNSIL,
+	M4A1_DETACHSIL
 };
 
 void
 w_m4a1_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_m4a1.fire");
+	Sound_Precache("weapon_m4a1.silenced");
+#endif
 	precache_model("models/v_m4a1.mdl");
 	precache_model("models/w_m4a1.mdl");
 	precache_model("models/p_m4a1.mdl");
@@ -79,10 +91,8 @@ w_m4a1_pickup(int new)
 void
 w_m4a1_draw(void)
 {
-#ifdef CSQC
 	Weapons_SetModel("models/v_m4a1.mdl");
 	Weapons_ViewAnimation(M4A1_DRAW);
-#endif
 }
 
 void
@@ -94,48 +104,100 @@ w_m4a1_primary(void)
 		return;
 	}
 
+	/* ammo check */
 #ifdef CSQC
 	if (!pl.a_ammo1) {
 		return;
-	}
-
-	View_SetMuzzleflash(MUZZLE_RIFLE);
-	Weapons_ViewPunchAngle([-2,0,0]);
-
-	int r = floor(random(0,3));
-	switch (r) {
-	case 0:
-		Weapons_ViewAnimation(M4A1_SHOOT1);
-		break;
-	case 1:
-		Weapons_ViewAnimation(M4A1_SHOOT2);
-		break;
-	default:
-		Weapons_ViewAnimation(M4A1_SHOOT3);
-		break;
 	}
 #else
 	if (!pl.m4a1_mag) {
 		return;
 	}
+#endif
 
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.01,0,01], WEAPON_M4A1);
+	/* actual firing */
+#ifdef CSQC
+	if (pl.a_ammo3 == 1) {
+		View_SetMuzzleflash(0);
+	} else {
+		View_SetMuzzleflash(MUZZLE_RIFLE);
+	}
 
+	pl.a_ammo1--;
+	View_SetMuzzleflash(MUZZLE_RIFLE);
+	Weapons_ViewPunchAngle([-2,0,0]);
+#else
 	pl.m4a1_mag--;
+
+	/* Different sounds without silencer */
+	if (pl.a_ammo3 == 1) {
+		Sound_Play(pl, CHAN_WEAPON, "weapon_m4a1.silenced");
+	} else {
+		Sound_Play(pl, CHAN_WEAPON, "weapon_m4a1.fire");
+	}
+
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 33,  [0.1,0.1], WEAPON_M4A1);
 
 	if (self.flags & FL_CROUCHING)
 		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
 	else
 		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
-
-	if (random() < 0.5) {
-		sound(pl, CHAN_WEAPON, "weapons/m4a1-1.wav", 1.0f, ATTN_NORM);
-	} else {
-		sound(pl, CHAN_WEAPON, "weapons/m4a1-2.wav", 1.0f, ATTN_NORM);
-	}
 #endif
 
-	pl.w_attack_next = 0.0955f;
+	/* this stuff is predicted */
+	int r = (float)input_sequence % 3;
+	if (pl.a_ammo3 == 1) {
+		switch (r) {
+		case 0:
+			Weapons_ViewAnimation(M4A1_SHOOT1);
+			break;
+		case 1:
+			Weapons_ViewAnimation(M4A1_SHOOT2);
+			break;
+		default:
+			Weapons_ViewAnimation(M4A1_SHOOT3);
+			break;
+		}
+	} else {
+		switch (r) {
+		case 0:
+			Weapons_ViewAnimation(M4A1_SHOOT1UNSIL);
+			break;
+		case 1:
+			Weapons_ViewAnimation(M4A1_SHOOT2UNSIL);
+			break;
+		default:
+			Weapons_ViewAnimation(M4A1_SHOOT3UNSIL);
+			break;
+		}
+	}
+	Weapons_ViewPunchAngle([-2,0,0]);
+
+	pl.w_attack_next = 0.0875f;
+	pl.w_idle_next = 5.0f;
+}
+
+void
+w_m4a1_secondary(void)
+{
+	player pl = (player)self;
+
+	if (pl.w_attack_next > 0) {
+		return;
+	}
+
+	/* toggle silencer */
+	pl.a_ammo3 = 1 - pl.a_ammo3;
+
+	/* play the animation */
+	if (pl.a_ammo3) {
+		Weapons_ViewAnimation(M4A1_ADDSIL);
+	} else {
+		Weapons_ViewAnimation(M4A1_DETACHSIL);
+	}
+
+	pl.w_attack_next = 2.0f;
+	pl.w_idle_next = pl.w_attack_next;
 }
 
 void
@@ -163,7 +225,6 @@ w_m4a1_reload(void)
 	}
 
 	Weapons_ReloadWeapon(pl, player::m4a1_mag, player::ammo_762mm, 30);
-	Weapons_UpdateAmmo(pl, pl.m4a1_mag, pl.ammo_762mm, -1);
 #endif
 
 	Weapons_ViewAnimation(M4A1_RELOAD);
@@ -173,19 +234,35 @@ w_m4a1_reload(void)
 float
 w_m4a1_aimanim(void)
 {
-	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
+	return w_ak47_aimanim();
 }
 
 void
 w_m4a1_hud(void)
 {
 #ifdef CSQC
-
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
 	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [0,72/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
 #endif
+}
+
+void
+w_m4a1_release(void)
+{
+	player pl = (player)self;
+
+	if (pl.w_idle_next > 0.0) {
+		return;
+	}
+
+	if (pl.a_ammo3) {
+		Weapons_ViewAnimation(M4A1_IDLE);
+	} else {
+		Weapons_ViewAnimation(M4A1_IDLEUNSIL);
+	}
+	pl.w_idle_next = 5.0f;
 }
 
 void
@@ -220,27 +297,27 @@ w_m4a1_hudpic(int selected, vector pos, float a)
 
 weapon_t w_m4a1 =
 {
-	ITEM_M4A1,
-	0,
-	9,
-	"sprites/640hud1.spr_0.tga",
-	[32,16],
-	[192,16],
-	w_m4a1_draw,
-	__NULL__,
-	w_m4a1_primary,
-	__NULL__,
-	w_m4a1_reload,
-	__NULL__,
-	w_m4a1_hud,
-	w_m4a1_precache,
-	w_m4a1_pickup,
-	w_m4a1_updateammo,
-	w_m4a1_wmodel,
-	w_m4a1_pmodel,
-	w_m4a1_deathmsg,
-	w_m4a1_aimanim,
-	w_m4a1_hudpic
+	.id		= ITEM_M4A1,
+	.slot		= 0,
+	.slot_pos	= 9,
+	.ki_spr		= "sprites/640hud1.spr_0.tga",
+	.ki_size	= [32,16],
+	.ki_xy		= [192,16],
+	.draw		= w_m4a1_draw,
+	.holster	= __NULL__,
+	.primary	= w_m4a1_primary,
+	.secondary	= w_m4a1_secondary,
+	.reload		= w_m4a1_reload,
+	.release	= w_m4a1_release,
+	.crosshair	= w_m4a1_hud,
+	.precache	= w_m4a1_precache,
+	.pickup		= w_m4a1_pickup,
+	.updateammo	= w_m4a1_updateammo,
+	.wmodel		= w_m4a1_wmodel,
+	.pmodel		= w_m4a1_pmodel,
+	.deathmsg	= w_m4a1_deathmsg,
+	.aimanim	= w_m4a1_aimanim,
+	.hudpic		= w_m4a1_hudpic
 };
 
 #ifdef SSQC

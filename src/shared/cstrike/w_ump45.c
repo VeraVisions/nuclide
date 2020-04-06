@@ -26,6 +26,9 @@ enum {
 void
 w_ump45_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_ump45.fire");
+#endif
 	precache_model("models/v_ump45.mdl");
 	precache_model("models/w_ump45.mdl");
 	precache_model("models/p_ump45.mdl");
@@ -35,7 +38,7 @@ void
 w_ump45_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, pl.ump45_mag, pl.ammo_762mm, -1);
+	Weapons_UpdateAmmo(pl, pl.ump45_mag, pl.ammo_45acp, -1);
 #endif
 }
 
@@ -64,10 +67,10 @@ w_ump45_pickup(int new)
 	player pl = (player)self;
 
 	if (new) {
-		pl.ump45_mag = 30;
+		pl.ump45_mag = 25;
 	} else {
-		if (pl.ammo_762mm < 90) {
-			pl.ammo_762mm = bound(0, pl.ammo_762mm + 30, 90);
+		if (pl.ammo_45acp < AMMO_MAX_45ACP) {
+			pl.ammo_45acp = bound(0, pl.ammo_45acp + 25, AMMO_MAX_45ACP);
 		} else {
 			return FALSE;
 		}
@@ -102,7 +105,7 @@ w_ump45_primary(void)
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 	Weapons_ViewPunchAngle([-2,0,0]);
 
-	int r = floor(random(0,3));
+	int r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(UMP45_SHOOT1);
@@ -119,7 +122,7 @@ w_ump45_primary(void)
 		return;
 	}
 
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.01,0,01], WEAPON_UMP45);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 30, [0.01,0,01], WEAPON_UMP45);
 
 	pl.ump45_mag--;
 
@@ -128,14 +131,10 @@ w_ump45_primary(void)
 	else
 		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
 
-	if (random() < 0.5) {
-		sound(pl, CHAN_WEAPON, "weapons/ump45-1.wav", 1.0f, ATTN_NORM);
-	} else {
-		sound(pl, CHAN_WEAPON, "weapons/ump45-2.wav", 1.0f, ATTN_NORM);
-	}
+	Sound_Play(pl, CHAN_WEAPON, "weapon_ump45.fire");
 #endif
 
-	pl.w_attack_next = 0.0955f;
+	pl.w_attack_next = 0.105f;
 }
 
 void
@@ -148,22 +147,22 @@ w_ump45_reload(void)
 	}
 
 #ifdef CSQC
-	if (pl.a_ammo1 >= 30) {
+	if (pl.a_ammo1 >= 25) {
 		return;
 	}
 	if (!pl.a_ammo2) {
 		return;
 	}
 #else
-	if (pl.ump45_mag >= 30) {
+	if (pl.ump45_mag >= 25) {
 		return;
 	}
-	if (!pl.ammo_762mm) {
+	if (!pl.ammo_45acp) {
 		return;
 	}
 
-	Weapons_ReloadWeapon(pl, player::ump45_mag, player::ammo_762mm, 30);
-	Weapons_UpdateAmmo(pl, pl.ump45_mag, pl.ammo_762mm, -1);
+	Weapons_ReloadWeapon(pl, player::ump45_mag, player::ammo_45acp, 25);
+	Weapons_UpdateAmmo(pl, pl.ump45_mag, pl.ammo_45acp, -1);
 #endif
 
 	Weapons_ViewAnimation(UMP45_RELOAD);
@@ -173,14 +172,13 @@ w_ump45_reload(void)
 float
 w_ump45_aimanim(void)
 {
-	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
+	return w_ak47_aimanim();
 }
 
 void
 w_ump45_hud(void)
 {
 #ifdef CSQC
-
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];

@@ -26,9 +26,12 @@ enum {
 void
 w_para_precache(void)
 {
-	precache_model("models/v_para.mdl");
-	precache_model("models/w_para.mdl");
-	precache_model("models/p_para.mdl");
+#ifdef SSQC
+	Sound_Precache("weapon_para.fire");
+#endif
+	precache_model("models/v_m249.mdl");
+	precache_model("models/w_m249.mdl");
+	precache_model("models/p_m249.mdl");
 }
 
 void
@@ -42,13 +45,13 @@ w_para_updateammo(player pl)
 string
 w_para_wmodel(void)
 {
-	return "models/w_para.mdl";
+	return "models/w_m249.mdl";
 }
 
 string
 w_para_pmodel(void)
 {
-	return "models/p_para.mdl";
+	return "models/p_m249.mdl";
 }
 
 string
@@ -64,10 +67,10 @@ w_para_pickup(int new)
 	player pl = (player)self;
 
 	if (new) {
-		pl.para_mag = 30;
+		pl.para_mag = 100;
 	} else {
-		if (pl.ammo_762mm < 90) {
-			pl.ammo_762mm = bound(0, pl.ammo_762mm + 30, 90);
+		if (pl.ammo_762mm < 200) {
+			pl.ammo_762mm = bound(0, pl.ammo_762mm + 100, 200);
 		} else {
 			return FALSE;
 		}
@@ -80,7 +83,7 @@ void
 w_para_draw(void)
 {
 #ifdef CSQC
-	Weapons_SetModel("models/v_para.mdl");
+	Weapons_SetModel("models/v_m249.mdl");
 	Weapons_ViewAnimation(PARA_DRAW);
 #endif
 }
@@ -102,7 +105,7 @@ w_para_primary(void)
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 	Weapons_ViewPunchAngle([-2,0,0]);
 
-	int r = floor(random(0,3));
+	int r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(PARA_SHOOT1);
@@ -119,7 +122,7 @@ w_para_primary(void)
 		return;
 	}
 
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.01,0,01], WEAPON_PARA);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 35, [0.01,0,01], WEAPON_PARA);
 
 	pl.para_mag--;
 
@@ -128,14 +131,10 @@ w_para_primary(void)
 	else
 		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
 
-	if (random() < 0.5) {
-		sound(pl, CHAN_WEAPON, "weapons/para-1.wav", 1.0f, ATTN_NORM);
-	} else {
-		sound(pl, CHAN_WEAPON, "weapons/para-2.wav", 1.0f, ATTN_NORM);
-	}
+	Sound_Play(pl, CHAN_WEAPON, "weapon_para.fire");
 #endif
 
-	pl.w_attack_next = 0.0955f;
+	pl.w_attack_next = 0.1f;
 }
 
 void
@@ -148,21 +147,21 @@ w_para_reload(void)
 	}
 
 #ifdef CSQC
-	if (pl.a_ammo1 >= 30) {
+	if (pl.a_ammo1 >= 100) {
 		return;
 	}
 	if (!pl.a_ammo2) {
 		return;
 	}
 #else
-	if (pl.para_mag >= 30) {
+	if (pl.para_mag >= 100) {
 		return;
 	}
 	if (!pl.ammo_762mm) {
 		return;
 	}
 
-	Weapons_ReloadWeapon(pl, player::para_mag, player::ammo_762mm, 30);
+	Weapons_ReloadWeapon(pl, player::para_mag, player::ammo_762mm, 100);
 	Weapons_UpdateAmmo(pl, pl.para_mag, pl.ammo_762mm, -1);
 #endif
 
@@ -173,7 +172,7 @@ w_para_reload(void)
 float
 w_para_aimanim(void)
 {
-	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
+	return w_ak47_aimanim();
 }
 
 void

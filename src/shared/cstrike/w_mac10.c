@@ -26,6 +26,9 @@ enum {
 void
 w_mac10_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_mac10.fire");
+#endif
 	precache_model("models/v_mac10.mdl");
 	precache_model("models/w_mac10.mdl");
 	precache_model("models/p_mac10.mdl");
@@ -102,7 +105,7 @@ w_mac10_primary(void)
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 	Weapons_ViewPunchAngle([-2,0,0]);
 
-	int r = floor(random(0,3));
+	int r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(MAC10_SHOOT1);
@@ -119,7 +122,7 @@ w_mac10_primary(void)
 		return;
 	}
 
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.01,0,01], WEAPON_MAC10);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 29, [0.01,0,01], WEAPON_MAC10);
 
 	pl.mac10_mag--;
 
@@ -128,14 +131,10 @@ w_mac10_primary(void)
 	else
 		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
 
-	if (random() < 0.5) {
-		sound(pl, CHAN_WEAPON, "weapons/mac10-1.wav", 1.0f, ATTN_NORM);
-	} else {
-		sound(pl, CHAN_WEAPON, "weapons/mac10-2.wav", 1.0f, ATTN_NORM);
-	}
+	Sound_Play(pl, CHAN_WEAPON, "weapon_mac10.fire");
 #endif
 
-	pl.w_attack_next = 0.0955f;
+	pl.w_attack_next = 0.07f;
 }
 
 void
@@ -173,7 +172,7 @@ w_mac10_reload(void)
 float
 w_mac10_aimanim(void)
 {
-	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
+	return w_deagle_aimanim();
 }
 
 void

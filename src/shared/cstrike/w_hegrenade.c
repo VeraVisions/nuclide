@@ -79,7 +79,7 @@ w_hegrenade_primary(void)
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 	Weapons_ViewPunchAngle([-2,0,0]);
 
-	int r = floor(random(0,3));
+	int r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(HEGRENADE_SHOOT1);
@@ -99,7 +99,7 @@ w_hegrenade_primary(void)
 float
 w_hegrenade_aimanim(void)
 {
-	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
+	return w_flashbang_aimanim();
 }
 
 void

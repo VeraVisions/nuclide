@@ -26,6 +26,9 @@ enum {
 void
 w_flashbang_precache(void)
 {
+#ifdef SSQC
+	Sound_Precache("weapon_flashbang.explode");
+#endif
 	precache_model("models/v_flashbang.mdl");
 	precache_model("models/w_flashbang.mdl");
 	precache_model("models/p_flashbang.mdl");
@@ -79,7 +82,7 @@ w_flashbang_primary(void)
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 	Weapons_ViewPunchAngle([-2,0,0]);
 
-	int r = floor(random(0,3));
+	int r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(FLASHBANG_SHOOT1);
