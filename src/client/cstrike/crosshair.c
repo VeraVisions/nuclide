@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -96,15 +96,15 @@ Cstrike_DrawScope(void)
 	static void Cstrike_ScopePic(vector pos, vector sz, string img) {
 		drawpic((pos * scope_scale) + [scope_offset, 0], img, sz * scope_scale, [1,1,1], 1.0f);
 	}
-	
+
 	// Draw the scope in the middle, seperately from the border
 	scope_pos = g_hudmins + (g_hudres / 2) + [-128,-128];
 	drawpic(scope_pos, "sprites/sniper_scope.spr_0.tga", [256,256], [1,1,1], 1.0f, DRAWFLAG_NORMAL);
-	
+
 	// Border scale to fit the screen
 	scope_scale = g_hudres[1] / 480;
 	scope_offset = g_hudmins + (g_hudres[0] / 2) - ((640 * scope_scale) / 2);
-	
+
 	// Type 1 Border... more coming soon?
 	Cstrike_ScopePic([0,0], [192,112], "sprites/top_left.spr_0.tga");
 	Cstrike_ScopePic([192,0], [256,112], "sprites/top.spr_0.tga");
@@ -114,7 +114,7 @@ Cstrike_DrawScope(void)
 	Cstrike_ScopePic([0,368], [192,112], "sprites/bottom_left.spr_0.tga");
 	Cstrike_ScopePic([192,368], [256,112], "sprites/bottom.spr_0.tga");
 	Cstrike_ScopePic([448,368], [192,112], "sprites/bottom_right.spr_0.tga");
-	
+
 	// Rect borders left and right
 	if (scope_offset > 0) {
 		drawfill([0,0], [scope_offset, g_hudres[1]], [0,0,0], 1.0f);

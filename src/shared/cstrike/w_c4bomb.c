@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,7 +15,7 @@
  */
 
 /*QUAKED weapon_c4bomb (0 0 1) (-16 -16 0) (16 16 32)
-"model" "models/w_c4bomb.mdl"
+"model" "models/w_c4.mdl"
 
 COUNTER-STRIKE (1999) ENTITY
 
