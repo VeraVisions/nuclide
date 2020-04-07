@@ -15,4 +15,5 @@
  */
 
 void Cstrike_DrawCrosshair(void);
-void Cstrike_DrawSimpleCrosshair();
+void Cstrike_DrawSimpleCrosshair(void);
+void Cstrike_DrawScope(void);

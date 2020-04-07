@@ -158,6 +158,24 @@ w_scout_primary(void)
 }
 
 void
+w_scout_secondary(void)
+{
+	player pl = (player)self;
+	if (pl.w_attack_next) {
+		return;
+	}
+	/* Simple toggle of fovs */
+	if (pl.viewzoom == 1.0f) {
+		pl.viewzoom = 0.45f;
+	} else if (pl.viewzoom == 0.45f) {
+		pl.viewzoom = 0.1f;
+	} else {
+		pl.viewzoom = 1.0f;
+	}
+	pl.w_attack_next = 0.5f;
+}
+
+void
 w_scout_reload(void)
 {
 	player pl = (player)self;
@@ -200,7 +218,10 @@ void
 w_scout_hud(void)
 {
 #ifdef CSQC
-	Cstrike_DrawCrosshair();
+	player pl = (player)self;
+	if (pl.viewzoom < 1.0f) {
+		Cstrike_DrawScope();
+	}
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
@@ -249,7 +270,7 @@ weapon_t w_scout =
 	w_scout_draw,
 	__NULL__,
 	w_scout_primary,
-	__NULL__,
+	w_scout_secondary,
 	w_scout_reload,
 	w_cstrike_weaponrelease,
 	w_scout_hud,

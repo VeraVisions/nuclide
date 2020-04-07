@@ -14,9 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-float(entity foo, float chanid) getchannellevel = #0;
-
-
 /*
 =================
 Client_Init
@@ -25,6 +22,16 @@ Comparable to worldspawn in SSQC in that it's mostly used for precaches
 =================
 */
 void Client_Init(float apilevel, string enginename, float engineversion)
+{
+}
+
+void Client_InitDone(void)
+{
+	/* change this to the motd */
+	//VGUI_ChooseTeam();
+}
+
+void Game_RendererRestarted(string rstr)
 {
 	precache_model("sprites/640hud1.spr");
 	precache_model("sprites/640hud2.spr");
@@ -40,9 +47,6 @@ void Client_Init(float apilevel, string enginename, float engineversion)
 	precache_model("sprites/640hud14.spr");
 	precache_model("sprites/640hud15.spr");
 	precache_model("sprites/640hud16.spr");
-	precache_model("sprites/hud640_01.spr");
-	precache_model("sprites/hud640_02.spr");
-	precache_model("sprites/hud640_04.spr");
 	precache_model("sprites/bottom.spr");
 	precache_model("sprites/bottom_left.spr");
 	precache_model("sprites/bottom_right.spr");
@@ -53,16 +57,5 @@ void Client_Init(float apilevel, string enginename, float engineversion)
 	precache_model("sprites/top.spr");
 	precache_model("sprites/top_left.spr");
 	precache_model("sprites/top_right.spr");
-
 	BEAM_TRIPMINE = particleeffectnum("beam_tripmine");
-}
-
-void Client_InitDone(void)
-{
-	/* change this to the motd */
-	//VGUI_ChooseTeam();
-}
-
-void Game_RendererRestarted(string rstr)
-{
 }

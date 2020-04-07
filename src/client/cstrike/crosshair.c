@@ -78,3 +78,46 @@ Cstrike_DrawSimpleCrosshair(void)
 	cross_pos = g_hudmins + (g_hudres / 2) + [-12,-12];
 	drawsubpic(cross_pos, [24,24], "sprites/crosshairs.spr_0.tga", [0.1875,0], [0.1875, 0.1875], [1,1,1], 1, DRAWFLAG_NORMAL);
 }
+
+/*
+=================
+HUD_DrawScope
+
+Tries to draw a scope whenever viewzoom < 1.0f
+=================
+*/
+void
+Cstrike_DrawScope(void)
+{
+	vector scope_pos;
+	static float scope_offset;
+	static float scope_scale;
+
+	static void Cstrike_ScopePic(vector pos, vector sz, string img) {
+		drawpic((pos * scope_scale) + [scope_offset, 0], img, sz * scope_scale, [1,1,1], 1.0f);
+	}
+	
+	// Draw the scope in the middle, seperately from the border
+	scope_pos = g_hudmins + (g_hudres / 2) + [-128,-128];
+	drawpic(scope_pos, "sprites/sniper_scope.spr_0.tga", [256,256], [1,1,1], 1.0f, DRAWFLAG_NORMAL);
+	
+	// Border scale to fit the screen
+	scope_scale = g_hudres[1] / 480;
+	scope_offset = (g_hudres[0] / 2) - ((640 * scope_scale) / 2);
+	
+	// Type 1 Border... more coming soon?
+	Cstrike_ScopePic([0,0], [192,112], "sprites/top_left.spr_0.tga");
+	Cstrike_ScopePic([192,0], [256,112], "sprites/top.spr_0.tga");
+	Cstrike_ScopePic([448,0], [192,112], "sprites/top_right.spr_0.tga");
+	Cstrike_ScopePic([0,112], [192,256], "sprites/left.spr_0.tga");
+	Cstrike_ScopePic([448,112], [192,256], "sprites/right.spr_0.tga");
+	Cstrike_ScopePic([0,368], [192,112], "sprites/bottom_left.spr_0.tga");
+	Cstrike_ScopePic([192,368], [256,112], "sprites/bottom.spr_0.tga");
+	Cstrike_ScopePic([448,368], [192,112], "sprites/bottom_right.spr_0.tga");
+	
+	// Rect borders left and right
+	if (scope_offset > 0) {
+		drawfill([0,0], [scope_offset, g_hudres[1]], [0,0,0], 1.0f);
+		drawfill([(640 * scope_scale) + scope_offset, 0], [scope_offset, g_hudres[1]], [0,0,0], 1.0f);
+	}
+}
