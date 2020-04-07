@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,9 +14,46 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED armoury_entity (0 0 0.8) (-16 -16 0) (16 16 16)
+"targetname"    Name
+"target"        Target when triggered.
+"killtarget"    Target to kill when triggered.
+"item"          Which weapon/equipment this item will contain
+"count"         How many of said item will players be able to pick up from this
+
+COUNTER-STRIKE (1999) ENTITY
+
+Items in the armoury.
+
+An item oriented entity that contains one or more weapon/equipment item
+for players to pick up. It's limited to early Counter-Strike weapons, as
+it was never updated in newer versions to add support for newly added ones.
+
+List of available items:
+    0 =  H&K MP5-Navy
+    1 =  Steyr Tactical (TMP)
+    2 =  FN P90
+    3 =  Ingram MAC-10
+    4 =  AK-47
+    5 =  Sig SG-552 Commando
+    6 =  Colt M4A1 Carbine
+    7 =  Steyr AUG
+    8 =  Steyr Scout
+    9 =  H&K G3/SG-1
+    10 = AI Arctic Warfare/Magnum
+    11 = Benneli M3 Super90
+    12 = Benneli XM1014
+    13 = FN M249 Para
+    14 = Flashbang Grenade
+    15 = HE Grenade
+    16 = Kevlar
+    17 = Kevlar + Helmet
+    18 = Smoke Grenade
+*/
+
 var int autocvar_fcs_nopickups = FALSE;
 
-int iArmouryItems[19] = {
+int g_cstrike_armouryitems[19] = {
 	WEAPON_MP5,
 	WEAPON_TMP,
 	WEAPON_P90,
@@ -33,8 +70,8 @@ int iArmouryItems[19] = {
 	WEAPON_PARA,
 	WEAPON_FLASHBANG,
 	WEAPON_HEGRENADE,
-	EQUIPMENT_KEVLAR,
-	EQUIPMENT_HELMET,
+	0,/*EQUIPMENT_KEVLAR,*/
+	0,/*EQUIPMENT_HELMET,*/
 	WEAPON_SMOKEGRENADE
 };
 
@@ -71,12 +108,6 @@ class armoury_entity:CBaseEntity
 	virtual void() Respawn;
 };
 
-int
-amoury_entity_pickup(armoury_entity item, entity player)
-{
-	
-}
-
 void
 armoury_entity::touch(void)
 {
@@ -84,11 +115,16 @@ armoury_entity::touch(void)
 		return;
 	}
 
-	if (amoury_entity_pickup(this, other)) {
-		m_iLeft--;
-		if (m_iLeft <= 0) {
-			Hide();
-		}
+	if (Weapons_AddItem((player)other, m_iItem) == FALSE) {
+		return;
+	}
+
+	Logging_Pickup(other, this, __NULL__);
+	sound(other, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_NORM);
+
+	m_iLeft--;
+	if (m_iLeft <= 0) {
+		Hide();
 	}
 }
 
@@ -109,6 +145,8 @@ armoury_entity::armoury_entity(void)
 		remove(this);
 		return;
 	}
+	
+	m_iCount = 1;
 
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
@@ -116,7 +154,7 @@ armoury_entity::armoury_entity(void)
 			m_iCount = stoi(argv(i + 1));
 			break;
 		case "item":
-			m_iItem = iArmouryItems[stoi(argv(i + 1))];
+			m_iItem = g_cstrike_armouryitems[stoi(argv(i + 1))];
 			model = sArmouryModels[m_iItem];
 			break;
 		default:
@@ -124,7 +162,5 @@ armoury_entity::armoury_entity(void)
 		}
 	}
 
-	precache_model(model);
 	CBaseEntity::CBaseEntity();
-	armoury_entity::Respawn();
 }

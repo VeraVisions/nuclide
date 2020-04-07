@@ -14,6 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED weapon_smokegrenade (0 0 1) (-16 -16 0) (16 16 32)
+"model" "models/w_smokegrenade.mdl"
+
+COUNTER-STRIKE (1999) ENTITY
+
+Smoke Grenade Weapon
+
+When thrown, the explosion casts view-blocking smoke in that radius.
+
+- Buy Menu -
+Price: $300
+
+*/
+
 enum {
 	SMOKEGRENADE_IDLE,
 	SMOKEGRENADE_RELOAD,

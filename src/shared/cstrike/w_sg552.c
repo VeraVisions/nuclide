@@ -14,6 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED weapon_sg552 (0 0 1) (-16 -16 0) (16 16 32)
+"model" "models/w_sg552.mdl"
+
+COUNTER-STRIKE (1999) ENTITY
+
+SIG SG 552 Commando Weapon
+
+- Buy Menu -
+Price: $3500
+
+*/
+
 enum {
 	SG552_IDLE,
 	SG552_RELOAD,
@@ -145,8 +157,28 @@ w_sg552_primary(void)
 		break;
 	}
 
-	pl.w_attack_next = 0.0825f;
+	if (pl.viewzoom == 1.0f) {
+		pl.w_attack_next = 0.0825f;
+	} else {
+		pl.w_attack_next = 0.15f;
+	}
 	pl.w_idle_next = pl.w_attack_next;
+}
+
+void
+w_sg552_secondary(void)
+{
+	player pl = (player)self;
+	if (pl.w_attack_next) {
+		return;
+	}
+	/* Simple toggle of fovs */
+	if (pl.viewzoom == 1.0f) {
+		pl.viewzoom = 0.2f;
+	} else {
+		pl.viewzoom = 1.0f;
+	}
+	pl.w_attack_next = 0.5f;
 }
 
 void
@@ -192,7 +224,12 @@ void
 w_sg552_hud(void)
 {
 #ifdef CSQC
-	Cstrike_DrawCrosshair();
+	player pl = (player)self;
+	if (pl.viewzoom == 1.0f) {
+		Cstrike_DrawCrosshair();
+	} else {
+		Cstrike_DrawSimpleCrosshair();
+	}
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
@@ -241,7 +278,7 @@ weapon_t w_sg552 =
 	w_sg552_draw,
 	__NULL__,
 	w_sg552_primary,
-	__NULL__,
+	w_sg552_secondary,
 	w_sg552_reload,
 	w_cstrike_weaponrelease,
 	w_sg552_hud,

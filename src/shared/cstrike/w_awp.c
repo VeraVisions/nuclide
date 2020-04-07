@@ -14,6 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED weapon_awp (0 0 1) (-16 -16 0) (16 16 32)
+"model" "models/w_awp.mdl"
+
+COUNTER-STRIKE (1999) ENTITY
+
+AWP (AI Arctic Warfare/Magnum) Weapon
+
+- Buy Menu -
+Price: $4750
+
+*/
+
 enum {
 	AWP_IDLE,
 	AWP_SHOOT1,

@@ -14,6 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED weapon_sg550 (0 0 1) (-16 -16 0) (16 16 32)
+"model" "models/w_sg550.mdl"
+
+COUNTER-STRIKE (1999) ENTITY
+
+SIG SG 550 Weapon
+
+- Buy Menu -
+Price: $4200
+
+*/
+
 enum {
 	SG550_IDLE,
 	SG550_SHOOT1,

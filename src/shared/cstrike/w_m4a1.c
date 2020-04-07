@@ -14,6 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED weapon_m4a1 (0 0 1) (-16 -16 0) (16 16 32)
+"model" "models/w_m4a1.mdl"
+
+COUNTER-STRIKE (1999) ENTITY
+
+Colt M4A1 Carbine Weapon
+
+- Buy Menu -
+Price: $3100
+Counter-Terrorists only weapon
+
+*/
+
 enum {
 	M4A1_IDLE,
 	M4A1_SHOOT1,

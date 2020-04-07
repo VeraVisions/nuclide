@@ -14,6 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED weapon_xm1014 (0 0 1) (-16 -16 0) (16 16 32)
+"model" "models/w_xm1014.mdl"
+
+COUNTER-STRIKE (1999) ENTITY
+
+Benneli XM1014 Weapon
+
+- Buy Menu -
+Price: $3000
+
+*/
+
 enum {
 	XM1014_IDLE,
 	XM1014_SHOOT1,

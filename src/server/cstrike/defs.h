@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,5 +14,5 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void Cstrike_DrawCrosshair(void);
-void Cstrike_DrawSimpleCrosshair();
+var int g_cstrike_buying = 0;
+var float g_cstrike_bombradius = 500;

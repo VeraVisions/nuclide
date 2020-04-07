@@ -14,6 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED weapon_g3sg1 (0 0 1) (-16 -16 0) (16 16 32)
+"model" "models/w_g3sg1.mdl"
+
+COUNTER-STRIKE (1999) ENTITY
+
+Heckler & Koch G3/SG-1 Weapon
+
+- Buy Menu -
+Price: $5000
+
+*/
+
 enum {
 	G3SG1_IDLE,
 	G3SG1_SHOOT1,

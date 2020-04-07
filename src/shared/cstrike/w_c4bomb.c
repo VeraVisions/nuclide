@@ -14,13 +14,32 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED weapon_c4bomb (0 0 1) (-16 -16 0) (16 16 32)
+"model" "models/w_c4bomb.mdl"
+
+COUNTER-STRIKE (1999) ENTITY
+
+C4 Bomb Weapon, Bomb Defusal Gamemode Entity
+
+Default arsenal for Terrorists
+
+Can only be picked up by Terrorists and planted in
+func_bombtarget brush entities.
+
+*/
+
 enum {
-	C4BOMB_IDLE,
-	C4BOMB_RELOAD,
-	C4BOMB_DRAW,
-	C4BOMB_SHOOT1,
-	C4BOMB_SHOOT2,
-	C4BOMB_SHOOT3
+	C4_IDLE,
+	C4_DRAW,
+	C4_DROP,
+	C4_ENTERCODE
+};
+
+enum {
+	C4S_NONE,
+	C4S_ENTERINGCODE,
+	C4S_DROPPING,
+	C4S_DONE
 };
 
 void
@@ -32,29 +51,29 @@ w_c4bomb_precache(void)
 	Sound_Precache("weapon_c4bomb.explode");
 	Sound_Precache("weapon_c4bomb.plant");
 #endif
-	precache_model("models/v_c4bomb.mdl");
-	precache_model("models/w_c4bomb.mdl");
-	precache_model("models/p_c4bomb.mdl");
+	precache_model("models/v_c4.mdl");
+	precache_model("models/w_c4.mdl");
+	precache_model("models/p_c4.mdl");
 }
 
 void
 w_c4bomb_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, -1, -1, -1);
+	Weapons_UpdateAmmo(pl, pl.a_ammo1, pl.a_ammo2, pl.a_ammo3);
 #endif
 }
 
 string
 w_c4bomb_wmodel(void)
 {
-	return "models/w_c4bomb.mdl";
+	return "models/w_c4.mdl";
 }
 
 string
 w_c4bomb_pmodel(void)
 {
-	return "models/p_c4bomb.mdl";
+	return "models/p_c4.mdl";
 }
 
 string
@@ -66,41 +85,62 @@ w_c4bomb_deathmsg(void)
 void
 w_c4bomb_draw(void)
 {
+	Weapons_SetModel("models/v_c4.mdl");
+	Weapons_ViewAnimation(C4_DRAW);
+}
+
+void
+w_c4bomb_release(void)
+{
 	player pl = (player)self;
-#ifdef CSQC
-	Weapons_SetModel("models/v_c4bomb.mdl");
-	Weapons_ViewAnimation(C4BOMB_DRAW);
+	
+	if (pl.a_ammo1 == C4S_DROPPING) {
+		if (pl.w_idle_next <= 0.0f) {
+			pl.a_ammo1 = C4S_DONE;
+#ifdef SSQC
+			Weapons_RemoveItem(pl, WEAPON_C4BOMB);
 #endif
+		}
+		return;
+	}
+
+	/* reset animation */
+	if (pl.a_ammo1 != C4S_NONE) {
+		Weapons_ViewAnimation(C4_IDLE);
+	}
+	pl.a_ammo1 = C4S_NONE;
+	pl.w_idle_next = 0.0f;
+	pl.flags &= ~FL_FROZEN;
 }
 
 void
 w_c4bomb_primary(void)
 {
 	player pl = (player)self;
+	
+	pl.flags |= FL_FROZEN;
 
-	if (pl.w_attack_next > 0.0) {
-		return;
-	}
-
-#ifdef CSQC
-	View_SetMuzzleflash(MUZZLE_RIFLE);
-	Weapons_ViewPunchAngle([-2,0,0]);
-
-	int r = (float)input_sequence % 3;
-	switch (r) {
-	case 0:
-		Weapons_ViewAnimation(C4BOMB_SHOOT1);
-		break;
-	case 1:
-		Weapons_ViewAnimation(C4BOMB_SHOOT2);
-		break;
+	switch (pl.a_ammo1) {
+	case C4S_NONE:
+			pl.a_ammo1 = C4S_ENTERINGCODE;
+			Weapons_ViewAnimation(C4_ENTERCODE);
+			pl.w_idle_next = 3.0f;
+			break;
+	case C4S_ENTERINGCODE:
+			if (pl.w_idle_next <= 0.0f) {
+				pl.a_ammo1 = C4S_DROPPING;
+				Weapons_ViewAnimation(C4_DROP);
+				pl.w_idle_next = 1.0f;
+			}
+			break;
+	case C4S_DROPPING:
+			w_c4bomb_release();
+			break;
 	default:
-		Weapons_ViewAnimation(C4BOMB_SHOOT3);
 		break;
 	}
-#endif
 
-	pl.w_attack_next = 0.0955f;
+	pl.w_attack_next = 0.0f;
 }
 
 float
@@ -113,7 +153,6 @@ void
 w_c4bomb_hud(void)
 {
 #ifdef CSQC
-	Cstrike_DrawCrosshair();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
 	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [96/256,96/256], [24/256, 24/256], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
@@ -163,7 +202,7 @@ weapon_t w_c4bomb =
 	w_c4bomb_primary,
 	__NULL__,
 	__NULL__,
-	__NULL__,
+	w_c4bomb_release,
 	w_c4bomb_hud,
 	w_c4bomb_precache,
 	__NULL__,

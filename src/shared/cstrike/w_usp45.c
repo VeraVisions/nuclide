@@ -14,6 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED weapon_usp45 (0 0 1) (-16 -16 0) (16 16 32)
+"model" "models/w_usp45.mdl"
+
+COUNTER-STRIKE (1999) ENTITY
+
+Heckler & Koch USP .45 Tactical Weapon
+
+Default arsenal for Counter-Terrorists
+
+- Buy Menu -
+Price: $500
+
+*/
+
 enum {
 	USP45_IDLE,
 	USP45_SHOOT1,

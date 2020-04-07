@@ -14,6 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED weapon_knife (0 0 1) (-16 -16 0) (16 16 32)
+"model" "models/w_knife.mdl"
+
+COUNTER-STRIKE (1999) ENTITY
+
+Knife Weapon
+
+Default arsenal on both teams
+
+*/
+
 enum {
 	KNIFE_IDLE,
 	KNIFE_RELOAD,

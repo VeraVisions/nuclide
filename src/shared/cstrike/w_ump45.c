@@ -14,6 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED weapon_ump45 (0 0 1) (-16 -16 0) (16 16 32)
+"model" "models/w_ump45.mdl"
+
+COUNTER-STRIKE (1999) ENTITY
+
+Heckler & Koch UMP .45 ACP Weapon
+
+- Buy Menu -
+Price: $1700
+
+*/
+
 enum {
 	UMP45_IDLE,
 	UMP45_RELOAD,

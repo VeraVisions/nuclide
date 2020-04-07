@@ -14,6 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED weapon_hegrenade (0 0 1) (-16 -16 0) (16 16 32)
+"model" "models/w_hegrenade.mdl"
+
+COUNTER-STRIKE (1999) ENTITY
+
+HE (High Explosive) Grenade Weapon
+
+When thrown, explodes with a fairly deadly blast radius to players.
+
+- Buy Menu -
+Price: $300
+
+*/
+
 enum {
 	HEGRENADE_IDLE,
 	HEGRENADE_RELOAD,

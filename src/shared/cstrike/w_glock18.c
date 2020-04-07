@@ -14,6 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED weapon_glock18 (0 0 1) (-16 -16 0) (16 16 32)
+"model" "models/w_glock18.mdl"
+
+COUNTER-STRIKE (1999) ENTITY
+
+Glock 18 Select Fire Weapon
+
+Default arsenal for Terrorists
+
+- Buy Menu -
+Price: $400
+
+*/
+
 enum {
 	GLOCK_IDLE1,
 	GLOCK_IDLE2,

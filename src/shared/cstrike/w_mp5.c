@@ -14,6 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED weapon_mp5 (0 0 1) (-16 -16 0) (16 16 32)
+"model" "models/w_mp5.mdl"
+
+COUNTER-STRIKE (1999) ENTITY
+
+Heckler & Koch MP5-Navy Weapon
+
+- Buy Menu -
+Price: $1500
+
+*/
+
 enum {
 	MP5_IDLE,
 	MP5_RELOAD,

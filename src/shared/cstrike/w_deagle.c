@@ -14,6 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED weapon_deagle (0 0 1) (-16 -16 0) (16 16 32)
+"model" "models/w_deagle.mdl"
+
+COUNTER-STRIKE (1999) ENTITY
+
+Desert Eagle .50 AE Weapon
+
+- Buy Menu -
+Price: $650
+
+*/
+
 enum {
 	DEAGLE_IDLE,
 	DEAGLE_SHOOT1,

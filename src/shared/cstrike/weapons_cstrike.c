@@ -44,11 +44,21 @@ Cstrike_ShotMultiplierAdd(player pl, int shots)
 float
 Cstrike_CalculateAccuracy(player pl, float divisor)
 {
+	float m = 1.0f;
+
+	if (!(pl.flags & FL_ONGROUND)) {
+		m = 2.0f;
+	} else if (pl.flags & FL_CROUCHING) {
+		m = 0.5f;
+	} else if (vlen(pl.velocity) > 120) {
+		m = 1.5f;
+	}
+
 	if (divisor == -1) {
 		/* snipers shoot way less accurate overall. */
-		return (pl.viewzoom < 1.0f) ? 0.0f : 0.05;
+		return (pl.viewzoom < 1.0f) ? (0.0f) : (0.05 * m);
 	} else {
-		return  (pl.cs_shotmultiplier / divisor);
+		return  (pl.cs_shotmultiplier / divisor) * m;
 	}
 }
 

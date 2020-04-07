@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,5 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void Cstrike_DrawCrosshair(void);
-void Cstrike_DrawSimpleCrosshair();
+/*QUAKED func_bomb_target (0 .5 .8) ?
+"targetname"    Name
+"target"        Target when bomb blows up.
+"killtarget"    Target to kill when triggered.
+
+COUNTER-STRIKE (1999) ENTITY
+
+Bomb target zone.
+
+Used in the bomb defusal mode (de_* maps).
+Once the bomb explodes inside this volume, it'll trigger its targets.
+*/
+
+class func_bomb_target:CBaseTrigger
+{
+	
+};

@@ -14,6 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED weapon_ak47 (0 0 1) (-16 -16 0) (16 16 32)
+"model" "models/w_ak47.mdl"
+
+COUNTER-STRIKE (1999) ENTITY
+
+AK-47 Weapon
+
+- Buy Menu -
+Price: $2500
+Terrorists only weapon
+
+*/
+
 enum {
 	AK47_IDLE,
 	AK47_RELOAD,

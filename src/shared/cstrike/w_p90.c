@@ -14,6 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED weapon_p90 (0 0 1) (-16 -16 0) (16 16 32)
+"model" "models/w_p90.mdl"
+
+COUNTER-STRIKE (1999) ENTITY
+
+FN P90 Weapon
+
+- Buy Menu -
+Price: $2350
+
+*/
+
 enum {
 	P90_IDLE,
 	P90_RELOAD,

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,5 +14,28 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void Cstrike_DrawCrosshair(void);
-void Cstrike_DrawSimpleCrosshair();
+/*QUAKED info_hostage_rescue (0 0 0.8) (-16 -16 0) (16 16 16)
+"targetname"    Name
+"target"        Target when triggered.
+"killtarget"    Target to kill when triggered.
+
+COUNTER-STRIKE (1999) ENTITY
+
+Hostage rescue point.
+
+Used in the Hostage Rescue mode (cs_* maps).
+Creates a volume around itself with a radius of 128 units.
+If neither a info_hostage_rescue or a func_hostage_rescue is placed,
+zones will be placed in Counter-Terrorist player spawn nodes automatically.
+*/
+
+class info_hostage_rescue
+{
+	void() info_hostage_rescue;
+};
+
+void
+info_hostage_rescue::info_hostage_rescue(void)
+{
+
+}

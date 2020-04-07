@@ -14,6 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED weapon_tmp (0 0 1) (-16 -16 0) (16 16 32)
+"model" "models/w_tmp.mdl"
+
+COUNTER-STRIKE (1999) ENTITY
+
+Steyr Tactical Weapon
+
+- Buy Menu -
+Price: $1250
+
+*/
+
 enum {
 	TMP_IDLE,
 	TMP_RELOAD,

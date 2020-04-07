@@ -14,6 +14,19 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED weapon_aug (0 0 1) (-16 -16 0) (16 16 32)
+"model" "models/w_aug.mdl"
+
+COUNTER-STRIKE (1999) ENTITY
+
+Steyr AUG Weapon
+
+- Buy Menu -
+Price: $3500
+Counter-Terrorists only weapon
+
+*/
+
 enum {
 	AUG_IDLE,
 	AUG_RELOAD,
@@ -144,8 +157,28 @@ w_aug_primary(void)
 		break;
 	}
 
-	pl.w_attack_next = 0.0825f;
+	if (pl.viewzoom == 1.0f) {
+		pl.w_attack_next = 0.0825f;
+	} else {
+		pl.w_attack_next = 0.15f;
+	}
 	pl.w_idle_next = pl.w_attack_next;
+}
+
+void
+w_aug_secondary(void)
+{
+	player pl = (player)self;
+	if (pl.w_attack_next) {
+		return;
+	}
+	/* Simple toggle of fovs */
+	if (pl.viewzoom == 1.0f) {
+		pl.viewzoom = 0.2f;
+	} else {
+		pl.viewzoom = 1.0f;
+	}
+	pl.w_attack_next = 0.5f;
 }
 
 void
@@ -191,7 +224,12 @@ void
 w_aug_hud(void)
 {
 #ifdef CSQC
-	Cstrike_DrawCrosshair();
+	player pl = (player)self;
+	if (pl.viewzoom == 1.0f) {
+		Cstrike_DrawCrosshair();
+	} else {
+		Cstrike_DrawSimpleCrosshair();
+	}
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
@@ -240,7 +278,7 @@ weapon_t w_aug =
 	w_aug_draw,
 	__NULL__,
 	w_aug_primary,
-	__NULL__,
+	w_aug_secondary,
 	w_aug_reload,
 	w_cstrike_weaponrelease,
 	w_aug_hud,
