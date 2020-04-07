@@ -64,7 +64,6 @@ void CPictureSwitch::Draw(void)
 
 void CPictureSwitch::Input(float type, float x, float y, float devid)
 {
-	int clickPrev, clickNext;
 	m_hoverPrev = Util_CheckMouse(m_x+3, m_y+m_size[1]-16, m_size[0]/2, 12);
 	m_hoverNext = Util_CheckMouse(m_x+m_size[0]-4-(m_size[0]/2), m_y+m_size[1]-16, m_size[0]/2, 12);
 

@@ -32,20 +32,21 @@ void m_intro_skip(void)
 
 void m_intro_draw(void)
 {
+	float alpha;
 	if (clientstate() == 2) {
 		g_intro_progress = INTRO_TIME;
 		g_intro_stage = INTRO_DONE;
 	}
 
 	if (g_intro_progress > 7.0f) {
-		float alpha = (8 - g_intro_progress);
+		alpha = (8 - g_intro_progress);
 		drawfill([0,0], [g_vidsize[0],g_vidsize[1]], [1,1,1], alpha);
 		
 		if (g_intro_stage != INTRO_FADETOMENU) {
 			g_intro_stage = INTRO_FADETOMENU;
 		}
 	} else if (g_intro_progress > 5.0f) {
-		float alpha = (6 - g_intro_progress);
+		alpha = (6 - g_intro_progress);
 		drawpic([g_menuofs[0],g_menuofs[1]], g_bmp[SPLASH8BIT],
 				[640,480], [1,1,1], 1.0f, 0);
 		drawfill([0,0], [g_vidsize[0],g_vidsize[1]], [1,1,1], 1.0 - alpha);

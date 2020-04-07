@@ -103,7 +103,7 @@ Cstrike_DrawScope(void)
 
 	// Border scale to fit the screen
 	scope_scale = g_hudres[1] / 480;
-	scope_offset = g_hudmins + (g_hudres[0] / 2) - ((640 * scope_scale) / 2);
+	scope_offset = g_hudmins[0] + (g_hudres[0] / 2) - ((640 * scope_scale) / 2);
 
 	// Type 1 Border... more coming soon?
 	Cstrike_ScopePic([0,0], [192,112], "sprites/top_left.spr_0.tga");
