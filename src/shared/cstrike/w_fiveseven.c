@@ -145,8 +145,6 @@ w_fiveseven_primary(void)
 	Sound_Play(pl, CHAN_WEAPON, "weapon_fiveseven.fire");
 #endif
 
-	Weapons_ViewPunchAngle([-2,0,0]);
-
 	if (pl.a_ammo1 <= 0) {
 		Weapons_ViewAnimation(FIVESEVEN_SHOOT_EMPTY);
 	} else {

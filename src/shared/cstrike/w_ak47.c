@@ -142,8 +142,6 @@ w_ak47_primary(void)
 	Sound_Play(pl, CHAN_WEAPON, "weapon_ak47.fire");
 #endif
 
-	Weapons_ViewPunchAngle([-2,0,0]);
-
 	int r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:

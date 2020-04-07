@@ -156,8 +156,6 @@ w_elites_primary(void)
 
 	pl.a_ammo3 = 1 - pl.a_ammo3;
 
-	Weapons_ViewPunchAngle([-2,0,0]);
-
 	int r = (float)input_sequence % 5;
 	if (pl.a_ammo3) {
 		if (pl.a_ammo1 <= 0) {

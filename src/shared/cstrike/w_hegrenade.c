@@ -91,7 +91,6 @@ w_hegrenade_primary(void)
 
 #ifdef CSQC
 	View_SetMuzzleflash(MUZZLE_RIFLE);
-	Weapons_ViewPunchAngle([-2,0,0]);
 
 	int r = (float)input_sequence % 3;
 	switch (r) {

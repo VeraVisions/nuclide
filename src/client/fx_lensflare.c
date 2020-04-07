@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-int trace_surfaceflagsi;
+noref int trace_surfaceflagsi;
 var vector g_vecLensPos;
 var float g_flLensAlpha;
 

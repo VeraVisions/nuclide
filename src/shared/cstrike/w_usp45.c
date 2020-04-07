@@ -175,7 +175,6 @@ w_usp45_primary(void)
 	else
 		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
 #endif
-	Weapons_ViewPunchAngle([-2,0,0]);
 
 	/* this stuff is predicted */
 	int r = (float)input_sequence % 3;

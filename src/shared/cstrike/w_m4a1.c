@@ -170,7 +170,6 @@ w_m4a1_primary(void)
 	else
 		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
 #endif
-	Weapons_ViewPunchAngle([-2,0,0]);
 
 	/* this stuff is predicted */
 	int r = (float)input_sequence % 3;
@@ -199,7 +198,6 @@ w_m4a1_primary(void)
 			break;
 		}
 	}
-	Weapons_ViewPunchAngle([-2,0,0]);
 
 	pl.w_attack_next = 0.0875f;
 	pl.w_idle_next = pl.w_attack_next;

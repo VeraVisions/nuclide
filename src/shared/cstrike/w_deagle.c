@@ -137,7 +137,6 @@ w_deagle_primary(void)
 	pl.deagle_mag--;
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 54, [accuracy,accuracy], WEAPON_DEAGLE);
 
-
 	if (self.flags & FL_CROUCHING)
 		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
 	else
@@ -146,7 +145,6 @@ w_deagle_primary(void)
 	Sound_Play(pl, CHAN_WEAPON, "weapon_deagle.fire");
 #endif
 
-	Weapons_ViewPunchAngle([-2,0,0]);
 
 	if (pl.a_ammo1 <= 0) {
 		Weapons_ViewAnimation(DEAGLE_SHOOT_EMPTY);

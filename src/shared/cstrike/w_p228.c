@@ -149,8 +149,6 @@ w_p228_primary(void)
 	Sound_Play(pl, CHAN_WEAPON, "weapon_p228.fire");
 #endif
 
-	Weapons_ViewPunchAngle([-2,0,0]);
-
 	if (pl.a_ammo1 <= 0) {
 		Weapons_ViewAnimation(P228_SHOOT_EMPTY);
 	} else {

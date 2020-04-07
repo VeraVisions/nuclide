@@ -141,8 +141,6 @@ w_sg550_primary(void)
 	Sound_Play(pl, CHAN_WEAPON, "weapon_sg550.fire");
 #endif
 
-	Weapons_ViewPunchAngle([-2,0,0]);
-
 	int r = (float)input_sequence % 2;
 	switch (r) {
 	case 0:

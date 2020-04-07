@@ -140,8 +140,6 @@ w_g3sg1_primary(void)
 	Sound_Play(pl, CHAN_WEAPON, "weapon_g3sg1.fire");
 #endif
 
-	Weapons_ViewPunchAngle([-2,0,0]);
-
 	int r = (float)input_sequence % 2;
 	switch (r) {
 	case 0:
