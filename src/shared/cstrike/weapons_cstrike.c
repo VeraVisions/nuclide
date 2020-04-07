@@ -14,6 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/* 
+ * How Counter-Strike's accuracy works (from my understanding)
+ * this was deducted from the decrypted CS:S script files:
+ * https://gamebanana.com/gamefiles/2293
+ * 
+ * Each and every bullet fired contributes to the shotmultiplier value,
+ * which decreases back to 0 slowly over time.
+ * 
+ * Meanwhile, accuracy gets calculated by taking said value and dividing it
+ * by the weapon-specific divider. Each gun has a different one.
+ * The higher the divider value, the more accurate the weapon is in contrast
+ * to other weapons.
+*/
+
 /* called whenever a cstrike gun fires a successful shot */
 void
 Cstrike_ShotMultiplierAdd(player pl, int shots)

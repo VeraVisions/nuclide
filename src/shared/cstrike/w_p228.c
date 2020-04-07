@@ -114,7 +114,7 @@ w_p228_primary(void)
 		return;
 	}
 #else
-	if (!pl.p90_mag) {
+	if (!pl.p228_mag) {
 		return;
 	}
 #endif
