@@ -71,13 +71,40 @@ weapon_glock18.burstfire
 	sample weapons/glock18-1.wav
 }
 
-weapon_grenade.bounce
+weapon_hegrenade.bounce
 {
 	sample weapons/he_bounce-1.wav
 }
 
 weapon_hegrenade.explode
 {
+	sample weapons/explode3.wav
+	sample weapons/explode4.wav
+}
+
+weapon_smokegrenade.bounce
+{
+	sample weapons/grenade_hit1.wav
+	sample weapons/grenade_hit2.wav
+	sample weapons/grenade_hit3.wav
+}
+
+weapon_smokegrenade.explode
+{
+	sample weapons/sg_explode.wav
+}
+
+weapon_flashbang.bounce
+{
+	sample weapons/grenade_hit1.wav
+	sample weapons/grenade_hit2.wav
+	sample weapons/grenade_hit3.wav
+}
+
+weapon_flashbang.explode
+{
+	sample weapons/flashbang-1.wav
+	sample weapons/flashbang-2.wav
 }
 
 weapon_knife.hit

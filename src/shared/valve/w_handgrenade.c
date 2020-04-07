@@ -186,7 +186,6 @@ void w_handgrenade_hud(void)
 #endif
 }
 
-
 void w_handgrenade_release(void)
 {
 	player pl = (player)self;

@@ -30,17 +30,16 @@ Price: $300
 
 enum {
 	SMOKEGRENADE_IDLE,
-	SMOKEGRENADE_RELOAD,
+	SMOKEGRENADE_PULLPIN,
+	SMOKEGRENADE_THROW,
 	SMOKEGRENADE_DRAW,
-	SMOKEGRENADE_SHOOT1,
-	SMOKEGRENADE_SHOOT2,
-	SMOKEGRENADE_SHOOT3
 };
 
 void
 w_smokegrenade_precache(void)
 {
 #ifdef SSQC
+	Sound_Precache("weapon_smokegrenade.bounce");
 	Sound_Precache("weapon_smokegrenade.explode");
 #endif
 	precache_model("models/v_smokegrenade.mdl");
@@ -52,8 +51,23 @@ void
 w_smokegrenade_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, -1, -1, -1);
+	Weapons_UpdateAmmo(pl, -1, pl.ammo_smokegrenade, pl.a_ammo3);
 #endif
+}
+
+int
+w_smokegrenade_pickup(int new)
+{
+#ifdef SSQC
+	player pl = (player)self;
+
+	if (pl.ammo_smokegrenade < 3) {
+		pl.ammo_smokegrenade = bound(0, pl.ammo_smokegrenade + 1, 3);
+	} else {
+		return FALSE;
+	}
+#endif
+	return TRUE;
 }
 
 string
@@ -77,39 +91,124 @@ w_smokegrenade_deathmsg(void)
 void
 w_smokegrenade_draw(void)
 {
-#ifdef CSQC
 	Weapons_SetModel("models/v_smokegrenade.mdl");
 	Weapons_ViewAnimation(SMOKEGRENADE_DRAW);
-#endif
 }
+
+#ifdef SSQC
+void w_smokegrenade_throw(void)
+{
+	static void smokegrenade_explode( void )
+	{
+		Sound_Play(self, CHAN_BODY, "weapon_smokegrenade.explode");
+		remove(self);
+	}
+	
+	static void smokegrenade_touch( void )
+	{
+		if (other.takedamage == DAMAGE_YES) {
+			Damage_Apply(other, self.owner, 15, WEAPON_SMOKEGRENADE, DMG_BLUNT);
+		} else {
+			Sound_Play(self, CHAN_BODY, "weapon_smokegrenade.bounce");
+		}
+		self.frame = 0;
+	}
+
+	player pl = (player)self;
+	vector vPLAngle = pl.v_angle;
+	if ( vPLAngle[0] < 0 ) {
+		vPLAngle[0] = -10 + vPLAngle[0] * ((90 - 10) / 90.0);
+	} else {
+		vPLAngle[0] = -10 + vPLAngle[0] * ((90 + 10) / 90.0);
+	}
+
+	float flVel = (90 - vPLAngle[0]) * 5;
+	if ( flVel > 1000 ) {
+		flVel = 1000;
+	}
+
+	makevectors( vPLAngle );
+	vector vecSrc = pl.origin + pl.view_ofs + v_forward * 16;
+	vector vecThrow = v_forward * flVel + pl.velocity;
+
+	entity eGrenade = spawn();
+	eGrenade.owner = pl;
+	eGrenade.classname = "remove_me";
+	eGrenade.solid = SOLID_BBOX;
+	eGrenade.frame = 1;
+	eGrenade.velocity = vecThrow;
+	eGrenade.movetype = MOVETYPE_BOUNCE;
+	eGrenade.think = smokegrenade_explode;
+	eGrenade.touch = smokegrenade_touch;
+	eGrenade.nextthink = time + 4.0f;
+	setmodel( eGrenade, "models/w_smokegrenade.mdl" );
+	setsize( eGrenade, [0,0,0], [0,0,0] );
+	setorigin( eGrenade, vecSrc );
+}
+#endif
 
 void
 w_smokegrenade_primary(void)
 {
 	player pl = (player)self;
-
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
+	
+	/* We're abusing this network variable for the holding check */
+	if (pl.a_ammo3 > 0) {
+		return;
+	}
 
+	/* Ammo check */
 #ifdef CSQC
-	View_SetMuzzleflash(MUZZLE_RIFLE);
-
-	int r = (float)input_sequence % 3;
-	switch (r) {
-	case 0:
-		Weapons_ViewAnimation(SMOKEGRENADE_SHOOT1);
-		break;
-	case 1:
-		Weapons_ViewAnimation(SMOKEGRENADE_SHOOT2);
-		break;
-	default:
-		Weapons_ViewAnimation(SMOKEGRENADE_SHOOT3);
-		break;
+	if (pl.a_ammo2 <= 0) {
+		return;
+	}
+#else
+	if (pl.ammo_smokegrenade <= 0) {
+		return;
 	}
 #endif
 
-	pl.w_attack_next = 0.0955f;
+	Weapons_ViewAnimation(SMOKEGRENADE_PULLPIN);
+	pl.a_ammo3 = 1;
+	pl.w_attack_next = 0.975f;
+	pl.w_idle_next = pl.w_attack_next;
+}
+
+void
+w_smokegrenade_release(void)
+{
+	player pl = (player)self;
+	
+	if (pl.w_idle_next > 0.0) {
+		return;
+	}
+
+	if (pl.a_ammo3 == 1) {
+#ifdef CSQC
+		pl.a_ammo2--;
+		Weapons_ViewAnimation(SMOKEGRENADE_THROW);
+#else
+		pl.ammo_smokegrenade--;
+		w_smokegrenade_throw();
+#endif
+		pl.a_ammo3 = 2;
+		pl.w_attack_next = 1.0f;
+		pl.w_idle_next = 0.5f;
+	} else if (pl.a_ammo3 == 2) {
+#ifdef CSQC
+		Weapons_ViewAnimation(SMOKEGRENADE_DRAW);
+#else
+		if (!pl.ammo_smokegrenade) {
+			Weapons_RemoveItem(pl, WEAPON_SMOKEGRENADE);
+		}
+#endif
+		pl.w_attack_next = 0.5f;
+		pl.w_idle_next = 0.5f;
+		pl.a_ammo3 = 0;
+	}
 }
 
 float
@@ -169,12 +268,12 @@ weapon_t w_smokegrenade =
 	w_smokegrenade_draw,
 	__NULL__,
 	w_smokegrenade_primary,
-	__NULL__,
-	__NULL__,
-	__NULL__,
+	w_smokegrenade_release,
+	w_smokegrenade_release,
+	w_smokegrenade_release,
 	w_smokegrenade_hud,
 	w_smokegrenade_precache,
-	__NULL__,
+	w_smokegrenade_pickup,
 	w_smokegrenade_updateammo,
 	w_smokegrenade_wmodel,
 	w_smokegrenade_pmodel,

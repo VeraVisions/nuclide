@@ -118,6 +118,9 @@ class player:CBaseEntity
 	int ammo_45acp;
 	int ammo_357sig;
 	int ammo_57mm;
+	int ammo_hegrenade;
+	int ammo_fbgrenade;
+	int ammo_smokegrenade;
 
 	/* conditional networking */
 	int old_modelindex;
