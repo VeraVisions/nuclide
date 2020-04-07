@@ -134,7 +134,6 @@ void
 w_medkit_release(void)
 {
 	player pl = (player)self;
-	int r;
 
 	if (pl.w_idle_next > 0.0) {
 		return;

@@ -66,6 +66,7 @@ w_c4bomb_deathmsg(void)
 void
 w_c4bomb_draw(void)
 {
+	player pl = (player)self;
 #ifdef CSQC
 	Weapons_SetModel("models/v_c4bomb.mdl");
 	Weapons_ViewAnimation(C4BOMB_DRAW);
@@ -106,6 +107,17 @@ float
 w_c4bomb_aimanim(void)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
+}
+
+void
+w_c4bomb_hud(void)
+{
+#ifdef CSQC
+	Cstrike_DrawCrosshair();
+	HUD_DrawAmmo2();
+	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [96/256,96/256], [24/256, 24/256], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+#endif
 }
 
 void
@@ -152,7 +164,7 @@ weapon_t w_c4bomb =
 	__NULL__,
 	__NULL__,
 	__NULL__,
-	__NULL__,
+	w_c4bomb_hud,
 	w_c4bomb_precache,
 	__NULL__,
 	w_c4bomb_updateammo,

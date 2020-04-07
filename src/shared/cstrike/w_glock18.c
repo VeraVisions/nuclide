@@ -15,12 +15,19 @@
  */
 
 enum {
-	GLOCK18_IDLE,
-	GLOCK18_RELOAD,
-	GLOCK18_DRAW,
-	GLOCK18_SHOOT1,
-	GLOCK18_SHOOT2,
-	GLOCK18_SHOOT3
+	GLOCK_IDLE1,
+	GLOCK_IDLE2,
+	GLOCK_IDLE3,
+	GLOCK_SHOOT_BURST1,
+	GLOCK_SHOOT_BURST2,
+	GLOCK_SHOOT,
+	GLOCK_SHOOT_EMPTY,
+	GLOCK_RELOAD1,
+	GLOCK_DRAW1,
+	GLOCK_UNUSED1,
+	GLOCK_UNUSED2,
+	GLOCK_DRAW2,
+	GLOCK_RELOAD2
 };
 
 void
@@ -28,6 +35,7 @@ w_glock18_precache(void)
 {
 #ifdef SSQC
 	Sound_Precache("weapon_glock18.fire");
+	Sound_Precache("weapon_glock18.burstfire");
 #endif
 	precache_model("models/v_glock18.mdl");
 	precache_model("models/w_glock18.mdl");
@@ -38,7 +46,7 @@ void
 w_glock18_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, pl.glock18_mag, pl.ammo_762mm, -1);
+	Weapons_UpdateAmmo(pl, pl.glock18_mag, pl.ammo_9mm, -1);
 #endif
 }
 
@@ -69,8 +77,8 @@ w_glock18_pickup(int new)
 	if (new) {
 		pl.glock18_mag = 20;
 	} else {
-		if (pl.ammo_762mm < 40) {
-			pl.ammo_762mm = bound(0, pl.ammo_762mm + 20, 40);
+		if (pl.ammo_9mm < 40) {
+			pl.ammo_9mm = bound(0, pl.ammo_9mm + 20, 40);
 		} else {
 			return FALSE;
 		}
@@ -82,9 +90,21 @@ w_glock18_pickup(int new)
 void
 w_glock18_draw(void)
 {
-#ifdef CSQC
+	player pl = (player)self;
 	Weapons_SetModel("models/v_glock18.mdl");
-	Weapons_ViewAnimation(GLOCK18_DRAW);
+	int r = (float)input_sequence % 2;
+	switch (r) {
+	case 0:
+		Weapons_ViewAnimation(GLOCK_DRAW1);
+		break;
+	default:
+		Weapons_ViewAnimation(GLOCK_DRAW2);
+		break;
+	}
+
+#ifdef CSQC
+	pl.cs_cross_mindist = 8;
+	pl.cs_cross_deltadist = 3;
 #endif
 }
 
@@ -97,33 +117,28 @@ w_glock18_primary(void)
 		return;
 	}
 
-#ifdef CSQC
-	if (!pl.a_ammo1) {
+	if (pl.flags & FL_SEMI_TOGGLED) {
 		return;
 	}
 
-	View_SetMuzzleflash(MUZZLE_RIFLE);
-	Weapons_ViewPunchAngle([-2,0,0]);
-
-	int r = (float)input_sequence % 3;
-	switch (r) {
-	case 0:
-		Weapons_ViewAnimation(GLOCK18_SHOOT1);
-		break;
-	case 1:
-		Weapons_ViewAnimation(GLOCK18_SHOOT2);
-		break;
-	default:
-		Weapons_ViewAnimation(GLOCK18_SHOOT3);
-		break;
+#ifdef CSQC
+	if (!pl.a_ammo1) {
+		return;
 	}
 #else
 	if (!pl.glock18_mag) {
 		return;
 	}
+#endif
 
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 25, [0.01,0,01], WEAPON_GLOCK18);
+	Cstrike_ShotMultiplierAdd(pl, 1);
+	float accuracy = Cstrike_CalculateAccuracy(pl, 200);
 
+#ifdef CSQC
+	pl.a_ammo1--;
+	View_SetMuzzleflash(MUZZLE_RIFLE);
+#else
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 25, [accuracy,accuracy], WEAPON_GLOCK18);
 	pl.glock18_mag--;
 
 	if (self.flags & FL_CROUCHING)
@@ -131,10 +146,59 @@ w_glock18_primary(void)
 	else
 		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
 
-	Sound_Play(pl, CHAN_WEAPON, "weapon_glock18.fire");
+	if (pl.a_ammo3) {
+		Sound_Play(pl, CHAN_WEAPON, "weapon_glock18.burstfire");
+	} else {
+		Sound_Play(pl, CHAN_WEAPON, "weapon_glock18.fire");
+	}
+#endif
+	Weapons_ViewPunchAngle([-2,0,0]);
+
+	if (pl.a_ammo3) {
+		int r = (float)input_sequence % 2;
+		switch (r) {
+		case 0:
+			Weapons_ViewAnimation(GLOCK_SHOOT_BURST1);
+			break;
+		default:
+			Weapons_ViewAnimation(GLOCK_SHOOT_BURST2);
+			break;
+		}
+		pl.w_attack_next = 0.5f;
+	} else {
+		if (pl.a_ammo1 <= 0) {
+			Weapons_ViewAnimation(GLOCK_SHOOT_EMPTY);
+		} else {
+			Weapons_ViewAnimation(GLOCK_SHOOT);
+		}
+		pl.w_attack_next = 0.15f;
+	}
+	pl.flags |= FL_SEMI_TOGGLED;
+	pl.w_idle_next = pl.w_attack_next;
+}
+
+void
+w_glock18_secondary(void)
+{
+	player pl = (player)self;
+
+	if (pl.w_attack_next > 0) {
+		return;
+	}
+
+	/* toggle burst-fire */
+	pl.a_ammo3 = 1 - pl.a_ammo3;
+
+#ifdef CSQC
+	if (pl.a_ammo3) {
+		CSQC_Parse_CenterPrint("Switched to Burst-Fire mode");
+	} else {
+		CSQC_Parse_CenterPrint("Switched to Semi-Automatic mode");
+	}
 #endif
 
-	pl.w_attack_next = 0.15f;
+	pl.w_attack_next = 1.0f;
+	pl.w_idle_next = pl.w_attack_next;
 }
 
 void
@@ -157,16 +221,26 @@ w_glock18_reload(void)
 	if (pl.glock18_mag >= 20) {
 		return;
 	}
-	if (!pl.ammo_762mm) {
+	if (!pl.ammo_9mm) {
 		return;
 	}
 
-	Weapons_ReloadWeapon(pl, player::glock18_mag, player::ammo_762mm, 20);
-	Weapons_UpdateAmmo(pl, pl.glock18_mag, pl.ammo_762mm, -1);
+	Weapons_ReloadWeapon(pl, player::glock18_mag, player::ammo_9mm, 20);
+	Weapons_UpdateAmmo(pl, pl.glock18_mag, pl.ammo_9mm, -1);
 #endif
 
-	Weapons_ViewAnimation(GLOCK18_RELOAD);
+	int r = (float)input_sequence % 2;
+	switch (r) {
+	case 0:
+		Weapons_ViewAnimation(GLOCK_RELOAD1);
+		break;
+	default:
+		Weapons_ViewAnimation(GLOCK_RELOAD2);
+		break;
+	}
+
 	pl.w_attack_next = 2.1f;
+	pl.w_idle_next = pl.w_attack_next;
 }
 
 float
@@ -179,11 +253,11 @@ void
 w_glock18_hud(void)
 {
 #ifdef CSQC
-
+	Cstrike_DrawCrosshair();
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [0,72/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [48/256,72/256], [24/256, 24/256], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
@@ -228,9 +302,9 @@ weapon_t w_glock18 =
 	w_glock18_draw,
 	__NULL__,
 	w_glock18_primary,
-	__NULL__,
+	w_glock18_secondary,
 	w_glock18_reload,
-	__NULL__,
+	w_cstrike_weaponrelease,
 	w_glock18_hud,
 	w_glock18_precache,
 	w_glock18_pickup,

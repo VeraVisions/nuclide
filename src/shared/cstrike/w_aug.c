@@ -82,9 +82,13 @@ w_aug_pickup(int new)
 void
 w_aug_draw(void)
 {
-#ifdef CSQC
+	player pl = (player)self;
 	Weapons_SetModel("models/v_aug.mdl");
 	Weapons_ViewAnimation(AUG_DRAW);
+
+#ifdef CSQC
+	pl.cs_cross_mindist = 3;
+	pl.cs_cross_deltadist = 3;
 #endif
 }
 
@@ -101,8 +105,30 @@ w_aug_primary(void)
 	if (!pl.a_ammo1) {
 		return;
 	}
+#else
+	if (!pl.aug_mag) {
+		return;
+	}
+#endif
 
+	Cstrike_ShotMultiplierAdd(pl, 1);
+	float accuracy = Cstrike_CalculateAccuracy(pl, 215);
+
+#ifdef CSQC
+	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
+#else
+	pl.aug_mag--;
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 32, [accuracy,accuracy], WEAPON_AUG);
+
+	if (self.flags & FL_CROUCHING)
+		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
+	else
+		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
+
+	Sound_Play(pl, CHAN_WEAPON, "weapon_aug.fire");
+#endif
+
 	Weapons_ViewPunchAngle([-2,0,0]);
 
 	int r = (float)input_sequence % 3;
@@ -117,24 +143,9 @@ w_aug_primary(void)
 		Weapons_ViewAnimation(AUG_SHOOT3);
 		break;
 	}
-#else
-	if (!pl.aug_mag) {
-		return;
-	}
-
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 32, [0.01,0,01], WEAPON_AUG);
-
-	pl.aug_mag--;
-
-	if (self.flags & FL_CROUCHING)
-		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
-	else
-		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
-
-	Sound_Play(pl, CHAN_WEAPON, "weapon_aug.fire");
-#endif
 
 	pl.w_attack_next = 0.0825f;
+	pl.w_idle_next = pl.w_attack_next;
 }
 
 void
@@ -164,9 +175,10 @@ w_aug_reload(void)
 	Weapons_ReloadWeapon(pl, player::aug_mag, player::ammo_762mm, 30);
 	Weapons_UpdateAmmo(pl, pl.aug_mag, pl.ammo_762mm, -1);
 #endif
-
 	Weapons_ViewAnimation(AUG_RELOAD);
-	pl.w_attack_next = 2.0f;
+
+	pl.w_attack_next = 3.3f;
+	pl.w_idle_next = pl.w_attack_next;
 }
 
 float
@@ -179,11 +191,11 @@ void
 w_aug_hud(void)
 {
 #ifdef CSQC
-
+	Cstrike_DrawCrosshair();
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [0,72/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [72/256,72/256], [24/256, 24/256], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
@@ -230,7 +242,7 @@ weapon_t w_aug =
 	w_aug_primary,
 	__NULL__,
 	w_aug_reload,
-	__NULL__,
+	w_cstrike_weaponrelease,
 	w_aug_hud,
 	w_aug_precache,
 	w_aug_pickup,

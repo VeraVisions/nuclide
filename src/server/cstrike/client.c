@@ -135,6 +135,12 @@ Game_PlayerPostThink(player pl)
 	if (pl.old_a_ammo3 != pl.a_ammo3) {
 		pl.SendFlags |= PLAYER_AMMO3;
 	}
+	if (pl.old_cs_shotmultiplier != pl.cs_shotmultiplier) {
+		pl.SendFlags |= PLAYER_CSSHOT;
+	}
+	if (pl.old_cs_shottime != pl.cs_shottime) {
+		pl.SendFlags |= PLAYER_CSSHOTTIME;
+	}
 
 	pl.old_modelindex = pl.modelindex;
 	pl.old_origin = pl.origin;
@@ -152,6 +158,8 @@ Game_PlayerPostThink(player pl)
 	pl.old_a_ammo1 = pl.a_ammo1;
 	pl.old_a_ammo2 = pl.a_ammo2;
 	pl.old_a_ammo3 = pl.a_ammo3;
+	pl.old_cs_shotmultiplier = pl.cs_shotmultiplier;
+	pl.old_cs_shottime = pl.cs_shottime;
 }
 
 void

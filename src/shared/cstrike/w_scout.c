@@ -16,11 +16,10 @@
 
 enum {
 	SCOUT_IDLE,
-	SCOUT_RELOAD,
-	SCOUT_DRAW,
 	SCOUT_SHOOT1,
 	SCOUT_SHOOT2,
-	SCOUT_SHOOT3
+	SCOUT_RELOAD,
+	SCOUT_DRAW
 };
 
 void
@@ -82,9 +81,13 @@ w_scout_pickup(int new)
 void
 w_scout_draw(void)
 {
-#ifdef CSQC
+	player pl = (player)self;
 	Weapons_SetModel("models/v_scout.mdl");
 	Weapons_ViewAnimation(SCOUT_DRAW);
+
+#ifdef CSQC
+	pl.cs_cross_mindist = 5;
+	pl.cs_cross_deltadist = 3;
 #endif
 }
 
@@ -97,33 +100,25 @@ w_scout_primary(void)
 		return;
 	}
 
+	/* ammo check */
 #ifdef CSQC
 	if (!pl.a_ammo1) {
 		return;
-	}
-
-	View_SetMuzzleflash(MUZZLE_RIFLE);
-	Weapons_ViewPunchAngle([-2,0,0]);
-
-	int r = (float)input_sequence % 3;
-	switch (r) {
-	case 0:
-		Weapons_ViewAnimation(SCOUT_SHOOT1);
-		break;
-	case 1:
-		Weapons_ViewAnimation(SCOUT_SHOOT2);
-		break;
-	default:
-		Weapons_ViewAnimation(SCOUT_SHOOT3);
-		break;
 	}
 #else
 	if (!pl.scout_mag) {
 		return;
 	}
+#endif
 
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 75, [0.01,0,01], WEAPON_SCOUT);
+	Cstrike_ShotMultiplierAdd(pl, 1);
+	float accuracy = Cstrike_CalculateAccuracy(pl, 200);
 
+#ifdef CSQC
+	pl.a_ammo1--;
+	View_SetMuzzleflash(MUZZLE_RIFLE);
+#else
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 75, [accuracy,accuracy], WEAPON_SCOUT);
 	pl.scout_mag--;
 
 	if (self.flags & FL_CROUCHING)
@@ -134,7 +129,20 @@ w_scout_primary(void)
 	Sound_Play(pl, CHAN_WEAPON, "weapon_scout.fire");
 #endif
 
+	Weapons_ViewPunchAngle([-2,0,0]);
+
+	int r = (float)input_sequence % 2;
+	switch (r) {
+	case 0:
+		Weapons_ViewAnimation(SCOUT_SHOOT1);
+		break;
+	default:
+		Weapons_ViewAnimation(SCOUT_SHOOT2);
+		break;
+	}
+
 	pl.w_attack_next = 1.25f;
+	pl.w_idle_next = pl.w_attack_next;
 }
 
 void
@@ -167,6 +175,7 @@ w_scout_reload(void)
 
 	Weapons_ViewAnimation(SCOUT_RELOAD);
 	pl.w_attack_next = 2.0f;
+	pl.w_idle_next = pl.w_attack_next;
 }
 
 float
@@ -179,11 +188,11 @@ void
 w_scout_hud(void)
 {
 #ifdef CSQC
-
+	Cstrike_DrawCrosshair();
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [0,72/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [72/256,72/256], [24/256, 24/256], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
@@ -230,7 +239,7 @@ weapon_t w_scout =
 	w_scout_primary,
 	__NULL__,
 	w_scout_reload,
-	__NULL__,
+	w_cstrike_weaponrelease,
 	w_scout_hud,
 	w_scout_precache,
 	w_scout_pickup,

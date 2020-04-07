@@ -16,11 +16,10 @@
 
 enum {
 	G3SG1_IDLE,
-	G3SG1_RELOAD,
-	G3SG1_DRAW,
 	G3SG1_SHOOT1,
 	G3SG1_SHOOT2,
-	G3SG1_SHOOT3
+	G3SG1_RELOAD,
+	G3SG1_DRAW
 };
 
 void
@@ -82,9 +81,13 @@ w_g3sg1_pickup(int new)
 void
 w_g3sg1_draw(void)
 {
-#ifdef CSQC
+	player pl = (player)self;
 	Weapons_SetModel("models/v_g3sg1.mdl");
 	Weapons_ViewAnimation(G3SG1_DRAW);
+
+#ifdef CSQC
+	pl.cs_cross_mindist = 6;
+	pl.cs_cross_deltadist = 4;
 #endif
 }
 
@@ -101,29 +104,20 @@ w_g3sg1_primary(void)
 	if (!pl.a_ammo1) {
 		return;
 	}
-
-	View_SetMuzzleflash(MUZZLE_RIFLE);
-	Weapons_ViewPunchAngle([-2,0,0]);
-
-	int r = (float)input_sequence % 3;
-	switch (r) {
-	case 0:
-		Weapons_ViewAnimation(G3SG1_SHOOT1);
-		break;
-	case 1:
-		Weapons_ViewAnimation(G3SG1_SHOOT2);
-		break;
-	default:
-		Weapons_ViewAnimation(G3SG1_SHOOT3);
-		break;
-	}
 #else
 	if (!pl.g3sg1_mag) {
 		return;
 	}
+#endif
 
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 80, [0.01,0,01], WEAPON_G3SG1);
+	Cstrike_ShotMultiplierAdd(pl, 1);
+	float accuracy = Cstrike_CalculateAccuracy(pl, 200);
 
+#ifdef CSQC
+	pl.a_ammo1--;
+	View_SetMuzzleflash(MUZZLE_RIFLE);
+#else
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 80, [accuracy,accuracy], WEAPON_G3SG1);
 	pl.g3sg1_mag--;
 
 	if (self.flags & FL_CROUCHING)
@@ -134,7 +128,20 @@ w_g3sg1_primary(void)
 	Sound_Play(pl, CHAN_WEAPON, "weapon_g3sg1.fire");
 #endif
 
+	Weapons_ViewPunchAngle([-2,0,0]);
+
+	int r = (float)input_sequence % 2;
+	switch (r) {
+	case 0:
+		Weapons_ViewAnimation(SCOUT_SHOOT1);
+		break;
+	default:
+		Weapons_ViewAnimation(SCOUT_SHOOT2);
+		break;
+	}
+
 	pl.w_attack_next = 0.25f;
+	pl.w_idle_next = pl.w_attack_next;
 }
 
 void
@@ -166,7 +173,8 @@ w_g3sg1_reload(void)
 #endif
 
 	Weapons_ViewAnimation(G3SG1_RELOAD);
-	pl.w_attack_next = 2.0f;
+	pl.w_attack_next = 4.6f;
+	pl.w_idle_next = pl.w_attack_next;
 }
 
 float
@@ -179,11 +187,11 @@ void
 w_g3sg1_hud(void)
 {
 #ifdef CSQC
-
+	Cstrike_DrawCrosshair();
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [0,72/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [72/256,72/256], [24/256, 24/256], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
@@ -230,7 +238,7 @@ weapon_t w_g3sg1 =
 	w_g3sg1_primary,
 	__NULL__,
 	w_g3sg1_reload,
-	__NULL__,
+	w_cstrike_weaponrelease,
 	w_g3sg1_hud,
 	w_g3sg1_precache,
 	w_g3sg1_pickup,

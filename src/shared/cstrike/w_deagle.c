@@ -16,11 +16,11 @@
 
 enum {
 	DEAGLE_IDLE,
-	DEAGLE_RELOAD,
-	DEAGLE_DRAW,
 	DEAGLE_SHOOT1,
 	DEAGLE_SHOOT2,
-	DEAGLE_SHOOT3
+	DEAGLE_SHOOT_EMPTY,
+	DEAGLE_RELOAD,
+	DEAGLE_DRAW
 };
 
 void
@@ -82,8 +82,14 @@ w_deagle_pickup(int new)
 void
 w_deagle_draw(void)
 {
+	player pl = (player)self;
 	Weapons_SetModel("models/v_deagle.mdl");
 	Weapons_ViewAnimation(DEAGLE_DRAW);
+
+#ifdef CSQC
+	pl.cs_cross_mindist = 8;
+	pl.cs_cross_deltadist = 3;
+#endif
 }
 
 void
@@ -95,34 +101,30 @@ w_deagle_primary(void)
 		return;
 	}
 
-#ifdef CSQC
-	if (!pl.a_ammo1) {
+	if (pl.flags & FL_SEMI_TOGGLED) {
 		return;
 	}
 
-	View_SetMuzzleflash(MUZZLE_RIFLE);
-	Weapons_ViewPunchAngle([-2,0,0]);
-
-	int r = (float)input_sequence % 3;
-	switch (r) {
-	case 0:
-		Weapons_ViewAnimation(DEAGLE_SHOOT1);
-		break;
-	case 1:
-		Weapons_ViewAnimation(DEAGLE_SHOOT2);
-		break;
-	default:
-		Weapons_ViewAnimation(DEAGLE_SHOOT3);
-		break;
+#ifdef CSQC
+	if (!pl.a_ammo1) {
+		return;
 	}
 #else
 	if (!pl.deagle_mag) {
 		return;
 	}
+#endif
 
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 54, [0.01,0,01], WEAPON_DEAGLE);
+	Cstrike_ShotMultiplierAdd(pl, 1);
+	float accuracy = Cstrike_CalculateAccuracy(pl, 200);
 
+#ifdef CSQC
+	pl.a_ammo1--;
+	View_SetMuzzleflash(MUZZLE_RIFLE);
+#else
 	pl.deagle_mag--;
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 54, [accuracy,accuracy], WEAPON_DEAGLE);
+
 
 	if (self.flags & FL_CROUCHING)
 		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
@@ -132,7 +134,25 @@ w_deagle_primary(void)
 	Sound_Play(pl, CHAN_WEAPON, "weapon_deagle.fire");
 #endif
 
+	Weapons_ViewPunchAngle([-2,0,0]);
+
+	if (pl.a_ammo1 <= 0) {
+		Weapons_ViewAnimation(DEAGLE_SHOOT_EMPTY);
+	} else {
+		int r = (float)input_sequence % 2;
+		switch (r) {
+		case 0:
+			Weapons_ViewAnimation(DEAGLE_SHOOT1);
+			break;
+		default:
+			Weapons_ViewAnimation(DEAGLE_SHOOT2);
+			break;
+		}
+	}
+
+	pl.flags |= FL_SEMI_TOGGLED;
 	pl.w_attack_next = 0.15f;
+	pl.w_idle_next = pl.w_attack_next;
 }
 
 void
@@ -164,7 +184,8 @@ w_deagle_reload(void)
 #endif
 
 	Weapons_ViewAnimation(DEAGLE_RELOAD);
-	pl.w_attack_next = 2.0f;
+	pl.w_attack_next = 2.1f;
+	pl.w_idle_next = pl.w_attack_next;
 }
 
 float
@@ -177,10 +198,11 @@ void
 w_deagle_hud(void)
 {
 #ifdef CSQC
+	Cstrike_DrawCrosshair();
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [0,72/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [24/256,72/256], [24/256, 24/256], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
@@ -227,7 +249,7 @@ weapon_t w_deagle =
 	w_deagle_primary,
 	__NULL__,
 	w_deagle_reload,
-	__NULL__,
+	w_cstrike_weaponrelease,
 	w_deagle_hud,
 	w_deagle_precache,
 	w_deagle_pickup,

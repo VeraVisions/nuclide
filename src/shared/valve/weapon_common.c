@@ -123,6 +123,8 @@ void Weapons_Release(void)
 	if (g_weapons[i].release != __NULL__) {
 		g_weapons[i].release();
 	}
+	
+	pl.flags &= ~FL_SEMI_TOGGLED;
 }
 
 void Weapons_DrawCrosshair(void)

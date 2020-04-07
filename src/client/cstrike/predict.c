@@ -14,58 +14,32 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-enum {
-	ENT_ENTITY = 1,
-	ENT_PLAYER,
-	ENT_AMBIENTSOUND,
-	ENT_ENVLASER,
-	ENT_SPRITE,
-	ENT_SPRAY,
-#ifdef VALVE
-	ENT_TRIPMINE,
-#endif
-	ENT_DECAL
-};
+/*
+=================
+Predict_PreFrame
 
-/* entity update flags */
-enumflags {
-	NPC_MODELINDEX,
-	NPC_ORIGIN_X,
-	NPC_ORIGIN_Y,
-	NPC_ORIGIN_Z,
-	NPC_ANGLES_X,
-	NPC_ANGLES_Y,
-	NPC_ANGLES_Z,
-	NPC_VELOCITY_X,
-	NPC_VELOCITY_Y,
-	NPC_VELOCITY_Z,
-	NPC_FRAME,
-	NPC_SKIN,
-	NPC_BODY
-};
+We're part way through parsing new player data.
+Propagate our pmove state to whatever the current frame before its stomped on 
+(so any non-networked state updates locally).
+=================
+*/
+void GamePredict_PreFrame(player pl)
+{
+	pl.net_cs_shotmultiplier = pl.cs_shotmultiplier;
+	pl.net_cs_shottime = pl.cs_shottime;
+}
 
-enumflags {
-	PLAYER_KEEPALIVE,
-	PLAYER_MODELINDEX,
-	PLAYER_ORIGIN,
-	PLAYER_ORIGIN_Z,
-	PLAYER_ANGLES_X,
-	PLAYER_ANGLES_Y,
-	PLAYER_ANGLES_Z,
-	PLAYER_VELOCITY,
-	PLAYER_VELOCITY_Z,
-	PLAYER_FLAGS,
-	PLAYER_WEAPON,
-	PLAYER_ITEMS,
-	PLAYER_HEALTH,
-	PLAYER_ARMOR,
-	PLAYER_MOVETYPE,
-	PLAYER_VIEWOFS,
-	PLAYER_BASEFRAME,
-	PLAYER_FRAME,
-	PLAYER_AMMO1,
-	PLAYER_AMMO2,
-	PLAYER_AMMO3,
-	PLAYER_CSSHOT,
-	PLAYER_CSSHOTTIME
-};
+/*
+=================
+Predict_PostFrame
+
+We're part way through parsing new player data.
+Rewind our pmove state back to before we started predicting. 
+(to give consistent state instead of accumulating errors)
+=================
+*/
+void GamePredict_PostFrame(player pl)
+{
+	pl.cs_shotmultiplier = pl.net_cs_shotmultiplier;
+	pl.cs_shottime = pl.net_cs_shottime;
+}

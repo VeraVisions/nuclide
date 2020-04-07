@@ -36,15 +36,17 @@
 ../voice.c
 ../../shared/valve/animations.h
 ../../shared/valve/animations.c
-../../shared/valve/player.cpp
+../../shared/cstrike/player.cpp
 ../player.c
 ../../shared/pmove.c
+predict.c
 ../predict.c
 ../../shared/decals.c
 ../../shared/effects.c
 ../../shared/spraylogo.cpp
 ../npc.c
 ../../shared/cstrike/items.h
+../../shared/cstrike/weapons_cstrike.c
 ../../shared/valve/weapon_common.h
 ../../shared/cstrike/weapons.h
 ../../shared/cstrike/w_ak47.c
@@ -76,7 +78,7 @@
 ../../shared/cstrike/w_smokegrenade.c
 ../../shared/cstrike/weapons.c
 ../../shared/valve/weapon_common.c
-../valve/player.c
+../cstrike/player.c
 entities.c
 ../entities.c
 ../fx_lensflare.c
@@ -94,6 +96,7 @@ entities.c
 ../cstrike/vgui_chooseteam.cpp
 
 hud.h
+crosshair.c
 hud.c
 hud_weaponselect.c
 ../valve/scoreboard.c

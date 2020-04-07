@@ -19,6 +19,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 {
 	pSeat = &seats[0];
 
+	registercommand("dev_sentence");
 	registercommand("fx_lenspos");
 	registercommand("titles_test");
 	registercommand("vox_test");
@@ -604,6 +605,17 @@ CSQC_ConsoleCommand(string sCMD)
 	tokenize(sCMD);
 	
 	switch (argv(0)) {
+		case "dev_sentence":
+			static CBaseEntity foo;
+			if (!foo) {
+				foo = spawn(CBaseEntity);
+				foo.drawmask = MASK_ENGINE;
+				setmodel(foo, "models/headcrab.mdl");
+			}
+			setorigin(foo, getproperty(VF_ORIGIN));
+			foo.Sentence(argv(1));
+			break;
+			
 	case "vote":
 		if (argv(1) == "yes") {
 			sendevent("VoteY", "");

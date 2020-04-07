@@ -106,6 +106,17 @@ w_flashbang_aimanim(void)
 }
 
 void
+w_flashbang_hud(void)
+{
+#ifdef CSQC
+
+	HUD_DrawAmmo2();
+	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [48/256,96/256], [24/256, 24/256], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+#endif
+}
+
+void
 w_flashbang_hudpic(int selected, vector pos, float a)
 {
 #ifdef CSQC
@@ -149,7 +160,7 @@ weapon_t w_flashbang =
 	__NULL__,
 	__NULL__,
 	__NULL__,
-	__NULL__,
+	w_flashbang_hud,
 	w_flashbang_precache,
 	__NULL__,
 	w_flashbang_updateammo,

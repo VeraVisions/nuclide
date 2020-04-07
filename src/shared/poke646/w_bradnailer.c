@@ -96,11 +96,7 @@ w_bradnailer_shootnail(void)
 		Effect_CreateSpark(self.origin, trace_plane_normal);
 		if (other.takedamage == DAMAGE_YES) {
 			Damage_Apply(other, self.owner, 15, WEAPON_BRADNAILER, DMG_GENERIC);
-			if (random() < 0.5) {
-				Weapons_PlaySound(self, CHAN_WEAPON, "weapons/brad_hit1.wav", 1, ATTN_NORM);
-			} else {
-				Weapons_PlaySound(self, CHAN_WEAPON, "weapons/brad_hit2.wav", 1, ATTN_NORM);
-			}
+			Sound_Play(self, CHAN_WEAPON, "weapon_bradnailer.hitbody");
 		} else {
 			Weapons_PlaySound(self, CHAN_WEAPON, "weapons/xbow_hit1.wav", 1, ATTN_NORM);
 		}
@@ -125,7 +121,7 @@ w_bradnailer_shootnail(void)
 	else
 		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
 
-	sound(pl, CHAN_WEAPON, "weapons/bradnailer.wav", 1, ATTN_NORM);
+	Sound_Play(pl, CHAN_WEAPON, "weapon_bradnailer.fire");
 }
 #endif
 
@@ -196,7 +192,7 @@ w_bradnailer_release(void)
 		return;
 	}
 
-	int r = floor(random(0,3));
+	int r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
 		Weapons_ViewAnimation(BNAIL_IDLE1);

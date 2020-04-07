@@ -32,6 +32,7 @@
 ../valve/spectator.c
 
 ../../shared/cstrike/items.h
+../../shared/cstrike/weapons_cstrike.c
 ../../shared/valve/weapon_common.h
 ../../shared/cstrike/weapons.h
 ../../shared/cstrike/w_ak47.c

@@ -38,6 +38,8 @@ void Predict_PreFrame(player pl)
 	pl.net_ammo2 = pl.a_ammo2;
 	pl.net_ammo3 = pl.a_ammo3;
 	pl.net_weapontime = pl.weapontime;
+	
+	GamePredict_PreFrame(pl);
 
 	//self.netpmove_flags = self.pmove_flags;
 
@@ -45,8 +47,18 @@ void Predict_PreFrame(player pl)
 	/*for (; self.pmove_frame <= servercommandframe; self.pmove_frame++) {
 		float flSuccess = getinputstate(self.pmove_frame);*/
 	for ( int i = pl.sequence + 1; i <= clientcommandframe; i++ ) {
-		if (!getinputstate(i)) {
-			break;	//erk?... too old?
+		float flSuccess = getinputstate( i );
+		if (flSuccess == FALSE) {
+			continue;
+		}
+
+		if (i==clientcommandframe){
+			CSQC_Input_Frame();
+		}
+
+		// Partial frames are the worst
+		if (input_timelength == 0) {
+			break;
 		}
 		input_sequence = i;
 		QPhysics_Run(pl);
@@ -71,15 +83,14 @@ void Predict_PostFrame(player pl)
 	pl.teleport_time = pl.net_teleport_time;
 	pl.viewzoom = pl.net_viewzoom;
 	pl.punchangle = pl.net_punchangle;
-	//pl.hook.origin = pl.net_hookpos;
-
 	pl.w_attack_next = pl.net_w_attack_next;
 	pl.w_idle_next = pl.net_w_idle_next;
 	pl.a_ammo1 = pl.net_ammo1;
 	pl.a_ammo2 = pl.net_ammo2;
 	pl.a_ammo3 = pl.net_ammo3;
-
 	pl.weapontime = pl.net_weapontime;
+
+	GamePredict_PostFrame(pl);
 
 	//self.pmove_flags = self.netpmove_flags;
 	setorigin(pl, pl.origin);

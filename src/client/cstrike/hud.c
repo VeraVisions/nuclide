@@ -371,7 +371,7 @@ HUD_Draw(void)
 	HUD_DrawFlashlight();
 	Damage_Draw();
 	
-	drawpic([128,128], HUD_NUMS, [256,256], [1,1,1], 1.0f);
+	//drawpic([128,128], HUD_NUMS, [256,256], [1,1,1], 1.0f);
 }
 
 /* specatator main entry */

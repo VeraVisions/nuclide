@@ -38,7 +38,7 @@ void
 w_p90_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, pl.p90_mag, pl.ammo_762mm, -1);
+	Weapons_UpdateAmmo(pl, pl.p90_mag, pl.ammo_57mm, -1);
 #endif
 }
 
@@ -69,8 +69,8 @@ w_p90_pickup(int new)
 	if (new) {
 		pl.p90_mag = 50;
 	} else {
-		if (pl.ammo_762mm < 100) {
-			pl.ammo_762mm = bound(0, pl.ammo_762mm + 50, 100);
+		if (pl.ammo_57mm < 100) {
+			pl.ammo_57mm = bound(0, pl.ammo_57mm + 50, 100);
 		} else {
 			return FALSE;
 		}
@@ -82,9 +82,13 @@ w_p90_pickup(int new)
 void
 w_p90_draw(void)
 {
-#ifdef CSQC
+	player pl = (player)self;
 	Weapons_SetModel("models/v_p90.mdl");
 	Weapons_ViewAnimation(P90_DRAW);
+
+#ifdef CSQC
+	pl.cs_cross_mindist = 7;
+	pl.cs_cross_deltadist = 3;
 #endif
 }
 
@@ -97,12 +101,34 @@ w_p90_primary(void)
 		return;
 	}
 
+	/* ammo check */
 #ifdef CSQC
 	if (!pl.a_ammo1) {
 		return;
 	}
+#else
+	if (!pl.p90_mag) {
+		return;
+	}
+#endif
 
+	Cstrike_ShotMultiplierAdd(pl, 1);
+	float accuracy = Cstrike_CalculateAccuracy(pl, 175);
+
+#ifdef CSQC
+	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
+#else
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 26, [accuracy,accuracy], WEAPON_P90);
+	pl.p90_mag--;
+
+	if (self.flags & FL_CROUCHING)
+		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
+	else
+		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
+
+	Sound_Play(pl, CHAN_WEAPON, "weapon_p90.fire");
+#endif
 	Weapons_ViewPunchAngle([-2,0,0]);
 
 	int r = (float)input_sequence % 3;
@@ -117,24 +143,9 @@ w_p90_primary(void)
 		Weapons_ViewAnimation(P90_SHOOT3);
 		break;
 	}
-#else
-	if (!pl.p90_mag) {
-		return;
-	}
-
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 26, [0.01,0,01], WEAPON_P90);
-
-	pl.p90_mag--;
-
-	if (self.flags & FL_CROUCHING)
-		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
-	else
-		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
-
-	Sound_Play(pl, CHAN_WEAPON, "weapon_p90.fire");
-#endif
 
 	pl.w_attack_next = 0.07f;
+	pl.w_idle_next = pl.w_attack_next;
 }
 
 void
@@ -157,16 +168,17 @@ w_p90_reload(void)
 	if (pl.p90_mag >= 50) {
 		return;
 	}
-	if (!pl.ammo_762mm) {
+	if (!pl.ammo_57mm) {
 		return;
 	}
 
-	Weapons_ReloadWeapon(pl, player::p90_mag, player::ammo_762mm, 50);
-	Weapons_UpdateAmmo(pl, pl.p90_mag, pl.ammo_762mm, -1);
+	Weapons_ReloadWeapon(pl, player::p90_mag, player::ammo_57mm, 50);
+	Weapons_UpdateAmmo(pl, pl.p90_mag, pl.ammo_57mm, -1);
 #endif
 
 	Weapons_ViewAnimation(P90_RELOAD);
-	pl.w_attack_next = 2.0f;
+	pl.w_attack_next = 3.3f;
+	pl.w_idle_next = pl.w_attack_next;
 }
 
 float
@@ -179,11 +191,11 @@ void
 w_p90_hud(void)
 {
 #ifdef CSQC
-
+	Cstrike_DrawCrosshair();
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [0,72/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [120/256,96/256], [24/256, 24/256], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
@@ -230,7 +242,7 @@ weapon_t w_p90 =
 	w_p90_primary,
 	__NULL__,
 	w_p90_reload,
-	__NULL__,
+	w_cstrike_weaponrelease,
 	w_p90_hud,
 	w_p90_precache,
 	w_p90_pickup,

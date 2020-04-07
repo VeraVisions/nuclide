@@ -44,20 +44,6 @@ typedef struct
 	int g_sentences_count;
 #endif
 
-string g_sentences_path;
-
-void
-Sentences_Path(string word)
-{
-	int c = tokenizebyseparator(word, "/");
-
-	if (c > 1) {
-		g_sentences_path = sprintf("%s/", argv(0));
-	} else {
-		g_sentences_path =  "";
-	}
-}
-
 void
 Sentences_Init(void)
 {
@@ -90,9 +76,6 @@ Sentences_Init(void)
 		/* starts of at 0, for every line increases */
 		int x = g_sentences_count;
 
-		/* default path is vox */
-		g_sentences_path = "vox/";
-
 		/* allocate memory and increase count */
 #ifdef DYNAMIC_SENTENCES
 		g_sentences = memrealloc(g_sentences,
@@ -109,13 +92,10 @@ Sentences_Init(void)
 			if (i==0) {
 				g_sentences[x].m_strID = strcat("!", argv(0));
 			} else {
-				/* check whether or not our keyword contains a path */
-				Sentences_Path(argv(i));
-
 				if (i == 1) {
-					g_sentences[x].m_strSamples = sprintf("%s%s", g_sentences_path, argv(i));
+					g_sentences[x].m_strSamples = sprintf("%s", argv(i));
 				} else {
-					g_sentences[x].m_strSamples = sprintf("%s %s%s", g_sentences[x].m_strSamples, g_sentences_path, argv(i));
+					g_sentences[x].m_strSamples = sprintf("%s %s", g_sentences[x].m_strSamples, argv(i));
 				}
 			}
 		}

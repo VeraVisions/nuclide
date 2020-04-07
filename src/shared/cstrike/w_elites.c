@@ -16,29 +16,38 @@
 
 enum {
 	ELITES_IDLE,
+	ELITES_IDLE_LEFTEMPTY,
+	ELITES_SHOOT_LEFT1,
+	ELITES_SHOOT_LEFT2,
+	ELITES_SHOOT_LEFT3,
+	ELITES_SHOOT_LEFT4,
+	ELITES_SHOOT_LEFT5,
+	ELITES_SHOOT_LEFTLAST,
+	ELITES_SHOOT_RIGHT1,
+	ELITES_SHOOT_RIGHT2,
+	ELITES_SHOOT_RIGHT3,
+	ELITES_SHOOT_RIGHT4,
+	ELITES_SHOOT_RIGHT5,
+	ELITES_SHOOT_RIGHTLAST,
 	ELITES_RELOAD,
-	ELITES_DRAW,
-	ELITES_SHOOT1,
-	ELITES_SHOOT2,
-	ELITES_SHOOT3
+	ELITES_DRAW
 };
-
 void
 w_elites_precache(void)
 {
 #ifdef SSQC
 	Sound_Precache("weapon_elites.fire");
 #endif
-	precache_model("models/v_elites.mdl");
-	precache_model("models/w_elites.mdl");
-	precache_model("models/p_elites.mdl");
+	precache_model("models/v_elite.mdl");
+	precache_model("models/w_elite.mdl");
+	precache_model("models/p_elite.mdl");
 }
 
 void
 w_elites_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, pl.elites_mag, pl.ammo_762mm, -1);
+	Weapons_UpdateAmmo(pl, pl.elites_mag, pl.ammo_9mm, -1);
 #endif
 }
 
@@ -69,8 +78,8 @@ w_elites_pickup(int new)
 	if (new) {
 		pl.elites_mag = 30;
 	} else {
-		if (pl.ammo_762mm < 90) {
-			pl.ammo_762mm = bound(0, pl.ammo_762mm + 30, 90);
+		if (pl.ammo_9mm < 90) {
+			pl.ammo_9mm = bound(0, pl.ammo_9mm + 30, 90);
 		} else {
 			return FALSE;
 		}
@@ -82,9 +91,13 @@ w_elites_pickup(int new)
 void
 w_elites_draw(void)
 {
-#ifdef CSQC
-	Weapons_SetModel("models/v_elites.mdl");
+	player pl = (player)self;
+	Weapons_SetModel("models/v_elite.mdl");
 	Weapons_ViewAnimation(ELITES_DRAW);
+
+#ifdef CSQC
+	pl.cs_cross_mindist = 4;
+	pl.cs_cross_deltadist = 3;
 #endif
 }
 
@@ -97,33 +110,28 @@ w_elites_primary(void)
 		return;
 	}
 
-#ifdef CSQC
-	if (!pl.a_ammo1) {
+	if (pl.flags & FL_SEMI_TOGGLED) {
 		return;
 	}
 
-	View_SetMuzzleflash(MUZZLE_RIFLE);
-	Weapons_ViewPunchAngle([-2,0,0]);
-
-	int r = (float)input_sequence % 3;
-	switch (r) {
-	case 0:
-		Weapons_ViewAnimation(ELITES_SHOOT1);
-		break;
-	case 1:
-		Weapons_ViewAnimation(ELITES_SHOOT2);
-		break;
-	default:
-		Weapons_ViewAnimation(ELITES_SHOOT3);
-		break;
+#ifdef CSQC
+	if (!pl.a_ammo1) {
+		return;
 	}
 #else
 	if (!pl.elites_mag) {
 		return;
 	}
+#endif
 
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 45, [0.01,0,01], WEAPON_ELITES);
+	Cstrike_ShotMultiplierAdd(pl, 1);
+	float accuracy = Cstrike_CalculateAccuracy(pl, 200);
 
+#ifdef CSQC
+	pl.a_ammo1--;
+	View_SetMuzzleflash(MUZZLE_RIFLE);
+#else
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 45, [accuracy,accuracy], WEAPON_ELITES);
 	pl.elites_mag--;
 
 	if (self.flags & FL_CROUCHING)
@@ -134,7 +142,60 @@ w_elites_primary(void)
 	Sound_Play(pl, CHAN_WEAPON, "weapon_elites.fire");
 #endif
 
+	pl.a_ammo3 = 1 - pl.a_ammo3;
+
+	Weapons_ViewPunchAngle([-2,0,0]);
+
+	int r = (float)input_sequence % 5;
+	if (pl.a_ammo3) {
+		if (pl.a_ammo1 <= 0) {
+			Weapons_ViewAnimation(ELITES_SHOOT_LEFTLAST);
+		} else {
+			switch (r) {
+			case 0:
+				Weapons_ViewAnimation(ELITES_SHOOT_LEFT1);
+				break;
+			case 1:
+				Weapons_ViewAnimation(ELITES_SHOOT_LEFT2);
+				break;
+			case 2:
+				Weapons_ViewAnimation(ELITES_SHOOT_LEFT3);
+				break;
+			case 3:
+				Weapons_ViewAnimation(ELITES_SHOOT_LEFT4);
+				break;
+			default:
+				Weapons_ViewAnimation(ELITES_SHOOT_LEFT1);
+				break;
+			}
+		}
+	} else {
+		if (pl.a_ammo1 <= 0) {
+			Weapons_ViewAnimation(ELITES_SHOOT_RIGHTLAST);
+		} else {
+			switch (r) {
+			case 0:
+				Weapons_ViewAnimation(ELITES_SHOOT_RIGHT1);
+				break;
+			case 1:
+				Weapons_ViewAnimation(ELITES_SHOOT_RIGHT2);
+				break;
+			case 2:
+				Weapons_ViewAnimation(ELITES_SHOOT_RIGHT3);
+				break;
+			case 3:
+				Weapons_ViewAnimation(ELITES_SHOOT_RIGHT4);
+				break;
+			default:
+				Weapons_ViewAnimation(ELITES_SHOOT_RIGHT1);
+				break;
+			}
+		}
+	}
+
+	pl.flags |= FL_SEMI_TOGGLED;
 	pl.w_attack_next = 0.15f;
+	pl.w_idle_next = pl.w_attack_next;
 }
 
 void
@@ -157,16 +218,17 @@ w_elites_reload(void)
 	if (pl.elites_mag >= 30) {
 		return;
 	}
-	if (!pl.ammo_762mm) {
+	if (!pl.ammo_9mm) {
 		return;
 	}
 
-	Weapons_ReloadWeapon(pl, player::elites_mag, player::ammo_762mm, 30);
-	Weapons_UpdateAmmo(pl, pl.elites_mag, pl.ammo_762mm, -1);
+	Weapons_ReloadWeapon(pl, player::elites_mag, player::ammo_9mm, 30);
+	Weapons_UpdateAmmo(pl, pl.elites_mag, pl.ammo_9mm, -1);
 #endif
 
 	Weapons_ViewAnimation(ELITES_RELOAD);
-	pl.w_attack_next = 2.0f;
+	pl.w_attack_next = 4.6f;
+	pl.w_idle_next = pl.w_attack_next;
 }
 
 float
@@ -179,11 +241,11 @@ void
 w_elites_hud(void)
 {
 #ifdef CSQC
-
+	Cstrike_DrawCrosshair();
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [0,72/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [48/256,72/256], [24/256, 24/256], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
@@ -230,7 +292,7 @@ weapon_t w_elites =
 	w_elites_primary,
 	__NULL__,
 	w_elites_reload,
-	__NULL__,
+	w_cstrike_weaponrelease,
 	w_elites_hud,
 	w_elites_precache,
 	w_elites_pickup,

@@ -7,13 +7,11 @@ weapon_ak47.fire
 weapon_aug.fire
 {
 	sample weapons/aug-1.wav
-	sample weapons/aug-2.wav
 }
 
 weapon_awp.fire
 {
-	sample weapons/awp-1.wav
-	sample weapons/awp-2.wav
+	sample weapons/awp1.wav
 }
 
 weapon_c4bomb.disarm
@@ -44,14 +42,13 @@ weapon_deagle.fire
 
 weapon_elites.fire
 {
-	sample weapons/elites-1.wav
-	sample weapons/elites-2.wav
+	sample weapons/elite_fire.wav
+	sample weapons/elite_fire.wav
 }
 
 weapon_fiveseven.fire
 {
 	sample weapons/fiveseven-1.wav
-	sample weapons/fiveseven-2.wav
 }
 
 weapon_flashbang.explode
@@ -62,13 +59,16 @@ weapon_flashbang.explode
 weapon_g3sg1.fire
 {
 	sample weapons/g3sg1-1.wav
-	sample weapons/g3sg1-2.wav
 }
 
-weapon_glock.fire
+weapon_glock18.fire
+{
+	sample weapons/glock18-2.wav
+}
+
+weapon_glock18.burstfire
 {
 	sample weapons/glock18-1.wav
-	sample weapons/glock18-2.wav
 }
 
 weapon_grenade.bounce
@@ -182,7 +182,7 @@ weapon_usp45.fire
 	sample weapons/usp_unsil-1.wav
 }
 
-weapon_usp45.silencer
+weapon_usp45.silenced
 {
 	sample weapons/usp1.wav
 	sample weapons/usp2.wav
@@ -191,4 +191,9 @@ weapon_usp45.silencer
 weapon_xm1014.fire
 {
 	sample weapons/xm1014-1.wav
+}
+
+weapon_xm1014.insertshell
+{
+	sample weapons/m3_insertshell.wav
 }

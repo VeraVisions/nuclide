@@ -35,6 +35,7 @@
 ../../shared/valve/player.cpp
 ../player.c
 ../../shared/pmove.c
+../valve/predict.c
 ../predict.c
 ../../shared/decals.c
 ../../shared/effects.c

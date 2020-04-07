@@ -139,7 +139,16 @@ CBaseEntity::ProcessWordQue(void)
 		return;
 	}
 
-	sound(this, CHAN_VOICE, m_pSentenceQue[m_iSentencePos].m_strSnd, 1.0, ATTN_NORM, 100, SOUNDFLAG_FOLLOW);
+	/* hack to get vox working. */
+	string sndpath;
+	int c = tokenizebyseparator(m_pSentenceQue[m_iSentencePos].m_strSnd, "/");
+	if (c > 1) {
+		sndpath = argv(0);
+	} else {
+		sndpath =  "vox";
+	}
+
+	sound(this, CHAN_VOICE, sprintf("%s/%s", sndpath, argv(1)), 1.0, ATTN_NORM, 100, SOUNDFLAG_FOLLOW);
 	dprint(sprintf("^2CBaseEntity::^3ProcessWordQue^7: Speaking %s\n", m_pSentenceQue[m_iSentencePos].m_strSnd));
 	m_iSentencePos++;
 

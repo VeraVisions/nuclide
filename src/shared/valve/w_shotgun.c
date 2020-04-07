@@ -186,6 +186,7 @@ void w_shotgun_secondary(void)
 	pl.w_attack_next = 1.5f;
 	pl.w_idle_next = 2.5f;
 }
+
 void w_shotgun_reload(void)
 {
 	player pl = (player)self;
@@ -211,6 +212,7 @@ void w_shotgun_reload(void)
 	pl.a_ammo3 = SHOTTY_RELOAD_START;
 	pl.w_idle_next = 0.0f;
 }
+
 void w_shotgun_release(void)
 {
 	player pl = (player)self;

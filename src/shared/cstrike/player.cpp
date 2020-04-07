@@ -67,6 +67,9 @@ class player:CBaseEntity
 	int g3sg1_mag;
 	int sg550_mag;
 	int para_mag;
+	
+	int cs_shotmultiplier;
+	float cs_shottime;
 
 #ifdef CSQC
 	/* External model */
@@ -76,6 +79,11 @@ class player:CBaseEntity
 	int p_model_bone;
 	float pitch;
 	float lastweapon;
+
+	int cs_cross_mindist;
+	int cs_cross_deltadist;
+	int cs_old_shotmultiplier;
+	float cs_crosshairdistance;
 
 	/* Prediction */
 	vector net_origin;
@@ -87,9 +95,12 @@ class player:CBaseEntity
 	float net_teleport_time;
 	float net_weapontime;
 	float net_viewzoom;
+	vector net_punchangle;
 	int net_ammo1;
 	int net_ammo2;
 	int net_ammo3;
+	int net_cs_shotmultiplier;
+	float net_cs_shottime;
 	int sequence;
 	
 	virtual void() gun_offset;
@@ -125,5 +136,8 @@ class player:CBaseEntity
 	int old_a_ammo1;
 	int old_a_ammo2;
 	int old_a_ammo3;
+
+	int old_cs_shotmultiplier;
+	float old_cs_shottime;
 #endif
 };

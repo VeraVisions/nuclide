@@ -182,12 +182,16 @@ void customgame_btnactivate_start(void)
 
 	games_set(nextgame);
 
+#if 0
+	localcmd(sprintf("fs_changegame %s.fmf\n", games[nextgame].gamedir));
+#else
 	/* some games/mods inherit other directories */
 	if (games[nextgame].fallback_dir) {
 		localcmd(sprintf("gamedir \"%s;%s\"\n", games[nextgame].fallback_dir, games[nextgame].gamedir));
 	} else {
 		localcmd(sprintf("gamedir \"%s\"\n", games[nextgame].gamedir));
 	}
+#endif
 
 	localcmd("stopmusic\nsnd_restart\nwait\nvid_reload\nmenu_restart\nmenu_customgame\n");
 	cvar_init();

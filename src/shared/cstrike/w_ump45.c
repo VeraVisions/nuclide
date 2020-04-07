@@ -82,9 +82,13 @@ w_ump45_pickup(int new)
 void
 w_ump45_draw(void)
 {
-#ifdef CSQC
+	player pl = (player)self;
 	Weapons_SetModel("models/v_ump45.mdl");
 	Weapons_ViewAnimation(UMP45_DRAW);
+
+#ifdef CSQC
+	pl.cs_cross_mindist = 6;
+	pl.cs_cross_deltadist = 3;
 #endif
 }
 
@@ -97,12 +101,35 @@ w_ump45_primary(void)
 		return;
 	}
 
+	/* ammo check */
 #ifdef CSQC
 	if (!pl.a_ammo1) {
 		return;
 	}
+#else
+	if (!pl.ump45_mag) {
+		return;
+	}
+#endif
 
+	Cstrike_ShotMultiplierAdd(pl, 1);
+	float accuracy = Cstrike_CalculateAccuracy(pl, 210);
+
+#ifdef CSQC
+	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
+#else
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 30, [accuracy,accuracy], WEAPON_UMP45);
+	pl.ump45_mag--;
+
+	if (self.flags & FL_CROUCHING)
+		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
+	else
+		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
+
+	Sound_Play(pl, CHAN_WEAPON, "weapon_ump45.fire");
+#endif
+
 	Weapons_ViewPunchAngle([-2,0,0]);
 
 	int r = (float)input_sequence % 3;
@@ -117,24 +144,9 @@ w_ump45_primary(void)
 		Weapons_ViewAnimation(UMP45_SHOOT3);
 		break;
 	}
-#else
-	if (!pl.ump45_mag) {
-		return;
-	}
-
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 30, [0.01,0,01], WEAPON_UMP45);
-
-	pl.ump45_mag--;
-
-	if (self.flags & FL_CROUCHING)
-		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
-	else
-		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
-
-	Sound_Play(pl, CHAN_WEAPON, "weapon_ump45.fire");
-#endif
 
 	pl.w_attack_next = 0.105f;
+	pl.w_idle_next = pl.w_attack_next;
 }
 
 void
@@ -166,7 +178,8 @@ w_ump45_reload(void)
 #endif
 
 	Weapons_ViewAnimation(UMP45_RELOAD);
-	pl.w_attack_next = 2.0f;
+	pl.w_attack_next = 3.5f;
+	pl.w_idle_next = pl.w_attack_next;
 }
 
 float
@@ -179,10 +192,11 @@ void
 w_ump45_hud(void)
 {
 #ifdef CSQC
+	Cstrike_DrawCrosshair();
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [0,72/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [96/256,72/256], [24/256, 24/256], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
@@ -229,7 +243,7 @@ weapon_t w_ump45 =
 	w_ump45_primary,
 	__NULL__,
 	w_ump45_reload,
-	__NULL__,
+	w_cstrike_weaponrelease,
 	w_ump45_hud,
 	w_ump45_precache,
 	w_ump45_pickup,

@@ -16,11 +16,10 @@
 
 enum {
 	SG550_IDLE,
-	SG550_RELOAD,
-	SG550_DRAW,
 	SG550_SHOOT1,
 	SG550_SHOOT2,
-	SG550_SHOOT3
+	SG550_RELOAD,
+	SG550_DRAW,
 };
 
 void
@@ -38,7 +37,7 @@ void
 w_sg550_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, pl.sg550_mag, pl.ammo_762mm, -1);
+	Weapons_UpdateAmmo(pl, pl.sg550_mag, pl.ammo_556mm, -1);
 #endif
 }
 
@@ -69,8 +68,8 @@ w_sg550_pickup(int new)
 	if (new) {
 		pl.sg550_mag = 30;
 	} else {
-		if (pl.ammo_762mm < 90) {
-			pl.ammo_762mm = bound(0, pl.ammo_762mm + 30, 90);
+		if (pl.ammo_556mm < 90) {
+			pl.ammo_556mm = bound(0, pl.ammo_556mm + 30, 90);
 		} else {
 			return FALSE;
 		}
@@ -82,9 +81,13 @@ w_sg550_pickup(int new)
 void
 w_sg550_draw(void)
 {
-#ifdef CSQC
+	player pl = (player)self;
 	Weapons_SetModel("models/v_sg550.mdl");
 	Weapons_ViewAnimation(SG550_DRAW);
+
+#ifdef CSQC
+	pl.cs_cross_mindist = 5;
+	pl.cs_cross_deltadist = 3;
 #endif
 }
 
@@ -97,33 +100,25 @@ w_sg550_primary(void)
 		return;
 	}
 
+	/* ammo check */
 #ifdef CSQC
 	if (!pl.a_ammo1) {
 		return;
-	}
-
-	View_SetMuzzleflash(MUZZLE_RIFLE);
-	Weapons_ViewPunchAngle([-2,0,0]);
-
-	int r = (float)input_sequence % 3;
-	switch (r) {
-	case 0:
-		Weapons_ViewAnimation(SG550_SHOOT1);
-		break;
-	case 1:
-		Weapons_ViewAnimation(SG550_SHOOT2);
-		break;
-	default:
-		Weapons_ViewAnimation(SG550_SHOOT3);
-		break;
 	}
 #else
 	if (!pl.sg550_mag) {
 		return;
 	}
+#endif
 
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 70, [0.01,0,01], WEAPON_SG550);
+	Cstrike_ShotMultiplierAdd(pl, 1);
+	float accuracy = Cstrike_CalculateAccuracy(pl, 200);
 
+#ifdef CSQC
+	pl.a_ammo1--;
+	View_SetMuzzleflash(MUZZLE_RIFLE);
+#else
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 70, [accuracy,accuracy], WEAPON_SG550);
 	pl.sg550_mag--;
 
 	if (self.flags & FL_CROUCHING)
@@ -134,7 +129,20 @@ w_sg550_primary(void)
 	Sound_Play(pl, CHAN_WEAPON, "weapon_sg550.fire");
 #endif
 
+	Weapons_ViewPunchAngle([-2,0,0]);
+
+	int r = (float)input_sequence % 2;
+	switch (r) {
+	case 0:
+		Weapons_ViewAnimation(SCOUT_SHOOT1);
+		break;
+	default:
+		Weapons_ViewAnimation(SCOUT_SHOOT2);
+		break;
+	}
+
 	pl.w_attack_next = 0.25f;
+	pl.w_idle_next = pl.w_attack_next;
 }
 
 void
@@ -157,16 +165,17 @@ w_sg550_reload(void)
 	if (pl.sg550_mag >= 30) {
 		return;
 	}
-	if (!pl.ammo_762mm) {
+	if (!pl.ammo_556mm) {
 		return;
 	}
 
-	Weapons_ReloadWeapon(pl, player::sg550_mag, player::ammo_762mm, 30);
-	Weapons_UpdateAmmo(pl, pl.sg550_mag, pl.ammo_762mm, -1);
+	Weapons_ReloadWeapon(pl, player::sg550_mag, player::ammo_556mm, 30);
+	Weapons_UpdateAmmo(pl, pl.sg550_mag, pl.ammo_556mm, -1);
 #endif
 
 	Weapons_ViewAnimation(SG550_RELOAD);
-	pl.w_attack_next = 2.0f;
+	pl.w_attack_next = 3.8f;
+	pl.w_idle_next = pl.w_attack_next;
 }
 
 float
@@ -179,11 +188,11 @@ void
 w_sg550_hud(void)
 {
 #ifdef CSQC
-
+	Cstrike_DrawCrosshair();
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [0,72/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [0,96/256], [24/256, 24/256], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
@@ -230,7 +239,7 @@ weapon_t w_sg550 =
 	w_sg550_primary,
 	__NULL__,
 	w_sg550_reload,
-	__NULL__,
+	w_cstrike_weaponrelease,
 	w_sg550_hud,
 	w_sg550_precache,
 	w_sg550_pickup,

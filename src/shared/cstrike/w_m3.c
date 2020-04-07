@@ -16,11 +16,20 @@
 
 enum {
 	M3_IDLE,
-	M3_RELOAD,
-	M3_DRAW,
 	M3_SHOOT1,
 	M3_SHOOT2,
-	M3_SHOOT3
+	M3_INSERT,
+	M3_RELOAD_END,
+	M3_RELOAD_START,
+	M3_DRAW
+};
+
+enum
+{
+	M3S_IDLE,
+	M3S_RELOAD_START,
+	M3S_RELOAD,
+	M3S_RELOAD_END
 };
 
 void
@@ -38,7 +47,7 @@ void
 w_m3_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, pl.m3_mag, pl.ammo_buckshot, -1);
+	Weapons_UpdateAmmo(pl, pl.m3_mag, pl.ammo_buckshot, pl.a_ammo3);
 #endif
 }
 
@@ -82,9 +91,13 @@ w_m3_pickup(int new)
 void
 w_m3_draw(void)
 {
-#ifdef CSQC
+	player pl = (player)self;
 	Weapons_SetModel("models/v_m3.mdl");
 	Weapons_ViewAnimation(M3_DRAW);
+
+#ifdef CSQC
+	pl.cs_cross_mindist = 8;
+	pl.cs_cross_deltadist = 6;
 #endif
 }
 
@@ -101,29 +114,20 @@ w_m3_primary(void)
 	if (!pl.a_ammo1) {
 		return;
 	}
-
-	View_SetMuzzleflash(MUZZLE_RIFLE);
-	Weapons_ViewPunchAngle([-2,0,0]);
-
-	int r = (float)input_sequence % 3;
-	switch (r) {
-	case 0:
-		Weapons_ViewAnimation(M3_SHOOT1);
-		break;
-	case 1:
-		Weapons_ViewAnimation(M3_SHOOT2);
-		break;
-	default:
-		Weapons_ViewAnimation(M3_SHOOT3);
-		break;
-	}
 #else
 	if (!pl.m3_mag) {
 		return;
 	}
+#endif
 
-	TraceAttack_FireBullets(8, pl.origin + pl.view_ofs, 26, [0.01,0,01], WEAPON_M3);
+	Cstrike_ShotMultiplierAdd(pl, 9);
+	float accuracy = Cstrike_CalculateAccuracy(pl, 200);
 
+#ifdef CSQC
+	pl.a_ammo1--;
+	View_SetMuzzleflash(MUZZLE_RIFLE);
+#else
+	TraceAttack_FireBullets(9, pl.origin + pl.view_ofs, 26, [accuracy,accuracy], WEAPON_M3);
 	pl.m3_mag--;
 
 	if (self.flags & FL_CROUCHING)
@@ -134,39 +138,88 @@ w_m3_primary(void)
 	Sound_Play(pl, CHAN_WEAPON, "weapon_m3.fire");
 #endif
 
+	Weapons_ViewPunchAngle([-2,0,0]);
+
+	int r = (float)input_sequence % 2;
+	switch (r) {
+	case 0:
+		Weapons_ViewAnimation(M3_SHOOT1);
+		break;
+	default:
+		Weapons_ViewAnimation(M3_SHOOT2);
+		break;
+	}
+
 	pl.w_attack_next = 1.0f;
+	pl.w_idle_next = pl.w_attack_next;
 }
 
 void
 w_m3_reload(void)
 {
 	player pl = (player)self;
-
-	if (pl.w_attack_next > 0.0) {
-		return;
-	}
-
 #ifdef CSQC
 	if (pl.a_ammo1 >= 8) {
 		return;
 	}
-	if (!pl.a_ammo2) {
+	if (pl.a_ammo2 <= 0) { 
 		return;
 	}
 #else
 	if (pl.m3_mag >= 8) {
 		return;
 	}
-	if (!pl.ammo_buckshot) {
+	if (pl.ammo_buckshot <= 0) {
+		return;
+	}
+#endif
+	
+	if (pl.a_ammo3 > M3S_IDLE) {
+		return;
+	}
+	pl.a_ammo3 = M3S_RELOAD_START;
+	pl.w_idle_next = 0.0f;
+}
+
+void
+w_m3_release(void)
+{
+	player pl = (player)self;
+
+	w_cstrike_weaponrelease();
+
+	if (pl.w_idle_next > 0.0) {
 		return;
 	}
 
-	Weapons_ReloadWeapon(pl, player::m3_mag, player::ammo_buckshot, 8);
-	Weapons_UpdateAmmo(pl, pl.m3_mag, pl.ammo_buckshot, -1);
-#endif
+	if (pl.a_ammo3 == M3S_RELOAD_START) {
+		Weapons_ViewAnimation(M3_RELOAD_START);
+		pl.a_ammo3 = M3S_RELOAD;
+		pl.w_idle_next = 0.65f;
+	} else if (pl.a_ammo3 == M3S_RELOAD) {
+		Weapons_ViewAnimation(M3_INSERT);
+#ifdef CSQC
+		pl.a_ammo1++;
+		pl.a_ammo2--;
 
-	Weapons_ViewAnimation(M3_RELOAD);
-	pl.w_attack_next = 2.0f;
+		if (pl.a_ammo2 <= 0 || pl.a_ammo1 >= 8) {
+			pl.a_ammo3 = M3S_RELOAD_END;
+		}
+#else
+		pl.m3_mag++;
+		pl.ammo_buckshot--;
+		w_m3_updateammo(pl);
+		if (pl.ammo_buckshot <= 0 || pl.m3_mag >= 8) {
+			pl.a_ammo3 = M3S_RELOAD_END;
+		}
+#endif
+		pl.w_idle_next = 0.5f;	
+	} else if (pl.a_ammo3 == M3S_RELOAD_END) {
+		Weapons_ViewAnimation(M3_RELOAD_END);
+		pl.a_ammo3 = M3S_IDLE;
+		pl.w_idle_next = 10.0f;
+		pl.w_attack_next = 0.5f;
+	}
 }
 
 float
@@ -179,11 +232,11 @@ void
 w_m3_hud(void)
 {
 #ifdef CSQC
-
+	Cstrike_DrawCrosshair();
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [0,72/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [0,72/256], [24/256, 24/256], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
@@ -230,7 +283,7 @@ weapon_t w_m3 =
 	w_m3_primary,
 	__NULL__,
 	w_m3_reload,
-	__NULL__,
+	w_m3_release,
 	w_m3_hud,
 	w_m3_precache,
 	w_m3_pickup,

@@ -49,7 +49,7 @@ FXGauss::Draw(void)
 
 	src = m_vecStart;
 	makevectors(m_vecAngle);
-	vector endpos = src + v_forward * 1024;
+	endpos = src + v_forward * 1024;
 	traceline(src, endpos, FALSE, pl);
 
 	/* drawing the first bit */
@@ -269,7 +269,7 @@ void w_gauss_primary(void)
 	FXGauss p = (FXGauss)pSeat->pWeaponFX;
 	p.m_iBeams = 0;
 	p.m_vecAngle = input_angles;
-	p.m_vecStart = pl.net_origin + pl.view_ofs;
+	p.m_vecStart = pl.origin + pl.view_ofs;
 	p.alpha = 1.0f;
 	pl.a_ammo2 -= 2;
 	Weapons_ViewPunchAngle([-2,0,0]);
@@ -361,7 +361,7 @@ void w_gauss_release(void)
 		FXGauss p = (FXGauss)pSeat->pWeaponFX;
 		p.m_iBeams = 1;
 		p.m_vecAngle = input_angles;
-		p.m_vecStart = pl.net_origin + pl.view_ofs;
+		p.m_vecStart = pl.origin + pl.view_ofs;
 		p.alpha = 1.0f;
 		soundupdate(pl, CHAN_WEAPON, "", -1, ATTN_NORM, 0, 0, 0);
 		Weapons_ViewPunchAngle([-5,0,0]);

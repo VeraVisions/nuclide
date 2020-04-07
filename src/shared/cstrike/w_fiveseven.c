@@ -16,11 +16,11 @@
 
 enum {
 	FIVESEVEN_IDLE,
-	FIVESEVEN_RELOAD,
-	FIVESEVEN_DRAW,
 	FIVESEVEN_SHOOT1,
 	FIVESEVEN_SHOOT2,
-	FIVESEVEN_SHOOT3
+	FIVESEVEN_SHOOT_EMPTY,
+	FIVESEVEN_RELOAD,
+	FIVESEVEN_DRAW
 };
 
 void
@@ -38,7 +38,7 @@ void
 w_fiveseven_updateammo(player pl)
 {
 #ifdef SSQC
-	Weapons_UpdateAmmo(pl, pl.fiveseven_mag, pl.ammo_762mm, -1);
+	Weapons_UpdateAmmo(pl, pl.fiveseven_mag, pl.ammo_57mm, -1);
 #endif
 }
 
@@ -69,8 +69,8 @@ w_fiveseven_pickup(int new)
 	if (new) {
 		pl.fiveseven_mag = 20;
 	} else {
-		if (pl.ammo_762mm < 40) {
-			pl.ammo_762mm = bound(0, pl.ammo_762mm + 20, 40);
+		if (pl.ammo_57mm < 40) {
+			pl.ammo_57mm = bound(0, pl.ammo_57mm + 20, 40);
 		} else {
 			return FALSE;
 		}
@@ -82,9 +82,13 @@ w_fiveseven_pickup(int new)
 void
 w_fiveseven_draw(void)
 {
-#ifdef CSQC
+	player pl = (player)self;
 	Weapons_SetModel("models/v_fiveseven.mdl");
 	Weapons_ViewAnimation(FIVESEVEN_DRAW);
+
+#ifdef CSQC
+	pl.cs_cross_mindist = 8;
+	pl.cs_cross_deltadist = 3;
 #endif
 }
 
@@ -97,33 +101,28 @@ w_fiveseven_primary(void)
 		return;
 	}
 
-#ifdef CSQC
-	if (!pl.a_ammo1) {
+	if (pl.flags & FL_SEMI_TOGGLED) {
 		return;
 	}
 
-	View_SetMuzzleflash(MUZZLE_RIFLE);
-	Weapons_ViewPunchAngle([-2,0,0]);
-
-	int r = (float)input_sequence % 3;
-	switch (r) {
-	case 0:
-		Weapons_ViewAnimation(FIVESEVEN_SHOOT1);
-		break;
-	case 1:
-		Weapons_ViewAnimation(FIVESEVEN_SHOOT2);
-		break;
-	default:
-		Weapons_ViewAnimation(FIVESEVEN_SHOOT3);
-		break;
+#ifdef CSQC
+	if (!pl.a_ammo1) {
+		return;
 	}
 #else
 	if (!pl.fiveseven_mag) {
 		return;
 	}
+#endif
 
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 25, [0.01,0,01], WEAPON_FIVESEVEN);
+	Cstrike_ShotMultiplierAdd(pl, 1);
+	float accuracy = Cstrike_CalculateAccuracy(pl, 200);
 
+#ifdef CSQC
+	pl.a_ammo1--;
+	View_SetMuzzleflash(MUZZLE_RIFLE);
+#else
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 25, [accuracy,accuracy], WEAPON_FIVESEVEN);
 	pl.fiveseven_mag--;
 
 	if (self.flags & FL_CROUCHING)
@@ -134,7 +133,25 @@ w_fiveseven_primary(void)
 	Sound_Play(pl, CHAN_WEAPON, "weapon_fiveseven.fire");
 #endif
 
+	Weapons_ViewPunchAngle([-2,0,0]);
+
+	if (pl.a_ammo1 <= 0) {
+		Weapons_ViewAnimation(FIVESEVEN_SHOOT_EMPTY);
+	} else {
+		int r = (float)input_sequence % 2;
+		switch (r) {
+		case 0:
+			Weapons_ViewAnimation(FIVESEVEN_SHOOT1);
+			break;
+		default:
+			Weapons_ViewAnimation(FIVESEVEN_SHOOT2);
+			break;
+		}
+	}
+
+	pl.flags |= FL_SEMI_TOGGLED;
 	pl.w_attack_next = 0.15f;
+	pl.w_idle_next = pl.w_attack_next;
 }
 
 void
@@ -157,16 +174,17 @@ w_fiveseven_reload(void)
 	if (pl.fiveseven_mag >= 20) {
 		return;
 	}
-	if (!pl.ammo_762mm) {
+	if (!pl.ammo_57mm) {
 		return;
 	}
 
-	Weapons_ReloadWeapon(pl, player::fiveseven_mag, player::ammo_762mm, 20);
-	Weapons_UpdateAmmo(pl, pl.fiveseven_mag, pl.ammo_762mm, -1);
+	Weapons_ReloadWeapon(pl, player::fiveseven_mag, player::ammo_57mm, 20);
+	Weapons_UpdateAmmo(pl, pl.fiveseven_mag, pl.ammo_57mm, -1);
 #endif
 
 	Weapons_ViewAnimation(FIVESEVEN_RELOAD);
-	pl.w_attack_next = 2.0f;
+	pl.w_attack_next = 3.1f;
+	pl.w_idle_next = pl.w_attack_next;
 }
 
 float
@@ -179,11 +197,11 @@ void
 w_fiveseven_hud(void)
 {
 #ifdef CSQC
-
+	Cstrike_DrawCrosshair();
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [0,72/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [120/256,96/256], [24/256, 24/256], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
@@ -230,7 +248,7 @@ weapon_t w_fiveseven =
 	w_fiveseven_primary,
 	__NULL__,
 	w_fiveseven_reload,
-	__NULL__,
+	w_cstrike_weaponrelease,
 	w_fiveseven_hud,
 	w_fiveseven_precache,
 	w_fiveseven_pickup,
