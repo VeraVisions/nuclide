@@ -237,7 +237,7 @@ w_usp45_secondary(void)
 		Weapons_ViewAnimation(USP45_DETACHSIL);
 	}
 
-	pl.w_attack_next = 2.0f;
+	pl.w_attack_next = 3.1f;
 	pl.w_idle_next = pl.w_attack_next;
 }
 
