@@ -1,8 +1,12 @@
 FTEMANIFEST 1
 GAME tfc
 NAME "Team Fortress"
+<<<<<<< HEAD
 BASEGAME platform
 BASEGAME logos
+=======
+BASEGAME nuclide
+>>>>>>> 0246a10b124be549d1bdbce3a96c8619ad29c9ec
 BASEGAME tfc
 
 // custom game menu variables
