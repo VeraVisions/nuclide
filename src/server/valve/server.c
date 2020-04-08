@@ -26,6 +26,8 @@ float Game_ConsoleCmd(string cmd)
 
 void Game_Worldspawn(void)
 {
+	Sound_Precache("ammo.pickup");
+	Sound_Precache("ammo.respawn");
 	precache_model("models/player.mdl");
 	precache_model("models/w_weaponbox.mdl");
 	precache_sound("fvox/flatline.wav");
