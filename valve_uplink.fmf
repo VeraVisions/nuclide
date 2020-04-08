@@ -1,7 +1,7 @@
 FTEMANIFEST 1
 GAME valve_uplink
 NAME "Half-Life: Uplink"
-BASEGAME nuclide
+BASEGAME platform
 BASEGAME logos
 BASEGAME valve_uplink
 
@@ -27,7 +27,7 @@ BASEGAME valve_uplink
 UPDATEURL http://www.frag-net.com/mods/valve_uplink.fmf
 PACKAGE valve_uplink/pak0.pk3 0xc8ed1ea1 "http://www.frag-net.com/dl/c8ed1ea1/file.pk3"
 PACKAGE logos/pakrm_logos.pk3 0xd318299 "http://www.frag-net.com/dl/d318299/file.pk3"
-PACKAGE nuclide/pak0.pk3 0xd707e87f "http://www.frag-net.com/dl/707e87f/file.pk3"
+PACKAGE platform/pak0.pk3 0xd707e87f "http://www.frag-net.com/dl/707e87f/file.pk3"
 
 // you don't really want to change these
 RTCBROKER master.frag-net.com:27950

@@ -1,7 +1,7 @@
 FTEMANIFEST 1
 GAME cstrike
 NAME "Counter-Strike"
-BASEGAME nuclide
+BASEGAME platform
 BASEGAME logos
 BASEGAME valve
 BASEGAME cstrike

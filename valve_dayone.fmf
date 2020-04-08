@@ -1,7 +1,7 @@
 FTEMANIFEST 1
 GAME valve_dayone
 NAME "Half-Life: Day One"
-BASEGAME nuclide
+BASEGAME platform
 BASEGAME logos
 BASEGAME valve_dayone
 
@@ -27,7 +27,7 @@ BASEGAME valve_dayone
 UPDATEURL http://www.frag-net.com/mods/valve_dayone.fmf
 PACKAGE valve_dayone/pak0.pk3 0x141b84fb "http://www.frag-net.com/dl/141b84fb/file.pk3"
 PACKAGE logos/pakrm_logos.pk3 0xd318299 "http://www.frag-net.com/dl/d318299/file.pk3"
-PACKAGE nuclide/pak0.pk3 0xd707e87f "http://www.frag-net.com/dl/707e87f/file.pk3"
+PACKAGE platform/pak0.pk3 0xd707e87f "http://www.frag-net.com/dl/707e87f/file.pk3"
 
 // you don't really want to change these
 RTCBROKER master.frag-net.com:27950

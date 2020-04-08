@@ -375,7 +375,7 @@ HUD_DrawNotify(void)
 
 	pos = g_hudmins + [g_hudres[0] - 192, g_hudres[1] - 128];
 	Weapons_HUDPic(pSeat->pickup_weapon, 1, pos, pSeat->pickup_alpha);
-	pSeat->pickup_alpha -= frametime;
+	pSeat->pickup_alpha -= clframetime;
 }
 
 void
@@ -410,7 +410,7 @@ HUD_Draw(void)
 
 /* specatator main entry */
 void
-VGUI_DrawSpectatorHUD(void)
+HUD_DrawSpectator(void)
 {
 	// FIXME
 }
