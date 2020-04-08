@@ -24,12 +24,15 @@ BASEGAME tfc
 -set gameinfo_url_dl "http://www.frag-net.com/mods/tfc.fmf"
 -set gameinfo_menutrack ""
 
-// download/update packaging information
 UPDATEURL http://www.frag-net.com/mods/tfc.fmf
-PACKAGE tfc/pakrm_valve.pk3 0xfc41b608 "http://www.frag-net.com/dl/fc41b608/file.pk3"
-PACKAGE tfc/pakrm_tfc.pk3 0x69a455aa "http://www.frag-net.com/dl/69a455aa/file.pk3"
-PACKAGE logos/pakrm_logos.pk3 0xd318299 "http://www.frag-net.com/dl/d318299/file.pk3"
-PACKAGE platform/pak0.pk3 0xd707e87f "http://www.frag-net.com/dl/707e87f/file.pk3"
+PACKAGE valve/pak0_dayone.pk3 0x141b84fb "https://netcologne.dl.sourceforge.net/project/freecs-1-5/demo-files/valve/dayone.zip"
+PACKAGE valve/pak1_uplink.pk3 0xc8ed1ea1 "https://netcologne.dl.sourceforge.net/project/freecs-1-5/demo-files/valve/uplink.zip"
+PACKAGE valve/pak2_realmedia.pk3 0xfc41b608 "https://netcologne.dl.sourceforge.net/project/freecs-1-5/demo-files/valve/realmedia.zip"
+PACKAGE valve/pak3_opfordemo.pk3 0x2f39b267 "https://netcologne.dl.sourceforge.net/project/freecs-1-5/demo-files/valve/opfordemo.zip"
+PACKAGE valve/pak4_hlds.pk3 0xe20ecf91 "https://netcologne.dl.sourceforge.net/project/freecs-1-5/demo-files/valve/hlds.zip"
+PACKAGE logos/pak0_realmedia.pk3 0xe20ecf91 "https://netcologne.dl.sourceforge.net/project/freecs-1-5/demo-files/logos/realmedia.zip"
+PACKAGE tfc/pak0_realmedia.pk3 0x69a455aa "https://netcologne.dl.sourceforge.net/project/freecs-1-5/demo-files/tfc/realmedia.zip"
+PACKAGE tfc/pak1_hlds.pk3 0x4b94378d "https://netcologne.dl.sourceforge.net/project/freecs-1-5/demo-files/tfc/hlds.zip"
 
 // you don't really want to change these
 RTCBROKER master.frag-net.com:27950

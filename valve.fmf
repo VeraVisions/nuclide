@@ -1,0 +1,38 @@
+FTEMANIFEST 1
+GAME valve
+NAME "Half-Life"
+BASEGAME platform
+BASEGAME logos
+BASEGAME valve
+
+// custom game menu variables
+-set gameinfo_game "Half-Life"
+-set gameinfo_gamedir "valve"
+-set gameinfo_fallback_dir ""
+-set gameinfo_mpentity "info_player_deathmatch"
+-set gameinfo_size "496200000"
+-set gameinfo_url_info "www.valvesoftware.com"
+-set gameinfo_version "1.0"
+-set gameinfo_url_dl ""
+-set gameinfo_type "Both"
+-set gameinfo_nomodels 0
+-set gameinfo_gamedll "progs.dat"
+-set gameinfo_startmap "c0a0"
+-set gameinfo_trainingmap "map t0a0"
+-set gameinfo_cldll 1
+-set gameinfo_hlversion "1110"
+-set gameinfo_svonly "0"
+-set gameinfo_menutrack ""
+
+UPDATEURL http://www.frag-net.com/mods/valve.fmf
+PACKAGE valve/pak0_dayone.pk3 0x141b84fb "https://netcologne.dl.sourceforge.net/project/freecs-1-5/demo-files/valve/dayone.zip"
+PACKAGE valve/pak1_uplink.pk3 0xc8ed1ea1 "https://netcologne.dl.sourceforge.net/project/freecs-1-5/demo-files/valve/uplink.zip"
+PACKAGE valve/pak2_realmedia.pk3 0xfc41b608 "https://netcologne.dl.sourceforge.net/project/freecs-1-5/demo-files/valve/realmedia.zip"
+PACKAGE valve/pak3_opfordemo.pk3 0x2f39b267 "https://netcologne.dl.sourceforge.net/project/freecs-1-5/demo-files/valve/opfordemo.zip"
+PACKAGE valve/pak4_hlds.pk3 0xe20ecf91 "https://netcologne.dl.sourceforge.net/project/freecs-1-5/demo-files/valve/hlds.zip"
+PACKAGE logos/pak0_realmedia.pk3 0xe20ecf91 "https://netcologne.dl.sourceforge.net/project/freecs-1-5/demo-files/logos/realmedia.zip"
+
+// you don't really want to change these
+RTCBROKER master.frag-net.com:27950
+PROTOCOLNAME "Nuclide"
+MAINCONFIG nuclide.cfg
