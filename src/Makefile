@@ -7,7 +7,7 @@ all:
 	make plugins
 
 menu:
-	mkdir -p ../nuclide/data.pk3dir
+	mkdir -p ../platform/data.pk3dir
 	$(CC) menu-fn/progs.src
 
 games:
