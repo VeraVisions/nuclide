@@ -1,6 +1,7 @@
 FTEMANIFEST 1
 GAME hunger
 NAME "They Hunger"
+BASEGAME nuclide
 BASEGAME logos
 BASEGAME valve
 BASEGAME hunger

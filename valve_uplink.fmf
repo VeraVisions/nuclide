@@ -1,6 +1,7 @@
 FTEMANIFEST 1
 GAME valve_uplink
 NAME "Half-Life: Uplink"
+BASEGAME nuclide
 BASEGAME logos
 BASEGAME valve_uplink
 

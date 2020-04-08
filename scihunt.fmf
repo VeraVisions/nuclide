@@ -1,6 +1,7 @@
 FTEMANIFEST 1
 GAME scihunt
 NAME "Scientist Hunt"
+BASEGAME nuclide
 BASEGAME logos
 BASEGAME valve
 BASEGAME scihunt

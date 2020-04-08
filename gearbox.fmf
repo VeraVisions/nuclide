@@ -1,6 +1,7 @@
 FTEMANIFEST 1
 GAME gearbox
 NAME "Opposing Force"
+BASEGAME nuclide
 BASEGAME logos
 BASEGAME valve
 BASEGAME gearbox

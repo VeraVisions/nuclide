@@ -173,7 +173,7 @@ ModServer_ParseItem(string data)
 
 /* Called as an eventual result of the uri_get builtin. */
 void
-ModServer_URI_Callback(float id, float code, string data)
+ModServer_URI_Callback(float id, float code, string data, int resourcebytes)
 {
 	/* count our requests down */
 	if (id == MODSERVER_REQ_ITEM) {

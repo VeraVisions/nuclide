@@ -1,6 +1,7 @@
 FTEMANIFEST 1
 GAME valve
 NAME "Half-Life"
+BASEGAME nuclide
 BASEGAME logos
 BASEGAME valve
 

@@ -1,6 +1,7 @@
 FTEMANIFEST 1
 GAME valve_dayone
 NAME "Half-Life: Day One"
+BASEGAME nuclide
 BASEGAME logos
 BASEGAME valve_dayone
 

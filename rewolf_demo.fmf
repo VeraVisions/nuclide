@@ -1,6 +1,7 @@
 FTEMANIFEST 1
 GAME rewolf_demo
 NAME "Gunman Demo"
+BASEGAME nuclide
 BASEGAME logos
 BASEGAME rewolf_demo
 
