@@ -29,8 +29,6 @@ void Game_Worldspawn(void)
 	precache_model("models/player.mdl");
 	precache_model("models/w_weaponbox.mdl");
 	precache_sound("fvox/flatline.wav");
-	
-	Player_Precache();
 	Weapons_Init();
 	Player_Precache();
 }
