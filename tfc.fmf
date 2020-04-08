@@ -1,0 +1,35 @@
+FTEMANIFEST 1
+GAME tfc
+NAME "Team Fortress"
+BASEGAME nuclide
+BASEGAME tfc
+
+// custom game menu variables
+-set gameinfo_game "Team Fortress"
+-set gameinfo_type "Multiplayer"
+-set gameinfo_gamedir "tfc"
+-set gameinfo_fallback_dir ""
+-set gameinfo_mpentity "info_player_deathmatch"
+-set gameinfo_size "55740962"
+-set gameinfo_version "1.5"
+-set gameinfo_hlversion "1110"
+-set gameinfo_nomodels 0
+-set gameinfo_gamedll "progs.dat"
+-set gameinfo_startmap "c1a0"
+-set gameinfo_trainingmap "map t0a0"
+-set gameinfo_cldll 1
+-set gameinfo_svonly "0"
+-set gameinfo_url_info "www.teamfortress.com"
+-set gameinfo_url_dl "http://www.frag-net.com/mods/tfc.fmf"
+-set gameinfo_menutrack ""
+
+// download/update packaging information
+UPDATEURL http://www.frag-net.com/mods/tfc.fmf
+PACKAGE tfc/pakrm_valve.pk3 0xfc41b608 "http://www.frag-net.com/dl/fc41b608/file.pk3"
+PACKAGE tfc/pakrm_tfc.pk3 0x69a455aa "http://www.frag-net.com/dl/69a455aa/file.pk3"
+PACKAGE tfc/pakrm_logos.pk3 0xd318299 "http://www.frag-net.com/dl/d318299/file.pk3"
+
+// you don't really want to change these
+RTCBROKER master.frag-net.com:27950
+PROTOCOLNAME "Nuclide"
+MAINCONFIG nuclide.cfg

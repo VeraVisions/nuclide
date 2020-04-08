@@ -23,7 +23,7 @@ BASEGAME valve_dayone
 -set gameinfo_hlversion "1110"
 -set gameinfo_svonly "0"
 
-PACKAGE valve_dayone/pak0.pk3 0x141b84fb "http://www.frag-net.com/dl/141b84fb/pak0.pk3"
+PACKAGE valve_dayone/pak0.pk3 0x141b84fb "http://www.frag-net.com/dl/141b84fb/file.pk3"
 
 // you don't really want to change these
 RTCBROKER master.frag-net.com:27950

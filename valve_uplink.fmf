@@ -23,7 +23,7 @@ BASEGAME valve_uplink
 -set gameinfo_hlversion "1110"
 -set gameinfo_svonly "0"
 
-PACKAGE valve_uplink/pak0.pk3 0xc8ed1ea1 "http://www.frag-net.com/dl/c8ed1ea1/pak0.pk3"
+PACKAGE valve_uplink/pak0.pk3 0xc8ed1ea1 "http://www.frag-net.com/dl/c8ed1ea1/file.pk3"
 
 // you don't really want to change these
 RTCBROKER master.frag-net.com:27950
