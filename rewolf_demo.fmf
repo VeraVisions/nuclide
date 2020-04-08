@@ -22,8 +22,11 @@ BASEGAME rewolf_demo
 -set gameinfo_cldll 1
 -set gameinfo_hlversion "1110"
 -set gameinfo_svonly "0"
-
+// download/update packaging information
+UPDATEURL http://www.frag-net.com/mods/rewolf_demo.fmf
 PACKAGE rewolf_demo/pak0.pk3 0x105f03e9 "http://www.frag-net.com/dl/105f03e9/file.pk3"
+PACKAGE logos/pakrm_logos.pk3 0xd318299 "http://www.frag-net.com/dl/d318299/file.pk3"
+PACKAGE nuclide/pak0.pk3 0xd707e87f "http://www.frag-net.com/dl/707e87f/file.pk3"
 
 // you don't really want to change these
 RTCBROKER master.frag-net.com:27950

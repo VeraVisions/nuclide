@@ -2,6 +2,7 @@ FTEMANIFEST 1
 GAME tfc
 NAME "Team Fortress"
 BASEGAME nuclide
+BASEGAME logos
 BASEGAME tfc
 
 // custom game menu variables
@@ -27,7 +28,7 @@ BASEGAME tfc
 UPDATEURL http://www.frag-net.com/mods/tfc.fmf
 PACKAGE tfc/pakrm_valve.pk3 0xfc41b608 "http://www.frag-net.com/dl/fc41b608/file.pk3"
 PACKAGE tfc/pakrm_tfc.pk3 0x69a455aa "http://www.frag-net.com/dl/69a455aa/file.pk3"
-PACKAGE tfc/pakrm_logos.pk3 0xd318299 "http://www.frag-net.com/dl/d318299/file.pk3"
+PACKAGE logos/pakrm_logos.pk3 0xd318299 "http://www.frag-net.com/dl/d318299/file.pk3"
 PACKAGE nuclide/pak0.pk3 0xd707e87f "http://www.frag-net.com/dl/707e87f/file.pk3"
 
 // you don't really want to change these

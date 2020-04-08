@@ -26,10 +26,9 @@ BASEGAME scihunt
 -set gameinfo_menutrack "sound/Hondo2/pca.wav"
 
 // download/update packaging information
+UPDATEURL http://www.frag-net.com/mods/scihunt.fmf
 PACKAGE scihunt/pak0.pk3 0xc1cbd5c1 "http://www.frag-net.com/dl/c1cbd5c1/file.pk3"
-
-// do we want this? I don't want to automatically update it
-// UPDATEURL http://www.frag-net.com/mods/scihunt.fmf
+PACKAGE logos/pakrm_logos.pk3 0xd318299 "http://www.frag-net.com/dl/d318299/file.pk3"
 
 // you don't really want to change these
 RTCBROKER master.frag-net.com:27950
