@@ -142,6 +142,8 @@ monstermaker::Spawner(void)
 		}
 	} else {
 		print(sprintf("^1monstermaker::^3Trigger^7: cannot call spawnfunction for %s\n", m_strMonster));
+		remove(this);
+		return;
 	}
 
 	/* shut off for good when we've spawned all we ever wanted */
