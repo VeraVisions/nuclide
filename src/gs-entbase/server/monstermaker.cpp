@@ -109,14 +109,14 @@ monstermaker::Spawner(void)
 	for (entity l = world; (l = find(l, ::classname, m_strMonster));) {
 		if (l.real_owner == this) {
 			/* may be a corpse? */
-			if (l.health > 0 && l.movetype == MOVETYPE_WALK) {
+			if (l.movetype == MOVETYPE_WALK) {
 				c++;
 			}
 		}
 	}
 
 	/* too many alive at a time */
-	if ((m_iMaxChildren > 0 && c >= m_iMaxChildren) || (m_flDelay == 0 && c >= 1)) {
+	if ((m_iMaxChildren > 0 && c >= m_iMaxChildren) || (m_flDelay <= 0 && c >= 1)) {
 		nextthink = time + m_flDelay;
 		return;
 	}
@@ -184,6 +184,7 @@ monstermaker::Respawn(void)
 void
 monstermaker::monstermaker(void)
 {
+	m_flDelay = 1.0f;
 	CBaseTrigger::CBaseTrigger();
 
 	for (int i = 1; i < ( tokenize(__fullspawndata) - 1); i += 2) {
