@@ -25,11 +25,9 @@ BASEGAME cstrike
 -set gameinfo_url_dl "http://www.frag-net.com/mods/cstrike.fmf"
 -set gameinfo_menutrack "sound/ambience/Opera.wav"
 
-// download/update packaging information
-// PACKAGE cstrike/pak0.pk3 0xc1cbd5c1 "http://www.frag-net.com/files/cstrike_pak0.pk3"
-
-// do we want this? I don't want to automatically update it
-// UPDATEURL http://www.frag-net.com/mods/cstrike.fmf
+DOWNLOADSURL http://www.frag-net.com/dl/cstrike_packages
+UPDATEURL http://www.frag-net.com/mods/cstrike.fmf
+INSTALL "cstrike_essential;valve_essential;free_essential"
 
 // you don't really want to change these
 RTCBROKER master.frag-net.com:27950
