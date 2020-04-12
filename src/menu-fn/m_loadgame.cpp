@@ -46,7 +46,7 @@ void lg_btncancel_start(void)
 	header.SetExecute(lg_btncancel_end);
 }
 
-void lg_lbsaves_changed(void)
+void lg_lbsaves_changed(int val)
 {
 	
 }

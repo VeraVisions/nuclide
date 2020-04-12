@@ -15,9 +15,9 @@
  */
 
 var int autocvar_r_drawdecals = TRUE;
-var int autocvar_sp_decals = 4096;
-var int autocvar_mp_decals = 300;
-var int autocvar_cl_decals = 512;
+var int autocvar_sp_decals = 32;
+var int autocvar_mp_decals = 32;
+var int autocvar_cl_decals = 32;
 
 #ifdef CLIENT
 const string g_decal_shader = \

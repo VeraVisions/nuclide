@@ -17,6 +17,7 @@
 void
 CSQC_Init(float apilevel, string enginename, float engineversion)
 {
+	Sound_Init();
 	pSeat = &g_seats[0];
 
 	registercommand("dev_sentence");

@@ -112,6 +112,8 @@ void SV_ParseClientCommand(string cmd)
 void init(float prevprogs)
 {
 	string sTemp;
+	
+	Sound_Init();
 
 	// Let's load materials.txt because someone thought this was the best idea
 	filestream fileMaterial = fopen("sound/materials.txt", FILE_READ);

@@ -40,7 +40,8 @@ typedef struct
 	sentences_t *g_sentences;
 	int g_sentences_count;
 #else
-	sentences_t g_sentences[1024];
+	#define SENTENCES_LIMIT 1024
+	sentences_t g_sentences[SENTENCES_LIMIT];
 	int g_sentences_count;
 #endif
 
@@ -51,15 +52,19 @@ Sentences_Init(void)
 	string temp;
 	int c, i;
 
+	if (g_sentences_count > 0) {
+		g_sentences_count = 0;
+#ifndef DYNAMIC_SENTENCES
+		if (g_sentences) {
+			memfree(g_sentences);
+		}
+#endif
+	}
+
 	fs_sentences = fopen("sound/sentences.txt", FILE_READ);
 
 	if (fs_sentences < 0) {
-		print("^1WARNING: ^7Could NOT load sound/sentences.txt");
-		return;
-	}
-
-	if (g_sentences_count > 0) {
-		print("^1WARNING: ^7Attempted to load sentences twice!");
+		print("^1WARNING: ^7Could NOT load sound/sentences.txt\n");
 		return;
 	}
 
@@ -83,6 +88,11 @@ Sentences_Init(void)
 				g_sentences_count,
 				++g_sentences_count);
 #else
+		if (g_sentences_count + 1 >= SENTENCES_LIMIT) {
+			print("^1WARNING: ^7Reached limit of max sentences!\n");
+			return;
+		}
+
 		g_sentences_count++;
 #endif
 

@@ -54,6 +54,17 @@ typedef struct
 snd_t *g_sounds;
 static int g_sounds_count;
 
+/* make sure it's all reset */
+void Sound_Init(void)
+{
+	if (g_sounds) {
+		memfree(g_sounds);
+	}
+
+	g_sounds_count = 0;
+	g_hashsounds = 0;
+}
+
 void
 Sound_ParseField(int i, int a)
 {

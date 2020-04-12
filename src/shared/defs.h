@@ -62,6 +62,11 @@ void* memrealloc(__variant *oldptr, int elementsize, int oldelements, int newele
 	return n;
 }
 
+__wrap __variant* memalloc(int size)
+{
+	return prior(size);
+}
+
 void Empty(void)
 {
 	

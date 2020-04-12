@@ -23,8 +23,16 @@
  * we'll just default to those whenever there's no custom value set.
  */
 
-string *g_sentences;
-int g_sentences_count;
+#define DYNAMIC_SENTENCES
+
+#ifdef DYNAMIC_SENTENCES
+	string *g_sentences;
+	int g_sentences_count;
+#else
+	#define SENTENCES_LIMIT 1024
+	string g_sentences[SENTENCES_LIMIT];
+	int g_sentences_count;
+#endif
 
 void
 Sentences_Init(void)
@@ -33,15 +41,19 @@ Sentences_Init(void)
 	string temp;
 	int c;
 
+	if (g_sentences_count > 0) {
+		g_sentences_count = 0;
+#ifndef DYNAMIC_SENTENCES
+		if (g_sentences) {
+			memfree(g_sentences);
+		}
+#endif
+	}
+
 	fs_sentences = fopen("sound/sentences.txt", FILE_READ);
 
 	if (fs_sentences < 0) {
-		print("^1WARNING: ^7Could NOT load sound/sentences.txt");
-		return;
-	}
-
-	if (g_sentences_count > 0) {
-		print("^1WARNING: ^7Attempted to load sentences twice!");
+		print("^1WARNING: ^7Could NOT load sound/sentences.txt\n");
 		return;
 	}
 
@@ -59,10 +71,19 @@ Sentences_Init(void)
 		int x = g_sentences_count;
 
 		/* allocate memory and increase count */
+#ifdef DYNAMIC_SENTENCES
 		g_sentences = memrealloc(g_sentences,
 				sizeof(string),
 				g_sentences_count,
 				++g_sentences_count);
+#else
+		if (g_sentences_count + 1 >= SENTENCES_LIMIT) {
+			print("^1WARNING: ^7Reached limit of max sentences!\n");
+			return;
+		}
+
+		g_sentences_count++;
+#endif
 
 		g_sentences[x] = strcat("!", argv(0));
 	}
