@@ -31,10 +31,10 @@ class env_laser
 	string m_strBeamTex;
 	string m_strEndTex;
 
-	void() env_laser;
+	void(void) env_laser;
 
-	virtual void() Init;
-	virtual void() Initialized;
+	virtual void(void) Init;
+	virtual void(void) Initialized;
 	virtual void(float flChanged) ReadEntity;
 	virtual float(void) predraw;
 };

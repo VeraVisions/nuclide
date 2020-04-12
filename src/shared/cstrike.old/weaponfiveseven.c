@@ -45,7 +45,8 @@ weaponinfo_t wptFIVESEVEN = {
 };
 
 // Anim Table
-enum {
+enum
+{
 	ANIM_FIVESEVEN_IDLE,
 	ANIM_FIVESEVEN_SHOOT1,
 	ANIM_FIVESEVEN_SHOOT2,
@@ -54,39 +55,39 @@ enum {
 	ANIM_FIVESEVEN_DRAW
 };
 
-void WeaponFIVESEVEN_Draw( void ) {
-#ifdef SSQC
+void WeaponFIVESEVEN_Draw(void) {
+#ifdef SERVER
 	BaseGun_Draw();
 #else
-	View_PlayAnimation( ANIM_FIVESEVEN_DRAW );
+	View_PlayAnimation(ANIM_FIVESEVEN_DRAW);
 #endif
 }
 
-void WeaponFIVESEVEN_PrimaryFire( void ) {
-#ifdef SSQC
-	if ( BaseGun_PrimaryFire() == TRUE ) {
+void WeaponFIVESEVEN_PrimaryFire(void) {
+#ifdef SERVER
+	if (BaseGun_PrimaryFire() == TRUE) {
 		// Play Sound
-		sound( self, CHAN_WEAPON, "weapons/fiveseven-1.wav", 1, ATTN_NORM );
+		sound(self, CHAN_WEAPON, "weapons/fiveseven-1.wav", 1, ATTN_NORM);
 	}
 #else
-	if ( getstatf( STAT_CURRENT_MAG ) == 0 ) {
-		View_PlayAnimation( ANIM_FIVESEVEN_SHOOT_EMPTY );
+	if (getstatf(STAT_CURRENT_MAG) == 0) {
+		View_PlayAnimation(ANIM_FIVESEVEN_SHOOT_EMPTY);
 	} else {
-		if ( random() <= 0.5 ) {
-			View_PlayAnimation( ANIM_FIVESEVEN_SHOOT1 );
+		if (random() <= 0.5) {
+			View_PlayAnimation(ANIM_FIVESEVEN_SHOOT1);
 		} else {
-			View_PlayAnimation( ANIM_FIVESEVEN_SHOOT2 );
+			View_PlayAnimation(ANIM_FIVESEVEN_SHOOT2);
 		}
 	}
-	BaseGun_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle(1);
 #endif
 }
 
-void WeaponFIVESEVEN_Reload( void ) {
-#ifdef SSQC
-	if ( BaseGun_Reload() == TRUE ) {
+void WeaponFIVESEVEN_Reload(void) {
+#ifdef SERVER
+	if (BaseGun_Reload() == TRUE) {
 	}
 #else
-	View_PlayAnimation( ANIM_FIVESEVEN_RELOAD );
+	View_PlayAnimation(ANIM_FIVESEVEN_RELOAD);
 #endif
 }

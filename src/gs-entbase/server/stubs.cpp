@@ -16,20 +16,22 @@
 
 class info_null
 {
-	void() info_null;
+	void(void) info_null;
 };
 
-void info_null::info_null(void)
+void
+info_null::info_null(void)
 {
-	remove( self );
+	remove(self);
 }
 
 class info_notnull:CBaseTrigger
 {
-	void() info_notnull;
+	void(void) info_notnull;
 };
 
-void info_notnull::info_notnull(void)
+void
+info_notnull::info_notnull(void)
 {
 	CBaseTrigger::CBaseTrigger();
 }
@@ -38,7 +40,8 @@ CLASSEXPORT(info_node, info_notnull)
 CLASSEXPORT(info_target, info_notnull)
 CLASSEXPORT(env_sound, info_null)
 
-void env_glow(void)
+void
+env_glow(void)
 {
 	if (self.model) {
 		precache_model(self.model);

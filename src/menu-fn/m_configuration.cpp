@@ -62,6 +62,11 @@ void btn_video_start(void)
 	header.SetHeader(HEAD_VIDEO);
 	header.SetExecute(btn_video_end);
 }
+void cf_btnupdates_start(void)
+{
+	localsound("../media/launch_upmenu1.wav");
+	g_menupage = PAGE_UPDATES;
+}
 void cf_btndone_start(void)
 {
 	static void cf_btndone_end(void) {
@@ -106,7 +111,7 @@ void menu_configuration_init(void)
 	
 	cf_btnUpdate = spawn(CMainButton);
 	cf_btnUpdate.SetImage(BTN_UPDATE);
-	//cf_btnUpdate.SetExecute(btn_console);
+	cf_btnUpdate.SetExecute(cf_btnupdates_start);
 	cf_btnUpdate.SetPos(50,268);
 	Widget_Add(fn_configuration, cf_btnUpdate);
 	

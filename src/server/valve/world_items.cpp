@@ -17,7 +17,7 @@
 /* This is one of those leftovers from trying to get a game out in time */
 class world_items:CBaseTrigger
 {
-	void() world_items;
+	void(void) world_items;
 };
 
 void world_items::world_items(void)

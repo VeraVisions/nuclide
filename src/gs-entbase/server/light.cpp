@@ -59,9 +59,9 @@ class light:CBaseTrigger
 	float m_flStyle;
 	string m_strPattern;
 
-	void() light;
-	virtual void() Trigger;
-	virtual void() Respawn;
+	void(void) light;
+	virtual void(void) Trigger;
+	virtual void(void) Respawn;
 };
 
 void light::Trigger(void)

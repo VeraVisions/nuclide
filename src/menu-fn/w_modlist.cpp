@@ -28,16 +28,16 @@ class CModList:CWidget
 
 	int m_scroll;
 	int m_selected;
-	virtual void() m_changed = 0;
+	virtual void(void) m_changed = 0;
 
-	void() CModList;
-	virtual void() Draw;
+	void(void) CModList;
+	virtual void(void) Draw;
 	virtual void(float type, float x, float y, float devid) Input;
 
 	virtual void(int w, int h) SetSize;
 	//virtual void(void(int val) func) SetChanged;
 	virtual void(int i) SetSelected;
-	virtual int() GetSelected;
+	virtual int(void) GetSelected;
 };
 
 void CModList::CModList(void)
@@ -56,7 +56,7 @@ void CModList::Draw(void)
 	visible = bound(0, visible, gameinfo_count);
 	pos = m_y;
 
-	for ( int i = m_scroll; i < (visible + m_scroll); i++) {
+	for (int i = m_scroll; i < (visible + m_scroll); i++) {
 		vector colo;
 		if (games[i].gamedir == GAME_DIR) {
 			continue;
@@ -132,7 +132,7 @@ void CModList::Input(float type, float x, float y, float devid)
 	pos[0] = m_x;
 	pos[1] = m_y;
 
-	for ( int i = m_scroll; i < (visible + m_scroll); i++) {
+	for (int i = m_scroll; i < (visible + m_scroll); i++) {
 		if (games[i].gamedir == GAME_DIR) {
 			continue;
 		}
@@ -159,7 +159,7 @@ void CModList::SetScroll(int i)
 	m_scroll = i;
 }
 
-void CModList::SetChanged(void() func)
+void CModList::SetChanged(void(void) func)
 {
 	m_changed = func;
 }

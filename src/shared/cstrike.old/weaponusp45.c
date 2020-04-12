@@ -16,7 +16,7 @@
 
 .int iMag_USP45;
 
-#ifdef SSQC
+#ifdef SERVER
 .int iMode_USP45;
 #else
 int iWeaponMode_USP45;
@@ -50,7 +50,8 @@ weaponinfo_t wptUSP45 = {
 	SHELL_PISTOL
 };
 
-enum {
+enum
+{
 	ANIM_USP45_IDLE,
 	ANIM_USP45_SILENCER_SHOOT1,
 	ANIM_USP45_SILENCER_SHOOT2,
@@ -69,95 +70,95 @@ enum {
 	ANIM_USP45_SILENCER_REMOVE
 };
 
-void WeaponUSP45_Draw( void ) {
-#ifdef SSQC
+void WeaponUSP45_Draw(void) {
+#ifdef SERVER
 	BaseGun_Draw();
 #else
-	if ( iWeaponMode_USP45 == TRUE ) {
-		View_PlayAnimation( ANIM_USP45_SILENCER_DRAW );
+	if (iWeaponMode_USP45 == TRUE) {
+		View_PlayAnimation(ANIM_USP45_SILENCER_DRAW);
 	} else {
-		View_PlayAnimation( ANIM_USP45_DRAW );
+		View_PlayAnimation(ANIM_USP45_DRAW);
 	}
 #endif
 }
 
-void WeaponUSP45_PrimaryFire( void ) {
-#ifdef SSQC
-	if ( BaseGun_PrimaryFire() == TRUE ) {
-		if ( self.iMode_USP45 == TRUE ) {
-			if ( random() <= 0.5 ) {
-				sound( self, CHAN_WEAPON, "weapons/usp1.wav", 1, ATTN_NORM );
+void WeaponUSP45_PrimaryFire(void) {
+#ifdef SERVER
+	if (BaseGun_PrimaryFire() == TRUE) {
+		if (self.iMode_USP45 == TRUE) {
+			if (random() <= 0.5) {
+				sound(self, CHAN_WEAPON, "weapons/usp1.wav", 1, ATTN_NORM);
 			} else {
-				sound( self, CHAN_WEAPON, "weapons/usp2.wav", 1, ATTN_NORM );
+				sound(self, CHAN_WEAPON, "weapons/usp2.wav", 1, ATTN_NORM);
 			}
 		} else {
-			sound( self, CHAN_WEAPON, "weapons/usp_unsil-1.wav", 1, ATTN_NORM );
+			sound(self, CHAN_WEAPON, "weapons/usp_unsil-1.wav", 1, ATTN_NORM);
 		}
 	}
 #else
-	if ( getstatf( STAT_CURRENT_MAG ) == 0 ) {
-		if ( iWeaponMode_USP45 == TRUE ) {
-			View_PlayAnimation( ANIM_USP45_SILENCER_SHOOTLAST );
+	if (getstatf(STAT_CURRENT_MAG) == 0) {
+		if (iWeaponMode_USP45 == TRUE) {
+			View_PlayAnimation(ANIM_USP45_SILENCER_SHOOTLAST);
 		} else {
-			View_PlayAnimation( ANIM_USP45_SHOOTLAST );
+			View_PlayAnimation(ANIM_USP45_SHOOTLAST);
 		}
 	} else {
-		int iRand = (int)floor( random( 1, 4 ) );
+		int iRand = (int)floor(random(1, 4));
 		
-		if ( iRand == 1 ) {
-			if ( iWeaponMode_USP45 == TRUE ) {
-				View_PlayAnimation( ANIM_USP45_SILENCER_SHOOT1 );
+		if (iRand == 1) {
+			if (iWeaponMode_USP45 == TRUE) {
+				View_PlayAnimation(ANIM_USP45_SILENCER_SHOOT1);
 			} else {
-				View_PlayAnimation( ANIM_USP45_SHOOT1 );
+				View_PlayAnimation(ANIM_USP45_SHOOT1);
 			}
-		} else if ( iRand == 2 ) {
-			if ( iWeaponMode_USP45 == TRUE ) {
-				View_PlayAnimation( ANIM_USP45_SILENCER_SHOOT2 );
+		} else if (iRand == 2) {
+			if (iWeaponMode_USP45 == TRUE) {
+				View_PlayAnimation(ANIM_USP45_SILENCER_SHOOT2);
 			} else {
-				View_PlayAnimation( ANIM_USP45_SHOOT2 );
+				View_PlayAnimation(ANIM_USP45_SHOOT2);
 			}
 		} else {
-			if ( iWeaponMode_USP45 == TRUE ) {
-				View_PlayAnimation( ANIM_USP45_SILENCER_SHOOT3 );
+			if (iWeaponMode_USP45 == TRUE) {
+				View_PlayAnimation(ANIM_USP45_SILENCER_SHOOT3);
 			} else {
-				View_PlayAnimation( ANIM_USP45_SHOOT3 );
+				View_PlayAnimation(ANIM_USP45_SHOOT3);
 			}
 		}
 	}
 	
-	BaseGun_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle(1);
 #endif
 }
 
-void WeaponUSP45_Secondary( void ) {
-#ifdef SSQC
+void WeaponUSP45_Secondary(void) {
+#ifdef SERVER
 	// Just switch the modes quickly
 	self.iMode_USP45 = 1 - self.iMode_USP45;
 	self.fAttackFinished = time + 3.0;
 	
 	// Tell the client that we switched modes, too
-	Client_SendEvent( self, EV_WEAPON_SECONDARYATTACK );
+	Client_SendEvent(self, EV_WEAPON_SECONDARYATTACK);
 #else 
 	iWeaponMode_USP45 = 1 - iWeaponMode_USP45;
 	
-	if ( iWeaponMode_USP45 == TRUE ) {
-		View_PlayAnimation( ANIM_USP45_SILENCER_ADD );
+	if (iWeaponMode_USP45 == TRUE) {
+		View_PlayAnimation(ANIM_USP45_SILENCER_ADD);
 	} else {
-		View_PlayAnimation( ANIM_USP45_SILENCER_REMOVE );
+		View_PlayAnimation(ANIM_USP45_SILENCER_REMOVE);
 	}
 #endif
 }
 
-void WeaponUSP45_Reload( void ) {
-#ifdef SSQC
-	if ( BaseGun_Reload() == TRUE ) {
+void WeaponUSP45_Reload(void) {
+#ifdef SERVER
+	if (BaseGun_Reload() == TRUE) {
 
 	}
 #else
-	if ( iWeaponMode_USP45 == TRUE ) {
-		View_PlayAnimation( ANIM_USP45_SILENCER_RELOAD );
+	if (iWeaponMode_USP45 == TRUE) {
+		View_PlayAnimation(ANIM_USP45_SILENCER_RELOAD);
 	} else {
-		View_PlayAnimation( ANIM_USP45_RELOAD );
+		View_PlayAnimation(ANIM_USP45_RELOAD);
 	}
 #endif
 }

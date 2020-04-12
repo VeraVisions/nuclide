@@ -86,8 +86,8 @@ HUD_DrawRedNumber
 Draws a normal number
 =================
 */
-void HUD_DrawNumber(int iNumber, vector vPos, float fAlpha, vector vColor) {
-	drawsubpic(vPos, [24,25], HUD_NUMFILE_LAYER, [vHUDNumPos[iNumber], 0], [NUMSIZE_X, NUMSIZE_Y], vColor, fAlpha, DRAWFLAG_ADDITIVE);
+void HUD_DrawNumber(int iNumber, vector vecPos, float fAlpha, vector vColor) {
+	drawsubpic(vecPos, [24,25], HUD_NUMFILE_LAYER, [vHUDNumPos[iNumber], 0], [NUMSIZE_X, NUMSIZE_Y], vColor, fAlpha, DRAWFLAG_ADDITIVE);
 }
 
 /*
@@ -97,16 +97,16 @@ HUD_DrawNums
 Draws numerals quickly for health, armor etc.
 =================
 */
-void HUD_DrawNums(float fNumber, vector vPos, float fAlpha, vector vColor) {
+void HUD_DrawNums(float fNumber, vector vecPos, float fAlpha, vector vColor) {
 	int iNumber = fNumber;
 	if (iNumber > 0) {
 		while (iNumber > 0) {
-			HUD_DrawNumber((float)iNumber % 10, vPos, fAlpha, vColor);
+			HUD_DrawNumber((float)iNumber % 10, vecPos, fAlpha, vColor);
 			iNumber = iNumber / 10;
-			vPos[0] -= 20;
+			vecPos[0] -= 20;
 		} 
 	} else {
-		HUD_DrawNumber(0, vPos, fAlpha, vColor);
+		HUD_DrawNumber(0, vecPos, fAlpha, vColor);
 	}
 }
 
@@ -485,7 +485,7 @@ void HUD_DrawRadar(void) {
 		Overview_DrawLayer();
 		
 		makevectors(view_angles);
-		setproperty(VF_ORIGIN, [pSeat->vPlayerOrigin[0], pSeat->vPlayerOrigin[1], fZoom] );
+		setproperty(VF_ORIGIN, [pSeat->m_vecPredictedOrigin[0], pSeat->m_vecPredictedOrigin[1], fZoom]);
 		setproperty(VF_ANGLES, [Math_Lerp(90, 60, pSeat.fMapLerp), view_angles[1], 0]);
 		setproperty(VF_DRAWWORLD, 0);
 		renderscene();

@@ -44,7 +44,7 @@ enum
 	SLSTATE_RELOAD_END
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void Sporelauncher_Fire(entity spawner, vector org, vector dir)
 {
 	static void Spore_Touch(void) {
@@ -158,7 +158,7 @@ w_sporelauncher_precache(void)
 void
 w_sporelauncher_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.sporelauncher_mag, pl.ammo_spore, -1);
 #endif
 }
@@ -183,7 +183,7 @@ w_sporelauncher_deathmsg(void)
 int
 w_sporelauncher_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -202,7 +202,7 @@ w_sporelauncher_pickup(int new)
 void
 w_sporelauncher_draw(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	Weapons_SetModel("models/v_spore_launcher.mdl");
 	Weapons_ViewAnimation(SPORE_DRAW);
 #else
@@ -226,7 +226,7 @@ w_sporelauncher_primary(void)
 		return;
 	}
 
-#ifdef SSQC
+#ifdef SERVER
 	if (pl.sporelauncher_mag <= 0) {
 		return;
 	}
@@ -258,7 +258,7 @@ w_sporelauncher_secondary(void)
 		return;
 	}
 
-#ifdef SSQC
+#ifdef SERVER
 	if (pl.sporelauncher_mag <= 0) {
 		return;
 	}
@@ -311,7 +311,7 @@ void w_sporelauncher_release(void)
 		pl.w_idle_next = 0.65f;
 	} else if (pl.a_ammo3 == SLSTATE_RELOAD) {
 		Weapons_ViewAnimation(SPORE_RELOAD2);
-#ifdef CSQC
+#ifdef CLIENT
 		pl.a_ammo1++;
 		pl.a_ammo2--;
 
@@ -341,7 +341,7 @@ w_sporelauncher_reload(void)
 {
 	player pl = (player)self;
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 >= 5) {
 		return;
 	}
@@ -368,7 +368,7 @@ w_sporelauncher_reload(void)
 void
 w_sporelauncher_crosshair(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	vector cross_pos;
 	vector aicon_pos;
 
@@ -398,7 +398,7 @@ w_sporelauncher_crosshair(void)
 		[200/256,48/128],
 		[24/256, 24/128],
 		g_hud_color,
-		pSeat->ammo2_alpha,
+		pSeat->m_flAmmo2Alpha,
 		DRAWFLAG_ADDITIVE
 	);
 #endif
@@ -413,7 +413,7 @@ w_sporelauncher_aimanim(void)
 void
 w_sporelauncher_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -465,7 +465,7 @@ weapon_t w_sporelauncher =
 	.hudpic		= w_sporelauncher_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_sporelauncher(void)
 {

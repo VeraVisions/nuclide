@@ -21,8 +21,8 @@ class CWidget
 	CWidget m_next;
 	CWidget m_parent;
 
-	void() CWidget;
-	virtual void() Draw;
+	void(void) CWidget;
+	virtual void(void) Draw;
 	virtual void(float type, float x, float y, float devid) Input;
 
 	virtual void(int x, int y) SetPos;

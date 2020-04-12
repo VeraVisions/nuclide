@@ -22,7 +22,8 @@ Nihilanth
 
 */
 
-enum {
+enum
+{
 	NIL_IDLE,
 	NIL_ATTACK,
 	NIL_ATTACK2,
@@ -50,7 +51,7 @@ class monster_nihilanth:CBaseMonster
 {
 	float m_flIdleTime;
 
-	void() monster_nihilanth;
+	void(void) monster_nihilanth;
 
 	virtual void(int) Death;
 	virtual void(int) Pain;

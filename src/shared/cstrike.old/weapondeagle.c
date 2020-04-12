@@ -45,7 +45,8 @@ weaponinfo_t wptDEAGLE = {
 };
 
 // Anim Table
-enum {
+enum
+{
 	ANIM_DEAGLE_IDLE,
 	ANIM_DEAGLE_SHOOT1,
 	ANIM_DEAGLE_SHOOT2,
@@ -54,44 +55,44 @@ enum {
 	ANIM_DEAGLE_DRAW
 };
 
-void WeaponDEAGLE_Draw( void ) {
-	#ifdef SSQC
+void WeaponDEAGLE_Draw(void) {
+	#ifdef SERVER
 	BaseGun_Draw();
 	#else
-	View_PlayAnimation( ANIM_DEAGLE_DRAW );
+	View_PlayAnimation(ANIM_DEAGLE_DRAW);
 	#endif
 }
 
-void WeaponDEAGLE_PrimaryFire( void ) {
-	#ifdef SSQC
-	if ( BaseGun_PrimaryFire() == TRUE ) {
-		if ( random() <= 0.5 ) {
-			sound( self, CHAN_WEAPON, "weapons/deagle-1.wav", 1, ATTN_NORM );
+void WeaponDEAGLE_PrimaryFire(void) {
+	#ifdef SERVER
+	if (BaseGun_PrimaryFire() == TRUE) {
+		if (random() <= 0.5) {
+			sound(self, CHAN_WEAPON, "weapons/deagle-1.wav", 1, ATTN_NORM);
 		} else {
-			sound( self, CHAN_WEAPON, "weapons/deagle-2.wav", 1, ATTN_NORM );
+			sound(self, CHAN_WEAPON, "weapons/deagle-2.wav", 1, ATTN_NORM);
 		}
 	}
 	#else
-	if ( getstatf( STAT_CURRENT_MAG ) == 0 ) {
-		View_PlayAnimation( ANIM_DEAGLE_SHOOT_EMPTY );
+	if (getstatf(STAT_CURRENT_MAG) == 0) {
+		View_PlayAnimation(ANIM_DEAGLE_SHOOT_EMPTY);
 	} else {
-		if ( random() <= 0.5 ) {
-			View_PlayAnimation( ANIM_DEAGLE_SHOOT1 );
+		if (random() <= 0.5) {
+			View_PlayAnimation(ANIM_DEAGLE_SHOOT1);
 		} else {
-			View_PlayAnimation( ANIM_DEAGLE_SHOOT2 );
+			View_PlayAnimation(ANIM_DEAGLE_SHOOT2);
 		}
 	}
 	
-	BaseGun_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle(1);
 	#endif
 }
 
-void WeaponDEAGLE_Reload( void ) {
-	#ifdef SSQC
-	if ( BaseGun_Reload() == TRUE ) {
+void WeaponDEAGLE_Reload(void) {
+	#ifdef SERVER
+	if (BaseGun_Reload() == TRUE) {
 
 	}
 	#else
-	View_PlayAnimation( ANIM_DEAGLE_RELOAD );
+	View_PlayAnimation(ANIM_DEAGLE_RELOAD);
 	#endif
 }

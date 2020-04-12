@@ -54,17 +54,18 @@ class CBaseEntity
 
 	string m_parent;
 	
-	void() CBaseEntity;
-	virtual void() Respawn;
-	virtual void() Hide;
-	virtual void() ParentUpdate;
+	void(void) CBaseEntity;
+	virtual void(void) Respawn;
+	virtual void(void) Hide;
+	virtual void(void) ParentUpdate;
 	virtual float(entity, float) SendEntity;
 	virtual void(int iHitBody) Pain;
 	virtual void(int iHitBody) Death;
 };
 
 /* Make sure StartFrame calls this */
-float CBaseEntity::SendEntity(entity ePEnt, float fChanged)
+float
+CBaseEntity::SendEntity(entity ePEnt, float fChanged)
 {
 	if (!modelindex) {
 		return FALSE;
@@ -138,18 +139,21 @@ float CBaseEntity::SendEntity(entity ePEnt, float fChanged)
 	return TRUE;
 }
 
-void CBaseEntity::Pain(int body)
+void
+CBaseEntity::Pain(int body)
 {
 	
 }
 
-void CBaseEntity::Death(int body)
+void
+CBaseEntity::Death(int body)
 {
 	
 }
 
 /* Make sure StartFrame calls this */
-void CBaseEntity::ParentUpdate(void)
+void
+CBaseEntity::ParentUpdate(void)
 {
 	/* Check our fields for networking */
 	if (origin != oldnet_origin) {
@@ -231,7 +235,8 @@ void CBaseEntity::ParentUpdate(void)
 	}
 }
 
-void CBaseEntity :: CBaseEntity ( void )
+void
+CBaseEntity::CBaseEntity(void)
 {
 	/* Not in Deathmatch */
 	if (spawnflags & 2048) {
@@ -246,9 +251,9 @@ void CBaseEntity :: CBaseEntity ( void )
 	gflags = GF_CANRESPAWN;
 	effects |= EF_NOSHADOW;
 
-	int nfields = tokenize( __fullspawndata );
-	for ( int i = 1; i < ( nfields - 1 ); i += 2 ) {
-		switch ( argv( i ) ) {
+	int nfields = tokenize(__fullspawndata);
+	for (int i = 1; i < (nfields - 1); i += 2) {
+		switch (argv(i)) {
 		case "origin":
 			origin = stov(argv(i+1));
 			break;
@@ -259,35 +264,35 @@ void CBaseEntity :: CBaseEntity ( void )
 			solid = stof(argv(i+1));
 			break;
 		case "shadows":
-			if (stof(argv( i + 1 )) == 1) {
+			if (stof(argv(i+1)) == 1) {
 				effects &= ~EF_NOSHADOW;
 			}
 			break;
 		case "targetname":
-			m_strTargetName = argv( i + 1 );
+			m_strTargetName = argv(i+1);
 			targetname = __NULL__;
 			break;
 		case "target":
-			m_strTarget = argv( i + 1 );
+			m_strTarget = argv(i+1);
 			target = __NULL__;
 			break;
 		case "color":
-			m_vecRenderColor = stov( argv( i + 1 ) );
+			m_vecRenderColor = stov(argv(i+1));
 			break;
 		case "alpha":
-			m_flRenderAmt = stof( argv( i + 1 ) );
+			m_flRenderAmt = stof(argv(i+1));
 			break;
 		case "renderamt":
-			m_flRenderAmt = stof( argv( i + 1 ) ) / 255;
+			m_flRenderAmt = stof(argv(i+1)) / 255;
 			break;
 		case "rendercolor":
-			m_vecRenderColor = stov( argv( i + 1 ) ) / 255;
+			m_vecRenderColor = stov(argv(i+1)) / 255;
 			break;
 		case "rendermode":
-			m_iRenderMode = stoi( argv( i + 1 ) );
+			m_iRenderMode = stoi(argv(i+1));
 			break;
 		case "renderfx":
-			m_iRenderFX = stoi( argv( i + 1 ) );
+			m_iRenderFX = stoi(argv(i+1));
 			break;
 		case "parentname":
 			m_parent = argv(i+1);
@@ -312,23 +317,25 @@ void CBaseEntity :: CBaseEntity ( void )
 	m_oldAngle = angles;
 }
 
-void CBaseEntity :: Respawn ( void )
+void
+CBaseEntity::Respawn(void)
 {
 	model = m_oldModel;
 	solid = m_oldSolid;
 	health = m_oldHealth;
 	origin = m_oldOrigin;
 	angles = m_oldAngle;
-	setorigin( this, origin );
+	setorigin(this, origin);
 
 	if (model != "") {
 		setmodel(this, model);
 	}
 }
 
-void CBaseEntity :: Hide ( void )
+void
+CBaseEntity::Hide(void)
 {
-	setmodel( this, "" );
+	setmodel(this, "");
 	modelindex = 0;
 	solid = SOLID_NOT;
 	movetype = MOVETYPE_NONE;

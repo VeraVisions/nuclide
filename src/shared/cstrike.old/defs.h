@@ -20,7 +20,7 @@
 #define PLAYER_SENDFLAG_UPDATE 1
 #define PLAYER_SENDFLAG_INGAME 2
 
-string sCSPlayers[ 9 ] = {
+string sCSPlayers[9] = {
 	"",
 	"models/player/terror/terror.mdl",
 	"models/player/leet/leet.mdl",
@@ -33,14 +33,16 @@ string sCSPlayers[ 9 ] = {
 };
 
 // Stuff that applies to all codebases
-enum {
+enum
+{
 	TEAM_SPECTATOR,
 	TEAM_T,
 	TEAM_CT,
 	TEAM_VIP
 };
 
-enum { 
+enum
+{ 
 	STAT_BUYZONE = 34,
 	STAT_ESCAPEZONE,
 	STAT_VIPZONE,
@@ -67,7 +69,8 @@ enum {
 	STAT_WON_CT
 };
 
-enum {
+enum
+{
 	GAME_INACTIVE,
 	GAME_COMMENCING,
 	GAME_FREEZE,
@@ -77,7 +80,8 @@ enum {
 };
 
 #define CS_WEAPON_COUNT 28
-enum {
+enum
+{
 	WEAPON_NONE,
 	WEAPON_KNIFE,
 	WEAPON_USP45,
@@ -114,7 +118,8 @@ enum {
 #define EQUIPMENT_DEFUSALKIT 	4
 #define EQUIPMENT_NIGHTVISION 	8
 
-enum {
+enum
+{
 	CALIBER_50AE = 1,
 	CALIBER_762MM,
 	CALIBER_556MM,
@@ -143,13 +148,15 @@ enum {
 .int iAmmo_57MM;
 
 // Weapon types
-enum {
+enum
+{
 	TYPE_SEMI,
 	TYPE_AUTO
 };
 
 // Slot types
-enum { 
+enum
+{ 
 	SLOT_PRIMARY,
 	SLOT_SECONDARY,
 	SLOT_MELEE,
@@ -158,7 +165,8 @@ enum {
 };
 
 // These variables are taken from CS:S' .ctx script files, usually and interpreted as I go along...
-typedef struct {
+typedef struct
+{
 	int iWeaponID; 	// Identifier
 	int iSlot;
 	int iPrice;		
@@ -192,34 +200,39 @@ typedef struct {
 	int iShellType;	// Type of shell the weapon ejects
 } weaponinfo_t;
 
-enum {
+enum
+{
 	SHELL_PISTOL,
 	SHELL_RIFLE,
 	SHELL_RIFLEBIG,
 	SHELL_SHOTGUN
 };
 
-typedef struct {
+typedef struct
+{
 	int iID;
 	int iPrice;
 } equipmentinfo_t;
 
-typedef struct {
+typedef struct
+{
 	int iSize;
 	int iMaxAmount;
 	int iPrice;
 } ammoinfo_t;
 
-typedef struct {
-	void() vDraw;
-	void() vPrimary;
-	void() vSecondary;
-	void() vReload;
+typedef struct
+{
+	void(void) vDraw;
+	void(void) vPrimary;
+	void(void) vSecondary;
+	void(void) vReload;
 } weaponfunc_t;
 
 
 // Animation types
-enum {
+enum
+{
 	ATYPE_ONEHAND,
 	ATYPE_DUALPISTOLS,
 	ATYPE_CARBINE,
@@ -233,10 +246,10 @@ enum {
 	ATYPE_AK47
 };
 
-void BaseGun_ShotMultiplierHandle( float fShots );
+void BaseGun_ShotMultiplierHandle(float fShots);
 void Effect_CreateSmoke(vector pos);
 
-float Weapon_GetSpeedM( float fWeapon );
+float Weapon_GetSpeedM(float fWeapon);
 .float weapon;
 .float jumptime;
 .vector view_ofs;
@@ -249,7 +262,7 @@ float Weapon_GetSpeedM( float fWeapon );
 Game_GetMaxSpeed
 =================
 */
-float Game_GetMaxSpeed( entity eTarget ) {
+float Game_GetMaxSpeed(entity eTarget) {
 	int weap;
 	if (!eTarget.weapon) {
 		weap = WEAPON_KNIFE;
@@ -257,8 +270,8 @@ float Game_GetMaxSpeed( entity eTarget ) {
 		weap = eTarget.weapon;
 	}
 
-	if ( eTarget.flags & FL_CROUCHING ) {
-		return ( serverkeyfloat("phy_maxspeed") * Weapon_GetSpeedM(weap) * 0.5 );
+	if (eTarget.flags & FL_CROUCHING) {
+		return (serverkeyfloat("phy_maxspeed") * Weapon_GetSpeedM(weap) * 0.5);
 	} else {
 		return serverkeyfloat("phy_maxspeed") * Weapon_GetSpeedM(weap);
 	}

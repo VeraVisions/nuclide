@@ -52,7 +52,7 @@ server/trigger_cdaudio.cpp
 server/trigger_camera.cpp
 server/trigger_hurt.cpp
 server/trigger_changelevel.cpp
-server/trigger_gravity.cpp
+server/trigger_look.cpp
 server/trigger_once.cpp
 server/trigger_multiple.cpp
 server/trigger_push.cpp

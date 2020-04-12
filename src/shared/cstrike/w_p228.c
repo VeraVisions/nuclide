@@ -26,7 +26,8 @@ Price: $600
 
 */
 
-enum {
+enum
+{
 	P228_IDLE,
 	P228_SHOOT1,
 	P228_SHOOT2,
@@ -39,7 +40,7 @@ enum {
 void
 w_p228_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_p228.fire");
 #endif
 	precache_model("models/v_p228.mdl");
@@ -52,7 +53,7 @@ w_p228_precache(void)
 void
 w_p228_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.p228_mag, pl.ammo_357sig, -1);
 #endif
 }
@@ -78,7 +79,7 @@ w_p228_deathmsg(void)
 int
 w_p228_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -101,7 +102,7 @@ w_p228_draw(void)
 	Weapons_SetModel("models/v_p228.mdl");
 	Weapons_ViewAnimation(P228_DRAW);
 
-#ifdef CSQC
+#ifdef CLIENT
 	pl.cs_cross_mindist = 8;
 	pl.cs_cross_deltadist = 3;
 #endif
@@ -121,7 +122,7 @@ w_p228_primary(void)
 	}
 
 	/* ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (!pl.a_ammo1) {
 		return;
 	}
@@ -134,7 +135,7 @@ w_p228_primary(void)
 	Cstrike_ShotMultiplierAdd(pl, 1);
 	float accuracy = Cstrike_CalculateAccuracy(pl, 200);
 
-#ifdef CSQC
+#ifdef CLIENT
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 #else
@@ -180,7 +181,7 @@ w_p228_reload(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 >= 30) {
 		return;
 	}
@@ -213,19 +214,19 @@ w_p228_aimanim(void)
 void
 w_p228_hud(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	Cstrike_DrawCrosshair();
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [120/256,72/256], [24/256, 24/256], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [120/256,72/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
 void
 w_p228_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -277,7 +278,7 @@ weapon_t w_p228 =
 	w_p228_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_p228(void)
 {

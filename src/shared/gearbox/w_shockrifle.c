@@ -23,7 +23,7 @@ Shockrifle Weapon
 
 */
 
-#ifdef CSQC
+#ifdef CLIENT
 var int PART_SHOCKPIECE;
 #endif
 
@@ -49,7 +49,7 @@ w_shockrifle_precache(void)
 	precache_sound("weapons/shock_impact.wav");
 	precache_sound("weapons/shock_recharge.wav");
 
-#ifdef CSQC
+#ifdef CLIENT
 	PART_SHOCKPIECE = particleeffectnum("shockrifle.shockrifle_piece");
 #endif
 }
@@ -57,7 +57,7 @@ w_shockrifle_precache(void)
 int
 w_shockrifle_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	/* only pick it up once */
@@ -72,7 +72,7 @@ w_shockrifle_pickup(int new)
 void
 w_shockrifle_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, pl.ammo_shock, -1);
 #endif
 }
@@ -100,7 +100,7 @@ w_shockrifle_draw(void)
 {
 	Weapons_SetModel("models/v_shock.mdl");
 	Weapons_ViewAnimation(SHOCKRIFLE_DRAW);
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 	Weapons_UpdateAmmo(pl, -1, pl.ammo_shock, -1);
 #endif
@@ -112,7 +112,7 @@ w_shockrifle_holster(void)
 	
 }
 
-#ifdef SSQC
+#ifdef SERVER
 void
 w_shockrifle_shoothornet(void)
 {
@@ -153,7 +153,7 @@ w_shockrifle_release(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo2 < 10) {
 		pl.a_ammo2 = bound(0, pl.a_ammo2 + 1, 10);
 		pl.w_idle_next = 0.35f;
@@ -188,7 +188,7 @@ w_shockrifle_primary(void)
 	}
 
 	/* Ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo2 <= 0) {
 		w_shockrifle_release();
 		return;
@@ -201,7 +201,7 @@ w_shockrifle_primary(void)
 #endif
 
 
-#ifdef SSQC
+#ifdef SERVER
 	w_shockrifle_shoothornet();
 	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/shock_fire.wav", 1, ATTN_NORM);
 	
@@ -222,7 +222,7 @@ w_shockrifle_primary(void)
 void
 w_shockrifle_crosshair(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	vector cross_pos;
 	vector aicon_pos;
 
@@ -251,7 +251,7 @@ w_shockrifle_crosshair(void)
 		[224/256,48/128],
 		[24/256, 24/128],
 		g_hud_color,
-		pSeat->ammo2_alpha,
+		pSeat->m_flAmmo2Alpha,
 		DRAWFLAG_ADDITIVE
 	);
 #endif
@@ -266,7 +266,7 @@ w_shockrifle_aimanim(void)
 void
 w_shockrifle_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -318,7 +318,7 @@ weapon_t w_shockrifle =
 	.hudpic		= w_shockrifle_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_shockrifle(void)
 {

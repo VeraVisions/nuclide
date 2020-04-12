@@ -24,13 +24,14 @@ This entity does not work in multiplayer.
 class trigger_autosave:CBaseTrigger
 {
 	float m_flDelay;
-	void() trigger_autosave;
+	void(void) trigger_autosave;
 
-	virtual void() touch;
-	virtual void() Respawn;
+	virtual void(void) touch;
+	virtual void(void) Respawn;
 };
 
-void trigger_autosave::touch(void)
+void
+trigger_autosave::touch(void)
 {
 	eActivator = other;
 
@@ -44,8 +45,8 @@ void trigger_autosave::touch(void)
 	msg_entity = this;
 	multicast(origin, MULTICAST_ALL);
 
-	dprint( sprintf( "^2trigger_autosave::^3touch^7: %s called autosave\n", 
-		other.netname) );
+	dprint(sprintf("^2trigger_autosave::^3touch^7: %s called autosave\n", 
+		other.netname));
 
 	localcmd("save autosave");
 	Hide();
@@ -58,20 +59,15 @@ void trigger_autosave::touch(void)
 	solid = SOLID_NOT;
 }
 
-void trigger_autosave::Respawn(void)
+void
+trigger_autosave::Respawn(void)
 {
-	solid = SOLID_TRIGGER;
-#ifdef GS_DEVELOPER
-	m_iRenderMode = RM_SOLID;
-	m_flRenderAmt = 0.25f;
-#else
-	m_iRenderMode = RM_SOLID;
-	m_flRenderAmt = 0.0f;
-#endif
+	InitBrushTrigger();
 }
 
-void trigger_autosave::trigger_autosave(void)
-{	
+void
+trigger_autosave::trigger_autosave(void)
+{
 	if (cvar("sv_playerslots") > 1) {
 		remove(this);
 		return;
@@ -80,7 +76,7 @@ void trigger_autosave::trigger_autosave(void)
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
 		case "delay":
-			m_flDelay = stof(argv(i + 1));
+			m_flDelay = stof(argv(i+1));
 			break;
 		default:
 			break;

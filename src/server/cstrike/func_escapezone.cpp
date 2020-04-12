@@ -28,5 +28,11 @@ Used in the Escape mode (es_* maps).
 
 class func_escapezone:CBaseTrigger
 {
-	
+	virtual void(void) Respawn;
 }; 
+
+void
+func_escapezone::Respawn(void)
+{
+	InitBrushTrigger();
+}

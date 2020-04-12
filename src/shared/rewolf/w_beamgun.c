@@ -14,7 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-enum {
+enum
+{
 	BEAMGUN_DRAW,
 	BEAMGUN_IDLE, // 2.6f
 	BEAMGUN_FIDGET1, // 2.4f
@@ -78,7 +79,7 @@ w_beamgun_primary(void)
 
 	src = Weapons_GetCameraPos();
 
-#ifdef CSQC
+#ifdef CLIENT
 	//Weapons_ViewAnimation(GP_FIRESINGLE);
 #endif
 
@@ -112,7 +113,7 @@ w_beamgun_secondary(void)
 void
 w_beamgun_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, pl.ammo_battery, -1);
 #endif
 }
@@ -144,7 +145,7 @@ w_beamgun_aimanim(void)
 void
 w_beamgun_hud(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	static string rmodes[] = {
 		"TOUCH TAZER",
 		"SHORT TAZER",
@@ -229,7 +230,7 @@ w_beamgun_hud(void)
 void
 w_beamgun_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	drawpic(
 		pos,
 		"gfx/vgui/640_weapon_beamgun0.tga",
@@ -246,7 +247,7 @@ w_beamgun_precache(void)
 {
 	precache_model("models/v_beam.mdl");
 
-#ifdef SSQC
+#ifdef SERVER
 	clientstat(46, EV_INTEGER, player::beam_range);
 	clientstat(47, EV_INTEGER, player::beam_poweracc);
 	clientstat(48, EV_INTEGER, player::beam_lightning);
@@ -279,7 +280,7 @@ weapon_t w_beamgun =
 };
 
 /* entity definitions for pickups */
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_beamgun(void)
 {
@@ -287,7 +288,7 @@ weapon_beamgun(void)
 }
 #endif
 
-#ifdef CSQC
+#ifdef CLIENT
 int
 w_beamgun_hudforward(player pl)
 {

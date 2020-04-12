@@ -45,7 +45,8 @@ weaponinfo_t wptG3SG1 = {
 };
 
 // Anim Table
-enum {
+enum
+{
 	ANIM_G3SG1_IDLE,
 	ANIM_G3SG1_SHOOT1,
 	ANIM_G3SG1_SHOOT2,
@@ -53,37 +54,37 @@ enum {
 	ANIM_G3SG1_DRAW
 };
 
-void WeaponG3SG1_Draw( void ) {
-	#ifdef SSQC
+void WeaponG3SG1_Draw(void) {
+	#ifdef SERVER
 	BaseGun_Draw();
 	#else
-	View_PlayAnimation( ANIM_G3SG1_DRAW );
+	View_PlayAnimation(ANIM_G3SG1_DRAW);
 	#endif
 }
 
-void WeaponG3SG1_PrimaryFire( void ) {
-	#ifdef SSQC
-	if ( BaseGun_PrimaryFire() == TRUE ) {
+void WeaponG3SG1_PrimaryFire(void) {
+	#ifdef SERVER
+	if (BaseGun_PrimaryFire() == TRUE) {
 		// Play Sound
 		dprint("[DEBUG] FIRE!\n");
-		sound( self, CHAN_WEAPON, "weapons/g3sg1-1.wav", 1, ATTN_NORM );
+		sound(self, CHAN_WEAPON, "weapons/g3sg1-1.wav", 1, ATTN_NORM);
 	}
 	#else
 
-	if ( random() <= 0.5 ) {
-		View_PlayAnimation( ANIM_G3SG1_SHOOT1 );
+	if (random() <= 0.5) {
+		View_PlayAnimation(ANIM_G3SG1_SHOOT1);
 	} else {
-		View_PlayAnimation( ANIM_G3SG1_SHOOT2 );
+		View_PlayAnimation(ANIM_G3SG1_SHOOT2);
 	}
-	BaseGun_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle(1);
 	#endif
 }
 
-void WeaponG3SG1_SecondaryFire( void ) {
-#ifdef SSQC
-	if ( self.viewzoom == 1.0 ) {
+void WeaponG3SG1_SecondaryFire(void) {
+#ifdef SERVER
+	if (self.viewzoom == 1.0) {
 		self.viewzoom = 0.45;
-	} else if ( self.viewzoom == 0.45 ) {
+	} else if (self.viewzoom == 0.45) {
 		self.viewzoom = 0.15;
 	} else {
 		self.viewzoom = 1.0;
@@ -93,12 +94,12 @@ void WeaponG3SG1_SecondaryFire( void ) {
 #endif
 }
 
-void WeaponG3SG1_Reload( void ) {
-	#ifdef SSQC
-	if ( BaseGun_Reload() == TRUE ) {
+void WeaponG3SG1_Reload(void) {
+	#ifdef SERVER
+	if (BaseGun_Reload() == TRUE) {
 		// Play Sound
 	}
 	#else
-	View_PlayAnimation( ANIM_G3SG1_RELOAD );
+	View_PlayAnimation(ANIM_G3SG1_RELOAD);
 	#endif
 }

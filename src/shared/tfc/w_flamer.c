@@ -25,7 +25,7 @@ w_flamer_precache(void)
 void
 w_flamer_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, __NULL__, __NULL__, __NULL__);
 #endif
 }
@@ -63,7 +63,7 @@ w_flamer_aimanim(void)
 void
 w_flamer_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,

@@ -25,39 +25,39 @@ This is a food item that will give the user 1 health when touched.
 class item_food
 {
 	int m_iIsCan;
-	void() item_food;
-	virtual void() Setup;
-	virtual void() Touch;
+	void(void) item_food;
+	virtual void(void) Setup;
+	virtual void(void) Touch;
 };
 
-void item_food :: Touch ( void )
+void item_food::Touch(void)
 {
-	if ( other.classname != "player" ) {
+	if (other.classname != "player") {
 		return;
 	}
 	
-	if ( owner != __NULL__ ) {
+	if (owner != __NULL__) {
 		env_beverage bevOwner = (env_beverage)owner;
 		bevOwner.m_iReady = TRUE;
 	}
 	
 	Damage_Apply(other, this, -1, 0, DMG_GENERIC);
 	solid = SOLID_NOT;
-	remove( this );
+	remove(this);
 }
 
-void item_food :: Setup ( void )
+void item_food::Setup(void)
 {
 	solid = SOLID_TRIGGER;
-	setsize( this, [-16,-16,-16], [16,16,16]);
+	setsize(this, [-16,-16,-16], [16,16,16]);
 	touch = Touch;
 
-	if ( m_iIsCan ) {
-		sound( this, CHAN_ITEM, "weapons/g_bounce3.wav", 1.0f, ATTN_NORM );
+	if (m_iIsCan) {
+		sound(this, CHAN_ITEM, "weapons/g_bounce3.wav", 1.0f, ATTN_NORM);
 	}
 }
 
-void item_food :: item_food ( void )
+void item_food::item_food(void)
 {
 	// TODO: differentiate between item_sodacan and item_food
 	m_iIsCan = 1;
@@ -65,13 +65,13 @@ void item_food :: item_food ( void )
 	solid = SOLID_NOT;
 	movetype = MOVETYPE_TOSS;
 
-	if ( m_iIsCan ) {
-		setmodel( this, "models/can.mdl" );
+	if (m_iIsCan) {
+		setmodel(this, "models/can.mdl");
 	}
 
-	setsize( this, [0,0,0], [0,0,0]);
+	setsize(this, [0,0,0], [0,0,0]);
 	think = Setup;
 	nextthink = time + 1.0f;
 }
 
-CLASSEXPORT( item_sodacan, item_food )
+CLASSEXPORT(item_sodacan, item_food)

@@ -26,7 +26,8 @@ Price: $1400
 
 */
 
-enum {
+enum
+{
 	MAC10_IDLE,
 	MAC10_RELOAD,
 	MAC10_DRAW,
@@ -38,7 +39,7 @@ enum {
 void
 w_mac10_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_mac10.fire");
 #endif
 	precache_model("models/v_mac10.mdl");
@@ -49,7 +50,7 @@ w_mac10_precache(void)
 void
 w_mac10_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.mac10_mag, pl.ammo_45acp, -1);
 #endif
 }
@@ -75,7 +76,7 @@ w_mac10_deathmsg(void)
 int
 w_mac10_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -98,7 +99,7 @@ w_mac10_draw(void)
 	Weapons_SetModel("models/v_mac10.mdl");
 	Weapons_ViewAnimation(MAC10_DRAW);
 
-#ifdef CSQC
+#ifdef CLIENT
 	pl.cs_cross_mindist = 9;
 	pl.cs_cross_deltadist = 3;
 #endif
@@ -113,7 +114,7 @@ w_mac10_primary(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (!pl.a_ammo1) {
 		return;
 	}
@@ -126,7 +127,7 @@ w_mac10_primary(void)
 	Cstrike_ShotMultiplierAdd(pl, 1);
 	float accuracy = Cstrike_CalculateAccuracy(pl, 200);
 
-#ifdef CSQC
+#ifdef CLIENT
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 #else
@@ -167,7 +168,7 @@ w_mac10_reload(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 >= 30) {
 		return;
 	}
@@ -200,19 +201,19 @@ w_mac10_aimanim(void)
 void
 w_mac10_hud(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	Cstrike_DrawCrosshair();
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [96/256,72/256], [24/256, 24/256], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [96/256,72/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
 void
 w_mac10_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -264,7 +265,7 @@ weapon_t w_mac10 =
 	w_mac10_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_mac10(void)
 {

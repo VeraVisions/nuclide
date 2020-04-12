@@ -23,8 +23,8 @@ class CSlider:CWidget
 	float m_value;
 	virtual void(float value) m_changed = 0;
 
-	void() CSlider;
-	virtual void() Draw;
+	void(void) CSlider;
+	virtual void(void) Draw;
 	virtual void(float type, float x, float y, float devid) Input;
 	
 	virtual void(float val) SetValue;

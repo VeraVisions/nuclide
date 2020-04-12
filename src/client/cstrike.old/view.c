@@ -16,18 +16,18 @@
 
 void View_UpdateWeapon(entity vm, entity mflash)
 {
-	int aw = getstati( STAT_ACTIVEWEAPON );
-	if( aw < CS_WEAPON_COUNT ) {
-			if ( pSeat->fLastWeapon != aw ) {
-				pSeat->fLastWeapon = aw;
-				if ( aw >= 1 ) {
+	int aw = getstati(STAT_ACTIVEWEAPON);
+	if(aw < CS_WEAPON_COUNT) {
+			if (pSeat->m_iLastWeapon != aw) {
+				pSeat->m_iLastWeapon = aw;
+				if (aw >= 1) {
 					string wm;
 					if (autocvar_skins_dir != "") {
-						wm = sprintf("skins/%s/%s", autocvar_skins_dir, sViewModels[ aw - 1 ]);
+						wm = sprintf("skins/%s/%s", autocvar_skins_dir, sViewModels[aw - 1]);
 					} else {
-						wm = sprintf("models/%s", sViewModels[ aw - 1 ]);
+						wm = sprintf("models/%s", sViewModels[aw - 1]);
 					}
-					setmodel( vm, wm );
+					setmodel(vm, wm);
 
 					if (getstati_punf(STAT_TEAM) == TEAM_CT) {
 						setcustomskin(vm, "", "geomset 0 2\n");
@@ -35,10 +35,10 @@ void View_UpdateWeapon(entity vm, entity mflash)
 						setcustomskin(vm, "", "geomset 0 1\n");
 					}
 
-					skel_delete( mflash.skeletonindex );
-					mflash.skeletonindex = skel_create( vm.modelindex );
-					pSeat->fNumBones = skel_get_numbones( mflash.skeletonindex ) + 1;
-					pSeat->fEjectBone = pSeat->fNumBones + 1;
+					skel_delete(mflash.skeletonindex);
+					mflash.skeletonindex = skel_create(vm.modelindex);
+					pSeat->m_iVMBones = skel_get_numbones(mflash.skeletonindex) + 1;
+					pSeat->m_iVMEjectBone = pSeat->m_iVMBones + 1;
 				}
 			}
 	}

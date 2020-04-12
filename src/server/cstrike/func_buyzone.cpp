@@ -42,5 +42,11 @@ Choices for 'team' include:
 
 class func_buyzone:CBaseTrigger
 {
-	
+	virtual void(void) Respawn;
 };
+
+void
+func_buyzone::Respawn(void)
+{
+	InitBrushTrigger();
+}

@@ -14,60 +14,51 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-float g_printtime;
-string g_printbuffer[5];
-var int g_printlines = -1;
-
 void
 Print_Draw(void)
 {
-	vector pos = video_mins + [16, 16];
+	vector pos = g_hudmins + [16, 16];
 
-	if (g_printlines < 0) {
+	if (pSeat->m_iPrintLines < 0) {
 		return;
 	}
 
-	if (g_printtime < time) {
-		g_printbuffer[g_printlines] = __NULL__;
-		g_printlines--;
-		g_printtime = time + 5;
+	if (pSeat->m_flPrintTime < time) {
+		pSeat->m_strPrintBuffer[pSeat->m_iPrintLines] = __NULL__;
+		pSeat->m_iPrintLines--;
+		pSeat->m_flPrintTime = time + 5;
 	}
 
 	for (int i = 0; i < 5; i++) {
-		drawstring(pos, g_printbuffer[i], [12,12], [1,1,1], 1.0f, 0);
+		drawstring(pos, pSeat->m_strPrintBuffer[i], [12,12], [1,1,1], 1.0f, 0);
 		pos[1] += 14;
 	}
 }
 
-float fCenterPrintAlpha;
-float fCenterPrintTime;
-float fCenterPrintLines;
-string sCenterPrintBuffer[18];
-
 void
-CSQC_DrawCenterprint(void)
+Print_DrawCenterprint(void)
 {
-	if (fCenterPrintAlpha <= 0) {
+	vector vecPos;
+
+	if (pSeat->m_flCenterprintAlpha <= 0) {
 		return;
 	}
-	
-	vector vCenterPrintPos;
-	
-	if (fCenterPrintTime > time) {
-		fCenterPrintAlpha = 1;
+
+	if (pSeat->m_flCenterprintTime > time) {
+		pSeat->m_flCenterprintAlpha = 1;
 	} else {
-		fCenterPrintAlpha -= frametime;
+		pSeat->m_flCenterprintAlpha -= clframetime;
 		
-		if (fCenterPrintAlpha < 0) {
-			fCenterPrintAlpha = 0;
+		if (pSeat->m_flCenterprintAlpha < 0) {
+			pSeat->m_flCenterprintAlpha = 0;
 		}
 	}
 	
-	vCenterPrintPos[1] = video_mins[1] + (video_res[1] / 2) - (fCenterPrintLines - 4) - 69;
+	vecPos[1] = g_hudmins[1] + (g_hudres[1] / 2) - (pSeat->m_iCenterprintLines - 4) - 69;
 	
-	for (int i = 0; i < (fCenterPrintLines); i++) {
-		vCenterPrintPos[0] = video_mins[0] + (video_res[0] / 2) - (stringwidth(sCenterPrintBuffer[i], TRUE, '12 12') / 2);
-		drawstring(vCenterPrintPos, sCenterPrintBuffer[i], '12 12', '1 1 1', fCenterPrintAlpha, 0);
-		vCenterPrintPos[1] += 8;
+	for (int i = 0; i < (pSeat->m_iCenterprintLines); i++) {
+		vecPos[0] = g_hudmins[0] + (g_hudres[0] / 2) - (stringwidth(pSeat->m_strCenterprintBuffer[i], TRUE, '12 12') / 2);
+		drawstring(vecPos, pSeat->m_strCenterprintBuffer[i], '12 12', '1 1 1', pSeat->m_flCenterprintAlpha, 0);
+		vecPos[1] += 8;
 	}
 }

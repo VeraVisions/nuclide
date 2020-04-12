@@ -25,7 +25,7 @@ w_rpg_precache(void)
 void
 w_rpg_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, __NULL__, __NULL__, __NULL__);
 #endif
 }
@@ -63,7 +63,7 @@ w_rpg_aimanim(void)
 void
 w_rpg_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(pos, [170,45], "sprites/640hud5.spr_0.tga", [0,45/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	} else {

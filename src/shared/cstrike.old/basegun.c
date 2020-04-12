@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-weaponinfo_t wptTable[ CS_WEAPON_COUNT ] = {
+weaponinfo_t wptTable[CS_WEAPON_COUNT] = {
 	{ 0, 0, 0, 0, 240, 0, 0, 0, 0, 0.0, 0.0, 0, 0.0, 0.0, iAmmo_9MM, iAmmo_9MM, 0.0, 0.0, 0.0, 0, 0 },
 	wptKNIFE,
 	wptUSP45,
@@ -45,7 +45,7 @@ weaponinfo_t wptTable[ CS_WEAPON_COUNT ] = {
 	wptSMOKEGRENADE
 };
 
-#ifdef SSQC
+#ifdef SERVER
 .int iShotMultiplier;
 .float fDecreaseShotTime;
 //.int iOldShotMultiplier;
@@ -56,9 +56,9 @@ weaponinfo_t wptTable[ CS_WEAPON_COUNT ] = {
 BaseGun_ShotMultiplierHandle
 ====================
 */
-void BaseGun_ShotMultiplierHandle( float fShots ) {
-#ifdef SSQC
-	if ( self.iShotMultiplier > 12 ) {
+void BaseGun_ShotMultiplierHandle(float fShots) {
+#ifdef SERVER
+	if (self.iShotMultiplier > 12) {
 		self.iShotMultiplier = 12;
 	} else {
 		self.iShotMultiplier += fShots;
@@ -66,20 +66,20 @@ void BaseGun_ShotMultiplierHandle( float fShots ) {
 	self.fDecreaseShotTime = time + 0.2;
 #else
 	vector vPunch;
-	if ( pSeat->iShotMultiplier > 12 ) {
+	if (pSeat->iShotMultiplier > 12) {
 		pSeat->iShotMultiplier = 12;
 	} else {
 		pSeat->iShotMultiplier += fShots;
 	}
 	
-	vPunch[0] = -2 * ( pSeat->iShotMultiplier / 6 );
-	vPunch[1] = random( -1, 1 );
+	vPunch[0] = -2 * (pSeat->iShotMultiplier / 6);
+	vPunch[1] = random(-1, 1);
 	/*player pl = (player)self;
 	pl.punchangle += vPunch;*/
 #endif
 }
 
-#ifdef SSQC
+#ifdef SERVER
 /*
 ====================
 BaseGun_ShotMultiplierUpdate
@@ -87,9 +87,9 @@ BaseGun_ShotMultiplierUpdate
 This is being triggered in PlayerPreThink after the input
 ====================
 */
-void BaseGun_ShotMultiplierUpdate( void ) {
-	if ( ( self.iShotMultiplier > 0 ) && ( self.fDecreaseShotTime < time ) ) {
-		self.fDecreaseShotTime = time + wptTable[ self.weapon ].fAttackFinished + 0.01;
+void BaseGun_ShotMultiplierUpdate(void) {
+	if ((self.iShotMultiplier > 0) && (self.fDecreaseShotTime < time)) {
+		self.fDecreaseShotTime = time + wptTable[self.weapon].fAttackFinished + 0.01;
 		self.iShotMultiplier--;
 	}	
 }
@@ -99,10 +99,10 @@ void BaseGun_ShotMultiplierUpdate( void ) {
 BaseGun_Draw
 ====================
 */
-void BaseGun_Draw( void ) {
-	self.iCurrentMag = self.(wptTable[ self.weapon ].iMagfld);
-	self.iCurrentCaliber = self.(wptTable[ self.weapon ].iCaliberfld);
-	Client_SendEvent( self, EV_WEAPON_DRAW );
+void BaseGun_Draw(void) {
+	self.iCurrentMag = self.(wptTable[self.weapon].iMagfld);
+	self.iCurrentCaliber = self.(wptTable[self.weapon].iCaliberfld);
+	Client_SendEvent(self, EV_WEAPON_DRAW);
 }
 
 /*
@@ -110,15 +110,15 @@ void BaseGun_Draw( void ) {
 BaseGun_AccuracyCalc
 ====================
 */
-void BaseGun_AccuracyCalc( void ) {
-	if ( wptTable[ self.weapon ].fAccuracyDivisor == -1 ) {
-		if ( self.viewzoom < 1.0f ) {
+void BaseGun_AccuracyCalc(void) {
+	if (wptTable[self.weapon].fAccuracyDivisor == -1) {
+		if (self.viewzoom < 1.0f) {
 			self.fAccuracy = 0.0f;
 		} else {
 			self.fAccuracy = 0.05f;
 		}
 	} else {
-		self.fAccuracy = ( self.iShotMultiplier / wptTable[ self.weapon ].fAccuracyDivisor );
+		self.fAccuracy = (self.iShotMultiplier / wptTable[self.weapon].fAccuracyDivisor);
 	}
 }
 
@@ -129,25 +129,25 @@ BaseGun_PrimaryFire
 Returns whether or not to play an animation
 ====================
 */
-float BaseGun_PrimaryFire( void ) {
+float BaseGun_PrimaryFire(void) {
 	// Nothing in the clip anymore? Don't even attempt
-	if ( ( self.(wptTable[ self.weapon ].iMagfld) - 1 ) < 0 ) {
+	if ((self.(wptTable[self.weapon].iMagfld) - 1) < 0) {
 		return FALSE;
 	}
 	
 	// Responsible for semi-automatic switch
-	if ( wptTable[ self.weapon ].fWeaponType == TYPE_SEMI ) {
-		self.flags = self.flags - ( self.flags & FL_SEMI_TOGGLED );
+	if (wptTable[self.weapon].fWeaponType == TYPE_SEMI) {
+		self.flags = self.flags - (self.flags & FL_SEMI_TOGGLED);
 	}
 	
-	BaseGun_ShotMultiplierHandle( wptTable[ self.weapon ].iBullets );
+	BaseGun_ShotMultiplierHandle(wptTable[self.weapon].iBullets);
 	BaseGun_AccuracyCalc();
-	TraceAttack_FireBullets( wptTable[ self.weapon ].iBullets, ( self.origin + self.view_ofs), wptTable[self.weapon].iDamage, [self.fAccuracy, self.fAccuracy], self.weapon);
-	Animation_ShootWeapon( self );
+	TraceAttack_FireBullets(wptTable[self.weapon].iBullets, (self.origin + self.view_ofs), wptTable[self.weapon].iDamage, [self.fAccuracy, self.fAccuracy], self.weapon);
+	Animation_ShootWeapon(self);
 	
-	self.(wptTable[ self.weapon ].iMagfld) -= 1;
-	self.fAttackFinished = time + wptTable[ self.weapon ].fAttackFinished;
-	Client_SendEvent( self, EV_WEAPON_PRIMARYATTACK );
+	self.(wptTable[self.weapon].iMagfld) -= 1;
+	self.fAttackFinished = time + wptTable[self.weapon].fAttackFinished;
+	Client_SendEvent(self, EV_WEAPON_PRIMARYATTACK);
 	return TRUE;
 }
 
@@ -156,39 +156,39 @@ float BaseGun_PrimaryFire( void ) {
 BaseGun_Reload
 ====================
 */
-float BaseGun_Reload( void ) {
-	static void BaseGun_FinishReload( void ) {
-		int iNeed = wptTable[ self.weapon ].iMagSize - self.(wptTable[ self.weapon ].iMagfld);
-		int iHave = self.(wptTable[ self.weapon ].iCaliberfld);
+float BaseGun_Reload(void) {
+	static void BaseGun_FinishReload(void) {
+		int iNeed = wptTable[self.weapon].iMagSize - self.(wptTable[self.weapon].iMagfld);
+		int iHave = self.(wptTable[self.weapon].iCaliberfld);
 
-		if ( iNeed > iHave ) {
-			self.(wptTable[ self.weapon ].iMagfld) += iHave;
-			self.(wptTable[ self.weapon ].iCaliberfld) = 0;
+		if (iNeed > iHave) {
+			self.(wptTable[self.weapon].iMagfld) += iHave;
+			self.(wptTable[self.weapon].iCaliberfld) = 0;
 		} else {
-			self.(wptTable[ self.weapon ].iMagfld) += iNeed;
-			self.(wptTable[ self.weapon ].iCaliberfld) -= iNeed;
+			self.(wptTable[self.weapon].iMagfld) += iNeed;
+			self.(wptTable[self.weapon].iCaliberfld) -= iNeed;
 		}
 
 		Weapon_UpdateCurrents();
 	}
 	
 	// Don't bother reloading the gun when full
-	if ( self.(wptTable[ self.weapon ].iMagfld) == wptTable[ self.weapon ].iMagSize ) {
+	if (self.(wptTable[self.weapon].iMagfld) == wptTable[self.weapon].iMagSize) {
 		return FALSE;
 	}
 	
 	// Also don't bother reloading the gun if you've got nothing to reload it with
-	if ( self.(wptTable[ self.weapon ].iCaliberfld) <= 0 ) {
+	if (self.(wptTable[self.weapon].iCaliberfld) <= 0) {
 		return FALSE;
 	}
 	
 	
 	self.think = BaseGun_FinishReload;
-	self.nextthink = time + wptTable[ self.weapon ].fReloadFinished - 0.1f; // Hack - in some cases input might happen first
+	self.nextthink = time + wptTable[self.weapon].fReloadFinished - 0.1f; // Hack - in some cases input might happen first
 	self.fAttackFinished = self.nextthink + 0.1f;
 	
-	Animation_ReloadWeapon( self );
-	Client_SendEvent( self, EV_WEAPON_RELOAD );
+	Animation_ReloadWeapon(self);
+	Client_SendEvent(self, EV_WEAPON_RELOAD);
 	return TRUE;
 }
 #endif

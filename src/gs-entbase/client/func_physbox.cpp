@@ -23,9 +23,9 @@ Physics based brush entity
 {
 	int m_iShape;
 
-	void() func_physbox;
-	virtual void() Respawn;
-	virtual void() touch;
+	void(void) func_physbox;
+	virtual void(void) Respawn;
+	virtual void(void) touch;
 };
 
 void func_physbox::touch(void)
@@ -46,7 +46,7 @@ void prop_rope::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
 	case "material":
-		//m_iMaterial = stof(argv(i + 1));
+		//m_iMaterial = stof(argv(i+1));
 		break;
 	default:
 		CBaseEntity::SpawnKey(strField, strKey);

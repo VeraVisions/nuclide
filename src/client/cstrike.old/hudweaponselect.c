@@ -14,7 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-typedef struct {
+typedef struct
+{
 	string sSprite;
 	vector vOrigin;
 } weaponsymbolinfo_t;
@@ -50,7 +51,7 @@ weaponsymbolinfo_t wpSymbolTable[CS_WEAPON_COUNT] = {
 	{ "sprites/640hud3.spr_0.tga", [0,0.52734375] }		//WEAPON_SMOKEGRENADE
 };
 
-vector vHUDSlotNumPos[5] = {
+vector g_vecHUDNums[5] = {
 	[0.65625,0.28125],	// 1 PRIMARY
 	[0.734375,0.28125],	// 2 SECONDARY
 	[0.8125,0.28125],	// 3 MELEE
@@ -256,15 +257,15 @@ void HUD_DrawWeaponSelect_Forward(void)
 		return;
 	}
 	
-	if (pSeat->fHUDWeaponSelected == 0) {
+	if (pSeat->m_iHUDWeaponSelected == 0) {
 		sound(self, CHAN_ITEM, "common/wpn_hudon.wav", 0.5, ATTN_NONE);
-		pSeat->fHUDWeaponSelected = HUD_DrawWeaponSelect_GetWeapon(HUD_DrawWeaponSelect_NextItem(wptTable[getstatf(STAT_ACTIVEWEAPON)].iSlot));
+		pSeat->m_iHUDWeaponSelected = HUD_DrawWeaponSelect_GetWeapon(HUD_DrawWeaponSelect_NextItem(wptTable[getstatf(STAT_ACTIVEWEAPON)].iSlot));
 	} else {
 		sound(self, CHAN_ITEM, "common/wpn_moveselect.wav", 0.5, ATTN_NONE);
-		pSeat->fHUDWeaponSelected = HUD_DrawWeaponSelect_GetWeapon(HUD_DrawWeaponSelect_NextItem(wptTable[pSeat->fHUDWeaponSelected].iSlot));
+		pSeat->m_iHUDWeaponSelected = HUD_DrawWeaponSelect_GetWeapon(HUD_DrawWeaponSelect_NextItem(wptTable[pSeat->m_iHUDWeaponSelected].iSlot));
 	}
 	
-	pSeat->fHUDWeaponSelectTime = time + 3;
+	pSeat->m_flHUDWeaponSelectTime = time + 3;
 }
 
 /*
@@ -280,15 +281,15 @@ void HUD_DrawWeaponSelect_Back(void)
 		return;
 	}
 	
-	if (pSeat->fHUDWeaponSelected == 0) {
+	if (pSeat->m_iHUDWeaponSelected == 0) {
 		sound(self, CHAN_ITEM, "common/wpn_hudon.wav", 0.5, ATTN_NONE);
-		pSeat->fHUDWeaponSelected = HUD_DrawWeaponSelect_GetWeapon(HUD_DrawWeaponSelect_PreviousItem(wptTable[getstatf(STAT_ACTIVEWEAPON)].iSlot));
+		pSeat->m_iHUDWeaponSelected = HUD_DrawWeaponSelect_GetWeapon(HUD_DrawWeaponSelect_PreviousItem(wptTable[getstatf(STAT_ACTIVEWEAPON)].iSlot));
 	} else {
 		sound(self, CHAN_ITEM, "common/wpn_moveselect.wav", 0.5, ATTN_NONE);
-		pSeat->fHUDWeaponSelected = HUD_DrawWeaponSelect_GetWeapon(HUD_DrawWeaponSelect_PreviousItem(wptTable[pSeat->fHUDWeaponSelected].iSlot));
+		pSeat->m_iHUDWeaponSelected = HUD_DrawWeaponSelect_GetWeapon(HUD_DrawWeaponSelect_PreviousItem(wptTable[pSeat->m_iHUDWeaponSelected].iSlot));
 	}
 	
-	pSeat->fHUDWeaponSelectTime = time + 3;
+	pSeat->m_flHUDWeaponSelectTime = time + 3;
 }
 
 /*
@@ -298,9 +299,9 @@ HUD_DrawWeaponSelect_Num
 Draws the numbers 1-4 on the selection display
 =================
 */
-void HUD_DrawWeaponSelect_Num(vector vPos, float fValue)
+void HUD_DrawWeaponSelect_Num(vector vecPos, float fValue)
 {
-	drawsubpic(vPos, [20,20], "sprites/640hud7.spr_0.tga", vHUDSlotNumPos[fValue], [0.078125, 0.078125], vHUDColor, 1, DRAWFLAG_ADDITIVE);
+	drawsubpic(vecPos, [20,20], "sprites/640hud7.spr_0.tga", g_vecHUDNums[fValue], [0.078125, 0.078125], vHUDColor, 1, DRAWFLAG_ADDITIVE);
 }
 
 /*
@@ -311,11 +312,11 @@ Drawn every frame through HUD.c
 =================
 */
 void HUD_DrawWeaponSelect(void)
-{	
-	if (pSeat->fHUDWeaponSelectTime < time) {
-		if (pSeat->fHUDWeaponSelected) {
+{
+	if (pSeat->m_flHUDWeaponSelectTime < time) {
+		if (pSeat->m_iHUDWeaponSelected) {
 			sound(self, CHAN_ITEM, "common/wpn_hudoff.wav", 0.5, ATTN_NONE);
-			pSeat->fHUDWeaponSelected = 0;
+			pSeat->m_iHUDWeaponSelected = 0;
 		}
 		return;
 	}
@@ -329,7 +330,7 @@ void HUD_DrawWeaponSelect(void)
 		// Again, grenades are treated seperately
 		if (i == SLOT_GRENADE) {
 			int ihasnade = FALSE;
-			if (wptTable[pSeat->fHUDWeaponSelected].iSlot == SLOT_GRENADE) {
+			if (wptTable[pSeat->m_iHUDWeaponSelected].iSlot == SLOT_GRENADE) {
 				if (getstati_punf(STAT_ITEM_HEGRENADE)) {
 					drawsubpic(vSelectPos + [0,20], [170,45], wpSymbolTable[WEAPON_HEGRENADE].sSprite, wpSymbolTable[WEAPON_HEGRENADE].vOrigin, [0.6640625, 0.17578125], vHUDColor, 1, DRAWFLAG_ADDITIVE);
 					if (pSeat->iHUDGrenadesSelected == WEAPON_HEGRENADE) {
@@ -361,8 +362,8 @@ void HUD_DrawWeaponSelect(void)
 				vSelectPos[0] += 20;
 			}
 		} else {
-			if (wptTable[pSeat->fHUDWeaponSelected].iSlot == i) {
-				drawsubpic(vSelectPos + [0,20], [170,45], wpSymbolTable[pSeat->fHUDWeaponSelected].sSprite, wpSymbolTable[pSeat->fHUDWeaponSelected].vOrigin, [0.6640625, 0.17578125], vHUDColor, 1, DRAWFLAG_ADDITIVE);
+			if (wptTable[pSeat->m_iHUDWeaponSelected].iSlot == i) {
+				drawsubpic(vSelectPos + [0,20], [170,45], wpSymbolTable[pSeat->m_iHUDWeaponSelected].sSprite, wpSymbolTable[pSeat->m_iHUDWeaponSelected].vOrigin, [0.6640625, 0.17578125], vHUDColor, 1, DRAWFLAG_ADDITIVE);
 				drawsubpic(vSelectPos + [0,20], [170,45], "sprites/640hud3.spr_0.tga", [0,0.703125], [0.6640625, 0.17578125], vHUDColor, 1, DRAWFLAG_ADDITIVE);
 				vSelectPos[0] += 170;
 			} else {
@@ -377,7 +378,7 @@ void HUD_SlotSelect(int i)
 	
 }
 
-var float fHUDWeaponLast;
+var int iHUDWeaponLast;
 /*
 =================
 HUD_DrawWeaponSelect_Trigger
@@ -387,11 +388,11 @@ Called by CSQC_Input_Frame when conditions are met
 */
 void HUD_DrawWeaponSelect_Trigger(void)
 {
-	fHUDWeaponLast = getstatf(STAT_ACTIVEWEAPON);
-	sendevent("PlayerSwitchWeapon", "f", pSeat->fHUDWeaponSelected);
+	iHUDWeaponLast = getstati(STAT_ACTIVEWEAPON);
+	sendevent("PlayerSwitchWeapon", "i", pSeat->m_iHUDWeaponSelected);
 	sound(self, CHAN_ITEM, "common/wpn_select.wav", 0.5f, ATTN_NONE);
-	pSeat->fHUDWeaponSelectTime = 0;
-	pSeat->fHUDWeaponSelected = 0;
+	pSeat->m_flHUDWeaponSelectTime = 0;
+	pSeat->m_iHUDWeaponSelected = 0;
 }
 
 /*
@@ -403,6 +404,6 @@ Returns the last weapon we've used
 */
 void HUD_DrawWeaponSelect_Last(void)
 {
-	sendevent("PlayerSwitchWeapon", "f", fHUDWeaponLast);
-	fHUDWeaponLast = getstatf(STAT_ACTIVEWEAPON);
+	sendevent("PlayerSwitchWeapon", "i", iHUDWeaponLast);
+	iHUDWeaponLast = getstatf(STAT_ACTIVEWEAPON);
 }

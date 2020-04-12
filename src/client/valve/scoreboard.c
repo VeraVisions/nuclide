@@ -19,17 +19,19 @@
 
 var int autocvar_cl_centerscores = FALSE;
 
-void Scores_Init(void)
+void
+Scores_Init(void)
 {
 	
 }
 
-void Scores_Draw(void)
+void
+Scores_Draw(void)
 {
 	vector pos;
 	player pl;
 	
-	pl = (player)pSeat->ePlayer;
+	pl = (player)pSeat->m_ePlayer;
 
 	if (autocvar_cl_centerscores) {
 		int c = 10;

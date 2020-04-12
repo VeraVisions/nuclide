@@ -33,15 +33,15 @@ enum
 	SNARK_THROW
 };
 
-#ifdef SSQC
+#ifdef SERVER
 class monster_snark:CBaseMonster
 {
-	void() monster_snark;
+	void(void) monster_snark;
 
-	virtual void() customphysics;
+	virtual void(void) customphysics;
 	virtual void(int) Death;
 	virtual void(int) Pain;
-	virtual void() Respawn;
+	virtual void(void) Respawn;
 };
 
 void
@@ -139,7 +139,7 @@ monster_snark::monster_snark(void)
 
 int w_snark_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (pl.ammo_snark < MAX_A_SNARK) {
@@ -162,7 +162,7 @@ void w_snark_holster(void)
 	
 }
 
-#ifdef SSQC
+#ifdef SERVER
 void w_snark_deploy(void)
 {
 	monster_snark snark = spawn(monster_snark, owner: self, goalentity: self);
@@ -179,7 +179,7 @@ void w_snark_primary(void)
 	}
 
 	/* Ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo2 <= 0) {
 		return;
 	}
@@ -192,7 +192,7 @@ void w_snark_primary(void)
 	Weapons_ViewAnimation(SNARK_THROW);
 
 	/* Audio-Visual Bit */
-#ifdef CSQC
+#ifdef CLIENT
 	pl.a_ammo2--;
 #else
 	w_snark_deploy();
@@ -241,11 +241,12 @@ void w_snark_release(void)
 }
 void w_snark_precache(void)
 {
+	precache_model("models/w_sqknest.mdl");
 	precache_model("models/w_squeak.mdl");
 	precache_model("models/p_squeak.mdl");
 	precache_model("models/v_squeak.mdl");
 
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_snark.deploy");
 	Sound_Precache("weapon_snark.die");
 	Sound_Precache("weapon_snark.blast");
@@ -254,7 +255,7 @@ void w_snark_precache(void)
 }
 void w_snark_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_snark, __NULL__);
 #endif
 }
@@ -279,16 +280,16 @@ float w_snark_aimanim(void)
 
 void w_snark_hud(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [96/256,96/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [96/256,96/128], [24/256, 24/128], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
 void w_snark_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(pos, [170,45], "sprites/640hud6.spr_0.tga",
 			[0,135/256], [170/256,45/256],
@@ -326,7 +327,7 @@ weapon_t w_snark =
 	w_snark_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void weapon_snark(void) {
 	Weapons_InitItem(WEAPON_SNARK);
 }

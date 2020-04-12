@@ -33,7 +33,7 @@ env_cubemap:CBaseEntity
 {
 	int m_iSize;
 
-	void() env_cubemap;
+	void(void) env_cubemap;
 	virtual void(string, string) SpawnKey;
 };
 

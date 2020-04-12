@@ -28,7 +28,8 @@ If you want it to loop, you have to give the file itself a loop flag.
 TODO: Add a forced loop flag for non .wav samples?
 */
 
-enumflags {
+enumflags
+{
 	AS_ARADIUS,
 	AS_SRADIUS,
 	AS_MRADIUS,
@@ -37,7 +38,8 @@ enumflags {
 	AS_NOTTOGGLED
 };
 
-enumflags {
+enumflags
+{
 	AG_INFO,
 	AG_SAMPLE
 };
@@ -52,15 +54,16 @@ class ambient_generic:CBaseTrigger
 	int m_iToggleSwitch;
 	int m_iLoop;
 
-	void() ambient_generic;
+	void(void) ambient_generic;
 	
-	virtual void() Respawn;
-	virtual void() UseNormal;
-	virtual void() UseLoop;
+	virtual void(void) Respawn;
+	virtual void(void) UseNormal;
+	virtual void(void) UseLoop;
 	virtual float(entity, float) SendEntity;
 };
 
-float ambient_generic::SendEntity(entity ePEnt, float fChanged)
+float
+ambient_generic::SendEntity(entity ePEnt, float fChanged)
 {
 	/* only override when we're doing the toggle guff */
 	if (m_iLoop == FALSE) {
@@ -87,30 +90,33 @@ float ambient_generic::SendEntity(entity ePEnt, float fChanged)
 	return TRUE;
 }
 
-void ambient_generic::UseNormal(void)
+void
+ambient_generic::UseNormal(void)
 {
 	sound(this, CHAN_VOICE, m_strActivePath, m_flVolume, m_flRadius, m_flPitch);
-	dprint( sprintf( "^2ambient_generic::^3UseNormal^7: %s plays `%s`\n", 
-		m_strTarget, m_strActivePath ) );
+	dprint(sprintf("^2ambient_generic::^3UseNormal^7: %s plays `%s`\n", 
+		m_strTarget, m_strActivePath));
 }
 
-void ambient_generic::UseLoop(void)
+void
+ambient_generic::UseLoop(void)
 {
 	if (m_iToggleSwitch == TRUE) {
-		dprint( sprintf( "^2ambient_generic::^3UseLoop^7: %s stops `%s`\n", 
-			m_strTarget, m_strActivePath ) );
+		dprint(sprintf("^2ambient_generic::^3UseLoop^7: %s stops `%s`\n", 
+			m_strTarget, m_strActivePath));
 		m_strActivePath = "common/null.wav";
 	} else {
 		m_strActivePath = m_strSoundPath;
-		dprint( sprintf( "^2ambient_generic::^3UseLoop^7: %s plays `%s`\n", 
-			m_strTarget, m_strActivePath ) );
+		dprint(sprintf("^2ambient_generic::^3UseLoop^7: %s plays `%s`\n", 
+			m_strTarget, m_strActivePath));
 	}
 
 	m_iToggleSwitch = 1 - m_iToggleSwitch;
 	SendFlags |= AG_SAMPLE;
 }
 
-void ambient_generic::Respawn(void)
+void
+ambient_generic::Respawn(void)
 {
 	m_strActivePath = m_strSoundPath;
 
@@ -134,7 +140,8 @@ void ambient_generic::Respawn(void)
 	}
 }
 
-void ambient_generic::ambient_generic(void)
+void
+ambient_generic::ambient_generic(void)
 {
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {

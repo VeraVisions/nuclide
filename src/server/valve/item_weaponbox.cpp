@@ -31,7 +31,7 @@ class item_weaponbox
 	int weapon_items;
 
 	void(void) item_weaponbox;
-	virtual void() touch;
+	virtual void(void) touch;
 	virtual void(player) setup;
 };
 

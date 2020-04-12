@@ -22,7 +22,8 @@ Sentry Gun
 
 */
 
-enum {
+enum
+{
 	SENT_IDLE,
 	SENT_FIRE,
 	SENT_SPIN,
@@ -34,7 +35,7 @@ enum {
 
 class monster_sentry:CBaseMonster
 {
-	void() monster_sentry;
+	void(void) monster_sentry;
 	
 	virtual void(int) Death;
 	virtual void(void) Respawn;

@@ -23,7 +23,7 @@ Barnacle Grappling-Hook Weapon
 
 */
 
-#ifdef CSQC
+#ifdef CLIENT
 /* because some people apparently prefer the worse quality one */
 var int autocvar_cl_tonguemode = 0;
 #endif
@@ -63,7 +63,7 @@ w_grapple_precache(void)
 void
 w_grapple_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, -1, -1);
 #endif
 }
@@ -110,12 +110,12 @@ void Grapple_Touch(void)
 	pl.a_ammo1 = 1;
 }
 
-#ifdef CSQC
+#ifdef CLIENT
 /* draw the tongue from a to b */
 float
 grapple_predraw(void)
 {
-	vector forg = gettaginfo(pSeat->eViewModel, pSeat->fNumBones);
+	vector forg = gettaginfo(pSeat->m_eViewModel, pSeat->m_iVMBones);
 	vector morg = self.origin;
 	vector fsize = [3,3];
 
@@ -158,7 +158,7 @@ w_grapple_primary(void)
 			return;
 		}
 
-#ifdef SSQC
+#ifdef SERVER
 		Weapons_MakeVectors();
 		vector src = Weapons_GetCameraPos();
 		traceline(src, src + (v_forward * 32), FALSE, pl);
@@ -173,7 +173,7 @@ w_grapple_primary(void)
 	Weapons_MakeVectors();
 	pl.hook = spawn();
 
-#ifdef CSQC
+#ifdef CLIENT
 	/*setmodel(pl.hook, "models/v_bgrap_tonguetip.mdl");*/
 	pl.hook.drawmask = MASK_ENGINE;
 	pl.hook.predraw = grapple_predraw;
@@ -214,7 +214,7 @@ w_grapple_release(void)
 		pl.a_ammo1 = 0; /* cache */
 		pl.hook.skin = 0; /* ungrappled */
 		remove(pl.hook);
-#ifdef CSQC
+#ifdef CLIENT
 		Weapons_ViewAnimation(BARN_FIRERELEASE);
 #else
 		sound(pl, CHAN_VOICE, "weapons/bgrapple_release.wav", 1.0, ATTN_NORM);
@@ -253,7 +253,7 @@ w_grapple_aimanim(void)
 void
 w_grapple_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -306,7 +306,7 @@ weapon_t w_grapple =
 };
 
 /* entity definitions for pickups */
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_grapple(void)
 {

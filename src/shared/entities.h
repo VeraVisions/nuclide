@@ -14,7 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-enum {
+enum
+{
 	ENT_ENTITY = 1,
 	ENT_PLAYER,
 	ENT_AMBIENTSOUND,
@@ -28,7 +29,8 @@ enum {
 };
 
 /* entity update flags */
-enumflags {
+enumflags
+{
 	NPC_MODELINDEX,
 	NPC_ORIGIN_X,
 	NPC_ORIGIN_Y,
@@ -44,7 +46,8 @@ enumflags {
 	NPC_BODY
 };
 
-enumflags {
+enumflags
+{
 	PLAYER_KEEPALIVE,
 	PLAYER_MODELINDEX,
 	PLAYER_ORIGIN,

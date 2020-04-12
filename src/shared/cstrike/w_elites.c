@@ -26,7 +26,8 @@ Price: $1000
 
 */
 
-enum {
+enum
+{
 	ELITES_IDLE,
 	ELITES_IDLE_LEFTEMPTY,
 	ELITES_SHOOT_LEFT1,
@@ -47,7 +48,7 @@ enum {
 void
 w_elites_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_elites.fire");
 #endif
 	precache_model("models/v_elite.mdl");
@@ -58,7 +59,7 @@ w_elites_precache(void)
 void
 w_elites_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.elites_mag, pl.ammo_9mm, -1);
 #endif
 }
@@ -84,7 +85,7 @@ w_elites_deathmsg(void)
 int
 w_elites_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -107,7 +108,7 @@ w_elites_draw(void)
 	Weapons_SetModel("models/v_elite.mdl");
 	Weapons_ViewAnimation(ELITES_DRAW);
 
-#ifdef CSQC
+#ifdef CLIENT
 	pl.cs_cross_mindist = 4;
 	pl.cs_cross_deltadist = 3;
 #endif
@@ -126,7 +127,7 @@ w_elites_primary(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (!pl.a_ammo1) {
 		return;
 	}
@@ -139,7 +140,7 @@ w_elites_primary(void)
 	Cstrike_ShotMultiplierAdd(pl, 1);
 	float accuracy = Cstrike_CalculateAccuracy(pl, 200);
 
-#ifdef CSQC
+#ifdef CLIENT
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 #else
@@ -217,7 +218,7 @@ w_elites_reload(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 >= 30) {
 		return;
 	}
@@ -250,19 +251,19 @@ w_elites_aimanim(void)
 void
 w_elites_hud(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	Cstrike_DrawCrosshair();
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [48/256,72/256], [24/256, 24/256], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [48/256,72/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
 void
 w_elites_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -314,7 +315,7 @@ weapon_t w_elites =
 	w_elites_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_elites(void)
 {

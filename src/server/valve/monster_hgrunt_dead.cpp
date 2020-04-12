@@ -25,11 +25,11 @@ Human Grunt's corpse
 class monster_hgrunt_dead:CBaseMonster
 {
 	int m_iPose;
-	void() monster_hgrunt_dead;
+	void(void) monster_hgrunt_dead;
 
-	virtual void() Hide;
-	virtual void() Respawn;
-	virtual void() Gib;
+	virtual void(void) Hide;
+	virtual void(void) Respawn;
+	virtual void(void) Gib;
 };
 
 void monster_hgrunt_dead::Gib(void)

@@ -28,7 +28,7 @@ enum
 void
 w_sniper_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_sniper.fire");
 	Sound_Precache("weapon_sniper.reload");
 #endif
@@ -40,7 +40,7 @@ w_sniper_precache(void)
 int
 w_sniper_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -59,7 +59,7 @@ w_sniper_pickup(int new)
 void
 w_sniper_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.sniper_mag, pl.ammo_sniper, -1);
 #endif
 }
@@ -85,7 +85,7 @@ w_sniper_deathmsg(void)
 void
 w_sniper_draw(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	Weapons_SetModel("models/v_tfc_sniper.mdl");
 	Weapons_ViewAnimation(SNIPER_DRAW);
 #endif
@@ -94,7 +94,7 @@ w_sniper_draw(void)
 void
 w_sniper_holster(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	Weapons_ViewAnimation(SNIPER_HOLSTER);
 #endif
 }
@@ -141,7 +141,7 @@ w_sniper_primary(void)
 	}
 
 	/* Ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 <= 0) {
 		return;
 	}
@@ -152,7 +152,7 @@ w_sniper_primary(void)
 #endif
 
 	/* Actual firing */
-#ifdef CSQC
+#ifdef CLIENT
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_SMALL);
 	Weapons_ViewPunchAngle([-20,0,0]);
@@ -203,7 +203,7 @@ w_sniper_reload(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 >= 5) {
 		return;
 	}
@@ -230,7 +230,7 @@ w_sniper_reload(void)
 void
 w_sniper_crosshair(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	player pl = (player)self;
 	static vector cross_pos;
 	vector aicon_pos;
@@ -278,7 +278,7 @@ w_sniper_crosshair(void)
 		[24/256,72/128],
 		[24/256, 24/128],
 		g_hud_color,
-		pSeat->ammo2_alpha,
+		pSeat->m_flAmmo2Alpha,
 		DRAWFLAG_ADDITIVE
 	);
 #endif
@@ -293,7 +293,7 @@ w_sniper_aimanim(void)
 void
 w_sniper_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -346,7 +346,7 @@ weapon_t w_sniper =
 };
 
 /* pickups */
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_einar1(void)
 {

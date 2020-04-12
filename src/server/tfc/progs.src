@@ -2,6 +2,7 @@
 #pragma progs_dat  "../../../tfc/data.pk3dir/progs.dat"
 
 #define QWSSQC
+#define SERVER
 #define VALVE
 
 #includelist
@@ -20,10 +21,11 @@
 ../nodes.c
 ../skill.c
 ../sentences.c
+
 ../../gs-entbase/server.src
-../../shared/decals.c
+../../gs-entbase/shared.src
+
 ../../shared/effects.c
-../../shared/spraylogo.cpp
 ../../shared/valve/player.cpp
 ../valve/player.c
 ../../shared/pmove.c

@@ -42,7 +42,7 @@ enum
 void
 w_crossbow_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_crossbow.fire");
 	Sound_Precache("weapon_crossbow.hit");
 	Sound_Precache("weapon_crossbow.hitbody");
@@ -59,7 +59,7 @@ w_crossbow_precache(void)
 void
 w_crossbow_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.crossbow_mag, pl.ammo_bolt, -1);
 #endif
 }
@@ -85,7 +85,7 @@ w_crossbow_deathmsg(void)
 int
 w_crossbow_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -104,21 +104,17 @@ w_crossbow_pickup(int new)
 void
 w_crossbow_draw(void)
 {
-#ifdef CSQC
 	Weapons_SetModel("models/v_crossbow.mdl");
 	Weapons_ViewAnimation(CROSSBOW_DRAW1);
-#endif
 }
 
 void
 w_crossbow_holster(void)
 {
-#ifdef CSQC
 	Weapons_ViewAnimation(CROSSBOW_HOLSTER1);
-#endif
 }
 
-#ifdef SSQC
+#ifdef SERVER
 void Crossbolt_Touch(void) {
 	/* explode mode, multiplayer */
 	if (self.weapon) {
@@ -165,7 +161,7 @@ w_crossbow_primary(void)
 	}
 
 	/* ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 <= 0) {
 		return;
 	}
@@ -175,16 +171,8 @@ w_crossbow_primary(void)
 	}
 #endif
 
-#ifdef CSQC
+#ifdef CLIENT
 	pl.a_ammo1--;
-
-	if (pl.a_ammo1) {
-		Weapons_ViewAnimation(CROSSBOW_FIRE1);
-	} else {
-		Weapons_ViewAnimation(CROSSBOW_FIRE3);
-	}
-
-	Weapons_ViewPunchAngle([-2,0,0]);
 #else
 	Weapons_MakeVectors();
 	entity bolt = spawn();
@@ -211,6 +199,14 @@ w_crossbow_primary(void)
 	Sound_Play(pl, CHAN_WEAPON, "weapon_crossbow.fire");
 	Weapons_UpdateAmmo(pl, pl.crossbow_mag, pl.ammo_bolt, -1);
 #endif
+
+	if (pl.a_ammo1) {
+		Weapons_ViewAnimation(CROSSBOW_FIRE1);
+	} else {
+		Weapons_ViewAnimation(CROSSBOW_FIRE3);
+	}
+
+	Weapons_ViewPunchAngle([-2,0,0]);
 
 	pl.w_attack_next = 0.75f;
 	pl.w_idle_next = 10.0f;
@@ -241,7 +237,7 @@ w_crossbow_reload(void)
 		return;
 	}
 
-#ifdef SSQC
+#ifdef SERVER
 	if (pl.ammo_bolt <= 0) {
 		return;
 	}
@@ -257,12 +253,12 @@ w_crossbow_reload(void)
 	}
 #endif
 
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_ReloadWeapon(pl, player::crossbow_mag, player::ammo_bolt, 5);
 	sound(pl, CHAN_ITEM, "weapons/xbow_reload1.wav", 1.0f, ATTN_NORM);
-#else
-	Weapons_ViewAnimation(CROSSBOW_RELOAD);
 #endif
+
+	Weapons_ViewAnimation(CROSSBOW_RELOAD);
 
 	pl.w_attack_next = 4.5f;
 	pl.w_idle_next = 10.0f;
@@ -277,7 +273,6 @@ w_crossbow_release(void)
 		return;
 	}
 
-#ifdef CSQC
 	int r = (float)input_sequence % 2;
 	if (r == 1) {
 		if (pl.a_ammo1) {
@@ -292,7 +287,6 @@ w_crossbow_release(void)
 			Weapons_ViewAnimation(CROSSBOW_FIDGET2);
 		}
 	}
-#endif
 
 	pl.w_idle_next = 3.0f;
 }
@@ -300,7 +294,7 @@ w_crossbow_release(void)
 void
 w_crossbow_crosshair(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	vector cross_pos;
 	vector aicon_pos;
 
@@ -327,7 +321,7 @@ w_crossbow_crosshair(void)
 		[96/256,72/128],
 		[24/256, 24/128],
 		g_hud_color,
-		pSeat->ammo2_alpha,
+		pSeat->m_flAmmo2Alpha,
 		DRAWFLAG_ADDITIVE
 	);
 #endif
@@ -342,7 +336,7 @@ w_crossbow_aimanim(void)
 void
 w_crossbow_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -394,7 +388,7 @@ weapon_t w_crossbow =
 	w_crossbow_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_crossbow(void)
 {

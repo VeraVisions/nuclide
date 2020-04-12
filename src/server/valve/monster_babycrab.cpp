@@ -24,7 +24,7 @@ Baby Headcrab
 
 class monster_babycrab:monster_headcrab
 {
-	void() monster_babycrab;
+	void(void) monster_babycrab;
 };
 
 void

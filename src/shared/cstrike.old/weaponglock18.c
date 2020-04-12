@@ -16,7 +16,7 @@
 
 .int iMag_GLOCK18;
 
-#ifdef SSQC
+#ifdef SERVER
 .int iMode_GLOCK18;
 #else
 int iWeaponMode_GLOCK18;
@@ -51,7 +51,8 @@ weaponinfo_t wptGLOCK18 = {
 };
 
 // Anim Table
-enum {
+enum
+{
 	ANIM_GLOCK_IDLE1,
 	ANIM_GLOCK_IDLE2,
 	ANIM_GLOCK_IDLE3,
@@ -67,90 +68,90 @@ enum {
 	ANIM_GLOCK_RELOAD2
 };
 
-void WeaponGLOCK18_Draw( void ) {
-#ifdef SSQC
+void WeaponGLOCK18_Draw(void) {
+#ifdef SERVER
 	BaseGun_Draw();
 #else
-	if ( random() <= 0.5 ) {
-		View_PlayAnimation( ANIM_GLOCK_DRAW1 );
+	if (random() <= 0.5) {
+		View_PlayAnimation(ANIM_GLOCK_DRAW1);
 	} else {
-		View_PlayAnimation( ANIM_GLOCK_DRAW2 );
+		View_PlayAnimation(ANIM_GLOCK_DRAW2);
 	}
 #endif
 }
 
-void WeaponGLOCK18_PrimaryFire( void ) {
-#ifdef SSQC
-	if ( self.iMode_GLOCK18 == FALSE ) {
-		if ( BaseGun_PrimaryFire() == TRUE ) {
-			sound( self, CHAN_WEAPON, "weapons/glock18-2.wav", 1, ATTN_NORM );
+void WeaponGLOCK18_PrimaryFire(void) {
+#ifdef SERVER
+	if (self.iMode_GLOCK18 == FALSE) {
+		if (BaseGun_PrimaryFire() == TRUE) {
+			sound(self, CHAN_WEAPON, "weapons/glock18-2.wav", 1, ATTN_NORM);
 		}
 	} else {
-		if ( self.iMag_GLOCK18 <= 0 ) {
+		if (self.iMag_GLOCK18 <= 0) {
 			return;
 		}
 		
-		for ( int i = 0; i < 3; i++ ) {
-			if ( self.iMag_GLOCK18 ) {
-				BaseGun_ShotMultiplierHandle( 1 );
+		for (int i = 0; i < 3; i++) {
+			if (self.iMag_GLOCK18) {
+				BaseGun_ShotMultiplierHandle(1);
 				BaseGun_AccuracyCalc();
-				TraceAttack_FireBullets( 1, ( self.origin + self.view_ofs ), 25, [self.fAccuracy,self.fAccuracy], WEAPON_GLOCK18);
+				TraceAttack_FireBullets(1, (self.origin + self.view_ofs), 25, [self.fAccuracy,self.fAccuracy], WEAPON_GLOCK18);
 				self.iMag_GLOCK18 -= 1;
 			}
 		}
 		self.fAttackFinished = time + 0.5;
-		sound( self, CHAN_WEAPON, "weapons/glock18-1.wav", 1, ATTN_NORM );
-		Client_SendEvent( self, EV_WEAPON_PRIMARYATTACK );
+		sound(self, CHAN_WEAPON, "weapons/glock18-1.wav", 1, ATTN_NORM);
+		Client_SendEvent(self, EV_WEAPON_PRIMARYATTACK);
 	}
 #else
-	if ( iWeaponMode_GLOCK18 == FALSE ) {
-		if ( getstatf( STAT_CURRENT_MAG ) == 0 ) {
-			View_PlayAnimation( ANIM_GLOCK_SHOOT_EMPTY );
+	if (iWeaponMode_GLOCK18 == FALSE) {
+		if (getstatf(STAT_CURRENT_MAG) == 0) {
+			View_PlayAnimation(ANIM_GLOCK_SHOOT_EMPTY);
 		} else {
-			View_PlayAnimation( ANIM_GLOCK_SHOOT );
+			View_PlayAnimation(ANIM_GLOCK_SHOOT);
 		}
-		BaseGun_ShotMultiplierHandle( 1 );
+		BaseGun_ShotMultiplierHandle(1);
 	} else {
-		if ( random() <= 0.5 ) {
-			View_PlayAnimation( ANIM_GLOCK_SHOOT_BURST1 );
+		if (random() <= 0.5) {
+			View_PlayAnimation(ANIM_GLOCK_SHOOT_BURST1);
 		} else {
-			View_PlayAnimation( ANIM_GLOCK_SHOOT_BURST2 );
+			View_PlayAnimation(ANIM_GLOCK_SHOOT_BURST2);
 		}
-		BaseGun_ShotMultiplierHandle( 3 );
+		BaseGun_ShotMultiplierHandle(3);
 	}
 #endif
 }
 
-void WeaponGLOCK18_Secondary( void ) {
-#ifdef SSQC
+void WeaponGLOCK18_Secondary(void) {
+#ifdef SERVER
 	// Just switch the modes quickly
 	self.iMode_GLOCK18 = 1 - self.iMode_GLOCK18;
 	self.fAttackFinished = time + 0.2;
 	
 	// Tell the client that we switched modes, too
-	Client_SendEvent( self, EV_WEAPON_SECONDARYATTACK );
+	Client_SendEvent(self, EV_WEAPON_SECONDARYATTACK);
 	
 	// TODO: Move to the clientside
-	if ( self.iMode_GLOCK18 == TRUE ) {
-		centerprint( self, "Switched to Burst-Fire mode" );
+	if (self.iMode_GLOCK18 == TRUE) {
+		centerprint(self, "Switched to Burst-Fire mode");
 	} else {
-		centerprint( self, "Switched to Semi-Automatic mode" );
+		centerprint(self, "Switched to Semi-Automatic mode");
 	}
 #else 
 	iWeaponMode_GLOCK18 = 1 - iWeaponMode_GLOCK18;
 #endif
 }
 
-void WeaponGLOCK18_Reload( void ) {
-#ifdef SSQC
-	if ( BaseGun_Reload() == TRUE ) {
+void WeaponGLOCK18_Reload(void) {
+#ifdef SERVER
+	if (BaseGun_Reload() == TRUE) {
 		// Play Sound
 	}
 #else
-	if ( random() <= 0.5 ) {
-		View_PlayAnimation( ANIM_GLOCK_RELOAD1 );
+	if (random() <= 0.5) {
+		View_PlayAnimation(ANIM_GLOCK_RELOAD1);
 	} else {
-		View_PlayAnimation( ANIM_GLOCK_RELOAD2 );
+		View_PlayAnimation(ANIM_GLOCK_RELOAD2);
 	}
 #endif
 }

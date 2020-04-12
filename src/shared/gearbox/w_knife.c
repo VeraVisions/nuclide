@@ -56,7 +56,7 @@ w_knife_precache(void)
 void 
 w_knife_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, -1, -1);
 #endif
 }
@@ -115,7 +115,7 @@ w_knife_primary(void)
 	}
 	pl.w_idle_next = 2.5f;
 
-#ifdef CSQC
+#ifdef CLIENT
 	r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
@@ -215,7 +215,7 @@ w_knife_aimanim(void)
 void
 w_knife_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -268,7 +268,7 @@ weapon_t w_knife =
 };
 
 /* entity definitions for pickups */
-#ifdef SSQC
+#ifdef SERVER
 void weapon_knife(void)
 {
 	Weapons_InitItem(WEAPON_KNIFE);

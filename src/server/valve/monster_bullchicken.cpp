@@ -22,7 +22,8 @@ Bullsquid
 
 */
 
-enum {
+enum
+{
 	BULL_WALK,
 	BULL_RUN,
 	BULL_SURPIRSE,
@@ -57,14 +58,14 @@ class monster_bullchicken:CBaseMonster
 {
 	float m_flIdleTime;
 
-	void() monster_bullchicken;
+	void(void) monster_bullchicken;
 
 	virtual void(int) Death;
 	virtual void(int) Pain;
-	virtual void() IdleNoise;
-	virtual int() AnimIdle;
-	virtual int() AnimWalk;
-	virtual int() AnimRun;
+	virtual void(void) IdleNoise;
+	virtual int(void) AnimIdle;
+	virtual int(void) AnimWalk;
+	virtual int(void) AnimRun;
 };
 
 int

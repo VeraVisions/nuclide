@@ -18,11 +18,11 @@
 class item_pickup:CBaseTrigger
 {
 	int id;
-	void() item_pickup;
+	void(void) item_pickup;
 
-	virtual void() touch;
+	virtual void(void) touch;
 	virtual void(int i) setitem;
-	virtual void() Respawn;
+	virtual void(void) Respawn;
 };
 
 void item_pickup::touch(void)

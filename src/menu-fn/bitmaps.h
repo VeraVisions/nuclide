@@ -93,7 +93,8 @@ string g_bmp[76] = {
 	"gfx/shell/won_logo.bmp"
 };
 
-enum {
+enum
+{
 	BTNS_MAIN,
 	CB_CHECKED,
 	CB_DISABLED,

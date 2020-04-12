@@ -30,11 +30,12 @@ var string g_strSkyName = "";
 class worldspawn:CBaseEntity
 {
 	virtual void(string, string) SpawnKey;
-	virtual void() Initialized;
+	virtual void(void) Initialized;
 };
 
 void worldspawn::Initialized(void)
 {
+	g_vecSunDir = [90,0];
 	remove(this);
 }
 
@@ -43,12 +44,6 @@ void worldspawn::SpawnKey(string strField, string strKey)
 	switch (strField) {
 	case "chaptertitle":
 		GameMessage_Setup(strKey);
-		break;
-	case "lf_pos":
-		g_vecLensPos = stov(strKey);
-		break;
-	case "sun_pos":
-		g_vecSunDir = stov(strKey);
 		break;
 	case "skyname":
 		g_strSkyName = strKey;

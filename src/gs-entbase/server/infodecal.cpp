@@ -34,9 +34,9 @@ class infodecal:CBaseTrigger
 {
 	string m_strTexture;
 
-	void() infodecal;
-	virtual void() Trigger;
-	virtual void() Respawn;
+	void(void) infodecal;
+	virtual void(void) Trigger;
+	virtual void(void) Respawn;
 };
 
 void
@@ -69,7 +69,7 @@ infodecal::infodecal(void)
 		switch (argv(i)) {
 		case "material":
 		case "texture":
-			m_strTexture = strtolower(argv(i + 1));
+			m_strTexture = strtolower(argv(i+1));
 			break;
 		default:
 			break;

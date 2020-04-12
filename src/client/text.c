@@ -31,7 +31,8 @@ typedef struct
 gametext_t g_textchannels[5];
 
 /* for effect 2 */
-int GameText_CharCount(float fadein, float timer, string msg)
+int
+GameText_CharCount(float fadein, float timer, string msg)
 {
 	float len = (timer / fadein);
 
@@ -141,7 +142,7 @@ void
 GameText_Parse(void)
 {
 	int chan = readbyte();
-	g_textchannels[chan].m_strMessage = readstring();
+	g_textchannels[chan].m_strMessage = Titles_ParseFunString(readstring());
 	g_textchannels[chan].m_flPosX = readfloat();
 	g_textchannels[chan].m_flPosY = readfloat();
 	g_textchannels[chan].m_iEffect = readbyte();
@@ -170,7 +171,7 @@ GameMessage_Setup(string message)
 	}
 
 	if (findid < 0) {
-		g_textchannels[0].m_strMessage = message;
+		g_textchannels[0].m_strMessage = Titles_ParseFunString(message);
 		g_textchannels[0].m_flTime = 0.0f;
 		g_textchannels[0].m_flPosX = -1;
 		g_textchannels[0].m_flPosY = 0.75f;

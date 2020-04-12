@@ -14,7 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-enum {
+enum
+{
 	MG_IDLE, // 2.0f
 	MG_FIDGET, // 2.6f
 	MG_FIRE, // 0.333333f
@@ -78,7 +79,7 @@ w_minigun_primary(void)
 		return;
 	}
 	
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo2 <= 0) {
 		w_minigun_release();
 		return;
@@ -92,21 +93,21 @@ w_minigun_primary(void)
 
 	src = Weapons_GetCameraPos();
 
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Play(pl, CHAN_WEAPON, "weapon_minigun.fire");
 #else
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 	Weapons_ViewPunchAngle([-2,0,0]);
 #endif
 
-#ifdef CSQC
+#ifdef CLIENT
 	pl.a_ammo2--;
 #else
 	pl.ammo_minigun--;
 #endif
 
 	if (pl.a_ammo3 == 1) {
-#ifdef CSQC
+#ifdef CLIENT
 		Weapons_ViewAnimation(MG_FIRELOOP);
 #else
 		TraceAttack_FireBullets(1, src, 8, [0.1,0.1], WEAPON_MINIGUN);
@@ -115,7 +116,7 @@ w_minigun_primary(void)
 		pl.w_idle_next = 0.1f;
 	} else {
 
-#ifdef CSQC
+#ifdef CLIENT
 		Weapons_ViewAnimation(MG_FIRE);
 #else
 		TraceAttack_FireBullets(1, src, 8, [0.05,0.05], WEAPON_MINIGUN);
@@ -133,7 +134,7 @@ w_minigun_secondary(void)
 		return;
 	}
 
-#ifdef SSQC
+#ifdef SERVER
 	if (pl.a_ammo3 == 0) {
 		Sound_Play(pl, 8, "weapon_minigun.spinup");
 	} else {
@@ -155,7 +156,7 @@ w_minigun_secondary(void)
 void
 w_minigun_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, pl.ammo_minigun, -1);
 #endif
 }
@@ -187,7 +188,7 @@ w_minigun_aimanim(void)
 int
 w_minigun_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (pl.ammo_minigun < 100) {
@@ -202,7 +203,7 @@ w_minigun_pickup(int new)
 void
 w_minigun_hud(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	vector pos;
 	pos = g_hudmins + (g_hudres / 2) + [-23,-15];
 
@@ -236,7 +237,7 @@ w_minigun_hud(void)
 void
 w_minigun_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	drawpic(
 		pos,
 		"gfx/vgui/640_weapon_minigun0.tga",
@@ -251,7 +252,7 @@ w_minigun_hudpic(int selected, vector pos, float a)
 void
 w_minigun_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_minigun.fire");
 	Sound_Precache("weapon_minigun.spindown");
 	Sound_Precache("weapon_minigun.spinup");
@@ -287,7 +288,7 @@ weapon_t w_minigun =
 };
 
 /* entity definitions for pickups */
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_minigun(void)
 {

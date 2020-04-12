@@ -22,7 +22,8 @@ Sitting scientists
 
 */
 
-enum {
+enum
+{
 	DSCIA_LYING1 = 37,
 	DSCIA_LYING2,
 	DSCIA_DEADSIT,
@@ -35,13 +36,13 @@ enum {
 class monster_sitting_scientist:CBaseMonster
 {
 	int m_iPose;
-	void() monster_sitting_scientist;
+	void(void) monster_sitting_scientist;
 
-	virtual void() Hide;
-	virtual void() Respawn;
+	virtual void(void) Hide;
+	virtual void(void) Respawn;
 	virtual void(int) Pain;
 	virtual void(int) Death;
-	virtual void() Gib;
+	virtual void(void) Gib;
 };
 
 void monster_sitting_scientist::Gib(void)

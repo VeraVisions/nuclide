@@ -23,15 +23,15 @@ typedef struct
 	vector ki_size;
 	vector ki_xy;
 
-	void() draw;
-	void() holster;
-	void() primary;
-	void() secondary;
-	void() reload;
-	void() release;
-	void() crosshair;
+	void(void) draw;
+	void(void) holster;
+	void(void) primary;
+	void(void) secondary;
+	void(void) reload;
+	void(void) release;
+	void(void) crosshair;
 
-	void() precache;
+	void(void) precache;
 	int(int) pickup;
 	void(player) updateammo;
 	string() wmodel;
@@ -42,8 +42,6 @@ typedef struct
 } weapon_t;
 
 void Weapons_DrawCrosshair(void);
-void Decals_PlaceSmall(vector);
-void Decals_PlaceBig(vector);
 void Weapons_MakeVectors(void);
 vector Weapons_GetCameraPos(void);
 void Weapons_ViewAnimation(int);
@@ -52,7 +50,7 @@ void Weapons_PlaySound(entity, float, string, float, float);
 int Weapons_IsPresent(player, int);
 void Weapons_SetModel(string);
 void Weapons_SetGeomset(string);
-#ifdef SSQC
+#ifdef SERVER
 void Weapons_RefreshAmmo(player);
 void Weapons_InitItem(int);
 float Weapons_GetAim(int);

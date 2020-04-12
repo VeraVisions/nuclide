@@ -33,17 +33,17 @@ class CUI3DView:CUIWidget
 	vector m_vec3DAngles;
 	float m_flFOV;
 
-	void() CUI3DView;
-	virtual void() m_vDrawFunc = 0;
+	void(void) CUI3DView;
+	virtual void(void) m_vDrawFunc = 0;
 	virtual void(float, float, float, float) m_vInputFunc = 0;
-	virtual void() Draw;
+	virtual void(void) Draw;
 	virtual vector() GetSize;
 	virtual vector() Get3DPos;
 	virtual vector() Get3DAngles;
 	virtual void(vector) SetSize;
 	virtual void(vector) Set3DPos;
 	virtual void(vector) Set3DAngles;
-	virtual void(void()) SetDrawFunc;
+	virtual void(void(void)) SetDrawFunc;
 	virtual void(void(float, float, float, float)) SetInputFunc;
 	virtual void(float, float, float, float) Input;
 };
@@ -94,7 +94,7 @@ CUI3DView::Get3DPos(void)
 }
 
 void
-CUI3DView::SetDrawFunc(void() vFunc)
+CUI3DView::SetDrawFunc(void(void) vFunc)
 {
 	m_vDrawFunc = vFunc;
 }

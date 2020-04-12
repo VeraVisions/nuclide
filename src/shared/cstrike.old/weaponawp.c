@@ -45,7 +45,8 @@ weaponinfo_t wptAWP = {
 };
 
 // Anim Table
-enum {
+enum
+{
 	ANIM_AWP_IDLE,
 	ANIM_AWP_SHOOT1,
 	ANIM_AWP_SHOOT2,
@@ -54,39 +55,39 @@ enum {
 	ANIM_AWP_DRAW
 };
 
-void WeaponAWP_Draw( void ) {
-	#ifdef SSQC
+void WeaponAWP_Draw(void) {
+	#ifdef SERVER
 	BaseGun_Draw();
 	#else
-	View_PlayAnimation( ANIM_AWP_DRAW );
+	View_PlayAnimation(ANIM_AWP_DRAW);
 	#endif
 }
 
-void WeaponAWP_PrimaryFire( void ) {
-	#ifdef SSQC
-	if ( BaseGun_PrimaryFire() == TRUE ) {
+void WeaponAWP_PrimaryFire(void) {
+	#ifdef SERVER
+	if (BaseGun_PrimaryFire() == TRUE) {
 		// Play Sound
-		sound( self, CHAN_WEAPON, "weapons/awp1.wav", 1, ATTN_NORM );
+		sound(self, CHAN_WEAPON, "weapons/awp1.wav", 1, ATTN_NORM);
 	}
 	#else
-	int iRand = (int)floor( random( 1, 4 ) );
-	if ( iRand == 1 ) {
-		View_PlayAnimation( ANIM_AWP_SHOOT1 );
-	} else if ( iRand == 2 ) {
-		View_PlayAnimation( ANIM_AWP_SHOOT2 );
+	int iRand = (int)floor(random(1, 4));
+	if (iRand == 1) {
+		View_PlayAnimation(ANIM_AWP_SHOOT1);
+	} else if (iRand == 2) {
+		View_PlayAnimation(ANIM_AWP_SHOOT2);
 	} else {
-		View_PlayAnimation( ANIM_AWP_SHOOT3 );
+		View_PlayAnimation(ANIM_AWP_SHOOT3);
 	}
 	
-	BaseGun_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle(1);
 	#endif
 }
 
-void WeaponAWP_SecondaryFire( void ) {
-#ifdef SSQC
-	if ( self.viewzoom == 1.0 ) {
+void WeaponAWP_SecondaryFire(void) {
+#ifdef SERVER
+	if (self.viewzoom == 1.0) {
 		self.viewzoom = 0.45;
-	} else if ( self.viewzoom == 0.45 ) {
+	} else if (self.viewzoom == 0.45) {
 		self.viewzoom = 0.1;
 	} else {
 		self.viewzoom = 1.0;
@@ -96,12 +97,12 @@ void WeaponAWP_SecondaryFire( void ) {
 #endif
 }
 
-void WeaponAWP_Reload( void ) {
-	#ifdef SSQC
-	if ( BaseGun_Reload() == TRUE ) {
+void WeaponAWP_Reload(void) {
+	#ifdef SERVER
+	if (BaseGun_Reload() == TRUE) {
 		// Play Sound
 	}
 	#else
-	View_PlayAnimation( ANIM_AWP_RELOAD );
+	View_PlayAnimation(ANIM_AWP_RELOAD);
 	#endif
 }

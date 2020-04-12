@@ -22,7 +22,8 @@ Alien Controller
 
 */
 
-enum {
+enum
+{
 	CON_ATTACK,
 	CON_ATTACK2,
 	CON_THROW,
@@ -49,7 +50,7 @@ class monster_alien_controller:CBaseMonster
 	float m_flIdleTime;
 	float m_flPainTime;
 
-	void() monster_alien_controller;
+	void(void) monster_alien_controller;
 
 	virtual void(int) Pain;
 	virtual void(int) Death;

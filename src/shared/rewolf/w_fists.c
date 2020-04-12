@@ -14,7 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-enum {
+enum
+{
 	FISTS_IDLE, // 2.0f
 	FISTS_FIDGET1, // 3.0f
 	FISTS_FIDGET2, // 2.333333f
@@ -32,7 +33,8 @@ enum {
 	HANDS_PUSHBUTTON, // 8.0f
 };
 
-enum {
+enum
+{
 	HS_KNIFE,
 	HS_KNIFE_TO_FISTS,
 	HS_FISTS,
@@ -42,7 +44,7 @@ enum {
 void
 w_fists_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, -1, pl.fist_mode);
 #endif
 }
@@ -54,7 +56,7 @@ w_fists_draw(void)
 	Weapons_SetModel("models/v_hands.mdl");
 	Weapons_SetGeomset("geomset 1 2\n");
 	Weapons_ViewAnimation(KNIFE_DRAW);
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Play(pl, CHAN_WEAPON, "weapon_fists.knifedraw");
 #endif
 }
@@ -76,7 +78,7 @@ w_fists_release(void)
 	}
 
 	if (pl.a_ammo3 == HS_FISTS_TO_KNIFE) {
-#ifdef SSQC
+#ifdef SERVER
 		Sound_Play(pl, CHAN_WEAPON, "weapon_fists.knifedraw");
 #endif
 		Weapons_ViewAnimation(KNIFE_DRAW);
@@ -139,7 +141,7 @@ w_fists_primary(void)
 	pl.a_ammo1 = 1 - pl.a_ammo1;
 
 	if (pl.a_ammo3 == HS_KNIFE) {
-		#ifdef SSQC
+		#ifdef SERVER
 		Sound_Play(pl, 8, "weapon_fists.missknife");
 		#endif
 		if (pl.a_ammo1 == 1) {
@@ -152,12 +154,12 @@ w_fists_primary(void)
 	} else {
 		if (pl.a_ammo1 == 1) {
 			Weapons_ViewAnimation(FISTS_RIGHT);
-			#ifdef SSQC
+			#ifdef SERVER
 			Sound_Play(pl, CHAN_WEAPON, "weapon_fists.hitright");
 			#endif
 		} else {
 			Weapons_ViewAnimation(FISTS_LEFT);
-			#ifdef SSQC
+			#ifdef SERVER
 			Sound_Play(pl, CHAN_WEAPON, "weapon_fists.hitleft");
 			#endif
 		}
@@ -221,7 +223,7 @@ w_fists_aimanim(void)
 int
 w_fists_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (pl.ammo_minigun < 100) {
@@ -236,7 +238,7 @@ w_fists_pickup(int new)
 void
 w_fists_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	drawpic(
 		pos,
 		"gfx/vgui/640_weapon_fists0.tga",
@@ -251,7 +253,7 @@ w_fists_hudpic(int selected, vector pos, float a)
 void
 w_fists_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_fists.knifedraw");
 	Sound_Precache("weapon_fists.hitleft");
 	Sound_Precache("weapon_fists.hitright");

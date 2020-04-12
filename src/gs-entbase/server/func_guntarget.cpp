@@ -31,15 +31,15 @@ class func_guntarget:CBaseTrigger
 	float m_flSpeed;
 	string m_strFire;
 
-	void() func_guntarget;
+	void(void) func_guntarget;
 	
-	virtual void() Respawn;
-	virtual void() NextPath;
-	virtual void() Move;
-	virtual void() Stop;
-	virtual void() Trigger;
+	virtual void(void) Respawn;
+	virtual void(void) NextPath;
+	virtual void(void) Move;
+	virtual void(void) Stop;
+	virtual void(void) Trigger;
 	virtual void(int) Death;
-	virtual int() GetValue;
+	virtual int(void) GetValue;
 };
 
 int func_guntarget::GetValue(void)

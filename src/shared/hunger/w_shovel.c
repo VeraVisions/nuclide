@@ -31,7 +31,7 @@ enum
 void
 w_shovel_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_crowbar.hit");
 	Sound_Precache("weapon_crowbar.miss");
 	Sound_Precache("weapon_crowbar.hitbody");
@@ -98,7 +98,7 @@ w_shovel_aimanim(void)
 void
 w_shovel_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -151,7 +151,7 @@ weapon_t w_shovel =
 };
 
 /* entity definitions for pickups */
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_th_shovel(void)
 {

@@ -32,7 +32,7 @@ void Effect_BreakModel(int, vector, vector, vector, float);
    every game/mod ever.
 */
 string Util_FixModel(string mdl)
-{	
+{
 	if (!mdl) {
 		return "";
 	}

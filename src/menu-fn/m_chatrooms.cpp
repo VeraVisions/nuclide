@@ -39,7 +39,7 @@ var string g_crIRCchannel;
 var int g_iIRCActive;
 
 /* we've got a Internet servers button on here, so we require these */
-void() cr_btnservers_start;
+void(void) cr_btnservers_start;
 
 void cr_closeconnection(void)
 {
@@ -181,8 +181,8 @@ void menu_chatrooms_draw(void)
 	g_irc.show_tab = g_irc.cur_tab;
 	for (tmp = "", tab_id = 0; tmp; tmp = con_getset(tmp, "next")) {
 		if (substring(tmp, 0, 3) == "IRC") {
-			con_getset( tmp, "hidden", "1" );
-			string title = con_getset( tmp, "title" );
+			con_getset(tmp, "hidden", "1");
+			string title = con_getset(tmp, "title");
 		}
 	}
 	if not (g_irc.channel_grabbed)

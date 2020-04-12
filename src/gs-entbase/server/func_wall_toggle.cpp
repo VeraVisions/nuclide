@@ -32,9 +32,9 @@ class func_wall_toggle:CBaseTrigger
 	int m_oldmodelindex;
 	int m_iVisible;
 
-	void() func_wall_toggle;
-	virtual void() Respawn;
-	virtual void() Trigger;
+	void(void) func_wall_toggle;
+	virtual void(void) Respawn;
+	virtual void(void) Trigger;
 };
 
 void func_wall_toggle::Trigger(void)

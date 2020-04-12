@@ -22,7 +22,8 @@ Alien Grunt
 
 */
 
-enum {
+enum
+{
 	AG_IDLE,
 	AG_THREAT,
 	AG_WALK,
@@ -62,7 +63,7 @@ class monster_alien_grunt:CBaseMonster
 	float m_flIdleTime;
 	float m_flPainTime;
 
-	void() monster_alien_grunt;
+	void(void) monster_alien_grunt;
 
 	virtual void(int) Pain;
 	virtual void(int) Death;

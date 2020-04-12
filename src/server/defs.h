@@ -14,20 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define CLASSEXPORT(classname,classa) void classname ( void ) { spawnfunc_##classa(); }
+#define CLASSEXPORT(classname,classa) void classname(void) { spawnfunc_##classa(); }
 
 var int autocvar_mp_flashlight = TRUE;
 var int g_hlbsp_materials = FALSE;
 
-void Effect_Impact( int iType, vector vPos, vector vNormal );
-void Effect_CreateExplosion( vector vPos );
-void Effect_GibHuman( vector vPos);
-void Footsteps_Update( void );
+void Effect_Impact(int iType, vector vecPos, vector vNormal);
+void Effect_CreateExplosion(vector vecPos);
+void Effect_GibHuman(vector vecPos);
+void Footsteps_Update(void);
 void Vox_Broadcast(string sMessage);
 void TraceAttack_FireBullets(int , vector, int, vector, int);
-void Damage_Radius( vector, entity, float, float, int, int);
-void Damage_Apply( entity, entity, float, int, int);
-void Client_TriggerCamera( entity eTarget, vector vPos, vector vEndPos, float fResetTime );
+void Damage_Radius(vector, entity, float, float, int, int);
+void Damage_Apply(entity, entity, float, int, int);
+void Client_TriggerCamera(entity eTarget, vector vecPos, vector vEndPos, float fResetTime);
 void Client_FixAngle(entity, vector);
 void Game_Input(void);
 int Rules_IsTeamPlay(void);
@@ -36,7 +36,7 @@ entity eActivator;
 entity g_eAttacker;
 
 /* Generic entity fields */
-.void() PlayerUse;
+.void(void) PlayerUse;
 .int iBleeds;
 .entity eUser;
 .float material;

@@ -22,7 +22,8 @@ Barney Calhoun
 
 */
 
-enum {
+enum
+{
 	BA_IDLE1,
 	BA_IDLE2,
 	BA_IDLE3,
@@ -45,15 +46,15 @@ enum {
 
 class monster_barney:CBaseNPC
 {
-	void() monster_barney;
+	void(void) monster_barney;
 
-	virtual void() Respawn;
-	virtual void() PlayerUse;
+	virtual void(void) Respawn;
+	virtual void(void) PlayerUse;
 	virtual void(int) Pain;
 	virtual void(int) Death;
-	virtual int() AnimIdle;
-	virtual int() AnimWalk;
-	virtual int() AnimRun;
+	virtual int(void) AnimIdle;
+	virtual int(void) AnimWalk;
+	virtual int(void) AnimRun;
 };
 
 int

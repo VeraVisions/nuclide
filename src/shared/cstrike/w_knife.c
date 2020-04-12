@@ -25,7 +25,8 @@ Default arsenal on both teams
 
 */
 
-enum {
+enum
+{
 	KNIFE_IDLE,
 	KNIFE_RELOAD,
 	KNIFE_DRAW,
@@ -37,7 +38,7 @@ enum {
 void
 w_knife_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_knife.hit");
 	Sound_Precache("weapon_knife.hitbody");
 	Sound_Precache("weapon_knife.hithard");
@@ -51,7 +52,7 @@ w_knife_precache(void)
 void
 w_knife_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, -1, -1);
 #endif
 }
@@ -77,7 +78,7 @@ w_knife_deathmsg(void)
 void
 w_knife_draw(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	Weapons_SetModel("models/v_knife.mdl");
 	Weapons_ViewAnimation(KNIFE_DRAW);
 #endif
@@ -92,7 +93,7 @@ w_knife_primary(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 
 	int r = (float)input_sequence % 3;
@@ -121,7 +122,7 @@ w_knife_aimanim(void)
 void
 w_knife_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -173,7 +174,7 @@ weapon_t w_knife =
 	w_knife_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_knife(void)
 {

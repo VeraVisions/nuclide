@@ -49,7 +49,7 @@ w_sniperrifle_precache(void)
 int
 w_sniperrifle_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -68,7 +68,7 @@ w_sniperrifle_pickup(int new)
 void
 w_sniperrifle_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.sniper_mag, pl.ammo_762, __NULL__);
 #endif
 }
@@ -96,7 +96,7 @@ w_sniperrifle_draw(void)
 {
 	Weapons_SetModel("models/v_m40a1.mdl");
 	Weapons_ViewAnimation(SNIPER_DRAW);
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 	Weapons_UpdateAmmo(pl, pl.sniper_mag, pl.ammo_762, __NULL__);
 #endif
@@ -117,7 +117,7 @@ w_sniperrifle_primary(void)
 	}
 
 	/* Ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 <= 0) {
 		return;
 	}
@@ -128,7 +128,7 @@ w_sniperrifle_primary(void)
 #endif
 
 	/* Actual firing */
-#ifdef SSQC
+#ifdef SERVER
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 40, [0.00873, 0.00873], WEAPON_SNIPERRIFLE);
 	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/sniper_fire.wav", 1, ATTN_NORM);
 
@@ -175,7 +175,7 @@ w_sniperrifle_reload(void)
 	}
 
 	/* Ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 >= 5) {
 		return;
 	}
@@ -194,7 +194,7 @@ w_sniperrifle_reload(void)
 	/* Audio-Visual bit */
 	/* TODO has a couple reloading states */
 	Weapons_ViewAnimation(SNIPER_RELOAD1);
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_ReloadWeapon(pl, player::sniper_mag, player::ammo_762, 5);
 	Weapons_UpdateAmmo(pl, pl.sniper_mag, pl.ammo_762, __NULL__);
 #endif
@@ -220,7 +220,7 @@ w_sniperrifle_release(void)
 void
 w_sniperrifle_crosshair(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	player pl = (player)self;
 	static vector cross_pos;
 
@@ -254,7 +254,7 @@ w_sniperrifle_crosshair(void)
 	HUD_DrawAmmo2();
 
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [24/256,72/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [24/256,72/128], [24/256, 24/128], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
@@ -267,7 +267,7 @@ w_sniperrifle_aimanim(void)
 void
 w_sniperrifle_hudpic(int s, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (s) {
 		drawsubpic(pos, [170,45], "sprites/640hudof04.spr_0.tga", [0,135/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	} else {
@@ -301,7 +301,7 @@ weapon_t w_sniperrifle =
 	.hudpic		= w_sniperrifle_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_sniperrifle(void)
 {

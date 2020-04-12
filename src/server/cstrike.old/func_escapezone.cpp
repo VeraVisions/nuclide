@@ -22,8 +22,8 @@ TODO: This gamemode is odd about balancing, right now the last surviving terrori
 
 class func_escapezone
 {
-	void() func_escapezone;
-	virtual void() touch;
+	void(void) func_escapezone;
+	virtual void(void) touch;
 };
 
 void Escape_Touch(entity targ)

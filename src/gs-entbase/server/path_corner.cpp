@@ -38,7 +38,8 @@ With the PC_FIREONCE flag set, it'll only fire its target (message) once.
 var int autocvar_dev_cornerspeed = 0;
 #endif
 
-enumflags {
+enumflags
+{
 	PC_WAIT,
 	PC_TELEPORT,
 	PC_FIREONCE
@@ -51,9 +52,9 @@ class path_corner:CBaseTrigger
 	float m_flYawSpeed;
 	float m_flWait;
 
-	void() path_corner;
-	virtual void() Trigger;
-	virtual void() Respawn;
+	void(void) path_corner;
+	virtual void(void) Trigger;
+	virtual void(void) Respawn;
 };
 
 void

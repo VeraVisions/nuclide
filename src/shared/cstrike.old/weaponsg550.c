@@ -45,7 +45,8 @@ weaponinfo_t wptSG550 = {
 };
 
 // Anim Table
-enum {
+enum
+{
 	ANIM_SG550_IDLE,
 	ANIM_SG550_SHOOT1,
 	ANIM_SG550_SHOOT2,
@@ -53,35 +54,35 @@ enum {
 	ANIM_SG550_DRAW,
 };
 
-void WeaponSG550_Draw( void ) {
-	#ifdef SSQC
+void WeaponSG550_Draw(void) {
+	#ifdef SERVER
 	BaseGun_Draw();
 	#else
-	View_PlayAnimation( ANIM_SG550_DRAW );
+	View_PlayAnimation(ANIM_SG550_DRAW);
 	#endif
 }
 
-void WeaponSG550_PrimaryFire( void ) {
-	#ifdef SSQC
-	if ( BaseGun_PrimaryFire() == TRUE ) {
-		sound( self, CHAN_WEAPON, "weapons/sg550-1.wav", 1, ATTN_NORM );
+void WeaponSG550_PrimaryFire(void) {
+	#ifdef SERVER
+	if (BaseGun_PrimaryFire() == TRUE) {
+		sound(self, CHAN_WEAPON, "weapons/sg550-1.wav", 1, ATTN_NORM);
 	}
 	#else
 
-	if ( random() <= 0.5 ) {
-		View_PlayAnimation( ANIM_SG550_SHOOT1 );
+	if (random() <= 0.5) {
+		View_PlayAnimation(ANIM_SG550_SHOOT1);
 	} else {
-		View_PlayAnimation( ANIM_SG550_SHOOT2 );
+		View_PlayAnimation(ANIM_SG550_SHOOT2);
 	} 
-	BaseGun_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle(1);
 	#endif
 }
 
-void WeaponSG550_SecondaryFire( void ) {
-#ifdef SSQC
-	if ( self.viewzoom == 1.0 ) {
+void WeaponSG550_SecondaryFire(void) {
+#ifdef SERVER
+	if (self.viewzoom == 1.0) {
 		self.viewzoom = 0.45;
-	} else if ( self.viewzoom == 0.45 ) {
+	} else if (self.viewzoom == 0.45) {
 		self.viewzoom = 0.15;
 	} else {
 		self.viewzoom = 1.0;
@@ -91,12 +92,12 @@ void WeaponSG550_SecondaryFire( void ) {
 #endif
 }
 
-void WeaponSG550_Reload( void ) {
-	#ifdef SSQC
-	if ( BaseGun_Reload() == TRUE ) {
+void WeaponSG550_Reload(void) {
+	#ifdef SERVER
+	if (BaseGun_Reload() == TRUE) {
 		// Play Sound
 	}
 	#else
-	View_PlayAnimation( ANIM_SG550_RELOAD );
+	View_PlayAnimation(ANIM_SG550_RELOAD);
 	#endif
 }

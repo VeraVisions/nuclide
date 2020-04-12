@@ -38,12 +38,13 @@ class trigger_multiple:CBaseTrigger
 {
 	float m_flDelay;
 	float m_flWait;
-	void() trigger_multiple;
-	virtual void() touch;
-	virtual void() Respawn;
+	void(void) trigger_multiple;
+	virtual void(void) touch;
+	virtual void(void) Respawn;
 };
 
-void trigger_multiple::touch(void)
+void
+trigger_multiple::touch(void)
 {
 	eActivator = other;
 
@@ -71,19 +72,14 @@ void trigger_multiple::touch(void)
 	solid = SOLID_NOT;
 }
 
-void trigger_multiple::Respawn(void)
+void
+trigger_multiple::Respawn(void)
 {
-	solid = SOLID_TRIGGER;
-#ifdef GS_DEVELOPER
-	m_iRenderMode = RM_SOLID;
-	m_flRenderAmt = 0.25f;
-#else
-	m_iRenderMode = RM_SOLID;
-	m_flRenderAmt = 0.0f;
-#endif
+	InitBrushTrigger();
 }
 
-void trigger_multiple::trigger_multiple(void)
+void
+trigger_multiple::trigger_multiple(void)
 {
 	CBaseEntity::CBaseEntity();
 

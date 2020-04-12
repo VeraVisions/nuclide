@@ -14,29 +14,29 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class CUILabel : CUIWidget
+class CUILabel:CUIWidget
 {
 	vector m_vecSize;
 	string m_strTitle;
 	
-	void() CUILabel;
-	virtual void() Draw;
-	virtual void( vector ) SetSize;
-	virtual void( string ) SetTitle;
-	virtual void( float, float, float, float ) Input;
+	void(void) CUILabel;
+	virtual void(void) Draw;
+	virtual void(vector) SetSize;
+	virtual void(string) SetTitle;
+	virtual void(float, float, float, float) Input;
 };
 
-void CUILabel :: CUILabel ( void )
+void CUILabel::CUILabel(void)
 {
 	m_vecSize = [96,16];
 	m_iFlags = BUTTON_VISIBLE;
 }
 
-void CUILabel :: SetSize ( vector vecSize )
+void CUILabel::SetSize (vector vecSize)
 {
 	m_vecSize = vecSize;
 }
-void CUILabel :: SetTitle ( string strName )
+void CUILabel::SetTitle (string strName)
 {
 #ifndef CLASSIC_VGUI
 	m_strTitle = strName;
@@ -47,15 +47,15 @@ void CUILabel :: SetTitle ( string strName )
 
 	/* hack, add 2 just to make sure it doesn't immediately wrap. bug
 	 * in engines' textfield thing in combo with ttf. */
-	SetSize( [ 2 + stringwidth( m_strTitle, TRUE, [ g_fntDefault.iScale, g_fntDefault.iScale ] ), 16 ] );
+	SetSize([2 + stringwidth(m_strTitle, TRUE, [g_fntDefault.iScale, g_fntDefault.iScale]), 16]);
 }
-void CUILabel :: Draw ( void )
+void CUILabel::Draw(void)
 {
-	if ( m_strTitle ) {
-		Font_DrawField( m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, m_strTitle, g_fntDefault, 0 );
+	if (m_strTitle) {
+		Font_DrawField(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, m_strTitle, g_fntDefault, 0);
 	}
 }
 
-void CUILabel :: Input ( float flEVType, float flKey, float flChar, float flDevID )
+void CUILabel::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
 }

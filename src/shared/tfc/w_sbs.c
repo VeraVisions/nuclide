@@ -39,7 +39,7 @@ enum
 void
 w_sbs_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_sbs.cock");
 	Sound_Precache("weapon_sbs.fire");
 	Sound_Precache("weapon_sbs.reload");
@@ -52,7 +52,7 @@ w_sbs_precache(void)
 void
 w_sbs_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.shotgun_mag, pl.ammo_shells, __NULL__);
 #endif
 }
@@ -72,7 +72,7 @@ string w_sbs_deathmsg(void)
 int
 w_sbs_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 	pl.shotgun_mag = bound(0, pl.shotgun_mag + 8, 8);
 #endif
@@ -84,7 +84,7 @@ w_sbs_draw(void)
 {
 	Weapons_SetModel("models/v_tfc_12gauge.mdl");
 	Weapons_ViewAnimation(SBS_DRAW);
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 	Weapons_UpdateAmmo(pl, pl.shotgun_mag, pl.ammo_shells, __NULL__);
 #endif
@@ -109,7 +109,7 @@ w_sbs_primary(void)
 	}
 
 	/* Ammo check */
-#ifdef SSQC
+#ifdef SERVER
 	if (pl.shotgun_mag <= 0) {
 		return;
 	}
@@ -119,7 +119,7 @@ w_sbs_primary(void)
 	}
 #endif
 
-#ifdef SSQC
+#ifdef SERVER
 	TraceAttack_FireBullets(4, pl.origin + pl.view_ofs, 6, [0.17365,0.04362], WEAPON_SBS);
 	Sound_Play(pl, CHAN_WEAPON, "weapon_sbs.fire");
 	pl.shotgun_mag--;
@@ -139,7 +139,7 @@ void
 w_sbs_reload(void)
 {
 	player pl = (player)self;
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 >= 8) {
 		return;
 	}
@@ -191,7 +191,7 @@ w_sbs_release(void)
 		pl.w_idle_next = 0.65f;
 	} else if (pl.a_ammo3 == SBS_RELOAD) {
 		Weapons_ViewAnimation(SBS_ADDSHELL);
-#ifdef CSQC
+#ifdef CLIENT
 		pl.a_ammo1++;
 		pl.a_ammo2--;
 
@@ -210,7 +210,7 @@ w_sbs_release(void)
 		pl.w_idle_next = 0.5f;	
 	} else if (pl.a_ammo3 == SBS_RELOAD_END) {
 		Weapons_ViewAnimation(SBS_PUMP);
-#ifdef SSQC
+#ifdef SERVER
 		Sound_Play(pl, CHAN_WEAPON, "weapon_sbs.cock");
 #endif
 		pl.a_ammo3 = SBS_IDLE;
@@ -221,14 +221,14 @@ w_sbs_release(void)
 void
 w_sbs_crosshair(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	static vector cross_pos;
 	cross_pos = (g_hudres / 2) + [-12,-12];
 	drawsubpic(cross_pos, [24,24], "sprites/crosshairs.spr_0.tga", [48/128,24/128], [0.1875, 0.1875], [1,1,1], 1, DRAWFLAG_NORMAL);
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [72/256,72/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [72/256,72/128], [24/256, 24/128], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
@@ -241,7 +241,7 @@ w_sbs_aimanim(void)
 void
 w_sbs_hudpic(int s, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (s) {
 		drawsubpic(pos, [170,45], "sprites/tfchud02.spr_0.tga", [0,180/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	} else {

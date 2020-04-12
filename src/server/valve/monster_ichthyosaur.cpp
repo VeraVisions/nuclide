@@ -22,7 +22,8 @@ Ichthyosaur
 
 */
 
-enum {
+enum
+{
 	ICHY_IDLE,
 	ICHY_SWIM,
 	ICHY_THRUST,
@@ -45,7 +46,7 @@ class monster_ichthyosaur:CBaseMonster
 {
 	float m_flIdleTime;
 
-	void() monster_ichthyosaur;
+	void(void) monster_ichthyosaur;
 
 	virtual void(int) Pain;
 	virtual void(int) Death;

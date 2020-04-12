@@ -14,8 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-.string chaptertitle;
-
 /* after a level-change is done we need to pick up the scraps and fill the
  * info back in. */
 void
@@ -32,6 +30,7 @@ Gamerules_DecodeChangeParms(player pl)
 	pl.velocity[2] = parm9;
 	pl.g_items = parm10;
 	pl.activeweapon = parm11;
+	pl.flags = parm64;
 
 	pl.ammo_9mm = parm12;
 	pl.ammo_357 = parm13;
@@ -53,6 +52,12 @@ Gamerules_DecodeChangeParms(player pl)
 	pl.crossbow_mag = parm28;
 	pl.rpg_mag = parm29;
 	pl.satchel_chg = parm30;
+
+	if (pl.flags & FL_CROUCHING) {
+		setsize(pl, VEC_CHULL_MIN, VEC_CHULL_MAX);
+	} else {
+		setsize(pl, VEC_HULL_MIN, VEC_HULL_MAX);
+	}
 }
 
 /* prepare the client-info for level-transition */
@@ -68,6 +73,7 @@ Gamerules_SetChangeParms(player pl)
 	parm7 = pl.velocity[0];
 	parm8 = pl.velocity[1];
 	parm9 = pl.velocity[2];
+	parm64 = pl.flags;
 	parm10 = pl.g_items;
 	parm11 = pl.activeweapon;
 	parm12 = pl.ammo_9mm;
@@ -100,6 +106,8 @@ Gamerules_SetNewParms(void)
 	parm15 = parm16 = parm17 = parm18 = parm19 = parm20 = parm21 =
 	parm22 = parm23 = parm24 = parm25 = parm26 = parm27 = parm28 =
 	parm29 = parm30 = 0;
+
+	parm64 = FL_CLIENT;
 }
 
 /* called when the player first spawns/respawns */

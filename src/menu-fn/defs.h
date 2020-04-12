@@ -41,9 +41,10 @@ int font_console;
 int font_arial;
 int font_label_p;
 
-typedef struct {
-	void() m_init;
-	void() m_draw;
+typedef struct
+{
+	void(void) m_init;
+	void(void) m_draw;
 	void(float evtype, float scanx, float chary, float devid) m_input;
 } menupage_t;
 
@@ -59,6 +60,7 @@ typedef struct
 	int cldll;
 	string type;
 	string hlversion;
+	string pkg_repo;
 	int nomodels;
 	int installed;
 	string mpentity;
@@ -72,10 +74,46 @@ var int gameinfo_current = -1;
 int gameinfo_count;
 gameinfo_t *games;
 string(float id, float b) getgamedirinfo = #0;
+string(int packageidx, int desiredfield) getpackagemanagerinfo = #0;
+
+
+enum
+{
+	GPMI_NAME,			// name of the package, for use with the pkg command.
+	GPMI_CATEGORY,		// category text
+	GPMI_TITLE,			// name of the package, for showing the user.
+	GPMI_VERSION,		// version info (may have multiple with the same name but different versions)
+	GPMI_DESCRIPTION,	// some blurb
+	GPMI_LICENSE,		// what license its distributed under
+	GPMI_AUTHOR,		// name of the person(s) who created it
+	GPMI_WEBSITE,		// where to contribute/find out more info/etc
+	GPMI_INSTALLED,		// current state
+	GPMI_ACTION,		// desired state
+	GPMI_AVAILABLE,		// whether it may be downloaded or not.
+	GPMI_FILESIZE,		// whether it may be downloaded or not.
+};
+
+typedef struct
+{
+	string name;
+	string category;
+	string title;
+	string version;
+	string description;
+	string license;
+	string author;
+	string website;
+	string installed;
+	int size;
+	int uid;
+} update_t;
+int update_count;
+update_t *updates;
 
 int g_menupage;
 
-enum {
+enum
+{
 	PAGE_MAIN,
 	PAGE_CONFIGURATION,
 	PAGE_AUDIO,
@@ -102,7 +140,8 @@ enum {
 	PAGE_LANGAMES,
 	PAGE_SPECTATEGAMES,
 	PAGE_NEWGAME,
-	PAGE_VIEWREADME
+	PAGE_VIEWREADME,
+	PAGE_UPDATES
 };
 
 void m_hide(void);

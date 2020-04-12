@@ -28,5 +28,11 @@ Used in the assassination mode (as_* maps).
 
 class func_vip_safetyzone:CBaseTrigger
 {
-	
+	virtual void(void) Respawn;
 }; 
+
+void
+func_vip_safetyzone::Respawn(void)
+{
+	InitBrushTrigger();
+}

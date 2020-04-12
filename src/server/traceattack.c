@@ -24,19 +24,15 @@
 
 /* cast a single bullet shot */
 void
-TraceAttack_FireSingle(vector vPos, vector vAngle, int iDamage, int iWeapon)
+TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon)
 {
 	string tex;
 	vector range;
 	float surf;
 
-#ifdef CSTRIKE
-	range = (vAngle * wptTable[self.weapon].fRange);
-#else
 	range = (vAngle * 8196);
-#endif
 
-	traceline(vPos, vPos + range, MOVE_LAGGED | MOVE_HITMODEL, self);
+	traceline(vecPos, vecPos + range, MOVE_LAGGED | MOVE_HITMODEL, self);
 	if (trace_fraction >= 1.0f) {
 		return;
 	}
@@ -47,10 +43,10 @@ TraceAttack_FireSingle(vector vPos, vector vAngle, int iDamage, int iWeapon)
 		switch (trace_surface_id) {
 		case BODY_HEAD:
 			/* the helmet is one power house */
-			if (trace_ent.iEquipment & EQUIPMENT_HELMET) {
+			if (trace_ent.items & ITEM_HELMET) {
 				iDamage = 0;
 				sound(self, CHAN_ITEM, "weapons/ric_metal-2.wav", 1, ATTN_IDLE);
-				trace_ent.iEquipment -= EQUIPMENT_HELMET;
+				trace_ent.items &= ~ITEM_HELMET;
 				return;
 			} else {
 				iDamage *= 4;
@@ -117,7 +113,7 @@ TraceAttack_FireSingle(vector vPos, vector vAngle, int iDamage, int iWeapon)
 
 /* fire a given amount of shots */
 void
-TraceAttack_FireBullets(int iShots, vector vPos, int iDamage, vector vecSpread, int iWeapon)
+TraceAttack_FireBullets(int iShots, vector vecPos, int iDamage, vector vecSpread, int iWeapon)
 {
 	vector vDir;
 	makevectors(self.v_angle);
@@ -127,9 +123,26 @@ TraceAttack_FireBullets(int iShots, vector vPos, int iDamage, vector vecSpread, 
 		iTotalPenetrations = 4;
 #endif
 		vDir = aim(self, 100000);
-		vDir += Math_CRandom() * vecSpread[0] * v_right;
-		vDir += Math_CRandom() * vecSpread[1] * v_up;
-		TraceAttack_FireSingle(vPos, vDir, iDamage, iWeapon);
+#ifndef CSTRIKE
+		vDir += random(-1,1) * vecSpread[0] * v_right;
+		vDir += random(-1,1) * vecSpread[1] * v_up;
+#else
+		player pl = (player)self;
+
+		/* weapons have already applied their multiplier... so attempt this */
+		int multiplier = pl.cs_shotmultiplier - iShots;
+		float frand = (multiplier / 6);
+
+		/* shoddy attempt at spray patterns */
+		if (frand < 1)
+			frand = frand;
+		else if (frand <= 2)
+			frand = 2 - (frand * 1.5);
+
+		vDir += frand * vecSpread[0] * v_right;
+		vDir += (vecSpread[1] * v_up) * 2;
+#endif
+		TraceAttack_FireSingle(vecPos, vDir, iDamage, iWeapon);
 		iShots--;
 	}
 }

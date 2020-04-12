@@ -34,7 +34,8 @@ When MMF_MONSTERCLIP is checked, all spawned monsters will be blocked by
 func_monsterclip entities.
 */
 
-enumflags {
+enumflags
+{
 	MMF_STARTON,
 	MMF_UNUSED1,
 	MMF_NONTOGGLE,
@@ -51,14 +52,14 @@ class monstermaker:CBaseTrigger
 	int m_iEnabled;
 	string m_strChildName;
 
-	void() monstermaker;
+	void(void) monstermaker;
 
-	virtual void() Spawner;
-	virtual void() Trigger;
-	virtual void() Respawn;
-	virtual void() TurnOn;
-	virtual void() TurnOff;
-	virtual int() GetValue;
+	virtual void(void) Spawner;
+	virtual void(void) Trigger;
+	virtual void(void) Respawn;
+	virtual void(void) TurnOn;
+	virtual void(void) TurnOff;
+	virtual int(void) GetValue;
 };
 
 int
@@ -117,6 +118,13 @@ monstermaker::Spawner(void)
 
 	/* too many alive at a time */
 	if ((m_iMaxChildren > 0 && c >= m_iMaxChildren) || (m_flDelay <= 0 && c >= 1)) {
+		nextthink = time + m_flDelay;
+		return;
+	}
+
+	tracebox(origin, [-16,-16,-16], [16,16,16], origin, FALSE, this);
+
+	if (trace_startsolid == TRUE) {
 		nextthink = time + m_flDelay;
 		return;
 	}
@@ -187,7 +195,7 @@ monstermaker::monstermaker(void)
 	m_flDelay = 1.0f;
 	CBaseTrigger::CBaseTrigger();
 
-	for (int i = 1; i < ( tokenize(__fullspawndata) - 1); i += 2) {
+	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
 		case "monstertype":
 			m_strMonster = argv(i+1);

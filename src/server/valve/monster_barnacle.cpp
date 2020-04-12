@@ -22,7 +22,8 @@ Barnacle
 
 */
 
-enum {
+enum
+{
 	BCL_IDLE,
 	BCL_IDLE2,
 	BCL_IDLE3,
@@ -36,11 +37,11 @@ enum {
 
 class monster_barnacle:CBaseMonster
 {
-	void() monster_barnacle;
+	void(void) monster_barnacle;
 
 	virtual void(int) Death;
 	virtual void(void) Respawn;
-	virtual void() Physics;
+	virtual void(void) Physics;
 };
 
 void

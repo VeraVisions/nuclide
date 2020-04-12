@@ -13,33 +13,49 @@
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+ 
+/*QUAKED light_environment (1 0 0) (-8 -8 -8) (8 8 8) ?
 
-class CBaseFX
+STUB!
+*/
+
+class light_environment:CBaseEntity
 {
-	int m_iBaseJoint;
-
-	void() CBaseFX;
-
-	virtual void() Draw;
+	void(void) light_environment;
+	virtual void(void) Init;
+	virtual void(void) Initialized;
+	virtual void(string, string) SpawnKey;
 };
 
-void
-CBaseFX::Draw(void)
+void light_environment::light_environment(void)
 {
-	
+	solid = SOLID_NOT;
+	Init();
 }
 
-void
-CBaseFX::CBaseFX(void)
+void light_environment::Init(void)
 {
+	CBaseEntity::Init();
+	setorigin(this, origin);
 	drawmask = MASK_ENGINE;
 }
 
-
-void FX_Init(void)
+void light_environment::Initialized(void)
 {
-	precache_pic("textures/fx/flare1");
-	precache_pic("textures/fx/flare2");
-	precache_pic("textures/fx/flare3");
-	precache_pic("textures/fx/flare4");
+	makevectors(g_vecSunDir);
+	cvar_set("r_shadows_throwdirection", sprintf("%v", v_forward));
+}
+
+void light_environment::SpawnKey(string strField, string strKey)
+{
+	switch (strField) {
+	case "pitch":
+		g_vecSunDir[0] = stof(strKey);
+		break;
+	case "sunangle":
+		g_vecSunDir[1] = stof(strKey);
+		break;
+	default:
+		CBaseEntity::SpawnKey(strField, strKey);
+	}
 }

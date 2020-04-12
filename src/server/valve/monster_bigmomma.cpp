@@ -22,7 +22,8 @@ Gonarch
 
 */
 
-enum {
+enum
+{
 	GON_IDLE,
 	GON_IDLE2,
 	GON_WALK,
@@ -49,7 +50,7 @@ class monster_bigmomma:CBaseMonster
 {
 	float m_flIdleTime;
 
-	void() monster_bigmomma;
+	void(void) monster_bigmomma;
 
 	virtual void(int) Death;
 	virtual void(int) Pain;

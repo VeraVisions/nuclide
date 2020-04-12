@@ -40,11 +40,11 @@ void vo_sldscreensize_changed(float val)
 }
 void vo_sldgamma_changed(float val)
 {
-	cvar_set("gamma", ftos(val) );
+	cvar_set("gamma", ftos(val));
 }
 void vo_sldglare_changed(float val)
 {
-	cvar_set("brightness", ftos(val * 0.5) );
+	cvar_set("brightness", ftos(val * 0.5));
 }
 
 /* Init */

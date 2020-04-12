@@ -29,5 +29,11 @@ Once the bomb explodes inside this volume, it'll trigger its targets.
 
 class func_bomb_target:CBaseTrigger
 {
-	
+	virtual void(void) Respawn;
 };
+
+void
+func_bomb_target::Respawn(void)
+{
+	InitBrushTrigger();
+}

@@ -28,7 +28,8 @@ Price: $500
 
 */
 
-enum {
+enum
+{
 	USP45_IDLE,
 	USP45_SHOOT1,
 	USP45_SHOOT2,
@@ -50,7 +51,7 @@ enum {
 void
 w_usp45_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_usp45.fire");
 	Sound_Precache("weapon_usp45.silenced");
 #endif
@@ -62,7 +63,7 @@ w_usp45_precache(void)
 void
 w_usp45_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.usp45_mag, pl.ammo_45acp, -1);
 #endif
 }
@@ -88,7 +89,7 @@ w_usp45_deathmsg(void)
 int
 w_usp45_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -116,7 +117,7 @@ w_usp45_draw(void)
 		Weapons_ViewAnimation(USP45_DRAWUNSIL);
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	pl.cs_cross_mindist = 8;
 	pl.cs_cross_deltadist = 3;
 #endif
@@ -136,7 +137,7 @@ w_usp45_primary(void)
 	}
 
 	/* ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (!pl.a_ammo1) {
 		return;
 	}
@@ -150,7 +151,7 @@ w_usp45_primary(void)
 	float accuracy = Cstrike_CalculateAccuracy(pl, 200);
 
 	/* actual firing */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo3 == 1) {
 		View_SetMuzzleflash(0);
 	} else {
@@ -249,7 +250,7 @@ w_usp45_reload(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 >= 12) {
 		return;
 	}
@@ -286,19 +287,19 @@ w_usp45_aimanim(void)
 void
 w_usp45_hud(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	Cstrike_DrawCrosshair();
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [96/256,72/256], [24/256, 24/256], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [96/256,72/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
 void
 w_usp45_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -350,7 +351,7 @@ weapon_t w_usp45 =
 	w_usp45_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_usp45(void)
 {

@@ -30,39 +30,42 @@ again before it has finished triggering it's previous list of entities.
 class multi_manager_sub:CBaseTrigger
 {
 	int m_iValue;
-	virtual int() GetValue;
+	virtual int(void) GetValue;
 };
 
-int multi_manager_sub::GetValue(void)
+int
+multi_manager_sub::GetValue(void)
 {
 	return m_iValue;
 }
 
-class multi_manager : CBaseTrigger
+class multi_manager:CBaseTrigger
 {
 	multi_manager_sub m_eTriggers[16];
 	string m_strBuffer;
 	int m_iBusy;
 	int m_iValue;
 
-	virtual void() Trigger;
-	virtual int() GetValue;
+	virtual void(void) Trigger;
+	virtual int(void) GetValue;
 };
 
-int multi_manager :: GetValue (void)
+int
+multi_manager::GetValue(void)
 {
 	return m_iValue;
 }
 
-void multi_manager :: Trigger (void)
+void
+multi_manager::Trigger(void)
 {
 	static void mm_enttrigger (void) {
 		multi_manager_sub wow = (multi_manager_sub)self;
 		
 		entity eFind = find(world, CBaseTrigger::m_strTargetName, wow.m_strTarget);
 
-		dprint( sprintf( "^2%s::^3Trigger^7: %s (%s)\n", 
-			this.classname, wow.m_strTarget, eFind.classname ) );
+		dprint(sprintf("^2%s::^3Trigger^7: %s (%s)\n", 
+			this.classname, wow.m_strTarget, eFind.classname));
 
 		CBaseTrigger::UseTargets();
 	}
@@ -90,14 +93,15 @@ void multi_manager :: Trigger (void)
 		// HACK: Avoid infinite loops
 		if (m_strTargetName != argv(i)) {
 			m_eTriggers[b].think = mm_enttrigger;
-			m_eTriggers[b].nextthink = time + stof(argv(i + 1));
+			m_eTriggers[b].nextthink = time + stof(argv(i+1));
 			m_eTriggers[b].m_iValue = TRUE;
 			b++;
 		}
 	}
 }
 
-void multi_manager::Respawn(void)
+void
+multi_manager::Respawn(void)
 {
 	m_iValue = FALSE;
 
@@ -107,7 +111,8 @@ void multi_manager::Respawn(void)
 	}
 }
 
-void multi_manager :: multi_manager (void)
+void
+multi_manager::multi_manager(void)
 {
 	m_strBuffer = "";
 	int iFields = tokenize(__fullspawndata);
@@ -126,11 +131,11 @@ void multi_manager :: multi_manager (void)
 			break;
 		default:
 			if (substring(argv(i), strlen(argv(i)) - 3,  1) == "#") {
-				m_strBuffer = sprintf("%s%s %s ", m_strBuffer, substring(argv(i), 0, strlen(argv(i)) - 3), argv(i + 1));
+				m_strBuffer = sprintf("%s%s %s ", m_strBuffer, substring(argv(i), 0, strlen(argv(i)) - 3), argv(i+1));
 			} else if (substring(argv(i), strlen(argv(i)) - 2,  1) == "#") {
-				m_strBuffer = sprintf("%s%s %s ", m_strBuffer, substring(argv(i), 0, strlen(argv(i)) - 2), argv(i + 1));
+				m_strBuffer = sprintf("%s%s %s ", m_strBuffer, substring(argv(i), 0, strlen(argv(i)) - 2), argv(i+1));
 			} else {
-				m_strBuffer = sprintf("%s%s %s ", m_strBuffer, argv(i), argv(i + 1));
+				m_strBuffer = sprintf("%s%s %s ", m_strBuffer, argv(i), argv(i+1));
 			}
 		}
 	}

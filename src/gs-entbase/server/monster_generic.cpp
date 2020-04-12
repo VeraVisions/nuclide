@@ -26,9 +26,9 @@ Decorative, does nothing yet.
 
 class monster_generic:CBaseNPC
 {
-	void() monster_generic;
+	void(void) monster_generic;
 
-	virtual void() Respawn;
+	virtual void(void) Respawn;
 };
 
 void

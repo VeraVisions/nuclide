@@ -28,7 +28,7 @@ enum
 void
 w_spanner_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_crowbar.hit");
 	Sound_Precache("weapon_crowbar.miss");
 	Sound_Precache("weapon_crowbar.hitbody");
@@ -96,7 +96,7 @@ w_spanner_primary(void)
 	}
 	pl.w_idle_next = 2.5f;
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (random() < 0.5) {
 		Weapons_ViewAnimation(CBAR_ATTACK1);
 	} else {
@@ -151,7 +151,7 @@ w_spanner_aimanim(void)
 void
 w_spanner_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -204,7 +204,7 @@ weapon_t w_spanner =
 };
 
 /* entity definitions for pickups */
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_th_spanner(void)
 {

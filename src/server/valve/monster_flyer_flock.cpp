@@ -24,7 +24,7 @@ Boid
 
 class monster_flyer_flock:CBaseMonster
 {
-	void() monster_flyer_flock;
+	void(void) monster_flyer_flock;
 };
 
 void monster_flyer_flock::monster_flyer_flock(void)

@@ -25,17 +25,17 @@ class CServerList:CWidget
 	int m_selected;
 	virtual void(int val) m_execute = 0;
 
-	void() CServerList;
-	virtual void() Draw;
+	void(void) CServerList;
+	virtual void(void) Draw;
 	virtual void(float type, float x, float y, float devid) Input;
 
 	virtual void(string m) AddEntry;
-	virtual void() Clear;
+	virtual void(void) Clear;
 	virtual void(int w, int h) SetSize;
 	virtual void(void(int val) func) SetChanged;
 	virtual void(int i) SetSelected;
 	virtual string() GetSelectedItem;
-	virtual int() GetSelected;
+	virtual int(void) GetSelected;
 };
 
 void CServerList::CServerList(void)
@@ -54,7 +54,7 @@ void CServerList::Draw(void)
 	pos[0] = m_x + 2;
 	pos[1] = m_y + 2;
 
-	for ( int i = m_scroll; i < (visible + m_scroll); i++) {
+	for (int i = m_scroll; i < (visible + m_scroll); i++) {
 		if (m_selected == i) {
 			drawfill([g_menuofs[0] + pos[0] - 2, g_menuofs[1] + pos[1] - 2], [m_size[0], 15], 
 			 [84/255,45/255,0], 1.0f);
@@ -74,7 +74,7 @@ void CServerList::Input(float type, float x, float y, float devid)
 	pos[0] = m_x;
 	pos[1] = m_y;
 
-	for ( int i = m_scroll; i < (visible + m_scroll); i++) {
+	for (int i = m_scroll; i < (visible + m_scroll); i++) {
 		if (Util_CheckMouse(pos[0], pos[1], m_size[0], 15)) {
 			if (type == IE_KEYDOWN) {
 				if (x == K_MOUSE1) {

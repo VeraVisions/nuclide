@@ -35,7 +35,8 @@ Same as weapon_9mmAR
 */
 
 /* Animations */
-enum {
+enum
+{
 	MP5_IDLE1,
 	MP5_IDLE2,
 	MP5_GRENADE,
@@ -52,7 +53,7 @@ enum {
 void
 w_mp5_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_mp5.shoot");
 	Sound_Precache("weapon_mp5.gl");
 #endif
@@ -66,7 +67,7 @@ w_mp5_precache(void)
 int
 w_mp5_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -85,7 +86,7 @@ w_mp5_pickup(int new)
 void
 w_mp5_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.mp5_mag, pl.ammo_9mm, pl.ammo_m203_grenade);
 #endif
 }
@@ -111,7 +112,7 @@ w_mp5_deathmsg(void)
 void
 w_mp5_draw(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	Weapons_SetModel("models/v_9mmar.mdl");
 	Weapons_ViewAnimation(MP5_DRAW);
 #endif
@@ -133,7 +134,7 @@ w_mp5_primary(void)
 	}
 
 	/* Ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 <= 0) {
 		return;
 	}
@@ -144,7 +145,7 @@ w_mp5_primary(void)
 #endif
 
 	/* Actual firing */
-#ifdef CSQC
+#ifdef CLIENT
 	if (random() < 0.5) {
 		Weapons_ViewAnimation(MP5_FIRE1);
 	} else {
@@ -181,7 +182,7 @@ w_mp5_secondary(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo3 <= 0) {
 		return;
 	}
@@ -238,7 +239,7 @@ w_mp5_reload(void)
 	}
 
 	/* Ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 >= 50) {
 		return;
 	}
@@ -254,7 +255,7 @@ w_mp5_reload(void)
 	}
 #endif
 
-#ifdef CSQC
+#ifdef CLIENT
 	Weapons_ViewAnimation(MP5_RELOAD);
 #else
 	Weapons_ReloadWeapon(pl, player::mp5_mag, player::ammo_9mm, 50);
@@ -285,7 +286,7 @@ w_mp5_release(void)
 void
 w_mp5_crosshair(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	vector cross_pos;
 	vector aicon_pos;
 
@@ -314,7 +315,7 @@ w_mp5_crosshair(void)
 		[0,72/128],
 		[24/256, 24/128],
 		g_hud_color,
-		pSeat->ammo2_alpha,
+		pSeat->m_flAmmo2Alpha,
 		DRAWFLAG_ADDITIVE
 	);
 
@@ -326,7 +327,7 @@ w_mp5_crosshair(void)
 		[48/256,72/128],
 		[24/256, 24/128],
 		g_hud_color,
-		pSeat->ammo3_alpha,
+		pSeat->m_flAmmo3Alpha,
 		DRAWFLAG_ADDITIVE
 	);
 #endif
@@ -341,7 +342,7 @@ w_mp5_aimanim(void)
 void
 w_mp5_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -392,7 +393,7 @@ weapon_t w_mp5 = {
 	w_mp5_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_9mmAR(void)
 {

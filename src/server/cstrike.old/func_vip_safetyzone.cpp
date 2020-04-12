@@ -16,8 +16,8 @@
 
 class func_vip_safetyzone
 {
-	void() func_vip_safetyzone;
-	virtual void() touch;
+	void(void) func_vip_safetyzone;
+	virtual void(void) touch;
 };
 
 /* Hack! Make this better? */

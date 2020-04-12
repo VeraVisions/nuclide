@@ -53,7 +53,7 @@ w_python_precache(void)
 	precache_model("models/w_357.mdl");
 	precache_model("models/p_357.mdl");
 
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_357.shoot");
 	Sound_Precache("weapon_357.reload");
 #endif
@@ -62,7 +62,7 @@ w_python_precache(void)
 int
 w_python_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -81,7 +81,7 @@ w_python_pickup(int new)
 void
 w_python_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.python_mag, pl.ammo_357, -1);
 #endif
 }
@@ -107,7 +107,7 @@ w_python_deathmsg(void)
 void
 w_python_draw(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	Weapons_SetModel("models/v_357.mdl");
 
 	/* singleplayer doesn't do scope */
@@ -123,7 +123,7 @@ w_python_draw(void)
 void
 w_python_holster(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	Weapons_ViewAnimation(PYTHON_HOLSTER);
 #endif
 }
@@ -138,7 +138,7 @@ w_python_primary(void)
 	}
 
 	/* Ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 <= 0) {
 		return;
 	}
@@ -149,7 +149,7 @@ w_python_primary(void)
 #endif
 
 	/* Actual firing */
-#ifdef CSQC
+#ifdef CLIENT
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_SMALL);
 	Weapons_ViewPunchAngle([-10,0,0]);
@@ -197,7 +197,7 @@ w_python_reload(void)
 	}
 
 	/* Ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 >= 6) {
 		return;
 	}
@@ -214,7 +214,7 @@ w_python_reload(void)
 #endif
 
 	/* Audio-Visual bit */
-#ifdef CSQC
+#ifdef CLIENT
 	Weapons_ViewAnimation(PYTHON_RELOAD);
 #else
 	Sound_Play(pl, CHAN_WEAPON, "weapon_357.reload");
@@ -259,7 +259,7 @@ w_python_release(void)
 void
 w_python_crosshair(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	vector cross_pos;
 	vector aicon_pos;
 
@@ -286,7 +286,7 @@ w_python_crosshair(void)
 		[24/256,72/128],
 		[24/256, 24/128],
 		g_hud_color,
-		pSeat->ammo2_alpha,
+		pSeat->m_flAmmo2Alpha,
 		DRAWFLAG_ADDITIVE
 	);
 #endif
@@ -301,7 +301,7 @@ w_python_aimanim(void)
 void
 w_python_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -354,7 +354,7 @@ weapon_t w_python =
 };
 
 /* pickups */
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_357(void)
 {

@@ -33,8 +33,8 @@ class func_lod:CBaseEntity
 	int m_iDisappearDist;
 	vector m_vecTestPos;
 
-	void() func_lod;
-	virtual void() Init;
+	void(void) func_lod;
+	virtual void(void) Init;
 	virtual float() predraw;
 	virtual void(string,string) SpawnKey;
 };
@@ -47,8 +47,8 @@ float func_lod::predraw(void)
 	vecPlayer = viewClient.vecPlayerOrigin;
 #else
 	int s = (float)getproperty(VF_ACTIVESEAT);
-	pSeat = &seats[s];
-	vecPlayer = pSeat->vPlayerOrigin;
+	pSeat = &g_seats[s];
+	vecPlayer = pSeat->m_vecPredictedOrigin;
 #endif
 
 	if (checkpvs(vecPlayer, this) == FALSE) {
@@ -100,9 +100,9 @@ void func_lod::Init(void)
 	movetype = MOVETYPE_NONE;
 	drawmask = MASK_ENGINE;
 
-	m_vecTestPos[0] = absmin[0] + ( 0.5 * ( absmax[0] - absmin[0] ) );
-	m_vecTestPos[1] = absmin[1] + ( 0.5 * ( absmax[1] - absmin[1] ) );
-	m_vecTestPos[2] = absmin[2] + ( 0.5 * ( absmax[2] - absmin[2] ) );
+	m_vecTestPos[0] = absmin[0] + (0.5 * (absmax[0] - absmin[0]));
+	m_vecTestPos[1] = absmin[1] + (0.5 * (absmax[1] - absmin[1]));
+	m_vecTestPos[2] = absmin[2] + (0.5 * (absmax[2] - absmin[2]));
 }
 
 void func_lod::func_lod(void)

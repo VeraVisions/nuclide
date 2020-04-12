@@ -37,11 +37,12 @@ class scripted_sentence:CBaseTrigger
 	float m_flPitch;
 	float m_flDuration;
 
-	void() scripted_sentence;
-	virtual void() Trigger;
+	void(void) scripted_sentence;
+	virtual void(void) Trigger;
 };
 
-void scripted_sentence::Trigger(void)
+void
+scripted_sentence::Trigger(void)
 {
 	entity speaker = find(world, CBaseEntity::m_strTargetName, m_strSpeaker);
 
@@ -62,7 +63,8 @@ void scripted_sentence::Trigger(void)
 	npc.m_flNextSentence = time + m_flDuration;
 }
 
-void scripted_sentence::scripted_sentence(void)
+void
+scripted_sentence::scripted_sentence(void)
 {
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {

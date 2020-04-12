@@ -50,7 +50,7 @@ enum
 void
 w_glock_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_glock.fire");
 #endif
 
@@ -62,7 +62,7 @@ w_glock_precache(void)
 void
 w_glock_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.glock_mag, pl.ammo_9mm, -1);
 #endif
 }
@@ -88,7 +88,7 @@ w_glock_deathmsg(void)
 int
 w_glock_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -107,7 +107,7 @@ w_glock_pickup(int new)
 void
 w_glock_draw(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	Weapons_SetModel("models/v_9mmhandgun.mdl");
 	Weapons_ViewAnimation(GLOCK_DRAW);
 #endif
@@ -116,7 +116,7 @@ w_glock_draw(void)
 void
 w_glock_holster(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	Weapons_ViewAnimation(GLOCK_HOLSTER);
 #endif
 }
@@ -131,7 +131,7 @@ w_glock_primary(void)
 	}
 
 	/* ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (!pl.a_ammo1) {
 		return;
 	}
@@ -142,7 +142,7 @@ w_glock_primary(void)
 #endif
 
 	/* actual firing */
-#ifdef CSQC
+#ifdef CLIENT
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_SMALL);
 	Weapons_ViewPunchAngle([-2,0,0]);
@@ -177,7 +177,7 @@ w_glock_secondary(void)
 	}
 
 	/* ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (!pl.a_ammo1) {
 		return;
 	}
@@ -187,7 +187,7 @@ w_glock_secondary(void)
 	}
 #endif
 
-#ifdef CSQC
+#ifdef CLIENT
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_SMALL);
 	Weapons_ViewPunchAngle([-2,0,0]);
@@ -221,7 +221,7 @@ w_glock_reload(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 >= 18) {
 		return;
 	}
@@ -285,7 +285,7 @@ w_glock_aimanim(void)
 void
 w_glock_hud(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	vector cross_pos;
 	vector aicon_pos;
 
@@ -313,7 +313,7 @@ w_glock_hud(void)
 		[0,72/128],
 		[24/256, 24/128],
 		g_hud_color,
-		pSeat->ammo2_alpha,
+		pSeat->m_flAmmo2Alpha,
 		DRAWFLAG_ADDITIVE
 	);
 #endif
@@ -322,7 +322,7 @@ w_glock_hud(void)
 void
 w_glock_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -375,7 +375,7 @@ weapon_t w_glock =
 };
 
 /* pickups */
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_9mmhandgun(void)
 {

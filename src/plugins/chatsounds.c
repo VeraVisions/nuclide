@@ -21,7 +21,8 @@ static entity emitter;
 static int g_sounds;
 
 /* where we save our lists */
-typedef struct {
+typedef struct
+{
 	string sentence;
 	string sample;
 } chatsentence_t;
@@ -99,7 +100,7 @@ init(float prevprogs)
 	g_table = memalloc(sizeof(chatsentence_t) * g_sounds);
 	while ((temp = fgets(chatfile))) {
 		c = tokenize_console(temp);
-		if (c != 2 ) {
+		if (c != 2) {
 			continue;
 		}
 		g_table[i].sentence = strtolower(argv(0));

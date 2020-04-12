@@ -21,19 +21,19 @@
 Volume that permanently adds a multiplier that affects an entities' gravity.
 */
 
-#ifdef CSQC
+#ifdef CLIENT
 class trigger_gravity:CBaseEntity
 #else
 class trigger_gravity:CBaseTrigger
 #endif
 {
 	float m_flGravity;
-	void() trigger_gravity;
-	virtual void() touch;
-	virtual void() Respawn;
+	void(void) trigger_gravity;
+	virtual void(void) touch;
+	virtual void(void) Respawn;
 
-#ifdef CSQC
-	virtual void() Initialized;
+#ifdef CLIENT
+	virtual void(void) Initialized;
 	virtual void(string, string) SpawnKey;
 #endif
 };
@@ -46,7 +46,7 @@ void trigger_gravity::touch(void)
 /* TODO: Make this redundant */
 void trigger_gravity::Respawn(void)
 {
-	solid = SOLID_TRIGGER;
+	solid = SOLID_BSPTRIGGER;
 #ifdef GS_DEVELOPER
 	alpha = 0.5f;
 #endif
@@ -54,11 +54,11 @@ void trigger_gravity::Respawn(void)
 
 void trigger_gravity::trigger_gravity(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
 		case "gravity":
-			m_flGravity = stof(argv(i + 1));
+			m_flGravity = stof(argv(i+1));
 			break;
 		default:
 			break;
@@ -69,12 +69,12 @@ void trigger_gravity::trigger_gravity(void)
 #endif
 }
 
-#ifdef CSQC
-void trigger_gravity :: Initialized (void)
+#ifdef CLIENT
+void trigger_gravity::Initialized (void)
 {
-	setmodel( this, model );
+	setmodel(this, model);
 	movetype = MOVETYPE_NONE;
-	solid = SOLID_TRIGGER;
+	solid = SOLID_BSPTRIGGER;
 }
 void trigger_gravity::SpawnKey(string strField, string strKey)
 {

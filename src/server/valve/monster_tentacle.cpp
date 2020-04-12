@@ -22,7 +22,8 @@ Tentacle
 
 */
 
-enum {
+enum
+{
 	TE_IDLEPIT,
 	TE_RISE,
 	TE_TOFLOOR1,
@@ -83,7 +84,7 @@ class monster_tentacle:CBaseMonster
 {
 	float m_flIdleTime;
 
-	void() monster_tentacle;
+	void(void) monster_tentacle;
 
 	virtual void(void) IdleNoise;
 	virtual void(void) Respawn;

@@ -36,17 +36,18 @@ class CBaseEntity
 	string target;
 	float spawnflags;
 
-	void() CBaseEntity;
-	virtual void() Init;
-	virtual void() Initialized;
+	void(void) CBaseEntity;
+	virtual void(void) Init;
+	virtual void(void) Initialized;
 	virtual void(string, string) SpawnKey;
 	virtual void(string) Sentence;
-	virtual void() ProcessWordQue;
+	virtual void(void) ProcessWordQue;
 	virtual void(float flChanged) ReadEntity;
 	virtual float(void) predraw;
+	virtual void(void) postdraw;
 
 #ifdef GS_RENDERFX
-	virtual void() RenderFXPass;
+	virtual void(void) RenderFXPass;
 #endif
 };
 
@@ -317,14 +318,19 @@ void CBaseEntity::SpawnKey(string strField, string strKey)
 			break;
 		default:
 #ifdef GS_DEVELOPER
-			print( sprintf( "%s::SpawnKey: Unknown '%s' value '%s'\n", 
-				this.classname, strField, strKey ) );
+			print(sprintf("%s::SpawnKey: Unknown '%s' value '%s'\n", 
+				this.classname, strField, strKey));
 #endif
 	}
 }
 
+void CBaseEntity::postdraw(void)
+{
+}
+
 void CBaseEntity::Init(void)
 {
+	isCSQC = TRUE;
 	effects |= EF_NOSHADOW;
 	for (int i = 0; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		SpawnKey(argv(i), argv(i+1));

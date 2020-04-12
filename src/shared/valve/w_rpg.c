@@ -39,7 +39,7 @@ enum
 
 void w_rpg_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_rpg.shoot");
 #endif
 	precache_model("models/v_rpg.mdl");
@@ -51,7 +51,7 @@ void w_rpg_precache(void)
 
 void w_rpg_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.rpg_mag, pl.ammo_rocket, -1);
 #endif
 }
@@ -70,7 +70,7 @@ string w_rpg_deathmsg(void)
 
 int w_rpg_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -88,7 +88,7 @@ int w_rpg_pickup(int new)
 
 void w_rpg_draw(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	Weapons_SetModel("models/v_rpg.mdl");
 	Weapons_ViewAnimation(RPG_DRAW1);
 #endif
@@ -107,7 +107,7 @@ void w_rpg_primary(void)
 	}
 
 	/* Ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 <= 0) {
 		return;
 	}
@@ -119,7 +119,7 @@ void w_rpg_primary(void)
 
 	Weapons_ViewAnimation(RPG_FIRE2);
 
-#ifdef CSQC
+#ifdef CLIENT
 	pl.a_ammo1--;
 	Weapons_ViewPunchAngle([-10,0,0]);
 #else
@@ -127,7 +127,7 @@ void w_rpg_primary(void)
 		float dmg = Skill_GetValue("plr_rpg");
 		Effect_CreateExplosion(self.origin);
 		Damage_Radius(self.origin, self.owner, dmg, dmg * 2.5f, TRUE, WEAPON_RPG);
-		sound(self, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 2 ) + 3 ), 1, ATTN_NORM);
+		sound(self, CHAN_WEAPON, sprintf("weapons/explode%d.wav", floor(random() * 2) + 3), 1, ATTN_NORM);
 		remove(self);
 	}
 	static void Rocket_BuildSpeed(void){
@@ -184,7 +184,7 @@ void w_rpg_reload(void)
 	}
 
 	/* Ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 >= 1) {
 		return;
 	}
@@ -201,7 +201,7 @@ void w_rpg_reload(void)
 #endif
 
 	/* Audio-Visual Bit */
-#ifdef CSQC
+#ifdef CLIENT
 	Weapons_ViewAnimation(RPG_RELOAD);
 #else
 	Weapons_ReloadWeapon(pl, player::rpg_mag, player::ammo_rocket, 1);
@@ -218,7 +218,7 @@ void w_rpg_release(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 <= 0 && pl.a_ammo2 > 0) {
 		w_rpg_reload();
 	}
@@ -269,7 +269,7 @@ float w_rpg_aimanim(void)
 
 void w_rpg_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(pos, [170,45], "sprites/640hud5.spr_0.tga", [0,45/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	} else {
@@ -280,7 +280,7 @@ void w_rpg_hudpic(int selected, vector pos, float a)
 
 void w_rpg_hud(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	player pl = (player)self;
 	vector cross_pos;
 	vector aicon_pos;
@@ -333,7 +333,7 @@ void w_rpg_hud(void)
 		[120/256,72/128],
 		[24/256, 24/128],
 		g_hud_color,
-		pSeat->ammo2_alpha,
+		pSeat->m_flAmmo2Alpha,
 		DRAWFLAG_ADDITIVE
 	);
 #endif
@@ -364,7 +364,7 @@ weapon_t w_rpg =
 	w_rpg_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void weapon_rpg(void) {
 	Weapons_InitItem(WEAPON_RPG);
 }

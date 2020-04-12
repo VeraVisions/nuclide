@@ -14,7 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void Game_Input(void)
+void
+Game_Input(void)
 {
 	if (input_buttons & INPUT_BUTTON0) {
 		Weapons_Primary();

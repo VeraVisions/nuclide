@@ -16,7 +16,7 @@
 
 class monster_human_demoman:CBaseNPC
 {
-	void() monster_human_demoman;
+	void(void) monster_human_demoman;
 };
 
 void monster_human_demoman::monster_human_demoman(void)

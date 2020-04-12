@@ -339,7 +339,7 @@ Sound_Play(entity target, int chan, string shader)
 			volume = 0.75;
 		}
 	}
-#ifdef CSQC
+#ifdef CLIENT
 	if (g_sounds[sample].flags & SNDFL_OMNI) {
 		flags |= SOUNDFLAG_NOSPACIALISE;
 	}
@@ -404,7 +404,7 @@ Sound_PlayAt(vector pos, string shader)
 		}
 		r = g_sounds[sample].playc++;
 	}
-#ifdef CSQC
+#ifdef CLIENT
 	if (g_sounds[sample].flags & SNDFL_OMNI) {
 		flags |= SOUNDFLAG_NOSPACIALISE;
 	}
@@ -414,7 +414,7 @@ Sound_PlayAt(vector pos, string shader)
 	pointsound(pos, argv(r), g_sounds[sample].volume, g_sounds[sample].dist_max);
 }
 
-#ifdef CSQC
+#ifdef CLIENT
 void
 Sound_Update(entity target, int channel, int sample, float volume)
 {

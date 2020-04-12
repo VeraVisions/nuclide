@@ -26,18 +26,18 @@ void Player_ReadEntity(float flIsNew)
 {
 	player pl = (player)self;
 
-	if ( flIsNew == TRUE ) {
+	if (flIsNew == TRUE) {
 		spawnfunc_player();
 			
 		pl.classname = "player";
 		pl.solid = SOLID_SLIDEBOX;
 		pl.drawmask = MASK_ENGINE;
 		pl.customphysics = Empty;
-		setsize( pl, VEC_HULL_MIN, VEC_HULL_MAX );
+		setsize(pl, VEC_HULL_MIN, VEC_HULL_MAX);
 	}else {
         if (pl.entnum == player_localentnum) // FIXME: Splitscreen
         {
-            pSeat = &seats[0];  //FIXME: splitscreen
+            pSeat = &g_seats[0];  //FIXME: splitscreen
             for (int i = pl.sequence+1; i <= servercommandframe; i++) {
                 if (!getinputstate(i))
                     break;  //erk?... too old?
@@ -66,5 +66,5 @@ void Player_ReadEntity(float flIsNew)
 	pl.viewzoom = readfloat();
 	pl.jumptime = readfloat();
 	pl.teleport_time = readfloat();
-	setorigin( pl, pl.origin );
+	setorigin(pl, pl.origin);
 }

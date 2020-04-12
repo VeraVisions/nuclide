@@ -39,7 +39,7 @@ w_nailgun_precache(void)
 void
 w_nailgun_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, __NULL__, __NULL__, __NULL__);
 #endif
 }
@@ -66,7 +66,7 @@ w_nailgun_primary(void)
 		return;
 	}
 
-#ifdef SSQC
+#ifdef SERVER
 	static void Nail_Touch(void) {
 		Effect_CreateSpark(self.origin, trace_plane_normal);
 		if (other.takedamage == DAMAGE_YES) {
@@ -136,7 +136,7 @@ w_nailgun_release(void)
 void
 w_nailgun_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -189,7 +189,7 @@ weapon_t w_nailgun =
 };
 
 /* entity definitions for pickups */
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_nailgun(void)
 {

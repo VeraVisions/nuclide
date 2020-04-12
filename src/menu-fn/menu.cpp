@@ -41,7 +41,8 @@ menupage_t g_mpage[] = {
 	{ menu_langames_init, menu_langames_draw, menu_langames_input },
 	{ menu_spectategames_init, menu_spectategames_draw, menu_spectategames_input },
 	{ menu_newgame_init, menu_newgame_draw, menu_newgame_input },
-	{ menu_viewreadme_init, menu_viewreadme_draw, menu_viewreadme_input }
+	{ menu_viewreadme_init, menu_viewreadme_draw, menu_viewreadme_input },
+	{ menu_updates_init, menu_updates_draw, menu_updates_input }
 };
 
 void main_init(void)

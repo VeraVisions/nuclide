@@ -100,7 +100,11 @@ void vm_btncancel_start(void)
 
 void vm_cbwindowed_changed(float val)
 {
-	cvar_set("vid_fullscreen", ftos(1-val));
+	if (val) {
+		cvar_set("vid_fullscreen", "0");
+	} else {
+		cvar_set("vid_fullscreen", "2");
+	}
 }
 void vm_sbres_changed(int val)
 {
@@ -126,10 +130,14 @@ void menu_videomodes_init(void)
 
 	vm_cbWindowed = spawn(CCheckBox);
 	vm_cbWindowed.SetPos(248,386);
-	vm_cbWindowed.SetValue(1-cvar("vid_fullscreen"));
+	if (cvar("vid_fullscreen") > 0) {
+		vm_cbWindowed.SetValue(0);
+	} else {
+		vm_cbWindowed.SetValue(1);
+	}
 	vm_cbWindowed.SetCallback(vm_cbwindowed_changed);
 	Widget_Add(fn_vidmodes, vm_cbWindowed);
-	
+
 	vm_frRes = spawn(CFrame);
 	vm_frRes.SetPos(246,188);
 	vm_frRes.SetSize(344,186);

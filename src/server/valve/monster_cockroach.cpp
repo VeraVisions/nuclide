@@ -24,7 +24,7 @@ Cockroach
 
 class monster_cockroach:CBaseMonster
 {
-	void() monster_cockroach;
+	void(void) monster_cockroach;
 	virtual void(int) Death;
 };
 

@@ -36,13 +36,14 @@ enumflags
 class trigger_once:CBaseTrigger
 {
 	float m_flDelay;
-	void() trigger_once;
+	void(void) trigger_once;
 
-	virtual void() touch;
-	virtual void() Respawn;
+	virtual void(void) touch;
+	virtual void(void) Respawn;
 };
 
-void trigger_once::touch(void)
+void
+trigger_once::touch(void)
 {
 	eActivator = other;
 
@@ -54,7 +55,8 @@ void trigger_once::touch(void)
 	solid = SOLID_NOT;
 }
 
-void trigger_once::Respawn(void)
+void
+trigger_once::Respawn(void)
 {
 	solid = SOLID_TRIGGER;
 #ifdef GS_DEVELOPER
@@ -66,12 +68,13 @@ void trigger_once::Respawn(void)
 #endif
 }
 
-void trigger_once::trigger_once(void)
+void
+trigger_once::trigger_once(void)
 {
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
 		case "delay":
-			m_flDelay = stof(argv(i + 1));
+			m_flDelay = stof(argv(i+1));
 			break;
 		default:
 			break;

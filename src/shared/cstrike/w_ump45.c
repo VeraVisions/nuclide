@@ -26,7 +26,8 @@ Price: $1700
 
 */
 
-enum {
+enum
+{
 	UMP45_IDLE,
 	UMP45_RELOAD,
 	UMP45_DRAW,
@@ -38,7 +39,7 @@ enum {
 void
 w_ump45_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_ump45.fire");
 #endif
 	precache_model("models/v_ump45.mdl");
@@ -49,7 +50,7 @@ w_ump45_precache(void)
 void
 w_ump45_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.ump45_mag, pl.ammo_45acp, -1);
 #endif
 }
@@ -75,7 +76,7 @@ w_ump45_deathmsg(void)
 int
 w_ump45_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -98,7 +99,7 @@ w_ump45_draw(void)
 	Weapons_SetModel("models/v_ump45.mdl");
 	Weapons_ViewAnimation(UMP45_DRAW);
 
-#ifdef CSQC
+#ifdef CLIENT
 	pl.cs_cross_mindist = 6;
 	pl.cs_cross_deltadist = 3;
 #endif
@@ -114,7 +115,7 @@ w_ump45_primary(void)
 	}
 
 	/* ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (!pl.a_ammo1) {
 		return;
 	}
@@ -127,7 +128,7 @@ w_ump45_primary(void)
 	Cstrike_ShotMultiplierAdd(pl, 1);
 	float accuracy = Cstrike_CalculateAccuracy(pl, 210);
 
-#ifdef CSQC
+#ifdef CLIENT
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 #else
@@ -168,7 +169,7 @@ w_ump45_reload(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 >= 25) {
 		return;
 	}
@@ -201,19 +202,19 @@ w_ump45_aimanim(void)
 void
 w_ump45_hud(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	Cstrike_DrawCrosshair();
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [96/256,72/256], [24/256, 24/256], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [96/256,72/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
 void
 w_ump45_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -265,7 +266,7 @@ weapon_t w_ump45 =
 	w_ump45_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_ump45(void)
 {

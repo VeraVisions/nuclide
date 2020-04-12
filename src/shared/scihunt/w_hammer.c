@@ -40,7 +40,7 @@ void w_hammer_precache(void)
 
 void w_hammer_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, -1, -1);
 #endif
 }
@@ -57,7 +57,7 @@ void w_hammer_draw(void)
 {
 	Weapons_SetModel("models/v_hammer.mdl");
 	Weapons_ViewAnimation(HAMMER_DRAW);
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 	Weapons_UpdateAmmo(pl, -1, -1, -1);
 #endif
@@ -107,7 +107,7 @@ void w_hammer_release(void)
 		return;
 	}
 
-#ifdef SSQC
+#ifdef SERVER
 	int hitsound = 0;
 	vector src = pl.origin + pl.view_ofs;
 	makevectors(pl.v_angle);
@@ -115,7 +115,7 @@ void w_hammer_release(void)
 #endif
 
 	if (pl.a_ammo1 == 1) {
-	#ifdef SSQC
+	#ifdef SERVER
 		if (trace_ent.takedamage) {
 			hitsound = floor(random(1, 4));
     
@@ -139,7 +139,7 @@ void w_hammer_release(void)
 		Weapons_ViewAnimation(HAMMER_ATTACK1);
 		pl.w_attack_next = 1.0f;
 	} else if (pl.a_ammo1 == 2) {
-#ifdef SSQC
+#ifdef SERVER
 	if (trace_ent.takedamage) {
 		hitsound = floor(random(1, 4));
 		Damage_Apply(trace_ent, self, 200, WEAPON_HAMMER, DMG_BLUNT);
@@ -153,7 +153,7 @@ void w_hammer_release(void)
 		pl.w_attack_next = 0.75f;
 	}
 
-#ifdef SSQC
+#ifdef SERVER
 	if (pl.a_ammo1 > 0) {
 		string snd = "sh/ham_swing.wav";
 		switch (hitsound) {
@@ -204,7 +204,7 @@ float w_hammer_aimanim(void)
 
 void w_hammer_hudpic(int s, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (s) {
 		drawsubpic(pos, [170,45], "sprites/hammer.spr_0.tga", [0,48/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	} else {

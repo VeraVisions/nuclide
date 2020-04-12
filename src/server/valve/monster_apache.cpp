@@ -24,8 +24,8 @@ Boeing AH-64 Apache
 
 class monster_apache:CBaseMonster
 {
-	void() monster_apache;
-	virtual void() Respawn;
+	void(void) monster_apache;
+	virtual void(void) Respawn;
 };
 
 void monster_apache::Respawn(void)

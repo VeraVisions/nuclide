@@ -28,7 +28,7 @@ enum
 void
 w_medkit_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_medkit.heal");
 #endif
 	precache_model("models/v_tfc_medkit.mdl");
@@ -39,7 +39,7 @@ w_medkit_precache(void)
 void
 w_medkit_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, pl.ammo_medkit, -1);
 #endif
 }
@@ -65,7 +65,7 @@ w_medkit_deathmsg(void)
 int
 w_medkit_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -98,7 +98,7 @@ w_medkit_primary(void)
 		return;
 	}
 
-#ifdef SSQC
+#ifdef SERVER
 	if (!pl.ammo_medkit) {
 		return;
 	}
@@ -161,7 +161,7 @@ w_medkit_aimanim(void)
 void
 w_medkit_crosshair(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	vector aicon_pos;
 	aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
 
@@ -174,7 +174,7 @@ w_medkit_crosshair(void)
 		[24/256,96/128],
 		[24/256, 24/128],
 		g_hud_color,
-		pSeat->ammo2_alpha,
+		pSeat->m_flAmmo2Alpha,
 		DRAWFLAG_ADDITIVE
 	);
 #endif
@@ -183,7 +183,7 @@ w_medkit_crosshair(void)
 void
 w_medkit_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -235,7 +235,7 @@ weapon_t w_medkit =
 	.hudpic		= w_medkit_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_th_medkit(void)
 {

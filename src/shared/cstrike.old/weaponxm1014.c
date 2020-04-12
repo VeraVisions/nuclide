@@ -16,7 +16,7 @@
 
 .int iMag_XM1014;
 
-#ifdef SSQC
+#ifdef SERVER
 .int iMode_XM1014;
 #else
 int iWeaponMode_XM1014;
@@ -51,7 +51,8 @@ weaponinfo_t wptXM1014 = {
 };
 
 // Anim Table
-enum {
+enum
+{
 	ANIM_XM1014_IDLE,
 	ANIM_XM1014_SHOOT1,
 	ANIM_XM1014_SHOOT2,
@@ -61,47 +62,47 @@ enum {
 	ANIM_XM1014_DRAW
 };
 
-void WeaponXM1014_Draw( void ) {
-	#ifdef SSQC
+void WeaponXM1014_Draw(void) {
+	#ifdef SERVER
 	BaseGun_Draw();
 	#else
-	View_PlayAnimation( ANIM_XM1014_DRAW );
+	View_PlayAnimation(ANIM_XM1014_DRAW);
 	#endif
 }
 
-void WeaponXM1014_ReloadNULL( void ) { }
+void WeaponXM1014_ReloadNULL(void) { }
 
-void WeaponXM1014_PrimaryFire( void ) {
-#ifdef SSQC
-	if ( self.iMode_XM1014 == TRUE ) {
+void WeaponXM1014_PrimaryFire(void) {
+#ifdef SERVER
+	if (self.iMode_XM1014 == TRUE) {
 		self.iMode_XM1014 = 0;
-		Client_SendEvent( self, EV_WEAPON_RELOAD );
+		Client_SendEvent(self, EV_WEAPON_RELOAD);
 		self.think = WeaponXM1014_ReloadNULL;
 		self.fAttackFinished = time + 0.5;
 		return;
 	}
 	
-	if ( BaseGun_PrimaryFire() == TRUE ) {
-		sound( self, CHAN_WEAPON, "weapons/xm1014-1.wav", 1, ATTN_NORM );
+	if (BaseGun_PrimaryFire() == TRUE) {
+		sound(self, CHAN_WEAPON, "weapons/xm1014-1.wav", 1, ATTN_NORM);
 	}
 #else
-	if ( random() <= 0.5 ) {
-		View_PlayAnimation( ANIM_XM1014_SHOOT1 );
+	if (random() <= 0.5) {
+		View_PlayAnimation(ANIM_XM1014_SHOOT1);
 	} else {
-		View_PlayAnimation( ANIM_XM1014_SHOOT2 );
+		View_PlayAnimation(ANIM_XM1014_SHOOT2);
 	}
 	
-	BaseGun_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle(1);
 #endif
 }
 
-void WeaponXM1014_Reload( void);
-void WeaponXM1014_Secondary( void ) {
-#ifdef SSQC
+void WeaponXM1014_Reload(void);
+void WeaponXM1014_Secondary(void) {
+#ifdef SERVER
 	// If it's full or no ammo is left...
-	if ( (self.(wptXM1014.iMagfld) == wptXM1014.iMagSize) || ( self.(wptXM1014.iCaliberfld) <= 0 ) ) {
+	if ((self.(wptXM1014.iMagfld) == wptXM1014.iMagSize) || (self.(wptXM1014.iCaliberfld) <= 0)) {
 		self.iMode_XM1014 = 0;
-		Client_SendEvent( self, EV_WEAPON_RELOAD );
+		Client_SendEvent(self, EV_WEAPON_RELOAD);
 		self.think = WeaponXM1014_ReloadNULL;
 		self.fAttackFinished = time + 0.5;
 		return;
@@ -110,17 +111,17 @@ void WeaponXM1014_Secondary( void ) {
 	self.(wptXM1014.iMagfld) += 1;
 	self.(wptXM1014.iCaliberfld) -= 1;
 	
-	Client_SendEvent( self, EV_WEAPON_SECONDARYATTACK );
+	Client_SendEvent(self, EV_WEAPON_SECONDARYATTACK);
 	
 	self.think = WeaponXM1014_Secondary;
 	self.nextthink = time + 0.5;
 #else
-	View_PlayAnimation( ANIM_XM1014_INSERT );
+	View_PlayAnimation(ANIM_XM1014_INSERT);
 #endif
 }
 
-void WeaponXM1014_Reload( void ) {
-#ifdef SSQC
+void WeaponXM1014_Reload(void) {
+#ifdef SERVER
 	// Can we reload the gun even if we wanted to?
 	if (self.(wptXM1014.iMagfld) == wptXM1014.iMagSize) {
 		return;
@@ -131,22 +132,22 @@ void WeaponXM1014_Reload( void ) {
 
 	self.iMode_XM1014 = 1 - self.iMode_XM1014;
 
-	if ( self.iMode_XM1014 == TRUE ) {
+	if (self.iMode_XM1014 == TRUE) {
 		self.think = WeaponXM1014_Secondary;
 		self.nextthink = time + 0.8;
 	} else {
 		self.think = WeaponXM1014_ReloadNULL;
 	}
 
-	Client_SendEvent( self, EV_WEAPON_RELOAD );
+	Client_SendEvent(self, EV_WEAPON_RELOAD);
 	self.fAttackFinished = time + 0.5;
 #else
 	iWeaponMode_XM1014 = 1 - iWeaponMode_XM1014;
 	
-	if ( iWeaponMode_XM1014 == TRUE ) {
-		View_PlayAnimation( ANIM_XM1014_RELOAD_START );
+	if (iWeaponMode_XM1014 == TRUE) {
+		View_PlayAnimation(ANIM_XM1014_RELOAD_START);
 	} else {
-		View_PlayAnimation( ANIM_XM1014_RELOAD_END );
+		View_PlayAnimation(ANIM_XM1014_RELOAD_END);
 	}
 #endif
 }

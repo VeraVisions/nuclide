@@ -22,7 +22,8 @@ HECU - Human Grunt
 
 */
 
-enum {
+enum
+{
 	GR_WALK,
 	GR_RUN,
 	GR_VICTORYDANCE,
@@ -112,16 +113,16 @@ class monster_human_grunt:CBaseNPC
 {
 	float m_flIdleTime;
 	
-	void() monster_human_grunt;
+	void(void) monster_human_grunt;
 	
-	virtual void() Scream;
-	virtual void() IdleChat;
-	virtual void() Respawn;
+	virtual void(void) Scream;
+	virtual void(void) IdleChat;
+	virtual void(void) Respawn;
 	virtual void(int) Pain;
 	virtual void(int) Death;
-	virtual int() AnimIdle;
-	virtual int() AnimWalk;
-	virtual int() AnimRun;
+	virtual int(void) AnimIdle;
+	virtual int(void) AnimWalk;
+	virtual int(void) AnimRun;
 };
 
 int

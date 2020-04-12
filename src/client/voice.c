@@ -21,7 +21,8 @@ HUD_DrawVoice
 Draws a little notification for anyone using voice chat
 =================
 */
-void Voice_DrawHUD(void) {
+void
+Voice_DrawHUD(void) {
 	vector pos = video_mins + [video_res[0] - 160, video_res[1] - 136];
 
 	for (int i = -1; i > -32; i--) {
@@ -66,7 +67,8 @@ void Voice_DrawHUD(void) {
 Player_PreDraw
 =================
 */
-void Voice_Draw3D(entity t)
+void
+Voice_Draw3D(entity t)
 {
 	if (getplayerkeyfloat(t.entnum - 1, INFOKEY_P_VOIPSPEAKING)) {
 		vector vpos = t.origin + [0,0,48];

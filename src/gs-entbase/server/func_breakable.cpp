@@ -79,12 +79,12 @@ class func_breakable:CBaseTrigger
 	int m_pressType;
 	int m_pressDamage;*/
 
-	void() func_breakable;
-	virtual void() Respawn;
-	virtual void() Explode;
-	virtual void() Trigger;
-	virtual void() PlayerTouch;
-	/*virtual void() PressureDeath;*/
+	void(void) func_breakable;
+	virtual void(void) Respawn;
+	virtual void(void) Explode;
+	virtual void(void) Trigger;
+	virtual void(void) PlayerTouch;
+	/*virtual void(void) PressureDeath;*/
 	virtual void(int) Pain;
 	virtual void(int) Death;
 };
@@ -129,9 +129,9 @@ void func_breakable::Pain (int body)
 void func_breakable::Explode(void)
 {
 	vector vWorldPos;
-	vWorldPos[0] = absmin[0] + ( 0.5 * ( absmax[0] - absmin[0] ) );
-	vWorldPos[1] = absmin[1] + ( 0.5 * ( absmax[1] - absmin[1] ) );
-	vWorldPos[2] = absmin[2] + ( 0.5 * ( absmax[2] - absmin[2] ) );
+	vWorldPos[0] = absmin[0] + (0.5 * (absmax[0] - absmin[0]));
+	vWorldPos[1] = absmin[1] + (0.5 * (absmax[1] - absmin[1]));
+	vWorldPos[2] = absmin[2] + (0.5 * (absmax[2] - absmin[2]));
 	Effect_BreakModel(vlen(size) / 10, absmin, absmax, '0 0 0', m_iMaterial);
 	Effect_CreateExplosion(vWorldPos);
 	Damage_Radius(vWorldPos, this, m_flExplodeMag, m_flExplodeMag * 2.5f, TRUE, 0);
@@ -252,9 +252,9 @@ void func_breakable::func_breakable(void)
 			// hack, gotta get the world pos */
 			solid = SOLID_BSP;
 			setmodel(this, model);
-			realorg[0] = absmin[0] + ( 0.5 * ( absmax[0] - absmin[0] ) );
-			realorg[1] = absmin[1] + ( 0.5 * ( absmax[1] - absmin[1] ) );
-			realorg[2] = absmin[2] + ( 0.5 * ( absmax[2] - absmin[2] ) );
+			realorg[0] = absmin[0] + (0.5 * (absmax[0] - absmin[0]));
+			realorg[1] = absmin[1] + (0.5 * (absmax[1] - absmin[1]));
+			realorg[2] = absmin[2] + (0.5 * (absmax[2] - absmin[2]));
 
 			/* change the origin */
 			origin = realorg;
@@ -267,10 +267,10 @@ void func_breakable::func_breakable(void)
 			spawnflags |= SF_ISMODEL;
 			break;
 		case "material":
-			m_iMaterial = stof(argv(i + 1));
+			m_iMaterial = stof(argv(i+1));
 			break;
 		case "delay":
-			m_flDelay = stof(argv(i + 1));
+			m_flDelay = stof(argv(i+1));
 			break;
 		case "explodemagnitude":
 			m_flExplodeMag = stof(argv(i+1));

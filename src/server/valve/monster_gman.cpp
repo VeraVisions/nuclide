@@ -22,7 +22,8 @@ G-Man
 
 */
 
-enum {
+enum
+{
 	GMAN_IDLE,
 	GMAN_IDLETIE,
 	GMAN_IDLELOOK,
@@ -41,12 +42,12 @@ enum {
 
 class monster_gman:CBaseMonster
 {
-	void() monster_gman;
+	void(void) monster_gman;
 
-	virtual void() Respawn;
-	virtual int() AnimIdle;
-	virtual int() AnimWalk;
-	virtual int() AnimRun;
+	virtual void(void) Respawn;
+	virtual int(void) AnimIdle;
+	virtual int(void) AnimWalk;
+	virtual int(void) AnimRun;
 };
 
 int

@@ -27,12 +27,12 @@ class func_tracktrain:CBaseTrigger
 {
 	float m_flSpeed;
 
-	void() func_tracktrain;
-	virtual void() Find;
-	virtual void() NextPath;
-	virtual void() GoToTarget;
-	virtual void() Trigger;
-	virtual void() Respawn;
+	void(void) func_tracktrain;
+	virtual void(void) Find;
+	virtual void(void) NextPath;
+	virtual void(void) GoToTarget;
+	virtual void(void) Trigger;
+	virtual void(void) Respawn;
 };
 
 void func_tracktrain::GoToTarget(void)
@@ -107,8 +107,8 @@ void func_tracktrain::Respawn(void)
 
 void func_tracktrain::func_tracktrain(void)
 {
-	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
-		switch ( argv( i ) ) {
+	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
+		switch (argv(i)) {
 		case "speed":
 			m_flSpeed = stof(argv(i+1));
 			break;

@@ -29,7 +29,8 @@ int g_connected;
 int g_connectstatus;
 float g_connecttimer;
 
-enum {
+enum
+{
 	CONNECT_NONE,
 	CONNECT_INTERNET,
 	CONNECT_CHAT

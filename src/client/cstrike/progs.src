@@ -2,17 +2,19 @@
 #pragma progs_dat  "../../../cstrike/data.pk3dir/csprogs.dat"
 
 #define CSQC
+#define CLIENT
 #define VALVE
+#define CSTRIKE
 
 #includelist
 ../../shared/fteextensions.qc
 ../../shared/defs.h
+../../shared/cstrike/defs.h
 ../../shared/math.h
 ../../shared/materials.h
 ../../shared/events.h
 ../../shared/entities.h
 ../../shared/sound.c
-../valve/defs.h
 ../cstrike/defs.h
 ../valve/particles.h
 ../defs.h
@@ -20,13 +22,13 @@
 ../../vgui/include.src
 
 ../util.c
-../cstrike/init.c
 
 ../fade.c
 ../titles.c
 ../text.c
 
 ../../gs-entbase/client.src
+../../gs-entbase/shared.src
 
 ../sky.c
 ../sound.c
@@ -41,10 +43,10 @@
 ../../shared/pmove.c
 predict.c
 ../predict.c
-../../shared/decals.c
 ../../shared/effects.c
-../../shared/spraylogo.cpp
 ../npc.c
+
+../../shared/cstrike/radio.c
 ../../shared/cstrike/items.h
 ../../shared/cstrike/weapons_cstrike.c
 ../../shared/valve/weapon_common.h
@@ -81,21 +83,22 @@ predict.c
 ../cstrike/player.c
 entities.c
 ../entities.c
-../fx_lensflare.c
 ../fx_gunsmoke.c
-../valve/cmds.c
-../valve/game_event.c
+../cstrike/cmds.c
+../cstrike/game_event.c
 ../events.c
 ../valve/view.c
 ../view.c
 ../damage.c
 ../obituary.c
 ../chat.c
+../textmenu.c
 
 ../vgui.cpp
 ../cstrike/vgui_chooseteam.cpp
+../cstrike/textmenu.c
+../cstrike/init.c
 
-hud.h
 crosshair.c
 hud.c
 hud_weaponselect.c

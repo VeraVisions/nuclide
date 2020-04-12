@@ -45,7 +45,8 @@ weaponinfo_t wptTMP = {
 };
 
 // Anim Table
-enum {
+enum
+{
 	ANIM_TMP_IDLE,
 	ANIM_TMP_RELOAD,
 	ANIM_TMP_DRAW,
@@ -54,43 +55,43 @@ enum {
 	ANIM_TMP_SHOOT3
 };
 
-void WeaponTMP_Draw( void ) {
-#ifdef SSQC
+void WeaponTMP_Draw(void) {
+#ifdef SERVER
 	BaseGun_Draw();
 #else
-	View_PlayAnimation( ANIM_TMP_DRAW );
+	View_PlayAnimation(ANIM_TMP_DRAW);
 #endif
 }
 
-void WeaponTMP_PrimaryFire( void ) {
-#ifdef SSQC
-	if ( BaseGun_PrimaryFire() == TRUE ) {
-		if ( random() <= 0.5 ) {
-			sound( self, CHAN_WEAPON, "weapons/tmp-1.wav", 1, ATTN_NORM );
+void WeaponTMP_PrimaryFire(void) {
+#ifdef SERVER
+	if (BaseGun_PrimaryFire() == TRUE) {
+		if (random() <= 0.5) {
+			sound(self, CHAN_WEAPON, "weapons/tmp-1.wav", 1, ATTN_NORM);
 		} else {
-			sound( self, CHAN_WEAPON, "weapons/tmp-2.wav", 1, ATTN_NORM );
+			sound(self, CHAN_WEAPON, "weapons/tmp-2.wav", 1, ATTN_NORM);
 		}
 	}
 #else
-	int iRand = (int)floor( random( 1, 4 ) );
-	if ( iRand == 1 ) {
-		View_PlayAnimation( ANIM_TMP_SHOOT1 );
-	} else if ( iRand == 2 ) {
-		View_PlayAnimation( ANIM_TMP_SHOOT2 );
+	int iRand = (int)floor(random(1, 4));
+	if (iRand == 1) {
+		View_PlayAnimation(ANIM_TMP_SHOOT1);
+	} else if (iRand == 2) {
+		View_PlayAnimation(ANIM_TMP_SHOOT2);
 	} else {
-		View_PlayAnimation( ANIM_TMP_SHOOT3 );
+		View_PlayAnimation(ANIM_TMP_SHOOT3);
 	}
 	
-	BaseGun_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle(1);
 #endif
 }
 
-void WeaponTMP_Reload( void ) {
-#ifdef SSQC
-	if ( BaseGun_Reload() == TRUE ) {
+void WeaponTMP_Reload(void) {
+#ifdef SERVER
+	if (BaseGun_Reload() == TRUE) {
 		// Play Sound
 	}
 #else
-	View_PlayAnimation( ANIM_TMP_RELOAD );
+	View_PlayAnimation(ANIM_TMP_RELOAD);
 #endif
 }

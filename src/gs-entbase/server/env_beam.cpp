@@ -21,10 +21,11 @@ This entity is incomplete. Purely stub.
 */
 
 class env_beam {
-	void() env_beam;
+	void(void) env_beam;
 };
 
-void env_beam :: env_beam ( void )
+void
+env_beam::env_beam(void)
 {
 	
 }

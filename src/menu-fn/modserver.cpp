@@ -116,7 +116,7 @@ ModServer_ParseItem(string data)
 	games[id].installed = 0;
 
 	for (int i = 0; i < c; i++) {
-		switch( argv(i) ) {
+		switch(argv(i)) {
 		case "gameinfo_game":
 			games[id].game = argv(i+1);
 			break;

@@ -32,8 +32,8 @@ class CScrollbar:CWidget
 	int m_dn_hover;
 	int m_dn_hold;
 
-	void() CScrollbar;
-	virtual void() Draw;
+	void(void) CScrollbar;
+	virtual void(void) Draw;
 	virtual void(float type, float x, float y, float devid) Input;
 
 	virtual void(int val) SetScroll;

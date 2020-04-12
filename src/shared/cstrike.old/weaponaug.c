@@ -45,7 +45,8 @@ weaponinfo_t wptAUG = {
 };
 
 // Anim Table
-enum {
+enum
+{
 	ANIM_AUG_IDLE,
 	ANIM_AUG_RELOAD,
 	ANIM_AUG_DRAW,
@@ -54,40 +55,40 @@ enum {
 	ANIM_AUG_SHOOT3
 };
 
-void WeaponAUG_Draw( void ) {
-#ifdef SSQC
+void WeaponAUG_Draw(void) {
+#ifdef SERVER
 	BaseGun_Draw();
 #else
-	View_PlayAnimation( ANIM_AUG_DRAW );
+	View_PlayAnimation(ANIM_AUG_DRAW);
 #endif
 }
 
-void WeaponAUG_PrimaryFire( void ) {
-#ifdef SSQC
-	if ( BaseGun_PrimaryFire() == TRUE ) {
-		sound( self, CHAN_WEAPON, "weapons/aug-1.wav", 1, ATTN_NORM );
+void WeaponAUG_PrimaryFire(void) {
+#ifdef SERVER
+	if (BaseGun_PrimaryFire() == TRUE) {
+		sound(self, CHAN_WEAPON, "weapons/aug-1.wav", 1, ATTN_NORM);
 		
-		if ( self.viewzoom != 1.0 ) {
+		if (self.viewzoom != 1.0) {
 			self.fAttackFinished = time + 0.135;
 		}
 	}
 #else
-	int iRand = (int)floor( random( 1, 4 ) );
-	if ( iRand == 1 ) {
-		View_PlayAnimation( ANIM_AUG_SHOOT1 );
-	} else if ( iRand == 2 ) {
-		View_PlayAnimation( ANIM_AUG_SHOOT2 );
+	int iRand = (int)floor(random(1, 4));
+	if (iRand == 1) {
+		View_PlayAnimation(ANIM_AUG_SHOOT1);
+	} else if (iRand == 2) {
+		View_PlayAnimation(ANIM_AUG_SHOOT2);
 	} else {
-		View_PlayAnimation( ANIM_AUG_SHOOT3 );
+		View_PlayAnimation(ANIM_AUG_SHOOT3);
 	}
 	
-	BaseGun_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle(1);
 #endif
 }
 
-void WeaponAUG_SecondaryFire( void ) {
-#ifdef SSQC
-	if ( self.viewzoom != 1.0 ) {
+void WeaponAUG_SecondaryFire(void) {
+#ifdef SERVER
+	if (self.viewzoom != 1.0) {
 		self.viewzoom = 1.0;
 	} else {
 		self.viewzoom = 0.6;
@@ -97,12 +98,12 @@ void WeaponAUG_SecondaryFire( void ) {
 #endif
 }
 
-void WeaponAUG_Reload( void ) {
-#ifdef SSQC
-	if ( BaseGun_Reload() == TRUE ) {
+void WeaponAUG_Reload(void) {
+#ifdef SERVER
+	if (BaseGun_Reload() == TRUE) {
 		// Play Sound
 	}
 #else
-	View_PlayAnimation( ANIM_AUG_RELOAD );
+	View_PlayAnimation(ANIM_AUG_RELOAD);
 #endif
 }

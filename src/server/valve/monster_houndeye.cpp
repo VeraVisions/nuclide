@@ -22,7 +22,8 @@ Houndeye
 
 */
 
-enum {
+enum
+{
 	HE_IDLE,
 	HE_IDLE2,
 	HE_IDLE3,
@@ -60,7 +61,7 @@ class monster_houndeye:CBaseMonster
 {
 	float m_flIdleTime;
 
-	void() monster_houndeye;
+	void(void) monster_houndeye;
 
 	virtual void(int) Pain;
 	virtual void(int) Death;

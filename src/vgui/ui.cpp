@@ -48,9 +48,9 @@ class CUIWidget
 	virtual void(int) FlagRemove;
 	virtual void(vector) SetPos;
 	virtual vector() GetPos;
-	virtual int() GetPosWidth;
-	virtual int() GetPosHeight;
-	virtual void() Draw;
+	virtual int(void) GetPosWidth;
+	virtual int(void) GetPosHeight;
+	virtual void(void) Draw;
 	virtual void(float, float, float, float) Input;
 };
 

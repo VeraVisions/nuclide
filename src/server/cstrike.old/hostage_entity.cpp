@@ -14,13 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-enum {
+enum
+{
 	HOSTAGE_IDLE,
 	HOSTAGE_WALK,
 	HOSTAGE_RUN
 };
 
-enum {
+enum
+{
 	HOSA_WALK,
 	HOSA_WALKSCARED,
 	HOSA_RUN,
@@ -81,15 +83,15 @@ class hostage_entity:CBaseEntity
 	entity m_eRescuer;
 	int m_iUsed;
 	int m_iScared;
-	void() hostage_entity;
+	void(void) hostage_entity;
 
-	virtual void() touch;
-	virtual void() Hide;
-	virtual void() Respawn;
-	virtual void() PlayerUse;
+	virtual void(void) touch;
+	virtual void(void) Hide;
+	virtual void(void) Respawn;
+	virtual void(void) PlayerUse;
 	virtual void(int) Pain;
 	virtual void(int) Death;
-	virtual void() Physics;
+	virtual void(void) Physics;
 };
 
 void hostage_entity::Physics(void)

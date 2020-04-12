@@ -14,7 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void FX_Gunsmoke(vector inworldpos)
+void
+FX_Gunsmoke(vector inworldpos)
 {
 	
 }

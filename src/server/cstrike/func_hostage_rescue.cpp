@@ -30,5 +30,11 @@ zones will be placed in Counter-Terrorist player spawn nodes automatically.
 
 class func_hostage_rescue:CBaseTrigger
 {
-	
+	virtual void(void) Respawn;
 }; 
+
+void
+func_hostage_rescue::Respawn(void)
+{
+	InitBrushTrigger();
+}

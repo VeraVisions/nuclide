@@ -43,8 +43,8 @@ class env_sprite:CBaseTrigger
 	float m_flScale;
 	float m_flEffects;
 
-	void() env_sprite;
-	virtual void() Trigger;
+	void(void) env_sprite;
+	virtual void(void) Trigger;
 	virtual float(entity, float) Network;
 };
 
@@ -72,7 +72,7 @@ float env_sprite::Network(entity pvsent, float flags)
 
 void env_sprite::NetworkOnce(void)
 {
-	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET );
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_SPRITE);
 	WriteCoord(MSG_MULTICAST, origin[0]);
 	WriteCoord(MSG_MULTICAST, origin[1]);
@@ -86,7 +86,7 @@ void env_sprite::NetworkOnce(void)
 	WriteFloat(MSG_MULTICAST, colormod[1]);
 	WriteFloat(MSG_MULTICAST, colormod[2]);
 	msg_entity = this;
-	multicast( origin, MULTICAST_PVS );
+	multicast(origin, MULTICAST_PVS);
 }
 
 void env_sprite::Trigger(void)
@@ -101,13 +101,13 @@ void env_sprite::Trigger(void)
 
 void env_sprite::env_sprite(void)
 {
-	for (int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2) {
-		switch ( argv( i ) ) {
+	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
+		switch (argv(i)) {
 		case "framerate":
-			m_flFramerate = stof(argv(i + 1));
+			m_flFramerate = stof(argv(i+1));
 			break;
 		case "scale":
-			m_flScale = stof(argv(i + 1));
+			m_flScale = stof(argv(i+1));
 			break;
 		default:
 			break;

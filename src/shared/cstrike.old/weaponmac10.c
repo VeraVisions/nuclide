@@ -45,7 +45,8 @@ weaponinfo_t wptMAC10 = {
 };
 
 // Anim Table
-enum {
+enum
+{
 	ANIM_MAC10_IDLE,
 	ANIM_MAC10_RELOAD,
 	ANIM_MAC10_DRAW,
@@ -54,39 +55,39 @@ enum {
 	ANIM_MAC10_SHOOT3
 };
 
-void WeaponMAC10_Draw( void ) {
-#ifdef SSQC
+void WeaponMAC10_Draw(void) {
+#ifdef SERVER
 	BaseGun_Draw();
 #else
-	View_PlayAnimation( ANIM_MAC10_DRAW );
+	View_PlayAnimation(ANIM_MAC10_DRAW);
 #endif
 }
 
-void WeaponMAC10_PrimaryFire( void ) {
-#ifdef SSQC
-	if ( BaseGun_PrimaryFire() == TRUE ) {
-		sound( self, CHAN_WEAPON, "weapons/mac10-1.wav", 1, ATTN_NORM );
+void WeaponMAC10_PrimaryFire(void) {
+#ifdef SERVER
+	if (BaseGun_PrimaryFire() == TRUE) {
+		sound(self, CHAN_WEAPON, "weapons/mac10-1.wav", 1, ATTN_NORM);
 	}
 #else
-	int iRand = (int)floor( random( 1, 4 ) );
+	int iRand = (int)floor(random(1, 4));
 	
-	if ( iRand == 1 ) {
-		View_PlayAnimation( ANIM_MAC10_SHOOT1 );
-	} else if ( iRand == 2 ) {
-		View_PlayAnimation( ANIM_MAC10_SHOOT2 );
+	if (iRand == 1) {
+		View_PlayAnimation(ANIM_MAC10_SHOOT1);
+	} else if (iRand == 2) {
+		View_PlayAnimation(ANIM_MAC10_SHOOT2);
 	} else {
-		View_PlayAnimation( ANIM_MAC10_SHOOT3 );
+		View_PlayAnimation(ANIM_MAC10_SHOOT3);
 	}
-	BaseGun_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle(1);
 #endif
 }
 
-void WeaponMAC10_Reload( void ) {
-#ifdef SSQC
-	if ( BaseGun_Reload() == TRUE ) {
+void WeaponMAC10_Reload(void) {
+#ifdef SERVER
+	if (BaseGun_Reload() == TRUE) {
 		// Play Sound
 	}
 #else
-	View_PlayAnimation( ANIM_MAC10_RELOAD );
+	View_PlayAnimation(ANIM_MAC10_RELOAD);
 #endif
 }

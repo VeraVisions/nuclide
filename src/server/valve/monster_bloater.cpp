@@ -24,7 +24,7 @@ Flocking Floater
 
 class monster_bloater:CBaseMonster
 {
-	void() monster_bloater;
+	void(void) monster_bloater;
 };
 
 void monster_bloater::monster_bloater(void)

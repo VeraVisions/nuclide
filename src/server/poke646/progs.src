@@ -2,6 +2,7 @@
 #pragma progs_dat  "../../../poke646/data.pk3dir/progs.dat"
 
 #define QWSSQC
+#define SERVER
 #define VALVE
 #define POKE646
 
@@ -21,7 +22,9 @@
 ../nodes.c
 ../skill.c
 ../sentences.c
+
 ../../gs-entbase/server.src
+../../gs-entbase/shared.src
 
 ../valve/monster_apache.cpp
 ../valve/monster_alien_controller.cpp
@@ -58,9 +61,7 @@
 ../valve/monster_turret.cpp
 ../valve/monster_zombie.cpp
 
-../../shared/decals.c
 ../../shared/effects.c
-../../shared/spraylogo.cpp
 ../../shared/poke646/player.cpp
 ../valve/player.c
 ../../shared/pmove.c

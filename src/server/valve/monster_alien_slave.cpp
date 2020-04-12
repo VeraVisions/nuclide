@@ -22,7 +22,8 @@ Alien Slave
 
 */
 
-enum {
+enum
+{
 	SLV_IDLE,
 	SLV_IDLE2,
 	SLV_IDLE3,
@@ -60,7 +61,7 @@ class monster_alien_slave:CBaseNPC
 	float m_flIdleTime;
 	float m_flPainTime;
 
-	void() monster_alien_slave;
+	void(void) monster_alien_slave;
 	
 	virtual void(int) Death;
 	virtual void(int) Pain;

@@ -19,17 +19,18 @@ class decal
 	string m_strShader;
 	string m_strTexture;
 
-#ifdef SSQC
+#ifdef SERVER
 	virtual float(entity, float) SendEntity;
 #else
-	virtual void() ReadEntity;
+	virtual void(void) ReadEntity;
 	virtual float() predraw;
-	virtual void() BuildShader;
+	virtual void(void) BuildShader;
 #endif
 	virtual void(vector, string) Place;
 };
 
-typedef struct {
+typedef struct
+{
 	float fraction;
 	vector normal;
 	vector endpos;
@@ -76,7 +77,7 @@ decal_pickwall(entity dself, vector vpos)
 
 	/* pick whatever wall is closest */
 	for (int i = 0; i < 6; i++) {
-		if ( tmp[i].fraction < frac ) {
+		if (tmp[i].fraction < frac) {
 			frac = tmp[i].fraction;
 			g_tracedDecal.fraction = tmp[i].fraction;
 			g_tracedDecal.endpos = tmp[i].endpos;

@@ -28,7 +28,8 @@ Price: $300
 
 */
 
-enum {
+enum
+{
 	SMOKEGRENADE_IDLE,
 	SMOKEGRENADE_PULLPIN,
 	SMOKEGRENADE_THROW,
@@ -38,7 +39,7 @@ enum {
 void
 w_smokegrenade_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_smokegrenade.bounce");
 	Sound_Precache("weapon_smokegrenade.explode");
 #endif
@@ -50,7 +51,7 @@ w_smokegrenade_precache(void)
 void
 w_smokegrenade_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, pl.ammo_smokegrenade, pl.a_ammo3);
 #endif
 }
@@ -58,7 +59,7 @@ w_smokegrenade_updateammo(player pl)
 int
 w_smokegrenade_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (pl.ammo_smokegrenade < 3) {
@@ -95,16 +96,16 @@ w_smokegrenade_draw(void)
 	Weapons_ViewAnimation(SMOKEGRENADE_DRAW);
 }
 
-#ifdef SSQC
+#ifdef SERVER
 void w_smokegrenade_throw(void)
 {
-	static void smokegrenade_explode( void )
+	static void smokegrenade_explode(void)
 	{
 		Sound_Play(self, CHAN_BODY, "weapon_smokegrenade.explode");
 		remove(self);
 	}
 	
-	static void smokegrenade_touch( void )
+	static void smokegrenade_touch(void)
 	{
 		if (other.takedamage == DAMAGE_YES) {
 			Damage_Apply(other, self.owner, 15, WEAPON_SMOKEGRENADE, DMG_BLUNT);
@@ -116,18 +117,18 @@ void w_smokegrenade_throw(void)
 
 	player pl = (player)self;
 	vector vPLAngle = pl.v_angle;
-	if ( vPLAngle[0] < 0 ) {
+	if (vPLAngle[0] < 0) {
 		vPLAngle[0] = -10 + vPLAngle[0] * ((90 - 10) / 90.0);
 	} else {
 		vPLAngle[0] = -10 + vPLAngle[0] * ((90 + 10) / 90.0);
 	}
 
 	float flVel = (90 - vPLAngle[0]) * 5;
-	if ( flVel > 1000 ) {
+	if (flVel > 1000) {
 		flVel = 1000;
 	}
 
-	makevectors( vPLAngle );
+	makevectors(vPLAngle);
 	vector vecSrc = pl.origin + pl.view_ofs + v_forward * 16;
 	vector vecThrow = v_forward * flVel + pl.velocity;
 
@@ -141,9 +142,9 @@ void w_smokegrenade_throw(void)
 	eGrenade.think = smokegrenade_explode;
 	eGrenade.touch = smokegrenade_touch;
 	eGrenade.nextthink = time + 4.0f;
-	setmodel( eGrenade, "models/w_smokegrenade.mdl" );
-	setsize( eGrenade, [0,0,0], [0,0,0] );
-	setorigin( eGrenade, vecSrc );
+	setmodel(eGrenade, "models/w_smokegrenade.mdl");
+	setsize(eGrenade, [0,0,0], [0,0,0]);
+	setorigin(eGrenade, vecSrc);
 }
 #endif
 
@@ -161,7 +162,7 @@ w_smokegrenade_primary(void)
 	}
 
 	/* Ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo2 <= 0) {
 		return;
 	}
@@ -187,7 +188,7 @@ w_smokegrenade_release(void)
 	}
 
 	if (pl.a_ammo3 == 1) {
-#ifdef CSQC
+#ifdef CLIENT
 		pl.a_ammo2--;
 		Weapons_ViewAnimation(SMOKEGRENADE_THROW);
 #else
@@ -198,7 +199,7 @@ w_smokegrenade_release(void)
 		pl.w_attack_next = 1.0f;
 		pl.w_idle_next = 0.5f;
 	} else if (pl.a_ammo3 == 2) {
-#ifdef CSQC
+#ifdef CLIENT
 		Weapons_ViewAnimation(SMOKEGRENADE_DRAW);
 #else
 		if (!pl.ammo_smokegrenade) {
@@ -220,17 +221,17 @@ w_smokegrenade_aimanim(void)
 void
 w_smokegrenade_hud(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [144/256,96/256], [24/256, 24/256], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [144/256,96/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
 void
 w_smokegrenade_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -282,7 +283,7 @@ weapon_t w_smokegrenade =
 	w_smokegrenade_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_smokegrenade(void)
 {

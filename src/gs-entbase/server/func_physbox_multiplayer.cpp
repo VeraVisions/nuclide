@@ -3,9 +3,9 @@ class func_physbox:CBaseEntity
 {
 	int m_iShape;
 
-	void() func_physbox;
-	virtual void() Respawn;
-	virtual void() touch;
+	void(void) func_physbox;
+	virtual void(void) Respawn;
+	virtual void(void) touch;
 };
 
 void func_physbox::touch(void)
@@ -35,7 +35,7 @@ void func_physbox::func_physbox(void)
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
 		case "material":
-			//m_iMaterial = stof(argv(i + 1));
+			//m_iMaterial = stof(argv(i+1));
 			break;
 		default:
 			break;

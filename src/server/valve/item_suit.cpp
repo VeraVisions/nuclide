@@ -24,10 +24,10 @@ Provides the player with armor, a flashlight and a Heads-Up-Display.
 */
 class item_suit:CBaseTrigger
 {
-	void() item_suit;
+	void(void) item_suit;
 
-	virtual void() touch;
-	virtual void() Respawn;
+	virtual void(void) touch;
+	virtual void(void) Respawn;
 };
 
 void item_suit::touch(void)

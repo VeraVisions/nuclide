@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifdef SSQC
+#ifdef SERVER
 void
 Spray_RemoveAll(entity entOwner)
 {
@@ -83,7 +83,7 @@ CSEv_Spraylogo(void)
 }
 #endif
 
-#ifdef CSQC
+#ifdef CLIENT
 class CSpraylogo
 {
 	vector m_vecPosition;

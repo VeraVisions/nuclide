@@ -19,14 +19,15 @@
 .float fWasCrouching;
 
 // For lerping, sigh
-#ifdef CSQC
+#ifdef CLIENT
 .float frame_last;
 .float baseframe_last;
 #else
 .float subblend2frac;
 #endif
 
-enum {
+enum
+{
 	ANIM_DUMMY1,
 	ANIM_IDLE,
 	ANIM_IDLE_CROUCH,
@@ -125,11 +126,11 @@ enum {
 };
 
 
-void Animation_Print( string sWow ) {
-#ifdef CSQC
-	print( sprintf( "[DEBUG] %s", sWow ) );
+void Animation_Print(string sWow) {
+#ifdef CLIENT
+	print(sprintf("[DEBUG] %s", sWow));
 #else 
-	bprint(PRINT_HIGH, sprintf( "SSQC: %s", sWow )  );
+	bprint(PRINT_HIGH, sprintf("SSQC: %s", sWow) );
 #endif	
 }
 
@@ -141,12 +142,12 @@ Called every frame to update the animation sequences
 depending on what the player is doing
 =================
 */
-void Animation_PlayerUpdate( void ) {
+void Animation_PlayerUpdate(void) {
 	self.basebone = 40;
 	
 	// TODO: Make this faster
-	if ( self.baseframe_time < time ) {
-		switch ( Weapon_GetAnimType( self.weapon ) ) {
+	if (self.baseframe_time < time) {
+		switch (Weapon_GetAnimType(self.weapon)) {
 			case ATYPE_AK47:
 				self.baseframe = self.flags & FL_CROUCHING ? ANIM_CROUCH_AIM_AK47 : ANIM_AIM_AK47;
 				break;
@@ -184,46 +185,46 @@ void Animation_PlayerUpdate( void ) {
 		self.baseframe_old = self.baseframe;
 	}
 	
-	if ( !( self.flags & FL_ONGROUND ) ) {
+	if (!(self.flags & FL_ONGROUND)) {
 		self.frame = ANIM_JUMP;
-	} else if ( vlen( self.velocity ) == 0 ) {
-		if ( self.flags & FL_CROUCHING ) {
+	} else if (vlen(self.velocity) == 0) {
+		if (self.flags & FL_CROUCHING) {
 			self.frame = ANIM_IDLE_CROUCH;
 		} else {
 			self.frame = ANIM_IDLE;
 		}
-	} else if ( vlen( self.velocity ) < 150 ) {
-		if ( self.flags & FL_CROUCHING ) {
+	} else if (vlen(self.velocity) < 150) {
+		if (self.flags & FL_CROUCHING) {
 			self.frame = ANIM_RUN_CROUCH;
 		} else {
 			self.frame = ANIM_WALK;
 		}
-	} else if ( vlen( self.velocity ) > 150 ) {
-		if ( self.flags & FL_CROUCHING ) {
+	} else if (vlen(self.velocity) > 150) {
+		if (self.flags & FL_CROUCHING) {
 			self.frame = ANIM_RUN_CROUCH;
 		} else {
 			self.frame = ANIM_RUN;
 		}
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	// Lerp it down!
-	if ( self.lerpfrac > 0 ) {
+	if (self.lerpfrac > 0) {
 		self.lerpfrac -= frametime * 5;
-		if ( self.lerpfrac < 0 ) {
+		if (self.lerpfrac < 0) {
 			self.lerpfrac = 0;
 		}
 	}
 
-	if ( self.baselerpfrac > 0 ) {
+	if (self.baselerpfrac > 0) {
 		self.baselerpfrac -= frametime * 5;
-		if ( self.baselerpfrac < 0 ) {
+		if (self.baselerpfrac < 0) {
 			self.baselerpfrac = 0;
 		}
 	}
 
-	if ( self.frame != self.frame_last ) {
-		//Animation_Print( sprintf( "New Frame: %d, Last Frame: %d\n", self.frame, self.frame_last ));
+	if (self.frame != self.frame_last) {
+		//Animation_Print(sprintf("New Frame: %d, Last Frame: %d\n", self.frame, self.frame_last));
 		
 		// Move everything over to frame 2
 		self.frame2time = self.frame1time;
@@ -236,8 +237,8 @@ void Animation_PlayerUpdate( void ) {
 		self.frame1time = 0.0f;
 	}
 	
-	if ( self.baseframe != self.baseframe_last ) {
-		//Animation_Print( sprintf( "New Baseframe: %d, Last Baseframe: %d\n", self.baseframe, self.baseframe_last ) );
+	if (self.baseframe != self.baseframe_last) {
+		//Animation_Print(sprintf("New Baseframe: %d, Last Baseframe: %d\n", self.baseframe, self.baseframe_last));
 		
 		// Move everything over to frame 2
 		self.baseframe2time = self.baseframe1time;
@@ -254,18 +255,18 @@ void Animation_PlayerUpdate( void ) {
 #endif
 	self.angles[0] = self.angles[2] = 0;
 	
-	if ( !( self.flags & FL_ONGROUND ) ) {
+	if (!(self.flags & FL_ONGROUND)) {
 		self.frame = ANIM_JUMP;
 	}
 	
 	// Force the code above to update if we switched positions
-	if ( self.fWasCrouching != ( self.flags & FL_CROUCHING ) ) {
+	if (self.fWasCrouching != (self.flags & FL_CROUCHING)) {
 		self.baseframe_old = 0;
 		self.baseframe_time = 0;
-		self.fWasCrouching = ( self.flags & FL_CROUCHING );
+		self.fWasCrouching = (self.flags & FL_CROUCHING);
 	}
 
-#ifdef SSQC
+#ifdef SERVER
 	// On the CSQC it's done in Player.c
 	self.subblend2frac = self.v_angle[0] / 90;
 #endif
@@ -278,18 +279,18 @@ Animation_PlayerTop
 Changes the animation sequence for the upper body part
 =================
 */
-void Animation_PlayerTop( float fFrame ) {
+void Animation_PlayerTop(float fFrame) {
 	self.baseframe = fFrame;
 	self.baseframe_old = fFrame;
 }
 
-void Animation_PlayerTopTemp( float fFrame, float fTime ) {
+void Animation_PlayerTopTemp(float fFrame, float fTime) {
 	self.baseframe = fFrame;
 	self.baseframe_time = time + fTime;
 }
 
-void Animation_ShootWeapon( entity ePlayer ) {
-	switch ( Weapon_GetAnimType( ePlayer.weapon )  ) {
+void Animation_ShootWeapon(entity ePlayer) {
+	switch (Weapon_GetAnimType(ePlayer.weapon) ) {
 		case ATYPE_AK47:
 			ePlayer.baseframe = ePlayer.flags & FL_CROUCHING ? ANIM_CROUCH_SHOOT_AK47 : ANIM_SHOOT_AK47;
 			break;
@@ -325,11 +326,11 @@ void Animation_ShootWeapon( entity ePlayer ) {
 			break;
 	}
 	
-	ePlayer.baseframe_time = time + Weapon_GetFireRate( ePlayer.weapon );
+	ePlayer.baseframe_time = time + Weapon_GetFireRate(ePlayer.weapon);
 }
 
-void Animation_ReloadWeapon( entity ePlayer ) {
-	switch ( Weapon_GetAnimType( ePlayer.weapon )  ) {
+void Animation_ReloadWeapon(entity ePlayer) {
+	switch (Weapon_GetAnimType(ePlayer.weapon) ) {
 		case ATYPE_AK47:
 			ePlayer.baseframe = ePlayer.flags & FL_CROUCHING ? ANIM_CROUCH_RELOAD_AK47 : ANIM_RELOAD_AK47;
 			break;
@@ -365,5 +366,5 @@ void Animation_ReloadWeapon( entity ePlayer ) {
 			break;
 	}
 	
-	ePlayer.baseframe_time = time + Weapon_GetReloadTime( ePlayer.weapon );
+	ePlayer.baseframe_time = time + Weapon_GetReloadTime(ePlayer.weapon);
 }

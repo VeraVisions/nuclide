@@ -40,7 +40,7 @@ int Items_CheckItem(entity pl, int i) {
  */
 void
 PMove_Init(void) {
-#ifdef SSQC
+#ifdef SERVER
 	localcmd("serverinfo phy_stepheight 18\n");
 	localcmd("serverinfo phy_airstepheight 18\n");
 	localcmd("serverinfo phy_friction 4\n");
@@ -49,14 +49,14 @@ PMove_Init(void) {
 	localcmd("serverinfo phy_gravity 800\n");
 	localcmd("serverinfo phy_airaccelerate 10\n");
 
-#ifdef CSTRIKE
-	localcmd("serverinfo phy_accelerate 4\n");
-	localcmd("serverinfo phy_maxspeed 240\n");
-#endif
-
 #ifdef VALVE
 	localcmd("serverinfo phy_accelerate 8\n");
 	localcmd("serverinfo phy_maxspeed 270\n");
+#endif
+	
+#ifdef CSTRIKE
+	localcmd("serverinfo phy_accelerate 4\n");
+	localcmd("serverinfo phy_maxspeed 240\n");
 #endif
 #endif
 }
@@ -107,7 +107,7 @@ PMove_Categorize(void)
 	if (!trace_startsolid) {
 		if ((trace_fraction < 1) && (trace_plane_normal[2] > 0.7)) {
 			self.flags |= FL_ONGROUND;
-			self.flags &= ~FL_WATERJUMP;
+			//self.flags &= ~FL_WATERJUMP;
 			self.groundentity = trace_ent;
 
 			if (self.groundentity) {
@@ -258,7 +258,7 @@ PMove_CheckWaterJump(void)
 		traceline(vStart, vEnd, TRUE, self);
 		
 		if (trace_fraction == 1) {
-			self.flags |= FL_WATERJUMP;
+			//self.flags |= FL_WATERJUMP;
 			self.velocity[2] = 350;
 			self.flags &= ~FL_JUMPRELEASED;
 			return;
@@ -464,8 +464,8 @@ PMove_AccelJump(float move_time, float premove)
 		return;
 	}
 
-	if (self.flags & FL_WATERJUMP)
-		return;
+	/*if (self.flags & FL_WATERJUMP)
+		return;*/
 	if (!(self.flags & FL_ONGROUND))
 		return;
 	if (!(self.flags & FL_JUMPRELEASED))

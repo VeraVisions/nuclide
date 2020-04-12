@@ -28,7 +28,7 @@ enum
 void
 w_ap9_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_ap9.fire");
 #endif
 	precache_model("models/v_ap9.mdl");
@@ -42,7 +42,7 @@ w_ap9_precache(void)
 void
 w_ap9_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.ap9_mag, pl.ammo_ap9, -1);
 #endif
 }
@@ -68,7 +68,7 @@ w_ap9_deathmsg(void)
 int
 w_ap9_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -87,7 +87,7 @@ w_ap9_pickup(int new)
 void
 w_ap9_draw(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	Weapons_SetModel("models/v_ap9.mdl");
 	Weapons_ViewAnimation(AP9_DRAW);
 #endif
@@ -109,7 +109,7 @@ w_ap9_primary(void)
 	}
 
 	/* ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (!pl.a_ammo1) {
 		return;
 	}
@@ -120,7 +120,7 @@ w_ap9_primary(void)
 #endif
 
 	/* actual firing */
-#ifdef CSQC
+#ifdef CLIENT
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_SMALL);
 	Weapons_ViewPunchAngle([-2,0,0]);
@@ -163,7 +163,7 @@ w_ap9_secondary(void)
 	}
 
 	/* ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (!pl.a_ammo1) {
 		return;
 	}
@@ -173,7 +173,7 @@ w_ap9_secondary(void)
 	}
 #endif
 
-#ifdef CSQC
+#ifdef CLIENT
 	pl.a_ammo1 -= 3;
 	View_SetMuzzleflash(MUZZLE_SMALL);
 	Weapons_ViewPunchAngle([-2,0,0]);
@@ -214,7 +214,7 @@ w_ap9_reload(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 >= 40) {
 		return;
 	}
@@ -265,7 +265,7 @@ w_ap9_hud(void)
 void
 w_ap9_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -318,7 +318,7 @@ weapon_t w_ap9 =
 };
 
 /* pickups */
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_th_ap9(void)
 {

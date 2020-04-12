@@ -23,10 +23,11 @@ All entities touching this volume would carry across to the next level.
 
 class trigger_transition
 {
-	void() trigger_transition;
+	void(void) trigger_transition;
 };
 
-void trigger_transition::trigger_transition(void)
+void
+trigger_transition::trigger_transition(void)
 {
 	solid = SOLID_NOT;
 	movetype = MOVETYPE_NONE;

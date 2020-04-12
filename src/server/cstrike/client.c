@@ -170,96 +170,32 @@ Game_RunClientCommand(void)
 }
 
 void
-Game_DecodeChangeParms(void)
-{
-	player pl = (player)self;
-	g_landmarkpos[0] = parm1;
-	g_landmarkpos[1] = parm2;
-	g_landmarkpos[2] = parm3;
-	pl.angles[0] = parm4;
-	pl.angles[1] = parm5;
-	pl.angles[2] = parm6;
-	pl.velocity[0] = parm7;
-	pl.velocity[1] = parm8;
-	pl.velocity[2] = parm9;
-	pl.g_items = parm10;
-	pl.activeweapon = parm11;
-}
-
-void
-Game_SetChangeParms(void)
-{
-	player pl = (player)self;
-	parm1 = g_landmarkpos[0];
-	parm2 = g_landmarkpos[1];
-	parm3 = g_landmarkpos[2];
-	parm4 = pl.angles[0];
-	parm5 = pl.angles[1];
-	parm6 = pl.angles[2];
-	parm7 = pl.velocity[0];
-	parm8 = pl.velocity[1];
-	parm9 = pl.velocity[2];
-	parm10 = pl.g_items;
-	parm11 = pl.activeweapon;
-}
-
-void
 Game_PutClientInServer(player pl)
 {
-	entity spot;
-	pl.classname = "player";
-	pl.health = self.max_health = 100;
-
-	pl.takedamage = DAMAGE_YES;
-	pl.solid = SOLID_SLIDEBOX;
-	pl.movetype = MOVETYPE_WALK;
-	pl.flags = FL_CLIENT;
-	pl.viewzoom = 1.0;
-	pl.model = "models/player.mdl";
-	
-	string mymodel = infokey(pl, "model");
-
-	if (mymodel) {
-		mymodel = sprintf("models/player/%s/%s.mdl", mymodel, mymodel);
-		if (whichpack(mymodel)) {
-			pl.model = mymodel;
-		}
-	} 
-	setmodel(pl, pl.model);
-
-	setsize(pl, VEC_HULL_MIN, VEC_HULL_MAX);
-	pl.view_ofs = VEC_PLAYER_VIEWPOS;
-	pl.velocity = [0,0,0];
-	pl.gravity = __NULL__;
-	pl.frame = 1;
+	pl.classname = "spectator";
+	pl.health = 0;
+	pl.armor = 0;
+	pl.takedamage = DAMAGE_NO;
+	pl.solid = SOLID_NOT;
+	pl.movetype = MOVETYPE_NOCLIP;
 	pl.SendEntity = Player_SendEntity;
-	pl.SendFlags = UPDATE_ALL;
+	pl.flags = FL_CLIENT;
+	pl.weapon = 0;
+	pl.viewzoom = 1.0f;
+	pl.model = 0;
+	setsize (pl, [-16,-16,-16], [16,16,16]);
+	pl.view_ofs = pl.velocity = [0,0,0];
+	forceinfokey(pl, "*spec", "2");
+	entity eTarget = world;
 
-	pl.customphysics = Empty;
-	pl.Pain = Player_Pain;
-	pl.Death = Player_Death;
-	pl.iBleeds = TRUE;
-	forceinfokey(pl, "*spec", "0");
-	forceinfokey(self, "*deaths", ftos(self.deaths));
+	Spawn_MakeSpectator();
+	Spawn_ObserverCam();
 
-	if (cvar("sv_playerslots") == 1) {
-		Game_DecodeChangeParms();
-
-		if (startspot != "") {
-			setorigin(pl, Landmark_GetSpot());
-		} else {
-			spot = find(world, classname, "info_player_start");
-			setorigin(pl, spot.origin);
-			pl.angles = spot.angles;
-			pl.fixangle = TRUE;
-		}
-	} else {
-		spot = Spawn_SelectRandom("info_player_deathmatch");
-		setorigin(pl, spot.origin);
-		pl.angles = spot.angles;
-		pl.fixangle = TRUE;
-		pl.g_items |= ITEM_SUIT;
-	}
+	// Because we don't want to reset these when we die
+	Money_AddMoney(pl, autocvar_mp_startmoney);
+	
+	pl.team = 0;
+	forceinfokey(pl, "*team", "0"); 
 }
 
 void

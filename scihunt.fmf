@@ -13,7 +13,7 @@ BASEGAME scihunt
 -set gameinfo_fallback_dir ""
 -set gameinfo_mpentity "info_player_deathmatch"
 -set gameinfo_size "12869244"
--set gameinfo_version "1.0"
+-set gameinfo_version "1.2"
 -set gameinfo_hlversion "1110"
 -set gameinfo_nomodels 0
 -set gameinfo_gamedll "progs.dat"
@@ -25,10 +25,9 @@ BASEGAME scihunt
 -set gameinfo_url_dl "http://www.frag-net.com/mods/scihunt.fmf"
 -set gameinfo_menutrack "sound/Hondo2/pca.wav"
 
-// download/update packaging information
+DOWNLOADSURL http://www.frag-net.com/dl/scihunt_packages
 UPDATEURL http://www.frag-net.com/mods/scihunt.fmf
-PACKAGE scihunt/pak0.pk3 0xc1cbd5c1 "http://www.frag-net.com/dl/c1cbd5c1/file.pk3"
-PACKAGE logos/pakrm_logos.pk3 0xd318299 "http://www.frag-net.com/dl/d318299/file.pk3"
+INSTALL "scihunt_essential;valve_essential;free_essential;addons_essential"
 
 // you don't really want to change these
 RTCBROKER master.frag-net.com:27950

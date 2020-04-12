@@ -96,9 +96,9 @@ HUD_DrawSeperator(vector pos)
 
 /* handle single/multiple digits */
 void
-HUD_DrawNumber(int iNumber, vector vPos, float fAlpha, vector vColor)
+HUD_DrawNumber(int iNumber, vector vecPos, float fAlpha, vector vColor)
 {
-	drawsubpic(vPos,
+	drawsubpic(vecPos,
 		[24,24],
 		HUD_NUMS,
 		[spr_hudnum[iNumber], 0],
@@ -110,17 +110,17 @@ HUD_DrawNumber(int iNumber, vector vPos, float fAlpha, vector vColor)
 }
 
 void
-HUD_DrawNums(float fNumber, vector vPos, float fAlpha, vector vColor)
+HUD_DrawNums(float fNumber, vector vecPos, float fAlpha, vector vColor)
 {
 	int i = fNumber;
 	if (i > 0) {
 		while (i > 0) {
-			HUD_DrawNumber((float)i % 10, vPos, fAlpha, vColor);
+			HUD_DrawNumber((float)i % 10, vecPos, fAlpha, vColor);
 			i = i / 10;
-			vPos[0] -= 20;
+			vecPos[0] -= 20;
 		}
 	} else {
-		HUD_DrawNumber(0, vPos, fAlpha, vColor);
+		HUD_DrawNumber(0, vecPos, fAlpha, vColor);
 	}
 }
 
@@ -129,16 +129,16 @@ void
 HUD_DrawHealth(void)
 {
 	vector pos;
-	player pl = (player)pSeat->ePlayer;
+	player pl = (player)pSeat->m_ePlayer;
 
-	if (pl.health != pSeat->health_old) {
-		pSeat->health_alpha = 1.0;
+	if (pl.health != pSeat->m_iHealthOld) {
+		pSeat->m_flHealthAlpha = 1.0;
 	}
 
-	if (pSeat->health_alpha >= HUD_ALPHA) {
-		pSeat->health_alpha -= clframetime * 0.5;
+	if (pSeat->m_flHealthAlpha >= HUD_ALPHA) {
+		pSeat->m_flHealthAlpha -= clframetime * 0.5;
 	} else {
-		pSeat->health_alpha = HUD_ALPHA;
+		pSeat->m_flHealthAlpha = HUD_ALPHA;
 	}
 
 	pos = g_hudmins + [88, g_hudres[1] - 42];
@@ -150,10 +150,10 @@ HUD_DrawHealth(void)
 			[spr_health[0], spr_health[1]],
 			[spr_health[2], spr_health[3]],
 			g_hud_color,
-			pSeat->health_alpha,
+			pSeat->m_flHealthAlpha,
 			DRAWFLAG_ADDITIVE
 		);
-		HUD_DrawNums(pl.health, pos, pSeat->health_alpha, g_hud_color);
+		HUD_DrawNums(pl.health, pos, pSeat->m_flHealthAlpha, g_hud_color);
 	} else {
 		drawsubpic(
 			pos + [-72,-4],
@@ -162,13 +162,13 @@ HUD_DrawHealth(void)
 			[spr_health[0], spr_health[1]],
 			[spr_health[2], spr_health[3]],
 			[1,0,0],
-			pSeat->health_alpha,
+			pSeat->m_flHealthAlpha,
 			DRAWFLAG_ADDITIVE
 		);
-		HUD_DrawNums(pl.health, pos, pSeat->health_alpha, [1,0,0]);
+		HUD_DrawNums(pl.health, pos, pSeat->m_flHealthAlpha, [1,0,0]);
 	}
 
-	pSeat->health_old = pl.health;
+	pSeat->m_iHealthOld = pl.health;
 }
 
 /* armor/suit charge */
@@ -176,18 +176,18 @@ void
 HUD_DrawArmor(void)
 {
 	vector pos;
-	player pl = (player)pSeat->ePlayer;
+	player pl = (player)pSeat->m_ePlayer;
 
 	pos = g_hudmins + [198, g_hudres[1] - 42];
 	
-	if (pl.armor != pSeat->armor_old) {
-		pSeat->armor_alpha = 1.0;
+	if (pl.armor != pSeat->m_iArmorOld) {
+		pSeat->m_flArmorAlpha = 1.0;
 	}
 
-	if (pSeat->armor_alpha >= HUD_ALPHA) {
-		pSeat->armor_alpha -= clframetime * 0.5;
+	if (pSeat->m_flArmorAlpha >= HUD_ALPHA) {
+		pSeat->m_flArmorAlpha -= clframetime * 0.5;
 	} else {
-		pSeat->armor_alpha = HUD_ALPHA;
+		pSeat->m_flArmorAlpha = HUD_ALPHA;
 	}
 
 	drawsubpic(
@@ -197,7 +197,7 @@ HUD_DrawArmor(void)
 		[spr_suit2[0], spr_suit2[1]],
 		[spr_suit2[2], spr_suit2[3]],
 		g_hud_color,
-		pSeat->armor_alpha,
+		pSeat->m_flArmorAlpha,
 		DRAWFLAG_ADDITIVE
 	);
 
@@ -210,35 +210,35 @@ HUD_DrawArmor(void)
 			spr_suit1[1]],
 			[spr_suit1[2], spr_suit1[3] * (pl.armor / 100)],
 			g_hud_color,
-			pSeat->armor_alpha,
+			pSeat->m_flArmorAlpha,
 			DRAWFLAG_ADDITIVE
 		);
 	}
 
-	HUD_DrawNums(pl.armor, pos, pSeat->armor_alpha, g_hud_color);
-	pSeat->armor_old = pl.armor;
+	HUD_DrawNums(pl.armor, pos, pSeat->m_flArmorAlpha, g_hud_color);
+	pSeat->m_iArmorOld = pl.armor;
 }
 
 /* magazine/clip ammo */
 void
 HUD_DrawAmmo1(void)
 {
-	player pl = (player)pSeat->ePlayer;
+	player pl = (player)pSeat->m_ePlayer;
 	vector pos;
 
-	if (pl.a_ammo1 != pSeat->ammo1_old) {
-		pSeat->ammo1_alpha = 1.0;
-		pSeat->ammo1_old = pl.a_ammo1;
+	if (pl.a_ammo1 != pSeat->m_iAmmo1Old) {
+		pSeat->m_flAmmo1Alpha = 1.0;
+		pSeat->m_iAmmo1Old = pl.a_ammo1;
 	}
 
-	if (pSeat->ammo1_alpha >= HUD_ALPHA) {
-		pSeat->ammo1_alpha -= clframetime * 0.5;
+	if (pSeat->m_flAmmo1Alpha >= HUD_ALPHA) {
+		pSeat->m_flAmmo1Alpha -= clframetime * 0.5;
 	} else {
-		pSeat->ammo1_alpha = HUD_ALPHA;
+		pSeat->m_flAmmo1Alpha = HUD_ALPHA;
 	}
 
 	pos = g_hudmins + [g_hudres[0] - 152, g_hudres[1] - 42];
-	HUD_DrawNums(pl.a_ammo1, pos, pSeat->ammo1_alpha, g_hud_color);
+	HUD_DrawNums(pl.a_ammo1, pos, pSeat->m_flAmmo1Alpha, g_hud_color);
 	HUD_DrawSeperator(pos + [30,0]);
 }
 
@@ -246,44 +246,44 @@ HUD_DrawAmmo1(void)
 void
 HUD_DrawAmmo2(void)
 {
-	player pl = (player)pSeat->ePlayer;
+	player pl = (player)pSeat->m_ePlayer;
 	vector pos;
 
-	if (pl.a_ammo2 != pSeat->ammo2_old) {
-		pSeat->ammo2_alpha = 1.0;
-		pSeat->ammo2_old = pl.a_ammo2;
+	if (pl.a_ammo2 != pSeat->m_iAmmo2Old) {
+		pSeat->m_flAmmo2Alpha = 1.0;
+		pSeat->m_iAmmo2Old = pl.a_ammo2;
 	}
 
-	if (pSeat->ammo2_alpha >= HUD_ALPHA) {
-		pSeat->ammo2_alpha -= clframetime * 0.5;
+	if (pSeat->m_flAmmo2Alpha >= HUD_ALPHA) {
+		pSeat->m_flAmmo2Alpha -= clframetime * 0.5;
 	} else {
-		pSeat->ammo2_alpha = HUD_ALPHA;
+		pSeat->m_flAmmo2Alpha = HUD_ALPHA;
 	}
 
 	pos = g_hudmins + [g_hudres[0] - 72, g_hudres[1] - 42];
-	HUD_DrawNums(pl.a_ammo2, pos, pSeat->ammo2_alpha, g_hud_color);
+	HUD_DrawNums(pl.a_ammo2, pos, pSeat->m_flAmmo2Alpha, g_hud_color);
 }
 
 /* special ammo */
 void
 HUD_DrawAmmo3(void)
 {
-	player pl = (player)pSeat->ePlayer;
+	player pl = (player)pSeat->m_ePlayer;
 	vector pos;
 
-	if (pl.a_ammo3 != pSeat->ammo3_old) {
-		pSeat->ammo3_alpha = 1.0;
-		pSeat->ammo3_old = pl.a_ammo3;
+	if (pl.a_ammo3 != pSeat->m_iAmmo3Old) {
+		pSeat->m_flAmmo3Alpha = 1.0;
+		pSeat->m_iAmmo3Old = pl.a_ammo3;
 	}
 
-	if (pSeat->ammo3_alpha >= HUD_ALPHA) {
-		pSeat->ammo3_alpha -= clframetime * 0.5;
+	if (pSeat->m_flAmmo3Alpha >= HUD_ALPHA) {
+		pSeat->m_flAmmo3Alpha -= clframetime * 0.5;
 	} else {
-		pSeat->ammo3_alpha = HUD_ALPHA;
+		pSeat->m_flAmmo3Alpha = HUD_ALPHA;
 	}
 
 	pos = g_hudmins + [g_hudres[0] - 72, g_hudres[1] - 74];
-	HUD_DrawNums(pl.a_ammo3, pos, pSeat->ammo3_alpha, g_hud_color);
+	HUD_DrawNums(pl.a_ammo3, pos, pSeat->m_flAmmo3Alpha, g_hud_color);
 }
 
 /* flashlight/torch indicator */
@@ -291,7 +291,7 @@ void
 HUD_DrawFlashlight(void)
 {
 	vector pos;
-	player pl = (player)pSeat->ePlayer;
+	player pl = (player)pSeat->m_ePlayer;
 	pos = g_hudmins + [g_hudres[0] - 48, 16];
 
 	/* both on, draw both sprites at full intensity */
@@ -369,27 +369,27 @@ HUD_DrawNotify(void)
 {
 	vector pos;
 	
-	if (pSeat->pickup_alpha <= 0.0f) {
+	if (pSeat->m_flPickupAlpha <= 0.0f) {
 		return;
 	}
 
 	pos = g_hudmins + [g_hudres[0] - 192, g_hudres[1] - 128];
-	Weapons_HUDPic(pSeat->pickup_weapon, 1, pos, pSeat->pickup_alpha);
-	pSeat->pickup_alpha -= clframetime;
+	Weapons_HUDPic(pSeat->m_iPickupWeapon, 1, pos, pSeat->m_flPickupAlpha);
+	pSeat->m_flPickupAlpha -= clframetime;
 }
 
 void
 HUD_WeaponPickupNotify(int w)
 {
-	pSeat->pickup_weapon = w;
-	pSeat->pickup_alpha = 1.0f;
+	pSeat->m_iPickupWeapon = w;
+	pSeat->m_flPickupAlpha = 1.0f;
 }
 
 /* main entry */
 void
 HUD_Draw(void)
 {
-	player pl = (player)pSeat->ePlayer;
+	player pl = (player)pSeat->m_ePlayer;
 
 	g_hud_color = autocvar_con_color * (1 / 255);
 

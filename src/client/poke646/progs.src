@@ -2,6 +2,7 @@
 #pragma progs_dat  "../../../poke646/data.pk3dir/csprogs.dat"
 
 #define CSQC
+#define CLIENT
 #define VALVE
 #define POKE646
 
@@ -24,6 +25,7 @@
 ../sentences.c
 
 ../../gs-entbase/client.src
+../../gs-entbase/shared.src
 
 ../sky.c
 ../sound.c
@@ -37,9 +39,7 @@
 ../../shared/pmove.c
 ../valve/predict.c
 ../predict.c
-../../shared/decals.c
 ../../shared/effects.c
-../../shared/spraylogo.cpp
 ../npc.c
 init.c
 ../../shared/poke646/items.h
@@ -58,7 +58,6 @@ init.c
 ../valve/player.c
 entities.c
 ../entities.c
-../fx_lensflare.c
 ../fx_gunsmoke.c
 ../valve/cmds.c
 ../valve/game_event.c
@@ -68,6 +67,7 @@ entities.c
 ../damage.c
 ../obituary.c
 ../chat.c
+../textmenu.c
 ../vgui.cpp
 ../valve/hud.h
 ../valve/hud.c

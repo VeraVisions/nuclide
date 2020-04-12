@@ -29,9 +29,9 @@ The values can be tweaked in the skill.cfg file.
 */
 class item_battery:CBaseEntity
 {
-	void() item_battery;
-	virtual void() Respawn;
-	virtual void() touch;
+	void(void) item_battery;
+	virtual void(void) Respawn;
+	virtual void(void) touch;
 };
 
 void item_battery::touch(void)

@@ -198,10 +198,10 @@ float Player_SendEntity(entity ePEnt, float fChanged)
 }
 
 void Weapons_Draw(void);
-void CSEv_PlayerSwitchWeapon_f(float w)
+void CSEv_PlayerSwitchWeapon_i(int w)
 {
 	player pl = (player)self;
-	pl.activeweapon = (int)w;
+	pl.activeweapon = w;
 	Weapons_Draw();
 }
 

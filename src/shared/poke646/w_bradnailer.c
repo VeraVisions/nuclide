@@ -43,7 +43,7 @@ enum
 void
 w_bradnailer_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_bradnailer.fire");
 	Sound_Precache("weapon_bradnailer.hitbody");
 #endif
@@ -56,7 +56,7 @@ w_bradnailer_precache(void)
 void
 w_bradnailer_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.bradnailer_mag, pl.ammo_nail, -1);
 #endif
 }
@@ -87,7 +87,7 @@ w_bradnailer_holster(void)
 	Weapons_ViewAnimation(BNAIL_HOLSTER);
 }
 
-#ifdef SSQC
+#ifdef SERVER
 void
 w_bradnailer_shootnail(void)
 {
@@ -134,7 +134,7 @@ w_bradnailer_primary(void)
 		return;
 	}
 
-#ifdef SSQC
+#ifdef SERVER
 	w_bradnailer_shootnail();
 #else
 	Weapons_ViewPunchAngle([-2,0,0]);
@@ -163,7 +163,7 @@ w_bradnailer_secondary(void)
 		return;
 	}
 
-#ifdef SSQC
+#ifdef SERVER
 	w_bradnailer_shootnail();
 #else
 	Weapons_ViewPunchAngle([-2,0,0]);
@@ -210,7 +210,7 @@ w_bradnailer_release(void)
 void
 w_bradnailer_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -263,7 +263,7 @@ weapon_t w_bradnailer =
 };
 
 /* entity definitions for pickups */
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_bradnailer(void)
 {

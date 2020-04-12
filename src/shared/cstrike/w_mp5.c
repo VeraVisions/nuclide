@@ -26,7 +26,8 @@ Price: $1500
 
 */
 
-enum {
+enum
+{
 	MP5_IDLE,
 	MP5_RELOAD,
 	MP5_DRAW,
@@ -38,7 +39,7 @@ enum {
 void
 w_mp5_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_mp5.fire");
 #endif
 	precache_model("models/v_mp5.mdl");
@@ -49,7 +50,7 @@ w_mp5_precache(void)
 void
 w_mp5_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.mp5_mag, pl.ammo_9mm, -1);
 #endif
 }
@@ -75,7 +76,7 @@ w_mp5_deathmsg(void)
 int
 w_mp5_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -98,7 +99,7 @@ w_mp5_draw(void)
 	Weapons_SetModel("models/v_mp5.mdl");
 	Weapons_ViewAnimation(MP5_DRAW);
 
-#ifdef CSQC
+#ifdef CLIENT
 	pl.cs_cross_mindist = 5;
 	pl.cs_cross_deltadist = 2;
 #endif
@@ -113,7 +114,7 @@ w_mp5_primary(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (!pl.a_ammo1) {
 		return;
 	}
@@ -126,7 +127,7 @@ w_mp5_primary(void)
 	Cstrike_ShotMultiplierAdd(pl, 1);
 	float accuracy = Cstrike_CalculateAccuracy(pl, 220);
 
-#ifdef CSQC
+#ifdef CLIENT
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 #else
@@ -172,7 +173,7 @@ w_mp5_reload(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 >= 30) {
 		return;
 	}
@@ -205,19 +206,19 @@ w_mp5_aimanim(void)
 void
 w_mp5_hud(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	Cstrike_DrawCrosshair();
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [48/256,72/256], [24/256, 24/256], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [48/256,72/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
 void
 w_mp5_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -269,7 +270,7 @@ weapon_t w_mp5 =
 	w_mp5_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_mp5(void)
 {

@@ -60,29 +60,18 @@ Gamerules_SetNewParms(void)
 	parm29 = parm30 = 0;
 }
 
-/* called when the player first spawns/respawns */
 void
-Gamerules_Spawn(player pl)
+CSEv_JoinT_f(float c)
 {
-	entity spot;
+	player pl = (player)self;
+	pl.charmodel = c;
+	CSEv_GamePlayerSpawn_f(pl.charmodel);
+};
 
-	if (cvar("sv_playerslots") == 1 || cvar("coop") == 1) {
-		if (startspot != "") {
-			Gamerules_DecodeChangeParms(pl);
-			setorigin(pl, Landmark_GetSpot());
-		} else {
-			Gamerules_SetNewParms();
-			spot = find(world, classname, "info_player_start");
-			setorigin(pl, spot.origin);
-			pl.angles = spot.angles;
-		}
-		Weapons_RefreshAmmo(pl);
-	} else {
-		Gamerules_SetNewParms();
-		Gamerules_DecodeChangeParms(pl);
-		spot = Spawn_SelectRandom("info_player_deathmatch");
-		setorigin(pl, spot.origin);
-		pl.angles = spot.angles;
-	}
-	Client_FixAngle(pl, pl.angles);
+void
+CSEv_JoinCT_f(float c)
+{
+	player pl = (player)self;
+	pl.charmodel = c + 4;
+	CSEv_GamePlayerSpawn_f(pl.charmodel);
 }

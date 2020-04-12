@@ -22,7 +22,7 @@ Damage_Draw(void)
 	float fw, fw_alpha;
 	float rt, rt_alpha;
 
-	if (pSeat->damage_alpha <= 0.0) {
+	if (pSeat->m_flDamageAlpha <= 0.0) {
 		return;
 	}
 
@@ -34,12 +34,12 @@ Damage_Draw(void)
 	 * of each direction based on a dotproduct tested against our
 	 * camera direction.
 	 */
-	rel_pos = normalize(pSeat->damage_pos - getproperty(VF_ORIGIN));
+	rel_pos = normalize(pSeat->m_vecDamagePos - getproperty(VF_ORIGIN));
 	makevectors(getproperty(VF_CL_VIEWANGLES));
 	fw = dotproduct(rel_pos, v_forward);
 	rt = dotproduct(rel_pos, v_right);
 
-	fw_alpha = fabs(fw) * pSeat->damage_alpha;
+	fw_alpha = fabs(fw) * pSeat->m_flDamageAlpha;
 	if (fw > 0.25f) {
 		drawpic(center + [-64,-102], "sprites/640_pain.spr_0.tga", 
 			[128,48], [1,1,1], fw_alpha, DRAWFLAG_ADDITIVE);
@@ -48,7 +48,7 @@ Damage_Draw(void)
 			[128,48], [1,1,1], fw_alpha, DRAWFLAG_ADDITIVE);
 	}
 
-	rt_alpha = fabs(rt) * pSeat->damage_alpha;
+	rt_alpha = fabs(rt) * pSeat->m_flDamageAlpha;
 	if (rt > 0.25f) {
 		drawpic(center + [70,-64], "sprites/640_pain.spr_1.tga",
 			[48,128], [1,1,1], rt_alpha, DRAWFLAG_ADDITIVE);
@@ -57,7 +57,7 @@ Damage_Draw(void)
 			[48,128], [1,1,1], rt_alpha, DRAWFLAG_ADDITIVE);
 	}
 
-	pSeat->damage_alpha -= clframetime;
+	pSeat->m_flDamageAlpha -= clframetime;
 }
 
 /*
@@ -69,15 +69,15 @@ float
 CSQC_Parse_Damage(float save, float take, vector abs_pos)
 {
 	int s = (float)getproperty(VF_ACTIVESEAT);
-	pSeat = &seats[s];
+	pSeat = &g_seats[s];
 
 	/* FIXME: while a player shooting you from [0,0,0] is unlikely, it's
 	 * not impossible. we only do this to lazily seperate players from
 	 * entities belonging to world
 	 */
 	if (abs_pos) {
-		pSeat->damage_pos = abs_pos;
-		pSeat->damage_alpha = 1.0f;
+		pSeat->m_vecDamagePos = abs_pos;
+		pSeat->m_flDamageAlpha = 1.0f;
 	}
 
 	//View_AddPunchAngle([take,0,0]);

@@ -39,7 +39,7 @@ void w_chainsaw_precache(void)
 
 void w_chainsaw_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, __NULL__, __NULL__, __NULL__);
 #endif
 }
@@ -56,7 +56,7 @@ void w_chainsaw_draw(void)
 {
 	Weapons_SetModel("models/v_chainsaw.mdl");
 	Weapons_ViewAnimation(CHAINSAW_DEPLOY);
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 	Weapons_UpdateAmmo(pl, __NULL__, __NULL__, __NULL__);
 #endif
@@ -77,7 +77,7 @@ void w_chainsaw_primary(void)
 	pl.a_ammo3 = 1;
 	Weapons_ViewAnimation(CHAINSAW_CONTINUEFIRE);
 
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_MakeVectors();
 	vector src = pl.origin + pl.view_ofs;
 	traceline(src, src + (v_forward * 32), FALSE, pl);
@@ -138,7 +138,7 @@ float w_chainsaw_aimanim(void)
 
 void w_chainsaw_hudpic(int s, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (s) {
 		drawsubpic(pos, [170,45], "sprites/chainsaw.spr_0.tga",
 			[0,48/256], [170/256,45/256],

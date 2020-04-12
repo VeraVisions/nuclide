@@ -23,22 +23,17 @@ Init all the cmds in one place
 */
 void CSQC_ConsoleCommand_Init(void)
 {
-	
 	registercommand("dev_testorbituary");
 	registercommand("minimap");
 	registercommand("overview_test");
-	
 	registercommand("buy");
 	registercommand("motd");
 	registercommand("chooseteam");
-
 	registercommand("drop");
 	registercommand("nightvision");
-	
 	registercommand("radio1");
 	registercommand("radio2");
 	registercommand("radio3");
-	
 	registercommand("glock");
 	registercommand("usp");
 	registercommand("p228");
@@ -61,12 +56,10 @@ void CSQC_ConsoleCommand_Init(void)
 	registercommand("awp");
 	registercommand("g3sg1");
 	registercommand("m249");
-	
 	registercommand("primammo");
 	registercommand("buyammo1");
 	registercommand("secammo");
 	registercommand("buyammo2");
-	
 	registercommand("vest");
 	registercommand("vesthelm");
 	registercommand("flash");
@@ -74,7 +67,6 @@ void CSQC_ConsoleCommand_Init(void)
 	registercommand("vsgren");
 	registercommand("defuser");
 	registercommand("nvg");
-
 	registercommand("coverme");
 	registercommand("takepoint");
 	registercommand("holdpos");
@@ -122,7 +114,7 @@ float Game_ConsoleCommand(void)
 		VGUI_MessageOfTheDay();
 		break;
 	case "buy":
-		if(getstatf(STAT_BUYZONE) == TRUE) {
+		if (getstatf(STAT_BUYZONE) == TRUE) {
 			VGUI_BuyMenu();
 		}
 		break;
@@ -231,76 +223,76 @@ float Game_ConsoleCommand(void)
 		sendevent("PlayerBuyEquipment", "f", 6);
 		break;
 	case "coverme":
-		sendevent("RadioMessage", "f", RADIO_CT_COVERME);
+		sendevent("Radio", "f", RADIO_CT_COVERME);
 		break;
 	case "takepoint":
-		sendevent("RadioMessage", "f", RADIO_CT_POINT);
+		sendevent("Radio", "f", RADIO_CT_POINT);
 		break;
 	case "takepoint":
-		sendevent("RadioMessage", "f", RADIO_POSITION);
+		sendevent("Radio", "f", RADIO_POSITION);
 		break;
 	case "regroup":
-		sendevent("RadioMessage", "f", RADIO_REGROUP);
+		sendevent("Radio", "f", RADIO_REGROUP);
 		break;
 	case "followme":
-		sendevent("RadioMessage", "f", RADIO_FOLLOWME);
+		sendevent("Radio", "f", RADIO_FOLLOWME);
 		break;
 	case "takingfire":
-		sendevent("RadioMessage", "f", RADIO_FIREASSIS);
+		sendevent("Radio", "f", RADIO_FIREASSIS);
 		break;
 	case "go":
-		sendevent("RadioMessage", "f", RADIO_GO);
+		sendevent("Radio", "f", RADIO_GO);
 		break;
 	case "fallback":
-		sendevent("RadioMessage", "f", RADIO_FALLBACK);
+		sendevent("Radio", "f", RADIO_FALLBACK);
 		break;
 	case "sticktog":
-		sendevent("RadioMessage", "f", RADIO_STICKTOG);
+		sendevent("Radio", "f", RADIO_STICKTOG);
 		break;
 	case "getinpos":
-		sendevent("RadioMessage", "f", RADIO_COM_GETINPOS);
+		sendevent("Radio", "f", RADIO_COM_GETINPOS);
 		break;
 	case "stormfront":
-		sendevent("RadioMessage", "f", RADIO_STORMFRONT);
+		sendevent("Radio", "f", RADIO_STORMFRONT);
 		break;
 	case "report":
-		sendevent("RadioMessage", "f", RADIO_COM_REPORTIN);
+		sendevent("Radio", "f", RADIO_COM_REPORTIN);
 		break;
 	case "roger":
-		sendevent("RadioMessage", "f", RADIO_ROGER);
+		sendevent("Radio", "f", RADIO_ROGER);
 		break;
 	case "enemyspot":
-		sendevent("RadioMessage", "f", RADIO_CT_ENEMYS);
+		sendevent("Radio", "f", RADIO_CT_ENEMYS);
 		break;
 	case "needbackup":
-		sendevent("RadioMessage", "f", RADIO_CT_BACKUP);
+		sendevent("Radio", "f", RADIO_CT_BACKUP);
 		break;
 	case "sectorclear":
-		sendevent("RadioMessage", "f", RADIO_CLEAR);
+		sendevent("Radio", "f", RADIO_CLEAR);
 		break;
 	case "inposition":
-		sendevent("RadioMessage", "f", RADIO_CT_INPOS);
+		sendevent("Radio", "f", RADIO_CT_INPOS);
 		break;
 	case "reportingin":
-		sendevent("RadioMessage", "f", RADIO_CT_REPORTINGIN);
+		sendevent("Radio", "f", RADIO_CT_REPORTINGIN);
 		break;
 	case "getout":
-		sendevent("RadioMessage", "f", RADIO_GETOUT);
+		sendevent("Radio", "f", RADIO_GETOUT);
 		break;
 	case "negative":
-		sendevent("RadioMessage", "f", RADIO_NEGATIVE);
+		sendevent("Radio", "f", RADIO_NEGATIVE);
 		break;
 	case "enemydown":
-		sendevent("RadioMessage", "f", RADIO_ENEMYDOWN);
+		sendevent("Radio", "f", RADIO_ENEMYDOWN);
 		break;
 	case "radio1":
 		VGUI_RadioCommands();
 		break;
 	case "radio2":
-		VGUI_RadioGroup();	
+		VGUI_RadioGroup();
 		break;
 	case "radio3":
-	 	VGUI_RadioResponse();	
+		VGUI_RadioResponse();
 		break;
 	default:
 		return FALSE;
@@ -320,36 +312,36 @@ void Game_Parse_Event(float fHeader) {
 	if (fHeader == EV_WEAPON_DRAW) {
 		fWeaponEventPlayer = readbyte();
 		for (s = 0; s < numclientseats; s++)	//lame loop
-			if (seats[s].ePlayer.entnum == fWeaponEventPlayer) {
+			if (g_seats[s].m_ePlayer.entnum == fWeaponEventPlayer) {
 				setproperty(VF_ACTIVESEAT, (float)s);
-				pSeat = &seats[s];
+				pSeat = &g_seats[s];
 				break;
 			}
 		Weapon_Draw(getstatf(STAT_ACTIVEWEAPON));
 	} else if (fHeader == EV_WEAPON_PRIMARYATTACK) {
 		fWeaponEventPlayer = readbyte();
 		for (s = 0; s < numclientseats; s++)	//lame loop
-			if (seats[s].ePlayer.entnum == fWeaponEventPlayer) {
+			if (g_seats[s].m_ePlayer.entnum == fWeaponEventPlayer) {
 				setproperty(VF_ACTIVESEAT, (float)s);
-				pSeat = &seats[s];
+				pSeat = &g_seats[s];
 				break;
 			}
 		Weapon_PrimaryAttack(getstatf(STAT_ACTIVEWEAPON));
 	} else if (fHeader == EV_WEAPON_SECONDARYATTACK) {
 		fWeaponEventPlayer = readbyte();
 		for (s = 0; s < numclientseats; s++)	//lame loop
-			if (seats[s].ePlayer.entnum == fWeaponEventPlayer) {
+			if (g_seats[s].m_ePlayer.entnum == fWeaponEventPlayer) {
 				setproperty(VF_ACTIVESEAT, (float)s);
-				pSeat = &seats[s];
+				pSeat = &g_seats[s];
 				break;
 			}
 		Weapon_SecondaryAttack(getstatf(STAT_ACTIVEWEAPON));
 	} else if (fHeader == EV_WEAPON_RELOAD) {
 		fWeaponEventPlayer = readbyte();
 		for (s = 0; s < numclientseats; s++)	//lame loop
-			if (seats[s].ePlayer.entnum == fWeaponEventPlayer) {
+			if (g_seats[s].m_ePlayer.entnum == fWeaponEventPlayer) {
 				setproperty(VF_ACTIVESEAT, (float)s);
-				pSeat = &seats[s];
+				pSeat = &g_seats[s];
 				break;
 			}
 		Weapon_Reload(getstatf(STAT_ACTIVEWEAPON));

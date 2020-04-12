@@ -16,7 +16,7 @@
 
 .int iMag_ELITES;
 
-#ifdef SSQC
+#ifdef SERVER
 //.int iMode_ELITES;
 #else
 int iWeaponMode_ELITES;
@@ -51,7 +51,8 @@ weaponinfo_t wptELITES = {
 };
 
 // Anim Table
-enum {
+enum
+{
 	ANIM_ELITES_IDLE,
 	ANIM_ELITES_IDLE_LEFTEMPTY,
 	ANIM_ELITES_SHOOT_LEFT1,
@@ -70,69 +71,69 @@ enum {
 	ANIM_ELITES_DRAW
 };
 
-void WeaponELITES_Draw( void ) {
-#ifdef SSQC
+void WeaponELITES_Draw(void) {
+#ifdef SERVER
 	BaseGun_Draw();
-	sound( self, CHAN_WEAPON, "weapons/elite_deploy.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
+	sound(self, CHAN_WEAPON, "weapons/elite_deploy.wav", 1, ATTN_IDLE); // TODO: Move to the client...?
 #else
-	View_PlayAnimation( ANIM_ELITES_DRAW );
+	View_PlayAnimation(ANIM_ELITES_DRAW);
 #endif
 }
 
-void WeaponELITES_PrimaryFire( void ) {
-#ifdef SSQC
-	if ( BaseGun_PrimaryFire() == TRUE ) {
+void WeaponELITES_PrimaryFire(void) {
+#ifdef SERVER
+	if (BaseGun_PrimaryFire() == TRUE) {
 		// Play Sound
-		sound( self, CHAN_WEAPON, "weapons/elite_fire.wav", 1, ATTN_NORM );
+		sound(self, CHAN_WEAPON, "weapons/elite_fire.wav", 1, ATTN_NORM);
 	}
 #else
-	int iRand = (int)floor( random( 1, 4 ) );
-	if ( iWeaponMode_ELITES == 0 ) {
-		if ( getstatf( STAT_CURRENT_MAG ) == 1 ) {
-			View_PlayAnimation( ANIM_ELITES_SHOOT_LEFTLAST );
+	int iRand = (int)floor(random(1, 4));
+	if (iWeaponMode_ELITES == 0) {
+		if (getstatf(STAT_CURRENT_MAG) == 1) {
+			View_PlayAnimation(ANIM_ELITES_SHOOT_LEFTLAST);
 		} else {
-			if ( iRand == 1 ) {
-				View_PlayAnimation( ANIM_ELITES_SHOOT_LEFT1 );
-			} else if ( iRand == 2 ) {
-				View_PlayAnimation( ANIM_ELITES_SHOOT_LEFT2 );
-			} else if ( iRand == 3 ) {
-				View_PlayAnimation( ANIM_ELITES_SHOOT_LEFT3 );
-			} else if ( iRand == 4 ) {
-				View_PlayAnimation( ANIM_ELITES_SHOOT_LEFT4 );
+			if (iRand == 1) {
+				View_PlayAnimation(ANIM_ELITES_SHOOT_LEFT1);
+			} else if (iRand == 2) {
+				View_PlayAnimation(ANIM_ELITES_SHOOT_LEFT2);
+			} else if (iRand == 3) {
+				View_PlayAnimation(ANIM_ELITES_SHOOT_LEFT3);
+			} else if (iRand == 4) {
+				View_PlayAnimation(ANIM_ELITES_SHOOT_LEFT4);
 			} else {
-				View_PlayAnimation( ANIM_ELITES_SHOOT_LEFT5 );
+				View_PlayAnimation(ANIM_ELITES_SHOOT_LEFT5);
 			}
 		}
 	} else {
-		if ( getstatf( STAT_CURRENT_MAG ) == 0 ) {
-			View_PlayAnimation( ANIM_ELITES_SHOOT_RIGHTLAST );
+		if (getstatf(STAT_CURRENT_MAG) == 0) {
+			View_PlayAnimation(ANIM_ELITES_SHOOT_RIGHTLAST);
 		} else {
-			if ( iRand == 1 ) {
-				View_PlayAnimation( ANIM_ELITES_SHOOT_RIGHT1 );
-			} else if ( iRand == 2 ) {
-				View_PlayAnimation( ANIM_ELITES_SHOOT_RIGHT2 );
-			} else if ( iRand == 3 ) {
-				View_PlayAnimation( ANIM_ELITES_SHOOT_RIGHT3 );
-			} else if ( iRand == 4 ) {
-				View_PlayAnimation( ANIM_ELITES_SHOOT_RIGHT4 );
+			if (iRand == 1) {
+				View_PlayAnimation(ANIM_ELITES_SHOOT_RIGHT1);
+			} else if (iRand == 2) {
+				View_PlayAnimation(ANIM_ELITES_SHOOT_RIGHT2);
+			} else if (iRand == 3) {
+				View_PlayAnimation(ANIM_ELITES_SHOOT_RIGHT3);
+			} else if (iRand == 4) {
+				View_PlayAnimation(ANIM_ELITES_SHOOT_RIGHT4);
 			} else {
-				View_PlayAnimation( ANIM_ELITES_SHOOT_RIGHT5 );
+				View_PlayAnimation(ANIM_ELITES_SHOOT_RIGHT5);
 			}
 		}
 	}
 	
-	BaseGun_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle(1);
 	iWeaponMode_ELITES = 1 - iWeaponMode_ELITES;
 #endif
 }
 
-void WeaponELITES_Reload( void ) {
-#ifdef SSQC
-	if ( BaseGun_Reload() == TRUE ) {
+void WeaponELITES_Reload(void) {
+#ifdef SERVER
+	if (BaseGun_Reload() == TRUE) {
 		// Play Sound
 	}
 #else
-	View_PlayAnimation( ANIM_ELITES_RELOAD );
+	View_PlayAnimation(ANIM_ELITES_RELOAD);
 	iWeaponMode_ELITES = 0;
 #endif
 }

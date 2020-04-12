@@ -32,7 +32,7 @@ enum
 void
 w_silencer_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_glock.fire");
 	Sound_Precache("weapon_silencer.fire");
 #endif
@@ -93,7 +93,7 @@ w_silencer_primary(void)
 	}
 
 	/* ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (!pl.a_ammo1) {
 		return;
 	}
@@ -114,7 +114,7 @@ w_silencer_primary(void)
 #endif
 
 	/* actual firing */
-#ifdef CSQC
+#ifdef CLIENT
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_SMALL);
 	Weapons_ViewPunchAngle([-2,0,0]);
@@ -165,7 +165,7 @@ w_silencer_secondary(void)
 	pl.a_ammo3 = 1 - pl.a_ammo3;
 
 	/* the sub model isn't setting right, need the right values */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo3) {
 		Weapons_SetGeomset("geomset 1 3\n");
 		Weapons_ViewAnimation(GLOCK_SILENCER);
@@ -211,7 +211,7 @@ w_silencer_hud(void)
 void
 w_silencer_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,

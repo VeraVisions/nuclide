@@ -14,7 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-enum {
+enum
+{
 	AIC_IDLE, // 1.777778f
 	AIC_PLUGIN, // 1.066667f
 	AIC_DRAW // 1.7f
@@ -44,7 +45,7 @@ w_aicore_primary(void)
 
 	src = Weapons_GetCameraPos();
 
-#ifdef CSQC
+#ifdef CLIENT
 	//Weapons_ViewAnimation(GP_FIRESINGLE);
 #endif
 
@@ -100,7 +101,7 @@ w_aicore_aimanim(void)
 void
 w_aicore_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	drawpic(
 		pos,
 		"gfx/vgui/640_weapon_aicore0.tga",
@@ -144,7 +145,7 @@ weapon_t w_aicore =
 };
 
 /* entity definitions for pickups */
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_aicore(void)
 {

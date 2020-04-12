@@ -14,7 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-
 /* NPCs are more advanced than regular monsters in that they express emotions
  * and are able to interact more with the environment */
 
@@ -65,36 +64,37 @@ class CBaseNPC:CBaseMonster
 	string m_talkFollow; /* whenever player asks the NPC to follow */
 	string m_talkStopFollow; /* we have to stop following */
 
-	void() CBaseNPC;
+	void(void) CBaseNPC;
 	virtual void(string) Speak;
 	virtual void(string) Sentence;
-	virtual void() WarnAllies;
-	virtual void() FollowPlayer;
-	virtual void() FollowChain;
-	virtual void() Physics;
-	virtual void() PlayerUse;
-	virtual void() PanicFrame;
-	virtual void() Hide;
+	virtual void(void) WarnAllies;
+	virtual void(void) FollowPlayer;
+	virtual void(void) FollowChain;
+	virtual void(void) Physics;
+	virtual void(void) PlayerUse;
+	virtual void(void) PanicFrame;
+	virtual void(void) Hide;
+	virtual void(void) Respawn;
 
-	/*virtual void() TalkAnswer;
-	virtual void() TalkAsk;
-	virtual void() TalkAllyShot;
-	virtual void() TalkGreet;
-	virtual void() TalkIdle;
-	virtual void() TalkHearing;
-	virtual void() TalkSmelling;
-	virtual void() TalkStare;
-	virtual void() TalkSurvived;
-	virtual void() TalkWounded;*/
-	virtual void() TalkPlayerAsk; 
-	virtual void() TalkPlayerGreet;
-	virtual void() TalkPlayerIdle;
-	virtual void() TalkPlayerWounded1;
-	virtual void() TalkPlayerWounded2;
-	virtual void() TalkPlayerWounded3;
-	virtual void() TalkUnfollow;
-	virtual void() TalkFollow;
-	virtual void() TalkStopFollow;
+	/*virtual void(void) TalkAnswer;
+	virtual void(void) TalkAsk;
+	virtual void(void) TalkAllyShot;
+	virtual void(void) TalkGreet;
+	virtual void(void) TalkIdle;
+	virtual void(void) TalkHearing;
+	virtual void(void) TalkSmelling;
+	virtual void(void) TalkStare;
+	virtual void(void) TalkSurvived;
+	virtual void(void) TalkWounded;*/
+	virtual void(void) TalkPlayerAsk; 
+	virtual void(void) TalkPlayerGreet;
+	virtual void(void) TalkPlayerIdle;
+	virtual void(void) TalkPlayerWounded1;
+	virtual void(void) TalkPlayerWounded2;
+	virtual void(void) TalkPlayerWounded3;
+	virtual void(void) TalkUnfollow;
+	virtual void(void) TalkFollow;
+	virtual void(void) TalkStopFollow;
 };
 
 void
@@ -500,6 +500,13 @@ CBaseNPC::Physics(void)
 			think();
 		}
 	}
+}
+
+void CBaseNPC::Respawn(void)
+{
+	CBaseMonster::Respawn();
+	m_eFollowing = world;
+	m_eFollowingChain = world;
 }
 
 void

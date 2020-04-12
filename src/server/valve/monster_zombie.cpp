@@ -22,7 +22,8 @@ Zombie
 
 */
 
-enum {
+enum
+{
 	ZO_IDLE,
 	ZO_TURNLEFT,
 	ZO_TURNRIGHT,
@@ -73,7 +74,7 @@ class monster_zombie:CBaseMonster
 {
 	float m_flIdleTime;
 
-	void() monster_zombie;
+	void(void) monster_zombie;
 
 	virtual void(int) Pain;
 	virtual void(int) Death;

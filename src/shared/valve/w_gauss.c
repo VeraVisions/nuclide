@@ -23,7 +23,7 @@ Gauss Weapon
 
 */
 
-#ifdef CSQC
+#ifdef CLIENT
 #define FXGAUSS_BEAMCOLOR [1,0.5,0]
 class FXGauss:CBaseFX
 {
@@ -31,8 +31,8 @@ class FXGauss:CBaseFX
 	vector m_vecStart;
 	vector m_vecAngle;
 
-	void() FXGauss;
-	virtual void() Draw;
+	void(void) FXGauss;
+	virtual void(void) Draw;
 };
 
 void
@@ -41,7 +41,7 @@ FXGauss::Draw(void)
 	player pl = (player)self;
 	int iLoop = 6;
 	vector src, endpos;
-	vector gunpos = gettaginfo(pSeat->eViewModel, 33);
+	vector gunpos = gettaginfo(pSeat->m_eViewModel, 33);
 
 	if (alpha <= 0.0f) {
 		return;
@@ -137,7 +137,7 @@ void w_gauss_precache(void)
 }
 void w_gauss_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, pl.ammo_uranium, -1);
 #endif
 }
@@ -156,7 +156,7 @@ string w_gauss_deathmsg(void)
 
 int w_gauss_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (pl.ammo_uranium < MAX_A_URANIUM) {
@@ -174,9 +174,9 @@ void w_gauss_draw(void)
 	Weapons_ViewAnimation(GAUSS_DRAW);
 
 	/* link the FX class */
-#ifdef CSQC
+#ifdef CLIENT
 	entity eold = self;
-	self = pSeat->pWeaponFX;
+	self = pSeat->m_pWeaponFX;
 	spawnfunc_FXGauss();
 	self = eold;
 #endif
@@ -187,7 +187,7 @@ void w_gauss_holster(void)
 	Weapons_ViewAnimation(GAUSS_HOLSTER);
 }
 
-#ifdef SSQC
+#ifdef SERVER
 void w_gauss_fire(int one)
 {
 	player pl = (player)self;
@@ -214,7 +214,7 @@ void w_gauss_fire(int one)
 		/* Apply force */
 		if (pl.flags & FL_ONGROUND) {
 			pl.velocity += v_forward * -400;
-		} else {	
+		} else {
 			pl.velocity += v_forward * -800;
 		}
 	}
@@ -238,7 +238,7 @@ void w_gauss_fire(int one)
 		}
 		
 		if (getsurfacetexture(trace_ent, getsurfacenearpoint(trace_ent, trace_endpos)) != "sky") {
-			Decals_PlaceGauss(trace_endpos);
+			Decals_Place(trace_endpos, "{gaussshot1");
 		} else {
 			break;
 		}
@@ -254,7 +254,7 @@ void w_gauss_primary(void)
 	}
 
 	/* Ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo2 < 2) {
 		return;
 	}
@@ -265,8 +265,8 @@ void w_gauss_primary(void)
 #endif
 
 	Weapons_ViewAnimation(GAUSS_FIRE2);
-#ifdef CSQC
-	FXGauss p = (FXGauss)pSeat->pWeaponFX;
+#ifdef CLIENT
+	FXGauss p = (FXGauss)pSeat->m_pWeaponFX;
 	p.m_iBeams = 0;
 	p.m_vecAngle = input_angles;
 	p.m_vecStart = pl.origin + pl.view_ofs;
@@ -285,7 +285,7 @@ void w_gauss_secondary(void)
 {
 	player pl = (player)self;
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo3)
 		soundupdate(pl, CHAN_WEAPON, "", 2, ATTN_NORM, 100 + (200 * (pl.a_ammo1/255)), 0, 0);
 #endif
@@ -296,7 +296,7 @@ void w_gauss_secondary(void)
 	pl.w_attack_next = 0.1f;
 
 	/* Ammo check */
-#ifdef CSQC
+#ifdef CLIENT
     if (pl.a_ammo2 <= 0) {
         if (pl.a_ammo3 > 0) {
 			w_gauss_release();
@@ -312,7 +312,7 @@ void w_gauss_secondary(void)
     }
 #endif
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 < 255)
 		pl.a_ammo2--;
 #else
@@ -332,7 +332,7 @@ void w_gauss_secondary(void)
 		pl.w_idle_next = 0.0f;
 	} else if (!pl.a_ammo3) {
 		Weapons_ViewAnimation(GAUSS_SPINUP);
-#ifdef CSQC
+#ifdef CLIENT
 		sound(pl, CHAN_WEAPON, "ambience/pulsemachine.wav", 2, ATTN_NORM);
 #endif
 		pl.a_ammo3 = 1;
@@ -357,8 +357,8 @@ void w_gauss_release(void)
 		return;
 	} else if (pl.a_ammo3 == 2) {
 		Weapons_ViewAnimation(GAUSS_FIRE1);
-#ifdef CSQC
-		FXGauss p = (FXGauss)pSeat->pWeaponFX;
+#ifdef CLIENT
+		FXGauss p = (FXGauss)pSeat->m_pWeaponFX;
 		p.m_iBeams = 1;
 		p.m_vecAngle = input_angles;
 		p.m_vecStart = pl.origin + pl.view_ofs;
@@ -395,7 +395,7 @@ void w_gauss_release(void)
 
 void w_gauss_crosshair(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	vector cross_pos;
 	vector aicon_pos;
 
@@ -420,7 +420,7 @@ void w_gauss_crosshair(void)
 		[0,96/128],
 		[24/256,24/128],
 		g_hud_color,
-		pSeat->ammo2_alpha,
+		pSeat->m_flAmmo2Alpha,
 		DRAWFLAG_ADDITIVE
 	);
 
@@ -435,7 +435,7 @@ float w_gauss_aimanim(void)
 
 void w_gauss_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -487,7 +487,7 @@ weapon_t w_gauss =
 	w_gauss_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void weapon_gauss(void) {
 	Weapons_InitItem(WEAPON_GAUSS);
 }

@@ -118,7 +118,7 @@ void init(float prevprogs)
 	hashMaterials = hash_createtab(2, HASH_ADD);
 
 	if (fileMaterial >= 0) {
-		while ((sTemp = fgets(fileMaterial))) {			
+		while ((sTemp = fgets(fileMaterial))) {		
 			// Tokenize and just parse this stuff in
 			if (tokenize_console(sTemp) == 2) {
 				hash_add(hashMaterials, strtolower(argv(1)), str2chr(argv(0), 0));

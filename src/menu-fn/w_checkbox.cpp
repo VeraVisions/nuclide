@@ -21,7 +21,7 @@ class CCheckBox:CWidget
 	int m_click;
 	virtual void(float value) m_changed = 0;
 
-	virtual void() Draw;
+	virtual void(void) Draw;
 	virtual void(float type, float x, float y, float devid) Input;
 	virtual void(void(float val) vFunc) SetCallback;
 	virtual void(float val) SetValue;

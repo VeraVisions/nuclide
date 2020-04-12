@@ -29,7 +29,7 @@ weapon_t g_weapons[] = {
 	w_chemicalgun
 };
 
-#ifdef CSQC
+#ifdef CLIENT
 int(player) gp_inputforward[] = {
 	__NULL__,
 	__NULL__,

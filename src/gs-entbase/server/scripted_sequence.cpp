@@ -66,7 +66,8 @@ float(float modidx, float framenum) frameduration = #277;
  #define SSFL_NOSCRIPTMOVE 128
 
 /* m_iMove, how we move to perform m_iActionAnim */
-enum {
+enum
+{
     SS_NO, /* Don't move or turn */
     SS_WALK, /* Walk to the scripted_sequence */
     SS_RUN, /* Run to the scripted_sequence */
@@ -90,12 +91,13 @@ class scripted_sequence:CBaseTrigger
 	/* How we move to perform m_iActionAnim */
 	int m_iMove;
 
-	void() scripted_sequence;
-	virtual void() Trigger;
-	virtual void() Respawn;
+	void(void) scripted_sequence;
+	virtual void(void) Trigger;
+	virtual void(void) Respawn;
 };
 
-void scripted_sequence::Trigger(void)
+void
+scripted_sequence::Trigger(void)
 {
 	CBaseMonster f;
 	float duration;
@@ -199,12 +201,14 @@ void scripted_sequence::Trigger(void)
 	dprint(sprintf("\tEnding: %f\n", f.nextthink));
 }
 
-void scripted_sequence::Respawn(void)
+void
+scripted_sequence::Respawn(void)
 {
 	m_iEnabled = TRUE;
 }
 
-void scripted_sequence::scripted_sequence(void)
+void
+scripted_sequence::scripted_sequence(void)
 {
 	int nfields = tokenize(__fullspawndata);
 	for (int i = 1; i < (nfields-1); i += 2) {

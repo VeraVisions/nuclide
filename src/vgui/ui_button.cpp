@@ -31,16 +31,16 @@ class CUIButton:CUIWidget
 	string m_strTitleActive;
 	string m_strIcon;
 
-	void() CUIButton;
-	virtual void() m_vFunc = 0;
-	virtual void() Draw;
+	void(void) CUIButton;
+	virtual void(void) m_vFunc = 0;
+	virtual void(void) Draw;
 	virtual vector() GetSize;
-	virtual int() GetSizeWidth;
-	virtual int() GetSizeHeight;
+	virtual int(void) GetSizeWidth;
+	virtual int(void) GetSizeHeight;
 	virtual void(vector) SetSize;
 	virtual void(string) SetTitle;
 	virtual void(string) SetIcon;
-	virtual void(void()) SetFunc;
+	virtual void(void(void)) SetFunc;
 	virtual void(float, float, float, float) Input;
 };
 
@@ -98,7 +98,7 @@ CUIButton::SetIcon(string strName)
 	m_strIcon = strName;
 }
 void
-CUIButton::SetFunc(void() vFunc)
+CUIButton::SetFunc(void(void) vFunc)
 {
 	m_vFunc = vFunc;
 }

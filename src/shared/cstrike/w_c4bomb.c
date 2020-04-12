@@ -28,14 +28,16 @@ func_bombtarget brush entities.
 
 */
 
-enum {
+enum
+{
 	C4_IDLE,
 	C4_DRAW,
 	C4_DROP,
 	C4_ENTERCODE
 };
 
-enum {
+enum
+{
 	C4S_NONE,
 	C4S_ENTERINGCODE,
 	C4S_DROPPING,
@@ -45,7 +47,7 @@ enum {
 void
 w_c4bomb_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_c4bomb.disarm");
 	Sound_Precache("weapon_c4bomb.disarmed");
 	Sound_Precache("weapon_c4bomb.explode");
@@ -59,7 +61,7 @@ w_c4bomb_precache(void)
 void
 w_c4bomb_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.a_ammo1, pl.a_ammo2, pl.a_ammo3);
 #endif
 }
@@ -97,7 +99,7 @@ w_c4bomb_release(void)
 	if (pl.a_ammo1 == C4S_DROPPING) {
 		if (pl.w_idle_next <= 0.0f) {
 			pl.a_ammo1 = C4S_DONE;
-#ifdef SSQC
+#ifdef SERVER
 			Weapons_RemoveItem(pl, WEAPON_C4BOMB);
 #endif
 		}
@@ -152,17 +154,17 @@ w_c4bomb_aimanim(void)
 void
 w_c4bomb_hud(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [96/256,96/256], [24/256, 24/256], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [96/256,96/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
 void
 w_c4bomb_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -214,7 +216,7 @@ weapon_t w_c4bomb =
 	w_c4bomb_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_c4bomb(void)
 {

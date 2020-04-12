@@ -17,7 +17,7 @@
 .int iAmmo_FLASHBANG;
 
 // This is to keep track of us holding down the nade
-#ifdef SSQC
+#ifdef SERVER
 .int iMode_FLASHBANG;
 #endif
 
@@ -50,34 +50,35 @@ weaponinfo_t wptFLASHBANG = {
 };
 
 // Anim Table
-enum {
+enum
+{
 	ANIM_FLASHBANG_IDLE1,
 	ANIM_FLASHBANG_PULLPIN,
 	ANIM_FLASHBANG_THROW,
 	ANIM_FLASHBANG_DRAW,
 };
 
-void WeaponFLASHBANG_Draw( void ) {
-#ifdef SSQC
+void WeaponFLASHBANG_Draw(void) {
+#ifdef SERVER
 	BaseMelee_Draw();
 	self.iMode_FLASHBANG = GRENADE_UNREADY;
 #else
-	View_PlayAnimation( ANIM_FLASHBANG_DRAW );
+	View_PlayAnimation(ANIM_FLASHBANG_DRAW);
 #endif
 }
 
-void WeaponFLASHBANG_PrimaryFire( void ) {
-#ifdef SSQC
-	static void WeaponFLASHBANG_Release_Ready( void ) {
+void WeaponFLASHBANG_PrimaryFire(void) {
+#ifdef SERVER
+	static void WeaponFLASHBANG_Release_Ready(void) {
 		self.iMode_FLASHBANG = GRENADE_READY;
 	}
 	
-	if ( self.iMode_FLASHBANG != GRENADE_UNREADY ) {
+	if (self.iMode_FLASHBANG != GRENADE_UNREADY) {
 		return;
 	}
 	
-	Client_SendEvent( self, EV_WEAPON_PRIMARYATTACK );
-	Animation_ShootWeapon( self );
+	Client_SendEvent(self, EV_WEAPON_PRIMARYATTACK);
+	Animation_ShootWeapon(self);
 	self.fAttackFinished = time + wptFLASHBANG.fAttackFinished;
 	
 	// Mark the nade as ready once the pin has been pulled
@@ -85,63 +86,63 @@ void WeaponFLASHBANG_PrimaryFire( void ) {
 	self.think = WeaponFLASHBANG_Release_Ready;
 	self.nextthink = self.fAttackFinished;
 #else
-	View_PlayAnimation( ANIM_FLASHBANG_PULLPIN );
+	View_PlayAnimation(ANIM_FLASHBANG_PULLPIN);
 #endif
 }
 
-#ifdef SSQC
-void WeaponFLASHBANG_Throw( void ) {
-	static void WeaponFLASHBANG_Explode( void ) {
+#ifdef SERVER
+void WeaponFLASHBANG_Throw(void) {
+	static void WeaponFLASHBANG_Explode(void) {
 		vector vNorm;
 		float fDot;
 		
-		for ( entity eFind = world; ( eFind = find( eFind, classname, "player" ) ); ) {
+		for (entity eFind = world; (eFind = find(eFind, classname, "player"));) {
 			other = world;
-			traceline( self.origin + '0 0 32', eFind.origin, MOVE_OTHERONLY, self );
-			if ( trace_fraction == 1 ) {
-				makevectors ( eFind.angles );
-				vNorm = normalize ( self.origin - eFind.origin );
+			traceline(self.origin + '0 0 32', eFind.origin, MOVE_OTHERONLY, self);
+			if (trace_fraction == 1) {
+				makevectors (eFind.angles);
+				vNorm = normalize (self.origin - eFind.origin);
 				fDot = vNorm * v_forward;
 				
-				if ( fDot > 0.5 ) {
-					Effect_CreateFlash( eFind );
+				if (fDot > 0.5) {
+					Effect_CreateFlash(eFind);
 				}
 			}
 		}
 		
-		if ( random() < 0.5 ) {
-			sound( self, CHAN_WEAPON, "weapons/flashbang-1.wav", 1, ATTN_NORM );
+		if (random() < 0.5) {
+			sound(self, CHAN_WEAPON, "weapons/flashbang-1.wav", 1, ATTN_NORM);
 		} else {
-			sound( self, CHAN_WEAPON, "weapons/flashbang-2.wav", 1, ATTN_NORM );
+			sound(self, CHAN_WEAPON, "weapons/flashbang-2.wav", 1, ATTN_NORM);
 		}
-		remove( self );
+		remove(self);
 	}
-	static void Weapon_FLASHBANG_Touch( void ) {
-		if ( other.solid == SOLID_TRIGGER ) {
+	static void Weapon_FLASHBANG_Touch(void) {
+		if (other.solid == SOLID_TRIGGER) {
 			return;
 		}
-		if ( other == self.owner ) {
+		if (other == self.owner) {
 			return;
 		}
-		if ( other.classname == "func_breakable" ) {
-			Damage_Apply( other, self, 50, FALSE, 0);
+		if (other.classname == "func_breakable") {
+			Damage_Apply(other, self, 50, FALSE, 0);
 		}
-		sound( self, CHAN_WEAPON, sprintf( "weapons/grenade_hit%d.wav", floor( random() * 3 ) + 1 ), 1, ATTN_NORM );
+		sound(self, CHAN_WEAPON, sprintf("weapons/grenade_hit%d.wav", floor(random() * 3) + 1), 1, ATTN_NORM);
 	}
 	
-	makevectors( self.v_angle );
+	makevectors(self.v_angle);
 	entity eNade = spawn();
-	setorigin( eNade, ( self.origin + self.view_ofs ) + ( v_forward * 16 ) );
-	setmodel( eNade, "models/w_flashbang.mdl" );
-	setsize( eNade, '-1 -1 -1', '1 1 1' );
+	setorigin(eNade, (self.origin + self.view_ofs) + (v_forward * 16));
+	setmodel(eNade, "models/w_flashbang.mdl");
+	setsize(eNade, '-1 -1 -1', '1 1 1');
 	
-	vector vDir = aim ( self, 100000 );
+	vector vDir = aim (self, 100000);
 	eNade.classname = "remove_me";
 	eNade.owner = self;
 	eNade.solid = SOLID_TRIGGER;
-	eNade.angles = vectoangles( vDir );
-	eNade.velocity = ( vDir * 800 );
-	eNade.avelocity = ( v_forward * 600 );
+	eNade.angles = vectoangles(vDir);
+	eNade.velocity = (vDir * 800);
+	eNade.avelocity = (v_forward * 600);
 	eNade.movetype = MOVETYPE_BOUNCE;
 	eNade.touch = Weapon_FLASHBANG_Touch;
 	eNade.gravity = 0.5f;
@@ -152,21 +153,21 @@ void WeaponFLASHBANG_Throw( void ) {
 	self.iAmmo_FLASHBANG--;
 	Radio_TeamMessage(RADIO_CT_FIREINHOLE, self.team);
 	
-	if ( !self.iAmmo_FLASHBANG ) {
+	if (!self.iAmmo_FLASHBANG) {
 		Weapon_SwitchBest();
 	} else {
-		Weapon_Draw( WEAPON_FLASHBANG );	
+		Weapon_Draw(WEAPON_FLASHBANG);	
 	}
 }
 #endif
 
-void WeaponFLASHBANG_Release( void ) {
-#ifdef SSQC
-	if ( self.iMode_FLASHBANG == GRENADE_READY ) {
+void WeaponFLASHBANG_Release(void) {
+#ifdef SERVER
+	if (self.iMode_FLASHBANG == GRENADE_READY) {
 		// Throw immediately
 		WeaponFLASHBANG_Throw();
 		self.iMode_FLASHBANG = GRENADE_UNREADY;
-	} else if ( self.iMode_FLASHBANG == GRENADE_PULLING ) {
+	} else if (self.iMode_FLASHBANG == GRENADE_PULLING) {
 		// Trying to release the grenade before it's done pulling, throw asap
 		self.iMode_FLASHBANG = GRENADE_UNREADY;
 		self.think = WeaponFLASHBANG_Throw;

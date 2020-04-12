@@ -103,9 +103,9 @@ class armoury_entity:CBaseEntity
 	int m_iLeft;
 	int m_iItem;
 
-	void() armoury_entity;
-	virtual void() touch;
-	virtual void() Respawn;
+	void(void) armoury_entity;
+	virtual void(void) touch;
+	virtual void(void) Respawn;
 };
 
 void
@@ -151,10 +151,10 @@ armoury_entity::armoury_entity(void)
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
 		case "count":
-			m_iCount = stoi(argv(i + 1));
+			m_iCount = stoi(argv(i+1));
 			break;
 		case "item":
-			m_iItem = g_cstrike_armouryitems[stoi(argv(i + 1))];
+			m_iItem = g_cstrike_armouryitems[stoi(argv(i+1))];
 			model = sArmouryModels[m_iItem];
 			break;
 		default:

@@ -45,7 +45,7 @@ w_xs_precache(void)
 void
 w_xs_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, __NULL__, __NULL__, __NULL__);
 #endif
 }
@@ -93,7 +93,7 @@ w_xs_release(void)
 void
 w_xs_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -146,7 +146,7 @@ weapon_t w_xs =
 };
 
 /* entity definitions for pickups */
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_xs(void)
 {

@@ -2,6 +2,7 @@
 #pragma progs_dat  "../../../gearbox/data.pk3dir/csprogs.dat"
 
 #define CSQC
+#define CLIENT
 #define VALVE
 #define GEARBOX
 
@@ -24,6 +25,8 @@
 ../sentences.c
 
 ../../gs-entbase/client.src
+../../gs-entbase/shared.src
+
 ../sky.c
 ../sound.c
 ../music.c
@@ -36,9 +39,7 @@
 ../../shared/pmove.c
 ../valve/predict.c
 ../predict.c
-../../shared/decals.c
 ../../shared/effects.c
-../../shared/spraylogo.cpp
 ../npc.c
 init.c
 ../../shared/gearbox/items.h
@@ -73,7 +74,6 @@ init.c
 ../valve/player.c
 ../valve/entities.c
 ../entities.c
-../fx_lensflare.c
 ../fx_gunsmoke.c
 ../valve/cmds.c
 ../valve/game_event.c
@@ -83,6 +83,7 @@ init.c
 ../damage.c
 ../obituary.c
 ../chat.c
+../textmenu.c
 ../vgui.cpp
 ../valve/hud.c
 hud_weaponselect.c

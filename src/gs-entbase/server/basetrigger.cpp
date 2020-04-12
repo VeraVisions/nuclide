@@ -14,12 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-enum { 
+enum
+{ 
 	USE_TOGGLE,
 	USE_CONTINOUS
 };
 
-class CBaseTrigger : CBaseEntity
+class CBaseTrigger:CBaseEntity
 {
 	int m_strGlobalState;
 	string m_strKillTarget;
@@ -28,22 +29,23 @@ class CBaseTrigger : CBaseEntity
 	int m_iUseType;
 	int m_iTeam;
 
-	void() CBaseTrigger;
-	virtual void() Trigger;
-	virtual void() UseTargets;
-	virtual int() GetValue;
-	virtual int() GetMaster;
-	virtual void( float ) UseTargets_Delay;
-	virtual void() InitBrushTrigger;
-	virtual void() InitPointTrigger;
+	void(void) CBaseTrigger;
+	virtual void(void) Trigger;
+	virtual void(void) UseTargets;
+	virtual int(void) GetValue;
+	virtual int(void) GetMaster;
+	virtual void(float) UseTargets_Delay;
+	virtual void(void) InitBrushTrigger;
+	virtual void(void) InitPointTrigger;
 };
 
-void CBaseTrigger :: UseTargets ( void )
+void
+CBaseTrigger::UseTargets(void)
 {
-	for ( entity eFind = world; ( eFind = find( eFind, CBaseTrigger::m_strTargetName, m_strTarget ) ); ) {
+	for (entity eFind = world; (eFind = find(eFind, CBaseTrigger::m_strTargetName, m_strTarget));) {
 		CBaseTrigger trigger = (CBaseTrigger) eFind;
-		dprint( sprintf( "^2%s::^3UseTargets^7: Triggering %s `%s`\n", 
-			this.classname, eFind.classname, trigger.m_strTargetName ) );
+		dprint(sprintf("^2%s::^3UseTargets^7: Triggering %s `%s`\n", 
+			this.classname, eFind.classname, trigger.m_strTargetName));
 		if (trigger.Trigger != __NULL__) {
 			trigger.Trigger();
 		}
@@ -59,20 +61,22 @@ void CBaseTrigger :: UseTargets ( void )
 		}
 	}*/
 
-	if ( m_strKillTarget ) {
-		entity eKill = find( world, CBaseTrigger::m_strTargetName, m_strKillTarget );
-		if ( eKill ) {
-			remove( eKill );
+	if (m_strKillTarget) {
+		entity eKill = find(world, CBaseTrigger::m_strTargetName, m_strKillTarget);
+		if (eKill) {
+			remove(eKill);
 		}
 	}
 }
 
-int CBaseTrigger :: GetValue ( void )
+int
+CBaseTrigger::GetValue(void)
 {
 	return TRUE;
 }
 
-int CBaseTrigger :: GetMaster ( void )
+int
+CBaseTrigger::GetMaster(void)
 {
 	CBaseTrigger t;
 
@@ -91,62 +95,61 @@ int CBaseTrigger :: GetMaster ( void )
 	return t.GetValue();
 }
 
-void CBaseTrigger :: UseTargets_Delay ( float fDelay )
+void
+CBaseTrigger::UseTargets_Delay (float fDelay)
 {
-	static void Entities_UseTargets_Delay_Think( void ) {
+	static void Entities_UseTargets_Delay_Think(void) {
 		eActivator = self.owner;
 		CBaseTrigger::UseTargets();
-		remove( self );
+		remove(self);
 	}
 
-	dprint( sprintf( "^2%s::^3UseTargets_Delay^7: Triggering `%s`\n", 
-		this.classname, m_strTarget ) );
+	dprint(sprintf("^2%s::^3UseTargets_Delay^7: Triggering `%s`\n", 
+		this.classname, m_strTarget));
 
-	CBaseTrigger eTimer = spawn( CBaseTrigger );
+	CBaseTrigger eTimer = spawn(CBaseTrigger);
 	eTimer.owner = eActivator;
 	eTimer.think = Entities_UseTargets_Delay_Think;
 	eTimer.m_strTarget = m_strTarget;
 	eTimer.nextthink = time + fDelay;
 }
 
-void CBaseTrigger :: Trigger ( void )
+void
+CBaseTrigger::Trigger(void)
 {
 	
 }
 
-void CBaseTrigger :: InitPointTrigger ( void )
+void
+CBaseTrigger::InitPointTrigger(void)
 {
-	setsize( this, VEC_HULL_MIN, VEC_HULL_MAX );
+	setsize(this, VEC_HULL_MIN, VEC_HULL_MAX);
 	solid = SOLID_TRIGGER;
 }
 
-void CBaseTrigger :: InitBrushTrigger ( void )
+void
+CBaseTrigger::InitBrushTrigger(void)
 {
-	precache_model( m_oldModel );
-	setmodel( this, m_oldModel );
+	setmodel(this, m_oldModel);
 	movetype = MOVETYPE_NONE;
-	solid = SOLID_TRIGGER;
-#ifdef GS_DEVELOPER
-	m_iRenderMode = RM_SOLID;
+	solid = SOLID_BSPTRIGGER;
+	m_iRenderMode = RM_COLOR;
 	m_flRenderAmt = 0.25f;
-#else
-	modelindex = 0;
-	model = "";
-#endif
 }
 
-void CBaseTrigger :: CBaseTrigger ( void )
+void
+CBaseTrigger::CBaseTrigger(void)
 {
 	CBaseEntity::CBaseEntity();
 	m_strMessage = "";
 
-	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
-		switch ( argv( i ) ) {
+	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
+		switch (argv(i)) {
 		case "killtarget":
-			m_strKillTarget = argv( i + 1 );
+			m_strKillTarget = argv(i+1);
 			break;
 		case "message":
-			m_strMessage = argv( i + 1);
+			m_strMessage = argv(i+1);
 			break;
 		case "master":
 			m_strMaster = argv(i+1);

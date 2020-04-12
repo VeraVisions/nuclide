@@ -45,7 +45,7 @@ entity Spawn_FindSpawnPoint(float fTeam)
 		eSpot = find(eSpot, classname, sClassname);
 		
 		if (eSpot == eLastSpawn)
-		{	//fall back on lame cycling/spawnfragging
+		{//fall back on lame cycling/spawnfragging
 			eLastSpawn = find(eLastSpawn, classname, sClassname);
 			if (!eLastSpawn)
 				eLastSpawn = find(eLastSpawn, classname, sClassname);
@@ -103,7 +103,7 @@ void Spawn_RespawnClient(float fTeam)
 
 	// Get the player-model from Defs.h's list
 	if (self.team != TEAM_VIP) {
-		setmodel(self, sCSPlayers[ self.fCharModel ]);
+		setmodel(self, sCSPlayers[self.fCharModel]);
 	} else {
 		setmodel(self, "models/player/vip/vip.mdl");
 	}

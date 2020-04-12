@@ -32,8 +32,8 @@ class env_glow:CBaseEntity
 	string m_strSprite;
 	vector m_vecSize;
 	float m_flScale;
-	void() env_glow;
-	virtual void() customphysics;
+	void(void) env_glow;
+	virtual void(void) customphysics;
 	virtual float() predraw;
 	virtual void(string, string) SpawnKey;
 };
@@ -46,8 +46,8 @@ float env_glow::predraw(void)
 	vecPlayer = viewClient.vecPlayerOrigin;
 #else
 	int s = (float)getproperty(VF_ACTIVESEAT);
-	pSeat = &seats[s];
-	vecPlayer = pSeat->vPlayerOrigin;
+	pSeat = &g_seats[s];
+	vecPlayer = pSeat->m_vecPredictedOrigin;
 #endif
 
 	m_flAlpha = bound(0, m_flAlpha, 1.0f);
@@ -99,8 +99,8 @@ void env_glow::customphysics(void)
 	vecPlayer = viewClient.vecPlayerOrigin;
 #else
 	int s = (float)getproperty(VF_ACTIVESEAT);
-	pSeat = &seats[s];
-	vecPlayer = pSeat->vPlayerOrigin;
+	pSeat = &g_seats[s];
+	vecPlayer = pSeat->m_vecPredictedOrigin;
 #endif
 
 	if (checkpvs(vecPlayer, this) == FALSE) {

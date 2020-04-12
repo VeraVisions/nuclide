@@ -21,18 +21,18 @@ Brush that lets light to pass through it.
 On idTech 2 BSPs, it will change texture variants when triggered.
 */
 
-class func_lod : CBaseEntity
+class func_lod:CBaseEntity
 {
-	void() func_lod;
+	void(void) func_lod;
 	virtual float(entity, float) SendEntity;
 };
 
-float func_lod :: SendEntity ( entity a, float b )
+float func_lod::SendEntity (entity a, float b)
 {
 	return FALSE;
 }
 
-void func_lod :: func_lod ( void )
+void func_lod::func_lod(void)
 {
 	CBaseEntity::CBaseEntity();
 
@@ -47,8 +47,8 @@ void func_lod :: func_lod ( void )
 		}
 	}
 
-	precache_model( model );
+	precache_model(model);
 	movetype = MOVETYPE_PUSH;
-	setmodel( this, model );
+	setmodel(this, model);
 	setorigin(this, origin);
 }

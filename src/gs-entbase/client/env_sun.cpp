@@ -1,0 +1,136 @@
+/*
+ * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ *
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
+ * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
+ * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+ 
+int trace_surfaceflagsi;
+
+/*QUAKED env_sun (1 0 0) (-8 -8 -8) (8 8 8)
+"targetname"    Name
+"pitch"         Sun glow pitch.
+"angle"         Sun glow angle.
+
+STUB!
+*/
+
+#define FLARE_SIZE [128,128]
+
+int Util_IsSky(vector pos)
+{
+	if (serverkeyfloat("*bspversion") == 30)
+	if (getsurfacetexture(world, getsurfacenearpoint(world, pos)) == "sky") {
+		return TRUE;
+	}
+
+	if (trace_surfaceflagsi & SURF_SKY) {
+		return TRUE;
+	}
+	return FALSE;
+}
+
+class env_sun:CBaseEntity
+{
+	vector m_vecLensPos;
+	float m_flLensAlpha;
+
+	void(void) env_sun;
+	virtual void(void) Init;
+	virtual void(void) Initialized;
+	virtual void(void) postdraw;
+	virtual float(void) predraw;
+	virtual void(string, string) SpawnKey;
+};
+
+float
+env_sun::predraw(void)
+{
+	addentity(this);
+	return PREDRAW_NEXT;
+}
+
+void
+env_sun::postdraw(void)
+{
+	makevectors(m_vecLensPos);
+	vector lens_pos = getproperty(VF_ORIGIN) + (v_forward * 16384);
+	vector lens_1 = project(lens_pos) - (FLARE_SIZE / 2);
+
+	makevectors(getproperty(VF_ANGLES));
+	vector v = normalize (lens_pos - getproperty(VF_ORIGIN));
+	float flDot = v * v_forward;
+
+	if (flDot < 0.15) {
+		return;
+	} else {
+		traceline(getproperty(VF_ORIGIN), lens_pos, TRUE, self);
+
+		if (Util_IsSky(trace_endpos) && flDot > 0.8) {
+			/* this never happens because the above trace fails. */
+			m_flLensAlpha = bound(0.0, m_flLensAlpha + (clframetime * 2), 1.0);
+		} else {
+			m_flLensAlpha = bound(0.0, m_flLensAlpha - (clframetime * 2), 1.0);
+		}
+	}
+
+	if (m_flLensAlpha <= 0.0f) {
+		return;
+	}
+
+	makevectors(getproperty(VF_CL_VIEWANGLES));
+	vector lens_m = project(getproperty(VF_ORIGIN) + (v_forward * 16384));
+	vector c = (lens_1 - lens_m) * 1.5;
+	drawpic(lens_1, "textures/fx/flare1", FLARE_SIZE, [1,1,1] * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
+	drawpic(lens_1 - c * 0.1, "textures/fx/flare2", FLARE_SIZE, [1,1,1] * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
+	drawpic(lens_1 + c * 0.2, "textures/fx/flare3", FLARE_SIZE, [1,1,1] * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
+	drawpic(lens_1 - c * 0.3, "textures/fx/flare4", FLARE_SIZE, [1,1,1] * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
+	drawpic(lens_1 + c * 0.4, "textures/fx/flare2", FLARE_SIZE, [1,1,1] * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
+	drawpic(lens_1 - c * 0.5, "textures/fx/flare3", FLARE_SIZE, [1,1,1] * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
+}
+
+void env_sun::Init(void)
+{
+	CBaseEntity::Init();
+	setorigin(this, origin);
+	drawmask = MASK_ENGINE;
+}
+
+void env_sun::Initialized(void)
+{
+	makevectors(m_vecLensPos);
+	m_vecLensPos = vectoangles(v_forward);
+}
+
+void env_sun::env_sun(void)
+{
+	precache_pic("textures/fx/flare1");
+	precache_pic("textures/fx/flare2");
+	precache_pic("textures/fx/flare3");
+	precache_pic("textures/fx/flare4");
+	solid = SOLID_NOT;
+	Init();
+}
+
+void env_sun::SpawnKey(string strField, string strKey)
+{
+	switch (strField) {
+	case "pitch":
+		m_vecLensPos[0] = stof(strKey);
+		break;
+	case "angle":
+		m_vecLensPos[1] = stof(strKey);
+		break;
+	default:
+		CBaseEntity::SpawnKey(strField, strKey);
+	}
+}

@@ -23,7 +23,8 @@ Propagate our pmove state to whatever the current frame before its stomped on
 (so any non-networked state updates locally).
 =================
 */
-void GamePredict_PreFrame(player pl)
+void
+GamePredict_PreFrame(player pl)
 {
 	pl.net_cs_shotmultiplier = pl.cs_shotmultiplier;
 	pl.net_cs_shottime = pl.cs_shottime;
@@ -38,7 +39,8 @@ Rewind our pmove state back to before we started predicting.
 (to give consistent state instead of accumulating errors)
 =================
 */
-void GamePredict_PostFrame(player pl)
+void
+GamePredict_PostFrame(player pl)
 {
 	pl.cs_shotmultiplier = pl.net_cs_shotmultiplier;
 	pl.cs_shottime = pl.net_cs_shottime;

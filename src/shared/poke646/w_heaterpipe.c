@@ -41,7 +41,7 @@ w_heaterpipe_precache(void)
 void
 w_heaterpipe_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, __NULL__, __NULL__, __NULL__);
 #endif
 }
@@ -80,7 +80,7 @@ w_heaterpipe_release(void)
 void
 w_heaterpipe_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -133,7 +133,7 @@ weapon_t w_heaterpipe =
 };
 
 /* entity definitions for pickups */
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_heaterpipe(void)
 {

@@ -17,7 +17,7 @@
 .int iAmmo_HEGRENADE;
 
 // This is to keep track of us holding down the nade
-#ifdef SSQC
+#ifdef SERVER
 .int iMode_HEGRENADE;
 #endif
 
@@ -50,34 +50,35 @@ weaponinfo_t wptHEGRENADE = {
 };
 
 // Anim Table
-enum {
+enum
+{
 	ANIM_HEGRENADE_IDLE1,
 	ANIM_HEGRENADE_PULLPIN,
 	ANIM_HEGRENADE_THROW,
 	ANIM_HEGRENADE_DRAW,
 };
 
-void WeaponHEGRENADE_Draw( void ) {
-#ifdef SSQC
+void WeaponHEGRENADE_Draw(void) {
+#ifdef SERVER
 	BaseMelee_Draw();
 	self.iMode_HEGRENADE = GRENADE_UNREADY;
 #else
-	View_PlayAnimation( ANIM_HEGRENADE_DRAW );
+	View_PlayAnimation(ANIM_HEGRENADE_DRAW);
 #endif
 }
 
-void WeaponHEGRENADE_PrimaryFire( void ) {
-#ifdef SSQC
-	static void WeaponHEGRENADE_Release_Ready( void ) {
+void WeaponHEGRENADE_PrimaryFire(void) {
+#ifdef SERVER
+	static void WeaponHEGRENADE_Release_Ready(void) {
 		self.iMode_HEGRENADE = GRENADE_READY;
 	}
 	
-	if ( self.iMode_HEGRENADE != GRENADE_UNREADY ) {
+	if (self.iMode_HEGRENADE != GRENADE_UNREADY) {
 		return;
 	}
 	
-	Client_SendEvent( self, EV_WEAPON_PRIMARYATTACK );
-	Animation_ShootWeapon( self );
+	Client_SendEvent(self, EV_WEAPON_PRIMARYATTACK);
+	Animation_ShootWeapon(self);
 	self.fAttackFinished = time + wptHEGRENADE.fAttackFinished;
 	
 	// Mark the nade as ready once the pin has been pulled
@@ -85,45 +86,45 @@ void WeaponHEGRENADE_PrimaryFire( void ) {
 	self.think = WeaponHEGRENADE_Release_Ready;
 	self.nextthink = self.fAttackFinished;
 #else
-	View_PlayAnimation( ANIM_HEGRENADE_PULLPIN );
+	View_PlayAnimation(ANIM_HEGRENADE_PULLPIN);
 #endif
 }
 
-#ifdef SSQC
-void WeaponHEGRENADE_Throw( void ) {
-	static void WeaponHEGRENADE_Explode( void ) {
-		Effect_CreateExplosion( self.origin );
-		Damage_Radius( self.origin, self, 100, 512, TRUE );
-		sound( self, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 2 ) + 3 ), 1, ATTN_NORM );
-		remove( self );
+#ifdef SERVER
+void WeaponHEGRENADE_Throw(void) {
+	static void WeaponHEGRENADE_Explode(void) {
+		Effect_CreateExplosion(self.origin);
+		Damage_Radius(self.origin, self, 100, 512, TRUE);
+		sound(self, CHAN_WEAPON, sprintf("weapons/explode%d.wav", floor(random() * 2) + 3), 1, ATTN_NORM);
+		remove(self);
 	}
-	static void Weapon_HEGRENADE_Touch( void ) {
-		if ( other.solid == SOLID_TRIGGER ) {
+	static void Weapon_HEGRENADE_Touch(void) {
+		if (other.solid == SOLID_TRIGGER) {
 			return;
 		}
-		if ( other == self.owner ) {
+		if (other == self.owner) {
 			return;
 		}
-		if ( ( other.classname == "func_breakable" ) && ( other.material == MATERIAL_GLASS ) ) {
-			Damage_Apply( other, self, other.health, self.origin, FALSE, WEAPON_HEGRENADE);
+		if ((other.classname == "func_breakable") && (other.material == MATERIAL_GLASS)) {
+			Damage_Apply(other, self, other.health, self.origin, FALSE, WEAPON_HEGRENADE);
 		}
 		
-		sound( self, CHAN_WEAPON, "weapons/he_bounce-1.wav", 1, ATTN_NORM );
+		sound(self, CHAN_WEAPON, "weapons/he_bounce-1.wav", 1, ATTN_NORM);
 	}
 	
-	makevectors( self.v_angle );
+	makevectors(self.v_angle);
 	entity eNade = spawn();
-	setorigin( eNade, ( self.origin + self.view_ofs ) + ( v_forward * 16 ) );
-	setmodel( eNade, "models/w_hegrenade.mdl" );
-	setsize( eNade, '-1 -1 -1', '1 1 1' );
+	setorigin(eNade, (self.origin + self.view_ofs) + (v_forward * 16));
+	setmodel(eNade, "models/w_hegrenade.mdl");
+	setsize(eNade, '-1 -1 -1', '1 1 1');
 	
-	vector vDir = aim ( self, 100000 );
+	vector vDir = aim (self, 100000);
 	eNade.owner = self;
 	eNade.classname = "remove_me";
 	eNade.solid = SOLID_TRIGGER; // This is so grenades will not get slowed down by windows they touch
-	eNade.angles = vectoangles( vDir );
-	eNade.velocity = ( vDir * 1000 );
-	eNade.avelocity = ( v_forward * 1000 );
+	eNade.angles = vectoangles(vDir);
+	eNade.velocity = (vDir * 1000);
+	eNade.avelocity = (v_forward * 1000);
 	eNade.movetype = MOVETYPE_BOUNCE;
 	eNade.touch = Weapon_HEGRENADE_Touch;
 	eNade.gravity = 0.5f;
@@ -135,21 +136,21 @@ void WeaponHEGRENADE_Throw( void ) {
 	
 	Radio_TeamMessage(RADIO_CT_FIREINHOLE, self.team);
 	
-	if ( !self.iAmmo_HEGRENADE ) {
+	if (!self.iAmmo_HEGRENADE) {
 		Weapon_SwitchBest();
 	} else {
-		Weapon_Draw( WEAPON_HEGRENADE );
+		Weapon_Draw(WEAPON_HEGRENADE);
 	}
 }
 #endif
 
-void WeaponHEGRENADE_Release( void ) {
-#ifdef SSQC
-	if ( self.iMode_HEGRENADE == GRENADE_READY ) {
+void WeaponHEGRENADE_Release(void) {
+#ifdef SERVER
+	if (self.iMode_HEGRENADE == GRENADE_READY) {
 		// Throw immediately
 		WeaponHEGRENADE_Throw();
 		self.iMode_HEGRENADE = GRENADE_UNREADY;
-	} else if ( self.iMode_HEGRENADE == GRENADE_PULLING ) {
+	} else if (self.iMode_HEGRENADE == GRENADE_PULLING) {
 		// Trying to release the grenade before it's done pulling, throw asap
 		self.iMode_HEGRENADE = GRENADE_UNREADY;
 		self.think = WeaponHEGRENADE_Throw;

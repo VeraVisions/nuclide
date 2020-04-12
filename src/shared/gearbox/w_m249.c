@@ -24,7 +24,8 @@ M249 Weapon
 */
 
 /* Animations */
-enum {
+enum
+{
 	M249_IDLE1,
 	M249_IDLE2,
 	M249_RELOAD1,
@@ -50,7 +51,7 @@ w_m249_precache(void)
 int 
 w_m249_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -69,7 +70,7 @@ w_m249_pickup(int new)
 void
 w_m249_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.m249_mag, pl.ammo_556, -1);
 #endif
 }
@@ -95,7 +96,7 @@ w_m249_deathmsg(void)
 void
 w_m249_draw(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	Weapons_SetModel("models/v_saw.mdl");
 	Weapons_ViewAnimation(M249_DRAW);
 #endif
@@ -149,7 +150,7 @@ w_m249_primary(void)
 	}
 
 	/* ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 <= 0) {
 		return;
 	}
@@ -166,7 +167,7 @@ w_m249_primary(void)
 	pl.velocity += push;
 
 	/* actual firing */
-#ifdef CSQC
+#ifdef CLIENT
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 	Weapons_ViewPunchAngle([-5,0,0]);
@@ -202,7 +203,7 @@ w_m249_reload(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 >= 50) {
 		return;
 	}
@@ -228,7 +229,7 @@ w_m249_reload(void)
 void
 w_m249_crosshair(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	vector cross_pos;
 	vector aicon_pos;
 
@@ -258,7 +259,7 @@ w_m249_crosshair(void)
 		[24/128,72/128],
 		[24/256, 24/128],
 		g_hud_color,
-		pSeat->ammo2_alpha,
+		pSeat->m_flAmmo2Alpha,
 		DRAWFLAG_ADDITIVE
 	);
 #endif
@@ -273,7 +274,7 @@ w_m249_aimanim(void)
 void
 w_m249_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -325,7 +326,7 @@ weapon_t w_m249 =
 	.hudpic		= w_m249_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_m249(void)
 {

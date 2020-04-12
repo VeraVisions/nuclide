@@ -16,7 +16,7 @@
 
 class monster_human_chopper:CBaseNPC
 {
-	void() monster_human_chopper;
+	void(void) monster_human_chopper;
 };
 
 void monster_human_chopper::monster_human_chopper(void)

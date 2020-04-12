@@ -16,31 +16,27 @@
 
 typedef struct
 {
-	vector dest;
-	int linkflags;
+	vector m_vecDest;
+	int m_iFlags;
 } nodeslist_t;
 
-/* Begin calculating a route. The callback function will be called once the
- * route has finished being calculated. The route must be memfreed once it is
- * no longer needed. The route must be followed in reverse order (ie: the
- * first node that must be reached is at index numnodes-1).
- * If no route is available then the callback will be called with no nodes. */
-void(entity, vector, int, void(entity, vector, int, nodeslist_t *)) route_calculate = #0:route_calculate; 
-
-enum {
+enum
+{
 	MONSTER_IDLE,
 	MONSTER_WALK,
 	MONSTER_RUN,
 	MONSTER_DEAD
 };
 
-enum {
+enum
+{
 	SEQUENCESTATE_NONE,
 	SEQUENCESTATE_ACTIVE,
 	SEQUENCESTATE_ENDING
 };
 
-enumflags {
+enumflags
+{
 	MSF_WAITTILLSEEN,
 	MSF_GAG,
 	MSF_MONSTERCLIP,
@@ -77,32 +73,32 @@ class CBaseMonster:CBaseEntity
 	/* sequences */
 	string m_strRouteEnded;
 
-	void() CBaseMonster;
+	void(void) CBaseMonster;
 
-	virtual void() touch;
-	virtual void() Hide;
-	virtual void() Respawn;
-	virtual void() PlayerUse;
+	virtual void(void) touch;
+	virtual void(void) Hide;
+	virtual void(void) Respawn;
+	virtual void(void) PlayerUse;
 	virtual void(int) Pain;
 	virtual void(int) Death;
-	virtual void() Physics;
-	virtual void() IdleNoise;
-	virtual void() Gib;
+	virtual void(void) Physics;
+	virtual void(void) IdleNoise;
+	virtual void(void) Gib;
 	virtual void(string) Sound;
 
 	/* sequences */
-	virtual void() FreeState;
+	virtual void(void) FreeState;
 
-	virtual void() ClearRoute;
-	virtual void() CheckRoute;
-	virtual void() WalkRoute;
+	virtual void(void) ClearRoute;
+	virtual void(void) CheckRoute;
+	virtual void(void) WalkRoute;
 	virtual void(vector) NewRoute;
 
 	/* animation cycles */
 	float m_flAnimTime;
-	virtual int() AnimIdle;
-	virtual int() AnimWalk;
-	virtual int() AnimRun;
+	virtual int(void) AnimIdle;
+	virtual int(void) AnimWalk;
+	virtual int(void) AnimRun;
 };
 
 int
@@ -123,24 +119,28 @@ CBaseMonster::AnimRun(void)
 	return 0;
 }
 
-void CBaseMonster::Sound(string msg)
+void
+CBaseMonster::Sound(string msg)
 {
 	sound(this, CHAN_VOICE, msg, 1.0, ATTN_NORM);
 }
 
-void CBaseMonster::Gib(void)
+void
+CBaseMonster::Gib(void)
 {
 	takedamage = DAMAGE_NO;
 	Effect_GibHuman(this.origin);
 	Hide();
 }
 
-void CBaseMonster::IdleNoise(void)
+void
+CBaseMonster::IdleNoise(void)
 {
 
 }
 
-void CBaseMonster::ClearRoute(void)
+void
+CBaseMonster::ClearRoute(void)
 {
 	if (m_iNodes) {
 		m_iNodes = 0;
@@ -148,7 +148,8 @@ void CBaseMonster::ClearRoute(void)
 	}
 }
 
-void CBaseMonster::FreeState(void)
+void
+CBaseMonster::FreeState(void)
 {
 	m_flSequenceEnd = 0;
 	m_iSequenceState = SEQUENCESTATE_NONE;
@@ -174,7 +175,8 @@ void CBaseMonster::FreeState(void)
 	}
 }
 
-void CBaseMonster::CheckRoute(void)
+void
+CBaseMonster::CheckRoute(void)
 {
 	float flDist;
 	vector evenpos;
@@ -188,13 +190,13 @@ void CBaseMonster::CheckRoute(void)
 		evenpos = m_vecLastNode;
 		evenpos[2] = origin[2];
 	} else {
-		evenpos = m_pRoute[m_iCurNode].dest;
+		evenpos = m_pRoute[m_iCurNode].m_vecDest;
 		evenpos[2] = origin[2];
 	}
 
-	flDist = floor( vlen( evenpos - origin ) );
+	flDist = floor(vlen(evenpos - origin));
 
-	if ( flDist < 8 ) {
+	if (flDist < 8) {
 		dprint(sprintf("^2CBaseMonster::^3CheckRoute^7: %s reached node\n", this.m_strTargetName));
 		m_iCurNode--;
 		velocity = [0,0,0]; /* clamp friction */
@@ -221,22 +223,23 @@ void CBaseMonster::CheckRoute(void)
 		}
 	}
 
-	/*if ( flDist == m_flLastDist ) {
+	/*if (flDist == m_flLastDist) {
 		m_flNodeGiveup += frametime;
 	} else {
-		m_flNodeGiveup = bound( 0, m_flNodeGiveup - frametime, 1.0 );
+		m_flNodeGiveup = bound(0, m_flNodeGiveup - frametime, 1.0);
 	}
 
 	m_flLastDist = flDist;
 
-	if ( m_flNodeGiveup >= 1.0f ) {
+	if (m_flNodeGiveup >= 1.0f) {
 		print(sprintf("CBaseMonster::CheckNode: %s gave up route\n",
 			this.netname));
 		ClearRoute();
 	}*/
 }
 
-void CBaseMonster::WalkRoute(void)
+void
+CBaseMonster::WalkRoute(void)
 {
 	if (m_iNodes) {
 		vector endangles;
@@ -244,14 +247,15 @@ void CBaseMonster::WalkRoute(void)
 		if (m_iCurNode < 0) {
 			endangles = vectoangles(m_vecLastNode - origin);
 		} else {
-			endangles = vectoangles(m_pRoute[m_iCurNode].dest - origin);
+			endangles = vectoangles(m_pRoute[m_iCurNode].m_vecDest - origin);
 		}
 		input_angles[1] = endangles[1];
 		input_movevalues = [m_flSequenceSpeed, 0, 0];
 	}
 }
 
-void CBaseMonster::NewRoute(vector destination)
+void
+CBaseMonster::NewRoute(vector destination)
 {
 	/* engine calls this upon successfully creating a route */
 	static void NewRoute_RouteCB(entity ent, vector dest, int numnodes, nodeslist_t *nodelist)
@@ -277,7 +281,8 @@ void CBaseMonster::NewRoute(vector destination)
 	}
 }
 
-void CBaseMonster::Physics(void)
+void
+CBaseMonster::Physics(void)
 {
 	input_movevalues = [0,0,0];
 	input_impulse = 0;
@@ -321,7 +326,8 @@ void CBaseMonster::Physics(void)
 	}
 }
 
-void CBaseMonster::touch(void)
+void
+CBaseMonster::touch(void)
 {
 	if (movetype != MOVETYPE_WALK) {
 		return;
@@ -332,17 +338,20 @@ void CBaseMonster::touch(void)
 	}
 }
 
-void CBaseMonster::PlayerUse(void)
+void
+CBaseMonster::PlayerUse(void)
 {
 
 }
 
-void CBaseMonster::Pain(int iHitBody)
+void
+CBaseMonster::Pain(int iHitBody)
 {
 
 }
 
-void CBaseMonster::Death(int iHitBody)
+void
+CBaseMonster::Death(int iHitBody)
 {
 	m_iFlags = 0x0;
 
@@ -360,7 +369,8 @@ void CBaseMonster::Death(int iHitBody)
 	style = MONSTER_DEAD;
 }
 
-void CBaseMonster::Hide(void)
+void
+CBaseMonster::Hide(void)
 {
 	setmodel(this, "");
 	solid = SOLID_NOT;
@@ -368,7 +378,8 @@ void CBaseMonster::Hide(void)
 	customphysics = __NULL__;
 }
 
-void CBaseMonster::Respawn(void)
+void
+CBaseMonster::Respawn(void)
 {
 	v_angle[0] = Math_FixDelta(m_oldAngle[0]);
 	v_angle[1] = Math_FixDelta(m_oldAngle[1]);
@@ -391,7 +402,8 @@ void CBaseMonster::Respawn(void)
 	droptofloor();
 }
 
-void CBaseMonster::CBaseMonster(void)
+void
+CBaseMonster::CBaseMonster(void)
 {
 	CBaseEntity::CBaseEntity();
 	Respawn();

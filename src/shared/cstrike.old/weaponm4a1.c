@@ -16,7 +16,7 @@
 
 .int iMag_M4A1;
 
-#ifdef SSQC
+#ifdef SERVER
 .int iMode_M4A1;
 #else
 int iWeaponMode_M4A1;
@@ -50,7 +50,8 @@ weaponinfo_t wptM4A1 = {
 	SHELL_RIFLE
 };
 
-enum {
+enum
+{
 	ANIM_M4A1_IDLE,
 	ANIM_M4A1_SILENCER_SHOOT1,
 	ANIM_M4A1_SILENCER_SHOOT2,
@@ -67,86 +68,86 @@ enum {
 	ANIM_M4A1_SILENCER_REMOVE
 };
 
-void WeaponM4A1_Draw( void ) {
-#ifdef SSQC
+void WeaponM4A1_Draw(void) {
+#ifdef SERVER
 	BaseGun_Draw();
 #else
-	if ( iWeaponMode_M4A1 == TRUE ) {
-		View_PlayAnimation( ANIM_M4A1_SILENCER_DRAW );
+	if (iWeaponMode_M4A1 == TRUE) {
+		View_PlayAnimation(ANIM_M4A1_SILENCER_DRAW);
 	} else {
-		View_PlayAnimation( ANIM_M4A1_DRAW );
+		View_PlayAnimation(ANIM_M4A1_DRAW);
 	}
 #endif
 }
 
-void WeaponM4A1_PrimaryFire( void ) {
-#ifdef SSQC
-	if ( BaseGun_PrimaryFire() == TRUE ) {
-		if ( self.iMode_M4A1 == TRUE ) {
-			sound( self, CHAN_WEAPON, "weapons/m4a1-1.wav", 1, ATTN_NORM );
+void WeaponM4A1_PrimaryFire(void) {
+#ifdef SERVER
+	if (BaseGun_PrimaryFire() == TRUE) {
+		if (self.iMode_M4A1 == TRUE) {
+			sound(self, CHAN_WEAPON, "weapons/m4a1-1.wav", 1, ATTN_NORM);
 		} else {
-			if ( random() <= 0.5 ) {
-				sound( self, CHAN_WEAPON, "weapons/m4a1_unsil-1.wav", 1, ATTN_NORM );
+			if (random() <= 0.5) {
+				sound(self, CHAN_WEAPON, "weapons/m4a1_unsil-1.wav", 1, ATTN_NORM);
 			} else {
-				sound( self, CHAN_WEAPON, "weapons/m4a1_unsil-2.wav", 1, ATTN_NORM );
+				sound(self, CHAN_WEAPON, "weapons/m4a1_unsil-2.wav", 1, ATTN_NORM);
 			}
 		}
 	}
 #else
-	int iRand = (int)floor( random( 1, 4 ) );
+	int iRand = (int)floor(random(1, 4));
 		
-	if ( iRand == 1 ) {
-		if ( iWeaponMode_M4A1 == TRUE ) {
-			View_PlayAnimation( ANIM_M4A1_SILENCER_SHOOT1 );
+	if (iRand == 1) {
+		if (iWeaponMode_M4A1 == TRUE) {
+			View_PlayAnimation(ANIM_M4A1_SILENCER_SHOOT1);
 		} else {
-			View_PlayAnimation( ANIM_M4A1_SHOOT1 );
+			View_PlayAnimation(ANIM_M4A1_SHOOT1);
 		}
-	} else if ( iRand == 2 ) {
-		if ( iWeaponMode_M4A1 == TRUE ) {
-			View_PlayAnimation( ANIM_M4A1_SILENCER_SHOOT2 );
+	} else if (iRand == 2) {
+		if (iWeaponMode_M4A1 == TRUE) {
+			View_PlayAnimation(ANIM_M4A1_SILENCER_SHOOT2);
 		} else {
-			View_PlayAnimation( ANIM_M4A1_SHOOT2 );
+			View_PlayAnimation(ANIM_M4A1_SHOOT2);
 		}
 	} else {
-		if ( iWeaponMode_M4A1 == TRUE ) {
-			View_PlayAnimation( ANIM_M4A1_SILENCER_SHOOT3 );
+		if (iWeaponMode_M4A1 == TRUE) {
+			View_PlayAnimation(ANIM_M4A1_SILENCER_SHOOT3);
 		} else {
-			View_PlayAnimation( ANIM_M4A1_SHOOT3 );
+			View_PlayAnimation(ANIM_M4A1_SHOOT3);
 		}
 	}
-	BaseGun_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle(1);
 #endif
 }
 
-void WeaponM4A1_Secondary( void ) {
-#ifdef SSQC
+void WeaponM4A1_Secondary(void) {
+#ifdef SERVER
 	// Just switch the modes quickly
 	self.iMode_M4A1 = 1 - self.iMode_M4A1;
 	self.fAttackFinished = time + 2;
 	
 	// Tell the client that we switched modes, too
-	Client_SendEvent( self, EV_WEAPON_SECONDARYATTACK );
+	Client_SendEvent(self, EV_WEAPON_SECONDARYATTACK);
 #else 
 	iWeaponMode_M4A1 = 1 - iWeaponMode_M4A1;
 	
-	if ( iWeaponMode_M4A1 == TRUE ) {
-		View_PlayAnimation( ANIM_M4A1_SILENCER_ADD );
+	if (iWeaponMode_M4A1 == TRUE) {
+		View_PlayAnimation(ANIM_M4A1_SILENCER_ADD);
 	} else {
-		View_PlayAnimation( ANIM_M4A1_SILENCER_REMOVE );
+		View_PlayAnimation(ANIM_M4A1_SILENCER_REMOVE);
 	}
 #endif
 }
 
-void WeaponM4A1_Reload( void ) {
-#ifdef SSQC
-	if ( BaseGun_Reload() == TRUE ) {
+void WeaponM4A1_Reload(void) {
+#ifdef SERVER
+	if (BaseGun_Reload() == TRUE) {
 		// Play Sound
 	}
 #else
-	if ( iWeaponMode_M4A1 == TRUE ) {
-		View_PlayAnimation( ANIM_M4A1_SILENCER_RELOAD );
+	if (iWeaponMode_M4A1 == TRUE) {
+		View_PlayAnimation(ANIM_M4A1_SILENCER_RELOAD);
 	} else {
-		View_PlayAnimation( ANIM_M4A1_RELOAD );
+		View_PlayAnimation(ANIM_M4A1_RELOAD);
 	}
 #endif
 }

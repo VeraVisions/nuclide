@@ -55,8 +55,8 @@ void Master_RefreshCache(void)
 {
 	print("Refreshing host cache...\n");
 	resethostcachemasks();
-	//sethostcachemaskstring( 0, gethostcacheindexforkey( "gamedir" ), cvar_string("game"), SLIST_TEST_EQUAL );
-	sethostcachesort( gethostcacheindexforkey( "ping" ), FALSE );
+	//sethostcachemaskstring(0, gethostcacheindexforkey("gamedir"), cvar_string("game"), SLIST_TEST_EQUAL);
+	sethostcachesort(gethostcacheindexforkey("ping"), FALSE);
 	refreshhostcache(FALSE);
 	resorthostcache();
 	int a = gethostcachevalue(SLIST_HOSTCACHETOTALCOUNT);
@@ -70,8 +70,8 @@ void Master_UpdateCache(void)
 {
 	print("Updating host cache...\n");
 	resethostcachemasks();
-	//sethostcachemaskstring( 0, gethostcacheindexforkey( "gamedir" ), cvar_string("game"), SLIST_TEST_EQUAL );
-	sethostcachesort( gethostcacheindexforkey( "ping" ), FALSE );
+	//sethostcachemaskstring(0, gethostcacheindexforkey("gamedir"), cvar_string("game"), SLIST_TEST_EQUAL);
+	sethostcachesort(gethostcacheindexforkey("ping"), FALSE);
 	refreshhostcache(TRUE);
 	resorthostcache();
 	int a = gethostcachevalue(SLIST_HOSTCACHETOTALCOUNT);

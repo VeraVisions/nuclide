@@ -47,7 +47,7 @@ w_umbrella_precache(void)
 void
 w_umbrella_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, __NULL__, __NULL__, __NULL__);
 #endif
 }
@@ -118,7 +118,7 @@ w_umbrella_primary(void)
 
 	pl.w_idle_next = 2.5f;
 
-#ifdef SSQC
+#ifdef SERVER
 	if (pl.flags & FL_CROUCHING) {
 		Animation_PlayerTopTemp(ANIM_SHOOTCROWBAR, 0.5f);
 	} else {
@@ -184,7 +184,7 @@ w_umbrella_aimanim(void)
 void
 w_umbrella_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,

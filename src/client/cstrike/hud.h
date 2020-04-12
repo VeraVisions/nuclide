@@ -48,4 +48,16 @@ float spr_flash2[4] = {
 	24 / 256, // pos u
 	48 / 256, // size x
 	32 / 256 // size y
-}; 
+};
+
+string
+HUD_GetChatColorHEX(float fTeam)
+{
+	if (fTeam == TEAM_CT) {
+		return "^x7AC";
+	} else if (fTeam == TEAM_T) {
+		return "^xC33";
+	} else {
+		return "^xCCC";
+	}
+}

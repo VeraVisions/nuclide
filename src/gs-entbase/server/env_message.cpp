@@ -39,10 +39,10 @@ class env_message:CBaseTrigger
 	float m_flVolume;
 	int m_iAttenuation;
 
-	void() env_message;
+	void(void) env_message;
 
-	virtual void() Play;
-	virtual void() Respawn;
+	virtual void(void) Play;
+	virtual void(void) Respawn;
 };
 
 void env_message::Play(void)

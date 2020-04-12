@@ -31,30 +31,30 @@
 Shoots model entities from its location.
 */
 
-class gibshooter2 : env_shooter
-{	
-	void() gibshooter2;
+class gibshooter2:env_shooter
+{
+	void(void) gibshooter2;
 };
 
-void gibshooter2 :: gibshooter2 ( void )
+void gibshooter2::gibshooter2(void)
 {
-	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
-		switch ( argv( i ) ) {
+	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
+		switch (argv(i)) {
 		case "m_iGibs":
-			m_iGibs = stoi( argv( i + 1 ) );
+			m_iGibs = stoi(argv(i+1));
 			break;
 		case "delay":
 		case "m_flDelay":
-			m_flDelay = stof( argv( i + 1 ) );
+			m_flDelay = stof(argv(i+1));
 			break;
 		case "m_flVelocity":
-			m_flVelocity = stof( argv( i + 1 ) );
+			m_flVelocity = stof(argv(i+1));
 			break;
 		case "m_flVariance":
-			m_flVariance = stof( argv( i + 1 ) );
+			m_flVariance = stof(argv(i+1));
 			break;
 		case "m_flGibLife":
-			m_flGibLife = stof( argv( i + 1 ) );
+			m_flGibLife = stof(argv(i+1));
 			break;
 		default:
 			break;
@@ -65,6 +65,6 @@ void gibshooter2 :: gibshooter2 ( void )
 	m_flShootSounds = 3;
 	m_flScale = 1.0;
 
-	precache_model( m_strShootModel );
+	precache_model(m_strShootModel);
 	CBaseTrigger::CBaseTrigger();
 }

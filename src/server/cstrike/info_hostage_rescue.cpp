@@ -31,7 +31,7 @@ zones will be placed in Counter-Terrorist player spawn nodes automatically.
 
 class info_hostage_rescue
 {
-	void() info_hostage_rescue;
+	void(void) info_hostage_rescue;
 };
 
 void

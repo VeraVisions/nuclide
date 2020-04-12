@@ -45,7 +45,8 @@ weaponinfo_t wptP228 = {
 };
 
 // Anim Table
-enum {
+enum
+{
 	ANIM_P228_IDLE,
 	ANIM_P228_SHOOT1,
 	ANIM_P228_SHOOT2,
@@ -55,44 +56,44 @@ enum {
 	ANIM_P228_DRAW
 };
 
-void WeaponP228_Draw( void ) {
-#ifdef SSQC
+void WeaponP228_Draw(void) {
+#ifdef SERVER
 	BaseGun_Draw();
 #else
-	View_PlayAnimation( ANIM_P228_DRAW );
+	View_PlayAnimation(ANIM_P228_DRAW);
 #endif
 }
 
-void WeaponP228_PrimaryFire( void ) {
-#ifdef SSQC
-	if ( BaseGun_PrimaryFire() == TRUE ) {
+void WeaponP228_PrimaryFire(void) {
+#ifdef SERVER
+	if (BaseGun_PrimaryFire() == TRUE) {
 		// Play Sound
-		sound( self, CHAN_WEAPON, "weapons/p228-1.wav", 1, ATTN_NORM );
+		sound(self, CHAN_WEAPON, "weapons/p228-1.wav", 1, ATTN_NORM);
 	}
 #else
-	if ( getstatf( STAT_CURRENT_MAG ) == 0 ) {
-		View_PlayAnimation( ANIM_P228_SHOOT_EMPTY );
+	if (getstatf(STAT_CURRENT_MAG) == 0) {
+		View_PlayAnimation(ANIM_P228_SHOOT_EMPTY);
 	} else {
 		
-		int iRand = (int)floor( random( 1, 4 ) );
+		int iRand = (int)floor(random(1, 4));
 		
-		if ( iRand == 1 ) {
-			View_PlayAnimation( ANIM_P228_SHOOT1 );
-		} else if ( iRand == 2 ) {
-			View_PlayAnimation( ANIM_P228_SHOOT2 );
+		if (iRand == 1) {
+			View_PlayAnimation(ANIM_P228_SHOOT1);
+		} else if (iRand == 2) {
+			View_PlayAnimation(ANIM_P228_SHOOT2);
 		} else {
-			View_PlayAnimation( ANIM_P228_SHOOT3 );
+			View_PlayAnimation(ANIM_P228_SHOOT3);
 		}
 	}
-	BaseGun_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle(1);
 #endif
 }
 
-void WeaponP228_Reload( void ) {
-#ifdef SSQC
-	if ( BaseGun_Reload() == TRUE ) {
+void WeaponP228_Reload(void) {
+#ifdef SERVER
+	if (BaseGun_Reload() == TRUE) {
 	}
 #else
-	View_PlayAnimation( ANIM_P228_RELOAD );
+	View_PlayAnimation(ANIM_P228_RELOAD);
 #endif
 }

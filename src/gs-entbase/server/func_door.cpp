@@ -55,21 +55,21 @@ class func_door:CBaseTrigger
 	int m_iDamage;
 	int m_iLocked;
 	
-	void() func_door;
-	virtual void() SetMovementDirection;
-	virtual void(vector vdest, void() func) MoveToDestination;
-	virtual void() MoveToDestination_End;
-	virtual void() MoveAway;
-	virtual void() MoveBack;
-	virtual void() Precache;
-	virtual void() Arrived;
-	virtual void() Returned;
-	virtual void() Respawn;
-	virtual void() Trigger;
-	virtual void() Blocked;
-	virtual void() Touch;
-	virtual void() Use;
-	virtual void() m_pMove = 0;
+	void(void) func_door;
+	virtual void(void) SetMovementDirection;
+	virtual void(vector vdest, void(void) func) MoveToDestination;
+	virtual void(void) MoveToDestination_End;
+	virtual void(void) MoveAway;
+	virtual void(void) MoveBack;
+	virtual void(void) Precache;
+	virtual void(void) Arrived;
+	virtual void(void) Returned;
+	virtual void(void) Respawn;
+	virtual void(void) Trigger;
+	virtual void(void) Blocked;
+	virtual void(void) Touch;
+	virtual void(void) Use;
+	virtual void(void) m_pMove = 0;
 };
 
 void func_door::Precache(void)
@@ -258,7 +258,7 @@ void func_door::MoveToDestination_End(void)
 	m_pMove();
 }
 
-void func_door::MoveToDestination(vector vDestination, void() func)
+void func_door::MoveToDestination(vector vecDest, void(void) func)
 {
 	vector vecDifference;
 	float flTravel;
@@ -270,16 +270,16 @@ void func_door::MoveToDestination(vector vDestination, void() func)
 	}
 
 	m_pMove = func;
-	m_vecDest = vDestination;
+	m_vecDest = vecDest;
 	think = MoveToDestination_End;
 
-	if (vDestination == origin) {
+	if (vecDest == origin) {
 		velocity = [0,0,0];
 		nextthink = (ltime + 0.1f);
 		return;
 	}
 
-	vecDifference = (vDestination - origin);
+	vecDifference = (vecDest - origin);
 	flTravel = vlen(vecDifference);
 	fTravelTime = (flTravel / m_flSpeed);
 

@@ -21,17 +21,83 @@ Client_Init
 Comparable to worldspawn in SSQC in that it's mostly used for precaches
 =================
 */
-void Client_Init(float apilevel, string enginename, float engineversion)
+void
+Client_Init(float apilevel, string enginename, float engineversion)
 {
+	registercommand("callvote");
+	registercommand("chooseteam");
+	registercommand("buy");
+	registercommand("radio1");
+	registercommand("radio2");
+	registercommand("radio3");
+
+	registercommand("motd");
+	registercommand("drop");
+	registercommand("nightvision");
+	registercommand("glock");
+	registercommand("usp");
+	registercommand("p228");
+	registercommand("deagle");
+	registercommand("fn57");
+	registercommand("elites");
+	registercommand("m3");
+	registercommand("xm1014");
+	registercommand("tmp");
+	registercommand("mac10");
+	registercommand("mp5");
+	registercommand("ump45");
+	registercommand("p90");
+	registercommand("ak47");
+	registercommand("m4a1");
+	registercommand("sg552");
+	registercommand("aug");
+	registercommand("scout");
+	registercommand("sg550");
+	registercommand("awp");
+	registercommand("g3sg1");
+	registercommand("m249");
+	registercommand("primammo");
+	registercommand("buyammo1");
+	registercommand("secammo");
+	registercommand("buyammo2");
+	registercommand("vest");
+	registercommand("vesthelm");
+	registercommand("flash");
+	registercommand("hegren");
+	registercommand("vsgren");
+	registercommand("defuser");
+	registercommand("nvg");
+	registercommand("coverme");
+	registercommand("takepoint");
+	registercommand("holdpos");
+	registercommand("regroup");
+	registercommand("followme");
+	registercommand("takingfire");
+	registercommand("go");
+	registercommand("fallback");
+	registercommand("sticktog");
+	registercommand("getinpos");
+	registercommand("stormfront");
+	registercommand("report");
+	registercommand("roger");
+	registercommand("enemyspot");
+	registercommand("needbackup");
+	registercommand("sectorclear");
+	registercommand("inposition");
+	registercommand("reportingin");
+	registercommand("getout");
+	registercommand("negative");
+	registercommand("enemydown");
 }
 
-void Client_InitDone(void)
+void
+Client_InitDone(void)
 {
-	/* change this to the motd */
-	//VGUI_ChooseTeam();
+	Textmenu_Call("TEAM_SELECT");
 }
 
-void Game_RendererRestarted(string rstr)
+void
+Game_RendererRestarted(string rstr)
 {
 	precache_model("sprites/640hud1.spr");
 	precache_model("sprites/640hud2.spr");

@@ -24,11 +24,11 @@ void Scores_Init(void)
 VGUI_Scores_DrawTeam
 ====================
 */
-vector VGUI_Scores_DrawTeam(vector vPos, float fTeam) {
+vector VGUI_Scores_DrawTeam(vector vecPos, float fTeam) {
 	
 	vector vColor;
 	// Preserve the old vector so we can draw the amount of players per team later on
-	vector vNewPos = vPos;
+	vector vNewPos = vecPos;
 
 	int iPlayerCount = 0;
 
@@ -80,19 +80,19 @@ vector VGUI_Scores_DrawTeam(vector vPos, float fTeam) {
 	// If we've got no spectators, don't draw them.
 	if ((fTeam != TEAM_SPECTATOR) || (fTeam == TEAM_SPECTATOR && iPlayerCount > 0)) {
 		// The name/title of the team
-		drawstring(vPos+'24 0', sScoreTeams[ fTeam ], '12 12', vColor, 1.0f, 0);
-		drawfill(vPos+'19 24', '493 1', vColor, 1.0f);
+		drawstring(vecPos+'24 0', sScoreTeams[fTeam], '12 12', vColor, 1.0f, 0);
+		drawfill(vecPos+'19 24', '493 1', vColor, 1.0f);
 		
 		// Draw the amount of rounds we've von
 		if (fTeam == TEAM_CT) {
-			drawstring_r(vPos+'320 0', sprintf("%i", getstati(STAT_WON_CT)), '12 12', vColor, 1.0f, 0);
+			drawstring_r(vecPos+'320 0', sprintf("%i", getstati(STAT_WON_CT)), '12 12', vColor, 1.0f, 0);
 		} else if (fTeam == TEAM_T) {
-			drawstring_r(vPos+'320 0', sprintf("%i", getstati(STAT_WON_T)), '12 12', vColor, 1.0f, 0);
+			drawstring_r(vecPos+'320 0', sprintf("%i", getstati(STAT_WON_T)), '12 12', vColor, 1.0f, 0);
 		}
 		
 		// Now we know the playercount, so let's calculate the position next to the Teamname String and print it
-		vector vCountPos = vPos+'24 6';
-		vCountPos[0] += stringwidth(sScoreTeams[ fTeam ], FALSE, '12 12')+8;
+		vector vCountPos = vecPos+'24 6';
+		vCountPos[0] += stringwidth(sScoreTeams[fTeam], FALSE, '12 12')+8;
 		drawstring(vCountPos, sprintf(_("SCORE_PLAYERS"), iPlayerCount), '12 12', vColor, 1.0f, 0);
 	}
 	return vNewPos+'0 24';

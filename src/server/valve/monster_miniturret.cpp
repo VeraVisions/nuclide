@@ -22,7 +22,8 @@ Automatic Turret (small)
 
 */
 
-enum {
+enum
+{
 	TUR_IDLE,
 	TUR_FIRE,
 	TUR_SPIN,
@@ -33,7 +34,7 @@ enum {
 
 class monster_miniturret:CBaseMonster
 {
-	void() monster_miniturret;
+	void(void) monster_miniturret;
 };
 
 void monster_miniturret::monster_miniturret(void)

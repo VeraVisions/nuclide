@@ -19,9 +19,9 @@ class info_tfgoal:CBaseTrigger
 	string m_strName;
 	string m_strSound;
 
-	void() info_tfgoal;
-	virtual void() touch;
-	virtual void() Respawn;
+	void(void) info_tfgoal;
+	virtual void(void) touch;
+	virtual void(void) Respawn;
 };
 
 void

@@ -25,10 +25,10 @@ and pressing jump.
 */
 class item_longjump:CBaseTrigger
 {
-	void() item_longjump;
+	void(void) item_longjump;
 
-	virtual void() touch;
-	virtual void() Respawn;
+	virtual void(void) touch;
+	virtual void(void) Respawn;
 };
 
 void item_longjump::touch(void)

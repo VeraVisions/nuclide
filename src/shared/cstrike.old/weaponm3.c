@@ -16,7 +16,7 @@
 
 .int iMag_M3;
 
-#ifdef SSQC
+#ifdef SERVER
 .int iMode_M3;
 #else
 int iWeaponMode_M3;
@@ -51,7 +51,8 @@ weaponinfo_t wptM3 = {
 };
 
 // Anim Table
-enum {
+enum
+{
 	ANIM_M3_IDLE,
 	ANIM_M3_SHOOT1,
 	ANIM_M3_SHOOT2,
@@ -61,49 +62,49 @@ enum {
 	ANIM_M3_DRAW
 };
 
-void WeaponM3_Draw( void ) {
-	#ifdef SSQC
+void WeaponM3_Draw(void) {
+	#ifdef SERVER
 	BaseGun_Draw();
 	#else
-	View_PlayAnimation( ANIM_M3_DRAW );
+	View_PlayAnimation(ANIM_M3_DRAW);
 	#endif
 }
 
-void WeaponM3_ReloadNULL( void ) { }
+void WeaponM3_ReloadNULL(void) { }
 
-void WeaponM3_PrimaryFire( void ) {
-#ifdef SSQC
-	if ( self.iMode_M3 == TRUE ) {
+void WeaponM3_PrimaryFire(void) {
+#ifdef SERVER
+	if (self.iMode_M3 == TRUE) {
 		self.iMode_M3 = 0;
-		Client_SendEvent( self, EV_WEAPON_RELOAD );
+		Client_SendEvent(self, EV_WEAPON_RELOAD);
 		self.think = WeaponM3_ReloadNULL;
 		self.fAttackFinished = time + 1.0;
 		return;
 	}
 	
-	if ( BaseGun_PrimaryFire() == TRUE ) {
-		sound( self, CHAN_WEAPON, "weapons/m3-1.wav", 1, ATTN_NORM );
+	if (BaseGun_PrimaryFire() == TRUE) {
+		sound(self, CHAN_WEAPON, "weapons/m3-1.wav", 1, ATTN_NORM);
 	}
 #else
-	if ( random() <= 0.5 ) {
-		View_PlayAnimation( ANIM_M3_SHOOT1 );
+	if (random() <= 0.5) {
+		View_PlayAnimation(ANIM_M3_SHOOT1);
 	} else {
-		View_PlayAnimation( ANIM_M3_SHOOT2 );
+		View_PlayAnimation(ANIM_M3_SHOOT2);
 	}
-	BaseGun_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle(1);
 #endif
 }
 
 // The gun has no real secondary mode, but part of the reloading uses this function
 // mainly for client-side cosmetics. The server doesn't have a function telling
 // the client to switch animations (we save 1 byte in networking by reusing this)
-void WeaponM3_Reload( void);
-void WeaponM3_Secondary( void ) {
-#ifdef SSQC
+void WeaponM3_Reload(void);
+void WeaponM3_Secondary(void) {
+#ifdef SERVER
 	// If it's full or no ammo is left...
-	if ( (self.(wptM3.iMagfld) == wptM3.iMagSize) || ( self.(wptM3.iCaliberfld) <= 0 ) ) {
+	if ((self.(wptM3.iMagfld) == wptM3.iMagSize) || (self.(wptM3.iCaliberfld) <= 0)) {
 		self.iMode_M3 = 0;
-		Client_SendEvent( self, EV_WEAPON_RELOAD );
+		Client_SendEvent(self, EV_WEAPON_RELOAD);
 		self.think = WeaponM3_ReloadNULL;
 		self.fAttackFinished = time + 1.0;
 		return;
@@ -112,19 +113,19 @@ void WeaponM3_Secondary( void ) {
 	self.(wptM3.iMagfld) += 1;
 	self.(wptM3.iCaliberfld) -= 1;
 	
-	Client_SendEvent( self, EV_WEAPON_SECONDARYATTACK );
+	Client_SendEvent(self, EV_WEAPON_SECONDARYATTACK);
 	
 	self.think = WeaponM3_Secondary;
 	self.nextthink = time + 0.5;
 #else
-	View_PlayAnimation( ANIM_M3_INSERT );
+	View_PlayAnimation(ANIM_M3_INSERT);
 #endif
 }
 
-void WeaponM3_Reload( void ) {
-#ifdef SSQC
+void WeaponM3_Reload(void) {
+#ifdef SERVER
 	// Can we reload the gun even if we wanted to?
-	if (( self.(wptM3.iMagfld) == wptM3.iMagSize )) {
+	if ((self.(wptM3.iMagfld) == wptM3.iMagSize)) {
 		return;
 	}
 	if (self.(wptM3.iCaliberfld) <= 0) {
@@ -140,15 +141,15 @@ void WeaponM3_Reload( void ) {
 		self.think = WeaponM3_ReloadNULL;
 	}
 	
-	Client_SendEvent( self, EV_WEAPON_RELOAD );
+	Client_SendEvent(self, EV_WEAPON_RELOAD);
 	self.fAttackFinished = time + 1.0;
 #else
 	iWeaponMode_M3 = 1 - iWeaponMode_M3;
 
-	if ( iWeaponMode_M3 == TRUE ) {
-		View_PlayAnimation( ANIM_M3_RELOAD_START );
+	if (iWeaponMode_M3 == TRUE) {
+		View_PlayAnimation(ANIM_M3_RELOAD_START);
 	} else {
-		View_PlayAnimation( ANIM_M3_RELOAD_END );
+		View_PlayAnimation(ANIM_M3_RELOAD_END);
 	}
 #endif
 }

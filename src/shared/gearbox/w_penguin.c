@@ -36,7 +36,7 @@ enum
 int
 w_penguin_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (pl.ammo_penguin < 9) {
@@ -53,7 +53,7 @@ w_penguin_draw(void)
 {
 	Weapons_SetModel("models/v_penguin.mdl");
 	Weapons_ViewAnimation(PENGUIN_DRAW);
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_penguin, __NULL__);
 #endif
@@ -65,7 +65,7 @@ w_penguin_holster(void)
 	
 }
 
-#ifdef SSQC
+#ifdef SERVER
 void penguin_squeak(entity p)
 {
 	int r = floor(random(1,4));
@@ -195,7 +195,7 @@ w_penguin_primary(void)
 	}
 
 	/* Ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo2 <= 0) {
 		return;
 	}
@@ -208,7 +208,7 @@ w_penguin_primary(void)
 	Weapons_ViewAnimation(PENGUIN_THROW);
 
 	/* Audio-Visual Bit */
-#ifdef CSQC
+#ifdef CLIENT
 	pl.a_ammo2--;
 #else
 	w_penguin_deploy();
@@ -280,7 +280,7 @@ w_penguin_precache(void)
 void
 w_penguin_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_penguin, __NULL__);
 #endif
 }
@@ -313,17 +313,17 @@ w_penguin_aimanim(void)
 void
 w_penguin_hud(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [144/256,72/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [144/256,72/128], [24/256, 24/128], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
 void
 w_penguin_hudpic(int s, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (s) {
 		drawsubpic(pos, [170,45], "sprites/640hudof04.spr_0.tga",
 			[0,180/256], [170/256,45/256],
@@ -361,7 +361,7 @@ weapon_t w_penguin =
 	.hudpic		= w_penguin_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_penguin(void)
 {

@@ -23,7 +23,8 @@
 //.float basesubblendfrac; // legs part.
 .float subblend2frac; // Up/Down
 
-void player::gun_offset(void)
+void
+player::gun_offset(void)
 {
 	vector v1, v2;
 	/* Set it to something consistent */
@@ -50,7 +51,8 @@ void player::gun_offset(void)
 
 string Weapons_GetPlayermodel(int);
 
-void player::draw(void)
+void
+player::draw(void)
 {
 	if (!this.p_model) {
 		this.p_model = spawn();
@@ -111,7 +113,8 @@ void player::draw(void)
 
 var float autocvar_standheight = 0;
 var float autocvar_crouchheight = 0;
-float player::predraw(void)
+float
+player::predraw(void)
 {
 	/* Handle the flashlights... */
 	if (flags & FL_FLASHLIGHT) {
@@ -141,6 +144,7 @@ float player::predraw(void)
 	/* Run animations regardless of rendering the player */
 	draw();
 	gun_offset();
+	effects &= ~EF_NOSHADOW;
 
 	if (autocvar_cl_thirdperson == TRUE || this.entnum != player_localentnum) {
 		Voice_Draw3D(this);
@@ -153,6 +157,7 @@ float player::predraw(void)
 	return PREDRAW_NEXT;
 }
 
-void player::postdraw(void)
+void
+player::postdraw(void)
 {
 }

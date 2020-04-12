@@ -22,7 +22,8 @@ Black Ops - Assassin
 
 */
 
-enum {
+enum
+{
 	HAS_IDLE,
 	HAS_IDLE3,
 	HAS_IDLE2,
@@ -46,7 +47,7 @@ class monster_human_assassin:CBaseMonster
 {
 	float m_flIdleTime;
 
-	void() monster_human_assassin;
+	void(void) monster_human_assassin;
 
 	virtual void(int) Death;
 	virtual void(void) Respawn;

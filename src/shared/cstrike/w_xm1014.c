@@ -26,7 +26,8 @@ Price: $3000
 
 */
 
-enum {
+enum
+{
 	XM1014_IDLE,
 	XM1014_SHOOT1,
 	XM1014_SHOOT2,
@@ -47,7 +48,7 @@ enum
 void
 w_xm1014_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_xm1014.fire");
 	Sound_Precache("weapon_xm1014.insertshell");
 #endif
@@ -59,7 +60,7 @@ w_xm1014_precache(void)
 void
 w_xm1014_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.xm1014_mag, pl.ammo_buckshot, pl.a_ammo3);
 #endif
 }
@@ -85,7 +86,7 @@ w_xm1014_deathmsg(void)
 int
 w_xm1014_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -108,7 +109,7 @@ w_xm1014_draw(void)
 	Weapons_SetModel("models/v_xm1014.mdl");
 	Weapons_ViewAnimation(XM1014_DRAW);
 
-#ifdef CSQC
+#ifdef CLIENT
 	pl.cs_cross_mindist = 9;
 	pl.cs_cross_deltadist = 4;
 #endif
@@ -124,7 +125,7 @@ w_xm1014_primary(void)
 	}
 
 	/* ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (!pl.a_ammo1) {
 		return;
 	}
@@ -137,7 +138,7 @@ w_xm1014_primary(void)
 	Cstrike_ShotMultiplierAdd(pl, 6);
 	float accuracy = Cstrike_CalculateAccuracy(pl, 200);
 
-#ifdef CSQC
+#ifdef CLIENT
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 #else
@@ -170,7 +171,7 @@ void
 w_xm1014_reload(void)
 {
 	player pl = (player)self;
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 >= 7) {
 		return;
 	}
@@ -210,7 +211,7 @@ w_xm1014_release(void)
 		pl.w_idle_next = 0.65f;
 	} else if (pl.a_ammo3 == XM1014S_RELOAD) {
 		Weapons_ViewAnimation(XM1014_INSERT);
-#ifdef CSQC
+#ifdef CLIENT
 		pl.a_ammo1++;
 		pl.a_ammo2--;
 
@@ -244,19 +245,19 @@ w_xm1014_aimanim(void)
 void
 w_xm1014_hud(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	Cstrike_DrawCrosshair();
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [0,72/256], [24/256, 24/256], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [0,72/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
 void
 w_xm1014_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -308,7 +309,7 @@ weapon_t w_xm1014 =
 	w_xm1014_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_xm1014(void)
 {

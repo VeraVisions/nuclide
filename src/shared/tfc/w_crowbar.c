@@ -44,7 +44,7 @@ w_crowbar_precache(void)
 void
 w_crowbar_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, __NULL__, __NULL__, __NULL__);
 #endif
 }
@@ -115,7 +115,7 @@ w_crowbar_primary(void)
 
 	pl.w_idle_next = 2.5f;
 
-#ifdef SSQC
+#ifdef SERVER
 	if (pl.flags & FL_CROUCHING) {
 		Animation_PlayerTopTemp(ANIM_SHOOTCROWBAR, 0.5f);
 	} else {
@@ -181,7 +181,7 @@ w_crowbar_aimanim(void)
 void
 w_crowbar_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,

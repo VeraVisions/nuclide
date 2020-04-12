@@ -1,6 +1,21 @@
+/*
+ * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ *
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
+ * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
+ * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 
-
-enum {
+enum
+{
 	PHYSM_BOX,
 	PHYSM_SPHERE,
 	PHYSM_CAPSULE,
@@ -14,14 +29,15 @@ class CBasePhysics:CBaseEntity
 	int m_iMaterial;
 	float m_flMass;
 
-	void() CBasePhysics;
-	virtual void() Respawn;
-	virtual void() touch;
-	virtual void() TouchThink;
+	void(void) CBasePhysics;
+	virtual void(void) Respawn;
+	virtual void(void) touch;
+	virtual void(void) TouchThink;
 	virtual void(int) Pain;
 };
 
-void CBasePhysics::TouchThink(void)
+void
+CBasePhysics::TouchThink(void)
 {
 #ifdef GS_BULLET_PHYSICS
 	/* let players collide */
@@ -54,7 +70,8 @@ void CBasePhysics::TouchThink(void)
 #endif
 }
 
-void CBasePhysics::touch(void)
+void
+CBasePhysics::touch(void)
 {
 #ifdef GS_BULLET_PHYSICS
 	makevectors(vectoangles(origin - other.origin));
@@ -63,7 +80,8 @@ void CBasePhysics::touch(void)
 #endif
 }
 
-void CBasePhysics::Pain(int body)
+void
+CBasePhysics::Pain(int body)
 {
 #ifdef GS_BULLET_PHYSICS
 	makevectors(vectoangles(origin - trace_endpos));
@@ -73,7 +91,8 @@ void CBasePhysics::Pain(int body)
 #endif
 }
 
-void CBasePhysics::Respawn(void)
+void
+CBasePhysics::Respawn(void)
 {
 #ifdef GS_BULLET_PHYSICS
 	movetype = MOVETYPE_PHYSICS;
@@ -101,7 +120,8 @@ void CBasePhysics::Respawn(void)
 	effects &= ~EF_NOSHADOW;
 }
 
-void CBasePhysics::CBasePhysics(void)
+void
+CBasePhysics::CBasePhysics(void)
 {
 	CBaseEntity::CBaseEntity();
 	precache_model(m_oldModel);
@@ -110,29 +130,22 @@ void CBasePhysics::CBasePhysics(void)
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
 		case "physmodel":
-			m_iShape = stoi(argv(i + 1));
+			m_iShape = stoi(argv(i+1));
 
-			if ( m_iShape > PHYSM_CYLINDER ) {
+			if (m_iShape > PHYSM_CYLINDER) {
 				m_iShape = 0;
 			}
 			break;
 		case "massscale":
-			m_flMass = stof(argv(i + 1));
+			m_flMass = stof(argv(i+1));
 			break;
 		case "physdamagescale":
 			break;
 		case "material":
-			m_iMaterial = stof(argv(i + 1));
+			m_iMaterial = stof(argv(i+1));
 			break;
 		default:
 			break;
 		}
 	}
 }
-
-CLASSEXPORT(prop_physics, CBasePhysics)
-CLASSEXPORT(prop_physics_multiplayer, CBasePhysics)
-
-CLASSEXPORT(func_physbox, CBasePhysics)
-CLASSEXPORT(func_physbox_multiplayer, CBasePhysics)
- 

@@ -34,7 +34,7 @@ enum
 	DISP_HOLSTER
 };
 
-#ifdef SSQC
+#ifdef SERVER
 entity Spawn_SelectRandom(string);
 #endif
 
@@ -58,7 +58,7 @@ w_displacer_precache(void)
 void
 w_displacer_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, pl.ammo_uranium, -1);
 #endif
 }
@@ -84,7 +84,7 @@ w_displacer_deathmsg(void)
 int
 w_displacer_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (pl.ammo_uranium < 100) {
@@ -99,7 +99,7 @@ w_displacer_pickup(int new)
 void
 w_displacer_draw(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	Weapons_SetModel("models/v_displacer.mdl");
 	Weapons_ViewAnimation(DISP_DRAW);
 #endif
@@ -108,7 +108,7 @@ w_displacer_draw(void)
 void
 w_displacer_holster(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	Weapons_ViewAnimation(DISP_HOLSTER);
 #endif
 }
@@ -116,7 +116,7 @@ w_displacer_holster(void)
 void
 w_displacer_teleport(entity target)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)target;
 	/* TODO, 250 damage */
 	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/displacer_teleport.wav", 1, ATTN_NORM);
@@ -136,7 +136,7 @@ w_displacer_fireball(void)
 
 	static void displacerball_touch(void)
 	{
-#ifdef SSQC
+#ifdef SERVER
 		if (other.flags & FL_CLIENT) {
 			w_displacer_teleport(other);
 		}
@@ -145,7 +145,7 @@ w_displacer_fireball(void)
 #endif
 		remove(self);
 	}
-#ifdef CSQC
+#ifdef CLIENT
 	static float displacerball_predraw(void)
 	{
 		
@@ -157,7 +157,7 @@ w_displacer_fireball(void)
 	Weapons_MakeVectors();
 	entity ball = spawn();
 	
-#ifdef CSQC
+#ifdef CLIENT
 	setmodel(ball, "sprites/exit1.spr");
 	ball.drawmask = MASK_ENGINE;
 	ball.predraw = displacerball_predraw;
@@ -172,7 +172,7 @@ w_displacer_fireball(void)
 	ball.touch = displacerball_touch;
 	setsize(ball, [0,0,0], [0,0,0]);
 
-#ifdef SSQC
+#ifdef SERVER
 	sound(pl, CHAN_WEAPON, "weapons/displacer_fire.wav", 1, ATTN_NORM);
 #endif
 }
@@ -220,7 +220,7 @@ w_displacer_primary(void)
 	}
 
 	/* ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo2 < 20) {
 		return;
 	}
@@ -238,7 +238,7 @@ w_displacer_primary(void)
 
 	pl.a_ammo3 = 1;
 
-#ifdef CSQC
+#ifdef CLIENT
 	Weapons_ViewAnimation(DISP_SPINUP);
 #else
 	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/displacer_spin.wav", 1, ATTN_NORM);
@@ -256,7 +256,7 @@ w_displacer_secondary(void)
 	}
 
 	/* ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo2 < 60) {
 		return;
 	}
@@ -274,7 +274,7 @@ w_displacer_secondary(void)
 
 	pl.a_ammo3 = 2;
 
-#ifdef CSQC
+#ifdef CLIENT
 	Weapons_ViewAnimation(DISP_SPINUP);
 #else
 	Weapons_PlaySound(pl, CHAN_WEAPON, "weapons/displacer_spin2.wav", 1, ATTN_NORM);
@@ -291,7 +291,7 @@ w_displacer_aimanim(void)
 void
 w_displacer_hud(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	vector cross_pos;
 	vector aicon_pos;
 
@@ -316,7 +316,7 @@ w_displacer_hud(void)
 		[0,96/128], // was [24/256,72/128]... which makes 0 sense
 		[24/256, 24/128],
 		g_hud_color,
-		pSeat->ammo2_alpha,
+		pSeat->m_flAmmo2Alpha,
 		DRAWFLAG_ADDITIVE
 	);
 
@@ -327,7 +327,7 @@ w_displacer_hud(void)
 void
 w_displacer_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -380,7 +380,7 @@ weapon_t w_displacer =
 };
 
 /* entity definitions for pickups */
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_displacer(void)
 {

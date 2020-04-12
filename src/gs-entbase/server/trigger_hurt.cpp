@@ -31,41 +31,45 @@ If SF_HURT_FIREONPLAYER is set, it'll only trigger a target if a player
 activates it.
 */
 
-#define SF_HURT_ONCE 		1 // Turn off once it fired the first time
-#define SF_HURT_OFF 		2 // Needs to be triggered in order to work again
-#define SF_HURT_NOPLAYERS 	8 // Don't hurt players
-#define SF_HURT_FIREONPLAYER 	16 // Only call UseTarget functions when it's a player
-#define SF_HURT_TOUCHPLAYER 	32 // Only hurt players
+#define SF_HURT_ONCE			1 // Turn off once it fired the first time
+#define SF_HURT_OFF				2 // Needs to be triggered in order to work again
+#define SF_HURT_NOPLAYERS		8 // Don't hurt players
+#define SF_HURT_FIREONPLAYER	16 // Only call UseTarget functions when it's a player
+#define SF_HURT_TOUCHPLAYER		32 // Only hurt players
 
 class trigger_hurt:CBaseTrigger
 {
-	float	m_flNextTrigger;
-	float	m_flNextDmg;
-	int	m_iDamage;
-	float	m_flDelay;
-	void()	trigger_hurt;
-	
-	virtual void() Trigger;
-	virtual void() Touch;
-	virtual void() Respawn;
+	float m_flNextTrigger;
+	float m_flNextDmg;
+	int m_iDamage;
+	float m_flDelay;
+	void(void) trigger_hurt;
+
+	virtual void(void) Trigger;
+	virtual void(void) Touch;
+	virtual void(void) Respawn;
 };
 
-void trigger_hurt::Trigger(void)
+void
+trigger_hurt::Trigger(void)
 {
 	if (solid != SOLID_NOT) {
-		dprint( sprintf( "trigger_hurt::^3Trigger: %s deactivated\n", 
-			m_strTargetName ) );
+		dprint(sprintf("trigger_hurt::^3Trigger: %s deactivated\n", 
+			m_strTargetName));
 		solid = SOLID_NOT;
 		touch = __NULL__;
 	} else {
-		dprint( sprintf( "trigger_hurt::^3Trigger: %s activated\n", 
-			m_strTargetName ) );
-		solid = SOLID_TRIGGER;
+		dprint(sprintf("trigger_hurt::^3Trigger: %s activated\n", 
+			m_strTargetName));
+		solid = SOLID_BSPTRIGGER;
 		touch = Touch;
+		setmodel (this, m_oldModel);
+		self.movetype = MOVETYPE_NONE;
 	}
 }
 
-void trigger_hurt::Touch(void)
+void
+trigger_hurt::Touch(void)
 {
 	if (m_flNextTrigger > time) {
 		return;
@@ -99,10 +103,10 @@ void trigger_hurt::Touch(void)
 
 	Damage_Apply(other, this, m_iDamage, 0, DMG_GENERIC);
 
-	dprint( sprintf( "^2trigger_hurt::^3Touch^7: Hurting '%s' with %i\n", 
-		other.netname, m_iDamage ) );
+	dprint(sprintf("^2trigger_hurt::^3Touch^7: Hurting '%s' with %i\n", 
+		other.netname, m_iDamage));
 
-	// Shut it down if used once
+	/* shut it down if used once */
 	if (spawnflags & SF_HURT_ONCE) {
 		Trigger();
 	}
@@ -110,7 +114,8 @@ void trigger_hurt::Touch(void)
 	m_flNextTrigger = time + m_flNextDmg;
 }
 
-void trigger_hurt::Respawn(void)
+void
+trigger_hurt::Respawn(void)
 {
 	/* reset */
 	m_flNextDmg = 0.5f;
@@ -120,16 +125,12 @@ void trigger_hurt::Respawn(void)
 		solid = SOLID_NOT;
 		touch = __NULL__;
 	} else {
-		solid = SOLID_TRIGGER;
-		touch = Touch;
+		InitBrushTrigger();
 	}
-	setmodel (this, m_oldModel);
-	self.movetype = MOVETYPE_NONE;
-	self.modelindex = 0;
-	self.model = "";
 }
 
-void trigger_hurt::trigger_hurt(void)
+void
+trigger_hurt::trigger_hurt(void)
 {
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
@@ -147,5 +148,4 @@ void trigger_hurt::trigger_hurt(void)
 	}
 
 	CBaseEntity::CBaseEntity();
-	CBaseTrigger::InitBrushTrigger();
 }

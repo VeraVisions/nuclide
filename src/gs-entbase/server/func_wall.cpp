@@ -21,24 +21,24 @@ Brush that lets light to pass through it.
 On idTech 2 BSPs, it will change texture variants when triggered.
 */
 
-class func_wall : CBaseTrigger
+class func_wall:CBaseTrigger
 {
-	void() func_wall;
-	virtual void() Trigger;
+	void(void) func_wall;
+	virtual void(void) Trigger;
 };
 
-void func_wall :: func_wall ( void )
+void func_wall::func_wall(void)
 {
-	precache_model( model );
+	precache_model(model);
 	//angles = '0 0 0';
 	movetype = MOVETYPE_PUSH;
 	solid = SOLID_BSP;
-	setmodel( this, model );
+	setmodel(this, model);
 	setorigin(this, origin);
 	CBaseTrigger::CBaseTrigger();
 }
 
-void func_wall :: Trigger ( void )
+void func_wall::Trigger(void)
 {
 	frame = 1 - frame;
 }

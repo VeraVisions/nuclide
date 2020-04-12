@@ -16,7 +16,7 @@
 
 class info_player_teamspawn:CBaseTrigger
 {
-	void() info_player_teamspawn;
+	void(void) info_player_teamspawn;
 };
 
 void

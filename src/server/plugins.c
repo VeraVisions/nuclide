@@ -18,7 +18,7 @@ var int g_plugins_enabled;
 var int autocvar_sv_plugins = 1;
 
 void Plugin_Init(void)
-{	
+{
 	if (autocvar_sv_plugins) {
 		print("Initializing plugins...\n");
 		g_plugins_enabled = 1;

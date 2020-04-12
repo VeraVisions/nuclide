@@ -16,8 +16,8 @@
 
 class func_hostage_rescue
 {
-	void() func_hostage_rescue;
-	virtual void() touch;
+	void(void) func_hostage_rescue;
+	virtual void(void) touch;
 };
 
 void func_hostage_rescue::touch(void)

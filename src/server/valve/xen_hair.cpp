@@ -23,7 +23,7 @@ Xen Hair
 */
 class xen_hair:CBaseEntity
 {
-	void() xen_hair;
+	void(void) xen_hair;
 };
 
 void xen_hair::xen_hair(void)

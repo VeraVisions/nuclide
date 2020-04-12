@@ -59,9 +59,9 @@ class game_text:CBaseTrigger
 	float m_flFXTime;
 	int m_iChannel;
 		
-	void() game_text;
+	void(void) game_text;
 
-	virtual void() Trigger;
+	virtual void(void) Trigger;
 };
 
 void game_text::Trigger(void)
@@ -95,8 +95,8 @@ void game_text::Trigger(void)
 
 void game_text::game_text(void)
 {
-	for ( int i = 1; i < ( tokenize( __fullspawndata ) - 1 ); i += 2 ) {
-		switch ( argv( i ) ) {
+	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
+		switch (argv(i)) {
 		case "x":
 			m_flPosX = stof(argv(i+1));
 			break;

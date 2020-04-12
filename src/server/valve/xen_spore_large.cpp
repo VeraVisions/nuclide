@@ -23,7 +23,7 @@ Large Xen Spore
 */
 class xen_spore_large:CBaseEntity
 {
-	void() xen_spore_large;
+	void(void) xen_spore_large;
 };
 
 void xen_spore_large::xen_spore_large(void)

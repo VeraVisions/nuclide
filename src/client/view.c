@@ -19,17 +19,17 @@ var int autocvar_v_camroll = TRUE;
 void
 View_Init(void)
 {
-	for (int s = seats.length; s-- > numclientseats;) {
-		pSeat = &seats[s];
-		if(!pSeat->eViewModel) {
-			pSeat->eViewModel = spawn();
-			pSeat->eViewModel.classname = "vm";
-			pSeat->eViewModel.renderflags = RF_DEPTHHACK;
+	for (int s = g_seats.length; s-- > numclientseats;) {
+		pSeat = &g_seats[s];
+		if(!pSeat->m_eViewModel) {
+			pSeat->m_eViewModel = spawn();
+			pSeat->m_eViewModel.classname = "vm";
+			pSeat->m_eViewModel.renderflags = RF_DEPTHHACK;
 			
-			pSeat->eMuzzleflash = spawn();
-			pSeat->eMuzzleflash.classname = "mflash";
-			pSeat->eMuzzleflash.renderflags = RF_ADDITIVE;
-			pSeat->pWeaponFX = spawn(CBaseFX);
+			pSeat->m_eMuzzleflash = spawn();
+			pSeat->m_eMuzzleflash.classname = "mflash";
+			pSeat->m_eMuzzleflash.renderflags = RF_ADDITIVE;
+			pSeat->m_pWeaponFX = spawn(CBaseFX);
 		}
 	}
 
@@ -42,7 +42,7 @@ View_Init(void)
 void
 View_SetMuzzleflash(int index)
 {
-	pSeat->eMuzzleflash.modelindex = (float)index;
+	pSeat->m_eMuzzleflash.modelindex = (float)index;
 }
 
 void 
@@ -94,8 +94,8 @@ View_CalcBob(void)
 		return;	
 	}
 
-	pSeat->fBobTime += clframetime;
-	cycle = pSeat->fBobTime - (int)(pSeat->fBobTime / autocvar_v_bobcycle) * autocvar_v_bobcycle;
+	pSeat->m_flBobTime += clframetime;
+	cycle = pSeat->m_flBobTime - (int)(pSeat->m_flBobTime / autocvar_v_bobcycle) * autocvar_v_bobcycle;
 	cycle /= autocvar_v_bobcycle;
 	
 	if (cycle < autocvar_v_bobup) {
@@ -104,12 +104,12 @@ View_CalcBob(void)
 		cycle = MATH_PI + MATH_PI * (cycle - autocvar_v_bobup)/(1.0 - autocvar_v_bobup);
 	}
 
-	vel = pSeat->vPlayerVelocity;
+	vel = pSeat->m_vecPredictedVelocity;
 	vel[2] = 0;
 
-	float fBob = sqrt(vel[0] * vel[0] + vel[1] * vel[1]) * autocvar_v_bob;
-	fBob = fBob * 0.3 + fBob * 0.7 * sin(cycle);
-	pSeat->fBob = bound(-7, fBob, 4);
+	float flBob = sqrt(vel[0] * vel[0] + vel[1] * vel[1]) * autocvar_v_bob;
+	flBob = flBob * 0.3 + flBob * 0.7 * sin(cycle);
+	pSeat->m_flBob = bound(-7, flBob, 4);
 }
 
 float
@@ -118,7 +118,7 @@ View_CalcRoll(void)
 	float roll;
 	makevectors(view_angles);
 
-	roll = dotproduct(pSeat->vPlayerVelocity, v_right);
+	roll = dotproduct(pSeat->m_vecPredictedVelocity, v_right);
 	roll *= 0.015f;
 	return autocvar_v_camroll ? roll : 0;
 }
@@ -133,8 +133,8 @@ muzzleflash, dynamic lights and so on appear
 */
 void View_DrawViewModel(void)
 {
-	entity eViewModel = pSeat->eViewModel;
-	entity eMuzzleflash = pSeat->eMuzzleflash;
+	entity m_eViewModel = pSeat->m_eViewModel;
+	entity m_eMuzzleflash = pSeat->m_eMuzzleflash;
 	
 	player pl = (player) self;
 
@@ -147,27 +147,27 @@ void View_DrawViewModel(void)
 	}
 
 	View_CalcBob();
-	View_UpdateWeapon(eViewModel, eMuzzleflash);
-	float fBaseTime = eViewModel.frame1time;
-	eViewModel.frame2time = pl.weapontime;
-    	eViewModel.frame1time = pl.weapontime;
-	processmodelevents(eViewModel.modelindex, eViewModel.frame, fBaseTime,
-		eViewModel.frame1time, Event_ProcessModel);
+	View_UpdateWeapon(m_eViewModel, m_eMuzzleflash);
+	float fBaseTime = m_eViewModel.frame1time;
+	m_eViewModel.frame2time = pl.weapontime;
+    	m_eViewModel.frame1time = pl.weapontime;
+	processmodelevents(m_eViewModel.modelindex, m_eViewModel.frame, fBaseTime,
+		m_eViewModel.frame1time, Event_ProcessModel);
 
 	makevectors(view_angles);
-	eViewModel.angles = view_angles;
+	m_eViewModel.angles = view_angles;
 
 	// Give the gun a tilt effect like in old HL/CS versions
 	if (autocvar_v_bobclassic == 1) {
-		eViewModel.angles[2] = -pSeat->fBob;
+		m_eViewModel.angles[2] = -pSeat->m_flBob;
 	}
 
 	/* now apply the scale hack */
-	eViewModel.scale = autocvar_r_viewmodelscale;
-	pSeat->fBob *= autocvar_r_viewmodelscale;
+	m_eViewModel.scale = autocvar_r_viewmodelscale;
+	pSeat->m_flBob *= autocvar_r_viewmodelscale;
 	
-	eViewModel.origin = pSeat->vPlayerOrigin + pl.view_ofs;
-	eViewModel.origin += [0,0,-1] + (v_forward * (pSeat->fBob * 0.4))
+	m_eViewModel.origin = pSeat->m_vecPredictedOrigin + pl.view_ofs;
+	m_eViewModel.origin += [0,0,-1] + (v_forward * (pSeat->m_flBob * 0.4))
 			+ (v_forward * autocvar_v_gunofs[0])
 			+ (v_right * autocvar_v_gunofs[1])
 			+ (v_up * autocvar_v_gunofs[2]);
@@ -175,54 +175,55 @@ void View_DrawViewModel(void)
 	// Left-handed weapons
 	if (autocvar_v_lefthanded) {
 		v_right *= -1;
-		eViewModel.renderflags |= RF_USEAXIS;
-		//eViewModel.forceshader = SHADER_CULLED;
+		m_eViewModel.renderflags |= RF_USEAXIS;
+		//m_eViewModel.forceshader = SHADER_CULLED;
 	} else {
-		if (eViewModel.forceshader) {
-			eViewModel.forceshader = 0;
-			eViewModel.renderflags &= ~RF_USEAXIS;
+		if (m_eViewModel.forceshader) {
+			m_eViewModel.forceshader = 0;
+			m_eViewModel.renderflags &= ~RF_USEAXIS;
 		}
 	}
 
 	// Only bother when zoomed out
 	if (pl.viewzoom == 1.0f) {
 		// Update muzzleflash position and draw it
-		if (eMuzzleflash.alpha > 0.0f) {
+		if (m_eMuzzleflash.alpha > 0.0f) {
 			makevectors(getproperty(VF_ANGLES));
-			eMuzzleflash.origin = gettaginfo(eViewModel, eMuzzleflash.skin);
-			dynamiclight_add(pSeat->vPlayerOrigin + (v_forward * 32), 400 * eMuzzleflash.alpha, [1,0.45,0]);
+			m_eMuzzleflash.origin = gettaginfo(m_eViewModel, m_eMuzzleflash.skin);
+			dynamiclight_add(pSeat->m_vecPredictedOrigin + (v_forward * 32), 400 * m_eMuzzleflash.alpha, [1,0.45,0]);
 			
-			setorigin(eMuzzleflash, eMuzzleflash.origin);
-			addentity(eMuzzleflash);
+			setorigin(m_eMuzzleflash, m_eMuzzleflash.origin);
+			addentity(m_eMuzzleflash);
 		}
-		setorigin(eViewModel, eViewModel.origin);
-		addentity(eViewModel);
+		setorigin(m_eViewModel, m_eViewModel.origin);
+		addentity(m_eViewModel);
 	}
 
 	if (pl.movetype == MOVETYPE_WALK) {
 		view_angles[2] = View_CalcRoll();
+		setproperty(VF_ANGLES, view_angles + pl.punchangle);
 	}
 }
 
 void View_PostDraw(void)
 {
-	entity eMuzzleflash = pSeat->eMuzzleflash;
+	entity m_eMuzzleflash = pSeat->m_eMuzzleflash;
 
 	// Take away alpha once it has drawn fully at least once
-	if (eMuzzleflash.alpha > 0.0f) {
-		eMuzzleflash.alpha -= (clframetime * 16);
+	if (m_eMuzzleflash.alpha > 0.0f) {
+		m_eMuzzleflash.alpha -= (clframetime * 16);
 	}
 }
 
 void View_Stairsmooth(void)
 {
-	vector currentpos = pSeat->vPlayerOrigin;
+	vector currentpos = pSeat->m_vecPredictedOrigin;
 	vector endpos = currentpos;
 	static vector oldpos;
 
 	/* Have we gone up since last frame? */
-	if ((pSeat->fPlayerFlags & FL_ONGROUND) && (endpos[2] - oldpos[2] > 0)) {
-		endpos[2] = oldpos[2] += (frametime * 150);
+	if ((pSeat->m_flPredictedFlags & FL_ONGROUND) && (endpos[2] - oldpos[2] > 0)) {
+		endpos[2] = oldpos[2] += (clframetime * 150);
 
 		if (endpos[2] > currentpos[2]) {
 			endpos[2] = currentpos[2];
@@ -238,7 +239,7 @@ void View_Stairsmooth(void)
 	}
 
 	//setproperty(VF_ORIGIN, endpos);
-	pSeat->vPlayerOrigin = endpos;
+	pSeat->m_vecPredictedOrigin = endpos;
 	oldpos = endpos;
 }
 
@@ -252,11 +253,12 @@ onto the view model
 */
 void View_PlayAnimation(int iSequence)
 {
-	pSeat->eViewModel.frame = (float)iSequence;
-	player pl = (player)pSeat->ePlayer;
+	pSeat->m_eViewModel.frame = (float)iSequence;
+	player pl = (player)pSeat->m_ePlayer;
 	pl.weapontime = 0.0f;
 }
+
 int View_GetAnimation(void)
 {
-	return pSeat->eViewModel.frame;
+	return pSeat->m_eViewModel.frame;
 }

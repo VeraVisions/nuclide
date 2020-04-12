@@ -43,7 +43,7 @@ void CBaseDecor::SpawnKey(string strField, string strKey)
 /* Let's begin */
 class decore_asteroid:CBaseDecor
 {
-	virtual void() Initialized = {
+	virtual void(void) Initialized = {
 		model = "models/asteroid.mdl";
 		CBaseDecor::Initialized();
 	};
@@ -51,7 +51,7 @@ class decore_asteroid:CBaseDecor
 
 class decore_baboon:CBaseDecor
 {
-	virtual void() Initialized = {
+	virtual void(void) Initialized = {
 		model = "models/baboon.mdl";
 		CBaseDecor::Initialized();
 	};
@@ -59,7 +59,7 @@ class decore_baboon:CBaseDecor
 
 class decore_bodygib:CBaseDecor
 {
-	void() decore_bodygib = {
+	void(void) decore_bodygib = {
 		model = "models/bodygib.mdl";
 		CBaseDecor::Initialized();
 	};
@@ -67,7 +67,7 @@ class decore_bodygib:CBaseDecor
 
 class decore_butterflyflock:CBaseDecor
 {
-	virtual void() Initialized = {
+	virtual void(void) Initialized = {
 		model = "models/butterfly.mdl";
 		CBaseDecor::Initialized();
 	};
@@ -75,7 +75,7 @@ class decore_butterflyflock:CBaseDecor
 
 class decore_explodable:CBaseDecor
 {
-	virtual void() Initialized = {
+	virtual void(void) Initialized = {
 		model = "models/EXPLODABLE!!!!";
 		CBaseDecor::Initialized();
 	};
@@ -83,7 +83,7 @@ class decore_explodable:CBaseDecor
 
 class decore_foot:CBaseDecor
 {
-	virtual void() Initialized = {
+	virtual void(void) Initialized = {
 		model = "models/FOOT!!!!";
 		CBaseDecor::Initialized();
 	};
@@ -91,7 +91,7 @@ class decore_foot:CBaseDecor
 
 class decore_goldskull:CBaseDecor
 {
-	virtual void() Initialized = {
+	virtual void(void) Initialized = {
 		model = "models/goldskull.mdl";
 		CBaseDecor::Initialized();
 	};
@@ -99,7 +99,7 @@ class decore_goldskull:CBaseDecor
 
 class decore_hatgib:CBaseDecor
 {
-	virtual void() Initialized = {
+	virtual void(void) Initialized = {
 		model = "models/hatgib.mdl";
 		CBaseDecor::Initialized();
 	};
@@ -107,7 +107,7 @@ class decore_hatgib:CBaseDecor
 
 class decore_nest:CBaseDecor
 {
-	virtual void() Initialized = {
+	virtual void(void) Initialized = {
 		model = "models/ornest.mdl";
 		CBaseDecor::Initialized();
 	};
@@ -115,7 +115,7 @@ class decore_nest:CBaseDecor
 
 class decore_pteradon:CBaseDecor
 {
-	virtual void() Initialized = {
+	virtual void(void) Initialized = {
 		model = "models/pteradon2.mdl";
 		CBaseDecor::Initialized();
 	};
@@ -123,7 +123,7 @@ class decore_pteradon:CBaseDecor
 
 class decore_torch:CBaseDecor
 {
-	virtual void() Initialized = {
+	virtual void(void) Initialized = {
 		precache_model("sprites/torch.spr");
 		model = "models/torch.mdl";
 		CBaseDecor::Initialized();
@@ -143,7 +143,7 @@ class decore_torch:CBaseDecor
 
 class decore_spacedebris:CBaseDecor
 {
-	virtual void() Initialized = {
+	virtual void(void) Initialized = {
 		CBaseDecor::Initialized();
 	};
 
@@ -161,7 +161,7 @@ class decore_spacedebris:CBaseDecor
 
 class decore_swampplants:CBaseDecor
 {
-	virtual void() Initialized = {
+	virtual void(void) Initialized = {
 		model = "models/swampstuff.mdl";
 		CBaseDecor::Initialized();
 	};
@@ -169,7 +169,7 @@ class decore_swampplants:CBaseDecor
 
 class decore_mushroom:CBaseDecor
 {
-	virtual void() Initialized = {
+	virtual void(void) Initialized = {
 		model = "models/mushroom.mdl";
 		CBaseDecor::Initialized();
 	};
@@ -177,7 +177,7 @@ class decore_mushroom:CBaseDecor
 
 class decore_mushroom2:CBaseDecor
 {
-	virtual void() Initialized = {
+	virtual void(void) Initialized = {
 		model = "models/mushroom2.mdl";
 		CBaseDecor::Initialized();
 	};

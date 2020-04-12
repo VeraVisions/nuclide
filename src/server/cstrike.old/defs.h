@@ -48,7 +48,8 @@ var int iMapCycleCount;
 string *sMapCycle;
 
 // Grenade states
-enum {
+enum
+{
 	GRENADE_UNREADY,
 	GRENADE_PULLING,
 	GRENADE_READY

@@ -45,7 +45,8 @@ weaponinfo_t wptSCOUT = {
 };
 
 // Anim Table
-enum {
+enum
+{
 	ANIM_SCOUT_IDLE,
 	ANIM_SCOUT_SHOOT1,
 	ANIM_SCOUT_SHOOT2,
@@ -53,36 +54,36 @@ enum {
 	ANIM_SCOUT_DRAW
 };
 
-void WeaponSCOUT_Draw( void ) {
-#ifdef SSQC
+void WeaponSCOUT_Draw(void) {
+#ifdef SERVER
 	BaseGun_Draw();
 #else
-	View_PlayAnimation( ANIM_SCOUT_DRAW );
+	View_PlayAnimation(ANIM_SCOUT_DRAW);
 #endif
 }
 
-void WeaponSCOUT_PrimaryFire( void ) {
-#ifdef SSQC
-	if ( BaseGun_PrimaryFire() == TRUE ) {
+void WeaponSCOUT_PrimaryFire(void) {
+#ifdef SERVER
+	if (BaseGun_PrimaryFire() == TRUE) {
 		// Play Sound
-		sound( self, CHAN_WEAPON, "weapons/scout_fire-1.wav", 1, ATTN_NORM );
+		sound(self, CHAN_WEAPON, "weapons/scout_fire-1.wav", 1, ATTN_NORM);
 	}
 #else
-	if ( random() <= 0.5 ) {
-		View_PlayAnimation( ANIM_SCOUT_SHOOT1 );
+	if (random() <= 0.5) {
+		View_PlayAnimation(ANIM_SCOUT_SHOOT1);
 	} else {
-		View_PlayAnimation( ANIM_SCOUT_SHOOT2 );
+		View_PlayAnimation(ANIM_SCOUT_SHOOT2);
 	}
 	
-	BaseGun_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle(1);
 #endif
 }
 
-void WeaponSCOUT_SecondaryFire( void ) {
-#ifdef SSQC
-	if ( self.viewzoom == 1.0 ) {
+void WeaponSCOUT_SecondaryFire(void) {
+#ifdef SERVER
+	if (self.viewzoom == 1.0) {
 		self.viewzoom = 0.45;
-	} else if ( self.viewzoom == 0.45 ) {
+	} else if (self.viewzoom == 0.45) {
 		self.viewzoom = 0.15;
 	} else {
 		self.viewzoom = 1.0;
@@ -92,12 +93,12 @@ void WeaponSCOUT_SecondaryFire( void ) {
 #endif
 }
 
-void WeaponSCOUT_Reload( void ) {
-#ifdef SSQC
-	if ( BaseGun_Reload() == TRUE ) {
+void WeaponSCOUT_Reload(void) {
+#ifdef SERVER
+	if (BaseGun_Reload() == TRUE) {
 		// Play Sound
 	}
 #else
-	View_PlayAnimation( ANIM_SCOUT_RELOAD );
+	View_PlayAnimation(ANIM_SCOUT_RELOAD);
 #endif
 }

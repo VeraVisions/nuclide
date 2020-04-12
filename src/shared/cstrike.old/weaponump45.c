@@ -45,7 +45,8 @@ weaponinfo_t wptUMP45 = {
 };
 
 // Anim Table
-enum {
+enum
+{
 	ANIM_UMP45_IDLE,
 	ANIM_UMP45_RELOAD,
 	ANIM_UMP45_DRAW,
@@ -54,41 +55,41 @@ enum {
 	ANIM_UMP45_SHOOT3
 };
 
-void WeaponUMP45_Draw( void ) {
-#ifdef SSQC
+void WeaponUMP45_Draw(void) {
+#ifdef SERVER
 	BaseGun_Draw();
-	//sound( self, CHAN_WEAPON, "weapons/ump45_boltslap.wav", 1, ATTN_IDLE ); // TODO: Move to the client...?
+	//sound(self, CHAN_WEAPON, "weapons/ump45_boltslap.wav", 1, ATTN_IDLE); // TODO: Move to the client...?
 #else
-	View_PlayAnimation( ANIM_UMP45_DRAW );
+	View_PlayAnimation(ANIM_UMP45_DRAW);
 #endif
 }
 
-void WeaponUMP45_PrimaryFire( void ) {
-#ifdef SSQC
-	if ( BaseGun_PrimaryFire() == TRUE ) {
-		sound( self, CHAN_WEAPON, "weapons/ump45-1.wav", 1, ATTN_NORM );
+void WeaponUMP45_PrimaryFire(void) {
+#ifdef SERVER
+	if (BaseGun_PrimaryFire() == TRUE) {
+		sound(self, CHAN_WEAPON, "weapons/ump45-1.wav", 1, ATTN_NORM);
 	}
 #else
-	int iRand = (int)floor( random( 1, 4 ) );
+	int iRand = (int)floor(random(1, 4));
 	
-	if ( iRand == 1 ) {
-		View_PlayAnimation( ANIM_UMP45_SHOOT1 );
-	} else if ( iRand == 2 ) {
-		View_PlayAnimation( ANIM_UMP45_SHOOT2 );
+	if (iRand == 1) {
+		View_PlayAnimation(ANIM_UMP45_SHOOT1);
+	} else if (iRand == 2) {
+		View_PlayAnimation(ANIM_UMP45_SHOOT2);
 	} else {
-		View_PlayAnimation( ANIM_UMP45_SHOOT3 );
+		View_PlayAnimation(ANIM_UMP45_SHOOT3);
 	}
 	
-	BaseGun_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle(1);
 #endif
 }
 
-void WeaponUMP45_Reload( void ) {
-	#ifdef SSQC
-	if ( BaseGun_Reload() == TRUE ) {
+void WeaponUMP45_Reload(void) {
+	#ifdef SERVER
+	if (BaseGun_Reload() == TRUE) {
 		// Play Sound
 	}
 	#else
-	View_PlayAnimation( ANIM_UMP45_RELOAD );
+	View_PlayAnimation(ANIM_UMP45_RELOAD);
 	#endif
 }

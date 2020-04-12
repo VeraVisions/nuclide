@@ -25,7 +25,8 @@ class CCSAmbientSound {
 	string m_strSample;
 };
 
-void Sound_ParseLoopingEntity(entity sndent, float isNew)
+void
+Sound_ParseLoopingEntity(entity sndent, float isNew)
 {
 	float flFlags;
 	CCSAmbientSound new = (CCSAmbientSound)sndent;
@@ -40,7 +41,7 @@ void Sound_ParseLoopingEntity(entity sndent, float isNew)
 		new.origin[0] = readcoord();
 		new.origin[1] = readcoord();
 		new.origin[2] = readcoord();
-		setorigin( new, new.origin );
+		setorigin(new, new.origin);
 		new.m_flVolume = readfloat();
 		new.m_flAttn = readbyte();
 		new.m_flPitch = readfloat();
@@ -54,7 +55,8 @@ void Sound_ParseLoopingEntity(entity sndent, float isNew)
 
 sound_t *g_voxque;
 
-void Sound_PlayVOX(string msg)
+void
+Sound_PlayVOX(string msg)
 {
 	if (g_voxcount) {
 		return;
@@ -70,7 +72,8 @@ void Sound_PlayVOX(string msg)
 	g_voxtime = time;
 }
 
-void Sound_ProcessWordQue(void)
+void
+Sound_ProcessWordQue(void)
 {
 	if (cltime < 2 || !g_voxcount) {
 		return;
@@ -90,7 +93,8 @@ void Sound_ProcessWordQue(void)
 	}
 }
 
-void Sound_InitVOX(void)
+void
+Sound_InitVOX(void)
 {
 	precache_sound("vox/accelerating.wav");
 	precache_sound("vox/accelerator.wav");

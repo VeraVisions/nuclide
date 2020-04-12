@@ -95,7 +95,7 @@ void Player_Pain(int iHitBody)
 		Animation_PlayerTopTemp(ANIM_GUT_FLINCH, 0.25f);
 	}*/
 	
-	sound(self, CHAN_VOICE, sPainSounds[ floor(random() * 5) ], 1, ATTN_IDLE);
+	sound(self, CHAN_VOICE, sPainSounds[floor(random() * 5)], 1, ATTN_IDLE);
 	self.velocity = '0 0 0';
 }
 
@@ -118,7 +118,7 @@ void Player_Death(int iHitBody)
 	setorigin(eCorpse, self.origin);
 	setmodel(eCorpse, self.model);
 	setsize(eCorpse, self.mins, self.maxs);
-	eCorpse.angles = [ 0, self.angles[1], 0 ];
+	eCorpse.angles = [0, self.angles[1], 0];
 	eCorpse.movetype = MOVETYPE_BOUNCE;
 
 	// Drop primary weapon as well as the bomb if present

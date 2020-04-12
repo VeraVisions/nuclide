@@ -16,7 +16,7 @@
 
 class monster_human_gunman:CBaseNPC
 {
-	void() monster_human_gunman;
+	void(void) monster_human_gunman;
 };
 
 void monster_human_gunman::monster_human_gunman(void)

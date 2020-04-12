@@ -38,6 +38,25 @@ typedef struct titles_s
 titles_t *g_titles;
 int g_titles_count;
 
+string
+Titles_ParseFunString(string temp)
+{
+	/* empty lines are newlines. */
+	if (!temp) {
+		return "\n";
+	}
+
+	temp = strreplace("\\y", "^3", temp);
+	temp = strreplace("\\r", "^1", temp);
+	temp = strreplace("\\g", "^2", temp);
+	temp = strreplace("\\b", "^4", temp);
+	temp = strreplace("\\w", "^7", temp);
+	temp = strreplace("\\d", "^8", temp);
+	temp = strreplace("\\R", " ", temp);
+	temp = strreplace("/n", "\n", temp);
+	return temp;
+}
+
 void
 Titles_Init(void)
 {
@@ -98,7 +117,7 @@ Titles_Init(void)
 		}
 	}
 
-	/*print(sprintf("[^1TITLES^7] Found %i titles\n", g_titles_count));*/
+	dprint(sprintf("^2Titles_Init^7: found %i titles\n", g_titles_count));
 	g_titles = memalloc(sizeof(titles_t) * g_titles_count);
 	fseek(fs_titles, 0);
 
@@ -180,6 +199,7 @@ Titles_Init(void)
 		default:
 			if (braced == TRUE) {
 				/* append string entry after another */
+				temp = Titles_ParseFunString(temp);
 				t_message = sprintf("%s%s\n", t_message, temp);
 			} else {
 				/* name/identifer of our message */

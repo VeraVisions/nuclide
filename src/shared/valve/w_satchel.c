@@ -42,7 +42,7 @@ enum
 
 void w_satchel_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.satchel_chg, pl.ammo_satchel, __NULL__);
 #endif
 }
@@ -60,7 +60,7 @@ string w_satchel_deathmsg(void)
 }
 void w_satchel_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_satchel.bounce");
 #endif
 	precache_model("models/w_satchel.mdl");
@@ -71,7 +71,7 @@ void w_satchel_precache(void)
 
 int w_satchel_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (pl.ammo_satchel < MAX_A_SATCHEL) {
@@ -87,7 +87,7 @@ void w_satchel_draw(void)
 {
 	Weapons_SetModel("models/v_satchel.mdl");
 	Weapons_ViewAnimation(SATCHEL_DRAW);
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 	Weapons_UpdateAmmo(pl, pl.satchel_chg, pl.ammo_satchel, __NULL__);
 #endif
@@ -98,7 +98,7 @@ void w_satchel_holster(void)
 	
 }
 
-#ifdef SSQC
+#ifdef SERVER
 void s_satchel_drop(entity master, vector src, vector vel)
 {
 	static void s_satchel_touch(void)
@@ -129,7 +129,7 @@ void s_satchel_detonate(entity master)
 			float dmg = Skill_GetValue("plr_satchel");
 			Effect_CreateExplosion(b.origin);
 			Damage_Radius(b.origin, master, dmg, dmg * 2.5f, TRUE, WEAPON_SATCHEL);
-			sound(b, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 2 ) + 3 ), 1, ATTN_NORM);
+			sound(b, CHAN_WEAPON, sprintf("weapons/explode%d.wav", floor(random() * 2) + 3), 1, ATTN_NORM);
 			remove(b);
 		}
 	}
@@ -145,7 +145,7 @@ void w_satchel_primary(void)
 	}
 
 	/* Ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 <= 0 && pl.a_ammo2 <= 0) {
 		return;
 	}
@@ -161,7 +161,7 @@ void w_satchel_primary(void)
         Weapons_ViewAnimation(RADIO_USE);
     }
 
-#ifdef SSQC
+#ifdef SERVER
 	if (!pl.satchel_chg) {
 		vector throw;
 		
@@ -180,7 +180,7 @@ void w_satchel_primary(void)
 	}
 	Weapons_UpdateAmmo(pl, pl.satchel_chg, pl.ammo_satchel, __NULL__);
 #else
-	setmodel(pSeat->eViewModel, "models/v_satchel_radio.mdl");
+	setmodel(pSeat->m_eViewModel, "models/v_satchel_radio.mdl");
 	pl.a_ammo1++;
 	pl.a_ammo2--;
 #endif
@@ -197,7 +197,7 @@ void w_satchel_secondary(void)
 	}
 
     /* Ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo2 <= 0) {
 		return;
 	}
@@ -207,7 +207,7 @@ void w_satchel_secondary(void)
 	}
 #endif
 
-#ifdef SSQC
+#ifdef SERVER
 	vector throw;
 	Weapons_MakeVectors();
 	throw = pl.velocity + (v_forward * 274);
@@ -218,7 +218,7 @@ void w_satchel_secondary(void)
 #else
 	pl.a_ammo1++;
 	pl.a_ammo2--;
-	setmodel(pSeat->eViewModel, "models/v_satchel_radio.mdl");
+	setmodel(pSeat->m_eViewModel, "models/v_satchel_radio.mdl");
 #endif
 
 	Weapons_ViewAnimation(RADIO_DRAW);
@@ -253,16 +253,16 @@ float w_satchel_aimanim(void)
 
 void w_satchel_hud(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [72/256,96/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [72/256,96/128], [24/256, 24/128], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
 void w_satchel_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(pos, [170,45], "sprites/640hud6.spr_0.tga", [0,45/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	} else {
@@ -296,7 +296,7 @@ weapon_t w_satchel =
 	w_satchel_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void weapon_satchel(void) {
 	Weapons_InitItem(WEAPON_SATCHEL);
 }

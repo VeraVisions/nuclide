@@ -55,25 +55,25 @@ class func_door_rotating:CBaseTrigger
 	vector m_vecPos1;
 	vector m_vecPos2;
 	vector m_vecMoveDir;
-	virtual void() m_pMove = 0;
+	virtual void(void) m_pMove = 0;
 	
-	void() func_door_rotating;
-	virtual void() Respawn;
-	virtual void() Precache;
-	virtual void() Arrived;
-	virtual void() Returned;
-	virtual void() Back;
-	virtual void() Away;
-	virtual void() Trigger;
-	virtual void() Use;
-	virtual void() Touch;
-	virtual void() Blocked;
-	virtual void() SetMovementDirection;
-	virtual void(vector angle, void() func) RotToDest;
-	virtual void() RotToDest_End;
+	void(void) func_door_rotating;
+	virtual void(void) Respawn;
+	virtual void(void) Precache;
+	virtual void(void) Arrived;
+	virtual void(void) Returned;
+	virtual void(void) Back;
+	virtual void(void) Away;
+	virtual void(void) Trigger;
+	virtual void(void) Use;
+	virtual void(void) Touch;
+	virtual void(void) Blocked;
+	virtual void(void) SetMovementDirection;
+	virtual void(vector angle, void(void) func) RotToDest;
+	virtual void(void) RotToDest_End;
 
 #ifdef GS_BULLET_PHYSICS
-	virtual void() Unhinge;
+	virtual void(void) Unhinge;
 #endif
 };
 
@@ -171,7 +171,7 @@ void func_door_rotating::Away(void)
 		}
 	}
   
-	if (m_iState == STATE_RAISED) {	
+	if (m_iState == STATE_RAISED) {
 		nextthink = (ltime + m_flWait);
 		return;
 	}
@@ -278,7 +278,7 @@ void func_door_rotating::RotToDest_End(void)
 	m_pMove();
 }
 
-void func_door_rotating::RotToDest(vector vDestAngle, void() func)
+void func_door_rotating::RotToDest(vector vDestAngle, void(void) func)
 {
 	vector vecAngleDifference;
 	float flTravelLength, flTravelTime;

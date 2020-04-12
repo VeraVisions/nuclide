@@ -25,8 +25,8 @@ class func_dustmotes:CBaseEntity
 	int m_iPart;
 	float m_flNexTime;
 
-	void() func_dustmotes;
-	virtual void() Init;
+	void(void) func_dustmotes;
+	virtual void(void) Init;
 	virtual float() predraw;
 	virtual void(string, string) SpawnKey;
 };
@@ -41,12 +41,12 @@ float func_dustmotes::predraw(void)
 		return PREDRAW_NEXT;
 	}
 
-	for ( int i = 0; i < m_iCount; i++) {
-		vector vPos;
-		vPos[0] = mins[0] + ( random() * ( maxs[0] - mins[0] ) );
-		vPos[1] = mins[1] + ( random() * ( maxs[1] - mins[1] ) );
-		vPos[2] = mins[2] + ( random() * ( maxs[2] - mins[2] ) );
-		pointparticles( PART_DUSTMOTE, vPos, [0,0,0], 1 );
+	for (int i = 0; i < m_iCount; i++) {
+		vector vecPos;
+		vecPos[0] = mins[0] + (random() * (maxs[0] - mins[0]));
+		vecPos[1] = mins[1] + (random() * (maxs[1] - mins[1]));
+		vecPos[2] = mins[2] + (random() * (maxs[2] - mins[2]));
+		pointparticles(PART_DUSTMOTE, vecPos, [0,0,0], 1);
 	}
 	
 	m_flNexTime = cltime + 3.0f;

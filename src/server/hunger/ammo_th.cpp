@@ -25,8 +25,8 @@ A single ammo_egonclip will provide 25, er, gas.
  */
 class ammo_egonclip:item_ammo
 {
-	void() ammo_egonclip;
-	virtual void() touch;
+	void(void) ammo_egonclip;
+	virtual void(void) touch;
 };
 
 void ammo_egonclip::ammo_egonclip(void)
@@ -59,8 +59,8 @@ A single ammo_th_ap9 will provide 40 bullets.
 */
 class ammo_th_ap9:item_ammo
 {
-	void() ammo_th_ap9;
-	virtual void() touch;
+	void(void) ammo_th_ap9;
+	virtual void(void) touch;
 };
 
 void ammo_th_ap9::ammo_th_ap9(void)
@@ -106,8 +106,8 @@ Same as ammo_einar1
 
 class ammo_th_sniper:item_ammo
 {
-	void() ammo_th_sniper;
-	virtual void() touch;
+	void(void) ammo_th_sniper;
+	virtual void(void) touch;
 };
 
 void ammo_th_sniper::ammo_th_sniper(void)

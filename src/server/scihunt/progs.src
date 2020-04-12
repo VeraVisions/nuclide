@@ -2,6 +2,7 @@
 #pragma progs_dat  "../../../scihunt/data.pk3dir/progs.dat"
 
 #define QWSSQC
+#define SERVER
 #define VALVE
 #define SCIHUNT
 
@@ -24,6 +25,7 @@
 ../sentences.c
 
 ../../gs-entbase/server.src
+../../gs-entbase/shared.src
 
 ../valve/monster_apache.cpp
 ../valve/monster_alien_controller.cpp
@@ -60,9 +62,7 @@ monster_scientist.cpp
 ../valve/monster_turret.cpp
 ../valve/monster_zombie.cpp
 
-../../shared/decals.c
 ../../shared/effects.c
-../../shared/spraylogo.cpp
 
 ../../shared/scihunt/player.cpp
 ../valve/player.c

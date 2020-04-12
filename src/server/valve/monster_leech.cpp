@@ -22,7 +22,8 @@ Leech
 
 */
 
-enum {
+enum
+{
 	LEECH_SWIM,
 	LEECH_SWIM2,
 	LEECH_ATTACK,
@@ -37,11 +38,11 @@ class monster_leech:CBaseMonster
 {
 	float m_flIdleTime;
 
-	void() monster_leech;
+	void(void) monster_leech;
 
 	virtual void(int) Death;
-	virtual void() DeathEnd;
-	virtual void() Respawn;
+	virtual void(void) DeathEnd;
+	virtual void(void) Respawn;
 };
 
 void

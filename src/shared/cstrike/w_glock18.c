@@ -28,7 +28,8 @@ Price: $400
 
 */
 
-enum {
+enum
+{
 	GLOCK_IDLE1,
 	GLOCK_IDLE2,
 	GLOCK_IDLE3,
@@ -47,7 +48,7 @@ enum {
 void
 w_glock18_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_glock18.fire");
 	Sound_Precache("weapon_glock18.burstfire");
 #endif
@@ -59,7 +60,7 @@ w_glock18_precache(void)
 void
 w_glock18_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.glock18_mag, pl.ammo_9mm, -1);
 #endif
 }
@@ -85,7 +86,7 @@ w_glock18_deathmsg(void)
 int
 w_glock18_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -116,7 +117,7 @@ w_glock18_draw(void)
 		break;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	pl.cs_cross_mindist = 8;
 	pl.cs_cross_deltadist = 3;
 #endif
@@ -135,7 +136,7 @@ w_glock18_primary(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (!pl.a_ammo1) {
 		return;
 	}
@@ -148,7 +149,7 @@ w_glock18_primary(void)
 	Cstrike_ShotMultiplierAdd(pl, 1);
 	float accuracy = Cstrike_CalculateAccuracy(pl, 200);
 
-#ifdef CSQC
+#ifdef CLIENT
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 #else
@@ -202,7 +203,7 @@ w_glock18_secondary(void)
 	/* toggle burst-fire */
 	pl.a_ammo3 = 1 - pl.a_ammo3;
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo3) {
 		CSQC_Parse_CenterPrint("Switched to Burst-Fire mode");
 	} else {
@@ -223,7 +224,7 @@ w_glock18_reload(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 >= 20) {
 		return;
 	}
@@ -265,19 +266,19 @@ w_glock18_aimanim(void)
 void
 w_glock18_hud(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	Cstrike_DrawCrosshair();
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [48/256,72/256], [24/256, 24/256], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [48/256,72/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
 void
 w_glock18_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -329,7 +330,7 @@ weapon_t w_glock18 =
 	w_glock18_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_glock18(void)
 {

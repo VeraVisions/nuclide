@@ -41,7 +41,7 @@ w_hornetgun_precache(void)
 	precache_model("models/p_hgun.mdl");
 	precache_model("models/hornet.mdl");
 	
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_hornetgun.fire");
 	Sound_Precache("weapon_hornetgun.buzz");
 	Sound_Precache("weapon_hornetgun.hit");
@@ -51,7 +51,7 @@ w_hornetgun_precache(void)
 int
 w_hornetgun_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	/* only pick it up once */
@@ -66,7 +66,7 @@ w_hornetgun_pickup(int new)
 void
 w_hornetgun_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, pl.ammo_hornet, -1);
 #endif
 }
@@ -88,7 +88,7 @@ w_hornetgun_draw(void)
 {
 	Weapons_SetModel("models/v_hgun.mdl");
 	Weapons_ViewAnimation(HORNETGUN_DRAW);
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_hornet, __NULL__);
 #endif
@@ -100,7 +100,7 @@ w_hornetgun_holster(void)
 	
 }
 
-#ifdef SSQC
+#ifdef SERVER
 void
 w_hornetgun_shoothornet(void)
 {
@@ -140,7 +140,7 @@ w_hornetgun_release(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo2 < MAX_A_HORNET) {
 		pl.a_ammo2 = bound(0, pl.a_ammo2 + 1, MAX_A_HORNET);
 		pl.w_idle_next = 0.35f;
@@ -184,7 +184,7 @@ w_hornetgun_primary(void)
 	}
 
 	/* Ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo2 <= 0) {
 		w_hornetgun_release();
 		return;
@@ -197,7 +197,7 @@ w_hornetgun_primary(void)
 #endif
 
 
-#ifdef SSQC
+#ifdef SERVER
 	w_hornetgun_shoothornet();
 	Sound_Play(pl, CHAN_WEAPON, "weapon_hornetgun.fire");
 
@@ -222,7 +222,7 @@ w_hornetgun_secondary(void)
 	}
 
     /* Ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo2 <= 0) {
 		w_hornetgun_release();
 		return;
@@ -234,7 +234,7 @@ w_hornetgun_secondary(void)
 	}
 #endif
 
-#ifdef SSQC
+#ifdef SERVER
 	pl.ammo_hornet--;
 	w_hornetgun_shoothornet();
 	Weapons_PlaySound(pl, CHAN_WEAPON, sprintf("agrunt/ag_fire%d.wav", floor(random(1,4))), 1, ATTN_NORM);
@@ -252,7 +252,7 @@ w_hornetgun_secondary(void)
 void
 w_hornetgun_crosshair(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	vector cross_pos;
 	vector aicon_pos;
 
@@ -279,7 +279,7 @@ w_hornetgun_crosshair(void)
 		[24/256,96/128],
 		[24/256, 24/128],
 		g_hud_color,
-		pSeat->ammo2_alpha,
+		pSeat->m_flAmmo2Alpha,
 		DRAWFLAG_ADDITIVE
 	);
 #endif
@@ -294,7 +294,7 @@ w_hornetgun_aimanim(void)
 void
 w_hornetgun_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -346,7 +346,7 @@ weapon_t w_hornetgun =
 	w_hornetgun_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_hornetgun(void)
 {

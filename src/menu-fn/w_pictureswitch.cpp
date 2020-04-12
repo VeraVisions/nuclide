@@ -26,10 +26,10 @@ class CPictureSwitch:CWidget
 	
 	int m_hoverPrev;
 	int m_hoverNext;
-	virtual void() m_changed = 0;
+	virtual void(void) m_changed = 0;
 
-	void() CPictureSwitch;
-	virtual void() Draw;
+	void(void) CPictureSwitch;
+	virtual void(void) Draw;
 	virtual void(float type, float x, float y, float devid) Input;
 
 	virtual void(string *m) SetPics;
@@ -37,7 +37,7 @@ class CPictureSwitch:CWidget
 	virtual void(int val) SetMax;
 	virtual void(string val) SetValueS;
 	virtual void(int w, int h) SetSize;
-	virtual void(void() vFunc) SetCallback;
+	virtual void(void(void) vFunc) SetCallback;
 	virtual string() GetPic;
 };
 
@@ -136,7 +136,7 @@ void CPictureSwitch::SetPicOffset(int w, int h)
 	m_picofs[1] = h;
 }
 
-void CPictureSwitch::SetCallback(void() vFunc)
+void CPictureSwitch::SetCallback(void(void) vFunc)
 {
 	m_changed = vFunc;
 }

@@ -31,7 +31,6 @@ void Player_Death(int hit)
 	
 	pl.think = PutClientInServer;
 	pl.nextthink = time + 4.0f;
-	sound(pl, CHAN_AUTO, "fvox/flatline.wav", 1.0, ATTN_NORM);
 
 	if (pl.health < -50) {
 		pl.health = 0;
@@ -52,6 +51,24 @@ void Player_Death(int hit)
 	corpse.frame = ANIM_DIESIMPLE;
 	corpse.angles = pl.angles;
 	corpse.velocity = pl.velocity;
+
+	/* gamerule stuff */
+	Spawn_MakeSpectator();
+	self.classname = "player";
+	self.health = 0;
+	forceinfokey(self, "*dead", "1"); 
+	forceinfokey(self, "*team", ftos(self.team));
+
+	Rules_CountPlayers();
+
+	/* In Assassination, all Terrorists receive a $2500
+	 *  reward if they won by killing the VIP. */
+	if (self.team == TEAM_VIP) {
+		Rules_RoundOver(TEAM_T, 2500, FALSE);
+		return;
+	}
+
+	Rules_DeathCheck();
 }
 
 /*
@@ -203,10 +220,10 @@ float Player_SendEntity(entity ePEnt, float fChanged)
 }
 
 void Weapons_Draw(void);
-void CSEv_PlayerSwitchWeapon_f(float w)
+void CSEv_PlayerSwitchWeapon_i(int w)
 {
 	player pl = (player)self;
-	pl.activeweapon = (int)w;
+	pl.activeweapon = w;
 	Weapons_Draw();
 }
 

@@ -28,12 +28,13 @@ sequences. This is really for test-maps and showroom entities.
 
 class cycler:CBaseTrigger
 {
-	void() cycler;
-	virtual void() Respawn;
+	void(void) cycler;
+	virtual void(void) Respawn;
 	virtual void(int) Pain;
 };
 
-void cycler::Pain(int body)
+void
+cycler::Pain(int body)
 {
 	if (frame >= modelframecount(modelindex)) {
 		frame = 0;
@@ -43,7 +44,8 @@ void cycler::Pain(int body)
 	health = 9999;
 }
 
-void cycler::Respawn(void)
+void
+cycler::Respawn(void)
 {
 	CBaseEntity::Respawn();
 	solid = SOLID_BBOX;
@@ -51,7 +53,8 @@ void cycler::Respawn(void)
 	health = 9999;
 }
 
-void cycler::cycler(void)
+void
+cycler::cycler(void)
 {
 	CBaseEntity::CBaseEntity();
 }

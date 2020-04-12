@@ -16,8 +16,8 @@
 
 class func_buyzone
 {
-	void() func_buyzone;
-	virtual void() touch;
+	void(void) func_buyzone;
+	virtual void(void) touch;
 };
 
 void func_buyzone::touch(void)

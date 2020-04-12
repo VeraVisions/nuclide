@@ -21,7 +21,7 @@ HUD_DrawCrosshair
 Draws the cursor every frame, unless spectator
 =================
 */
-void HUD_DrawCrosshair(void) {	
+void HUD_DrawCrosshair(void) {
 	int iCrosshairDistance;
 	int iLineLength;
 
@@ -39,7 +39,7 @@ void HUD_DrawCrosshair(void) {
 		fDistance = fDistance * 2;
 	} else if (getstatf(STAT_FLAGS) & FL_CROUCHING) { // Crouching...
 		fDistance = fDistance * 0.5;
-	} else if (vlen(pSeat->ePlayer.velocity) > 120) { // Running, not walking
+	} else if (vlen(pSeat->m_ePlayer.velocity) > 120) { // Running, not walking
 		fDistance = fDistance * 1.5;
 	}
 

@@ -25,7 +25,7 @@ w_pipebomb_precache(void)
 void
 w_pipebomb_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, __NULL__, __NULL__, __NULL__);
 #endif
 }
@@ -64,7 +64,7 @@ w_pipebomb_aimanim(void)
 void
 w_pipebomb_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,

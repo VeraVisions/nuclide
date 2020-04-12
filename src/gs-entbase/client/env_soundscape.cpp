@@ -32,7 +32,7 @@ class env_soundscape:CBaseEntity
 	int m_iRadius;
 	float m_flVolume;
 
-	void() env_soundscape;
+	void(void) env_soundscape;
 	virtual void(string, string) SpawnKey;
 };
 
@@ -90,12 +90,12 @@ void DSP_UpdateSoundscape(void)
 	vecPlayer = viewClient.vecPlayerOrigin;
 #else
 	int s = (float)getproperty(VF_ACTIVESEAT);
-	pSeat = &seats[s];
-	vecPlayer = pSeat->vPlayerOrigin;
+	pSeat = &g_seats[s];
+	vecPlayer = pSeat->m_vecPredictedOrigin;
 #endif
 
 	float bestdist = 999999;
-	for ( entity e = world; ( e = find( e, classname, "env_soundscape" ) ); ) {
+	for (entity e = world; (e = find(e, classname, "env_soundscape"));) {
 		env_soundscape scape = (env_soundscape)e;
 		
 		other = world;
@@ -127,7 +127,7 @@ void DSP_UpdateSoundscape(void)
 	g_entOldScape = g_entSoundScape;
 
 	float newvol;
-	for ( entity e = world; ( e = find( e, classname, "env_soundscape" ) ); ) {
+	for (entity e = world; (e = find(e, classname, "env_soundscape"));) {
 		env_soundscape t = (env_soundscape)e;
 
 		if (g_ambientsound) {

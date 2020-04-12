@@ -22,7 +22,8 @@ Headcrab
 
 */
 
-enum {
+enum
+{
 	HC_IDLE1,
 	HC_IDLE2,
 	HC_IDLE3,
@@ -52,14 +53,14 @@ class monster_headcrab:CBaseMonster
 {
 	float m_flIdleTime;
 
-	void() monster_headcrab;
+	void(void) monster_headcrab;
 
 	virtual void(int) Pain;
 	virtual void(int) Death;
 	virtual void(void) IdleNoise;
-	virtual int() AnimIdle;
-	virtual int() AnimWalk;
-	virtual int() AnimRun;
+	virtual int(void) AnimIdle;
+	virtual int(void) AnimWalk;
+	virtual int(void) AnimRun;
 };
 
 int

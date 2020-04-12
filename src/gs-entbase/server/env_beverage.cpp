@@ -26,7 +26,7 @@ the shape of a soda can.
 */
 
 /* dependency from item_food.cpp */
-void item_sodacan( void );
+void item_sodacan(void);
 
 // TODO: Implement support for skins
 enum
@@ -40,23 +40,23 @@ enum
 	SKIN_RANDOM
 };
 
-class env_beverage : CBaseTrigger
+class env_beverage:CBaseTrigger
 {
 	int m_iUses;
 	int m_iReady;
 	int m_iSkin;
-	void() env_beverage;
-	virtual void() Trigger;
+	void(void) env_beverage;
+	virtual void(void) Trigger;
 };
 
-void env_beverage :: Trigger ( void )
+void env_beverage::Trigger(void)
 {
-	if ( m_iReady == FALSE || m_iUses <= 0 ) {
+	if (m_iReady == FALSE || m_iUses <= 0) {
 		return;
 	}
 
 	entity eCan = spawn();
-	setorigin( eCan, origin );
+	setorigin(eCan, origin);
 	eCan.angles = angles;
 	eCan.owner = this;
 	eCan.think = item_sodacan;
@@ -66,23 +66,23 @@ void env_beverage :: Trigger ( void )
 	m_iReady = FALSE;
 }
 
-void env_beverage :: env_beverage ( void )
+void env_beverage::env_beverage(void)
 {
-	precache_model( "models/can.mdl" );
-	precache_sound( "weapons/g_bounce3.wav" );
+	precache_model("models/can.mdl");
+	precache_sound("weapons/g_bounce3.wav");
 	CBaseTrigger::CBaseTrigger();
 
-	for ( int i = 1; i < (  tokenize( __fullspawndata ) - 1 ); i += 2 ) {
-		switch ( argv( i ) ) {
+	for (int i = 1; i < ( tokenize(__fullspawndata) - 1); i += 2) {
+		switch (argv(i)) {
 		case "health":
-			m_iUses = stoi( argv( i + 1 ) );
+			m_iUses = stoi(argv(i+1));
 			break;
 		default:
 			break;
 		}
 	}
 
-	if ( !m_iUses ) {
+	if (!m_iUses) {
 		m_iUses = 10;
 	}
 	m_iReady = TRUE;

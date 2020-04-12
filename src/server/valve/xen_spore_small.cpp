@@ -23,7 +23,7 @@ Small Xen Spore
 */
 class xen_spore_small:CBaseEntity
 {
-	void() xen_spore_small;
+	void(void) xen_spore_small;
 };
 
 void xen_spore_small::xen_spore_small(void)

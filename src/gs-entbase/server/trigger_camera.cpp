@@ -27,11 +27,12 @@ class trigger_camera:CBaseTrigger
 {
 	float m_flWait;
 
-	void() trigger_camera;
-	virtual void() Trigger;
+	void(void) trigger_camera;
+	virtual void(void) Trigger;
 };
 
-void trigger_camera::Trigger(void)
+void
+trigger_camera::Trigger(void)
 {
 	if (m_strTarget) {
 		entity e = find(world, CBaseTrigger::m_strTargetName, m_strTarget);
@@ -43,16 +44,17 @@ void trigger_camera::Trigger(void)
 
 	Client_TriggerCamera(eActivator, origin, angles, m_flWait);
 
-	dprint( sprintf( "^2trigger_camera::^3Trigger^7: Camera at %v, %v, for %f sec/s requested\n", 
-		origin, angles, m_flWait ) );
+	dprint(sprintf("^2trigger_camera::^3Trigger^7: Camera at %v, %v, for %f sec/s requested\n", 
+		origin, angles, m_flWait));
 }
 
-void trigger_camera::trigger_camera(void)
+void
+trigger_camera::trigger_camera(void)
 {
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
 		case "wait":
-			m_flWait = stof(argv(i + 1));
+			m_flWait = stof(argv(i+1));
 			break;
 		default:
 			break;

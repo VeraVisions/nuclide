@@ -14,7 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-enum {
+enum
+{
 	BTN_NEWGAME,
 	BTN_RESUMEGAME,
 	BTN_TRAINING,
@@ -93,17 +94,17 @@ class CMainButton:CWidget
 	float m_alpha;
 	int m_hover;
 	int m_click;
-	virtual void() m_execute = 0;
+	virtual void(void) m_execute = 0;
 	
 	int m_length;
 
-	void() CMainButton;
-	virtual void() Draw;
+	void(void) CMainButton;
+	virtual void(void) Draw;
 	virtual void(float type, float x, float y, float devid) Input;
 
 	virtual void(int i) SetImage;
 	virtual void(int i) SetLength;
-	virtual void(void() vFunc) SetExecute;
+	virtual void(void(void) vFunc) SetExecute;
 };
 
 void CMainButton::CMainButton(void)
@@ -169,7 +170,7 @@ void CMainButton::SetLength(int i)
 	m_length = i;
 }
 
-void CMainButton::SetExecute(void() vFunc)
+void CMainButton::SetExecute(void(void) vFunc)
 {
 	m_execute = vFunc;
 }

@@ -16,12 +16,14 @@
 
 class CFrame:CWidget
 {
+	int m_background;
 	int m_bsize[2];
 	int m_size[2];
-	virtual void() Draw;
+	virtual void(void) Draw;
 	virtual void(float type, float x, float y, float devid) Input;
 
 	virtual void(int w, int h) SetSize;
+	virtual void(int w) SetBorder;
 };
 
 void CFrame::CFrame(void)
@@ -38,6 +40,8 @@ void CFrame::Draw(void)
 		drawfill([g_menuofs[0] + m_x, g_menuofs[1] + m_y], 
 			 [m_size[0],m_size[1]], [0.25,0.25,0.25], 1.0f);
 	}
+
+	if (m_bsize[0] > 0)
 	drawfill([g_menuofs[0] + m_x + m_bsize[0], g_menuofs[1] + m_y + m_bsize[1]], 
 			 [m_size[0] - (m_bsize[0] * 2),m_size[1]-(m_bsize[1] * 2)],
 			 [0,0,0], 1.0f);
@@ -57,4 +61,8 @@ void CFrame::SetSize(int x, int y)
 {
 	m_size[0] = x;
 	m_size[1] = y;
+}
+void CFrame::SetBorder(int x)
+{
+	m_bsize[0] = m_bsize[1] = x;
 }

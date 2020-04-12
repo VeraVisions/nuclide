@@ -23,63 +23,83 @@ vector g_hudres;
 struct
 {
 	/* viewmodel stuff */
-	entity eViewModel;
-	entity eMuzzleflash;
-	float fNumBones;
-	float fEjectBone;
-	float fLastWeapon;
-	float fBobTime;
-	float fBob;
-	float damage_alpha;
-	vector damage_pos;
+	entity m_eViewModel;
+	entity m_eMuzzleflash;
+	int m_iVMBones;
+	int m_iVMEjectBone;
+	int m_iLastWeapon;
+	float m_flBobTime;
+	float m_flBob;
 
-	int iZoomed;
-	float flZoomTime;
+	/* damage overlay */
+	float m_flDamageAlpha;
+	vector m_vecDamagePos;
+
+	/* +zoomin cmd */
+	int m_iZoomed;
+	float m_flZoomTime;
 
 	/* player fields */
-	entity ePlayer;
-	vector vPlayerOrigin;
-	vector vPlayerOriginOld;
-	vector vPlayerVelocity;
-	float fPlayerFlags;
+	entity m_ePlayer;
+	vector m_vecPredictedOrigin;
+	vector m_vecPredictedOriginOld;
+	vector m_vecPredictedVelocity;
+	float m_flPredictedFlags;
 	
 	/* camera fields */
-	vector vCameraPos;
-	vector vCameraAngle;
-	float fCameraTime;
-	
-	/* punchangle */
-	vector punchangle;
-	vector net_punchangle;
+	vector m_vecCameraOrigin;
+	vector m_vecCameraAngle;
+	float m_flCameraTime;
 
 	/* hud.c */
-	float health_old;
-	float health_alpha;
-	float armor_old;
-	float armor_alpha;
-	float ammo1_old;
-	float ammo1_alpha;
-	float ammo2_old;
-	float ammo2_alpha;
-	float ammo3_old;
-	float ammo3_alpha;
-	int pickup_weapon;
-	float pickup_alpha;
+	int m_iHealthOld;
+	float m_flHealthAlpha;
+	int m_iArmorOld;
+	float m_flArmorAlpha;
+	int m_iAmmo1Old;
+	float m_flAmmo1Alpha;
+	int m_iAmmo2Old;
+	float m_flAmmo2Alpha;
+	int m_iAmmo3Old;
+	float m_flAmmo3Alpha;
+	int m_iPickupWeapon;
+	float m_flPickupAlpha;
 
 	/* This is seperated from the other VGUI stuff so we can check scores
 	 * while buying and whatnot */
-	int iShowScores;
-	float fHUDWeaponSelected;
-	float fHUDWeaponSelectTime;
+	int m_iScoresVisible;
+	int m_iHUDWeaponSelected;
+	float m_flHUDWeaponSelectTime;
 
-	int iInputAttack2;
-	int iInputReload;
-	int iInputUse;
-	int iInputDuck;
+	/* centerprint related */
+	float m_flCenterprintAlpha;
+	float m_flCenterprintTime;
+	float m_iCenterprintLines;
+	string m_strCenterprintBuffer[18];
 
-	float fInputSendNext;
-	entity pWeaponFX;
-} seats[4], *pSeat;
+	/* chat related */
+	float m_flPrintTime;
+	string m_strPrintBuffer[5];
+	int m_iPrintLines;
+
+	int m_iInputAttack2;
+	int m_iInputReload;
+	int m_iInputUse;
+	int m_iInputDuck;
+	float m_flInputBlockTime;
+	
+	/* fading */
+	float m_flFadeDuration;
+	float m_flFadeHold;
+	float m_flFadeMaxAlpha;
+	float m_flFadeStyle;
+	float m_flFadeAlpha;
+	float m_flFadeTime;
+	vector m_vecFadeColor;
+	int m_iFadeActive;
+
+	entity m_pWeaponFX;
+} g_seats[4], *pSeat;
 
 void HUD_DrawAmmo1(void);
 void HUD_DrawAmmo2(void);

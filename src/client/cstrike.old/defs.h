@@ -27,7 +27,7 @@ var float PARTICLE_SMOKEGRENADE;
 vector vHUDColor; // Defined in HUD_Draw (HUD.c)
 vector vCrossColor; // Defined in HUD_Draw (HUDCrosshair.c)
 
-string sShellModel [ 4 ] = {
+string sShellModel [4] = {
 	"models/pshell.mdl",
 	"models/rshell.mdl",
 	"models/rshell_big.mdl",
@@ -36,7 +36,7 @@ string sShellModel [ 4 ] = {
 
 
 var string autocvar_skins_dir = "";
-string sViewModels[ CS_WEAPON_COUNT - 1 ] = {
+string sViewModels[CS_WEAPON_COUNT - 1] = {
 	"v_knife.mdl",
 	"v_usp.mdl",
 	"v_glock18.mdl",
@@ -70,16 +70,16 @@ string sViewModels[ CS_WEAPON_COUNT - 1 ] = {
 struct
 {
 //Viewmodel stuff
-	entity eViewModel;
-	entity eMuzzleflash;
-	float fNumBones;
-	float fEjectBone;
+	entity m_eViewModel;
+	entity m_eMuzzleflash;
+	float m_iVMBones;
+	float m_iVMEjectBone;
 	vector punchangle;
-	float fLastWeapon;
-	float fBobTime;
-	float fBob;
-	float damage_alpha;
-	vector damage_pos;
+	float m_iLastWeapon;
+	float m_flBobTime;
+	float m_flBob;
+	float m_flDamageAlpha;
+	vector m_vecDamagePos;
 	
 	/* Camera Bob */
 	float flCamMove;
@@ -88,21 +88,21 @@ struct
 	float flCamFracSin;
 	float flCamDelta;
 
-	int iZoomed;
-	float flZoomTime;
+	int m_iZoomed;
+	float m_flZoomTime;
 
 //Player fields
 	entity ePlayer;
-	vector vPlayerOrigin;
-	vector vPlayerOriginOld;
-	vector vPlayerVelocity;
-	float fPlayerFlags;
+	vector m_vecPredictedOrigin;
+	vector m_vecPredictedOriginOld;
+	vector m_vecPredictedVelocity;
+	float m_flPredictedFlags;
 	
 // Camera Fields
 	//entity ePlayerEnt;
-	vector vCameraPos;
-	vector vCameraAngle;
-	float fCameraTime;
+	vector m_vecCameraOrigin;
+	vector m_vecCameraAngle;
+	float m_flCameraTime;
 	
 // Flashbang'd
 	float fFlashTime;
@@ -110,7 +110,7 @@ struct
 	
 //UI fields
 	float fVGUI_Display;	// The VGUI menu currently being drawn
-	int iShowScores;	// This is seperated from the other VGUI stuff so we can check scores while buying and whatnot
+	int m_iScoresVisible;	// This is seperated from the other VGUI stuff so we can check scores while buying and whatnot
 	
 	// Testing
 	int iOverview;
@@ -127,21 +127,21 @@ struct
 	// We can only carry one item per slot, so this is hacking around the last one
 	int iHUDGrenades;
 	int iHUDGrenadesSelected;
-	float fHUDWeaponSelectTime;
-	float fHUDWeaponSelected;
+	float m_flHUDWeaponSelectTime;
+	float m_iHUDWeaponSelected;
 
-	int iInputAttack2;
-	int iInputReload;
-	int iInputUse;
-	int iInputDuck;
+	int m_iInputAttack2;
+	int m_iInputReload;
+	int m_iInputUse;
+	int m_iInputDuck;
 
-	float fInputSendNext;
-} seats[4], *pSeat;
+	float m_flInputBlockTime;
+} g_seats[4], *pSeat;
 
 // Sound Stuff
 //.string sSoundSample;
 //.float fVolume;
-string HUD_GetChatColorHEX( float fTeam );
+string HUD_GetChatColorHEX(float fTeam);
 
 // For the player entity
 .entity eGunModel;
@@ -151,8 +151,8 @@ float fWeaponEventPlayer;
 .float health;
 .float oldhealth;
 
-void Animation_ShootWeapon( entity ePlayer );
-void Animation_ReloadWeapon( entity ePlayer );
+void Animation_ShootWeapon(entity ePlayer);
+void Animation_ReloadWeapon(entity ePlayer);
 
 /*
 ====================
@@ -161,10 +161,10 @@ HUD_GetChatColor
 Returns an RGB color vector for the specified team
 ====================
 */
-vector HUD_GetChatColor( float fTeam ) {
-	if ( fTeam == TEAM_CT ) {
+vector HUD_GetChatColor(float fTeam) {
+	if (fTeam == TEAM_CT) {
 		return '0.45 0.60 0.75';
-	} else if ( fTeam == TEAM_T ) {
+	} else if (fTeam == TEAM_T) {
 		return '0.75 0.1875 0.1875';
 	} else {
 		return '0.75 0.75 0.75';
@@ -178,10 +178,10 @@ HUD_GetChatColor
 Returns a HEX color string prefix for the specified team
 ====================
 */
-string HUD_GetChatColorHEX( float fTeam ) {
-	if ( fTeam == TEAM_CT ) {
+string HUD_GetChatColorHEX(float fTeam) {
+	if (fTeam == TEAM_CT) {
 		return "^x7AC";
-	} else if ( fTeam == TEAM_T ) {
+	} else if (fTeam == TEAM_T) {
 		return "^xC33";
 	} else {
 		return "^xCCC";
@@ -195,10 +195,10 @@ HUD_GetChatColor
 Returns a HEX color string prefix with teamname
 ====================
 */
-string HUD_GetChatColorHEXTeam( float fTeam ) {
-	if ( fTeam == TEAM_CT ) {
+string HUD_GetChatColorHEXTeam(float fTeam) {
+	if (fTeam == TEAM_CT) {
 		return "^x7AC(Counter-Terrorist) ";
-	} else if ( fTeam == TEAM_T ) {
+	} else if (fTeam == TEAM_T) {
 		return "^xC33(Terrorist) ";
 	} else {
 		return "^xCCC(Spectator) ";

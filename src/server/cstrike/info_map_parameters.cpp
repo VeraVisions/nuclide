@@ -34,7 +34,7 @@ Choices for 'buying':
 
 class info_map_parameters
 {
-	void() info_map_parameters;
+	void(void) info_map_parameters;
 };
 
 void
@@ -43,10 +43,10 @@ info_map_parameters::info_map_parameters(void)
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
 		case "buying":
-			g_cstrike_buying = stoi(argv(i + 1));
+			g_cstrike_buying = stoi(argv(i+1));
 			break;
 		case "bombradius":
-			g_cstrike_bombradius = stof(argv(i + 1));
+			g_cstrike_bombradius = stof(argv(i+1));
 			break;
 		default:
 			break;

@@ -35,7 +35,8 @@ collide with the train. This is best used for things in the distance or for
 when lasers are following this train as a sort of guide.
 */
 
-enumflags {
+enumflags
+{
 	TRAIN_WAIT,
 	TRAIN_UNUSED1,
 	TRAIN_UNUSED2,
@@ -79,12 +80,12 @@ class func_train:CBaseTrigger
 	string m_strStopSnd;
 	string m_strOldTarget; /* specific to trains? */
 
-	void() func_train;
-	virtual void() NextPath;
-	virtual void() GoToTarget;
-	virtual void() Trigger;
-	virtual void() Respawn;
-	virtual void() Blocked;
+	void(void) func_train;
+	virtual void(void) NextPath;
+	virtual void(void) GoToTarget;
+	virtual void(void) Trigger;
+	virtual void(void) Respawn;
+	virtual void(void) Blocked;
 };
 
 void

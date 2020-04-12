@@ -43,7 +43,8 @@ weaponinfo_t wptKNIFE = {
 };
 
 // Anim Table
-enum {
+enum
+{
 	ANIM_KNIFE_IDLE1,
 	ANIM_KNIFE_SLASH1,
 	ANIM_KNIFE_SLASH2,
@@ -54,44 +55,44 @@ enum {
 	ANIM_KNIFE_MIDSLASH2
 };
 
-void WeaponKNIFE_Draw( void ) {
-#ifdef SSQC
+void WeaponKNIFE_Draw(void) {
+#ifdef SERVER
 	BaseMelee_Draw();
 #else
-	View_PlayAnimation( ANIM_KNIFE_DRAW );
+	View_PlayAnimation(ANIM_KNIFE_DRAW);
 #endif
 }
 
-void WeaponKNIFE_PrimaryFire( void ) {
-#ifdef SSQC
+void WeaponKNIFE_PrimaryFire(void) {
+#ifdef SERVER
 
-	Client_SendEvent( self, EV_WEAPON_PRIMARYATTACK );
+	Client_SendEvent(self, EV_WEAPON_PRIMARYATTACK);
 	
-	if ( BaseMelee_Attack() == FALSE ) {
-		if ( random() <= 0.5 ) {
-			sound( self, CHAN_WEAPON, "weapons/knife_slash1.wav", 1, ATTN_IDLE );
+	if (BaseMelee_Attack() == FALSE) {
+		if (random() <= 0.5) {
+			sound(self, CHAN_WEAPON, "weapons/knife_slash1.wav", 1, ATTN_IDLE);
 		} else {
-			sound( self, CHAN_WEAPON, "weapons/knife_slash2.wav", 1, ATTN_IDLE );
+			sound(self, CHAN_WEAPON, "weapons/knife_slash2.wav", 1, ATTN_IDLE);
 		} 
 	}
 	
-	Animation_ShootWeapon( self );
+	Animation_ShootWeapon(self);
 	self.fAttackFinished = time + wptKNIFE.fAttackFinished;
 #else
-	if ( random() <= 0.5 ) {
-		View_PlayAnimation( ANIM_KNIFE_SLASH1 );
+	if (random() <= 0.5) {
+		View_PlayAnimation(ANIM_KNIFE_SLASH1);
 	} else {
-		View_PlayAnimation( ANIM_KNIFE_SLASH2 );
+		View_PlayAnimation(ANIM_KNIFE_SLASH2);
 	}
 #endif
 }
 
-void WeaponKNIFE_Secondary( void ) {
-#ifdef SSQC
+void WeaponKNIFE_Secondary(void) {
+#ifdef SERVER
 	BaseMelee_Attack();
-	Client_SendEvent( self, EV_WEAPON_SECONDARYATTACK );
+	Client_SendEvent(self, EV_WEAPON_SECONDARYATTACK);
 	self.fAttackFinished = time + wptKNIFE.fAttackFinished;
 #else
-	View_PlayAnimation( ANIM_KNIFE_STAB );
+	View_PlayAnimation(ANIM_KNIFE_STAB);
 #endif
 }

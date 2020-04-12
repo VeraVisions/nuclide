@@ -27,7 +27,8 @@ Counter-Terrorists only weapon
 
 */
 
-enum {
+enum
+{
 	AUG_IDLE,
 	AUG_RELOAD,
 	AUG_DRAW,
@@ -39,7 +40,7 @@ enum {
 void
 w_aug_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_aug.fire");
 #endif
 	precache_model("models/v_aug.mdl");
@@ -50,7 +51,7 @@ w_aug_precache(void)
 void
 w_aug_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.aug_mag, pl.ammo_762mm, -1);
 #endif
 }
@@ -76,7 +77,7 @@ w_aug_deathmsg(void)
 int
 w_aug_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -99,7 +100,7 @@ w_aug_draw(void)
 	Weapons_SetModel("models/v_aug.mdl");
 	Weapons_ViewAnimation(AUG_DRAW);
 
-#ifdef CSQC
+#ifdef CLIENT
 	pl.cs_cross_mindist = 3;
 	pl.cs_cross_deltadist = 3;
 #endif
@@ -114,7 +115,7 @@ w_aug_primary(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (!pl.a_ammo1) {
 		return;
 	}
@@ -127,7 +128,7 @@ w_aug_primary(void)
 	Cstrike_ShotMultiplierAdd(pl, 1);
 	float accuracy = Cstrike_CalculateAccuracy(pl, 215);
 
-#ifdef CSQC
+#ifdef CLIENT
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 #else
@@ -188,7 +189,7 @@ w_aug_reload(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 >= 30) {
 		return;
 	}
@@ -221,7 +222,7 @@ w_aug_aimanim(void)
 void
 w_aug_hud(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	player pl = (player)self;
 	if (pl.viewzoom == 1.0f) {
 		Cstrike_DrawCrosshair();
@@ -231,14 +232,14 @@ w_aug_hud(void)
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [72/256,72/256], [24/256, 24/256], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [72/256,72/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
 void
 w_aug_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -290,7 +291,7 @@ weapon_t w_aug =
 	w_aug_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_aug(void)
 {

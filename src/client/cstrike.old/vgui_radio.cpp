@@ -18,17 +18,18 @@ static CUIWindow winRadio1;
 static CUIWindow winRadio2;
 static CUIWindow winRadio3;
 
-typedef struct {
+typedef struct
+{
 	int id;
-	void() func;
+	void(void) func;
 } radiomsg_t;
 
-void rad_cmd_1(void) { sendevent("RadioMessage", "f", RADIO_CT_COVERME); winRadio1.Hide(); } 
-void rad_cmd_2(void) { sendevent("RadioMessage", "f", RADIO_CT_POINT); winRadio1.Hide(); }
-void rad_cmd_3(void) { sendevent("RadioMessage", "f", RADIO_POSITION); winRadio1.Hide(); }
-void rad_cmd_4(void) { sendevent("RadioMessage", "f", RADIO_REGROUP); winRadio1.Hide(); }
-void rad_cmd_5(void) { sendevent("RadioMessage", "f", RADIO_FOLLOWME); winRadio1.Hide(); }
-void rad_cmd_6(void) { sendevent("RadioMessage", "f", RADIO_FIREASSIS); winRadio1.Hide(); }
+void rad_cmd_1(void) { sendevent("Radio", "f", RADIO_CT_COVERME); winRadio1.Hide(); } 
+void rad_cmd_2(void) { sendevent("Radio", "f", RADIO_CT_POINT); winRadio1.Hide(); }
+void rad_cmd_3(void) { sendevent("Radio", "f", RADIO_POSITION); winRadio1.Hide(); }
+void rad_cmd_4(void) { sendevent("Radio", "f", RADIO_REGROUP); winRadio1.Hide(); }
+void rad_cmd_5(void) { sendevent("Radio", "f", RADIO_FOLLOWME); winRadio1.Hide(); }
+void rad_cmd_6(void) { sendevent("Radio", "f", RADIO_FIREASSIS); winRadio1.Hide(); }
 
 radiomsg_t rad_cmds[] = {
 	{ RADIO_CT_COVERME, rad_cmd_1 },
@@ -40,12 +41,12 @@ radiomsg_t rad_cmds[] = {
 };
 CUIButton *radioCommands;
 
-void rad_group_1(void) { sendevent("RadioMessage", "f", RADIO_GO); winRadio2.Hide(); }
-void rad_group_2(void) { sendevent("RadioMessage", "f", RADIO_FALLBACK); winRadio2.Hide(); }
-void rad_group_3(void) { sendevent("RadioMessage", "f", RADIO_STICKTOG); winRadio2.Hide(); }
-void rad_group_4(void) { sendevent("RadioMessage", "f", RADIO_CT_INPOS); winRadio2.Hide(); }
-void rad_group_5(void) { sendevent("RadioMessage", "f", RADIO_STORMFRONT); winRadio2.Hide(); }
-void rad_group_6(void) { sendevent("RadioMessage", "f", RADIO_COM_REPORTIN); winRadio2.Hide(); } 
+void rad_group_1(void) { sendevent("Radio", "f", RADIO_GO); winRadio2.Hide(); }
+void rad_group_2(void) { sendevent("Radio", "f", RADIO_FALLBACK); winRadio2.Hide(); }
+void rad_group_3(void) { sendevent("Radio", "f", RADIO_STICKTOG); winRadio2.Hide(); }
+void rad_group_4(void) { sendevent("Radio", "f", RADIO_CT_INPOS); winRadio2.Hide(); }
+void rad_group_5(void) { sendevent("Radio", "f", RADIO_STORMFRONT); winRadio2.Hide(); }
+void rad_group_6(void) { sendevent("Radio", "f", RADIO_COM_REPORTIN); winRadio2.Hide(); } 
 
 radiomsg_t rad_group[] = {
     { RADIO_GO, rad_group_1 },
@@ -57,15 +58,15 @@ radiomsg_t rad_group[] = {
 };
 CUIButton *radioGroup;
 
-void rad_res_1(void) { sendevent("RadioMessage", "f", RADIO_CT_AFFIRM); winRadio3.Hide(); }
-void rad_res_2(void) { sendevent("RadioMessage", "f", RADIO_CT_ENEMYS); winRadio3.Hide(); }
-void rad_res_3(void) { sendevent("RadioMessage", "f", RADIO_CT_BACKUP); winRadio3.Hide(); }
-void rad_res_4(void) { sendevent("RadioMessage", "f", RADIO_CLEAR); winRadio3.Hide(); }
-void rad_res_5(void) { sendevent("RadioMessage", "f", RADIO_CT_INPOS); winRadio3.Hide(); }
-void rad_res_6(void) { sendevent("RadioMessage", "f", RADIO_CT_REPORTINGIN); winRadio3.Hide(); }
-void rad_res_7(void) { sendevent("RadioMessage", "f", RADIO_BLOW); winRadio3.Hide(); }
-void rad_res_8(void) { sendevent("RadioMessage", "f", RADIO_NEGATIVE); winRadio3.Hide(); }
-void rad_res_9(void) { sendevent("RadioMessage", "f", RADIO_ENEMYDOWN); winRadio3.Hide(); }
+void rad_res_1(void) { sendevent("Radio", "f", RADIO_CT_AFFIRM); winRadio3.Hide(); }
+void rad_res_2(void) { sendevent("Radio", "f", RADIO_CT_ENEMYS); winRadio3.Hide(); }
+void rad_res_3(void) { sendevent("Radio", "f", RADIO_CT_BACKUP); winRadio3.Hide(); }
+void rad_res_4(void) { sendevent("Radio", "f", RADIO_CLEAR); winRadio3.Hide(); }
+void rad_res_5(void) { sendevent("Radio", "f", RADIO_CT_INPOS); winRadio3.Hide(); }
+void rad_res_6(void) { sendevent("Radio", "f", RADIO_CT_REPORTINGIN); winRadio3.Hide(); }
+void rad_res_7(void) { sendevent("Radio", "f", RADIO_BLOW); winRadio3.Hide(); }
+void rad_res_8(void) { sendevent("Radio", "f", RADIO_NEGATIVE); winRadio3.Hide(); }
+void rad_res_9(void) { sendevent("Radio", "f", RADIO_ENEMYDOWN); winRadio3.Hide(); }
 
 radiomsg_t rad_res[] = {
     { RADIO_CT_AFFIRM, rad_res_1 },

@@ -16,7 +16,7 @@
 
 class CDialog:CWidget
 {
-	virtual void() Draw;
+	virtual void(void) Draw;
 };
 
 void CDialog::Draw(void)

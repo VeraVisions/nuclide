@@ -36,7 +36,7 @@ void Client_Init(float apilevel, string enginename, float engineversion)
 	precache_model("models/rshell.mdl");
 	precache_model("models/rshell_big.mdl");
 	precache_model("models/shotgunshell.mdl");
-	precache_pic( sprintf( "overviews/%s.bmp", mapname ) );
+	precache_pic(sprintf("overviews/%s.bmp", mapname));
 
 	PARTICLE_SMOKEGRENADE = particleeffectnum("smokegren");
 

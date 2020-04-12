@@ -17,13 +17,13 @@
 void
 View_UpdateWeapon(entity vm, entity mflash)
 {
-	player pl = (player)pSeat->ePlayer;
+	player pl = (player)pSeat->m_ePlayer;
 
 	/* only bother upon change */
-	if (pSeat->fLastWeapon == pl.activeweapon) {
+	if (pSeat->m_iLastWeapon == pl.activeweapon) {
 		return;
 	}
-	pSeat->fLastWeapon = pl.activeweapon;
+	pSeat->m_iLastWeapon = pl.activeweapon;
 
 	if (!pl.activeweapon) {
 		return;
@@ -43,8 +43,8 @@ View_UpdateWeapon(entity vm, entity mflash)
 
 	/* figure out when the attachments start. in FTE attachments for
 	 * HLMDL are treated as bones. they start at numbones + 1 */
-	skel_delete( mflash.skeletonindex );
-	mflash.skeletonindex = skel_create( vm.modelindex );
-	pSeat->fNumBones = skel_get_numbones( mflash.skeletonindex ) + 1;
-	pSeat->fEjectBone = pSeat->fNumBones + 1;
+	skel_delete(mflash.skeletonindex);
+	mflash.skeletonindex = skel_create(vm.modelindex);
+	pSeat->m_iVMBones = skel_get_numbones(mflash.skeletonindex) + 1;
+	pSeat->m_iVMEjectBone = pSeat->m_iVMBones + 1;
 }

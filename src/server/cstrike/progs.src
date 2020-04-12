@@ -2,11 +2,14 @@
 #pragma progs_dat  "../../../cstrike/data.pk3dir/progs.dat"
 
 #define QWSSQC
+#define SERVER
 #define VALVE
+#define CSTRIKE
 
 #includelist
 ../../shared/fteextensions.qc
 ../../shared/defs.h
+../../shared/cstrike/defs.h
 ../valve/defs.h
 ../../shared/math.h
 ../../shared/materials.h
@@ -23,15 +26,15 @@
 ../sentences.c
 
 ../../gs-entbase/server.src
+../../gs-entbase/shared.src
 
-../../shared/decals.c
 ../../shared/effects.c
-../../shared/spraylogo.cpp
 ../../shared/cstrike/player.cpp
 ../cstrike/player.c
 ../../shared/pmove.c
 ../valve/spectator.c
 
+../../shared/cstrike/radio.c
 ../../shared/cstrike/items.h
 ../../shared/cstrike/weapons_cstrike.c
 ../../shared/valve/weapon_common.h
@@ -81,10 +84,13 @@
 ../spawn.c
 ../vox.c
 ../../shared/valve/animations.c
+../cstrike/game_money.c
+../cstrike/game_timer.c
+../cstrike/game_rules.c
 ../cstrike/gamerules.c
 ../cstrike/client.c
 ../client.c
-../valve/server.c
+../cstrike/server.c
 ../server.c
 ../valve/damage.c
 ../traceattack.c
@@ -92,7 +98,7 @@
 ../footsteps.c
 ../flashlight.c
 ../cstrike/input.c
-../valve/spawn.c
+../cstrike/spawn.c
 ../vote.c
 
 ../entry.c

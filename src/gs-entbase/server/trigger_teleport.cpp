@@ -24,12 +24,13 @@ any entity set as the "target". Works best with info_teleport_destination.
 
 class trigger_teleport:CBaseTrigger
 {
-	void() trigger_teleport;
+	void(void) trigger_teleport;
 
-	virtual void() touch;
+	virtual void(void) touch;
 };
 
-void trigger_teleport::touch(void)
+void
+trigger_teleport::touch(void)
 {
 	if (other.health > 0 || other.solid == SOLID_SLIDEBOX) {
 		eActivator = other;
@@ -38,16 +39,17 @@ void trigger_teleport::touch(void)
 		if (eTarget) {
 			vector endpos = eTarget.origin + [0,0,16];
 			setorigin(other, endpos);
-			dprint( sprintf( "^2trigger_teleport::^3touch^7: Teleported '%s' to `%v`\n", 
-				other.netname, endpos ) );
+			dprint(sprintf("^2trigger_teleport::^3touch^7: Teleported '%s' to `%v`\n", 
+				other.netname, endpos));
 		} else {
-			print( sprintf( "^2trigger_teleport::^3touch^7: Failed to teleport '%s'\n", 
-				other.netname ) );
+			print(sprintf("^2trigger_teleport::^3touch^7: Failed to teleport '%s'\n", 
+				other.netname));
 		}
 	}
 }
 
-void trigger_teleport::trigger_teleport(void)
+void
+trigger_teleport::trigger_teleport(void)
 {
 	CBaseTrigger::CBaseTrigger();
 	CBaseTrigger::InitBrushTrigger();

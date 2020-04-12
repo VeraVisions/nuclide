@@ -16,9 +16,9 @@
 
 class item_ammo:CBaseEntity
 {
-	void() item_ammo;
-	virtual void() Respawn;
-	virtual void() touch;
+	void(void) item_ammo;
+	virtual void(void) Respawn;
+	virtual void(void) touch;
 };
 
 void item_ammo::touch(void)
@@ -74,7 +74,7 @@ void item_ammo::item_ammo(void)
 class 
 ammo_bolts:item_ammo
 {
-	void() ammo_bolts;
+	void(void) ammo_bolts;
 };
 
 void 
@@ -93,8 +93,8 @@ A single ammo_nailclip will provide 25 nails.
 */
 class ammo_nailclip:item_ammo
 {
-	void() ammo_nailclip;
-	virtual void() touch;
+	void(void) ammo_nailclip;
+	virtual void(void) touch;
 };
 
 void ammo_nailclip::ammo_nailclip(void)
@@ -126,8 +126,8 @@ A single ammo_nailround will provide 50 nails.
 */
 class ammo_nailround:item_ammo
 {
-	void() ammo_nailround;
-	virtual void() touch;
+	void(void) ammo_nailround;
+	virtual void(void) touch;
 };
 
 void ammo_nailround::ammo_nailround(void)
@@ -160,8 +160,8 @@ A single ammo_xencandy will provide 20 snacks.
 
 class ammo_xencandy:item_ammo
 {
-	void() ammo_xencandy;
-	virtual void() touch;
+	void(void) ammo_xencandy;
+	virtual void(void) touch;
 };
 
 void ammo_xencandy::ammo_xencandy(void)

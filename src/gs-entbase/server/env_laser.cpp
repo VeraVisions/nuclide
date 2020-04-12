@@ -51,12 +51,12 @@ class env_laser:CBaseTrigger
 	string m_strBeamTex;
 	string m_strEndTex;
 
-	void() env_laser;
+	void(void) env_laser;
 
-	virtual void() think;
-	virtual void() Trigger;
-	virtual void() Respawn;
-	virtual void() ParentUpdate;
+	virtual void(void) think;
+	virtual void(void) Trigger;
+	virtual void(void) Respawn;
+	virtual void(void) ParentUpdate;
 	virtual float(entity, float) SendEntity;
 };
 
@@ -173,18 +173,18 @@ void env_laser::env_laser(void)
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
 		case "texture":
-			m_strBeamTex = argv(i + 1);
+			m_strBeamTex = argv(i+1);
 			precache_model(m_strBeamTex);
 			break;
 		case "EndSprite":
-			m_strEndTex = argv(i + 1);
+			m_strEndTex = argv(i+1);
 			precache_model(m_strEndTex);
 			break;
 		case "LaserTarget":
-			m_strLaserDest = argv(i + 1);
+			m_strLaserDest = argv(i+1);
 			break;
 		case "damage":
-			m_flDPS = stof(argv(i + 1));
+			m_flDPS = stof(argv(i+1));
 			break;
 		default:
 			break;

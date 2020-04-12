@@ -19,7 +19,7 @@ var int autocvar_sp_decals = 4096;
 var int autocvar_mp_decals = 300;
 var int autocvar_cl_decals = 512;
 
-#ifdef CSQC
+#ifdef CLIENT
 const string g_decal_shader = \
 	"{\n" \
 		"polygonOffset\n" \
@@ -31,7 +31,7 @@ const string g_decal_shader = \
 	"}";
 #endif
 
-#ifdef SSQC
+#ifdef SERVER
 float
 decal::SendEntity(entity pvsent, float changedflags)
 {
@@ -123,7 +123,7 @@ decal::Place(vector org, string dname)
 		return;
 	}
 
-	makevectors(vectoangles(g_tracedDecal.endpos - origin ));
+	makevectors(vectoangles(g_tracedDecal.endpos - origin));
 	vector cpl = v_forward - (v_forward * g_tracedDecal.normal) * g_tracedDecal.normal;
 
 	if (g_tracedDecal.normal[2] == 0) {
@@ -133,7 +133,7 @@ decal::Place(vector org, string dname)
 	angles = vectoangles(cpl, g_tracedDecal.normal);
 	m_strTexture = dname;
 
-#ifdef SSQC
+#ifdef SERVER
 	angles = vectoangles(cpl, g_tracedDecal.normal);
 	solid = SOLID_NOT;
 	pvsflags = PVSF_NOREMOVE | PVSF_IGNOREPVS;
@@ -161,7 +161,7 @@ void Decals_Init(void)
 {
 	int max;
 
-#ifdef SSQC
+#ifdef SERVER
 	max = cvar("sv_playerslots") == 1 ? autocvar_sp_decals : autocvar_mp_decals;
 #else
 	max = autocvar_cl_decals;
@@ -194,7 +194,7 @@ decal Decals_Next(vector pos)
 	/* Check for a tempdecal within a radius of 8 units and overwrite that one
 	 * instead */
 	for (entity b = world; (b = find(b, ::classname, "tempdecal"));) {
-		if (vlen(b.origin - pos) < 8) {
+		if (vlen(b.origin - pos) < 2) {
 			return b;
 		}
 	}
@@ -213,8 +213,7 @@ void Decals_Place(vector pos, string dname)
 	x.Place(pos, dname);
 }
 
-
-#ifdef CSQC
+#ifdef CLIENT
 void Decal_Reload(void)
 {
 	for (entity b = world; (b = find(b, ::classname, "decal"));) {
@@ -233,59 +232,3 @@ void Decal_Parse(void)
 	new.ReadEntity();
 }
 #endif
-
-/* TODO: THROW THESE OUT */
-void Decals_PlaceSmall(vector pos)
-{
-	if (serverkeyfloat("*bspversion") != 30) {
-		return;
-	}
-	decal x = Decals_Next(pos);
-	x.Place(pos, sprintf("{shot%d", floor(random(1,6))));
-}
-
-void Decals_PlaceBig(vector pos)
-{
-	if (serverkeyfloat("*bspversion") != 30) {
-		return;
-	}
-	decal x = Decals_Next(pos);
-	x.Place(pos, sprintf("{bigshot%d", floor(random(1,6))));
-}
-
-void Decals_PlaceGlass(vector pos)
-{
-	if (serverkeyfloat("*bspversion") != 30) {
-		return;
-	}
-	decal x = Decals_Next(pos);
-	x.Place(pos, sprintf("{break%d", floor(random(1,4))));
-}
-
-void Decals_PlaceScorch(vector pos)
-{
-	if (serverkeyfloat("*bspversion") != 30) {
-		return;
-	}
-	decal x = Decals_Next(pos);
-	x.Place(pos, sprintf("{scorch%d", floor(random(1,4))));
-}
-
-void Decals_PlaceDent(vector pos)
-{
-	if (serverkeyfloat("*bspversion") != 30) {
-		return;
-	}
-	decal x = Decals_Next(pos);
-	x.Place(pos, sprintf("{dent%d", floor(random(1,7))));
-}
-
-void Decals_PlaceGauss(vector pos)
-{
-	if (serverkeyfloat("*bspversion") != 30) {
-		return;
-	}
-
-	decal x = Decals_Next(pos);
-	x.Place(pos, "{gaussshot1");
-}

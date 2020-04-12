@@ -25,7 +25,8 @@
 Changes the visual appearance of a target.
 */
 
-enumflags {
+enumflags
+{
 	SF_NORENDERFX,
 	SF_NORENDERAMT,
 	SF_NORENDERMODE,
@@ -34,7 +35,7 @@ enumflags {
 
 class env_render:CBaseTrigger
 {
-	virtual void() Trigger;
+	virtual void(void) Trigger;
 };
 
 void env_render::Trigger(void)

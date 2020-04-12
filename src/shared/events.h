@@ -15,7 +15,8 @@
  */
 
 // Network Events
-enum {
+enum
+{
 	EV_MUSICTRACK,
 	EV_MUSICLOOP,
 	EV_WEAPON_DRAW,

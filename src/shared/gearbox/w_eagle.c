@@ -53,7 +53,7 @@ w_eagle_precache(void)
 int
 w_eagle_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -72,7 +72,7 @@ w_eagle_pickup(int new)
 void
 w_eagle_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.eagle_mag, pl.ammo_357, -1);
 #endif
 }
@@ -96,7 +96,7 @@ w_eagle_deathmsg(void)
 void
 w_eagle_draw(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	Weapons_SetModel("models/v_desert_eagle.mdl");
 	Weapons_ViewAnimation(EAGLE_DRAW);
 #else
@@ -121,7 +121,7 @@ w_eagle_release(void)
 	}
 
 	/* these idles don't support the 'empty' animation style */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 <= 0) {
 		return;
 	}
@@ -160,7 +160,7 @@ w_eagle_primary(void)
 	}
 
 	/* Ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 <= 0) {
 		return;
 	}
@@ -172,18 +172,18 @@ w_eagle_primary(void)
 
 	/* Actual firing */
 	if (pl.a_ammo3 == 1) {
-#ifdef SSQC
+#ifdef SERVER
 		TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 34, [0, 0], WEAPON_EAGLE);
 #endif
 		pl.w_attack_next = 0.5f;
 	} else {
-#ifdef SSQC
+#ifdef SERVER
 		TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 34,  [0.1,0.1], WEAPON_EAGLE);
 #endif
 		pl.w_attack_next = 0.2f;
 	}
 
-#ifdef SSQC
+#ifdef SERVER
 	sound(pl, CHAN_WEAPON, "weapons/desert_eagle_fire.wav", 1, ATTN_NORM);
 	pl.eagle_mag--;
 	Weapons_UpdateAmmo(pl, pl.eagle_mag, pl.ammo_357, -1);
@@ -212,7 +212,7 @@ w_eagle_secondary(void)
 	/* toggle laser */
 	pl.a_ammo3 = 1 - pl.a_ammo3;
 
-#ifdef SSQC
+#ifdef SERVER
 	if (pl.a_ammo3) {
 		sound(pl, 8, "weapons/desert_eagle_sight.wav", 1, ATTN_NORM);
 	} else {
@@ -233,7 +233,7 @@ w_eagle_reload(void)
 	}
 
 	/* Ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 >= 7) {
 		return;
 	}
@@ -250,7 +250,7 @@ w_eagle_reload(void)
 #endif
 
 	/* Audio-Visual bit */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 <= 0) {
 		Weapons_ViewAnimation(EAGLE_RELOAD);
 	} else {
@@ -268,7 +268,7 @@ w_eagle_reload(void)
 void
 w_eagle_crosshair(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	player pl = (player)self;
 	vector cross_pos;
 	vector aicon_pos;
@@ -321,7 +321,7 @@ w_eagle_crosshair(void)
 		[24/256,72/128],
 		[24/256, 24/128],
 		g_hud_color,
-		pSeat->ammo2_alpha,
+		pSeat->m_flAmmo2Alpha,
 		DRAWFLAG_ADDITIVE
 	);
 #endif
@@ -336,7 +336,7 @@ w_eagle_aimanim(void)
 void
 w_eagle_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -388,7 +388,7 @@ weapon_t w_eagle =
 	.hudpic		= w_eagle_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_eagle(void)
 {

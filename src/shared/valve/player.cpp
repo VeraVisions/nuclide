@@ -55,7 +55,7 @@ class player:CBaseEntity
 	int rpg_mag;
 	int satchel_chg;
 
-#ifdef CSQC
+#ifdef CLIENT
 	/* External model */
 	entity p_model;
 	int p_hand_bone;
@@ -79,10 +79,10 @@ class player:CBaseEntity
 	int net_ammo3;
 	int sequence;
 
-	virtual void() gun_offset;
-	virtual void() draw;
+	virtual void(void) gun_offset;
+	virtual void(void) draw;
 	virtual float() predraw;
-	virtual void() postdraw;
+	virtual void(void) postdraw;
 #else
 	int ammo_9mm;
 	int ammo_357;

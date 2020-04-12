@@ -16,9 +16,9 @@
 
 class func_bomb_target:CBaseTrigger
 {
-	void() func_bomb_target;
-	virtual void() touch;
-	virtual void() Respawn;
+	void(void) func_bomb_target;
+	virtual void(void) touch;
+	virtual void(void) Respawn;
 };
 
 void func_bomb_target::touch(void)

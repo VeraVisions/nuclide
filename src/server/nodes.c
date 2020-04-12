@@ -241,7 +241,7 @@ SV_AddDebugPolygons(void)
 		R_EndPolygon();
 	}
 
-	for (entity s = world; (s = find(s, ::classname, "scripted_sequence")); ) {
+	for (entity s = world; (s = find(s, ::classname, "scripted_sequence"));) {
 		R_PolygonVertex(s.origin + v_right * 2 - v_up * 2, [1,1], SEQUENCE_RECT_COLOR, NODE_RECT_ALPHA);
 		R_PolygonVertex(s.origin - v_right * 2 - v_up * 2, [0,1], SEQUENCE_RECT_COLOR, NODE_RECT_ALPHA);
 		R_PolygonVertex(s.origin - v_right * 2 + v_up * 2, [0,0], SEQUENCE_RECT_COLOR, NODE_RECT_ALPHA);

@@ -29,7 +29,7 @@ var int g_skyscale;
 
 class sky_camera:CBaseEntity
 {
-	void() sky_camera;
+	void(void) sky_camera;
 	virtual void(string, string) SpawnKey;
 };
 
@@ -40,8 +40,8 @@ void sky_camera::SpawnKey(string strField, string strKey)
 			g_skyscale = stoi(strKey);
 			break;
 		case "origin":
-			origin = stov( strKey );
-			setorigin( this, origin );
+			origin = stov(strKey);
+			setorigin(this, origin);
 			g_skypos = origin;
 			break;
 		default:

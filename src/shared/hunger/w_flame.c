@@ -33,7 +33,7 @@ enum
 void
 w_flame_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_flame.fire");
 #endif
 	precache_model("sprites/fthrow.spr");
@@ -45,7 +45,7 @@ w_flame_precache(void)
 void
 w_flame_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_gas, __NULL__);
 #endif
 }
@@ -71,7 +71,7 @@ w_flame_deathmsg(void)
 int
 w_flame_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 	if (pl.ammo_gas < MAX_A_GAS) {
 		pl.ammo_gas = bound(0, pl.ammo_gas + 20, MAX_A_GAS);
@@ -95,7 +95,7 @@ w_flame_holster(void)
 }
 
 
-#ifdef SSQC
+#ifdef SERVER
 void
 Flame_Touch(void)
 {
@@ -120,7 +120,7 @@ w_flame_primary(void)
 	}
 
 	/* Ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo2 <= 0) {
 		return;
 	}
@@ -130,7 +130,7 @@ w_flame_primary(void)
 	}
 #endif
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (Weapons_GetAnimation() == EGON_IDLE1)
 		Weapons_ViewAnimation(EGON_ALTFIREON);
 	else if (Weapons_GetAnimation() == EGON_ALTFIREON)
@@ -183,13 +183,13 @@ w_flame_release(void)
 void
 w_flame_crosshair(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	static vector cross_pos;
 	cross_pos = g_hudmins + (g_hudres / 2) + [-12,-12];
 	drawsubpic(cross_pos, [24,24], "sprites/crosshairs.spr_0.tga", [72/128,48/128], [0.1875, 0.1875], [1,1,1], 1, DRAWFLAG_NORMAL);
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [0,96/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [0,96/128], [24/256, 24/128], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
@@ -202,7 +202,7 @@ w_flame_aimanim(void)
 void 
 w_flame_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,

@@ -14,7 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-enum {
+enum
+{
 	CHEMGUN_DRAW, // 1.2f
 	CHEMGUN_HOLSTER, // 1.2f
 	CHEMGUN_IDLE, // 2.08f
@@ -61,7 +62,7 @@ w_chemicalgun_primary(void)
 
 	src = Weapons_GetCameraPos();
 
-#ifdef CSQC
+#ifdef CLIENT
 	//Weapons_ViewAnimation(GP_FIRESINGLE);
 #endif
 
@@ -140,7 +141,7 @@ w_chemicalgun_aimanim(void)
 int
 w_chemicalgun_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -159,7 +160,7 @@ w_chemicalgun_pickup(int new)
 	return TRUE;
 }
 
-#ifdef CSQC
+#ifdef CLIENT
 void
 w_chemgun_drawvial(vector pos, int length, vector col)
 {
@@ -247,7 +248,7 @@ w_chemgun_drawpressure(vector pos, int length, vector col)
 void
 w_chemicalgun_hud(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	vector pos;
 	player pl = (player)self;
 
@@ -317,7 +318,7 @@ w_chemicalgun_hud(void)
 void
 w_chemicalgun_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	drawpic(
 		pos,
 		"gfx/vgui/640_weapon_SPchemicalgun0.tga",
@@ -347,7 +348,7 @@ w_chemicalgun_precache(void)
 	precache_model("sprites/hud_pntr.spr");
 	precache_model("sprites/hud_rule.spr");
 
-#ifdef SSQC
+#ifdef SERVER
 	clientstat(51, EV_INTEGER, player::chem_acid);
 	clientstat(52, EV_INTEGER, player::chem_neutral);
 	clientstat(53, EV_INTEGER, player::chem_base);
@@ -381,7 +382,7 @@ weapon_t w_chemicalgun =
 };
 
 /* entity definitions for pickups */
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_SPchemicalgun(void)
 {
@@ -389,7 +390,7 @@ weapon_SPchemicalgun(void)
 }
 #endif
 
-#ifdef CSQC
+#ifdef CLIENT
 int
 w_chemgun_hudforward(player pl)
 {

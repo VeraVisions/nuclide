@@ -14,7 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-float Game_ConsoleCommand(void)
+int
+Game_ConsoleCommand(void)
 {
 	switch(argv(0)) {
 		default:

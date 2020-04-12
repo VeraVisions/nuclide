@@ -29,8 +29,8 @@ class CTextBox:CWidget
 	int m_flags;
 	virtual void(string) m_onEnter = 0;
 
-	void() CTextBox;
-	virtual void() Draw;
+	void(void) CTextBox;
+	virtual void(void) Draw;
 	virtual void(float, float, float, float) Input;
 	virtual void(void(string) vFunc) SetCallOnEnter;
 	virtual void(string) SetText;

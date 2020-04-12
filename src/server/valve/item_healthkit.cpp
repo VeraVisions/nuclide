@@ -24,9 +24,9 @@ Adds 20 of health to the player.
 */
 class item_healthkit:CBaseEntity
 {
-	void() item_healthkit;
-	virtual void() Respawn;
-	virtual void() touch;
+	void(void) item_healthkit;
+	virtual void(void) Respawn;
+	virtual void(void) touch;
 };
 
 void item_healthkit::touch(void)

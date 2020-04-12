@@ -2,6 +2,7 @@
 #pragma progs_dat  "../../../cstrike/data.pk3dir/csprogs.dat"
 
 #define CSQC
+#define CLIENT
 #define CSTRIKE
 
 #includelist

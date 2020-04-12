@@ -16,7 +16,8 @@
 
 /* the rocket launcher */
 
-enum {
+enum
+{
 	DML_IDLE, // 2.5f
 	DML_FIDGET, // 2.0f
 	DML_RELOADBOTH, // 1.6f
@@ -27,12 +28,14 @@ enum {
 	DML_DRAW // 1.222222f
 };
 
-enum {
+enum
+{
 	DS_FULL,
 	DS_RELOADING
 };
 
-enum {
+enum
+{
 	DMENU_NONE,
 	DMENU_LAUNCH,
 	DMENU_FLIGHTPATH,
@@ -41,25 +44,29 @@ enum {
 };
 
 /* customizable states */
-enum {
+enum
+{
 	LAUNCH_FIRED,
 	LAUNCH_TARGETED
 };
 
-enum {
+enum
+{
 	FLIGHTPATH_GUIDED,
 	FLIGHTPATH_HOMING,
 	FLIGHTPATH_SPIRAL
 } ;
 
-enum {
+enum
+{
 	DETONATE_IMPACT,
 	DETONATE_PROXIMITY,
 	DETONATE_TIMED,
 	DETONATE_TRIPPED
 };
 
-enum {
+enum
+{
 	PAYLOAD_EXPLOSIVE,
 	PAYLOAD_CLUSTER
 };
@@ -94,7 +101,7 @@ w_dml_release(void)
 		} else {
 			Weapons_ViewAnimation(DML_RELOADLEFT);
 		}
-#ifdef SSQC
+#ifdef SERVER
 		Sound_Play(pl, CHAN_WEAPON, "weapon_dml.reload");
 #endif
 		pl.w_attack_next = 1.6f;
@@ -132,7 +139,7 @@ w_dml_primary(void)
 		pl.a_ammo1 = 0;
 		pl.flags &= ~FL_SEMI_TOGGLED;
 		Weapons_ViewAnimation(DML_CUSTOMIZE);
-#ifdef SSQC
+#ifdef SERVER
 		Sound_Play(pl, 8, "weapon_dml.customize");
 #endif
 		pl.w_attack_next = 4.0f;
@@ -151,7 +158,7 @@ w_dml_primary(void)
 
 	src = Weapons_GetCameraPos();
 
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Play(pl, CHAN_WEAPON, "weapon_dml.fire");
 #endif
 
@@ -187,7 +194,7 @@ w_dml_secondary(void)
 void
 w_dml_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, pl.ammo_rockets, -1);
 #endif
 }
@@ -219,7 +226,7 @@ w_dml_aimanim(void)
 int
 w_dml_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (pl.ammo_rocket < 100) {
@@ -234,7 +241,7 @@ w_dml_pickup(int new)
 void
 w_dml_hud(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	static string lmodes[] = {
 		"WHEN FIRED",
 		"WHEN TARGETED"
@@ -339,7 +346,7 @@ w_dml_hud(void)
 void
 w_dml_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	drawpic(
 		pos,
 		"gfx/vgui/640_weapon_dml0.tga",
@@ -357,7 +364,7 @@ w_dml_precache(void)
 	precache_model("models/v_dml.mdl");
 	precache_model("sprites/laserdot.spr");
 
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_dml.customize");
 	Sound_Precache("weapon_dml.fire");
 	Sound_Precache("weapon_dml.reload");
@@ -395,7 +402,7 @@ weapon_t w_dml =
 };
 
 /* entity definitions for pickups */
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_dml(void)
 {
@@ -403,7 +410,7 @@ weapon_dml(void)
 }
 #endif
 
-#ifdef CSQC
+#ifdef CLIENT
 int
 w_dml_hudforward(player pl)
 {

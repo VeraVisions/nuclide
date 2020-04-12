@@ -21,7 +21,8 @@ CSQC_Ent_Update
 Called whenever an entity is sent manually via .SendFlags and so on
 =================
 */
-void CSQC_Ent_Update(float new)
+void
+CSQC_Ent_Update(float new)
 {
 	float t;
 	t = readbyte();

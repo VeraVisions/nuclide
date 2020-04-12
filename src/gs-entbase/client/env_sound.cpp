@@ -60,7 +60,8 @@ Client-side environmental reverb modifier.
 This works only with the OpenAL sound backend.
 */
 
-enum {
+enum
+{
 	DSP_DEFAULT,
 	DSP_PADDEDCELL,
 	DSP_ROOM,
@@ -145,7 +146,7 @@ class env_sound:CBaseEntity
 	int m_iRoomType;
 	int m_iRadius;
 
-	void() env_sound;
+	void(void) env_sound;
 	virtual void(string, string) SpawnKey;
 };
 
@@ -330,12 +331,12 @@ void DSP_UpdateListener(void)
 	vecPlayer = viewClient.vecPlayerOrigin;
 #else
 	int s = (float)getproperty(VF_ACTIVESEAT);
-	pSeat = &seats[s];
-	vecPlayer = pSeat->vPlayerOrigin;
+	pSeat = &g_seats[s];
+	vecPlayer = pSeat->m_vecPredictedOrigin;
 #endif
 
 	float bestdist = 999999;
-	for ( entity e = world; ( e = find( e, classname, "env_sound" ) ); ) {
+	for (entity e = world; (e = find(e, classname, "env_sound"));) {
 		env_sound scape = (env_sound)e;
 		
 		other = world;
@@ -376,8 +377,8 @@ void DSP_UpdateListener(void)
 #else
 
 #ifdef GS_DEVELOPER
-	print( sprintf( "DSP_UpdateListener: Changed style to %i\n", 
-		g_iDSP ) );
+	print(sprintf("DSP_UpdateListener: Changed style to %i\n", 
+		g_iDSP));
 #endif
 
 	old_dsp = g_iDSP;

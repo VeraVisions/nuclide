@@ -67,19 +67,19 @@ void games_init(void)
 		games[id].url_dl = "";
 		games[id].version = "1.0";
 		games[id].size = 0;
-		games[id].type = "";
+		games[id].type = "Both";
 		games[id].nomodels = 0;
 		games[id].mpentity = "info_player_deathmatch";
 		games[id].gamedll = "progs.dat";
 		games[id].startmap = "c0a0";
 		games[id].trainingmap = "t0a0";
 		games[id].cldll = 1;
-		games[id].hlversion = "1110";
+		games[id].hlversion = "1000";
 		games[id].svonly = 0;
 		games[id].installed = 1;
 
-		for ( int i = 0; i < county; i++ ) {
-			switch( argv(i) ) {
+		for (int i = 0; i < county; i++) {
+			switch(argv(i)) {
 			case "gameinfo_game":
 				games[id].game = argv(i+1);
 				break;
@@ -146,6 +146,9 @@ void games_init(void)
 			case "gameinfo_menutrack":
 				cvar_set("gameinfo_menutrack", argv(i+1));
 				break;
+			case "gameinfo_pkgrepo":
+				games[id].pkg_repo = argv(i+1);
+				break;
 			default:
 				break;
 			}
@@ -182,7 +185,7 @@ void customgame_btnactivate_start(void)
 
 	games_set(nextgame);
 
-#if 0
+#if 1
 	localcmd(sprintf("fs_changegame %s.fmf\n", games[nextgame].gamedir));
 #else
 	/* some games/mods inherit other directories */

@@ -41,7 +41,7 @@ class prop_rope:CBaseEntity
 	float m_flSwingFactor;
 	int m_iSegments;
 
-	void() prop_rope;
+	void(void) prop_rope;
 	virtual float() predraw;
 	virtual void(string, string) SpawnKey;
 
@@ -120,8 +120,8 @@ float prop_rope::predraw(void)
 
 	if (!x) {
 #ifdef GS_DEVELOPER
-		print( sprintf( "%s::predraw: Unknown target '%s'\n", 
-			this.classname, target ) );
+		print(sprintf("%s::predraw: Unknown target '%s'\n", 
+			this.classname, target));
 #endif
 		remove(this);
 		return PREDRAW_NEXT;

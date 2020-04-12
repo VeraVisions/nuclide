@@ -17,10 +17,9 @@
 void
 CSQC_Init(float apilevel, string enginename, float engineversion)
 {
-	pSeat = &seats[0];
+	pSeat = &g_seats[0];
 
 	registercommand("dev_sentence");
-	registercommand("fx_lenspos");
 	registercommand("titles_test");
 	registercommand("vox_test");
 	registercommand("+attack2");
@@ -31,8 +30,8 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	registercommand("-use");
 	registercommand("+duck");
 	registercommand("-duck");
-	registercommand( "callvote" );
-	registercommand( "vote" );
+	registercommand("callvote");
+	registercommand("vote");
 
 	/* Requested by Slacer */
 	registercommand("+zoomin");
@@ -146,14 +145,14 @@ CSQC_UpdateView(float w, float h, float focus)
 	video_res[0] = w;
 	video_res[1] = h;
 
-	if ( g_iCubeProcess == TRUE ) {
+	if (g_iCubeProcess == TRUE) {
 		clearscene();
-		setproperty( VF_DRAWWORLD, TRUE );
-		setproperty( VF_DRAWENGINESBAR, FALSE );
-		setproperty( VF_DRAWCROSSHAIR, FALSE );
-		setproperty( VF_ENVMAP, "$whiteimage" );
-		setproperty( VF_ORIGIN, g_vecCubePos );
-		setproperty( VF_AFOV, 90 );
+		setproperty(VF_DRAWWORLD, TRUE);
+		setproperty(VF_DRAWENGINESBAR, FALSE);
+		setproperty(VF_DRAWCROSSHAIR, FALSE);
+		setproperty(VF_ENVMAP, "$whiteimage");
+		setproperty(VF_ORIGIN, g_vecCubePos);
+		setproperty(VF_AFOV, 90);
 		renderscene();
 		return;
 	}
@@ -163,22 +162,22 @@ CSQC_UpdateView(float w, float h, float focus)
 	setproperty(VF_DRAWCROSSHAIR, 0);
 
 	//just in case...
-	if (numclientseats > seats.length) {
-		numclientseats = seats.length;
+	if (numclientseats > g_seats.length) {
+		numclientseats = g_seats.length;
 	}
 
-	for (s = seats.length; s-- > numclientseats;) {
-		pSeat = &seats[s];
-		pSeat->ePlayer = world;
+	for (s = g_seats.length; s-- > numclientseats;) {
+		pSeat = &g_seats[s];
+		pSeat->m_ePlayer = world;
 	}
 
 	for (s = numclientseats; s-- > 0;) {
-		pSeat = &seats[s];
+		pSeat = &g_seats[s];
 		
 		View_CalcViewport(s, w, h);
 		setproperty(VF_ACTIVESEAT, (float)s);
 
-		pSeat->ePlayer = self = findfloat(world, entnum, player_localentnum);
+		pSeat->m_ePlayer = self = findfloat(world, entnum, player_localentnum);
 
 		if (!self) {
 			continue;
@@ -188,9 +187,9 @@ CSQC_UpdateView(float w, float h, float focus)
 
 		Predict_PreFrame((player)self);
 
-		pSeat->vPlayerOrigin = pl.origin;
-		pSeat->vPlayerVelocity = pl.velocity;
-		pSeat->fPlayerFlags = pl.flags;
+		pSeat->m_vecPredictedOrigin = pl.origin;
+		pSeat->m_vecPredictedVelocity = pl.velocity;
+		pSeat->m_flPredictedFlags = pl.flags;
 
 		// Don't hide the player entity
 		if (autocvar_cl_thirdperson == TRUE && pl.health) {
@@ -201,15 +200,15 @@ CSQC_UpdateView(float w, float h, float focus)
 
 		float oldzoom = pl.viewzoom;
 		if (pl.viewzoom == 1.0f) {
-			pl.viewzoom = 1.0 - (0.5 * pSeat->flZoomTime);
+			pl.viewzoom = 1.0 - (0.5 * pSeat->m_flZoomTime);
 
 			/* +zoomin requested by Slacer */
-			if (pSeat->iZoomed) {
-				pSeat->flZoomTime += frametime * 15;
+			if (pSeat->m_iZoomed) {
+				pSeat->m_flZoomTime += clframetime * 15;
 			} else {
-				pSeat->flZoomTime -= frametime * 15;
+				pSeat->m_flZoomTime -= clframetime * 15;
 			}
-			pSeat->flZoomTime = bound(0, pSeat->flZoomTime, 1);
+			pSeat->m_flZoomTime = bound(0, pSeat->m_flZoomTime, 1);
 		}
 
 		setproperty(VF_AFOV, cvar("fov") * pl.viewzoom);
@@ -229,27 +228,27 @@ CSQC_UpdateView(float w, float h, float focus)
 		View_Stairsmooth();
 
 		// When Cameratime is active, draw on the forced coords instead
-		if (pSeat->fCameraTime > time) {
-			setproperty(VF_ORIGIN, pSeat->vCameraPos);
-			setproperty(VF_CL_VIEWANGLES, pSeat->vCameraAngle);
+		if (pSeat->m_flCameraTime > time) {
+			setproperty(VF_ORIGIN, pSeat->m_vecCameraOrigin);
+			setproperty(VF_CL_VIEWANGLES, pSeat->m_vecCameraAngle);
 		} else {
 			if (pl.health) {
 				if (autocvar_cl_thirdperson == TRUE) {
 					makevectors(view_angles);
-					vector vStart = [pSeat->vPlayerOrigin[0], pSeat->vPlayerOrigin[1], pSeat->vPlayerOrigin[2] + 16] + (v_right * 4);
+					vector vStart = [pSeat->m_vecPredictedOrigin[0], pSeat->m_vecPredictedOrigin[1], pSeat->m_vecPredictedOrigin[2] + 16] + (v_right * 4);
 					vector vEnd = vStart + (v_forward * -48) + [0,0,16] + (v_right * 4);
 					traceline(vStart, vEnd, FALSE, self);
 					setproperty(VF_ORIGIN, trace_endpos + (v_forward * 5));
 				} else {
-					setproperty(VF_ORIGIN, pSeat->vPlayerOrigin + pl.view_ofs);
+					setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin + pl.view_ofs);
 				}
 			} else {
-				setproperty(VF_ORIGIN, pSeat->vPlayerOrigin);
+				setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin);
 			}
 		}
 
-		if (pSeat->pWeaponFX) {
-			CBaseFX p = (CBaseFX)pSeat->pWeaponFX;
+		if (pSeat->m_pWeaponFX) {
+			CBaseFX p = (CBaseFX)pSeat->m_pWeaponFX;
 			p.Draw();
 		}
 
@@ -285,7 +284,7 @@ CSQC_UpdateView(float w, float h, float focus)
 			setproperty(VF_ANGLES, view_angles + pl.punchangle);
 			setproperty(VF_DRAWWORLD, 0);
 			setproperty(VF_AFOV, autocvar_r_viewmodelfov);
-			setproperty(VF_ORIGIN, pSeat->vPlayerOrigin + pl.view_ofs);
+			setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin + pl.view_ofs);
 			View_DrawViewModel();
 			renderscene();
 		} else {
@@ -293,17 +292,14 @@ CSQC_UpdateView(float w, float h, float focus)
 			renderscene();
 		}
 
-		FX_LensFlare();
-
-		/* Run this on all players */
-		for (entity b = world; (b = find(b, ::classname, "player"));) {
-			player pf = (player) b;
+		for (entity b = world; (b = findfloat(b, ::isCSQC, 1));) {
+			CBaseEntity pf = (CBaseEntity) b;
 			pf.postdraw();
 		}
 
 		Fade_Update((int)video_mins[0],(int)video_mins[1], (int)w, (int)h);
 
-#ifdef CSTRIKE
+#if 0
 		Cstrike_PostDraw((int)video_mins[0],(int)video_mins[1], (int)w, (int)h);
 #endif
 		View_PostDraw();
@@ -313,23 +309,22 @@ CSQC_UpdateView(float w, float h, float focus)
 
 			// The spectator sees things... differently
 			if (getplayerkeyvalue(player_localnum, "*spec") != "0") {
-				//VGUI_DrawSpectatorHUD();
+				HUD_DrawSpectator();
 			} else {
 				HUD_Draw();
 			}
 
 			Obituary_Draw();
-			///HUD_DrawOrbituaries();
 			Voice_DrawHUD();
 			Chat_Draw();
 			Print_Draw();
 
 			// Don't even try to draw centerprints and VGUI menus when scores are shown
-			if (pSeat->iShowScores == TRUE) {
+			if (pSeat->m_iScoresVisible == TRUE) {
 				Scores_Draw();
 			} else {
 				VGUI_Draw();
-				CSQC_DrawCenterprint();
+				Print_DrawCenterprint();
 			}
 		}
 
@@ -353,7 +348,7 @@ float
 CSQC_InputEvent(float fEventType, float fKey, float fCharacter, float fDeviceID)
 {
 	int s = (float)getproperty(VF_ACTIVESEAT);
-	pSeat = &seats[s];
+	pSeat = &g_seats[s];
 
 	switch (fEventType) {
 		case IE_KEYDOWN:
@@ -406,7 +401,7 @@ void
 CSQC_Input_Frame(void)
 {
 	int s = (float)getproperty(VF_ACTIVESEAT);
-	pSeat = &seats[s];
+	pSeat = &g_seats[s];
 
 	// If we are inside a VGUI, don't let the client do stuff outside
 	if (g_vguiWidgetCount > 0) {
@@ -416,14 +411,14 @@ CSQC_Input_Frame(void)
 	}
 
 	/* The HUD needs more time */
-	if ((pSeat->fHUDWeaponSelected) && (input_buttons & INPUT_BUTTON0)) {
+	if ((pSeat->m_iHUDWeaponSelected) && (input_buttons & INPUT_BUTTON0)) {
 		HUD_DrawWeaponSelect_Trigger();
 		input_buttons = 0;
-		pSeat->fInputSendNext = time + 0.2;
+		pSeat->m_flInputBlockTime = time + 0.2;
 	}
 
 	/* prevent accidental input packets */
-	if (pSeat->fInputSendNext > time) {
+	if (pSeat->m_flInputBlockTime > time) {
 		input_impulse = 0;
 		input_buttons = 0;
 		return;
@@ -434,19 +429,19 @@ CSQC_Input_Frame(void)
 		sendevent("Spraylogo", "");
 	}
 
-	if (pSeat->iInputAttack2 == TRUE) {
+	if (pSeat->m_iInputAttack2 == TRUE) {
 		input_buttons |= INPUT_BUTTON3;
 	} 
 
-	if (pSeat->iInputReload == TRUE) {
+	if (pSeat->m_iInputReload == TRUE) {
 		input_buttons |= INPUT_BUTTON4;
 	} 
 
-	if (pSeat->iInputUse == TRUE) {
+	if (pSeat->m_iInputUse == TRUE) {
 		input_buttons |= INPUT_BUTTON5;
 	} 
 
-	if (pSeat->iInputDuck == TRUE) {
+	if (pSeat->m_iInputDuck == TRUE) {
 		input_buttons |= INPUT_BUTTON8;
 	}
 }
@@ -464,7 +459,7 @@ CSQC_Parse_Event(void)
 {
 	/* always 0, unless it was sent with a MULTICAST_ONE or MULTICAST_ONE_R to p2+ */
 	int s = (float)getproperty(VF_ACTIVESEAT);
-	pSeat = &seats[s];
+	pSeat = &g_seats[s];
 
 	float fHeader = readbyte();
 
@@ -481,7 +476,7 @@ CSQC_Parse_Event(void)
 	case EV_SPEAK:
 		string msg;
 		float pit;
-		entity t = findfloat( world, entnum, readentitynum() );
+		entity t = findfloat(world, entnum, readentitynum());
 		msg = readstring();
 		pit = readfloat();
 		sound(t, CHAN_VOICE, msg, 1.0, ATTN_NORM, pit);
@@ -542,10 +537,10 @@ CSQC_Parse_Event(void)
 		Effect_CreateExplosion(vExploPos);
 		break;
 	case EV_MODELGIB:
-		vector vPos;
-		vPos[0] = readcoord();
-		vPos[1] = readcoord();
-		vPos[2] = readcoord();
+		vector vecPos;
+		vecPos[0] = readcoord();
+		vecPos[1] = readcoord();
+		vecPos[2] = readcoord();
 
 		vector vSize;
 		vSize[0] = readcoord();
@@ -554,18 +549,18 @@ CSQC_Parse_Event(void)
 
 		float fStyle = readbyte();
 		int count = readbyte();
-		Effect_BreakModel(count, vPos, vSize, [0,0,0], fStyle);
+		Effect_BreakModel(count, vecPos, vSize, [0,0,0], fStyle);
 		break;
 	case EV_CAMERATRIGGER:
-		pSeat->vCameraPos.x = readcoord();
-		pSeat->vCameraPos.y = readcoord();
-		pSeat->vCameraPos.z = readcoord();
+		pSeat->m_vecCameraOrigin.x = readcoord();
+		pSeat->m_vecCameraOrigin.y = readcoord();
+		pSeat->m_vecCameraOrigin.z = readcoord();
 
-		pSeat->vCameraAngle.x = readcoord();
-		pSeat->vCameraAngle.y = readcoord();
-		pSeat->vCameraAngle.z = readcoord();
+		pSeat->m_vecCameraAngle.x = readcoord();
+		pSeat->m_vecCameraAngle.y = readcoord();
+		pSeat->m_vecCameraAngle.z = readcoord();
 
-		pSeat->fCameraTime = time + readfloat();
+		pSeat->m_flCameraTime = time + readfloat();
 		break;
 	case EV_IMPACT:
 		int iType;
@@ -600,7 +595,7 @@ CSQC_ConsoleCommand(string sCMD)
 {
 	/* the engine will hide the p1 etc commands... which is fun... */
 	int s = (float)getproperty(VF_ACTIVESEAT);
-	pSeat = &seats[s];
+	pSeat = &g_seats[s];
 	
 	tokenize(sCMD);
 	
@@ -626,10 +621,10 @@ CSQC_ConsoleCommand(string sCMD)
 		sendevent("CallVote", "s", substring(sCMD, 9, strlen(sCMD)-9));
 		break;
 	case "+zoomin":
-		pSeat->iZoomed = TRUE;
+		pSeat->m_iZoomed = TRUE;
 		break;
 	case "-zoomin":
-		pSeat->iZoomed = FALSE;
+		pSeat->m_iZoomed = FALSE;
 		break;
 	case "buildcubemaps":
 		CMap_Build();
@@ -641,28 +636,28 @@ CSQC_ConsoleCommand(string sCMD)
 		Sound_PlayVOX(sCMD);
 		break;
 	case "+attack2":
-		pSeat->iInputAttack2 = TRUE;
+		pSeat->m_iInputAttack2 = TRUE;
 		break;
 	case "-attack2":
-		pSeat->iInputAttack2 = FALSE;
+		pSeat->m_iInputAttack2 = FALSE;
 		break;
 	case "+reload":
-		pSeat->iInputReload = TRUE;
+		pSeat->m_iInputReload = TRUE;
 		break;
 	case "-reload":
-		pSeat->iInputReload = FALSE;
+		pSeat->m_iInputReload = FALSE;
 		break;
 	case "+use":
-		pSeat->iInputUse = TRUE;
+		pSeat->m_iInputUse = TRUE;
 		break;
 	case "-use":
-		pSeat->iInputUse = FALSE;
+		pSeat->m_iInputUse = FALSE;
 		break;
 	case "+duck":
-		pSeat->iInputDuck = TRUE;
+		pSeat->m_iInputDuck = TRUE;
 		break;
 	case "-duck":
-		pSeat->iInputDuck = FALSE;
+		pSeat->m_iInputDuck = FALSE;
 		break;
 	case "invnext":
 		HUD_DrawWeaponSelect_Back();
@@ -674,10 +669,10 @@ CSQC_ConsoleCommand(string sCMD)
 		HUD_DrawWeaponSelect_Last();
 		break;
 	case "+showscores":
-		pSeat->iShowScores = TRUE;
+		pSeat->m_iScoresVisible = TRUE;
 		break;
 	case "-showscores":
-		pSeat->iShowScores = FALSE;
+		pSeat->m_iScoresVisible = FALSE;
 		break;
 	case "slot1":
 		HUD_SlotSelect(0);
@@ -709,35 +704,35 @@ CSQC_ConsoleCommand(string sCMD)
 	case "slot10":
 		HUD_SlotSelect(9);
 		break;
-	case "fx_lenspos":
-		makevectors(getproperty(VF_ANGLES));
-		g_vecLensPos = vectoangles(v_forward);
-		break;
 	default:
 		return Game_ConsoleCommand();
 	}
 	return TRUE;
 }
 
-void CSQC_Parse_Print(string sMessage, float fLevel)
+void
+CSQC_Parse_Print(string sMessage, float fLevel)
 {
-	// This gives messages other than chat an orange tint
+	int s = (float)getproperty(VF_ACTIVESEAT);
+	pSeat = &g_seats[s];
+
+	/* This gives messages other than chat an orange tint */
 	if (fLevel == PRINT_CHAT) {
 		Chat_Parse(sMessage);
 		return;
 	}
 
-	if (g_printlines < (4)) {
-		g_printbuffer[g_printlines + 1] = sMessage;
-		g_printlines++;
+	if (pSeat->m_iPrintLines < 4) {
+		pSeat->m_strPrintBuffer[pSeat->m_iPrintLines + 1] = sMessage;
+		pSeat->m_iPrintLines++;
 	} else {
-		for (int i = 0; i < (4); i++) {
-			g_printbuffer[i] = g_printbuffer[i + 1];
+		for (int i = 0; i < 4; i++) {
+			pSeat->m_strPrintBuffer[i] = pSeat->m_strPrintBuffer[i + 1];
 		}
-		g_printbuffer[4] = sMessage;
+		pSeat->m_strPrintBuffer[4] = sMessage;
 	}
 
-	g_printtime = time + CHAT_TIME;
+	pSeat->m_flPrintTime = time + CHAT_TIME;
 
 	// Log to console
 	localcmd(sprintf("echo \"%s\"\n", sMessage));
@@ -756,14 +751,17 @@ Keep in mind that newlines need to be tokenized
 float
 CSQC_Parse_CenterPrint(string sMessage)
 {
-	fCenterPrintLines = tokenizebyseparator(sMessage, "\n");
+	int s = (float)getproperty(VF_ACTIVESEAT);
+	pSeat = &g_seats[s];
 
-	for (int i = 0; i < (fCenterPrintLines); i++) {
-		sCenterPrintBuffer[i] = sprintf("^xF80%s", argv(i));
+	pSeat->m_iCenterprintLines = tokenizebyseparator(sMessage, "\n");
+
+	for (int i = 0; i < (pSeat->m_iCenterprintLines); i++) {
+		pSeat->m_strCenterprintBuffer[i] = sprintf("^xF80%s", argv(i));
 	}
 
-	fCenterPrintAlpha = 1;
-	fCenterPrintTime = time + 3;
+	pSeat->m_flCenterprintAlpha = 1;
+	pSeat->m_flCenterprintTime = time + 3;
 
 	return TRUE;
 }

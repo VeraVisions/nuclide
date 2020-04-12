@@ -23,7 +23,7 @@ Medium Xen Spore
 */
 class xen_spore_medium:CBaseEntity
 {
-	void() xen_spore_medium;
+	void(void) xen_spore_medium;
 };
 
 void xen_spore_medium::xen_spore_medium(void)

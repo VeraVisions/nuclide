@@ -39,7 +39,7 @@ enum
 void
 w_crowbar_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_crowbar.hit");
 	Sound_Precache("weapon_crowbar.miss");
 	Sound_Precache("weapon_crowbar.hitbody");
@@ -53,7 +53,7 @@ w_crowbar_precache(void)
 void
 w_crowbar_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, -1, -1);
 #endif
 }
@@ -110,20 +110,19 @@ w_crowbar_primary(void)
 	}
 	pl.w_idle_next = 2.5f;
 
-#ifdef CSQC
 	int r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
-		anim = trace_fraction >= 1 ? CBAR_ATTACK1MISS:CBAR_ATTACK1HIT;
+		Weapons_ViewAnimation(trace_fraction >= 1 ? CBAR_ATTACK1MISS:CBAR_ATTACK1HIT);
 		break;
 	case 1:
-		anim = trace_fraction >= 1 ? CBAR_ATTACK2MISS:CBAR_ATTACK2HIT;
+		Weapons_ViewAnimation(trace_fraction >= 1 ? CBAR_ATTACK2MISS:CBAR_ATTACK2HIT);
 		break;
 	default:
-		anim = trace_fraction >= 1 ? CBAR_ATTACK3MISS:CBAR_ATTACK3HIT;
+		Weapons_ViewAnimation(trace_fraction >= 1 ? CBAR_ATTACK3MISS:CBAR_ATTACK3HIT);
 	}
-	Weapons_ViewAnimation(anim);
-#else
+
+#ifdef SERVER
 	if (pl.flags & FL_CROUCHING) {
 		Animation_PlayerTopTemp(ANIM_SHOOTCROWBAR, 0.5f);
 	} else {
@@ -145,12 +144,9 @@ w_crowbar_primary(void)
 
 	if (trace_ent.takedamage) {
 		Damage_Apply(trace_ent, pl, Skill_GetValue("plr_crowbar"), WEAPON_CROWBAR, DMG_BLUNT);
-
-		if (!trace_ent.iBleeds) {
-			return;
+		if (trace_ent.iBleeds) {
+			Sound_Play(self, CHAN_WEAPON, "weapon_crowbar.hitbody");
 		}
-
-		Sound_Play(self, CHAN_WEAPON, "weapon_crowbar.hitbody");
 	} else {
 		Sound_Play(self, CHAN_WEAPON, "weapon_crowbar.hit");
 	}
@@ -179,7 +175,7 @@ w_crowbar_aimanim(void)
 void
 w_crowbar_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -232,7 +228,7 @@ weapon_t w_crowbar =
 };
 
 /* entity definitions for pickups */
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_crowbar(void)
 {

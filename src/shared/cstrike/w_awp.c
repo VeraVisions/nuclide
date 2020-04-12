@@ -26,7 +26,8 @@ Price: $4750
 
 */
 
-enum {
+enum
+{
 	AWP_IDLE,
 	AWP_SHOOT1,
 	AWP_SHOOT2,
@@ -38,7 +39,7 @@ enum {
 void
 w_awp_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_awp.fire");
 #endif
 	precache_model("models/v_awp.mdl");
@@ -49,7 +50,7 @@ w_awp_precache(void)
 void
 w_awp_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.awp_mag, pl.ammo_338mag, -1);
 #endif
 }
@@ -75,7 +76,7 @@ w_awp_deathmsg(void)
 int
 w_awp_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -98,7 +99,7 @@ w_awp_draw(void)
 	Weapons_SetModel("models/v_awp.mdl");
 	Weapons_ViewAnimation(AWP_DRAW);
 
-#ifdef CSQC
+#ifdef CLIENT
 	pl.cs_cross_mindist = 8;
 	pl.cs_cross_deltadist = 3;
 #endif
@@ -113,7 +114,7 @@ w_awp_primary(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (!pl.a_ammo1) {
 		return;
 	}
@@ -126,7 +127,7 @@ w_awp_primary(void)
 	Cstrike_ShotMultiplierAdd(pl, 1);
 	float accuracy = Cstrike_CalculateAccuracy(pl, -1);
 
-#ifdef CSQC
+#ifdef CLIENT
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 #else
@@ -185,7 +186,7 @@ w_awp_reload(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 >= 10) {
 		return;
 	}
@@ -218,7 +219,7 @@ w_awp_aimanim(void)
 void
 w_awp_hud(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	player pl = (player)self;
 	if (pl.viewzoom < 1.0f) {
 		Cstrike_DrawScope();
@@ -226,14 +227,14 @@ w_awp_hud(void)
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [24/256,96/256], [24/256, 24/256], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [24/256,96/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
 void
 w_awp_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -285,7 +286,7 @@ weapon_t w_awp =
 	w_awp_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_awp(void)
 {

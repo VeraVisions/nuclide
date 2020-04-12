@@ -26,7 +26,7 @@ enum
 void
 w_sniper2_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_sniper.fire");
 #endif
 	precache_model("models/v_hkg36.mdl");
@@ -37,7 +37,7 @@ w_sniper2_precache(void)
 int
 w_sniper2_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -56,7 +56,7 @@ w_sniper2_pickup(int new)
 void
 w_sniper2_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.sniper_mag, pl.ammo_sniper, -1);
 #endif
 }
@@ -82,7 +82,7 @@ w_sniper2_deathmsg(void)
 void
 w_sniper2_draw(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	Weapons_SetModel("models/v_hkg36.mdl");
 	Weapons_ViewAnimation(SNIPER_DRAW);
 #endif
@@ -127,7 +127,7 @@ w_sniper2_primary(void)
 	}
 
 	/* Ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 <= 0) {
 		return;
 	}
@@ -138,7 +138,7 @@ w_sniper2_primary(void)
 #endif
 
 	/* Actual firing */
-#ifdef CSQC
+#ifdef CLIENT
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_SMALL);
 	Weapons_ViewPunchAngle([-20,0,0]);
@@ -176,7 +176,7 @@ w_sniper2_reload(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 >= 5) {
 		return;
 	}
@@ -200,7 +200,7 @@ w_sniper2_reload(void)
 void
 w_sniper2_crosshair(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	w_sniper_crosshair();
 #endif
 }
@@ -243,7 +243,7 @@ weapon_t w_sniper2 =
 };
 
 /* pickups */
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_th_sniper(void)
 {

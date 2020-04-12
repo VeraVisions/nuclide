@@ -27,7 +27,8 @@ Counter-Terrorists only weapon
 
 */
 
-enum {
+enum
+{
 	M4A1_IDLE,
 	M4A1_SHOOT1,
 	M4A1_SHOOT2,
@@ -47,7 +48,7 @@ enum {
 void
 w_m4a1_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_m4a1.fire");
 	Sound_Precache("weapon_m4a1.silenced");
 #endif
@@ -59,7 +60,7 @@ w_m4a1_precache(void)
 void
 w_m4a1_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.m4a1_mag, pl.ammo_556mm, -1);
 #endif
 }
@@ -85,7 +86,7 @@ w_m4a1_deathmsg(void)
 int
 w_m4a1_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -114,7 +115,7 @@ w_m4a1_draw(void)
 		Weapons_ViewAnimation(M4A1_DRAWUNSIL);
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	pl.cs_cross_mindist = 4;
 	pl.cs_cross_deltadist = 3;
 #endif
@@ -130,7 +131,7 @@ w_m4a1_primary(void)
 	}
 
 	/* ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (!pl.a_ammo1) {
 		return;
 	}
@@ -144,7 +145,7 @@ w_m4a1_primary(void)
 	float accuracy = Cstrike_CalculateAccuracy(pl, 220);
 
 	/* actual firing */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo3 == 1) {
 		View_SetMuzzleflash(0);
 	} else {
@@ -235,7 +236,7 @@ w_m4a1_reload(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 >= 30) {
 		return;
 	}
@@ -272,12 +273,12 @@ w_m4a1_aimanim(void)
 void
 w_m4a1_hud(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	Cstrike_DrawCrosshair();
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [0,96/256], [24/256, 24/256], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [0,96/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
@@ -303,7 +304,7 @@ w_m4a1_release(void)
 void
 w_m4a1_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -355,7 +356,7 @@ weapon_t w_m4a1 =
 	.hudpic		= w_m4a1_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_m4a1(void)
 {

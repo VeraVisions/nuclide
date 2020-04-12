@@ -22,12 +22,12 @@
 STUB!
 */
 
-class func_pushable : func_breakable
+class func_pushable:func_breakable
 {
-	virtual void() touch;
+	virtual void(void) touch;
 };
 
-void func_pushable :: touch ( void )
+void func_pushable::touch(void)
 {
 	if (other.movetype == MOVETYPE_WALK) {
 		

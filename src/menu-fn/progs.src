@@ -33,6 +33,7 @@ w_pictureswitch.cpp
 w_slider.cpp
 w_textbox.cpp
 w_scrollbar.cpp
+w_updatelist.cpp
 
 m_addserver.cpp
 m_advancedcontrols.cpp
@@ -60,6 +61,7 @@ m_videomodes.cpp
 m_videooptions.cpp
 m_viewgameinfo.cpp
 m_viewreadme.cpp
+m_updates.cpp
 m_intro.cpp
 m_main.cpp
 music.cpp

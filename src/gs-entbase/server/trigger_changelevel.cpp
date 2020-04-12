@@ -51,14 +51,15 @@ class trigger_changelevel:CBaseTrigger
 	float m_flChangeDelay;
 	entity m_activator;
 
-	void() trigger_changelevel;
-	virtual void() Change;
-	virtual void() Trigger;
-	virtual void() Respawn;
+	void(void) trigger_changelevel;
+	virtual void(void) Change;
+	virtual void(void) Trigger;
+	virtual void(void) Respawn;
 	virtual int(entity, entity) IsInside;
 };
 
-int trigger_changelevel::IsInside(entity ePlayer, entity eVolume)
+int
+trigger_changelevel::IsInside(entity ePlayer, entity eVolume)
 {
 	if (ePlayer.absmin[0] > eVolume.absmax[0] ||
 		 ePlayer.absmin[1] > eVolume.absmax[1] ||
@@ -70,7 +71,8 @@ int trigger_changelevel::IsInside(entity ePlayer, entity eVolume)
 	return TRUE;
 }
 
-void trigger_changelevel::Change(void)
+void
+trigger_changelevel::Change(void)
 {
 	if (m_strLandmark) {
 		info_landmark landmark;
@@ -87,13 +89,14 @@ void trigger_changelevel::Change(void)
 		}
 		changelevel(m_strMap, m_strLandmark);
 	} else {
-		dprint( sprintf( "^2trigger_changelevel::^3Change^7: Change to `%s`\n", 
-			m_strMap ) );
+		dprint(sprintf("^2trigger_changelevel::^3Change^7: Change to `%s`\n", 
+			m_strMap));
 		changelevel(m_strMap);
 	}
 }
 
-void trigger_changelevel::Trigger(void)
+void
+trigger_changelevel::Trigger(void)
 {
 	if (time < 5) {
 		return;
@@ -103,25 +106,29 @@ void trigger_changelevel::Trigger(void)
 	m_activator = eActivator;
 
 	if (m_flChangeDelay) {
-		dprint( sprintf( "^2trigger_changelevel::^3Trigger^7: Delayed change to `%s` in %d sec/s\n", 
-			m_strMap, m_flChangeDelay ) );
+		dprint(sprintf("^2trigger_changelevel::^3Trigger^7: Delayed change to `%s` in %d sec/s\n", 
+			m_strMap, m_flChangeDelay));
 		think = Change;
 		nextthink = time + m_flChangeDelay;
 	} else {
-		dprint( sprintf( "^2trigger_changelevel::^3Trigger^7: Change to `%s` requested\n", 
-			m_strMap ) );
+		dprint(sprintf("^2trigger_changelevel::^3Trigger^7: Change to `%s` requested\n", 
+			m_strMap));
 		Change();
 	}
 }
 
-void trigger_changelevel::Respawn(void)
+void
+trigger_changelevel::Respawn(void)
 {
+	InitBrushTrigger();
+
 	if (!(spawnflags & LC_USEONLY)) {
 		touch = Trigger;
 	}
 }
 
-void trigger_changelevel::trigger_changelevel(void)
+void
+trigger_changelevel::trigger_changelevel(void)
 {
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
@@ -139,10 +146,10 @@ void trigger_changelevel::trigger_changelevel(void)
 		}
 	}
 	CBaseTrigger::CBaseTrigger();
-	CBaseTrigger::InitBrushTrigger();
 }
 
-vector Landmark_GetSpot(void)
+vector
+Landmark_GetSpot(void)
 {
 	info_landmark landmark = world;
 

@@ -24,7 +24,8 @@ Client_Init
 Comparable to worldspawn in SSQC in that it's mostly used for precaches
 =================
 */
-void Client_Init(float apilevel, string enginename, float engineversion)
+void
+Client_Init(float apilevel, string enginename, float engineversion)
 {
 	precache_model("sprites/640hud1.spr");
 	precache_model("sprites/640hud2.spr");
@@ -45,11 +46,13 @@ void Client_Init(float apilevel, string enginename, float engineversion)
 	BEAM_TRIPMINE = particleeffectnum("beam_tripmine");
 }
 
-void Client_InitDone(void)
+void
+Client_InitDone(void)
 {
 }
 
-void Game_RendererRestarted(string rstr)
+void
+Game_RendererRestarted(string rstr)
 {
 	
 }

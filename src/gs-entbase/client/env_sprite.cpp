@@ -20,10 +20,10 @@ class env_sprite:CBaseEntity
 	int loops;
 	int maxframe; 
 
-	virtual void() Init;
-	virtual void() Initialized;
+	virtual void(void) Init;
+	virtual void(void) Initialized;
 	virtual void(float flChanged) ReadEntity;
-	virtual void() think;
+	virtual void(void) think;
 };
 
 void env_sprite::think(void)

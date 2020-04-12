@@ -25,7 +25,8 @@ If TP_ONCE is set, It'll only emit a single push once before disabling itself.
 If TP_STARTOFF is set, it needs to be triggered first in order to function.
 */
 
-enumflags {
+enumflags
+{
 	TP_ONCE,
 	TP_STARTOFF
 };
@@ -35,15 +36,16 @@ class trigger_push:CBaseTrigger
 	vector m_vecMoveDir;
 	float m_flSpeed;
 
-	void() trigger_push;
+	void(void) trigger_push;
 
-	virtual void() touch;
-	virtual void() Respawn;
-	virtual void() Trigger;
-	virtual void() SetMovementDirection;
+	virtual void(void) touch;
+	virtual void(void) Respawn;
+	virtual void(void) Trigger;
+	virtual void(void) SetMovementDirection;
 };
 
-void trigger_push::SetMovementDirection(void)
+void
+trigger_push::SetMovementDirection(void)
 {
 	if (m_oldAngle == [0,-1,0]) {
 		m_vecMoveDir = [0,0,1];
@@ -57,7 +59,8 @@ void trigger_push::SetMovementDirection(void)
 	angles = [0,0,0];
 }
 
-void trigger_push::Trigger(void)
+void
+trigger_push::Trigger(void)
 {
 	if (solid == SOLID_NOT) {
 		solid = SOLID_TRIGGER;
@@ -66,7 +69,8 @@ void trigger_push::Trigger(void)
 	}
 }
 
-void trigger_push::touch(void)
+void
+trigger_push::touch(void)
 {
 	eActivator = other;
 
@@ -94,7 +98,8 @@ void trigger_push::touch(void)
 	}
 }
 
-void trigger_push::Respawn(void)
+void
+trigger_push::Respawn(void)
 {
 	SetMovementDirection();
 
@@ -103,13 +108,14 @@ void trigger_push::Respawn(void)
 	}
 }
 
-void trigger_push::trigger_push(void)
+void
+trigger_push::trigger_push(void)
 {
 	m_flSpeed = 100;
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
 		case "speed":
-			m_flSpeed = stof(argv(i + 1));
+			m_flSpeed = stof(argv(i+1));
 			break;
 		default:
 			break;

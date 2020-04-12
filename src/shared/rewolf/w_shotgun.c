@@ -14,7 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-enum {
+enum
+{
 	SHOTGUN_DRAW, // 0.909091f
 	SHOTGUN_IDLE, // 2.0f
 	SHOTGUN_FIDGET, // 2.0f
@@ -25,19 +26,21 @@ enum {
 	SHOTGUN_CUSTOMIZE // 2.25f
 };
 
-enum {
+enum
+{
 	SMENU_NONE,
 	SMENU_SHELLS,
 	SMENU_SPREAD
 };
 
-enum {
+enum
+{
 	SPREAD_RIOT,
 	SPREAD_SHOT,
 	SPREAD_RIFLE
 };
 
-#ifdef CSQC
+#ifdef CLIENT
 string gsmodes[] = {
 	"RIOTGUN",
 	"SHOTGUN",
@@ -86,7 +89,7 @@ w_shotgun_primary(void)
 
 	pl.velocity += v_forward * -128;
 
-#ifdef SSQC
+#ifdef SERVER
 	vector spread = [0.1,0.05];
 	int pellets;
 
@@ -184,7 +187,7 @@ w_shotgun_release(void)
 void
 w_shotgun_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, pl.ammo_buckshot, -1);
 #endif
 }
@@ -216,7 +219,7 @@ w_shotgun_aimanim(void)
 int
 w_shotgun_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -236,7 +239,7 @@ w_shotgun_pickup(int new)
 void
 w_shotgun_hud(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	vector pos;
 	player pl = (player)self;
 
@@ -300,7 +303,7 @@ w_shotgun_hud(void)
 void
 w_shotgun_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	drawpic(
 		pos,
 		"gfx/vgui/640_weapon_shotgun0.tga",
@@ -319,7 +322,7 @@ w_shotgun_precache(void)
 	precache_model("models/w_shotgun.mdl");
 	precache_model("models/p_shotgun.mdl");
 
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_shotgun.fire");
 	clientstat(40, EV_INTEGER, player::shotgun_shells);
 	clientstat(41, EV_INTEGER, player::shotgun_spread);
@@ -352,7 +355,7 @@ weapon_t w_shotgun =
 };
 
 /* entity definitions for pickups */
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_shotgun(void)
 {
@@ -360,7 +363,7 @@ weapon_shotgun(void)
 }
 #endif
 
-#ifdef CSQC
+#ifdef CLIENT
 int
 w_shotgun_hudforward(player pl)
 {

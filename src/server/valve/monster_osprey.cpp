@@ -24,8 +24,8 @@ Bell Boeing VV-22 Osprey
 
 class monster_osprey:CBaseMonster
 {
-	void() monster_osprey;
-	virtual void() Respawn;
+	void(void) monster_osprey;
+	virtual void(void) Respawn;
 };
 
 void monster_osprey::Respawn(void)

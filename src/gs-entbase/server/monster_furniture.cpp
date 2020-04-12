@@ -34,16 +34,16 @@ enumflags
 	MF_FADECORPSE
 };
 
-class monster_furniture : CBaseEntity
+class monster_furniture:CBaseEntity
 {
-	void() monster_furniture;
-	//virtual void() Respawn;
+	void(void) monster_furniture;
+	//virtual void(void) Respawn;
 };
 
-void monster_furniture :: monster_furniture ( void )
+void monster_furniture::monster_furniture(void)
 {
-	precache_model( model );
-	setmodel( this, model );
+	precache_model(model);
+	setmodel(this, model);
 	CBaseEntity::CBaseEntity();
 	
 #if 1

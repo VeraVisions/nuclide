@@ -460,7 +460,7 @@ void Strings_Init(void)
 	m_reslbl[IDS_LOGO_OVERSIZED] = "Custom logos can be no larger than 64 x 64 pixels.";
 	m_reslbl[IDS_LOGO_POWEROF2] = "Custom logo width and height must be 2, 4, 8, 16, 32, ro 64.";
 	m_reslbl[IDS_MODEM_CUSTOM] = "Custom";
-	m_reslbl[IDS_MODEM_RATE] = "Enter data transfer rate ( 100 - 9999 )";
+	m_reslbl[IDS_MODEM_RATE] = "Enter data transfer rate (100 - 9999)";
 	m_reslbl[IDS_REGISTRY_UPDATE] = "Updating registry settings for Half-Life.  You will need to reconfigure your settings.";
 	m_reslbl[IDS_CHAT_JOIN] = "Tyring to join %s";
 	m_reslbl[IDS_CHAT_FLOOD] = "Too much text, please wait.";
@@ -471,7 +471,7 @@ void Strings_Init(void)
 	m_reslbl[IDS_CHAT_NOAUTH] = "Could not obtain authentication information";
 	m_reslbl[IDS_CHAT_NODIR] = "Server did not return any directory information.";
 	m_reslbl[IDS_CHAT_NOSUCHROOM] = "Could not find room %s";
-	m_reslbl[IDS_CHAT_ROOMFULL] = "Can't join %s..., room has too many users ( %i ), try again later";
+	m_reslbl[IDS_CHAT_ROOMFULL] = "Can't join %s..., room has too many users (%i), try again later";
 	m_reslbl[IDS_CREATESV_NOADVANCED] = "No advanced options available";
 	m_reslbl[IDS_WON_CDINUSE] = "Your Half-Life CD Key is currently in use.  Please try again later.";
 	m_reslbl[IDS_CHAT_JOINHINT] = "Type /join [roomname] to join another chat room.";
@@ -538,7 +538,7 @@ void Strings_Init(void)
 	m_reslbl[IDS_MOD_DLSTATUSSHORT] = "Downloading %s from\r\n%s";
 	m_reslbl[IDS_MOD_NOFILES] = "Nothing to download";
 	m_reslbl[IDS_MOD_NOLIBLIST] = "Could not find liblist.gam file on remote host\r\nDouble check that %s is a valid custom game site";
-	m_reslbl[IDS_INTERNET_CURRENTTOTALS] = "%i servers ( %i players online )";
+	m_reslbl[IDS_INTERNET_CURRENTTOTALS] = "%i servers (%i players online)";
 	m_reslbl[IDS_SERVER_REFRESH] = "Refresh selected server";
 	m_reslbl[IDS_CONNECT_NEEDMOD] = "You cannot connect to a server running custom game %s until you install the custom game";
 	m_reslbl[IDS_MOD_REMOTEOPENFAIL] = "Could not open %s on remote machine";
@@ -570,7 +570,7 @@ void Strings_Init(void)
 	m_reslbl[IDS_MOD_MODVERSION] = "You are attempting to connect to a server running version %i of the game '%s', but you only have version %i installed.  Continue anyway?";
 	m_reslbl[IDS_CONN_FULL] = "Can't connect to %s, server is full.";
 	m_reslbl[IDS_MOD_UNZIP] = "Do you want to uncompress the files for game '%s'?";
-	m_reslbl[IDS_FAVSVRS_CORRUPT] = "The server data file favsvrs.dat appears to be corrupt.\r\n\r\nYou can request a new list of servers by pressing the Update button.\r\n\r\nDo you want to remove the corrupt file ( you will have to re-enter your 'favorites' if you remove the file )?";
+	m_reslbl[IDS_FAVSVRS_CORRUPT] = "The server data file favsvrs.dat appears to be corrupt.\r\n\r\nYou can request a new list of servers by pressing the Update button.\r\n\r\nDo you want to remove the corrupt file (you will have to re-enter your 'favorites' if you remove the file)?";
 
 	/* Override the defaults with custom entries */
 	stringslst = fopen("gfx/shell/strings.lst", FILE_READ);

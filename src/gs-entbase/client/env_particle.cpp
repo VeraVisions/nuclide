@@ -35,8 +35,8 @@ class env_particle:CBaseEntity
 	int m_iCount;
 	string m_strTarget;
 
-	void() env_particle;
-	virtual void() customphysics;
+	void(void) env_particle;
+	virtual void(void) customphysics;
 	virtual void(string, string) SpawnKey;
 };
 
@@ -48,8 +48,8 @@ void env_particle::customphysics(void)
 	vecPlayer = viewClient.vecPlayerOrigin;
 #else
 	int s = (float)getproperty(VF_ACTIVESEAT);
-	pSeat = &seats[s];
-	vecPlayer = pSeat->vPlayerOrigin;
+	pSeat = &g_seats[s];
+	vecPlayer = pSeat->m_vecPredictedOrigin;
 #endif
 	
 	if (checkpvs(vecPlayer, this) == FALSE) {

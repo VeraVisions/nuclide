@@ -35,9 +35,9 @@ class func_healthcharger:CBaseTrigger
 	string m_strSndCharging;
 	string m_strSndDone;
 
-	void() func_healthcharger;
-	virtual void() customphysics;
-	virtual void() PlayerUse;
+	void(void) func_healthcharger;
+	virtual void(void) customphysics;
+	virtual void(void) PlayerUse;
 };
 
 void func_healthcharger::PlayerUse(void)

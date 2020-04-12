@@ -24,7 +24,7 @@ Rat
 
 class monster_rat:CBaseMonster
 {
-	void() monster_rat;
+	void(void) monster_rat;
 };
 
 void monster_rat::monster_rat(void)

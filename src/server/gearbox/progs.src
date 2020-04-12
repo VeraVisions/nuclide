@@ -2,6 +2,7 @@
 #pragma progs_dat  "../../../gearbox/data.pk3dir/progs.dat"
 
 #define QWSSQC
+#define SERVER
 #define VALVE
 #define GEARBOX
 
@@ -21,7 +22,9 @@
 ../nodes.c
 ../skill.c
 ../sentences.c
+
 ../../gs-entbase/server.src
+../../gs-entbase/shared.src
 
 ../valve/monster_apache.cpp
 ../valve/monster_alien_controller.cpp
@@ -61,9 +64,7 @@
 ../gearbox/monster_drillsergeant.cpp
 ../gearbox/monster_recruit.cpp
 
-../../shared/decals.c
 ../../shared/effects.c
-../../shared/spraylogo.cpp
 ../../shared/gearbox/player.cpp
 ../valve/player.c
 ../../shared/pmove.c

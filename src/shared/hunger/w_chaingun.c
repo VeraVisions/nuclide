@@ -16,7 +16,8 @@
  */
 
 /* Animations */
-enum {
+enum
+{
 	CHAINGUN_IDLE1,
 	CHAINGUN_IDLE2,
 	CHAINGUN_SPINUP,
@@ -29,7 +30,7 @@ enum {
 void
 w_chaingun_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_chaingun.fire");
 	Sound_Precache("weapon_chaingun.reload");
 	Sound_Precache("weapon_chaingun.spindown");
@@ -43,7 +44,7 @@ w_chaingun_precache(void)
 int
 w_chaingun_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -62,7 +63,7 @@ w_chaingun_pickup(int new)
 void
 w_chaingun_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.chaingun_mag, pl.ammo_9mm, -1);
 #endif
 }
@@ -88,7 +89,7 @@ w_chaingun_deathmsg(void)
 void
 w_chaingun_draw(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	Weapons_SetModel("models/v_tfac.mdl");
 	Weapons_ViewAnimation(CHAINGUN_DRAW);
 #endif
@@ -154,7 +155,7 @@ w_chaingun_primary(void)
 	}
 
 	/* ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 <= 0) {
 		return;
 	}
@@ -175,7 +176,7 @@ w_chaingun_primary(void)
 	}
 
 	/* actual firing */
-#ifdef CSQC
+#ifdef CLIENT
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 	Weapons_ViewAnimation(CHAINGUN_FIRE);
@@ -200,7 +201,7 @@ w_chaingun_reload(void)
 	}
 
 	/* ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 >= 100) {
 		return;
 	}
@@ -216,7 +217,7 @@ w_chaingun_reload(void)
 	}
 #endif
 
-#ifdef CSQC
+#ifdef CLIENT
 	Weapons_ViewAnimation(CHAINGUN_HOLSTER);
 #else
 	Sound_Play(pl, CHAN_WEAPON, "weapon_chaingun.reload");
@@ -243,7 +244,7 @@ w_chaingun_aimanim(void)
 void
 w_chaingun_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -272,7 +273,7 @@ w_chaingun_hudpic(int selected, vector pos, float a)
 
 weapon_t w_chaingun =
 {
-	.id		= ITEM_CHAINGUN,
+	.id			= ITEM_CHAINGUN,
 	.slot		= 3,
 	.slot_pos	= 3,
 	.ki_spr		= "sprites/tfc_dmsg.spr_0.tga",
@@ -296,7 +297,7 @@ weapon_t w_chaingun =
 };
 
 /* pickups */
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_th_chaingun(void)
 {

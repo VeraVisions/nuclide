@@ -14,7 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-enum {
+enum
+{
 	GP_IDLE1, // 3.75f
 	GP_IDLE2, // 3.0f
 	GP_FIRESINGLE, // 0.727273f
@@ -30,7 +31,8 @@ enum {
 	SNIPER_HOLSTER // 1.666667f
 };
 
-enum {
+enum
+{
 	GM_SINGLE,
 	GM_CHARGE,
 	GM_FAST,
@@ -110,7 +112,7 @@ w_gausspistol_primary(void)
 	switch (pl.a_ammo3) {
 	case GM_FAST:
 		Weapons_ViewAnimation(GP_FIREFAST);
-#ifdef SSQC
+#ifdef SERVER
 		Sound_Play(pl, CHAN_WEAPON, "weapon_gausspistol.firefast");
 #endif
 		pl.w_attack_next = 0.15f;
@@ -119,7 +121,7 @@ w_gausspistol_primary(void)
 	case GM_CHARGE:
 		take = 10;
 		Weapons_ViewAnimation(GP_FIRECHARGE);
-#ifdef SSQC
+#ifdef SERVER
 		Sound_Play(pl, CHAN_WEAPON, "weapon_gausspistol.firecharge");
 		Sound_Play(pl, 8, "weapon_gausspistol.charge");
 #endif
@@ -129,7 +131,7 @@ w_gausspistol_primary(void)
 	default:
 		pl.flags &= ~FL_SEMI_TOGGLED;
 		Weapons_ViewAnimation(GP_FIRESINGLE);
-#ifdef SSQC
+#ifdef SERVER
 		Sound_Play(pl, CHAN_WEAPON, "weapon_gausspistol.firesingle");
 #endif
 		pl.w_attack_next = 0.15f;
@@ -139,7 +141,7 @@ w_gausspistol_primary(void)
 
 	src = Weapons_GetCameraPos();
 
-#ifdef SSQC
+#ifdef SERVER
 	pl.ammo_gauss -= take;
 #else
 	pl.a_ammo2 -= take;
@@ -167,7 +169,7 @@ w_gausspistol_secondary(void)
 void
 w_gausspistol_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, pl.ammo_gauss, pl.gauss_mode);
 #endif
 }
@@ -199,7 +201,7 @@ w_gausspistol_aimanim(void)
 int
 w_gausspistol_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (pl.ammo_gauss < 150) {
@@ -214,7 +216,7 @@ w_gausspistol_pickup(int new)
 void
 w_gausspistol_hud(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	vector pos;
 	player pl = (player)self;
 
@@ -334,7 +336,7 @@ w_gausspistol_hud(void)
 void
 w_gausspistol_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	drawpic(
 		pos,
 		"gfx/vgui/640_weapon_gaussPistol0.tga",
@@ -349,7 +351,7 @@ w_gausspistol_hudpic(int selected, vector pos, float a)
 void
 w_gausspistol_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_gausspistol.charge");
 	Sound_Precache("weapon_gausspistol.firecharge");
 	Sound_Precache("weapon_gausspistol.firefast");
@@ -388,7 +390,7 @@ weapon_t w_gausspistol =
 };
 
 /* entity definitions for pickups */
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_gausspistol(void)
 {
@@ -396,7 +398,7 @@ weapon_gausspistol(void)
 }
 #endif
 
-#ifdef CSQC
+#ifdef CLIENT
 int
 w_gausspistol_hudforward(player pl)
 {

@@ -28,15 +28,15 @@ Tripmine Weapon
  * Because not being able to place it around levels would be boring.
  * Some maps, such as subtransit and a few singleplayer chapters have this. */
 
-#ifdef SSQC
+#ifdef SERVER
 class monster_tripmine:CBaseMonster
 {
-	void() monster_tripmine;
+	void(void) monster_tripmine;
 
 	virtual float(entity, float) SendEntity;
 	virtual void(int) Trip;
-	virtual void() Ready;
-	virtual void() Respawn;
+	virtual void(void) Ready;
+	virtual void(void) Respawn;
 };
 
 float
@@ -70,7 +70,7 @@ monster_tripmine::Trip(int walkthrough)
 	dmg = Skill_GetValue("plr_tripmine");
 	Effect_CreateExplosion(origin);
 	Damage_Radius(origin, real_owner, dmg, dmg * 2.5f, TRUE, WEAPON_TRIPMINE);
-	sound(this, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 2 ) + 3 ), 1, ATTN_NORM);
+	sound(this, CHAN_WEAPON, sprintf("weapons/explode%d.wav", floor(random() * 2) + 3), 1, ATTN_NORM);
 	remove(this);
 }
 
@@ -147,7 +147,7 @@ void w_tripmine_precache(void)
 	precache_model("models/v_tripmine.mdl");
 	precache_model("models/p_tripmine.mdl");
 
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_tripmine.deploy");
 	Sound_Precache("weapon_tripmine.charge");
 	Sound_Precache("weapon_tripmine.activate");
@@ -155,7 +155,7 @@ void w_tripmine_precache(void)
 }
 void w_tripmine_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, pl.ammo_tripmine, -1);
 #endif
 }
@@ -173,7 +173,7 @@ string w_tripmine_deathmsg(void)
 }
 int w_tripmine_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (pl.ammo_tripmine < MAX_A_TRIPMINE) {
@@ -187,7 +187,7 @@ int w_tripmine_pickup(int new)
 
 void w_tripmine_draw(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	Weapons_SetModel("models/v_tripmine.mdl");
 	Weapons_ViewAnimation(TRIPMINE_DRAW);
 #endif
@@ -197,7 +197,7 @@ void w_tripmine_holster(void)
 	
 }
 
-#ifdef CSQC
+#ifdef CLIENT
 .float health;
 .float armor;
 float w_tripmine_predraw(void)
@@ -240,7 +240,7 @@ void w_tripmine_primary(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo2 <= 0) {
 		return;
 	}
@@ -258,12 +258,12 @@ void w_tripmine_primary(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	pl.a_ammo2--;
 	Weapons_ViewAnimation(TRIPMINE_FIRE2);
 #else
 	pl.ammo_tripmine--;
-	vector ang = vectoangles( trace_plane_normal );
+	vector ang = vectoangles(trace_plane_normal);
 	monster_tripmine mine = spawn(monster_tripmine, real_owner: self, angles: ang);
 	setorigin(mine, trace_endpos - (v_forward * 8));
 
@@ -286,7 +286,7 @@ void w_tripmine_release(void)
 
 	if (pl.a_ammo3 == 1) {
 		Weapons_ViewAnimation(TRIPMINE_DRAW);
-#ifdef SSQC
+#ifdef SERVER
 		if (pl.ammo_tripmine <= 0) {
 			Weapons_RemoveItem(pl, WEAPON_TRIPMINE);
 		}
@@ -321,16 +321,16 @@ float w_tripmine_aimanim(void)
 
 void w_tripmine_hud(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [120/256,96/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [120/256,96/128], [24/256, 24/128], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
 void w_tripmine_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(pos, [170,45], "sprites/640hud6.spr_0.tga", [0,90/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	} else {
@@ -364,7 +364,7 @@ weapon_t w_tripmine =
 	w_tripmine_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void weapon_tripmine(void) {
 	Weapons_InitItem(WEAPON_TRIPMINE);
 }

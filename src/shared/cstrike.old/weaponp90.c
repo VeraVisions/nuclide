@@ -45,7 +45,8 @@ weaponinfo_t wptP90 = {
 };
 
 // Anim Table
-enum {
+enum
+{
 	ANIM_P90_IDLE,
 	ANIM_P90_RELOAD,
 	ANIM_P90_DRAW,
@@ -54,39 +55,39 @@ enum {
 	ANIM_P90_SHOOT3
 };
 
-void WeaponP90_Draw( void ) {
-#ifdef SSQC
+void WeaponP90_Draw(void) {
+#ifdef SERVER
 	BaseGun_Draw();
 #else
-	View_PlayAnimation( ANIM_P90_DRAW );
+	View_PlayAnimation(ANIM_P90_DRAW);
 #endif
 }
 
-void WeaponP90_PrimaryFire( void ) {
-#ifdef SSQC
-	if ( BaseGun_PrimaryFire() == TRUE ) {
-		sound( self, CHAN_WEAPON, "weapons/p90-1.wav", 1, ATTN_NORM );
+void WeaponP90_PrimaryFire(void) {
+#ifdef SERVER
+	if (BaseGun_PrimaryFire() == TRUE) {
+		sound(self, CHAN_WEAPON, "weapons/p90-1.wav", 1, ATTN_NORM);
 	}
 #else
-	int iRand = (int)floor( random( 1, 4 ) );
+	int iRand = (int)floor(random(1, 4));
 	
-	if ( iRand == 1 ) {
-		View_PlayAnimation( ANIM_P90_SHOOT1 );
-	} else if ( iRand == 2 ) {
-		View_PlayAnimation( ANIM_P90_SHOOT2 );
+	if (iRand == 1) {
+		View_PlayAnimation(ANIM_P90_SHOOT1);
+	} else if (iRand == 2) {
+		View_PlayAnimation(ANIM_P90_SHOOT2);
 	} else {
-		View_PlayAnimation( ANIM_P90_SHOOT3 );
+		View_PlayAnimation(ANIM_P90_SHOOT3);
 	}
-	BaseGun_ShotMultiplierHandle( 1 );
+	BaseGun_ShotMultiplierHandle(1);
 #endif
 }
 
-void WeaponP90_Reload( void ) {
-	#ifdef SSQC
-	if ( BaseGun_Reload() == TRUE ) {
+void WeaponP90_Reload(void) {
+	#ifdef SERVER
+	if (BaseGun_Reload() == TRUE) {
 		// Play Sound
 	}
 	#else
-	View_PlayAnimation( ANIM_P90_RELOAD );
+	View_PlayAnimation(ANIM_P90_RELOAD);
 	#endif
 }

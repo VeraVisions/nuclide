@@ -20,7 +20,7 @@ Spawn_ObserverCam(void)
 	entity eTarget;
 
 	// Go find a camera if we aren't dead
-	entity eCamera = find (world, classname, "trigger_camera");
+	entity eCamera = find(world, classname, "trigger_camera");
 
 	if (eCamera) {
 		self.origin = eCamera.origin;
@@ -49,7 +49,7 @@ Spawn_ObserverCam(void)
 		}
 	}
 
-	self.fixangle = TRUE;
+	Client_FixAngle(self, self.angles);
 }
 
 float Spawn_PlayerRange(entity spot) {

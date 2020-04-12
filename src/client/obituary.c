@@ -17,7 +17,8 @@
 #define OBITUARY_LINES	4
 #define OBITUARY_TIME	5
 
-typedef struct {
+typedef struct
+{
 	string attacker;
 	string victim;
 

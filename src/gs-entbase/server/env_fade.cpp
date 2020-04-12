@@ -34,16 +34,16 @@ enumflags
 	EVF_ONLYUSER
 };
 
-class env_fade : CBaseTrigger
+class env_fade:CBaseTrigger
 {
 	float m_flFadeDuration;
 	float m_flFadeHold;
 
-	void() env_fade;
-	virtual void() Trigger;
+	void(void) env_fade;
+	virtual void(void) Trigger;
 };
 
-void env_fade :: Trigger (void)
+void env_fade::Trigger (void)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_FADE);
@@ -63,15 +63,15 @@ void env_fade :: Trigger (void)
 	}
 }
 
-void env_fade :: env_fade (void)
+void env_fade::env_fade (void)
 {
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
 		case "duration":
-			m_flFadeDuration = stof(argv(i + 1));
+			m_flFadeDuration = stof(argv(i+1));
 			break;
 		case "holdtime":
-			m_flFadeHold = stof(argv(i + 1));
+			m_flFadeHold = stof(argv(i+1));
 			break;
 		default:
 			break;

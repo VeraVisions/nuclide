@@ -22,11 +22,12 @@
 STUB!
 */
 
-class multisource : CBaseTrigger
+class multisource:CBaseTrigger
 {
-	void() multisource;
-	virtual int() GetValue;
-	virtual void() Trigger;
+	void(void) multisource;
+
+	virtual int(void) GetValue;
+	virtual void(void) Trigger;
 };
 
 int

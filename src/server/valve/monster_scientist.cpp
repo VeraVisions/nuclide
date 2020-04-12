@@ -22,7 +22,8 @@ Scientist
 
 */
 
-enum {
+enum
+{
 	SCIA_WALK,
 	SCIA_WALKSCARED,
 	SCIA_RUN,
@@ -70,15 +71,15 @@ enum {
 
 class monster_scientist:CBaseNPC
 {
-	void() monster_scientist;
+	void(void) monster_scientist;
 
-	virtual void() Respawn;
-	virtual void() PlayerUse;
+	virtual void(void) Respawn;
+	virtual void(void) PlayerUse;
 	virtual void(int) Pain;
 	virtual void(int) Death;
-	virtual int() AnimIdle;
-	virtual int() AnimWalk;
-	virtual int() AnimRun;
+	virtual int(void) AnimIdle;
+	virtual int(void) AnimWalk;
+	virtual int(void) AnimRun;
 };
 
 int

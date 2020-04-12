@@ -28,9 +28,9 @@ class CHeader:CWidget
 	int m_end_h;
 	int m_visible;
 
-	virtual void() m_execute = 0;
+	virtual void(void) m_execute = 0;
 
-	virtual void() Draw;
+	virtual void(void) Draw;
 	virtual void(int x1, int y1, int x2, int y2) SetStartEndPos;
 	virtual void(int x1, int y1, int x2, int y2) SetStartEndSize;
 	virtual void(int i) SetHeader;
@@ -77,7 +77,7 @@ void CHeader::SetHeader(int i)
 	m_header = i;
 }
 
-void CHeader::SetExecute(void() vFunc)
+void CHeader::SetExecute(void(void) vFunc)
 {
 	m_execute = vFunc;
 }

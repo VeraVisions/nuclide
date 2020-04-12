@@ -14,7 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void Sky_Update(void)
+void
+Sky_Update(void)
 {
 	if (serverkeyfloat("*bspversion") != 30) {
 		return;

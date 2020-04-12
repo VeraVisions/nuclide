@@ -29,15 +29,15 @@ string g_laddersnd[] = {
 
 class func_ladder:CBaseEntity
 {
-	void() func_ladder;
+	void(void) func_ladder;
 
-	virtual void() Respawn;
+	virtual void(void) Respawn;
 };
 
 
 void func_ladder::Respawn(void)
 {
-	setmodel( this, m_oldModel );
+	setmodel(this, m_oldModel);
 	movetype = MOVETYPE_NONE;
 	skin = CONTENT_LADDER;
 	solid = SOLID_BSP;
@@ -51,9 +51,9 @@ void func_ladder::Respawn(void)
 #endif
 }
 
-void func_ladder :: func_ladder ( void )
+void func_ladder::func_ladder(void)
 {
-	setmodel( this, m_oldModel );
+	setmodel(this, m_oldModel);
 	movetype = MOVETYPE_NONE;
 	skin = CONTENT_LADDER;
 	solid = SOLID_BSP;

@@ -48,11 +48,11 @@ class env_spark:CBaseTrigger
 {
 	float m_flMaxDelay;
 
-	void() env_spark;
-	virtual void() CreateSpark;
-	virtual void() TimedSpark;
-	virtual void() Trigger;
-	virtual void() Respawn;
+	void(void) env_spark;
+	virtual void(void) CreateSpark;
+	virtual void(void) TimedSpark;
+	virtual void(void) Trigger;
+	virtual void(void) Respawn;
 };
 
 void env_spark::CreateSpark(void)
@@ -101,7 +101,7 @@ void env_spark::env_spark(void)
 	for (i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
 		case "MaxDelay":
-			m_flMaxDelay = stof(argv(i + 1));
+			m_flMaxDelay = stof(argv(i+1));
 			break;
 		default:
 			break;

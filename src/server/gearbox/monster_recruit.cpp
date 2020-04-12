@@ -23,7 +23,8 @@ Recruit
 
 */
 
-enum {
+enum
+{
 	RECRUIT_IDLE,
 	RECRUIT_WALK,
 	RECRUIT_RUN,
@@ -36,11 +37,11 @@ enum {
 
 class monster_recruit:CBaseNPC
 {
-	void() monster_recruit;
-	virtual void() Respawn;
-	virtual int() AnimIdle;
-	virtual int() AnimWalk;
-	virtual int() AnimRun;
+	void(void) monster_recruit;
+	virtual void(void) Respawn;
+	virtual int(void) AnimIdle;
+	virtual int(void) AnimWalk;
+	virtual int(void) AnimRun;
 };
 
 int

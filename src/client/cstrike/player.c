@@ -32,7 +32,7 @@ Player_ReadEntity(float new)
 		//FIXME: splitscreen
 		if (pl.entnum == player_localentnum) {
 			//FIXME: splitscreen
-			pSeat = &seats[0];
+			pSeat = &g_seats[0];
 			for (i = pl.sequence+1; i <= servercommandframe; i++) {
 				if (!getinputstate(i)) {
 					break;	//erk?... too old?

@@ -16,9 +16,9 @@
 
 class item_ammo:CBaseEntity
 {
-	void() item_ammo;
-	virtual void() Respawn;
-	virtual void() touch;
+	void(void) item_ammo;
+	virtual void(void) Respawn;
+	virtual void(void) touch;
 };
 
 void item_ammo::touch(void)
@@ -61,6 +61,7 @@ void item_ammo::Respawn(void)
 
 void item_ammo::item_ammo(void)
 {
+	precache_model(model);
 	m_oldModel = model;
 	setmodel(this, m_oldModel);
 	CBaseEntity::CBaseEntity();
@@ -76,8 +77,8 @@ A single ammo_357 will provide 6 bullets.
 */
 class ammo_357:item_ammo
 {
-	void() ammo_357;
-	virtual void() touch;
+	void(void) ammo_357;
+	virtual void(void) touch;
 };
 
 void ammo_357::ammo_357(void)
@@ -109,8 +110,8 @@ A single ammo_9mmAR will provide 50 bullets.
 */
 class ammo_9mmAR:item_ammo
 {
-	void() ammo_9mmAR;
-	virtual void() touch;
+	void(void) ammo_9mmAR;
+	virtual void(void) touch;
 };
 
 void ammo_9mmAR::ammo_9mmAR(void)
@@ -143,8 +144,8 @@ A single ammo_9mmbox will provide 200 bullets.
 */
 class ammo_9mmbox:item_ammo
 {
-	void() ammo_9mmbox;
-	virtual void() touch;
+	void(void) ammo_9mmbox;
+	virtual void(void) touch;
 };
 
 void ammo_9mmbox::ammo_9mmbox(void)
@@ -176,8 +177,8 @@ A single ammo_9mmclip will provide 17 bullets.
 */
 class ammo_9mmclip:item_ammo
 {
-	void() ammo_9mmclip;
-	virtual void() touch;
+	void(void) ammo_9mmclip;
+	virtual void(void) touch;
 };
 
 void ammo_9mmclip::ammo_9mmclip(void)
@@ -209,8 +210,8 @@ A single ammo_ARgrenades will provide 2 AR grenades.
 */
 class ammo_ARgrenades:item_ammo
 {
-	void() ammo_ARgrenades;
-	virtual void() touch;
+	void(void) ammo_ARgrenades;
+	virtual void(void) touch;
 };
 
 void ammo_ARgrenades::ammo_ARgrenades(void)
@@ -243,8 +244,8 @@ A single ammo_buckshot will provide 12 shells.
 */
 class ammo_buckshot:item_ammo
 {
-	void() ammo_buckshot;
-	virtual void() touch;
+	void(void) ammo_buckshot;
+	virtual void(void) touch;
 };
 
 void ammo_buckshot::ammo_buckshot(void)
@@ -276,8 +277,8 @@ A single ammo_crossbow will provide 5 bolts.
 */
 class ammo_crossbow:item_ammo
 {
-	void() ammo_crossbow;
-	virtual void() touch;
+	void(void) ammo_crossbow;
+	virtual void(void) touch;
 };
 
 void ammo_crossbow::ammo_crossbow(void)
@@ -309,8 +310,8 @@ A single ammo_gaussclip will provide 20 cells.
 */
 class ammo_gaussclip:item_ammo
 {
-	void() ammo_gaussclip;
-	virtual void() touch;
+	void(void) ammo_gaussclip;
+	virtual void(void) touch;
 };
 
 void ammo_gaussclip::ammo_gaussclip(void)
@@ -341,8 +342,8 @@ A single ammo_rpgclip will provide 1 rocket.
 */
 class ammo_rpgclip:item_ammo
 {
-	void() ammo_rpgclip;
-	virtual void() touch;
+	void(void) ammo_rpgclip;
+	virtual void(void) touch;
 };
 
 void ammo_rpgclip::ammo_rpgclip(void)

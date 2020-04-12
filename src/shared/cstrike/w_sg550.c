@@ -26,7 +26,8 @@ Price: $4200
 
 */
 
-enum {
+enum
+{
 	SG550_IDLE,
 	SG550_SHOOT1,
 	SG550_SHOOT2,
@@ -37,7 +38,7 @@ enum {
 void
 w_sg550_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_sg550.fire");
 #endif
 	precache_model("models/v_sg550.mdl");
@@ -48,7 +49,7 @@ w_sg550_precache(void)
 void
 w_sg550_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.sg550_mag, pl.ammo_556mm, -1);
 #endif
 }
@@ -74,7 +75,7 @@ w_sg550_deathmsg(void)
 int
 w_sg550_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -97,7 +98,7 @@ w_sg550_draw(void)
 	Weapons_SetModel("models/v_sg550.mdl");
 	Weapons_ViewAnimation(SG550_DRAW);
 
-#ifdef CSQC
+#ifdef CLIENT
 	pl.cs_cross_mindist = 5;
 	pl.cs_cross_deltadist = 3;
 #endif
@@ -113,7 +114,7 @@ w_sg550_primary(void)
 	}
 
 	/* ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (!pl.a_ammo1) {
 		return;
 	}
@@ -126,7 +127,7 @@ w_sg550_primary(void)
 	Cstrike_ShotMultiplierAdd(pl, 1);
 	float accuracy = Cstrike_CalculateAccuracy(pl, 200);
 
-#ifdef CSQC
+#ifdef CLIENT
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 #else
@@ -182,7 +183,7 @@ w_sg550_reload(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 >= 30) {
 		return;
 	}
@@ -215,7 +216,7 @@ w_sg550_aimanim(void)
 void
 w_sg550_hud(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	player pl = (player)self;
 	if (pl.viewzoom < 1.0f) {
 		Cstrike_DrawScope();
@@ -223,14 +224,14 @@ w_sg550_hud(void)
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [0,96/256], [24/256, 24/256], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [0,96/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
 void
 w_sg550_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -282,7 +283,7 @@ weapon_t w_sg550 =
 	w_sg550_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_sg550(void)
 {

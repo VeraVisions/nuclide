@@ -23,7 +23,8 @@ Propagate our pmove state to whatever the current frame before its stomped on
 (so any non-networked state updates locally).
 =================
 */
-void Predict_PreFrame(player pl)
+void
+Predict_PreFrame(player pl)
 {
 	pl.net_origin = pl.origin;
 	pl.net_velocity = pl.velocity;
@@ -46,8 +47,8 @@ void Predict_PreFrame(player pl)
 	//we want to predict an exact copy of the data in the new packet
 	/*for (; self.pmove_frame <= servercommandframe; self.pmove_frame++) {
 		float flSuccess = getinputstate(self.pmove_frame);*/
-	for ( int i = pl.sequence + 1; i <= clientcommandframe; i++ ) {
-		float flSuccess = getinputstate( i );
+	for (int i = pl.sequence + 1; i <= clientcommandframe; i++) {
+		float flSuccess = getinputstate(i);
 		if (flSuccess == FALSE) {
 			continue;
 		}
@@ -74,7 +75,8 @@ Rewind our pmove state back to before we started predicting.
 (to give consistent state instead of accumulating errors)
 =================
 */
-void Predict_PostFrame(player pl)
+void
+Predict_PostFrame(player pl)
 {
 	pl.origin = pl.net_origin;
 	pl.velocity = pl.net_velocity;

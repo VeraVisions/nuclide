@@ -14,7 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-enum {
+enum
+{
 	GREN_IDLE1, // 2.0f
 	GREN_IDLE2, // 2.0f
 	GREN_FIDGET, // 1.2f
@@ -63,7 +64,7 @@ w_grenade_primary(void)
 
 	src = Weapons_GetCameraPos();
 
-#ifdef CSQC
+#ifdef CLIENT
 	//Weapons_ViewAnimation(GP_FIRESINGLE);
 #endif
 
@@ -146,7 +147,7 @@ w_grenade_aimanim(void)
 void
 w_grenade_hud(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	vector pos;
 	player pl = (player)self;
 	
@@ -194,7 +195,7 @@ w_grenade_hud(void)
 void
 w_grenade_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	drawpic(
 		pos,
 		"gfx/vgui/640_weapon_dmlGrenade0.tga",
@@ -211,7 +212,7 @@ w_grenade_precache(void)
 {
 	precache_model("models/v_grenade.mdl");
 
-#ifdef SSQC
+#ifdef SERVER
 	clientstat(49, EV_INTEGER, player::gren_detonate);
 	clientstat(50, EV_INTEGER, player::gren_payload);
 #endif
@@ -243,7 +244,7 @@ weapon_t w_grenade =
 };
 
 /* entity definitions for pickups */
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_grenade(void)
 {
@@ -251,7 +252,7 @@ weapon_grenade(void)
 }
 #endif
 
-#ifdef CSQC
+#ifdef CLIENT
 int
 w_grenade_hudforward(player pl)
 {

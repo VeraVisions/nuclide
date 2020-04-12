@@ -24,8 +24,8 @@ A single ammo_556 will provide 50 bullets.
 */
 class ammo_556:item_ammo
 {
-	void() ammo_556;
-	virtual void() touch;
+	void(void) ammo_556;
+	virtual void(void) touch;
 };
 
 void
@@ -56,8 +56,8 @@ A single ammo_762 will provide 5 bullets.
 */
 class ammo_762:item_ammo
 {
-	void() ammo_762;
-	virtual void() touch;
+	void(void) ammo_762;
+	virtual void(void) touch;
 };
 
 void
@@ -91,9 +91,9 @@ the direction the model is aiming.
 */
 class ammo_spore:item_ammo
 {
-	void() ammo_spore;
-	virtual void() touch;
-	virtual void() Respawn;
+	void(void) ammo_spore;
+	virtual void(void) touch;
+	virtual void(void) Respawn;
 	virtual void(int) Death;
 };
 
@@ -142,7 +142,7 @@ void ammo_spore::Respawn(void)
 	}
 
 	origin = g_tracedDecal.endpos;
-	makevectors(vectoangles(g_tracedDecal.endpos - origin ));
+	makevectors(vectoangles(g_tracedDecal.endpos - origin));
 	vector cpl = v_forward - (v_forward * g_tracedDecal.normal) * g_tracedDecal.normal;
 
 	if (g_tracedDecal.normal[2] == 0) {

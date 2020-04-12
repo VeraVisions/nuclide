@@ -2,6 +2,7 @@
 #pragma progs_dat  "../../../scihunt/data.pk3dir/csprogs.dat"
 
 #define CSQC
+#define CLIENT
 #define VALVE
 
 #includelist
@@ -26,6 +27,7 @@
 ../sentences.c
 
 ../../gs-entbase/client.src
+../../gs-entbase/shared.src
 
 ../sky.c
 ../music.c
@@ -40,9 +42,7 @@
 ../../shared/pmove.c
 ../valve/predict.c
 ../predict.c
-../../shared/decals.c
 ../../shared/effects.c
-../../shared/spraylogo.cpp
 ../npc.c
 init.c
 
@@ -72,7 +72,6 @@ init.c
 ../valve/player.c
 ../valve/entities.c
 ../entities.c
-../fx_lensflare.c
 ../fx_gunsmoke.c
 
 ../valve/cmds.c
@@ -83,6 +82,7 @@ init.c
 ../damage.c
 ../obituary.c
 ../chat.c
+../textmenu.c
 ../vgui.cpp
 
 ../valve/hud.c

@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifdef SSQC
+#ifdef SERVER
 void Decals_Init(void);
 #endif
 
@@ -29,15 +29,15 @@ void Weapons_Init(void)
 
 void Weapons_SetModel(string mdl)
 {
-#ifdef CSQC
-	setmodel(pSeat->eViewModel, mdl);
+#ifdef CLIENT
+	setmodel(pSeat->m_eViewModel, mdl);
 #endif
 }
 
 void Weapons_SetGeomset(string set)
 {
-#ifdef CSQC
-	setcustomskin(pSeat->eViewModel, "", set);
+#ifdef CLIENT
+	setcustomskin(pSeat->m_eViewModel, "", set);
 #endif
 }
 
@@ -56,7 +56,7 @@ void Weapons_Draw(void)
 	if (g_weapons[i].draw != __NULL__) {
 		g_weapons[i].draw();
 	}
-#ifdef SSQC
+#ifdef SERVER
 	if (g_weapons[i].updateammo != __NULL__) {
 		g_weapons[i].updateammo(pl);
 	}
@@ -81,7 +81,7 @@ void Weapons_Primary(void)
 		g_weapons[i].primary();
 	}
 
-#ifdef SSQC
+#ifdef SERVER
 	if (g_weapons[i].updateammo != __NULL__) {
 		g_weapons[i].updateammo(pl);
 	}
@@ -95,7 +95,7 @@ void Weapons_Secondary(void)
 	if (g_weapons[i].secondary != __NULL__) {
 		g_weapons[i].secondary();
 	}
-#ifdef SSQC
+#ifdef SERVER
 	if (g_weapons[i].updateammo != __NULL__) {
 		g_weapons[i].updateammo(pl);
 	}
@@ -109,7 +109,7 @@ void Weapons_Reload(void)
 	if (g_weapons[i].reload != __NULL__) {
 		g_weapons[i].reload();
 	}
-#ifdef SSQC
+#ifdef SERVER
 	if (g_weapons[i].updateammo != __NULL__) {
 		g_weapons[i].updateammo(pl);
 	}
@@ -163,7 +163,7 @@ string Weapons_GetDeathmessage(int id)
 	return "";
 }
 
-#ifdef SSQC
+#ifdef SERVER
 float Weapons_GetAim(int id)
 {
 	if (g_weapons[id].aimanim != __NULL__) {
@@ -174,7 +174,7 @@ float Weapons_GetAim(int id)
 }
 #endif
 
-#ifdef CSQC
+#ifdef CLIENT
 void Weapons_HUDPic(int id, int s, vector pos, float a)
 {
 	if (g_weapons[id].hudpic != __NULL__) {
@@ -185,7 +185,7 @@ void Weapons_HUDPic(int id, int s, vector pos, float a)
 
 void Weapons_MakeVectors(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 	makevectors(pl.v_angle);
 #else
@@ -195,17 +195,17 @@ void Weapons_MakeVectors(void)
 
 vector Weapons_GetCameraPos(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	return self.origin + self.view_ofs;
 #else
-	return pSeat->vPlayerOrigin + self.view_ofs;
+	return pSeat->m_vecPredictedOrigin + self.view_ofs;
 #endif
 }
 
 void Weapons_ViewAnimation(int i)
 {
-#ifdef CSQC
-	player pl = (player)pSeat->ePlayer;
+#ifdef CLIENT
+	player pl = (player)pSeat->m_ePlayer;
 	View_PlayAnimation(i);
 #else
 	player pl = (player)self;
@@ -213,7 +213,7 @@ void Weapons_ViewAnimation(int i)
 	pl.weapontime = 0.0f;
 }
 
-#ifdef CSQC
+#ifdef CLIENT
 int View_GetAnimation(void);
 int Weapons_GetAnimation(void)
 {
@@ -223,7 +223,7 @@ int Weapons_GetAnimation(void)
 
 void Weapons_ViewPunchAngle(vector add)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	player pl = (player)self;
 	pl.punchangle += add;
 #endif
@@ -231,7 +231,7 @@ void Weapons_ViewPunchAngle(vector add)
 
 void Weapons_PlaySound(entity t, float ch, string s, float vol, float at)
 {
-#ifdef SSQC
+#ifdef SERVER
 	sound(t, ch, s, vol, at);
 #endif
 }
@@ -245,7 +245,7 @@ int Weapons_IsPresent(player pl, int w)
 	}
 }
 
-#ifdef SSQC
+#ifdef SERVER
 void Weapons_PickupNotify(player pl, int w)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
@@ -362,7 +362,7 @@ void Weapons_ReloadWeapon(player pl, .int mag, .int ammo, int max)
 	int iNeed = max - pl.(mag);
 	int iHave = pl.(ammo);
 
-	if ( iNeed > iHave ) {
+	if (iNeed > iHave) {
 		pl.(mag) += iHave;
 		pl.(ammo) = 0;
 	} else {

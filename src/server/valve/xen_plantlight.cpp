@@ -23,7 +23,7 @@ Xen Plant Light
 */
 class xen_plantlight:CBaseEntity
 {
-	void() xen_plantlight;
+	void(void) xen_plantlight;
 };
 
 void xen_plantlight::xen_plantlight(void)

@@ -16,6 +16,8 @@
 
 var int g_initialized = FALSE;
 
+#define FN_UPDATE_PKGLIST "http://www.frag-net.com/dl/%s_packages"
+
 const string LICENSE_TEXT = "\
 ==============================================================================\
 Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>\
@@ -33,7 +35,8 @@ IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING\
 OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.\
 ==============================================================================";
 
-void cvar_init(void)
+void
+cvar_init(void)
 {
 	/* TODO: Shove these into defaults.cfg instead of forcing them */
 	localcmd("seta con_textsize -12\n");
@@ -49,7 +52,27 @@ void cvar_init(void)
 	localcmd("seta gl_font CONCHARS?fmt=h\n");
 }
 
-void m_init(void)
+var int autocvar_r_autoscale = TRUE;
+void
+Menu_AutoScale(void)
+{
+	if (autocvar_r_autoscale) {
+		/* override for vid_conautoscales */
+		vector psize = getproperty(VF_SCREENPSIZE);
+		if (psize[1] >= (480 * 4)) {
+			cvar_set("vid_conautoscale", "4");
+		} else if (psize[1] >= (480 * 3)) {
+			cvar_set("vid_conautoscale", "3");
+		} else if (psize[1] >= (480 * 2)) {
+			cvar_set("vid_conautoscale", "2");
+		} else {
+			cvar_set("vid_conautoscale", "1");
+		}
+	}
+}
+
+void
+m_init(void)
 {
 	vector g_btnsize;
 
@@ -57,11 +80,11 @@ void m_init(void)
 	print("\n\n");
 
 	registercommand("menu_customgame");
-	font_console = loadfont( "font", "", "12", -1 );
-	font_label = loadfont( "label", "gfx/shell/mssansserif.ttf", "10 12 14", -1 );
-	font_arial = loadfont( "label", "gfx/shell/arial.ttf", "14 11 12", -1 );
-	font_label_b = loadfont( "label_b", "gfx/shell/arialbd.ttf", "14 12", -1 );
-	font_label_p = loadfont( "label_p", "gfx/shell/arialbd.ttf", "16 21", -1 );
+	font_console = loadfont("font", "", "12", -1);
+	font_label = loadfont("label", "gfx/shell/mssansserif.ttf", "10 12 14", -1);
+	font_arial = loadfont("label", "gfx/shell/arial.ttf", "14 11 12", -1);
+	font_label_b = loadfont("label_b", "gfx/shell/arialbd.ttf", "14 12", -1);
+	font_label_p = loadfont("label_p", "gfx/shell/arialbd.ttf", "16 21", -1);
 
 	localcmd("plug_load ffmpeg\n");
 
@@ -83,13 +106,28 @@ void m_init(void)
 	Strings_Init();
 	g_initialized = TRUE;
 
-	if (cvar_string("game") != "valve") {
+	/*if (cvar_string("game") != "valve")*/ {
 		m_intro_skip();
 		Music_MenuStart();
 	}
+	
+	localcmd(sprintf("pkg addsource http://www.frag-net.com/dl/valve_packages\npkg addsource http://www.frag-net.com/dl/%s_packages\nwait;wait;pkg update\n", games[gameinfo_current].gamedir));
+	
+	if (autocvar_menu_updating || !autocvar_menu_installedpackages) {
+		g_menupage = PAGE_UPDATES;
+	}
+	Menu_AutoScale();
 }
 
-void m_shutdown(void)
+void
+Menu_RendererRestarted(void)
+{
+	localcmd("menu_restart\n");
+	Menu_AutoScale();
+}
+
+void
+m_shutdown(void)
 {
 	g_initialized = FALSE;
 	/*int i = 0;
@@ -107,14 +145,11 @@ void m_shutdown(void)
 	memfree(games);
 }
 
-void m_draw(vector screensize)
+void
+m_draw(vector screensize)
 {
-	static float oldtime;	
+	static float oldtime;
 	frametime = time - oldtime;
-
-	if (!g_active) {
-		return;
-	}
 	
 	if (g_initialized == FALSE) {
 		return;
@@ -125,6 +160,11 @@ void m_draw(vector screensize)
 		g_vidsize[1] = screensize[1];
 		g_menuofs[0] = (g_vidsize[0] / 2) - 320;
 		g_menuofs[1] = (g_vidsize[1] / 2) - 240;
+		Menu_AutoScale();
+	}
+
+	if (!g_active) {
+		return;
 	}
 
 	if (clientstate() == 2) {
@@ -140,14 +180,17 @@ void m_draw(vector screensize)
 	oldtime = time;
 }
 
-void m_drawloading(vector screensize, float opaque)
+void
+m_drawloading(vector screensize, float opaque)
 {
 	vector pos;
 	pos = (screensize / 2) - [32,32];
+	drawfill([0,0], screensize, [0.5,0.5,0.5], 1.0f);
 	drawpic(pos, "gfx/lambda64", [64,64], [1,1,1], 1.0f);
 }
 
-float Menu_InputEvent(float evtype, float scanx, float chary, float devid)
+float
+Menu_InputEvent(float evtype, float scanx, float chary, float devid)
 {
 	switch (evtype) {
 		case IE_KEYDOWN:
@@ -171,7 +214,8 @@ float Menu_InputEvent(float evtype, float scanx, float chary, float devid)
 	return TRUE;
 }
 
-void m_display(void)
+void
+m_display(void)
 {
 	g_active = TRUE;
 	setkeydest(KEY_MENU);
@@ -184,7 +228,8 @@ void m_display(void)
 m_hide
 =================
 */
-void m_hide(void)
+void
+m_hide(void)
 {
 	g_active = FALSE;
 	setkeydest(KEY_GAME);
@@ -197,7 +242,8 @@ void m_hide(void)
 m_toggle
 =================
 */
-void m_toggle(float fMode)
+void
+m_toggle(float fMode)
 {
 	if (fMode == FALSE) {
 		m_hide();
@@ -206,7 +252,8 @@ void m_toggle(float fMode)
 	}
 }
 
-float m_consolecommand(string cmd)
+float
+m_consolecommand(string cmd)
 {
 	tokenize(cmd);
 	switch (argv(0)) {

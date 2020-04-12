@@ -25,9 +25,9 @@ Client-side decorative model entity.
 
 class prop_dynamic:CBaseEntity
 {
-	void() prop_dynamic;
+	void(void) prop_dynamic;
 
-	virtual void() Init;
+	virtual void(void) Init;
 	virtual void(string, string) SpawnKey;
 };
 

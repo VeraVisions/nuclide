@@ -2,6 +2,7 @@
 #pragma progs_dat  "../../../cstrike/data.pk3dir/progs.dat"
 
 #define QWSSQC
+#define SERVER
 #define CSTRIKE
 
 #includelist

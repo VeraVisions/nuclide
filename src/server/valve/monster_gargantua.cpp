@@ -22,7 +22,8 @@ Gargantua
 
 */
 
-enum {
+enum
+{
 	GARG_IDLE,
 	GARG_IDLE2,
 	GARG_IDLE3,
@@ -51,7 +52,7 @@ class monster_gargantua:CBaseMonster
 {
 	float m_flIdleTime;
 
-	void() monster_gargantua;
+	void(void) monster_gargantua;
 
 	virtual void(int) Death;
 	virtual void(int) Pain;

@@ -14,7 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-enum {
+enum
+{
 	RADIO_BLOW,
 	RADIO_BOMBDEF,
 	RADIO_BOMBPL,
@@ -60,8 +61,8 @@ enum {
 	RADIO_VIP,
 };
 
-#ifdef CSQC
-string sRadioSamples[43] = {
+#ifdef CLIENT
+string g_cstrikeRadioWAVs[43] = {
 	"radio/blow.wav",
 	"radio/bombdef.wav",
 	"radio/bombpl.wav",
@@ -160,9 +161,9 @@ Radio_InitSounds
 Who doesn't love precaching sounds
 =================
 */
-void Radio_InitSounds( void ) {
-	for ( int i = 0; i < 43; i++ ) {
-		precache_sound( sRadioSamples[ i ] );
+void Radio_InitSounds(void) {
+	for (int i = 0; i < 43; i++) {
+		precache_sound(g_cstrikeRadioWAVs[i]);
 	}
 }
 
@@ -173,9 +174,9 @@ Radio_PlayMessage
 Play a radio message that doesn't come from a player
 =================
 */
-void Radio_PlayMessage( float fMessage ) {
-	sound( world, CHAN_VOICE, sRadioSamples[ fMessage ], 1, ATTN_NONE, 0, SOUNDFLAG_NOSPACIALISE );
-	CSQC_Parse_Print( sprintf( "^2[RADIO]^xF80: %s\n", sRadioChat[ fMessage ] ), PRINT_CHAT );
+void Radio_PlayMessage(float fMessage) {
+	sound(world, CHAN_VOICE, g_cstrikeRadioWAVs[fMessage], 1, ATTN_NONE, 0, SOUNDFLAG_NOSPACIALISE);
+	CSQC_Parse_Print(sprintf("^2[RADIO]^xF80: %s\n", sRadioChat[fMessage]), PRINT_CHAT);
 }
 
 /*
@@ -185,14 +186,14 @@ Radio_PlayPlayerMessage
 This radio message does come from a player
 =================
 */
-void Radio_PlayPlayerMessage( float fPlayerNum, float fMessage ) {
-	sound( world, CHAN_VOICE, sRadioSamples[ fMessage ], 1, ATTN_NONE, 0, SOUNDFLAG_NOSPACIALISE );
-	CSQC_Parse_Print( sprintf( "^2[RADIO] %s%s^xF80: %s\n", HUD_GetChatColorHEX( stof( getplayerkeyvalue( fPlayerNum, "*team" ) ) ), getplayerkeyvalue( fPlayerNum, "name" ), sRadioChat[ fMessage ] ), PRINT_CHAT );
+void Radio_PlayPlayerMessage(float fPlayerNum, float fMessage) {
+	sound(world, CHAN_VOICE, g_cstrikeRadioWAVs[fMessage], 1, ATTN_NONE, 0, SOUNDFLAG_NOSPACIALISE);
+	CSQC_Parse_Print(sprintf("^2[RADIO] %s%s^xF80: %s\n", HUD_GetChatColorHEX(stof(getplayerkeyvalue(fPlayerNum, "*team"))), getplayerkeyvalue(fPlayerNum, "name"), sRadioChat[fMessage]), PRINT_CHAT);
 }
 #endif
 
 
-#ifdef SSQC
+#ifdef SERVER
 /*
 =================
 Radio_BroadcastMessage
@@ -200,12 +201,12 @@ Radio_BroadcastMessage
 A global radio message for all players
 =================
 */
-void Radio_BroadcastMessage( float fMessage ) {
-	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
-	WriteByte( MSG_MULTICAST, EV_RADIOMSG );
-	WriteByte( MSG_MULTICAST, fMessage );
+void Radio_BroadcastMessage(float fMessage) {
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_RADIOMSG);
+	WriteByte(MSG_MULTICAST, fMessage);
 	msg_entity = self;
-	multicast( '0 0 0', MULTICAST_ALL );
+	multicast('0 0 0', MULTICAST_ALL);
 }
 
 /*
@@ -215,20 +216,20 @@ Radio_TeamMessage
 A radio message targetted at members of a specific team
 =================
 */
-void Radio_TeamMessage( float fMessage, float fTeam ) {
-	static void Radio_TeamMessage_Send( float fMessage, entity eEnt ) {
-		WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
-		WriteByte( MSG_MULTICAST, EV_RADIOMSG );
-		WriteByte( MSG_MULTICAST, fMessage );
+void Radio_TeamMessage(float fMessage, float fTeam) {
+	static void Radio_TeamMessage_Send(float fMessage, entity eEnt) {
+		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+		WriteByte(MSG_MULTICAST, EV_RADIOMSG);
+		WriteByte(MSG_MULTICAST, fMessage);
 		msg_entity = eEnt;
-		multicast( '0 0 0', MULTICAST_ONE );
+		multicast('0 0 0', MULTICAST_ONE);
 	}
 	
-	for ( entity eFind = world; ( eFind = find( eFind, classname, "player" ) ); ) {
-		if ( eFind.team == fTeam ) {
-			Radio_TeamMessage_Send( fMessage, eFind );
-		} else if ( eFind.team == TEAM_VIP && fTeam == TEAM_CT ) {
-			Radio_TeamMessage_Send( fMessage, eFind );
+	for (entity eFind = world; (eFind = find(eFind, classname, "player"));) {
+		if (eFind.team == fTeam) {
+			Radio_TeamMessage_Send(fMessage, eFind);
+		} else if (eFind.team == TEAM_VIP && fTeam == TEAM_CT) {
+			Radio_TeamMessage_Send(fMessage, eFind);
 		}
 	}
 }
@@ -240,12 +241,12 @@ Radio_DefaultStart
 Pick a generic, random radio string for global start messages
 =================
 */
-float Radio_DefaultStart( void ) {
-	float fRand = floor( random( 1, 4 ) );
+float Radio_DefaultStart(void) {
+	float fRand = floor(random(1, 4));
 	
-	if ( fRand == 1 ) {
+	if (fRand == 1) {
 		return RADIO_MOVEOUT;
-	} else if ( fRand == 2 ) {
+	} else if (fRand == 2) {
 		return RADIO_LOCKNLOAD;
 	} else {
 		return RADIO_LETSGO;
@@ -259,56 +260,56 @@ Radio_StartMessage
 Decide which startmessage to play at the beginning of each round
 =================
 */
-void Radio_StartMessage( void ) {
-	if ( iVIPZones > 0 ) {
-		Radio_TeamMessage( RADIO_VIP, TEAM_CT );
-		Radio_TeamMessage( Radio_DefaultStart(), TEAM_T );
-	} else if ( iEscapeZones > 0 ) {
-		Radio_TeamMessage( RADIO_GETOUT, TEAM_T );
-		Radio_TeamMessage( Radio_DefaultStart(), TEAM_CT );
+void Radio_StartMessage(void) {
+	if (iVIPZones > 0) {
+		Radio_TeamMessage(RADIO_VIP, TEAM_CT);
+		Radio_TeamMessage(Radio_DefaultStart(), TEAM_T);
+	} else if (iEscapeZones > 0) {
+		Radio_TeamMessage(RADIO_GETOUT, TEAM_T);
+		Radio_TeamMessage(Radio_DefaultStart(), TEAM_CT);
 	} else {
-		Radio_BroadcastMessage( Radio_DefaultStart() );
+		Radio_BroadcastMessage(Radio_DefaultStart());
 	}
 }
 
 /*
 =================
-CSEv_RadioMessage_f
+CSEv_Radio_f
 
 Triggered by clients, plays a message to members of the same team
 =================
 */
-void CSEv_RadioMessage_f( float fMessage ) {
-	static void CSEv_RadioMessage_Send( float fMessage, entity eEnt ) {
-		WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
-		WriteByte( MSG_MULTICAST, EV_RADIOMSG2 );
-		WriteByte( MSG_MULTICAST, num_for_edict( eEnt ) - 1 );
-		WriteByte( MSG_MULTICAST, fMessage );
+void CSEv_Radio_f(float fMessage) {
+	static void CSEv_Radio_Send(float fMessage, entity eEnt) {
+		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+		WriteByte(MSG_MULTICAST, EV_RADIOMSG2);
+		WriteByte(MSG_MULTICAST, num_for_edict(eEnt) - 1);
+		WriteByte(MSG_MULTICAST, fMessage);
 		msg_entity = eEnt;
-		multicast( '0 0 0', MULTICAST_ONE );
+		multicast('0 0 0', MULTICAST_ONE);
 	}
 	
 	// Don't allow spamming
-	if ( self.fRadioFinished > time ) {
+	if (self.fRadioFinished > time) {
 		return;
 	}
 	
 	// When dead, don't talk
-	if ( self.health <= 0 ) {
+	if (self.health <= 0) {
 		return;
 	}
 	
 	// Make sure that VIPs and CTs get eachother
 	float fTargetTeam = self.team;
-	if ( fTargetTeam == TEAM_VIP ) {
+	if (fTargetTeam == TEAM_VIP) {
 		fTargetTeam = TEAM_CT;
 	}
 	
-	for ( entity eFind = world; ( eFind = find( eFind, classname, "player" ) ); ) {
-		if ( eFind.team == fTargetTeam ) {
-			CSEv_RadioMessage_Send( fMessage, eFind );
-		} else if ( eFind.team == TEAM_VIP && fTargetTeam == TEAM_CT ) {
-			CSEv_RadioMessage_Send( fMessage, eFind );
+	for (entity eFind = world; (eFind = find(eFind, classname, "player"));) {
+		if (eFind.team == fTargetTeam) {
+			CSEv_Radio_Send(fMessage, eFind);
+		} else if (eFind.team == TEAM_VIP && fTargetTeam == TEAM_CT) {
+			CSEv_Radio_Send(fMessage, eFind);
 		}
 	}
 	

@@ -17,14 +17,16 @@
 var int autocvar_sh_scialert = FALSE;
 var int autocvar_sh_scispeed = 40;
 
-enum {
+enum
+{
 	SCI_IDLE,
 	SCI_WALK,
 	SCI_RUN,
 	SCI_DEAD
 };
 
-enum {
+enum
+{
 	SCIA_WALK,
 	SCIA_WALKSCARED,
 	SCIA_RUN,
@@ -311,18 +313,18 @@ class monster_scientist:CBaseNPC
 	float m_flChangePath;
 	float m_flTraceTime;
 	int m_iFlags;
-	void() monster_scientist;
+	void(void) monster_scientist;
 
-	virtual void() touch;
-	virtual void() Hide;
-	virtual void() Respawn;
-	virtual void() PlayerUse;
+	virtual void(void) touch;
+	virtual void(void) Hide;
+	virtual void(void) Respawn;
+	virtual void(void) PlayerUse;
 	virtual void(int) Pain;
 	virtual void(int) Death;
-	virtual void() Physics;
-	virtual void() Scream;
-	virtual void() WarnOthers;
-	virtual void() IdleChat;
+	virtual void(void) Physics;
+	virtual void(void) Scream;
+	virtual void(void) WarnOthers;
+	virtual void(void) IdleChat;
 };
 
 void monster_scientist::WarnOthers(void)

@@ -38,7 +38,7 @@ void w_cannon_precache(void)
 }
 void w_cannon_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.cannon_mag, pl.ammo_buckshot, __NULL__);
 #endif
 }
@@ -57,7 +57,7 @@ void w_cannon_reload(void)
 	if (pl.w_attack_next > 0) {
 		return;
 	}
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 >= 2) {
 		return;
 	}
@@ -83,7 +83,7 @@ void w_cannon_reload(void)
 
 int w_cannon_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -103,7 +103,7 @@ void w_cannon_draw(void)
 {
 	Weapons_SetModel("models/v_cannon.mdl");
 	Weapons_ViewAnimation(CANNON_DEPLOY);
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 	Weapons_UpdateAmmo(pl, pl.cannon_mag, pl.ammo_buckshot, __NULL__);
 #endif
@@ -121,7 +121,7 @@ void w_cannon_primary(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 != 2) {
 		w_cannon_reload();
 		return;
@@ -152,7 +152,7 @@ void w_cannon_secondary(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (!pl.a_ammo1) {
 		w_cannon_reload();
 		return;
@@ -201,14 +201,14 @@ void w_cannon_release(void)
 }
 void w_cannon_crosshair(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	static vector cross_pos;
 	cross_pos = (g_hudres / 2) + [-12,-12];
 	drawsubpic(cross_pos, [24,24], "sprites/crosshairs.spr_0.tga", [48/128,24/128], [0.1875, 0.1875], [1,1,1], 1, DRAWFLAG_NORMAL);
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [72/256,72/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [72/256,72/128], [24/256, 24/128], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
@@ -219,7 +219,7 @@ float w_cannon_aimanim(void)
 
 void w_cannon_hudpic(int s, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (s) {
 		drawsubpic(pos, [170,45], "sprites/w_cannon.spr_0.tga", [0,48/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	} else {

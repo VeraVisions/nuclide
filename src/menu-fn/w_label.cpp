@@ -23,8 +23,8 @@ class CLabel:CWidget
 	float m_alpha;
 	int m_font;
 
-	void() CLabel;
-	virtual void() Draw;
+	void(void) CLabel;
+	virtual void(void) Draw;
 };
 
 void CLabel::CLabel(void)

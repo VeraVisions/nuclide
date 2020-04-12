@@ -65,7 +65,7 @@ w_pipewrench_precache(void)
 void
 w_pipewrench_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, -1, -1);
 #endif
 }
@@ -123,7 +123,7 @@ w_pipewrench_primary(void)
 	}
 	pl.w_idle_next = 2.5f;
 
-#ifdef CSQC
+#ifdef CLIENT
 	int r = (float)input_sequence % 3;
 	switch (r) {
 	case 0:
@@ -207,7 +207,7 @@ w_pipewrench_release(void)
 	}
 
 	if (pl.a_ammo1 == 1) {
-	#ifdef SSQC
+	#ifdef SERVER
 		int hitsound = 0;
 		string snd;
 	#endif
@@ -217,7 +217,7 @@ w_pipewrench_release(void)
 		traceline(src, src + (v_forward * 64), FALSE, pl);
 
 		if (trace_fraction < 1.0) {
-		#ifdef SSQC
+		#ifdef SERVER
 			if (trace_ent.takedamage == DAMAGE_YES) {
 				hitsound = floor(random(1, 2));
 				/* TODO Damage is 45 - 200+ (?) */
@@ -238,7 +238,7 @@ w_pipewrench_release(void)
 		} else {
 			Weapons_ViewAnimation(PIPE_ATTACKBIGMISS);
 		}
-#ifdef SSQC
+#ifdef SERVER
 		snd = "weapons/pwrench_big_miss.wav";
 		switch (hitsound) {
 		case 1:
@@ -289,7 +289,7 @@ w_pipewrench_aimanim(void)
 void
 w_pipewrench_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -342,7 +342,7 @@ weapon_t w_pipewrench =
 };
 
 /* entity definitions for pickups */
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_pipewrench(void)
 {

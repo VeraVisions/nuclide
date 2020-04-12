@@ -33,7 +33,7 @@ enum
 void
 w_taurus_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_taurus.fire");
 #endif
 	precache_model("models/v_taurus.mdl");
@@ -44,7 +44,7 @@ w_taurus_precache(void)
 void
 w_taurus_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.taurus_mag, pl.ammo_taurus, -1);
 #endif
 }
@@ -70,7 +70,7 @@ w_taurus_deathmsg(void)
 int
 w_taurus_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
@@ -89,7 +89,7 @@ w_taurus_pickup(int new)
 void
 w_taurus_draw(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	Weapons_SetModel("models/v_taurus.mdl");
 	Weapons_ViewAnimation(TAURUS_DRAW);
 #endif
@@ -98,7 +98,7 @@ w_taurus_draw(void)
 void
 w_taurus_holster(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	Weapons_ViewAnimation(TAURUS_HOLSTER);
 #endif
 }
@@ -113,7 +113,7 @@ w_taurus_primary(void)
 	}
 
 	/* ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (!pl.a_ammo1) {
 		return;
 	}
@@ -124,7 +124,7 @@ w_taurus_primary(void)
 #endif
 
 	/* actual firing */
-#ifdef CSQC
+#ifdef CLIENT
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_SMALL);
 	Weapons_ViewPunchAngle([-2,0,0]);
@@ -164,7 +164,7 @@ w_taurus_reload(void)
 		return;
 	}
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 >= 10) {
 		return;
 	}
@@ -264,7 +264,7 @@ weapon_t w_taurus =
 
 
 /* pickups */
-#ifdef SSQC
+#ifdef SERVER
 void
 weapon_th_taurus(void)
 {

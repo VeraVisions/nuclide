@@ -22,6 +22,37 @@
 STUB!
 */
 
+/* compatibility */
+string g_q1button_src[4] = {
+	"buttons/airbut1.wav",
+	"buttons/switch21.wav",
+	"buttons/switch02.wav",
+	"buttons/switch04.wav"
+};
+string g_hlbutton_sfx[21] = {
+	"common/null.wav",
+	"buttons/button1.wav",
+	"buttons/button2.wav",
+	"buttons/button3.wav",
+	"buttons/button4.wav",
+	"buttons/button5.wav",
+	"buttons/button6.wav",
+	"buttons/button7.wav",
+	"buttons/button8.wav",
+	"buttons/button9.wav",
+	"buttons/button10.wav",
+	"buttons/button11.wav",
+	"buttons/latchlocked1.wav",
+	"buttons/latchunlocked1.wav",
+	"buttons/lightswitch2.wav",
+	"buttons/lever1.wav",
+	"buttons/lever2.wav",
+	"buttons/lever3.wav",
+	"buttons/lever4.wav",
+	"buttons/lever5.wav",
+	"buttons/button9.wav"
+};
+
 #define SF_BTT_NOMOVE		1
 #define SF_BTT_TOGGLE		32
 #define SF_BTT_SPARKS		64
@@ -49,102 +80,52 @@ class func_button:CBaseTrigger
 	int m_iState;
 	vector m_vecPos1;
 	vector m_vecPos2;
-	int m_iSounds;
+
 	float m_flNextTrigger;
 	vector m_vecDest;
-	string m_strNoise;
 	float m_flWait;
 	float m_flDelay;
 	vector m_vecMoveDir;
-	virtual void() m_pMove = 0;
+	virtual void(void) m_pMove = 0;
+
+	/* full-path versus sound-shaders */
+	int m_iSoundCompat;
+	string m_strSndPressed;
+	string m_strSndUnpressed;
 	
-	virtual void() Precache;
-	virtual void() Respawn;
-	virtual void() Arrived;
-	virtual void() Returned;
-	virtual void() MoveBack;
-	virtual void() MoveAway;
-	virtual void() Touch;
-	virtual void() Blocked;
-	virtual void() Trigger;
-	virtual void() Use;
+	virtual void(void) Precache;
+	virtual void(void) Respawn;
+	virtual void(void) Arrived;
+	virtual void(void) Returned;
+	virtual void(void) MoveBack;
+	virtual void(void) MoveAway;
+	virtual void(void) Touch;
+	virtual void(void) Blocked;
+	virtual void(void) Trigger;
+	virtual void(void) Use;
 	virtual void(int) Pain;
 	virtual void(int) Death;
 	
-	virtual void() SetMovementDirection;
-	virtual void(vector, void()) MoveToDestination;
-	virtual void() MoveToDestination_End;
+	virtual void(void) SetMovementDirection;
+	virtual void(vector, void(void)) MoveToDestination;
+	virtual void(void) MoveToDestination_End;
 };
 
 void func_button::Precache(void)
 {
-	precache_model(model);
-	switch(m_iSounds) {
-		case 0: 
-			m_strNoise = "common/null.wav";
-			break;
-		case 1:
-			m_strNoise = "buttons/button1.wav";
-			break;
-		case 2:
-			m_strNoise = "buttons/button2.wav";
-			break;
-		case 3:
-			m_strNoise = "buttons/button3.wav";
-			break;
-		case 4:
-			m_strNoise = "buttons/button4.wav";
-			break;
-		case 5:
-			m_strNoise = "buttons/button5.wav";
-			break;
-		case 6:
-			m_strNoise = "buttons/button6.wav";
-			break;
-		case 7:
-			m_strNoise = "buttons/button7.wav";
-			break;
-		case 8:
-			m_strNoise = "buttons/button8.wav";
-			break;
-		case 9:
-			m_strNoise = "buttons/button9.wav";
-			break;
-		case 10:
-			m_strNoise = "buttons/button10.wav";
-			break;
-		case 11:
-			m_strNoise = "buttons/button11.wav";
-			break;
-		case 12:
-			m_strNoise = "buttons/latchlocked1.wav";
-			break;
-		case 13:
-			m_strNoise = "buttons/latchunlocked1.wav";
-			break;
-		case 14:
-			m_strNoise = "buttons/lightswitch2.wav";
-			break;
-		case 21:
-			m_strNoise = "buttons/lever1.wav";
-			break;
-		case 22:
-			m_strNoise = "buttons/lever2.wav";	
-			break;
-		case 23:
-			m_strNoise = "buttons/lever3.wav";
-			break;
-		case 24:
-			m_strNoise = "buttons/lever4.wav";
-			break;
-		case 25:
-			m_strNoise = "buttons/lever5.wav";
-			break;
-		default:
-			m_strNoise = "buttons/button9.wav";
+	if (m_strSndPressed) {
+		if (m_iSoundCompat)
+			precache_sound(m_strSndPressed);
+		else
+			Sound_Precache(m_strSndPressed);
 	}
-	
-	precache_sound(m_strNoise);
+
+	if (m_strSndUnpressed) {
+		if (m_iSoundCompat)
+			precache_sound(m_strSndUnpressed);
+		else
+			Sound_Precache(m_strSndUnpressed);
+	}
 }
 
 void func_button::Arrived(void)
@@ -181,11 +162,18 @@ void func_button::MoveBack(void)
 {
 	touch = __NULL__;
 	m_iState = STATE_DOWN;
-	
+
+	if (m_strSndUnpressed) {
+		if (m_iSoundCompat)
+			sound(this, CHAN_VOICE, m_strSndUnpressed, 1.0, ATTN_NORM);
+		else
+			Sound_Play(this, CHAN_VOICE, m_strSndUnpressed);
+	}
+
 	if (m_vecPos2 != m_vecPos1) {
-		func_button::MoveToDestination (m_vecPos1, Returned);
+		MoveToDestination (m_vecPos1, Returned);
 	} else {
-		func_button::Returned();
+		Returned();
 	}
 }
 
@@ -204,9 +192,9 @@ void func_button::MoveAway(void)
 	m_iState = STATE_UP;
 	
 	if (m_vecPos2 != m_vecPos1) {
-		func_button::MoveToDestination(m_vecPos2, Arrived);
+		MoveToDestination(m_vecPos2, Arrived);
 	} else {
-		func_button::Arrived();
+		Arrived();
 	}
 	
 	frame = FRAME_ON;
@@ -222,18 +210,24 @@ void func_button::Trigger(void)
 	
 	if ((m_iState == STATE_UP) || (m_iState == STATE_RAISED)){
 		if (m_flWait != -1) {
-			func_button::MoveBack();
+			MoveBack();
 		}
 		return;
 	}
 
-	sound(this, CHAN_VOICE, m_strNoise, 1.0, ATTN_NORM);
-	func_button::MoveAway();
-	
+	if (m_strSndPressed) {
+		if (m_iSoundCompat)
+			sound(this, CHAN_VOICE, m_strSndPressed, 1.0, ATTN_NORM);
+		else
+			Sound_Play(this, CHAN_VOICE, m_strSndPressed);
+	}
+
+	MoveAway();
+
 	if (m_flDelay) {
-		CBaseTrigger::UseTargets_Delay(m_flDelay);
+		UseTargets_Delay(m_flDelay);
 	} else {
-		CBaseTrigger::UseTargets();
+		UseTargets();
 	}
 }
 
@@ -241,7 +235,7 @@ void func_button::Touch(void)
 {
 	if (other.movetype == MOVETYPE_WALK) {
 		eActivator = other;
-		func_button::Trigger();
+		Trigger();
     
 		if (!(spawnflags & SF_BTT_TOUCH_ONLY)) {
 			touch = __NULL__;
@@ -269,12 +263,12 @@ void func_button::Blocked(void)
 	if (m_iDamage) {
 		//Damage_Apply(other, this, dmg, other.origin, FALSE);
 	}
-	
+
 	if (m_flWait >= 0) {
 		if (m_iState == STATE_DOWN) {
-			func_button::MoveAway();
+			MoveAway();
 		} else {
-			func_button::MoveBack();
+			MoveBack();
 		}
 	}
 }
@@ -299,7 +293,7 @@ void func_button::MoveToDestination_End(void)
 	m_pMove();
 }
 
-void func_button::MoveToDestination(vector vDestination, void() func)
+void func_button::MoveToDestination(vector vecDest, void(void) func)
 {
 	vector vecDifference;
 	float flTravel, fTravelTime;
@@ -309,16 +303,16 @@ void func_button::MoveToDestination(vector vDestination, void() func)
 	}
 
 	m_pMove = func;
-	m_vecDest = vDestination;
+	m_vecDest = vecDest;
 	think = MoveToDestination_End;
 
-	if (vDestination == origin) {
+	if (vecDest == origin) {
 		velocity = '0 0 0';
 		nextthink = (ltime + 0.1);
 		return;
 	}
 
-	vecDifference = (vDestination - origin);
+	vecDifference = (vecDest - origin);
 	flTravel = vlen(vecDifference);
 	fTravelTime = (flTravel / m_flSpeed);
 
@@ -327,14 +321,14 @@ void func_button::MoveToDestination(vector vDestination, void() func)
 		nextthink = ltime + 0.1;
 		return;
 	}
-	
+
 	nextthink = (ltime + fTravelTime);
 	velocity = (vecDifference * (1 / fTravelTime));
 }
 
 void func_button::Respawn(void)
 {
-	func_button::SetMovementDirection();
+	SetMovementDirection();
 
 	solid = SOLID_BSP;
 	movetype = MOVETYPE_PUSH;
@@ -344,7 +338,7 @@ void func_button::Respawn(void)
 	velocity = [0,0,0];
 	nextthink = -1;
 	health = m_oldHealth;
-	
+
 	if (health > 0) {
 		takedamage = DAMAGE_YES;
 	}
@@ -375,28 +369,38 @@ void func_button::Respawn(void)
 
 void func_button::func_button(void)
 {
-	func_button::Precache();
 	CBaseTrigger::CBaseTrigger();
 
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
 		case "speed":
-			m_flSpeed = stof(argv(i + 1));
+			m_flSpeed = stof(argv(i+1));
 			break;
 		case "lip":
-			m_flLip = stof(argv(i + 1));
+			m_flLip = stof(argv(i+1));
 			break;
-		case "sounds":
-			m_iSounds = stoi(argv(i + 1));
+		case "snd_pressed":
+			m_strSndPressed = argv(i+1);
+			break;
+		case "snd_unpressed":
+			m_strSndUnpressed = argv(i+1);
 			break;
 		case "wait":
-			m_flWait = stof(argv(i + 1));
+			m_flWait = stof(argv(i+1));
 			break;
 		case "delay":
-			m_flDelay = stof(argv(i + 1));
+			m_flDelay = stof(argv(i+1));
+			break;
+		/* compatibility */
+		case "sounds":
+			int snd;
+			snd = stoi(argv(i+1));
+			m_strSndPressed = g_hlbutton_sfx[snd];
+			m_iSoundCompat = TRUE;
 			break;
 		default:
 			break;
 		}
 	}
+	Precache();
 }

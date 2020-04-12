@@ -21,42 +21,42 @@ Brush that lets light to pass through it and is non-solid.
 On idTech 2 BSPs, it will change texture variants when triggered.
 */
 
-class func_illusionary : CBaseEntity
+class func_illusionary:CBaseEntity
 {
-	void() func_illusionary;
+	void(void) func_illusionary;
 
-	virtual void() Use;
+	virtual void(void) Use;
 };
 
-void func_illusionary :: func_illusionary ( void )
+void func_illusionary::func_illusionary(void)
 {
 	CBaseEntity::CBaseEntity();
 
-	int nfields = tokenize( __fullspawndata );
-	for ( int i = 1; i < ( nfields - 1 ); i += 2 ) {
-		switch ( argv( i ) ) {
+	int nfields = tokenize(__fullspawndata);
+	for (int i = 1; i < (nfields - 1); i += 2) {
+		switch (argv(i)) {
 		case "color":
-			colormod = stov( argv( i + 1 ) );
+			colormod = stov(argv(i+1));
 			break;
 		default:
 			break;
 		}
 	}
 
-	precache_model( model );
+	precache_model(model);
 	//angles = '0 0 0';
 	movetype = MOVETYPE_PUSH;
 	solid = SOLID_NOT;
-	setmodel( this, model );
+	setmodel(this, model);
 	setorigin(this, origin);
 
 	// TODO: Add support for (skin) -1 = Empty, -7 = Volumetric light
-	if (skin < 0 ) {
+	if (skin < 0) {
 		skin = 0;
 	}
 }
 
-void func_illusionary :: Use ( void )
+void func_illusionary::Use(void)
 {
 	skin = 1 - skin;
 }

@@ -46,7 +46,7 @@ void w_egon_precache(void)
 }
 void w_egon_updateammo(player pl)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_uranium, __NULL__);
 #endif
 }
@@ -65,7 +65,7 @@ string w_egon_deathmsg(void)
 
 int w_egon_pickup(int new)
 {
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 
 	if (pl.ammo_uranium < MAX_A_URANIUM) {
@@ -97,7 +97,7 @@ void w_egon_primary(void)
 	}
 
 	/* Ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo2 <= 0) {
 		return;
 	}
@@ -107,7 +107,7 @@ void w_egon_primary(void)
 	}
 #endif
 
-#ifdef CSQC
+#ifdef CLIENT
 	if (Weapons_GetAnimation() == EGON_IDLE1)
 		Weapons_ViewAnimation(EGON_ALTFIREON);
 	else if (Weapons_GetAnimation() == EGON_ALTFIREON)
@@ -137,7 +137,7 @@ void w_egon_reload(void)
 }
 void w_egon_release(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	player pl = (player)self;
 	if (Weapons_GetAnimation() == EGON_ALTFIRECYCLE) {
 		Weapons_ViewAnimation(EGON_ALTFIREOFF);
@@ -159,13 +159,13 @@ void w_egon_release(void)
 }
 void w_egon_crosshair(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	static vector cross_pos;
 	cross_pos = g_hudmins + (g_hudres / 2) + [-12,-12];
 	drawsubpic(cross_pos, [24,24], "sprites/crosshairs.spr_0.tga", [72/128,48/128], [0.1875, 0.1875], [1,1,1], 1, DRAWFLAG_NORMAL);
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [0,96/128], [24/256, 24/128], g_hud_color, pSeat->ammo2_alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [0,96/128], [24/256, 24/128], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
@@ -176,7 +176,7 @@ float w_egon_aimanim(void)
 
 void w_egon_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(pos, [170,45], "sprites/640hud5.spr_0.tga", [0,135/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	} else {
@@ -210,7 +210,7 @@ weapon_t w_egon =
 	w_egon_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void weapon_egon(void) {
 	Weapons_InitItem(WEAPON_EGON);
 }

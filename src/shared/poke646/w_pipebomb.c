@@ -59,7 +59,7 @@ string w_pipebomb_deathmsg(void)
 }
 void w_pipebomb_precache(void)
 {
-#ifdef SSQC
+#ifdef SERVER
 	Sound_Precache("weapon_satchel.bounce");
 #endif
 	precache_model("models/w_pipebomb.mdl");
@@ -77,7 +77,7 @@ void w_pipebomb_draw(void)
 {
 	Weapons_SetModel("models/v_pipebomb.mdl");
 	Weapons_ViewAnimation(SATCHEL_DRAW);
-#ifdef SSQC
+#ifdef SERVER
 	player pl = (player)self;
 	Weapons_UpdateAmmo(pl, pl.satchel_chg, pl.ammo_satchel, __NULL__);
 #endif
@@ -88,7 +88,7 @@ void w_pipebomb_holster(void)
 	
 }
 
-#ifdef SSQC
+#ifdef SERVER
 void s_pipebomb_drop(entity master, vector src, vector vel)
 {
 	static void s_pipebomb_touch(void)
@@ -119,7 +119,7 @@ void s_pipebomb_detonate(entity master)
 			float dmg = Skill_GetValue("plr_satchel");
 			Effect_CreateExplosion(b.origin);
 			Damage_Radius(b.origin, master, dmg, dmg * 2.5f, TRUE, WEAPON_SATCHEL);
-			sound(b, CHAN_WEAPON, sprintf( "weapons/explode%d.wav", floor( random() * 2 ) + 3 ), 1, ATTN_NORM);
+			sound(b, CHAN_WEAPON, sprintf("weapons/explode%d.wav", floor(random() * 2) + 3), 1, ATTN_NORM);
 			remove(b);
 		}
 	}
@@ -135,7 +135,7 @@ void w_pipebomb_primary(void)
 	}
 
 	/* Ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo1 <= 0 && pl.a_ammo2 <= 0) {
 		return;
 	}
@@ -151,7 +151,7 @@ void w_pipebomb_primary(void)
         Weapons_ViewAnimation(RADIO_USE);
     }
 
-#ifdef SSQC
+#ifdef SERVER
 	if (!pl.satchel_chg) {
 		vector throw;
 		
@@ -170,7 +170,7 @@ void w_pipebomb_primary(void)
 	}
 	Weapons_UpdateAmmo(pl, pl.satchel_chg, pl.ammo_satchel, __NULL__);
 #else
-	setmodel(pSeat->eViewModel, "models/v_pipebomb_watch.mdl");
+	setmodel(pSeat->m_eViewModel, "models/v_pipebomb_watch.mdl");
 	pl.a_ammo1++;
 	pl.a_ammo2--;
 #endif
@@ -187,7 +187,7 @@ void w_pipebomb_secondary(void)
 	}
 
     /* Ammo check */
-#ifdef CSQC
+#ifdef CLIENT
 	if (pl.a_ammo2 <= 0) {
 		return;
 	}
@@ -197,7 +197,7 @@ void w_pipebomb_secondary(void)
 	}
 #endif
 
-#ifdef SSQC
+#ifdef SERVER
 	vector throw;
 	Weapons_MakeVectors();
 	throw = pl.velocity + (v_forward * 274);
@@ -208,7 +208,7 @@ void w_pipebomb_secondary(void)
 #else
 	pl.a_ammo1++;
 	pl.a_ammo2--;
-	setmodel(pSeat->eViewModel, "models/v_pipebomb_watch.mdl");
+	setmodel(pSeat->m_eViewModel, "models/v_pipebomb_watch.mdl");
 #endif
 
 	Weapons_ViewAnimation(RADIO_DRAW);
@@ -237,7 +237,7 @@ void w_pipebomb_hud(void)
 
 void w_pipebomb_hudpic(int selected, vector pos, float a)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	if (selected) {
 		drawsubpic(pos, [170,45], "sprites/640hud6.spr_0.tga", [0,45/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	} else {
@@ -271,7 +271,7 @@ weapon_t w_pipebomb =
 	.hudpic		= w_pipebomb_hudpic
 };
 
-#ifdef SSQC
+#ifdef SERVER
 void weapon_pipebomb(void) {
 	Weapons_InitItem(WEAPON_SATCHEL);
 }

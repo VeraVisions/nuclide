@@ -16,21 +16,24 @@
 
 CUIWidget g_uiDesktop;
 
-void VGUI_Init(void)
+void
+VGUI_Init(void)
 {
 	UISystem_Init();
-	g_uiDesktop = spawn( CUIWidget );
-	g_uiDesktop.FlagAdd( 1 );
+	g_uiDesktop = spawn(CUIWidget);
+	g_uiDesktop.FlagAdd(1);
 }
 
-int VGUI_Draw(void)
+int
+VGUI_Draw(void)
 {
 	g_uiDesktop.Draw();
 	return 1;
 }
 
-int VGUI_Input(float flEvType, float flScanX, float flCharY, float flDevID)
+int
+VGUI_Input(float flEvType, float flScanX, float flCharY, float flDevID)
 {
-	g_uiDesktop.Input( flEvType, flScanX, flCharY, flDevID );
+	g_uiDesktop.Input(flEvType, flScanX, flCharY, flDevID);
 	return 1;
 }
