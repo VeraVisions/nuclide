@@ -81,10 +81,7 @@ void CListBox::Input(float type, float x, float y, float devid)
 		if (Util_CheckMouse(pos[0], pos[1], m_size[0], 15)) {
 			if (type == IE_KEYDOWN) {
 				if (x == K_MOUSE1) {
-					m_selected = i;
-					if (m_execute) {
-						m_execute(i);
-					}
+					SetSelected(i);
 					break;
 				}
 			}
@@ -131,7 +128,15 @@ void CListBox::SetChanged(void(int val) func)
 
 void CListBox::SetSelected(int i)
 {
+	if (m_entries[i] == __NULL__) {
+		return;
+	}
+
 	m_selected = i;
+
+	if (m_execute) {
+		m_execute(i);
+	}
 }
 
 int CListBox::GetSelected(void)

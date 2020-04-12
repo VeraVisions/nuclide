@@ -88,6 +88,19 @@ void btn_configuration_start(void)
 	header.SetHeader(HEAD_CONFIG);
 	header.SetExecute(btn_configuration_end);
 }
+void btn_loadgame_start(void)
+{
+	static void btn_loadgame_end(void) {
+		g_menupage = PAGE_LOADGAME;
+	}
+	localsound("../media/launch_upmenu1.wav");
+	header.SetStartEndPos(70,292,45,45);
+	header.SetStartEndSize(156,26,460,80);
+	header.m_lerp = 0.0f;
+	header.m_visible = TRUE;
+	header.SetHeader(HEAD_LOAD);
+	header.SetExecute(btn_loadgame_end);
+}
 void btn_multiplayer_start(void)
 {
 	static void btn_multiplayer_end(void) {
@@ -162,6 +175,7 @@ void menu_main_init(void)
 
 	main_btnLoadGame = spawn(CMainButton);
 	main_btnLoadGame.SetImage(BTN_LOADGAME);
+	main_btnLoadGame.SetExecute(btn_loadgame_start);
 	if (games[gameinfo_current].type != "Multiplayer") {
 		// Loadgame disabled
 	}

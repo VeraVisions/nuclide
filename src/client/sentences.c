@@ -28,7 +28,7 @@
  * has pretty good documentation of how the format is meant to work */
 
 /* enable this if you want to use memalloc */
-#define DYNAMIC_SENTENCES 1
+#define DYNAMIC_SENTENCES
 
 typedef struct
 {
