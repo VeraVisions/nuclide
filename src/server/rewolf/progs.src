@@ -65,8 +65,8 @@ monster_human_unarmed.cpp
 ../../shared/valve/animations.c
 
 ../gamerules.cpp
-../valve/gamerules.cpp
-../rewolf/gamerules_singleplayer.cpp
+../rewolf/gamerules.cpp
+../valve/gamerules_singleplayer.cpp
 ../rewolf/gamerules_multiplayer.cpp
 ../valve/client.c
 ../client.c

@@ -16,20 +16,23 @@
 
 var int autocvar_sv_playerkeepalive = TRUE;
 
-class HLGameRules:CGameRules
+class CSGameRules:CGameRules
 {
 	virtual void(entity) PlayerConnect;
 	virtual void(entity) PlayerDisconnect;
 	virtual void(player) PlayerKill;
 	virtual void(player) PlayerPostFrame;
 
+	/* level transitions */
+	virtual void(player) LevelChangeParms;
+	virtual void(player) LevelDecodeParms;
 	virtual void(void) LevelNewParms;
 };
 
 /* we check what fields have changed over the course of the frame and network
  * only the ones that have actually changed */
 void
-HLGameRules::PlayerPostFrame(player pl)
+CSGameRules::PlayerPostFrame(player pl)
 {
 	Animation_PlayerUpdate();
 
@@ -123,8 +126,49 @@ HLGameRules::PlayerPostFrame(player pl)
 	pl.old_cs_shottime = pl.cs_shottime;
 }
 
+
 void
-HLGameRules::LevelNewParms(void)
+CSGameRules::LevelDecodeParms(player pl)
+{
+	g_landmarkpos[0] = parm1;
+	g_landmarkpos[1] = parm2;
+	g_landmarkpos[2] = parm3;
+	pl.angles[0] = parm4;
+	pl.angles[1] = parm5;
+	pl.angles[2] = parm6;
+	pl.velocity[0] = parm7;
+	pl.velocity[1] = parm8;
+	pl.velocity[2] = parm9;
+	pl.g_items = parm10;
+	pl.activeweapon = parm11;
+	pl.flags = parm64;
+
+	if (pl.flags & FL_CROUCHING) {
+		setsize(pl, VEC_CHULL_MIN, VEC_CHULL_MAX);
+	} else {
+		setsize(pl, VEC_HULL_MIN, VEC_HULL_MAX);
+	}
+}
+
+void
+CSGameRules::LevelChangeParms(player pl)
+{
+	parm1 = g_landmarkpos[0];
+	parm2 = g_landmarkpos[1];
+	parm3 = g_landmarkpos[2];
+	parm4 = pl.angles[0];
+	parm5 = pl.angles[1];
+	parm6 = pl.angles[2];
+	parm7 = pl.velocity[0];
+	parm8 = pl.velocity[1];
+	parm9 = pl.velocity[2];
+	parm64 = pl.flags;
+	parm10 = pl.g_items;
+	parm11 = pl.activeweapon;
+}
+
+void
+CSGameRules::LevelNewParms(void)
 {
 	parm1 = parm2 = parm3 = parm4 = parm5 = parm6 = parm7 =
 	parm8 = parm9 = parm10 = parm11 = parm12 = parm13 = parm14 =
@@ -135,7 +179,7 @@ HLGameRules::LevelNewParms(void)
 }
 
 void
-HLGameRules::PlayerConnect(entity pl)
+CSGameRules::PlayerConnect(entity pl)
 {
 	entity a;
 	bprint(PRINT_HIGH, sprintf("%s connected\n", pl.netname));
@@ -156,7 +200,7 @@ HLGameRules::PlayerConnect(entity pl)
 }
 
 void
-HLGameRules::PlayerDisconnect(entity pl)
+CSGameRules::PlayerDisconnect(entity pl)
 {
 	bprint(PRINT_HIGH, sprintf("%s disconnected\n", pl.netname));
 
@@ -170,7 +214,7 @@ HLGameRules::PlayerDisconnect(entity pl)
 }
 
 void
-HLGameRules::PlayerKill(player pl)
+CSGameRules::PlayerKill(player pl)
 {
 	Damage_Apply(pl, pl, pl.health, WEAPON_NONE, DMG_SKIP_ARMOR);
 } 

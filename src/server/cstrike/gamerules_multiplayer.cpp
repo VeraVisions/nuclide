@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class CSMultiplayerRules:HLGameRules
+class CSMultiplayerRules:CSGameRules
 {
 	virtual void(void) FrameStart;
 	/* client */

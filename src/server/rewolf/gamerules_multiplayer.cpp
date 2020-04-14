@@ -18,16 +18,7 @@ class HLMultiplayerRules:HLGameRules
 {
 	/* client */
 	virtual void(player) PlayerSpawn;
-
-	/* level transitions */
-	virtual void(player) LevelDecodeParms;
 };
-
-void
-HLMultiplayerRules::LevelDecodeParms(player pl)
-{
-
-}
 
 void
 HLMultiplayerRules::PlayerSpawn(player pl)
@@ -67,6 +58,12 @@ HLMultiplayerRules::PlayerSpawn(player pl)
 
 	LevelNewParms();
 	LevelDecodeParms(pl);
+
+	/*pl.g_items = ITEM_CROWBAR | ITEM_GLOCK | ITEM_SUIT;
+	pl.activeweapon = WEAPON_GLOCK;
+	pl.glock_mag = 18;
+	pl.ammo_9mm = 44;*/
+
 	spot = Spawn_SelectRandom("info_player_deathmatch");
 	setorigin(pl, spot.origin);
 	pl.angles = spot.angles;

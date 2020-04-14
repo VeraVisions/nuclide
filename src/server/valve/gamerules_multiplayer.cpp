@@ -18,54 +18,7 @@ class HLMultiplayerRules:HLGameRules
 {
 	/* client */
 	virtual void(player) PlayerSpawn;
-
-	/* level transitions */
-	virtual void(player) LevelDecodeParms;
 };
-
-void
-HLMultiplayerRules::LevelDecodeParms(player pl)
-{
-	g_landmarkpos[0] = parm1;
-	g_landmarkpos[1] = parm2;
-	g_landmarkpos[2] = parm3;
-	pl.angles[0] = parm4;
-	pl.angles[1] = parm5;
-	pl.angles[2] = parm6;
-	pl.velocity[0] = parm7;
-	pl.velocity[1] = parm8;
-	pl.velocity[2] = parm9;
-	pl.g_items = ITEM_CROWBAR | ITEM_GLOCK | ITEM_SUIT;
-	pl.activeweapon = WEAPON_GLOCK;
-	pl.flags = parm64;
-
-	pl.ammo_9mm = 44;
-	pl.ammo_357 = parm13;
-	pl.ammo_buckshot = parm14;
-	pl.ammo_m203_grenade = parm15;
-	pl.ammo_bolt = parm16;
-	pl.ammo_rocket = parm17;
-	pl.ammo_uranium = parm18;
-	pl.ammo_handgrenade = parm19;
-	pl.ammo_satchel = parm20;
-	pl.ammo_tripmine = parm21;
-	pl.ammo_snark = parm22;
-	pl.ammo_hornet = parm23;
-
-	pl.glock_mag = 18;
-	pl.mp5_mag = parm25;
-	pl.python_mag = parm26;
-	pl.shotgun_mag = parm27;
-	pl.crossbow_mag = parm28;
-	pl.rpg_mag = parm29;
-	pl.satchel_chg = parm30;
-
-	if (pl.flags & FL_CROUCHING) {
-		setsize(pl, VEC_CHULL_MIN, VEC_CHULL_MAX);
-	} else {
-		setsize(pl, VEC_HULL_MIN, VEC_HULL_MAX);
-	}
-}
 
 void
 HLMultiplayerRules::PlayerSpawn(player pl)
@@ -105,6 +58,11 @@ HLMultiplayerRules::PlayerSpawn(player pl)
 
 	LevelNewParms();
 	LevelDecodeParms(pl);
+	pl.g_items = ITEM_CROWBAR | ITEM_GLOCK | ITEM_SUIT;
+	pl.activeweapon = WEAPON_GLOCK;
+	pl.glock_mag = 18;
+	pl.ammo_9mm = 44;
+
 	spot = Spawn_SelectRandom("info_player_deathmatch");
 	setorigin(pl, spot.origin);
 	pl.angles = spot.angles;

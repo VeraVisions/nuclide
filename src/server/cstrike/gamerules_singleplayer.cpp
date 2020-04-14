@@ -14,55 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class CSSingleplayerRules:HLGameRules
+class CSSingleplayerRules:CSGameRules
 {
 	/* client */
 	virtual void(player) PlayerSpawn;
-
-	/* level transitions */
-	virtual void(player) LevelChangeParms;
-	virtual void(player) LevelDecodeParms;
 };
-
-void
-CSSingleplayerRules::LevelDecodeParms(player pl)
-{
-	g_landmarkpos[0] = parm1;
-	g_landmarkpos[1] = parm2;
-	g_landmarkpos[2] = parm3;
-	pl.angles[0] = parm4;
-	pl.angles[1] = parm5;
-	pl.angles[2] = parm6;
-	pl.velocity[0] = parm7;
-	pl.velocity[1] = parm8;
-	pl.velocity[2] = parm9;
-	pl.g_items = parm10;
-	pl.activeweapon = parm11;
-	pl.flags = parm64;
-
-	if (pl.flags & FL_CROUCHING) {
-		setsize(pl, VEC_CHULL_MIN, VEC_CHULL_MAX);
-	} else {
-		setsize(pl, VEC_HULL_MIN, VEC_HULL_MAX);
-	}
-}
-
-void
-CSSingleplayerRules::LevelChangeParms(player pl)
-{
-	parm1 = g_landmarkpos[0];
-	parm2 = g_landmarkpos[1];
-	parm3 = g_landmarkpos[2];
-	parm4 = pl.angles[0];
-	parm5 = pl.angles[1];
-	parm6 = pl.angles[2];
-	parm7 = pl.velocity[0];
-	parm8 = pl.velocity[1];
-	parm9 = pl.velocity[2];
-	parm64 = pl.flags;
-	parm10 = pl.g_items;
-	parm11 = pl.activeweapon;
-}
 
 void
 CSSingleplayerRules::PlayerSpawn(player pl)
@@ -89,7 +45,6 @@ CSSingleplayerRules::PlayerSpawn(player pl)
 	forceinfokey(pl, "*spec", "0");
 	forceinfokey(pl, "*deaths", ftos(pl.deaths));
 
-	/* this is where the mods want to deviate */
 	entity spot;
 
 	if (startspot != "") {
