@@ -14,4 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "gamerules.h"
+#include "../gamerules.h"
+
+class TFCGameRules:CGameRules
+{
+	virtual void(entity) PlayerConnect;
+	virtual void(entity) PlayerDisconnect;
+	virtual void(player) PlayerPostFrame;
+	virtual void(player) PlayerSpawn;
+	virtual void(player) PlayerKill;
+
+	virtual void(void) LevelNewParms;
+};

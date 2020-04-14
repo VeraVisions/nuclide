@@ -55,7 +55,7 @@ CSEv_BuyWeapon_f(float fWeapon)
 	player pl = (player)self;
 	iWeapon = (int)fWeapon;
 
-	if (rules.RulesBuyingPossible(pl) == FALSE) {
+	if (rules.BuyingPossible(pl) == FALSE) {
 		return;
 	}
 

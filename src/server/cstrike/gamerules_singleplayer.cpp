@@ -14,12 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class CSSingleplayerRules:CSGameRules
-{
-	/* client */
-	virtual void(player) PlayerSpawn;
-};
-
 void
 CSSingleplayerRules::PlayerSpawn(player pl)
 {

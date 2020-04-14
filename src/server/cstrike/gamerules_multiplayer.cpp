@@ -14,37 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class CSMultiplayerRules:CSGameRules
+void
+CSMultiplayerRules::PlayerPreFrame(player pl)
 {
-	entity m_eLastTSpawn;
-	entity m_eLastCTSpawn;
+	if (pl.health <= 0)
+		return;
 
-	virtual void(void) InitPostEnts;
-	virtual void(void) FrameStart;
-	virtual void(player) PlayerSpawn;
-
-	/* CS specific */
-	virtual void(void) CreateRescueZones;
-	virtual void(void) CreateCTBuyzones;
-	virtual void(void) CreateTBuyzones;
-	virtual void(float, int) TimerBegin;
-	virtual void(void) TimerUpdate;
-
-	virtual void(player) RulesDeathCheck;
-	virtual void(void) RulesCountPlayers;
-	virtual void(void) RulesSwitchTeams;
-	virtual void(void) RulesTimeOver;
-	virtual void(int, int, int) RulesRoundOver;
-	virtual void(int) RulesRestart;
-	virtual void(player) RulesMakeVIP;
-	virtual void(player) RulesMakeBomber;
-	virtual int(player) RulesBuyingPossible;
-
-	virtual void(player, int) PlayerMakePlayable;
-	virtual void(player) PlayerMakeSpectator;
-	virtual void(player, int) PlayerRespawn;
-	virtual entity(float) PlayerFindSpawn;
-};
+	if (g_cs_gamestate == GAME_FREEZE) {
+		pl.flags |= FL_FROZEN;
+	} else {
+		pl.flags &= ~FL_FROZEN;
+	}
+}
 
 void
 CSMultiplayerRules::FrameStart(void)
@@ -196,7 +177,7 @@ CSMultiplayerRules::TimerUpdate(void)
 
 	if (g_cs_hostagestotal > 0) {
 		if (g_cs_hostagesrescued >= g_cs_hostagestotal) {
-			RulesRoundOver(TEAM_CT, 0, FALSE);
+			RoundOver(TEAM_CT, 0, FALSE);
 			return;
 		}
 	}
@@ -239,14 +220,14 @@ CSMultiplayerRules::TimerUpdate(void)
 			if (g_cs_roundswon_t == 0 && g_cs_roundswon_ct == 0) {
 				Money_ResetTeamReward();
 				Money_ResetRoundReward();
-				RulesRestart(TRUE);
+				RestartRound(TRUE);
 			} else {
 				if (autocvar_mp_halftime == TRUE && (autocvar_mp_winlimit / 2 == g_cs_roundsplayed)) {
 					Money_ResetTeamReward();
-					RulesSwitchTeams();
-					RulesRestart(TRUE);
+					SwitchTeams();
+					RestartRound(TRUE);
 				} else {
-					RulesRestart(FALSE);
+					RestartRound(FALSE);
 				}
 			}
 		}
@@ -262,7 +243,7 @@ CSMultiplayerRules::TimerUpdate(void)
 						return;
 					}
 				}
-				RulesTimeOver();
+				TimeOut();
 				TimerBegin(5, GAME_END); // Round is over, 5 seconds til a new round starts
 			} else {
 				TimerBegin(autocvar_mp_roundtime * 60, GAME_ACTIVE); // Unfreeze
@@ -274,13 +255,13 @@ CSMultiplayerRules::TimerUpdate(void)
 
 /*
 =================
-RulesBuyingPossible
+BuyingPossible
 
 Checks if it is possible for players to buy anything
 =================
 */
 int
-CSMultiplayerRules::RulesBuyingPossible(player pl)
+CSMultiplayerRules::BuyingPossible(player pl)
 {
 	if (pl.health <= 0) {
 		return FALSE;
@@ -322,14 +303,14 @@ CSMultiplayerRules::RulesBuyingPossible(player pl)
 }
 
 void
-CSMultiplayerRules::RulesMakeBomber(player pl)
+CSMultiplayerRules::MakeBomber(player pl)
 {
 	Weapons_AddItem(pl, WEAPON_C4BOMB);
 	centerprint(pl, "You have the bomb!\nFind the target zone or DROP\nthe bomb for another Terrorist.");
 }
 
 void
-CSMultiplayerRules::RulesMakeVIP(player pl)
+CSMultiplayerRules::MakeVIP(player pl)
 {
 	pl.team = TEAM_VIP;
 	PlayerRespawn(pl, pl.team);
@@ -339,13 +320,13 @@ CSMultiplayerRules::RulesMakeVIP(player pl)
 
 /*
 =================
-RulesRestart
+RestartRound
 
 Loop through all ents and handle them
 =================
 */
 void
-CSMultiplayerRules::RulesRestart(int iWipe)
+CSMultiplayerRules::RestartRound(int iWipe)
 {
 	g_cs_hostagesrescued = 0;
 
@@ -388,7 +369,7 @@ CSMultiplayerRules::RulesRestart(int iWipe)
 				iPickT++;
 				
 				if (iPickT == iRandomT) {
-					RulesMakeBomber((player)eFind);
+					MakeBomber((player)eFind);
 				}
 			}
 		}
@@ -403,7 +384,7 @@ CSMultiplayerRules::RulesRestart(int iWipe)
 			if (eFind.team == TEAM_CT) {
 				iPickCT++;
 				if (iPickCT == iRandomCT) {
-					RulesMakeVIP((player)eFind);
+					MakeVIP((player)eFind);
 				}
 			}
 		}
@@ -421,13 +402,13 @@ CSMultiplayerRules::RulesRestart(int iWipe)
 
 /*
 =================
-RulesRoundOver
+RoundOver
 
 This happens whenever an objective is complete or time is up
 =================
 */
 void
-CSMultiplayerRules::RulesRoundOver(int iTeamWon, int iMoneyReward, int fSilent)
+CSMultiplayerRules::RoundOver(int iTeamWon, int iMoneyReward, int fSilent)
 {
 	
 	if (g_cs_gamestate != GAME_ACTIVE) {
@@ -467,37 +448,37 @@ CSMultiplayerRules::RulesRoundOver(int iTeamWon, int iMoneyReward, int fSilent)
 
 /*
 =================
-RulesTimeOver
+TimeOut
 
 Whenever mp_roundtime was being counted down to 0
 =================
 */
 void
-CSMultiplayerRules::RulesTimeOver(void)
+CSMultiplayerRules::TimeOut(void)
 {
 	if (g_cs_vipzones > 0) {
-		RulesRoundOver(TEAM_T, 3250, FALSE);
+		RoundOver(TEAM_T, 3250, FALSE);
 	} else if (g_cs_bombzones > 0) {
 		/* In Bomb Defusal, all Counter-Terrorists receive $3250
 		 *  if they won running down the time. */
-		RulesRoundOver(TEAM_CT, 3250, FALSE);
+		RoundOver(TEAM_CT, 3250, FALSE);
 	} else if (g_cs_hostagestotal > 0) {
 		// TODO: Broadcast_Print: Hostages have not been rescued!
-		RulesRoundOver(TEAM_T, 3250, FALSE);
+		RoundOver(TEAM_T, 3250, FALSE);
 	} else {
-		RulesRoundOver(0, 0, FALSE);
+		RoundOver(0, 0, FALSE);
 	}
 }
 
 /*
 =================
-RulesSwitchTeams
+SwitchTeams
 
 Happens rarely
 =================
 */
 void
-CSMultiplayerRules::RulesSwitchTeams(void)
+CSMultiplayerRules::SwitchTeams(void)
 {
 	int iCTW, iTW;
 
@@ -527,7 +508,7 @@ CSMultiplayerRules::RulesSwitchTeams(void)
 }
 
 void
-CSMultiplayerRules::RulesCountPlayers(void)
+CSMultiplayerRules::CountPlayers(void)
 {
 	g_cs_alive_t = 0;
 	g_cs_alive_ct = 0;
@@ -546,13 +527,13 @@ CSMultiplayerRules::RulesCountPlayers(void)
 }
 
 void
-CSMultiplayerRules::RulesDeathCheck(player pl)
+CSMultiplayerRules::DeathCheck(player pl)
 {
 	if ((g_cs_alive_t == 0) && (g_cs_alive_ct == 0)) {
 		if (g_cs_bombplanted == TRUE) {
-			RulesRoundOver(TEAM_T, 3600, FALSE);
+			RoundOver(TEAM_T, 3600, FALSE);
 		} else {
-			RulesRoundOver(FALSE, 0, FALSE);
+			RoundOver(FALSE, 0, FALSE);
 		}
 	} else {
 		int winner;
@@ -567,12 +548,12 @@ CSMultiplayerRules::RulesDeathCheck(player pl)
 			/* In Bomb Defusal, the winning team receives $3250
 			 * if they won by eliminating the enemy team. */
 			if (!g_cs_bombplanted || g_cs_alive_ct == 0) {
-				RulesRoundOver(winner, 3250, FALSE);
+				RoundOver(winner, 3250, FALSE);
 			}
 		} else {
 			/* In Hostage Rescue, the winning team receives $3600
 			 * if they won by eliminating the enemy team. */
-			RulesRoundOver(winner, 3600, FALSE);
+			RoundOver(winner, 3600, FALSE);
 		}
 	}
 }
@@ -647,7 +628,7 @@ CSMultiplayerRules::PlayerRespawn(player pl, int fTeam)
 	pl.classname = "player";
 	pl.health = pl.max_health = 100;
 	forceinfokey(pl, "*dead", "0");
-	RulesCountPlayers();
+	CountPlayers();
 
 	pl.takedamage = DAMAGE_YES;
 	pl.solid = SOLID_SLIDEBOX;
@@ -769,6 +750,12 @@ CSMultiplayerRules::PlayerSpawn(player pl)
 	forceinfokey(pl, "*team", "0"); 
 }
 
+void
+CSMultiplayerRules::CSMultiplayerRules(void)
+{
+	forceinfokey(world, "*gamemode", "classic"); 
+}
+
 /*
 =================
 CSEv_JoinTeam_f
@@ -776,7 +763,7 @@ CSEv_JoinTeam_f
 Event Handling, called by the Client codebase via 'sendevent'
 =================
 */
-void CSEv_JoinTeam_f(int fChar)
+void CSEv_JoinTeam_f(float flChar)
 {
 	CSMultiplayerRules rules = (CSMultiplayerRules)g_grMode;
 	player pl = (player)self;
@@ -794,28 +781,28 @@ void CSEv_JoinTeam_f(int fChar)
 	switch (g_cs_gamestate) {
 	/* spawn the players immediately when its in the freeze state */
 	case GAME_FREEZE:
-		pl.charmodel = fChar;
-		rules.PlayerMakePlayable(pl, fChar);
+		pl.charmodel = (int)flChar;
+		rules.PlayerMakePlayable(pl, (int)flChar);
 
 		if ((pl.team == TEAM_T) && (g_cs_alive_t == 1)) {
 			if (g_cs_bombzones > 0) {
-				rules.RulesMakeBomber(pl);
+				rules.MakeBomber(pl);
 			}
 		} else if ((pl.team == TEAM_CT) && (g_cs_alive_ct == 1)) {
 			if (g_cs_vipzones > 0) {
-				rules.RulesMakeVIP(pl);
+				rules.MakeVIP(pl);
 			}
 		}
 
 		break;
 	/* otherwise, just prepare their fields for the next round */
 	default:
-		if (fChar == 0) {
+		if (flChar == 0) {
 			rules.PlayerSpawn(pl);
 			return;
 		}
 
-		if (fChar < 5) {
+		if (flChar < 5) {
 			pl.team = TEAM_T;
 		} else {
 			pl.team = TEAM_CT;
@@ -823,7 +810,7 @@ void CSEv_JoinTeam_f(int fChar)
 
 		rules.PlayerMakeSpectator(pl);
 		pl.classname = "player";
-		pl.charmodel = fChar;
+		pl.charmodel = (int)flChar;
 		pl.health = 0;
 		forceinfokey(pl, "*dead", "1");
 		forceinfokey(pl, "*team", ftos(pl.team)); 
@@ -836,9 +823,9 @@ void CSEv_JoinTeam_f(int fChar)
 
 	/* if no players are present in the chosen team, force restart round */
 	if ((pl.team == TEAM_T) && (g_cs_alive_t == 0)) {
-		rules.RulesRoundOver(FALSE, 0, FALSE);
+		rules.RoundOver(FALSE, 0, FALSE);
 	} else if ((pl.team == TEAM_CT) && (g_cs_alive_ct == 0)) {
-		rules.RulesRoundOver(FALSE, 0, FALSE);
+		rules.RoundOver(FALSE, 0, FALSE);
 	}
 }
 

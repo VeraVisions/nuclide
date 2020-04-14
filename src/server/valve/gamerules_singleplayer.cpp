@@ -14,12 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class HLSingleplayerRules:HLGameRules
-{
-	/* client */
-	virtual void(player) PlayerSpawn;
-};
-
 void
 HLSingleplayerRules::PlayerSpawn(player pl)
 {

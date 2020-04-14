@@ -16,18 +16,6 @@
 
 var int autocvar_sv_playerkeepalive = TRUE;
 
-class HLGameRules:CGameRules
-{
-	virtual void(entity) PlayerConnect;
-	virtual void(entity) PlayerDisconnect;
-	virtual void(player) PlayerKill;
-	virtual void(player) PlayerPostFrame;
-
-	virtual void(player) LevelDecodeParms;
-	virtual void(player) LevelChangeParms;
-	virtual void(void) LevelNewParms;
-};
-
 void
 HLGameRules::LevelDecodeParms(player pl)
 {

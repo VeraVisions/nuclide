@@ -40,6 +40,13 @@ Game_Parse_Event(float fHeader)
 			sendevent("PlayerSwitchWeapon", "i", w);
 		}
 
+		player pl = (player)pSeat->m_ePlayer;
+		if (getplayerkeyfloat(pl.entnum-1, "*team") == TEAM_CT) {
+			setcustomskin(pSeat->m_eViewModel, "", "geomset 0 2\n");
+		} else {
+			setcustomskin(pSeat->m_eViewModel, "", "geomset 0 1\n");
+		}
+
 		HUD_WeaponPickupNotify(w);
 	} else if (fHeader == EV_RADIOMSG) {
 		Radio_PlayMessage(readbyte());

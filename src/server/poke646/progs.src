@@ -9,7 +9,6 @@
 #includelist
 ../../shared/fteextensions.qc
 ../../shared/defs.h
-../valve/defs.h
 ../../shared/math.h
 ../../shared/materials.h
 ../../shared/events.h
@@ -25,6 +24,9 @@
 
 ../../gs-entbase/server.src
 ../../gs-entbase/shared.src
+
+../../shared/poke646/player.cpp
+../valve/defs.h
 
 ../valve/monster_apache.cpp
 ../valve/monster_alien_controller.cpp
@@ -62,7 +64,6 @@
 ../valve/monster_zombie.cpp
 
 ../../shared/effects.c
-../../shared/poke646/player.cpp
 ../valve/player.c
 ../../shared/pmove.c
 ../valve/spectator.c

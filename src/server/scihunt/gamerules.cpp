@@ -14,12 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class SHMultiplayerRules:HLGameRules
-{
-	/* client */
-	virtual void(player) PlayerSpawn;
-};
-
 void
 SHMultiplayerRules::PlayerSpawn(player pl)
 {
@@ -56,8 +50,6 @@ SHMultiplayerRules::PlayerSpawn(player pl)
 	forceinfokey(pl, "*spec", "0");
 	forceinfokey(pl, "*deaths", ftos(pl.deaths));
 
-	LevelNewParms();
-	LevelDecodeParms(pl);
 	spot = Spawn_SelectRandom("info_player_deathmatch");
 	setorigin(pl, spot.origin);
 	pl.angles = spot.angles;

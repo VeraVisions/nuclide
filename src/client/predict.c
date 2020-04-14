@@ -62,7 +62,7 @@ Predict_PreFrame(player pl)
 			break;
 		}
 		input_sequence = i;
-		QPhysics_Run(pl);
+		PMove_Run();
 	}
 }
 

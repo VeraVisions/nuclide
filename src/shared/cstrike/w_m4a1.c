@@ -201,7 +201,7 @@ w_m4a1_primary(void)
 	}
 
 	pl.w_attack_next = 0.0875f;
-	pl.w_idle_next = pl.w_attack_next;
+	pl.w_idle_next = 2.0f;
 }
 
 void

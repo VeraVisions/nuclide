@@ -9,7 +9,6 @@
 #includelist
 ../../shared/fteextensions.qc
 ../../shared/defs.h
-../valve/defs.h
 ../../shared/math.h
 ../../shared/materials.h
 ../../shared/events.h
@@ -25,6 +24,9 @@
 
 ../../gs-entbase/server.src
 ../../gs-entbase/shared.src
+
+../../shared/gearbox/player.cpp
+../valve/defs.h
 
 ../valve/monster_apache.cpp
 ../valve/monster_alien_controller.cpp
@@ -65,7 +67,6 @@
 ../gearbox/monster_recruit.cpp
 
 ../../shared/effects.c
-../../shared/gearbox/player.cpp
 ../valve/player.c
 ../../shared/pmove.c
 ../valve/spectator.c

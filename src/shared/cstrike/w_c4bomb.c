@@ -28,6 +28,97 @@ func_bombtarget brush entities.
 
 */
 
+/* C4 entity logic */
+
+#ifdef SERVER
+class c4bomb:CBaseEntity
+{
+	entity m_eUser;
+	float m_flBeepTime;
+	float m_flExplodeTime;
+	float m_flDefusalState;
+
+	void(void) c4bomb;
+	virtual void(void) PlayerUse;
+	virtual void(void) Logic;
+};
+
+void
+c4bomb::PlayerUse(void)
+{
+	m_eUser = eActivator;
+	m_flDefusalState += frametime;
+}
+
+void
+c4bomb::Logic(void)
+{
+	// If the guy who started using us stopped using us, reset the defuser counter
+	if (m_eUser != world) {
+		m_eUser= world;
+		m_flDefusalState = 0.0f;
+	}
+
+	// If our time has passed, explode
+	if (m_flExplodeTime < time) {
+		CSMultiplayerRules rules = (CSMultiplayerRules)g_grMode;
+
+		/* In Bomb Defusal, all Terrorists receive $3500
+		 * if they won by detonating the bomb. */
+		rules.RoundOver(TEAM_T, 3500, FALSE);
+		Damage_Radius(origin, this.owner, 500, g_cstrike_bombradius, TRUE, WEAPON_C4BOMB);
+		sound(this, CHAN_VOICE, "weapons/c4_explode1.wav", 1.0, ATTN_NONE);
+
+		for (entity e = world; (e = find(e, ::classname, "func_bomb_target"));) {
+			CBaseTrigger trigger = (CBaseTrigger)e;
+			if (trigger.Trigger != __NULL__) {
+				trigger.Trigger();
+			}
+		}
+
+		m_flBeepTime = 0.0f;
+		m_flDefusalState = 0;
+		remove(this);
+		return;
+	}
+
+	if (m_flBeepTime > time) {
+		return;
+	}
+	m_flBeepTime = time + 1.5;
+
+	if (m_flExplodeTime - time < 2) {
+		sound(this, CHAN_VOICE, "weapons/c4_beep5.wav", 1.0, ATTN_NONE);
+	} else if (m_flExplodeTime - time < 5) {
+		sound(this, CHAN_VOICE, "weapons/c4_beep5.wav", 1.0, ATTN_NORM);
+	} else if (m_flExplodeTime - time < 10) {
+		sound(this, CHAN_VOICE, "weapons/c4_beep4.wav", 1.0, ATTN_NORM);
+	} else if (m_flExplodeTime - time < 20) {
+		sound(this, CHAN_VOICE, "weapons/c4_beep3.wav", 1.0, ATTN_NORM);
+	} else if (m_flExplodeTime - time < 30) {
+		sound(this, CHAN_VOICE, "weapons/c4_beep2.wav", 1.0, ATTN_NORM);
+	} else {
+		sound(this, CHAN_VOICE, "weapons/c4_beep1.wav", 1.0, ATTN_NORM);
+	}
+}
+
+void
+c4bomb::c4bomb(void)
+{
+	movetype = MOVETYPE_NONE;
+	solid = SOLID_BBOX;
+	setmodel(this, "models/w_c4.mdl");
+	setsize(this, [-6,-6,0], [6,6,6]);
+
+	customphysics = Logic;
+	m_flExplodeTime = time + 45.0f;
+
+	sound(this, CHAN_WEAPON, "weapons/c4_plant.wav", 1.0f, ATTN_IDLE);
+}
+#endif
+
+/* C4 weapon logic */
+
 enum
 {
 	C4_IDLE,
@@ -52,6 +143,13 @@ w_c4bomb_precache(void)
 	Sound_Precache("weapon_c4bomb.disarmed");
 	Sound_Precache("weapon_c4bomb.explode");
 	Sound_Precache("weapon_c4bomb.plant");
+	precache_sound("weapons/c4_plant.wav");
+	precache_sound("weapons/c4_beep1.wav");
+	precache_sound("weapons/c4_beep2.wav");
+	precache_sound("weapons/c4_beep3.wav");
+	precache_sound("weapons/c4_beep4.wav");
+	precache_sound("weapons/c4_beep5.wav");
+	precache_sound("weapons/c4_explode1.wav");
 #endif
 	precache_model("models/v_c4.mdl");
 	precache_model("models/w_c4.mdl");
@@ -100,6 +198,15 @@ w_c4bomb_release(void)
 		if (pl.w_idle_next <= 0.0f) {
 			pl.a_ammo1 = C4S_DONE;
 #ifdef SERVER
+			c4bomb bomb = spawn(c4bomb);
+			bomb.owner = pl;
+
+			/* place directly below */
+			traceline(pl.origin, pl.origin + [0,0,-64], FALSE, pl);
+			setorigin(bomb, trace_endpos);
+
+			Radio_BroadcastMessage(RADIO_BOMBPL);
+			g_cs_bombplanted = TRUE;
 			Weapons_RemoveItem(pl, WEAPON_C4BOMB);
 #endif
 		}

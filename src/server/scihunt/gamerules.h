@@ -14,4 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "gamerules.h"
+#include "../gamerules.h"
+
+class SHMultiplayerRules:CGameRules
+{
+	/* client */
+	virtual void(player) PlayerSpawn;
+};

@@ -9,7 +9,6 @@
 #includelist
 ../../shared/fteextensions.qc
 ../../shared/defs.h
-../valve/defs.h
 ../../shared/math.h
 ../../shared/materials.h
 ../../shared/events.h
@@ -26,6 +25,9 @@
 
 ../../gs-entbase/server.src
 ../../gs-entbase/shared.src
+
+../../shared/scihunt/player.cpp
+../scihunt/defs.h
 
 ../valve/monster_apache.cpp
 ../valve/monster_alien_controller.cpp
@@ -64,7 +66,6 @@ monster_scientist.cpp
 
 ../../shared/effects.c
 
-../../shared/scihunt/player.cpp
 ../valve/player.c
 ../../shared/pmove.c
 ../valve/spectator.c
@@ -111,8 +112,7 @@ shdata_parse.c
 ../../shared/valve/animations.c
 
 ../gamerules.cpp
-../valve/gamerules.cpp
-../scihunt/gamerules_multiplayer.cpp
+../scihunt/gamerules.cpp
 ../valve/client.c
 ../client.c
 

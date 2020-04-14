@@ -10,7 +10,6 @@
 ../../shared/fteextensions.qc
 ../../shared/defs.h
 ../../shared/cstrike/defs.h
-../valve/defs.h
 ../../shared/math.h
 ../../shared/materials.h
 ../../shared/events.h
@@ -18,7 +17,6 @@
 ../../shared/sound.c
 ../../shared/valve/animations.h
 ../defs.h
-../cstrike/defs.h
 ../plugins.c
 ../logging.c
 ../nodes.c
@@ -28,8 +26,10 @@
 ../../gs-entbase/server.src
 ../../gs-entbase/shared.src
 
-../../shared/effects.c
 ../../shared/cstrike/player.cpp
+../cstrike/defs.h
+
+../../shared/effects.c
 ../cstrike/player.c
 ../../shared/pmove.c
 ../valve/spectator.c
@@ -87,7 +87,6 @@
 
 ../gamerules.cpp
 ../cstrike/game_money.c
-
 ../cstrike/gamerules.cpp
 ../cstrike/gamerules_singleplayer.cpp
 ../cstrike/gamerules_multiplayer.cpp

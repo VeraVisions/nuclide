@@ -19,7 +19,7 @@ void
 Game_RunClientCommand(void)
 {
 	Footsteps_Update();
-	QPhysics_Run(self);
+	PMove_Run();
 }
 
 /* custom chat packet */

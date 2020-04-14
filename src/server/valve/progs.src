@@ -8,7 +8,6 @@
 #includelist
 ../../shared/fteextensions.qc
 ../../shared/defs.h
-defs.h
 ../../shared/math.h
 ../../shared/materials.h
 ../../shared/events.h
@@ -24,6 +23,9 @@ defs.h
 
 ../../gs-entbase/server.src
 ../../gs-entbase/shared.src
+
+../../shared/valve/player.cpp
+../valve/defs.h
 
 ../valve/monster_apache.cpp
 ../valve/monster_alien_controller.cpp
@@ -61,7 +63,6 @@ defs.h
 ../valve/monster_zombie.cpp
 
 ../../shared/effects.c
-../../shared/valve/player.cpp
 player.c
 ../../shared/pmove.c
 spectator.c

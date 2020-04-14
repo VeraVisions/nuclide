@@ -21,7 +21,7 @@ Game_RunClientCommand(void)
 	pl.buyzone = FALSE;
 
 	Footsteps_Update();
-	QPhysics_Run(self);
+	PMove_Run();
 }
 
 void

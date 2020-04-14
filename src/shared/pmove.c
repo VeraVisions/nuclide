@@ -745,6 +745,10 @@ PMove_Run(void)
 {
 	float punch;
 	player pl = (player)self;
+	
+#ifdef SERVER
+	float flFallVel = (self.flags & FL_ONGROUND) ? 0 : -self.velocity[2];
+#endif
 
 	/* maxspeed changes when crouching, TODO: make this game-specific */
 	self.maxspeed = (self.flags & FL_CROUCHING) ? 135 : 270;
@@ -752,6 +756,10 @@ PMove_Run(void)
 	/* when pressing the 'use' button, we also walk slower for precision */
 	if (input_buttons & INPUT_BUTTON5) {
 		input_movevalues *= 0.25;
+	}
+
+	if (pl.flags & FL_FROZEN) {
+		input_movevalues = [0,0,0];
 	}
 
 	/* establish which water elements we're dealing in */
@@ -804,6 +812,18 @@ PMove_Run(void)
 	pl.punchangle[0] *= punch;
 	pl.punchangle[1] *= punch;
 	pl.punchangle[2] *= punch;
+
+#ifdef SERVER
+	if (self.waterlevel != 0) {
+		flFallVel = 0;
+	}
+
+	if ((self.flags & FL_ONGROUND) && self.movetype == MOVETYPE_WALK && (flFallVel > 580)) {
+		float fFallDamage = (flFallVel - 580) * (100 / (1024 - 580));
+		Damage_Apply(self, world, fFallDamage, 0, DMG_FALL);
+		sound(self, CHAN_AUTO, "player/pl_fallpain3.wav", 1.0, ATTN_NORM);
+	}
+#endif
 
 	/* weapon/item logic of what the player controls */
 	Game_Input();

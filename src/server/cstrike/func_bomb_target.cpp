@@ -37,3 +37,9 @@ func_bomb_target::Respawn(void)
 {
 	InitBrushTrigger();
 }
+
+void
+func_bomb_target::func_bomb_target(void)
+{
+	g_cs_bombzones++;
+}

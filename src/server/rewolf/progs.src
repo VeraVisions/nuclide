@@ -8,7 +8,6 @@
 #includelist
 ../../shared/fteextensions.qc
 ../../shared/defs.h
-../valve/defs.h
 ../../shared/math.h
 ../../shared/materials.h
 ../../shared/events.h
@@ -25,6 +24,9 @@
 ../../gs-entbase/server.src
 ../../gs-entbase/shared.src
 
+../../shared/rewolf/player.cpp
+../valve/defs.h
+
 ../valve/monster_rat.cpp
 ../valve/monster_scientist_dead.cpp
 gunman_cycler.cpp
@@ -34,7 +36,6 @@ monster_human_demoman.cpp
 monster_human_gunman.cpp
 monster_human_unarmed.cpp
 ../../shared/effects.c
-../../shared/rewolf/player.cpp
 ../valve/player.c
 ../../shared/pmove.c
 ../valve/spectator.c

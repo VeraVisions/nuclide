@@ -16,17 +16,6 @@
 
 var int autocvar_sv_playerkeepalive = TRUE;
 
-class TFCGameRules:CGameRules
-{
-	virtual void(entity) PlayerConnect;
-	virtual void(entity) PlayerDisconnect;
-	virtual void(player) PlayerPostFrame;
-	virtual void(player) PlayerSpawn;
-	virtual void(player) PlayerKill;
-
-	virtual void(void) LevelNewParms;
-};
-
 /* we check what fields have changed over the course of the frame and network
  * only the ones that have actually changed */
 void

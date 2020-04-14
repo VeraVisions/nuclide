@@ -14,4 +14,28 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "gamerules.h"
+#include "../gamerules.h"
+
+class HLGameRules:CGameRules
+{
+	virtual void(entity) PlayerConnect;
+	virtual void(entity) PlayerDisconnect;
+	virtual void(player) PlayerKill;
+	virtual void(player) PlayerPostFrame;
+
+	virtual void(player) LevelDecodeParms;
+	virtual void(player) LevelChangeParms;
+	virtual void(void) LevelNewParms;
+};
+
+class HLSingleplayerRules:HLGameRules
+{
+	/* client */
+	virtual void(player) PlayerSpawn;
+};
+
+class HLMultiplayerRules:HLGameRules
+{
+	/* client */
+	virtual void(player) PlayerSpawn;
+};

@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include "gamerules.h"
+
 var int g_cstrike_buying = 0;
 var float g_cstrike_bombradius = 500;
 
@@ -60,8 +62,8 @@ var int autocvar_fcs_penalty_pain = -150;
 var int autocvar_fcs_penalty_kill = -1500;
 var int autocvar_fcs_maxmoney = 16000;
 var int autocvar_fcs_fillweapons = FALSE; /* This will automatically get ammo for the weapon you buy */
-var int autocvar_fcs_fix_bombtimer = FALSE; /* If true, the bomb-timer will dictate the round-end */
-var int autocvar_fcs_bombaltthrow = FALSE; /* Randomize the bomb-throw every time ever so slightly */
+var int autocvar_fcs_fix_bombtimer = TRUE; /* If true, the bomb-timer will dictate the round-end */
+var int autocvar_fcs_bombaltthrow = TRUE; /* Randomize the bomb-throw every time ever so slightly */
 
 enum
 {

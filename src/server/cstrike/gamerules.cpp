@@ -16,24 +16,8 @@
 
 var int autocvar_sv_playerkeepalive = TRUE;
 
-class CSGameRules:CGameRules
-{
-	virtual void(entity) PlayerConnect;
-	virtual void(entity) PlayerDisconnect;
-	virtual void(player) PlayerKill;
-	virtual void(player) PlayerPostFrame;
-
-	/* level transitions */
-	virtual void(player) LevelChangeParms;
-	virtual void(player) LevelDecodeParms;
-	virtual void(void) LevelNewParms;
-
-	virtual int(player) RulesBuyingPossible;
-};
-
-
 int
-CSGameRules::RulesBuyingPossible(player pl)
+CSGameRules::BuyingPossible(player pl)
 {
 	return FALSE;
 }

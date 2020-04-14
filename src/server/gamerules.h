@@ -14,4 +14,33 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "gamerules.h"
+class CGameRules
+{
+	void() CGameRules;
+
+	virtual void(void) InitPostEnts;
+
+	/* logic */
+	virtual void(void) FrameStart;
+	virtual float(player,string) ConsoleCommand;
+
+	/* client */
+	virtual void(entity) PlayerConnect;
+	virtual void(entity) PlayerDisconnect;
+	virtual void(player) PlayerKill;
+	virtual void(player) PlayerSpawn;
+	virtual void(player) PlayerPreFrame;
+	virtual void(player) PlayerPostFrame;
+
+	/* level transitions */
+	virtual void(void) LevelNewParms;
+	virtual void(player) LevelChangeParms;
+
+	/* spectator */
+	/*virtual void(player) SpectatorConnect;
+	virtual void(player) SpectatorDisconnect;
+	virtual void(player) SpectatorThink;*/
+};
+
+/* our currently running mode */
+CGameRules g_grMode;

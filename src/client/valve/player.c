@@ -38,7 +38,7 @@ Player_ReadEntity(float new)
 					break;	//erk?... too old?
 				}
 				input_sequence = i;
-				QPhysics_Run(pl);
+				PMove_Run();
 			}
 
 			/* any differences in things that are read below are now
