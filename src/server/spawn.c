@@ -15,7 +15,7 @@
  */
 
 void
-Spawn_ObserverCam(void)
+Spawn_ObserverCam(player pl)
 {
 	entity eTarget;
 
@@ -23,13 +23,13 @@ Spawn_ObserverCam(void)
 	entity eCamera = find(world, ::classname, "trigger_camera");
 
 	if (eCamera) {
-		self.origin = eCamera.origin;
+		pl.origin = eCamera.origin;
 		
 		if (eCamera.target) {
 			eTarget = find(world, ::targetname, eCamera.target);
 			if (eTarget) {
-				self.angles = vectoangles(eTarget.origin - eCamera.origin);
-				self.angles[0] *= -1;
+				pl.angles = vectoangles(eTarget.origin - eCamera.origin);
+				pl.angles[0] *= -1;
 			}
 		}
 	} else {
@@ -37,19 +37,19 @@ Spawn_ObserverCam(void)
 		eCamera = find (world, ::classname, "info_player_start");
 		
 		if (eCamera) {
-			self.origin = eCamera.origin;
+			pl.origin = eCamera.origin;
 			
 			if (eCamera.target) {
 				eTarget = find(world, ::targetname, eCamera.target);
 				if (eTarget) {
-					self.angles = vectoangles(eTarget.origin - eCamera.origin);
-					self.angles[0] *= -1;
+					pl.angles = vectoangles(eTarget.origin - eCamera.origin);
+					pl.angles[0] *= -1;
 				}
 			}
 		}
 	}
 
-	Client_FixAngle(self, self.angles);
+	Client_FixAngle(pl, pl.angles);
 }
 
 float Spawn_PlayerRange(entity spot) {

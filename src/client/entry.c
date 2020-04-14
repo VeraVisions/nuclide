@@ -20,6 +20,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	Sound_Init();
 	pSeat = &g_seats[0];
 
+	registercommand("callvote");
 	registercommand("dev_sentence");
 	registercommand("titles_test");
 	registercommand("vox_test");
@@ -31,7 +32,6 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	registercommand("-use");
 	registercommand("+duck");
 	registercommand("-duck");
-	registercommand("callvote");
 	registercommand("vote");
 
 	/* Requested by Slacer */

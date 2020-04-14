@@ -160,7 +160,7 @@ void Player_Death(int iHitBody)
 		}
 	}
 
-	Spawn_MakeSpectator();
+	PlayerMakeSpectator();
 	self.classname = "player";
 	self.health = 0;
 	forceinfokey(self, "*dead", "1"); 

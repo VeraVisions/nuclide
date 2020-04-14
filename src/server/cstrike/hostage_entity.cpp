@@ -191,4 +191,5 @@ hostage_entity::hostage_entity(void)
 	base_mins = [-16,-16,0];
 	base_maxs = [16,16,72];
 	CBaseNPC::CBaseNPC();
+	g_cs_hostagestotal++;
 }

@@ -72,14 +72,3 @@ enum
 	GAME_END, 
 	GAME_OVER
 };
-
-void Rules_RoundOver(int, int, float);
-void Rules_CountPlayers(void);
-void Rules_Restart(int);
-void Rules_SwitchTeams(void);
-void Rules_DeathCheck(void);
-void Rules_TimeOver(void);
-void Spawn_CreateClient(int);
-void Spawn_RespawnClient(int);
-void Spawn_MakeSpectator(void);
-void CSEv_GamePlayerSpawn_f(int);

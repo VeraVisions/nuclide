@@ -116,6 +116,8 @@ void init(float prevprogs)
 
 void init_respawn(void)
 {
+	g_grMode.InitPostEnts();
+
 	for (entity a = world; (a = findfloat(a, ::gflags, GF_CANRESPAWN));) {
 		CBaseEntity ent = (CBaseEntity)a;
 		ent.Respawn();

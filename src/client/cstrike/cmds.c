@@ -48,7 +48,7 @@ Game_ConsoleCommand(void)
 		/*Nightvision_Toggle();*/
 		break;
 	case "drop":
-		sendevent("WeaponDrop", "");
+		sendevent("DropWeapon", "");
 		break;
 	case "glock":
 		sendevent("BuyWeapon", "f", WEAPON_GLOCK18);
@@ -118,32 +118,32 @@ Game_ConsoleCommand(void)
 		break;
 	case "buyammo1":
 	case "primammo":
-		sendevent("GamePlayerBuyAmmo", "f", 0);
+		sendevent("BuyAmmo", "f", 0);
 		break;
 	case "buyammo2":
 	case "secammo":
-		sendevent("GamePlayerBuyAmmo", "f", 1);
+		sendevent("BuyAmmo", "f", 1);
 		break;
 	case "vest":
-		sendevent("PlayerBuyEquipment", "f", 0);
+		sendevent("BuyEquipment", "f", 0);
 		break;
 	case "vesthelm":
-		sendevent("PlayerBuyEquipment", "f", 1);
+		sendevent("BuyEquipment", "f", 1);
 		break;
 	case "flash":
-		sendevent("PlayerBuyEquipment", "f", 2);
+		sendevent("BuyEquipment", "f", 2);
 		break;
 	case "hegren":
-		sendevent("PlayerBuyEquipment", "f", 3);
+		sendevent("BuyEquipment", "f", 3);
 		break;
 	case "vsgren":
-		sendevent("PlayerBuyEquipment", "f", 4);
+		sendevent("BuyEquipment", "f", 4);
 		break;
 	case "defuser":
-		sendevent("PlayerBuyEquipment", "f", 5);
+		sendevent("BuyEquipment", "f", 5);
 		break;
 	case "nvg":
-		sendevent("PlayerBuyEquipment", "f", 6);
+		sendevent("BuyEquipment", "f", 6);
 		break;
 	case "coverme":
 		sendevent("Radio", "f", RADIO_CT_COVERME);

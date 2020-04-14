@@ -18,8 +18,10 @@ class CGameRules
 {
 	void() CGameRules;
 
+	virtual void(void) InitPostEnts;
+
 	/* logic */
-	virtual void() FrameStart;
+	virtual void(void) FrameStart;
 	virtual float(player,string) ConsoleCommand;
 
 	/* client */
@@ -42,7 +44,7 @@ class CGameRules
 
 /* init */
 void
-CGameRules::Init(void)
+CGameRules::InitPostEnts(void)
 {
 	//print("Init!\n");
 }

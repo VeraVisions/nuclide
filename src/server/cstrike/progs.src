@@ -70,13 +70,13 @@
 ../valve/items.cpp
 ../../shared/valve/weapon_common.c
 
+../cstrike/hostage_entity.cpp
 ../cstrike/armoury_entity.cpp
 ../cstrike/func_bomb_target.cpp
 ../cstrike/func_buyzone.cpp
 ../cstrike/func_escapezone.cpp
 ../cstrike/func_hostage_rescue.cpp
 ../cstrike/func_vip_safetyzone.cpp
-../cstrike/hostage_entity.cpp
 ../cstrike/info_hostage_rescue.cpp
 ../cstrike/info_map_parameters.cpp
 ../cstrike/item_suit.cpp
@@ -87,8 +87,6 @@
 
 ../gamerules.cpp
 ../cstrike/game_money.c
-../cstrike/game_timer.c
-../cstrike/game_rules.c
 
 ../cstrike/gamerules.cpp
 ../cstrike/gamerules_singleplayer.cpp

@@ -19,12 +19,12 @@ entity eLastCTSpawn;
 
 /*
 =================
-Spawn_FindSpawnPoint
+PlayerFindSpawn
 
 Recursive function that gets the next spawnpoint
 =================
 */
-entity Spawn_FindSpawnPoint(float fTeam)
+entity PlayerFindSpawn(float fTeam)
 {
 	entity eSpot, eLastSpawn;
 	entity eThing;
@@ -71,16 +71,16 @@ entity Spawn_FindSpawnPoint(float fTeam)
 
 /*
 =================
-Spawn_RespawnClient
+PlayerRoundRespawn
 
 Called whenever a player just needs his basic properties to be reset
 =================
 */
-void Spawn_RespawnClient(float fTeam)
+void PlayerRoundRespawn(float fTeam)
 {
 	entity eSpawn;
 	forceinfokey(self, "*spec", "0");
-	eSpawn = Spawn_FindSpawnPoint(self.team);
+	eSpawn = PlayerFindSpawn(self.team);
 
 	self.classname = "player";
 	self.health = self.max_health = 100;
@@ -121,12 +121,12 @@ void Spawn_RespawnClient(float fTeam)
 
 /*
 =================
-Spawn_CreateClient
+PlayerSpawnIngame
 
 Called whenever a player becomes a completely new type of player
 =================
 */
-void Spawn_CreateClient(float fCharModel)
+void PlayerSpawnIngame(float fCharModel)
 {
 	// What team are we on - 0= Spectator, < 5 Terrorists, CT rest
 	if(fCharModel == 0) {
@@ -163,18 +163,18 @@ void Spawn_CreateClient(float fCharModel)
 	}
 
 	forceinfokey(self, "*team", ftos(self.team)); 
-	Spawn_RespawnClient(self.team);
+	PlayerRoundRespawn(self.team);
 	self.fAttackFinished = time + 1;
 }
 
 /*
 =================
-Spawn_MakeSpectator
+PlayerMakeSpectator
 
 Called on connect and whenever a player dies
 =================
 */
-void Spawn_MakeSpectator(void)
+void PlayerMakeSpectator(void)
 {
 	self.classname = "spectator";
 
@@ -228,7 +228,7 @@ void CSEv_GamePlayerSpawn_f(float fChar)
 	switch (fGameState) {
 		case GAME_FREEZE:
 			self.fCharModel = fChar;
-			Spawn_CreateClient(fChar);
+			PlayerSpawnIngame(fChar);
 
 			if ((self.team == TEAM_T) && (iAlivePlayers_T == 1)) {
 				if (iBombZones > 0) {
@@ -251,7 +251,7 @@ void CSEv_GamePlayerSpawn_f(float fChar)
 				self.team = TEAM_CT;
 			}
 
-			Spawn_MakeSpectator();
+			PlayerMakeSpectator();
 			self.classname = "player";
 			self.fCharModel = fChar;
 			self.health = 0;

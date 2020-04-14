@@ -120,7 +120,7 @@ TraceAttack_FireBullets(int iShots, vector vecPos, int iDamage, vector vecSpread
 
 	while (iShots > 0) {
 #ifdef PENETRATION
-		iTotalPenetrations = 4;
+		iTotalPenetrations = 2;
 #endif
 		vDir = aim(self, 100000);
 #ifndef CSTRIKE

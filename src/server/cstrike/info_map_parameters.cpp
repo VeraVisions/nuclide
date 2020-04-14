@@ -32,6 +32,14 @@ Choices for 'buying':
     3 = Neither Counter-Terrorists nor Terrorists can buy items
 */
 
+enum
+{
+	BUY_BOTH,
+	BUY_CT,
+	BUY_T,
+	BUY_NEITHER
+};
+
 class info_map_parameters
 {
 	void(void) info_map_parameters;

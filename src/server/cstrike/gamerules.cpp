@@ -27,7 +27,16 @@ class CSGameRules:CGameRules
 	virtual void(player) LevelChangeParms;
 	virtual void(player) LevelDecodeParms;
 	virtual void(void) LevelNewParms;
+
+	virtual int(player) RulesBuyingPossible;
 };
+
+
+int
+CSGameRules::RulesBuyingPossible(player pl)
+{
+	return FALSE;
+}
 
 /* we check what fields have changed over the course of the frame and network
  * only the ones that have actually changed */

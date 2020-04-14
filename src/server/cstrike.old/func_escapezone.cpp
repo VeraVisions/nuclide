@@ -30,7 +30,7 @@ void Escape_Touch(entity targ)
 {
 	entity eOld = self;
 	self = targ;
-	Spawn_MakeSpectator();
+	PlayerMakeSpectator();
 	self.classname = "player";
 	forceinfokey(self, "*dead", "0");
 	self.health = 0;

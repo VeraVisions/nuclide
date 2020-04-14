@@ -25,7 +25,7 @@ void VIP_Rescue(entity targ)
 {
 	entity eOld = self;
 	self = other;
-	Spawn_MakeSpectator();
+	PlayerMakeSpectator();
 	self.classname = "player";
 	self.team = TEAM_CT;
 	forceinfokey(self, "*dead", "0");

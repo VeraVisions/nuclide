@@ -63,7 +63,7 @@ Game_ParseClientCommand(string cmd)
 		return;
 	} else if (argv(0) == "say_team") {
 		entity a;
-		for (a = world; (a = find(a, classname, "player"));) { 
+		for (a = world; (a = find(a, ::classname, "player"));) { 
 			if (a.team == self.team) {
 				SV_SendChat(self, argv(1), a, 1);
 			}

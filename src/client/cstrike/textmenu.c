@@ -35,23 +35,23 @@ TERRORIST_SELECT(int n)
 {
 	switch (n) {
 	case 1:
-		sendevent("JoinT", "f", 1);
+		sendevent("JoinTeam", "f", 1);
 		Textmenu_Call("");
 		break;
 	case 2:
-		sendevent("JoinT", "f", 2);
+		sendevent("JoinTeam", "f", 2);
 		Textmenu_Call("");
 		break;
 	case 3:
-		sendevent("JoinT", "f", 3);
+		sendevent("JoinTeam", "f", 3);
 		Textmenu_Call("");
 		break;
 	case 4:
-		sendevent("JoinT", "f", 4);
+		sendevent("JoinTeam", "f", 4);
 		Textmenu_Call("");
 		break;
 	case 5:
-		sendevent("JoinT", "f", floor(random(1,5)));
+		sendevent("JoinTeam", "f", floor(random(1,5)));
 		Textmenu_Call("");
 		break;
 	}
@@ -61,23 +61,23 @@ CT_SELECT(int n)
 {
 	switch (n) {
 	case 1:
-		sendevent("JoinCT", "f", 1);
+		sendevent("JoinTeam", "f", 5);
 		Textmenu_Call("");
 		break;
 	case 2:
-		sendevent("JoinCT", "f", 2);
+		sendevent("JoinTeam", "f", 6);
 		Textmenu_Call("");
 		break;
 	case 3:
-		sendevent("JoinCT", "f", 3);
+		sendevent("JoinTeam", "f", 7);
 		Textmenu_Call("");
 		break;
 	case 4:
-		sendevent("JoinCT", "f", 4);
+		sendevent("JoinTeam", "f", 8);
 		Textmenu_Call("");
 		break;
 	case 5:
-		sendevent("JoinCT", "f", floor(random(1,5)));
+		sendevent("JoinTeam", "f", floor(random(1,5)));
 		Textmenu_Call("");
 		break;
 	}
@@ -127,19 +127,60 @@ void
 DT_BUYITEM(int n)
 {
 	switch (n) {
-	default:
-		Textmenu_Call("");
+	case 1:
+		sendevent("BuyEquipment", "f", 0);
 		break;
+	case 2:
+		sendevent("BuyEquipment", "f", 1);
+		break;
+	case 3:
+		sendevent("BuyEquipment", "f", 2);
+		break;
+	case 4:
+		sendevent("BuyEquipment", "f", 3);
+		break;
+	case 5:
+		sendevent("BuyEquipment", "f", 4);
+		break;
+	case 7:
+		sendevent("BuyEquipment", "f", 6);
+		break;
+	default:
+		return;
 	}
+
+	Textmenu_Call("");
 }
 void
 DCT_BUYITEM(int n)
 {
 	switch (n) {
-	default:
-		Textmenu_Call("");
+	case 1:
+		sendevent("BuyEquipment", "f", 0);
 		break;
+	case 2:
+		sendevent("BuyEquipment", "f", 1);
+		break;
+	case 3:
+		sendevent("BuyEquipment", "f", 2);
+		break;
+	case 4:
+		sendevent("BuyEquipment", "f", 3);
+		break;
+	case 5:
+		sendevent("BuyEquipment", "f", 4);
+		break;
+	case 6:
+		sendevent("BuyEquipment", "f", 5);
+		break;
+	case 7:
+		sendevent("BuyEquipment", "f", 6);
+		break;
+	default:
+		return;
 	}
+
+	Textmenu_Call("");
 }
 
 /* Handguns */
@@ -147,19 +188,51 @@ void
 T_BUYPISTOL(int n)
 {
 	switch (n) {
-	default:
-		Textmenu_Call("");
+	case 1:
+		sendevent("BuyWeapon", "f", WEAPON_USP45);
 		break;
+	case 2:
+		sendevent("BuyWeapon", "f", WEAPON_GLOCK18);
+		break;
+	case 3:
+		sendevent("BuyWeapon", "f", WEAPON_DEAGLE);
+		break;
+	case 4:
+		sendevent("BuyWeapon", "f", WEAPON_P228);
+		break;
+	case 5:
+		sendevent("BuyWeapon", "f", WEAPON_ELITES);
+		break;
+	default:
+		return;
 	}
+
+	Textmenu_Call("");
 }
 void
 CT_BUYPISTOL(int n)
 {
 	switch (n) {
-	default:
-		Textmenu_Call("");
+	case 1:
+		sendevent("BuyWeapon", "f", WEAPON_USP45);
 		break;
+	case 2:
+		sendevent("BuyWeapon", "f", WEAPON_GLOCK18);
+		break;
+	case 3:
+		sendevent("BuyWeapon", "f", WEAPON_DEAGLE);
+		break;
+	case 4:
+		sendevent("BuyWeapon", "f", WEAPON_P228);
+		break;
+	case 6:
+		sendevent("BuyWeapon", "f", WEAPON_FIVESEVEN);
+		break;
+	default:
+		return;
 	}
+
+	Textmenu_Call("");
 }
 
 /* Shotguns */
@@ -167,10 +240,17 @@ void
 BUYSHOTGUN(int n)
 {
 	switch (n) {
-	default:
-		Textmenu_Call("");
+	case 1:
+		sendevent("BuyWeapon", "f", WEAPON_M3);
 		break;
+	case 2:
+		sendevent("BuyWeapon", "f", WEAPON_XM1014);
+		break;
+	default:
+		return;
 	}
+
+	Textmenu_Call("");
 }
 
 /* Rifles, Sniper */
@@ -178,19 +258,54 @@ void
 T_BUYRIFLE(int n)
 {
 	switch (n) {
-	default:
-		Textmenu_Call("");
+	case 1:
+		sendevent("BuyWeapon", "f", WEAPON_AK47);
 		break;
+	case 2:
+		sendevent("BuyWeapon", "f", WEAPON_SG552);
+		break;
+	case 5:
+		sendevent("BuyWeapon", "f", WEAPON_SCOUT);
+		break;
+	case 6:
+		sendevent("BuyWeapon", "f", WEAPON_AWP);
+		break;
+	case 7:
+		sendevent("BuyWeapon", "f", WEAPON_G3SG1);
+		break;
+	default:
+		return;
 	}
+
+	Textmenu_Call("");
 }
 void
 CT_BUYRIFLE(int n)
 {
 	switch (n) {
-	default:
-		Textmenu_Call("");
+	case 3:
+		sendevent("BuyWeapon", "f", WEAPON_M4A1);
 		break;
+	case 4:
+		sendevent("BuyWeapon", "f", WEAPON_AUG);
+		break;
+	case 5:
+		sendevent("BuyWeapon", "f", WEAPON_SCOUT);
+		break;
+	case 6:
+		sendevent("BuyWeapon", "f", WEAPON_AWP);
+		break;
+	case 7:
+		sendevent("BuyWeapon", "f", WEAPON_G3SG1);
+		break;
+	case 8:
+		sendevent("BuyWeapon", "f", WEAPON_SG550);
+		break;
+	default:
+		return;
 	}
+
+	Textmenu_Call("");
 }
 
 /* SMGs */
@@ -198,19 +313,45 @@ void
 T_BUYSUBMACHINEGUN(int n)
 {
 	switch (n) {
-	default:
-		Textmenu_Call("");
+	case 1:
+		sendevent("BuyWeapon", "f", WEAPON_MP5);
 		break;
+	case 3:
+		sendevent("BuyWeapon", "f", WEAPON_P90);
+		break;
+	case 4:
+		sendevent("BuyWeapon", "f", WEAPON_MAC10);
+		break;
+	case 5:
+		sendevent("BuyWeapon", "f", WEAPON_UMP45);
+		break;
+	default:
+		return;
 	}
+
+	Textmenu_Call("");
 }
 void
 CT_BUYSUBMACHINEGUN(int n)
 {
 	switch (n) {
-	default:
-		Textmenu_Call("");
+	case 1:
+		sendevent("BuyWeapon", "f", WEAPON_MP5);
 		break;
+	case 2:
+		sendevent("BuyWeapon", "f", WEAPON_TMP);
+		break;
+	case 3:
+		sendevent("BuyWeapon", "f", WEAPON_P90);
+		break;
+	case 5:
+		sendevent("BuyWeapon", "f", WEAPON_UMP45);
+		break;
+	default:
+		return;
 	}
+
+	Textmenu_Call("");
 }
 
 /* Big and heavy */
@@ -218,10 +359,14 @@ void
 BUYMACHINEGUN(int n)
 {
 	switch (n) {
-	default:
-		Textmenu_Call("");
+	case 1:
+		sendevent("BuyWeapon", "f", WEAPON_PARA);
 		break;
+	default:
+		return;
 	}
+
+	Textmenu_Call("");
 }
 
 /* Radio */

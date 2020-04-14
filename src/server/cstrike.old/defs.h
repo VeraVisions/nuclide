@@ -81,9 +81,9 @@ int iBombPlanted;
 void Rules_RoundOver(int iTeamWon, int iMoneyReward, float fSilent);
 float Rules_BuyingPossible(void);
 void Timer_Begin(float fTime, float fMode);
-void Spawn_RespawnClient(float fTeam);
-void Spawn_CreateClient(float fTeam);
-void Spawn_MakeSpectator(void);
+void PlayerRoundRespawn(float fTeam);
+void PlayerSpawnIngame(float fTeam);
+void PlayerMakeSpectator(void);
 void Client_SendEvent(entity eClient, float fEVType);
 
 void Weapon_Draw(float fWeapon);

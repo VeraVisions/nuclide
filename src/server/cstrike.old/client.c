@@ -56,7 +56,7 @@ Called when a spectator joins the game
 */
 void Game_SpectatorConnect(void)
 {
-	//Spawn_MakeSpectator();
+	//PlayerMakeSpectator();
 	//Spawn_ObserverCam();
 	ClientConnect();
 	PutClientInServer();
@@ -160,7 +160,7 @@ void Game_PutClientInServer(void)
 
 	entity eTarget = world;
 
-	Spawn_MakeSpectator();
+	PlayerMakeSpectator();
 	Spawn_ObserverCam();
 	self.SendEntity = Player_SendEntity;
 

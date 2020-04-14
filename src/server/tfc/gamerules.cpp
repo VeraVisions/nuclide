@@ -188,8 +188,8 @@ TFCGameRules::PlayerSpawn(player pl)
 	pl.weapon = 0;
 	pl.viewzoom = 1.0f;
 	pl.model = 0;
-	setsize (pl, '-16 -16 -16', '16 16 16');
-	pl.view_ofs = pl.velocity = '0 0 0';
+	setsize (pl, [-16,-16,-16], [16,16,16]);
+	pl.view_ofs = pl.velocity = [0,0,0];
 	forceinfokey(pl, "*spec", "2");
-	Spawn_ObserverCam();
+	Spawn_ObserverCam(pl);
 }

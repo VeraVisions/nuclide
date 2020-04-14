@@ -49,11 +49,13 @@ int g_cstrikeWeaponPrice[] =
 void
 CSEv_BuyWeapon_f(float fWeapon)
 {
+	CSGameRules rules = (CSGameRules)g_grMode;
+
 	int iWeapon;
 	player pl = (player)self;
 	iWeapon = (int)fWeapon;
 
-	if (Rules_BuyingPossible() == FALSE) {
+	if (rules.RulesBuyingPossible(pl) == FALSE) {
 		return;
 	}
 

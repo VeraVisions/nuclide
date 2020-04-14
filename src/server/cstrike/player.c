@@ -53,22 +53,22 @@ void Player_Death(int hit)
 	corpse.velocity = pl.velocity;
 
 	/* gamerule stuff */
-	Spawn_MakeSpectator();
+//	PlayerMakeSpectator();
 	self.classname = "player";
 	self.health = 0;
 	forceinfokey(self, "*dead", "1"); 
 	forceinfokey(self, "*team", ftos(self.team));
 
-	Rules_CountPlayers();
+	//Rules_CountPlayers();
 
 	/* In Assassination, all Terrorists receive a $2500
 	 *  reward if they won by killing the VIP. */
 	if (self.team == TEAM_VIP) {
-		Rules_RoundOver(TEAM_T, 2500, FALSE);
+	//	Rules_RoundOver(TEAM_T, 2500, FALSE);
 		return;
 	}
-
-	Rules_DeathCheck();
+//
+	//Rules_DeathCheck();
 }
 
 /*

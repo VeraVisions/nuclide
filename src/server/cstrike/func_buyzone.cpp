@@ -40,10 +40,10 @@ Choices for 'team' include:
     2 = Counter-Terrorist
 */
 
-class func_buyzone:CBaseTrigger
+class func_buyzone
 {
+	void(void) func_buyzone;
 	virtual void(void) touch;
-	virtual void(void) Respawn;
 };
 
 void
@@ -58,7 +58,17 @@ func_buyzone::touch(void)
 }
 
 void
-func_buyzone::Respawn(void)
+func_buyzone::func_buyzone(void)
 {
-	InitBrushTrigger();
+	angles = [0,0,0];
+	movetype = MOVETYPE_NONE;
+	solid = SOLID_TRIGGER;
+
+	if (model) {
+		setmodel(this, model);
+	} else {
+		mins = [-128,-128,-36];
+		maxs = [128,128,36];
+		setsize(this, mins, maxs);
+	}
 }

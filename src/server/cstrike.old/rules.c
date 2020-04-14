@@ -107,7 +107,7 @@ void Rules_MakeBomber(void) {
 
 void Rules_MakeVIP(void) {
 	self.team = TEAM_VIP;
-	Spawn_RespawnClient(self.team);
+	PlayerRoundRespawn(self.team);
 	centerprint(self, "You are the VIP\nMake your way to the safety zones!");
 	forceinfokey(self, "*dead", "2");
 }
@@ -129,10 +129,10 @@ void Rules_Restart(int iWipe) {
 		self = eFind;
 		
 		if (self.health > 0 && iWipe == FALSE) {
-			Spawn_RespawnClient(self.team);
+			PlayerRoundRespawn(self.team);
 		} else {
-			Spawn_MakeSpectator();
-			Spawn_CreateClient(self.fCharModel);
+			PlayerMakeSpectator();
+			PlayerSpawnIngame(self.fCharModel);
 		}
 		
 		if (iWipe == FALSE) {

@@ -24,9 +24,10 @@ Comparable to worldspawn in SSQC in that it's mostly used for precaches
 void
 Client_Init(float apilevel, string enginename, float engineversion)
 {
-	registercommand("callvote");
 	registercommand("chooseteam");
 	registercommand("buy");
+
+	/* radio */
 	registercommand("radio1");
 	registercommand("radio2");
 	registercommand("radio3");
@@ -34,18 +35,26 @@ Client_Init(float apilevel, string enginename, float engineversion)
 	registercommand("motd");
 	registercommand("drop");
 	registercommand("nightvision");
+
+	/* pistols */
 	registercommand("glock");
 	registercommand("usp");
 	registercommand("p228");
 	registercommand("deagle");
 	registercommand("fn57");
 	registercommand("elites");
+
+	/* shotties */
 	registercommand("m3");
 	registercommand("xm1014");
+
+	/* smg */
 	registercommand("tmp");
 	registercommand("mac10");
 	registercommand("mp5");
 	registercommand("ump45");
+
+	/* rifles */
 	registercommand("p90");
 	registercommand("ak47");
 	registercommand("m4a1");
@@ -55,11 +64,17 @@ Client_Init(float apilevel, string enginename, float engineversion)
 	registercommand("sg550");
 	registercommand("awp");
 	registercommand("g3sg1");
+
+	/* lonely */
 	registercommand("m249");
+
+	/* ammo */
 	registercommand("primammo");
 	registercommand("buyammo1");
 	registercommand("secammo");
 	registercommand("buyammo2");
+
+	/* equipment */
 	registercommand("vest");
 	registercommand("vesthelm");
 	registercommand("flash");
@@ -67,6 +82,8 @@ Client_Init(float apilevel, string enginename, float engineversion)
 	registercommand("vsgren");
 	registercommand("defuser");
 	registercommand("nvg");
+
+	/* radio */
 	registercommand("coverme");
 	registercommand("takepoint");
 	registercommand("holdpos");
