@@ -21,29 +21,29 @@ void main(void)
 
 void StartFrame(void)
 {
-	for (entity a = world; (a = findfloat(a, gflags, GF_CANRESPAWN));) {
+	for (entity a = world; (a = findfloat(a, ::gflags, GF_CANRESPAWN));) {
 		CBaseEntity ent = (CBaseEntity)a;
 		ent.ParentUpdate();
 	}
 
-	Game_StartFrame();
+	g_grMode.FrameStart();
 	Vote_Frame();
 }
 
 void ClientConnect(float csqc_active)
 {
-	Game_ClientConnect();
+	g_grMode.PlayerConnect(self);
 }
 
 void ClientDisconnect(void)
 {
-	Game_ClientDisconnect();
+	g_grMode.PlayerDisconnect(self);
 }
 
 void ClientKill(void)
 {
 	player pl = (player)self;
-	Game_ClientKill(pl);
+	g_grMode.PlayerKill(pl);
 }
 
 void SpectatorThink(void)
@@ -69,30 +69,30 @@ void PutClientInServer(void)
 	}
 
 	pl = (player)self;
-	Game_PutClientInServer(pl);
+	g_grMode.PlayerSpawn(pl);
 }
 
 void PlayerPreThink(void)
 {
 	player pl = (player)self;
-	Game_PlayerPreThink(pl);
+	g_grMode.PlayerPreFrame(pl);
 }
 
 void PlayerPostThink(void)
 {
 	player pl = (player)self;
-	Game_PlayerPostThink(pl);
+	g_grMode.PlayerPostFrame(pl);
 }
 
 void SetNewParms(void)
 {
-	Gamerules_SetNewParms();
+	g_grMode.LevelNewParms();
 }
 
 void SetChangeParms(void)
 {
 	player pl = (player)self;
-	Gamerules_SetChangeParms(pl);
+	g_grMode.LevelChangeParms(pl);
 }
 
 void SV_RunClientCommand(void)
@@ -111,16 +111,31 @@ void SV_ParseClientCommand(string cmd)
 
 void init(float prevprogs)
 {
+	Plugin_Init();
+}
+
+void init_respawn(void)
+{
+	for (entity a = world; (a = findfloat(a, ::gflags, GF_CANRESPAWN));) {
+		CBaseEntity ent = (CBaseEntity)a;
+		ent.Respawn();
+	}
+	remove(self);
+}
+
+void initents(void)
+{
 	string sTemp;
 	
 	Sound_Init();
 
 	// Let's load materials.txt because someone thought this was the best idea
 	filestream fileMaterial = fopen("sound/materials.txt", FILE_READ);
+	hashMaterials = __NULL__;
 	hashMaterials = hash_createtab(2, HASH_ADD);
 
 	if (fileMaterial >= 0) {
-		while ((sTemp = fgets(fileMaterial))) {		
+		while ((sTemp = fgets(fileMaterial))) {
 			// Tokenize and just parse this stuff in
 			if (tokenize_console(sTemp) == 2) {
 				hash_add(hashMaterials, strtolower(argv(1)), str2chr(argv(0), 0));
@@ -134,20 +149,7 @@ void init(float prevprogs)
 	}
 
 	PMove_Init();
-	Plugin_Init();
-}
 
-void init_respawn(void)
-{
-	for (entity a = world; (a = findfloat(a, gflags, GF_CANRESPAWN));) {
-		CBaseEntity ent = (CBaseEntity)a;
-		ent.Respawn();
-	}
-	remove(self);
-}
-
-void initents(void)
-{
 	precache_sound("weapons/explode3.wav");
 	precache_sound("weapons/explode4.wav");
 	precache_sound("weapons/explode5.wav");
@@ -214,6 +216,7 @@ void initents(void)
 	precache_sound("items/flashlight1.wav");
 	precache_sound("common/null.wav");
 
+	Game_InitRules();
 	Game_Worldspawn();
 	Decals_Init();
 	Sentences_Init();
@@ -241,6 +244,6 @@ void worldspawn(void)
 
 float ConsoleCmd(string cmd)
 {
-	return Game_ConsoleCmd(cmd);
+	player pl = (player)self;
+	return g_grMode.ConsoleCommand(pl, cmd);
 }
-

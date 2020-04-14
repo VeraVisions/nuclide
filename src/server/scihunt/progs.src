@@ -109,7 +109,10 @@ shdata_parse.c
 ../vox.c
 
 ../../shared/valve/animations.c
-../scihunt/gamerules.c
+
+../gamerules.cpp
+../valve/gamerules.cpp
+../scihunt/gamerules_multiplayer.cpp
 ../valve/client.c
 ../client.c
 

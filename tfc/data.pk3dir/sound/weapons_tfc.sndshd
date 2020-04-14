@@ -1,3 +1,8 @@
+weapon_dbs.fire
+{
+	sample weapons/shotgn2.wav
+}
+
 weapon_sbs.cock
 {
 	sample weapons/scock1.wav

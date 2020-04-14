@@ -20,13 +20,13 @@ Spawn_ObserverCam(void)
 	entity eTarget;
 
 	// Go find a camera if we aren't dead
-	entity eCamera = find(world, classname, "trigger_camera");
+	entity eCamera = find(world, ::classname, "trigger_camera");
 
 	if (eCamera) {
 		self.origin = eCamera.origin;
 		
 		if (eCamera.target) {
-			eTarget = find(world, targetname, eCamera.target);
+			eTarget = find(world, ::targetname, eCamera.target);
 			if (eTarget) {
 				self.angles = vectoangles(eTarget.origin - eCamera.origin);
 				self.angles[0] *= -1;
@@ -34,13 +34,13 @@ Spawn_ObserverCam(void)
 		}
 	} else {
 		// Can't find a camera? Just do this lazy thing, CS seems to do the same
-		eCamera = find (world, classname, "info_player_start");
+		eCamera = find (world, ::classname, "info_player_start");
 		
 		if (eCamera) {
 			self.origin = eCamera.origin;
 			
 			if (eCamera.target) {
-				eTarget = find(world, targetname, eCamera.target);
+				eTarget = find(world, ::targetname, eCamera.target);
 				if (eTarget) {
 					self.angles = vectoangles(eTarget.origin - eCamera.origin);
 					self.angles[0] *= -1;

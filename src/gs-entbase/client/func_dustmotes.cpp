@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED func_dustmotes (1 0 0) (-8 -8 -8) (8 8 8) ?
+/*QUAKED func_dustmotes (0 .5 .8) ?
 
 Dustmote emitting brush volume.
 */

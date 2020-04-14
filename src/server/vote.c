@@ -55,7 +55,7 @@ Vote_Reset(void)
 	forceinfokey(world, "votes_n", "0");
 	forceinfokey(world, "vote_cmd", "");
 
-	for (entity e = world; (e = find(e, classname, "player"));) {
+	for (entity e = world; (e = find(e, ::classname, "player"));) {
 		e.flags &= ~FL_VOTED;
 	}
 }
@@ -145,7 +145,7 @@ CSEv_VoteY(void)
 
 	/* HACK: Is there a better way to do this? */
 	float playernums = 0;
-	for (entity eFind = world; (eFind = find(eFind, classname, "player"));) {
+	for (entity eFind = world; (eFind = find(eFind, ::classname, "player"));) {
 		playernums++;
 	}
 
@@ -188,7 +188,7 @@ CSEv_VoteN(void)
 
 	/* HACK: Is there a better way to do this? */
 	float playernums = 0;
-	for (entity eFind = world; (eFind = find(eFind, classname, "player"));) {
+	for (entity eFind = world; (eFind = find(eFind, ::classname, "player"));) {
 		playernums++;
 	}
 

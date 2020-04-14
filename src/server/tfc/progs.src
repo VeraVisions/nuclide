@@ -66,10 +66,12 @@ info_player_teamspawn.cpp
 spawn.c
 ../vox.c
 ../../shared/valve/animations.c
-../tfc/gamerules.c
+
+../gamerules.cpp
+../tfc/gamerules.cpp
 ../valve/client.c
 ../client.c
-../valve/server.c
+../tfc/server.c
 ../server.c
 ../valve/damage.c
 ../traceattack.c

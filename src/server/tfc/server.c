@@ -17,12 +17,7 @@
 void
 Game_InitRules(void)
 {
-	print("Game_InitRules!\n");
-	if (cvar("sv_playerslots") == 1 || cvar("coop") == 1) {
-		g_grMode = spawn(HLSingleplayerRules);
-	} else {
-		g_grMode = spawn(HLMultiplayerRules);
-	}
+	g_grMode = spawn(TFCGameRules);
 }
 
 void
@@ -35,4 +30,8 @@ Game_Worldspawn(void)
 	precache_sound("fvox/flatline.wav");
 	Weapons_Init();
 	Player_Precache();
+}
+
+void weaponbox_spawn(player pl)
+{
 }

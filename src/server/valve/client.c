@@ -13,149 +13,6 @@
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-var int autocvar_sv_playerkeepalive = TRUE;
-
-void
-Game_ClientConnect(void)
-{
-	entity a;
-	bprint(PRINT_HIGH, sprintf("%s connected\n", self.netname));
-
-	int playercount = 0;
-	for (a = world; (a = find(a, classname, "player"));) {
-		playercount++;
-	}
-
-	/* we're the first. respawn all entities? */	
-	if (playercount == 0) {
-		for (a = world; (a = findfloat(a, gflags, GF_CANRESPAWN));) {
-			CBaseEntity caw = (CBaseEntity)a;
-			caw.Respawn();
-		}
-		Nodes_Init();
-	}
-}
-
-void
-Game_ClientDisconnect(void)
-{
-	bprint(PRINT_HIGH, sprintf("%s disconnected\n", self.netname));
-	
-	/* Make this unusable */
-	self.solid = SOLID_NOT;
-	self.movetype = MOVETYPE_NONE;
-	self.modelindex = 0;
-	self.health = 0;
-	self.takedamage = 0;
-	self.SendFlags = PLAYER_MODELINDEX;
-}
-
-void
-Game_ClientKill(player pl)
-{
-	Damage_Apply(pl, pl, pl.health, WEAPON_NONE, DMG_SKIP_ARMOR);
-}
-
-void
-Game_PlayerPreThink(player pl)
-{
-	
-}
-
-/* we check what fields have changed over the course of the frame and network
- * only the ones that have actually changed */
-void
-Game_PlayerPostThink(player pl)
-{
-	Animation_PlayerUpdate();
-
-	if (autocvar_sv_playerkeepalive)
-		pl.SendFlags |= PLAYER_KEEPALIVE;
-
-	if (pl.old_modelindex != pl.modelindex)
-		pl.SendFlags |= PLAYER_MODELINDEX;
-
-	if (pl.old_origin[0] != pl.origin[0])
-		pl.SendFlags |= PLAYER_ORIGIN;
-
-	if (pl.old_origin[1] != pl.origin[1])
-		pl.SendFlags |= PLAYER_ORIGIN;
-
-	if (pl.old_origin[2] != pl.origin[2])
-		pl.SendFlags |= PLAYER_ORIGIN_Z;
-
-	if (pl.old_angles[0] != pl.v_angle[0])
-		pl.SendFlags |= PLAYER_ANGLES_X;
-
-	if (pl.old_angles[1] != pl.angles[1])
-		pl.SendFlags |= PLAYER_ANGLES_Y;
-
-	if (pl.old_angles[2] != pl.angles[2])
-		pl.SendFlags |= PLAYER_ANGLES_Z;
-
-	if (pl.old_velocity[0] != pl.velocity[0])
-		pl.SendFlags |= PLAYER_VELOCITY;
-
-	if (pl.old_velocity[1] != pl.velocity[1])
-		pl.SendFlags |= PLAYER_VELOCITY;
-
-	if (pl.old_velocity[2] != pl.velocity[2])
-		pl.SendFlags |= PLAYER_VELOCITY_Z;
-
-	if (pl.old_flags != pl.flags)
-		pl.SendFlags |= PLAYER_FLAGS;
-
-	if (pl.old_activeweapon != pl.activeweapon)
-		pl.SendFlags |= PLAYER_WEAPON;
-
-	if (pl.old_items != pl.g_items)
-		pl.SendFlags |= PLAYER_ITEMS;
-
-	if (pl.old_health != pl.health)
-		pl.SendFlags |= PLAYER_HEALTH;
-
-	if (pl.old_armor != pl.armor)
-		pl.SendFlags |= PLAYER_ARMOR;
-
-	if (pl.old_movetype != pl.movetype)
-		pl.SendFlags |= PLAYER_MOVETYPE;
-
-	if (pl.old_viewofs != pl.view_ofs[2])
-		pl.SendFlags |= PLAYER_VIEWOFS;
-
-	if (pl.old_baseframe != pl.baseframe)
-		pl.SendFlags |= PLAYER_BASEFRAME;
-
-	if (pl.old_frame != pl.frame)
-		pl.SendFlags |= PLAYER_FRAME;
-
-	if (pl.old_a_ammo1 != pl.a_ammo1)
-		pl.SendFlags |= PLAYER_AMMO1;
-
-	if (pl.old_a_ammo2 != pl.a_ammo2)
-		pl.SendFlags |= PLAYER_AMMO2;
-
-	if (pl.old_a_ammo3 != pl.a_ammo3)
-		pl.SendFlags |= PLAYER_AMMO3;
-
-	pl.old_modelindex = pl.modelindex;
-	pl.old_origin = pl.origin;
-	pl.old_angles = pl.angles;
-	pl.old_angles[0] = pl.v_angle[0];
-	pl.old_velocity = pl.velocity;
-	pl.old_flags = pl.flags;
-	pl.old_activeweapon = pl.activeweapon;
-	pl.old_items = pl.g_items;
-	pl.old_health = pl.health;
-	pl.old_armor = pl.armor;
-	pl.old_movetype = pl.movetype;
-	pl.old_viewofs = pl.view_ofs[2];
-	pl.old_baseframe = pl.baseframe;
-	pl.old_frame = pl.frame;
-	pl.old_a_ammo1 = pl.a_ammo1;
-	pl.old_a_ammo2 = pl.a_ammo2;
-	pl.old_a_ammo3 = pl.a_ammo3;
-}
 
 /* called every input frame */
 void
@@ -163,44 +20,6 @@ Game_RunClientCommand(void)
 {
 	Footsteps_Update();
 	QPhysics_Run(self);
-}
-
-/* called whenever we respawn, or connect */
-void
-Game_PutClientInServer(player pl)
-{
-	pl.classname = "player";
-	pl.health = pl.max_health = 100;
-	pl.takedamage = DAMAGE_YES;
-	pl.solid = SOLID_SLIDEBOX;
-	pl.movetype = MOVETYPE_WALK;
-	pl.flags = FL_CLIENT;
-	pl.viewzoom = 1.0;
-	pl.model = "models/player.mdl";
-	string mymodel = infokey(pl, "model");
-
-	if (mymodel) {
-		mymodel = sprintf("models/player/%s/%s.mdl", mymodel, mymodel);
-		if (whichpack(mymodel)) {
-			pl.model = mymodel;
-		}
-	} 
-	setmodel(pl, pl.model);
-
-	setsize(pl, VEC_HULL_MIN, VEC_HULL_MAX);
-	pl.view_ofs = VEC_PLAYER_VIEWPOS;
-	pl.velocity = [0,0,0];
-	pl.gravity = __NULL__;
-	pl.frame = 1;
-	pl.SendEntity = Player_SendEntity;
-	pl.SendFlags = UPDATE_ALL;
-	pl.customphysics = Empty;
-	pl.iBleeds = TRUE;
-	forceinfokey(pl, "*spec", "0");
-	forceinfokey(pl, "*deaths", ftos(pl.deaths));
-
-	/* this is where the mods want to deviate */
-	Gamerules_Spawn(pl);
 }
 
 /* custom chat packet */
@@ -244,7 +63,7 @@ Game_ParseClientCommand(string cmd)
 		return;
 	} else if (argv(0) == "say_team") {
 		entity a;
-		for (a = world; (a = find(a, classname, "player"));) { 
+		for (a = world; (a = find(a, ::classname, "player"));) { 
 			if (a.team == self.team) {
 				SV_SendChat(self, argv(1), a, 1);
 			}

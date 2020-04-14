@@ -63,7 +63,11 @@ monster_human_unarmed.cpp
 ../spawn.c
 ../vox.c
 ../../shared/valve/animations.c
-../rewolf/gamerules.c
+
+../gamerules.cpp
+../valve/gamerules.cpp
+../rewolf/gamerules_singleplayer.cpp
+../rewolf/gamerules_multiplayer.cpp
 ../valve/client.c
 ../client.c
 ../valve/server.c

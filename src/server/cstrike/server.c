@@ -14,33 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void Game_StartFrame(void)
-{
-	if ((g_cs_alive_t + g_cs_alive_ct) == 0) {
-		int iInGamePlayers = 0;
-		for (entity eFind = world; (eFind = find(eFind, classname, "player"));) {
-			iInGamePlayers++;
-		}
-		
-		if ((iInGamePlayers > 0) && (g_cs_gamestate != GAME_COMMENCING && g_cs_gamestate != GAME_END)) {
-			Timer_Begin(2, GAME_COMMENCING);
-		} else if (iInGamePlayers == 0) {
-			g_cs_gamestate = GAME_INACTIVE;
-			g_cs_gametime = 0;
-			g_cs_roundswon_t = 0;
-			g_cs_roundswon_ct = 0;
-			g_cs_roundsplayed = 0;
-		} else {
-			Timer_Update(); // Timer that happens once players have started joining
-		}
-	} else {
-		Timer_Update(); // Normal gameplay timer
-	}
-}
 
-float Game_ConsoleCmd(string cmd)
+void
+Game_InitRules(void)
 {
-	return FALSE;
+	if (cvar("sv_playerslots") == 1 || cvar("coop") == 1) {
+		g_grMode = spawn(CSSingleplayerRules);
+	} else {
+		g_grMode = spawn(CSMultiplayerRules);
+	}
 }
 
 void Game_Worldspawn(void)

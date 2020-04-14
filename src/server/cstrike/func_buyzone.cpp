@@ -42,8 +42,20 @@ Choices for 'team' include:
 
 class func_buyzone:CBaseTrigger
 {
+	virtual void(void) touch;
 	virtual void(void) Respawn;
 };
+
+void
+func_buyzone::touch(void)
+{
+	player pl = (player)other;
+	if (!(other.flags & FL_CLIENT)) {
+		return;
+	}
+
+	pl.buyzone = TRUE;
+}
 
 void
 func_buyzone::Respawn(void)

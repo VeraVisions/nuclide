@@ -14,15 +14,15 @@ games:
 	mkdir -p ../valve/data.pk3dir
 	$(CC) client/valve/progs.src
 	$(CC) server/valve/progs.src
+	mkdir -p ../tfc/data.pk3dir
+	$(CC) client/tfc/progs.src
+	$(CC) server/tfc/progs.src
 	mkdir -p ../rewolf/data.pk3dir
 	$(CC) client/rewolf/progs.src
 	$(CC) server/rewolf/progs.src
 	mkdir -p ../gearbox/data.pk3dir
 	$(CC) client/gearbox/progs.src
 	$(CC) server/gearbox/progs.src
-	mkdir -p ../tfc/data.pk3dir
-	$(CC) client/tfc/progs.src
-	$(CC) server/tfc/progs.src
 	
 mods:
 	mkdir -p ../cstrike/data.pk3dir

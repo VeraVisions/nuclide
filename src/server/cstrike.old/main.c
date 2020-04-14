@@ -111,7 +111,7 @@ void Game_StartFrame(void)
 	if (!iRescueZones && iHostagesMax > 0) {
 		Game_CreateRescueZones();
 	}
-		
+
 	if (iBuyZones == 0) {
 		Game_CreateBuyZones();
 	}

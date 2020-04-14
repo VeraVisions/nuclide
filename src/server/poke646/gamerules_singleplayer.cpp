@@ -14,10 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* after a level-change is done we need to pick up the scraps and fill the
- * info back in. */
+class HLSingleplayerRules:HLGameRules
+{
+	/* client */
+	virtual void(player) PlayerSpawn;
+
+	/* level transitions */
+	virtual void(player) LevelChangeParms;
+	virtual void(player) LevelDecodeParms;
+};
+
 void
-Gamerules_DecodeChangeParms(player pl)
+HLSingleplayerRules::LevelDecodeParms(player pl)
 {
 	g_landmarkpos[0] = parm1;
 	g_landmarkpos[1] = parm2;
@@ -30,6 +38,7 @@ Gamerules_DecodeChangeParms(player pl)
 	pl.velocity[2] = parm9;
 	pl.g_items = parm10;
 	pl.activeweapon = parm11;
+	pl.flags = parm64;
 
 	pl.ammo_nail = parm12;
 	pl.ammo_buckshot = parm13;
@@ -43,11 +52,16 @@ Gamerules_DecodeChangeParms(player pl)
 	pl.cmlwbr_mag = parm20;
 	pl.xs_mag = parm21;
 	pl.satchel_chg = parm22;
+
+	if (pl.flags & FL_CROUCHING) {
+		setsize(pl, VEC_CHULL_MIN, VEC_CHULL_MAX);
+	} else {
+		setsize(pl, VEC_HULL_MIN, VEC_HULL_MAX);
+	}
 }
 
-/* prepare the client-info for level-transition */
 void
-Gamerules_SetChangeParms(player pl)
+HLSingleplayerRules::LevelChangeParms(player pl)
 {
 	parm1 = g_landmarkpos[0];
 	parm2 = g_landmarkpos[1];
@@ -58,6 +72,7 @@ Gamerules_SetChangeParms(player pl)
 	parm7 = pl.velocity[0];
 	parm8 = pl.velocity[1];
 	parm9 = pl.velocity[2];
+	parm64 = pl.flags;
 	parm10 = pl.g_items;
 	parm11 = pl.activeweapon;
 	parm12 = pl.ammo_nail;
@@ -73,44 +88,45 @@ Gamerules_SetChangeParms(player pl)
 	parm22 = pl.satchel_chg;
 }
 
-/* yuck, whenever 'changelevel' does not happen. */
 void
-Gamerules_SetNewParms(void)
+HLSingleplayerRules::PlayerSpawn(player pl)
 {
-	parm1 = parm2 = parm3 = parm4 = parm5 = parm6 = parm7 =
-	parm8 = parm9 = parm10 = parm11 = parm12 = parm13 = parm14 =
-	parm15 = parm16 = parm17 = parm18 = parm19 = parm20 = parm21 =
-	parm22 = parm23 = parm24 = parm25 = parm26 = parm27 = parm28 =
-	parm29 = parm30 = 0;
-}
+	pl.classname = "player";
+	pl.health = pl.max_health = 100;
+	pl.takedamage = DAMAGE_YES;
+	pl.solid = SOLID_SLIDEBOX;
+	pl.movetype = MOVETYPE_WALK;
+	pl.flags = FL_CLIENT;
+	pl.viewzoom = 1.0;
+	pl.model = "models/player.mdl";
+	setmodel(pl, pl.model);
 
-/* called when the player first spawns/respawns */
-void
-Gamerules_Spawn(player pl)
-{
+	setsize(pl, VEC_HULL_MIN, VEC_HULL_MAX);
+	pl.view_ofs = VEC_PLAYER_VIEWPOS;
+	pl.velocity = [0,0,0];
+	pl.gravity = __NULL__;
+	pl.frame = 1;
+	pl.SendEntity = Player_SendEntity;
+	pl.SendFlags = UPDATE_ALL;
+	pl.customphysics = Empty;
+	pl.iBleeds = TRUE;
+	forceinfokey(pl, "*spec", "0");
+	forceinfokey(pl, "*deaths", ftos(pl.deaths));
+
+	/* this is where the mods want to deviate */
 	entity spot;
 
-	if (cvar("sv_playerslots") == 1) {
-		if (startspot != "") {
-			Gamerules_DecodeChangeParms(pl);
-			setorigin(pl, Landmark_GetSpot());
-		} else {
-			Gamerules_SetNewParms();
-			spot = find(world, classname, "info_player_start");
-			setorigin(pl, spot.origin);
-			pl.fixangle = TRUE;
-		}
+	if (startspot != "") {
+		dprint(sprintf("^3Gamerules_Spawn^7: Startspot is %s\n", startspot));
+		LevelDecodeParms(pl);
+		setorigin(pl, Landmark_GetSpot());
 	} else {
-		Gamerules_SetNewParms();
-		spot = Spawn_SelectRandom("info_player_deathmatch");
+		LevelNewParms();
+		spot = find(world, ::classname, "info_player_start");
 		setorigin(pl, spot.origin);
 		pl.angles = spot.angles;
-		pl.g_items |= ITEM_SUIT;
 	}
-	Client_FixAngle(pl, pl.angles);
-}
 
-void weaponbox_spawn(player pl)
-{
-	
-}
+	Weapons_RefreshAmmo(pl);
+	Client_FixAngle(pl, pl.angles);
+} 

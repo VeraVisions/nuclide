@@ -94,7 +94,11 @@
 ../spawn.c
 ../vox.c
 ../../shared/valve/animations.c
-gamerules.c
+
+../gamerules.cpp
+../poke646/gamerules.cpp
+../poke646/gamerules_singleplayer.cpp
+../poke646/gamerules_multiplayer.cpp
 ../valve/client.c
 ../client.c
 ../valve/server.c

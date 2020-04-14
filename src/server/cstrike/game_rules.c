@@ -92,6 +92,7 @@ Rules_BuyingPossible(void)
 	}
 	
 	if (pl.buyzone == FALSE) {
+		centerprint(pl, "Sorry, you aren't in a buyzone.\n");
 		return FALSE;
 	}
 	

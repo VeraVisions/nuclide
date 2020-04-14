@@ -51,70 +51,70 @@ Game_ConsoleCommand(void)
 		sendevent("WeaponDrop", "");
 		break;
 	case "glock":
-		sendevent("PlayerBuyWeapon", "f", WEAPON_GLOCK18);
+		sendevent("BuyWeapon", "f", WEAPON_GLOCK18);
 		break;
 	case "usp":
-		sendevent("PlayerBuyWeapon", "f", WEAPON_USP45);
+		sendevent("BuyWeapon", "f", WEAPON_USP45);
 		break;
 	case "p228":
-		sendevent("PlayerBuyWeapon", "f", WEAPON_P228);
+		sendevent("BuyWeapon", "f", WEAPON_P228);
 		break;
 	case "deagle":
-		sendevent("PlayerBuyWeapon", "f", WEAPON_DEAGLE);
+		sendevent("BuyWeapon", "f", WEAPON_DEAGLE);
 		break;
 	case "fn57":
-		sendevent("PlayerBuyWeapon", "f", WEAPON_FIVESEVEN);
+		sendevent("BuyWeapon", "f", WEAPON_FIVESEVEN);
 		break;
 	case "elites":
-		sendevent("PlayerBuyWeapon", "f", WEAPON_ELITES);
+		sendevent("BuyWeapon", "f", WEAPON_ELITES);
 		break;
 	case "m3":
-		sendevent("PlayerBuyWeapon", "f", WEAPON_M3);
+		sendevent("BuyWeapon", "f", WEAPON_M3);
 		break;
 	case "xm1014":
-		sendevent("PlayerBuyWeapon", "f", WEAPON_XM1014);
+		sendevent("BuyWeapon", "f", WEAPON_XM1014);
 		break;
 	case "tmp":
-		sendevent("PlayerBuyWeapon", "f", WEAPON_TMP);
+		sendevent("BuyWeapon", "f", WEAPON_TMP);
 		break;
 	case "mac10":
-		sendevent("PlayerBuyWeapon", "f", WEAPON_MAC10);
+		sendevent("BuyWeapon", "f", WEAPON_MAC10);
 		break;
 	case "mp5":
-		sendevent("PlayerBuyWeapon", "f", WEAPON_MP5);
+		sendevent("BuyWeapon", "f", WEAPON_MP5);
 		break;
 	case "ump45":
-		sendevent("PlayerBuyWeapon", "f", WEAPON_UMP45);
+		sendevent("BuyWeapon", "f", WEAPON_UMP45);
 		break;
 	case "p90":
-		sendevent("PlayerBuyWeapon", "f", WEAPON_P90);
+		sendevent("BuyWeapon", "f", WEAPON_P90);
 		break;
 	case "ak47":
-		sendevent("PlayerBuyWeapon", "f", WEAPON_AK47);
+		sendevent("BuyWeapon", "f", WEAPON_AK47);
 		break;
 	case "m4a1":
-		sendevent("PlayerBuyWeapon", "f", WEAPON_M4A1);
+		sendevent("BuyWeapon", "f", WEAPON_M4A1);
 		break;
 	case "sg552":
-		sendevent("PlayerBuyWeapon", "f", WEAPON_SG552);
+		sendevent("BuyWeapon", "f", WEAPON_SG552);
 		break;
 	case "aug":
-		sendevent("PlayerBuyWeapon", "f", WEAPON_AUG);
+		sendevent("BuyWeapon", "f", WEAPON_AUG);
 		break;
 	case "scout":
-		sendevent("PlayerBuyWeapon", "f", WEAPON_SCOUT);
+		sendevent("BuyWeapon", "f", WEAPON_SCOUT);
 		break;
 	case "sg550":
-		sendevent("PlayerBuyWeapon", "f", WEAPON_SG550);
+		sendevent("BuyWeapon", "f", WEAPON_SG550);
 		break;
 	case "awp":
-		sendevent("PlayerBuyWeapon", "f", WEAPON_AWP);
+		sendevent("BuyWeapon", "f", WEAPON_AWP);
 		break;
 	case "g3sg1":
-		sendevent("PlayerBuyWeapon", "f", WEAPON_G3SG1);
+		sendevent("BuyWeapon", "f", WEAPON_G3SG1);
 		break;
 	case "m249":
-		sendevent("PlayerBuyWeapon", "f", WEAPON_PARA);
+		sendevent("BuyWeapon", "f", WEAPON_PARA);
 		break;
 	case "buyammo1":
 	case "primammo":

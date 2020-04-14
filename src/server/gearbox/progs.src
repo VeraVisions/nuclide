@@ -115,7 +115,11 @@
 ../spawn.c
 ../vox.c
 ../../shared/valve/animations.c
-../valve/gamerules.c
+
+../gamerules.cpp
+../gearbox/gamerules.cpp
+../gearbox/gamerules_singleplayer.cpp
+../gearbox/gamerules_multiplayer.cpp
 ../valve/client.c
 ../client.c
 ../valve/server.c

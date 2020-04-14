@@ -83,10 +83,11 @@ Sentences_Init(void)
 
 		/* allocate memory and increase count */
 #ifdef DYNAMIC_SENTENCES
+		g_sentences_count++;
 		g_sentences = memrealloc(g_sentences,
 				sizeof(sentences_t),
-				g_sentences_count,
-				++g_sentences_count);
+				x,
+				g_sentences_count);
 #else
 		if (g_sentences_count + 1 >= SENTENCES_LIMIT) {
 			print("^1WARNING: ^7Reached limit of max sentences!\n");

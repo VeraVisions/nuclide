@@ -147,7 +147,7 @@ Damage_Radius(vector org, entity attacker, float dmg, float r, int check, int w)
 	float diff;
 	vector pos;
 
-	for (entity e = world; (e = findfloat(e, takedamage, DAMAGE_YES));) {
+	for (entity e = world; (e = findfloat(e, ::takedamage, DAMAGE_YES));) {
 		pos[0] = e.absmin[0] + (0.5 * (e.absmax[0] - e.absmin[0]));
 		pos[1] = e.absmin[1] + (0.5 * (e.absmax[1] - e.absmin[1]));
 		pos[2] = e.absmin[2] + (0.5 * (e.absmax[2] - e.absmin[2]));

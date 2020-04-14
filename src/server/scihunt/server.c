@@ -14,14 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void Game_StartFrame(void)
+void
+Game_InitRules(void)
 {
-	
-}
-
-float Game_ConsoleCmd(string cmd)
-{
-	return FALSE;
+	g_grMode = spawn(SHMultiplayerRules);
 }
 
 void Game_Worldspawn(void)
