@@ -84,10 +84,8 @@ void SHData_NewAngles(void)
 	self = oldself;
 }
 
-void SHData_GetItems(void)
+void SHData_GetItems(player pl)
 {
-	player pl = (player)self;
-
 	/* TODO: Parse the config files */
 	pl.ammo_9mm = 68;
 	pl.ammo_buckshot = 34;
