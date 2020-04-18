@@ -393,9 +393,9 @@ void func_button::func_button(void)
 			break;
 		/* compatibility */
 		case "sounds":
-			int snd;
-			snd = stoi(argv(i+1));
-			m_strSndPressed = g_hlbutton_sfx[snd];
+			int sfx;
+			sfx = stoi(argv(i+1));
+			m_strSndPressed = g_hlbutton_sfx[sfx];
 			m_iSoundCompat = TRUE;
 			break;
 		default:
