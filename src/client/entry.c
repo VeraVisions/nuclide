@@ -841,20 +841,6 @@ Whenever the world is fully initialized...
 void
 CSQC_WorldLoaded(void)
 {
-	precache_pic("{shot1", TRUE);
-	precache_pic("{shot2", TRUE);
-	precache_pic("{shot3", TRUE);
-	precache_pic("{shot4", TRUE);
-	precache_pic("{shot5", TRUE);
-	precache_pic("{bigshot1", TRUE);
-	precache_pic("{bigshot2", TRUE);
-	precache_pic("{bigshot3", TRUE);
-	precache_pic("{bigshot4", TRUE);
-	precache_pic("{bigshot5", TRUE);
-	precache_pic("{scorch1", TRUE);
-	precache_pic("{scorch2", TRUE);
-	precache_pic("{scorch3", TRUE);
-
 	/* Primarily for the flashlight */
 	if (serverkeyfloat("*bspversion") != 30) {
 		localcmd("r_shadow_realtime_dlight 1\n");
