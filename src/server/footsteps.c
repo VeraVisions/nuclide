@@ -119,6 +119,79 @@ Footsteps_VVBSP(entity target)
 
 	/* WIP */
 	if (target.flags & FL_ONGROUND) {
+		target.hitcontentsmaski = CONTENTBITS_POINTSOLID;
+		tracebox(target.origin, target.mins, target.maxs, (target.origin + [0,0,-16]), MOVE_NORMAL, target);
+		target.hitcontentsmaski = 0;
+		trace_surfaceflagsi &= ~SURF_MASK;
+
+		switch (trace_surfaceflagsi) {
+		case SURF_ALIEN:
+			mat_name = "step_alien";
+			break;
+		case SURF_FLESH:
+			mat_name = "step_flesh";
+			break;
+		case SURF_FOLIAGE:
+			mat_name = "step_foliage";
+			break;
+		case SURF_COMPUTER:
+			mat_name = "step_computer";
+			break;
+		case SURF_DIRT:
+			mat_name = "step_dirt";
+			break;
+		case SURF_VENT:
+			mat_name = "step_vent";
+			break;
+		case SURF_GRATE:
+			mat_name = "step_grate";
+			break;
+		case SURF_METAL:
+			mat_name = "step_metal";
+			break;
+		case SURF_GLASS:
+			mat_name = "step_glass";
+			break;
+		case SURF_SAND:
+			mat_name = "step_sand";
+			break;
+		case SURF_SLOSH:
+			mat_name = "step_slosh";
+			break;
+		case SURF_SNOW:
+			mat_name = "step_snow";
+			break;
+		case SURF_TILE:
+			mat_name = "step_tile";
+			break;
+		case SURF_WOOD:
+			mat_name = "step_wood";
+			break;
+		case SURF_CONCRETE:
+			mat_name = "step_concrete";
+			break;
+		default:
+			mat_name = "step_default";
+		}
+	} else if (target.flags & FL_ONLADDER) {
+		mat_name = "step_ladder";
+	}
+
+	if (target.iStep) {
+		Sound_Play(target, CHAN_BODY, sprintf("%s.left", mat_name));
+	} else {
+		Sound_Play(target, CHAN_BODY, sprintf("%s.right", mat_name));
+	}
+}
+
+/* anything unsupported */
+void
+Footsteps_Default(entity target)
+{
+	string mat_name = "";
+
+	/* WIP */
+	if (target.flags & FL_ONGROUND) {
 		mat_name = "step_default";
 	} else if (target.flags & FL_ONLADDER) {
 		mat_name = "step_ladder";
@@ -156,13 +229,16 @@ Footsteps_Update(void)
 		self.fStepTime = time + 0.35;
 
 		switch (serverkeyfloat("*bspversion")) {
-		case 30:
+		case 30: /* HL */
 			Footsteps_HLBSP(self);
 			break;
-		case 1:
+		case 46: /* Q3 */
+		case 47: /* RtCW */
+		case 1: /* RFVBSP */
 			Footsteps_VVBSP(self);
 			break;
 		default:
+			Footsteps_Default(self);
 		}
 
 		/* switch between feet */

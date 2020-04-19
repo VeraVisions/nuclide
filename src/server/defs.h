@@ -48,6 +48,7 @@ entity g_eAttacker;
  * we don't want this all of the time. so use this as a fallback */
 .entity real_owner;
 
+int trace_surfaceflagsi;
 string startspot;
 string __fullspawndata;
 hashtable hashMaterials;
