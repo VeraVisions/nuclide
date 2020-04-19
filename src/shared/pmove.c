@@ -751,7 +751,7 @@ PMove_Run(void)
 #endif
 
 	/* maxspeed changes when crouching, TODO: make this game-specific */
-	self.maxspeed = (self.flags & FL_CROUCHING) ? 135 : 270;
+	self.maxspeed = GamePMove_Maxspeed(self);
 
 	/* when pressing the 'use' button, we also walk slower for precision */
 	if (input_buttons & INPUT_BUTTON5) {

@@ -42,6 +42,7 @@ init.c
 ../../shared/valve/animations.c
 ../../shared/valve/player.cpp
 ../player.c
+../../shared/valve/pmove.c
 ../../shared/pmove.c
 ../valve/predict.c
 ../predict.c

@@ -64,6 +64,7 @@
 
 ../../shared/effects.c
 player.c
+../../shared/valve/pmove.c
 ../../shared/pmove.c
 spectator.c
 ../../shared/valve/items.h

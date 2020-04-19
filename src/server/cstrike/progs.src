@@ -31,6 +31,7 @@
 
 ../../shared/effects.c
 ../cstrike/player.c
+../../shared/cstrike/pmove.c
 ../../shared/pmove.c
 ../valve/spectator.c
 

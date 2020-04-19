@@ -37,6 +37,7 @@ monster_human_gunman.cpp
 monster_human_unarmed.cpp
 ../../shared/effects.c
 ../valve/player.c
+../../shared/valve/pmove.c
 ../../shared/pmove.c
 ../valve/spectator.c
 ../../shared/rewolf/items.h

@@ -15,6 +15,7 @@
  */
 
 #include "radio.h"
+#include "weapons.h"
 
 enum
 {

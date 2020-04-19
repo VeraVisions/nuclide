@@ -68,6 +68,7 @@
 
 ../../shared/effects.c
 ../valve/player.c
+../../shared/valve/pmove.c
 ../../shared/pmove.c
 ../valve/spectator.c
 ../../shared/gearbox/items.h

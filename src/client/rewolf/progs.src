@@ -43,6 +43,7 @@ decore.cpp
 ../../shared/valve/animations.c
 ../../shared/rewolf/player.cpp
 ../player.c
+../../shared/valve/pmove.c
 ../../shared/pmove.c
 ../valve/predict.c
 ../predict.c
