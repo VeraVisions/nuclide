@@ -20,10 +20,9 @@ var int autocvar_sv_plugins = 1;
 void Plugin_Init(void)
 {
 	if (autocvar_sv_plugins) {
-		print("Initializing plugins...\n");
+		iprint("Initializing Plugins");
 		g_plugins_enabled = 1;
 	} else {
-		print("Initializing plugins...\n");
 		g_plugins_enabled = 0;
 	}
 }

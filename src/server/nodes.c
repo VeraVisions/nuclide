@@ -173,6 +173,7 @@ Node_AutoLink(node_t *new)
 void
 Nodes_Init(void)
 {
+	iprint("Initializing Nodes-Subsystem");
 	g_nodes_present = FALSE;
 
 	/* skip if present. TODO: check if they're out of date? */

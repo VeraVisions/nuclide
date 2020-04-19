@@ -86,11 +86,13 @@ void PlayerPostThink(void)
 
 void SetNewParms(void)
 {
+	iprint("Setting New Level Parameters");
 	g_grMode.LevelNewParms();
 }
 
 void SetChangeParms(void)
 {
+	iprint("Setting Level-Change Parameters");
 	player pl = (player)self;
 	g_grMode.LevelChangeParms(pl);
 }
@@ -111,11 +113,13 @@ void SV_ParseClientCommand(string cmd)
 
 void init(float prevprogs)
 {
+	iprint("Initializing Server-Module");
 	Plugin_Init();
 }
 
 void init_respawn(void)
 {
+	iprint("Respawning Entities");
 	g_grMode.InitPostEnts();
 
 	for (entity a = world; (a = findfloat(a, ::gflags, GF_CANRESPAWN));) {
@@ -127,8 +131,8 @@ void init_respawn(void)
 
 void initents(void)
 {
-	string sTemp;
-	
+	iprint("Initializing Entities");
+
 	Sound_Init();
 
 	// Let's load materials.txt because someone thought this was the best idea
@@ -137,6 +141,7 @@ void initents(void)
 	hashMaterials = hash_createtab(2, HASH_ADD);
 
 	if (fileMaterial >= 0) {
+		string sTemp;
 		while ((sTemp = fgets(fileMaterial))) {
 			// Tokenize and just parse this stuff in
 			if (tokenize_console(sTemp) == 2) {
@@ -230,6 +235,7 @@ void initents(void)
 
 void worldspawn(void)
 {
+	iprint("Initializing World");
 	lightstyle(0, "m");
 	lightstyle(1, "mmnmmommommnonmmonqnmmo");
 	lightstyle(2, "abcdefghijklmnopqrstuvwxyzyxwvutsrqponmlkjihgfedcba");

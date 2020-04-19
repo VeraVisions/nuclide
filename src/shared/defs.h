@@ -82,3 +82,10 @@ __wrap void dprint(string m)
 	if (cvar("developer") == 1)
 		return prior(m);
 }
+
+/* info print */
+void
+iprint(string m)
+{
+	print(sprintf("^Ue080^Ue081^Ue081^Ue081^Ue081^Ue081^Ue081 %s ^Ue081^Ue081^Ue081^Ue081^Ue081^Ue081^Ue082\n", m));
+}

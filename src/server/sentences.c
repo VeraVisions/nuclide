@@ -41,6 +41,8 @@ Sentences_Init(void)
 	string temp;
 	int c;
 
+	iprint("Initializing Sentences-Subsystem");
+
 	if (g_sentences_count > 0) {
 		g_sentences_count = 0;
 #ifndef DYNAMIC_SENTENCES
