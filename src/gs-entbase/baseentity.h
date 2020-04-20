@@ -24,7 +24,8 @@ enum
 	RM_TEXTURE,
 	RM_GLOW,
 	RM_SOLID,
-	RM_ADDITIVE
+	RM_ADDITIVE,
+	RM_TRIGGER
 };
 
 enum

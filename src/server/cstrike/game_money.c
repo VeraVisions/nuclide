@@ -14,9 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-int g_cs_moneyreward_ct;
-int g_cs_moneyreward_t;
-
 void
 Money_AddMoney(player pl, int iMoneyValue)
 {

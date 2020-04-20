@@ -32,10 +32,38 @@ zones will be placed in Counter-Terrorist player spawn nodes automatically.
 class info_hostage_rescue
 {
 	void(void) info_hostage_rescue;
+	virtual void(void) touch;
 };
+
+void
+info_hostage_rescue::touch(void)
+{
+	if (other.classname != "hostage_entity") {
+		return;
+	}
+
+	CBaseNPC hosty = (CBaseNPC)other;
+
+	if (hosty.solid == SOLID_NOT) {
+		return;
+	}
+
+	Radio_BroadcastMessage(RADIO_RESCUED);
+	g_cs_hostagesrescued++;
+
+	Money_AddMoney(hosty.m_eFollowing, 1000);
+
+	/* In Hostage Rescue, all Counter-Terrorists receive an $850
+	 * bonus for every hostage they rescue, even if they lose the round. */
+	Money_QueTeamReward(TEAM_CT, 850);
+
+	CBaseEntity targa = (CBaseEntity)other;
+	targa.Hide();
+}
 
 void
 info_hostage_rescue::info_hostage_rescue(void)
 {
-
+	solid = SOLID_TRIGGER;
+	setsize(this, [-128,-128,-128], [128,128,128]);
 }

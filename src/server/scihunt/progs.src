@@ -9,10 +9,6 @@
 #includelist
 ../../shared/fteextensions.qc
 ../../shared/defs.h
-../../shared/math.h
-../../shared/materials.h
-../../shared/events.h
-../../shared/entities.h
 ../../shared/sound.c
 ../../shared/valve/animations.h
 ../defs.h

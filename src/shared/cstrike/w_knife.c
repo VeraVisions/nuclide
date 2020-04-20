@@ -27,12 +27,14 @@ Default arsenal on both teams
 
 enum
 {
-	KNIFE_IDLE,
-	KNIFE_RELOAD,
+	KNIFE_IDLE1,
+	KNIFE_SLASH1,
+	KNIFE_SLASH2,
 	KNIFE_DRAW,
-	KNIFE_SHOOT1,
-	KNIFE_SHOOT2,
-	KNIFE_SHOOT3
+	KNIFE_STAB,
+	KNIFE_STAB_MISS,
+	KNIFE_MIDSLASH1,
+	KNIFE_MIDSLASH2
 };
 
 void
@@ -93,24 +95,78 @@ w_knife_primary(void)
 		return;
 	}
 
-#ifdef CLIENT
-	View_SetMuzzleflash(MUZZLE_RIFLE);
-
-	int r = (float)input_sequence % 3;
+	int r = (float)input_sequence % 2;
 	switch (r) {
 	case 0:
-		Weapons_ViewAnimation(KNIFE_SHOOT1);
-		break;
-	case 1:
-		Weapons_ViewAnimation(KNIFE_SHOOT2);
+		Weapons_ViewAnimation(KNIFE_SLASH1);
 		break;
 	default:
-		Weapons_ViewAnimation(KNIFE_SHOOT3);
+		Weapons_ViewAnimation(KNIFE_SLASH2);
 		break;
 	}
-#endif
-
 	pl.w_attack_next = 0.7f;
+
+#ifdef SERVER
+	vector src;
+	Weapons_MakeVectors();
+	src = pl.origin + pl.view_ofs;
+	traceline(src, src + (v_forward * 32), FALSE, pl);
+
+	Sound_Play(pl, CHAN_WEAPON, "weapon_knife.miss");
+
+	if (trace_fraction >= 1.0) {
+		return;
+	}
+
+	if (trace_ent.iBleeds) {
+		Effect_CreateBlood(trace_endpos, [1,0,0]);
+		Sound_Play(pl, CHAN_WEAPON, "weapon_knife.hitbody");
+	} else {
+		Sound_Play(pl, CHAN_WEAPON, "weapon_knife.hit");
+	}
+
+	if (trace_ent.takedamage) {
+		Damage_Apply(trace_ent, pl, 15, WEAPON_KNIFE, DMG_SLASH);
+	}
+#endif
+}
+
+void
+w_knife_secondary(void)
+{
+	player pl = (player)self;
+
+	if (pl.w_attack_next > 0.0) {
+		return;
+	}
+
+	Weapons_ViewAnimation(KNIFE_STAB);
+	pl.w_attack_next = 1.2f;
+
+#ifdef SERVER
+	vector src;
+	Weapons_MakeVectors();
+	src = pl.origin + pl.view_ofs;
+	traceline(src, src + (v_forward * 32), FALSE, pl);
+
+	Sound_Play(pl, CHAN_WEAPON, "weapon_knife.miss");
+
+	if (trace_fraction >= 1.0) {
+		return;
+	}
+
+	/* don't bother with decals, we got squibs */
+	if (trace_ent.iBleeds) {
+		Effect_CreateBlood(trace_endpos, [1,0,0]);
+		Sound_Play(pl, CHAN_WEAPON, "weapon_knife.hitbody");
+	} else {
+		Sound_Play(pl, CHAN_WEAPON, "weapon_knife.hit");
+	}
+
+	if (trace_ent.takedamage) {
+		Damage_Apply(trace_ent, pl, 65, WEAPON_KNIFE, DMG_SLASH);
+	}
+#endif
 }
 
 float
@@ -160,7 +216,7 @@ weapon_t w_knife =
 	w_knife_draw,
 	__NULL__,
 	w_knife_primary,
-	__NULL__,
+	w_knife_secondary,
 	__NULL__,
 	__NULL__,
 	__NULL__,

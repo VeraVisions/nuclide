@@ -49,32 +49,3 @@ enum
 #define SURF_ALPHASHADOW	0x10000i	/* do per-pixel light shadow casting in q3map */
 #define SURF_NODLIGHT		0x20000i	/* don't dlight even if solid (solid lava, skies) */
 #define SURF_DUST			0x40000i	/* leave a dust trail when walking on this surface */
-
-/* behaviour surfaceflags */
-#define SURF_LEAKSTEAM		0x00080000i /* when shot, the material emits steam */
-#define SURF_LEAKWATER		0x00100000i /* when shot, the material emits water */
-#define SURF_RESERVED1		0x00200000i
-#define SURF_RESERVED2		0x00400000i
-#define SURF_RESERVED3		0x00800000i
-#define SURF_RESERVED4		0x01000000i
-#define SURF_RESERVED5		0x02000000i
-#define SURF_RESERVED6		0x04000000i
-#define SURF_RESERVED7		0x08000000i
-
-/* material surfaceflags (need to be masked) */
-#define SURF_MASK			0x0FFFFFFFi
-#define SURF_ALIEN			0x10000000i
-#define SURF_FLESH			0x20000000i
-#define SURF_FOLIAGE		0x30000000i
-#define SURF_COMPUTER		0x40000000i
-#define SURF_DIRT			0x50000000i
-#define SURF_VENT			0x60000000i
-#define SURF_GRATE			0x70000000i
-#define SURF_METAL			0x80000000i
-#define SURF_GLASS			0x90000000i
-#define SURF_SAND			0xA0000000i
-#define SURF_SLOSH			0xB0000000i
-#define SURF_SNOW			0xC0000000i
-#define SURF_TILE			0xD0000000i
-#define SURF_WOOD			0xE0000000i
-#define SURF_CONCRETE		0xF0000000i

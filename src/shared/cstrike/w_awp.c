@@ -41,6 +41,7 @@ w_awp_precache(void)
 {
 #ifdef SERVER
 	Sound_Precache("weapon_awp.fire");
+	Sound_Precache("weapon_awp.zoom");
 #endif
 	precache_model("models/v_awp.mdl");
 	precache_model("models/w_awp.mdl");
@@ -51,7 +52,7 @@ void
 w_awp_updateammo(player pl)
 {
 #ifdef SERVER
-	Weapons_UpdateAmmo(pl, pl.awp_mag, pl.ammo_338mag, -1);
+	Weapons_UpdateAmmo(pl, pl.awp_mag, pl.ammo_338mag, pl.a_ammo3);
 #endif
 }
 
@@ -105,12 +106,61 @@ w_awp_draw(void)
 #endif
 }
 
+
+void
+w_awp_release(void)
+{
+	player pl = (player)self;
+
+	w_cstrike_weaponrelease();
+
+	if (pl.w_idle_next > 0.0f) {
+		pl.viewzoom = 1.0f;
+		return;
+	}
+
+	if (pl.a_ammo3 == 1) {
+		pl.viewzoom = 0.45f;
+	} else if (pl.a_ammo3 == 2) {
+		pl.viewzoom = 0.1f;
+	} else {
+		pl.viewzoom = 1.0f;
+	}
+}
+
+void
+w_awp_secondary(void)
+{
+	player pl = (player)self;
+	if (pl.w_attack_next) {
+		return;
+	}
+
+#ifdef SSQC
+	Sound_Play(pl, CHAN_WEAPON, "weapon_awp.zoom");
+#endif
+
+	/* Simple toggle of fovs */
+	if (pl.a_ammo3 == 1) {
+		pl.a_ammo3 = 2;
+	} else if (pl.a_ammo3 == 2) {
+		pl.a_ammo3 = 0;
+	} else {
+		pl.a_ammo3 = 1;
+	}
+
+	pl.w_attack_next = 0.5f;
+	pl.w_idle_next = 0.0f;
+	w_awp_release();
+}
+
 void
 w_awp_primary(void)
 {
 	player pl = (player)self;
 
 	if (pl.w_attack_next > 0.0) {
+		w_awp_release();
 		return;
 	}
 
@@ -157,24 +207,6 @@ w_awp_primary(void)
 
 	pl.w_attack_next = 1.2f;
 	pl.w_idle_next = pl.w_attack_next;
-}
-
-void
-w_awp_secondary(void)
-{
-	player pl = (player)self;
-	if (pl.w_attack_next) {
-		return;
-	}
-	/* Simple toggle of fovs */
-	if (pl.viewzoom == 1.0f) {
-		pl.viewzoom = 0.45f;
-	} else if (pl.viewzoom == 0.45f) {
-		pl.viewzoom = 0.1f;
-	} else {
-		pl.viewzoom = 1.0f;
-	}
-	pl.w_attack_next = 0.5f;
 }
 
 void
@@ -274,7 +306,7 @@ weapon_t w_awp =
 	w_awp_primary,
 	w_awp_secondary,
 	w_awp_reload,
-	w_cstrike_weaponrelease,
+	w_awp_release,
 	w_awp_hud,
 	w_awp_precache,
 	w_awp_pickup,

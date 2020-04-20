@@ -75,7 +75,7 @@ CSMultiplayerRules::CreateRescueZones(void)
 
 	/* since no buyzones are available, let's create one around every CT spawn */
 	for (entity e = world; (e = find(e, ::classname, "info_player_start"));) {
-		func_hostage_rescue newzone = spawn(func_hostage_rescue);
+		info_hostage_rescue newzone = spawn(info_hostage_rescue);
 		setorigin(newzone, e.origin);
 	}
 }
@@ -98,7 +98,7 @@ CSMultiplayerRules::CreateCTBuyzones(void)
 
 	/* since no buyzones are available, let's create one around every CT spawn */
 	for (entity e = world; (e = find(e, ::classname, "info_player_start"));) {
-		func_buyzone newzone = spawn(func_buyzone);
+		info_buyzone newzone = spawn(info_buyzone);
 		setorigin(newzone, e.origin);
 		newzone.team = TEAM_CT;
 	}
@@ -122,7 +122,7 @@ CSMultiplayerRules::CreateTBuyzones(void)
 
 	/* since no buyzones are available, let's create one around every T spawn */
 	for (entity e = world; (e = find(e, ::classname, "info_player_deathmatch"));) {
-		func_buyzone newzone = spawn(func_buyzone);
+		info_buyzone newzone = spawn(info_buyzone);
 		setorigin(newzone, e.origin);
 		newzone.team = TEAM_T;
 	}

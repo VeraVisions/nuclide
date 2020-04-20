@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,25 +14,14 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED trigger_transition (0 .5 .8) ?
-"targetname"    Name
+int g_cs_moneyreward_ct;
+int g_cs_moneyreward_t;
 
-Currently unused. This is meant for defining level transition regions.
-All entities touching this volume would carry across to the next level.
-*/
-
-class trigger_transition:CBaseEntity
-{
-	void(void) trigger_transition;
-};
-
-void
-trigger_transition::trigger_transition(void)
-{
-	solid = SOLID_NOT;
-	movetype = MOVETYPE_NONE;
-	setmodel(this, model);
-	model = __NULL__;
-	modelindex = 0;
-	m_iRenderMode = RM_TRIGGER;
-}
+void Money_AddMoney(player pl, int iMoneyValue);
+void Money_QueTeamReward(int t, int iMoneyValue);
+void Money_GiveTeamReward(void);
+void Money_ResetTeamReward(void);
+int Money_GetLosses(int team);
+int Money_HasBonus(int team);
+void Money_HandleRoundReward(int winner)
+void Money_ResetRoundReward(void);

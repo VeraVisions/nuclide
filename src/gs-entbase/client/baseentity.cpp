@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+var int autocvar_cl_showtriggers = FALSE;
+
 string __fullspawndata;
 string Sentences_GetSamples(string);
 
@@ -73,6 +75,15 @@ CBaseEntity::RenderFXPass(void)
 		break;
 	case RM_ADDITIVE:
 		effects = EF_ADDITIVE;
+		break;
+	case RM_TRIGGER:
+		if (autocvar_cl_showtriggers) {
+			effects = EF_FULLBRIGHT;
+			alpha = 0.75f;
+			colormod = [1,0,0];
+		} else {
+			alpha = 0.0f;
+		}
 		break;
 	}
 

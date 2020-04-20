@@ -141,7 +141,7 @@ void View_DrawViewModel(void)
 	if (pl.health <= 0) {
 		return;
 	}
-	
+
 	if (cvar("r_drawviewmodel") == 0 || autocvar_cl_thirdperson == TRUE) {
 		return;
 	}
@@ -165,7 +165,7 @@ void View_DrawViewModel(void)
 	/* now apply the scale hack */
 	m_eViewModel.scale = autocvar_r_viewmodelscale;
 	pSeat->m_flBob *= autocvar_r_viewmodelscale;
-	
+
 	m_eViewModel.origin = pSeat->m_vecPredictedOrigin + pl.view_ofs;
 	m_eViewModel.origin += [0,0,-1] + (v_forward * (pSeat->m_flBob * 0.4))
 			+ (v_forward * autocvar_v_gunofs[0])
@@ -190,7 +190,7 @@ void View_DrawViewModel(void)
 		if (m_eMuzzleflash.alpha > 0.0f) {
 			makevectors(getproperty(VF_ANGLES));
 			m_eMuzzleflash.origin = gettaginfo(m_eViewModel, m_eMuzzleflash.skin);
-			dynamiclight_add(pSeat->m_vecPredictedOrigin + (v_forward * 32), 400 * m_eMuzzleflash.alpha, [1,0.45,0]);
+			/*dynamiclight_add(pSeat->m_vecPredictedOrigin + (v_forward * 32), 400 * m_eMuzzleflash.alpha, [1,0.45,0]);*/
 			
 			setorigin(m_eMuzzleflash, m_eMuzzleflash.origin);
 			addentity(m_eMuzzleflash);

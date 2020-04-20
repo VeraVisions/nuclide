@@ -274,6 +274,7 @@ void Weapons_SwitchBest(player pl)
 	}
 	Weapons_Draw();
 	self = oldself;
+	pl.flags |= FL_SEMI_TOGGLED;
 }
 
 /* returns TRUE if weapon pickup gets removed from this world */

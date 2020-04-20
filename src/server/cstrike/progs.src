@@ -10,10 +10,6 @@
 ../../shared/fteextensions.qc
 ../../shared/defs.h
 ../../shared/cstrike/defs.h
-../../shared/math.h
-../../shared/materials.h
-../../shared/events.h
-../../shared/entities.h
 ../../shared/sound.c
 ../../shared/valve/animations.h
 ../defs.h
@@ -36,10 +32,8 @@
 ../valve/spectator.c
 
 ../../shared/cstrike/radio.c
-../../shared/cstrike/items.h
 ../../shared/cstrike/weapons_cstrike.c
 ../../shared/valve/weapon_common.h
-../../shared/cstrike/weapons.h
 ../../shared/cstrike/w_ak47.c
 ../../shared/cstrike/w_deagle.c
 ../../shared/cstrike/w_knife.c
@@ -75,10 +69,11 @@
 ../cstrike/armoury_entity.cpp
 ../cstrike/func_bomb_target.cpp
 ../cstrike/func_buyzone.cpp
+../cstrike/info_buyzone.cpp
 ../cstrike/func_escapezone.cpp
 ../cstrike/func_hostage_rescue.cpp
-../cstrike/func_vip_safetyzone.cpp
 ../cstrike/info_hostage_rescue.cpp
+../cstrike/func_vip_safetyzone.cpp
 ../cstrike/info_map_parameters.cpp
 ../cstrike/item_suit.cpp
 

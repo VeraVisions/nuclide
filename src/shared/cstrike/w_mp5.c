@@ -272,7 +272,7 @@ weapon_t w_mp5 =
 
 #ifdef SERVER
 void
-weapon_mp5(void)
+weapon_mp5navy(void)
 {
 	Weapons_InitItem(WEAPON_MP5);
 }

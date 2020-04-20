@@ -119,12 +119,12 @@ void inet_btnrefresh(void)
 
 void inet_lb_clicked(int val)
 {
-	inet_lbServers_Name.SetSelected(val);
-	inet_lbServers_Ping.SetSelected(val);
-	inet_lbServers_Map.SetSelected(val);
-	inet_lbServers_Game.SetSelected(val);
-	inet_lbServers_Players.SetSelected(val);
-	inet_lbServers_Addresses.SetSelected(val);
+	inet_lbServers_Name.SetSelected(val, FALSE);
+	inet_lbServers_Ping.SetSelected(val, FALSE);
+	inet_lbServers_Map.SetSelected(val, FALSE);
+	inet_lbServers_Game.SetSelected(val, FALSE);
+	inet_lbServers_Players.SetSelected(val, FALSE);
+	inet_lbServers_Addresses.SetSelected(val, FALSE);
 }
 void inet_lb_changed(int val)
 {

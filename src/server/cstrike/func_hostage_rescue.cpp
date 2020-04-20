@@ -28,10 +28,12 @@ If neither a func_hostage_rescue or a info_hostage_rescue is placed,
 zones will be placed in Counter-Terrorist player spawn nodes automatically.
 */
 
-class func_hostage_rescue
+class func_hostage_rescue:CBaseTrigger
 {
 	void(void) func_hostage_rescue;
+
 	virtual void(void) touch;
+	virtual void(void) Respawn;
 };
 
 void
@@ -50,28 +52,25 @@ func_hostage_rescue::touch(void)
 	Radio_BroadcastMessage(RADIO_RESCUED);
 	g_cs_hostagesrescued++;
 
-	//Money_AddMoney(hosty.m_eFollowing, 1000);
+	Money_AddMoney(hosty.m_eFollowing, 1000);
 
 	/* In Hostage Rescue, all Counter-Terrorists receive an $850
 	 * bonus for every hostage they rescue, even if they lose the round. */
-	//Money_QueTeamReward(TEAM_CT, 850);
+	Money_QueTeamReward(TEAM_CT, 850);
 
 	CBaseEntity targa = (CBaseEntity)other;
 	targa.Hide();
 }
 
 void
+func_hostage_rescue::Respawn(void)
+{
+	InitBrushTrigger();
+}
+
+void
 func_hostage_rescue::func_hostage_rescue(void)
 {
-	angles = [0,0,0];
-	movetype = MOVETYPE_NONE;
-	solid = SOLID_TRIGGER;
-
-	if (model) {
-		setmodel(this, model);
-	} else {
-		mins = [-128,-128,-36];
-		maxs = [128,128,36];
-		setsize(this, mins, maxs);
-	}
+	CBaseTrigger::CBaseTrigger();
+	InitBrushTrigger();
 }

@@ -160,7 +160,7 @@ void menu_videomodes_init(void)
 	for (int i = 0; i < g_resolutions.length; i++) {
 		tokenizebyseparator(g_resolutions[i], "x");
 		if (stof(argv(0)) == physres[0] && stof(argv(1)) == physres[1]) {
-			vm_lbRes.SetSelected(i);
+			vm_lbRes.SetSelected(i, FALSE);
 		}
 		vm_lbRes.AddEntry(g_resolutions[i]);
 	}

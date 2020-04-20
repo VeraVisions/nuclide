@@ -35,7 +35,7 @@ class CListBox:CWidget
 	virtual void(void(int val) func) SetChanged;
 	virtual string(int) GetItem;
 	virtual void(int, string) SetItem;
-	virtual void(int i) SetSelected;
+	virtual void(int, int) SetSelected;
 	virtual string() GetSelectedItem;
 	virtual int(void) GetSelected;
 	virtual int(void) GetCount;
@@ -81,7 +81,7 @@ void CListBox::Input(float type, float x, float y, float devid)
 		if (Util_CheckMouse(pos[0], pos[1], m_size[0], 15)) {
 			if (type == IE_KEYDOWN) {
 				if (x == K_MOUSE1) {
-					SetSelected(i);
+					SetSelected(i, TRUE);
 					break;
 				}
 			}
@@ -126,7 +126,7 @@ void CListBox::SetChanged(void(int val) func)
 	m_execute = func;
 }
 
-void CListBox::SetSelected(int i)
+void CListBox::SetSelected(int i, int exec)
 {
 	if (m_entries[i] == __NULL__) {
 		return;
@@ -134,7 +134,7 @@ void CListBox::SetSelected(int i)
 
 	m_selected = i;
 
-	if (m_execute) {
+	if (m_execute && exec) {
 		m_execute(i);
 	}
 }

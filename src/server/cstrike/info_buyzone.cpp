@@ -14,25 +14,37 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED trigger_transition (0 .5 .8) ?
+/*QUAKED info_buyzone (0 0 0.8) (-16 -16 0) (16 16 16)
 "targetname"    Name
+"target"        Target when triggered.
+"killtarget"    Target to kill when triggered.
 
-Currently unused. This is meant for defining level transition regions.
-All entities touching this volume would carry across to the next level.
+COUNTER-STRIKE (1999) ENTITY
+
+Buy zone.
+See func_buyzone for more information.
 */
 
-class trigger_transition:CBaseEntity
+class info_buyzone
 {
-	void(void) trigger_transition;
+	void(void) info_buyzone;
+	virtual void(void) touch;
 };
 
 void
-trigger_transition::trigger_transition(void)
+info_buyzone::touch(void)
 {
-	solid = SOLID_NOT;
-	movetype = MOVETYPE_NONE;
-	setmodel(this, model);
-	model = __NULL__;
-	modelindex = 0;
-	m_iRenderMode = RM_TRIGGER;
+	player pl = (player)other;
+	if (!(other.flags & FL_CLIENT)) {
+		return;
+	}
+
+	pl.buyzone = TRUE;
+}
+
+void
+info_buyzone::info_buyzone(void)
+{
+	solid = SOLID_TRIGGER;
+	setsize(this, [-128,-128,-128], [128,128,128]);
 }

@@ -14,10 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define PHY_JUMP_CHAINWINDOW	0.5
-#define PHY_JUMP_CHAIN			100
-#define PHY_JUMP_CHAINDECAY		50
-
 /* FIXME: jumptime should use the time global, as time intervals are not
  * predictable - decrement it based upon input_timelength */
 .float waterlevel;
@@ -26,13 +22,6 @@
 .vector view_ofs;
 int trace_endcontentsi;
 .vector basevelocity;
-
-#ifdef VALVE
-int Items_CheckItem(entity pl, int i) {
-    player pm = (player)pl;
-	return pm.g_items & i ? TRUE:FALSE;
-}
-#endif
 
 /* serverinfo keys are the only way both client and server are kept in sync
  * about physics variables. so none of the traditional cvars will work.
@@ -56,7 +45,7 @@ PMove_Init(void) {
 	
 #ifdef CSTRIKE
 	localcmd("serverinfo phy_accelerate 4\n");
-	localcmd("serverinfo phy_maxspeed 240\n");
+	localcmd("serverinfo phy_maxspeed 250\n");
 #endif
 #endif
 }
@@ -455,9 +444,6 @@ PMove_AccelGravity(float move_time, float premove, vector wish_dir, float wish_s
 void
 PMove_AccelJump(float move_time, float premove)
 {
-	float flJumptimeDelta;
-	float flChainBonus;
-
 	/* unset jump-key whenever it's not set */
 	if (!(input_buttons & INPUT_BUTTON2)) {
 		self.flags |= FL_JUMPRELEASED;
@@ -476,31 +462,7 @@ PMove_AccelJump(float move_time, float premove)
 			self.velocity[2] = 0;
 		}
 
-		if (self.waterlevel >= 2) {
-			if (self.watertype == CONTENT_WATER) {
-				self.velocity[2] = 100;
-			} else if (self.watertype == CONTENT_SLIME) {
-				self.velocity[2] = 80;
-			} else {
-				self.velocity[2] = 50;
-			}
-		} else {
-			/* Half-Life: Longjump module */
-	#ifdef VALVE
-			if (self.flags & FL_CROUCHING && Items_CheckItem(self, 0x00008000)) {
-				self.velocity = v_forward * 512;
-				self.velocity[2] += 100;
-			}
-	#endif
-			self.velocity[2] += 240;
-		}
-
-		if (self.jumptime > 0) {
-			flJumptimeDelta = 0 - (self.jumptime - PHY_JUMP_CHAINWINDOW);
-			flChainBonus = PHY_JUMP_CHAIN - (((PHY_JUMP_CHAINWINDOW - (PHY_JUMP_CHAINWINDOW - flJumptimeDelta)) * 2) * PHY_JUMP_CHAINDECAY);
-			self.velocity[2] += flChainBonus;
-		}
-		self.jumptime = PHY_JUMP_CHAINWINDOW;
+		GamePMove_Jump((player)self);
 		self.flags &= ~FL_ONGROUND;
 		self.flags &= ~FL_JUMPRELEASED;
 	}
@@ -563,8 +525,6 @@ PMove_Acceleration(float move_time, float premove)
 		self.flags &= ~FL_ONGROUND;
 		self.velocity = wish_dir * wish_speed;
 	} else {
-		PMove_AccelJump(move_time, premove);
-
 		if (self.flags & FL_ONLADDER) {
 			PMove_AccelLadder(move_time, premove, wish_dir, wish_speed);
 		} else if (self.flags & FL_ONGROUND) {
@@ -572,6 +532,7 @@ PMove_Acceleration(float move_time, float premove)
 		} else {
 			PMove_AccelGravity(move_time, premove, wish_dir, wish_speed);
 		}
+		PMove_AccelJump(move_time, premove);
 	}
 }
 
@@ -745,13 +706,12 @@ PMove_Run(void)
 {
 	float punch;
 	player pl = (player)self;
-	
-#ifdef SERVER
+
 	float flFallVel = (self.flags & FL_ONGROUND) ? 0 : -self.velocity[2];
-#endif
+
 
 	/* maxspeed changes when crouching, TODO: make this game-specific */
-	self.maxspeed = GamePMove_Maxspeed(self);
+	self.maxspeed = GamePMove_Maxspeed((player)self);
 
 	/* when pressing the 'use' button, we also walk slower for precision */
 	if (input_buttons & INPUT_BUTTON5) {
@@ -813,17 +773,13 @@ PMove_Run(void)
 	pl.punchangle[1] *= punch;
 	pl.punchangle[2] *= punch;
 
-#ifdef SERVER
 	if (self.waterlevel != 0) {
 		flFallVel = 0;
 	}
 
-	if ((self.flags & FL_ONGROUND) && self.movetype == MOVETYPE_WALK && (flFallVel > 580)) {
-		float fFallDamage = (flFallVel - 580) * (100 / (1024 - 580));
-		Damage_Apply(self, world, fFallDamage, 0, DMG_FALL);
-		sound(self, CHAN_AUTO, "player/pl_fallpain3.wav", 1.0, ATTN_NORM);
+	if ((self.flags & FL_ONGROUND) && self.movetype == MOVETYPE_WALK) {
+		GamePMove_Fall((player)self, flFallVel);
 	}
-#endif
 
 	/* weapon/item logic of what the player controls */
 	Game_Input();

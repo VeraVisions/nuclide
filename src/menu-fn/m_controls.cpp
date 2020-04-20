@@ -69,9 +69,9 @@ void ctrl_lb_clicked(int val)
 {
 	static float clicked_last;
 	static int val_last;
-	ctrl_lbActDesc.SetSelected(val);
-	ctrl_lbActBind1.SetSelected(val);
-	ctrl_lbActBind2.SetSelected(val);
+	ctrl_lbActDesc.SetSelected(val, FALSE);
+	ctrl_lbActBind1.SetSelected(val, FALSE);
+	ctrl_lbActBind2.SetSelected(val, FALSE);
 
 	if (ctrl_lbActBind3.GetItem(val) == "blank") {
 		return;

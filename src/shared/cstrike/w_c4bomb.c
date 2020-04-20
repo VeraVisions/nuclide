@@ -219,7 +219,6 @@ w_c4bomb_release(void)
 	}
 	pl.a_ammo1 = C4S_NONE;
 	pl.w_idle_next = 0.0f;
-	pl.flags &= ~FL_FROZEN;
 }
 
 void
@@ -244,6 +243,7 @@ w_c4bomb_primary(void)
 			break;
 	case C4S_DROPPING:
 			w_c4bomb_release();
+			return;
 			break;
 	default:
 		break;

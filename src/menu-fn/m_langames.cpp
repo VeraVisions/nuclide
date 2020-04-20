@@ -113,12 +113,12 @@ void lan_btnrefresh(void)
 
 void lan_lb_clicked(int val)
 {
-	lan_lbServers_Name.SetSelected(val);
-	lan_lbServers_Ping.SetSelected(val);
-	lan_lbServers_Map.SetSelected(val);
-	lan_lbServers_Game.SetSelected(val);
-	lan_lbServers_Players.SetSelected(val);
-	lan_lbServers_Addresses.SetSelected(val);
+	lan_lbServers_Name.SetSelected(val, FALSE);
+	lan_lbServers_Ping.SetSelected(val, FALSE);
+	lan_lbServers_Map.SetSelected(val, FALSE);
+	lan_lbServers_Game.SetSelected(val, FALSE);
+	lan_lbServers_Players.SetSelected(val, FALSE);
+	lan_lbServers_Addresses.SetSelected(val, FALSE);
 }
 
 void lan_lb_changed(int val)

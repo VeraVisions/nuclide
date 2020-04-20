@@ -32,6 +32,12 @@ void lg_btnload(void)
 	localcmd(sprintf("load %s\n", g_savegames[i]));
 }
 
+void lg_btnunsave(void)
+{
+	int i = lg_lbSaves.GetSelected();
+	localcmd(sprintf("unsavegame %s\n", g_savegames[i]));
+}
+
 void lg_btncancel_start(void)
 {
 	static void lg_btncancel_end(void) {
@@ -69,7 +75,7 @@ void menu_loadgame_refreshsaves(void)
 		lg_lbSaves.AddEntry(g_savegames[i]);
 	}
 	search_end(searchy);
-	lg_lbSaves.SetSelected(0);
+	lg_lbSaves.SetSelected(0, TRUE);
 }
 
 void menu_loadgame_init(void)
@@ -84,7 +90,7 @@ void menu_loadgame_init(void)
 
 	lg_btnDelete = spawn(CMainButton);
 	lg_btnDelete.SetImage(BTN_DELETE);
-	lg_btnDelete.SetExecute(__NULL__);
+	lg_btnDelete.SetExecute(lg_btnunsave);
 	lg_btnDelete.SetPos(50,172);
 	Widget_Add(fn_loadgame, lg_btnDelete);
 

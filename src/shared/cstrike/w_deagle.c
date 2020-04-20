@@ -146,7 +146,6 @@ w_deagle_primary(void)
 	Sound_Play(pl, CHAN_WEAPON, "weapon_deagle.fire");
 #endif
 
-
 	if (pl.a_ammo1 <= 0) {
 		Weapons_ViewAnimation(DEAGLE_SHOOT_EMPTY);
 	} else {
