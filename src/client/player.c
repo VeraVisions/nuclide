@@ -125,7 +125,7 @@ player::predraw(void)
 			src = origin + view_ofs;
 			ang = [pitch, angles[1], angles[2]];
 		} else {
-			src = getproperty(VF_ORIGIN);
+			src = getproperty(VF_ORIGIN) + [0,0,-8];
 			ang = getproperty(VF_CL_VIEWANGLES);
 		}
 
