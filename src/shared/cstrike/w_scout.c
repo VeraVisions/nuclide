@@ -50,7 +50,7 @@ void
 w_scout_updateammo(player pl)
 {
 #ifdef SERVER
-	Weapons_UpdateAmmo(pl, pl.scout_mag, pl.ammo_762mm, -1);
+	Weapons_UpdateAmmo(pl, pl.scout_mag, pl.ammo_762mm, pl.a_ammo3);
 #endif
 }
 
@@ -104,12 +104,61 @@ w_scout_draw(void)
 #endif
 }
 
+
+void
+w_scout_release(void)
+{
+	player pl = (player)self;
+
+	w_cstrike_weaponrelease();
+
+	if (pl.w_idle_next > 0.0f) {
+		pl.viewzoom = 1.0f;
+		return;
+	}
+
+	if (pl.a_ammo3 == 1) {
+		pl.viewzoom = 0.45f;
+	} else if (pl.a_ammo3 == 2) {
+		pl.viewzoom = 0.1f;
+	} else {
+		pl.viewzoom = 1.0f;
+	}
+}
+
+void
+w_scout_secondary(void)
+{
+	player pl = (player)self;
+	if (pl.w_attack_next) {
+		return;
+	}
+
+#ifdef SSQC
+	Sound_Play(pl, CHAN_WEAPON, "weapon_awp.zoom");
+#endif
+
+	/* Simple toggle of fovs */
+	if (pl.a_ammo3 == 1) {
+		pl.a_ammo3 = 2;
+	} else if (pl.a_ammo3 == 2) {
+		pl.a_ammo3 = 0;
+	} else {
+		pl.a_ammo3 = 1;
+	}
+
+	pl.w_attack_next = 0.3f;
+	pl.w_idle_next = 0.0f;
+	w_scout_release();
+}
+
 void
 w_scout_primary(void)
 {
 	player pl = (player)self;
 
 	if (pl.w_attack_next > 0.0) {
+		w_scout_release();
 		return;
 	}
 
@@ -154,24 +203,6 @@ w_scout_primary(void)
 
 	pl.w_attack_next = 1.25f;
 	pl.w_idle_next = pl.w_attack_next;
-}
-
-void
-w_scout_secondary(void)
-{
-	player pl = (player)self;
-	if (pl.w_attack_next) {
-		return;
-	}
-	/* Simple toggle of fovs */
-	if (pl.viewzoom == 1.0f) {
-		pl.viewzoom = 0.45f;
-	} else if (pl.viewzoom == 0.45f) {
-		pl.viewzoom = 0.1f;
-	} else {
-		pl.viewzoom = 1.0f;
-	}
-	pl.w_attack_next = 0.5f;
 }
 
 void
@@ -271,7 +302,7 @@ weapon_t w_scout =
 	w_scout_primary,
 	w_scout_secondary,
 	w_scout_reload,
-	w_cstrike_weaponrelease,
+	w_scout_release,
 	w_scout_hud,
 	w_scout_precache,
 	w_scout_pickup,

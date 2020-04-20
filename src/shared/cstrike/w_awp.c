@@ -106,7 +106,6 @@ w_awp_draw(void)
 #endif
 }
 
-
 void
 w_awp_release(void)
 {
@@ -149,7 +148,7 @@ w_awp_secondary(void)
 		pl.a_ammo3 = 1;
 	}
 
-	pl.w_attack_next = 0.5f;
+	pl.w_attack_next = 0.3f;
 	pl.w_idle_next = 0.0f;
 	w_awp_release();
 }
