@@ -9,7 +9,7 @@ all:
 menu:
 	mkdir -p ../platform/data.pk3dir
 	$(CC) menu-fn/progs.src
-	$(CC) menu-vgui/progs.src
+	#$(CC) menu-vgui/progs.src
 
 games:
 	mkdir -p ../valve/data.pk3dir

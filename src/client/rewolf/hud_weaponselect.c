@@ -118,11 +118,17 @@ int HUD_InSlotPos(int slot, int pos)
 	return -1;
 }
 
-void HUD_SlotSelect(int slot)
+void
+HUD_SlotSelect(int slot)
 {
 	player pl = (player)pSeat->m_ePlayer;
 	int curslot = g_weapons[pSeat->m_iHUDWeaponSelected].slot;
 	int i;
+
+	if (g_textmenu != "") {
+		Textmenu_Input(slot);
+		return;
+	}
 
 	/* hack to see if we have ANY weapons at all. */
 	if (!pl.activeweapon) {
@@ -145,22 +151,23 @@ void HUD_SlotSelect(int slot)
 			}
 		}
 	} else {
-		/* increment our current selected weapon by 1 */
-		pSeat->m_iHUDWeaponSelected++;
-		pSeat->m_flHUDWeaponSelectTime = time + 3;
-
-		/* haven't got it. */
-		if (!(pl.g_items & g_weapons[pSeat->m_iHUDWeaponSelected].id)) {
-			HUD_SlotSelect(slot);
+		int first = -1;
+		for (i = 1; i < g_weapons.length; i++) {
+			if (g_weapons[i].slot == slot && pl.g_items & g_weapons[i].id) {
+				if (i < pSeat->m_iHUDWeaponSelected && first == -1) {
+					first = i;
+				} else if (i > pSeat->m_iHUDWeaponSelected) {
+					first = -1;
+					pSeat->m_iHUDWeaponSelected = i;
+					pSeat->m_flHUDWeaponSelectTime = time + 3;
+					break;
+				}
+			}
 		}
 
-		/* reset when out of bounds or outside slot area */
-		if (pSeat->m_iHUDWeaponSelected >= g_weapons.length) {
-			pSeat->m_iHUDWeaponSelected = 0;
-			HUD_SlotSelect(slot);
-		} else if (g_weapons[pSeat->m_iHUDWeaponSelected].slot != slot) {
-			pSeat->m_iHUDWeaponSelected = 0;
-			HUD_SlotSelect(slot);
+		if (first > 0) {
+			pSeat->m_iHUDWeaponSelected = first;
+			pSeat->m_flHUDWeaponSelectTime = time + 3;
 		}
 	}
 }
