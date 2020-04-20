@@ -76,12 +76,74 @@ CSEv_BuyWeapon_f(float fWeapon)
 
 	if ((pl.money - g_cstrikeWeaponPrice[iWeapon]) >= 0) {
 		Weapons_AddItem(pl, iWeapon);
-		//Ammo_AutoFill(iWeapon);
-
-		//Weapon_Draw(iWeapon);
 		Money_AddMoney(pl, -g_cstrikeWeaponPrice[iWeapon]);
-		
 		sound(pl, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_IDLE);
+	} else {
+		//centerprint(pl, "You have insufficient funds!");
+	}
+} 
+
+int g_cstrikeUtilPrice[] =
+{
+	650,	/* Kevlar Vest */
+	1000,	/* Kevlar Vest & Helmet */
+	200,	/* Flashbang */
+	300,	/* HE Grenade */
+	300,	/* Smoke Grenade */
+	200,	/* Defuse Kit */
+	1250	/* NightVision Goggles */
+};
+
+void
+CSEv_BuyEquipment_f(float fUtil)
+{
+	CSGameRules rules = (CSGameRules)g_grMode;
+
+	int iUtil;
+	player pl = (player)self;
+	iUtil = (int)fUtil;
+
+	if (rules.BuyingPossible(pl) == FALSE) {
+		return;
+	}
+
+	if (pl.team == TEAM_T) {
+		if (iUtil == 5) { return; }
+	}
+
+	if ((pl.money - g_cstrikeUtilPrice[iUtil]) >= 0) {
+		switch (iUtil) {
+		case 0:
+			pl.armor = 100;
+			sound(pl, CHAN_ITEM, "items/tr_kevlar.wav", 1.0f, ATTN_IDLE);
+			break;
+		case 1:
+			pl.armor = 100;
+			pl.g_items |= ITEM_HELMET;
+			sound(pl, CHAN_ITEM, "items/tr_kevlar.wav", 1.0f, ATTN_IDLE);
+			break;
+		case 2:
+			Weapons_AddItem(pl, WEAPON_FLASHBANG);
+			sound(pl, CHAN_ITEM, "items/gunpickup2.wav", 1.0f, ATTN_IDLE);
+			break;
+		case 3:
+			Weapons_AddItem(pl, WEAPON_HEGRENADE);
+			sound(pl, CHAN_ITEM, "items/gunpickup2.wav", 1.0f, ATTN_IDLE);
+			break;
+		case 4:
+			Weapons_AddItem(pl, WEAPON_SMOKEGRENADE);
+			sound(pl, CHAN_ITEM, "items/gunpickup2.wav", 1.0f, ATTN_IDLE);
+			break;
+		case 5:
+			pl.g_items |= ITEM_DEFUSAL;
+			sound(pl, CHAN_ITEM, "items/gunpickup2.wav", 1.0f, ATTN_IDLE);
+			break;
+		case 6:
+			pl.g_items |= ITEM_NIGHTVISION;
+			sound(pl, CHAN_ITEM, "items/gunpickup2.wav", 1.0f, ATTN_IDLE);
+			break;
+		}
+		Money_AddMoney(pl, -g_cstrikeUtilPrice[iUtil]);
 	} else {
 		//centerprint(pl, "You have insufficient funds!");
 	}
