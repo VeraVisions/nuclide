@@ -7,37 +7,27 @@ all:
 	make plugins
 
 menu:
-	mkdir -p ../platform/data.pk3dir
-	$(CC) menu-fn/progs.src
-	#$(CC) menu-vgui/progs.src
+	cd menu-fn && $(MAKE)
 
 games:
-	mkdir -p ../valve/data.pk3dir
-	$(CC) client/valve/progs.src
-	$(CC) server/valve/progs.src
-	mkdir -p ../tfc/data.pk3dir
-	$(CC) client/tfc/progs.src
-	$(CC) server/tfc/progs.src
-	mkdir -p ../rewolf/data.pk3dir
-	$(CC) client/rewolf/progs.src
-	$(CC) server/rewolf/progs.src
-	mkdir -p ../gearbox/data.pk3dir
-	$(CC) client/gearbox/progs.src
-	$(CC) server/gearbox/progs.src
+	cd client/valve && $(MAKE)
+	cd server/valve && $(MAKE)
+	cd client/tfc && $(MAKE)
+	cd server/tfc && $(MAKE)
+	cd client/rewolf && $(MAKE)
+	cd server/rewolf && $(MAKE)
+	cd client/gearbox && $(MAKE)
+	cd server/gearbox && $(MAKE)
 	
 mods:
-	mkdir -p ../cstrike/data.pk3dir
-	$(CC) client/cstrike/progs.src
-	$(CC) server/cstrike/progs.src
-	mkdir -p ../scihunt/data.pk3dir
-	$(CC) client/scihunt/progs.src
-	$(CC) server/scihunt/progs.src
-	mkdir -p ../poke646/data.pk3dir
-	$(CC) client/poke646/progs.src
-	$(CC) server/poke646/progs.src
-	mkdir -p ../hunger/data.pk3dir
-	$(CC) client/hunger/progs.src
-	$(CC) server/hunger/progs.src
+	cd client/cstrike && $(MAKE)
+	cd server/cstrike && $(MAKE)
+	cd client/scihunt && $(MAKE)
+	cd server/scihunt && $(MAKE)
+	cd client/poke646 && $(MAKE)
+	cd server/poke646 && $(MAKE)
+	cd client/hunger && $(MAKE)
+	cd server/hunger && $(MAKE)
 	
 plugins:
 	$(CC) plugins/chatsounds.src
