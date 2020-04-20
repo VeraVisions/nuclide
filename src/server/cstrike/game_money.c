@@ -41,9 +41,8 @@ Money_QueTeamReward(int t, int iMoneyValue)
 }
 
 void
-Money_GiveTeamReward(void)
+Money_GiveTeamReward(player pl)
 {
-	player pl = (player)self;
 	if (pl.team == TEAM_T) {
 		Money_AddMoney(pl, g_cs_moneyreward_t);
 	} else {

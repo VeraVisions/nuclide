@@ -17,11 +17,11 @@
 int g_cs_moneyreward_ct;
 int g_cs_moneyreward_t;
 
-void Money_AddMoney(player pl, int iMoneyValue);
-void Money_QueTeamReward(int t, int iMoneyValue);
-void Money_GiveTeamReward(void);
+void Money_AddMoney(player, int);
+void Money_QueTeamReward(int, int);
+void Money_GiveTeamReward(player);
 void Money_ResetTeamReward(void);
-int Money_GetLosses(int team);
-int Money_HasBonus(int team);
-void Money_HandleRoundReward(int winner)
+int Money_GetLosses(int);
+int Money_HasBonus(int);
+void Money_HandleRoundReward(int)
 void Money_ResetRoundReward(void);

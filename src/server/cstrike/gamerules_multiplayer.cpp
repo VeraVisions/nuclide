@@ -366,8 +366,6 @@ Loop through all ents and handle them
 void
 CSMultiplayerRules::RestartRound(int iWipe)
 {
-	g_cs_hostagesrescued = 0;
-
 	// Spawn/Respawn everyone at their team position and give them $$$
 	for (entity eFind = world; (eFind = find(eFind, ::classname, "player"));) {
 		player pl = (player)eFind;
@@ -380,7 +378,7 @@ CSMultiplayerRules::RestartRound(int iWipe)
 		}
 
 		if (iWipe == FALSE) {
-			Money_GiveTeamReward();
+			Money_GiveTeamReward(pl);
 		} else {
 			pl.money = 0;
 			Money_AddMoney(pl, autocvar_mp_startmoney);

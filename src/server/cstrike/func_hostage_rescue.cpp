@@ -61,7 +61,7 @@ func_hostage_rescue::touch(void)
 	Money_AddMoney((player)hosty.m_eFollowing, 1000);
 
 	/* In Hostage Rescue, all Counter-Terrorists receive an $850
-	 * bonus for every hostage they rescue, even if they lose the round. */
+	 * bonus for every hostage that was rescued, even if they lose the round. */
 	Money_QueTeamReward(TEAM_CT, 850);
 
 	CBaseEntity targa = (CBaseEntity)other;
