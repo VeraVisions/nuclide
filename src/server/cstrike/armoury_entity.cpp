@@ -155,6 +155,12 @@ armoury_entity::armoury_entity(void)
 			break;
 		case "item":
 			m_iItem = g_cstrike_armouryitems[stoi(argv(i+1))];
+
+			if (m_iItem < 0 || m_iItem >= 19) {
+				print(sprintf("^1armoury_entity with invalid item %i. ignoring\n", m_iItem));
+				remove(this);
+				return;
+			}
 			model = sArmouryModels[m_iItem];
 			break;
 		default:
