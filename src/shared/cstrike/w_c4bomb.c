@@ -225,7 +225,11 @@ void
 w_c4bomb_primary(void)
 {
 	player pl = (player)self;
-	
+
+	if (!(pl.flags & FL_BOMBZONE)) {
+		return;
+	}
+
 	pl.flags |= FL_FROZEN;
 
 	switch (pl.a_ammo1) {

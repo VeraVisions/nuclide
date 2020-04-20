@@ -69,15 +69,15 @@ void CUIScrollbar::Draw(void)
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin, vecSize, m_vecColor, m_flAlpha);
 
 	if (m_iFlags & BUTTON_DOWN) {
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, vecSize[1] - 1], [vecSize[0], 1], '1 1 1', 0.5f);
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin, [vecSize[0], 1], '0 0 0', 0.5f);
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, 1], [1, vecSize[1] - 2], '0 0 0', 0.5f);
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [vecSize[0] - 1, 1], [1, vecSize[1] - 2], '1 1 1', 0.5f);
+		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, vecSize[1] - 1], [vecSize[0], 1], [1,1,1], 0.5f);
+		drawfill(m_parent.m_vecOrigin + m_vecOrigin, [vecSize[0], 1], [0,0,0], 0.5f);
+		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, 1], [1, vecSize[1] - 2], [0,0,0], 0.5f);
+		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [vecSize[0] - 1, 1], [1, vecSize[1] - 2], [1,1,1], 0.5f);
 	} else {
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, vecSize[1] - 1], [vecSize[0], 1], '0 0 0', 0.5f);
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin, [vecSize[0], 1], '1 1 1', 0.5f);
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, 1], [1, vecSize[1] - 2], '1 1 1', 0.5f);
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [vecSize[0] - 1, 1], [1, vecSize[1] - 2], '0 0 0', 0.5f);
+		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, vecSize[1] - 1], [vecSize[0], 1], [0,0,0], 0.5f);
+		drawfill(m_parent.m_vecOrigin + m_vecOrigin, [vecSize[0], 1], [1,1,1], 0.5f);
+		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, 1], [1, vecSize[1] - 2], [1,1,1], 0.5f);
+		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [vecSize[0] - 1, 1], [1, vecSize[1] - 2], [0,0,0], 0.5f);
 	}
 #else
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, vecSize[1] - 1], [vecSize[0], 1], m_vecColor, 1.0f);
@@ -93,67 +93,67 @@ void CUIScrollbar::Draw(void)
 	vecSliderPos[1] += (m_iLength - 60) * (m_flValue / m_flMax);
 	
 	// Slider Button
-	drawfill(vecSliderPos, '20 20', m_vecColor, m_flAlpha);
+	drawfill(vecSliderPos, [20,20], m_vecColor, m_flAlpha);
 	if (m_iFlags & SCROLLBAR_SLIDER_DOWN) {
-		drawfill(vecSliderPos, [20, 1], '0 0 0', 0.5f);
-		drawfill(vecSliderPos + [0, 19], [20, 1], '1 1 1', 0.5f);
-		drawfill(vecSliderPos + [0, 1], [1, 18], '0 0 0', 0.5f);
-		drawfill(vecSliderPos + [19, 1], [1, 18], '1 1 1', 0.5f);
+		drawfill(vecSliderPos, [20, 1], [0,0,0], 0.5f);
+		drawfill(vecSliderPos + [0, 19], [20, 1], [1,1,1], 0.5f);
+		drawfill(vecSliderPos + [0, 1], [1, 18], [0,0,0], 0.5f);
+		drawfill(vecSliderPos + [19, 1], [1, 18], [1,1,1], 0.5f);
 	} else {
-		drawfill(vecSliderPos, [20, 1], '1 1 1', 0.5f);
-		drawfill(vecSliderPos + [0, 19], [20, 1], '0 0 0', 0.5f);
-		drawfill(vecSliderPos + [0, 1], [1, 18], '1 1 1', 0.5f);
-		drawfill(vecSliderPos + [19, 1], [1, 18], '0 0 0', 0.5f);
+		drawfill(vecSliderPos, [20, 1], [1,1,1], 0.5f);
+		drawfill(vecSliderPos + [0, 19], [20, 1], [0,0,0], 0.5f);
+		drawfill(vecSliderPos + [0, 1], [1, 18], [1,1,1], 0.5f);
+		drawfill(vecSliderPos + [19, 1], [1, 18], [0,0,0], 0.5f);
 	}
 
 	// Button UP
 #ifndef CLASSIC_VGUI
-	drawfill(vecUpPos, '20 20', m_vecColor, m_flAlpha);
+	drawfill(vecUpPos, [20,20], m_vecColor, m_flAlpha);
 	if (m_iFlags & SCROLLBAR_UP_DOWN) {
-		drawfill(vecUpPos, [20, 1], '0 0 0', 0.5f);
-		drawfill(vecUpPos + [0, 19], [20, 1], '1 1 1', 0.5f);
-		drawfill(vecUpPos + [0, 1], [1, 18], '0 0 0', 0.5f);
-		drawfill(vecUpPos + [19, 1], [1, 18], '1 1 1', 0.5f);
+		drawfill(vecUpPos, [20, 1], [0,0,0], 0.5f);
+		drawfill(vecUpPos + [0, 19], [20, 1], [1,1,1], 0.5f);
+		drawfill(vecUpPos + [0, 1], [1, 18], [0,0,0], 0.5f);
+		drawfill(vecUpPos + [19, 1], [1, 18], [1,1,1], 0.5f);
 	} else {
-		drawfill(vecUpPos, [20, 1], '1 1 1', 0.5f);
-		drawfill(vecUpPos + [0, 19], [20, 1], '0 0 0', 0.5f);
-		drawfill(vecUpPos + [0, 1], [1, 18], '1 1 1', 0.5f);
-		drawfill(vecUpPos + [19, 1], [1, 18], '0 0 0', 0.5f);
+		drawfill(vecUpPos, [20, 1], [1,1,1], 0.5f);
+		drawfill(vecUpPos + [0, 19], [20, 1], [0,0,0], 0.5f);
+		drawfill(vecUpPos + [0, 1], [1, 18], [1,1,1], 0.5f);
+		drawfill(vecUpPos + [19, 1], [1, 18], [0,0,0], 0.5f);
 	}
-	drawpic(vecUpPos + '2 2', "textures/ui/steam/icon_up", '16 16', '1 1 1', 1.0f, 0);
+	drawpic(vecUpPos + [2,2], "textures/ui/steam/icon_up", [16,16], [1,1,1], 1.0f, 0);
 #else
 	if (m_iFlags & SCROLLBAR_UP_DOWN) {
-		drawfill(vecUpPos, '20 20', m_vecColor, 0.25f);
+		drawfill(vecUpPos, [20,20], m_vecColor, 0.25f);
 		drawfill(vecUpPos, [20, 1], m_vecColor, 1.0f);
 		drawfill(vecUpPos + [0, 19], [20, 1], m_vecColor, 1.0f);
 		drawfill(vecUpPos + [0, 1], [1, 18], m_vecColor, 1.0f);
 		drawfill(vecUpPos + [19, 1], [1, 18], m_vecColor, 1.0f);
 	} else {
-		drawfill(vecUpPos, [20, 1], '1 1 1', 0.5f);
+		drawfill(vecUpPos, [20, 1], [1,1,1], 0.5f);
 		drawfill(vecUpPos + [0, 19], [20, 1], m_vecColor, 1.0f);
 		drawfill(vecUpPos + [0, 1], [1, 18], m_vecColor, 1.0f);
 		drawfill(vecUpPos + [19, 1], [1, 18], m_vecColor, 1.0f);
 	}
-	drawpic(vecUpPos + '2 2', "textures/ui/steam/icon_up", '16 16', m_vecColor, 1.0f, 0);
+	drawpic(vecUpPos + [2,2], "textures/ui/steam/icon_up", [16,16], m_vecColor, 1.0f, 0);
 #endif
 	// Button DOWN
 #ifndef CLASSIC_VGUI
-	drawfill(vecDownPos, '20 20', m_vecColor, m_flAlpha);
+	drawfill(vecDownPos, [20,20], m_vecColor, m_flAlpha);
 	if (m_iFlags & SCROLLBAR_DN_DOWN) {
-		drawfill(vecDownPos, [20, 1], '0 0 0', 0.5f);
-		drawfill(vecDownPos + [0, 19], [20, 1], '1 1 1', 0.5f);
-		drawfill(vecDownPos + [0, 1], [1, 18], '0 0 0', 0.5f);
-		drawfill(vecDownPos + [19, 1], [1, 18], '1 1 1', 0.5f);
+		drawfill(vecDownPos, [20, 1], [0,0,0], 0.5f);
+		drawfill(vecDownPos + [0, 19], [20, 1], [1,1,1], 0.5f);
+		drawfill(vecDownPos + [0, 1], [1, 18], [0,0,0], 0.5f);
+		drawfill(vecDownPos + [19, 1], [1, 18], [1,1,1], 0.5f);
 	} else {
-		drawfill(vecDownPos, [20, 1], '1 1 1', 0.5f);
-		drawfill(vecDownPos+ [0, 19], [20, 1], '0 0 0', 0.5f);
-		drawfill(vecDownPos + [0, 1], [1, 18], '1 1 1', 0.5f);
-		drawfill(vecDownPos + [19, 1], [1, 18], '0 0 0', 0.5f);
+		drawfill(vecDownPos, [20, 1], [1,1,1], 0.5f);
+		drawfill(vecDownPos+ [0, 19], [20, 1], [0,0,0], 0.5f);
+		drawfill(vecDownPos + [0, 1], [1, 18], [1,1,1], 0.5f);
+		drawfill(vecDownPos + [19, 1], [1, 18], [0,0,0], 0.5f);
 	}
-	drawpic(vecDownPos + '2 2', "textures/ui/steam/icon_down", '16 16', '1 1 1', 1.0f, 0);
+	drawpic(vecDownPos + [2,2], "textures/ui/steam/icon_down", [16,16], [1,1,1], 1.0f, 0);
 #else
 	if (m_iFlags & SCROLLBAR_DN_DOWN) {
-		drawfill(vecDownPos, '20 20', m_vecColor, 0.25f);
+		drawfill(vecDownPos, [20,20], m_vecColor, 0.25f);
 		drawfill(vecDownPos, [20, 1], m_vecColor, 1.0f);
 		drawfill(vecDownPos + [0, 19], [20, 1], m_vecColor, 1.0f);
 		drawfill(vecDownPos + [0, 1], [1, 18], m_vecColor, 1.0f);
@@ -164,7 +164,7 @@ void CUIScrollbar::Draw(void)
 		drawfill(vecDownPos + [0, 1], [1, 18], m_vecColor, 1.0f);
 		drawfill(vecDownPos + [19, 1], [1, 18], m_vecColor, 1.0f);
 	}
-	drawpic(vecDownPos + '2 2', "textures/ui/steam/icon_down", '16 16', m_vecColor, 1.0f, 0);
+	drawpic(vecDownPos + [2,2], "textures/ui/steam/icon_down", [16,16], m_vecColor, 1.0f, 0);
 #endif
 }
 
@@ -175,17 +175,17 @@ void CUIScrollbar::Input (float flEVType, float flKey, float flChar, float flDev
 	
 	if (flEVType == IE_KEYDOWN) {
 		if (flKey == K_MOUSE1) {
-			if (Util_MouseAbove(getmousepos(), vecUpPos, '20 20')) {
+			if (Util_MouseAbove(getmousepos(), vecUpPos, [20,20])) {
 				m_iFlags |= SCROLLBAR_UP_DOWN;
-			} else if (Util_MouseAbove(getmousepos(), vecDownPos, '20 20')) {
+			} else if (Util_MouseAbove(getmousepos(), vecDownPos, [20,20])) {
 				m_iFlags |= SCROLLBAR_DN_DOWN;
 			}
 		}
 	} else if (flEVType == IE_KEYUP) {
 		if (flKey == K_MOUSE1) {
-			if (m_iFlags & SCROLLBAR_UP_DOWN && Util_MouseAbove(getmousepos(), vecUpPos, '20 20')) {
+			if (m_iFlags & SCROLLBAR_UP_DOWN && Util_MouseAbove(getmousepos(), vecUpPos, [20,20])) {
 				SetValue(GetValue() - GetStep(), TRUE);
-			} else if (m_iFlags & SCROLLBAR_DN_DOWN && Util_MouseAbove(getmousepos(), vecDownPos, '20 20')) {
+			} else if (m_iFlags & SCROLLBAR_DN_DOWN && Util_MouseAbove(getmousepos(), vecDownPos, [20,20])) {
 				SetValue(GetValue() + GetStep(), TRUE);
 			}
 			m_iFlags -= (m_iFlags & SCROLLBAR_UP_DOWN);

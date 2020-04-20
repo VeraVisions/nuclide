@@ -36,6 +36,20 @@ float spr_suit2[4] = {
 	24 / 256 // size y
 };
 
+float spr_suit3[4] = {
+	0 / 256, // pos x
+	124 / 256, // pos u
+	24 / 256, // size x
+	24 / 256 // size y
+};
+
+float spr_suit4[4] = {
+	24 / 256, // pos x
+	124 / 256, // pos u
+	24 / 256, // size x
+	24 / 256 // size y
+};
+
 float spr_flash1[4] = {
 	160 / 256, // pos x
 	24 / 256, // pos u

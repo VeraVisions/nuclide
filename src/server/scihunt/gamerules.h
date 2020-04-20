@@ -23,6 +23,7 @@ class SHMultiplayerRules:CGameRules
 	virtual void(entity) PlayerConnect;
 	virtual void(entity) PlayerDisconnect;
 	virtual void(player) PlayerKill;
+	virtual void(player) PlayerDeath;
 	virtual void(player) PlayerPostFrame;
 
 	virtual void(player) LevelDecodeParms;

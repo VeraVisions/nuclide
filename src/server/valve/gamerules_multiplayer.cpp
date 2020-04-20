@@ -15,6 +15,41 @@
  */
 
 void
+HLMultiplayerRules::PlayerDeath(player pl)
+{
+	weaponbox_spawn(pl);
+	pl.movetype = MOVETYPE_NONE;
+	pl.solid = SOLID_NOT;
+	pl.takedamage = DAMAGE_NO;
+	pl.flags &= ~FL_FLASHLIGHT;
+	pl.armor = pl.activeweapon = pl.g_items = 0;
+
+	pl.think = PutClientInServer;
+	pl.nextthink = time + 4.0f;
+	sound(pl, CHAN_AUTO, "fvox/flatline.wav", 1.0, ATTN_NORM);
+
+	if (pl.health < -50) {
+		pl.health = 0;
+		Effect_GibHuman(pl.origin);
+		return;
+	}
+
+	pl.health = 0;
+
+	/* Let's handle corpses on the clientside */
+	entity corpse = spawn();
+	setorigin(corpse, pl.origin + [0,0,32]);
+	setmodel(corpse, pl.model);
+	setsize(corpse, VEC_HULL_MIN, VEC_HULL_MAX);
+	corpse.movetype = MOVETYPE_TOSS;
+	corpse.solid = SOLID_TRIGGER;
+	corpse.modelindex = pl.modelindex;
+	corpse.frame = ANIM_DIESIMPLE;
+	corpse.angles = pl.angles;
+	corpse.velocity = pl.velocity;
+}
+
+void
 HLMultiplayerRules::PlayerSpawn(player pl)
 {
 	/* this is where the mods want to deviate */

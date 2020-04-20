@@ -16,6 +16,16 @@
 
 var int autocvar_sv_playerkeepalive = TRUE;
 
+void
+CSGameRules::PlayerDeath(player pl)
+{
+}
+
+void
+CSGameRules::PlayerPain(player pl)
+{
+}
+
 int
 CSGameRules::BuyingPossible(player pl)
 {

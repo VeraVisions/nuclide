@@ -36,6 +36,7 @@ Damage_Obituary(entity c, entity t, float weapon, float flags)
 void
 Damage_Apply(entity t, entity c, float dmg, int w, int type)
 {
+	CGameRules rules = (CGameRules)g_grMode;
 	if (t.flags & FL_GODMODE) {
 		return;
 	}
@@ -99,9 +100,17 @@ Damage_Apply(entity t, entity c, float dmg, int w, int type)
 		if (t.flags & FL_MONSTER || t.flags & FL_CLIENT) {
 			Damage_Obituary(c, t, w, 0);
 		}
-		s.Death(trace_surface_id);
+		if (s.flags & FL_CLIENT) {
+			rules.PlayerDeath((player)s);
+		} else {
+			s.Death(trace_surface_id);
+		}
 	} else {
-		s.Pain(trace_surface_id);
+		if (s.flags & FL_CLIENT) {
+			rules.PlayerPain((player)s);
+		} else {
+			s.Pain(trace_surface_id);
+		}
 	}
 }
 

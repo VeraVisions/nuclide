@@ -85,7 +85,6 @@ class player:CBaseEntity
 	virtual float() predraw;
 	virtual void(void) postdraw;
 #else
-	int buyzone;
 	int charmodel;
 	int money;
 	int ammo_50ae;
@@ -147,6 +146,8 @@ class player:CBaseEntity
 	int old_a_ammo1;
 	int old_a_ammo2;
 	int old_a_ammo3;
+
+	int voted;
 
 	int old_cs_shotmultiplier;
 	float old_cs_shottime;

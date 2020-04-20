@@ -38,6 +38,12 @@ class info_hostage_rescue
 void
 info_hostage_rescue::touch(void)
 {
+	if (other.flags & FL_CLIENT) {
+		player pl = (player)other;
+		pl.flags |= FL_RESCUEZONE;
+		return;
+	}
+
 	if (other.classname != "hostage_entity") {
 		return;
 	}
@@ -51,7 +57,7 @@ info_hostage_rescue::touch(void)
 	Radio_BroadcastMessage(RADIO_RESCUED);
 	g_cs_hostagesrescued++;
 
-	Money_AddMoney(hosty.m_eFollowing, 1000);
+	Money_AddMoney((player)hosty.m_eFollowing, 1000);
 
 	/* In Hostage Rescue, all Counter-Terrorists receive an $850
 	 * bonus for every hostage they rescue, even if they lose the round. */

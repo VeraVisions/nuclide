@@ -37,10 +37,15 @@ void Game_Worldspawn(void)
 	precache_model("models/player/urban/urban.mdl");
 	precache_model("models/player/vip/vip.mdl");
 	precache_sound("weapons/ric_metal-2.wav");
+	precache_sound("player/pl_pain2.wav");
+	precache_sound("player/pl_pain4.wav");
+	Sound_Precache("buy.kevlar");
+	Sound_Precache("buy.weapon");
 
 	Weapons_Init();
 
 	clientstat(STAT_MONEY, EV_INTEGER, player::money);
+
 	pointerstat(STAT_GAMETIME, EV_FLOAT, &g_cs_gametime);
 	pointerstat(STAT_GAMESTATE, EV_INTEGER, &g_cs_gamestate);
 }

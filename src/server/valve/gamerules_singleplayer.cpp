@@ -15,6 +15,25 @@
  */
 
 void
+HLSingleplayerRules::PlayerDeath(player pl)
+{
+	pl.movetype = MOVETYPE_NONE;
+	pl.solid = SOLID_NOT;
+	pl.takedamage = DAMAGE_NO;
+	pl.flags &= ~FL_FLASHLIGHT;
+	pl.armor = pl.activeweapon = pl.g_items = 0;
+	sound(pl, CHAN_AUTO, "fvox/flatline.wav", 1.0, ATTN_NORM);
+
+	if (pl.health < -50) {
+		pl.health = 0;
+		Effect_GibHuman(pl.origin);
+		return;
+	}
+
+	pl.health = 0;
+}
+
+void
 HLSingleplayerRules::PlayerSpawn(player pl)
 {
 	pl.classname = "player";

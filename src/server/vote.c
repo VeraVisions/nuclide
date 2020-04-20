@@ -56,7 +56,8 @@ Vote_Reset(void)
 	forceinfokey(world, "vote_cmd", "");
 
 	for (entity e = world; (e = find(e, ::classname, "player"));) {
-		e.flags &= ~FL_VOTED;
+		player pl = (player)e;
+		pl.voted = 0;
 	}
 }
 
@@ -127,6 +128,8 @@ CSEv_VoteY
 void
 CSEv_VoteY(void)
 {
+	player pl = (player)self;
+
 	/* No vote is in progress */
 	if (g_iVoteState != VOTE_INPROGRESS) {
 		return;
@@ -136,12 +139,12 @@ CSEv_VoteY(void)
 		return;
 	}
 
-	if (self.flags & FL_VOTED) {
+	if (pl.voted) {
 		return;
 	}
 
 	forceinfokey(world, "votes_y", ftos(serverkeyfloat("votes_y")+1));
-	self.flags |= FL_VOTED;
+	pl.voted = 1;
 
 	/* HACK: Is there a better way to do this? */
 	float playernums = 0;
@@ -170,6 +173,8 @@ CSEv_VoteN
 void
 CSEv_VoteN(void)
 {
+	player pl = (player)self;
+
 	/* No vote is in progress */
 	if (g_iVoteState != VOTE_INPROGRESS) {
 		return;
@@ -179,12 +184,12 @@ CSEv_VoteN(void)
 		return;
 	}
 
-	if (self.flags & FL_VOTED) {
+	if (pl.voted) {
 		return;
 	}
 
 	forceinfokey(world, "votes_n", ftos(serverkeyfloat("votes_n")+1));
-	self.flags |= FL_VOTED;
+	pl.voted = 1;
 
 	/* HACK: Is there a better way to do this? */
 	float playernums = 0;

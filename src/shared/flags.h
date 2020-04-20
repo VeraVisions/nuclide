@@ -34,12 +34,12 @@
 /* nuclide */
 #define FL_ONLADDER				(1<<13)
 #define FL_FLASHLIGHT			(1<<17)
-#define FL_REMOVEME				(1<<18)
-#define FL_CROUCHING			(1<<19)
-#define FL_SEMI_TOGGLED			(1<<20)
-#define FL_FROZEN				(1<<21)
-#define FL_VOTED				(1<<22)
-#define FL_RESERVED				(1<<23) 
+#define FL_CROUCHING			(1<<18)
+#define FL_SEMI_TOGGLED			(1<<19)
+#define FL_FROZEN				(1<<20)
+#define FL_RESERVED1			(1<<21)
+#define FL_RESERVED2			(1<<22) 
+#define FL_RESERVED3			(1<<23)
 
 /* game flags */
 #define GF_UNUSED1		(1<<0)

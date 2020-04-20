@@ -52,11 +52,11 @@ void
 func_buyzone::touch(void)
 {
 	player pl = (player)other;
-	if (!(other.flags & FL_CLIENT)) {
+	if (!(other.flags & FL_CLIENT))
 		return;
-	}
 
-	pl.buyzone = TRUE;
+	if (team == 0 || team == pl.team)
+		pl.flags |= FL_BUYZONE;
 }
 
 void

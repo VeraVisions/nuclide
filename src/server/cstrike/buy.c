@@ -77,7 +77,7 @@ CSEv_BuyWeapon_f(float fWeapon)
 	if ((pl.money - g_cstrikeWeaponPrice[iWeapon]) >= 0) {
 		Weapons_AddItem(pl, iWeapon);
 		Money_AddMoney(pl, -g_cstrikeWeaponPrice[iWeapon]);
-		sound(pl, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_IDLE);
+		Sound_Play(pl, CHAN_ITEM, "buy.weapon");
 	} else {
 		//centerprint(pl, "You have insufficient funds!");
 	}
@@ -115,32 +115,32 @@ CSEv_BuyEquipment_f(float fUtil)
 		switch (iUtil) {
 		case 0:
 			pl.armor = 100;
-			sound(pl, CHAN_ITEM, "items/tr_kevlar.wav", 1.0f, ATTN_IDLE);
+			Sound_Play(pl, CHAN_ITEM, "buy.kevlar");
 			break;
 		case 1:
 			pl.armor = 100;
 			pl.g_items |= ITEM_HELMET;
-			sound(pl, CHAN_ITEM, "items/tr_kevlar.wav", 1.0f, ATTN_IDLE);
+			Sound_Play(pl, CHAN_ITEM, "buy.kevlar");
 			break;
 		case 2:
 			Weapons_AddItem(pl, WEAPON_FLASHBANG);
-			sound(pl, CHAN_ITEM, "items/gunpickup2.wav", 1.0f, ATTN_IDLE);
+			Sound_Play(pl, CHAN_ITEM, "buy.weapon");
 			break;
 		case 3:
 			Weapons_AddItem(pl, WEAPON_HEGRENADE);
-			sound(pl, CHAN_ITEM, "items/gunpickup2.wav", 1.0f, ATTN_IDLE);
+			Sound_Play(pl, CHAN_ITEM, "buy.weapon");
 			break;
 		case 4:
 			Weapons_AddItem(pl, WEAPON_SMOKEGRENADE);
-			sound(pl, CHAN_ITEM, "items/gunpickup2.wav", 1.0f, ATTN_IDLE);
+			Sound_Play(pl, CHAN_ITEM, "buy.weapon");
 			break;
 		case 5:
 			pl.g_items |= ITEM_DEFUSAL;
-			sound(pl, CHAN_ITEM, "items/gunpickup2.wav", 1.0f, ATTN_IDLE);
+			Sound_Play(pl, CHAN_ITEM, "buy.weapon");
 			break;
 		case 6:
 			pl.g_items |= ITEM_NIGHTVISION;
-			sound(pl, CHAN_ITEM, "items/gunpickup2.wav", 1.0f, ATTN_IDLE);
+			Sound_Play(pl, CHAN_ITEM, "buy.weapon");
 			break;
 		}
 		Money_AddMoney(pl, -g_cstrikeUtilPrice[iUtil]);

@@ -47,6 +47,16 @@ CGameRules::PlayerDisconnect(entity pl)
 void
 CGameRules::PlayerKill(player pl)
 {
+	//print("PlayerKill!\n");
+}
+void
+CGameRules::PlayerDeath(player pl)
+{
+	//print("PlayerDeath!\n");
+}
+void
+CGameRules::PlayerPain(player pl)
+{
 	//print("ClientKill!\n");
 }
 void

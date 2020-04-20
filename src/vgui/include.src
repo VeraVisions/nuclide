@@ -1,7 +1,3 @@
-#ifndef WASTES
-#define CLASSIC_VGUI
-#endif
-
 #includelist
 ../vgui/font.cpp
 ../vgui/ui.cpp

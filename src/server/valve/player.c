@@ -14,47 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void weaponbox_spawn(player);
-
-void player::Pain(int hit)
-{
-	
-}
-
-void player::Death(int hit)
-{
-	weaponbox_spawn(this);
-	movetype = MOVETYPE_NONE;
-	solid = SOLID_NOT;
-	takedamage = DAMAGE_NO;
-	flags &= ~FL_FLASHLIGHT;
-	armor = activeweapon = g_items = 0;
-
-	think = PutClientInServer;
-	nextthink = time + 4.0f;
-	sound(this, CHAN_AUTO, "fvox/flatline.wav", 1.0, ATTN_NORM);
-
-	if (health < -50) {
-		health = 0;
-		Effect_GibHuman(origin);
-		return;
-	}
-
-	health = 0;
-
-	/* Let's handle corpses on the clientside */
-	entity corpse = spawn();
-	setorigin(corpse, origin + [0,0,32]);
-	setmodel(corpse, model);
-	setsize(corpse, VEC_HULL_MIN, VEC_HULL_MAX);
-	corpse.movetype = MOVETYPE_TOSS;
-	corpse.solid = SOLID_TRIGGER;
-	corpse.modelindex = modelindex;
-	corpse.frame = ANIM_DIESIMPLE;
-	corpse.angles = angles;
-	corpse.velocity = velocity;
-}
-
 /*
 ====================
 UseWorkaround

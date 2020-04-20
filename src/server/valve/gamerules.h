@@ -32,10 +32,12 @@ class HLSingleplayerRules:HLGameRules
 {
 	/* client */
 	virtual void(player) PlayerSpawn;
+	virtual void(player) PlayerDeath;
 };
 
 class HLMultiplayerRules:HLGameRules
 {
 	/* client */
 	virtual void(player) PlayerSpawn;
+	virtual void(player) PlayerDeath;
 };

@@ -29,8 +29,26 @@ Once the bomb explodes inside this volume, it'll trigger its targets.
 
 class func_bomb_target:CBaseTrigger
 {
+	void(void) func_bomb_target;
+
 	virtual void(void) Respawn;
+	virtual void(void) touch;
 };
+
+void
+func_bomb_target::touch(void)
+{
+	player pl = (player)other;
+	if (!(other.flags & FL_CLIENT)) {
+		return;
+	}
+
+	if (pl.team != TEAM_T) {
+		return;
+	}
+
+	pl.flags |= FL_BOMBZONE;
+}
 
 void
 func_bomb_target::Respawn(void)

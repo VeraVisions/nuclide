@@ -197,10 +197,10 @@ HUD_DrawMoney(void)
 	/* dollar sign */
 	drawsubpic(
 		money_pos,
-		[18,25],
+		[18,26],
 		HUD_NUMS,
-		[NUMSIZE_X * 8, NUMSIZE_Y * 1],
-		[NUMSIZE_X * 0.75, NUMSIZE_Y],
+		[192/256, 24/256],
+		[18/256, 26/256],
 		g_hud_color,
 		HUD_ALPHA - endalpha,
 		DRAWFLAG_ADDITIVE
@@ -210,7 +210,16 @@ HUD_DrawMoney(void)
 	 * varying alphas/colors  */
 	if (pSeat->m_flMoneyAlpha > 0) {
 		/* red/green dollar sign */
-		drawsubpic(money_pos, [18,25], HUD_NUMS, [NUMSIZE_X * 8, NUMSIZE_Y * 1], [NUMSIZE_X * 0.75, NUMSIZE_Y], pSeat->m_vecMoneyColor, endalpha, DRAWFLAG_ADDITIVE);
+		drawsubpic(
+			money_pos,
+			[18,26],
+			HUD_NUMS,
+			[192/256, 24/256],
+			[18/256, 26/256],
+			pSeat->m_vecMoneyColor,
+			endalpha,
+			DRAWFLAG_ADDITIVE
+		);
 
 		/* draw the +/- symbols depending on whether
 		 * or not we made or lost money */
@@ -310,29 +319,56 @@ HUD_DrawArmor(void)
 		pSeat->m_flArmorAlpha = HUD_ALPHA;
 	}
 
-	drawsubpic(
-		pos + [-80,1],
-		[24,24],
-		HUD_NUMS,
-		[spr_suit2[0], spr_suit2[1]],
-		[spr_suit2[2], spr_suit2[3]],
-		g_hud_color,
-		pSeat->m_flArmorAlpha,
-		DRAWFLAG_ADDITIVE
-	);
-
-	if (pl.armor > 0) {
+	if (pl.g_items & ITEM_HELMET) {
 		drawsubpic(
 			pos + [-80,1],
-			[24, 24 * (pl.armor / 100)],
+			[24,24],
 			HUD_NUMS,
-			[spr_suit1[0],
-			spr_suit1[1]],
-			[spr_suit1[2], spr_suit1[3] * (pl.armor / 100)],
+			[spr_suit4[0], spr_suit4[1]],
+			[spr_suit4[2], spr_suit4[3]],
 			g_hud_color,
 			pSeat->m_flArmorAlpha,
 			DRAWFLAG_ADDITIVE
 		);
+	} else {
+		drawsubpic(
+			pos + [-80,1],
+			[24,24],
+			HUD_NUMS,
+			[spr_suit2[0], spr_suit2[1]],
+			[spr_suit2[2], spr_suit2[3]],
+			g_hud_color,
+			pSeat->m_flArmorAlpha,
+			DRAWFLAG_ADDITIVE
+		);
+	}
+
+	if (pl.armor > 0) {
+		if (pl.g_items & ITEM_HELMET) {
+			drawsubpic(
+				pos + [-80,1],
+				[24, 24 * (pl.armor / 100)],
+				HUD_NUMS,
+				[spr_suit3[0],
+				spr_suit3[1]],
+				[spr_suit3[2], spr_suit3[3] * (pl.armor / 100)],
+				g_hud_color,
+				pSeat->m_flArmorAlpha,
+				DRAWFLAG_ADDITIVE
+			);
+		} else {
+			drawsubpic(
+				pos + [-80,1],
+				[24, 24 * (pl.armor / 100)],
+				HUD_NUMS,
+				[spr_suit1[0],
+				spr_suit1[1]],
+				[spr_suit1[2], spr_suit1[3] * (pl.armor / 100)],
+				g_hud_color,
+				pSeat->m_flArmorAlpha,
+				DRAWFLAG_ADDITIVE
+			);
+		}
 	}
 
 	HUD_DrawNums(pl.armor, pos, pSeat->m_flArmorAlpha, g_hud_color);
@@ -451,35 +487,79 @@ HUD_DrawFlashlight(void)
 	}
 }
 
-/* logo animation used during e3 1998 */
 void
-HUD_DrawLogo(void)
+HUD_DrawZones(void)
 {
-	vector pos;
-	static int f;
-	static float frame_timer;
+	int zc = 0;
+	vector pos = [0,0,0];
+	player pl = (player)pSeat->m_ePlayer;
 
-	frame_timer -= clframetime;
-	pos = [g_hudres[0] - 262, 48];
-
-	drawpic(
-		pos,
-		sprintf("sprites/640_logo.spr_%i.tga", f),
-		[256, 48],
-		[1,1,1],
-		1.0f,
-		DRAWFLAG_ADDITIVE
-	);
-
-	if (frame_timer > 0) {
-		return;
+	if (pl.flags & FL_BUYZONE) {
+		zc++;
+	}
+	if (pl.flags & FL_BOMBZONE) {
+		zc++;
+	}
+	if (pl.flags & FL_RESCUEZONE) {
+		zc++;
+	}
+	if (pl.g_items & ITEM_DEFUSAL) {
+		zc++;
 	}
 
-	frame_timer = 0.1f;
+	pos = g_hudmins + [16, (g_hudres[1] / 2) - (zc * 16)];
 
-	f++;
-	if (f == 31) {
-		f = 0;
+	if (pl.flags & FL_BUYZONE) {
+		drawsubpic(
+			pos,
+			[32,32],
+			HUD_NUMS,
+			[96/256,148/256],
+			[32/256,32/256],
+			[0,1,0],
+			1.0f,
+			DRAWFLAG_ADDITIVE
+		);
+		pos[1] += 32;
+	}
+	if (pl.flags & FL_BOMBZONE) {
+		drawsubpic(
+			pos,
+			[32,32],
+			HUD_NUMS,
+			[0/256,148/256],
+			[32/256,32/256],
+			[0,1,0],
+			1.0f,
+			DRAWFLAG_ADDITIVE
+		);
+		pos[1] += 32;
+	}
+	if (pl.flags & FL_RESCUEZONE) {
+		drawsubpic(
+			pos,
+			[32,32],
+			HUD_NUMS,
+			[64/256,148/256],
+			[32/256,32/256],
+			[0,1,0],
+			1.0f,
+			DRAWFLAG_ADDITIVE
+		);
+		pos[1] += 32;
+	}
+	if (pl.g_items & ITEM_DEFUSAL) {
+		drawsubpic(
+			pos,
+			[32,32],
+			HUD_NUMS,
+			[48/256,148/256],
+			[32/256,32/256],
+			[0,1,0],
+			1.0f,
+			DRAWFLAG_ADDITIVE
+		);
+		pos[1] += 32;
 	}
 }
 
@@ -529,10 +609,9 @@ HUD_Draw(void)
 	HUD_DrawNotify();
 	HUD_DrawHealth();
 	HUD_DrawArmor();
+	HUD_DrawZones();
 	HUD_DrawFlashlight();
 	Damage_Draw();
-	
-	//drawpic([128,128], HUD_NUMS, [256,256], [1,1,1], 1.0f);
 }
 
 /* specatator main entry */

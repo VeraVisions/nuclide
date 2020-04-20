@@ -15,6 +15,44 @@
  */
 
 void
+CSMultiplayerRules::PlayerDeath(player pl)
+{
+	pl.movetype = MOVETYPE_NONE;
+	pl.solid = SOLID_NOT;
+	pl.takedamage = DAMAGE_NO;
+	pl.flags &= ~FL_FLASHLIGHT;
+	pl.armor = pl.activeweapon = pl.g_items = 0;
+	pl.health = 0;
+
+	entity corpse = spawn();
+	setorigin(corpse, pl.origin + [0,0,32]);
+	setmodel(corpse, pl.model);
+	setsize(corpse, VEC_HULL_MIN, VEC_HULL_MAX);
+	corpse.movetype = MOVETYPE_TOSS;
+	corpse.solid = SOLID_TRIGGER;
+	corpse.modelindex = pl.modelindex;
+	corpse.frame = ANIM_DIESIMPLE;
+	corpse.angles = pl.angles;
+	corpse.velocity = pl.velocity;
+
+	/* gamerule stuff */
+	PlayerMakeSpectator(pl);
+	pl.classname = "player";
+	pl.health = 0;
+	forceinfokey(pl, "*dead", "1"); 
+	forceinfokey(pl, "*team", ftos(pl.team));
+	CountPlayers();
+
+	/* In Assassination, all Terrorists receive a $2500
+	 *  reward if they won by killing the VIP. */
+	if (self.team == TEAM_VIP) {
+		RoundOver(TEAM_T, 2500, FALSE);
+		return;
+	}
+	DeathCheck(pl);
+}
+
+void
 CSMultiplayerRules::PlayerPreFrame(player pl)
 {
 	if (pl.health <= 0)
@@ -294,7 +332,7 @@ CSMultiplayerRules::BuyingPossible(player pl)
 		}
 	}
 	
-	if (pl.buyzone == FALSE) {
+	if (!(pl.flags & FL_BUYZONE)) {
 		centerprint(pl, "Sorry, you aren't in a buyzone.\n");
 		return FALSE;
 	}
@@ -828,5 +866,3 @@ void CSEv_JoinTeam_f(float flChar)
 		rules.RoundOver(FALSE, 0, FALSE);
 	}
 }
-
-void weaponbox_spawn(player pl) {}

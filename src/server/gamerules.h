@@ -31,6 +31,8 @@ class CGameRules
 	virtual void(player) PlayerSpawn;
 	virtual void(player) PlayerPreFrame;
 	virtual void(player) PlayerPostFrame;
+	virtual void(player) PlayerDeath;
+	virtual void(player) PlayerPain;
 
 	/* level transitions */
 	virtual void(void) LevelNewParms;

@@ -22,6 +22,8 @@ class CSGameRules:CGameRules
 	virtual void(entity) PlayerDisconnect;
 	virtual void(player) PlayerKill;
 	virtual void(player) PlayerPostFrame;
+	virtual void(player) PlayerDeath;
+	virtual void(player) PlayerPain;
 
 	/* level transitions */
 	virtual void(player) LevelChangeParms;
@@ -35,6 +37,7 @@ class CSSingleplayerRules:CSGameRules
 {
 	/* client */
 	virtual void(player) PlayerSpawn;
+	virtual void(player) PlayerDeath;
 };
 
 class CSMultiplayerRules:CSGameRules
@@ -48,6 +51,7 @@ class CSMultiplayerRules:CSGameRules
 	virtual void(void) FrameStart;
 	virtual void(player) PlayerSpawn;
 	virtual void(player) PlayerPreFrame;
+	virtual void(player) PlayerDeath;
 
 	/* CS specific */
 	virtual void(void) CreateRescueZones;

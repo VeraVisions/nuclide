@@ -14,63 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void Player_Pain(int hit)
-{
-	
-}
-
-void Player_Death(int hit)
-{
-	player pl = (player)self;
-
-	pl.movetype = MOVETYPE_NONE;
-	pl.solid = SOLID_NOT;
-	pl.takedamage = DAMAGE_NO;
-	pl.flags &= ~FL_FLASHLIGHT;
-	pl.armor = pl.activeweapon = pl.g_items = 0;
-	
-	pl.think = PutClientInServer;
-	pl.nextthink = time + 4.0f;
-
-	if (pl.health < -50) {
-		pl.health = 0;
-		Effect_GibHuman(pl.origin);
-		return;
-	}
-
-	pl.health = 0;
-
-	/* Let's handle corpses on the clientside */
-	entity corpse = spawn();
-	setorigin(corpse, pl.origin + [0,0,32]);
-	setmodel(corpse, pl.model);
-	setsize(corpse, VEC_HULL_MIN, VEC_HULL_MAX);
-	corpse.movetype = MOVETYPE_TOSS;
-	corpse.solid = SOLID_TRIGGER;
-	corpse.modelindex = pl.modelindex;
-	corpse.frame = ANIM_DIESIMPLE;
-	corpse.angles = pl.angles;
-	corpse.velocity = pl.velocity;
-
-	/* gamerule stuff */
-//	PlayerMakeSpectator();
-	self.classname = "player";
-	self.health = 0;
-	forceinfokey(self, "*dead", "1"); 
-	forceinfokey(self, "*team", ftos(self.team));
-
-	//Rules_CountPlayers();
-
-	/* In Assassination, all Terrorists receive a $2500
-	 *  reward if they won by killing the VIP. */
-	if (self.team == TEAM_VIP) {
-	//	Rules_RoundOver(TEAM_T, 2500, FALSE);
-		return;
-	}
-//
-	//Rules_DeathCheck();
-}
-
 /*
 ====================
 UseWorkaround
