@@ -18,7 +18,7 @@ games:
 	cd server/rewolf && $(MAKE)
 	cd client/gearbox && $(MAKE)
 	cd server/gearbox && $(MAKE)
-	
+
 mods:
 	cd client/cstrike && $(MAKE)
 	cd server/cstrike && $(MAKE)
@@ -28,6 +28,6 @@ mods:
 	cd server/poke646 && $(MAKE)
 	cd client/hunger && $(MAKE)
 	cd server/hunger && $(MAKE)
-	
+
 plugins:
 	$(CC) plugins/chatsounds.src

@@ -98,7 +98,7 @@ w_bradnailer_shootnail(void)
 			Damage_Apply(other, self.owner, 15, WEAPON_BRADNAILER, DMG_GENERIC);
 			Sound_Play(self, CHAN_WEAPON, "weapon_bradnailer.hitbody");
 		} else {
-			Weapons_PlaySound(self, CHAN_WEAPON, "weapons/xbow_hit1.wav", 1, ATTN_NORM);
+			Sound_Play(self, CHAN_WEAPON, "weapon_crossbow.hit");
 		}
 		remove(self);
 	}

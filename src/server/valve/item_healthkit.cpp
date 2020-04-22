@@ -39,7 +39,7 @@ void item_healthkit::touch(void)
 		return;
 	}
 	Damage_Apply(other, this, -20, 0, DMG_GENERIC);
-	sound(this, CHAN_ITEM, "items/smallmedkit1.wav", 1, ATTN_NORM);
+	Sound_Play(this, CHAN_ITEM, "item.healthkit");
 	Logging_Pickup(other, this, __NULL__);
 
 	if (cvar("sv_playerslots") == 1) {
@@ -63,14 +63,14 @@ void item_healthkit::Respawn(void)
 
 	think = __NULL__;
 	nextthink = -1;
-	sound(this, CHAN_ITEM, "items/suitchargeok1.wav", 1, ATTN_NORM, 150);
+	Sound_Play(this, CHAN_ITEM, "item.respawn");
 	droptofloor();
 }
 
 void item_healthkit::item_healthkit(void)
 {
-	precache_sound("items/smallmedkit1.wav");
-	precache_sound("items/suitchargeok1.wav");
+	Sound_Precache("item.healthkit");
+	Sound_Precache("item.respawn");
 	model = "models/w_medkit.mdl";
 	CBaseEntity::CBaseEntity();
 	item_healthkit::Respawn();

@@ -50,7 +50,7 @@ void item_battery::touch(void)
 	}
 
 	Logging_Pickup(other, this, __NULL__);
-	sound(other, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_NORM);
+	Sound_Play(other, CHAN_ITEM, "item.battery");
 
 	if (cvar("sv_playerslots") == 1) {
 		remove(self);
@@ -72,12 +72,14 @@ void item_battery::Respawn(void)
 
 	think = __NULL__;
 	nextthink = -1;
-	sound(this, CHAN_ITEM, "items/suitchargeok1.wav", 1, ATTN_NORM, 150);
+	Sound_Play(this, CHAN_ITEM, "item.respawn");
 	droptofloor();
 }
 
 void item_battery::item_battery(void)
 {
+	Sound_Precache("item.battery");
+	Sound_Precache("item.respawn");
 	model = "models/w_battery.mdl";
 	CBaseEntity::CBaseEntity();
 	item_healthkit::Respawn();
