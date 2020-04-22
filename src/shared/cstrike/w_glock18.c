@@ -157,9 +157,9 @@ w_glock18_primary(void)
 	pl.glock18_mag--;
 
 	if (self.flags & FL_CROUCHING)
-		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
+		Animation_PlayerTopTemp(ANIM_SHOOT_ONEHAND, 0.45f);
 	else
-		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
+		Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_ONEHAND, 0.45f);
 
 	if (pl.a_ammo3) {
 		Sound_Play(pl, CHAN_WEAPON, "weapon_glock18.burstfire");

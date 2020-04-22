@@ -216,7 +216,7 @@ w_flashbang_release(void)
 float
 w_flashbang_aimanim(void)
 {
-	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
+	return self.flags & FL_CROUCHING ? ANIM_CROUCH_AIM_GRENADE : ANIM_AIM_GRENADE;
 }
 
 void

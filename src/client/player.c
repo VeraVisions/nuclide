@@ -14,13 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-//.float bonecontrol1; //Half-Life model format bone controller. On player models, this typically affects the spine's yaw.
-//.float bonecontrol2; //Half-Life model format bone controller. On player models, this typically affects the spine's yaw.
-//.float bonecontrol3; //Half-Life model format bone controller. On player models, this typically affects the spine's yaw.
-//.float bonecontrol4; //Half-Life model format bone controller. On player models, this typically affects the spine's yaw.
-//.float bonecontrol5; //Half-Life model format bone controller. This typically affects the mouth.
-//.float subblendfrac; //Weird animation value specific to Half-Life models. On player models, this typically affects the spine's pitch.
-//.float basesubblendfrac; // legs part.
 .float subblend2frac; // Up/Down
 
 void
@@ -81,13 +74,23 @@ player::draw(void)
 	}
 	this.bonecontrol5 = getplayerkeyfloat(this.entnum - 1, "voiploudness");
 
+	makevectors([0, this.angles[1], 0]);
+	float fCorrect = dotproduct(this.velocity, v_right) * 0.25f;
+
+#ifdef CSTRIKE
+	/* hack, we can't play the animations in reverse the normal way */
+	if (this.frame1time < 0.0f) {
+		this.frame1time = 10.0f;
+	}
+	
+	this.subblendfrac = -fCorrect * 0.05f;
+	this.subblend2frac *= -0.1f;
+	this.angles[1] -= fCorrect;
+#else
 	/* hack, we can't play the animations in reverse the normal way */
 	if (this.baseframe1time < 0.0f) {
 		this.baseframe1time = 10.0f;
 	}
-
-	makevectors([0, this.angles[1], 0]);
-	float fCorrect = dotproduct(this.velocity, v_right) * 0.25f;
 
 	/* Turn torso */
 	this.bonecontrol1 = fCorrect;
@@ -97,6 +100,7 @@ player::draw(void)
 
 	/* Correct the legs */
 	this.angles[1] -= fCorrect;
+#endif
 
 	if (cvar("bonetest") == 1) {
 		this.bonecontrol1 = cvar("bonecontrol1");

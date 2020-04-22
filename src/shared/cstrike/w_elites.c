@@ -60,7 +60,7 @@ void
 w_elites_updateammo(player pl)
 {
 #ifdef SERVER
-	Weapons_UpdateAmmo(pl, pl.elites_mag, pl.ammo_9mm, -1);
+	Weapons_UpdateAmmo(pl, pl.elites_mag, pl.ammo_9mm, pl.a_ammo3);
 #endif
 }
 
@@ -137,6 +137,8 @@ w_elites_primary(void)
 	}
 #endif
 
+	pl.a_ammo3 = 1 - pl.a_ammo3;
+
 	Cstrike_ShotMultiplierAdd(pl, 1);
 	float accuracy = Cstrike_CalculateAccuracy(pl, 200);
 
@@ -147,15 +149,20 @@ w_elites_primary(void)
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 45, [accuracy,accuracy], WEAPON_ELITES);
 	pl.elites_mag--;
 
-	if (self.flags & FL_CROUCHING)
-		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
-	else
-		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
+	if (self.flags & FL_CROUCHING) {
+		if (pl.a_ammo3)
+			Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT2_DUALPISTOLS, 0.45f);
+		else
+			Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_DUALPISTOLS, 0.45f);
+	} else {
+		if (pl.a_ammo3)
+			Animation_PlayerTopTemp(ANIM_SHOOT2_DUALPISTOLS, 0.45f);
+		else
+			Animation_PlayerTopTemp(ANIM_SHOOT_DUALPISTOLS, 0.45f);
+	}
 
 	Sound_Play(pl, CHAN_WEAPON, "weapon_elites.fire");
 #endif
-
-	pl.a_ammo3 = 1 - pl.a_ammo3;
 
 	int r = (float)input_sequence % 5;
 	if (pl.a_ammo3) {
@@ -245,7 +252,7 @@ w_elites_reload(void)
 float
 w_elites_aimanim(void)
 {
-	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
+	return self.flags & FL_CROUCHING ? ANIM_CROUCH_AIM_DUALPISTOLS : ANIM_AIM_DUALPISTOLS;
 }
 
 void

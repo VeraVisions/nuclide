@@ -5,13 +5,13 @@
 #define SERVER
 #define VALVE
 #define CSTRIKE
+#define BULLETPENETRATION
 
 #includelist
 ../../shared/fteextensions.qc
 ../../shared/defs.h
 ../../shared/cstrike/defs.h
 ../../shared/sound.c
-../../shared/valve/animations.h
 ../defs.h
 ../plugins.c
 ../logging.c
@@ -22,7 +22,7 @@
 ../../gs-entbase/server.src
 ../../gs-entbase/shared.src
 
-../../shared/cstrike/player.cpp
+../../shared/cstrike/player.h
 ../cstrike/defs.h
 
 ../../shared/effects.c
@@ -79,7 +79,7 @@
 
 ../spawn.c
 ../vox.c
-../../shared/valve/animations.c
+../../shared/cstrike/animations.c
 
 ../gamerules.cpp
 ../cstrike/game_money.c
@@ -97,6 +97,8 @@
 ../valve/rules.c
 ../footsteps.c
 ../flashlight.c
+../../botlib/include.src
+
 ../cstrike/input.c
 ../cstrike/spawn.c
 ../vote.c

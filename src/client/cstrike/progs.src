@@ -33,9 +33,8 @@
 ../sentences.c
 ../prints.c
 ../voice.c
-../../shared/valve/animations.h
-../../shared/valve/animations.c
-../../shared/cstrike/player.cpp
+../../shared/cstrike/animations.c
+../../shared/cstrike/player.h
 ../player.c
 ../../shared/cstrike/pmove.c
 ../../shared/pmove.c

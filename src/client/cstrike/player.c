@@ -94,13 +94,14 @@ Player_ReadEntity(float new)
 		pl.movetype = readbyte();
 	if (fl & PLAYER_VIEWOFS)
 		pl.view_ofs[2] = readfloat();
-	if (fl & PLAYER_BASEFRAME)
+	if (fl & PLAYER_BASEFRAME) {
 		pl.baseframe = readbyte();
-	if (fl & PLAYER_FRAME) {
-		pl.frame = readbyte();
-		pl.frame1time = 0.0f;
-		pl.frame2time = 0.0f;
+		pl.baseframe1time = 0.0f;
+		pl.baseframe2time = 0.0f;
 	}
+	if (fl & PLAYER_FRAME)
+		pl.frame = readbyte();
+
 	if (fl & PLAYER_AMMO1)
 		pl.a_ammo1 = readbyte();
 	if (fl & PLAYER_AMMO2)

@@ -114,6 +114,11 @@ w_knife_primary(void)
 
 	Sound_Play(pl, CHAN_WEAPON, "weapon_knife.miss");
 
+	if (self.flags & FL_CROUCHING)
+		Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_KNIFE, 0.45f);
+	else
+		Animation_PlayerTopTemp(ANIM_SHOOT_KNIFE, 0.45f);
+
 	if (trace_fraction >= 1.0) {
 		return;
 	}
@@ -172,7 +177,7 @@ w_knife_secondary(void)
 float
 w_knife_aimanim(void)
 {
-	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
+	return self.flags & FL_CROUCHING ? ANIM_CROUCH_AIM_KNIFE : ANIM_AIM_KNIFE;
 }
 
 void

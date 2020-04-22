@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include "animations.h"
 #include "radio.h"
 #include "weapons.h"
 #include "items.h"

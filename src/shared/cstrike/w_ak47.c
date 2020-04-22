@@ -136,9 +136,9 @@ w_ak47_primary(void)
 	pl.ak47_mag--;
 
 	if (self.flags & FL_CROUCHING)
-		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
+		Animation_PlayerTopTemp(ANIM_SHOOT_AK47, 0.45f);
 	else
-		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
+		Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_AK47, 0.45f);
 	
 	Sound_Play(pl, CHAN_WEAPON, "weapon_ak47.fire");
 #endif
@@ -196,7 +196,7 @@ w_ak47_reload(void)
 float
 w_ak47_aimanim(void)
 {
-	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
+	return self.flags & FL_CROUCHING ? ANIM_CROUCH_AIM_AK47 : ANIM_AIM_AK47;
 }
 
 void

@@ -184,9 +184,9 @@ w_awp_primary(void)
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 115, [accuracy,accuracy], WEAPON_AWP);
 
 	if (self.flags & FL_CROUCHING)
-		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
+		Animation_PlayerTopTemp(ANIM_SHOOT_RIFLE, 0.45f);
 	else
-		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
+		Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_RIFLE, 0.45f);
 
 	Sound_Play(pl, CHAN_WEAPON, "weapon_awp.fire");
 #endif

@@ -31,9 +31,10 @@ CSMultiplayerRules::PlayerDeath(player pl)
 	corpse.movetype = MOVETYPE_TOSS;
 	corpse.solid = SOLID_TRIGGER;
 	corpse.modelindex = pl.modelindex;
-	corpse.frame = ANIM_DIESIMPLE;
+	corpse.frame = ANIM_DEATH1;
 	corpse.angles = pl.angles;
 	corpse.velocity = pl.velocity;
+	corpse.classname = "remove_me";
 
 	/* gamerule stuff */
 	PlayerMakeSpectator(pl);
@@ -446,7 +447,6 @@ This happens whenever an objective is complete or time is up
 void
 CSMultiplayerRules::RoundOver(int iTeamWon, int iMoneyReward, int fSilent)
 {
-	
 	if (g_cs_gamestate != GAME_ACTIVE) {
 		return;
 	}
@@ -862,5 +862,27 @@ void CSEv_JoinTeam_f(float flChar)
 		rules.RoundOver(FALSE, 0, FALSE);
 	} else if ((pl.team == TEAM_CT) && (g_cs_alive_ct == 0)) {
 		rules.RoundOver(FALSE, 0, FALSE);
+	}
+}
+
+void CSEv_JoinAuto(void)
+{
+	int ct_count = 0;
+	int t_count = 1;
+
+	for (entity eFind = world; (eFind = find(eFind, ::classname, "player"));) {
+		player pl = (player)eFind;
+		if (pl.team == TEAM_T) {
+			t_count++;
+		}
+		if (pl.team == TEAM_CT) {
+			ct_count++;
+		}
+	}
+
+	if (ct_count > t_count) {
+		CSEv_JoinTeam_f(floor(random(1,5)));
+	} else {
+		CSEv_JoinTeam_f(floor(random(5,9)));
 	}
 }

@@ -259,7 +259,7 @@ w_c4bomb_primary(void)
 float
 w_c4bomb_aimanim(void)
 {
-	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
+	return self.flags & FL_CROUCHING ? ANIM_CROUCH_AIM_C4 : ANIM_AIM_C4;
 }
 
 void

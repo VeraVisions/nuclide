@@ -139,9 +139,9 @@ w_deagle_primary(void)
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 54, [accuracy,accuracy], WEAPON_DEAGLE);
 
 	if (self.flags & FL_CROUCHING)
-		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
+		Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_ONEHAND, 0.45f);
 	else
-		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
+		Animation_PlayerTopTemp(ANIM_SHOOT_ONEHAND, 0.45f);
 
 	Sound_Play(pl, CHAN_WEAPON, "weapon_deagle.fire");
 #endif
@@ -201,7 +201,7 @@ w_deagle_reload(void)
 float
 w_deagle_aimanim(void)
 {
-	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
+	return self.flags & FL_CROUCHING ? ANIM_CROUCH_AIM_ONEHAND : ANIM_AIM_ONEHAND;
 }
 
 void

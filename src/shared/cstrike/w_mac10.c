@@ -135,9 +135,9 @@ w_mac10_primary(void)
 	pl.mac10_mag--;
 
 	if (self.flags & FL_CROUCHING)
-		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
+		Animation_PlayerTopTemp(ANIM_SHOOT_MP5, 0.45f);
 	else
-		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
+		Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_MP5, 0.45f);
 
 	Sound_Play(pl, CHAN_WEAPON, "weapon_mac10.fire");
 #endif

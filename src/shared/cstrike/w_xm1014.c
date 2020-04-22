@@ -146,9 +146,9 @@ w_xm1014_primary(void)
 	pl.xm1014_mag--;
 
 	if (self.flags & FL_CROUCHING)
-		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
+		Animation_PlayerTopTemp(ANIM_SHOOT_SHOTGUN, 0.45f);
 	else
-		Animation_PlayerTopTemp(ANIM_CR_SHOOT1HAND, 0.45f);
+		Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_SHOTGUN, 0.45f);
 
 	Sound_Play(pl, CHAN_WEAPON, "weapon_xm1014.fire");
 #endif

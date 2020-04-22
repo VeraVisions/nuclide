@@ -709,7 +709,6 @@ PMove_Run(void)
 
 	float flFallVel = (self.flags & FL_ONGROUND) ? 0 : -self.velocity[2];
 
-
 	/* maxspeed changes when crouching, TODO: make this game-specific */
 	self.maxspeed = GamePMove_Maxspeed((player)self);
 
