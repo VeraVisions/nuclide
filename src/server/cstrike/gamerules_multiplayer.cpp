@@ -675,8 +675,39 @@ CSMultiplayerRules::PlayerRespawn(player pl, int fTeam)
 
 	pl.origin = eSpawn.origin;
 	pl.angles = eSpawn.angles;
-	setmodel(pl, "models/player/vip/vip.mdl");
-	setsize(pl, VEC_HULL_MIN, VEC_HULL_MAX);
+	Client_FixAngle(pl, pl.angles);
+
+	switch (pl.charmodel) {
+	case 1:
+		pl.model = "models/player/terror/terror.mdl";
+		break;
+	case 2:
+		pl.model = "models/player/leet/leet.mdl";
+		break;
+	case 3:
+		pl.model = "models/player/arctic/arctic.mdl";
+		break;
+	case 4:
+		pl.model = "models/player/guerilla/guerilla.mdl";
+		break;
+	case 5:
+		pl.model = "models/player/urban/urban.mdl";
+		break;
+	case 6:
+		pl.model = "models/player/gsg9/gsg9.mdl";
+		break;
+	case 7:
+		pl.model = "models/player/sas/sas.mdl";
+		break;
+	case 8:
+		pl.model = "models/player/gign/gign.mdl";
+		break;
+	default:
+		pl.model = "models/player/vip/vip.mdl";
+	}
+	pl.SetModel(pl.model);
+	pl.SetSize(VEC_HULL_MIN, VEC_HULL_MAX);
+
 	pl.view_ofs = VEC_PLAYER_VIEWPOS;
 	pl.velocity = [0,0,0];
 	Weapons_SwitchBest(pl);
