@@ -602,49 +602,19 @@ Recursive function that gets the next spawnpoint
 =================
 */
 entity
-CSMultiplayerRules::PlayerFindSpawn(float fTeam)
+CSMultiplayerRules::PlayerFindSpawn(float t)
 {
-	entity eSpot, eLastSpawn;
-	entity eThing;
-	int iCount;
-	string sClassname;
-
-	if (fTeam == TEAM_T) {
-		sClassname = "info_player_deathmatch";
-		eSpot = eLastSpawn = m_eLastTSpawn;
-	} else if (fTeam == TEAM_CT) {
-		sClassname = "info_player_start";
-		eSpot = eLastSpawn = m_eLastCTSpawn;
-	} else if (fTeam == TEAM_VIP) {
+	if (t == TEAM_T) {
+		m_eLastTSpawn = find(m_eLastTSpawn, ::classname, "info_player_deathmatch");
+		return m_eLastTSpawn;
+	} else if (t == TEAM_CT) {
+		m_eLastCTSpawn = find(m_eLastCTSpawn, ::classname, "info_player_start");
+		return m_eLastCTSpawn;
+	} else if (t == TEAM_VIP) {
 		return find(world, ::classname, "info_vip_start");
 	}
 
-	while (1) {
-		eSpot = find(eSpot, ::classname, sClassname);
-		
-		if (eSpot == eLastSpawn)
-		{//fall back on lame cycling/spawnfragging
-			eLastSpawn = find(eLastSpawn, ::classname, sClassname);
-			if (!eLastSpawn)
-				eLastSpawn = find(eLastSpawn, ::classname, sClassname);
-			return eLastSpawn;
-		}
-		if (eSpot != world) {
-			iCount = 0;
-			eThing = findradius(eSpot.origin, 32);
-			while(eThing) {
-				if (eThing.classname == "player")
-					iCount++;
-				eThing = eThing.chain;
-			}
-			if (iCount == 0) {
-				eLastSpawn = eSpot;
-				return eSpot;
-			}
-		}
-	}
-
-	return eSpot;
+	return world;
 }
 
 /*
