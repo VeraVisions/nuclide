@@ -23,11 +23,11 @@ STUB!
 */
 
 // TODO: Finish these
-#define SF_MOV_OPEN		1
+#define SF_MOV_OPEN			1
 #define SF_MOV_UNLINK 		4
 #define SF_MOV_PASSABLE		8
 #define SF_MOV_TOGGLE		32
-#define SF_MOV_USE		256
+#define SF_MOV_USE			256
 
 enum
 {
@@ -54,7 +54,7 @@ class func_door:CBaseTrigger
 	int m_iStopSnd;
 	int m_iDamage;
 	int m_iLocked;
-	
+
 	void(void) func_door;
 	virtual void(void) SetMovementDirection;
 	virtual void(vector vdest, void(void) func) MoveToDestination;

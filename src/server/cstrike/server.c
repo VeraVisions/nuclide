@@ -41,6 +41,7 @@ void Game_Worldspawn(void)
 	precache_sound("player/pl_pain4.wav");
 	Sound_Precache("buy.kevlar");
 	Sound_Precache("buy.weapon");
+	Sound_Precache("buy.ammo");
 
 	Weapons_Init();
 

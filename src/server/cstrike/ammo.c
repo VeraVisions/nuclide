@@ -107,10 +107,12 @@ ammoinfo_t cs_ammoinfo[11] = {
 	}
 };
 
-void
+int
 Ammo_BuyCaliber(player pl, int cal)
 {
 	int *ptr_ammo;
+	int rv = 0;
+
 	while (pl.money - cs_ammoinfo[cal].price > 0) {
 		switch (cal) {
 		case CALIBER_50AE:
@@ -146,11 +148,14 @@ Ammo_BuyCaliber(player pl, int cal)
 		}
 
 		if (*ptr_ammo >= cs_ammoinfo[cal].a_max)
-			return;
+			break;
 
 		*ptr_ammo += cs_ammoinfo[cal].a_size;
 		Money_AddMoney(pl, -cs_ammoinfo[cal].price);
+		rv = 1;
 	}
+
+	return rv;
 }
 
 /* We want to loop through all the possible weapons in case the server
@@ -160,6 +165,7 @@ void
 CSEv_AmmoBuySecondary(void)
 {
 	int cal = 0;
+	int ps = 0;
 	player pl = (player)self;
 
 	for (int i = 1; i < g_weapons.length; i++) {
@@ -184,8 +190,15 @@ CSEv_AmmoBuySecondary(void)
 				cal = CALIBER_57MM;
 				break;
 			}
-			Ammo_BuyCaliber(pl, cal);
+
+			if (Ammo_BuyCaliber(pl, cal) == 1) {
+				ps = 1;
+			}
 		}
+	}
+
+	if (ps) {
+		Sound_Play(pl, CHAN_ITEM, "buy.ammo");
 	}
 	Weapons_RefreshAmmo(pl);
 }
@@ -193,6 +206,7 @@ CSEv_AmmoBuySecondary(void)
 void
 CSEv_AmmoBuyPrimary(void)
 {
+	int ps = 0;
 	int cal = 0;
 	player pl = (player)self;
 
@@ -248,8 +262,15 @@ CSEv_AmmoBuyPrimary(void)
 				cal = CALIBER_556MMBOX;
 				break;
 			}
-			Ammo_BuyCaliber(pl, cal);
+
+			if (Ammo_BuyCaliber(pl, cal) == 1) {
+				ps = 1;
+			}
 		}
+	}
+
+	if (ps) {
+		Sound_Play(pl, CHAN_ITEM, "buy.ammo");
 	}
 	Weapons_RefreshAmmo(pl);
 }
