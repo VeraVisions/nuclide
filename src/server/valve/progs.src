@@ -112,6 +112,8 @@ damage.c
 ../valve/rules.c
 ../footsteps.c
 ../flashlight.c
+../../botlib/include.src
+
 input.c
 spawn.c
 ../vote.c

@@ -42,6 +42,9 @@ void Game_Input(void)
 	if (self.impulse == 100) {
 		Flashlight_Toggle();
 	}
+	
+	if (self.impulse == 240)
+		Bot_AddQuick();
 
 	if (cvar("sv_cheats") == 1) {
 		player pl = (player)self;

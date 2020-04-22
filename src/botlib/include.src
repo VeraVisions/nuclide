@@ -1,0 +1,6 @@
+#define BOT_INCLUDED
+
+#includelist
+../botlib/bot.h
+../botlib/bot.cpp
+#endlist
