@@ -37,6 +37,7 @@ PMove_Init(void) {
 	localcmd("serverinfo phy_stopspeed 75\n");
 	localcmd("serverinfo phy_gravity 800\n");
 	localcmd("serverinfo phy_airaccelerate 10\n");
+	localcmd("serverinfo phy_wateraccelerate 8\n");
 
 #ifdef VALVE
 	localcmd("serverinfo phy_accelerate 8\n");
@@ -96,7 +97,6 @@ PMove_Categorize(void)
 	if (!trace_startsolid) {
 		if ((trace_fraction < 1) && (trace_plane_normal[2] > 0.7)) {
 			self.flags |= FL_ONGROUND;
-			//self.flags &= ~FL_WATERJUMP;
 			self.groundentity = trace_ent;
 
 			if (self.groundentity) {
@@ -106,6 +106,8 @@ PMove_Categorize(void)
 			self.flags &= ~FL_ONGROUND;
 		}
 	}
+
+	self.flags &= ~FL_WATERJUMP;
 
 	/*if (self.basevelocity[2] > 0)
 		self.flags &= ~FL_ONGROUND;*/
@@ -247,7 +249,7 @@ PMove_CheckWaterJump(void)
 		traceline(vStart, vEnd, TRUE, self);
 		
 		if (trace_fraction == 1) {
-			//self.flags |= FL_WATERJUMP;
+			self.flags |= FL_WATERJUMP;
 			self.velocity[2] = 350;
 			self.flags &= ~FL_JUMPRELEASED;
 			return;
@@ -354,7 +356,7 @@ PMove_AccelWater(float move_time, float premove)
 		return;
 	}
 
-	flFriction = min(wish_speed - flFriction, serverkeyfloat("phy_accelerate") * wish_speed * move_time);
+	flFriction = min(wish_speed - flFriction, serverkeyfloat("phy_wateraccelerate") * wish_speed * move_time);
 	self.velocity = self.velocity + normalize(vecWishVel) * flFriction;
 	return;
 }
@@ -450,8 +452,8 @@ PMove_AccelJump(float move_time, float premove)
 		return;
 	}
 
-	/*if (self.flags & FL_WATERJUMP)
-		return;*/
+	if (self.flags & FL_WATERJUMP)
+		return;
 	if (!(self.flags & FL_ONGROUND))
 		return;
 	if (!(self.flags & FL_JUMPRELEASED))
