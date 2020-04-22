@@ -88,6 +88,7 @@
 ../cstrike/gamerules_multiplayer.cpp
 
 ../cstrike/client.c
+../cstrike/ammo.c
 ../cstrike/buy.c
 ../client.c
 ../cstrike/server.c
