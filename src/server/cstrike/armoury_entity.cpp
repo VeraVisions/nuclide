@@ -145,7 +145,7 @@ armoury_entity::armoury_entity(void)
 		remove(this);
 		return;
 	}
-	
+
 	m_iCount = 1;
 
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
@@ -154,14 +154,16 @@ armoury_entity::armoury_entity(void)
 			m_iCount = stoi(argv(i+1));
 			break;
 		case "item":
-			m_iItem = g_cstrike_armouryitems[stoi(argv(i+1))];
+			int id = stoi(argv(i+1));
 
-			if (m_iItem < 0 || m_iItem >= 19) {
+			if (id < 0 || id >= 19) {
 				print(sprintf("^1armoury_entity with invalid item %i. ignoring\n", m_iItem));
 				remove(this);
 				return;
 			}
-			model = sArmouryModels[m_iItem];
+
+			m_iItem = g_cstrike_armouryitems[id];
+			model = sArmouryModels[id];
 			break;
 		default:
 			break;
