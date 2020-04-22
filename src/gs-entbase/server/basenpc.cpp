@@ -448,7 +448,7 @@ CBaseNPC::Physics(void)
 	/* override whatever we did above with this */
 	if (m_iSequenceState == SEQUENCESTATE_ENDING) {
 		input_angles = angles = v_angle = m_vecSequenceAngle;
-		frame = m_flSequenceEnd;
+		SetFrame(m_flSequenceEnd);
 	} else {
 		if (style != MONSTER_DEAD) {
 			TalkPlayerGreet();
@@ -473,11 +473,11 @@ CBaseNPC::Physics(void)
 				spvel = vlen(velocity);
 
 				if (spvel < 5) {
-					frame = AnimIdle();
+					SetFrame(AnimIdle());
 				} else if (spvel <= 140) {
-					frame = AnimWalk();
+					SetFrame(AnimWalk());
 				} else if (spvel <= 240) {
-					frame = AnimRun();
+					SetFrame(AnimRun());
 				}
 			}
 		}
@@ -485,6 +485,7 @@ CBaseNPC::Physics(void)
 		WalkRoute();
 		runstandardplayerphysics(this);
 		Footsteps_Update();
+		SetOrigin(origin);
 	}
 
 	if (!(flags & FL_ONGROUND) && velocity[2] < -100) {

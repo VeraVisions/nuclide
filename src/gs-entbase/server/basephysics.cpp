@@ -98,8 +98,8 @@ CBasePhysics::Respawn(void)
 	movetype = MOVETYPE_PHYSICS;
 	solid = SOLID_PHYSICS_BOX + m_iShape;
 	geomtype = GEOMTYPE_BOX;
-	setmodel(this, m_oldModel);
-	setorigin(this, m_oldOrigin);
+	SetModel(m_oldModel);
+	SetOrigin(m_oldOrigin);
 	physics_enable(this, TRUE);
 	takedamage = DAMAGE_YES;
 	health = 100000;
@@ -114,8 +114,8 @@ CBasePhysics::Respawn(void)
 #else
 	movetype = MOVETYPE_NONE;
 	solid = SOLID_BBOX;
-	setmodel(this, m_oldModel);
-	setorigin(this, m_oldOrigin);
+	SetModel(m_oldModel);
+	SetOrigin(m_oldOrigin);
 #endif
 	effects &= ~EF_NOSHADOW;
 }

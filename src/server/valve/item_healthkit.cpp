@@ -53,13 +53,11 @@ void item_healthkit::touch(void)
 
 void item_healthkit::Respawn(void)
 {
-	solid = SOLID_TRIGGER;
-	movetype = MOVETYPE_TOSS;
-	setmodel(this, m_oldModel);
-	
-
-	setsize(this, [-16,-16,0], [16,16,36]);
-	setorigin(this, m_oldOrigin);
+	SetSolid(SOLID_TRIGGER);
+	SetMovetype(MOVETYPE_TOSS);
+	SetSize([-16,-16,0],[16,16,16]);
+	SetOrigin(m_oldOrigin);
+	SetModel(m_oldModel);
 
 	think = __NULL__;
 	nextthink = -1;

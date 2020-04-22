@@ -126,12 +126,12 @@ void ammo_spore::Respawn(void)
 	health = 1;
 
 	if (m_oldModel) {
-		setmodel(this, m_oldModel);
+		SetModel(m_oldModel);
 	}
 
 	solid = SOLID_NOT;
 	setsize(this, [0,0,0], [0,0,0]);
-	setorigin(this, m_oldOrigin);
+	SetOrigin(m_oldOrigin);
 
 	decal_pickwall(this, m_oldOrigin);
 

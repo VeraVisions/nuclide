@@ -111,8 +111,8 @@ void func_recharge::func_recharge(void)
 	precache_sound(m_strSndCharging);
 	precache_sound(m_strSndDone);
 
-	solid = SOLID_BSP;
-	movetype = MOVETYPE_PUSH;
-	setorigin(this, origin);
-	setmodel(this, model);
+	SetSolid(SOLID_BSP);
+	SetMovetype(MOVETYPE_PUSH);
+	SetOrigin(origin);
+	SetModel(model);
 }

@@ -252,7 +252,7 @@ void func_door::SetMovementDirection(void)
 
 void func_door::MoveToDestination_End(void)
 {
-	setorigin(this, m_vecDest);
+	SetOrigin(m_vecDest);
 	velocity = [0,0,0];
 	nextthink = -1;
 	m_pMove();
@@ -296,21 +296,19 @@ void func_door::MoveToDestination(vector vecDest, void(void) func)
 void func_door::Respawn(void)
 {
 	/* reset */
-	origin = m_oldOrigin;
-	angles = m_oldAngle;
 	m_vecPos1 = [0,0,0];
 	m_vecPos2 = [0,0,0];
 	m_vecDest = [0,0,0];
 	m_vecMoveDir = [0,0,0];
 
 	/* angles to vecMoveDir */
+	angles = m_oldAngle;
 	SetMovementDirection();
-
+	SetSolid(SOLID_BSP);
+	SetMovetype(MOVETYPE_PUSH);
+	SetModel(m_oldModel);
+	SetOrigin(m_oldOrigin);
 	blocked = Blocked;
-	solid = SOLID_BSP;
-	movetype = MOVETYPE_PUSH;
-	setmodel(this, model);
-	setorigin(this, origin);
 	think = __NULL__;
 	nextthink = 0;
 	m_pMove = 0;
@@ -340,7 +338,7 @@ void func_door::Respawn(void)
 	m_vecPos2 = (m_vecPos1 + m_vecMoveDir * (fabs(m_vecMoveDir * size) - m_flLip));
 
 	if (spawnflags & SF_MOV_OPEN) {
-		setorigin(this, m_vecPos2);
+		SetOrigin(m_vecPos2);
 		m_vecPos2 = m_vecPos1;
 		m_vecPos1 = origin;
 	}
@@ -348,7 +346,8 @@ void func_door::Respawn(void)
 	if (m_strTargetName) {
 		m_iLocked = TRUE;
 	}
-	angles = [0,0,0];
+
+	SetAngles([0,0,0]);
 }
 
 void func_door::func_door(void)

@@ -293,11 +293,12 @@ CBaseMonster::Physics(void)
 	/* override whatever we did above with this */
 	if (m_iSequenceState == SEQUENCESTATE_ENDING) {
 		input_angles = angles = v_angle = m_vecSequenceAngle;
-		frame = m_flSequenceEnd;
+		SetFrame(m_flSequenceEnd);
 	} else if (movetype == MOVETYPE_WALK) {
 		CheckRoute();
 		WalkRoute();
 		runstandardplayerphysics(this);
+		SetOrigin(origin);
 		IdleNoise();
 
 		if (style != MONSTER_DEAD) {
@@ -307,11 +308,11 @@ CBaseMonster::Physics(void)
 				float spvel = vlen(velocity);
 
 				if (spvel < 5) {
-					frame = AnimIdle();
+					SetFrame(AnimIdle());
 				} else if (spvel <= 140) {
-					frame = AnimWalk();
+					SetFrame(AnimWalk());
 				} else if (spvel <= 240) {
-					frame = AnimRun();
+					SetFrame(AnimRun());
 				}
 			}
 		}
@@ -364,17 +365,17 @@ CBaseMonster::Death(int iHitBody)
 	flags &= ~FL_MONSTER;
 
 	/* gibbing action */
-	movetype = MOVETYPE_NONE;
-	solid = SOLID_CORPSE;
 	style = MONSTER_DEAD;
+	SetSolid(SOLID_CORPSE);
+	SetMovetype(MOVETYPE_NONE);
 }
 
 void
 CBaseMonster::Hide(void)
 {
-	setmodel(this, "");
-	solid = SOLID_NOT;
-	movetype = MOVETYPE_NONE;
+	SetModelindex(0);
+	SetSolid(SOLID_NOT);
+	SetMovetype(MOVETYPE_NONE);
 	customphysics = __NULL__;
 }
 
@@ -385,9 +386,6 @@ CBaseMonster::Respawn(void)
 	v_angle[1] = Math_FixDelta(m_oldAngle[1]);
 	v_angle[2] = Math_FixDelta(m_oldAngle[2]);
 	flags |= FL_MONSTER;
-	angles = v_angle;
-	solid = SOLID_SLIDEBOX;
-	movetype = MOVETYPE_WALK;
 	takedamage = DAMAGE_YES;
 	iBleeds = TRUE;
 	customphysics = Physics;
@@ -396,9 +394,14 @@ CBaseMonster::Respawn(void)
 	SendFlags = 0xff;
 	style = MONSTER_IDLE;
 	health = base_health;
-	setmodel(this, m_oldModel);
-	setsize(this, base_mins, base_maxs);
-	setorigin(this, m_oldOrigin);
+
+	SetAngles(v_angle);
+	SetSolid(SOLID_SLIDEBOX);
+	SetMovetype(MOVETYPE_WALK);
+	SetModel(m_oldModel);
+	SetSize(base_mins, base_maxs);
+	SetOrigin(m_oldOrigin);
+
 	droptofloor();
 }
 

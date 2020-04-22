@@ -155,7 +155,7 @@ void func_button::Returned(void)
 	}
     
 	m_iState = STATE_LOWERED;
-	frame = FRAME_OFF;
+	SetFrame(FRAME_OFF);
 }
 
 void func_button::MoveBack(void)
@@ -196,8 +196,8 @@ void func_button::MoveAway(void)
 	} else {
 		Arrived();
 	}
-	
-	frame = FRAME_ON;
+
+	SetFrame(FRAME_ON);
 }
 
 void func_button::Trigger(void)
@@ -287,7 +287,7 @@ void func_button::SetMovementDirection(void)
 
 void func_button::MoveToDestination_End(void)
 {
-	setorigin(this, m_vecDest);
+	SetOrigin(m_vecDest);
 	velocity = [0,0,0];
 	nextthink = -1;
 	m_pMove();
@@ -330,10 +330,11 @@ void func_button::Respawn(void)
 {
 	SetMovementDirection();
 
-	solid = SOLID_BSP;
-	movetype = MOVETYPE_PUSH;
-	setorigin(this, m_oldOrigin);
-	setmodel(this, m_oldModel);
+	SetSolid(SOLID_BSP);
+	SetMovetype(MOVETYPE_PUSH);
+	SetOrigin(m_oldOrigin);
+	SetModel(m_oldModel);
+
 	blocked = Blocked;
 	velocity = [0,0,0];
 	nextthink = -1;
@@ -364,7 +365,7 @@ void func_button::Respawn(void)
 	}
 
 	m_iState = STATE_LOWERED;
-	angles = [0,0,0];
+	SetAngles([0,0,0]);
 }
 
 void func_button::func_button(void)

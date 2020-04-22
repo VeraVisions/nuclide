@@ -30,17 +30,17 @@ var int autocvar_dev_rotspeed = 0;
 
 enumflags
 {
-	FR_STARTON, // 1
-	FR_REVERSE, // 2
-	FR_ZAXIS, // 4
-	FR_XAXIS, // 8
-	FR_ACCDCC, // 16
-	FR_FANPAIN, // 32
-	FR_NOTSOLID, // 64
-	FR_SMALLRADIUS, // 128
-	FR_MRADIUS, // 256
-	FR_LRADIUS, // 512
-	FR_TOGGLEDIR // 1024
+	FR_STARTON,
+	FR_REVERSE,
+	FR_ZAXIS,
+	FR_XAXIS,
+	FR_ACCDCC,
+	FR_FANPAIN,
+	FR_NOTSOLID,
+	FR_SMALLRADIUS,
+	FR_MRADIUS,
+	FR_LRADIUS,
+	FR_TOGGLEDIR
 };
 
 class func_rotating:CBaseTrigger
@@ -102,15 +102,10 @@ void func_rotating::Respawn(void)
 
 	m_flDir = 0; /* Reset */
 
-	movetype = MOVETYPE_PUSH;
-	setorigin(this, origin);
-	setmodel(this, model);
-
-	if (spawnflags & FR_NOTSOLID) {
-		solid = SOLID_NOT;
-	} else {
-		solid = SOLID_BSP;
-	}
+	SetMovetype(MOVETYPE_PUSH);
+	SetOrigin(origin);
+	SetModel(model);
+	SetSolid((spawnflags & FR_NOTSOLID) ? SOLID_NOT : SOLID_BSP);
 
 	if (spawnflags & FR_STARTON) {
 		avelocity = m_vecMoveDir * m_flSpeed;
@@ -146,7 +141,7 @@ void func_rotating::func_rotating(void)
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
 		/*case "spawnorigin":
-			setorigin(this, stov(argv(i+1)));
+			SetOrigin(stov(argv(i+1)));
 			break;*/
 		case "speed":
 			m_flSpeed = stof(argv(i+1));

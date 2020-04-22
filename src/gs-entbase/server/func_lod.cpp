@@ -48,7 +48,7 @@ void func_lod::func_lod(void)
 	}
 
 	precache_model(model);
-	movetype = MOVETYPE_PUSH;
-	setmodel(this, model);
-	setorigin(this, origin);
+	SetMovetype(MOVETYPE_PUSH);
+	SetModel(model);
+	SetOrigin(origin);
 }

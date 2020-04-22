@@ -32,6 +32,6 @@ void xen_plantlight::xen_plantlight(void)
 	precache_model("models/light.mdl");
 	solid = SOLID_SLIDEBOX;
 	movetype = MOVETYPE_WALK;
-	setmodel(this, "models/light.mdl");
-	setorigin(this, origin);
+	SetModel("models/light.mdl");
+	SetOrigin(origin);
 }

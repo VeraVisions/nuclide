@@ -59,7 +59,7 @@ void func_hostage_rescue::func_hostage_rescue(void)
 	solid = SOLID_TRIGGER;
 
 	if (model) {
-		setmodel(this, model);
+		SetModel(model);
 	} else {
 		mins = '-128 -128 -36';
 		maxs = '128 128 36';

@@ -42,10 +42,10 @@ void func_physbox::touch(void)
 
 void func_physbox::Respawn(void)
 {
-	movetype = MOVETYPE_PHYSICS;
-	solid = SOLID_PHYSICS_BOX; // SOLID_PHYSICS_TRIMESH
-	setmodel(this, m_oldModel);
-	setorigin(this, m_oldOrigin);
+	SetMovetype(MOVETYPE_PHYSICS);
+	SetSolid(SOLID_PHYSICS_BOX); // SOLID_PHYSICS_TRIMESH
+	SetModel(m_oldModel);
+	SetOrigin(m_oldOrigin);
 	physics_enable(this, TRUE);
 }
 

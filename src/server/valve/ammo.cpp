@@ -43,15 +43,11 @@ void item_ammo::touch(void)
 
 void item_ammo::Respawn(void)
 {
-	solid = SOLID_TRIGGER;
-	movetype = MOVETYPE_TOSS;
-
-	if (m_oldModel) {
-		setmodel(this, m_oldModel);
-	}
-
-	setsize(this, [-16,-16,0], [16,16,16]);
-	setorigin(this, origin);
+	SetSolid(SOLID_TRIGGER);
+	SetMovetype(MOVETYPE_TOSS);
+	SetSize([-16,-16,0],[16,16,16]);
+	SetOrigin(m_oldOrigin);
+	SetModel(m_oldModel);
 
 	think = __NULL__;
 	nextthink = -1;
@@ -63,7 +59,7 @@ void item_ammo::item_ammo(void)
 {
 	precache_model(model);
 	m_oldModel = model;
-	setmodel(this, m_oldModel);
+	SetModel(m_oldModel);
 	CBaseEntity::CBaseEntity();
 }
 

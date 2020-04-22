@@ -31,7 +31,7 @@ trigger_transition::trigger_transition(void)
 {
 	solid = SOLID_NOT;
 	movetype = MOVETYPE_NONE;
-	setmodel(this, model);
+	SetModel(model);
 	model = __NULL__;
 	modelindex = 0;
 	SetRenderMode(RM_TRIGGER);

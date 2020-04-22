@@ -210,16 +210,16 @@ void func_breakable::Respawn(void)
 {
 	CBaseEntity::Respawn();
 
-	movetype = MOVETYPE_NONE;
+	SetMovetype(MOVETYPE_NONE);
 
 	if (spawnflags & SF_ISMODEL) {
-		solid = SOLID_BBOX;
+		SetSolid(SOLID_BBOX);
 	} else {
-		solid = SOLID_BSP;
+		SetSolid(SOLID_BSP);
 	}
 
-	setmodel(this, m_oldModel);
-	setorigin(this, m_oldOrigin);
+	SetModel(m_oldModel);
+	SetOrigin(m_oldOrigin);
 	touch = PlayerTouch;
 	think = __NULL__;
 
@@ -251,7 +251,7 @@ void func_breakable::func_breakable(void)
 			vector realorg;
 			// hack, gotta get the world pos */
 			solid = SOLID_BSP;
-			setmodel(this, model);
+			SetModel(model);
 			realorg[0] = absmin[0] + (0.5 * (absmax[0] - absmin[0]));
 			realorg[1] = absmin[1] + (0.5 * (absmax[1] - absmin[1]));
 			realorg[2] = absmin[2] + (0.5 * (absmax[2] - absmin[2]));
@@ -280,5 +280,5 @@ void func_breakable::func_breakable(void)
 		}
 	}
 
-	angles = vvm_angles;
+	SetAngles(vvm_angles);
 }

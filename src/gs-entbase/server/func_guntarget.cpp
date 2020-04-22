@@ -141,10 +141,10 @@ void func_guntarget::Trigger(void)
 
 void func_guntarget::Respawn(void)
 {
-	solid = SOLID_BSP;
-	movetype = MOVETYPE_PUSH;
-	setmodel(this, m_oldModel);
-	setorigin(this, m_oldOrigin);
+	SetSolid(SOLID_BSP);
+	SetMovetype(MOVETYPE_PUSH);
+	SetModel(m_oldModel);
+	SetOrigin(m_oldOrigin);
 
 	if (spawnflags & SF_GUNTARGET_ON) {
 		think = Trigger;

@@ -47,11 +47,11 @@ void item_ammo::Respawn(void)
 	movetype = MOVETYPE_TOSS;
 
 	if (m_oldModel) {
-		setmodel(this, m_oldModel);
+		SetModel(m_oldModel);
 	}
 
 	setsize(this, [-16,-16,0], [16,16,16]);
-	setorigin(this, origin);
+	SetOrigin(origin);
 
 	think = __NULL__;
 	nextthink = -1;
@@ -62,7 +62,7 @@ void item_ammo::Respawn(void)
 void item_ammo::item_ammo(void)
 {
 	m_oldModel = model;
-	setmodel(this, m_oldModel);
+	SetModel(m_oldModel);
 	CBaseEntity::CBaseEntity();
 }
 

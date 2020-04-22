@@ -52,7 +52,7 @@ void monster_scientist_dead::Gib(void)
 
 void monster_scientist_dead::Hide(void)
 {
-	setmodel(this, "");
+	SetModel("");
 	solid = SOLID_NOT;
 	movetype = MOVETYPE_NONE;
 }
@@ -63,11 +63,11 @@ void monster_scientist_dead::Respawn(void)
 	v_angle[1] = Math_FixDelta(m_oldAngle[1]);
 	v_angle[2] = Math_FixDelta(m_oldAngle[2]);
 
-	setorigin(this, m_oldOrigin);
+	SetOrigin(m_oldOrigin);
 	angles = v_angle;
 	solid = SOLID_CORPSE;
 	movetype = MOVETYPE_NONE;
-	setmodel(this, m_oldModel);
+	SetModel(m_oldModel);
 	setsize(this, VEC_HULL_MIN + [0,0,36], VEC_HULL_MAX + [0,0,36]);
 	takedamage = DAMAGE_YES;
 	health = 0;

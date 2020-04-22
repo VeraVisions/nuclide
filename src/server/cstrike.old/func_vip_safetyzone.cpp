@@ -54,7 +54,7 @@ void func_vip_safetyzone::func_vip_safetyzone(void)
 	solid = SOLID_TRIGGER;
 
 	if (model) {
-		setmodel(this, model);
+		SetModel(model);
 	} else {
 		setsize(this, mins, maxs);
 	}

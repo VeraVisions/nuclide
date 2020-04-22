@@ -50,8 +50,8 @@ void item_suit::Respawn(void)
 	solid = SOLID_TRIGGER;
 	movetype = MOVETYPE_TOSS;
 	setsize(this, VEC_HULL_MIN, VEC_HULL_MAX);
-	setorigin(this, m_oldOrigin);
-	setmodel(this, m_oldModel);
+	SetOrigin(m_oldOrigin);
+	SetModel(m_oldModel);
 
 	think = __NULL__;
 	nextthink = -1;

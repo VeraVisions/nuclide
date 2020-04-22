@@ -48,9 +48,9 @@ info_tfgoal::Respawn(void)
 {
 	solid = SOLID_TRIGGER;
 	movetype = MOVETYPE_NONE;
-	setmodel(this, m_oldModel);
+	SetModel(m_oldModel);
 	setsize(this, VEC_HULL_MIN, VEC_HULL_MAX);
-	setorigin(this, m_oldOrigin);
+	SetOrigin(m_oldOrigin);
 }
 
 void

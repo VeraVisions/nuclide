@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class item_weaponbox
+class item_weaponbox:CBaseEntity
 {
 	int ammo_9mm;
 	int ammo_357;
@@ -98,15 +98,15 @@ void item_weaponbox::setup(player pl)
 
 void item_weaponbox::item_weaponbox(void)
 {
-	setmodel(this, "models/w_weaponbox.mdl");
-	setsize(this, [-16,-16,0], [16,16,16]);
-	solid = SOLID_TRIGGER;
-	movetype = MOVETYPE_TOSS;
+	SetModel("models/w_weaponbox.mdl");
+	SetSize([-16,-16,0], [16,16,16]);
+	SetSolid(SOLID_TRIGGER);
+	SetMovetype(MOVETYPE_TOSS);
 }
 
 void weaponbox_spawn(player spawner)
 {
 	item_weaponbox weaponbox = spawn(item_weaponbox);
-	setorigin(weaponbox, spawner.origin);
+	weaponbox.SetOrigin(spawner.origin);
 	weaponbox.setup(spawner);
 }

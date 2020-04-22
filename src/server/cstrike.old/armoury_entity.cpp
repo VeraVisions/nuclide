@@ -182,7 +182,7 @@ void armoury_entity::armoury_entity(void)
 	CBaseEntity::CBaseEntity();
 
 	precache_model(m_oldModel);
-	setmodel(this, m_oldModel);
+	SetModel(m_oldModel);
 	setsize(this, [-16,-16,0], [16,16,16]);
 
 	armoury_entity::Respawn();

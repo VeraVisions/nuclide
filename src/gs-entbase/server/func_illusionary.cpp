@@ -32,31 +32,19 @@ void func_illusionary::func_illusionary(void)
 {
 	CBaseEntity::CBaseEntity();
 
-	int nfields = tokenize(__fullspawndata);
-	for (int i = 1; i < (nfields - 1); i += 2) {
-		switch (argv(i)) {
-		case "color":
-			colormod = stov(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
-
 	precache_model(model);
-	//angles = '0 0 0';
-	movetype = MOVETYPE_PUSH;
-	solid = SOLID_NOT;
-	setmodel(this, model);
-	setorigin(this, origin);
+	SetMovetype(MOVETYPE_PUSH);
+	SetSolid(SOLID_NOT);
+	SetModel(model);
+	SetOrigin(origin);
 
 	// TODO: Add support for (skin) -1 = Empty, -7 = Volumetric light
 	if (skin < 0) {
-		skin = 0;
+		SetSkin(0);
 	}
 }
 
 void func_illusionary::Use(void)
 {
-	skin = 1 - skin;
+	SetSkin(1-skin);
 }

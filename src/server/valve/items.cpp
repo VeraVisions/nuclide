@@ -54,21 +54,21 @@ void item_pickup::setitem(int i)
 {
 	id = i;
 	m_oldModel = Weapons_GetWorldmodel(id);
-	setmodel(this, m_oldModel);
+	SetModel(m_oldModel);
 }
 
 void item_pickup::Respawn(void)
 {
-	solid = SOLID_TRIGGER;
-	movetype = MOVETYPE_TOSS;
-	setorigin(this, m_oldOrigin);
+	SetSolid(SOLID_TRIGGER);
+	SetMovetype(MOVETYPE_TOSS);
+	SetOrigin(m_oldOrigin);
 
 	/* At some points, the item id might not yet be set */
 	if (m_oldModel) {
-		setmodel(this, m_oldModel);
+		SetModel(m_oldModel);
 	}
 
-	setsize(this, [-16,-16,0], [16,16,16]);
+	SetSize([-16,-16,0], [16,16,16]);
 	
 	think = __NULL__;
 	nextthink = -1;

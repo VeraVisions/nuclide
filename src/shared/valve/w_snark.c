@@ -118,7 +118,7 @@ void
 monster_snark::Respawn(void)
 {
 	netname = "Snark";
-	setmodel(this, "models/w_squeak.mdl");
+	SetModel("models/w_squeak.mdl");
 	flags |= FL_MONSTER;
 	solid = SOLID_BBOX;
 	movetype = MOVETYPE_WALK;
@@ -167,7 +167,7 @@ void w_snark_deploy(void)
 {
 	monster_snark snark = spawn(monster_snark, owner: self, goalentity: self);
 	makevectors(self.v_angle);
-	setorigin(snark, self.origin + v_forward * 32);
+	snark.SetOrigin(self.origin + v_forward * 32);
 }
 #endif
 

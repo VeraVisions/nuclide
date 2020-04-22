@@ -29,7 +29,6 @@ func_bombtarget brush entities.
 */
 
 /* C4 entity logic */
-
 #ifdef SERVER
 class c4bomb:CBaseEntity
 {
@@ -105,10 +104,10 @@ c4bomb::Logic(void)
 void
 c4bomb::c4bomb(void)
 {
-	movetype = MOVETYPE_NONE;
-	solid = SOLID_BBOX;
-	setmodel(this, "models/w_c4.mdl");
-	setsize(this, [-6,-6,0], [6,6,6]);
+	SetMovetype(MOVETYPE_NONE);
+	SetSolid(SOLID_BBOX);
+	SetModel("models/w_c4.mdl");
+	SetSize([-6,-6,0], [6,6,6]);
 
 	customphysics = Logic;
 	m_flExplodeTime = time + 45.0f;

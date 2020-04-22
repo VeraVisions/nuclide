@@ -99,11 +99,11 @@ monster_tripmine::Ready(void)
 void
 monster_tripmine::Respawn(void)
 {
-	setmodel(this, "models/v_tripmine.mdl");
-	solid = SOLID_NOT;
-	movetype = MOVETYPE_NONE;
-	setsize(this, [-8,-8,-8], [8,8,8]);
-	setorigin(this, origin);
+	SetModel("models/v_tripmine.mdl");
+	SetSolid(SOLID_NOT);
+	SetMovetype(MOVETYPE_NONE);
+	SetSize([-8,-8,-8], [8,8,8]);
+	SetOrigin(origin);
 	SendFlags = 1; /* force update */
 
 	/* ready in 4 seconds flat */
@@ -265,7 +265,7 @@ void w_tripmine_primary(void)
 	pl.ammo_tripmine--;
 	vector ang = vectoangles(trace_plane_normal);
 	monster_tripmine mine = spawn(monster_tripmine, real_owner: self, angles: ang);
-	setorigin(mine, trace_endpos - (v_forward * 8));
+	mine.SetOrigin(trace_endpos - (v_forward * 8));
 
 	Sound_Play(self, CHAN_WEAPON, "weapon_tripmine.deploy");
 	Sound_Play(mine, CHAN_WEAPON, "weapon_tripmine.charge");

@@ -166,7 +166,7 @@ func_train::NextPath(void)
 		sound(this, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
 	}
 
-	setorigin(this, eNode.origin - (mins + maxs) * 0.5);
+	SetOrigin(eNode.origin - (mins + maxs) * 0.5);
 	m_flSpeed = eNode.m_flSpeed;
 	m_flWait = eNode.m_flWait;
 	m_strTarget = eNode.m_strTarget;
@@ -205,8 +205,8 @@ func_train::Respawn(void)
 	solid = spawnflags & TRAIN_NOTSOLID ? SOLID_NOT : SOLID_BSP;
 	movetype = MOVETYPE_PUSH;
 	blocked = Blocked;
-	setmodel(this, m_oldModel);
-	setorigin(this, m_oldOrigin);
+	SetModel(m_oldModel);
+	SetOrigin(m_oldOrigin);
 
 	/* let's wait 1/4 a second to give the path_corner entities a chance to
 	 * spawn in case they're after us in the ent lump */

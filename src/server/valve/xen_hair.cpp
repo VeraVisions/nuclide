@@ -32,6 +32,6 @@ void xen_hair::xen_hair(void)
 	precache_model("models/hair.mdl");
 	solid = SOLID_SLIDEBOX;
 	movetype = MOVETYPE_WALK;
-	setmodel(this, "models/hair.mdl");
-	setorigin(this, origin);
+	SetModel("models/hair.mdl");
+	SetOrigin(origin);
 }

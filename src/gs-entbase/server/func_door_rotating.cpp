@@ -82,8 +82,8 @@ void func_door_rotating::Unhinge(void)
 {
 	takedamage = DAMAGE_NO;
 	touch = think = __NULL__;
-	solid = SOLID_PHYSICS_BOX;
-	movetype = MOVETYPE_PHYSICS;
+	SetSolid(SOLID_PHYSICS_BOX);
+	SetMovetype(MOVETYPE_PHYSICS);
 	physics_enable(this, TRUE);
 }
 #endif
@@ -272,7 +272,7 @@ void func_door_rotating::SetMovementDirection(void)
 
 void func_door_rotating::RotToDest_End(void)
 {
-	angles = m_vecDest;
+	SetAngles(m_vecDest);
 	avelocity = [0,0,0];
 	nextthink = -1;
 	m_pMove();
@@ -309,10 +309,10 @@ void func_door_rotating::Respawn(void)
 	Death = func_door_rotating::Unhinge;
 #endif
 
-	solid = SOLID_BSP;
-	movetype = MOVETYPE_PUSH;
-	setmodel(this, m_oldModel);
-	setorigin(this, m_oldOrigin);
+	SetSolid(SOLID_BSP);
+	SetMovetype(MOVETYPE_PUSH);
+	SetModel(m_oldModel);
+	SetOrigin(m_oldOrigin);
 	think = __NULL__;
 	nextthink = 0;
 	m_pMove = 0;
@@ -345,14 +345,14 @@ void func_door_rotating::Respawn(void)
 	}
 
 	if (spawnflags & SF_ROT_PASSABLE) {
-		solid = SOLID_NOT;
+		SetSolid(SOLID_NOT);
 	}
 
 	if (m_strTargetName) {
 		m_iLocked = TRUE;
 	}
 
-	angles = m_vecPos1;
+	SetAngles(m_vecPos1);
 }
 
 void func_door_rotating::func_door_rotating(void)

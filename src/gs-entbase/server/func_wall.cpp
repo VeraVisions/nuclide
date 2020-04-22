@@ -33,8 +33,8 @@ void func_wall::func_wall(void)
 	//angles = '0 0 0';
 	movetype = MOVETYPE_PUSH;
 	solid = SOLID_BSP;
-	setmodel(this, model);
-	setorigin(this, origin);
+	SetModel(model);
+	SetOrigin(origin);
 	CBaseTrigger::CBaseTrigger();
 }
 

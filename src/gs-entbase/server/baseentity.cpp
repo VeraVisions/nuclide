@@ -18,25 +18,18 @@ class CBaseEntity
 {
 	string m_strTarget;
 	string m_strTargetName;
+	int m_iBody;
+
+	/* respawn */
 	string m_oldModel;
 	float m_oldSolid;
 	float m_oldHealth;
 	vector m_oldOrigin;
 	vector m_oldAngle;
-	
-	int m_iBody;
-	int oldnet_body;
 
-	vector oldnet_origin;
-	vector oldnet_angles;
-	float oldnet_modelindex;
-	vector oldnet_mins;
-	vector oldnet_maxs;
-	float oldnet_solid;
-	float oldnet_movetype;
-	float oldnet_frame;
-	float oldnet_skin;
-	float oldnet_effects;
+	/* keep track of these variables */
+	vector net_origin;
+	vector net_angles;
 
 #ifdef GS_RENDERFX
 	int m_iRenderFX;
@@ -44,12 +37,11 @@ class CBaseEntity
 	float m_flRenderAmt;
 	vector m_vecRenderColor;
 
-	int m_spawn_iRenderFX;
-	float m_spawn_iRenderMode;
-	float m_spawn_flRenderAmt;
-	vector m_spawn_vecRenderColor;
-#else
-	float oldnet_alpha;
+	/* respawn */
+	int m_oldiRenderFX;
+	float m_oldiRenderMode;
+	float m_oldflRenderAmt;
+	vector m_oldvecRenderColor;
 #endif
 
 	string m_parent;
@@ -62,6 +54,18 @@ class CBaseEntity
 	virtual void(int iHitBody) Pain;
 	virtual void(int iHitBody) Death;
 
+	virtual void(float) SetEffects;
+	virtual void(float) SetFrame;
+	virtual void(string) SetModel;
+	virtual void(float) SetModelindex;
+	virtual void(float) SetMovetype;
+	virtual void(float) SetSkin;
+	virtual void(float) SetSolid;
+	virtual void(int) SetBody;
+	virtual void(vector) SetAngles;
+	virtual void(vector) SetOrigin;
+	virtual void(vector, vector) SetSize;
+
 #ifdef GS_RENDERFX
 	virtual void(int) SetRenderFX;
 	virtual void(float) SetRenderMode;
@@ -70,28 +74,141 @@ class CBaseEntity
 #endif
 };
 
+/* we want to really use those set functions because they'll notify of any
+ * networking related changes. otherwise we'll have to keep track of copies
+ * that get updated every frame */
+void
+CBaseEntity::SetEffects(float newEffects)
+{
+	if (newEffects == effects)
+		return;
+
+	effects = newEffects;
+	SendFlags |= BASEFL_CHANGED_EFFECTS;
+}
+void
+CBaseEntity::SetFrame(float newFrame)
+{
+	if (newFrame == frame)
+		return;
+
+	frame = newFrame;
+	SendFlags |= BASEFL_CHANGED_FRAME;
+}
+void
+CBaseEntity::SetModel(string newModel)
+{
+	model = newModel;
+	setmodel(this, newModel);
+	SendFlags |= BASEFL_CHANGED_MODELINDEX;
+}
+void
+CBaseEntity::SetModelindex(float newModelIndex)
+{
+	if (newModelIndex == modelindex)
+		return;
+
+	modelindex = newModelIndex;
+	SendFlags |= BASEFL_CHANGED_MODELINDEX;
+}
+void
+CBaseEntity::SetMovetype(float newMovetype)
+{
+	if (newMovetype == movetype)
+		return;
+
+	movetype = newMovetype;
+	SendFlags |= BASEFL_CHANGED_MOVETYPE;
+}
+void
+CBaseEntity::SetSkin(float newSkin)
+{
+	if (newSkin == skin)
+		return;
+
+	skin = newSkin;
+	SendFlags |= BASEFL_CHANGED_SKIN;
+}
+void
+CBaseEntity::SetSolid(float newSolid)
+{
+	if (newSolid == solid)
+		return;
+
+	solid = newSolid;
+	SendFlags |= BASEFL_CHANGED_SOLID;
+}
+void
+CBaseEntity::SetBody(int newBody)
+{
+	if (newBody == m_iBody)
+		return;
+
+	m_iBody = newBody;
+	SendFlags |= BASEFL_CHANGED_BODY;
+}
+void
+CBaseEntity::SetAngles(vector newAngles)
+{
+	if (newAngles == angles)
+		return;
+
+	angles = newAngles;
+	SendFlags |= BASEFL_CHANGED_ANGLES;
+}
+void
+CBaseEntity::SetSize(vector newMins, vector newMaxs)
+{
+	if (newMins == mins && newMaxs == maxs)
+		return;
+
+	setsize(this, newMins, newMaxs);
+	SendFlags |= BASEFL_CHANGED_SIZE;
+}
+void
+CBaseEntity::SetOrigin(vector newOrigin)
+{
+	if (newOrigin == origin)
+		return;
+
+	setorigin(this, newOrigin);
+	SendFlags |= BASEFL_CHANGED_ORIGIN;
+}
+
 #ifdef GS_RENDERFX
 void
 CBaseEntity::SetRenderFX(int newFX)
 {
+	if (newFX == m_iRenderFX)
+		return;
+
 	m_iRenderFX = newFX;
 	SendFlags |= BASEFL_CHANGED_RENDERFX;
 }
 void
 CBaseEntity::SetRenderMode(float newMode)
 {
+	if (newMode == m_iRenderMode)
+		return;
+
 	m_iRenderMode = newMode;
 	SendFlags |= BASEFL_CHANGED_RENDERMODE;
 }
 void
 CBaseEntity::SetRenderAmt(float newAmt)
 {
+	if (newAmt == m_flRenderAmt)
+		return;
+
 	m_flRenderAmt = newAmt;
 	SendFlags |= BASEFL_CHANGED_RENDERAMT;
 }
 void
 CBaseEntity::SetRenderColor(vector newColor)
 {
+	if (newColor == m_vecRenderColor)
+		return;
+
 	m_vecRenderColor = newColor;
 	SendFlags |= BASEFL_CHANGED_RENDERCOLOR;
 }
@@ -189,59 +306,16 @@ CBaseEntity::Death(int body)
 void
 CBaseEntity::ParentUpdate(void)
 {
-	/* Check our fields for networking */
-	if (origin != oldnet_origin) {
+	/* while the engine is still handling physics for these, we can't
+	 * predict when origin/angle might change */
+	if (net_origin != origin) {
+		net_origin = origin;
 		SendFlags |= BASEFL_CHANGED_ORIGIN;
-		oldnet_origin = origin;
 	}
-	if (angles != oldnet_angles) {
+	if (net_angles != angles) {
+		net_angles = angles;
 		SendFlags |= BASEFL_CHANGED_ANGLES;
-		oldnet_angles = angles;
 	}
-	if (modelindex != oldnet_modelindex) {
-		SendFlags |= BASEFL_CHANGED_MODELINDEX;
-		oldnet_modelindex = modelindex;
-	}
-	if (mins != oldnet_mins) {
-		SendFlags |= BASEFL_CHANGED_SIZE;
-		oldnet_mins = mins;
-	}
-	if (maxs != oldnet_maxs) {
-		SendFlags |= BASEFL_CHANGED_SIZE;
-		oldnet_maxs = maxs;
-	}
-	if (solid != oldnet_solid) {
-		SendFlags |= BASEFL_CHANGED_SOLID;
-		oldnet_solid = solid;
-	}
-	if (movetype != oldnet_movetype) {
-		SendFlags |= BASEFL_CHANGED_MOVETYPE;
-		oldnet_movetype = movetype;
-	}
-	if (frame != oldnet_frame) {
-		SendFlags |= BASEFL_CHANGED_FRAME;
-		oldnet_frame = frame;
-	}
-	if (skin != oldnet_skin) {
-		SendFlags |= BASEFL_CHANGED_SKIN;
-		oldnet_skin = skin;
-	}
-	if (effects != oldnet_effects) {
-		SendFlags |= BASEFL_CHANGED_EFFECTS;
-		oldnet_effects = effects;
-	}
-	if (m_iBody != oldnet_body) {
-		SendFlags |= BASEFL_CHANGED_BODY;
-		oldnet_body = m_iBody;
-	}
-#ifdef GS_RENDERFX
-
-#else
-	if (alpha != oldnet_alpha) {
-		SendFlags |= BASEFL_CHANGED_ALPHA;
-		oldnet_alpha = alpha;
-	}
-#endif
 
 	if (m_parent) {
 		entity p = find(world, CBaseEntity::m_strTargetName, m_parent);
@@ -250,7 +324,7 @@ CBaseEntity::ParentUpdate(void)
 			return;
 		}
 
-		setorigin(this, p.origin);
+		SetOrigin(p.origin);
 	}
 }
 
@@ -264,8 +338,6 @@ CBaseEntity::CBaseEntity(void)
 			return;
 		}
 	}
-
-	m_flRenderAmt = 1.0f;
 
 	gflags = GF_CANRESPAWN;
 	effects |= EF_NOSHADOW;
@@ -282,6 +354,9 @@ CBaseEntity::CBaseEntity(void)
 		case "solid":
 			solid = stof(argv(i+1));
 			break;
+		case "health":
+			health = stof(argv(i+1));
+			break;
 		case "shadows":
 			if (stof(argv(i+1)) == 1) {
 				effects &= ~EF_NOSHADOW;
@@ -297,27 +372,21 @@ CBaseEntity::CBaseEntity(void)
 			break;
 		case "color":
 			m_vecRenderColor = stov(argv(i+1));
-			m_spawn_vecRenderColor = stov(argv(i+1));
 			break;
 		case "alpha":
 			m_flRenderAmt = stof(argv(i+1));
-			m_spawn_flRenderAmt = stof(argv(i+1));
 			break;
 		case "renderamt":
 			m_flRenderAmt = stof(argv(i+1)) / 255;
-			m_spawn_flRenderAmt = stof(argv(i+1)) / 255;
 			break;
 		case "rendercolor":
 			m_vecRenderColor = stov(argv(i+1)) / 255;
-			m_spawn_vecRenderColor = stov(argv(i+1)) / 255;
 			break;
 		case "rendermode":
 			m_iRenderMode = stoi(argv(i+1));
-			m_spawn_iRenderMode = stoi(argv(i+1));
 			break;
 		case "renderfx":
 			m_iRenderFX = stoi(argv(i+1));
-			m_spawn_iRenderFX = stoi(argv(i+1));
 			break;
 		case "parentname":
 			m_parent = argv(i+1);
@@ -330,45 +399,45 @@ CBaseEntity::CBaseEntity(void)
 		}
 	}
 
+	m_oldAngle = angles;
+	m_oldOrigin = origin;
+	m_oldSolid = solid;
+	m_oldHealth = health;
 	m_oldModel = Util_FixModel(model);
+	m_oldiRenderFX = m_iRenderFX;
+	m_oldiRenderMode = m_iRenderMode;
+	m_oldvecRenderColor = m_vecRenderColor;
+	m_oldflRenderAmt = m_flRenderAmt;
+	m_oldvecRenderColor = m_vecRenderColor;
+	m_oldflRenderAmt = m_flRenderAmt;
 
 	if (m_oldModel != "") {
 		precache_model(m_oldModel);
 	}
-
-	m_oldSolid = solid;
-	m_oldHealth = health;
-	m_oldOrigin = origin;
-	m_oldAngle = angles;
 }
 
 void
 CBaseEntity::Respawn(void)
 {
-	model = m_oldModel;
-	solid = m_oldSolid;
 	health = m_oldHealth;
-	origin = m_oldOrigin;
-	angles = m_oldAngle;
+	SetModel(m_oldModel);
+	SetSolid(m_oldSolid);
+	SetAngles(m_oldAngle);
+	SetOrigin(m_oldOrigin);
 
-	m_iRenderFX = m_spawn_iRenderFX;
-	m_iRenderMode = m_spawn_iRenderMode;
-	m_flRenderAmt = m_spawn_flRenderAmt;
-	m_vecRenderColor = m_spawn_vecRenderColor;
-
-	setorigin(this, origin);
-
-	if (model != "") {
-		setmodel(this, model);
-	}
+#ifdef GS_RENDERFX
+	SetRenderFX(m_oldiRenderFX);
+	SetRenderMode(m_oldiRenderMode);
+	SetRenderAmt(m_oldflRenderAmt);
+	SetRenderColor(m_oldvecRenderColor);
+#endif
 }
 
 void
 CBaseEntity::Hide(void)
 {
-	setmodel(this, "");
-	modelindex = 0;
-	solid = SOLID_NOT;
-	movetype = MOVETYPE_NONE;
+	SetModelindex(0);
+	SetSolid(SOLID_NOT);
+	SetMovetype(MOVETYPE_NONE);
 	takedamage = DAMAGE_NO;
 }

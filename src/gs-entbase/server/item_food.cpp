@@ -66,7 +66,7 @@ void item_food::item_food(void)
 	movetype = MOVETYPE_TOSS;
 
 	if (m_iIsCan) {
-		setmodel(this, "models/can.mdl");
+		setmodel(this,"models/can.mdl");
 	}
 
 	setsize(this, [0,0,0], [0,0,0]);

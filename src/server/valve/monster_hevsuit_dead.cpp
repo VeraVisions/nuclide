@@ -41,7 +41,7 @@ void monster_hevsuit_dead::Gib(void)
 
 void monster_hevsuit_dead::Hide(void)
 {
-	setmodel(this, "");
+	SetModel("");
 	solid = SOLID_NOT;
 	movetype = MOVETYPE_NONE;
 }
@@ -52,11 +52,11 @@ void monster_hevsuit_dead::Respawn(void)
 	v_angle[1] = Math_FixDelta(m_oldAngle[1]);
 	v_angle[2] = Math_FixDelta(m_oldAngle[2]);
 
-	setorigin(this, m_oldOrigin);
+	SetOrigin(m_oldOrigin);
 	angles = v_angle;
 	solid = SOLID_CORPSE;
 	movetype = MOVETYPE_NONE;
-	setmodel(this, m_oldModel);
+	SetModel(m_oldModel);
 	setsize(this, VEC_HULL_MIN + [0,0,36], VEC_HULL_MAX + [0,0,36]);
 	takedamage = DAMAGE_YES;
 	health = 0;
@@ -77,10 +77,10 @@ void monster_hevsuit_dead::monster_hevsuit_dead(void)
 			m_iPose = stoi(argv(i+1));
 			break;
 		case "body":
-			m_iBody = stoi(argv(i+1)) + 1;
+			SetBody(stoi(argv(i+1)) + 1);
 			break;
 		case "skin":
-			skin = stoi(argv(i+1));
+			SetSkin(stoi(argv(i+1)));
 			break;
 		default:
 			break;

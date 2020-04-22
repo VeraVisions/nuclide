@@ -43,7 +43,7 @@ class monster_furniture:CBaseEntity
 void monster_furniture::monster_furniture(void)
 {
 	precache_model(model);
-	setmodel(this, model);
+	SetModel(model);
 	CBaseEntity::CBaseEntity();
 	
 #if 1

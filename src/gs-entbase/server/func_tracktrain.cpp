@@ -88,17 +88,17 @@ void func_tracktrain::Find(void)
 		return;
 	}
 
-	setorigin(this, f.origin);
+	SetOrigin(f.origin);
 }
 
 void func_tracktrain::Respawn(void)
 {
-	solid = SOLID_BSP;
-	movetype = MOVETYPE_PUSH;
+	SetSolid(SOLID_BSP);
+	SetMovetype(MOVETYPE_PUSH);
 	//blocked = Blocked;
 
-	setmodel(this, m_oldModel);
-	setorigin(this, m_oldOrigin);
+	SetModel(m_oldModel);
+	SetOrigin(m_oldOrigin);
 
 	/* Make sure we got some time for the paths to spawn */
 	nextthink = ltime + 0.1f;

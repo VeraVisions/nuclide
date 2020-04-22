@@ -60,11 +60,11 @@ void item_longjump::touch(void)
 
 void item_longjump::Respawn(void)
 {
-	solid = SOLID_TRIGGER;
-	movetype = MOVETYPE_TOSS;
-	setsize(this, [-16,-16,0],[16,16,16]);
-	setorigin(this, m_oldOrigin);
-	setmodel(this, m_oldModel);
+	SetSolid(SOLID_TRIGGER);
+	SetMovetype(MOVETYPE_TOSS);
+	SetSize([-16,-16,0],[16,16,16]);
+	SetOrigin(m_oldOrigin);
+	SetModel(m_oldModel);
 
 	think = __NULL__;
 	nextthink = -1;

@@ -29,11 +29,12 @@ class func_conveyor:func_wall
 {
 	float m_flSpeed;
 	vector m_vecMoveDir;
+
 	void(void) func_conveyor;
+
 	virtual void(void) Trigger;
 	virtual void(void) touch;
 	virtual void(void) SetMovementDirection;
-	virtual void(float) UpdateSpeed;
 };
 
 void func_conveyor::SetMovementDirection(void)
@@ -50,33 +51,15 @@ void func_conveyor::SetMovementDirection(void)
 	angles = [0,0,0];
 }
 
-
-// HACKHACK -- This is ugly, but encode the speed in the rendercolor to avoid adding more data to the network stream
-void func_conveyor::UpdateSpeed(float flSpeed)
-{
-	// Encode it as an integer with 4 fractional bits
-	/*int speedCode = (int)(fabs(flSpeed) * 16.0f);
-
-	if (flSpeed < 0) {
-		pev->rendercolor.x = 1;
-	} else {
-		pev->rendercolor.x = 0;
-	}
-
-	pev->rendercolor.y = (speedCode >> 8);
-	pev->rendercolor.z = (speedCode & 0xFF);*/
-}
-
 void func_conveyor::touch(void)
 {
-	//other.basevelocity = m_vecMoveDir * m_flSpeed;
+	other.basevelocity = m_vecMoveDir * m_flSpeed;
 }
-
 
 void func_conveyor::Trigger(void)
 {
-    m_flSpeed = -m_flSpeed;
-	UpdateSpeed(m_flSpeed);
+	/* changes direction */
+	m_flSpeed = -m_flSpeed;
 }
 
 void func_conveyor::func_conveyor(void)
@@ -84,19 +67,16 @@ void func_conveyor::func_conveyor(void)
 	SetMovementDirection();
 	func_wall::func_wall();
 
+	/* TODO: Apply some effect flag the engine handles? */
 	if (!(spawnflags & SF_CONVEYOR_VISUAL)) {
-		//SetBits(pev->flags, FL_CONVEYOR);
 	}
 
-	// HACKHACK - This is to allow for some special effects
 	if (spawnflags & SF_CONVEYOR_NOTSOLID) {
-		solid = SOLID_NOT;
-		skin = 0;
+		SetSolid(SOLID_NOT);
+		SetSkin(0);
 	}
 
 	if (m_flSpeed == 0) {
 		m_flSpeed = 100;
 	}
-
-	UpdateSpeed(m_flSpeed);
 }

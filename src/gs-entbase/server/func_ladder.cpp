@@ -20,34 +20,16 @@
 Ladder volume. Climb up ladders with this one simple brush.
 */
 
-string g_laddersnd[] = {
-	"player/pl_ladder1.wav",
-	"player/pl_ladder2.wav",
-	"player/pl_ladder3.wav",
-	"player/pl_ladder4.wav"
-};
-
 class func_ladder:CBaseEntity
 {
-	void(void) func_ladder;
-
 	virtual void(void) Respawn;
 };
 
-
 void func_ladder::Respawn(void)
 {
-	setmodel(this, m_oldModel);
-	movetype = MOVETYPE_NONE;
-	skin = CONTENT_LADDER;
-	solid = SOLID_BSP;
+	SetModel(m_oldModel);
+	SetMovetype(MOVETYPE_NONE);
+	SetSkin(CONTENT_LADDER);
+	SetSolid(SOLID_BSP);
 	SetRenderMode(RM_TRIGGER);
-}
-
-void func_ladder::func_ladder(void)
-{
-	setmodel(this, m_oldModel);
-	movetype = MOVETYPE_NONE;
-	skin = CONTENT_LADDER;
-	solid = SOLID_BSP;
 }

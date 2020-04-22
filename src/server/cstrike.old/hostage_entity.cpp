@@ -218,7 +218,7 @@ void hostage_entity::Death(int iHitBody)
 
 void hostage_entity::Hide(void)
 {
-	setmodel(this, "");
+	SetModel("");
 	m_eUser = world;
 	solid = SOLID_NOT;
 	movetype = MOVETYPE_NONE;
@@ -231,11 +231,11 @@ void hostage_entity::Respawn(void)
 	v_angle[1] = Math_FixDelta(m_oldAngle[1]);
 	v_angle[2] = Math_FixDelta(m_oldAngle[2]);
 
-	setorigin(this, m_oldOrigin);
+	SetOrigin(m_oldOrigin);
 	angles = v_angle;
 	solid = SOLID_SLIDEBOX;
 	movetype = MOVETYPE_NONE;
-	setmodel(this, m_oldModel);
+	SetModel(m_oldModel);
 	setsize(this, VEC_HULL_MIN + [0,0,36], VEC_HULL_MAX + [0,0,36]);
 
 	m_eUser = world;
@@ -268,7 +268,7 @@ void hostage_entity::hostage_entity(void)
 	CBaseEntity::CBaseEntity();
 
 	precache_model(m_oldModel);
-	setmodel(this, m_oldModel);
+	SetModel(m_oldModel);
 	iHostagesMax = iHostagesMax + 1;
 	Respawn();
 }

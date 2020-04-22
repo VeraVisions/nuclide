@@ -134,8 +134,8 @@ float env_laser::SendEntity(entity ePEnt, float fChanged)
 
 void env_laser::ParentUpdate(void)
 {
-	/* Check our fields for networking */
-	if (origin != oldnet_origin) {
+	/* FIXME: Check our fields for networking */
+	/*if (origin != oldnet_origin) {
 		SendFlags |= ENVLASER_CHANGED_ORIGIN;
 		SendFlags |= ENVLASER_CHANGED_ANGLES;
 		SendFlags |= ENVLASER_CHANGED_STATE;
@@ -155,7 +155,7 @@ void env_laser::ParentUpdate(void)
 		SendFlags |= ENVLASER_CHANGED_STATE;
 		SendFlags |= ENVLASER_CHANGED_TEXTURE;
 		m_iStateOld = m_iState;
-	}
+	}*/
 
 	if (m_parent) {
 		entity p = find(world, CBaseEntity::m_strTargetName, m_parent);
@@ -164,7 +164,7 @@ void env_laser::ParentUpdate(void)
 			return;
 		}
 
-		setorigin(this, p.origin);
+		SetOrigin(p.origin);
 	}
 }
 

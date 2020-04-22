@@ -32,6 +32,6 @@ void xen_spore_large::xen_spore_large(void)
 	precache_model("models/fungus(large).mdl");
 	solid = SOLID_SLIDEBOX;
 	movetype = MOVETYPE_WALK;
-	setmodel(this, "models/fungus(large).mdl");
-	setorigin(this, origin);
+	SetModel("models/fungus(large).mdl");
+	SetOrigin(origin);
 }

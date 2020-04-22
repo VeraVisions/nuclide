@@ -67,7 +67,7 @@ void monster_sitting_scientist::Death(int iHitBody)
 
 void monster_sitting_scientist::Hide(void)
 {
-	setmodel(this, "");
+	SetModel("");
 	solid = SOLID_NOT;
 	movetype = MOVETYPE_NONE;
 }
@@ -78,11 +78,11 @@ void monster_sitting_scientist::Respawn(void)
 	v_angle[1] = Math_FixDelta(m_oldAngle[1]);
 	v_angle[2] = Math_FixDelta(m_oldAngle[2]);
 
-	setorigin(this, m_oldOrigin);
+	SetOrigin(m_oldOrigin);
 	angles = v_angle;
 	solid = SOLID_BBOX;
 	movetype = MOVETYPE_NONE;
-	setmodel(this, m_oldModel);
+	SetModel(m_oldModel);
 	setsize(this, [-14,-14,0],[14,14,36]);
 	takedamage = DAMAGE_YES;
 	health = 0;
