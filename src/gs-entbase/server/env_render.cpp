@@ -35,26 +35,44 @@ enumflags
 
 class env_render:CBaseTrigger
 {
+	void(void) env_render;
 	virtual void(void) Trigger;
 };
 
-void env_render::Trigger(void)
+void
+env_render::Trigger(void)
 {
-	for (entity eFind = world; 
-		(eFind = find(eFind, CBaseTrigger::m_strTargetName, m_strTarget));) {
-		CBaseEntity trigger = (CBaseEntity) eFind;
+	for (entity e = world;
+		(e = find(e, CBaseEntity::m_strTargetName, m_strTarget));) {
+		CBaseEntity trigger = (CBaseEntity)e;
+
+		dprint(sprintf("^2env_render::^3Trigger^7: with spawnflags %d\n", spawnflags));
+			print(sprintf("\tTarget: %s\n", m_strTarget));
 		if (!(spawnflags & SF_NORENDERMODE)) {
+			dprint(sprintf("\tMode change from %d to %d\n", trigger.m_iRenderMode, m_iRenderMode));
 			trigger.m_iRenderMode = m_iRenderMode;
+			trigger.SendFlags |= BASEFL_CHANGED_RENDERMODE;
 		}
 		if (!(spawnflags & SF_NORENDERCOLOR)) {
+			dprint(sprintf("\tColor change from %v to %v\n", trigger.m_vecRenderColor, m_vecRenderColor));
 			trigger.m_vecRenderColor = m_vecRenderColor;
+			trigger.SendFlags |= BASEFL_CHANGED_RENDERCOLOR;
 		}
 		if (!(spawnflags & SF_NORENDERAMT)) {
+			dprint(sprintf("\tAmt change from %d to %d\n", trigger.m_flRenderAmt, m_flRenderAmt));
 			trigger.m_flRenderAmt = m_flRenderAmt;
+			trigger.SendFlags |= BASEFL_CHANGED_RENDERAMT;
 		}
 		if (!(spawnflags & SF_NORENDERFX)) {
+			dprint(sprintf("\tFX change from %i to %i\n", trigger.m_iRenderFX, m_iRenderFX));
 			trigger.m_iRenderFX = m_iRenderFX;
+			trigger.SendFlags |= BASEFL_CHANGED_RENDERFX;
 		}
 	}
 }
 
+void
+env_render::env_render(void)
+{
+	CBaseEntity::CBaseEntity();
+}
