@@ -144,18 +144,9 @@ w_mp5_primary(void)
 	}
 #endif
 
-	/* Actual firing */
 #ifdef CLIENT
-	if (random() < 0.5) {
-		Weapons_ViewAnimation(MP5_FIRE1);
-	} else {
-		Weapons_ViewAnimation(MP5_FIRE2);
-	}
-
-	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
-	int r = (float)input_sequence % 4;
-	Weapons_ViewPunchAngle([r-2,0,0]);
+	pl.a_ammo1--;
 #else
 	/* singleplayer is more accurate */
 	if (cvar("sv_playerslots") == 1) {
@@ -168,6 +159,16 @@ w_mp5_primary(void)
 
 	pl.mp5_mag--;
 #endif
+
+	/* Actual firing */
+	int r = (float)input_sequence % 2;
+	if (r) {
+		Weapons_ViewAnimation(MP5_FIRE1);
+	} else {
+		Weapons_ViewAnimation(MP5_FIRE2);
+	}
+
+	Weapons_ViewPunchAngle([-2,0,0]);
 
 	pl.w_attack_next = 0.1f;
 	pl.w_idle_next = 10.0f;
