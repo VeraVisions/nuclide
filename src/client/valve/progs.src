@@ -4,6 +4,7 @@
 #define CSQC
 #define CLIENT
 #define VALVE
+#define CLASSIC_VGUI
 
 #includelist
 ../../shared/fteextensions.qc
