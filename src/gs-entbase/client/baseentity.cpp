@@ -14,6 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/* a lot of the rendering info is assembled with the following url:
+ * https://sites.google.com/site/svenmanor/rendermodes
+ * for reference. I thank thee fellow soldiers at sven manor! */
+
 var int autocvar_cl_showtriggers = FALSE;
 
 string __fullspawndata;

@@ -24,7 +24,7 @@
 Decorative, does nothing yet.
 */
 
-class cycler_sprite:CBaseTrigger
+class cycler_sprite:CBaseEntity
 {
 
 };

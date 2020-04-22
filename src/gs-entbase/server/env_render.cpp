@@ -47,26 +47,22 @@ env_render::Trigger(void)
 		CBaseEntity trigger = (CBaseEntity)e;
 
 		dprint(sprintf("^2env_render::^3Trigger^7: with spawnflags %d\n", spawnflags));
-			print(sprintf("\tTarget: %s\n", m_strTarget));
+			dprint(sprintf("\tTarget: %s\n", m_strTarget));
 		if (!(spawnflags & SF_NORENDERMODE)) {
 			dprint(sprintf("\tMode change from %d to %d\n", trigger.m_iRenderMode, m_iRenderMode));
-			trigger.m_iRenderMode = m_iRenderMode;
-			trigger.SendFlags |= BASEFL_CHANGED_RENDERMODE;
+			trigger.SetRenderMode(m_iRenderMode);
 		}
 		if (!(spawnflags & SF_NORENDERCOLOR)) {
 			dprint(sprintf("\tColor change from %v to %v\n", trigger.m_vecRenderColor, m_vecRenderColor));
-			trigger.m_vecRenderColor = m_vecRenderColor;
-			trigger.SendFlags |= BASEFL_CHANGED_RENDERCOLOR;
+			trigger.SetRenderColor(m_vecRenderColor);
 		}
 		if (!(spawnflags & SF_NORENDERAMT)) {
 			dprint(sprintf("\tAmt change from %d to %d\n", trigger.m_flRenderAmt, m_flRenderAmt));
-			trigger.m_flRenderAmt = m_flRenderAmt;
-			trigger.SendFlags |= BASEFL_CHANGED_RENDERAMT;
+			trigger.SetRenderAmt(m_flRenderAmt);
 		}
 		if (!(spawnflags & SF_NORENDERFX)) {
 			dprint(sprintf("\tFX change from %i to %i\n", trigger.m_iRenderFX, m_iRenderFX));
-			trigger.m_iRenderFX = m_iRenderFX;
-			trigger.SendFlags |= BASEFL_CHANGED_RENDERFX;
+			trigger.SetRenderFX(m_iRenderFX);
 		}
 	}
 }

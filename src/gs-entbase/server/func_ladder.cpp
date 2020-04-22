@@ -41,14 +41,7 @@ void func_ladder::Respawn(void)
 	movetype = MOVETYPE_NONE;
 	skin = CONTENT_LADDER;
 	solid = SOLID_BSP;
-
-#ifdef GS_DEVELOPER
-	m_iRenderMode = RM_SOLID;
-	m_flRenderAmt = 0.25f;
-#else
-	m_iRenderMode = RM_SOLID;
-	m_flRenderAmt = 0.0f;
-#endif
+	SetRenderMode(RM_TRIGGER);
 }
 
 void func_ladder::func_ladder(void)

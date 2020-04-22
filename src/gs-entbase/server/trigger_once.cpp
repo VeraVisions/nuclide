@@ -59,13 +59,7 @@ void
 trigger_once::Respawn(void)
 {
 	solid = SOLID_TRIGGER;
-#ifdef GS_DEVELOPER
-	m_iRenderMode = RM_SOLID;
-	m_flRenderAmt = 0.25f;
-#else
-	m_iRenderMode = RM_SOLID;
-	m_flRenderAmt = 0.0f;
-#endif
+	SetRenderMode(RM_TRIGGER);
 }
 
 void

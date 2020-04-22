@@ -34,5 +34,5 @@ trigger_transition::trigger_transition(void)
 	setmodel(this, model);
 	model = __NULL__;
 	modelindex = 0;
-	m_iRenderMode = RM_TRIGGER;
+	SetRenderMode(RM_TRIGGER);
 }

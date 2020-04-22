@@ -44,11 +44,6 @@ class CBaseEntity
 	float m_flRenderAmt;
 	vector m_vecRenderColor;
 
-	int m_old_iRenderFX;
-	float m_old_iRenderMode;
-	float m_old_flRenderAmt;
-	vector m_old_vecRenderColor;
-
 	int m_spawn_iRenderFX;
 	float m_spawn_iRenderMode;
 	float m_spawn_flRenderAmt;
@@ -66,7 +61,41 @@ class CBaseEntity
 	virtual float(entity, float) SendEntity;
 	virtual void(int iHitBody) Pain;
 	virtual void(int iHitBody) Death;
+
+#ifdef GS_RENDERFX
+	virtual void(int) SetRenderFX;
+	virtual void(float) SetRenderMode;
+	virtual void(float) SetRenderAmt;
+	virtual void(vector) SetRenderColor;
+#endif
 };
+
+#ifdef GS_RENDERFX
+void
+CBaseEntity::SetRenderFX(int newFX)
+{
+	m_iRenderFX = newFX;
+	SendFlags |= BASEFL_CHANGED_RENDERFX;
+}
+void
+CBaseEntity::SetRenderMode(float newMode)
+{
+	m_iRenderMode = newMode;
+	SendFlags |= BASEFL_CHANGED_RENDERMODE;
+}
+void
+CBaseEntity::SetRenderAmt(float newAmt)
+{
+	m_flRenderAmt = newAmt;
+	SendFlags |= BASEFL_CHANGED_RENDERAMT;
+}
+void
+CBaseEntity::SetRenderColor(vector newColor)
+{
+	m_vecRenderColor = newColor;
+	SendFlags |= BASEFL_CHANGED_RENDERCOLOR;
+}
+#endif
 
 /* Make sure StartFrame calls this */
 float
@@ -206,22 +235,7 @@ CBaseEntity::ParentUpdate(void)
 		oldnet_body = m_iBody;
 	}
 #ifdef GS_RENDERFX
-	if (m_old_iRenderFX != m_iRenderFX) {
-		SendFlags |= BASEFL_CHANGED_RENDERFX;
-		m_old_iRenderFX = m_iRenderFX;
-	}
-	if (m_old_iRenderMode != m_iRenderMode) {
-		SendFlags |= BASEFL_CHANGED_RENDERMODE;
-		m_old_iRenderMode = m_iRenderMode;
-	}
-	if (m_old_flRenderAmt != m_flRenderAmt) {
-		SendFlags |= BASEFL_CHANGED_RENDERAMT;
-		m_old_flRenderAmt = m_flRenderAmt;
-	}
-	if (m_old_vecRenderColor != m_vecRenderColor) {
-		SendFlags |= BASEFL_CHANGED_RENDERCOLOR;
-		m_old_vecRenderColor = m_vecRenderColor;
-	}
+
 #else
 	if (alpha != oldnet_alpha) {
 		SendFlags |= BASEFL_CHANGED_ALPHA;
