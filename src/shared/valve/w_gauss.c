@@ -464,27 +464,27 @@ void w_gauss_hudpic(int selected, vector pos, float a)
 
 weapon_t w_gauss =
 {
-	ITEM_GAUSS,
-	3,
-	1,
-	"sprites/640hud1.spr_0.tga",
-	[32,16],
-	[192,112],
-	w_gauss_draw,
-	w_gauss_holster,
-	w_gauss_primary,
-	w_gauss_secondary,
-	__NULL__,
-	w_gauss_release,
-	w_gauss_crosshair,
-	w_gauss_precache,
-	w_gauss_pickup,
-	w_gauss_updateammo,
-	w_gauss_wmodel,
-	w_gauss_pmodel,
-	w_gauss_deathmsg,
-	w_gauss_aimanim,
-	w_gauss_hudpic
+	.id		= ITEM_GAUSS,
+	.slot		= 3,
+	.slot_pos	= 1,
+	.ki_spr		= "sprites/640hud1.spr_0.tga",
+	.ki_size	= [32,16],
+	.ki_xy		= [192,112],
+	.draw		= w_gauss_draw,
+	.holster	= w_gauss_holster,
+	.primary	= w_gauss_primary,
+	.secondary	= w_gauss_secondary,
+	.reload		= __NULL__,
+	.release	= w_gauss_release,
+	.crosshair	= w_gauss_crosshair,
+	.precache	= w_gauss_precache,
+	.pickup		= w_gauss_pickup,
+	.updateammo	= w_gauss_updateammo,
+	.wmodel		= w_gauss_wmodel,
+	.pmodel		= w_gauss_pmodel,
+	.deathmsg	= w_gauss_deathmsg,
+	.aimanim	= w_gauss_aimanim,
+	.hudpic		= w_gauss_hudpic
 };
 
 #ifdef SERVER

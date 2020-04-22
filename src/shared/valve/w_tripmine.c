@@ -341,27 +341,27 @@ void w_tripmine_hudpic(int selected, vector pos, float a)
 
 weapon_t w_tripmine =
 {
-	ITEM_TRIPMINE,
-	4,
-	2,
-	"sprites/640hud1.spr_0.tga",
-	[32,16],
-	[192,192],
-	w_tripmine_draw,
-	w_tripmine_holster,
-	w_tripmine_primary,
-	w_tripmine_release,
-	w_tripmine_release,
-	w_tripmine_release,
-	w_tripmine_hud,
-	w_tripmine_precache,
-	w_tripmine_pickup,
-	w_tripmine_updateammo,
-	w_tripmine_wmodel,
-	w_tripmine_pmodel,
-	w_tripmine_deathmsg,
-	w_tripmine_aimanim,
-	w_tripmine_hudpic
+	.id		= ITEM_TRIPMINE,
+	.slot		= 4,
+	.slot_pos	= 2,
+	.ki_spr		= "sprites/640hud1.spr_0.tga",
+	.ki_size	= [32,16],
+	.ki_xy		= [192,192],
+	.draw		= w_tripmine_draw,
+	.holster	= w_tripmine_holster,
+	.primary	= w_tripmine_primary,
+	.secondary	= __NULL__,
+	.reload		= __NULL__,
+	.release	= w_tripmine_release,
+	.crosshair	= w_tripmine_hud,
+	.precache	= w_tripmine_precache,
+	.pickup		= w_tripmine_pickup,
+	.updateammo	= w_tripmine_updateammo,
+	.wmodel		= w_tripmine_wmodel,
+	.pmodel		= w_tripmine_pmodel,
+	.deathmsg	= w_tripmine_deathmsg,
+	.aimanim	= w_tripmine_aimanim,
+	.hudpic		= w_tripmine_hudpic
 };
 
 #ifdef SERVER

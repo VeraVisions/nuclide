@@ -187,27 +187,27 @@ void w_egon_hudpic(int selected, vector pos, float a)
 
 weapon_t w_egon =
 {
-	ITEM_EGON,
-	3,
-	2,
-	"sprites/640hud1.spr_0.tga",
-	[32,16],
-	[192,128],
-	w_egon_draw,
-	w_egon_holster,
-	w_egon_primary,
-	w_egon_secondary,
-	w_egon_reload,
-	w_egon_release,
-	w_egon_crosshair,
-	w_egon_precache,
-	w_egon_pickup,
-	w_egon_updateammo,
-	w_egon_wmodel,
-	w_egon_pmodel,
-	w_egon_deathmsg,
-	w_egon_aimanim,
-	w_egon_hudpic
+	.id		= ITEM_EGON,
+	.slot		= 3,
+	.slot_pos	= 2,
+	.ki_spr		= "sprites/640hud1.spr_0.tga",
+	.ki_size	= [32,16],
+	.ki_xy		= [192,128],
+	.draw		= w_egon_draw,
+	.holster	= w_egon_holster,
+	.primary	= w_egon_primary,
+	.secondary	= w_egon_secondary,
+	.reload		= w_egon_reload,
+	.release	= w_egon_release,
+	.crosshair	= w_egon_crosshair,
+	.precache	= w_egon_precache,
+	.pickup		= w_egon_pickup,
+	.updateammo	= w_egon_updateammo,
+	.wmodel		= w_egon_wmodel,
+	.pmodel		= w_egon_pmodel,
+	.deathmsg	= w_egon_deathmsg,
+	.aimanim	= w_egon_aimanim,
+	.hudpic		= w_egon_hudpic
 };
 
 #ifdef SERVER

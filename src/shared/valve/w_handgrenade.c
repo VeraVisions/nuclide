@@ -248,27 +248,27 @@ w_handgrenade_hudpic(int selected, vector pos, float a)
 
 weapon_t w_handgrenade =
 {
-	ITEM_HANDGRENADE,
-	4,
-	0,
-	"sprites/640hud1.spr_0.tga",
-	[32,16],
-	[192,160],
-	w_handgrenade_draw,
-	w_handgrenade_holster,
-	w_handgrenade_primary,
-	w_handgrenade_release,
-	w_handgrenade_release,
-	w_handgrenade_release,
-	w_handgrenade_hud,
-	w_handgrenade_precache,
-	w_handgrenade_pickup,
-	w_handgrenade_updateammo,
-	w_handgrenade_wmodel,
-	w_handgrenade_pmodel,
-	w_handgrenade_deathmsg,
-	w_handgrenade_aimanim,
-	w_handgrenade_hudpic
+	.id		= ITEM_HANDGRENADE,
+	.slot		= 4,
+	.slot_pos	= 0,
+	.ki_spr		= "sprites/640hud1.spr_0.tga",
+	.ki_size	= [32,16],
+	.ki_xy		= [192,160],
+	.draw		= w_handgrenade_draw,
+	.holster	= w_handgrenade_holster,
+	.primary	= w_handgrenade_primary,
+	.secondary	= __NULL__,
+	.reload		= __NULL__,
+	.release	= w_handgrenade_release,
+	.crosshair	= w_handgrenade_hud,
+	.precache	= w_handgrenade_precache,
+	.pickup		= w_handgrenade_pickup,
+	.updateammo	= w_handgrenade_updateammo,
+	.wmodel		= w_handgrenade_wmodel,
+	.pmodel		= w_handgrenade_pmodel,
+	.deathmsg	= w_handgrenade_deathmsg,
+	.aimanim	= w_handgrenade_aimanim,
+	.hudpic		= w_handgrenade_hudpic
 };
 
 #ifdef SERVER

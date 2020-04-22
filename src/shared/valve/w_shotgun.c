@@ -301,27 +301,27 @@ void w_shotgun_hudpic(int selected, vector pos, float a)
 
 weapon_t w_shotgun =
 {
-	ITEM_SHOTGUN,
-	2,
-	1,
-	"sprites/640hud1.spr_0.tga",
-	[48,16],
-	[192,64],
-	w_shotgun_draw,
-	w_shotgun_holster,
-	w_shotgun_primary,
-	w_shotgun_secondary,
-	w_shotgun_reload,
-	w_shotgun_release,
-	w_shotgun_crosshair,
-	w_shotgun_precache,
-	w_shotgun_pickup,
-	w_shotgun_updateammo,
-	w_shotgun_wmodel,
-	w_shotgun_pmodel,
-	w_shotgun_deathmsg,
-	w_shotgun_aimanim,
-	w_shotgun_hudpic
+	.id		= ITEM_SHOTGUN,
+	.slot		= 2,
+	.slot_pos	= 1,
+	.ki_spr		= "sprites/640hud1.spr_0.tga",
+	.ki_size	= [48,16],
+	.ki_xy		= [192,64],
+	.draw		= w_shotgun_draw,
+	.holster	= w_shotgun_holster,
+	.primary	= w_shotgun_primary,
+	.secondary	= w_shotgun_secondary,
+	.reload		= w_shotgun_reload,
+	.release	= w_shotgun_release,
+	.crosshair	= w_shotgun_crosshair,
+	.precache	= w_shotgun_precache,
+	.pickup		= w_shotgun_pickup,
+	.updateammo	= w_shotgun_updateammo,
+	.wmodel		= w_shotgun_wmodel,
+	.pmodel		= w_shotgun_pmodel,
+	.deathmsg	= w_shotgun_deathmsg,
+	.aimanim	= w_shotgun_aimanim,
+	.hudpic		= w_shotgun_hudpic
 };
 
 #ifdef SERVER

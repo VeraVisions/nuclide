@@ -323,27 +323,27 @@ w_hornetgun_hudpic(int selected, vector pos, float a)
 
 weapon_t w_hornetgun =
 {
-	ITEM_HORNETGUN,
-	3,
-	3,
-	"sprites/640hud1.spr_0.tga",
-	[48,16],
-	[192,144],
-	w_hornetgun_draw,
-	w_hornetgun_holster,
-	w_hornetgun_primary,
-	w_hornetgun_secondary,
-	__NULL__,
-	w_hornetgun_release,
-	w_hornetgun_crosshair,
-	w_hornetgun_precache,
-	w_hornetgun_pickup,
-	w_hornetgun_updateammo,
-	w_hornetgun_wmodel,
-	w_hornetgun_pmodel,
-	w_hornetgun_deathmsg,
-	w_hornetgun_aimanim,
-	w_hornetgun_hudpic
+	.id		= ITEM_HORNETGUN,
+	.slot		= 3,
+	.slot_pos	= 3,
+	.ki_spr		= "sprites/640hud1.spr_0.tga",
+	.ki_size	= [48,16],
+	.ki_xy		= [192,144],
+	.draw		= w_hornetgun_draw,
+	.holster	= w_hornetgun_holster,
+	.primary	= w_hornetgun_primary,
+	.secondary	= w_hornetgun_secondary,
+	.reload		= __NULL__,
+	.release	= w_hornetgun_release,
+	.crosshair	= w_hornetgun_crosshair,
+	.precache	= w_hornetgun_precache,
+	.pickup		= w_hornetgun_pickup,
+	.updateammo	= w_hornetgun_updateammo,
+	.wmodel		= w_hornetgun_wmodel,
+	.pmodel		= w_hornetgun_pmodel,
+	.deathmsg	= w_hornetgun_deathmsg,
+	.aimanim	= w_hornetgun_aimanim,
+	.hudpic		= w_hornetgun_hudpic
 };
 
 #ifdef SERVER

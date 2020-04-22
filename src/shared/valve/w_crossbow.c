@@ -365,27 +365,27 @@ w_crossbow_hudpic(int selected, vector pos, float a)
 
 weapon_t w_crossbow =
 {
-	ITEM_CROSSBOW,
-	2,
-	2,
-	"sprites/640hud1.spr_0.tga",
-	[48,16],
-	[192,80],
-	w_crossbow_draw,
-	w_crossbow_holster,
-	w_crossbow_primary,
-	w_crossbow_secondary,
-	w_crossbow_reload,
-	w_crossbow_release,
-	w_crossbow_crosshair,
-	w_crossbow_precache,
-	w_crossbow_pickup,
-	w_crossbow_updateammo,
-	w_crossbow_wmodel,
-	w_crossbow_pmodel,
-	w_crossbow_deathmsg,
-	w_crossbow_aimanim,
-	w_crossbow_hudpic
+	.id		= ITEM_CROSSBOW,
+	.slot		= 2,
+	.slot_pos	= 2,
+	.ki_spr		= "sprites/640hud1.spr_0.tga",
+	.ki_size	= [48,16],
+	.ki_xy		= [192,80],
+	.draw		= w_crossbow_draw,
+	.holster	= w_crossbow_holster,
+	.primary	= w_crossbow_primary,
+	.secondary	= w_crossbow_secondary,
+	.reload		= w_crossbow_reload,
+	.release	= w_crossbow_release,
+	.crosshair	= w_crossbow_crosshair,
+	.precache	= w_crossbow_precache,
+	.pickup		= w_crossbow_pickup,
+	.updateammo	= w_crossbow_updateammo,
+	.wmodel		= w_crossbow_wmodel,
+	.pmodel		= w_crossbow_pmodel,
+	.deathmsg	= w_crossbow_deathmsg,
+	.aimanim	= w_crossbow_aimanim,
+	.hudpic		= w_crossbow_hudpic
 };
 
 #ifdef SERVER

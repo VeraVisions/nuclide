@@ -304,27 +304,27 @@ void w_snark_hudpic(int selected, vector pos, float a)
 
 weapon_t w_snark =
 {
-	ITEM_SNARK,
-	4,
-	3,
-	"sprites/640hud1.spr_0.tga",
-	[32,16],
-	[192,208],
-	w_snark_draw,
-	w_snark_holster,
-	w_snark_primary,
-	w_snark_secondary,
-	w_snark_reload,
-	w_snark_release,
-	w_snark_hud,
-	w_snark_precache,
-	w_snark_pickup,
-	w_snark_updateammo,
-	w_snark_wmodel,
-	w_snark_pmodel,
-	w_snark_deathmsg,
-	w_snark_aimanim,
-	w_snark_hudpic
+	.id		= ITEM_SNARK,
+	.slot		= 4,
+	.slot_pos	= 3,
+	.ki_spr		= "sprites/640hud1.spr_0.tga",
+	.ki_size	= [32,16],
+	.ki_xy		= [192,208],
+	.draw		= w_snark_draw,
+	.holster	= w_snark_holster,
+	.primary	= w_snark_primary,
+	.secondary	= w_snark_secondary,
+	.reload		= w_snark_reload,
+	.release	= w_snark_release,
+	.crosshair	= w_snark_hud,
+	.precache	= w_snark_precache,
+	.pickup		= w_snark_pickup,
+	.updateammo	= w_snark_updateammo,
+	.wmodel		= w_snark_wmodel,
+	.pmodel		= w_snark_pmodel,
+	.deathmsg	= w_snark_deathmsg,
+	.aimanim	= w_snark_aimanim,
+	.hudpic		= w_snark_hudpic
 };
 
 #ifdef SERVER

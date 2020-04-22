@@ -371,27 +371,27 @@ w_mp5_hudpic(int selected, vector pos, float a)
 }
 
 weapon_t w_mp5 = {
-	ITEM_MP5,
-	2,
-	0,
-	"sprites/640hud1.spr_0.tga",
-	[48,16],
-	[192,48],
-	w_mp5_draw,
-	w_mp5_holster,
-	w_mp5_primary,
-	w_mp5_secondary,
-	w_mp5_reload,
-	w_mp5_release,
-	w_mp5_crosshair,
-	w_mp5_precache,
-	w_mp5_pickup,
-	w_mp5_updateammo,
-	w_mp5_wmodel,
-	w_mp5_pmodel,
-	w_mp5_deathmsg,
-	w_mp5_aimanim,
-	w_mp5_hudpic
+	.id		= ITEM_MP5,
+	.slot		= 2,
+	.slot_pos	= 0,
+	.ki_spr		= "sprites/640hud1.spr_0.tga",
+	.ki_size	= [48,16],
+	.ki_xy		= [192,48],
+	.draw		= w_mp5_draw,
+	.holster	= w_mp5_holster,
+	.primary	= w_mp5_primary,
+	.secondary	= w_mp5_secondary,
+	.reload		= w_mp5_reload,
+	.release	= w_mp5_release,
+	.crosshair	= w_mp5_crosshair,
+	.precache	= w_mp5_precache,
+	.pickup		= w_mp5_pickup,
+	.updateammo	= w_mp5_updateammo,
+	.wmodel		= w_mp5_wmodel,
+	.pmodel		= w_mp5_pmodel,
+	.deathmsg	= w_mp5_deathmsg,
+	.aimanim	= w_mp5_aimanim,
+	.hudpic		= w_mp5_hudpic
 };
 
 #ifdef SERVER

@@ -351,27 +351,27 @@ w_glock_hudpic(int selected, vector pos, float a)
 
 weapon_t w_glock =
 {
-	ITEM_GLOCK,
-	1,
-	0,
-	"sprites/640hud1.spr_0.tga",
-	[32,16],
-	[192,16],
-	w_glock_draw,
-	w_glock_holster,
-	w_glock_primary,
-	w_glock_secondary,
-	w_glock_reload,
-	w_glock_release,
-	w_glock_hud,
-	w_glock_precache,
-	w_glock_pickup,
-	w_glock_updateammo,
-	w_glock_wmodel,
-	w_glock_pmodel,
-	w_glock_deathmsg,
-	w_glock_aimanim,
-	w_glock_hudpic
+	.id		= ITEM_GLOCK,
+	.slot		= 1,
+	.slot_pos	= 0,
+	.ki_spr		= "sprites/640hud1.spr_0.tga",
+	.ki_size	= [32,16],
+	.ki_xy		= [192,16],
+	.draw		= w_glock_draw,
+	.holster	= w_glock_holster,
+	.primary	= w_glock_primary,
+	.secondary	= w_glock_secondary,
+	.reload		= w_glock_reload,
+	.release	= w_glock_release,
+	.crosshair	= w_glock_hud,
+	.precache	= w_glock_precache,
+	.pickup		= w_glock_pickup,
+	.updateammo	= w_glock_updateammo,
+	.wmodel		= w_glock_wmodel,
+	.pmodel		= w_glock_pmodel,
+	.deathmsg	= w_glock_deathmsg,
+	.aimanim	= w_glock_aimanim,
+	.hudpic		= w_glock_hudpic
 };
 
 /* pickups */

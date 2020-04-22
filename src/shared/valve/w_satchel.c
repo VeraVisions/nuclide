@@ -273,27 +273,27 @@ void w_satchel_hudpic(int selected, vector pos, float a)
 
 weapon_t w_satchel =
 {
-	ITEM_SATCHEL,
-	4,
-	1,
-	"sprites/640hud1.spr_0.tga",
-	[32,16],
-	[192,176],
-	w_satchel_draw,
-	w_satchel_holster,
-	w_satchel_primary,
-	w_satchel_secondary,
-	w_satchel_reload,
-	w_satchel_release,
-	w_satchel_hud,
-	w_satchel_precache,
-	w_satchel_pickup,
-	w_satchel_updateammo,
-	w_satchel_wmodel,
-	w_satchel_pmodel,
-	w_satchel_deathmsg,
-	w_satchel_aimanim,
-	w_satchel_hudpic
+	.id		= ITEM_SATCHEL,
+	.slot		= 4,
+	.slot_pos	= 1,
+	.ki_spr		= "sprites/640hud1.spr_0.tga",
+	.ki_size	= [32,16],
+	.ki_xy		= [192,176],
+	.draw		= w_satchel_draw,
+	.holster	= w_satchel_holster,
+	.primary	= w_satchel_primary,
+	.secondary	= w_satchel_secondary,
+	.reload		= w_satchel_reload,
+	.release	= w_satchel_release,
+	.crosshair	= w_satchel_hud,
+	.precache	= w_satchel_precache,
+	.pickup		= __NULL__,
+	.updateammo	= w_satchel_updateammo,
+	.wmodel		= w_satchel_wmodel,
+	.pmodel		= w_satchel_pmodel,
+	.deathmsg	= w_satchel_deathmsg,
+	.aimanim	= w_satchel_aimanim,
+	.hudpic		= w_satchel_hudpic
 };
 
 #ifdef SERVER

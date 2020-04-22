@@ -330,27 +330,27 @@ w_python_hudpic(int selected, vector pos, float a)
 
 weapon_t w_python =
 {
-	ITEM_PYTHON,
-	1,
-	1,
-	"sprites/640hud1.spr_0.tga",
-	[32,16],
-	[192,32],
-	w_python_draw,
-	w_python_holster,
-	w_python_primary,
-	w_python_secondary,
-	w_python_reload,
-	w_python_release,
-	w_python_crosshair,
-	w_python_precache,
-	w_python_pickup,
-	w_python_updateammo,
-	w_python_wmodel,
-	w_python_pmodel,
-	w_python_deathmsg,
-	w_python_aimanim,
-	w_python_hudpic
+	.id		= ITEM_PYTHON,
+	.slot		= 1,
+	.slot_pos	= 1,
+	.ki_spr		= "sprites/640hud1.spr_0.tga",
+	.ki_size	= [32,16],
+	.ki_xy		= [192,32],
+	.draw		= w_python_draw,
+	.holster	= w_python_holster,
+	.primary	= w_python_primary,
+	.secondary	= w_python_secondary,
+	.reload		= w_python_reload,
+	.release	= w_python_release,
+	.crosshair	= w_python_crosshair,
+	.precache	= w_python_precache,
+	.pickup		= w_python_pickup,
+	.updateammo	= w_python_updateammo,
+	.wmodel		= w_python_wmodel,
+	.pmodel		= w_python_pmodel,
+	.deathmsg	= w_python_deathmsg,
+	.aimanim	= w_python_aimanim,
+	.hudpic		= w_python_hudpic
 };
 
 /* pickups */

@@ -341,27 +341,27 @@ void w_rpg_hud(void)
 
 weapon_t w_rpg =
 {
-	ITEM_RPG,
-	3,
-	0,
-	"sprites/640hud1.spr_0.tga",
-	[48,16],
-	[192,96],
-	w_rpg_draw,
-	w_rpg_holster,
-	w_rpg_primary,
-	w_rpg_secondary,
-	w_rpg_reload,
-	w_rpg_release,
-	w_rpg_hud,
-	w_rpg_precache,
-	w_rpg_pickup,
-	w_rpg_updateammo,
-	w_rpg_wmodel,
-	w_rpg_pmodel,
-	w_rpg_deathmsg,
-	w_rpg_aimanim,
-	w_rpg_hudpic
+	.id		= ITEM_RPG,
+	.slot		= 3,
+	.slot_pos	= 0,
+	.ki_spr		= "sprites/640hud1.spr_0.tga",
+	.ki_size	= [48,16],
+	.ki_xy		= [192,96],
+	.draw		= w_rpg_draw,
+	.holster	= w_rpg_holster,
+	.primary	= w_rpg_primary,
+	.secondary	= w_rpg_secondary,
+	.reload		= w_rpg_reload,
+	.release	= w_rpg_release,
+	.crosshair	= w_rpg_hud,
+	.precache	= w_rpg_precache,
+	.pickup		= w_rpg_pickup,
+	.updateammo	= w_rpg_updateammo,
+	.wmodel		= w_rpg_wmodel,
+	.pmodel		= w_rpg_pmodel,
+	.deathmsg	= w_rpg_deathmsg,
+	.aimanim	= w_rpg_aimanim,
+	.hudpic		= w_rpg_hudpic
 };
 
 #ifdef SERVER
