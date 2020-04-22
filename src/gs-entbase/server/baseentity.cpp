@@ -48,6 +48,11 @@ class CBaseEntity
 	float m_old_iRenderMode;
 	float m_old_flRenderAmt;
 	vector m_old_vecRenderColor;
+
+	int m_spawn_iRenderFX;
+	float m_spawn_iRenderMode;
+	float m_spawn_flRenderAmt;
+	vector m_spawn_vecRenderColor;
 #else
 	float oldnet_alpha;
 #endif
@@ -278,21 +283,27 @@ CBaseEntity::CBaseEntity(void)
 			break;
 		case "color":
 			m_vecRenderColor = stov(argv(i+1));
+			m_spawn_vecRenderColor = stov(argv(i+1));
 			break;
 		case "alpha":
 			m_flRenderAmt = stof(argv(i+1));
+			m_spawn_flRenderAmt = stof(argv(i+1));
 			break;
 		case "renderamt":
 			m_flRenderAmt = stof(argv(i+1)) / 255;
+			m_spawn_flRenderAmt = stof(argv(i+1)) / 255;
 			break;
 		case "rendercolor":
 			m_vecRenderColor = stov(argv(i+1)) / 255;
+			m_spawn_vecRenderColor = stov(argv(i+1)) / 255;
 			break;
 		case "rendermode":
 			m_iRenderMode = stoi(argv(i+1));
+			m_spawn_iRenderMode = stoi(argv(i+1));
 			break;
 		case "renderfx":
 			m_iRenderFX = stoi(argv(i+1));
+			m_spawn_iRenderFX = stoi(argv(i+1));
 			break;
 		case "parentname":
 			m_parent = argv(i+1);
@@ -325,6 +336,12 @@ CBaseEntity::Respawn(void)
 	health = m_oldHealth;
 	origin = m_oldOrigin;
 	angles = m_oldAngle;
+
+	m_iRenderFX = m_spawn_iRenderFX;
+	m_iRenderMode = m_spawn_iRenderMode;
+	m_flRenderAmt = m_spawn_flRenderAmt;
+	m_vecRenderColor = m_spawn_vecRenderColor;
+
 	setorigin(this, origin);
 
 	if (model != "") {
