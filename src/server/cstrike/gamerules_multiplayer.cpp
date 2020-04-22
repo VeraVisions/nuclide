@@ -679,6 +679,7 @@ CSMultiplayerRules::PlayerRespawn(player pl, int fTeam)
 	setsize(pl, VEC_HULL_MIN, VEC_HULL_MAX);
 	pl.view_ofs = VEC_PLAYER_VIEWPOS;
 	pl.velocity = [0,0,0];
+	Weapons_SwitchBest(pl);
 
 	/*Ammo_AutoFill(pl.fSlotPrimary);
 	Ammo_AutoFill(pl.fSlotSecondary);*/
