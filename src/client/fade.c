@@ -76,8 +76,6 @@ Fade_Update (int x, int y, int w, int h)
 		return;
 	}
 
-	print(sprintf("FADE: %f\n", pSeat->m_flFadeAlpha));
-
 	if (pSeat->m_flFadeStyle & EVF_MODULATE) {
 		drawpic([x, y], "fade_modulate", [w, h], pSeat->m_vecFadeColor, pSeat->m_flFadeAlpha * pSeat->m_flFadeMaxAlpha, 0);
 	} else {

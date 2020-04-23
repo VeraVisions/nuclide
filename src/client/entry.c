@@ -20,6 +20,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	Sound_Init();
 	pSeat = &g_seats[0];
 
+	registercommand("getpos");
 	registercommand("callvote");
 	registercommand("dev_sentence");
 	registercommand("titles_test");
@@ -537,6 +538,9 @@ CSQC_ConsoleCommand(string sCMD)
 		} else if (argv(1) == "no") {
 			sendevent("VoteN", "");
 		}
+		break;
+	case "getpos":
+		print(sprintf("setpos %v;setang -%v\n", getproperty(VF_ORIGIN), getproperty(VF_ANGLES)));
 		break;
 	case "callvote":
 		sendevent("CallVote", "s", substring(sCMD, 9, strlen(sCMD)-9));
