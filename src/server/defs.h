@@ -19,9 +19,9 @@
 var int autocvar_mp_flashlight = TRUE;
 var int g_hlbsp_materials = FALSE;
 
-void Effect_Impact(int iType, vector vecPos, vector vNormal);
-void Effect_CreateExplosion(vector vecPos);
-void Effect_GibHuman(vector vecPos);
+void FX_Impact(int iType, vector vecPos, vector vNormal);
+void FX_Explosion(vector vecPos);
+void FX_GibHuman(vector vecPos);
 void Footsteps_Update(void);
 void Vox_Broadcast(string sMessage);
 void TraceAttack_FireBullets(int , vector, int, vector, int);

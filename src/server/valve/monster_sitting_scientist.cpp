@@ -48,7 +48,7 @@ class monster_sitting_scientist:CBaseMonster
 void monster_sitting_scientist::Gib(void)
 {
 	takedamage = DAMAGE_NO;
-	Effect_GibHuman(this.origin);
+	FX_GibHuman(this.origin);
 	Hide();
 }
 

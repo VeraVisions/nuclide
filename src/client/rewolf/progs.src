@@ -17,7 +17,6 @@
 ../../vgui/include.src
 
 ../util.c
-init.c
 
 ../fade.c
 ../titles.c
@@ -43,8 +42,14 @@ decore.cpp
 ../../shared/pmove.c
 ../valve/predict.c
 ../predict.c
-../../shared/effects.c
+../../shared/valve/fx_blood.c
+../../shared/valve/fx_breakmodel.c
+../../shared/valve/fx_explosion.c
+../../shared/valve/fx_gibhuman.c
+../../shared/valve/fx_impact.c
+../../shared/valve/fx_spark.c
 ../npc.c
+init.c
 
 ../../shared/rewolf/items.h
 ../../shared/valve/weapon_common.h

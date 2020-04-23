@@ -35,7 +35,7 @@ class monster_hevsuit_dead:CBaseMonster
 void monster_hevsuit_dead::Gib(void)
 {
 	takedamage = DAMAGE_NO;
-	Effect_GibHuman(this.origin);
+	FX_GibHuman(this.origin);
 	Hide();
 }
 

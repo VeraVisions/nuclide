@@ -142,7 +142,7 @@ penguin_die(int i)
 	self.health = 0;
 
 	/* now we can explodededededed */
-	Effect_CreateExplosion(self.origin);
+	FX_Explosion(self.origin);
 	Damage_Radius(self.origin, self.owner, 150, 150 * 2.5f, TRUE, WEAPON_PENGUIN);
 
 	if (random() < 0.5) {

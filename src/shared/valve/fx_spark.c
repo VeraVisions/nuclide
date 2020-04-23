@@ -14,38 +14,33 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*
-=================
-Client_Init
-
-Comparable to worldspawn in SSQC in that it's mostly used for precaches
-=================
-*/
 void
-Client_Init(float apilevel, string enginename, float engineversion)
+FX_Spark_Init(void)
 {
+	precache_sound("buttons/spark1.wav");
+	precache_sound("buttons/spark2.wav");
+	precache_sound("buttons/spark3.wav");
+	precache_sound("buttons/spark4.wav");
+	precache_sound("buttons/spark5.wav");
+	precache_sound("buttons/spark6.wav");
 }
 
 void
-Client_InitDone(void)
+FX_Spark(vector pos, vector ang)
 {
-}
-
-void
-Game_RendererRestarted(string rstr)
-{
-	FX_Blood_Init();
-	FX_BreakModel_Init();
-	FX_Explosion_Init();
-	FX_GibHuman_Init();
-	FX_Spark_Init();
-	FX_Impact_Init();
-
-	precache_model("sprites/640hud1.spr");
-	precache_model("sprites/640hud2.spr");
-	precache_model("sprites/640hud3.spr");
-	precache_model("sprites/640hud4.spr");
-	precache_model("sprites/640hud5.spr");
-	precache_model("sprites/640hud6.spr");
-	BEAM_TRIPMINE = particleeffectnum("beam_tripmine");
-}
+#ifdef SERVER
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_SPARK);
+	WriteCoord(MSG_MULTICAST, pos[0]);
+	WriteCoord(MSG_MULTICAST, pos[1]);
+	WriteCoord(MSG_MULTICAST, pos[2]);
+	WriteCoord(MSG_MULTICAST, ang[0]);
+	WriteCoord(MSG_MULTICAST, ang[1]);
+	WriteCoord(MSG_MULTICAST, ang[2]);
+	msg_entity = self;
+	multicast(pos, MULTICAST_PVS);
+#else
+	pointparticles(PARTICLE_SPARK, pos, ang, 1);
+	pointsound(pos, sprintf("buttons/spark%d.wav", floor(random() * 6) + 1), 1, ATTN_STATIC);
+#endif
+} 

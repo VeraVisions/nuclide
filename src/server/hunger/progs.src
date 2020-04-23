@@ -59,7 +59,12 @@
 ../valve/monster_turret.cpp
 ../valve/monster_zombie.cpp
 
-../../shared/effects.c
+../../shared/valve/fx_blood.c
+../../shared/valve/fx_breakmodel.c
+../../shared/valve/fx_explosion.c
+../../shared/valve/fx_gibhuman.c
+../../shared/valve/fx_impact.c
+../../shared/valve/fx_spark.c
 ../valve/player.c
 ../../shared/valve/pmove.c
 ../../shared/pmove.c

@@ -23,6 +23,21 @@ Comparable to worldspawn in SSQC in that it's mostly used for precaches
 */
 void Client_Init(float apilevel, string enginename, float engineversion)
 {
+}
+
+void Client_InitDone(void)
+{
+}
+
+void Game_RendererRestarted(string rstr)
+{
+	FX_Blood_Init();
+	FX_BreakModel_Init();
+	FX_Explosion_Init();
+	FX_GibHuman_Init();
+	FX_Spark_Init();
+	FX_Impact_Init();
+
 	precache_model("sprites/640hud1.spr");
 	precache_model("sprites/640hud2.spr");
 	precache_model("sprites/640hud3.spr");
@@ -32,81 +47,3 @@ void Client_Init(float apilevel, string enginename, float engineversion)
 
 	BEAM_TRIPMINE = particleeffectnum("beam_tripmine");
 }
-
-void Client_InitDone(void)
-{
-}
-
-void Game_RendererRestarted(string rstr)
-{
-	
-}
-
-/*
-#ifdef REWOLF
-				case "decore_asteroid":
-					eEnt = spawn(decore_asteroid);
-					iClass = TRUE;
-					break;
-				case "decore_baboon":
-					eEnt = spawn(decore_baboon);
-					iClass = TRUE;
-					break;
-				case "decore_bodygib":
-					eEnt = spawn(decore_bodygib);
-					iClass = TRUE;
-					break;
-				case "decore_butterflyflock":
-					eEnt = spawn(decore_butterflyflock);
-					iClass = TRUE;
-					break;
-				case "decore_explodable":
-					eEnt = spawn(decore_explodable);
-					iClass = TRUE;
-					break;
-				case "decore_foot":
-					eEnt = spawn(decore_foot);
-					iClass = TRUE;
-					break;
-				case "decore_goldskull":
-					eEnt = spawn(decore_goldskull);
-					iClass = TRUE;
-					break;
-				case "decore_hatgib":
-					eEnt = spawn(decore_hatgib);
-					iClass = TRUE;
-					break;
-				case "decore_nest":
-					eEnt = spawn(decore_nest);
-					iClass = TRUE;
-					break;
-				case "decore_pteradon":
-					eEnt = spawn(decore_pteradon);
-					iClass = TRUE;
-					break;
-				case "decore_torch":
-					eEnt = spawn(decore_torch);
-					iClass = TRUE;
-					break;
-				case "decore_spacedebris":
-					eEnt = spawn(decore_spacedebris);
-					iClass = TRUE;
-					break;
-				case "decore_swampplants":
-					eEnt = spawn(decore_swampplants);
-					iClass = TRUE;
-					break;
-				case "decore_mushroom":
-					eEnt = spawn(decore_mushroom);
-					iClass = TRUE;
-					break;
-				case "decore_mushroom2":
-					eEnt = spawn(decore_mushroom2);
-					iClass = TRUE;
-					break;
-				#endif
-				default:
-					eEnt.classname = strValue;
-				}
-				break;
-*/

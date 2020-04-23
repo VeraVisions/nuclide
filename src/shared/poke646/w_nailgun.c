@@ -68,7 +68,7 @@ w_nailgun_primary(void)
 
 #ifdef SERVER
 	static void Nail_Touch(void) {
-		Effect_CreateSpark(self.origin, trace_plane_normal);
+		FX_Spark(self.origin, trace_plane_normal);
 		if (other.takedamage == DAMAGE_YES) {
 			Damage_Apply(other, self.owner, 15, WEAPON_NAILGUN, DMG_GENERIC);
 			if (random() < 0.5) {

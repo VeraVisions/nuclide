@@ -35,7 +35,7 @@ class monster_barney_dead:CBaseEntity
 void monster_barney_dead::Gib(void)
 {
 	takedamage = DAMAGE_NO;
-	Effect_GibHuman(this.origin);
+	FX_GibHuman(this.origin);
 	Hide();
 }
 

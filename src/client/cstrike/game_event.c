@@ -17,23 +17,98 @@
 void
 Game_Parse_Event(float fHeader)
 {
-	if (fHeader == EV_CHAT) {
+switch (fHeader) {
+	case EV_SPARK:
+		vector vSparkPos, vSparkAngle;
+		vSparkPos[0] = readcoord();
+		vSparkPos[1] = readcoord();
+		vSparkPos[2] = readcoord();
+		vSparkAngle[0] = readcoord();
+		vSparkAngle[1] = readcoord();
+		vSparkAngle[2] = readcoord();
+		FX_Spark(vSparkPos, vSparkAngle);
+		break;
+	case EV_GIBHUMAN:
+		vector vGibPos;
+		vGibPos[0] = readcoord();
+		vGibPos[1] = readcoord();
+		vGibPos[2] = readcoord();
+		FX_GibHuman(vGibPos);
+		break;
+	case EV_BLOOD:
+		vector vBloodPos;
+		vector vBloodColor;
+
+		vBloodPos[0] = readcoord();
+		vBloodPos[1] = readcoord();
+		vBloodPos[2] = readcoord();
+
+		vBloodColor[0] = readbyte() / 255;
+		vBloodColor[1] = readbyte() / 255;
+		vBloodColor[2] = readbyte() / 255;
+
+		FX_Blood(vBloodPos, vBloodColor);
+		break;
+	case EV_EXPLOSION:
+		vector vExploPos;
+
+		vExploPos[0] = readcoord();
+		vExploPos[1] = readcoord();
+		vExploPos[2] = readcoord();
+
+		FX_Explosion(vExploPos);
+		break;
+	case EV_MODELGIB:
+		vector vecPos;
+		vecPos[0] = readcoord();
+		vecPos[1] = readcoord();
+		vecPos[2] = readcoord();
+
+		vector vSize;
+		vSize[0] = readcoord();
+		vSize[1] = readcoord();
+		vSize[2] = readcoord();
+
+		float fStyle = readbyte();
+		int count = readbyte();
+		FX_BreakModel(count, vecPos, vSize, [0,0,0], fStyle);
+		break;
+	case EV_IMPACT:
+		int iType;
+		vector vOrigin, vNormal;
+
+		iType = (int)readbyte();
+		vOrigin[0] = readcoord();
+		vOrigin[1] = readcoord();
+		vOrigin[2] = readcoord();
+
+		vNormal[0] = readcoord();
+		vNormal[1] = readcoord();
+		vNormal[2] = readcoord();
+
+		FX_Impact(iType, vOrigin, vNormal);
+		break;
+	case EV_CHAT:
 		float fSender = readbyte();
 		float fTeam = readbyte();
 		string sMessage = readstring();
 
 		CSQC_Parse_Print(sprintf("%s: %s", getplayerkeyvalue(fSender, "name"), sMessage), PRINT_CHAT);
-	} else if (fHeader == EV_CHAT_TEAM) {
+		break;
+	case EV_CHAT_TEAM:
 		float fSender2 = readbyte();
 		float fTeam2 = readbyte();
 		string sMessage2 = readstring();
 
 		CSQC_Parse_Print(sprintf("[TEAM] %s: %s", getplayerkeyvalue(fSender2, "name"), sMessage2), PRINT_CHAT);
-	} else if (fHeader == EV_CHAT_VOX) {
+		break;
+	case EV_CHAT_VOX:
 		Sound_PlayVOX(readstring());
-	} else if (fHeader == EV_VIEWMODEL) {
+		break;
+	case EV_VIEWMODEL:
 		View_PlayAnimation(readbyte());
-	} else if (fHeader == EV_WEAPON_PICKUP) {
+		break;
+	case EV_WEAPON_PICKUP:
 		int w = readbyte();
 
 		if (autocvar_cl_autoweaponswitch == 1) {
@@ -48,9 +123,12 @@ Game_Parse_Event(float fHeader)
 		}
 
 		HUD_WeaponPickupNotify(w);
-	} else if (fHeader == EV_RADIOMSG) {
+		break;
+	case EV_RADIOMSG:
 		Radio_PlayMessage(readbyte());
-	} else if (fHeader == EV_RADIOMSG2) {
+		break;
+	case EV_RADIOMSG2:
 		Radio_PlayPlayerMessage(readbyte(), readbyte());
+		break;
 	}
 }

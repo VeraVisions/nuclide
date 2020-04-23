@@ -119,7 +119,7 @@ void Crossbolt_Touch(void) {
 	/* explode mode, multiplayer */
 	if (self.weapon) {
 		float dmg = Skill_GetValue("plr_xbow_bolt_monster");
-		Effect_CreateExplosion(self.origin);
+		FX_Explosion(self.origin);
 		Damage_Radius(self.origin, self.owner, dmg, dmg * 2.5f, TRUE, WEAPON_CROSSBOW);
 		if (random() < 0.5) {
 			sound(self, 1, "weapons/explode3.wav", 1.0f, ATTN_NORM);
@@ -132,7 +132,7 @@ void Crossbolt_Touch(void) {
 
 	/* walls, etc. */
 	if (other.takedamage != DAMAGE_YES) {
-		Effect_CreateSpark(self.origin, trace_plane_normal);
+		FX_Spark(self.origin, trace_plane_normal);
 		Sound_Play(self, 1, "weapon_crossbow.hit");
 		remove(self);
 		return;
@@ -143,9 +143,9 @@ void Crossbolt_Touch(void) {
 	Sound_Play(self, 1, "weapon_crossbow.hitbody");
 
 	if (other.iBleeds == FALSE) {
-		Effect_CreateSpark(self.origin, trace_plane_normal);
+		FX_Spark(self.origin, trace_plane_normal);
 	} else {
-		Effect_CreateBlood(self.origin, [1,0,0]);
+		FX_Blood(self.origin, [1,0,0]);
 	}
 	remove(self);
 }

@@ -33,7 +33,7 @@ SHMultiplayerRules::PlayerDeath(player pl)
 
 	if (pl.health < -50) {
 		pl.health = 0;
-		Effect_GibHuman(pl.origin);
+		FX_GibHuman(pl.origin);
 		return;
 	}
 

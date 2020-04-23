@@ -35,7 +35,7 @@ class monster_hgrunt_dead:CBaseMonster
 void monster_hgrunt_dead::Gib(void)
 {
 	takedamage = DAMAGE_NO;
-	Effect_GibHuman(this.origin);
+	FX_GibHuman(this.origin);
 	Hide();
 }
 

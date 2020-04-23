@@ -137,9 +137,9 @@ w_crowbar_primary(void)
 
 	/* don't bother with decals, we got squibs */
 	if (trace_ent.iBleeds) {
-		Effect_CreateBlood(trace_endpos, [1,0,0]);
+		FX_Blood(trace_endpos, [1,0,0]);
 	} else {
-		Effect_Impact(IMPACT_MELEE, trace_endpos, trace_plane_normal);
+		FX_Impact(IMPACT_MELEE, trace_endpos, trace_plane_normal);
 	}
 
 	if (trace_ent.takedamage) {

@@ -124,7 +124,7 @@ w_knife_primary(void)
 	}
 
 	if (trace_ent.iBleeds) {
-		Effect_CreateBlood(trace_endpos, [1,0,0]);
+		FX_Blood(trace_endpos, [1,0,0]);
 		Sound_Play(pl, CHAN_WEAPON, "weapon_knife.hitbody");
 	} else {
 		Sound_Play(pl, CHAN_WEAPON, "weapon_knife.hit");
@@ -162,7 +162,7 @@ w_knife_secondary(void)
 
 	/* don't bother with decals, we got squibs */
 	if (trace_ent.iBleeds) {
-		Effect_CreateBlood(trace_endpos, [1,0,0]);
+		FX_Blood(trace_endpos, [1,0,0]);
 		Sound_Play(pl, CHAN_WEAPON, "weapon_knife.hitbody");
 	} else {
 		Sound_Play(pl, CHAN_WEAPON, "weapon_knife.hit");

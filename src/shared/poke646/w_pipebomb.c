@@ -117,7 +117,7 @@ void s_pipebomb_detonate(entity master)
 	for (entity b = world; (b = find(b, ::classname, "satchel"));) {
 		if (b.owner == master) {
 			float dmg = Skill_GetValue("plr_satchel");
-			Effect_CreateExplosion(b.origin);
+			FX_Explosion(b.origin);
 			Damage_Radius(b.origin, master, dmg, dmg * 2.5f, TRUE, WEAPON_SATCHEL);
 			sound(b, CHAN_WEAPON, sprintf("weapons/explode%d.wav", floor(random() * 2) + 3), 1, ATTN_NORM);
 			remove(b);

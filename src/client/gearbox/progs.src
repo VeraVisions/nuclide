@@ -36,7 +36,12 @@
 ../../shared/pmove.c
 ../valve/predict.c
 ../predict.c
-../../shared/effects.c
+../../shared/valve/fx_blood.c
+../../shared/valve/fx_breakmodel.c
+../../shared/valve/fx_explosion.c
+../../shared/valve/fx_gibhuman.c
+../../shared/valve/fx_impact.c
+../../shared/valve/fx_spark.c
 ../npc.c
 init.c
 ../../shared/gearbox/items.h

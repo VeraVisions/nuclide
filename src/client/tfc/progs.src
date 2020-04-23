@@ -18,7 +18,6 @@
 vgui_chooseteam.cpp
 
 ../util.c
-init.c
 
 ../fade.c
 ../titles.c
@@ -42,7 +41,13 @@ init.c
 ../../shared/pmove.c
 ../valve/predict.c
 ../predict.c
-../../shared/effects.c
+../../shared/valve/fx_blood.c
+../../shared/valve/fx_breakmodel.c
+../../shared/valve/fx_explosion.c
+../../shared/valve/fx_gibhuman.c
+../../shared/valve/fx_impact.c
+../../shared/valve/fx_spark.c
+init.c
 ../npc.c
 
 ../../shared/tfc/items.h

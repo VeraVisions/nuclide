@@ -194,7 +194,7 @@ w_mp5_secondary(void)
 #else
 	static void Grenade_ExplodeTouch(void) {
 		float dmg = Skill_GetValue("plr_9mmAR_grenade");
-		Effect_CreateExplosion(self.origin);
+		FX_Explosion(self.origin);
 		Damage_Radius(self.origin, self.owner, dmg, dmg * 2.5f, TRUE, WEAPON_MP5);
 
 		if (random() < 0.5) {

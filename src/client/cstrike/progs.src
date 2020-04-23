@@ -40,7 +40,14 @@
 ../../shared/pmove.c
 predict.c
 ../predict.c
-../../shared/effects.c
+../../shared/valve/fx_blood.c
+../../shared/valve/fx_breakmodel.c
+../../shared/valve/fx_explosion.c
+../../shared/valve/fx_gibhuman.c
+../../shared/valve/fx_spark.c
+../../shared/cstrike/fx_impact.c
+../../shared/cstrike/fx_flashbang.c
+../../shared/cstrike/fx_smokenade.c
 ../npc.c
 
 ../../shared/cstrike/radio.c

@@ -14,38 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*
-=================
-Client_Init
-
-Comparable to worldspawn in SSQC in that it's mostly used for precaches
-=================
-*/
+#ifdef SERVER
 void
-Client_Init(float apilevel, string enginename, float engineversion)
+FX_Flashbang(entity eTarget)
 {
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_FLASH);
+	msg_entity = eTarget;
+	multicast([0,0,0], MULTICAST_ONE);
 }
-
-void
-Client_InitDone(void)
-{
-}
-
-void
-Game_RendererRestarted(string rstr)
-{
-	FX_Blood_Init();
-	FX_BreakModel_Init();
-	FX_Explosion_Init();
-	FX_GibHuman_Init();
-	FX_Spark_Init();
-	FX_Impact_Init();
-
-	precache_model("sprites/640hud1.spr");
-	precache_model("sprites/640hud2.spr");
-	precache_model("sprites/640hud3.spr");
-	precache_model("sprites/640hud4.spr");
-	precache_model("sprites/640hud5.spr");
-	precache_model("sprites/640hud6.spr");
-	BEAM_TRIPMINE = particleeffectnum("beam_tripmine");
-}
+#endif 

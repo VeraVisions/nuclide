@@ -65,9 +65,6 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	/* VOX */
 	Sound_InitVOX();
 
-	/* Effects */
-	Effects_Init();
-
 	precache_sound("common/wpn_hudon.wav");
 	precache_sound("common/wpn_hudoff.wav");
 	precache_sound("common/wpn_moveselect.wav");
@@ -497,61 +494,6 @@ CSQC_Parse_Event(void)
 	case EV_MESSAGE:
 		GameMessage_Parse();
 		break;
-	case EV_SPARK:
-		vector vSparkPos, vSparkAngle;
-		vSparkPos[0] = readcoord();
-		vSparkPos[1] = readcoord();
-		vSparkPos[2] = readcoord();
-		vSparkAngle[0] = readcoord();
-		vSparkAngle[1] = readcoord();
-		vSparkAngle[2] = readcoord();
-		Effect_CreateSpark(vSparkPos, vSparkAngle);
-		break;
-	case EV_GIBHUMAN:
-		vector vGibPos;
-		vGibPos[0] = readcoord();
-		vGibPos[1] = readcoord();
-		vGibPos[2] = readcoord();
-		Effect_GibHuman(vGibPos);
-		break;
-	case EV_BLOOD:
-		vector vBloodPos;
-		vector vBloodColor;
-
-		vBloodPos[0] = readcoord();
-		vBloodPos[1] = readcoord();
-		vBloodPos[2] = readcoord();
-
-		vBloodColor[0] = readbyte() / 255;
-		vBloodColor[1] = readbyte() / 255;
-		vBloodColor[2] = readbyte() / 255;
-
-		Effect_CreateBlood(vBloodPos, vBloodColor);
-		break;
-	case EV_EXPLOSION:
-		vector vExploPos;
-
-		vExploPos[0] = readcoord();
-		vExploPos[1] = readcoord();
-		vExploPos[2] = readcoord();
-
-		Effect_CreateExplosion(vExploPos);
-		break;
-	case EV_MODELGIB:
-		vector vecPos;
-		vecPos[0] = readcoord();
-		vecPos[1] = readcoord();
-		vecPos[2] = readcoord();
-
-		vector vSize;
-		vSize[0] = readcoord();
-		vSize[1] = readcoord();
-		vSize[2] = readcoord();
-
-		float fStyle = readbyte();
-		int count = readbyte();
-		Effect_BreakModel(count, vecPos, vSize, [0,0,0], fStyle);
-		break;
 	case EV_CAMERATRIGGER:
 		pSeat->m_vecCameraOrigin.x = readcoord();
 		pSeat->m_vecCameraOrigin.y = readcoord();
@@ -562,21 +504,6 @@ CSQC_Parse_Event(void)
 		pSeat->m_vecCameraAngle.z = readcoord();
 
 		pSeat->m_flCameraTime = time + readfloat();
-		break;
-	case EV_IMPACT:
-		int iType;
-		vector vOrigin, vNormal;
-
-		iType = (int)readbyte();
-		vOrigin[0] = readcoord();
-		vOrigin[1] = readcoord();
-		vOrigin[2] = readcoord();
-
-		vNormal[0] = readcoord();
-		vNormal[1] = readcoord();
-		vNormal[2] = readcoord();
-
-		Effect_Impact(iType, vOrigin, vNormal);
 		break;
 	case EV_ANGLE:
 		vector a;

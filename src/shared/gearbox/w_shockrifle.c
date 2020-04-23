@@ -122,9 +122,9 @@ w_shockrifle_shoothornet(void)
 		}
 		
 		if (other.iBleeds) {
-			Effect_CreateBlood(trace_endpos, [1,0,0]);
+			FX_Blood(trace_endpos, [1,0,0]);
 		} else {
-			Effect_CreateSpark(self.origin, trace_plane_normal);
+			FX_Spark(self.origin, trace_plane_normal);
 		}
 		remove(self);
 	}

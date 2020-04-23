@@ -86,7 +86,7 @@ void w_chainsaw_primary(void)
 		Weapons_PlaySound(pl, CHAN_WEAPON, "sh/chainsaw_idle2.wav", 1, ATTN_NORM);
 		pl.w_attack_next = 0.2f;
 	} else {
-		Effect_Impact(IMPACT_MELEE, trace_endpos, trace_plane_normal);
+		FX_Impact(IMPACT_MELEE, trace_endpos, trace_plane_normal);
 		
 		if (trace_ent.takedamage) {
 			if (trace_ent.iBleeds) {
@@ -97,7 +97,7 @@ void w_chainsaw_primary(void)
 			Damage_Apply(trace_ent, self, 10, WEAPON_CHAINSAW, DMG_BLUNT);
 			Weapons_PlaySound(pl, CHAN_WEAPON, "sh/chainsaw_cutintoflesh.wav", 1, ATTN_NORM);
 		} else {
-			Effect_CreateSpark(trace_endpos, trace_plane_normal);
+			FX_Spark(trace_endpos, trace_plane_normal);
 			Weapons_PlaySound(pl, CHAN_WEAPON, "sh/chainsaw_cutinto.wav", 1, ATTN_NORM);
 		}
 		pl.w_attack_next = 0.1f;

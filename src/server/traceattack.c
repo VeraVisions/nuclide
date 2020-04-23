@@ -66,7 +66,7 @@ TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon)
 	}
 
 	if (trace_ent.iBleeds == TRUE) {
-		Effect_CreateBlood(trace_endpos, [1,0,0]);
+		FX_Blood(trace_endpos, [1,0,0]);
 		return;
 	}
 
@@ -77,25 +77,25 @@ TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon)
 	switch ((float)hash_get(hashMaterials, tex)) {
 	case 'G':
 	case 'V':
-		Effect_Impact(IMPACT_METAL, trace_endpos, trace_plane_normal);
+		FX_Impact(IMPACT_METAL, trace_endpos, trace_plane_normal);
 		break;
 	case 'M':
 	case 'P':
-		Effect_Impact(IMPACT_METAL, trace_endpos, trace_plane_normal);
+		FX_Impact(IMPACT_METAL, trace_endpos, trace_plane_normal);
 		break;
 	case 'D':
 	case 'W':
-		Effect_Impact(IMPACT_WOOD, trace_endpos, trace_plane_normal);
+		FX_Impact(IMPACT_WOOD, trace_endpos, trace_plane_normal);
 		break;
 	case 'Y':
-		Effect_Impact(IMPACT_GLASS, trace_endpos, trace_plane_normal);
+		FX_Impact(IMPACT_GLASS, trace_endpos, trace_plane_normal);
 		break;
 	case 'N':
-		Effect_Impact(IMPACT_DEFAULT, trace_endpos, trace_plane_normal);
+		FX_Impact(IMPACT_DEFAULT, trace_endpos, trace_plane_normal);
 		break;
 	case 'T':
 	default:
-		Effect_Impact(IMPACT_DEFAULT, trace_endpos, trace_plane_normal);
+		FX_Impact(IMPACT_DEFAULT, trace_endpos, trace_plane_normal);
 		break;
 	}
 

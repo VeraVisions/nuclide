@@ -58,7 +58,7 @@ void env_explosion::env_explosion(void)
 
 void env_explosion::Trigger(void)
 {
-	Effect_CreateExplosion(origin);
+	FX_Explosion(origin);
 
 	if (!(spawnflags & ENVEXPLO_NODAMAGE)) {
 		Damage_Radius(origin, this, m_iMagnitude, m_iMagnitude * 2.5f, TRUE, 0);

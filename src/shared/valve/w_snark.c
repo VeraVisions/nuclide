@@ -85,7 +85,7 @@ monster_snark::customphysics(void)
 		if (trace_ent.takedamage == DAMAGE_YES) {
 			Sound_Play(self, CHAN_BODY, "weapon_snark.deploy");
 			Damage_Apply(trace_ent, self.goalentity, Skill_GetValue("snark_dmg_bite"), WEAPON_SNARK, DMG_GENERIC);
-			Effect_CreateBlood(self.origin + [0,0,16], [1,0,0]);
+			FX_Blood(self.origin + [0,0,16], [1,0,0]);
 		}
 
 		if (self.aiment.health <= 0) {
@@ -101,7 +101,7 @@ monster_snark::Death(int i)
 {
 	float dmg = Skill_GetValue("snark_dmg_pop");
 	Damage_Radius(origin, goalentity, dmg, dmg * 2.5f, TRUE, WEAPON_SNARK);
-	Effect_CreateBlood(self.origin + [0,0,16], [203,183,15] / 255);
+	FX_Blood(self.origin + [0,0,16], [203,183,15] / 255);
 	Sound_Play(self, CHAN_VOICE, "weapon_snark.die");
 	Sound_Play(self, CHAN_BODY, "weapon_snark.blast");
 	self.customphysics = __NULL__;

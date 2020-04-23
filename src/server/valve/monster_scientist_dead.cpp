@@ -46,7 +46,7 @@ class monster_scientist_dead:CBaseMonster
 void monster_scientist_dead::Gib(void)
 {
 	takedamage = DAMAGE_NO;
-	Effect_GibHuman(this.origin);
+	FX_GibHuman(this.origin);
 	Hide();
 }
 

@@ -59,7 +59,7 @@ void env_spark::CreateSpark(void)
 {
 	int r = floor((random() * spark_snd.length));
 	sound(this, CHAN_AUTO, spark_snd[r], 1.0f, ATTN_IDLE);
-	Effect_CreateSpark(self.origin, self.angles);
+	FX_Spark(self.origin, self.angles);
 }
 
 void env_spark::TimedSpark(void)

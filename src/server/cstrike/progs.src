@@ -25,7 +25,14 @@
 ../../shared/cstrike/player.h
 ../cstrike/defs.h
 
-../../shared/effects.c
+../../shared/valve/fx_blood.c
+../../shared/valve/fx_breakmodel.c
+../../shared/valve/fx_explosion.c
+../../shared/valve/fx_gibhuman.c
+../../shared/valve/fx_spark.c
+../../shared/cstrike/fx_impact.c
+../../shared/cstrike/fx_flashbang.c
+../../shared/cstrike/fx_smokenade.c
 ../cstrike/player.c
 ../../shared/cstrike/pmove.c
 ../../shared/pmove.c

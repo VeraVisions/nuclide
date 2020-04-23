@@ -18,8 +18,8 @@
 .float wait;
 .float wait;
 
-void Effect_CreateSpark(vector, vector);
-void Effect_BreakModel(int, vector, vector, vector, float);
+void FX_Spark(vector, vector);
+void FX_BreakModel(int, vector, vector, vector, float);
 
 /* This is required because people who use Hammer do awful things
    to get their models to update. We get a multitude of juicy

@@ -93,7 +93,7 @@ void WeaponHEGRENADE_PrimaryFire(void) {
 #ifdef SERVER
 void WeaponHEGRENADE_Throw(void) {
 	static void WeaponHEGRENADE_Explode(void) {
-		Effect_CreateExplosion(self.origin);
+		FX_Explosion(self.origin);
 		Damage_Radius(self.origin, self, 100, 512, TRUE);
 		sound(self, CHAN_WEAPON, sprintf("weapons/explode%d.wav", floor(random() * 2) + 3), 1, ATTN_NORM);
 		remove(self);
