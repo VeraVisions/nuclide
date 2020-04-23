@@ -167,6 +167,11 @@ CSEv_AmmoBuySecondary(void)
 	int cal = 0;
 	int ps = 0;
 	player pl = (player)self;
+	CSGameRules rules = (CSGameRules)g_grMode;
+
+	if (rules.BuyingPossible(pl) == FALSE) {
+		return;
+	}
 
 	for (int i = 1; i < g_weapons.length; i++) {
 		if ((pl.g_items & g_weapons[i].id) && (g_weapons[i].slot == 1)) {
@@ -209,6 +214,11 @@ CSEv_AmmoBuyPrimary(void)
 	int ps = 0;
 	int cal = 0;
 	player pl = (player)self;
+	CSGameRules rules = (CSGameRules)g_grMode;
+
+	if (rules.BuyingPossible(pl) == FALSE) {
+		return;
+	}
 
 	for (int i = 1; i < g_weapons.length; i++) {
 		if ((pl.g_items & g_weapons[i].id) && (g_weapons[i].slot == 0)) {
