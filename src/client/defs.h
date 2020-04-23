@@ -52,14 +52,7 @@ var float autocvar_r_viewmodelscale = 1.0f;
 var float autocvar_cl_hudaspect = 0.0f;
 
 /* particle descriptors */
-var float PARTICLE_BLOOD;
-var float PARTICLE_PIECES_BLACK;
-var float PARTICLE_SMOKE_BROWN;
-var float PARTICLE_SMOKE_GREY;
-var float PARTICLE_SPARK;
 var float PART_DUSTMOTE;
-var float DECAL_SHOT;
-var float DECAL_GLASS;
 
 /* muzzleflash indices */
 var int MUZZLE_SMALL;

@@ -14,11 +14,14 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+var float PARTICLE_BLOOD;
+
 void
 FX_Blood_Init(void)
 {
 	precache_model("sprites/bloodspray.spr");
 	precache_model("sprites/blood.spr");
+	PARTICLE_BLOOD = particleeffectnum("part_blood");
 }
 
 void

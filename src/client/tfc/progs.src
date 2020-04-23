@@ -45,8 +45,8 @@ vgui_chooseteam.cpp
 ../../shared/valve/fx_breakmodel.c
 ../../shared/valve/fx_explosion.c
 ../../shared/valve/fx_gibhuman.c
-../../shared/valve/fx_impact.c
 ../../shared/valve/fx_spark.c
+../../shared/valve/fx_impact.c
 init.c
 ../npc.c
 

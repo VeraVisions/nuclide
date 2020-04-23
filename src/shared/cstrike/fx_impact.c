@@ -14,6 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+var float DECAL_SHOT;
+var float DECAL_GLASS;
+var float PARTICLE_PIECES_BLACK;
+var float PARTICLE_SMOKE_BROWN;
+var float PARTICLE_SMOKE_GREY;
+
 void
 FX_Impact_Init(void)
 {
@@ -27,6 +33,12 @@ FX_Impact_Init(void)
 	precache_sound("weapons/ric3.wav");
 	precache_sound("weapons/ric4.wav");
 	precache_sound("weapons/ric5.wav");
+
+	DECAL_SHOT = particleeffectnum("decal_shot");
+	DECAL_GLASS = particleeffectnum("decal_glass");
+	PARTICLE_PIECES_BLACK = particleeffectnum("part_pieces_black");
+	PARTICLE_SMOKE_GREY = particleeffectnum("part_smoke_grey");
+	PARTICLE_SMOKE_BROWN = particleeffectnum("part_smoke_brown");
 }
 
 void
@@ -68,20 +80,19 @@ FX_Impact(int iType, vector vecPos, vector vNormal)
 			pointparticles(PARTICLE_PIECES_BLACK, vecPos, vNormal, 1);
 			break;
 		case IMPACT_WOOD:
-			pointparticles(PARTICLE_SPARK, vecPos, vNormal, 1);
+			FX_Spark(vecPos, vNormal);
 			pointparticles(PARTICLE_PIECES_BLACK, vecPos, vNormal, 1);
 			pointparticles(PARTICLE_SMOKE_BROWN, vecPos, vNormal, 1);
 			break;
 		case IMPACT_METAL:
-			pointparticles(PARTICLE_SPARK, vecPos, vNormal, 1);
-			pointparticles(PARTICLE_SPARK, vecPos, vNormal, 1);
+			FX_Spark(vecPos, vNormal);
 			pointparticles(PARTICLE_PIECES_BLACK, vecPos, vNormal, 1);
 			break;
 		case IMPACT_FLESH:
-			pointparticles(PARTICLE_BLOOD, vecPos, vNormal, 1);
+			FX_Blood(vecPos, vNormal);
 			break;
 		case IMPACT_DEFAULT:
-			pointparticles(PARTICLE_SPARK, vecPos, vNormal, 1);
+			FX_Spark(vecPos, vNormal);
 			pointparticles(PARTICLE_PIECES_BLACK, vecPos, vNormal, 1);
 			pointparticles(PARTICLE_SMOKE_GREY, vecPos, vNormal, 1);
 			break;
