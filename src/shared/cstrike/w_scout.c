@@ -180,6 +180,7 @@ w_scout_primary(void)
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 #else
+	TraceAttack_SetPenetrationPower(2);
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 75, [accuracy,accuracy], WEAPON_SCOUT);
 	pl.scout_mag--;
 

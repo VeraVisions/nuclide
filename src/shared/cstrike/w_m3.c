@@ -140,6 +140,7 @@ w_m3_primary(void)
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 #else
+	TraceAttack_SetPenetrationPower(0);
 	TraceAttack_FireBullets(9, pl.origin + pl.view_ofs, 26, [accuracy,accuracy], WEAPON_M3);
 	pl.m3_mag--;
 

@@ -133,6 +133,7 @@ w_aug_primary(void)
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 #else
 	pl.aug_mag--;
+	TraceAttack_SetPenetrationPower(1);
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 32, [accuracy,accuracy], WEAPON_AUG);
 
 	if (self.flags & FL_CROUCHING)

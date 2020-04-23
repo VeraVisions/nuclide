@@ -181,6 +181,7 @@ w_awp_primary(void)
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 #else
 	pl.awp_mag--;
+	TraceAttack_SetPenetrationPower(2);
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 115, [accuracy,accuracy], WEAPON_AWP);
 
 	if (self.flags & FL_CROUCHING)

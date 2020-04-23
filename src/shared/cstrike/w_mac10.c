@@ -131,6 +131,7 @@ w_mac10_primary(void)
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 #else
+	TraceAttack_SetPenetrationPower(0);
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 29, [accuracy,accuracy], WEAPON_MAC10);
 	pl.mac10_mag--;
 

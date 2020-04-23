@@ -132,6 +132,7 @@ w_ak47_primary(void)
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 #else
+	TraceAttack_SetPenetrationPower(1);
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 36, [accuracy,accuracy], WEAPON_AK47);
 	pl.ak47_mag--;
 

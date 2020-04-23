@@ -24,7 +24,12 @@ void FX_Explosion(vector vecPos);
 void FX_GibHuman(vector vecPos);
 void Footsteps_Update(void);
 void Vox_Broadcast(string sMessage);
-void TraceAttack_FireBullets(int , vector, int, vector, int);
+
+void TraceAttack_FireBullets(int,vector,int,vector,int);
+#ifdef BULLETPENETRATION
+void TraceAttack_SetPenetrationPower(int);
+#endif
+
 void Damage_Radius(vector, entity, float, float, int, int);
 void Damage_Apply(entity, entity, float, int, int);
 void Client_TriggerCamera(entity eTarget, vector vecPos, vector vEndPos, float fResetTime);

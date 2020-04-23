@@ -135,6 +135,7 @@ w_mp5_primary(void)
 		return;
 	}
 
+	TraceAttack_SetPenetrationPower(0);
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 26, [accuracy,accuracy], WEAPON_MP5);
 
 	pl.mp5_mag--;

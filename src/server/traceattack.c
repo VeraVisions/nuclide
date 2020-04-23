@@ -102,7 +102,7 @@ TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon)
 #ifdef BULLETPENETRATION
 	if (iTotalPenetrations > 0) {
 		iTotalPenetrations -= 1;
-		TraceAttack_FireSingle(trace_endpos + (v_forward * 2), vAngle, iDamage, iWeapon);
+		TraceAttack_FireSingle(trace_endpos + (v_forward * 2), vAngle, iDamage / 2, iWeapon);
 	}
 #endif
 }
@@ -115,9 +115,6 @@ TraceAttack_FireBullets(int iShots, vector vecPos, int iDamage, vector vecSpread
 	makevectors(self.v_angle);
 
 	while (iShots > 0) {
-#ifdef BULLETPENETRATION
-		iTotalPenetrations = 2;
-#endif
 		vDir = aim(self, 100000);
 #ifndef CSTRIKE
 		vDir += random(-1,1) * vecSpread[0] * v_right;
@@ -142,3 +139,11 @@ TraceAttack_FireBullets(int iShots, vector vecPos, int iDamage, vector vecSpread
 		iShots--;
 	}
 }
+
+#ifdef BULLETPENETRATION
+void
+TraceAttack_SetPenetrationPower(int power)
+{
+	iTotalPenetrations = power;
+}
+#endif

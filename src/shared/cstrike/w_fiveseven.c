@@ -135,6 +135,7 @@ w_fiveseven_primary(void)
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 #else
+	TraceAttack_SetPenetrationPower(0);
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 25, [accuracy,accuracy], WEAPON_FIVESEVEN);
 	pl.fiveseven_mag--;
 

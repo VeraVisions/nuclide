@@ -131,6 +131,7 @@ w_sg550_primary(void)
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 #else
+	TraceAttack_SetPenetrationPower(1);
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 70, [accuracy,accuracy], WEAPON_SG550);
 	pl.sg550_mag--;
 

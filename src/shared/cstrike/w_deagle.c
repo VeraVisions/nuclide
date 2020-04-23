@@ -136,6 +136,7 @@ w_deagle_primary(void)
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 #else
 	pl.deagle_mag--;
+	TraceAttack_SetPenetrationPower(1);
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 54, [accuracy,accuracy], WEAPON_DEAGLE);
 
 	if (self.flags & FL_CROUCHING)

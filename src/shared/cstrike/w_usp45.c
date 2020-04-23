@@ -169,6 +169,7 @@ w_usp45_primary(void)
 		Sound_Play(pl, CHAN_WEAPON, "weapon_usp45.fire");
 	}
 
+	TraceAttack_SetPenetrationPower(0);
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 33,  [accuracy,accuracy], WEAPON_USP45);
 
 	if (self.flags & FL_CROUCHING)

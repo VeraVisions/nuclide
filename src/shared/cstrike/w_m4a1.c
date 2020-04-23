@@ -164,6 +164,7 @@ w_m4a1_primary(void)
 		Sound_Play(pl, CHAN_WEAPON, "weapon_m4a1.fire");
 	}
 
+	TraceAttack_SetPenetrationPower(1);
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 33,  [accuracy,accuracy], WEAPON_M4A1);
 
 	if (self.flags & FL_CROUCHING)

@@ -146,6 +146,7 @@ w_elites_primary(void)
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 #else
+	TraceAttack_SetPenetrationPower(0);
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 45, [accuracy,accuracy], WEAPON_ELITES);
 	pl.elites_mag--;
 

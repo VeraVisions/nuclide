@@ -139,6 +139,7 @@ w_p228_primary(void)
 	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 #else
+	TraceAttack_SetPenetrationPower(0);
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 40, [accuracy,accuracy], WEAPON_P228);
 	pl.p228_mag--;
 
