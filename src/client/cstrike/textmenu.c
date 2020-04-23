@@ -116,7 +116,7 @@ BUY(int n)
 	case 8:
 		Textmenu_Call(inteam == TEAM_T ? "DT_BUYITEM" : "DCT_BUYITEM");
 		break;
-	case 0:
+	case 10:
 		Textmenu_Call("");
 		break;
 	}
@@ -144,6 +144,9 @@ DT_BUYITEM(int n)
 		break;
 	case 7:
 		sendevent("BuyEquipment", "f", 6);
+		break;
+	case 10:
+		Textmenu_Call("");
 		break;
 	default:
 		return;
@@ -176,6 +179,9 @@ DCT_BUYITEM(int n)
 	case 7:
 		sendevent("BuyEquipment", "f", 6);
 		break;
+	case 10:
+		Textmenu_Call("");
+		break;
 	default:
 		return;
 	}
@@ -203,6 +209,9 @@ T_BUYPISTOL(int n)
 	case 5:
 		sendevent("BuyWeapon", "f", WEAPON_ELITES);
 		break;
+	case 10:
+		Textmenu_Call("");
+		break;
 	default:
 		return;
 	}
@@ -228,6 +237,9 @@ CT_BUYPISTOL(int n)
 	case 6:
 		sendevent("BuyWeapon", "f", WEAPON_FIVESEVEN);
 		break;
+	case 10:
+		Textmenu_Call("");
+		break;
 	default:
 		return;
 	}
@@ -245,6 +257,9 @@ BUYSHOTGUN(int n)
 		break;
 	case 2:
 		sendevent("BuyWeapon", "f", WEAPON_XM1014);
+		break;
+	case 10:
+		Textmenu_Call("");
 		break;
 	default:
 		return;
@@ -272,6 +287,9 @@ T_BUYRIFLE(int n)
 		break;
 	case 7:
 		sendevent("BuyWeapon", "f", WEAPON_G3SG1);
+		break;
+	case 10:
+		Textmenu_Call("");
 		break;
 	default:
 		return;
@@ -301,6 +319,9 @@ CT_BUYRIFLE(int n)
 	case 8:
 		sendevent("BuyWeapon", "f", WEAPON_SG550);
 		break;
+	case 10:
+		Textmenu_Call("");
+		break;
 	default:
 		return;
 	}
@@ -325,6 +346,9 @@ T_BUYSUBMACHINEGUN(int n)
 	case 5:
 		sendevent("BuyWeapon", "f", WEAPON_UMP45);
 		break;
+	case 10:
+		Textmenu_Call("");
+		break;
 	default:
 		return;
 	}
@@ -347,6 +371,9 @@ CT_BUYSUBMACHINEGUN(int n)
 	case 5:
 		sendevent("BuyWeapon", "f", WEAPON_UMP45);
 		break;
+	case 10:
+		Textmenu_Call("");
+		break;
 	default:
 		return;
 	}
@@ -361,6 +388,9 @@ BUYMACHINEGUN(int n)
 	switch (n) {
 	case 1:
 		sendevent("BuyWeapon", "f", WEAPON_PARA);
+		break;
+	case 10:
+		Textmenu_Call("");
 		break;
 	default:
 		return;
@@ -392,6 +422,9 @@ RADIOA(int n)
 	case 6:
 		sendevent("Radio", "f", RADIO_FIREASSIS);
 		break;
+	case 10:
+		Textmenu_Call("");
+		break;
 	default:
 		return;
 	}
@@ -420,6 +453,9 @@ RADIOB(int n)
 		break;
 	case 6:
 		sendevent("Radio", "f", RADIO_COM_REPORTIN);
+		break;
+	case 10:
+		Textmenu_Call("");
 		break;
 	default:
 		return;
@@ -458,6 +494,9 @@ RADIOC(int n)
 		break;
 	case 9:
 		sendevent("Radio", "f", RADIO_ENEMYDOWN);
+		break;
+	case 10:
+		Textmenu_Call("");
 		break;
 	default:
 		return;
