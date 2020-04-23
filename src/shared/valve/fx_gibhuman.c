@@ -55,12 +55,11 @@ FX_GibHuman(vector pos)
 		Decals_Place(self.origin, sprintf("{blood%d", floor(random(1,9))));
 	}
 	for (int i = 0; i < 5; i++) {
-		
 		vector vel;
 		vel[0] = random(-128,128);
 		vel[1] = random(-128,128);
 		vel[2] = (300 + random() * 64);
-	
+
 		entity gibb = spawn();
 		setmodel(gibb, g_hgibs[i]);
 		setorigin(gibb, pos);

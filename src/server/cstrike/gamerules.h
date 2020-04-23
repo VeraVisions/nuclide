@@ -52,6 +52,7 @@ class CSMultiplayerRules:CSGameRules
 	virtual void(player) PlayerSpawn;
 	virtual void(player) PlayerPreFrame;
 	virtual void(player) PlayerDeath;
+	virtual int(void) MaxItemPerSlot;
 
 	/* CS specific */
 	virtual void(void) CreateRescueZones;
@@ -74,5 +75,4 @@ class CSMultiplayerRules:CSGameRules
 	virtual void(player) PlayerMakeSpectator;
 	virtual void(player, int) PlayerRespawn;
 	virtual entity(float) PlayerFindSpawn;
-	virtual int(void) MaxItemPerSlot;
 };

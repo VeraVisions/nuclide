@@ -139,23 +139,23 @@ FX_BreakModel(int count, vector vMins, vector vMaxs, vector vVel, float fStyle)
 	for (int i = 0; i < count; i++) {
 		entity eGib = spawn();
 		eGib.classname = "gib";
-		
-		vecPos[0] = vMins[0] + (random() * (vMaxs[0] - vMins[0]));	
-		vecPos[1] = vMins[1] + (random() * (vMaxs[1] - vMins[1]));	
-		vecPos[2] = vMins[2] + (random() * (vMaxs[2] - vMins[2]));	
-		
+
+		vecPos[0] = vMins[0] + (random() * (vMaxs[0] - vMins[0]));
+		vecPos[1] = vMins[1] + (random() * (vMaxs[1] - vMins[1]));
+		vecPos[2] = vMins[2] + (random() * (vMaxs[2] - vMins[2]));
+
 		setorigin(eGib, vecPos);
 		setmodel(eGib, sModel);
 		setcustomskin(eGib, "", sprintf("geomset 0 %f\n", random(1, fModelCount + 1)));
 		eGib.movetype = MOVETYPE_BOUNCE;
 		eGib.solid = SOLID_NOT;
-		
+
 		eGib.avelocity[0] = random()*600;
 		eGib.avelocity[1] = random()*600;
 		eGib.avelocity[2] = random()*600;
 		eGib.think = FX_BreakModel_Remove;
 		eGib.nextthink = time + 10;
-		
+
 		if ((fStyle == GSMATERIAL_GLASS) || (fStyle == GSMATERIAL_GLASS_UNBREAKABLE)) {
 			eGib.effects = EF_ADDITIVE;
 		}

@@ -297,6 +297,7 @@ int Weapons_AddItem(player pl, int w)
 
 				/* we're over the slot limit. */
 				if (c >= maxit) {
+					self = oldself;
 					return FALSE;
 				}
 			}

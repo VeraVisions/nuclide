@@ -14,6 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+int
+CSMultiplayerRules::MaxItemPerSlot(void)
+{
+	return 1;
+}
+
 void
 CSMultiplayerRules::PlayerDeath(player pl)
 {
@@ -719,7 +725,6 @@ CSMultiplayerRules::PlayerMakePlayable(player pl, int chara)
 	} else {
 		/* counter */
 		pl.team = TEAM_CT;
-		pl.g_items |= ITEM_SUIT;
 
 		Weapons_AddItem(pl, WEAPON_KNIFE);
 		if (autocvar_fcs_knifeonly == FALSE) {
@@ -786,12 +791,6 @@ CSMultiplayerRules::PlayerSpawn(player pl)
 	/* we don't belong to any team */
 	pl.team = 0;
 	forceinfokey(pl, "*team", "0"); 
-}
-
-int
-CSMultiplayerRules::MaxItemPerSlot(void)
-{
-	return 1;
 }
 
 void
