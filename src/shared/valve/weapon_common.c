@@ -370,5 +370,31 @@ void Weapons_ReloadWeapon(player pl, .int mag, .int ammo, int max)
 		pl.(mag) += iNeed;
 		pl.(ammo) -= iNeed;
 	}
-} 
+}
+
+void CSEv_DropWeapon(void)
+{
+	player pl = (player)self;
+	
+	static void DropWeapon_Enable(void)
+	{
+		self.solid = SOLID_TRIGGER;
+	}
+
+	if (!pl.activeweapon)
+		return;
+
+	item_pickup drop = spawn(item_pickup);
+	drop.setitem(pl.activeweapon);
+	setorigin(drop, pl.origin);
+	drop.solid = SOLID_NOT;
+	drop.think = DropWeapon_Enable;
+	drop.nextthink = time + 1.5f;
+	drop.movetype = MOVETYPE_TOSS;
+
+	makevectors(pl.v_angle);
+	drop.velocity = v_forward * 256;
+	drop.avelocity[1] = 500;
+	Weapons_RemoveItem(pl, pl.activeweapon);
+}
 #endif

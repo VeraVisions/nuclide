@@ -23,6 +23,7 @@ View_UpdateWeapon(entity vm, entity mflash)
 	if (pSeat->m_iLastWeapon == pl.activeweapon) {
 		return;
 	}
+	pSeat->m_iOldWeapon = pSeat->m_iLastWeapon;
 	pSeat->m_iLastWeapon = pl.activeweapon;
 
 	if (!pl.activeweapon) {

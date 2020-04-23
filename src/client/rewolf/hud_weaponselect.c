@@ -95,7 +95,11 @@ void HUD_DrawWeaponSelect_Trigger(void)
 
 void HUD_DrawWeaponSelect_Last(void)
 {
-	
+	player pl = (player)pSeat->m_ePlayer;
+	if (pl.g_items & g_weapons[pSeat->m_iOldWeapon].id) {
+		pl.activeweapon = pSeat->m_iOldWeapon;
+		sendevent("PlayerSwitchWeapon", "i", pSeat->m_iOldWeapon);
+	}
 }
 
 void HUD_DrawWeaponSelect_Num(vector vecPos, float fValue)

@@ -115,6 +115,10 @@ armoury_entity::touch(void)
 		return;
 	}
 
+	/* temp */
+	if (m_iItem == 17 || m_iItem == 16)
+		return;
+
 	if (Weapons_AddItem((player)other, m_iItem) == FALSE) {
 		return;
 	}

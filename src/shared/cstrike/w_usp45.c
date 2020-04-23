@@ -71,13 +71,13 @@ w_usp45_updateammo(player pl)
 string
 w_usp45_wmodel(void)
 {
-	return "models/w_usp45.mdl";
+	return "models/w_usp.mdl";
 }
 
 string
 w_usp45_pmodel(void)
 {
-	return "models/p_usp45.mdl";
+	return "models/p_usp.mdl";
 }
 
 string

@@ -30,6 +30,7 @@ struct
 	int m_iVMBones;
 	int m_iVMEjectBone;
 	int m_iLastWeapon;
+	int m_iOldWeapon;
 	float m_flBobTime;
 	float m_flBob;
 

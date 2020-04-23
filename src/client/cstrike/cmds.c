@@ -33,17 +33,6 @@ Game_ConsoleCommand(void)
 	case "radio3":
 		Textmenu_Call("RADIOC");
 		break;
-	case "motd":
-		/*VGUI_MessageOfTheDay();*/
-		break;
-	case "buy":
-		/*if (getstatf(STAT_BUYZONE) == TRUE) {
-			VGUI_BuyMenu();
-		}*/
-		break;
-	case "chooseteam":
-		/*VGUI_ChooseTeam();*/
-		break;
 	case "nightvision":
 		/*Nightvision_Toggle();*/
 		break;
