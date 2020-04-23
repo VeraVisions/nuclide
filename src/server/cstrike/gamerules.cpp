@@ -220,4 +220,4 @@ void
 CSGameRules::PlayerKill(player pl)
 {
 	Damage_Apply(pl, pl, pl.health, WEAPON_NONE, DMG_SKIP_ARMOR);
-} 
+}

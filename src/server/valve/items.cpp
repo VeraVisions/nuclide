@@ -17,6 +17,8 @@
 /* PICKUP ITEMS */
 class item_pickup:CBaseTrigger
 {
+	int m_iClip;
+	int m_iWasDropped;
 	int id;
 	void(void) item_pickup;
 
@@ -72,7 +74,10 @@ void item_pickup::Respawn(void)
 	
 	think = __NULL__;
 	nextthink = -1;
-	sound(this, CHAN_ITEM, "items/suitchargeok1.wav", 1, ATTN_NORM, 150);
+
+	if (!m_iWasDropped)
+		sound(this, CHAN_ITEM, "items/suitchargeok1.wav", 1, ATTN_NORM, 150);
+
 	droptofloor();
 }
 

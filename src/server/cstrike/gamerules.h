@@ -74,4 +74,5 @@ class CSMultiplayerRules:CSGameRules
 	virtual void(player) PlayerMakeSpectator;
 	virtual void(player, int) PlayerRespawn;
 	virtual entity(float) PlayerFindSpawn;
+	virtual int(void) MaxItemPerSlot;
 };

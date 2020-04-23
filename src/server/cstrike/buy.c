@@ -75,6 +75,25 @@ CSEv_BuyWeapon_f(float fWeapon)
 	}
 
 	if ((pl.money - g_cstrikeWeaponPrice[iWeapon]) >= 0) {
+		/* let's check if we've got a limit */
+		int maxit;
+		maxit = rules.MaxItemPerSlot();
+		if (maxit > 0) {
+			int wantslot = g_weapons[iWeapon].slot;
+			int c;
+			for (int i = 0; i < g_weapons.length; i++) {
+				if (pl.g_items & g_weapons[i].id && g_weapons[i].slot == wantslot) {
+					c++;
+
+					/* we're over the slot limit. */
+					if (c >= maxit) {
+						pl.activeweapon = i;
+						CSEv_DropWeapon();
+					}
+				}
+			}
+		}
+	
 		Weapons_AddItem(pl, iWeapon);
 		Money_AddMoney(pl, -g_cstrikeWeaponPrice[iWeapon]);
 		Sound_Play(pl, CHAN_ITEM, "buy.weapon");

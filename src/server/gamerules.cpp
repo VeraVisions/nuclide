@@ -104,6 +104,12 @@ CGameRules::SpectatorThink(player pl)
 	//print("SpectatorThink!\n");
 }*/
 
+int
+CGameRules::MaxItemPerSlot(void)
+{
+	return -1;
+}
+
 void
 CGameRules::CGameRules(void)
 {

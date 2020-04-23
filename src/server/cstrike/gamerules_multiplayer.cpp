@@ -788,6 +788,12 @@ CSMultiplayerRules::PlayerSpawn(player pl)
 	forceinfokey(pl, "*team", "0"); 
 }
 
+int
+CSMultiplayerRules::MaxItemPerSlot(void)
+{
+	return 1;
+}
+
 void
 CSMultiplayerRules::CSMultiplayerRules(void)
 {

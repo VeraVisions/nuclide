@@ -284,6 +284,25 @@ int Weapons_AddItem(player pl, int w)
 	entity oldself = self;
 	self = pl;
 
+	/* let's check if we've got a limit */
+	int maxit;
+	CGameRules rules = (CGameRules)g_grMode;
+	maxit = rules.MaxItemPerSlot();
+	if (maxit > 0) {
+		int wantslot = g_weapons[w].slot;
+		int c;
+		for (int i = 0; i < g_weapons.length; i++) {
+			if (pl.g_items & g_weapons[i].id && g_weapons[i].slot == wantslot) {
+				c++;
+
+				/* we're over the slot limit. */
+				if (c >= maxit) {
+					return FALSE;
+				}
+			}
+		}
+	}
+
 	/* in case programmer decided not to add a pickup callback */
 	if (g_weapons[w].pickup == __NULL__) {
 		if (pl.g_items & g_weapons[w].id) {
@@ -384,7 +403,7 @@ void CSEv_DropWeapon(void)
 	if (!pl.activeweapon)
 		return;
 
-	item_pickup drop = spawn(item_pickup);
+	item_pickup drop = spawn(item_pickup, m_iWasDropped: TRUE, m_iClip: pl.a_ammo1);
 	drop.setitem(pl.activeweapon);
 	setorigin(drop, pl.origin);
 	drop.solid = SOLID_NOT;
