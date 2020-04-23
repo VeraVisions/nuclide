@@ -118,11 +118,11 @@ Game_ConsoleCommand(void)
 		break;
 	case "buyammo1":
 	case "primammo":
-		sendevent("BuyAmmo", "f", 0);
+		sendevent("AmmoBuyPrimary", "");
 		break;
 	case "buyammo2":
 	case "secammo":
-		sendevent("BuyAmmo", "f", 1);
+		sendevent("AmmoBuySecondary", "");
 		break;
 	case "vest":
 		sendevent("BuyEquipment", "f", 0);
