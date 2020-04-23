@@ -149,10 +149,12 @@ w_c4bomb_precache(void)
 	precache_sound("weapons/c4_beep4.wav");
 	precache_sound("weapons/c4_beep5.wav");
 	precache_sound("weapons/c4_explode1.wav");
-#endif
-	precache_model("models/v_c4.mdl");
 	precache_model("models/w_c4.mdl");
 	precache_model("models/p_c4.mdl");
+	precache_model("sprites/ledglow.spr");
+#else
+	precache_model("models/v_c4.mdl");
+#endif
 }
 
 void

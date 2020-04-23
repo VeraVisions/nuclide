@@ -14,6 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+.float maxspeed;
+.float flags;
+
 var hashtable g_hashsounds;
 
 enumflags
@@ -303,7 +306,7 @@ Sound_Play(entity target, int chan, string shader)
 	float volume;
 	float radius;
 	float pitch;
-	int flags;
+	int flag;
 	int sample;
 
 	sample = (int)hash_get(g_hashsounds, shader);
@@ -323,13 +326,13 @@ Sound_Play(entity target, int chan, string shader)
 
 	/* flags */
 	if (g_sounds[sample].flags & SNDFL_NOREVERB) {
-		flags |= SOUNDFLAG_NOREVERB;
+		flag |= SOUNDFLAG_NOREVERB;
 	}
 	if (g_sounds[sample].flags & SNDFL_GLOBAL) {
 		radius = ATTN_NONE;
 	}
 	if (g_sounds[sample].flags & SNDFL_LOOPING) {
-		flags |= SOUNDFLAG_FORCELOOP;
+		flag |= SOUNDFLAG_FORCELOOP;
 	}
 	if (g_sounds[sample].flags & SNDFL_NODUPS) {
 		if (g_sounds[sample].playc >= g_sounds[sample].sample_count) {
@@ -338,13 +341,18 @@ Sound_Play(entity target, int chan, string shader)
 		r = g_sounds[sample].playc++;
 	}
 	if (g_sounds[sample].flags & SNDFL_FOLLOW) {
-		flags |= SOUNDFLAG_FOLLOW;
+		flag |= SOUNDFLAG_FOLLOW;
 	}
 	if (g_sounds[sample].flags & SNDFL_STEP) {
 		float s = vlen(target.velocity);
-		if (s < 120) {
+		float m = target.maxspeed;
+
+		if (target.flags & FL_CROUCHING)
+			m *= 2.0f;
+		
+		if (s <= (m * 0.5f)) {
 			return;
-		} else if (s < 270) {
+		} else if (s < (m * 0.8f)) {
 			volume = 0.35f;
 		} else {
 			volume = 0.75;
@@ -352,11 +360,11 @@ Sound_Play(entity target, int chan, string shader)
 	}
 #ifdef CLIENT
 	if (g_sounds[sample].flags & SNDFL_OMNI) {
-		flags |= SOUNDFLAG_NOSPACIALISE;
+		flag |= SOUNDFLAG_NOSPACIALISE;
 	}
 #else
 	if (g_sounds[sample].flags & SNDFL_PRIVATE) {
-		flags |= SOUNDFLAG_UNICAST;
+		flag |= SOUNDFLAG_UNICAST;
 		msg_entity = target;
 	}
 #endif
@@ -372,7 +380,7 @@ Sound_Play(entity target, int chan, string shader)
 		volume,
 		radius,
 		pitch,
-		flags,
+		flag,
 		g_sounds[sample].offset
 	);
 }

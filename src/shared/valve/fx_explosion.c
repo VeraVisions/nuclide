@@ -15,6 +15,8 @@
  */
 
 #ifdef CLIENT
+var int FX_EXPLOSION_MAIN;
+
 void
 FX_Explosion_Init(void)
 {
@@ -22,6 +24,7 @@ FX_Explosion_Init(void)
 	precache_sound("weapons/explode4.wav");
 	precache_sound("weapons/explode5.wav");
 	precache_model("sprites/fexplo.spr");
+	FX_EXPLOSION_MAIN = particleeffectnum("fx_explosion.main");
 }
 #endif
 
@@ -52,7 +55,7 @@ FX_Explosion(vector vecPos)
 	eExplosion.framerate = 20;
 	eExplosion.nextthink = time + 0.05f;
 
-	te_explosion(vecPos);
+	pointparticles(FX_EXPLOSION_MAIN, vecPos, [0,0,0], 1);
 #endif
 }
 

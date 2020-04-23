@@ -15,11 +15,10 @@
  */
 
 #ifdef CLIENT
-var float DECAL_SHOT;
-var float DECAL_GLASS;
-var float PARTICLE_PIECES_BLACK;
-var float PARTICLE_SMOKE_BROWN;
-var float PARTICLE_SMOKE_GREY;
+var int FX_IMPACT_BLACKBITS;
+var int FX_IMPACT_SMOKE_BROWN;
+var int FX_IMPACT_SMOKE_GREY;
+var int FX_IMPACT_SPARK;
 
 void
 FX_Impact_Init(void)
@@ -35,11 +34,10 @@ FX_Impact_Init(void)
 	precache_sound("weapons/ric4.wav");
 	precache_sound("weapons/ric5.wav");
 
-	DECAL_SHOT = particleeffectnum("decal_shot");
-	DECAL_GLASS = particleeffectnum("decal_glass");
-	PARTICLE_PIECES_BLACK = particleeffectnum("part_pieces_black");
-	PARTICLE_SMOKE_GREY = particleeffectnum("part_smoke_grey");
-	PARTICLE_SMOKE_BROWN = particleeffectnum("part_smoke_brown");
+	FX_IMPACT_BLACKBITS = particleeffectnum("fx_impact.blackbits");
+	FX_IMPACT_SMOKE_GREY = particleeffectnum("fx_impact.smoke_grey");
+	FX_IMPACT_SMOKE_BROWN = particleeffectnum("fx_impact.smoke_brown");
+	FX_IMPACT_SPARK = particleeffectnum("fx_impact.spark");
 }
 #endif
 
@@ -79,26 +77,26 @@ FX_Impact(int iType, vector vecPos, vector vNormal)
 		case IMPACT_EXPLOSION:
 			break;
 		case IMPACT_GLASS:
-			pointparticles(PARTICLE_PIECES_BLACK, vecPos, vNormal, 1);
+			pointparticles(FX_IMPACT_BLACKBITS, vecPos, vNormal, 1);
 			break;
 		case IMPACT_WOOD:
-			FX_Spark(vecPos, vNormal);
-			pointparticles(PARTICLE_PIECES_BLACK, vecPos, vNormal, 1);
-			pointparticles(PARTICLE_SMOKE_BROWN, vecPos, vNormal, 1);
+			pointparticles(FX_IMPACT_SPARK, vecPos, vNormal, 1);
+			pointparticles(FX_IMPACT_BLACKBITS, vecPos, vNormal, 1);
+			pointparticles(FX_IMPACT_SMOKE_BROWN, vecPos, vNormal, 1);
 			break;
 		case IMPACT_METAL:
-			FX_Spark(vecPos, vNormal);
-			pointparticles(PARTICLE_PIECES_BLACK, vecPos, vNormal, 1);
+			pointparticles(FX_IMPACT_SPARK, vecPos, vNormal, 1);
+			pointparticles(FX_IMPACT_BLACKBITS, vecPos, vNormal, 1);
 			break;
 		case IMPACT_FLESH:
 			FX_Blood(vecPos, vNormal);
 			break;
 		case IMPACT_DEFAULT:
-			FX_Spark(vecPos, vNormal);
-			pointparticles(PARTICLE_PIECES_BLACK, vecPos, vNormal, 1);
-			pointparticles(PARTICLE_SMOKE_GREY, vecPos, vNormal, 1);
-			break;
 		default:
+			pointparticles(FX_IMPACT_SPARK, vecPos, vNormal, 1);
+			pointparticles(FX_IMPACT_BLACKBITS, vecPos, vNormal, 1);
+			pointparticles(FX_IMPACT_SMOKE_GREY, vecPos, vNormal, 1);
+			break;
 	}
 
 	switch (iType) {

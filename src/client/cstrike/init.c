@@ -148,5 +148,4 @@ Game_RendererRestarted(string rstr)
 	precache_model("sprites/top.spr");
 	precache_model("sprites/top_left.spr");
 	precache_model("sprites/top_right.spr");
-	BEAM_TRIPMINE = particleeffectnum("beam_tripmine");
 }

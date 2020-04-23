@@ -60,5 +60,5 @@ Game_RendererRestarted(string rstr)
 	precache_model("sprites/ofch2.spr");
 	precache_model("sprites/320hudof01.spr");
 
-	BEAM_TRIPMINE = particleeffectnum("beam_tripmine");
+	BEAM_TRIPMINE = particleeffectnum("weapon_tripmine.beam");
 }
