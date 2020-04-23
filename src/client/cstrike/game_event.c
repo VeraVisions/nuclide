@@ -88,6 +88,13 @@ switch (fHeader) {
 
 		FX_Impact(iType, vOrigin, vNormal);
 		break;
+	case EV_SMOKE:
+		vector vSmokePos;
+		vSmokePos[0] = readcoord();
+		vSmokePos[1] = readcoord();
+		vSmokePos[2] = readcoord();
+		FX_Smokenade(vSmokePos);
+		break;
 	case EV_CHAT:
 		float fSender = readbyte();
 		float fTeam = readbyte();

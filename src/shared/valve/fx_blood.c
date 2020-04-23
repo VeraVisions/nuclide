@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifdef CLIENT
 var float PARTICLE_BLOOD;
 
 void
@@ -23,6 +24,7 @@ FX_Blood_Init(void)
 	precache_model("sprites/blood.spr");
 	PARTICLE_BLOOD = particleeffectnum("part_blood");
 }
+#endif
 
 void
 FX_Blood(vector pos, vector color)

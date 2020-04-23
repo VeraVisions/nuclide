@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifdef CLIENT
 var float DECAL_SHOT;
 var float DECAL_GLASS;
 var float PARTICLE_PIECES_BLACK;
@@ -35,6 +36,7 @@ FX_Impact_Init(void)
 	PARTICLE_SMOKE_GREY = particleeffectnum("part_smoke_grey");
 	PARTICLE_SMOKE_BROWN = particleeffectnum("part_smoke_brown");
 }
+#endif
 
 void
 FX_Impact(int iType, vector vecPos, vector vNormal)

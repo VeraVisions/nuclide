@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifdef CLIENT
 string g_hgibs[] = {
 	"models/gib_b_bone.mdl",
 	"models/gib_legbone.mdl",
@@ -32,6 +33,7 @@ FX_GibHuman_Init(void)
 	precache_model("models/gib_b_gib.mdl");
 	precache_sound("common/bodysplat.wav");
 }
+#endif
 
 void
 FX_GibHuman(vector pos)

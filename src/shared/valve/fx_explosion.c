@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifdef CLIENT
 void
 FX_Explosion_Init(void)
 {
@@ -22,6 +23,7 @@ FX_Explosion_Init(void)
 	precache_sound("weapons/explode5.wav");
 	precache_model("sprites/fexplo.spr");
 }
+#endif
 
 void
 FX_Explosion(vector vecPos)

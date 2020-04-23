@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifdef CLIENT
 var float PARTICLE_SPARK;
 
 void
@@ -27,6 +28,7 @@ FX_Spark_Init(void)
 	precache_sound("buttons/spark6.wav");
 	PARTICLE_SPARK = particleeffectnum("part_spark");
 }
+#endif
 
 void
 FX_Spark(vector pos, vector ang)

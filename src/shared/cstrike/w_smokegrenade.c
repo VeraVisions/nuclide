@@ -101,6 +101,7 @@ void w_smokegrenade_throw(void)
 {
 	static void smokegrenade_explode(void)
 	{
+		FX_Smokenade(self.origin);
 		Sound_Play(self, CHAN_BODY, "weapon_smokegrenade.explode");
 		remove(self);
 	}

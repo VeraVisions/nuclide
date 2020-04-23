@@ -122,6 +122,7 @@ Game_RendererRestarted(string rstr)
 	FX_GibHuman_Init();
 	FX_Spark_Init();
 	FX_Impact_Init();
+	FX_Smokenade_Init();
 
 	precache_model("sprites/640hud1.spr");
 	precache_model("sprites/640hud2.spr");

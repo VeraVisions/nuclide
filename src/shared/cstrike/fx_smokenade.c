@@ -14,14 +14,24 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifdef CLIENT
+var int PARTICLE_SMOKEGRENADE;
+
+void
+FX_Smokenade_Init(void)
+{
+	PARTICLE_SMOKEGRENADE = particleeffectnum("fx_smokenade.effect");
+}
+#endif
+
 void
 FX_Smokenade(vector vecPos)
 {
 #ifdef SERVER
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_SMOKE);
-	WriteCoord(MSG_MULTICAST, vecPos[0]); 
-	WriteCoord(MSG_MULTICAST, vecPos[1]); 
+	WriteCoord(MSG_MULTICAST, vecPos[0]);
+	WriteCoord(MSG_MULTICAST, vecPos[1]);
 	WriteCoord(MSG_MULTICAST, vecPos[2]);
 	msg_entity = self;
 	multicast([0,0,0], MULTICAST_ALL);
@@ -35,9 +45,9 @@ FX_Smokenade(vector vecPos)
 		if (self.frame <= 0) {
 			remove(self);
 			return;
-		} 
-	
-//		pointparticles(PARTICLE_SMOKEGRENADE, self.origin, [0,0,0], 1);
+		}
+
+		pointparticles(PARTICLE_SMOKEGRENADE, self.origin, [0,0,0], 1);
 		self.frame--;
 		self.nextthink = time + 0.2f;
 		self.skin = getstatf(STAT_GAMETIME);
