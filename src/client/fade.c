@@ -52,14 +52,15 @@ Fade_Update (int x, int y, int w, int h)
 		return;
 	}
 	if (pSeat->m_flFadeStyle & EVF_FADEDROM) {
-		if (pSeat->m_flFadeTime > pSeat->m_flFadeHold) {
-			pSeat->m_flFadeAlpha -= (clframetime * (1.0f / pSeat->m_flFadeDuration)) * pSeat->m_flFadeMaxAlpha;
+		pSeat->m_flFadeAlpha = 1.0f;
+		if (pSeat->m_flFadeTime > pSeat->m_flFadeDuration) {
+			pSeat->m_flFadeAlpha -= (pSeat->m_flFadeTime - pSeat->m_flFadeDuration) * (1.0 / pSeat->m_flFadeHold);
 		}
 	} else {
 		if (pSeat->m_flFadeTime < pSeat->m_flFadeDuration) {
-			pSeat->m_flFadeAlpha += (clframetime * (1.0f / pSeat->m_flFadeDuration)) * pSeat->m_flFadeMaxAlpha;
+			pSeat->m_flFadeAlpha = pSeat->m_flFadeTime * (1.0 / pSeat->m_flFadeDuration);
 		} else {
-			pSeat->m_flFadeAlpha -= (clframetime * (1.0f / pSeat->m_flFadeHold)) * pSeat->m_flFadeMaxAlpha;
+			pSeat->m_flFadeAlpha = (pSeat->m_flFadeTime - pSeat->m_flFadeDuration) * (1.0 / pSeat->m_flFadeHold);
 		}
 	}
 
@@ -69,15 +70,18 @@ Fade_Update (int x, int y, int w, int h)
 		pSeat->m_flFadeAlpha = 0.0f;
 	}
 
-	if (pSeat->m_flFadeAlpha <= 0) {
+	/* time's up */
+	if (pSeat->m_flFadeTime >= (pSeat->m_flFadeDuration + pSeat->m_flFadeHold)) {
 		pSeat->m_iFadeActive = FALSE;
 		return;
 	}
 
+	print(sprintf("FADE: %f\n", pSeat->m_flFadeAlpha));
+
 	if (pSeat->m_flFadeStyle & EVF_MODULATE) {
-		drawpic([x, y], "fade_modulate", [w, h], pSeat->m_vecFadeColor, pSeat->m_flFadeAlpha, 0);
+		drawpic([x, y], "fade_modulate", [w, h], pSeat->m_vecFadeColor, pSeat->m_flFadeAlpha * pSeat->m_flFadeMaxAlpha, 0);
 	} else {
-		drawfill([x, y], [w, h], pSeat->m_vecFadeColor, pSeat->m_flFadeAlpha, 0);
+		drawfill([x, y], [w, h], pSeat->m_vecFadeColor, pSeat->m_flFadeAlpha * pSeat->m_flFadeMaxAlpha, 0);
 	}
 
 	pSeat->m_flFadeTime += clframetime;
