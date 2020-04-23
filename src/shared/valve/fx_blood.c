@@ -32,11 +32,11 @@ FX_Blood(vector pos, vector color)
 #ifdef SERVER
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_BLOOD);
-	WriteCoord(MSG_MULTICAST, pos[0]); 
-	WriteCoord(MSG_MULTICAST, pos[1]); 
+	WriteCoord(MSG_MULTICAST, pos[0]);
+	WriteCoord(MSG_MULTICAST, pos[1]);
 	WriteCoord(MSG_MULTICAST, pos[2]);
-	WriteByte(MSG_MULTICAST, color[0] * 255); 
-	WriteByte(MSG_MULTICAST, color[1] * 255); 
+	WriteByte(MSG_MULTICAST, color[0] * 255);
+	WriteByte(MSG_MULTICAST, color[1] * 255);
 	WriteByte(MSG_MULTICAST, color[2] * 255);
 	msg_entity = self;
 	multicast(pos, MULTICAST_PVS);
@@ -51,8 +51,6 @@ FX_Blood(vector pos, vector color)
 	setorigin(eBlood, pos);
 	setmodel(eBlood, "sprites/bloodspray.spr");
 
-	//eExplosion.think = FX_Explosion_Animate;
-	//eBlood.effects = EF_ADDITIVE;
 	eBlood.drawmask = MASK_ENGINE;
 	eBlood.maxframe = modelframecount(eBlood.modelindex);
 	eBlood.loops = 0;
@@ -60,7 +58,7 @@ FX_Blood(vector pos, vector color)
 	eBlood.colormod = color;
 	eBlood.framerate = 20;
 	eBlood.nextthink = time + 0.05f;
-	
+
 	for (int i = 0; i < 3; i++) {
 		env_sprite ePart = spawn(env_sprite);
 		setorigin(ePart, pos);
@@ -80,4 +78,4 @@ FX_Blood(vector pos, vector color)
 		setsize(ePart, [0,0,0], [0,0,0]);
 	}
 #endif
-} 
+}

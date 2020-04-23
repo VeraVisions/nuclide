@@ -16,11 +16,45 @@
 
 #ifdef SERVER
 void
-FX_Flashbang(entity eTarget)
+FX_Flashbang(vector org)
 {
-	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
-	WriteByte(MSG_MULTICAST, EV_FLASH);
-	msg_entity = eTarget;
-	multicast([0,0,0], MULTICAST_ONE);
+	for (entity e = world; (e = find(e, ::classname, "player"));) {
+		float fov_dot;
+		vector val;
+		float blindness;
+		float fade;
+
+		/* wall check */
+		traceline(e.origin + e.view_ofs, org, FALSE, e);
+		if (trace_fraction < 1.0f)
+			continue;
+
+		/* calculate the fov in dotproduct form */
+		makevectors(e.v_angle);
+		val = normalize(org - (e.origin + e.view_ofs));
+		fov_dot = val * v_forward;
+
+		/* it's behind us */
+		if (fov_dot < 0) {
+			blindness = 0.1;
+			fade = 1.0f;
+		} else {
+			blindness = 2 * fov_dot;
+			fade = 4 * fov_dot;
+		}
+
+		/* send the blinding env_fade event */
+		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+		WriteByte(MSG_MULTICAST, EV_FADE);
+		WriteFloat(MSG_MULTICAST, 1.0f);
+		WriteFloat(MSG_MULTICAST, 1.0f);
+		WriteFloat(MSG_MULTICAST, 1.0f);
+		WriteFloat(MSG_MULTICAST, 1.0f);
+		WriteFloat(MSG_MULTICAST, blindness);
+		WriteFloat(MSG_MULTICAST, fade);
+		WriteByte(MSG_MULTICAST, EVF_FADEDROM);
+		msg_entity = e;
+		multicast('0 0 0', MULTICAST_ONE_R);
+	}
 }
 #endif 

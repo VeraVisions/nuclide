@@ -101,6 +101,7 @@ void w_flashbang_throw(void)
 {
 	static void flashbang_explode(void)
 	{
+		FX_Flashbang(self.origin);
 		Sound_Play(self, CHAN_BODY, "weapon_flashbang.explode");
 		remove(self);
 	}
