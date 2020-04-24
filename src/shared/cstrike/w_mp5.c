@@ -253,7 +253,7 @@ weapon_t w_mp5 =
 	2,
 	"sprites/640hud1.spr_0.tga",
 	[32,16],
-	[192,16],
+	[192,64],
 	w_mp5_draw,
 	__NULL__,
 	w_mp5_primary,

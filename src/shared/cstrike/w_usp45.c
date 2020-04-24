@@ -334,7 +334,7 @@ weapon_t w_usp45 =
 	0,
 	"sprites/640hud1.spr_0.tga",
 	[32,16],
-	[192,16],
+	[192,32],
 	w_usp45_draw,
 	__NULL__,
 	w_usp45_primary,

@@ -249,7 +249,7 @@ weapon_t w_tmp =
 	6,
 	"sprites/640hud1.spr_0.tga",
 	[32,16],
-	[192,16],
+	[224,64],
 	w_tmp_draw,
 	__NULL__,
 	w_tmp_primary,

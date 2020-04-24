@@ -254,7 +254,7 @@ weapon_t w_deagle =
 	2,
 	"sprites/640hud1.spr_0.tga",
 	[32,16],
-	[192,16],
+	[224,16],
 	w_deagle_draw,
 	__NULL__,
 	w_deagle_primary,

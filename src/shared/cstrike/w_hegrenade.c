@@ -270,7 +270,7 @@ weapon_t w_hegrenade =
 	0,
 	"sprites/640hud1.spr_0.tga",
 	[32,16],
-	[192,16],
+	[224,192],
 	w_hegrenade_draw,
 	__NULL__,
 	w_hegrenade_primary,
