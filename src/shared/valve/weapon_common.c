@@ -287,7 +287,7 @@ int Weapons_AddItem(player pl, int w)
 	/* let's check if we've got a limit */
 	int maxit;
 	CGameRules rules = (CGameRules)g_grMode;
-	maxit = rules.MaxItemPerSlot();
+	maxit = rules.MaxItemPerSlot(g_weapons[w].slot);
 	if (maxit > 0) {
 		int wantslot = g_weapons[w].slot;
 		int c;

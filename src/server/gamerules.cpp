@@ -105,7 +105,7 @@ CGameRules::SpectatorThink(player pl)
 }*/
 
 int
-CGameRules::MaxItemPerSlot(void)
+CGameRules::MaxItemPerSlot(int slot)
 {
 	return -1;
 }
@@ -113,7 +113,7 @@ CGameRules::MaxItemPerSlot(void)
 void
 CGameRules::CGameRules(void)
 {
-	//print("CGameRules!\n");
+	forceinfokey(world, "teamplay", "0");
 }
 
 /* our currently running mode */

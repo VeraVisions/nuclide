@@ -77,7 +77,7 @@ CSEv_BuyWeapon_f(float fWeapon)
 	if ((pl.money - g_cstrikeWeaponPrice[iWeapon]) >= 0) {
 		/* let's check if we've got a limit */
 		int maxit;
-		maxit = rules.MaxItemPerSlot();
+		maxit = rules.MaxItemPerSlot(g_weapons[iWeapon].slot);
 		if (maxit > 0) {
 			int wantslot = g_weapons[iWeapon].slot;
 			int c;

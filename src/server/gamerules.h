@@ -38,7 +38,7 @@ class CGameRules
 	virtual void(void) LevelNewParms;
 	virtual void(player) LevelChangeParms;
 
-	virtual int(void) MaxItemPerSlot;
+	virtual int(int) MaxItemPerSlot;
 
 	/* spectator */
 	/*virtual void(player) SpectatorConnect;

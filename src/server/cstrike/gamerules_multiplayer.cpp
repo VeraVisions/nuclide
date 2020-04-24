@@ -15,8 +15,12 @@
  */
 
 int
-CSMultiplayerRules::MaxItemPerSlot(void)
+CSMultiplayerRules::MaxItemPerSlot(int slot)
 {
+	/* grenades */
+	if (slot == 3) {
+		return 3;
+	}
 	return 1;
 }
 
@@ -486,6 +490,9 @@ CSMultiplayerRules::RoundOver(int iTeamWon, int iMoneyReward, int fSilent)
 	g_cs_hostagesrescued = 0;
 	g_cs_bombplanted = 0;
 	g_cs_roundsplayed++;
+
+	forceinfokey(world, "teamscore_1", sprintf("%i", g_cs_roundswon_t));
+	forceinfokey(world, "teamscore_2", sprintf("%i", g_cs_roundswon_ct));
 }
 
 /*
@@ -547,6 +554,9 @@ CSMultiplayerRules::SwitchTeams(void)
 
 	g_cs_alive_ct = iTW;
 	g_cs_alive_t = iCTW;
+
+	forceinfokey(world, "teamscore_1", sprintf("%i", g_cs_roundswon_t));
+	forceinfokey(world, "teamscore_2", sprintf("%i", g_cs_roundswon_ct));
 }
 
 void
@@ -796,7 +806,11 @@ CSMultiplayerRules::PlayerSpawn(player pl)
 void
 CSMultiplayerRules::CSMultiplayerRules(void)
 {
-	forceinfokey(world, "*gamemode", "classic"); 
+	forceinfokey(world, "teams", "2");
+	forceinfokey(world, "team_1", "Terrorist");
+	forceinfokey(world, "teamscore_1", "0");
+	forceinfokey(world, "team_2", "Counter-Terrorist");
+	forceinfokey(world, "teamscore_2", "0");
 }
 
 /*
@@ -887,7 +901,7 @@ void CSEv_JoinAuto(void)
 		}
 	}
 
-	if (ct_count > t_count) {
+	if (ct_count >= t_count) {
 		CSEv_JoinTeam_f(floor(random(1,5)));
 	} else {
 		CSEv_JoinTeam_f(floor(random(5,9)));

@@ -38,7 +38,7 @@
 #define FL_SEMI_TOGGLED			(1<<19)
 #define FL_FROZEN				(1<<20)
 #define FL_RESERVED1			(1<<21)
-#define FL_RESERVED2			(1<<22) 
+#define FL_RESERVED2			(1<<22)
 #define FL_RESERVED3			(1<<23)
 
 /* game flags */
