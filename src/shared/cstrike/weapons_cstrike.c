@@ -36,7 +36,7 @@ Cstrike_ShotMultiplierAdd(player pl, int shots)
 	pl.cs_shotmultiplier = bound(0, pl.cs_shotmultiplier + shots, 12);
 
 	pl.cs_shottime = 0.2f;
-	pl.punchangle[0] = -2 * (pl.cs_shotmultiplier / 6);
+	pl.punchangle[0] = -4 * (pl.cs_shotmultiplier / 6);
 	pl.punchangle[1] = random(-1, 1);
 }
 
