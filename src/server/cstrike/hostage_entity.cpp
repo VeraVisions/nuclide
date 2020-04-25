@@ -78,6 +78,8 @@ enum
 
 class hostage_entity:CBaseNPC
 {
+	int m_iUsedOnce;
+
 	void(void) hostage_entity;
 
 	virtual void(void) Respawn;
@@ -116,6 +118,12 @@ hostage_entity::PlayerUse(void)
 
 	if (m_eFollowing == world)
 		Sound_Speak(this, "hostage_entity.follow");
+
+	/* CT reward, first time only */
+	if (m_iUsedOnce == FALSE) {
+		Money_AddMoney((player)eActivator, 150);
+		m_iUsedOnce = TRUE;
+	}
 
 	CBaseNPC::PlayerUse();
 }
@@ -157,6 +165,7 @@ hostage_entity::Respawn(void)
 {
 	CBaseNPC::Respawn();
 	m_iFlags |= MONSTER_CANFOLLOW;
+	m_iUsedOnce = FALSE;
 }
 
 void
