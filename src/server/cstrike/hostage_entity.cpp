@@ -110,7 +110,7 @@ hostage_entity::AnimRun(void)
 void
 hostage_entity::PlayerUse(void)
 {
-	if (team == 1) {
+	if (eActivator.team == TEAM_T) {
 		return;
 	}
 
