@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED weapon_mp5 (0 0 1) (-16 -16 0) (16 16 32)
+/*QUAKED weapon_mp5navy (0 0 1) (-16 -16 0) (16 16 32)
 "model" "models/w_mp5.mdl"
 
 COUNTER-STRIKE (1999) ENTITY
@@ -251,7 +251,7 @@ w_mp5_hudpic(int selected, vector pos, float a)
 
 weapon_t w_mp5 =
 {
-	"mp5",
+	"mp5navy",
 	ITEM_MP5,
 	0,
 	2,

@@ -17,6 +17,13 @@
 void
 Game_Input(void)
 {
+	CGameRules rules = (CGameRules)g_grMode;
+
+	if (rules.m_iIntermission) {
+		rules.IntermissionEnd();
+		return;
+	}
+
 	if (input_buttons & INPUT_BUTTON0) {
 		Weapons_Primary();
 	} else if (input_buttons & INPUT_BUTTON4) {

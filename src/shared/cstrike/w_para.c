@@ -243,7 +243,7 @@ w_para_hudpic(int selected, vector pos, float a)
 
 weapon_t w_para =
 {
-	"para",
+	"m249",
 	ITEM_PARA,
 	0,
 	15,
@@ -267,7 +267,7 @@ weapon_t w_para =
 
 #ifdef SERVER
 void
-weapon_para(void)
+weapon_m249(void)
 {
 	Weapons_InitItem(WEAPON_PARA);
 }

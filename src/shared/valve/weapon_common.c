@@ -20,6 +20,32 @@ void Decals_Init(void);
 
 void Weapons_Init(void)
 {
+	/* in the future we'll have no internal weapon table, then this will fill
+	 * one up... */
+	/*searchhandle sh;
+	filestream fh;
+	string line;
+	sh = search_begin("scripts/weapon_*.txt", TRUE, TRUE);
+	for (int i = 0; i < search_getsize(sh); i++) {
+		fh = fopen(search_getfilename(sh, i), FILE_READ);
+		if (fh < 0) {
+			continue;
+		}
+
+		while ((line = fgets(fh))) {
+			int w = tokenize(line);
+			switch (argv(0)) {
+				case "name":
+					break;
+				case "slot":
+					break;
+				case "slot_pos":
+					break;
+			}
+		}
+		fclose(fh);
+	}*/
+
 	for (int i = 0; i < g_weapons.length; i++) {
 		if (g_weapons[i].precache != __NULL__) {
 			g_weapons[i].precache();

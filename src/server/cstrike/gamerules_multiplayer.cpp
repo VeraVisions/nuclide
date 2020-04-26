@@ -271,22 +271,19 @@ CSMultiplayerRules::TimerUpdate(void)
 	if (g_cs_gamestate != GAME_OVER) {
 		if (cvar("mp_timelimit") > 0) {
 			if (time >= (cvar("mp_timelimit") * 60)) {
-				TimerBegin(5, GAME_OVER);
+				IntermissionStart();
+				g_cs_gamestate = GAME_OVER;
 			}
 		}
-	}
-
-	if ((g_cs_gamestate == GAME_OVER) && (g_cs_gametime < 0)) {
-		localcmd("echo nextmap\n");
 	}
 
 	// Okay, this means that timelimit is not the only deciding factor
 	if (autocvar_mp_winlimit > 0 && g_cs_gamestate != GAME_OVER) {
 		// It really doesn't matter who won. Do some logging perhaps?
 		if (g_cs_roundswon_ct == autocvar_mp_winlimit) {
-			TimerBegin(5, GAME_OVER);
+			IntermissionStart();
 		} else if (g_cs_roundswon_t == autocvar_mp_winlimit) {
-			TimerBegin(5, GAME_OVER);
+			IntermissionStart();
 		}
 	}
 
