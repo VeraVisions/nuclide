@@ -414,6 +414,7 @@ void CSEv_DropWeapon(void)
 	drop.think = DropWeapon_Enable;
 	drop.nextthink = time + 1.5f;
 	drop.movetype = MOVETYPE_TOSS;
+	drop.classname = "remove_me";
 
 	makevectors(pl.v_angle);
 	drop.velocity = v_forward * 256;

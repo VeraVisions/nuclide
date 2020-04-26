@@ -43,7 +43,7 @@ void item_pickup::touch(void)
 
 	CBaseTrigger::UseTargets();
 
-	if (cvar("sv_playerslots") == 1) {
+	if (m_iWasDropped == 1 || cvar("sv_playerslots") == 1) {
 		remove(self);
 	} else {
 		Hide();
