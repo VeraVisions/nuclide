@@ -71,6 +71,7 @@ class CSMultiplayerRules:CSGameRules
 	virtual void(void) SwitchTeams;
 	virtual void(void) TimeOut;
 
+	virtual void(player) PlayerClearWeaponry;
 	virtual void(player, int) PlayerMakePlayable;
 	virtual void(player) PlayerMakeSpectator;
 	virtual void(player, int) PlayerRespawn;

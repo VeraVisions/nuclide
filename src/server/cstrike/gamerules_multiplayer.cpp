@@ -27,11 +27,14 @@ CSMultiplayerRules::MaxItemPerSlot(int slot)
 void
 CSMultiplayerRules::PlayerDeath(player pl)
 {
+	/* clear all ammo and inventory... */
+	PlayerClearWeaponry(pl);
+
 	pl.movetype = MOVETYPE_NONE;
 	pl.solid = SOLID_NOT;
 	pl.takedamage = DAMAGE_NO;
 	pl.flags &= ~FL_FLASHLIGHT;
-	pl.armor = pl.activeweapon = pl.g_items = 0;
+	pl.armor = 0;
 	pl.health = 0;
 
 	entity corpse = spawn();
@@ -49,7 +52,6 @@ CSMultiplayerRules::PlayerDeath(player pl)
 	/* gamerule stuff */
 	PlayerMakeSpectator(pl);
 	pl.classname = "player";
-	pl.health = 0;
 	forceinfokey(pl, "*dead", "1"); 
 	forceinfokey(pl, "*team", ftos(pl.team));
 	CountPlayers();
@@ -620,17 +622,30 @@ Recursive function that gets the next spawnpoint
 entity
 CSMultiplayerRules::PlayerFindSpawn(float t)
 {
+	entity point;
 	if (t == TEAM_T) {
 		m_eLastTSpawn = find(m_eLastTSpawn, ::classname, "info_player_deathmatch");
-		return m_eLastTSpawn;
+		
+		if (m_eLastTSpawn == world) {
+			m_eLastTSpawn = find(m_eLastTSpawn, ::classname, "info_player_deathmatch");
+		}
+		point = m_eLastTSpawn;
 	} else if (t == TEAM_CT) {
 		m_eLastCTSpawn = find(m_eLastCTSpawn, ::classname, "info_player_start");
-		return m_eLastCTSpawn;
+		
+		if (m_eLastCTSpawn == world) {
+			m_eLastCTSpawn = find(m_eLastCTSpawn, ::classname, "info_player_start");
+		}
+		point = m_eLastCTSpawn;
 	} else if (t == TEAM_VIP) {
-		return find(world, ::classname, "info_vip_start");
+		point = find(world, ::classname, "info_vip_start");
 	}
 
-	return world;
+	if (point == world) {
+		error("Error: No valid spawnpoints available.");
+	}
+
+	return point;
 }
 
 /*
@@ -700,6 +715,49 @@ CSMultiplayerRules::PlayerRespawn(player pl, int fTeam)
 
 	/*Ammo_AutoFill(pl.fSlotPrimary);
 	Ammo_AutoFill(pl.fSlotSecondary);*/
+}
+
+void
+CSMultiplayerRules::PlayerClearWeaponry(player pl)
+{
+	pl.g_items = 0x0;
+	pl.activeweapon = 0;
+	pl.ammo_50ae = 0;
+	pl.ammo_762mm = 0;
+	pl.ammo_556mm = 0;
+	pl.ammo_556mmbox = 0;
+	pl.ammo_338mag = 0;
+	pl.ammo_9mm = 0;
+	pl.ammo_buckshot = 0;
+	pl.ammo_45acp = 0;
+	pl.ammo_357sig = 0;
+	pl.ammo_57mm = 0;
+	pl.ammo_hegrenade = 0;
+	pl.ammo_fbgrenade = 0;
+	pl.ammo_smokegrenade = 0;
+	pl.usp45_mag = 0;
+	pl.glock18_mag = 0;
+	pl.deagle_mag = 0;
+	pl.p228_mag = 0;
+	pl.elites_mag = 0;
+	pl.fiveseven_mag = 0;
+	pl.m3_mag = 0;
+	pl.xm1014_mag = 0;
+	pl.mp5_mag = 0;
+	pl.p90_mag = 0;
+	pl.ump45_mag = 0;
+	pl.mac10_mag = 0;
+	pl.tmp_mag = 0;
+	pl.ak47_mag = 0;
+	pl.sg552_mag = 0;
+	pl.m4a1_mag = 0;
+	pl.aug_mag = 0;
+	pl.scout_mag = 0;
+	pl.awp_mag = 0;
+	pl.g3sg1_mag = 0;
+	pl.sg550_mag = 0;
+	pl.para_mag = 0;
+	pl.viewzoom = 1.0f;
 }
 
 /*
