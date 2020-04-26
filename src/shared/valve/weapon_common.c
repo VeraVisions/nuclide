@@ -392,9 +392,8 @@ void Weapons_ReloadWeapon(player pl, .int mag, .int ammo, int max)
 	}
 }
 
-void CSEv_DropWeapon(void)
+void Weapon_DropCurrentWeapon(player pl)
 {
-	player pl = (player)self;
 	
 	static void DropWeapon_Enable(void)
 	{
@@ -420,5 +419,11 @@ void CSEv_DropWeapon(void)
 	drop.velocity = v_forward * 256;
 	drop.avelocity[1] = 500;
 	Weapons_RemoveItem(pl, pl.activeweapon);
+}
+
+void CSEv_DropWeapon(void)
+{
+	player pl = (player)self;
+	Weapon_DropCurrentWeapon(pl);
 }
 #endif

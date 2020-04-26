@@ -53,6 +53,14 @@ CSMultiplayerRules::PlayerDeath(player pl)
 			g_dmg_eAttacker.frags++;
 	}
 
+	Weapon_DropCurrentWeapon(pl);
+
+	/* if we're the bomb carrier, make sure we drop the bomb. */
+	if (pl.g_items & ITEM_C4BOMB) {
+		pl.activeweapon = WEAPON_C4BOMB;
+		Weapon_DropCurrentWeapon(pl);
+	}
+
 	/* clear all ammo and inventory... */
 	PlayerClearWeaponry(pl);
 

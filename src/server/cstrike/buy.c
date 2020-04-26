@@ -88,7 +88,7 @@ CSEv_BuyWeapon_f(float fWeapon)
 					/* we're over the slot limit. */
 					if (c >= maxit) {
 						pl.activeweapon = i;
-						CSEv_DropWeapon();
+						Weapon_DropCurrentWeapon(pl);
 					}
 				}
 			}

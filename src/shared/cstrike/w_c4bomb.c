@@ -150,6 +150,7 @@ w_c4bomb_precache(void)
 	precache_sound("weapons/c4_beep5.wav");
 	precache_sound("weapons/c4_explode1.wav");
 	precache_model("models/w_c4.mdl");
+	precache_model("models/w_backpack.mdl");
 	precache_model("models/p_c4.mdl");
 	precache_model("sprites/ledglow.spr");
 #else
@@ -168,7 +169,7 @@ w_c4bomb_updateammo(player pl)
 string
 w_c4bomb_wmodel(void)
 {
-	return "models/w_c4.mdl";
+	return "models/w_backpack.mdl";
 }
 
 string
