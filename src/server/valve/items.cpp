@@ -34,7 +34,7 @@ void item_pickup::touch(void)
 	}
 
 	/* don't remove if AddItem fails */
-	if (Weapons_AddItem((player)other, id) == FALSE) {
+	if (Weapons_AddItem((player)other, id, m_iClip) == FALSE) {
 		return;
 	}
 
@@ -75,8 +75,10 @@ void item_pickup::Respawn(void)
 	think = __NULL__;
 	nextthink = -1;
 
-	if (!m_iWasDropped)
+	if (!m_iWasDropped) {
 		sound(this, CHAN_ITEM, "items/suitchargeok1.wav", 1, ATTN_NORM, 150);
+		m_iClip = -1;
+	}
 
 	droptofloor();
 }

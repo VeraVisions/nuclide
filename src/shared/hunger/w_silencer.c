@@ -67,9 +67,9 @@ w_silencer_deathmsg(void)
 }
 
 int
-w_silencer_pickup(int new)
+w_silencer_pickup(int new, int startammo)
 {
-	return w_glock_pickup(new);
+	return w_glock_pickup(new, startammo);
 }
 
 void
@@ -240,12 +240,10 @@ w_silencer_hudpic(int selected, vector pos, float a)
 
 weapon_t w_silencer =
 {
-	.id		= ITEM_GLOCK,
+	.name		= "silencer",
+	.id			= ITEM_GLOCK,
 	.slot		= 1,
 	.slot_pos	= 0,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [32,16],
-	.ki_xy		= [192,16],
 	.draw		= w_silencer_draw,
 	.holster	= w_silencer_holster,
 	.primary	= w_silencer_primary,

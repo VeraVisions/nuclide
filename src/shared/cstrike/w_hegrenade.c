@@ -57,7 +57,7 @@ w_hegrenade_updateammo(player pl)
 }
 
 int
-w_hegrenade_pickup(int new)
+w_hegrenade_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -265,12 +265,11 @@ w_hegrenade_hudpic(int selected, vector pos, float a)
 
 weapon_t w_hegrenade =
 {
+	"hegrenade",
 	ITEM_HEGRENADE,
 	3,
 	0,
-	"sprites/640hud1.spr_0.tga",
-	[32,16],
-	[224,192],
+	FALSE,
 	w_hegrenade_draw,
 	__NULL__,
 	w_hegrenade_primary,

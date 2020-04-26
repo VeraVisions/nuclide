@@ -60,7 +60,7 @@ w_python_precache(void)
 }
 
 int
-w_python_pickup(int new)
+w_python_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -330,12 +330,10 @@ w_python_hudpic(int selected, vector pos, float a)
 
 weapon_t w_python =
 {
+	.name		= "python",
 	.id		= ITEM_PYTHON,
 	.slot		= 1,
 	.slot_pos	= 1,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [32,16],
-	.ki_xy		= [192,32],
 	.draw		= w_python_draw,
 	.holster	= w_python_holster,
 	.primary	= w_python_primary,

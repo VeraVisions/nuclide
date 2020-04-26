@@ -75,13 +75,16 @@ w_awp_deathmsg(void)
 }
 
 int
-w_awp_pickup(int new)
+w_awp_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
-		pl.awp_mag = 10;
+		if (startammo == -1)
+			pl.awp_mag = 10;
+		else
+			pl.awp_mag = startammo;
 	} else {
 		if (pl.ammo_338mag < 20) {
 			pl.ammo_338mag = bound(0, pl.ammo_338mag + 10, 20);
@@ -295,12 +298,11 @@ w_awp_hudpic(int selected, vector pos, float a)
 
 weapon_t w_awp =
 {
+	"awp",
 	ITEM_AWP,
 	0,
 	12,
-	"sprites/640hud1.spr_0.tga",
-	[48,16],
-	[192,128],
+	TRUE,
 	w_awp_draw,
 	__NULL__,
 	w_awp_primary,

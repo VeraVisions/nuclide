@@ -70,7 +70,7 @@ string w_sbs_deathmsg(void)
 }
 
 int
-w_sbs_pickup(int new)
+w_sbs_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -252,25 +252,23 @@ w_sbs_hudpic(int s, vector pos, float a)
 
 weapon_t w_sbs =
 {
-	ITEM_SBS,
-	1,
-	0,
-	"sprites/tfc_dmsg.spr_0.tga",
-	[60,16],
-	[0,144],
-	w_sbs_draw,
-	w_sbs_holster,
-	w_sbs_primary,
-	w_sbs_release,
-	w_sbs_reload,
-	w_sbs_release,
-	w_sbs_crosshair,
-	w_sbs_precache,
-	w_sbs_pickup,
-	w_sbs_updateammo,
-	w_sbs_wmodel,
-	w_sbs_pmodel,
-	w_sbs_deathmsg,
-	w_sbs_aimanim,
-	w_sbs_hudpic
+	.name		= "sbs",
+	.id			= ITEM_SBS,
+	.slot		= 1,
+	.slot_pos	= 0,
+	.draw		= w_sbs_draw,
+	.holster	= w_sbs_holster,
+	.primary	= w_sbs_primary,
+	.secondary	= w_sbs_release,
+	.reload		= w_sbs_reload,
+	.release	= w_sbs_release,
+	.crosshair	= w_sbs_crosshair,
+	.precache	= w_sbs_precache,
+	.pickup		= w_sbs_pickup,
+	.updateammo	= w_sbs_updateammo,
+	.wmodel		= w_sbs_wmodel,
+	.pmodel		= w_sbs_pmodel,
+	.deathmsg	= w_sbs_deathmsg,
+	.aimanim	= w_sbs_aimanim,
+	.hudpic		= w_sbs_hudpic
 };

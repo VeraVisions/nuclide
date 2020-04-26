@@ -154,7 +154,7 @@ string w_gauss_deathmsg(void)
 	return "";
 }
 
-int w_gauss_pickup(int new)
+int w_gauss_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -464,12 +464,10 @@ void w_gauss_hudpic(int selected, vector pos, float a)
 
 weapon_t w_gauss =
 {
+	.name		= "gauss",
 	.id		= ITEM_GAUSS,
 	.slot		= 3,
 	.slot_pos	= 1,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [32,16],
-	.ki_xy		= [192,112],
 	.draw		= w_gauss_draw,
 	.holster	= w_gauss_holster,
 	.primary	= w_gauss_primary,

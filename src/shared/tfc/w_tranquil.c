@@ -92,12 +92,10 @@ w_tranquil_hudpic(int selected, vector pos, float a)
 
 weapon_t w_tranquil =
 {
-	.id		= ITEM_TRANQUIL,
+	.name		= "tranquil",
+	.id			= ITEM_TRANQUIL,
 	.slot		= 1,
 	.slot_pos	= 2,
-	.ki_spr		= "sprites/tfc_dmsg.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [0,176],
 	.draw		= w_tranquil_draw,
 	.holster	= __NULL__,
 	.primary	= __NULL__,

@@ -63,7 +63,7 @@ string w_shotgun_deathmsg(void)
 	return "";
 }
 
-int w_shotgun_pickup(int new)
+int w_shotgun_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -245,12 +245,10 @@ void w_shotgun_hudpic(int s, vector pos, float a)
 
 weapon_t w_shotgun =
 {
-	.id		= ITEM_SHOTGUN,
+	.name		= "shotgun",
+	.id			= ITEM_SHOTGUN,
 	.slot		= 2,
 	.slot_pos	= 1,
-	.ki_spr		= __NULL__,
-	.ki_size	= __NULL__,
-	.ki_xy		= __NULL__,
 	.draw		= w_shotgun_draw,
 	.holster	= w_shotgun_holster,
 	.primary	= w_shotgun_primary,

@@ -68,9 +68,9 @@ void w_pipebomb_precache(void)
 	precache_model("models/p_pipebomb.mdl");
 }
 
-int w_pipebomb_pickup(int new)
+int w_pipebomb_pickup(int new, int startammo)
 {
-	return w_satchel_pickup(new);
+	return w_satchel_pickup(new, startammo);
 }
 
 void w_pipebomb_draw(void)
@@ -248,12 +248,10 @@ void w_pipebomb_hudpic(int selected, vector pos, float a)
 
 weapon_t w_pipebomb =
 {
-	.id		= ITEM_SATCHEL,
+	.name		= "pipebomb",
+	.id			= ITEM_SATCHEL,
 	.slot		= 4,
 	.slot_pos	= 1,
-	.ki_spr		= __NULL__,
-	.ki_size	= __NULL__,
-	.ki_xy		= __NULL__,
 	.draw		= w_pipebomb_draw,
 	.holster	= w_pipebomb_holster,
 	.primary	= w_pipebomb_primary,

@@ -57,7 +57,7 @@ w_smokegrenade_updateammo(player pl)
 }
 
 int
-w_smokegrenade_pickup(int new)
+w_smokegrenade_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -261,12 +261,11 @@ w_smokegrenade_hudpic(int selected, vector pos, float a)
 
 weapon_t w_smokegrenade =
 {
+	"smokegrenade",
 	ITEM_SMOKEGRENADE,
 	3,
 	2,
-	"sprites/640hud1.spr_0.tga",
-	[32,16],
-	[224,192],
+	FALSE,
 	w_smokegrenade_draw,
 	__NULL__,
 	w_smokegrenade_primary,

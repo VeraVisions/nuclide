@@ -120,12 +120,10 @@ w_cmlwbr_hudpic(int selected, vector pos, float a)
 
 weapon_t w_cmlwbr =
 {
-	.id		= ITEM_CMLWBR,
+	.name		= "cmlwbr",
+	.id			= ITEM_CMLWBR,
 	.slot		= 2,
 	.slot_pos	= 1,
-	.ki_spr		= __NULL__,
-	.ki_size	= __NULL__,
-	.ki_xy		= __NULL__,
 	.draw		= w_cmlwbr_draw,
 	.holster	= w_cmlwbr_holster,
 	.primary	= w_cmlwbr_primary,

@@ -68,7 +68,7 @@ string w_rpg_deathmsg(void)
 	return "";
 }
 
-int w_rpg_pickup(int new)
+int w_rpg_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -341,12 +341,10 @@ void w_rpg_hud(void)
 
 weapon_t w_rpg =
 {
+	.name		= "rpg",
 	.id		= ITEM_RPG,
 	.slot		= 3,
 	.slot_pos	= 0,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [192,96],
 	.draw		= w_rpg_draw,
 	.holster	= w_rpg_holster,
 	.primary	= w_rpg_primary,

@@ -15,8 +15,49 @@
  */
 
 void
+HLMultiplayerRules::FrameStart(void)
+{
+	if (cvar("mp_timelimit"))
+	if (time >= (cvar("mp_timelimit") * 60)) {
+		IntermissionStart();
+	}
+}
+
+void
 HLMultiplayerRules::PlayerDeath(player pl)
 {
+	/* obituary networking */
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_OBITUARY);
+	if (g_dmg_eAttacker.netname)
+		WriteString(MSG_MULTICAST, g_dmg_eAttacker.netname);
+	else
+		WriteString(MSG_MULTICAST, g_dmg_eAttacker.classname);
+	WriteString(MSG_MULTICAST, pl.netname);
+	WriteByte(MSG_MULTICAST, g_dmg_iWeapon);
+	WriteByte(MSG_MULTICAST, 0);
+	msg_entity = world;
+	multicast([0,0,0], MULTICAST_ALL);
+
+	/* death-counter */
+	pl.deaths++;
+	forceinfokey(pl, "*deaths", ftos(pl.deaths));
+
+	/* update score-counter */
+	if (pl.flags & FL_CLIENT || pl.flags & FL_MONSTER)
+	if (g_dmg_eAttacker.flags & FL_CLIENT) {
+		if (pl == g_dmg_eAttacker)
+			g_dmg_eAttacker.frags--;
+		else
+			g_dmg_eAttacker.frags++;
+	}
+
+	/* in DM we only care about the frags */
+	if (cvar("mp_fraglimit"))
+	if (g_dmg_eAttacker.frags >= cvar("mp_fraglimit")) {
+		IntermissionStart();
+	}
+
 	weaponbox_spawn(pl);
 	pl.movetype = MOVETYPE_NONE;
 	pl.solid = SOLID_NOT;

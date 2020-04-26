@@ -51,7 +51,7 @@ w_eagle_precache(void)
 }
 
 int
-w_eagle_pickup(int new)
+w_eagle_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -365,12 +365,10 @@ w_eagle_hudpic(int selected, vector pos, float a)
 
 weapon_t w_eagle =
 {
-	.id		= ITEM_EAGLE,
+	.name		= "eagle",
+	.id			= ITEM_EAGLE,
 	.slot		= 1,
 	.slot_pos	= 2,
-	.ki_spr		= "sprites/320hudof01.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [0,240],
 	.draw		= w_eagle_draw,
 	.holster	= w_eagle_holster,
 	.primary	= w_eagle_primary,

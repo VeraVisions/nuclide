@@ -180,12 +180,10 @@ w_spanner_hudpic(int selected, vector pos, float a)
 
 weapon_t w_spanner =
 {
-	.id		= ITEM_SPANNER,
+	.name		= "spanner",
+	.id			= ITEM_SPANNER,
 	.slot		= 0,
 	.slot_pos	= 2,
-	.ki_spr		= "sprites/tfc_dmsg.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [0,48],
 	.draw		= w_spanner_draw,
 	.holster	= w_spanner_holster,
 	.primary	= w_spanner_primary,

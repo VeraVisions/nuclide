@@ -42,13 +42,13 @@ Game_Input(void)
 		if (self.impulse == 101) {
 			pl.health = 100;
 			pl.armor = 100;
-			Weapons_AddItem(pl, WEAPON_HEATERPIPE);
-			Weapons_AddItem(pl, WEAPON_BRADNAILER);
-			Weapons_AddItem(pl, WEAPON_NAILGUN);
-			Weapons_AddItem(pl, WEAPON_SHOTGUN);
-			Weapons_AddItem(pl, WEAPON_CMLWBR);
-			Weapons_AddItem(pl, WEAPON_XS);
-			Weapons_AddItem(pl, WEAPON_SATCHEL);
+			Weapons_AddItem(pl, WEAPON_HEATERPIPE, -1);
+			Weapons_AddItem(pl, WEAPON_BRADNAILER, -1);
+			Weapons_AddItem(pl, WEAPON_NAILGUN, -1);
+			Weapons_AddItem(pl, WEAPON_SHOTGUN, -1);
+			Weapons_AddItem(pl, WEAPON_CMLWBR, -1);
+			Weapons_AddItem(pl, WEAPON_XS, -1);
+			Weapons_AddItem(pl, WEAPON_SATCHEL, -1);
 		}
 
 		if (self.impulse == 102) {

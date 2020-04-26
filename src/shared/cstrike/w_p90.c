@@ -74,13 +74,16 @@ w_p90_deathmsg(void)
 }
 
 int
-w_p90_pickup(int new)
+w_p90_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
-		pl.p90_mag = 50;
+		if (startammo == -1)
+			pl.p90_mag = 50;
+		else
+			pl.p90_mag = startammo;
 	} else {
 		if (pl.ammo_57mm < 100) {
 			pl.ammo_57mm = bound(0, pl.ammo_57mm + 50, 100);
@@ -244,12 +247,11 @@ w_p90_hudpic(int selected, vector pos, float a)
 
 weapon_t w_p90 =
 {
+	"p90",
 	ITEM_P90,
 	0,
 	3,
-	"sprites/640hud1.spr_0.tga",
-	[48,16],
-	[192,176],
+	TRUE,
 	w_p90_draw,
 	__NULL__,
 	w_p90_primary,

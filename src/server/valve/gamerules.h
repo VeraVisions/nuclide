@@ -37,6 +37,11 @@ class HLSingleplayerRules:HLGameRules
 
 class HLMultiplayerRules:HLGameRules
 {
+	int m_iIntermission;
+	int m_iIntermissionTime;
+
+	virtual void(void) FrameStart;
+
 	/* client */
 	virtual void(player) PlayerSpawn;
 	virtual void(player) PlayerDeath;

@@ -93,12 +93,10 @@ w_pipebomb_hudpic(int selected, vector pos, float a)
 
 weapon_t w_pipebomb =
 {
-	.id		= ITEM_PIPEBOMB,
+	.name		= "pipebomb",
+	.id			= ITEM_PIPEBOMB,
 	.slot		= 4,
 	.slot_pos	= 1,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [0,112],
 	.draw		= w_pipebomb_draw,
 	.holster	= __NULL__,
 	.primary	= __NULL__,

@@ -73,13 +73,16 @@ w_g3sg1_deathmsg(void)
 }
 
 int
-w_g3sg1_pickup(int new)
+w_g3sg1_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
-		pl.g3sg1_mag = 20;
+		if (startammo == -1)
+			pl.g3sg1_mag = 20;
+		else
+			pl.g3sg1_mag = startammo;
 	} else {
 		if (pl.ammo_762mm < 60) {
 			pl.ammo_762mm = bound(0, pl.ammo_762mm + 20, 60);
@@ -260,12 +263,11 @@ w_g3sg1_hudpic(int selected, vector pos, float a)
 
 weapon_t w_g3sg1 =
 {
+	"g3sg1",
 	ITEM_G3SG1,
 	0,
 	13,
-	"sprites/640hud1.spr_0.tga",
-	[48,16],
-	[192,144],
+	TRUE,
 	w_g3sg1_draw,
 	__NULL__,
 	w_g3sg1_primary,

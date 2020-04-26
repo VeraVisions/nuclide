@@ -92,12 +92,10 @@ w_grapple_hudpic(int selected, vector pos, float a)
 
 weapon_t w_grapple =
 {
-	.id		= ITEM_GRAPPLE,
+	.name		= "grapple",
+	.id			= ITEM_GRAPPLE,
 	.slot		= 5,
 	.slot_pos	= 0,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [192,0],
 	.draw		= w_grapple_draw,
 	.holster	= __NULL__,
 	.primary	= __NULL__,

@@ -83,7 +83,7 @@ w_crossbow_deathmsg(void)
 }
 
 int
-w_crossbow_pickup(int new)
+w_crossbow_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -365,12 +365,10 @@ w_crossbow_hudpic(int selected, vector pos, float a)
 
 weapon_t w_crossbow =
 {
+	.name		= "crossbow",
 	.id		= ITEM_CROSSBOW,
 	.slot		= 2,
 	.slot_pos	= 2,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [192,80],
 	.draw		= w_crossbow_draw,
 	.holster	= w_crossbow_holster,
 	.primary	= w_crossbow_primary,

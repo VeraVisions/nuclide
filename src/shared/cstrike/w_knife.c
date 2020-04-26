@@ -212,12 +212,11 @@ w_knife_hudpic(int selected, vector pos, float a)
 
 weapon_t w_knife =
 {
+	"knife",
 	ITEM_KNIFE,
 	2,
 	0,
-	"sprites/640hud1.spr_0.tga",
-	[48,16],
-	[192,0],
+	FALSE,
 	w_knife_draw,
 	__NULL__,
 	w_knife_primary,

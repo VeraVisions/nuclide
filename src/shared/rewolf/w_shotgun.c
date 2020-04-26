@@ -217,7 +217,7 @@ w_shotgun_aimanim(void)
 }
 
 int
-w_shotgun_pickup(int new)
+w_shotgun_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -331,12 +331,10 @@ w_shotgun_precache(void)
 
 weapon_t w_shotgun =
 {
-	.id		= ITEM_SHOTGUN,
+	.name		= "shotgun",
+	.id			= ITEM_SHOTGUN,
 	.slot		= 2,
 	.slot_pos	= 0,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [192,0],
 	.draw		= w_shotgun_draw,
 	.holster	= w_shotgun_holster,
 	.primary	= w_shotgun_primary,

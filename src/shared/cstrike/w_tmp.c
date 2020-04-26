@@ -74,13 +74,16 @@ w_tmp_deathmsg(void)
 }
 
 int
-w_tmp_pickup(int new)
+w_tmp_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
-		pl.tmp_mag = 30;
+		if (startammo == -1)
+			pl.tmp_mag = 30;
+		else
+			pl.tmp_mag = startammo;
 	} else {
 		if (pl.ammo_9mm < 90) {
 			pl.ammo_9mm = bound(0, pl.ammo_9mm + 30, 90);
@@ -244,12 +247,11 @@ w_tmp_hudpic(int selected, vector pos, float a)
 
 weapon_t w_tmp =
 {
+	"tmp",
 	ITEM_TMP,
 	0,
 	6,
-	"sprites/640hud1.spr_0.tga",
-	[32,16],
-	[224,64],
+	TRUE,
 	w_tmp_draw,
 	__NULL__,
 	w_tmp_primary,

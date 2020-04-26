@@ -75,13 +75,16 @@ w_aug_deathmsg(void)
 }
 
 int
-w_aug_pickup(int new)
+w_aug_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
-		pl.aug_mag = 30;
+		if (startammo == -1)
+			pl.aug_mag = 30;
+		else
+			pl.aug_mag = startammo;
 	} else {
 		if (pl.ammo_762mm < 90) {
 			pl.ammo_762mm = bound(0, pl.ammo_762mm + 30, 90);
@@ -269,27 +272,26 @@ w_aug_hudpic(int selected, vector pos, float a)
 
 weapon_t w_aug =
 {
-	ITEM_AUG,
-	0,
-	10,
-	"sprites/640hud1.spr_0.tga",
-	[44,16],
-	[148,240],
-	w_aug_draw,
-	__NULL__,
-	w_aug_primary,
-	w_aug_secondary,
-	w_aug_reload,
-	w_cstrike_weaponrelease,
-	w_aug_hud,
-	w_aug_precache,
-	w_aug_pickup,
-	w_aug_updateammo,
-	w_aug_wmodel,
-	w_aug_pmodel,
-	w_aug_deathmsg,
-	w_aug_aimanim,
-	w_aug_hudpic
+	.name		= "aug",
+	.id			= ITEM_AUG,
+	.slot		= 0,
+	.slot_pos	= 10,
+	.allow_drop	= TRUE,
+	.draw		= w_aug_draw,
+	.holster	= __NULL__,
+	.primary	= w_aug_primary,
+	.secondary	= w_aug_secondary,
+	.reload		= w_aug_reload,
+	.release	= w_cstrike_weaponrelease,
+	.crosshair	= w_aug_hud,
+	.precache	= w_aug_precache,
+	.pickup		= w_aug_pickup,
+	.updateammo	= w_aug_updateammo,
+	.wmodel		= w_aug_wmodel,
+	.pmodel		= w_aug_pmodel,
+	.deathmsg	= w_aug_deathmsg,
+	.aimanim	= w_aug_aimanim,
+	.hudpic		= w_aug_hudpic
 };
 
 #ifdef SERVER

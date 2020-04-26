@@ -92,12 +92,10 @@ w_flamer_hudpic(int selected, vector pos, float a)
 
 weapon_t w_flamer =
 {
-	.id		= ITEM_FLAMER,
+	.name		= "flamer",
+	.id			= ITEM_FLAMER,
 	.slot		= 3,
 	.slot_pos	= 3,
-	.ki_spr		= "sprites/tfc_dmsg.spr_0.tga",
-	.ki_size	= [64,16],
-	.ki_xy		= [112,24],
 	.draw		= w_flamer_draw,
 	.holster	= __NULL__,
 	.primary	= __NULL__,

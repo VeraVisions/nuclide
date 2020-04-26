@@ -65,7 +65,7 @@ w_mp5_precache(void)
 }
 
 int
-w_mp5_pickup(int new)
+w_mp5_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -370,13 +370,12 @@ w_mp5_hudpic(int selected, vector pos, float a)
 #endif
 }
 
-weapon_t w_mp5 = {
+weapon_t w_mp5 =
+{
+	.name		= "mp5",
 	.id		= ITEM_MP5,
 	.slot		= 2,
 	.slot_pos	= 0,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [192,48],
 	.draw		= w_mp5_draw,
 	.holster	= w_mp5_holster,
 	.primary	= w_mp5_primary,

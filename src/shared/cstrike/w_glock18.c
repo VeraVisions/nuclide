@@ -84,13 +84,16 @@ w_glock18_deathmsg(void)
 }
 
 int
-w_glock18_pickup(int new)
+w_glock18_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
-		pl.glock18_mag = 20;
+		if (startammo == -1)
+			pl.glock18_mag = 20;
+		else
+			pl.glock18_mag = startammo;
 	} else {
 		if (pl.ammo_9mm < 40) {
 			pl.ammo_9mm = bound(0, pl.ammo_9mm + 20, 40);
@@ -308,12 +311,11 @@ w_glock18_hudpic(int selected, vector pos, float a)
 
 weapon_t w_glock18 =
 {
+	"glock18",
 	ITEM_GLOCK18,
 	1,
 	1,
-	"sprites/640hud1.spr_0.tga",
-	[32,16],
-	[192,16],
+	TRUE,
 	w_glock18_draw,
 	__NULL__,
 	w_glock18_primary,

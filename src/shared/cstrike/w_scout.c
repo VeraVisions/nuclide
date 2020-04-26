@@ -73,13 +73,16 @@ w_scout_deathmsg(void)
 }
 
 int
-w_scout_pickup(int new)
+w_scout_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
-		pl.scout_mag = 10;
+		if (startammo == -1)
+			pl.scout_mag = 10;
+		else
+			pl.scout_mag = startammo;
 	} else {
 		if (pl.ammo_762mm < 30) {
 			pl.ammo_762mm = bound(0, pl.ammo_762mm + 10, 30);
@@ -292,12 +295,11 @@ w_scout_hudpic(int selected, vector pos, float a)
 
 weapon_t w_scout =
 {
+	"scout",
 	ITEM_SCOUT,
 	0,
 	11,
-	"sprites/640hud1.spr_0.tga",
-	[48,16],
-	[192,208],
+	TRUE,
 	w_scout_draw,
 	__NULL__,
 	w_scout_primary,

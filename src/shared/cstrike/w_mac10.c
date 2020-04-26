@@ -74,13 +74,16 @@ w_mac10_deathmsg(void)
 }
 
 int
-w_mac10_pickup(int new)
+w_mac10_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
-		pl.mac10_mag = 30;
+		if (startammo == -1)
+			pl.mac10_mag = 30;
+		else
+			pl.mac10_mag = startammo;
 	} else {
 		if (pl.ammo_45acp < 90) {
 			pl.ammo_45acp = bound(0, pl.ammo_45acp + 30, 90);
@@ -243,12 +246,11 @@ w_mac10_hudpic(int selected, vector pos, float a)
 
 weapon_t w_mac10 =
 {
+	"mac10",
 	ITEM_MAC10,
 	0,
 	5,
-	"sprites/640hud1.spr_0.tga",
-	[34,16],
-	[109,240],
+	TRUE,
 	w_mac10_draw,
 	__NULL__,
 	w_mac10_primary,

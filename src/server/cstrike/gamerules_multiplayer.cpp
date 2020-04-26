@@ -27,6 +27,32 @@ CSMultiplayerRules::MaxItemPerSlot(int slot)
 void
 CSMultiplayerRules::PlayerDeath(player pl)
 {
+	/* obituary networking */
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_OBITUARY);
+	if (g_dmg_eAttacker.netname)
+		WriteString(MSG_MULTICAST, g_dmg_eAttacker.netname);
+	else
+		WriteString(MSG_MULTICAST, g_dmg_eAttacker.classname);
+	WriteString(MSG_MULTICAST, pl.netname);
+	WriteByte(MSG_MULTICAST, g_dmg_iWeapon);
+	WriteByte(MSG_MULTICAST, 0);
+	msg_entity = world;
+	multicast([0,0,0], MULTICAST_ALL);
+
+	/* death-counter */
+	pl.deaths++;
+	forceinfokey(pl, "*deaths", ftos(pl.deaths));
+
+	/* update score-counter */
+	if (g_dmg_eTarget.flags & FL_CLIENT || g_dmg_eTarget.flags & FL_MONSTER)
+	if (g_dmg_eAttacker.flags & FL_CLIENT) {
+		if (g_dmg_eTarget == g_dmg_eAttacker || g_dmg_eTarget.team == g_dmg_eAttacker.team)
+			g_dmg_eAttacker.frags--;
+		else
+			g_dmg_eAttacker.frags++;
+	}
+
 	/* clear all ammo and inventory... */
 	PlayerClearWeaponry(pl);
 
@@ -356,7 +382,7 @@ CSMultiplayerRules::BuyingPossible(player pl)
 void
 CSMultiplayerRules::MakeBomber(player pl)
 {
-	Weapons_AddItem(pl, WEAPON_C4BOMB);
+	Weapons_AddItem(pl, WEAPON_C4BOMB, -1);
 	centerprint(pl, "You have the bomb!\nFind the target zone or DROP\nthe bomb for another Terrorist.");
 }
 
@@ -778,13 +804,13 @@ CSMultiplayerRules::PlayerMakePlayable(player pl, int chara)
 	}
 
 	pl.g_items |= ITEM_SUIT;
-	Weapons_AddItem(pl, WEAPON_KNIFE);
+	Weapons_AddItem(pl, WEAPON_KNIFE, -1);
 
 	if (chara < 5) {
 		/* terrorists */
 		pl.team = TEAM_T;
 		if (autocvar_fcs_knifeonly == FALSE) {
-			Weapons_AddItem(pl, WEAPON_GLOCK18);
+			Weapons_AddItem(pl, WEAPON_GLOCK18, -1);
 			/*Weapon_GiveAmmo(WEAPON_GLOCK18, 40);*/
 			/*Weapon_Draw(WEAPON_GLOCK18);*/
 		} else {
@@ -794,9 +820,8 @@ CSMultiplayerRules::PlayerMakePlayable(player pl, int chara)
 		/* counter */
 		pl.team = TEAM_CT;
 
-		Weapons_AddItem(pl, WEAPON_KNIFE);
 		if (autocvar_fcs_knifeonly == FALSE) {
-			Weapons_AddItem(pl, WEAPON_USP45);
+			Weapons_AddItem(pl, WEAPON_USP45, -1);
 			/*Weapon_GiveAmmo(WEAPON_USP45, 24);*/
 			/*Weapon_Draw(WEAPON_USP45);*/
 		} else {

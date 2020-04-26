@@ -16,12 +16,11 @@
 
 typedef struct
 {
+	string name;
 	int id; /* bitflag id */
 	int slot;
 	int slot_pos;
-	string ki_spr;
-	vector ki_size;
-	vector ki_xy;
+	int allow_drop;
 
 	void(void) draw;
 	void(void) holster;
@@ -32,7 +31,7 @@ typedef struct
 	void(void) crosshair;
 
 	void(void) precache;
-	int(int) pickup;
+	int(int, int) pickup;
 	void(player) updateammo;
 	string() wmodel;
 	string() pmodel;
@@ -54,7 +53,10 @@ void Weapons_SetGeomset(string);
 void Weapons_RefreshAmmo(player);
 void Weapons_InitItem(int);
 float Weapons_GetAim(int);
-int Weapons_AddItem(player, int);
+
+/* TODO: pass this as a weapon.pickup parm */
+int Weapons_AddItem(player, int, int);
+
 void Weapons_RemoveItem(player, int);
 string Weapons_GetWorldmodel(int);
 void Weapons_UpdateAmmo(player, int, int, int);

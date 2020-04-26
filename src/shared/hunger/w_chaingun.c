@@ -42,7 +42,7 @@ w_chaingun_precache(void)
 }
 
 int
-w_chaingun_pickup(int new)
+w_chaingun_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -273,12 +273,10 @@ w_chaingun_hudpic(int selected, vector pos, float a)
 
 weapon_t w_chaingun =
 {
+	.name		= "chaingun",
 	.id			= ITEM_CHAINGUN,
 	.slot		= 3,
 	.slot_pos	= 3,
-	.ki_spr		= "sprites/tfc_dmsg.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [0,16],
 	.draw		= w_chaingun_draw,
 	.holster	= w_chaingun_holster,
 	.primary	= w_chaingun_primary,

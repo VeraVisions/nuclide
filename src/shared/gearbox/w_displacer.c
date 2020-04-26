@@ -82,7 +82,7 @@ w_displacer_deathmsg(void)
 }
 
 int
-w_displacer_pickup(int new)
+w_displacer_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -356,12 +356,10 @@ w_displacer_hudpic(int selected, vector pos, float a)
 
 weapon_t w_displacer =
 {
-	.id		= ITEM_DISPLACER,
+	.name		= "displacer",
+	.id			= ITEM_DISPLACER,
 	.slot		= 5,
 	.slot_pos	= 1,
-	.ki_spr		= "sprites/320hudof01.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [48,208],
 	.draw		= w_displacer_draw,
 	.holster	= w_displacer_holster,
 	.primary	= w_displacer_primary,

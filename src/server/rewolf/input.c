@@ -42,15 +42,15 @@ Game_Input(void)
 		if (self.impulse == 101) {
 			pl.health = 100;
 			pl.armor = 100;
-			Weapons_AddItem(pl, WEAPON_FISTS);
-			Weapons_AddItem(pl, WEAPON_GAUSSPISTOL);
-			Weapons_AddItem(pl, WEAPON_BEAMGUN);
-			Weapons_AddItem(pl, WEAPON_CHEMICALGUN);
-			Weapons_AddItem(pl, WEAPON_DML);
-			Weapons_AddItem(pl, WEAPON_MINIGUN);
-			Weapons_AddItem(pl, WEAPON_AICORE);
-			Weapons_AddItem(pl, WEAPON_SHOTGUN);
-			Weapons_AddItem(pl, WEAPON_GRENADE);
+			Weapons_AddItem(pl, WEAPON_FISTS, -1);
+			Weapons_AddItem(pl, WEAPON_GAUSSPISTOL, -1);
+			Weapons_AddItem(pl, WEAPON_BEAMGUN, -1);
+			Weapons_AddItem(pl, WEAPON_CHEMICALGUN, -1);
+			Weapons_AddItem(pl, WEAPON_DML, -1);
+			Weapons_AddItem(pl, WEAPON_MINIGUN, -1);
+			Weapons_AddItem(pl, WEAPON_AICORE, -1);
+			Weapons_AddItem(pl, WEAPON_SHOTGUN, -1);
+			Weapons_AddItem(pl, WEAPON_GRENADE, -1);
 		}
 
 		if (self.impulse == 102) {

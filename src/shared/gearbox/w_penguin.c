@@ -34,7 +34,7 @@ enum
 };
 
 int
-w_penguin_pickup(int new)
+w_penguin_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -338,12 +338,10 @@ w_penguin_hudpic(int s, vector pos, float a)
 
 weapon_t w_penguin =
 {
-	.id		= ITEM_PENGUIN,
+	.name		= "penguin",
+	.id			= ITEM_PENGUIN,
 	.slot		= 4,
 	.slot_pos	= 4,
-	.ki_spr		= "sprites/320hudof01.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [144,224],
 	.draw		= w_penguin_draw,
 	.holster	= w_penguin_holster,
 	.primary	= w_penguin_primary,

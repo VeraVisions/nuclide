@@ -137,7 +137,7 @@ monster_snark::monster_snark(void)
 }
 #endif
 
-int w_snark_pickup(int new)
+int w_snark_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -304,12 +304,10 @@ void w_snark_hudpic(int selected, vector pos, float a)
 
 weapon_t w_snark =
 {
+	.name		= "snark",
 	.id		= ITEM_SNARK,
 	.slot		= 4,
 	.slot_pos	= 3,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [32,16],
-	.ki_xy		= [192,208],
 	.draw		= w_snark_draw,
 	.holster	= w_snark_holster,
 	.primary	= w_snark_primary,

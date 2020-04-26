@@ -77,13 +77,16 @@ w_p228_deathmsg(void)
 }
 
 int
-w_p228_pickup(int new)
+w_p228_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
-		pl.p228_mag = 13;
+		if (startammo == -1)
+			pl.p228_mag = 13;
+		else
+			pl.p228_mag = startammo;
 	} else {
 		if (pl.ammo_357sig < 26) {
 			pl.ammo_357sig = bound(0, pl.ammo_357sig + 13, 26);
@@ -256,12 +259,11 @@ w_p228_hudpic(int selected, vector pos, float a)
 
 weapon_t w_p228 =
 {
+	"p228",
 	ITEM_P228,
 	1,
 	3,
-	"sprites/640hud1.spr_0.tga",
-	[32,16],
-	[224,32],
+	TRUE,
 	w_p228_draw,
 	__NULL__,
 	w_p228_primary,

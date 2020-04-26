@@ -87,13 +87,16 @@ w_usp45_deathmsg(void)
 }
 
 int
-w_usp45_pickup(int new)
+w_usp45_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
-		pl.usp45_mag = 12;
+		if (startammo == -1)
+			pl.usp45_mag = 12;
+		else
+			pl.usp45_mag = startammo;
 	} else {
 		if (pl.ammo_45acp < AMMO_MAX_45ACP) {
 			pl.ammo_45acp = bound(0, pl.ammo_45acp + 12, AMMO_MAX_45ACP);
@@ -329,12 +332,11 @@ w_usp45_hudpic(int selected, vector pos, float a)
 
 weapon_t w_usp45 =
 {
+	"usp",
 	ITEM_USP45,
 	1,
 	0,
-	"sprites/640hud1.spr_0.tga",
-	[32,16],
-	[192,32],
+	TRUE,
 	w_usp45_draw,
 	__NULL__,
 	w_usp45_primary,

@@ -204,12 +204,10 @@ w_crowbar_hudpic(int selected, vector pos, float a)
 
 weapon_t w_crowbar =
 {
+	.name		= "crowbar",
 	.id		= ITEM_CROWBAR,
 	.slot		= 0,
 	.slot_pos	= 0,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [192,0],
 	.draw		= w_crowbar_draw,
 	.holster	= w_crowbar_holster,
 	.primary	= w_crowbar_primary,

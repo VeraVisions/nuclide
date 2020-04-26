@@ -215,12 +215,10 @@ void w_hammer_hudpic(int s, vector pos, float a)
 
 weapon_t w_hammer =
 {
-	.id		= ITEM_HAMMER,
+	.name		= "hammer",
+	.id			= ITEM_HAMMER,
 	.slot		= 0,
 	.slot_pos	= 1,
-	.ki_spr		= "sprites/hammer.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [192,0],
 	.draw		= w_hammer_draw,
 	.holster	= w_hammer_holster,
 	.primary	= w_hammer_primary,

@@ -64,7 +64,7 @@ string w_handgrenade_deathmsg(void)
 	return "";
 }
 
-int w_handgrenade_pickup(int new)
+int w_handgrenade_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -248,12 +248,10 @@ w_handgrenade_hudpic(int selected, vector pos, float a)
 
 weapon_t w_handgrenade =
 {
+	.name		= "handgrenade",
 	.id		= ITEM_HANDGRENADE,
 	.slot		= 4,
 	.slot_pos	= 0,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [32,16],
-	.ki_xy		= [192,160],
 	.draw		= w_handgrenade_draw,
 	.holster	= w_handgrenade_holster,
 	.primary	= w_handgrenade_primary,

@@ -15,6 +15,15 @@
  */
 
 void
+HLMultiplayerRules::FrameStart(void)
+{
+	if (cvar("mp_timelimit") != 0)
+	if (time >= (cvar("mp_timelimit") * 60)) {
+		IntermissionStart();
+	}
+}
+
+void
 HLMultiplayerRules::PlayerDeath(player pl)
 {
 	pl.movetype = MOVETYPE_NONE;

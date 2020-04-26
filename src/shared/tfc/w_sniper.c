@@ -92,12 +92,10 @@ w_sniper_hudpic(int selected, vector pos, float a)
 
 weapon_t w_sniper =
 {
-	.id		= ITEM_SNIPER,
+	.name		= "sniper",
+	.id			= ITEM_SNIPER,
 	.slot		= 1,
 	.slot_pos	= 1,
-	.ki_spr		= "sprites/tfc_dmsg.spr_0.tga",
-	.ki_size	= [60,16],
-	.ki_xy		= [0,96],
 	.draw		= w_sniper_draw,
 	.holster	= __NULL__,
 	.primary	= __NULL__,

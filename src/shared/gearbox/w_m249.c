@@ -49,7 +49,7 @@ w_m249_precache(void)
 }
 
 int 
-w_m249_pickup(int new)
+w_m249_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -303,12 +303,10 @@ w_m249_hudpic(int selected, vector pos, float a)
 
 weapon_t w_m249 =
 {
-	.id		= ITEM_M249,
+	.name		= "m249",
+	.id			= ITEM_M249,
 	.slot		= 5,
 	.slot_pos	= 0,
-	.ki_spr		= "sprites/320hudof01.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [96,208],
 	.draw		= w_m249_draw,
 	.holster	= w_m249_holster,
 	.primary	= w_m249_primary,

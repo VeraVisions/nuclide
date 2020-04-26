@@ -256,12 +256,10 @@ w_beamgun_precache(void)
 
 weapon_t w_beamgun =
 {
-	.id		= ITEM_BEAMGUN,
+	.name		= "beamgun",
+	.id			= ITEM_BEAMGUN,
 	.slot		= 3,
 	.slot_pos	= 0,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [192,0],
 	.draw		= w_beamgun_draw,
 	.holster	= w_beamgun_holster,
 	.primary	= w_beamgun_primary,

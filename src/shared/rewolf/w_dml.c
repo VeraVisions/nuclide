@@ -224,7 +224,7 @@ w_dml_aimanim(void)
 }
 
 int
-w_dml_pickup(int new)
+w_dml_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -378,12 +378,10 @@ w_dml_precache(void)
 
 weapon_t w_dml =
 {
-	.id		= ITEM_DML,
+	.name		= "dml",
+	.id			= ITEM_DML,
 	.slot		= 3,
 	.slot_pos	= 1,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [192,0],
 	.draw		= w_dml_draw,
 	.holster	= w_dml_holster,
 	.primary	= w_dml_primary,

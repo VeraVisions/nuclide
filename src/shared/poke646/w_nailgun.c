@@ -165,12 +165,10 @@ w_nailgun_hudpic(int selected, vector pos, float a)
 
 weapon_t w_nailgun =
 {
-	.id		= ITEM_NAILGUN,
+	.name		= "nailgun",
+	.id			= ITEM_NAILGUN,
 	.slot		= 1,
 	.slot_pos	= 1,
-	.ki_spr		= __NULL__,
-	.ki_size	= __NULL__,
-	.ki_xy		= __NULL__,
 	.draw		= w_nailgun_draw,
 	.holster	= __NULL__,
 	.primary	= w_nailgun_primary,

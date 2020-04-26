@@ -57,7 +57,7 @@ w_flashbang_updateammo(player pl)
 }
 
 int
-w_flashbang_pickup(int new)
+w_flashbang_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -263,12 +263,11 @@ w_flashbang_hudpic(int selected, vector pos, float a)
 
 weapon_t w_flashbang =
 {
+	"flashbang",
 	ITEM_FLASHBANG,
 	3,
 	1,
-	"sprites/640hud1.spr_0.tga",
-	[48,16],
-	[192,192],
+	FALSE,
 	w_flashbang_draw,
 	__NULL__,
 	w_flashbang_primary,

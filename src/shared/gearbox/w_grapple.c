@@ -282,12 +282,10 @@ w_grapple_hudpic(int selected, vector pos, float a)
 
 weapon_t w_grapple =
 {
-	.id		= ITEM_GRAPPLE,
+	.name		= "grapple",
+	.id			= ITEM_GRAPPLE,
 	.slot		= 0,
 	.slot_pos	= 3,
-	.ki_spr		= "sprites/320hudof01.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [0,224],
 	.draw		= w_grapple_draw,
 	.holster	= w_grapple_holster,
 	.primary	= w_grapple_primary,

@@ -74,12 +74,10 @@ w_rpg_hudpic(int selected, vector pos, float a)
 
 weapon_t w_rpg =
 {
-	.id		= ITEM_RPG,
+	.name		= "rpg",
+	.id			= ITEM_RPG,
 	.slot		= 4,
 	.slot_pos	= 0,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [192,96],
 	.draw		= w_rpg_draw,
 	.holster	= __NULL__,
 	.primary	= __NULL__,

@@ -213,12 +213,10 @@ w_umbrella_hudpic(int selected, vector pos, float a)
 
 weapon_t w_umbrella =
 {
-	.id		= ITEM_UMBRELLA,
+	.name		= "umbrella",
+	.id			= ITEM_UMBRELLA,
 	.slot		= 0,
 	.slot_pos	= 4,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [192,0],
 	.draw		= w_umbrella_draw,
 	.holster	= w_umbrella_holster,
 	.primary	= w_umbrella_primary,

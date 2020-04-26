@@ -139,7 +139,7 @@ w_chemicalgun_aimanim(void)
 }
 
 int
-w_chemicalgun_pickup(int new)
+w_chemicalgun_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -358,12 +358,10 @@ w_chemicalgun_precache(void)
 
 weapon_t w_chemicalgun =
 {
-	.id		= ITEM_CHEMICALGUN,
+	.name		= "chemicalgun",
+	.id			= ITEM_CHEMICALGUN,
 	.slot		= 4,
 	.slot_pos	= 1,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [192,0],
 	.draw		= w_chemicalgun_draw,
 	.holster	= w_chemicalgun_holster,
 	.primary	= w_chemicalgun_primary,

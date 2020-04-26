@@ -63,6 +63,7 @@ var int MUZZLE_WEIRD;
 vector video_mins;
 vector video_res;
 vector mouse_pos;
+int g_iIntermission;
 
 int g_iWorldInitialized;
 

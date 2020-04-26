@@ -199,7 +199,7 @@ w_gausspistol_aimanim(void)
 }
 
 int
-w_gausspistol_pickup(int new)
+w_gausspistol_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -366,12 +366,10 @@ w_gausspistol_precache(void)
 
 weapon_t w_gausspistol =
 {
-	.id		= ITEM_GAUSSPISTOL,
+	.name		= "gausspistol",
+	.id			= ITEM_GAUSSPISTOL,
 	.slot		= 1,
 	.slot_pos	= 0,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [192,0],
 	.draw		= w_gausspistol_draw,
 	.holster	= w_gausspistol_holster,
 	.primary	= w_gausspistol_primary,

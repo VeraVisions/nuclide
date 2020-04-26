@@ -63,7 +63,7 @@ w_medkit_deathmsg(void)
 }
 
 int
-w_medkit_pickup(int new)
+w_medkit_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -212,12 +212,10 @@ w_medkit_hudpic(int selected, vector pos, float a)
 
 weapon_t w_medkit =
 {
+	.name		= "medkit",
 	.id			= ITEM_MEDKIT2,
 	.slot		= 4,
 	.slot_pos	= 4,
-	.ki_spr		= "sprites/tfc_dmsg.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [0,192],
 	.draw		= w_medkit_draw,
 	.holster	= __NULL__,
 	.primary	= w_medkit_primary,

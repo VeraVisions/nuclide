@@ -121,12 +121,10 @@ w_aicore_precache(void)
 
 weapon_t w_aicore =
 {
-	.id		= ITEM_AICORE,
+	.name		= "aicore",
+	.id			= ITEM_AICORE,
 	.slot		= 0,
 	.slot_pos	= 1,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [192,0],
 	.draw		= w_aicore_draw,
 	.holster	= w_aicore_holster,
 	.primary	= w_aicore_primary,

@@ -92,12 +92,10 @@ w_incendiary_hudpic(int selected, vector pos, float a)
 
 weapon_t w_incendiary =
 {
-	.id		= ITEM_INCENDIARY,
+	.name		= "incendiary",
+	.id			= ITEM_INCENDIARY,
 	.slot		= 4,
 	.slot_pos	= 3,
-	.ki_spr		= "sprites/tfc_dmsg.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [0,160],
 	.draw		= w_incendiary_draw,
 	.holster	= __NULL__,
 	.primary	= __NULL__,

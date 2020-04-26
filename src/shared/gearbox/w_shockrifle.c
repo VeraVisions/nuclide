@@ -55,7 +55,7 @@ w_shockrifle_precache(void)
 }
 
 int
-w_shockrifle_pickup(int new)
+w_shockrifle_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -295,12 +295,10 @@ w_shockrifle_hudpic(int selected, vector pos, float a)
 
 weapon_t w_shockrifle =
 {
-	.id		= ITEM_SHOCKRIFLE,
+	.name		= "shockrifle",
+	.id			= ITEM_SHOCKRIFLE,
 	.slot		= 6,
 	.slot_pos	= 1,
-	.ki_spr		= "sprites/320hudof01.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [48,240],
 	.draw		= w_shockrifle_draw,
 	.holster	= w_shockrifle_holster,
 	.primary	= w_shockrifle_primary,

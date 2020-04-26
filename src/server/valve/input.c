@@ -23,6 +23,13 @@ Handles impulse and whatnot
 */
 void Game_Input(void)
 {
+	CGameRules rules = (CGameRules)g_grMode;
+
+	if (rules.m_iIntermission) {
+		rules.IntermissionEnd();
+		return;
+	}
+
 	if (input_buttons & INPUT_BUTTON0) {
 		Weapons_Primary();
 	} else if (input_buttons & INPUT_BUTTON4) {
@@ -52,20 +59,20 @@ void Game_Input(void)
 			pl.health = 100;
 			pl.armor = 100;
 			pl.g_items |= ITEM_SUIT;
-			Weapons_AddItem(pl, WEAPON_CROWBAR);
-			Weapons_AddItem(pl, WEAPON_GLOCK);
-			Weapons_AddItem(pl, WEAPON_PYTHON);
-			Weapons_AddItem(pl, WEAPON_MP5);
-			Weapons_AddItem(pl, WEAPON_SHOTGUN);
-			Weapons_AddItem(pl, WEAPON_CROSSBOW);
-			Weapons_AddItem(pl, WEAPON_RPG);
-			Weapons_AddItem(pl, WEAPON_GAUSS);
-			Weapons_AddItem(pl, WEAPON_EGON);
-			Weapons_AddItem(pl, WEAPON_HORNETGUN);
-			Weapons_AddItem(pl, WEAPON_HANDGRENADE);
-			Weapons_AddItem(pl, WEAPON_SATCHEL);
-			Weapons_AddItem(pl, WEAPON_TRIPMINE);
-			Weapons_AddItem(pl, WEAPON_SNARK);
+			Weapons_AddItem(pl, WEAPON_CROWBAR, -1);
+			Weapons_AddItem(pl, WEAPON_GLOCK, -1);
+			Weapons_AddItem(pl, WEAPON_PYTHON, -1);
+			Weapons_AddItem(pl, WEAPON_MP5, -1);
+			Weapons_AddItem(pl, WEAPON_SHOTGUN, -1);
+			Weapons_AddItem(pl, WEAPON_CROSSBOW, -1);
+			Weapons_AddItem(pl, WEAPON_RPG, -1);
+			Weapons_AddItem(pl, WEAPON_GAUSS, -1);
+			Weapons_AddItem(pl, WEAPON_EGON, -1);
+			Weapons_AddItem(pl, WEAPON_HORNETGUN, -1);
+			Weapons_AddItem(pl, WEAPON_HANDGRENADE, -1);
+			Weapons_AddItem(pl, WEAPON_SATCHEL, -1);
+			Weapons_AddItem(pl, WEAPON_TRIPMINE, -1);
+			Weapons_AddItem(pl, WEAPON_SNARK, -1);
 		}
 
 		if (self.impulse == 102) {

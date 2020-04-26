@@ -153,12 +153,10 @@ void w_chainsaw_hudpic(int s, vector pos, float a)
 
 weapon_t w_chainsaw =
 {
-	.id		= ITEM_CHAINSAW,
+	.name		= "chainsaw",
+	.id			= ITEM_CHAINSAW,
 	.slot		= 0,
 	.slot_pos	= 2,
-	.ki_spr		= "sprites/chainsaw.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [192,0],
 	.draw		= w_chainsaw_draw,
 	.holster	= w_chainsaw_holster,
 	.primary	= w_chainsaw_primary,

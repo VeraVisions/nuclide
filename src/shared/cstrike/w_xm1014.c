@@ -84,13 +84,16 @@ w_xm1014_deathmsg(void)
 }
 
 int
-w_xm1014_pickup(int new)
+w_xm1014_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
-		pl.xm1014_mag = 7;
+		if (startammo == -1)
+			pl.xm1014_mag = 7;
+		else
+			pl.xm1014_mag = startammo;
 	} else {
 		if (pl.ammo_buckshot < AMMO_MAX_BUCKSHOT) {
 			pl.ammo_buckshot = bound(0, pl.ammo_buckshot + 7, AMMO_MAX_BUCKSHOT);
@@ -287,27 +290,26 @@ w_xm1014_hudpic(int selected, vector pos, float a)
 
 weapon_t w_xm1014 =
 {
-	ITEM_XM1014,
-	0,
-	1,
-	"sprites/640hud1.spr_0.tga",
-	[48,16],
-	[192,224],
-	w_xm1014_draw,
-	__NULL__,
-	w_xm1014_primary,
-	__NULL__,
-	w_xm1014_reload,
-	w_xm1014_release,
-	w_xm1014_hud,
-	w_xm1014_precache,
-	w_xm1014_pickup,
-	w_xm1014_updateammo,
-	w_xm1014_wmodel,
-	w_xm1014_pmodel,
-	w_xm1014_deathmsg,
-	w_xm1014_aimanim,
-	w_xm1014_hudpic
+	.name		= "xm1014",
+	.id			= ITEM_XM1014,
+	.slot		= 0,
+	.slot_pos	= 1,
+	.allow_drop	= TRUE,
+	.draw		= w_xm1014_draw,
+	.holster	= __NULL__,
+	.primary	= w_xm1014_primary,
+	.secondary	= __NULL__,
+	.reload		= w_xm1014_reload,
+	.release	= w_xm1014_release,
+	.crosshair	= w_xm1014_hud,
+	.precache	= w_xm1014_precache,
+	.pickup		= w_xm1014_pickup,
+	.updateammo	= w_xm1014_updateammo,
+	.wmodel		= w_xm1014_wmodel,
+	.pmodel		= w_xm1014_pmodel,
+	.deathmsg	= w_xm1014_deathmsg,
+	.aimanim	= w_xm1014_aimanim,
+	.hudpic		= w_xm1014_hudpic
 };
 
 #ifdef SERVER

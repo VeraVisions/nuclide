@@ -14,24 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* someone dieded */
-void
-Damage_Obituary(entity c, entity t, float weapon, float flags)
-{
-	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
-	WriteByte(MSG_MULTICAST, EV_OBITUARY);
-	if (c.netname) {
-		WriteString(MSG_MULTICAST, c.netname);
-	} else {
-		WriteString(MSG_MULTICAST, c.classname);
-	}
-	WriteString(MSG_MULTICAST, t.netname);
-	WriteByte(MSG_MULTICAST, weapon);
-	WriteByte(MSG_MULTICAST, flags);
-	msg_entity = self;
-	multicast([0,0,0], MULTICAST_ALL);
-}
-
 /* generic function that applies damage, pain and suffering */
 void
 Damage_Apply(entity t, entity c, float dmg, int w, int type)
@@ -69,26 +51,19 @@ Damage_Apply(entity t, entity c, float dmg, int w, int type)
 	dmg = rint(dmg);
 	t.health -= dmg;
 
+	/* the globals... */
+	g_dmg_eAttacker = c;
+	g_dmg_eTarget = t;
+	g_dmg_iDamage = dmg;
+	g_dmg_iHitBody = trace_surface_id;
+	g_dmg_iFlags = type;
+	g_dmg_iWeapon = w;
+
 	if (dmg > 0) {
 		t.dmg_take = dmg;
 		t.dmg_inflictor = c;
 	} else if (t.max_health && t.health > t.max_health) {
 		t.health = t.max_health;
-	}
-
-	// Target is dead and a client....
-	if (t.health <= 0) {
-		if (t.flags & FL_CLIENT) {
-			t.deaths++;
-			forceinfokey(t, "*deaths", ftos(t.deaths));
-		}
-
-		if (t.flags & FL_CLIENT || t.flags & FL_MONSTER)
-		if (c.flags & FL_CLIENT)
-			if (t == c)
-				c.frags--;
-			else
-				c.frags++;
 	}
 
 	/* set this global in case we need it later */
@@ -97,9 +72,6 @@ Damage_Apply(entity t, entity c, float dmg, int w, int type)
 	CBaseEntity s = (CBaseEntity)t;
 
 	if (s.health <= 0) {
-		if (t.flags & FL_MONSTER || t.flags & FL_CLIENT) {
-			Damage_Obituary(c, t, w, 0);
-		}
 		if (s.flags & FL_CLIENT) {
 			rules.PlayerDeath((player)s);
 		} else {

@@ -111,6 +111,36 @@ CGameRules::MaxItemPerSlot(int slot)
 }
 
 void
+CGameRules::IntermissionStart(void)
+{
+	if (m_iIntermission)
+		return;
+
+	m_iIntermission = TRUE;
+	m_flIntermissionTime = time + 5.0f;
+
+	/* make the clients aware */
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_INTERMISSION);
+	msg_entity = world;
+	multicast([0,0,0], MULTICAST_ALL);
+}
+
+void
+CGameRules::IntermissionEnd(void)
+{
+	if (!m_iIntermission)
+		return;
+	if (time < m_flIntermissionTime)
+		return;
+
+	if (!(input_buttons & INPUT_BUTTON0) && !(input_buttons & INPUT_BUTTON2))
+		return;
+
+	localcmd("restart\n");
+}
+
+void
 CGameRules::CGameRules(void)
 {
 	forceinfokey(world, "teamplay", "0");

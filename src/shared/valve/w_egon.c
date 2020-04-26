@@ -63,7 +63,7 @@ string w_egon_deathmsg(void)
 	return "";
 }
 
-int w_egon_pickup(int new)
+int w_egon_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -187,12 +187,10 @@ void w_egon_hudpic(int selected, vector pos, float a)
 
 weapon_t w_egon =
 {
+	.name		= "egon",
 	.id		= ITEM_EGON,
 	.slot		= 3,
 	.slot_pos	= 2,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [32,16],
-	.ki_xy		= [192,128],
 	.draw		= w_egon_draw,
 	.holster	= w_egon_holster,
 	.primary	= w_egon_primary,

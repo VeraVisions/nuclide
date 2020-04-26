@@ -17,6 +17,7 @@
 // Network Events
 enum
 {
+	EV_INTERMISSION,
 	EV_MUSICTRACK,
 	EV_MUSICLOOP,
 	EV_WEAPON_DRAW,

@@ -92,12 +92,10 @@ w_medkit_hudpic(int selected, vector pos, float a)
 
 weapon_t w_medkit =
 {
-	.id		= ITEM_MEDKIT,
+	.name		= "medkit",
+	.id			= ITEM_MEDKIT,
 	.slot		= 0,
 	.slot_pos	= 1,
-	.ki_spr		= "sprites/tfc_dmsg.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [0,192],
 	.draw		= w_medkit_draw,
 	.holster	= __NULL__,
 	.primary	= __NULL__,

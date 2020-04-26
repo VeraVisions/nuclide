@@ -248,6 +248,11 @@ CSQC_UpdateView(float w, float h, float focus)
 		setproperty(VF_MIN, video_mins);
 		setproperty(VF_SIZE, video_res);
 		setproperty(VF_ANGLES, view_angles + pl.punchangle);
+
+		if (g_iIntermission) {
+			view_angles = pSeat->m_vecCameraAngle + [sin(time), sin(time * 2)] * 5;
+		}
+
 		setproperty(VF_DRAWWORLD, 1);
 
 		if (g_skyscale != 0 && g_skypos) {
@@ -296,7 +301,9 @@ CSQC_UpdateView(float w, float h, float focus)
 #endif
 		View_PostDraw();
 
-		if (focus == TRUE) {
+		if (g_iIntermission) {
+			Scores_Draw();
+		} else if (focus == TRUE) {
 			GameText_Draw();
 
 			// The spectator sees things... differently
@@ -456,6 +463,11 @@ CSQC_Parse_Event(void)
 	float fHeader = readbyte();
 
 	switch (fHeader) {
+	case EV_INTERMISSION:
+		g_iIntermission = TRUE;
+		pSeat->m_vecCameraOrigin = getproperty(VF_ORIGIN);
+		pSeat->m_vecCameraAngle = getproperty(VF_ANGLES);
+		break;
 	case EV_MUSICTRACK:
 		Music_ParseTrack();
 		break;

@@ -122,12 +122,10 @@ w_xs_hudpic(int selected, vector pos, float a)
 
 weapon_t w_xs =
 {
-	.id		= ITEM_XS,
+	.name		= "xs",
+	.id			= ITEM_XS,
 	.slot		= 3,
 	.slot_pos	= 0,
-	.ki_spr		= __NULL__,
-	.ki_size	= __NULL__,
-	.ki_xy		= __NULL__,
 	.draw		= w_xs_draw,
 	.holster	= w_xs_holster,
 	.primary	= w_xs_primary,

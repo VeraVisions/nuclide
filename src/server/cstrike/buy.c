@@ -94,7 +94,7 @@ CSEv_BuyWeapon_f(float fWeapon)
 			}
 		}
 	
-		Weapons_AddItem(pl, iWeapon);
+		Weapons_AddItem(pl, iWeapon, -1);
 		Money_AddMoney(pl, -g_cstrikeWeaponPrice[iWeapon]);
 		Sound_Play(pl, CHAN_ITEM, "buy.weapon");
 	} else {
@@ -142,15 +142,15 @@ CSEv_BuyEquipment_f(float fUtil)
 			Sound_Play(pl, CHAN_ITEM, "buy.kevlar");
 			break;
 		case 2:
-			Weapons_AddItem(pl, WEAPON_FLASHBANG);
+			Weapons_AddItem(pl, WEAPON_FLASHBANG, -1);
 			Sound_Play(pl, CHAN_ITEM, "buy.weapon");
 			break;
 		case 3:
-			Weapons_AddItem(pl, WEAPON_HEGRENADE);
+			Weapons_AddItem(pl, WEAPON_HEGRENADE, -1);
 			Sound_Play(pl, CHAN_ITEM, "buy.weapon");
 			break;
 		case 4:
-			Weapons_AddItem(pl, WEAPON_SMOKEGRENADE);
+			Weapons_AddItem(pl, WEAPON_SMOKEGRENADE, -1);
 			Sound_Play(pl, CHAN_ITEM, "buy.weapon");
 			break;
 		case 5:

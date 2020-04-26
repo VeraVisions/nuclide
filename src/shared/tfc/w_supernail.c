@@ -92,12 +92,10 @@ w_supernail_hudpic(int selected, vector pos, float a)
 
 weapon_t w_supernail =
 {
-	.id		= ITEM_SUPERNAIL,
+	.name		= "supernail",
+	.id			= ITEM_SUPERNAIL,
 	.slot		= 3,
 	.slot_pos	= 2,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [112,64],
 	.draw		= w_supernail_draw,
 	.holster	= __NULL__,
 	.primary	= __NULL__,

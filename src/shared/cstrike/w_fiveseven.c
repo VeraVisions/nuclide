@@ -74,13 +74,16 @@ w_fiveseven_deathmsg(void)
 }
 
 int
-w_fiveseven_pickup(int new)
+w_fiveseven_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
-		pl.fiveseven_mag = 20;
+		if (startammo == -1)
+			pl.fiveseven_mag = 20;
+		else
+			pl.fiveseven_mag = startammo;
 	} else {
 		if (pl.ammo_57mm < 40) {
 			pl.ammo_57mm = bound(0, pl.ammo_57mm + 20, 40);
@@ -249,12 +252,11 @@ w_fiveseven_hudpic(int selected, vector pos, float a)
 
 weapon_t w_fiveseven =
 {
+	"fiveseven",
 	ITEM_FIVESEVEN,
 	1,
 	5,
-	"sprites/640hud16.spr_0.tga",
-	[48,16],
-	[192,0],
+	TRUE,
 	w_fiveseven_draw,
 	__NULL__,
 	w_fiveseven_primary,

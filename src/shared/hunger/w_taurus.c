@@ -68,7 +68,7 @@ w_taurus_deathmsg(void)
 }
 
 int
-w_taurus_pickup(int new)
+w_taurus_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -239,12 +239,10 @@ w_taurus_hudpic(int selected, vector pos, float a)
 
 weapon_t w_taurus =
 {
-	.id		= ITEM_TAURUS,
+	.name		= "taurus",
+	.id			= ITEM_TAURUS,
 	.slot		= 1,
 	.slot_pos	= 3,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [32,16],
-	.ki_xy		= [192,16],
 	.draw		= w_taurus_draw,
 	.holster	= w_taurus_holster,
 	.primary	= w_taurus_primary,

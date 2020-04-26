@@ -109,12 +109,10 @@ w_heaterpipe_hudpic(int selected, vector pos, float a)
 
 weapon_t w_heaterpipe =
 {
-	.id		= ITEM_HEATERPIPE,
+	.name		= "heaterpipe",
+	.id			= ITEM_HEATERPIPE,
 	.slot		= 0,
 	.slot_pos	= 0,
-	.ki_spr		= __NULL__,
-	.ki_size	= __NULL__,
-	.ki_xy		= __NULL__,
 	.draw		= w_heaterpipe_draw,
 	.holster	= w_heaterpipe_holster,
 	.primary	= w_heaterpipe_primary,

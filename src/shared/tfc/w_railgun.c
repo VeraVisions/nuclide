@@ -92,12 +92,10 @@ w_railgun_hudpic(int selected, vector pos, float a)
 
 weapon_t w_railgun =
 {
-	.id		= ITEM_RAILGUN,
+	.name		= "railgun",
+	.id			= ITEM_RAILGUN,
 	.slot		= 1,
 	.slot_pos	= 3,
-	.ki_spr		= "sprites/tfc_dmsg.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [113,4],
 	.draw		= w_railgun_draw,
 	.holster	= __NULL__,
 	.primary	= __NULL__,

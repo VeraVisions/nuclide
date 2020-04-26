@@ -92,12 +92,10 @@ w_glauncher_hudpic(int selected, vector pos, float a)
 
 weapon_t w_glauncher =
 {
-	.id		= ITEM_GLAUNCHER,
+	.name		= "glauncher",
+	.id			= ITEM_GLAUNCHER,
 	.slot		= 3,
 	.slot_pos	= 1,
-	.ki_spr		= "sprites/tfc_dmsg.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [0,128],
 	.draw		= w_glauncher_draw,
 	.holster	= __NULL__,
 	.primary	= __NULL__,

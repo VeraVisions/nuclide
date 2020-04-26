@@ -38,7 +38,7 @@ w_sniper_precache(void)
 }
 
 int
-w_sniper_pickup(int new)
+w_sniper_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -322,12 +322,10 @@ w_sniper_hudpic(int selected, vector pos, float a)
 
 weapon_t w_sniper =
 {
-	.id		= ITEM_SNIPER,
+	.name		= "sniper",
+	.id			= ITEM_SNIPER,
 	.slot		= 2,
 	.slot_pos	= 3,
-	.ki_spr		= "sprites/tfc_dmsg.spr_0.tga",
-	.ki_size	= [60,16],
-	.ki_xy		= [0,96],
 	.draw		= w_sniper_draw,
 	.holster	= w_sniper_holster,
 	.primary	= w_sniper_primary,

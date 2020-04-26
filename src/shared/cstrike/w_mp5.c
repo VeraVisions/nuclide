@@ -74,13 +74,16 @@ w_mp5_deathmsg(void)
 }
 
 int
-w_mp5_pickup(int new)
+w_mp5_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
-		pl.mp5_mag = 30;
+		if (startammo == -1)
+			pl.mp5_mag = 30;
+		else
+			pl.mp5_mag = startammo;
 	} else {
 		if (pl.ammo_9mm < AMMO_MAX_9MM) {
 			pl.ammo_9mm = bound(0, pl.ammo_9mm + 30, AMMO_MAX_9MM);
@@ -248,12 +251,11 @@ w_mp5_hudpic(int selected, vector pos, float a)
 
 weapon_t w_mp5 =
 {
+	"mp5",
 	ITEM_MP5,
 	0,
 	2,
-	"sprites/640hud1.spr_0.tga",
-	[32,16],
-	[192,64],
+	TRUE,
 	w_mp5_draw,
 	__NULL__,
 	w_mp5_primary,

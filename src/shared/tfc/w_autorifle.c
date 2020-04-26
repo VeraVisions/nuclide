@@ -92,12 +92,10 @@ w_autorifle_hudpic(int selected, vector pos, float a)
 
 weapon_t w_autorifle =
 {
-	.id		= ITEM_AUTORIFLE,
+	.name		= "autorifle",
+	.id			= ITEM_AUTORIFLE,
 	.slot		= 2,
 	.slot_pos	= 0,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [60,16],
-	.ki_xy		= [0,80],
 	.draw		= w_autorifle_draw,
 	.holster	= __NULL__,
 	.primary	= __NULL__,

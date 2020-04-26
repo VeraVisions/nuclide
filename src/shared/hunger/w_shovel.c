@@ -127,12 +127,10 @@ w_shovel_hudpic(int selected, vector pos, float a)
 
 weapon_t w_shovel =
 {
-	.id		= ITEM_SHOVEL,
+	.name		= "shovel",
+	.id			= ITEM_SHOVEL,
 	.slot		= 0,
 	.slot_pos	= 1,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [192,0],
 	.draw		= w_shovel_draw,
 	.holster	= w_shovel_holster,
 	.primary	= w_shovel_primary,

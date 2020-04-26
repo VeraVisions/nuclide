@@ -119,7 +119,7 @@ armoury_entity::touch(void)
 	if (m_iItem == 17 || m_iItem == 16)
 		return;
 
-	if (Weapons_AddItem((player)other, m_iItem) == FALSE) {
+	if (Weapons_AddItem((player)other, m_iItem, -1) == FALSE) {
 		return;
 	}
 

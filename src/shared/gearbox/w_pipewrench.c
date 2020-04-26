@@ -318,12 +318,10 @@ w_pipewrench_hudpic(int selected, vector pos, float a)
 
 weapon_t w_pipewrench =
 {
-	.id		= ITEM_PIPEWRENCH,
+	.name		= "pipewrench",
+	.id			= ITEM_PIPEWRENCH,
 	.slot		= 0,
 	.slot_pos	= 1,
-	.ki_spr		= "sprites/320hudof01.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [0,208],
 	.draw		= w_pipewrench_draw,
 	.holster	= w_pipewrench_holster,
 	.primary	= w_pipewrench_primary,

@@ -220,12 +220,10 @@ w_grenade_precache(void)
 
 weapon_t w_grenade =
 {
-	.id		= ITEM_GRENADE,
+	.name		= "grenade",
+	.id			= ITEM_GRENADE,
 	.slot		= 4,
 	.slot_pos	= 0,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [192,0],
 	.draw		= w_grenade_draw,
 	.holster	= w_grenade_holster,
 	.primary	= w_grenade_primary,

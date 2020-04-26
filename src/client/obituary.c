@@ -42,14 +42,14 @@ Obituary_KillIcon(int id, float w)
 
 	/* fill in the entries and calculate some in advance */
 	if (w > 0) {
-		mtrsize = drawgetimagesize(g_weapons[w].ki_spr);
+		/*mtrsize = drawgetimagesize(g_weapons[w].ki_spr);
 		g_obituary[id].mtr = g_weapons[w].ki_spr;
 		g_obituary[id].pos = g_weapons[w].ki_xy;
 		g_obituary[id].size = g_weapons[w].ki_size;
 		g_obituary[id].coord[0] = g_weapons[w].ki_xy[0] / mtrsize[0];
 		g_obituary[id].coord[1] = g_weapons[w].ki_xy[1] / mtrsize[1];
 		g_obituary[id].bounds[0] = g_weapons[w].ki_size[0] / mtrsize[0];
-		g_obituary[id].bounds[1] = g_weapons[w].ki_size[1] / mtrsize[1];
+		g_obituary[id].bounds[1] = g_weapons[w].ki_size[1] / mtrsize[1];*/
 	} else {
 		/* generic splat icon */
 		g_obituary[id].mtr = "sprites/640hud1.spr_0.tga";

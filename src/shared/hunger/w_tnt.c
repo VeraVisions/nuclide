@@ -57,9 +57,9 @@ string w_tnt_deathmsg(void)
 	return w_handgrenade_deathmsg();
 }
 
-int w_tnt_pickup(int new)
+int w_tnt_pickup(int new, int startammo)
 {
-	return w_handgrenade_pickup(new);
+	return w_handgrenade_pickup(new, startammo);
 }
 
 #ifdef SERVER
@@ -200,12 +200,10 @@ w_tnt_hudpic(int selected, vector pos, float a)
 
 weapon_t w_tnt =
 {
-	.id		= ITEM_HANDGRENADE,
+	.name		= "tnt",
+	.id			= ITEM_HANDGRENADE,
 	.slot		= 4,
 	.slot_pos	= 0,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [32,16],
-	.ki_xy		= [192,160],
 	.draw		= w_tnt_draw,
 	.holster	= w_tnt_holster,
 	.primary	= w_tnt_primary,

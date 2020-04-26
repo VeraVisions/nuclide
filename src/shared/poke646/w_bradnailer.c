@@ -68,7 +68,7 @@ w_bradnailer_wmodel(void)
 }
 
 int
-w_bradnailer_pickup(int new)
+w_bradnailer_pickup(int new, int startammo)
 {
 /* TODO */
 	return TRUE;
@@ -239,12 +239,10 @@ w_bradnailer_hudpic(int selected, vector pos, float a)
 
 weapon_t w_bradnailer =
 {
-	.id		= ITEM_BRADNAILER,
+	.name		= "bradnailer",
+	.id			= ITEM_BRADNAILER,
 	.slot		= 1,
 	.slot_pos	= 0,
-	.ki_spr		= __NULL__,
-	.ki_size	= __NULL__,
-	.ki_xy		= __NULL__,
 	.draw		= w_bradnailer_draw,
 	.holster	= w_bradnailer_holster,
 	.primary	= w_bradnailer_primary,

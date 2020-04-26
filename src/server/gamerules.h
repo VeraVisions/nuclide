@@ -16,6 +16,9 @@
 
 class CGameRules
 {
+	int m_iIntermission;
+	float m_flIntermissionTime;
+
 	void() CGameRules;
 
 	virtual void(void) InitPostEnts;
@@ -39,6 +42,10 @@ class CGameRules
 	virtual void(player) LevelChangeParms;
 
 	virtual int(int) MaxItemPerSlot;
+
+	/* end of a game */
+	virtual void(void) IntermissionStart;
+	virtual void(void) IntermissionEnd;
 
 	/* spectator */
 	/*virtual void(player) SpectatorConnect;

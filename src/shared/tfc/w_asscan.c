@@ -92,12 +92,10 @@ w_asscan_hudpic(int selected, vector pos, float a)
 
 weapon_t w_asscan =
 {
-	.id		= ITEM_ASSCAN,
+	.name		= "asscan",
+	.id			= ITEM_ASSCAN,
 	.slot		= 4,
 	.slot_pos	= 2,
-	.ki_spr		= "sprites/tfc_dmsg.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [0,16],
 	.draw		= w_asscan_draw,
 	.holster	= __NULL__,
 	.primary	= __NULL__,

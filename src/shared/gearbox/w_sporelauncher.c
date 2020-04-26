@@ -181,7 +181,7 @@ w_sporelauncher_deathmsg(void)
 }
 
 int
-w_sporelauncher_pickup(int new)
+w_sporelauncher_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -442,12 +442,10 @@ w_sporelauncher_hudpic(int selected, vector pos, float a)
 
 weapon_t w_sporelauncher =
 {
-	.id		= ITEM_SPORELAUNCHER,
+	.name		= "sporelauncher",
+	.id			= ITEM_SPORELAUNCHER,
 	.slot		= 6,
 	.slot_pos	= 0,
-	.ki_spr		= "sprites/320hudof01.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [48,224],
 	.draw		= w_sporelauncher_draw,
 	.holster	= w_sporelauncher_holster,
 	.primary	= w_sporelauncher_primary,

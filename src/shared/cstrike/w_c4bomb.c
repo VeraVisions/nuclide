@@ -305,12 +305,11 @@ w_c4bomb_hudpic(int selected, vector pos, float a)
 
 weapon_t w_c4bomb =
 {
+	"c4",
 	ITEM_C4BOMB,
 	4,
 	0,
-	"sprites/640hud1.spr_0.tga",
-	[32,16],
-	[224,240],
+	TRUE,
 	w_c4bomb_draw,
 	__NULL__,
 	w_c4bomb_primary,

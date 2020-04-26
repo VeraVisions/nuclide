@@ -75,13 +75,16 @@ w_ak47_deathmsg(void)
 }
 
 int
-w_ak47_pickup(int new)
+w_ak47_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
-		pl.ak47_mag = 30;
+		if (startammo == -1)
+			pl.ak47_mag = 30;
+		else
+			pl.ak47_mag = startammo;
 	} else {
 		if (pl.ammo_762mm < 90) {
 			pl.ammo_762mm = bound(0, pl.ammo_762mm + 30, 90);
@@ -244,12 +247,11 @@ w_ak47_hudpic(int selected, vector pos, float a)
 
 weapon_t w_ak47 =
 {
-	.id		= ITEM_AK47,
+	.name		= "ak47",
+	.id			= ITEM_AK47,
 	.slot		= 0,
 	.slot_pos	= 7,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [192,80],
+	.allow_drop	= TRUE,
 	.draw		= w_ak47_draw,
 	.holster	= __NULL__,
 	.primary	= w_ak47_primary,

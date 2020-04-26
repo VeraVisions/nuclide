@@ -278,7 +278,7 @@ void Weapons_SwitchBest(player pl)
 }
 
 /* returns TRUE if weapon pickup gets removed from this world */
-int Weapons_AddItem(player pl, int w)
+int Weapons_AddItem(player pl, int w, int startammo)
 {
 	int value;
 	entity oldself = self;
@@ -323,13 +323,13 @@ int Weapons_AddItem(player pl, int w)
 			}
 		}
 	} else {
-		/* Call team pickup */
+		/* call pickup to handle the ammo */
 		if (pl.g_items & g_weapons[w].id) {
-			value = g_weapons[w].pickup(FALSE);
+			value = g_weapons[w].pickup(FALSE, startammo);
 		} else {
 			/* new to our arsenal */
 			pl.g_items |= g_weapons[w].id;
-			value = g_weapons[w].pickup(TRUE);
+			value = g_weapons[w].pickup(TRUE, startammo);
 
 			/* it's new, so autoswitch? */
 			if (pl.activeweapon == 0) {
@@ -402,6 +402,9 @@ void CSEv_DropWeapon(void)
 	}
 
 	if (!pl.activeweapon)
+		return;
+
+	if (g_weapons[pl.activeweapon].allow_drop != TRUE)
 		return;
 
 	item_pickup drop = spawn(item_pickup, m_iWasDropped: TRUE, m_iClip: pl.a_ammo1);

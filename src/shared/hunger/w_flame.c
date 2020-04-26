@@ -69,7 +69,7 @@ w_flame_deathmsg(void)
 }
 
 int
-w_flame_pickup(int new)
+w_flame_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -231,12 +231,10 @@ w_flame_hudpic(int selected, vector pos, float a)
 
 weapon_t w_flame =
 {
-	.id		= ITEM_EGON,
+	.name		= "flame",
+	.id			= ITEM_EGON,
 	.slot		= 3,
 	.slot_pos	= 2,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [32,16],
-	.ki_xy		= [0,192],
 	.draw		= w_flame_draw,
 	.holster	= w_egon_holster,
 	.primary	= w_flame_primary,

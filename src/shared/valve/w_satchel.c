@@ -69,7 +69,7 @@ void w_satchel_precache(void)
 	precache_model("models/p_satchel.mdl");
 }
 
-int w_satchel_pickup(int new)
+int w_satchel_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -273,12 +273,10 @@ void w_satchel_hudpic(int selected, vector pos, float a)
 
 weapon_t w_satchel =
 {
+	.name		= "satchel",
 	.id		= ITEM_SATCHEL,
 	.slot		= 4,
 	.slot_pos	= 1,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [32,16],
-	.ki_xy		= [192,176],
 	.draw		= w_satchel_draw,
 	.holster	= w_satchel_holster,
 	.primary	= w_satchel_primary,

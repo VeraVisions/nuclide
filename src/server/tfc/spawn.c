@@ -109,64 +109,64 @@ CSEv_TeamJoin_f(float f)
 	
 	switch (f) {
 	case CLASS_SCOUT:
-		Weapons_AddItem(pl, WEAPON_CROWBAR);
-		Weapons_AddItem(pl, WEAPON_SBS);
-		Weapons_AddItem(pl, WEAPON_NAILGUN);
+		Weapons_AddItem(pl, WEAPON_CROWBAR, -1);
+		Weapons_AddItem(pl, WEAPON_SBS, -1);
+		Weapons_AddItem(pl, WEAPON_NAILGUN, -1);
 		env_message_single(pl, "HELP_SCOUT");
 		break;
 	case CLASS_SNIPER:
-		Weapons_AddItem(pl, WEAPON_CROWBAR);
-		Weapons_AddItem(pl, WEAPON_SNIPER);
-		Weapons_AddItem(pl, WEAPON_AUTORIFLE);
-		Weapons_AddItem(pl, WEAPON_NAILGUN);
+		Weapons_AddItem(pl, WEAPON_CROWBAR, -1);
+		Weapons_AddItem(pl, WEAPON_SNIPER, -1);
+		Weapons_AddItem(pl, WEAPON_AUTORIFLE, -1);
+		Weapons_AddItem(pl, WEAPON_NAILGUN, -1);
 		env_message_single(pl, "HELP_SNIPER");
 		break;
 	case CLASS_SOLDIER:
-		Weapons_AddItem(pl, WEAPON_CROWBAR);
-		Weapons_AddItem(pl, WEAPON_SBS);
-		Weapons_AddItem(pl, WEAPON_DBS);
-		Weapons_AddItem(pl, WEAPON_RPG);
+		Weapons_AddItem(pl, WEAPON_CROWBAR, -1);
+		Weapons_AddItem(pl, WEAPON_SBS, -1);
+		Weapons_AddItem(pl, WEAPON_DBS, -1);
+		Weapons_AddItem(pl, WEAPON_RPG, -1);
 		env_message_single(pl, "HELP_SOLDIER");
 		break;
 	case CLASS_DEMO:
-		Weapons_AddItem(pl, WEAPON_CROWBAR);
-		Weapons_AddItem(pl, WEAPON_SBS);
-		Weapons_AddItem(pl, WEAPON_GLAUNCHER);
-		Weapons_AddItem(pl, WEAPON_PIPEBOMB);
+		Weapons_AddItem(pl, WEAPON_CROWBAR, -1);
+		Weapons_AddItem(pl, WEAPON_SBS, -1);
+		Weapons_AddItem(pl, WEAPON_GLAUNCHER, -1);
+		Weapons_AddItem(pl, WEAPON_PIPEBOMB, -1);
 		env_message_single(pl, "HELP_DEMOMAN");
 		break;
 	case CLASS_MEDIC:
-		Weapons_AddItem(pl, WEAPON_MEDKIT);
-		Weapons_AddItem(pl, WEAPON_SBS);
-		Weapons_AddItem(pl, WEAPON_DBS);
-		Weapons_AddItem(pl, WEAPON_SUPERNAIL);
+		Weapons_AddItem(pl, WEAPON_MEDKIT, -1);
+		Weapons_AddItem(pl, WEAPON_SBS, -1);
+		Weapons_AddItem(pl, WEAPON_DBS, -1);
+		Weapons_AddItem(pl, WEAPON_SUPERNAIL, -1);
 		env_message_single(pl, "HELP_MEDIC");
 		break;
 	case CLASS_HVYWEAPON:
-		Weapons_AddItem(pl, WEAPON_CROWBAR);
-		Weapons_AddItem(pl, WEAPON_SBS);
-		Weapons_AddItem(pl, WEAPON_DBS);
-		Weapons_AddItem(pl, WEAPON_ASSCAN);
+		Weapons_AddItem(pl, WEAPON_CROWBAR, -1);
+		Weapons_AddItem(pl, WEAPON_SBS, -1);
+		Weapons_AddItem(pl, WEAPON_DBS, -1);
+		Weapons_AddItem(pl, WEAPON_ASSCAN, -1);
 		env_message_single(pl, "HELP_HWGUY");
 		break;
 	case CLASS_PYRO:
-		Weapons_AddItem(pl, WEAPON_CROWBAR);
-		Weapons_AddItem(pl, WEAPON_SBS);
-		Weapons_AddItem(pl, WEAPON_FLAMER);
-		Weapons_AddItem(pl, WEAPON_INCENDIARY);
+		Weapons_AddItem(pl, WEAPON_CROWBAR, -1);
+		Weapons_AddItem(pl, WEAPON_SBS, -1);
+		Weapons_AddItem(pl, WEAPON_FLAMER, -1);
+		Weapons_AddItem(pl, WEAPON_INCENDIARY, -1);
 		env_message_single(pl, "HELP_PYRO");
 		break;
 	case CLASS_SPY:
-		Weapons_AddItem(pl, WEAPON_KNIFE);
-		Weapons_AddItem(pl, WEAPON_TRANQUIL);
-		Weapons_AddItem(pl, WEAPON_DBS);
-		Weapons_AddItem(pl, WEAPON_NAILGUN);
+		Weapons_AddItem(pl, WEAPON_KNIFE, -1);
+		Weapons_AddItem(pl, WEAPON_TRANQUIL, -1);
+		Weapons_AddItem(pl, WEAPON_DBS, -1);
+		Weapons_AddItem(pl, WEAPON_NAILGUN, -1);
 		env_message_single(pl, "HELP_SPY");
 		break;
 	case CLASS_ENGINEER:
-		Weapons_AddItem(pl, WEAPON_WRENCH);
-		Weapons_AddItem(pl, WEAPON_RAILGUN);
-		Weapons_AddItem(pl, WEAPON_DBS);
+		Weapons_AddItem(pl, WEAPON_WRENCH, -1);
+		Weapons_AddItem(pl, WEAPON_RAILGUN, -1);
+		Weapons_AddItem(pl, WEAPON_DBS, -1);
 		env_message_single(pl, "HELP_ENGINEER");
 		break;
 	}

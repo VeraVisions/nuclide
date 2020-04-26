@@ -73,13 +73,16 @@ w_sg550_deathmsg(void)
 }
 
 int
-w_sg550_pickup(int new)
+w_sg550_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
-		pl.sg550_mag = 30;
+		if (startammo == -1)
+			pl.sg550_mag = 30;
+		else
+			pl.sg550_mag = startammo;
 	} else {
 		if (pl.ammo_556mm < 90) {
 			pl.ammo_556mm = bound(0, pl.ammo_556mm + 30, 90);
@@ -261,12 +264,11 @@ w_sg550_hudpic(int selected, vector pos, float a)
 
 weapon_t w_sg550 =
 {
+	"sg550",
 	ITEM_SG550,
 	0,
 	14,
-	"sprites/640hud16.spr_0.tga",
-	[48,16],
-	[192,48],
+	TRUE,
 	w_sg550_draw,
 	__NULL__,
 	w_sg550_primary,

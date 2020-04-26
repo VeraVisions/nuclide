@@ -186,7 +186,7 @@ w_minigun_aimanim(void)
 }
 
 int
-w_minigun_pickup(int new)
+w_minigun_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -264,12 +264,10 @@ w_minigun_precache(void)
 
 weapon_t w_minigun =
 {
-	.id		= ITEM_MINIGUN,
+	.name		= "minigun",
+	.id			= ITEM_MINIGUN,
 	.slot		= 2,
 	.slot_pos	= 1,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [192,0],
 	.draw		= w_minigun_draw,
 	.holster	= w_minigun_holster,
 	.primary	= w_minigun_primary,

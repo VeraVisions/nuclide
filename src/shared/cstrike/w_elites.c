@@ -83,13 +83,16 @@ w_elites_deathmsg(void)
 }
 
 int
-w_elites_pickup(int new)
+w_elites_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
-		pl.elites_mag = 30;
+		if (startammo == -1)
+			pl.elites_mag = 30;
+		else
+			pl.elites_mag = startammo;
 	} else {
 		if (pl.ammo_9mm < 90) {
 			pl.ammo_9mm = bound(0, pl.ammo_9mm + 30, 90);
@@ -300,12 +303,11 @@ w_elites_hudpic(int selected, vector pos, float a)
 
 weapon_t w_elites =
 {
+	"elites",
 	ITEM_ELITES,
 	1,
 	4,
-	"sprites/640hud1.spr_0.tga",
-	[57,16],
-	[52,240],
+	TRUE,
 	w_elites_draw,
 	__NULL__,
 	w_elites_primary,

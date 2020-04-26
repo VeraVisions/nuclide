@@ -92,12 +92,10 @@ w_knife_hudpic(int selected, vector pos, float a)
 
 weapon_t w_knife =
 {
-	.id		= ITEM_KNIFE,
+	.name		= "knife",
+	.id			= ITEM_KNIFE,
 	.slot		= 0,
 	.slot_pos	= 2,
-	.ki_spr		= "sprites/tfc_dmsg.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [0,32],
 	.draw		= w_knife_draw,
 	.holster	= __NULL__,
 	.primary	= __NULL__,

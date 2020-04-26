@@ -86,7 +86,7 @@ w_glock_deathmsg(void)
 }
 
 int
-w_glock_pickup(int new)
+w_glock_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -351,12 +351,10 @@ w_glock_hudpic(int selected, vector pos, float a)
 
 weapon_t w_glock =
 {
+	.name		= "glock",
 	.id		= ITEM_GLOCK,
 	.slot		= 1,
 	.slot_pos	= 0,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [32,16],
-	.ki_xy		= [192,16],
 	.draw		= w_glock_draw,
 	.holster	= w_glock_holster,
 	.primary	= w_glock_primary,

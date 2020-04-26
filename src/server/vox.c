@@ -56,7 +56,7 @@ void Vox_Broadcast(string sMessage)
 	WriteByte(MSG_MULTICAST, EV_CHAT_VOX);
 	WriteString(MSG_MULTICAST, sMessage);
 	msg_entity = world;
-	multicast([0,0,0], MULTICAST_ALL);	
+	multicast([0,0,0], MULTICAST_ALL);
 }
 
 /*

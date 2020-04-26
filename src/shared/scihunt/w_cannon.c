@@ -81,7 +81,7 @@ void w_cannon_reload(void)
 	pl.w_idle_next = 3.0f;
 }
 
-int w_cannon_pickup(int new)
+int w_cannon_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -230,12 +230,10 @@ void w_cannon_hudpic(int s, vector pos, float a)
 
 weapon_t w_cannon =
 {
-	.id		= ITEM_CANNON,
+	.name		= "cannon",
+	.id			= ITEM_CANNON,
 	.slot		= 2,
 	.slot_pos	= 3,
-	.ki_spr		= "sprites/w_cannon.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [192,0],
 	.draw		= w_cannon_draw,
 	.holster	= w_cannon_holster,
 	.primary	= w_cannon_primary,

@@ -203,12 +203,10 @@ w_wrench_hudpic(int selected, vector pos, float a)
 
 weapon_t w_wrench =
 {
-	.id		= ITEM_WRENCH,
+	.name		= "wrench",
+	.id			= ITEM_WRENCH,
 	.slot		= 0,
 	.slot_pos	= 3,
-	.ki_spr		= "sprites/tfc_dmsg.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [0,48],
 	.draw		= w_wrench_draw,
 	.holster	= w_wrench_holster,
 	.primary	= w_wrench_primary,

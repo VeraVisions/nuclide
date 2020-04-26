@@ -74,13 +74,16 @@ w_deagle_deathmsg(void)
 }
 
 int
-w_deagle_pickup(int new)
+w_deagle_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
-		pl.deagle_mag = 7;
+		if (startammo == -1)
+			pl.deagle_mag = 7;
+		else
+			pl.deagle_mag = startammo;
 	} else {
 		if (pl.ammo_50ae < AMMO_MAX_50AE) {
 			pl.ammo_50ae = bound(0, pl.ammo_50ae + 7, AMMO_MAX_50AE);
@@ -249,12 +252,11 @@ w_deagle_hudpic(int selected, vector pos, float a)
 
 weapon_t w_deagle =
 {
+	"deagle",
 	ITEM_DEAGLE,
 	1,
 	2,
-	"sprites/640hud1.spr_0.tga",
-	[32,16],
-	[224,16],
+	TRUE,
 	w_deagle_draw,
 	__NULL__,
 	w_deagle_primary,

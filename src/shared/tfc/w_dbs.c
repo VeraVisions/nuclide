@@ -69,7 +69,7 @@ string w_dbs_deathmsg(void)
 }
 
 int
-w_dbs_pickup(int new)
+w_dbs_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -251,25 +251,23 @@ w_dbs_hudpic(int s, vector pos, float a)
 
 weapon_t w_dbs =
 {
-	ITEM_DBS,
-	2,
-	1,
-	"sprites/640hud1.spr_0.tga",
-	[48,16],
-	[192,64],
-	w_dbs_draw,
-	w_dbs_holster,
-	w_dbs_primary,
-	w_dbs_release,
-	w_dbs_reload,
-	w_dbs_release,
-	w_dbs_crosshair,
-	w_dbs_precache,
-	w_dbs_pickup,
-	w_dbs_updateammo,
-	w_dbs_wmodel,
-	w_dbs_pmodel,
-	w_dbs_deathmsg,
-	w_dbs_aimanim,
-	w_dbs_hudpic
+	.name		= "sbs",
+	.id			= ITEM_DBS,
+	.slot		= 2,
+	.slot_pos	= 1,
+	.draw		= w_dbs_draw,
+	.holster	= w_dbs_holster,
+	.primary	= w_dbs_primary,
+	.secondary	= w_dbs_release,
+	.reload		= w_dbs_reload,
+	.release	= w_dbs_release,
+	.crosshair	= w_dbs_crosshair,
+	.precache	= w_dbs_precache,
+	.pickup		= w_dbs_pickup,
+	.updateammo	= w_dbs_updateammo,
+	.wmodel		= w_dbs_wmodel,
+	.pmodel		= w_dbs_pmodel,
+	.deathmsg	= w_dbs_deathmsg,
+	.aimanim	= w_dbs_aimanim,
+	.hudpic		= w_dbs_hudpic
 };

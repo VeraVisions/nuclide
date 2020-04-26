@@ -84,13 +84,16 @@ w_m4a1_deathmsg(void)
 }
 
 int
-w_m4a1_pickup(int new)
+w_m4a1_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
-		pl.m4a1_mag = 30;
+		if (startammo == -1)
+			pl.m4a1_mag = 30;
+		else
+			pl.m4a1_mag = startammo;
 	} else {
 		if (pl.ammo_556mm < AMMO_MAX_762MM) {
 			pl.ammo_556mm = bound(0, pl.ammo_556mm + 30, AMMO_MAX_762MM);
@@ -334,12 +337,11 @@ w_m4a1_hudpic(int selected, vector pos, float a)
 
 weapon_t w_m4a1 =
 {
-	.id		= ITEM_M4A1,
+	.name		= "m4a1",
+	.id			= ITEM_M4A1,
 	.slot		= 0,
 	.slot_pos	= 9,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [192,96],
+	.allow_drop = TRUE,
 	.draw		= w_m4a1_draw,
 	.holster	= __NULL__,
 	.primary	= w_m4a1_primary,

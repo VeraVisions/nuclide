@@ -49,7 +49,7 @@ w_hornetgun_precache(void)
 }
 
 int
-w_hornetgun_pickup(int new)
+w_hornetgun_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -323,12 +323,10 @@ w_hornetgun_hudpic(int selected, vector pos, float a)
 
 weapon_t w_hornetgun =
 {
+	.name		= "hornetgun",
 	.id		= ITEM_HORNETGUN,
 	.slot		= 3,
 	.slot_pos	= 3,
-	.ki_spr		= "sprites/640hud1.spr_0.tga",
-	.ki_size	= [48,16],
-	.ki_xy		= [192,144],
 	.draw		= w_hornetgun_draw,
 	.holster	= w_hornetgun_holster,
 	.primary	= w_hornetgun_primary,

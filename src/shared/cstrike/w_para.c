@@ -73,13 +73,16 @@ w_para_deathmsg(void)
 }
 
 int
-w_para_pickup(int new)
+w_para_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
-		pl.para_mag = 100;
+		if (startammo == -1)
+			pl.para_mag = 100;
+		else
+			pl.para_mag = startammo;
 	} else {
 		if (pl.ammo_556mmbox < 200) {
 			pl.ammo_556mmbox = bound(0, pl.ammo_556mmbox + 100, 200);
@@ -240,12 +243,11 @@ w_para_hudpic(int selected, vector pos, float a)
 
 weapon_t w_para =
 {
+	"para",
 	ITEM_PARA,
 	0,
 	15,
-	"sprites/640hud1.spr_0.tga",
-	[48,16],
-	[192,160],
+	TRUE,
 	w_para_draw,
 	__NULL__,
 	w_para_primary,

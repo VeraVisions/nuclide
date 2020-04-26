@@ -83,13 +83,16 @@ w_m3_deathmsg(void)
 }
 
 int
-w_m3_pickup(int new)
+w_m3_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
 
 	if (new) {
-		pl.m3_mag = 8;
+		if (startammo == -1)
+			pl.m3_mag = 8;
+		else
+			pl.m3_mag = startammo;
 	} else {
 		if (pl.ammo_buckshot < AMMO_MAX_BUCKSHOT) {
 			pl.ammo_buckshot = bound(0, pl.ammo_buckshot + 8, AMMO_MAX_BUCKSHOT);
@@ -284,12 +287,11 @@ w_m3_hudpic(int selected, vector pos, float a)
 
 weapon_t w_m3 =
 {
+	"m3",
 	ITEM_M3,
 	0,
 	0,
-	"sprites/640hud1.spr_0.tga",
-	[48,16],
-	[192,48],
+	TRUE,
 	w_m3_draw,
 	__NULL__,
 	w_m3_primary,

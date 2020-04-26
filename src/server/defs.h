@@ -69,3 +69,11 @@ enumflags
 	GF_SEMI_TOGGLED,
 	GF_GAMESTARTS
 };
+
+/* damage related tempglobals, like trace_* */
+entity g_dmg_eAttacker;
+entity g_dmg_eTarget;
+int g_dmg_iDamage;
+int g_dmg_iHitBody;
+int g_dmg_iFlags;
+int g_dmg_iWeapon;
