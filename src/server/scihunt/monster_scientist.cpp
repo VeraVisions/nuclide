@@ -491,11 +491,11 @@ void monster_scientist::Physics(void)
 		spvel = vlen(velocity);
 
 		if (spvel < 5) {
-			frame = (m_iFlags & SCIF_SCARED) ? SCIA_SCARED1:SCIA_IDLE1;
+			SetFrame((m_iFlags & SCIF_SCARED) ? SCIA_SCARED1:SCIA_IDLE1);
 		} else if (spvel <= 140) {
-			frame = (m_iFlags & SCIF_SCARED) ? SCIA_WALKSCARED:SCIA_WALK;
+			SetFrame((m_iFlags & SCIF_SCARED) ? SCIA_WALKSCARED:SCIA_WALK);
 		} else if (spvel <= 240) {
-			frame = (m_iFlags & SCIF_SCARED) ? SCIA_RUNSCARED:SCIA_RUN;
+			SetFrame((m_iFlags & SCIF_SCARED) ? SCIA_RUNSCARED:SCIA_RUN);
 		}
 	}
 
@@ -566,7 +566,7 @@ void monster_scientist::Pain(int iHitBody)
 	int rand = floor(random(0,sci_sndpain.length));
 	Speak(sci_sndpain[rand]);
 
-	frame = SCIA_FLINCH + floor(random(0, 5));
+	SetFrame(SCIA_FLINCH + floor(random(0, 5)));
 	m_iFlags |= SCIF_FEAR;
 
 	m_flPainTime = time + 0.25f;
@@ -598,7 +598,7 @@ void monster_scientist::Death(int iHitBody)
 	//takedamage = DAMAGE_NO;
 
 	if (style != SCI_DEAD) {
-		frame = SCIA_DIE_SIMPLE + floor(random(0, 6));
+		SetFrame(SCIA_DIE_SIMPLE + floor(random(0, 6)));
 		style = SCI_DEAD;
 	}
 }
@@ -619,16 +619,16 @@ void monster_scientist::Respawn(void)
 	v_angle[2] = Math_FixDelta(m_oldAngle[2]);
 
 	flags |= FL_MONSTER;
-	angles = v_angle;
-	solid = SOLID_SLIDEBOX;
-	movetype = MOVETYPE_WALK;
+	SetAngles(v_angle);
+	SetSolid(SOLID_SLIDEBOX);
+	SetMovetype(MOVETYPE_WALK);
 	SetModel(m_oldModel);
-	setsize(this, VEC_HULL_MIN + [0,0,36], VEC_HULL_MAX + [0,0,36]);
+	SetSize(VEC_HULL_MIN + [0,0,36], VEC_HULL_MAX + [0,0,36]);
 	SetOrigin(m_oldOrigin);
+	SetFrame(SCIA_IDLE1);
 	takedamage = DAMAGE_YES;
 	iBleeds = TRUE;
 	style = SCI_IDLE;
-	frame = SCIA_IDLE1;
 	health = 50;
 	velocity = [0,0,0];
 	m_iFlags = 0x0;
