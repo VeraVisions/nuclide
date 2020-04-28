@@ -22,7 +22,7 @@ HLSingleplayerRules::PlayerDeath(player pl)
 	pl.takedamage = DAMAGE_NO;
 	pl.flags &= ~FL_FLASHLIGHT;
 	pl.armor = pl.activeweapon = pl.g_items = 0;
-	sound(pl, CHAN_AUTO, "fvox/flatline.wav", 1.0, ATTN_NORM);
+	Sound_Play(pl, CHAN_AUTO, "player.die");
 
 	if (pl.health < -50) {
 		pl.health = 0;

@@ -17,7 +17,6 @@
 void
 Game_InitRules(void)
 {
-	print("Game_InitRules!\n");
 	if (cvar("sv_playerslots") == 1 || cvar("coop") == 1) {
 		g_grMode = spawn(HLSingleplayerRules);
 	} else {
@@ -30,9 +29,10 @@ Game_Worldspawn(void)
 {
 	Sound_Precache("ammo.pickup");
 	Sound_Precache("ammo.respawn");
+	Sound_Precache("player.die");
+	Sound_Precache("player.fall");
 	precache_model("models/player.mdl");
 	precache_model("models/w_weaponbox.mdl");
-	precache_sound("fvox/flatline.wav");
 	Weapons_Init();
 	Player_Precache();
 }

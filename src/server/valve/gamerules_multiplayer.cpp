@@ -67,7 +67,7 @@ HLMultiplayerRules::PlayerDeath(player pl)
 
 	pl.think = PutClientInServer;
 	pl.nextthink = time + 4.0f;
-	sound(pl, CHAN_AUTO, "fvox/flatline.wav", 1.0, ATTN_NORM);
+	Sound_Play(pl, CHAN_AUTO, "player.die");
 
 	if (pl.health < -50) {
 		pl.health = 0;

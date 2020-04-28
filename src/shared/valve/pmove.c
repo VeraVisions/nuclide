@@ -32,7 +32,7 @@ void GamePMove_Fall(player target, float impactspeed)
 #ifdef SERVER
 		float fFallDamage = (impactspeed - 580) * (100 / (1024 - 580));
 		Damage_Apply(self, world, fFallDamage, 0, DMG_FALL);
-		sound(self, CHAN_AUTO, "player/pl_fallpain3.wav", 1.0, ATTN_NORM);
+		Sound_Play(self, CHAN_AUTO, "player.fall");
 #endif
 	}
 }
