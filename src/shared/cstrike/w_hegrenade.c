@@ -265,26 +265,26 @@ w_hegrenade_hudpic(int selected, vector pos, float a)
 
 weapon_t w_hegrenade =
 {
-	"hegrenade",
-	ITEM_HEGRENADE,
-	3,
-	0,
-	FALSE,
-	w_hegrenade_draw,
-	__NULL__,
-	w_hegrenade_primary,
-	w_hegrenade_release,
-	w_hegrenade_release,
-	w_hegrenade_release,
-	w_hegrenade_hud,
-	w_hegrenade_precache,
-	w_hegrenade_pickup,
-	w_hegrenade_updateammo,
-	w_hegrenade_wmodel,
-	w_hegrenade_pmodel,
-	w_hegrenade_deathmsg,
-	w_hegrenade_aimanim,
-	w_hegrenade_hudpic
+	.name		= "hegrenade",
+	.id			= ITEM_HEGRENADE,
+	.slot		= 3,
+	.slot_pos	= 0,
+	.allow_drop	= FALSE,
+	.draw		= w_hegrenade_draw,
+	.holster	= __NULL__,
+	.primary	= w_hegrenade_primary,
+	.secondary	= __NULL__,
+	.reload		= __NULL__,
+	.release	= w_hegrenade_release,
+	.crosshair	= w_hegrenade_hud,
+	.precache	= w_hegrenade_precache,
+	.pickup		= w_hegrenade_pickup,
+	.updateammo	= w_hegrenade_updateammo,
+	.wmodel		= w_hegrenade_wmodel,
+	.pmodel		= w_hegrenade_pmodel,
+	.deathmsg	= w_hegrenade_deathmsg,
+	.aimanim	= w_hegrenade_aimanim,
+	.hudpic		= w_hegrenade_hudpic
 };
 
 #ifdef SERVER

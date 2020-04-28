@@ -263,26 +263,26 @@ w_g3sg1_hudpic(int selected, vector pos, float a)
 
 weapon_t w_g3sg1 =
 {
-	"g3sg1",
-	ITEM_G3SG1,
-	0,
-	13,
-	TRUE,
-	w_g3sg1_draw,
-	__NULL__,
-	w_g3sg1_primary,
-	w_g3sg1_secondary,
-	w_g3sg1_reload,
-	w_cstrike_weaponrelease,
-	w_g3sg1_hud,
-	w_g3sg1_precache,
-	w_g3sg1_pickup,
-	w_g3sg1_updateammo,
-	w_g3sg1_wmodel,
-	w_g3sg1_pmodel,
-	w_g3sg1_deathmsg,
-	w_g3sg1_aimanim,
-	w_g3sg1_hudpic
+	.name		= "g3sg1",
+	.id			= ITEM_G3SG1,
+	.slot		= 0,
+	.slot_pos	= 13,
+	.allow_drop	= TRUE,
+	.draw		= w_g3sg1_draw,
+	.holster	= __NULL__,
+	.primary	= w_g3sg1_primary,
+	.secondary	= w_g3sg1_secondary,
+	.reload		= w_g3sg1_reload,
+	.release	= w_cstrike_weaponrelease,
+	.crosshair	= w_g3sg1_hud,
+	.precache	= w_g3sg1_precache,
+	.pickup		= w_g3sg1_pickup,
+	.updateammo	= w_g3sg1_updateammo,
+	.wmodel		= w_g3sg1_wmodel,
+	.pmodel		= w_g3sg1_pmodel,
+	.deathmsg	= w_g3sg1_deathmsg,
+	.aimanim	= w_g3sg1_aimanim,
+	.hudpic		= w_g3sg1_hudpic
 };
 
 #ifdef SERVER

@@ -298,26 +298,26 @@ w_awp_hudpic(int selected, vector pos, float a)
 
 weapon_t w_awp =
 {
-	"awp",
-	ITEM_AWP,
-	0,
-	12,
-	TRUE,
-	w_awp_draw,
-	__NULL__,
-	w_awp_primary,
-	w_awp_secondary,
-	w_awp_reload,
-	w_awp_release,
-	w_awp_hud,
-	w_awp_precache,
-	w_awp_pickup,
-	w_awp_updateammo,
-	w_awp_wmodel,
-	w_awp_pmodel,
-	w_awp_deathmsg,
-	w_awp_aimanim,
-	w_awp_hudpic
+	.name		= "awp",
+	.id			= ITEM_AWP,
+	.slot		= 0,
+	.slot_pos	= 12,
+	.allow_drop	= TRUE,
+	.draw		= w_awp_draw,
+	.holster	= __NULL__,
+	.primary	= w_awp_primary,
+	.secondary	= w_awp_secondary,
+	.reload		= w_awp_reload,
+	.release	= w_awp_release,
+	.crosshair	= w_awp_hud,
+	.precache	= w_awp_precache,
+	.pickup		= w_awp_pickup,
+	.updateammo	= w_awp_updateammo,
+	.wmodel		= w_awp_wmodel,
+	.pmodel		= w_awp_pmodel,
+	.deathmsg	= w_awp_deathmsg,
+	.aimanim	= w_awp_aimanim,
+	.hudpic		= w_awp_hudpic
 };
 
 #ifdef SERVER

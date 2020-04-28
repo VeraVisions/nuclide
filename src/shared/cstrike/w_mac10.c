@@ -246,26 +246,26 @@ w_mac10_hudpic(int selected, vector pos, float a)
 
 weapon_t w_mac10 =
 {
-	"mac10",
-	ITEM_MAC10,
-	0,
-	5,
-	TRUE,
-	w_mac10_draw,
-	__NULL__,
-	w_mac10_primary,
-	__NULL__,
-	w_mac10_reload,
-	w_cstrike_weaponrelease,
-	w_mac10_hud,
-	w_mac10_precache,
-	w_mac10_pickup,
-	w_mac10_updateammo,
-	w_mac10_wmodel,
-	w_mac10_pmodel,
-	w_mac10_deathmsg,
-	w_mac10_aimanim,
-	w_mac10_hudpic
+	.name		= "mac10",
+	.id			= ITEM_MAC10,
+	.slot		= 0,
+	.slot_pos	= 5,
+	.allow_drop	= TRUE,
+	.draw		= w_mac10_draw,
+	.holster	= __NULL__,
+	.primary	= w_mac10_primary,
+	.secondary	= __NULL__,
+	.reload		= w_mac10_reload,
+	.release	= w_cstrike_weaponrelease,
+	.crosshair	= w_mac10_hud,
+	.precache	= w_mac10_precache,
+	.pickup		= w_mac10_pickup,
+	.updateammo	= w_mac10_updateammo,
+	.wmodel		= w_mac10_wmodel,
+	.pmodel		= w_mac10_pmodel,
+	.deathmsg	= w_mac10_deathmsg,
+	.aimanim	= w_mac10_aimanim,
+	.hudpic		= w_mac10_hudpic
 };
 
 #ifdef SERVER

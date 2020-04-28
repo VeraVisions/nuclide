@@ -306,26 +306,26 @@ w_c4bomb_hudpic(int selected, vector pos, float a)
 
 weapon_t w_c4bomb =
 {
-	"c4",
-	ITEM_C4BOMB,
-	4,
-	0,
-	TRUE,
-	w_c4bomb_draw,
-	__NULL__,
-	w_c4bomb_primary,
-	__NULL__,
-	__NULL__,
-	w_c4bomb_release,
-	w_c4bomb_hud,
-	w_c4bomb_precache,
-	__NULL__,
-	w_c4bomb_updateammo,
-	w_c4bomb_wmodel,
-	w_c4bomb_pmodel,
-	w_c4bomb_deathmsg,
-	w_c4bomb_aimanim,
-	w_c4bomb_hudpic
+	.name		= "c4",
+	.id			= ITEM_C4BOMB,
+	.slot		= 4,
+	.slot_pos	= 0,
+	.allow_drop	= TRUE,
+	.draw		= w_c4bomb_draw,
+	.holster	= __NULL__,
+	.primary	= w_c4bomb_primary,
+	.secondary	= __NULL__,
+	.reload		= __NULL__,
+	.release	= w_c4bomb_release,
+	.crosshair	= w_c4bomb_hud,
+	.precache	= w_c4bomb_precache,
+	.pickup		= __NULL__,
+	.updateammo	= w_c4bomb_updateammo,
+	.wmodel		= w_c4bomb_wmodel,
+	.pmodel		= w_c4bomb_pmodel,
+	.deathmsg	= w_c4bomb_deathmsg,
+	.aimanim	= w_c4bomb_aimanim,
+	.hudpic		= w_c4bomb_hudpic
 };
 
 #ifdef SERVER

@@ -205,7 +205,7 @@ w_fiveseven_reload(void)
 float
 w_fiveseven_aimanim(void)
 {
-	return w_deagle_aimanim();
+	return w_fiveseven_aimanim();
 }
 
 void
@@ -252,26 +252,26 @@ w_fiveseven_hudpic(int selected, vector pos, float a)
 
 weapon_t w_fiveseven =
 {
-	"fiveseven",
-	ITEM_FIVESEVEN,
-	1,
-	5,
-	TRUE,
-	w_fiveseven_draw,
-	__NULL__,
-	w_fiveseven_primary,
-	__NULL__,
-	w_fiveseven_reload,
-	w_cstrike_weaponrelease,
-	w_fiveseven_hud,
-	w_fiveseven_precache,
-	w_fiveseven_pickup,
-	w_fiveseven_updateammo,
-	w_fiveseven_wmodel,
-	w_fiveseven_pmodel,
-	w_fiveseven_deathmsg,
-	w_fiveseven_aimanim,
-	w_fiveseven_hudpic
+	.name		= "fiveseven",
+	.id			= ITEM_FIVESEVEN,
+	.slot		= 1,
+	.slot_pos	= 5,
+	.allow_drop	= TRUE,
+	.draw		= w_fiveseven_draw,
+	.holster	= __NULL__,
+	.primary	= w_fiveseven_primary,
+	.secondary	= __NULL__,
+	.reload		= w_fiveseven_reload,
+	.release	= w_cstrike_weaponrelease,
+	.crosshair	= w_fiveseven_hud,
+	.precache	= w_fiveseven_precache,
+	.pickup		= w_fiveseven_pickup,
+	.updateammo	= w_fiveseven_updateammo,
+	.wmodel		= w_fiveseven_wmodel,
+	.pmodel		= w_fiveseven_pmodel,
+	.deathmsg	= w_fiveseven_deathmsg,
+	.aimanim	= w_fiveseven_aimanim,
+	.hudpic		= w_fiveseven_hudpic
 };
 
 #ifdef SERVER

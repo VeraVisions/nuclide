@@ -332,26 +332,26 @@ w_usp45_hudpic(int selected, vector pos, float a)
 
 weapon_t w_usp45 =
 {
-	"usp",
-	ITEM_USP45,
-	1,
-	0,
-	TRUE,
-	w_usp45_draw,
-	__NULL__,
-	w_usp45_primary,
-	w_usp45_secondary,
-	w_usp45_reload,
-	w_cstrike_weaponrelease,
-	w_usp45_hud,
-	w_usp45_precache,
-	w_usp45_pickup,
-	w_usp45_updateammo,
-	w_usp45_wmodel,
-	w_usp45_pmodel,
-	w_usp45_deathmsg,
-	w_usp45_aimanim,
-	w_usp45_hudpic
+	.name		= "usp",
+	.id			= ITEM_USP45,
+	.slot		= 1,
+	.slot_pos	= 0,
+	.allow_drop	= TRUE,
+	.draw		= w_usp45_draw,
+	.holster	= __NULL__,
+	.primary	= w_usp45_primary,
+	.secondary	= w_usp45_secondary,
+	.reload		= w_usp45_reload,
+	.release	= w_cstrike_weaponrelease,
+	.crosshair	= w_usp45_hud,
+	.precache	= w_usp45_precache,
+	.pickup		= w_usp45_pickup,
+	.updateammo	= w_usp45_updateammo,
+	.wmodel		= w_usp45_wmodel,
+	.pmodel		= w_usp45_pmodel,
+	.deathmsg	= w_usp45_deathmsg,
+	.aimanim	= w_usp45_aimanim,
+	.hudpic		= w_usp45_hudpic
 };
 
 #ifdef SERVER

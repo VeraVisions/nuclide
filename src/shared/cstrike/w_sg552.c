@@ -272,26 +272,26 @@ w_sg552_hudpic(int selected, vector pos, float a)
 
 weapon_t w_sg552 =
 {
-	"sg552",
-	ITEM_SG552,
-	0,
-	8,
-	TRUE,
-	w_sg552_draw,
-	__NULL__,
-	w_sg552_primary,
-	w_sg552_secondary,
-	w_sg552_reload,
-	w_cstrike_weaponrelease,
-	w_sg552_hud,
-	w_sg552_precache,
-	w_sg552_pickup,
-	w_sg552_updateammo,
-	w_sg552_wmodel,
-	w_sg552_pmodel,
-	w_sg552_deathmsg,
-	w_sg552_aimanim,
-	w_sg552_hudpic
+	.name		= "sg552",
+	.id			= ITEM_SG552,
+	.slot		= 0,
+	.slot_pos	= 8,
+	.allow_drop	= TRUE,
+	.draw		= w_sg552_draw,
+	.holster	= __NULL__,
+	.primary	= w_sg552_primary,
+	.secondary	= w_sg552_secondary,
+	.reload		= w_sg552_reload,
+	.release	= w_cstrike_weaponrelease,
+	.crosshair	= w_sg552_hud,
+	.precache	= w_sg552_precache,
+	.pickup		= w_sg552_pickup,
+	.updateammo	= w_sg552_updateammo,
+	.wmodel		= w_sg552_wmodel,
+	.pmodel		= w_sg552_pmodel,
+	.deathmsg	= w_sg552_deathmsg,
+	.aimanim	= w_sg552_aimanim,
+	.hudpic		= w_sg552_hudpic
 };
 
 #ifdef SERVER

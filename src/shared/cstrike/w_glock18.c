@@ -311,26 +311,26 @@ w_glock18_hudpic(int selected, vector pos, float a)
 
 weapon_t w_glock18 =
 {
-	"glock18",
-	ITEM_GLOCK18,
-	1,
-	1,
-	TRUE,
-	w_glock18_draw,
-	__NULL__,
-	w_glock18_primary,
-	w_glock18_secondary,
-	w_glock18_reload,
-	w_cstrike_weaponrelease,
-	w_glock18_hud,
-	w_glock18_precache,
-	w_glock18_pickup,
-	w_glock18_updateammo,
-	w_glock18_wmodel,
-	w_glock18_pmodel,
-	w_glock18_deathmsg,
-	w_glock18_aimanim,
-	w_glock18_hudpic
+	.name		= "glock18",
+	.id			= ITEM_GLOCK18,
+	.slot		= 1,
+	.slot_pos	= 1,
+	.allow_drop	= TRUE,
+	.draw		= w_glock18_draw,
+	.holster	= __NULL__,
+	.primary	= w_glock18_primary,
+	.secondary	= w_glock18_secondary,
+	.reload		= w_glock18_reload,
+	.release	= w_cstrike_weaponrelease,
+	.crosshair	= w_glock18_hud,
+	.precache	= w_glock18_precache,
+	.pickup		= w_glock18_pickup,
+	.updateammo	= w_glock18_updateammo,
+	.wmodel		= w_glock18_wmodel,
+	.pmodel		= w_glock18_pmodel,
+	.deathmsg	= w_glock18_deathmsg,
+	.aimanim	= w_glock18_aimanim,
+	.hudpic		= w_glock18_hudpic
 };
 
 #ifdef SERVER

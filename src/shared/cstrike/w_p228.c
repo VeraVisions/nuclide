@@ -259,26 +259,26 @@ w_p228_hudpic(int selected, vector pos, float a)
 
 weapon_t w_p228 =
 {
-	"p228",
-	ITEM_P228,
-	1,
-	3,
-	TRUE,
-	w_p228_draw,
-	__NULL__,
-	w_p228_primary,
-	__NULL__,
-	w_p228_reload,
-	w_cstrike_weaponrelease,
-	w_p228_hud,
-	w_p228_precache,
-	w_p228_pickup,
-	w_p228_updateammo,
-	w_p228_wmodel,
-	w_p228_pmodel,
-	w_p228_deathmsg,
-	w_p228_aimanim,
-	w_p228_hudpic
+	.name		= "p228",
+	.id			= ITEM_P228,
+	.slot		= 1,
+	.slot_pos	= 3,
+	.allow_drop	= TRUE,
+	.draw		= w_p228_draw,
+	.holster	= __NULL__,
+	.primary	= w_p228_primary,
+	.secondary	= __NULL__,
+	.reload		= w_p228_reload,
+	.release	= w_cstrike_weaponrelease,
+	.crosshair	= w_p228_hud,
+	.precache	= w_p228_precache,
+	.pickup		= w_p228_pickup,
+	.updateammo	= w_p228_updateammo,
+	.wmodel		= w_p228_wmodel,
+	.pmodel		= w_p228_pmodel,
+	.deathmsg	= w_p228_deathmsg,
+	.aimanim	= w_p228_aimanim,
+	.hudpic		= w_p228_hudpic
 };
 
 #ifdef SERVER

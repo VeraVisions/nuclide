@@ -252,26 +252,26 @@ w_deagle_hudpic(int selected, vector pos, float a)
 
 weapon_t w_deagle =
 {
-	"deagle",
-	ITEM_DEAGLE,
-	1,
-	2,
-	TRUE,
-	w_deagle_draw,
-	__NULL__,
-	w_deagle_primary,
-	__NULL__,
-	w_deagle_reload,
-	w_cstrike_weaponrelease,
-	w_deagle_hud,
-	w_deagle_precache,
-	w_deagle_pickup,
-	w_deagle_updateammo,
-	w_deagle_wmodel,
-	w_deagle_pmodel,
-	w_deagle_deathmsg,
-	w_deagle_aimanim,
-	w_deagle_hudpic
+	.name		= "deagle",
+	.id			= ITEM_DEAGLE,
+	.slot		= 1,
+	.slot_pos	= 2,
+	.allow_drop	= TRUE,
+	.draw		= w_deagle_draw,
+	.holster	= __NULL__,
+	.primary	= w_deagle_primary,
+	.secondary	= __NULL__,
+	.reload		= w_deagle_reload,
+	.release	= w_cstrike_weaponrelease,
+	.crosshair	= w_deagle_hud,
+	.precache	= w_deagle_precache,
+	.pickup		= w_deagle_pickup,
+	.updateammo	= w_deagle_updateammo,
+	.wmodel		= w_deagle_wmodel,
+	.pmodel		= w_deagle_pmodel,
+	.deathmsg	= w_deagle_deathmsg,
+	.aimanim	= w_deagle_aimanim,
+	.hudpic		= w_deagle_hudpic
 };
 
 #ifdef SERVER

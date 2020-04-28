@@ -247,26 +247,26 @@ w_tmp_hudpic(int selected, vector pos, float a)
 
 weapon_t w_tmp =
 {
-	"tmp",
-	ITEM_TMP,
-	0,
-	6,
-	TRUE,
-	w_tmp_draw,
-	__NULL__,
-	w_tmp_primary,
-	__NULL__,
-	w_tmp_reload,
-	w_cstrike_weaponrelease,
-	w_tmp_hud,
-	w_tmp_precache,
-	w_tmp_pickup,
-	w_tmp_updateammo,
-	w_tmp_wmodel,
-	w_tmp_pmodel,
-	w_tmp_deathmsg,
-	w_tmp_aimanim,
-	w_tmp_hudpic
+	.name		= "tmp",
+	.id			= ITEM_TMP,
+	.slot		= 0,
+	.slot_pos	= 6,
+	.allow_drop	= TRUE,
+	.draw		= w_tmp_draw,
+	.holster	= __NULL__,
+	.primary	= w_tmp_primary,
+	.secondary	= __NULL__,
+	.reload		= w_tmp_reload,
+	.release	= w_cstrike_weaponrelease,
+	.crosshair	= w_tmp_hud,
+	.precache	= w_tmp_precache,
+	.pickup		= w_tmp_pickup,
+	.updateammo	= w_tmp_updateammo,
+	.wmodel		= w_tmp_wmodel,
+	.pmodel		= w_tmp_pmodel,
+	.deathmsg	= w_tmp_deathmsg,
+	.aimanim	= w_tmp_aimanim,
+	.hudpic		= w_tmp_hudpic
 };
 
 #ifdef SERVER

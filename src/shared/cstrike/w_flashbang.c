@@ -263,26 +263,26 @@ w_flashbang_hudpic(int selected, vector pos, float a)
 
 weapon_t w_flashbang =
 {
-	"flashbang",
-	ITEM_FLASHBANG,
-	3,
-	1,
-	FALSE,
-	w_flashbang_draw,
-	__NULL__,
-	w_flashbang_primary,
-	w_flashbang_release,
-	w_flashbang_release,
-	w_flashbang_release,
-	w_flashbang_hud,
-	w_flashbang_precache,
-	w_flashbang_pickup,
-	w_flashbang_updateammo,
-	w_flashbang_wmodel,
-	w_flashbang_pmodel,
-	w_flashbang_deathmsg,
-	w_flashbang_aimanim,
-	w_flashbang_hudpic
+	.name		= "flashbang",
+	.id			= ITEM_FLASHBANG,
+	.slot		= 3,
+	.slot_pos	= 1,
+	.allow_drop	= FALSE,
+	.draw		= w_flashbang_draw,
+	.holster	= __NULL__,
+	.primary	= w_flashbang_primary,
+	.secondary	= __NULL__,
+	.reload		= __NULL__,
+	.release	= w_flashbang_release,
+	.crosshair	= w_flashbang_hud,
+	.precache	= w_flashbang_precache,
+	.pickup		= w_flashbang_pickup,
+	.updateammo	= w_flashbang_updateammo,
+	.wmodel		= w_flashbang_wmodel,
+	.pmodel		= w_flashbang_pmodel,
+	.deathmsg	= w_flashbang_deathmsg,
+	.aimanim	= w_flashbang_aimanim,
+	.hudpic		= w_flashbang_hudpic
 };
 
 #ifdef SERVER

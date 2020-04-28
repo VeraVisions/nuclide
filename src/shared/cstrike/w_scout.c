@@ -295,26 +295,26 @@ w_scout_hudpic(int selected, vector pos, float a)
 
 weapon_t w_scout =
 {
-	"scout",
-	ITEM_SCOUT,
-	0,
-	11,
-	TRUE,
-	w_scout_draw,
-	__NULL__,
-	w_scout_primary,
-	w_scout_secondary,
-	w_scout_reload,
-	w_scout_release,
-	w_scout_hud,
-	w_scout_precache,
-	w_scout_pickup,
-	w_scout_updateammo,
-	w_scout_wmodel,
-	w_scout_pmodel,
-	w_scout_deathmsg,
-	w_scout_aimanim,
-	w_scout_hudpic
+	.name		= "scout",
+	.id			= ITEM_SCOUT,
+	.slot		= 0,
+	.slot_pos	= 11,
+	.allow_drop	= TRUE,
+	.draw		= w_scout_draw,
+	.holster	= __NULL__,
+	.primary	= w_scout_primary,
+	.secondary	= w_scout_secondary,
+	.reload		= w_scout_reload,
+	.release	= w_scout_release,
+	.crosshair	= w_scout_hud,
+	.precache	= w_scout_precache,
+	.pickup		= w_scout_pickup,
+	.updateammo	= w_scout_updateammo,
+	.wmodel		= w_scout_wmodel,
+	.pmodel		= w_scout_pmodel,
+	.deathmsg	= w_scout_deathmsg,
+	.aimanim	= w_scout_aimanim,
+	.hudpic		= w_scout_hudpic
 };
 
 #ifdef SERVER

@@ -287,26 +287,26 @@ w_m3_hudpic(int selected, vector pos, float a)
 
 weapon_t w_m3 =
 {
-	"m3",
-	ITEM_M3,
-	0,
-	0,
-	TRUE,
-	w_m3_draw,
-	__NULL__,
-	w_m3_primary,
-	__NULL__,
-	w_m3_reload,
-	w_m3_release,
-	w_m3_hud,
-	w_m3_precache,
-	w_m3_pickup,
-	w_m3_updateammo,
-	w_m3_wmodel,
-	w_m3_pmodel,
-	w_m3_deathmsg,
-	w_m3_aimanim,
-	w_m3_hudpic
+	.name		= "m3",
+	.id			= ITEM_M3,
+	.slot		= 0,
+	.slot_pos	= 0,
+	.allow_drop	= TRUE,
+	.draw		= w_m3_draw,
+	.holster	= __NULL__,
+	.primary	= w_m3_primary,
+	.secondary	= __NULL__,
+	.reload		= w_m3_reload,
+	.release	= w_m3_release,
+	.crosshair	= w_m3_hud,
+	.precache	= w_m3_precache,
+	.pickup		= w_m3_pickup,
+	.updateammo	= w_m3_updateammo,
+	.wmodel		= w_m3_wmodel,
+	.pmodel		= w_m3_pmodel,
+	.deathmsg	= w_m3_deathmsg,
+	.aimanim	= w_m3_aimanim,
+	.hudpic		= w_m3_hudpic
 };
 
 #ifdef SERVER

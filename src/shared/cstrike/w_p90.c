@@ -247,26 +247,26 @@ w_p90_hudpic(int selected, vector pos, float a)
 
 weapon_t w_p90 =
 {
-	"p90",
-	ITEM_P90,
-	0,
-	3,
-	TRUE,
-	w_p90_draw,
-	__NULL__,
-	w_p90_primary,
-	__NULL__,
-	w_p90_reload,
-	w_cstrike_weaponrelease,
-	w_p90_hud,
-	w_p90_precache,
-	w_p90_pickup,
-	w_p90_updateammo,
-	w_p90_wmodel,
-	w_p90_pmodel,
-	w_p90_deathmsg,
-	w_p90_aimanim,
-	w_p90_hudpic
+	.name		= "p90",
+	.id			= ITEM_P90,
+	.slot		= 0,
+	.slot_pos	= 3,
+	.allow_drop	= TRUE,
+	.draw		= w_p90_draw,
+	.holster	= __NULL__,
+	.primary	= w_p90_primary,
+	.secondary	= __NULL__,
+	.reload		= w_p90_reload,
+	.release	= w_cstrike_weaponrelease,
+	.crosshair	= w_p90_hud,
+	.precache	= w_p90_precache,
+	.pickup		= w_p90_pickup,
+	.updateammo	= w_p90_updateammo,
+	.wmodel		= w_p90_wmodel,
+	.pmodel		= w_p90_pmodel,
+	.deathmsg	= w_p90_deathmsg,
+	.aimanim	= w_p90_aimanim,
+	.hudpic		= w_p90_hudpic
 };
 
 #ifdef SERVER

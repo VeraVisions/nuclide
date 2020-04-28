@@ -243,26 +243,26 @@ w_para_hudpic(int selected, vector pos, float a)
 
 weapon_t w_para =
 {
-	"m249",
-	ITEM_PARA,
-	0,
-	15,
-	TRUE,
-	w_para_draw,
-	__NULL__,
-	w_para_primary,
-	__NULL__,
-	w_para_reload,
-	w_cstrike_weaponrelease,
-	w_para_hud,
-	w_para_precache,
-	w_para_pickup,
-	w_para_updateammo,
-	w_para_wmodel,
-	w_para_pmodel,
-	w_para_deathmsg,
-	w_para_aimanim,
-	w_para_hudpic
+	.name		= "m249",
+	.id			= ITEM_PARA,
+	.slot		= 0,
+	.slot_pos	= 15,
+	.allow_drop	= TRUE,
+	.draw		= w_para_draw,
+	.holster	= __NULL__,
+	.primary	= w_para_primary,
+	.secondary	= __NULL__,
+	.reload		= w_para_reload,
+	.release	= w_cstrike_weaponrelease,
+	.crosshair	= w_para_hud,
+	.precache	= w_para_precache,
+	.pickup		= w_para_pickup,
+	.updateammo	= w_para_updateammo,
+	.wmodel		= w_para_wmodel,
+	.pmodel		= w_para_pmodel,
+	.deathmsg	= w_para_deathmsg,
+	.aimanim	= w_para_aimanim,
+	.hudpic		= w_para_hudpic
 };
 
 #ifdef SERVER

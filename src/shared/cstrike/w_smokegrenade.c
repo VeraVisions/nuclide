@@ -261,26 +261,26 @@ w_smokegrenade_hudpic(int selected, vector pos, float a)
 
 weapon_t w_smokegrenade =
 {
-	"smokegrenade",
-	ITEM_SMOKEGRENADE,
-	3,
-	2,
-	FALSE,
-	w_smokegrenade_draw,
-	__NULL__,
-	w_smokegrenade_primary,
-	w_smokegrenade_release,
-	w_smokegrenade_release,
-	w_smokegrenade_release,
-	w_smokegrenade_hud,
-	w_smokegrenade_precache,
-	w_smokegrenade_pickup,
-	w_smokegrenade_updateammo,
-	w_smokegrenade_wmodel,
-	w_smokegrenade_pmodel,
-	w_smokegrenade_deathmsg,
-	w_smokegrenade_aimanim,
-	w_smokegrenade_hudpic
+	.name		= "smokegrenade",
+	.id			= ITEM_SMOKEGRENADE,
+	.slot		= 3,
+	.slot_pos	= 2,
+	.allow_drop	= FALSE,
+	.draw		= w_smokegrenade_draw,
+	.holster	= __NULL__,
+	.primary	= w_smokegrenade_primary,
+	.secondary	= __NULL__,
+	.reload		= __NULL__,
+	.release	= w_smokegrenade_release,
+	.crosshair	= w_smokegrenade_hud,
+	.precache	= w_smokegrenade_precache,
+	.pickup		= w_smokegrenade_pickup,
+	.updateammo	= w_smokegrenade_updateammo,
+	.wmodel		= w_smokegrenade_wmodel,
+	.pmodel		= w_smokegrenade_pmodel,
+	.deathmsg	= w_smokegrenade_deathmsg,
+	.aimanim	= w_smokegrenade_aimanim,
+	.hudpic		= w_smokegrenade_hudpic
 };
 
 #ifdef SERVER

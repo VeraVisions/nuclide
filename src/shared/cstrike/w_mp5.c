@@ -251,26 +251,26 @@ w_mp5_hudpic(int selected, vector pos, float a)
 
 weapon_t w_mp5 =
 {
-	"mp5navy",
-	ITEM_MP5,
-	0,
-	2,
-	TRUE,
-	w_mp5_draw,
-	__NULL__,
-	w_mp5_primary,
-	__NULL__,
-	w_mp5_reload,
-	w_cstrike_weaponrelease,
-	w_mp5_hud,
-	w_mp5_precache,
-	w_mp5_pickup,
-	w_mp5_updateammo,
-	w_mp5_wmodel,
-	w_mp5_pmodel,
-	w_mp5_deathmsg,
-	w_mp5_aimanim,
-	w_mp5_hudpic
+	.name		= "mp5navy",
+	.id			= ITEM_MP5,
+	.slot		= 0,
+	.slot_pos	= 2,
+	.allow_drop	= TRUE,
+	.draw		= w_mp5_draw,
+	.holster	= __NULL__,
+	.primary	= w_mp5_primary,
+	.secondary	= __NULL__,
+	.reload		= w_mp5_reload,
+	.release	= w_cstrike_weaponrelease,
+	.crosshair	= w_mp5_hud,
+	.precache	= w_mp5_precache,
+	.pickup		= w_mp5_pickup,
+	.updateammo	= w_mp5_updateammo,
+	.wmodel		= w_mp5_wmodel,
+	.pmodel		= w_mp5_pmodel,
+	.deathmsg	= w_mp5_deathmsg,
+	.aimanim	= w_mp5_aimanim,
+	.hudpic		= w_mp5_hudpic
 };
 
 #ifdef SERVER

@@ -212,26 +212,26 @@ w_knife_hudpic(int selected, vector pos, float a)
 
 weapon_t w_knife =
 {
-	"knife",
-	ITEM_KNIFE,
-	2,
-	0,
-	FALSE,
-	w_knife_draw,
-	__NULL__,
-	w_knife_primary,
-	w_knife_secondary,
-	__NULL__,
-	__NULL__,
-	__NULL__,
-	w_knife_precache,
-	__NULL__,
-	w_knife_updateammo,
-	w_knife_wmodel,
-	w_knife_pmodel,
-	w_knife_deathmsg,
-	w_knife_aimanim,
-	w_knife_hudpic
+	.name		= "knife",
+	.id			= ITEM_KNIFE,
+	.slot		= 2,
+	.slot_pos	= 0,
+	.allow_drop	= FALSE,
+	.draw		= w_knife_draw,
+	.holster	= __NULL__,
+	.primary	= w_knife_primary,
+	.secondary	= w_knife_secondary,
+	.reload		= __NULL__,
+	.release	= __NULL__,
+	.crosshair	= __NULL__,
+	.precache	= w_knife_precache,
+	.pickup		= __NULL__,
+	.updateammo	= w_knife_updateammo,
+	.wmodel		= w_knife_wmodel,
+	.pmodel		= w_knife_pmodel,
+	.deathmsg	= w_knife_deathmsg,
+	.aimanim	= w_knife_aimanim,
+	.hudpic		= w_knife_hudpic
 };
 
 #ifdef SERVER

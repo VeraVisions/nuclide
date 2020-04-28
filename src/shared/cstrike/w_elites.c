@@ -303,26 +303,26 @@ w_elites_hudpic(int selected, vector pos, float a)
 
 weapon_t w_elites =
 {
-	"elites",
-	ITEM_ELITES,
-	1,
-	4,
-	TRUE,
-	w_elites_draw,
-	__NULL__,
-	w_elites_primary,
-	__NULL__,
-	w_elites_reload,
-	w_cstrike_weaponrelease,
-	w_elites_hud,
-	w_elites_precache,
-	w_elites_pickup,
-	w_elites_updateammo,
-	w_elites_wmodel,
-	w_elites_pmodel,
-	w_elites_deathmsg,
-	w_elites_aimanim,
-	w_elites_hudpic
+	.name		= "elites",
+	.id			= ITEM_ELITES,
+	.slot		= 1,
+	.slot_pos	= 4,
+	.allow_drop	= TRUE,
+	.draw		= w_elites_draw,
+	.holster	= __NULL__,
+	.primary	= w_elites_primary,
+	.secondary	= __NULL__,
+	.reload		= w_elites_reload,
+	.release	= w_cstrike_weaponrelease,
+	.crosshair	= w_elites_hud,
+	.precache	= w_elites_precache,
+	.pickup		= w_elites_pickup,
+	.updateammo	= w_elites_updateammo,
+	.wmodel		= w_elites_wmodel,
+	.pmodel		= w_elites_pmodel,
+	.deathmsg	= w_elites_deathmsg,
+	.aimanim	= w_elites_aimanim,
+	.hudpic		= w_elites_hudpic
 };
 
 #ifdef SERVER
