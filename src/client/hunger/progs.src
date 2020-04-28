@@ -5,6 +5,7 @@
 #define CLIENT
 #define VALVE
 #define HUNGER
+#define CLASSIC_VGUI
 
 #includelist
 ../../shared/fteextensions.qc
