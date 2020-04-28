@@ -39,8 +39,31 @@ float spr_hudnum[10] = {
 void
 HUD_Init(void)
 {
-	precache_model("sprites/640hud7.spr");
 	precache_model("sprites/640_logo.spr");
+	precache_model("sprites/640hud1.spr");
+	precache_model("sprites/640hud2.spr");
+	precache_model("sprites/640hud3.spr");
+	precache_model("sprites/640hud4.spr");
+	precache_model("sprites/640hud5.spr");
+	precache_model("sprites/640hud6.spr");
+	precache_model("sprites/640hud7.spr");
+	precache_model("sprites/640hud10.spr");
+	precache_model("sprites/640hud11.spr");
+	precache_model("sprites/640hud12.spr");
+	precache_model("sprites/640hud13.spr");
+	precache_model("sprites/640hud14.spr");
+	precache_model("sprites/640hud15.spr");
+	precache_model("sprites/640hud16.spr");
+	precache_model("sprites/bottom.spr");
+	precache_model("sprites/bottom_left.spr");
+	precache_model("sprites/bottom_right.spr");
+	precache_model("sprites/left.spr");
+	precache_model("sprites/radar640.spr");
+	precache_model("sprites/right.spr");
+	precache_model("sprites/sniper_scope.spr");
+	precache_model("sprites/top.spr");
+	precache_model("sprites/top_left.spr");
+	precache_model("sprites/top_right.spr");
 }
 
 /* seperator for mainly ammo */

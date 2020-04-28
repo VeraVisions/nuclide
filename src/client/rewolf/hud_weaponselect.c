@@ -24,7 +24,8 @@ vector g_vecHUDNums[6] =
 	[208 / 256, 92 / 128]
 };
 
-void HUD_DrawWeaponSelect_Forward(void)
+void
+HUD_DrawWeaponSelect_Forward(void)
 {
 	player pl = (player)pSeat->m_ePlayer;
 
@@ -54,7 +55,8 @@ void HUD_DrawWeaponSelect_Forward(void)
 	}
 }
 
-void HUD_DrawWeaponSelect_Back(void)
+void
+HUD_DrawWeaponSelect_Back(void)
 {
 	player pl = (player)pSeat->m_ePlayer;
 
@@ -84,7 +86,8 @@ void HUD_DrawWeaponSelect_Back(void)
 	}
 }
 
-void HUD_DrawWeaponSelect_Trigger(void)
+void
+HUD_DrawWeaponSelect_Trigger(void)
 {
 	player pl = (player)pSeat->m_ePlayer;
 	pl.activeweapon = pSeat->m_iHUDWeaponSelected;
@@ -93,7 +96,8 @@ void HUD_DrawWeaponSelect_Trigger(void)
 	pSeat->m_iHUDWeaponSelected = pSeat->m_flHUDWeaponSelectTime = 0;
 }
 
-void HUD_DrawWeaponSelect_Last(void)
+void
+HUD_DrawWeaponSelect_Last(void)
 {
 	player pl = (player)pSeat->m_ePlayer;
 	if (pl.g_items & g_weapons[pSeat->m_iOldWeapon].id) {
@@ -102,12 +106,14 @@ void HUD_DrawWeaponSelect_Last(void)
 	}
 }
 
-void HUD_DrawWeaponSelect_Num(vector vecPos, float fValue)
+void
+HUD_DrawWeaponSelect_Num(vector vecPos, float fValue)
 {
 	drawsubpic(vecPos, [20,20], "sprites/640hud7.spr_0.tga", g_vecHUDNums[fValue], [20/256, 20/128], g_hud_color, 1, DRAWFLAG_ADDITIVE);
 }
 
-int HUD_InSlotPos(int slot, int pos)
+int
+HUD_InSlotPos(int slot, int pos)
 {
 	player pl = (player)pSeat->m_ePlayer;
 	for (int i = 1; i < g_weapons.length; i++) {
@@ -176,7 +182,8 @@ HUD_SlotSelect(int slot)
 	}
 }
 
-void HUD_DrawWeaponSelect(void)
+void
+HUD_DrawWeaponSelect(void)
 {
 	player pl = (player)pSeat->m_ePlayer;
 	if (!pl.activeweapon) {

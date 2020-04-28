@@ -39,8 +39,15 @@ float spr_hudnum[10] = {
 
 void HUD_DrawWeaponSelect(void);
 
-void HUD_Init(void)
+void
+HUD_Init(void)
 {
+	precache_model("sprites/640hud1.spr");
+	precache_model("sprites/640hud2.spr");
+	precache_model("sprites/640hud3.spr");
+	precache_model("sprites/640hud4.spr");
+	precache_model("sprites/640hud5.spr");
+	precache_model("sprites/640hud6.spr");
 	precache_model("sprites/640hud7.spr");
 	precache_model("sprites/numbers.spr");
 	precache_model("sprites/armor.spr");
@@ -56,13 +63,15 @@ HUD_DrawNumber
 Draws a normal number
 =================
 */
-void HUD_DrawNumber(int iNumber, vector vecPos, float fAlpha, vector vColor)
+void
+HUD_DrawNumber(int iNumber, vector vecPos, float fAlpha, vector vColor)
 {
 	drawsubpic(vecPos, [18,32], GM_NUMS, [spr_hudnum[iNumber], 0],
 			   [NUMSIZE_X, NUMSIZE_Y], vColor, fAlpha, DRAWFLAG_ADDITIVE);
 }
 
-void HUD_DrawSeperator(vector pos)
+void
+HUD_DrawSeperator(vector pos)
 {
 	drawsubpic(pos, [2,24], HUD_NUMS, [240/256, 0],
 			   [2/256, 24/128], g_hud_color, HUD_ALPHA, DRAWFLAG_ADDITIVE);
@@ -75,7 +84,8 @@ HUD_DrawNums
 Draws numerals quickly for health, armor etc.
 =================
 */
-void HUD_DrawNums(float fNumber, vector vecPos, float fAlpha, vector vColor)
+void
+HUD_DrawNums(float fNumber, vector vecPos, float fAlpha, vector vColor)
 {
 	int iNumber = fNumber;
 	if (iNumber > 0) {
@@ -96,7 +106,8 @@ HUD_DrawHealth
 Draw the current amount of health
 =================
 */
-void HUD_DrawHealth(void)
+void
+HUD_DrawHealth(void)
 {
 	vector pos;
 	vector hcol;
@@ -169,7 +180,8 @@ void HUD_DrawHealth(void)
 	}
 }
 
-void HUD_DrawAmmo1(void)
+void
+HUD_DrawAmmo1(void)
 {
 	player pl = (player)pSeat->m_ePlayer;
 	vector pos;
@@ -197,7 +209,8 @@ void HUD_DrawAmmo1(void)
 	HUD_DrawSeperator(pos + [-50,0]);
 }
 
-void HUD_DrawAmmo2(void)
+void
+HUD_DrawAmmo2(void)
 {
 	player pl = (player)pSeat->m_ePlayer;
 	vector pos;
@@ -222,7 +235,8 @@ void HUD_DrawAmmo2(void)
 	HUD_DrawNums(pl.a_ammo2, pos, m_flAmmo2Alpha, g_hud_color);
 }
 
-void HUD_DrawAmmo3(void)
+void
+HUD_DrawAmmo3(void)
 {
 	player pl = (player)pSeat->m_ePlayer;
 	vector pos;
@@ -255,7 +269,8 @@ HUD_WeaponPickupNotify(int w)
 	
 }
 
-void HUD_Draw(void)
+void
+HUD_Draw(void)
 {
 	g_hud_color = autocvar_con_color * (1 / 255);
 	
@@ -265,7 +280,8 @@ void HUD_Draw(void)
 	HUD_DrawWeaponSelect();
 }
 
-void HUD_DrawSpectator(void)
+void
+HUD_DrawSpectator(void)
 {
 	// FIXME
 }

@@ -75,6 +75,12 @@ float spr_flash2[4] = {
 void
 HUD_Init(void)
 {
+	precache_model("sprites/640hud1.spr");
+	precache_model("sprites/640hud2.spr");
+	precache_model("sprites/640hud3.spr");
+	precache_model("sprites/640hud4.spr");
+	precache_model("sprites/640hud5.spr");
+	precache_model("sprites/640hud6.spr");
 	precache_model("sprites/640hud7.spr");
 	precache_model("sprites/640_logo.spr");
 }

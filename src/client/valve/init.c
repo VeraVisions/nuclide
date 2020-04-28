@@ -40,12 +40,5 @@ Game_RendererRestarted(string rstr)
 	FX_GibHuman_Init();
 	FX_Spark_Init();
 	FX_Impact_Init();
-
-	precache_model("sprites/640hud1.spr");
-	precache_model("sprites/640hud2.spr");
-	precache_model("sprites/640hud3.spr");
-	precache_model("sprites/640hud4.spr");
-	precache_model("sprites/640hud5.spr");
-	precache_model("sprites/640hud6.spr");
 	BEAM_TRIPMINE = particleeffectnum("weapon_tripmine.beam");
 }

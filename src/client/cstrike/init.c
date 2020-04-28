@@ -123,29 +123,4 @@ Game_RendererRestarted(string rstr)
 	FX_Spark_Init();
 	FX_Impact_Init();
 	FX_Smokenade_Init();
-
-	precache_model("sprites/640hud1.spr");
-	precache_model("sprites/640hud2.spr");
-	precache_model("sprites/640hud3.spr");
-	precache_model("sprites/640hud4.spr");
-	precache_model("sprites/640hud5.spr");
-	precache_model("sprites/640hud6.spr");
-	precache_model("sprites/640hud7.spr");
-	precache_model("sprites/640hud10.spr");
-	precache_model("sprites/640hud11.spr");
-	precache_model("sprites/640hud12.spr");
-	precache_model("sprites/640hud13.spr");
-	precache_model("sprites/640hud14.spr");
-	precache_model("sprites/640hud15.spr");
-	precache_model("sprites/640hud16.spr");
-	precache_model("sprites/bottom.spr");
-	precache_model("sprites/bottom_left.spr");
-	precache_model("sprites/bottom_right.spr");
-	precache_model("sprites/left.spr");
-	precache_model("sprites/radar640.spr");
-	precache_model("sprites/right.spr");
-	precache_model("sprites/sniper_scope.spr");
-	precache_model("sprites/top.spr");
-	precache_model("sprites/top_left.spr");
-	precache_model("sprites/top_right.spr");
 }

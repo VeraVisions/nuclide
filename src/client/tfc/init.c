@@ -14,9 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-float(entity foo, float chanid) getchannellevel = #0;
-
-
 /*
 =================
 Client_Init
