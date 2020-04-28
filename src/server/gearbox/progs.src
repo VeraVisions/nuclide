@@ -22,7 +22,7 @@
 ../../gs-entbase/shared.src
 
 ../../shared/gearbox/player.cpp
-../valve/defs.h
+../gearbox/defs.h
 
 ../valve/monster_apache.cpp
 ../valve/monster_alien_controller.cpp
@@ -123,9 +123,10 @@
 ../gearbox/gamerules.cpp
 ../valve/gamerules_singleplayer.cpp
 ../valve/gamerules_multiplayer.cpp
+../gearbox/gamerules_ctf.cpp
 ../valve/client.c
 ../client.c
-../valve/server.c
+../gearbox/server.c
 ../server.c
 ../valve/damage.c
 ../traceattack.c

@@ -29,5 +29,6 @@ mods:
 	cd client/hunger && $(MAKE)
 	cd server/hunger && $(MAKE)
 
+
 plugins:
 	$(CC) plugins/chatsounds.src

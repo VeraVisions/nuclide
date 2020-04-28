@@ -185,7 +185,7 @@ void customgame_btnactivate_start(void)
 
 	games_set(nextgame);
 
-#if 1
+#if 0
 	localcmd(sprintf("fs_changegame %s.fmf\n", games[nextgame].gamedir));
 #else
 	/* some games/mods inherit other directories */
