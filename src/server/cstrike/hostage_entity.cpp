@@ -141,8 +141,7 @@ hostage_entity::Pain(int iHitBody)
 		return;
 	}
 
-	frame = HOSA_FLINCH;
-	m_iFlags |= MONSTER_FEAR;
+	SetFrame(HOSA_FLINCH);
 	m_flAnimTime = time + 0.25f;
 }
 
