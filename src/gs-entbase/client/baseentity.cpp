@@ -80,6 +80,9 @@ CBaseEntity::RenderFXPass(void)
 	case RM_ADDITIVE:
 		effects = EF_ADDITIVE | EF_FULLBRIGHT;
 		break;
+	case RM_FULLBRIGHT:
+		effects = EF_FULLBRIGHT;
+		break;
 	case RM_TRIGGER:
 		if (autocvar_cl_showtriggers) {
 			effects = EF_FULLBRIGHT;
