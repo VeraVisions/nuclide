@@ -47,7 +47,7 @@ monster_sentry::Death(int iHitBody)
 {
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
-		frame = SENT_DIE;
+		SetFrame(SENT_DIE);
 		Sound_Play(this, CHAN_VOICE, "monster_sentry.die");
 	}
 
@@ -59,7 +59,7 @@ void
 monster_sentry::Respawn(void)
 {
 	CBaseMonster::Respawn();
-	frame = SENT_IDLE;
+	SetFrame(SENT_IDLE);
 	iBleeds = FALSE;
 }
 

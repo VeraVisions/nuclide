@@ -101,7 +101,7 @@ monster_barney::Pain(int iHitBody)
 
 	Sound_Speak(this, "monster_barney.pain");
 
-	frame = BA_FLINCH_LA + floor(random(0, 5));
+	SetFrame(BA_FLINCH_LA + floor(random(0, 5)));
 	m_iFlags |= MONSTER_FEAR;
 	m_flAnimTime = time + 0.25f;
 }
@@ -111,11 +111,9 @@ monster_barney::Death(int iHitBody)
 {
 	WarnAllies();
 
-	Sound_Speak(this, "monster_barney.die");
-
 	if (style != MONSTER_DEAD) {
-		frame = 25 + floor(random(0, 6));
-		style = MONSTER_DEAD;
+		SetFrame(25 + floor(random(0, 6)));
+		Sound_Speak(this, "monster_barney.die");
 	}
 
 	/* now mark our state as 'dead' */

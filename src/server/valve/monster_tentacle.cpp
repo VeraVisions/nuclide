@@ -114,7 +114,7 @@ monster_tentacle::Respawn(void)
 	/* not entirely true, takes damage then retreats and reheals */
 	takedamage = DAMAGE_NO;
 	iBleeds = FALSE;
-	frame = TE_IDLE;
+	SetFrame(TE_IDLE);
 }
 
 void

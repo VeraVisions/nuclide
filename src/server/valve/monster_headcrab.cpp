@@ -95,7 +95,7 @@ monster_headcrab::Pain(int iHitBody)
 	}
 
 	Sound_Play(this, CHAN_VOICE, "monster_headcrab.pain");
-	frame = HC_FLINCH;
+	SetFrame(HC_FLINCH);
 	m_flAnimTime = time + 0.25f;
 }
 
@@ -104,8 +104,7 @@ monster_headcrab::Death(int iHitBody)
 {
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
-		frame = HC_DIE;
-
+		SetFrame(HC_DIE);
 		Sound_Play(this, CHAN_VOICE, "monster_headcrab.die");
 	}
 

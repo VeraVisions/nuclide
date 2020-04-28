@@ -72,7 +72,7 @@ monster_alien_controller::Pain(int iHitBody)
 	}
 
 	Sound_Play(this, CHAN_VOICE, "monster_alien_controller.die");
-	frame = CON_FLINCH + floor(random(0, 2));
+	SetFrame(CON_FLINCH + floor(random(0, 2)));
 	m_flPainTime = time + 0.25f;
 }
 
@@ -81,7 +81,7 @@ monster_alien_controller::Death(int iHitBody)
 {
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
-		frame = CON_DIE;
+		SetFrame(CON_DIE);
 		Sound_Play(this, CHAN_VOICE, "monster_alien_controller.die");
 	}
 

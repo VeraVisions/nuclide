@@ -91,7 +91,7 @@ monster_gargantua::Pain(int iHitBody)
 	}
 
 	Sound_Play(this, CHAN_VOICE, "monster_gargantua.pain");
-	frame = (random() < 0.5) ? GARG_FLINCH : GARG_FLINCH2;
+	SetFrame((random() < 0.5) ? GARG_FLINCH : GARG_FLINCH2);
 	m_flAnimTime = time + 0.25f;
 }
 
@@ -100,9 +100,7 @@ monster_gargantua::Death(int iHitBody)
 {
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
-
-	frame = GARG_DIE;
-
+		SetFrame(GARG_DIE);
 		Sound_Play(this, CHAN_VOICE, "monster_gargantua.die");
 	}
 
@@ -114,7 +112,7 @@ void
 monster_gargantua::Respawn(void)
 {
 	CBaseMonster::Respawn();
-	frame = GARG_IDLE;
+	SetFrame(GARG_IDLE);
 	/* takes damage from explosives only
 	 * takedamage = DAMAGE_NO; */
 	iBleeds = FALSE;

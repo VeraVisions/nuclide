@@ -183,7 +183,7 @@ monster_human_grunt::Pain(int iHitBody)
 	}
 
 	Sound_Play(this, CHAN_VOICE, "monster_human_grunt.pain");
-	frame = GR_FLINCH;
+	SetFrame(GR_FLINCH);
 	m_flAnimTime = time + 0.25f;
 }
 
@@ -196,12 +196,12 @@ monster_human_grunt::Death(int iHitBody)
 		/* this animation may not have been used, but it looks cool */
 		if (iHitBody == BODY_HEAD) {
 			if (random() < 0.5) {
-				frame = GR_DIEHS;
+				SetFrame(GR_DIEHS);
 			} else {
-				frame = GR_DIEBACK;
+				SetFrame(GR_DIEBACK);
 			}
 		} else {
-			frame = GR_DIE;
+			SetFrame(GR_DIE);
 		}
 	}
 
@@ -214,7 +214,7 @@ void
 monster_human_grunt::Respawn(void)
 {
 	CBaseMonster::Respawn();
-	frame = GR_IDLE;
+	SetFrame(GR_IDLE);
 }
 
 

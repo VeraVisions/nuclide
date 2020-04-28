@@ -77,25 +77,25 @@ void monster_scientist_dead::Respawn(void)
 	
 	switch (m_iPose) {
 	case 1:
-		frame = DSCIA_LYING2;
+		SetFrame(DSCIA_LYING2);
 		break;
 	case 2:
-		frame = DSCIA_DEADSIT;
+		SetFrame(DSCIA_DEADSIT);
 		break;
 	case 3:
-		frame = DSCIA_DEADHANG;
+		SetFrame(DSCIA_DEADHANG);
 		break;
 	case 4:
-		frame = DSCIA_DEADTABLE1;
+		SetFrame(DSCIA_DEADTABLE1);
 		break;
 	case 5:
-		frame = DSCIA_DEADTABLE2;
+		SetFrame(DSCIA_DEADTABLE2);
 		break;
 	case 6:
-		frame = DSCIA_DEADTABLE3;
+		SetFrame(DSCIA_DEADTABLE3);
 		break;
 	default:
-		frame = DSCIA_LYING1;
+		SetFrame(DSCIA_LYING1);
 	}
 }
 

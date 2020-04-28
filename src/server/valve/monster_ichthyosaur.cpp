@@ -68,7 +68,7 @@ monster_ichthyosaur::Pain(int iHitBody)
 	}
 
 	Sound_Play(this, CHAN_VOICE, "monster_ichthyosaur.pain");
-	frame = ICHY_FLINCH + floor(random(0, 2));
+	SetFrame(ICHY_FLINCH + floor(random(0, 2)));
 	m_flAnimTime = time + 0.25f;
 }
 
@@ -81,13 +81,13 @@ monster_ichthyosaur::Death(int iHitBody)
 
 		switch (r) {
 		case 1:
-			frame = ICHY_DIE2;
+			SetFrame(ICHY_DIE2);
 			break;
 		case 2:
-			frame = ICHY_DIE3;
+			SetFrame(ICHY_DIE3);
 			break;
 		default:
-			frame = ICHY_DIE1;
+			SetFrame(ICHY_DIE1);
 			break;
 		}
 
@@ -118,7 +118,7 @@ void
 monster_ichthyosaur::Respawn(void)
 {
 	CBaseMonster::Respawn();
-	frame = ICHY_IDLE;
+	SetFrame(ICHY_IDLE);
 }
 
 void

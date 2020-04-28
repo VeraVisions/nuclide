@@ -136,11 +136,9 @@ monster_scientist::Death(int iHitBody)
 {
 	WarnAllies();
 
-	Sound_Speak(this, "monster_scientist.die");
-
 	if (style != MONSTER_DEAD) {
-		frame = SCIA_DIE_SIMPLE + floor(random(0, 6));
-		style = MONSTER_DEAD;
+		SetFrame(SCIA_DIE_SIMPLE + floor(random(0, 6)));
+		Sound_Speak(this, "monster_scientist.die");
 	}
 
 	/* now mark our state as 'dead' */

@@ -25,7 +25,8 @@ enum
 	MONSTER_IDLE,
 	MONSTER_WALK,
 	MONSTER_RUN,
-	MONSTER_DEAD
+	MONSTER_DEAD,
+	MONSTER_GIBBED,
 };
 
 enum
@@ -354,8 +355,15 @@ CBaseMonster::Pain(int iHitBody)
 void
 CBaseMonster::Death(int iHitBody)
 {
+	/* we were already dead before, so gib */
+	if (style == MONSTER_DEAD) {
+		Gib();
+		return;
+	}
+
 	m_iFlags = 0x0;
 
+	/* if we make more than 50 damage, gib immediately */
 	if (health < -50) {
 		Gib();
 		return;
@@ -363,11 +371,13 @@ CBaseMonster::Death(int iHitBody)
 
 	/* make sure we're not causing any more obituaries */
 	flags &= ~FL_MONSTER;
+	m_iFlags = 0x0;
 
 	/* gibbing action */
-	style = MONSTER_DEAD;
-	SetSolid(SOLID_CORPSE);
 	SetMovetype(MOVETYPE_NONE);
+	SetSolid(SOLID_CORPSE);
+	health = 50 + health; 
+	style = MONSTER_DEAD;
 }
 
 void

@@ -48,7 +48,7 @@ class monster_leech:CBaseMonster
 void
 monster_leech::DeathEnd(void)
 {
-	frame = LEECH_DIEEND;
+	SetFrame(LEECH_DIEEND);
 }
 
 void
@@ -56,7 +56,7 @@ monster_leech::Death(int iHitBody)
 {
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
-		frame = LEECH_DIE;
+		SetFrame(LEECH_DIE);
 		think = DeathEnd;
 		nextthink = time + 1.0f;
 	}
@@ -69,7 +69,7 @@ void
 monster_leech::Respawn(void)
 {
 	CBaseMonster::Respawn();
-	frame = LEECH_SWIM;
+	SetFrame(LEECH_SWIM);
 }
 
 void monster_leech::monster_leech(void)

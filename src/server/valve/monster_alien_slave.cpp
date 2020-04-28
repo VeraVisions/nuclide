@@ -95,7 +95,7 @@ monster_alien_slave::Pain(int iHitBody)
 	}
 
 	Sound_Play(this, CHAN_VOICE, "monster_alien_slave.pain");
-	frame = SLV_FLINCH + floor(random(0, 2));
+	SetFrame(SLV_FLINCH + floor(random(0, 2)));
 	m_flPainTime = time + 0.25f;
 }
 
@@ -107,12 +107,12 @@ monster_alien_slave::Death(int iHitBody)
 		/* headshots == different animation */
 		if (iHitBody == BODY_HEAD) {
 			if (random() < 0.5) {
-				frame = SLV_DIEHS;
+				SetFrame(SLV_DIEHS);
 			} else {
-				frame = SLV_DIEBACK;
+				SetFrame(SLV_DIEBACK);
 			}
 		} else {
-			frame = SLV_DIE + floor(random(0, 3));
+			SetFrame(SLV_DIE + floor(random(0, 3)));
 		}
 
 		Sound_Play(this, CHAN_VOICE, "monster_alien_slave.die");
@@ -126,7 +126,7 @@ void
 monster_alien_slave::Respawn(void)
 {
 	CBaseNPC::Respawn();
-	frame = SLV_IDLE;
+	SetFrame(SLV_IDLE);
 }
 
 void

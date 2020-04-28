@@ -55,8 +55,7 @@ monster_barnacle::Death(int iHitBody)
 {
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
-		frame = BCL_DIE;
-
+		SetFrame(BCL_DIE);
 		Sound_Play(this, CHAN_VOICE, "monster_barnacle.die");
 	}
 
@@ -68,7 +67,7 @@ void
 monster_barnacle::Respawn(void)
 {
 	CBaseMonster::Respawn();
-	frame = BCL_IDLE;
+	SetFrame(BCL_IDLE);
 }
 
 void monster_barnacle::monster_barnacle(void)

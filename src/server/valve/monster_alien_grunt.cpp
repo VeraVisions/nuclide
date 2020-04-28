@@ -85,7 +85,7 @@ monster_alien_grunt::Pain(int iHitBody)
 	}
 
 	Sound_Play(this, CHAN_VOICE, "monster_alien_grunt.pain");
-	frame = AG_FLINCH + floor(random(0, 2));
+	SetFrame(AG_FLINCH + floor(random(0, 2)));
 	m_flPainTime = time + 0.25f;
 }
 
@@ -97,12 +97,12 @@ monster_alien_grunt::Death(int iHitBody)
 		/* headshots == different animation */
 		if (iHitBody == BODY_HEAD) {
 			if (random() < 0.5) {
-				frame = AG_DIEHS;
+				SetFrame(AG_DIEHS);
 			} else {
-				frame = AG_DIEFORWARD;
+				SetFrame(AG_DIEFORWARD);
 			}
 		} else {
-			frame = AG_DIE + floor(random(0, 2));
+			SetFrame(AG_DIE + floor(random(0, 2)));
 		}
 
 		Sound_Play(this, CHAN_VOICE, "monster_alien_grunt.die");
@@ -132,7 +132,7 @@ void
 monster_alien_grunt::Respawn(void)
 {
 	CBaseMonster::Respawn();
-	frame = AG_IDLE;
+	SetFrame(AG_IDLE);
 }
 
 void

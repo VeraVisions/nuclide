@@ -72,7 +72,7 @@ void monster_gman::Respawn(void)
 {
 	/* he can't die, he's the G-Man! */
 	CBaseMonster::Respawn();
-	frame = GMAN_IDLE;
+	SetFrame(GMAN_IDLE);
 	takedamage = DAMAGE_NO;
 	iBleeds = FALSE;
 }

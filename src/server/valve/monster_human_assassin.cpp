@@ -62,12 +62,12 @@ monster_human_assassin::Death(int iHitBody)
 		/* this animation may not have been used, but it looks cool */
 		if (iHitBody == BODY_HEAD) {
 			if (random() < 0.5) {
-				frame = HAS_DIERUN;
+				SetFrame(HAS_DIERUN);
 			} else {
-				frame = HAS_DIEBACK;
+				SetFrame(HAS_DIEBACK);
 			}
 		} else {
-			frame = HAS_DIE;
+			SetFrame(HAS_DIE);
 		}
 	}
 

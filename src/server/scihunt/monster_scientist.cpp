@@ -370,7 +370,7 @@ void monster_scientist::Physics(void)
 	input_impulse = 0;
 	input_buttons = 0;
 	
-	if (style != SCI_DEAD) {
+	if (style != MONSTER_DEAD) {
 	if (!(m_iFlags & SCIF_SEEN)) {
 		for (entity b = world; (b = find(b, ::classname, "player"));) {
 			/* Find players in a 256 unit radius */
@@ -552,7 +552,10 @@ void monster_scientist::PlayerUse(void)
 
 void monster_scientist::Pain(int iHitBody)
 {
-	
+	if (style == MONSTER_DEAD) {
+		return;
+	}
+
 	WarnOthers();
 
 	if (m_flPainTime > time) {
@@ -574,6 +577,11 @@ void monster_scientist::Pain(int iHitBody)
 
 void monster_scientist::Death(int iHitBody)
 {
+	if (style == MONSTER_DEAD) {
+		Gib();
+		return;
+	}
+
 	int r;
 	r = floor(random(0,sci_snddie.length));
 	Speak(sci_snddie[r]);
@@ -584,7 +592,6 @@ void monster_scientist::Death(int iHitBody)
 	nextthink = time + 10.0f;
 
 	m_eUser = world;
-	//customphysics = __NULL__;
 	m_iFlags = 0x0;
 
 	if (health < -50) {
@@ -593,14 +600,13 @@ void monster_scientist::Death(int iHitBody)
 	}
 
 	flags &= ~FL_MONSTER;
-	movetype = MOVETYPE_NONE;
-	solid = SOLID_CORPSE;
-	//takedamage = DAMAGE_NO;
+	SetFrame(SCIA_DIE_SIMPLE + floor(random(0, 6)));
 
-	if (style != SCI_DEAD) {
-		SetFrame(SCIA_DIE_SIMPLE + floor(random(0, 6)));
-		style = SCI_DEAD;
-	}
+	/* corpse health */
+	SetMovetype(MOVETYPE_NONE);
+	SetSolid(SOLID_CORPSE);
+	health = 50 + health; 
+	style = MONSTER_DEAD;
 }
 
 void monster_scientist::Hide(void)
@@ -628,7 +634,7 @@ void monster_scientist::Respawn(void)
 	SetFrame(SCIA_IDLE1);
 	takedamage = DAMAGE_YES;
 	iBleeds = TRUE;
-	style = SCI_IDLE;
+	style = MONSTER_IDLE;
 	health = 50;
 	velocity = [0,0,0];
 	m_iFlags = 0x0;

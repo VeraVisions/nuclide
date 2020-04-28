@@ -91,7 +91,7 @@ monster_nihilanth::Pain(int iHitBody)
 
 	Sound_Play(this, CHAN_VOICE, "monster_nihilanth.pain");
 
-	frame = (random() < 0.5) ? NIL_FLINCH : NIL_FLINCH2;
+	SetFrame((random() < 0.5) ? NIL_FLINCH : NIL_FLINCH2);
 	m_flAnimTime = time + 0.25f;
 }
 
@@ -100,7 +100,7 @@ monster_nihilanth::Death(int iHitBody)
 {
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
-		frame = NIL_DIE;
+		SetFrame(NIL_DIE);
 		Sound_Play(this, CHAN_VOICE, "monster_nihilanth.die");
 	}
 
@@ -112,7 +112,7 @@ void
 monster_nihilanth::Respawn(void)
 {
 	CBaseMonster::Respawn();
-	frame = NIL_IDLE;
+	SetFrame(NIL_IDLE);
 }
 
 void monster_nihilanth::monster_nihilanth(void)

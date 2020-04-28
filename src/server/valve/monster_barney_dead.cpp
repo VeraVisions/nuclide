@@ -62,7 +62,7 @@ void monster_barney_dead::Respawn(void)
 	health = 0;
 	velocity = [0,0,0];
 	iBleeds = TRUE;
-	frame = 35 + m_iPose;
+	SetFrame(35 + m_iPose);
 }
 
 void monster_barney_dead::monster_barney_dead(void)

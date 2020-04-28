@@ -117,7 +117,7 @@ monster_bullchicken::Pain(int iHitBody)
 	}
 
 	Sound_Play(this, CHAN_VOICE, "monster_bullchicken.pain");
-	frame = (random() < 0.5) ? BULL_FLINCH : BULL_FLINCH2;
+	SetFrame((random() < 0.5) ? BULL_FLINCH : BULL_FLINCH2);
 	m_flAnimTime = time + 0.25f;
 }
 
@@ -128,7 +128,7 @@ monster_bullchicken::Death(int iHitBody)
 	if (style != MONSTER_DEAD) {
 
 	/* two different animations */
-	frame = (random() < 0.5) ? BULL_DIE : BULL_DIE2;
+	SetFrame((random() < 0.5) ? BULL_DIE : BULL_DIE2);
 
 		Sound_Play(this, CHAN_VOICE, "monster_bullchicken.die");
 	}

@@ -96,7 +96,7 @@ monster_zombie::Pain(int iHitBody)
 	}
 
 	Sound_Play(this, CHAN_VOICE, "monster_zombie.pain");
-	frame = ZO_FLINCH + floor(random(0, 2));
+	SetFrame(ZO_FLINCH + floor(random(0, 2)));
 	m_flAnimTime = time + 0.25f;
 }
 
@@ -108,12 +108,12 @@ monster_zombie::Death(int iHitBody)
 		/* headshots == different animation */
 		if (iHitBody == BODY_HEAD) {
 			if (random() < 0.5) {
-				frame = ZO_DIEHS;
+				SetFrame(ZO_DIEHS);
 			} else {
-				frame = ZO_DIEHS2;
+				SetFrame(ZO_DIEHS2);
 			}
 		} else {
-			 frame = ZO_DIE + floor(random(0, 3));
+			 SetFrame(ZO_DIE + floor(random(0, 3)));
 		}
 
 		Sound_Play(this, CHAN_VOICE, "monster_zombie.pain");
@@ -143,7 +143,7 @@ void
 monster_zombie::Respawn(void)
 {
 	CBaseMonster::Respawn();
-	frame = ZO_IDLE;
+	SetFrame(ZO_IDLE);
 }
 
 void

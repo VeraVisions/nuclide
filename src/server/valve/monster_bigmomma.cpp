@@ -89,7 +89,7 @@ monster_bigmomma::Pain(int iHitBody)
 	}
 
 	Sound_Play(this, CHAN_VOICE, "monster_bigmomma.pain");
-	frame = GON_FLINCH;
+	SetFrame(GON_FLINCH);
 	m_flAnimTime = time + 0.25f;
 }
 
@@ -98,7 +98,7 @@ monster_bigmomma::Death(int iHitBody)
 {
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
-		frame = GON_DIE;
+		SetFrame(GON_DIE);
 		Sound_Play(this, CHAN_VOICE, "monster_bigmomma.die");
 	}
 
@@ -110,7 +110,7 @@ void
 monster_bigmomma::Respawn(void)
 {
 	CBaseMonster::Respawn();
-	frame = GON_IDLE;
+	SetFrame(GON_IDLE);
 }
 
 void monster_bigmomma::monster_bigmomma(void)

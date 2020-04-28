@@ -83,7 +83,7 @@ monster_houndeye::Pain(int iHitBody)
 	}
 
 	Sound_Play(this, CHAN_VOICE, "monster_houndeye.pain");
-	frame = HE_FLINCH + floor(random(0, 2));
+	SetFrame(HE_FLINCH + floor(random(0, 2)));
 	m_flAnimTime = time + 0.25f;
 }
 
@@ -92,7 +92,7 @@ monster_houndeye::Death(int iHitBody)
 {
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
-		frame = HE_DIE + floor(random(0, 4));
+		SetFrame(HE_DIE + floor(random(0, 4)));
 
 		Sound_Play(this, CHAN_VOICE, "monster_houndeye.die");
 	}
@@ -121,7 +121,7 @@ void
 monster_houndeye::Respawn(void)
 {
 	CBaseMonster::Respawn();
-	frame = HE_IDLE;
+	SetFrame(HE_IDLE);
 }
 
 void
