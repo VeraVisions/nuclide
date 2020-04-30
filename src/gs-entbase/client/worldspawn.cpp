@@ -55,6 +55,11 @@ void worldspawn::SpawnKey(string strField, string strKey)
 		g_ambientsound = spawn(env_soundscape);
 		g_ambientsound.m_iShader = Sound_Precache(strKey);
 		break;
+#ifdef HHDEATH
+	case "_bgm":
+		localcmd(sprintf("music sound/bgm/%s.mp3\n", strKey));
+		break;
+#endif
 	case "hdr_iris_minvalue":
 		g_flHDRIrisMinValue = stof(strKey);
 			cvar_set("r_hdr_irisadaptation_minvalue", ftos(g_flHDRIrisMinValue));

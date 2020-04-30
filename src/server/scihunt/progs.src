@@ -68,7 +68,7 @@ monster_scientist.cpp
 ../../shared/valve/fx_spark.c
 
 ../valve/player.c
-../../shared/valve/pmove.c
+../../shared/scihunt/pmove.c
 ../../shared/pmove.c
 ../valve/spectator.c
 ../../shared/scihunt/items.h

@@ -515,6 +515,14 @@ void monster_scientist::Physics(void)
 	} else {
 		m_iFlags -= (flags & SCIF_FALLING);
 	}
+
+	/* support for think/nextthink */
+	if (think && nextthink > 0.0f) {
+		if (nextthink < time) {
+			nextthink = 0.0f;
+			think();
+		}
+	}
 }
 
 void monster_scientist::touch(void)
@@ -581,6 +589,11 @@ void monster_scientist::Death(int iHitBody)
 		Gib();
 		return;
 	}
+
+	SHMultiplayerRules rules = (SHMultiplayerRules)g_grMode;
+
+	if (g_dmg_eAttacker.flags & FL_CLIENT)
+		rules.ScientistKill((player)g_dmg_eAttacker, (entity)this);
 
 	int r;
 	r = floor(random(0,sci_snddie.length));

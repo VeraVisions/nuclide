@@ -61,10 +61,8 @@ trigger_hurt::Trigger(void)
 	} else {
 		dprint(sprintf("trigger_hurt::^3Trigger: %s activated\n", 
 			m_strTargetName));
-		solid = SOLID_BSPTRIGGER;
+		InitBrushTrigger();
 		touch = Touch;
-		setmodel (this, m_oldModel);
-		self.movetype = MOVETYPE_NONE;
 	}
 }
 
@@ -118,20 +116,25 @@ void
 trigger_hurt::Respawn(void)
 {
 	/* reset */
-	m_flNextDmg = 0.5f;
 	m_flNextTrigger = 0.0f;
 
 	if (spawnflags & SF_HURT_OFF) {
 		solid = SOLID_NOT;
-		touch = __NULL__;
 	} else {
 		InitBrushTrigger();
+		touch = Touch;
 	}
 }
 
 void
 trigger_hurt::trigger_hurt(void)
 {
+	/* defaults */
+	m_iDamage = 15;
+	m_flNextDmg = 0.5f;
+
+	CBaseEntity::CBaseEntity();
+	
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
 		case "dmg":
@@ -146,6 +149,4 @@ trigger_hurt::trigger_hurt(void)
 			break;
 		}
 	}
-
-	CBaseEntity::CBaseEntity();
 }

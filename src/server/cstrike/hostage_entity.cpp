@@ -151,8 +151,7 @@ hostage_entity::Death(int iHitBody)
 	WarnAllies();
 
 	if (style != MONSTER_DEAD) {
-		frame = HOSA_DIE_SIMPLE + floor(random(0, 6));
-		style = MONSTER_DEAD;
+		SetFrame(HOSA_DIE_SIMPLE + floor(random(0, 6)));
 	}
 
 	/* now mark our state as 'dead' */

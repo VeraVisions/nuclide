@@ -14,13 +14,39 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+var int autocvar_sh_insanity = 10;
 var int autocvar_sv_playerkeepalive = TRUE;
 
 
 void
 SHMultiplayerRules::PlayerDeath(player pl)
 {
-	weaponbox_spawn(pl);
+	/* obituary networking */
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_OBITUARY);
+	if (g_dmg_eAttacker.netname)
+		WriteString(MSG_MULTICAST, g_dmg_eAttacker.netname);
+	else
+		WriteString(MSG_MULTICAST, g_dmg_eAttacker.classname);
+	WriteString(MSG_MULTICAST, pl.netname);
+	WriteByte(MSG_MULTICAST, g_dmg_iWeapon);
+	WriteByte(MSG_MULTICAST, 0);
+	msg_entity = world;
+	multicast([0,0,0], MULTICAST_ALL);
+
+	/* death-counter */
+	pl.deaths++;
+	forceinfokey(pl, "*deaths", ftos(pl.deaths));
+
+	/* update score-counter */
+	if (pl.flags & FL_CLIENT || pl.flags & FL_MONSTER)
+	if (g_dmg_eAttacker.flags & FL_CLIENT) {
+		if (pl == g_dmg_eAttacker)
+			g_dmg_eAttacker.frags--;
+		else
+			g_dmg_eAttacker.frags++;
+	}
+
 	pl.movetype = MOVETYPE_NONE;
 	pl.solid = SOLID_NOT;
 	pl.takedamage = DAMAGE_NO;
@@ -286,6 +312,17 @@ SHMultiplayerRules::PlayerPostFrame(player pl)
 	pl.old_a_ammo1 = pl.a_ammo1;
 	pl.old_a_ammo2 = pl.a_ammo2;
 	pl.old_a_ammo3 = pl.a_ammo3;
+
+	pl.sh_insaneactive = bound(0.0f, pl.sh_insaneactive - frametime, pl.sh_insaneactive);
+
+	if (pl.sh_insaneactive > 0.0f)
+		pl.flags |= FL_RESERVED1;
+	else {
+		if (pl.flags & FL_RESERVED1) {
+			bprint(PRINT_CHAT, sprintf("%s is no longer insane!\n", pl.netname));
+		}
+		pl.flags &= ~FL_RESERVED1;
+	}
 }
 
 void
@@ -327,4 +364,42 @@ void
 SHMultiplayerRules::PlayerKill(player pl)
 {
 	Damage_Apply(pl, pl, pl.health, WEAPON_NONE, DMG_SKIP_ARMOR);
+}
+
+void
+SHMultiplayerRules::ScientistKill(player pl, entity sci)
+{
+	/* obituary networking */
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_OBITUARY);
+	WriteString(MSG_MULTICAST, pl.netname);
+	WriteString(MSG_MULTICAST, sci.netname);
+	WriteByte(MSG_MULTICAST, g_dmg_iWeapon);
+	WriteByte(MSG_MULTICAST, 0);
+	msg_entity = world;
+	multicast([0,0,0], MULTICAST_ALL);
+	pl.frags++;
+
+	/*if (g_weapons[g_dmg_iWeapon].slot != 0)
+		return;*/
+
+	/* if this is our first kill in a while, or in the timer... */
+	if (pl.sh_insanecount == 0 || pl.sh_insanetime > time) {
+		pl.sh_insanecount++;
+	} else {
+		pl.sh_insanecount = 0;
+	}
+
+	if (pl.sh_insanecount >= autocvar_sh_insanity) {
+		if (pl.sh_insaneactive <= 0.0f)
+			bprint(PRINT_CHAT, sprintf("%s is going insane!\n", pl.netname));
+
+		pl.sh_insaneactive += 3.0f;
+		
+		if (pl.sh_insaneactive > 60)
+			pl.sh_insaneactive = 60;
+	}
+
+	/* timer gets touched every time */
+	pl.sh_insanetime = time + 2.0f;
 } 

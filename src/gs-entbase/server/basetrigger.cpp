@@ -132,7 +132,7 @@ CBaseTrigger::InitBrushTrigger(void)
 {
 	SetModel(m_oldModel);
 	movetype = MOVETYPE_NONE;
-	solid = SOLID_BSPTRIGGER;
+	solid = SOLID_TRIGGER;
 	SetRenderMode(RM_TRIGGER);
 }
 

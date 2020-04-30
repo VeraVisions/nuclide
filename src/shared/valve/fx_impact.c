@@ -66,6 +66,7 @@ FX_Impact(int iType, vector vecPos, vector vNormal)
 	}
 
 	switch (iType) {
+		case IMPACT_MELEE:
 		case IMPACT_EXPLOSION:
 			break;
 		case IMPACT_GLASS:

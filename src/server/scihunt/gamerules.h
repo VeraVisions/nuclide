@@ -25,6 +25,7 @@ class SHMultiplayerRules:CGameRules
 	virtual void(player) PlayerKill;
 	virtual void(player) PlayerDeath;
 	virtual void(player) PlayerPostFrame;
+	virtual void(player, entity) ScientistKill;
 
 	virtual void(player) LevelDecodeParms;
 	virtual void(player) LevelChangeParms;

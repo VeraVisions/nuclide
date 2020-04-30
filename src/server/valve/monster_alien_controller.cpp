@@ -109,7 +109,7 @@ void
 monster_alien_controller::Respawn(void)
 {
 	CBaseMonster::Respawn();
-	frame = CON_IDLE;
+	SetFrame(CON_IDLE);
 }
 
 void

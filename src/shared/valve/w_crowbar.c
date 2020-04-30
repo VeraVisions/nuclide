@@ -101,7 +101,12 @@ w_crowbar_primary(void)
 
 	Weapons_MakeVectors();
 	src = pl.origin + pl.view_ofs;
+
+	/* make sure we can gib corpses */
+	int oldhitcontents = self.hitcontentsmaski;
+	self.hitcontentsmaski = CONTENTBITS_POINTSOLID | CONTENTBIT_CORPSE;
 	traceline(src, src + (v_forward * 32), FALSE, pl);
+	self.hitcontentsmaski = oldhitcontents;
 
 	if (trace_fraction >= 1.0) {
 		pl.w_attack_next = 0.5f;

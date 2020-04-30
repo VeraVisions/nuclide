@@ -116,5 +116,9 @@ class player:CBaseEntity
 	int old_a_ammo2;
 	int old_a_ammo3;
 	int voted;
+
+	int sh_insanecount;
+	float sh_insanetime;
+	float sh_insaneactive;
 #endif
 };

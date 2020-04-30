@@ -97,6 +97,8 @@ void monster_scientist_dead::Respawn(void)
 	default:
 		SetFrame(DSCIA_LYING1);
 	}
+
+	droptofloor();
 }
 
 void monster_scientist_dead::monster_scientist_dead(void)

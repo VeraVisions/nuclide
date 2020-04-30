@@ -419,5 +419,4 @@ void
 CBaseMonster::CBaseMonster(void)
 {
 	CBaseEntity::CBaseEntity();
-	Respawn();
 }

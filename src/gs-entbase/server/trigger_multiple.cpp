@@ -95,5 +95,4 @@ trigger_multiple::trigger_multiple(void)
 			break;
 		}
 	}
-	InitBrushTrigger();
 }
