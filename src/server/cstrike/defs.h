@@ -16,6 +16,7 @@
 
 #include "gamerules.h"
 #include "money.h"
+#include "../valve/items.h"
 
 var int g_cstrike_buying = 0;
 var float g_cstrike_bombradius = 500;

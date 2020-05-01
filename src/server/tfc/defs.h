@@ -15,3 +15,4 @@
  */
 
 #include "gamerules.h"
+#include "../valve/items.h"

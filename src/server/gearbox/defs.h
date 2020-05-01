@@ -16,3 +16,4 @@
 
 #include "../valve/gamerules.h"
 #include "gamerules_ctf.h"
+#include "../valve/items.h"

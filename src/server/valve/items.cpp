@@ -14,21 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* PICKUP ITEMS */
-class item_pickup:CBaseTrigger
-{
-	int m_bFloating;
-	int m_iClip;
-	int m_iWasDropped;
-	int id;
-	void(void) item_pickup;
-
-	virtual void(void) touch;
-	virtual void(int i) setitem;
-	virtual void(void) Respawn;
-	virtual void(int) SetFloating;
-};
-
 void item_pickup::touch(void)
 {
 	if (other.classname != "player") {
