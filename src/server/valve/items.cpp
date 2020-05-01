@@ -39,7 +39,7 @@ void item_pickup::touch(void)
 	}
 
 	Logging_Pickup(other, this, __NULL__);
-	sound(other, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_NORM);
+	Sound_Play(other, CHAN_ITEM, "weapon.pickup");
 
 	CBaseTrigger::UseTargets();
 
@@ -71,12 +71,12 @@ void item_pickup::Respawn(void)
 	}
 
 	SetSize([-16,-16,0], [16,16,16]);
-	
+
 	think = __NULL__;
 	nextthink = -1;
 
-	if (!m_iWasDropped) {
-		sound(this, CHAN_ITEM, "items/suitchargeok1.wav", 1, ATTN_NORM, 150);
+	if (!m_iWasDropped || cvar("sv_playerslots") > 1) {
+		Sound_Play(this, CHAN_ITEM, "item.respawn");
 		m_iClip = -1;
 	}
 
@@ -85,7 +85,8 @@ void item_pickup::Respawn(void)
 
 void item_pickup::item_pickup(void)
 {
-	precache_sound("items/suitchargeok1.wav");
+	Sound_Precache("item.respawn");
+	Sound_Precache("weapon.pickup");
 	CBaseTrigger::CBaseTrigger();
 	Respawn();
 }

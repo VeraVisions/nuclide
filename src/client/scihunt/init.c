@@ -41,12 +41,6 @@ Game_RendererRestarted(string rstr)
 	FX_Spark_Init();
 	FX_Impact_Init();
 
-	precache_model("sprites/640hud1.spr");
-	precache_model("sprites/640hud2.spr");
-	precache_model("sprites/640hud3.spr");
-	precache_model("sprites/640hud4.spr");
-	precache_model("sprites/640hud5.spr");
-	precache_model("sprites/640hud6.spr");
 	precache_model("sprites/chainsaw.spr");
 	precache_model("sprites/hammer.spr");
 	precache_model("sprites/w_cannon.spr");

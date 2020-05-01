@@ -42,6 +42,12 @@ void Game_Worldspawn(void)
 	Sound_Precache("buy.weapon");
 	Sound_Precache("buy.ammo");
 
+	/* some Counter-Strike maps do not have weapon pickups, so we want to
+	 * precache these regardless in case of someone dropping a weapon,
+	 * which happens quite often (buying weapons, etc.) */
+	Sound_Precache("item.respawn");
+	Sound_Precache("weapon.pickup");
+
 	Weapons_Init();
 
 	clientstat(STAT_MONEY, EV_INTEGER, player::money);
