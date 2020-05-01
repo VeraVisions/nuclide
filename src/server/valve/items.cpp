@@ -17,6 +17,7 @@
 /* PICKUP ITEMS */
 class item_pickup:CBaseTrigger
 {
+	int m_bFloating;
 	int m_iClip;
 	int m_iWasDropped;
 	int id;
@@ -25,6 +26,7 @@ class item_pickup:CBaseTrigger
 	virtual void(void) touch;
 	virtual void(int i) setitem;
 	virtual void(void) Respawn;
+	virtual void(int) SetFloating;
 };
 
 void item_pickup::touch(void)
@@ -59,10 +61,14 @@ void item_pickup::setitem(int i)
 	SetModel(m_oldModel);
 }
 
+void item_pickup::SetFloating(int i)
+{
+	m_bFloating = rint(bound(0, m_bFloating, 1));
+}
+
 void item_pickup::Respawn(void)
 {
 	SetSolid(SOLID_TRIGGER);
-	SetMovetype(MOVETYPE_TOSS);
 	SetOrigin(m_oldOrigin);
 
 	/* At some points, the item id might not yet be set */
@@ -80,7 +86,10 @@ void item_pickup::Respawn(void)
 		m_iClip = -1;
 	}
 
-	droptofloor();
+	if (!m_bFloating) {
+		droptofloor();
+		SetMovetype(MOVETYPE_TOSS);
+	}
 }
 
 void item_pickup::item_pickup(void)
