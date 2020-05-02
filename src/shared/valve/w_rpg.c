@@ -341,8 +341,8 @@ void w_rpg_hud(void)
 
 weapon_t w_rpg =
 {
-	.name		= "rpg",
-	.id		= ITEM_RPG,
+	.name		= "rpg_rocket",
+	.id			= ITEM_RPG,
 	.slot		= 3,
 	.slot_pos	= 0,
 	.draw		= w_rpg_draw,

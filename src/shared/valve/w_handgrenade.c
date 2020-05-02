@@ -248,8 +248,8 @@ w_handgrenade_hudpic(int selected, vector pos, float a)
 
 weapon_t w_handgrenade =
 {
-	.name		= "handgrenade",
-	.id		= ITEM_HANDGRENADE,
+	.name		= "grenade",
+	.id			= ITEM_HANDGRENADE,
 	.slot		= 4,
 	.slot_pos	= 0,
 	.draw		= w_handgrenade_draw,

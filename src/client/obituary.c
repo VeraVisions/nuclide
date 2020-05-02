@@ -17,17 +17,25 @@
 #define OBITUARY_LINES	4
 #define OBITUARY_TIME	5
 
+/* imagery */
+typedef struct {
+	string name;		/* name of the weapon/type, e.g. d_crowbar */
+	string sprite;		/* name of the spritesheet it's from */
+	float size[2];		/* on-screen size in pixels */
+	float src_pos[2];	/* normalized position in the sprite sheet */
+	float src_size[2];	/* normalized size in the sprite sheet */
+	string src_sprite;		/* precaching reasons */
+} obituaryimg_t;
+
+obituaryimg_t *g_obtypes;
+int g_obtype_count;
+
+/* actual obituary storage */
 typedef struct
 {
 	string attacker;
 	string victim;
-
-	/* icon */
-	string mtr;
-	vector pos;
-	vector size;
-	vector coord;
-	vector bounds;
+	int icon;
 } obituary_t;
 
 static obituary_t g_obituary[OBITUARY_LINES];
@@ -35,32 +43,84 @@ static int g_obituary_count;
 static float g_obituary_time;
 
 void
+Obituary_Init(void)
+{
+	int i;
+	filestream fh;
+	string line;
+	vector tmp;
+
+	g_obtype_count = 0;
+	i = 0;
+
+	fh = fopen("sprites/hud.txt", FILE_READ);
+	if (fh < 0) {
+		return;
+	}
+
+	/* count valid entries */
+	while ((line = fgets(fh))) {
+		if (substring(line, 0, 2) == "d_") {
+			int c = tokenize(line);
+			if (c == 7 && argv(1) == "640") {
+				g_obtype_count++;
+			}
+		}
+	}
+
+	g_obtypes = memalloc(sizeof(obituaryimg_t) * g_obtype_count);
+
+	fseek(fh, 0);
+
+	/* read them in */
+	while ((line = fgets(fh))) {
+		if (substring(line, 0, 2) == "d_") {
+			int c = tokenize(line);
+
+			/* we only care about the high-res (640) variants. the 320
+			 * HUD is useless to us. Just use the builtin scaler */
+			if (c == 7 && argv(1) == "640") {
+				g_obtypes[i].name = substring(argv(0), 2, -1);
+				g_obtypes[i].src_sprite = sprintf("sprites/%s.spr", argv(2));
+				g_obtypes[i].sprite = sprintf("sprites/%s.spr_0.tga", argv(2));
+				g_obtypes[i].size[0] = stof(argv(5));
+				g_obtypes[i].size[1] = stof(argv(6));
+				tmp = drawgetimagesize(g_obtypes[i].sprite);
+				g_obtypes[i].src_pos[0] = stof(argv(3)) / tmp[0];
+				g_obtypes[i].src_pos[1] = stof(argv(4)) / tmp[1];
+				g_obtypes[i].src_size[0] = g_obtypes[i].size[0] / tmp[0];
+				g_obtypes[i].src_size[1] = g_obtypes[i].size[1] / tmp[1];
+				i++;
+			}
+		}
+	}
+
+	fclose(fh);
+}
+
+void Obituary_Precache(void)
+{
+	for (int i = 0; i < g_obtype_count; i++)
+		precache_model(g_obtypes[i].src_sprite);
+}
+
+void
 Obituary_KillIcon(int id, float w)
 {
-#ifdef VALVE
-	vector mtrsize;
-
-	/* fill in the entries and calculate some in advance */
-	if (w > 0) {
-		/*mtrsize = drawgetimagesize(g_weapons[w].ki_spr);
-		g_obituary[id].mtr = g_weapons[w].ki_spr;
-		g_obituary[id].pos = g_weapons[w].ki_xy;
-		g_obituary[id].size = g_weapons[w].ki_size;
-		g_obituary[id].coord[0] = g_weapons[w].ki_xy[0] / mtrsize[0];
-		g_obituary[id].coord[1] = g_weapons[w].ki_xy[1] / mtrsize[1];
-		g_obituary[id].bounds[0] = g_weapons[w].ki_size[0] / mtrsize[0];
-		g_obituary[id].bounds[1] = g_weapons[w].ki_size[1] / mtrsize[1];*/
-	} else {
-		/* generic splat icon */
-		g_obituary[id].mtr = "sprites/640hud1.spr_0.tga";
-		g_obituary[id].pos = [192,224];
-		g_obituary[id].size = [32,16];
-		g_obituary[id].coord[0] = 192 / 256;
-		g_obituary[id].coord[1] = 224 / 256;
-		g_obituary[id].bounds[0] = 32 / 256;
-		g_obituary[id].bounds[1] = 16 / 256;
+	for (int i = 0; i < g_obtype_count; i++) {
+		if (g_weapons[w].name == g_obtypes[i].name) {
+			g_obituary[id].icon = i;
+			return;
+		}
 	}
-#endif
+
+	/* look for skull instead */
+	for (int i = 0; i < g_obtype_count; i++) {
+		if (g_obtypes[i].name == "skull") {
+			g_obituary[id].icon = i;
+			return;
+		}
+	}
 }
 
 void
@@ -81,11 +141,7 @@ Obituary_Add(string attacker, string victim, float weapon, float flags)
 		for (i = 0; i < (x-1); i++) {
 			g_obituary[i].attacker = g_obituary[i+1].attacker;
 			g_obituary[i].victim = g_obituary[i+1].victim;
-			g_obituary[i].mtr = g_obituary[i+1].mtr;
-			g_obituary[i].pos = g_obituary[i+1].pos;
-			g_obituary[i].size = g_obituary[i+1].size;
-			g_obituary[i].coord = g_obituary[i+1].coord;
-			g_obituary[i].bounds = g_obituary[i+1].bounds;
+			g_obituary[i].icon = g_obituary[i+1].icon;
 		}
 		/* after rearranging, add the newest to the bottom. */
 		g_obituary[x-1].attacker = attacker;
@@ -109,11 +165,7 @@ Obituary_Draw(void)
 		for (i = 0; i < (OBITUARY_LINES-1); i++) {
 			g_obituary[i].attacker = g_obituary[i+1].attacker;
 			g_obituary[i].victim = g_obituary[i+1].victim;
-			g_obituary[i].mtr = g_obituary[i+1].mtr;
-			g_obituary[i].pos = g_obituary[i+1].pos;
-			g_obituary[i].size = g_obituary[i+1].size;
-			g_obituary[i].coord = g_obituary[i+1].coord;
-			g_obituary[i].bounds = g_obituary[i+1].bounds;
+			g_obituary[i].icon = g_obituary[i+1].icon;
 		}
 		g_obituary[OBITUARY_LINES-1].attacker = "";
 
@@ -139,14 +191,14 @@ Obituary_Draw(void)
 		v = g_obituary[i].victim;
 		drawstring_r(item + [0,2], v, [12,12], [1,1,1], 1.0f, 0);
 		item[0] -= stringwidth(v, TRUE, [12,12]) + 4;
-		item[0] -= g_obituary[i].size[0];
+		item[0] -= g_obtypes[g_obituary[i].icon].size[0];
 
 		drawsubpic(
 			item,
-			g_obituary[i].size,
-			g_obituary[i].mtr,
-			g_obituary[i].coord,
-			g_obituary[i].bounds,
+			[g_obtypes[g_obituary[i].icon].size[0], g_obtypes[g_obituary[i].icon].size[1]],
+			g_obtypes[g_obituary[i].icon].sprite,
+			[g_obtypes[g_obituary[i].icon].src_pos[0],g_obtypes[g_obituary[i].icon].src_pos[1]],
+			[g_obtypes[g_obituary[i].icon].src_size[0],g_obtypes[g_obituary[i].icon].src_size[1]],
 			g_hud_color,
 			1.0f,
 			DRAWFLAG_ADDITIVE

@@ -330,8 +330,8 @@ w_python_hudpic(int selected, vector pos, float a)
 
 weapon_t w_python =
 {
-	.name		= "python",
-	.id		= ITEM_PYTHON,
+	.name		= "357",
+	.id			= ITEM_PYTHON,
 	.slot		= 1,
 	.slot_pos	= 1,
 	.draw		= w_python_draw,

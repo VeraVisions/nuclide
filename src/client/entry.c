@@ -81,6 +81,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	Titles_Init();
 	Sentences_Init();
 	Decals_Init();
+	Obituary_Init();
 }
 
 /* Rendering Caches */
@@ -111,6 +112,7 @@ CSQC_RendererRestarted(string rstr)
 	Decal_Reload();
 	Game_RendererRestarted(rstr);
 	FX_Init();
+	Obituary_Precache();
 }
 
 void

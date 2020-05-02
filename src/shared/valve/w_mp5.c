@@ -372,8 +372,8 @@ w_mp5_hudpic(int selected, vector pos, float a)
 
 weapon_t w_mp5 =
 {
-	.name		= "mp5",
-	.id		= ITEM_MP5,
+	.name		= "9mmAR",
+	.id			= ITEM_MP5,
 	.slot		= 2,
 	.slot_pos	= 0,
 	.draw		= w_mp5_draw,

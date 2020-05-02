@@ -351,8 +351,8 @@ w_glock_hudpic(int selected, vector pos, float a)
 
 weapon_t w_glock =
 {
-	.name		= "glock",
-	.id		= ITEM_GLOCK,
+	.name		= "9mmhandgun",
+	.id			= ITEM_GLOCK,
 	.slot		= 1,
 	.slot_pos	= 0,
 	.draw		= w_glock_draw,

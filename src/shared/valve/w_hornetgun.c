@@ -323,7 +323,7 @@ w_hornetgun_hudpic(int selected, vector pos, float a)
 
 weapon_t w_hornetgun =
 {
-	.name		= "hornetgun",
+	.name		= "hornet",
 	.id		= ITEM_HORNETGUN,
 	.slot		= 3,
 	.slot_pos	= 3,

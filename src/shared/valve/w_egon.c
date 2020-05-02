@@ -188,7 +188,7 @@ void w_egon_hudpic(int selected, vector pos, float a)
 weapon_t w_egon =
 {
 	.name		= "egon",
-	.id		= ITEM_EGON,
+	.id			= ITEM_EGON,
 	.slot		= 3,
 	.slot_pos	= 2,
 	.draw		= w_egon_draw,

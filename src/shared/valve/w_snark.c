@@ -305,7 +305,7 @@ void w_snark_hudpic(int selected, vector pos, float a)
 weapon_t w_snark =
 {
 	.name		= "snark",
-	.id		= ITEM_SNARK,
+	.id			= ITEM_SNARK,
 	.slot		= 4,
 	.slot_pos	= 3,
 	.draw		= w_snark_draw,
