@@ -382,7 +382,7 @@ void Weapons_InitItem(int w)
 {
 	item_pickup it = (item_pickup)self;
 	spawnfunc_item_pickup();
-	it.setitem(w);
+	it.SetItem(w);
 }
 
 void Weapons_UpdateAmmo(player pl, int a1, int a2, int a3)
@@ -433,7 +433,7 @@ void Weapon_DropCurrentWeapon(player pl)
 		return;
 
 	item_pickup drop = spawn(item_pickup, m_iWasDropped: TRUE, m_iClip: pl.a_ammo1);
-	drop.setitem(pl.activeweapon);
+	drop.SetItem(pl.activeweapon);
 	setorigin(drop, pl.origin);
 	drop.solid = SOLID_NOT;
 	drop.think = DropWeapon_Enable;

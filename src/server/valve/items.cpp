@@ -39,7 +39,7 @@ void item_pickup::touch(void)
 	}
 }
 
-void item_pickup::setitem(int i)
+void item_pickup::SetItem(int i)
 {
 	id = i;
 	m_oldModel = Weapons_GetWorldmodel(id);
@@ -66,7 +66,7 @@ void item_pickup::Respawn(void)
 	think = __NULL__;
 	nextthink = -1;
 
-	if (!m_iWasDropped || cvar("sv_playerslots") > 1) {
+	if (!m_iWasDropped && cvar("sv_playerslots") > 1) {
 		Sound_Play(this, CHAN_ITEM, "item.respawn");
 		m_iClip = -1;
 	}

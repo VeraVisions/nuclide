@@ -24,7 +24,7 @@ class item_pickup:CBaseTrigger
 	void(void) item_pickup;
 
 	virtual void(void) touch;
-	virtual void(int i) setitem;
+	virtual void(int i) SetItem;
 	virtual void(void) Respawn;
 	virtual void(int) SetFloating;
 };

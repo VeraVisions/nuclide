@@ -45,6 +45,7 @@ static float g_obituary_time;
 void
 Obituary_Init(void)
 {
+	int c;
 	int i;
 	filestream fh;
 	string line;
@@ -61,7 +62,7 @@ Obituary_Init(void)
 	/* count valid entries */
 	while ((line = fgets(fh))) {
 		if (substring(line, 0, 2) == "d_") {
-			int c = tokenize(line);
+			c = tokenize(line);
 			if (c == 7 && argv(1) == "640") {
 				g_obtype_count++;
 			}
@@ -75,7 +76,7 @@ Obituary_Init(void)
 	/* read them in */
 	while ((line = fgets(fh))) {
 		if (substring(line, 0, 2) == "d_") {
-			int c = tokenize(line);
+			c = tokenize(line);
 
 			/* we only care about the high-res (640) variants. the 320
 			 * HUD is useless to us. Just use the builtin scaler */
