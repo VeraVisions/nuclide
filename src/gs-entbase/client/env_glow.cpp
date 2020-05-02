@@ -32,6 +32,7 @@ class env_glow:CBaseEntity
 	string m_strSprite;
 	vector m_vecSize;
 	float m_flScale;
+
 	void(void) env_glow;
 	virtual void(void) customphysics;
 	virtual float() predraw;
@@ -141,6 +142,7 @@ void env_glow::SpawnKey(string strField, string strKey)
 		break;
 	case "sprite":
 	case "model":
+		precache_model(strKey);
 		m_strSprite = sprintf("%s_0.tga", strKey);
 		m_vecSize = drawgetimagesize(m_strSprite) / 2;
 		break;

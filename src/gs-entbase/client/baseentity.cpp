@@ -73,7 +73,40 @@ CBaseEntity::RenderFXPass(void)
 	case RM_TEXTURE:
 		break;
 	case RM_GLOW:
-		effects = EF_FULLBRIGHT;
+		int s = (float)getproperty(VF_ACTIVESEAT);
+		pSeat = &g_seats[s];
+		vector vecPlayer = pSeat->m_vecPredictedOrigin;
+
+		if (checkpvs(vecPlayer, this) == FALSE) {
+			alpha -= clframetime;
+		}
+
+		other = world;
+		traceline(this.origin, vecPlayer, MOVE_OTHERONLY, this);
+
+		/* If we can't trace against the player, or are two close, fade out */
+		if (trace_fraction < 1.0f || vlen(origin - vecPlayer) < 128) {
+			alpha -= clframetime; 
+		} else {
+			alpha += clframetime;
+		}
+
+		alpha = bound(0, alpha, 1.0f);
+		effects = EF_ADDITIVE | EF_FULLBRIGHT;
+
+		if (alpha > 0) {
+			float falpha;
+			
+			/* Scale the glow somewhat with the players distance */
+			scale = bound(1, vlen(vecPlayer - origin) / 256, 4);
+			
+			/* Fade out when the player is starting to move away */
+			falpha = 1 - bound(0, vlen(vecPlayer - origin) / 1024, 1);
+			falpha *= alpha;
+			
+			/* Clamp the alpha by the glows' renderamt value */
+			alpha = bound(0, falpha, m_flRenderAmt);
+		}
 		break;
 	case RM_SOLID:
 		break;

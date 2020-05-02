@@ -85,7 +85,6 @@
 ../cstrike/player.c
 ../cstrike/entities.c
 ../entities.c
-../fx_gunsmoke.c
 ../cstrike/cmds.c
 ../cstrike/game_event.c
 ../events.c

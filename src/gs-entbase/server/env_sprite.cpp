@@ -62,11 +62,12 @@ float env_sprite::Network(entity pvsent, float flags)
 	WriteFloat(MSG_ENTITY, modelindex);
 	WriteFloat(MSG_ENTITY, m_flFramerate);
 	WriteFloat(MSG_ENTITY, m_flScale);
-	WriteFloat(MSG_ENTITY, alpha);
-	WriteFloat(MSG_ENTITY, effects);
-	WriteFloat(MSG_ENTITY, colormod[0]);
-	WriteFloat(MSG_ENTITY, colormod[1]);
-	WriteFloat(MSG_ENTITY, colormod[2]);
+	WriteByte(MSG_ENTITY, m_iRenderFX);
+	WriteByte(MSG_ENTITY, m_iRenderMode);
+	WriteFloat(MSG_ENTITY, m_vecRenderColor[0]);
+	WriteFloat(MSG_ENTITY, m_vecRenderColor[1]);
+	WriteFloat(MSG_ENTITY, m_vecRenderColor[2]);
+	WriteFloat(MSG_ENTITY, m_flRenderAmt);
 	return TRUE;
 }
 
@@ -80,11 +81,12 @@ void env_sprite::NetworkOnce(void)
 	WriteFloat(MSG_MULTICAST, modelindex);
 	WriteFloat(MSG_MULTICAST, m_flFramerate);
 	WriteFloat(MSG_MULTICAST, m_flScale);
-	WriteFloat(MSG_MULTICAST, alpha);
-	WriteFloat(MSG_MULTICAST, effects);
-	WriteFloat(MSG_MULTICAST, colormod[0]);
-	WriteFloat(MSG_MULTICAST, colormod[1]);
-	WriteFloat(MSG_MULTICAST, colormod[2]);
+	WriteByte(MSG_ENTITY, m_iRenderFX);
+	WriteByte(MSG_ENTITY, m_iRenderMode);
+	WriteFloat(MSG_ENTITY, m_vecRenderColor[0]);
+	WriteFloat(MSG_ENTITY, m_vecRenderColor[1]);
+	WriteFloat(MSG_ENTITY, m_vecRenderColor[2]);
+	WriteFloat(MSG_ENTITY, m_flRenderAmt);
 	msg_entity = this;
 	multicast(origin, MULTICAST_PVS);
 }
