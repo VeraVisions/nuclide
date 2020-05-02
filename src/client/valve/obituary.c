@@ -27,7 +27,6 @@ Obituary_Init(void)
 		return;
 	}
 
-	print("Init Obituaries\n");
 	g_obtype_count = 0;
 	i = 0;
 
@@ -80,8 +79,6 @@ Obituary_Init(void)
 void
 Obituary_Precache(void)
 {
-	print("Precache Obituaries\n");
-
 	for (int i = 0; i < g_obtype_count; i++)
 		precache_model(g_obtypes[i].src_sprite);
 }
@@ -132,6 +129,13 @@ Obituary_Add(string attacker, string victim, float weapon, float flags)
 	}
 
 	g_obituary_time = OBITUARY_TIME;
+
+	string conprint = g_weapons[weapon].deathmsg();
+
+	if (conprint != "") {
+		print(sprintf(conprint, attacker, victim));
+		print("\n");
+	}
 }
 
 void
@@ -168,8 +172,7 @@ Obituary_Draw(void)
 		}
 
 		item[0] = pos[0];
-		
-		
+
 		v = g_obituary[i].victim;
 		drawstring_r(item + [0,2], v, [12,12], [1,1,1], 1.0f, 0);
 		item[0] -= stringwidth(v, TRUE, [12,12]) + 4;

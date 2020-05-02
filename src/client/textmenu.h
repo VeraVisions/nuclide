@@ -14,10 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* Wrapper that right-aligns the text */
-void
-drawstring_r(vector p, string t, vector s, vector c, float a, float f)
-{
-	p[0] -= stringwidth(t, TRUE, s);
-	drawstring(p, t, s, c, a, f);
-}
+var string g_textmenu = "";
+var float g_textmenucheck = 0.0f; 
+
+void Textmenu_Input(int);
+void Textmenu_Draw(void);

@@ -6,91 +6,36 @@
 #define VALVE
 #define CLASSIC_VGUI
 
+#define CSQC
+#define CLIENT
+#define VALVE
+#define CLASSIC_VGUI
+
 #includelist
 ../../shared/fteextensions.qc
 ../../shared/defs.h
-../../shared/sound.c
 ../valve/defs.h
-../valve/particles.h
 ../defs.h
 
 ../../vgui/include.src
 
-../util.c
-
-../fade.c
-../titles.c
-../text.c
-../sentences.c
-
 ../../gs-entbase/client.src
 ../../gs-entbase/shared.src
+../../shared/scihunt/include.src
 
-../sky.c
-../music.c
-../sound.c
-../prints.c
-../voice.c
-
-../../shared/valve/animations.h
-../../shared/valve/animations.c
-../../shared/scihunt/player.cpp
-../player.c
-../../shared/scihunt/pmove.c
-../../shared/pmove.c
 ../valve/predict.c
-../predict.c
-../../shared/valve/fx_blood.c
-../../shared/valve/fx_breakmodel.c
-../../shared/valve/fx_explosion.c
-../../shared/valve/fx_gibhuman.c
-../../shared/valve/fx_spark.c
-../../shared/valve/fx_impact.c
-../npc.c
-init.c
-
-../../shared/scihunt/items.h
-../../shared/valve/weapon_common.h
-../../shared/scihunt/weapons.h
-../../shared/valve/w_crossbow.c
-../../shared/valve/w_crowbar.c
-../../shared/valve/w_egon.c
-../../shared/valve/w_gauss.c
-../../shared/valve/w_glock.c
-../../shared/valve/w_handgrenade.c
-../../shared/valve/w_hornetgun.c
-../../shared/valve/w_mp5.c
-../../shared/valve/w_python.c
-../../shared/valve/w_rpg.c
-../../shared/valve/w_satchel.c
-../../shared/valve/w_shotgun.c
-../../shared/valve/w_snark.c
-../../shared/valve/w_tripmine.c
-../../shared/scihunt/w_cannon.c
-../../shared/scihunt/w_chainsaw.c
-../../shared/scihunt/w_hammer.c
-../../shared/scihunt/weapons.c
-../../shared/valve/weapon_common.c
-
+../valve/init.c
 ../valve/player.c
 ../valve/entities.c
-../entities.c
-
 ../valve/cmds.c
 ../valve/game_event.c
-../events.c
 ../valve/view.c
-../view.c
-../damage.c
-../chat.c
-../textmenu.c
-../vgui.cpp
-
 ../valve/obituary.c
 ../valve/hud.c
 ../valve/hud_weaponselect.c
 ../valve/scoreboard.c
-
 ../valve/input.c
-../entry.c
+
+../include.src
+
 #endlist

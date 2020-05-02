@@ -23,6 +23,7 @@
 #include "hitmesh.h"
 #include "materials.h"
 #include "math.h"
+#include "sound.h"
 
 /* Those are constant for HL BSP and CANNOT be changed.
  * Blame Valve for purchasing a Quake II license but not
@@ -92,6 +93,17 @@ dprint(string m)
 {
 	if (cvar("developer") == 1)
 		return prior(m);
+}
+
+__wrap string
+precache_model(string m)
+{
+#ifdef CLIENT
+	dprint(sprintf("^3Client precaching model ^7%s\n", m));
+#else
+	dprint(sprintf("^3Server precaching model ^7%s\n", m));
+#endif
+	return prior(m);
 }
 
 /* info print */

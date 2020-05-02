@@ -29,13 +29,17 @@ enum
 
 void w_hammer_precache(void)
 {
+#ifdef SERVER
 	precache_sound("sh/ham_hitbod1.wav");
 	precache_sound("sh/ham_hitbod2.wav");
 	precache_sound("sh/ham_hitbod3.wav");
 	precache_sound("sh/ham_hitw.wav");
 	precache_sound("sh/ham_swing.wav");
+#else
 	precache_model("models/p_hammer.mdl");
 	precache_model("models/v_hammer.mdl");
+	precache_model("sprites/hammer.spr");
+#endif
 }
 
 void w_hammer_updateammo(player pl)

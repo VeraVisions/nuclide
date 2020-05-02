@@ -17,7 +17,6 @@
 var int autocvar_sh_insanity = 10;
 var int autocvar_sv_playerkeepalive = TRUE;
 
-
 void
 SHMultiplayerRules::PlayerDeath(player pl)
 {

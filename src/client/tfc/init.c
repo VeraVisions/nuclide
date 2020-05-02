@@ -30,7 +30,7 @@ Client_Init(float apilevel, string enginename, float engineversion)
 void
 Client_InitDone(void)
 {
-	VGUI_ChooseTeam();
+//	VGUI_ChooseTeam();
 }
 
 void

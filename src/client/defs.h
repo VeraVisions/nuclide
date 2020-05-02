@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include "textmenu.h"
+
 /* flags for 2d drawing */
 #define DRAWFLAG_NORMAL		0
 #define DRAWFLAG_ADDITIVE	1
@@ -71,7 +73,18 @@ int g_iWorldInitialized;
 float clframetime;
 
 /* prototypes */
-void View_SetMuzzleflash(int);
-void View_UpdateWeapon(entity, entity);
-void View_PlayAnimation(int);
+void Damage_Draw(void);
+
+void
+drawstring_r(vector p, string t, vector s, vector c, float a, float f)
+{
+	p[0] -= stringwidth(t, TRUE, s);
+	drawstring(p, t, s, c, a, f);
+}
+
+void GameMessage_Setup(string);
 void Game_Input(void);
+void View_SetMuzzleflash(int);
+void View_PlayAnimation(int);
+void View_PlayAnimation(int);
+void Sound_PlayVOX(string);

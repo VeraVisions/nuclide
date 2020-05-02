@@ -27,14 +27,18 @@ enum
 
 void w_chainsaw_precache(void)
 {
+#ifdef SERVER
 	precache_sound("sh/chainsaw_cutinto.wav");
 	precache_sound("sh/chainsaw_cutintoflesh.wav");
 	precache_sound("sh/chainsaw_idle.wav");
 	precache_sound("sh/chainsaw_idle2.wav");
 	precache_sound("sh/chainsaw_pullout.wav");
 	precache_sound("sh/chainsaw_startup.wav");
+#else
 	precache_model("models/v_chainsaw.mdl");
 	precache_model("models/p_saw.mdl");
+	precache_model("sprites/chainsaw.spr");
+#endif
 }
 
 void w_chainsaw_updateammo(player pl)

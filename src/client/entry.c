@@ -101,15 +101,16 @@ CSQC_RendererRestarted(string rstr)
 	precache_pic("gfx/vgui/icntlk_pl");
 
 	/* View */
+	Weapons_Init();
 	Scores_Init();
 	View_Init();
+	Game_RendererRestarted(rstr);
 	HUD_Init();
 
 	/* GS-Entbase */
 	Fade_Init();
 	Sky_Update();
 	Decal_Reload();
-	Game_RendererRestarted(rstr);
 	FX_Init();
 }
 

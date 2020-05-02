@@ -28,13 +28,17 @@ enum
 
 void w_cannon_precache(void)
 {
-	precache_model("models/v_cannon.mdl");
-	precache_model("models/p_cannon.mdl");
+#ifdef SERVER
 	precache_sound("cannon/cin.wav");
 	precache_sound("cannon/close.wav");
 	precache_sound("cannon/cout.wav");
 	precache_sound("cannon/fire.wav");
 	precache_sound("cannon/open.wav");
+#else
+	precache_model("models/v_cannon.mdl");
+	precache_model("models/p_cannon.mdl");
+	precache_model("sprites/w_cannon.spr");
+#endif
 }
 void w_cannon_updateammo(player pl)
 {

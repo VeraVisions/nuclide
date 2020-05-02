@@ -16,9 +16,6 @@
 
 /* Old style Counter-Strike/TFC menus */
 
-var string g_textmenu = "";
-var float g_textmenucheck = 0.0f;
-
 void
 Textmenu_Call(string menu)
 {

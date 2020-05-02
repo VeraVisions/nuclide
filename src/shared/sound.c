@@ -17,46 +17,6 @@
 .float maxspeed;
 .float flags;
 
-var hashtable g_hashsounds;
-
-enumflags
-{
-	SNDFL_LOOPING,	/* forceloop */
-	SNDFL_NODUPS,	/* don't random the samples */
-	SNDFL_GLOBAL,	/* no attenuation */
-	SNDFL_NOREVERB,	/* skip reverb */
-	SNDFL_OMNI,	/* volume on all channels is equal */
-	SNDFL_PRIVATE,	/* only play on target */
-	SNDFL_STEP, /* volume is calculated from entity speed */
-	SNDFL_FOLLOW
-};
-
-typedef struct
-{
-	float dist_min;
-	float dist_max;
-	float offset;
-	float pitch_min;
-	float pitch_max;
-	float shake;
-	float volume;
-	int flags;
-	int playc;
-	int sample_count;
-	string samples;
-	string name;
-} snd_t;
-
-typedef struct
-{
-	string m_strSnd;
-	float m_flLength;
-	float m_flPitch;
-} sound_t;
-
-snd_t *g_sounds;
-static int g_sounds_count;
-
 /* make sure it's all reset */
 void Sound_Init(void)
 {

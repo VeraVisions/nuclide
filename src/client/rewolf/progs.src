@@ -4,87 +4,34 @@
 #define CSQC
 #define CLIENT
 #define VALVE
-#define REWOLF
+#define CLASSIC_VGUI
 
 #includelist
 ../../shared/fteextensions.qc
 ../../shared/defs.h
-../../shared/sound.c
 ../valve/defs.h
-../valve/particles.h
 ../defs.h
 
 ../../vgui/include.src
 
-../util.c
-
-../fade.c
-../titles.c
-../text.c
-../sentences.c
-
 ../../gs-entbase/client.src
 ../../gs-entbase/shared.src
+../../shared/rewolf/include.src
 
 ../rewolf/decore.cpp
-
-../sky.c
-../music.c
-../sound.c
-../prints.c
-../voice.c
-
-../../shared/valve/animations.h
-../../shared/valve/animations.c
-../../shared/rewolf/player.cpp
-../player.c
-../../shared/valve/pmove.c
-../../shared/pmove.c
 ../valve/predict.c
-../predict.c
-../../shared/valve/fx_blood.c
-../../shared/valve/fx_breakmodel.c
-../../shared/valve/fx_explosion.c
-../../shared/valve/fx_gibhuman.c
-../../shared/valve/fx_spark.c
-../../shared/valve/fx_impact.c
-../npc.c
 ../rewolf/init.c
-
-../../shared/rewolf/items.h
-../../shared/valve/weapon_common.h
-../../shared/rewolf/weapons.h
-../../shared/rewolf/w_fists.c
-../../shared/rewolf/w_gausspistol.c
-../../shared/rewolf/w_grenade.c
-../../shared/rewolf/w_shotgun.c
-../../shared/rewolf/w_beamgun.c
-../../shared/rewolf/w_chemicalgun.c
-../../shared/rewolf/w_dml.c
-../../shared/rewolf/w_minigun.c
-../../shared/rewolf/w_aicore.c
-../../shared/rewolf/weapons.c
-../../shared/valve/weapon_common.c
-
 ../valve/player.c
 ../rewolf/entities.c
-../entities.c
-
 ../valve/cmds.c
 ../valve/game_event.c
-../events.c
 ../valve/view.c
-../view.c
-../damage.c
-../chat.c
-../textmenu.c
-../vgui.cpp
-
 ../valve/obituary.c
 ../rewolf/hud.c
 ../rewolf/hud_weaponselect.c
 ../valve/scoreboard.c
-
 ../valve/input.c
-../entry.c
+
+../include.src
+
 #endlist

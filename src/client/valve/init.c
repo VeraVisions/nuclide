@@ -43,5 +43,6 @@ Game_RendererRestarted(string rstr)
 	FX_GibHuman_Init();
 	FX_Spark_Init();
 	FX_Impact_Init();
+
 	BEAM_TRIPMINE = particleeffectnum("weapon_tripmine.beam");
 }

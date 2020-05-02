@@ -15,6 +15,7 @@
  */
 
 #include "obituary.h"
+#include "particles.h"
 
 var int autocvar_cl_autoweaponswitch = TRUE;
 
