@@ -81,7 +81,6 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	Titles_Init();
 	Sentences_Init();
 	Decals_Init();
-	Obituary_Init();
 }
 
 /* Rendering Caches */
@@ -112,7 +111,6 @@ CSQC_RendererRestarted(string rstr)
 	Decal_Reload();
 	Game_RendererRestarted(rstr);
 	FX_Init();
-	Obituary_Precache();
 }
 
 void
@@ -315,7 +313,6 @@ CSQC_UpdateView(float w, float h, float focus)
 				HUD_Draw();
 			}
 
-			Obituary_Draw();
 			Voice_DrawHUD();
 			Chat_Draw();
 			Print_Draw();
@@ -475,9 +472,6 @@ CSQC_Parse_Event(void)
 		break;
 	case EV_MUSICLOOP:
 		Music_ParseLoop();
-		break;
-	case EV_OBITUARY:
-		Obituary_Parse();
 		break;
 	case EV_SPEAK:
 		string msg;

@@ -18,6 +18,9 @@ void
 Game_Parse_Event(float fHeader)
 {
 	switch (fHeader) {
+	case EV_OBITUARY:
+		Obituary_Parse();
+		break;
 	case EV_SPARK:
 		vector vSparkPos, vSparkAngle;
 		vSparkPos[0] = readcoord();

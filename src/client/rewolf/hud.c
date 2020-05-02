@@ -273,7 +273,8 @@ void
 HUD_Draw(void)
 {
 	g_hud_color = autocvar_con_color * (1 / 255);
-	
+
+	Obituary_Draw();
 	Damage_Draw();
 	HUD_DrawHealth();
 	Weapons_DrawCrosshair();

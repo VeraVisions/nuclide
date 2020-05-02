@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include "obituary.h"
+
 var int autocvar_cl_autoweaponswitch = TRUE;
 
 vector g_hud_color;

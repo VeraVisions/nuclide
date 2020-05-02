@@ -105,6 +105,8 @@ Client_Init(float apilevel, string enginename, float engineversion)
 	registercommand("getout");
 	registercommand("negative");
 	registercommand("enemydown");
+
+	Obituary_Init();
 }
 
 void
@@ -116,6 +118,8 @@ Client_InitDone(void)
 void
 Game_RendererRestarted(string rstr)
 {
+	Obituary_Precache();
+
 	FX_Blood_Init();
 	FX_BreakModel_Init();
 	FX_Explosion_Init();

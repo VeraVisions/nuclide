@@ -26,7 +26,7 @@
 ../../gs-entbase/client.src
 ../../gs-entbase/shared.src
 
-decore.cpp
+../rewolf/decore.cpp
 
 ../sky.c
 ../music.c
@@ -49,7 +49,7 @@ decore.cpp
 ../../shared/valve/fx_spark.c
 ../../shared/valve/fx_impact.c
 ../npc.c
-init.c
+../rewolf/init.c
 
 ../../shared/rewolf/items.h
 ../../shared/valve/weapon_common.h
@@ -67,9 +67,8 @@ init.c
 ../../shared/valve/weapon_common.c
 
 ../valve/player.c
-entities.c
+../rewolf/entities.c
 ../entities.c
-../fx_gunsmoke.c
 
 ../valve/cmds.c
 ../valve/game_event.c
@@ -77,13 +76,13 @@ entities.c
 ../valve/view.c
 ../view.c
 ../damage.c
-../obituary.c
 ../chat.c
 ../textmenu.c
 ../vgui.cpp
 
-hud.c
-hud_weaponselect.c
+../valve/obituary.c
+../rewolf/hud.c
+../rewolf/hud_weaponselect.c
 ../valve/scoreboard.c
 
 ../valve/input.c

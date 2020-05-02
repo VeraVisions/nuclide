@@ -14,39 +14,35 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*
-=================
-Client_Init
+#define OBITUARY_LINES	4
+#define OBITUARY_TIME	5
 
-Comparable to worldspawn in SSQC in that it's mostly used for precaches
-=================
-*/
-void
-Client_Init(float apilevel, string enginename, float engineversion)
+/* imagery */
+typedef struct {
+	string name;			/* name of the weapon/type, e.g. d_crowbar */
+	string sprite;			/* name of the spritesheet it's from */
+	float size[2];			/* on-screen size in pixels */
+	float src_pos[2];		/* normalized position in the sprite sheet */
+	float src_size[2];		/* normalized size in the sprite sheet */
+	string src_sprite;		/* precaching reasons */
+} obituaryimg_t;
+
+obituaryimg_t *g_obtypes;
+int g_obtype_count;
+
+/* actual obituary storage */
+typedef struct
 {
-	Obituary_Init();
-}
+	string attacker;
+	string victim;
+	int icon;
+} obituary_t;
 
-void
-Client_InitDone(void)
-{
-}
+obituary_t g_obituary[OBITUARY_LINES];
+int g_obituary_count;
+float g_obituary_time;
 
-void
-Game_RendererRestarted(string rstr)
-{
-	Obituary_Precache();
-
-	FX_Blood_Init();
-	FX_BreakModel_Init();
-	FX_Explosion_Init();
-	FX_GibHuman_Init();
-	FX_Spark_Init();
-	FX_Impact_Init();
-
-	precache_model("sprites/chainsaw.spr");
-	precache_model("sprites/hammer.spr");
-	precache_model("sprites/w_cannon.spr");
-
-	BEAM_TRIPMINE = particleeffectnum("weapon_tripmine.beam");
-}
+void Obituary_Init(void);
+void Obituary_Precache(void);
+void Obituary_Draw(void);
+void Obituary_Parse(void);

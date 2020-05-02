@@ -75,7 +75,6 @@ init.c
 ../valve/player.c
 ../valve/entities.c
 ../entities.c
-../fx_gunsmoke.c
 
 ../valve/cmds.c
 ../valve/game_event.c
@@ -83,11 +82,11 @@ init.c
 ../valve/view.c
 ../view.c
 ../damage.c
-../obituary.c
 ../chat.c
 ../textmenu.c
 ../vgui.cpp
 
+../valve/obituary.c
 ../valve/hud.c
 ../valve/hud_weaponselect.c
 ../valve/scoreboard.c

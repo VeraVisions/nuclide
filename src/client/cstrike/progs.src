@@ -38,7 +38,7 @@
 ../player.c
 ../../shared/cstrike/pmove.c
 ../../shared/pmove.c
-predict.c
+../cstrike/predict.c
 ../predict.c
 ../../shared/valve/fx_blood.c
 ../../shared/valve/fx_breakmodel.c
@@ -83,7 +83,7 @@ predict.c
 ../../shared/cstrike/weapons.c
 ../../shared/valve/weapon_common.c
 ../cstrike/player.c
-entities.c
+../cstrike/entities.c
 ../entities.c
 ../fx_gunsmoke.c
 ../cstrike/cmds.c
@@ -92,7 +92,6 @@ entities.c
 ../valve/view.c
 ../view.c
 ../damage.c
-../obituary.c
 ../chat.c
 ../textmenu.c
 
@@ -101,9 +100,10 @@ entities.c
 ../cstrike/textmenu.c
 ../cstrike/init.c
 
-crosshair.c
-hud.c
-hud_weaponselect.c
+../cstrike/crosshair.c
+../valve/obituary.c
+../cstrike/hud.c
+../cstrike/hud_weaponselect.c
 ../valve/scoreboard.c
 ../valve/input.c
 ../entry.c

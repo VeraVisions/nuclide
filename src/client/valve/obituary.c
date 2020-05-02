@@ -14,34 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define OBITUARY_LINES	4
-#define OBITUARY_TIME	5
-
-/* imagery */
-typedef struct {
-	string name;		/* name of the weapon/type, e.g. d_crowbar */
-	string sprite;		/* name of the spritesheet it's from */
-	float size[2];		/* on-screen size in pixels */
-	float src_pos[2];	/* normalized position in the sprite sheet */
-	float src_size[2];	/* normalized size in the sprite sheet */
-	string src_sprite;		/* precaching reasons */
-} obituaryimg_t;
-
-obituaryimg_t *g_obtypes;
-int g_obtype_count;
-
-/* actual obituary storage */
-typedef struct
-{
-	string attacker;
-	string victim;
-	int icon;
-} obituary_t;
-
-static obituary_t g_obituary[OBITUARY_LINES];
-static int g_obituary_count;
-static float g_obituary_time;
-
 void
 Obituary_Init(void)
 {
@@ -51,6 +23,11 @@ Obituary_Init(void)
 	string line;
 	vector tmp;
 
+	if (g_obtype_count > 0) {
+		return;
+	}
+
+	print("Init Obituaries\n");
 	g_obtype_count = 0;
 	i = 0;
 
@@ -83,6 +60,7 @@ Obituary_Init(void)
 			if (c == 7 && argv(1) == "640") {
 				g_obtypes[i].name = substring(argv(0), 2, -1);
 				g_obtypes[i].src_sprite = sprintf("sprites/%s.spr", argv(2));
+				precache_model(g_obtypes[i].src_sprite);
 				g_obtypes[i].sprite = sprintf("sprites/%s.spr_0.tga", argv(2));
 				g_obtypes[i].size[0] = stof(argv(5));
 				g_obtypes[i].size[1] = stof(argv(6));
@@ -99,8 +77,11 @@ Obituary_Init(void)
 	fclose(fh);
 }
 
-void Obituary_Precache(void)
+void
+Obituary_Precache(void)
 {
+	print("Precache Obituaries\n");
+
 	for (int i = 0; i < g_obtype_count; i++)
 		precache_model(g_obtypes[i].src_sprite);
 }
@@ -231,5 +212,4 @@ Obituary_Parse(void)
 	}
 
 	Obituary_Add(attacker, victim, weapon, flags);
-	//print("Obituary received\n");
 }

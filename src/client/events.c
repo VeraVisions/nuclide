@@ -68,27 +68,23 @@ Event_ProcessModel(float fTimeStamp, int iCode, string sData)
 		pSeat->m_eMuzzleflash.alpha = 1.0f;
 		pSeat->m_eMuzzleflash.scale = 0.25;
 		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones;
-		FX_Gunsmoke(gettaginfo(pSeat->m_eMuzzleflash, pSeat->m_eMuzzleflash.skin));
 		Event_EjectShell();
 	} else if(iCode == 5011) {
 		pSeat->m_eMuzzleflash.alpha = 1.0f;
 		pSeat->m_eMuzzleflash.scale = 0.25;
 		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 1;
-		FX_Gunsmoke(gettaginfo(pSeat->m_eMuzzleflash, pSeat->m_eMuzzleflash.skin));
 		//setmodel(pSeat->m_eMuzzleflash, sprintf("sprites/muzzleflash%s.spr", substring(sData, 1, 1)));
 		Event_EjectShell();
 	} else if (iCode == 5021) {
 		pSeat->m_eMuzzleflash.alpha = 1.0f;
 		pSeat->m_eMuzzleflash.scale = 0.25;
 		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 2;
-		FX_Gunsmoke(gettaginfo(pSeat->m_eMuzzleflash, pSeat->m_eMuzzleflash.skin));
 		//setmodel(pSeat->m_eMuzzleflash, sprintf("sprites/muzzleflash%s.spr", substring(sData, 1, 1)));
 		Event_EjectShell();
 	} else if (iCode == 5031) {
 		pSeat->m_eMuzzleflash.alpha = 1.0f;
 		pSeat->m_eMuzzleflash.scale = 0.25;
 		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 3;
-		FX_Gunsmoke(gettaginfo(pSeat->m_eMuzzleflash, pSeat->m_eMuzzleflash.skin));
 		//setmodel(pSeat->m_eMuzzleflash, sprintf("sprites/muzzleflash%s.spr", substring(sData, 1, 1)));
 		Event_EjectShell();
 	}

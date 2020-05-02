@@ -230,7 +230,7 @@ void w_cannon_hudpic(int s, vector pos, float a)
 
 weapon_t w_cannon =
 {
-	.name		= "cannon",
+	.name		= "handcannon",
 	.id			= ITEM_CANNON,
 	.slot		= 2,
 	.slot_pos	= 3,

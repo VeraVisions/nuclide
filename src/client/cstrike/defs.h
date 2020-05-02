@@ -15,6 +15,7 @@
  */
 
 #include "hud.h"
+#include "../valve/obituary.h"
 
 var int autocvar_cl_autoweaponswitch = TRUE;
 

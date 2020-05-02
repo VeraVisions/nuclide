@@ -24,6 +24,7 @@ Comparable to worldspawn in SSQC in that it's mostly used for precaches
 void
 Client_Init(float apilevel, string enginename, float engineversion)
 {
+	Obituary_Init();
 }
 
 void
@@ -35,6 +36,8 @@ Client_InitDone(void)
 void
 Game_RendererRestarted(string rstr)
 {
+	Obituary_Precache();
+
 	FX_Blood_Init();
 	FX_BreakModel_Init();
 	FX_Explosion_Init();

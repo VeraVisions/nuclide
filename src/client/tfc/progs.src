@@ -88,10 +88,10 @@ entities.c
 ../valve/view.c
 ../view.c
 ../damage.c
-../obituary.c
 ../chat.c
 ../textmenu.c
 
+../valve/obituary.c
 ../valve/hud.c
 ../valve/hud_weaponselect.c
 ../valve/scoreboard.c

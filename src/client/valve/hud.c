@@ -402,6 +402,7 @@ HUD_Draw(void)
 	/* little point in not drawing these, even if you don't have a suit */
 	Weapons_DrawCrosshair();
 	HUD_DrawWeaponSelect();
+	Obituary_Draw();
 
 	if (!(pl.g_items & ITEM_SUIT)) {
 		return;
