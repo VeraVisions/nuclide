@@ -90,7 +90,7 @@ void
 w_dml_release(void)
 {
 	player pl = (player)self;
-	pl.flags |= FL_SEMI_TOGGLED;
+
 	if (pl.w_idle_next) {
 		return;
 	}
@@ -131,13 +131,13 @@ w_dml_primary(void)
 	vector src;
 	player pl = (player)self;
 
-	if not (pl.flags & FL_SEMI_TOGGLED) {
+	if (pl.flags & FL_SEMI_TOGGLED) {
 		return;
 	}
 
 	if (pl.a_ammo1 > 0) {
 		pl.a_ammo1 = 0;
-		pl.flags &= ~FL_SEMI_TOGGLED;
+		pl.flags |= FL_SEMI_TOGGLED;
 		Weapons_ViewAnimation(DML_CUSTOMIZE);
 #ifdef SERVER
 		Sound_Play(pl, 8, "weapon_dml.customize");
@@ -173,11 +173,11 @@ w_dml_secondary(void)
 {
 	player pl = (player)self;
 
-	if not (pl.flags & FL_SEMI_TOGGLED) {
+	if (pl.flags & FL_SEMI_TOGGLED) {
 		return;
 	}
 
-	pl.flags &= ~FL_SEMI_TOGGLED;
+	pl.flags |= FL_SEMI_TOGGLED;
 
 	if (pl.w_attack_next) {
 		return;

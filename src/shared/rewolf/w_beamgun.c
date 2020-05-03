@@ -44,8 +44,6 @@ w_beamgun_release(void)
 {
 	player pl = (player)self;
 
-	pl.flags |= FL_SEMI_TOGGLED;
-
 	if (pl.w_idle_next) {
 		return;
 	}
@@ -60,13 +58,13 @@ w_beamgun_primary(void)
 	vector src;
 	player pl = (player)self;
 
-	if not (pl.flags & FL_SEMI_TOGGLED) {
+	if (pl.flags & FL_SEMI_TOGGLED) {
 		return;
 	}
 
 	if (pl.a_ammo1 > 0) {
 		pl.a_ammo1 = 0;
-		pl.flags &= ~FL_SEMI_TOGGLED;
+		pl.flags |= FL_SEMI_TOGGLED;
 		Weapons_ViewAnimation(BEAMGUN_CONFIG);
 		pl.w_attack_next = 2.26087f;
 		pl.w_idle_next = 2.26087f;
@@ -92,11 +90,11 @@ w_beamgun_secondary(void)
 {
 	player pl = (player)self;
 
-	if not (pl.flags & FL_SEMI_TOGGLED) {
+	if (pl.flags & FL_SEMI_TOGGLED) {
 		return;
 	}
 
-	pl.flags &= ~FL_SEMI_TOGGLED;
+	pl.flags |= FL_SEMI_TOGGLED;
 
 	if (pl.w_attack_next) {
 		return;
