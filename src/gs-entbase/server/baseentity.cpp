@@ -14,66 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class CBaseEntity
-{
-	string m_strTarget;
-	string m_strTargetName;
-	int m_iBody;
-
-	/* respawn */
-	string m_oldModel;
-	float m_oldSolid;
-	float m_oldHealth;
-	vector m_oldOrigin;
-	vector m_oldAngle;
-
-	/* keep track of these variables */
-	vector net_origin;
-	vector net_angles;
-
-#ifdef GS_RENDERFX
-	int m_iRenderFX;
-	float m_iRenderMode;
-	float m_flRenderAmt;
-	vector m_vecRenderColor;
-
-	/* respawn */
-	int m_oldiRenderFX;
-	float m_oldiRenderMode;
-	float m_oldflRenderAmt;
-	vector m_oldvecRenderColor;
-#endif
-
-	string m_parent;
-	
-	void(void) CBaseEntity;
-	virtual void(void) Respawn;
-	virtual void(void) Hide;
-	virtual void(void) ParentUpdate;
-	virtual float(entity, float) SendEntity;
-	virtual void(int iHitBody) Pain;
-	virtual void(int iHitBody) Death;
-
-	virtual void(float) SetEffects;
-	virtual void(float) SetFrame;
-	virtual void(string) SetModel;
-	virtual void(float) SetModelindex;
-	virtual void(float) SetMovetype;
-	virtual void(float) SetSkin;
-	virtual void(float) SetSolid;
-	virtual void(int) SetBody;
-	virtual void(vector) SetAngles;
-	virtual void(vector) SetOrigin;
-	virtual void(vector, vector) SetSize;
-
-#ifdef GS_RENDERFX
-	virtual void(int) SetRenderFX;
-	virtual void(float) SetRenderMode;
-	virtual void(float) SetRenderAmt;
-	virtual void(vector) SetRenderColor;
-#endif
-};
-
 /* we want to really use those set functions because they'll notify of any
  * networking related changes. otherwise we'll have to keep track of copies
  * that get updated every frame */

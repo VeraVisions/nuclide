@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include "baseentity.h"
+
 vector g_vecSunDir;
 
 /* TODO: Find a better way to figure out what's a CBaseEntity at heart */

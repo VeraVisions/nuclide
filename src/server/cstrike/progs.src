@@ -6,71 +6,22 @@
 #define VALVE
 #define CSTRIKE
 #define BULLETPENETRATION
+#define GS_RENDERFX
 
 #includelist
 ../../shared/fteextensions.qc
+../../gs-entbase/server/defs.h
 ../../shared/defs.h
-../../shared/cstrike/defs.h
-../../shared/sound.c
 ../defs.h
-../plugins.c
-../logging.c
-../nodes.c
-../skill.c
-../sentences.c
 
 ../../gs-entbase/server.src
 ../../gs-entbase/shared.src
 
-../../shared/cstrike/player.h
 ../cstrike/defs.h
+../../shared/cstrike/include.src
 
-../../shared/valve/fx_blood.c
-../../shared/valve/fx_breakmodel.c
-../../shared/valve/fx_explosion.c
-../../shared/valve/fx_gibhuman.c
-../../shared/valve/fx_spark.c
-../../shared/cstrike/fx_impact.c
-../../shared/cstrike/fx_flashbang.c
-../../shared/cstrike/fx_smokenade.c
 ../cstrike/player.c
-../../shared/cstrike/pmove.c
-../../shared/pmove.c
 ../valve/spectator.c
-
-../../shared/cstrike/radio.c
-../../shared/cstrike/weapons_cstrike.c
-../../shared/valve/weapon_common.h
-../../shared/cstrike/w_ak47.c
-../../shared/cstrike/w_deagle.c
-../../shared/cstrike/w_knife.c
-../../shared/cstrike/w_usp45.c
-../../shared/cstrike/w_glock18.c
-../../shared/cstrike/w_p228.c
-../../shared/cstrike/w_elites.c
-../../shared/cstrike/w_fiveseven.c
-../../shared/cstrike/w_m3.c
-../../shared/cstrike/w_xm1014.c
-../../shared/cstrike/w_mp5.c
-../../shared/cstrike/w_p90.c
-../../shared/cstrike/w_ump45.c
-../../shared/cstrike/w_mac10.c
-../../shared/cstrike/w_tmp.c
-../../shared/cstrike/w_sg552.c
-../../shared/cstrike/w_m4a1.c
-../../shared/cstrike/w_aug.c
-../../shared/cstrike/w_scout.c
-../../shared/cstrike/w_awp.c
-../../shared/cstrike/w_g3sg1.c
-../../shared/cstrike/w_sg550.c
-../../shared/cstrike/w_para.c
-../../shared/cstrike/w_c4bomb.c
-../../shared/cstrike/w_flashbang.c
-../../shared/cstrike/w_hegrenade.c
-../../shared/cstrike/w_smokegrenade.c
-../../shared/cstrike/weapons.c
-../valve/items.cpp
-../../shared/valve/weapon_common.c
 
 ../cstrike/hostage_entity.cpp
 ../cstrike/armoury_entity.cpp
@@ -83,33 +34,26 @@
 ../cstrike/func_vip_safetyzone.cpp
 ../cstrike/info_map_parameters.cpp
 ../cstrike/item_suit.cpp
+../cstrike/item_c4bomb.cpp
+../valve/items.cpp
 
-../spawn.c
-../vox.c
-../../shared/cstrike/animations.c
-
-../gamerules.cpp
 ../cstrike/game_money.c
 ../cstrike/gamerules.cpp
 ../cstrike/gamerules_singleplayer.cpp
 ../cstrike/gamerules_multiplayer.cpp
 
+../cstrike/radio.c
 ../cstrike/client.c
 ../cstrike/ammo.c
 ../cstrike/buy.c
-../client.c
 ../cstrike/server.c
-../server.c
 ../valve/damage.c
-../traceattack.c
 ../valve/rules.c
-../footsteps.c
-../flashlight.c
+
 ../../botlib/include.src
 
 ../cstrike/input.c
 ../cstrike/spawn.c
-../vote.c
 
-../entry.c
+../include.src
 #endlist

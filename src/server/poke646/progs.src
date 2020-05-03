@@ -5,23 +5,18 @@
 #define SERVER
 #define VALVE
 #define POKE646
+#define GS_RENDERFX
 
 #includelist
 ../../shared/fteextensions.qc
+../../gs-entbase/server/defs.h
 ../../shared/defs.h
-../../shared/sound.c
-../../shared/valve/animations.h
 ../defs.h
-../plugins.c
-../logging.c
-../nodes.c
-../skill.c
-../sentences.c
 
 ../../gs-entbase/server.src
 ../../gs-entbase/shared.src
+../../shared/poke646/include.src
 
-../../shared/poke646/player.cpp
 ../valve/defs.h
 
 ../valve/monster_apache.cpp
@@ -59,29 +54,10 @@
 ../valve/monster_turret.cpp
 ../valve/monster_zombie.cpp
 
-../../shared/valve/fx_blood.c
-../../shared/valve/fx_breakmodel.c
-../../shared/valve/fx_explosion.c
-../../shared/valve/fx_gibhuman.c
-../../shared/valve/fx_impact.c
-../../shared/valve/fx_spark.c
 ../valve/player.c
-../../shared/valve/pmove.c
-../../shared/pmove.c
 ../valve/spectator.c
-../../shared/poke646/items.h
-../../shared/valve/weapon_common.h
-../../shared/poke646/weapons.h
-../../shared/valve/w_satchel.c
-../../shared/poke646/weapons.h
-../../shared/poke646/w_bradnailer.c
-../../shared/poke646/w_cmlwbr.c
-../../shared/poke646/w_heaterpipe.c
-../../shared/poke646/w_nailgun.c
-../../shared/poke646/w_pipebomb.c
-../../shared/poke646/w_shotgun.c
-../../shared/poke646/w_xs.c
 ../valve/items.cpp
+../valve/item_longjump.cpp
 ../valve/item_suit.cpp
 ../valve/item_healthkit.cpp
 ../valve/item_battery.cpp
@@ -92,27 +68,19 @@
 ../valve/xen_hair.cpp
 ../valve/xen_plantlight.cpp
 ../poke646/ammo_p646.cpp
-../../shared/poke646/weapons.c 
-../../shared/valve/weapon_common.c
-../spawn.c
-../vox.c
-../../shared/valve/animations.c
 
-../gamerules.cpp
 ../poke646/gamerules.cpp
 ../valve/gamerules_singleplayer.cpp
 ../poke646/gamerules_multiplayer.cpp
 ../valve/client.c
-../client.c
 ../valve/server.c
-../server.c
 ../valve/damage.c
-../traceattack.c
 ../valve/rules.c
-../footsteps.c
-../flashlight.c
-input.c
+
+../../botlib/include.src
+
+../poke646/input.c
 ../valve/spawn.c
-../vote.c
-../entry.c
+
+../include.src
 #endlist

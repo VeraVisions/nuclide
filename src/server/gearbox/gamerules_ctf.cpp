@@ -24,8 +24,10 @@ OP4CTFRules::FrameStart(void)
 }
 
 void
-OP4CTFRules::PlayerDeath(player pl)
+OP4CTFRules::PlayerDeath(base_player pp)
 {
+	player pl = (player)pp;
+
 	/* obituary networking */
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_OBITUARY);
@@ -91,8 +93,10 @@ OP4CTFRules::PlayerDeath(player pl)
 }
 
 void
-OP4CTFRules::PlayerSpawn(player pl)
+OP4CTFRules::PlayerSpawn(base_player pp)
 {
+	player pl = (player)pp;
+
 	/* this is where the mods want to deviate */
 	entity spot;
 

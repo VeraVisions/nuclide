@@ -15,7 +15,8 @@
  */
 
 int input_sequence;
-class player:CBaseEntity
+
+class player:base_player
 {
 	float health;
 	float armor;

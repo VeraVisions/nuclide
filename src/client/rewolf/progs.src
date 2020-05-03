@@ -5,6 +5,7 @@
 #define CLIENT
 #define VALVE
 #define CLASSIC_VGUI
+#define GS_RENDERFX
 
 #includelist
 ../../shared/fteextensions.qc

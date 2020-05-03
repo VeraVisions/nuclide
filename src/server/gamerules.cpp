@@ -28,7 +28,7 @@ CGameRules::FrameStart(void)
 	//print("StartFrame!\n");
 }
 float
-CGameRules::ConsoleCommand(player pl, string cmd)
+CGameRules::ConsoleCommand(base_player pl, string cmd)
 {
 	return FALSE;
 }
@@ -45,32 +45,32 @@ CGameRules::PlayerDisconnect(entity pl)
 	//print("ClientDisconnect!\n");
 }
 void
-CGameRules::PlayerKill(player pl)
+CGameRules::PlayerKill(base_player pl)
 {
 	//print("PlayerKill!\n");
 }
 void
-CGameRules::PlayerDeath(player pl)
+CGameRules::PlayerDeath(base_player pl)
 {
 	//print("PlayerDeath!\n");
 }
 void
-CGameRules::PlayerPain(player pl)
+CGameRules::PlayerPain(base_player pl)
 {
 	//print("ClientKill!\n");
 }
 void
-CGameRules::PlayerSpawn(player pl)
+CGameRules::PlayerSpawn(base_player pl)
 {
 	//print("PutClientInServer!\n");
 }
 void
-CGameRules::PlayerPreFrame(player pl)
+CGameRules::PlayerPreFrame(base_player pl)
 {
 	//print("PlayerPreThink!\n");
 }
 void
-CGameRules::PlayerPostFrame(player pl)
+CGameRules::PlayerPostFrame(base_player pl)
 {
 	//print("PlayerPostThink!\n");
 }
@@ -82,7 +82,7 @@ CGameRules::LevelNewParms(void)
 	//print("LevelNewParms!\n");
 }
 void
-CGameRules::LevelChangeParms(player pl)
+CGameRules::LevelChangeParms(base_player pl)
 {
 	//print("LevelChangeParms!\n");
 }

@@ -1,10 +1,9 @@
  #includelist
+../../shared/cstrike/defs.h
 ../../shared/sound.c
 ../../shared/cstrike/animations.h
 ../../shared/cstrike/animations.c
 ../../shared/cstrike/player.h
-../../shared/cstrike/pmove.c
-../../shared/pmove.c
 
 ../../shared/valve/fx_blood.c
 ../../shared/valve/fx_breakmodel.c
@@ -15,7 +14,6 @@
 ../../shared/cstrike/fx_flashbang.c
 ../../shared/cstrike/fx_smokenade.c
 
-../../shared/cstrike/radio.c
 ../../shared/cstrike/weapons_cstrike.c
 ../../shared/valve/weapon_common.h
 ../../shared/cstrike/w_ak47.c
@@ -47,4 +45,6 @@
 ../../shared/cstrike/w_smokegrenade.c
 ../../shared/cstrike/weapons.c
 ../../shared/valve/weapon_common.c
+../../shared/cstrike/pmove.c
+../../shared/pmove.c
 #endlist

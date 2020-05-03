@@ -24,7 +24,7 @@ HLMultiplayerRules::FrameStart(void)
 }
 
 void
-HLMultiplayerRules::PlayerDeath(player pl)
+HLMultiplayerRules::PlayerDeath(base_player pl)
 {
 	/* obituary networking */
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
@@ -58,7 +58,7 @@ HLMultiplayerRules::PlayerDeath(player pl)
 		IntermissionStart();
 	}
 
-	weaponbox_spawn(pl);
+	weaponbox_spawn((player)pl);
 	pl.movetype = MOVETYPE_NONE;
 	pl.solid = SOLID_NOT;
 	pl.takedamage = DAMAGE_NO;
@@ -91,8 +91,9 @@ HLMultiplayerRules::PlayerDeath(player pl)
 }
 
 void
-HLMultiplayerRules::PlayerSpawn(player pl)
+HLMultiplayerRules::PlayerSpawn(base_player pp)
 {
+	player pl = (player)pp;
 	/* this is where the mods want to deviate */
 	entity spot;
 

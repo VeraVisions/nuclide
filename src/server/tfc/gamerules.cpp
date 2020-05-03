@@ -19,8 +19,9 @@ var int autocvar_sv_playerkeepalive = TRUE;
 /* we check what fields have changed over the course of the frame and network
  * only the ones that have actually changed */
 void
-TFCGameRules::PlayerPostFrame(player pl)
+TFCGameRules::PlayerPostFrame(base_player pp)
 {
+	player pl = (player)pp;
 	Animation_PlayerUpdate();
 
 	if (autocvar_sv_playerkeepalive)
@@ -158,14 +159,16 @@ TFCGameRules::PlayerDisconnect(entity pl)
 }
 
 void
-TFCGameRules::PlayerKill(player pl)
+TFCGameRules::PlayerKill(base_player pp)
 {
+	player pl = (player)pp;
 	Damage_Apply(pl, pl, pl.health, WEAPON_NONE, DMG_SKIP_ARMOR);
 }
 
 void
-TFCGameRules::PlayerSpawn(player pl)
+TFCGameRules::PlayerSpawn(base_player pp)
 {
+	player pl = (player)pp;
 	pl.classname = "spectator";
 	pl.health = 0;
 	pl.armor = 0;

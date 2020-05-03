@@ -4,86 +4,40 @@
 #define QWSSQC
 #define SERVER
 #define VALVE
+#define TFC
+#define GS_RENDERFX
 
 #includelist
 ../../shared/fteextensions.qc
+../../gs-entbase/server/defs.h
 ../../shared/defs.h
-../../shared/sound.c
-../../shared/valve/animations.h
 ../defs.h
-../plugins.c
-../logging.c
-../nodes.c
-../skill.c
-../sentences.c
 
 ../../gs-entbase/server.src
 ../../gs-entbase/shared.src
+../../shared/tfc/include.src
 
-../../shared/valve/player.cpp
 ../tfc/defs.h
 
-../../shared/valve/fx_blood.c
-../../shared/valve/fx_breakmodel.c
-../../shared/valve/fx_explosion.c
-../../shared/valve/fx_gibhuman.c
-../../shared/valve/fx_impact.c
-../../shared/valve/fx_spark.c
-
 ../valve/player.c
-../../shared/valve/pmove.c
-../../shared/pmove.c
 ../valve/spectator.c
 
-../../shared/tfc/items.h
-../../shared/valve/weapon_common.h
-../../shared/tfc/weapons.h
-../../shared/tfc/w_asscan.c
-../../shared/tfc/w_autorifle.c
-../../shared/tfc/w_crowbar.c
-../../shared/tfc/w_dbs.c
-../../shared/tfc/w_flamer.c
-../../shared/tfc/w_glauncher.c
-../../shared/tfc/w_grapple.c
-../../shared/tfc/w_incendiary.c
-../../shared/tfc/w_knife.c
-../../shared/tfc/w_medkit.c
-../../shared/tfc/w_nailgun.c
-../../shared/tfc/w_pipebomb.c
-../../shared/tfc/w_railgun.c
-../../shared/tfc/w_rpg.c
-../../shared/tfc/w_sbs.c
-../../shared/tfc/w_sniper.c
-../../shared/tfc/w_supernail.c
-../../shared/tfc/w_tranquil.c
-../../shared/tfc/w_umbrella.c
-../../shared/tfc/w_wrench.c
 ../valve/items.cpp
-../valve/item_healthkit.cpp
-info_tfgoal.cpp
-item_tfgoal.cpp
-info_player_teamspawn.cpp
-../../shared/tfc/weapons.c
-../../shared/valve/weapon_common.c
+../tfc/info_player_teamspawn.cpp
+../tfc/info_tfgoal.cpp
+../tfc/item_tfgoal.cpp
 
-../spawn.c
-spawn.c
-../vox.c
-../../shared/valve/animations.c
-
-../gamerules.cpp
 ../tfc/gamerules.cpp
 ../valve/client.c
-../client.c
 ../tfc/server.c
-../server.c
 ../valve/damage.c
-../traceattack.c
 ../valve/rules.c
-../footsteps.c
-../flashlight.c
-input.c
-../valve/spawn.c
-../vote.c
-../entry.c
+
+../../botlib/include.src
+
+../tfc/input.c
+../tfc/spawn.c
+
+../include.src
 #endlist
+

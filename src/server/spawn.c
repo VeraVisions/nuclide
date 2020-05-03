@@ -15,7 +15,7 @@
  */
 
 void
-Spawn_ObserverCam(player pl)
+Spawn_ObserverCam(base_player pl)
 {
 	entity eTarget;
 

@@ -173,7 +173,7 @@ void w_snark_deploy(void)
 
 void w_snark_primary(void)
 {
-	player pl = (player)self;	
+	player pl = (player)self;
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}

@@ -15,7 +15,7 @@
  */
 
 void
-HLSingleplayerRules::PlayerDeath(player pl)
+HLSingleplayerRules::PlayerDeath(base_player pl)
 {
 	pl.movetype = MOVETYPE_NONE;
 	pl.solid = SOLID_NOT;
@@ -34,7 +34,7 @@ HLSingleplayerRules::PlayerDeath(player pl)
 }
 
 void
-HLSingleplayerRules::PlayerSpawn(player pl)
+HLSingleplayerRules::PlayerSpawn(base_player pl)
 {
 	pl.classname = "player";
 	pl.health = pl.max_health = 100;

@@ -4,84 +4,39 @@
 #define QWSSQC
 #define SERVER
 #define VALVE
+#define REWOLF
+#define GS_RENDERFX
 
 #includelist
 ../../shared/fteextensions.qc
+../../gs-entbase/server/defs.h
 ../../shared/defs.h
-../../shared/sound.c
-../../shared/valve/animations.h
 ../defs.h
-../plugins.c
-../logging.c
-../nodes.c
-../skill.c
-../sentences.c
 
 ../../gs-entbase/server.src
 ../../gs-entbase/shared.src
+../../shared/rewolf/include.src
 
-../../shared/rewolf/player.cpp
 ../valve/defs.h
 
-../valve/monster_rat.cpp
-../valve/monster_scientist_dead.cpp
-gunman_cycler.cpp
-monster_human_bandit.cpp
-monster_human_chopper.cpp
-monster_human_demoman.cpp
-monster_human_gunman.cpp
-monster_human_unarmed.cpp
-../../shared/valve/fx_blood.c
-../../shared/valve/fx_breakmodel.c
-../../shared/valve/fx_explosion.c
-../../shared/valve/fx_gibhuman.c
-../../shared/valve/fx_impact.c
-../../shared/valve/fx_spark.c
 ../valve/player.c
-../../shared/valve/pmove.c
-../../shared/pmove.c
 ../valve/spectator.c
-../../shared/rewolf/items.h
-../../shared/valve/weapon_common.h
-../../shared/rewolf/weapons.h
-../../shared/rewolf/w_fists.c
-../../shared/rewolf/w_gausspistol.c
-../../shared/rewolf/w_grenade.c
-../../shared/rewolf/w_shotgun.c
-../../shared/rewolf/w_beamgun.c
-../../shared/rewolf/w_chemicalgun.c
-../../shared/rewolf/w_dml.c
-../../shared/rewolf/w_minigun.c
-../../shared/rewolf/w_aicore.c
+
 ../valve/items.cpp
-../valve/item_longjump.cpp
-../valve/item_suit.cpp
-../valve/item_healthkit.cpp
-../valve/item_battery.cpp
 
-../valve/world_items.cpp
-
-../../shared/rewolf/weapons.c 
-../../shared/valve/weapon_common.c
-../spawn.c
-../vox.c
-../../shared/valve/animations.c
-
-../gamerules.cpp
 ../rewolf/gamerules.cpp
 ../valve/gamerules_singleplayer.cpp
 ../rewolf/gamerules_multiplayer.cpp
+
 ../valve/client.c
-../client.c
 ../valve/server.c
-../server.c
 ../valve/damage.c
-../traceattack.c
 ../valve/rules.c
-../footsteps.c
-../flashlight.c
-input.c
+
+../../botlib/include.src
+
+../rewolf/input.c
 ../valve/spawn.c
-../vote.c
-../entry.c
+
+../include.src
 #endlist

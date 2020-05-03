@@ -23,17 +23,6 @@
  * we'll just default to those whenever there's no custom value set.
  */
 
-#define DYNAMIC_SENTENCES
-
-#ifdef DYNAMIC_SENTENCES
-	string *g_sentences;
-	int g_sentences_count;
-#else
-	#define SENTENCES_LIMIT 1024
-	string g_sentences[SENTENCES_LIMIT];
-	int g_sentences_count;
-#endif
-
 void
 Sentences_Init(void)
 {

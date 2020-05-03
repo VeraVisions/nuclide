@@ -20,24 +20,24 @@ class CSGameRules:CGameRules
 {
 	virtual void(entity) PlayerConnect;
 	virtual void(entity) PlayerDisconnect;
-	virtual void(player) PlayerKill;
-	virtual void(player) PlayerPostFrame;
-	virtual void(player) PlayerDeath;
-	virtual void(player) PlayerPain;
+	virtual void(base_player) PlayerKill;
+	virtual void(base_player) PlayerPostFrame;
+	virtual void(base_player) PlayerDeath;
+	virtual void(base_player) PlayerPain;
 
 	/* level transitions */
-	virtual void(player) LevelChangeParms;
-	virtual void(player) LevelDecodeParms;
+	virtual void(base_player) LevelChangeParms;
+	virtual void(base_player) LevelDecodeParms;
 	virtual void(void) LevelNewParms;
 
-	virtual int(player) BuyingPossible;
+	virtual int(base_player) BuyingPossible;
 }; 
 
 class CSSingleplayerRules:CSGameRules
 {
 	/* client */
-	virtual void(player) PlayerSpawn;
-	virtual void(player) PlayerDeath;
+	virtual void(base_player) PlayerSpawn;
+	virtual void(base_player) PlayerDeath;
 };
 
 class CSMultiplayerRules:CSGameRules
@@ -49,9 +49,9 @@ class CSMultiplayerRules:CSGameRules
 
 	virtual void(void) InitPostEnts;
 	virtual void(void) FrameStart;
-	virtual void(player) PlayerSpawn;
-	virtual void(player) PlayerPreFrame;
-	virtual void(player) PlayerDeath;
+	virtual void(base_player) PlayerSpawn;
+	virtual void(base_player) PlayerPreFrame;
+	virtual void(base_player) PlayerDeath;
 	virtual int(int) MaxItemPerSlot;
 
 	/* CS specific */
@@ -61,19 +61,21 @@ class CSMultiplayerRules:CSGameRules
 	virtual void(float, int) TimerBegin;
 	virtual void(void) TimerUpdate;
 
-	virtual int(player) BuyingPossible;
+	virtual int(base_player) BuyingPossible;
 	virtual void(int, int, int) RoundOver;
 	virtual void(int) RestartRound;
-	virtual void(player) DeathCheck;
-	virtual void(player) MakeBomber;
-	virtual void(player) MakeVIP;
+	virtual void(base_player) DeathCheck;
+	virtual void(base_player) MakeBomber;
+	virtual void(base_player) MakeVIP;
 	virtual void(void) CountPlayers;
 	virtual void(void) SwitchTeams;
 	virtual void(void) TimeOut;
 
-	virtual void(player) PlayerClearWeaponry;
-	virtual void(player, int) PlayerMakePlayable;
-	virtual void(player) PlayerMakeSpectator;
-	virtual void(player, int) PlayerRespawn;
+	virtual void(base_player) PlayerClearWeaponry;
+	virtual void(base_player, int) PlayerMakePlayable;
+	virtual void(base_player) PlayerMakeSpectator;
+	virtual void(base_player, int) PlayerRespawn;
 	virtual entity(float) PlayerFindSpawn;
 };
+
+void CSEv_JoinAuto(void);

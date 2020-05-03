@@ -6,6 +6,7 @@
 #define VALVE
 #define POKE646
 #define CLASSIC_VGUI
+#define GS_RENDERFX
 
 #includelist
 ../../shared/fteextensions.qc
@@ -35,4 +36,3 @@
 ../include.src
 
 #endlist
-

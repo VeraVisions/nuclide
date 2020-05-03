@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include "player.h"
 #include "damage.h"
 #include "flags.h"
 #include "hitmesh.h"

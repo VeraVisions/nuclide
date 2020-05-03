@@ -5,11 +5,7 @@
 #define CLIENT
 #define VALVE
 #define CLASSIC_VGUI
-
-#define CSQC
-#define CLIENT
-#define VALVE
-#define CLASSIC_VGUI
+#define GS_RENDERFX
 
 #includelist
 ../../shared/fteextensions.qc
@@ -37,5 +33,4 @@
 ../valve/input.c
 
 ../include.src
-
 #endlist

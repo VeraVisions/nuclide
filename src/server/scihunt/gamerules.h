@@ -19,15 +19,15 @@
 class SHMultiplayerRules:CGameRules
 {
 	/* client */
-	virtual void(player) PlayerSpawn;
+	virtual void(base_player) PlayerSpawn;
 	virtual void(entity) PlayerConnect;
 	virtual void(entity) PlayerDisconnect;
-	virtual void(player) PlayerKill;
-	virtual void(player) PlayerDeath;
-	virtual void(player) PlayerPostFrame;
-	virtual void(player, entity) ScientistKill;
+	virtual void(base_player) PlayerKill;
+	virtual void(base_player) PlayerDeath;
+	virtual void(base_player) PlayerPostFrame;
+	virtual void(base_player, entity) ScientistKill;
 
-	virtual void(player) LevelDecodeParms;
-	virtual void(player) LevelChangeParms;
+	virtual void(base_player) LevelDecodeParms;
+	virtual void(base_player) LevelChangeParms;
 	virtual void(void) LevelNewParms;
 };

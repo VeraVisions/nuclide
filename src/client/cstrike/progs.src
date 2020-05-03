@@ -6,6 +6,7 @@
 #define VALVE
 #define CSTRIKE
 #define CLASSIC_VGUI
+#define GS_RENDERFX
 
 #includelist
 ../../shared/fteextensions.qc
@@ -34,6 +35,7 @@
 ../cstrike/hud_weaponselect.c
 ../valve/scoreboard.c
 ../valve/input.c
+../cstrike/radio.c
 
 ../include.src
 #endlist

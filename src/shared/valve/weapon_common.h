@@ -49,19 +49,8 @@ void Weapons_PlaySound(entity, float, string, float, float);
 int Weapons_IsPresent(player, int);
 void Weapons_SetModel(string);
 void Weapons_SetGeomset(string);
-#ifdef SERVER
-void Weapons_RefreshAmmo(player);
-void Weapons_InitItem(int);
-float Weapons_GetAim(int);
 
-/* TODO: pass this as a weapon.pickup parm */
-int Weapons_AddItem(player, int, int);
-
-void Weapons_RemoveItem(player, int);
-string Weapons_GetWorldmodel(int);
-void Weapons_UpdateAmmo(player, int, int, int);
-void Weapons_ReloadWeapon(player, .int, .int, int);
-#else
+#ifdef CLIENT
 string Weapons_GetPlayermodel(int);
 int Weapons_GetAnimation(void);
 void Weapons_HUDPic(int, int, vector, float);

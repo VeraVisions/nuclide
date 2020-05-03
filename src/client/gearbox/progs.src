@@ -5,6 +5,7 @@
 #define CLIENT
 #define VALVE
 #define GEARBOX
+#define GS_RENDERFX
 
 #includelist
 ../../shared/fteextensions.qc

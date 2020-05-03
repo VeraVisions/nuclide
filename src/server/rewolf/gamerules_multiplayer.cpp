@@ -24,8 +24,9 @@ HLMultiplayerRules::FrameStart(void)
 }
 
 void
-HLMultiplayerRules::PlayerDeath(player pl)
+HLMultiplayerRules::PlayerDeath(base_player pp)
 {
+	player pl = (player)pp;
 	pl.movetype = MOVETYPE_NONE;
 	pl.solid = SOLID_NOT;
 	pl.takedamage = DAMAGE_NO;
@@ -34,7 +35,6 @@ HLMultiplayerRules::PlayerDeath(player pl)
 
 	pl.think = PutClientInServer;
 	pl.nextthink = time + 4.0f;
-	sound(pl, CHAN_AUTO, "fvox/flatline.wav", 1.0, ATTN_NORM);
 
 	if (pl.health < -50) {
 		pl.health = 0;
@@ -58,8 +58,9 @@ HLMultiplayerRules::PlayerDeath(player pl)
 }
 
 void
-HLMultiplayerRules::PlayerSpawn(player pl)
+HLMultiplayerRules::PlayerSpawn(base_player pp)
 {
+	player pl = (player)pp;
 	/* this is where the mods want to deviate */
 	entity spot;
 

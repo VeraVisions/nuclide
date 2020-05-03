@@ -15,8 +15,9 @@
  */
 
 void
-Money_AddMoney(player pl, int iMoneyValue)
+Money_AddMoney(base_player pp, int iMoneyValue)
 {
+	player pl = (player)pp;
 	dprint(sprintf("^2Money_AddMoney^7: giving %s $%i\n", pl.netname, iMoneyValue));
 	pl.money += (float)iMoneyValue;
 
@@ -41,7 +42,7 @@ Money_QueTeamReward(int t, int iMoneyValue)
 }
 
 void
-Money_GiveTeamReward(player pl)
+Money_GiveTeamReward(base_player pl)
 {
 	if (pl.team == TEAM_T) {
 		Money_AddMoney(pl, g_cs_moneyreward_t);

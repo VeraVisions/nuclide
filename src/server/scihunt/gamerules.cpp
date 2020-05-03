@@ -18,7 +18,7 @@ var int autocvar_sh_insanity = 10;
 var int autocvar_sv_playerkeepalive = TRUE;
 
 void
-SHMultiplayerRules::PlayerDeath(player pl)
+SHMultiplayerRules::PlayerDeath(base_player pl)
 {
 	/* obituary networking */
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
@@ -78,8 +78,9 @@ SHMultiplayerRules::PlayerDeath(player pl)
 }
 
 void
-SHMultiplayerRules::PlayerSpawn(player pl)
+SHMultiplayerRules::PlayerSpawn(base_player pp)
 {
+	player pl = (player)pp;
 	/* this is where the mods want to deviate */
 	entity spot;
 
@@ -128,8 +129,9 @@ SHMultiplayerRules::PlayerSpawn(player pl)
 }
 
 void
-SHMultiplayerRules::LevelDecodeParms(player pl)
+SHMultiplayerRules::LevelDecodeParms(base_player pp)
 {
+	player pl = (player)pp;
 	g_landmarkpos[0] = parm1;
 	g_landmarkpos[1] = parm2;
 	g_landmarkpos[2] = parm3;
@@ -172,8 +174,9 @@ SHMultiplayerRules::LevelDecodeParms(player pl)
 }
 
 void
-SHMultiplayerRules::LevelChangeParms(player pl)
+SHMultiplayerRules::LevelChangeParms(base_player pp)
 {
+	player pl = (player)pp;
 	parm1 = g_landmarkpos[0];
 	parm2 = g_landmarkpos[1];
 	parm3 = g_landmarkpos[2];
@@ -221,8 +224,9 @@ SHMultiplayerRules::LevelNewParms(void)
 /* we check what fields have changed over the course of the frame and network
  * only the ones that have actually changed */
 void
-SHMultiplayerRules::PlayerPostFrame(player pl)
+SHMultiplayerRules::PlayerPostFrame(base_player pp)
 {
+	player pl = (player)pp;
 	Animation_PlayerUpdate();
 
 	if (autocvar_sv_playerkeepalive)
@@ -360,14 +364,16 @@ SHMultiplayerRules::PlayerDisconnect(entity pl)
 }
 
 void
-SHMultiplayerRules::PlayerKill(player pl)
+SHMultiplayerRules::PlayerKill(base_player pp)
 {
+	player pl = (player)pp;
 	Damage_Apply(pl, pl, pl.health, WEAPON_NONE, DMG_SKIP_ARMOR);
 }
 
 void
-SHMultiplayerRules::ScientistKill(player pl, entity sci)
+SHMultiplayerRules::ScientistKill(base_player pp, entity sci)
 {
+	player pl = (player)pp;
 	/* obituary networking */
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_OBITUARY);

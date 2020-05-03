@@ -17,17 +17,17 @@
 var int autocvar_sv_playerkeepalive = TRUE;
 
 void
-CSGameRules::PlayerDeath(player pl)
+CSGameRules::PlayerDeath(base_player pl)
 {
 }
 
 void
-CSGameRules::PlayerPain(player pl)
+CSGameRules::PlayerPain(base_player pl)
 {
 }
 
 int
-CSGameRules::BuyingPossible(player pl)
+CSGameRules::BuyingPossible(base_player pl)
 {
 	return FALSE;
 }
@@ -35,8 +35,10 @@ CSGameRules::BuyingPossible(player pl)
 /* we check what fields have changed over the course of the frame and network
  * only the ones that have actually changed */
 void
-CSGameRules::PlayerPostFrame(player pl)
+CSGameRules::PlayerPostFrame(base_player pp)
 {
+	player pl = (player)pp;
+
 	Animation_PlayerUpdate();
 
 	if (autocvar_sv_playerkeepalive)
@@ -131,8 +133,9 @@ CSGameRules::PlayerPostFrame(player pl)
 
 
 void
-CSGameRules::LevelDecodeParms(player pl)
+CSGameRules::LevelDecodeParms(base_player pp)
 {
+	player pl = (player)pp;
 	g_landmarkpos[0] = parm1;
 	g_landmarkpos[1] = parm2;
 	g_landmarkpos[2] = parm3;
@@ -190,8 +193,9 @@ CSGameRules::LevelDecodeParms(player pl)
 }
 
 void
-CSGameRules::LevelChangeParms(player pl)
+CSGameRules::LevelChangeParms(base_player pp)
 {
+	player pl = (player)pp;
 	parm1 = g_landmarkpos[0];
 	parm2 = g_landmarkpos[1];
 	parm3 = g_landmarkpos[2];
@@ -291,7 +295,7 @@ CSGameRules::PlayerDisconnect(entity pl)
 }
 
 void
-CSGameRules::PlayerKill(player pl)
+CSGameRules::PlayerKill(base_player pl)
 {
 	Damage_Apply(pl, pl, pl.health, WEAPON_NONE, DMG_SKIP_ARMOR);
 }

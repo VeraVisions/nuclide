@@ -49,7 +49,7 @@ void Animation_PlayerUpdate(void) {
 	self.basebone = cvar("spinebone"); // gettagindex(self, "Bip01 Spine");
 #ifdef SERVER
 	if (self.baseframe_time < time) {
-		player pl = (player)self;
+		base_player pl = (base_player)self;
 		self.baseframe = Weapons_GetAim(pl.activeweapon);
 		self.baseframe_old = self.frame;
 	}

@@ -14,8 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-var int autocvar_logging_enabled = FALSE;
-
 void
 Logging_Frag(entity a, entity v)
 {

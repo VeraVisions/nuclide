@@ -25,7 +25,7 @@ CSMultiplayerRules::MaxItemPerSlot(int slot)
 }
 
 void
-CSMultiplayerRules::PlayerDeath(player pl)
+CSMultiplayerRules::PlayerDeath(base_player pl)
 {
 	/* obituary networking */
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
@@ -100,7 +100,7 @@ CSMultiplayerRules::PlayerDeath(player pl)
 }
 
 void
-CSMultiplayerRules::PlayerPreFrame(player pl)
+CSMultiplayerRules::PlayerPreFrame(base_player pl)
 {
 	if (pl.health <= 0)
 		return;
@@ -343,7 +343,7 @@ Checks if it is possible for players to buy anything
 =================
 */
 int
-CSMultiplayerRules::BuyingPossible(player pl)
+CSMultiplayerRules::BuyingPossible(base_player pl)
 {
 	if (pl.health <= 0) {
 		return FALSE;
@@ -385,14 +385,14 @@ CSMultiplayerRules::BuyingPossible(player pl)
 }
 
 void
-CSMultiplayerRules::MakeBomber(player pl)
+CSMultiplayerRules::MakeBomber(base_player pl)
 {
 	Weapons_AddItem(pl, WEAPON_C4BOMB, -1);
 	centerprint(pl, "You have the bomb!\nFind the target zone or DROP\nthe bomb for another Terrorist.");
 }
 
 void
-CSMultiplayerRules::MakeVIP(player pl)
+CSMultiplayerRules::MakeVIP(base_player pl)
 {
 	pl.team = TEAM_VIP;
 	PlayerRespawn(pl, pl.team);
@@ -612,7 +612,7 @@ CSMultiplayerRules::CountPlayers(void)
 }
 
 void
-CSMultiplayerRules::DeathCheck(player pl)
+CSMultiplayerRules::DeathCheck(base_player pl)
 {
 	if ((g_cs_alive_t == 0) && (g_cs_alive_ct == 0)) {
 		if (g_cs_bombplanted == TRUE) {
@@ -687,8 +687,10 @@ Called whenever a player survived a round and needs a basic respawn.
 =================
 */
 void
-CSMultiplayerRules::PlayerRespawn(player pl, int fTeam)
+CSMultiplayerRules::PlayerRespawn(base_player pp, int fTeam)
 {
+	player pl = (player)pp;
+
 	entity eSpawn;
 	forceinfokey(pl, "*spec", "0");
 	eSpawn = PlayerFindSpawn(pl.team);
@@ -749,8 +751,10 @@ CSMultiplayerRules::PlayerRespawn(player pl, int fTeam)
 }
 
 void
-CSMultiplayerRules::PlayerClearWeaponry(player pl)
+CSMultiplayerRules::PlayerClearWeaponry(base_player pp)
 {
+	player pl = (player)pp;
+
 	pl.g_items = 0x0;
 	pl.activeweapon = 0;
 	pl.ammo_50ae = 0;
@@ -800,8 +804,9 @@ This may be after a player had died or when the game starts for the first time.
 =================
 */
 void
-CSMultiplayerRules::PlayerMakePlayable(player pl, int chara)
+CSMultiplayerRules::PlayerMakePlayable(base_player pp, int chara)
 {
+	player pl = (player)pp;
 	/* spectator */
 	if (chara == 0) {
 		PlayerSpawn(pl);
@@ -847,7 +852,7 @@ Force the player to become an observer.
 =================
 */
 void
-CSMultiplayerRules::PlayerMakeSpectator(player pl)
+CSMultiplayerRules::PlayerMakeSpectator(base_player pl)
 {
 	pl.classname = "spectator";
 	pl.health = 0;
@@ -877,7 +882,7 @@ Called on the client first joining the server.
 =================
 */
 void
-CSMultiplayerRules::PlayerSpawn(player pl)
+CSMultiplayerRules::PlayerSpawn(base_player pl)
 {
 	/* immediately put us into spectating mode */
 	PlayerMakeSpectator(pl);

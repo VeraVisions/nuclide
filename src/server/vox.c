@@ -22,7 +22,8 @@ Assumes time in minutes.
 TODO: Actually output proper, tokenized strings for not just 1-10 minutes
 =================
 */
-string Vox_TimeToString(float fTime)
+string
+Vox_TimeToString(float fTime)
 {
 	fTime = rint(fTime);
 
@@ -49,7 +50,8 @@ Vox_Broadcast
 Broadcasts a VOX message to all players
 =================
 */
-void Vox_Broadcast(string sMessage)
+void
+Vox_Broadcast(string sMessage)
 {
 	localcmd(sprintf("echo [VOX] Broadcast: %s\n", sMessage));
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
@@ -66,7 +68,8 @@ Vox_Singlecast
 Broadcasts a VOX message to one player
 =================
 */
-void Vox_Singlecast(entity eClient, string sMessage)
+void
+Vox_Singlecast(entity eClient, string sMessage)
 {
 	localcmd(sprintf("echo [VOX] Singlecast to %s: %s\n", eClient.netname, sMessage));
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);

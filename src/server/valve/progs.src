@@ -4,23 +4,18 @@
 #define QWSSQC
 #define SERVER
 #define VALVE
+#define GS_RENDERFX
 
 #includelist
 ../../shared/fteextensions.qc
+../../gs-entbase/server/defs.h
 ../../shared/defs.h
-../../shared/sound.c
-../../shared/valve/animations.h
 ../defs.h
-../plugins.c
-../logging.c
-../nodes.c
-../skill.c
-../sentences.c
 
 ../../gs-entbase/server.src
 ../../gs-entbase/shared.src
+../../shared/valve/include.src
 
-../../shared/valve/player.cpp
 ../valve/defs.h
 
 ../valve/monster_apache.cpp
@@ -58,70 +53,34 @@
 ../valve/monster_turret.cpp
 ../valve/monster_zombie.cpp
 
-../../shared/valve/fx_blood.c
-../../shared/valve/fx_breakmodel.c
-../../shared/valve/fx_explosion.c
-../../shared/valve/fx_gibhuman.c
-../../shared/valve/fx_impact.c
-../../shared/valve/fx_spark.c
+../valve/player.c
+../valve/spectator.c
+../valve/items.cpp
+../valve/item_longjump.cpp
+../valve/item_suit.cpp
+../valve/item_healthkit.cpp
+../valve/item_battery.cpp
+../valve/item_weaponbox.cpp
+../valve/world_items.cpp
+../valve/xen_spore_small.cpp
+../valve/xen_spore_medium.cpp
+../valve/xen_spore_large.cpp
+../valve/xen_hair.cpp
+../valve/xen_plantlight.cpp
+../valve/ammo.cpp
 
-player.c
-../../shared/valve/pmove.c
-../../shared/pmove.c
-spectator.c
-../../shared/valve/items.h
-../../shared/valve/weapon_common.h
-../../shared/valve/weapons.h
-../../shared/valve/w_crossbow.c
-../../shared/valve/w_crowbar.c
-../../shared/valve/w_egon.c
-../../shared/valve/w_gauss.c
-../../shared/valve/w_glock.c
-../../shared/valve/w_handgrenade.c
-../../shared/valve/w_hornetgun.c
-../../shared/valve/w_mp5.c
-../../shared/valve/w_python.c
-../../shared/valve/w_rpg.c
-../../shared/valve/w_satchel.c
-../../shared/valve/w_shotgun.c
-../../shared/valve/w_snark.c
-../../shared/valve/w_tripmine.c
-items.cpp
-item_longjump.cpp
-item_suit.cpp
-item_healthkit.cpp
-item_battery.cpp
-item_weaponbox.cpp
-world_items.cpp
-xen_spore_small.cpp
-xen_spore_medium.cpp
-xen_spore_large.cpp
-xen_hair.cpp
-xen_plantlight.cpp
-ammo.cpp
-../../shared/valve/weapons.c
-../../shared/valve/weapon_common.c
-../spawn.c
-../vox.c
-../../shared/valve/animations.c
-
-../gamerules.cpp
 ../valve/gamerules.cpp
 ../valve/gamerules_singleplayer.cpp
 ../valve/gamerules_multiplayer.cpp
 ../valve/client.c
-../client.c
-server.c
-../server.c
-damage.c
-../traceattack.c
+../valve/server.c
+../valve/damage.c
 ../valve/rules.c
-../footsteps.c
-../flashlight.c
+
 ../../botlib/include.src
 
-input.c
-spawn.c
-../vote.c
-../entry.c
+../valve/input.c
+../valve/spawn.c
+
+../include.src
 #endlist

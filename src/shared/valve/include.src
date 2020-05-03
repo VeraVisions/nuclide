@@ -1,8 +1,9 @@
  #includelist
 ../../shared/sound.c
+../../shared/valve/player.cpp
+../../shared/valve/weapon_common.h
 ../../shared/valve/animations.h
 ../../shared/valve/animations.c
-../../shared/valve/player.cpp
 ../../shared/valve/pmove.c
 ../../shared/pmove.c
 
@@ -14,7 +15,6 @@
 ../../shared/valve/fx_impact.c
 
 ../../shared/valve/items.h
-../../shared/valve/weapon_common.h
 ../../shared/valve/weapons.h
 ../../shared/valve/w_crossbow.c
 ../../shared/valve/w_crowbar.c

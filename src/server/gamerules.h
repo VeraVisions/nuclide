@@ -25,21 +25,21 @@ class CGameRules
 
 	/* logic */
 	virtual void(void) FrameStart;
-	virtual float(player,string) ConsoleCommand;
+	virtual float(base_player,string) ConsoleCommand;
 
 	/* client */
 	virtual void(entity) PlayerConnect;
 	virtual void(entity) PlayerDisconnect;
-	virtual void(player) PlayerKill;
-	virtual void(player) PlayerSpawn;
-	virtual void(player) PlayerPreFrame;
-	virtual void(player) PlayerPostFrame;
-	virtual void(player) PlayerDeath;
-	virtual void(player) PlayerPain;
+	virtual void(base_player) PlayerKill;
+	virtual void(base_player) PlayerSpawn;
+	virtual void(base_player) PlayerPreFrame;
+	virtual void(base_player) PlayerPostFrame;
+	virtual void(base_player) PlayerDeath;
+	virtual void(base_player) PlayerPain;
 
 	/* level transitions */
 	virtual void(void) LevelNewParms;
-	virtual void(player) LevelChangeParms;
+	virtual void(base_player) LevelChangeParms;
 
 	virtual int(int) MaxItemPerSlot;
 
@@ -48,9 +48,9 @@ class CGameRules
 	virtual void(void) IntermissionEnd;
 
 	/* spectator */
-	/*virtual void(player) SpectatorConnect;
-	virtual void(player) SpectatorDisconnect;
-	virtual void(player) SpectatorThink;*/
+	/*virtual void(base_player) SpectatorConnect;
+	virtual void(base_player) SpectatorDisconnect;
+	virtual void(base_player) SpectatorThink;*/
 };
 
 /* our currently running mode */

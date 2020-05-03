@@ -17,8 +17,9 @@
 var int autocvar_sv_playerkeepalive = TRUE;
 
 void
-HLGameRules::LevelDecodeParms(player pl)
+HLGameRules::LevelDecodeParms(base_player pp)
 {
+	player pl = (player)pp;
 	g_landmarkpos[0] = parm1;
 	g_landmarkpos[1] = parm2;
 	g_landmarkpos[2] = parm3;
@@ -61,8 +62,9 @@ HLGameRules::LevelDecodeParms(player pl)
 }
 
 void
-HLGameRules::LevelChangeParms(player pl)
+HLGameRules::LevelChangeParms(base_player pp)
 {
+	player pl = (player)pp;
 	parm1 = g_landmarkpos[0];
 	parm2 = g_landmarkpos[1];
 	parm3 = g_landmarkpos[2];
@@ -110,7 +112,7 @@ HLGameRules::LevelNewParms(void)
 /* we check what fields have changed over the course of the frame and network
  * only the ones that have actually changed */
 void
-HLGameRules::PlayerPostFrame(player pl)
+HLGameRules::PlayerPostFrame(base_player pl)
 {
 	Animation_PlayerUpdate();
 
@@ -238,7 +240,7 @@ HLGameRules::PlayerDisconnect(entity pl)
 }
 
 void
-HLGameRules::PlayerKill(player pl)
+HLGameRules::PlayerKill(base_player pl)
 {
 	Damage_Apply(pl, pl, pl.health, WEAPON_NONE, DMG_SKIP_ARMOR);
 } 

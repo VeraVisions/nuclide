@@ -15,7 +15,7 @@
  */
 
 void
-CSSingleplayerRules::PlayerDeath(player pl)
+CSSingleplayerRules::PlayerDeath(base_player pl)
 {
 	pl.movetype = MOVETYPE_NONE;
 	pl.solid = SOLID_NOT;
@@ -33,7 +33,7 @@ CSSingleplayerRules::PlayerDeath(player pl)
 }
 
 void
-CSSingleplayerRules::PlayerSpawn(player pl)
+CSSingleplayerRules::PlayerSpawn(base_player pl)
 {
 	pl.classname = "player";
 	pl.health = pl.max_health = 100;

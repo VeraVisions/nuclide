@@ -14,25 +14,35 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include "gamerules.h"
+#include "sentences.h"
+#include "skill.h"
+#include "logging.h"
+#include "vox.h"
+#include "nodes.h"
+#include "spawn.h"
+#include "flashlight.h"
+#include "weapons.h"
+
 #define CLASSEXPORT(classname,classa) void classname(void) { spawnfunc_##classa(); }
 
 var int autocvar_mp_flashlight = TRUE;
 var int g_hlbsp_materials = FALSE;
 
-void FX_Impact(int iType, vector vecPos, vector vNormal);
-void FX_Explosion(vector vecPos);
-void FX_GibHuman(vector vecPos);
+void FX_Impact(int, vector, vector);
+void FX_Explosion(vector);
+void FX_GibHuman(vector);
 void Footsteps_Update(void);
 void Vox_Broadcast(string sMessage);
 
-void TraceAttack_FireBullets(int,vector,int,vector,int);
+void TraceAttack_FireBullets(int, vector, int, vector, int);
 #ifdef BULLETPENETRATION
 void TraceAttack_SetPenetrationPower(int);
 #endif
 
 void Damage_Radius(vector, entity, float, float, int, int);
 void Damage_Apply(entity, entity, float, int, int);
-void Client_TriggerCamera(entity eTarget, vector vecPos, vector vEndPos, float fResetTime);
+void Client_TriggerCamera(entity, vector, vector, float);
 void Client_FixAngle(entity, vector);
 void Game_Input(void);
 int Rules_IsTeamPlay(void);
