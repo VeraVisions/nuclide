@@ -218,7 +218,7 @@ w_usp45_primary(void)
 	}
 
 	pl.flags |= FL_SEMI_TOGGLED;
-	pl.w_attack_next = 0.0875f;
+	pl.w_attack_next = 0.15f;
 	pl.w_idle_next = pl.w_attack_next;
 }
 
