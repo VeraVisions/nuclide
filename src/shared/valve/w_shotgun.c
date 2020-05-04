@@ -52,11 +52,11 @@ void w_shotgun_precache(void)
 	Sound_Precache("weapon_shotgun.double");
 	Sound_Precache("weapon_shotgun.reload");
 	Sound_Precache("weapon_shotgun.cock");
-#endif
-
-	precache_model("models/v_shotgun.mdl");
 	precache_model("models/w_shotgun.mdl");
+#else
+	precache_model("models/v_shotgun.mdl");
 	precache_model("models/p_shotgun.mdl");
+#endif
 }
 void w_shotgun_updateammo(player pl)
 {

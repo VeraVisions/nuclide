@@ -40,10 +40,13 @@ enum
 void
 w_sniperrifle_precache(void)
 {
-	precache_model("models/v_m40a1.mdl");
+#ifdef SERVER
 	precache_model("models/w_m40a1.mdl");
-	precache_model("models/p_m40a1.mdl");
 	precache_sound("weapons/sniper_fire.wav");
+#else
+	precache_model("models/v_m40a1.mdl");
+	precache_model("models/p_m40a1.mdl");
+#endif
 }
 
 int

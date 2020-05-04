@@ -62,11 +62,12 @@ void w_satchel_precache(void)
 {
 #ifdef SERVER
 	Sound_Precache("weapon_satchel.bounce");
-#endif
 	precache_model("models/w_satchel.mdl");
+#else
 	precache_model("models/v_satchel.mdl");
 	precache_model("models/v_satchel_radio.mdl");
 	precache_model("models/p_satchel.mdl");
+#endif
 }
 
 int w_satchel_pickup(int new, int startammo)

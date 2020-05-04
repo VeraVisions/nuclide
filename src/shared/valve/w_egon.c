@@ -40,9 +40,12 @@ enum
 
 void w_egon_precache(void)
 {
-	precache_model("models/v_egon.mdl");
+#ifdef SERVER
 	precache_model("models/w_egon.mdl");
+#else
+	precache_model("models/v_egon.mdl");
 	precache_model("models/p_egon.mdl");
+#endif
 }
 void w_egon_updateammo(player pl)
 {

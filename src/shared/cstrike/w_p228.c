@@ -42,12 +42,11 @@ w_p228_precache(void)
 {
 #ifdef SERVER
 	Sound_Precache("weapon_p228.fire");
-#endif
-	precache_model("models/v_p228.mdl");
 	precache_model("models/w_p228.mdl");
+#else
+	precache_model("models/v_p228.mdl");
 	precache_model("models/p_p228.mdl");
-	precache_sound("weapons/p228-1.wav");
-	precache_sound("weapons/p228-2.wav");
+#endif
 }
 
 void

@@ -49,13 +49,13 @@ enum
 void
 w_python_precache(void)
 {
-	precache_model("models/v_357.mdl");
-	precache_model("models/w_357.mdl");
-	precache_model("models/p_357.mdl");
-
 #ifdef SERVER
 	Sound_Precache("weapon_357.shoot");
 	Sound_Precache("weapon_357.reload");
+	precache_model("models/w_357.mdl");
+#else
+	precache_model("models/v_357.mdl");
+	precache_model("models/p_357.mdl");
 #endif
 }
 

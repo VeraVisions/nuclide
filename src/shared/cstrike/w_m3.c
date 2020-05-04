@@ -50,10 +50,11 @@ w_m3_precache(void)
 {
 #ifdef SERVER
 	Sound_Precache("weapon_m3.fire");
-#endif
-	precache_model("models/v_m3.mdl");
 	precache_model("models/w_m3.mdl");
+#else
+	precache_model("models/v_m3.mdl");
 	precache_model("models/p_m3.mdl");
+#endif
 }
 
 void

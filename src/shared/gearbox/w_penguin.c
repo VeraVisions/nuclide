@@ -266,15 +266,18 @@ w_penguin_release(void)
 void
 w_penguin_precache(void)
 {
+#ifdef SERVER
 	precache_model("models/w_penguin.mdl");
-	precache_model("models/p_penguin.mdl");
-	precache_model("models/v_penguin.mdl");	
 	precache_sound("squeek/sqk_deploy1.wav");
 	precache_sound("squeek/sqk_die1.wav");
 	precache_sound("squeek/sqk_blast1.wav");
 	precache_sound("squeek/sqk_hunt1.wav");
 	precache_sound("squeek/sqk_hunt2.wav");
 	precache_sound("squeek/sqk_hunt3.wav");
+#else
+	precache_model("models/p_penguin.mdl");
+	precache_model("models/v_penguin.mdl");
+#endif
 }
 
 void

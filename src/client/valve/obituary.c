@@ -86,6 +86,7 @@ Obituary_Precache(void)
 void
 Obituary_KillIcon(int id, float w)
 {
+	if (w > 0)
 	for (int i = 0; i < g_obtype_count; i++) {
 		if (g_weapons[w].name == g_obtypes[i].name) {
 			g_obituary[id].icon = i;
@@ -130,11 +131,13 @@ Obituary_Add(string attacker, string victim, float weapon, float flags)
 
 	g_obituary_time = OBITUARY_TIME;
 
-	string conprint = g_weapons[weapon].deathmsg();
+	if (g_weapons[weapon].deathmsg) {
+		string conprint = g_weapons[weapon].deathmsg();
 
-	if (conprint != "") {
-		print(sprintf(conprint, attacker, victim));
-		print("\n");
+		if (conprint != "") {
+			print(sprintf(conprint, attacker, victim));
+			print("\n");
+		}
 	}
 }
 

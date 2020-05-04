@@ -41,10 +41,11 @@ w_deagle_precache(void)
 {
 #ifdef SERVER
 	Sound_Precache("weapon_deagle.fire");
-#endif
-	precache_model("models/v_deagle.mdl");
 	precache_model("models/w_deagle.mdl");
+#else
+	precache_model("models/v_deagle.mdl");
 	precache_model("models/p_deagle.mdl");
+#endif
 }
 
 void

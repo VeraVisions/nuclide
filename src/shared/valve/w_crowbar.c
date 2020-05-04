@@ -43,11 +43,11 @@ w_crowbar_precache(void)
 	Sound_Precache("weapon_crowbar.hit");
 	Sound_Precache("weapon_crowbar.miss");
 	Sound_Precache("weapon_crowbar.hitbody");
-#endif
-
-	precache_model("models/v_crowbar.mdl");
 	precache_model("models/w_crowbar.mdl");
+#else
+	precache_model("models/v_crowbar.mdl");
 	precache_model("models/p_crowbar.mdl");
+#endif
 }
 
 void

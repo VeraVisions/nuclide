@@ -50,10 +50,11 @@ w_elites_precache(void)
 {
 #ifdef SERVER
 	Sound_Precache("weapon_elites.fire");
-#endif
-	precache_model("models/v_elite.mdl");
 	precache_model("models/w_elite.mdl");
+#else
+	precache_model("models/v_elite.mdl");
 	precache_model("models/p_elite.mdl");
+#endif
 }
 
 void

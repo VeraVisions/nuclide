@@ -41,10 +41,11 @@ w_p90_precache(void)
 {
 #ifdef SERVER
 	Sound_Precache("weapon_p90.fire");
-#endif
-	precache_model("models/v_p90.mdl");
 	precache_model("models/w_p90.mdl");
+#else
+	precache_model("models/v_p90.mdl");
 	precache_model("models/p_p90.mdl");
+#endif
 }
 
 void

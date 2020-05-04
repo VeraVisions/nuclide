@@ -54,10 +54,11 @@ w_usp45_precache(void)
 #ifdef SERVER
 	Sound_Precache("weapon_usp45.fire");
 	Sound_Precache("weapon_usp45.silenced");
-#endif
-	precache_model("models/v_usp.mdl");
 	precache_model("models/w_usp.mdl");
+#else
+	precache_model("models/v_usp.mdl");
 	precache_model("models/p_usp.mdl");
+#endif
 }
 
 void

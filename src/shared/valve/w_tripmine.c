@@ -144,13 +144,13 @@ enum
 
 void w_tripmine_precache(void)
 {
-	precache_model("models/v_tripmine.mdl");
-	precache_model("models/p_tripmine.mdl");
-
 #ifdef SERVER
 	Sound_Precache("weapon_tripmine.deploy");
 	Sound_Precache("weapon_tripmine.charge");
 	Sound_Precache("weapon_tripmine.activate");
+	precache_model("models/v_tripmine.mdl");
+#else
+	precache_model("models/p_tripmine.mdl");
 #endif
 }
 void w_tripmine_updateammo(player pl)

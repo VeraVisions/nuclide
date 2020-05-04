@@ -41,10 +41,11 @@ w_tmp_precache(void)
 {
 #ifdef SERVER
 	Sound_Precache("weapon_tmp.fire");
-#endif
-	precache_model("models/v_tmp.mdl");
 	precache_model("models/w_tmp.mdl");
+#else
+	precache_model("models/v_tmp.mdl");
 	precache_model("models/p_tmp.mdl");
+#endif
 }
 
 void

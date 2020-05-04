@@ -46,6 +46,7 @@ enum
 void
 w_grapple_precache(void)
 {
+#ifdef SERVER
 	precache_sound("weapons/bgrapple_cough.wav");
 	precache_sound("weapons/bgrapple_fire.wav");
 	precache_sound("weapons/bgrapple_impact.wav");
@@ -54,10 +55,12 @@ w_grapple_precache(void)
 	precache_sound("weapons/bgrapple_wait.wav");
 	precache_model("sprites/_tongue.spr");
 	precache_model("sprites/tongue.spr");
+	precache_model("models/w_bgrap.mdl");
+#else
 	precache_model("models/v_bgrap.mdl");
 	precache_model("models/v_bgrap_tonguetip.mdl");
-	precache_model("models/w_bgrap.mdl");
 	precache_model("models/p_bgrap.mdl");
+#endif
 }
 
 void

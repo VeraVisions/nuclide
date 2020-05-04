@@ -41,6 +41,7 @@ entity Spawn_SelectRandom(string);
 void
 w_displacer_precache(void)
 {
+#ifdef SERVER
 	precache_sound("weapons/displacer_fire.wav");
 	precache_sound("weapons/displacer_impact.wav");
 	precache_sound("weapons/displacer_self.wav");
@@ -49,10 +50,12 @@ w_displacer_precache(void)
 	precache_sound("weapons/displacer_start.wav");
 	precache_sound("weapons/displacer_teleport.wav");
 	precache_sound("weapons/displacer_teleport_player.wav");
-	precache_model("models/v_displacer.mdl");
 	precache_model("models/w_displacer.mdl");
-	precache_model("models/p_displacer.mdl");
 	precache_model("sprites/exit1.spr");
+#else
+	precache_model("models/v_displacer.mdl");
+	precache_model("models/p_displacer.mdl");
+#endif
 }
 
 void

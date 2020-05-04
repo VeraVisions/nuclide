@@ -41,12 +41,13 @@ void w_rpg_precache(void)
 {
 #ifdef SERVER
 	Sound_Precache("weapon_rpg.shoot");
-#endif
-	precache_model("models/v_rpg.mdl");
 	precache_model("models/w_rpg.mdl");
-	precache_model("models/p_rpg.mdl");
 	precache_model("models/rpgrocket.mdl");
+#else
+	precache_model("models/v_rpg.mdl");
+	precache_model("models/p_rpg.mdl");
 	precache_model("sprites/laserdot.spr");
+#endif
 }
 
 void w_rpg_updateammo(player pl)

@@ -42,10 +42,11 @@ w_flashbang_precache(void)
 #ifdef SERVER
 	Sound_Precache("weapon_flashbang.bounce");
 	Sound_Precache("weapon_flashbang.explode");
-#endif
-	precache_model("models/v_flashbang.mdl");
 	precache_model("models/w_flashbang.mdl");
+#else
+	precache_model("models/v_flashbang.mdl");
 	precache_model("models/p_flashbang.mdl");
+#endif
 }
 
 void

@@ -51,10 +51,11 @@ w_m4a1_precache(void)
 #ifdef SERVER
 	Sound_Precache("weapon_m4a1.fire");
 	Sound_Precache("weapon_m4a1.silenced");
-#endif
-	precache_model("models/v_m4a1.mdl");
 	precache_model("models/w_m4a1.mdl");
+#else
+	precache_model("models/v_m4a1.mdl");
 	precache_model("models/p_m4a1.mdl");
+#endif
 }
 
 void

@@ -42,10 +42,11 @@ w_aug_precache(void)
 {
 #ifdef SERVER
 	Sound_Precache("weapon_aug.fire");
-#endif
-	precache_model("models/v_aug.mdl");
 	precache_model("models/w_aug.mdl");
+#else
+	precache_model("models/v_aug.mdl");
 	precache_model("models/p_aug.mdl");
+#endif
 }
 
 void

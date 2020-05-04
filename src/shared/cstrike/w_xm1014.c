@@ -51,10 +51,11 @@ w_xm1014_precache(void)
 #ifdef SERVER
 	Sound_Precache("weapon_xm1014.fire");
 	Sound_Precache("weapon_xm1014.insertshell");
-#endif
-	precache_model("models/v_xm1014.mdl");
 	precache_model("models/w_xm1014.mdl");
+#else
+	precache_model("models/v_xm1014.mdl");
 	precache_model("models/p_xm1014.mdl");
+#endif
 }
 
 void

@@ -56,12 +56,12 @@ w_mp5_precache(void)
 #ifdef SERVER
 	Sound_Precache("weapon_mp5.shoot");
 	Sound_Precache("weapon_mp5.gl");
-#endif
-
-	precache_model("models/v_9mmar.mdl");
 	precache_model("models/w_9mmar.mdl");
-	precache_model("models/p_9mmar.mdl");
 	precache_model("models/grenade.mdl");
+#else
+	precache_model("models/v_9mmar.mdl");
+	precache_model("models/p_9mmar.mdl");
+#endif
 }
 
 int

@@ -51,10 +51,11 @@ w_glock18_precache(void)
 #ifdef SERVER
 	Sound_Precache("weapon_glock18.fire");
 	Sound_Precache("weapon_glock18.burstfire");
-#endif
-	precache_model("models/v_glock18.mdl");
 	precache_model("models/w_glock18.mdl");
+#else
+	precache_model("models/v_glock18.mdl");
 	precache_model("models/p_glock18.mdl");
+#endif
 }
 
 void

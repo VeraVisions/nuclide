@@ -41,10 +41,11 @@ w_mp5_precache(void)
 {
 #ifdef SERVER
 	Sound_Precache("weapon_mp5.fire");
-#endif
-	precache_model("models/v_mp5.mdl");
 	precache_model("models/w_mp5.mdl");
+#else
+	precache_model("models/v_mp5.mdl");
 	precache_model("models/p_mp5.mdl");
+#endif
 }
 
 void

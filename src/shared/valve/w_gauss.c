@@ -124,16 +124,19 @@ void w_gauss_release(void);
 
 void w_gauss_precache(void)
 {
-	precache_model("models/v_gauss.mdl");
+#ifdef SERVER
 	precache_model("models/w_gauss.mdl");
-	precache_model("models/p_gauss.mdl");
-	precache_sound("weapons/gauss2.wav");
 	precache_model("sprites/yelflare1.spr");
 	precache_model("sprites/xbeam1.spr");
 	precache_sound("weapons/electro4.wav");
 	precache_sound("weapons/electro5.wav");
 	precache_sound("weapons/electro6.wav");
 	precache_sound("ambience/pulsemachine.wav");
+	precache_sound("weapons/gauss2.wav");
+#else
+	precache_model("models/v_gauss.mdl");
+	precache_model("models/p_gauss.mdl");
+#endif
 }
 void w_gauss_updateammo(player pl)
 {

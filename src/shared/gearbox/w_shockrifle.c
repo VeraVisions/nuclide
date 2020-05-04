@@ -39,18 +39,17 @@ enum
 void
 w_shockrifle_precache(void)
 {
-	precache_model("models/v_shock.mdl");
+#ifdef SERVER
 	precache_model("models/w_shock.mdl");
-	precache_model("models/p_shock.mdl");
-	
 	precache_sound("weapons/shock_discharge.wav");
 	precache_sound("weapons/shock_draw.wav");
 	precache_sound("weapons/shock_fire.wav");
 	precache_sound("weapons/shock_impact.wav");
 	precache_sound("weapons/shock_recharge.wav");
-
-#ifdef CLIENT
+#else
 	PART_SHOCKPIECE = particleeffectnum("shockrifle.shockrifle_piece");
+	precache_model("models/v_shock.mdl");
+	precache_model("models/p_shock.mdl");
 #endif
 }
 

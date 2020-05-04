@@ -42,10 +42,11 @@ w_hegrenade_precache(void)
 #ifdef SERVER
 	Sound_Precache("weapon_hegrenade.bounce");
 	Sound_Precache("weapon_hegrenade.explode");
-#endif
-	precache_model("models/v_hegrenade.mdl");
 	precache_model("models/w_hegrenade.mdl");
+#else
+	precache_model("models/v_hegrenade.mdl");
 	precache_model("models/p_hegrenade.mdl");
+#endif
 }
 
 void

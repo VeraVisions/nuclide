@@ -36,15 +36,15 @@ enum
 void
 w_hornetgun_precache(void)
 {
-	precache_model("models/v_hgun.mdl");
-	precache_model("models/w_hgun.mdl");
-	precache_model("models/p_hgun.mdl");
-	precache_model("models/hornet.mdl");
-	
 #ifdef SERVER
 	Sound_Precache("weapon_hornetgun.fire");
 	Sound_Precache("weapon_hornetgun.buzz");
 	Sound_Precache("weapon_hornetgun.hit");
+	precache_model("models/w_hgun.mdl");
+	precache_model("models/hornet.mdl");
+#else
+	precache_model("models/v_hgun.mdl");
+	precache_model("models/p_hgun.mdl");
 #endif
 }
 

@@ -45,10 +45,11 @@ w_knife_precache(void)
 	Sound_Precache("weapon_knife.hitbody");
 	Sound_Precache("weapon_knife.hithard");
 	Sound_Precache("weapon_knife.miss");
-#endif
-	precache_model("models/v_knife.mdl");
 	precache_model("models/w_knife.mdl");
+#else
+	precache_model("models/v_knife.mdl");
 	precache_model("models/p_knife.mdl");
+#endif
 }
 
 void

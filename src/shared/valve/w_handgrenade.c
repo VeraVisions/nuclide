@@ -39,11 +39,11 @@ void w_handgrenade_precache(void)
 {
 #ifdef SERVER
 	Sound_Precache("weapon_handgrenade.bounce");
-#endif
-
-	precache_model("models/v_grenade.mdl");
 	precache_model("models/w_grenade.mdl");
+#else
+	precache_model("models/v_grenade.mdl");
 	precache_model("models/p_grenade.mdl");
+#endif
 }
 void w_handgrenade_updateammo(player pl)
 {

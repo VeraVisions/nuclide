@@ -41,10 +41,11 @@ w_fiveseven_precache(void)
 {
 #ifdef SERVER
 	Sound_Precache("weapon_fiveseven.fire");
-#endif
-	precache_model("models/v_fiveseven.mdl");
 	precache_model("models/w_fiveseven.mdl");
+#else
+	precache_model("models/v_fiveseven.mdl");
 	precache_model("models/p_fiveseven.mdl");
+#endif
 }
 
 void

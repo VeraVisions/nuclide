@@ -41,10 +41,11 @@ w_ump45_precache(void)
 {
 #ifdef SERVER
 	Sound_Precache("weapon_ump45.fire");
-#endif
-	precache_model("models/v_ump45.mdl");
 	precache_model("models/w_ump45.mdl");
+#else
+	precache_model("models/v_ump45.mdl");
 	precache_model("models/p_ump45.mdl");
+#endif
 }
 
 void

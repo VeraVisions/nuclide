@@ -36,7 +36,7 @@ item_c4::Logic(void)
 		 * if they won by detonating the bomb. */
 		rules.RoundOver(TEAM_T, 3500, FALSE);
 		Damage_Radius(origin, this.owner, 500, g_cstrike_bombradius, TRUE, WEAPON_C4BOMB);
-		sound(this, CHAN_VOICE, "weapons/c4_explode1.wav", 1.0, ATTN_NONE);
+		Sound_Play(this, CHAN_VOICE, "weapon_c4bomb.explode");
 
 		for (entity e = world; (e = find(e, ::classname, "func_bomb_target"));) {
 			CBaseTrigger trigger = (CBaseTrigger)e;
@@ -82,7 +82,7 @@ item_c4::item_c4(void)
 	customphysics = Logic;
 	m_flExplodeTime = time + 45.0f;
 
-	sound(this, CHAN_WEAPON, "weapons/c4_plant.wav", 1.0f, ATTN_IDLE);
+	Sound_Play(this, CHAN_WEAPON, "weapon_c4bomb.plant");
 }
 
 void

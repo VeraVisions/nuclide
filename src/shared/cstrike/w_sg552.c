@@ -41,10 +41,11 @@ w_sg552_precache(void)
 {
 #ifdef SERVER
 	Sound_Precache("weapon_sg552.fire");
-#endif
-	precache_model("models/v_sg552.mdl");
 	precache_model("models/w_sg552.mdl");
+#else
+	precache_model("models/v_sg552.mdl");
 	precache_model("models/p_sg552.mdl");
+#endif
 }
 
 void

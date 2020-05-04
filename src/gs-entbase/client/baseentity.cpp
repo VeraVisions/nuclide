@@ -73,9 +73,14 @@ CBaseEntity::RenderFXPass(void)
 	case RM_TEXTURE:
 		break;
 	case RM_GLOW:
+		vector vecPlayer;
+#ifdef WASTES
+		vecPlayer = [0,0,0];
+#else
 		int s = (float)getproperty(VF_ACTIVESEAT);
 		pSeat = &g_seats[s];
-		vector vecPlayer = pSeat->m_vecPredictedOrigin;
+		vecPlayer = pSeat->m_vecPredictedOrigin;
+#endif
 
 		if (checkpvs(vecPlayer, this) == FALSE) {
 			alpha -= clframetime;

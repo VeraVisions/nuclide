@@ -45,6 +45,7 @@ enum
 void
 w_pipewrench_precache(void)
 {
+#ifdef SERVER
 	precache_sound("weapons/pwrench_big_miss.wav");
 	precache_sound("weapons/pwrench_big_hit1.wav");
 	precache_sound("weapons/pwrench_big_hit2.wav");
@@ -57,9 +58,11 @@ w_pipewrench_precache(void)
 	precache_sound("weapons/pwrench_hitbod1.wav");
 	precache_sound("weapons/pwrench_hitbod2.wav");
 	precache_sound("weapons/pwrench_hitbod3.wav");
-	precache_model("models/v_pipe_wrench.mdl");
 	precache_model("models/w_pipe_wrench.mdl");
+#else
 	precache_model("models/p_pipe_wrench.mdl");
+	precache_model("models/v_pipe_wrench.mdl");
+#endif
 }
 
 void

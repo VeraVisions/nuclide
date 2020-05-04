@@ -41,13 +41,15 @@ enum
 void
 w_eagle_precache(void)
 {
-	precache_model("models/v_desert_eagle.mdl");
+#ifdef SERVER
 	precache_model("models/w_desert_eagle.mdl");
-	precache_model("models/p_desert_eagle.mdl");
-
 	precache_sound("weapons/desert_eagle_fire.wav");
 	precache_sound("weapons/desert_eagle_sight.wav");
 	precache_sound("weapons/desert_eagle_sight2.wav");
+#else
+	precache_model("models/v_desert_eagle.mdl");
+	precache_model("models/p_desert_eagle.mdl");
+#endif
 }
 
 int

@@ -42,10 +42,11 @@ w_ak47_precache(void)
 {
 #ifdef SERVER
 	Sound_Precache("weapon_ak47.fire");
-#endif
-	precache_model("models/v_ak47.mdl");
 	precache_model("models/w_ak47.mdl");
+#else
+	precache_model("models/v_ak47.mdl");
 	precache_model("models/p_ak47.mdl");
+#endif
 }
 
 void

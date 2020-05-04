@@ -42,10 +42,11 @@ w_awp_precache(void)
 #ifdef SERVER
 	Sound_Precache("weapon_awp.fire");
 	Sound_Precache("weapon_awp.zoom");
-#endif
-	precache_model("models/v_awp.mdl");
 	precache_model("models/w_awp.mdl");
+#else
+	precache_model("models/v_awp.mdl");
 	precache_model("models/p_awp.mdl");
+#endif
 }
 
 void

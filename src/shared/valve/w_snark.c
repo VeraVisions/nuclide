@@ -241,16 +241,16 @@ void w_snark_release(void)
 }
 void w_snark_precache(void)
 {
-	precache_model("models/w_sqknest.mdl");
-	precache_model("models/w_squeak.mdl");
-	precache_model("models/p_squeak.mdl");
-	precache_model("models/v_squeak.mdl");
-
 #ifdef SERVER
 	Sound_Precache("weapon_snark.deploy");
 	Sound_Precache("weapon_snark.die");
 	Sound_Precache("weapon_snark.blast");
 	Sound_Precache("weapon_snark.hunt");
+	precache_model("models/w_sqknest.mdl");
+	precache_model("models/w_squeak.mdl");
+#else
+	precache_model("models/p_squeak.mdl");
+	precache_model("models/v_squeak.mdl");
 #endif
 }
 void w_snark_updateammo(player pl)

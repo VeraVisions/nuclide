@@ -40,10 +40,11 @@ w_sg550_precache(void)
 {
 #ifdef SERVER
 	Sound_Precache("weapon_sg550.fire");
-#endif
-	precache_model("models/v_sg550.mdl");
 	precache_model("models/w_sg550.mdl");
+#else
+	precache_model("models/v_sg550.mdl");
 	precache_model("models/p_sg550.mdl");
+#endif
 }
 
 void

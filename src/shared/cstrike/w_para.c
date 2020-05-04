@@ -40,10 +40,11 @@ w_para_precache(void)
 {
 #ifdef SERVER
 	Sound_Precache("weapon_para.fire");
-#endif
-	precache_model("models/v_m249.mdl");
 	precache_model("models/w_m249.mdl");
+#else
+	precache_model("models/v_m249.mdl");
 	precache_model("models/p_m249.mdl");
+#endif
 }
 
 void

@@ -38,14 +38,17 @@ enum
 void
 w_m249_precache(void)
 {
-	precache_model("models/v_saw.mdl");
+#ifdef SERVER
 	precache_model("models/w_saw.mdl");
-	precache_model("models/p_saw.mdl");
 	precache_sound("weapons/saw_fire1.wav");
 	precache_sound("weapons/saw_fire2.wav");
 	precache_sound("weapons/saw_fire3.wav");
 	precache_sound("weapons/saw_reload.wav");
 	precache_sound("weapons/saw_reload2.wav");
+#else
+	precache_model("models/v_saw.mdl");
+	precache_model("models/p_saw.mdl");
+#endif
 }
 
 int 

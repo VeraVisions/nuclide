@@ -139,10 +139,9 @@ void Sporelauncher_AltFire(entity spawner, vector org, vector dir)
 void
 w_sporelauncher_precache(void)
 {
+#ifdef SERVER
 	precache_model("models/spore.mdl");
-	precache_model("models/v_spore_launcher.mdl");
 	precache_model("models/w_spore_launcher.mdl");
-	precache_model("models/p_spore_launcher.mdl");
 	precache_sound("weapons/splauncher_altfire.wav");
 	precache_sound("weapons/splauncher_bounce.wav");
 	precache_sound("weapons/splauncher_fire.wav");
@@ -153,6 +152,10 @@ w_sporelauncher_precache(void)
 	precache_sound("weapons/spore_hit1.wav");
 	precache_sound("weapons/spore_hit2.wav");
 	precache_sound("weapons/spore_hit3.wav");
+#else
+	precache_model("models/v_spore_launcher.mdl");
+	precache_model("models/p_spore_launcher.mdl");
+#endif
 
 }
 void

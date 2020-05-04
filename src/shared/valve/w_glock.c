@@ -52,11 +52,11 @@ w_glock_precache(void)
 {
 #ifdef SERVER
 	Sound_Precache("weapon_glock.fire");
-#endif
-
-	precache_model("models/v_9mmhandgun.mdl");
 	precache_model("models/w_9mmhandgun.mdl");
+#else
+	precache_model("models/v_9mmhandgun.mdl");
 	precache_model("models/p_9mmhandgun.mdl");
+#endif
 }
 
 void

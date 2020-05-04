@@ -42,10 +42,11 @@ w_smokegrenade_precache(void)
 #ifdef SERVER
 	Sound_Precache("weapon_smokegrenade.bounce");
 	Sound_Precache("weapon_smokegrenade.explode");
-#endif
-	precache_model("models/v_smokegrenade.mdl");
 	precache_model("models/w_smokegrenade.mdl");
+#else
+	precache_model("models/v_smokegrenade.mdl");
 	precache_model("models/p_smokegrenade.mdl");
+#endif
 }
 
 void

@@ -40,10 +40,11 @@ w_g3sg1_precache(void)
 {
 #ifdef SERVER
 	Sound_Precache("weapon_g3sg1.fire");
-#endif
-	precache_model("models/v_g3sg1.mdl");
 	precache_model("models/w_g3sg1.mdl");
+#else
+	precache_model("models/v_g3sg1.mdl");
 	precache_model("models/p_g3sg1.mdl");
+#endif
 }
 
 void

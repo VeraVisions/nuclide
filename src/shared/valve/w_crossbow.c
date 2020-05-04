@@ -47,13 +47,12 @@ w_crossbow_precache(void)
 	Sound_Precache("weapon_crossbow.hit");
 	Sound_Precache("weapon_crossbow.hitbody");
 	Sound_Precache("weapon_crossbow.reload");
-#endif
 	precache_model("models/crossbow_bolt.mdl");
-	precache_model("models/v_crossbow.mdl");
 	precache_model("models/w_crossbow.mdl");
+#else
+	precache_model("models/v_crossbow.mdl");
 	precache_model("models/p_crossbow.mdl");
-	precache_sound("weapons/xbow_reload1.wav");
-	precache_sound("weapons/xbow_fire1.wav");
+#endif
 }
 
 void
@@ -255,7 +254,7 @@ w_crossbow_reload(void)
 
 #ifdef SERVER
 	Weapons_ReloadWeapon(pl, player::crossbow_mag, player::ammo_bolt, 5);
-	sound(pl, CHAN_ITEM, "weapons/xbow_reload1.wav", 1.0f, ATTN_NORM);
+	Sound_Play(pl, CHAN_ITEM, "weapon_crossbow.reload");
 #endif
 
 	Weapons_ViewAnimation(CROSSBOW_RELOAD);
@@ -366,7 +365,7 @@ w_crossbow_hudpic(int selected, vector pos, float a)
 weapon_t w_crossbow =
 {
 	.name		= "crossbow",
-	.id		= ITEM_CROSSBOW,
+	.id			= ITEM_CROSSBOW,
 	.slot		= 2,
 	.slot_pos	= 2,
 	.draw		= w_crossbow_draw,

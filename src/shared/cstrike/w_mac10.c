@@ -41,10 +41,11 @@ w_mac10_precache(void)
 {
 #ifdef SERVER
 	Sound_Precache("weapon_mac10.fire");
-#endif
-	precache_model("models/v_mac10.mdl");
 	precache_model("models/w_mac10.mdl");
+#else
+	precache_model("models/v_mac10.mdl");
 	precache_model("models/p_mac10.mdl");
+#endif
 }
 
 void

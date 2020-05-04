@@ -40,10 +40,11 @@ w_scout_precache(void)
 {
 #ifdef SERVER
 	Sound_Precache("weapon_scout.fire");
-#endif
-	precache_model("models/v_scout.mdl");
 	precache_model("models/w_scout.mdl");
+#else
+	precache_model("models/v_scout.mdl");
 	precache_model("models/p_scout.mdl");
+#endif
 }
 
 void

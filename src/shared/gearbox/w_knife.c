@@ -41,6 +41,8 @@ enum
 void
 w_knife_precache(void)
 {
+#ifdef SERVER
+	precache_model("models/w_knife.mdl");
 	precache_sound("weapons/knife1.wav");
 	precache_sound("weapons/knife2.wav");
 	precache_sound("weapons/knife3.wav");
@@ -48,9 +50,10 @@ w_knife_precache(void)
 	precache_sound("weapons/knife_hit_wall2.wav");
 	precache_sound("weapons/knife_hit_flesh1.wav");
 	precache_sound("weapons/knife_hit_flesh2.wav");
+#else
 	precache_model("models/v_knife.mdl");
-	precache_model("models/w_knife.mdl");
 	precache_model("models/p_knife.mdl");
+#endif
 }
 
 void 

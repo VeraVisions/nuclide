@@ -54,19 +54,17 @@ w_c4bomb_precache(void)
 	Sound_Precache("weapon_c4bomb.disarmed");
 	Sound_Precache("weapon_c4bomb.explode");
 	Sound_Precache("weapon_c4bomb.plant");
-	precache_sound("weapons/c4_plant.wav");
 	precache_sound("weapons/c4_beep1.wav");
 	precache_sound("weapons/c4_beep2.wav");
 	precache_sound("weapons/c4_beep3.wav");
 	precache_sound("weapons/c4_beep4.wav");
 	precache_sound("weapons/c4_beep5.wav");
-	precache_sound("weapons/c4_explode1.wav");
 	precache_model("models/w_c4.mdl");
 	precache_model("models/w_backpack.mdl");
-	precache_model("models/p_c4.mdl");
 	precache_model("sprites/ledglow.spr");
 #else
 	precache_model("models/v_c4.mdl");
+	precache_model("models/p_c4.mdl");
 #endif
 }
 
