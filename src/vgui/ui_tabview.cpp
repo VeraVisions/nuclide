@@ -65,10 +65,10 @@ void CUITabView::SetTitle (string strName)
 void CUITabView::Draw(void)
 {
 	
-	//drawfill(m_parent.m_vecOrigin + m_vecOutlinePos, [m_vecOutlineSize[0], 1], '1 1 1', 0.5f);
-	drawfill(m_parent.m_vecOrigin + m_vecOutlinePos + [0, m_vecOutlineSize[1] - 1], [m_vecOutlineSize[0], 1], '0 0 0', 0.5f);
-	drawfill(m_parent.m_vecOrigin + m_vecOutlinePos + [0, 1], [1, m_vecOutlineSize[1] - 2], '1 1 1', 0.5f);
-	drawfill(m_parent.m_vecOrigin + m_vecOutlinePos + [m_vecOutlineSize[0] - 1, 1], [1, m_vecOutlineSize[1] - 2], '0 0 0', 0.5f);
+	//drawfill(m_parent.m_vecOrigin + m_vecOutlinePos, [m_vecOutlineSize[0], 1], [1,1,1], 0.5f);
+	drawfill(m_parent.m_vecOrigin + m_vecOutlinePos + [0, m_vecOutlineSize[1] - 1], [m_vecOutlineSize[0], 1], [0,0,0], 0.5f);
+	drawfill(m_parent.m_vecOrigin + m_vecOutlinePos + [0, 1], [1, m_vecOutlineSize[1] - 2], [1,1,1], 0.5f);
+	drawfill(m_parent.m_vecOrigin + m_vecOutlinePos + [m_vecOutlineSize[0] - 1, 1], [1, m_vecOutlineSize[1] - 2], [0,0,0], 0.5f);
 	
 	//Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [8, 8], m_strTitle, g_fntDefault);
 }

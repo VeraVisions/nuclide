@@ -58,7 +58,7 @@ Print_DrawCenterprint(void)
 	
 	for (int i = 0; i < (pSeat->m_iCenterprintLines); i++) {
 		vecPos[0] = g_hudmins[0] + (g_hudres[0] / 2) - (stringwidth(pSeat->m_strCenterprintBuffer[i], TRUE, '12 12') / 2);
-		drawstring(vecPos, pSeat->m_strCenterprintBuffer[i], '12 12', '1 1 1', pSeat->m_flCenterprintAlpha, 0);
+		drawstring(vecPos, pSeat->m_strCenterprintBuffer[i], '12 12', [1,1,1], pSeat->m_flCenterprintAlpha, 0);
 		vecPos[1] += 8;
 	}
 }

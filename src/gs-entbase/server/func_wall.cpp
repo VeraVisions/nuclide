@@ -30,7 +30,7 @@ class func_wall:CBaseTrigger
 void func_wall::func_wall(void)
 {
 	precache_model(model);
-	//angles = '0 0 0';
+	//angles = [0,0,0];
 	movetype = MOVETYPE_PUSH;
 	solid = SOLID_BSP;
 	SetModel(model);

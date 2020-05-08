@@ -45,7 +45,7 @@ void CUIPic::CUIPic(void)
 void CUIPic::Draw(void)
 {
 	if (m_strImage) {
-		drawpic(m_parent.m_vecOrigin + m_vecOrigin, m_strImage, m_vecSize, '1 1 1', 1.0f, 0);
+		drawpic(m_parent.m_vecOrigin + m_vecOrigin, m_strImage, m_vecSize, [1,1,1], 1.0f, 0);
 	}
 }
 

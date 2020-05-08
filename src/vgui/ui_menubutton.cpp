@@ -68,15 +68,15 @@ void CUIMenuButton::Draw(void)
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, m_vecColor, m_flAlpha);
 
 	if (m_iFlags & BUTTON_DOWN) {
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, m_vecSize[1] - 1], [m_vecSize[0], 1], '1 1 1', 0.5f);
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin, [m_vecSize[0], 1], '0 0 0', 0.5f);
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, 1], [1, m_vecSize[1] - 2], '0 0 0', 0.5f);
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], '1 1 1', 0.5f);
+		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, m_vecSize[1] - 1], [m_vecSize[0], 1], [1,1,1], 0.5f);
+		drawfill(m_parent.m_vecOrigin + m_vecOrigin, [m_vecSize[0], 1], [0,0,0], 0.5f);
+		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, 1], [1, m_vecSize[1] - 2], [0,0,0], 0.5f);
+		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], [1,1,1], 0.5f);
 	} else {
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, m_vecSize[1] - 1], [m_vecSize[0], 1], '0 0 0', 0.5f);
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin, [m_vecSize[0], 1], '1 1 1', 0.5f);
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, 1], [1, m_vecSize[1] - 2], '1 1 1', 0.5f);
-		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], '0 0 0', 0.5f);
+		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, m_vecSize[1] - 1], [m_vecSize[0], 1], [0,0,0], 0.5f);
+		drawfill(m_parent.m_vecOrigin + m_vecOrigin, [m_vecSize[0], 1], [1,1,1], 0.5f);
+		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, 1], [1, m_vecSize[1] - 2], [1,1,1], 0.5f);
+		drawfill(m_parent.m_vecOrigin + m_vecOrigin + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], [0,0,0], 0.5f);
 	}
 #else
 	if (m_iFlags & BUTTON_DOWN) {
@@ -90,7 +90,7 @@ void CUIMenuButton::Draw(void)
 
 	
 	if (m_strIcon) {
-		drawpic(m_parent.m_vecOrigin + m_vecOrigin + [4, 4], m_strIcon, '16 16', '1 1 1', 1.0f);
+		drawpic(m_parent.m_vecOrigin + m_vecOrigin + [4, 4], m_strIcon, [16,16], [1,1,1], 1.0f);
 		if (m_strTitle) {
 			Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [26, 8], m_strTitle, g_fntDefault);
 		}

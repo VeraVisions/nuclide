@@ -21,7 +21,7 @@ Infinitely small point of light illuminating the scene.
 
 idTech 3 BSP relevant keys:
 "light"         Light intensity value. Default is '300'.
-"_color"        Normalized RGB color value. Default is '1 1 1'.
+"_color"        Normalized RGB color value. Default is [1,1,1].
 "radius"        Sets the light cone radius. Default is '64'.
 "target"        When set, targets an enity instead, becoming a spotlight.
 

@@ -50,7 +50,7 @@ void env_shake::Trigger (void)
 		WriteFloat(MSG_MULTICAST, m_flDuration);
 		WriteFloat(MSG_MULTICAST, m_flFrequency);
 		msg_entity = e;
-		multicast('0 0 0', MULTICAST_ONE_R);
+		multicast([0,0,0], MULTICAST_ONE_R);
 	}
 }
 

@@ -57,9 +57,9 @@ void env_fade::Trigger (void)
 	msg_entity = eActivator;
 	
 	if (spawnflags & EVF_ONLYUSER) {
-		multicast('0 0 0', MULTICAST_ONE_R);
+		multicast([0,0,0], MULTICAST_ONE_R);
 	} else {
-		multicast('0 0 0', MULTICAST_ALL);
+		multicast([0,0,0], MULTICAST_ALL);
 	}
 }
 

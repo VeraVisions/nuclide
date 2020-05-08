@@ -42,12 +42,14 @@ PMove_Init(void) {
 #ifdef VALVE
 	localcmd("serverinfo phy_accelerate 8\n");
 	localcmd("serverinfo phy_maxspeed 270\n");
-#endif
-	
-#ifdef CSTRIKE
+#elif CSTRIKE
 	localcmd("serverinfo phy_accelerate 4\n");
 	localcmd("serverinfo phy_maxspeed 250\n");
+#else
+	localcmd("serverinfo phy_accelerate 8\n");
+	localcmd("serverinfo phy_maxspeed 270\n");
 #endif
+
 #endif
 }
 

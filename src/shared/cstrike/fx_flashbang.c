@@ -54,7 +54,7 @@ FX_Flashbang(vector org)
 		WriteFloat(MSG_MULTICAST, fade);
 		WriteByte(MSG_MULTICAST, EVF_FADEDROM);
 		msg_entity = e;
-		multicast('0 0 0', MULTICAST_ONE_R);
+		multicast([0,0,0], MULTICAST_ONE_R);
 	}
 }
 #endif 

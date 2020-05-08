@@ -12,7 +12,7 @@ Radio_BroadcastMessage(float fMessage)
 	WriteByte(MSG_MULTICAST, EV_RADIOMSG);
 	WriteByte(MSG_MULTICAST, fMessage);
 	msg_entity = self;
-	multicast('0 0 0', MULTICAST_ALL);
+	multicast([0,0,0], MULTICAST_ALL);
 }
 
 /*
@@ -30,7 +30,7 @@ Radio_TeamMessage(float fMessage, float fTeam)
 		WriteByte(MSG_MULTICAST, EV_RADIOMSG);
 		WriteByte(MSG_MULTICAST, fMessage);
 		msg_entity = eEnt;
-		multicast('0 0 0', MULTICAST_ONE);
+		multicast([0,0,0], MULTICAST_ONE);
 	}
 	
 	for (entity eFind = world; (eFind = find(eFind, classname, "player"));) {
@@ -100,7 +100,7 @@ CSEv_Radio_f(float fMessage)
 		WriteByte(MSG_MULTICAST, num_for_edict(eEnt) - 1);
 		WriteByte(MSG_MULTICAST, fMessage);
 		msg_entity = eEnt;
-		multicast('0 0 0', MULTICAST_ONE);
+		multicast([0,0,0], MULTICAST_ONE);
 	}
 	
 	// Don't allow spamming

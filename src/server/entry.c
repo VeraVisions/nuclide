@@ -135,24 +135,26 @@ void initents(void)
 
 	Sound_Init();
 
-	// Let's load materials.txt because someone thought this was the best idea
-	filestream fileMaterial = fopen("sound/materials.txt", FILE_READ);
-	hashMaterials = __NULL__;
-	hashMaterials = hash_createtab(2, HASH_ADD);
+	if (serverkeyfloat("*bspversion") != 30) {
+		// Let's load materials.txt because someone thought this was the best idea
+		filestream fileMaterial = fopen("sound/materials.txt", FILE_READ);
+		hashMaterials = __NULL__;
+		hashMaterials = hash_createtab(2, HASH_ADD);
 
-	if (fileMaterial >= 0) {
-		string sTemp;
-		while ((sTemp = fgets(fileMaterial))) {
-			// Tokenize and just parse this stuff in
-			if (tokenize_console(sTemp) == 2) {
-				hash_add(hashMaterials, strtolower(argv(1)), str2chr(argv(0), 0));
+		if (fileMaterial >= 0) {
+			string sTemp;
+			while ((sTemp = fgets(fileMaterial))) {
+				// Tokenize and just parse this stuff in
+				if (tokenize_console(sTemp) == 2) {
+					hash_add(hashMaterials, strtolower(argv(1)), str2chr(argv(0), 0));
+				}
 			}
+			fclose(fileMaterial);
+			g_hlbsp_materials = TRUE;
+		} else {
+			print("Failed to load sound/materials.txt!\n");
+			g_hlbsp_materials = FALSE;
 		}
-		fclose(fileMaterial);
-		g_hlbsp_materials = TRUE;
-	} else {
-		error("Failed to load sound/materials.txt!\n");
-		g_hlbsp_materials = FALSE;
 	}
 
 	PMove_Init();

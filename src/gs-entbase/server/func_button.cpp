@@ -307,7 +307,7 @@ void func_button::MoveToDestination(vector vecDest, void(void) func)
 	think = MoveToDestination_End;
 
 	if (vecDest == origin) {
-		velocity = '0 0 0';
+		velocity = [0,0,0];
 		nextthink = (ltime + 0.1);
 		return;
 	}
@@ -317,7 +317,7 @@ void func_button::MoveToDestination(vector vecDest, void(void) func)
 	fTravelTime = (flTravel / m_flSpeed);
 
 	if (fTravelTime < 0.1) {
-		velocity = '0 0 0';
+		velocity = [0,0,0];
 		nextthink = ltime + 0.1;
 		return;
 	}

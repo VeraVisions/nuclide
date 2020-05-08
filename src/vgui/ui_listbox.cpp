@@ -92,13 +92,13 @@ void CUIListBox::Draw(void)
 		return;
 	}
 	
-	drawfill(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, '0 0 0', 0.5f);
-	drawfill(m_parent.m_vecOrigin + m_vecOrigin, [m_vecSize[0], 1], '0 0 0', 0.5f);
-	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, m_vecSize[1] - 1], [m_vecSize[0], 1], '1 1 1', 0.5f);
-	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, 1], [1, m_vecSize[1] - 2], '0 0 0', 0.5f);
-	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], '1 1 1', 0.5f);
+	drawfill(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, [0,0,0], 0.5f);
+	drawfill(m_parent.m_vecOrigin + m_vecOrigin, [m_vecSize[0], 1], [0,0,0], 0.5f);
+	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, m_vecSize[1] - 1], [m_vecSize[0], 1], [1,1,1], 0.5f);
+	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [0, 1], [1, m_vecSize[1] - 2], [0,0,0], 0.5f);
+	drawfill(m_parent.m_vecOrigin + m_vecOrigin + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], [1,1,1], 0.5f);
 
-	vector vecOffset = '8 8';
+	vector vecOffset = [8,8];
 	
 	iMaxDisplay = bound(0, m_iItemCount, floor(m_vecSize[1] / 20));
 	for (int i = m_iDrawOffset; i < iMaxDisplay + m_iDrawOffset; i++) {
@@ -107,7 +107,7 @@ void CUIListBox::Draw(void)
 		}
 		
 		if (m_iSelected == i) {
-			drawfill(m_parent.m_vecOrigin + m_vecOrigin + vecOffset + '-7 -3', [m_vecSize[0] - 2, 18], '1 1 1', 0.5f);
+			drawfill(m_parent.m_vecOrigin + m_vecOrigin + vecOffset + [-7,-3], [m_vecSize[0] - 2, 18], [1,1,1], 0.5f);
 		}
 		
 		Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + vecOffset, m_strItems[i], g_fntDefault);
@@ -120,7 +120,7 @@ void CUIListBox::Input (float flEVType, float flKey, float flChar, float flDevID
 	int iMaxDisplay;
 	iMaxDisplay = bound(0, m_iItemCount, floor(m_vecSize[1] / 20));
 	
-	vector vecOffset = '8 8';
+	vector vecOffset = [8,8];
 	if (flEVType == IE_KEYDOWN) {
 		if (flKey == K_MOUSE1) {
 			for (int i = m_iDrawOffset; i < iMaxDisplay + m_iDrawOffset; i++) {
