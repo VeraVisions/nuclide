@@ -1,0 +1,27 @@
+1. Building all of the game-logic
+
+To build the game-logic for all games, issue 'make' inside the src/
+directory of the repository. This requires you to have the latest
+fteqcc installed.
+
+2. Building a specific game or mod
+
+For that you'll have to navigate into the client and server directory
+of the game you want to compile. For example if you're only wanting to
+build the Half-Life game-logic, navigate into src/client/valve, issue
+'make' there, then do the same inside src/server/valve.
+
+3. Building the engine
+
+The engine is not part of this project.
+However, as of this writing, building the engine is simple.
+Checkout/Clone the FTEQW engine repository, then navigate into the
+engine/ sub-directory and issue 'make m-rel' there.
+This will generate a 'fteqw' binary for your platform in the sub-directory
+titled 'release'.
+
+4. Misc notes
+
+To those not in the know, the game-logic is written in QuakeC, it is thus
+platform and architecture independent. You do not need to rebuild the logic
+for each and every platform. The result will be identical.

@@ -1,20 +1,31 @@
 Q: Why does this project exist?
-A: >I< wanted a free variant of the best version of Counter-Strike in 2016 as
+A: I wanted a free variant of the best version of Counter-Strike in 2016 as
    as I was preparing to move away from x86 hardware and moving to other
    operating systems that could never run Wine/Windows software.
+   So I decided to 'put my money where my mouth is' and write a small
+   game-logic re-implementation of CS. It grew from there. 
    In the end, I aim to support more mods. Including Half-Life.
+   A lot of the codebase I also use in my commercial game, The Wastes.
+   Due to the free license on this codebase, so can you.
 
 Q: Can I help at this moment?
-A: Not really. Unless you've got crashes etc. to report that are really bad
+A: It depends. If you've got crashes etc. to report that are really bad
    and not documented, feel free to report them. I know what needs doing and
    it'll get done in time.
+   But then there's little things, like - getting the firing rate of a weapon
+   just right. I do not look at decompiled code. I do not look at leaked code.
+   if you can research the exact values of some low-hanging fruit like that,
+   feel free to tweak the values and send me a diff or tell me what needs to be
+   changed on IRC.
    If a crash to console happens, it's most likely my bug. If the whole engine
    comes crashing down, it's FTEQW's fault. Not mine.
 
 Q: It doesn't work with my Half-Life/Counter-Strike version.
 A: This is designed for the disc version of Half-Life, released before Steam.
    Supporting both is a bit annoying right now. I might add support for the
-   Steam UI one day.
+   Steam UI one day. Just right now it's in an alpha-stage where yes, most DOES
+   work, the backend is constantly changing still and I can't afford to support
+   all these things at once.
 
 Q: I don't like how you're doing [insert thing here]!
 A: Too bad!
@@ -45,15 +56,24 @@ Q: X#sh3D? Why not use that instead of FTE QuakeWorld?
 A: There are enough GPL violators around, I do not need to contribute to that
    cesspool. 'From scratch' my a$$.
 
+Q: Is FTEQW a GoldSrc replacement?
+A: No. It is not aiming to be anything like that. FTE has been around for
+   longer (in parts) than even GoldSrc has. It's just a QuakeWorld engine
+   that supports an whole lot of formats.
+   You can easily make very modern games with it too. It's not limited like
+   GoldSrc and Source in terms of rendering as it's fully accessible. 
+
 Q: [insert thing here] isn't 100% exact as in the original 1.5.
 A: Sometimes bugs get fixed, sometimes very minor details get streamlined in
    order to get more work done in other areas. FreeCS will most likely never
    be done in that accuracy aspect, but it'll get better with time.
+   Feel free to contribute when it comes to low-hanging fruit like tweaking
+   variables!
 
 Q: Why do this when you can just run a VM?
 A: FreeCS isn't just making CS more portable. It also fixes bugs. It optimises
    the netcode greatly. It's got much better lag compensation and client-side
-   player and weapon prediction than CS ever did.
+   player and weapon prediction than CS ever did. Yes, even the Steam version. 
 
 Q: I still don't get it - why not play CS on Steam?
 A: This is clearly not intended for you, then!
