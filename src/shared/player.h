@@ -59,8 +59,8 @@ class base_player
 	int old_flags;
 	int old_activeweapon;
 	int old_items;
-	int old_health;
-	int old_armor;
+	float old_health;
+	float old_armor;
 	int old_movetype;
 	float old_viewofs;
 	int old_baseframe;

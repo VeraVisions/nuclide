@@ -22,7 +22,8 @@ Draws a little notification for anyone using voice chat
 =================
 */
 void
-Voice_DrawHUD(void) {
+Voice_DrawHUD(void)
+{
 	vector pos = video_mins + [video_res[0] - 160, video_res[1] - 136];
 
 	for (int i = -1; i > -32; i--) {
@@ -61,7 +62,6 @@ Voice_DrawHUD(void) {
 	}
 }
 
-
 /*
 =================
 Player_PreDraw
@@ -74,10 +74,10 @@ Voice_Draw3D(entity t)
 		vector vpos = t.origin + [0,0,48];
 		makevectors(view_angles);
 		R_BeginPolygon("gfx/vgui/icntlk_pl");
-		R_PolygonVertex(vpos + v_right*8 - v_up*8, '1 1', [1,1,1], 1);
-		R_PolygonVertex(vpos - v_right*8 - v_up*8, '0 1', [1,1,1], 1);
-		R_PolygonVertex(vpos - v_right*8 + v_up*8, '0 0', [1,1,1], 1);
-		R_PolygonVertex(vpos + v_right*8 + v_up*8, '1 0', [1,1,1], 1);
+		R_PolygonVertex(vpos + v_right * 8 - v_up * 8, [1,1], [1,1,1], 1.0f);
+		R_PolygonVertex(vpos - v_right * 8 - v_up * 8, [0,1], [1,1,1], 1.0f);
+		R_PolygonVertex(vpos - v_right * 8 + v_up * 8, [0,0], [1,1,1], 1.0f);
+		R_PolygonVertex(vpos + v_right * 8 + v_up * 8, [1,0], [1,1,1], 1.0f);
 		R_EndPolygon();
 	}
 }

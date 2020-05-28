@@ -18,6 +18,8 @@
 void
 Damage_Apply(entity t, entity c, float dmg, int w, int type)
 {
+	base_player tp = (base_player)t;
+
 	CGameRules rules = (CGameRules)g_grMode;
 	if (t.flags & FL_GODMODE) {
 		return;
@@ -30,20 +32,20 @@ Damage_Apply(entity t, entity c, float dmg, int w, int type)
 
 	/* skip armor */
 	if not (type & DMG_SKIP_ARMOR)
-	if (t.armor && dmg > 0) {
+	if (tp.armor && dmg > 0) {
 		float flArmor;
 		float flNewDamage;
 
 		flNewDamage = dmg * 0.2;
 		flArmor = (dmg - flNewDamage) * 0.5;
 
-		if (flArmor > t.armor) {
-			flArmor = t.armor;
+		if (flArmor > tp.armor) {
+			flArmor = tp.armor;
 			flArmor *= (1/0.5);
 			flNewDamage = dmg - flArmor;
-			t.armor = 0;
+			tp.armor = 0;
 		} else {
-			t.armor -= flArmor;
+			tp.armor -= flArmor;
 		}
 		dmg = flNewDamage;
 	}

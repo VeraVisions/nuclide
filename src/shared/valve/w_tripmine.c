@@ -31,6 +31,7 @@ Tripmine Weapon
 #ifdef SERVER
 class monster_tripmine:CBaseMonster
 {
+	float armor;
 	void(void) monster_tripmine;
 
 	virtual float(entity, float) SendEntity;
@@ -43,15 +44,15 @@ float
 monster_tripmine::SendEntity(entity pvsent, float flags)
 {
 	WriteByte(MSG_ENTITY, ENT_TRIPMINE);
-	WriteCoord(MSG_ENTITY, self.origin[0]);
-	WriteCoord(MSG_ENTITY, self.origin[1]);
-	WriteCoord(MSG_ENTITY, self.origin[2]);
-	WriteCoord(MSG_ENTITY, self.angles[0]);
-	WriteCoord(MSG_ENTITY, self.angles[1]);
-	WriteCoord(MSG_ENTITY, self.angles[2]);
-	WriteFloat(MSG_ENTITY, self.armor);
-	WriteByte(MSG_ENTITY, self.health);
-	WriteShort(MSG_ENTITY, self.modelindex);
+	WriteCoord(MSG_ENTITY, origin[0]);
+	WriteCoord(MSG_ENTITY, origin[1]);
+	WriteCoord(MSG_ENTITY, origin[2]);
+	WriteCoord(MSG_ENTITY, angles[0]);
+	WriteCoord(MSG_ENTITY, angles[1]);
+	WriteCoord(MSG_ENTITY, angles[2]);
+	WriteFloat(MSG_ENTITY, armor);
+	WriteByte(MSG_ENTITY, health);
+	WriteShort(MSG_ENTITY, modelindex);
 	return TRUE;
 }
 

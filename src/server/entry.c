@@ -150,10 +150,8 @@ void initents(void)
 				}
 			}
 			fclose(fileMaterial);
-			g_hlbsp_materials = TRUE;
 		} else {
 			print("Failed to load sound/materials.txt!\n");
-			g_hlbsp_materials = FALSE;
 		}
 	}
 

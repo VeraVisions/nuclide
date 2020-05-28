@@ -27,7 +27,6 @@
 #define CLASSEXPORT(classname,classa) void classname(void) { spawnfunc_##classa(); }
 
 var int autocvar_mp_flashlight = TRUE;
-var int g_hlbsp_materials = FALSE;
 
 void FX_Impact(int, vector, vector);
 void FX_Explosion(vector);
@@ -55,7 +54,6 @@ entity g_eAttacker;
 .int iBleeds;
 .entity eUser;
 .float material;
-.float armor;
 .float deaths;
 .float fStepTime;
 

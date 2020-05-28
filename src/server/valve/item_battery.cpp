@@ -39,14 +39,16 @@ void item_battery::touch(void)
 	if (other.classname != "player") {
 		return;
 	}
+
+	base_player pl = (base_player)other;
 	
-	if (other.armor >= 100) {
+	if (pl.armor >= 100) {
 		return;
 	}
 	/* Move this somewhere else? */
-	other.armor += Skill_GetValue("battery");
-	if (other.armor > 100) {
-		other.armor = 100;
+	pl.armor += Skill_GetValue("battery");
+	if (pl.armor > 100) {
+		pl.armor = 100;
 	}
 
 	Logging_Pickup(other, this, __NULL__);

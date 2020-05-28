@@ -58,14 +58,15 @@ void func_recharge::PlayerUse(void)
 		return;
 	}
 
-	if (eActivator.armor >= 100) {
+	base_player pl = (base_player)eActivator;
+	if (pl.armor >= 100) {
 		eActivator.gflags &= ~GF_USE_RELEASED;
 		sound(this, CHAN_VOICE, m_strSndDone, 1.0, ATTN_NORM);
 	} else {
 		if (m_eUser == world) {
 			sound(this, CHAN_ITEM, m_strSndCharging, 1.0, ATTN_NORM);
 		}
-		eActivator.armor = bound(0, eActivator.armor += 1, 100);
+		pl.armor = bound(0, pl.armor += 1, 100);
 	}
 
 	m_eUser = eActivator;
