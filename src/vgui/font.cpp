@@ -41,8 +41,8 @@ Font_Load (string strFile, font_s &fntNew)
 	fntNew.flAlpha = 1.0f;
 	fntNew.iFlags = 0;
 #else
-	string strTemp;
-	string strFontPath;
+	string strTemp = "";
+	string strFontPath = "";
 	filestream fileFont = fopen(strFile, FILE_READ);
 	fntNew.iID = 0;
 	fntNew.iScale = 8;

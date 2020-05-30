@@ -67,7 +67,7 @@ FX_BreakModel(int count, vector vMins, vector vMaxs, vector vVel, float fStyle)
 #else
 	static void FX_BreakModel_Remove(void) { remove(self) ; }
 
-	float fModelCount;
+	float fModelCount = 0;
 	vector vecPos;
 	string sModel = "";
 
@@ -109,9 +109,7 @@ FX_BreakModel(int count, vector vMins, vector vMaxs, vector vVel, float fStyle)
 	}
 
 	vector vWorldPos;
-	vWorldPos[0] = vMins[0] + (0.5 * (vMaxs[0] - vMins[0]));
-	vWorldPos[1] = vMins[1] + (0.5 * (vMaxs[1] - vMins[1]));
-	vWorldPos[2] = vMins[2] + (0.5 * (vMaxs[2] - vMins[2]));
+	vWorldPos = vMins + (0.5 * (vMaxs - vMins));
 
 	switch (fStyle) {
 		case GSMATERIAL_GLASS:

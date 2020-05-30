@@ -131,9 +131,9 @@ void w_gauss_precache(void)
 	precache_sound("weapons/electro4.wav");
 	precache_sound("weapons/electro5.wav");
 	precache_sound("weapons/electro6.wav");
-	precache_sound("ambience/pulsemachine.wav");
 	precache_sound("weapons/gauss2.wav");
 #else
+	precache_sound("ambience/pulsemachine.wav");
 	precache_model("models/v_gauss.mdl");
 	precache_model("models/p_gauss.mdl");
 #endif

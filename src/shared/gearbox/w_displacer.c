@@ -51,10 +51,10 @@ w_displacer_precache(void)
 	precache_sound("weapons/displacer_teleport.wav");
 	precache_sound("weapons/displacer_teleport_player.wav");
 	precache_model("models/w_displacer.mdl");
-	precache_model("sprites/exit1.spr");
 #else
 	precache_model("models/v_displacer.mdl");
 	precache_model("models/p_displacer.mdl");
+	precache_model("sprites/exit1.spr");
 #endif
 }
 

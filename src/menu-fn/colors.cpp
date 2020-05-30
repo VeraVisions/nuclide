@@ -29,7 +29,7 @@ string Colors_RGB8_to_HEX(vector color)
 	string out = "^x";
 
 	for (int i = 0; i < 3; i++) {
-		string a;
+		string a = "";
 		float b = rint(color[i] * 15);
 
 		switch (b) {

@@ -43,7 +43,7 @@ int Weapons_AddItem(base_player pl, int w, int startammo)
 	maxit = rules.MaxItemPerSlot(g_weapons[w].slot);
 	if (maxit > 0) {
 		int wantslot = g_weapons[w].slot;
-		int c;
+		int c = 0;
 		for (int i = 0; i < g_weapons.length; i++) {
 			if (pl.g_items & g_weapons[i].id && g_weapons[i].slot == wantslot) {
 				c++;

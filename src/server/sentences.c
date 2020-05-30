@@ -87,7 +87,7 @@ string
 Sentences_GetSamples(string word)
 {
 	int len;
-	int gc;
+	int gc = 0;
 
 	/* you never know what NPCs might do */
 	if (word == "") {

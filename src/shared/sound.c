@@ -255,7 +255,6 @@ Sound_Precache(string shader)
 	dprint("\n");
 
 	search_end(sh);
-	fclose(fh);
 	return -1;
 }
 
@@ -269,6 +268,7 @@ Sound_Play(entity target, int chan, string shader)
 	int flag;
 	int sample;
 
+	flag = 0;
 	sample = (int)hash_get(g_hashsounds, shader);
 
 	if (sample < 0) {
@@ -351,9 +351,10 @@ Sound_PlayAt(vector pos, string shader)
 	int r;
 	float radius;
 	float pitch;
-	int flags;
+	int flag;
 	int sample;
 
+	flag = 0;
 	sample = (int)hash_get(g_hashsounds, shader);
 
 	if (sample < 0) {
@@ -369,13 +370,13 @@ Sound_PlayAt(vector pos, string shader)
 
 	/* flags */
 	if (g_sounds[sample].flags & SNDFL_NOREVERB) {
-		flags |= SOUNDFLAG_NOREVERB;
+		flag |= SOUNDFLAG_NOREVERB;
 	}
 	if (g_sounds[sample].flags & SNDFL_GLOBAL) {
 		radius = 0;
 	}
 	if (g_sounds[sample].flags & SNDFL_LOOPING) {
-		flags |= SOUNDFLAG_FORCELOOP;
+		flag |= SOUNDFLAG_FORCELOOP;
 	}
 	if (g_sounds[sample].flags & SNDFL_NODUPS) {
 		if (g_sounds[sample].playc >= g_sounds[sample].sample_count) {
@@ -385,7 +386,7 @@ Sound_PlayAt(vector pos, string shader)
 	}
 #ifdef CLIENT
 	if (g_sounds[sample].flags & SNDFL_OMNI) {
-		flags |= SOUNDFLAG_NOSPACIALISE;
+		flag |= SOUNDFLAG_NOSPACIALISE;
 	}
 #endif
 
@@ -400,7 +401,7 @@ Sound_Update(entity target, int channel, int sample, float volume)
 	int r;
 	float radius;
 	float pitch;
-	int flags;
+	int flag;
 
 	if (sample < 0) {
 		return;
@@ -413,16 +414,17 @@ Sound_Update(entity target, int channel, int sample, float volume)
 	/* set pitch */
 	pitch = random(g_sounds[sample].pitch_min, g_sounds[sample].pitch_max);
 	radius = g_sounds[sample].dist_max;
+	flag = 0;
 
 	/* flags */
 	if (g_sounds[sample].flags & SNDFL_NOREVERB) {
-		flags |= SOUNDFLAG_NOREVERB;
+		flag |= SOUNDFLAG_NOREVERB;
 	}
 	if (g_sounds[sample].flags & SNDFL_GLOBAL) {
 		radius = ATTN_NONE;
 	}
 	if (g_sounds[sample].flags & SNDFL_LOOPING) {
-		flags |= SOUNDFLAG_FORCELOOP;
+		flag |= SOUNDFLAG_FORCELOOP;
 	}
 	if (g_sounds[sample].flags & SNDFL_NODUPS) {
 		if (g_sounds[sample].playc >= g_sounds[sample].sample_count) {
@@ -431,7 +433,7 @@ Sound_Update(entity target, int channel, int sample, float volume)
 		r = g_sounds[sample].playc++;
 	}
 	if (g_sounds[sample].flags & SNDFL_OMNI) {
-		flags |= SOUNDFLAG_NOSPACIALISE;
+		flag |= SOUNDFLAG_NOSPACIALISE;
 	}
 
 	soundupdate(
@@ -441,7 +443,7 @@ Sound_Update(entity target, int channel, int sample, float volume)
 		g_sounds[sample].volume * volume,
 		radius,
 		pitch,
-		flags,
+		flag,
 		g_sounds[sample].offset
 	);
 }
@@ -452,7 +454,7 @@ Sound_Speak(entity target, string shader)
 	int r;
 	float radius;
 	float pitch;
-	int flags;
+	int flag;
 	int sample;
 
 	sample = (int)hash_get(g_hashsounds, shader);
@@ -468,16 +470,17 @@ Sound_Speak(entity target, string shader)
 	/* set pitch */
 	pitch = random(g_sounds[sample].pitch_min, g_sounds[sample].pitch_max);
 	radius = g_sounds[sample].dist_max;
+	flag = 0;
 
 	/* flags */
 	if (g_sounds[sample].flags & SNDFL_NOREVERB) {
-		flags |= SOUNDFLAG_NOREVERB;
+		flag |= SOUNDFLAG_NOREVERB;
 	}
 	if (g_sounds[sample].flags & SNDFL_GLOBAL) {
 		radius = ATTN_NONE;
 	}
 	if (g_sounds[sample].flags & SNDFL_LOOPING) {
-		flags |= SOUNDFLAG_FORCELOOP;
+		flag |= SOUNDFLAG_FORCELOOP;
 	}
 	if (g_sounds[sample].flags & SNDFL_NODUPS) {
 		if (g_sounds[sample].playc >= g_sounds[sample].sample_count) {
@@ -486,11 +489,11 @@ Sound_Speak(entity target, string shader)
 		r = g_sounds[sample].playc++;
 	}
 	if (g_sounds[sample].flags & SNDFL_FOLLOW) {
-		flags |= SOUNDFLAG_FOLLOW;
+		flag |= SOUNDFLAG_FOLLOW;
 	}
 
 	if (g_sounds[sample].flags & SNDFL_PRIVATE) {
-		flags |= SOUNDFLAG_UNICAST;
+		flag |= SOUNDFLAG_UNICAST;
 		msg_entity = target;
 	}
 

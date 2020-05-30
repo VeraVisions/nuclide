@@ -48,7 +48,7 @@ CSEv_TeamJoin_f(float f)
 	}
 	player pl = (player)self;
 
-	entity spot;
+	entity spot = world;
 	pl.classname = "player";
 	pl.health = self.max_health = 100;
 
