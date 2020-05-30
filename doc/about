@@ -1,0 +1,41 @@
+About Nuclide
+
+The Nuclide project produces a freely available game-logic component and 
+development platform on top of FTEQW.
+Our goals is to create a modern research base for new advancements, features
+as well as support games whose formats are supported by FTEQW but their code
+isn't freely accessible.
+
+1. Why might I want to use it?
+
+Nuclide is for you when:
+
+- You want to play one of our supported games on the platform/arch of your
+  choice.
+- You want to develop a game using a lot of complex and well-tested objects
+  we have written for you.
+- You want to make modifications for a game we support and have full control
+  over what you can do.
+
+2. How free is Nuclide?
+
+Everything in Nuclide is free. The copyright terms for the game-logic are
+very permitting. Nuclide does not use the GPL as a point of reference, it
+instead uses a ISC-like license. This means you can use, copy, modify and
+distribute the code and work resulting from it for any purpose.
+Please read the very short 'license' document for details.
+
+3. What is the release cycle?
+
+At the current moment, there is no strict release cycle as everthing is
+still very early (albeit usable). I am aiming for a stable release cycle of
+every 3-6 months once we leave Beta.
+
+4. How can I support the project?
+
+Currently, the only way to support the efforts of the one-man-team behind
+this, is to use https://www.paypal.me/eukara/
+
+It was only possible for Nuclide to get this far because of the contributions
+of single individuals from the free-software community.
+Thanks you so much, everyone who has contributed! 
