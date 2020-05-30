@@ -30,7 +30,7 @@ void item_pickup::touch(void)
 
 	CBaseTrigger::UseTargets();
 
-	if (m_iWasDropped == 1 || cvar("sv_playerslots") == 1) {
+	if (real_owner || m_iWasDropped == 1 || cvar("sv_playerslots") == 1) {
 		remove(self);
 	} else {
 		Hide();
@@ -67,7 +67,9 @@ void item_pickup::Respawn(void)
 	nextthink = -1;
 
 	if (!m_iWasDropped && cvar("sv_playerslots") > 1) {
-		Sound_Play(this, CHAN_ITEM, "item.respawn");
+		if (!real_owner)
+			Sound_Play(this, CHAN_ITEM, "item.respawn");
+
 		m_iClip = -1;
 	}
 

@@ -111,7 +111,7 @@ m_init(void)
 		Music_MenuStart();
 	}
 	
-	localcmd(sprintf("pkg addsource http://www.frag-net.com/dl/valve_packages\npkg addsource http://www.frag-net.com/dl/%s_packages\nwait;wait;pkg update\n", games[gameinfo_current].gamedir));
+	/* localcmd(sprintf("pkg addsource http://www.frag-net.com/dl/valve_packages\npkg addsource http://www.frag-net.com/dl/%s_packages\nwait;wait;pkg update\n", games[gameinfo_current].gamedir)); */
 	
 	if (autocvar_menu_updating || !autocvar_menu_installedpackages) {
 		g_menupage = PAGE_UPDATES;

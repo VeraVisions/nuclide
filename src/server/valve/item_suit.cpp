@@ -48,7 +48,7 @@ void item_suit::touch(void)
 
 	CBaseTrigger::UseTargets();
 	
-	if (cvar("sv_playerslots") == 1) {
+	if (real_owner || cvar("sv_playerslots") == 1) {
 		remove(self);
 	} else {
 		Hide();
@@ -67,7 +67,9 @@ void item_suit::Respawn(void)
 
 	think = __NULL__;
 	nextthink = -1;
-	sound(this, CHAN_ITEM, "items/suitchargeok1.wav", 1, ATTN_NORM, 150);
+
+	if (!real_owner)
+		Sound_Play(this, CHAN_ITEM, "item.respawn");
 }
 
 void item_suit::item_suit(void)

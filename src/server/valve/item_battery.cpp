@@ -54,7 +54,7 @@ void item_battery::touch(void)
 	Logging_Pickup(other, this, __NULL__);
 	Sound_Play(other, CHAN_ITEM, "item.battery");
 
-	if (cvar("sv_playerslots") == 1) {
+	if (real_owner || cvar("sv_playerslots") == 1) {
 		remove(self);
 	} else {
 		Hide();
@@ -73,7 +73,10 @@ void item_battery::Respawn(void)
 
 	think = __NULL__;
 	nextthink = -1;
-	Sound_Play(this, CHAN_ITEM, "item.respawn");
+
+	if (!real_owner)
+		Sound_Play(this, CHAN_ITEM, "item.respawn");
+
 	droptofloor();
 }
 

@@ -1,4 +1,4 @@
-/*
+	/*
  * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
@@ -32,7 +32,7 @@ void item_ammo::touch(void)
 	Weapons_RefreshAmmo(pl);
 	Logging_Pickup(other, this, __NULL__);
 
-	if (cvar("sv_playerslots") == 1) {
+	if (real_owner || cvar("sv_playerslots") == 1) {
 		remove(self);
 	} else {
 		Hide();
@@ -51,7 +51,10 @@ void item_ammo::Respawn(void)
 
 	think = __NULL__;
 	nextthink = -1;
-	Sound_Play(this, CHAN_ITEM, "ammo.respawn");
+
+	if (real_owner)
+		Sound_Play(this, CHAN_ITEM, "ammo.respawn");
+
 	droptofloor();
 }
 

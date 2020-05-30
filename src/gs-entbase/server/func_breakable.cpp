@@ -70,11 +70,44 @@ enum
 	BREAKMT_NONE
 };
 
+#ifdef VALVE
+const string funcbreakable_objtable[22] = {
+	"",
+	"spawnfunc_item_battery",
+	"spawnfunc_item_healthkit",
+	"weapon_9mmhandgun",
+	"weapon_9mmclip",
+	"weapon_9mmAR",
+	"spawnfunc_ammo_9mmAR",
+	"spawnfunc_ammo_ARgrenades",
+	"weapon_shotgun",
+	"spawnfunc_ammo_buckshot",
+	"weapon_crossbow",
+	"spawnfunc_ammo_crossbow",
+	"weapon_357",
+	"spawnfunc_ammo_357",
+	"weapon_rpg",
+	"spawnfunc_ammo_rpgclip",
+	"spawnfunc_ammo_gaussclip",
+	"weapon_hegrenade",
+	"weapon_tripmine",
+	"weapon_satchel",
+	"weapon_snark",
+	"weapon_hornetgun"
+};
+#else
+const string funcbreakable_objtable[] = {
+	""
+};
+#endif
+
 class func_breakable:CBaseTrigger
 {
 	float m_iMaterial;
 	float m_flDelay;
 	float m_flExplodeMag;
+	string m_strBreakSpawn;
+
 	/*entity m_pressAttacker;
 	int m_pressType;
 	int m_pressDamage;*/
@@ -128,24 +161,48 @@ void func_breakable::Pain (int body)
 
 void func_breakable::Explode(void)
 {
-	vector vWorldPos;
-	vWorldPos[0] = absmin[0] + (0.5 * (absmax[0] - absmin[0]));
-	vWorldPos[1] = absmin[1] + (0.5 * (absmax[1] - absmin[1]));
-	vWorldPos[2] = absmin[2] + (0.5 * (absmax[2] - absmin[2]));
+	vector rp = absmin + (0.5 * (absmax - absmin));
 	FX_BreakModel(vlen(size) / 10, absmin, absmax, [0,0,0], m_iMaterial);
-	FX_Explosion(vWorldPos);
-	Damage_Radius(vWorldPos, this, m_flExplodeMag, m_flExplodeMag * 2.5f, TRUE, 0);
+	FX_Explosion(rp);
+	Damage_Radius(rp, this, m_flExplodeMag, m_flExplodeMag * 2.5f, TRUE, 0);
 	CBaseTrigger::UseTargets();
 	CBaseEntity::Hide();
 }
 
 void func_breakable::Death(int body)
 {
+	static void break_spawnobject(void) {
+		/* these might get overwritten by the entity spawnfunction */
+		vector neworg = self.origin;
+
+		/* become the classname assigned */
+		CBaseEntity t = (CBaseEntity)self;
+		callfunction(self.classname);
+
+		/* apply the saved values back */
+		t.origin = t.m_oldOrigin = neworg;
+
+		/* spawn anew */
+		if (t.Respawn)
+			t.Respawn();
+	}
+
 	if (m_iMaterial == BREAKMT_GLASS_UNBREAKABLE) {
 		return;
 	}
+
 	health = 0;
 	eActivator = g_eAttacker;
+
+	if (m_strBreakSpawn != "" && isfunction(m_strBreakSpawn)) {
+		entity unit = spawn();
+		unit.classname = m_strBreakSpawn;
+		unit.think = break_spawnobject;
+		unit.nextthink = time;
+		unit.real_owner = this;
+		setorigin(unit, absmin + (0.5 * (absmax - absmin)));
+		print(sprintf("breakable spawning %s\n", unit.classname));
+	}
 
 	/* This may seem totally absurd. That's because it is. It's very
 	 * unreliable but exploding breakables in close proximity it WILL cause
@@ -186,7 +243,7 @@ void func_breakable::PlayerTouch(void)
 		if (fDamage >= health) {
 			touch = __NULL__;
 			Damage_Apply(this, other, fDamage, 0, DMG_CRUSH);
-			
+
 			if ((m_iMaterial == BREAKMT_GLASS) || (m_iMaterial == BREAKMT_COMPUTER)) {
 				Damage_Apply(other, this, fDamage / 4, 0, DMG_CRUSH);
 			}
@@ -248,16 +305,12 @@ void func_breakable::func_breakable(void)
 			vvm_angles = stov(argv(i+1));
 			break;
 		case "vvm_model":
-			vector realorg;
 			// hack, gotta get the world pos */
 			solid = SOLID_BSP;
 			SetModel(model);
-			realorg[0] = absmin[0] + (0.5 * (absmax[0] - absmin[0]));
-			realorg[1] = absmin[1] + (0.5 * (absmax[1] - absmin[1]));
-			realorg[2] = absmin[2] + (0.5 * (absmax[2] - absmin[2]));
 
 			/* change the origin */
-			origin = realorg;
+			origin = absmin + (0.5 * (absmax - absmin));
 			m_oldOrigin = origin;
 
 			/* Now we can fake being a point entity. */
@@ -274,6 +327,12 @@ void func_breakable::func_breakable(void)
 			break;
 		case "explodemagnitude":
 			m_flExplodeMag = stof(argv(i+1));
+			break;
+		case "spawnobject":
+			m_strBreakSpawn = funcbreakable_objtable[stoi(argv(i+1))];
+			break;
+		case "spawnonbreak":
+			m_strBreakSpawn = argv(i+1);
 			break;
 		default:
 			break;
