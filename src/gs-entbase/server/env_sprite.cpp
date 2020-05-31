@@ -81,12 +81,12 @@ void env_sprite::NetworkOnce(void)
 	WriteFloat(MSG_MULTICAST, modelindex);
 	WriteFloat(MSG_MULTICAST, m_flFramerate);
 	WriteFloat(MSG_MULTICAST, m_flScale);
-	WriteByte(MSG_ENTITY, m_iRenderFX);
-	WriteByte(MSG_ENTITY, m_iRenderMode);
-	WriteFloat(MSG_ENTITY, m_vecRenderColor[0]);
-	WriteFloat(MSG_ENTITY, m_vecRenderColor[1]);
-	WriteFloat(MSG_ENTITY, m_vecRenderColor[2]);
-	WriteFloat(MSG_ENTITY, m_flRenderAmt);
+	WriteByte(MSG_MULTICAST, m_iRenderFX);
+	WriteByte(MSG_MULTICAST, m_iRenderMode);
+	WriteFloat(MSG_MULTICAST, m_vecRenderColor[0]);
+	WriteFloat(MSG_MULTICAST, m_vecRenderColor[1]);
+	WriteFloat(MSG_MULTICAST, m_vecRenderColor[2]);
+	WriteFloat(MSG_MULTICAST, m_flRenderAmt);
 	msg_entity = this;
 	multicast(origin, MULTICAST_PVS);
 }
