@@ -60,7 +60,7 @@ Obituary_Init(void)
 				g_obtypes[i].name = substring(argv(0), 2, -1);
 				g_obtypes[i].src_sprite = sprintf("sprites/%s.spr", argv(2));
 				precache_model(g_obtypes[i].src_sprite);
-				g_obtypes[i].sprite = sprintf("sprites/%s.spr_0.tga", argv(2));
+				g_obtypes[i].sprite = spriteframe(sprintf("sprites/%s.spr", argv(2)), 0, 0.0f);
 				g_obtypes[i].size[0] = stof(argv(5));
 				g_obtypes[i].size[1] = stof(argv(6));
 				tmp = drawgetimagesize(g_obtypes[i].sprite);
