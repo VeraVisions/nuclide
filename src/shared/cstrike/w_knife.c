@@ -189,7 +189,7 @@ w_knife_hudpic(int selected, vector pos, float a)
 		drawsubpic(
 			pos,
 			[170,45],
-			"sprites/640hud11.spr_0.tga",
+			g_hud11_spr,
 			[0,135/256],
 			[170/256,45/256],
 			g_hud_color,
@@ -200,7 +200,7 @@ w_knife_hudpic(int selected, vector pos, float a)
 		drawsubpic(
 			pos,
 			[170,45],
-			"sprites/640hud10.spr_0.tga",
+			g_hud10_spr,
 			[0,135/256],
 			[170/256,45/256],
 			g_hud_color,

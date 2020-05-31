@@ -237,7 +237,7 @@ w_sg552_hud(void)
 	HUD_DrawAmmo1();
 	HUD_DrawAmmo2();
 	vector aicon_pos = g_hudmins + [g_hudres[0] - 48, g_hudres[1] - 42];
-	drawsubpic(aicon_pos, [24,24], "sprites/640hud7.spr_0.tga", [0,96/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
+	drawsubpic(aicon_pos, [24,24], g_hud7_spr, [0,96/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
 #endif
 }
 
@@ -249,7 +249,7 @@ w_sg552_hudpic(int selected, vector pos, float a)
 		drawsubpic(
 			pos,
 			[170,45],
-			"sprites/640hud11.spr_0.tga",
+			g_hud11_spr,
 			[0,45/256],
 			[170/256,45/256],
 			g_hud_color,
@@ -260,7 +260,7 @@ w_sg552_hudpic(int selected, vector pos, float a)
 		drawsubpic(
 			pos,
 			[170,45],
-			"sprites/640hud10.spr_0.tga",
+			g_hud10_spr,
 			[0,45/256],
 			[170/256,45/256],
 			g_hud_color,

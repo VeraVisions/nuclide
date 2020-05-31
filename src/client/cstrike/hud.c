@@ -17,7 +17,6 @@
 void HUD_DrawWeaponSelect(void);
 
 /* Use first frame for drawing (needs precache) */
-#define HUD_NUMS "sprites/640hud7.spr_0.tga"
 #define NUMSIZE_X 24/256
 #define NUMSIZE_Y 24/256
 #define HUD_ALPHA 0.5
@@ -40,20 +39,22 @@ void
 HUD_Init(void)
 {
 	precache_model("sprites/640_logo.spr");
-	precache_model("sprites/640hud1.spr");
-	precache_model("sprites/640hud2.spr");
-	precache_model("sprites/640hud3.spr");
-	precache_model("sprites/640hud4.spr");
-	precache_model("sprites/640hud5.spr");
-	precache_model("sprites/640hud6.spr");
-	precache_model("sprites/640hud7.spr");
-	precache_model("sprites/640hud10.spr");
-	precache_model("sprites/640hud11.spr");
-	precache_model("sprites/640hud12.spr");
-	precache_model("sprites/640hud13.spr");
-	precache_model("sprites/640hud14.spr");
-	precache_model("sprites/640hud15.spr");
-	precache_model("sprites/640hud16.spr");
+
+	g_hud1_spr = spriteframe("sprites/640hud1.spr", 0, 0.0f);
+	g_hud2_spr = spriteframe("sprites/640hud2.spr", 0, 0.0f);
+	g_hud3_spr = spriteframe("sprites/640hud3.spr", 0, 0.0f);
+	g_hud4_spr = spriteframe("sprites/640hud4.spr", 0, 0.0f);
+	g_hud5_spr = spriteframe("sprites/640hud5.spr", 0, 0.0f);
+	g_hud6_spr = spriteframe("sprites/640hud6.spr", 0, 0.0f);
+	g_hud7_spr = spriteframe("sprites/640hud7.spr", 0, 0.0f);
+	g_hud10_spr = spriteframe("sprites/640hud10.spr", 0, 0.0f);
+	g_hud11_spr = spriteframe("sprites/640hud11.spr", 0, 0.0f);
+	g_hud12_spr = spriteframe("sprites/640hud12.spr", 0, 0.0f);
+	g_hud13_spr = spriteframe("sprites/640hud13.spr", 0, 0.0f);
+	g_hud14_spr = spriteframe("sprites/640hud14.spr", 0, 0.0f);
+	g_hud15_spr = spriteframe("sprites/640hud15.spr", 0, 0.0f);
+	g_hud16_spr = spriteframe("sprites/640hud16.spr", 0, 0.0f);
+
 	precache_model("sprites/bottom.spr");
 	precache_model("sprites/bottom_left.spr");
 	precache_model("sprites/bottom_right.spr");
@@ -72,7 +73,7 @@ HUD_DrawSeperator(vector pos)
 {
 	drawsubpic(pos,
 		[2,24],
-		HUD_NUMS,
+		g_hud7_spr,
 		[240/256, 0],
 		[2/256, 24/256],
 		g_hud_color,
@@ -87,7 +88,7 @@ HUD_DrawNumber(int iNumber, vector vecPos, float fAlpha, vector vColor)
 {
 	drawsubpic(vecPos,
 		[20,25],
-		HUD_NUMS,
+		g_hud7_spr,
 		[spr_hudnum[iNumber], 0],
 		[20/256, 25/256],
 		vColor,
@@ -152,14 +153,14 @@ HUD_DrawTimer(int spectator)
 		HUD_DrawNumber(iUnits, time_pos + [99,0],1 - fAlpha, g_hud_color);
 		
 		/* : symbol */
-		drawsubpic(time_pos + [70,6], [3,3], HUD_NUMS, [0.9375, 0], [0.01171875, 0.01171875], [1,0,0], fAlpha, DRAWFLAG_ADDITIVE);
-		drawsubpic(time_pos + [70,16], [3,3], HUD_NUMS, [0.9375, 0], [0.01171875, 0.01171875], [1,0,0], fAlpha, DRAWFLAG_ADDITIVE);
-		drawsubpic(time_pos + [70,6], [3,3], HUD_NUMS, [0.9375, 0], [0.01171875, 0.01171875], g_hud_color, 1 - fAlpha, DRAWFLAG_ADDITIVE);
-		drawsubpic(time_pos + [70,16], [3,3], HUD_NUMS, [0.9375, 0], [0.01171875, 0.01171875], g_hud_color, 1 - fAlpha, DRAWFLAG_ADDITIVE);
+		drawsubpic(time_pos + [70,6], [3,3], g_hud7_spr, [0.9375, 0], [0.01171875, 0.01171875], [1,0,0], fAlpha, DRAWFLAG_ADDITIVE);
+		drawsubpic(time_pos + [70,16], [3,3], g_hud7_spr, [0.9375, 0], [0.01171875, 0.01171875], [1,0,0], fAlpha, DRAWFLAG_ADDITIVE);
+		drawsubpic(time_pos + [70,6], [3,3], g_hud7_spr, [0.9375, 0], [0.01171875, 0.01171875], g_hud_color, 1 - fAlpha, DRAWFLAG_ADDITIVE);
+		drawsubpic(time_pos + [70,16], [3,3], g_hud7_spr, [0.9375, 0], [0.01171875, 0.01171875], g_hud_color, 1 - fAlpha, DRAWFLAG_ADDITIVE);
 		
 		/* clock */
-		drawsubpic(time_pos, [24,25], HUD_NUMS, [NUMSIZE_X * 6, NUMSIZE_Y * 3], [NUMSIZE_X, NUMSIZE_Y], [1,0,0], fAlpha, DRAWFLAG_ADDITIVE);
-		drawsubpic(time_pos, [24,25], HUD_NUMS, [NUMSIZE_X * 6, NUMSIZE_Y * 3], [NUMSIZE_X, NUMSIZE_Y], g_hud_color, 1 - fAlpha, DRAWFLAG_ADDITIVE);
+		drawsubpic(time_pos, [24,25], g_hud7_spr, [NUMSIZE_X * 6, NUMSIZE_Y * 3], [NUMSIZE_X, NUMSIZE_Y], [1,0,0], fAlpha, DRAWFLAG_ADDITIVE);
+		drawsubpic(time_pos, [24,25], g_hud7_spr, [NUMSIZE_X * 6, NUMSIZE_Y * 3], [NUMSIZE_X, NUMSIZE_Y], g_hud_color, 1 - fAlpha, DRAWFLAG_ADDITIVE);
 	} else {
 		if (iUnits != pSeat->m_iTimeUnitsOld) {
 			pSeat->m_flTimeAlpha = 1.0;
@@ -174,10 +175,10 @@ HUD_DrawTimer(int spectator)
 		HUD_DrawNumber(iTens, time_pos + [75,0], pSeat->m_flTimeAlpha, g_hud_color);
 		HUD_DrawNumber(iUnits, time_pos + [95,0], pSeat->m_flTimeAlpha, g_hud_color);
 		
-		drawsubpic(time_pos + [70,6], [3,3], HUD_NUMS, [0.9375, 0], [0.01171875, 0.01171875], g_hud_color, pSeat->m_flTimeAlpha, DRAWFLAG_ADDITIVE);
-		drawsubpic(time_pos + [70,16], [3,3], HUD_NUMS, [0.9375, 0], [0.01171875, 0.01171875], g_hud_color, pSeat->m_flTimeAlpha, DRAWFLAG_ADDITIVE);
+		drawsubpic(time_pos + [70,6], [3,3], g_hud7_spr, [0.9375, 0], [0.01171875, 0.01171875], g_hud_color, pSeat->m_flTimeAlpha, DRAWFLAG_ADDITIVE);
+		drawsubpic(time_pos + [70,16], [3,3], g_hud7_spr, [0.9375, 0], [0.01171875, 0.01171875], g_hud_color, pSeat->m_flTimeAlpha, DRAWFLAG_ADDITIVE);
 		
-		drawsubpic(time_pos, [24,25], HUD_NUMS, [NUMSIZE_X * 6, NUMSIZE_Y * 3], [NUMSIZE_X, NUMSIZE_Y], g_hud_color, pSeat->m_flTimeAlpha, DRAWFLAG_ADDITIVE);
+		drawsubpic(time_pos, [24,25], g_hud7_spr, [NUMSIZE_X * 6, NUMSIZE_Y * 3], [NUMSIZE_X, NUMSIZE_Y], g_hud_color, pSeat->m_flTimeAlpha, DRAWFLAG_ADDITIVE);
 		pSeat->m_iTimeUnitsOld = iUnits;
 	}
 }
@@ -221,7 +222,7 @@ HUD_DrawMoney(void)
 	drawsubpic(
 		money_pos,
 		[18,26],
-		HUD_NUMS,
+		g_hud7_spr,
 		[192/256, 24/256],
 		[18/256, 26/256],
 		g_hud_color,
@@ -236,7 +237,7 @@ HUD_DrawMoney(void)
 		drawsubpic(
 			money_pos,
 			[18,26],
-			HUD_NUMS,
+			g_hud7_spr,
 			[192/256, 24/256],
 			[18/256, 26/256],
 			pSeat->m_vecMoneyColor,
@@ -247,9 +248,9 @@ HUD_DrawMoney(void)
 		/* draw the +/- symbols depending on whether
 		 * or not we made or lost money */
 		if (pSeat->m_iMoneyDelta < 0) {
-			drawsubpic(money_pos + [0,-32], [18,23], HUD_NUMS, [0.8671875, 0.09765625], [0.0703125, 0.08984375], pSeat->m_vecMoneyColor, endalpha, DRAWFLAG_ADDITIVE);
+			drawsubpic(money_pos + [0,-32], [18,23], g_hud7_spr, [0.8671875, 0.09765625], [0.0703125, 0.08984375], pSeat->m_vecMoneyColor, endalpha, DRAWFLAG_ADDITIVE);
 		} else {
-			drawsubpic(money_pos + [0,-32], [13,23], HUD_NUMS, [0.8203125, 0.09765625], [0.05078125, 0.08984375], pSeat->m_vecMoneyColor, endalpha, DRAWFLAG_ADDITIVE);
+			drawsubpic(money_pos + [0,-32], [13,23], g_hud7_spr, [0.8203125, 0.09765625], [0.05078125, 0.08984375], pSeat->m_vecMoneyColor, endalpha, DRAWFLAG_ADDITIVE);
 		}
 
 		/* shift the numbers for reverse drawing */
@@ -298,7 +299,7 @@ HUD_DrawHealth(void)
 		drawsubpic(
 			pos + [-72,1],
 			[24,24],
-			HUD_NUMS,
+			g_hud7_spr,
 			[spr_health[0], spr_health[1]],
 			[spr_health[2], spr_health[3]],
 			g_hud_color,
@@ -310,7 +311,7 @@ HUD_DrawHealth(void)
 		drawsubpic(
 			pos + [-72,1],
 			[24,24],
-			HUD_NUMS,
+			g_hud7_spr,
 			[spr_health[0], spr_health[1]],
 			[spr_health[2], spr_health[3]],
 			[1,0,0],
@@ -346,7 +347,7 @@ HUD_DrawArmor(void)
 		drawsubpic(
 			pos + [-80,1],
 			[24,24],
-			HUD_NUMS,
+			g_hud7_spr,
 			[spr_suit4[0], spr_suit4[1]],
 			[spr_suit4[2], spr_suit4[3]],
 			g_hud_color,
@@ -357,7 +358,7 @@ HUD_DrawArmor(void)
 		drawsubpic(
 			pos + [-80,1],
 			[24,24],
-			HUD_NUMS,
+			g_hud7_spr,
 			[spr_suit2[0], spr_suit2[1]],
 			[spr_suit2[2], spr_suit2[3]],
 			g_hud_color,
@@ -371,7 +372,7 @@ HUD_DrawArmor(void)
 			drawsubpic(
 				pos + [-80,1],
 				[24, 24 * (pl.armor / 100)],
-				HUD_NUMS,
+				g_hud7_spr,
 				[spr_suit3[0],
 				spr_suit3[1]],
 				[spr_suit3[2], spr_suit3[3] * (pl.armor / 100)],
@@ -383,7 +384,7 @@ HUD_DrawArmor(void)
 			drawsubpic(
 				pos + [-80,1],
 				[24, 24 * (pl.armor / 100)],
-				HUD_NUMS,
+				g_hud7_spr,
 				[spr_suit1[0],
 				spr_suit1[1]],
 				[spr_suit1[2], spr_suit1[3] * (pl.armor / 100)],
@@ -478,7 +479,7 @@ HUD_DrawFlashlight(void)
 		drawsubpic(
 			pos,
 			[32,32],
-			HUD_NUMS,
+			g_hud7_spr,
 			[spr_flash1[0], spr_flash1[1]],
 			[spr_flash1[2], spr_flash1[3]],
 			g_hud_color,
@@ -489,7 +490,7 @@ HUD_DrawFlashlight(void)
 		drawsubpic(
 			pos,
 			[48,32],
-			HUD_NUMS,
+			g_hud7_spr,
 			[spr_flash2[0], spr_flash2[1]],
 			[spr_flash2[2], spr_flash2[3]],
 			g_hud_color,
@@ -500,7 +501,7 @@ HUD_DrawFlashlight(void)
 		drawsubpic(
 			pos,
 			[32,32],
-			HUD_NUMS,
+			g_hud7_spr,
 			[spr_flash1[0], spr_flash1[1]],
 			[spr_flash1[2], spr_flash1[3]],
 			g_hud_color,
@@ -536,7 +537,7 @@ HUD_DrawZones(void)
 		drawsubpic(
 			pos,
 			[32,32],
-			HUD_NUMS,
+			g_hud7_spr,
 			[96/256,148/256],
 			[32/256,32/256],
 			[0,1,0],
@@ -549,7 +550,7 @@ HUD_DrawZones(void)
 		drawsubpic(
 			pos,
 			[32,32],
-			HUD_NUMS,
+			g_hud7_spr,
 			[0/256,148/256],
 			[32/256,32/256],
 			[0,1,0],
@@ -562,7 +563,7 @@ HUD_DrawZones(void)
 		drawsubpic(
 			pos,
 			[32,32],
-			HUD_NUMS,
+			g_hud7_spr,
 			[64/256,148/256],
 			[32/256,32/256],
 			[0,1,0],
@@ -575,7 +576,7 @@ HUD_DrawZones(void)
 		drawsubpic(
 			pos,
 			[32,32],
-			HUD_NUMS,
+			g_hud7_spr,
 			[48/256,148/256],
 			[32/256,32/256],
 			[0,1,0],

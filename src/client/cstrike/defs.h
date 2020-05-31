@@ -24,6 +24,21 @@ vector g_hud_color;
 vector g_hudmins;
 vector g_hudres;
 
+var string g_hud1_spr;
+var string g_hud2_spr;
+var string g_hud3_spr;
+var string g_hud4_spr;
+var string g_hud5_spr;
+var string g_hud6_spr;
+var string g_hud7_spr;
+var string g_hud10_spr;
+var string g_hud11_spr;
+var string g_hud12_spr;
+var string g_hud13_spr;
+var string g_hud14_spr;
+var string g_hud15_spr;
+var string g_hud16_spr;
+
 struct
 {
 	/* viewmodel stuff */
