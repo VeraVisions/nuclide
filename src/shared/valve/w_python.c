@@ -267,7 +267,7 @@ w_python_crosshair(void)
 	drawsubpic(
 		cross_pos,
 		[24,24],
-		"sprites/crosshairs.spr_0.tga",
+		g_cross_spr,
 		[48/128,0],
 		[0.1875, 0.1875],
 		[1,1,1],
@@ -282,7 +282,7 @@ w_python_crosshair(void)
 	drawsubpic(
 		aicon_pos,
 		[24,24],
-		"sprites/640hud7.spr_0.tga",
+		g_hud7_spr,
 		[24/256,72/128],
 		[24/256, 24/128],
 		g_hud_color,
@@ -306,7 +306,7 @@ w_python_hudpic(int selected, vector pos, float a)
 		drawsubpic(
 			pos,
 			[170,45],
-			"sprites/640hud4.spr_0.tga",
+			g_hud4_spr,
 			[0,90/256],
 			[170/256,45/256],
 			g_hud_color,
@@ -317,7 +317,7 @@ w_python_hudpic(int selected, vector pos, float a)
 		drawsubpic(
 			pos,
 			[170,45],
-			"sprites/640hud1.spr_0.tga",
+			g_hud1_spr,
 			[0,90/256],
 			[170/256,45/256],
 			g_hud_color,

@@ -75,6 +75,8 @@ float clframetime;
 /* prototypes */
 void Damage_Draw(void);
 
+string(string modelname, int frame, float frametime) spriteframe = #0;
+
 void
 drawstring_r(vector p, string t, vector s, vector c, float a, float f)
 {

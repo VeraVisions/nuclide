@@ -82,7 +82,7 @@ Scores_DrawTeam(player pl, vector pos)
 				drawsubpic(
 					pos - [8,0],
 					[32,16],
-					"sprites/640hud1.spr_0.tga",
+					g_hud1_spr,
 					[224/256, 240/256],
 					[32/256, 16/256],
 					[1,0,0],

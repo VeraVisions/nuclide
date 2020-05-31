@@ -17,7 +17,6 @@
 void HUD_DrawWeaponSelect(void);
 
 /* Use first frame for drawing (needs precache) */
-#define HUD_NUMS "sprites/640hud7.spr_0.tga"
 #define NUMSIZE_X 24/256
 #define NUMSIZE_Y 24/128
 #define HUD_ALPHA 0.5
@@ -75,14 +74,15 @@ float spr_flash2[4] = {
 void
 HUD_Init(void)
 {
-	precache_model("sprites/640hud1.spr");
-	precache_model("sprites/640hud2.spr");
-	precache_model("sprites/640hud3.spr");
-	precache_model("sprites/640hud4.spr");
-	precache_model("sprites/640hud5.spr");
-	precache_model("sprites/640hud6.spr");
-	precache_model("sprites/640hud7.spr");
-	precache_model("sprites/640_logo.spr");
+	g_cross_spr = spriteframe("sprites/crosshairs.spr", 0, 0.0f);
+	g_laser_spr = spriteframe("sprites/laserdot.spr", 0, 0.0f);
+	g_hud1_spr = spriteframe("sprites/640hud1.spr", 0, 0.0f);
+	g_hud2_spr = spriteframe("sprites/640hud2.spr", 0, 0.0f);
+	g_hud3_spr = spriteframe("sprites/640hud3.spr", 0, 0.0f);
+	g_hud4_spr = spriteframe("sprites/640hud4.spr", 0, 0.0f);
+	g_hud5_spr = spriteframe("sprites/640hud5.spr", 0, 0.0f);
+	g_hud6_spr = spriteframe("sprites/640hud6.spr", 0, 0.0f);
+	g_hud7_spr = spriteframe("sprites/640hud7.spr", 0, 0.0f);
 }
 
 /* seperator for mainly ammo */
@@ -91,7 +91,7 @@ HUD_DrawSeperator(vector pos)
 {
 	drawsubpic(pos,
 		[2,24],
-		HUD_NUMS,
+		g_hud7_spr,
 		[240/256, 0],
 		[2/256, 24/128],
 		g_hud_color,
@@ -106,7 +106,7 @@ HUD_DrawNumber(int iNumber, vector vecPos, float fAlpha, vector vColor)
 {
 	drawsubpic(vecPos,
 		[24,24],
-		HUD_NUMS,
+		g_hud7_spr,
 		[spr_hudnum[iNumber], 0],
 		[NUMSIZE_X, NUMSIZE_Y],
 		vColor,
@@ -152,7 +152,7 @@ HUD_DrawHealth(void)
 		drawsubpic(
 			pos + [-72,-4],
 			[32,32],
-			HUD_NUMS,
+			g_hud7_spr,
 			[spr_health[0], spr_health[1]],
 			[spr_health[2], spr_health[3]],
 			g_hud_color,
@@ -164,7 +164,7 @@ HUD_DrawHealth(void)
 		drawsubpic(
 			pos + [-72,-4],
 			[32,32],
-			HUD_NUMS,
+			g_hud7_spr,
 			[spr_health[0], spr_health[1]],
 			[spr_health[2], spr_health[3]],
 			[1,0,0],
@@ -199,7 +199,7 @@ HUD_DrawArmor(void)
 	drawsubpic(
 		pos + [-80,-9],
 		[40,40],
-		HUD_NUMS,
+		g_hud7_spr,
 		[spr_suit2[0], spr_suit2[1]],
 		[spr_suit2[2], spr_suit2[3]],
 		g_hud_color,
@@ -211,7 +211,7 @@ HUD_DrawArmor(void)
 		drawsubpic(
 			pos + [-80,-9],
 			[40, 40 * (pl.armor / 100)],
-			HUD_NUMS,
+			g_hud7_spr,
 			[spr_suit1[0],
 			spr_suit1[1]],
 			[spr_suit1[2], spr_suit1[3] * (pl.armor / 100)],
@@ -305,7 +305,7 @@ HUD_DrawFlashlight(void)
 		drawsubpic(
 			pos,
 			[32,32],
-			HUD_NUMS,
+			g_hud7_spr,
 			[spr_flash1[0], spr_flash1[1]],
 			[spr_flash1[2], spr_flash1[3]],
 			g_hud_color,
@@ -316,7 +316,7 @@ HUD_DrawFlashlight(void)
 		drawsubpic(
 			pos,
 			[48,32],
-			HUD_NUMS,
+			g_hud7_spr,
 			[spr_flash2[0], spr_flash2[1]],
 			[spr_flash2[2], spr_flash2[3]],
 			g_hud_color,
@@ -327,7 +327,7 @@ HUD_DrawFlashlight(void)
 		drawsubpic(
 			pos,
 			[32,32],
-			HUD_NUMS,
+			g_hud7_spr,
 			[spr_flash1[0], spr_flash1[1]],
 			[spr_flash1[2], spr_flash1[3]],
 			g_hud_color,

@@ -14,6 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifdef CLIENT
+var string g_chainsaw_spr;
+#endif
+
 enum
 {
 	CHAINSAW_STARTFIRE,
@@ -37,7 +41,7 @@ void w_chainsaw_precache(void)
 #else
 	precache_model("models/v_chainsaw.mdl");
 	precache_model("models/p_saw.mdl");
-	precache_model("sprites/chainsaw.spr");
+	g_chainsaw_spr = spriteframe("sprites/chainsaw.spr", 0, 0.0f);
 #endif
 }
 
@@ -144,11 +148,11 @@ void w_chainsaw_hudpic(int s, vector pos, float a)
 {
 #ifdef CLIENT
 	if (s) {
-		drawsubpic(pos, [170,45], "sprites/chainsaw.spr_0.tga",
+		drawsubpic(pos, [170,45], g_chainsaw_spr,
 			[0,48/256], [170/256,45/256],
 			g_hud_color, a, DRAWFLAG_ADDITIVE);
 	} else {
-		drawsubpic(pos, [170,45], "sprites/chainsaw.spr_0.tga",
+		drawsubpic(pos, [170,45], g_chainsaw_spr,
 			[0,0], [170/256,45/256],
 			g_hud_color, a, DRAWFLAG_ADDITIVE);
 	}

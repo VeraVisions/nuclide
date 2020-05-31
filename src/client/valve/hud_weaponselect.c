@@ -101,7 +101,7 @@ HUD_DrawWeaponSelect_Last(void)
 void
 HUD_DrawWeaponSelect_Num(vector vecPos, float fValue)
 {
-	drawsubpic(vecPos, [20,20], "sprites/640hud7.spr_0.tga", g_vecHUDNums[fValue], [20/256, 20/128], g_hud_color, 1, DRAWFLAG_ADDITIVE);
+	drawsubpic(vecPos, [20,20], g_hud7_spr, g_vecHUDNums[fValue], [20/256, 20/128], g_hud_color, 1, DRAWFLAG_ADDITIVE);
 }
 
 int
@@ -205,7 +205,7 @@ HUD_DrawWeaponSelect(void)
 				if (x == wantpos) {
 					// Selected Sprite
 					Weapons_HUDPic(pSeat->m_iHUDWeaponSelected, 1, vecPos, 1.0f);
-					drawsubpic(vecPos, [170,45], "sprites/640hud3.spr_0.tga", 
+					drawsubpic(vecPos, [170,45], g_hud3_spr, 
 								[0,180/256], [170/256,45/256], g_hud_color, 1, DRAWFLAG_ADDITIVE);
 					vecPos[1] += 50;
 				} else if ((b=HUD_InSlotPos(i, x)) != -1) {

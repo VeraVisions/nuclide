@@ -272,9 +272,9 @@ void w_rpg_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
 	if (selected) {
-		drawsubpic(pos, [170,45], "sprites/640hud5.spr_0.tga", [0,45/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
+		drawsubpic(pos, [170,45], g_hud5_spr, [0,45/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	} else {
-		drawsubpic(pos, [170,45], "sprites/640hud2.spr_0.tga", [0,45/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
+		drawsubpic(pos, [170,45], g_hud2_spr, [0,45/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	}
 #endif
 }
@@ -300,7 +300,7 @@ void w_rpg_hud(void)
 		drawsubpic(
 			cross_pos + jitter,
 			[lerp,lerp],
-			"sprites/laserdot.spr_0.tga",
+			g_laser_spr,
 			[0,0],
 			[1.0, 1.0],
 			[1,1,1],
@@ -312,7 +312,7 @@ void w_rpg_hud(void)
 		drawsubpic(
 			cross_pos,
 			[24,24],
-			"sprites/crosshairs.spr_0.tga",
+			g_cross_spr,
 			[0,0],
 			[0.1875, 0.1875],
 			[1,1,1],

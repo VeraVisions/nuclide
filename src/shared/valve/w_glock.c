@@ -295,7 +295,7 @@ w_glock_hud(void)
 	drawsubpic(
 		cross_pos,
 		[24,24],
-		"sprites/crosshairs.spr_0.tga",
+		g_cross_spr,
 		[0.1875,0],
 		[0.1875, 0.1875],
 		[1,1,1],
@@ -309,7 +309,7 @@ w_glock_hud(void)
 	drawsubpic(
 		aicon_pos,
 		[24,24],
-		"sprites/640hud7.spr_0.tga",
+		g_hud7_spr,
 		[0,72/128],
 		[24/256, 24/128],
 		g_hud_color,
@@ -327,7 +327,7 @@ w_glock_hudpic(int selected, vector pos, float a)
 		drawsubpic(
 			pos,
 			[170,45],
-			"sprites/640hud4.spr_0.tga",
+			g_hud4_spr,
 			[0,45/256],
 			[170/256,45/256],
 			g_hud_color,
@@ -338,7 +338,7 @@ w_glock_hudpic(int selected, vector pos, float a)
 		drawsubpic(
 			pos,
 			[170,45],
-			"sprites/640hud1.spr_0.tga",
+			g_hud1_spr,
 			[0,45/256],
 			[170/256,45/256],
 			g_hud_color,

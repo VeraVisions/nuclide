@@ -14,6 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifdef CLIENT
+var string g_hammer_spr;
+#endif
+
 enum
 {
 	HAMMER_IDLE1,
@@ -38,7 +42,7 @@ void w_hammer_precache(void)
 #else
 	precache_model("models/p_hammer.mdl");
 	precache_model("models/v_hammer.mdl");
-	precache_model("sprites/hammer.spr");
+	g_hammer_spr = spriteframe("sprites/hammer.spr", 0, 0.0f);
 #endif
 }
 
@@ -210,9 +214,9 @@ void w_hammer_hudpic(int s, vector pos, float a)
 {
 #ifdef CLIENT
 	if (s) {
-		drawsubpic(pos, [170,45], "sprites/hammer.spr_0.tga", [0,48/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
+		drawsubpic(pos, [170,45], g_hammer_spr, [0,48/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	} else {
-		drawsubpic(pos, [170,45], "sprites/hammer.spr_0.tga", [0,0], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
+		drawsubpic(pos, [170,45], g_hammer_spr, [0,0], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	}
 #endif
 }

@@ -408,7 +408,7 @@ void w_gauss_crosshair(void)
 	drawsubpic(
 		cross_pos,
 		[24,24],
-		"sprites/crosshairs.spr_0.tga",
+		g_cross_spr,
 		[48/128,48/128],
 		[0.1875, 0.1875],
 		[1,1,1],
@@ -419,7 +419,7 @@ void w_gauss_crosshair(void)
 	drawsubpic(
 		aicon_pos,
 		[24,24],
-		"sprites/640hud7.spr_0.tga",
+		g_hud7_spr,
 		[0,96/128],
 		[24/256,24/128],
 		g_hud_color,
@@ -443,7 +443,7 @@ void w_gauss_hudpic(int selected, vector pos, float a)
 		drawsubpic(
 			pos,
 			[170,45],
-			"sprites/640hud5.spr_0.tga",
+			g_hud5_spr,
 			[0,90/256],
 			[170/256,45/256],
 			g_hud_color,
@@ -454,7 +454,7 @@ void w_gauss_hudpic(int selected, vector pos, float a)
 		drawsubpic(
 			pos,
 			[170,45],
-			"sprites/640hud2.spr_0.tga",
+			g_hud2_spr,
 			[0,90/256],
 			[170/256,45/256],
 			g_hud_color,

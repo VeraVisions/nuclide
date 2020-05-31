@@ -185,7 +185,7 @@ w_crowbar_hudpic(int selected, vector pos, float a)
 		drawsubpic(
 			pos,
 			[170,45],
-			"sprites/640hud4.spr_0.tga",
+			g_hud4_spr,
 			[0,0],
 			[170/256,45/256],
 			g_hud_color,
@@ -196,7 +196,7 @@ w_crowbar_hudpic(int selected, vector pos, float a)
 		drawsubpic(
 			pos,
 			[170,45],
-			"sprites/640hud1.spr_0.tga",
+			g_hud1_spr,
 			[0,0],
 			[170/256,45/256],
 			g_hud_color,

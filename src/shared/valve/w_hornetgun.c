@@ -262,7 +262,7 @@ w_hornetgun_crosshair(void)
 	drawsubpic(
 		cross_pos,
 		[24,24],
-		"sprites/crosshairs.spr_0.tga",
+		g_cross_spr,
 		[72/128,24/128],
 		[0.1875, 0.1875],
 		[1,1,1],
@@ -275,7 +275,7 @@ w_hornetgun_crosshair(void)
 	drawsubpic(
 		aicon_pos,
 		[24,24],
-		"sprites/640hud7.spr_0.tga",
+		g_hud7_spr,
 		[24/256,96/128],
 		[24/256, 24/128],
 		g_hud_color,
@@ -299,7 +299,7 @@ w_hornetgun_hudpic(int selected, vector pos, float a)
 		drawsubpic(
 			pos,
 			[170,45],
-			"sprites/640hud5.spr_0.tga",
+			g_hud5_spr,
 			[0,180/256],
 			[170/256,45/256],
 			g_hud_color,
@@ -310,7 +310,7 @@ w_hornetgun_hudpic(int selected, vector pos, float a)
 		drawsubpic(
 			pos,
 			[170,45],
-			"sprites/640hud2.spr_0.tga",
+			g_hud2_spr,
 			[0,180/256],
 			[170/256,45/256],
 			g_hud_color,

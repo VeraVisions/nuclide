@@ -120,7 +120,7 @@ m_init(void)
 }
 
 void
-Menu_RendererRestarted(void)
+Menu_RendererRestarted(string rendererdesc)
 {
 	localcmd("menu_restart\n");
 	Menu_AutoScale();
