@@ -15,27 +15,52 @@ class item_c4:CBaseEntity
 void
 item_c4::PlayerUse(void)
 {
-	m_eUser = eActivator;
-	m_flDefusalState += frametime;
+	/* don't allow anyone else to hijack. */
+	if (m_eUser == world) {
+		m_eUser = eActivator;
+		sound(this, CHAN_ITEM, "weapons/c4_disarm.wav", 1.0, ATTN_NONE);
+	}
 }
 
 void
 item_c4::Logic(void)
 {
-	// If the guy who started using us stopped using us, reset the defuser counter
+	CSMultiplayerRules rules = (CSMultiplayerRules)g_grMode;
+
+	/* check if we're being used */
 	if (m_eUser != world) {
-		m_eUser= world;
-		m_flDefusalState = 0.0f;
+		/* we need to check if the user has changed every frame. */
+		if (!m_eUser.button5) {
+			m_eUser = world;
+			m_flDefusalState = 0.0f;
+		} else {
+			player pl = (player)m_eUser;
+
+			/* defusal kit always cuts the time in half */
+			if (pl.g_items & ITEM_DEFUSAL)
+				m_flDefusalState += (frametime * 2);
+			else
+				m_flDefusalState += frametime;
+		}
 	}
 
-	// If our time has passed, explode
+	if (m_flDefusalState > 10.0f) {
+		sound(this, CHAN_VOICE, "weapons/c4_disarmed.wav", 1.0, ATTN_NORM);
+		rules.RoundOver(TEAM_CT, 3600, TRUE);
+		Radio_BroadcastMessage(RADIO_BOMBDEF);
+		m_flBeepTime = 0.0f;
+		m_flDefusalState = 0;
+		remove(this);
+		return;
+	}
+
+	/* if our time has passed, explode */
 	if (m_flExplodeTime < time) {
-		CSMultiplayerRules rules = (CSMultiplayerRules)g_grMode;
 
 		/* In Bomb Defusal, all Terrorists receive $3500
 		 * if they won by detonating the bomb. */
 		rules.RoundOver(TEAM_T, 3500, FALSE);
-		Damage_Radius(origin, this.owner, 500, g_cstrike_bombradius, TRUE, WEAPON_C4BOMB);
+		Damage_Radius(origin, this.owner, 500, g_cstrike_bombradius, FALSE, WEAPON_C4BOMB);
 		Sound_Play(this, CHAN_VOICE, "weapon_c4bomb.explode");
 
 		for (entity e = world; (e = find(e, ::classname, "func_bomb_target"));) {
