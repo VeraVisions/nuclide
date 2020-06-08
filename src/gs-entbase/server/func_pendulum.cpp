@@ -59,6 +59,8 @@ void func_pendulum::customphysics(void)
 		angles[2] = sin(m_flProgress);
 	else if (spawnflags & FUNCPEND_YAXIS)
 		angles[0] = sin(m_flProgress);
+	else
+		angles[1] = sin(m_flProgress);
 
 	angles *= m_flDistance;
 }
