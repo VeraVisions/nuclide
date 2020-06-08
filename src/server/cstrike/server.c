@@ -51,6 +51,7 @@ void Game_Worldspawn(void)
 	Weapons_Init();
 
 	clientstat(STAT_MONEY, EV_INTEGER, player::money);
+	clientstat(STAT_PROGRESS, EV_FLOAT, player::progress);
 
 	pointerstat(STAT_GAMETIME, EV_FLOAT, &g_cs_gametime);
 	pointerstat(STAT_GAMESTATE, EV_INTEGER, &g_cs_gamestate);

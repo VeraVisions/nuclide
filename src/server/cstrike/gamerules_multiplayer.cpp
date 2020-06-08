@@ -429,13 +429,8 @@ CSMultiplayerRules::RestartRound(int iWipe)
 		}
 	}
 
-	// Clear the corpses/items
+	/* clear the corpses/items/bombs */
 	for (entity eFind = world; (eFind = find(eFind, ::classname, "remove_me"));) {
-		remove(eFind);
-	}
-
-	// Find the bombs. Destory them!
-	for (entity eFind = world; (eFind = find(eFind, ::classname, "c4bomb"));) {
 		remove(eFind);
 	}
 

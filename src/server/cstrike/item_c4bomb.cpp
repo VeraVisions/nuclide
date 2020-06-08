@@ -8,13 +8,30 @@ class item_c4:CBaseEntity
 	float m_flDefusalState;
 
 	void(void) item_c4;
+	virtual void(void) ClearProgress;
 	virtual void(void) PlayerUse;
 	virtual void(void) Logic;
 };
 
 void
+item_c4::ClearProgress(void)
+{
+	if (m_eUser != world) {
+		player pl = (player)m_eUser;
+		pl.progress = 0.0f;
+	}
+}
+
+void
 item_c4::PlayerUse(void)
 {
+	player pl = (player)eActivator;
+
+	/* obvious check */
+	if (pl.team != TEAM_CT) {
+		return;
+	}
+
 	/* don't allow anyone else to hijack. */
 	if (m_eUser == world) {
 		m_eUser = eActivator;
@@ -29,22 +46,30 @@ item_c4::Logic(void)
 
 	/* check if we're being used */
 	if (m_eUser != world) {
+		player pl = (player)m_eUser;
+
 		/* we need to check if the user has changed every frame. */
 		if (!m_eUser.button5) {
+			ClearProgress();
+			
+			/* clear user */
 			m_eUser = world;
 			m_flDefusalState = 0.0f;
 		} else {
-			player pl = (player)m_eUser;
 
 			/* defusal kit always cuts the time in half */
 			if (pl.g_items & ITEM_DEFUSAL)
 				m_flDefusalState += (frametime * 2);
 			else
 				m_flDefusalState += frametime;
+
+			/* tracked stat */
+			pl.progress = m_flDefusalState;
 		}
 	}
 
 	if (m_flDefusalState > 10.0f) {
+		ClearProgress();
 		sound(this, CHAN_VOICE, "weapons/c4_disarmed.wav", 1.0, ATTN_NORM);
 		rules.RoundOver(TEAM_CT, 3600, TRUE);
 		Radio_BroadcastMessage(RADIO_BOMBDEF);
@@ -56,6 +81,7 @@ item_c4::Logic(void)
 
 	/* if our time has passed, explode */
 	if (m_flExplodeTime < time) {
+		ClearProgress();
 
 		/* In Bomb Defusal, all Terrorists receive $3500
 		 * if they won by detonating the bomb. */
@@ -99,6 +125,9 @@ item_c4::Logic(void)
 void
 item_c4::item_c4(void)
 {
+	/* throw this in with the other temporary round entities */
+	classname = "remove_me";
+
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_BBOX);
 	SetModel("models/w_c4.mdl");

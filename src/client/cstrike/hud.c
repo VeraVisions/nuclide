@@ -587,6 +587,32 @@ HUD_DrawZones(void)
 	}
 }
 
+/* defusal etc. progress bar */
+void
+HUD_DrawProgress(void)
+{
+	vector vSize = [540,16];
+	vector vMainPos;
+	float progress;
+
+	progress = getstatf(STAT_PROGRESS) / 10.0f;
+
+	if (progress > 0) {
+		vMainPos = g_hudmins;
+		vMainPos[0] += (g_hudres[0] / 2) - (vSize[0] / 2);
+		vMainPos[1] += (g_hudres[1] / 2) - (vSize[1] / 2);
+
+		vector vBar = vSize;
+		vBar[0] = 538 * progress;
+		vBar[1] = 14;
+		drawfill(vMainPos + [1,1], vBar, g_hud_color, 1.0, DRAWFLAG_ADDITIVE);
+		drawfill(vMainPos, [vSize[0], 1], g_hud_color, 1.0f); // Top
+		drawfill([vMainPos[0], vMainPos[1] + vSize[1]], [vSize[0], 1], g_hud_color, 1.0f); // Bottom
+		drawfill(vMainPos, [1, vSize[1]], g_hud_color, 1.0f); // Left
+		drawfill([vMainPos[0] + vSize[0], vMainPos[1]], [1, vSize[1] + 1], g_hud_color, 1.0f); // Right
+	}
+}
+
 /* weapon/ammo pickup notifications */
 void
 HUD_DrawNotify(void)
@@ -635,6 +661,7 @@ HUD_Draw(void)
 	HUD_DrawHealth();
 	HUD_DrawArmor();
 	HUD_DrawZones();
+	HUD_DrawProgress();
 	HUD_DrawFlashlight();
 	Damage_Draw();
 }

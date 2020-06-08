@@ -89,5 +89,7 @@ class player:base_player
 
 	int old_cs_shotmultiplier;
 	float old_cs_shottime;
+
+	float progress;
 #endif
 };
