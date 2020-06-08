@@ -72,7 +72,7 @@ void
 w_c4bomb_updateammo(player pl)
 {
 #ifdef SERVER
-	Weapons_UpdateAmmo(pl, pl.a_ammo1, pl.a_ammo2, pl.a_ammo3);
+	Weapons_UpdateAmmo(pl, pl.a_ammo1, 1, pl.a_ammo3);
 #endif
 }
 
