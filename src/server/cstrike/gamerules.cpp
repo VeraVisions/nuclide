@@ -129,6 +129,11 @@ CSGameRules::PlayerPostFrame(base_player pp)
 	pl.old_a_ammo3 = pl.a_ammo3;
 	pl.old_cs_shotmultiplier = pl.cs_shotmultiplier;
 	pl.old_cs_shottime = pl.cs_shottime;
+
+	if (g_cs_gamestate != GAME_FREEZE) {
+		if (pl.progress <= 0.0f)
+			pl.flags &= ~FL_FROZEN;
+	} 
 }
 
 

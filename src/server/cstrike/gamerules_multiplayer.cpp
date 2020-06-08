@@ -102,13 +102,13 @@ CSMultiplayerRules::PlayerDeath(base_player pl)
 void
 CSMultiplayerRules::PlayerPreFrame(base_player pl)
 {
+	player pp = (player)pl;
+
 	if (pl.health <= 0)
 		return;
 
-	if (g_cs_gamestate == GAME_FREEZE) {
+	if (g_cs_gamestate == GAME_FREEZE || pp.progress > 0.0f) {
 		pl.flags |= FL_FROZEN;
-	} else {
-		pl.flags &= ~FL_FROZEN;
 	}
 }
 

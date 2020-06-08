@@ -19,6 +19,7 @@ item_c4::ClearProgress(void)
 	if (m_eUser != world) {
 		player pl = (player)m_eUser;
 		pl.progress = 0.0f;
+		pl.flags &= ~FL_FROZEN;
 	}
 }
 
@@ -65,6 +66,7 @@ item_c4::Logic(void)
 
 			/* tracked stat */
 			pl.progress = m_flDefusalState;
+			pl.flags |= FL_FROZEN;
 		}
 	}
 
