@@ -25,13 +25,14 @@ STUB!
 #define SF_CONVEYOR_VISUAL		1
 #define SF_CONVEYOR_NOTSOLID	2
 
-class func_conveyor:func_wall
+class func_conveyor:CBaseTrigger
 {
 	float m_flSpeed;
 	vector m_vecMoveDir;
 
 	void(void) func_conveyor;
 
+	virtual void(void) Respawn;
 	virtual void(void) Trigger;
 	virtual void(void) touch;
 	virtual void(void) SetMovementDirection;
@@ -47,8 +48,6 @@ void func_conveyor::SetMovementDirection(void)
 		makevectors(angles);
 		m_vecMoveDir = v_forward;
 	}
-
-	angles = [0,0,0];
 }
 
 void func_conveyor::touch(void)
@@ -62,10 +61,16 @@ void func_conveyor::Trigger(void)
 	m_flSpeed = -m_flSpeed;
 }
 
-void func_conveyor::func_conveyor(void)
+void func_conveyor::Respawn(void)
 {
-	func_wall::func_wall();
+	m_vecMoveDir = [0,0,0];
+	angles = m_oldAngle;
+
 	SetMovementDirection();
+	SetSolid(SOLID_BSP);
+	SetMovetype(MOVETYPE_PUSH);
+	SetModel(m_oldModel);
+	SetOrigin(m_oldOrigin);
 
 	/* TODO: Apply some effect flag the engine handles? */
 	if (!(spawnflags & SF_CONVEYOR_VISUAL)) {
@@ -78,4 +83,11 @@ void func_conveyor::func_conveyor(void)
 
 	if (m_flSpeed == 0)
 		m_flSpeed = 100;
+
+	SetAngles([0,0,0]);
+}
+
+void func_conveyor::func_conveyor(void)
+{
+	CBaseTrigger::CBaseTrigger();
 }
