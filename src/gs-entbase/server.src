@@ -42,6 +42,7 @@ server/func_wall.cpp
 server/func_wall_toggle.cpp
 server/func_conveyor.cpp
 server/func_rotating.cpp
+server/func_pendulum.cpp
 server/light.cpp
 server/stubs.cpp
 server/infodecal.cpp

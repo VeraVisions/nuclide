@@ -64,8 +64,8 @@ void func_conveyor::Trigger(void)
 
 void func_conveyor::func_conveyor(void)
 {
-	SetMovementDirection();
 	func_wall::func_wall();
+	SetMovementDirection();
 
 	/* TODO: Apply some effect flag the engine handles? */
 	if (!(spawnflags & SF_CONVEYOR_VISUAL)) {
@@ -76,7 +76,6 @@ void func_conveyor::func_conveyor(void)
 		SetSkin(0);
 	}
 
-	if (m_flSpeed == 0) {
+	if (m_flSpeed == 0)
 		m_flSpeed = 100;
-	}
 }
