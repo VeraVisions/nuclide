@@ -58,7 +58,7 @@ void func_pendulum::customphysics(void)
 	if (spawnflags & FUNCPEND_XAXIS)
 		angles[2] = sin(m_flProgress);
 	else if (spawnflags & FUNCPEND_YAXIS)
-		angles[1] = sin(m_flProgress);
+		angles[0] = sin(m_flProgress);
 
 	angles *= m_flDistance;
 }
@@ -77,9 +77,9 @@ void func_pendulum::Respawn(void)
 		m_iActive = TRUE;
 
 	if (spawnflags & FUNCPEND_NONSOLID)
-		solid = SOLID_NOT;
+		SetSolid(SOLID_NOT);
 	else
-		solid = SOLID_BSP;
+		SetSolid(SOLID_BSP);
 
 	movetype = MOVETYPE_PUSH;
 	SetModel(m_oldModel);
