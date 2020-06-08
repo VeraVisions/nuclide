@@ -739,6 +739,7 @@ CSMultiplayerRules::PlayerRespawn(base_player pp, int fTeam)
 
 	pl.view_ofs = VEC_PLAYER_VIEWPOS;
 	pl.velocity = [0,0,0];
+	pl.progress = 0.0f;
 	Weapons_SwitchBest(pl);
 
 	/*Ammo_AutoFill(pl.fSlotPrimary);
