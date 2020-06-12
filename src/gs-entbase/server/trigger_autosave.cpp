@@ -48,7 +48,7 @@ trigger_autosave::touch(void)
 	dprint(sprintf("^2trigger_autosave::^3touch^7: %s called autosave\n", 
 		other.netname));
 
-	localcmd("save autosave");
+	localcmd("save autosave\n");
 	Hide();
 
 	if (m_flDelay > 0) {
