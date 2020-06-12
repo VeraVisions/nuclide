@@ -22,6 +22,12 @@ Teleportation volume. Teleports anything it touches to the position of
 any entity set as the "target". Works best with info_teleport_destination.
 */
 
+enumflags
+{
+	TRIGTELE_MONSTERS,
+	TRIGTELE_NOCLIENTS
+};
+
 class trigger_teleport:CBaseTrigger
 {
 	void(void) trigger_teleport;
@@ -32,6 +38,13 @@ class trigger_teleport:CBaseTrigger
 void
 trigger_teleport::touch(void)
 {
+	if (GetMaster() == FALSE)
+		return;
+	if (spawnflags & TRIGTELE_NOCLIENTS && other.flags & FL_CLIENT)
+		return;
+	if (spawnflags & TRIGTELE_MONSTERS && !(other.flags & FL_MONSTER))
+		return;
+
 	if (other.health > 0 || other.solid == SOLID_SLIDEBOX) {
 		eActivator = other;
 		entity eTarget = find(world, CBaseTrigger::m_strTargetName, m_strTarget);
