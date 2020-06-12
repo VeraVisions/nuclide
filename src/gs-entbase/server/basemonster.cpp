@@ -47,7 +47,8 @@ enumflags
 	MSF_RESERVED3,
 	MSF_WAITFORSCRIPT,
 	MSF_PREDISASTER,
-	MSF_FADECORPSE
+	MSF_FADECORPSE,
+	MSF_MULTIPLAYER
 };
 
 class CBaseMonster:CBaseEntity
@@ -419,6 +420,7 @@ void
 CBaseMonster::CBaseMonster(void)
 {
 	/* FIXME: Put this somewhere else? */
+	if (!(spawnflags & MSF_MULTIPLAYER))
 	if (!(cvar("coop") == 1 || cvar("sv_playerslots") == 1)) {
 		remove(this);
 		return;

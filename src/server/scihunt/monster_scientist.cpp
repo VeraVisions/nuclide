@@ -661,6 +661,8 @@ void monster_scientist::Respawn(void)
 
 void monster_scientist::monster_scientist(void)
 {
+	spawnflags |= MSF_MULTIPLAYER;
+
 	for (int i = 0; i < sci_sndpain.length; i++) {
 		precache_sound(sci_sndpain[i]);
 	}
