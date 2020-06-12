@@ -170,6 +170,9 @@ CSQC_UpdateView(float w, float h, float focus)
 		View_CalcViewport(s, w, h);
 		setproperty(VF_ACTIVESEAT, (float)s);
 
+		setproperty(VF_MIN, video_mins);
+		setproperty(VF_SIZE, video_res);
+
 		pSeat->m_ePlayer = self = findfloat(world, entnum, player_localentnum);
 
 		if (!self) {
@@ -220,10 +223,30 @@ CSQC_UpdateView(float w, float h, float focus)
 		
 		View_Stairsmooth();
 
-		// When Cameratime is active, draw on the forced coords instead
+		if (pSeat->m_pWeaponFX) {
+			CBaseFX p = (CBaseFX)pSeat->m_pWeaponFX;
+			p.Draw();
+		}
+
+		addentities(MASK_ENGINE);
+
 		if (pSeat->m_flCameraTime > time) {
+			vector lastang;
+			float lerp;
+
+			lerp = bound(0.0f, 1.0f - clframetime, 1.0f);
+			makevectors(view_angles);
+			lastang = v_forward;
+			makevectors(pSeat->m_vecCameraAngle);
+
+			lastang[0] = Math_Lerp(lastang[0], v_forward[0], clframetime);
+			lastang[1] = Math_Lerp(lastang[1], v_forward[1], clframetime);
+			lastang[2] = Math_Lerp(lastang[2], v_forward[2], clframetime);
+			view_angles = vectoangles(lastang);
+
 			setproperty(VF_ORIGIN, pSeat->m_vecCameraOrigin);
-			setproperty(VF_CL_VIEWANGLES, pSeat->m_vecCameraAngle);
+			setproperty(VF_CL_VIEWANGLES, view_angles);
+			setproperty(VF_ANGLES, view_angles);
 		} else {
 			if (pl.health) {
 				if (autocvar_cl_thirdperson == TRUE) {
@@ -238,20 +261,11 @@ CSQC_UpdateView(float w, float h, float focus)
 			} else {
 				setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin);
 			}
-		}
 
-		if (pSeat->m_pWeaponFX) {
-			CBaseFX p = (CBaseFX)pSeat->m_pWeaponFX;
-			p.Draw();
-		}
-
-		addentities(MASK_ENGINE);
-		setproperty(VF_MIN, video_mins);
-		setproperty(VF_SIZE, video_res);
-		setproperty(VF_ANGLES, view_angles + pl.punchangle);
-
-		if (g_iIntermission) {
-			view_angles = pSeat->m_vecCameraAngle + [sin(time), sin(time * 2)] * 5;
+			if (g_iIntermission) {
+				view_angles = pSeat->m_vecCameraAngle + [sin(time), sin(time * 2)] * 5;
+			}
+			setproperty(VF_ANGLES, view_angles + pl.punchangle);
 		}
 
 		setproperty(VF_DRAWWORLD, 1);
@@ -430,18 +444,22 @@ CSQC_Input_Frame(void)
 
 	if (pSeat->m_iInputAttack2 == TRUE) {
 		input_buttons |= INPUT_BUTTON3;
-	} 
+	}
 
 	if (pSeat->m_iInputReload == TRUE) {
 		input_buttons |= INPUT_BUTTON4;
-	} 
+	}
 
 	if (pSeat->m_iInputUse == TRUE) {
 		input_buttons |= INPUT_BUTTON5;
-	} 
+	}
 
 	if (pSeat->m_iInputDuck == TRUE) {
 		input_buttons |= INPUT_BUTTON8;
+	}
+
+	if (pSeat->m_flCameraTime > time) {
+		/* TODO: Supress the changing of view_angles/input_angles. */
 	}
 }
 
@@ -498,13 +516,13 @@ CSQC_Parse_Event(void)
 		GameMessage_Parse();
 		break;
 	case EV_CAMERATRIGGER:
-		pSeat->m_vecCameraOrigin.x = readcoord();
-		pSeat->m_vecCameraOrigin.y = readcoord();
-		pSeat->m_vecCameraOrigin.z = readcoord();
+		pSeat->m_vecCameraOrigin[0] = readcoord();
+		pSeat->m_vecCameraOrigin[1] = readcoord();
+		pSeat->m_vecCameraOrigin[2] = readcoord();
 
-		pSeat->m_vecCameraAngle.x = readcoord();
-		pSeat->m_vecCameraAngle.y = readcoord();
-		pSeat->m_vecCameraAngle.z = readcoord();
+		pSeat->m_vecCameraAngle[0] = readcoord();
+		pSeat->m_vecCameraAngle[1] = readcoord();
+		pSeat->m_vecCameraAngle[2] = readcoord();
 
 		pSeat->m_flCameraTime = time + readfloat();
 		break;
