@@ -382,10 +382,19 @@ PMove_AccelLadder(float move_time, float premove, vector wish_dir, float wish_sp
 void
 PMove_AccelFriction(float move_time, float premove, vector wish_dir, float wish_speed)
 {
+	float flApplyFriction;
 	float flFriction;
 	vector vecTemp;
 
-	// friction
+	flApplyFriction = serverkeyfloat("phy_friction");
+
+	/* per frame basis friction modifier */
+	if (self.friction != 0.0f) {
+		flApplyFriction /= self.friction;
+		self.friction = 0.0f;
+	}
+
+	/* apply friction */
 	if (self.velocity[0] || self.velocity[1]) {
 		vecTemp = self.velocity;
 		vecTemp[2] = 0;
@@ -398,15 +407,16 @@ PMove_AccelFriction(float move_time, float premove, vector wish_dir, float wish_
 		// apply friction
 		if (trace_fraction == 1.0) {
 			if (flFriction < serverkeyfloat("phy_stopspeed")) {
-				flFriction = 1 - move_time * (serverkeyfloat("phy_stopspeed") / flFriction) * serverkeyfloat("phy_friction") * serverkeyfloat("phy_edgefriction");
+				flFriction = 1 - move_time * (serverkeyfloat("phy_stopspeed") / flFriction) * flApplyFriction * serverkeyfloat("phy_edgefriction");
 			} else {
-				flFriction = 1 - move_time * serverkeyfloat("phy_friction") * serverkeyfloat("phy_edgefriction");
+				flFriction = 1 - move_time * flApplyFriction * serverkeyfloat("phy_edgefriction");
 			}
 		} else {
 			if (flFriction < serverkeyfloat("phy_stopspeed")) {
-				flFriction = 1 - move_time * (serverkeyfloat("phy_stopspeed") / flFriction) * serverkeyfloat("phy_friction");
+				flFriction = 1 - move_time * (serverkeyfloat("phy_stopspeed") / flFriction) * flApplyFriction;
 			} else {
-				flFriction = 1 - move_time * serverkeyfloat("phy_friction");
+				
+				flFriction = 1 - move_time * flApplyFriction;
 			}
 		}
 
