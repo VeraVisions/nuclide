@@ -25,6 +25,8 @@ Causes the activators first-person camera to switch to the view of this entity.
 
 class trigger_camera:CBaseTrigger
 {
+	string m_strMoveTo;
+	float m_flDelay;
 	float m_flWait;
 
 	void(void) trigger_camera;
@@ -34,15 +36,21 @@ class trigger_camera:CBaseTrigger
 void
 trigger_camera::Trigger(void)
 {
-	if (m_strTarget) {
-		entity e = find(world, CBaseTrigger::m_strTargetName, m_strTarget);
+	if (m_flDelay > 0) {
+		CBaseTrigger::UseTargets_Delay(m_flDelay);
+	} else {
+		CBaseTrigger::UseTargets();
+	}
+
+	if (m_strMoveTo) {
+		entity e = find(world, CBaseTrigger::m_strTargetName, m_strMoveTo);
 		if (e) {
 			angles = vectoangles(e.origin - origin);
-			//angles[0] *= -1;
 		}
 	}
 
 	Client_TriggerCamera(eActivator, origin, angles, m_flWait);
+	//eActivator.view2 = this;
 
 	dprint(sprintf("^2trigger_camera::^3Trigger^7: Camera at %v, %v, for %f sec/s requested\n", 
 		origin, angles, m_flWait));
@@ -53,8 +61,14 @@ trigger_camera::trigger_camera(void)
 {
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
+		case "delay":
+			m_flDelay = stof(argv(i+1));
+			break;
 		case "wait":
 			m_flWait = stof(argv(i+1));
+			break;
+		case "moveto":
+			m_strMoveTo = argv(i+1);
 			break;
 		default:
 			break;
