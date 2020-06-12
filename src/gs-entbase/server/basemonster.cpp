@@ -418,5 +418,11 @@ CBaseMonster::Respawn(void)
 void
 CBaseMonster::CBaseMonster(void)
 {
+	/* FIXME: Put this somewhere else? */
+	if (!(cvar("coop") == 1 || cvar("sv_playerslots") == 1)) {
+		remove(this);
+		return;
+	}
+
 	CBaseEntity::CBaseEntity();
 }
