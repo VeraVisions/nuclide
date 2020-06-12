@@ -193,7 +193,8 @@ monster_scientist::monster_scientist(void)
 	for (int i = 1; i < (tokenize(__fullspawndata)-1); i += 2) {
 		switch (argv(i)) {
 		case "body":
-			SetBody(stoi(argv(i+1)) + 1);
+			body = stoi(argv(i+1)) + 1;
+			SetBody(body);
 			break;
 		default:
 			break;
