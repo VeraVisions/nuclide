@@ -1,17 +1,15 @@
-HALF-LIFE ENTITY BASE - QUAKEC VERSION
-======================================
+GENERAL ENTITY CODE BASE
+========================
 
-This server-side logic is part of the FreeCS project.
-It's a reverse-engineering effort to get Half-Life entities closely
-compatible with FTE QuakeWorld.
+This is part reverse-engineering effort, part innovation, in terms of reusable
+and game-agnostic map-entity logic.
 
-They are made possible through the documentation efforts of twhl.info
+A lot of entities from Half-Life and Source Engine based titles are implemented.
+Those are made possible through the documentation efforts of twhl.info
+and a lot of trial and error. A lot of mods and custom maps have been used to
+make sure this is as compatible as can be. It's always improving.
 
-It's created from scratch and is not C++ - it's QuakeC and meant to be used
-within FTE QuakeWorld. The file extensions are only changed in order to help
-with the syntax highlighting choice of your favorite editor.
-
-This codebase is to be compiled with FTEQCC, no other compiler is supported.
+Others objects I have come up with on my own for the projects.
 
 A few warnings to the uneducated:
 If you're planning on merging or using any of this code in combination with the
