@@ -11,6 +11,7 @@ server/basetrigger.cpp
 server/basemonster.cpp
 server/basenpc.cpp
 server/basephysics.cpp
+server/button_target.cpp
 server/ambient_generic.cpp
 server/cycler.cpp
 server/cycler_sprite.cpp
