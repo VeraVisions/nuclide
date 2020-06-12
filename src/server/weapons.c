@@ -1,5 +1,18 @@
 #ifdef SERVER
-void Weapons_PickupNotify(base_player pl, int w)
+int
+Weapon_GetCount(void)
+{
+	return g_weapons.length;
+}
+
+int
+Weapon_GetBitID(int i)
+{
+	return g_weapons[i].id;
+}
+
+void
+Weapons_PickupNotify(base_player pl, int w)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_WEAPON_PICKUP);
@@ -8,14 +21,16 @@ void Weapons_PickupNotify(base_player pl, int w)
 	multicast([0,0,0], MULTICAST_ONE);
 }
 
-void Weapons_RefreshAmmo(base_player pl)
+void
+Weapons_RefreshAmmo(base_player pl)
 {
 	if (g_weapons[pl.activeweapon].updateammo != __NULL__) {
 		g_weapons[pl.activeweapon].updateammo((player)pl);
     }
 }
 
-void Weapons_SwitchBest(base_player pl)
+void
+Weapons_SwitchBest(base_player pl)
 {
 	entity oldself = self;
 	self = pl;
@@ -31,7 +46,8 @@ void Weapons_SwitchBest(base_player pl)
 }
 
 /* returns TRUE if weapon pickup gets removed from this world */
-int Weapons_AddItem(base_player pl, int w, int startammo)
+int
+Weapons_AddItem(base_player pl, int w, int startammo)
 {
 	int value;
 	entity oldself = self;
@@ -99,20 +115,23 @@ int Weapons_AddItem(base_player pl, int w, int startammo)
 	return value;
 }
 
-void Weapons_RemoveItem(base_player pl, int w)
+void
+Weapons_RemoveItem(base_player pl, int w)
 {
 	pl.g_items &= ~g_weapons[w].id;
 	Weapons_SwitchBest(pl);
 }
 
-void Weapons_InitItem(int w)
+void
+Weapons_InitItem(int w)
 {
 	item_pickup it = (item_pickup)self;
 	spawnfunc_item_pickup();
 	it.SetItem(w);
 }
 
-void Weapons_UpdateAmmo(base_player pl, int a1, int a2, int a3)
+void
+Weapons_UpdateAmmo(base_player pl, int a1, int a2, int a3)
 {
 	/* no change */
 	if (a1 == -1) {
@@ -131,7 +150,8 @@ void Weapons_UpdateAmmo(base_player pl, int a1, int a2, int a3)
 	pl.a_ammo3 = bound(0, a3, 255);
 }
 
-void Weapons_ReloadWeapon(base_player pl, .int mag, .int ammo, int max)
+void
+Weapons_ReloadWeapon(base_player pl, .int mag, .int ammo, int max)
 {
 	int iNeed = max - pl.(mag);
 	int iHave = pl.(ammo);
@@ -145,7 +165,8 @@ void Weapons_ReloadWeapon(base_player pl, .int mag, .int ammo, int max)
 	}
 }
 
-void Weapon_DropCurrentWeapon(base_player pl)
+void
+Weapon_DropCurrentWeapon(base_player pl)
 {
 	
 	static void DropWeapon_Enable(void)
@@ -174,7 +195,8 @@ void Weapon_DropCurrentWeapon(base_player pl)
 	Weapons_RemoveItem(pl, pl.activeweapon);
 }
 
-void CSEv_DropWeapon(void)
+void
+CSEv_DropWeapon(void)
 {
 	player pl = (player)self;
 	Weapon_DropCurrentWeapon(pl);

@@ -329,7 +329,14 @@ void func_breakable::func_breakable(void)
 			m_flExplodeMag = stof(argv(i+1));
 			break;
 		case "spawnobject":
-			m_strBreakSpawn = funcbreakable_objtable[stoi(argv(i+1))];
+			int oid = stoi(argv(i+1));
+
+			if (oid >= funcbreakable_objtable.length) {
+				print(sprintf("^1func_breakable^7: spawnobject %i out of bounds! fix your mod!\n", oid));
+				m_strBreakSpawn = "";
+			} else {
+				m_strBreakSpawn = funcbreakable_objtable[oid];
+			}
 			break;
 		case "spawnonbreak":
 			m_strBreakSpawn = argv(i+1);

@@ -136,7 +136,6 @@ CSGameRules::PlayerPostFrame(base_player pp)
 	} 
 }
 
-
 void
 CSGameRules::LevelDecodeParms(base_player pp)
 {

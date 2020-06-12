@@ -34,10 +34,11 @@ void item_healthkit::touch(void)
 	if (other.classname != "player") {
 		return;
 	}
-	
+
 	if (other.health >= other.max_health) {
 		return;
 	}
+
 	Damage_Apply(other, this, -20, 0, DMG_GENERIC);
 	Sound_Play(this, CHAN_ITEM, "item.healthkit");
 	Logging_Pickup(other, this, __NULL__);

@@ -8,3 +8,5 @@ void Weapons_InitItem(int w);
 void Weapons_UpdateAmmo(base_player pl, int a1, int a2, int a3);
 void Weapons_ReloadWeapon(base_player pl, .int mag, .int ammo, int max);
 void Weapon_DropCurrentWeapon(base_player pl);
+int Weapon_GetCount();
+int Weapon_GetBitID(int);
