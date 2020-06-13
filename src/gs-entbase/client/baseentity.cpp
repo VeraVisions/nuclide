@@ -196,26 +196,29 @@ CBaseEntity::ProcessWordQue(void)
 		return;
 	}
 
-	/* hack to get vox working. */
-	string sndpath;
-	int c = tokenizebyseparator(m_pSentenceQue[m_iSentencePos].m_strSnd, "/");
-	if (c > 1) {
-		sndpath = argv(0);
-	} else {
-		sndpath =  "vox";
-	}
-
-	sound(this, CHAN_VOICE, sprintf("%s/%s", sndpath, argv(1)), 1.0, ATTN_NORM, 100, SOUNDFLAG_FOLLOW);
+	sound(this, CHAN_VOICE, m_pSentenceQue[m_iSentencePos].m_strSnd, 1.0, ATTN_NORM, 100, SOUNDFLAG_FOLLOW);
 	dprint(sprintf("^2CBaseEntity::^3ProcessWordQue^7: Speaking %s\n", m_pSentenceQue[m_iSentencePos].m_strSnd));
 	m_iSentencePos++;
 
-	if (m_iSentenceCount == m_iSentenceCount) {
+	if (m_iSentencePos == m_iSentenceCount) {
 		memfree(m_pSentenceQue);
 		m_iSentenceCount = 0;
 		m_iSentencePos = 0;
 		m_pSentenceQue = 0;
 	} else {
-		m_flSentenceTime = time + m_pSentenceQue[m_iSentenceCount - 1].m_flLength;
+		m_flSentenceTime = time + m_pSentenceQue[m_iSentencePos - 1].m_flLength;
+	}
+}
+
+string
+CBaseEntity_ProcessSample(string sample)
+{
+	int c = tokenizebyseparator(sample, "/");
+
+	if (c > 1) {
+		return sample;
+	} else {
+		return sprintf("vox/%s", sample);
 	}
 }
 
@@ -238,8 +241,14 @@ CBaseEntity::Sentence(string msg)
 	m_iSentenceCount = tokenize(Sentences_GetSamples(msg));
 	m_pSentenceQue = memalloc(sizeof(sound_t) * m_iSentenceCount);
 
+	/* first we have to get the info out of the token */
 	for (int i = 0; i < m_iSentenceCount; i++) {
 		m_pSentenceQue[i].m_strSnd = sprintf("%s.wav", argv(i));
+	}
+
+	/* process more info, we'll need to override argv() here */
+	for (int i = 0; i < m_iSentenceCount; i++) {
+		m_pSentenceQue[i].m_strSnd = CBaseEntity_ProcessSample(m_pSentenceQue[i].m_strSnd);
 		m_pSentenceQue[i].m_flLength = soundlength(m_pSentenceQue[i].m_strSnd);
 		m_pSentenceQue[i].m_flPitch = 100;
 	}

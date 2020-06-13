@@ -121,6 +121,5 @@ Sentences_GetSamples(string msg)
 			return g_sentences[i].m_strSamples;
 		}
 	}
-
 	return "";
 }

@@ -68,6 +68,7 @@ server/env_beverage.cpp
 server/env_global.cpp
 server/env_laser.cpp
 server/item_food.cpp
+server/speaker.cpp
 server/multi_manager.cpp
 server/monster_furniture.cpp
 server/monster_generic.cpp
