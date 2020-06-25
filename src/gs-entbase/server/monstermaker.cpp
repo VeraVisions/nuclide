@@ -99,6 +99,7 @@ monstermaker::Spawner(void)
 		/* apply the saved values back */
 		t.origin = t.m_oldOrigin = neworg;
 		t.m_strTargetName = tname;
+		t.spawnflags |= MSF_MULTIPLAYER;
 
 		/* spawn anew */
 		t.Respawn();

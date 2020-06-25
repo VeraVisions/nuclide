@@ -55,5 +55,6 @@ monster_generic::monster_generic(void)
 		base_maxs = [16,16,72];
 	}
 
+	spawnflags |= MSF_MULTIPLAYER;
 	CBaseNPC::CBaseNPC();
 }

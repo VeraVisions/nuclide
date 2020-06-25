@@ -46,12 +46,9 @@ void monster_furniture::monster_furniture(void)
 	SetModel(model);
 	CBaseEntity::CBaseEntity();
 	
-#if 1
-	self.movetype = MOVETYPE_NOCLIP;
-	self.solid = SOLID_NOT;
-	//self.avelocity = '0 90 0 ';
-	//self.modelflags = MF_ROTATE;
-#endif
+	movetype = MOVETYPE_NOCLIP;
+	solid = SOLID_NOT;
+	spawnflags |= MSF_MULTIPLAYER;
 }
 
 CLASSEXPORT(ts_model, monster_furniture)
