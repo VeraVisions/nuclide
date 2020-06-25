@@ -50,7 +50,6 @@ monster_tripmine::SendEntity(entity pvsent, float flags)
 	WriteCoord(MSG_ENTITY, angles[0]);
 	WriteCoord(MSG_ENTITY, angles[1]);
 	WriteCoord(MSG_ENTITY, angles[2]);
-	WriteFloat(MSG_ENTITY, armor);
 	WriteByte(MSG_ENTITY, health);
 	WriteShort(MSG_ENTITY, modelindex);
 	return TRUE;
@@ -154,24 +153,29 @@ void w_tripmine_precache(void)
 	precache_model("models/p_tripmine.mdl");
 #endif
 }
+
 void w_tripmine_updateammo(player pl)
 {
 #ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, pl.ammo_tripmine, -1);
 #endif
 }
+
 string w_tripmine_wmodel(void)
 {
 	return "models/v_tripmine.mdl";
 }
+
 string w_tripmine_pmodel(void)
 {
 	return "models/p_tripmine.mdl";
 }
+
 string w_tripmine_deathmsg(void)
 {
 	return "";
 }
+
 int w_tripmine_pickup(int new, int startammo)
 {
 #ifdef SERVER
@@ -193,46 +197,63 @@ void w_tripmine_draw(void)
 	Weapons_ViewAnimation(TRIPMINE_DRAW);
 #endif
 }
+
 void w_tripmine_holster(void)
 {
 	
 }
 
 #ifdef CLIENT
-.float health;
-.float armor;
-float w_tripmine_predraw(void)
+class csitem_tripmine
 {
-	if (self.health) {
-		makevectors(self.angles);
-		traceline(self.origin, self.origin + v_forward * 8196, FALSE, self);
-		trailparticles(BEAM_TRIPMINE, self, self.origin, trace_endpos);
+	int m_iActive;
+
+	void(void) csitem_tripmine;
+	virtual float(void) predraw;
+};
+
+float csitem_tripmine::predraw(void)
+{
+	if (m_iActive) {
+		makevectors(angles);
+		traceline(origin, origin + v_forward * 8196, FALSE, this);
+		trailparticles(BEAM_TRIPMINE, this, origin, trace_endpos);
 	}
-	addentity(self);
+
+	addentity(this);
 	return PREDRAW_NEXT;
 }
+
+void
+csitem_tripmine::csitem_tripmine(void)
+{
+	solid = SOLID_BBOX;
+	movetype = MOVETYPE_NONE;
+	drawmask = MASK_ENGINE;
+	frame = TRIPMINE_WORLD;
+}
+
 void w_tripmine_parse(void)
 {
-	self.origin[0] = readcoord();
-	self.origin[1] = readcoord();
-	self.origin[2] = readcoord();
-	self.angles[0] = readcoord();
-	self.angles[1] = readcoord();
-	self.angles[2] = readcoord();
-	self.armor = readfloat();
-	self.health = readbyte();
-	self.modelindex = readshort();
-	self.solid = SOLID_BBOX;
-	self.movetype = MOVETYPE_NONE;
-	self.predraw = w_tripmine_predraw;
-	self.drawmask = MASK_ENGINE;
-	self.frame = TRIPMINE_WORLD;
-	setcustomskin(self, "", "geomset 0 2\ngeomset 1 2\n");
-	setorigin(self, self.origin);
+	csitem_tripmine tm = (csitem_tripmine)self;
+	spawnfunc_csitem_tripmine();
+
+	tm.origin[0] = readcoord();
+	tm.origin[1] = readcoord();
+	tm.origin[2] = readcoord();
+	tm.angles[0] = readcoord();
+	tm.angles[1] = readcoord();
+	tm.angles[2] = readcoord();
+	tm.m_iActive = readbyte();
+	tm.modelindex = readshort();
+
+	setcustomskin(tm, "", "geomset 0 2\ngeomset 1 2\n");
+	setorigin(tm, tm.origin);
 }
 #endif
 
-void w_tripmine_primary(void)
+void
+w_tripmine_primary(void)
 {
 	player pl = (player)self;
 	vector src;
@@ -277,7 +298,8 @@ void w_tripmine_primary(void)
 	pl.w_idle_next = 0.5f;
 }
 
-void w_tripmine_release(void)
+void
+w_tripmine_release(void)
 {
 	player pl = (player)self;
 
@@ -315,12 +337,14 @@ void w_tripmine_release(void)
 	}
 }
 
-float w_tripmine_aimanim(void)
+float
+w_tripmine_aimanim(void)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIMTRIPMINE : ANIM_AIMTRIPMINE;
 }
 
-void w_tripmine_hud(void)
+void
+w_tripmine_hud(void)
 {
 #ifdef CLIENT
 	HUD_DrawAmmo2();
@@ -329,7 +353,8 @@ void w_tripmine_hud(void)
 #endif
 }
 
-void w_tripmine_hudpic(int selected, vector pos, float a)
+void
+w_tripmine_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
 	if (selected) {
@@ -364,7 +389,8 @@ weapon_t w_tripmine =
 };
 
 #ifdef SERVER
-void weapon_tripmine(void) {
+void
+weapon_tripmine(void) {
 	Weapons_InitItem(WEAPON_TRIPMINE);
 }
 #endif
