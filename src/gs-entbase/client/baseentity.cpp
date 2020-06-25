@@ -22,6 +22,7 @@ var int autocvar_cl_showtriggers = FALSE;
 
 string __fullspawndata;
 string Sentences_GetSamples(string);
+string Sentences_ProcessSample(string);
 
 class CBaseEntity
 {
@@ -210,18 +211,6 @@ CBaseEntity::ProcessWordQue(void)
 	}
 }
 
-string
-CBaseEntity_ProcessSample(string sample)
-{
-	int c = tokenizebyseparator(sample, "/");
-
-	if (c > 1) {
-		return sample;
-	} else {
-		return sprintf("vox/%s", sample);
-	}
-}
-
 /* we'll pass it a sentences.txt word (e.g. !BA_TEST) and start queing it */
 void
 CBaseEntity::Sentence(string msg)
@@ -248,7 +237,7 @@ CBaseEntity::Sentence(string msg)
 
 	/* process more info, we'll need to override argv() here */
 	for (int i = 0; i < m_iSentenceCount; i++) {
-		m_pSentenceQue[i].m_strSnd = CBaseEntity_ProcessSample(m_pSentenceQue[i].m_strSnd);
+		m_pSentenceQue[i].m_strSnd = Sentences_ProcessSample(m_pSentenceQue[i].m_strSnd);
 		m_pSentenceQue[i].m_flLength = soundlength(m_pSentenceQue[i].m_strSnd);
 		m_pSentenceQue[i].m_flPitch = 100;
 	}

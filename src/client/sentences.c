@@ -27,6 +27,36 @@
  * http://articles.thewavelength.net/230/
  * has pretty good documentation of how the format is meant to work */
 
+/* Sentences Documentation
+
+	Each line is a new sentence group.
+    [GROUPNAME] [...PARAMETERS] [...SAMPLES]
+
+    If a sample is not in a sub-directory, it'll be assumed to be part
+    of the 'vox' sub-directory, or the last valid path of a previous sample.
+    For example
+        attention male/hello how are you
+    becomes
+        vox/attention.wav male/hello.wav male/how.wav male/are.wav male/you.wav
+
+	When parameters are surrounded by spaces, this means they apply
+    to all current samples. They can be overwritten later down the parsing.
+    When a parameter is attached to a sample, e.g.
+        attention(p120)
+    Then this parameter only applies to said keyword.
+    Whereas...
+        (p120) attention everyone alive
+    Will apply the pitch effect to all three succeeding samples.
+
+	Parameters:
+    (pXX) = Pitch. Valid values are from 50 to 150.
+    (vXX) = Volume. Valid values are from 0 to 100.
+    (sXX) = Start point in %. E.g. 10 skips the first 10% of the sample.
+    (eXX) = End point in %. E.g. 75 ends playback 75% into the sample.
+    (tXX) = Time shift/compression in %. 100 is unaltered speed,
+            wheras 50 plays the sample back in half the time.
+*/
+
 /* enable this if you want to use memalloc */
 #define DYNAMIC_SENTENCES
 
@@ -45,6 +75,8 @@ typedef struct
 	int g_sentences_count;
 #endif
 
+var string g_sentences_samplepath;
+
 void
 Sentences_Init(void)
 {
@@ -54,6 +86,7 @@ Sentences_Init(void)
 
 	if (g_sentences_count > 0) {
 		g_sentences_count = 0;
+
 #ifndef DYNAMIC_SENTENCES
 		if (g_sentences) {
 			memfree(g_sentences);
@@ -113,9 +146,34 @@ Sentences_Init(void)
 	}
 }
 
+
+
+string
+Sentences_ProcessSample(string sample)
+{
+	int c = tokenizebyseparator(sample, "/");
+
+	if (c > 1) {
+		g_sentences_samplepath = argv(0);
+	}
+
+	sample = strreplace(",", "vox/comma.wav", sample);
+
+	return sprintf("%s/%s", g_sentences_samplepath, sample);
+}
+
+string
+Sentences_ResetSample()
+{
+	g_sentences_samplepath = "vox";
+}
+
+
 string
 Sentences_GetSamples(string msg)
 {
+	Sentences_ResetSample();
+
 	for (int i = 0; i < g_sentences_count; i++) {
 		if (g_sentences[i].m_strID == msg) {
 			return g_sentences[i].m_strSamples;
