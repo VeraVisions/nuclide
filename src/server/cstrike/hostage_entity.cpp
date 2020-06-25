@@ -192,6 +192,7 @@ hostage_entity::hostage_entity(void)
 	m_talkFollow = "";
 	m_talkStopFollow = "";
 
+	spawnflags |= MSF_MULTIPLAYER;
 	model = "models/hostage.mdl";
 	netname = "Hostage";
 	base_health = 100;
