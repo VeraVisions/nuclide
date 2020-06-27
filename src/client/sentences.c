@@ -162,8 +162,8 @@ Sentences_ProcessSample(string sample)
 	return sprintf("%s/%s", g_sentences_samplepath, sample);
 }
 
-string
-Sentences_ResetSample()
+void
+Sentences_ResetSample(void)
 {
 	g_sentences_samplepath = "vox";
 }
