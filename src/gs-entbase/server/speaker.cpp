@@ -57,7 +57,7 @@ string g_speaker_hlpresets[] = {
 	"!C2A5_",
 	"!C3A1_",
 	"!C3A2_"
-}
+};
 
 class speaker:CBaseNPC
 {
