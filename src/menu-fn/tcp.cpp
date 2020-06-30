@@ -38,10 +38,11 @@ TCP_Connect(tcpinfo_t *in, string path)
 
 	if (in.m_fSocket < 0) {
 		dprint(sprintf("^1TCP_Connect^7: Unable to access %s\n", path));
+	} else {
+		/* we got at least this far */
+		in.m_iState = STATE_CONNECTING;
 	}
 
-	/* we got at least this far */
-	in.m_iState = STATE_CONNECTING;
 	return (int)in.m_fSocket;
 }
 
@@ -53,6 +54,7 @@ TCP_Disconnect(tcpinfo_t *in)
 
 	in.m_iState = STATE_DISCONNECTED;
 	fclose(in.m_fSocket);
+	in.m_fSocket = -1;
 }
 
 int

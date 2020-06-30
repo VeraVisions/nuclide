@@ -142,9 +142,6 @@ irc_receive(string buffer)
 		:eukara!eukara@irc.won.net PRIVMSG Frank :hello
 	*/
 
-	print(buffer);
-	print("\n");
-
 	if (substring(buffer, 0, 4) == "PING") {
 		irc_send(sprintf("PONG :%s\n", substring(buffer, 6, -1)));
 		return;
@@ -233,6 +230,9 @@ irc_receive(string buffer)
 			}
 		}
 		cr_print(sprintf("%s is now known as %s", src, argv(2)));
+	default:
+		dprint(buffer);
+		dprint("\n");
 	}
 }
 
@@ -396,29 +396,26 @@ void menu_chatrooms_draw(void)
 		g_ircroom.m_iStatus = TRUE;
 	}
 
-	if (TCP_GetState(&tcp_irc) == STATE_CONNECTED) {
-		drawsetcliparea(g_menuofs[0] + 33, g_menuofs[1] + 104, 450,331);
-		drawresetcliparea();
-	} else if (TCP_GetState(&tcp_irc) == STATE_CONNECTING) {
+	if (TCP_GetState(&tcp_irc) == STATE_CONNECTING || !g_ircroom.m_iReady) {
 		/* connecting... dialog */
 		cr_dgConnect.Draw();
 		WField_Static(162, 180, m_reslbl[IDS_WON_LOGIN], 320, 260,
+						col_prompt_text, 1.0f, 2, font_label_p);
+		WField_Static(162, 200, sprintf("%d seconds remaining...\n", timeout), 320, 260,
 						col_prompt_text, 1.0f, 2, font_label_p);
 		WField_Static(162, 280, sprintf(m_reslbl[IDS_CHAT_JOIN], g_ircroom.m_strChannel), 320, 260,
 						col_prompt_title, 1.0f, 2, font_label_p);
 		timeout -= frametime;
 
 		if (timeout < 0.0) {
+			timeout = 10.0f;
+			TCP_Disconnect(&tcp_irc);
 			cr_btndone_start();
 		}
-	}
-
-	if (!g_ircroom.m_iReady) {
-		cr_dgConnect.Draw();
-		WField_Static(162, 180, "Connected to Frag-Net", 320, 260,
-						col_prompt_text, 1.0f, 2, font_label_p);
-		WField_Static(162, 280, sprintf("Loading room info for %s", g_ircroom.m_strChannel), 320, 260,
-						col_prompt_title, 1.0f, 2, font_label_p);
+	} else if (TCP_GetState(&tcp_irc) == STATE_CONNECTED) {
+		drawsetcliparea(g_menuofs[0] + 33, g_menuofs[1] + 104, 450,331);
+		drawresetcliparea();
+		timeout = 10.0f;
 	}
 
 	/* draw the labels */
