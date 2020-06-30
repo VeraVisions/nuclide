@@ -29,7 +29,8 @@ class CListBox:CWidget
 	virtual void(void) Draw;
 	virtual void(float type, float x, float y, float devid) Input;
 
-	virtual void(string m) AddEntry;
+	virtual void(string) AddEntry;
+	virtual void(int) DelEntry;
 	virtual void(void) Clear;
 	virtual void(int, int) SetSize;
 	virtual void(void(int val) func) SetChanged;
@@ -62,8 +63,10 @@ void CListBox::Draw(void)
 			drawfill([g_menuofs[0] + pos[0] - 2, g_menuofs[1] + pos[1] - 2], [m_size[0], 15], 
 			 [84/255,45/255,0], 1.0f);
 		}
+		drawsetcliparea(g_menuofs[0] + m_x, g_menuofs[1] + m_y, m_size[0], m_size[1]);
 		WLabel_Static(pos[0], pos[1], m_entries[i], 12, 12, [1,0.5,0.1],
 					1.0f, 0, font_label);
+		drawresetcliparea();
 		pos[1] += 15;
 	}
 }
@@ -98,6 +101,14 @@ void CListBox::AddEntry(string m)
 			m_count = i + 1;
 			break;
 		}
+	}
+}
+
+void CListBox::DelEntry(int i)
+{
+	if (m_entries[i] != __NULL__) {
+		m_entries[i] = __NULL__;
+		m_count--;
 	}
 }
 

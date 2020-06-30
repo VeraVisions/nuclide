@@ -18,6 +18,8 @@ games:
 	cd server/rewolf && $(MAKE)
 	cd client/gearbox && $(MAKE)
 	cd server/gearbox && $(MAKE)
+#	cd client/wastes && $(MAKE)
+	#cd server/wastes && $(MAKE)
 
 mods:
 	cd client/cstrike && $(MAKE)

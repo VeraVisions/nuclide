@@ -42,7 +42,6 @@ void create_btnok_start(void)
 		localcmd(sprintf("map %s\n", startmap));
 		g_menupage = PAGE_LANGAMES;
 	}
-
 	/* Strip .bsp extension before submitting */
 	startmap = substring(create_lbMaps.GetSelectedItem(), 0, -5);
 

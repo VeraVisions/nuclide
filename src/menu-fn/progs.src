@@ -25,6 +25,7 @@ w_frame.cpp
 w_label.cpp
 w_combobox.cpp
 w_listbox.cpp
+w_textbuffer.cpp
 w_servers.cpp
 w_mainbutton.cpp
 w_modetab.cpp

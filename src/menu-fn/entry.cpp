@@ -163,6 +163,9 @@ m_draw(vector screensize)
 		Menu_AutoScale();
 	}
 
+	/* to prevent TCP timeouts */
+	menu_chatrooms_keepalive();
+
 	if (!g_active) {
 		return;
 	}

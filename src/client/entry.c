@@ -55,6 +55,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	registercommand("+showscores");
 	registercommand("-showscores");
 	registercommand("buildcubemaps");
+	registercommand("_fnchat_msg");
 
 	precache_model("sprites/640_pain.spr");
 	precache_model("sprites/crosshairs.spr");
@@ -655,6 +656,9 @@ CSQC_ConsoleCommand(string sCMD)
 		break;
 	case "slot10":
 		HUD_SlotSelect(9);
+		break;
+	case "_fnchat_msg":
+		CSQC_Parse_Print(argv(1), PRINT_CHAT);
 		break;
 	default:
 		return Game_ConsoleCommand();

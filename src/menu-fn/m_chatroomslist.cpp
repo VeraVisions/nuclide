@@ -19,11 +19,47 @@ CMainButton crl_btnJoin;
 CMainButton crl_btnCreateRoom;
 CMainButton crl_btnCancel;
 
-var string g_crIRCchannel;
+CFrame crl_frRooms;
+CListBox crl_lbRooms;
+CScrollbar crl_sbRooms;
+
+var int crl_iLoading;
+
+void
+crl_addroom(string room)
+{
+	/* skip this thing. */
+	if (room == "&SERVER")
+		return;
+
+	crl_lbRooms.AddEntry(room);
+	crl_sbRooms.SetMax(crl_lbRooms.GetCount());
+}
+
+void
+crl_clearrooms(void)
+{
+	crl_lbRooms.Clear();
+	crl_sbRooms.SetMax(0);
+	crl_iLoading = TRUE;
+}
+
+void
+crl_roomsdone(void)
+{
+	crl_iLoading = FALSE;
+}
 
 void crl_btnjoin_start(void)
 {
 	static void cr_btncancel_end(void) {
+		/* part the current channel, clear textbuffer and user list */
+		irc_send(sprintf("PART %s\n", g_ircroom.m_strChannel));
+		irc_clear();
+
+		/* set the new current channel, attempt to join */
+		g_ircroom.m_strChannel = crl_lbRooms.GetSelectedItem();
+		irc_send(sprintf("JOIN %s\n", g_ircroom.m_strChannel));
 		g_menupage = PAGE_CHATROOMS;
 	}
 	localsound("../media/launch_dnmenu1.wav");
@@ -49,6 +85,11 @@ void crl_btncancel_start(void)
 	header.SetExecute(crl_btncancel_end);
 }
 
+void crl_rooms_changed(int val)
+{
+	crl_lbRooms.SetScroll(val);
+}
+
 void menu_chatroomslist_init(void)
 {
 	fn_chatroomslist = spawn(CWidget);
@@ -63,6 +104,22 @@ void menu_chatroomslist_init(void)
 	//crl_btnCreateRoom.SetExecute(cr_btncancel_start);
 	crl_btnCreateRoom.SetPos(50,172);
 	Widget_Add(fn_chatroomslist, crl_btnCreateRoom);
+	
+	crl_frRooms = spawn(CFrame);
+	crl_frRooms.SetPos(382,172);
+	crl_frRooms.SetSize(208,288);
+	Widget_Add(fn_chatroomslist, crl_frRooms);
+
+	crl_lbRooms = spawn(CListBox);
+	crl_lbRooms.SetPos(384,175);
+	crl_lbRooms.SetSize(202-16,282);
+	Widget_Add(fn_chatroomslist, crl_lbRooms);
+	
+	crl_sbRooms = spawn(CScrollbar);
+	crl_sbRooms.SetPos(571,175);
+	crl_sbRooms.SetHeight(282);
+	crl_sbRooms.SetCallback(crl_rooms_changed);
+	Widget_Add(fn_chatroomslist, crl_sbRooms);
 
 	crl_btnCancel = spawn(CMainButton);
 	crl_btnCancel.SetImage(BTN_CANCEL);
@@ -76,6 +133,14 @@ void menu_chatroomslist_draw(void)
 	Widget_Draw(fn_chatroomslist);
 	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_ROOMS],[460,80], [1,1,1], 1.0f, 1);
 	drawpic([g_menuofs[0]+550,g_menuofs[1]+10], "gfx/shell/fragnet",[80,80], [1,1,1], 1.0f, 0);
+
+	if (crl_iLoading) {
+		cr_dgConnect.Draw();
+		WField_Static(162, 180, "Connected to Frag-Net", 320, 260,
+						col_prompt_text, 1.0f, 2, font_label_p);
+		WField_Static(162, 280, "Retrieving Room List...", 320, 260,
+						col_prompt_title, 1.0f, 2, font_label_p);
+	}
 }
 
 void menu_chatroomslist_input(float evtype, float scanx, float chary, float devid)

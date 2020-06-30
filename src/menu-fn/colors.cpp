@@ -24,7 +24,8 @@ vector col_refresh_title;
 vector col_refresh_text;
 vector col_refresh_bg;
 
-string Colors_RGB8_to_HEX(vector color)
+string
+Colors_RGB8_to_HEX(vector color)
 {
 	string out = "^x";
 
@@ -57,6 +58,12 @@ string Colors_RGB8_to_HEX(vector color)
 		out = sprintf("%s%s", out, a);
 	}
 	return out;
+}
+
+string
+Colors_RGB255_to_HEX(vector color)
+{
+	return Colors_RGB8_to_HEX(color / 255);
 }
 
 void Colors_Init(void)
