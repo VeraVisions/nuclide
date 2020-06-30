@@ -156,15 +156,16 @@ irc_receive(string buffer)
 	/* process the code */
 	switch (argv(2)) {
 	case "PRIVMSG": /* a message */
+		string msg = substring(buffer, strstrofs(buffer, ":", 1) + 1, -1);
 		cr_print(
 			sprintf("%s<%s>%s %s",
 				Colors_RGB255_to_HEX([192,192,192]),
 				src,
 				Colors_RGB255_to_HEX([255,255,255]),
-				substring(buffer, strstrofs(buffer, ":", 1) + 1, -1)
+				msg
 			)
 		);
-		localcmd(sprintf("_fnchat_msg \"[%s] %s: %s\"\n", g_ircroom.m_strChannel, src, argv(2)));
+		localcmd(sprintf("_fnchat_msg \"[%s] %s: %s\"\n", g_ircroom.m_strChannel, src, msg));
 		break;
 	case "321":
 		crl_clearrooms();
@@ -264,6 +265,7 @@ void cr_input_enter(string text)
 			text
 		)
 	);
+
 	irc_send(sprintf("PRIVMSG %s :%s\n", g_ircroom.m_strChannel, text));
 	cr_tbInput.SetText("");
 }
