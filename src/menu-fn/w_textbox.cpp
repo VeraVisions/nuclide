@@ -86,6 +86,8 @@ void CTextBox::Input(float type, float x, float y, float devid)
 				m_onEnter(m_text);
 			}
 			break;
+		case K_ESCAPE:
+			break;
 		default:
 			if (m_flags & TEXTBOX_FOCUS) {
 				m_text = sprintf("%s%s", m_text, chr2str(y));
