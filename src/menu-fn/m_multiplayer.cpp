@@ -36,7 +36,8 @@ enum
 	CONNECT_CHAT
 };
 
-void mp_btndone_start(void)
+void
+mp_btndone_start(void)
 {
 	static void mp_btndone_end(void) {
 		g_menupage = PAGE_MAIN;
@@ -50,7 +51,8 @@ void mp_btndone_start(void)
 	header.SetExecute(mp_btndone_end);
 }
 
-void mp_btninet_start(void)
+void
+mp_btninet_start(void)
 {
 	static void mp_btninet_end(void) {
 		g_menupage = PAGE_INTERNETGAMES;
@@ -74,7 +76,8 @@ void mp_btninet_start(void)
 }
 
 /* this is from m_chatrooms.cpp */
-void cr_btnservers_start(void)
+void
+cr_btnservers_start(void)
 {
 	static void cr_btnservers_end(void) {
 		g_menupage = PAGE_INTERNETGAMES;
@@ -99,7 +102,8 @@ void cr_btnservers_start(void)
 	}
 }
 
-void mp_btnlan_start(void)
+void
+mp_btnlan_start(void)
 {
 	static void mp_btnlan_end(void) {
 		g_menupage = PAGE_LANGAMES;
@@ -115,7 +119,8 @@ void mp_btnlan_start(void)
 	header.SetExecute(mp_btnlan_end);
 }
 
-void mp_btnchatrooms_start(void)
+void
+mp_btnchatrooms_start(void)
 {
 	static void mp_btnchatrooms_end(void) {
 		g_menupage = PAGE_CHATROOMS;
@@ -129,7 +134,8 @@ void mp_btnchatrooms_start(void)
 	header.SetExecute(mp_btnchatrooms_end);
 }
 
-void mp_btncustomize_start(void)
+void
+mp_btncustomize_start(void)
 {
 	static void mp_btncustomize_end(void) {
 		g_menupage = PAGE_CUSTOMIZE;
@@ -143,7 +149,8 @@ void mp_btncustomize_start(void)
 	header.SetExecute(mp_btncustomize_end);
 }
 
-void menu_multiplayer_init(void)
+void
+menu_multiplayer_init(void)
 {
 	fn_multiplayer = spawn(CWidget);
 	mp_dgConnect = spawn(CDialog);
@@ -199,7 +206,8 @@ void menu_multiplayer_init(void)
 	Master_UpdateCache();
 }
 
-void menu_multiplayer_draw(void)
+void
+menu_multiplayer_draw(void)
 {
 	Widget_Draw(fn_multiplayer);
 	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_MULTI],[460,80], [1,1,1], 1.0f, 1);
@@ -237,7 +245,8 @@ void menu_multiplayer_draw(void)
 	}
 }
 
-void menu_multiplayer_input(float evtype, float scanx, float chary, float devid)
+void
+menu_multiplayer_input(float evtype, float scanx, float chary, float devid)
 {
 	if (!g_connectstatus) {
 		Widget_Input(fn_multiplayer, evtype, scanx, chary, devid);

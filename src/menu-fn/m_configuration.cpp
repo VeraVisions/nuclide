@@ -23,7 +23,8 @@ CMainButton cf_btnUpdate;
 CMainButton cf_btnDone;
 
 /* Button Callbacks */
-void btn_controls_start(void)
+void
+btn_controls_start(void)
 {
 	static void btn_controls_end(void) {
 		g_menupage = PAGE_CONTROLS;
@@ -36,7 +37,9 @@ void btn_controls_start(void)
 	header.SetHeader(HEAD_CONTROLS);
 	header.SetExecute(btn_controls_end);
 }
-void btn_audio_start(void)
+
+void
+btn_audio_start(void)
 {
 	static void btn_audio_end(void) {
 		g_menupage = PAGE_AUDIO;
@@ -49,7 +52,9 @@ void btn_audio_start(void)
 	header.SetHeader(HEAD_AUDIO);
 	header.SetExecute(btn_audio_end);
 }
-void btn_video_start(void)
+
+void
+btn_video_start(void)
 {
 	static void btn_video_end(void) {
 		g_menupage = PAGE_VIDEO;
@@ -62,12 +67,16 @@ void btn_video_start(void)
 	header.SetHeader(HEAD_VIDEO);
 	header.SetExecute(btn_video_end);
 }
-void cf_btnupdates_start(void)
+
+void
+cf_btnupdates_start(void)
 {
 	localsound("../media/launch_upmenu1.wav");
 	g_menupage = PAGE_UPDATES;
 }
-void cf_btndone_start(void)
+
+void
+cf_btndone_start(void)
 {
 	static void cf_btndone_end(void) {
 		g_menupage = PAGE_MAIN;
@@ -82,7 +91,8 @@ void cf_btndone_start(void)
 }
 
 /* Init */
-void menu_configuration_init(void)
+void
+menu_configuration_init(void)
 {
 	fn_configuration = spawn(CWidget);
 	cf_btnControls = spawn(CMainButton);
@@ -123,7 +133,8 @@ void menu_configuration_init(void)
 }
 
 /* Drawing */
-void menu_configuration_draw(void)
+void
+menu_configuration_draw(void)
 {
 	Widget_Draw(fn_configuration);
 	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_CONFIG],[460,80], [1,1,1], 1.0f, 1);
@@ -142,7 +153,8 @@ void menu_configuration_draw(void)
 					1.0f, 0, font_label);
 }
 
-void menu_configuration_input(float evtype, float scanx, float chary, float devid)
+void
+menu_configuration_input(float evtype, float scanx, float chary, float devid)
 {
 	Widget_Input(fn_configuration, evtype, scanx, chary, devid);
 }

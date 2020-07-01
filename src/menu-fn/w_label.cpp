@@ -27,7 +27,8 @@ class CLabel:CWidget
 	virtual void(void) Draw;
 };
 
-void CLabel::CLabel(void)
+void
+CLabel::CLabel(void)
 {
 	m_label = "Label";
 	m_color = [1,1,1];
@@ -35,23 +36,27 @@ void CLabel::CLabel(void)
 	m_sx = m_sy = 8;
 }
 
-void CLabel::Draw(void)
+void
+CLabel::Draw(void)
 {
 	drawfont = m_font;
 	drawstring([m_x,m_y], m_label, [m_sx,m_sy], m_color, m_alpha, 0);
 }
 
 /* Sometimes all you need is a static label */
-void WLabel_Static(int x, int y, string msg, int sx, int sy, vector col,
-					float alpha, float flags, int font)
+void
+WLabel_Static(int x, int y, string msg, int sx, int sy, vector col,
+				float alpha, float flags, int font)
 {
 	drawfont = font;
 	x += g_menuofs[0];
 	y += g_menuofs[1];
 	drawstring([x,y], msg, [sx,sy], col, alpha, flags);
 }
-void WLabel_StaticR(int x, int y, string msg, int sx, int sy, vector col,
-					float alpha, float flags, int font)
+
+void
+WLabel_StaticR(int x, int y, string msg, int sx, int sy, vector col,
+				float alpha, float flags, int font)
 {
 	drawfont = font;
 	x += g_menuofs[0] - stringwidth(msg, TRUE,[sx,sy]);
@@ -59,8 +64,9 @@ void WLabel_StaticR(int x, int y, string msg, int sx, int sy, vector col,
 	drawstring([x,y], msg, [sx,sy], col, alpha, flags);
 }
 
-void WField_Static(int x, int y, string msg, int sx, int sy, vector col,
-					float alpha, float flags, int font)
+void
+WField_Static(int x, int y, string msg, int sx, int sy, vector col,
+				float alpha, float flags, int font)
 {
 	drawfont = font;
 	x += g_menuofs[0];

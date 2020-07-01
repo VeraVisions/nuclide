@@ -45,7 +45,8 @@ menupage_t g_mpage[] = {
 	{ menu_updates_init, menu_updates_draw, menu_updates_input }
 };
 
-void main_init(void)
+void
+main_init(void)
 {
 	for (int i = 0; i < g_mpage.length; i++) {
 		g_mpage[i].m_init();
@@ -54,13 +55,15 @@ void main_init(void)
 	header = spawn(CHeader);
 }
 
-void main_draw(void)
+void
+main_draw(void)
 {
 	g_mpage[g_menupage].m_draw();
 	header.Draw();
 }
 
-void main_input(float evtype, float scanx, float chary, float devid)
+void
+main_input(float evtype, float scanx, float chary, float devid)
 {
 	g_mpage[g_menupage].m_input(evtype, scanx, chary, devid);
 }

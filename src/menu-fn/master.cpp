@@ -25,7 +25,8 @@ float srv_fldMaxplayers;
 float srv_fldMap;
 float srv_fldGame;
 
-string Master_Resolve(void)
+string
+Master_Resolve(void)
 {
 	string out = netaddress_resolve(MASTER_DNS,MASTER_PORT);
 	print("Resolving master at ");
@@ -41,7 +42,8 @@ string Master_Resolve(void)
 	return out;
 }
 
-int Master_GetTotalServers(void)
+int
+Master_GetTotalServers(void)
 {
 	int a = gethostcachevalue(SLIST_HOSTCACHETOTALCOUNT);
 	
@@ -51,7 +53,8 @@ int Master_GetTotalServers(void)
 	return gethostcachevalue(SLIST_HOSTCACHETOTALCOUNT);
 }
 
-void Master_RefreshCache(void)
+void
+Master_RefreshCache(void)
 {
 	print("Refreshing host cache...\n");
 	resethostcachemasks();
@@ -66,7 +69,8 @@ void Master_RefreshCache(void)
 	}
 }
 
-void Master_UpdateCache(void)
+void
+Master_UpdateCache(void)
 {
 	print("Updating host cache...\n");
 	resethostcachemasks();
@@ -81,7 +85,8 @@ void Master_UpdateCache(void)
 	}
 }
 
-void Master_ResortCache(void)
+void
+Master_ResortCache(void)
 {
 	resorthostcache();
 	srv_fldAdress = gethostcacheindexforkey("cname");
@@ -93,7 +98,8 @@ void Master_ResortCache(void)
 	srv_fldGame = gethostcacheindexforkey("game");
 }
 
-void Master_GetInternetList(void)
+void
+Master_GetInternetList(void)
 {
 	/*string url = sprintf("%s:%d",MASTER_DNS,MASTER_PORT);
 	localcmd("net_master1 \"localhost\"\n");
@@ -116,7 +122,8 @@ void Master_GetInternetList(void)
 	Master_UpdateCache();
 }
 
-void Master_GetLANList(void)
+void
+Master_GetLANList(void)
 {
 	/*localcmd("net_master1 \"localhost\"\n");
 	localcmd("net_master2 \"\"\n");
@@ -137,4 +144,3 @@ void Master_GetLANList(void)
 
 	Master_UpdateCache();
 }
-

@@ -31,20 +31,22 @@ class CUpdateList:CWidget
 
 	void(void) CUpdateList;
 	virtual void(void) Draw;
-	virtual void(float type, float x, float y, float devid) Input;
+	virtual void(float, float, float, float) Input;
 
-	virtual void(int w, int h) SetSize;
-	//virtual void(void(int val) func) SetChanged;
-	virtual void(int i) SetSelected;
+	virtual void(int, int) SetSize;
+	//virtual void(void(int)) SetChanged;
+	virtual void(int) SetSelected;
 	virtual int(void) GetSelected;
 };
 
-void CUpdateList::CUpdateList(void)
+void
+CUpdateList::CUpdateList(void)
 {
 	m_selected = -1;
 }
 
-void CUpdateList::Draw(void)
+void
+CUpdateList::Draw(void)
 {
 	int visible;
 	int pos;
@@ -117,7 +119,8 @@ void CUpdateList::Draw(void)
 	}
 }
 
-void CUpdateList::Input(float type, float x, float y, float devid)
+void
+CUpdateList::Input(float type, float x, float y, float devid)
 {
 	int visible;
 	int pos[2];
@@ -141,23 +144,27 @@ void CUpdateList::Input(float type, float x, float y, float devid)
 	}
 }
 
-void CUpdateList::SetSize(int w, int h)
+void
+CUpdateList::SetSize(int w, int h)
 {
 	m_size[0] = w;
 	m_size[1] = h;
 }
 
-void CUpdateList::SetScroll(int i)
+void
+CUpdateList::SetScroll(int i)
 {
 	m_scroll = i;
 }
 
-void CUpdateList::SetChanged(void(void) func)
+void
+CUpdateList::SetChanged(void(void) func)
 {
 	m_changed = func;
 }
 
-void CUpdateList::SetSelected(int i)
+void
+CUpdateList::SetSelected(int i)
 {
 	m_selected = i;
 
@@ -166,12 +173,14 @@ void CUpdateList::SetSelected(int i)
 	}
 }
 
-int CUpdateList::GetSelected(void)
+int
+CUpdateList::GetSelected(void)
 {
 	return m_selected;
 }
 
-/*string CUpdateList::GetSelectedItem(void)
+/*string
+CUpdateList::GetSelectedItem(void)
 {
 	if (m_selected == -1) {
 		return __NULL__;

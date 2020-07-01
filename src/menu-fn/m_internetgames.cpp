@@ -35,7 +35,8 @@ CListBox inet_lbServers_Addresses;
 CScrollbar inet_sbServers;
 
 /* Button Callbacks */
-void inet_btnjoin(void)
+void
+inet_btnjoin(void)
 {
 	string addr = inet_lbServers_Addresses.GetSelectedItem();
 	
@@ -43,7 +44,9 @@ void inet_btnjoin(void)
 		localcmd(sprintf("connect %s\n", addr));
 	}
 }
-void inet_btncreate_start(void)
+
+void
+inet_btncreate_start(void)
 {
 	static void inet_btncreate_end(void) {
 		g_menupage = PAGE_CREATEGAMEINET;
@@ -58,7 +61,8 @@ void inet_btncreate_start(void)
 	header.SetExecute(inet_btncreate_end);
 }
 
-void inet_btndone_start(void)
+void
+inet_btndone_start(void)
 {
 	static void inet_btndone_end(void) {
 		g_menupage = PAGE_MULTIPLAYER;
@@ -72,7 +76,8 @@ void inet_btndone_start(void)
 	header.SetExecute(inet_btndone_end);
 }
 
-void inet_btnrefresh(void)
+void
+inet_btnrefresh(void)
 {
 	int count = 0;
 	int added = 0;
@@ -117,7 +122,8 @@ void inet_btnrefresh(void)
 	inet_sbServers.SetMax(added);
 }
 
-void inet_lb_clicked(int val)
+void
+inet_lb_clicked(int val)
 {
 	inet_lbServers_Name.SetSelected(val, FALSE);
 	inet_lbServers_Ping.SetSelected(val, FALSE);
@@ -126,7 +132,9 @@ void inet_lb_clicked(int val)
 	inet_lbServers_Players.SetSelected(val, FALSE);
 	inet_lbServers_Addresses.SetSelected(val, FALSE);
 }
-void inet_lb_changed(int val)
+
+void
+inet_lb_changed(int val)
 {
 	inet_lbServers_Name.SetScroll(val);
 	inet_lbServers_Ping.SetScroll(val);
@@ -135,7 +143,8 @@ void inet_lb_changed(int val)
 	inet_lbServers_Players.SetScroll(val);
 }
 
-void menu_internetgames_init(void)
+void
+menu_internetgames_init(void)
 {
 	fn_inet = spawn(CWidget);
 
@@ -238,7 +247,8 @@ void menu_internetgames_init(void)
 	Widget_Add(fn_inet, inet_btnDone);
 }
 
-void menu_internetgames_draw(void)
+void
+menu_internetgames_draw(void)
 {
 	Widget_Draw(fn_inet);
 	resorthostcache();
@@ -258,7 +268,8 @@ void menu_internetgames_draw(void)
 					1.0f, 0, font_arial);
 }
 
-void menu_internetgames_input(float evtype, float scanx, float chary, float devid)
+void
+menu_internetgames_input(float evtype, float scanx, float chary, float devid)
 {
 	Widget_Input(fn_inet, evtype, scanx, chary, devid);
 }

@@ -23,31 +23,33 @@ class CListBox:CWidget
 	int m_count;
 	int m_scroll;
 	int m_selected;
-	virtual void(int val) m_execute = 0;
+	virtual void(int) m_execute = 0;
 
 	void(void) CListBox;
 	virtual void(void) Draw;
-	virtual void(float type, float x, float y, float devid) Input;
+	virtual void(float, float, float, float) Input;
 
 	virtual void(string) AddEntry;
 	virtual void(int) DelEntry;
 	virtual void(void) Clear;
 	virtual void(int, int) SetSize;
-	virtual void(void(int val) func) SetChanged;
+	virtual void(void(int)) SetChanged;
 	virtual string(int) GetItem;
 	virtual void(int, string) SetItem;
 	virtual void(int, int) SetSelected;
-	virtual string() GetSelectedItem;
+	virtual string(void) GetSelectedItem;
 	virtual int(void) GetSelected;
 	virtual int(void) GetCount;
 };
 
-void CListBox::CListBox(void)
+void
+CListBox::CListBox(void)
 {
 	m_selected = -1;
 }
 
-void CListBox::Draw(void)
+void
+CListBox::Draw(void)
 {
 	int visible;
 	int pos[2];
@@ -71,7 +73,8 @@ void CListBox::Draw(void)
 	}
 }
 
-void CListBox::Input(float type, float x, float y, float devid)
+void
+CListBox::Input(float type, float x, float y, float devid)
 {
 	int visible;
 	int pos[2];
@@ -93,7 +96,8 @@ void CListBox::Input(float type, float x, float y, float devid)
 	}
 }
 
-void CListBox::AddEntry(string m)
+void
+CListBox::AddEntry(string m)
 {
 	for (int i = 0; i < LB_MAX_ENTRIES; i++) {
 		if (m_entries[i] == __NULL__) {
@@ -104,7 +108,8 @@ void CListBox::AddEntry(string m)
 	}
 }
 
-void CListBox::DelEntry(int i)
+void
+CListBox::DelEntry(int i)
 {
 	if (m_entries[i] != __NULL__) {
 		m_entries[i] = __NULL__;
@@ -112,32 +117,37 @@ void CListBox::DelEntry(int i)
 	}
 }
 
-void CListBox::Clear(void)
+void
+CListBox::Clear(void)
 {
 	for (int i = 0; i < LB_MAX_ENTRIES; i++) {
 		m_entries[i] = __NULL__;
 	}
 }
 
-void CListBox::SetSize(int w, int h)
+void
+CListBox::SetSize(int w, int h)
 {
 	m_size[0] = w;
 	m_size[1] = h;
 }
 
-void CListBox::SetScroll(int i)
+void
+CListBox::SetScroll(int i)
 {
 	if (i >= 0 && i < LB_MAX_ENTRIES) {
 		m_scroll = i;
 	}
 }
 
-void CListBox::SetChanged(void(int val) func)
+void
+CListBox::SetChanged(void(int val) func)
 {
 	m_execute = func;
 }
 
-void CListBox::SetSelected(int i, int exec)
+void
+CListBox::SetSelected(int i, int exec)
 {
 	if (m_entries[i] == __NULL__) {
 		return;
@@ -150,23 +160,27 @@ void CListBox::SetSelected(int i, int exec)
 	}
 }
 
-int CListBox::GetSelected(void)
+int
+CListBox::GetSelected(void)
 {
 	return m_selected;
 }
 
-string CListBox::GetItem(int i)
+string
+CListBox::GetItem(int i)
 {
 	return m_entries[i];
 }
 
-void CListBox::SetItem(int i, string s)
+void
+CListBox::SetItem(int i, string s)
 {
 	m_entries[i] = s;
 }
 
 
-string CListBox::GetSelectedItem(void)
+string
+CListBox::GetSelectedItem(void)
 {
 	if (m_selected == -1) {
 		return __NULL__;
@@ -174,7 +188,8 @@ string CListBox::GetSelectedItem(void)
 	return m_entries[m_selected];
 }
 
-int CListBox::GetCount(void)
+int
+CListBox::GetCount(void)
 {
 	return m_count;
 }

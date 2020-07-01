@@ -22,12 +22,13 @@ class CCheckBox:CWidget
 	virtual void(float value) m_changed = 0;
 
 	virtual void(void) Draw;
-	virtual void(float type, float x, float y, float devid) Input;
-	virtual void(void(float val) vFunc) SetCallback;
-	virtual void(float val) SetValue;
+	virtual void(float, float, float, float) Input;
+	virtual void(void(float)) SetCallback;
+	virtual void(float) SetValue;
 };
 
-void CCheckBox::Draw(void)
+void
+CCheckBox::Draw(void)
 {
 	if (m_click) {
 		drawpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y], g_bmp[CB_DOWN],
@@ -47,7 +48,8 @@ void CCheckBox::Draw(void)
 			[19,19], [1,1,1], 1.0f, 1);
 	}
 }
-void CCheckBox::Input(float type, float x, float y, float devid)
+void
+CCheckBox::Input(float type, float x, float y, float devid)
 {
 	if (Util_CheckMouse(m_x, m_y, 19, 19) == TRUE) {
 		m_hover = TRUE;
@@ -69,12 +71,15 @@ void CCheckBox::Input(float type, float x, float y, float devid)
 		}
 	}
 }
-void CCheckBox::SetCallback(void(float val) vFunc)
+
+void
+CCheckBox::SetCallback(void(float val) vFunc)
 {
 	m_changed = vFunc;
 }
 
-void CCheckBox::SetValue(float val)
+void
+CCheckBox::SetValue(float val)
 {
 	m_value = (int)val;
 }

@@ -26,7 +26,8 @@ int g_modelcount;
 string *g_sprays;
 int g_sprayscount;
 
-void cz_btndone_start(void)
+void
+cz_btndone_start(void)
 {
 	static void cz_btndone_end(void) {
 		g_menupage = PAGE_MULTIPLAYER;
@@ -40,7 +41,9 @@ void cz_btndone_start(void)
 	header.SetHeader(HEAD_CUSTOMIZE);
 	header.SetExecute(cz_btndone_end);
 }
-void cz_btnadvanced_start(void)
+
+void
+cz_btnadvanced_start(void)
 {
 	static void cz_btnadvanced_end(void) {
 		g_menupage = PAGE_ADVANCEDCUSTOMIZE;
@@ -54,7 +57,8 @@ void cz_btnadvanced_start(void)
 	header.SetExecute(cz_btnadvanced_end);
 }
 
-void cz_cbModelChanged(void)
+void
+cz_cbModelChanged(void)
 {
 	string mdl = cz_psModel.GetPic();
 	tokenizebyseparator(mdl, "/");
@@ -62,14 +66,16 @@ void cz_cbModelChanged(void)
 	localcmd(sprintf("setinfo model %s\n", argv(2)));
 }
 
-void cz_cbSprayChanged(void)
+void
+cz_cbSprayChanged(void)
 {
 	string mdl = cz_psSpray.GetPic();
 	localcmd(sprintf("seta _cl_playerspray %s\n", mdl));
 	localcmd(sprintf("setinfoblob spray %s\n", mdl));
 }
 
-void menu_customize_init(void)
+void
+menu_customize_init(void)
 {
 	int sid = 0;
 	g_sprayscount = 0;
@@ -153,7 +159,8 @@ void menu_customize_init(void)
 	Widget_Add(fn_customize, cz_psModel);
 }
 
-void menu_customize_draw(void)
+void
+menu_customize_draw(void)
 {
 	Widget_Draw(fn_customize);
 	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_CUSTOMIZE],[460,80], [1,1,1], 1.0f, 1);
@@ -165,7 +172,8 @@ void menu_customize_draw(void)
 					1.0f, 0, font_arial);
 }
 
-void menu_customize_input(float evtype, float scanx, float chary, float devid)
+void
+menu_customize_input(float evtype, float scanx, float chary, float devid)
 {
 	Widget_Input(fn_customize, evtype, scanx, chary, devid);
 }

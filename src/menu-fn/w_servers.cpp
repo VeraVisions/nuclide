@@ -23,27 +23,29 @@ class CServerList:CWidget
 	int m_count;
 	int m_scroll;
 	int m_selected;
-	virtual void(int val) m_execute = 0;
+	virtual void(int) m_execute = 0;
 
 	void(void) CServerList;
 	virtual void(void) Draw;
-	virtual void(float type, float x, float y, float devid) Input;
+	virtual void(float, float, float, float) Input;
 
-	virtual void(string m) AddEntry;
+	virtual void(string) AddEntry;
 	virtual void(void) Clear;
-	virtual void(int w, int h) SetSize;
-	virtual void(void(int val) func) SetChanged;
-	virtual void(int i) SetSelected;
-	virtual string() GetSelectedItem;
+	virtual void(int, int) SetSize;
+	virtual void(void(int)) SetChanged;
+	virtual void(int) SetSelected;
+	virtual string(void) GetSelectedItem;
 	virtual int(void) GetSelected;
 };
 
-void CServerList::CServerList(void)
+void
+CServerList::CServerList(void)
 {
 	m_selected = -1;
 }
 
-void CServerList::Draw(void)
+void
+CServerList::Draw(void)
 {
 	int visible;
 	int pos[2];
@@ -65,7 +67,8 @@ void CServerList::Draw(void)
 	}
 }
 
-void CServerList::Input(float type, float x, float y, float devid)
+void
+CServerList::Input(float type, float x, float y, float devid)
 {
 	int visible;
 	int pos[2];
@@ -90,7 +93,8 @@ void CServerList::Input(float type, float x, float y, float devid)
 	}
 }
 
-void CServerList::AddEntry(string m)
+void
+CServerList::AddEntry(string m)
 {
 	for (int i = 0; i < SL_MAX_ENTRIES; i++) {
 		if (m_entries[i] == __NULL__) {
@@ -101,40 +105,47 @@ void CServerList::AddEntry(string m)
 	}
 }
 
-void CServerList::Clear(void)
+void
+CServerList::Clear(void)
 {
 	for (int i = 0; i < SL_MAX_ENTRIES; i++) {
 		m_entries[i] = __NULL__;
 	}
 }
 
-void CServerList::SetSize(int w, int h)
+void
+CServerList::SetSize(int w, int h)
 {
 	m_size[0] = w;
 	m_size[1] = h;
 }
 
-void CServerList::SetScroll(int i)
+void
+CServerList::SetScroll(int i)
 {
 	m_scroll = i;
 }
 
-void CServerList::SetChanged(void(int val) func)
+void
+CServerList::SetChanged(void(int val) func)
 {
 	m_execute = func;
 }
 
-void CServerList::SetSelected(int i)
+void
+CServerList::SetSelected(int i)
 {
 	m_selected = i;
 }
 
-int CServerList::GetSelected(void)
+int
+CServerList::GetSelected(void)
 {
 	return m_selected;
 }
 
-string CServerList::GetSelectedItem(void)
+string
+CServerList::GetSelectedItem(void)
 {
 	if (m_selected == -1) {
 		return __NULL__;

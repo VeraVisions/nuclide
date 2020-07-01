@@ -21,7 +21,8 @@ CMainButton ng_btnDifficult;
 CMainButton ng_btnCancel;
 
 /* Button Callbacks */
-void ng_btneasy_start(void)
+void
+ng_btneasy_start(void)
 {
 	static void ng_btneasy_end(void) {
 		g_menupage = PAGE_MAIN;
@@ -37,7 +38,9 @@ void ng_btneasy_start(void)
 	header.SetHeader(HEAD_NEWGAME);
 	header.SetExecute(ng_btneasy_end);
 }
-void ng_btnnormal_start(void)
+
+void
+ng_btnnormal_start(void)
 {
 	static void ng_btnnormal_end(void) {
 		g_menupage = PAGE_MAIN;
@@ -53,7 +56,9 @@ void ng_btnnormal_start(void)
 	header.SetHeader(HEAD_NEWGAME);
 	header.SetExecute(ng_btnnormal_end);
 }
-void ng_btnhard_start(void)
+
+void
+ng_btnhard_start(void)
 {
 	static void ng_btnhard_end(void) {
 		g_menupage = PAGE_MAIN;
@@ -70,7 +75,8 @@ void ng_btnhard_start(void)
 	header.SetExecute(ng_btnhard_end);
 }
 
-void ng_btncancel_start(void)
+void
+ng_btncancel_start(void)
 {
 	static void ng_btncancel_end(void) {
 		g_menupage = PAGE_MAIN;
@@ -85,7 +91,8 @@ void ng_btncancel_start(void)
 }
 
 /* Init */
-void menu_newgame_init(void)
+void
+menu_newgame_init(void)
 {
 	fn_newgame = spawn(CWidget);
 	ng_btnEasy = spawn(CMainButton);
@@ -114,7 +121,8 @@ void menu_newgame_init(void)
 }
 
 /* Drawing */
-void menu_newgame_draw(void)
+void
+menu_newgame_draw(void)
 {
 	Widget_Draw(fn_newgame);
 	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_NEWGAME],[460,80], [1,1,1], 1.0f, 1);
@@ -129,7 +137,8 @@ void menu_newgame_draw(void)
 					1.0f, 0, font_label);
 }
 
-void menu_newgame_input(float evtype, float scanx, float chary, float devid)
+void
+menu_newgame_input(float evtype, float scanx, float chary, float devid)
 {
 	Widget_Input(fn_newgame, evtype, scanx, chary, devid);
 }

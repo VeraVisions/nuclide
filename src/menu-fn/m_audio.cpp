@@ -29,7 +29,8 @@ CSlider au_sldMusicVolume;
 #endif
 
 /* Button Callbacks */
-void au_btndone_start(void)
+void
+au_btndone_start(void)
 {
 	static void au_btndone_end(void) {
 		g_menupage = PAGE_CONFIGURATION;
@@ -42,40 +43,53 @@ void au_btndone_start(void)
 	header.SetHeader(HEAD_AUDIO);
 	header.SetExecute(au_btndone_end);
 }
-void au_sldvolume_changed(float val)
+
+void
+au_sldvolume_changed(float val)
 {
 	cvar_set("volume", ftos(val));
 }
-void au_sldsuitvolume_changed(float val)
+
+void
+au_sldsuitvolume_changed(float val)
 {
 	cvar_set("suitvolume", ftos(val));
 }
 
 #ifndef ACCURATE
-void au_sldmusicvolume_changed(float val)
+void
+au_sldmusicvolume_changed(float val)
 {
 	cvar_set("bgmvolume", ftos(val));
 }
 #endif
 
-void au_cxcdmusic_changed(float val)
+void
+au_cxcdmusic_changed(float val)
 {
 }
-void au_cxhqsound_changed(float val)
+
+void
+au_cxhqsound_changed(float val)
 {
 	cvar_set("loadas8bit", ftos(1-val));
 	localcmd("snd_restart");
 }
-void au_cxa3dsound_changed(float val)
+
+void
+au_cxa3dsound_changed(float val)
 {
 	
 }
-void au_cxeaxsound_changed(float val)
+
+void
+au_cxeaxsound_changed(float val)
 {
 	cvar_set("snd_eax", ftos(val));
 }
 
-void menu_audio_init(void)
+void
+menu_audio_init(void)
 {
 	fn_audio = spawn(CWidget);
 	au_btnDone = spawn(CMainButton);
@@ -126,7 +140,8 @@ void menu_audio_init(void)
 	Widget_Add(fn_audio, au_cxEAXSound);
 }
 
-void menu_audio_draw(void)
+void
+menu_audio_draw(void)
 {
 	Widget_Draw(fn_audio);
 	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_AUDIO],[460,80], [1,1,1], 1.0f, 1);
@@ -154,7 +169,8 @@ void menu_audio_draw(void)
 #endif
 }
 
-void menu_audio_input(float evtype, float scanx, float chary, float devid)
+void
+menu_audio_input(float evtype, float scanx, float chary, float devid)
 {
 	Widget_Input(fn_audio, evtype, scanx, chary, devid);
 }

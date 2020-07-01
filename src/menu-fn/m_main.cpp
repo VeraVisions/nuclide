@@ -45,18 +45,21 @@ CMainButton main_btnQuitCancel;
 int main_quitdialog;
 
 /* Button Callbacks */
-void btn_console(void)
+void
+btn_console(void)
 {
 	localcmd("toggleconsole\n");
 }
 
-void btn_resume(void)
+void
+btn_resume(void)
 {
 	m_hide();
 }
 
 /* Button Callbacks */
-void btn_newgame_start(void)
+void
+btn_newgame_start(void)
 {
 	static void btn_newgame_end(void) {
 		g_menupage = PAGE_NEWGAME;
@@ -69,13 +72,17 @@ void btn_newgame_start(void)
 	header.SetHeader(HEAD_NEWGAME);
 	header.SetExecute(btn_newgame_end);
 }
-void btn_training(void)
+
+void
+btn_training(void)
 {
 	localcmd("stopmusic\n");
 	localcmd("maxplayers 1\n");
 	localcmd(sprintf("%s\n", games[gameinfo_current].trainingmap));
 }
-void btn_configuration_start(void)
+
+void
+btn_configuration_start(void)
 {
 	static void btn_configuration_end(void) {
 		g_menupage = PAGE_CONFIGURATION;
@@ -88,7 +95,9 @@ void btn_configuration_start(void)
 	header.SetHeader(HEAD_CONFIG);
 	header.SetExecute(btn_configuration_end);
 }
-void btn_loadgame_start(void)
+
+void
+btn_loadgame_start(void)
 {
 	static void btn_loadgame_end(void) {
 		g_menupage = PAGE_LOADGAME;
@@ -101,7 +110,9 @@ void btn_loadgame_start(void)
 	header.SetHeader(HEAD_LOAD);
 	header.SetExecute(btn_loadgame_end);
 }
-void btn_multiplayer_start(void)
+
+void
+btn_multiplayer_start(void)
 {
 	static void btn_multiplayer_end(void) {
 		g_menupage = PAGE_MULTIPLAYER;
@@ -114,7 +125,9 @@ void btn_multiplayer_start(void)
 	header.SetHeader(HEAD_MULTI);
 	header.SetExecute(btn_multiplayer_end);
 }
-void btn_customgame_start(void)
+
+void
+btn_customgame_start(void)
 {
 	static void btn_customgame_end(void) {
 		g_menupage = PAGE_CUSTOMGAME;
@@ -127,21 +140,28 @@ void btn_customgame_start(void)
 	header.SetHeader(HEAD_CUSTOM);
 	header.SetExecute(btn_customgame_end);
 }
-void btn_quit(void)
+
+void
+btn_quit(void)
 {
 	main_quitdialog = TRUE;
 }
-void btn_quit_ok(void)
+
+void
+btn_quit_ok(void)
 {
 	localcmd("quit\n");
 }
-void btn_quit_cancel(void)
+
+void
+btn_quit_cancel(void)
 {
 	main_quitdialog = FALSE;
 }
 
 /* Init */
-void menu_main_init(void)
+void
+menu_main_init(void)
 {
 	/* Main Menu (Disconnected) */
 	fn_main = spawn(CWidget);
@@ -288,7 +308,8 @@ void menu_main_init(void)
 }
 
 /* Drawing */
-void menu_main_draw(void)
+void
+menu_main_draw(void)
 {
 	if (clientstate() == 2) {
 		Widget_Draw(fn_main2);
@@ -355,7 +376,8 @@ void menu_main_draw(void)
 	}
 }
 
-void menu_main_input(float evtype, float scanx, float chary, float devid)
+void
+menu_main_input(float evtype, float scanx, float chary, float devid)
 {
 	if (autocvar_menu_intro == TRUE) {
 		if (g_intro_progress < INTRO_TIME) {

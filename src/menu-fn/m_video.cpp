@@ -19,8 +19,8 @@ CMainButton vd_btnVidOptions;
 CMainButton vd_btnVidModes;
 CMainButton vd_btnDone;
 
-
-void vd_vidoptions_start(void)
+void
+vd_vidoptions_start(void)
 {
 	static void vd_vidoptions_end(void) {
 		g_menupage = PAGE_VIDEOOPTIONS;
@@ -33,7 +33,9 @@ void vd_vidoptions_start(void)
 	header.SetHeader(HEAD_VIDOPTIONS);
 	header.SetExecute(vd_vidoptions_end);
 }
-void vd_vidmodes_start(void)
+
+void
+vd_vidmodes_start(void)
 {
 	static void vd_vidmodes_end(void) {
 		g_menupage = PAGE_VIDEOMODES;
@@ -47,7 +49,8 @@ void vd_vidmodes_start(void)
 	header.SetExecute(vd_vidmodes_end);
 }
 
-void vd_btndone_start(void)
+void
+vd_btndone_start(void)
 {
 	static void vd_btndone_end(void) {
 		g_menupage = PAGE_CONFIGURATION;
@@ -61,7 +64,8 @@ void vd_btndone_start(void)
 	header.SetExecute(vd_btndone_end);
 }
 
-void menu_video_init(void)
+void
+menu_video_init(void)
 {
 	fn_video = spawn(CWidget);
 
@@ -84,7 +88,8 @@ void menu_video_init(void)
 	Widget_Add(fn_video, vd_btnDone);
 }
 
-void menu_video_draw(void)
+void
+menu_video_draw(void)
 {
 	Widget_Draw(fn_video);
 	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_VIDEO],[460,80], [1,1,1], 1.0f, 1);
@@ -96,7 +101,8 @@ void menu_video_draw(void)
 					1.0f, 0, font_label);
 }
 
-void menu_video_input(float evtype, float scanx, float chary, float devid)
+void
+menu_video_input(float evtype, float scanx, float chary, float devid)
 {
 	Widget_Input(fn_video, evtype, scanx, chary, devid);
 }

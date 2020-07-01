@@ -103,7 +103,7 @@ TCP_Frame(tcpinfo_t *in)
 		return;
 
 	/* if the send was unsuccessful, try next frame */
-	if (fwrite(in.m_fSocket, data, strlen(data)) <= 0) {
+	if (fwrite(in.m_fSocket, (void *)data, strlen(data)) <= 0) {
 		dprint("^1TCP_Frame^7: Unsuccessful frame\n");
 		return;
 	}

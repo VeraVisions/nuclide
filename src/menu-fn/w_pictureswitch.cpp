@@ -30,24 +30,26 @@ class CPictureSwitch:CWidget
 
 	void(void) CPictureSwitch;
 	virtual void(void) Draw;
-	virtual void(float type, float x, float y, float devid) Input;
+	virtual void(float, float, float, float) Input;
 
-	virtual void(string *m) SetPics;
-	virtual void(int val) SetValue;
-	virtual void(int val) SetMax;
-	virtual void(string val) SetValueS;
-	virtual void(int w, int h) SetSize;
-	virtual void(void(void) vFunc) SetCallback;
+	virtual void(string *) SetPics;
+	virtual void(int) SetValue;
+	virtual void(int) SetMax;
+	virtual void(string) SetValueS;
+	virtual void(int, int) SetSize;
+	virtual void(void(void)) SetCallback;
 	virtual string() GetPic;
 };
 
-void CPictureSwitch::CPictureSwitch(void)
+void
+CPictureSwitch::CPictureSwitch(void)
 {
 	m_size[0] = 124;
 	m_size[1] = 124;
 }
 
-void CPictureSwitch::Draw(void)
+void
+CPictureSwitch::Draw(void)
 {
 	drawfill([g_menuofs[0]+m_x,g_menuofs[1]+m_y], [m_size[0],m_size[1]], [0.25,0.25,0.25], 1.0f);
 	drawfill([g_menuofs[0]+m_x+3,g_menuofs[1]+m_y+3], [m_size[0]-6,m_size[1]-31], [0,0,0], 1.0f);
@@ -62,7 +64,8 @@ void CPictureSwitch::Draw(void)
 					[1,1,1],1.0f, 0, font_arial);
 }
 
-void CPictureSwitch::Input(float type, float x, float y, float devid)
+void
+CPictureSwitch::Input(float type, float x, float y, float devid)
 {
 	m_hoverPrev = Util_CheckMouse(m_x+3, m_y+m_size[1]-16, m_size[0]/2, 12);
 	m_hoverNext = Util_CheckMouse(m_x+m_size[0]-4-(m_size[0]/2), m_y+m_size[1]-16, m_size[0]/2, 12);
@@ -86,12 +89,14 @@ void CPictureSwitch::Input(float type, float x, float y, float devid)
 	}
 }
 
-void CPictureSwitch::SetPics(string *m)
+void
+CPictureSwitch::SetPics(string *m)
 {
 	m_pics = m;
 }
 
-void CPictureSwitch::SetValue(int val)
+void
+CPictureSwitch::SetValue(int val)
 {
 	m_value = val;
 
@@ -100,12 +105,14 @@ void CPictureSwitch::SetValue(int val)
 	}
 }
 
-void CPictureSwitch::SetMax(int val)
+void
+CPictureSwitch::SetMax(int val)
 {
 	m_max = val;
 }
 
-void CPictureSwitch::SetValueS(string val)
+void
+CPictureSwitch::SetValueS(string val)
 {
 	for (int i = 0; i < m_max; i++) {
 		if (m_pics[i] == val) {
@@ -118,30 +125,35 @@ void CPictureSwitch::SetValueS(string val)
 	}
 }
 
-void CPictureSwitch::SetSize(int w, int h)
+void
+CPictureSwitch::SetSize(int w, int h)
 {
 	m_size[0] = w;
 	m_size[1] = h;
 }
 
-void CPictureSwitch::SetPicSize(int w, int h)
+void
+CPictureSwitch::SetPicSize(int w, int h)
 {
 	m_picsize[0] = w;
 	m_picsize[1] = h;
 }
 
-void CPictureSwitch::SetPicOffset(int w, int h)
+void
+CPictureSwitch::SetPicOffset(int w, int h)
 {
 	m_picofs[0] = w;
 	m_picofs[1] = h;
 }
 
-void CPictureSwitch::SetCallback(void(void) vFunc)
+void
+CPictureSwitch::SetCallback(void(void) vFunc)
 {
 	m_changed = vFunc;
 }
 
-string CPictureSwitch::GetPic(void)
+string
+CPictureSwitch::GetPic(void)
 {
 	return m_pics[m_value];
 }

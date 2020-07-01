@@ -14,7 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-int Server_IsLan(string address)
+int
+Server_IsLan(string address)
 {
 #if 0
 	return FALSE;

@@ -31,7 +31,8 @@ CScrollbar create_sbMaps;
 string *g_maps;
 int g_mapcount;
 
-void create_btnok_start(void)
+void
+create_btnok_start(void)
 {
 	static string startmap;
 	static void create_btnok_end(void) {
@@ -57,7 +58,9 @@ void create_btnok_start(void)
 	header.SetHeader(HEAD_CREATEGAME);
 	header.SetExecute(create_btnok_end);
 }
-void create_btncancel_start(void)
+
+void
+create_btncancel_start(void)
 {
 	static void create_btncancel_end(void) {
 		g_menupage = PAGE_LANGAMES;
@@ -71,12 +74,14 @@ void create_btncancel_start(void)
 	header.SetExecute(create_btncancel_end);
 }
 
-void create_sbmaps_changed(int val)
+void
+create_sbmaps_changed(int val)
 {
 	create_lbMaps.SetScroll(val);
 }
 
-void menu_creategame_init(void)
+void
+menu_creategame_init(void)
 {
 	fn_create = spawn(CWidget);
 	create_btnAdv = spawn(CMainButton);
@@ -143,7 +148,8 @@ void menu_creategame_init(void)
 	search_end(mapsearch);
 }
 
-void menu_creategame_draw(void)
+void
+menu_creategame_draw(void)
 {
 	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_CREATEGAME],[460,80], [1,1,1], 1.0f, 1);
 
@@ -160,7 +166,8 @@ void menu_creategame_draw(void)
 	Widget_Draw(fn_createshared);
 }
 
-void menu_creategame_input(float evtype, float scanx, float chary, float devid)
+void
+menu_creategame_input(float evtype, float scanx, float chary, float devid)
 {
 	Widget_Input(fn_create, evtype, scanx, chary, devid);
 	Widget_Input(fn_createshared, evtype, scanx, chary, devid);

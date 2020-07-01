@@ -19,7 +19,8 @@ CMainButton createinet_btnAdv;
 CMainButton createinet_btnOk;
 CMainButton createinet_btnCancel;
 
-void createinet_btnok_start(void)
+void
+createinet_btnok_start(void)
 {
 	static string startmap;
 	static void createinet_btnok_end(void) {
@@ -47,7 +48,9 @@ void createinet_btnok_start(void)
 	header.SetHeader(HEAD_CREATEGAME);
 	header.SetExecute(createinet_btnok_end);
 }
-void createinet_btncancel_start(void)
+
+void
+createinet_btncancel_start(void)
 {
 	static void createinet_btncancel_end(void) {
 		g_menupage = PAGE_INTERNETGAMES;
@@ -61,7 +64,8 @@ void createinet_btncancel_start(void)
 	header.SetExecute(createinet_btncancel_end);
 }
 
-void menu_creategameinet_init(void)
+void
+menu_creategameinet_init(void)
 {
 	fn_createinet = spawn(CWidget);
 	createinet_btnAdv = spawn(CMainButton);
@@ -83,7 +87,8 @@ void menu_creategameinet_init(void)
 	Widget_Add(fn_createinet, createinet_btnCancel);
 }
 
-void menu_creategameinet_draw(void)
+void
+menu_creategameinet_draw(void)
 {
 	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_CREATEGAME],[460,80], [1,1,1], 1.0f, 1);
 	drawpic([g_menuofs[0]+550,g_menuofs[1]+10], "gfx/shell/fragnet",[80,80], [1,1,1], 1.0f, 0);
@@ -101,7 +106,8 @@ void menu_creategameinet_draw(void)
 	Widget_Draw(fn_createshared);
 }
 
-void menu_creategameinet_input(float evtype, float scanx, float chary, float devid)
+void
+menu_creategameinet_input(float evtype, float scanx, float chary, float devid)
 {
 	Widget_Input(fn_createinet, evtype, scanx, chary, devid);
 	Widget_Input(fn_createshared, evtype, scanx, chary, devid);

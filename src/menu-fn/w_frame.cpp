@@ -20,18 +20,20 @@ class CFrame:CWidget
 	int m_bsize[2];
 	int m_size[2];
 	virtual void(void) Draw;
-	virtual void(float type, float x, float y, float devid) Input;
+	virtual void(float, float, float, float) Input;
 
-	virtual void(int w, int h) SetSize;
-	virtual void(int w) SetBorder;
+	virtual void(int, int) SetSize;
+	virtual void(int) SetBorder;
 };
 
-void CFrame::CFrame(void)
+void
+CFrame::CFrame(void)
 {
 	m_bsize[0] = m_bsize[1] = 3;
 }
 
-void CFrame::Draw(void)
+void
+CFrame::Draw(void)
 {
 	if (g_focuswidget == this) {
 		drawfill([g_menuofs[0] + m_x, g_menuofs[1] + m_y], 
@@ -47,7 +49,8 @@ void CFrame::Draw(void)
 			 [0,0,0], 1.0f);
 }
 
-void CFrame::Input(float type, float x, float y, float devid)
+void
+CFrame::Input(float type, float x, float y, float devid)
 {
 	if (Util_CheckMouse(m_x, m_y, m_size[0], m_size[1])) {
 		if (type == IE_KEYDOWN) {
@@ -57,12 +60,16 @@ void CFrame::Input(float type, float x, float y, float devid)
 		}
 	}
 }
-void CFrame::SetSize(int x, int y)
+
+void
+CFrame::SetSize(int x, int y)
 {
 	m_size[0] = x;
 	m_size[1] = y;
 }
-void CFrame::SetBorder(int x)
+
+void
+CFrame::SetBorder(int x)
 {
 	m_bsize[0] = m_bsize[1] = x;
 }

@@ -26,19 +26,22 @@ CListBox lg_lbSaves;
 CFrame lg_frSaves;
 CFrame lg_frPreview;
 
-void lg_btnload(void)
+void
+lg_btnload(void)
 {
 	int i = lg_lbSaves.GetSelected();
 	localcmd(sprintf("load %s\n", g_savegames[i]));
 }
 
-void lg_btnunsave(void)
+void
+lg_btnunsave(void)
 {
 	int i = lg_lbSaves.GetSelected();
 	localcmd(sprintf("unsavegame %s\n", g_savegames[i]));
 }
 
-void lg_btncancel_start(void)
+void
+lg_btncancel_start(void)
 {
 	static void lg_btncancel_end(void) {
 		g_menupage = PAGE_MAIN;
@@ -52,16 +55,19 @@ void lg_btncancel_start(void)
 	header.SetExecute(lg_btncancel_end);
 }
 
-void lg_lbsaves_changed(int val)
+void
+lg_lbsaves_changed(int val)
 {
 	
 }
-void up_sbsaves_changed(int val)
+void
+up_sbsaves_changed(int val)
 {
 	lg_lbSaves.SetScroll(val);
 }
 
-void menu_loadgame_refreshsaves(void)
+void
+menu_loadgame_refreshsaves(void)
 {
 	searchhandle searchy;
 	lg_lbSaves.Clear();
@@ -78,7 +84,8 @@ void menu_loadgame_refreshsaves(void)
 	lg_lbSaves.SetSelected(0, TRUE);
 }
 
-void menu_loadgame_init(void)
+void
+menu_loadgame_init(void)
 {
 	fn_loadgame = spawn(CWidget);
 
@@ -127,7 +134,8 @@ void menu_loadgame_init(void)
 	menu_loadgame_refreshsaves();
 }
 
-void menu_loadgame_draw(void)
+void
+menu_loadgame_draw(void)
 {
 	Widget_Draw(fn_loadgame);
 	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_LOAD],[460,80], [1,1,1], 1.0f, 1);
@@ -140,7 +148,8 @@ void menu_loadgame_draw(void)
 	drawpic([g_menuofs[0]+390,g_menuofs[1]+140], sprintf("saves/%s/screeny.tga", g_savegames[i]),[220,165], [1,1,1], 1.0f, 1);
 }
 
-void menu_loadgame_input(float evtype, float scanx, float chary, float devid)
+void
+menu_loadgame_input(float evtype, float scanx, float chary, float devid)
 {
 	Widget_Input(fn_loadgame, evtype, scanx, chary, devid);
 }

@@ -31,7 +31,8 @@ CListBox lan_lbServers_Addresses;
 CScrollbar lan_sbServers;
 
 /* Button Callbacks */
-void lan_btnjoin(void)
+void
+lan_btnjoin(void)
 {
 	string addr = lan_lbServers_Addresses.GetSelectedItem();
 	
@@ -40,7 +41,8 @@ void lan_btnjoin(void)
 	}
 }
 
-void lan_btncreate_start(void)
+void
+lan_btncreate_start(void)
 {
 	static void lan_btncreate_end(void) {
 		g_menupage = PAGE_CREATEGAME;
@@ -55,7 +57,8 @@ void lan_btncreate_start(void)
 	header.SetExecute(lan_btncreate_end);
 }
 
-void lan_btndone_start(void)
+void
+lan_btndone_start(void)
 {
 	static void lan_btndone_end(void) {
 		g_menupage = PAGE_MULTIPLAYER;
@@ -69,7 +72,8 @@ void lan_btndone_start(void)
 	header.SetExecute(lan_btndone_end);
 }
 
-void lan_btnrefresh(void)
+void
+lan_btnrefresh(void)
 {
 	int count = 0;
 	int added = 0;
@@ -111,7 +115,8 @@ void lan_btnrefresh(void)
 	lan_sbServers.SetMax(added);
 }
 
-void lan_lb_clicked(int val)
+void
+lan_lb_clicked(int val)
 {
 	lan_lbServers_Name.SetSelected(val, FALSE);
 	lan_lbServers_Ping.SetSelected(val, FALSE);
@@ -121,7 +126,8 @@ void lan_lb_clicked(int val)
 	lan_lbServers_Addresses.SetSelected(val, FALSE);
 }
 
-void lan_lb_changed(int val)
+void
+lan_lb_changed(int val)
 {
 	lan_lbServers_Name.SetScroll(val);
 	lan_lbServers_Ping.SetScroll(val);
@@ -131,7 +137,8 @@ void lan_lb_changed(int val)
 	lan_lbServers_Addresses.SetScroll(val);
 }
 
-void menu_langames_init(void)
+void
+menu_langames_init(void)
 {
 	fn_lan = spawn(CWidget);
 
@@ -210,7 +217,8 @@ void menu_langames_init(void)
 	Widget_Add(fn_lan, lan_sbServers);
 }
 
-void menu_langames_draw(void)
+void
+menu_langames_draw(void)
 {
 	Widget_Draw(fn_lan);
 	Master_ResortCache();
@@ -229,7 +237,8 @@ void menu_langames_draw(void)
 					1.0f, 0, font_arial);
 }
 
-void menu_langames_input(float evtype, float scanx, float chary, float devid)
+void
+menu_langames_input(float evtype, float scanx, float chary, float devid)
 {
 	Widget_Input(fn_lan, evtype, scanx, chary, devid);
 }

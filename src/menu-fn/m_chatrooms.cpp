@@ -22,7 +22,6 @@ CMainButton cr_btnListRooms;
 CMainButton cr_btnSearch;
 CMainButton cr_btnServers;
 CMainButton cr_btnDone;
-CScrollbar cr_sbHistory;
 CTextBuffer cr_lbHistory;
 CListBox cr_lbUsers;
 CDialog cr_dgConnect;
@@ -238,7 +237,8 @@ irc_receive(string buffer)
 }
 
 /* initial connect */
-void cr_makeconnection(void)
+void
+cr_makeconnection(void)
 {
 	int i;
 	i = TCP_Connect(&tcp_irc, "tcp://irc.frag-net.com:6667");
@@ -252,7 +252,8 @@ void cr_makeconnection(void)
 }
 
 /* when ENTER is pressed on the message box */
-void cr_input_enter(string text)
+void
+cr_input_enter(string text)
 {
 	if (!text)
 		return;
@@ -270,12 +271,14 @@ void cr_input_enter(string text)
 	cr_tbInput.SetText("");
 }
 
-void cr_closeconnection(void)
+void
+cr_closeconnection(void)
 {
 	TCP_Disconnect(&tcp_irc);
 }
 
-void cr_btndone_start(void)
+void
+cr_btndone_start(void)
 {
 	static void cr_btndone_end(void) {
 		g_menupage = PAGE_MULTIPLAYER;
@@ -290,7 +293,8 @@ void cr_btndone_start(void)
 	header.SetExecute(cr_btndone_end);
 }
 
-void cr_btnlistrooms_start(void)
+void
+cr_btnlistrooms_start(void)
 {
 	static void cr_btnlistrooms_end(void) {
 		g_menupage = PAGE_CHATROOMS_LIST;
@@ -308,12 +312,14 @@ void cr_btnlistrooms_start(void)
 }
 
 /* 'Done' button */
-void cr_btnservers_prepare(void)
+void
+cr_btnservers_prepare(void)
 {
 	cr_btnservers_start();
 }
 
-void menu_chatrooms_init(void)
+void
+menu_chatrooms_init(void)
 {
 	fn_chatrooms = spawn(CWidget);
 	cr_btnListRooms = spawn(CMainButton);
@@ -377,7 +383,8 @@ void menu_chatrooms_init(void)
 	cr_dgConnect = spawn(CDialog);
 }
 
-string menu_chatrooms_gettopic(void)
+string
+menu_chatrooms_gettopic(void)
 {
 	if (g_ircroom.m_strTopic)
 		return g_ircroom.m_strTopic;
@@ -385,7 +392,8 @@ string menu_chatrooms_gettopic(void)
 		return "No topic.";
 }
 
-void menu_chatrooms_draw(void)
+void
+menu_chatrooms_draw(void)
 {
 	static float timeout;
 
@@ -431,13 +439,15 @@ void menu_chatrooms_draw(void)
 
 /* this function is run, even when the menu is visibly closed. we need to keep
  * the TCP session with the IRC server alive afterall */
-void menu_chatrooms_keepalive(void)
+void
+menu_chatrooms_keepalive(void)
 {
 	TCP_Frame(&tcp_irc);
 	irc_receive(TCP_Receive(&tcp_irc));
 }
 
-void menu_chatrooms_input(float evtype, float scanx, float chary, float devid)
+void
+menu_chatrooms_input(float evtype, float scanx, float chary, float devid)
 {
 	Widget_Input(fn_chatrooms, evtype, scanx, chary, devid);
 }

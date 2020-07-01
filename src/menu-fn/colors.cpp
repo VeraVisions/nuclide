@@ -66,7 +66,8 @@ Colors_RGB255_to_HEX(vector color)
 	return Colors_RGB8_to_HEX(color / 255);
 }
 
-void Colors_Init(void)
+void
+Colors_Init(void)
 {
 	int c;
 	vector coltmp;

@@ -25,7 +25,7 @@ class CScrollbar:CWidget
 	int m_minus;
 	int m_max;
 	float m_itemheight;
-	virtual void(int value) m_changed = 0;
+	virtual void(int) m_changed = 0;
 	
 	int m_up_hover;
 	int m_up_hold;
@@ -34,16 +34,17 @@ class CScrollbar:CWidget
 
 	void(void) CScrollbar;
 	virtual void(void) Draw;
-	virtual void(float type, float x, float y, float devid) Input;
+	virtual void(float, float, float, float) Input;
 
-	virtual void(int val) SetScroll;
-	virtual void(int val) SetMax;
-	virtual void(int val) SetHeight;
-	virtual void(int val) SetItemheight;
-	virtual void(void(int val) vFunc) SetCallback;
+	virtual void(int) SetScroll;
+	virtual void(int) SetMax;
+	virtual void(int) SetHeight;
+	virtual void(int) SetItemheight;
+	virtual void(void(int)) SetCallback;
 };
 
-void CScrollbar::CScrollbar(void)
+void
+CScrollbar::CScrollbar(void)
 {
 	/* There's the physical length (t_length) and the actual length 
 	 * (border, etc. ignored) */
@@ -51,7 +52,8 @@ void CScrollbar::CScrollbar(void)
 	SetHeight(128);
 }
 
-void CScrollbar::Draw(void)
+void
+CScrollbar::Draw(void)
 {
 	int barheight = 0;
 	int barstep = 0;
@@ -100,7 +102,8 @@ void CScrollbar::Draw(void)
 	}
 }
 
-void CScrollbar::Input(float type, float x, float y, float devid)
+void
+CScrollbar::Input(float type, float x, float y, float devid)
 {
 	int barheight = 0;
 	int barstep = 0;
@@ -175,7 +178,8 @@ void CScrollbar::Input(float type, float x, float y, float devid)
 	}
 }
 
-void CScrollbar::SetScroll(int val)
+void
+CScrollbar::SetScroll(int val)
 {
 	m_scroll = bound(0,val,m_max);
 
@@ -184,24 +188,28 @@ void CScrollbar::SetScroll(int val)
 	}
 }
 
-void CScrollbar::SetMax(int val)
+void
+CScrollbar::SetMax(int val)
 {
 	m_minus = (m_height + 20) / m_itemheight;
 	m_max = val - m_minus;
 }
 
-void CScrollbar::SetHeight(int val)
+void
+CScrollbar::SetHeight(int val)
 {
 	m_height = val - 20;
 	m_theight = m_height - 32;
 }
 
-void CScrollbar::SetItemheight(int val)
+void
+CScrollbar::SetItemheight(int val)
 {
 	m_itemheight = val;
 }
 
-void CScrollbar::SetCallback(void(int val) vFunc)
+void
+CScrollbar::SetCallback(void(int val) vFunc)
 {
 	m_changed = vFunc;
 }

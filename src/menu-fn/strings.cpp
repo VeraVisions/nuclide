@@ -14,7 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void Strings_Init(void)
+void
+Strings_Init(void)
 {
 	filestream stringslst;
 	string lstline;

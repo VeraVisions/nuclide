@@ -21,12 +21,14 @@ class CComboBox:CWidget
 	virtual void(void) Draw;
 };
 
-void CComboBox::CComboBox(void)
+void
+CComboBox::CComboBox(void)
 {
 	
 }
 
-void CComboBox::Draw(void)
+void
+CComboBox::Draw(void)
 {
 	
 }

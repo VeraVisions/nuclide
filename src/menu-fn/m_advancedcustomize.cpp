@@ -18,7 +18,8 @@ CWidget fn_advcustomize;
 CMainButton ac_btnDone;
 CMainButton ac_btnCancel;
 
-void ac_btndone_start(void)
+void
+ac_btndone_start(void)
 {
 	static void ac_btndone_end(void) {
 		g_menupage = PAGE_CUSTOMIZE;
@@ -31,7 +32,9 @@ void ac_btndone_start(void)
 	header.SetHeader(HEAD_ADVANCED);
 	header.SetExecute(ac_btndone_end);
 }
-void ac_btncancel_start(void)
+
+void
+ac_btncancel_start(void)
 {
 	static void ac_btncancel_end(void) {
 		g_menupage = PAGE_CUSTOMIZE;
@@ -45,7 +48,8 @@ void ac_btncancel_start(void)
 	header.SetExecute(ac_btncancel_end);
 }
 
-void menu_advancedcustomize_init(void)
+void
+menu_advancedcustomize_init(void)
 {
 	fn_advcustomize = spawn(CWidget);
 	ac_btnDone = spawn(CMainButton);
@@ -61,13 +65,15 @@ void menu_advancedcustomize_init(void)
 	Widget_Add(fn_advcustomize, ac_btnCancel);
 }
 
-void menu_advancedcustomize_draw(void)
+void
+menu_advancedcustomize_draw(void)
 {
 	Widget_Draw(fn_advcustomize);
 	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_ADVOPTIONS],[460,80], [1,1,1], 1.0f, 1);
 }
 
-void menu_advancedcustomize_input(float evtype, float scanx, float chary, float devid)
+void
+menu_advancedcustomize_input(float evtype, float scanx, float chary, float devid)
 {
 	Widget_Input(fn_advcustomize, evtype, scanx, chary, devid);
 }

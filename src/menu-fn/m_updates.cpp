@@ -32,7 +32,7 @@ enum
 	GPMI_FILESIZE,		// size to download.
 };
 
-string(int packageidx, int desiredfield) getpackagemanagerinfo = #0;
+string(int, int) getpackagemanagerinfo = #0;
 
 var int g_updates_initialized = FALSE;
 var int autocvar_menu_updating = FALSE;
@@ -51,7 +51,8 @@ CScrollbar up_sbUpdates;
 var string g_updates_previewpic;
 
 /* Button Callbacks */
-void up_btndone_start(void)
+void
+up_btndone_start(void)
 {
 	cvar_set("menu_updating", "0");
 	localsound("../media/launch_dnmenu1.wav");
@@ -59,7 +60,8 @@ void up_btndone_start(void)
 	localcmd("seta menu_installedpackages 1;cfg_save\n");
 }
 
-void up_btninstall_start(void)
+void
+up_btninstall_start(void)
 {
 	int pkgid;
 
@@ -69,7 +71,8 @@ void up_btninstall_start(void)
 	print(sprintf("Marking package %s for install.\n", updates[pkgid].title));
 }
 
-void up_btnremove_start(void)
+void
+up_btnremove_start(void)
 {
 	int pkgid;
 
@@ -79,14 +82,16 @@ void up_btnremove_start(void)
 	print(sprintf("Marking package %s for 'removal'.\n", updates[pkgid].title));
 }
 
-void up_btnapply_start(void)
+void
+up_btnapply_start(void)
 {
 	cvar_set("menu_updating", "1");
 	localcmd("pkg apply\n");
 	print("Applying package changes.\n");
 }
 
-void up_lbupdates_changed(void)
+void
+up_lbupdates_changed(void)
 {
 	int pkgid;
 	string newpic;
@@ -96,13 +101,16 @@ void up_lbupdates_changed(void)
 	g_updates_previewpic = newpic;
 	precache_pic(g_updates_previewpic);
 }
-void up_sbupdates_changed(int val)
+
+void
+up_sbupdates_changed(int val)
 {
 	up_lbUpdates.SetScroll(val);
 }
 
 /* Init */
-void menu_updates_init(void)
+void
+menu_updates_init(void)
 {
 	fn_updates = spawn(CWidget);
 
@@ -155,7 +163,8 @@ void menu_updates_init(void)
 	Widget_Add(fn_updates, up_frPreview);
 }
 
-void menu_updates_refresh(void)
+void
+menu_updates_refresh(void)
 {
 	int c;
 	update_count = 0;
@@ -207,7 +216,8 @@ void menu_updates_refresh(void)
 }
 
 /* Drawing */
-void menu_updates_draw(void)
+void
+menu_updates_draw(void)
 {
 	float fl = 0;
 
@@ -277,7 +287,8 @@ void menu_updates_draw(void)
 	drawpic([g_menuofs[0]+350+3,g_menuofs[1]+160+3], g_updates_previewpic, [256,128], [1,1,1], 1.0f);
 }
 
-void menu_updates_input(float evtype, float scanx, float chary, float devid)
+void
+menu_updates_input(float evtype, float scanx, float chary, float devid)
 {
 	Widget_Input(fn_updates, evtype, scanx, chary, devid);
 }

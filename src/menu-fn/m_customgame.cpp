@@ -15,14 +15,16 @@
  */
 
 /* local game/mod info parsing */
-void games_set(int id)
+void
+games_set(int id)
 {
 	gameinfo_current = id;
 	setwindowcaption(games[id].game);
 	cvar_set("com_fullgamename", games[id].game);
 }
 
-void games_init(void)
+void
+games_init(void)
 {
 	int id;
 	float county;
@@ -179,7 +181,8 @@ CMainButton customgame_btnRefresh;
 CMainButton customgame_btnDeactivate;
 CMainButton customgame_btnDone;
 
-void customgame_btnactivate_start(void)
+void
+customgame_btnactivate_start(void)
 {
 	int nextgame = customgame_lbMods.GetSelected();
 
@@ -199,13 +202,17 @@ void customgame_btnactivate_start(void)
 	localcmd("stopmusic\nsnd_restart\nwait\nvid_reload\nmenu_restart\nmenu_customgame\n");
 	cvar_init();
 }
-void customgame_btninstall_start(void)
+
+void
+customgame_btninstall_start(void)
 {
 	int gid = customgame_lbMods.GetSelected();
 	print(sprintf("Requesting download for http://www.frag-net.com/mods/%s.fmf...\n", games[gid].gamedir));
 	localcmd(sprintf("fs_changegame %s http://www.frag-net.com/mods/%s.fmf\n", games[gid].gamedir, games[gid].gamedir));
 }
-void customgame_btndeactivate_start(void)
+
+void 
+customgame_btndeactivate_start(void)
 {
 	localcmd("gamedir \"\"\n");
 	localcmd("stopmusic\nsnd_restart\nwait\nvid_reload\n");
@@ -213,7 +220,8 @@ void customgame_btndeactivate_start(void)
 	localcmd("menu_customgame\n");
 }
 
-void customgame_btndone_start(void)
+void
+customgame_btndone_start(void)
 {
 	static void customgame_btndone_end(void) {
 		g_menupage = PAGE_MAIN;
@@ -226,12 +234,15 @@ void customgame_btndone_start(void)
 	header.SetHeader(HEAD_CUSTOM);
 	header.SetExecute(customgame_btndone_end);
 }
-void customgame_sbmods_changed(int val)
+
+void
+customgame_sbmods_changed(int val)
 {
 	customgame_lbMods.SetScroll(val);
 }
 
-void customgame_lbmods_changed(void)
+void
+customgame_lbmods_changed(void)
 {
 	int gid = customgame_lbMods.GetSelected();
 
@@ -244,7 +255,8 @@ void customgame_lbmods_changed(void)
 	}
 }
 
-void menu_customgame_init(void)
+void
+menu_customgame_init(void)
 {
 	fn_customgame = spawn(CWidget);
 	customgame_dlgWait = spawn(CDialog);
@@ -303,7 +315,8 @@ void menu_customgame_init(void)
 	Widget_Add(fn_customgame, customgame_sbMods);
 }
 
-void menu_customgame_draw(void)
+void
+menu_customgame_draw(void)
 {
 	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_CUSTOM],[460,80], [1,1,1], 1.0f, 1);
 	Widget_Draw(fn_customgame);
@@ -333,7 +346,8 @@ void menu_customgame_draw(void)
 	customgame_sbMods.SetMax(gameinfo_count-1); /* don't show our current game */
 }
 
-void menu_customgame_input(float evtype, float scanx, float chary, float devid)
+void
+menu_customgame_input(float evtype, float scanx, float chary, float devid)
 {
 	Widget_Input(fn_customgame, evtype, scanx, chary, devid);
 }

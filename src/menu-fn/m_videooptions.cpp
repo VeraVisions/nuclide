@@ -21,7 +21,8 @@ CSlider vo_sldGamma;
 CSlider vo_sldGlare;
 
 /* Button Callbacks */
-void vo_btndone_start(void)
+void
+vo_btndone_start(void)
 {
 	static void vo_btndone_end(void) {
 		g_menupage = PAGE_VIDEO;
@@ -34,21 +35,28 @@ void vo_btndone_start(void)
 	header.SetHeader(HEAD_VIDOPTIONS);
 	header.SetExecute(vo_btndone_end);
 }
-void vo_sldscreensize_changed(float val)
+
+void
+vo_sldscreensize_changed(float val)
 {
 	cvar_set("viewsize", ftos(floor(val * 120)));
 }
-void vo_sldgamma_changed(float val)
+
+void
+vo_sldgamma_changed(float val)
 {
 	cvar_set("gamma", ftos(val));
 }
-void vo_sldglare_changed(float val)
+
+void
+vo_sldglare_changed(float val)
 {
 	cvar_set("brightness", ftos(val * 0.5));
 }
 
 /* Init */
-void menu_videooptions_init(void)
+void
+menu_videooptions_init(void)
 {
 	fn_vidoptions = spawn(CWidget);
 	vo_btnDone = spawn(CMainButton);
@@ -77,7 +85,8 @@ void menu_videooptions_init(void)
 }
 
 /* Drawing */
-void menu_videooptions_draw(void)
+void
+menu_videooptions_draw(void)
 {
 	Widget_Draw(fn_vidoptions);
 	drawpic([g_menuofs[0] + 45, g_menuofs[1] + 45], g_bmp[HEAD_VIDOPTIONS],
@@ -99,7 +108,8 @@ void menu_videooptions_draw(void)
 }
 
 /* Input */
-void menu_videooptions_input(float evtype, float x, float y, float devid)
+void
+menu_videooptions_input(float evtype, float x, float y, float devid)
 {
 	Widget_Input(fn_vidoptions, evtype, x, y, devid);
 }

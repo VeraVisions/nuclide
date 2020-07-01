@@ -14,14 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void menu_advancedmpoptions_init(void)
+void
+menu_advancedmpoptions_init(void)
 {
 }
 
-void menu_advancedmpoptions_draw(void)
+void
+menu_advancedmpoptions_draw(void)
 {
 }
 
-void menu_advancedmpoptions_input(float evtype, float scanx, float chary, float devid)
+void
+menu_advancedmpoptions_input(float evtype, float scanx, float chary, float devid)
 {
 }

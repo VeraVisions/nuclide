@@ -100,20 +100,22 @@ class CMainButton:CWidget
 
 	void(void) CMainButton;
 	virtual void(void) Draw;
-	virtual void(float type, float x, float y, float devid) Input;
+	virtual void(float, float, float, float) Input;
 
-	virtual void(int i) SetImage;
-	virtual void(int i) SetLength;
-	virtual void(void(void) vFunc) SetExecute;
+	virtual void(int) SetImage;
+	virtual void(int) SetLength;
+	virtual void(void(void)) SetExecute;
 };
 
-void CMainButton::CMainButton(void)
+void
+CMainButton::CMainButton(void)
 {
 	m_alpha = 1.0f;
 	m_length = 156;
 }
 
-void CMainButton::Draw(void)
+void
+CMainButton::Draw(void)
 {
 	if (!m_execute) {
 		drawsubpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y], [156,26], g_bmp[0], 
@@ -142,7 +144,8 @@ void CMainButton::Draw(void)
 	m_alpha = bound(0.0f, m_alpha, 1.0f);
 }
 
-void CMainButton::Input(float type, float x, float y, float devid)
+void
+CMainButton::Input(float type, float x, float y, float devid)
 {
 	m_hover = Util_CheckMouse(m_x, m_y, m_length, 26);
 
@@ -161,16 +164,19 @@ void CMainButton::Input(float type, float x, float y, float devid)
 	}
 }
 
-void CMainButton::SetImage(int i)
+void
+CMainButton::SetImage(int i)
 {
 	m_bitmap = i;
 }
-void CMainButton::SetLength(int i)
+void
+CMainButton::SetLength(int i)
 {
 	m_length = i;
 }
 
-void CMainButton::SetExecute(void(void) vFunc)
+void
+CMainButton::SetExecute(void(void) vFunc)
 {
 	m_execute = vFunc;
 }

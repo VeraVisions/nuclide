@@ -58,7 +58,8 @@ static string g_resolutions[] = {
 };
 
 /* Button Callbacks */
-void vm_btnok_start(void)
+void
+vm_btnok_start(void)
 {
 	static void vm_btnok_end(void) {
 		g_menupage = PAGE_VIDEO;
@@ -84,7 +85,9 @@ void vm_btnok_start(void)
 	header.SetHeader(HEAD_VIDMODES);
 	header.SetExecute(vm_btnok_end);
 }
-void vm_btncancel_start(void)
+
+void
+vm_btncancel_start(void)
 {
 	static void vm_btncancel_end(void) {
 		g_menupage = PAGE_VIDEO;
@@ -98,7 +101,8 @@ void vm_btncancel_start(void)
 	header.SetExecute(vm_btncancel_end);
 }
 
-void vm_cbwindowed_changed(float val)
+void
+vm_cbwindowed_changed(float val)
 {
 	if (val) {
 		cvar_set("vid_fullscreen", "0");
@@ -106,13 +110,15 @@ void vm_cbwindowed_changed(float val)
 		cvar_set("vid_fullscreen", "2");
 	}
 }
-void vm_sbres_changed(int val)
+void
+vm_sbres_changed(int val)
 {
 	vm_lbRes.SetScroll(val);
 }
 
 /* Init */
-void menu_videomodes_init(void)
+void
+menu_videomodes_init(void)
 {
 	fn_vidmodes = spawn(CWidget);
 
@@ -167,7 +173,8 @@ void menu_videomodes_init(void)
 }
 
 /* Draw */
-void menu_videomodes_draw(void)
+void
+menu_videomodes_draw(void)
 {
 	Widget_Draw(fn_vidmodes);
 	drawpic([g_menuofs[0] + 45, g_menuofs[1] + 45], g_bmp[HEAD_VIDMODES],
@@ -181,7 +188,8 @@ void menu_videomodes_draw(void)
 }
 
 /* Input */
-void menu_videomodes_input(float evtype, float x, float y, float devid)
+void
+menu_videomodes_input(float evtype, float x, float y, float devid)
 {
 	Widget_Input(fn_vidmodes, evtype, x, y, devid);
 }

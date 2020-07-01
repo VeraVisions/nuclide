@@ -32,17 +32,20 @@ class CTextBox:CWidget
 	void(void) CTextBox;
 	virtual void(void) Draw;
 	virtual void(float, float, float, float) Input;
+
 	virtual void(void(string) vFunc) SetCallOnEnter;
 	virtual void(string) SetText;
 	virtual void(int) SetLength;
 };
 
-void CTextBox::CTextBox(void)
+void
+CTextBox::CTextBox(void)
 {
 	m_length = 184;
 }
 
-void CTextBox::Draw(void)
+void
+CTextBox::Draw(void)
 {
 	if (g_focuswidget == this) {
 		drawfill([g_menuofs[0]+m_x,g_menuofs[1]+m_y], [m_length,24], [0.5,0.5,0.5], 1.0f);
@@ -66,7 +69,8 @@ void CTextBox::Draw(void)
 	}
 }
 
-void CTextBox::Input(float type, float x, float y, float devid)
+void
+CTextBox::Input(float type, float x, float y, float devid)
 {
 	if (type == IE_KEYDOWN) {
 		switch (x) {
@@ -105,17 +109,20 @@ void CTextBox::Input(float type, float x, float y, float devid)
 	}
 }
 
-void CTextBox::SetCallOnEnter(void(string) vFunc)
+void
+CTextBox::SetCallOnEnter(void(string) vFunc)
 {
 	m_onEnter = vFunc;
 }
 
-void CTextBox::SetText(string txt)
+void
+CTextBox::SetText(string txt)
 {
 	m_text = txt;
 }
 
-void CTextBox::SetLength(int len)
+void
+CTextBox::SetLength(int len)
 {
 	m_length = len;
 }

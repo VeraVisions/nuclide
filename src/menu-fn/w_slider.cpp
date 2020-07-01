@@ -21,17 +21,18 @@ class CSlider:CWidget
 	int m_hover;
 	int m_hold;
 	float m_value;
-	virtual void(float value) m_changed = 0;
+	virtual void(float) m_changed = 0;
 
 	void(void) CSlider;
 	virtual void(void) Draw;
-	virtual void(float type, float x, float y, float devid) Input;
+	virtual void(float, float, float, float) Input;
 	
-	virtual void(float val) SetValue;
-	virtual void(void(float val) vFunc) SetCallback;
+	virtual void(float) SetValue;
+	virtual void(void(float)) SetCallback;
 };
 
-void CSlider::CSlider(void)
+void
+CSlider::CSlider(void)
 {
 	/* There's the physical length (t_length) and the actual length 
 	 * (border, etc. ignored) */
@@ -39,7 +40,8 @@ void CSlider::CSlider(void)
 	m_tlength = m_length - 27;
 }
 
-void CSlider::Draw(void)
+void
+CSlider::Draw(void)
 {
 	drawfill([g_menuofs[0]+m_x,g_menuofs[1]+m_y], [m_length,8], [0.25,0.25,0.25], 1.0f);
 	drawfill([g_menuofs[0]+m_x+3,g_menuofs[1]+m_y+3], [m_length-6,2], [0,0,0], 1.0f);
@@ -49,7 +51,8 @@ void CSlider::Draw(void)
 			[21,8], [1,1,1], 1.0f);
 }
 
-void CSlider::Input(float type, float x, float y, float devid)
+void
+CSlider::Input(float type, float x, float y, float devid)
 {
 	if (Util_CheckMouse(m_x, m_y, m_length, 8) == TRUE) {
 		m_hover = TRUE;
@@ -84,12 +87,14 @@ void CSlider::Input(float type, float x, float y, float devid)
 	}
 }
 
-void CSlider::SetValue(float val)
+void
+CSlider::SetValue(float val)
 {
 	m_value = val;
 }
 
-void CSlider::SetCallback(void(float val) vFunc)
+void
+CSlider::SetCallback(void(float val) vFunc)
 {
 	m_changed = vFunc;
 }

@@ -31,7 +31,8 @@ CDialog mp_dgBind;
 
 var int g_controlquery = -1;
 
-void ctrl_btnok_start(void)
+void
+ctrl_btnok_start(void)
 {
 	static void ctrl_btnok_end(void) {
 		g_menupage = PAGE_CONFIGURATION;
@@ -45,7 +46,9 @@ void ctrl_btnok_start(void)
 	header.SetHeader(HEAD_CONTROLS);
 	header.SetExecute(ctrl_btnok_end);
 }
-void ctrl_btncancel_start(void)
+
+void
+ctrl_btncancel_start(void)
 {
 	static void ctrl_btnok_end(void) {
 		g_menupage = PAGE_CONFIGURATION;
@@ -59,13 +62,17 @@ void ctrl_btncancel_start(void)
 	header.SetHeader(HEAD_CONTROLS);
 	header.SetExecute(ctrl_btnok_end);
 }
-void ctrl_sbcontrols_changed(int val)
+
+void
+ctrl_sbcontrols_changed(int val)
 {
 	ctrl_lbActDesc.SetScroll(val);
 	ctrl_lbActBind1.SetScroll(val);
 	ctrl_lbActBind2.SetScroll(val);
 }
-void ctrl_lb_clicked(int val)
+
+void
+ctrl_lb_clicked(int val)
 {
 	static float clicked_last;
 	static int val_last;
@@ -88,7 +95,8 @@ void ctrl_lb_clicked(int val)
 	clicked_last = time + 0.5f;
 }
 
-void menu_controls_update(void)
+void
+menu_controls_update(void)
 {
 	int c, j, k, i;
 
@@ -124,7 +132,8 @@ void menu_controls_update(void)
 	}
 }
 
-void menu_controls_init(void)
+void
+menu_controls_init(void)
 {
 	fn_controls = spawn(CWidget);
 	mp_dgBind = spawn(CDialog);
@@ -217,7 +226,8 @@ void menu_controls_init(void)
 }
 
 float g_ctrl_refresh;
-void menu_controls_draw(void)
+void
+menu_controls_draw(void)
 {
 
 	Widget_Draw(fn_controls);
@@ -240,7 +250,8 @@ void menu_controls_draw(void)
 	}
 }
 
-void menu_controls_input(float evtype, float scanx, float chary, float devid)
+void
+menu_controls_input(float evtype, float scanx, float chary, float devid)
 {
 	/* this comes first, or else the dialog will skip immediately */
 	if (g_controlquery >= 0) {

@@ -32,20 +32,22 @@ class CModList:CWidget
 
 	void(void) CModList;
 	virtual void(void) Draw;
-	virtual void(float type, float x, float y, float devid) Input;
+	virtual void(float, float, float, float) Input;
 
-	virtual void(int w, int h) SetSize;
-	//virtual void(void(int val) func) SetChanged;
-	virtual void(int i) SetSelected;
+	virtual void(int, int) SetSize;
+	//virtual void(void(int)) SetChanged;
+	virtual void(int) SetSelected;
 	virtual int(void) GetSelected;
 };
 
-void CModList::CModList(void)
+void
+CModList::CModList(void)
 {
 	m_selected = -1;
 }
 
-void CModList::Draw(void)
+void
+CModList::Draw(void)
 {
 	int visible;
 	int pos;
@@ -121,7 +123,8 @@ void CModList::Draw(void)
 	}
 }
 
-void CModList::Input(float type, float x, float y, float devid)
+void
+CModList::Input(float type, float x, float y, float devid)
 {
 	int visible;
 	int pos[2];
@@ -148,23 +151,27 @@ void CModList::Input(float type, float x, float y, float devid)
 	}
 }
 
-void CModList::SetSize(int w, int h)
+void
+CModList::SetSize(int w, int h)
 {
 	m_size[0] = w;
 	m_size[1] = h;
 }
 
-void CModList::SetScroll(int i)
+void
+CModList::SetScroll(int i)
 {
 	m_scroll = i;
 }
 
-void CModList::SetChanged(void(void) func)
+void
+CModList::SetChanged(void(void) func)
 {
 	m_changed = func;
 }
 
-void CModList::SetSelected(int i)
+void
+CModList::SetSelected(int i)
 {
 	m_selected = i;
 
@@ -173,7 +180,8 @@ void CModList::SetSelected(int i)
 	}
 }
 
-int CModList::GetSelected(void)
+int
+CModList::GetSelected(void)
 {
 	return m_selected;
 }

@@ -128,7 +128,8 @@ void menu_chatroomslist_init(void)
 	Widget_Add(fn_chatroomslist, crl_btnCancel);
 }
 
-void menu_chatroomslist_draw(void)
+void
+menu_chatroomslist_draw(void)
 {
 	Widget_Draw(fn_chatroomslist);
 	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_ROOMS],[460,80], [1,1,1], 1.0f, 1);
@@ -143,7 +144,8 @@ void menu_chatroomslist_draw(void)
 	}
 }
 
-void menu_chatroomslist_input(float evtype, float scanx, float chary, float devid)
+void
+menu_chatroomslist_input(float evtype, float scanx, float chary, float devid)
 {
 	Widget_Input(fn_chatroomslist, evtype, scanx, chary, devid);
 }

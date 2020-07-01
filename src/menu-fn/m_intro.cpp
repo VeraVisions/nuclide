@@ -26,12 +26,14 @@ enum
 float g_intro_progress;
 int g_intro_stage;
 
-void m_intro_skip(void)
+void
+m_intro_skip(void)
 {
 	g_intro_progress = INTRO_TIME;
 }
 
-void m_intro_draw(void)
+void
+m_intro_draw(void)
 {
 	float alpha;
 	if (clientstate() == 2) {
@@ -69,7 +71,8 @@ void m_intro_draw(void)
 	g_intro_progress += frametime;
 }
 
-void m_intro_input(float evtype, float scanx, float chary, float devid)
+void
+m_intro_input(float evtype, float scanx, float chary, float devid)
 {
 	if (evtype == IE_KEYDOWN) {
 		if (scanx == K_ESCAPE) {

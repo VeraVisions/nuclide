@@ -23,32 +23,37 @@ class CWidget
 
 	void(void) CWidget;
 	virtual void(void) Draw;
-	virtual void(float type, float x, float y, float devid) Input;
+	virtual void(float, float, float, float) Input;
 
-	virtual void(int x, int y) SetPos;
+	virtual void(int, int) SetPos;
 };
 
-void CWidget::CWidget(void)
+void
+CWidget::CWidget(void)
 {
 	m_x = g_menuofs[0];
 	m_y = g_menuofs[1];
 }
 
-void CWidget::Draw(void)
+void
+CWidget::Draw(void)
 {
 }
 
-void CWidget::Input(float type, float x, float y, float devid)
+void
+CWidget::Input(float type, float x, float y, float devid)
 {
 }
 
-void CWidget::SetPos(int x, int y)
+void
+CWidget::SetPos(int x, int y)
 {
 	m_x = x;
 	m_y = y;
 }
 
-void Widget_Add(CWidget parent, CWidget item)
+void
+Widget_Add(CWidget parent, CWidget item)
 {
 	CWidget wNext = parent;
 	CWidget wParent;
@@ -60,7 +65,8 @@ void Widget_Add(CWidget parent, CWidget item)
 	item.m_parent = parent;
 }
 
-void Widget_Draw(CWidget start)
+void
+Widget_Draw(CWidget start)
 {
 	CWidget wNext = start;
 	do {
@@ -71,7 +77,8 @@ void Widget_Draw(CWidget start)
 	} while (wNext);
 }
 
-void Widget_Input(CWidget start, float type, float x, float y, float devid)
+void
+Widget_Input(CWidget start, float type, float x, float y, float devid)
 {
 	CWidget wNext = start;
 	do {

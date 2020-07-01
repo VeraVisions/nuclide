@@ -14,7 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-int Util_CheckMouse(int x, int y, int sx, int sy) {
+int
+Util_CheckMouse(int x, int y, int sx, int sy)
+{
 	int mins[2];
 	int maxs[2];
 
@@ -35,7 +37,8 @@ int Util_CheckMouse(int x, int y, int sx, int sy) {
 	return FALSE;
 }
 
-string Util_CmdToKey(string cmd)
+string
+Util_CmdToKey(string cmd)
 {
 	float fBindKey = tokenize(findkeysforcommand(cmd));
 	string sBindTx = "";
@@ -54,6 +57,8 @@ string Util_CmdToKey(string cmd)
 	return sBindTx;
 }
 
-float lerp(float fA, float fB, float fPercent) {
+float
+lerp(float fA, float fB, float fPercent)
+{
 	return (fA * (1 - fPercent)) + (fB * fPercent);
 }

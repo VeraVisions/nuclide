@@ -31,12 +31,13 @@ class CHeader:CWidget
 	virtual void(void) m_execute = 0;
 
 	virtual void(void) Draw;
-	virtual void(int x1, int y1, int x2, int y2) SetStartEndPos;
-	virtual void(int x1, int y1, int x2, int y2) SetStartEndSize;
-	virtual void(int i) SetHeader;
+	virtual void(int, int, int, int) SetStartEndPos;
+	virtual void(int, int, int, int) SetStartEndSize;
+	virtual void(int) SetHeader;
 };
 
-void CHeader::Draw(void)
+void
+CHeader::Draw(void)
 {
 	int pos[2];
 	int size[2];
@@ -72,17 +73,20 @@ void CHeader::Draw(void)
 	}
 }
 
-void CHeader::SetHeader(int i)
+void
+CHeader::SetHeader(int i)
 {
 	m_header = i;
 }
 
-void CHeader::SetExecute(void(void) vFunc)
+void
+CHeader::SetExecute(void(void) vFunc)
 {
 	m_execute = vFunc;
 }
 
-void CHeader::SetStartEndPos(int x1, int y1, int x2, int y2)
+void
+CHeader::SetStartEndPos(int x1, int y1, int x2, int y2)
 {
 	m_start_x = x1;
 	m_start_y = y1;
@@ -90,7 +94,8 @@ void CHeader::SetStartEndPos(int x1, int y1, int x2, int y2)
 	m_end_y = y2;
 }
 
-void CHeader::SetStartEndSize(int x1, int y1, int x2, int y2)
+void
+CHeader::SetStartEndSize(int x1, int y1, int x2, int y2)
 {
 	m_start_w = x1;
 	m_start_h = y1;

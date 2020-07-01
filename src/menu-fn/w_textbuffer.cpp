@@ -20,22 +20,24 @@ class CTextBuffer:CWidget
 {
 	int m_size[2];
 	string m_entries[TB_MAX_ENTRIES];
-	virtual void(int val) m_execute = 0;
+	virtual void(int) m_execute = 0;
 
 	void(void) CTextBuffer;
 	virtual void(void) Draw;
-	virtual void(float type, float x, float y, float devid) Input;
+	virtual void(float, float, float, float) Input;
 
-	virtual void(string m) Insert;
+	virtual void(string) Insert;
 	virtual void(void) Clear;
 	virtual void(int, int) SetSize;
 };
 
-void CTextBuffer::CTextBuffer(void)
+void
+CTextBuffer::CTextBuffer(void)
 {
 }
 
-void CTextBuffer::Draw(void)
+void
+CTextBuffer::Draw(void)
 {
 	int visible;
 	int pos[2];
@@ -55,12 +57,14 @@ void CTextBuffer::Draw(void)
 	}
 }
 
-void CTextBuffer::Input(float type, float x, float y, float devid)
+void
+CTextBuffer::Input(float type, float x, float y, float devid)
 {
 
 }
 
-void CTextBuffer::Insert(string m)
+void
+CTextBuffer::Insert(string m)
 {
 	for (int i = 0; i < TB_MAX_ENTRIES; i++) {
 		if (i == TB_MAX_ENTRIES - 1) {
@@ -71,14 +75,16 @@ void CTextBuffer::Insert(string m)
 	}
 }
 
-void CTextBuffer::Clear(void)
+void
+CTextBuffer::Clear(void)
 {
 	for (int i = 0; i < TB_MAX_ENTRIES; i++) {
 		m_entries[i] = __NULL__;
 	}
 }
 
-void CTextBuffer::SetSize(int w, int h)
+void
+CTextBuffer::SetSize(int w, int h)
 {
 	m_size[0] = w;
 	m_size[1] = h;
