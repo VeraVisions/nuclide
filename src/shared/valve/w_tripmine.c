@@ -23,6 +23,19 @@ Tripmine Weapon
 
 */
 
+enum
+{
+	TRIPMINE_IDLE1,
+	TRIPMINE_IDLE2,
+	TRIPMINE_FIRE1,
+	TRIPMINE_FIRE2,
+	TRIPMINE_FIDGET,
+	TRIPMINE_HOLSTER,
+	TRIPMINE_DRAW,
+	TRIPMINE_WORLD,
+	TRIPMINE_GROUND,
+};
+
 /* MONSTER_TRIPMINE SEGMENT 
  * 
  * Because not being able to place it around levels would be boring.
@@ -31,7 +44,7 @@ Tripmine Weapon
 #ifdef SERVER
 class monster_tripmine:CBaseMonster
 {
-	float armor;
+	float m_flDist;
 	void(void) monster_tripmine;
 
 	virtual float(entity, float) SendEntity;
@@ -80,17 +93,18 @@ monster_tripmine::Ready(void)
 	makevectors(angles);
 	traceline(origin, origin + v_forward * 2048, FALSE, this);
 
+	/* first time we're marked as ready, we play a sound and set the distance */
 	if (!health) {
 		SendFlags = -1;
 		health = 1;
 		Death =
 		Pain = Trip;
 		takedamage = DAMAGE_YES;
-		armor = trace_plane_dist;
+		m_flDist = trace_plane_dist;
 		Sound_Play(this, CHAN_WEAPON, "weapon_tripmine.activate");
 	}
 
-	if (trace_plane_dist != armor) {
+	if (trace_plane_dist != m_flDist) {
 		Trip(1);
 	}
 	nextthink = time;
@@ -122,25 +136,59 @@ monster_tripmine::monster_tripmine(void)
 {
 	Respawn();
 }
+#else
+class csitem_tripmine
+{
+	int m_iActive;
+
+	void(void) csitem_tripmine;
+	virtual float(void) predraw;
+};
+
+float csitem_tripmine::predraw(void)
+{
+	if (m_iActive) {
+		makevectors(angles);
+		traceline(origin, origin + v_forward * 8196, FALSE, this);
+		trailparticles(BEAM_TRIPMINE, this, origin, trace_endpos);
+	}
+
+	addentity(this);
+	return PREDRAW_NEXT;
+}
+
+void
+csitem_tripmine::csitem_tripmine(void)
+{
+	solid = SOLID_BBOX;
+	movetype = MOVETYPE_NONE;
+	drawmask = MASK_ENGINE;
+	frame = TRIPMINE_WORLD;
+}
+
+void w_tripmine_parse(void)
+{
+	csitem_tripmine tm = (csitem_tripmine)self;
+	spawnfunc_csitem_tripmine();
+
+	tm.origin[0] = readcoord();
+	tm.origin[1] = readcoord();
+	tm.origin[2] = readcoord();
+	tm.angles[0] = readcoord();
+	tm.angles[1] = readcoord();
+	tm.angles[2] = readcoord();
+	tm.m_iActive = readbyte();
+	tm.modelindex = readshort();
+
+	setcustomskin(tm, "", "geomset 0 2\ngeomset 1 2\n");
+	setorigin(tm, tm.origin);
+}
 #endif
 
 /* The WEAPON_TRIPMINE code
  * 
  * Here is where the actual 'weapon' logic happens that the player itself
  * runs. It obviously won't work without MONSTER_TRIPMINE */
-
-enum
-{
-	TRIPMINE_IDLE1,
-	TRIPMINE_IDLE2,
-	TRIPMINE_FIRE1,
-	TRIPMINE_FIRE2,
-	TRIPMINE_FIDGET,
-	TRIPMINE_HOLSTER,
-	TRIPMINE_DRAW,
-	TRIPMINE_WORLD,
-	TRIPMINE_GROUND,
-};
 
 void w_tripmine_precache(void)
 {
@@ -203,55 +251,6 @@ void w_tripmine_holster(void)
 	
 }
 
-#ifdef CLIENT
-class csitem_tripmine
-{
-	int m_iActive;
-
-	void(void) csitem_tripmine;
-	virtual float(void) predraw;
-};
-
-float csitem_tripmine::predraw(void)
-{
-	if (m_iActive) {
-		makevectors(angles);
-		traceline(origin, origin + v_forward * 8196, FALSE, this);
-		trailparticles(BEAM_TRIPMINE, this, origin, trace_endpos);
-	}
-
-	addentity(this);
-	return PREDRAW_NEXT;
-}
-
-void
-csitem_tripmine::csitem_tripmine(void)
-{
-	solid = SOLID_BBOX;
-	movetype = MOVETYPE_NONE;
-	drawmask = MASK_ENGINE;
-	frame = TRIPMINE_WORLD;
-}
-
-void w_tripmine_parse(void)
-{
-	csitem_tripmine tm = (csitem_tripmine)self;
-	spawnfunc_csitem_tripmine();
-
-	tm.origin[0] = readcoord();
-	tm.origin[1] = readcoord();
-	tm.origin[2] = readcoord();
-	tm.angles[0] = readcoord();
-	tm.angles[1] = readcoord();
-	tm.angles[2] = readcoord();
-	tm.m_iActive = readbyte();
-	tm.modelindex = readshort();
-
-	setcustomskin(tm, "", "geomset 0 2\ngeomset 1 2\n");
-	setorigin(tm, tm.origin);
-}
-#endif
-
 void
 w_tripmine_primary(void)
 {
@@ -286,10 +285,10 @@ w_tripmine_primary(void)
 #else
 	pl.ammo_tripmine--;
 	vector ang = vectoangles(trace_plane_normal);
-	monster_tripmine mine = spawn(monster_tripmine, real_owner: self, angles: ang);
+	monster_tripmine mine = spawn(monster_tripmine, real_owner: pl, angles: ang, spawnflags: MSF_MULTIPLAYER);
 	mine.SetOrigin(trace_endpos - (v_forward * 8));
 
-	Sound_Play(self, CHAN_WEAPON, "weapon_tripmine.deploy");
+	Sound_Play(pl, CHAN_WEAPON, "weapon_tripmine.deploy");
 	Sound_Play(mine, CHAN_WEAPON, "weapon_tripmine.charge");
 #endif
 

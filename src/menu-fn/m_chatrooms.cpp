@@ -164,7 +164,7 @@ irc_receive(string buffer)
 				msg
 			)
 		);
-		localcmd(sprintf("_fnchat_msg \"[%s] %s: %s\"\n", g_ircroom.m_strChannel, src, msg));
+		localcmd(sprintf("_fnchat_msg \"^2[Chat-room] ^7%s^7: %s\"\n", src, msg));
 		break;
 	case "321":
 		crl_clearrooms();
