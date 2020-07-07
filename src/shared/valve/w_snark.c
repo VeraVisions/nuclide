@@ -36,6 +36,9 @@ enum
 #ifdef SERVER
 class monster_snark:CBaseMonster
 {
+	float m_flJump;
+	entity m_eTarget;
+
 	void(void) monster_snark;
 
 	virtual void(void) customphysics;
@@ -50,50 +53,51 @@ monster_snark::customphysics(void)
 	input_movevalues = [250,0,0];
 	input_buttons = 0;
 	input_impulse = 0;
-	input_angles = self.angles;
+	input_angles = angles;
 	input_timelength = frametime;
 	
-	if (self.health <= 0) {
+	if (health <= 0) {
 		return;
 	}
 
-	if (self.weapon <= 0.0 && self.aiment == __NULL__) {
+	if (m_flJump <= 0.0 && m_eTarget == __NULL__) {
 		float shortest = 999999;
 		for (entity ef = world; (ef = findfloat(ef, ::movetype, MOVETYPE_WALK));) {
-			float len = vlen(ef.origin - self.origin);
-			if (ef.classname != "snark" && len < shortest && ef.health > 0) {
-				self.owner = __NULL__;
-				self.aiment = ef;
+			float len = vlen(ef.origin - origin);
+			if (ef.classname != "monster_snark" && len < shortest && ef.health > 0) {
+				owner = __NULL__;
+				m_eTarget = ef;
 				shortest = len;
 			}
 		}
 	} 
 
-	if (self.aiment) {
-		self.angles = input_angles = vectoangles(self.aiment.origin - self.origin);
+	if (m_eTarget) {
+		angles = input_angles = vectoangles(m_eTarget.origin - origin);
 	}
 
-	if (self.aiment && self.weapon <= 0.0) {
-		self.weapon = 0.5f + random();
-		Sound_Play(self, CHAN_VOICE, "weapon_snark.hunt");
+	if (m_eTarget && m_flJump <= 0.0) {
+		m_flJump = 0.5f + random();
+		Sound_Play(this, CHAN_VOICE, "weapon_snark.hunt");
 		input_buttons = 2;
-		Damage_Apply(self, world, 1, 0, DMG_GENERIC);
-			
-		makevectors(self.angles);
-		traceline(self.origin, self.origin + (v_forward * 128), 0, self);
-			
+		Damage_Apply(this, world, 1, 0, DMG_GENERIC);
+
+		makevectors(angles);
+		traceline(origin, origin + (v_forward * 128), 0, this);
+
 		if (trace_ent.takedamage == DAMAGE_YES) {
-			Sound_Play(self, CHAN_BODY, "weapon_snark.deploy");
-			Damage_Apply(trace_ent, self.goalentity, Skill_GetValue("snark_dmg_bite"), WEAPON_SNARK, DMG_GENERIC);
-			FX_Blood(self.origin + [0,0,16], [1,0,0]);
+			Sound_Play(this, CHAN_BODY, "weapon_snark.deploy");
+			Damage_Apply(trace_ent, real_owner, Skill_GetValue("snark_dmg_bite"), WEAPON_SNARK, DMG_GENERIC);
+			FX_Blood(origin + [0,0,16], [1,0,0]);
 		}
 
-		if (self.aiment.health <= 0) {
-			self.aiment = __NULL__;
+		if (m_eTarget.health <= 0) {
+			m_eTarget = __NULL__;
 		}
 	}
-	self.weapon -= frametime;	
-	runstandardplayerphysics(self);
+
+	m_flJump -= frametime;
+	runstandardplayerphysics(this);
 }
 
 void
@@ -101,11 +105,11 @@ monster_snark::Death(int i)
 {
 	float dmg = Skill_GetValue("snark_dmg_pop");
 	Damage_Radius(origin, goalentity, dmg, dmg * 2.5f, TRUE, WEAPON_SNARK);
-	FX_Blood(self.origin + [0,0,16], [203,183,15] / 255);
-	Sound_Play(self, CHAN_VOICE, "weapon_snark.die");
-	Sound_Play(self, CHAN_BODY, "weapon_snark.blast");
-	self.customphysics = __NULL__;
-	remove(self);
+	FX_Blood(origin + [0,0,16], [203,183,15] / 255);
+	Sound_Play(this, CHAN_VOICE, "weapon_snark.die");
+	Sound_Play(this, CHAN_BODY, "weapon_snark.blast");
+	customphysics = __NULL__;
+	remove(this);
 }
 
 void
@@ -120,14 +124,14 @@ monster_snark::Respawn(void)
 	netname = "Snark";
 	SetModel("models/w_squeak.mdl");
 	flags |= FL_MONSTER;
-	solid = SOLID_BBOX;
-	movetype = MOVETYPE_WALK;
-	frame = 3; /* running like crazy. */
+	SetSolid(SOLID_BBOX);
+	SetMovetype(MOVETYPE_WALK);
+	SetFrame(3); /* running like crazy. */
 	angles = goalentity.angles;
 	health = 20;
 	takedamage = DAMAGE_YES;
-	aiment = __NULL__;
-	weapon = 1.0f;
+	m_eTarget = __NULL__;
+	m_flJump = 1.0f;
 }
 
 void
@@ -165,7 +169,7 @@ void w_snark_holster(void)
 #ifdef SERVER
 void w_snark_deploy(void)
 {
-	monster_snark snark = spawn(monster_snark, owner: self, goalentity: self);
+	monster_snark snark = spawn(monster_snark, real_owner: self, goalentity: self, spawnflags: MSF_MULTIPLAYER);
 	makevectors(self.v_angle);
 	snark.SetOrigin(self.origin + v_forward * 32);
 }
