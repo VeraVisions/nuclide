@@ -69,6 +69,21 @@ btn_video_start(void)
 }
 
 void
+btn_gore_start(void)
+{
+	static void btn_gore_end(void) {
+		g_menupage = PAGE_CONTENTCONTROL;
+	}
+	localsound("../media/launch_upmenu1.wav");
+	header.SetStartEndPos(50,236,45,45);
+	header.SetStartEndSize(156,26,460,80);
+	header.m_lerp = 0.0f;
+	header.m_visible = TRUE;
+	header.SetHeader(HEAD_GORE);
+	header.SetExecute(btn_gore_end);
+}
+
+void
 cf_btnupdates_start(void)
 {
 	localsound("../media/launch_upmenu1.wav");
@@ -115,7 +130,7 @@ menu_configuration_init(void)
 	
 	cf_btnContentControl = spawn(CMainButton);
 	cf_btnContentControl.SetImage(BTN_CONTENTCONTROL);
-	//cf_btnContentControl.SetExecute(btn_console);
+	cf_btnContentControl.SetExecute(btn_gore_start);
 	cf_btnContentControl.SetPos(50,236);
 	Widget_Add(fn_configuration, cf_btnContentControl);
 	

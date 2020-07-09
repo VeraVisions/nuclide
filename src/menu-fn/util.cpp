@@ -43,7 +43,7 @@ Util_CmdToKey(string cmd)
 	float fBindKey = tokenize(findkeysforcommand(cmd));
 	string sBindTx = "";
 	float j, k;
-	
+
 	for(j = 0; j < fBindKey; ++j) {
 		k = stof(argv(j));
 		if(k != -1) {
