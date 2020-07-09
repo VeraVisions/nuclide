@@ -26,3 +26,5 @@ class bot:player
 	void(void) bot;
 	virtual void(void) PickName;
 };
+
+entity Bot_AddQuick(void);

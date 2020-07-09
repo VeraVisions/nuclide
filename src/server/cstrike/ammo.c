@@ -108,7 +108,7 @@ ammoinfo_t cs_ammoinfo[11] = {
 };
 
 int
-Ammo_BuyCaliber(player pl, int cal)
+Ammo_BuyCaliber(player pl, int cal, int free)
 {
 	int *ptr_ammo;
 	int rv = 0;
@@ -151,7 +151,10 @@ Ammo_BuyCaliber(player pl, int cal)
 			break;
 
 		*ptr_ammo += cs_ammoinfo[cal].a_size;
-		Money_AddMoney(pl, -cs_ammoinfo[cal].price);
+
+		if (!free)
+			Money_AddMoney(pl, -cs_ammoinfo[cal].price);
+
 		rv = 1;
 	}
 
@@ -160,7 +163,6 @@ Ammo_BuyCaliber(player pl, int cal)
 
 /* We want to loop through all the possible weapons in case the server
  * enabled the ability to pick up more than one primary/secondary weapon */
-
 void
 CSEv_AmmoBuySecondary(void)
 {
@@ -196,7 +198,7 @@ CSEv_AmmoBuySecondary(void)
 				break;
 			}
 
-			if (Ammo_BuyCaliber(pl, cal) == 1) {
+			if (Ammo_BuyCaliber(pl, cal, FALSE) == 1) {
 				ps = 1;
 			}
 		}
@@ -273,7 +275,7 @@ CSEv_AmmoBuyPrimary(void)
 				break;
 			}
 
-			if (Ammo_BuyCaliber(pl, cal) == 1) {
+			if (Ammo_BuyCaliber(pl, cal, FALSE) == 1) {
 				ps = 1;
 			}
 		}

@@ -43,16 +43,6 @@ Game_Input(void)
 	if (self.impulse == 100) {
 		Flashlight_Toggle();
 	}
-	
-	if (self.impulse == 240) {
-		entity bot = Bot_AddQuick();
-		if (bot) {
-			entity oself = self;
-			self = bot;
-			CSEv_JoinAuto();
-			self = oself;
-		}
-	}
 
 	if (cvar("sv_cheats") == 1) {
 		player pl = (player)self;

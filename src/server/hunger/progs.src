@@ -71,6 +71,8 @@
 ../valve/ammo.cpp
 ../hunger/ammo_th.cpp
 
+../../botlib/include.src
+
 ../valve/gamerules.cpp
 ../valve/gamerules_singleplayer.cpp
 ../valve/gamerules_multiplayer.cpp
@@ -78,8 +80,6 @@
 ../valve/server.c
 ../valve/damage.c
 ../valve/rules.c
-
-../../botlib/include.src
 
 ../hunger/input.c
 ../valve/spawn.c

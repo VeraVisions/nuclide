@@ -133,10 +133,11 @@ void initents(void)
 {
 	iprint("Initializing Entities");
 
+	/* sound shader init */
 	Sound_Init();
 
 	if (serverkeyfloat("*bspversion") != 30) {
-		// Let's load materials.txt because someone thought this was the best idea
+		/* load materials.txt because someone thought this was the best idea */
 		filestream fileMaterial = fopen("sound/materials.txt", FILE_READ);
 		hashMaterials = __NULL__;
 		hashMaterials = hash_createtab(2, HASH_ADD);
@@ -144,7 +145,7 @@ void initents(void)
 		if (fileMaterial >= 0) {
 			string sTemp;
 			while ((sTemp = fgets(fileMaterial))) {
-				// Tokenize and just parse this stuff in
+				/* tokenize and just parse this stuff in */
 				if (tokenize_console(sTemp) == 2) {
 					hash_add(hashMaterials, strtolower(argv(1)), str2chr(argv(0), 0));
 				}
@@ -157,6 +158,7 @@ void initents(void)
 
 	PMove_Init();
 
+	/* TODO: turn these effects into sound shaders */
 	precache_sound("weapons/explode3.wav");
 	precache_sound("weapons/explode4.wav");
 	precache_sound("weapons/explode5.wav");
@@ -228,6 +230,8 @@ void initents(void)
 	Decals_Init();
 	Sentences_Init();
 
+	/* TODO: Make sure every entity calls Respawn inside the constructor, then
+	 * remove this */
 	entity respawntimer = spawn();
 	respawntimer.think = init_respawn;
 	respawntimer.nextthink = time + 0.1f;

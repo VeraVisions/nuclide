@@ -37,6 +37,8 @@
 ../cstrike/item_c4bomb.cpp
 ../valve/items.cpp
 
+../../botlib/include.src
+
 ../cstrike/game_money.c
 ../cstrike/gamerules.cpp
 ../cstrike/gamerules_singleplayer.cpp
@@ -49,8 +51,6 @@
 ../cstrike/server.c
 ../valve/damage.c
 ../valve/rules.c
-
-../../botlib/include.src
 
 ../cstrike/input.c
 ../cstrike/spawn.c

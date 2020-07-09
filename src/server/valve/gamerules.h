@@ -43,4 +43,5 @@ class HLMultiplayerRules:HLGameRules
 	/* client */
 	virtual void(base_player) PlayerSpawn;
 	virtual void(base_player) PlayerDeath;
+	virtual float(base_player, string) ConsoleCommand;
 };

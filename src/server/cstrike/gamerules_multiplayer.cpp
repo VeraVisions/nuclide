@@ -892,6 +892,26 @@ CSMultiplayerRules::PlayerSpawn(base_player pl)
 	forceinfokey(pl, "*team", "0"); 
 }
 
+float
+CSMultiplayerRules::ConsoleCommand(base_player pp, string cmd)
+{
+	tokenize(cmd);
+
+	switch (argv(0)) {
+	case "bot_add":
+		entity bot_ent = Bot_AddQuick();
+		if (bot_ent) {
+			bot_ent.think = CSEv_JoinAuto;
+			bot_ent.nextthink = time;
+		}
+		break;
+	default:
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
 void
 CSMultiplayerRules::CSMultiplayerRules(void)
 {

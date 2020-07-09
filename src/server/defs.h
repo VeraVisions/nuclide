@@ -56,6 +56,7 @@ entity g_eAttacker;
 .float material;
 .float deaths;
 .float fStepTime;
+.float gflags;
 
 /* in idTech the .owner field causes collisions to fail against set entity,
  * we don't want this all of the time. so use this as a fallback */
@@ -65,8 +66,6 @@ int trace_surfaceflagsi;
 string startspot;
 string __fullspawndata;
 hashtable hashMaterials;
-
-.float gflags;
 
 enumflags
 {

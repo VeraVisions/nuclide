@@ -103,3 +103,19 @@ HLMultiplayerRules::PlayerSpawn(base_player pp)
 
 	Client_FixAngle(pl, pl.angles);
 }
+
+float
+HLMultiplayerRules::ConsoleCommand(base_player pp, string cmd)
+{
+	tokenize(cmd);
+
+	switch (argv(0)) {
+	case "bot_add":
+		Bot_AddQuick();
+		break;
+	default:
+		return FALSE;
+	}
+
+	return TRUE;
+}

@@ -69,6 +69,8 @@
 ../valve/xen_plantlight.cpp
 ../poke646/ammo_p646.cpp
 
+../../botlib/include.src
+
 ../poke646/gamerules.cpp
 ../valve/gamerules_singleplayer.cpp
 ../poke646/gamerules_multiplayer.cpp
@@ -76,8 +78,6 @@
 ../valve/server.c
 ../valve/damage.c
 ../valve/rules.c
-
-../../botlib/include.src
 
 ../poke646/input.c
 ../valve/spawn.c

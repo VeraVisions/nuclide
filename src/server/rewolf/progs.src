@@ -24,6 +24,8 @@
 
 ../valve/items.cpp
 
+../../botlib/include.src
+
 ../rewolf/gamerules.cpp
 ../valve/gamerules_singleplayer.cpp
 ../rewolf/gamerules_multiplayer.cpp
@@ -32,8 +34,6 @@
 ../valve/server.c
 ../valve/damage.c
 ../valve/rules.c
-
-../../botlib/include.src
 
 ../rewolf/input.c
 ../valve/spawn.c

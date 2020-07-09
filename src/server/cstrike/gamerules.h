@@ -53,6 +53,7 @@ class CSMultiplayerRules:CSGameRules
 	virtual void(base_player) PlayerPreFrame;
 	virtual void(base_player) PlayerDeath;
 	virtual int(int) MaxItemPerSlot;
+	virtual float(base_player, string) ConsoleCommand;
 
 	/* CS specific */
 	virtual void(void) CreateRescueZones;

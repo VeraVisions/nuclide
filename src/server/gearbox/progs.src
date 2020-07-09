@@ -73,6 +73,8 @@
 ../valve/ammo.cpp
 ../gearbox/ammo_op4.cpp
 
+../../botlib/include.src
+
 ../gearbox/gamerules.cpp
 ../valve/gamerules_singleplayer.cpp
 ../valve/gamerules_multiplayer.cpp
@@ -81,8 +83,6 @@
 ../gearbox/server.c
 ../valve/damage.c
 ../valve/rules.c
-
-../../botlib/include.src
 
 ../valve/input.c
 ../valve/spawn.c

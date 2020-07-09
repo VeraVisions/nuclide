@@ -21,7 +21,7 @@ void Money_AddMoney(base_player, int);
 void Money_QueTeamReward(int, int);
 void Money_GiveTeamReward(base_player);
 void Money_ResetTeamReward(void);
-int Money_GetLosses(int);
-int Money_HasBonus(int);
 void Money_HandleRoundReward(int)
 void Money_ResetRoundReward(void);
+int Money_GetLosses(int);
+int Money_HasBonus(int);

@@ -93,7 +93,7 @@ CSEv_BuyWeapon_f(float fWeapon)
 				}
 			}
 		}
-	
+
 		Weapons_AddItem(pl, iWeapon, -1);
 		Money_AddMoney(pl, -g_cstrikeWeaponPrice[iWeapon]);
 		Sound_Play(pl, CHAN_ITEM, "buy.weapon");
