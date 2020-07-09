@@ -133,12 +133,27 @@ btn_customgame_start(void)
 		g_menupage = PAGE_CUSTOMGAME;
 	}
 	localsound("../media/launch_upmenu1.wav");
-	header.SetStartEndPos(70,320,45,45);
+	header.SetStartEndPos(70,348,45,45);
 	header.SetStartEndSize(156,26,460,80);
 	header.m_lerp = 0.0f;
 	header.m_visible = TRUE;
 	header.SetHeader(HEAD_CUSTOM);
 	header.SetExecute(btn_customgame_end);
+}
+
+void
+btn_readme_start(void)
+{
+	static void btn_readme_end(void) {
+		g_menupage = PAGE_VIEWREADME;
+	}
+	localsound("../media/launch_upmenu1.wav");
+	header.SetStartEndPos(70,376,45,45);
+	header.SetStartEndSize(156,26,460,80);
+	header.m_lerp = 0.0f;
+	header.m_visible = TRUE;
+	header.SetHeader(HEAD_README);
+	header.SetExecute(btn_readme_end);
 }
 
 void
@@ -218,6 +233,7 @@ menu_main_init(void)
 
 	main_btnReadme = spawn(CMainButton);
 	main_btnReadme.SetImage(BTN_README);
+	main_btnReadme.SetExecute(btn_readme_start);
 	main_btnReadme.SetPos(70,376);
 	Widget_Add(fn_main, main_btnReadme);
 

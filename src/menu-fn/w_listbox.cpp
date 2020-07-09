@@ -30,6 +30,7 @@ class CListBox:CWidget
 	virtual void(float, float, float, float) Input;
 
 	virtual void(string) AddEntry;
+	virtual void(string) AddWrapped;
 	virtual void(int) DelEntry;
 	virtual void(void) Clear;
 	virtual void(int, int) SetSize;
@@ -106,6 +107,36 @@ CListBox::AddEntry(string m)
 			break;
 		}
 	}
+}
+
+void
+CListBox::AddWrapped(string m)
+{
+	int len;
+	int argc;
+	string tmp;
+	string new;
+
+	drawfont = font_label;
+
+	argc = tokenizebyseparator(m, " ");
+
+	tmp = new = "";
+
+	for (int i = 0; i < argc; i++) {
+		tmp = sprintf("%s%s ", new, argv(i));
+
+		len = stringwidth(tmp, TRUE, [12, 12]);
+
+		if (len >= m_size[0]) {
+			AddEntry(new);
+			new = "";
+		} else {
+			new = tmp;
+		}
+	}
+
+	AddEntry(new);
 }
 
 void

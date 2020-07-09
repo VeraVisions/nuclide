@@ -28,7 +28,6 @@ CFrame create_frMaps;
 CListBox create_lbMaps;
 CScrollbar create_sbMaps;
 
-string *g_maps;
 int g_mapcount;
 
 void
@@ -138,10 +137,10 @@ menu_creategame_init(void)
 
 	searchhandle mapsearch = search_begin("maps/*.bsp", TRUE, TRUE);
 	g_mapcount = search_getsize(mapsearch);
-	g_maps = memalloc(sizeof(string) * g_mapcount);
 	for (int i = 0; i < g_mapcount; i++) {
-		g_maps[i] = substring(search_getfilename(mapsearch, i), 5, -1);
-		create_lbMaps.AddEntry(g_maps[i]);
+		string tmp;
+		tmp = substring(search_getfilename(mapsearch, i), 5, -1);
+		create_lbMaps.AddEntry(tmp);
 	}
 
 	create_sbMaps.SetMax(g_mapcount);

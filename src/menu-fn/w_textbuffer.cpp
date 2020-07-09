@@ -27,6 +27,7 @@ class CTextBuffer:CWidget
 	virtual void(float, float, float, float) Input;
 
 	virtual void(string) Insert;
+	virtual void(string) InsertWrapped;
 	virtual void(void) Clear;
 	virtual void(int, int) SetSize;
 };
@@ -73,6 +74,36 @@ CTextBuffer::Insert(string m)
 			m_entries[i] = m_entries[i+1];
 		}
 	}
+}
+
+void
+CTextBuffer::InsertWrapped(string m)
+{
+	int len;
+	int argc;
+	string tmp;
+	string new;
+
+	drawfont = font_label;
+
+	argc = tokenizebyseparator(m, " ");
+
+	tmp = new = "";
+
+	for (int i = 0; i < argc; i++) {
+		tmp = sprintf("%s%s ", new, argv(i));
+
+		len = stringwidth(tmp, TRUE, [12, 12]);
+
+		if (len >= m_size[0]) {
+			Insert(new);
+			new = "";
+		} else {
+			new = tmp;
+		}
+	}
+
+	Insert(new);
 }
 
 void

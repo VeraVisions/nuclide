@@ -51,7 +51,7 @@ void
 cr_print(string buffer)
 {
 	print(sprintf("%s\n", buffer));
-	cr_lbHistory.Insert(buffer);
+	cr_lbHistory.InsertWrapped(buffer);
 }
 
 /* tempstrings and fwrite == not a good idea. we need to manually copy all

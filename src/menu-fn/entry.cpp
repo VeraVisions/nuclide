@@ -141,7 +141,6 @@ m_shutdown(void)
 
 	memfree(g_sprays);
 	memfree(g_models);
-	memfree(g_maps);
 	memfree(games);
 }
 
