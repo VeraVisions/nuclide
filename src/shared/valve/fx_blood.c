@@ -47,6 +47,10 @@ FX_Blood(vector pos, vector color)
 		self.touch = __NULL__;
 	}
 
+	if (cvar("violence_hblood") <= 0) {
+		return;
+	}
+
 	env_sprite eBlood = spawn(env_sprite);
 	setorigin(eBlood, pos);
 	setmodel(eBlood, "sprites/bloodspray.spr");
