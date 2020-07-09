@@ -86,6 +86,7 @@ CTextBox::Input(float type, float x, float y, float devid)
 			}
 			break;
 		case K_ENTER:
+		case K_KP_ENTER:
 			if (m_onEnter) {
 				m_onEnter(m_text);
 			}
