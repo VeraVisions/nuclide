@@ -141,6 +141,9 @@ Sentences_Init(void)
 				} else {
 					g_sentences[x].m_strSamples = sprintf("%s %s", g_sentences[x].m_strSamples, argv(i));
 				}
+
+				g_sentences[x].m_strSamples = 
+					strreplace(",", " vox/comma.wav", g_sentences[x].m_strSamples);
 			}
 		}
 	}
@@ -153,13 +156,14 @@ Sentences_ProcessSample(string sample)
 {
 	int c = tokenizebyseparator(sample, "/");
 
+	/* this sample contains a path */
 	if (c > 1) {
 		g_sentences_samplepath = argv(0);
+		return sample;
 	}
 
-	sample = strreplace(",", "vox/comma.wav", sample);
-
-	return sprintf("%s/%s", g_sentences_samplepath, sample);
+	/* we don't have a path, so supply the default */
+	return sprintf("%s/%s", g_sentences_samplepath, argv(0));
 }
 
 void
