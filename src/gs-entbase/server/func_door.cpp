@@ -14,20 +14,53 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED func_door (0 .5 .8) ?
+/*QUAKED func_door (0 .5 .8) ? SF_MOV_OPEN x SF_MOV_UNLINK SF_MOV_PASSABLE x SF_MOV_TOGGLE x x SF_MOV_USE
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
+"speed"         Movement speed in game-units per second.
+"lip"           Sets how many units are still visible after a door moved.
+"delay"         Time until triggering target.
+"wait"          When to move back.
+"netname"       Target to trigger when door returns to its initial position.
+"dmg"           Damage to inflict upon anything blocking the way.
+"noise1"        Path to sound sample to play when the door is moving.
+"noise2"        Path to sound sample to play when the door stops moving.
+"movesnd"       Legacy integer value pointing to a predefined move sound.
+"stopsnd"       Legacy integer value pointing to a predefined stop sound.
 
-STUB!
+This sliding door entity has the ability to slide forth and back on any
+axis. It is often used for primitive elevators as well.
+
+The keys "movesnd" and "stopsnd" are obsolete. Their values point towards
+the samples doors/doormoveX.wav and doors/doorstopX.wav respectively, where
+X is the integer value set in "movesnd" and "stopsnd".
+
+When SF_MOV_OPEN is set, the door starts 'open'. This helps getting the surface
+of the door lit properly before hiding it away somewhere.
+
+The spawnflag SF_MOV_UNLINK is currently unimplemented.
+
+When SF_MOV_PASSABLE is set, the door won't have any collision.
+
+When SF_MOV_TOGGLE is set, the door cannot be opened by any conventional means.
+It will have to be triggered by another map entity.
+
+When SF_MOV_USE is set, the door can be triggered by a player using the 'use'
+key/button. Not every game may implement such a function.
 */
 
-// TODO: Finish these
-#define SF_MOV_OPEN			1
-#define SF_MOV_UNLINK 		4
-#define SF_MOV_PASSABLE		8
-#define SF_MOV_TOGGLE		32
-#define SF_MOV_USE			256
+enumflags {
+	SF_MOV_OPEN,
+	SF_MOV_RESERVED1,
+	SF_MOV_UNLINK, /* TODO: implement this */
+	SF_MOV_PASSABLE,
+	SF_MOV_RESERVED2,
+	SF_MOV_TOGGLE,
+	SF_MOV_RESERVED3,
+	SF_MOV_RESERVED4,
+	SF_MOV_USE
+};
 
 enum
 {
@@ -58,7 +91,7 @@ class func_door:CBaseTrigger
 
 	void(void) func_door;
 	virtual void(void) SetMovementDirection;
-	virtual void(vector vdest, void(void) func) MoveToDestination;
+	virtual void(vector, void(void) func) MoveToDestination;
 	virtual void(void) MoveToDestination_End;
 	virtual void(void) MoveAway;
 	virtual void(void) MoveBack;
@@ -72,30 +105,6 @@ class func_door:CBaseTrigger
 	virtual void(void) m_pMove = 0;
 };
 
-const string g_hldoormove_sfx[10] = {
-	"doors/doormove1.wav",
-	"doors/doormove2.wav",
-	"doors/doormove3.wav",
-	"doors/doormove4.wav",
-	"doors/doormove5.wav",
-	"doors/doormove6.wav",
-	"doors/doormove7.wav",
-	"doors/doormove8.wav",
-	"doors/doormove9.wav",
-	"doors/doormove10.wav"
-};
-
-const string g_hldoorstop_sfx[8] = {
-	"doors/doorstop1.wav",
-	"doors/doorstop2.wav",
-	"doors/doorstop3.wav",
-	"doors/doorstop4.wav",
-	"doors/doorstop5.wav",
-	"doors/doorstop6.wav",
-	"doors/doorstop7.wav",
-	"doors/doorstop8.wav"
-};
-
 void func_door::Use(void)
 {
 	eActivator.gflags &= ~GF_USE_RELEASED;
@@ -107,9 +116,9 @@ void func_door::Arrived(void)
 	m_iState = DOORSTATE_RAISED;
 
 	if (m_strSndStop) {
-		sound(this, CHAN_VOICE, m_strSndStop, 1.0, ATTN_NORM);
+		sound(this, CHAN_VOICE, m_strSndStop, 1.0f, ATTN_NORM);
 	} else {
-		sound(this, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
+		sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
 	}
 
 	if (!(spawnflags & SF_MOV_USE)) {
@@ -128,9 +137,9 @@ void func_door::Arrived(void)
 void func_door::Returned(void)
 {
 	if (m_strSndStop) {
-		sound(this, CHAN_VOICE, m_strSndStop, 1.0, ATTN_NORM);
+		sound(this, CHAN_VOICE, m_strSndStop, 1.0f, ATTN_NORM);
 	} else {
-		sound(this, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
+		sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
 	}
 
 	if (!(spawnflags & SF_MOV_USE)) {
@@ -152,9 +161,9 @@ void func_door::Returned(void)
 void func_door::MoveBack(void)
 {
 	if (m_strSndMove) {
-		sound(this, CHAN_VOICE, m_strSndMove, 1.0, ATTN_NORM);
+		sound(this, CHAN_VOICE, m_strSndMove, 1.0f, ATTN_NORM);
 	} else {
-		sound(this, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
+		sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
 	}
 
 	if (!(spawnflags & SF_MOV_USE)) {
@@ -172,9 +181,9 @@ void func_door::MoveAway(void)
 	}
 
 	if (m_strSndMove) {
-		sound(this, CHAN_VOICE, m_strSndMove, 1.0, ATTN_NORM);
+		sound(this, CHAN_VOICE, m_strSndMove, 1.0f, ATTN_NORM);
 	} else {
-		sound(this, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
+		sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
 	}
 
 	if (!(spawnflags & SF_MOV_TOGGLE)) {
@@ -197,7 +206,7 @@ void func_door::Trigger(void)
 	}
 	m_flNextTrigger = time + m_flWait;
 
-	// Only trigger stuff when we are done moving
+	/* only trigger stuff once we are done moving */
 	if ((m_iState == DOORSTATE_RAISED) || (m_iState == DOORSTATE_LOWERED)) {
 		if (m_flDelay > 0) {
 			CBaseTrigger::UseTargets_Delay(m_flDelay);
@@ -299,7 +308,7 @@ void func_door::MoveToDestination(vector vecDest, void(void) func)
 	}
 
 	nextthink = (ltime + fTravelTime);
-	velocity = (vecDifference * (1 / fTravelTime));
+	velocity = (vecDifference * (1.0f / fTravelTime));
 }
 
 void func_door::Respawn(void)
@@ -313,7 +322,12 @@ void func_door::Respawn(void)
 	/* angles to vecMoveDir */
 	angles = m_oldAngle;
 	SetMovementDirection();
-	SetSolid(SOLID_BSP);
+
+	if (spawnflags & SF_MOV_PASSABLE)
+		SetSolid(SOLID_NOT);
+	else
+		SetSolid(SOLID_BSP);
+
 	SetMovetype(MOVETYPE_PUSH);
 	SetModel(m_oldModel);
 	SetOrigin(m_oldOrigin);
@@ -327,7 +341,7 @@ void func_door::Respawn(void)
 	}
 
 	if (!m_flSpeed) {
-		m_flSpeed = 100;
+		m_flSpeed = 100.0f;
 	}
 
 	if (!m_iDamage) {
@@ -395,14 +409,14 @@ void func_door::func_door(void)
 		/* GoldSrc compat */
 		case "movesnd":
 			x = stoi(argv(i+1));
-			if (x > 0 && x <= g_hldoormove_sfx.length) {
-				m_strSndMove = g_hldoormove_sfx[x-1];
+			if (x >= 1 && x <= 10) {
+				m_strSndMove = sprintf("doors/doormove%i.wav", x);
 			}
 			break;
 		case "stopsnd":
 			x = stoi(argv(i+1));
-			if (x > 0 && x <= g_hldoorstop_sfx.length) {
-				m_strSndStop = g_hldoorstop_sfx[x-1];
+			if (x >= 1 && x <= 8) {
+				m_strSndStop = sprintf("doors/doorstop%i.wav", x);
 			}
 			break;
 		default:
