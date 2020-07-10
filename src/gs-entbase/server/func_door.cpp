@@ -50,10 +50,11 @@ class func_door:CBaseTrigger
 	float m_flNextTrigger;
 	float m_flWait;
 	float m_flDelay;
-	int m_iMoveSnd;
-	int m_iStopSnd;
 	int m_iDamage;
 	int m_iLocked;
+
+	string m_strSndMove;
+	string m_strSndStop;
 
 	void(void) func_door;
 	virtual void(void) SetMovementDirection;
@@ -61,7 +62,6 @@ class func_door:CBaseTrigger
 	virtual void(void) MoveToDestination_End;
 	virtual void(void) MoveAway;
 	virtual void(void) MoveBack;
-	virtual void(void) Precache;
 	virtual void(void) Arrived;
 	virtual void(void) Returned;
 	virtual void(void) Respawn;
@@ -72,20 +72,29 @@ class func_door:CBaseTrigger
 	virtual void(void) m_pMove = 0;
 };
 
-void func_door::Precache(void)
-{
-	if(m_iMoveSnd > 0 && m_iMoveSnd <= 10) {
-		precache_sound(sprintf("doors/doormove%i.wav", m_iMoveSnd));
-	} else {
-		precache_sound("common/null.wav");
-	}
+const string g_hldoormove_sfx[10] = {
+	"doors/doormove1.wav",
+	"doors/doormove2.wav",
+	"doors/doormove3.wav",
+	"doors/doormove4.wav",
+	"doors/doormove5.wav",
+	"doors/doormove6.wav",
+	"doors/doormove7.wav",
+	"doors/doormove8.wav",
+	"doors/doormove9.wav",
+	"doors/doormove10.wav"
+};
 
-	if(m_iStopSnd > 0 && m_iStopSnd <= 8) {
-		precache_sound(sprintf("doors/doorstop%i.wav", m_iStopSnd));
-	} else {
-		precache_sound("common/null.wav");
-	}
-}
+const string g_hldoorstop_sfx[8] = {
+	"doors/doorstop1.wav",
+	"doors/doorstop2.wav",
+	"doors/doorstop3.wav",
+	"doors/doorstop4.wav",
+	"doors/doorstop5.wav",
+	"doors/doorstop6.wav",
+	"doors/doorstop7.wav",
+	"doors/doorstop8.wav"
+};
 
 void func_door::Use(void)
 {
@@ -97,10 +106,10 @@ void func_door::Arrived(void)
 {
 	m_iState = DOORSTATE_RAISED;
 
-	if (m_iStopSnd > 0 && m_iStopSnd <= 8) {
-		sound(self, CHAN_VOICE, sprintf("doors/doorstop%i.wav", m_iStopSnd), 1.0, ATTN_NORM);
+	if (m_strSndStop) {
+		sound(this, CHAN_VOICE, m_strSndStop, 1.0, ATTN_NORM);
 	} else {
-		sound(self, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
+		sound(this, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
 	}
 
 	if (!(spawnflags & SF_MOV_USE)) {
@@ -118,10 +127,10 @@ void func_door::Arrived(void)
 
 void func_door::Returned(void)
 {
-	if (m_iStopSnd > 0 && m_iStopSnd <= 8) {
-		sound(self, CHAN_VOICE, sprintf("doors/doorstop%i.wav", m_iStopSnd), 1.0, ATTN_NORM);
+	if (m_strSndStop) {
+		sound(this, CHAN_VOICE, m_strSndStop, 1.0, ATTN_NORM);
 	} else {
-		sound(self, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
+		sound(this, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
 	}
 
 	if (!(spawnflags & SF_MOV_USE)) {
@@ -142,10 +151,10 @@ void func_door::Returned(void)
 
 void func_door::MoveBack(void)
 {
-	if (m_iMoveSnd > 0 && m_iMoveSnd <= 10) {
-		sound(self, CHAN_VOICE, sprintf("doors/doormove%i.wav", m_iMoveSnd), 1.0, ATTN_NORM);
+	if (m_strSndMove) {
+		sound(this, CHAN_VOICE, m_strSndMove, 1.0, ATTN_NORM);
 	} else {
-		sound(self, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
+		sound(this, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
 	}
 
 	if (!(spawnflags & SF_MOV_USE)) {
@@ -162,10 +171,10 @@ void func_door::MoveAway(void)
 		return;
 	}
 
-	if (m_iMoveSnd > 0 && m_iMoveSnd <= 10) {
-		sound(self, CHAN_VOICE, sprintf("doors/doormove%i.wav", m_iMoveSnd), 1.0, ATTN_NORM);
+	if (m_strSndMove) {
+		sound(this, CHAN_VOICE, m_strSndMove, 1.0, ATTN_NORM);
 	} else {
-		sound(self, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
+		sound(this, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
 	}
 
 	if (!(spawnflags & SF_MOV_TOGGLE)) {
@@ -352,6 +361,8 @@ void func_door::Respawn(void)
 
 void func_door::func_door(void)
 {
+	int x;
+
 	CBaseTrigger::CBaseTrigger();
 
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
@@ -361,12 +372,6 @@ void func_door::func_door(void)
 			break;
 		case "lip":
 			m_flLip = stof(argv(i+1));
-			break;
-		case "movesnd":
-			m_iMoveSnd = stoi(argv(i+1));
-			break;
-		case "stopsnd":
-			m_iStopSnd = stoi(argv(i+1));
 			break;
 		case "delay":
 			m_flDelay = stof(argv(i+1));
@@ -380,12 +385,35 @@ void func_door::func_door(void)
 			break;
 		case "dmg":
 			m_iDamage = stoi(argv(i+1));
+			break;
+		case "noise1":
+			m_strSndMove = argv(i+1);
+			break;
+		case "noise2":
+			m_strSndStop = argv(i+1);
+			break;
+		/* GoldSrc compat */
+		case "movesnd":
+			x = stoi(argv(i+1));
+			if (x > 0 && x <= g_hldoormove_sfx.length) {
+				m_strSndMove = g_hldoormove_sfx[x-1];
+			}
+			break;
+		case "stopsnd":
+			x = stoi(argv(i+1));
+			if (x > 0 && x <= g_hldoorstop_sfx.length) {
+				m_strSndStop = g_hldoorstop_sfx[x-1];
+			}
+			break;
 		default:
 			break;
 		}
 	}
 
-	func_door::Precache();
+	if (m_strSndMove)
+		precache_sound(m_strSndMove);
+	if (m_strSndStop)
+		precache_sound(m_strSndStop);
 }
 
 void func_water(void)
