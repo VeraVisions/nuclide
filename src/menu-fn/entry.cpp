@@ -177,6 +177,16 @@ m_draw(vector screensize)
 				[640,480], [1,1,1], 1.0f);
 	}
 
+	const string ver = "Nuclide (build " __DATE__ ")";
+	drawfont = font_label;
+
+	WLabel_Static(640 - 16 - stringwidth(ver, TRUE, [12,12]),
+				  8,
+				  ver, 
+				  12, 12,
+				  [0.75,0.75,0.75],
+				  0.25f, 0, font_label_b);
+
 	main_draw();
 	
 	oldtime = time;
