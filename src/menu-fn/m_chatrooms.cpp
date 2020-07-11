@@ -54,20 +54,10 @@ cr_print(string buffer)
 	cr_lbHistory.InsertWrapped(buffer);
 }
 
-/* tempstrings and fwrite == not a good idea. we need to manually copy all
- * the chars. sigh. 
- * for static strings however, we can just use TCP_Send as is. */
 void
 irc_send(string msg)
 {
-	string out;
-
-	out = (string)memalloc(strlen(msg));
-
-	for (float i = 0; i < strlen(msg); i++)
-		out[i] = str2chr(msg, i);
-
-	TCP_Send(&tcp_irc, out);
+	TCP_Send(&tcp_irc, msg);
 }
 
 void
@@ -244,11 +234,12 @@ cr_makeconnection(void)
 	i = TCP_Connect(&tcp_irc, "tcp://irc.frag-net.com:6667");
 
 	g_ircroom.m_strChannel = sprintf("#%s", cvar_string("game"));
-	TCP_Send(&tcp_irc, "USER guest fn irc.won.net :Player\n");
+	irc_send("USER guest fn irc.won.net :Player\n");
 
 	/* attempt to force our nickname to be the same as in-game.
 	 * we'll probably have to keep track of event 433 though. */
-	irc_send(sprintf("NICK %s\n", cvar_string("name")));
+	g_ircroom.m_strNick = cvar_string("name");
+	irc_send(sprintf("NICK %s\n", g_ircroom.m_strNick));
 }
 
 /* when ENTER is pressed on the message box */

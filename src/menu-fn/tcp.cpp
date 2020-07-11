@@ -90,25 +90,29 @@ TCP_Receive(tcpinfo_t *in)
 void
 TCP_Frame(tcpinfo_t *in)
 {
-	string data;
+	string out;
 
 	/* not even open */
 	if (in.m_iState == STATE_DISCONNECTED)
 		return;
 
-	data = in.m_strBuffer[0];
-
 	/* got nothing worth sending */
-	if (data == "" || in.m_iBufferLines <= 0)
+	if (in.m_strBuffer[0] == "" || in.m_iBufferLines <= 0)
 		return;
 
 	/* if the send was unsuccessful, try next frame */
-	if (fwrite(in.m_fSocket, (void *)data, strlen(data)) <= 0) {
+	out = (string)memalloc(strlen(in.m_strBuffer[0]));
+
+	for (float i = 0; i < strlen(in.m_strBuffer[0]); i++)
+		out[i] = str2chr(in.m_strBuffer[0], i);
+
+	if (fwrite(in.m_fSocket, (void *)out, strlen(in.m_strBuffer[0])) <= 0) {
 		dprint("^1TCP_Frame^7: Unsuccessful frame\n");
+		memfree(out);
 		return;
 	}
 
-	print(sprintf("^1TCP_Frame^7: Sent %s", data));
+	print(sprintf("^1TCP_Frame^7: Sent %s", in.m_strBuffer[0]));
 
 	/* at least one successful write went through */
 	in.m_iState = STATE_CONNECTED;
@@ -119,6 +123,7 @@ TCP_Frame(tcpinfo_t *in)
 	}
 
 	in.m_iBufferLines--;
+	memfree(out);
 }
 
 int

@@ -105,13 +105,15 @@ class func_door:CBaseTrigger
 	virtual void(void) m_pMove = 0;
 };
 
-void func_door::Use(void)
+void
+func_door::Use(void)
 {
 	eActivator.gflags &= ~GF_USE_RELEASED;
 	Trigger();
 }
 
-void func_door::Arrived(void)
+void
+func_door::Arrived(void)
 {
 	m_iState = DOORSTATE_RAISED;
 
@@ -134,7 +136,8 @@ void func_door::Arrived(void)
 	}
 }
 
-void func_door::Returned(void)
+void
+func_door::Returned(void)
 {
 	if (m_strSndStop) {
 		sound(this, CHAN_VOICE, m_strSndStop, 1.0f, ATTN_NORM);
@@ -158,7 +161,8 @@ void func_door::Returned(void)
 	m_iState = DOORSTATE_LOWERED;
 }
 
-void func_door::MoveBack(void)
+void
+func_door::MoveBack(void)
 {
 	if (m_strSndMove) {
 		sound(this, CHAN_VOICE, m_strSndMove, 1.0f, ATTN_NORM);
@@ -174,7 +178,8 @@ void func_door::MoveBack(void)
 	MoveToDestination(m_vecPos1, Returned);
 }
 
-void func_door::MoveAway(void)
+void
+func_door::MoveAway(void)
 {
 	if (m_iState == DOORSTATE_UP) {
 		return;
@@ -197,7 +202,8 @@ void func_door::MoveAway(void)
 	MoveToDestination(m_vecPos2, Arrived);
 }
 
-void func_door::Trigger(void)
+void
+func_door::Trigger(void)
 {
 	if (m_flNextTrigger > time) {
 		if (!(spawnflags & SF_MOV_TOGGLE)) {
@@ -223,7 +229,8 @@ void func_door::Trigger(void)
 	MoveAway();
 }
 
-void func_door::Touch(void)
+void
+func_door::Touch(void)
 {
 	if (spawnflags & SF_MOV_TOGGLE) {
 		return;
@@ -241,7 +248,8 @@ void func_door::Touch(void)
 	}
 }
 
-void func_door::Blocked(void)
+void
+func_door::Blocked(void)
 {
 	if (m_iDamage) {
 		Damage_Apply(other, this, m_iDamage, 0, DMG_CRUSH);
@@ -256,7 +264,8 @@ void func_door::Blocked(void)
 	}
 }
 
-void func_door::SetMovementDirection(void)
+void
+func_door::SetMovementDirection(void)
 {
 	if (angles == [0,-1,0]) {
 		m_vecMoveDir = [0,0,1];
@@ -268,7 +277,8 @@ void func_door::SetMovementDirection(void)
 	}
 }
 
-void func_door::MoveToDestination_End(void)
+void
+func_door::MoveToDestination_End(void)
 {
 	SetOrigin(m_vecDest);
 	velocity = [0,0,0];
@@ -276,7 +286,8 @@ void func_door::MoveToDestination_End(void)
 	m_pMove();
 }
 
-void func_door::MoveToDestination(vector vecDest, void(void) func)
+void
+func_door::MoveToDestination(vector vecDest, void(void) func)
 {
 	vector vecDifference;
 	float flTravel;
@@ -311,7 +322,8 @@ void func_door::MoveToDestination(vector vecDest, void(void) func)
 	velocity = (vecDifference * (1.0f / fTravelTime));
 }
 
-void func_door::Respawn(void)
+void
+func_door::Respawn(void)
 {
 	/* reset */
 	m_vecPos1 = [0,0,0];
@@ -373,7 +385,8 @@ void func_door::Respawn(void)
 	SetAngles([0,0,0]);
 }
 
-void func_door::func_door(void)
+void
+func_door::func_door(void)
 {
 	int x;
 
@@ -430,7 +443,8 @@ void func_door::func_door(void)
 		precache_sound(m_strSndStop);
 }
 
-void func_water(void)
+void
+func_water(void)
 {
 	spawnfunc_func_door();
 	self.classname = "func_water";
