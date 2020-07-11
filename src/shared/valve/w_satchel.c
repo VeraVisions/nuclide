@@ -40,67 +40,11 @@ enum
 	RADIO_HOLSTER
 };
 
-void w_satchel_updateammo(player pl)
-{
-#ifdef SERVER
-	Weapons_UpdateAmmo(pl, pl.satchel_chg, pl.ammo_satchel, __NULL__);
-#endif
-}
-string w_satchel_wmodel(void)
-{
-	return "models/w_satchel.mdl";
-}
-string w_satchel_pmodel(void)
-{
-	return "models/p_satchel.mdl";
-}
-string w_satchel_deathmsg(void)
-{
-	return "";
-}
-void w_satchel_precache(void)
-{
-#ifdef SERVER
-	Sound_Precache("weapon_satchel.bounce");
-	precache_model("models/w_satchel.mdl");
-#else
-	precache_model("models/v_satchel.mdl");
-	precache_model("models/v_satchel_radio.mdl");
-	precache_model("models/p_satchel.mdl");
-#endif
-}
 
-int w_satchel_pickup(int new, int startammo)
-{
-#ifdef SERVER
-	player pl = (player)self;
-
-	if (pl.ammo_satchel < MAX_A_SATCHEL) {
-		pl.ammo_satchel = bound(0, pl.ammo_satchel + 1, MAX_A_SATCHEL);
-	} else {
-		return FALSE;
-	}
-#endif
-	return TRUE;
-}
-
-void w_satchel_draw(void)
-{
-	Weapons_SetModel("models/v_satchel.mdl");
-	Weapons_ViewAnimation(SATCHEL_DRAW);
-#ifdef SERVER
-	player pl = (player)self;
-	Weapons_UpdateAmmo(pl, pl.satchel_chg, pl.ammo_satchel, __NULL__);
-#endif
-}
-
-void w_satchel_holster(void)
-{
-	
-}
 
 #ifdef SERVER
-void s_satchel_drop(entity master, vector src, vector vel)
+void
+s_satchel_drop(entity master, vector src, vector vel)
 {
 	static void s_satchel_touch(void)
 	{
@@ -123,7 +67,9 @@ void s_satchel_drop(entity master, vector src, vector vel)
 	setsize(satch, [-4,-4,-4], [4,4,4]);
 	setorigin(satch, src);
 }
-void s_satchel_detonate(entity master)
+
+void
+s_satchel_detonate(entity master)
 {
 	for (entity b = world; (b = find(b, ::classname, "satchel"));) {
 		if (b.owner == master) {
@@ -137,7 +83,77 @@ void s_satchel_detonate(entity master)
 }
 #endif
 
-void w_satchel_primary(void)
+void
+w_satchel_updateammo(player pl)
+{
+#ifdef SERVER
+	Weapons_UpdateAmmo(pl, pl.satchel_chg, pl.ammo_satchel, __NULL__);
+#endif
+}
+
+string
+w_satchel_wmodel(void)
+{
+	return "models/w_satchel.mdl";
+}
+
+string
+w_satchel_pmodel(void)
+{
+	return "models/p_satchel.mdl";
+}
+
+string
+w_satchel_deathmsg(void)
+{
+	return "";
+}
+
+void
+w_satchel_precache(void)
+{
+#ifdef SERVER
+	Sound_Precache("weapon_satchel.bounce");
+	precache_model("models/w_satchel.mdl");
+#else
+	precache_model("models/v_satchel.mdl");
+	precache_model("models/v_satchel_radio.mdl");
+	precache_model("models/p_satchel.mdl");
+#endif
+}
+
+int
+w_satchel_pickup(int new, int startammo)
+{
+#ifdef SERVER
+	player pl = (player)self;
+
+	if (pl.ammo_satchel < MAX_A_SATCHEL) {
+		pl.ammo_satchel = bound(0, pl.ammo_satchel + 1, MAX_A_SATCHEL);
+	} else {
+		return FALSE;
+	}
+#endif
+	return TRUE;
+}
+
+void
+w_satchel_draw(void)
+{
+#ifdef CLIENT
+	Weapons_SetModel("models/v_satchel.mdl");
+	Weapons_ViewAnimation(SATCHEL_DRAW);
+#endif
+}
+
+void
+w_satchel_holster(void)
+{
+	
+}
+
+void
+w_satchel_primary(void)
 {
 	player pl = (player)self;
 
@@ -163,6 +179,7 @@ void w_satchel_primary(void)
     }
 
 #ifdef SERVER
+	/* if we don't have any satchels placed yet, place one */
 	if (!pl.satchel_chg) {
 		vector throw;
 		
@@ -172,24 +189,33 @@ void w_satchel_primary(void)
 		pl.satchel_chg++;
 		pl.ammo_satchel--;
 	} else {
+		/* detonate all we have */
 		s_satchel_detonate(pl);
 		pl.satchel_chg = 0;
 
+		/* no satchels left to place? just get rid of this thing */
 		if (pl.ammo_satchel <= 0) {
 			Weapons_RemoveItem(pl, WEAPON_SATCHEL);
 		}
 	}
-	Weapons_UpdateAmmo(pl, pl.satchel_chg, pl.ammo_satchel, __NULL__);
 #else
-	setmodel(pSeat->m_eViewModel, "models/v_satchel_radio.mdl");
-	pl.a_ammo1++;
-	pl.a_ammo2--;
+	Weapons_SetModel("models/v_satchel_radio.mdl");
+
+	/* same thing as the SERVER ifdef above... */
+	if (!pl.a_ammo1) {
+		pl.a_ammo1++;
+		pl.a_ammo2--;
+	} else {
+		pl.a_ammo1 = 0;
+	}
 #endif
 
 	pl.w_attack_next = 1.0f;
 	pl.w_idle_next = 1.0f;
 }
-void w_satchel_secondary(void)
+
+void
+w_satchel_secondary(void)
 {
 	player pl = (player)self;
 
@@ -215,23 +241,25 @@ void w_satchel_secondary(void)
 	s_satchel_drop(self, pl.origin, throw);
 	pl.satchel_chg++;
 	pl.ammo_satchel--;
-	Weapons_UpdateAmmo(pl, pl.satchel_chg, pl.ammo_satchel, __NULL__);
 #else
 	pl.a_ammo1++;
 	pl.a_ammo2--;
-	setmodel(pSeat->m_eViewModel, "models/v_satchel_radio.mdl");
-#endif
-
+	Weapons_SetModel("models/v_satchel_radio.mdl");
 	Weapons_ViewAnimation(RADIO_DRAW);
+#endif
 
 	pl.w_attack_next = 1.0f;
 	pl.w_idle_next = 2.5f;
 }
-void w_satchel_reload(void)
+
+void
+w_satchel_reload(void)
 {
 	
 }
-void w_satchel_release(void)
+
+void
+w_satchel_release(void)
 {
 	player pl = (player)self;
 
@@ -247,12 +275,14 @@ void w_satchel_release(void)
 	pl.w_idle_next = 15.0f;
 }
 
-float w_satchel_aimanim(void)
+float
+w_satchel_aimanim(void)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIMSQUEAK : ANIM_AIMSQUEAK;
 }
 
-void w_satchel_hud(void)
+void
+w_satchel_hud(void)
 {
 #ifdef CLIENT
 	HUD_DrawAmmo2();
@@ -261,7 +291,8 @@ void w_satchel_hud(void)
 #endif
 }
 
-void w_satchel_hudpic(int selected, vector pos, float a)
+void
+w_satchel_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
 	if (selected) {
@@ -275,7 +306,7 @@ void w_satchel_hudpic(int selected, vector pos, float a)
 weapon_t w_satchel =
 {
 	.name		= "satchel",
-	.id		= ITEM_SATCHEL,
+	.id			= ITEM_SATCHEL,
 	.slot		= 4,
 	.slot_pos	= 1,
 	.draw		= w_satchel_draw,
@@ -296,7 +327,9 @@ weapon_t w_satchel =
 };
 
 #ifdef SERVER
-void weapon_satchel(void) {
+void
+weapon_satchel(void)
+{
 	Weapons_InitItem(WEAPON_SATCHEL);
 }
 #endif
