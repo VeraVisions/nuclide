@@ -202,7 +202,7 @@ void w_snark_primary(void)
 	w_snark_deploy();
 	pl.ammo_snark--;
 
-	if (pl.a_ammo2 <= 0) {
+	if (pl.ammo_snark <= 0) {
 		Weapons_RemoveItem(pl, WEAPON_SNARK);
 	}
 #endif
