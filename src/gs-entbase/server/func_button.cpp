@@ -14,12 +14,36 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED func_button (0 .5 .8) ?
+/*QUAKED func_button (0 .5 .8) ? SF_BTT_NOMOVE x x x x SF_BTT_TOGGLE SF_BTT_SPARKS x SF_BTT_TOUCH_ONLY
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
+"speed"         Movement speed of the door in game-units per second.
+"lip"           How many units remain visible when fully pushed in.
+"snd_pressed"   The sound shader name to play when pressed.
+"snd_unpressed" The sound shader name to play when the button becomes unpressed.
+"wait"          Time to wait in seconds before the button becomes unpressed.
+"delay"         Delay until the Target gets triggered.
+"sounds"        Obsolete legacy key for HL/Q1 style buttons to decide
+                which sounds to play.
 
-STUB!
+A brush entity which can be used either by touching, interaction (via a games'
+use-key/button or other targetting methods.
+It will then travel, similar to a door to a specified direction.
+Once it's fully pushed in, it'll trigger its targets, then return back to its
+original position.
+
+When SF_BTT_NOMOVE is set, the only visual indicator you'll get is a possible
+change of texture of your button. The button will not move.
+
+When SF_BTT_TOGGLE is set, the button will never return to its original position
+or state automatically. The 'wait' key will be ignored and a something will have
+to manually untoggle it again.
+
+When SF_BTT_SPARKS is set, the button will create a bunch of sparks when used.
+
+When SF_BTT_TOUCH_ONLY is set, the use key/button cannot be used to interact
+with the button, it has to collide against a player.
 */
 
 /* compatibility */
@@ -53,10 +77,18 @@ string g_hlbutton_sfx[21] = {
 	"buttons/button9.wav"
 };
 
-#define SF_BTT_NOMOVE		1
-#define SF_BTT_TOGGLE		32
-#define SF_BTT_SPARKS		64
-#define SF_BTT_TOUCH_ONLY	256
+enumflags
+{
+	SF_BTT_NOMOVE,
+	SF_BTT_RESERVED1,
+	SF_BTT_RESERVED2,
+	SF_BTT_RESERVED3,
+	SF_BTT_RESERVED4,
+	SF_BTT_TOGGLE,
+	SF_BTT_SPARKS,
+	SF_BTT_RESERVED5,
+	SF_BTT_TOUCH_ONLY
+};
 
 enum
 {
