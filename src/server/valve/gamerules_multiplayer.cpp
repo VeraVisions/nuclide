@@ -69,6 +69,44 @@ HLMultiplayerRules::PlayerDeath(base_player pl)
 	pl.nextthink = time + 4.0f;
 	Sound_Play(pl, CHAN_AUTO, "player.die");
 
+	/* silly announcer */
+	if (g_dmg_eAttacker != world && g_dmg_eAttacker != g_dmg_eTarget) {
+		int r = rint(random(0,10));
+
+		switch (r) {
+		case 0:
+			Vox_Broadcast("buzwarn go go go");
+			break;
+		case 1:
+			Vox_Broadcast("buzwarn goodbye");
+			break;
+		case 2:
+			Vox_Broadcast("buzwarn kill one out");
+			break;
+		case 3:
+			Vox_Broadcast("buzwarn woop woop");
+			break;
+		case 4:
+			Vox_Broadcast("buzwarn terminated");
+			break;
+		case 5:
+			Vox_Broadcast("buzwarn slow soldier");
+			break;
+		case 6:
+			Vox_Broadcast("buzwarn that is hot");
+			break;
+		case 7:
+			Vox_Broadcast("buzwarn great kill");
+			break;
+		case 8:
+			Vox_Broadcast("buzwarn good kill");
+			break;
+		default:
+			Vox_Broadcast("buzwarn exterminate exterminate");
+			break;
+		}
+	}
+
 	if (pl.health < -50) {
 		pl.health = 0;
 		FX_GibHuman(pl.origin);

@@ -105,17 +105,15 @@ trigger_changelevel::Trigger(void)
 	/* eActivator == player who triggered the damn thing */
 	m_activator = eActivator;
 
-	if (!(m_activator.flags & FL_CLIENT))
+	if (!(eActivator.flags & FL_CLIENT))
 		return;
 
 	if (m_flChangeDelay) {
-		dprint(sprintf("^2trigger_changelevel::^3Trigger^7: Delayed change to `%s` in %d sec/s\n", 
-			m_strMap, m_flChangeDelay));
+		dprint(sprintf("^2trigger_changelevel::^3Trigger^7: Delayed change to `%s` in %d sec/s\n", m_strMap, m_flChangeDelay));
 		think = Change;
 		nextthink = time + m_flChangeDelay;
 	} else {
-		dprint(sprintf("^2trigger_changelevel::^3Trigger^7: Change to `%s` requested\n", 
-			m_strMap));
+		dprint(sprintf("^2trigger_changelevel::^3Trigger^7: Change to `%s` requested\n", m_strMap));
 		Change();
 	}
 }
