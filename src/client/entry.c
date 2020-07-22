@@ -115,6 +115,14 @@ CSQC_RendererRestarted(string rstr)
 	FX_Init();
 }
 
+/* this is so that profile_csqc reports more accurate statistics as to
+   what causes computation time */
+void
+CSQC_RenderScene(void)
+{
+	renderscene();
+}
+
 void
 CSQC_UpdateView(float w, float h, float focus)
 {
@@ -299,10 +307,10 @@ CSQC_UpdateView(float w, float h, float focus)
 			setproperty(VF_AFOV, autocvar_r_viewmodelfov);
 			setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin + pl.view_ofs);
 			View_DrawViewModel();
-			renderscene();
+			CSQC_RenderScene();
 		} else {
 			View_DrawViewModel();
-			renderscene();
+			CSQC_RenderScene();
 		}
 
 		for (entity b = world; (b = findfloat(b, ::isCSQC, 1));) {
