@@ -180,10 +180,10 @@ m_draw(vector screensize)
 	const string ver = "Nuclide (build " __DATE__ ")";
 	drawfont = font_label;
 
-	WLabel_Static(640 - 16 - stringwidth(ver, TRUE, [12,12]),
-				  8,
+	WLabel_Static(640 - 16 - stringwidth(ver, TRUE, [10,10]),
+				  466,
 				  ver, 
-				  12, 12,
+				  10, 10,
 				  [0.75,0.75,0.75],
 				  0.25f, 0, font_label_b);
 
