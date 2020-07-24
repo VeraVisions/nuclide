@@ -252,10 +252,7 @@ void worldspawn(void)
 	lightstyle(9, "aaaaaaaazzzzzzzz");
 	lightstyle(10, "mmamammmmammamamaaamammma");
 	lightstyle(11, "abcdefghijklmnopqrrqponmlkjihgfedcba");
-
-	/* sometimes we have extra overrides that the original does not
-	   provide. so we execute our mod-specific config here */
-	localcmd(sprintf("exec skill_%s.cfg\n", cvar_string("game")));
+	Skill_Init();
 }
 
 float ConsoleCmd(string cmd)

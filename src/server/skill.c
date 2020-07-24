@@ -14,6 +14,16 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+string(string cmd) readcmd = #0;
+
+void
+Skill_Init(void)
+{
+	/* sometimes we have extra overrides that the original does not
+	   provide. so we execute our mod-specific config here */
+	readcmd(sprintf("exec skill_%s.cfg\n", cvar_string("game")));
+}
+
 float Skill_GetValue(string variable)
 {
 	float skill = cvar("skill");

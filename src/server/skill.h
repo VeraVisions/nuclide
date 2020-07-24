@@ -15,4 +15,5 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+void Skill_Init(void);
 float Skill_GetValue(string); 
