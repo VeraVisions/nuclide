@@ -94,6 +94,7 @@ void w_chainsaw_primary(void)
 		Weapons_PlaySound(pl, CHAN_WEAPON, "sh/chainsaw_idle2.wav", 1, ATTN_NORM);
 		pl.w_attack_next = 0.2f;
 	} else {
+		int dmg;
 		FX_Impact(IMPACT_MELEE, trace_endpos, trace_plane_normal);
 		
 		if (trace_ent.takedamage) {
@@ -101,8 +102,8 @@ void w_chainsaw_primary(void)
 				/* Push the player towards the victim */
 				pl.velocity = normalize(trace_ent.origin - pl.origin) * 240;
 			}
-
-			Damage_Apply(trace_ent, self, 10, WEAPON_CHAINSAW, DMG_BLUNT);
+			dmg = Skill_GetValue("plr_chainsaw");
+			Damage_Apply(trace_ent, self, dmg, WEAPON_CHAINSAW, DMG_BLUNT);
 			Weapons_PlaySound(pl, CHAN_WEAPON, "sh/chainsaw_cutintoflesh.wav", 1, ATTN_NORM);
 		} else {
 			FX_Spark(trace_endpos, trace_plane_normal);

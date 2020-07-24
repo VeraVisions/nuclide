@@ -116,6 +116,7 @@ void w_hammer_release(void)
 	}
 
 #ifdef SERVER
+	int hdmg;
 	int hitsound = 0;
 	vector src = pl.origin + pl.view_ofs;
 	makevectors(pl.v_angle);
@@ -126,11 +127,14 @@ void w_hammer_release(void)
 	#ifdef SERVER
 		if (trace_ent.takedamage) {
 			hitsound = floor(random(1, 4));
-    
+
+			/* players only take half damage */
 			if (trace_ent.classname == "player")
-				Damage_Apply(trace_ent, self, 50, WEAPON_HAMMER, DMG_BLUNT);
+				hdmg = Skill_GetValue("plr_hammer") / 2;
 			else
-				Damage_Apply(trace_ent, self, 100, WEAPON_HAMMER, DMG_BLUNT);
+				hdmg = Skill_GetValue("plr_hammer");
+
+			Damage_Apply(trace_ent, self, hdmg, WEAPON_HAMMER, DMG_BLUNT);
 
 			if (trace_ent.classname == "monster_scientist") {
 				trace_ent.movetype = MOVETYPE_TOSS;
@@ -150,7 +154,8 @@ void w_hammer_release(void)
 #ifdef SERVER
 	if (trace_ent.takedamage) {
 		hitsound = floor(random(1, 4));
-		Damage_Apply(trace_ent, self, 200, WEAPON_HAMMER, DMG_BLUNT);
+		hdmg = Skill_GetValue("plr_hammeralt");
+		Damage_Apply(trace_ent, self, hdmg, WEAPON_HAMMER, DMG_BLUNT);
 	} else {
 		if (trace_fraction < 1.0) {
 			hitsound = 4;

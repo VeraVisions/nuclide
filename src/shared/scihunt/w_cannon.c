@@ -138,12 +138,15 @@ void w_cannon_primary(void)
 	View_SetMuzzleflash(MUZZLE_SMALL);
 	Weapons_ViewPunchAngle([-5,0,0]);
 #else
+	int dmg;
+
 	if (pl.cannon_mag != 2) {
 		w_cannon_reload();
 		return;
 	}
 
-	TraceAttack_FireBullets(20, pl.origin + pl.view_ofs, 5, [0.08716,0.04362], WEAPON_CANNON);
+	dmg = Skill_GetValue("plr_cannon");
+	TraceAttack_FireBullets(20, pl.origin + pl.view_ofs, dmg, [0.08716,0.04362], WEAPON_CANNON);
 	pl.cannon_mag -= 2;
 	Weapons_PlaySound(pl, CHAN_WEAPON, "cannon/fire.wav", 1, ATTN_NORM);
 	Weapons_UpdateAmmo(pl, pl.cannon_mag, pl.ammo_buckshot, __NULL__);
@@ -152,6 +155,7 @@ void w_cannon_primary(void)
 	pl.w_attack_next = 1.5f;
 	pl.w_idle_next = 2.5f;
 }
+
 void w_cannon_secondary(void)
 {
 	player pl = (player)self;
@@ -168,12 +172,14 @@ void w_cannon_secondary(void)
 
 	Weapons_ViewPunchAngle([-5,0,0]);
 #else
+	int dmg;
 	if (!pl.cannon_mag) {
 		w_cannon_reload();
 		return;
 	}
 
-	TraceAttack_FireBullets(10, pl.origin + pl.view_ofs, 5, [0.08716,0.04362], WEAPON_CANNON);
+	dmg = Skill_GetValue("plr_cannon");
+	TraceAttack_FireBullets(10, pl.origin + pl.view_ofs, dmg, [0.08716,0.04362], WEAPON_CANNON);
 	pl.cannon_mag--;
 	Weapons_PlaySound(pl, CHAN_WEAPON, "cannon/fire.wav", 1, ATTN_NORM);
 	Weapons_UpdateAmmo(pl, pl.cannon_mag, pl.ammo_buckshot, __NULL__);
