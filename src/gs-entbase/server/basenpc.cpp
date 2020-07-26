@@ -451,6 +451,7 @@ CBaseNPC::Physics(void)
 		SetFrame(m_flSequenceEnd);
 	} else {
 		if (style != MONSTER_DEAD) {
+			AttackThink();
 			TalkPlayerGreet();
 			FollowChain();
 

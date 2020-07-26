@@ -24,7 +24,8 @@ Skill_Init(void)
 	readcmd(sprintf("exec skill_%s.cfg\n", cvar_string("game")));
 }
 
-float Skill_GetValue(string variable)
+float
+Skill_GetValue(string variable)
 {
 	float skill = cvar("skill");
 	return cvar(sprintf("sk_%s%d", variable, skill));

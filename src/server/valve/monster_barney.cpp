@@ -55,6 +55,11 @@ class monster_barney:CBaseNPC
 	virtual int(void) AnimIdle;
 	virtual int(void) AnimWalk;
 	virtual int(void) AnimRun;
+
+	virtual void(void) AttackDraw;
+	virtual void(void) AttackHolster;
+	virtual void(void) AttackMelee;
+	virtual void(void) AttackRanged;
 };
 
 int
@@ -76,6 +81,38 @@ monster_barney::AnimRun(void)
 }
 
 void
+monster_barney::AttackDraw(void)
+{
+	AnimPlay(BA_DRAW);
+	m_flAttackThink = m_flAnimTime;
+}
+
+void
+monster_barney::AttackHolster(void)
+{
+	AnimPlay(BA_HOLSTER);
+	m_flAttackThink = m_flAnimTime;
+}
+
+void
+monster_barney::AttackMelee(void)
+{
+	AttackRanged();
+}
+
+void
+monster_barney::AttackRanged(void)
+{
+	/* visual */
+	AnimPlay(BA_SHOOT1);
+	m_flAttackThink = time + 0.4f;
+
+	/* functional */
+	TraceAttack_FireBullets(1, origin + [0,0,16], 8, [0.01,0,01], 2);
+	Sound_Play(this, CHAN_WEAPON, "weapon_glock.fire");
+}
+
+void
 monster_barney::PlayerUse(void)
 {
 	if (spawnflags & MSF_PREDISASTER) {
@@ -89,6 +126,8 @@ monster_barney::PlayerUse(void)
 void
 monster_barney::Pain(int iHitBody)
 {
+	CBaseNPC::Pain(iHitBody);
+
 	WarnAllies();
 
 	if (m_flAnimTime > time) {

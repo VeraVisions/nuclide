@@ -20,15 +20,18 @@ typedef struct
 	int m_iFlags;
 } nodeslist_t;
 
+/* movement states */
 enum
 {
 	MONSTER_IDLE,
-	MONSTER_WALK,
-	MONSTER_RUN,
+	MONSTER_DRAWING,
+	MONSTER_HOLSTERING,
+	MONSTER_AIMING,
 	MONSTER_DEAD,
-	MONSTER_GIBBED,
+	MONSTER_GIBBED
 };
 
+/* scripted sequence states */
 enum
 {
 	SEQUENCESTATE_NONE,
@@ -36,6 +39,7 @@ enum
 	SEQUENCESTATE_ENDING
 };
 
+/* monster flags */
 enumflags
 {
 	MSF_WAITTILLSEEN,
@@ -51,6 +55,15 @@ enumflags
 	MSF_MULTIPLAYER
 };
 
+/* alliance state */
+enum
+{
+	MAL_FRIEND, /* friendly towards the player */
+	MAL_ENEMY,  /* unfriendly towards the player */
+	MAL_ALIEN,  /* unfriendly towards anyone but themselves */
+	MAL_ROGUE   /* no allies, not even amongst themselves */
+};
+
 class CBaseMonster:CBaseEntity
 {
 	vector oldnet_velocity;
@@ -60,11 +73,21 @@ class CBaseMonster:CBaseEntity
 	vector base_maxs;
 	int base_health;
 
+	/* sequences */
+	string m_strRouteEnded;
 	int m_iSequenceRemove;
 	int m_iSequenceState;
 	float m_flSequenceEnd;
 	float m_flSequenceSpeed;
 	vector m_vecSequenceAngle;
+
+	/* attack/alliance system */
+	entity m_eEnemy;
+	float m_flFOV;
+	float m_flAttackThink;
+	int m_iAlliance;
+	int m_iMState;
+	vector m_vecLKPos; /* last-known pos */
 
 	/* pathfinding */
 	int m_iNodes;
@@ -72,11 +95,7 @@ class CBaseMonster:CBaseEntity
 	nodeslist_t *m_pRoute;
 	vector m_vecLastNode;
 
-	/* sequences */
-	string m_strRouteEnded;
-
 	void(void) CBaseMonster;
-
 	virtual void(void) touch;
 	virtual void(void) Hide;
 	virtual void(void) Respawn;
@@ -88,9 +107,15 @@ class CBaseMonster:CBaseEntity
 	virtual void(void) Gib;
 	virtual void(string) Sound;
 
+	/* attack system */
+	virtual void(void) AttackDraw;
+	virtual void(void) AttackHolster;
+	virtual void(void) AttackThink;
+	virtual void(void) AttackMelee;
+	virtual void(void) AttackRanged;
+
 	/* sequences */
 	virtual void(void) FreeState;
-
 	virtual void(void) ClearRoute;
 	virtual void(void) CheckRoute;
 	virtual void(void) WalkRoute;
@@ -101,6 +126,7 @@ class CBaseMonster:CBaseEntity
 	virtual int(void) AnimIdle;
 	virtual int(void) AnimWalk;
 	virtual int(void) AnimRun;
+	virtual void(float) AnimPlay;
 };
 
 int
@@ -122,6 +148,16 @@ CBaseMonster::AnimRun(void)
 }
 
 void
+CBaseMonster::AnimPlay(float seq)
+{
+	/* forces a client-side update */
+	SendFlags |= BASEFL_CHANGED_FRAME;
+
+	SetFrame(seq);
+	m_flAnimTime = time + frameduration(modelindex, frame);
+}
+
+void
 CBaseMonster::Sound(string msg)
 {
 	sound(this, CHAN_VOICE, msg, 1.0, ATTN_NORM);
@@ -139,6 +175,86 @@ void
 CBaseMonster::IdleNoise(void)
 {
 
+}
+
+void
+CBaseMonster::AttackThink(void)
+{
+	if (m_flAttackThink > time) {
+		return;
+	}
+
+	/* don't have an enemy? let's look out for one */
+	if (!m_eEnemy) {
+		/* find code here */
+		m_flAttackThink = time + 0.5f;
+		return;
+	}
+
+	/* do we have a clear shot? */
+	other = world;
+	traceline(origin, m_eEnemy.origin, MOVE_OTHERONLY, this);
+
+	/* something is blocking us */
+	if (trace_fraction < 1.0f) {
+		m_iMState = MONSTER_HOLSTERING;
+
+		/* FIXME: This is unreliable, but unlikely that a player ever is here */
+		if (m_vecLKPos != [0,0,0]) {
+			NewRoute(m_vecLKPos);
+			m_flSequenceSpeed = 140;
+			m_vecLKPos = [0,0,0];
+		}
+	} else {
+		if (m_iMState == MONSTER_IDLE) {
+			m_iMState = MONSTER_DRAWING;
+		} else if (m_iMState == MONSTER_DRAWING) {
+			m_iMState = MONSTER_AIMING;
+		}
+
+		/* make sure we remember the last known position. */
+		m_vecLKPos = m_eEnemy.origin;
+	}
+
+	if (m_iMState == MONSTER_AIMING) {
+		if (vlen(origin - m_eEnemy.origin) < 96)
+			AttackMelee();
+		else
+			AttackRanged();
+	} else if (m_iMState == MONSTER_DRAWING) {
+		AttackDraw();
+	} else if (m_iMState == MONSTER_HOLSTERING) {
+		AttackHolster();
+		m_iMState = MONSTER_IDLE;
+	}
+}
+
+void
+CBaseMonster::AttackMelee(void)
+{
+	dprint(sprintf("^1%s::AttackMelee: Not defined!\n", ::classname));
+	m_flAttackThink = time + 0.5f;
+}
+
+void
+CBaseMonster::AttackRanged(void)
+{
+	dprint(sprintf("^1%s::AttackRanged: Not defined!\n", ::classname));
+	m_flAttackThink = time + 0.5f;
+}
+
+void
+CBaseMonster::AttackDraw(void)
+{
+	dprint(sprintf("^1%s::AttackDraw: Not defined!\n", ::classname));
+	m_flAttackThink = time + 0.5f;
+}
+
+void
+CBaseMonster::AttackHolster(void)
+{
+	dprint(sprintf("^1%s::AttackHolster: Not defined!\n", ::classname));
+	m_flAttackThink = time + 0.5f;
 }
 
 void
@@ -203,7 +319,7 @@ CBaseMonster::CheckRoute(void)
 		m_iCurNode--;
 		velocity = [0,0,0]; /* clamp friction */
 	}
-	
+
 	if (m_iCurNode < -1) {
 		ClearRoute();
 		dprint(sprintf("^2CBaseMonster::^3CheckRoute^7: %s reached end\n", this.m_strTargetName));
@@ -243,8 +359,18 @@ CBaseMonster::CheckRoute(void)
 void
 CBaseMonster::WalkRoute(void)
 {
-	if (m_iNodes) {
-		vector endangles;
+	vector endangles;
+
+	/* we're busy shooting at something, don't walk */
+	if (m_iMState == MONSTER_AIMING) {
+		endangles = vectoangles(m_eEnemy.origin - origin);
+
+		/* TODO: lerp */
+		input_angles[1] = endangles[1];
+		return;
+	}
+
+	if (m_iNodes && m_iMState == MONSTER_IDLE) {
 		/* we're on our last node */
 		if (m_iCurNode < 0) {
 			endangles = vectoangles(m_vecLastNode - origin);
@@ -297,6 +423,7 @@ CBaseMonster::Physics(void)
 		input_angles = angles = v_angle = m_vecSequenceAngle;
 		SetFrame(m_flSequenceEnd);
 	} else if (movetype == MOVETYPE_WALK) {
+		AttackThink();
 		CheckRoute();
 		WalkRoute();
 		runstandardplayerphysics(this);
@@ -350,7 +477,8 @@ CBaseMonster::PlayerUse(void)
 void
 CBaseMonster::Pain(int iHitBody)
 {
-
+	if (!m_eEnemy)
+		m_eEnemy = g_dmg_eAttacker;
 }
 
 void
@@ -427,4 +555,8 @@ CBaseMonster::CBaseMonster(void)
 	}
 
 	CBaseEntity::CBaseEntity();
+
+	/* give us a 65 degree view cone */
+	m_flFOV = 1.0 / 65;
+	m_iAlliance = MAL_ROGUE;
 }
