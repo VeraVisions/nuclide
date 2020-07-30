@@ -28,13 +28,15 @@ class CUpdateList:CWidget
 	int m_scroll;
 	int m_selected;
 	virtual void(void) m_changed = 0;
+	virtual void(void) m_dclicked = 0;
 
 	void(void) CUpdateList;
 	virtual void(void) Draw;
 	virtual void(float, float, float, float) Input;
 
 	virtual void(int, int) SetSize;
-	//virtual void(void(int)) SetChanged;
+	virtual void(void(void)) SetChanged;
+	virtual void(void(void)) SetDClicked;
 	virtual void(int) SetSelected;
 	virtual int(void) GetSelected;
 };
@@ -124,6 +126,7 @@ CUpdateList::Input(float type, float x, float y, float devid)
 {
 	int visible;
 	int pos[2];
+	static float clicktime;
 
 	visible = floor(m_size[1] / 18) + 1;
 	visible = bound(0, visible, update_count);
@@ -135,7 +138,19 @@ CUpdateList::Input(float type, float x, float y, float devid)
 		if (Util_CheckMouse(pos[0], pos[1], m_size[0], 18)) {
 			if (type == IE_KEYDOWN) {
 				if (x == K_MOUSE1) {
-					SetSelected(i);
+					if (m_selected != i) {
+						SetSelected(i);
+						clicktime = time + 0.5f;
+					} else {
+						if (time < clicktime) {
+							dprint("double click!\n");
+							if (m_dclicked) {
+								m_dclicked();
+							}
+						} else {
+							clicktime = time + 0.5f;
+						}
+					}
 					break;
 				}
 			}
@@ -161,6 +176,13 @@ void
 CUpdateList::SetChanged(void(void) func)
 {
 	m_changed = func;
+}
+
+
+void
+CUpdateList::SetDClicked(void(void) func)
+{
+	m_dclicked = func;
 }
 
 void

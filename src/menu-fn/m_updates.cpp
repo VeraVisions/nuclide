@@ -83,6 +83,23 @@ up_btnremove_start(void)
 }
 
 void
+up_toggleinstall(void)
+{
+	int pkgid;
+	pkgid = up_lbUpdates.GetSelected();
+
+	switch (updates[pkgid].installed) {
+	case "rem":
+		localcmd(sprintf("pkg add %s\n", updates[pkgid].name));
+		updates[pkgid].installed = "pending";
+		break;
+	default:
+		localcmd(sprintf("pkg rem %s\n", updates[pkgid].name));
+		updates[pkgid].installed = "rem";
+	}
+}
+
+void
 up_btnapply_start(void)
 {
 	cvar_set("menu_updating", "1");
@@ -117,13 +134,13 @@ menu_updates_init(void)
 	up_btnDone = spawn(CMainButton);
 	up_btnDone.SetImage(BTN_DONE);
 	up_btnDone.SetExecute(up_btndone_start);
-	up_btnDone.SetPos(50,420);
+	up_btnDone.SetPos(50,420+13);
 	Widget_Add(fn_updates, up_btnDone);
 
 	up_btnApply = spawn(CMainButton);
-	up_btnApply.SetImage(BTN_ACTIVATE);
+	up_btnApply.SetImage(BTN_UPDATE);
 	up_btnApply.SetExecute(up_btnapply_start);
-	up_btnApply.SetPos(50,450);
+	up_btnApply.SetPos(350+96,420+30);
 	Widget_Add(fn_updates, up_btnApply);
 
 	up_btnInstall = spawn(CMainButton);
@@ -147,6 +164,7 @@ menu_updates_init(void)
 	up_lbUpdates.SetPos(53,163);
 	up_lbUpdates.SetSize(194+50,244);
 	up_lbUpdates.SetChanged(up_lbupdates_changed);
+	up_lbUpdates.SetDClicked(up_toggleinstall);
 	Widget_Add(fn_updates, up_lbUpdates);
 	
 	up_sbUpdates = spawn(CScrollbar);
