@@ -459,10 +459,7 @@ CBaseMonster::Physics(void)
 	input_timelength = frametime;
 
 	/* override whatever we did above with this */
-	if (m_iSequenceState == SEQUENCESTATE_IDLE) {
-		input_angles = angles = v_angle = m_vecSequenceAngle;
-		SetFrame(m_flSequenceEnd);
-	} else if (m_iSequenceState == SEQUENCESTATE_ENDING) {
+	if (m_iSequenceState == SEQUENCESTATE_ENDING) {
 		input_angles = angles = v_angle = m_vecSequenceAngle;
 		SetFrame(m_flSequenceEnd);
 	} else if (movetype == MOVETYPE_WALK) {

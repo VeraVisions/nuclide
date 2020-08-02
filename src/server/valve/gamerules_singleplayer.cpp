@@ -21,16 +21,30 @@ HLSingleplayerRules::PlayerDeath(base_player pl)
 	pl.solid = SOLID_NOT;
 	pl.takedamage = DAMAGE_NO;
 	pl.flags &= ~FL_FLASHLIGHT;
-	pl.armor = pl.activeweapon = pl.g_items = 0;
+	pl.armor = pl.activeweapon = pl.g_items = pl.weapon = 0;
+	pl.health = 0;
 	Sound_Play(pl, CHAN_AUTO, "player.die");
 
-	if (pl.health < -50) {
-		pl.health = 0;
-		FX_GibHuman(pl.origin);
-		return;
+	if (cvar("coop") == 1) {
+		pl.think = PutClientInServer;
+		pl.nextthink = time + 4.0f;
 	}
 
-	pl.health = 0;
+	if (pl.health < -50) {
+		FX_GibHuman(pl.origin);
+	}
+
+	/* Let's handle corpses on the clientside */
+	entity corpse = spawn();
+	setorigin(corpse, pl.origin + [0,0,32]);
+	setmodel(corpse, pl.model);
+	setsize(corpse, VEC_HULL_MIN, VEC_HULL_MAX);
+	corpse.movetype = MOVETYPE_TOSS;
+	corpse.solid = SOLID_TRIGGER;
+	corpse.modelindex = pl.modelindex;
+	corpse.frame = ANIM_DIESIMPLE;
+	corpse.angles = pl.angles;
+	corpse.velocity = pl.velocity;
 }
 
 void
@@ -44,6 +58,18 @@ HLSingleplayerRules::PlayerSpawn(base_player pl)
 	pl.flags = FL_CLIENT;
 	pl.viewzoom = 1.0;
 	pl.model = "models/player.mdl";
+
+
+	if (cvar("coop") == 1) {
+		string mymodel = infokey(pl, "model");
+		if (mymodel) {
+			mymodel = sprintf("models/player/%s/%s.mdl", mymodel, mymodel);
+			if (whichpack(mymodel)) {
+				pl.model = mymodel;
+			}
+		}
+	}
+
 	setmodel(pl, pl.model);
 
 	setsize(pl, VEC_HULL_MIN, VEC_HULL_MAX);
