@@ -93,6 +93,7 @@ class scripted_sequence:CBaseTrigger
 
 	void(void) scripted_sequence;
 	virtual void(void) Trigger;
+	virtual void(void) InitIdle;
 	virtual void(void) Respawn;
 };
 
@@ -202,9 +203,46 @@ scripted_sequence::Trigger(void)
 }
 
 void
+scripted_sequence::InitIdle(void)
+{
+	CBaseMonster f;
+
+	dprint(sprintf("^2scripted_sequence::^3InitIdle^7: with spawnflags %d\n", spawnflags));
+	f = (CBaseMonster)find(world, CBaseEntity::m_strTargetName, m_strMonster);
+
+	/* target doesn't exist/hasn't spawned */
+	if (!f) {
+		/* time to look for a classname instead */
+		for (entity c = world; (c = find(c, ::classname, m_strMonster));) {
+			/* within radius */
+			if (vlen(origin - c.origin) < m_flSearchRadius) {
+				f = (CBaseMonster)c;
+				break;
+			}
+		}
+
+		/* cancel out. this trigger is broken. */
+		if (!f) {
+			dprint(sprintf("^1scripted_sequence::^3InitIdle^7: Unknown target %s\n", m_strMonster));
+			return;
+		}
+	}
+	
+	setorigin(f, origin);
+	f.m_flSequenceEnd = frameforname(f.modelindex, m_strIdleAnim);
+	f.m_iSequenceState = SEQUENCESTATE_ENDING;
+	f.m_vecSequenceAngle = angles;
+}
+
+void
 scripted_sequence::Respawn(void)
 {
 	m_iEnabled = TRUE;
+
+	if (m_strIdleAnim) {
+		think = InitIdle;
+		nextthink = time + 0.1f;
+	}
 }
 
 void

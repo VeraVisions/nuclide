@@ -67,7 +67,7 @@ env_sun::postdraw(void)
 	vector lens_1 = project(lens_pos) - (FLARE_SIZE / 2);
 
 	makevectors(getproperty(VF_ANGLES));
-	vector v = normalize (lens_pos - getproperty(VF_ORIGIN));
+	vector v = normalize(lens_pos - getproperty(VF_ORIGIN));
 	float flDot = v * v_forward;
 
 	if (flDot < 0.15) {

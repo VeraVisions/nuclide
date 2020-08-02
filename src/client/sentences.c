@@ -149,8 +149,6 @@ Sentences_Init(void)
 	}
 }
 
-
-
 string
 Sentences_ProcessSample(string sample)
 {
@@ -171,7 +169,6 @@ Sentences_ResetSample(void)
 {
 	g_sentences_samplepath = "vox";
 }
-
 
 string
 Sentences_GetSamples(string msg)
