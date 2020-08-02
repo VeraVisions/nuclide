@@ -80,7 +80,68 @@ class monster_zombie:CBaseMonster
 	virtual void(int) Death;
 	virtual void(void) IdleNoise;
 	virtual void(void) Respawn;
+
+	virtual int(void) AnimIdle;
+	virtual int(void) AnimWalk;
+	virtual int(void) AnimRun;
+
+	virtual int(void) AttackMelee;
+	virtual void(void) AttackFlail;
 };
+
+
+int
+monster_zombie::AnimIdle(void)
+{
+	return ZO_IDLE;
+}
+
+int
+monster_zombie::AnimWalk(void)
+{
+	return ZO_WALK;
+}
+
+int
+monster_zombie::AnimRun(void)
+{
+	return ZO_WALK;
+}
+
+int
+monster_zombie::AttackMelee(void)
+{
+	/* visual */
+	if (random() < 0.5)
+		AnimPlay(ZO_ATTACK1);
+	else
+		AnimPlay(ZO_ATTACK2);
+
+	m_flAttackThink = m_flAnimTime;
+	Sound_Play(this, CHAN_VOICE, "monster_zombie.attack");
+
+	/* functional */
+	think = AttackFlail;
+	nextthink = 0.25f;
+	return TRUE;
+}
+
+void
+monster_zombie::AttackFlail(void)
+{
+	traceline(origin, m_eEnemy.origin, FALSE, this);
+
+	if (trace_fraction >= 1.0 || trace_ent.takedamage != DAMAGE_YES) {
+		Sound_Play(this, CHAN_WEAPON, "monster_zombie.attackmiss");
+		return;
+	}
+
+	Damage_Apply(trace_ent, this, 25, 0, 0);
+	Sound_Play(this, CHAN_WEAPON, "monster_zombie.attackhit");
+
+	if (m_eEnemy.health <= 0)
+		m_eEnemy = __NULL__;
+}
 
 void
 monster_zombie::Pain(int iHitBody)
@@ -160,5 +221,6 @@ monster_zombie::monster_zombie(void)
 	base_health = Skill_GetValue("zombie_health");
 	base_mins = [-16,-16,0];
 	base_maxs = [16,16,72];
+	m_iAlliance = MAL_ALIEN;
 	CBaseMonster::CBaseMonster();
 }

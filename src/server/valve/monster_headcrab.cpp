@@ -61,6 +61,8 @@ class monster_headcrab:CBaseMonster
 	virtual int(void) AnimIdle;
 	virtual int(void) AnimWalk;
 	virtual int(void) AnimRun;
+	virtual int(void) AttackRanged;
+	virtual void(void) touch;
 };
 
 int
@@ -79,6 +81,32 @@ int
 monster_headcrab::AnimRun(void)
 {
 	return HC_RUN;
+}
+
+int
+monster_headcrab::AttackRanged(void)
+{
+	/* visual */
+	if (random() < 0.5)
+		AnimPlay(HC_JUMP);
+	else
+		AnimPlay(HC_JUMP_VARIATION1);
+
+	m_flAttackThink = m_flAnimTime;
+	Sound_Play(this, CHAN_VOICE, "monster_headcrab.attack");
+
+	/* functional */
+	makevectors(vectoangles(m_eEnemy.origin - origin));
+	velocity = v_forward * 512 + [0,0,250];
+	return TRUE;
+}
+
+void
+monster_headcrab::touch(void)
+{
+	if (other.takedamage == DAMAGE_YES)
+	if (frame == HC_JUMP || frame == HC_JUMP_VARIATION1)
+		Damage_Apply(other, this, 500, 0, 0);
 }
 
 void
@@ -149,5 +177,6 @@ monster_headcrab::monster_headcrab(void)
 
 	base_mins = [-16,-16,0];
 	base_maxs = [16,16,36];
+	m_iAlliance = MAL_ALIEN;
 	CBaseMonster::CBaseMonster();
 }

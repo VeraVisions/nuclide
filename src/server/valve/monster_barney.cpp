@@ -58,8 +58,8 @@ class monster_barney:CBaseNPC
 
 	virtual void(void) AttackDraw;
 	virtual void(void) AttackHolster;
-	virtual void(void) AttackMelee;
-	virtual void(void) AttackRanged;
+	virtual int(void) AttackMelee;
+	virtual int(void) AttackRanged;
 };
 
 int
@@ -94,13 +94,13 @@ monster_barney::AttackHolster(void)
 	m_flAttackThink = m_flAnimTime;
 }
 
-void
+int
 monster_barney::AttackMelee(void)
 {
-	AttackRanged();
+	return AttackRanged();
 }
 
-void
+int
 monster_barney::AttackRanged(void)
 {
 	/* visual */
@@ -110,6 +110,7 @@ monster_barney::AttackRanged(void)
 	/* functional */
 	TraceAttack_FireBullets(1, origin + [0,0,16], 8, [0.01,0,01], 2);
 	Sound_Play(this, CHAN_WEAPON, "weapon_glock.fire");
+	return TRUE;
 }
 
 void

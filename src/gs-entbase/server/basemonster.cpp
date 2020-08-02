@@ -24,8 +24,8 @@ typedef struct
 enum
 {
 	MONSTER_IDLE,
-	MONSTER_DRAWING,
-	MONSTER_HOLSTERING,
+	MONSTER_FOLLOWING,
+	MONSTER_CHASING,
 	MONSTER_AIMING,
 	MONSTER_DEAD,
 	MONSTER_GIBBED
@@ -107,12 +107,16 @@ class CBaseMonster:CBaseEntity
 	virtual void(void) Gib;
 	virtual void(string) Sound;
 
+	/* see/hear subsystem */
+	float m_flSeeTime;
+	virtual void(void) SeeThink;
+
 	/* attack system */
 	virtual void(void) AttackDraw;
 	virtual void(void) AttackHolster;
 	virtual void(void) AttackThink;
-	virtual void(void) AttackMelee;
-	virtual void(void) AttackRanged;
+	virtual int(void) AttackMelee;
+	virtual int(void) AttackRanged;
 
 	/* sequences */
 	virtual void(void) FreeState;
@@ -178,18 +182,48 @@ CBaseMonster::IdleNoise(void)
 }
 
 void
+CBaseMonster::SeeThink(void)
+{
+	if (m_eEnemy)
+		return;
+
+	if (m_flSeeTime > time)
+		return;
+
+	m_flSeeTime = time + 0.25f;
+
+	for (entity w = world; (w = find(w, ::classname, "player"));) {
+
+		if (w.health <= 0)
+			continue;
+
+		/* first, is the potential enemy in our field of view? */
+		makevectors(angles);
+		vector v = normalize(w.origin - origin);
+		float flDot = v * v_forward;
+
+		if (flDot < 0.60)
+			continue;
+
+		other = world;
+		traceline(origin, w.origin, MOVE_OTHERONLY, this);
+
+		if (trace_fraction == 1.0f) {
+			m_eEnemy = w;
+			return;
+		}
+	}
+}
+void
 CBaseMonster::AttackThink(void)
 {
 	if (m_flAttackThink > time) {
 		return;
 	}
 
-	/* don't have an enemy? let's look out for one */
-	if (!m_eEnemy) {
-		/* find code here */
-		m_flAttackThink = time + 0.5f;
-		return;
-	}
+	/* reset */
+	if (m_eEnemy && m_eEnemy.health <= 0)
+		m_eEnemy = __NULL__;
 
 	/* do we have a clear shot? */
 	other = world;
@@ -197,7 +231,7 @@ CBaseMonster::AttackThink(void)
 
 	/* something is blocking us */
 	if (trace_fraction < 1.0f) {
-		m_iMState = MONSTER_HOLSTERING;
+		m_iMState = MONSTER_IDLE;
 
 		/* FIXME: This is unreliable, but unlikely that a player ever is here */
 		if (m_vecLKPos != [0,0,0]) {
@@ -206,41 +240,39 @@ CBaseMonster::AttackThink(void)
 			m_vecLKPos = [0,0,0];
 		}
 	} else {
-		if (m_iMState == MONSTER_IDLE) {
-			m_iMState = MONSTER_DRAWING;
-		} else if (m_iMState == MONSTER_DRAWING) {
-			m_iMState = MONSTER_AIMING;
-		}
+		m_iMState = MONSTER_AIMING;
 
 		/* make sure we remember the last known position. */
 		m_vecLKPos = m_eEnemy.origin;
 	}
 
 	if (m_iMState == MONSTER_AIMING) {
+		int m;
 		if (vlen(origin - m_eEnemy.origin) < 96)
-			AttackMelee();
-		else
-			AttackRanged();
-	} else if (m_iMState == MONSTER_DRAWING) {
-		AttackDraw();
-	} else if (m_iMState == MONSTER_HOLSTERING) {
-		AttackHolster();
-		m_iMState = MONSTER_IDLE;
+			m = AttackMelee();
+		else {
+			m = AttackRanged();
+
+			/* if we don't have the desired attack mode, walk */
+			if (m == FALSE)
+				m_iMState = MONSTER_CHASING;	
+
+		}
 	}
 }
 
-void
+int
 CBaseMonster::AttackMelee(void)
 {
-	dprint(sprintf("^1%s::AttackMelee: Not defined!\n", ::classname));
 	m_flAttackThink = time + 0.5f;
+	return FALSE;
 }
 
-void
+int
 CBaseMonster::AttackRanged(void)
 {
-	dprint(sprintf("^1%s::AttackRanged: Not defined!\n", ::classname));
 	m_flAttackThink = time + 0.5f;
+	return FALSE;
 }
 
 void
@@ -380,6 +412,13 @@ CBaseMonster::WalkRoute(void)
 		input_angles[1] = endangles[1];
 		input_movevalues = [m_flSequenceSpeed, 0, 0];
 	}
+
+	if (m_iMState == MONSTER_CHASING) {
+		/* we've got 'em in our sights, just need to walk closer */
+		endangles = vectoangles(m_eEnemy.origin - origin);
+		input_movevalues = [140, 0, 0];
+		input_angles[1] = endangles[1];
+	}
 }
 
 void
@@ -423,6 +462,7 @@ CBaseMonster::Physics(void)
 		input_angles = angles = v_angle = m_vecSequenceAngle;
 		SetFrame(m_flSequenceEnd);
 	} else if (movetype == MOVETYPE_WALK) {
+		SeeThink();
 		AttackThink();
 		CheckRoute();
 		WalkRoute();
