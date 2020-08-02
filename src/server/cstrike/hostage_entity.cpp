@@ -131,18 +131,32 @@ hostage_entity::PlayerUse(void)
 void
 hostage_entity::Pain(int iHitBody)
 {
-	WarnAllies();
-
-	if (m_flAnimTime > time) {
-		return;
+	switch (iHitBody) {
+	case BODY_HEAD:
+	case BODY_DEFAULT:
+	case BODY_CHEST:
+	case BODY_STOMACH:
+		AnimPlay(HOSA_PAIN);
+		break;
+	case BODY_ARMLEFT:
+		AnimPlay(HOSA_PAINLEFT);
+		break;
+	case BODY_ARMRIGHT:
+		AnimPlay(HOSA_PAINRIGHT);
+		break;
+	case BODY_LEGLEFT:
+		AnimPlay(HOSA_PAINLEGLEFT);
+		break;
+	case BODY_LEGRIGHT:
+		AnimPlay(HOSA_PAINLEGRIGHT);
+		break;
 	}
 
-	if (random() < 0.25f) {
+	/* penalties */
+	if (g_dmg_eAttacker.classname != "player")
 		return;
-	}
 
-	SetFrame(HOSA_FLINCH);
-	m_flAnimTime = time + 0.25f;
+	Money_AddMoney(g_dmg_eAttacker, -(g_dmg_iDamage * 25));
 }
 
 void 
@@ -156,6 +170,17 @@ hostage_entity::Death(int iHitBody)
 
 	/* now mark our state as 'dead' */
 	CBaseNPC::Death(iHitBody);
+
+	/* penalties */
+	if (g_dmg_eAttacker.classname != "player")
+		return;
+
+	if (g_dmg_iDamage >= 100)
+		Money_AddMoney(g_dmg_eAttacker, -2500);
+	else
+		Money_AddMoney(g_dmg_eAttacker, -500);
+
+	Radio_BroadcastMessage(RADIO_HOSDOWN);
 }
 
 void
