@@ -22,6 +22,8 @@ Houndeye
 
 */
 
+#define HE_BLAST_RADIUS 384
+
 enum
 {
 	HE_IDLE,
@@ -67,7 +69,63 @@ class monster_houndeye:CBaseMonster
 	virtual void(int) Death;
 	virtual void(void) IdleNoise;
 	virtual void(void) Respawn;
+
+	virtual int(void) AttackMelee;
+	virtual void(void) AttackBlast;
 };
+
+int
+monster_houndeye::AttackMelee(void)
+{
+	AnimPlay(HE_ATTACK);
+	Sound_Play(this, CHAN_WEAPON, "monster_houndeye.attack");
+	m_flAttackThink = m_flAnimTime + 0.5f;
+
+	think = AttackBlast;
+	nextthink = m_flAnimTime;
+}
+
+void
+monster_houndeye::AttackBlast(void)
+{
+	float new_dmg;
+	float dist;
+	float diff;
+	vector pos;
+	float dmg = 50; /* TODO: set proper damage */
+
+	for (entity e = world; (e = findfloat(e, ::takedamage, DAMAGE_YES));) {
+		pos[0] = e.absmin[0] + (0.5 * (e.absmax[0] - e.absmin[0]));
+		pos[1] = e.absmin[1] + (0.5 * (e.absmax[1] - e.absmin[1]));
+		pos[2] = e.absmin[2] + (0.5 * (e.absmax[2] - e.absmin[2]));
+
+		if (e.classname == "monster_houndeye")
+			continue;
+
+		/* don't bother if it's not anywhere near us */
+		dist = vlen(origin - pos);
+		if (dist > HE_BLAST_RADIUS) {
+			continue;
+		}
+
+		/* can we physically hit this thing? */
+		other = world;
+		traceline(e.origin, origin, MOVE_OTHERONLY, this);
+
+		if (trace_fraction < 1.0f)
+			dmg *= 0.5f;
+
+		/* calculate new damage values */
+		diff = vlen(origin - pos);
+		diff = (HE_BLAST_RADIUS - diff) / HE_BLAST_RADIUS;
+		new_dmg = rint(dmg * diff);
+
+		if (diff > 0) {
+			Damage_Apply(e, this, new_dmg, 0, DMG_EXPLODE);
+		}
+	}
+	Sound_Play(this, CHAN_WEAPON, "monster_houndeye.blast");
+}
 
 void
 monster_houndeye::Pain(int iHitBody)
@@ -129,6 +187,7 @@ monster_houndeye::monster_houndeye(void)
 {
 	Sound_Precache("monster_houndeye.alert");
 	Sound_Precache("monster_houndeye.attack");
+	Sound_Precache("monster_houndeye.blast");
 	Sound_Precache("monster_houndeye.die");
 	Sound_Precache("monster_houndeye.idle");
 	Sound_Precache("monster_houndeye.pain");
@@ -137,5 +196,6 @@ monster_houndeye::monster_houndeye(void)
 	base_health = Skill_GetValue("houndeye_health");
 	base_mins = [-16,-16,0];
 	base_maxs = [16,16,36];
+	m_iAlliance = MAL_ALIEN;
 	CBaseMonster::CBaseMonster();
 }
