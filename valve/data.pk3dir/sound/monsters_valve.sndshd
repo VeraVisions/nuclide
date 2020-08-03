@@ -89,6 +89,18 @@ monster_alien_slave.pain
 	sample aslave/slv_pain2.wav
 }
 
+monster_alien_slave.attack_charge
+{
+	sample debris/zap4.wav
+}
+
+monster_alien_slave.attack_shoot
+{
+	pitch_min 1.3
+	pitch_max 1.6
+	sample hassault/hw_shoot1.wav
+}
+
 // bcl_bite3 is played when an entity is in it's mouth bcl_tongue1 unused?
 monster_barnacle.attackchew
 {
@@ -342,6 +354,14 @@ monster_houndeye.attack
 	sample houndeye/he_attack2.wav
 	sample houndeye/he_attack3.wav
 }
+
+monster_houndeye.blast
+{
+	sample houndeye/he_blast1.wav
+	sample houndeye/he_blast2.wav
+	sample houndeye/he_blast3.wav
+}
+
 
 monster_houndeye.die
 {
