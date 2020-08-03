@@ -279,14 +279,14 @@ CBaseMonster::AttackRanged(void)
 void
 CBaseMonster::AttackDraw(void)
 {
-	dprint(sprintf("^1%s::AttackDraw: Not defined!\n", ::classname));
+	dprint(sprintf("^1%s::AttackDraw: Not defined!\n", classname));
 	m_flAttackThink = time + 0.5f;
 }
 
 void
 CBaseMonster::AttackHolster(void)
 {
-	dprint(sprintf("^1%s::AttackHolster: Not defined!\n", ::classname));
+	dprint(sprintf("^1%s::AttackHolster: Not defined!\n", classname));
 	m_flAttackThink = time + 0.5f;
 }
 

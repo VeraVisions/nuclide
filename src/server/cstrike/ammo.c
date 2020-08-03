@@ -110,7 +110,7 @@ ammoinfo_t cs_ammoinfo[11] = {
 int
 Ammo_BuyCaliber(player pl, int cal, int free)
 {
-	int *ptr_ammo;
+	int *ptr_ammo = __NULL__;
 	int rv = 0;
 
 	while (pl.money - cs_ammoinfo[cal].price > 0) {
@@ -145,6 +145,8 @@ Ammo_BuyCaliber(player pl, int cal, int free)
 		case CALIBER_57MM:
 			ptr_ammo = &pl.ammo_57mm;
 			break;
+		default:
+			error("Ammo_BuyCaliber: Impossible caliber definition.");
 		}
 
 		if (*ptr_ammo >= cs_ammoinfo[cal].a_max)

@@ -81,7 +81,7 @@ Money_HasBonus(int team)
 void
 Money_HandleRoundReward(int winner)
 {
-	int loser;
+	int loser = -1;
 
 	if (winner == TEAM_CT) {
 		g_cs_winstreak_ct++;
@@ -93,7 +93,7 @@ Money_HandleRoundReward(int winner)
 		if (g_cs_winstreak_ct >= 2) {
 			g_cs_bonus_ct = TRUE;
 		}
-	} else if (winner == TEAM_T) {
+	} else {
 		g_cs_winstreak_t++;
 		g_cs_winstreak_ct = 0;
 		g_cs_roundslost_ct++;

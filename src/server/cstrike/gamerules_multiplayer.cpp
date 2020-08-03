@@ -648,7 +648,8 @@ Recursive function that gets the next spawnpoint
 entity
 CSMultiplayerRules::PlayerFindSpawn(float t)
 {
-	entity point;
+	entity point = world;
+
 	if (t == TEAM_T) {
 		m_eLastTSpawn = find(m_eLastTSpawn, ::classname, "info_player_deathmatch");
 		

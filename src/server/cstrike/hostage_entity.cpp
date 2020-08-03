@@ -156,7 +156,7 @@ hostage_entity::Pain(int iHitBody)
 	if (g_dmg_eAttacker.classname != "player")
 		return;
 
-	Money_AddMoney(g_dmg_eAttacker, -(g_dmg_iDamage * 25));
+	Money_AddMoney((base_player)g_dmg_eAttacker, -(g_dmg_iDamage * 25));
 }
 
 void 
@@ -176,9 +176,9 @@ hostage_entity::Death(int iHitBody)
 		return;
 
 	if (g_dmg_iDamage >= 100)
-		Money_AddMoney(g_dmg_eAttacker, -2500);
+		Money_AddMoney((base_player)g_dmg_eAttacker, -2500);
 	else
-		Money_AddMoney(g_dmg_eAttacker, -500);
+		Money_AddMoney((base_player)g_dmg_eAttacker, -500);
 
 	Radio_BroadcastMessage(RADIO_HOSDOWN);
 }

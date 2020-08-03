@@ -80,7 +80,7 @@ CSEv_BuyWeapon_f(float fWeapon)
 		maxit = rules.MaxItemPerSlot(g_weapons[iWeapon].slot);
 		if (maxit > 0) {
 			int wantslot = g_weapons[iWeapon].slot;
-			int c;
+			int c = 0;
 			for (int i = 0; i < g_weapons.length; i++) {
 				if (pl.g_items & g_weapons[i].id && g_weapons[i].slot == wantslot) {
 					c++;
