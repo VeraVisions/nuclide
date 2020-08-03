@@ -198,7 +198,12 @@ scripted_sequence::Trigger(void)
 	}
 
 	f.m_iSequenceState = SEQUENCESTATE_ENDING;
-	f.think = CBaseMonster::FreeState;
+
+	if (spawnflags & SSFL_NOSCRIPTMOVE)
+		f.think = CBaseMonster::FreeState;
+	else
+		f.think = CBaseMonster::FreeStateMoved;
+
 	dprint(sprintf("\tEnding: %f\n", f.nextthink));
 }
 

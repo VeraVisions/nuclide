@@ -65,6 +65,8 @@ enum
 	MAL_ROGUE   /* no allies, not even amongst themselves */
 };
 
+.int m_iAlliance;
+
 class CBaseMonster:CBaseEntity
 {
 	vector oldnet_velocity;
@@ -81,12 +83,12 @@ class CBaseMonster:CBaseEntity
 	float m_flSequenceEnd;
 	float m_flSequenceSpeed;
 	vector m_vecSequenceAngle;
+	vector m_vecTurnAngle;
 
 	/* attack/alliance system */
 	entity m_eEnemy;
 	float m_flFOV;
 	float m_flAttackThink;
-	int m_iAlliance;
 	int m_iMState;
 	vector m_vecLKPos; /* last-known pos */
 
@@ -111,6 +113,7 @@ class CBaseMonster:CBaseEntity
 	/* see/hear subsystem */
 	float m_flSeeTime;
 	virtual void(void) SeeThink;
+	virtual float(void) SeeFOV;
 
 	/* attack system */
 	virtual void(void) AttackDraw;
@@ -121,6 +124,7 @@ class CBaseMonster:CBaseEntity
 
 	/* sequences */
 	virtual void(void) FreeState;
+	virtual void(void) FreeStateMoved;
 	virtual void(void) ClearRoute;
 	virtual void(void) CheckRoute;
 	virtual void(void) WalkRoute;
@@ -182,6 +186,25 @@ CBaseMonster::IdleNoise(void)
 
 }
 
+int
+CBaseMonster::IsFriend(int al)
+{
+
+	if (m_iAlliance == MAL_ROGUE)
+		return FALSE;
+	else if (al == m_iAlliance)
+		return TRUE;
+
+	return FALSE;
+}
+
+
+float
+CBaseMonster::SeeFOV(void)
+{
+	return 90;
+}
+
 void
 CBaseMonster::SeeThink(void)
 {
@@ -193,17 +216,19 @@ CBaseMonster::SeeThink(void)
 
 	m_flSeeTime = time + 0.25f;
 
-	for (entity w = world; (w = find(w, ::classname, "player"));) {
+	for (entity w = world; (w = findfloat(w, ::takedamage, DAMAGE_YES));) {
+		if (IsFriend(w.m_iAlliance))
+			continue;
 
 		if (w.health <= 0)
 			continue;
 
 		/* first, is the potential enemy in our field of view? */
-		makevectors(angles);
+		makevectors(v_angle);
 		vector v = normalize(w.origin - origin);
 		float flDot = v * v_forward;
 
-		if (flDot < 0.60)
+		if (flDot < SeeFOV()/180)
 			continue;
 
 		other = world;
@@ -223,8 +248,10 @@ CBaseMonster::AttackThink(void)
 	}
 
 	/* reset */
-	if (m_eEnemy && m_eEnemy.health <= 0)
+	if (m_eEnemy.solid == SOLID_CORPSE || (m_eEnemy && m_eEnemy.health <= 0)) {
 		m_eEnemy = __NULL__;
+		ClearRoute();
+	}
 
 	/* do we have a clear shot? */
 	other = world;
@@ -236,6 +263,7 @@ CBaseMonster::AttackThink(void)
 
 		/* FIXME: This is unreliable, but unlikely that a player ever is here */
 		if (m_vecLKPos != [0,0,0]) {
+			ClearRoute();
 			NewRoute(m_vecLKPos);
 			m_flSequenceSpeed = 140;
 			m_vecLKPos = [0,0,0];
@@ -327,6 +355,15 @@ CBaseMonster::FreeState(void)
 }
 
 void
+CBaseMonster::FreeStateMoved(void)
+{
+	vector new_origin;
+	new_origin = gettaginfo(this, 0);
+	SetOrigin(new_origin);
+	FreeState();
+}
+
+void
 CBaseMonster::CheckRoute(void)
 {
 	float flDist;
@@ -399,27 +436,39 @@ CBaseMonster::WalkRoute(void)
 		endangles = vectoangles(m_eEnemy.origin - origin);
 
 		/* TODO: lerp */
-		input_angles[1] = endangles[1];
-		return;
-	}
-
-	if (m_iNodes && m_iMState == MONSTER_IDLE) {
+		m_vecTurnAngle[1] = endangles[1];
+	} else if (m_iNodes && m_iMState == MONSTER_IDLE) {
 		/* we're on our last node */
 		if (m_iCurNode < 0) {
 			endangles = vectoangles(m_vecLastNode - origin);
 		} else {
 			endangles = vectoangles(m_pRoute[m_iCurNode].m_vecDest - origin);
 		}
-		input_angles[1] = endangles[1];
+		m_vecTurnAngle[1] = endangles[1];
 		input_movevalues = [m_flSequenceSpeed, 0, 0];
-	}
-
-	if (m_iMState == MONSTER_CHASING) {
+	} else if (m_iMState == MONSTER_CHASING) {
 		/* we've got 'em in our sights, just need to walk closer */
 		endangles = vectoangles(m_eEnemy.origin - origin);
 		input_movevalues = [140, 0, 0];
-		input_angles[1] = endangles[1];
+		m_vecTurnAngle[1] = endangles[1];
 	}
+
+	/* functional */
+	input_angles[1] = v_angle[1] = m_vecTurnAngle[1];
+
+	/* cosmetic */
+	vector new_ang;
+	vector old_ang;
+	vector tmp;
+	makevectors(m_vecTurnAngle);
+	new_ang = v_forward;
+	makevectors(angles);
+	old_ang = v_forward;	
+
+	tmp[0] = Math_Lerp(old_ang[0], new_ang[0], frametime * 5);
+	tmp[1] = Math_Lerp(old_ang[1], new_ang[1], frametime * 5);
+	tmp[2] = Math_Lerp(old_ang[2], new_ang[2], frametime * 5);
+	angles = vectoangles(tmp);
 }
 
 void
@@ -455,12 +504,12 @@ CBaseMonster::Physics(void)
 	input_movevalues = [0,0,0];
 	input_impulse = 0;
 	input_buttons = 0;
-	input_angles = angles = v_angle;
+	input_angles = v_angle;
 	input_timelength = frametime;
 
 	/* override whatever we did above with this */
 	if (m_iSequenceState == SEQUENCESTATE_ENDING) {
-		input_angles = angles = v_angle = m_vecSequenceAngle;
+		input_angles = v_angle = m_vecSequenceAngle;
 		SetFrame(m_flSequenceEnd);
 	} else if (movetype == MOVETYPE_WALK) {
 		SeeThink();
@@ -495,6 +544,8 @@ CBaseMonster::Physics(void)
 			think();
 		}
 	}
+
+	frame1time += frametime;
 }
 
 void
@@ -574,6 +625,7 @@ CBaseMonster::Respawn(void)
 	SendFlags = 0xff;
 	style = MONSTER_IDLE;
 	health = base_health;
+	m_eEnemy = __NULL__;
 
 	SetAngles(v_angle);
 	SetSolid(SOLID_SLIDEBOX);
@@ -599,5 +651,4 @@ CBaseMonster::CBaseMonster(void)
 
 	/* give us a 65 degree view cone */
 	m_flFOV = 1.0 / 65;
-	m_iAlliance = MAL_ROGUE;
 }

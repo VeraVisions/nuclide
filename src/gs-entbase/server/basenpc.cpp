@@ -443,21 +443,22 @@ CBaseNPC::Physics(void)
 	input_impulse = 0;
 	input_buttons = 0;
 	input_timelength = frametime;
-	input_angles = angles = v_angle;
+	input_angles = v_angle;
 
 	/* override whatever we did above with this */
 	if (m_iSequenceState == SEQUENCESTATE_ENDING) {
-		input_angles = angles = v_angle = m_vecSequenceAngle;
+		input_angles = v_angle = m_vecSequenceAngle;
 		SetFrame(m_flSequenceEnd);
 	} else {
 		if (style != MONSTER_DEAD) {
+			SeeThink();
 			AttackThink();
 			TalkPlayerGreet();
 			FollowChain();
 
 			if (m_eFollowing != world) {
 				FollowPlayer();
-				input_angles = angles = v_angle;
+				input_angles = v_angle;
 			} else if (m_iFlags & MONSTER_FEAR) {
 				PanicFrame();
 			} else {
@@ -502,6 +503,8 @@ CBaseNPC::Physics(void)
 			think();
 		}
 	}
+
+	frame1time += frametime;
 }
 
 void CBaseNPC::Respawn(void)

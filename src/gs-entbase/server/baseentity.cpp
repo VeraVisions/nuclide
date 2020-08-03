@@ -33,6 +33,7 @@ CBaseEntity::SetFrame(float newFrame)
 		return;
 
 	frame = newFrame;
+	frame1time = 0.0f;
 	SendFlags |= BASEFL_CHANGED_FRAME;
 }
 void
