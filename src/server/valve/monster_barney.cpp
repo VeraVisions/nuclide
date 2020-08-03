@@ -108,6 +108,7 @@ monster_barney::AttackRanged(void)
 	m_flAttackThink = time + 0.4f;
 
 	/* functional */
+	v_angle = vectoangles(m_eEnemy.origin - origin);
 	TraceAttack_FireBullets(1, origin + [0,0,16], 8, [0.01,0,01], 2);
 	Sound_Play(this, CHAN_WEAPON, "weapon_glock.fire");
 	return TRUE;
@@ -141,9 +142,9 @@ monster_barney::Pain(int iHitBody)
 
 	Sound_Speak(this, "monster_barney.pain");
 
-	SetFrame(BA_FLINCH_LA + floor(random(0, 5)));
+	AnimPlay(BA_FLINCH_LA + floor(random(0, 5)));
+	m_flAttackThink = m_flAnimTime;
 	m_iFlags |= MONSTER_FEAR;
-	m_flAnimTime = time + 0.25f;
 }
 
 void 
@@ -202,5 +203,6 @@ monster_barney::monster_barney(void)
 	base_health = Skill_GetValue("barney_health");
 	base_mins = [-16,-16,0];
 	base_maxs = [16,16,72];
+	m_iAlliance = MAL_FRIEND;
 	CBaseNPC::CBaseNPC();
 }
