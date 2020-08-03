@@ -112,6 +112,7 @@ enum
 class monster_human_grunt:CBaseNPC
 {
 	float m_flIdleTime;
+	int m_iMP5Burst;
 	
 	void(void) monster_human_grunt;
 	
@@ -120,9 +121,15 @@ class monster_human_grunt:CBaseNPC
 	virtual void(void) Respawn;
 	virtual void(int) Pain;
 	virtual void(int) Death;
+
 	virtual int(void) AnimIdle;
 	virtual int(void) AnimWalk;
 	virtual int(void) AnimRun;
+
+	virtual int(void) AttackRanged;
+	virtual int(void) AttackMelee;
+	virtual void(void) AttackKick;
+
 };
 
 int
@@ -141,6 +148,56 @@ int
 monster_human_grunt::AnimRun(void)
 {
 	return GR_RUN;
+}
+
+int
+monster_human_grunt::AttackMelee(void)
+{
+	/* visual */
+	AnimPlay(GR_FRONTKICK);
+
+	m_flAttackThink = m_flAnimTime;
+	Sound_Play(this, CHAN_VOICE, "monster_zombie.attack");
+
+	/* functional */
+	think = AttackKick;
+	nextthink = 0.25f;
+	return TRUE;
+}
+
+void
+monster_human_grunt::AttackKick(void)
+{
+	traceline(origin, m_eEnemy.origin, FALSE, this);
+
+	if (trace_fraction >= 1.0 || trace_ent.takedamage != DAMAGE_YES) {
+		//Sound_Play(this, CHAN_WEAPON, "monster_zombie.attackmiss");
+		return;
+	}
+
+	Damage_Apply(trace_ent, this, 25, 0, 0);
+	//Sound_Play(this, CHAN_WEAPON, "monster_zombie.attackhit");
+}
+
+int
+monster_human_grunt::AttackRanged(void)
+{
+	/* visual */
+	AnimPlay(GR_STANDSHOOTMP5);
+	Sound_Play(this, CHAN_WEAPON, "weapon_mp5.shoot");
+
+	if (m_iMP5Burst >= 2) {
+		m_iMP5Burst = 0;
+		m_flAttackThink = time + 0.4f;
+	} else {
+		m_iMP5Burst++;
+		m_flAttackThink = time + 0.1f;
+	}
+
+	/* functional */
+	v_angle = vectoangles(m_eEnemy.origin - origin);
+	TraceAttack_FireBullets(1, origin + [0,0,16], 8, [0.01,0,01], 2);
+	return TRUE;
 }
 
 void monster_human_grunt::Scream(void)
@@ -256,5 +313,6 @@ void monster_human_grunt::monster_human_grunt(void)
 	base_health = Skill_GetValue("hgrunt_health");
 	base_mins = [-16,-16,0];
 	base_maxs = [16,16,72];
+	m_iAlliance = MAL_ENEMY;
 	CBaseMonster::CBaseMonster();
 }
