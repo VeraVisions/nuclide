@@ -67,7 +67,92 @@ class monster_alien_slave:CBaseNPC
 	virtual void(int) Pain;
 	virtual void(void) IdleChat;
 	virtual void(void) Respawn;
+
+	virtual int(void) AnimIdle;
+	virtual int(void) AnimWalk;
+	virtual int(void) AnimRun;
+
+	virtual int(void) AttackMelee;
+	virtual void(void) AttackFlail;
+
+	virtual int(void) AttackRanged;
+	virtual void(void) AttackBeam;
 };
+
+int
+monster_alien_slave::AnimIdle(void)
+{
+	return SLV_IDLE;
+}
+
+int
+monster_alien_slave::AnimWalk(void)
+{
+	return SLV_WALK;
+}
+
+int
+monster_alien_slave::AnimRun(void)
+{
+	return SLV_RUN;
+}
+
+int
+monster_alien_slave::AttackMelee(void)
+{
+	/* visual */
+	AnimPlay(SLV_ATTACK);
+
+	m_flAttackThink = m_flAnimTime;
+
+	/* functional */
+	think = AttackFlail;
+	nextthink = 0.25f;
+	return TRUE;
+}
+
+void
+monster_alien_slave::AttackFlail(void)
+{
+	traceline(origin, m_eEnemy.origin, FALSE, this);
+
+	if (trace_fraction >= 1.0 || trace_ent.takedamage != DAMAGE_YES) {
+		Sound_Play(this, CHAN_WEAPON, "monster_zombie.attackmiss");
+		return;
+	}
+
+	Damage_Apply(trace_ent, this, 25, 0, 0);
+	Sound_Play(this, CHAN_WEAPON, "monster_zombie.attackhit");
+}
+
+int
+monster_alien_slave::AttackRanged(void)
+{
+	/* visual */
+	AnimPlay(SLV_ATTACKZAP);
+
+	m_flAttackThink = m_flAnimTime;
+	Sound_Play(this, CHAN_VOICE, "monster_alien_slave.attack_charge");
+
+	/* functional */
+	think = AttackBeam;
+	nextthink = time + 1.5f;
+	return TRUE;
+}
+
+void
+monster_alien_slave::AttackBeam(void)
+{
+	traceline(origin, m_eEnemy.origin, FALSE, this);
+	Sound_Play(this, CHAN_WEAPON, "monster_alien_slave.attack_shoot");
+
+	if (trace_fraction >= 1.0 || trace_ent.takedamage != DAMAGE_YES) {
+		//Sound_Play(this, CHAN_WEAPON, "monster_zombie.attackmiss");
+		return;
+	}
+
+	Damage_Apply(trace_ent, this, 100, 0, 0);
+}
 
 void 
 monster_alien_slave::IdleChat(void)
@@ -134,6 +219,10 @@ monster_alien_slave::monster_alien_slave(void)
 {
 	Sound_Precache("monster_alien_slave.die");
 	Sound_Precache("monster_alien_slave.pain");
+	Sound_Precache("monster_alien_slave.attack_charge");
+	Sound_Precache("monster_alien_slave.attack_shoot");
+	Sound_Precache("monster_zombie.attackhit");
+	Sound_Precache("monster_zombie.attackmiss");
 
 	m_talkAnswer = "";
 	m_talkAsk = "";
@@ -160,5 +249,6 @@ monster_alien_slave::monster_alien_slave(void)
 	base_health = Skill_GetValue("islave_health");
 	base_mins = [-16,-16,0];
 	base_maxs = [16,16,72];
+	m_iAlliance = MAL_ALIEN;
 	CBaseNPC::CBaseNPC();
 }
