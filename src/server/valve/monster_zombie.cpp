@@ -89,7 +89,6 @@ class monster_zombie:CBaseMonster
 	virtual void(void) AttackFlail;
 };
 
-
 int
 monster_zombie::AnimIdle(void)
 {
@@ -138,9 +137,6 @@ monster_zombie::AttackFlail(void)
 
 	Damage_Apply(trace_ent, this, 25, 0, 0);
 	Sound_Play(this, CHAN_WEAPON, "monster_zombie.attackhit");
-
-	if (m_eEnemy.health <= 0)
-		m_eEnemy = __NULL__;
 }
 
 void
