@@ -54,6 +54,7 @@ class trigger_changelevel:CBaseTrigger
 	void(void) trigger_changelevel;
 	virtual void(void) Change;
 	virtual void(void) Trigger;
+	virtual void(void) TouchTrigger;
 	virtual void(void) Respawn;
 	virtual int(entity, entity) IsInside;
 };
@@ -74,38 +75,38 @@ trigger_changelevel::IsInside(entity ePlayer, entity eVolume)
 void
 trigger_changelevel::Change(void)
 {
-	if (m_strLandmark) {
-		info_landmark landmark;
-
-		/* a trigger_transition may share the same targetname, thus we do this */
-		for (entity e = world; (e = find(e, ::classname, "info_landmark"));) {
-			info_landmark lm = (info_landmark)e;
-			/* found it */
-			if (lm.m_strTargetName == m_strLandmark) {
-				dprint(sprintf("^2trigger_changelevel::^3Change^7: Found landmark for %s\n", m_strLandmark));
-				landmark = lm;
-				g_landmarkpos = m_activator.origin - landmark.origin;
-			}
-		}
-		changelevel(m_strMap, m_strLandmark);
-	} else {
+	/* standard level change */
+	if (!m_strLandmark) {
 		dprint(sprintf("^2trigger_changelevel::^3Change^7: Change to `%s`\n", 
 			m_strMap));
 		changelevel(m_strMap);
+		return;
+	}
+
+	/* a trigger_transition may share the same targetname, thus we do this */
+	for (entity e = world; (e = find(e, ::classname, "info_landmark"));) {
+		info_landmark lm = (info_landmark)e;
+		/* found it */
+		if (lm.m_strTargetName == m_strLandmark) {
+			dprint(sprintf("^2trigger_changelevel::^3Change^7: Found landmark for %s\n", m_strLandmark));
+			g_landmarkpos = m_activator.origin - lm.origin;
+			changelevel(m_strMap, m_strLandmark);
+			break;
+		}
 	}
 }
 
 void
 trigger_changelevel::Trigger(void)
 {
-	if (time < 5) {
+	/* this means a delayed trigger is active */
+	if (nextthink > 0.0f)
 		return;
-	}
 
 	/* eActivator == player who triggered the damn thing */
 	m_activator = eActivator;
 
-	if (!(eActivator.flags & FL_CLIENT))
+	if (eActivator.classname != "player")
 		return;
 
 	if (m_flChangeDelay) {
@@ -119,18 +120,27 @@ trigger_changelevel::Trigger(void)
 }
 
 void
+trigger_changelevel::TouchTrigger(void)
+{
+	eActivator = other;
+	Trigger();
+}
+
+void
 trigger_changelevel::Respawn(void)
 {
 	InitBrushTrigger();
 
 	if (!(spawnflags & LC_USEONLY)) {
-		touch = Trigger;
+		touch = TouchTrigger;
 	}
 }
 
 void
 trigger_changelevel::trigger_changelevel(void)
 {
+	CBaseTrigger::CBaseTrigger();
+
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
 		case "map":
@@ -146,22 +156,18 @@ trigger_changelevel::trigger_changelevel(void)
 			break;
 		}
 	}
-	CBaseTrigger::CBaseTrigger();
 }
 
 vector
 Landmark_GetSpot(void)
 {
-	info_landmark landmark = world;
-
 	/* a trigger_transition may share the same targetname, thus we do this */
 	for (entity e = world; (e = find(e, ::classname, "info_landmark"));) {
 		info_landmark lm = (info_landmark)e;
 		/* found it */
 		if (lm.m_strTargetName == startspot) {
 			dprint(sprintf("^3Landmark_GetSpot^7: Found landmark for %s\n", startspot));
-			landmark = lm;
-			return landmark.origin + g_landmarkpos;
+			return lm.origin + g_landmarkpos;
 		}
 	}
 
