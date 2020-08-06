@@ -23,10 +23,10 @@ BASEGAME valve
 -set gameinfo_hlversion "1110"
 -set gameinfo_svonly "0"
 -set gameinfo_menutrack ""
+-set gameinfo_chatroom "halflife"
 
 DOWNLOADSURL http://www.frag-net.com/dl/valve_packages
 UPDATEURL http://www.frag-net.com/mods/valve.fmf
-INSTALL "valve_essential;free_essential;addons_essential"
 
 // you don't really want to change these
 RTCBROKER master.frag-net.com:27950

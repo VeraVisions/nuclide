@@ -23,7 +23,8 @@ BASEGAME cstrike
 -set gameinfo_svonly "0"
 -set gameinfo_url_info "www.counter-strike.net"
 -set gameinfo_url_dl "http://www.frag-net.com/mods/cstrike.fmf"
--set gameinfo_menutrack "sound/ambience/Opera.wav"
+-set gameinfo_menutrack ""
+-set gameinfo_chatroom "freecs"
 
 DOWNLOADSURL http://www.frag-net.com/dl/cstrike_packages
 UPDATEURL http://www.frag-net.com/mods/cstrike.fmf
