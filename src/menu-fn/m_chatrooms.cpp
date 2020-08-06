@@ -231,9 +231,17 @@ void
 cr_makeconnection(void)
 {
 	int i;
+	string channel;
 	i = TCP_Connect(&tcp_irc, "tcp://irc.frag-net.com:6667");
 
-	g_ircroom.m_strChannel = sprintf("#%s", cvar_string("game"));
+	channel = games[gameinfo_current].chatroom;
+
+	/* we're already setting a default channel, but a mod might set it
+	   set it to something empty to mess with us */
+	if (!channel)
+		channel = cvar_string("game");
+
+	g_ircroom.m_strChannel = sprintf("#%s", channel);
 	irc_send("USER guest fn irc.won.net :Player\n");
 
 	/* attempt to force our nickname to be the same as in-game.

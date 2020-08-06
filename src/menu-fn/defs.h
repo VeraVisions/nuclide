@@ -60,7 +60,7 @@ typedef struct
 	int cldll;
 	string type;
 	string hlversion;
-	string pkg_repo;
+	string pkgname;
 	int nomodels;
 	int installed;
 	string mpentity;
@@ -68,6 +68,7 @@ typedef struct
 	string startmap;
 	string trainingmap;
 	string fallback_dir;
+	string chatroom;
 } gameinfo_t;
 
 var int gameinfo_current = -1;

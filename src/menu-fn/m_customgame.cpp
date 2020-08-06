@@ -1,4 +1,4 @@
-/*
+	/*
  * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
@@ -79,6 +79,7 @@ games_init(void)
 		games[id].hlversion = "1000";
 		games[id].svonly = 0;
 		games[id].installed = 1;
+		games[id].chatroom = gamedirname;
 
 		for (int i = 0; i < county; i++) {
 			switch(argv(i)) {
@@ -148,8 +149,11 @@ games_init(void)
 			case "gameinfo_menutrack":
 				cvar_set("gameinfo_menutrack", argv(i+1));
 				break;
-			case "gameinfo_pkgrepo":
-				games[id].pkg_repo = argv(i+1);
+			case "gameinfo_pkgname":
+				games[id].pkgname = argv(i+1);
+				break;
+			case "gameinfo_chatroom":
+				games[id].chatroom = argv(i+1);
 				break;
 			default:
 				break;
