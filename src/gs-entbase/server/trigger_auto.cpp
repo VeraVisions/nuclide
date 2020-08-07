@@ -27,6 +27,7 @@ It will not survive round respawns, etc.
 
 class trigger_auto:CBaseTrigger
 {
+	int m_iTriggerState;
 	float m_flDelay;
 
 	void(void) trigger_auto;
@@ -40,11 +41,10 @@ trigger_auto::Processing(void)
 	// This is weird, because ents may not be spawned yet.
 	// However, Half-Life doesn't care about this, either.
 	// So why should we?
-	CBaseTrigger::UseTargets_Delay(TRIG_TOGGLE, m_flDelay);
+	CBaseTrigger::UseTargets_Delay(m_iTriggerState, m_flDelay);
 
 	if (spawnflags & 1) {
-		dprint(sprintf("^2trigger_auto::^3think^7: %s triggerer removed self\n", 
-			m_strTarget));
+		dprint(sprintf("^2trigger_auto::^3think^7: %s triggerer removed self\n",  m_strTarget));
 		think = __NULL__;
 	}
 }
@@ -58,10 +58,15 @@ trigger_auto::Respawn(void)
 void
 trigger_auto::trigger_auto(void)
 {
+	m_iTriggerState = TRIG_TOGGLE;
+
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {
 		case "delay":
 			m_flDelay = stof(argv(i+1));
+			break;
+		case "triggerstate":
+			m_iTriggerState = stoi(argv(i+1));
 			break;
 		default:
 			break;

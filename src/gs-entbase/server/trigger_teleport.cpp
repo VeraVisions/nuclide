@@ -42,7 +42,7 @@ trigger_teleport::touch(void)
 		return;
 	if (spawnflags & TRIGTELE_NOCLIENTS && other.flags & FL_CLIENT)
 		return;
-	if (spawnflags & TRIGTELE_MONSTERS && !(other.flags & FL_MONSTER))
+	if (!(spawnflags & TRIGTELE_MONSTERS) && other.flags & FL_MONSTER)
 		return;
 
 	if (other.health > 0 || other.solid == SOLID_SLIDEBOX) {
