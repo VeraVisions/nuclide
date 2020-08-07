@@ -62,6 +62,15 @@ class CBaseEntity
 void
 CBaseEntity::RenderFXPass(void)
 {
+	vector vecPlayer;
+#ifdef WASTES
+	vecPlayer = [0,0,0];
+#else
+	int s = (float)getproperty(VF_ACTIVESEAT);
+	pSeat = &g_seats[s];
+	vecPlayer = pSeat->m_vecPredictedOrigin;
+#endif
+
 	colormod = m_vecRenderColor;
 	alpha = m_flRenderAmt;
 
@@ -74,15 +83,6 @@ CBaseEntity::RenderFXPass(void)
 	case RM_TEXTURE:
 		break;
 	case RM_GLOW:
-		vector vecPlayer;
-#ifdef WASTES
-		vecPlayer = [0,0,0];
-#else
-		int s = (float)getproperty(VF_ACTIVESEAT);
-		pSeat = &g_seats[s];
-		vecPlayer = pSeat->m_vecPredictedOrigin;
-#endif
-
 		if (checkpvs(vecPlayer, this) == FALSE) {
 			alpha -= clframetime;
 		}
@@ -149,7 +149,7 @@ CBaseEntity::RenderFXPass(void)
 			renderflags |= RF_USEAXIS;
 		}
 
-		dist = vlen(getproperty(VF_ORIGIN) - origin);
+		dist = vlen(vecPlayer - origin);
 		if (dist < 256) {
 			float distalpha = dist / 256;
 			alpha = 1.0 - distalpha;
