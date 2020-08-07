@@ -98,7 +98,7 @@ class func_door:CBaseTrigger
 	virtual void(void) Arrived;
 	virtual void(void) Returned;
 	virtual void(void) Respawn;
-	virtual void(void) Trigger;
+	virtual void(int) Trigger;
 	virtual void(void) Blocked;
 	virtual void(void) Touch;
 	virtual void(void) Use;
@@ -109,7 +109,7 @@ void
 func_door::Use(void)
 {
 	eActivator.gflags &= ~GF_USE_RELEASED;
-	Trigger();
+	Trigger(TRIG_TOGGLE);
 }
 
 void
@@ -154,7 +154,7 @@ func_door::Returned(void)
 		t = (CBaseTrigger)find(world, CBaseTrigger::m_strTargetName, m_strFire);
 		
 		if (t) {
-			t.Trigger();
+			t.Trigger(TRIG_TOGGLE);
 		}
 	}
 
@@ -174,6 +174,7 @@ func_door::MoveBack(void)
 		touch = __NULL__;
 	}
 
+	m_iValue = 0;
 	m_iState = DOORSTATE_DOWN;
 	MoveToDestination(m_vecPos1, Returned);
 }
@@ -198,13 +199,17 @@ func_door::MoveAway(void)
 		}
 	}
 
+	m_iValue = 1;
 	m_iState = DOORSTATE_UP;
 	MoveToDestination(m_vecPos2, Arrived);
 }
 
 void
-func_door::Trigger(void)
+func_door::Trigger(int state)
 {
+	if (GetMaster() == 0)
+		return;
+
 	if (m_flNextTrigger > time) {
 		if (!(spawnflags & SF_MOV_TOGGLE)) {
 			return;
@@ -215,9 +220,9 @@ func_door::Trigger(void)
 	/* only trigger stuff once we are done moving */
 	if ((m_iState == DOORSTATE_RAISED) || (m_iState == DOORSTATE_LOWERED)) {
 		if (m_flDelay > 0) {
-			CBaseTrigger::UseTargets_Delay(m_flDelay);
+			CBaseTrigger::UseTargets_Delay(TRIG_TOGGLE, m_flDelay);
 		} else {
-			CBaseTrigger::UseTargets();
+			CBaseTrigger::UseTargets(TRIG_TOGGLE);
 		}
 	}
 
@@ -243,7 +248,7 @@ func_door::Touch(void)
 	if (other.movetype == MOVETYPE_WALK) {
 		if (other.absmin[2] <= maxs[2] - 2) {
 			eActivator = other;
-			Trigger();
+			Trigger(TRIG_TOGGLE);
 		}
 	}
 }
@@ -368,6 +373,7 @@ func_door::Respawn(void)
 		PlayerUse = __NULL__;
 	}
 
+	m_iValue = 0;
 	m_iState = DOORSTATE_LOWERED;
 	m_vecPos1 = m_oldOrigin;
 	m_vecPos2 = (m_vecPos1 + m_vecMoveDir * (fabs(m_vecMoveDir * size) - m_flLip));
@@ -376,6 +382,7 @@ func_door::Respawn(void)
 		SetOrigin(m_vecPos2);
 		m_vecPos2 = m_vecPos1;
 		m_vecPos1 = origin;
+		m_iValue = 1;
 	}
 
 	if (m_strTargetName) {

@@ -37,7 +37,7 @@ void item_suit::touch(void)
 	sound(other, CHAN_ITEM, "items/tr_kevlar.wav", 1, ATTN_NORM);
 	pl.g_items |= ITEM_SUIT;
 
-	CBaseTrigger::UseTargets();
+	CBaseTrigger::UseTargets(TRIG_TOGGLE);
 
 	if (cvar("sv_playerslots") == 1) {
 		remove(self);

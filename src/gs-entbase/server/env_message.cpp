@@ -41,11 +41,11 @@ class env_message:CBaseTrigger
 
 	void(void) env_message;
 
-	virtual void(void) Play;
+	virtual void(int) Play;
 	virtual void(void) Respawn;
 };
 
-void env_message::Play(void)
+void env_message::Play(int state)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_MESSAGE);

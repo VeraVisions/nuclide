@@ -30,16 +30,16 @@ class trigger_camera:CBaseTrigger
 	float m_flWait;
 
 	void(void) trigger_camera;
-	virtual void(void) Trigger;
+	virtual void(int) Trigger;
 };
 
 void
-trigger_camera::Trigger(void)
+trigger_camera::Trigger(int state)
 {
 	if (m_flDelay > 0) {
-		CBaseTrigger::UseTargets_Delay(m_flDelay);
+		CBaseTrigger::UseTargets_Delay(TRIG_TOGGLE, m_flDelay);
 	} else {
-		CBaseTrigger::UseTargets();
+		CBaseTrigger::UseTargets(TRIG_TOGGLE);
 	}
 
 	if (m_strMoveTo) {

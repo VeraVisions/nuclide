@@ -45,10 +45,11 @@ class func_pendulum:CBaseTrigger
 
 	virtual void(void) customphysics;
 	virtual void(void) Respawn;
-	virtual void(void) Trigger;
+	virtual void(int) Trigger;
 };
 
-void func_pendulum::customphysics(void)
+void
+func_pendulum::customphysics(void)
 {
 	if (!m_iActive)
 		return;
@@ -65,15 +66,26 @@ void func_pendulum::customphysics(void)
 	angles *= m_flDistance;
 }
 
-void func_pendulum::Trigger(void)
+void
+func_pendulum::Trigger(int state)
 {
-	m_iActive = 1 - m_iActive;
+	switch (state) {
+	case TRIG_OFF:
+		m_iActive = 0;
+		break;
+	case TRIG_ON:
+		m_iActive = 1;
+		break;
+	default:
+		m_iActive = 1 - m_iActive;
+	}
 
-	if (m_iActive == FALSE && spawnflags & FUNCPEND_RETURNONTRIGGER)
+	if (m_iActive == 0 && spawnflags & FUNCPEND_RETURNONTRIGGER)
 		angles = [0,0,0];
 }
 
-void func_pendulum::Respawn(void)
+void
+func_pendulum::Respawn(void)
 {
 	if (spawnflags & FUNCPEND_STARTON)
 		m_iActive = TRUE;
@@ -88,7 +100,8 @@ void func_pendulum::Respawn(void)
 	SetOrigin(origin);
 }
 
-void func_pendulum::func_pendulum(void)
+void
+func_pendulum::func_pendulum(void)
 {
 	CBaseTrigger::CBaseTrigger();
 

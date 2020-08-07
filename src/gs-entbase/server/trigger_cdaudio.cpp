@@ -26,12 +26,13 @@ class trigger_cdaudio:CBaseTrigger
 	int m_iCDTrack;
 	void(void) trigger_cdaudio;
 
-	virtual void(void) Trigger;
+	virtual void(int) Trigger;
 	virtual void(void) Respawn;
+	virtual void(void) touch;
 };
 
 void
-trigger_cdaudio::Trigger(void)
+trigger_cdaudio::Trigger(int unused)
 {
 	if (!(other.flags & FL_CLIENT)) {
 		return;
@@ -47,6 +48,12 @@ trigger_cdaudio::Trigger(void)
 	multicast([0,0,0], MULTICAST_ALL_R);
 
 	remove(this);
+}
+
+void
+trigger_cdaudio::touch(void)
+{
+	Trigger(TRIG_TOGGLE);
 }
 
 void
@@ -69,5 +76,4 @@ trigger_cdaudio::trigger_cdaudio(void)
 	}
 	CBaseTrigger::CBaseTrigger();
 	CBaseTrigger::InitBrushTrigger();
-	touch = Trigger;
 }

@@ -38,13 +38,18 @@ class button_target:CBaseTrigger
 	void(void) button_target;
 
 	virtual void(void) Respawn;
-	virtual void(void) Trigger;
+	virtual void(int) Trigger;
 	virtual void(int) Damage;
 };
 
 void
 button_target::Respawn(void)
 {
+	/* yuck */
+	static void PUseWrapper(void) {
+		Trigger(TRIG_TOGGLE);
+	}
+
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid(SOLID_BSP);
 	SetModel(m_oldModel);
@@ -52,7 +57,7 @@ button_target::Respawn(void)
 
 	/* it's either one or the other */
 	if (spawnflags & BUTTA_USE) {
-		PlayerUse = Trigger;
+		PlayerUse = PUseWrapper;
 	} else {
 		health = 1;
 		takedamage = DAMAGE_YES;
@@ -64,20 +69,20 @@ button_target::Respawn(void)
 }
 
 void
-button_target::Trigger(void)
+button_target::Trigger(int status)
 {
 	/* make unusable */
 	PlayerUse = __NULL__;
 	takedamage = DAMAGE_NO;
 
 	frame = 1 - frame;
-	UseTargets();
+	UseTargets(status);
 }
 
 void
 button_target::Damage(int hit)
 {
-	Trigger();
+	Trigger(TRIG_TOGGLE); /* TODO: Set state? */
 }
 
 void

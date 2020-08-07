@@ -53,7 +53,7 @@ class trigger_changelevel:CBaseTrigger
 
 	void(void) trigger_changelevel;
 	virtual void(void) Change;
-	virtual void(void) Trigger;
+	virtual void(int) Trigger;
 	virtual void(void) TouchTrigger;
 	virtual void(void) Respawn;
 	virtual int(entity, entity) IsInside;
@@ -97,7 +97,7 @@ trigger_changelevel::Change(void)
 }
 
 void
-trigger_changelevel::Trigger(void)
+trigger_changelevel::Trigger(int unused)
 {
 	/* this means a delayed trigger is active */
 	if (nextthink > 0.0f)
@@ -123,7 +123,7 @@ void
 trigger_changelevel::TouchTrigger(void)
 {
 	eActivator = other;
-	Trigger();
+	Trigger(TRIG_TOGGLE);
 }
 
 void

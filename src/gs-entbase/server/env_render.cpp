@@ -36,11 +36,11 @@ enumflags
 class env_render:CBaseTrigger
 {
 	void(void) env_render;
-	virtual void(void) Trigger;
+	virtual void(int) Trigger;
 };
 
 void
-env_render::Trigger(void)
+env_render::Trigger(int state)
 {
 	for (entity e = world;
 		(e = find(e, CBaseEntity::m_strTargetName, m_strTarget));) {

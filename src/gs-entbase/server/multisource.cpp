@@ -26,12 +26,13 @@ class multisource:CBaseTrigger
 {
 	void(void) multisource;
 
-	virtual int(void) GetValue;
-	virtual void(void) Trigger;
+	virtual void(void) Respawn;
+	virtual int(void) QueryTargets;
+	virtual void(int) Trigger;
 };
 
 int
-multisource::GetValue(void)
+multisource::QueryTargets(void)
 {
 	entity a;
 	int out = TRUE;
@@ -39,36 +40,46 @@ multisource::GetValue(void)
 	/* normal triggers */
 	for (a = world; (a = find(a, CBaseTrigger::m_strTarget, m_strTargetName));) {
 		CBaseTrigger tTemp = (CBaseTrigger) a;
-#ifdef GS_DEVELOPER
-		dprint("[^1MULTISOURCE^7] ");
-		dprint(tTemp.classname);
-		if (tTemp.GetValue() == FALSE) {
-			dprint(" is ^1OFF^7, name: ");
-			out = FALSE;
+		if (cvar("developer") == 1) {
+			dprint("[^1MULTISOURCE^7] ");
+			dprint(tTemp.classname);
+			if (tTemp.GetValue() == FALSE) {
+				dprint(" is ^1OFF^7, name: ");
+				out = FALSE;
+			} else {
+				dprint(" is ^2ON^7, name: ");
+			}
+			dprint(tTemp.m_strTargetName);
+			dprint("\n");
 		} else {
-			dprint(" is ^2ON^7, name: ");
+			/* exit out immediately as there's no point unless in-dev */
+			if (tTemp.GetValue() == FALSE) {
+				return FALSE;
+			}
 		}
-		dprint(tTemp.m_strTargetName);
-		dprint("\n");
-#else
-		/* exit out immediately as there's no point unless in-dev */
-		if (tTemp.GetValue() == FALSE) {
-			return FALSE;
-		}
-#endif
 	}
 
 	return out;
 }
 
 void
-multisource::Trigger(void)
+multisource::Trigger(int unused)
 {
-	if (GetValue() == FALSE) {
+	if (QueryTargets() == FALSE) {
+		dprint(sprintf("[^1MULTISOURCE^7] %s is inactive.\n", m_strTargetName));
+		m_iValue = FALSE;
 		return;
 	}
 
-	CBaseTrigger::UseTargets();
+	dprint(sprintf("[^1MULTISOURCE^7] %s is now active.\n", m_strTargetName));
+	m_iValue = TRUE;
+	CBaseTrigger::UseTargets(TRIG_TOGGLE);
+}
+
+void
+multisource::Respawn(void)
+{
+	m_iValue = FALSE;
 }
 
 void

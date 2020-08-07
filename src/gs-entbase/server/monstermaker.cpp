@@ -55,7 +55,7 @@ class monstermaker:CBaseTrigger
 	void(void) monstermaker;
 
 	virtual void(void) Spawner;
-	virtual void(void) Trigger;
+	virtual void(int) Trigger;
 	virtual void(void) Respawn;
 	virtual void(void) TurnOn;
 	virtual void(void) TurnOff;
@@ -142,7 +142,7 @@ monstermaker::Spawner(void)
 		m_iMonsterSpawned++;
 
 		if (m_strTarget) {
-			UseTargets();
+			UseTargets(TRIG_TOGGLE);
 		}
 
 		/* inherit the monsterclip flag */
@@ -170,12 +170,21 @@ monstermaker::Spawner(void)
 }
 
 void
-monstermaker::Trigger(void)
+monstermaker::Trigger(int state)
 {
-	if (m_iEnabled)
+	switch (state) {
+	case TRIG_OFF:
 		TurnOff();
-	else
+		break;
+	case TRIG_ON:
 		TurnOn();
+		break;
+	default:
+		if (m_iEnabled)
+			TurnOff();
+		else
+			TurnOn();
+	}
 }
 
 void

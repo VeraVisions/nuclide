@@ -34,12 +34,22 @@ class func_wall_toggle:CBaseTrigger
 
 	void(void) func_wall_toggle;
 	virtual void(void) Respawn;
-	virtual void(void) Trigger;
+	virtual void(int) Trigger;
 };
 
-void func_wall_toggle::Trigger(void)
+void
+func_wall_toggle::Trigger(int state)
 {
-	m_iVisible = 1 - m_iVisible;
+	switch (state) {
+	case TRIG_OFF:
+		m_iVisible = 0;
+		break;
+	case TRIG_ON:
+		m_iVisible = 1;
+		break;
+	default:
+		m_iVisible = 1 - m_iVisible;
+	}
 
 	if (m_iVisible) {
 		modelindex = m_oldmodelindex;
@@ -50,7 +60,8 @@ void func_wall_toggle::Trigger(void)
 	}
 }
 
-void func_wall_toggle::Respawn(void)
+void
+func_wall_toggle::Respawn(void)
 {
 	movetype = MOVETYPE_PUSH;
 	solid = SOLID_BSP;
@@ -60,11 +71,12 @@ void func_wall_toggle::Respawn(void)
 	m_oldmodelindex = modelindex;
 
 	if (spawnflags & FTW_STARTHIDDEN) {
-		Trigger();
+		Trigger(TRIG_OFF);
 	}
 }
 
-void func_wall_toggle::func_wall_toggle(void)
+void
+func_wall_toggle::func_wall_toggle(void)
 {
 	precache_model(model);
 	CBaseTrigger::CBaseTrigger();

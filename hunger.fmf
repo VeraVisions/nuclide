@@ -23,12 +23,7 @@ BASEGAME hunger
 -set gameinfo_url_info "www.planethalflife.com/manke"
 -set gameinfo_url_dl "http://www.frag-net.com/mods/hunger.fmf"
 -set gameinfo_menutrack "sound/song/you_are.wav"
-
-// download/update packaging information
-// PACKAGE hunger/pak0.pak 0xc1cbd5c1 "http://www.frag-net.com/files/hunger_pak0.pak"
-
-// do we want this? I don't want to automatically update it
-// UPDATEURL http://www.frag-net.com/mods/hunger.fmf
+-set gameinfo_pkgname "cg_hunger"
 
 // you don't really want to change these
 RTCBROKER master.frag-net.com:27950

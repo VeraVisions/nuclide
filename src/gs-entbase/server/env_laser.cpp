@@ -54,7 +54,7 @@ class env_laser:CBaseTrigger
 	void(void) env_laser;
 
 	virtual void(void) think;
-	virtual void(void) Trigger;
+	virtual void(int) Trigger;
 	virtual void(void) Respawn;
 	virtual void(void) ParentUpdate;
 	virtual float(entity, float) SendEntity;
@@ -85,10 +85,19 @@ void env_laser::think(void)
 	}
 }
 
-void env_laser::Trigger(void)
+void env_laser::Trigger(int state)
 {
-	m_iState = 1 - m_iState;
-	
+	switch (state) {
+	case TRIG_OFF:
+		m_iState = 0;
+		break;
+	case TRIG_ON:
+		m_iState = 1;
+		break;
+	default:
+		m_iState = 1 - m_iState;
+	}
+
 	if (m_iState) {
 		nextthink = time;
 	} else {

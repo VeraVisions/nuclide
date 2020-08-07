@@ -37,19 +37,9 @@ class func_guntarget:CBaseTrigger
 	virtual void(void) NextPath;
 	virtual void(void) Move;
 	virtual void(void) Stop;
-	virtual void(void) Trigger;
+	virtual void(int) Trigger;
 	virtual void(int) Death;
-	virtual int(void) GetValue;
 };
-
-int func_guntarget::GetValue(void)
-{
-	if (health <= 0) {
-		return TRUE;
-	} else {
-		return FALSE;
-	}
-}
 
 void func_guntarget::Move(void)
 {
@@ -114,7 +104,7 @@ void func_guntarget::Death(int iHitBody)
 
 	for (a = world; (a = find(a, CBaseTrigger::m_strTargetName, m_strFire));) {
 		CBaseTrigger trigger = (CBaseTrigger)a;
-		trigger.Trigger();
+		trigger.Trigger(TRIG_TOGGLE);
 	}
 }
 
@@ -126,28 +116,35 @@ void func_guntarget::Stop(void)
 	think = __NULL__;
 }
 
-void func_guntarget::Trigger(void)
+/* TODO: Handle state? */
+void func_guntarget::Trigger(int state)
 {
-	flags = (1<<FL_FROZEN) | flags;
+	flags = (1 << FL_FROZEN) | flags;
 
 	if (flags & FL_FROZEN) {
 		takedamage = DAMAGE_NO;
 		Stop();
+		m_iValue = 1;
 	} else {
 		takedamage = DAMAGE_YES;
 		NextPath();
+		m_iValue = 0;
 	}
 }
 
 void func_guntarget::Respawn(void)
 {
+	static void ThinkWrap(void) {
+		Trigger(TRIG_TOGGLE);
+	}
+
 	SetSolid(SOLID_BSP);
 	SetMovetype(MOVETYPE_PUSH);
 	SetModel(m_oldModel);
 	SetOrigin(m_oldOrigin);
 
 	if (spawnflags & SF_GUNTARGET_ON) {
-		think = Trigger;
+		think = ThinkWrap;
 		nextthink = ltime + 0.25f;
 	}
 }

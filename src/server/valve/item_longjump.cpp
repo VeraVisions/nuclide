@@ -47,7 +47,7 @@ void item_longjump::touch(void)
 	sound(other, CHAN_VOICE, "fvox/powermove_on.wav", 1, ATTN_NORM);
 	pl.g_items |= ITEM_LONGJUMP;
 
-	CBaseTrigger::UseTargets();
+	CBaseTrigger::UseTargets(TRIG_TOGGLE);
 
 	if (real_owner || cvar("sv_playerslots") == 1) {
 		remove(self);

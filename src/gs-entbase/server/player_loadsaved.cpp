@@ -36,7 +36,7 @@ class player_loadsaved:CBaseTrigger
 	float m_flFadeHold;
 
 	void(void) player_loadsaved;
-	virtual void(void) Trigger;
+	virtual void(int) Trigger;
 	virtual void(void) ReloadSave;
 };
 
@@ -47,7 +47,7 @@ player_loadsaved::ReloadSave(void)
 }
 
 void
-player_loadsaved::Trigger(void)
+player_loadsaved::Trigger(int unused)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_FADE);

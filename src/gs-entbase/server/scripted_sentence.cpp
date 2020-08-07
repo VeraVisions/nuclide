@@ -38,11 +38,11 @@ class scripted_sentence:CBaseTrigger
 	float m_flDuration;
 
 	void(void) scripted_sentence;
-	virtual void(void) Trigger;
+	virtual void(int state) Trigger;
 };
 
 void
-scripted_sentence::Trigger(void)
+scripted_sentence::Trigger(int unused)
 {
 	entity speaker = find(world, CBaseEntity::m_strTargetName, m_strSpeaker);
 

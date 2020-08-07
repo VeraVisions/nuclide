@@ -23,11 +23,11 @@ Strips the activator of all of its weapons.
 class player_weaponstrip:CBaseTrigger
 {
 	void(void) player_weaponstrip;
-	virtual void(void) Trigger;
+	virtual void(int) Trigger;
 };
 
 void
-player_weaponstrip::Trigger(void)
+player_weaponstrip::Trigger(int unused)
 {
 	base_player pl;
 

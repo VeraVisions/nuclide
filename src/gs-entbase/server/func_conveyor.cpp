@@ -33,12 +33,13 @@ class func_conveyor:CBaseTrigger
 	void(void) func_conveyor;
 
 	virtual void(void) Respawn;
-	virtual void(void) Trigger;
+	virtual void(int) Trigger;
 	virtual void(void) touch;
 	virtual void(void) SetMovementDirection;
 };
 
-void func_conveyor::SetMovementDirection(void)
+void
+func_conveyor::SetMovementDirection(void)
 {
 	if (angles == [0,-1,0]) {
 		m_vecMoveDir = [0,0,1];
@@ -50,18 +51,22 @@ void func_conveyor::SetMovementDirection(void)
 	}
 }
 
-void func_conveyor::touch(void)
+void
+func_conveyor::touch(void)
 {
 	other.basevelocity = m_vecMoveDir * m_flSpeed;
 }
 
-void func_conveyor::Trigger(void)
+/* TODO: Handle state? */
+void 
+func_conveyor::Trigger(int state)
 {
 	/* changes direction */
 	m_flSpeed = -m_flSpeed;
 }
 
-void func_conveyor::Respawn(void)
+void
+func_conveyor::Respawn(void)
 {
 	m_vecMoveDir = [0,0,0];
 	angles = m_oldAngle;
@@ -87,7 +92,8 @@ void func_conveyor::Respawn(void)
 	SetAngles([0,0,0]);
 }
 
-void func_conveyor::func_conveyor(void)
+void
+func_conveyor::func_conveyor(void)
 {
 	CBaseTrigger::CBaseTrigger();
 }

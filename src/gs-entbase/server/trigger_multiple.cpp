@@ -48,6 +48,9 @@ trigger_multiple::touch(void)
 {
 	eActivator = other;
 
+	if (GetMaster() == FALSE)
+		return;
+
 	if (Rules_IsTeamPlay() == TRUE) {
 		if (m_iTeam > 0 && eActivator.team != m_iTeam + 1) {
 			return;
@@ -59,9 +62,9 @@ trigger_multiple::touch(void)
 	}
 
 	if (m_flDelay > 0) {
-		UseTargets_Delay(m_flDelay);
+		UseTargets_Delay(TRIG_TOGGLE, m_flDelay);
 	} else {
-		UseTargets();
+		UseTargets(TRIG_TOGGLE);
 	}
 	
 	/* This is effectively a trigger_once...*/

@@ -24,10 +24,7 @@ BASEGAME scihunt
 -set gameinfo_url_info "www.richwhitehouse.com"
 -set gameinfo_url_dl "http://www.frag-net.com/mods/scihunt.fmf"
 -set gameinfo_menutrack "sound/Hondo2/pca.wav"
-
-DOWNLOADSURL http://www.frag-net.com/dl/scihunt_packages
-UPDATEURL http://www.frag-net.com/mods/scihunt.fmf
-INSTALL "scihunt_essential;valve_essential;free_essential;addons_essential"
+-set gameinfo_pkgname "cg_scihunt"
 
 // you don't really want to change these
 RTCBROKER master.frag-net.com:27950

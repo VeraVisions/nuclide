@@ -83,7 +83,7 @@ class func_train:CBaseTrigger
 	void(void) func_train;
 	virtual void(void) NextPath;
 	virtual void(void) GoToTarget;
-	virtual void(void) Trigger;
+	virtual void(int) Trigger;
 	virtual void(void) Respawn;
 	virtual void(void) Blocked;
 };
@@ -154,7 +154,7 @@ func_train::NextPath(void)
 
 	/* fire the path_corners' target */
 	if (eNode.m_strMessage) {
-		eNode.Trigger();
+		eNode.Trigger(TRIG_TOGGLE);
 	}
 
 	/* stuff for the ears */
@@ -193,8 +193,9 @@ func_train::NextPath(void)
 	}
 }
 
+/* TODO: Handle state? */
 void
-func_train::Trigger(void)
+func_train::Trigger(int state)
 {
 	GoToTarget();
 }

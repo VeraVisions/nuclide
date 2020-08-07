@@ -343,7 +343,7 @@ CBaseMonster::FreeState(void)
 
 		if (trigger.Trigger != __NULL__) {
 			dprint(sprintf("^2CBaseMonster::^3FreeState^7: %s triggered %f\n", m_strRouteEnded, time));
-			trigger.Trigger();
+			trigger.Trigger(TRIG_TOGGLE);
 		} else {
 			dprint(sprintf("^1CBaseMonster::^3FreeState^7: %s not a valid trigger\n", m_strRouteEnded));
 		}
@@ -509,7 +509,7 @@ CBaseMonster::Physics(void)
 
 	/* override whatever we did above with this */
 	if (m_iSequenceState == SEQUENCESTATE_ENDING) {
-		input_angles = v_angle = m_vecSequenceAngle;
+		input_angles = v_angle = angles = m_vecSequenceAngle;
 		SetFrame(m_flSequenceEnd);
 	} else if (movetype == MOVETYPE_WALK) {
 		SeeThink();

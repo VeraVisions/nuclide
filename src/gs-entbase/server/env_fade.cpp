@@ -40,10 +40,10 @@ class env_fade:CBaseTrigger
 	float m_flFadeHold;
 
 	void(void) env_fade;
-	virtual void(void) Trigger;
+	virtual void(int) Trigger;
 };
 
-void env_fade::Trigger (void)
+void env_fade::Trigger(int state)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_FADE);

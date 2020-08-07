@@ -64,7 +64,7 @@ class func_door_rotating:CBaseTrigger
 	virtual void(void) Returned;
 	virtual void(void) Back;
 	virtual void(void) Away;
-	virtual void(void) Trigger;
+	virtual void(int) Trigger;
 	virtual void(void) Use;
 	virtual void(void) Touch;
 	virtual void(void) Blocked;
@@ -196,7 +196,8 @@ void func_door_rotating::Away(void)
 	RotToDest(m_vecPos2 * fDirection, Arrived);
 }
 
-void func_door_rotating::Trigger(void)
+/* TODO: Handle state */
+void func_door_rotating::Trigger(int state)
 {
 	if (GetMaster() == FALSE) {
 		return;
@@ -215,16 +216,16 @@ void func_door_rotating::Trigger(void)
 	Away();
 
 	if (m_flDelay) {
-		CBaseTrigger::UseTargets_Delay(m_flDelay);
+		CBaseTrigger::UseTargets_Delay(TRIG_TOGGLE, m_flDelay);
 	} else {
-		CBaseTrigger::UseTargets();
+		CBaseTrigger::UseTargets(TRIG_TOGGLE);
 	}
 }
 
 void func_door_rotating::Use(void)
 {
 	eActivator.gflags &= ~GF_USE_RELEASED;
-	Trigger();
+	Trigger(TRIG_TOGGLE);
 }
 
 void func_door_rotating::Touch(void)
@@ -239,7 +240,7 @@ void func_door_rotating::Touch(void)
 
 	if (other.movetype == MOVETYPE_WALK) {
 		eActivator = other;
-		Trigger();
+		Trigger(TRIG_TOGGLE);
 	}
 	touch = __NULL__;
 }

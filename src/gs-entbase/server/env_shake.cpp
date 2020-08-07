@@ -37,12 +37,12 @@ class env_shake:CBaseTrigger
 	float m_flFrequency;
 
 	void(void) env_shake;
-	virtual void(void) Trigger;
+	virtual void(int) Trigger;
 };
 
-void env_shake::Trigger (void)
+void env_shake::Trigger(int state)
 {
-	for (entity e = world; (e = find(e, ::classname, "Player"));) {
+	for (entity e = world; (e = find(e, ::classname, "player"));) {
 		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 		WriteByte(MSG_MULTICAST, EV_SHAKE);
 		WriteFloat(MSG_MULTICAST, m_flRadius);

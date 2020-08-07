@@ -83,6 +83,7 @@ monster_houndeye::AttackMelee(void)
 
 	think = AttackBlast;
 	nextthink = m_flAnimTime;
+	return TRUE;
 }
 
 void

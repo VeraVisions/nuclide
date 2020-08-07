@@ -45,7 +45,7 @@ class env_global:CBaseTrigger
 	int m_iInitialState;
 	
 	void(void) env_global;
-	virtual void(void) Trigger;
+	virtual void(int) Trigger;
 	
 	virtual int(string) GlobalPresent;
 	virtual void(string, int) AddNewGlobal;
@@ -53,7 +53,9 @@ class env_global:CBaseTrigger
 	virtual int(string) GetGlobal;
 };
 
-void env_global::Trigger(void) {
+void
+env_global::Trigger(int state)
+{
 	int iOldValue = GetGlobal(m_strGlobalState);
 	int iNewValue = 0;
 	
@@ -84,7 +86,9 @@ void env_global::Trigger(void) {
 	}
 }
 
-int env_global::GlobalPresent (string strName) {
+int
+env_global::GlobalPresent(string strName)
+{
 	for (int i = 1; i < (tokenize(cvar_string(CENVGLOBAL_CVAR)) - 1); i += 2) {
 		if (argv(i) == strName) {
 			return 1;
@@ -93,11 +97,14 @@ int env_global::GlobalPresent (string strName) {
 	return 0;
 }
 
-void env_global::AddNewGlobal (string strName, int iValue) {
+void
+env_global::AddNewGlobal(string strName, int iValue)
+{
 	cvar_set(CENVGLOBAL_CVAR, sprintf("%s %s %i", cvar_string(CENVGLOBAL_CVAR), strName, iValue));
 }
 
-void env_global::SetGlobal (string strName, int iValue) {
+void
+env_global::SetGlobal(string strName, int iValue) {
 	string strNewData = "";
 	for (int i = 1; i < (tokenize(cvar_string(CENVGLOBAL_CVAR)) - 1); i += 2) {
 		if (argv(i) != strName) {
@@ -107,7 +114,9 @@ void env_global::SetGlobal (string strName, int iValue) {
 	cvar_set(CENVGLOBAL_CVAR, sprintf("%s %s %i", strNewData, strName, iValue));
 }
 
-int env_global::GetGlobal (string strName) {
+int
+env_global::GetGlobal(string strName)
+{
 	for (int i = 1; i < (tokenize(cvar_string(CENVGLOBAL_CVAR)) - 1); i += 2) {
 		if (argv(i) == strName) {
 			return stoi(argv(i+1));
@@ -116,7 +125,8 @@ int env_global::GetGlobal (string strName) {
 	return 0;
 }
 
-void env_global::env_global(void)
+void
+env_global::env_global(void)
 {
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {

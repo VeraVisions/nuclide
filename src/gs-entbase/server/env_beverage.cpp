@@ -46,10 +46,11 @@ class env_beverage:CBaseTrigger
 	int m_iReady;
 	int m_iSkin;
 	void(void) env_beverage;
-	virtual void(void) Trigger;
+	virtual void(int) Trigger;
 };
 
-void env_beverage::Trigger(void)
+void
+env_beverage::Trigger(int unused)
 {
 	if (m_iReady == FALSE || m_iUses <= 0) {
 		return;
@@ -66,7 +67,8 @@ void env_beverage::Trigger(void)
 	m_iReady = FALSE;
 }
 
-void env_beverage::env_beverage(void)
+void
+env_beverage::env_beverage(void)
 {
 	precache_model("models/can.mdl");
 	precache_sound("weapons/g_bounce3.wav");

@@ -45,29 +45,32 @@ class trigger_hurt:CBaseTrigger
 	float m_flDelay;
 	void(void) trigger_hurt;
 
-	virtual void(void) Trigger;
-	virtual void(void) Touch;
+	virtual void(int) Trigger;
+	virtual void(void) touch;
 	virtual void(void) Respawn;
 };
 
 void
-trigger_hurt::Trigger(void)
+trigger_hurt::Trigger(int state)
 {
-	if (solid != SOLID_NOT) {
-		dprint(sprintf("trigger_hurt::^3Trigger: %s deactivated\n", 
-			m_strTargetName));
+	switch (state) {
+	case TRIG_OFF:
 		solid = SOLID_NOT;
-		touch = __NULL__;
-	} else {
-		dprint(sprintf("trigger_hurt::^3Trigger: %s activated\n", 
-			m_strTargetName));
+		break;
+	case TRIG_ON:
+		solid = SOLID_TRIGGER;
 		InitBrushTrigger();
-		touch = Touch;
+		break;
+	default:
+		if (solid == SOLID_NOT)
+			Trigger(TRIG_ON);
+		else
+			Trigger(TRIG_OFF);
 	}
 }
 
 void
-trigger_hurt::Touch(void)
+trigger_hurt::touch(void)
 {
 	if (m_flNextTrigger > time) {
 		return;
@@ -84,17 +87,17 @@ trigger_hurt::Touch(void)
 			if (other.flags & FL_CLIENT) {
 				eActivator = other;
 				if (m_flDelay > 0) {
-					CBaseTrigger::UseTargets_Delay(m_flDelay);
+					CBaseTrigger::UseTargets_Delay(TRIG_TOGGLE, m_flDelay);
 				} else {
-					CBaseTrigger::UseTargets();
+					CBaseTrigger::UseTargets(TRIG_TOGGLE);
 				}
 			}
 		} else {
 			eActivator = other;
 			if (m_flDelay > 0) {
-				CBaseTrigger::UseTargets_Delay(m_flDelay);
+				CBaseTrigger::UseTargets_Delay(TRIG_TOGGLE, m_flDelay);
 			} else {
-				CBaseTrigger::UseTargets();
+				CBaseTrigger::UseTargets(TRIG_TOGGLE);
 			}
 		}
 	}
@@ -106,7 +109,7 @@ trigger_hurt::Touch(void)
 
 	/* shut it down if used once */
 	if (spawnflags & SF_HURT_ONCE) {
-		Trigger();
+		Trigger(TRIG_OFF);
 	}
 
 	m_flNextTrigger = time + m_flNextDmg;
@@ -119,10 +122,9 @@ trigger_hurt::Respawn(void)
 	m_flNextTrigger = 0.0f;
 
 	if (spawnflags & SF_HURT_OFF) {
-		solid = SOLID_NOT;
+		Trigger(TRIG_OFF);
 	} else {
-		InitBrushTrigger();
-		touch = Touch;
+		Trigger(TRIG_ON);
 	}
 }
 

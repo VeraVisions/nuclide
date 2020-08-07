@@ -61,10 +61,10 @@ class game_text:CBaseTrigger
 		
 	void(void) game_text;
 
-	virtual void(void) Trigger;
+	virtual void(int) Trigger;
 };
 
-void game_text::Trigger(void)
+void game_text::Trigger(int state)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_TEXT);

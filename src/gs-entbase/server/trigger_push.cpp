@@ -40,7 +40,7 @@ class trigger_push:CBaseTrigger
 
 	virtual void(void) touch;
 	virtual void(void) Respawn;
-	virtual void(void) Trigger;
+	virtual void(int state) Trigger;
 	virtual void(void) SetMovementDirection;
 };
 
@@ -60,12 +60,17 @@ trigger_push::SetMovementDirection(void)
 }
 
 void
-trigger_push::Trigger(void)
+trigger_push::Trigger(int state)
 {
-	if (solid == SOLID_NOT) {
-		solid = SOLID_TRIGGER;
-	} else {
+	switch (state) {
+	case TRIG_OFF:
 		solid = SOLID_NOT;
+		break;
+	case TRIG_ON:
+		solid = SOLID_TRIGGER;
+		break;
+	default:
+		solid = (solid == SOLID_NOT) ? SOLID_TRIGGER : SOLID_NOT;
 	}
 }
 

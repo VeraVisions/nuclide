@@ -51,7 +51,7 @@ class env_spark:CBaseTrigger
 	void(void) env_spark;
 	virtual void(void) CreateSpark;
 	virtual void(void) TimedSpark;
-	virtual void(void) Trigger;
+	virtual void(int) Trigger;
 	virtual void(void) Respawn;
 };
 
@@ -68,7 +68,8 @@ void env_spark::TimedSpark(void)
 	nextthink = time + (random() * m_flMaxDelay);
 }
 
-void env_spark::Trigger(void)
+/* TODO: Implement state */
+void env_spark::Trigger(int state)
 {
 	if (spawnflags & EVSPARK_TOGGLE) {
 		if (think != __NULL__) {

@@ -48,10 +48,11 @@ class env_shooter:CBaseTrigger
 	void(void) env_shooter;
 	virtual void(void) Respawn;
 	virtual void(void) ShootGib;
-	virtual void(void) Trigger;
+	virtual void(int) Trigger;
 };
 
-void env_shooter::ShootGib(void)
+void
+env_shooter::ShootGib(void)
 {
 	static void Gib_Remove(void) { remove(self); }
 
@@ -77,18 +78,34 @@ void env_shooter::ShootGib(void)
 	}
 }
 
-void env_shooter::Trigger(void)
+void
+env_shooter::Trigger(int state)
 {
-	think = ShootGib;
-	nextthink = time + m_flVariance;
+	switch (state) {
+	case TRIG_OFF:
+		think = __NULL__;
+		nextthink = 0.0f;
+		break;
+	case TRIG_ON:
+		think = ShootGib;
+		nextthink = time + m_flVariance;
+		break;
+	default:
+		if (think == __NULL__)
+			Trigger(TRIG_ON);
+		else
+			Trigger(TRIG_OFF);
+	}
 }
 
-void env_shooter::Respawn(void)
+void
+env_shooter::Respawn(void)
 {
 	m_iGibsLeft = m_iGibs;
 }
 
-void env_shooter::env_shooter(void)
+void
+env_shooter::env_shooter(void)
 {
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {

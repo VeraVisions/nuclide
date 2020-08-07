@@ -115,14 +115,15 @@ class func_breakable:CBaseTrigger
 	void(void) func_breakable;
 	virtual void(void) Respawn;
 	virtual void(void) Explode;
-	virtual void(void) Trigger;
+	virtual void(int) Trigger;
 	virtual void(void) PlayerTouch;
 	/*virtual void(void) PressureDeath;*/
 	virtual void(int) Pain;
 	virtual void(int) Death;
 };
 
-void func_breakable::Pain (int body)
+void
+func_breakable::Pain(int body)
 {
 	if (spawnflags & SF_TRIGGER) {
 		return;
@@ -159,17 +160,19 @@ void func_breakable::Pain (int body)
 }
 
 
-void func_breakable::Explode(void)
+void
+func_breakable::Explode(void)
 {
 	vector rp = absmin + (0.5 * (absmax - absmin));
 	FX_BreakModel(vlen(size) / 10, absmin, absmax, [0,0,0], m_iMaterial);
 	FX_Explosion(rp);
 	Damage_Radius(rp, this, m_flExplodeMag, m_flExplodeMag * 2.5f, TRUE, 0);
-	CBaseTrigger::UseTargets();
+	CBaseTrigger::UseTargets(TRIG_TOGGLE);
 	CBaseEntity::Hide();
 }
 
-void func_breakable::Death(int body)
+void
+func_breakable::Death(int body)
 {
 	static void break_spawnobject(void) {
 		/* these might get overwritten by the entity spawnfunction */
@@ -215,24 +218,31 @@ void func_breakable::Death(int body)
 		nextthink = time + random(0.0,0.5);
 	} else {
 		FX_BreakModel(vlen(size) / 10, absmin, absmax, [0,0,0], m_iMaterial);
-		CBaseTrigger::UseTargets();
+		CBaseTrigger::UseTargets(TRIG_TOGGLE);
 		CBaseEntity::Hide();
 	}
 }
 
-void func_breakable::Trigger(void)
+void
+func_breakable::Trigger(int state)
 {
 	if (health > 0)
 		func_breakable::Death(0);
 }
 
-/*void func_breakable::PressureDeath(void)
+/*void
+func_breakable::PressureDeath(void)
 {
 	func_breakable::Death(m_pressAttacker, m_pressType, m_pressDamage);
 }*/
 
-void func_breakable::PlayerTouch(void)
+void
+func_breakable::PlayerTouch(void)
 {
+	static void TriggerWrap(void) {
+		Trigger(TRIG_TOGGLE);
+	}
+
 	if (other.classname == classname) {
 		return;
 	}
@@ -252,7 +262,7 @@ void func_breakable::PlayerTouch(void)
 
 	if ((spawnflags & SF_PRESSURE) && (other.absmin[2] >= maxs[2] - 2)) {
 		touch = __NULL__;
-		think = Trigger;
+		think = TriggerWrap;
 
 		if (m_flDelay == 0) {
 			m_flDelay = 0.1f;
@@ -263,7 +273,8 @@ void func_breakable::PlayerTouch(void)
 }
 
 
-void func_breakable::Respawn(void)
+void
+func_breakable::Respawn(void)
 {
 	CBaseEntity::Respawn();
 
@@ -293,7 +304,8 @@ void func_breakable::Respawn(void)
 	}
 }
 
-void func_breakable::func_breakable(void)
+void
+func_breakable::func_breakable(void)
 {
 	vector vvm_angles = [0,0,0];
 	precache_model(model);

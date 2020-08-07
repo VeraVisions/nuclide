@@ -133,7 +133,7 @@ class func_button:CBaseTrigger
 	virtual void(void) MoveAway;
 	virtual void(void) Touch;
 	virtual void(void) Blocked;
-	virtual void(void) Trigger;
+	virtual void(int) Trigger;
 	virtual void(void) Use;
 	virtual void(int) Pain;
 	virtual void(int) Death;
@@ -194,6 +194,7 @@ void func_button::MoveBack(void)
 {
 	touch = __NULL__;
 	m_iState = STATE_DOWN;
+	m_iValue = 0;
 
 	if (m_strSndUnpressed) {
 		if (m_iSoundCompat)
@@ -229,10 +230,12 @@ void func_button::MoveAway(void)
 		Arrived();
 	}
 
+	m_iValue = 1;
 	SetFrame(FRAME_ON);
 }
 
-void func_button::Trigger(void)
+/* TODO: Handle state */
+void func_button::Trigger(int state)
 {
 	if (m_flNextTrigger > time) {
 		return;
@@ -257,9 +260,9 @@ void func_button::Trigger(void)
 	MoveAway();
 
 	if (m_flDelay) {
-		UseTargets_Delay(m_flDelay);
+		UseTargets_Delay(TRIG_TOGGLE, m_flDelay);
 	} else {
-		UseTargets();
+		UseTargets(TRIG_TOGGLE);
 	}
 }
 
@@ -267,7 +270,7 @@ void func_button::Touch(void)
 {
 	if (other.movetype == MOVETYPE_WALK) {
 		eActivator = other;
-		Trigger();
+		Trigger(TRIG_TOGGLE);
     
 		if (!(spawnflags & SF_BTT_TOUCH_ONLY)) {
 			touch = __NULL__;
@@ -277,17 +280,17 @@ void func_button::Touch(void)
 
 void func_button::Use(void)
 {
-	Trigger();
+	Trigger(TRIG_TOGGLE);
 }
 
 void func_button::Pain (int body)
 {
-	Trigger();
+	Trigger(TRIG_TOGGLE);
 }
 
 void func_button::Death (int body)
 {
-	Trigger();
+	Trigger(TRIG_TOGGLE);
 }
 
 void func_button::Blocked(void)

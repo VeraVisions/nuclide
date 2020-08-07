@@ -46,7 +46,7 @@ class multi_manager:CBaseTrigger
 	int m_iBusy;
 	int m_iValue;
 
-	virtual void(void) Trigger;
+	virtual void(int) Trigger;
 	virtual int(void) GetValue;
 };
 
@@ -57,7 +57,7 @@ multi_manager::GetValue(void)
 }
 
 void
-multi_manager::Trigger(void)
+multi_manager::Trigger(int state)
 {
 	static void mm_enttrigger (void) {
 		multi_manager_sub wow = (multi_manager_sub)self;
@@ -67,7 +67,7 @@ multi_manager::Trigger(void)
 		dprint(sprintf("^2%s::^3Trigger^7: %s (%s)\n", 
 			this.classname, wow.m_strTarget, eFind.classname));
 
-		CBaseTrigger::UseTargets();
+		CBaseTrigger::UseTargets(TRIG_TOGGLE);
 	}
 
 	m_iValue = TRUE;

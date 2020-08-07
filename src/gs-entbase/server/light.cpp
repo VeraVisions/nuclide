@@ -60,18 +60,27 @@ class light:CBaseTrigger
 	string m_strPattern;
 
 	void(void) light;
-	virtual void(void) Trigger;
+	virtual void(int) Trigger;
 	virtual void(void) Respawn;
 };
 
-void light::Trigger(void)
+void light::Trigger(int state)
 {
-	if (m_iEnabled == TRUE) {
+	switch (state) {
+	case TRIG_OFF:
+		m_iEnabled = 0;
+		break;
+	case TRIG_ON:
+		m_iEnabled = 1;
+		break;
+	default:
+		m_iEnabled = 1 - m_iEnabled;
+	}
+
+	if (m_iEnabled == 0) {
 		lightstyle(m_flStyle, "a");
-		m_iEnabled = FALSE;
 	} else {
 		lightstyle(m_flStyle, m_strPattern);
-		m_iEnabled = TRUE;
 	}
 }
 
@@ -79,10 +88,10 @@ void light::Respawn(void)
 {
 	if (spawnflags & 1) {
 		lightstyle(m_flStyle, "a");
-		m_iEnabled = FALSE;
+		m_iEnabled = 0;
 	} else {
 		lightstyle(m_flStyle, m_strPattern);
-		m_iEnabled = TRUE;
+		m_iEnabled = 1;
 	}
 }
 

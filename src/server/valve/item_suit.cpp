@@ -45,8 +45,9 @@ void item_suit::touch(void)
 	sound(other, CHAN_ITEM, "fvox/bell.wav", 1, ATTN_NORM);
 	sound(other, CHAN_VOICE, "fvox/hev_logon.wav", 1, ATTN_NORM);
 	pl.g_items |= ITEM_SUIT;
+	m_iValue = TRUE;
 
-	CBaseTrigger::UseTargets();
+	CBaseTrigger::UseTargets(TRIG_TOGGLE);
 	
 	if (real_owner || cvar("sv_playerslots") == 1) {
 		remove(self);
@@ -64,6 +65,7 @@ void item_suit::Respawn(void)
 	SetSize(VEC_HULL_MIN, VEC_HULL_MAX);
 	SetOrigin(m_oldOrigin);
 	SetModel(m_oldModel);
+	m_iValue = FALSE;
 
 	think = __NULL__;
 	nextthink = -1;

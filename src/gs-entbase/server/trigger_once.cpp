@@ -35,7 +35,6 @@ enumflags
 
 class trigger_once:CBaseTrigger
 {
-	float m_flDelay;
 	void(void) trigger_once;
 
 	virtual void(void) touch;
@@ -49,22 +48,27 @@ trigger_once::touch(void)
 		return;
 	if (spawnflags & TO_NOCLIENTS && other.spawnflags & FL_CLIENT)
 		return;
+	if (GetMaster() == FALSE)
+		return;
 
 	eActivator = other;
 	solid = SOLID_NOT; /* make inactive */
+	m_iValue = 1;
 
 	if (m_flDelay > 0) {
-		CBaseTrigger::UseTargets_Delay(m_flDelay);
+		CBaseTrigger::UseTargets_Delay(TRIG_TOGGLE, m_flDelay);
 	} else {
-		CBaseTrigger::UseTargets();
+		CBaseTrigger::UseTargets(TRIG_TOGGLE);
 	}
 }
 
 void
 trigger_once::Respawn(void)
 {
+	m_iValue = 0;
 	solid = SOLID_TRIGGER;
 	SetRenderMode(RM_TRIGGER);
+	InitBrushTrigger();
 }
 
 void
@@ -81,5 +85,4 @@ trigger_once::trigger_once(void)
 	}
 
 	CBaseTrigger::CBaseTrigger();
-	InitBrushTrigger();
 }

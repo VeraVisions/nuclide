@@ -48,13 +48,13 @@ trigger_autosave::touch(void)
 	dprint(sprintf("^2trigger_autosave::^3touch^7: %s called autosave\n", 
 		other.netname));
 
-	localcmd("save autosave\n");
+	//localcmd("save autosave\n");
 	Hide();
 
 	if (m_flDelay > 0) {
-		CBaseTrigger::UseTargets_Delay(m_flDelay);
+		CBaseTrigger::UseTargets_Delay(TRIG_TOGGLE, m_flDelay);
 	} else {
-		CBaseTrigger::UseTargets();
+		CBaseTrigger::UseTargets(TRIG_TOGGLE);
 	}
 	solid = SOLID_NOT;
 }

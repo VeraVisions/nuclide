@@ -94,7 +94,7 @@ item_c4::Logic(void)
 		for (entity e = world; (e = find(e, ::classname, "func_bomb_target"));) {
 			CBaseTrigger trigger = (CBaseTrigger)e;
 			if (trigger.Trigger != __NULL__) {
-				trigger.Trigger();
+				trigger.Trigger(TRIG_TOGGLE);
 			}
 		}
 

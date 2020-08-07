@@ -53,6 +53,9 @@ trigger_look::Touch(void)
 	float dot;
 	entity lt;
 
+	if (GetMaster() == FALSE)
+		return;
+
 	if (!(other.flags & FL_CLIENT)) {
 		/* FIXME: could this conflict with other entities? probably. */
 		m_flLooked = 0.0f;
@@ -86,9 +89,9 @@ trigger_look::Touch(void)
 
 	/* trigger and disable entity, for now */
 	if (m_flDelay > 0) {
-		UseTargets_Delay(m_flDelay);
+		UseTargets_Delay(TRIG_TOGGLE, m_flDelay);
 	} else {
-		UseTargets();
+		UseTargets(TRIG_TOGGLE);
 	}
 	solid = SOLID_NOT;
 }

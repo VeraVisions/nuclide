@@ -447,7 +447,7 @@ CBaseNPC::Physics(void)
 
 	/* override whatever we did above with this */
 	if (m_iSequenceState == SEQUENCESTATE_ENDING) {
-		input_angles = v_angle = m_vecSequenceAngle;
+		input_angles = v_angle = angles = m_vecSequenceAngle;
 		SetFrame(m_flSequenceEnd);
 	} else {
 		if (style != MONSTER_DEAD) {

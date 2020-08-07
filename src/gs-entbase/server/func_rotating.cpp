@@ -52,18 +52,21 @@ class func_rotating:CBaseTrigger
 
 	void(void) func_rotating;
 	virtual void(void) Respawn;
-	virtual void(void) Trigger;
+	virtual void(int) Trigger;
 	virtual void(void) Rotate;
 	virtual void(void) Blocked;
 	virtual void(void) SetMovementDirection;
 };
 
-void func_rotating::Rotate(void)
+void
+func_rotating::Rotate(void)
 {
 	nextthink = ltime + 10.0f;
 }
 
-void func_rotating::Trigger(void)
+/* TODO: Handle state */
+void
+func_rotating::Trigger(int state)
 {
 	if (vlen(avelocity)) {
 		avelocity = [0,0,0];
@@ -81,7 +84,8 @@ void func_rotating::Trigger(void)
 	}
 }
 
-void func_rotating::Blocked(void)
+void
+func_rotating::Blocked(void)
 {
 	if (avelocity == [0,0,0]) {
 		return;
@@ -92,7 +96,8 @@ void func_rotating::Blocked(void)
 	}
 }
 
-void func_rotating::Respawn(void)
+void
+func_rotating::Respawn(void)
 {
 #ifdef GS_DEVELOPER
 	if (autocvar_dev_rotspeed != 0) {
@@ -120,7 +125,8 @@ void func_rotating::Respawn(void)
 	}
 }
 
-void func_rotating::SetMovementDirection(void)
+void
+func_rotating::SetMovementDirection(void)
 {
 	if (spawnflags & FR_ZAXIS) {
 		m_vecMoveDir = [0,0,1];
@@ -135,7 +141,8 @@ void func_rotating::SetMovementDirection(void)
 	}
 }
 
-void func_rotating::func_rotating(void)
+void
+func_rotating::func_rotating(void)
 {
 	precache_model(model);
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
