@@ -226,12 +226,17 @@ func_door::Trigger(int state)
 		}
 	}
 
-	if ((m_iState == DOORSTATE_UP) || (m_iState == DOORSTATE_RAISED)){
+	if (state == TRIG_OFF) {
 		MoveBack();
-		return;
+	} else if (state == TRIG_ON) {
+		MoveAway();
+	} else {
+		if ((m_iState == DOORSTATE_UP) || (m_iState == DOORSTATE_RAISED)){
+			MoveBack();
+		} else {
+			MoveAway();
+		}
 	}
-
-	MoveAway();
 }
 
 void
@@ -272,12 +277,12 @@ func_door::Blocked(void)
 void
 func_door::SetMovementDirection(void)
 {
-	if (angles == [0,-1,0]) {
+	if (m_oldAngle == [0,-1,0]) {
 		m_vecMoveDir = [0,0,1];
-	} else if (angles == [0,-2,0]) {
+	} else if (m_oldAngle == [0,-2,0]) {
 		m_vecMoveDir = [0,0,-1];
 	} else {
-		makevectors(angles);
+		makevectors(m_oldAngle);
 		m_vecMoveDir = v_forward;
 	}
 }
@@ -337,7 +342,6 @@ func_door::Respawn(void)
 	m_vecMoveDir = [0,0,0];
 
 	/* angles to vecMoveDir */
-	angles = m_oldAngle;
 	SetMovementDirection();
 
 	if (spawnflags & SF_MOV_PASSABLE)
