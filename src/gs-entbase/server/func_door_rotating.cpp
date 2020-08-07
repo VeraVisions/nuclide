@@ -196,7 +196,6 @@ void func_door_rotating::Away(void)
 	RotToDest(m_vecPos2 * fDirection, Arrived);
 }
 
-/* TODO: Handle state */
 void func_door_rotating::Trigger(int state)
 {
 	if (GetMaster() == FALSE) {
@@ -208,12 +207,19 @@ void func_door_rotating::Trigger(int state)
 	}
 	m_flNextAction = time + m_flWait;
 
-	if ((m_iState == STATE_UP) || (m_iState == STATE_RAISED)) {
+	if (state == TRIG_TOGGLE) {
+		if ((m_iState == STATE_UP) || (m_iState == STATE_RAISED)) {
+			Back();
+			return;
+		} else {
+			Away();
+		}
+	} else if (state == TRIG_OFF) {
 		Back();
-		return;
+	} else if (state == TRIG_ON) {
+		Away();
 	}
 
-	Away();
 
 	if (m_flDelay) {
 		CBaseTrigger::UseTargets_Delay(TRIG_TOGGLE, m_flDelay);
