@@ -13,6 +13,9 @@ src/client/wastes
 src/server/wastes
 src/shared/wastes
 *.lno
+maptimes.txt
+iplog.txt
+entities.def
 *.pk3
 *.dat
 *.way
@@ -22,12 +25,14 @@ src/shared/wastes
 *.pk3
 *.pk4
 csqccore.txt
+*.log
 ssqccore.txt
 menucore.txt
 conhistory.txt
 condump.txt
 config.cfg
 fte.cfg
+nuclide.cfg
 qkey
 installed.lst
 *.kdev4
