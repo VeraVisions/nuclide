@@ -45,14 +45,19 @@ class trigger_once:CBaseTrigger
 void
 trigger_once::touch(void)
 {
+	if (!(spawnflags & TO_MONSTERS) && other.spawnflags & FL_MONSTER)
+		return;
+	if (spawnflags & TO_NOCLIENTS && other.spawnflags & FL_CLIENT)
+		return;
+
 	eActivator = other;
+	solid = SOLID_NOT; /* make inactive */
 
 	if (m_flDelay > 0) {
 		CBaseTrigger::UseTargets_Delay(m_flDelay);
 	} else {
 		CBaseTrigger::UseTargets();
 	}
-	solid = SOLID_NOT;
 }
 
 void
