@@ -103,7 +103,7 @@ const string funcbreakable_objtable[] = {
 
 class func_breakable:CBaseTrigger
 {
-	float m_iMaterial;
+	int m_iMaterial;
 	float m_flDelay;
 	float m_flExplodeMag;
 	string m_strBreakSpawn;
@@ -272,7 +272,6 @@ func_breakable::PlayerTouch(void)
 	}
 }
 
-
 void
 func_breakable::Respawn(void)
 {
@@ -332,7 +331,7 @@ func_breakable::func_breakable(void)
 			spawnflags |= SF_ISMODEL;
 			break;
 		case "material":
-			m_iMaterial = stof(argv(i+1));
+			m_iMaterial = stoi(argv(i+1));
 			break;
 		case "delay":
 			m_flDelay = stof(argv(i+1));
