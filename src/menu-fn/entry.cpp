@@ -111,8 +111,6 @@ m_init(void)
 		Music_MenuStart();
 	}
 	
-	/* localcmd(sprintf("pkg addsource http://www.frag-net.com/dl/valve_packages\npkg addsource http://www.frag-net.com/dl/%s_packages\nwait;wait;pkg update\n", games[gameinfo_current].gamedir)); */
-	
 	if (autocvar_menu_updating || !autocvar_menu_installedpackages) {
 		g_menupage = PAGE_UPDATES;
 	}
@@ -124,6 +122,16 @@ Menu_RendererRestarted(string rendererdesc)
 {
 	localcmd("menu_restart\n");
 	Menu_AutoScale();
+
+	if (cvar("brightness") != cvar("vid_brightness")) {
+		cvar_set("brightness", cvar_string("vid_brightness"));
+		print("^1Menu_RendererRestarted^7: Brightness hack.\n");
+	}
+
+	if (cvar("gamma") != cvar("vid_gamma")) {
+		cvar_set("gamma", cvar_string("vid_gamma"));
+		print("^1Menu_RendererRestarted^7: Gamma hack.\n");
+	}
 }
 
 void
