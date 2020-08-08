@@ -543,6 +543,12 @@ CSQC_Parse_Event(void)
 		setproperty(VF_CL_VIEWANGLES, a);
 		setproperty(VF_ANGLES, a);
 		break;
+	case EV_SHAKE:
+		float rad, amp, dur, freq;
+		rad = readfloat();
+		amp = readfloat();
+		dur = readfloat();
+		freq = readfloat();
 	default:
 		Game_Parse_Event(fHeader);
 	}

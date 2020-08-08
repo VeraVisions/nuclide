@@ -17,11 +17,13 @@ BASEGAME rewolf
 -set gameinfo_type "Both"
 -set gameinfo_nomodels 0
 -set gameinfo_gamedll "progs.dat"
--set gameinfo_startmap "city1a"
+-set gameinfo_startmap "demo1"
 -set gameinfo_trainingmap "playvideo av:media/rewolf.bik"
 -set gameinfo_cldll 1
 -set gameinfo_hlversion "1110"
 -set gameinfo_svonly "0"
+-set gameinfo_pkgname "cg_rewolf"
+-set gameinfo_chatroom "gunman"
 
 // you don't really want to change these
 RTCBROKER master.frag-net.com:27950
