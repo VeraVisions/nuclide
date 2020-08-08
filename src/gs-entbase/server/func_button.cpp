@@ -285,12 +285,13 @@ void func_button::Use(void)
 
 void func_button::Pain (int body)
 {
-	Trigger(TRIG_TOGGLE);
+	/* how you doin? */
 }
 
 void func_button::Death (int body)
 {
 	Trigger(TRIG_TOGGLE);
+	health = m_oldHealth;
 }
 
 void func_button::Blocked(void)

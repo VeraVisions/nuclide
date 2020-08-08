@@ -14,6 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+var float autocvar_vid_brightness = 0.0f;
+var float autocvar_vid_gamma = 1.0f;
+
 CWidget fn_vidoptions;
 CMainButton vo_btnDone;
 CSlider vo_sldScreensize;
@@ -45,13 +48,13 @@ vo_sldscreensize_changed(float val)
 void
 vo_sldgamma_changed(float val)
 {
-	cvar_set("gamma", ftos(val));
+	localcmd(sprintf("seta gamma %f; seta vid_gamma %f\n", val, val));
 }
 
 void
 vo_sldglare_changed(float val)
 {
-	cvar_set("brightness", ftos(val * 0.5));
+	localcmd(sprintf("seta brightness %f; seta vid_brightness %f\n", val, val));
 }
 
 /* Init */

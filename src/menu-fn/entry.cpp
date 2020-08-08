@@ -71,6 +71,21 @@ Menu_AutoScale(void)
 	}
 }
 
+/* for old Half-Life configs */
+void
+Menu_GammaHack(void)
+{
+	if (cvar("brightness") != cvar("vid_brightness")) {
+		cvar_set("brightness", "0");
+		print("^1Menu_RendererRestarted^7: Brightness hack.\n");
+	}
+
+	if (cvar("gamma") != cvar("vid_gamma")) {
+		cvar_set("gamma", "1");
+		print("^1Menu_RendererRestarted^7: Gamma hack.\n");
+	}
+}
+
 void
 m_init(void)
 {
@@ -115,6 +130,7 @@ m_init(void)
 		g_menupage = PAGE_UPDATES;
 	}
 	Menu_AutoScale();
+	Menu_GammaHack();
 }
 
 void
@@ -122,16 +138,7 @@ Menu_RendererRestarted(string rendererdesc)
 {
 	localcmd("menu_restart\n");
 	Menu_AutoScale();
-
-	if (cvar("brightness") != cvar("vid_brightness")) {
-		cvar_set("brightness", cvar_string("vid_brightness"));
-		print("^1Menu_RendererRestarted^7: Brightness hack.\n");
-	}
-
-	if (cvar("gamma") != cvar("vid_gamma")) {
-		cvar_set("gamma", cvar_string("vid_gamma"));
-		print("^1Menu_RendererRestarted^7: Gamma hack.\n");
-	}
+	Menu_GammaHack();
 }
 
 void
