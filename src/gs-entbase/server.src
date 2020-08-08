@@ -70,6 +70,9 @@ server/env_laser.cpp
 server/item_food.cpp
 server/speaker.cpp
 server/multi_manager.cpp
+server/momentarybase.cpp
+server/momentary_rot_button.cpp
+server/momentary_door.cpp
 server/monster_furniture.cpp
 server/monster_generic.cpp
 server/monstermaker.cpp
