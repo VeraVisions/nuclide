@@ -33,13 +33,6 @@ enumflags
 	TRLY_ONCE,
 };
 
-enum
-{
-	TRL_STATE_OFF,
-	TRL_STATE_ON,
-	TRL_STATE_TOGGLE
-};
-
 class trigger_relay:CBaseTrigger
 {
 	int m_iTriggerState;

@@ -22,9 +22,9 @@ enum
 
 enum
 {
-	TRIG_TOGGLE,
 	TRIG_OFF,
-	TRIG_ON
+	TRIG_ON,
+	TRIG_TOGGLE
 };
 
 class CBaseTrigger:CBaseEntity
@@ -112,8 +112,8 @@ CBaseTrigger::GetMaster(void)
 
 	/* default to success */
 	if (!m_strMaster) {
-		dprint(sprintf("^2%s::^3GetMaster^7: No master, return success\n", 
-		this.classname));
+		/*dprint(sprintf("^2%s::^3GetMaster^7: No master, return success\n", 
+		this.classname));*/
 		return TRUE;
 	}
 
@@ -121,17 +121,17 @@ CBaseTrigger::GetMaster(void)
 
 	/* we couldn't find it, so let's not even bother going further */
 	if (!t) {
-		dprint(sprintf("^2%s::^3GetMaster^7: Invalid master, return success\n", 
-		this.classname));
+		/*dprint(sprintf("^2%s::^3GetMaster^7: Invalid master, return success\n", 
+		this.classname));*/
 		return TRUE;
 	}
 
-	if (t.GetValue() == 1)
+	/*if (t.GetValue() == 1)
 		dprint(sprintf("^2%s::^3GetMaster^7: %s learns %s ^2POSITIVE\n", 
 		this.classname, m_strTargetName, m_strMaster));
 	else
 		dprint(sprintf("^2%s::^3GetMaster^7: %s learns %s ^1NEGATIVE\n", 
-		this.classname, m_strTargetName, m_strMaster));
+		this.classname, m_strTargetName, m_strMaster));*/
 	
 	return t.GetValue();
 }
