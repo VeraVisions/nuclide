@@ -117,10 +117,13 @@ CBaseEntity::RenderFXPass(void)
 	case RM_SOLID:
 		break;
 	case RM_ADDITIVE:
-		effects = EF_ADDITIVE | EF_FULLBRIGHT;
+		effects = EF_ADDITIVE;
+		drawflags = 7;
+		abslight = 255;
 		break;
 	case RM_FULLBRIGHT:
-		effects = EF_FULLBRIGHT;
+		drawflags = 7;
+		abslight = 255;
 		break;
 	case RM_TRIGGER:
 		if (autocvar_cl_showtriggers) {
