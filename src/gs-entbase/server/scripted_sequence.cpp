@@ -152,6 +152,9 @@ scripted_sequence::Trigger(int unused)
 		f.m_strRouteEnded = m_strTarget;
 	}
 
+	/* mark us as having been used, for multisources. */
+	m_iValue = TRUE;
+
 	/* mark the state */
 	f.m_iSequenceState = SEQUENCESTATE_ACTIVE;
 
