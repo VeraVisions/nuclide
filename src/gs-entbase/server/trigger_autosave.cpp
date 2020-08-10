@@ -33,8 +33,6 @@ class trigger_autosave:CBaseTrigger
 void
 trigger_autosave::touch(void)
 {
-	eActivator = other;
-
 	/* saved text */
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_MESSAGE);
@@ -48,13 +46,13 @@ trigger_autosave::touch(void)
 	dprint(sprintf("^2trigger_autosave::^3touch^7: %s called autosave\n", 
 		other.netname));
 
-	//localcmd("save autosave\n");
+	//readcmd("save autosave\n");
 	Hide();
 
 	if (m_flDelay > 0) {
-		CBaseTrigger::UseTargets_Delay(TRIG_TOGGLE, m_flDelay);
+		CBaseTrigger::UseTargets_Delay(other, TRIG_TOGGLE, m_flDelay);
 	} else {
-		CBaseTrigger::UseTargets(TRIG_TOGGLE);
+		CBaseTrigger::UseTargets(other, TRIG_TOGGLE);
 	}
 	solid = SOLID_NOT;
 }

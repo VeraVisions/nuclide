@@ -31,7 +31,7 @@ class func_tracktrain:CBaseTrigger
 	virtual void(void) Find;
 	virtual void(void) NextPath;
 	virtual void(void) GoToTarget;
-	virtual void(int) Trigger;
+	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
 };
 
@@ -72,7 +72,7 @@ void func_tracktrain::NextPath(void)
 	GoToTarget();
 }
 
-void func_tracktrain::Trigger(int state)
+void func_tracktrain::Trigger(entity act, int state)
 {
 	GoToTarget();
 }

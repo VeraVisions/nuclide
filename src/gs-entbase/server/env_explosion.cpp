@@ -39,7 +39,7 @@ class env_explosion:CBaseTrigger
 	float m_flMaxDelay;
 
 	void(void) env_explosion;
-	virtual void(int) Trigger;
+	virtual void(entity, int) Trigger;
 };
 
 void env_explosion::env_explosion(void)
@@ -56,7 +56,7 @@ void env_explosion::env_explosion(void)
 	CBaseTrigger::CBaseTrigger();
 }
 
-void env_explosion::Trigger(int state)
+void env_explosion::Trigger(entity act, int state)
 {
 	FX_Explosion(origin);
 

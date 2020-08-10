@@ -34,11 +34,11 @@ class func_wall_toggle:CBaseTrigger
 
 	void(void) func_wall_toggle;
 	virtual void(void) Respawn;
-	virtual void(int) Trigger;
+	virtual void(entity, int) Trigger;
 };
 
 void
-func_wall_toggle::Trigger(int state)
+func_wall_toggle::Trigger(entity act, int state)
 {
 	switch (state) {
 	case TRIG_OFF:
@@ -71,7 +71,7 @@ func_wall_toggle::Respawn(void)
 	m_oldmodelindex = modelindex;
 
 	if (spawnflags & FTW_STARTHIDDEN) {
-		Trigger(TRIG_OFF);
+		Trigger(this, TRIG_OFF);
 	}
 }
 

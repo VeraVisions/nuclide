@@ -115,7 +115,7 @@ class func_breakable:CBaseTrigger
 	void(void) func_breakable;
 	virtual void(void) Respawn;
 	virtual void(void) Explode;
-	virtual void(int) Trigger;
+	virtual void(entity, int) Trigger;
 	virtual void(void) PlayerTouch;
 	/*virtual void(void) PressureDeath;*/
 	virtual void(int) Pain;
@@ -167,7 +167,7 @@ func_breakable::Explode(void)
 	FX_BreakModel(vlen(size) / 10, absmin, absmax, [0,0,0], m_iMaterial);
 	FX_Explosion(rp);
 	Damage_Radius(rp, this, m_flExplodeMag, m_flExplodeMag * 2.5f, TRUE, 0);
-	CBaseTrigger::UseTargets(TRIG_TOGGLE);
+	CBaseTrigger::UseTargets(this, TRIG_TOGGLE);
 	CBaseEntity::Hide();
 }
 
@@ -218,13 +218,14 @@ func_breakable::Death(int body)
 		nextthink = time + random(0.0,0.5);
 	} else {
 		FX_BreakModel(vlen(size) / 10, absmin, absmax, [0,0,0], m_iMaterial);
-		CBaseTrigger::UseTargets(TRIG_TOGGLE);
+		/* TODO: ability to have whoever destroyed the crate be the activator */
+		CBaseTrigger::UseTargets(this, TRIG_TOGGLE);
 		CBaseEntity::Hide();
 	}
 }
 
 void
-func_breakable::Trigger(int state)
+func_breakable::Trigger(entity act, int state)
 {
 	if (health > 0)
 		func_breakable::Death(0);
@@ -240,7 +241,8 @@ void
 func_breakable::PlayerTouch(void)
 {
 	static void TriggerWrap(void) {
-		Trigger(TRIG_TOGGLE);
+		/* TODO: 'this' should be the person who touched the ent instead */
+		Trigger(this, TRIG_TOGGLE);
 	}
 
 	if (other.classname == classname) {

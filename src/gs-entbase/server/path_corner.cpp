@@ -53,12 +53,12 @@ class path_corner:CBaseTrigger
 	float m_flWait;
 
 	void(void) path_corner;
-	virtual void(int) Trigger;
+	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
 };
 
 void
-path_corner::Trigger(int state)
+path_corner::Trigger(entity act, int state)
 {
 	entity a;
 
@@ -68,7 +68,7 @@ path_corner::Trigger(int state)
 
 	for (a = world; (a = find(a, CBaseTrigger::m_strTargetName, m_strMessage));) {
 		CBaseTrigger trigger = (CBaseTrigger)a;
-		trigger.Trigger(state);
+		trigger.Trigger(act, state);
 		m_iFired = TRUE;
 	}
 }

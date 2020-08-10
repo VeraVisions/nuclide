@@ -64,7 +64,7 @@ class func_door_rotating:CBaseTrigger
 	virtual void(void) Returned;
 	virtual void(void) Back;
 	virtual void(void) Away;
-	virtual void(int) Trigger;
+	virtual void(entity, int) Trigger;
 	virtual void(void) Use;
 	virtual void(void) Touch;
 	virtual void(void) Blocked;
@@ -196,15 +196,15 @@ void func_door_rotating::Away(void)
 	RotToDest(m_vecPos2 * fDirection, Arrived);
 }
 
-void func_door_rotating::Trigger(int state)
+void func_door_rotating::Trigger(entity act, int state)
 {
 	if (GetMaster() == FALSE) {
 		return;
 	}
-
 	if (m_flNextAction > time) {
 		return;
 	}
+
 	m_flNextAction = time + m_flWait;
 
 	if (state == TRIG_TOGGLE) {
@@ -222,16 +222,16 @@ void func_door_rotating::Trigger(int state)
 
 
 	if (m_flDelay) {
-		CBaseTrigger::UseTargets_Delay(TRIG_TOGGLE, m_flDelay);
+		CBaseTrigger::UseTargets_Delay(act, TRIG_TOGGLE, m_flDelay);
 	} else {
-		CBaseTrigger::UseTargets(TRIG_TOGGLE);
+		CBaseTrigger::UseTargets(act, TRIG_TOGGLE);
 	}
 }
 
 void func_door_rotating::Use(void)
 {
 	eActivator.gflags &= ~GF_USE_RELEASED;
-	Trigger(TRIG_TOGGLE);
+	Trigger(eActivator, TRIG_TOGGLE);
 }
 
 void func_door_rotating::Touch(void)
@@ -239,14 +239,12 @@ void func_door_rotating::Touch(void)
 	if (spawnflags & SF_ROT_USE) {
 		return;
 	}
-
 	if (m_iLocked) {
 		return;
 	}
 
 	if (other.movetype == MOVETYPE_WALK) {
-		eActivator = other;
-		Trigger(TRIG_TOGGLE);
+		Trigger(other, TRIG_TOGGLE);
 	}
 	touch = __NULL__;
 }

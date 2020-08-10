@@ -39,12 +39,12 @@ class trigger_relay:CBaseTrigger
 	int m_iEnabled;
 
 	void(void) trigger_relay;
-	virtual void(int) Trigger;
+	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
 };
 
 void
-trigger_relay::Trigger(int state)
+trigger_relay::Trigger(entity act, int state)
 {
 	if (m_iEnabled == FALSE)
 		return;
@@ -52,9 +52,9 @@ trigger_relay::Trigger(int state)
 		m_iEnabled = FALSE;
 
 	if (m_flDelay > 0) {
-		CBaseTrigger::UseTargets_Delay(m_iTriggerState, m_flDelay);
+		CBaseTrigger::UseTargets_Delay(act, m_iTriggerState, m_flDelay);
 	} else {
-		CBaseTrigger::UseTargets(m_iTriggerState);
+		CBaseTrigger::UseTargets(act, m_iTriggerState);
 	}
 }
 

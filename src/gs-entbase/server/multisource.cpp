@@ -28,7 +28,7 @@ class multisource:CBaseTrigger
 
 	virtual void(void) Respawn;
 	virtual int(void) QueryTargets;
-	virtual void(int) Trigger;
+	virtual void(entity, int) Trigger;
 };
 
 int
@@ -63,7 +63,7 @@ multisource::QueryTargets(void)
 }
 
 void
-multisource::Trigger(int unused)
+multisource::Trigger(entity act, int unused)
 {
 	if (QueryTargets() == FALSE) {
 		dprint(sprintf("[^1MULTISOURCE^7] %s is inactive.\n", m_strTargetName));
@@ -73,7 +73,7 @@ multisource::Trigger(int unused)
 
 	dprint(sprintf("[^1MULTISOURCE^7] %s is now active.\n", m_strTargetName));
 	m_iValue = TRUE;
-	CBaseTrigger::UseTargets(TRIG_TOGGLE);
+	CBaseTrigger::UseTargets(act, TRIG_TOGGLE);
 }
 
 void

@@ -61,10 +61,10 @@ class game_text:CBaseTrigger
 		
 	void(void) game_text;
 
-	virtual void(int) Trigger;
+	virtual void(entity, int) Trigger;
 };
 
-void game_text::Trigger(int state)
+void game_text::Trigger(entity act, int state)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_TEXT);
@@ -88,7 +88,7 @@ void game_text::Trigger(int state)
 		msg_entity = this;
 		multicast(origin, MULTICAST_ALL);
 	} else {
-		msg_entity = eActivator;
+		msg_entity = act;
 		multicast(origin, MULTICAST_ONE_R);
 	}
 }

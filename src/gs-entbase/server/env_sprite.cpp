@@ -44,7 +44,7 @@ class env_sprite:CBaseTrigger
 	float m_flEffects;
 
 	void(void) env_sprite;
-	virtual void(int) Trigger;
+	virtual void(entity, int) Trigger;
 	virtual float(entity, float) Network;
 };
 
@@ -92,7 +92,7 @@ void env_sprite::NetworkOnce(void)
 }
 
 /* TODO: Implement state */
-void env_sprite::Trigger(int state)
+void env_sprite::Trigger(entity act, int state)
 {
 	if (spawnflags & ENVS_PLAYONCE) {
 		NetworkOnce();

@@ -29,15 +29,9 @@ again before it has finished triggering it's previous list of entities.
 
 class multi_manager_sub:CBaseTrigger
 {
+	entity m_eActivator;
 	int m_iValue;
-	virtual int(void) GetValue;
 };
-
-int
-multi_manager_sub::GetValue(void)
-{
-	return m_iValue;
-}
 
 class multi_manager:CBaseTrigger
 {
@@ -46,18 +40,12 @@ class multi_manager:CBaseTrigger
 	int m_iBusy;
 	int m_iValue;
 
-	virtual void(int) Trigger;
-	virtual int(void) GetValue;
+	virtual void(entity, int) Trigger;
 };
 
-int
-multi_manager::GetValue(void)
-{
-	return m_iValue;
-}
 
 void
-multi_manager::Trigger(int state)
+multi_manager::Trigger(entity act, int state)
 {
 	static void mm_enttrigger (void) {
 		multi_manager_sub wow = (multi_manager_sub)self;
@@ -67,7 +55,7 @@ multi_manager::Trigger(int state)
 		dprint(sprintf("^2%s::^3Trigger^7: %s (%s)\n", 
 			this.classname, wow.m_strTarget, eFind.classname));
 
-		CBaseTrigger::UseTargets(TRIG_TOGGLE);
+		CBaseTrigger::UseTargets(wow.m_eActivator, TRIG_TOGGLE);
 	}
 
 	m_iValue = TRUE;
@@ -95,6 +83,7 @@ multi_manager::Trigger(int state)
 			m_eTriggers[b].think = mm_enttrigger;
 			m_eTriggers[b].nextthink = time + stof(argv(i+1));
 			m_eTriggers[b].m_iValue = TRUE;
+			m_eTriggers[b].m_eActivator = act;
 			b++;
 		}
 	}

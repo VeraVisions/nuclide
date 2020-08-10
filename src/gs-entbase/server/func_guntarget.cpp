@@ -37,7 +37,7 @@ class func_guntarget:CBaseTrigger
 	virtual void(void) NextPath;
 	virtual void(void) Move;
 	virtual void(void) Stop;
-	virtual void(int) Trigger;
+	virtual void(entity act, int) Trigger;
 	virtual void(int) Death;
 };
 
@@ -104,7 +104,7 @@ void func_guntarget::Death(int iHitBody)
 
 	for (a = world; (a = find(a, CBaseTrigger::m_strTargetName, m_strFire));) {
 		CBaseTrigger trigger = (CBaseTrigger)a;
-		trigger.Trigger(TRIG_TOGGLE);
+		trigger.Trigger(g_dmg_eAttacker, TRIG_TOGGLE);
 	}
 }
 
@@ -117,7 +117,7 @@ void func_guntarget::Stop(void)
 }
 
 /* TODO: Handle state? */
-void func_guntarget::Trigger(int state)
+void func_guntarget::Trigger(entity act, int state)
 {
 	flags = (1 << FL_FROZEN) | flags;
 
@@ -135,7 +135,7 @@ void func_guntarget::Trigger(int state)
 void func_guntarget::Respawn(void)
 {
 	static void ThinkWrap(void) {
-		Trigger(TRIG_TOGGLE);
+		Trigger(this, TRIG_TOGGLE);
 	}
 
 	SetSolid(SOLID_BSP);

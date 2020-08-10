@@ -46,8 +46,6 @@ class trigger_multiple:CBaseTrigger
 void
 trigger_multiple::touch(void)
 {
-	eActivator = other;
-
 	if (GetMaster() == FALSE)
 		return;
 
@@ -62,9 +60,9 @@ trigger_multiple::touch(void)
 	}
 
 	if (m_flDelay > 0) {
-		UseTargets_Delay(TRIG_TOGGLE, m_flDelay);
+		UseTargets_Delay(other, TRIG_TOGGLE, m_flDelay);
 	} else {
-		UseTargets(TRIG_TOGGLE);
+		UseTargets(other, TRIG_TOGGLE);
 	}
 	
 	/* This is effectively a trigger_once...*/

@@ -26,15 +26,15 @@ class trigger_cdaudio:CBaseTrigger
 	int m_iCDTrack;
 	void(void) trigger_cdaudio;
 
-	virtual void(int) Trigger;
+	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
 	virtual void(void) touch;
 };
 
 void
-trigger_cdaudio::Trigger(int unused)
+trigger_cdaudio::Trigger(entity act, int unused)
 {
-	if (!(other.flags & FL_CLIENT)) {
+	if (!(act.flags & FL_CLIENT)) {
 		return;
 	}
 
@@ -53,7 +53,7 @@ trigger_cdaudio::Trigger(int unused)
 void
 trigger_cdaudio::touch(void)
 {
-	Trigger(TRIG_TOGGLE);
+	Trigger(other, TRIG_TOGGLE);
 }
 
 void

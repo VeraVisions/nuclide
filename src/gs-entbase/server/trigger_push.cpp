@@ -40,7 +40,7 @@ class trigger_push:CBaseTrigger
 
 	virtual void(void) touch;
 	virtual void(void) Respawn;
-	virtual void(int state) Trigger;
+	virtual void(entity, int) Trigger;
 	virtual void(void) SetMovementDirection;
 };
 
@@ -60,7 +60,7 @@ trigger_push::SetMovementDirection(void)
 }
 
 void
-trigger_push::Trigger(int state)
+trigger_push::Trigger(entity act, int state)
 {
 	switch (state) {
 	case TRIG_OFF:

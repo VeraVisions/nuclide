@@ -60,11 +60,11 @@ class light:CBaseTrigger
 	string m_strPattern;
 
 	void(void) light;
-	virtual void(int) Trigger;
+	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
 };
 
-void light::Trigger(int state)
+void light::Trigger(entity act, int state)
 {
 	switch (state) {
 	case TRIG_OFF:

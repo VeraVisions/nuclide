@@ -89,9 +89,9 @@ trigger_look::Touch(void)
 
 	/* trigger and disable entity, for now */
 	if (m_flDelay > 0) {
-		UseTargets_Delay(TRIG_TOGGLE, m_flDelay);
+		UseTargets_Delay(other, TRIG_TOGGLE, m_flDelay);
 	} else {
-		UseTargets(TRIG_TOGGLE);
+		UseTargets(other, TRIG_TOGGLE);
 	}
 	solid = SOLID_NOT;
 }

@@ -51,7 +51,7 @@ class env_spark:CBaseTrigger
 	void(void) env_spark;
 	virtual void(void) CreateSpark;
 	virtual void(void) TimedSpark;
-	virtual void(int) Trigger;
+	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
 };
 
@@ -69,7 +69,7 @@ void env_spark::TimedSpark(void)
 }
 
 /* TODO: Implement state */
-void env_spark::Trigger(int state)
+void env_spark::Trigger(entity act, int state)
 {
 	if (spawnflags & EVSPARK_TOGGLE) {
 		if (think != __NULL__) {

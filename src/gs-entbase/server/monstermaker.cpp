@@ -49,31 +49,23 @@ class monstermaker:CBaseTrigger
 	int m_iTotalMonsters;
 	float m_flDelay;
 	int m_iMaxChildren;
-	int m_iEnabled;
 	string m_strChildName;
 
 	void(void) monstermaker;
 
 	virtual void(void) Spawner;
-	virtual void(int) Trigger;
+	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
 	virtual void(void) TurnOn;
 	virtual void(void) TurnOff;
-	virtual int(void) GetValue;
 };
-
-int
-monstermaker::GetValue(void)
-{
-	return m_iEnabled;
-}
 
 void
 monstermaker::TurnOff(void)
 {
 	think = __NULL__;
 	nextthink = 0;
-	m_iEnabled = 0;
+	m_iValue = 0;
 }
 
 void
@@ -81,7 +73,7 @@ monstermaker::TurnOn(void)
 {
 	think = Spawner;
 	nextthink = time + m_flDelay;
-	m_iEnabled = 1;
+	m_iValue = 1;
 }
 
 void
@@ -142,7 +134,7 @@ monstermaker::Spawner(void)
 		m_iMonsterSpawned++;
 
 		if (m_strTarget) {
-			UseTargets(TRIG_TOGGLE);
+			UseTargets(this, TRIG_TOGGLE);
 		}
 
 		/* inherit the monsterclip flag */
@@ -170,7 +162,7 @@ monstermaker::Spawner(void)
 }
 
 void
-monstermaker::Trigger(int state)
+monstermaker::Trigger(entity act, int state)
 {
 	switch (state) {
 	case TRIG_OFF:
@@ -180,7 +172,7 @@ monstermaker::Trigger(int state)
 		TurnOn();
 		break;
 	default:
-		if (m_iEnabled)
+		if (m_iValue)
 			TurnOff();
 		else
 			TurnOn();

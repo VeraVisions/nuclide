@@ -40,10 +40,10 @@ class env_fade:CBaseTrigger
 	float m_flFadeHold;
 
 	void(void) env_fade;
-	virtual void(int) Trigger;
+	virtual void(entity, int) Trigger;
 };
 
-void env_fade::Trigger(int state)
+void env_fade::Trigger(entity act, int state)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_FADE);
@@ -54,7 +54,7 @@ void env_fade::Trigger(int state)
 	WriteFloat(MSG_MULTICAST, m_flFadeDuration);
 	WriteFloat(MSG_MULTICAST, m_flFadeHold);
 	WriteByte(MSG_MULTICAST, spawnflags);
-	msg_entity = eActivator;
+	msg_entity = act;
 	
 	if (spawnflags & EVF_ONLYUSER) {
 		multicast([0,0,0], MULTICAST_ONE_R);

@@ -52,7 +52,7 @@ class func_rotating:CBaseTrigger
 
 	void(void) func_rotating;
 	virtual void(void) Respawn;
-	virtual void(int) Trigger;
+	virtual void(entity, int) Trigger;
 	virtual void(void) Rotate;
 	virtual void(void) Blocked;
 	virtual void(void) SetMovementDirection;
@@ -66,7 +66,7 @@ func_rotating::Rotate(void)
 
 /* TODO: Handle state */
 void
-func_rotating::Trigger(int state)
+func_rotating::Trigger(entity act, int state)
 {
 	if (vlen(avelocity)) {
 		avelocity = [0,0,0];

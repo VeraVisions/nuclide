@@ -92,13 +92,13 @@ class scripted_sequence:CBaseTrigger
 	int m_iMove;
 
 	void(void) scripted_sequence;
-	virtual void(int) Trigger;
+	virtual void(entity, int) Trigger;
 	virtual void(void) InitIdle;
 	virtual void(void) Respawn;
 };
 
 void
-scripted_sequence::Trigger(int unused)
+scripted_sequence::Trigger(entity act, int unused)
 {
 	CBaseMonster f;
 	float duration;

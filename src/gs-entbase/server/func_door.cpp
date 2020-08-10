@@ -98,7 +98,7 @@ class func_door:CBaseTrigger
 	virtual void(void) Arrived;
 	virtual void(void) Returned;
 	virtual void(void) Respawn;
-	virtual void(int) Trigger;
+	virtual void(entity, int) Trigger;
 	virtual void(void) Blocked;
 	virtual void(void) Touch;
 	virtual void(void) Use;
@@ -109,7 +109,7 @@ void
 func_door::Use(void)
 {
 	eActivator.gflags &= ~GF_USE_RELEASED;
-	Trigger(TRIG_TOGGLE);
+	Trigger(eActivator, TRIG_TOGGLE);
 }
 
 void
@@ -154,7 +154,7 @@ func_door::Returned(void)
 		t = (CBaseTrigger)find(world, CBaseTrigger::m_strTargetName, m_strFire);
 		
 		if (t) {
-			t.Trigger(TRIG_TOGGLE);
+			t.Trigger(this, TRIG_TOGGLE);
 		}
 	}
 
@@ -205,7 +205,7 @@ func_door::MoveAway(void)
 }
 
 void
-func_door::Trigger(int state)
+func_door::Trigger(entity act, int state)
 {
 	if (GetMaster() == 0)
 		return;
@@ -220,9 +220,9 @@ func_door::Trigger(int state)
 	/* only trigger stuff once we are done moving */
 	if ((m_iState == DOORSTATE_RAISED) || (m_iState == DOORSTATE_LOWERED)) {
 		if (m_flDelay > 0) {
-			CBaseTrigger::UseTargets_Delay(TRIG_TOGGLE, m_flDelay);
+			CBaseTrigger::UseTargets_Delay(act, TRIG_TOGGLE, m_flDelay);
 		} else {
-			CBaseTrigger::UseTargets(TRIG_TOGGLE);
+			CBaseTrigger::UseTargets(act, TRIG_TOGGLE);
 		}
 	}
 
@@ -252,8 +252,7 @@ func_door::Touch(void)
 
 	if (other.movetype == MOVETYPE_WALK) {
 		if (other.absmin[2] <= maxs[2] - 2) {
-			eActivator = other;
-			Trigger(TRIG_TOGGLE);
+			Trigger(other, TRIG_TOGGLE);
 		}
 	}
 }
@@ -267,9 +266,9 @@ func_door::Blocked(void)
 
 	if (m_flWait >= 0) {
 		if (m_iState == DOORSTATE_DOWN) {
-			MoveAway ();
+			MoveAway();
 		} else {
-			MoveBack ();
+			MoveBack();
 		}
 	}
 }

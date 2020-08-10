@@ -133,7 +133,7 @@ class func_button:CBaseTrigger
 	virtual void(void) MoveAway;
 	virtual void(void) Touch;
 	virtual void(void) Blocked;
-	virtual void(int) Trigger;
+	virtual void(entity, int) Trigger;
 	virtual void(void) Use;
 	virtual void(int) Pain;
 	virtual void(int) Death;
@@ -235,7 +235,7 @@ void func_button::MoveAway(void)
 }
 
 /* TODO: Handle state */
-void func_button::Trigger(int state)
+void func_button::Trigger(entity act, int state)
 {
 	if (m_flNextTrigger > time) {
 		return;
@@ -260,17 +260,16 @@ void func_button::Trigger(int state)
 	MoveAway();
 
 	if (m_flDelay) {
-		UseTargets_Delay(TRIG_TOGGLE, m_flDelay);
+		UseTargets_Delay(act, TRIG_TOGGLE, m_flDelay);
 	} else {
-		UseTargets(TRIG_TOGGLE);
+		UseTargets(act, TRIG_TOGGLE);
 	}
 }
 
 void func_button::Touch(void)
 {
 	if (other.movetype == MOVETYPE_WALK) {
-		eActivator = other;
-		Trigger(TRIG_TOGGLE);
+		Trigger(other, TRIG_TOGGLE);
     
 		if (!(spawnflags & SF_BTT_TOUCH_ONLY)) {
 			touch = __NULL__;
@@ -280,7 +279,7 @@ void func_button::Touch(void)
 
 void func_button::Use(void)
 {
-	Trigger(TRIG_TOGGLE);
+	Trigger(eActivator, TRIG_TOGGLE);
 }
 
 void func_button::Pain (int body)
@@ -290,7 +289,7 @@ void func_button::Pain (int body)
 
 void func_button::Death (int body)
 {
-	Trigger(TRIG_TOGGLE);
+	Trigger(g_dmg_eAttacker, TRIG_TOGGLE);
 	health = m_oldHealth;
 }
 

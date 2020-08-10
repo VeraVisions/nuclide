@@ -41,11 +41,11 @@ class env_message:CBaseTrigger
 
 	void(void) env_message;
 
-	virtual void(int) Play;
+	virtual void(entity, int) Play;
 	virtual void(void) Respawn;
 };
 
-void env_message::Play(int state)
+void env_message::Play(entity act, int state)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_MESSAGE);
@@ -58,7 +58,7 @@ void env_message::Play(int state)
 		msg_entity = this;
 		multicast(origin, MULTICAST_ALL);
 	} else {
-		msg_entity = eActivator;
+		msg_entity = act;
 		multicast(origin, MULTICAST_ONE_R);
 	}
 

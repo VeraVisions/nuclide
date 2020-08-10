@@ -38,7 +38,7 @@ class button_target:CBaseTrigger
 	void(void) button_target;
 
 	virtual void(void) Respawn;
-	virtual void(int) Trigger;
+	virtual void(entity, int) Trigger;
 	virtual void(int) Damage;
 };
 
@@ -47,7 +47,7 @@ button_target::Respawn(void)
 {
 	/* yuck */
 	static void PUseWrapper(void) {
-		Trigger(TRIG_TOGGLE);
+		Trigger(eActivator, TRIG_TOGGLE);
 	}
 
 	SetMovetype(MOVETYPE_PUSH);
@@ -69,20 +69,20 @@ button_target::Respawn(void)
 }
 
 void
-button_target::Trigger(int status)
+button_target::Trigger(entity act, int status)
 {
 	/* make unusable */
 	PlayerUse = __NULL__;
 	takedamage = DAMAGE_NO;
 
 	frame = 1 - frame;
-	UseTargets(status);
+	UseTargets(act, status);
 }
 
 void
 button_target::Damage(int hit)
 {
-	Trigger(TRIG_TOGGLE); /* TODO: Set state? */
+	Trigger(g_dmg_eAttacker, TRIG_TOGGLE); /* TODO: Set state? */
 }
 
 void

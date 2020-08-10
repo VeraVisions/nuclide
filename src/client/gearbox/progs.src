@@ -6,6 +6,7 @@
 #define VALVE
 #define GEARBOX
 #define GS_RENDERFX
+#define CLASSIC_VGUI
 
 #includelist
 ../../shared/fteextensions.qc

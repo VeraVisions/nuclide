@@ -51,14 +51,13 @@ trigger_once::touch(void)
 	if (GetMaster() == FALSE)
 		return;
 
-	eActivator = other;
 	solid = SOLID_NOT; /* make inactive */
 	m_iValue = 1;
 
 	if (m_flDelay > 0) {
-		CBaseTrigger::UseTargets_Delay(TRIG_TOGGLE, m_flDelay);
+		CBaseTrigger::UseTargets_Delay(other, TRIG_TOGGLE, m_flDelay);
 	} else {
-		CBaseTrigger::UseTargets(TRIG_TOGGLE);
+		CBaseTrigger::UseTargets(other, TRIG_TOGGLE);
 	}
 }
 

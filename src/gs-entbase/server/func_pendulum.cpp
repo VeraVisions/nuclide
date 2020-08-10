@@ -45,7 +45,7 @@ class func_pendulum:CBaseTrigger
 
 	virtual void(void) customphysics;
 	virtual void(void) Respawn;
-	virtual void(int) Trigger;
+	virtual void(entity, int) Trigger;
 };
 
 void
@@ -67,7 +67,7 @@ func_pendulum::customphysics(void)
 }
 
 void
-func_pendulum::Trigger(int state)
+func_pendulum::Trigger(entity act, int state)
 {
 	switch (state) {
 	case TRIG_OFF:

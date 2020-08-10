@@ -30,16 +30,16 @@ class trigger_camera:CBaseTrigger
 	float m_flWait;
 
 	void(void) trigger_camera;
-	virtual void(int) Trigger;
+	virtual void(entity, int) Trigger;
 };
 
 void
-trigger_camera::Trigger(int state)
+trigger_camera::Trigger(entity act, int state)
 {
 	if (m_flDelay > 0) {
-		CBaseTrigger::UseTargets_Delay(TRIG_TOGGLE, m_flDelay);
+		CBaseTrigger::UseTargets_Delay(act, TRIG_TOGGLE, m_flDelay);
 	} else {
-		CBaseTrigger::UseTargets(TRIG_TOGGLE);
+		CBaseTrigger::UseTargets(act, TRIG_TOGGLE);
 	}
 
 	if (m_strMoveTo) {
@@ -49,7 +49,7 @@ trigger_camera::Trigger(int state)
 		}
 	}
 
-	Client_TriggerCamera(eActivator, origin, angles, m_flWait);
+	Client_TriggerCamera(act, origin, angles, m_flWait);
 	//eActivator.view2 = this;
 
 	dprint(sprintf("^2trigger_camera::^3Trigger^7: Camera at %v, %v, for %f sec/s requested\n", 

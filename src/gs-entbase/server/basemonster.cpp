@@ -343,7 +343,7 @@ CBaseMonster::FreeState(void)
 
 		if (trigger.Trigger != __NULL__) {
 			dprint(sprintf("^2CBaseMonster::^3FreeState^7: %s triggered %f\n", m_strRouteEnded, time));
-			trigger.Trigger(TRIG_TOGGLE);
+			trigger.Trigger(this, TRIG_TOGGLE);
 		} else {
 			dprint(sprintf("^1CBaseMonster::^3FreeState^7: %s not a valid trigger\n", m_strRouteEnded));
 		}

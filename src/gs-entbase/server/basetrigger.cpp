@@ -40,9 +40,9 @@ class CBaseTrigger:CBaseEntity
 
 	void(void) CBaseTrigger;
 
-	virtual void(int) Trigger;
-	virtual void(int) UseTargets;
-	virtual void(int, float) UseTargets_Delay;
+	virtual void(entity, int) Trigger;
+	virtual void(entity, int) UseTargets;
+	virtual void(entity, int, float) UseTargets_Delay;
 	virtual int(void) GetValue;
 	virtual int(void) GetMaster;
 	virtual void(void) InitBrushTrigger;
@@ -50,14 +50,14 @@ class CBaseTrigger:CBaseEntity
 };
 
 void
-CBaseTrigger::UseTargets(int state)
+CBaseTrigger::UseTargets(entity act, int state)
 {
 	for (entity f = world; (f = find(f, CBaseTrigger::m_strTargetName, m_strTarget));) {
 		CBaseTrigger trigger = (CBaseTrigger)f;
-		dprint(sprintf("^2%s::^3UseTargets^7: Triggering %s `%s`\n", 
-			this.classname, f.classname, trigger.m_strTargetName));
+		dprint(sprintf("^2%s::^3UseTargets^7: Triggering %s `%s` from %s\n", 
+			this.classname, f.classname, trigger.m_strTargetName, act.classname));
 		if (trigger.Trigger != __NULL__) {
-			trigger.Trigger(state);
+			trigger.Trigger(act, state);
 		}
 	}
 
@@ -66,8 +66,8 @@ CBaseTrigger::UseTargets(int state)
 		print(m_strMessage);
 		print("\n");
 	} else {
-		if (m_strMessage && eActivator.flags & FL_CLIENT) {
-			centerprint(eActivator, m_strMessage);
+		if (m_strMessage && act.flags & FL_CLIENT) {
+			centerprint(act, m_strMessage);
 		}
 	}*/
 
@@ -80,11 +80,10 @@ CBaseTrigger::UseTargets(int state)
 }
 
 void
-CBaseTrigger::UseTargets_Delay(int state, float fDelay)
+CBaseTrigger::UseTargets_Delay(entity act, int state, float fDelay)
 {
 	static void Entities_UseTargets_Delay_Think(void) {
-		eActivator = self.owner;
-		CBaseTrigger::UseTargets(self.health); /* ugly */
+		CBaseTrigger::UseTargets(self.owner, self.health); /* ugly */
 		remove(self);
 	}
 
@@ -92,7 +91,7 @@ CBaseTrigger::UseTargets_Delay(int state, float fDelay)
 		this.classname, m_strTarget));
 
 	CBaseTrigger eTimer = spawn(CBaseTrigger);
-	eTimer.owner = eActivator;
+	eTimer.owner = act;
 	eTimer.think = Entities_UseTargets_Delay_Think;
 	eTimer.m_strTarget = m_strTarget;
 	eTimer.nextthink = time + fDelay;
@@ -137,7 +136,7 @@ CBaseTrigger::GetMaster(void)
 }
 
 void
-CBaseTrigger::Trigger(int state)
+CBaseTrigger::Trigger(entity act, int state)
 {
 	
 }

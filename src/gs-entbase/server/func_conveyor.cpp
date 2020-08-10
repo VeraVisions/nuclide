@@ -33,7 +33,7 @@ class func_conveyor:CBaseTrigger
 	void(void) func_conveyor;
 
 	virtual void(void) Respawn;
-	virtual void(int) Trigger;
+	virtual void(entity, int) Trigger;
 	virtual void(void) touch;
 	virtual void(void) SetMovementDirection;
 };
@@ -59,7 +59,7 @@ func_conveyor::touch(void)
 
 /* TODO: Handle state? */
 void 
-func_conveyor::Trigger(int state)
+func_conveyor::Trigger(entity act, int state)
 {
 	/* changes direction */
 	m_flSpeed = -m_flSpeed;

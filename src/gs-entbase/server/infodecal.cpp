@@ -35,13 +35,13 @@ class infodecal:CBaseTrigger
 	string m_strTexture;
 
 	void(void) infodecal;
-	virtual void(int) Trigger;
+	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
 };
 
 /* TODO: Handle state? */
 void
-infodecal::Trigger(int state)
+infodecal::Trigger(entity act, int state)
 {
 	decal new = spawn(decal);
 	new.Place(origin, m_strTexture);
@@ -54,7 +54,7 @@ infodecal::Respawn(void)
 	/* this will be invisible by default */
 	if (!m_strTargetName) {
 		/* spawn automatically, remove self */
-		Trigger(TRIG_TOGGLE);
+		Trigger(this, TRIG_TOGGLE);
 	}
 }
 

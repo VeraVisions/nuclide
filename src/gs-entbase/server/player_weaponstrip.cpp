@@ -23,19 +23,19 @@ Strips the activator of all of its weapons.
 class player_weaponstrip:CBaseTrigger
 {
 	void(void) player_weaponstrip;
-	virtual void(int) Trigger;
+	virtual void(entity, int) Trigger;
 };
 
 void
-player_weaponstrip::Trigger(int unused)
+player_weaponstrip::Trigger(entity act, int unused)
 {
 	base_player pl;
 
-	if (!(eActivator.flags & FL_CLIENT)) {
+	if (!(act.flags & FL_CLIENT)) {
 		return;
 	}
 
-	pl = (base_player)eActivator;
+	pl = (base_player)act;
 
 	for (int i = 1; i < Weapon_GetCount(); i++) {
 		pl.g_items &= ~Weapon_GetBitID(i);

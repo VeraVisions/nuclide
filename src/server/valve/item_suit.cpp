@@ -47,7 +47,7 @@ void item_suit::touch(void)
 	pl.g_items |= ITEM_SUIT;
 	m_iValue = TRUE;
 
-	CBaseTrigger::UseTargets(TRIG_TOGGLE);
+	CBaseTrigger::UseTargets(other, TRIG_TOGGLE);
 	
 	if (real_owner || cvar("sv_playerslots") == 1) {
 		remove(self);

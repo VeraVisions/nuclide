@@ -48,7 +48,7 @@ class env_shooter:CBaseTrigger
 	void(void) env_shooter;
 	virtual void(void) Respawn;
 	virtual void(void) ShootGib;
-	virtual void(int) Trigger;
+	virtual void(entity, int) Trigger;
 };
 
 void
@@ -79,7 +79,7 @@ env_shooter::ShootGib(void)
 }
 
 void
-env_shooter::Trigger(int state)
+env_shooter::Trigger(entity act, int state)
 {
 	switch (state) {
 	case TRIG_OFF:
@@ -92,9 +92,9 @@ env_shooter::Trigger(int state)
 		break;
 	default:
 		if (think == __NULL__)
-			Trigger(TRIG_ON);
+			Trigger(act, TRIG_ON);
 		else
-			Trigger(TRIG_OFF);
+			Trigger(act, TRIG_OFF);
 	}
 }
 

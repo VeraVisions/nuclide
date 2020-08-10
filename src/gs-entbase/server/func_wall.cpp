@@ -24,11 +24,11 @@ On idTech 2 BSPs, it will change texture variants when triggered.
 class func_wall:CBaseTrigger
 {
 	void(void) func_wall;
-	virtual void(int) Trigger;
+	virtual void(entity, int) Trigger;
 };
 
 void
-func_wall::Trigger(int state)
+func_wall::Trigger(entity act, int state)
 {
 	switch (state) {
 	case TRIG_OFF:

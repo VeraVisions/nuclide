@@ -37,10 +37,10 @@ class env_shake:CBaseTrigger
 	float m_flFrequency;
 
 	void(void) env_shake;
-	virtual void(int) Trigger;
+	virtual void(entity act, int) Trigger;
 };
 
-void env_shake::Trigger(int state)
+void env_shake::Trigger(entity act, int state)
 {
 	for (entity e = world; (e = find(e, ::classname, "player"));) {
 		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
@@ -54,7 +54,7 @@ void env_shake::Trigger(int state)
 	}
 }
 
-void env_shake::env_shake (void)
+void env_shake::env_shake(void)
 {
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		switch (argv(i)) {

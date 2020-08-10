@@ -36,7 +36,7 @@ class player_loadsaved:CBaseTrigger
 	float m_flFadeHold;
 
 	void(void) player_loadsaved;
-	virtual void(int) Trigger;
+	virtual void(entity, int) Trigger;
 	virtual void(void) ReloadSave;
 };
 
@@ -47,7 +47,7 @@ player_loadsaved::ReloadSave(void)
 }
 
 void
-player_loadsaved::Trigger(int unused)
+player_loadsaved::Trigger(entity act, int unused)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_FADE);
@@ -60,7 +60,7 @@ player_loadsaved::Trigger(int unused)
 	WriteByte(MSG_MULTICAST, 0);
 	msg_entity = world;
 	multicast([0,0,0], MULTICAST_ALL);
-	env_message_single(eActivator, m_strMessage);
+	env_message_single(act, m_strMessage);
 
 	think = ReloadSave;
 	nextthink = time + m_flLoadTime;

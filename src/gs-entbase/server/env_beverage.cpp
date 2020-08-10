@@ -46,11 +46,11 @@ class env_beverage:CBaseTrigger
 	int m_iReady;
 	int m_iSkin;
 	void(void) env_beverage;
-	virtual void(int) Trigger;
+	virtual void(entity, int) Trigger;
 };
 
 void
-env_beverage::Trigger(int unused)
+env_beverage::Trigger(entity act, int unused)
 {
 	if (m_iReady == FALSE || m_iUses <= 0) {
 		return;

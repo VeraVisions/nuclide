@@ -257,6 +257,7 @@ CSQC_UpdateView(float w, float h, float focus)
 			setproperty(VF_CL_VIEWANGLES, view_angles);
 			setproperty(VF_ANGLES, view_angles);
 		} else {
+			pSeat->m_vecCameraOrigin = [0,0,0];
 			if (pl.health) {
 				if (autocvar_cl_thirdperson == TRUE) {
 					makevectors(view_angles);
@@ -525,15 +526,25 @@ CSQC_Parse_Event(void)
 		GameMessage_Parse();
 		break;
 	case EV_CAMERATRIGGER:
-		pSeat->m_vecCameraOrigin[0] = readcoord();
-		pSeat->m_vecCameraOrigin[1] = readcoord();
-		pSeat->m_vecCameraOrigin[2] = readcoord();
+		vector cam_newpos;
+
+		cam_newpos[0] = readcoord();
+		cam_newpos[1] = readcoord();
+		cam_newpos[2] = readcoord();
 
 		pSeat->m_vecCameraAngle[0] = readcoord();
 		pSeat->m_vecCameraAngle[1] = readcoord();
 		pSeat->m_vecCameraAngle[2] = readcoord();
 
 		pSeat->m_flCameraTime = time + readfloat();
+
+		/* if the same camera as last-time (hack) is still active,
+		   then make sure it becomes inactive... */
+		if (pSeat->m_vecCameraOrigin == cam_newpos) {
+			pSeat->m_flCameraTime = 0.0f;
+		} else {
+			pSeat->m_vecCameraOrigin = cam_newpos;
+		}
 		break;
 	case EV_ANGLE:
 		vector a;
