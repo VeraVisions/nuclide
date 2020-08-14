@@ -44,7 +44,7 @@ enum
 #ifdef SERVER
 class monster_tripmine:CBaseMonster
 {
-	float m_flDist;
+	int m_iDist;
 	void(void) monster_tripmine;
 
 	virtual float(entity, float) SendEntity;
@@ -92,6 +92,7 @@ monster_tripmine::Ready(void)
 {
 	makevectors(angles);
 	traceline(origin, origin + v_forward * 2048, FALSE, this);
+	SetSolid(SOLID_BBOX);
 
 	/* first time we're marked as ready, we play a sound and set the distance */
 	if (!health) {
@@ -100,11 +101,11 @@ monster_tripmine::Ready(void)
 		Death =
 		Pain = Trip;
 		takedamage = DAMAGE_YES;
-		m_flDist = trace_plane_dist;
+		m_iDist = (int)trace_plane_dist;
 		Sound_Play(this, CHAN_WEAPON, "weapon_tripmine.activate");
 	}
 
-	if (trace_plane_dist != m_flDist) {
+	if ((int)trace_plane_dist != m_iDist) {
 		Trip(1);
 	}
 	nextthink = time;
@@ -182,6 +183,7 @@ void w_tripmine_parse(void)
 
 	setcustomskin(tm, "", "geomset 0 2\ngeomset 1 2\n");
 	setorigin(tm, tm.origin);
+	setsize(tm, [-8,-8,-8], [8,8,8]);
 }
 #endif
 
