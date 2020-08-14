@@ -90,3 +90,14 @@ void View_SetMuzzleflash(int);
 void View_PlayAnimation(int);
 void View_PlayAnimation(int);
 void Sound_PlayVOX(string);
+
+/* this really should be done in-engine */
+
+__wrap float(vector pos, string pic, vector size, vector rgb, float alpha, optional float drawflag) drawpic =
+{
+	return prior([(int)pos[0],(int)pos[1]], pic, size, rgb, alpha, drawflag);
+};
+__wrap void(vector pos, vector sz, string pic, vector srcpos, vector srcsz, vector rgb, float alpha, optional float drawflag) drawsubpic =
+{
+	return prior([(int)pos[0],(int)pos[1]], sz, pic, srcpos, srcsz, rgb, alpha, drawflag);
+};
