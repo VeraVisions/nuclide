@@ -17,14 +17,73 @@
 var int g_plugins_enabled;
 var int autocvar_sv_plugins = 1;
 
-void Plugin_Init(void)
+typedef struct
 {
+	string m_strPath;
+	float m_flProgsID;
+} plugin_t;
+
+plugin_t *g_plugindb;
+var int g_plugincount;
+
+void
+Plugin_Init(void)
+{
+	filestream pdb;
+	string tmp;
+	int i;
+
 	if (autocvar_sv_plugins) {
 		iprint("Initializing Plugins");
 		g_plugins_enabled = 1;
 	} else {
 		g_plugins_enabled = 0;
+		return;
 	}
+
+	pdb = fopen("plugins.txt", FILE_READ);
+
+	if (pdb < 0) {
+		print("^2Plugins^7: No plugins.txt found. Disabling.\n");
+		g_plugins_enabled = 0;
+		return;
+	}
+
+	/* count valid progs */
+	g_plugincount = 0;
+	while ((tmp = fgets(pdb))) {
+		g_plugincount++;
+	}
+
+	g_plugindb = memalloc(sizeof(plugin_t) * g_plugincount);
+	fseek(pdb, 0);
+	i = 0;
+
+	while ((tmp = fgets(pdb))) {
+		g_plugindb[i].m_strPath = tmp;
+		g_plugindb[i].m_flProgsID = addprogs(tmp);
+		i++;
+	}
+
+	fclose(pdb);
+
+	void(void) vFunc;
+	for (i = 0; i < g_plugincount; i++) {
+		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "FMX_Init");
+
+		if (vFunc) {
+			vFunc();
+		}
+	}
+
+	print(sprintf("^1Plugins^7: Initialized %i plugins\n", g_plugincount));
+}
+
+void
+Plugin_Shutdown(void)
+{
+	memfree(g_plugindb);
+	g_plugincount = 0;
 }
 
 /*
@@ -34,15 +93,32 @@ Plugin_RunClientCommand
 Funtion that can interrupt client commands before physics are run
 =================
 */
-int Plugin_RunClientCommand(void)
+int
+Plugin_RunClientCommand(void)
 {
-	int(void) vFunc = externvalue(-2, "FMX_RunClientCommand");
+	int rval;
+	int tval;
+	int(void) vFunc;
 
-	if (vFunc || g_plugins_enabled == 0) {
-		return vFunc();
+	if (g_plugins_enabled == 0)
+		return FALSE;
+
+	/* rval = final return value, tval = temporary return value.
+	   if at least one of the plugins returns TRUE, then RunClientCommand
+	   will not be called by the engine, as it should be */
+	rval = FALSE;
+	tval = FALSE;
+
+	for (int i = 0; i < g_plugincount; i++) {
+		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "FMX_RunClientCommand");
+
+		if (vFunc) {
+			tval = vFunc();
+			rval |= tval;
+		}
 	}
 
-	return FALSE;
+	return rval;
 }
 
 /*
@@ -53,13 +129,30 @@ Intercepts 'cmd' calls. We use it to intercept
 chat messages and handle distribution ourselves.
 =================
 */
-int Plugin_ParseClientCommand(string msg)
+int
+Plugin_ParseClientCommand(string msg)
 {
-	int(string msg) vFunc = externvalue(-2, "FMX_ParseClientCommand");
+	int rval;
+	int tval;
+	int(string msg) vFunc;
 
-	if (vFunc || g_plugins_enabled == 0) {
-		return vFunc(msg);
+	if (g_plugins_enabled == 0)
+		return FALSE;
+
+	/* rval = final return value, tval = temporary return value.
+	   if at least one of the plugins returns TRUE, then RunClientCommand
+	   will not be called by the engine, as it should be */
+	rval = FALSE;
+	tval = FALSE;
+
+	for (int i = 0; i < g_plugincount; i++) {
+		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "FMX_ParseClientCommand");
+
+		if (vFunc) {
+			tval = vFunc(msg);
+			rval |= tval;
+		}
 	}
 
-	return FALSE;
+	return rval;
 }

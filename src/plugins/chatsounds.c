@@ -32,6 +32,11 @@ void
 ChatPlay(int id)
 {
 	int r, count, flags;
+
+	if (!emitter) {
+		emitter = spawn();
+	}
+
 	count = tokenizebyseparator(g_table[id].sample, ";");
 	r = random(0, count);
 	flags = SOUNDFLAG_NOREVERB; /* this should be enough for now */
@@ -56,17 +61,23 @@ ChatLookUp(string cmd)
 	return autocvar_chatplug_suppresschat == 1 ? TRUE : FALSE;
 }
 
-void
-initents(void)
+/* plugin hook */
+int
+FMX_ParseClientCommand(string cmd)
 {
-	/* why waste entity slots? */
-	if (g_sounds > 0) {
-		emitter = spawn();
+	tokenize(cmd);
+	switch (argv(0)) {
+		case "say":
+			return ChatLookUp(strtolower(argv(1)));
+			break;
+		default:
+			return FALSE;
 	}
+	return TRUE;
 }
 
 void
-init(float prevprogs)
+FMX_Init(void)
 {
 	string temp;
 	int i = 0;
@@ -74,11 +85,11 @@ init(float prevprogs)
 	filestream chatfile;
 	searchhandle list;
 
-	list = search_begin("plugins/chatsounds/*.txt", TRUE, TRUE);
+	/*list = search_begin("plugins/chatsounds/*.txt", TRUE, TRUE);
 	for (int i = 0; i < search_getsize(list); i++) {
 		print(sprintf("Found %s\n", search_getfilename(list, i)));
 	}
-	search_end(list);
+	search_end(list);*/
 
 	chatfile = fopen("chatsounds.txt", FILE_READ);
 
@@ -113,19 +124,4 @@ init(float prevprogs)
 		i++;
 	}
 	fclose(chatfile);
-}
-
-/* plugin hook */
-int
-FMX_ParseClientCommand(string cmd)
-{
-	tokenize(cmd);
-	switch (argv(0)) {
-		case "say":
-			return ChatLookUp(strtolower(argv(1)));
-			break;
-		default:
-			return FALSE;
-	}
-	return TRUE;
 }
