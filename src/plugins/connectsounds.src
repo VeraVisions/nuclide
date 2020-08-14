@@ -1,0 +1,8 @@
+#pragma target fte
+#pragma PROGS_DAT  "../../valve/data.pk3dir/p_connectsounds.dat"
+#define QWSSQC
+
+#includelist
+../shared/fteextensions.qc
+connectsounds.c
+#endlist
