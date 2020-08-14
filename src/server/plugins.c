@@ -14,9 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-var int g_plugins_enabled;
-var int autocvar_sv_plugins = 1;
-
 typedef struct
 {
 	string m_strPath;
@@ -150,6 +147,77 @@ Plugin_ParseClientCommand(string msg)
 
 		if (vFunc) {
 			tval = vFunc(msg);
+			rval |= tval;
+		}
+	}
+
+	return rval;
+}
+
+/*
+=================
+Plugin_PlayerConnect
+
+Called whenever a new client connect to the game
+=================
+*/
+int
+Plugin_PlayerConnect(entity cl)
+{
+	int rval;
+	int tval;
+	int(entity) vFunc;
+
+	if (g_plugins_enabled == 0)
+		return FALSE;
+
+	/* rval = final return value, tval = temporary return value.
+	   if at least one of the plugins returns TRUE, then RunClientCommand
+	   will not be called by the engine, as it should be */
+	rval = FALSE;
+	tval = FALSE;
+
+	for (int i = 0; i < g_plugincount; i++) {
+		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "FMX_PlayerConnect");
+
+		if (vFunc) {
+			tval = vFunc(cl);
+			rval |= tval;
+		}
+	}
+
+	return rval;
+}
+
+
+/*
+=================
+Plugin_PlayerDisconnect
+
+Called whenever a client leaves the game
+=================
+*/
+int
+Plugin_PlayerDisconnect(entity cl)
+{
+	int rval;
+	int tval;
+	int(entity) vFunc;
+
+	if (g_plugins_enabled == 0)
+		return FALSE;
+
+	/* rval = final return value, tval = temporary return value.
+	   if at least one of the plugins returns TRUE, then RunClientCommand
+	   will not be called by the engine, as it should be */
+	rval = FALSE;
+	tval = FALSE;
+
+	for (int i = 0; i < g_plugincount; i++) {
+		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "FMX_PlayerDisconnect");
+
+		if (vFunc) {
+			tval = vFunc(cl);
 			rval |= tval;
 		}
 	}

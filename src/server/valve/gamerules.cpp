@@ -208,7 +208,9 @@ void
 HLGameRules::PlayerConnect(entity pl)
 {
 	entity a;
-	bprint(PRINT_HIGH, sprintf("%s connected\n", pl.netname));
+
+	if (Plugin_PlayerConnect(pl) == FALSE)
+		bprint(PRINT_HIGH, sprintf("%s connected\n", pl.netname));
 
 	int playercount = 0;
 	for (a = world; (a = find(a, ::classname, "player"));) {
@@ -228,7 +230,8 @@ HLGameRules::PlayerConnect(entity pl)
 void
 HLGameRules::PlayerDisconnect(entity pl)
 {
-	bprint(PRINT_HIGH, sprintf("%s disconnected\n", pl.netname));
+	if (Plugin_PlayerDisconnect(pl) == FALSE)
+		bprint(PRINT_HIGH, sprintf("%s disconnected\n", pl.netname));
 
 	/* Make this unusable */
 	pl.solid = SOLID_NOT;
@@ -236,7 +239,7 @@ HLGameRules::PlayerDisconnect(entity pl)
 	pl.modelindex = 0;
 	pl.health = 0;
 	pl.takedamage = 0;
-	pl.SendFlags = PLAYER_MODELINDEX;
+	pl.SendFlags = -1;
 }
 
 void
