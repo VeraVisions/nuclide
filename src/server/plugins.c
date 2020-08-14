@@ -224,3 +224,28 @@ Plugin_PlayerDisconnect(entity cl)
 
 	return rval;
 }
+
+
+/*
+=================
+Plugin_PlayerObituary
+
+Deathmessage hook
+=================
+*/
+void
+Plugin_PlayerObituary(entity attk, entity targ, int weapon, int body, int dmg)
+{
+	void(entity,entity,int,int,int) vFunc;
+
+	if (g_plugins_enabled == 0)
+		return FALSE;
+
+	for (int i = 0; i < g_plugincount; i++) {
+		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "FMX_PlayerObituary");
+
+		if (vFunc) {
+			vFunc(attk, targ, weapon, body, dmg);
+		}
+	}
+}
