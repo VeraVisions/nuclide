@@ -26,10 +26,10 @@ VoxFunc(string strMessage)
 
 void
 FMX_PlayerObituary(entity attk, entity targ, int weapon, int body, int dmg)
-{
+
 	/* silly announcer */
 	if (attk != world && attk != targ) {
-		int r = rint(random(0,10));
+		int r = floor(random(0,18));
 
 		switch (r) {
 		case 0:
@@ -39,25 +39,49 @@ FMX_PlayerObituary(entity attk, entity targ, int weapon, int body, int dmg)
 			VoxFunc("buzwarn goodbye");
 			break;
 		case 2:
-			VoxFunc("buzwarn kill one out");
-			break;
-		case 3:
 			VoxFunc("buzwarn woop woop");
 			break;
-		case 4:
+		case 3:
 			VoxFunc("buzwarn terminated");
 			break;
-		case 5:
-			VoxFunc("buzwarn slow soldier");
+		case 4:
+			VoxFunc("buzwarn to slow amigo");
 			break;
-		case 6:
+		case 5:
 			VoxFunc("buzwarn that is hot");
 			break;
-		case 7:
+		case 6:
 			VoxFunc("buzwarn great kill");
 			break;
-		case 8:
+		case 7:
 			VoxFunc("buzwarn good kill");
+			break;
+		case 8:
+			VoxFunc("buzwarn beyond extreme");
+			break;
+		case 9:
+			VoxFunc("buzwarn must explode go bust");
+			break;
+		case 10:
+			VoxFunc("buzwarn supercooled");
+			break;
+		case 11:
+			VoxFunc("buzwarn kill life");
+			break;
+		case 12:
+			VoxFunc("buzwarn kill that amigo");
+			break;
+		case 13:
+			VoxFunc("buzwarn explode that amigo");
+			break;
+		case 14:
+			VoxFunc("buzwarn life denied");
+			break;
+		case 15:
+			VoxFunc("buzwarn no mercy");
+			break;
+		case 16:
+			VoxFunc("buzwarn target destroyed");
 			break;
 		default:
 			VoxFunc("buzwarn exterminate exterminate");
