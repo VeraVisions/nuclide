@@ -1,5 +1,3 @@
-CC=fteqcc
-
 all:
 	make menu
 	make games
@@ -31,6 +29,5 @@ mods:
 	cd client/hunger && $(MAKE)
 	cd server/hunger && $(MAKE)
 
-
 plugins:
-	$(CC) plugins/chatsounds.src
+	cd plugins && $(MAKE)

@@ -19,6 +19,8 @@ var int autocvar_sv_plugins = 1;
 
 void Plugin_Init(void);
 void Plugin_Shutdown(void);
+
+void Plugin_InitEnts(void);
 int Plugin_RunClientCommand(void);
 int Plugin_ParseClientCommand(string);
 int Plugin_PlayerConnect(entity);

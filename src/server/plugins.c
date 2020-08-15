@@ -76,11 +76,55 @@ Plugin_Init(void)
 	print(sprintf("^1Plugins^7: Initialized %i plugins\n", g_plugincount));
 }
 
+/*
+=================
+Plugin_Shutdown
+
+Allows every plugin to properly free and unallocate whatever it is they've done
+=================
+*/
 void
 Plugin_Shutdown(void)
 {
+	void(void) vFunc;
+
+	if (g_plugincount <= 0)
+		return;
+
+	for (int i = 0; i < g_plugincount; i++) {
+		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "FMX_Shutdown");
+
+		if (vFunc) {
+			vFunc();
+		}
+	}
+
 	memfree(g_plugindb);
 	g_plugincount = 0;
+}
+
+/*
+=================
+Plugin_InitEnts
+
+Called once entity slots are available for use.
+=================
+*/
+void
+Plugin_InitEnts(void)
+{
+	void(void) vFunc;
+
+	if (g_plugins_enabled == 0)
+		return FALSE;
+
+	for (int i = 0; i < g_plugincount; i++) {
+		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "FMX_InitEnts");
+
+		if (vFunc) {
+			vFunc();
+		}
+	}
 }
 
 /*

@@ -33,10 +33,6 @@ ChatPlay(int id)
 {
 	int r, count, flags;
 
-	if (!emitter) {
-		emitter = spawn();
-	}
-
 	count = tokenizebyseparator(g_table[id].sample, ";");
 	r = random(0, count);
 	flags = SOUNDFLAG_NOREVERB; /* this should be enough for now */
@@ -85,11 +81,11 @@ FMX_Init(void)
 	filestream chatfile;
 	searchhandle list;
 
-	/*list = search_begin("plugins/chatsounds/*.txt", TRUE, TRUE);
+	list = search_begin("plugins/chatsounds/*.txt", TRUE, TRUE);
 	for (int i = 0; i < search_getsize(list); i++) {
 		print(sprintf("Found %s\n", search_getfilename(list, i)));
 	}
-	search_end(list);*/
+	search_end(list);
 
 	chatfile = fopen("chatsounds.txt", FILE_READ);
 
@@ -124,4 +120,13 @@ FMX_Init(void)
 		i++;
 	}
 	fclose(chatfile);
+}
+
+
+void
+FMX_InitEnts(void)
+{
+	if (!emitter && g_sounds > 0) {
+		emitter = spawn();
+	}
 }

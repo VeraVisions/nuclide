@@ -595,6 +595,8 @@ void monster_scientist::Death(int iHitBody)
 	if (g_dmg_eAttacker.flags & FL_CLIENT)
 		rules.ScientistKill((player)g_dmg_eAttacker, (entity)this);
 
+	Plugin_PlayerObituary(g_dmg_eAttacker, this, g_dmg_iWeapon, g_dmg_iHitBody, g_dmg_iDamage);
+
 	int r;
 	r = floor(random(0,sci_snddie.length));
 	Speak(sci_snddie[r]);

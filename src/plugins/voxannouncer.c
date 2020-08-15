@@ -26,7 +26,7 @@ VoxFunc(string strMessage)
 
 void
 FMX_PlayerObituary(entity attk, entity targ, int weapon, int body, int dmg)
-
+{
 	/* silly announcer */
 	if (attk != world && attk != targ) {
 		int r = floor(random(0,18));
