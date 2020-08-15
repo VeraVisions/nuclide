@@ -24,7 +24,8 @@ class CScrollbar:CWidget
 	int m_scroll;
 	int m_minus;
 	int m_max;
-	float m_itemheight;
+	int m_maxtotal;
+	int m_itemheight;
 	virtual void(int) m_changed = 0;
 	
 	int m_up_hover;
@@ -84,7 +85,7 @@ CScrollbar::Draw(void)
 	barstep = (m_scroll * m_itemheight) * (m_theight / (m_max * m_itemheight));
 
 	/* too few entries? don't even bother */
-	if (m_max * m_itemheight < m_height) {
+	if (m_maxtotal * m_itemheight < m_height) {
 		drawfill([g_menuofs[0]+m_x,g_menuofs[1]+m_y+16], [16,m_theight+20], [0.25,0.25,0.25], 1.0f);
 		return;
 	}
@@ -109,7 +110,7 @@ CScrollbar::Input(float type, float x, float y, float devid)
 	int barstep = 0;
 
 	/* too few entries? don't even bother */
-	if (m_max * m_itemheight < m_height) {
+	if (m_maxtotal * m_itemheight < m_height) {
 		return;
 	}
 
@@ -193,6 +194,7 @@ CScrollbar::SetMax(int val)
 {
 	m_minus = (m_height + 20) / m_itemheight;
 	m_max = val - m_minus;
+	m_maxtotal = val;
 }
 
 void
