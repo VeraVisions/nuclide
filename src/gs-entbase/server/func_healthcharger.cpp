@@ -42,6 +42,11 @@ class func_healthcharger:CBaseTrigger
 
 void func_healthcharger::PlayerUse(void)
 {
+	/* let's not let this become too funny... */
+	if (eActivator.health <= 0) {
+		return;
+	}
+
 	eActivator.gflags |= GF_USE_RELEASED;
 
 	/* First come first serve */ 
