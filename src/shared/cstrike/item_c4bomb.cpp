@@ -1,17 +1,61 @@
-/* C4 entity logic */
+/*
+ * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ *
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
+ * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
+ * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 
 class item_c4:CBaseEntity
 {
+#ifdef SERVER
 	entity m_eUser;
 	float m_flBeepTime;
 	float m_flExplodeTime;
 	float m_flDefusalState;
+#endif
 
+#ifdef CLIENT
+	float m_flAlpha;
+#endif
+
+#ifdef SERVER
 	void(void) item_c4;
+	virtual float(entity, float) SendEntity;
 	virtual void(void) ClearProgress;
 	virtual void(void) PlayerUse;
 	virtual void(void) Logic;
+#endif
+
+#ifdef CLIENT
+	void(void) item_c4;
+	virtual void(void) DrawLED;
+	virtual float(void) predraw;
+#endif
 };
+
+#ifdef SERVER
+float
+item_c4::SendEntity(entity pvsent, float flags)
+{
+	WriteByte(MSG_ENTITY, ENT_C4BOMB);
+	WriteCoord(MSG_ENTITY, origin[0]);
+	WriteCoord(MSG_ENTITY, origin[1]);
+	WriteCoord(MSG_ENTITY, origin[2]);
+	WriteCoord(MSG_ENTITY, angles[0]);
+	WriteCoord(MSG_ENTITY, angles[1]);
+	WriteCoord(MSG_ENTITY, angles[2]);
+	WriteShort(MSG_ENTITY, modelindex);
+	return TRUE;
+}
 
 void
 item_c4::ClearProgress(void)
@@ -150,7 +194,90 @@ C4Bomb_Plant(base_player planter)
 	/* place directly below */
 	traceline(planter.origin, planter.origin + [0,0,-64], FALSE, planter);
 	setorigin(bomb, trace_endpos);
+	bomb.SendFlags = -1;
 
 	Radio_BroadcastMessage(RADIO_BOMBPL);
 	g_cs_bombplanted = TRUE;
 }
+#endif
+
+#ifdef CLIENT
+void
+item_c4::DrawLED(void)
+{
+	vector vecPlayer;
+
+	int s = (float)getproperty(VF_ACTIVESEAT);
+	pSeat = &g_seats[s];
+	vecPlayer = pSeat->m_vecPredictedOrigin;
+
+	m_flAlpha -= frametime;
+
+	if (m_flAlpha <= 0.0f)
+		m_flAlpha = 1.0f;
+
+	if (m_flAlpha > 0) {
+		vector forg;
+		vector fsize;
+		float falpha;
+		
+		/* Scale the glow somewhat with the players distance */
+		fsize = [16,16];
+		fsize *= bound(1, vlen(vecPlayer - origin) / 256, 4);
+
+		/* Fade out when the player is starting to move away */
+		falpha = 1 - bound(0, vlen(vecPlayer - origin) / 1024, 1);
+		falpha *= m_flAlpha;
+
+		/* Nudge this slightly towards the camera */
+		makevectors(vectoangles(origin - vecPlayer));
+		forg = (origin + [0,0,8]) + (v_forward * -16);
+
+		/* Project it, always facing the player */
+		makevectors(view_angles);
+		R_BeginPolygon(g_c4bombled_spr, 1, 0);
+		R_PolygonVertex(forg + v_right * fsize[0] - v_up * fsize[1],
+			[1,1], [1,1,1], falpha);
+		R_PolygonVertex(forg - v_right * fsize[0] - v_up * fsize[1],
+			[0,1], [1,1,1], falpha);
+		R_PolygonVertex(forg - v_right * fsize[0] + v_up * fsize[1],
+			[0,0], [1,1,1], falpha);
+		R_PolygonVertex(forg + v_right * fsize[0] + v_up * fsize[1],
+			[1,0], [1,1,1], falpha);
+		R_EndPolygon();
+	}
+}
+
+float
+item_c4::predraw(void)
+{
+	DrawLED();
+	addentity(this);
+	return PREDRAW_NEXT;
+}
+
+void
+item_c4::item_c4(void)
+{
+	solid = SOLID_BBOX;
+	movetype = MOVETYPE_NONE;
+	drawmask = MASK_ENGINE;
+}
+
+void
+w_c4bomb_parse(void)
+{
+	item_c4 tm = (item_c4)self;
+	spawnfunc_item_c4();
+
+	tm.origin[0] = readcoord();
+	tm.origin[1] = readcoord();
+	tm.origin[2] = readcoord();
+	tm.angles[0] = readcoord();
+	tm.angles[1] = readcoord();
+	tm.angles[2] = readcoord();
+	tm.modelindex = readshort();
+	setorigin(tm, tm.origin);
+	setsize(tm, [-6,-6,0], [6,6,6]);
+}
+#endif

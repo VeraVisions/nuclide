@@ -5,6 +5,8 @@
 ../../shared/cstrike/animations.c
 ../../shared/cstrike/player.h
 
+../../shared/cstrike/item_c4bomb.h
+
 ../../shared/valve/fx_blood.c
 ../../shared/valve/fx_breakmodel.c
 ../../shared/valve/fx_explosion.c
@@ -47,4 +49,5 @@
 ../../shared/valve/weapon_common.c
 ../../shared/cstrike/pmove.c
 ../../shared/pmove.c
+../../shared/cstrike/item_c4bomb.cpp
 #endlist

@@ -34,7 +34,6 @@
 ../cstrike/func_vip_safetyzone.cpp
 ../cstrike/info_map_parameters.cpp
 ../cstrike/item_suit.cpp
-../cstrike/item_c4bomb.cpp
 ../valve/items.cpp
 
 ../../botlib/include.src

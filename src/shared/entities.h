@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/* TODO: Split game-specific ones into one of the shared folders... */
 enum
 {
 	ENT_ENTITY = 1,
@@ -24,6 +25,9 @@ enum
 	ENT_SPRAY,
 #ifdef VALVE
 	ENT_TRIPMINE,
+#endif
+#ifdef CSTRIKE
+	ENT_C4BOMB,
 #endif
 	ENT_DECAL
 };

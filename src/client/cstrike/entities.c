@@ -18,6 +18,9 @@ int
 Game_Entity_Update(float id, float new)
 {
 	switch (id) {
+	case ENT_C4BOMB:
+		w_c4bomb_parse();
+		break;
 	default:
 		return FALSE;
 	}

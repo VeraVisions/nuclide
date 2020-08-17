@@ -17,7 +17,6 @@
 #include "gamerules.h"
 #include "money.h"
 #include "radio.h"
-#include "item_c4bomb.h"
 #include "../valve/items.h"
 
 var int g_cstrike_buying = 0;
