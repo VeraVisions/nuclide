@@ -702,6 +702,7 @@ CSMultiplayerRules::PlayerRespawn(base_player pp, int fTeam)
 	pl.flags = FL_CLIENT;
 	pl.iBleeds = TRUE;
 	pl.viewzoom = 1.0;
+	pl.g_items &= ~ITEM_C4BOMB;
 
 	pl.origin = eSpawn.origin;
 	pl.angles = eSpawn.angles;
