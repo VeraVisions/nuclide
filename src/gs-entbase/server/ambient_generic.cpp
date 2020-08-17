@@ -57,8 +57,8 @@ class ambient_generic:CBaseTrigger
 	void(void) ambient_generic;
 	
 	virtual void(void) Respawn;
-	virtual void(int) UseNormal;
-	virtual void(int) UseLoop;
+	virtual void(entity, int) UseNormal;
+	virtual void(entity, int) UseLoop;
 	virtual float(entity, float) SendEntity;
 };
 
@@ -91,7 +91,7 @@ ambient_generic::SendEntity(entity ePEnt, float fChanged)
 }
 
 void
-ambient_generic::UseNormal(int state)
+ambient_generic::UseNormal(entity act, int state)
 {
 	sound(this, CHAN_VOICE, m_strActivePath, m_flVolume, m_flRadius, m_flPitch);
 	dprint(sprintf("^2ambient_generic::^3UseNormal^7: %s plays `%s`\n", 
@@ -99,7 +99,7 @@ ambient_generic::UseNormal(int state)
 }
 
 void
-ambient_generic::UseLoop(int state)
+ambient_generic::UseLoop(entity act, int state)
 {
 	if (m_iToggleSwitch == TRUE) {
 		dprint(sprintf("^2ambient_generic::^3UseLoop^7: %s stops `%s`\n", 
