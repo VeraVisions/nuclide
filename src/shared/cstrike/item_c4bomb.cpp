@@ -270,6 +270,8 @@ w_c4bomb_parse(void)
 	item_c4 tm = (item_c4)self;
 	spawnfunc_item_c4();
 
+	g_c4bombled_spr = spriteframe("sprites/ledglow.spr", 0, 0.0f);
+
 	tm.origin[0] = readcoord();
 	tm.origin[1] = readcoord();
 	tm.origin[2] = readcoord();

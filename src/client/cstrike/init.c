@@ -127,6 +127,4 @@ Game_RendererRestarted(string rstr)
 	FX_Spark_Init();
 	FX_Impact_Init();
 	FX_Smokenade_Init();
-	
-	g_c4bombled_spr = spriteframe("sprites/ledglow.spr", 0, 0.0f);
 }
