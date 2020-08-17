@@ -258,7 +258,7 @@ CSEv_AmmoBuyPrimary(void)
 				cal = CALIBER_556MM;
 				break;
 			case WEAPON_AUG:
-				cal = CALIBER_556MM;
+				cal = CALIBER_762MM;
 				break;
 			case WEAPON_SCOUT:
 				cal = CALIBER_762MM;
