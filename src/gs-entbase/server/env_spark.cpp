@@ -68,16 +68,24 @@ void env_spark::TimedSpark(void)
 	nextthink = time + (random() * m_flMaxDelay);
 }
 
-/* TODO: Implement state */
 void env_spark::Trigger(entity act, int state)
 {
 	if (spawnflags & EVSPARK_TOGGLE) {
-		if (think != __NULL__) {
+		switch (state) {
+		case TRIG_OFF:
 			think = __NULL__;
 			nextthink = 0;
-		} else {
+			break;
+		case TRIG_ON:
 			think = TimedSpark;
 			nextthink = time + (random() * m_flMaxDelay);
+			break;
+		default:
+			if (think != __NULL__) {
+				Trigger(act, TRIG_OFF);
+			} else {
+				Trigger(act, TRIG_ON);
+			}
 		}
 	} else {
 		CreateSpark();
@@ -91,8 +99,7 @@ void env_spark::Respawn(void)
 	}
 
 	if (spawnflags & EVSPARK_STARTON) {
-		think = TimedSpark;
-		nextthink = time + (random() * m_flMaxDelay);
+		Trigger(this, TRIG_ON);
 	}
 }
 
