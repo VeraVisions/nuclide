@@ -32,6 +32,8 @@ which is probably overkill). No angle has to be supplied.
 
 class infodecal:CBaseTrigger
 {
+	decal m_decChild;
+
 	string m_strTexture;
 
 	void(void) infodecal;
@@ -39,13 +41,25 @@ class infodecal:CBaseTrigger
 	virtual void(void) Respawn;
 };
 
-/* TODO: Handle state? */
 void
 infodecal::Trigger(entity act, int state)
 {
-	decal new = spawn(decal);
-	new.Place(origin, m_strTexture);
-	remove(this);
+	switch (state) {
+	case TRIG_OFF:
+		if (m_decChild) {
+			remove(m_decChild);
+			m_decChild = __NULL__;
+		}
+		break;
+	case TRIG_ON:
+		if (!m_decChild) {
+			m_decChild = spawn(decal);
+			m_decChild.Place(origin, m_strTexture);
+		}
+		break;
+	default:
+		Trigger(act, (m_decChild == __NULL__) ? TRIG_ON : TRIG_OFF);
+	}
 }
 
 void
@@ -54,7 +68,10 @@ infodecal::Respawn(void)
 	/* this will be invisible by default */
 	if (!m_strTargetName) {
 		/* spawn automatically, remove self */
-		Trigger(this, TRIG_TOGGLE);
+		Trigger(this, TRIG_ON);
+	} else {
+		Trigger(this, TRIG_OFF);
+		m_decChild = __NULL__;
 	}
 }
 
