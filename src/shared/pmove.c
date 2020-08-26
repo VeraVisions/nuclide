@@ -733,6 +733,7 @@ PMove_Run(void)
 
 	if (pl.flags & FL_FROZEN) {
 		input_movevalues = [0,0,0];
+		input_buttons &= ~INPUT_BUTTON2;
 	}
 
 	/* establish which water elements we're dealing in */
