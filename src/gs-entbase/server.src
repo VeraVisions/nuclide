@@ -11,6 +11,7 @@ server/basetrigger.cpp
 server/basemonster.cpp
 server/basenpc.cpp
 server/basephysics.cpp
+server/basevehicle.cpp
 server/button_target.cpp
 server/ambient_generic.cpp
 server/cycler.cpp
@@ -44,6 +45,8 @@ server/func_wall_toggle.cpp
 server/func_conveyor.cpp
 server/func_rotating.cpp
 server/func_pendulum.cpp
+server/func_vehicle.cpp
+server/func_vehiclecontrols.cpp
 server/light.cpp
 server/stubs.cpp
 server/infodecal.cpp
