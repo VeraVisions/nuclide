@@ -672,6 +672,7 @@ HUD_DrawSpectator(void)
 {
 	// FIXME
 	Textmenu_Draw();
+	Obituary_Draw();
 
 	HUD_DrawTimer(1);
 }
