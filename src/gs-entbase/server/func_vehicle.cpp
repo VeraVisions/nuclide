@@ -171,7 +171,7 @@ func_vehicle_wheel::Move(void)
 						}
 
 						/* FIXME: do we need velocity < 0? */
-						if (trace_fraction < 1 && self.velocity[2] < 0) {
+						if (trace_fraction < 1) {
 							Bounce(trace_plane_normal);
 						} else if (fwfrac < 1) {
 							Bounce(fwplane);
@@ -239,7 +239,7 @@ func_vehicle_wheel::Accel(float flMoveTime, float m_flTurn)
 		   not slowing as much as the wheel itself (zomg: race conditions!) */
 		velocity -= (velocity * v_right) * v_right * vehParent.m_flTraction * flMoveTime * flTraction;
 
-		if (eDriver.button2 || eDriver.movement[2] > 0) {
+		if (!eDriver || (eDriver.button2 || eDriver.movement[2] > 0)) {
 			vector t;
 
 			/* empty cars are assumed to have their brakes on.
@@ -331,6 +331,14 @@ func_vehicle::customphysics(void)
 	angles[0] = Math_FixDelta(angles[0]);
 	angles[1] = Math_FixDelta(angles[1]);
 	angles[2] = Math_FixDelta(angles[2]);
+	angles[0] = bound(-45, angles[0], 45);
+	angles[2] = bound(-45, angles[2], 45);
+
+
+	velocity[0] = bound(-1000, velocity[0], 1000);
+	velocity[1] = bound(-1000, velocity[1], 1000);
+	velocity[2] = bound(-1000, velocity[2], 1000);
+
 	makevectors(angles);
 
 	setorigin(m_wlFR, origin + v_right * m_flWidth + v_forward * m_flLength);
@@ -462,7 +470,7 @@ func_vehicle::Realign(void)
 		angles = vectoangles(first.origin - second.origin);
 
 		end_pos = first.origin;
-		end_pos[2] = m_oldOrigin[2];
+		end_pos[2] = m_oldOrigin[2] + 64;
 		setorigin(this, end_pos);
 	}
 }
@@ -474,6 +482,7 @@ func_vehicle::Respawn(void)
 	solid = SOLID_BSP;
 	SetModel(m_oldModel);
 	SetOrigin(m_oldOrigin);
+	SetAngles(m_oldAngle);
 	owner = m_eDriver = __NULL__;
 	think = Realign;
 	nextthink = time + 0.1f;
