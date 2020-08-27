@@ -54,6 +54,10 @@ info_hostage_rescue::touch(void)
 		return;
 	}
 
+	/* some custom maps are very smart... */
+	if (!((player)hosty.m_eFollowing))
+		return;
+
 	Radio_BroadcastMessage(RADIO_RESCUED);
 	g_cs_hostagesrescued++;
 

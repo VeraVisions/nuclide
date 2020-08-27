@@ -149,9 +149,7 @@ CSMultiplayerRules::CreateRescueZones(void)
 
 	/* count the already existing rescue zones. */
 	for (entity e = world; (e = find(e, ::classname, "func_hostage_rescue"));) {
-		if (e.team == TEAM_CT) {
-			zones++;
-		}
+		zones++;
 	}
 
 	/* we don't need to create any additional rescue zones. */
