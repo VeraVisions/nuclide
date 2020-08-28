@@ -34,7 +34,7 @@ enumflags
 	MF_FADECORPSE
 };
 
-class monster_furniture:CBaseEntity
+class monster_furniture:CBaseMonster
 {
 	void(void) monster_furniture;
 	//virtual void(void) Respawn;
