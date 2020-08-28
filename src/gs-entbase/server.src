@@ -52,6 +52,7 @@ server/stubs.cpp
 server/infodecal.cpp
 server/player_weaponstrip.cpp
 server/player_loadsaved.cpp
+server/targ_speaker.cpp
 server/target_cdaudio.cpp
 server/trigger_auto.cpp
 server/trigger_autosave.cpp
