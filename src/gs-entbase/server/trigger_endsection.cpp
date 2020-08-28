@@ -32,7 +32,10 @@ class trigger_endsection:CBaseTrigger
 void
 trigger_endsection::Trigger(entity act, int state)
 {
-	localcmd("disconnect\n");
+	if (GetMaster() == FALSE)
+		return;
+
+	localcmd("echo disconnect\n");
 }
 
 /* TODO: Make this redundant */
