@@ -61,7 +61,7 @@ trigger_counter::Trigger(entity act, int state)
 
 	m_iCounted++;
 
-	print("^2trigger_counter::^3Trigger^7: " \
+	dprint("^2trigger_counter::^3Trigger^7: " \
 	       "Incremented '%s' by 1 (%i/%i)\n", \
 	       m_strTargetName, m_iCounted, m_iMaxCount);
 
