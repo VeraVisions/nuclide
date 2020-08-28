@@ -86,6 +86,7 @@ server/monster_generic.cpp
 server/monstermaker.cpp
 server/multisource.cpp
 server/random_speaker.cpp
+server/random_trigger.cpp
 server/scripted_sentence.cpp
 server/scripted_sequence.cpp
 #endlist
