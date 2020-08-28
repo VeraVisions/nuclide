@@ -25,12 +25,12 @@ class trigger_endsection:CBaseTrigger
 {
 	void(void) trigger_endsection;
 
-	virtual void(void) Trigger;
+	virtual void(entity,int) Trigger;
 	virtual void(void) Respawn;
-}
+};
 
 void
-trigger_endsection::Trigger(void)
+trigger_endsection::Trigger(entity act, int state)
 {
 	localcmd("disconnect\n");
 }
@@ -45,6 +45,5 @@ trigger_endsection::Respawn(void)
 void
 trigger_endsection::trigger_endsection(void)
 {
-	CBaseEntity::CBaseEntity();
-	CBaseTrigger::InitBrushTrigger();
+	CBaseTrigger::CBaseTrigger();
 }
