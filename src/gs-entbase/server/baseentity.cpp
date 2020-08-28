@@ -351,6 +351,7 @@ CBaseEntity::CBaseEntity(void)
 	m_oldflRenderAmt = m_flRenderAmt;
 	m_oldvecRenderColor = m_vecRenderColor;
 	m_oldflRenderAmt = m_flRenderAmt;
+	m_oldstrTarget = m_strTarget;
 
 	if (m_oldModel != "") {
 		precache_model(m_oldModel);
@@ -365,6 +366,7 @@ CBaseEntity::Respawn(void)
 	SetSolid(m_oldSolid);
 	SetAngles(m_oldAngle);
 	SetOrigin(m_oldOrigin);
+	m_strTarget = m_oldstrTarget;
 
 #ifdef GS_RENDERFX
 	SetRenderFX(m_oldiRenderFX);

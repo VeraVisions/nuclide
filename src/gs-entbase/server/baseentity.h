@@ -17,6 +17,7 @@
 class CBaseEntity
 {
 	string m_strTarget;
+	string m_oldstrTarget; /* needed due to trigger_changetarget */
 	string m_strTargetName;
 	int m_iBody;
 

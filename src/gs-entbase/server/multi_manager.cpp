@@ -144,6 +144,7 @@ multi_manager::multi_manager(void)
 		// HACK: Avoid infinite loops
 		if (m_strTargetName != argv(i)) {
 			m_eTriggers[b].m_strTarget = argv(i);
+			m_eTriggers[b].m_oldstrTarget = argv(i);
 			b++;
 		}
 	}

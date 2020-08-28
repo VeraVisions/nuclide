@@ -246,6 +246,7 @@ void
 scripted_sequence::Respawn(void)
 {
 	m_iEnabled = TRUE;
+	m_strTarget = m_oldstrTarget;
 
 	if (m_strIdleAnim) {
 		think = InitIdle;
@@ -283,6 +284,7 @@ scripted_sequence::scripted_sequence(void)
 			break;
 		}
 	}
+	m_oldstrTarget = m_strTarget;
 }
 
 CLASSEXPORT(aiscripted_sequence, scripted_sequence)
