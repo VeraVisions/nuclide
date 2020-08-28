@@ -68,6 +68,7 @@ server/trigger_multiple.cpp
 server/trigger_push.cpp
 server/trigger_teleport.cpp
 server/trigger_transition.cpp
+server/trigger_playerfreeze.cpp
 server/trigger_relay.cpp
 server/env_shooter.cpp
 server/gibshooter.cpp
