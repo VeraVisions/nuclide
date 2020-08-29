@@ -451,6 +451,8 @@ CBaseMonster::WalkRoute(void)
 		endangles = vectoangles(m_eEnemy.origin - origin);
 		input_movevalues = [140, 0, 0];
 		m_vecTurnAngle[1] = endangles[1];
+	} else {
+		return;
 	}
 
 	/* functional */

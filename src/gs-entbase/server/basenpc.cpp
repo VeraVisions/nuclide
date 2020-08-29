@@ -458,7 +458,7 @@ CBaseNPC::Physics(void)
 
 			if (m_eFollowing != world) {
 				FollowPlayer();
-				input_angles = v_angle;
+				input_angles = angles = v_angle;
 			} else if (m_iFlags & MONSTER_FEAR) {
 				PanicFrame();
 			} else {
