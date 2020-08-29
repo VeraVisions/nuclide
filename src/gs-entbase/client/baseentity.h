@@ -42,6 +42,7 @@ class CBaseEntity
 	virtual void(float flChanged) ReadEntity;
 	virtual float(void) predraw;
 	virtual void(void) postdraw;
+	virtual void(void) customphysics;
 
 #ifdef GS_RENDERFX
 	virtual void(void) RenderFXPass;

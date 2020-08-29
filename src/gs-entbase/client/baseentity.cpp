@@ -24,40 +24,6 @@ string __fullspawndata;
 string Sentences_GetSamples(string);
 string Sentences_ProcessSample(string);
 
-class CBaseEntity
-{
-#ifdef GS_RENDERFX
-	int m_iRenderFX;
-	float m_iRenderMode;
-	float m_flRenderAmt;
-	vector m_vecRenderColor;
-#endif
-
-	int m_iBody;
-	float m_flSentenceTime;
-	sound_t *m_pSentenceQue;
-	int m_iSentenceCount;
-	int m_iSentencePos;
-
-	string targetname;
-	string target;
-	float spawnflags;
-
-	void(void) CBaseEntity;
-	virtual void(void) Init;
-	virtual void(void) Initialized;
-	virtual void(string, string) SpawnKey;
-	virtual void(string) Sentence;
-	virtual void(void) ProcessWordQue;
-	virtual void(float flChanged) ReadEntity;
-	virtual float(void) predraw;
-	virtual void(void) postdraw;
-
-#ifdef GS_RENDERFX
-	virtual void(void) RenderFXPass;
-#endif
-};
-
 #ifdef GS_RENDERFX
 void
 CBaseEntity::RenderFXPass(void)
@@ -81,6 +47,8 @@ CBaseEntity::RenderFXPass(void)
 	case RM_COLOR:
 		break;
 	case RM_TEXTURE:
+		drawflags = 7;
+		abslight = 255;
 		break;
 	case RM_GLOW:
 		if (checkpvs(vecPlayer, this) == FALSE) {
@@ -122,6 +90,7 @@ CBaseEntity::RenderFXPass(void)
 		abslight = 255;
 		break;
 	case RM_FULLBRIGHT:
+		alpha = 1.0f;
 		drawflags = 7;
 		abslight = 255;
 		break;
@@ -382,8 +351,21 @@ void CBaseEntity::SpawnKey(string strField, string strKey)
 	}
 }
 
-void CBaseEntity::postdraw(void)
+void
+CBaseEntity::postdraw(void)
 {
+}
+
+void
+CBaseEntity::customphysics(void)
+{
+	/* support for think/nextthink */
+	if (think && nextthink > 0.0f) {
+		if (nextthink < time) {
+			nextthink = 0.0f;
+			think();
+		}
+	}
 }
 
 void CBaseEntity::Init(void)
