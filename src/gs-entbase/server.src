@@ -12,6 +12,8 @@ server/basemonster.cpp
 server/basenpc.cpp
 server/basephysics.cpp
 server/basevehicle.cpp
+server/info_null.cpp
+server/info_notnull.cpp
 server/button_target.cpp
 server/ambient_generic.cpp
 server/cycler.cpp

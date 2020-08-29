@@ -14,14 +14,27 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-CLASSEXPORT(info_node, info_notnull)
-CLASSEXPORT(info_target, info_notnull)
-CLASSEXPORT(env_sound, info_null)
+
+/*QUAKED info_notnull (1 0 0) (-8 -8 -8) (8 8 8)
+"targetname" Name
+
+Helper entity for the game-logic its vast array of entities.
+It is most commonly used to aim active in-game entities towards a specific
+location.
+
+For tasks such as aiming static/lightmapped light sources during the compiling
+process, please use info_null instead as it'll get removed after it has served
+its purpose.
+*/
+
+
+class info_notnull:CBaseTrigger
+{
+	void(void) info_notnull;
+};
 
 void
-env_glow(void)
+info_notnull::info_notnull(void)
 {
-	if (self.model) {
-		precache_model(self.model);
-	}
+	CBaseTrigger::CBaseTrigger();
 }

@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED infodecal (1 0 0) (-2 -2 -2) (2 2 2)
+/*QUAKED infodecal (1 0 0) (-8 -8 -8) (8 8 8)
 "targetname" Name
 "texture"    Name of the texture inside decals.wad it projects onto a surface.
 
