@@ -84,8 +84,8 @@ class hostage_entity:CBaseNPC
 
 	virtual void(void) Respawn;
 	virtual void(void) PlayerUse;
-	virtual void(int) Pain;
-	virtual void(int) Death;
+	virtual void(void) Pain;
+	virtual void(void) Death;
 	virtual int(void) AnimIdle;
 	virtual int(void) AnimWalk;
 	virtual int(void) AnimRun;
@@ -129,9 +129,9 @@ hostage_entity::PlayerUse(void)
 }
 
 void
-hostage_entity::Pain(int iHitBody)
+hostage_entity::Pain(void)
 {
-	switch (iHitBody) {
+	switch (g_dmg_iHitBody) {
 	case BODY_HEAD:
 	case BODY_DEFAULT:
 	case BODY_CHEST:
@@ -160,7 +160,7 @@ hostage_entity::Pain(int iHitBody)
 }
 
 void 
-hostage_entity::Death(int iHitBody)
+hostage_entity::Death(void)
 {
 	WarnAllies();
 
@@ -169,7 +169,7 @@ hostage_entity::Death(int iHitBody)
 	}
 
 	/* now mark our state as 'dead' */
-	CBaseNPC::Death(iHitBody);
+	CBaseNPC::Death();
 
 	/* penalties */
 	if (g_dmg_eAttacker.classname != "player")

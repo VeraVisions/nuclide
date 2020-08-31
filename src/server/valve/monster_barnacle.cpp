@@ -33,13 +33,11 @@ enum
 	BCL_DIE
 };
 
-
-
 class monster_barnacle:CBaseMonster
 {
 	void(void) monster_barnacle;
 
-	virtual void(int) Death;
+	virtual void(void) Death;
 	virtual void(void) Respawn;
 	virtual void(void) Physics;
 };
@@ -51,7 +49,7 @@ monster_barnacle::Physics(void)
 }
 
 void
-monster_barnacle::Death(int iHitBody)
+monster_barnacle::Death(void)
 {
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
@@ -60,7 +58,7 @@ monster_barnacle::Death(int iHitBody)
 	}
 
 	/* set the functional differences */
-	CBaseMonster::Death(iHitBody);
+	CBaseMonster::Death();
 }
 
 void

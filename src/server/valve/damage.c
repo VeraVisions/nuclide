@@ -77,13 +77,13 @@ Damage_Apply(entity t, entity c, float dmg, int w, int type)
 		if (s.flags & FL_CLIENT) {
 			rules.PlayerDeath((player)s);
 		} else {
-			s.Death(trace_surface_id);
+			s.Death();
 		}
 	} else {
 		if (s.flags & FL_CLIENT) {
 			rules.PlayerPain((player)s);
 		} else {
-			s.Pain(trace_surface_id);
+			s.Pain();
 		}
 	}
 }

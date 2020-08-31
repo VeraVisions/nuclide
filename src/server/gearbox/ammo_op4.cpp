@@ -94,7 +94,7 @@ class ammo_spore:item_ammo
 	void(void) ammo_spore;
 	virtual void(void) touch;
 	virtual void(void) Respawn;
-	virtual void(int) Death;
+	virtual void(void) Death;
 };
 
 void
@@ -106,7 +106,7 @@ ammo_spore::ammo_spore(void)
 }
 
 void
-ammo_spore::Death(int a)
+ammo_spore::Death(void)
 {
 	makevectors(m_oldAngle);
 	Sporelauncher_AltFire(this, origin, v_forward);

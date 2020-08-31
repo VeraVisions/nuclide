@@ -52,16 +52,16 @@ class monster_alien_controller:CBaseMonster
 
 	void(void) monster_alien_controller;
 
-	virtual void(int) Pain;
-	virtual void(int) Death;
+	virtual void(void) Pain;
+	virtual void(void) Death;
 	virtual void(void) IdleNoise;
 	virtual void(void) Respawn;
 };
 
 void
-monster_alien_controller::Pain(int iHitBody)
+monster_alien_controller::Pain(void)
 {
-	CBaseMonster::Pain(iHitBody);
+	CBaseMonster::Pain();
 
 	if (m_flPainTime > time) {
 		return;
@@ -77,7 +77,7 @@ monster_alien_controller::Pain(int iHitBody)
 }
 
 void
-monster_alien_controller::Death(int iHitBody)
+monster_alien_controller::Death(void)
 {
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
@@ -86,7 +86,7 @@ monster_alien_controller::Death(int iHitBody)
 	}
 
 	/* set the functional differences */
-	CBaseMonster::Death(iHitBody);
+	CBaseMonster::Death();
 }
 
 void

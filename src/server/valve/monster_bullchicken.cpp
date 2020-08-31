@@ -60,8 +60,8 @@ class monster_bullchicken:CBaseMonster
 
 	void(void) monster_bullchicken;
 
-	virtual void(int) Death;
-	virtual void(int) Pain;
+	virtual void(void) Death;
+	virtual void(void) Pain;
 	virtual void(void) IdleNoise;
 	virtual int(void) AnimIdle;
 	virtual int(void) AnimWalk;
@@ -104,9 +104,9 @@ monster_bullchicken::IdleNoise(void)
 }
 
 void
-monster_bullchicken::Pain(int iHitBody)
+monster_bullchicken::Pain(void)
 {
-	CBaseMonster::Pain(iHitBody);
+	CBaseMonster::Pain();
 
 	if (m_flAnimTime > time) {
 		return;
@@ -122,7 +122,7 @@ monster_bullchicken::Pain(int iHitBody)
 }
 
 void
-monster_bullchicken::Death(int iHitBody)
+monster_bullchicken::Death(void)
 {
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
@@ -134,7 +134,7 @@ monster_bullchicken::Death(int iHitBody)
 	}
 
 	/* set the functional differences */
-	CBaseMonster::Death(iHitBody);
+	CBaseMonster::Death();
 }
 
 void monster_bullchicken::monster_bullchicken(void)

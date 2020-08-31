@@ -47,16 +47,14 @@ enum
 	HC_STRUGGLE
 };
 
-
-
 class monster_headcrab:CBaseMonster
 {
 	float m_flIdleTime;
 
 	void(void) monster_headcrab;
 
-	virtual void(int) Pain;
-	virtual void(int) Death;
+	virtual void(void) Pain;
+	virtual void(void) Death;
 	virtual void(void) IdleNoise;
 	virtual int(void) AnimIdle;
 	virtual int(void) AnimWalk;
@@ -110,9 +108,9 @@ monster_headcrab::touch(void)
 }
 
 void
-monster_headcrab::Pain(int iHitBody)
+monster_headcrab::Pain(void)
 {
-	CBaseMonster::Pain(iHitBody);
+	CBaseMonster::Pain();
 
 	if (m_flAnimTime > time) {
 		return;
@@ -128,7 +126,7 @@ monster_headcrab::Pain(int iHitBody)
 }
 
 void
-monster_headcrab::Death(int iHitBody)
+monster_headcrab::Death(void)
 {
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
@@ -137,7 +135,7 @@ monster_headcrab::Death(int iHitBody)
 	}
 
 	/* set the functional differences */
-	CBaseMonster::Death(iHitBody);
+	CBaseMonster::Death();
 }
 
 void
@@ -165,6 +163,7 @@ monster_headcrab::monster_headcrab(void)
 	Sound_Precache("monster_headcrab.die");
 	Sound_Precache("monster_headcrab.idle");
 	Sound_Precache("monster_headcrab.pain");
+
 	if (classname == "monster_babycrab") {
 		netname = "Baby Headcrab";
 		model = "models/baby_headcrab.mdl";

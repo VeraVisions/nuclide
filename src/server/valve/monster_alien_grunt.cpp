@@ -65,16 +65,16 @@ class monster_alien_grunt:CBaseMonster
 
 	void(void) monster_alien_grunt;
 
-	virtual void(int) Pain;
-	virtual void(int) Death;
+	virtual void(void) Pain;
+	virtual void(void) Death;
 	virtual void(void) IdleNoise;
 	virtual void(void) Respawn;
 };
 
 void
-monster_alien_grunt::Pain(int iHitBody)
+monster_alien_grunt::Pain(void)
 {
-	CBaseMonster::Pain(iHitBody);
+	CBaseMonster::Pain();
 
 	if (m_flPainTime > time) {
 		return;
@@ -90,12 +90,12 @@ monster_alien_grunt::Pain(int iHitBody)
 }
 
 void
-monster_alien_grunt::Death(int iHitBody)
+monster_alien_grunt::Death(void)
 {
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
 		/* headshots == different animation */
-		if (iHitBody == BODY_HEAD) {
+		if (g_dmg_iHitBody == BODY_HEAD) {
 			if (random() < 0.5) {
 				SetFrame(AG_DIEHS);
 			} else {
@@ -109,7 +109,7 @@ monster_alien_grunt::Death(int iHitBody)
 	}
 
 	/* set the functional differences */
-	CBaseMonster::Death(iHitBody);
+	CBaseMonster::Death();
 }
 
 void

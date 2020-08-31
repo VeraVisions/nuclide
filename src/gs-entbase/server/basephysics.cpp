@@ -33,7 +33,7 @@ class CBasePhysics:CBaseEntity
 	virtual void(void) Respawn;
 	virtual void(void) touch;
 	virtual void(void) TouchThink;
-	virtual void(int) Pain;
+	virtual void(void) Pain;
 };
 
 void
@@ -81,7 +81,7 @@ CBasePhysics::touch(void)
 }
 
 void
-CBasePhysics::Pain(int body)
+CBasePhysics::Pain(void)
 {
 #ifdef GS_BULLET_PHYSICS
 	makevectors(vectoangles(origin - trace_endpos));

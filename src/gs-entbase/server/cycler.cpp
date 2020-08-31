@@ -30,11 +30,11 @@ class cycler:CBaseTrigger
 {
 	void(void) cycler;
 	virtual void(void) Respawn;
-	virtual void(int) Pain;
+	virtual void(void) Pain;
 };
 
 void
-cycler::Pain(int body)
+cycler::Pain(void)
 {
 	if (frame >= modelframecount(modelindex)) {
 		frame = 0;

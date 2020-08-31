@@ -53,8 +53,8 @@ class monster_nihilanth:CBaseMonster
 
 	void(void) monster_nihilanth;
 
-	virtual void(int) Death;
-	virtual void(int) Pain;
+	virtual void(void) Death;
+	virtual void(void) Pain;
 	virtual void(void) IdleNoise;
 	virtual void(void) Respawn;
 };
@@ -70,6 +70,7 @@ monster_nihilanth::IdleNoise(void)
 	if (m_flIdleTime > time) {
 		return;
 	}
+
 	/* timing needs to adjusted as sounds conflict */
 	m_flIdleTime = time + random(2,10);
 
@@ -77,9 +78,9 @@ monster_nihilanth::IdleNoise(void)
 }
 
 void
-monster_nihilanth::Pain(int iHitBody)
+monster_nihilanth::Pain(void)
 {
-	CBaseMonster::Pain(iHitBody);
+	CBaseMonster::Pain();
 
 	if (m_flAnimTime > time) {
 		return;
@@ -96,7 +97,7 @@ monster_nihilanth::Pain(int iHitBody)
 }
 
 void
-monster_nihilanth::Death(int iHitBody)
+monster_nihilanth::Death(void)
 {
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
@@ -105,7 +106,7 @@ monster_nihilanth::Death(int iHitBody)
 	}
 
 	/* set the functional differences */
-	CBaseMonster::Death(iHitBody);
+	CBaseMonster::Death();
 }
 
 void

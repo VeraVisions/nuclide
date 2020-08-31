@@ -103,8 +103,8 @@ class CBaseMonster:CBaseEntity
 	virtual void(void) Hide;
 	virtual void(void) Respawn;
 	virtual void(void) PlayerUse;
-	virtual void(int) Pain;
-	virtual void(int) Death;
+	virtual void(void) Pain;
+	virtual void(void) Death;
 	virtual void(void) Physics;
 	virtual void(void) IdleNoise;
 	virtual void(void) Gib;
@@ -569,14 +569,14 @@ CBaseMonster::PlayerUse(void)
 }
 
 void
-CBaseMonster::Pain(int iHitBody)
+CBaseMonster::Pain(void)
 {
 	if (!m_eEnemy)
 		m_eEnemy = g_dmg_eAttacker;
 }
 
 void
-CBaseMonster::Death(int iHitBody)
+CBaseMonster::Death(void)
 {
 	/* we were already dead before, so gib */
 	if (style == MONSTER_DEAD) {

@@ -63,8 +63,8 @@ class monster_alien_slave:CBaseNPC
 
 	void(void) monster_alien_slave;
 	
-	virtual void(int) Death;
-	virtual void(int) Pain;
+	virtual void(void) Death;
+	virtual void(void) Pain;
 	virtual void(void) IdleChat;
 	virtual void(void) Respawn;
 
@@ -167,9 +167,9 @@ monster_alien_slave::IdleChat(void)
 }
 
 void
-monster_alien_slave::Pain(int iHitBody)
+monster_alien_slave::Pain(void)
 {
-	CBaseNPC::Pain(iHitBody);
+	CBaseNPC::Pain();
 
 	if (m_flPainTime > time) {
 		return;
@@ -185,12 +185,12 @@ monster_alien_slave::Pain(int iHitBody)
 }
 
 void
-monster_alien_slave::Death(int iHitBody)
+monster_alien_slave::Death(void)
 {
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
 		/* headshots == different animation */
-		if (iHitBody == BODY_HEAD) {
+		if (g_dmg_iHitBody == BODY_HEAD) {
 			if (random() < 0.5) {
 				SetFrame(SLV_DIEHS);
 			} else {
@@ -204,7 +204,7 @@ monster_alien_slave::Death(int iHitBody)
 	}
 
 	/* set the functional differences */
-	CBaseNPC::Death(iHitBody);
+	CBaseNPC::Death();
 }
 
 void

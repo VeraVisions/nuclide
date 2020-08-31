@@ -40,6 +40,8 @@ enumflags
 
 class func_door_rotating:CBaseTrigger
 {
+	string m_strTargetClose;
+
 	int m_iMoveSnd;
 	int m_iStopSnd;
 	int m_iDamage;
@@ -132,6 +134,14 @@ void func_door_rotating::Returned(void)
 {
 	if (!(spawnflags & SF_ROT_USE)) {
 		touch = Touch;
+	}
+
+	if (m_strTargetClose)
+	for (entity f = world; (f = find(f, CBaseTrigger::m_strTargetName, m_strTargetClose));) {
+		CBaseTrigger trigger = (CBaseTrigger)f;
+		if (trigger.Trigger != __NULL__) {
+			trigger.Trigger(this, TRIG_TOGGLE);
+		}
 	}
     
 	m_iState = STATE_LOWERED;
@@ -388,6 +398,12 @@ void func_door_rotating::func_door_rotating(void)
 			break;
 		case "dmg":
 			m_iDamage = stoi(argv(i+1));
+			break;
+		case "wait":
+			m_flWait = stof(argv(i+1));
+			break;
+		case "netname":
+			m_strTargetClose = argv(i+1);
 			break;
 		default:
 			break;

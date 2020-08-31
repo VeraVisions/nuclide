@@ -42,8 +42,7 @@ class monster_snark:CBaseMonster
 	void(void) monster_snark;
 
 	virtual void(void) customphysics;
-	virtual void(int) Death;
-	virtual void(int) Pain;
+	virtual void(void) Death;
 	virtual void(void) Respawn;
 };
 
@@ -101,7 +100,7 @@ monster_snark::customphysics(void)
 }
 
 void
-monster_snark::Death(int i)
+monster_snark::Death(void)
 {
 	float dmg = Skill_GetValue("snark_dmg_pop");
 	Damage_Radius(origin, goalentity, dmg, dmg * 2.5f, TRUE, WEAPON_SNARK);
@@ -110,12 +109,6 @@ monster_snark::Death(int i)
 	Sound_Play(this, CHAN_BODY, "weapon_snark.blast");
 	customphysics = __NULL__;
 	remove(this);
-}
-
-void
-monster_snark::Pain(int i)
-{
-	
 }
 
 void

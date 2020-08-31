@@ -135,8 +135,7 @@ class func_button:CBaseTrigger
 	virtual void(void) Blocked;
 	virtual void(entity, int) Trigger;
 	virtual void(void) Use;
-	virtual void(int) Pain;
-	virtual void(int) Death;
+	virtual void(void) Death;
 	
 	virtual void(void) SetMovementDirection;
 	virtual void(vector, void(void)) MoveToDestination;
@@ -282,12 +281,7 @@ void func_button::Use(void)
 	Trigger(eActivator, TRIG_TOGGLE);
 }
 
-void func_button::Pain (int body)
-{
-	/* how you doin? */
-}
-
-void func_button::Death (int body)
+void func_button::Death(void)
 {
 	Trigger(g_dmg_eAttacker, TRIG_TOGGLE);
 	health = m_oldHealth;

@@ -119,8 +119,8 @@ class monster_human_grunt:CBaseNPC
 	virtual void(void) Scream;
 	virtual void(void) IdleChat;
 	virtual void(void) Respawn;
-	virtual void(int) Pain;
-	virtual void(int) Death;
+	virtual void(void) Pain;
+	virtual void(void) Death;
 
 	virtual int(void) AnimIdle;
 	virtual int(void) AnimWalk;
@@ -227,9 +227,9 @@ void monster_human_grunt::IdleChat(void)
 }
 
 void
-monster_human_grunt::Pain(int iHitBody)
+monster_human_grunt::Pain(void)
 {
-	CBaseMonster::Pain(iHitBody);
+	CBaseMonster::Pain();
 
 	if (m_flAnimTime > time) {
 		return;
@@ -245,13 +245,13 @@ monster_human_grunt::Pain(int iHitBody)
 }
 
 void
-monster_human_grunt::Death(int iHitBody)
+monster_human_grunt::Death(void)
 {
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
 		/* headshots == different animation */
 		/* this animation may not have been used, but it looks cool */
-		if (iHitBody == BODY_HEAD) {
+		if (g_dmg_iHitBody == BODY_HEAD) {
 			if (random() < 0.5) {
 				SetFrame(GR_DIEHS);
 			} else {
@@ -263,8 +263,9 @@ monster_human_grunt::Death(int iHitBody)
 	}
 
 	Sound_Play(this, CHAN_VOICE, "monster_human_grunt.die");
+
 	/* set the functional differences */
-	CBaseMonster::Death(iHitBody);
+	CBaseMonster::Death();
 }
 
 void

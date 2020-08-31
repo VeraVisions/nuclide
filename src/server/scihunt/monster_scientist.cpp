@@ -319,8 +319,8 @@ class monster_scientist:CBaseNPC
 	virtual void(void) Hide;
 	virtual void(void) Respawn;
 	virtual void(void) PlayerUse;
-	virtual void(int) Pain;
-	virtual void(int) Death;
+	virtual void(void) Pain;
+	virtual void(void) Death;
 	virtual void(void) Physics;
 	virtual void(void) Scream;
 	virtual void(void) WarnOthers;
@@ -558,7 +558,7 @@ void monster_scientist::PlayerUse(void)
 	}
 }
 
-void monster_scientist::Pain(int iHitBody)
+void monster_scientist::Pain(void)
 {
 	if (style == MONSTER_DEAD) {
 		return;
@@ -583,7 +583,7 @@ void monster_scientist::Pain(int iHitBody)
 	m_flPainTime = time + 0.25f;
 }
 
-void monster_scientist::Death(int iHitBody)
+void monster_scientist::Death(void)
 {
 	if (style == MONSTER_DEAD) {
 		Gib();

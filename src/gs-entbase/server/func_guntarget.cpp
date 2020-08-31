@@ -38,7 +38,7 @@ class func_guntarget:CBaseTrigger
 	virtual void(void) Move;
 	virtual void(void) Stop;
 	virtual void(entity act, int) Trigger;
-	virtual void(int) Death;
+	virtual void(void) Death;
 };
 
 void func_guntarget::Move(void)
@@ -93,7 +93,7 @@ void func_guntarget::NextPath(void)
 	}
 }
 
-void func_guntarget::Death(int iHitBody)
+void func_guntarget::Death(void)
 {
 	entity a;
 	Stop();

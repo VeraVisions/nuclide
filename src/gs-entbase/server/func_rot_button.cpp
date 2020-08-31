@@ -66,7 +66,7 @@ class func_rot_button:CBaseTrigger
 	virtual void(void) TurnToggle;
 	virtual void(void) PlayerUse;
 	virtual void(void) Respawn;
-	virtual void(int) Death;
+	virtual void(void) Death;
 	virtual void(void) touch;
 };
 
@@ -143,7 +143,7 @@ func_rot_button::TurnToggle(void)
 }
 
 void
-func_rot_button::Death(int i)
+func_rot_button::Death(void)
 {
 	takedamage = DAMAGE_NO;
 	TurnToggle();

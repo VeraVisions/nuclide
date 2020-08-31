@@ -49,18 +49,18 @@ class monster_human_assassin:CBaseMonster
 
 	void(void) monster_human_assassin;
 
-	virtual void(int) Death;
+	virtual void(void) Death;
 	virtual void(void) Respawn;
 };
 
 void
-monster_human_assassin::Death(int iHitBody)
+monster_human_assassin::Death(void)
 {
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
 		/* headshots == different animation */
 		/* this animation may not have been used, but it looks cool */
-		if (iHitBody == BODY_HEAD) {
+		if (g_dmg_iHitBody == BODY_HEAD) {
 			if (random() < 0.5) {
 				SetFrame(HAS_DIERUN);
 			} else {
@@ -72,7 +72,7 @@ monster_human_assassin::Death(int iHitBody)
 	}
 
 	/* set the functional differences */
-	CBaseMonster::Death(iHitBody);
+	CBaseMonster::Death();
 }
 
 void

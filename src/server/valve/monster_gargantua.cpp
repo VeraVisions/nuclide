@@ -54,8 +54,8 @@ class monster_gargantua:CBaseMonster
 
 	void(void) monster_gargantua;
 
-	virtual void(int) Death;
-	virtual void(int) Pain;
+	virtual void(void) Death;
+	virtual void(void) Pain;
 	virtual void(void) IdleNoise;
 	virtual void(void) Respawn;
 };
@@ -78,9 +78,9 @@ monster_gargantua::IdleNoise(void)
 }
 
 void
-monster_gargantua::Pain(int iHitBody)
+monster_gargantua::Pain(void)
 {
-	CBaseMonster::Pain(iHitBody);
+	CBaseMonster::Pain();
 
 	if (m_flAnimTime > time) {
 		return;
@@ -96,7 +96,7 @@ monster_gargantua::Pain(int iHitBody)
 }
 
 void
-monster_gargantua::Death(int iHitBody)
+monster_gargantua::Death(void)
 {
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
@@ -105,7 +105,7 @@ monster_gargantua::Death(int iHitBody)
 	}
 
 	/* set the functional differences */
-	CBaseMonster::Death(iHitBody);
+	CBaseMonster::Death();
 }
 
 void

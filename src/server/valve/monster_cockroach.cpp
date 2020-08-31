@@ -25,11 +25,11 @@ Cockroach
 class monster_cockroach:CBaseMonster
 {
 	void(void) monster_cockroach;
-	virtual void(int) Death;
+	virtual void(void) Death;
 };
 
 void
-monster_cockroach::Death(int iHitBody)
+monster_cockroach::Death(void)
 {
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
@@ -40,7 +40,7 @@ monster_cockroach::Death(int iHitBody)
 	health = -100;
 
 	/* set the functional differences */
-	CBaseMonster::Death(iHitBody);
+	CBaseMonster::Death();
 }
 
 void monster_cockroach::monster_cockroach(void)

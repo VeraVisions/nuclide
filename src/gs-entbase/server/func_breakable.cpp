@@ -118,12 +118,12 @@ class func_breakable:CBaseTrigger
 	virtual void(entity, int) Trigger;
 	virtual void(void) PlayerTouch;
 	/*virtual void(void) PressureDeath;*/
-	virtual void(int) Pain;
-	virtual void(int) Death;
+	virtual void(void) Pain;
+	virtual void(void) Death;
 };
 
 void
-func_breakable::Pain(int body)
+func_breakable::Pain(void)
 {
 	if (spawnflags & SF_TRIGGER) {
 		return;
@@ -172,7 +172,7 @@ func_breakable::Explode(void)
 }
 
 void
-func_breakable::Death(int body)
+func_breakable::Death(void)
 {
 	static void break_spawnobject(void) {
 		/* these might get overwritten by the entity spawnfunction */
@@ -228,14 +228,8 @@ void
 func_breakable::Trigger(entity act, int state)
 {
 	if (health > 0)
-		func_breakable::Death(0);
+		func_breakable::Death();
 }
-
-/*void
-func_breakable::PressureDeath(void)
-{
-	func_breakable::Death(m_pressAttacker, m_pressType, m_pressDamage);
-}*/
 
 void
 func_breakable::PlayerTouch(void)
@@ -247,6 +241,12 @@ func_breakable::PlayerTouch(void)
 
 	if (other.classname == classname) {
 		return;
+	}
+
+	if (other.solid == SOLID_CORPSE) {
+		if (vlen(other.velocity) > 100) {
+			Trigger(this, TRIG_ON);
+		}
 	}
 
 	if (spawnflags & SF_TOUCH) {

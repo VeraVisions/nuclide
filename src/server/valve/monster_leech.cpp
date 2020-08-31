@@ -40,7 +40,7 @@ class monster_leech:CBaseMonster
 
 	void(void) monster_leech;
 
-	virtual void(int) Death;
+	virtual void(void) Death;
 	virtual void(void) DeathEnd;
 	virtual void(void) Respawn;
 };
@@ -52,7 +52,7 @@ monster_leech::DeathEnd(void)
 }
 
 void
-monster_leech::Death(int iHitBody)
+monster_leech::Death(void)
 {
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
@@ -62,7 +62,7 @@ monster_leech::Death(int iHitBody)
 	}
 
 	/* set the functional differences */
-	CBaseMonster::Death(iHitBody);
+	CBaseMonster::Death();
 }
 
 void

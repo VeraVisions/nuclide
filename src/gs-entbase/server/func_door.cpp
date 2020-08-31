@@ -72,11 +72,11 @@ enum
 
 class func_door:CBaseTrigger
 {
+	string m_strTargetClose;
 	vector m_vecPos1;
 	vector m_vecPos2;
 	vector m_vecDest;
 	vector m_vecMoveDir;
-	string m_strFire;
 	float m_flSpeed;
 	float m_flLip;
 	float m_iState;
@@ -123,6 +123,14 @@ func_door::Arrived(void)
 		sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
 	}
 
+	if (m_strTargetClose)
+	for (entity f = world; (f = find(f, CBaseTrigger::m_strTargetName, m_strTargetClose));) {
+		CBaseTrigger trigger = (CBaseTrigger)f;
+		if (trigger.Trigger != __NULL__) {
+			trigger.Trigger(this, TRIG_TOGGLE);
+		}
+	}
+
 	if (!(spawnflags & SF_MOV_USE)) {
 		touch = Touch;
 	}
@@ -147,15 +155,6 @@ func_door::Returned(void)
 
 	if (!(spawnflags & SF_MOV_USE)) {
 		touch = Touch;
-	}
-
-	if (m_strFire) {
-		CBaseTrigger t;
-		t = (CBaseTrigger)find(world, CBaseTrigger::m_strTargetName, m_strFire);
-		
-		if (t) {
-			t.Trigger(this, TRIG_TOGGLE);
-		}
 	}
 
 	m_iState = DOORSTATE_LOWERED;
@@ -417,7 +416,7 @@ func_door::func_door(void)
 			m_flWait = stof(argv(i+1));
 			break;
 		case "netname":
-			m_strFire = argv(i+1);
+			m_strTargetClose = argv(i+1);
 			netname = __NULL__;
 			break;
 		case "dmg":

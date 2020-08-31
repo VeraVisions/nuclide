@@ -76,8 +76,8 @@ class monster_zombie:CBaseMonster
 
 	void(void) monster_zombie;
 
-	virtual void(int) Pain;
-	virtual void(int) Death;
+	virtual void(void) Pain;
+	virtual void(void) Death;
 	virtual void(void) IdleNoise;
 	virtual void(void) Respawn;
 
@@ -140,9 +140,9 @@ monster_zombie::AttackFlail(void)
 }
 
 void
-monster_zombie::Pain(int iHitBody)
+monster_zombie::Pain(void)
 {
-	CBaseMonster::Pain(iHitBody);
+	CBaseMonster::Pain();
 
 	if (m_flAnimTime > time) {
 		return;
@@ -158,12 +158,12 @@ monster_zombie::Pain(int iHitBody)
 }
 
 void
-monster_zombie::Death(int iHitBody)
+monster_zombie::Death(void)
 {
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
 		/* headshots == different animation */
-		if (iHitBody == BODY_HEAD) {
+		if (g_dmg_iHitBody == BODY_HEAD) {
 			if (random() < 0.5) {
 				SetFrame(ZO_DIEHS);
 			} else {
@@ -177,7 +177,7 @@ monster_zombie::Death(int iHitBody)
 	}
 
 	/* set the functional differences */
-	CBaseMonster::Death(iHitBody);
+	CBaseMonster::Death();
 }
 
 void

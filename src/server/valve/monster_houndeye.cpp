@@ -65,8 +65,8 @@ class monster_houndeye:CBaseMonster
 
 	void(void) monster_houndeye;
 
-	virtual void(int) Pain;
-	virtual void(int) Death;
+	virtual void(void) Pain;
+	virtual void(void) Death;
 	virtual void(void) IdleNoise;
 	virtual void(void) Respawn;
 
@@ -129,9 +129,9 @@ monster_houndeye::AttackBlast(void)
 }
 
 void
-monster_houndeye::Pain(int iHitBody)
+monster_houndeye::Pain(void)
 {
-	CBaseMonster::Pain(iHitBody);
+	CBaseMonster::Pain();
 
 	if (m_flAnimTime > time) {
 		return;
@@ -147,7 +147,7 @@ monster_houndeye::Pain(int iHitBody)
 }
 
 void
-monster_houndeye::Death(int iHitBody)
+monster_houndeye::Death(void)
 {
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
@@ -157,7 +157,7 @@ monster_houndeye::Death(int iHitBody)
 	}
 
 	/* set the functional differences */
-	CBaseMonster::Death(iHitBody);
+	CBaseMonster::Death();
 }
 
 void

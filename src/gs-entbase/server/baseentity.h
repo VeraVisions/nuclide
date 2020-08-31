@@ -52,8 +52,8 @@ class CBaseEntity
 	virtual void(void) Hide;
 	virtual void(void) ParentUpdate;
 	virtual float(entity, float) SendEntity;
-	virtual void(int iHitBody) Pain;
-	virtual void(int iHitBody) Death;
+	virtual void(void) Pain;
+	virtual void(void) Death;
 
 	virtual void(float) SetEffects;
 	virtual void(float) SetFrame;

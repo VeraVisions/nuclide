@@ -52,8 +52,8 @@ class monster_bigmomma:CBaseMonster
 
 	void(void) monster_bigmomma;
 
-	virtual void(int) Death;
-	virtual void(int) Pain;
+	virtual void(void) Death;
+	virtual void(void) Pain;
 	virtual void(void) IdleNoise;
 	virtual void(void) Respawn;
 };
@@ -76,9 +76,9 @@ monster_bigmomma::IdleNoise(void)
 }
 
 void
-monster_bigmomma::Pain(int iHitBody)
+monster_bigmomma::Pain(void)
 {
-	CBaseMonster::Pain(iHitBody);
+	CBaseMonster::Pain();
 
 	if (m_flAnimTime > time) {
 		return;
@@ -94,7 +94,7 @@ monster_bigmomma::Pain(int iHitBody)
 }
 
 void
-monster_bigmomma::Death(int iHitBody)
+monster_bigmomma::Death(void)
 {
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
@@ -103,7 +103,7 @@ monster_bigmomma::Death(int iHitBody)
 	}
 
 	/* set the functional differences */
-	CBaseMonster::Death(iHitBody);
+	CBaseMonster::Death();
 }
 
 void

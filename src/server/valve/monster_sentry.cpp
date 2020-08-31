@@ -37,13 +37,13 @@ class monster_sentry:CBaseMonster
 {
 	void(void) monster_sentry;
 	
-	virtual void(int) Death;
+	virtual void(void) Death;
 	virtual void(void) Respawn;
 
 };
 
 void
-monster_sentry::Death(int iHitBody)
+monster_sentry::Death(void)
 {
 	/* if we're already dead (corpse) don't change animations */
 	if (style != MONSTER_DEAD) {
@@ -52,7 +52,7 @@ monster_sentry::Death(int iHitBody)
 	}
 
 	/* set the functional differences */
-	CBaseMonster::Death(iHitBody);
+	CBaseMonster::Death();
 }
 
 void

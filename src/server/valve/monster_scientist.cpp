@@ -75,8 +75,8 @@ class monster_scientist:CBaseNPC
 
 	virtual void(void) Respawn;
 	virtual void(void) PlayerUse;
-	virtual void(int) Pain;
-	virtual void(int) Death;
+	virtual void(void) Pain;
+	virtual void(void) Death;
 	virtual int(void) AnimIdle;
 	virtual int(void) AnimWalk;
 	virtual int(void) AnimRun;
@@ -112,7 +112,7 @@ monster_scientist::PlayerUse(void)
 }
 
 void
-monster_scientist::Pain(int iHitBody)
+monster_scientist::Pain(void)
 {
 	WarnAllies();
 
@@ -132,7 +132,7 @@ monster_scientist::Pain(int iHitBody)
 }
 
 void
-monster_scientist::Death(int iHitBody)
+monster_scientist::Death(void)
 {
 	WarnAllies();
 
@@ -142,7 +142,7 @@ monster_scientist::Death(int iHitBody)
 	}
 
 	/* now mark our state as 'dead' */
-	CBaseNPC::Death(iHitBody);
+	CBaseNPC::Death();
 }
 
 void

@@ -232,13 +232,13 @@ CBaseEntity::SendEntity(entity ePEnt, float fChanged)
 }
 
 void
-CBaseEntity::Pain(int body)
+CBaseEntity::Pain(void)
 {
 	
 }
 
 void
-CBaseEntity::Death(int body)
+CBaseEntity::Death(void)
 {
 	
 }

@@ -39,7 +39,7 @@ class button_target:CBaseTrigger
 
 	virtual void(void) Respawn;
 	virtual void(entity, int) Trigger;
-	virtual void(int) Damage;
+	virtual void(void) Damage;
 };
 
 void
@@ -80,7 +80,7 @@ button_target::Trigger(entity act, int status)
 }
 
 void
-button_target::Damage(int hit)
+button_target::Damage(void)
 {
 	Trigger(g_dmg_eAttacker, TRIG_TOGGLE); /* TODO: Set state? */
 }

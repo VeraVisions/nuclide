@@ -40,24 +40,20 @@ class monster_sitting_scientist:CBaseMonster
 
 	virtual void(void) Hide;
 	virtual void(void) Respawn;
-	virtual void(int) Pain;
-	virtual void(int) Death;
+	virtual void(void) Death;
 	virtual void(void) Gib;
 };
 
-void monster_sitting_scientist::Gib(void)
+void
+monster_sitting_scientist::Gib(void)
 {
 	takedamage = DAMAGE_NO;
 	FX_GibHuman(this.origin);
 	Hide();
 }
 
-void monster_sitting_scientist::Pain(int iHitBody)
-{
-
-}
-
-void monster_sitting_scientist::Death(int iHitBody)
+void
+monster_sitting_scientist::Death(void)
 {
 	if (health < -50) {
 		Gib();
@@ -65,14 +61,16 @@ void monster_sitting_scientist::Death(int iHitBody)
 	}
 }
 
-void monster_sitting_scientist::Hide(void)
+void
+monster_sitting_scientist::Hide(void)
 {
 	SetModel("");
 	solid = SOLID_NOT;
 	movetype = MOVETYPE_NONE;
 }
 
-void monster_sitting_scientist::Respawn(void)
+void
+monster_sitting_scientist::Respawn(void)
 {
 	v_angle[0] = Math_FixDelta(m_oldAngle[0]);
 	v_angle[1] = Math_FixDelta(m_oldAngle[1]);
@@ -93,7 +91,8 @@ void monster_sitting_scientist::Respawn(void)
 	droptofloor();
 }
 
-void monster_sitting_scientist::monster_sitting_scientist(void)
+void
+monster_sitting_scientist::monster_sitting_scientist(void)
 {
 	model = "models/scientist.mdl";
 	

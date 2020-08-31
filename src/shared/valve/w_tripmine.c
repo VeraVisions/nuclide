@@ -49,6 +49,7 @@ class monster_tripmine:CBaseMonster
 
 	virtual float(entity, float) SendEntity;
 	virtual void(int) Trip;
+	virtual void(void) Damaged;
 	virtual void(void) Ready;
 	virtual void(void) Respawn;
 };
@@ -88,6 +89,12 @@ monster_tripmine::Trip(int walkthrough)
 }
 
 void
+monster_tripmine::Damaged(void)
+{
+	Trip(0);
+}
+
+void
 monster_tripmine::Ready(void)
 {
 	makevectors(angles);
@@ -99,7 +106,7 @@ monster_tripmine::Ready(void)
 		SendFlags = -1;
 		health = 1;
 		Death =
-		Pain = Trip;
+		Pain = Damaged;
 		takedamage = DAMAGE_YES;
 		m_iDist = (int)trace_plane_dist;
 		Sound_Play(this, CHAN_WEAPON, "weapon_tripmine.activate");

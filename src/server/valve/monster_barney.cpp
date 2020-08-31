@@ -50,8 +50,8 @@ class monster_barney:CBaseNPC
 
 	virtual void(void) Respawn;
 	virtual void(void) PlayerUse;
-	virtual void(int) Pain;
-	virtual void(int) Death;
+	virtual void(void) Pain;
+	virtual void(void) Death;
 	virtual int(void) AnimIdle;
 	virtual int(void) AnimWalk;
 	virtual int(void) AnimRun;
@@ -126,9 +126,9 @@ monster_barney::PlayerUse(void)
 }
 
 void
-monster_barney::Pain(int iHitBody)
+monster_barney::Pain(void)
 {
-	CBaseNPC::Pain(iHitBody);
+	CBaseNPC::Pain();
 
 	WarnAllies();
 
@@ -148,7 +148,7 @@ monster_barney::Pain(int iHitBody)
 }
 
 void 
-monster_barney::Death(int iHitBody)
+monster_barney::Death(void)
 {
 	WarnAllies();
 
@@ -158,7 +158,7 @@ monster_barney::Death(int iHitBody)
 	}
 
 	/* now mark our state as 'dead' */
-	CBaseNPC::Death(iHitBody);
+	CBaseNPC::Death();
 }
 
 void
