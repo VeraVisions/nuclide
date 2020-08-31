@@ -54,7 +54,7 @@ func_conveyor::SetMovementDirection(void)
 void
 func_conveyor::touch(void)
 {
-	other.basevelocity = m_vecMoveDir * m_flSpeed;
+	other.basevelocity = m_vecMoveDir * (m_flSpeed * -0.2f);
 }
 
 /* TODO: Handle state? */

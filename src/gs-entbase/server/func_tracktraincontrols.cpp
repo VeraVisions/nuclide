@@ -14,20 +14,26 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED func_vehiclecontrols (0 .5 .8) ?
+/*QUAKED func_tracktraincontrols (0 .5 .8) ?
 "targetname"    Name
 "target"        Name of the func_vehicle to control
 
-Brush that marks the usable region of a func_vehicle, in order
+Brush that marks the usable region of a func_tracktrain, in order
 to gain control.
-
-It's the same as func_tracktraincontrols, except that it's for
-func_vehicle instead of func_tracktrain.
 */
 
-void
-func_vehiclecontrols(void)
+class func_tracktraincontrols:CBaseTrigger
 {
-	spawnfunc_func_tracktraincontrols();
-	self.classname = "func_vehiclecontrols";
+	void(void) func_tracktraincontrols;
+};
+
+void
+func_tracktraincontrols::func_tracktraincontrols(void)
+{
+	precache_model(model);
+	SetModel(model);
+	SetOrigin(origin);
+	SetRenderMode(RM_TRIGGER);
+	SetSolid(SOLID_NOT);
+	CBaseTrigger::CBaseTrigger();
 }

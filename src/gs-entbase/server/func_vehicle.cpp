@@ -463,7 +463,7 @@ func_vehicle::Realign(void)
 		}
 	}
 
-	if (t) {
+	if (first && second) {
 		vector end_pos;
 		first = (CBaseEntity)first;
 		second = (CBaseEntity)second;

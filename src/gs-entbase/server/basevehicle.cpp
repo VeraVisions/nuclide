@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class CBaseVehicle:CBaseEntity
+class CBaseVehicle:CBaseTrigger
 {
 	entity m_eDriver;
 
@@ -62,6 +62,7 @@ void
 CBaseVehicle::PlayerLeave(base_player pl)
 {
 	pl.movetype = MOVETYPE_WALK;
+	pl.flags &= ~FL_FROZEN;
 	m_eDriver = __NULL__;
 }
 
