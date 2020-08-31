@@ -32,6 +32,22 @@ CDialog mp_dgBind;
 var int g_controlquery = -1;
 
 void
+ctrl_btnadvanced_start(void)
+{
+	static void ctrl_btnadvanced_end(void) {
+		g_menupage = PAGE_ADVANCEDCONTROLS;
+	}
+
+	localsound("../media/launch_dnmenu1.wav");			
+	header.SetStartEndPos(50,172,45,45);
+	header.SetStartEndSize(156,26,460,80);
+	header.m_lerp = 0.0f;
+	header.m_visible = TRUE;
+	header.SetHeader(HEAD_ADVANCED);
+	header.SetExecute(ctrl_btnadvanced_end);
+}
+
+void
 ctrl_btnok_start(void)
 {
 	static void ctrl_btnok_end(void) {
@@ -146,7 +162,7 @@ menu_controls_init(void)
 
 	ctrl_btnAdvanced = spawn(CMainButton);
 	ctrl_btnAdvanced.SetImage(BTN_ADVCONTROLS);
-	//ctrl_btnAdvanced.SetExecute(ctrl_btnok_start);
+	ctrl_btnAdvanced.SetExecute(ctrl_btnadvanced_start);
 	ctrl_btnAdvanced.SetPos(50,172);
 	Widget_Add(fn_controls, ctrl_btnAdvanced);
 

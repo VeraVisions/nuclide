@@ -197,7 +197,7 @@ Strings_Init(void)
 	m_reslbl[IDS_OPTS_CROSSHAIRHELP] = "Enable the weapon aiming crosshair.";
 	m_reslbl[IDS_OPTS_REVERSEHELP] = "Reverse mouse up/down axis.";
 	m_reslbl[IDS_OPTS_MLOOKHELP] = "Use the mouse to look around instead of using the mouse to move.";
-    //m_reslbl[IDS_OPTS_LOOKSPRINGHELP] = "Causes the screen to] = "";spring";"; back to looking straight ahead when you move forward.";
+    m_reslbl[IDS_OPTS_LOOKSPRINGHELP] = "Causes the screen to \"spring\" back to looking straight ahead when you move forward.";
 	m_reslbl[IDS_OPTS_LOOKSTRAFEHELP] = "In combination with your mouse look modifier, causes left-right movements to strafe instead of turn.";
 	m_reslbl[IDS_OPTS_MFILTERHELP] = "Average mouse inputs over the last two frames to smooth out movements.";
 	m_reslbl[IDS_OPTS_JOYSTICKHELP] = "Enable the joystick.";
