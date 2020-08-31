@@ -14,12 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED func_plat (0 .5 .8) ?
+/*QUAKED func_plat (0 .5 .8) ? FNCPLAT_TRIGGER
 "targetname"    Name
+"speed"         Speed of the lift in units per second
+"height"        Number of units the lift is supposed to move down
 
-Brush that lets light to pass through it.
-On idTech 2 BSPs, it will change texture variants when triggered.
+It's a simple elevator. It goes down... and back up.
 */
+
+enumflags
+{
+	FNCPLAT_TRIGGER,
+};
 
 enum
 {
@@ -38,68 +44,13 @@ class func_plat:CBaseTrigger
 
 	void(void) func_plat;
 	virtual void(entity, int) Trigger;
-	virtual void(void) MoveUp;
-	virtual void(void) MoveDown;
 	virtual void(void) ArrivedUp;
 	virtual void(void) ArrivedDown;
+	virtual void(vector, void(void)) Move;
+	virtual void(void) MoveToggle;
 	virtual void(void) Respawn;
 	virtual void(void) touch;
 };
-
-void
-func_plat::touch(void)
-{
-	if (other.movetype != MOVETYPE_WALK) {
-		return;
-	}
-
-	Trigger(other, TRIG_TOGGLE);
-
-}
-
-void
-func_plat::MoveDown(void)
-{
-	vector vecDifference;
-	float flTravel, fTravelTime;
-
-	m_iState = PLATSTATE_DOWN;
-	vecDifference = ((m_oldOrigin - [0,0,m_flHeight]) - origin);
-	flTravel = vlen(vecDifference);
-	fTravelTime = (flTravel / m_flSpeed);
-	think = ArrivedDown;
-
-	if (fTravelTime < 0.1) {
-		velocity = [0,0,0];
-		nextthink = ltime + 0.1f;
-		return;
-	}
-
-	velocity = (vecDifference * (1.0f / fTravelTime));
-	nextthink = (ltime + fTravelTime);
-}
-
-void
-func_plat::MoveUp(void)
-{
-	vector vecDifference;
-	float flTravel, fTravelTime;
-
-	m_iState = PLATSTATE_UP;
-	vecDifference = (m_oldOrigin - origin);
-	flTravel = vlen(vecDifference);
-	fTravelTime = (flTravel / m_flSpeed);
-	think = ArrivedUp;
-
-	if (fTravelTime < 0.1) {
-		velocity = [0,0,0];
-		nextthink = ltime + 0.1f;
-		return;
-	}
-
-	velocity = (vecDifference * (1.0f / fTravelTime));
-	nextthink = (ltime + fTravelTime);
-}
 
 void
 func_plat::ArrivedUp(void)
@@ -116,13 +67,63 @@ func_plat::ArrivedDown(void)
 }
 
 void
-func_plat::Trigger(entity act, int state)
+func_plat::Move(vector vecDest, void() vFunc)
+{
+	vector vecDifference;
+	float flTravel, fTravelTime;
+
+	m_iState = PLATSTATE_DOWN;
+	vecDifference = (vecDest - origin);
+	flTravel = vlen(vecDifference);
+	fTravelTime = (flTravel / m_flSpeed);
+	think = vFunc;
+
+	if (fTravelTime < 0.1) {
+		velocity = [0,0,0];
+		nextthink = ltime + 0.1f;
+		return;
+	}
+
+	velocity = (vecDifference * (1.0f / fTravelTime));
+	nextthink = (ltime + fTravelTime);
+}
+
+void
+func_plat::MoveToggle(void)
 {
 	if (m_iState == PLATSTATE_RAISED) {
-		MoveDown();
+		Move(m_oldOrigin - [0,0,m_flHeight], ArrivedDown);
 	} else if (m_iState == PLATSTATE_LOWERED) {
-		MoveUp();
+		Move(m_oldOrigin, ArrivedUp);
 	}
+}
+
+void
+func_plat::Trigger(entity act, int state)
+{
+	if (spawnflags & FNCPLAT_TRIGGER)
+		return;
+	
+	switch (state) {
+	case TRIG_OFF:
+		Move(m_oldOrigin - [0,0,m_flHeight], ArrivedDown);
+		break;
+	case TRIG_ON:
+		Move(m_oldOrigin, ArrivedUp);
+		break;
+	default:
+		MoveToggle();
+	}
+}
+
+void
+func_plat::touch(void)
+{
+	if (other.movetype != MOVETYPE_WALK) {
+		return;
+	}
+
+	MoveToggle();
 }
 
 void
@@ -134,6 +135,8 @@ func_plat::Respawn(void)
 	SetOrigin(m_oldOrigin);
 	
 	m_iState = PLATSTATE_RAISED;
+	think = __NULL__;
+	nextthink = 0.0f;
 }
 
 void
