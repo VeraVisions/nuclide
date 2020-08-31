@@ -23,8 +23,8 @@ class CScrollbar:CWidget
 	int m_theight;
 	int m_scroll;
 	int m_minus;
-	int m_max;
-	int m_maxtotal;
+	int m_maxvisible;
+	int m_totalentries;
 	int m_itemheight;
 	virtual void(int) m_changed = 0;
 	
@@ -57,7 +57,7 @@ void
 CScrollbar::Draw(void)
 {
 	int barheight = 0;
-	int barstep = 0;
+	float barstep = 0;
 
 	if (m_up_hold) {
 		drawpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y], g_bmp[UPARROWP],
@@ -71,27 +71,29 @@ CScrollbar::Draw(void)
 	}
 
 	if (m_dn_hold) {
-		drawpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y+m_height + 4], g_bmp[DNARROWP],
+		drawpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y+m_theight + 16], g_bmp[DNARROWP],
 				[16,16], [1,1,1], 1.0f, 0);
 	} else if (m_dn_hover) {
-		drawpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y+m_height + 4], g_bmp[DNARROWF],
+		drawpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y+m_theight + 16], g_bmp[DNARROWF],
 				[16,16], [1,1,1], 1.0f, 0);
 	} else {
-		drawpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y+m_height + 4], g_bmp[DNARROWD],
+		drawpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y+m_theight + 16], g_bmp[DNARROWD],
 				[16,16], [1,1,1], 1.0f, 0);
 	}
 
-	barheight = 20 /*m_theight * (m_theight / (m_max * m_itemheight))*/;
-	barstep = (m_scroll * m_itemheight) * (m_theight / (m_max * m_itemheight));
+	barheight = (float)(m_minus) / (float)(m_totalentries) * m_theight;
+
+	barstep = m_theight - barheight;
+	barstep *= (float)(m_scroll) / (float)(m_maxvisible);
 
 	/* too few entries? don't even bother */
-	if (m_maxtotal * m_itemheight < m_height) {
-		drawfill([g_menuofs[0]+m_x,g_menuofs[1]+m_y+16], [16,m_theight+20], [0.25,0.25,0.25], 1.0f);
+	if (m_totalentries * m_itemheight < m_height) {
+		drawfill([g_menuofs[0]+m_x,g_menuofs[1]+m_y+16], [16,m_theight], [0.25,0.25,0.25], 1.0f);
 		return;
 	}
 
 	if (!m_hold) {
-		drawfill([g_menuofs[0]+m_x,g_menuofs[1]+m_y+16], [16,m_theight+20], [0.25,0.25,0.25], 1.0f);
+		drawfill([g_menuofs[0]+m_x,g_menuofs[1]+m_y+16], [16,m_theight], [0.25,0.25,0.25], 1.0f);
 		if (!m_hover) {
 			drawfill([g_menuofs[0]+m_x+4,g_menuofs[1]+m_y+16+4+barstep], [8,barheight-8], [0,0,0], 1.0f);
 		} else {
@@ -107,10 +109,10 @@ void
 CScrollbar::Input(float type, float x, float y, float devid)
 {
 	int barheight = 0;
-	int barstep = 0;
+	float barstep = 0;
 
 	/* too few entries? don't even bother */
-	if (m_maxtotal * m_itemheight < m_height) {
+	if (m_totalentries * m_itemheight < m_height) {
 		return;
 	}
 
@@ -130,7 +132,7 @@ CScrollbar::Input(float type, float x, float y, float devid)
 	}
 
 	/* Down Arrow */
-	if (Util_CheckMouse(m_x, m_y + m_height + 4, 16, 16)) {
+	if (Util_CheckMouse(m_x, m_y + m_theight + 16, 16, 16)) {
 		m_dn_hover = TRUE;
 	} else {
 		m_dn_hover = FALSE;
@@ -144,8 +146,10 @@ CScrollbar::Input(float type, float x, float y, float devid)
 		SetScroll(m_scroll + 1);
 	}
 
-	barheight = 20 /*m_theight * (m_theight / (m_max * m_itemheight))*/;
-	barstep = (m_scroll * m_itemheight) * (m_theight / (m_max * m_itemheight));
+	barheight = (float)(m_minus) / (float)(m_totalentries) * m_theight;
+
+	barstep = m_theight - barheight;
+	barstep *= (float)(m_scroll) / (float)(m_maxvisible);
 
 	if (Util_CheckMouse(m_x, m_y + 16 + barstep, 16, barheight)) {
 		m_hover = TRUE;
@@ -164,11 +168,11 @@ CScrollbar::Input(float type, float x, float y, float devid)
 			int mdelta;
 			float m_value;
 			/* The - 10 is putting the slider in the middle of the cursor */
-			mdelta = (g_mousepos[1]-barheight) - (g_menuofs[1]+m_y);
+			mdelta = (g_mousepos[1] - (barheight / 2)) - (g_menuofs[1]+m_y);
 			m_value = ((float)mdelta / (float)m_theight);
 			m_value = bound(0.0f, m_value, 1.0f);
 			
-			SetScroll(rint(m_max * m_value));
+			SetScroll(rint(m_totalentries * m_value));
 			g_lastmousepos[0] = g_mousepos[0];
 			g_lastmousepos[1] = g_mousepos[1];
 			
@@ -182,7 +186,7 @@ CScrollbar::Input(float type, float x, float y, float devid)
 void
 CScrollbar::SetScroll(int val)
 {
-	m_scroll = bound(0,val,m_max);
+	m_scroll = bound(0,val,m_maxvisible);
 
 	if (m_changed) {
 		m_changed(m_scroll);
@@ -192,15 +196,15 @@ CScrollbar::SetScroll(int val)
 void
 CScrollbar::SetMax(int val)
 {
-	m_minus = (m_height + 20) / m_itemheight;
-	m_max = val - m_minus;
-	m_maxtotal = val;
+	m_minus = m_height / m_itemheight;
+	m_totalentries = val;
+	m_maxvisible = m_totalentries - m_minus;
 }
 
 void
 CScrollbar::SetHeight(int val)
 {
-	m_height = val - 20;
+	m_height = val;
 	m_theight = m_height - 32;
 }
 
