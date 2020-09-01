@@ -83,6 +83,9 @@ CScrollbar::Draw(void)
 
 	barheight = (float)(m_minus) / (float)(m_totalentries) * m_theight;
 
+	if (barheight < 20)
+		barheight = 20;
+
 	barstep = m_theight - barheight;
 	barstep *= (float)(m_scroll) / (float)(m_maxvisible);
 
@@ -147,6 +150,9 @@ CScrollbar::Input(float type, float x, float y, float devid)
 	}
 
 	barheight = (float)(m_minus) / (float)(m_totalentries) * m_theight;
+
+	if (barheight < 20)
+		barheight = 20;
 
 	barstep = m_theight - barheight;
 	barstep *= (float)(m_scroll) / (float)(m_maxvisible);

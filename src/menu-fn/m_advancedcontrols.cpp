@@ -14,8 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-
-CMainButton fn_advcontrols;
+CWidget fn_advcontrols;
 CCheckBox acn_cbCrosshair;
 CCheckBox acn_cbReverseMouse;
 CCheckBox acn_cbMouseLook;
