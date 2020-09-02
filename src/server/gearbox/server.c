@@ -31,6 +31,7 @@ Game_Worldspawn(void)
 	Sound_Precache("ammo.respawn");
 	Sound_Precache("player.die");
 	Sound_Precache("player.fall");
+	Sound_Precache("player.lightfall");
 	precache_model("models/player.mdl");
 	precache_model("models/w_weaponbox.mdl");
 	Weapons_Init();

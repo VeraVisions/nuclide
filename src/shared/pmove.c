@@ -778,6 +778,14 @@ PMove_Run(void)
 	/* activate any SOLID_TRIGGER entities */
 	touchtriggers();
 
+	if (self.waterlevel != 0) {
+		flFallVel = 0;
+	}
+
+	if ((self.flags & FL_ONGROUND) && self.movetype == MOVETYPE_WALK) {
+		GamePMove_Fall((player)self, flFallVel);
+	}
+
 	/* timers, these are predicted and shared across client and server */
 	pl.w_attack_next = max(0, pl.w_attack_next - input_timelength);
 	pl.w_idle_next = max(0, pl.w_idle_next - input_timelength);
@@ -786,14 +794,6 @@ PMove_Run(void)
 	pl.punchangle[0] *= punch;
 	pl.punchangle[1] *= punch;
 	pl.punchangle[2] *= punch;
-
-	if (self.waterlevel != 0) {
-		flFallVel = 0;
-	}
-
-	if ((self.flags & FL_ONGROUND) && self.movetype == MOVETYPE_WALK) {
-		GamePMove_Fall((player)self, flFallVel);
-	}
 
 	/* weapon/item logic of what the player controls */
 	Game_Input();

@@ -26,6 +26,7 @@ void Game_Worldspawn(void)
 	precache_model("models/w_weaponbox.mdl");
 	Sound_Precache("player.die");
 	Sound_Precache("player.fall");
+	Sound_Precache("player.lightfall");
 
 	Player_Precache();
 	Weapons_Init();
