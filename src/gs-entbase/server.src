@@ -14,6 +14,7 @@ server/basephysics.cpp
 server/basevehicle.cpp
 server/info_null.cpp
 server/info_notnull.cpp
+server/info_intermission.cpp
 server/button_target.cpp
 server/ambient_generic.cpp
 server/cycler.cpp
@@ -42,6 +43,9 @@ server/func_train.cpp
 server/func_guntarget.cpp
 server/func_tracktrain.cpp
 server/func_tracktraincontrols.cpp
+server/func_tank.cpp
+server/func_tankmortar.cpp
+server/func_tankcontrols.cpp
 server/func_pushable.cpp
 server/func_wall.cpp
 server/func_wall_toggle.cpp

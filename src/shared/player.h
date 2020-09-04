@@ -33,6 +33,9 @@ class base_player
 	/* any mods that use hooks */
 	entity hook;
 
+	/* vehicle info */
+	entity vehicle;
+
 #ifdef CLIENT
 	/* Prediction */
 	vector net_origin;

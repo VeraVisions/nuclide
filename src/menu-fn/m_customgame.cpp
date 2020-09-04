@@ -315,7 +315,7 @@ menu_customgame_init(void)
 	customgame_sbMods.SetItemheight(29);
 	customgame_sbMods.SetHeight(289);
 	customgame_sbMods.SetCallback(customgame_sbmods_changed);
-	customgame_sbMods.SetMax(gameinfo_count-1); /* don't show our current game */
+	customgame_sbMods.SetMax(gameinfo_count-1);
 	Widget_Add(fn_customgame, customgame_sbMods);
 }
 

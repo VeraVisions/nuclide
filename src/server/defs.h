@@ -24,6 +24,7 @@
 #include "flashlight.h"
 #include "weapons.h"
 #include "plugins.h"
+#include "vehicles.h"
 
 #define CLASSEXPORT(classname,classa) void classname(void) { spawnfunc_##classa(); }
 

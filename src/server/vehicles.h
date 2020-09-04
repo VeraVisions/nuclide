@@ -14,15 +14,4 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-CLASSEXPORT(info_node, info_notnull)
-CLASSEXPORT(info_target, info_notnull)
-CLASSEXPORT(env_sound, info_null)
-CLASSEXPORT(info_intermission, info_null)
-
-void
-env_glow(void)
-{
-	if (self.model) {
-		precache_model(self.model);
-	}
-}
+void Vehicle_Input(void);

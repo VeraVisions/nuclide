@@ -89,6 +89,7 @@ up_toggleinstall(void)
 	pkgid = up_lbUpdates.GetSelected();
 
 	switch (updates[pkgid].installed) {
+	case "":
 	case "rem":
 		localcmd(sprintf("pkg add %s\n", updates[pkgid].name));
 		updates[pkgid].installed = "pending";

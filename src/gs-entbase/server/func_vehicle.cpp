@@ -483,7 +483,6 @@ func_vehicle::Respawn(void)
 	SetModel(m_oldModel);
 	SetOrigin(m_oldOrigin);
 	SetAngles(m_oldAngle);
-	owner = m_eDriver = __NULL__;
 	think = Realign;
 	nextthink = time + 0.1f;
 
@@ -492,6 +491,9 @@ func_vehicle::Respawn(void)
 	m_wlBL.velocity =
 	m_wlBR.velocity =
 	velocity = [0,0,0];
+
+	if (m_eDriver)
+		PlayerLeave(m_eDriver);
 }
 
 void

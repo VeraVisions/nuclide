@@ -257,7 +257,6 @@ CSQC_UpdateView(float w, float h, float focus)
 			setproperty(VF_CL_VIEWANGLES, view_angles);
 			setproperty(VF_ANGLES, view_angles);
 		} else {
-			pSeat->m_vecCameraOrigin = [0,0,0];
 			if (pl.health) {
 				if (autocvar_cl_thirdperson == TRUE) {
 					makevectors(view_angles);
@@ -273,7 +272,10 @@ CSQC_UpdateView(float w, float h, float focus)
 			}
 
 			if (g_iIntermission) {
-				view_angles = pSeat->m_vecCameraAngle + [sin(time), sin(time * 2)] * 5;
+				view_angles = pSeat->m_vecCameraAngle;
+				view_angles += [sin(time), sin(time * 2)] * 5;
+				setproperty(VF_ORIGIN, pSeat->m_vecCameraOrigin);
+				setproperty(VF_CL_VIEWANGLES, view_angles);
 			}
 			setproperty(VF_ANGLES, view_angles + pl.punchangle);
 		}
@@ -492,9 +494,27 @@ CSQC_Parse_Event(void)
 
 	switch (fHeader) {
 	case EV_INTERMISSION:
+		int cam;
+		vector pos, ang;
+
+		cam = (int)readbyte();
+
+		if (cam) {
+			ang[0] = readfloat();
+			ang[1] = readfloat();
+			ang[2] = readfloat();
+
+			pos[0] = readcoord();
+			pos[1] = readcoord();
+			pos[2] = readcoord();
+		} else {
+			pos = getproperty(VF_ORIGIN);
+			ang = getproperty(VF_ANGLES);
+		}
+		
+		pSeat->m_vecCameraOrigin = pos;
+		pSeat->m_vecCameraAngle = ang;
 		g_iIntermission = TRUE;
-		pSeat->m_vecCameraOrigin = getproperty(VF_ORIGIN);
-		pSeat->m_vecCameraAngle = getproperty(VF_ANGLES);
 		break;
 	case EV_MUSICTRACK:
 		Music_ParseTrack();

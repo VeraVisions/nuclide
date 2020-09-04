@@ -24,7 +24,14 @@ class CBaseVehicle:CBaseTrigger
 	virtual void(void) PlayerAlign;
 	virtual void(base_player) PlayerEnter;
 	virtual void(base_player) PlayerLeave;
+	virtual void() PlayerInput;
 };
+
+void
+CBaseVehicle::PlayerInput(void)
+{
+
+}
 
 void
 CBaseVehicle::PlayerAlign(void)
@@ -56,6 +63,7 @@ CBaseVehicle::PlayerEnter(base_player pl)
 	m_vecPlayerPos[2] = dotproduct(offs, v_up);
 	pl.movetype = MOVETYPE_NOCLIP;
 	m_eDriver = (entity)pl;
+	pl.vehicle = this;
 }
 
 void
@@ -63,6 +71,7 @@ CBaseVehicle::PlayerLeave(base_player pl)
 {
 	pl.movetype = MOVETYPE_WALK;
 	pl.flags &= ~FL_FROZEN;
+	pl.vehicle = __NULL__;
 	m_eDriver = __NULL__;
 }
 

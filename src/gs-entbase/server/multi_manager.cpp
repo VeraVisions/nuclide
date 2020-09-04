@@ -58,6 +58,9 @@ multi_manager::Trigger(entity act, int state)
 		CBaseTrigger::UseTargets(wow.m_eActivator, TRIG_TOGGLE);
 	}
 
+	if (GetMaster() == FALSE)
+		return;
+
 	m_iValue = TRUE;
 
 	/* If not multi-threaded, we have to watch out 'til all triggers are done. */

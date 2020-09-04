@@ -14,15 +14,46 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-CLASSEXPORT(info_node, info_notnull)
-CLASSEXPORT(info_target, info_notnull)
-CLASSEXPORT(env_sound, info_null)
-CLASSEXPORT(info_intermission, info_null)
+class hologram_damage:CBaseNPC
+{
+	void(void) hologram_damage;
+
+	virtual void(void) Respawn;
+};
 
 void
-env_glow(void)
+hologram_damage::Respawn(void)
 {
-	if (self.model) {
-		precache_model(self.model);
+	//SetRenderMode(RM_ADDITIVE);
+}
+
+void
+hologram_damage::hologram_damage(void)
+{
+	int mdltype;
+
+	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
+		switch (argv(i)) {
+		case "creaturetype":
+			mdltype = stoi(argv(i+1));
+			break;
+		default:
+			break;
+		}
 	}
+
+	switch (mdltype) {
+	case 1:
+		model = "models/tube.mdl";
+		break;
+	case 2:
+		model = "models/raptor.mdl";
+		break;
+	default:
+		model = "models/beak.mdl";
+	}
+
+	base_mins = [-16,-16,0];
+	base_maxs = [16,16,72];
+	CBaseNPC::CBaseNPC();
 }

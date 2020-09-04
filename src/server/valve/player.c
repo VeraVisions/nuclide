@@ -35,17 +35,17 @@ Player_UseDown
 */
 void Player_UseDown(void)
 {
+	vector vecSrc;
+
 	if (self.health <= 0) {
 		return;
 	} else if (!(self.gflags & GF_USE_RELEASED)) {
 		return;
 	}
-	
-	vector vSource;
 
 	makevectors(self.v_angle);
-	vSource = self.origin + self.view_ofs;
-	traceline (vSource, vSource + (v_forward * 64), FALSE, self);
+	vecSrc = self.origin + self.view_ofs;
+	traceline(vecSrc, vecSrc + (v_forward * 64), MOVE_NORMAL, self);
 
 	if (trace_ent.PlayerUse) {
 		self.gflags &= ~GF_USE_RELEASED;

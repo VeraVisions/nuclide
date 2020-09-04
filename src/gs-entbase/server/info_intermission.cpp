@@ -14,15 +14,26 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-CLASSEXPORT(info_node, info_notnull)
-CLASSEXPORT(info_target, info_notnull)
-CLASSEXPORT(env_sound, info_null)
-CLASSEXPORT(info_intermission, info_null)
+
+/*QUAKED info_intermission (1 0 0) (-8 -8 -8) (8 8 8)
+"targetname" Name
+"targetname" Target entity to aim towards
+
+An entity that's used to create an 'Intermission' camera.
+Some mods use this while displaying the final scores, once a timelimit
+is hit etc.
+
+When Intermission is active, the players camera will be teleported here
+and angles towards the aim target.
+*/
+
+class info_intermission:CBaseTrigger
+{
+	void(void) info_intermission;
+};
 
 void
-env_glow(void)
+info_intermission::info_intermission(void)
 {
-	if (self.model) {
-		precache_model(self.model);
-	}
+	CBaseTrigger::CBaseTrigger();
 }

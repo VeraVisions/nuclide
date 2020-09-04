@@ -118,12 +118,57 @@ CGameRules::IntermissionStart(void)
 
 	m_iIntermission = TRUE;
 	m_flIntermissionTime = time + 5.0f;
+}
+
+void
+CGameRules::IntermissionCycle(void)
+{
+	static CBaseEntity cam;
+	CBaseEntity targ;
+
+	if (!m_iIntermission)
+		return;
+
+	if (time < m_flIntermissionCycle)
+		return;
 
 	/* make the clients aware */
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_INTERMISSION);
+
+	cam = (CBaseEntity)find(cam, ::classname, "info_intermission");
+
+	if (cam) {
+		targ = (CBaseEntity)find(world, CBaseEntity::m_strTargetName, cam.m_strTarget);
+
+		if (targ) {
+			vector foo;
+			foo = vectoangles(targ.origin - cam.origin);
+
+			WriteByte(MSG_MULTICAST, 1);
+			WriteFloat(MSG_MULTICAST, foo[0]);
+			WriteFloat(MSG_MULTICAST, foo[1]);
+			WriteFloat(MSG_MULTICAST, foo[2]);
+			WriteCoord(MSG_MULTICAST, cam.origin[0]);
+			WriteCoord(MSG_MULTICAST, cam.origin[1]);
+			WriteCoord(MSG_MULTICAST, cam.origin[2]);
+		}
+
+		for (entity pl = world; (pl = find(pl, ::classname, "player"));) {
+			setorigin(pl, cam.origin);
+		}
+	} else {
+		WriteByte(MSG_MULTICAST, 0);
+	}
+
 	msg_entity = world;
 	multicast([0,0,0], MULTICAST_ALL);
+
+	if (!cam)
+		m_flIntermissionCycle = 0.0f;
+	else
+		m_flIntermissionCycle = time + 5.0f;
+	
 }
 
 void
@@ -131,6 +176,7 @@ CGameRules::IntermissionEnd(void)
 {
 	if (!m_iIntermission)
 		return;
+
 	if (time < m_flIntermissionTime)
 		return;
 

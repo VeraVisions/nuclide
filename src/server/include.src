@@ -14,5 +14,6 @@ footsteps.c
 flashlight.c
 vote.c
 weapons.c
+vehicles.c
 entry.c
 #endlist

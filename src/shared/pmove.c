@@ -795,6 +795,11 @@ PMove_Run(void)
 	pl.punchangle[1] *= punch;
 	pl.punchangle[2] *= punch;
 
+	/* allow vehicles to prevent weapon logic from happening */
+#ifdef SERVER
+	Vehicle_Input();
+#endif
+
 	/* weapon/item logic of what the player controls */
 	Game_Input();
 }

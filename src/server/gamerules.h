@@ -18,6 +18,7 @@ class CGameRules
 {
 	int m_iIntermission;
 	float m_flIntermissionTime;
+	float m_flIntermissionCycle;
 
 	void() CGameRules;
 
@@ -45,6 +46,7 @@ class CGameRules
 
 	/* end of a game */
 	virtual void(void) IntermissionStart;
+	virtual void(void) IntermissionCycle;
 	virtual void(void) IntermissionEnd;
 
 	/* spectator */

@@ -14,15 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-CLASSEXPORT(info_node, info_notnull)
-CLASSEXPORT(info_target, info_notnull)
-CLASSEXPORT(env_sound, info_null)
-CLASSEXPORT(info_intermission, info_null)
-
-void
-env_glow(void)
+class monster_trainingbot:CBaseNPC
 {
-	if (self.model) {
-		precache_model(self.model);
-	}
+	void(void) monster_trainingbot;
+};
+
+void monster_trainingbot::monster_trainingbot(void)
+{
+	model = "models/gunmantrooper.mdl";
+	base_mins = [-16,-16,0];
+	base_maxs = [16,16,72];
+	CBaseNPC::CBaseNPC();
 }

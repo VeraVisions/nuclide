@@ -45,7 +45,7 @@ void Player_UseDown(void)
 
 	makevectors(self.v_angle);
 	vSource = self.origin + self.view_ofs;
-	traceline (vSource, vSource + (v_forward * 64), FALSE, self);
+	traceline (vSource, vSource + (v_forward * 64), MOVE_EVERYTHING, self);
 
 	if (trace_ent.PlayerUse) {
 		self.gflags &= ~GF_USE_RELEASED;
