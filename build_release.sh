@@ -41,6 +41,7 @@ copy_file logos/fte.png
 # one last touch
 touch ./_release/fteqw_goes_here
 mv ./_release/doc/release-readme ./_release/README
+mv ./_release/valve.fmf ./_release/default.fmf
 
 # build the tarball
 export FILE_OUT=nuclide-$(date +%m-%d-%Y)
