@@ -55,8 +55,7 @@ CUpdateList::Draw(void)
 	drawfill([g_menuofs[0] + m_x, g_menuofs[1] + m_y], [m_size[0], m_size[1]], 
 			 [0,0,0], 1.0f);
 
-	visible = floor(m_size[1] / 18) + 1;
-	visible = bound(0, visible, update_count);
+	visible = floor(m_size[1] / 18);
 	pos = m_y;
 
 	for (int i = m_scroll; i < (visible + m_scroll); i++) {
@@ -128,8 +127,7 @@ CUpdateList::Input(float type, float x, float y, float devid)
 	int pos[2];
 	static float clicktime;
 
-	visible = floor(m_size[1] / 18) + 1;
-	visible = bound(0, visible, update_count);
+	visible = floor(m_size[1] / 18);
 
 	pos[0] = m_x;
 	pos[1] = m_y;
