@@ -91,6 +91,7 @@ server/multi_manager.cpp
 server/momentarybase.cpp
 server/momentary_rot_button.cpp
 server/momentary_door.cpp
+server/func_mortar_field.cpp
 server/monster_furniture.cpp
 server/monster_generic.cpp
 server/monstermaker.cpp

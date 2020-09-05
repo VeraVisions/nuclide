@@ -14,13 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED func_wall (0 .5 .8) ?
-"targetname"    Name
-
-Brush that lets light to pass through it.
-On idTech 2 BSPs, it will change texture variants when triggered.
-*/
-
 class CBaseMomentary:CBaseTrigger
 {
 	entity m_eUser;
