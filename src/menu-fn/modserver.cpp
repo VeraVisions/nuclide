@@ -22,6 +22,8 @@
 var int g_iModServerLoading;
 var int g_iModServerReqCount;
 
+int game_getpackageid(string pkgname);
+
 void*
 memrealloc(__variant *oldptr, int elementsize, int old_num, int new_num)
 {
@@ -114,6 +116,7 @@ ModServer_ParseItem(string data)
 	games[id].hlversion = "1110";
 	games[id].svonly = 0;
 	games[id].installed = 0;
+	games[id].pkgid = -1;
 
 	for (int i = 0; i < c; i++) {
 		switch(argv(i)) {
@@ -164,6 +167,10 @@ ModServer_ParseItem(string data)
 			break;
 		case "gameinfo_trainingmap":
 			games[id].trainingmap = argv(i+1);
+			break;
+		case "gameinfo_pkgname":
+			games[id].pkgname = argv(i+1);
+			games[id].pkgid = game_getpackageid(games[id].pkgname);
 			break;
 		default:
 			break;

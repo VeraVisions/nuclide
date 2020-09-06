@@ -24,7 +24,7 @@
 class CUpdateList:CWidget
 {
 	int m_size[2];
-
+	int m_max;
 	int m_scroll;
 	int m_selected;
 	virtual void(void) m_changed = 0;
@@ -56,6 +56,10 @@ CUpdateList::Draw(void)
 			 [0,0,0], 1.0f);
 
 	visible = floor(m_size[1] / 18);
+
+	if (visible > m_max)
+		visible = m_max;
+
 	pos = m_y;
 
 	for (int i = m_scroll; i < (visible + m_scroll); i++) {
@@ -129,6 +133,9 @@ CUpdateList::Input(float type, float x, float y, float devid)
 
 	visible = floor(m_size[1] / 18);
 
+	if (visible > m_max)
+		visible = m_max;
+
 	pos[0] = m_x;
 	pos[1] = m_y;
 
@@ -191,6 +198,12 @@ CUpdateList::SetSelected(int i)
 	if (m_changed) {
 		m_changed();
 	}
+}
+
+void
+CUpdateList::SetMax(int i)
+{
+	m_max = i;
 }
 
 int

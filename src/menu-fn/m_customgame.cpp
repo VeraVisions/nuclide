@@ -14,6 +14,84 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/* the menu specific variables */
+CWidget fn_customgame;
+CFrame customgame_frMods;
+CModList customgame_lbMods;
+CScrollbar customgame_sbMods;
+CDialog customgame_dlgWait;
+
+CMainButton customgame_btnActivate;
+CMainButton customgame_btnInstall;
+CMainButton customgame_btnVisit;
+CMainButton customgame_btnRefresh;
+CMainButton customgame_btnDeactivate;
+CMainButton customgame_btnDone;
+
+/* get package id */
+var int g_iModInstallCache;
+var string g_strModInstallCache;
+
+int
+game_getpackageid(string pkgname)
+{
+	string f;
+
+	for (int i = 0; (getpackagemanagerinfo(i, GPMI_NAME)); i++) {
+		string name;
+		name = getpackagemanagerinfo(i, GPMI_NAME);
+
+		/* Spike started randomly putting version numbers into package names */
+		f = sprintf("%s=%s", pkgname, getpackagemanagerinfo(i, GPMI_VERSION));
+
+		if (name == f) {
+			return i;
+		}
+	}
+
+	/* no package id whatsoever */
+	return -1;
+}
+
+/* get installing id */
+void
+game_getinstallcache(void)
+{
+	int ret;
+	filestream fs_cache;
+
+	ret = 0;
+	fs_cache = fopen("mcache.dat", FILE_READ);
+
+	if (fs_cache >= 0) {
+		g_iModInstallCache = (int)stof(fgets(fs_cache));
+		g_strModInstallCache = fgets(fs_cache);
+		fclose(fs_cache);
+	} else {
+		g_iModInstallCache = -1;
+		g_strModInstallCache = "";
+	}
+
+	print(sprintf("id: %i, name: %s\n", ret, g_strModInstallCache));
+}
+
+/* write installing id */
+void
+game_writeinstallcache(int id, string gamedir)
+{
+	filestream fs_cache;
+
+	fs_cache = fopen("mcache.dat", FILE_WRITE);
+	g_iModInstallCache = id;
+	g_strModInstallCache = gamedir;
+
+	if (fs_cache >= 0) {
+		fputs(fs_cache, sprintf("%i\n",id));
+		fputs(fs_cache, gamedir);
+		fclose(fs_cache);
+	}
+}
+
 /* local game/mod info parsing */
 void
 games_set(int id)
@@ -80,6 +158,7 @@ games_init(void)
 		games[id].svonly = 0;
 		games[id].installed = 1;
 		games[id].chatroom = gamedirname;
+		games[id].pkgid = -1;
 
 		for (int i = 0; i < county; i++) {
 			switch(argv(i)) {
@@ -113,12 +192,14 @@ games_init(void)
 			case "gameinfo_type":
 				switch (strtolower(argv(i+1))) {
 					case "multiplayer_only":
+					case "multiplayer only":
 					case "mp":
 					case "multi":
 					case "multiplayer":
 						games[id].type = "Multiplayer";
 						break;
 					case "singleplayer_only":
+					case "singleplayer only":
 					case "sp":
 					case "single":
 					case "singleplayer":
@@ -151,6 +232,7 @@ games_init(void)
 				break;
 			case "gameinfo_pkgname":
 				games[id].pkgname = argv(i+1);
+				games[id].pkgid = game_getpackageid(games[id].pkgname);
 				break;
 			case "gameinfo_chatroom":
 				games[id].chatroom = argv(i+1);
@@ -164,6 +246,8 @@ games_init(void)
 		}
 	}
 
+	game_getinstallcache();
+
 	if (gameinfo_current == -1) {
 		print("^1FATAL ERROR: NO MODINFO.TXT FOR CURRENT MOD FOUND!\n");
 		crash();
@@ -171,19 +255,92 @@ games_init(void)
 	}
 }
 
-/* the menu specific code */
-CWidget fn_customgame;
-CFrame customgame_frMods;
-CModList customgame_lbMods;
-CScrollbar customgame_sbMods;
-CDialog customgame_dlgWait;
+void
+customgame_installstart(int gameid)
+{
+	int count;
+	count = tokenize(games[gameid].pkgname);
 
-CMainButton customgame_btnActivate;
-CMainButton customgame_btnInstall;
-CMainButton customgame_btnVisit;
-CMainButton customgame_btnRefresh;
-CMainButton customgame_btnDeactivate;
-CMainButton customgame_btnDone;
+	for (int i = 0; i < count; i++) {
+		int pkgid = game_getpackageid(argv(i));
+		localcmd(sprintf("pkg add %s\n", argv(i)));
+		print(sprintf("Marking package %s for install.\n",
+		      argv(i)));
+	}
+
+	game_writeinstallcache(gameid, games[gameid].gamedir);
+	localcmd("pkg apply\n");
+	print("Starting installation of custom game packages\n");
+}
+
+void
+customgame_installend(void)
+{
+	int gid = g_iModInstallCache;
+	print("install-end!\n");
+
+	localcmd(sprintf("fs_changegame %s http://www.frag-net.com/mods/%s.fmf\n", g_strModInstallCache, g_strModInstallCache));
+	game_writeinstallcache(-1, g_strModInstallCache);
+}
+
+void
+customgame_installframe(void)
+{
+	int id;
+	float perc;
+	float c;
+	int loading;
+
+	/* graphical frame */
+	customgame_dlgWait.Draw();
+	WField_Static(162, 180, "Installing mod data...", 320, 260,
+		col_prompt_text, 1.0f, 2, font_label_p);
+
+	/* download percentage */
+	perc = 0.0f;
+	loading = FALSE;
+
+	/* a game can have multiple packages associated */
+	id = g_iModInstallCache;
+	c = tokenize(games[id].pkgname);
+
+	/* go through all invididual packages */
+	for (float i = 0; i < c; i++) {
+		string st;
+		int pkgid;
+
+		/* package query */
+		pkgid = game_getpackageid(argv(i));
+		st = getpackagemanagerinfo(pkgid, GPMI_INSTALLED);
+
+		/* filter out statuses so we can calculate percentage */
+		switch (st) {
+		case "":
+		case "pending":
+		case "enabled":
+		case "present":
+		case "corrupt":
+			break;
+		default:
+			perc += stof(st);
+		}
+
+		/* all packages need to be 'enabled', else fail to end */
+		if (st != "enabled")
+			loading = TRUE;
+	}
+
+	/* display download percentage we calculated */
+	perc = perc / c;
+	WField_Static(162, 220, sprintf("%d", perc), 320, 260,
+		col_prompt_text, 1.0f, 2, font_label_p);
+
+	/* not everything has been downloaded */
+	if (loading == TRUE)
+		return;
+
+	customgame_installend();
+}
 
 void
 customgame_btnactivate_start(void)
@@ -210,9 +367,21 @@ customgame_btnactivate_start(void)
 void
 customgame_btninstall_start(void)
 {
-	int gid = customgame_lbMods.GetSelected();
-	print(sprintf("Requesting download for http://www.frag-net.com/mods/%s.fmf...\n", games[gid].gamedir));
-	localcmd(sprintf("fs_changegame %s http://www.frag-net.com/mods/%s.fmf\n", games[gid].gamedir, games[gid].gamedir));
+	int id = customgame_lbMods.GetSelected();
+	string st;
+
+	st = getpackagemanagerinfo(games[id].pkgid, GPMI_INSTALLED);
+
+	print(st);
+	print("\n");
+
+	if (st != "enabled") {
+		customgame_installstart(id);
+		return;
+	}
+
+	game_writeinstallcache(id, games[id].gamedir);
+	customgame_installend();
 }
 
 void 
@@ -348,10 +517,15 @@ menu_customgame_draw(void)
 			col_prompt_text, 1.0f, 2, font_label_p);
 	}
 	customgame_sbMods.SetMax(gameinfo_count-1); /* don't show our current game */
+
+	if (g_iModInstallCache >= 0) {
+		customgame_installframe();
+	}
 }
 
 void
 menu_customgame_input(float evtype, float scanx, float chary, float devid)
 {
-	Widget_Input(fn_customgame, evtype, scanx, chary, devid);
+	if (g_iModInstallCache == -1)
+		Widget_Input(fn_customgame, evtype, scanx, chary, devid);
 }

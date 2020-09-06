@@ -61,6 +61,7 @@ typedef struct
 	string type;
 	string hlversion;
 	string pkgname;
+	int pkgid;
 	int nomodels;
 	int installed;
 	string mpentity;

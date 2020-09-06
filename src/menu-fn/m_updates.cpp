@@ -197,7 +197,7 @@ menu_updates_refresh(void)
 		if (cat == "Plugins/") {
 			continue;
 		}
-		if (cat == "Mods/") {
+		if (cat == "Mod/") {
 			continue;
 		}
 		update_count++;
@@ -211,7 +211,7 @@ menu_updates_refresh(void)
 		if (cat == "Plugins/") {
 			continue;
 		}
-		if (cat == "Mods/") {
+		if (cat == "Mod/") {
 			continue;
 		}
 
@@ -231,6 +231,7 @@ menu_updates_refresh(void)
 		c++;
 	}
 	up_sbUpdates.SetMax(update_count);
+	up_lbUpdates.SetMax(update_count);
 	up_lbUpdates.SetSelected(0);
 }
 
@@ -249,7 +250,7 @@ menu_updates_draw(void)
 			if (cat == "Plugins/") {
 				continue;
 			}
-			if (cat == "Mods/") {
+			if (cat == "Mod/") {
 				continue;
 			}
 			pkg_ready = 1;

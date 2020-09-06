@@ -121,14 +121,18 @@ m_init(void)
 	Strings_Init();
 	g_initialized = TRUE;
 
-	/*if (cvar_string("game") != "valve")*/ {
+	if (cvar_string("game") != "valve") {
 		m_intro_skip();
 		Music_MenuStart();
 	}
-	
+
 	if (autocvar_menu_updating || !autocvar_menu_installedpackages) {
 		g_menupage = PAGE_UPDATES;
 	}
+	if (g_iModInstallCache >= 0) {
+		g_menupage = PAGE_CUSTOMGAME;
+	}
+
 	Menu_AutoScale();
 	Menu_GammaHack();
 }
