@@ -55,6 +55,7 @@ typedef struct
 	string url_info;
 	string url_dl;
 	string version;
+	string readme;
 	int size;
 	int svonly;
 	int cldll;

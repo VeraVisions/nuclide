@@ -158,6 +158,7 @@ games_init(void)
 		games[id].svonly = 0;
 		games[id].installed = 1;
 		games[id].chatroom = gamedirname;
+		games[id].readme = "readme.txt";
 		games[id].pkgid = -1;
 
 		for (int i = 0; i < county; i++) {
@@ -236,6 +237,9 @@ games_init(void)
 				break;
 			case "gameinfo_chatroom":
 				games[id].chatroom = argv(i+1);
+				break;
+			case "gameinfo_readme":
+				games[id].readme = argv(i+1);
 				break;
 			default:
 				break;
@@ -332,8 +336,10 @@ customgame_installframe(void)
 
 	/* display download percentage we calculated */
 	perc = perc / c;
-	WField_Static(162, 220, sprintf("%d", perc), 320, 260,
-		col_prompt_text, 1.0f, 2, font_label_p);
+	WField_Static(162, 220, sprintf("%d%%", perc), 320, 260,
+		[1,1,1], 1.0f, 2, font_label_p);
+	WField_Static(162, 220, "Service provided by frag-net.com through archive.org", 320, 260,
+		[1,1,1], 1.0f, 2, font_label);
 
 	/* not everything has been downloaded */
 	if (loading == TRUE)
