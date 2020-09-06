@@ -338,7 +338,7 @@ customgame_installframe(void)
 	perc = perc / c;
 	WField_Static(162, 220, sprintf("%d%%", perc), 320, 260,
 		[1,1,1], 1.0f, 2, font_label_p);
-	WField_Static(162, 220, "Service provided by frag-net.com through archive.org", 320, 260,
+	WField_Static(162, 260, "Service provided by frag-net.com through archive.org", 320, 260,
 		[1,1,1], 1.0f, 2, font_label);
 
 	/* not everything has been downloaded */
