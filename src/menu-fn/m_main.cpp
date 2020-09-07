@@ -186,68 +186,77 @@ menu_main_init(void)
 	main_btnConsole.SetPos(70,180);
 	Widget_Add(fn_main, main_btnConsole);
 
+	/* New Game */
 	main_btnNewGame = spawn(CMainButton);
 	main_btnNewGame.SetImage(BTN_NEWGAME);
-	if (games[gameinfo_current].type != "Multiplayer") {
-		main_btnNewGame.SetExecute(btn_newgame_start);
-	}
 	main_btnNewGame.SetPos(70,208);
+	/* new game not available in multiplayer_only */
+	if (games[gameinfo_current].type != "Multiplayer")
+		main_btnNewGame.SetExecute(btn_newgame_start);
 	Widget_Add(fn_main, main_btnNewGame);
 
+	/* Training */
 	main_btnTraining = spawn(CMainButton);
 	main_btnTraining.SetImage(BTN_TRAINING);
-	if (games[gameinfo_current].type != "Multiplayer") {
-		main_btnTraining.SetExecute(btn_training);
-	}
 	main_btnTraining.SetPos(70,236);
+	/* some mods actively try to hide the option */
+	if (games[gameinfo_current].trainingmap != "")
+		main_btnTraining.SetExecute(btn_training);
 	Widget_Add(fn_main, main_btnTraining);
 
+	/* Configuration */
 	main_btnConfiguration = spawn(CMainButton);
 	main_btnConfiguration.SetImage(BTN_CONFIG);
 	main_btnConfiguration.SetExecute(btn_configuration_start);
 	main_btnConfiguration.SetPos(70,264);
 	Widget_Add(fn_main, main_btnConfiguration);
 
+	/* Load Game */
 	main_btnLoadGame = spawn(CMainButton);
 	main_btnLoadGame.SetImage(BTN_LOADGAME);
-	main_btnLoadGame.SetExecute(btn_loadgame_start);
-	if (games[gameinfo_current].type != "Multiplayer") {
-		// Loadgame disabled
-	}
 	main_btnLoadGame.SetPos(70,292);
+	/* disable in multiplayer_only */
+	if (games[gameinfo_current].type != "Multiplayer")
+		main_btnLoadGame.SetExecute(btn_loadgame_start);
 	Widget_Add(fn_main, main_btnLoadGame);
 
+	/* Multiplayer */
 	main_btnMultiplayer = spawn(CMainButton);
 	main_btnMultiplayer.SetImage(BTN_MULTIPLAYER);
 	main_btnMultiplayer.SetPos(70,320);
-	if (games[gameinfo_current].type != "Singleplayer") {
+	/* disable when it's singleplayer_only */
+	if (games[gameinfo_current].type != "Singleplayer")
 		main_btnMultiplayer.SetExecute(btn_multiplayer_start);
-	}
 	Widget_Add(fn_main, main_btnMultiplayer);
 
+	/* Custom game */
 	main_btnCustomGame = spawn(CMainButton);
 	main_btnCustomGame.SetImage(BTN_CUSTOMGAME);
 	main_btnCustomGame.SetExecute(btn_customgame_start);
 	main_btnCustomGame.SetPos(70,348);
 	Widget_Add(fn_main, main_btnCustomGame);
 
+	/* View readme */
 	main_btnReadme = spawn(CMainButton);
 	main_btnReadme.SetImage(BTN_README);
 	main_btnReadme.SetExecute(btn_readme_start);
 	main_btnReadme.SetPos(70,376);
 	Widget_Add(fn_main, main_btnReadme);
 
+	/* Previews */
 	main_btnPreviews = spawn(CMainButton);
 	main_btnPreviews.SetImage(BTN_PREVIEWS);
 	main_btnPreviews.SetPos(70,404);
 	Widget_Add(fn_main, main_btnPreviews);
 
+	/* Quit */
 	main_btnQuit = spawn(CMainButton);
 	main_btnQuit.SetImage(BTN_QUIT);
 	main_btnQuit.SetExecute(btn_quit);
 	main_btnQuit.SetPos(70,432);	
 	Widget_Add(fn_main, main_btnQuit);
 
+	/* Quit dialog */
 	main_dgQuit = spawn(CDialog);	
 	main_btnQuitOk = spawn(CMainButton);
 	main_btnQuitOk.SetImage(BTN_OK);
@@ -263,7 +272,7 @@ menu_main_init(void)
 	main_btnQuitCancel.SetExecute(btn_quit_cancel);
 	Widget_Add(main_dgQuit, main_btnQuitCancel);
 
-	/* Main Menu (Connected) */
+	/* Now comes the 'connected' / ingame variation of this menu */
 	fn_main2 = spawn(CWidget);
 	main_btn2Console = spawn(CMainButton);
 	main_btn2Console.SetImage(BTN_CONSOLE);
@@ -271,51 +280,66 @@ menu_main_init(void)
 	main_btn2Console.SetPos(70,180);
 	Widget_Add(fn_main2, main_btn2Console);
 
+	/* Resume game */
 	main_btn2Resume = spawn(CMainButton);
 	main_btn2Resume.SetImage(BTN_RESUMEGAME);
 	main_btn2Resume.SetExecute(btn_resume);
 	main_btn2Resume.SetPos(70,208);
 	Widget_Add(fn_main2, main_btn2Resume);
 
+	/* New Game */
 	main_btn2NewGame = spawn(CMainButton);
 	main_btn2NewGame.SetImage(BTN_NEWGAME);
-	main_btn2NewGame.SetExecute(btn_newgame_start);
 	main_btn2NewGame.SetPos(70,236);
+	/* disable in multiplayer_only */
+	if (games[gameinfo_current].type != "Multiplayer")
+		main_btn2NewGame.SetExecute(btn_newgame_start);
 	Widget_Add(fn_main2, main_btn2NewGame);
 
+	/* Training */
 	main_btn2Training = spawn(CMainButton);
 	main_btn2Training.SetImage(BTN_TRAINING);
-	main_btn2Training.SetExecute(btn_training);
+	if (games[gameinfo_current].trainingmap)
+		main_btn2Training.SetExecute(btn_training);
 	main_btn2Training.SetPos(70,264);
 	Widget_Add(fn_main2, main_btn2Training);
 
+	/* Configuration */
 	main_btn2Configuration = spawn(CMainButton);
 	main_btn2Configuration.SetImage(BTN_CONFIG);
 	main_btn2Configuration.SetExecute(btn_configuration_start);
 	main_btn2Configuration.SetPos(70,292);
 	Widget_Add(fn_main2, main_btn2Configuration);
 
+	/* Save/Load */
 	main_btn2LoadGame = spawn(CMainButton);
 	main_btn2LoadGame.SetImage(BTN_SAVELOAD);
 	main_btn2LoadGame.SetPos(70,320);
+	/* disable in multiplayer_only */
+	if (games[gameinfo_current].type != "Multiplayer")
+		main_btn2LoadGame.SetExecute(btn_loadgame_start);
 	Widget_Add(fn_main2, main_btn2LoadGame);
 
+	/* Multiplayer */
 	main_btn2Multiplayer = spawn(CMainButton);
 	main_btn2Multiplayer.SetImage(BTN_MULTIPLAYER);
 	main_btn2Multiplayer.SetPos(70,348);
 	main_btn2Multiplayer.SetExecute(btn_multiplayer_start);
 	Widget_Add(fn_main2, main_btn2Multiplayer);
 
+	/* Custom game */
 	main_btn2CustomGame = spawn(CMainButton);
 	main_btn2CustomGame.SetImage(BTN_CUSTOMGAME);
 	main_btn2CustomGame.SetPos(70,376);
 	Widget_Add(fn_main2, main_btn2CustomGame);
 
+	/* Previews */
 	main_btn2Previews = spawn(CMainButton);
 	main_btn2Previews.SetImage(BTN_PREVIEWS);
 	main_btn2Previews.SetPos(70,404);
 	Widget_Add(fn_main2, main_btn2Previews);
 
+	/* Quit */
 	main_btn2Quit = spawn(CMainButton);
 	main_btn2Quit.SetImage(BTN_QUIT);
 	main_btn2Quit.SetExecute(btn_quit);
