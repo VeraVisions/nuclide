@@ -28,6 +28,7 @@ server/env_render.cpp
 server/env_shake.cpp
 server/env_message.cpp
 server/game_text.cpp
+server/game_player_equip.cpp
 server/path_corner.cpp
 server/path_track.cpp
 server/func_recharge.cpp
