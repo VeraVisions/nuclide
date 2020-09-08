@@ -336,7 +336,7 @@ CBaseMonster::FreeState(void)
 	/* trigger when required */
 	if (m_strRouteEnded) {
 		CBaseTrigger trigger = 0;
-		trigger = (CBaseTrigger)find(trigger, CBaseTrigger::m_strTargetName, m_strRouteEnded);
+		trigger = (CBaseTrigger)find(trigger, ::targetname, m_strRouteEnded);
 		if (!trigger) {
 			dprint(sprintf("^1CBaseMonster::^3FreeState^7: %s doesn't exist. Won't trigger\n", m_strRouteEnded));
 		}
@@ -385,14 +385,14 @@ CBaseMonster::CheckRoute(void)
 	flDist = floor(vlen(evenpos - origin));
 
 	if (flDist < 8) {
-		dprint(sprintf("^2CBaseMonster::^3CheckRoute^7: %s reached node\n", this.m_strTargetName));
+		dprint(sprintf("^2CBaseMonster::^3CheckRoute^7: %s reached node\n", this.targetname));
 		m_iCurNode--;
 		velocity = [0,0,0]; /* clamp friction */
 	}
 
 	if (m_iCurNode < -1) {
 		ClearRoute();
-		dprint(sprintf("^2CBaseMonster::^3CheckRoute^7: %s reached end\n", this.m_strTargetName));
+		dprint(sprintf("^2CBaseMonster::^3CheckRoute^7: %s reached end\n", this.targetname));
 
 		/* mark that we've ended a sequence, if we're in one and que anim */
 		if (m_iSequenceState == SEQUENCESTATE_ACTIVE) {
@@ -401,12 +401,12 @@ CBaseMonster::CheckRoute(void)
 				m_iSequenceState = SEQUENCESTATE_ENDING;
 				think = FreeState;
 				nextthink = time + duration;
-				dprint(sprintf("^2CBaseMonster::^3CheckRoute^7: %s overriding anim for %f seconds (modelindex %d, frame %d)\n", this.m_strTargetName, duration, modelindex, m_flSequenceEnd));
+				dprint(sprintf("^2CBaseMonster::^3CheckRoute^7: %s overriding anim for %f seconds (modelindex %d, frame %d)\n", this.targetname, duration, modelindex, m_flSequenceEnd));
 			} else {
 				/* we still need to trigger targets */
 				think = FreeState;
 				nextthink = time;
-				dprint(sprintf("^2CBaseMonster::^3CheckRoute^7: %s has no anim, finished sequence.\n", this.m_strTargetName));
+				dprint(sprintf("^2CBaseMonster::^3CheckRoute^7: %s has no anim, finished sequence.\n", this.targetname));
 			}
 		}
 	}

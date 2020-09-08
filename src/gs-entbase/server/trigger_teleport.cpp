@@ -47,7 +47,7 @@ trigger_teleport::touch(void)
 
 	if (other.health > 0 || other.solid == SOLID_SLIDEBOX) {
 		eActivator = other;
-		entity eTarget = find(world, CBaseTrigger::m_strTargetName, m_strTarget);
+		entity eTarget = find(world, ::targetname, target);
 
 		if (eTarget) {
 			vector endpos = eTarget.origin + [0,0,16];

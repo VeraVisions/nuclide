@@ -79,7 +79,7 @@ random_speaker::Enable(void)
 
 	print("^2random_speaker::^3Disable^7: " \
 	       "%s playing %s in %d\n", \
-	       m_strTargetName, m_strSample, r);
+	       targetname, m_strSample, r);
 }
 
 void
@@ -87,7 +87,7 @@ random_speaker::Disable(void)
 {
 	dprint("^2random_speaker::^3Disable^7: " \
 	       "Disabled %s playing %s\n", \
-	       m_strTargetName, m_strSample);
+	       targetname, m_strSample);
 
 	m_iValue = 0;
 	think = __NULL__;

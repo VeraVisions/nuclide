@@ -82,7 +82,7 @@ trigger_hurt::touch(void)
 		return;
 	}
 
-	if (m_strTarget) {
+	if (target) {
 		if (spawnflags & SF_HURT_FIREONPLAYER) {
 			if (other.flags & FL_CLIENT) {
 				eActivator = other;

@@ -66,7 +66,7 @@ path_corner::Trigger(entity act, int state)
 		return;
 	}
 
-	for (a = world; (a = find(a, CBaseTrigger::m_strTargetName, m_strMessage));) {
+	for (a = world; (a = find(a, ::targetname, m_strMessage));) {
 		CBaseTrigger trigger = (CBaseTrigger)a;
 		trigger.Trigger(act, state);
 		m_iFired = TRUE;

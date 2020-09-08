@@ -38,7 +38,7 @@ multisource::QueryTargets(void)
 	int out = TRUE;
 
 	/* normal triggers */
-	for (a = world; (a = find(a, CBaseTrigger::m_strTarget, m_strTargetName));) {
+	for (a = world; (a = find(a, ::target, targetname));) {
 		CBaseTrigger tTemp = (CBaseTrigger) a;
 		if (cvar("developer") == 1) {
 			dprint("[^1MULTISOURCE^7] ");
@@ -49,7 +49,7 @@ multisource::QueryTargets(void)
 			} else {
 				dprint(" is ^2ON^7, name: ");
 			}
-			dprint(tTemp.m_strTargetName);
+			dprint(tTemp.targetname);
 			dprint("\n");
 		} else {
 			/* exit out immediately as there's no point unless in-dev */
@@ -66,12 +66,12 @@ void
 multisource::Trigger(entity act, int unused)
 {
 	if (QueryTargets() == FALSE) {
-		dprint(sprintf("[^1MULTISOURCE^7] %s is inactive.\n", m_strTargetName));
+		dprint(sprintf("[^1MULTISOURCE^7] %s is inactive.\n", targetname));
 		m_iValue = FALSE;
 		return;
 	}
 
-	dprint(sprintf("[^1MULTISOURCE^7] %s is now active.\n", m_strTargetName));
+	dprint(sprintf("[^1MULTISOURCE^7] %s is now active.\n", targetname));
 	m_iValue = TRUE;
 	CBaseTrigger::UseTargets(act, TRIG_TOGGLE);
 }

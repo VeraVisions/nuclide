@@ -50,10 +50,10 @@ multi_manager::Trigger(entity act, int state)
 	static void mm_enttrigger (void) {
 		multi_manager_sub wow = (multi_manager_sub)self;
 		
-		entity eFind = find(world, CBaseTrigger::m_strTargetName, wow.m_strTarget);
+		entity eFind = find(world, ::targetname, wow.target);
 
 		dprint(sprintf("^2%s::^3Trigger^7: %s (%s)\n", 
-			this.classname, wow.m_strTarget, eFind.classname));
+			this.classname, wow.target, eFind.classname));
 
 		CBaseTrigger::UseTargets(wow.m_eActivator, TRIG_TOGGLE);
 	}
@@ -82,7 +82,7 @@ multi_manager::Trigger(entity act, int state)
 		}
 
 		// HACK: Avoid infinite loops
-		if (m_strTargetName != argv(i)) {
+		if (targetname != argv(i)) {
 			m_eTriggers[b].think = mm_enttrigger;
 			m_eTriggers[b].nextthink = time + stof(argv(i+1));
 			m_eTriggers[b].m_iValue = TRUE;
@@ -145,8 +145,8 @@ multi_manager::multi_manager(void)
 		}
 
 		// HACK: Avoid infinite loops
-		if (m_strTargetName != argv(i)) {
-			m_eTriggers[b].m_strTarget = argv(i);
+		if (targetname != argv(i)) {
+			m_eTriggers[b].target = argv(i);
 			m_eTriggers[b].m_oldstrTarget = argv(i);
 			b++;
 		}

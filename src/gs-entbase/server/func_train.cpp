@@ -112,7 +112,7 @@ func_train::GoToTarget(void)
 	vector vecVelocity;
 	vector vecWorldPos;
 
-	eNode = find(world, CBaseTrigger::m_strTargetName, m_strTarget);
+	eNode = find(world, ::targetname, target);
 
 	if (!eNode) {
 		return;
@@ -146,7 +146,7 @@ void
 func_train::NextPath(void)
 {
 	path_corner eNode;
-	eNode = (path_corner)find(world, CBaseTrigger::m_strTargetName, m_strTarget);
+	eNode = (path_corner)find(world, ::targetname, target);
 
 	if (!eNode) {
 		return;
@@ -169,12 +169,12 @@ func_train::NextPath(void)
 	SetOrigin(eNode.origin - (mins + maxs) * 0.5);
 	m_flSpeed = eNode.m_flSpeed;
 	m_flWait = eNode.m_flWait;
-	m_strTarget = eNode.m_strTarget;
+	target = eNode.target;
 	velocity = [0,0,0];
 
 	/* warp next frame */
 	if (eNode.spawnflags & PC_TELEPORT) {
-		print(sprintf("^1func_train::^3NextPath^7: Node %s wants %s to teleport\n", eNode.m_strTargetName, m_strTargetName));
+		print(sprintf("^1func_train::^3NextPath^7: Node %s wants %s to teleport\n", eNode.targetname, targetname));
 		think = NextPath;
 		nextthink = ltime;
 		return;
@@ -211,7 +211,7 @@ func_train::Respawn(void)
 
 	/* let's wait 1/4 a second to give the path_corner entities a chance to
 	 * spawn in case they're after us in the ent lump */
-	m_strTarget = m_strOldTarget;
+	target = m_strOldTarget;
 	think = NextPath;
 	nextthink = ltime + 0.25f;
 }

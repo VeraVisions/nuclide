@@ -72,7 +72,7 @@ enum
 
 class func_door:CBaseTrigger
 {
-	string m_strTargetClose;
+	string targetClose;
 	vector m_vecPos1;
 	vector m_vecPos2;
 	vector m_vecDest;
@@ -123,8 +123,8 @@ func_door::Arrived(void)
 		sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
 	}
 
-	if (m_strTargetClose)
-	for (entity f = world; (f = find(f, CBaseTrigger::m_strTargetName, m_strTargetClose));) {
+	if (targetClose)
+	for (entity f = world; (f = find(f, ::targetname, targetClose));) {
 		CBaseTrigger trigger = (CBaseTrigger)f;
 		if (trigger.Trigger != __NULL__) {
 			trigger.Trigger(this, TRIG_TOGGLE);
@@ -387,7 +387,7 @@ func_door::Respawn(void)
 		m_iValue = 1;
 	}
 
-	if (m_strTargetName) {
+	if (targetname) {
 		m_iLocked = TRUE;
 	}
 
@@ -416,7 +416,7 @@ func_door::func_door(void)
 			m_flWait = stof(argv(i+1));
 			break;
 		case "netname":
-			m_strTargetClose = argv(i+1);
+			targetClose = argv(i+1);
 			netname = __NULL__;
 			break;
 		case "dmg":

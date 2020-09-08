@@ -43,11 +43,11 @@ void
 env_render::Trigger(entity act, int state)
 {
 	for (entity e = world;
-		(e = find(e, CBaseEntity::m_strTargetName, m_strTarget));) {
+		(e = find(e, ::targetname, target));) {
 		CBaseEntity trigger = (CBaseEntity)e;
 
 		dprint(sprintf("^2env_render::^3Trigger^7: with spawnflags %d\n", spawnflags));
-			dprint(sprintf("\tTarget: %s\n", m_strTarget));
+			dprint(sprintf("\tTarget: %s\n", target));
 		if (!(spawnflags & SF_NORENDERMODE)) {
 			dprint(sprintf("\tMode change from %d to %d\n", trigger.m_iRenderMode, m_iRenderMode));
 			trigger.SetRenderMode(m_iRenderMode);

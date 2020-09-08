@@ -89,6 +89,15 @@ CBaseEntity::SetBody(int newBody)
 	SendFlags |= BASEFL_CHANGED_BODY;
 }
 void
+CBaseEntity::SetScale(float newScale)
+{
+	if (newScale == m_flScale)
+		return;
+
+	m_flScale = newScale;
+	SendFlags |= BASEFL_CHANGED_SCALE;
+}
+void
 CBaseEntity::SetAngles(vector newAngles)
 {
 	if (newAngles == angles)
@@ -206,6 +215,9 @@ CBaseEntity::SendEntity(entity ePEnt, float fChanged)
 	if (fChanged & BASEFL_CHANGED_BODY) {
 		WriteByte(MSG_ENTITY, m_iBody);
 	}
+	if (fChanged & BASEFL_CHANGED_SCALE) {
+		WriteFloat(MSG_ENTITY, m_flScale);
+	}
 
 #ifdef GS_RENDERFX
 	if (fChanged & BASEFL_CHANGED_RENDERFX) {
@@ -259,7 +271,7 @@ CBaseEntity::ParentUpdate(void)
 	}
 
 	if (m_parent) {
-		entity p = find(world, CBaseEntity::m_strTargetName, m_parent);
+		entity p = find(world, ::targetname, m_parent);
 
 		if (!p) {
 			return;
@@ -286,6 +298,9 @@ CBaseEntity::CBaseEntity(void)
 	int nfields = tokenize(__fullspawndata);
 	for (int i = 1; i < (nfields - 1); i += 2) {
 		switch (argv(i)) {
+		case "scale":
+			m_flScale = stof(argv(i+1));
+			break;
 		case "origin":
 			origin = stov(argv(i+1));
 			break;
@@ -304,12 +319,10 @@ CBaseEntity::CBaseEntity(void)
 			}
 			break;
 		case "targetname":
-			m_strTargetName = argv(i+1);
-			targetname = __NULL__;
+			targetname = argv(i+1);
 			break;
 		case "target":
-			m_strTarget = argv(i+1);
-			target = __NULL__;
+			target = argv(i+1);
 			break;
 		case "color":
 			m_vecRenderColor = stov(argv(i+1));
@@ -351,7 +364,7 @@ CBaseEntity::CBaseEntity(void)
 	m_oldflRenderAmt = m_flRenderAmt;
 	m_oldvecRenderColor = m_vecRenderColor;
 	m_oldflRenderAmt = m_flRenderAmt;
-	m_oldstrTarget = m_strTarget;
+	m_oldstrTarget = target;
 
 	if (m_oldModel != "") {
 		precache_model(m_oldModel);
@@ -366,7 +379,7 @@ CBaseEntity::Respawn(void)
 	SetSolid(m_oldSolid);
 	SetAngles(m_oldAngle);
 	SetOrigin(m_oldOrigin);
-	m_strTarget = m_oldstrTarget;
+	target = m_oldstrTarget;
 
 #ifdef GS_RENDERFX
 	SetRenderFX(m_oldiRenderFX);

@@ -125,11 +125,11 @@ func_mortar_field::FireControlled(void)
 	for (f = world; (f = find(f, ::classname, "momentary_rot_button"));) {
 		momentary_rot_button l = (momentary_rot_button) f;
 
-		if (l.m_strTargetName == m_strXController) {
+		if (l.targetname == m_strXController) {
 			mX = l;
 		}
 
-		if (l.m_strTargetName == m_strYController) {
+		if (l.targetname == m_strYController) {
 			mY = l;
 		}
 	}

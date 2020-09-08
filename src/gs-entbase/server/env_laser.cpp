@@ -70,11 +70,11 @@ void env_laser::think(void)
 		nextthink = time + 0.1;
 	}
 
-	t = (CBaseTrigger)find(world, CBaseEntity::m_strTargetName, m_strLaserDest);
+	t = (CBaseTrigger)find(world, ::targetname, m_strLaserDest);
 	angles = t.origin;
 
 	if (!t) {
-		print(sprintf("^1env_laser::^3think^7: %s has no valid target. Aborting\n", m_strTargetName));
+		print(sprintf("^1env_laser::^3think^7: %s has no valid target. Aborting\n", targetname));
 		return;
 	}
 
@@ -167,7 +167,7 @@ void env_laser::ParentUpdate(void)
 	}*/
 
 	if (m_parent) {
-		entity p = find(world, CBaseEntity::m_strTargetName, m_parent);
+		entity p = find(world, ::targetname, m_parent);
 
 		if (!p) {
 			return;

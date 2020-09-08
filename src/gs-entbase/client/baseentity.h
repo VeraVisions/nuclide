@@ -24,6 +24,7 @@ class CBaseEntity
 #endif
 
 	int m_iBody;
+	float m_flScale;
 	float m_flSentenceTime;
 	sound_t *m_pSentenceQue;
 	int m_iSentenceCount;

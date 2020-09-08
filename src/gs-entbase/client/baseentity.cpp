@@ -147,6 +147,8 @@ CBaseEntity::predraw(void)
 	RenderFXPass();
 #endif
 
+	scale = m_flScale;
+
 	/* mouth flapping action */
 	bonecontrol5 = getchannellevel(this, CHAN_VOICE) * 20;
 	frame1time += clframetime;
@@ -263,6 +265,9 @@ void CBaseEntity::ReadEntity(float flChanged)
 	if (flChanged & BASEFL_CHANGED_BODY) {
 		m_iBody = readbyte();
 		setcustomskin(this, "", sprintf("geomset 1 %i\n", m_iBody));
+	}
+	if (flChanged & BASEFL_CHANGED_SCALE) {
+		m_flScale = readfloat();
 	}
 
 #ifdef GS_RENDERFX

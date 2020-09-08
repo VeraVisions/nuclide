@@ -36,7 +36,7 @@ func_tankcontrols::PlayerUse(void)
 		return;
 	}
 
-	for (f = world; (f = find(f, CBaseEntity::m_strTargetName, m_strTarget));) {
+	for (f = world; (f = find(f, ::targetname, target));) {
 		/* we found the right entity */
 		if (f.classname == "func_tank" || f.classname == "func_tankmortar") {
 			tank = (CBaseVehicle)f;

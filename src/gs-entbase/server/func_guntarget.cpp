@@ -47,10 +47,10 @@ void func_guntarget::Move(void)
 	vector vel_to_pos;
 	path_corner node;
 
-	node = (path_corner)find(world, CBaseTrigger::m_strTargetName, m_strTarget);
+	node = (path_corner)find(world, ::targetname, target);
 
 	if (!node) {
-		dprint(sprintf("^1func_guntarget::^3Move^7: Path node for %s not found!\n", m_strTargetName));
+		dprint(sprintf("^1func_guntarget::^3Move^7: Path node for %s not found!\n", targetname));
 		return;
 	}
 
@@ -76,8 +76,8 @@ void func_guntarget::NextPath(void)
 {
 	path_corner node;
 
-	print(sprintf("^2func_guntarget::^3NextPath^7: Talking to current target %s... ", m_strTarget));
-	node = (path_corner)find(world, path_corner::m_strTargetName, m_strTarget);
+	print(sprintf("^2func_guntarget::^3NextPath^7: Talking to current target %s... ", target));
+	node = (path_corner)find(world, ::targetname, target);
 
 	if (!node) {
 		print("^1FAILED.\n");
@@ -85,10 +85,10 @@ void func_guntarget::NextPath(void)
 		print("^2SUCCESS.\n");
 	}
 
-	m_strTarget = node.m_strTarget;
+	target = node.target;
 	velocity = [0,0,0];
 
-	if (m_strTarget) {
+	if (target) {
 		Move();
 	}
 }
@@ -102,7 +102,7 @@ void func_guntarget::Death(void)
 		return;
 	}
 
-	for (a = world; (a = find(a, CBaseTrigger::m_strTargetName, m_strFire));) {
+	for (a = world; (a = find(a, ::targetname, m_strFire));) {
 		CBaseTrigger trigger = (CBaseTrigger)a;
 		trigger.Trigger(g_dmg_eAttacker, TRIG_TOGGLE);
 	}

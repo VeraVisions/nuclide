@@ -63,7 +63,7 @@ trigger_look::Touch(void)
 	}
 
 	/* find the looktarget */
-	lt = find(world, CBaseEntity::m_strTargetName, m_strLookTarget);
+	lt = find(world, ::targetname, m_strLookTarget);
 	if (!lt) {
 		dprint(sprintf("^1trigger_look:Touch^7: Invalid m_strLookTarget %s!\n", m_strLookTarget));
 		remove(this);

@@ -87,7 +87,7 @@ trigger_changelevel::Change(void)
 	for (entity e = world; (e = find(e, ::classname, "info_landmark"));) {
 		info_landmark lm = (info_landmark)e;
 		/* found it */
-		if (lm.m_strTargetName == m_strLandmark) {
+		if (lm.targetname == m_strLandmark) {
 			dprint(sprintf("^2trigger_changelevel::^3Change^7: Found landmark for %s\n", m_strLandmark));
 			g_landmarkpos = m_activator.origin - lm.origin;
 			changelevel(m_strMap, m_strLandmark);
@@ -164,7 +164,7 @@ Landmark_GetSpot(void)
 	for (entity e = world; (e = find(e, ::classname, "info_landmark"));) {
 		info_landmark lm = (info_landmark)e;
 		/* found it */
-		if (lm.m_strTargetName == startspot) {
+		if (lm.targetname == startspot) {
 			dprint(sprintf("^3Landmark_GetSpot^7: Found landmark for %s\n", startspot));
 			return lm.origin + g_landmarkpos;
 		}

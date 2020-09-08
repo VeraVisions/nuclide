@@ -37,15 +37,15 @@ trigger_changetarget::Trigger(entity act, int state)
 {
 	CBaseEntity f;
 
-	f = (CBaseEntity)find(world, CBaseEntity::m_strTargetName, m_strTarget);
+	f = (CBaseEntity)find(world, ::targetname, target);
 
 	if (f) {
 		dprint("^2trigger_changetarget::^3Trigger^7: " \
 		       "Changing %s (%s) target from '%s' to '%s'\n", \
-		       m_strTarget, f.classname, f.m_strTarget, m_strTarget);
+		       target, f.classname, f.target, target);
 
 		/* now change the target */
-		f.m_strTarget = m_strNewTarget;
+		f.target = m_strNewTarget;
 	}
 }
 

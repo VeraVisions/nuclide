@@ -52,10 +52,10 @@ class CBaseTrigger:CBaseEntity
 void
 CBaseTrigger::UseTargets(entity act, int state)
 {
-	for (entity f = world; (f = find(f, CBaseTrigger::m_strTargetName, m_strTarget));) {
+	for (entity f = world; (f = find(f, ::targetname, target));) {
 		CBaseTrigger trigger = (CBaseTrigger)f;
 		dprint(sprintf("^2%s::^3UseTargets^7: Triggering %s `%s` from %s\n", 
-			this.classname, f.classname, trigger.m_strTargetName, act.classname));
+			this.classname, f.classname, trigger.targetname, act.classname));
 		if (trigger.Trigger != __NULL__) {
 			trigger.Trigger(act, state);
 		}
@@ -72,7 +72,7 @@ CBaseTrigger::UseTargets(entity act, int state)
 	}*/
 
 	if (m_strKillTarget) {
-		entity eKill = find(world, CBaseTrigger::m_strTargetName, m_strKillTarget);
+		entity eKill = find(world, ::targetname, m_strKillTarget);
 		if (eKill) {
 			remove(eKill);
 		}
@@ -88,12 +88,12 @@ CBaseTrigger::UseTargets_Delay(entity act, int state, float fDelay)
 	}
 
 	dprint(sprintf("^2%s::^3UseTargets_Delay^7: Triggering `%s`\n", 
-		this.classname, m_strTarget));
+		this.classname, target));
 
 	CBaseTrigger eTimer = spawn(CBaseTrigger);
 	eTimer.owner = act;
 	eTimer.think = Entities_UseTargets_Delay_Think;
-	eTimer.m_strTarget = m_strTarget;
+	eTimer.target = target;
 	eTimer.nextthink = time + fDelay;
 	eTimer.health = state;  /* ugly */
 }
@@ -116,7 +116,7 @@ CBaseTrigger::GetMaster(void)
 		return TRUE;
 	}
 
-	t = (CBaseTrigger)find(world, CBaseTrigger::m_strTarget, m_strMaster);
+	t = (CBaseTrigger)find(world, ::target, m_strMaster);
 
 	/* we couldn't find it, so let's not even bother going further */
 	if (!t) {
@@ -127,10 +127,10 @@ CBaseTrigger::GetMaster(void)
 
 	/*if (t.GetValue() == 1)
 		dprint(sprintf("^2%s::^3GetMaster^7: %s learns %s ^2POSITIVE\n", 
-		this.classname, m_strTargetName, m_strMaster));
+		this.classname, targetname, m_strMaster));
 	else
 		dprint(sprintf("^2%s::^3GetMaster^7: %s learns %s ^1NEGATIVE\n", 
-		this.classname, m_strTargetName, m_strMaster));*/
+		this.classname, targetname, m_strMaster));*/
 	
 	return t.GetValue();
 }

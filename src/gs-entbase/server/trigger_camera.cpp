@@ -43,7 +43,7 @@ trigger_camera::Trigger(entity act, int state)
 	}
 
 	if (m_strMoveTo) {
-		entity e = find(world, CBaseTrigger::m_strTargetName, m_strMoveTo);
+		entity e = find(world, ::targetname, m_strMoveTo);
 		if (e) {
 			angles = vectoangles(e.origin - origin);
 		}

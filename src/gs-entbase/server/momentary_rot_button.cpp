@@ -53,7 +53,7 @@ momentary_rot_button::PlayerUse(void)
 void
 momentary_rot_button::customphysics(void)
 {
-	entity e = find(world, CBaseEntity::m_strTargetName, m_strTarget);
+	entity e = find(world, ::targetname, target);
 	CBaseMomentary bl = (CBaseMomentary)e;
 
 	if (m_eUser != world) {

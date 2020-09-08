@@ -44,7 +44,7 @@ class scripted_sentence:CBaseTrigger
 void
 scripted_sentence::Trigger(entity act, int unused)
 {
-	entity speaker = find(world, CBaseEntity::m_strTargetName, m_strSpeaker);
+	entity speaker = find(world, ::targetname, m_strSpeaker);
 
 	if (!speaker) {
 		print(sprintf("^1scripted_sentence::^3Trigger^7: Couldn't find %s!\n", m_strSpeaker));

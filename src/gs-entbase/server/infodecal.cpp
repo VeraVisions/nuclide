@@ -66,7 +66,7 @@ void
 infodecal::Respawn(void)
 {
 	/* this will be invisible by default */
-	if (!m_strTargetName) {
+	if (!targetname) {
 		/* spawn automatically, remove self */
 		Trigger(this, TRIG_ON);
 	} else {

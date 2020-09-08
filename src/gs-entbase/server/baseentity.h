@@ -16,10 +16,9 @@
 
 class CBaseEntity
 {
-	string m_strTarget;
 	string m_oldstrTarget; /* needed due to trigger_changetarget */
-	string m_strTargetName;
 	int m_iBody;
+	float m_flScale;
 
 	/* respawn */
 	string m_oldModel;
@@ -63,6 +62,7 @@ class CBaseEntity
 	virtual void(float) SetSkin;
 	virtual void(float) SetSolid;
 	virtual void(int) SetBody;
+	virtual void(float) SetScale;
 	virtual void(vector) SetAngles;
 	virtual void(vector) SetOrigin;
 	virtual void(vector, vector) SetSize;

@@ -431,7 +431,7 @@ func_vehicle::Realign(void)
 
 	first = second = t = f = __NULL__;
 
-	for (f = world; (f = find(f, CBaseEntity::m_strTarget, m_strTargetName));) {
+	for (f = world; (f = find(f, ::target, targetname));) {
 		/* we found the right entity */
 		if (f.classname == "func_vehiclecontrols") {
 			t = f;
@@ -446,8 +446,8 @@ func_vehicle::Realign(void)
 	}
 
 	/* we rotate and position ourselves after the first path_track/corner */
-	strFirst = m_strTarget;
-	for (f = world; (f = find(f, CBaseEntity::m_strTargetName, strFirst));) {
+	strFirst = target;
+	for (f = world; (f = find(f, ::targetname, strFirst));) {
 		/* we found the right entity */
 		if (f.classname == "path_track" || f.classname == "path_corner") {
 			first = (CBaseEntity)f;
@@ -455,8 +455,8 @@ func_vehicle::Realign(void)
 	}
 
 	/* now get the second one... */
-	strSecond = first.m_strTarget;
-	for (f = world; (f = find(f, CBaseEntity::m_strTargetName, strSecond));) {
+	strSecond = first.target;
+	for (f = world; (f = find(f, ::targetname, strSecond));) {
 		/* we found the right entity */
 		if (f.classname == "path_track" || f.classname == "path_corner") {
 			second = (CBaseEntity)f;

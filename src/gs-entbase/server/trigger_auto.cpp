@@ -44,7 +44,7 @@ trigger_auto::Processing(void)
 	CBaseTrigger::UseTargets_Delay(this, m_iTriggerState, m_flDelay);
 
 	if (spawnflags & 1) {
-		dprint(sprintf("^2trigger_auto::^3think^7: %s triggerer removed self\n",  m_strTarget));
+		dprint(sprintf("^2trigger_auto::^3think^7: %s triggerer removed self\n",  target));
 		think = __NULL__;
 	}
 }

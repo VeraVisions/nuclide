@@ -139,7 +139,7 @@ CGameRules::IntermissionCycle(void)
 	cam = (CBaseEntity)find(cam, ::classname, "info_intermission");
 
 	if (cam) {
-		targ = (CBaseEntity)find(world, CBaseEntity::m_strTargetName, cam.m_strTarget);
+		targ = (CBaseEntity)find(world, ::targetname, cam.target);
 
 		if (targ) {
 			vector foo;

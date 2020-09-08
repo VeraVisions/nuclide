@@ -113,7 +113,7 @@ scripted_sequence::Trigger(entity act, int unused)
 	}
 
 	dprint(sprintf("^2scripted_sequence::^3Trigger^7: with spawnflags %d\n", spawnflags));
-	f = (CBaseMonster)find(world, CBaseEntity::m_strTargetName, m_strMonster);
+	f = (CBaseMonster)find(world, ::targetname, m_strMonster);
 
 	/* target doesn't exist/hasn't spawned */
 	if (!f) {
@@ -133,7 +133,7 @@ scripted_sequence::Trigger(entity act, int unused)
 		}
 	}
 
-	dprint(sprintf("\tName: %s\n", m_strTargetName));
+	dprint(sprintf("\tName: %s\n", targetname));
 	dprint(sprintf("\tTarget: %s\n", m_strMonster));
 	dprint(sprintf("\tStarted: %f\n", time));
 
@@ -147,9 +147,9 @@ scripted_sequence::Trigger(entity act, int unused)
 	}
 
 	/* entity to trigger after sequence ends */
-	if (m_strTarget) {
-		dprint(sprintf("\tTrigger when finished: %s\n", m_strTarget));
-		f.m_strRouteEnded = m_strTarget;
+	if (target) {
+		dprint(sprintf("\tTrigger when finished: %s\n", target));
+		f.m_strRouteEnded = target;
 	}
 
 	/* mark us as having been used, for multisources. */
@@ -195,7 +195,7 @@ scripted_sequence::Trigger(entity act, int unused)
 		f.nextthink = time;
 		dprint(sprintf(
 			"\t^1WARNING: %s skipping animation on script type %i\n",
-			f.m_strTargetName,
+			f.targetname,
 			m_iMove
 		));
 	}
@@ -216,7 +216,7 @@ scripted_sequence::InitIdle(void)
 	CBaseMonster f;
 
 	dprint(sprintf("^2scripted_sequence::^3InitIdle^7: with spawnflags %d\n", spawnflags));
-	f = (CBaseMonster)find(world, CBaseEntity::m_strTargetName, m_strMonster);
+	f = (CBaseMonster)find(world, ::targetname, m_strMonster);
 
 	/* target doesn't exist/hasn't spawned */
 	if (!f) {
@@ -246,7 +246,7 @@ void
 scripted_sequence::Respawn(void)
 {
 	m_iEnabled = TRUE;
-	m_strTarget = m_oldstrTarget;
+	target = m_oldstrTarget;
 
 	if (m_strIdleAnim) {
 		think = InitIdle;
@@ -261,7 +261,7 @@ scripted_sequence::scripted_sequence(void)
 	for (int i = 1; i < (nfields-1); i += 2) {
 		switch (argv(i)) {
 		case "target":
-			m_strTarget = argv(i+1);
+			target = argv(i+1);
 			break;
 		case "m_iszEntity":
 			m_strMonster = argv(i+1);
@@ -284,7 +284,7 @@ scripted_sequence::scripted_sequence(void)
 			break;
 		}
 	}
-	m_oldstrTarget = m_strTarget;
+	m_oldstrTarget = target;
 }
 
 CLASSEXPORT(aiscripted_sequence, scripted_sequence)

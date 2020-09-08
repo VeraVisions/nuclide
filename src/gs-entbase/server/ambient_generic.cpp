@@ -95,7 +95,7 @@ ambient_generic::UseNormal(entity act, int state)
 {
 	sound(this, CHAN_VOICE, m_strActivePath, m_flVolume, m_flRadius, m_flPitch);
 	dprint(sprintf("^2ambient_generic::^3UseNormal^7: %s plays `%s`\n", 
-		m_strTarget, m_strActivePath));
+		target, m_strActivePath));
 }
 
 void
@@ -103,12 +103,12 @@ ambient_generic::UseLoop(entity act, int state)
 {
 	if (m_iToggleSwitch == TRUE) {
 		dprint(sprintf("^2ambient_generic::^3UseLoop^7: %s stops `%s`\n", 
-			m_strTarget, m_strActivePath));
+			target, m_strActivePath));
 		m_strActivePath = "common/null.wav";
 	} else {
 		m_strActivePath = m_strSoundPath;
 		dprint(sprintf("^2ambient_generic::^3UseLoop^7: %s plays `%s`\n", 
-			m_strTarget, m_strActivePath));
+			target, m_strActivePath));
 	}
 
 	m_iToggleSwitch = 1 - m_iToggleSwitch;

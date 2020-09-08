@@ -33,7 +33,7 @@ class momentary_door:CBaseMomentary
 void
 momentary_door::customphysics(void)
 {
-	entity e = find(world, CBaseEntity::m_strTargetName, m_strTarget);
+	entity e = find(world, ::targetname, target);
 	CBaseMomentary bl = (CBaseMomentary)e;
 
 	if (m_eUser != world) {

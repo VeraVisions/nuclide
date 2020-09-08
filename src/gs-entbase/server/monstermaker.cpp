@@ -90,7 +90,7 @@ monstermaker::Spawner(void)
 
 		/* apply the saved values back */
 		t.origin = t.m_oldOrigin = neworg;
-		t.m_strTargetName = tname;
+		t.targetname = tname;
 		t.spawnflags |= MSF_MULTIPLAYER;
 
 		/* spawn anew */
@@ -133,7 +133,7 @@ monstermaker::Spawner(void)
 		setorigin(unit, origin);
 		m_iMonsterSpawned++;
 
-		if (m_strTarget) {
+		if (target) {
 			UseTargets(this, TRIG_TOGGLE);
 		}
 

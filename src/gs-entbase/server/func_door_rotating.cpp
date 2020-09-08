@@ -40,7 +40,7 @@ enumflags
 
 class func_door_rotating:CBaseTrigger
 {
-	string m_strTargetClose;
+	string targetClose;
 
 	int m_iMoveSnd;
 	int m_iStopSnd;
@@ -136,8 +136,8 @@ void func_door_rotating::Returned(void)
 		touch = Touch;
 	}
 
-	if (m_strTargetClose)
-	for (entity f = world; (f = find(f, CBaseTrigger::m_strTargetName, m_strTargetClose));) {
+	if (targetClose)
+	for (entity f = world; (f = find(f, ::targetname, targetClose));) {
 		CBaseTrigger trigger = (CBaseTrigger)f;
 		if (trigger.Trigger != __NULL__) {
 			trigger.Trigger(this, TRIG_TOGGLE);
@@ -299,7 +299,7 @@ void func_door_rotating::RotToDest(vector vDestAngle, void(void) func)
 	float flTravelLength, flTravelTime;
 
 	if (!m_flSpeed) {
-		dprint(sprintf("^1func_door_rotating::^3RotToDest^7: No speed defined for %s!", m_strTargetName));
+		dprint(sprintf("^1func_door_rotating::^3RotToDest^7: No speed defined for %s!", targetname));
 		func_door_rotating::Respawn();
 		return;
 	}
@@ -363,7 +363,7 @@ void func_door_rotating::Respawn(void)
 		SetSolid(SOLID_NOT);
 	}
 
-	if (m_strTargetName) {
+	if (targetname) {
 		m_iLocked = TRUE;
 	}
 
@@ -403,7 +403,7 @@ void func_door_rotating::func_door_rotating(void)
 			m_flWait = stof(argv(i+1));
 			break;
 		case "netname":
-			m_strTargetClose = argv(i+1);
+			targetClose = argv(i+1);
 			break;
 		default:
 			break;
