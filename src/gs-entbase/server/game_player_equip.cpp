@@ -50,6 +50,7 @@ class game_player_equip:CBaseTrigger
 
 	virtual void(string, vector) SpawnUnit;
 	virtual void(entity, int) Trigger;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -110,25 +111,26 @@ game_player_equip::Trigger(entity act, int state)
 }
 
 void
-game_player_equip::game_player_equip(void)
+game_player_equip::SpawnKey(string strKey, string strValue)
 {
 	/* like multi_manager, we save non-field infos in the spawndata */
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "{":
-		case "}":
-		case "classname":
-		case "origin":
-		case "targetname":
-		case "spawnflags":
-		case "angle":
-		case "angles":
-			continue;
-			break;
-		default:
-			m_strBuffer = sprintf("%s%s %s ", m_strBuffer, argv(i), argv(i+1));
-		}
+	switch (strKey) {
+	case "{":
+	case "}":
+	case "classname":
+	case "origin":
+	case "targetname":
+	case "spawnflags":
+	case "angle":
+	case "angles":
+		break;
+	default:
+		m_strBuffer = sprintf("%s%s %s ", m_strBuffer, strKey, strValue);
 	}
+}
 
+void
+game_player_equip::game_player_equip(void)
+{
 	CBaseTrigger::CBaseTrigger();
 }

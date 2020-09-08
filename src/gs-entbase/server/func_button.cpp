@@ -124,8 +124,7 @@ class func_button:CBaseTrigger
 	int m_iSoundCompat;
 	string m_strSndPressed;
 	string m_strSndUnpressed;
-	
-	virtual void(void) Precache;
+
 	virtual void(void) Respawn;
 	virtual void(void) Arrived;
 	virtual void(void) Returned;
@@ -140,26 +139,11 @@ class func_button:CBaseTrigger
 	virtual void(void) SetMovementDirection;
 	virtual void(vector, void(void)) MoveToDestination;
 	virtual void(void) MoveToDestination_End;
+	virtual void(string, string) SpawnKey;
 };
 
-void func_button::Precache(void)
-{
-	if (m_strSndPressed) {
-		if (m_iSoundCompat)
-			precache_sound(m_strSndPressed);
-		else
-			Sound_Precache(m_strSndPressed);
-	}
-
-	if (m_strSndUnpressed) {
-		if (m_iSoundCompat)
-			precache_sound(m_strSndUnpressed);
-		else
-			Sound_Precache(m_strSndUnpressed);
-	}
-}
-
-void func_button::Arrived(void)
+void
+func_button::Arrived(void)
 {
 	m_iState = STATE_RAISED;
 	
@@ -179,7 +163,8 @@ void func_button::Arrived(void)
 	}
 }
 
-void func_button::Returned(void)
+void
+func_button::Returned(void)
 {
 	if (spawnflags & SF_BTT_TOUCH_ONLY) {
 		touch = Touch;
@@ -189,7 +174,8 @@ void func_button::Returned(void)
 	SetFrame(FRAME_OFF);
 }
 
-void func_button::MoveBack(void)
+void
+func_button::MoveBack(void)
 {
 	touch = __NULL__;
 	m_iState = STATE_DOWN;
@@ -209,7 +195,8 @@ void func_button::MoveBack(void)
 	}
 }
 
-void func_button::MoveAway(void)
+void
+func_button::MoveAway(void)
 {
 	if (m_iState == STATE_UP) {
 		return;
@@ -234,7 +221,8 @@ void func_button::MoveAway(void)
 }
 
 /* TODO: Handle state */
-void func_button::Trigger(entity act, int state)
+void
+func_button::Trigger(entity act, int state)
 {
 	if (m_flNextTrigger > time) {
 		return;
@@ -265,7 +253,8 @@ void func_button::Trigger(entity act, int state)
 	}
 }
 
-void func_button::Touch(void)
+void
+func_button::Touch(void)
 {
 	if (other.movetype == MOVETYPE_WALK) {
 		Trigger(other, TRIG_TOGGLE);
@@ -276,18 +265,21 @@ void func_button::Touch(void)
 	}
 }
 
-void func_button::Use(void)
+void
+func_button::Use(void)
 {
 	Trigger(eActivator, TRIG_TOGGLE);
 }
 
-void func_button::Death(void)
+void
+func_button::Death(void)
 {
 	Trigger(g_dmg_eAttacker, TRIG_TOGGLE);
 	health = m_oldHealth;
 }
 
-void func_button::Blocked(void)
+void
+func_button::Blocked(void)
 {
 	if (m_iDamage) {
 		//Damage_Apply(other, this, dmg, other.origin, FALSE);
@@ -302,7 +294,8 @@ void func_button::Blocked(void)
 	}
 }
 
-void func_button::SetMovementDirection(void)
+void
+func_button::SetMovementDirection(void)
 {
 	if (m_oldAngle == [0,-1,0]) {
 		m_vecMoveDir = [0,0,1];
@@ -314,7 +307,8 @@ void func_button::SetMovementDirection(void)
 	}
 }
 
-void func_button::MoveToDestination_End(void)
+void
+func_button::MoveToDestination_End(void)
 {
 	SetOrigin(m_vecDest);
 	velocity = [0,0,0];
@@ -322,7 +316,8 @@ void func_button::MoveToDestination_End(void)
 	m_pMove();
 }
 
-void func_button::MoveToDestination(vector vecDest, void(void) func)
+void
+func_button::MoveToDestination(vector vecDest, void(void) func)
 {
 	vector vecDifference;
 	float flTravel, fTravelTime;
@@ -355,7 +350,8 @@ void func_button::MoveToDestination(vector vecDest, void(void) func)
 	velocity = (vecDifference * (1 / fTravelTime));
 }
 
-void func_button::Respawn(void)
+void
+func_button::Respawn(void)
 {
 	SetMovementDirection();
 
@@ -397,40 +393,56 @@ void func_button::Respawn(void)
 	SetAngles([0,0,0]);
 }
 
-void func_button::func_button(void)
+void
+func_button::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "speed":
+		m_flSpeed = stof(strValue);
+		break;
+	case "lip":
+		m_flLip = stof(strValue);
+		break;
+	case "snd_pressed":
+		m_strSndPressed = strValue;
+		break;
+	case "snd_unpressed":
+		m_strSndUnpressed = strValue;
+		break;
+	case "wait":
+		m_flWait = stof(strValue);
+		break;
+	case "delay":
+		m_flDelay = stof(strValue);
+		break;
+		/* compatibility */
+	case "sounds":
+		int sfx;
+		sfx = stoi(strValue);
+		m_strSndPressed = g_hlbutton_sfx[sfx];
+		m_iSoundCompat = TRUE;
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+func_button::func_button(void)
 {
 	CBaseTrigger::CBaseTrigger();
-
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "speed":
-			m_flSpeed = stof(argv(i+1));
-			break;
-		case "lip":
-			m_flLip = stof(argv(i+1));
-			break;
-		case "snd_pressed":
-			m_strSndPressed = argv(i+1);
-			break;
-		case "snd_unpressed":
-			m_strSndUnpressed = argv(i+1);
-			break;
-		case "wait":
-			m_flWait = stof(argv(i+1));
-			break;
-		case "delay":
-			m_flDelay = stof(argv(i+1));
-			break;
-		/* compatibility */
-		case "sounds":
-			int sfx;
-			sfx = stoi(argv(i+1));
-			m_strSndPressed = g_hlbutton_sfx[sfx];
-			m_iSoundCompat = TRUE;
-			break;
-		default:
-			break;
-		}
+	
+	if (m_strSndPressed) {
+		if (m_iSoundCompat)
+			precache_sound(m_strSndPressed);
+		else
+			Sound_Precache(m_strSndPressed);
 	}
-	Precache();
+
+	if (m_strSndUnpressed) {
+		if (m_iSoundCompat)
+			precache_sound(m_strSndUnpressed);
+		else
+			Sound_Precache(m_strSndUnpressed);
+	}
 }

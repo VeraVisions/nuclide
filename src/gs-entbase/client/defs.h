@@ -20,3 +20,8 @@ vector g_vecSunDir;
 
 /* TODO: Find a better way to figure out what's a CBaseEntity at heart */
 .float isCSQC;
+
+/* things we don't have in CSQC normally and oughta be global */
+.string target;
+.string targetname;
+.float spawnflags;

@@ -52,8 +52,7 @@ enumflags
 {
 	SF_TRIGGER,
 	SF_TOUCH,
-	SF_PRESSURE,
-	SF_ISMODEL
+	SF_PRESSURE
 };
 
 enum
@@ -120,6 +119,7 @@ class func_breakable:CBaseTrigger
 	/*virtual void(void) PressureDeath;*/
 	virtual void(void) Pain;
 	virtual void(void) Death;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -277,15 +277,8 @@ func_breakable::PlayerTouch(void)
 void
 func_breakable::Respawn(void)
 {
-	CBaseEntity::Respawn();
-
 	SetMovetype(MOVETYPE_NONE);
-
-	if (spawnflags & SF_ISMODEL) {
-		SetSolid(SOLID_BBOX);
-	} else {
-		SetSolid(SOLID_BSP);
-	}
+	SetSolid(SOLID_BSP);
 
 	SetModel(m_oldModel);
 	SetOrigin(m_oldOrigin);
@@ -306,58 +299,40 @@ func_breakable::Respawn(void)
 }
 
 void
+func_breakable::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "material":
+		m_iMaterial = stoi(strValue);
+		break;
+	case "delay":
+		m_flDelay = stof(strValue);
+		break;
+	case "explodemagnitude":
+		m_flExplodeMag = stof(strValue);
+		break;
+	case "spawnobject":
+		int oid = stoi(strValue);
+
+		if (oid >= funcbreakable_objtable.length) {
+			m_strBreakSpawn = "";
+			print(sprintf("^1func_breakable^7:" \
+			      "spawnobject %i out of bounds! fix your mod!\n", oid));
+		} else {
+			m_strBreakSpawn = funcbreakable_objtable[oid];
+		}
+		break;
+	case "spawnonbreak":
+		m_strBreakSpawn = strValue;
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+		break;
+	}
+}
+
+void
 func_breakable::func_breakable(void)
 {
-	vector vvm_angles = [0,0,0];
-	precache_model(model);
-	CBaseEntity::CBaseEntity();
-
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "vvm_angles":
-			vvm_angles = stov(argv(i+1));
-			break;
-		case "vvm_model":
-			// hack, gotta get the world pos */
-			solid = SOLID_BSP;
-			SetModel(model);
-
-			/* change the origin */
-			origin = absmin + (0.5 * (absmax - absmin));
-			m_oldOrigin = origin;
-
-			/* Now we can fake being a point entity. */
-			model = argv(i+1);
-			m_oldModel = model;
-			precache_model(model);
-			spawnflags |= SF_ISMODEL;
-			break;
-		case "material":
-			m_iMaterial = stoi(argv(i+1));
-			break;
-		case "delay":
-			m_flDelay = stof(argv(i+1));
-			break;
-		case "explodemagnitude":
-			m_flExplodeMag = stof(argv(i+1));
-			break;
-		case "spawnobject":
-			int oid = stoi(argv(i+1));
-
-			if (oid >= funcbreakable_objtable.length) {
-				print(sprintf("^1func_breakable^7: spawnobject %i out of bounds! fix your mod!\n", oid));
-				m_strBreakSpawn = "";
-			} else {
-				m_strBreakSpawn = funcbreakable_objtable[oid];
-			}
-			break;
-		case "spawnonbreak":
-			m_strBreakSpawn = argv(i+1);
-			break;
-		default:
-			break;
-		}
-	}
-
-	SetAngles(vvm_angles);
+	CBaseTrigger::CBaseTrigger();
 }

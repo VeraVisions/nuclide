@@ -28,6 +28,7 @@ class momentary_door:CBaseMomentary
 	virtual void(void) customphysics;
 	virtual void(void) Respawn;
 	virtual void(void) SetMovementDirection;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -102,23 +103,25 @@ momentary_door::Respawn(void)
 }
 
 void
+momentary_door::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "lip":
+		m_flDistance = stof(strValue);
+		break;
+	case "speed":
+		m_flSpeed = stof(strValue);
+		break;
+	case "returnspeed":
+		m_flReturnspeed = stof(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 momentary_door::momentary_door(void)
 {
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "lip":
-			m_flDistance = stof(argv(i+1));
-			break;
-		case "speed":
-			m_flSpeed = stof(argv(i+1));
-			break;
-		case "returnspeed":
-			m_flReturnspeed = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
-
 	CBaseTrigger::CBaseTrigger();
 }

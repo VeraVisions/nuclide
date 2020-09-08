@@ -39,6 +39,7 @@ class targ_speaker:CBaseTrigger
 	void(void) targ_speaker;
 
 	virtual void(entity,int) Trigger;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -52,20 +53,22 @@ targ_speaker::Trigger(entity act, int state)
 }
 
 void
+targ_speaker::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "tsnoise":
+		m_strSample = strValue;
+		break;
+	case "volume":
+		m_flVolume = stof(strValue);
+		break;
+	default:
+		break;
+	}
+}
+
+void
 targ_speaker::targ_speaker(void)
 {
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "tsnoise":
-			m_strSample = argv(i+1);
-			break;
-		case "volume":
-			m_flVolume = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
-
 	CBaseTrigger::CBaseTrigger();
 }

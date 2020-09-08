@@ -38,6 +38,7 @@ class func_recharge:CBaseTrigger
 	void(void) func_recharge;
 	virtual void(void) customphysics;
 	virtual void(void) PlayerUse;
+	virtual void(string, string) SpawnKey;
 };
 
 void func_recharge::PlayerUse(void)
@@ -91,27 +92,31 @@ void func_recharge::customphysics(void)
 	}
 }
 
+void
+func_recharge::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "snd_first":
+		m_strSndFirst = strValue;
+		break;
+	case "snd_charging":
+		m_strSndCharging = strValue;
+		break;
+	case "snd_done":
+		m_strSndDone = strValue;
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
 void func_recharge::func_recharge(void)
 {
 	m_strSndFirst = "items/suitchargeok1.wav";
 	m_strSndCharging = "items/suitcharge1.wav";
 	m_strSndDone = "items/suitchargeno1.wav";
 
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "snd_first":
-			m_strSndFirst = argv(i+1);
-			break;
-		case "snd_charging":
-			m_strSndCharging = argv(i+1);
-			break;
-		case "snd_done":
-			m_strSndDone = argv(i+1);
-			break;
-		default:
-			break;
-		}
-	}
+	CBaseTrigger::CBaseTrigger();
 
 	precache_sound(m_strSndFirst);
 	precache_sound(m_strSndCharging);

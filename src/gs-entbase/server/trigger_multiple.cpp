@@ -41,6 +41,7 @@ class trigger_multiple:CBaseTrigger
 	void(void) trigger_multiple;
 	virtual void(void) touch;
 	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -80,20 +81,22 @@ trigger_multiple::Respawn(void)
 }
 
 void
+trigger_multiple::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "delay":
+		m_flDelay = stof(strValue);
+		break;
+	case "wait":
+		m_flWait = stof(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 trigger_multiple::trigger_multiple(void)
 {
-	CBaseEntity::CBaseEntity();
-
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "delay":
-			m_flDelay = stof(argv(i+1));
-			break;
-		case "wait":
-			m_flWait = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
+	CBaseTrigger::CBaseTrigger();
 }

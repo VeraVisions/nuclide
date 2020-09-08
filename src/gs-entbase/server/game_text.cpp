@@ -62,6 +62,7 @@ class game_text:CBaseTrigger
 	void(void) game_text;
 
 	virtual void(entity, int) Trigger;
+	virtual void(string, string) SpawnKey;
 };
 
 void game_text::Trigger(entity act, int state)
@@ -93,43 +94,46 @@ void game_text::Trigger(entity act, int state)
 	}
 }
 
+void
+game_text::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "x":
+		m_flPosX = stof(strValue);
+		break;
+	case "y":
+		m_flPosY = stof(strValue);
+		break;
+	case "effect":
+		m_iEffect = stoi(strValue);
+		break;
+	case "color":
+		m_vecColor1 = stov(strValue);
+		break;
+	case "color2":
+		m_vecColor2 = stov(strValue);
+		break;
+	case "fadein":
+		m_flFadeIn = stof(strValue);
+		break;
+	case "fadeout":
+		m_flFadeOut = stof(strValue);
+		break;
+	case "holdtime":
+		m_flHoldTime = stof(strValue);
+		break;
+	case "fxtime":
+		m_flFXTime = stof(strValue);
+		break;
+	case "channel":
+		m_iChannel = stoi(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
 void game_text::game_text(void)
 {
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "x":
-			m_flPosX = stof(argv(i+1));
-			break;
-		case "y":
-			m_flPosY = stof(argv(i+1));
-			break;
-		case "effect":
-			m_iEffect = stoi(argv(i+1));
-			break;
-		case "color":
-			m_vecColor1 = stov(argv(i+1));
-			break;
-		case "color2":
-			m_vecColor2 = stov(argv(i+1));
-			break;
-		case "fadein":
-			m_flFadeIn = stof(argv(i+1));
-			break;
-		case "fadeout":
-			m_flFadeOut = stof(argv(i+1));
-			break;
-		case "holdtime":
-			m_flHoldTime = stof(argv(i+1));
-			break;
-		case "fxtime":
-			m_flFXTime = stof(argv(i+1));
-			break;
-		case "channel":
-			m_iChannel = stoi(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
 	CBaseTrigger::CBaseTrigger();
 }

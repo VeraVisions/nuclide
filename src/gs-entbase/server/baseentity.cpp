@@ -91,10 +91,10 @@ CBaseEntity::SetBody(int newBody)
 void
 CBaseEntity::SetScale(float newScale)
 {
-	if (newScale == m_flScale)
+	if (newScale == scale)
 		return;
 
-	m_flScale = newScale;
+	scale = newScale;
 	SendFlags |= BASEFL_CHANGED_SCALE;
 }
 void
@@ -216,7 +216,7 @@ CBaseEntity::SendEntity(entity ePEnt, float fChanged)
 		WriteByte(MSG_ENTITY, m_iBody);
 	}
 	if (fChanged & BASEFL_CHANGED_SCALE) {
-		WriteFloat(MSG_ENTITY, m_flScale);
+		WriteFloat(MSG_ENTITY, scale);
 	}
 
 #ifdef GS_RENDERFX
@@ -282,92 +282,10 @@ CBaseEntity::ParentUpdate(void)
 }
 
 void
-CBaseEntity::CBaseEntity(void)
+CBaseEntity::SpawnInit(void)
 {
-	/* Not in Deathmatch */
-	if (spawnflags & 2048) {
-		if (cvar("sv_playerslots") > 1) {
-			remove(this);
-			return;
-		}
-	}
-
-	gflags = GF_CANRESPAWN;
-	effects |= EF_NOSHADOW;
-
-	int nfields = tokenize(__fullspawndata);
-	for (int i = 1; i < (nfields - 1); i += 2) {
-		switch (argv(i)) {
-		case "scale":
-			m_flScale = stof(argv(i+1));
-			break;
-		case "origin":
-			origin = stov(argv(i+1));
-			break;
-		case "angles":
-			angles = stov(argv(i+1));
-			break;
-		case "solid":
-			solid = stof(argv(i+1));
-			break;
-		case "health":
-			health = stof(argv(i+1));
-			break;
-		case "shadows":
-			if (stof(argv(i+1)) == 1) {
-				effects &= ~EF_NOSHADOW;
-			}
-			break;
-		case "targetname":
-			targetname = argv(i+1);
-			break;
-		case "target":
-			target = argv(i+1);
-			break;
-		case "color":
-			m_vecRenderColor = stov(argv(i+1));
-			break;
-		case "alpha":
-			m_flRenderAmt = stof(argv(i+1));
-			break;
-		case "renderamt":
-			m_flRenderAmt = stof(argv(i+1)) / 255;
-			break;
-		case "rendercolor":
-			m_vecRenderColor = stov(argv(i+1)) / 255;
-			break;
-		case "rendermode":
-			m_iRenderMode = stoi(argv(i+1));
-			break;
-		case "renderfx":
-			m_iRenderFX = stoi(argv(i+1));
-			break;
-		case "parentname":
-			m_parent = argv(i+1);
-			break;
-		case "model":
-			model = argv(i+1);
-			break;
-		default:
-			break;
-		}
-	}
-
-	m_oldAngle = angles;
-	m_oldOrigin = origin;
-	m_oldSolid = solid;
-	m_oldHealth = health;
-	m_oldModel = Util_FixModel(model);
-	m_oldiRenderFX = m_iRenderFX;
-	m_oldiRenderMode = m_iRenderMode;
-	m_oldvecRenderColor = m_vecRenderColor;
-	m_oldflRenderAmt = m_flRenderAmt;
-	m_oldvecRenderColor = m_vecRenderColor;
-	m_oldflRenderAmt = m_flRenderAmt;
-	m_oldstrTarget = target;
-
-	if (m_oldModel != "") {
-		precache_model(m_oldModel);
+	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
+		SpawnKey(argv(i), argv(i+1));
 	}
 }
 
@@ -396,4 +314,100 @@ CBaseEntity::Hide(void)
 	SetSolid(SOLID_NOT);
 	SetMovetype(MOVETYPE_NONE);
 	takedamage = DAMAGE_NO;
+}
+
+void
+CBaseEntity::SpawnKey(string strKey, string strValue)
+{
+	/* we do re-read a lot of the builtin fields in case we want to set
+	   defaults. just in case anybody is wondering. */
+	switch (strKey) {
+	case "scale":
+		scale = stof(strValue);
+		break;
+	case "origin":
+		origin = stov(strValue);
+		break;
+	case "angles":
+		angles = stov(strValue);
+		break;
+	case "solid":
+		solid = stof(strValue);
+		break;
+	case "health":
+		health = stof(strValue);
+		break;
+	case "shadows":
+		if (stof(strValue) == 1) {
+			effects &= ~EF_NOSHADOW;
+		}
+		break;
+	case "targetname":
+		targetname = strValue;
+		break;
+	case "target":
+		target = strValue;
+		break;
+	case "color":
+		m_vecRenderColor = stov(strValue);
+		break;
+	case "alpha":
+		m_flRenderAmt = stof(strValue);
+		break;
+	case "renderamt":
+		m_flRenderAmt = stof(strValue) / 255;
+		break;
+	case "rendercolor":
+		m_vecRenderColor = stov(strValue) / 255;
+		break;
+	case "rendermode":
+		m_iRenderMode = stoi(strValue);
+		break;
+	case "renderfx":
+		m_iRenderFX = stoi(strValue);
+		break;
+	case "parentname":
+		m_parent = strValue;
+		break;
+	case "model":
+		model = strValue;
+		break;
+	default:
+		break;
+	}
+}
+
+void
+CBaseEntity::CBaseEntity(void)
+{
+	/* Not in Deathmatch */
+	if (spawnflags & 2048) {
+		if (cvar("sv_playerslots") > 1) {
+			remove(this);
+			return;
+		}
+	}
+
+	gflags = GF_CANRESPAWN;
+	effects |= EF_NOSHADOW;
+	scale = 1.0f;
+
+	SpawnInit();
+
+	m_oldAngle = angles;
+	m_oldOrigin = origin;
+	m_oldSolid = solid;
+	m_oldHealth = health;
+	m_oldModel = Util_FixModel(model);
+	m_oldiRenderFX = m_iRenderFX;
+	m_oldiRenderMode = m_iRenderMode;
+	m_oldvecRenderColor = m_vecRenderColor;
+	m_oldflRenderAmt = m_flRenderAmt;
+	m_oldvecRenderColor = m_vecRenderColor;
+	m_oldflRenderAmt = m_flRenderAmt;
+	m_oldstrTarget = target;
+
+	if (m_oldModel != "") {
+		precache_model(m_oldModel);
+	}
 }

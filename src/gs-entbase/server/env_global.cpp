@@ -51,6 +51,7 @@ class env_global:CBaseTrigger
 	virtual void(string, int) AddNewGlobal;
 	virtual void(string, int) SetGlobal;
 	virtual int(string) GetGlobal;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -126,28 +127,32 @@ env_global::GetGlobal(string strName)
 }
 
 void
+env_global::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "globalstate":
+		m_strGlobalState = strValue;
+		break;
+	case "triggermode":
+		m_iTriggerMode = stoi(strValue);
+		break;
+	case "initialstate":
+		m_iInitialState = stoi(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 env_global::env_global(void)
 {
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "globalstate":
-			m_strGlobalState = argv(i+1);
-			break;
-		case "triggermode":
-			m_iTriggerMode = stoi(argv(i+1));
-			break;
-		case "initialstate":
-			m_iInitialState = stoi(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
-	
+	CBaseTrigger::CBaseTrigger();
+
 	if (!m_strGlobalState) {
 		objerror("env_global: No globalstate name given! Aborting\n");
 	}
-	
+
 	if (spawnflags & GLOBAL_SETSPAWN) {
 		if (!GlobalPresent(m_strGlobalState)) {
 			AddNewGlobal(m_strGlobalState, m_iInitialState);

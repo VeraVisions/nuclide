@@ -31,10 +31,10 @@ class trigger_gravity:CBaseTrigger
 	void(void) trigger_gravity;
 	virtual void(void) touch;
 	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
 
 #ifdef CLIENT
 	virtual void(void) Initialized;
-	virtual void(string, string) SpawnKey;
 #endif
 };
 
@@ -52,18 +52,20 @@ void trigger_gravity::Respawn(void)
 #endif
 }
 
+void trigger_gravity::SpawnKey(string strField, string strKey)
+{
+	switch (strField) {
+		case "gravity":
+			m_flGravity = stof(strKey);
+			break;
+		default:
+			CBaseEntity::SpawnKey(strField, strKey);
+	}
+}
+
 void trigger_gravity::trigger_gravity(void)
 {
 #ifdef SERVER
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "gravity":
-			m_flGravity = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
 	CBaseEntity::CBaseEntity();
 	CBaseTrigger::InitBrushTrigger();
 #endif
@@ -75,15 +77,5 @@ void trigger_gravity::Initialized (void)
 	setmodel(this, model);
 	movetype = MOVETYPE_NONE;
 	solid = SOLID_BSPTRIGGER;
-}
-void trigger_gravity::SpawnKey(string strField, string strKey)
-{
-	switch (strField) {
-		case "gravity":
-			m_flGravity = stof(strKey);
-			break;
-		default:
-			CBaseEntity::SpawnKey(strField, strKey);
-	}
 }
 #endif

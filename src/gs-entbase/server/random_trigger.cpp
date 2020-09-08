@@ -41,6 +41,7 @@ class random_trigger:CBaseTrigger
 
 	virtual void(entity,int) Trigger;
 	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -63,26 +64,28 @@ random_trigger::Respawn(void)
 }
 
 void
+random_trigger::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "start_state":
+		m_iStartState = stoi(strValue);
+		break;
+	case "wait":
+		m_flMinTime = stof(strValue);
+		break;
+	case "random_min":
+		m_flRandMin = stof(strValue);
+		break;
+	case "random_max":
+		m_flRandMax = stof(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 random_trigger::random_trigger(void)
 {
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "start_state":
-			m_iStartState = stoi(argv(i+1));
-			break;
-		case "wait":
-			m_flMinTime = stof(argv(i+1));
-			break;
-		case "random_min":
-			m_flRandMin = stof(argv(i+1));
-			break;
-		case "random_max":
-			m_flRandMax = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
-
 	CBaseTrigger::CBaseTrigger();
 }

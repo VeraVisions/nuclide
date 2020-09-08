@@ -47,6 +47,7 @@ class env_beverage:CBaseTrigger
 	int m_iSkin;
 	void(void) env_beverage;
 	virtual void(entity, int) Trigger;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -68,21 +69,24 @@ env_beverage::Trigger(entity act, int unused)
 }
 
 void
+env_beverage::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "health":
+		m_iUses = stoi(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 env_beverage::env_beverage(void)
 {
 	precache_model("models/can.mdl");
 	precache_sound("weapons/g_bounce3.wav");
-	CBaseTrigger::CBaseTrigger();
 
-	for (int i = 1; i < ( tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "health":
-			m_iUses = stoi(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
+	CBaseTrigger::CBaseTrigger();
 
 	if (!m_iUses) {
 		m_iUses = 10;

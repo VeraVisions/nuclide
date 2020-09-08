@@ -58,6 +58,7 @@ class func_mortar_field:CBaseTrigger
 	virtual void(void) FireControlled;
 	virtual void(entity,int) Trigger;
 	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -179,29 +180,31 @@ func_mortar_field::Respawn(void)
 }
 
 void
+func_mortar_field::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_iszXController":
+		m_strXController = strValue;
+		break;
+	case "m_iszYController":
+		m_strYController = strValue;
+		break;
+	case "m_flControl":
+		m_iType = stoi(strValue);
+		break;
+	case "m_flCount":
+		m_iCount = stoi(strValue);
+		break;
+	case "m_flSpread":
+		m_flSpread = stof(strValue) / 2;
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 func_mortar_field::func_mortar_field(void)
 {
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "m_iszXController":
-			m_strXController = argv(i+1);
-			break;
-		case "m_iszYController":
-			m_strYController = argv(i+1);
-			break;
-		case "m_flControl":
-			m_iType = stoi(argv(i+1));
-			break;
-		case "m_flCount":
-			m_iCount = stoi(argv(i+1));
-			break;
-		case "m_flSpread":
-			m_flSpread = stof(argv(i+1)) / 2;
-			break;
-		default:
-			break;
-		}
-	}
-
 	CBaseTrigger::CBaseTrigger();
 }

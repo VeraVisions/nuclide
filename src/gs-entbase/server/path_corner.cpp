@@ -55,6 +55,7 @@ class path_corner:CBaseTrigger
 	void(void) path_corner;
 	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -86,28 +87,30 @@ path_corner::Respawn(void)
 }
 
 void
+path_corner::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "speed":
+		m_flSpeed = stof(strValue);
+		break;
+	case "yaw_speed":
+		m_flYawSpeed = stof(strValue);
+		break;
+	case "wait":
+		m_flWait = stof(strValue);
+		break;
+	case "message":
+		m_strMessage = strValue;
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 path_corner::path_corner(void)
 {
 	CBaseTrigger::CBaseTrigger();
-
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "speed":
-			m_flSpeed = stof(argv(i+1));
-			break;
-		case "yaw_speed":
-			m_flYawSpeed = stof(argv(i+1));
-			break;
-		case "wait":
-			m_flWait = stof(argv(i+1));
-			break;
-		case "message":
-			m_strMessage = argv(i+1);
-			break;
-		default:
-			break;
-		}
-	}
 
 	if (!m_flSpeed) {
 		m_flSpeed = 100;

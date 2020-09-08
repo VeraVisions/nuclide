@@ -48,6 +48,7 @@ class trigger_hurt:CBaseTrigger
 	virtual void(entity, int) Trigger;
 	virtual void(void) touch;
 	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -129,26 +130,29 @@ trigger_hurt::Respawn(void)
 }
 
 void
+trigger_hurt::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "dmg":
+		m_iDamage = stoi(strValue);
+		break;
+	case "wait":
+		m_flNextDmg = stof(strValue);
+		break;
+	case "delay":
+		m_flDelay = stof(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 trigger_hurt::trigger_hurt(void)
 {
 	/* defaults */
 	m_iDamage = 15;
 	m_flNextDmg = 0.5f;
 
-	CBaseEntity::CBaseEntity();
-	
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "dmg":
-			m_iDamage = stoi(argv(i+1));
-			break;
-		case "wait":
-			m_flNextDmg = stof(argv(i+1));
-		case "delay":
-			m_flDelay = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
+	CBaseTrigger::CBaseTrigger();
 }

@@ -86,6 +86,7 @@ class func_train:CBaseTrigger
 	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
 	virtual void(void) Blocked;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -217,46 +218,42 @@ func_train::Respawn(void)
 }
 
 void
-func_train::func_train(void)
+func_train::SpawnKey(string strKey, string strValue)
 {
 	int a;
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "target":
-			m_strOldTarget = argv(i+1);
-			break;
-		case "dmg":
-			m_flDamage = stof(argv(i+1));
-			break;
-		case "movesnd":
-			a = bound(0, stof(argv(i+1)), g_strTrainMoveSnd.length);
-			m_strMoveSnd = g_strTrainMoveSnd[a];
-			break;
-		case "stopsnd":
-			a = bound(0, stof(argv(i+1)), g_strTrainStopSnd.length);
-			m_strStopSnd = g_strTrainStopSnd[a];
-			break;
-		case "snd_move":
-			m_strMoveSnd = argv(i+1);
-			break;
-		case "snd_stop":
-			m_strStopSnd = argv(i+1);
-			break;
-		default:
-			break;
-		}
-	}
 
-	if (m_strMoveSnd) {
+	switch (strKey) {
+	case "target":
+		m_strOldTarget = strValue;
+		break;
+	case "dmg":
+		m_flDamage = stof(strValue);
+		break;
+	case "movesnd":
+		a = bound(0, stof(strValue), g_strTrainMoveSnd.length);
+		m_strMoveSnd = g_strTrainMoveSnd[a];
 		precache_sound(m_strMoveSnd);
-	}
-	if (m_strStopSnd) {
+		break;
+	case "stopsnd":
+		a = bound(0, stof(strValue), g_strTrainStopSnd.length);
+		m_strStopSnd = g_strTrainStopSnd[a];
 		precache_sound(m_strStopSnd);
+		break;
+	case "snd_move":
+		m_strMoveSnd = strValue;
+		break;
+	case "snd_stop":
+		m_strStopSnd = strValue;
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
 	}
+}
 
-	if (!m_flSpeed) {
-		m_flSpeed = 100;
-	}
-
+void
+func_train::func_train(void)
+{
+	/* FIXME: This is all decided by the first path_corner pretty much */
+	m_flSpeed = 100;
 	CBaseTrigger::CBaseTrigger();
 }

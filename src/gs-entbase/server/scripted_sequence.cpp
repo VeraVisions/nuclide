@@ -95,6 +95,7 @@ class scripted_sequence:CBaseTrigger
 	virtual void(entity, int) Trigger;
 	virtual void(void) InitIdle;
 	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -255,35 +256,38 @@ scripted_sequence::Respawn(void)
 }
 
 void
+scripted_sequence::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "target":
+		target = strValue;
+		break;
+	case "m_iszEntity":
+		m_strMonster = strValue;
+		break;
+	case "m_iszPlay":
+		m_strActionAnim = strValue;
+		break;
+	case "m_iszIdle":
+		m_strIdleAnim = strValue;
+		break;
+	case "m_flRadius":
+		m_flSearchRadius = stof(strValue);
+		break;
+	case "m_flRepeat":
+		break;
+	case "m_fMoveTo":
+		m_iMove = stoi(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 scripted_sequence::scripted_sequence(void)
 {
-	int nfields = tokenize(__fullspawndata);
-	for (int i = 1; i < (nfields-1); i += 2) {
-		switch (argv(i)) {
-		case "target":
-			target = argv(i+1);
-			break;
-		case "m_iszEntity":
-			m_strMonster = argv(i+1);
-			break;
-		case "m_iszPlay":
-			m_strActionAnim = argv(i+1);
-			break;
-		case "m_iszIdle":
-			m_strIdleAnim = argv(i+1);
-			break;
-		case "m_flRadius":
-			m_flSearchRadius = stof(argv(i+1));
-			break;
-		case "m_flRepeat":
-			break;
-		case "m_fMoveTo":
-			m_iMove = stoi(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
+	CBaseTrigger::CBaseTrigger();
 	m_oldstrTarget = target;
 }
 

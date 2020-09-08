@@ -39,6 +39,7 @@ class infodecal:CBaseTrigger
 	void(void) infodecal;
 	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -76,6 +77,19 @@ infodecal::Respawn(void)
 }
 
 void
+infodecal::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "material":
+	case "texture":
+		m_strTexture = strtolower(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 infodecal::infodecal(void)
 {
 	if (serverkeyfloat("*bspversion") != 30) {
@@ -83,15 +97,5 @@ infodecal::infodecal(void)
 		return;
 	}
 
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "material":
-		case "texture":
-			m_strTexture = strtolower(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
 	CBaseTrigger::CBaseTrigger();
 }

@@ -16,10 +16,6 @@
 
 #include "baseentity.h"
 
-.float delay;
-.float wait;
-.float wait;
-
 void FX_Spark(vector, vector);
 void FX_BreakModel(int, vector, vector, vector, float);
 

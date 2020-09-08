@@ -53,22 +53,26 @@ class env_spark:CBaseTrigger
 	virtual void(void) TimedSpark;
 	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
 };
 
-void env_spark::CreateSpark(void)
+void
+env_spark::CreateSpark(void)
 {
 	int r = floor((random() * spark_snd.length));
 	sound(this, CHAN_AUTO, spark_snd[r], 1.0f, ATTN_IDLE);
 	FX_Spark(self.origin, self.angles);
 }
 
-void env_spark::TimedSpark(void)
+void
+env_spark::TimedSpark(void)
 {
 	CreateSpark();
 	nextthink = time + (random() * m_flMaxDelay);
 }
 
-void env_spark::Trigger(entity act, int state)
+void
+env_spark::Trigger(entity act, int state)
 {
 	if (spawnflags & EVSPARK_TOGGLE) {
 		switch (state) {
@@ -92,7 +96,8 @@ void env_spark::Trigger(entity act, int state)
 	}
 }
 
-void env_spark::Respawn(void)
+void
+env_spark::Respawn(void)
 {
 	if (m_flMaxDelay <= 0) {
 		m_flMaxDelay = 1.0f;
@@ -103,20 +108,24 @@ void env_spark::Respawn(void)
 	}
 }
 
-void env_spark::env_spark(void)
+void
+env_spark::SpawnKey(string strKey, string strValue)
 {
-	int i;
-	for (i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "MaxDelay":
-			m_flMaxDelay = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
+	switch (strKey) {
+	case "MaxDelay":
+		m_flMaxDelay = stof(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
 	}
-	for (i = 0; i < spark_snd.length; i++) {
+}
+
+void
+env_spark::env_spark(void)
+{
+	for (int i = 0; i < spark_snd.length; i++) {
 		precache_sound(spark_snd[i]);
 	}
+
 	CBaseTrigger::CBaseTrigger();
 }

@@ -39,6 +39,7 @@ class trigger_once:CBaseTrigger
 
 	virtual void(void) touch;
 	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -71,17 +72,19 @@ trigger_once::Respawn(void)
 }
 
 void
+trigger_once::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "delay":
+		m_flDelay = stof(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 trigger_once::trigger_once(void)
 {
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "delay":
-			m_flDelay = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
-
 	CBaseTrigger::CBaseTrigger();
 }

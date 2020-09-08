@@ -49,6 +49,7 @@ class env_shooter:CBaseTrigger
 	virtual void(void) Respawn;
 	virtual void(void) ShootGib;
 	virtual void(entity, int) Trigger;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -105,43 +106,49 @@ env_shooter::Respawn(void)
 }
 
 void
+env_shooter::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_iGibs":
+		m_iGibs = stoi(strValue);
+		break;
+	case "delay":
+	case "m_flDelay":
+		m_flDelay = stof(strValue);
+		break;
+	case "m_flVelocity":
+		m_flVelocity = stof(strValue);
+		break;
+	case "m_flVariance":
+		m_flVariance = stof(strValue);
+		break;
+	case "m_flGibLife":
+		m_flGibLife = stof(strValue);
+		break;
+	case "shootmodel":
+		m_strShootModel = strValue;
+		precache_model(m_strShootModel);
+		break;
+	case "shootsounds":
+		m_flShootSounds = stof(strValue);
+		break;
+	case "scale":
+		m_flScale = stof(strValue);
+		break;
+	case "skin":
+		m_flSkin = stof(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 env_shooter::env_shooter(void)
 {
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "m_iGibs":
-			m_iGibs = stoi(argv(i+1));
-			break;
-		case "delay":
-		case "m_flDelay":
-			m_flDelay = stof(argv(i+1));
-			break;
-		case "m_flVelocity":
-			m_flVelocity = stof(argv(i+1));
-			break;
-		case "m_flVariance":
-			m_flVariance = stof(argv(i+1));
-			break;
-		case "m_flGibLife":
-			m_flGibLife = stof(argv(i+1));
-			break;
-		case "shootmodel":
-			m_strShootModel = argv(i+1);
-			break;
-		case "shootsounds":
-			m_flShootSounds = stof(argv(i+1));
-			break;
-		case "scale":
-			m_flScale = stof(argv(i+1));
-			break;
-		case "skin":
-			m_flSkin = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
-	
-	precache_model(m_strShootModel);
 	CBaseTrigger::CBaseTrigger();
+
+	if (!m_strShootModel) {
+		remove(this);
+	}
 }

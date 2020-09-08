@@ -43,9 +43,11 @@ class env_message:CBaseTrigger
 
 	virtual void(entity, int) Play;
 	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
 };
 
-void env_message::Play(entity act, int state)
+void
+env_message::Play(entity act, int state)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_MESSAGE);
@@ -67,28 +69,32 @@ void env_message::Play(entity act, int state)
 	}
 }
 
-void env_message::Respawn(void)
+void
+env_message::Respawn(void)
 {
 	Trigger = Play;
 }
 
+void
+env_message::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "messagesound":
+		m_strSound = strValue;
+		break;
+	case "messagevolume":
+		m_flVolume = stof(strValue);
+		break;
+	case "messageattenuation":
+		m_iAttenuation = stoi(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
 void env_message::env_message(void)
 {
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "messagesound":
-			m_strSound = argv(i+1);
-			break;
-		case "messagevolume":
-			m_flVolume = stof(argv(i+1));
-			break;
-		case "messageattenuation":
-			m_iAttenuation = stoi(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
 	CBaseTrigger::CBaseTrigger();
 }
 

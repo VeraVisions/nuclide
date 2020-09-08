@@ -68,6 +68,7 @@ class func_rot_button:CBaseTrigger
 	virtual void(void) Respawn;
 	virtual void(void) Death;
 	virtual void(void) touch;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -189,26 +190,28 @@ func_rot_button::Respawn(void)
 }
 
 void
+func_rot_button::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "distance":
+		m_flDistance = stof(strValue);
+		break;
+	case "speed":
+		m_flSpeed = stof(strValue);
+		break;
+	case "wait":
+		m_flReturnTime = stof(strValue);
+		break;
+	case "health":
+		m_iHealth = stoi(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 func_rot_button::func_rot_button(void)
 {
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "distance":
-			m_flDistance = stof(argv(i+1));
-			break;
-		case "speed":
-			m_flSpeed = stof(argv(i+1));
-			break;
-		case "wait":
-			m_flReturnTime = stof(argv(i+1));
-			break;
-		case "health":
-			m_iHealth = stoi(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
-
 	CBaseTrigger::CBaseTrigger();
 }

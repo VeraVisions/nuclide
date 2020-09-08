@@ -69,6 +69,7 @@ class speaker:CBaseNPC
 	virtual void(void) Annouce;
 	virtual void(void) Respawn;
 	virtual void(void) Trigger;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -112,26 +113,29 @@ speaker::Trigger(void)
 }
 
 void
+speaker::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "preset":
+		int p = stoi(strValue);
+
+		/* fit in a valid preset string */
+		if (p > 0 && p < g_speaker_hlpresets.length)
+			m_strSentence = g_speaker_hlpresets[p-1];
+		break;
+	case "message":
+		m_strSentence = strValue;
+		break;
+	case "health":
+		m_flVolume = stof(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 speaker::speaker(void)
 {
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "preset":
-			int p = stoi(argv(i+1));
-
-			/* fit in a valid preset string */
-			if (p > 0 && p < g_speaker_hlpresets.length)
-				m_strSentence = g_speaker_hlpresets[p-1];
-			break;
-		case "message":
-			m_strSentence = argv(i+1);
-			break;
-		case "health":
-			m_flVolume = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
 	CBaseNPC::CBaseNPC();
 }

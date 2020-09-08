@@ -32,20 +32,22 @@ class func_friction:CBaseTrigger
 	void(void) func_friction;
 	virtual void(void) touch;
 	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
 
 #ifdef CLIENT
 	virtual void(void) Initialized;
-	virtual void(string, string) SpawnKey;
 #endif
 };
 
-void func_friction::touch(void)
+void
+func_friction::touch(void)
 {
 	other.friction = m_flFriction;
 }
 
 /* TODO: Make this redundant */
-void func_friction::Respawn(void)
+void
+func_friction::Respawn(void)
 {
 	solid = SOLID_BSPTRIGGER;
 #ifdef GS_DEVELOPER
@@ -53,38 +55,33 @@ void func_friction::Respawn(void)
 #endif
 }
 
-void func_friction::func_friction(void)
+void
+func_friction::SpawnKey(string strField, string strKey)
+{
+	switch (strField) {
+	case "modifier":
+		m_flFriction = stof(strKey);
+		break;
+	default:
+		CBaseEntity::SpawnKey(strField, strKey);
+	}
+}
+
+void
+func_friction::func_friction(void)
 {
 #ifdef SERVER
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "modifier":
-			m_flFriction = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
 	CBaseEntity::CBaseEntity();
 	CBaseTrigger::InitBrushTrigger();
 #endif
 }
 
 #ifdef CLIENT
-void func_friction::Initialized (void)
+void
+func_friction::Initialized (void)
 {
 	setmodel(this, model);
 	movetype = MOVETYPE_NONE;
 	solid = SOLID_BSPTRIGGER;
-}
-void func_friction::SpawnKey(string strField, string strKey)
-{
-	switch (strField) {
-		case "modifier":
-			m_flFriction = stof(strKey);
-			break;
-		default:
-			CBaseEntity::SpawnKey(strField, strKey);
-	}
 }
 #endif

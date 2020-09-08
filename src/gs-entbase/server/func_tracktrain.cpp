@@ -55,6 +55,7 @@ class func_tracktrain:CBaseVehicle
 	virtual void(void) PlayerUse;
 	virtual void(void) Realign;
 	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -293,20 +294,22 @@ func_tracktrain::Respawn(void)
 }
 
 void
+func_tracktrain::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "speed":
+		m_flMaxSpeed = stof(strValue);
+		break;
+	case "startspeed":
+		m_flStartSpeed = stof(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 func_tracktrain::func_tracktrain(void)
 {
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "speed":
-			m_flMaxSpeed = stof(argv(i+1));
-			break;
-		case "startspeed":
-			m_flStartSpeed = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
-
 	CBaseVehicle::CBaseVehicle();
 }

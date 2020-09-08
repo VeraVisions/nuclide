@@ -40,23 +40,11 @@ class env_explosion:CBaseTrigger
 
 	void(void) env_explosion;
 	virtual void(entity, int) Trigger;
+	virtual void(string, string) SpawnKey;
 };
 
-void env_explosion::env_explosion(void)
-{
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "iMagnitude":
-			m_iMagnitude = stoi(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
-	CBaseTrigger::CBaseTrigger();
-}
-
-void env_explosion::Trigger(entity act, int state)
+void
+env_explosion::Trigger(entity act, int state)
 {
 	FX_Explosion(origin);
 
@@ -68,4 +56,22 @@ void env_explosion::Trigger(entity act, int state)
 	if (!(spawnflags & ENVEXPLO_REPEATABLE)) {
 		remove(this);
 	}
+}
+
+void
+env_explosion::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "iMagnitude":
+		m_iMagnitude = stoi(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+env_explosion::env_explosion(void)
+{
+	CBaseTrigger::CBaseTrigger();
 }

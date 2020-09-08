@@ -46,6 +46,7 @@ class func_pendulum:CBaseTrigger
 	virtual void(void) customphysics;
 	virtual void(void) Respawn;
 	virtual void(entity, int) Trigger;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -101,20 +102,22 @@ func_pendulum::Respawn(void)
 }
 
 void
+func_pendulum::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "damp":
+		m_flDampening = stof(strValue);
+		break;
+	case "distance":
+		m_flDistance = stof(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 func_pendulum::func_pendulum(void)
 {
 	CBaseTrigger::CBaseTrigger();
-
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "damp":
-			m_flDampening = stof(argv(i+1));
-			break;
-		case "distance":
-			m_flDistance = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
 }

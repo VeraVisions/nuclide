@@ -86,14 +86,12 @@ func_conveyor::Respawn(void)
 		SetSkin(0);
 	}
 
-	if (m_flSpeed == 0)
-		m_flSpeed = 100;
-
 	SetAngles([0,0,0]);
 }
 
 void
 func_conveyor::func_conveyor(void)
 {
+	m_flSpeed = 100;
 	CBaseTrigger::CBaseTrigger();
 }

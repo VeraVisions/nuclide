@@ -38,29 +38,6 @@ class gibshooter2:env_shooter
 
 void gibshooter2::gibshooter2(void)
 {
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "m_iGibs":
-			m_iGibs = stoi(argv(i+1));
-			break;
-		case "delay":
-		case "m_flDelay":
-			m_flDelay = stof(argv(i+1));
-			break;
-		case "m_flVelocity":
-			m_flVelocity = stof(argv(i+1));
-			break;
-		case "m_flVariance":
-			m_flVariance = stof(argv(i+1));
-			break;
-		case "m_flGibLife":
-			m_flGibLife = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
-
 	m_strShootModel = "models/hgibs.mdl";
 	m_flShootSounds = 3;
 	m_flScale = 1.0;

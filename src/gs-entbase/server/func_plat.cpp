@@ -50,6 +50,7 @@ class func_plat:CBaseTrigger
 	virtual void(void) MoveToggle;
 	virtual void(void) Respawn;
 	virtual void(void) touch;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -140,22 +141,23 @@ func_plat::Respawn(void)
 }
 
 void
+func_plat::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "height":
+		m_flHeight = stof(strValue);
+		break;
+	case "speed":
+		m_flSpeed = stof(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 func_plat::func_plat(void)
 {
 	m_flSpeed = 100.0f;
-
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "height":
-			m_flHeight = stof(argv(i+1));
-			break;
-		case "speed":
-			m_flSpeed = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
-
 	CBaseTrigger::CBaseTrigger();
 }

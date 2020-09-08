@@ -41,6 +41,7 @@ class multi_manager:CBaseTrigger
 	int m_iValue;
 
 	virtual void(entity, int) Trigger;
+	virtual void(string, string) SpawnKey;
 };
 
 
@@ -104,41 +105,53 @@ multi_manager::Respawn(void)
 }
 
 void
-multi_manager::multi_manager(void)
+multi_manager::SpawnKey(string strKey, string strValue)
 {
-	m_strBuffer = "";
-	int iFields = tokenize(__fullspawndata);
-	for (int i = 1; i < (iFields - 1); i += 2) {
-		// Sigh, let's attempt to sanitize this
-		switch (argv(i)) {
-		case "{":
-		case "}":
-		case "classname":
-		case "origin":
-		case "targetname":
-		case "spawnflags":
-		case "angle":
-		case "angles":
-			continue;
-			break;
-		default:
-			if (substring(argv(i), strlen(argv(i)) - 3,  1) == "#") {
-				m_strBuffer = sprintf("%s%s %s ", m_strBuffer, substring(argv(i), 0, strlen(argv(i)) - 3), argv(i+1));
-			} else if (substring(argv(i), strlen(argv(i)) - 2,  1) == "#") {
-				m_strBuffer = sprintf("%s%s %s ", m_strBuffer, substring(argv(i), 0, strlen(argv(i)) - 2), argv(i+1));
-			} else {
-				m_strBuffer = sprintf("%s%s %s ", m_strBuffer, argv(i), argv(i+1));
-			}
+	switch (strKey) {
+	case "{":
+	case "}":
+	case "classname":
+	case "origin":
+	case "targetname":
+	case "spawnflags":
+	case "angle":
+	case "angles":
+		break;
+	default:
+		if (substring(strKey, strlen(strKey) - 3,  1) == "#") {
+			m_strBuffer = sprintf("%s%s %s ",
+							m_strBuffer,
+							substring(strKey,
+							0, strlen(strKey) - 3),
+							strValue);
+		} else if (substring(strKey, strlen(strKey) - 2,  1) == "#") {
+			m_strBuffer = sprintf("%s%s %s ",
+							m_strBuffer,
+							substring(strKey,
+							0, strlen(strKey) - 2),
+							strValue);
+		} else {
+			m_strBuffer = sprintf("%s%s %s ", m_strBuffer, strKey, strValue);
 		}
 	}
+}
+
+void
+multi_manager::multi_manager(void)
+{
+	int iFields;
+	int b;
+	m_strBuffer = "";
+
+	CBaseTrigger::CBaseTrigger();
 
 	for (int b = 0; b < 16; b++) {
 		m_eTriggers[b] = spawn(multi_manager_sub);
 	}
 
 	/* set up our triggers */
+	b = 0;
 	iFields = tokenizebyseparator(m_strBuffer, " ");
-	int b = 0;
 	for (int i = 0; i < iFields; i+=2) {
 		if (b >= 16) {
 			break;
@@ -151,6 +164,4 @@ multi_manager::multi_manager(void)
 			b++;
 		}
 	}
-
-	CBaseTrigger::CBaseTrigger();
 }

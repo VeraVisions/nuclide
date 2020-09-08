@@ -18,7 +18,6 @@ class CBaseEntity
 {
 	string m_oldstrTarget; /* needed due to trigger_changetarget */
 	int m_iBody;
-	float m_flScale;
 
 	/* respawn */
 	string m_oldModel;
@@ -66,6 +65,8 @@ class CBaseEntity
 	virtual void(vector) SetAngles;
 	virtual void(vector) SetOrigin;
 	virtual void(vector, vector) SetSize;
+	virtual void(string, string) SpawnKey;
+	virtual void(void) SpawnInit;
 
 #ifdef GS_RENDERFX
 	virtual void(int) SetRenderFX;

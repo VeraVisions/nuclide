@@ -32,7 +32,6 @@ void func_illusionary::func_illusionary(void)
 {
 	CBaseEntity::CBaseEntity();
 
-	precache_model(model);
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid(SOLID_NOT);
 	SetModel(model);

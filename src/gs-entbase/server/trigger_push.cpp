@@ -42,6 +42,7 @@ class trigger_push:CBaseTrigger
 	virtual void(void) Respawn;
 	virtual void(entity, int) Trigger;
 	virtual void(void) SetMovementDirection;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -106,6 +107,7 @@ trigger_push::touch(void)
 void
 trigger_push::Respawn(void)
 {
+	InitBrushTrigger();
 	SetMovementDirection();
 
 	if (spawnflags & TP_STARTOFF) {
@@ -114,19 +116,20 @@ trigger_push::Respawn(void)
 }
 
 void
+trigger_push::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "speed":
+		m_flSpeed = stof(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 trigger_push::trigger_push(void)
 {
 	m_flSpeed = 100;
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "speed":
-			m_flSpeed = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
-	
 	CBaseTrigger::CBaseTrigger();
-	CBaseTrigger::InitBrushTrigger();
 }

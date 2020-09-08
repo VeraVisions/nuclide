@@ -34,6 +34,7 @@ class target_cdaudio:CBaseTrigger
 	void(void) target_cdaudio;
 	virtual void(void) touch;
 	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -65,19 +66,22 @@ target_cdaudio::Respawn(void)
 }
 
 void
+target_cdaudio::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "health":
+		m_iCDTrack = stoi(strValue);
+		break;
+	case "radius":
+		m_flRadius = stof(strValue) / 2;
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 target_cdaudio::target_cdaudio(void)
 {
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "health":
-			m_iCDTrack = stoi(argv(i+1));
-			break;
-		case "radius":
-			m_flRadius = stof(argv(i+1)) / 2;
-			break;
-		default:
-			break;
-		}
-	}
 	CBaseTrigger::CBaseTrigger();
 }

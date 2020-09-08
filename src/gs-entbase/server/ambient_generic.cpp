@@ -60,6 +60,7 @@ class ambient_generic:CBaseTrigger
 	virtual void(entity, int) UseNormal;
 	virtual void(entity, int) UseLoop;
 	virtual float(entity, float) SendEntity;
+	virtual void(string, string) SpawnKey;
 };
 
 float
@@ -141,35 +142,39 @@ ambient_generic::Respawn(void)
 }
 
 void
+ambient_generic::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "message":
+		m_strSoundPath = strValue;
+		m_strActivePath = m_strSoundPath;
+		precache_sound(m_strSoundPath);
+		message = __NULL__;
+		break;
+	case "health":
+		m_flVolume = stof(strValue) * 0.1f;
+		health = __NULL__;
+		break;
+	case "volume":
+		m_flVolume = stof(strValue);
+		break;
+	case "pitch":
+		m_flPitch = stof(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+		break;
+	}
+}
+
+void
 ambient_generic::ambient_generic(void)
 {
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "message":
-			m_strSoundPath = argv(i+1);
-			m_strActivePath = m_strSoundPath;
-			message = __NULL__;
-			break;
-		case "health":
-			m_flVolume = stof(argv(i+1)) * 0.1f;
-			health = __NULL__;
-			break;
-		case "volume":
-			m_flVolume = stof(argv(i+1));
-			break;
-		case "pitch":
-			m_flPitch = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
+	CBaseTrigger::CBaseTrigger();
 
 	if (!m_strSoundPath) {
 		objerror("ambient_generic: No sound file specified!");
 	}
-
-	precache_sound(m_strSoundPath);
 
 	if (!m_flVolume) {
 		m_flVolume = 1.0f;
@@ -189,5 +194,4 @@ ambient_generic::ambient_generic(void)
 	}
 
 	pvsflags = PVSF_USEPHS;
-	CBaseTrigger::CBaseTrigger();
 }

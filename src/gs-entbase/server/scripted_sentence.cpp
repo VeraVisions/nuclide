@@ -39,6 +39,7 @@ class scripted_sentence:CBaseTrigger
 
 	void(void) scripted_sentence;
 	virtual void(entity, int) Trigger;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -64,31 +65,34 @@ scripted_sentence::Trigger(entity act, int unused)
 }
 
 void
+scripted_sentence::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "entity":
+		m_strSpeaker = strValue;
+		break;
+	case "sentence":
+		m_strSentence = strValue;
+		break;
+	case "pitch":
+		m_flPitch = stof(strValue);
+		break;
+	case "duration":
+		m_flDuration = stof(strValue);
+		break;
+	case "delay":
+		m_flDelay = stof(strValue);
+		break;
+	case "wait":
+		m_flWait = stof(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 scripted_sentence::scripted_sentence(void)
 {
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "entity":
-			m_strSpeaker = argv(i+1);
-			break;
-		case "sentence":
-			m_strSentence = argv(i+1);
-			break;
-		case "pitch":
-			m_flPitch = stof(argv(i+1));
-			break;
-		case "duration":
-			m_flDuration = stof(argv(i+1));
-		case "delay":
-			m_flDelay = stof(argv(i+1));
-			break;
-		case "wait":
-			m_flWait = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
-
 	CBaseTrigger::CBaseTrigger();
 }

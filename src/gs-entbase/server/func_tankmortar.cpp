@@ -88,6 +88,7 @@ class func_tankmortar:CBaseVehicle
 	virtual void(void) Respawn;
 	virtual void(vector) SpriteSmoke;
 	virtual void(vector) SpriteFlash;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -203,70 +204,72 @@ func_tankmortar::Respawn(void)
 }
 
 void
+func_tankmortar::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "yawrate":
+		m_flYawRate = stof(strValue) * 0.01f;
+		break;
+	case "yawrange":
+		m_flYawRange = stof(strValue);
+		break;
+	case "pitchrate":
+		m_flPitchRate = stof(strValue) * 0.01f;
+		break;
+	case "pitchrange":
+		m_flPitchRange = stof(strValue);
+		break;
+	case "barrel":
+		m_vecTipPos[0] = stof(strValue);
+		break;
+	case "barrely":
+		m_vecTipPos[1] = stof(strValue);
+		break;
+	case "barrelz":
+		m_vecTipPos[2] = stof(strValue);
+		break;
+	case "firerate":
+		m_flFireRate = 1.0f / stof(strValue);
+		break;
+	case "iMagnitude":
+		m_iDamage = stoi(strValue);
+		break;
+	case "firespread":
+		m_vecSpread = [0.10, 0.10, 0] * stof(strValue);
+		break;
+	case "persistance":
+		m_flPersistance = stof(strValue);
+		break;
+	case "minRange":
+		m_flMinRange = stof(strValue);
+		break;
+	case "maxRange":
+		m_flMaxRange = stof(strValue);
+		break;
+	case "spritesmoke":
+		m_strSpriteSmoke = strValue;
+		break;
+	case "spriteflash":
+		m_strSpriteFlash = strValue;
+		break;
+	case "spritescale":
+		m_flSpriteScale = stof(strValue);
+		break;
+	case "rotatesound":
+		m_strSndRotate = strValue;
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strValue, strKey);
+	}
+}
+
+void
 func_tankmortar::func_tankmortar(void)
 {
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "yawrate":
-			m_flYawRate = stof(argv(i+1)) * 0.01f;
-			break;
-		case "yawrange":
-			m_flYawRange = stof(argv(i+1));
-			break;
-		case "pitchrate":
-			m_flPitchRate = stof(argv(i+1)) * 0.01f;
-			break;
-		case "pitchrange":
-			m_flPitchRange = stof(argv(i+1));
-			break;
-		case "barrel":
-			m_vecTipPos[0] = stof(argv(i+1));
-			break;
-		case "barrely":
-			m_vecTipPos[1] = stof(argv(i+1));
-			break;
-		case "barrelz":
-			m_vecTipPos[2] = stof(argv(i+1));
-			break;
-		case "firerate":
-			m_flFireRate = 1.0f / stof(argv(i+1));
-			break;
-		case "iMagnitude":
-			m_iDamage = stoi(argv(i+1));
-			break;
-		case "firespread":
-			m_vecSpread = [0.10, 0.10, 0] * stof(argv(i+1));
-			break;
-		case "persistance":
-			m_flPersistance = stof(argv(i+1));
-			break;
-		case "minRange":
-			m_flMinRange = stof(argv(i+1));
-			break;
-		case "maxRange":
-			m_flMaxRange = stof(argv(i+1));
-			break;
-		case "spritesmoke":
-			m_strSpriteSmoke = argv(i+1);
-			break;
-		case "spriteflash":
-			m_strSpriteFlash = argv(i+1);
-			break;
-		case "spritescale":
-			m_flSpriteScale = stof(argv(i+1));
-			break;
-		case "rotatesound":
-			m_strSndRotate = argv(i+1);
-			break;
-		default:
-			break;
-		}
-	}
+	CBaseVehicle::CBaseVehicle();
 
 	if (m_strSpriteFlash)
 		precache_model(m_strSpriteFlash);
 	if (m_strSpriteSmoke)
 		precache_model(m_strSpriteSmoke);
-
-	CBaseVehicle::CBaseVehicle();
 }

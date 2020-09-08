@@ -38,6 +38,7 @@ class player_loadsaved:CBaseTrigger
 	void(void) player_loadsaved;
 	virtual void(entity, int) Trigger;
 	virtual void(void) ReloadSave;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -67,26 +68,28 @@ player_loadsaved::Trigger(entity act, int unused)
 }
 
 void
+player_loadsaved::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "duration":
+		m_flFadeDuration = stof(strValue);
+		break;
+	case "holdtime":
+		m_flFadeHold = stof(strValue);
+		break;
+	case "message":
+		m_strMessage = strValue;
+		break;
+	case "loadtime":
+		m_flLoadTime = stof(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 player_loadsaved::player_loadsaved(void)
 {
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "duration":
-			m_flFadeDuration = stof(argv(i+1));
-			break;
-		case "holdtime":
-			m_flFadeHold = stof(argv(i+1));
-			break;
-		case "message":
-			m_strMessage = argv(i+1);
-			break;
-		case "loadtime":
-			m_flLoadTime = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
-
 	CBaseTrigger::CBaseTrigger();
 }

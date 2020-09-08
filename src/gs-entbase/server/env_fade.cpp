@@ -41,9 +41,11 @@ class env_fade:CBaseTrigger
 
 	void(void) env_fade;
 	virtual void(entity, int) Trigger;
+	virtual void(string, string) SpawnKey;
 };
 
-void env_fade::Trigger(entity act, int state)
+void
+env_fade::Trigger(entity act, int state)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_FADE);
@@ -55,27 +57,30 @@ void env_fade::Trigger(entity act, int state)
 	WriteFloat(MSG_MULTICAST, m_flFadeHold);
 	WriteByte(MSG_MULTICAST, spawnflags);
 	msg_entity = act;
-	
-	if (spawnflags & EVF_ONLYUSER) {
+
+	if (spawnflags & EVF_ONLYUSER)
 		multicast([0,0,0], MULTICAST_ONE_R);
-	} else {
+	else
 		multicast([0,0,0], MULTICAST_ALL);
+}
+
+void
+env_fade::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "duration":
+		m_flFadeDuration = stof(strValue);
+		break;
+	case "holdtime":
+		m_flFadeHold = stof(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
 	}
 }
 
-void env_fade::env_fade (void)
+void
+env_fade::env_fade(void)
 {
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "duration":
-			m_flFadeDuration = stof(argv(i+1));
-			break;
-		case "holdtime":
-			m_flFadeHold = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
 	CBaseTrigger::CBaseTrigger();
 }

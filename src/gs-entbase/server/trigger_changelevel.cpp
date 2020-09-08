@@ -57,6 +57,7 @@ class trigger_changelevel:CBaseTrigger
 	virtual void(void) TouchTrigger;
 	virtual void(void) Respawn;
 	virtual int(entity, entity) IsInside;
+	virtual void(string, string) SpawnKey;
 };
 
 int
@@ -136,25 +137,27 @@ trigger_changelevel::Respawn(void)
 }
 
 void
+trigger_changelevel::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "map":
+		m_strMap = strValue;
+		break;
+	case "landmark":
+		m_strLandmark = strValue;
+		break;
+	case "changedelay":
+		m_flChangeDelay = stof(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 trigger_changelevel::trigger_changelevel(void)
 {
 	CBaseTrigger::CBaseTrigger();
-
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "map":
-			m_strMap = argv(i+1);
-			break;
-		case "landmark":
-			m_strLandmark = argv(i+1);
-			break;
-		case "changedelay":
-			m_flChangeDelay = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
 }
 
 vector

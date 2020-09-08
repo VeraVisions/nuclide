@@ -28,6 +28,7 @@ class trigger_autosave:CBaseTrigger
 
 	virtual void(void) touch;
 	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -64,6 +65,19 @@ trigger_autosave::Respawn(void)
 }
 
 void
+trigger_autosave::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "delay":
+		m_flDelay = stof(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+		break;
+	}
+}
+
+void
 trigger_autosave::trigger_autosave(void)
 {
 	if (cvar("sv_playerslots") > 1) {
@@ -71,15 +85,5 @@ trigger_autosave::trigger_autosave(void)
 		return;
 	}
 
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "delay":
-			m_flDelay = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
-	CBaseEntity::CBaseEntity();
-	CBaseTrigger::InitBrushTrigger();
+	CBaseTrigger::CBaseTrigger();
 }

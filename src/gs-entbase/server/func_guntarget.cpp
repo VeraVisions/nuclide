@@ -39,9 +39,11 @@ class func_guntarget:CBaseTrigger
 	virtual void(void) Stop;
 	virtual void(entity act, int) Trigger;
 	virtual void(void) Death;
+	virtual void(string, string) SpawnKey;
 };
 
-void func_guntarget::Move(void)
+void
+func_guntarget::Move(void)
 {
 	float flTravelTime;
 	vector vel_to_pos;
@@ -72,7 +74,8 @@ void func_guntarget::Move(void)
 	nextthink = (ltime + flTravelTime);
 }
 
-void func_guntarget::NextPath(void)
+void
+func_guntarget::NextPath(void)
 {
 	path_corner node;
 
@@ -93,7 +96,8 @@ void func_guntarget::NextPath(void)
 	}
 }
 
-void func_guntarget::Death(void)
+void
+func_guntarget::Death(void)
 {
 	entity a;
 	Stop();
@@ -108,7 +112,8 @@ void func_guntarget::Death(void)
 	}
 }
 
-void func_guntarget::Stop(void)
+void
+func_guntarget::Stop(void)
 {
 	takedamage = DAMAGE_NO;
 	velocity = [0,0,0];
@@ -117,7 +122,8 @@ void func_guntarget::Stop(void)
 }
 
 /* TODO: Handle state? */
-void func_guntarget::Trigger(entity act, int state)
+void
+func_guntarget::Trigger(entity act, int state)
 {
 	flags = (1 << FL_FROZEN) | flags;
 
@@ -132,7 +138,8 @@ void func_guntarget::Trigger(entity act, int state)
 	}
 }
 
-void func_guntarget::Respawn(void)
+void
+func_guntarget::Respawn(void)
 {
 	static void ThinkWrap(void) {
 		Trigger(this, TRIG_TOGGLE);
@@ -149,27 +156,26 @@ void func_guntarget::Respawn(void)
 	}
 }
 
+void
+func_guntarget::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "health":
+		health = stof(strValue);
+		break;
+	case "speed":
+		m_flSpeed = stof(strValue);
+		break;
+	case "message":
+		m_strFire = strValue;
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
 void func_guntarget::func_guntarget(void)
 {
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "health":
-			health = stof(argv(i+1));
-			break;
-		case "speed":
-			m_flSpeed = stof(argv(i+1));
-			break;
-		case "message":
-			m_strFire = argv(i+1);
-			break;
-		default:
-			break;
-		}
-	}
-
-	if (!m_flSpeed) {
-		m_flSpeed = 100;
-	}
-
+	m_flSpeed = 100;
 	CBaseTrigger::CBaseTrigger();
 }

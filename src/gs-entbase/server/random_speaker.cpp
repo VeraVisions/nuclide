@@ -50,6 +50,7 @@ class random_speaker:CBaseTrigger
 	virtual void(void) PlaySample;
 	virtual void(void) Enable;
 	virtual void(void) Disable;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -123,26 +124,28 @@ random_speaker::Respawn(void)
 }
 
 void
+random_speaker::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "rsnoise":
+		m_strSample = strValue;
+		break;
+	case "volume":
+		m_flVolume = stof(strValue);
+		break;
+	case "wait":
+		m_flMinPos = stof(strValue);
+		break;
+	case "random":
+		m_flRandPercent = stof(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 random_speaker::random_speaker(void)
 {
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "rsnoise":
-			m_strSample = argv(i+1);
-			break;
-		case "volume":
-			m_flVolume = stof(argv(i+1));
-			break;
-		case "wait":
-			m_flMinPos = stof(argv(i+1));
-			break;
-		case "random":
-			m_flRandPercent = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
-
 	CBaseTrigger::CBaseTrigger();
 }

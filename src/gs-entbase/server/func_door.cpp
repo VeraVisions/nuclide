@@ -102,6 +102,7 @@ class func_door:CBaseTrigger
 	virtual void(void) Blocked;
 	virtual void(void) Touch;
 	virtual void(void) Use;
+	virtual void(string, string) SpawnKey;
 	virtual void(void) m_pMove = 0;
 };
 
@@ -355,6 +356,7 @@ func_door::Respawn(void)
 	nextthink = 0;
 	m_pMove = 0;
 
+	/* FIXME: Is this correct? */
 	if (m_flWait == -1) {
 		spawnflags |= SF_MOV_TOGGLE;
 	}
@@ -395,56 +397,58 @@ func_door::Respawn(void)
 }
 
 void
-func_door::func_door(void)
+func_door::SpawnKey(string strKey, string strValue)
 {
 	int x;
 
-	CBaseTrigger::CBaseTrigger();
-
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "speed":
-			m_flSpeed = stof(argv(i+1));
-			break;
-		case "lip":
-			m_flLip = stof(argv(i+1));
-			break;
-		case "delay":
-			m_flDelay = stof(argv(i+1));
-			break;
-		case "wait":
-			m_flWait = stof(argv(i+1));
-			break;
-		case "netname":
-			targetClose = argv(i+1);
-			netname = __NULL__;
-			break;
-		case "dmg":
-			m_iDamage = stoi(argv(i+1));
-			break;
-		case "noise1":
-			m_strSndMove = argv(i+1);
-			break;
-		case "noise2":
-			m_strSndStop = argv(i+1);
-			break;
-		/* GoldSrc compat */
-		case "movesnd":
-			x = stoi(argv(i+1));
-			if (x >= 1 && x <= 10) {
-				m_strSndMove = sprintf("doors/doormove%i.wav", x);
-			}
-			break;
-		case "stopsnd":
-			x = stoi(argv(i+1));
-			if (x >= 1 && x <= 8) {
-				m_strSndStop = sprintf("doors/doorstop%i.wav", x);
-			}
-			break;
-		default:
-			break;
+	switch (strKey) {
+	case "speed":
+		m_flSpeed = stof(strValue);
+		break;
+	case "lip":
+		m_flLip = stof(strValue);
+		break;
+	case "delay":
+		m_flDelay = stof(strValue);
+		break;
+	case "wait":
+		m_flWait = stof(strValue);
+		break;
+	case "netname":
+		targetClose = strValue;
+		netname = __NULL__;
+		break;
+	case "dmg":
+		m_iDamage = stoi(strValue);
+		break;
+	case "noise1":
+		m_strSndMove = strValue;
+		break;
+	case "noise2":
+		m_strSndStop = strValue;
+		break;
+	/* GoldSrc compat */
+	case "movesnd":
+		x = stoi(strValue);
+		if (x >= 1 && x <= 10) {
+			m_strSndMove = sprintf("doors/doormove%i.wav", x);
 		}
+		break;
+	case "stopsnd":
+		x = stoi(strValue);
+		if (x >= 1 && x <= 8) {
+			m_strSndStop = sprintf("doors/doorstop%i.wav", x);
+		}
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
 	}
+}
+
+void
+func_door::func_door(void)
+{
+	CBaseTrigger::CBaseTrigger();
 
 	if (m_strSndMove)
 		precache_sound(m_strSndMove);

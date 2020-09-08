@@ -110,7 +110,7 @@ float prop_rope::predraw(void)
 	float segments;
 	float sc;
 
-	entity x = find(world, CBaseEntity::targetname, target);
+	entity x = find(world, ::targetname, target);
 
 	if (checkpvs(getproperty(VF_ORIGIN), this) == FALSE) {
 		if (checkpvs(getproperty(VF_ORIGIN), x) == FALSE) {

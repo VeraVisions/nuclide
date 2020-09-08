@@ -47,6 +47,7 @@ class CBaseTrigger:CBaseEntity
 	virtual int(void) GetMaster;
 	virtual void(void) InitBrushTrigger;
 	virtual void(void) InitPointTrigger;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -158,27 +159,30 @@ CBaseTrigger::InitBrushTrigger(void)
 }
 
 void
+CBaseTrigger::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "killtarget":
+		m_strKillTarget = strValue;
+		break;
+	case "message":
+		m_strMessage = strValue;
+		break;
+	case "master":
+		m_strMaster = strValue;
+		break;
+	case "team_no":
+		m_iTeam = stoi(strValue);
+		break;
+	default:
+		CBaseEntity::SpawnKey(strKey, strValue);
+		break;
+	}
+}
+
+void
 CBaseTrigger::CBaseTrigger(void)
 {
-	CBaseEntity::CBaseEntity();
 	m_strMessage = "";
-
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "killtarget":
-			m_strKillTarget = argv(i+1);
-			break;
-		case "message":
-			m_strMessage = argv(i+1);
-			break;
-		case "master":
-			m_strMaster = argv(i+1);
-			break;
-		case "team_no":
-			m_iTeam = stoi(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
+	CBaseEntity::CBaseEntity();
 }

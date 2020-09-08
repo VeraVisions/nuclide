@@ -62,6 +62,7 @@ class light:CBaseTrigger
 	void(void) light;
 	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
 };
 
 void light::Trigger(entity act, int state)
@@ -95,25 +96,26 @@ void light::Respawn(void)
 	}
 }
 
+void
+light::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "pattern":
+		m_strPattern = strValue;
+		break;
+	case "style":
+		m_flStyle = stof(strValue);
+		style = __NULL__;
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
 void light::light(void)
 {
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "pattern":
-			m_strPattern = argv(i+1);
-			break;
-		case "style":
-			m_flStyle = stof(argv(i+1));
-			style = __NULL__;
-			break;
-		default:
-			break;
-		}
-	}
-
-	if (!m_strPattern) {
-		m_strPattern = "m";
-	}
+	CBaseTrigger::CBaseTrigger();
+	m_strPattern = "m";
 }
 
 CLASSEXPORT(light_spot, light)

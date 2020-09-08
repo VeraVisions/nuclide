@@ -25,29 +25,32 @@ class func_lod:CBaseEntity
 {
 	void(void) func_lod;
 	virtual float(entity, float) SendEntity;
+	virtual void(string, string) SpawnKey;
 };
 
-float func_lod::SendEntity (entity a, float b)
+float
+func_lod::SendEntity(entity a, float b)
 {
 	return FALSE;
 }
 
-void func_lod::func_lod(void)
+void
+func_lod::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "Solid":
+	case "solid":
+		solid = stoi(strValue) == 1 ? SOLID_NOT : SOLID_BSP;
+		break;
+	default:
+		CBaseEntity::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+func_lod::func_lod(void)
 {
 	CBaseEntity::CBaseEntity();
-
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "Solid":
-		case "solid":
-			solid = stoi(argv(i+1)) == 1 ? SOLID_NOT : SOLID_BSP;
-			break;
-		default:
-			break;
-		}
-	}
-
-	precache_model(model);
 	SetMovetype(MOVETYPE_PUSH);
 	SetModel(model);
 	SetOrigin(origin);

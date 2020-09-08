@@ -30,6 +30,7 @@ class trigger_changetarget:CBaseTrigger
 	void(void) trigger_changetarget;
 
 	virtual void(entity,int) Trigger;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -50,17 +51,19 @@ trigger_changetarget::Trigger(entity act, int state)
 }
 
 void
+trigger_changetarget::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_iszNewTarget":
+		m_strNewTarget = strValue;
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 trigger_changetarget::trigger_changetarget(void)
 {
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "m_iszNewTarget":
-			m_strNewTarget = argv(i+1);
-			break;
-		default:
-			break;
-		}
-	}
-
 	CBaseTrigger::CBaseTrigger();
 }

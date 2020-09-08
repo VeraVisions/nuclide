@@ -45,6 +45,7 @@ class trigger_look:CBaseTrigger
 	
 	virtual void(void) Touch;
 	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -105,31 +106,34 @@ trigger_look::Respawn(void)
 }
 
 void
+trigger_look::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "looktarget":
+	case "target_destination":
+		m_strLookTarget = strValue;
+		break;
+	case "fov":
+	case "FieldOfView":
+		m_flFOV = stof(strValue);
+		break;
+	case "looktime":
+	case "LookTime":
+		m_flLookTime = stof(strValue);
+		break;
+	case "delay":
+		m_flDelay = stof(strValue);
+		break;
+	default:
+		break;
+	}
+}
+
+void
 trigger_look::trigger_look(void)
 {
 	m_flLookTime = 0.5f;
 	m_flFOV = 0.9f;
-
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "looktarget":
-		case "target_destination":
-			m_strLookTarget = argv(i+1);
-			break;
-		case "fov":
-		case "FieldOfView":
-			m_flFOV = stof(argv(i+1));
-			break;
-		case "looktime":
-		case "LookTime":
-			m_flLookTime = stof(argv(i+1));
-			break;
-		case "delay":
-			m_flDelay = stof(argv(i+1));
-		default:
-			break;
-		}
-	}
 
 	CBaseEntity::CBaseEntity();
 }

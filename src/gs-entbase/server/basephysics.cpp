@@ -34,6 +34,7 @@ class CBasePhysics:CBaseEntity
 	virtual void(void) touch;
 	virtual void(void) TouchThink;
 	virtual void(void) Pain;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -121,31 +122,33 @@ CBasePhysics::Respawn(void)
 }
 
 void
+CBasePhysics::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "physmodel":
+		m_iShape = stoi(strValue);
+
+		if (m_iShape > PHYSM_CYLINDER) {
+			m_iShape = 0;
+		}
+		break;
+	case "massscale":
+		m_flMass = stof(strValue);
+		break;
+	case "physdamagescale":
+		break;
+	case "material":
+		m_iMaterial = stof(strValue);
+		break;
+	default:
+		CBaseEntity::SpawnKey(strKey, strValue);
+		break;
+	}
+}
+
+void
 CBasePhysics::CBasePhysics(void)
 {
 	CBaseEntity::CBaseEntity();
-	precache_model(m_oldModel);
 	m_flMass = 1.0f;
-
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "physmodel":
-			m_iShape = stoi(argv(i+1));
-
-			if (m_iShape > PHYSM_CYLINDER) {
-				m_iShape = 0;
-			}
-			break;
-		case "massscale":
-			m_flMass = stof(argv(i+1));
-			break;
-		case "physdamagescale":
-			break;
-		case "material":
-			m_iMaterial = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
 }

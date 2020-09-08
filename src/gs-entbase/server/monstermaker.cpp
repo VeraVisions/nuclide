@@ -58,6 +58,7 @@ class monstermaker:CBaseTrigger
 	virtual void(void) Respawn;
 	virtual void(void) TurnOn;
 	virtual void(void) TurnOff;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -192,32 +193,34 @@ monstermaker::Respawn(void)
 }
 
 void
+monstermaker::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "monstertype":
+		m_strMonster = strValue;
+		break;
+	case "monstercount":
+		m_iTotalMonsters = stoi(strValue);
+		break;
+	case "child_alivemax":
+	case "m_imaxlivechildren":
+		m_iMaxChildren = stoi(strValue);
+		break;
+	case "delay":
+		m_flDelay = stof(strValue);
+		break;
+	case "child_name":
+	case "netname":
+		m_strChildName = strValue;
+		netname = __NULL__;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 monstermaker::monstermaker(void)
 {
 	m_flDelay = 1.0f;
 	CBaseTrigger::CBaseTrigger();
-
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "monstertype":
-			m_strMonster = argv(i+1);
-			break;
-		case "monstercount":
-			m_iTotalMonsters = stoi(argv(i+1));
-			break;
-		case "child_alivemax":
-		case "m_imaxlivechildren":
-			m_iMaxChildren = stoi(argv(i+1));
-			break;
-		case "delay":
-			m_flDelay = stof(argv(i+1));
-			break;
-		case "child_name":
-		case "netname":
-			m_strChildName = argv(i+1);
-			netname = __NULL__;
-		default:
-			break;
-		}
-	}
 }

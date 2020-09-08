@@ -46,9 +46,11 @@ class env_sprite:CBaseTrigger
 	void(void) env_sprite;
 	virtual void(entity, int) Trigger;
 	virtual float(entity, float) Network;
+	virtual void(string, string) SpawnKey;
 };
 
-float env_sprite::Network(entity pvsent, float flags)
+float
+env_sprite::Network(entity pvsent, float flags)
 {
 	/* Delete it on the client. */
 	if (m_iToggled == FALSE) {
@@ -71,7 +73,8 @@ float env_sprite::Network(entity pvsent, float flags)
 	return TRUE;
 }
 
-void env_sprite::NetworkOnce(void)
+void
+env_sprite::NetworkOnce(void)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_SPRITE);
@@ -92,7 +95,8 @@ void env_sprite::NetworkOnce(void)
 }
 
 /* TODO: Implement state */
-void env_sprite::Trigger(entity act, int state)
+void
+env_sprite::Trigger(entity act, int state)
 {
 	if (spawnflags & ENVS_PLAYONCE) {
 		NetworkOnce();
@@ -102,32 +106,28 @@ void env_sprite::Trigger(entity act, int state)
 	}
 }
 
-void env_sprite::env_sprite(void)
+void
+env_sprite::SpawnKey(string strKey, string strValue)
 {
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "framerate":
-			m_flFramerate = stof(argv(i+1));
-			break;
-		case "scale":
-			m_flScale = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
+	switch (strKey) {
+	case "framerate":
+		m_flFramerate = stof(strValue);
+		break;
+	case "scale":
+		m_flScale = stof(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
 	}
-	
-	if (!m_flFramerate) {
-		m_flFramerate = 10;
-	}
-	
-	if (!m_flScale) {
-		m_flScale = 1.0f;
-	}
+}
+
+void
+env_sprite::env_sprite(void)
+{
+	m_flFramerate = 10;
+	m_flScale = 1.0f;
 
 	CBaseTrigger::CBaseTrigger();
-	precache_model(m_oldModel);
-
 	m_iToggled = ((spawnflags & ENVS_STARTON) > 0);
 
 	if (!(spawnflags & ENVS_PLAYONCE)) {

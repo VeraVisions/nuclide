@@ -41,6 +41,7 @@ class trigger_counter:CBaseTrigger
 	virtual void(void) touch;
 	virtual void(entity,int) Trigger;
 	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -89,20 +90,22 @@ trigger_counter::Respawn(void)
 }
 
 void
+trigger_counter::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "count":
+		m_iMaxCount = stoi(strValue);
+		break;
+	case "delay":
+		m_flDelay = stof(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 trigger_counter::trigger_counter(void)
 {
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "count":
-			m_iMaxCount = stoi(argv(i+1));
-			break;
-		case "delay":
-			m_flDelay = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
-
 	CBaseTrigger::CBaseTrigger();
 }

@@ -24,15 +24,10 @@ class CBaseEntity
 #endif
 
 	int m_iBody;
-	float m_flScale;
 	float m_flSentenceTime;
 	sound_t *m_pSentenceQue;
 	int m_iSentenceCount;
 	int m_iSentencePos;
-
-	string targetname;
-	string target;
-	float spawnflags;
 
 	void(void) CBaseEntity;
 	virtual void(void) Init;

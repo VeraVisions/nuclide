@@ -38,9 +38,11 @@ class env_shake:CBaseTrigger
 
 	void(void) env_shake;
 	virtual void(entity act, int) Trigger;
+	virtual void(string, string) SpawnKey;
 };
 
-void env_shake::Trigger(entity act, int state)
+void
+env_shake::Trigger(entity act, int state)
 {
 	for (entity e = world; (e = find(e, ::classname, "player"));) {
 		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
@@ -54,25 +56,29 @@ void env_shake::Trigger(entity act, int state)
 	}
 }
 
-void env_shake::env_shake(void)
+void
+env_shake::SpawnKey(string strKey, string strValue)
 {
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "radius":
-			m_flRadius = stof(argv(i+1));
-			break;
-		case "amplitude":
-			m_flAmplitude = stof(argv(i+1));
-			break;
-		case "duration":
-			m_flDuration = stof(argv(i+1));
-			break;
-		case "frequency":
-			m_flFrequency = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
+	switch (strKey) {
+	case "radius":
+		m_flRadius = stof(strValue);
+		break;
+	case "amplitude":
+		m_flAmplitude = stof(strValue);
+		break;
+	case "duration":
+		m_flDuration = stof(strValue);
+		break;
+	case "frequency":
+		m_flFrequency = stof(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
 	}
+}
+
+void
+env_shake::env_shake(void)
+{
 	CBaseTrigger::CBaseTrigger();
 }

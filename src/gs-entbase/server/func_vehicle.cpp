@@ -94,6 +94,7 @@ class func_vehicle:CBaseVehicle
 	virtual void(void) Respawn;
 	virtual void(void) Realign;
 	virtual void(void) PlayerUse;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -497,6 +498,60 @@ func_vehicle::Respawn(void)
 }
 
 void
+func_vehicle::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "acceleration":
+		// TODO
+		break;
+	case "speed":
+		m_flAcceleration = stof(strValue);
+		break;
+	case "height":
+		m_flHeight = stof(strValue);
+		break;
+	case "width":
+		m_flWidth = stof(strValue) / 2;
+		break;
+	case "length":
+		m_flLength = stof(strValue) / 2;
+		break;
+	case "bouncefactor":
+		m_flBounceFactor = stof(strValue);
+		break;
+	case "skidspeed":
+		m_flSkidSpeed = stof(strValue);
+		break;
+	case "traction":
+		m_flTraction = stof(strValue);
+		break;
+	case "breakfactor":
+		m_flBreakFactor = stof(strValue);
+		break;
+	case "steerfactor":
+		m_flSteerFactor = stof(strValue);
+		break;
+	case "straightenfactor":
+		m_flStraightenFactor = stof(strValue);
+		break;
+	case "gravitydir":
+		m_vecGravityDir = stov(strValue);
+		break;
+	case "sounds":
+		// TODO
+		break;
+	case "volume":
+		// TODO
+		break;
+	case "dmg":
+		// TODO
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 func_vehicle::func_vehicle(void)
 {
 	m_flBounceFactor = 1.0f;
@@ -508,57 +563,7 @@ func_vehicle::func_vehicle(void)
 	m_flStraightenFactor = 1.0f;
 	m_vecGravityDir = [0,0,-1];
 
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "acceleration":
-			// TODO
-			break;
-		case "speed":
-			m_flAcceleration = stof(argv(i+1));
-			break;
-		case "height":
-			m_flHeight = stof(argv(i+1));
-			break;
-		case "width":
-			m_flWidth = stof(argv(i+1)) / 2;
-			break;
-		case "length":
-			m_flLength = stof(argv(i+1)) / 2;
-			break;
-		case "bouncefactor":
-			m_flBounceFactor = stof(argv(i+1));
-			break;
-		case "skidspeed":
-			m_flSkidSpeed = stof(argv(i+1));
-			break;
-		case "traction":
-			m_flTraction = stof(argv(i+1));
-			break;
-		case "breakfactor":
-			m_flBreakFactor = stof(argv(i+1));
-			break;
-		case "steerfactor":
-			m_flSteerFactor = stof(argv(i+1));
-			break;
-		case "straightenfactor":
-			m_flStraightenFactor = stof(argv(i+1));
-			break;
-		case "gravitydir":
-			m_vecGravityDir = stov(argv(i+1));
-			break;
-		case "sounds":
-			// TODO
-			break;
-		case "volume":
-			// TODO
-			break;
-		case "dmg":
-			// TODO
-			break;
-		default:
-			break;
-		}
-	}
+	CBaseVehicle::CBaseVehicle();
 
 	m_wlFL = spawn(func_vehicle_wheel);
 	m_wlFR = spawn(func_vehicle_wheel);
@@ -572,6 +577,4 @@ func_vehicle::func_vehicle(void)
 		m_wlBL.mins[2] = m_flHeight * -1;
 		m_wlBR.mins[2] = m_flHeight * -1;
 	}
-
-	CBaseVehicle::CBaseVehicle();
 }

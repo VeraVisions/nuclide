@@ -33,6 +33,7 @@ class func_physbox:CBaseEntity
 	void(void) func_physbox;
 	virtual void(void) Respawn;
 	virtual void(void) touch;
+	virtual void(string, string) SpawnKey;
 };
 
 void func_physbox::touch(void)
@@ -49,6 +50,18 @@ void func_physbox::Respawn(void)
 	physics_enable(this, TRUE);
 }
 
+void
+func_physbox::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "material":
+		//m_iMaterial = stof(strValue);
+		break;
+	default:
+		CBaseEntity::SpawnKey(strKey, strValue);
+	}
+}
+
 void func_physbox::func_physbox(void)
 {
 	if (!model) {
@@ -57,17 +70,7 @@ void func_physbox::func_physbox(void)
 	}
 
 	CBaseEntity::CBaseEntity();
-	precache_model(m_oldModel);
 
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "material":
-			//m_iMaterial = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
 }
 
 CLASSEXPORT(func_physbox, func_physbox)

@@ -61,7 +61,6 @@ class func_door_rotating:CBaseTrigger
 	
 	void(void) func_door_rotating;
 	virtual void(void) Respawn;
-	virtual void(void) Precache;
 	virtual void(void) Arrived;
 	virtual void(void) Returned;
 	virtual void(void) Back;
@@ -73,6 +72,7 @@ class func_door_rotating:CBaseTrigger
 	virtual void(void) SetMovementDirection;
 	virtual void(vector angle, void(void) func) RotToDest;
 	virtual void(void) RotToDest_End;
+	virtual void(string, string) SpawnKey;
 
 #ifdef GS_BULLET_PHYSICS
 	virtual void(void) Unhinge;
@@ -89,25 +89,6 @@ void func_door_rotating::Unhinge(void)
 	physics_enable(this, TRUE);
 }
 #endif
-
-void func_door_rotating::Precache(void)
-{
-	if (spawnflags & SF_DOOR_SILENT) {
-		return;
-	}
-
-	if (m_iMoveSnd > 0 && m_iMoveSnd <= 10) {
-		precache_sound(sprintf("doors/doormove%i.wav", m_iMoveSnd));
-	} else {
-		precache_sound("common/null.wav");
-	}
-
-	if (m_iStopSnd > 0 && m_iStopSnd <= 8) {
-		precache_sound(sprintf("doors/doorstop%i.wav", m_iStopSnd));
-	} else {
-		precache_sound("common/null.wav");
-	}
-}
 
 void func_door_rotating::Arrived(void)
 {
@@ -370,46 +351,61 @@ void func_door_rotating::Respawn(void)
 	SetAngles(m_vecPos1);
 }
 
+void
+func_door_rotating::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "speed":
+		m_flSpeed = stof(strValue);
+		break;
+	/*case "lip":
+		m_flLip = stof(strValue);
+		break;*/
+	case "movesnd":
+		m_iMoveSnd = stoi(strValue);
+		break;
+	case "stopsnd":
+		m_iStopSnd = stoi(strValue);
+		break;
+	case "distance":
+		m_flDistance = stof(strValue);
+		break;
+	case "delay":
+		m_flDelay = stof(strValue);
+		break;
+	case "dmg":
+		m_iDamage = stoi(strValue);
+		break;
+	case "wait":
+		m_flWait = stof(strValue);
+		break;
+	case "netname":
+		targetClose = strValue;
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
 void func_door_rotating::func_door_rotating(void)
 {
 	m_flSpeed = 100;
 	m_flDelay = 4;
 	m_flDistance = 90;
 
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "speed":
-			m_flSpeed = stof(argv(i+1));
-			break;
-		/*case "lip":
-			m_flLip = stof(argv(i+1));
-			break;*/
-		case "movesnd":
-			m_iMoveSnd = stoi(argv(i+1));
-			break;
-		case "stopsnd":
-			m_iStopSnd = stoi(argv(i+1));
-			break;
-		case "distance":
-			m_flDistance = stof(argv(i+1));
-			break;
-		case "delay":
-			m_flDelay = stof(argv(i+1));
-			break;
-		case "dmg":
-			m_iDamage = stoi(argv(i+1));
-			break;
-		case "wait":
-			m_flWait = stof(argv(i+1));
-			break;
-		case "netname":
-			targetClose = argv(i+1);
-			break;
-		default:
-			break;
-		}
-	}
+	CBaseTrigger::CBaseTrigger();
 
-	func_door_rotating::Precache();
-	CBaseEntity::CBaseEntity();
+	if (spawnflags & SF_DOOR_SILENT)
+		return;
+
+	/* TODO: Add support for custom sounds */
+	if (m_iMoveSnd > 0 && m_iMoveSnd <= 10)
+		precache_sound(sprintf("doors/doormove%i.wav", m_iMoveSnd));
+	else
+		precache_sound("common/null.wav");
+
+	if (m_iStopSnd > 0 && m_iStopSnd <= 8)
+		precache_sound(sprintf("doors/doorstop%i.wav", m_iStopSnd));
+	else
+		precache_sound("common/null.wav");
 }

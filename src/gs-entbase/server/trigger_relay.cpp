@@ -41,6 +41,7 @@ class trigger_relay:CBaseTrigger
 	void(void) trigger_relay;
 	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -65,20 +66,22 @@ trigger_relay::Respawn(void)
 }
 
 void
+trigger_relay::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "delay":
+		m_flDelay = stof(strValue);
+		break;
+	case "triggerstate":
+		m_iTriggerState = stoi(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 trigger_relay::trigger_relay(void)
 {
 	CBaseTrigger::CBaseTrigger();
-
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "delay":
-			m_flDelay = stof(argv(i+1));
-			break;
-		case "triggerstate":
-			m_iTriggerState = stoi(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
 }

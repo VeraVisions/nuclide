@@ -56,6 +56,7 @@ class func_rotating:CBaseTrigger
 	virtual void(void) Rotate;
 	virtual void(void) Blocked;
 	virtual void(void) SetMovementDirection;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -142,29 +143,24 @@ func_rotating::SetMovementDirection(void)
 }
 
 void
+func_rotating::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "speed":
+		m_flSpeed = stof(strValue);
+		break;
+	case "dmg":
+		m_flDamage = stof(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 func_rotating::func_rotating(void)
 {
-	precache_model(model);
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		/*case "spawnorigin":
-			SetOrigin(stov(argv(i+1)));
-			break;*/
-		case "speed":
-			m_flSpeed = stof(argv(i+1));
-			break;
-		case "dmg":
-			m_flDamage = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
-
-	if (!m_flSpeed) {
-		m_flSpeed = 100;
-	}
-
+	m_flSpeed = 100;
 	CBaseTrigger::CBaseTrigger();
 	func_rotating::SetMovementDirection();
 }

@@ -58,9 +58,11 @@ class env_laser:CBaseTrigger
 	virtual void(void) Respawn;
 	virtual void(void) ParentUpdate;
 	virtual float(entity, float) SendEntity;
+	virtual void(string, string) SpawnKey;
 };
 
-void env_laser::think(void)
+void
+env_laser::think(void)
 {
 	entity t;
 
@@ -85,7 +87,8 @@ void env_laser::think(void)
 	}
 }
 
-void env_laser::Trigger(entity act, int state)
+void
+env_laser::Trigger(entity act, int state)
 {
 	switch (state) {
 	case TRIG_OFF:
@@ -105,7 +108,8 @@ void env_laser::Trigger(entity act, int state)
 	}
 }
 
-void env_laser::Respawn(void)
+void
+env_laser::Respawn(void)
 {
 	if (spawnflags & ENVLAZ_STARTON) {
 		m_iState = 1;
@@ -113,7 +117,8 @@ void env_laser::Respawn(void)
 	}
 }
 
-float env_laser::SendEntity(entity ePEnt, float fChanged)
+float
+env_laser::SendEntity(entity ePEnt, float fChanged)
 {
 	WriteByte(MSG_ENTITY, ENT_ENVLASER);
 	WriteFloat(MSG_ENTITY, fChanged);
@@ -141,7 +146,8 @@ float env_laser::SendEntity(entity ePEnt, float fChanged)
 	return TRUE;
 }
 
-void env_laser::ParentUpdate(void)
+void
+env_laser::ParentUpdate(void)
 {
 	/* FIXME: Check our fields for networking */
 	/*if (origin != oldnet_origin) {
@@ -177,29 +183,32 @@ void env_laser::ParentUpdate(void)
 	}
 }
 
-void env_laser::env_laser(void)
+void
+env_laser::SpawnKey(string strKey, string strValue)
 {
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "texture":
-			m_strBeamTex = argv(i+1);
-			precache_model(m_strBeamTex);
-			break;
-		case "EndSprite":
-			m_strEndTex = argv(i+1);
-			precache_model(m_strEndTex);
-			break;
-		case "LaserTarget":
-			m_strLaserDest = argv(i+1);
-			break;
-		case "damage":
-			m_flDPS = stof(argv(i+1));
-			break;
-		default:
-			break;
-		}
+	switch (strKey) {
+	case "texture":
+		m_strBeamTex = strValue;
+		precache_model(m_strBeamTex);
+		break;
+	case "EndSprite":
+		m_strEndTex = strValue;
+		precache_model(m_strEndTex);
+		break;
+	case "LaserTarget":
+		m_strLaserDest = strValue;
+		break;
+	case "damage":
+		m_flDPS = stof(strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
 	}
+}
 
+void
+env_laser::env_laser(void)
+{
 	CBaseTrigger::CBaseTrigger();
 	gflags = GF_CANRESPAWN;
 	pvsflags = PVSF_IGNOREPVS;
