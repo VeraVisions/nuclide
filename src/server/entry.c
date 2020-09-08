@@ -70,6 +70,16 @@ void PutClientInServer(void)
 
 	pl = (player)self;
 	g_grMode.PlayerSpawn(pl);
+
+	/* activate all game_playerspawn entities */
+	for (entity a = world; (a = findfloat(a, ::gflags, GF_CANRESPAWN));) {
+		CBaseEntity ent = (CBaseEntity)a;
+
+		if (ent.m_strTargetName == "game_playerspawn") {
+			CBaseTrigger t = (CBaseTrigger)a;
+			t.Trigger(self, TRIG_TOGGLE);
+		}
+	}
 }
 
 void PlayerPreThink(void)
