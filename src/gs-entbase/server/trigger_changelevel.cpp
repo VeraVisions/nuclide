@@ -80,7 +80,7 @@ trigger_changelevel::Change(void)
 	if (!m_strLandmark) {
 		dprint(sprintf("^2trigger_changelevel::^3Change^7: Change to `%s`\n", 
 			m_strMap));
-		//changelevel(m_strMap);
+		changelevel(m_strMap);
 		return;
 	}
 
@@ -97,7 +97,7 @@ trigger_changelevel::Change(void)
 		if (lm.targetname == m_strLandmark) {
 			dprint(sprintf("^2trigger_changelevel::^3Change^7: Found landmark for %s\n", m_strLandmark));
 			g_landmarkpos = m_activator.origin - lm.origin;
-			//changelevel(m_strMap, m_strLandmark);
+			changelevel(m_strMap, m_strLandmark);
 			break;
 		}
 	}
