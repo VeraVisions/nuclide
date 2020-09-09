@@ -119,7 +119,7 @@ func_door::Arrived(void)
 	m_iState = DOORSTATE_RAISED;
 
 	if (m_strSndStop) {
-		sound(this, CHAN_VOICE, m_strSndStop, 1.0f, ATTN_NORM);
+		Sound_Play(this, CHAN_VOICE, m_strSndStop);
 	} else {
 		sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
 	}
@@ -149,7 +149,7 @@ void
 func_door::Returned(void)
 {
 	if (m_strSndStop) {
-		sound(this, CHAN_VOICE, m_strSndStop, 1.0f, ATTN_NORM);
+		Sound_Play(this, CHAN_VOICE, m_strSndStop);
 	} else {
 		sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
 	}
@@ -165,7 +165,7 @@ void
 func_door::MoveBack(void)
 {
 	if (m_strSndMove) {
-		sound(this, CHAN_VOICE, m_strSndMove, 1.0f, ATTN_NORM);
+		Sound_Play(this, CHAN_VOICE, m_strSndMove);
 	} else {
 		sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
 	}
@@ -187,7 +187,7 @@ func_door::MoveAway(void)
 	}
 
 	if (m_strSndMove) {
-		sound(this, CHAN_VOICE, m_strSndMove, 1.0f, ATTN_NORM);
+		Sound_Play(this, CHAN_VOICE, m_strSndMove);
 	} else {
 		sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
 	}
@@ -430,15 +430,11 @@ func_door::SpawnKey(string strKey, string strValue)
 	/* GoldSrc compat */
 	case "movesnd":
 		x = stoi(strValue);
-		if (x >= 1 && x <= 10) {
-			m_strSndMove = sprintf("doors/doormove%i.wav", x);
-		}
+		m_strSndMove = sprintf("func_door.move_%i", x);
 		break;
 	case "stopsnd":
 		x = stoi(strValue);
-		if (x >= 1 && x <= 8) {
-			m_strSndStop = sprintf("doors/doorstop%i.wav", x);
-		}
+		m_strSndStop = sprintf("func_door.stop_%i", x);
 		break;
 	default:
 		CBaseTrigger::SpawnKey(strKey, strValue);
@@ -451,9 +447,9 @@ func_door::func_door(void)
 	CBaseTrigger::CBaseTrigger();
 
 	if (m_strSndMove)
-		precache_sound(m_strSndMove);
+		Sound_Precache(m_strSndMove);
 	if (m_strSndStop)
-		precache_sound(m_strSndStop);
+		Sound_Precache(m_strSndStop);
 }
 
 void
