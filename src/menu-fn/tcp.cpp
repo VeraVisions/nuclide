@@ -108,7 +108,7 @@ TCP_Frame(tcpinfo_t *in)
 
 	if (fwrite(in.m_fSocket, (void *)out, strlen(in.m_strBuffer[0])) <= 0) {
 		dprint("^1TCP_Frame^7: Unsuccessful frame\n");
-		memfree(out);
+		memfree((__variant *)out);
 		return;
 	}
 
@@ -123,7 +123,7 @@ TCP_Frame(tcpinfo_t *in)
 	}
 
 	in.m_iBufferLines--;
-	memfree(out);
+	memfree((__variant *)out);
 }
 
 int
