@@ -16,33 +16,20 @@
 
 class hologram_damage:CBaseNPC
 {
+	int m_iType;
+
 	void(void) hologram_damage;
 
 	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
 };
 
 void
 hologram_damage::Respawn(void)
 {
-	//SetRenderMode(RM_ADDITIVE);
-}
+	SetRenderMode(RM_ADDITIVE);
 
-void
-hologram_damage::hologram_damage(void)
-{
-	int mdltype;
-
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "creaturetype":
-			mdltype = stoi(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
-
-	switch (mdltype) {
+	switch (m_iType) {
 	case 1:
 		model = "models/tube.mdl";
 		break;
@@ -53,6 +40,24 @@ hologram_damage::hologram_damage(void)
 		model = "models/beak.mdl";
 	}
 
+	SetModel(model);
+}
+
+void
+hologram_damage::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "creaturetype":
+		m_iType = stoi(strValue);
+		break;
+	default:
+		CBaseNPC::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+hologram_damage::hologram_damage(void)
+{
 	base_mins = [-16,-16,0];
 	base_maxs = [16,16,72];
 	CBaseNPC::CBaseNPC();

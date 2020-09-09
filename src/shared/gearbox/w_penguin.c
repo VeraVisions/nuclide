@@ -136,7 +136,7 @@ penguin_ai(void)
 }
 
 void
-penguin_die(int i)
+penguin_die(void)
 {
 	/* clear this first to avoid infinite recursion */
 	self.health = 0;
@@ -155,7 +155,7 @@ penguin_die(int i)
 }
 
 void
-penguin_pain(int i)
+penguin_pain(void)
 {
 	/* add stuff? */
 }

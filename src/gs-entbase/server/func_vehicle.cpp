@@ -494,7 +494,7 @@ func_vehicle::Respawn(void)
 	velocity = [0,0,0];
 
 	if (m_eDriver)
-		PlayerLeave(m_eDriver);
+		PlayerLeave((base_player)m_eDriver);
 }
 
 void

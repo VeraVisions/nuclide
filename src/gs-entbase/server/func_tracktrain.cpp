@@ -71,6 +71,7 @@ func_tracktrain::CheckPathFW(void)
 		entity f;
 		CBaseEntity current, next;
 		current = (CBaseEntity)m_ePath;
+		next = __NULL__;
 
 		for (f = world; (f = find(f, ::targetname, current.target));) {
 			/* we found the right entity */
@@ -78,13 +79,13 @@ func_tracktrain::CheckPathFW(void)
 				CBaseTrigger oldtrig;
 				oldtrig = (CBaseTrigger)m_ePath;
 				oldtrig.Trigger(this, TRIG_TOGGLE);
-				next = f;
+				next = (CBaseEntity)f;
 				break;
 			}
 		}
 
 		m_eOldPath = m_ePath;
-		m_ePath = (entity)next;
+		m_ePath = next;
 	}
 }
 
@@ -95,16 +96,17 @@ func_tracktrain::CheckPathRV(void)
 		entity f;
 		CBaseEntity current, next;
 		current = (CBaseEntity)m_ePath;
+		next = __NULL__;
 
 		for (f = world; (f = find(f, ::target, current.targetname));) {
 			/* we found the right entity */
 			if (f.classname == "path_track" || f.classname == "path_corner") {
-				next = f;
+				next = (CBaseEntity)f;
 			}
 		}
 
 		m_eOldPath = m_ePath;
-		m_ePath = (entity)next;
+		m_ePath = next;
 	}
 }
 
@@ -118,15 +120,17 @@ func_tracktrain::UpdateAngles(void)
 	CBaseEntity reallyold, reallynew;
 	entity f;
 
+	reallynew = reallyold = __NULL__;
+
 	for (f = world; (f = find(f, ::target, m_eOldPath.targetname));) {
 		if (f.classname == "path_track" || f.classname == "path_corner") {
-				reallyold = f;
+			reallyold = (CBaseEntity)f;
 		}
 	}
 	
 	for (f = world; (f = find(f, ::targetname, m_ePath.target));) {
 		if (f.classname == "path_track" || f.classname == "path_corner") {
-				reallynew = f;
+			reallynew = (CBaseEntity)f;
 		}
 	}
 
@@ -272,8 +276,8 @@ func_tracktrain::Realign(void)
 		setorigin(this, first.origin);
 	}
 
-	m_eOldPath = (entity)first;
-	m_ePath = (entity)second;
+	m_eOldPath = first;
+	m_ePath = second;
 }
 
 void

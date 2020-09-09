@@ -145,7 +145,7 @@ multi_manager::multi_manager(void)
 
 	CBaseTrigger::CBaseTrigger();
 
-	for (int b = 0; b < 16; b++) {
+	for (b = 0; b < 16; b++) {
 		m_eTriggers[b] = spawn(multi_manager_sub);
 	}
 

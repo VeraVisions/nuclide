@@ -131,7 +131,7 @@ void
 func_tankmortar::customphysics(void)
 {
 	if (m_eDriver && m_eDriver.health <= 0)
-		PlayerLeave(m_eDriver);
+		PlayerLeave((base_player)m_eDriver);
 
 	if (m_eDriver) {
 		vector wantang, endang;
@@ -200,7 +200,7 @@ func_tankmortar::Respawn(void)
 	SetAngles(m_oldAngle);
 
 	if (m_eDriver)
-		PlayerLeave(m_eDriver);
+		PlayerLeave((base_player)m_eDriver);
 }
 
 void
