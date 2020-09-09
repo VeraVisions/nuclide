@@ -35,15 +35,6 @@ enumflags
 	EVSPARK_STARTON
 };
 
-string spark_snd[] = {
-	"buttons/spark1.wav",
-	"buttons/spark2.wav",
-	"buttons/spark3.wav",
-	"buttons/spark4.wav",
-	"buttons/spark5.wav",
-	"buttons/spark6.wav"
-};
-
 class env_spark:CBaseTrigger
 {
 	float m_flMaxDelay;
@@ -59,8 +50,7 @@ class env_spark:CBaseTrigger
 void
 env_spark::CreateSpark(void)
 {
-	int r = floor((random() * spark_snd.length));
-	sound(this, CHAN_AUTO, spark_snd[r], 1.0f, ATTN_IDLE);
+	Sound_Play(this, CHAN_AUTO, "env_spark.sfx");
 	FX_Spark(self.origin, self.angles);
 }
 
@@ -123,9 +113,6 @@ env_spark::SpawnKey(string strKey, string strValue)
 void
 env_spark::env_spark(void)
 {
-	for (int i = 0; i < spark_snd.length; i++) {
-		precache_sound(spark_snd[i]);
-	}
-
+	Sound_Precache("env_spark.sfx");
 	CBaseTrigger::CBaseTrigger();
 }
