@@ -80,8 +80,14 @@ trigger_changelevel::Change(void)
 	if (!m_strLandmark) {
 		dprint(sprintf("^2trigger_changelevel::^3Change^7: Change to `%s`\n", 
 			m_strMap));
-		changelevel(m_strMap);
+		//changelevel(m_strMap);
 		return;
+	}
+
+	/* if some other entity triggered us... just find the next player. */
+	if (!(m_activator.flags & FL_CLIENT)) {
+		/* we need a player if we want to use landmarks at all */
+		m_activator = find(world, ::classname, "player");
 	}
 
 	/* a trigger_transition may share the same targetname, thus we do this */
@@ -91,7 +97,7 @@ trigger_changelevel::Change(void)
 		if (lm.targetname == m_strLandmark) {
 			dprint(sprintf("^2trigger_changelevel::^3Change^7: Found landmark for %s\n", m_strLandmark));
 			g_landmarkpos = m_activator.origin - lm.origin;
-			changelevel(m_strMap, m_strLandmark);
+			//changelevel(m_strMap, m_strLandmark);
 			break;
 		}
 	}
@@ -100,15 +106,14 @@ trigger_changelevel::Change(void)
 void
 trigger_changelevel::Trigger(entity act, int unused)
 {
-	/* this means a delayed trigger is active */
-	if (nextthink > 0.0f)
+	if (GetMaster() == FALSE)
 		return;
+
+	/* disable meself */
+	SetSolid(SOLID_NOT);
 
 	/* eActivator == player who triggered the damn thing */
-	m_activator = eActivator;
-
-	if (eActivator.classname != "player")
-		return;
+	m_activator = act;
 
 	if (m_flChangeDelay) {
 		dprint(sprintf("^2trigger_changelevel::^3Trigger^7: Delayed change to `%s` in %d sec/s\n", m_strMap, m_flChangeDelay));
@@ -123,6 +128,9 @@ trigger_changelevel::Trigger(entity act, int unused)
 void
 trigger_changelevel::TouchTrigger(void)
 {
+	if (!(other.flags & FL_CLIENT))
+		return;
+
 	Trigger(other, TRIG_TOGGLE);
 }
 
