@@ -149,8 +149,12 @@ CBaseEntity::predraw(void)
 
 	/* mouth flapping action */
 	bonecontrol5 = getchannellevel(this, CHAN_VOICE) * 20;
+	m_flBaseTime = frame1time;
 	frame1time += clframetime;
 	ProcessWordQue();
+
+	processmodelevents(modelindex, frame, m_flBaseTime,
+		frame1time, ModelEvent);
 
 	if (alpha > 0.0)
 		addentity(this);
@@ -368,6 +372,23 @@ CBaseEntity::customphysics(void)
 			nextthink = 0.0f;
 			think();
 		}
+	}
+}
+
+void
+CBaseEntity::ModelEvent(float fTimeStamp, int iCode, string sData)
+{
+	switch (iCode) {
+	case 1004:
+		sound(this, CHAN_BODY, sData, 1.0f, ATTN_NORM);
+		break;
+	/* things handled on the server-side */
+	case 1003:
+		break;
+	default:
+		dprint(sprintf("^3[CLIENT]^7 Unknown model-event code " \
+			"%i with data %s\n", iCode, sData));
+		break;
 	}
 }
 

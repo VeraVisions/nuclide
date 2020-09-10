@@ -18,9 +18,9 @@
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
-"rendermode"    Render-Mode the target changes to
-"renderamt"     Render-Alpha the target changes to
-"rendercolor"   Render-Color the target changes to
+"rendermode"    Render-Mode the target changes to.
+"renderamt"     Render-Alpha the target changes to.
+"rendercolor"   Render-Color the target changes to.
 
 Changes the visual appearance of a target.
 */
@@ -70,5 +70,5 @@ env_render::Trigger(entity act, int state)
 void
 env_render::env_render(void)
 {
-	CBaseEntity::CBaseEntity();
+	CBaseTrigger::CBaseTrigger();
 }

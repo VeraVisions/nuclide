@@ -287,6 +287,11 @@ CBaseEntity::SpawnInit(void)
 	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
 		SpawnKey(argv(i), argv(i+1));
 	}
+
+	/* some entity might involuntarily call SpawnInit as part of being
+	   a member of CBaseEntity. So we need to make sure that it doesn't
+	   inherit stuff from the last previously loaded entity */
+	__fullspawndata = "";
 }
 
 void
@@ -331,6 +336,9 @@ CBaseEntity::SpawnKey(string strKey, string strValue)
 	case "angles":
 		angles = stov(strValue);
 		break;
+	case "angle":
+		angles[1] = stof(strValue);
+		break;
 	case "solid":
 		solid = stof(strValue);
 		break;
@@ -372,7 +380,12 @@ CBaseEntity::SpawnKey(string strKey, string strValue)
 	case "model":
 		model = strValue;
 		break;
+	case "classname":
+	case "spawnflags":
+		break;
 	default:
+		print(sprintf("^3%s^7::SpawnKey:: Unknown key '%s' with value '%s'\n",
+		      classname, strKey, strValue));
 		break;
 	}
 }

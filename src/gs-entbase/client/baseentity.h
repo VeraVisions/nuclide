@@ -29,6 +29,9 @@ class CBaseEntity
 	int m_iSentenceCount;
 	int m_iSentencePos;
 
+	/* model events */
+	float m_flBaseTime;
+
 	void(void) CBaseEntity;
 	virtual void(void) Init;
 	virtual void(void) Initialized;
@@ -39,6 +42,7 @@ class CBaseEntity
 	virtual float(void) predraw;
 	virtual void(void) postdraw;
 	virtual void(void) customphysics;
+	virtual void(float, int, string) ModelEvent;
 
 #ifdef GS_RENDERFX
 	virtual void(void) RenderFXPass;

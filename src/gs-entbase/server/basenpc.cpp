@@ -486,7 +486,6 @@ CBaseNPC::Physics(void)
 		CheckRoute();
 		WalkRoute();
 		runstandardplayerphysics(this);
-		Footsteps_Update();
 		SetOrigin(origin);
 	}
 
@@ -504,7 +503,11 @@ CBaseNPC::Physics(void)
 		}
 	}
 
+	m_flBaseTime = frame1time;
 	frame1time += frametime;
+
+	processmodelevents(modelindex, frame, m_flBaseTime,
+		frame1time, ModelEvent);
 }
 
 void CBaseNPC::Respawn(void)

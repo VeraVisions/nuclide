@@ -183,6 +183,5 @@ CBaseTrigger::SpawnKey(string strKey, string strValue)
 void
 CBaseTrigger::CBaseTrigger(void)
 {
-	m_strMessage = "";
 	CBaseEntity::CBaseEntity();
 }

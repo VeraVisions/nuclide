@@ -106,6 +106,7 @@ class armoury_entity:CBaseEntity
 	void(void) armoury_entity;
 	virtual void(void) touch;
 	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -143,6 +144,31 @@ armoury_entity::Respawn(void)
 }
 
 void
+armoury_entity::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "count":
+		m_iCount = stoi(strValue);
+		break;
+	case "item":
+		int id = stoi(strValue);
+
+		if (id < 0 || id >= 19) {
+			print(sprintf("^1armoury_entity with invalid item %i. ignoring\n", m_iItem));
+			remove(this);
+			return;
+		}
+
+		m_iItem = g_cstrike_armouryitems[id];
+		model = sArmouryModels[id];
+		break;
+	default:
+		CBaseEntity::SpawnKey(strKey, strValue);
+		break;
+	}
+}
+
+void
 armoury_entity::armoury_entity(void)
 {
 	if (autocvar_fcs_nopickups == TRUE) {
@@ -151,28 +177,5 @@ armoury_entity::armoury_entity(void)
 	}
 
 	m_iCount = 1;
-
-	for (int i = 1; i < (tokenize(__fullspawndata) - 1); i += 2) {
-		switch (argv(i)) {
-		case "count":
-			m_iCount = stoi(argv(i+1));
-			break;
-		case "item":
-			int id = stoi(argv(i+1));
-
-			if (id < 0 || id >= 19) {
-				print(sprintf("^1armoury_entity with invalid item %i. ignoring\n", m_iItem));
-				remove(this);
-				return;
-			}
-
-			m_iItem = g_cstrike_armouryitems[id];
-			model = sArmouryModels[id];
-			break;
-		default:
-			break;
-		}
-	}
-
 	CBaseEntity::CBaseEntity();
 }

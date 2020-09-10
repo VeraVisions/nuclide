@@ -80,6 +80,7 @@ class monster_scientist:CBaseNPC
 	virtual int(void) AnimIdle;
 	virtual int(void) AnimWalk;
 	virtual int(void) AnimRun;
+	virtual void(string, string) SpawnKey;
 };
 
 int
@@ -153,6 +154,18 @@ monster_scientist::Respawn(void)
 }
 
 void
+monster_scientist::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "body":
+		SetBody(stoi(strValue) + 1);
+		break;
+	default:
+		CBaseEntity::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 monster_scientist::monster_scientist(void)
 {
 	Sound_Precache("monster_scientist.die");
@@ -187,48 +200,36 @@ monster_scientist::monster_scientist(void)
 	m_talkUnfollow = "!SC_WAIT";
 	m_talkFollow = "!SC_OK";
 	m_talkStopFollow = "!SC_STOP";
-
-	/* by default a random character etc. is chosen */
-	int body = -1;
-	for (int i = 1; i < (tokenize(__fullspawndata)-1); i += 2) {
-		switch (argv(i)) {
-		case "body":
-			body = stoi(argv(i+1)) + 1;
-			SetBody(body);
-			break;
-		default:
-			break;
-		}
-	}
+	m_iBody = -1;
 
 	model = "models/scientist.mdl";
 	base_mins = [-16,-16,0];
 	base_maxs = [16,16,72];
 	base_health = Skill_GetValue("scientist_health");
 
+	CBaseNPC::CBaseNPC();
+
 	/* has the body not been overriden, etc. choose a character for us */
-	if (body == -1) {
+	if (m_iBody == -1) {
 		SetBody((int)floor(random(1,5)));
 	}
 
 	switch (m_iBody) {
-		case 1:
-			m_flPitch = 105;
-			netname = "Walter";
-			break;
-		case 2:
-			m_flPitch = 100;
-			netname = "Einstein";
-			break;
-		case 3:
-			m_flPitch = 95;
-			netname = "Luther";
-			SetSkin(1);
-			break;
-		default:
-			m_flPitch = 100;
-			netname = "Slick";
+	case 1:
+		m_flPitch = 105;
+		netname = "Walter";
+		break;
+	case 2:
+		m_flPitch = 100;
+		netname = "Einstein";
+		break;
+	case 3:
+		m_flPitch = 95;
+		netname = "Luther";
+		SetSkin(1);
+		break;
+	default:
+		m_flPitch = 100;
+		netname = "Slick";
 	}
-
-	CBaseNPC::CBaseNPC();
 }

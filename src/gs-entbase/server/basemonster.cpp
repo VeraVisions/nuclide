@@ -85,6 +85,9 @@ class CBaseMonster:CBaseEntity
 	vector m_vecSequenceAngle;
 	vector m_vecTurnAngle;
 
+	/* model events */
+	float m_flBaseTime;
+
 	/* attack/alliance system */
 	entity m_eEnemy;
 	float m_flFOV;
@@ -109,6 +112,7 @@ class CBaseMonster:CBaseEntity
 	virtual void(void) IdleNoise;
 	virtual void(void) Gib;
 	virtual void(string) Sound;
+	virtual void(float, int, string) ModelEvent;
 
 	/* see/hear subsystem */
 	float m_flSeeTime;
@@ -497,6 +501,31 @@ CBaseMonster::NewRoute(vector destination)
 	if (!m_iNodes) {
 		route_calculate(this, destination, 0, NewRoute_RouteCB);
 		m_vecLastNode = destination;
+	}
+}
+
+void
+CBaseMonster::ModelEvent(float fTimeStamp, int iCode, string sData)
+{
+	switch (iCode) {
+	case 1003:
+		for (entity f = world; (f = find(f, ::targetname, sData));) {
+			CBaseTrigger trigger = (CBaseTrigger)f;
+			if (trigger.Trigger != __NULL__) {
+				trigger.Trigger(this, TRIG_TOGGLE);
+				dprint(sprintf("^2%s^7::^3ModelEvent^7: " \
+					"Calling trigger '%s'\n",
+					classname, sData));
+			}
+		}
+		break;
+	/* things handled on the client-side */
+	case 1004:
+		break;
+	default:
+		dprint(sprintf("^3[SERVER]^7 Unknown model-event code " \
+			"%i with data %s\n", iCode, sData));
+		break;
 	}
 }
 

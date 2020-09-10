@@ -41,23 +41,27 @@ class monster_scientist_dead:CBaseMonster
 	virtual void(void) Hide;
 	virtual void(void) Respawn;
 	virtual void(void) Gib;
+	virtual void(string, string) SpawnKey;
 };
 
-void monster_scientist_dead::Gib(void)
+void
+monster_scientist_dead::Gib(void)
 {
 	takedamage = DAMAGE_NO;
 	FX_GibHuman(this.origin);
 	Hide();
 }
 
-void monster_scientist_dead::Hide(void)
+void
+monster_scientist_dead::Hide(void)
 {
 	SetModel("");
 	solid = SOLID_NOT;
 	movetype = MOVETYPE_NONE;
 }
 
-void monster_scientist_dead::Respawn(void)
+void
+monster_scientist_dead::Respawn(void)
 {
 	v_angle[0] = Math_FixDelta(m_oldAngle[0]);
 	v_angle[1] = Math_FixDelta(m_oldAngle[1]);
@@ -101,27 +105,27 @@ void monster_scientist_dead::Respawn(void)
 	droptofloor();
 }
 
-void monster_scientist_dead::monster_scientist_dead(void)
+void
+monster_scientist_dead::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "pose":
+		m_iPose = stoi(strValue);
+		break;
+	case "body":
+		SetBody(stoi(strValue) + 1);
+		break;
+	case "skin":
+		SetSkin(stoi(strValue));
+		break;
+	default:
+		CBaseMonster::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+monster_scientist_dead::monster_scientist_dead(void)
 {
 	model = "models/scientist.mdl";
-	
-	for (int i = 1; i < (tokenize(__fullspawndata)-1); i += 2) {
-		switch (argv(i)) {
-		case "pose":
-			m_iPose = stoi(argv(i+1));
-			break;
-		case "body":
-			m_iBody = stoi(argv(i+1)) + 1;
-			break;
-		case "skin":
-			skin = stoi(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
-	
-	CBaseEntity::CBaseEntity();
-	precache_model(m_oldModel);
-	Respawn();
+	CBaseMonster::CBaseMonster();
 }

@@ -42,6 +42,7 @@ class monster_sitting_scientist:CBaseMonster
 	virtual void(void) Respawn;
 	virtual void(void) Death;
 	virtual void(void) Gib;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -92,51 +93,50 @@ monster_sitting_scientist::Respawn(void)
 }
 
 void
+monster_sitting_scientist::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "pose":
+		m_iPose = stoi(strValue);
+		break;
+	case "body":
+		SetBody(stoi(strValue) + 1);
+		break;
+	case "skin":
+		SetSkin(stoi(strValue));
+		break;
+	default:
+		CBaseMonster::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 monster_sitting_scientist::monster_sitting_scientist(void)
 {
 	model = "models/scientist.mdl";
-	
-	for (int i = 1; i < (tokenize(__fullspawndata)-1); i += 2) {
-		switch (argv(i)) {
-		case "pose":
-			m_iPose = stoi(argv(i+1));
-			break;
-		case "body":
-			m_iBody = stoi(argv(i+1)) + 1;
-			break;
-		case "skin":
-			skin = stoi(argv(i+1));
-			break;
-		default:
-			break;
-		}
-	}
+	CBaseMonster::CBaseMonster();
 
+	/* has the body not been overriden, etc. choose a character for us */
 	if (m_iBody == -1) {
-		/* This stuff needs to be persistent because we can't guarantee that
-		* the client-side geomset refresh happens. Don't shove this into Respawn */
-		m_iBody = floor(random(1,5));
+		SetBody((int)floor(random(1,5)));
 	}
 
 	switch (m_iBody) {
-		case 1:
-			m_flPitch = 105;
-			netname = "Walter";
-			break;
-		case 2:
-			m_flPitch = 100;
-			netname = "Einstein";
-			break;
-		case 3:
-			m_flPitch = 95;
-			netname = "Luther";
-			skin = 1;
-			break;
-		default:
-			m_flPitch = 100;
-			netname = "Slick";
+	case 1:
+		m_flPitch = 105;
+		netname = "Walter";
+		break;
+	case 2:
+		m_flPitch = 100;
+		netname = "Einstein";
+		break;
+	case 3:
+		m_flPitch = 95;
+		netname = "Luther";
+		SetSkin(1);
+		break;
+	default:
+		m_flPitch = 100;
+		netname = "Slick";
 	}
-
-	CBaseEntity::CBaseEntity();
-	precache_model(m_oldModel);
 }
