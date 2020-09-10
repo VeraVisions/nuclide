@@ -89,7 +89,7 @@ scripted_sentence::SpawnKey(string strKey, string strValue)
 		m_strSpeaker = strValue;
 		break;
 	case "sentence":
-		m_strSentence = strValue;
+		m_strSentence = strtoupper(strValue);
 		break;
 	case "pitch":
 		m_flPitch = stof(strValue);

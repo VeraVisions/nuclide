@@ -134,7 +134,7 @@ Sentences_Init(void)
 		for (i=0; i < c; i++) {
 			/* first entry is the id, prefix with ! as well */
 			if (i==0) {
-				g_sentences[x].m_strID = strcat("!", argv(0));
+				g_sentences[x].m_strID = strtoupper(strcat("!", argv(0)));
 			} else {
 				if (i == 1) {
 					g_sentences[x].m_strSamples = sprintf("%s", argv(i));

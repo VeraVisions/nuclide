@@ -77,7 +77,7 @@ Sentences_Init(void)
 		g_sentences_count++;
 #endif
 
-		g_sentences[x] = strcat("!", argv(0));
+		g_sentences[x] = strtoupper(strcat("!", argv(0)));
 	}
 
 	fclose(fs_sentences);
