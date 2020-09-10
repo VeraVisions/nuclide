@@ -56,7 +56,6 @@ class func_door_rotating:CBaseTrigger
 	vector m_vecPos1;
 	vector m_vecPos2;
 	vector m_vecMoveDir;
-	virtual void(void) m_pMove = 0;
 	
 	void(void) func_door_rotating;
 	virtual void(void) Respawn;
@@ -70,7 +69,6 @@ class func_door_rotating:CBaseTrigger
 	virtual void(void) Blocked;
 	virtual void(void) SetMovementDirection;
 	virtual void(vector angle, void(void) func) RotToDest;
-	virtual void(void) RotToDest_End;
 	virtual void(string, string) SpawnKey;
 
 #ifdef GS_BULLET_PHYSICS
@@ -91,6 +89,10 @@ void func_door_rotating::Unhinge(void)
 
 void func_door_rotating::Arrived(void)
 {
+	SetAngles(m_vecDest);
+	avelocity = [0,0,0];
+	nextthink = 0.0f;
+
 	m_iState = STATE_RAISED;
 
 	if (m_strSndStop) {
@@ -112,6 +114,10 @@ void func_door_rotating::Arrived(void)
 
 void func_door_rotating::Returned(void)
 {
+	SetAngles(m_vecDest);
+	avelocity = [0,0,0];
+	nextthink = 0.0f;
+
 	if (!(spawnflags & SF_ROT_USE)) {
 		touch = Touch;
 	}
@@ -272,14 +278,6 @@ void func_door_rotating::SetMovementDirection(void)
 	}
 }
 
-void func_door_rotating::RotToDest_End(void)
-{
-	SetAngles(m_vecDest);
-	avelocity = [0,0,0];
-	nextthink = -1;
-	m_pMove();
-}
-
 void func_door_rotating::RotToDest(vector vDestAngle, void(void) func)
 {
 	vector vecAngleDifference;
@@ -296,8 +294,7 @@ void func_door_rotating::RotToDest(vector vDestAngle, void(void) func)
 	flTravelTime = (flTravelLength / m_flSpeed);
 	avelocity = (vecAngleDifference * (1 / flTravelTime));
 	m_vecDest = vDestAngle;
-	m_pMove = func;
-	think = RotToDest_End;
+	think = func;
 	nextthink = (ltime + flTravelTime);
 }
 
@@ -316,8 +313,7 @@ void func_door_rotating::Respawn(void)
 	SetModel(m_oldModel);
 	SetOrigin(m_oldOrigin);
 	think = __NULL__;
-	nextthink = 0;
-	m_pMove = 0;
+	nextthink = 0.0f;
 	avelocity = [0,0,0];
 
 	blocked = Blocked;

@@ -46,37 +46,6 @@ When SF_BTT_TOUCH_ONLY is set, the use key/button cannot be used to interact
 with the button, it has to collide against a player.
 */
 
-/* compatibility */
-string g_q1button_src[4] = {
-	"buttons/airbut1.wav",
-	"buttons/switch21.wav",
-	"buttons/switch02.wav",
-	"buttons/switch04.wav"
-};
-string g_hlbutton_sfx[21] = {
-	"common/null.wav",
-	"buttons/button1.wav",
-	"buttons/button2.wav",
-	"buttons/button3.wav",
-	"buttons/button4.wav",
-	"buttons/button5.wav",
-	"buttons/button6.wav",
-	"buttons/button7.wav",
-	"buttons/button8.wav",
-	"buttons/button9.wav",
-	"buttons/button10.wav",
-	"buttons/button11.wav",
-	"buttons/latchlocked1.wav",
-	"buttons/latchunlocked1.wav",
-	"buttons/lightswitch2.wav",
-	"buttons/lever1.wav",
-	"buttons/lever2.wav",
-	"buttons/lever3.wav",
-	"buttons/lever4.wav",
-	"buttons/lever5.wav",
-	"buttons/button9.wav"
-};
-
 enumflags
 {
 	SF_BTT_NOMOVE,
@@ -118,10 +87,7 @@ class func_button:CBaseTrigger
 	float m_flWait;
 	float m_flDelay;
 	vector m_vecMoveDir;
-	virtual void(void) m_pMove = 0;
 
-	/* full-path versus sound-shaders */
-	int m_iSoundCompat;
 	string m_strSndPressed;
 	string m_strSndUnpressed;
 
@@ -138,13 +104,16 @@ class func_button:CBaseTrigger
 	
 	virtual void(void) SetMovementDirection;
 	virtual void(vector, void(void)) MoveToDestination;
-	virtual void(void) MoveToDestination_End;
 	virtual void(string, string) SpawnKey;
 };
 
 void
 func_button::Arrived(void)
 {
+	SetOrigin(m_vecDest);
+	velocity = [0,0,0];
+	nextthink = 0;
+
 	m_iState = STATE_RAISED;
 	
 	if (spawnflags & SF_BTT_TOUCH_ONLY) {
@@ -166,6 +135,10 @@ func_button::Arrived(void)
 void
 func_button::Returned(void)
 {
+	SetOrigin(m_vecDest);
+	velocity = [0,0,0];
+	nextthink = 0;
+
 	if (spawnflags & SF_BTT_TOUCH_ONLY) {
 		touch = Touch;
 	}
@@ -182,10 +155,7 @@ func_button::MoveBack(void)
 	m_iValue = 0;
 
 	if (m_strSndUnpressed) {
-		if (m_iSoundCompat)
-			sound(this, CHAN_VOICE, m_strSndUnpressed, 1.0, ATTN_NORM);
-		else
-			Sound_Play(this, CHAN_VOICE, m_strSndUnpressed);
+		Sound_Play(this, CHAN_VOICE, m_strSndUnpressed);
 	}
 
 	if (m_vecPos2 != m_vecPos1) {
@@ -237,12 +207,8 @@ func_button::Trigger(entity act, int state)
 		return;
 	}
 
-	if (m_strSndPressed) {
-		if (m_iSoundCompat)
-			sound(this, CHAN_VOICE, m_strSndPressed, 1.0, ATTN_NORM);
-		else
-			Sound_Play(this, CHAN_VOICE, m_strSndPressed);
-	}
+	if (m_strSndPressed)
+		Sound_Play(this, CHAN_VOICE, m_strSndPressed);
 
 	MoveAway();
 
@@ -308,15 +274,6 @@ func_button::SetMovementDirection(void)
 }
 
 void
-func_button::MoveToDestination_End(void)
-{
-	SetOrigin(m_vecDest);
-	velocity = [0,0,0];
-	nextthink = -1;
-	m_pMove();
-}
-
-void
 func_button::MoveToDestination(vector vecDest, void(void) func)
 {
 	vector vecDifference;
@@ -326,9 +283,8 @@ func_button::MoveToDestination(vector vecDest, void(void) func)
 		objerror("No speed defined for moving entity! Will not divide by zero.");
 	}
 
-	m_pMove = func;
 	m_vecDest = vecDest;
-	think = MoveToDestination_End;
+	think = func;
 
 	if (vecDest == origin) {
 		velocity = [0,0,0];
@@ -417,10 +373,7 @@ func_button::SpawnKey(string strKey, string strValue)
 		break;
 		/* compatibility */
 	case "sounds":
-		int sfx;
-		sfx = stoi(strValue);
-		m_strSndPressed = g_hlbutton_sfx[sfx];
-		m_iSoundCompat = TRUE;
+		m_strSndPressed = sprintf("func_button.hlsfx_%i", stoi(strValue) + 1i);
 		break;
 	default:
 		CBaseTrigger::SpawnKey(strKey, strValue);
@@ -431,18 +384,10 @@ void
 func_button::func_button(void)
 {
 	CBaseTrigger::CBaseTrigger();
-	
-	if (m_strSndPressed) {
-		if (m_iSoundCompat)
-			precache_sound(m_strSndPressed);
-		else
-			Sound_Precache(m_strSndPressed);
-	}
 
-	if (m_strSndUnpressed) {
-		if (m_iSoundCompat)
-			precache_sound(m_strSndUnpressed);
-		else
-			Sound_Precache(m_strSndUnpressed);
-	}
+	if (m_strSndPressed)
+		Sound_Precache(m_strSndPressed);
+
+	if (m_strSndUnpressed)
+		Sound_Precache(m_strSndUnpressed);
 }

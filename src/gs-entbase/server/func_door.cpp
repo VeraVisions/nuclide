@@ -92,7 +92,6 @@ class func_door:CBaseTrigger
 	void(void) func_door;
 	virtual void(void) SetMovementDirection;
 	virtual void(vector, void(void) func) MoveToDestination;
-	virtual void(void) MoveToDestination_End;
 	virtual void(void) MoveAway;
 	virtual void(void) MoveBack;
 	virtual void(void) Arrived;
@@ -103,7 +102,6 @@ class func_door:CBaseTrigger
 	virtual void(void) Touch;
 	virtual void(void) Use;
 	virtual void(string, string) SpawnKey;
-	virtual void(void) m_pMove = 0;
 };
 
 void
@@ -116,6 +114,10 @@ func_door::Use(void)
 void
 func_door::Arrived(void)
 {
+	SetOrigin(m_vecDest);
+	velocity = [0,0,0];
+	nextthink = 0.0f;
+
 	m_iState = DOORSTATE_RAISED;
 
 	if (m_strSndStop) {
@@ -148,6 +150,10 @@ func_door::Arrived(void)
 void
 func_door::Returned(void)
 {
+	SetOrigin(m_vecDest);
+	velocity = [0,0,0];
+	nextthink = 0.0f;
+
 	if (m_strSndStop) {
 		Sound_Play(this, CHAN_VOICE, m_strSndStop);
 	} else {
@@ -287,15 +293,6 @@ func_door::SetMovementDirection(void)
 }
 
 void
-func_door::MoveToDestination_End(void)
-{
-	SetOrigin(m_vecDest);
-	velocity = [0,0,0];
-	nextthink = -1;
-	m_pMove();
-}
-
-void
 func_door::MoveToDestination(vector vecDest, void(void) func)
 {
 	vector vecDifference;
@@ -307,9 +304,8 @@ func_door::MoveToDestination(vector vecDest, void(void) func)
 		return;
 	}
 
-	m_pMove = func;
 	m_vecDest = vecDest;
-	think = MoveToDestination_End;
+	think = func;
 
 	if (vecDest == origin) {
 		velocity = [0,0,0];
@@ -353,8 +349,7 @@ func_door::Respawn(void)
 	SetOrigin(m_oldOrigin);
 	blocked = Blocked;
 	think = __NULL__;
-	nextthink = 0;
-	m_pMove = 0;
+	nextthink = 0.0f;
 
 	/* FIXME: Is this correct? */
 	if (m_flWait == -1) {
