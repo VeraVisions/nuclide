@@ -45,16 +45,33 @@ class scripted_sentence:CBaseTrigger
 void
 scripted_sentence::Trigger(entity act, int unused)
 {
-	entity speaker = find(world, ::targetname, m_strSpeaker);
+	entity spe;
+	spe = find(world, ::targetname, m_strSpeaker);
 
-	if (!speaker) {
+	if (!spe) {
+		/* time to look for a classname instead */
+		float closest = 9999999;
+
+		for (entity c = world; (c = find(c, ::classname, m_strSpeaker));) {
+			float rad;
+			rad = vlen(origin - c.origin);
+
+			/* pick the closest entity */
+			if (rad < closest) {
+				spe = c;
+				closest = rad;
+			}
+		}
+	}
+
+	if (!spe) {
 		print(sprintf("^1scripted_sentence::^3Trigger^7: Couldn't find %s!\n", m_strSpeaker));
 		return;
 	}
 
 	dprint(sprintf("^2scripted_sentence::^3Trigger^7: %s on %s\n", m_strSentence, m_strSpeaker));
 
-	CBaseNPC npc = (CBaseNPC)speaker;
+	CBaseNPC npc = (CBaseNPC)spe;
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_SENTENCE);
 	WriteEntity(MSG_MULTICAST, npc);

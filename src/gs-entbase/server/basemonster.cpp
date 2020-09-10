@@ -339,17 +339,11 @@ CBaseMonster::FreeState(void)
 
 	/* trigger when required */
 	if (m_strRouteEnded) {
-		CBaseTrigger trigger = 0;
-		trigger = (CBaseTrigger)find(trigger, ::targetname, m_strRouteEnded);
-		if (!trigger) {
-			dprint(sprintf("^1CBaseMonster::^3FreeState^7: %s doesn't exist. Won't trigger\n", m_strRouteEnded));
-		}
-
-		if (trigger.Trigger != __NULL__) {
-			dprint(sprintf("^2CBaseMonster::^3FreeState^7: %s triggered %f\n", m_strRouteEnded, time));
-			trigger.Trigger(this, TRIG_TOGGLE);
-		} else {
-			dprint(sprintf("^1CBaseMonster::^3FreeState^7: %s not a valid trigger\n", m_strRouteEnded));
+		for (entity f = world; (f = find(f, ::targetname, m_strRouteEnded));) {
+			CBaseTrigger trigger = (CBaseTrigger)f;
+			if (trigger.Trigger != __NULL__) {
+				trigger.Trigger(this, TRIG_TOGGLE);
+			}
 		}
 	}
 

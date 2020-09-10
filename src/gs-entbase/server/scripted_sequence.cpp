@@ -93,46 +93,20 @@ class scripted_sequence:CBaseTrigger
 
 	void(void) scripted_sequence;
 	virtual void(entity, int) Trigger;
+	virtual void(entity) RunOnEntity;
 	virtual void(void) InitIdle;
 	virtual void(void) Respawn;
+	virtual void(void) touch;
 	virtual void(string, string) SpawnKey;
 };
 
 void
-scripted_sequence::Trigger(entity act, int unused)
-{
+scripted_sequence::RunOnEntity(entity targ)
+{	
 	CBaseMonster f;
 	float duration;
 
-	if (!m_iEnabled) {
-		return;
-	}
-
-	/* aaaaand it's gone */
-	if (!(spawnflags & SSFL_REPEATABLE)) {
-		m_iEnabled = FALSE;
-	}
-
-	dprint(sprintf("^2scripted_sequence::^3Trigger^7: with spawnflags %d\n", spawnflags));
-	f = (CBaseMonster)find(world, ::targetname, m_strMonster);
-
-	/* target doesn't exist/hasn't spawned */
-	if (!f) {
-		/* time to look for a classname instead */
-		for (entity c = world; (c = find(c, ::classname, m_strMonster));) {
-			/* within radius */
-			if (vlen(origin - c.origin) < m_flSearchRadius) {
-				f = (CBaseMonster)c;
-				break;
-			}
-		}
-
-		/* cancel out. this trigger is broken. */
-		if (!f) {
-			dprint(sprintf("^1scripted_sequence::^3Trigger^7: Unknown target %s\n", m_strMonster));
-			return;
-		}
-	}
+	f = (CBaseMonster)targ;
 
 	dprint(sprintf("\tName: %s\n", targetname));
 	dprint(sprintf("\tTarget: %s\n", m_strMonster));
@@ -212,6 +186,40 @@ scripted_sequence::Trigger(entity act, int unused)
 }
 
 void
+scripted_sequence::Trigger(entity act, int unused)
+{
+	CBaseMonster f;
+
+	if (!m_iEnabled)
+		return;
+
+	dprint(sprintf("^2scripted_sequence::^3Trigger^7: with spawnflags %d\n", spawnflags));
+	f = (CBaseMonster)find(world, ::targetname, m_strMonster);
+
+	/* target doesn't exist/hasn't spawned */
+	if (!f) {
+		for (entity c = world; (c = find(c, ::classname, m_strMonster));) {
+			/* within radius */
+			if (vlen(origin - c.origin) < m_flSearchRadius) {
+				f = (CBaseMonster)c;
+				break;
+			}
+		}
+
+		/* cancel out. this trigger is not yet ready. */
+		if (!f) {
+			return;
+		}
+	}
+
+	/* aaaaand it's gone */
+	if (!(spawnflags & SSFL_REPEATABLE))
+		m_iEnabled = FALSE;
+
+	RunOnEntity((entity)f);
+}
+
+void
 scripted_sequence::InitIdle(void)
 {
 	CBaseMonster f;
@@ -244,10 +252,35 @@ scripted_sequence::InitIdle(void)
 }
 
 void
+scripted_sequence::touch(void)
+{
+	if (other.classname != m_strMonster)
+		return;
+
+	if (!m_iEnabled)
+		return;
+
+	/* aaaaand it's gone */
+	if (!(spawnflags & SSFL_REPEATABLE))
+		m_iEnabled = FALSE;
+
+	RunOnEntity(other);
+}
+
+void
 scripted_sequence::Respawn(void)
 {
 	m_iEnabled = TRUE;
 	target = m_oldstrTarget;
+	
+	if (m_flSearchRadius) {
+		SetSolid(SOLID_TRIGGER);
+		mins[0] = mins[1] = mins[2] = -(m_flSearchRadius/2);
+		maxs[0] = maxs[1] = maxs[2] = (m_flSearchRadius/2);
+		setsize(this, mins, maxs);
+	} else {
+		SetSolid(SOLID_NOT);
+	}
 
 	if (m_strIdleAnim) {
 		think = InitIdle;
@@ -259,9 +292,6 @@ void
 scripted_sequence::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "target":
-		target = strValue;
-		break;
 	case "m_iszEntity":
 		m_strMonster = strValue;
 		break;
@@ -288,7 +318,6 @@ void
 scripted_sequence::scripted_sequence(void)
 {
 	CBaseTrigger::CBaseTrigger();
-	m_oldstrTarget = target;
 }
 
 CLASSEXPORT(aiscripted_sequence, scripted_sequence)

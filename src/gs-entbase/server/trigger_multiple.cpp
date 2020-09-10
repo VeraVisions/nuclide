@@ -50,6 +50,11 @@ trigger_multiple::touch(void)
 	if (GetMaster() == FALSE)
 		return;
 
+	if (spawnflags & TM_NOCLIENTS && other.flags & FL_CLIENT)
+		return;
+	if (!(spawnflags & TM_MONSTERS) && other.flags & FL_MONSTER)
+		return;
+
 	if (Rules_IsTeamPlay() == TRUE) {
 		if (m_iTeam > 0 && eActivator.team != m_iTeam + 1) {
 			return;

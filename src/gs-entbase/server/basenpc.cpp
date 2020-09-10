@@ -445,6 +445,10 @@ CBaseNPC::Physics(void)
 	input_timelength = frametime;
 	input_angles = v_angle;
 
+	if (m_iSequenceState != SEQUENCESTATE_NONE) {
+		m_eFollowing = __NULL__;
+	}
+
 	/* override whatever we did above with this */
 	if (m_iSequenceState == SEQUENCESTATE_ENDING) {
 		input_angles = v_angle = angles = m_vecSequenceAngle;

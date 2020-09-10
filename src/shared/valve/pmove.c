@@ -32,13 +32,13 @@ void GamePMove_Fall(player target, float impactspeed)
 #ifdef SERVER
 		float fFallDamage = (impactspeed - 580) * (100 / (1024 - 580));
 		Damage_Apply(target, world, fFallDamage, 0, DMG_FALL);
-		Sound_Play(target, CHAN_AUTO, "player.fall");
+		Sound_Play(target, CHAN_VOICE, "player.fall");
 #endif
 		target.punchangle += [15,0,(input_sequence & 1) ? 15 : -15];
 	} else if (impactspeed > 400) {
 		target.punchangle += [15,0,0];
 #ifdef SERVER
-		Sound_Play(target, CHAN_AUTO, "player.lightfall");
+		Sound_Play(target, CHAN_VOICE, "player.lightfall");
 #endif
 	}
 }
