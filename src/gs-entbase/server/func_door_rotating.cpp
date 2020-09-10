@@ -41,9 +41,8 @@ enumflags
 class func_door_rotating:CBaseTrigger
 {
 	string targetClose;
-
-	int m_iMoveSnd;
-	int m_iStopSnd;
+	string m_strSndMove;
+	string m_strSndStop;
 	int m_iDamage;
 	int m_iLocked;
 	float m_flDistance;
@@ -94,10 +93,10 @@ void func_door_rotating::Arrived(void)
 {
 	m_iState = STATE_RAISED;
 
-	if (m_iStopSnd > 0 && m_iStopSnd <= 8) {
-		sound(this, CHAN_VOICE, sprintf("doors/doorstop%i.wav", m_iStopSnd), 1.0, ATTN_NORM);
+	if (m_strSndStop) {
+		Sound_Play(this, CHAN_VOICE, m_strSndStop);
 	} else {
-		sound(this, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
+		sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
 	}
 
 	if (!(spawnflags & SF_ROT_USE)) {
@@ -117,6 +116,12 @@ void func_door_rotating::Returned(void)
 		touch = Touch;
 	}
 
+	if (m_strSndStop) {
+		Sound_Play(this, CHAN_VOICE, m_strSndStop);
+	} else {
+		sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
+	}
+
 	if (targetClose)
 	for (entity f = world; (f = find(f, ::targetname, targetClose));) {
 		CBaseTrigger trigger = (CBaseTrigger)f;
@@ -131,10 +136,11 @@ void func_door_rotating::Returned(void)
 void func_door_rotating::Back(void)
 {
 	if (!(spawnflags & SF_DOOR_SILENT)) {
-		if (m_iMoveSnd > 0 && m_iMoveSnd <= 10) {
-			sound(this, CHAN_VOICE, sprintf("doors/doormove%i.wav", m_iMoveSnd), 1.0, ATTN_NORM);
+		
+		if (m_strSndMove) {
+			Sound_Play(this, CHAN_VOICE, m_strSndMove);
 		} else {
-			sound(this, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
+			sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
 		}
 	}
 
@@ -155,10 +161,10 @@ void func_door_rotating::Away(void)
 	}
 
 	if (!(spawnflags & SF_DOOR_SILENT)) {
-		if (m_iMoveSnd > 0 && m_iMoveSnd <= 10) {
-			sound(this, CHAN_VOICE, sprintf("doors/doormove%i.wav", m_iMoveSnd), 1.0, ATTN_NORM);
+		if (m_strSndMove) {
+			Sound_Play(this, CHAN_VOICE, m_strSndMove);
 		} else {
-			sound(this, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
+			sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
 		}
 	}
   
@@ -354,6 +360,7 @@ void func_door_rotating::Respawn(void)
 void
 func_door_rotating::SpawnKey(string strKey, string strValue)
 {
+	int x = 0;
 	switch (strKey) {
 	case "speed":
 		m_flSpeed = stof(strValue);
@@ -361,11 +368,20 @@ func_door_rotating::SpawnKey(string strKey, string strValue)
 	/*case "lip":
 		m_flLip = stof(strValue);
 		break;*/
+	case "noise1":
+		m_strSndMove = strValue;
+		break;
+	case "noise2":
+		m_strSndStop = strValue;
+		break;
+	/* GoldSrc compat */
 	case "movesnd":
-		m_iMoveSnd = stoi(strValue);
+		x = stoi(strValue);
+		m_strSndMove = sprintf("func_door_rotating.move_%i", x);
 		break;
 	case "stopsnd":
-		m_iStopSnd = stoi(strValue);
+		x = stoi(strValue);
+		m_strSndStop = sprintf("func_door_rotating.stop_%i", x);
 		break;
 	case "distance":
 		m_flDistance = stof(strValue);
@@ -395,17 +411,8 @@ void func_door_rotating::func_door_rotating(void)
 
 	CBaseTrigger::CBaseTrigger();
 
-	if (spawnflags & SF_DOOR_SILENT)
-		return;
-
-	/* TODO: Add support for custom sounds */
-	if (m_iMoveSnd > 0 && m_iMoveSnd <= 10)
-		precache_sound(sprintf("doors/doormove%i.wav", m_iMoveSnd));
-	else
-		precache_sound("common/null.wav");
-
-	if (m_iStopSnd > 0 && m_iStopSnd <= 8)
-		precache_sound(sprintf("doors/doorstop%i.wav", m_iStopSnd));
-	else
-		precache_sound("common/null.wav");
+	if (m_strSndMove)
+		Sound_Precache(m_strSndMove);
+	if (m_strSndStop)
+		Sound_Precache(m_strSndStop);
 }
