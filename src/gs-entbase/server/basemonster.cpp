@@ -334,19 +334,24 @@ CBaseMonster::ClearRoute(void)
 void
 CBaseMonster::FreeState(void)
 {
+	string to_trigger;
 	m_flSequenceEnd = 0;
 	m_iSequenceState = SEQUENCESTATE_NONE;
 
+	/* we're clearing m_strRouteEnded early, because m_strRouteEnded
+	   might change when .Trigger is executed. It could be another scripted
+	   sequence triggering another sequence. Hence the caching */
+	to_trigger = m_strRouteEnded;
+	m_strRouteEnded = __NULL__;
+		
 	/* trigger when required */
-	if (m_strRouteEnded) {
-		for (entity f = world; (f = find(f, ::targetname, m_strRouteEnded));) {
+	if (to_trigger) {
+		for (entity f = world; (f = find(f, ::targetname, to_trigger));) {
 			CBaseTrigger trigger = (CBaseTrigger)f;
 			if (trigger.Trigger != __NULL__) {
 				trigger.Trigger(this, TRIG_TOGGLE);
 			}
 		}
-		/* we're done triggering things! give it up! */
-		m_strRouteEnded = "";
 	}
 
 	if (m_iSequenceRemove) {

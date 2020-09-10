@@ -108,6 +108,13 @@ scripted_sequence::RunOnEntity(entity targ)
 
 	f = (CBaseMonster)targ;
 
+	if (!m_iEnabled)
+		return;
+
+	/* aaaaand it's gone */
+	if (!(spawnflags & SSFL_REPEATABLE))
+		m_iEnabled = FALSE;
+
 	dprint(sprintf("\tName: %s\n", targetname));
 	dprint(sprintf("\tTarget: %s\n", m_strMonster));
 	dprint(sprintf("\tStarted: %f\n", time));
@@ -125,6 +132,9 @@ scripted_sequence::RunOnEntity(entity targ)
 	if (target) {
 		dprint(sprintf("\tTrigger when finished: %s\n", target));
 		f.m_strRouteEnded = target;
+	} else {
+		/* make sure we're not about to trigger _anything_ */
+		f.m_strRouteEnded = __NULL__;
 	}
 
 	/* mark us as having been used, for multisources. */
@@ -190,9 +200,6 @@ scripted_sequence::Trigger(entity act, int unused)
 {
 	CBaseMonster f;
 
-	if (!m_iEnabled)
-		return;
-
 	dprint(sprintf("^2scripted_sequence::^3Trigger^7: with spawnflags %d\n", spawnflags));
 	f = (CBaseMonster)find(world, ::targetname, m_strMonster);
 
@@ -212,9 +219,9 @@ scripted_sequence::Trigger(entity act, int unused)
 		}
 	}
 
-	/* aaaaand it's gone */
-	if (!(spawnflags & SSFL_REPEATABLE))
-		m_iEnabled = FALSE;
+	/* we already ARE on a sequence. */
+	if (f.m_iSequenceState != SEQUENCESTATE_NONE)
+		return;
 
 	RunOnEntity((entity)f);
 }
@@ -254,15 +261,16 @@ scripted_sequence::InitIdle(void)
 void
 scripted_sequence::touch(void)
 {
+	CBaseMonster f;
+
 	if (other.classname != m_strMonster)
 		return;
 
-	if (!m_iEnabled)
-		return;
+	f = (CBaseMonster)other;
 
-	/* aaaaand it's gone */
-	if (!(spawnflags & SSFL_REPEATABLE))
-		m_iEnabled = FALSE;
+	/* we already ARE on a sequence. */
+	if (f.m_iSequenceState != SEQUENCESTATE_NONE)
+		return;
 
 	RunOnEntity(other);
 }
