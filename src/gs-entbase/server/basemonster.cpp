@@ -345,6 +345,8 @@ CBaseMonster::FreeState(void)
 				trigger.Trigger(this, TRIG_TOGGLE);
 			}
 		}
+		/* we're done triggering things! give it up! */
+		m_strRouteEnded = "";
 	}
 
 	if (m_iSequenceRemove) {
