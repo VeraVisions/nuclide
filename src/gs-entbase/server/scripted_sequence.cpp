@@ -219,10 +219,6 @@ scripted_sequence::Trigger(entity act, int unused)
 		}
 	}
 
-	/* we already ARE on a sequence. */
-	if (f.m_iSequenceState != SEQUENCESTATE_NONE)
-		return;
-
 	RunOnEntity((entity)f);
 }
 
