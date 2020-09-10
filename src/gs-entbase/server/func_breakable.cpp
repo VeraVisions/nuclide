@@ -133,29 +133,30 @@ func_breakable::Pain(void)
 	}
 
 	switch (m_iMaterial) {
-		case BREAKMT_GLASS:
-		case BREAKMT_COMPUTER:
-		case BREAKMT_GLASS_UNBREAKABLE:
-			sound(self, CHAN_VOICE, sprintf("debris/glass%d.wav", random(1, 4)), 1.0, ATTN_NORM);
-			break;
-		case BREAKMT_WOOD:
-			sound(self, CHAN_VOICE, sprintf("debris/wood%d.wav", random(1, 4)), 1.0, ATTN_NORM);
-			break;
-		case BREAKMT_METAL:
-			sound(self, CHAN_VOICE, sprintf("debris/metal%d.wav", random(1, 4)), 1.0, ATTN_NORM);
-			break;
-		case BREAKMT_FLESH:
-			float fRand  = floor(random(1, 8));
-			/* There never was a flesh4.wav */
-			if (fRand == 4) {
-				fRand = 5;
-			}
-			sound(self, CHAN_VOICE, sprintf("debris/flesh%d.wav", fRand), 1.0, ATTN_NORM);
-			break;
-		case BREAKMT_CINDER:
-		case BREAKMT_ROCK:
-			sound(self, CHAN_VOICE, sprintf("debris/concrete%d.wav", random(1, 4)), 1.0, ATTN_NORM);
-			break;
+	case BREAKMT_GLASS:
+		Sound_Play(this, CHAN_VOICE, "func_breakable.impact_glass");
+		break;
+	case BREAKMT_COMPUTER:
+		Sound_Play(this, CHAN_VOICE, "func_breakable.impact_computer");
+		break;
+	case BREAKMT_GLASS_UNBREAKABLE:
+		Sound_Play(this, CHAN_VOICE, "func_breakable.impact_glassunreakable");
+		break;
+	case BREAKMT_WOOD:
+		Sound_Play(this, CHAN_VOICE, "func_breakable.impact_wood");
+		break;
+	case BREAKMT_METAL:
+		Sound_Play(this, CHAN_VOICE, "func_breakable.impact_metal");
+		break;
+	case BREAKMT_FLESH:
+		Sound_Play(this, CHAN_VOICE, "func_breakable.impact_flesh");
+		break;
+	case BREAKMT_CINDER:
+		Sound_Play(this, CHAN_VOICE, "func_breakable.impact_cinder");
+		break;
+	case BREAKMT_ROCK:
+		Sound_Play(this, CHAN_VOICE, "func_breakable.impact_rock");
+		break;
 	}
 }
 
@@ -335,4 +336,31 @@ void
 func_breakable::func_breakable(void)
 {
 	CBaseTrigger::CBaseTrigger();
+
+	switch (m_iMaterial) {
+	case BREAKMT_GLASS:
+		Sound_Precache("func_breakable.impact_glass");
+		break;
+	case BREAKMT_COMPUTER:
+		Sound_Precache("func_breakable.impact_computer");
+		break;
+	case BREAKMT_GLASS_UNBREAKABLE:
+		Sound_Precache("func_breakable.impact_glassunreakable");
+		break;
+	case BREAKMT_WOOD:
+		Sound_Precache("func_breakable.impact_wood");
+		break;
+	case BREAKMT_METAL:
+		Sound_Precache("func_breakable.impact_metal");
+		break;
+	case BREAKMT_FLESH:
+		Sound_Precache("func_breakable.impact_flesh");
+		break;
+	case BREAKMT_CINDER:
+		Sound_Precache("func_breakable.impact_cinder");
+		break;
+	case BREAKMT_ROCK:
+		Sound_Precache("func_breakable.impact_rock");
+		break;
+	}
 }
