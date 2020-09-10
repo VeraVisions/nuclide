@@ -32,13 +32,13 @@ func_wall::Trigger(entity act, int state)
 {
 	switch (state) {
 	case TRIG_OFF:
-		frame = 0;
+		SetFrame(0);
 		break;
 	case TRIG_ON:
-		frame = 1;
+		SetFrame(1);
 		break;
 	default:
-		frame = 1 - frame;
+		SetFrame(1 - frame);
 	}
 }
 
