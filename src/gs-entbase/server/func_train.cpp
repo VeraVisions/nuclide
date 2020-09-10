@@ -43,34 +43,6 @@ enumflags
 	TRAIN_NOTSOLID
 };
 
-string g_strTrainMoveSnd[] = {
-	"common/null.wav",
-	"plats/bigmove1.wav",
-	"plats/bigmove2.wav",
-	"plats/elevmove1.wav",
-	"plats/elevmove2.wav",
-	"plats/elevmove3.wav",
-	"plats/freightmove1.wav",
-	"plats/freightmove2.wav",
-	"plats/heavymove1.wav",
-	"plats/rackmove1.wav",
-	"plats/railmove1.wav",
-	"plats/squeekmove1.wav",
-	"plats/talkmove1.wav",
-	"plats/talkmove2.wav"
-};
-string g_strTrainStopSnd[] = {
-	"common/null.wav",
-	"plats/bigstop1.wav",
-	"plats/bigstop2.wav",
-	"plats/freightstop1.wav",
-	"plats/heavystop2.wav",
-	"plats/rackstop1.wav",
-	"plats/railstop1.wav",
-	"plats/squeekstop1.wav",
-	"plats/talkstop1.wav"
-};
-
 class func_train:CBaseTrigger
 {
 	float m_flWait;
@@ -78,7 +50,6 @@ class func_train:CBaseTrigger
 	float m_flDamage;
 	string m_strMoveSnd;
 	string m_strStopSnd;
-	string m_strOldTarget; /* specific to trains? */
 
 	void(void) func_train;
 	virtual void(void) NextPath;
@@ -135,7 +106,7 @@ func_train::GoToTarget(void)
 
 	/* more stuff for the ears */
 	if (m_strMoveSnd) {
-		sound(this, CHAN_VOICE, m_strMoveSnd, 1.0, ATTN_NORM);
+		Sound_Play(this, CHAN_VOICE, m_strMoveSnd);
 	}
 
 	velocity = (vecVelocity * (1 / flTravelTime));
@@ -160,7 +131,7 @@ func_train::NextPath(void)
 
 	/* stuff for the ears */
 	if (m_strStopSnd) {
-		sound(this, CHAN_BODY, m_strStopSnd, 1.0, ATTN_NORM);
+		Sound_Play(this, CHAN_BODY, m_strStopSnd);
 	}
 	/* make the loopy noise stop */
 	if (m_strMoveSnd) {
@@ -168,7 +139,11 @@ func_train::NextPath(void)
 	}
 
 	SetOrigin(eNode.origin - (mins + maxs) * 0.5);
-	m_flSpeed = eNode.m_flSpeed;
+
+	/* if speed is 0, retain current speed */
+	if (eNode.m_flSpeed > 0)
+		m_flSpeed = eNode.m_flSpeed;
+
 	m_flWait = eNode.m_flWait;
 	target = eNode.target;
 	velocity = [0,0,0];
@@ -212,7 +187,7 @@ func_train::Respawn(void)
 
 	/* let's wait 1/4 a second to give the path_corner entities a chance to
 	 * spawn in case they're after us in the ent lump */
-	target = m_strOldTarget;
+	target = m_oldstrTarget;
 	think = NextPath;
 	nextthink = ltime + 0.25f;
 }
@@ -220,30 +195,22 @@ func_train::Respawn(void)
 void
 func_train::SpawnKey(string strKey, string strValue)
 {
-	int a;
-
 	switch (strKey) {
-	case "target":
-		m_strOldTarget = strValue;
-		break;
 	case "dmg":
 		m_flDamage = stof(strValue);
-		break;
-	case "movesnd":
-		a = bound(0, stof(strValue), g_strTrainMoveSnd.length);
-		m_strMoveSnd = g_strTrainMoveSnd[a];
-		precache_sound(m_strMoveSnd);
-		break;
-	case "stopsnd":
-		a = bound(0, stof(strValue), g_strTrainStopSnd.length);
-		m_strStopSnd = g_strTrainStopSnd[a];
-		precache_sound(m_strStopSnd);
 		break;
 	case "snd_move":
 		m_strMoveSnd = strValue;
 		break;
 	case "snd_stop":
 		m_strStopSnd = strValue;
+		break;
+	/* compatibility */
+	case "movesnd":
+		m_strMoveSnd = sprintf("func_train.move_%i", stoi(strValue) + 1i);
+		break;
+	case "stopsnd":
+		m_strStopSnd = sprintf("func_train.stop_%i", stoi(strValue) + 1i);
 		break;
 	default:
 		CBaseTrigger::SpawnKey(strKey, strValue);
@@ -256,4 +223,10 @@ func_train::func_train(void)
 	/* FIXME: This is all decided by the first path_corner pretty much */
 	m_flSpeed = 100;
 	CBaseTrigger::CBaseTrigger();
+
+	if (m_strMoveSnd)
+		Sound_Precache(m_strMoveSnd);
+
+	if (m_strStopSnd)
+		Sound_Precache(m_strStopSnd);
 }

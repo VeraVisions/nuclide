@@ -110,12 +110,6 @@ path_corner::SpawnKey(string strKey, string strValue)
 void
 path_corner::path_corner(void)
 {
+	m_flWait = 1.0f;
 	CBaseTrigger::CBaseTrigger();
-
-	if (!m_flSpeed) {
-		m_flSpeed = 100;
-	}
-	if (!m_flWait) {
-		m_flWait = 1.0f;
-	}
 }
