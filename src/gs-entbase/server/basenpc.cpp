@@ -95,6 +95,7 @@ class CBaseNPC:CBaseMonster
 	virtual void(void) TalkUnfollow;
 	virtual void(void) TalkFollow;
 	virtual void(void) TalkStopFollow;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -545,6 +546,22 @@ CBaseNPC::PlayerUse(void)
 	} else {
 		TalkUnfollow();
 		m_eFollowing = world;
+	}
+}
+
+void
+CBaseNPC::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "UnUseSentence":
+		m_talkUnfollow = strcat("!", strValue);
+		break;
+	case "UseSentence":
+		m_talkFollow = strcat("!", strValue);
+		break;
+	default:
+		CBaseMonster::SpawnKey(strKey, strValue);
+		break;
 	}
 }
 
