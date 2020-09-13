@@ -616,6 +616,7 @@ void monster_scientist::Death(void)
 
 	flags &= ~FL_MONSTER;
 	SetFrame(SCIA_DIE_SIMPLE + floor(random(0, 6)));
+	SetSize(VEC_HULL_MIN + [0,0,36], VEC_HULL_MAX);
 
 	/* corpse health */
 	SetMovetype(MOVETYPE_NONE);

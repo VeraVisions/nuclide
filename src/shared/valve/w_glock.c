@@ -154,7 +154,7 @@ w_glock_primary(void)
 	}
 #else
 	pl.glock_mag--;
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, Skill_GetValue("plr_9mm_bullet"), [0.01,0,01], WEAPON_GLOCK);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, Skill_GetValue("plr_9mm_bullet"), [0.01,0.01], WEAPON_GLOCK);
 	Sound_Play(pl, CHAN_WEAPON, "weapon_glock.fire");
 
 	if (self.flags & FL_CROUCHING)

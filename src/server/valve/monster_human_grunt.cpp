@@ -196,7 +196,7 @@ monster_human_grunt::AttackRanged(void)
 
 	/* functional */
 	v_angle = vectoangles(m_eEnemy.origin - origin);
-	TraceAttack_FireBullets(1, origin + [0,0,16], 8, [0.01,0,01], 2);
+	TraceAttack_FireBullets(1, origin + [0,0,16], 8, [0.01,0.01], 2);
 	return TRUE;
 }
 

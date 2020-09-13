@@ -136,7 +136,7 @@ w_taurus_primary(void)
 	}
 #else
 	pl.taurus_mag--;
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 12, [0.01,0,01], WEAPON_TAURUS);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 12, [0.01,0.01], WEAPON_TAURUS);
 	Sound_Play(pl, CHAN_WEAPON, "weapon_taurus.fire");
 
 	if (self.flags & FL_CROUCHING)

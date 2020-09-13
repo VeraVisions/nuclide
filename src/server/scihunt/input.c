@@ -56,10 +56,9 @@ void Game_Input(void)
 		}
 		
 		if (self.impulse == 103) {
-			// Respawn all the entities
 			for (entity a = world; (a = find(a, classname, "func_breakable"));) {
 				func_breakable caw = (func_breakable)a;
-				caw.Death(0);
+				caw.Death();
 			}
 			bprint(PRINT_HIGH, "BREAK EVERYTHING!\n");
 		}

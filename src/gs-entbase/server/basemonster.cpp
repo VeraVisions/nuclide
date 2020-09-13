@@ -502,8 +502,6 @@ CBaseMonster::NewRoute(vector destination)
 				vector vecDest = p.m_pRoute[i].m_vecDest;
 				tracebox(p.origin, p.mins, p.maxs, vecDest, TRUE, p);
 
-				print(sprintf("%v %v\n", p.origin, vecDest));
-
 				if (trace_fraction == 1.0) {
 					p.m_iCurNode = i;
 					break;

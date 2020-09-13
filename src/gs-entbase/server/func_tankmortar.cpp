@@ -107,6 +107,7 @@ func_tankmortar::SpriteSmoke(vector org)
 	smoke.think = Die;
 	smoke.nextthink = time + 0.1f;
 	smoke.scale = m_flSpriteScale;
+	smoke.effects = EF_FLAG2;
 }
 
 void
@@ -125,6 +126,7 @@ func_tankmortar::SpriteFlash(vector org)
 	smoke.think = Die;
 	smoke.nextthink = time + 0.1f;
 	smoke.scale = m_flSpriteScale;
+	smoke.effects = EF_FLAG2;
 }
 
 void
