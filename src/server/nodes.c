@@ -195,6 +195,7 @@ Nodes_Init(void)
 #define NODE_RECT_COLOR [1.0,0.5,0.0]
 #define NODE_RECT_ALPHA 1.0f
 #define NODE_LINE_ALPHA 0.25f
+
 /* draws debug graphics of our node tree */
 void
 SV_AddDebugPolygons(void)
@@ -209,21 +210,30 @@ SV_AddDebugPolygons(void)
 	makevectors(self.v_angle);
 
 	/* draw the rectangles */
-	R_BeginPolygon("", 0, 0);
+	R_BeginPolygon("textures/dev/info_node", 0, 0);
 	for (int i = 0; i < g_iNodes; i++) {
 		node_t *w = g_pNodes + i;
-		R_PolygonVertex(w->origin + v_right * 2 - v_up * 2, [1,1], NODE_RECT_COLOR, NODE_RECT_ALPHA);
-		R_PolygonVertex(w->origin - v_right * 2 - v_up * 2, [0,1], NODE_RECT_COLOR, NODE_RECT_ALPHA);
-		R_PolygonVertex(w->origin - v_right * 2 + v_up * 2, [0,0], NODE_RECT_COLOR, NODE_RECT_ALPHA);
-		R_PolygonVertex(w->origin + v_right * 2 + v_up * 2, [1,0], NODE_RECT_COLOR, NODE_RECT_ALPHA);
+		R_PolygonVertex(w->origin + v_right * 8 - v_up * 8, [1,1], NODE_RECT_COLOR, NODE_RECT_ALPHA);
+		R_PolygonVertex(w->origin - v_right * 8 - v_up * 8, [0,1], NODE_RECT_COLOR, NODE_RECT_ALPHA);
+		R_PolygonVertex(w->origin - v_right * 8 + v_up * 8, [0,0], NODE_RECT_COLOR, NODE_RECT_ALPHA);
+		R_PolygonVertex(w->origin + v_right * 8 + v_up * 8, [1,0], NODE_RECT_COLOR, NODE_RECT_ALPHA);
 		R_EndPolygon();
 	}
 
 	for (entity s = world; (s = find(s, ::classname, "scripted_sequence"));) {
-		R_PolygonVertex(s.origin + v_right * 2 - v_up * 2, [1,1], SEQUENCE_RECT_COLOR, NODE_RECT_ALPHA);
-		R_PolygonVertex(s.origin - v_right * 2 - v_up * 2, [0,1], SEQUENCE_RECT_COLOR, NODE_RECT_ALPHA);
-		R_PolygonVertex(s.origin - v_right * 2 + v_up * 2, [0,0], SEQUENCE_RECT_COLOR, NODE_RECT_ALPHA);
-		R_PolygonVertex(s.origin + v_right * 2 + v_up * 2, [1,0], SEQUENCE_RECT_COLOR, NODE_RECT_ALPHA);
+		vector pos = s.origin;
+		pos[2] += 32;
+
+		R_BeginPolygon("textures/dev/scripted_sequence", 0, 0);
+		R_PolygonVertex(pos + v_right * 24 - v_up * 24, [1,1], SEQUENCE_RECT_COLOR, NODE_RECT_ALPHA);
+		R_PolygonVertex(pos - v_right * 24 - v_up * 24, [0,1], SEQUENCE_RECT_COLOR, NODE_RECT_ALPHA);
+		R_PolygonVertex(pos - v_right * 24 + v_up * 24, [0,0], SEQUENCE_RECT_COLOR, NODE_RECT_ALPHA);
+		R_PolygonVertex(pos + v_right * 24 + v_up * 24, [1,0], SEQUENCE_RECT_COLOR, NODE_RECT_ALPHA);
+		R_EndPolygon();
+
+		R_BeginPolygon("", 0, 0);
+		R_PolygonVertex(s.origin, [0,1], [1,1,1], NODE_LINE_ALPHA);
+		R_PolygonVertex(pos, [1,1], [1,1,1], NODE_LINE_ALPHA);
 		R_EndPolygon();
 	}
 
