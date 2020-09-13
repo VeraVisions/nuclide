@@ -489,11 +489,26 @@ CBaseMonster::NewRoute(vector destination)
 		p.m_iCurNode = numnodes - 1;
 		p.m_pRoute = nodelist;
 
-		/* we can walk there directly */
-		tracebox(p.origin, p.mins, p.maxs, dest, TRUE, this);
+		tracebox(p.origin, p.mins, p.maxs, dest, MOVE_NORMAL, this);
+
+		/* can we walk directly to our target destination? */
 		if (trace_fraction == 1.0) {
-			dprint("^2CBaseMonster::^3NewRoute^7: Walking directly to last node\n");
+			dprint("^2CBaseMonster::^3NewRoute^7: " \
+				"Walking directly to last node\n");
 			p.m_iCurNode = -1;
+		} else {
+			/* run through all nodes, mark the closest direct path possible */
+			for (int i = 0; i < p.m_iNodes; i++) {
+				vector vecDest = p.m_pRoute[i].m_vecDest;
+				tracebox(p.origin, p.mins, p.maxs, vecDest, TRUE, p);
+
+				print(sprintf("%v %v\n", p.origin, vecDest));
+
+				if (trace_fraction == 1.0) {
+					p.m_iCurNode = i;
+					break;
+				}
+			}
 		}
 	}
 
