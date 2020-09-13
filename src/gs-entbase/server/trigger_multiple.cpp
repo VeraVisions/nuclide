@@ -61,10 +61,6 @@ trigger_multiple::touch(void)
 		}
 	}
 
-	if (other.movetype != MOVETYPE_WALK) {
-		return;
-	}
-
 	if (m_flDelay > 0) {
 		UseTargets_Delay(other, TRIG_TOGGLE, m_flDelay);
 	} else {
