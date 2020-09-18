@@ -65,9 +65,9 @@ func_brush::Trigger(entity act, int state)
 	}
 
 	/* toggle appareance */
-	if (Solidity == 0) {
+	if (m_iSolidity == 0) {
 		if (solid == SOLID_NOT)
-			SetModelIndex(0);
+			SetModelindex(0);
 		else
 			SetModel(m_oldModel);
 	}
@@ -110,7 +110,7 @@ func_brush::Respawn(void)
 	default:
 		if (m_iStartOff) {
 			SetSolid(SOLID_NOT);
-			SetModelIndex(0);
+			SetModelindex(0);
 		} else {
 			SetSolid(SOLID_BSP);
 		}

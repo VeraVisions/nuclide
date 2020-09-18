@@ -147,6 +147,8 @@ Sentences_Init(void)
 			}
 		}
 	}
+	
+	fclose(fs_sentences);
 }
 
 string

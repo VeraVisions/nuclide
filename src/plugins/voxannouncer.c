@@ -29,7 +29,7 @@ FMX_PlayerObituary(entity attk, entity targ, int weapon, int body, int dmg)
 {
 	/* silly announcer */
 	if (attk != world && attk != targ) {
-		int r = floor(random(0,18));
+		int r = floor(random(0,20));
 
 		switch (r) {
 		case 0:
@@ -45,7 +45,7 @@ FMX_PlayerObituary(entity attk, entity targ, int weapon, int body, int dmg)
 			VoxFunc("buzwarn terminated");
 			break;
 		case 4:
-			VoxFunc("buzwarn to slow amigo");
+			VoxFunc("buzwarn to slow pal");
 			break;
 		case 5:
 			VoxFunc("buzwarn that is hot");
@@ -69,10 +69,10 @@ FMX_PlayerObituary(entity attk, entity targ, int weapon, int body, int dmg)
 			VoxFunc("buzwarn kill life");
 			break;
 		case 12:
-			VoxFunc("buzwarn kill that amigo");
+			VoxFunc("buzwarn kill that pal");
 			break;
 		case 13:
-			VoxFunc("buzwarn explode that amigo");
+			VoxFunc("buzwarn explode that pal");
 			break;
 		case 14:
 			VoxFunc("buzwarn life denied");
@@ -82,6 +82,12 @@ FMX_PlayerObituary(entity attk, entity targ, int weapon, int body, int dmg)
 			break;
 		case 16:
 			VoxFunc("buzwarn target destroyed");
+			break;
+		case 17:
+			VoxFunc("buzwarn adios mister");
+			break;
+		case 18:
+			VoxFunc("buzwarn expect an oscar for that kill");
 			break;
 		default:
 			VoxFunc("buzwarn exterminate exterminate");
