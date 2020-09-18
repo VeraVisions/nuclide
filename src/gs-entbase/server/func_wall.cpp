@@ -24,6 +24,8 @@ On idTech 2 BSPs, it will change texture variants when triggered.
 class func_wall:CBaseTrigger
 {
 	void(void) func_wall;
+
+	virtual void(void) Respawn;
 	virtual void(entity, int) Trigger;
 };
 
@@ -43,13 +45,22 @@ func_wall::Trigger(entity act, int state)
 }
 
 void
+func_wall::Respawn(void)
+{
+	/* reset the visual parameters */
+	CBaseEntity::Respawn();
+
+	/* func_wall specifics */
+	SetAngles([0,0,0]);
+	SetMovetype(MOVETYPE_PUSH);
+	SetSolid(SOLID_BSP);
+	SetModel(m_oldModel);
+	SetOrigin(m_oldOrigin);
+	SetFrame(0);
+}
+
+void
 func_wall::func_wall(void)
 {
-	precache_model(model);
-	//angles = [0,0,0];
-	movetype = MOVETYPE_PUSH;
-	solid = SOLID_BSP;
-	SetModel(model);
-	SetOrigin(origin);
 	CBaseTrigger::CBaseTrigger();
 }
