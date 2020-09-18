@@ -403,9 +403,6 @@ func_door::SpawnKey(string strKey, string strValue)
 	case "lip":
 		m_flLip = stof(strValue);
 		break;
-	case "delay":
-		m_flDelay = stof(strValue);
-		break;
 	case "wait":
 		m_flWait = stof(strValue);
 		break;

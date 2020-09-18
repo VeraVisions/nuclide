@@ -206,9 +206,6 @@ monstermaker::SpawnKey(string strKey, string strValue)
 	case "m_imaxlivechildren":
 		m_iMaxChildren = stoi(strValue);
 		break;
-	case "delay":
-		m_flDelay = stof(strValue);
-		break;
 	case "child_name":
 	case "netname":
 		m_strChildName = strValue;

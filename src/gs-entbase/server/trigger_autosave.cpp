@@ -28,7 +28,6 @@ class trigger_autosave:CBaseTrigger
 
 	virtual void(void) touch;
 	virtual void(void) Respawn;
-	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -62,19 +61,6 @@ void
 trigger_autosave::Respawn(void)
 {
 	InitBrushTrigger();
-}
-
-void
-trigger_autosave::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "delay":
-		m_flDelay = stof(strValue);
-		break;
-	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
-		break;
-	}
 }
 
 void

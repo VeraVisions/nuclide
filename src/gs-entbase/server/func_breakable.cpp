@@ -306,9 +306,6 @@ func_breakable::SpawnKey(string strKey, string strValue)
 	case "material":
 		m_iMaterial = stoi(strValue);
 		break;
-	case "delay":
-		m_flDelay = stof(strValue);
-		break;
 	case "explodemagnitude":
 		m_flExplodeMag = stof(strValue);
 		break;

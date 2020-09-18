@@ -97,9 +97,6 @@ scripted_sentence::SpawnKey(string strKey, string strValue)
 	case "duration":
 		m_flDuration = stof(strValue);
 		break;
-	case "delay":
-		m_flDelay = stof(strValue);
-		break;
 	case "wait":
 		m_flWait = stof(strValue);
 		break;

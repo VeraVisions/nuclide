@@ -85,9 +85,6 @@ void
 trigger_multiple::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "delay":
-		m_flDelay = stof(strValue);
-		break;
 	case "wait":
 		m_flWait = stof(strValue);
 		break;

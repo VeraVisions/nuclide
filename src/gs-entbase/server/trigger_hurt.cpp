@@ -139,9 +139,6 @@ trigger_hurt::SpawnKey(string strKey, string strValue)
 	case "wait":
 		m_flNextDmg = stof(strValue);
 		break;
-	case "delay":
-		m_flDelay = stof(strValue);
-		break;
 	default:
 		CBaseTrigger::SpawnKey(strKey, strValue);
 	}

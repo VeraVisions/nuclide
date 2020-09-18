@@ -69,9 +69,6 @@ void
 trigger_relay::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "delay":
-		m_flDelay = stof(strValue);
-		break;
 	case "triggerstate":
 		m_iTriggerState = stoi(strValue);
 		break;

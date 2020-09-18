@@ -112,7 +112,6 @@ env_shooter::SpawnKey(string strKey, string strValue)
 	case "m_iGibs":
 		m_iGibs = stoi(strValue);
 		break;
-	case "delay":
 	case "m_flDelay":
 		m_flDelay = stof(strValue);
 		break;

@@ -382,9 +382,6 @@ func_door_rotating::SpawnKey(string strKey, string strValue)
 	case "distance":
 		m_flDistance = stof(strValue);
 		break;
-	case "delay":
-		m_flDelay = stof(strValue);
-		break;
 	case "dmg":
 		m_iDamage = stoi(strValue);
 		break;

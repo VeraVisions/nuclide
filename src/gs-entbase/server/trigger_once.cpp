@@ -39,7 +39,6 @@ class trigger_once:CBaseTrigger
 
 	virtual void(void) touch;
 	virtual void(void) Respawn;
-	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -69,18 +68,6 @@ trigger_once::Respawn(void)
 	solid = SOLID_TRIGGER;
 	SetRenderMode(RM_TRIGGER);
 	InitBrushTrigger();
-}
-
-void
-trigger_once::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "delay":
-		m_flDelay = stof(strValue);
-		break;
-	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
-	}
 }
 
 void

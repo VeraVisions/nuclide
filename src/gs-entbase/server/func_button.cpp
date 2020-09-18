@@ -368,10 +368,7 @@ func_button::SpawnKey(string strKey, string strValue)
 	case "wait":
 		m_flWait = stof(strValue);
 		break;
-	case "delay":
-		m_flDelay = stof(strValue);
-		break;
-		/* compatibility */
+	/* compatibility */
 	case "sounds":
 		m_strSndPressed = sprintf("func_button.hlsfx_%i", stoi(strValue) + 1i);
 		break;

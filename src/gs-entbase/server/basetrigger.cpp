@@ -174,6 +174,9 @@ CBaseTrigger::SpawnKey(string strKey, string strValue)
 	case "team_no":
 		m_iTeam = stoi(strValue);
 		break;
+	case "delay":
+		m_flDelay = stof(strValue);
+		break;
 	default:
 		CBaseEntity::SpawnKey(strKey, strValue);
 		break;

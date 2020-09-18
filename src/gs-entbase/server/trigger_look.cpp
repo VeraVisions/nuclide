@@ -121,9 +121,6 @@ trigger_look::SpawnKey(string strKey, string strValue)
 	case "LookTime":
 		m_flLookTime = stof(strValue);
 		break;
-	case "delay":
-		m_flDelay = stof(strValue);
-		break;
 	default:
 		break;
 	}

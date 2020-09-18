@@ -96,9 +96,6 @@ trigger_counter::SpawnKey(string strKey, string strValue)
 	case "count":
 		m_iMaxCount = stoi(strValue);
 		break;
-	case "delay":
-		m_flDelay = stof(strValue);
-		break;
 	default:
 		CBaseTrigger::SpawnKey(strKey, strValue);
 	}
