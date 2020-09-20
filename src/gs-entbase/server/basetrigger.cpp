@@ -14,41 +14,87 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-enum
-{ 
-	USE_TOGGLE,
-	USE_CONTINOUS
-};
-
-enum
+/* modern trigger architecture */
+void
+CBaseTrigger::UseOutput(entity act, string outname)
 {
-	TRIG_OFF,
-	TRIG_ON,
-	TRIG_TOGGLE
-};
+	for (entity f = world; (f = find(f, ::targetname, outname));) {
+		CBaseOutput op = (CBaseOutput)f;
+		/* no more tries and not -1 (infinite) */
+		if (op.m_iCount == 0) {
+			return;
+		}
 
-class CBaseTrigger:CBaseEntity
+		op.m_eActivator = act;
+		op.think = CBaseOutput::TriggerOutput;
+		op.nextthink = time + op.m_flDelay;
+	}
+}
+
+/* input is a 4-5 parameter, commar separated string, output is the targetname
+   of a minion entity that'll handle the triggering (and counting down of uses)
+   as defined in the Source Input/Output specs */
+string
+CBaseTrigger::CreateOutput(string outmsg)
 {
-	int m_strGlobalState;
-	string m_strKillTarget;
-	string m_strMessage;
-	string m_strMaster;
-	float m_flDelay;
-	int m_iUseType;
-	int m_iTeam;
-	int m_iValue;
+	static int outcount = 0;
+	float c;
 
-	void(void) CBaseTrigger;
+	if (!outmsg)
+		return "";
 
-	virtual void(entity, int) Trigger;
-	virtual void(entity, int) UseTargets;
-	virtual void(entity, int, float) UseTargets_Delay;
-	virtual int(void) GetValue;
-	virtual int(void) GetMaster;
-	virtual void(void) InitBrushTrigger;
-	virtual void(void) InitPointTrigger;
-	virtual void(string, string) SpawnKey;
-};
+	string outname = sprintf("output_%i\n", outcount);
+	outcount++;
+
+	c = tokenizebyseparator(outmsg, ",");
+	for (float i = 1; i < c; i+=5) {
+		CBaseOutput new_minion = spawn(CBaseOutput);
+
+		new_minion.classname = "triggerminion";
+		new_minion.targetname = outname;
+		new_minion.m_strTarget = substring(argv(i), 1,-1);
+		new_minion.m_strInput = substring(argv(i+1), 1,-1);
+		new_minion.m_strData = substring(argv(i+2), 1,-1);
+		new_minion.m_flDelay = stof(substring(argv(i+3), 1,-1));
+		new_minion.m_iCount = stoi(substring(argv(i+4), 1,-1));
+		new_minion.m_iOldCount = new_minion.m_iCount;
+	}
+
+	/* print final debug output */
+	for (entity f = world; (f = find(f, ::targetname, outname));) {
+		CBaseOutput new_minion = (CBaseOutput)f;
+		print(sprintf("^2%s::OnTrigger report:\n", classname));
+		print(sprintf("Target: %s\n", new_minion.m_strTarget));
+		print(sprintf("Input: %s\n", new_minion.m_strInput));
+		print(sprintf("Data Message: %s\n", new_minion.m_strData));
+		print(sprintf("Delay: %f\n", new_minion.m_flDelay));
+		print(sprintf("Uses: %i\n\n", new_minion.m_iCount));
+	}
+
+	/* return the minion's name that'll act as the trigger */
+	return outname;
+}
+
+/* entities receive the inputs here and need to act on intype and data
+   accordingly. this is just a stub for unknown event troubleshooting */
+void
+CBaseTrigger::Input(entity act, string intype, string data)
+{
+	if (data != "")
+	dprint(sprintf("^2%s::^3Input^7: Receives input %s from %s with data %s\n", 
+		this.classname, intype, act.classname, data));
+	else
+	dprint(sprintf("^2%s::^3Input^7: Receives input %s from %s\n", 
+		this.classname, intype, act.classname));
+}
+
+/* legacy trigger architecture */
+void
+CBaseTrigger::Trigger(entity act, int state)
+{
+	dprint(sprintf("^2%s::^3Input^7: Triggerd by %s with no consequence\n", 
+		this.classname, act.classname));
+}
 
 void
 CBaseTrigger::UseTargets(entity act, int state)
@@ -137,12 +183,6 @@ CBaseTrigger::GetMaster(void)
 }
 
 void
-CBaseTrigger::Trigger(entity act, int state)
-{
-	
-}
-
-void
 CBaseTrigger::InitPointTrigger(void)
 {
 	setsize(this, VEC_HULL_MIN, VEC_HULL_MAX);
@@ -156,6 +196,48 @@ CBaseTrigger::InitBrushTrigger(void)
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_BSPTRIGGER);
 	SetRenderMode(RM_TRIGGER);
+}
+
+void CompilerTest(void)
+{
+	string outmsg = ",_control_retinal2,_BeginSequence,_,_0,_-1,_control_retinal3,_BeginSequence,_,_0,_-1,_control_retinal1,_BeginSequence,_,_0,_-1";
+
+	string out_targetname;
+	string out_name;
+	string out_in;
+	string out_data;
+	float out_delay;
+	int out_uses;
+	float c;
+	static int outcount = 0;
+
+	out_targetname = sprintf("output_%i\n", outcount);
+	outcount++;
+
+	c = tokenizebyseparator(outmsg, ",");
+	for (float i = 1; i < c; i+=5) {
+		out_name = substring(argv(i), 1,-1);
+		out_in = substring(argv(i+1), 1,-1);
+		out_data =  substring(argv(i+2), 1,-1);
+		out_delay = stof(substring(argv(i+3), 1,-1));
+		out_uses = stoi(substring(argv(i+4), 1,-1));
+
+		print(sprintf("%d: %s\n", i, out_name));
+		print(sprintf("%d: %s\n", i, out_in));
+		print(sprintf("%d: %s\n", i, out_data));
+		print(sprintf("%d: %d\n", i, out_delay));
+		print(sprintf("%d: %i\n", i, out_uses));
+		
+		CBaseOutput new_minion = spawn(CBaseOutput);
+		new_minion.classname = "triggerminion";
+		new_minion.targetname = out_targetname;
+		new_minion.m_strTarget = out_name;
+		new_minion.m_strInput = out_in;
+		new_minion.m_strData = out_data;
+		new_minion.m_flDelay = out_delay;
+		new_minion.m_iCount = out_uses;
+		new_minion.m_iOldCount = out_uses;
+	}
 }
 
 void
@@ -177,6 +259,10 @@ CBaseTrigger::SpawnKey(string strKey, string strValue)
 	case "delay":
 		m_flDelay = stof(strValue);
 		break;
+	case "OnTrigger":
+		strValue = strreplace(",", ",_", strValue);
+		m_strOnTrigger = strcat(m_strOnTrigger, ",_", strValue);
+		break;
 	default:
 		CBaseEntity::SpawnKey(strKey, strValue);
 		break;
@@ -187,4 +273,6 @@ void
 CBaseTrigger::CBaseTrigger(void)
 {
 	CBaseEntity::CBaseEntity();
+
+	m_strOnTrigger = CreateOutput(m_strOnTrigger);
 }

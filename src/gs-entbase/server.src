@@ -7,6 +7,7 @@ baseentity.h
 decals.h
 materials.h
 server/baseentity.cpp
+server/baseoutput.cpp
 server/basetrigger.cpp
 server/basemonster.cpp
 server/basenpc.cpp

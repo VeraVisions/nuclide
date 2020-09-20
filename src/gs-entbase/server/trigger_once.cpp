@@ -35,10 +35,13 @@ enumflags
 
 class trigger_once:CBaseTrigger
 {
+	string m_strOnStartTouch;
+
 	void(void) trigger_once;
 
 	virtual void(void) touch;
 	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -53,6 +56,11 @@ trigger_once::touch(void)
 
 	solid = SOLID_NOT; /* make inactive */
 	m_iValue = 1;
+
+	if (!target) {
+		UseOutput(other, m_strOnStartTouch);
+		return;
+	}
 
 	if (m_flDelay > 0) {
 		CBaseTrigger::UseTargets_Delay(other, TRIG_TOGGLE, m_flDelay);
@@ -71,7 +79,24 @@ trigger_once::Respawn(void)
 }
 
 void
+trigger_once::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "OnStartTouch":
+		strValue = strreplace(",", ",_", strValue);
+		m_strOnStartTouch = strcat(m_strOnStartTouch, ",_", strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+		break;
+	}
+}
+
+void
 trigger_once::trigger_once(void)
 {
 	CBaseTrigger::CBaseTrigger();
+
+	if (m_strOnStartTouch)
+		m_strOnStartTouch = CreateOutput(m_strOnStartTouch);
 }

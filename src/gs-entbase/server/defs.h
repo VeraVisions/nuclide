@@ -15,6 +15,7 @@
  */
 
 #include "baseentity.h"
+#include "basetrigger.h"
 
 void FX_Spark(vector, vector);
 void FX_BreakModel(int, vector, vector, vector, float);

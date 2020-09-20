@@ -24,10 +24,13 @@ Provides the player with armor, a flashlight and a Heads-Up-Display.
 */
 class item_suit:CBaseTrigger
 {
+	string m_strOnPlayerTouch;
+
 	void(void) item_suit;
 
 	virtual void(void) touch;
 	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
 };
 
 void item_suit::touch(void)
@@ -47,7 +50,12 @@ void item_suit::touch(void)
 	pl.g_items |= ITEM_SUIT;
 	m_iValue = TRUE;
 
-	CBaseTrigger::UseTargets(other, TRIG_TOGGLE);
+	if (!target) {
+		UseOutput(other, m_strOnPlayerTouch);
+		return;
+	} else {
+		CBaseTrigger::UseTargets(other, TRIG_TOGGLE);
+	}
 	
 	if (real_owner || cvar("sv_playerslots") == 1) {
 		remove(self);
@@ -74,6 +82,20 @@ void item_suit::Respawn(void)
 		Sound_Play(this, CHAN_ITEM, "item.respawn");
 }
 
+void
+item_suit::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "OnPlayerTouch":
+		strValue = strreplace(",", ",_", strValue);
+		m_strOnPlayerTouch = strcat(m_strOnPlayerTouch, ",_", strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+		break;
+	}
+}
+
 void item_suit::item_suit(void)
 {
 	model = "models/w_suit.mdl";
@@ -81,4 +103,6 @@ void item_suit::item_suit(void)
 	precache_sound("fvox/hev_logon.wav");
 	precache_sound("fvox/bell.wav");
 	CBaseTrigger::CBaseTrigger();
+
+	m_strOnPlayerTouch = CreateOutput(m_strOnPlayerTouch);
 }
