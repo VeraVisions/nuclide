@@ -20,6 +20,7 @@ CBaseTrigger::UseOutput(entity act, string outname)
 {
 	for (entity f = world; (f = find(f, ::targetname, outname));) {
 		CBaseOutput op = (CBaseOutput)f;
+
 		/* no more tries and not -1 (infinite) */
 		if (op.m_iCount == 0) {
 			return;
@@ -31,21 +32,27 @@ CBaseTrigger::UseOutput(entity act, string outname)
 	}
 }
 
-/* input is a 4-5 parameter, commar separated string, output is the targetname
+/* input is a 5 parameter, commar separated string, output is the targetname
    of a minion entity that'll handle the triggering (and counting down of uses)
    as defined in the Source Input/Output specs */
 string
 CBaseTrigger::CreateOutput(string outmsg)
 {
 	static int outcount = 0;
+	string outname = "";
 	float c;
 
 	if (!outmsg)
 		return "";
 
-	string outname = sprintf("output_%i\n", outcount);
+	outname = sprintf("output_%i\n", outcount);
 	outcount++;
 
+	/* to make sure tokenize 'remembers' to tell us about the commonly
+	   empty data string, we prepared the output string beforehand to
+	   at least contain a _ symbol after the comma separator... now
+	   we gotta clip that away using substring(). messy, but that's the
+	   only way to keep them at 5 argv() calls per output */
 	c = tokenizebyseparator(outmsg, ",");
 	for (float i = 1; i < c; i+=5) {
 		CBaseOutput new_minion = spawn(CBaseOutput);
@@ -58,20 +65,17 @@ CBaseTrigger::CreateOutput(string outmsg)
 		new_minion.m_flDelay = stof(substring(argv(i+3), 1,-1));
 		new_minion.m_iCount = stoi(substring(argv(i+4), 1,-1));
 		new_minion.m_iOldCount = new_minion.m_iCount;
+
+		/* print final debug output */
+		dprint(sprintf("^2%s::CreateOutput report:\n", classname));
+		dprint(sprintf("Target: %s\n", new_minion.m_strTarget));
+		dprint(sprintf("Input: %s\n", new_minion.m_strInput));
+		dprint(sprintf("Data Message: %s\n", new_minion.m_strData));
+		dprint(sprintf("Delay: %f\n", new_minion.m_flDelay));
+		dprint(sprintf("Uses: %i\n\n", new_minion.m_iCount));
 	}
 
-	/* print final debug output */
-	for (entity f = world; (f = find(f, ::targetname, outname));) {
-		CBaseOutput new_minion = (CBaseOutput)f;
-		print(sprintf("^2%s::OnTrigger report:\n", classname));
-		print(sprintf("Target: %s\n", new_minion.m_strTarget));
-		print(sprintf("Input: %s\n", new_minion.m_strInput));
-		print(sprintf("Data Message: %s\n", new_minion.m_strData));
-		print(sprintf("Delay: %f\n", new_minion.m_flDelay));
-		print(sprintf("Uses: %i\n\n", new_minion.m_iCount));
-	}
-
-	/* return the minion's name that'll act as the trigger */
+	/* return the name that'll act as the trigger for all outputs */
 	return outname;
 }
 
@@ -196,48 +200,6 @@ CBaseTrigger::InitBrushTrigger(void)
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_BSPTRIGGER);
 	SetRenderMode(RM_TRIGGER);
-}
-
-void CompilerTest(void)
-{
-	string outmsg = ",_control_retinal2,_BeginSequence,_,_0,_-1,_control_retinal3,_BeginSequence,_,_0,_-1,_control_retinal1,_BeginSequence,_,_0,_-1";
-
-	string out_targetname;
-	string out_name;
-	string out_in;
-	string out_data;
-	float out_delay;
-	int out_uses;
-	float c;
-	static int outcount = 0;
-
-	out_targetname = sprintf("output_%i\n", outcount);
-	outcount++;
-
-	c = tokenizebyseparator(outmsg, ",");
-	for (float i = 1; i < c; i+=5) {
-		out_name = substring(argv(i), 1,-1);
-		out_in = substring(argv(i+1), 1,-1);
-		out_data =  substring(argv(i+2), 1,-1);
-		out_delay = stof(substring(argv(i+3), 1,-1));
-		out_uses = stoi(substring(argv(i+4), 1,-1));
-
-		print(sprintf("%d: %s\n", i, out_name));
-		print(sprintf("%d: %s\n", i, out_in));
-		print(sprintf("%d: %s\n", i, out_data));
-		print(sprintf("%d: %d\n", i, out_delay));
-		print(sprintf("%d: %i\n", i, out_uses));
-		
-		CBaseOutput new_minion = spawn(CBaseOutput);
-		new_minion.classname = "triggerminion";
-		new_minion.targetname = out_targetname;
-		new_minion.m_strTarget = out_name;
-		new_minion.m_strInput = out_in;
-		new_minion.m_strData = out_data;
-		new_minion.m_flDelay = out_delay;
-		new_minion.m_iCount = out_uses;
-		new_minion.m_iOldCount = out_uses;
-	}
 }
 
 void

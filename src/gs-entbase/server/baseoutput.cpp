@@ -14,7 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* inspired by https://developer.valvesoftware.com/wiki/Inputs_and_Outputs */
+/* inspired by https://developer.valvesoftware.com/wiki/Inputs_and_Outputs 
+   a lot of the action also happens in CBaseTrigger.
+*/
 
 /* modern trigger architecture */
 class CBaseOutput:CBaseEntity
@@ -53,17 +55,21 @@ CBaseOutput::TriggerOutput(void)
 void
 CBaseOutput::SpawnInit(void)
 {
-	/* EMPTY! */
+	/* SpawnInit of CBaseEntity will tokenize __fullspawndata which
+	   in turn will break CBaseTrigger::CreateOutput's tokenize loop,
+	   as we'll be creating a bunch of CBaseOutput's in there */
 }
 
 void
 CBaseOutput::Respawn(void)
 {
+	/* gotta reset our counter */
 	m_iCount = m_iOldCount;
 }
 
 void
 CBaseOutput::CBaseOutput(void)
 {
+	/* Make sure Respawn() will be called between rounds */
 	gflags = GF_CANRESPAWN;
 }
