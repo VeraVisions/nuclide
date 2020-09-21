@@ -37,11 +37,7 @@ class trigger_camera:CBaseTrigger
 void
 trigger_camera::Trigger(entity act, int state)
 {
-	if (m_flDelay > 0) {
-		CBaseTrigger::UseTargets_Delay(act, TRIG_TOGGLE, m_flDelay);
-	} else {
-		CBaseTrigger::UseTargets(act, TRIG_TOGGLE);
-	}
+	UseTargets(act, TRIG_TOGGLE, m_flDelay);
 
 	if (m_strMoveTo) {
 		entity e = find(world, ::targetname, m_strMoveTo);

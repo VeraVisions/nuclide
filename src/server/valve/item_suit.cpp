@@ -54,7 +54,7 @@ void item_suit::touch(void)
 		UseOutput(other, m_strOnPlayerTouch);
 		return;
 	} else {
-		CBaseTrigger::UseTargets(other, TRIG_TOGGLE);
+		UseTargets(other, TRIG_TOGGLE, m_flDelay);
 	}
 	
 	if (real_owner || cvar("sv_playerslots") == 1) {

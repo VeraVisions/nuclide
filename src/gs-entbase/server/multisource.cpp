@@ -18,6 +18,7 @@
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
+"delay"         Delay until we trigger our target
 
 STUB!
 */
@@ -73,7 +74,7 @@ multisource::Trigger(entity act, int unused)
 
 	dprint(sprintf("[^1MULTISOURCE^7] %s is now active.\n", targetname));
 	m_iValue = TRUE;
-	CBaseTrigger::UseTargets(act, TRIG_TOGGLE);
+	UseTargets(act, TRIG_TOGGLE, m_flDelay);
 }
 
 void

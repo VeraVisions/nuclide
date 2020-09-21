@@ -101,52 +101,44 @@ CBaseTrigger::Trigger(entity act, int state)
 }
 
 void
-CBaseTrigger::UseTargets(entity act, int state)
+CBaseTrigger::UseTargets(entity act, int state, float fDelay)
 {
-	for (entity f = world; (f = find(f, ::targetname, target));) {
-		CBaseTrigger trigger = (CBaseTrigger)f;
-		dprint(sprintf("^2%s::^3UseTargets^7: Triggering %s `%s` from %s\n", 
-			this.classname, f.classname, trigger.targetname, act.classname));
-		if (trigger.Trigger != __NULL__) {
-			trigger.Trigger(act, state);
-		}
-	}
-
-	/* hack: check to see if this is a sound file */
-	/*if (whichpack(m_strMessage)) {
-		print(m_strMessage);
-		print("\n");
-	} else {
-		if (m_strMessage && act.flags & FL_CLIENT) {
-			centerprint(act, m_strMessage);
-		}
-	}*/
-
-	if (m_strKillTarget) {
-		entity eKill = find(world, ::targetname, m_strKillTarget);
-		if (eKill) {
-			remove(eKill);
-		}
-	}
-}
-
-void
-CBaseTrigger::UseTargets_Delay(entity act, int state, float fDelay)
-{
-	static void Entities_UseTargets_Delay_Think(void) {
-		CBaseTrigger::UseTargets(self.owner, self.health); /* ugly */
+	static void Entities_UseTargets_Think(void) {
+		CBaseTrigger::UseTargets(self.owner, self.health, 0.0f);
 		remove(self);
 	}
 
-	dprint(sprintf("^2%s::^3UseTargets_Delay^7: Triggering `%s`\n", 
-		this.classname, target));
+	if (fDelay > 0.0f) {
+		dprint(sprintf("^2%s::^3UseTargets^7: Triggering `%s`\n", 
+			this.classname, target));
 
-	CBaseTrigger eTimer = spawn(CBaseTrigger);
-	eTimer.owner = act;
-	eTimer.think = Entities_UseTargets_Delay_Think;
-	eTimer.target = target;
-	eTimer.nextthink = time + fDelay;
-	eTimer.health = state;  /* ugly */
+		CBaseTrigger eTimer = spawn(CBaseTrigger);
+		eTimer.owner = act;
+		eTimer.think = Entities_UseTargets_Think;
+		eTimer.target = target;
+		eTimer.nextthink = time + fDelay;
+		eTimer.health = state;  /* ugly */
+	} else {
+		for (entity f = world; (f = find(f, ::targetname, target));) {
+			CBaseTrigger trigger = (CBaseTrigger)f;
+
+			dprint(sprintf("^2%s::^3UseTargets^7:" \
+			       "Triggering %s `%s` from %s\n", \
+			        this.classname, f.classname, \
+			        trigger.targetname, act.classname));
+
+			if (trigger.Trigger != __NULL__) {
+				trigger.Trigger(act, state);
+			}
+		}
+
+		if (m_strKillTarget) {
+			entity eKill = find(world, ::targetname, m_strKillTarget);
+			if (eKill) {
+				remove(eKill);
+			}
+		}
+	}
 }
 
 int

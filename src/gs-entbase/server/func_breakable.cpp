@@ -168,8 +168,8 @@ func_breakable::Explode(void)
 	FX_BreakModel(vlen(size) / 10, absmin, absmax, [0,0,0], m_iMaterial);
 	FX_Explosion(rp);
 	Damage_Radius(rp, this, m_flExplodeMag, m_flExplodeMag * 2.5f, TRUE, 0);
-	CBaseTrigger::UseTargets(this, TRIG_TOGGLE);
-	CBaseEntity::Hide();
+	UseTargets(this, TRIG_TOGGLE, 0.0f); /* delay... ignored. */
+	Hide();
 }
 
 void
@@ -220,8 +220,8 @@ func_breakable::Death(void)
 	} else {
 		FX_BreakModel(vlen(size) / 10, absmin, absmax, [0,0,0], m_iMaterial);
 		/* TODO: ability to have whoever destroyed the crate be the activator */
-		CBaseTrigger::UseTargets(this, TRIG_TOGGLE);
-		CBaseEntity::Hide();
+		UseTargets(this, TRIG_TOGGLE, 0.0f);
+		Hide();
 	}
 }
 

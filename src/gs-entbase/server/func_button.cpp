@@ -211,12 +211,7 @@ func_button::Trigger(entity act, int state)
 		Sound_Play(this, CHAN_VOICE, m_strSndPressed);
 
 	MoveAway();
-
-	if (m_flDelay) {
-		UseTargets_Delay(act, TRIG_TOGGLE, m_flDelay);
-	} else {
-		UseTargets(act, TRIG_TOGGLE);
-	}
+	UseTargets(act, TRIG_TOGGLE, m_flDelay);
 }
 
 void

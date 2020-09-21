@@ -135,7 +135,7 @@ monstermaker::Spawner(void)
 		m_iMonsterSpawned++;
 
 		if (target) {
-			UseTargets(this, TRIG_TOGGLE);
+			UseTargets(this, TRIG_TOGGLE, 0.0f);
 		}
 
 		/* inherit the monsterclip flag */

@@ -69,11 +69,7 @@ trigger_multiple::touch(void)
 	}
 
 	/* legacy */
-	if (m_flDelay > 0) {
-		UseTargets_Delay(other, TRIG_TOGGLE, m_flDelay);
-	} else {
-		UseTargets(other, TRIG_TOGGLE);
-	}
+	UseTargets(other, TRIG_TOGGLE, m_flDelay);
 	
 	/* This is effectively a trigger_once...*/
 	if (m_flWait != -1) {

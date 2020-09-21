@@ -223,12 +223,7 @@ void func_door_rotating::Trigger(entity act, int state)
 		Away();
 	}
 
-
-	if (m_flDelay) {
-		CBaseTrigger::UseTargets_Delay(act, TRIG_TOGGLE, m_flDelay);
-	} else {
-		CBaseTrigger::UseTargets(act, TRIG_TOGGLE);
-	}
+	UseTargets(act, TRIG_TOGGLE, m_flDelay);
 }
 
 void func_door_rotating::Use(void)

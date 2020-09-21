@@ -56,7 +56,7 @@ multi_manager::Trigger(entity act, int state)
 		dprint(sprintf("^2%s::^3Trigger^7: %s (%s)\n", 
 			this.classname, wow.target, eFind.classname));
 
-		CBaseTrigger::UseTargets(wow.m_eActivator, TRIG_TOGGLE);
+		CBaseTrigger::UseTargets(wow.m_eActivator, TRIG_TOGGLE, 0.0f);
 	}
 
 	if (GetMaster() == FALSE)

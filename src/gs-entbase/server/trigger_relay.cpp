@@ -52,11 +52,7 @@ trigger_relay::Trigger(entity act, int state)
 	if (spawnflags & TRLY_ONCE)
 		m_iEnabled = FALSE;
 
-	if (m_flDelay > 0) {
-		CBaseTrigger::UseTargets_Delay(act, m_iTriggerState, m_flDelay);
-	} else {
-		CBaseTrigger::UseTargets(act, m_iTriggerState);
-	}
+	UseTargets(act, m_iTriggerState, m_flDelay);
 }
 
 void

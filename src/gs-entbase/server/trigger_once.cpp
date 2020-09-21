@@ -62,11 +62,7 @@ trigger_once::touch(void)
 		return;
 	}
 
-	if (m_flDelay > 0) {
-		CBaseTrigger::UseTargets_Delay(other, TRIG_TOGGLE, m_flDelay);
-	} else {
-		CBaseTrigger::UseTargets(other, TRIG_TOGGLE);
-	}
+	UseTargets(other, TRIG_TOGGLE, m_flDelay);
 }
 
 void

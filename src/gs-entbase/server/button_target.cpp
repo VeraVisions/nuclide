@@ -17,6 +17,7 @@
 /*QUAKED button_target (0 .5 .8) ? BUTTA_USE BUTTA_TEXON
 "targetname"    Name
 "target"        Target when triggered.
+"delay"         Time until target is triggered."
 
 Non-moving button that can either be used by hand, or shot.
 
@@ -76,7 +77,7 @@ button_target::Trigger(entity act, int status)
 	takedamage = DAMAGE_NO;
 
 	frame = 1 - frame;
-	UseTargets(act, status);
+	UseTargets(act, status, m_flDelay);
 }
 
 void

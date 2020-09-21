@@ -48,13 +48,9 @@ trigger_autosave::touch(void)
 
 	//readcmd("save autosave\n");
 	Hide();
+	SetSolid(SOLID_NOT);
 
-	if (m_flDelay > 0) {
-		CBaseTrigger::UseTargets_Delay(other, TRIG_TOGGLE, m_flDelay);
-	} else {
-		CBaseTrigger::UseTargets(other, TRIG_TOGGLE);
-	}
-	solid = SOLID_NOT;
+	CBaseTrigger::UseTargets(other, TRIG_TOGGLE, m_flDelay);
 }
 
 void

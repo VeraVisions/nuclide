@@ -165,7 +165,7 @@ func_tank::PlayerInput(void)
 		spos += v_right * m_vecTipPos[1];
 		spos += v_up * m_vecTipPos[2];
 
-		CBaseTrigger::UseTargets(this, TRIG_ON);
+		UseTargets(this, TRIG_ON, m_flDelay);
 		func_tank_shootsingle(m_eDriver, spos, m_vecSpread, m_iDamage);
 		m_flFireTime = time + m_flFireRate;
 

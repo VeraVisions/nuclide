@@ -28,7 +28,7 @@ void item_pickup::touch(void)
 	Logging_Pickup(other, this, __NULL__);
 	Sound_Play(other, CHAN_ITEM, "weapon.pickup");
 
-	CBaseTrigger::UseTargets(other, TRIG_TOGGLE);
+	UseTargets(other, TRIG_TOGGLE, m_flDelay);
 
 	if (real_owner || m_iWasDropped == 1 || cvar("sv_playerslots") == 1) {
 		remove(self);

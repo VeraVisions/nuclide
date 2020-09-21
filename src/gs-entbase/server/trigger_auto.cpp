@@ -42,7 +42,7 @@ trigger_auto::Processing(void)
 	// This is weird, because ents may not be spawned yet.
 	// However, Half-Life doesn't care about this, either.
 	// So why should we?
-	CBaseTrigger::UseTargets_Delay(this, m_iTriggerState, m_flDelay);
+	UseTargets(this, m_iTriggerState, m_flDelay);
 
 	if (spawnflags & 1) {
 		dprint(sprintf("^2trigger_auto::^3think^7: %s triggerer removed self\n",  target));

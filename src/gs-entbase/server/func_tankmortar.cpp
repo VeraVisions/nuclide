@@ -184,7 +184,7 @@ func_tankmortar::PlayerInput(void)
 		SpriteSmoke(spos);
 		SpriteFlash(spos);
 
-		CBaseTrigger::UseTargets(this, TRIG_ON);
+		UseTargets(this, TRIG_ON, m_flDelay);
 
 		m_flFireTime = time + m_flFireRate;
 	}

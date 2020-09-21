@@ -74,11 +74,7 @@ class func_rot_button:CBaseTrigger
 void
 func_rot_button::TriggerTargets(void)
 {
-	if (m_flDelay > 0) {
-		CBaseTrigger::UseTargets_Delay(this, TRIG_TOGGLE, m_flDelay);
-	} else {
-		CBaseTrigger::UseTargets(this, TRIG_TOGGLE);
-	}
+	UseTargets(this, TRIG_TOGGLE, m_flDelay);
 }
 
 void

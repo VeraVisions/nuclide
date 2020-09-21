@@ -48,8 +48,7 @@ class CBaseTrigger:CBaseEntity
 	/* legacy trigger architecture */
 	float m_flDelay;
 	virtual void(entity, int) Trigger;
-	virtual void(entity, int) UseTargets;
-	virtual void(entity, int, float) UseTargets_Delay;
+	virtual void(entity, int, float) UseTargets;
 
 	/* master feature */
 	virtual int(void) GetValue;

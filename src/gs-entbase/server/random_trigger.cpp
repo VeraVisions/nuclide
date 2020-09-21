@@ -53,7 +53,7 @@ random_trigger::Trigger(entity act, int state)
 		return;
 
 	r = time + m_flMinTime + random(m_flRandMin, m_flRandMax);
-	CBaseTrigger::UseTargets_Delay(other, TRIG_TOGGLE, r);
+	UseTargets(other, TRIG_TOGGLE, r);
 }
 
 void
