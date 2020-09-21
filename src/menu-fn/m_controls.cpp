@@ -281,6 +281,12 @@ menu_controls_input(float evtype, float scanx, float chary, float devid)
 				g_controlquery = -1;
 				g_ctrl_refresh = time + 0.1f;
 			} else if (scanx > 0) {
+				if (ctrl_lbActBind1.GetItem(g_controlquery) != " ")
+				if (ctrl_lbActBind2.GetItem(g_controlquery) != " ") {
+					localcmd(sprintf("unbind %s\n", ctrl_lbActBind1.GetItem(g_controlquery)));
+					localcmd(sprintf("unbind %s\n", ctrl_lbActBind2.GetItem(g_controlquery)));
+				}
+
 				localcmd(sprintf("bind %s %s\n", keynumtostring(scanx), ctrl_lbActBind3.GetItem(g_controlquery)));
 				g_controlquery = -1;
 				g_ctrl_refresh = time + 0.1f;
