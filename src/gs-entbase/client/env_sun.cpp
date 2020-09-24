@@ -90,12 +90,12 @@ env_sun::postdraw(void)
 	makevectors(getproperty(VF_CL_VIEWANGLES));
 	vector lens_m = project(getproperty(VF_ORIGIN) + (v_forward * 16384));
 	vector c = (lens_1 - lens_m) * 1.5;
-	drawpic(lens_1, "textures/fx/flare1", FLARE_SIZE, [1,1,1] * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
-	drawpic(lens_1 - c * 0.1, "textures/fx/flare2", FLARE_SIZE, [1,1,1] * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
-	drawpic(lens_1 + c * 0.2, "textures/fx/flare3", FLARE_SIZE, [1,1,1] * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
-	drawpic(lens_1 - c * 0.3, "textures/fx/flare4", FLARE_SIZE, [1,1,1] * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
-	drawpic(lens_1 + c * 0.4, "textures/fx/flare2", FLARE_SIZE, [1,1,1] * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
-	drawpic(lens_1 - c * 0.5, "textures/fx/flare3", FLARE_SIZE, [1,1,1] * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
+	drawpic(lens_1, "textures/sfx/flare1", FLARE_SIZE, [1,1,1] * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
+	drawpic(lens_1 - c * 0.1, "textures/sfx/flare2", FLARE_SIZE, [1,1,1] * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
+	drawpic(lens_1 + c * 0.2, "textures/sfx/flare3", FLARE_SIZE, [1,1,1] * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
+	drawpic(lens_1 - c * 0.3, "textures/sfx/flare4", FLARE_SIZE, [1,1,1] * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
+	drawpic(lens_1 + c * 0.4, "textures/sfx/flare2", FLARE_SIZE, [1,1,1] * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
+	drawpic(lens_1 - c * 0.5, "textures/sfx/flare3", FLARE_SIZE, [1,1,1] * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
 }
 
 void env_sun::Init(void)
@@ -113,10 +113,10 @@ void env_sun::Initialized(void)
 
 void env_sun::env_sun(void)
 {
-	precache_pic("textures/fx/flare1");
-	precache_pic("textures/fx/flare2");
-	precache_pic("textures/fx/flare3");
-	precache_pic("textures/fx/flare4");
+	precache_pic("textures/sfx/flare1");
+	precache_pic("textures/sfx/flare2");
+	precache_pic("textures/sfx/flare3");
+	precache_pic("textures/sfx/flare4");
 	solid = SOLID_NOT;
 	Init();
 }
