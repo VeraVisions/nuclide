@@ -82,6 +82,10 @@ decal::predraw(void)
 		return PREDRAW_NEXT;
 	}
 
+	/* skip empty decals */
+	if (!dcl.m_strShader)
+		return;
+
 	/* don't draw us, unnecessary */
 	/*if (checkpvs(getproperty(VF_ORIGIN), this) == FALSE) {
 		return PREDRAW_NEXT;
@@ -96,6 +100,11 @@ void
 decal::BuildShader(void)
 {
 	string shader_buff;
+
+	/* skip empty decals */
+	if (!m_strTexture)
+		return;
+
 	m_strShader = sprintf("decal_%s", m_strTexture);
 	shader_buff = sprintf(g_decal_shader, m_strTexture);
 	shaderforname(m_strShader, shader_buff);
