@@ -1,0 +1,24 @@
+#pragma target fte
+#pragma progs_dat  "../../platform/data.pk3dir/menu.dat"
+#define MENU
+
+#includelist
+../shared/fteextensions.qc
+defs.h
+
+../vgui/include.src
+
+background.cpp
+loading.cpp
+
+main.h
+ui_console.cpp
+ui_newgame.cpp
+ui_quitgame.cpp
+ui_createserver.cpp
+ui_findservers.cpp
+ui_musicplayer.cpp
+ui_modelviewer.cpp
+desktop.cpp
+main.cpp
+#endlist
