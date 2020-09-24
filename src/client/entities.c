@@ -14,57 +14,67 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*
-=================
-CSQC_Ent_Update
-
-Called whenever an entity is sent manually via .SendFlags and so on
-=================
-*/
-void
-CSQC_Ent_Update(float new)
+float
+Entities_ParseLump(void)
 {
-	float t;
-	t = readbyte();
+	entity eOld;
+	CBaseEntity eEnt = __NULL__;
+	string strField, strValue;
+	__fullspawndata = "";
+	int iClass = FALSE;
 
-	switch (t) {
-	case ENT_ENTITY:
-		CBaseEntity me = (CBaseEntity)self;
-		if (new) {
-			spawnfunc_CBaseEntity();
+	eOld = self;
+
+	while (1) {
+		strField = getentitytoken();
+
+		if (!strField) {
+			break;
 		}
-		me.ReadEntity(readfloat());
-		break;
-	case ENT_PLAYER:
-		Player_ReadEntity(new);
-		break;
-	case ENT_SPRITE:
-		env_sprite spr = (env_sprite)self;
-		if (new) {
-			spawnfunc_env_sprite();
+
+		if (strField == "}") {
+			/* invalid entity */
+			if (!eEnt.classname) {
+				break;
+			}
+			/* when we've reached the end of the lump, initialize the class! */
+			if (iClass == TRUE) {
+				eEnt.Init();
+				return TRUE;
+			}
+
+			/* remove if we've found no valid class to go with us */
+			if (eEnt) {
+				remove(eEnt);
+			}
+			return TRUE;
 		}
-		spr.ReadEntity(readfloat());
-		break;
-		break;
-	case ENT_SPRAY:
-		Spray_Parse();
-		break;
-	case ENT_DECAL:
-		Decal_Parse();
-		break;
-	case ENT_AMBIENTSOUND:
-		Sound_ParseLoopingEntity(self, new);
-		break;
-	case ENT_ENVLASER:
-		env_laser l = (env_laser)self;
-		if (new) {
-			spawnfunc_env_laser();
+
+		strValue = getentitytoken();
+		if (!strValue) {
+			break;
 		}
-		l.ReadEntity(readfloat());
-		break;
-	default:
-		if (Game_Entity_Update(t, new) == FALSE) {
-			error("Unknown entity type update received.\n");
+
+		switch (strField) {
+		case "classname":
+			eEnt = (CBaseEntity)spawn();
+
+			/* check if our classname has a matching class */
+			if (isfunction(strcat("spawnfunc_", strValue))) {
+				self = eEnt;
+				callfunction(strcat("spawnfunc_", strValue));
+				self = eOld;
+				iClass = TRUE;
+			} else {
+				eEnt.classname = strValue;
+			}
+			break;
+		default:
+			__fullspawndata = sprintf("%s\"%s\" \"%s\" ",
+				__fullspawndata, strField, strValue);
+			break;
 		}
 	}
+
+	return FALSE;
 }

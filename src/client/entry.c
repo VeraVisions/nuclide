@@ -14,6 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/* This file houses all of the callbacks and entry points the engine
+   calls by itself */
+
 void
 CSQC_Init(float apilevel, string enginename, float engineversion)
 {
@@ -333,7 +336,6 @@ CSQC_UpdateView(float w, float h, float focus)
 		} else if (focus == TRUE) {
 			GameText_Draw();
 
-			// The spectator sees things... differently
 			if (getplayerkeyvalue(player_localnum, "*spec") != "0") {
 				HUD_DrawSpectator();
 			} else {
@@ -344,7 +346,7 @@ CSQC_UpdateView(float w, float h, float focus)
 			Chat_Draw();
 			Print_Draw();
 
-			// Don't even try to draw centerprints and VGUI menus when scores are shown
+			/* no prints overlapping scoreboards */
 			if (pSeat->m_iScoresVisible == TRUE) {
 				Scores_Draw();
 			} else {
@@ -769,66 +771,57 @@ CSQC_Parse_CenterPrint(string sMessage)
 
 /*
 =================
-CSQC_Ent_ParseMapEntity
+CSQC_Ent_Update
+
+Called whenever an entity is sent manually via .SendFlags and so on
 =================
 */
-float
-CSQC_Ent_ParseMapEntity(void)
+void
+CSQC_Ent_Update(float new)
 {
-	entity eOld;
-	CBaseEntity eEnt = __NULL__;
-	string strField, strValue;
-	__fullspawndata = "";
-	int iClass = FALSE;
+	float t;
+	t = readbyte();
 
-	eOld = self;
-
-	while (1) {
-		strField = getentitytoken();
-
-		if (!strField) {
-			break;
+	switch (t) {
+	case ENT_ENTITY:
+		CBaseEntity me = (CBaseEntity)self;
+		if (new) {
+			spawnfunc_CBaseEntity();
 		}
-
-		if (strField == "}") {
-			if (!eEnt.classname) {
-				break;
-			}
-			if (iClass == TRUE) {
-				eEnt.Init();
-				return TRUE;
-			}
-			if (eEnt) {
-				remove(eEnt);
-			}
-			return TRUE;
+		me.ReadEntity(readfloat());
+		break;
+	case ENT_PLAYER:
+		Player_ReadEntity(new);
+		break;
+	case ENT_SPRITE:
+		env_sprite spr = (env_sprite)self;
+		if (new) {
+			spawnfunc_env_sprite();
 		}
-
-		strValue = getentitytoken();
-		if (!strValue) {
-			break;
+		spr.ReadEntity(readfloat());
+		break;
+		break;
+	case ENT_SPRAY:
+		Spray_Parse();
+		break;
+	case ENT_DECAL:
+		Decal_Parse();
+		break;
+	case ENT_AMBIENTSOUND:
+		Sound_ParseLoopingEntity(self, new);
+		break;
+	case ENT_ENVLASER:
+		env_laser l = (env_laser)self;
+		if (new) {
+			spawnfunc_env_laser();
 		}
-
-		switch (strField) {
-		case "classname":
-			eEnt = (CBaseEntity)spawn();
-			if (isfunction(strcat("spawnfunc_", strValue))) {
-				self = eEnt;
-				callfunction(strcat("spawnfunc_", strValue));
-				self = eOld;
-				iClass = TRUE;
-			} else {
-				eEnt.classname = strValue;
-			}
-			break;
-		default:
-			__fullspawndata = sprintf("%s\"%s\" \"%s\" ",
-				__fullspawndata, strField, strValue);
-			break;
+		l.ReadEntity(readfloat());
+		break;
+	default:
+		if (Game_Entity_Update(t, new) == FALSE) {
+			error("Unknown entity type update received.\n");
 		}
 	}
-
-	return FALSE;
 }
 
 /*
@@ -850,6 +843,7 @@ CSQC_WorldLoaded(void)
 
 	string strTokenized;
 	getentitytoken(0);
+
 	while (1) {
 		strTokenized = getentitytoken();
 		if (strTokenized == "") {
@@ -859,11 +853,14 @@ CSQC_WorldLoaded(void)
 			print("^1[WARNING] ^7Bad entity data\n");
 			return;
 		}
-		if (!CSQC_Ent_ParseMapEntity()) {
+		if (!Entities_ParseLump()) {
 			print("^1[WARNING] ^7Bad entity data\n");
 			return;
 		}
 	}
+
+	/* we've gone through all ent-lumps, so we can read sky-overrides from
+	   worldspawn now. */
 	Sky_Update();
 }
 
