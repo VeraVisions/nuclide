@@ -1,0 +1,12 @@
+// Vera Visions Material
+{
+	diffusemap textures/next/earth2.tga
+	normalmap textures/next/earth2_normal.tga
+
+	{
+		program lightmapped_reflectcube
+		map $diffuse
+		map $normalmap
+		map $reflectcube
+	}
+}

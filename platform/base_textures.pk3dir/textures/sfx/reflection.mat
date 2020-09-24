@@ -1,0 +1,12 @@
+// Vera Visions Material
+{
+	polygonOffset 1
+	diffusemap "textures/sfx/alpha.tga"
+
+	{
+		program lightmapped_reflectcube
+		map $diffuse
+		map $normalmap
+		map $reflectcube
+	}
+}

@@ -1,0 +1,4 @@
+COLOR=255 255 255
+ALPHA=255
+SIZE=12
+PATH=fonts/Tahoma.ttf

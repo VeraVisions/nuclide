@@ -1,0 +1,13 @@
+// Vera Visions Material
+{
+	surfaceparm metal
+
+	diffusemap textures/sfx/alpha.tga
+
+	{
+		program lightmapped_reflectcube
+		map $diffuse
+		map $normalmap
+		map $reflectcube
+	}
+}

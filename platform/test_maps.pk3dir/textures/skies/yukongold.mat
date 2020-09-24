@@ -1,0 +1,22 @@
+// Vera Visions Material
+{
+	qer_editorImage textures/skies/yukongold.tga
+	skyParms - 256 -
+	vmap_globalTexture
+
+	surfaceParm sky
+	surfaceParm noimpact
+	surfaceParm nolightmap
+	surfaceParm nodlight
+
+	nopicmip
+	nomipmaps
+	
+	{
+		program skybox_parallax
+		map textures/skies/clouds/dustycloud.tga
+		map $blackimage
+		map $cube:textures/skies/yukongold/bg
+		map $cube:textures/skies/yukongold/fg
+	}
+}

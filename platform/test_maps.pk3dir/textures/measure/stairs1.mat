@@ -1,0 +1,10 @@
+// Vera Visions Material
+{
+	diffusemap textures/measure/stairs1.tga
+
+	{
+		program lightmapped
+		map $diffuse
+		map $normalmap
+	}
+}

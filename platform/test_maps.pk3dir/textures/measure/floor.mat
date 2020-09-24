@@ -1,0 +1,10 @@
+// Vera Visions Material
+{
+	diffusemap textures/measure/floor.tga
+
+	{
+		program lightmapped
+		map $diffuse
+		map $normalmap
+	}
+}

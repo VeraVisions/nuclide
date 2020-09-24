@@ -1,0 +1,10 @@
+// Vera Visions Material
+{
+	diffusemap textures/next/vent2.tga
+
+	{
+		program lightmapped
+		map $diffuse
+		map $normalmap
+	}
+}

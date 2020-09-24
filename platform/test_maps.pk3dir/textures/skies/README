@@ -1,0 +1,19 @@
+Everything in this .pk3dir is licensed under the GPL V2.
+Two example skyboxes are included:
+
+textures/skies/smudge:
+Which is a LDR, single cubemap, skybox.
+
+textures/skies/dune:
+Which is HDR capable. So depending on the irisadaption level the sky will
+darken, or brighten. r_hdr_irisadaption needs to be set to 1.
+
+textures/skies/recotta:
+Which is an LDR night-sky. A map using this does not need a light_environment
+entity to light the scene. The compiler will approximate even lighting for the
+entire level based around said sky.
+
+textures/skies/yukongold:
+Which is a skybox with a background, clouds rendered on top, with another
+foreground box layered on top of the clouds. This is so the clouds can go
+behind mountains or whatever you'd like.

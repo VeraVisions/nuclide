@@ -1,0 +1,10 @@
+// Vera Visions Material
+{
+	diffusemap textures/next/bunker1.tga
+
+	{
+		program lightmapped
+		map $diffuse
+		map $normalmap
+	}
+}

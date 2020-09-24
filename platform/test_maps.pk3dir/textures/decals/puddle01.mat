@@ -1,0 +1,15 @@
+// Vera Visions Material
+{
+	surfaceParm nomarks
+	surfaceParm nonsolid
+	surfaceParm trans
+	surfaceParm nodlight
+	diffusemap textures/decals/puddle01.tga
+	normalmap textures/liquid/water1_n.tga
+
+	polygonOffset 1
+	{
+		program decal_reflectcube
+		blendFunc GL_ONE GL_ONE
+	}
+}

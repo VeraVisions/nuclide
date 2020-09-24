@@ -1,0 +1,11 @@
+// Vera Visions Material
+{
+	diffusemap textures/next/asphalt2.tga
+	normalmap textures/next/asphalt2_normal.tga
+
+	{
+		program lightmapped
+		map $diffuse
+		map $normalmap
+	}
+}

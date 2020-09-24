@@ -1,0 +1,10 @@
+// Vera Visions Material
+{
+	diffusemap textures/next/earth4.tga
+
+	{
+		program lightmapped
+		map $diffuse
+		map $normalmap
+	}
+}

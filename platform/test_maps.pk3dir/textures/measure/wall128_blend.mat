@@ -1,0 +1,14 @@
+// Vera Visions Material
+{
+	vmap_lightmapMergable
+	qer_editorImage "textures/measure/wall128b.tga"
+	polygonOffset 1
+
+	{
+		program terrain
+		map "textures/measure/wall128.tga"
+		map "textures/measure/wall128b.tga"
+		map $whiteimage
+		map $whiteimage
+	}
+}

@@ -1,0 +1,22 @@
+// Vera Visions Material
+{
+	qer_editorImage textures/skies/recotta.tga
+	skyParms textures/skies/recotta/bg 256 -
+	vmap_globalTexture
+
+	surfaceParm noimpact
+	surfaceParm nolightmap
+	surfaceParm sky
+	surfaceParm nodlight
+
+	vmap_skylight 200 4
+	nopicmip
+	nomipmaps
+
+	{
+		program skybox
+		map $cube:textures/skies/recotta/bg
+		map textures/skies/clouds/dunecloud.tga
+		map $blackimage
+	}
+}
