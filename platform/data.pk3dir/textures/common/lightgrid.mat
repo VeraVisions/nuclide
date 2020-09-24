@@ -1,0 +1,12 @@
+// Vera Visions Material
+{
+	qer_editorImage "textures/common/lightgrid.tga"
+	surfaceParm nodraw
+	surfaceParm nolightmap
+	surfaceParm nonsolid
+	surfaceParm detail
+	surfaceParm nomarks
+	surfaceParm trans
+	surfaceParm lightgrid
+	nomipmaps
+}

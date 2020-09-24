@@ -1,0 +1,8 @@
+// Vera Visions Material
+{
+	{
+		map $whiteimage
+		rgbGen vertex
+		alphaGen vertex
+	}
+}

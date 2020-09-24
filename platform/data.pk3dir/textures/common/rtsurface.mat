@@ -1,0 +1,7 @@
+// Vera Visions Material
+{
+	qer_editorImage "textures/common/rtsurface.tga"
+	{
+		map $rt:base
+	}
+}

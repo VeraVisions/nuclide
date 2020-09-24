@@ -1,0 +1,8 @@
+// Vera Visions Material
+{
+	qer_editorImage "textures/common/trigger.tga"
+	qer_trans 0.50
+	qer_noCarve
+	surfaceParm nodraw
+	nomipmaps
+}
