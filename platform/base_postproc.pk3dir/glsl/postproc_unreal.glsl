@@ -38,41 +38,33 @@ void main()
 #ifdef FRAGMENT_SHADER
 uniform vec2 e_sourcesize;
 
-// from https://github.com/hughsk/glsl-dither/blob/master/4x4.glsl
+// this is the kernel dithering scheme, but applied to the end framebuffer
+// like, this really oughta to done on the individual surfaces, but why bother.
+// it's just for a bit of fun.
 vec3 p_dither(vec2 position, vec3 col)
 {
-  float brightness = col.r + col.g + col.b / 3.0;
- 
-  int x = int(mod(position.x, 4.0));
-  int y = int(mod(position.y, 4.0));
-  int index = x + y * 4;
-  float limit = 0.0;
+	int x = int(mod(position.x, 2.0));
+	int y = int(mod(position.y, 2.0));
+	int index = x + y * 2;
+	vec2 coord_ofs;
 
-  if (x < 8) {
-    if (index == 0) limit = 0.0625;
-    if (index == 1) limit = 0.5625;
-    if (index == 2) limit = 0.1875;
-    if (index == 3) limit = 0.6875;
-    if (index == 4) limit = 0.8125;
-    if (index == 5) limit = 0.3125;
-    if (index == 6) limit = 0.9375;
-    if (index == 7) limit = 0.4375;
-    if (index == 8) limit = 0.25;
-    if (index == 9) limit = 0.75;
-    if (index == 10) limit = 0.125;
-    if (index == 11) limit = 0.625;
-    if (index == 12) limit = 1.0;
-    if (index == 13) limit = 0.5;
-    if (index == 14) limit = 0.875;
-    if (index == 15) limit = 0.375;
-  }
+	if (index == 0)
+		coord_ofs = vec2(0.25f, 0.0f);
+	else if (index == 1)
+		coord_ofs = vec2(0.50f, 0.75f);
+	else if (index == 2)
+		coord_ofs = vec2(0.75f, 0.50f);
+	else if (index == 3)
+		coord_ofs = vec2(0.00f, 0.25f);
 
-  return col * (brightness < limit ? 0.0 : 1.0);
+	// -0.003 is the distance intensity, all this is whipped up
+	return texture2D(s_screen, texcoord + coord_ofs * -0.003).rgb;
 }
 
+// accentuate the gritty lighting
 vec3 p_gamma(vec3 col)
 {
-	float gamma = 0.75f;
+	float gamma = 0.85f;
 	col.r = pow(col.r, 1.0 / gamma);
 	col.g = pow(col.g, 1.0 / gamma);
 	col.b = pow(col.b, 1.0 / gamma); 
@@ -84,13 +76,15 @@ void main(void)
 	vec2 pos = vec2(gl_FragCoord.x, gl_FragCoord.y);
 	vec3 col = texture2D(s_screen, texcoord).rgb;
 
-	col = p_gamma(col);
+	// dither me first
+	col = p_dither(pos, col);
 
-	// dither me
-	col = mix(col, p_dither(pos, col), 0.5f);
+	// mess with gamma
+	col = p_gamma(col);
 
 	// 16-bit ify
 	col.rgb = floor(col.rgb * vec3(32,64,32))/vec3(32,64,32);
+
 	gl_FragColor = vec4(col, 1.0);
 }
 #endif
