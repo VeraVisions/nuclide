@@ -25,13 +25,17 @@ and pressing jump.
 */
 class item_longjump:CBaseTrigger
 {
+	string m_strOnPlayerTouch;
+
 	void(void) item_longjump;
 
 	virtual void(void) touch;
 	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
 };
 
-void item_longjump::touch(void)
+void
+item_longjump::touch(void)
 {
 	if (other.classname != "player") {
 		return;
@@ -47,7 +51,11 @@ void item_longjump::touch(void)
 	sound(other, CHAN_VOICE, "fvox/powermove_on.wav", 1, ATTN_NORM);
 	pl.g_items |= ITEM_LONGJUMP;
 
-	UseTargets(other, TRIG_TOGGLE, m_flDelay);
+	if (!target) {
+		UseOutput(other, m_strOnPlayerTouch);
+	} else {
+		UseTargets(other, TRIG_TOGGLE, m_flDelay);
+	}
 
 	if (real_owner || cvar("sv_playerslots") == 1) {
 		remove(self);
@@ -58,7 +66,8 @@ void item_longjump::touch(void)
 	}
 }
 
-void item_longjump::Respawn(void)
+void
+item_longjump::Respawn(void)
 {
 	SetSolid(SOLID_TRIGGER);
 	SetMovetype(MOVETYPE_TOSS);
@@ -73,7 +82,22 @@ void item_longjump::Respawn(void)
 		Sound_Play(this, CHAN_ITEM, "item.respawn");
 }
 
-void item_longjump::item_longjump(void)
+void
+item_longjump::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "OnPlayerTouch":
+		strValue = strreplace(",", ",_", strValue);
+		m_strOnPlayerTouch = strcat(m_strOnPlayerTouch, ",_", strValue);
+		break;
+	default:
+		CBaseTrigger::SpawnKey(strKey, strValue);
+		break;
+	}
+}
+
+void
+item_longjump::item_longjump(void)
 {
 	model = "models/w_longjump.mdl";
 	precache_sound("items/suitchargeok1.wav");

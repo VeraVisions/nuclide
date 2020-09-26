@@ -33,7 +33,8 @@ class item_suit:CBaseTrigger
 	virtual void(string, string) SpawnKey;
 };
 
-void item_suit::touch(void)
+void
+item_suit::touch(void)
 {
 	if (other.classname != "player") {
 		return;
@@ -52,7 +53,6 @@ void item_suit::touch(void)
 
 	if (!target) {
 		UseOutput(other, m_strOnPlayerTouch);
-		return;
 	} else {
 		UseTargets(other, TRIG_TOGGLE, m_flDelay);
 	}
@@ -66,7 +66,8 @@ void item_suit::touch(void)
 	}
 }
 
-void item_suit::Respawn(void)
+void
+item_suit::Respawn(void)
 {
 	SetSolid(SOLID_TRIGGER);
 	SetMovetype(MOVETYPE_TOSS);
@@ -96,7 +97,8 @@ item_suit::SpawnKey(string strKey, string strValue)
 	}
 }
 
-void item_suit::item_suit(void)
+void
+item_suit::item_suit(void)
 {
 	model = "models/w_suit.mdl";
 	precache_sound("items/suitchargeok1.wav");
