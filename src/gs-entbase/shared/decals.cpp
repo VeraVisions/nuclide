@@ -84,7 +84,7 @@ decal::predraw(void)
 
 	/* skip empty decals */
 	if (!dcl.m_strShader)
-		return;
+		return PREDRAW_NEXT;
 
 	/* don't draw us, unnecessary */
 	/*if (checkpvs(getproperty(VF_ORIGIN), this) == FALSE) {
