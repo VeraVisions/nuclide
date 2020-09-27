@@ -95,6 +95,7 @@ m_init(void)
 	print("\n\n");
 
 	registercommand("menu_customgame");
+	registercommand("map_background");
 	font_console = loadfont("font", "", "12", -1);
 	font_label = loadfont("label", "gfx/shell/mssansserif.ttf", "10 12 14", -1);
 	font_arial = loadfont("label", "gfx/shell/arial.ttf", "14 11 12", -1);
@@ -181,15 +182,24 @@ m_draw(vector screensize)
 		Menu_AutoScale();
 	}
 
+	g_background = cvar("_background");
+
+	if (g_background) {
+		setkeydest(KEY_MENU);
+		setmousetarget(TARGET_MENU);
+		setcursormode(TRUE, "gfx/cursor");
+	}
+
 	/* to prevent TCP timeouts */
 	menu_chatrooms_keepalive();
 
-	if (!g_active) {
+	if (!g_active && !g_background) {
 		return;
 	}
 
 	if (clientstate() == 2) {
-		drawfill([0,0], screensize, [0,0,0], 0.75f);
+		if (!g_background)
+			drawfill([0,0], screensize, [0,0,0], 0.75f);
 	} else {
 		drawfill([0,0], screensize, [0,0,0], 1.0f);
 		drawpic([g_menuofs[0],g_menuofs[1]], g_bmp[SPLASH],
@@ -226,7 +236,7 @@ Menu_InputEvent(float evtype, float scanx, float chary, float devid)
 	switch (evtype) {
 		case IE_KEYDOWN:
 			if (chary == K_ESCAPE) {
-				if (clientstate() == 2) {
+				if (clientstate() == 2 && !g_background) {
 					m_toggle(0);
 				}
 			}
@@ -300,6 +310,10 @@ m_consolecommand(string cmd)
 			break;
 		case "togglemenu":
 			m_display();
+			break;
+		case "map_background":
+			localcmd(sprintf("maxplayers 2\nset coop 1\nset sv_background 1\nmap %s\n",
+				argv(1)));
 			break;
 		default:
 			return FALSE;

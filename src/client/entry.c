@@ -150,6 +150,12 @@ CSQC_UpdateView(float w, float h, float focus)
 	video_res[0] = w;
 	video_res[1] = h;
 
+	cvar_set("_background", serverkey("background"));
+
+	if (serverkeyfloat("background") == 1) {
+		setpause(FALSE);
+	}
+
 	if (g_iCubeProcess == TRUE) {
 		clearscene();
 		setproperty(VF_DRAWWORLD, TRUE);
@@ -430,12 +436,16 @@ CSQC_Input_Frame(void)
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
 
-	// If we are inside a VGUI, don't let the client do stuff outside
+	/* If we are inside a VGUI, don't let the client do stuff outside */
 	if (g_vguiWidgetCount > 0) {
 		input_impulse = 0;
 		input_buttons = 0;
 		return;
 	}
+
+	/* background maps have no input */
+	if (serverkeyfloat("background") == 1)
+		return;
 
 	/* The HUD needs more time */
 	if ((pSeat->m_iHUDWeaponSelected) && (input_buttons & INPUT_BUTTON0)) {

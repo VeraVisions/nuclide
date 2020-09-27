@@ -243,6 +243,14 @@ void initents(void)
 	entity respawntimer = spawn();
 	respawntimer.think = init_respawn;
 	respawntimer.nextthink = time + 0.1f;
+
+	/* menu background lock */
+	if (cvar("sv_background") == 1) {
+		forceinfokey(world, "background", "1");
+		localcmd("sv_background 0\n");
+	} else {
+		forceinfokey(world, "background", "0");
+	}
 }
 
 void worldspawn(void)
@@ -267,4 +275,13 @@ float ConsoleCmd(string cmd)
 {
 	player pl = (player)self;
 	return g_grMode.ConsoleCommand(pl, cmd);
+}
+
+float SV_ShouldPause(float newstatus)
+{
+	if (serverkeyfloat("background") == 1) {
+		return FALSE;
+	}
+
+	return newstatus;
 }

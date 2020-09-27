@@ -16,6 +16,7 @@
 
 int g_iMenuActive;
 vector video_res;
+var int g_background = FALSE;
 
 var float frametime;
 var float lasttime;

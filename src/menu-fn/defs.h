@@ -33,6 +33,7 @@ int g_lastmousepos[2];
 int g_active;
 float g_btnofs;
 float frametime;
+var int g_background = FALSE;
 
 /* Font IDs */
 int font_label;

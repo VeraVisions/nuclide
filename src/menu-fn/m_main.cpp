@@ -351,7 +351,7 @@ menu_main_init(void)
 void
 menu_main_draw(void)
 {
-	if (clientstate() == 2) {
+	if (clientstate() == 2 && !g_background) {
 		Widget_Draw(fn_main2);
 		WLabel_Static(235, 216, m_reslbl[IDS_MAIN_RETURNHELP], 10, 10,
 						col_help,1.0f, 0, font_label);
@@ -429,7 +429,7 @@ menu_main_input(float evtype, float scanx, float chary, float devid)
 	if (main_quitdialog) {
 		Widget_Input(main_dgQuit, evtype, scanx, chary, devid);
 	} else {
-		if (clientstate() == 2) {
+		if (clientstate() == 2 && !g_background) {
 			Widget_Input(fn_main2, evtype, scanx, chary, devid);
 		} else {
 			Widget_Input(fn_main, evtype, scanx, chary, devid);

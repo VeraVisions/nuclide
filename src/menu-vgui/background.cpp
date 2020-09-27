@@ -36,7 +36,8 @@ void Background_Init ( void )
 void Background_Draw ( vector vecSize )
 {
 	if ( clientstate() == 2 ) {
-		drawfill( [ 0, 0 ], vecSize, [ 0, 0, 0 ], 0.5f );
+		if (!g_background)
+			drawfill( [ 0, 0 ], vecSize, [ 0, 0, 0 ], 0.5f );
 	} else {
 		if ( g_iBackgroundLoaded == TRUE ) {
 			drawpic( [ 0, 0 ], BACKGROUND_IMG, vecSize, [ 1, 1, 1 ], 1.0f );
