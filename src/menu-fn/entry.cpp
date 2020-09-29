@@ -184,16 +184,25 @@ m_draw(vector screensize)
 
 	g_background = cvar("_background");
 
+	/* make sure input carries over when a map background is active */
 	if (g_background) {
-		setkeydest(KEY_MENU);
-		setmousetarget(TARGET_MENU);
-		setcursormode(TRUE, "gfx/cursor");
+		if (getkeydest() != KEY_MENU) {
+			setkeydest(KEY_MENU);
+			setmousetarget(TARGET_MENU);
+			setcursormode(TRUE, "gfx/cursor");
+		}
 	}
 
 	/* to prevent TCP timeouts */
 	menu_chatrooms_keepalive();
 
 	if (!g_active && !g_background) {
+		/* make sure we're redirecting input when the background's gone */
+		if (getkeydest() != KEY_GAME) {
+			setkeydest(KEY_GAME);
+			setmousetarget(TARGET_CLIENT);
+			setcursormode(FALSE);
+		}
 		return;
 	}
 
