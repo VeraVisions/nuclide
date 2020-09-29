@@ -104,12 +104,12 @@ void CUIMenuButton::Draw(void)
 void CUIMenuButton::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
 	// If we're not ingame
-	if (clientstate() != 2) {
-		if (!(m_iFlags & MBUTTON_SHOWOFFLINE)) {
+	if (clientstate() == 2 && !g_background) {
+		if (!(m_iFlags & MBUTTON_SHOWSP)) {
 			return;
 		}
 	} else {
-		if (!(m_iFlags & MBUTTON_SHOWSP)) {
+		if (!(m_iFlags & MBUTTON_SHOWOFFLINE)) {
 			return;
 		}
 	}
