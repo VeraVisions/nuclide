@@ -65,6 +65,21 @@ varying vec2 lm1, lm2, lm3;
 	#include "sys/fog.h"
 	#include "sys/pcf.h"
 
+	vec3 lightmap_fragment()
+	{
+		vec3 lightmaps;
+
+#ifdef LIGHTSTYLED
+		lightmaps  = texture2D(s_lightmap0, lm0).rgb * e_lmscale[0].rgb;
+		lightmaps += texture2D(s_lightmap1, lm1).rgb * e_lmscale[1].rgb;
+		lightmaps += texture2D(s_lightmap2, lm2).rgb * e_lmscale[2].rgb;
+		lightmaps += texture2D(s_lightmap3, lm3).rgb * e_lmscale[3].rgb;
+#else
+		lightmaps  = texture2D(s_lightmap, lm0).rgb * e_lmscale.rgb;
+#endif
+		return lightmaps;
+	}
+
 	vec3 lightmap_fragment (vec3 normal_f)
 	{
 		vec3 lightmaps;
@@ -95,7 +110,11 @@ varying vec2 lm1, lm2, lm3;
 	#endif
 
 		/* lightmap */
-		diffuse_f.rgb *= lightmap_fragment(normal_f);
+		if (float(dev_skipnormal) == 1.0) {
+			diffuse_f.rgb *= lightmap_fragment();
+		} else {
+			diffuse_f.rgb *= lightmap_fragment(normal_f);
+		}
 
 		/* specular */
 		vec3 halfdir = normalize(normalize(eyevector) - e_light_dir);

@@ -65,7 +65,22 @@ varying vec2 lm1, lm2, lm3;
 	#include "sys/fog.h"
 	#include "sys/pcf.h"
 
-	vec3 lightmap_fragment (vec3 normal_f)
+	vec3 lightmap_fragment()
+	{
+		vec3 lightmaps;
+
+#ifdef LIGHTSTYLED
+		lightmaps  = texture2D(s_lightmap0, lm0).rgb * e_lmscale[0].rgb;
+		lightmaps += texture2D(s_lightmap1, lm1).rgb * e_lmscale[1].rgb;
+		lightmaps += texture2D(s_lightmap2, lm2).rgb * e_lmscale[2].rgb;
+		lightmaps += texture2D(s_lightmap3, lm3).rgb * e_lmscale[3].rgb;
+#else
+		lightmaps  = texture2D(s_lightmap, lm0).rgb * e_lmscale.rgb;
+#endif
+		return lightmaps;
+	}
+
+	vec3 lightmap_fragment(vec3 normal_f)
 	{
 		vec3 lightmaps;
 
@@ -82,18 +97,26 @@ varying vec2 lm1, lm2, lm3;
 
 	void main (void)
 	{
-		vec4 diffuse_f = texture2D(s_t0, tex_c);
-		vec3 normal_f = normalize(texture2D(s_t1, tex_c).rgb - 0.5);
+		vec4 diffuse_f;
+		vec3 normal_f;
+
+		normal_f = normalize(texture2D(s_t1, tex_c).rgb - 0.5);
 
 		if (float(dev_skipdiffuse) == 1.0) {
 			diffuse_f =  vec4(1.0,1.0,1.0,1.0);
+		} else {
+			diffuse_f = texture2D(s_t0, tex_c);
 		}
 
 	#ifdef FAKESHADOWS
 		diffuse_f.rgb *= ShadowmapFilter(s_shadowmap, vtexprojcoord);
 	#endif
 
-		diffuse_f.rgb *= lightmap_fragment(normal_f);
+		if (float(dev_skipnormal) == 1.0) {
+			diffuse_f.rgb *= lightmap_fragment();
+		} else {
+			diffuse_f.rgb *= lightmap_fragment(normal_f);
+		}
 
 		gl_FragColor = fog4(diffuse_f);
 	}
