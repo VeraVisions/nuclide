@@ -30,6 +30,9 @@ CScrollbar create_sbMaps;
 
 int g_mapcount;
 
+int map_blacklist_count;
+string *map_blacklist;
+
 void
 create_btnok_start(void)
 {
@@ -82,6 +85,9 @@ create_sbmaps_changed(int val)
 void
 menu_creategame_init(void)
 {
+	int i = 0;
+	int realcount = 0;
+
 	fn_create = spawn(CWidget);
 	create_btnAdv = spawn(CMainButton);
 	create_btnAdv.SetImage(BTN_ADVOPTIONS);
@@ -135,15 +141,54 @@ menu_creategame_init(void)
 	create_sbMaps.SetCallback(create_sbmaps_changed);
 	Widget_Add(fn_createshared, create_sbMaps);
 
-	searchhandle mapsearch = search_begin("maps/*.bsp", TRUE, TRUE);
-	g_mapcount = search_getsize(mapsearch);
-	for (int i = 0; i < g_mapcount; i++) {
-		string tmp;
-		tmp = substring(search_getfilename(mapsearch, i), 5, -1);
-		create_lbMaps.AddEntry(tmp);
+	/* map blacklist code */
+	filestream fs_blacklist;
+	fs_blacklist = fopen("scripts/map_blacklist", FILE_READ);
+
+	if (fs_blacklist < 0) {
+		print("^1WARNING: ^7Could NOT load scripts/map_blacklist");
 	}
 
-	create_sbMaps.SetMax(g_mapcount);
+	if (fs_blacklist >= 0) {
+		string temp;
+
+		while ((temp = fgets(fs_blacklist))) {
+			map_blacklist_count++;
+		}
+
+		map_blacklist = memalloc(sizeof(string) * map_blacklist_count);
+		fseek(fs_blacklist, 0);
+
+		i = 0;
+		while ((temp = fgets(fs_blacklist))) {
+			map_blacklist[i] = temp;
+			i++;
+		}
+
+		fclose(fs_blacklist);
+	}
+
+	searchhandle mapsearch = search_begin("maps/*.bsp", TRUE, TRUE);
+	g_mapcount = search_getsize(mapsearch);
+	for (i = 0; i < g_mapcount; i++) {
+		string tmp;
+		int list = TRUE;
+		tmp = substring(search_getfilename(mapsearch, i), 5, -1);
+
+		/* see if any of our blacklisted names match */
+		for (int b = 0; b < map_blacklist_count; b++) {
+			if (tmp == map_blacklist[b]) {
+				list = FALSE;
+			}
+		}
+
+		if (list == TRUE) {
+			create_lbMaps.AddEntry(tmp);
+			realcount++;
+		}
+	}
+
+	create_sbMaps.SetMax(realcount);
 	search_end(mapsearch);
 }
 
