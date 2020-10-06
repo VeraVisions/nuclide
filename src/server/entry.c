@@ -274,7 +274,30 @@ void worldspawn(void)
 float ConsoleCmd(string cmd)
 {
 	player pl = (player)self;
-	return g_grMode.ConsoleCommand(pl, cmd);
+
+	/* give the game-mode a chance to override us */
+	if (g_grMode.ConsoleCommand(pl, cmd) == TRUE)
+		return TRUE;
+
+	/* time to handle commands that apply to all games */
+	tokenize(cmd);
+	switch (argv(0)) {
+	case "trigger_ent":
+		string targ;
+		targ = argv(1);
+
+		if (targ)
+		for (entity a = world; (a = find(a, ::targetname, argv(1)));) {
+			CBaseTrigger t = (CBaseTrigger)a;
+
+			if (t.Trigger)
+				t.Trigger(self, TRIG_TOGGLE);
+		}
+		break;
+	default:
+		return FALSE;
+	}
+	return TRUE;
 }
 
 float SV_ShouldPause(float newstatus)
