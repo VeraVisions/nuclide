@@ -2,7 +2,7 @@ all:
 	make menu
 	make games
 	make mods
-	make plugins
+	make plugs
 
 menu:
 	cd menu-fn && $(MAKE)
@@ -16,7 +16,7 @@ games:
 	cd server/rewolf && $(MAKE)
 	cd client/gearbox && $(MAKE)
 	cd server/gearbox && $(MAKE)
-#	cd client/wastes && $(MAKE)
+	#cd client/wastes && $(MAKE)
 	#cd server/wastes && $(MAKE)
 
 mods:
@@ -29,5 +29,5 @@ mods:
 	cd client/hunger && $(MAKE)
 	cd server/hunger && $(MAKE)
 
-plugins:
+plugs:
 	cd plugins && $(MAKE)
