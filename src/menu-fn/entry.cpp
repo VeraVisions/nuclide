@@ -96,6 +96,8 @@ m_init(void)
 
 	registercommand("menu_customgame");
 	registercommand("map_background");
+	registercommand("menu_musicstart");
+
 	font_console = loadfont("font", "", "12", -1);
 	font_label = loadfont("label", "gfx/shell/mssansserif.ttf", "10 12 14", -1);
 	font_arial = loadfont("label", "gfx/shell/arial.ttf", "14 11 12", -1);
@@ -307,6 +309,9 @@ m_consolecommand(string cmd)
 {
 	tokenize(cmd);
 	switch (argv(0)) {
+		case "menu_musicstart":
+			Music_MenuStart();
+			break;
 		case "menu_musictrack":
 			Music_ParseTrack(argv(1));
 			break;

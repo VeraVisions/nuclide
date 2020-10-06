@@ -228,9 +228,6 @@ games_init(void)
 			case "gameinfo_trainingmap":
 				games[id].trainingmap = argv(i+1);
 				break;
-			case "gameinfo_menutrack":
-				cvar_set("gameinfo_menutrack", argv(i+1));
-				break;
 			case "gameinfo_pkgname":
 				games[id].pkgname = argv(i+1);
 				games[id].pkgid = game_getpackageid(games[id].pkgname);
@@ -245,7 +242,7 @@ games_init(void)
 				break;
 			}
 		}
-		if (games[id].gamedir == cvar_string("game")) {
+		if (games[id].gamedir == cvar_string("gameinfo_gamedir")) {
 			games_set(id);
 		}
 	}
@@ -355,8 +352,8 @@ customgame_btnactivate_start(void)
 
 	games_set(nextgame);
 
-#if 0
-	localcmd(sprintf("fs_changegame %s.fmf\n", games[nextgame].gamedir));
+#if 1
+	localcmd(sprintf("fs_changegame %s %s.fmf\n", games[nextgame].gamedir, games[nextgame].gamedir));
 #else
 	/* some games/mods inherit other directories */
 	if (games[nextgame].fallback_dir) {
@@ -366,7 +363,10 @@ customgame_btnactivate_start(void)
 	}
 #endif
 
-	localcmd("stopmusic\nsnd_restart\nwait\nvid_reload\nmenu_restart\nmenu_customgame\n");
+	localcmd("stopmusic\nsnd_restart\nwait\nvid_reload\n");
+	localcmd("menu_restart\n");
+	localcmd("menu_customgame\n");
+	localcmd("menu_musicstart\n");
 	cvar_init();
 }
 
@@ -393,10 +393,11 @@ customgame_btninstall_start(void)
 void 
 customgame_btndeactivate_start(void)
 {
-	localcmd("gamedir \"\"\n");
+	localcmd(sprintf("fs_changegame %s %s.fmf\n", GAME_DIR, GAME_DIR));
 	localcmd("stopmusic\nsnd_restart\nwait\nvid_reload\n");
 	localcmd("menu_restart\n");
 	localcmd("menu_customgame\n");
+	localcmd("menu_musicstart\n");
 }
 
 void

@@ -101,6 +101,9 @@ void
 Music_MenuStart(void)
 {
 	string tinfo = cvar_string("gameinfo_menutrack");
+	print(tinfo);
+	print("\n");
+
 	if (tinfo) {
 		localcmd(sprintf("music %s\n", tinfo));
 	}
