@@ -124,7 +124,7 @@ m_init(void)
 	Strings_Init();
 	g_initialized = TRUE;
 
-	if (cvar_string("game") != "valve") {
+	if (cvar_string("gameinfo_gamedir") != "valve") {
 		m_intro_skip();
 		Music_MenuStart();
 	}
