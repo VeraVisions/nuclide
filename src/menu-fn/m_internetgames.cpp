@@ -41,6 +41,7 @@ inet_btnjoin(void)
 	string addr = inet_lbServers_Addresses.GetSelectedItem();
 	
 	if (addr) {
+		localcmd("stopmusic\n");
 		localcmd(sprintf("connect %s\n", addr));
 	}
 }

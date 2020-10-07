@@ -37,6 +37,7 @@ lan_btnjoin(void)
 	string addr = lan_lbServers_Addresses.GetSelectedItem();
 	
 	if (addr) {
+		localcmd("stopmusic\n");
 		localcmd(sprintf("connect %s\n", addr));
 	}
 }
