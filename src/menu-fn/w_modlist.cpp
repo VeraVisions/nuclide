@@ -51,18 +51,26 @@ CModList::Draw(void)
 {
 	int visible;
 	int pos;
+	int g = 0;
 	drawfill([g_menuofs[0] + m_x, g_menuofs[1] + m_y], [m_size[0], m_size[1]], 
 			 [0,0,0], 1.0f);
 
-	visible = floor(m_size[1] / 29) + 1;
+	visible = floor(m_size[1] / 29);
 	visible = bound(0, visible, gameinfo_count);
 	pos = m_y;
 
 	for (int i = m_scroll; i < (visible + m_scroll); i++) {
 		vector colo;
-		if (games[i].gamedir == GAME_DIR) {
-			continue;
+		g = i;
+
+		/* seperate counter so we skip our current game */
+		if (games[g].gamedir == GAME_DIR) {
+			g++;
 		}
+
+		if (g >= (visible + m_scroll))
+			break;
+
 		if (m_selected == i) {
 			colo = ML_COL_2;
 			drawfill([g_menuofs[0] + m_x, g_menuofs[1] + pos], [m_size[0], 29], 
@@ -71,33 +79,33 @@ CModList::Draw(void)
 			colo = ML_COL_1;
 		}
 
-		if (games[i].type != "") {
+		if (games[g].type != "") {
 			drawsetcliparea(g_menuofs[0] + m_x + 2, g_menuofs[1] + pos + 3, 50,30);
-			WLabel_Static(m_x + 2, pos + 3, games[i].type,
+			WLabel_Static(m_x + 2, pos + 3, games[g].type,
 						  11, 11, colo, 1.0f, 0, font_arial);
 			drawresetcliparea();
 		}
 
 		/* Game */
 		drawsetcliparea(g_menuofs[0] + m_x + 57, g_menuofs[1] + pos + 3, 112,30);
-		WLabel_Static(m_x + 57, pos + 3, games[i].game, 11, 11, colo,
+		WLabel_Static(m_x + 57, pos + 3, games[g].game, 11, 11, colo,
 					1.0f, 0, font_arial);
 		drawresetcliparea();
 		/* URL */
-		WLabel_Static(m_x + 2, pos + 18, sprintf("Info: %s", games[i].url_info), 11, 11, ML_COL_4,
+		WLabel_Static(m_x + 2, pos + 18, sprintf("Info: %s", games[g].url_info), 11, 11, ML_COL_4,
 					1.0f, 0, font_arial);
 		/* Version */
-		WLabel_Static(m_x + 177, pos + 3, games[i].version, 11, 11, colo,
+		WLabel_Static(m_x + 177, pos + 3, games[g].version, 11, 11, colo,
 					1.0f, 0, font_arial);
 		/* Size */
-		float size = games[i].size / 1024000;
+		float size = games[g].size / 1024000;
 		WLabel_Static(m_x + 227, pos + 3, sprintf("%.1fmb", size), 11, 11, colo,
 					1.0f, 0, font_arial);
 		/* Rating */
 		WLabel_Static(m_x + 277, pos + 3, "0.0", 11, 11, colo,
 					1.0f, 0, font_arial);
 
-		if (games[i].installed == 1) {
+		if (games[g].installed == 1) {
 			/* Installed */
 			WLabel_Static(m_x + 327, pos + 3, "Yes", 11, 11, ML_COL_3,
 						1.0f, 0, font_arial);
@@ -120,6 +128,7 @@ CModList::Draw(void)
 		}
 
 		pos += 29;
+		g++;
 	}
 }
 
@@ -128,26 +137,33 @@ CModList::Input(float type, float x, float y, float devid)
 {
 	int visible;
 	int pos[2];
+	int g = 0;
 
-	visible = floor(m_size[1] / 29) + 1;
+	visible = floor(m_size[1] / 29);
 	visible = bound(0, visible, gameinfo_count);
 
 	pos[0] = m_x;
 	pos[1] = m_y;
 
 	for (int i = m_scroll; i < (visible + m_scroll); i++) {
-		if (games[i].gamedir == GAME_DIR) {
-			continue;
-		}
+		g = i;
+
+		if (games[g].gamedir == GAME_DIR)
+			g++;
+
+		if (g >= (visible + m_scroll))
+			break;
+
 		if (Util_CheckMouse(pos[0], pos[1], m_size[0], 29)) {
 			if (type == IE_KEYDOWN) {
 				if (x == K_MOUSE1) {
-					SetSelected(i);
+					SetSelected(g);
 					break;
 				}
 			}
 		}
 		pos[1] += 29;
+		g++;
 	}
 }
 
