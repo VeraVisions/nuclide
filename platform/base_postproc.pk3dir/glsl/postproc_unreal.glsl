@@ -36,31 +36,6 @@ void main()
 #endif
 
 #ifdef FRAGMENT_SHADER
-uniform vec2 e_sourcesize;
-
-// this is the kernel dithering scheme, but applied to the end framebuffer
-// like, this really oughta to done on the individual surfaces, but why bother.
-// it's just for a bit of fun.
-vec3 p_dither(vec2 position, vec3 col)
-{
-	int x = int(mod(position.x, 2.0));
-	int y = int(mod(position.y, 2.0));
-	int index = x + y * 2;
-	vec2 coord_ofs;
-
-	if (index == 0)
-		coord_ofs = vec2(0.25f, 0.0f);
-	else if (index == 1)
-		coord_ofs = vec2(0.50f, 0.75f);
-	else if (index == 2)
-		coord_ofs = vec2(0.75f, 0.50f);
-	else if (index == 3)
-		coord_ofs = vec2(0.00f, 0.25f);
-
-	// -0.003 is the distance intensity, all this is whipped up
-	return texture2D(s_screen, texcoord + coord_ofs * -0.003).rgb;
-}
-
 // accentuate the gritty lighting
 vec3 p_gamma(vec3 col)
 {
@@ -75,9 +50,6 @@ void main(void)
 {
 	vec2 pos = vec2(gl_FragCoord.x, gl_FragCoord.y);
 	vec3 col = texture2D(s_screen, texcoord).rgb;
-
-	// dither me first
-	col = p_dither(pos, col);
 
 	// mess with gamma
 	col = p_gamma(col);

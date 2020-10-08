@@ -9,6 +9,7 @@
 !!samps lightmap
 !!samps =LIGHTSTYLED lightmap1 lightmap2 lightmap3
 !!cvardf gl_mono=0
+!!cvardf gl_kdither=0
 
 #include "sys/defs.h"
 
@@ -75,9 +76,37 @@ varying mat3 invsurface;
 		return lightmaps;
 	}
 
+	vec4 kernel_dither(sampler2D targ, vec2 texc)
+	{
+		int x = int(mod(gl_FragCoord.x, 2.0));
+		int y = int(mod(gl_FragCoord.y, 2.0));
+		int index = x + y * 2;
+		vec2 coord_ofs;
+		vec2 size;
+
+		size.x = 1.0 / textureSize(targ, 0).x;
+		size.y = 1.0 / textureSize(targ, 0).y;
+
+		if (index == 0)
+			coord_ofs = vec2(0.25f, 0.0f);
+		else if (index == 1)
+			coord_ofs = vec2(0.50f, 0.75f);
+		else if (index == 2)
+			coord_ofs = vec2(0.75f, 0.50f);
+		else if (index == 3)
+			coord_ofs = vec2(0.00f, 0.25f);
+
+		return texture2D(targ, texc + coord_ofs * size);
+	}
+
 	void main ( void )
 	{
-		vec4 diffuse_f = texture2D(s_diffuse, tex_c);
+		vec4 diffuse_f;
+
+		if (gl_kdither == 1.0)
+			diffuse_f = kernel_dither(s_diffuse, tex_c);
+		else
+			diffuse_f = texture2D(s_diffuse, tex_c);
 
 /* get the alphatesting out of the way first */
 #ifdef MASK

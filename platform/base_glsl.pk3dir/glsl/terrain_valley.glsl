@@ -19,6 +19,9 @@
 !!cvardf r_glsl_pcf
 !!samps =FAKESHADOWS shadowmap
 
+!!cvardf dev_skipdiffuse
+!!cvardf dev_skipnormal
+
 #include "sys/defs.h"
 
 varying vec2 tex_c;
@@ -47,9 +50,9 @@ varying vec2 lm1, lm2, lm3;
 
 	void main ( void )
 	{
+		lightmapped_init();
 		tex_c = v_texcoord * 2.5;
 		detail_c = tex_c * 7.5;
-		lm_c = v_lmcoord;
 		vex_color = v_colour;
 		gl_Position = ftetransform();
 		
@@ -63,7 +66,22 @@ varying vec2 lm1, lm2, lm3;
 	#include "sys/fog.h"
 	#include "sys/pcf.h"
 
-	vec3 lightmap_fragment (vec3 normal_f)
+	vec3 lightmap_fragment()
+	{
+		vec3 lightmaps;
+
+#ifdef LIGHTSTYLED
+		lightmaps  = texture2D(s_lightmap0, lm0).rgb * e_lmscale[0].rgb;
+		lightmaps += texture2D(s_lightmap1, lm1).rgb * e_lmscale[1].rgb;
+		lightmaps += texture2D(s_lightmap2, lm2).rgb * e_lmscale[2].rgb;
+		lightmaps += texture2D(s_lightmap3, lm3).rgb * e_lmscale[3].rgb;
+#else
+		lightmaps  = texture2D(s_lightmap, lm0).rgb * e_lmscale.rgb;
+#endif
+		return lightmaps;
+	}
+
+	vec3 lightmap_fragment(vec3 normal_f)
 	{
 		vec3 lightmaps;
 
@@ -80,17 +98,23 @@ varying vec2 lm1, lm2, lm3;
 
 	void main ( void )
 	{
-		vec4 diff1_f = texture2D( s_t0, tex_c);
-		vec4 diff2_f = texture2D( s_t1, tex_c);
-		vec3 lm1_f = texture2D( s_lightmap, lm_c ).rgb * e_lmscale.rgb;
+		vec4 diff1_f = texture2D(s_t0, tex_c);
+		vec4 diff2_f = texture2D(s_t1, tex_c);
+		vec3 norm1_f = normalize(texture2D(s_t4, tex_c).rgb - 0.5);
+		vec3 norm2_f = normalize(texture2D(s_t5, tex_c).rgb - 0.5);
 
 		vec3 d1_f = texture2D(s_t2, detail_c).rgb;
 		vec3 d2_f = texture2D(s_t3, detail_c).rgb;
 		diff1_f.rgb *= d1_f;
 		diff2_f.rgb *= d2_f;
 
-		diff1_f.rgb *= * lightmap_fragment(normal_f);
-		diff2_f.rgb *= * lightmap_fragment(normal_f);
+		if (float(dev_skipnormal) == 1.0) {
+			diff1_f.rgb *= lightmap_fragment();
+			diff2_f.rgb *= lightmap_fragment();
+		} else {
+			diff1_f.rgb *= lightmap_fragment(norm1_f);
+			diff2_f.rgb *= lightmap_fragment(norm2_f);
+		}
 
 		vec3 output_f = mix( diff1_f.rgb, diff2_f.rgb, vex_color.a );
 
