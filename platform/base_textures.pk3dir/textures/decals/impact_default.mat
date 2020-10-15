@@ -1,5 +1,6 @@
 {
 	polygonOffset 1
+	surfaceParm nodlight
 	{
 		program unlit
 		map "textures/decals/impact_default.tga"
