@@ -1,0 +1,8 @@
+{
+	polygonOffset 1
+	{
+		program unlit
+		map "textures/decals/impact_metal.tga"
+		blendfunc GL_ZERO GL_ONE_MINUS_SRC_COLOR
+	}
+}

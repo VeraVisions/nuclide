@@ -26,7 +26,7 @@ FX_Spark_Init(void)
 	precache_sound("buttons/spark4.wav");
 	precache_sound("buttons/spark5.wav");
 	precache_sound("buttons/spark6.wav");
-	PARTICLE_SPARK = particleeffectnum("part_spark");
+	PARTICLE_SPARK = particleeffectnum("fx_spark.effect");
 }
 #endif
 
