@@ -17,8 +17,8 @@
 .float maxspeed;
 .float flags;
 
-/* make sure it's all reset */
-void Sound_Init(void)
+void
+Sound_Shutdown(void)
 {
 	if (g_sounds) {
 		memfree(g_sounds);
@@ -26,6 +26,13 @@ void Sound_Init(void)
 
 	g_sounds_count = 0;
 	g_hashsounds = 0;
+}
+
+void
+Sound_Init(void)
+{
+	/* make sure it's all reset */
+	Sound_Shutdown();
 }
 
 void
@@ -224,7 +231,7 @@ Sound_Precache(string shader)
 	}
 
 	g_sounds_count++;
-	g_sounds = memrealloc(g_sounds, sizeof(snd_t), index, g_sounds_count);
+	g_sounds = (snd_t *)memrealloc(g_sounds, sizeof(snd_t), index, g_sounds_count);
 
 	g_sounds[index].volume = 1.0f;
 	g_sounds[index].dist_max = 1;

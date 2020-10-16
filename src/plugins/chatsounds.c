@@ -82,7 +82,7 @@ FMX_Init(void)
 	searchhandle list;
 
 	list = search_begin("plugins/chatsounds/*.txt", TRUE, TRUE);
-	for (int i = 0; i < search_getsize(list); i++) {
+	for (i = 0; i < search_getsize(list); i++) {
 		print(sprintf("Found %s\n", search_getfilename(list, i)));
 	}
 	search_end(list);

@@ -78,21 +78,24 @@ typedef struct
 var string g_sentences_samplepath;
 
 void
+Sentences_Shutdown(void)
+{
+#ifdef DYNAMIC_SENTENCES
+	if (g_sentences)
+		memfree(g_sentences);
+#endif
+
+	g_sentences_count = 0;
+}
+
+void
 Sentences_Init(void)
 {
 	filestream fs_sentences;
 	string temp;
 	int c, i;
 
-	if (g_sentences_count > 0) {
-		g_sentences_count = 0;
-
-#ifndef DYNAMIC_SENTENCES
-		if (g_sentences) {
-			memfree(g_sentences);
-		}
-#endif
-	}
+	Sentences_Shutdown();
 
 	fs_sentences = fopen("sound/sentences.txt", FILE_READ);
 
@@ -117,7 +120,7 @@ Sentences_Init(void)
 		/* allocate memory and increase count */
 #ifdef DYNAMIC_SENTENCES
 		g_sentences_count++;
-		g_sentences = memrealloc(g_sentences,
+		g_sentences = (sentences_t *)memrealloc(g_sentences,
 				sizeof(sentences_t),
 				x,
 				g_sentences_count);

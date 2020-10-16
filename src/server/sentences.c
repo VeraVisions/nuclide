@@ -64,7 +64,7 @@ Sentences_Init(void)
 		/* allocate memory and increase count */
 #ifdef DYNAMIC_SENTENCES
 		g_sentences_count++;
-		g_sentences = memrealloc(g_sentences,
+		g_sentences = (string *)memrealloc(g_sentences,
 				sizeof(string),
 				x,
 				g_sentences_count);

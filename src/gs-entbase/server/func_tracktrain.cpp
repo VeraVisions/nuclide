@@ -232,7 +232,8 @@ func_tracktrain::Realign(void)
 	CBaseEntity first, second;
 	string strFirst, strSecond;
 
-	first = second = t = f = __NULL__;
+	first = second = __NULL__;
+	t = f = __NULL__;
 
 	for (f = world; (f = find(f, ::target, targetname));) {
 		/* we found the right entity */

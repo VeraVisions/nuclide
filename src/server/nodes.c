@@ -105,7 +105,7 @@ Node_Link(node_t *n1, node_t *n2)
 	}
 
 	int idx = n1->nb_count++;
-	n1->nb = memrealloc(n1->nb, sizeof(*n1->nb), idx, n1->nb_count);
+	n1->nb = (neighbour_s *)memrealloc(n1->nb, sizeof(*n1->nb), idx, n1->nb_count);
 	local struct neighbour_s *n = n1->nb+idx;
 	n->node = w2n;
 	n->dist = vlen(n2->origin - n1->origin);
@@ -167,7 +167,7 @@ Nodes_Init(void)
 	/* run through the ents and rebuild the tree */
 	for (entity a = world; (a = find(a, ::classname, "info_node"));) {
 		int iID = g_iNodes++;
-		g_pNodes = memrealloc(g_pNodes, sizeof(node_t), iID, g_iNodes);
+		g_pNodes = (node_t *)memrealloc(g_pNodes, sizeof(node_t), iID, g_iNodes);
 		node_t *n = g_pNodes + iID;
 		n->origin = a.origin;
 		n->nb = __NULL__;

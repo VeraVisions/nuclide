@@ -884,5 +884,7 @@ Incase you need to free something
 void
 CSQC_Shutdown(void)
 {
-	
+	Sentences_Shutdown();
+	Titles_Shutdown();
+	Sound_Shutdown();
 }

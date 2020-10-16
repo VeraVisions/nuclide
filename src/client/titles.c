@@ -58,6 +58,15 @@ Titles_ParseFunString(string temp)
 }
 
 void
+Titles_Shutdown(void)
+{
+	if (g_titles)
+		memfree(g_titles);
+
+	g_titles_count = 0;
+}
+
+void
 Titles_Init(void)
 {
 	/* messages in the file inherit the last defined effects etc. */
@@ -76,6 +85,8 @@ Titles_Init(void)
 	int c;
 	int braced;
 	int id = 0;
+
+	Titles_Shutdown();
 
 	fs_titles = fopen("titles.txt", FILE_READ);
 
