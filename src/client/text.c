@@ -38,7 +38,7 @@ GameText_CharCount(float fadein, float timer, string msg)
 
 	if (!fadein || len > strlen(msg))
 		return strlen(msg);
-	else 
+	else
 		return len;
 }
 
@@ -48,7 +48,7 @@ GameText_DrawString(vector pos, string msg, vector col, float alpha)
 {
 	vector rpos;
 	int c = tokenizebyseparator(msg, "\n");
-	
+
 	for (int i = 0; i < c; i++) {
 		float strwidth = stringwidth(argv(i), TRUE, [20,20]);
 
@@ -81,30 +81,33 @@ GameText_DrawMessage(int i, float timer, int highlight)
 	vector rpos;
 	float mtime;
 	float btime;
-	string finalstring;
+	string finalstr;
 
 	if (g_textchannels[i].m_iEffect == 2) {
 		/* scan out */
-		finalstring = substring(g_textchannels[i].m_strMessage, 0,
+		finalstr = substring(g_textchannels[i].m_strMessage, 0,
 			GameText_CharCount(g_textchannels[i].m_flFadeIn, timer,
 				g_textchannels[i].m_strMessage));
 	} else {
-		finalstring = g_textchannels[i].m_strMessage;
+		finalstr = g_textchannels[i].m_strMessage;
 	}
 
 	timer = max(0, timer);
 
 	if (highlight) {
-		btime = g_textchannels[i].m_flFadeIn * strlen(g_textchannels[i].m_strMessage);
+		btime = g_textchannels[i].m_flFadeIn * \
+			strlen(g_textchannels[i].m_strMessage);
 		mtime = btime + g_textchannels[i].m_flFadeOut;
 	} else {
-		mtime = g_textchannels[i].m_flFadeIn + g_textchannels[i].m_flHoldTime + g_textchannels[i].m_flFadeOut;
-		btime = g_textchannels[i].m_flFadeIn + g_textchannels[i].m_flHoldTime;
+		mtime = g_textchannels[i].m_flFadeIn + \
+			g_textchannels[i].m_flHoldTime + \
+			g_textchannels[i].m_flFadeOut;
+		btime = g_textchannels[i].m_flFadeIn + \
+			g_textchannels[i].m_flHoldTime;
 	}
 
-	if (timer > mtime) {
+	if (timer > mtime)
 		return;
-	}
 
 	if (timer < g_textchannels[i].m_flFadeIn) {
 		a = (timer / g_textchannels[i].m_flFadeIn);
@@ -118,10 +121,11 @@ GameText_DrawMessage(int i, float timer, int highlight)
 
 	rpos[0] = g_textchannels[i].m_flPosX;
 	rpos[1] = g_textchannels[i].m_flPosY;
+
 	if (highlight) {
-		GameText_DrawString(rpos, finalstring, g_textchannels[i].m_vecColor2, a);
+		GameText_DrawString(rpos, finalstr, g_textchannels[i].m_vecColor2, a);
 	} else {
-		GameText_DrawString(rpos, finalstring, g_textchannels[i].m_vecColor1, a);
+		GameText_DrawString(rpos, finalstr, g_textchannels[i].m_vecColor1, a);
 	}
 }
 
@@ -129,6 +133,7 @@ void
 GameText_Draw(void)
 {
 	drawfont = FONT_20;
+
 	for (int i = 0; i < 5; i++) {
 		GameText_DrawMessage(i, g_textchannels[i].m_flTime - g_textchannels[i].m_flFXTime, 0);
 		GameText_DrawMessage(i, g_textchannels[i].m_flTime, 1);

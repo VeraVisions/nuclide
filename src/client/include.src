@@ -18,5 +18,6 @@ damage.c
 chat.c
 textmenu.c
 vgui.cpp
+vox.c
 entry.c
 #endlist

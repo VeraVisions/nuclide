@@ -89,7 +89,7 @@ void Game_Input(void);
 void View_SetMuzzleflash(int);
 void View_PlayAnimation(int);
 void View_PlayAnimation(int);
-void Sound_PlayVOX(string);
+void Vox_Play(string);
 
 /* this really should be done in-engine */
 
