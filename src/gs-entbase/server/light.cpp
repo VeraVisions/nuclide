@@ -114,8 +114,8 @@ light::SpawnKey(string strKey, string strValue)
 
 void light::light(void)
 {
-	CBaseTrigger::CBaseTrigger();
 	m_strPattern = "m";
+	CBaseTrigger::CBaseTrigger();
 }
 
 CLASSEXPORT(light_spot, light)

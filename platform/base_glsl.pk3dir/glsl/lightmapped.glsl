@@ -82,17 +82,22 @@ varying vec2 lm1, lm2, lm3;
 
 	vec3 lightmap_fragment(vec3 normal_f)
 	{
+#ifndef DELUXE
+		return lightmap_fragment();
+#else
 		vec3 lightmaps;
 
-#ifdef LIGHTSTYLED
+	#if defined(LIGHTSTYLED)
 		lightmaps  = texture2D(s_lightmap0, lm0).rgb * e_lmscale[0].rgb * dot(normal_f, (texture2D(s_deluxemap0, lm0).rgb - 0.5) * 2.0);
 		lightmaps += texture2D(s_lightmap1, lm1).rgb * e_lmscale[1].rgb * dot(normal_f, (texture2D(s_deluxemap1, lm1).rgb - 0.5) * 2.0);
 		lightmaps += texture2D(s_lightmap2, lm2).rgb * e_lmscale[2].rgb * dot(normal_f, (texture2D(s_deluxemap2, lm2).rgb - 0.5) * 2.0);
 		lightmaps += texture2D(s_lightmap3, lm3).rgb * e_lmscale[3].rgb * dot(normal_f, (texture2D(s_deluxemap3, lm3).rgb - 0.5) * 2.0);
-#else
+	#else 
 		lightmaps  = texture2D(s_lightmap, lm0).rgb * e_lmscale.rgb * dot(normal_f, (texture2D(s_deluxemap, lm0).rgb - 0.5) * 2.0);
-#endif
+	#endif
+
 		return lightmaps;
+#endif
 	}
 
 	void main (void)
