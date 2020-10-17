@@ -14,29 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-enum
-{
-	PHYSM_BOX,
-	PHYSM_SPHERE,
-	PHYSM_CAPSULE,
-	PHYSM_TRIMESH,
-	PHYSM_CYLINDER
-};
-
-class CBasePhysics:CBaseEntity
-{
-	int m_iShape;
-	int m_iMaterial;
-	float m_flMass;
-
-	void(void) CBasePhysics;
-	virtual void(void) Respawn;
-	virtual void(void) touch;
-	virtual void(void) TouchThink;
-	virtual void(void) Pain;
-	virtual void(string, string) SpawnKey;
-};
-
 void
 CBasePhysics::TouchThink(void)
 {

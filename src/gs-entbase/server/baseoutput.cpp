@@ -14,27 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* inspired by https://developer.valvesoftware.com/wiki/Inputs_and_Outputs 
-   a lot of the action also happens in CBaseTrigger.
-*/
-
-/* modern trigger architecture */
-class CBaseOutput:CBaseEntity
-{
-	entity m_eActivator;
-	string m_strTarget;
-	string m_strInput;
-	string m_strData;
-	float m_flDelay;
-	int m_iCount;
-	int m_iOldCount;
-
-	void(void) CBaseOutput;
-	virtual void(void) TriggerOutput;
-	virtual void(void) SpawnInit;
-	virtual void(void) Respawn;
-};
-
 void
 CBaseOutput::TriggerOutput(void)
 {

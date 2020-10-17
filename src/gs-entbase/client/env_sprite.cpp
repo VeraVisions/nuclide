@@ -50,12 +50,14 @@ void env_sprite::ReadEntity(float flChanged)
 	framerate = readfloat();
 	scale = readfloat();
 
+#ifdef GS_RENDERFX
 	m_iRenderFX = readbyte();
 	m_iRenderMode = readbyte();
 	m_vecRenderColor[0] = readfloat();
 	m_vecRenderColor[1] = readfloat();
 	m_vecRenderColor[2] = readfloat();
 	m_flRenderAmt = readfloat();
+#endif
 
 	drawmask = MASK_ENGINE;
 	nextthink = time + (1 / framerate);
@@ -84,12 +86,16 @@ void EnvSprite_ParseEvent(void)
 	spr.modelindex = readfloat();
 	spr.framerate = readfloat();
 	spr.scale = readfloat();
+
+#ifdef GS_RENDERFX
 	spr.m_iRenderFX = readbyte();
 	spr.m_iRenderMode = readbyte();
 	spr.m_vecRenderColor[0] = readfloat();
 	spr.m_vecRenderColor[1] = readfloat();
 	spr.m_vecRenderColor[2] = readfloat();
 	spr.m_flRenderAmt = readfloat();
+#endif
+
 	spr.drawmask = MASK_ENGINE;
 	spr.nextthink = time + (1 / spr.framerate);
 	spr.maxframe = modelframecount(spr.modelindex);

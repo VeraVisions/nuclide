@@ -213,6 +213,7 @@ monstermaker::SpawnKey(string strKey, string strValue)
 	case "netname":
 		m_strChildName = strValue;
 		netname = __NULL__;
+		break;
 	default:
 		CBaseTrigger::SpawnKey(strKey, strValue);
 	}
