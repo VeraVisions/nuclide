@@ -14,26 +14,26 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED func_physbox (0 .5 .8) ?
+/*QUAKED prop_physics (0 0 0.8) (-16 -16 -16) (16 16 16) 
 "targetname"    Name
 
-Physics brush
+Physics model
 */
 
-class func_physbox:CBasePhysics
+class prop_physics:CBasePhysics
 {
-	void(void) func_physbox;
+	void(void) prop_physics;
 	virtual void(string, string) SpawnKey;
 };
 
 void
-func_physbox::Respawn(void)
+prop_physics::Respawn(void)
 {
 	CBasePhysics::Respawn();
 }
 
 void
-func_physbox::SpawnKey(string strKey, string strValue)
+prop_physics::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	default:
@@ -42,7 +42,7 @@ func_physbox::SpawnKey(string strKey, string strValue)
 }
 
 void
-func_physbox::func_physbox(void)
+prop_physics::prop_physics(void)
 {
 	CBasePhysics::CBasePhysics();
 }

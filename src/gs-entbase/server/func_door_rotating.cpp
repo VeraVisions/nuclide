@@ -137,6 +137,9 @@ void func_door_rotating::Returned(void)
 	}
     
 	m_iState = STATE_LOWERED;
+
+	setorigin(this, origin);
+	openportal(this, AREAPORTAL_CLOSED);
 }
 
 void func_door_rotating::Back(void)
@@ -197,6 +200,9 @@ void func_door_rotating::Away(void)
 		}
 	}
 	RotToDest(m_vecPos2 * fDirection, Arrived);
+
+	setorigin(this, origin);
+	openportal(this, AREAPORTAL_OPEN);
 }
 
 void func_door_rotating::Trigger(entity act, int state)
@@ -335,6 +341,11 @@ void func_door_rotating::Respawn(void)
 		m_vecPos2 = m_vecPos1;
 		m_vecPos1 = vTemp;
 		m_vecMoveDir = m_vecMoveDir * -1;
+		setorigin(this, origin);
+		openportal(this, AREAPORTAL_OPEN);
+	} else {
+		setorigin(this, origin);
+		openportal(this, AREAPORTAL_CLOSED);
 	}
 
 	if (spawnflags & SF_ROT_PASSABLE) {

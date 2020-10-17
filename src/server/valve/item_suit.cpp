@@ -14,14 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED item_suit (0 0 0.8) (-16 -16 0) (16 16 36)
+/*QUAKED item_suit (0 0 0.8) (-16 -16 0) (16 16 36) SUIT_LONGINTRO
 
 HALF-LIFE (1998) ENTITY
 
 HEV Suit
 Provides the player with armor, a flashlight and a Heads-Up-Display.
 
+When SUIT_LONGINTRO is set, the intro dialog will be longer.
+
 */
+
 class item_suit:CBaseTrigger
 {
 	string m_strOnPlayerTouch;

@@ -165,6 +165,9 @@ func_door::Returned(void)
 	}
 
 	m_iState = DOORSTATE_LOWERED;
+
+	setorigin(this, origin);
+	openportal(this, AREAPORTAL_CLOSED);
 }
 
 void
@@ -208,6 +211,8 @@ func_door::MoveAway(void)
 	m_iValue = 1;
 	m_iState = DOORSTATE_UP;
 	MoveToDestination(m_vecPos2, Arrived);
+	setorigin(this, origin);
+	openportal(this, AREAPORTAL_OPEN);
 }
 
 void
@@ -378,6 +383,11 @@ func_door::Respawn(void)
 		m_vecPos2 = m_vecPos1;
 		m_vecPos1 = origin;
 		m_iValue = 1;
+		setorigin(this, origin);
+		openportal(this, AREAPORTAL_OPEN);
+	} else {
+		setorigin(this, origin);
+		openportal(this, AREAPORTAL_CLOSED);
 	}
 
 	if (targetname) {

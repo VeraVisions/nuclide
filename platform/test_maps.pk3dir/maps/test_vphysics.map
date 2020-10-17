@@ -319,3 +319,10 @@
 ( 112 16 0 ) ( 112 48 0 ) ( 112 16 16 ) common/origin [ 0 1 0 0 ] [ -0 -0 -1 0 ] -0 0.5 0.5 0 0 0
 }
 }
+
+// entity 16
+{
+"classname" "prop_physics"
+"origin" "-128.000000 0.000000 64.000000"
+"model" "models/player.mdl"
+}

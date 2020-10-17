@@ -28,6 +28,9 @@
 
 #define CLASSEXPORT(classname,classa) void classname(void) { spawnfunc_##classa(); }
 
+#define AREAPORTAL_CLOSED 0
+#define AREAPORTAL_OPEN 1
+
 var int autocvar_mp_flashlight = TRUE;
 
 void FX_Impact(int, vector, vector);

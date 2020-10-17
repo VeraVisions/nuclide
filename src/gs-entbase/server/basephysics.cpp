@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#define GS_PHYSICS
+
 void
 CBasePhysics::PhysicsEnable(void)
 {
@@ -108,7 +110,7 @@ void
 CBasePhysics::ApplyTorqueCenter(vector vecTorque)
 {
 #ifdef GS_PHYSICS
-	physics_addtorque(this, vecTorque * m_flInertia);
+	physics_addtorque(this, vecTorque * m_flInertiaScale);
 #else
 	print("^1CBasePhysics::ApplyTorqueCenter: ");
 	print("^7Physics simulator not enabled.\n");
@@ -136,6 +138,8 @@ CBasePhysics::TouchThink(void)
 	/* If we barely move, disable the physics simulator */
 	if (vlen(velocity) <= 1 && m_iEnabled) {
 		PhysicsDisable();
+		velocity = [0,0,0];
+		avelocity = [0,0,0];
 	}
 
 	/* don't let players collide */
@@ -170,11 +174,11 @@ CBasePhysics::Pain(void)
 void
 CBasePhysics::Respawn(void)
 {
+	SetModel(m_oldModel);
+	SetOrigin(m_oldOrigin);
 	SetMovetype(MOVETYPE_PHYSICS);
 	SetSolid(SOLID_PHYSICS_BOX + m_iShape);
 	geomtype = GEOMTYPE_BOX;
-	SetModel(m_oldModel);
-	SetOrigin(m_oldOrigin);
 	takedamage = DAMAGE_YES;
 	health = 100000;
 	PhysicsDisable();
