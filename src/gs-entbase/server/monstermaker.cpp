@@ -83,6 +83,7 @@ monstermaker::Spawner(void)
 	static void monstermaker_spawnunit(void) {
 		/* these will get overwritten by the monster spawnfunction */
 		vector neworg = self.origin;
+		vector newang = self.angles;
 		string tname = self.netname;
 
 		/* become the classname assigned */
@@ -91,6 +92,7 @@ monstermaker::Spawner(void)
 
 		/* apply the saved values back */
 		t.origin = t.m_oldOrigin = neworg;
+		t.angles = t.m_oldAngle = newang;
 		t.targetname = tname;
 		t.spawnflags |= MSF_MULTIPLAYER;
 
@@ -132,6 +134,7 @@ monstermaker::Spawner(void)
 		unit.real_owner = this;
 		dprint(sprintf("^2monstermaker::^3Trigger^7: Spawning %s\n", m_strMonster));
 		setorigin(unit, origin);
+		unit.angles = angles;
 		m_iMonsterSpawned++;
 
 		if (target) {
