@@ -15,9 +15,109 @@
  */
 
 void
+CBasePhysics::PhysicsEnable(void)
+{
+#ifdef GS_PHYSICS
+	physics_enable(this, TRUE);
+#else
+	print("^1CBasePhysics::PhysicsEnable: ");
+	print("^7Physics simulator not enabled.\n");
+#endif
+	m_iEnabled = TRUE;
+}
+
+void
+CBasePhysics::PhysicsDisable(void)
+{
+#ifdef GS_PHYSICS
+	physics_enable(this, FALSE);
+#else
+	print("^1CBasePhysics::PhysicsDisable: ");
+	print("^7Physics simulator not enabled.\n");
+#endif
+	m_iEnabled = FALSE;
+}
+
+void
+CBasePhysics::SetMass(float val)
+{
+	mass = val;
+}
+float
+CBasePhysics::GetMass(void)
+{
+	return mass;
+}
+
+void
+CBasePhysics::SetFriction(float val)
+{
+	friction = val;
+}
+float
+CBasePhysics::GetFriction(void)
+{
+	return friction;
+}
+
+void
+CBasePhysics::SetBounceFactor(float val)
+{
+	bouncefactor = val;
+}
+float
+CBasePhysics::GetBounceFactor(void)
+{
+	return bouncefactor;
+}
+
+void
+CBasePhysics::SetInertia(float val)
+{
+	m_flInertiaScale = val;
+}
+float
+CBasePhysics::GetInertia(void)
+{
+	return m_flInertiaScale;
+}
+
+void
+CBasePhysics::ApplyForceCenter(vector vecForce)
+{
+#ifdef GS_PHYSICS
+	physics_addforce(this, vecForce, [0,0,0]);
+#else
+	print("^1CBasePhysics::ApplyForceCenter: ");
+	print("^7Physics simulator not enabled.\n");
+#endif
+}
+
+void
+CBasePhysics::ApplyForceOffset(vector vecForce, vector vecOffset)
+{
+#ifdef GS_PHYSICS
+	physics_addforce(this, vecForce, vecOffset);
+#else
+	print("^1CBasePhysics::ApplyForceOffset: ");
+	print("^7Physics simulator not enabled.\n");
+#endif
+}
+
+void
+CBasePhysics::ApplyTorqueCenter(vector vecTorque)
+{
+#ifdef GS_PHYSICS
+	physics_addtorque(this, vecTorque * m_flInertia);
+#else
+	print("^1CBasePhysics::ApplyTorqueCenter: ");
+	print("^7Physics simulator not enabled.\n");
+#endif
+}
+
+void
 CBasePhysics::TouchThink(void)
 {
-#ifdef GS_BULLET_PHYSICS
 	/* let players collide */
 	dimension_solid = 255;
 	dimension_hit = 255;
@@ -27,15 +127,15 @@ CBasePhysics::TouchThink(void)
 	/* stuck */
 	if (trace_startsolid) {
 		if (trace_ent.flags & FL_CLIENT) {
-			physics_enable(this, TRUE);
+			PhysicsEnable();
 			makevectors(vectoangles(origin - trace_ent.origin));
-			velocity = v_forward * 256;
+			ApplyTorqueCenter([25,0,0]);
 		}
 	}
 
 	/* If we barely move, disable the physics simulator */
-	if (vlen(velocity) <= 1) {
-		physics_enable(this, FALSE);
+	if (vlen(velocity) <= 1 && m_iEnabled) {
+		PhysicsDisable();
 	}
 
 	/* don't let players collide */
@@ -45,43 +145,41 @@ CBasePhysics::TouchThink(void)
 	/* continue testing next frame */
 	nextthink = time;
 	effects &= ~EF_NOSHADOW;
-#endif
 }
 
 void
 CBasePhysics::touch(void)
 {
-#ifdef GS_BULLET_PHYSICS
+	PhysicsEnable();
 	makevectors(vectoangles(origin - other.origin));
-	physics_addforce(this, v_forward, other.origin);
-	physics_enable(this, TRUE);
-#endif
+	ApplyForceOffset(v_forward, origin - other.origin);
 }
 
 void
 CBasePhysics::Pain(void)
 {
-#ifdef GS_BULLET_PHYSICS
+	if (m_iFlags & BPHY_NODMGPUSH)
+		return;
+
+	PhysicsEnable();
 	makevectors(vectoangles(origin - trace_endpos));
-	physics_addforce(this, v_forward * 20, trace_endpos);
+	ApplyForceOffset(v_forward * 20, origin - trace_endpos);
 	health = 100000;
-	physics_enable(this, TRUE);
-#endif
 }
 
 void
 CBasePhysics::Respawn(void)
 {
-#ifdef GS_BULLET_PHYSICS
-	movetype = MOVETYPE_PHYSICS;
-	solid = SOLID_PHYSICS_BOX + m_iShape;
+	SetMovetype(MOVETYPE_PHYSICS);
+	SetSolid(SOLID_PHYSICS_BOX + m_iShape);
 	geomtype = GEOMTYPE_BOX;
 	SetModel(m_oldModel);
 	SetOrigin(m_oldOrigin);
-	physics_enable(this, TRUE);
 	takedamage = DAMAGE_YES;
 	health = 100000;
-	mass = m_flMass;
+	PhysicsDisable();
+	SetFriction(2.0f);
+	SetBounceFactor(0.25f);
 
 	/* don't let players collide */
 	dimension_solid = 1;
@@ -89,12 +187,6 @@ CBasePhysics::Respawn(void)
 
 	think = TouchThink;
 	nextthink = time + 0.1f;
-#else
-	movetype = MOVETYPE_NONE;
-	solid = SOLID_BBOX;
-	SetModel(m_oldModel);
-	SetOrigin(m_oldOrigin);
-#endif
 	effects &= ~EF_NOSHADOW;
 }
 
@@ -110,12 +202,23 @@ CBasePhysics::SpawnKey(string strKey, string strValue)
 		}
 		break;
 	case "massscale":
-		m_flMass = stof(strValue);
+		mass = stof(strValue);
+		break;
+	case "inertiascale":
+		m_flInertiaScale = stof(strValue);
 		break;
 	case "physdamagescale":
 		break;
 	case "material":
 		m_iMaterial = stof(strValue);
+		break;
+	case "nodamageforces":
+		if (strValue == "1")
+			m_iFlags |= BPHY_NODMGPUSH;
+		break;
+	case "Damagetype":
+		if (strValue == "1")
+			m_iFlags |= BPHY_SHARP;
 		break;
 	default:
 		CBaseEntity::SpawnKey(strKey, strValue);
@@ -126,6 +229,8 @@ CBasePhysics::SpawnKey(string strKey, string strValue)
 void
 CBasePhysics::CBasePhysics(void)
 {
+	mass = 1.0f;
+	m_flInertiaScale = 1.0f;
+
 	CBaseEntity::CBaseEntity();
-	m_flMass = 1.0f;
 }

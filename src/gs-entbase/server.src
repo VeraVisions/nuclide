@@ -55,6 +55,7 @@ server/func_wall_toggle.cpp
 server/func_conveyor.cpp
 server/func_rotating.cpp
 server/func_rot_button.cpp
+server/func_physbox.cpp
 server/func_plat.cpp
 server/func_pendulum.cpp
 server/func_vehicle.cpp

@@ -23,16 +23,37 @@ enum
 	PHYSM_CYLINDER
 };
 
+enumflags
+{
+	BPHY_NODMGPUSH,
+	BPHY_SHARP
+};
+
 class CBasePhysics:CBaseEntity
 {
+	int m_iEnabled;
 	int m_iShape;
 	int m_iMaterial;
-	float m_flMass;
+	int m_iFlags;
+	float m_flInertiaScale;
 
 	void(void) CBasePhysics;
 	virtual void(void) Respawn;
 	virtual void(void) touch;
 	virtual void(void) TouchThink;
 	virtual void(void) Pain;
+
+	virtual void(float) SetMass;
+	virtual float(void) GetMass;
+	virtual void(float) SetFriction;
+	virtual float(void) GetFriction;
+	virtual void(float) SetBounceFactor;
+	virtual float(void) GetBounceFactor;
+	virtual void(void) PhysicsEnable;
+	virtual void(void) PhysicsDisable;
+	virtual void(vector) ApplyForceCenter;
+	virtual void(vector, vector) ApplyForceOffset;
+	virtual void(vector) ApplyTorqueCenter;
+
 	virtual void(string, string) SpawnKey;
 };

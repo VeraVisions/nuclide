@@ -71,12 +71,12 @@ class func_door_rotating:CBaseTrigger
 	virtual void(vector angle, void(void) func) RotToDest;
 	virtual void(string, string) SpawnKey;
 
-#ifdef GS_BULLET_PHYSICS
+#ifdef GS_PHYSICS
 	virtual void(void) Unhinge;
 #endif
 };
 
-#ifdef GS_BULLET_PHYSICS
+#ifdef GS_PHYSICS
 void func_door_rotating::Unhinge(void)
 {
 	takedamage = DAMAGE_NO;
@@ -297,7 +297,7 @@ void func_door_rotating::Respawn(void)
 {
 	func_door_rotating::SetMovementDirection();
 
-#ifdef GS_BULLET_PHYSICS
+#ifdef GS_PHYSICS
 	takedamage = DAMAGE_YES;
 	health = 100;
 	Death = func_door_rotating::Unhinge;
