@@ -1,6 +1,9 @@
 {
-	polygonOffset 1
+	polygonOffset 4
 	surfaceParm nodlight
+	surfaceParm noshadows
+	sort decal
+
 	{
 		program unlit
 		map "textures/decals/impact_wood.tga"
