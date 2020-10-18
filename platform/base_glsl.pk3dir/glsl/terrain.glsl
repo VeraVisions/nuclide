@@ -65,33 +65,53 @@ varying vec2 lm1, lm2, lm3;
 	#include "sys/fog.h"
 	#include "sys/pcf.h"
 
-	vec3 lightmap_fragment (vec3 normal_f)
+	vec3 lightmap_fragment()
 	{
 		vec3 lightmaps;
 
 #ifdef LIGHTSTYLED
+		lightmaps  = texture2D(s_lightmap0, lm0).rgb * e_lmscale[0].rgb;
+		lightmaps += texture2D(s_lightmap1, lm1).rgb * e_lmscale[1].rgb;
+		lightmaps += texture2D(s_lightmap2, lm2).rgb * e_lmscale[2].rgb;
+		lightmaps += texture2D(s_lightmap3, lm3).rgb * e_lmscale[3].rgb;
+#else
+		lightmaps  = texture2D(s_lightmap, lm0).rgb * e_lmscale.rgb;
+#endif
+		return lightmaps;
+	}
+
+	vec3 lightmap_fragment(vec3 normal_f)
+	{
+#ifndef DELUXE
+		return lightmap_fragment();
+#else
+		vec3 lightmaps;
+
+	#if defined(LIGHTSTYLED)
 		lightmaps  = texture2D(s_lightmap0, lm0).rgb * e_lmscale[0].rgb * dot(normal_f, (texture2D(s_deluxemap0, lm0).rgb - 0.5) * 2.0);
 		lightmaps += texture2D(s_lightmap1, lm1).rgb * e_lmscale[1].rgb * dot(normal_f, (texture2D(s_deluxemap1, lm1).rgb - 0.5) * 2.0);
 		lightmaps += texture2D(s_lightmap2, lm2).rgb * e_lmscale[2].rgb * dot(normal_f, (texture2D(s_deluxemap2, lm2).rgb - 0.5) * 2.0);
 		lightmaps += texture2D(s_lightmap3, lm3).rgb * e_lmscale[3].rgb * dot(normal_f, (texture2D(s_deluxemap3, lm3).rgb - 0.5) * 2.0);
-#else
+	#else 
 		lightmaps  = texture2D(s_lightmap, lm0).rgb * e_lmscale.rgb * dot(normal_f, (texture2D(s_deluxemap, lm0).rgb - 0.5) * 2.0);
-#endif
+	#endif
+
 		return lightmaps;
+#endif
 	}
 
 	void main ( void )
 	{
 		vec4 diff1_f = texture2D( s_t0, tex_c);
 		vec4 diff2_f = texture2D( s_t1, tex_c);
-		vec3 normal1_f = normalize(texture2D(s_t4, tex_c).rgb - 0.5);
-		vec3 normal2_f = normalize(texture2D(s_t5, tex_c).rgb - 0.5);
+		vec3 normal1_f = normalize(texture2D(s_t2, tex_c).rgb - 0.5);
+		vec3 normal2_f = normalize(texture2D(s_t3, tex_c).rgb - 0.5);
 		float alpha = 1.0;
 		float bw = 1.0 - (diff2_f.r + diff2_f.g + diff2_f.b) / 3.0;
 
 		if (vex_color.a < 1.0) {
 			if (bw > vex_color.a) {
-				alpha = vex_color.a;
+				alpha = 0.0;
 			}
 		}
 

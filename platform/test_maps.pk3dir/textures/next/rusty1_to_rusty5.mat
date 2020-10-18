@@ -1,0 +1,13 @@
+// Vera Visions Material
+{
+	qer_editorImage "textures/next/rusty1.tga"
+	polygonOffset 1
+
+	{
+		program terrain
+		map "textures/next/rusty5.tga"
+		map "textures/next/rusty7.tga"
+		map $normalmap
+		map $normalmap
+	}
+}
