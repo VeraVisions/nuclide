@@ -261,7 +261,7 @@ void worldspawn(void)
 	lightstyle(2, "abcdefghijklmnopqrstuvwxyzyxwvutsrqponmlkjihgfedcba");
 	lightstyle(3, "mmmmmaaaaammmmmaaaaaabcdefgabcdefg");
 	lightstyle(4, "mamamamamama");
-	lightstyle(5,"jklmnopqrstuvwxyzyxwvutsrqponmlkj");
+	lightstyle(5, "jklmnopqrstuvwxyzyxwvutsrqponmlkj");
 	lightstyle(6, "nmonqnmomnmomomno");
 	lightstyle(7, "mmmaaaabcdefgmmmmaaaammmaamm");
 	lightstyle(8, "mmmaaammmaaammmabcdefaaaammmmabcdefmmmaaaa");

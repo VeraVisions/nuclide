@@ -88,7 +88,6 @@ void PointMessage_Draw(void)
 	vecPlayer = pSeat->m_vecPredictedOrigin;
 #endif
 
-#ifdef WASTES
 	string msg;
 	float distance;
 	for (entity eFind = world; (eFind = find(eFind, ::classname, "point_message"));) {
@@ -101,9 +100,9 @@ void PointMessage_Draw(void)
 		}
 
 		if (PointMessage_Visible(m.origin, vecPlayer, getproperty(VF_ANGLES)) == TRUE) {
-			vector vTemp = project(m.origin) - [(stringwidth(msg, FALSE,[8,8]) / 2), 0];
-			Gfx_String(vTemp, msg, [8,8], autocvar_hud_color, 1.0f, FNT_GAME);
+			drawfont = FONT_CON;
+			vector vTemp = project(m.origin) - [(stringwidth(msg, FALSE,[12,12]) / 2), 0];
+			drawstring(vTemp, msg, [12,12], [1,1,1], 1.0f, 0);
 		}
 	}
-#endif
 }

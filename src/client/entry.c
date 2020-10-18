@@ -341,6 +341,7 @@ CSQC_UpdateView(float w, float h, float focus)
 			Scores_Draw();
 		} else if (focus == TRUE) {
 			GameText_Draw();
+			PointMessage_Draw();
 
 			if (getplayerkeyvalue(player_localnum, "*spec") != "0") {
 				HUD_DrawSpectator();

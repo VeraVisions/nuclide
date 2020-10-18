@@ -375,6 +375,8 @@ func_button::SpawnKey(string strKey, string strValue)
 void
 func_button::func_button(void)
 {
+	m_flWait = 4.0f;
+
 	CBaseTrigger::CBaseTrigger();
 
 	if (m_strSndPressed)

@@ -57,6 +57,7 @@ class light:CBaseTrigger
 {
 	int m_iEnabled;
 	float m_flStyle;
+	float m_flSwitchStyle;
 	string m_strPattern;
 
 	void(void) light;
@@ -103,6 +104,9 @@ light::SpawnKey(string strKey, string strValue)
 	case "pattern":
 		m_strPattern = strValue;
 		break;
+	case "switch_style":
+		m_flSwitchStyle = stof(strValue);
+		break;
 	case "style":
 		m_flStyle = stof(strValue);
 		style = __NULL__;
@@ -116,6 +120,11 @@ void light::light(void)
 {
 	m_strPattern = "m";
 	CBaseTrigger::CBaseTrigger();
+
+	/* switch styles before 12 are builtins from Quake. */
+	if (m_flSwitchStyle <= 11) {
+		m_strPattern = getlightstyle(m_flSwitchStyle);
+	}
 }
 
 CLASSEXPORT(light_spot, light)
