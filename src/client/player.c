@@ -120,31 +120,6 @@ var float autocvar_crouchheight = 0;
 float
 player::predraw(void)
 {
-	/* Handle the flashlights... */
-	if (flags & FL_FLASHLIGHT) {
-		vector src;
-		vector ang;
-		
-		if (this.entnum != player_localentnum) {
-			src = origin + view_ofs;
-			ang = [pitch, angles[1], angles[2]];
-		} else {
-			src = pSeat->m_vecPredictedOrigin + [0,0,-8];
-			ang = view_angles;
-		}
-
-		makevectors(ang);
-		traceline(src, src + (v_forward * 8096), FALSE, self);
-
-		if (serverkeyfloat("*bspversion") == 30) {
-			dynamiclight_add(trace_endpos + (v_forward * -2), 128, [1,1,1]);
-		} else {
-			float p = dynamiclight_add(src, 512, [1,1,1], 0, "textures/flashlight");
-			dynamiclight_set(p, LFIELD_ANGLES, ang);
-			dynamiclight_set(p, LFIELD_FLAGS, 3);
-		}
-	}
-
 	/* Run animations regardless of rendering the player */
 	draw();
 	gun_offset();
@@ -152,9 +127,11 @@ player::predraw(void)
 
 	if (autocvar_cl_thirdperson == TRUE || this.entnum != player_localentnum) {
 		Voice_Draw3D(this);
+		Player_PreDraw(this, TRUE);
 		addentity(this);
 		addentity(this.p_model);
 	} else {
+		Player_PreDraw(this, FALSE);
 		removeentity(this);
 		removeentity(this.p_model);
 	}

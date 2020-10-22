@@ -68,13 +68,13 @@ w_shotgun_primary(void)
 	vector src;
 	player pl = (player)self;
 
-	if (pl.flags & FL_SEMI_TOGGLED) {
+	if (pl.gflags & GF_SEMI_TOGGLED) {
 		return;
 	}
 
 	if (pl.a_ammo1 > 0) {
 		pl.a_ammo1 = 0;
-		pl.flags |= FL_SEMI_TOGGLED;
+		pl.gflags |= GF_SEMI_TOGGLED;
 		Weapons_ViewAnimation(SHOTGUN_CUSTOMIZE);
 		pl.w_attack_next = 2.25f;
 		pl.w_idle_next = 2.25f;
@@ -141,7 +141,7 @@ w_shotgun_secondary(void)
 		return;
 	}
 
-	if (pl.flags & FL_SEMI_TOGGLED) {
+	if (pl.gflags & GF_SEMI_TOGGLED) {
 		return;
 	}
 
@@ -156,7 +156,7 @@ w_shotgun_secondary(void)
 		}
 	}
 
-	pl.flags |= FL_SEMI_TOGGLED;
+	pl.gflags |= GF_SEMI_TOGGLED;
 }
 
 void

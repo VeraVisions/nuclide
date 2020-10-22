@@ -80,6 +80,7 @@
 ../valve/server.c
 ../valve/damage.c
 ../valve/rules.c
+../valve/flashlight.c
 
 ../hunger/input.c
 ../valve/spawn.c

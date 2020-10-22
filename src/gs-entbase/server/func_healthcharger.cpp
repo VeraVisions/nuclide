@@ -48,7 +48,7 @@ void func_healthcharger::PlayerUse(void)
 		return;
 	}
 
-	eActivator.gflags |= GF_USE_RELEASED;
+	eActivator.flags |= FL_USE_RELEASED;
 
 	/* First come first serve */ 
 	if (m_eUser && eActivator != m_eUser) {
@@ -65,7 +65,7 @@ void func_healthcharger::PlayerUse(void)
 	}
 
 	if (eActivator.health >= 100) {
-		eActivator.gflags &= ~GF_USE_RELEASED;
+		eActivator.flags &= ~FL_USE_RELEASED;
 		sound(this, CHAN_VOICE, m_strSndDone, 1.0, ATTN_NORM);
 	} else {
 		if (m_eUser == world) {

@@ -234,7 +234,7 @@ void func_door_rotating::Trigger(entity act, int state)
 
 void func_door_rotating::Use(void)
 {
-	eActivator.gflags &= ~GF_USE_RELEASED;
+	eActivator.flags &= ~FL_USE_RELEASED;
 	Trigger(eActivator, TRIG_TOGGLE);
 }
 

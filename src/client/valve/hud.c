@@ -301,7 +301,7 @@ HUD_DrawFlashlight(void)
 	pos = g_hudmins + [g_hudres[0] - 48, 16];
 
 	/* both on, draw both sprites at full intensity */
-	if (pl.flags & FL_FLASHLIGHT) {
+	if (pl.gflags & GF_FLASHLIGHT) {
 		drawsubpic(
 			pos,
 			[32,32],

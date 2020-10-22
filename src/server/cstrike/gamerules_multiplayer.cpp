@@ -67,7 +67,7 @@ CSMultiplayerRules::PlayerDeath(base_player pl)
 	pl.movetype = MOVETYPE_NONE;
 	pl.solid = SOLID_NOT;
 	pl.takedamage = DAMAGE_NO;
-	pl.flags &= ~FL_FLASHLIGHT;
+	pl.gflags &= ~GF_FLASHLIGHT;
 	pl.armor = 0;
 	pl.health = 0;
 
@@ -374,7 +374,7 @@ CSMultiplayerRules::BuyingPossible(base_player pl)
 		}
 	}
 	
-	if (!(pl.flags & FL_BUYZONE)) {
+	if (!(pl.gflags & GF_BUYZONE)) {
 		centerprint(pl, "Sorry, you aren't in a buyzone.\n");
 		return FALSE;
 	}
@@ -464,9 +464,10 @@ CSMultiplayerRules::RestartRound(int iWipe)
 	}
 
 	// Respawn all the entities
-	for (entity a = world; (a = findfloat(a, ::gflags, GF_CANRESPAWN));) {
+	for (entity a = world; (a = findfloat(a, ::identity, 1));) {
 		CBaseEntity caw = (CBaseEntity)a;
-		caw.Respawn();
+		if (caw.classname != "player")
+			caw.Respawn();
 	}
 
 	TimerBegin(autocvar_mp_freezetime, GAME_FREEZE);
@@ -702,8 +703,10 @@ CSMultiplayerRules::PlayerRespawn(base_player pp, int fTeam)
 	pl.viewzoom = 1.0;
 	pl.g_items &= ~ITEM_C4BOMB;
 
-	pl.origin = eSpawn.origin;
+	print(sprintf("Spawnpos: %v\n", eSpawn.origin));
+	pl.SetOrigin(eSpawn.origin);
 	pl.angles = eSpawn.angles;
+	pl.SendFlags = UPDATE_ALL;
 	Client_FixAngle(pl, pl.angles);
 
 	switch (pl.charmodel) {

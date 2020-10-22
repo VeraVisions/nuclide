@@ -47,7 +47,7 @@ func_bomb_target::touch(void)
 		return;
 	}
 
-	pl.flags |= FL_BOMBZONE;
+	pl.gflags |= GF_BOMBZONE;
 }
 
 void

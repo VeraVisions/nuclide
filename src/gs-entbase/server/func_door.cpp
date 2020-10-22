@@ -107,7 +107,7 @@ class func_door:CBaseTrigger
 void
 func_door::Use(void)
 {
-	eActivator.gflags &= ~GF_USE_RELEASED;
+	eActivator.flags &= ~FL_USE_RELEASED;
 	Trigger(eActivator, TRIG_TOGGLE);
 }
 

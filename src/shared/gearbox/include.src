@@ -1,4 +1,5 @@
  #includelist
+../../shared/valve/flags.h
 ../../shared/sound.c
 ../../shared/gearbox/player.cpp
 ../../shared/valve/weapon_common.h

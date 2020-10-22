@@ -77,6 +77,9 @@ CSGameRules::PlayerPostFrame(base_player pp)
 	if (pl.old_flags != pl.flags)
 		pl.SendFlags |= PLAYER_FLAGS;
 
+	if (pl.old_gflags != pl.gflags)
+		pl.SendFlags |= PLAYER_FLAGS;
+
 	if (pl.old_activeweapon != pl.activeweapon)
 		pl.SendFlags |= PLAYER_WEAPON;
 
@@ -116,6 +119,7 @@ CSGameRules::PlayerPostFrame(base_player pp)
 	pl.old_angles[0] = pl.v_angle[0];
 	pl.old_velocity = pl.velocity;
 	pl.old_flags = pl.flags;
+	pl.old_gflags = pl.gflags;
 	pl.old_activeweapon = pl.activeweapon;
 	pl.old_items = pl.g_items;
 	pl.old_health = pl.health;
@@ -188,6 +192,7 @@ CSGameRules::LevelDecodeParms(base_player pp)
 	pl.g3sg1_mag = parm44;
 	pl.sg550_mag = parm45;
 	pl.para_mag = parm46;
+	pl.gflags = parm63;
 
 	if (pl.flags & FL_CROUCHING) {
 		setsize(pl, VEC_CHULL_MIN, VEC_CHULL_MAX);
@@ -209,6 +214,7 @@ CSGameRules::LevelChangeParms(base_player pp)
 	parm7 = pl.velocity[0];
 	parm8 = pl.velocity[1];
 	parm9 = pl.velocity[2];
+	parm63 = pl.gflags;
 	parm64 = pl.flags;
 	parm10 = pl.g_items;
 	parm11 = pl.activeweapon;
@@ -259,7 +265,7 @@ CSGameRules::LevelNewParms(void)
 	parm22 = parm23 = parm24 = parm25 = parm26 = parm27 = parm28 =
 	parm29 = parm30 = parm31 = parm32 = parm33 = parm34 = parm35 =
 	parm36 = parm37 = parm38 = parm39 = parm40 = parm41 = parm42 =
-	parm43 = parm44 = parm45 = parm46 = 0;
+	parm43 = parm44 = parm45 = parm46 = parm63= 0;
 	parm64 = FL_CLIENT;
 }
 
@@ -276,7 +282,7 @@ CSGameRules::PlayerConnect(entity pl)
 
 	/* we're the first. respawn all entities? */
 	if (playercount == 0) {
-		for (a = world; (a = findfloat(a, ::gflags, GF_CANRESPAWN));) {
+		for (a = world; (a = findfloat(a, ::identity, 1));) {
 			CBaseEntity caw = (CBaseEntity)a;
 			caw.Respawn();
 		}

@@ -24,7 +24,6 @@ class player:base_player
 	int playertype;
 	int p_hand_bone;
 	int p_model_bone;
-	float pitch;
 	float lastweapon;
 	
 	virtual void(void) gun_offset;

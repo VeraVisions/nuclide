@@ -41,7 +41,7 @@ Game_Input(void)
 		player pl = (player)self;
 		if (self.impulse == 102) {
 			// Respawn all the entities
-			for (entity a = world; (a = findfloat(a, gflags, GF_CANRESPAWN));) {
+			for (entity a = world; (a = findfloat(a, ::identity, 1));) {
 				CBaseEntity caw = (CBaseEntity)a;
 				caw.Respawn();
 			}

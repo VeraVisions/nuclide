@@ -61,6 +61,7 @@ const vector VEC_PLAYER_CVIEWPOS = [0,0,12];
 .float jumptime;
 .float teleport_time;
 .vector basevelocity;
+.float gflags;
 
 void*
 memrealloc(__variant *oldptr, int elementsize, int oldelements, int newelements)

@@ -56,7 +56,7 @@ func_buyzone::touch(void)
 		return;
 
 	if (team == 0 || team == pl.team)
-		pl.flags |= FL_BUYZONE;
+		pl.gflags |= GF_BUYZONE;
 }
 
 void

@@ -50,5 +50,5 @@ void
 CBaseOutput::CBaseOutput(void)
 {
 	/* Make sure Respawn() will be called between rounds */
-	gflags = GF_CANRESPAWN;
+	identity = 1;
 }

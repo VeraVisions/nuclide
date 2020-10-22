@@ -83,6 +83,7 @@
 ../gearbox/server.c
 ../valve/damage.c
 ../valve/rules.c
+../valve/flashlight.c
 
 ../valve/input.c
 ../valve/spawn.c

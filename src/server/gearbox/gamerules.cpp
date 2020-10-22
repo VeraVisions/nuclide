@@ -60,6 +60,9 @@ HLGameRules::PlayerPostFrame(base_player pp)
 	if (pl.old_flags != pl.flags)
 		pl.SendFlags |= PLAYER_FLAGS;
 
+	if (pl.old_gflags != pl.gflags)
+		pl.SendFlags |= PLAYER_FLAGS;
+
 	if (pl.old_activeweapon != pl.activeweapon)
 		pl.SendFlags |= PLAYER_WEAPON;
 
@@ -99,6 +102,7 @@ HLGameRules::PlayerPostFrame(base_player pp)
 	pl.old_angles[0] = pl.v_angle[0];
 	pl.old_velocity = pl.velocity;
 	pl.old_flags = pl.flags;
+	pl.old_gflags = pl.gflags;
 	pl.old_activeweapon = pl.activeweapon;
 	pl.old_items = pl.g_items;
 	pl.old_health = pl.health;
@@ -240,7 +244,7 @@ HLGameRules::PlayerConnect(entity pl)
 
 	/* we're the first. respawn all entities? */	
 	if (playercount == 0) {
-		for (a = world; (a = findfloat(a, ::gflags, GF_CANRESPAWN));) {
+		for (a = world; (a = findfloat(a, ::identity, 1));) {
 			CBaseEntity caw = (CBaseEntity)a;
 			caw.Respawn();
 		}

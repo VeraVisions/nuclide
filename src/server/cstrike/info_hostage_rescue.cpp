@@ -40,7 +40,7 @@ info_hostage_rescue::touch(void)
 {
 	if (other.flags & FL_CLIENT) {
 		player pl = (player)other;
-		pl.flags |= FL_RESCUEZONE;
+		pl.gflags |= GF_RESCUEZONE;
 		return;
 	}
 

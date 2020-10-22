@@ -66,7 +66,7 @@ HLMultiplayerRules::PlayerDeath(base_player pl)
 	pl.movetype = MOVETYPE_NONE;
 	pl.solid = SOLID_NOT;
 	pl.takedamage = DAMAGE_NO;
-	pl.flags &= ~FL_FLASHLIGHT;
+	pl.gflags &= ~GF_FLASHLIGHT;
 	pl.armor = pl.activeweapon = pl.g_items = 0;
 
 	pl.think = PutClientInServer;

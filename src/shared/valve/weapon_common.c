@@ -150,7 +150,7 @@ void Weapons_Release(void)
 		g_weapons[i].release();
 	}
 	
-	pl.flags &= ~FL_SEMI_TOGGLED;
+	pl.gflags &= ~GF_SEMI_TOGGLED;
 }
 
 void Weapons_DrawCrosshair(void)

@@ -32,6 +32,7 @@
 ../tfc/server.c
 ../valve/damage.c
 ../valve/rules.c
+../valve/flashlight.c
 
 ../../botlib/include.src
 

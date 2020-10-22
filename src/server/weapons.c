@@ -42,7 +42,7 @@ Weapons_SwitchBest(base_player pl)
 	}
 	Weapons_Draw();
 	self = oldself;
-	pl.flags |= FL_SEMI_TOGGLED;
+	pl.gflags |= GF_SEMI_TOGGLED;
 }
 
 /* returns TRUE if weapon pickup gets removed from this world */

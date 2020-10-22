@@ -1,5 +1,6 @@
  #includelist
 ../../shared/cstrike/defs.h
+../../shared/cstrike/flags.h
 ../../shared/sound.c
 ../../shared/cstrike/animations.h
 ../../shared/cstrike/animations.c

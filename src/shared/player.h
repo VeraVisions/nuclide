@@ -41,6 +41,7 @@ class base_player
 	vector net_origin;
 	vector net_velocity;
 	float net_flags;
+	float net_gflags;
 	float net_w_attack_next;
 	float net_w_idle_next;
 	float net_jumptime;
@@ -52,6 +53,7 @@ class base_player
 	int net_ammo2;
 	int net_ammo3;
 	int sequence;
+	float pitch;
 #else
 
 	/* conditional networking */
@@ -60,6 +62,7 @@ class base_player
 	vector old_angles;
 	vector old_velocity;
 	int old_flags;
+	int old_gflags;
 	int old_activeweapon;
 	int old_items;
 	float old_health;

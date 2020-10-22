@@ -43,7 +43,7 @@ info_null::WarnDeveloper(void)
 
 	for (entity f = world; (f = find(f, ::target, targetname));) {
 		CBaseEntity enty = (CBaseTrigger)f;
-		if (enty.gflags == GF_CANRESPAWN)
+		if (enty.identity)
 		if (enty.target == targetname) {
 			print(sprintf("^1info_null::WarnDeveloper^7: " \
 			      "%s (%s) is targetting an info_null called %s\n",

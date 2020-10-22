@@ -37,7 +37,7 @@ void Player_UseDown(void)
 {
 	if (self.health <= 0) {
 		return;
-	} else if (!(self.gflags & GF_USE_RELEASED)) {
+	} else if (!(self.flags & FL_USE_RELEASED)) {
 		return;
 	}
 	
@@ -48,17 +48,17 @@ void Player_UseDown(void)
 	traceline (vSource, vSource + (v_forward * 64), MOVE_EVERYTHING, self);
 
 	if (trace_ent.PlayerUse) {
-		self.gflags &= ~GF_USE_RELEASED;
+		self.flags &= ~FL_USE_RELEASED;
 		
 		UseWorkaround(trace_ent);
 
 		/* Some entities want to support Use spamming */
-		if (!(self.gflags & GF_USE_RELEASED)) {
+		if (!(self.flags & FL_USE_RELEASED)) {
 			sound(self, CHAN_ITEM, "common/wpn_select.wav", 0.25, ATTN_IDLE);
 		}
 	} else {
 		sound(self, CHAN_ITEM, "common/wpn_denyselect.wav", 0.25, ATTN_IDLE);
-		self.gflags &= ~GF_USE_RELEASED;
+		self.flags &= ~FL_USE_RELEASED;
 	}
 }
 
@@ -68,8 +68,8 @@ Player_UseUp
 ====================
 */
 void Player_UseUp(void) {
-	if (!(self.gflags & GF_USE_RELEASED)) {
-		self.gflags |= GF_USE_RELEASED;
+	if (!(self.flags & FL_USE_RELEASED)) {
+		self.flags |= FL_USE_RELEASED;
 	}
 }
 
@@ -118,6 +118,7 @@ float Player_SendEntity(entity ePEnt, float fChanged)
 	}
 	if (fChanged & PLAYER_FLAGS) {
 		WriteFloat(MSG_ENTITY, pl.flags);
+		WriteFloat(MSG_ENTITY, pl.gflags);
 	}
 	if (fChanged & PLAYER_WEAPON) {
 		WriteByte(MSG_ENTITY, pl.activeweapon);

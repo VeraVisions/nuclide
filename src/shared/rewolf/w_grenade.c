@@ -45,13 +45,13 @@ w_grenade_primary(void)
 	vector src;
 	player pl = (player)self;
 
-	if (pl.flags & FL_SEMI_TOGGLED) {
+	if (pl.gflags & GF_SEMI_TOGGLED) {
 		return;
 	}
 
 	if (pl.a_ammo1 > 0) {
 		pl.a_ammo1 = 0;
-		pl.flags |= FL_SEMI_TOGGLED;
+		pl.gflags |= GF_SEMI_TOGGLED;
 		Weapons_ViewAnimation(GREN_FIDGET);
 		pl.w_attack_next = 1.2f;
 		pl.w_idle_next = pl.w_attack_next;
@@ -77,11 +77,11 @@ w_grenade_secondary(void)
 {
 	player pl = (player)self;
 
-	if (pl.flags & FL_SEMI_TOGGLED) {
+	if (pl.gflags & GF_SEMI_TOGGLED) {
 		return;
 	}
 
-	pl.flags |= FL_SEMI_TOGGLED;
+	pl.gflags |= GF_SEMI_TOGGLED;
 
 	if (pl.w_attack_next) {
 		return;

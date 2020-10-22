@@ -475,7 +475,7 @@ HUD_DrawFlashlight(void)
 	pos = g_hudmins + [g_hudres[0] - 48, 16];
 
 	/* both on, draw both sprites at full intensity */
-	if (pl.flags & FL_FLASHLIGHT) {
+	if (pl.gflags & GF_FLASHLIGHT) {
 		drawsubpic(
 			pos,
 			[32,32],
@@ -518,13 +518,13 @@ HUD_DrawZones(void)
 	vector pos = [0,0,0];
 	player pl = (player)pSeat->m_ePlayer;
 
-	if (pl.flags & FL_BUYZONE) {
+	if (pl.gflags & GF_BUYZONE) {
 		zc++;
 	}
-	if (pl.flags & FL_BOMBZONE) {
+	if (pl.gflags & GF_BOMBZONE) {
 		zc++;
 	}
-	if (pl.flags & FL_RESCUEZONE) {
+	if (pl.gflags & GF_RESCUEZONE) {
 		zc++;
 	}
 	if (pl.g_items & ITEM_DEFUSAL) {
@@ -533,7 +533,7 @@ HUD_DrawZones(void)
 
 	pos = g_hudmins + [16, (g_hudres[1] / 2) - (zc * 16)];
 
-	if (pl.flags & FL_BUYZONE) {
+	if (pl.gflags & GF_BUYZONE) {
 		drawsubpic(
 			pos,
 			[32,32],
@@ -546,7 +546,7 @@ HUD_DrawZones(void)
 		);
 		pos[1] += 32;
 	}
-	if (pl.flags & FL_BOMBZONE) {
+	if (pl.gflags & GF_BOMBZONE) {
 		drawsubpic(
 			pos,
 			[32,32],
@@ -559,7 +559,7 @@ HUD_DrawZones(void)
 		);
 		pos[1] += 32;
 	}
-	if (pl.flags & FL_RESCUEZONE) {
+	if (pl.gflags & GF_RESCUEZONE) {
 		drawsubpic(
 			pos,
 			[32,32],

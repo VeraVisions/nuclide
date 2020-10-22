@@ -401,7 +401,7 @@ CBaseEntity::CBaseEntity(void)
 		}
 	}
 
-	gflags = GF_CANRESPAWN;
+	identity = 1;
 	effects |= EF_NOSHADOW;
 	scale = 1.0f;
 

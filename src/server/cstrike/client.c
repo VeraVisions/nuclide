@@ -19,9 +19,9 @@ Game_RunClientCommand(void)
 {
 	player pl = (player)self;
 
-	pl.flags &= ~FL_BUYZONE;
-	pl.flags &= ~FL_RESCUEZONE;
-	pl.flags &= ~FL_BOMBZONE;
+	pl.gflags &= ~GF_BUYZONE;
+	pl.gflags &= ~GF_RESCUEZONE;
+	pl.gflags &= ~GF_BOMBZONE;
 
 	Footsteps_Update();
 	PMove_Run();

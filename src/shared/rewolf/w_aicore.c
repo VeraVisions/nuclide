@@ -58,7 +58,7 @@ w_aicore_release(void)
 {
 	player pl = (player)self;
 
-	pl.flags |= FL_SEMI_TOGGLED;
+	pl.gflags |= GF_SEMI_TOGGLED;
 
 	if (pl.w_idle_next) {
 		return;

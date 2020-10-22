@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,19 +14,29 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "animations.h"
-#include "radio.h"
-#include "weapons.h"
-#include "items.h"
-
-#define TEAM_T		1
-#define TEAM_CT		2
-#define TEAM_VIP	3
-
-enum
+void Flashlight_Toggle(void)
 {
-	STAT_MONEY = 34,
-	STAT_PROGRESS,
-	STAT_GAMETIME,
-	STAT_GAMESTATE
-};
+	if (cvar("sv_playerslots") != 1) {
+		if (cvar("mp_flashlight") != 1) {
+			return;
+		}
+	}
+
+#ifdef VALVE
+	player pl = (player)self;
+	if (!(pl.g_items & ITEM_SUIT)) {
+		return;
+	}
+#endif
+
+	if (self.health <= 0) {
+		return;
+	}
+
+	if (self.gflags & GF_FLASHLIGHT) {
+		self.gflags &= ~GF_FLASHLIGHT;
+	} else {
+		self.gflags |= GF_FLASHLIGHT;
+	}
+	sound(self, CHAN_ITEM, "items/flashlight1.wav", 1, ATTN_IDLE);
+}

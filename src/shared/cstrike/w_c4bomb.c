@@ -132,7 +132,7 @@ w_c4bomb_primary(void)
 {
 	player pl = (player)self;
 
-	if (!(pl.flags & FL_BOMBZONE)) {
+	if (!(pl.gflags & GF_BOMBZONE)) {
 		return;
 	}
 

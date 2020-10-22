@@ -21,7 +21,7 @@ void main(void)
 
 void StartFrame(void)
 {
-	for (entity a = world; (a = findfloat(a, ::gflags, GF_CANRESPAWN));) {
+	for (entity a = world; (a = findfloat(a, ::identity, 1));) {
 		CBaseEntity ent = (CBaseEntity)a;
 		ent.ParentUpdate();
 	}
@@ -130,7 +130,7 @@ void init_respawn(void)
 	iprint("Respawning Entities");
 	g_grMode.InitPostEnts();
 
-	for (entity a = world; (a = findfloat(a, ::gflags, GF_CANRESPAWN));) {
+	for (entity a = world; (a = findfloat(a, ::identity, 1));) {
 		CBaseEntity ent = (CBaseEntity)a;
 		ent.Respawn();
 	}

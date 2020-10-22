@@ -22,7 +22,6 @@ class player:base_player
 	entity p_model;
 	int p_hand_bone;
 	int p_model_bone;
-	float pitch;
 	float lastweapon;
 	virtual void(void) gun_offset;
 	virtual void(void) draw;

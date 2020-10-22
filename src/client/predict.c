@@ -29,6 +29,7 @@ Predict_PreFrame(player pl)
 	pl.net_origin = pl.origin;
 	pl.net_velocity = pl.velocity;
 	pl.net_flags = pl.flags;
+	pl.net_gflags = pl.gflags;
 	pl.net_jumptime = pl.jumptime;
 	pl.net_teleport_time = pl.teleport_time;
 	pl.net_viewzoom = pl.viewzoom;
@@ -81,6 +82,7 @@ Predict_PostFrame(player pl)
 	pl.origin = pl.net_origin;
 	pl.velocity = pl.net_velocity;
 	pl.flags = pl.net_flags;
+	pl.gflags = pl.net_gflags;
 	pl.jumptime = pl.net_jumptime;
 	pl.teleport_time = pl.net_teleport_time;
 	pl.viewzoom = pl.net_viewzoom;

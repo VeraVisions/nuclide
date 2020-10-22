@@ -210,6 +210,6 @@ void
 env_laser::env_laser(void)
 {
 	CBaseTrigger::CBaseTrigger();
-	gflags = GF_CANRESPAWN;
+	identity = 1;
 	pvsflags = PVSF_IGNOREPVS;
 }

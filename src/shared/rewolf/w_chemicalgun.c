@@ -43,13 +43,13 @@ w_chemicalgun_primary(void)
 	vector src;
 	player pl = (player)self;
 
-	if (pl.flags & FL_SEMI_TOGGLED) {
+	if (pl.gflags & GF_SEMI_TOGGLED) {
 		return;
 	}
 
 	if (pl.a_ammo1 > 0) {
 		pl.a_ammo1 = 0;
-		pl.flags |= FL_SEMI_TOGGLED;
+		pl.gflags |= GF_SEMI_TOGGLED;
 		Weapons_ViewAnimation(CHEMGUN_CONFIG);
 		pl.w_attack_next = 2.08f;
 		pl.w_idle_next = pl.w_attack_next;
@@ -75,11 +75,11 @@ w_chemicalgun_secondary(void)
 {
 	player pl = (player)self;
 
-	if (pl.flags & FL_SEMI_TOGGLED) {
+	if (pl.gflags & GF_SEMI_TOGGLED) {
 		return;
 	}
 
-	pl.flags |= FL_SEMI_TOGGLED;
+	pl.gflags |= GF_SEMI_TOGGLED;
 
 	if (pl.w_attack_next) {
 		return;

@@ -84,13 +84,13 @@ w_gausspistol_primary(void)
 	int take = 1;
 	player pl = (player)self;
 	
-	if (pl.flags & FL_SEMI_TOGGLED) {
+	if (pl.gflags & GF_SEMI_TOGGLED) {
 		return;
 	}
 	
 	if (pl.a_ammo1 > 0) {
 		pl.a_ammo1 = 0;
-		pl.flags |= FL_SEMI_TOGGLED;
+		pl.gflags |= GF_SEMI_TOGGLED;
 		return;
 	}
 
@@ -127,7 +127,7 @@ w_gausspistol_primary(void)
 		pl.w_idle_next = 5.0f;
 		break;
 	default:
-		pl.flags |= FL_SEMI_TOGGLED;
+		pl.gflags |= GF_SEMI_TOGGLED;
 		Weapons_ViewAnimation(GP_FIRESINGLE);
 #ifdef SERVER
 		Sound_Play(pl, CHAN_WEAPON, "weapon_gausspistol.firesingle");
@@ -153,11 +153,11 @@ w_gausspistol_secondary(void)
 {
 	player pl = (player)self;
 
-	if (pl.flags & FL_SEMI_TOGGLED) {
+	if (pl.gflags & GF_SEMI_TOGGLED) {
 		return;
 	}
 
-	pl.flags |= FL_SEMI_TOGGLED;
+	pl.gflags |= GF_SEMI_TOGGLED;
 
 	/* activate menu */
 	pl.a_ammo1 = 1;

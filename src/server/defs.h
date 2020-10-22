@@ -21,7 +21,6 @@
 #include "vox.h"
 #include "nodes.h"
 #include "spawn.h"
-#include "flashlight.h"
 #include "weapons.h"
 #include "plugins.h"
 #include "vehicles.h"
@@ -61,7 +60,7 @@ entity g_eAttacker;
 .float material;
 .float deaths;
 .float fStepTime;
-.float gflags;
+.float identity;
 
 /* in idTech the .owner field causes collisions to fail against set entity,
  * we don't want this all of the time. so use this as a fallback */
@@ -71,16 +70,6 @@ int trace_surfaceflagsi;
 string startspot;
 string __fullspawndata;
 hashtable hashMaterials;
-
-enumflags
-{
-	GF_CANRESPAWN,
-	GF_USE_RELEASED,
-	GF_IN_VEHICLE,
-	GF_FROZEN,
-	GF_SEMI_TOGGLED,
-	GF_GAMESTARTS
-};
 
 /* damage related tempglobals, like trace_* */
 entity g_dmg_eAttacker;
