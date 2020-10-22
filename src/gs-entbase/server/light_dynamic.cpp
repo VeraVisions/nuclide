@@ -99,6 +99,7 @@ void
 light_dynamic::Respawn(void)
 {
 	SetSolid(SOLID_NOT);
+	SetSize([-16,-16,-16], [16,16,16]);
 	SetOrigin(m_oldOrigin);
 	SetAngles(m_oldAngle);
 	m_iState = 1;
@@ -240,12 +241,6 @@ light_dynamic::light_dynamic(void)
 	m_iState = 1;
 	m_vecLight = [255,255,255];
 	CBaseTrigger::CBaseTrigger();
-	gflags = GF_CANRESPAWN;
-
-	/* FIXME: this is really bad, but FTE refuses to network things without a model
-	 * or something along those lines - so we're force networking these right
-	 * now. */
-	pvsflags = PVSF_IGNOREPVS;
 }
 
 CLASSEXPORT(dynamic_light, light_dynamic)
