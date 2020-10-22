@@ -66,7 +66,8 @@ class light:CBaseTrigger
 	virtual void(string, string) SpawnKey;
 };
 
-void light::Trigger(entity act, int state)
+void
+light::Trigger(entity act, int state)
 {
 	switch (state) {
 	case TRIG_OFF:
@@ -86,7 +87,8 @@ void light::Trigger(entity act, int state)
 	}
 }
 
-void light::Respawn(void)
+void
+light::Respawn(void)
 {
 	if (spawnflags & 1) {
 		lightstyle(m_flStyle, "a");
@@ -116,7 +118,8 @@ light::SpawnKey(string strKey, string strValue)
 	}
 }
 
-void light::light(void)
+void
+light::light(void)
 {
 	m_strPattern = "m";
 	CBaseTrigger::CBaseTrigger();
@@ -129,4 +132,3 @@ void light::light(void)
 
 CLASSEXPORT(light_spot, light)
 CLASSEXPORT(light_environment, light)
-

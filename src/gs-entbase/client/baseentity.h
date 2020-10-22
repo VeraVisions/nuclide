@@ -38,7 +38,7 @@ class CBaseEntity
 	virtual void(string, string) SpawnKey;
 	virtual void(string) Sentence;
 	virtual void(void) ProcessWordQue;
-	virtual void(float flChanged) ReadEntity;
+	virtual void(float flChanged) ReceiveEntity;
 	virtual float(void) predraw;
 	virtual void(void) postdraw;
 	virtual void(void) customphysics;

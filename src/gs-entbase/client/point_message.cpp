@@ -32,7 +32,8 @@ class point_message:CBaseEntity
 	virtual void(string, string) SpawnKey;
 };
 
-void point_message::SpawnKey(string strField, string strKey)
+void
+point_message::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
 		case "radius":
@@ -50,14 +51,16 @@ void point_message::SpawnKey(string strField, string strKey)
 	}
 }
 
-void point_message::point_message(void)
+void
+point_message::point_message(void)
 {
 	m_flRadius = 512;
 	m_strMessage = "No message";
 	Init();
 }
 
-int PointMessage_Visible(vector p1, vector p2, vector ang)
+int
+PointMessage_Visible(vector p1, vector p2, vector ang)
 {
 	vector delta;
 	float fov;
@@ -75,18 +78,14 @@ int PointMessage_Visible(vector p1, vector p2, vector ang)
 	return FALSE;
 }
 
-void PointMessage_Draw(void)
+void
+PointMessage_Draw(void)
 {
 	vector vecPlayer;
 
-#ifdef WASTES
-	vecPlayer = viewClient.vecPlayerOrigin;
-	vecPlayer += [0, 0, getstatf(ST_VIEWHEIGHT)];
-#else
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
 	vecPlayer = pSeat->m_vecPredictedOrigin;
-#endif
 
 	string msg;
 	float distance;

@@ -22,7 +22,7 @@ class decal
 #ifdef SERVER
 	virtual float(entity, float) SendEntity;
 #else
-	virtual void(void) ReadEntity;
+	virtual void(void) ReceiveEntity;
 	virtual float() predraw;
 	virtual void(void) BuildShader;
 #endif

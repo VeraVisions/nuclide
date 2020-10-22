@@ -184,7 +184,7 @@ CSQC_UpdateView(float w, float h, float focus)
 
 	for (s = numclientseats; s-- > 0;) {
 		pSeat = &g_seats[s];
-		
+
 		View_CalcViewport(s, w, h);
 		setproperty(VF_ACTIVESEAT, (float)s);
 
@@ -205,7 +205,7 @@ CSQC_UpdateView(float w, float h, float focus)
 		pSeat->m_vecPredictedVelocity = pl.velocity;
 		pSeat->m_flPredictedFlags = pl.flags;
 
-		// Don't hide the player entity
+		/* Don't hide the player entity */
 		if (autocvar_cl_thirdperson == TRUE && pl.health) {
 			setproperty(VF_VIEWENTITY, (float)0);
 		} else {
@@ -232,13 +232,13 @@ CSQC_UpdateView(float w, float h, float focus)
 		} else {
 			setsensitivityscaler(pl.viewzoom);
 		}
-		
+
 		if (pl.viewzoom <= 0.0f) {
 			setsensitivityscaler(1.0f);
 		}
 
 		pl.viewzoom = oldzoom;
-		
+
 		View_Stairsmooth();
 
 		if (pSeat->m_pWeaponFX) {
@@ -385,32 +385,32 @@ CSQC_InputEvent(float fEventType, float fKey, float fCharacter, float fDeviceID)
 	pSeat = &g_seats[s];
 
 	switch (fEventType) {
-		case IE_KEYDOWN:
-			break;
-		case IE_KEYUP:
-			break;
-		case IE_MOUSEABS:
-			mouse_pos[0] = fKey;
-			mouse_pos[1] = fCharacter;
-			break;
-		case IE_MOUSEDELTA:
-			mouse_pos[0] += fKey;
-			mouse_pos[1] += fCharacter;
-			
-			if (mouse_pos[0] < 0) {
-				mouse_pos[0] = 0;
-			} else if (mouse_pos[0] > video_res[0]) {
-				mouse_pos[0] = video_res[0];
-			}
-			
-			if (mouse_pos[1] < 0) {
-				mouse_pos[1] = 0;
-			} else if (mouse_pos[1] > video_res[1]) {
-				mouse_pos[1] = video_res[1];
-			}
-			break;
-		default:
-			return TRUE;
+	case IE_KEYDOWN:
+		break;
+	case IE_KEYUP:
+		break;
+	case IE_MOUSEABS:
+		mouse_pos[0] = fKey;
+		mouse_pos[1] = fCharacter;
+		break;
+	case IE_MOUSEDELTA:
+		mouse_pos[0] += fKey;
+		mouse_pos[1] += fCharacter;
+
+		if (mouse_pos[0] < 0) {
+			mouse_pos[0] = 0;
+		} else if (mouse_pos[0] > video_res[0]) {
+			mouse_pos[0] = video_res[0];
+		}
+
+		if (mouse_pos[1] < 0) {
+			mouse_pos[1] = 0;
+		} else if (mouse_pos[1] > video_res[1]) {
+			mouse_pos[1] = video_res[1];
+		}
+		break;
+	default:
+		return TRUE;
 	}
 
 	VGUI_Input(fEventType, fKey, fCharacter, fDeviceID);
@@ -524,7 +524,7 @@ CSQC_Parse_Event(void)
 			pos = getproperty(VF_ORIGIN);
 			ang = getproperty(VF_ANGLES);
 		}
-		
+
 		pSeat->m_vecCameraOrigin = pos;
 		pSeat->m_vecCameraAngle = ang;
 		g_iIntermission = TRUE;
@@ -604,9 +604,9 @@ CSQC_ConsoleCommand(string sCMD)
 	/* the engine will hide the p1 etc commands... which is fun... */
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
-	
+
 	tokenize(sCMD);
-	
+
 	switch (argv(0)) {
 	case "dev_sentence":
 		static CBaseEntity foo;
@@ -799,17 +799,17 @@ CSQC_Ent_Update(float new)
 		if (new) {
 			spawnfunc_CBaseEntity();
 		}
-		me.ReadEntity(readfloat());
+		me.ReceiveEntity(readfloat());
 		break;
 	case ENT_PLAYER:
-		Player_ReadEntity(new);
+		Player_ReceiveEntity(new);
 		break;
 	case ENT_SPRITE:
 		env_sprite spr = (env_sprite)self;
 		if (new) {
 			spawnfunc_env_sprite();
 		}
-		spr.ReadEntity(readfloat());
+		spr.ReceiveEntity(readfloat());
 		break;
 		break;
 	case ENT_SPRAY:
@@ -821,12 +821,19 @@ CSQC_Ent_Update(float new)
 	case ENT_AMBIENTSOUND:
 		Sound_ParseLoopingEntity(self, new);
 		break;
+	case ENT_DLIGHT:
+		light_dynamic dl = (light_dynamic)self;
+		if (new) {
+			spawnfunc_light_dynamic();
+		}
+		dl.ReceiveEntity(readfloat());
+		break;
 	case ENT_ENVLASER:
 		env_laser l = (env_laser)self;
 		if (new) {
 			spawnfunc_env_laser();
 		}
-		l.ReadEntity(readfloat());
+		l.ReceiveEntity(readfloat());
 		break;
 	default:
 		if (Game_Entity_Update(t, new) == FALSE) {

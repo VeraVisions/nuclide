@@ -223,7 +223,7 @@ CBaseEntity::Sentence(string msg)
 	m_flSentenceTime = time;
 }
 
-void CBaseEntity::ReadEntity(float flChanged)
+void CBaseEntity::ReceiveEntity(float flChanged)
 {
 	if (flChanged & BASEFL_CHANGED_ORIGIN) {
 		origin[0] = readcoord();

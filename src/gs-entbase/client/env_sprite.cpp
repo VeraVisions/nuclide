@@ -22,7 +22,7 @@ class env_sprite:CBaseEntity
 
 	virtual void(void) Init;
 	virtual void(void) Initialized;
-	virtual void(float flChanged) ReadEntity;
+	virtual void(float flChanged) ReceiveEntity;
 	virtual void(void) think;
 };
 
@@ -41,7 +41,7 @@ void env_sprite::think(void)
 	nextthink = time + (1 / framerate);
 }
 
-void env_sprite::ReadEntity(float flChanged)
+void env_sprite::ReceiveEntity(float flChanged)
 {
 	origin[0] = readcoord();
 	origin[1] = readcoord();

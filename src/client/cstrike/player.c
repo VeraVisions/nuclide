@@ -15,7 +15,7 @@
  */
 
 void
-Player_ReadEntity(float new)
+Player_ReceiveEntity(float new)
 {
 	float fl;
 	player pl = (player)self;

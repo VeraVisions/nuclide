@@ -47,7 +47,7 @@ decal::SendEntity(entity pvsent, float changedflags)
 }
 #else
 void
-decal::ReadEntity(void)
+decal::ReceiveEntity(void)
 {
 	origin[0] = readcoord();
 	origin[1] = readcoord();
@@ -238,6 +238,6 @@ void Decal_Parse(void)
 	/* convert us to an object of type decal */
 	spawnfunc_decal();
 	new = (decal)self;
-	new.ReadEntity();
+	new.ReceiveEntity();
 }
 #endif

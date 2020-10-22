@@ -20,6 +20,7 @@ client/env_laser.cpp
 client/func_lod.cpp
 client/func_dustmotes.cpp
 client/light_environment.cpp
+client/light_dynamic.cpp
 client/sky_camera.cpp
 client/info_notnull.cpp
 client/point_message.cpp

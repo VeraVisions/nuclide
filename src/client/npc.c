@@ -20,7 +20,7 @@ class CBaseNPC:CBaseEntity
 	float frame_last;
 
 	virtual float() predraw;
-	virtual void(float flChanged) ReadEntity;
+	virtual void(float flChanged) ReceiveEntity;
 };
 
 float
@@ -56,7 +56,7 @@ CBaseNPC::predraw(void)
 }
 
 void
-CBaseNPC::ReadEntity(float fl)
+CBaseNPC::ReceiveEntity(float fl)
 {
 	if (fl & NPC_MODELINDEX)
 		modelindex = readshort();
