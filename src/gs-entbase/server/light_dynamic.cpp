@@ -32,8 +32,8 @@ may be interesting.
 /* this has to match gs-entbase/client/light_dynamic.cpp! */
 enumflags
 {
-	DLIGHTFL_CHANGED_ORIGIN, /* don't move these */
-	DLIGHTFL_CHANGED_ANGLES, /* don't move these */
+	DLIGHTFL_CHANGED_ORIGIN,
+	DLIGHTFL_CHANGED_ANGLES,
 	DLIGHTFL_CHANGED_LIGHT,
 	DLIGHTFL_CHANGED_INTENSITY,
 	DLIGHTFL_CHANGED_INNERCONE,
@@ -67,6 +67,15 @@ class light_dynamic:CBaseTrigger
 void
 light_dynamic::ParentUpdate(void)
 {
+	if (net_origin != origin) {
+		net_origin = origin;
+		SendFlags |= DLIGHTFL_CHANGED_ORIGIN;
+	}
+	if (net_angles != angles) {
+		net_angles = angles;
+		SendFlags |= DLIGHTFL_CHANGED_ANGLES;
+	}
+
 	if (m_parent) {
 		entity p = find(world, ::targetname, m_parent);
 
