@@ -39,17 +39,14 @@ class func_lod:CBaseEntity
 	virtual void(string,string) SpawnKey;
 };
 
-float func_lod::predraw(void)
+float
+func_lod::predraw(void)
 {
 	vector vecPlayer;
 
-#ifdef WASTES
-	vecPlayer = viewClient.vecPlayerOrigin;
-#else
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
 	vecPlayer = pSeat->m_vecPredictedOrigin;
-#endif
 
 	if (checkpvs(vecPlayer, this) == FALSE) {
 		return PREDRAW_NEXT;
@@ -75,7 +72,8 @@ float func_lod::predraw(void)
 	return PREDRAW_NEXT;
 }
 
-void func_lod::SpawnKey(string strField, string strKey)
+void
+func_lod::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
 	case "DisappearDist":
@@ -90,7 +88,8 @@ void func_lod::SpawnKey(string strField, string strKey)
 	}
 }
 
-void func_lod::Init(void)
+void
+func_lod::Init(void)
 {
 	CBaseEntity::Init();
 
@@ -105,7 +104,8 @@ void func_lod::Init(void)
 	m_vecTestPos[2] = absmin[2] + (0.5 * (absmax[2] - absmin[2]));
 }
 
-void func_lod::func_lod(void)
+void
+func_lod::func_lod(void)
 {
 	m_iDisappearDist = 2000;
 	solid = SOLID_BSP;

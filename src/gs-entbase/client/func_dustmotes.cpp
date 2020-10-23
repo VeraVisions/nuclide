@@ -15,6 +15,7 @@
  */
 
 /*QUAKED func_dustmotes (0 .5 .8) ?
+"count"    Number of dustmote particles that will float around on average.
 
 Dustmote emitting brush volume.
 */
@@ -31,15 +32,14 @@ class func_dustmotes:CBaseEntity
 	virtual void(string, string) SpawnKey;
 };
 
-float func_dustmotes::predraw(void)
+float
+func_dustmotes::predraw(void)
 {
-	if (m_flNexTime > cltime) {
+	if (m_flNexTime > cltime)
 		return PREDRAW_NEXT;
-	}
 
-	if (checkpvs(getproperty(VF_ORIGIN), this) == FALSE) {
+	if (checkpvs(getproperty(VF_ORIGIN), this) == FALSE)
 		return PREDRAW_NEXT;
-	}
 
 	for (int i = 0; i < m_iCount; i++) {
 		vector vecPos;
@@ -48,21 +48,15 @@ float func_dustmotes::predraw(void)
 		vecPos[2] = mins[2] + (random() * (maxs[2] - mins[2]));
 		pointparticles(PART_DUSTMOTE, vecPos, [0,0,0], 1);
 	}
-	
+
 	m_flNexTime = cltime + 3.0f;
 
 	addentity(self);
 	return PREDRAW_NEXT;
 }
 
-void func_dustmotes::func_dustmotes(void)
-{
-	solid = SOLID_NOT;
-	Init();
-	m_iCount = vlen(size) / 10;
-}
-
-void func_dustmotes::Init(void)
+void
+func_dustmotes::Init(void)
 {
 	CBaseEntity::Init();
 
@@ -73,7 +67,8 @@ void func_dustmotes::Init(void)
 	drawmask = MASK_ENGINE;
 }
 
-void func_dustmotes::SpawnKey(string strField, string strKey)
+void
+func_dustmotes::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
 	case "count":
@@ -83,4 +78,12 @@ void func_dustmotes::SpawnKey(string strField, string strKey)
 	default:
 		CBaseEntity::SpawnKey(strField, strKey);
 	}
+}
+
+void
+func_dustmotes::func_dustmotes(void)
+{
+	solid = SOLID_NOT;
+	Init();
+	m_iCount = vlen(size) / 10;
 }

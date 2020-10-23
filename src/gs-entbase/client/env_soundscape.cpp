@@ -21,7 +21,7 @@
 Client-side environmental soundscape modifier.
 */
 
-int Sound_Precache(string shader);
+var int autocvar_dsp_soundscapes = TRUE;
 
 int g_scapes;
 
@@ -38,8 +38,10 @@ class env_soundscape:CBaseEntity
 
 env_soundscape g_entSoundScape;
 env_soundscape g_entOldScape;
+env_soundscape g_ambientsound;
 
-void env_soundscape::SpawnKey(string strField, string strKey)
+void
+env_soundscape::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
 	case "shader":
@@ -59,7 +61,8 @@ void env_soundscape::SpawnKey(string strField, string strKey)
 	}
 }
 
-void env_soundscape::env_soundscape(void)
+void
+env_soundscape::env_soundscape(void)
 {
 	g_scapes+=1;
 	m_iID = g_scapes;
@@ -67,14 +70,14 @@ void env_soundscape::env_soundscape(void)
 	setorigin(this, origin);
 }
 
-void DSP_ResetSoundscape(void)
+void
+DSP_ResetSoundscape(void)
 {
 	g_entSoundScape = __NULL__;
 }
 
-var int autocvar_dsp_soundscapes = TRUE;
-env_soundscape g_ambientsound;
-void DSP_UpdateSoundscape(void)
+void
+DSP_UpdateSoundscape(void)
 {
 	vector vecPlayer;
 
@@ -86,13 +89,9 @@ void DSP_UpdateSoundscape(void)
 		return;
 	}
 
-#ifdef WASTES
-	vecPlayer = viewClient.vecPlayerOrigin;
-#else
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
 	vecPlayer = pSeat->m_vecPredictedOrigin;
-#endif
 
 	float bestdist = 999999;
 	for (entity e = world; (e = find(e, classname, "env_soundscape"));) {

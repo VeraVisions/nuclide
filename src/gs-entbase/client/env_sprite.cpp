@@ -26,7 +26,8 @@ class env_sprite:CBaseEntity
 	virtual void(void) think;
 };
 
-void env_sprite::think(void)
+void
+env_sprite::think(void)
 {
 	if (frame >= (maxframe-1)) {
 		if (loops == 0) {
@@ -41,7 +42,8 @@ void env_sprite::think(void)
 	nextthink = time + (1 / framerate);
 }
 
-void env_sprite::ReceiveEntity(float flChanged)
+void
+env_sprite::ReceiveEntity(float flChanged)
 {
 	origin[0] = readcoord();
 	origin[1] = readcoord();
@@ -67,17 +69,21 @@ void env_sprite::ReceiveEntity(float flChanged)
 }
 
 /* make sure we're not spawning on the client-side */
-void env_sprite::Init(void)
+void
+env_sprite::Init(void)
 {
 }
-void env_sprite::Initialized(void)
+void
+env_sprite::Initialized(void)
 {
 }
-void env_sprite::env_sprite(void)
+void
+env_sprite::env_sprite(void)
 {
 }
 
-void EnvSprite_ParseEvent(void)
+void
+EnvSprite_ParseEvent(void)
 {
 	env_sprite spr = spawn(env_sprite);
 	spr.origin[0] = readcoord();

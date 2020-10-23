@@ -39,70 +39,64 @@ class env_glow:CBaseEntity
 	virtual void(string, string) SpawnKey;
 };
 
-float env_glow::predraw(void)
+float
+env_glow::predraw(void)
 {
+	vector forg;
+	vector fsize;
+	float falpha;
 	vector vecPlayer;
 
-#ifdef WASTES
-	vecPlayer = viewClient.vecPlayerOrigin;
-#else
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
 	vecPlayer = pSeat->m_vecPredictedOrigin;
-#endif
 
-	m_flAlpha = bound(0, m_flAlpha, 1.0f);
+	m_flAlpha = bound(0.0f, m_flAlpha, 1.0f);
 
-	if (m_flAlpha > 0) {
-		vector forg;
-		vector fsize;
-		float falpha;
-		
-		/* Scale the glow somewhat with the players distance */
-		fsize = m_vecSize * m_flScale;
-		fsize *= bound(1, vlen(vecPlayer - origin) / 256, 4);
-		
-		/* Fade out when the player is starting to move away */
-		falpha = 1 - bound(0, vlen(vecPlayer - origin) / 1024, 1);
-		falpha *= m_flAlpha;
-		
-		/* Clamp the alpha by the glows' renderamt value */
-		falpha = bound(0, falpha, m_flMaxAlpha);
-		makevectors(view_angles);
-		
-		/* Nudge this slightly towards the camera */
-		makevectors(vectoangles(origin - vecPlayer));
-		forg = origin + (v_forward * -16);
+	if (m_flAlpha < 0.0f)
+		return PREDRAW_NEXT;
 
-		/* Project it, always facing the player */
-		makevectors(view_angles);
-		R_BeginPolygon(m_strSprite, 1, 0);
-		R_PolygonVertex(forg + v_right * fsize[0] - v_up * fsize[1],
-			[1,1], m_vecColor, falpha);
-		R_PolygonVertex(forg - v_right * fsize[0] - v_up * fsize[1],
-			[0,1], m_vecColor, falpha);
-		R_PolygonVertex(forg - v_right * fsize[0] + v_up * fsize[1],
-			[0,0], m_vecColor, falpha);
-		R_PolygonVertex(forg + v_right * fsize[0] + v_up * fsize[1],
-			[1,0], m_vecColor, falpha);
-		R_EndPolygon();
-		addentity(this);
-	}
+	/* Scale the glow somewhat with the players distance */
+	fsize = m_vecSize * m_flScale;
+	fsize *= bound(1, vlen(vecPlayer - origin) / 256, 4);
+
+	/* Fade out when the player is starting to move away */
+	falpha = 1 - bound(0, vlen(vecPlayer - origin) / 1024, 1);
+	falpha *= m_flAlpha;
+
+	/* Clamp the alpha by the glows' renderamt value */
+	falpha = bound(0, falpha, m_flMaxAlpha);
+	makevectors(view_angles);
+
+	/* Nudge this slightly towards the camera */
+	makevectors(vectoangles(origin - vecPlayer));
+	forg = origin + (v_forward * -16);
+
+	/* Project it, always facing the player */
+	makevectors(view_angles);
+	R_BeginPolygon(m_strSprite, 1, 0);
+	R_PolygonVertex(forg + v_right * fsize[0] - v_up * fsize[1],
+		[1,1], m_vecColor, falpha);
+	R_PolygonVertex(forg - v_right * fsize[0] - v_up * fsize[1],
+		[0,1], m_vecColor, falpha);
+	R_PolygonVertex(forg - v_right * fsize[0] + v_up * fsize[1],
+		[0,0], m_vecColor, falpha);
+	R_PolygonVertex(forg + v_right * fsize[0] + v_up * fsize[1],
+		[1,0], m_vecColor, falpha);
+	R_EndPolygon();
+	addentity(this);
 
 	return PREDRAW_NEXT;
 }
 
-void env_glow::customphysics(void)
+void
+env_glow::customphysics(void)
 {
 	vector vecPlayer;
-
-#ifdef WASTES
-	vecPlayer = viewClient.vecPlayerOrigin;
-#else
 	int s = (float)getproperty(VF_ACTIVESEAT);
+
 	pSeat = &g_seats[s];
 	vecPlayer = pSeat->m_vecPredictedOrigin;
-#endif
 
 	if (checkpvs(vecPlayer, this) == FALSE) {
 		m_flAlpha -= clframetime;
@@ -121,17 +115,8 @@ void env_glow::customphysics(void)
 	m_flAlpha += clframetime; 
 }
 
-void env_glow::env_glow(void)
-{
-	m_flScale = 1.0f;
-	m_flMaxAlpha = 1.0f;
-	m_vecColor = [1,1,1];
-	drawmask = MASK_ENGINE;
-	setorigin(this, origin);
-	Init();
-}
-
-void env_glow::SpawnKey(string strField, string strKey)
+void
+env_glow::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
 	case "material":
@@ -162,4 +147,15 @@ void env_glow::SpawnKey(string strField, string strKey)
 	default:
 		CBaseEntity::SpawnKey(strField, strKey);
 	}
+}
+
+void
+env_glow::env_glow(void)
+{
+	m_flScale = 1.0f;
+	m_flMaxAlpha = 1.0f;
+	m_vecColor = [1,1,1];
+	drawmask = MASK_ENGINE;
+	setorigin(this, origin);
+	Init();
 }

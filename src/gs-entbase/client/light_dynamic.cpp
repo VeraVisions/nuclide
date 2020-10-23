@@ -97,9 +97,9 @@ void light_dynamic::ReceiveEntity(float flFlags)
 		m_iState = readbyte();
 
 	classname = "light_dynamic";
-	drawmask = MASK_ENGINE;
 }
 
 void light_dynamic::light_dynamic(void)
 {
+	drawmask = MASK_ENGINE;
 }

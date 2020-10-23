@@ -26,7 +26,8 @@ STUB!
 
 #define FLARE_SIZE [128,128]
 
-int Util_IsSky(vector pos)
+int
+Util_IsSky(vector pos)
 {
 	if (serverkeyfloat("*bspversion") == 30)
 	if (getsurfacetexture(world, getsurfacenearpoint(world, pos)) == "sky") {
@@ -98,20 +99,23 @@ env_sun::postdraw(void)
 	drawpic(lens_1 - c * 0.5, "textures/sfx/flare3", FLARE_SIZE, [1,1,1] * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
 }
 
-void env_sun::Init(void)
+void
+env_sun::Init(void)
 {
 	CBaseEntity::Init();
 	setorigin(this, origin);
 	drawmask = MASK_ENGINE;
 }
 
-void env_sun::Initialized(void)
+void
+env_sun::Initialized(void)
 {
 	makevectors(m_vecLensPos);
 	m_vecLensPos = vectoangles(v_forward);
 }
 
-void env_sun::env_sun(void)
+void
+env_sun::env_sun(void)
 {
 	precache_pic("textures/sfx/flare1");
 	precache_pic("textures/sfx/flare2");
@@ -121,7 +125,8 @@ void env_sun::env_sun(void)
 	Init();
 }
 
-void env_sun::SpawnKey(string strField, string strKey)
+void
+env_sun::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
 	case "pitch":

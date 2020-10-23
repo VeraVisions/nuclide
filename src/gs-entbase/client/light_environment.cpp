@@ -27,26 +27,23 @@ class light_environment:CBaseEntity
 	virtual void(string, string) SpawnKey;
 };
 
-void light_environment::light_environment(void)
-{
-	solid = SOLID_NOT;
-	Init();
-}
-
-void light_environment::Init(void)
+void
+light_environment::Init(void)
 {
 	CBaseEntity::Init();
 	setorigin(this, origin);
 	drawmask = MASK_ENGINE;
 }
 
-void light_environment::Initialized(void)
+void
+light_environment::Initialized(void)
 {
 	makevectors(g_vecSunDir);
 	cvar_set("r_shadows_throwdirection", sprintf("%v", v_forward));
 }
 
-void light_environment::SpawnKey(string strField, string strKey)
+void
+light_environment::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
 	case "pitch":
@@ -58,4 +55,11 @@ void light_environment::SpawnKey(string strField, string strKey)
 	default:
 		CBaseEntity::SpawnKey(strField, strKey);
 	}
+}
+
+void
+light_environment::light_environment(void)
+{
+	solid = SOLID_NOT;
+	Init();
 }

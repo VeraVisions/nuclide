@@ -38,13 +38,15 @@ class trigger_gravity:CBaseTrigger
 #endif
 };
 
-void trigger_gravity::touch(void)
+void
+trigger_gravity::touch(void)
 {
 	other.gravity = m_flGravity;
 }
 
 /* TODO: Make this redundant */
-void trigger_gravity::Respawn(void)
+void
+trigger_gravity::Respawn(void)
 {
 	solid = SOLID_BSPTRIGGER;
 #ifdef GS_DEVELOPER
@@ -52,7 +54,8 @@ void trigger_gravity::Respawn(void)
 #endif
 }
 
-void trigger_gravity::SpawnKey(string strField, string strKey)
+void
+trigger_gravity::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
 		case "gravity":
@@ -63,7 +66,8 @@ void trigger_gravity::SpawnKey(string strField, string strKey)
 	}
 }
 
-void trigger_gravity::trigger_gravity(void)
+void
+trigger_gravity::trigger_gravity(void)
 {
 #ifdef SERVER
 	CBaseEntity::CBaseEntity();
@@ -72,7 +76,8 @@ void trigger_gravity::trigger_gravity(void)
 }
 
 #ifdef CLIENT
-void trigger_gravity::Initialized (void)
+void
+trigger_gravity::Initialized (void)
 {
 	setmodel(this, model);
 	movetype = MOVETYPE_NONE;

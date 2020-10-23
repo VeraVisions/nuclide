@@ -60,6 +60,10 @@ Client-side environmental reverb modifier.
 This works only with the OpenAL sound backend.
 */
 
+var int autocvar_dsp_environments = TRUE;
+
+reverbinfo_t mix;
+
 enum
 {
 	DSP_DEFAULT,
@@ -150,7 +154,8 @@ class env_sound:CBaseEntity
 	virtual void(string, string) SpawnKey;
 };
 
-void env_sound::env_sound(void)
+void
+env_sound::env_sound(void)
 {
 	m_iRadius = 256;
 	Init();
@@ -255,7 +260,8 @@ void env_sound::env_sound(void)
 	}
 }
 
-void env_sound::SpawnKey(string strField, string strKey)
+void
+env_sound::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
 		case "roomtype":
@@ -269,7 +275,8 @@ void env_sound::SpawnKey(string strField, string strKey)
 	}
 }
 
-void DSP_SetEnvironment(int id)
+void
+DSP_SetEnvironment(int id)
 {
 	if (g_iDSP == id) {
 		return;
@@ -280,8 +287,8 @@ void DSP_SetEnvironment(int id)
 	g_flDSPTime = 0.0f;
 }
 
-reverbinfo_t mix;
-void DSP_Interpolate(int id)
+void
+DSP_Interpolate(int id)
 {
 	mix.flDensity = Math_Lerp(mix.flDensity, reverbPresets[id].flDensity, g_flDSPTime);
 	mix.flDiffusion = Math_Lerp(mix.flDiffusion, reverbPresets[id].flDiffusion, g_flDSPTime);
@@ -312,8 +319,8 @@ void DSP_Interpolate(int id)
 	mix.iDecayHFLimit = Math_Lerp(mix.iDecayHFLimit, reverbPresets[id].iDecayHFLimit, g_flDSPTime);
 }
 
-var int autocvar_dsp_environments = TRUE;
-void DSP_UpdateListener(void)
+void
+DSP_UpdateListener(void)
 {
 	static int old_dsp;
 
@@ -327,13 +334,9 @@ void DSP_UpdateListener(void)
 		return;
 	}
 
-#ifdef WASTES
-	vecPlayer = viewClient.vecPlayerOrigin;
-#else
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
 	vecPlayer = pSeat->m_vecPredictedOrigin;
-#endif
 
 	float bestdist = 999999;
 	for (entity e = world; (e = find(e, classname, "env_sound"));) {
@@ -386,7 +389,8 @@ void DSP_UpdateListener(void)
 #endif
 }
 
-void DSP_Init(void)
+void
+DSP_Init(void)
 {
 	g_iDSP = 0;
 	g_flDSPTime = 1.0f;

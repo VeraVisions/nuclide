@@ -33,17 +33,14 @@ class env_laser
 
 	void(void) env_laser;
 
-	virtual void(void) Init;
-	virtual void(void) Initialized;
 	virtual void(float flChanged) ReceiveEntity;
 	virtual float(void) predraw;
 };
 
 float env_laser::predraw(void)
 {
-	if (!m_iState) {
+	if (!m_iState)
 		return PREDRAW_NEXT;
-	}
 
 	R_BeginPolygon(m_strBeamTex, 0, 0);
 		R_PolygonVertex(angles, [0,0], [1,1,1], 1.0f);
@@ -54,7 +51,8 @@ float env_laser::predraw(void)
 	return PREDRAW_NEXT;
 }
 
-void env_laser::ReceiveEntity(float flChanged)
+void
+env_laser::ReceiveEntity(float flChanged)
 {
 	if (flChanged & ENVLASER_CHANGED_ORIGIN) {
 		origin[0] = readcoord();
@@ -66,28 +64,18 @@ void env_laser::ReceiveEntity(float flChanged)
 		angles[1] = readcoord();
 		angles[2] = readcoord();
 	}
-	if (flChanged & ENVLASER_CHANGED_TEXTURE) {
+	if (flChanged & ENVLASER_CHANGED_TEXTURE)
 		m_strBeamTex = sprintf("%s_0.tga", readstring());
-	}
-	if (flChanged & ENVLASER_CHANGED_ENDTEXTURE) {
+	if (flChanged & ENVLASER_CHANGED_ENDTEXTURE)
 		m_strEndTex = readstring();
-	}
-	if (flChanged & ENVLASER_CHANGED_STATE) {
+	if (flChanged & ENVLASER_CHANGED_STATE)
 		m_iState = readbyte();
-	}
 
-	drawmask = MASK_ENGINE;
 	setorigin(this, origin);
 }
 
-void env_laser::Init(void)
+void
+env_laser::env_laser(void)
 {
-}
-
-void env_laser::Initialized(void)
-{
-}
-
-void env_laser::env_laser(void)
-{
+	drawmask = MASK_ENGINE;
 }
