@@ -56,6 +56,8 @@ decal::ReceiveEntity(void)
 	angles[0] = readcoord();
 	angles[1] = readcoord();
 	angles[2] = readcoord();
+	setorigin(this, origin);
+
 	m_strTexture = readstring();
 
 	size = drawgetimagesize(m_strTexture);
@@ -77,6 +79,11 @@ decal::ReceiveEntity(void)
 float
 decal::predraw(void)
 {
+	vector vecPlayer;
+	int s = (float)getproperty(VF_ACTIVESEAT);
+	pSeat = &g_seats[s];
+	vecPlayer = pSeat->m_vecPredictedOrigin;
+
 	decal dcl = (decal)self;
 	if (!autocvar_r_drawdecals) {
 		return PREDRAW_NEXT;
@@ -87,11 +94,9 @@ decal::predraw(void)
 		return PREDRAW_NEXT;
 
 	/* don't draw us, unnecessary */
-	/*if (checkpvs(getproperty(VF_ORIGIN), this) == FALSE) {
+	if (checkpvs(vecPlayer, this) == FALSE) {
 		return PREDRAW_NEXT;
-	}*/
-
-	
+	}
 
 	adddecal(dcl.m_strShader, dcl.origin, dcl.mins, dcl.maxs, dcl.color, 1.0f);
 	addentity(dcl);
@@ -128,6 +133,7 @@ decal::Place(vector org, string dname)
 	}
 
 	origin = g_tracedDecal.endpos;
+	setorigin(this, origin);
 
 	/* FIXME: more universal check? */
 	if (getsurfacetexture(trace_ent, getsurfacenearpoint(trace_ent, g_tracedDecal.endpos)) == "sky") {
@@ -266,4 +272,5 @@ decal::decal(void)
 {
 	m_strShader = __NULL__;
 	m_strTexture = __NULL__;
+	setsize(this, [0,0,0], [0,0,0]);
 }
