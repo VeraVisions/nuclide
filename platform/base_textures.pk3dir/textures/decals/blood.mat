@@ -1,0 +1,12 @@
+{
+	polygonOffset 4
+	surfaceParm nodlight
+	surfaceParm noshadows
+	sort decal
+
+	{
+		program unlit
+		map "textures/decals/blood.tga"
+		blendfunc GL_ZERO GL_ONE_MINUS_SRC_COLOR
+	}
+}

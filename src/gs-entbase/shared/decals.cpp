@@ -91,6 +91,8 @@ decal::predraw(void)
 		return PREDRAW_NEXT;
 	}*/
 
+	
+
 	adddecal(dcl.m_strShader, dcl.origin, dcl.mins, dcl.maxs, dcl.color, 1.0f);
 	addentity(dcl);
 	return PREDRAW_NEXT;
@@ -102,7 +104,7 @@ decal::BuildShader(void)
 	string shader_buff;
 
 	/* skip empty decals */
-	if (!m_strTexture)
+	if (!m_strTexture || !m_strTexture)
 		return;
 
 	m_strShader = sprintf("decal_%s", m_strTexture);
@@ -223,7 +225,8 @@ void Decals_Place(vector pos, string dname)
 }
 
 #ifdef CLIENT
-void Decal_Reload(void)
+void
+Decal_Reload(void)
 {
 	for (entity b = world; (b = find(b, ::classname, "decal"));) {
 		decal d = (decal)b;
@@ -231,7 +234,8 @@ void Decal_Reload(void)
 	}
 }
 
-void Decal_Parse(void)
+void
+Decal_Parse(void)
 {
 	decal new;
 
@@ -240,4 +244,22 @@ void Decal_Parse(void)
 	new = (decal)self;
 	new.ReceiveEntity();
 }
+
+void
+Decal_Shutdown(void)
+{
+	for (entity b = world; (b = find(b, ::classname, "tempdecal"));) {
+		remove(b);
+	}
+	for (entity b = world; (b = find(b, ::classname, "decal"));) {
+		remove(b);
+	}
+}
 #endif
+
+void
+decal::decal(void)
+{
+	m_strShader = __NULL__;
+	m_strTexture = __NULL__;
+}

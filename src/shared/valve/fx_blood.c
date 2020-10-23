@@ -16,6 +16,7 @@
 
 #ifdef CLIENT
 var float PARTICLE_BLOOD;
+var int DECAL_BLOOD;
 
 void
 FX_Blood_Init(void)
@@ -23,6 +24,7 @@ FX_Blood_Init(void)
 	precache_model("sprites/bloodspray.spr");
 	precache_model("sprites/blood.spr");
 	PARTICLE_BLOOD = particleeffectnum("part_blood");
+	DECAL_BLOOD = particleeffectnum("decal_blood.effect");
 }
 #endif
 
@@ -43,8 +45,12 @@ FX_Blood(vector pos, vector color)
 #else
 	static void Blood_Touch(void)
 	{
-		Decals_Place(self.origin, sprintf("{blood%d", floor(random(1,9))));
-		self.touch = __NULL__;
+		if (serverkeyfloat("*bspversion") == 30)
+			Decals_Place(self.origin, sprintf("{blood%d", floor(random(1,9))));
+		else {
+			decal_pickwall(self, self.origin);
+			pointparticles(DECAL_BLOOD, g_tracedDecal.endpos, g_tracedDecal.normal, 1);
+		}
 	}
 
 	if (cvar("violence_hblood") <= 0) {
@@ -79,6 +85,9 @@ FX_Blood(vector pos, vector color)
 		ePart.velocity = randomvec() * 64;
 		ePart.touch = Blood_Touch;
 		ePart.solid = SOLID_BBOX;
+		/* ignore player physics */
+		ePart.dimension_solid = 1;
+		ePart.dimension_hit = 1;
 		setsize(ePart, [0,0,0], [0,0,0]);
 	}
 #endif

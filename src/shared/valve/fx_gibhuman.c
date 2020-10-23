@@ -52,7 +52,12 @@ FX_GibHuman(vector pos)
 	}
 	static void Gib_Touch(void)
 	{
-		Decals_Place(self.origin, sprintf("{blood%d", floor(random(1,9))));
+		if (serverkeyfloat("*bspversion") == 30)
+			Decals_Place(self.origin, sprintf("{blood%d", floor(random(1,9))));
+		else {
+			decal_pickwall(self, self.origin);
+			pointparticles(DECAL_BLOOD, g_tracedDecal.endpos, g_tracedDecal.normal, 1);
+		}
 	}
 
 	if (cvar("violence_hgibs") <= 0) {

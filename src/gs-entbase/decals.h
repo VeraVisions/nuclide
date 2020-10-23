@@ -19,6 +19,8 @@ class decal
 	string m_strShader;
 	string m_strTexture;
 
+	void(void) decal;
+
 #ifdef SERVER
 	virtual float(entity, float) SendEntity;
 #else

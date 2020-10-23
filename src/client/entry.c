@@ -892,6 +892,7 @@ Incase you need to free something
 void
 CSQC_Shutdown(void)
 {
+	Decal_Shutdown();
 	Sentences_Shutdown();
 	Titles_Shutdown();
 	Sound_Shutdown();

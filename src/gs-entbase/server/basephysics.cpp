@@ -14,29 +14,27 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define GS_PHYSICS
-
 void
 CBasePhysics::PhysicsEnable(void)
 {
-#ifdef GS_PHYSICS
-	physics_enable(this, TRUE);
-#else
-	print("^1CBasePhysics::PhysicsEnable: ");
-	print("^7Physics simulator not enabled.\n");
-#endif
+	if (physics_supported() == TRUE)
+		physics_enable(this, TRUE);
+	else {
+		print("^1CBasePhysics::PhysicsEnable: ");
+		print("^7Physics simulator not enabled.\n");
+	}
 	m_iEnabled = TRUE;
 }
 
 void
 CBasePhysics::PhysicsDisable(void)
 {
-#ifdef GS_PHYSICS
-	physics_enable(this, FALSE);
-#else
-	print("^1CBasePhysics::PhysicsDisable: ");
-	print("^7Physics simulator not enabled.\n");
-#endif
+	if (physics_supported() == TRUE)
+		physics_enable(this, FALSE);
+	else {
+		print("^1CBasePhysics::PhysicsDisable: ");
+		print("^7Physics simulator not enabled.\n");
+	}
 	m_iEnabled = FALSE;
 }
 
@@ -87,34 +85,34 @@ CBasePhysics::GetInertia(void)
 void
 CBasePhysics::ApplyForceCenter(vector vecForce)
 {
-#ifdef GS_PHYSICS
-	physics_addforce(this, vecForce, [0,0,0]);
-#else
-	print("^1CBasePhysics::ApplyForceCenter: ");
-	print("^7Physics simulator not enabled.\n");
-#endif
+	if (physics_supported() == TRUE)
+		physics_addforce(this, vecForce, [0,0,0]);
+	else {
+		print("^1CBasePhysics::ApplyForceCenter: ");
+		print("^7Physics simulator not enabled.\n");
+	}
 }
 
 void
 CBasePhysics::ApplyForceOffset(vector vecForce, vector vecOffset)
 {
-#ifdef GS_PHYSICS
-	physics_addforce(this, vecForce, vecOffset);
-#else
-	print("^1CBasePhysics::ApplyForceOffset: ");
-	print("^7Physics simulator not enabled.\n");
-#endif
+	if (physics_supported() == TRUE)
+		physics_addforce(this, vecForce, vecOffset);
+	else {
+		print("^1CBasePhysics::ApplyForceOffset: ");
+		print("^7Physics simulator not enabled.\n");
+	}
 }
 
 void
 CBasePhysics::ApplyTorqueCenter(vector vecTorque)
 {
-#ifdef GS_PHYSICS
-	physics_addtorque(this, vecTorque * m_flInertiaScale);
-#else
-	print("^1CBasePhysics::ApplyTorqueCenter: ");
-	print("^7Physics simulator not enabled.\n");
-#endif
+	if (physics_supported() == TRUE)
+		physics_addtorque(this, vecTorque * m_flInertiaScale);
+	else {
+		print("^1CBasePhysics::ApplyTorqueCenter: ");
+		print("^7Physics simulator not enabled.\n");
+	}
 }
 
 void
@@ -200,10 +198,8 @@ CBasePhysics::SpawnKey(string strKey, string strValue)
 	switch (strKey) {
 	case "physmodel":
 		m_iShape = stoi(strValue);
-
-		if (m_iShape > PHYSM_CYLINDER) {
+		if (m_iShape > PHYSM_CYLINDER)
 			m_iShape = 0;
-		}
 		break;
 	case "massscale":
 		mass = stof(strValue);
