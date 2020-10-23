@@ -228,6 +228,10 @@ void Decals_Place(vector pos, string dname)
 void
 Decal_Reload(void)
 {
+	for (entity b = world; (b = find(b, ::classname, "tempdecal"));) {
+		decal d = (decal)b;
+		d.BuildShader();
+	}
 	for (entity b = world; (b = find(b, ::classname, "decal"));) {
 		decal d = (decal)b;
 		d.BuildShader();
