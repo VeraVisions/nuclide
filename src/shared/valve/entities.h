@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,21 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "animations.h"
-#include "radio.h"
-#include "weapons.h"
-#include "items.h"
-#include "entities.h"
-#include "events.h"
-
-#define TEAM_T		1
-#define TEAM_CT		2
-#define TEAM_VIP	3
-
 enum
 {
-	STAT_MONEY = 34,
-	STAT_PROGRESS,
-	STAT_GAMETIME,
-	STAT_GAMESTATE
+	ENT_TRIPMINE = ENT_SEPARATOR
 };

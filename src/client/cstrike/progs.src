@@ -10,8 +10,8 @@
 
 #includelist
 ../../shared/fteextensions.qc
-../../shared/cstrike/defs.h
 ../../shared/defs.h
+../../shared/cstrike/defs.h
 ../cstrike/defs.h
 ../defs.h
 

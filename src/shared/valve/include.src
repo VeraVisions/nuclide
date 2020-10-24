@@ -1,4 +1,5 @@
  #includelist
+../../shared/valve/entities.h
 ../../shared/valve/flags.h
 ../../shared/sound.c
 ../../shared/valve/player.cpp
