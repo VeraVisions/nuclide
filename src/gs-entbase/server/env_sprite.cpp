@@ -45,17 +45,20 @@ class env_sprite:CBaseTrigger
 
 	void(void) env_sprite;
 	virtual void(entity, int) Trigger;
-	virtual float(entity, float) Network;
+	virtual float(entity, float) SendEntity;
 	virtual void(string, string) SpawnKey;
 };
 
 float
-env_sprite::Network(entity pvsent, float flags)
+env_sprite::SendEntity(entity pvsent, float flags)
 {
-	/* Delete it on the client. */
-	if (m_iToggled == FALSE) {
+	if (spawnflags & ENVS_PLAYONCE)
 		return FALSE;
-	}
+
+	/* Delete it on the client. */
+	if (m_iToggled == FALSE)
+		return FALSE;
+
 	WriteByte(MSG_ENTITY, ENT_SPRITE);
 	WriteFloat(MSG_ENTITY, 666);
 	WriteCoord(MSG_ENTITY, origin[0]);
@@ -129,9 +132,4 @@ env_sprite::env_sprite(void)
 
 	CBaseTrigger::CBaseTrigger();
 	m_iToggled = ((spawnflags & ENVS_STARTON) > 0);
-
-	if (!(spawnflags & ENVS_PLAYONCE)) {
-		SendEntity = Network;
-		SendFlags = 1;
-	}
 }
