@@ -68,12 +68,12 @@ env_hudhint::env_hudhint(void)
 }
 
 void
-env_hudhint_send(entity eActivator, string strMessage, int iFlags)
+env_hudhint_send(entity eAct, string strMessage, int iFlags)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_HUDHINT);
 	WriteString(MSG_MULTICAST, strMessage);
-	msg_entity = eActivator;
+	msg_entity = eAct;
 
 	if (iFlags & EHH_ALLPLAYERS)
 		multicast([0,0,0], MULTICAST_ALL);

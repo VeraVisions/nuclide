@@ -43,7 +43,6 @@ env_glow::predraw(void)
 {
 	vector forg;
 	vector fsize;
-	float falpha;
 	vector vecPlayer;
 
 	int s = (float)getproperty(VF_ACTIVESEAT);
@@ -135,7 +134,7 @@ env_glow::env_glow(void)
 	m_flMaxAlpha = 1.0f;
 	m_vecColor = [1,1,1];
 	drawmask = MASK_ENGINE;
-	setorigin(this, [0,0,0], [0,0,0]);
+	setsize(this, [0,0,0], [0,0,0]);
 	setorigin(this, origin);
 	Init();
 }
