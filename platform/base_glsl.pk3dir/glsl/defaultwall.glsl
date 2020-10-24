@@ -10,6 +10,7 @@
 !!samps =LIGHTSTYLED lightmap1 lightmap2 lightmap3
 !!cvardf gl_mono=0
 !!cvardf gl_kdither=0
+!!cvardf gl_stipplealpha=0
 
 #include "sys/defs.h"
 
@@ -142,6 +143,33 @@ varying mat3 invsurface;
 #endif
 
 		diffuse_f *= e_colourident;
+
+		// awful stipple alpha code
+		if (gl_stipplealpha == 1.0) {
+			float alpha = e_colourident.a;
+			int x = int(mod(gl_FragCoord.x, 2.0));
+			int y = int(mod(gl_FragCoord.y, 2.0));
+
+			if (alpha <= 0.0) {
+					discard;
+			} else if (alpha <= 0.25) {
+				diffuse_f.a = 1.0f;
+				if (x + y == 2)
+					discard;
+				if (x + y == 1)
+					discard;
+			} else if (alpha <= 0.5) {
+				diffuse_f.a = 1.0f;
+				if (x + y == 2)
+					discard;
+				if (x + y == 0)
+					discard;
+			} else if (alpha < 1.0) {
+				diffuse_f.a = 1.0f;
+				if (x + y == 2)
+					discard;
+			}
+		}
 
 		if (gl_mono == 1.0) {
 			float bw = (diffuse_f.r + diffuse_f.g + diffuse_f.b) / 3.0;

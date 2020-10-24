@@ -19,6 +19,8 @@
  * for reference. I thank thee fellow soldiers at sven manor! */
 
 var int autocvar_cl_showtriggers = FALSE;
+var int autocvar_rm_unlit_additive = TRUE;
+var int autocvar_rm_unlit_texture = TRUE;
 
 string __fullspawndata;
 string Sentences_GetSamples(string);
@@ -47,8 +49,13 @@ CBaseEntity::RenderFXPass(void)
 	case RM_COLOR:
 		break;
 	case RM_TEXTURE:
-		drawflags = 7;
-		abslight = 255;
+		if (autocvar_rm_unlit_texture == 0) {
+			drawflags = 0;
+			abslight = 0;
+		} else {
+			drawflags = 7;
+			abslight = 255;
+		}
 		break;
 	case RM_GLOW:
 		if (checkpvs(vecPlayer, this) == FALSE)
@@ -76,8 +83,13 @@ CBaseEntity::RenderFXPass(void)
 		break;
 	case RM_ADDITIVE:
 		effects = EF_ADDITIVE;
-		drawflags = 7;
-		abslight = 255;
+		if (autocvar_rm_unlit_additive == 0) {
+			drawflags = 0;
+			abslight = 0;
+		} else {
+			drawflags = 7;
+			abslight = 255;
+		}
 		break;
 	case RM_FULLBRIGHT:
 		alpha = 1.0f;
