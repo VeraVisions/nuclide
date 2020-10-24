@@ -51,36 +51,26 @@ CBaseEntity::RenderFXPass(void)
 		abslight = 255;
 		break;
 	case RM_GLOW:
-		if (checkpvs(vecPlayer, this) == FALSE) {
+		if (checkpvs(vecPlayer, this) == FALSE)
 			alpha -= clframetime;
-		}
 
 		other = world;
 		traceline(this.origin, vecPlayer, MOVE_OTHERONLY, this);
 
 		/* If we can't trace against the player, or are two close, fade out */
-		if (trace_fraction < 1.0f || vlen(origin - vecPlayer) < 128) {
+		if (trace_fraction < 1.0f || vlen(origin - vecPlayer) < 128)
 			alpha -= clframetime; 
-		} else {
+		else
 			alpha += clframetime;
-		}
 
-		alpha = bound(0, alpha, 1.0f);
+		/* max alpha will be applied here to the color instead */
+		colormod *= m_flRenderAmt;
+		alpha = bound(0.0f, alpha, 1.0f);
 		effects = EF_ADDITIVE | EF_FULLBRIGHT;
 
-		if (alpha > 0) {
-			float falpha;
-			
-			/* Scale the glow somewhat with the players distance */
+		/* Scale the glow somewhat with the players distance */
+		if (alpha > 0.0f)
 			scale = bound(1, vlen(vecPlayer - origin) / 256, 4);
-			
-			/* Fade out when the player is starting to move away */
-			falpha = 1 - bound(0, vlen(vecPlayer - origin) / 1024, 1);
-			falpha *= alpha;
-			
-			/* Clamp the alpha by the glows' renderamt value */
-			alpha = bound(0, falpha, m_flRenderAmt);
-		}
 		break;
 	case RM_SOLID:
 		break;
@@ -223,7 +213,8 @@ CBaseEntity::Sentence(string msg)
 	m_flSentenceTime = time;
 }
 
-void CBaseEntity::ReceiveEntity(float flChanged)
+void
+CBaseEntity::ReceiveEntity(float flChanged)
 {
 	if (flChanged & BASEFL_CHANGED_ORIGIN) {
 		origin[0] = readcoord();
@@ -306,57 +297,57 @@ void CBaseEntity::ReceiveEntity(float flChanged)
 	setsize(this, mins, maxs);
 }
 
-void CBaseEntity::SpawnKey(string strField, string strKey)
+void
+CBaseEntity::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
-		/* compiler specific stuff */
-		case "angle":
-		case "_minlight":
-		case "_cs":
-			break;
-		case "shadows":
-			if (stof(strKey) == 1) {
-				effects &= ~EF_NOSHADOW;
-			}
-			break;
-		case "targetname":
-			targetname = strKey;
-			break;
-		case "target":
-			target = strKey;
-			break;
-		case "origin":
-			origin = stov(strKey);
-			setorigin(this, origin);
-			break;
-		case "angles":
-			angles = stov(strKey);
-			break;
-		case "model":
-			model = strKey;
-			break;
-		case "style":
-			style = stof(strKey);
-			break;
-		case "color":
-			color = stov(strKey);
-			break;
-		case "movetype":
-			movetype = stof(strKey);
-			break;
-		case "solid":
-			solid = stof(strKey);
-			break;
-		case "scale":
-			scale = stof(strKey);
-			break;
-		case "spawnflags":
-			spawnflags = stof(strKey);
-			break;
-		default:
+	/* compiler specific stuff */
+	case "angle":
+	case "_minlight":
+	case "_cs":
+		break;
+	case "shadows":
+		if (stof(strKey) == 1)
+			effects &= ~EF_NOSHADOW;
+		break;
+	case "targetname":
+		targetname = strKey;
+		break;
+	case "target":
+		target = strKey;
+		break;
+	case "origin":
+		origin = stov(strKey);
+		setorigin(this, origin);
+		break;
+	case "angles":
+		angles = stov(strKey);
+		break;
+	case "model":
+		model = strKey;
+		break;
+	case "style":
+		style = stof(strKey);
+		break;
+	case "color":
+		color = stov(strKey);
+		break;
+	case "movetype":
+		movetype = stof(strKey);
+		break;
+	case "solid":
+		solid = stof(strKey);
+		break;
+	case "scale":
+		scale = stof(strKey);
+		break;
+	case "spawnflags":
+		spawnflags = stof(strKey);
+		break;
+	default:
 #ifdef GS_DEVELOPER
-			print(sprintf("%s::SpawnKey: Unknown '%s' value '%s'\n", 
-				this.classname, strField, strKey));
+		print(sprintf("%s::SpawnKey: Unknown '%s' value '%s'\n", 
+			this.classname, strField, strKey));
 #endif
 	}
 }
@@ -395,21 +386,25 @@ CBaseEntity::ModelEvent(float fTimeStamp, int iCode, string sData)
 	}
 }
 
-void CBaseEntity::Init(void)
+void
+CBaseEntity::Init(void)
 {
 	isCSQC = TRUE;
 	effects |= EF_NOSHADOW;
-	for (int i = 0; i < (tokenize(__fullspawndata) - 1); i += 2) {
+
+	for (int i = 0; i < (tokenize(__fullspawndata) - 1); i += 2)
 		SpawnKey(argv(i), argv(i+1));
-	}
+
 	Initialized();
 }
 
-void CBaseEntity::Initialized(void)
+void
+CBaseEntity::Initialized(void)
 {
 }
 
-void CBaseEntity::CBaseEntity(void)
+void
+CBaseEntity::CBaseEntity(void)
 {
 }
 

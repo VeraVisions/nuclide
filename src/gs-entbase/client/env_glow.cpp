@@ -34,7 +34,6 @@ class env_glow:CBaseEntity
 	float m_flScale;
 
 	void(void) env_glow;
-	virtual void(void) customphysics;
 	virtual float() predraw;
 	virtual void(string, string) SpawnKey;
 };
@@ -54,18 +53,23 @@ env_glow::predraw(void)
 	if (checkpvs(vecPlayer, this) == FALSE)
 		return PREDRAW_NEXT;
 
+	other = world;
+	traceline(this.origin, vecPlayer, MOVE_OTHERONLY, this);
+
+	/* If we can't trace against the player, or are two close, fade out */
+	if (trace_fraction < 1.0f || vlen(origin - vecPlayer) < 128)
+		m_flAlpha -= clframetime;
+	else
+		m_flAlpha += clframetime;
+
 	m_flAlpha = bound(0.0f, m_flAlpha, 1.0f);
 
-	if (m_flAlpha < 0.0f)
+	if (m_flAlpha <= 0.0f)
 		return PREDRAW_NEXT;
 
 	/* Scale the glow somewhat with the players distance */
 	fsize = m_vecSize * m_flScale;
 	fsize *= bound(1, vlen(vecPlayer - origin) / 256, 4);
-
-	/* Fade out when the player is starting to move away */
-	falpha = 1;
-	falpha *= m_flAlpha;
 
 	makevectors(view_angles);
 
@@ -77,38 +81,17 @@ env_glow::predraw(void)
 	makevectors(view_angles);
 	R_BeginPolygon(m_strSprite, 1, 0);
 	R_PolygonVertex(forg + v_right * fsize[0] - v_up * fsize[1],
-		[1,1], m_vecColor * m_flMaxAlpha, falpha);
+		[1,1], m_vecColor * m_flMaxAlpha, m_flAlpha);
 	R_PolygonVertex(forg - v_right * fsize[0] - v_up * fsize[1],
-		[0,1], m_vecColor * m_flMaxAlpha, falpha);
+		[0,1], m_vecColor * m_flMaxAlpha, m_flAlpha);
 	R_PolygonVertex(forg - v_right * fsize[0] + v_up * fsize[1],
-		[0,0], m_vecColor * m_flMaxAlpha, falpha);
+		[0,0], m_vecColor * m_flMaxAlpha, m_flAlpha);
 	R_PolygonVertex(forg + v_right * fsize[0] + v_up * fsize[1],
-		[1,0], m_vecColor * m_flMaxAlpha, falpha);
+		[1,0], m_vecColor * m_flMaxAlpha, m_flAlpha);
 	R_EndPolygon();
 	addentity(this);
 
 	return PREDRAW_NEXT;
-}
-
-void
-env_glow::customphysics(void)
-{
-	vector vecPlayer;
-	int s = (float)getproperty(VF_ACTIVESEAT);
-
-	pSeat = &g_seats[s];
-	vecPlayer = pSeat->m_vecPredictedOrigin;
-
-	other = world;
-	traceline(this.origin, vecPlayer, MOVE_OTHERONLY, this);
-
-	/* If we can't trace against the player, or are two close, fade out */
-	if (trace_fraction < 1.0f || vlen(origin - vecPlayer) < 128) {
-		m_flAlpha -= clframetime; 
-		return;
-	}
-
-	m_flAlpha += clframetime; 
 }
 
 void
