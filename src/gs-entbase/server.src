@@ -22,6 +22,7 @@ server/cycler.cpp
 server/cycler_sprite.cpp
 server/env_beam.cpp
 server/env_fade.cpp
+server/env_hudhint.cpp
 server/env_sprite.cpp
 server/env_spark.cpp
 server/env_explosion.cpp

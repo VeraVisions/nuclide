@@ -546,6 +546,12 @@ CSQC_Parse_Event(void)
 	case EV_SENTENCE:
 		CBaseEntity_ParseSentence();
 		break;
+	case EV_HUDHINT:
+		string hint;
+		hint = readstring();
+		/* TODO: Handle the event properly */
+		Chat_Parse(sprintf("Hint: %s", hint));
+		break;
 	case EV_FADE:
 		Fade_Parse();
 		break;
