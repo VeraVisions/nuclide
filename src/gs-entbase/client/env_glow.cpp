@@ -51,6 +51,9 @@ env_glow::predraw(void)
 	pSeat = &g_seats[s];
 	vecPlayer = pSeat->m_vecPredictedOrigin;
 
+	if (checkpvs(vecPlayer, this) == FALSE)
+		return PREDRAW_NEXT;
+
 	m_flAlpha = bound(0.0f, m_flAlpha, 1.0f);
 
 	if (m_flAlpha < 0.0f)
@@ -61,11 +64,9 @@ env_glow::predraw(void)
 	fsize *= bound(1, vlen(vecPlayer - origin) / 256, 4);
 
 	/* Fade out when the player is starting to move away */
-	falpha = 1 - bound(0, vlen(vecPlayer - origin) / 1024, 1);
+	falpha = 1;
 	falpha *= m_flAlpha;
 
-	/* Clamp the alpha by the glows' renderamt value */
-	falpha = bound(0, falpha, m_flMaxAlpha);
 	makevectors(view_angles);
 
 	/* Nudge this slightly towards the camera */
@@ -76,13 +77,13 @@ env_glow::predraw(void)
 	makevectors(view_angles);
 	R_BeginPolygon(m_strSprite, 1, 0);
 	R_PolygonVertex(forg + v_right * fsize[0] - v_up * fsize[1],
-		[1,1], m_vecColor, falpha);
+		[1,1], m_vecColor * m_flMaxAlpha, falpha);
 	R_PolygonVertex(forg - v_right * fsize[0] - v_up * fsize[1],
-		[0,1], m_vecColor, falpha);
+		[0,1], m_vecColor * m_flMaxAlpha, falpha);
 	R_PolygonVertex(forg - v_right * fsize[0] + v_up * fsize[1],
-		[0,0], m_vecColor, falpha);
+		[0,0], m_vecColor * m_flMaxAlpha, falpha);
 	R_PolygonVertex(forg + v_right * fsize[0] + v_up * fsize[1],
-		[1,0], m_vecColor, falpha);
+		[1,0], m_vecColor * m_flMaxAlpha, falpha);
 	R_EndPolygon();
 	addentity(this);
 
@@ -97,11 +98,6 @@ env_glow::customphysics(void)
 
 	pSeat = &g_seats[s];
 	vecPlayer = pSeat->m_vecPredictedOrigin;
-
-	if (checkpvs(vecPlayer, this) == FALSE) {
-		m_flAlpha -= clframetime;
-		return;
-	}
 
 	other = world;
 	traceline(this.origin, vecPlayer, MOVE_OTHERONLY, this);
@@ -156,6 +152,7 @@ env_glow::env_glow(void)
 	m_flMaxAlpha = 1.0f;
 	m_vecColor = [1,1,1];
 	drawmask = MASK_ENGINE;
+	setorigin(this, [0,0,0], [0,0,0]);
 	setorigin(this, origin);
 	Init();
 }
