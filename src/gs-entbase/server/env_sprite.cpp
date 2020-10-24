@@ -128,8 +128,13 @@ void
 env_sprite::env_sprite(void)
 {
 	m_flFramerate = 10;
-	m_flScale = 1.0f;
+	m_flScale = 0.25f; /* this is the default, according to Sven Manor */
 
 	CBaseTrigger::CBaseTrigger();
+
 	m_iToggled = ((spawnflags & ENVS_STARTON) > 0);
+
+	/* how pointless this would be otherwise. */
+	if (!targetname)
+		m_iToggled = TRUE;
 }
