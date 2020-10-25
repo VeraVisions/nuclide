@@ -14,10 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* TODO: Move this into the player class. Monsters will call steps via
- * modelevents. */
-.int iStep;
-
 /* HLBSP materials.txt character id's */
 #define MATID_ALIEN			'H'
 #define MATID_BLOODYFLESH	'B'
@@ -37,7 +33,7 @@
 
 /* Valve Half-Life BSP */
 void
-Footsteps_HLBSP(entity target)
+Footsteps_HLBSP(base_player target)
 {
 	string mat_name = "";
 	string tex_name = "";
@@ -100,7 +96,7 @@ Footsteps_HLBSP(entity target)
 		mat_name = "step_ladder";
 	}
 
-	if (target.iStep) {
+	if (target.step) {
 		Sound_Play(target, CHAN_BODY, sprintf("%s.left", mat_name));
 	} else {
 		Sound_Play(target, CHAN_BODY, sprintf("%s.right", mat_name));
@@ -109,7 +105,7 @@ Footsteps_HLBSP(entity target)
 
 /* Vera Visions BSP / Modified RFBSP */
 void
-Footsteps_VVBSP(entity target)
+Footsteps_VVBSP(base_player target)
 {
 	string mat_name = "";
 
@@ -173,7 +169,7 @@ Footsteps_VVBSP(entity target)
 		mat_name = "step_ladder";
 	}
 
-	if (target.iStep) {
+	if (target.step) {
 		Sound_Play(target, CHAN_BODY, sprintf("%s.left", mat_name));
 	} else {
 		Sound_Play(target, CHAN_BODY, sprintf("%s.right", mat_name));
@@ -182,7 +178,7 @@ Footsteps_VVBSP(entity target)
 
 /* anything unsupported */
 void
-Footsteps_Default(entity target)
+Footsteps_Default(base_player target)
 {
 	string mat_name = "";
 
@@ -193,7 +189,7 @@ Footsteps_Default(entity target)
 		mat_name = "step_ladder";
 	}
 
-	if (target.iStep) {
+	if (target.step) {
 		Sound_Play(target, CHAN_BODY, sprintf("%s.left", mat_name));
 	} else {
 		Sound_Play(target, CHAN_BODY, sprintf("%s.right", mat_name));
@@ -210,34 +206,41 @@ Run every frame for each player, plays material based footsteps
 void
 Footsteps_Update(void)
 {
-	if (self.movetype == MOVETYPE_WALK) {
-		if ((self.velocity[0] == 0 && self.velocity[1] == 0) || self.fStepTime > time) {
+	base_player pl;
+
+	if (self.classname != "player")
+		return;
+
+	pl = (base_player)self;
+
+	if (pl.movetype == MOVETYPE_WALK) {
+		if ((pl.velocity[0] == 0 && pl.velocity[1] == 0) || pl.step_time > time) {
 			return;
 		}
 
 		/* make it so we step once we land */
-		if (!(self.flags & FL_ONGROUND) && !(self.flags & FL_ONLADDER)) {
-			self.fStepTime = 0.0f;
+		if (!(pl.flags & FL_ONGROUND) && !(pl.flags & FL_ONLADDER)) {
+			pl.step_time = 0.0f;
 			return;
 		}
 
 		/* the footsteps call might overwrite this later */
-		self.fStepTime = time + 0.35;
+		pl.step_time = time + 0.35;
 
 		switch (serverkeyfloat("*bspversion")) {
 		case 30: /* HL */
-			Footsteps_HLBSP(self);
+			Footsteps_HLBSP(pl);
 			break;
 		case 46: /* Q3 */
 		case 47: /* RtCW */
 		case 1: /* RFVBSP */
-			Footsteps_VVBSP(self);
+			Footsteps_VVBSP(pl);
 			break;
 		default:
-			Footsteps_Default(self);
+			Footsteps_Default(pl);
 		}
 
 		/* switch between feet */
-		self.iStep = 1 - self.iStep;
+		pl.step = 1 - pl.step;
 	}
 }

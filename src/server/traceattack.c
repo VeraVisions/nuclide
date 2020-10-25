@@ -14,10 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifdef BULLETPENETRATION
-	var int iTotalPenetrations;
-#endif
-
 /* cast a single bullet shot */
 void
 TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon)
@@ -29,9 +25,9 @@ TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon)
 	range = (vAngle * 8196);
 
 	traceline(vecPos, vecPos + range, MOVE_LAGGED | MOVE_HITMODEL, self);
-	if (trace_fraction >= 1.0f) {
+
+	if (trace_fraction >= 1.0f)
 		return;
-	}
 
 	if (trace_ent.takedamage == DAMAGE_YES) {
 #ifdef CSTRIKE
@@ -58,9 +54,8 @@ TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon)
 		}
 #else
 		/* only headshots count in HL */
-		if (trace_surface_id == BODY_HEAD) {
+		if (trace_surface_id == BODY_HEAD)
 			iDamage *= 3;
-		}
 #endif
 		Damage_Apply(trace_ent, self, iDamage, iWeapon, DMG_BULLET);
 	}
@@ -116,7 +111,7 @@ TraceAttack_FireBullets(int iShots, vector vecPos, int iDamage, vector vecSpread
 
 	while (iShots > 0) {
 		vDir = aim(self, 100000);
-#ifndef CSTRIKE
+#ifndef BULLETPATTERNS
 		vDir += random(-1,1) * vecSpread[0] * v_right;
 		vDir += random(-1,1) * vecSpread[1] * v_up;
 #else

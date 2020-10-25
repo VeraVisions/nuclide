@@ -76,5 +76,7 @@ class base_player
 	int old_a_ammo3;
 	
 	int voted;
+	int step;
+	float step_time;
 #endif
 }; 

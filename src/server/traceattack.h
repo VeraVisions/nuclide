@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
  *
@@ -15,5 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void Skill_Init(void);
-float Skill_GetValue(string);
+#ifdef BULLETPENETRATION
+	var int iTotalPenetrations;
+#endif
+
+void TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon);
+void TraceAttack_FireBullets(int iShots, vector vecPos, int iDamage, vector vecSpread, int iWeapon);
+
+#ifdef BULLETPENETRATION
+void TraceAttack_SetPenetrationPower(int power);
+#endif

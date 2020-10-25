@@ -24,6 +24,7 @@
 #include "weapons.h"
 #include "plugins.h"
 #include "vehicles.h"
+#include "traceattack.h"
 
 #define CLASSEXPORT(classname,classa) void classname(void) { spawnfunc_##classa(); }
 
@@ -59,7 +60,6 @@ entity g_eAttacker;
 .entity eUser;
 .float material;
 .float deaths;
-.float fStepTime;
 .float identity;
 
 /* in idTech the .owner field causes collisions to fail against set entity,
