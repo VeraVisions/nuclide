@@ -47,3 +47,4 @@ mv ./_release/valve.fmf ./_release/default.fmf
 export FILE_OUT=nuclide-$(date +%m-%d-%Y)
 mv ./_release "./$FILE_OUT"
 tar zcvf "$FILE_OUT".tar.gz "./$FILE_OUT"
+gpg --output "./$FILE_OUT.sig" --detach-sig "./$FILE_OUT"
