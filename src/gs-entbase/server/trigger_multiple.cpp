@@ -29,7 +29,6 @@ Trivia:
 This entity was introduced in Quake (1996).
 */
 
-// TODO: These are missing
 enumflags
 {
 	TM_MONSTERS,
@@ -58,6 +57,8 @@ trigger_multiple::touch(void)
 		return;
 	if (!(spawnflags & TM_MONSTERS) && other.flags & FL_MONSTER)
 		return;
+	if (!(spawnflags & TM_PUSHABLES) && other.classname = "func_pushable")
+		return;
 
 	if (Rules_IsTeamPlay() == TRUE) {
 		if (m_iTeam > 0 && eActivator.team != m_iTeam + 1) {
@@ -65,15 +66,12 @@ trigger_multiple::touch(void)
 		}
 	}
 
-	/* modern */
-	if (!target) {
+	/* if the target key isn't used, assume we're using the new I/O system */
+	if (!target)
 		UseOutput(other, m_strOnStartTouch);
-		return;
-	}
+	else
+		UseTargets(other, TRIG_TOGGLE, m_flDelay);
 
-	/* legacy */
-	UseTargets(other, TRIG_TOGGLE, m_flDelay);
-	
 	/* This is effectively a trigger_once...*/
 	if (m_flWait != -1) {
 		think = Respawn;
