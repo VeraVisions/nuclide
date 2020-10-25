@@ -15,6 +15,7 @@
 !!samps =FAKESHADOWS shadowmap
 
 #include "sys/defs.h"
+#include "sys/fog.h"
 
 #if gl_affinemodels == 1
 	#define affine noperspective
@@ -186,6 +187,6 @@ varying vec3 light;
 	#ifdef FAKESHADOWS
 		diffuse_f.rgb *= ShadowmapFilter(s_shadowmap, vtexprojcoord);
 	#endif
-		gl_FragColor = diffuse_f;
+		gl_FragColor = fog4(diffuse_f);
 	}
 #endif

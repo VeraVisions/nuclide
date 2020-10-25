@@ -1,5 +1,6 @@
 !!ver 130
 !!permu LIGHTSTYLED
+!!permu FOG
 !!samps diffuse reflectcube normalmap
 
 !!permu FAKESHADOWS
@@ -13,6 +14,7 @@
 !!cvardf gl_stipplealpha=0
 
 #include "sys/defs.h"
+#include "sys/fog.h"
 
 varying vec2 tex_c;
 
@@ -180,7 +182,7 @@ varying mat3 invsurface;
 		diffuse_f.rgb *= ShadowmapFilter(s_shadowmap, vtexprojcoord);
 	#endif
 
-		gl_FragColor = diffuse_f;
+		gl_FragColor = fog4(diffuse_f);
 		
 	}
 #endif
