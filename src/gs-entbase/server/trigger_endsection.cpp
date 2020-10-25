@@ -19,6 +19,9 @@
 
 This trigger shuts down the server.
 Useful for when a singleplayer game ends, as it takes you to the main menu.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 class trigger_endsection:CBaseTrigger

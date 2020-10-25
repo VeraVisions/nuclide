@@ -23,6 +23,9 @@ Freezing a player means they're unable to move, they can still look around.
 
 Ideas: Add ability to supress looking around, firing weapons, using items
 and so on.
+
+Trivia:
+This entity was introduced in Opposing Force (1999).
 */
 
 class trigger_playerfreeze:CBaseTrigger

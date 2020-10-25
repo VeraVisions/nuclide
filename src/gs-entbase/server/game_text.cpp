@@ -39,6 +39,9 @@ Line breaks can be added with a \n character.
 
 If GTF_ALLPLAYERS is set, it'll display the message to not just the activator,
 but all players on the level.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 enumflags

@@ -23,6 +23,9 @@
 "snd_done"      Sound to play when first finished charging.
 
 Brush that fills up your health when used, to a maximum of 100 HP.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 class func_healthcharger:CBaseTrigger

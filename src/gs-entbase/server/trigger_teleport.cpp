@@ -20,6 +20,9 @@
 
 Teleportation volume. Teleports anything it touches to the position of
 any entity set as the "target". Works best with info_teleport_destination.
+
+Trivia:
+This entity was introduced in Quake (1996).
 */
 
 enumflags

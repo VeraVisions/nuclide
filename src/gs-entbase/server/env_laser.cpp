@@ -20,6 +20,9 @@
 "killtarget"            Target to kill when triggered.
 
 Shoots a frickin lazer.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 enumflags

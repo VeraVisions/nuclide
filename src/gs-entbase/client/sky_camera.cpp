@@ -21,6 +21,9 @@ Defines the position of a skyroom camera.
 You want to put this into a dedicated room that contains a 3D skybox.
 The scale modifier is more like a divider. You want to keep these
 divisable by 2 to avoid any precision funkyness.
+
+Trivia:
+This entity was introduced in Half-Life 2 (2004).
 */
 
 var int autocvar_dev_skyscale = 0;

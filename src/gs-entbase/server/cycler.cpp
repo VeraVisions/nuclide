@@ -24,6 +24,9 @@
 
 Upon damage, the cycler will switch between all available animation
 sequences. This is really for test-maps and showroom entities.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 class cycler:CBaseTrigger

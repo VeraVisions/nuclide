@@ -23,6 +23,9 @@ var float autocvar_tracktrain_dir = 1.0f;
 
 Moving platform following along path_* entities that's fully user controlled.
 Very unfinished.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 enumflags

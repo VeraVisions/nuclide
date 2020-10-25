@@ -18,6 +18,9 @@
 "count"    Number of dustmote particles that will float around on average.
 
 Dustmote emitting brush volume.
+
+Trivia:
+This entity was introduced in Half-Life 2 (2004).
 */
 
 class func_dustmotes:CBaseEntity

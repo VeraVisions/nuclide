@@ -21,6 +21,9 @@
 Client-side overlay/message that is projected in relation to its position
 in 3D space.
 Used for zoo and test maps in which less interactive overlays are desired.
+
+Trivia:
+This entity was introduced in Half-Life 2 (2004).
 */
 
 class point_message:CBaseEntity

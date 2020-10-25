@@ -27,7 +27,7 @@ When triggered, it'll calculate some random interval until it triggers
 its targets, based on some limits given.
 
 Trivia:
-It was introduced in Gunman Chronicles.
+It was introduced in Gunman Chronicles (2000).
 */
 
 class random_trigger:CBaseTrigger

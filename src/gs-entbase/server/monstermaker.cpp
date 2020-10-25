@@ -32,6 +32,9 @@ When MMF_STARTON is checked, it'll start on automatically.
 When MMF_NONTOGGLE is checked, it'll spawn only one monster with each trigger
 When MMF_MONSTERCLIP is checked, all spawned monsters will be blocked by
 func_monsterclip entities.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 enumflags

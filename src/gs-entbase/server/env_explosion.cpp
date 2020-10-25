@@ -21,6 +21,9 @@
 "iMagnitude"    Magnitude of the explosion.
 
 When triggered, creates an explosion at its location.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 enumflags

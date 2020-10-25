@@ -44,6 +44,9 @@ it stays at the same vertical position as originally placed.
 The angle is calculated by aiming the 'target' path_track/corner entity
 to its own 'target' entity. So yes, you need two of these path_track/corner
 entities.
+
+Trivia:
+This entity was introduced in Counter-Strike (2000).
 */
 
 enumflags

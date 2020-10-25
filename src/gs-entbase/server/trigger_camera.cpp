@@ -21,6 +21,9 @@
 "wait"          How long to hold onto the target.
 
 Causes the activators first-person camera to switch to the view of this entity.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 class trigger_camera:CBaseTrigger

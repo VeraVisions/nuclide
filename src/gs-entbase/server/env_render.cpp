@@ -23,6 +23,9 @@
 "rendercolor"   Render-Color the target changes to.
 
 Changes the visual appearance of a target.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 enumflags

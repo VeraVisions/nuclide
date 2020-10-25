@@ -20,6 +20,9 @@
 "killtarget"    Target to kill when triggered.
 
 STUB!
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 class func_pushable:func_breakable

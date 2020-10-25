@@ -24,7 +24,6 @@ client/light_dynamic.cpp
 client/sky_camera.cpp
 client/info_notnull.cpp
 client/point_message.cpp
-client/func_physbox.cpp
 client/prop_dynamic.cpp
 client/prop_rope.cpp
 client/worldspawn.cpp

@@ -21,6 +21,9 @@
 "delay"         Delay until we trigger our target
 
 STUB!
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 class multisource:CBaseTrigger

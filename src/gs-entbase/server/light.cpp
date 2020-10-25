@@ -51,6 +51,9 @@ idTech 2 BSP relevant keys:
                 that'll interpolate between at 10 FPS ingame.
 
 If OFF_OR_LINEAR is set, it starts off/disabled.
+
+Trivia:
+This entity was introduced in Quake (1996).
 */
 
 class light:CBaseTrigger

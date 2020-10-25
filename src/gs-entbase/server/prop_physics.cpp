@@ -18,6 +18,9 @@
 "targetname"    Name
 
 Physics model
+
+Trivia:
+This entity was introduced in Half-Life 2 (2004).
 */
 
 class prop_physics:CBasePhysics

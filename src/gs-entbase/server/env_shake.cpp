@@ -25,6 +25,9 @@
 
 Causes an earthquake/shaking effect when triggered.
 Affects all clients (radius ignored) when EVS_GLOBAL is set.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 #define EVS_GLOBAL 1

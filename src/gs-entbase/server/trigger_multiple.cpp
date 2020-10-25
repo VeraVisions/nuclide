@@ -24,6 +24,9 @@
 A trigger volume which works more than once. 
 
 None of the spawnflags are implemented yet.
+
+Trivia:
+This entity was introduced in Quake (1996).
 */
 
 // TODO: These are missing

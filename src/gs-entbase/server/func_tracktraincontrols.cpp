@@ -20,6 +20,9 @@
 
 Brush that marks the usable region of a func_tracktrain, in order
 to gain control.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 class func_tracktraincontrols:CBaseTrigger

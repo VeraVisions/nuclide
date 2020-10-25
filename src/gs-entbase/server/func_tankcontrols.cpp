@@ -16,6 +16,9 @@
 
 /*QUAKED func_tankcontrols (0 .5 .8) ?
 "targetname"    Name
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 class func_tankcontrols:CBaseTrigger

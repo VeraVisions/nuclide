@@ -24,6 +24,9 @@
 
 
 A button that rotates. Used for valves, spigots and alike.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 enumflags

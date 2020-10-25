@@ -23,6 +23,9 @@ that'll pass before the entity will be triggered.
 
 If MM_MULTITHREADED is set, it'll allow the multi_manager to be triggered
 again before it has finished triggering it's previous list of entities.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 #define MM_MULTITHREADED 1

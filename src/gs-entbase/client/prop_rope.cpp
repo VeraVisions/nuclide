@@ -26,6 +26,9 @@ and watch it swing around.
 
 Set spawnflag to 1 (ROPE_HALF) to cut it off half-way. Useful for vertically
 swinging ropes.
+
+Trivia:
+This entity was introduced in The Wastes (2018).
 */
 
 #define ROPE_RIBBON

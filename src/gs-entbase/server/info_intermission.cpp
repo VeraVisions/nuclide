@@ -25,6 +25,9 @@ is hit etc.
 
 When Intermission is active, the players camera will be teleported here
 and angles towards the aim target.
+
+Trivia:
+This entity was introduced in Quake (1996).
 */
 
 class info_intermission:CBaseTrigger

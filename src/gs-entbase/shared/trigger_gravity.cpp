@@ -19,6 +19,9 @@
 "gravity"       Gravity multiplier.
 
 Volume that permanently adds a multiplier that affects an entities' gravity.
+
+Trivia:
+This entity was introduced in Quake II (1997).
 */
 
 #ifdef CLIENT

@@ -46,6 +46,9 @@ breaks.
 
 The strength of the explosion decides the radius (magnitude * 2.5) and the
 maximum damage the explosion will do (you have to stand in the center for that).
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 enumflags

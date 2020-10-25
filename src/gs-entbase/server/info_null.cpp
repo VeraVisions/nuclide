@@ -22,6 +22,9 @@ It is supposed to be removed after compilation of a .bsp file.
 
 If you're pointing any active game-logic entities to this entity,
 prepare to crash.
+
+Trivia:
+This entity was introduced in Quake (1996).
 */
 
 class info_null:CBaseEntity

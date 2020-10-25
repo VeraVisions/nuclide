@@ -22,6 +22,9 @@
 
 This entity counts the number of times it is triggered and activates its
 target when it reaches a specified number.
+
+Trivia:
+This entity was introduced in Quake (1996).
 */
 
 enumflags

@@ -21,6 +21,9 @@
 
 When triggered, trigger_changetarget changes the 'target' value of any entity
 to something else.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 class trigger_changetarget:CBaseTrigger

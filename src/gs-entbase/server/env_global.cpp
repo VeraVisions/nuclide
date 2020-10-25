@@ -25,6 +25,9 @@
 Sets/kills a global variable that carries across levels.
 Without GLOBAL_SETSPAWN set, it'll only modify existing
 values when triggered.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 #define GLOBAL_SETSPAWN 1

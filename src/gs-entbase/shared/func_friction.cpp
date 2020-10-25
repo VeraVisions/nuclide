@@ -20,6 +20,9 @@
 
 Volume that permanently adds a modifier that affects an entities' friction.
 Higher value = less friction.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 #ifdef CLIENT

@@ -37,6 +37,9 @@ Valid values for 'preset":
     10 = C2A5_
     11 = C3A1_
     12 = C3A2_
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 enumflags

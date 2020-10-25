@@ -27,6 +27,9 @@
 
 Dynamic light entity. Can be parented to things, it even has some inputs that
 may be interesting.
+
+Trivia:
+This entity was introduced in Half-Life 2 (2004).
 */
 
 /* this has to match gs-entbase/client/light_dynamic.cpp! */

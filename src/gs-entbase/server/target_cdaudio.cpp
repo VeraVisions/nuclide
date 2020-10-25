@@ -24,6 +24,9 @@ Disables itself upon activation.
 
 I honestly don't know what the point is, as trigger_cdaudio should
 act the same in practice.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 class target_cdaudio:CBaseTrigger

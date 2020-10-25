@@ -23,6 +23,9 @@
 "snd_done"      Sound to play when first finished charging.
 
 Brush that fills up your armor when used, to a maximum of 100 points.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 class func_recharge:CBaseTrigger

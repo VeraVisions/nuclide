@@ -25,6 +25,9 @@
 Plays a sound sample of whatever format the engine is configured to support.
 If you want it to loop, you have to give the file itself a loop flag.
 
+Trivia:
+This entity was introduced in Half-Life (1998).
+
 TODO: Add a forced loop flag for non .wav samples?
 */
 

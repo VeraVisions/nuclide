@@ -20,6 +20,9 @@
 "killtarget"    Target to kill when triggered.
 
 STUB!
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 class path_track:path_corner

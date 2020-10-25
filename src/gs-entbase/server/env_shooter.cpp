@@ -29,6 +29,9 @@
 "scale"         Scale modifier of the model pieces.
 
 Shoots model entities from its location.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 class env_shooter:CBaseTrigger

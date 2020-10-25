@@ -17,6 +17,9 @@
 /*QUAKED light_environment (1 0 0) (-8 -8 -8) (8 8 8) ?
 
 STUB!
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 class light_environment:CBaseEntity

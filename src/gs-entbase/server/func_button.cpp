@@ -44,6 +44,9 @@ When SF_BTT_SPARKS is set, the button will create a bunch of sparks when used.
 
 When SF_BTT_TOUCH_ONLY is set, the use key/button cannot be used to interact
 with the button, it has to collide against a player.
+
+Trivia:
+This entity was introduced in Quake (1996).
 */
 
 enumflags

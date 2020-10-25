@@ -18,6 +18,9 @@
 "targetname"    Name
 
 This entity is incomplete. Purely stub.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 class env_beam {

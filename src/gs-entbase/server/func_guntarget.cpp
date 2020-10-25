@@ -22,6 +22,9 @@
 "speed"         Speed in units per second at which it moves.
 
 Gun targets brushes that trigger a target once they 'die'.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 #define SF_GUNTARGET_ON 1

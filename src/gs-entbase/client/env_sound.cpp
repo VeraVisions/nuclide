@@ -58,6 +58,9 @@
 
 Client-side environmental reverb modifier.
 This works only with the OpenAL sound backend.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 var int autocvar_dsp_environments = TRUE;

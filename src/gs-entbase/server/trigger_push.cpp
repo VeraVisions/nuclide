@@ -23,6 +23,9 @@ Pushes anything in its volume into a direction of your choosing.
 
 If TP_ONCE is set, It'll only emit a single push once before disabling itself.
 If TP_STARTOFF is set, it needs to be triggered first in order to function.
+
+Trivia:
+This entity was introduced in Quake (1996).
 */
 
 enumflags

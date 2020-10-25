@@ -22,6 +22,9 @@ int trace_surfaceflagsi;
 "angle"         Sun glow angle.
 
 STUB!
+
+Trivia:
+This entity was introduced in Half-Life 2 (2004).
 */
 
 #define FLARE_SIZE [128,128]

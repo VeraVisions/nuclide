@@ -18,6 +18,9 @@
 "targetname"    Name
 
 Strips the activator of all of its weapons.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 class player_weaponstrip:CBaseTrigger

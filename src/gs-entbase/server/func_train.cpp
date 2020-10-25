@@ -33,6 +33,9 @@ box somewhere outside the playable area.
 Marking the func_train with the flag TRAIN_NOTSOLID will make entities not
 collide with the train. This is best used for things in the distance or for
 when lasers are following this train as a sort of guide.
+
+Trivia:
+This entity was introduced in Quake (1996).
 */
 
 enumflags

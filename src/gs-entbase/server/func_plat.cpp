@@ -20,6 +20,9 @@
 "height"        Number of units the lift is supposed to move down
 
 It's a simple elevator. It goes down... and back up.
+
+Trivia:
+This entity was introduced in Quake (1996).
 */
 
 enumflags

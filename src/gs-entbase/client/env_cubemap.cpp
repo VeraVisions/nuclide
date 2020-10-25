@@ -19,6 +19,9 @@
 
 Specifies a location for which a cubemap will be generated when the 
 buildcubemaps console command is executed.
+
+Trivia:
+This entity was introduced in Half-Life 2 (2004).
 */
 
 int g_iCubeProcess;

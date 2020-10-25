@@ -20,6 +20,9 @@
 "killtarget"    Target to kill when triggered.
 
 STUB!
+
+Trivia:
+This entity was introduced in Quake II (1997).
 */
 
 enumflags

@@ -20,6 +20,9 @@
 Brush that can be hidden and reappear when triggered.
 
 If FTW_STARTHIDDEN is set, it'll start hidden.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 enumflags

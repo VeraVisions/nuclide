@@ -22,6 +22,9 @@
 "model"         Model file that will be displayed by the entity.
 
 Decorative, does nothing yet.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 class cycler_sprite:CBaseEntity

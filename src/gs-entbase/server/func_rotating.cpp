@@ -22,6 +22,9 @@
 "dmg"           Damage applied to entity blocking its rotational path.
 
 Rotating brush object. Useful for fans, etc.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 #ifdef GS_DEVELOPER

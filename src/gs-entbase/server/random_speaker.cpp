@@ -33,7 +33,7 @@ For example, if 'wait' is 10 and 'random' is 50, then it'll always be
 a random interval between 10 and 15 seconds in total.
 
 Trivia:
-It was introduced in Gunman Chronicles.
+It was introduced in Gunman Chronicles (2000).
 */
 
 class random_speaker:CBaseTrigger

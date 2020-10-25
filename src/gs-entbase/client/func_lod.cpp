@@ -21,7 +21,11 @@
 0 = Solid
 1 = Nonsolid
 
-Level of Detail brush entity, disappears at a set distance. Useful for when VIS is impossible or not enough.
+Level of Detail brush entity, disappears at a set distance.
+Useful for when VIS is impossible or not enough.
+
+Trivia:
+This entity was introduced in Half-Life 2 (2004).
 */
 
 #ifdef DEVELOPER

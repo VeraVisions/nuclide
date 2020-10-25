@@ -22,6 +22,9 @@
 "MaxDelay"      Delay between sparks when start-on (or toggle) is set
 
 Creates a series (or just one) spark effect with sound when triggered.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 enumflags

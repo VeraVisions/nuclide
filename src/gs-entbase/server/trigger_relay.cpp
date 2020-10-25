@@ -26,6 +26,9 @@ instead of toggling e.g. a door open.
 
 When the spawnflag TRLY_ONCE is set, the trigger_relay will be removed upon
 triggering its targets.
+
+Trivia:
+This entity was introduced in Quake (1996).
 */
 
 enumflags

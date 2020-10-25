@@ -19,6 +19,9 @@
 
 Volume that'll save the current game when a client enters its bounds.
 This entity does not work in multiplayer.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 class trigger_autosave:CBaseTrigger

@@ -17,6 +17,8 @@
 /*QUAKED momentary_rot_button (0 .5 .8) ? MRBFL_DOORHACK MRBFL_NOTUSE x x MRBFL_AUTORETURN x MRBFL_XAXIS MRBFL_YAXIS
 "targetname"    Name
 
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 enumflags

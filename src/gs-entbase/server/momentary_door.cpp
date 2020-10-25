@@ -19,6 +19,9 @@
 
 Brush that lets light to pass through it.
 On idTech 2 BSPs, it will change texture variants when triggered.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 class momentary_door:CBaseMomentary

@@ -32,6 +32,9 @@ When the PC_TELEPORT flag is set, the train passing this node will immediately
 teleport to the position of the next node (target).
 
 With the PC_FIREONCE flag set, it'll only fire its target (message) once.
+
+Trivia:
+This entity was introduced in Quake (1996).
 */
 
 #ifdef DEVELOPER

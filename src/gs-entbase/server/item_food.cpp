@@ -20,6 +20,9 @@
 "model"         Model file that will be displayed by the entity.
 
 This is a food item that will give the user 1 health when touched.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 class item_food

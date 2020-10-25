@@ -19,6 +19,9 @@
 
 Currently unused. This is meant for defining level transition regions.
 All entities touching this volume would carry across to the next level.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 class trigger_transition:CBaseEntity

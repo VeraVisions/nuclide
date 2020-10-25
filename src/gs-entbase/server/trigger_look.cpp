@@ -30,6 +30,9 @@ It then disables itself.
 
 It's like the beginning in Halo - you know, where you have to look up/down
 at lights and stuff? No...? Well... ever played Splinter Cell?... Nevermind.
+
+Trivia:
+This entity was introduced in Half-Life 2 (2004).
 */
 
 class trigger_look:CBaseTrigger

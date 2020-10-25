@@ -28,6 +28,9 @@ to appear. Afterwards it cannot be triggered again.
 
 It will pick the nearest wall (currently checking a distance of 128 units,
 which is probably overkill). No angle has to be supplied.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 class infodecal:CBaseTrigger

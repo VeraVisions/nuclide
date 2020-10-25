@@ -26,6 +26,9 @@
 
 This trigger reloads the last autosaved game with a custom message.
 This is commonly used when a mission objective has failed.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 class player_loadsaved:CBaseTrigger

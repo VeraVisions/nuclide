@@ -48,6 +48,9 @@ It will have to be triggered by another map entity.
 
 When SF_MOV_USE is set, the door can be triggered by a player using the 'use'
 key/button. Not every game may implement such a function.
+
+Trivia:
+This entity was introduced in Quake (1996).
 */
 
 enumflags {

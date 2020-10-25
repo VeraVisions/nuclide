@@ -23,6 +23,9 @@ to gain control.
 
 It's the same as func_tracktraincontrols, except that it's for
 func_vehicle instead of func_tracktrain.
+
+Trivia:
+This entity was introduced in Counter-Strike (2000).
 */
 
 void

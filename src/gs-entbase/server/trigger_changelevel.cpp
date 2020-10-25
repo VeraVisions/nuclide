@@ -29,6 +29,9 @@ level.
 
 When LC_USEONLY is set, it will not act as a trigger volume people can step in.
 It'll have to be triggered by another entity.
+
+Trivia:
+This entity was introduced in Quake (1996).
 */
 
 vector g_landmarkpos;

@@ -25,6 +25,9 @@
 
 Sends a message to either one or all players, depending on if EMF_ALLPLAYERS
 is set. An optional sound effect can be supplied as well.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 enumflags

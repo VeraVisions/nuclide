@@ -22,6 +22,9 @@
 "renderamt"     Material alpha override in A8.
 
 Client-side glare/glow orb effect like the flares in 1997's Unreal.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 class env_glow:CBaseEntity

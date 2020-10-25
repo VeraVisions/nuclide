@@ -19,6 +19,9 @@
 "shader"    Sound shader to play.
 
 Client-side environmental soundscape modifier.
+
+Trivia:
+This entity was introduced in Half-Life 2 (2004).
 */
 
 var int autocvar_dsp_soundscapes = TRUE;

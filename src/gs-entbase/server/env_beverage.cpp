@@ -23,6 +23,9 @@
 
 Upon triggered, the entity will spawn item_food in its place in
 the shape of a soda can.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 /* dependency from item_food.cpp */

@@ -19,6 +19,9 @@
 "health"        Music track to play.
 
 Switches the background music track when triggered.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 class trigger_cdaudio:CBaseTrigger

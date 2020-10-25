@@ -29,6 +29,9 @@ If SF_HURT_NOPLAYERS is set, it will only NPCs.
 If SF_HURT_TOUCHPLAYER is set, it'll only hurt players.
 If SF_HURT_FIREONPLAYER is set, it'll only trigger a target if a player
 activates it.
+
+Trivia:
+This entity was introduced in Quake (1996).
 */
 
 #define SF_HURT_ONCE			1 // Turn off once it fired the first time

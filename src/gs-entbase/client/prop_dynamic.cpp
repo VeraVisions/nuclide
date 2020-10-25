@@ -21,6 +21,9 @@
 "_cs"         Toggles if the prop casts a shadow or not.
 
 Client-side decorative model entity.
+
+Trivia:
+This entity was introduced in Half-Life 2 (2004).
 */
 
 class prop_dynamic:CBaseEntity

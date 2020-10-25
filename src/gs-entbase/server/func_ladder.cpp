@@ -18,6 +18,9 @@
 "targetname"    Name
 
 Ladder volume. Climb up ladders with this one simple brush.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 class func_ladder:CBaseEntity

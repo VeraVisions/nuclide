@@ -25,6 +25,9 @@
 
 When triggered, creates a colored overlay that blinds all players, or just
 the one who triggered it if EVF_ONLYUSER is set.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 enumflags

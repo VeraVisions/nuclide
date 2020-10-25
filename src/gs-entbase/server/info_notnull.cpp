@@ -25,6 +25,9 @@ location.
 For tasks such as aiming static/lightmapped light sources during the compiling
 process, please use info_null instead as it'll get removed after it has served
 its purpose.
+
+Trivia:
+This entity was introduced in Quake (1996).
 */
 
 

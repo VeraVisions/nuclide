@@ -28,6 +28,9 @@
 
 A sprite entity manager with fancy overrides.
 Only used with an external sprite format, like SPR, SPRHL and SPR32.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 enumflags

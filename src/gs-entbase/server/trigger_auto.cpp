@@ -23,6 +23,9 @@
 Will automatically start working when the level has spawned.
 If TA_USEONCE is set, it'll remove itself from the level permanently.
 It will not survive round respawns, etc.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 class trigger_auto:CBaseTrigger

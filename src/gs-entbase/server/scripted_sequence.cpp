@@ -35,6 +35,9 @@ f_fMoveTo values:
 
 Allow a monster to be selected and given an action to perform.
 This is done in the form of olaying an animation.
+
+Trivia:
+This entity was introduced in Half-Life (1998).
 */
 
 float(float modidx, string framename) frameforname = #276;

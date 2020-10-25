@@ -24,7 +24,7 @@
 This entity plays a sample upon triggering at a specified volume.
 
 Trivia:
-It was introduced in Gunman Chronicles.
+It was introduced in Gunman Chronicles (2000).
 It's not any more useful than an ambient_generic.
 I suspect it's a carry-over from when Gunman was a Quake II mod, as
 Quake/Quake II did not have an entity that allowed custom sound samples
