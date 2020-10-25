@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED func_wall (0 .5 .8) ?
+/*QUAKED momentary_door (0 .5 .8) ?
 "targetname"    Name
 
 Brush that lets light to pass through it.

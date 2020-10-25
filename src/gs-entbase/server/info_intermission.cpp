@@ -14,7 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-
 /*QUAKED info_intermission (1 0 0) (-8 -8 -8) (8 8 8)
 "targetname" Name
 "targetname" Target entity to aim towards

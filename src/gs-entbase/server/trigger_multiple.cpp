@@ -57,7 +57,7 @@ trigger_multiple::touch(void)
 		return;
 	if (!(spawnflags & TM_MONSTERS) && other.flags & FL_MONSTER)
 		return;
-	if (!(spawnflags & TM_PUSHABLES) && other.classname = "func_pushable")
+	if (!(spawnflags & TM_PUSHABLES) && other.classname == "func_pushable")
 		return;
 
 	if (Rules_IsTeamPlay() == TRUE) {
