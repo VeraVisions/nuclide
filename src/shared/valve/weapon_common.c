@@ -103,6 +103,9 @@ void Weapons_Primary(void)
 	player pl = (player)self;
 	int i = pl.activeweapon;
 
+	if (pl.flags & FL_NOATTACK)
+		return;
+
 	if (g_weapons[i].primary != __NULL__) {
 		g_weapons[i].primary();
 	}
@@ -118,6 +121,10 @@ void Weapons_Secondary(void)
 {
 	player pl = (player)self;
 	int i = pl.activeweapon;
+
+	if (pl.flags & FL_NOATTACK)
+		return;
+
 	if (g_weapons[i].secondary != __NULL__) {
 		g_weapons[i].secondary();
 	}
@@ -132,6 +139,10 @@ void Weapons_Reload(void)
 {
 	player pl = (player)self;
 	int i = pl.activeweapon;
+
+	if (pl.flags & FL_NOATTACK)
+		return;
+
 	if (g_weapons[i].reload != __NULL__) {
 		g_weapons[i].reload();
 	}

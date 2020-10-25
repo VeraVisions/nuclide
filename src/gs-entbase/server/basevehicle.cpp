@@ -14,13 +14,22 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+enumflags
+{
+	VHF_FROZEN,
+	VHF_NOATTACK
+};
+
 class CBaseVehicle:CBaseTrigger
 {
+	int m_iVehicleFlags;
+
 	entity m_eDriver;
 
 	void(void) CBaseVehicle;
 	vector m_vecPlayerPos;
 
+	virtual void(void) PlayerUpdateFlags;
 	virtual void(void) PlayerAlign;
 	virtual void(base_player) PlayerEnter;
 	virtual void(base_player) PlayerLeave;
@@ -31,6 +40,16 @@ void
 CBaseVehicle::PlayerInput(void)
 {
 
+}
+
+void
+CBaseVehicle::PlayerUpdateFlags(void)
+{
+	if (m_iVehicleFlags & VHF_FROZEN)
+		m_eDriver.flags |= FL_FROZEN;
+
+	if (m_iVehicleFlags & VHF_NOATTACK)
+		m_eDriver.flags |= FL_NOATTACK;
 }
 
 void
@@ -70,7 +89,13 @@ void
 CBaseVehicle::PlayerLeave(base_player pl)
 {
 	pl.movetype = MOVETYPE_WALK;
-	pl.flags &= ~FL_FROZEN;
+
+	if (m_iVehicleFlags & VHF_FROZEN)
+		pl.flags &= ~FL_FROZEN;
+
+	if (m_iVehicleFlags & VHF_NOATTACK)
+		pl.flags &= ~FL_NOATTACK;
+
 	pl.vehicle = __NULL__;
 	m_eDriver = __NULL__;
 }

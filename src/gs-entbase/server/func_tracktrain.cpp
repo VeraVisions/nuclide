@@ -166,7 +166,7 @@ func_tracktrain::customphysics(void)
 		} else if (m_eDriver.movement[0] < 0) {
 			m_flSpeed = bound(0, m_flSpeed -= frametime, 1.0f);
 		}
-		m_eDriver.flags |= FL_FROZEN;
+		PlayerUpdateFlags();
 	}
 
 	//m_flSpeed = autocvar_tracktrain_dir;
@@ -316,5 +316,7 @@ func_tracktrain::SpawnKey(string strKey, string strValue)
 void
 func_tracktrain::func_tracktrain(void)
 {
+	m_iVehicleFlags |= VHF_FROZEN;
+
 	CBaseVehicle::CBaseVehicle();
 }

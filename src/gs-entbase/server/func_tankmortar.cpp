@@ -151,7 +151,7 @@ func_tankmortar::customphysics(void)
 		endang[1] = Math_Lerp(v_forward[1], wantang[1], frametime);
 		endang[2] = Math_Lerp(v_forward[2], wantang[2], frametime);
 		angles = vectoangles(endang);
-		m_eDriver.flags |= FL_FROZEN;
+		PlayerUpdateFlags();
 	}
 }
 
@@ -268,6 +268,8 @@ func_tankmortar::SpawnKey(string strKey, string strValue)
 void
 func_tankmortar::func_tankmortar(void)
 {
+	m_iVehicleFlags |= VHF_FROZEN | VHF_NOATTACK;
+
 	CBaseVehicle::CBaseVehicle();
 
 	if (m_strSpriteFlash)

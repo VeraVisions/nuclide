@@ -137,6 +137,7 @@ func_tank::customphysics(void)
 		makevectors(m_eDriver.v_angle);
 		endorg = v_forward * 4086;
 		angles = vectoangles(endorg - origin);
+		PlayerUpdateFlags();
 
 		if (vlen(m_eDriver.origin - origin) > 128)
 			PlayerLeave((base_player)m_eDriver);
@@ -255,6 +256,7 @@ func_tank::SpawnKey(string strKey, string strValue)
 void
 func_tank::func_tank(void)
 {
+	m_iVehicleFlags |= VHF_FROZEN | VHF_NOATTACK;
 	CBaseVehicle::CBaseVehicle();
 
 	if (m_strSpriteFlash)

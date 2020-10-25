@@ -326,7 +326,8 @@ func_vehicle::customphysics(void)
 				m_flTurn = max(0, m_flTurn - frametime * m_flStraightenFactor);
 			}
 		}
-		m_eDriver.flags |= FL_FROZEN;
+
+		PlayerUpdateFlags();
 	}
 
 	angles[0] = Math_FixDelta(angles[0]);
@@ -563,6 +564,7 @@ func_vehicle::func_vehicle(void)
 	m_flSteerFactor = 1.0f;
 	m_flStraightenFactor = 1.0f;
 	m_vecGravityDir = [0,0,-1];
+	m_iVehicleFlags |= VHF_FROZEN;
 
 	CBaseVehicle::CBaseVehicle();
 
