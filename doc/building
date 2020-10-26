@@ -20,6 +20,11 @@ engine/ sub-directory and issue 'make m-rel' there.
 This will generate a 'fteqw' binary for your platform in the sub-directory
 titled 'release'.
 
+3. Building fteqcc
+
+Issue 'make qcc-rel' in the FTEQW repository folder 'engine', like in 3.
+It will generate an fteqcc binary inside the sub-directory 'release'.
+
 4. Misc notes
 
 To those not in the know, the game-logic is written in QuakeC, it is thus
