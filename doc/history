@@ -46,3 +46,8 @@ a work environment similar to GoldSrc for the original Quake engine.
 In April of 2020, the weapons were rewritten to be fully client-side predicted.
 This brought the Counter-Strike component on par with the advances of the other
 games that Nuclide supports.
+
+So the meaning and scope of Nuclide has changed, mainly to make work easier
+as at one point TW and FreeCS were two seperate code-trees. Now they're unified
+into one. I'd like to consider Nuclide to be FTE's reference SDK for game-logic,
+like 'Source SDK Base' is to 'Source Engine'.

@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+var int g_inetrefresh = FALSE;
+
 CWidget fn_inet;
 CMainButton inet_btnJoin;
 CMainButton inet_btnCreate;
@@ -33,6 +35,9 @@ CListBox inet_lbServers_Game;
 CListBox inet_lbServers_Players;
 CListBox inet_lbServers_Addresses;
 CScrollbar inet_sbServers;
+
+CDialog inet_dgRefresh;
+CMainButton inet_btnRefDone;
 
 /* Button Callbacks */
 void
@@ -80,11 +85,24 @@ inet_btndone_start(void)
 void
 inet_btnrefresh(void)
 {
+	g_inetrefresh = TRUE;
+}
+
+void
+inet_refreshframe(void)
+{
+	static float refreshtime;
 	int count = 0;
 	int added = 0;
 
 	Master_RefreshCache();
-	count = gethostcachevalue(SLIST_HOSTCACHETOTALCOUNT);
+
+	/* only rebuild every half a frame */
+	if (refreshtime > time)
+		return;
+
+	count = gethostcachevalue(SLIST_HOSTCACHEVIEWCOUNT);
+	refreshtime = time + 0.5f;
 
 	inet_lbServers_Name.Clear();
 	inet_lbServers_Ping.Clear();
@@ -116,11 +134,17 @@ inet_btnrefresh(void)
 		inet_lbServers_Game.AddEntry(gethostcachestring(srv_fldGame, i));
 		inet_lbServers_Players.AddEntry(players);
 		inet_lbServers_Addresses.AddEntry(address);
-		print(sprintf("Adding %s to the Internet server list\n", address));
+		dprint(sprintf("Adding %s to the Internet server list\n", address));
 		added++;
 	}
-	print(sprintf("Added %i Internet servers.\n", added));
+	dprint(sprintf("Added %i Internet servers.\n", added));
 	inet_sbServers.SetMax(added);
+}
+
+void
+inet_refreshfinish(void)
+{
+	g_inetrefresh = FALSE;
 }
 
 void
@@ -246,6 +270,14 @@ menu_internetgames_init(void)
 	inet_btnDone.SetExecute(inet_btndone_start);
 	inet_btnDone.SetPos(30,396);
 	Widget_Add(fn_inet, inet_btnDone);
+
+	inet_dgRefresh = spawn(CDialog);
+	inet_btnRefDone = spawn(CMainButton);
+	inet_btnRefDone.SetImage(BTN_DONE);
+	inet_btnRefDone.SetPos(233,291);
+	inet_btnRefDone.SetLength(68);
+	inet_btnRefDone.SetExecute(inet_refreshfinish);
+	Widget_Add(inet_dgRefresh, inet_btnRefDone);
 }
 
 void
@@ -267,10 +299,26 @@ menu_internetgames_draw(void)
 					1.0f, 0, font_arial);
 	WLabel_Static(552, 128, m_reslbl[IDS_SERVER_PLAYERS], 10, 10, [1,1,1],
 					1.0f, 0, font_arial);
+
+	if (!g_inetrefresh)
+		return;
+
+	inet_refreshframe();
+	inet_dgRefresh.Draw();
+	Widget_Draw(inet_dgRefresh);
+	WField_Static(162, 180, "Refreshing server list...", 320, 260,
+					col_prompt_text, 1.0f, 2, font_label_p);
+	WField_Static(162, 220, sprintf("Listing %i applicable servers\n",
+					Master_GetInternetServers()), 320, 260,
+					col_prompt_title, 1.0f, 2, font_label_p);
 }
 
 void
 menu_internetgames_input(float evtype, float scanx, float chary, float devid)
 {
-	Widget_Input(fn_inet, evtype, scanx, chary, devid);
+	if (!g_inetrefresh)
+		Widget_Input(fn_inet, evtype, scanx, chary, devid);
+	else {
+		Widget_Input(inet_dgRefresh, evtype, scanx, chary, devid);
+	}
 }

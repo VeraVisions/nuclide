@@ -100,6 +100,9 @@ Music_ParseLoop(string parm)
 void
 Music_MenuStart(void)
 {
+	if (g_active)
+		return;
+
 	string tinfo = cvar_string("gameinfo_menutrack");
 	print(tinfo);
 	print("\n");

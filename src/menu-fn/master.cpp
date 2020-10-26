@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+int Server_IsLan(string address);
+
 #define MASTER_DNS "master.frag-net.com"
 #define MASTER_PORT 27950
 
@@ -29,14 +31,14 @@ string
 Master_Resolve(void)
 {
 	string out = netaddress_resolve(MASTER_DNS,MASTER_PORT);
-	print("Resolving master at ");
-	print(MASTER_DNS);
-	print(":");
-	print(ftos(MASTER_PORT));
-	print("...\n");
+	dprint("Resolving master at ");
+	dprint(MASTER_DNS);
+	dprint(":");
+	dprint(ftos(MASTER_PORT));
+	dprint("...\n");
 
 	if (!out) {
-		print("Failed to resolve address.\n");
+		dprint("Failed to resolve address.\n");
 	}
 
 	return out;
@@ -48,15 +50,37 @@ Master_GetTotalServers(void)
 	int a = gethostcachevalue(SLIST_HOSTCACHETOTALCOUNT);
 	
 	if (a) {
-		print(sprintf("Master reports a total of %i servers.\n", a));
+		dprint(sprintf("Master reports a total of %i servers.\n", a));
 	}
 	return gethostcachevalue(SLIST_HOSTCACHETOTALCOUNT);
+}
+
+int
+Master_GetInternetServers(void)
+{
+	int count = 0;
+	int tcount = 0;
+
+	count = gethostcachevalue(SLIST_HOSTCACHEVIEWCOUNT);
+
+	for (int i = 0; i < count; i++) {
+		string address;
+		address = gethostcachestring(srv_fldAdress, i);
+
+		/* skip LAN */
+		if (!address || Server_IsLan(address)) {
+			continue;
+		}
+		tcount++;
+	}
+
+	return tcount;
 }
 
 void
 Master_RefreshCache(void)
 {
-	print("Refreshing host cache...\n");
+	dprint("Refreshing host cache...\n");
 	resethostcachemasks();
 	sethostcachemaskstring(0, gethostcacheindexforkey("gamedir"), cvar_string("game"), SLIST_TEST_EQUAL);
 	sethostcachesort(gethostcacheindexforkey("ping"), FALSE);
@@ -65,14 +89,14 @@ Master_RefreshCache(void)
 	int a = gethostcachevalue(SLIST_HOSTCACHETOTALCOUNT);
 	
 	if (a) {
-		print(sprintf("Master reports a total of %i servers.\n", a));
+		dprint(sprintf("Master reports a total of %i servers.\n", a));
 	}
 }
 
 void
 Master_UpdateCache(void)
 {
-	print("Updating host cache...\n");
+	dprint("Updating host cache...\n");
 	resethostcachemasks();
 	sethostcachemaskstring(0, gethostcacheindexforkey("gamedir"), cvar_string("game"), SLIST_TEST_EQUAL);
 	sethostcachesort(gethostcacheindexforkey("ping"), FALSE);
@@ -81,7 +105,7 @@ Master_UpdateCache(void)
 	int a = gethostcachevalue(SLIST_HOSTCACHETOTALCOUNT);
 	
 	if (a) {
-		print(sprintf("Master reports a total of %i servers.\n", a));
+		dprint(sprintf("Master reports a total of %i servers.\n", a));
 	}
 }
 

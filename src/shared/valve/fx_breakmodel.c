@@ -155,7 +155,7 @@ FX_BreakModel(int count, vector vMins, vector vMaxs, vector vVel, float fStyle)
 		eGib.nextthink = time + 10;
 
 		if ((fStyle == GSMATERIAL_GLASS) || (fStyle == GSMATERIAL_GLASS_UNBREAKABLE)) {
-			eGib.effects = EF_ADDITIVE;
+			eGib.alpha = 0.5f;
 		}
 
 		eGib.drawmask = MASK_ENGINE;

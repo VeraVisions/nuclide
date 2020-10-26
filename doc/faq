@@ -1,4 +1,4 @@
-NUCLIDE SOURCE TREE FAQ
+NUCLIDE FREQUENTLY ASKED QUESTIONS
 
 Q: Why does this project exist?
 A: I wanted a free variant of the best version of Counter-Strike in 2016 as
@@ -22,15 +22,14 @@ A: It depends. If you've got crashes etc. to report that are really bad
    If a crash to console happens, it's most likely my bug. If the whole engine
    comes crashing down, it's FTEQW's fault. Not mine.
 
+FREECS SPECIFIC:
+
 Q: It doesn't work with my Half-Life/Counter-Strike version.
 A: This is designed for the disc version of Half-Life, released before Steam.
    Supporting both is a bit annoying right now. I might add support for the
    Steam UI one day. Just right now it's in an alpha-stage where yes, most DOES
    work, the backend is constantly changing still and I can't afford to support
    all these things at once.
-
-Q: I don't like how you're doing [insert thing here]!
-A: Too bad!
 
 Q: Why Counter-Strike 1.5? Not any earlier/later version?
 A: The best and last free to distribute version, no shield, no gambling.
@@ -50,13 +49,29 @@ A: Other mods. They do kinda keep the codebase in check too, since
    there's a lot of shared code between them and they do help keep specifics
    into their own source tree.
 
-Q: Make a wiki/discord/youtube/twitter/facebook etc. and spend time on
-   maintaining that, instead of working on the project, to build 'hype'.
-A: I'm sure you are the first one to suggest such an idea... No thanks.
+Q: [insert thing here] isn't 100% exact as in the original 1.5.
+A: Sometimes bugs get fixed, sometimes very minor details get streamlined in
+   order to get more work done in other areas. FreeCS will most likely never
+   be done in that accuracy aspect, but it'll get better with time.
+   Feel free to contribute when it comes to low-hanging fruit like tweaking
+   variables! Trust me, plenty of people come and go and they seem to be really
+   distressed when a weapon damage is off by few hitpoints. I know.
 
-Q: X#sh3D? Why not use that instead of FTE QuakeWorld?
-A: There are enough GPL violators around, I do not need to contribute to that
-   cesspool. 'From scratch' my a$$.
+Q: Why do this when you can just run a VM?
+A: FreeCS isn't just making CS more portable. It also fixes bugs. It optimises
+   the netcode greatly. It's got much better lag compensation and client-side
+   player and weapon prediction than CS ever did. Yes, even the Steam version.
+
+Q: I still don't get it - why not play CS on Steam?
+A: This is clearly not intended for you, then!
+
+Q: Will you make Nuclide's supported games available on Google Play?
+A: No. If you can manually copy over the content (that I legally cannot and will
+   not ever distribute with the project) onto your internal phone/tablet memory
+   then you can also install FTEQW's official .apk - which may I remind you is
+   a completely different project entirely.
+
+DEVELOPMENT:
 
 Q: Is FTEQW a GoldSrc replacement?
 A: No. It is not aiming to be anything like that. FTE has been around for
@@ -65,17 +80,11 @@ A: No. It is not aiming to be anything like that. FTE has been around for
    You can easily make very modern games with it too. It's not limited like
    GoldSrc and Source in terms of rendering as it's fully accessible. 
 
-Q: [insert thing here] isn't 100% exact as in the original 1.5.
-A: Sometimes bugs get fixed, sometimes very minor details get streamlined in
-   order to get more work done in other areas. FreeCS will most likely never
-   be done in that accuracy aspect, but it'll get better with time.
-   Feel free to contribute when it comes to low-hanging fruit like tweaking
-   variables!
+Q: X#sh3D? Why not use that instead of FTE QuakeWorld?
+A: There are enough GPL violators around, I do not need to contribute to that
+   cesspool. 'From scratch' my a$$. Ironically, that project took code from
+   FTEQW going all the way back to the late 2000s. Do not support it.
 
-Q: Why do this when you can just run a VM?
-A: FreeCS isn't just making CS more portable. It also fixes bugs. It optimises
-   the netcode greatly. It's got much better lag compensation and client-side
-   player and weapon prediction than CS ever did. Yes, even the Steam version. 
-
-Q: I still don't get it - why not play CS on Steam?
-A: This is clearly not intended for you, then!
+Q: Make a wiki/discord/youtube/twitter/facebook etc. and spend time on
+   maintaining that, instead of working on the project, to build 'hype'.
+A: I'm sure you are the first one to suggest such an idea... No thanks.
