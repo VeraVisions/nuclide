@@ -22,6 +22,7 @@
 !!samps =FAKESHADOWS shadowmap
 
 !!cvardf r_skipNormal
+!!cvardf r_skipLightmap
 
 #include "sys/defs.h"
 
@@ -65,17 +66,37 @@ varying vec2 lm1, lm2, lm3;
 	#include "sys/fog.h"
 	#include "sys/pcf.h"
 
+#if r_skipLightmap==0
+	#ifdef LIGHTSTYLED
+		#define LIGHTMAP0 texture2D(s_lightmap0, lm0).rgb
+		#define LIGHTMAP1 texture2D(s_lightmap1, lm1).rgb
+		#define LIGHTMAP2 texture2D(s_lightmap2, lm2).rgb
+		#define LIGHTMAP3 texture2D(s_lightmap3, lm3).rgb
+	#else
+		#define LIGHTMAP texture2D(s_lightmap, lm0).rgb 
+	#endif
+#else
+	#ifdef LIGHTSTYLED
+		#define LIGHTMAP0 vec3(0.5,0.5,0.5)
+		#define LIGHTMAP1 vec3(0.5,0.5,0.5)
+		#define LIGHTMAP2 vec3(0.5,0.5,0.5)
+		#define LIGHTMAP3 vec3(0.5,0.5,0.5)
+	#else
+		#define LIGHTMAP vec3(0.5,0.5,0.5)
+	#endif
+#endif
+
 	vec3 lightmap_fragment()
 	{
 		vec3 lightmaps;
 
 #ifdef LIGHTSTYLED
-		lightmaps  = texture2D(s_lightmap0, lm0).rgb * e_lmscale[0].rgb;
-		lightmaps += texture2D(s_lightmap1, lm1).rgb * e_lmscale[1].rgb;
-		lightmaps += texture2D(s_lightmap2, lm2).rgb * e_lmscale[2].rgb;
-		lightmaps += texture2D(s_lightmap3, lm3).rgb * e_lmscale[3].rgb;
+		lightmaps  = LIGHTMAP0 * e_lmscale[0].rgb;
+		lightmaps += LIGHTMAP1 * e_lmscale[1].rgb;
+		lightmaps += LIGHTMAP2 * e_lmscale[2].rgb;
+		lightmaps += LIGHTMAP3 * e_lmscale[3].rgb;
 #else
-		lightmaps  = texture2D(s_lightmap, lm0).rgb * e_lmscale.rgb;
+		lightmaps  = LIGHTMAP * e_lmscale.rgb;
 #endif
 		return lightmaps;
 	}
@@ -89,12 +110,12 @@ varying vec2 lm1, lm2, lm3;
 		vec3 lightmaps;
 
 	#if defined(LIGHTSTYLED)
-		lightmaps  = texture2D(s_lightmap0, lm0).rgb * e_lmscale[0].rgb * dot(normal_f, (texture2D(s_deluxemap0, lm0).rgb - 0.5) * 2.0);
-		lightmaps += texture2D(s_lightmap1, lm1).rgb * e_lmscale[1].rgb * dot(normal_f, (texture2D(s_deluxemap1, lm1).rgb - 0.5) * 2.0);
-		lightmaps += texture2D(s_lightmap2, lm2).rgb * e_lmscale[2].rgb * dot(normal_f, (texture2D(s_deluxemap2, lm2).rgb - 0.5) * 2.0);
-		lightmaps += texture2D(s_lightmap3, lm3).rgb * e_lmscale[3].rgb * dot(normal_f, (texture2D(s_deluxemap3, lm3).rgb - 0.5) * 2.0);
+		lightmaps  = LIGHTMAP0 * e_lmscale[0].rgb * dot(normal_f, (texture2D(s_deluxemap0, lm0).rgb - 0.5) * 2.0);
+		lightmaps += LIGHTMAP1 * e_lmscale[1].rgb * dot(normal_f, (texture2D(s_deluxemap1, lm1).rgb - 0.5) * 2.0);
+		lightmaps += LIGHTMAP2 * e_lmscale[2].rgb * dot(normal_f, (texture2D(s_deluxemap2, lm2).rgb - 0.5) * 2.0);
+		lightmaps += LIGHTMAP3 * e_lmscale[3].rgb * dot(normal_f, (texture2D(s_deluxemap3, lm3).rgb - 0.5) * 2.0);
 	#else 
-		lightmaps  = texture2D(s_lightmap, lm0).rgb * e_lmscale.rgb * dot(normal_f, (texture2D(s_deluxemap, lm0).rgb - 0.5) * 2.0);
+		lightmaps  = LIGHTMAP * e_lmscale.rgb * dot(normal_f, (texture2D(s_deluxemap, lm0).rgb - 0.5) * 2.0);
 	#endif
 
 		return lightmaps;

@@ -9,9 +9,12 @@
 
 !!samps lightmap
 !!samps =LIGHTSTYLED lightmap1 lightmap2 lightmap3
-!!cvardf gl_mono=0
-!!cvardf gl_kdither=0
-!!cvardf gl_stipplealpha=0
+!!cvardf gl_mono
+!!cvardf gl_kdither
+!!cvardf gl_stipplealpha
+
+!!cvardf r_skipDiffuse
+!!cvardf r_skipLightmap
 
 #include "sys/defs.h"
 #include "sys/fog.h"
@@ -64,6 +67,7 @@ varying mat3 invsurface;
 #ifdef FRAGMENT_SHADER
 	#include "sys/pcf.h"
 
+#if r_skipLightmap==0
 	vec3 lightmap_fragment(void)
 	{
 		vec3 lightmaps;
@@ -78,6 +82,12 @@ varying mat3 invsurface;
 #endif
 		return lightmaps;
 	}
+#else
+	vec3 lightmap_fragment(void)
+	{
+		return vec3(1.0,1.0,1.0);
+	}
+#endif
 
 	vec4 kernel_dither(sampler2D targ, vec2 texc)
 	{
@@ -106,10 +116,15 @@ varying mat3 invsurface;
 	{
 		vec4 diffuse_f;
 
-		if (gl_kdither == 1.0)
-			diffuse_f = kernel_dither(s_diffuse, tex_c);
-		else
-			diffuse_f = texture2D(s_diffuse, tex_c);
+#if r_skipDiffuse==1
+		diffuse_f = vec4(1.0,1.0,1.0,1.0);
+#else
+	#if gl_kdither==1
+		diffuse_f = kernel_dither(s_diffuse, tex_c);
+	#else
+		diffuse_f = texture2D(s_diffuse, tex_c);
+	#endif
+#endif
 
 /* get the alphatesting out of the way first */
 #ifdef MASK
@@ -146,37 +161,36 @@ varying mat3 invsurface;
 
 		diffuse_f *= e_colourident;
 
-		// awful stipple alpha code
-		if (gl_stipplealpha == 1.0) {
-			float alpha = e_colourident.a;
-			int x = int(mod(gl_FragCoord.x, 2.0));
-			int y = int(mod(gl_FragCoord.y, 2.0));
+	#if gl_stipplealpha==1
+		float alpha = e_colourident.a;
+		int x = int(mod(gl_FragCoord.x, 2.0));
+		int y = int(mod(gl_FragCoord.y, 2.0));
 
-			if (alpha <= 0.0) {
-					discard;
-			} else if (alpha <= 0.25) {
-				diffuse_f.a = 1.0f;
-				if (x + y == 2)
-					discard;
-				if (x + y == 1)
-					discard;
-			} else if (alpha <= 0.5) {
-				diffuse_f.a = 1.0f;
-				if (x + y == 2)
-					discard;
-				if (x + y == 0)
-					discard;
-			} else if (alpha < 1.0) {
-				diffuse_f.a = 1.0f;
-				if (x + y == 2)
-					discard;
-			}
+		if (alpha <= 0.0) {
+				discard;
+		} else if (alpha <= 0.25) {
+			diffuse_f.a = 1.0f;
+			if (x + y == 2)
+				discard;
+			if (x + y == 1)
+				discard;
+		} else if (alpha <= 0.5) {
+			diffuse_f.a = 1.0f;
+			if (x + y == 2)
+				discard;
+			if (x + y == 0)
+				discard;
+		} else if (alpha < 1.0) {
+			diffuse_f.a = 1.0f;
+			if (x + y == 2)
+				discard;
 		}
+	#endif
 
-		if (gl_mono == 1.0) {
-			float bw = (diffuse_f.r + diffuse_f.g + diffuse_f.b) / 3.0;
-			diffuse_f.rgb = vec3(bw, bw, bw);
-		}
+	#if gl_mono==1
+		float bw = (diffuse_f.r + diffuse_f.g + diffuse_f.b) / 3.0;
+		diffuse_f.rgb = vec3(bw, bw, bw);
+	#endif
 
 	#ifdef FAKESHADOWS
 		diffuse_f.rgb *= ShadowmapFilter(s_shadowmap, vtexprojcoord);

@@ -14,6 +14,8 @@
 !!cvardf r_glsl_pcf
 !!samps =FAKESHADOWS shadowmap
 
+!!cvardf r_skipDiffuse
+
 #include "sys/defs.h"
 #include "sys/fog.h"
 
@@ -67,17 +69,18 @@ varying vec3 light;
 		gl_Position = skeletaltransform_wnst(w,n,s,t);
 		tex_c = v_texcoord;
 
-		if (gl_halflambert == 1.0) {
-			light = e_light_ambient + (e_light_mul * halflambert(n, e_light_dir));
-		} else {
-			light = e_light_ambient + (e_light_mul * lambert(n, e_light_dir));
-		}
-		
+	#if gl_halflambert==1
+		light = e_light_ambient + (e_light_mul * halflambert(n, e_light_dir));
+	#else
+		light = e_light_ambient + (e_light_mul * lambert(n, e_light_dir));
+	#endif
+
 		light *= e_lmscale.r;
-		
-		if (gl_ldr == 1.0) {
-			light *= 0.75;
-		}
+
+	#if gl_ldr==1
+		light *= 0.75;
+	#endif
+
 #ifdef CHROME
 		vec3 rorg = rlv(vec3(0,0,0), w, e_light_dir);
 		vec3 viewc = normalize(rorg - w);
@@ -133,10 +136,15 @@ varying vec3 light;
 	{
 		vec4 diffuse_f;
 
-		if (gl_kdither == 1.0)
-			diffuse_f = kernel_dither(s_diffuse, tex_c);
-		else
-			diffuse_f = texture2D(s_diffuse, tex_c);
+#if r_skipDiffuse==1
+		diffuse_f = vec4(1.0, 1.0, 1.0, 1.0);
+#else
+	#if gl_kdither==1
+		diffuse_f = kernel_dither(s_diffuse, tex_c);
+	#else
+		diffuse_f = texture2D(s_diffuse, tex_c);
+	#endif
+#endif
 
 		diffuse_f.rgb *= light;
 
@@ -153,37 +161,37 @@ varying vec3 light;
 
 		diffuse_f *= e_colourident;
 
-		// awful stipple alpha code
-		if (gl_stipplealpha == 1.0) {
-			float alpha = e_colourident.a;
-			int x = int(mod(gl_FragCoord.x, 2.0));
-			int y = int(mod(gl_FragCoord.y, 2.0));
+	#if gl_stipplealpha==1
+		float alpha = e_colourident.a;
+		int x = int(mod(gl_FragCoord.x, 2.0));
+		int y = int(mod(gl_FragCoord.y, 2.0));
 
-			if (alpha <= 0.0) {
-					discard;
-			} else if (alpha <= 0.25) {
-				diffuse_f.a = 1.0f;
-				if (x + y == 2)
-					discard;
-				if (x + y == 1)
-					discard;
-			} else if (alpha <= 0.5) {
-				diffuse_f.a = 1.0f;
-				if (x + y == 2)
-					discard;
-				if (x + y == 0)
-					discard;
-			} else if (alpha < 1.0) {
-				diffuse_f.a = 1.0f;
-				if (x + y == 2)
-					discard;
-			}
+		if (alpha <= 0.0) {
+				discard;
+		} else if (alpha <= 0.25) {
+			diffuse_f.a = 1.0f;
+			if (x + y == 2)
+				discard;
+			if (x + y == 1)
+				discard;
+		} else if (alpha <= 0.5) {
+			diffuse_f.a = 1.0f;
+			if (x + y == 2)
+				discard;
+			if (x + y == 0)
+				discard;
+		} else if (alpha < 1.0) {
+			diffuse_f.a = 1.0f;
+			if (x + y == 2)
+				discard;
 		}
+	#endif
 
-		if (gl_mono == 1.0) {
+	#if gl_mono==1
 			float bw = (diffuse_f.r + diffuse_f.g + diffuse_f.b) / 3.0;
 			diffuse_f.rgb = vec3(bw, bw, bw);
-		}
+	#endif
+
 	#ifdef FAKESHADOWS
 		diffuse_f.rgb *= ShadowmapFilter(s_shadowmap, vtexprojcoord);
 	#endif

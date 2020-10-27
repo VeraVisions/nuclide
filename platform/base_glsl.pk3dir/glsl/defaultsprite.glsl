@@ -51,11 +51,11 @@ uniform vec4 e_vlscale;
 	{
 		vec4 col;
 
-		// Arrgh, currently the HUD uses this in HL */
-		if (gl_kdither == 1.0)
-			col = texture2D(s_t0, tc);
-		else
-			col = texture2D(s_t0, tc);
+	#if gl_kdither==1
+		col = texture2D(s_t0, tc);
+	#else
+		col = texture2D(s_t0, tc);
+	#endif
 
 	#ifdef MASK
 		if (col.a < float(MASK))
@@ -64,10 +64,10 @@ uniform vec4 e_vlscale;
 
 		col = fog4blend(col * vc * e_colourident * e_vlscale);
 
-		if (gl_mono == 1.0) {
-			float bw = (col.r + col.g + col.b) / 3.0;
-			col.rgb = vec3(bw, bw, bw) * 1.5;
-		}
+	#if gl_mono==1
+		float bw = (col.r + col.g + col.b) / 3.0;
+		col.rgb = vec3(bw, bw, bw) * 1.5;
+	#endif
 
 		gl_FragColor = col;
 	}

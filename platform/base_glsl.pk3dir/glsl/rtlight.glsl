@@ -145,8 +145,8 @@ void main ()
 
 #if defined(BUMP) || defined(SPECULAR) || defined(REFLECTCUBEMASK)
 
-	#if r_skipNormals==1
-		vec3 normal_f = normalize(texture2D(s_normalmap, tex_c).rgb - 0.5);
+	#if r_skipNormal==0
+		vec3 normal_f = normalize(texture2D(s_normalmap, tex_c).rgb - 0.5) * 2.0;
 	#else
 		#define normal_f vec3(0.0,0.0,0.5)
 	#endif
