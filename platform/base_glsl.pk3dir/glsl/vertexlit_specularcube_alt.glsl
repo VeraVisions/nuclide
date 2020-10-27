@@ -16,10 +16,9 @@
 !!cvardf r_glsl_pcf
 !!samps =FAKESHADOWS shadowmap
 
-!!cvardf dev_skipdiffuse
-!!cvardf dev_skipnormal
-!!cvardf dev_skipspecular
-!!cvardf dev_skipenvmaps
+!!cvardf r_skipDiffuse
+!!cvardf r_skipNormal
+!!cvardf r_skipSpecular
 
 #include "sys/defs.h"
 
@@ -79,27 +78,26 @@ varying mat3 invsurface;
 		vec3 new_e_light_dir = vec3(cos(e_time), sin(e_time), 0);
 		vec3 light;
 
-		#ifdef HALFLAMBERT
-			light = e_light_ambient + (e_light_mul * halflambert(norm, e_light_dir));
-		#else
-			light = e_light_ambient + (e_light_mul * lambert(norm, e_light_dir));
-		#endif
+	#ifdef HALFLAMBERT
+		light = e_light_ambient + (e_light_mul * halflambert(norm, e_light_dir));
+	#else
+		light = e_light_ambient + (e_light_mul * lambert(norm, e_light_dir));
+	#endif
 
+	#if r_skipSpecular==0
+		// gloss pass
+		vec3 halfdir = normalize(normalize(eyevector) + e_light_dir);
+		vec3 bumps = normalize(invsurface * (normal_f));
+		float spec = pow(max(dot(halfdir, bumps), 0.0), FTE_SPECULAR_EXPONENT);
+		spec *= 5.0 * (1.0 - gloss);
+		diffuse_f.rgb += spec;
+		// envmap pass
+		cube_c = reflect(normalize(-eyevector), normal_f.rgb * 0.5);
+		cube_c = cube_c.x * invsurface[0] + cube_c.y * invsurface[1] + cube_c.z * invsurface[2];
+		cube_c = (m_model * vec4(cube_c.xyz, 0.0)).xyz;
+		diffuse_f.rgb = mix(textureCube(s_reflectcube, cube_c).rgb, diffuse_f.rgb, gloss);
+	#endif
 
-		if (float(dev_skipspecular) == 0.0) {
-			vec3 halfdir = normalize(normalize(eyevector) + e_light_dir);
-			vec3 bumps = normalize(invsurface * (normal_f));
-			float spec = pow(max(dot(halfdir, bumps), 0.0), FTE_SPECULAR_EXPONENT);
-			spec *= 5.0 * (1.0 - gloss);
-			diffuse_f.rgb += spec;
-		}
-
-		if (float(dev_skipenvmaps) == 0.0) {
-			cube_c = reflect(normalize(-eyevector), normal_f.rgb * 0.5);
-			cube_c = cube_c.x * invsurface[0] + cube_c.y * invsurface[1] + cube_c.z * invsurface[2];
-			cube_c = (m_model * vec4(cube_c.xyz, 0.0)).xyz;
-			diffuse_f.rgb = mix(textureCube(s_reflectcube, cube_c).rgb, diffuse_f.rgb, gloss);
-		}
 		diffuse_f.rgb *= light;
 
 	#ifdef FAKESHADOWS

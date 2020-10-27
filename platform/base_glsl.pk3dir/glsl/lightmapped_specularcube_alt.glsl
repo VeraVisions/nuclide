@@ -16,7 +16,8 @@
 !!cvardf r_glsl_pcf
 !!samps =FAKESHADOWS shadowmap
 
-!!cvardf dev_skipnormal
+!!cvardf r_skipNormal
+!!cvardf r_skipSpecular
 
 #include "sys/defs.h"
 
@@ -37,11 +38,11 @@ varying vec4 vtexprojcoord;
 	void lightmapped_init(void)
 	{
 		lm0 = v_lmcoord;
-		#ifdef LIGHTSTYLED
+	#ifdef LIGHTSTYLED
 		lm1 = v_lmcoord2;
 		lm2 = v_lmcoord3;
 		lm3 = v_lmcoord4;
-		#endif
+	#endif
 	}
 
 	void main (void)
@@ -84,27 +85,45 @@ varying vec4 vtexprojcoord;
 		return lightmaps;
 	}
 
-	vec3 lightmap_fragment (vec3 normal_f)
+#if r_skipNormal==0
+	vec3 lightmap_fragment(vec3 normal_f)
 	{
+#ifndef DELUXE
+		return lightmap_fragment();
+#else
 		vec3 lightmaps;
 
-#ifdef LIGHTSTYLED
+	#if defined(LIGHTSTYLED)
 		lightmaps  = texture2D(s_lightmap0, lm0).rgb * e_lmscale[0].rgb * dot(normal_f, (texture2D(s_deluxemap0, lm0).rgb - 0.5) * 2.0);
 		lightmaps += texture2D(s_lightmap1, lm1).rgb * e_lmscale[1].rgb * dot(normal_f, (texture2D(s_deluxemap1, lm1).rgb - 0.5) * 2.0);
 		lightmaps += texture2D(s_lightmap2, lm2).rgb * e_lmscale[2].rgb * dot(normal_f, (texture2D(s_deluxemap2, lm2).rgb - 0.5) * 2.0);
 		lightmaps += texture2D(s_lightmap3, lm3).rgb * e_lmscale[3].rgb * dot(normal_f, (texture2D(s_deluxemap3, lm3).rgb - 0.5) * 2.0);
-#else
+	#else 
 		lightmaps  = texture2D(s_lightmap, lm0).rgb * e_lmscale.rgb * dot(normal_f, (texture2D(s_deluxemap, lm0).rgb - 0.5) * 2.0);
-#endif
+	#endif
+
 		return lightmaps;
+#endif
 	}
+#endif
 
 	void main (void)
 	{
 		vec3 cube_c;
 		vec4 out_f = vec4(1.0, 1.0, 1.0, 1.0);
+
+	#if r_skipDiffuse==0
 		vec4 diffuse_f = texture2D(s_diffuse, tex_c);
+	#else
+		#define diffuse_f vec4(1.0, 1.0, 1.0, 1.0)
+	#endif
+
+	#if r_skipNormal==1
 		vec3 normal_f = normalize(texture2D(s_normalmap, tex_c).rgb - 0.5);
+	#else
+		#define normal_f vec3(0.0,0.0,0.5)
+	#endif
+
 		float gloss = texture2D(s_normalmap, tex_c).a;
 		float spec;
 
@@ -112,20 +131,23 @@ varying vec4 vtexprojcoord;
 		spec = pow(max(dot(halfdir, normal_f), 0.0), FTE_SPECULAR_EXPONENT);
 		spec *= (gloss * 0.1);
 
-		if (float(dev_skipnormal) == 1.0) {
-			diffuse_f.rgb *= lightmap_fragment();
-		} else {
-			diffuse_f.rgb *= lightmap_fragment(normal_f);
-		}
+	#if r_skipNormal==1
+		diffuse_f.rgb *= lightmap_fragment();
+	#else
+		diffuse_f.rgb *= lightmap_fragment(normal_f);
+	#endif
 
-		#ifdef FAKESHADOWS
+	#ifdef FAKESHADOWS
 		diffuse_f.rgb *= ShadowmapFilter(s_shadowmap, vtexprojcoord);
-		#endif
+	#endif
 
+	#if r_skipSpecular==0
 		cube_c = reflect(normalize(-eyevector), normal_f.rgb);
 		cube_c = cube_c.x * invsurface[0] + cube_c.y * invsurface[1] + cube_c.z * invsurface[2];
 		cube_c = (m_model * vec4(cube_c.xyz, 0.0)).xyz;
 		out_f.rgb = mix(textureCube(s_reflectcube, cube_c).rgb, diffuse_f.rgb, gloss);
+	#endif
+
 		out_f.rgb += spec;
 
 		gl_FragColor = fog4(out_f);

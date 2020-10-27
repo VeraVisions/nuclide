@@ -16,7 +16,8 @@
 !!cvardf r_glsl_pcf
 !!samps =FAKESHADOWS shadowmap
 
-!!cvardf dev_skipenvmaps
+!!cvardf r_skipSpecular
+!!cvardf r_skipNormal
 
 #include "sys/defs.h"
 
@@ -76,28 +77,35 @@ varying mat3 invsurface;
 		vec3 cube_c;
 		vec4 out_f = vec4(1.0, 1.0, 1.0, 1.0);
 		vec4 diff_f = texture2D(s_diffuse, tex_c);
-		vec4 normal_f = (texture2D(s_normalmap, tex_c) - 0.5) * 2.0;
 		vec3 light;
+
+	#if r_skipNormal==0
+		vec3 normal_f = (texture2D(s_normalmap, tex_c).rgb - 0.5) * 2.0;
+		float refl = texture2D(s_normalmap, tex_c).a;
+	#else
+		#define normal_f vec3(0.0,0.0,1.0)
+		float refl = texture2D(s_normalmap, tex_c).a;
+	#endif
 
 		if (diff_f.a < 0.5) {
 			discard;
 		}
 
-		#ifdef HALFLAMBERT
-			light = e_light_ambient + (e_light_mul * halflambert(norm, e_light_dir));
-		#else
-			light = e_light_ambient + (e_light_mul * lambert(norm, e_light_dir));
-		#endif
+	#ifdef HALFLAMBERT
+		light = e_light_ambient + (e_light_mul * halflambert(norm, e_light_dir));
+	#else
+		light = e_light_ambient + (e_light_mul * lambert(norm, e_light_dir));
+	#endif
 
-		if (float(dev_skipenvmaps) == 0.0) {
-			cube_c = reflect(normalize(eyevector), normal_f.rgb);
-			cube_c = cube_c.x * invsurface[0] + cube_c.y * invsurface[1] + cube_c.z * invsurface[2];
-			cube_c = (m_model * vec4(cube_c.xyz, 0.0)).xyz;
-			diff_f.rgb = mix(textureCube(s_reflectcube, cube_c).rgb, diff_f.rgb, diff_f.a);
-		}
+	#if r_skipSpecular==0
+		cube_c = reflect(normalize(eyevector), normal_f.rgb);
+		cube_c = cube_c.x * invsurface[0] + cube_c.y * invsurface[1] + cube_c.z * invsurface[2];
+		cube_c = (m_model * vec4(cube_c.xyz, 0.0)).xyz;
+		diff_f.rgb = mix(textureCube(s_reflectcube, cube_c).rgb, diff_f.rgb, diff_f.a);
+	#endif
 
 		diff_f.rgb *= light;
-		out_f.rgb = mix(textureCube(s_reflectcube, cube_c).rgb, diff_f.rgb, normal_f.a);
+		out_f.rgb = mix(textureCube(s_reflectcube, cube_c).rgb, diff_f.rgb, refl);
 
 	#ifdef FAKESHADOWS
 		out_f.rgb *= ShadowmapFilter(s_shadowmap, vtexprojcoord);

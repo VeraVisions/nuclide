@@ -17,7 +17,8 @@
 !!cvardf r_glsl_pcf
 !!samps =FAKESHADOWS shadowmap
 
-!!cvardf dev_skipnormal
+!!cvardf r_skipNormal
+!!cvardf r_skipSpecular
 
 #include "sys/defs.h"
 
@@ -72,26 +73,34 @@ varying mat3 invsurface;
 	{
 		vec3 cube_c;
 		vec4 diffuse_f = texture2D( s_diffuse, tex_c );
-		vec3 normal_f = (texture2D(s_normalmap, tex_c).rgb - 0.5) * 2.0;
-		float gloss = texture2D( s_normalmap, tex_c ).a;
+
 		vec3 new_e_light_dir = vec3(cos(e_time), sin(e_time), 0);
 		vec3 light;
 
-		#ifdef HALFLAMBERT
-			light = e_light_ambient + (e_light_mul * halflambert(norm, e_light_dir));
-		#else
-			light = e_light_ambient + (e_light_mul * lambert(norm, e_light_dir));
-		#endif
+	#if r_skipNormal==0
+		vec3 normal_f = (texture2D(s_normalmap, tex_c).rgb - 0.5) * 2.0;
+		float gloss = texture2D(s_normalmap, tex_c).a;
+	#else
+		#define normal_f vec3(0.0,0.0,1.0)
+		float gloss = texture2D(s_normalmap, tex_c).a;
+	#endif
 
-		/* specular */
+	#ifdef HALFLAMBERT
+			light = e_light_ambient + (e_light_mul * halflambert(norm, e_light_dir));
+	#else
+			light = e_light_ambient + (e_light_mul * lambert(norm, e_light_dir));
+	#endif
+
+	#if r_skipSpecular==0
 		vec3 halfdir = normalize(normalize(eyevector) + e_light_dir);
 		vec3 bumps = normalize(invsurface * (normal_f));
 		float spec = pow(max(dot(halfdir, bumps), 0.0), FTE_SPECULAR_EXPONENT);
 		spec *= 5.0 * (1.0 - gloss);
 		diffuse_f.rgb += spec * diffuse_f.a;
+	#endif
 
 		/* reflectcube */
-		cube_c = reflect(normalize(-eyevector), normal_f.rgb * 0.5);
+		cube_c = reflect(normalize(-eyevector), normal_f.rgb);
 		cube_c = cube_c.x * invsurface[0] + cube_c.y * invsurface[1] + cube_c.z * invsurface[2];
 		cube_c = (m_model * vec4(cube_c.xyz, 0.0)).xyz;
 		diffuse_f.rgb = mix(textureCube(s_reflectcube, cube_c).rgb, diffuse_f.rgb, diffuse_f.a);

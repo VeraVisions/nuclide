@@ -16,6 +16,8 @@
 !!cvardf r_glsl_pcf
 !!samps =FAKESHADOWS shadowmap
 
+!!cvardf r_skipSpecular
+
 #include "sys/defs.h"
 
 varying vec2 tex_c;
@@ -80,33 +82,44 @@ varying vec2 lm1, lm2, lm3;
 		return lightmaps;
 	}
 
-	vec3 lightmap_fragment (vec3 normal_f)
+#if r_skipNormal==0
+	vec3 lightmap_fragment(vec3 normal_f)
 	{
+#ifndef DELUXE
+		return lightmap_fragment();
+#else
 		vec3 lightmaps;
 
-#ifdef LIGHTSTYLED
+	#if defined(LIGHTSTYLED)
 		lightmaps  = texture2D(s_lightmap0, lm0).rgb * e_lmscale[0].rgb * dot(normal_f, (texture2D(s_deluxemap0, lm0).rgb - 0.5) * 2.0);
 		lightmaps += texture2D(s_lightmap1, lm1).rgb * e_lmscale[1].rgb * dot(normal_f, (texture2D(s_deluxemap1, lm1).rgb - 0.5) * 2.0);
 		lightmaps += texture2D(s_lightmap2, lm2).rgb * e_lmscale[2].rgb * dot(normal_f, (texture2D(s_deluxemap2, lm2).rgb - 0.5) * 2.0);
 		lightmaps += texture2D(s_lightmap3, lm3).rgb * e_lmscale[3].rgb * dot(normal_f, (texture2D(s_deluxemap3, lm3).rgb - 0.5) * 2.0);
-#else
+	#else 
 		lightmaps  = texture2D(s_lightmap, lm0).rgb * e_lmscale.rgb * dot(normal_f, (texture2D(s_deluxemap, lm0).rgb - 0.5) * 2.0);
-#endif
+	#endif
+
 		return lightmaps;
+#endif
 	}
+#endif
 
 	void main (void)
 	{
 		vec2 stc;
 		vec4 diffuse_f = texture2D(s_diffuse, tex_c);
-		vec3 normal_f = normalize(texture2D(s_normalmap, tex_c).rgb - 0.5);
 
-		/* modulate the final pixel with the lightmap value */
-		if (float(dev_skipnormal) == 1.0) {
-			diffuse_f.rgb *= lightmap_fragment();
-		} else {
-			diffuse_f.rgb *= lightmap_fragment(normal_f);
-		}
+	#if r_skipNormal==1
+		vec3 normal_f = normalize(texture2D(s_normalmap, tex_c).rgb - 0.5);
+	#else
+		#define normal_f vec3(0.0,0.0,0.5)
+	#endif
+
+	#if r_skipNormal==1
+		diffuse_f.rgb *= lightmap_fragment();
+	#else
+		diffuse_f.rgb *= lightmap_fragment(normal_f);
+	#endif
 
 		/* map the reflection buffer onto the surface */
 		stc = (1.0 + (tf.xy / tf.w)) * 0.5;
@@ -115,9 +128,9 @@ varying vec2 lm1, lm2, lm3;
 		diffuse_f.rgb = mix(texture2D(s_reflection, stc).rgb, diffuse_f.rgb, diffuse_f.a);
 		diffuse_f.a = 1.0;
 
-		#ifdef FAKESHADOWS
+	#ifdef FAKESHADOWS
 		diffuse_f.rgb *= ShadowmapFilter(s_shadowmap, vtexprojcoord);
-		#endif
+	#endif
 
 		gl_FragColor = fog4(diffuse_f);
 	}

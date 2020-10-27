@@ -16,7 +16,7 @@
 !!cvardf r_glsl_pcf
 !!samps =FAKESHADOWS shadowmap
 
-!!cvardf dev_skipdiffuse
+!!cvardf r_skipDiffuse
 
 #include "sys/defs.h"
 
@@ -62,18 +62,17 @@ varying vec3 norm;
 	{
 		vec4 diff_f = texture2D(s_diffuse, tex_c);
 		vec4 fb_f = texture2D(s_fullbright, tex_c);
-		vec3 normal_f = (texture2D(s_normalmap, tex_c).rgb - 0.5) * 2.0;
 		vec3 light;
 
 		if (diff_f.a < 0.5) {
 			discard;
 		}
 
-		#ifdef HALFLAMBERT
-			light = e_light_ambient + (e_light_mul * halflambert(norm, e_light_dir));
-		#else
-			light = e_light_ambient + (e_light_mul * lambert(norm, e_light_dir));
-		#endif
+	#ifdef HALFLAMBERT
+		light = e_light_ambient + (e_light_mul * halflambert(norm, e_light_dir));
+	#else
+		light = e_light_ambient + (e_light_mul * lambert(norm, e_light_dir));
+	#endif
 
 		diff_f.rgb *= light;
 		diff_f.rgb += fb_f.rgb;
