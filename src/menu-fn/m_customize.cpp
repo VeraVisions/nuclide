@@ -106,7 +106,8 @@ menu_customize_init(void)
 	search_end(searchy);
 
 	/* scan and cache the models */
-	searchy = search_begin("models/player/*/*.bmp", TRUE, TRUE);
+	searchy = search_begin("models/player/*/*.bmp:models/player/*/*.tga", 17, TRUE);
+
 	g_modelcount = search_getsize(searchy);
 	g_models = memalloc(sizeof(string) * g_modelcount);
 	for (int i = 0; i < g_modelcount; i++) {
@@ -155,7 +156,7 @@ menu_customize_init(void)
 	cz_psModel.SetPics(g_models);
 	cz_psModel.SetMax(g_modelcount);
 	cz_psModel.SetCallback(cz_cbModelChanged);
-	cz_psModel.SetValueS(sprintf("models/player/%s/%s.bmp", cvar_string("_cl_playermodel"), cvar_string("_cl_playermodel")));
+	cz_psModel.SetValueS(sprintf("models/player/%s/%s", cvar_string("_cl_playermodel"), cvar_string("_cl_playermodel")));
 	Widget_Add(fn_customize, cz_psModel);
 }
 
