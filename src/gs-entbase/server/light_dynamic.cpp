@@ -252,6 +252,7 @@ light_dynamic::light_dynamic(void)
 {
 	m_iState = 1;
 	m_vecLight = [255,255,255];
+	m_flDistance = 256;
 	CBaseTrigger::CBaseTrigger();
 }
 

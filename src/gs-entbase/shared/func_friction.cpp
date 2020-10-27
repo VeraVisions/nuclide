@@ -70,6 +70,16 @@ func_friction::SpawnKey(string strField, string strKey)
 	}
 }
 
+#ifdef CLIENT
+void
+func_friction::Initialized(void)
+{
+	setmodel(this, model);
+	movetype = MOVETYPE_NONE;
+	solid = SOLID_BSPTRIGGER;
+}
+#endif
+
 void
 func_friction::func_friction(void)
 {
@@ -78,13 +88,3 @@ func_friction::func_friction(void)
 	CBaseTrigger::InitBrushTrigger();
 #endif
 }
-
-#ifdef CLIENT
-void
-func_friction::Initialized (void)
-{
-	setmodel(this, model);
-	movetype = MOVETYPE_NONE;
-	solid = SOLID_BSPTRIGGER;
-}
-#endif

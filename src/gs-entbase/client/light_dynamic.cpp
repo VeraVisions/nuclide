@@ -54,13 +54,14 @@ light_dynamic::predraw(void)
 	}
 
 	/* TODO: We need to handle the second cone light */
-	dynamiclight_add(origin, m_flIntensity, m_vecLight, m_flStyle);
+	dynamiclight_add(origin, m_flDistance, m_vecLight, m_flStyle);
 
 	addentity(this);
 	return PREDRAW_NEXT;
 }
 
-void light_dynamic::ReceiveEntity(float flFlags)
+void
+light_dynamic::ReceiveEntity(float flFlags)
 {
 	if (flFlags & DLIGHTFL_CHANGED_ORIGIN) {
 		origin[0] = readcoord();
@@ -99,7 +100,8 @@ void light_dynamic::ReceiveEntity(float flFlags)
 	classname = "light_dynamic";
 }
 
-void light_dynamic::light_dynamic(void)
+void
+light_dynamic::light_dynamic(void)
 {
 	drawmask = MASK_ENGINE;
 }
