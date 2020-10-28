@@ -253,6 +253,7 @@ void initents(void)
 	}
 }
 
+var int autocvar_sv_levelexec = 1;
 void worldspawn(void)
 {
 	iprint("Initializing World");
@@ -269,6 +270,9 @@ void worldspawn(void)
 	lightstyle(10, "mmamammmmammamamaaamammma");
 	lightstyle(11, "abcdefghijklmnopqrrqponmlkjihgfedcba");
 	Skill_Init();
+
+	if (autocvar_sv_levelexec)
+		readcmd(sprintf("exec maps/%s.cfg\n", mapname));
 }
 
 float ConsoleCmd(string cmd)
