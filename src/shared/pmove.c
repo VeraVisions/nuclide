@@ -16,19 +16,14 @@
 
 /* FIXME: jumptime should use the time global, as time intervals are not
  * predictable - decrement it based upon input_timelength */
-.float waterlevel;
-.float watertype;
-.float maxspeed;
-.vector view_ofs;
-int trace_endcontentsi;
-.vector basevelocity;
 
 /* serverinfo keys are the only way both client and server are kept in sync
  * about physics variables. so none of the traditional cvars will work.
  * otherwise we could not have reliable prediction code for player movement.
  */
 void
-PMove_Init(void) {
+PMove_Init(void)
+{
 #ifdef SERVER
 	localcmd("serverinfo phy_stepheight 18\n");
 	localcmd("serverinfo phy_airstepheight 18\n");
@@ -77,7 +72,6 @@ PMove_Gravity(entity ent)
 	}
 }
 
-.entity groundentity;
 /* figure out where we are in the geometry. void, solid, liquid, etc. */
 void
 PMove_Categorize(void)

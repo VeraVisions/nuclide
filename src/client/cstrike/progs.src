@@ -38,4 +38,5 @@
 ../cstrike/radio.c
 
 ../include.src
+../../shared/include.src
 #endlist

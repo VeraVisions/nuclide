@@ -16,7 +16,32 @@
 
 #define MATH_PI 3.1415926
 
-float Math_LerpAngle(float fStart, float fEnd, float fAmount);
-float Math_Lerp(float fA, float fB, float fPercent);
-float Math_FixDelta(float fDelta);
-vector Math_Reflect(vector v1, vector v2);
+float
+Math_LerpAngle(float fStart, float fEnd, float fAmount)
+{
+	float shortest_angle = ((((fEnd - fStart) % 360) + 540) % 360) - 180;
+	return shortest_angle * fAmount;
+}
+
+float
+Math_Lerp(float fA, float fB, float fPercent)
+{
+	return (fA * (1 - fPercent)) + (fB * fPercent);
+}
+
+float
+Math_FixDelta(float fDelta)
+{
+	if (fDelta >= 180) {
+		fDelta -= 360;
+	} else if (fDelta <= -180) {
+		fDelta += 360;
+	}
+	return fDelta;
+}
+
+vector
+Math_Reflect(vector v1, vector v2)
+{
+	return v1 - 2 * dotproduct(v1, v2) * v2;
+}

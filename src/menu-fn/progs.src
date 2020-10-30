@@ -5,6 +5,7 @@
 #includelist
 ../shared/fteextensions.qc
 ../shared/math.h
+../shared/math.c
 defs.h
 bitmaps.h
 strings.h

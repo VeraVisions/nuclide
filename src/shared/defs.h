@@ -25,6 +25,7 @@
 #include "materials.h"
 #include "math.h"
 #include "sound.h"
+#include "pmove.h"
 
 /* Those are constant for HL BSP and CANNOT be changed.
  * Blame Valve for purchasing a Quake II license but not

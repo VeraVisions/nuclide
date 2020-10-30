@@ -1,12 +1,10 @@
  #includelist
 ../../shared/valve/flags.h
-../../shared/sound.c
 ../../shared/rewolf/player.cpp
 ../../shared/valve/weapon_common.h
 ../../shared/valve/animations.h
 ../../shared/valve/animations.c
 ../../shared/valve/pmove.c
-../../shared/pmove.c
 
 ../../shared/valve/fx_blood.c
 ../../shared/valve/fx_breakmodel.c

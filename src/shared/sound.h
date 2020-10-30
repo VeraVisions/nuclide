@@ -55,6 +55,7 @@ snd_t *g_sounds;
 int g_sounds_count; 
 
 void Sound_Init(void);
+void Sound_Shutdown(void);
 void Sound_ParseField(int i, int a);
 int Sound_Parse(int i, string line, string shader);
 int Sound_Precache(string shader);

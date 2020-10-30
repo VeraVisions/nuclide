@@ -84,4 +84,5 @@
 ../valve/spawn.c
 
 ../include.src
+../../shared/include.src
 #endlist
