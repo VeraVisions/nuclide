@@ -25,6 +25,7 @@
 #include "plugins.h"
 #include "vehicles.h"
 #include "traceattack.h"
+#include "footsteps.h"
 
 #define CLASSEXPORT(classname,classa) void classname(void) { spawnfunc_##classa(); }
 

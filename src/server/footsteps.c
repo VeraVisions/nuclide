@@ -31,6 +31,45 @@
 #define MATID_VENT			'V'
 #define MATID_WOOD			'W'
 
+void
+Footsteps_Init(void)
+{
+	Sound_Precache("step_default.left");
+	Sound_Precache("step_default.right");
+	Sound_Precache("step_alien.left");
+	Sound_Precache("step_alien.right");
+	Sound_Precache("step_bloodyflesh.left");
+	Sound_Precache("step_bloodyflesh.right");
+	Sound_Precache("step_computer.left");
+	Sound_Precache("step_computer.right");
+	Sound_Precache("step_concrete.left");
+	Sound_Precache("step_concrete.right");
+	Sound_Precache("step_dirt.left");
+	Sound_Precache("step_dirt.right");
+	Sound_Precache("step_flesh.left");
+	Sound_Precache("step_flesh.right");
+	Sound_Precache("step_foliage.left");
+	Sound_Precache("step_foliage.right");
+	Sound_Precache("step_glass.left");
+	Sound_Precache("step_glass.right");
+	Sound_Precache("step_grate.left");
+	Sound_Precache("step_grate.right");
+	Sound_Precache("step_metal.left");
+	Sound_Precache("step_metal.right");
+	Sound_Precache("step_slosh.left");
+	Sound_Precache("step_slosh.right");
+	Sound_Precache("step_snow.left");
+	Sound_Precache("step_snow.right");
+	Sound_Precache("step_tile.left");
+	Sound_Precache("step_tile.right");
+	Sound_Precache("step_vent.left");
+	Sound_Precache("step_vent.right");
+	Sound_Precache("step_wood.left");
+	Sound_Precache("step_wood.right");
+	Sound_Precache("step_ladder.left");
+	Sound_Precache("step_ladder.right");
+}
+
 /* Valve Half-Life BSP */
 void
 Footsteps_HLBSP(base_player target)
