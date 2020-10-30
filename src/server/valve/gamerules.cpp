@@ -209,7 +209,7 @@ HLGameRules::PlayerPostFrame(base_player pl)
 }
 
 void
-HLGameRules::PlayerConnect(entity pl)
+HLGameRules::PlayerConnect(base_player pl)
 {
 	entity a;
 
@@ -232,7 +232,7 @@ HLGameRules::PlayerConnect(entity pl)
 }
 
 void
-HLGameRules::PlayerDisconnect(entity pl)
+HLGameRules::PlayerDisconnect(base_player pl)
 {
 	if (Plugin_PlayerDisconnect(pl) == FALSE)
 		bprint(PRINT_HIGH, sprintf("%s disconnected\n", pl.netname));

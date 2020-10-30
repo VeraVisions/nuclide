@@ -270,7 +270,7 @@ CSGameRules::LevelNewParms(void)
 }
 
 void
-CSGameRules::PlayerConnect(entity pl)
+CSGameRules::PlayerConnect(base_player pl)
 {
 	entity a;
 	bprint(PRINT_HIGH, sprintf("%s connected\n", pl.netname));
@@ -291,7 +291,7 @@ CSGameRules::PlayerConnect(entity pl)
 }
 
 void
-CSGameRules::PlayerDisconnect(entity pl)
+CSGameRules::PlayerDisconnect(base_player pl)
 {
 	bprint(PRINT_HIGH, sprintf("%s disconnected\n", pl.netname));
 

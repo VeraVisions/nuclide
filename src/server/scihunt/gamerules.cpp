@@ -333,7 +333,7 @@ SHMultiplayerRules::PlayerPostFrame(base_player pp)
 }
 
 void
-SHMultiplayerRules::PlayerConnect(entity pl)
+SHMultiplayerRules::PlayerConnect(base_player pl)
 {
 	entity a;
 	bprint(PRINT_HIGH, sprintf("%s connected\n", pl.netname));
@@ -354,7 +354,7 @@ SHMultiplayerRules::PlayerConnect(entity pl)
 }
 
 void
-SHMultiplayerRules::PlayerDisconnect(entity pl)
+SHMultiplayerRules::PlayerDisconnect(base_player pl)
 {
 	bprint(PRINT_HIGH, sprintf("%s disconnected\n", pl.netname));
 

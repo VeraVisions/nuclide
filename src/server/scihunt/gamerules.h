@@ -20,8 +20,8 @@ class SHMultiplayerRules:CGameRules
 {
 	/* client */
 	virtual void(base_player) PlayerSpawn;
-	virtual void(entity) PlayerConnect;
-	virtual void(entity) PlayerDisconnect;
+	virtual void(base_player) PlayerConnect;
+	virtual void(base_player) PlayerDisconnect;
 	virtual void(base_player) PlayerKill;
 	virtual void(base_player) PlayerDeath;
 	virtual void(base_player) PlayerPostFrame;

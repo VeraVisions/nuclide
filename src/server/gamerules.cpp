@@ -35,12 +35,12 @@ CGameRules::ConsoleCommand(base_player pl, string cmd)
 
 /* client */
 void
-CGameRules::PlayerConnect(entity pl)
+CGameRules::PlayerConnect(base_player pl)
 {
 	//print("ClientConnect!\n");
 }
 void
-CGameRules::PlayerDisconnect(entity pl)
+CGameRules::PlayerDisconnect(base_player pl)
 {
 	//print("ClientDisconnect!\n");
 }

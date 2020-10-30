@@ -232,7 +232,7 @@ HLGameRules::LevelChangeParms(base_player pp)
 }
 
 void
-HLGameRules::PlayerConnect(entity pl)
+HLGameRules::PlayerConnect(base_player pl)
 {
 	entity a;
 	bprint(PRINT_HIGH, sprintf("%s connected\n", pl.netname));
@@ -253,7 +253,7 @@ HLGameRules::PlayerConnect(entity pl)
 }
 
 void
-HLGameRules::PlayerDisconnect(entity pl)
+HLGameRules::PlayerDisconnect(base_player pl)
 {
 	bprint(PRINT_HIGH, sprintf("%s disconnected\n", pl.netname));
 

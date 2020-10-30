@@ -206,7 +206,7 @@ Called whenever a new client connect to the game
 =================
 */
 int
-Plugin_PlayerConnect(entity cl)
+Plugin_PlayerConnect(base_player cl)
 {
 	int rval;
 	int tval;
@@ -242,7 +242,7 @@ Called whenever a client leaves the game
 =================
 */
 int
-Plugin_PlayerDisconnect(entity cl)
+Plugin_PlayerDisconnect(base_player cl)
 {
 	int rval;
 	int tval;

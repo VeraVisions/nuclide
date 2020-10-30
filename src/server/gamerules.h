@@ -29,8 +29,8 @@ class CGameRules
 	virtual float(base_player,string) ConsoleCommand;
 
 	/* client */
-	virtual void(entity) PlayerConnect;
-	virtual void(entity) PlayerDisconnect;
+	virtual void(base_player) PlayerConnect;
+	virtual void(base_player) PlayerDisconnect;
 	virtual void(base_player) PlayerKill;
 	virtual void(base_player) PlayerSpawn;
 	virtual void(base_player) PlayerPreFrame;

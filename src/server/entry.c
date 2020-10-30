@@ -32,18 +32,22 @@ void StartFrame(void)
 
 void ClientConnect(float csqc_active)
 {
-	g_grMode.PlayerConnect(self);
+	/* make sure you never change the classname. ever. */
+	if (self.classname != "player") {
+		spawnfunc_player();
+	}
+
+	g_grMode.PlayerConnect((base_player)self);
 }
 
 void ClientDisconnect(void)
 {
-	g_grMode.PlayerDisconnect(self);
+	g_grMode.PlayerDisconnect((base_player)self);
 }
 
 void ClientKill(void)
 {
-	player pl = (player)self;
-	g_grMode.PlayerKill(pl);
+	g_grMode.PlayerKill((base_player)self);
 }
 
 void SpectatorThink(void)
@@ -61,15 +65,7 @@ void SpectatorDisconnect(void)
 
 void PutClientInServer(void)
 {
-	player pl;
-
-	/* make sure you never change the classname. ever. */
-	if (self.classname != "player") {
-		spawnfunc_player();
-	}
-
-	pl = (player)self;
-	g_grMode.PlayerSpawn(pl);
+	g_grMode.PlayerSpawn((base_player)self);
 
 	/* activate all game_playerspawn entities */
 	for (entity a = world; (a = find(a, ::targetname, "game_playerspawn"));) {
@@ -82,14 +78,12 @@ void PutClientInServer(void)
 
 void PlayerPreThink(void)
 {
-	player pl = (player)self;
-	g_grMode.PlayerPreFrame(pl);
+	g_grMode.PlayerPreFrame((base_player)self);
 }
 
 void PlayerPostThink(void)
 {
-	player pl = (player)self;
-	g_grMode.PlayerPostFrame(pl);
+	g_grMode.PlayerPostFrame((base_player)self);
 }
 
 void SetNewParms(void)
@@ -101,8 +95,7 @@ void SetNewParms(void)
 void SetChangeParms(void)
 {
 	iprint("Setting Level-Change Parameters");
-	player pl = (player)self;
-	g_grMode.LevelChangeParms(pl);
+	g_grMode.LevelChangeParms((base_player)self);
 }
 
 void SV_RunClientCommand(void)

@@ -128,7 +128,7 @@ TFCGameRules::LevelNewParms(void)
 }
 
 void
-TFCGameRules::PlayerConnect(entity pl)
+TFCGameRules::PlayerConnect(base_player pl)
 {
 	entity a;
 	bprint(PRINT_HIGH, sprintf("%s connected\n", pl.netname));
@@ -149,7 +149,7 @@ TFCGameRules::PlayerConnect(entity pl)
 }
 
 void
-TFCGameRules::PlayerDisconnect(entity pl)
+TFCGameRules::PlayerDisconnect(base_player pl)
 {
 	bprint(PRINT_HIGH, sprintf("%s disconnected\n", pl.netname));
 

@@ -18,8 +18,8 @@
 
 class CSGameRules:CGameRules
 {
-	virtual void(entity) PlayerConnect;
-	virtual void(entity) PlayerDisconnect;
+	virtual void(base_player) PlayerConnect;
+	virtual void(base_player) PlayerDisconnect;
 	virtual void(base_player) PlayerKill;
 	virtual void(base_player) PlayerPostFrame;
 	virtual void(base_player) PlayerDeath;
