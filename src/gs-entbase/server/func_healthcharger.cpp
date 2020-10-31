@@ -44,36 +44,33 @@ class func_healthcharger:CBaseTrigger
 	virtual void(string, string) SpawnKey;
 };
 
-void func_healthcharger::PlayerUse(void)
+void
+func_healthcharger::PlayerUse(void)
 {
 	/* let's not let this become too funny... */
-	if (eActivator.health <= 0) {
+	if (eActivator.health <= 0)
 		return;
-	}
 
 	eActivator.flags |= FL_USE_RELEASED;
 
 	/* First come first serve */ 
-	if (m_eUser && eActivator != m_eUser) {
+	if (m_eUser && eActivator != m_eUser)
 		return;
-	}
 
 	/* First time */
-	if (m_eUser == world) {
+	if (m_eUser == world)
 		sound(this, CHAN_VOICE, m_strSndFirst, 1.0, ATTN_NORM);
-	}
 
-	if (m_flDelay > time) {
+	if (m_flDelay > time)
 		return;
-	}
 
 	if (eActivator.health >= 100) {
 		eActivator.flags &= ~FL_USE_RELEASED;
 		sound(this, CHAN_VOICE, m_strSndDone, 1.0, ATTN_NORM);
 	} else {
-		if (m_eUser == world) {
+		if (m_eUser == world)
 			sound(this, CHAN_ITEM, m_strSndCharging, 1.0, ATTN_NORM);
-		}
+
 		eActivator.health = bound(0, eActivator.health += 1, 100);
 	}
 
@@ -82,11 +79,11 @@ void func_healthcharger::PlayerUse(void)
 	m_flCheck = time + 0.25f;
 }
 
-void func_healthcharger::customphysics(void)
+void
+func_healthcharger::customphysics(void)
 {
-	if (m_flCheck > time) {
+	if (m_flCheck > time)
 		return;
-	}
 
 	if (m_eUser) {
 		sound(this, CHAN_ITEM, "common/null.wav", 1.0, ATTN_NORM);
@@ -112,7 +109,8 @@ func_healthcharger::SpawnKey(string strKey, string strValue)
 	}
 }
 
-void func_healthcharger::func_healthcharger(void)
+void
+func_healthcharger::func_healthcharger(void)
 {
 	m_strSndFirst = "items/medshot4.wav";
 	m_strSndCharging = "items/medcharge4.wav";

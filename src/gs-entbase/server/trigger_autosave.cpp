@@ -36,6 +36,9 @@ class trigger_autosave:CBaseTrigger
 void
 trigger_autosave::touch(void)
 {
+	if (GetMaster() == FALSE)
+		return;
+
 	/* saved text */
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_MESSAGE);
