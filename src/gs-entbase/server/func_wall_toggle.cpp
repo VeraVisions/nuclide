@@ -38,6 +38,7 @@ class func_wall_toggle:CBaseTrigger
 	void(void) func_wall_toggle;
 	virtual void(void) Respawn;
 	virtual void(entity, int) Trigger;
+	virtual void(entity, string, string) Input;
 };
 
 void
@@ -75,6 +76,18 @@ func_wall_toggle::Respawn(void)
 
 	if (spawnflags & FTW_STARTHIDDEN) {
 		Trigger(this, TRIG_OFF);
+	}
+}
+
+void
+func_wall_toggle::Input(entity eAct, string strInput, string strData)
+{
+	switch (strInput) {
+	case "Toggle":
+		Trigger(eAct, TRIG_TOGGLE);
+		break;
+	default:
+		CBaseTrigger::Input(eAct, strInput, strData);
 	}
 }
 

@@ -26,6 +26,7 @@
 #include "math.h"
 #include "sound.h"
 #include "pmove.h"
+#include "memory.h"
 
 /* Those are constant for HL BSP and CANNOT be changed.
  * Blame Valve for purchasing a Quake II license but not
@@ -63,21 +64,6 @@ const vector VEC_PLAYER_CVIEWPOS = [0,0,12];
 .float teleport_time;
 .vector basevelocity;
 .float gflags;
-
-void*
-memrealloc(__variant *oldptr, int elementsize, int oldelements, int newelements)
-{
-	void *n = memalloc(elementsize * newelements);
-	memcpy(n, oldptr, elementsize * min(oldelements, newelements));
-	memfree(oldptr);
-	return n;
-}
-
-__wrap __variant*
-memalloc(int size)
-{
-	return prior(size);
-}
 
 void
 Empty(void)

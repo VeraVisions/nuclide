@@ -40,7 +40,7 @@ item_longjump::touch(void)
 	if (other.classname != "player") {
 		return;
 	}
-	
+
 	player pl = (player)other;
 	if (pl.g_items & ITEM_LONGJUMP) {
 		return;

@@ -32,17 +32,20 @@ This entity was introduced in Half-Life (1998).
 class func_guntarget:CBaseTrigger
 {
 	float m_flSpeed;
-	string m_strFire;
+	string m_strOnDeath;
+	string m_strOnDeathLegacy;
 
 	void(void) func_guntarget;
 	
 	virtual void(void) Respawn;
 	virtual void(void) NextPath;
 	virtual void(void) Move;
+	virtual void(void) Start;
 	virtual void(void) Stop;
 	virtual void(entity act, int) Trigger;
 	virtual void(void) Death;
 	virtual void(string, string) SpawnKey;
+	virtual void(entity, string, string) Input;
 };
 
 void
@@ -102,17 +105,29 @@ func_guntarget::NextPath(void)
 void
 func_guntarget::Death(void)
 {
-	entity a;
 	Stop();
 
-	if (!m_strFire) {
+	if (!m_strOnDeath && !m_strOnDeathLegacy) {
 		return;
 	}
 
-	for (a = world; (a = find(a, ::targetname, m_strFire));) {
-		CBaseTrigger trigger = (CBaseTrigger)a;
-		trigger.Trigger(g_dmg_eAttacker, TRIG_TOGGLE);
+	if (!m_strOnDeathLegacy) {
+		UseOutput(g_dmg_eAttacker, m_strOnDeath);
+	} else {
+		entity a;
+		for (a = world; (a = find(a, ::targetname, m_strOnDeathLegacy));) {
+			CBaseTrigger trigger = (CBaseTrigger)a;
+			trigger.Trigger(g_dmg_eAttacker, TRIG_TOGGLE);
+		}
 	}
+}
+
+void
+func_guntarget::Start(void)
+{
+	takedamage = DAMAGE_YES;
+	NextPath();
+	m_iValue = 0;
 }
 
 void
@@ -122,22 +137,27 @@ func_guntarget::Stop(void)
 	velocity = [0,0,0];
 	nextthink = 0;
 	think = __NULL__;
+	m_iValue = 1;
 }
 
-/* TODO: Handle state? */
 void
 func_guntarget::Trigger(entity act, int state)
 {
-	flags = (1 << FL_FROZEN) | flags;
-
-	if (flags & FL_FROZEN) {
-		takedamage = DAMAGE_NO;
-		Stop();
-		m_iValue = 1;
-	} else {
-		takedamage = DAMAGE_YES;
-		NextPath();
+	switch (state) {
+	case TRIG_OFF:
 		m_iValue = 0;
+		break;
+	case TRIG_ON:
+		m_iValue = 1;
+		break;
+	default:
+		m_iValue = 1 - m_iValue;
+	}
+
+	if (m_iValue) {
+		Start();
+	} else {
+		Stop();
 	}
 }
 
@@ -160,6 +180,24 @@ func_guntarget::Respawn(void)
 }
 
 void
+func_guntarget::Input(entity eAct, string strInput, string strData)
+{
+	switch (strInput) {
+	case "Start":
+		Trigger(eAct, TRIG_ON);
+		break;
+	case "Stop":
+		Trigger(eAct, TRIG_OFF);
+		break;
+	case "Toggle":
+		Trigger(eAct, TRIG_TOGGLE);
+		break;
+	default:
+		CBaseTrigger::Input(eAct, strInput, strData);
+	}
+}
+
+void
 func_guntarget::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
@@ -170,7 +208,11 @@ func_guntarget::SpawnKey(string strKey, string strValue)
 		m_flSpeed = stof(strValue);
 		break;
 	case "message":
-		m_strFire = strValue;
+		m_strOnDeathLegacy = strValue;
+		break;
+	case "OnDeath":
+		strValue = strreplace(",", ",_", strValue);
+		m_strOnDeath = strcat(m_strOnDeath, ",_", strValue);
 		break;
 	default:
 		CBaseTrigger::SpawnKey(strKey, strValue);

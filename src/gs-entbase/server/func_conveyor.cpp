@@ -39,6 +39,7 @@ class func_conveyor:CBaseTrigger
 	virtual void(entity, int) Trigger;
 	virtual void(void) touch;
 	virtual void(void) SetMovementDirection;
+	virtual void(entity, string, string) Input;
 };
 
 void
@@ -90,6 +91,21 @@ func_conveyor::Respawn(void)
 	}
 
 	SetAngles([0,0,0]);
+}
+
+void
+func_conveyor::Input(entity eAct, string strInput, string strData)
+{
+	switch (strInput) {
+	case "ToggleDirection":
+		Trigger(eAct, TRIG_TOGGLE);
+		break;
+	case "SetSpeed":
+		m_flSpeed = stof(strData);
+		break;
+	default:
+		CBaseTrigger::Input(eAct, strInput, strData);
+	}
 }
 
 void

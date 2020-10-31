@@ -14,32 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-float
-Math_LerpAngle(float fStart, float fEnd, float fAmount)
+void*
+memrealloc(__variant *oldptr, int elementsize, int oldelements, int newelements)
 {
-	float shortest_angle = ((((fEnd - fStart) % 360) + 540) % 360) - 180;
-	return shortest_angle * fAmount;
+	void *n = memalloc(elementsize * newelements);
+	memcpy(n, oldptr, elementsize * min(oldelements, newelements));
+	memfree(oldptr);
+	return n;
 }
 
-float
-Math_Lerp(float fA, float fB, float fPercent)
+__wrap __variant*
+memalloc(int size)
 {
-	return (fA * (1 - fPercent)) + (fB * fPercent);
-}
-
-float
-Math_FixDelta(float fDelta)
-{
-	if (fDelta >= 180) {
-		fDelta -= 360;
-	} else if (fDelta <= -180) {
-		fDelta += 360;
-	}
-	return fDelta;
-}
-
-vector
-Math_Reflect(vector v1, vector v2)
-{
-	return v1 - 2 * dotproduct(v1, v2) * v2;
-}
+	return prior(size);
+} 
