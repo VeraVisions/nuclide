@@ -54,12 +54,15 @@ class trigger_changelevel:CBaseTrigger
 	float m_flChangeDelay;
 	entity m_activator;
 
+	string m_strOnLevelChange;
+
 	void(void) trigger_changelevel;
 	virtual void(void) Change;
 	virtual void(entity, int) Trigger;
 	virtual void(void) TouchTrigger;
 	virtual void(void) Respawn;
 	virtual int(entity, entity) IsInside;
+	virtual void(entity, string, string) Input;
 	virtual void(string, string) SpawnKey;
 };
 
@@ -85,6 +88,12 @@ trigger_changelevel::Change(void)
 			m_strMap));
 		changelevel(m_strMap);
 		return;
+	}
+
+	if (!target) {
+		UseOutput(m_activator, m_strOnLevelChange);
+	} else {
+		UseTargets(m_activator, TRIG_TOGGLE, m_flDelay);
 	}
 
 	/* if some other entity triggered us... just find the next player. */
@@ -148,6 +157,18 @@ trigger_changelevel::Respawn(void)
 }
 
 void
+trigger_changelevel::Input(entity eAct, string strInput, string strData)
+{
+	switch (strInput) {
+	case "ChangeLevel":
+		Trigger(eAct, TRIG_TOGGLE);
+		break;
+	default:
+		CBaseTrigger::Input(eAct, strInput, strData);
+	}
+}
+
+void
 trigger_changelevel::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
@@ -160,6 +181,11 @@ trigger_changelevel::SpawnKey(string strKey, string strValue)
 	case "changedelay":
 		m_flChangeDelay = stof(strValue);
 		break;
+	case "OnLevelChange":
+	case "OnChangeLevel":
+		strValue = strreplace(",", ",_", strValue);
+		m_strOnLevelChange = strcat(m_strOnLevelChange, ",_", strValue);
+		break;
 	default:
 		CBaseTrigger::SpawnKey(strKey, strValue);
 	}
@@ -169,6 +195,9 @@ void
 trigger_changelevel::trigger_changelevel(void)
 {
 	CBaseTrigger::CBaseTrigger();
+
+	if (m_strOnLevelChange)
+		m_strOnLevelChange = CreateOutput(m_strOnLevelChange);
 }
 
 vector

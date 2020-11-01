@@ -39,6 +39,7 @@ enumflags
 class trigger_once:CBaseTrigger
 {
 	string m_strOnStartTouch;
+	string m_strOnTrigger;
 
 	void(void) trigger_once;
 
@@ -85,6 +86,10 @@ trigger_once::SpawnKey(string strKey, string strValue)
 		strValue = strreplace(",", ",_", strValue);
 		m_strOnStartTouch = strcat(m_strOnStartTouch, ",_", strValue);
 		break;
+	case "OnTrigger":
+		strValue = strreplace(",", ",_", strValue);
+		m_strOnTrigger = strcat(m_strOnTrigger, ",_", strValue);
+		break;
 	default:
 		CBaseTrigger::SpawnKey(strKey, strValue);
 		break;
@@ -95,6 +100,9 @@ void
 trigger_once::trigger_once(void)
 {
 	CBaseTrigger::CBaseTrigger();
+
+	if (m_strOnTrigger)
+		m_strOnTrigger = CreateOutput(m_strOnTrigger);
 
 	if (m_strOnStartTouch)
 		m_strOnStartTouch = CreateOutput(m_strOnStartTouch);

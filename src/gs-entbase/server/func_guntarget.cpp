@@ -223,4 +223,7 @@ void func_guntarget::func_guntarget(void)
 {
 	m_flSpeed = 100;
 	CBaseTrigger::CBaseTrigger();
+
+	if (m_strOnDeath)
+		m_strOnDeath = CreateOutput(m_strOnDeath);
 }

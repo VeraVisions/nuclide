@@ -41,8 +41,10 @@ class trigger_look:CBaseTrigger
 	float m_flLookTime;
 	string m_strLookTarget;
 	float m_flDelay;
-
 	float m_flLooked;
+
+	/* Input/Output */
+	string m_strOnTrigger;
 
 	void(void) trigger_look;
 	
@@ -93,7 +95,11 @@ trigger_look::Touch(void)
 
 	/* trigger and disable entity, for now */
 	SetSolid(SOLID_NOT);
-	UseTargets(other, TRIG_TOGGLE, m_flDelay);
+
+	if (!target)
+		UseOutput(other, m_strOnTrigger);
+	else
+		UseTargets(other, TRIG_TOGGLE, m_flDelay);
 }
 
 void
@@ -120,6 +126,10 @@ trigger_look::SpawnKey(string strKey, string strValue)
 	case "LookTime":
 		m_flLookTime = stof(strValue);
 		break;
+	case "OnTrigger":
+		strValue = strreplace(",", ",_", strValue);
+		m_strOnTrigger = strcat(m_strOnTrigger, ",_", strValue);
+		break;
 	default:
 		break;
 	}
@@ -132,4 +142,7 @@ trigger_look::trigger_look(void)
 	m_flFOV = 0.9f;
 
 	CBaseEntity::CBaseEntity();
+
+	if (m_strOnTrigger)
+		m_strOnTrigger = CreateOutput(m_strOnTrigger);
 }

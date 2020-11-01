@@ -39,7 +39,10 @@ enumflags
 class trigger_multiple:CBaseTrigger
 {
 	float m_flWait;
+
+	/* Input/Output */
 	string m_strOnStartTouch;
+	string m_strOnTrigger;
 
 	void(void) trigger_multiple;
 	virtual void(void) touch;
@@ -98,6 +101,10 @@ trigger_multiple::SpawnKey(string strKey, string strValue)
 		strValue = strreplace(",", ",_", strValue);
 		m_strOnStartTouch = strcat(m_strOnStartTouch, ",_", strValue);
 		break;
+	case "OnTrigger":
+		strValue = strreplace(",", ",_", strValue);
+		m_strOnTrigger = strcat(m_strOnTrigger, ",_", strValue);
+		break;
 	default:
 		CBaseTrigger::SpawnKey(strKey, strValue);
 	}
@@ -107,6 +114,9 @@ void
 trigger_multiple::trigger_multiple(void)
 {
 	CBaseTrigger::CBaseTrigger();
+
+	if (m_strOnTrigger)
+		m_strOnTrigger = CreateOutput(m_strOnTrigger);
 
 	if (m_strOnStartTouch)
 		m_strOnStartTouch = CreateOutput(m_strOnStartTouch);

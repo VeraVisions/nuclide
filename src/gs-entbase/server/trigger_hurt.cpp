@@ -46,12 +46,17 @@ class trigger_hurt:CBaseTrigger
 	float m_flNextDmg;
 	int m_iDamage;
 	float m_flDelay;
+
+	string m_strOnHurt;
+	string m_strOnHurtPlayer;
+
 	void(void) trigger_hurt;
 
 	virtual void(entity, int) Trigger;
 	virtual void(void) touch;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
+	virtual void(entity, string, string) Input;
 };
 
 void
@@ -86,7 +91,12 @@ trigger_hurt::touch(void)
 		return;
 	}
 
-	if (target) {
+	if (!target) {
+		if (other.flags & FL_CLIENT)
+			UseOutput(other, m_strOnHurtPlayer);
+		else
+			UseOutput(other, m_strOnHurt);
+	} else {
 		if (spawnflags & SF_HURT_FIREONPLAYER) {
 			if (other.flags & FL_CLIENT) {
 				eActivator = other;
@@ -125,6 +135,18 @@ trigger_hurt::Respawn(void)
 }
 
 void
+trigger_hurt::Input(entity eAct, string strInput, string strData)
+{
+	switch (strInput) {
+	case "SetDamage":
+		m_iDamage = stoi(strData);
+		break;
+	default:
+		CBaseTrigger::Input(eAct, strInput, strData);
+	}
+}
+
+void
 trigger_hurt::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
@@ -133,6 +155,14 @@ trigger_hurt::SpawnKey(string strKey, string strValue)
 		break;
 	case "wait":
 		m_flNextDmg = stof(strValue);
+		break;
+	case "OnHurt":
+		strValue = strreplace(",", ",_", strValue);
+		m_strOnHurt = strcat(m_strOnHurt, ",_", strValue);
+		break;
+	case "OnHurtPlayer":
+		strValue = strreplace(",", ",_", strValue);
+		m_strOnHurtPlayer = strcat(m_strOnHurtPlayer, ",_", strValue);
 		break;
 	default:
 		CBaseTrigger::SpawnKey(strKey, strValue);
@@ -147,4 +177,10 @@ trigger_hurt::trigger_hurt(void)
 	m_flNextDmg = 0.5f;
 
 	CBaseTrigger::CBaseTrigger();
+
+	if (m_strOnHurt)
+		m_strOnHurt = CreateOutput(m_strOnHurt);
+
+	if (m_strOnHurtPlayer)
+		m_strOnHurtPlayer = CreateOutput(m_strOnHurtPlayer);
 }
