@@ -1,0 +1,10 @@
+#!/bin/sh
+set -e
+SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PATH="$SCRIPT_LOCATION"/bin:"$PATH"
+
+if [ -f "$SCRIPT_LOCATION"/bin/fteqw-sv ]; then
+	fteqw-sv -manifest valve.fmf $*
+else
+	printf "Engine is not present, please run build_engine.sh\n"
+fi
