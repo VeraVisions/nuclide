@@ -170,32 +170,28 @@ Intercepts 'cmd' calls. We use it to intercept
 chat messages and handle distribution ourselves.
 =================
 */
-int
+string
 Plugin_ParseClientCommand(string msg)
 {
-	int rval;
-	int tval;
-	int(string msg) vFunc;
+	string(string msg) vFunc;
 
 	if (g_plugins_enabled == 0)
 		return FALSE;
-
-	/* rval = final return value, tval = temporary return value.
-	   if at least one of the plugins returns TRUE, then RunClientCommand
-	   will not be called by the engine, as it should be */
-	rval = FALSE;
-	tval = FALSE;
 
 	for (int i = 0; i < g_plugincount; i++) {
 		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "FMX_ParseClientCommand");
 
 		if (vFunc) {
-			tval = vFunc(msg);
-			rval |= tval;
+			string new;
+			new = vFunc(msg);
+
+			/* pass valid overrides forward */
+			if (new != __NULL__)
+				msg = new;
 		}
 	}
 
-	return rval;
+	return msg;
 }
 
 /*

@@ -107,9 +107,12 @@ void SV_RunClientCommand(void)
 
 void SV_ParseClientCommand(string cmd)
 {
-	if (!Plugin_ParseClientCommand(cmd)) {
+	string newcmd = Plugin_ParseClientCommand(cmd);
+
+	if (newcmd == __NULL__)
 		Game_ParseClientCommand(cmd);
-	}
+	else 
+		Game_ParseClientCommand(newcmd);
 }
 
 void init(float prevprogs)

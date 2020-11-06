@@ -1,8 +1,8 @@
 #pragma target fte
-#pragma PROGS_DAT  "../../platform/p_voxannouncer.dat"
+#pragma PROGS_DAT  "../../platform/p_chatfilter.dat"
 #define QWSSQC
 
 #includelist
 ../shared/fteextensions.qc
-voxannouncer.c
+chatfilter.c
 #endlist

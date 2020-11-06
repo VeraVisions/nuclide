@@ -22,7 +22,7 @@ void Plugin_Shutdown(void);
 
 void Plugin_InitEnts(void);
 int Plugin_RunClientCommand(void);
-int Plugin_ParseClientCommand(string);
+string Plugin_ParseClientCommand(string);
 int Plugin_PlayerConnect(base_player);
 int Plugin_PlayerDisconnect(base_player);
 void Plugin_PlayerObituary(entity, entity, int, int, int);

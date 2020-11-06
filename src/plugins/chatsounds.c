@@ -14,8 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-var int autocvar_chatplug_suppresschat = 0;
-
 /* our sound boogeyman */
 static entity emitter;
 static int g_sounds;
@@ -39,7 +37,7 @@ ChatPlay(int id)
 	sound(emitter, CHAN_BODY, argv(r), 1.0f, ATTN_NONE, 100, flags);
 }
 
-int
+string
 ChatLookUp(string cmd)
 {
 	int i;
@@ -48,17 +46,17 @@ ChatLookUp(string cmd)
 		for (int c = 0; c < sc; c++) {
 			if (cmd == argv(c)) {
 				ChatPlay(i);
-				break;
+				return __NULL__;
 			}
 		}
 	}
 
 	/* some joker might set it to non 0/1 */
-	return autocvar_chatplug_suppresschat == 1 ? TRUE : FALSE;
+	return __NULL__;
 }
 
 /* plugin hook */
-int
+string
 FMX_ParseClientCommand(string cmd)
 {
 	tokenize(cmd);
@@ -66,10 +64,8 @@ FMX_ParseClientCommand(string cmd)
 		case "say":
 			return ChatLookUp(strtolower(argv(1)));
 			break;
-		default:
-			return FALSE;
 	}
-	return TRUE;
+	return cmd;
 }
 
 void
@@ -121,7 +117,6 @@ FMX_Init(void)
 	}
 	fclose(chatfile);
 }
-
 
 void
 FMX_InitEnts(void)
