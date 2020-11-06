@@ -20,6 +20,13 @@ fi
 make -j $(nproc) makelibs FTE_TARGET=SDL2
 make -j $(nproc) m-rel FTE_TARGET=SDL2
 cp -v ./release/fteqw-sdl2 ../../../bin/fteqw
+make -j $(nproc) sv-rel
+cp -v ./release/fteqw-sv ../../../bin/fteqw-sv
 make -j $(nproc) qcc-rel
 cp -v ./release/fteqcc ../../../bin/fteqcc
+make -j $(nproc) plugins-rel NATIVE_PLUGINS="bullet"
+find ./release/ -name 'fteplug_bullet_*.so' -exec cp -prv '{}' '../../../bin/' ';'
+make -j $(nproc) plugins-rel NATIVE_PLUGINS="ffmpeg"
+find ./release/ -name 'fteplug_ffmpeg_*.so' -exec cp -prv '{}' '../../../bin/' ';'
+
 
