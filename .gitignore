@@ -38,3 +38,5 @@ installed.lst
 *.kdev4
 hl2/*
 *.ico
+src/engine/
+bin/
