@@ -1,0 +1,4 @@
+version 2
+set updatemode "1"
+set declined ""
+sublist "http://www.frag-net.com/dl/valve_packages" "" "enabled"
