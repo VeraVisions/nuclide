@@ -150,7 +150,7 @@ varying vec2 lm1, lm2, lm3;
 		diff2_f.rgb *= lightmap_fragment();
 	#endif
 
-		vec3 output_f = mix( diff1_f.rgb, diff2_f.rgb, alpha );
+		vec3 output_f = mix(diff1_f.rgb, diff2_f.rgb, alpha);
 
 	#ifdef FAKESHADOWS
 		output_f.rgb *= ShadowmapFilter(s_shadowmap, vtexprojcoord);

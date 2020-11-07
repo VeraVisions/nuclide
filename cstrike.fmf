@@ -27,9 +27,8 @@ BASEGAME cstrike
 -set gameinfo_chatroom "freecs"
 -set gameinfo_pkgname "cg_cstrike"
 
-DOWNLOADSURL http://www.frag-net.com/dl/cstrike_packages
+DOWNLOADSURL http://www.frag-net.com/dl/valve_packages
 UPDATEURL http://www.frag-net.com/mods/cstrike.fmf
-INSTALL "cstrike_essential;valve_essential;free_essential"
 
 // you don't really want to change these
 RTCBROKER master.frag-net.com:27950

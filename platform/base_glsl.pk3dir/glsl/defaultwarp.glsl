@@ -44,7 +44,7 @@ varying vec2 lm0;
 		diffuse_f *= e_colourident;
 
 		// awful stipple alpha code
-		if (gl_stipplealpha == 1.0) {
+		#if gl_stipplealpha==1
 			float alpha = USEALPHA * e_colourident.a;
 			int x = int(mod(gl_FragCoord.x, 2.0));
 			int y = int(mod(gl_FragCoord.y, 2.0));
@@ -68,16 +68,16 @@ varying vec2 lm0;
 				if (x + y == 2)
 					discard;
 			}
-		} else {
+		#else
 	#ifdef LIT
 		diffuse_f.rgb *= (texture2D(s_lightmap, lm0) * e_lmscale).rgb;
 	#endif
-		}
+		#endif
 
-		if (gl_mono == 1.0) {
+		#if gl_mono==1
 			float bw = (diffuse_f.r + diffuse_f.g + diffuse_f.b) / 3.0;
 			diffuse_f.rgb = vec3(bw, bw, bw);
-		}
+		#endif
 
 		gl_FragColor = fog4(diffuse_f);
 	}
