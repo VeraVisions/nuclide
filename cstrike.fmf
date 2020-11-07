@@ -25,6 +25,7 @@ BASEGAME cstrike
 -set gameinfo_url_dl "http://www.frag-net.com/mods/cstrike.fmf"
 -set gameinfo_menutrack ""
 -set gameinfo_chatroom "freecs"
+-set gameinfo_pkgname "cg_cstrike"
 
 DOWNLOADSURL http://www.frag-net.com/dl/cstrike_packages
 UPDATEURL http://www.frag-net.com/mods/cstrike.fmf
