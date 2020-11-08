@@ -26,6 +26,7 @@ Propagate our pmove state to whatever the current frame before its stomped on
 void
 Predict_PreFrame(player pl)
 {
+	/* base player attributes/fields we're going to roll back */
 	pl.net_origin = pl.origin;
 	pl.net_velocity = pl.velocity;
 	pl.net_flags = pl.flags;
@@ -40,14 +41,13 @@ Predict_PreFrame(player pl)
 	pl.net_ammo2 = pl.a_ammo2;
 	pl.net_ammo3 = pl.a_ammo3;
 	pl.net_weapontime = pl.weapontime;
-	
+
+	/* this is where a game/mod would decide to add more prediction rollback
+	 * information. */
 	GamePredict_PreFrame(pl);
 
-	//self.netpmove_flags = self.pmove_flags;
-
-	//we want to predict an exact copy of the data in the new packet
-	/*for (; self.pmove_frame <= servercommandframe; self.pmove_frame++) {
-		float flSuccess = getinputstate(self.pmove_frame);*/
+	/* run physics code for all the input frames which we've not heard back
+	 * from yet. This continues on in Player_ReceiveEntity! */
 	for (int i = pl.sequence + 1; i <= clientcommandframe; i++) {
 		float flSuccess = getinputstate(i);
 		if (flSuccess == FALSE) {
@@ -58,11 +58,15 @@ Predict_PreFrame(player pl)
 			CSQC_Input_Frame();
 		}
 
-		// Partial frames are the worst
+		/* don't do partial frames, aka incomplete input packets */
 		if (input_timelength == 0) {
 			break;
 		}
+
+		/* this global is for our shared random number seed */
 		input_sequence = i;
+
+		/* run our custom physics */
 		PMove_Run();
 	}
 }
@@ -79,6 +83,7 @@ Rewind our pmove state back to before we started predicting.
 void
 Predict_PostFrame(player pl)
 {
+	/* finally roll the values back */
 	pl.origin = pl.net_origin;
 	pl.velocity = pl.net_velocity;
 	pl.flags = pl.net_flags;
@@ -94,9 +99,9 @@ Predict_PostFrame(player pl)
 	pl.a_ammo3 = pl.net_ammo3;
 	pl.weapontime = pl.net_weapontime;
 
+	/* give the game/mod a chance to roll back its values too */
 	GamePredict_PostFrame(pl);
 
-	//self.pmove_flags = self.netpmove_flags;
+	/* update bounds */
 	setorigin(pl, pl.origin);
-	//self.pmove_frame = servercommandframe + 1;
 }

@@ -229,7 +229,6 @@ Plugin_PlayerConnect(base_player cl)
 	return rval;
 }
 
-
 /*
 =================
 Plugin_PlayerDisconnect
@@ -264,7 +263,6 @@ Plugin_PlayerDisconnect(base_player cl)
 
 	return rval;
 }
-
 
 /*
 =================

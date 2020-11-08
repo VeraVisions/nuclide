@@ -708,7 +708,10 @@ PMove_Move(void)
 	self.velocity -= self.basevelocity;
 }
 
-/* it all starts here */
+/* it all starts here, this function is called by both CLIENT and SERVER for
+   obvious prediction purposes. The SERVER will usually do this in the
+   Game_RunClientCommand function and the CLIENT will do so in both the
+   prediction places of Predict_PreFrame and Player_ReceiveEntity */
 void
 PMove_Run(void)
 {

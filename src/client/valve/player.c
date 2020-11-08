@@ -57,14 +57,19 @@ Player_ReceiveEntity(float new)
 		pl.customphysics = Empty;
 		setsize(pl, VEC_HULL_MIN, VEC_HULL_MAX);
 	} else {
-		int i;
-		//FIXME: splitscreen
+		/* Go through all the physics code between the last received frame
+		 * and the newest frame and keep the changes this time around instead
+		 * of rolling back, because we'll apply the new server-verified values
+		 * right after anyway. */
+		/* FIXME: splitscreen */
 		if (pl.entnum == player_localentnum) {
-			//FIXME: splitscreen
+			/* FIXME: splitscreen */
 			pSeat = &g_seats[0];
-			for (i = pl.sequence+1; i <= servercommandframe; i++) {
+
+			for (int i = pl.sequence+1; i <= servercommandframe; i++) {
+				/* ...maybe the input state is too old? */
 				if (!getinputstate(i)) {
-					break;	//erk?... too old?
+					break;
 				}
 				input_sequence = i;
 				PMove_Run();
@@ -75,6 +80,7 @@ Player_ReceiveEntity(float new)
 		}
 	}
 
+	/* seed for our prediction table */
 	pl.sequence = servercommandframe;
 
 	fl = readfloat();
