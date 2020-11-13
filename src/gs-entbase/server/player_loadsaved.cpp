@@ -55,10 +55,19 @@ player_loadsaved::Trigger(entity act, int unused)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_FADE);
+
+#ifdef GS_RENDERFX
 	WriteFloat(MSG_MULTICAST, m_vecRenderColor[0]);
 	WriteFloat(MSG_MULTICAST, m_vecRenderColor[1]);
 	WriteFloat(MSG_MULTICAST, m_vecRenderColor[2]);
 	WriteFloat(MSG_MULTICAST, m_flRenderAmt);
+#else
+	WriteFloat(MSG_MULTICAST, colormod[0]);
+	WriteFloat(MSG_MULTICAST, colormod[1]);
+	WriteFloat(MSG_MULTICAST, colormod[2]);
+	WriteFloat(MSG_MULTICAST, alpha);
+#endif
+
 	WriteFloat(MSG_MULTICAST, m_flFadeDuration);
 	WriteFloat(MSG_MULTICAST, m_flFadeHold);
 	WriteByte(MSG_MULTICAST, 0);

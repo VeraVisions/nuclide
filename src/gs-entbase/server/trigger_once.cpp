@@ -74,7 +74,11 @@ trigger_once::Respawn(void)
 {
 	m_iValue = 0;
 	solid = SOLID_TRIGGER;
+
+#ifdef GS_RENDERFX
 	SetRenderMode(RM_TRIGGER);
+#endif
+
 	InitBrushTrigger();
 }
 

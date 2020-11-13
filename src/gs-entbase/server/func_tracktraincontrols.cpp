@@ -36,7 +36,11 @@ func_tracktraincontrols::func_tracktraincontrols(void)
 	precache_model(model);
 	SetModel(model);
 	SetOrigin(origin);
+
+#ifdef GS_RENDERFX
 	SetRenderMode(RM_TRIGGER);
+#endif
+
 	SetSolid(SOLID_NOT);
 	CBaseTrigger::CBaseTrigger();
 }

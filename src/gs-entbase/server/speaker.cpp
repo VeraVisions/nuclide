@@ -100,8 +100,11 @@ speaker::Respawn(void)
 	/* force this thing to be networked */
 	SetModel("models/player.mdl");
 	SetOrigin(m_oldOrigin);
+
+#ifdef GS_RENDERFX
 	SetRenderMode(RM_COLOR);
 	SetRenderAmt(0);
+#endif
 
 	think = Annouce;
 

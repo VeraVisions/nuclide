@@ -34,5 +34,8 @@ void func_ladder::Respawn(void)
 	SetMovetype(MOVETYPE_NONE);
 	SetSkin(CONTENT_LADDER);
 	SetSolid(SOLID_BSP);
+
+#ifdef GS_RENDERFX
 	SetRenderMode(RM_TRIGGER);
+#endif
 }

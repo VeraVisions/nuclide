@@ -28,6 +28,7 @@ Trivia:
 This entity was introduced in Half-Life (1998).
 */
 
+#ifdef GS_RENDERFX
 enumflags
 {
 	SF_NORENDERFX,
@@ -75,3 +76,4 @@ env_render::env_render(void)
 {
 	CBaseTrigger::CBaseTrigger();
 }
+#endif

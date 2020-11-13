@@ -37,5 +37,8 @@ trigger_transition::trigger_transition(void)
 	SetModel(model);
 	model = __NULL__;
 	modelindex = 0;
+
+#ifdef GS_RENDERFX
 	SetRenderMode(RM_TRIGGER);
+#endif
 }

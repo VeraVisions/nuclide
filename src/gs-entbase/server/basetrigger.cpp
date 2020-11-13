@@ -191,7 +191,10 @@ CBaseTrigger::InitBrushTrigger(void)
 	SetModel(m_oldModel);
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_BSPTRIGGER);
+
+#ifdef GS_RENDERFX
 	SetRenderMode(RM_TRIGGER);
+#endif
 }
 
 void

@@ -357,11 +357,20 @@ CBaseEntity::SpawnKey(string strKey, string strValue)
 		target = strValue;
 		break;
 	case "color":
+#ifdef GS_RENDERFX
 		m_vecRenderColor = stov(strValue);
+#else
+		colormod = stov(strValue);
+#endif
 		break;
 	case "alpha":
+#ifdef GS_RENDERFX
 		m_flRenderAmt = stof(strValue);
+#else
+		alpha = stof(strValue);
+#endif
 		break;
+#ifdef GS_RENDERFX
 	case "renderamt":
 		m_flRenderAmt = stof(strValue) / 255;
 		break;
@@ -374,6 +383,7 @@ CBaseEntity::SpawnKey(string strKey, string strValue)
 	case "renderfx":
 		m_iRenderFX = stoi(strValue);
 		break;
+#endif
 	case "parentname":
 		m_parent = strValue;
 		break;
@@ -412,12 +422,16 @@ CBaseEntity::CBaseEntity(void)
 	m_oldSolid = solid;
 	m_oldHealth = health;
 	m_oldModel = Util_FixModel(model);
+
+#ifdef GS_RENDERFX
 	m_oldiRenderFX = m_iRenderFX;
 	m_oldiRenderMode = m_iRenderMode;
 	m_oldvecRenderColor = m_vecRenderColor;
 	m_oldflRenderAmt = m_flRenderAmt;
 	m_oldvecRenderColor = m_vecRenderColor;
 	m_oldflRenderAmt = m_flRenderAmt;
+#endif
+
 	m_oldstrTarget = target;
 
 	if (m_oldModel != "") {

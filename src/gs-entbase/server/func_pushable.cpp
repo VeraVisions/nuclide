@@ -27,14 +27,30 @@ This entity was introduced in Half-Life (1998).
 
 class func_pushable:func_breakable
 {
+	void(void) func_pushable;
+
+	virtual void(void) customphysics;
 	virtual void(void) touch;
 };
 
-void func_pushable::touch(void)
+void
+func_pushable::customphysics(void)
+{
+	tracebox(origin, mins, maxs, origin + (velocity * frametime), MOVE_NORMAL, this);
+}
+
+void
+func_pushable::touch(void)
 {
 	if (other.movetype == MOVETYPE_WALK) {
 		
 	}
 	
 	velocity = other.velocity * 0.25;
+}
+
+void
+func_pushable::func_pushable(void)
+{
+	func_breakable::func_breakable();
 }

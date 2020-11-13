@@ -65,7 +65,13 @@ FX_Blood(vector pos, vector color)
 	eBlood.maxframe = modelframecount(eBlood.modelindex);
 	eBlood.loops = 0;
 	eBlood.scale = 1.0f;
+
+#ifdef GS_RENDERFX
 	eBlood.m_vecRenderColor = color;
+#else
+	eBlood.colormod = color;
+#endif
+
 	eBlood.framerate = 20;
 	eBlood.nextthink = time + 0.05f;
 
@@ -79,7 +85,12 @@ FX_Blood(vector pos, vector color)
 		ePart.drawmask = MASK_ENGINE;
 		ePart.maxframe = modelframecount(ePart.modelindex);
 		ePart.loops = 0;
+
+#ifdef GS_RENDERFX
 		ePart.m_vecRenderColor = color;
+#else
+		ePart.colormod = color;
+#endif
 		ePart.framerate = 15;
 		ePart.nextthink = time + 0.1f;
 		ePart.velocity = randomvec() * 64;

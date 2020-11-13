@@ -63,7 +63,10 @@ func_tankcontrols::Respawn(void)
 	SetSolid(SOLID_BSP);
 	SetModel(m_oldModel);
 	SetOrigin(m_oldOrigin);
+
+#ifdef GS_RENDERFX
 	SetRenderMode(RM_TRIGGER);
+#endif
 }
 
 void
