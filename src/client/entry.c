@@ -59,6 +59,8 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	registercommand("-showscores");
 	registercommand("buildcubemaps");
 	registercommand("_fnchat_msg");
+	registercommand("dev_sunpos");
+	registercommand("dev_measure");
 
 	precache_model("sprites/640_pain.spr");
 	precache_model("sprites/crosshairs.spr");
@@ -614,6 +616,27 @@ CSQC_ConsoleCommand(string sCMD)
 	tokenize(sCMD);
 
 	switch (argv(0)) {
+	case "dev_sunpos":
+		vector sunpos;
+		vector sunang;
+		vector a = getproperty(VF_ANGLES);
+		makevectors(getproperty(VF_ANGLES));
+		sunpos = v_forward * -1;
+		sunang = vectoangles(sunpos);
+		localcmd(sprintf("r_shadows_throwdirection %v\n", sunpos));
+		print(sprintf("env_sun: pitch: %d; angle: %d\n", sunang[0], sunang[1]));
+		print(sprintf("light_environment: pitch %d; sunangle %d\n", a[0], a[1]));
+		break;
+	case "dev_measure":
+		static vector measurepos;
+		if (!vlen(measurepos)) {
+			measurepos = getproperty(VF_ORIGIN);
+			CSQC_Parse_CenterPrint(sprintf( "First marker set at\n%v", measurepos));
+		} else {
+			CSQC_Parse_CenterPrint(sprintf("Distance: %d\n", vlen(measurepos - getproperty(VF_ORIGIN))));
+			measurepos = [0,0,0];
+		}
+		break;
 	case "dev_sentence":
 		static CBaseEntity foo;
 		if (!foo) {
