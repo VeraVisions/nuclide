@@ -393,6 +393,9 @@ CBaseEntity::SpawnKey(string strKey, string strValue)
 	case "classname":
 	case "spawnflags":
 		break;
+	case "ignorepvs":
+		pvsflags = PVSF_IGNOREPVS;
+		break;
 	default:
 		print(sprintf("^3%s^7::SpawnKey:: Unknown key '%s' with value '%s'\n",
 		      classname, strKey, strValue));
