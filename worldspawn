@@ -1,0 +1,13 @@
+#!/bin/sh
+SCRPATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PATH="$SCRPATH"/bin:"$PATH"
+
+if [ ! -f "$SCRPATH"/bin/worldspawn ]; then
+	printf "Map editor is not present, please run build_editor.sh\n"
+	exit
+fi
+
+worldspawn
+
+
+

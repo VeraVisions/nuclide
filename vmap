@@ -1,0 +1,20 @@
+#!/bin/sh
+SCRPATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PATH="$SCRPATH"/bin:"$PATH"
+
+if [ ! -f "$SCRPATH"/bin/vmap ]; then
+	printf "Map compiler is not present, please run build_editor.sh\n"
+	exit
+fi
+
+vmap -v -custinfoparms -fs_basepath "$SCRPATH" -fs_game platform -threads 4 -samplesize 8 $*
+
+if [ ! -f "$*.prt" ]; then
+	exit
+fi
+
+vmap -vis -v -fs_basepath "$SCRPATH" -fs_game platform $*
+vmap -light -custinfoparms -fs_basepath "$SCRPATH" -v -fs_game platform -bounce 8 -fastbounce -samplesize 8 -threads 4 -shade -shadeangle 60 -patchshadows $*
+
+
+
