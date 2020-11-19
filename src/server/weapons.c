@@ -102,7 +102,7 @@ Weapons_AddItem(base_player pl, int w, int startammo)
 			value = TRUE;
 
 			/* it's new, so autoswitch? */
-			if (pl.activeweapon == 0 && autocvar_sv_forceweapondraw) {
+			if (pl.activeweapon == 0 && autocvar_sv_forceweapondraw == 1) {
 				pl.activeweapon = w;
 				Weapons_Draw();
 			} else {
@@ -119,7 +119,7 @@ Weapons_AddItem(base_player pl, int w, int startammo)
 			value = g_weapons[w].pickup(TRUE, startammo);
 
 			/* it's new, so autoswitch? */
-			if (pl.activeweapon == 0 && autocvar_sv_forceweapondraw) {
+			if (pl.activeweapon == 0 && autocvar_sv_forceweapondraw == 1) {
 				pl.activeweapon = w;
 				Weapons_Draw();
 			} else {
@@ -136,8 +136,13 @@ Weapons_AddItem(base_player pl, int w, int startammo)
 void
 Weapons_RemoveItem(base_player pl, int w)
 {
+	if (pl.activeweapon == w)
+		pl.activeweapon = WEAPON_NONE;
+
 	pl.g_items &= ~g_weapons[w].id;
-	Weapons_SwitchBest(pl);
+
+	if (autocvar_sv_forceweapondraw == 1)
+		Weapons_SwitchBest(pl);
 }
 
 void
