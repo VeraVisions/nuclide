@@ -65,8 +65,7 @@
 {
 "classname" "info_player_deathmatch"
 }
-
-// entity 5
+// entity 3
 {
 "classname" "func_button"
 "target" "foobar2"
@@ -80,7 +79,7 @@
 ( 48 -80 64 ) ( 48 -40 64 ) ( 48 -80 72 ) next/rusty7 [ 0 1 0 0 ] [ -0 -0 -1 0 ] -0 0.5 0.5 0 0 0
 }
 }
-// entity 6
+// entity 4
 {
 "classname" "func_button"
 "target" "foobar1"
@@ -94,24 +93,26 @@
 ( 48 112 64 ) ( 48 152 64 ) ( 48 112 72 ) next/rusty7 [ 0 1 0 0 ] [ -0 -0 -1 0 ] -0 0.5 0.5 0 0 0
 }
 }
-
+// entity 5
 {
 "classname" "point_message"
 "origin" "-160.000000 128.000000 32.000000"
 "message" "White dynamic light with no style pattern."
 }
+// entity 6
 {
 "classname" "dynamic_light"
 "origin" "-192.000000 128.000000 64.000000"
 "_light" "255 255 255"
 "brightness" "250"
 }
-
+// entity 7
 {
 "classname" "point_message"
 "origin" "-160.000000 -64.000000 32.000000"
 "message" "Small blinking yellow dynamic light."
 }
+// entity 8
 {
 "classname" "dynamic_light"
 "origin" "-192.000000 -64.000000 64.000000"
@@ -119,12 +120,13 @@
 "_light" "255 255 128"
 "brightness" "150"
 }
-
+// entity 9
 {
 "classname" "point_message"
 "origin" "120.000000 128.000000 32.000000"
 "message" "Toggable white flickering dynamic light."
 }
+// entity 10
 {
 "classname" "dynamic_light"
 "origin" "192.000000 128.000000 64.000000"
@@ -133,12 +135,13 @@
 "_light" "255 255 255"
 "brightness" "250"
 }
-
+// entity 11
 {
 "classname" "point_message"
 "origin" "120.000000 -64.000000 32.000000"
 "message" "Toggable red slow pulsing dynamic light."
 }
+// entity 12
 {
 "classname" "dynamic_light"
 "origin" "192.000000 -128.000000 64.000000"
@@ -146,4 +149,17 @@
 "style" "2"
 "_light" "255 0 0"
 "brightness" "250"
+}
+// entity 13
+{
+"classname" "prop_dynamic"
+"origin" "160.000000 0.000000 0.000000"
+"model" "models/logos/visions.vvm"
+"angles" "0 -90 0"
+"avelocity" "0 90 0"
+}
+// entity 14
+{
+"classname" "env_cubemap"
+"origin" "0 0 0"
 }

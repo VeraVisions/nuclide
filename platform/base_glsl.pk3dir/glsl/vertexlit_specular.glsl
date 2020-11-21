@@ -33,6 +33,23 @@ varying mat3 invsurface;
 
 #ifdef VERTEX_SHADER
 	#include "sys/skeletal.h"
+
+#ifdef CHROME
+	/* Rotate Light Vector */
+	vec3 rlv(vec3 axis, vec3 origin, vec3 lightpoint)
+	{
+		vec3 offs;
+		vec3 result;
+		offs[0] = lightpoint[0] - origin[0];
+		offs[1] = lightpoint[1] - origin[1];
+		offs[2] = lightpoint[2] - origin[2];
+		result[0] = dot(offs[0], axis[0]);
+		result[1] = dot(offs[1], axis[1]);
+		result[2] = dot(offs[2], axis[2]);
+		return result;
+	}
+#endif
+
 	void main ()
 	{
 		vec3 n, s, t, w;
@@ -41,7 +58,20 @@ varying mat3 invsurface;
 		n = normalize(n);
 		s = normalize(s);
 		t = normalize(t);
+
+		#ifdef CHROME
+		vec3 rorg = rlv(vec3(0,0,0), w, e_eyepos);
+		vec3 viewc = normalize(e_eyepos - w);
+		float d = dot(n, viewc);
+		vec3 reflected;
+		reflected.x = n.x * 2.0 * d - viewc.x;
+		reflected.y = n.y * 2.0 * d - viewc.y;
+		reflected.z = n.z * 2.0 * d - viewc.z;
+		tex_c.x = 0.5 + reflected.y * 0.5;
+		tex_c.y = 0.5 - reflected.z * 0.5;
+		#else
 		tex_c = v_texcoord;
+		#endif
 
 		/* normalmap */
 		invsurface = mat3(s, t, n);
@@ -72,7 +102,6 @@ varying mat3 invsurface;
 	void main ()
 	{
 		vec4 fb_f = texture2D(s_fullbright, tex_c);
-		vec3 new_e_light_dir = vec3(cos(e_time), sin(e_time), 0);
 		vec3 light;
 
 	#if r_skipDiffuse==0

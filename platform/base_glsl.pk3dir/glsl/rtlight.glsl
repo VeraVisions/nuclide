@@ -171,7 +171,7 @@ varying vec3 lightvector;
 	/* take existing specular map into account to appoint a new glossy light */
 	#ifdef SPECULAR
 		vec3 halfdir = normalize(normalize(eyevector) + nl);
-		float spec = pow(max(dot(halfdir, normal_f), 0.0), FTE_SPECULAR_EXPONENT * gloss) * float(SPECMUL);
+		float spec = pow(max(dot(halfdir, normal_f), 0.0), gloss);
 		diff += l_lightcolourscale.z * spec * specrgb;
 	#endif
 

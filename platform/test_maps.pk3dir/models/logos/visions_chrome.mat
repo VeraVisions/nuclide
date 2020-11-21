@@ -1,0 +1,6 @@
+// Vera Visions Material
+{
+	program vertexlit_specular#CHROME
+	diffusemap models/logos/visions_chrome.ktx
+	fullbrightmap models/logos/visions_chrome.ktx
+}

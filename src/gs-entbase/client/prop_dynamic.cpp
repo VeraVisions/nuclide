@@ -32,9 +32,11 @@ class prop_dynamic:CBaseEntity
 
 	virtual void(void) Init;
 	virtual void(string, string) SpawnKey;
+	virtual float(void) predraw;
 };
 
-void prop_dynamic::SpawnKey(string strField, string strKey)
+void
+prop_dynamic::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
 		case "modelscale":
@@ -43,12 +45,22 @@ void prop_dynamic::SpawnKey(string strField, string strKey)
 		case "angle":
 			angles[1] = stof(strKey);
 			break;
+		case "avelocity":
+			avelocity = stov(strKey);
+			break;
 		default:
 			CBaseEntity::SpawnKey(strField, strKey);
 	}
 }
+float
+prop_dynamic::predraw(void)
+{
+	angles += avelocity * frametime;
+	return CBaseEntity::predraw();
+}
 
-void prop_dynamic::Init(void)
+void
+prop_dynamic::Init(void)
 {
 	CBaseEntity::Init();
 
@@ -61,7 +73,9 @@ void prop_dynamic::Init(void)
 	drawmask = MASK_ENGINE;
 }
 
-void prop_dynamic::prop_dynamic(void)
+void
+prop_dynamic::prop_dynamic(void)
 {
 	scale = 1.0f;
+	Init();
 }
