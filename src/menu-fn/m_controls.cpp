@@ -88,6 +88,30 @@ ctrl_sbcontrols_changed(int val)
 }
 
 void
+ctrl_btndefaults(void)
+{
+	/* Parse the action list */
+	string sTemp;
+	filestream fs_def = fopen("gfx/shell/kb_def.lst", FILE_READ);
+
+	if (fs_def >= 0) {
+		localcmd("unbindall\n");
+
+		while ((sTemp = fgets(fs_def))) {
+			/* act upon valid entries */
+			if (tokenize_console(sTemp) == 2)
+				if (argv(1) == "+voicerecord")
+					localcmd(sprintf("bind \"%s\" \"+voip\"\n", argv(0)));
+				else
+					localcmd(sprintf("bind \"%s\" \"%s\"\n", argv(0), argv(1)));
+		}
+		fclose(fs_def);
+	} else {
+		error("Cannot parse gfx/shell/kb_def.lst!");
+	}
+}
+
+void
 ctrl_lb_clicked(int val)
 {
 	static float clicked_last;
@@ -156,7 +180,7 @@ menu_controls_init(void)
 
 	ctrl_btnDefaults = spawn(CMainButton);
 	ctrl_btnDefaults.SetImage(BTN_DEFAULTS);
-	//ctrl_btnDefaults.SetExecute(ctrl_btnok_start);
+	ctrl_btnDefaults.SetExecute(ctrl_btndefaults);
 	ctrl_btnDefaults.SetPos(50,140);
 	Widget_Add(fn_controls, ctrl_btnDefaults);
 
