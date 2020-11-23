@@ -32,12 +32,25 @@ void StartFrame(void)
 
 void ClientConnect(float csqc_active)
 {
+	int playercount = 0;
+
 	/* make sure you never change the classname. ever. */
 	if (self.classname != "player") {
 		spawnfunc_player();
 	}
 
 	g_grMode.PlayerConnect((base_player)self);
+	for (entity a = world; (a = find(a, ::classname, "player"));)
+		playercount++;
+
+	/* we're the only one. respawn all entities */	
+	if (playercount == 1) {
+		for (entity a = world; (a = findfloat(a, ::identity, 1));) {
+			CBaseEntity caw = (CBaseEntity)a;
+			caw.Respawn();
+		}
+		Nodes_Init();
+	}
 }
 
 void ClientDisconnect(void)

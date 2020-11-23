@@ -119,6 +119,9 @@ CBaseMonster::SeeThink(void)
 void
 CBaseMonster::AttackThink(void)
 {
+	if (m_iSequenceState != SEQUENCESTATE_NONE)
+		return;
+
 	if (m_flAttackThink > time) {
 		return;
 	}
@@ -262,9 +265,23 @@ CBaseMonster::CheckRoute(void)
 	flDist = floor(vlen(evenpos - origin));
 
 	if (flDist < 8) {
-		dprint(sprintf("^2CBaseMonster::^3CheckRoute^7: %s reached node\n", this.targetname));
+		dprint(sprintf("^2CBaseMonster::^3CheckRoute^7: " \
+			"%s reached node\n", this.targetname));
 		m_iCurNode--;
 		velocity = [0,0,0]; /* clamp friction */
+
+		/* we've still traveling and from this node we may be able to walk
+		 * directly to our end-destination */
+		if (m_iCurNode > -1) {
+			tracebox(origin, mins, maxs, m_vecLastNode, MOVE_NORMAL, this);
+
+			/* can we walk directly to our target destination? */
+			if (trace_fraction == 1.0) {
+				dprint("^2CBaseMonster::^3CheckRoute^7: " \
+					"Walking directly to last node\n");
+				m_iCurNode = -1;
+			}
+		}
 	}
 
 	if (m_iCurNode < -1) {
@@ -326,7 +343,7 @@ CBaseMonster::WalkRoute(void)
 	} else if (m_iMState == MONSTER_CHASING) {
 		/* we've got 'em in our sights, just need to walk closer */
 		endangles = vectoangles(m_eEnemy.origin - origin);
-		input_movevalues = [140, 0, 0];
+		input_movevalues = [m_flChaseSpeed, 0, 0];
 		m_vecTurnAngle[1] = endangles[1];
 	} else {
 		return;
@@ -335,6 +352,7 @@ CBaseMonster::WalkRoute(void)
 	/* functional */
 	input_angles[1] = v_angle[1] = m_vecTurnAngle[1];
 
+#if 1
 	/* cosmetic */
 	vector new_ang;
 	vector old_ang;
@@ -342,12 +360,13 @@ CBaseMonster::WalkRoute(void)
 	makevectors(m_vecTurnAngle);
 	new_ang = v_forward;
 	makevectors(angles);
-	old_ang = v_forward;	
+	old_ang = v_forward;
 
 	tmp[0] = Math_Lerp(old_ang[0], new_ang[0], frametime * 5);
 	tmp[1] = Math_Lerp(old_ang[1], new_ang[1], frametime * 5);
 	tmp[2] = Math_Lerp(old_ang[2], new_ang[2], frametime * 5);
 	angles = vectoangles(tmp);
+#endif
 }
 
 void
@@ -429,8 +448,11 @@ CBaseMonster::Physics(void)
 		input_angles = v_angle = angles = m_vecSequenceAngle;
 		SetFrame(m_flSequenceEnd);
 	} else if (movetype == MOVETYPE_WALK) {
-		SeeThink();
-		AttackThink();
+		if (m_iSequenceState == SEQUENCESTATE_NONE) {
+			SeeThink();
+			AttackThink();
+		}
+
 		CheckRoute();
 		WalkRoute();
 		runstandardplayerphysics(this);
@@ -568,4 +590,5 @@ CBaseMonster::CBaseMonster(void)
 
 	/* give us a 65 degree view cone */
 	m_flFOV = 1.0 / 65;
+	m_flChaseSpeed = 140;
 }

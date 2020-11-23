@@ -318,7 +318,6 @@ class monster_scientist:CBaseNPC
 	virtual void(void) touch;
 	virtual void(void) Hide;
 	virtual void(void) Respawn;
-	virtual void(void) PlayerUse;
 	virtual void(void) Pain;
 	virtual void(void) Death;
 	virtual void(void) Physics;
@@ -532,32 +531,6 @@ void monster_scientist::touch(void)
 	}
 }
 
-void monster_scientist::PlayerUse(void)
-{
-	int r;
-
-	if (m_iFlags & SCIF_FEAR) {
-		return;
-	}
-	if ((m_eUser == world)) {
-		if (!(m_iFlags & SCIF_USED)) {
-			m_iFlags |= SCIF_USED;
-		}
-
-		r = floor(random(0,sci_snduse.length));
-		Speak(sci_snduse[r]);
-
-		m_eUser = eActivator;
-		m_eRescuer = m_eUser;
-		m_vecLastUserPos = m_eUser.origin;
-	} else {
-		r = floor(random(0,sci_snduseno.length));
-		Speak(sci_snduseno[r]);
-
-		m_eUser = world;
-	}
-}
-
 void monster_scientist::Pain(void)
 {
 	if (style == MONSTER_DEAD) {
@@ -653,7 +626,7 @@ void monster_scientist::Respawn(void)
 	style = MONSTER_IDLE;
 	health = 50;
 	velocity = [0,0,0];
-	m_iFlags = 0x0;
+	m_iFlags = MONSTER_CANFOLLOW;
 	m_eUser = world;
 	customphysics = Physics;
 
@@ -700,7 +673,7 @@ void monster_scientist::monster_scientist(void)
 	}
 
 	model = "models/scientist.mdl";
-	CBaseEntity::CBaseEntity();
+	CBaseNPC::CBaseNPC();
 	precache_model(m_oldModel);
 
 	if (m_iBody == -1) {

@@ -212,22 +212,8 @@ HLGameRules::PlayerPostFrame(base_player pp)
 void
 HLGameRules::PlayerConnect(base_player pl)
 {
-	entity a;
-	bprint(PRINT_HIGH, sprintf("%s connected\n", pl.netname));
-
-	int playercount = 0;
-	for (a = world; (a = find(a, ::classname, "player"));) {
-		playercount++;
-	}
-
-	/* we're the first. respawn all entities? */	
-	if (playercount == 0) {
-		for (a = world; (a = findfloat(a, ::identity, 1));) {
-			CBaseEntity caw = (CBaseEntity)a;
-			caw.Respawn();
-		}
-		Nodes_Init();
-	}
+	if (Plugin_PlayerConnect(pl) == FALSE)
+		bprint(PRINT_HIGH, sprintf("%s connected\n", pl.netname));
 }
 
 void

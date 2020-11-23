@@ -76,6 +76,8 @@ class CBaseMonster:CBaseEntity
 	vector base_maxs;
 	int base_health;
 
+	float m_flChaseSpeed;
+
 	/* sequences */
 	string m_strRouteEnded;
 	int m_iSequenceRemove;

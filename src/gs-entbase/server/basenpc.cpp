@@ -268,7 +268,7 @@ CBaseNPC::FollowPlayer(void)
 	if (vlen(m_eFollowingChain.origin - origin) > 1024) {
 		m_eFollowing = world;
 	} else if (vlen(m_eFollowingChain.origin - origin) > 64) {
-		input_movevalues[0] = 240;
+		input_movevalues[0] = m_flChaseSpeed;
 
 		other = world;
 		traceline(origin, m_eFollowingChain.origin, MOVE_OTHERONLY, this);
@@ -363,7 +363,7 @@ CBaseNPC::Physics(void)
 	input_angles = v_angle;
 
 	if (m_iSequenceState != SEQUENCESTATE_NONE) {
-		m_eFollowing = __NULL__;
+		m_eEnemy = m_eFollowing = __NULL__;
 	}
 
 	/* override whatever we did above with this */
@@ -372,21 +372,23 @@ CBaseNPC::Physics(void)
 		SetFrame(m_flSequenceEnd);
 	} else {
 		if (style != MONSTER_DEAD) {
-			SeeThink();
-			AttackThink();
-			TalkPlayerGreet();
-			FollowChain();
+			if (m_iSequenceState == SEQUENCESTATE_NONE) {
+				SeeThink();
+				AttackThink();
+				TalkPlayerGreet();
+				FollowChain();
 
-			if (m_eFollowing != world) {
-				FollowPlayer();
-				input_angles = angles = v_angle;
-			} else if (m_iFlags & MONSTER_FEAR) {
-				PanicFrame();
-			} else {
-				if (random() < 0.5) {
-					TalkPlayerAsk();
+				if (m_eFollowing != world) {
+					FollowPlayer();
+					input_angles = angles = v_angle;
+				} else if (m_iFlags & MONSTER_FEAR) {
+					PanicFrame();
 				} else {
-					TalkPlayerIdle();
+					if (random() < 0.5) {
+						TalkPlayerAsk();
+					} else {
+						TalkPlayerIdle();
+					}
 				}
 			}
 
