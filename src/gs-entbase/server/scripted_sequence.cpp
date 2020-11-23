@@ -196,6 +196,11 @@ scripted_sequence::RunOnEntity(entity targ)
 		f.think = CBaseMonster::FreeStateMoved;
 
 	dprint(sprintf("\tEnding: %f\n", f.nextthink));
+
+	/* make sure we're forgetting about enemies and attack states in sequence */
+	f.m_eEnemy = __NULL__;
+	f.m_iMState = MONSTER_IDLE;
+	
 }
 
 void
