@@ -164,6 +164,20 @@ ambient_generic::SpawnKey(string strKey, string strValue)
 	case "pitch":
 		m_flPitch = stof(strValue);
 		break;
+	/* TODO: currently unimplemented */
+	case "preset":
+	case "volstart":
+	case "fadein":
+	case "fadeout":
+	case "pitchstart":
+	case "spinup":
+	case "spindown":
+	case "lfotype":
+	case "lforate":
+	case "lfomodpitch":
+	case "lfomodvol":
+	case "cspinup":
+		break;
 	default:
 		CBaseTrigger::SpawnKey(strKey, strValue);
 		break;
