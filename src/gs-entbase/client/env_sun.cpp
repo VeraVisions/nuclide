@@ -127,7 +127,7 @@ env_sun::Initialized(void)
 {
 	makevectors(m_vecLensPos);
 	m_vecLensPos = vectoangles(v_forward);
-	localcmd(sprintf("r_shadows_throwdirection %v\n", v_forward * -1));
+	localcmd(sprintf("r_shadows_throwdirection %v\n", v_forward));
 }
 
 void
