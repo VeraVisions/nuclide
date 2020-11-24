@@ -14,9 +14,62 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED info_player_start (1 1 1) (-16 -16 -36) (16 16 36)
+"targetname"    Name
+
+Player spawn position for single-player games.
+This entity is also used in Counter-Strike (2000) and its beta versions to mark
+spawn-positions for the Counter-Terrorist team.
+
+In order for a player to spawn here, the game needs to be in singleplayer mode
+or multiplayer coop (if info_player_coop spawn points don't exist).
+
+Mods may choose to have additional fields that are not documented here as part
+of the entity, keep that in mind.
+
+Trivia:
+This entity was introduced in Quake (1996).
+*/
+
+/*QUAKED info_player_deathmatch (1 1 1) (-16 -16 -36) (16 16 36)
+"targetname"    Name
+
+Player spawn position for deathmatch games.
+This entity is also used in Counter-Strike (2000) and its beta versions to mark
+spawn-positions for the Terrorist team.
+
+In order for a player to spawn here, the game needs to be in a compatible
+multiplayer mode. This (with the exception of Counter-Strike) excludes team
+based modes.
+
+Mods may choose to have additional fields that are not documented here as part
+of the entity, keep that in mind.
+
+Trivia:
+This entity was introduced in Quake (1996).
+*/
+
+/*QUAKED info_player_coop (1 1 1) (-16 -16 -36) (16 16 36)
+"targetname"    Name
+
+Player spawn position for cooperative games.
+
+In order for a player to spawn here, the game needs to take place on a map
+for singleplayer with cooperative multiplayer enabled.
+If this entity isn't present on such a mode, info_player_start will be the
+fallback spawn-point.
+
+Mods may choose to have additional fields that are not documented here as part
+of the entity, keep that in mind.
+
+Trivia:
+This entity was introduced in Quake (1996).
+*/
+
 CLASSEXPORT(info_node, info_notnull)
 CLASSEXPORT(info_target, info_notnull)
 CLASSEXPORT(env_sound, info_null)
+CLASSEXPORT(env_sun, info_null)
 CLASSEXPORT(info_intermission, info_null)
 
 void

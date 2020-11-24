@@ -91,14 +91,10 @@ CBaseNPC::TalkPlayerIdle(void)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE)
 		return;
-
-	if (spawnflags & MSF_PREDISASTER) {
+	if (spawnflags & MSF_PREDISASTER)
 		return;
-	}
-
-	if (m_flNextSentence > time) {
+	if (m_flNextSentence > time)
 		return;
-	}
 
 	for (entity p = world; (p = find(p, ::classname, "player"));) {
 		/* Find players in a specific radius */
@@ -120,14 +116,10 @@ CBaseNPC::TalkPlayerAsk(void)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE)
 		return;
-
-	if (spawnflags & MSF_PREDISASTER) {
+	if (spawnflags & MSF_PREDISASTER)
 		return;
-	}
-
-	if (m_flNextSentence > time) {
+	if (m_flNextSentence > time)
 		return;
-	}
 
 	for (entity p = world; (p = find(p, ::classname, "player"));) {
 		/* Find players in a specific radius */
@@ -362,8 +354,10 @@ CBaseNPC::Physics(void)
 	input_timelength = frametime;
 	input_angles = v_angle;
 
+	/* make sure we're forgetting about enemies and attack states in sequence */
 	if (m_iSequenceState != SEQUENCESTATE_NONE) {
-		m_eEnemy = m_eFollowing = __NULL__;
+		m_eEnemy = __NULL__;
+		m_iMState = MONSTER_IDLE;
 	}
 
 	/* override whatever we did above with this */
@@ -433,7 +427,8 @@ CBaseNPC::Physics(void)
 		frame1time, ModelEvent);
 }
 
-void CBaseNPC::Respawn(void)
+void
+CBaseNPC::Respawn(void)
 {
 	CBaseMonster::Respawn();
 	m_eFollowing = world;
