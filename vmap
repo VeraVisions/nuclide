@@ -7,14 +7,7 @@ if [ ! -f "$SCRPATH"/bin/vmap ]; then
 	exit
 fi
 
+set -e
 "$SCRPATH"/bin/vmap -v -custinfoparms -fs_basepath "$SCRPATH" -fs_game platform -threads 4 -samplesize 8 $*
-
-if [ ! -f "$*.prt" ]; then
-	exit
-fi
-
 "$SCRPATH"/bin/vmap -vis -v -fs_basepath "$SCRPATH" -fs_game platform $*
 "$SCRPATH"/bin/vmap -light -custinfoparms -fs_basepath "$SCRPATH" -v -fs_game platform -bounce 8 -fastbounce -samplesize 8 -threads 4 -shade -shadeangle 60 -patchshadows $*
-
-
-
