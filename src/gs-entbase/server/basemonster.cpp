@@ -585,6 +585,23 @@ CBaseMonster::Respawn(void)
 }
 
 void
+CBaseMonster::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	/* The legacy GoldSrc trigger condition system */
+	case "TriggerCondition":
+		m_iTriggerCondition = stoi(strValue);
+		break;
+	case "TriggerTarget":
+		m_strTriggerTarget = strValue;
+		break;
+	default:
+		CBaseEntity::SpawnKey(strKey, strValue);
+		break;
+	}
+}
+
+void
 CBaseMonster::CBaseMonster(void)
 {
 	/* FIXME: Put this somewhere else? */

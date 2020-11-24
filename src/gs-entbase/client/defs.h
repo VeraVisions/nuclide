@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "baseentity.h"
+#include "../shared/baseentity.h"
 
 vector g_vecSunDir;
 

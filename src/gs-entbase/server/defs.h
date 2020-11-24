@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "baseentity.h"
+#include "../shared/baseentity.h"
 #include "basetrigger.h"
 #include "basemonster.h"
 #include "basenpc.h"

@@ -16,8 +16,32 @@
 
 class CBaseEntity
 {
-	string m_oldstrTarget; /* needed due to trigger_changetarget */
 	int m_iBody;
+
+#ifdef CLIENT
+	float m_flSentenceTime;
+	sound_t *m_pSentenceQue;
+	int m_iSentenceCount;
+	int m_iSentencePos;
+
+	/* model events */
+	float m_flBaseTime;
+
+	void(void) CBaseEntity;
+	virtual void(void) Init;
+	virtual void(void) Initialized;
+	virtual void(string, string) SpawnKey;
+	virtual void(string) Sentence;
+	virtual void(void) ProcessWordQue;
+	virtual void(float flChanged) ReceiveEntity;
+	virtual float(void) predraw;
+	virtual void(void) postdraw;
+	virtual void(void) customphysics;
+	virtual void(float, int, string) ModelEvent;
+#endif
+
+#ifdef SERVER
+	string m_oldstrTarget; /* needed due to trigger_changetarget */
 
 	/* respawn */
 	string m_oldModel;
@@ -29,19 +53,6 @@ class CBaseEntity
 	/* keep track of these variables */
 	vector net_origin;
 	vector net_angles;
-
-#ifdef GS_RENDERFX
-	int m_iRenderFX;
-	float m_iRenderMode;
-	float m_flRenderAmt;
-	vector m_vecRenderColor;
-
-	/* respawn */
-	int m_oldiRenderFX;
-	float m_oldiRenderMode;
-	float m_oldflRenderAmt;
-	vector m_oldvecRenderColor;
-#endif
 
 	string m_parent;
 	
@@ -67,11 +78,27 @@ class CBaseEntity
 	virtual void(vector, vector) SetSize;
 	virtual void(string, string) SpawnKey;
 	virtual void(void) SpawnInit;
+#endif
 
 #ifdef GS_RENDERFX
-	virtual void(int) SetRenderFX;
-	virtual void(float) SetRenderMode;
-	virtual void(float) SetRenderAmt;
-	virtual void(vector) SetRenderColor;
+	int m_iRenderFX;
+	float m_iRenderMode;
+	float m_flRenderAmt;
+	vector m_vecRenderColor;
+
+	#ifdef CLIENT
+		virtual void(void) RenderFXPass;
+	#else
+		/* respawn */
+		int m_oldiRenderFX;
+		float m_oldiRenderMode;
+		float m_oldflRenderAmt;
+		vector m_oldvecRenderColor;
+
+		virtual void(int) SetRenderFX;
+		virtual void(float) SetRenderMode;
+		virtual void(float) SetRenderAmt;
+		virtual void(vector) SetRenderColor;
+	#endif
 #endif
 };

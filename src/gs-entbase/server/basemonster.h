@@ -14,34 +14,16 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/* if this is changed, it needs to be changed in the engine (server/sv_move.c)
+ * as well. */
 typedef struct
 {
 	vector m_vecDest;
 	int m_iFlags;
 } nodeslist_t;
 
-/* movement states */
-enum
-{
-	MONSTER_IDLE,
-	MONSTER_FOLLOWING,
-	MONSTER_CHASING,
-	MONSTER_AIMING,
-	MONSTER_DEAD,
-	MONSTER_GIBBED
-};
-
-/* scripted sequence states */
-enum
-{
-	SEQUENCESTATE_NONE,
-	SEQUENCESTATE_IDLE,
-	SEQUENCESTATE_ACTIVE,
-	SEQUENCESTATE_ENDING
-};
-
-/* monster flags */
-enumflags
+/* monster flags, these are defined by the level designers */
+typedef enumflags
 {
 	MSF_WAITTILLSEEN,
 	MSF_GAG,
@@ -54,17 +36,59 @@ enumflags
 	MSF_PREDISASTER,
 	MSF_FADECORPSE,
 	MSF_MULTIPLAYER
-};
+} monsterFlag_t;
+
+/* movement states */
+typedef enum
+{
+	MONSTER_IDLE,
+	MONSTER_FOLLOWING,
+	MONSTER_CHASING,
+	MONSTER_AIMING,
+	MONSTER_DEAD,
+	MONSTER_GIBBED
+} monsterState_t;
+
+/* scripted sequence states */
+typedef enum
+{
+	SEQUENCESTATE_NONE,
+	SEQUENCESTATE_IDLE,
+	SEQUENCESTATE_ACTIVE,
+	SEQUENCESTATE_ENDING
+} sequenceState_t;
 
 /* alliance state */
-enum
+typedef enum
 {
 	MAL_FRIEND, /* friendly towards the player */
 	MAL_ENEMY,  /* unfriendly towards the player */
 	MAL_ALIEN,  /* unfriendly towards anyone but themselves */
 	MAL_ROGUE   /* no allies, not even amongst themselves */
-};
+} allianceState_t;
 
+/* These numerations involve the m_iTriggerCondition attribute.
+ * Basically these conditions are being checked and triggered depending on what
+ * it's set to. If any of those checks are successful, we trigger our target
+ * under the m_strTriggerTarget attribute. */
+typedef enum
+{
+	MTRIG_NONE,					/* nothing */
+	MTRIG_SEEPLAYER_ANGRY,		/* we see an enemy player, that we want to harm */
+	MTRIG_PAIN,					/* taken damage */ 
+	MTRIG_HALFHEALTH,			/* lost half of our base_health */
+	MTRIG_DEATH,				/* we have died. */
+	MTRIG_SQUADMEMBERDEAD,		/* a squad member died */
+	MTRIG_SQUADLEADERDEAD,		/* the squad leader died */
+	MTRIG_HEARNOISE,			/* we hear some noise around the world. */
+	MTRIG_HEARENEMYPLAYER,		/* we hear a player we are enemies with */
+	MTRIG_HEARWEAPONS,			/* we hear weapons being fired */
+	MTRIG_SEEPLAYER,			/* we see a player, don't have to be angry at him. */
+	MTRIG_SEEPLAYER_RELAXED,	/* we see a player and we're currently attacking anything */
+} triggerCondition_t;
+
+/* FIXME: I'd like to move this into CBaseMonster, but our current IsFriend()
+ * check is currently only checking on a .takedamage basis. */
 .int m_iAlliance;
 
 class CBaseMonster:CBaseEntity
@@ -86,6 +110,9 @@ class CBaseMonster:CBaseEntity
 	float m_flSequenceSpeed;
 	vector m_vecSequenceAngle;
 	vector m_vecTurnAngle;
+
+	int m_iTriggerCondition;
+	string m_strTriggerTarget;
 
 	/* model events */
 	float m_flBaseTime;
@@ -115,6 +142,7 @@ class CBaseMonster:CBaseEntity
 	virtual void(void) Gib;
 	virtual void(string) Sound;
 	virtual void(float, int, string) ModelEvent;
+	virtual void(string, string) SpawnKey;
 
 	/* see/hear subsystem */
 	float m_flSeeTime;
