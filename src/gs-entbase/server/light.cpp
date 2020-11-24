@@ -116,6 +116,13 @@ light::SpawnKey(string strKey, string strValue)
 		m_flStyle = stof(strValue);
 		style = __NULL__;
 		break;
+	/* level-compiler keys we don't really use right now */
+	case "_cone":
+	case "_cone2":
+	case "_sky":
+	case "pitch":
+	case "_light":
+		break;
 	default:
 		CBaseTrigger::SpawnKey(strKey, strValue);
 	}
