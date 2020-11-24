@@ -619,13 +619,11 @@ CSQC_ConsoleCommand(string sCMD)
 	case "dev_sunpos":
 		vector sunpos;
 		vector sunang;
-		vector a = getproperty(VF_ANGLES);
 		makevectors(getproperty(VF_ANGLES));
 		sunpos = v_forward * -1;
 		sunang = vectoangles(sunpos);
 		localcmd(sprintf("r_shadows_throwdirection %v\n", sunpos));
-		print(sprintf("env_sun: pitch: %d; angle: %d\n", sunang[0], sunang[1]));
-		print(sprintf("light_environment: pitch %d; sunangle %d\n", a[0], a[1]));
+		print(sprintf("env_sun: pitch: %d; angle: %d\n", -sunang[0], sunang[1]));
 		break;
 	case "dev_measure":
 		static vector measurepos;

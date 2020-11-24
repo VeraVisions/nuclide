@@ -38,7 +38,7 @@ ctrl_btnadvanced_start(void)
 		g_menupage = PAGE_ADVANCEDCONTROLS;
 	}
 
-	localsound("../media/launch_dnmenu1.wav");			
+	localsound("../media/launch_dnmenu1.wav");
 	header.SetStartEndPos(50,172,45,45);
 	header.SetStartEndSize(156,26,460,80);
 	header.m_lerp = 0.0f;

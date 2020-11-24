@@ -20,6 +20,7 @@ int trace_surfaceflagsi;
 "targetname"    Name
 "pitch"         Sun glow pitch.
 "angle"         Sun glow angle.
+"use_angles"    Use the 'angles' yaw value instead of the one from 'angle'.
 
 STUB!
 
@@ -47,6 +48,7 @@ class env_sun:CBaseEntity
 {
 	vector m_vecLensPos;
 	float m_flLensAlpha;
+	int m_iUseAngles;
 
 	void(void) env_sun;
 	virtual void(void) Init;
@@ -66,7 +68,17 @@ env_sun::predraw(void)
 void
 env_sun::postdraw(void)
 {
-	makevectors(m_vecLensPos);
+	if (!m_iUseAngles)
+		makevectors(m_vecLensPos);
+	else {
+		vector ang;
+		ang = m_vecLensPos;
+		ang[1] = angles[1];
+		makevectors(ang);
+	}
+
+	v_forward *= -1;
+
 	vector lens_pos = getproperty(VF_ORIGIN) + (v_forward * 16384);
 	vector lens_1 = project(lens_pos) - (FLARE_SIZE / 2);
 
@@ -115,6 +127,7 @@ env_sun::Initialized(void)
 {
 	makevectors(m_vecLensPos);
 	m_vecLensPos = vectoangles(v_forward);
+	localcmd(sprintf("r_shadows_throwdirection %v\n", v_forward * -1));
 }
 
 void
@@ -124,7 +137,9 @@ env_sun::env_sun(void)
 	precache_pic("textures/sfx/flare2");
 	precache_pic("textures/sfx/flare3");
 	precache_pic("textures/sfx/flare4");
-	solid = SOLID_NOT;
+	drawmask = MASK_ENGINE;
+	setsize(this, [0,0,0], [0,0,0]);
+	setorigin(this, origin);
 	Init();
 }
 
@@ -133,10 +148,13 @@ env_sun::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
 	case "pitch":
-		m_vecLensPos[0] = stof(strKey);
+		m_vecLensPos[0] = -stof(strKey);
 		break;
 	case "angle":
 		m_vecLensPos[1] = stof(strKey);
+		break;
+	case "use_angles":
+		m_iUseAngles = stoi(strKey);
 		break;
 	default:
 		CBaseEntity::SpawnKey(strField, strKey);
