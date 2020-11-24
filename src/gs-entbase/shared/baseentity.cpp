@@ -28,13 +28,9 @@ void
 CBaseEntity::RenderFXPass(void)
 {
 	vector vecPlayer;
-#ifdef WASTES
-	vecPlayer = [0,0,0];
-#else
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
 	vecPlayer = pSeat->m_vecPredictedOrigin;
-#endif
 
 	colormod = m_vecRenderColor;
 	alpha = m_flRenderAmt;

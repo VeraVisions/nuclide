@@ -1,9 +1,9 @@
 #!/bin/sh
 set -e
-SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-PATH="$SCRIPT_LOCATION"/bin:"$PATH"
+SCRPATH="$( cd "$( dirname $(readlink -nf $0) )" && pwd )"
+PATH="$SCRPATH"/bin:"$PATH"
 
-if [ -f "$SCRIPT_LOCATION"/bin/fteqcc ]; then
+if [ -f "$SCRPATH"/bin/fteqcc ]; then
 	cd ./src
 	make
 else

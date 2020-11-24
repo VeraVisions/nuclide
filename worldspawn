@@ -1,5 +1,5 @@
 #!/bin/sh
-SCRPATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+SCRPATH="$( cd "$( dirname $(readlink -nf $0) )" && pwd )"
 PATH="$SCRPATH"/bin:"$PATH"
 
 if [ ! -f "$SCRPATH"/bin/worldspawn ]; then
