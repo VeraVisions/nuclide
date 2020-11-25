@@ -71,7 +71,7 @@ class CBaseNPC:CBaseMonster
 	virtual void(void) FollowPlayer;
 	virtual void(void) FollowChain;
 	virtual void(void) Physics;
-	virtual void(void) PlayerUse;
+	virtual void(void) OnPlayerUse;
 	virtual void(void) PanicFrame;
 	virtual void(void) Hide;
 	virtual void(void) Respawn;

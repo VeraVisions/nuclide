@@ -134,7 +134,6 @@ class CBaseMonster:CBaseEntity
 	virtual void(void) touch;
 	virtual void(void) Hide;
 	virtual void(void) Respawn;
-	virtual void(void) PlayerUse;
 	virtual void(void) Pain;
 	virtual void(void) Death;
 	virtual void(void) Physics;

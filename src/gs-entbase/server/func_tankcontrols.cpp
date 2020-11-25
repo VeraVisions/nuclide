@@ -25,12 +25,12 @@ class func_tankcontrols:CBaseTrigger
 {
 	void(void) func_tankcontrols;
 
-	virtual void(void) PlayerUse;
+	virtual void(void) OnPlayerUse;
 	virtual void(void) Respawn;
 };
 
 void
-func_tankcontrols::PlayerUse(void)
+func_tankcontrols::OnPlayerUse(void)
 {
 	entity f;
 	CBaseVehicle tank;
@@ -63,6 +63,7 @@ func_tankcontrols::Respawn(void)
 	SetSolid(SOLID_BSP);
 	SetModel(m_oldModel);
 	SetOrigin(m_oldOrigin);
+	PlayerUse = OnPlayerUse;
 
 #ifdef GS_RENDERFX
 	SetRenderMode(RM_TRIGGER);

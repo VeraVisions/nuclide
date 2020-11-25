@@ -49,7 +49,7 @@ class monster_barney:CBaseNPC
 	void(void) monster_barney;
 
 	virtual void(void) Respawn;
-	virtual void(void) PlayerUse;
+	virtual void(void) OnPlayerUse;
 	virtual void(void) Pain;
 	virtual void(void) Death;
 	virtual int(void) AnimIdle;
@@ -115,14 +115,14 @@ monster_barney::AttackRanged(void)
 }
 
 void
-monster_barney::PlayerUse(void)
+monster_barney::OnPlayerUse(void)
 {
 	if (spawnflags & MSF_PREDISASTER) {
 		Sentence("!BA_POK");
 		return;
 	}
 
-	CBaseNPC::PlayerUse();
+	CBaseNPC::OnPlayerUse();
 }
 
 void
@@ -166,6 +166,7 @@ monster_barney::Respawn(void)
 {
 	CBaseNPC::Respawn();
 	m_iFlags |= MONSTER_CANFOLLOW;
+	PlayerUse = OnPlayerUse;
 }
 
 void

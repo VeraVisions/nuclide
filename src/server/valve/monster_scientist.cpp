@@ -74,7 +74,7 @@ class monster_scientist:CBaseNPC
 	void(void) monster_scientist;
 
 	virtual void(void) Respawn;
-	virtual void(void) PlayerUse;
+	virtual void(void) OnPlayerUse;
 	virtual void(void) Pain;
 	virtual void(void) Death;
 	virtual int(void) AnimIdle;
@@ -102,14 +102,14 @@ monster_scientist::AnimRun(void)
 }
 
 void
-monster_scientist::PlayerUse(void)
+monster_scientist::OnPlayerUse(void)
 {
 	if (spawnflags & MSF_PREDISASTER) {
 		Sentence("!SC_POK");
 		return;
 	}
 
-	CBaseNPC::PlayerUse();
+	CBaseNPC::OnPlayerUse();
 }
 
 void
@@ -151,6 +151,7 @@ monster_scientist::Respawn(void)
 {
 	CBaseNPC::Respawn();
 	m_iFlags |= MONSTER_CANFOLLOW;
+	PlayerUse = OnPlayerUse;
 }
 
 void

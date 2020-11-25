@@ -83,7 +83,7 @@ class hostage_entity:CBaseNPC
 	void(void) hostage_entity;
 
 	virtual void(void) Respawn;
-	virtual void(void) PlayerUse;
+	virtual void(void) OnPlayerUse;
 	virtual void(void) Pain;
 	virtual void(void) Death;
 	virtual int(void) AnimIdle;
@@ -110,7 +110,7 @@ hostage_entity::AnimRun(void)
 }
 
 void
-hostage_entity::PlayerUse(void)
+hostage_entity::OnPlayerUse(void)
 {
 	if (eActivator.team == TEAM_T) {
 		return;
@@ -125,7 +125,7 @@ hostage_entity::PlayerUse(void)
 		m_iUsedOnce = TRUE;
 	}
 
-	CBaseNPC::PlayerUse();
+	CBaseNPC::OnPlayerUse();
 }
 
 void
@@ -189,6 +189,7 @@ hostage_entity::Respawn(void)
 	CBaseNPC::Respawn();
 	m_iFlags |= MONSTER_CANFOLLOW;
 	m_iUsedOnce = FALSE;
+	PlayerUse = OnPlayerUse;
 }
 
 void

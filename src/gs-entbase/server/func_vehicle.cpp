@@ -96,7 +96,7 @@ class func_vehicle:CBaseVehicle
 	virtual void(void) customphysics;
 	virtual void(void) Respawn;
 	virtual void(void) Realign;
-	virtual void(void) PlayerUse;
+	virtual void(void) OnPlayerUse;
 	virtual void(string, string) SpawnKey;
 };
 
@@ -401,7 +401,7 @@ func_vehicle::customphysics(void)
 }
 
 void
-func_vehicle::PlayerUse(void)
+func_vehicle::OnPlayerUse(void)
 {
 	vector matrix;
 	vector offs;
@@ -497,6 +497,7 @@ func_vehicle::Respawn(void)
 	m_wlBL.velocity =
 	m_wlBR.velocity =
 	velocity = [0,0,0];
+	PlayerUse = OnPlayerUse;
 
 	if (m_eDriver)
 		PlayerLeave((base_player)m_eDriver);

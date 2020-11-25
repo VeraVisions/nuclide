@@ -31,7 +31,7 @@ class item_c4:CBaseEntity
 	void(void) item_c4;
 	virtual float(entity, float) SendEntity;
 	virtual void(void) ClearProgress;
-	virtual void(void) PlayerUse;
+	virtual void(void) OnPlayerUse;
 	virtual void(void) Logic;
 #endif
 
@@ -68,7 +68,7 @@ item_c4::ClearProgress(void)
 }
 
 void
-item_c4::PlayerUse(void)
+item_c4::OnPlayerUse(void)
 {
 	player pl = (player)eActivator;
 
@@ -180,6 +180,7 @@ item_c4::item_c4(void)
 	SetSize([-6,-6,0], [6,6,6]);
 
 	customphysics = Logic;
+	PlayerUse = OnPlayerUse;
 	m_flExplodeTime = time + 45.0f;
 
 	Sound_Play(this, CHAN_WEAPON, "weapon_c4bomb.plant");

@@ -37,7 +37,7 @@ class momentary_rot_button:CBaseMomentary
 {
 	void(void) momentary_rot_button;
 
-	virtual void(void) PlayerUse;
+	virtual void(void) OnPlayerUse;
 	virtual void(void) customphysics;
 	virtual void(void) Respawn;
 	virtual void(void) SetMovementDirection;
@@ -45,7 +45,7 @@ class momentary_rot_button:CBaseMomentary
 };
 
 void
-momentary_rot_button::PlayerUse(void)
+momentary_rot_button::OnPlayerUse(void)
 {
 	if (spawnflags & MRBFL_NOTUSE)
 		return;
@@ -117,6 +117,7 @@ momentary_rot_button::Respawn(void)
 	SetOrigin(m_oldOrigin);
 	SetMovementDirection();
 	SetAngles([0,0,0]);
+	PlayerUse = OnPlayerUse;
 
 	m_vecPos1 = [0,0,0];
 	m_vecPos2 = m_oldAngle + m_vecMoveDir * m_flDistance;

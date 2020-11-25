@@ -67,7 +67,7 @@ class func_rot_button:CBaseTrigger
 	virtual void(void) TriggerTargets;
 	virtual void(vector, void()) Rotate;
 	virtual void(void) TurnToggle;
-	virtual void(void) PlayerUse;
+	virtual void(void) OnPlayerUse;
 	virtual void(void) Respawn;
 	virtual void(void) Death;
 	virtual void(void) touch;
@@ -116,7 +116,7 @@ func_rot_button::Rotate(vector vecDest, void(void) vFunc)
 }
 
 void
-func_rot_button::PlayerUse(void)
+func_rot_button::OnPlayerUse(void)
 {
 	TurnToggle();
 }
@@ -162,6 +162,7 @@ func_rot_button::Respawn(void)
 	SetModel(m_oldModel);
 	SetOrigin(m_oldOrigin);
 	SetAngles(m_oldAngle);
+	PlayerUse = OnPlayerUse;
 	
 	m_iState = ROTBTNSTATE_OPENED;
 	think = __NULL__;

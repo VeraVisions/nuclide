@@ -40,12 +40,12 @@ class func_healthcharger:CBaseTrigger
 
 	void(void) func_healthcharger;
 	virtual void(void) customphysics;
-	virtual void(void) PlayerUse;
+	virtual void(void) OnPlayerUse;
 	virtual void(string, string) SpawnKey;
 };
 
 void
-func_healthcharger::PlayerUse(void)
+func_healthcharger::OnPlayerUse(void)
 {
 	/* let's not let this become too funny... */
 	if (eActivator.health <= 0)
@@ -126,4 +126,5 @@ func_healthcharger::func_healthcharger(void)
 	SetMovetype(MOVETYPE_PUSH);
 	SetOrigin(origin);
 	SetModel(model);
+	PlayerUse = OnPlayerUse;
 }

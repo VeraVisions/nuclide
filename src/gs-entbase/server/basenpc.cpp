@@ -436,7 +436,7 @@ CBaseNPC::Respawn(void)
 }
 
 void
-CBaseNPC::PlayerUse(void)
+CBaseNPC::OnPlayerUse(void)
 {
 	if (m_iFlags & MONSTER_FEAR) {
 		return;

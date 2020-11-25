@@ -508,12 +508,6 @@ CBaseMonster::touch(void)
 }
 
 void
-CBaseMonster::PlayerUse(void)
-{
-
-}
-
-void
 CBaseMonster::Pain(void)
 {
 	if (!m_eEnemy)

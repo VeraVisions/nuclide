@@ -55,7 +55,7 @@ class func_tracktrain:CBaseVehicle
 	virtual void(void) CheckPathFW;
 	virtual void(void) CheckPathRV;
 	virtual void(void) UpdateAngles;
-	virtual void(void) PlayerUse;
+	virtual void(void) OnPlayerUse;
 	virtual void(void) Realign;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
@@ -202,7 +202,7 @@ func_tracktrain::customphysics(void)
 }
 
 void
-func_tracktrain::PlayerUse(void)
+func_tracktrain::OnPlayerUse(void)
 {
 	vector matrix;
 	vector offs;
@@ -297,6 +297,7 @@ func_tracktrain::Respawn(void)
 
 	think = Realign;
 	nextthink = time + 0.1f;
+	PlayerUse = OnPlayerUse;
 
 	m_flSpeed = m_flStartSpeed / m_flMaxSpeed;
 }
