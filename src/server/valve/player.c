@@ -45,7 +45,10 @@ void Player_UseDown(void)
 
 	makevectors(self.v_angle);
 	vecSrc = self.origin + self.view_ofs;
+
+	self.hitcontentsmaski = CONTENTBITS_POINTSOLID;
 	traceline(vecSrc, vecSrc + (v_forward * 64), MOVE_NORMAL, self);
+
 
 	if (trace_ent.PlayerUse) {
 		self.flags &= ~FL_USE_RELEASED;

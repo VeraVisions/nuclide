@@ -3,6 +3,8 @@ set -e
 SCRPATH="$( cd "$( dirname $(readlink -nf $0) )" && pwd )"
 PATH="$SCRPATH"/bin:"$PATH"
 
+cd "$SCRPATH"
+
 if [ -f "$SCRPATH"/bin/fteqw ]; then
 	fteqw -manifest valve.fmf $*
 else

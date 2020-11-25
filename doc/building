@@ -1,3 +1,20 @@
+Building the engine and toolchain:
+The build_engine.sh will do that for you. It will still ask you to have at least
+a certain amount of dependencies installed (such as the GCC, make and the X/SDL
+headers for your operating system.
+
+Building the editor:
+Handled by build_editor.sh, this will require the GCC9. It currently does not
+build on GCC10.
+GTK2, Pango, GTKGLEXT and MiniZip are one of a few other main dependencies.
+
+Building the game-logic:
+Once build_engine.sh has been executed, you can now build the source tree with
+build_game.sh. It'll use the fteqcc binary that's in the ./bin/ directory.
+
+Old, manual build instructions:
+================================================================================
+
 1. Building all of the game-logic
 
 To build the game-logic for all games, issue 'make' inside the src/
