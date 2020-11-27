@@ -44,9 +44,10 @@ cvar_init(void)
 	localcmd("seta cl_idlefps 0\n");
 	localcmd("seta r_ignoreentpvs 0\n");
 	localcmd("seta allow_download_packages 0\n");
-	localcmd("seta r_shadow_realtime_dlight 0\n");
 	localcmd("seta gl_mindist 4\n"); // Thanks Valve for v_shotgun.mdl
 	localcmd("seta _pext_infoblobs 1\n");
+	localcmd("seta r_shadow_realtime_dlight 1");
+	localcmd("seta r_shadow_realtime_dlight_shadows 1");
 	
 	/* Hack! */
 	localcmd("seta gl_font 0\n");

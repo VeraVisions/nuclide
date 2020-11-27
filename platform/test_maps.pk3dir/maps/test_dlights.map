@@ -266,6 +266,7 @@
 "model" "models/logos/visions.vvm"
 "angles" "0 -90 0"
 "avelocity" "0 90 0"
+"shadows" "1"
 }
 // entity 14
 {
@@ -286,6 +287,7 @@
 "origin" "192.000000 -576.000000 32.000000"
 "model" "models/logos/visions.vvm"
 "avelocity" "0 90 0"
+"shadows" "1"
 }
 // entity 17
 {
