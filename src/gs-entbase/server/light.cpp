@@ -93,7 +93,7 @@ light::Trigger(entity act, int state)
 void
 light::Respawn(void)
 {
-	if (spawnflags & 1) {
+	if (spawnflags & 1 && targetname) {
 		lightstyle(m_flStyle, "a");
 		m_iEnabled = 0;
 	} else {
