@@ -148,6 +148,7 @@
 "targetname" "foobar2"
 "style" "2"
 "_light" "255 0 0"
+"start_active" "0"
 "brightness" "250"
 }
 // entity 13

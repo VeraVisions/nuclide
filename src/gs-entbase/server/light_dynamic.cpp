@@ -24,9 +24,13 @@
 "distance"          Distance that light is allowed to cast, in inches.
 "spotlight_radius"  Radius of the resulting spotlight that's cast at a wall.
 "style"             Select one of the hard-coded lightstyles.
+"start_active"      Override for if the entity should start on or off.
 
 Dynamic light entity. Can be parented to things, it even has some inputs that
 may be interesting.
+
+The 'start_active' is a Nuclide specific one. There is no way in Source engine
+games to tell the entity to start inactive as far as I can tell.
 
 Trivia:
 This entity was introduced in Half-Life 2 (2004).
@@ -57,6 +61,7 @@ class light_dynamic:CBaseTrigger
 	float m_flRadius;
 	float m_flStyle;
 	int m_iState;
+	int m_iStartActive;
 
 	void(void) light_dynamic;
 	virtual void(entity, int) Trigger;
@@ -102,27 +107,6 @@ light_dynamic::Trigger(entity act, int state)
 	}
 
 	SendFlags |= DLIGHTFL_CHANGED_STATE;
-}
-
-void
-light_dynamic::Respawn(void)
-{
-	SetSolid(SOLID_NOT);
-	SetSize([-16,-16,-16], [16,16,16]);
-	SetOrigin(m_oldOrigin);
-	SetAngles(m_oldAngle);
-	m_iState = 1;
-
-	SendFlags = DLIGHTFL_CHANGED_ORIGIN | \
-		DLIGHTFL_CHANGED_ANGLES | \
-		DLIGHTFL_CHANGED_LIGHT | \
-		DLIGHTFL_CHANGED_INTENSITY | \
-		DLIGHTFL_CHANGED_INNERCONE | \
-		DLIGHTFL_CHANGED_CONE | \
-		DLIGHTFL_CHANGED_DISTANCE | \
-		DLIGHTFL_CHANGED_RADIUS | \
-		DLIGHTFL_CHANGED_STYLE | \
-		DLIGHTFL_CHANGED_STATE;
 }
 
 float
@@ -239,17 +223,43 @@ light_dynamic::SpawnKey(string strKey, string strValue)
 	case "style":
 		m_flStyle = stof(strValue);
 		break;
+	case "start_active":
+		m_iStartActive = stoi(strValue);
+		break;
 	default:
 		CBaseTrigger::SpawnKey(strKey, strValue);
 	}
 }
 
 void
+light_dynamic::Respawn(void)
+{
+	SetSolid(SOLID_NOT);
+	SetSize([-16,-16,-16], [16,16,16]);
+	SetOrigin(m_oldOrigin);
+	SetAngles(m_oldAngle);
+
+	m_iState = (m_iStartActive == 1) ? 1 : 0;
+
+	SendFlags = DLIGHTFL_CHANGED_ORIGIN | \
+		DLIGHTFL_CHANGED_ANGLES | \
+		DLIGHTFL_CHANGED_LIGHT | \
+		DLIGHTFL_CHANGED_INTENSITY | \
+		DLIGHTFL_CHANGED_INNERCONE | \
+		DLIGHTFL_CHANGED_CONE | \
+		DLIGHTFL_CHANGED_DISTANCE | \
+		DLIGHTFL_CHANGED_RADIUS | \
+		DLIGHTFL_CHANGED_STYLE | \
+		DLIGHTFL_CHANGED_STATE;
+}
+
+void
 light_dynamic::light_dynamic(void)
 {
-	m_iState = 1;
 	m_vecLight = [255,255,255];
 	m_flDistance = 256;
+	m_iStartActive = 1;
+
 	CBaseTrigger::CBaseTrigger();
 }
 
