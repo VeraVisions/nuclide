@@ -238,12 +238,11 @@ info_particle_system::Respawn(void)
 	SetOrigin(m_oldOrigin);
 	SetAngles(m_oldAngle);
 
-	SendFlags = PARTSYSFL_CHANGED_ORIGIN | \
-				PARTSYSFL_CHANGED_ANGLES | \
-				PARTSYSFL_CHANGED_EFFECT | \
-				PARTSYSFL_CHANGED_STATUS | \
-				PARTSYSFL_CHANGED_INTERVAL | \
-				PARTSYSFL_CHANGED_COUNT;
+	if (spawnflags & PSFL_STARTACTIVE) {
+		Trigger(this, TRIG_ON);
+	} else {
+		Trigger(this, TRIG_OFF);
+	}
 }
 #endif
 
