@@ -1,0 +1,8 @@
+{
+	diffusemap textures/dev/model_bone.tga
+	
+	{
+		map $diffuse
+		blendFunc blend
+	}
+}

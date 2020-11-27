@@ -16,7 +16,6 @@
 
 /*QUAKED info_intermission (1 0 0) (-8 -8 -8) (8 8 8)
 "targetname" Name
-"targetname" Target entity to aim towards
 
 An entity that's used to create an 'Intermission' camera.
 Some mods use this while displaying the final scores, once a timelimit

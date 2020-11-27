@@ -48,5 +48,3 @@ Sound_ParseLoopingEntity(entity sndent, float isNew)
 	}
 	sound(new, CHAN_VOICE, new.m_strSample, new.m_flVolume, new.m_flAttn, new.m_flPitch);
 }
-
-

@@ -94,6 +94,9 @@ class func_button:CBaseTrigger
 	string m_strSndPressed;
 	string m_strSndUnpressed;
 
+	/* input/output */
+	string m_strOnPressed;
+
 	virtual void(void) Respawn;
 	virtual void(void) Arrived;
 	virtual void(void) Returned;
@@ -214,7 +217,11 @@ func_button::Trigger(entity act, int state)
 		Sound_Play(this, CHAN_VOICE, m_strSndPressed);
 
 	MoveAway();
-	UseTargets(act, TRIG_TOGGLE, m_flDelay);
+
+	if (m_strOnPressed)
+		UseOutput(act, m_strOnPressed);
+	else
+		UseTargets(act, TRIG_TOGGLE, m_flDelay);
 }
 
 void
@@ -366,6 +373,11 @@ func_button::SpawnKey(string strKey, string strValue)
 	case "wait":
 		m_flWait = stof(strValue);
 		break;
+	/* input/output */
+	case "OnPressed":
+		strValue = strreplace(",", ",_", strValue);
+		m_strOnPressed = strcat(m_strOnPressed, ",_", strValue);
+		break;
 	/* compatibility */
 	case "sounds":
 		m_strSndPressed = sprintf("func_button.hlsfx_%i", stoi(strValue) + 1i);
@@ -387,4 +399,8 @@ func_button::func_button(void)
 
 	if (m_strSndUnpressed)
 		Sound_Precache(m_strSndUnpressed);
+
+	/* input/output */
+	if (m_strOnPressed)
+		m_strOnPressed = CreateOutput(m_strOnPressed);
 }
