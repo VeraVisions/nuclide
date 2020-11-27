@@ -281,6 +281,7 @@
 "lightcolor" "255 255 255 1024"
 "parentname" "trainy"
 "targetname" "sky_cube"
+"spawnflags" "1"
 }
 // entity 16
 {
@@ -341,12 +342,14 @@
 "classname" "env_projectedtexture"
 "origin" "40.000000 -504.000000 24.000000"
 "parentname" "trainy"
+"spawnflags" "1"
 }
 // entity 22
 {
 "classname" "env_projectedtexture"
 "origin" "40.000000 -648.000000 24.000000"
 "parentname" "trainy"
+"spawnflags" "1"
 }
 // entity 23
 {

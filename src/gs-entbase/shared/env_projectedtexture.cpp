@@ -71,7 +71,6 @@ class env_projectedtexture:CBaseTrigger
 	virtual void(float) ReceiveEntity;
 	virtual float(void) predraw;
 #else
-	int m_iStartActive;
 
 	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
@@ -270,10 +269,6 @@ env_projectedtexture::SpawnKey(string strKey, string strValue)
 	case "lightfov":
 		m_flFOV = stof(strValue);
 		break;
-	/* out-of-spec */
-	case "start_active":
-		m_iStartActive = stoi(strValue);
-		break;
 	default:
 		CBaseTrigger::SpawnKey(strKey, strValue);
 	}
@@ -287,7 +282,7 @@ env_projectedtexture::Respawn(void)
 	SetOrigin(m_oldOrigin);
 	SetAngles(m_oldAngle);
 
-	m_iState = (m_iStartActive == 1) ? 1 : 0;
+	m_iState = (spawnflags & 1) ? 1 : 0;
 }
 #endif
 
@@ -299,7 +294,6 @@ env_projectedtexture::env_projectedtexture(void)
 #else
 	m_vecLight = [255,255,255];
 	m_flIntensity = 512;
-	m_iStartActive = 1;
 	m_strTextureName = "textures/flashlight";
 	m_flFOV = 90;
 
