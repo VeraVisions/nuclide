@@ -108,9 +108,9 @@ light_dynamic::ReceiveEntity(float flFlags)
 	}
 
 	if (flFlags & DLIGHTFL_CHANGED_ANGLES) {
-		angles[0] = readcoord();
-		angles[1] = readcoord();
-		angles[2] = readcoord();
+		angles[0] = readfloat();
+		angles[1] = readfloat();
+		angles[2] = readfloat();
 	}
 
 	if (flFlags & DLIGHTFL_CHANGED_LIGHT) {
@@ -187,9 +187,9 @@ light_dynamic::SendEntity(entity ePVSEnt, float flFlags)
 	}
 
 	if (flFlags & DLIGHTFL_CHANGED_ANGLES) {
-		WriteCoord(MSG_ENTITY, angles[0]);
-		WriteCoord(MSG_ENTITY, angles[1]);
-		WriteCoord(MSG_ENTITY, angles[2]);
+		WriteFloat(MSG_ENTITY, angles[0]);
+		WriteFloat(MSG_ENTITY, angles[1]);
+		WriteFloat(MSG_ENTITY, angles[2]);
 	}
 
 	if (flFlags & DLIGHTFL_CHANGED_LIGHT) {
