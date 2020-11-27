@@ -6,6 +6,7 @@
 shared/decals.cpp
 shared/spraylogo.cpp
 shared/func_friction.cpp
+shared/env_projectedtexture.cpp
 shared/light_dynamic.cpp
 shared/trigger_gravity.cpp
 shared/info_particle_system.cpp

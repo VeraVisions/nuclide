@@ -854,6 +854,13 @@ CSQC_Ent_Update(float new)
 		}
 		dl.ReceiveEntity(readfloat());
 		break;
+	case ENT_PROJECTEDTEXTURE:
+		env_projectedtexture ept = (env_projectedtexture)self;
+		if (new) {
+			spawnfunc_env_projectedtexture();
+		}
+		ept.ReceiveEntity(readfloat());
+		break;
 	case ENT_ENVLASER:
 		env_laser l = (env_laser)self;
 		if (new) {
