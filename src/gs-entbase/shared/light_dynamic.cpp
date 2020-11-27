@@ -36,7 +36,6 @@ Trivia:
 This entity was introduced in Half-Life 2 (2004).
 */
 
-/* this has to match gs-entbase/client/light_dynamic.cpp! */
 enumflags
 {
 	DLIGHTFL_CHANGED_ORIGIN,
@@ -51,7 +50,11 @@ enumflags
 	DLIGHTFL_CHANGED_STATE
 };
 
+#ifdef CLIENT
+class light_dynamic
+#else
 class light_dynamic:CBaseTrigger
+#endif
 {
 	vector m_vecLight;
 	float m_flIntensity;
@@ -61,17 +64,79 @@ class light_dynamic:CBaseTrigger
 	float m_flRadius;
 	float m_flStyle;
 	int m_iState;
-	int m_iStartActive;
 
 	void(void) light_dynamic;
+
+#ifdef CLIENT
+	virtual void(float) ReceiveEntity;
+	virtual float(void) predraw;
+#else
+	int m_iStartActive;
+
 	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
 	virtual float(entity, float) SendEntity;
 	virtual void(string, string) SpawnKey;
 	virtual void(entity, string, string) Input;
 	virtual void(void) ParentUpdate;
+#endif
 };
 
+#ifdef CLIENT
+float
+light_dynamic::predraw(void)
+{
+	if (!m_iState) {
+		return PREDRAW_NEXT;
+	}
+
+	/* TODO: We need to handle the second cone light */
+	dynamiclight_add(origin, m_flDistance, m_vecLight, m_flStyle);
+
+	addentity(this);
+	return PREDRAW_NEXT;
+}
+
+void
+light_dynamic::ReceiveEntity(float flFlags)
+{
+	if (flFlags & DLIGHTFL_CHANGED_ORIGIN) {
+		origin[0] = readcoord();
+		origin[1] = readcoord();
+		origin[2] = readcoord();
+		setorigin(this, origin);
+	}
+
+	if (flFlags & DLIGHTFL_CHANGED_ANGLES) {
+		angles[0] = readcoord();
+		angles[1] = readcoord();
+		angles[2] = readcoord();
+	}
+
+	if (flFlags & DLIGHTFL_CHANGED_LIGHT) {
+		m_vecLight[0] = readbyte() / 255;
+		m_vecLight[1] = readbyte() / 255;
+		m_vecLight[2] = readbyte() / 255;
+	}
+
+	if (flFlags & DLIGHTFL_CHANGED_INTENSITY)
+		m_flIntensity = readfloat();
+	if (flFlags & DLIGHTFL_CHANGED_INNERCONE)
+		m_flInnerCone = readfloat();
+	if (flFlags & DLIGHTFL_CHANGED_CONE)
+		m_flCone = readfloat();
+	if (flFlags & DLIGHTFL_CHANGED_DISTANCE)
+		m_flDistance = readfloat();
+	if (flFlags & DLIGHTFL_CHANGED_RADIUS)
+		m_flRadius = readfloat();
+	if (flFlags & DLIGHTFL_CHANGED_STYLE)
+		m_flStyle = readbyte();
+	if (flFlags & DLIGHTFL_CHANGED_STATE)
+		m_iState = readbyte();
+
+	classname = "light_dynamic";
+}
+#else
 void
 light_dynamic::ParentUpdate(void)
 {
@@ -223,6 +288,7 @@ light_dynamic::SpawnKey(string strKey, string strValue)
 	case "style":
 		m_flStyle = stof(strValue);
 		break;
+	/* out-of-spec */
 	case "start_active":
 		m_iStartActive = stoi(strValue);
 		break;
@@ -252,15 +318,24 @@ light_dynamic::Respawn(void)
 		DLIGHTFL_CHANGED_STYLE | \
 		DLIGHTFL_CHANGED_STATE;
 }
+#endif
 
 void
 light_dynamic::light_dynamic(void)
 {
+#ifdef CLIENT
+	drawmask = MASK_ENGINE;
+#else
 	m_vecLight = [255,255,255];
 	m_flDistance = 256;
 	m_iStartActive = 1;
 
 	CBaseTrigger::CBaseTrigger();
+#endif
 }
 
+/* workaround for q3map2, as it turns any entity starting with light*
+   into a generic static world light. */
+#ifndef CLIENT
 CLASSEXPORT(dynamic_light, light_dynamic)
+#endif
