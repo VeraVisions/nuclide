@@ -232,6 +232,10 @@ env_projectedtexture::Input(entity eAct, string strInput, string strData)
 		m_flStyle = stof(strData);
 		SendFlags |= PRTEXFL_CHANGED_STYLE;
 		break;
+	case "SpotlightTexture":
+		m_strTextureName = strData;
+		SendFlags |= PRTEXFL_CHANGED_TEXTURE;
+		break;
 	case "TurnOn":
 		Trigger(eAct, TRIG_ON);
 		break;

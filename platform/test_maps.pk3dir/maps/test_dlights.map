@@ -280,6 +280,7 @@
 "texturename" "textures/skies/smudge/bg"
 "lightcolor" "255 255 255 1024"
 "parentname" "trainy"
+"targetname" "sky_cube"
 }
 // entity 16
 {
@@ -346,4 +347,20 @@
 "classname" "env_projectedtexture"
 "origin" "40.000000 -648.000000 24.000000"
 "parentname" "trainy"
+}
+// entity 23
+{
+"classname" "func_button"
+"OnPressed" "sky_cube,SpotlightTexture,textures/skies/yukongold/bg,0,-1"
+"OnPressed" "sky_cube,SpotlightTexture,textures/skies/dune_hdr/250th/bg,2.5,-1"
+"OnPressed" "sky_cube,SpotlightTexture,textures/skies/smudge/bg,5,-1"
+// brush 0
+{
+( -16 -760 8 ) ( -16 -768 8 ) ( -32 -760 8 ) measure/counter [ 1 0 0 0 ] [ -0 -1 -0 0 ] -0 0.5 0.5 0 0 0
+( -16 -760 64 ) ( -32 -760 64 ) ( -16 -760 -64 ) measure/counter [ 1 0 0 0 ] [ -0 -0 -1 0 ] -0 0.5 0.5 0 0 0
+( -16 -760 64 ) ( -16 -760 -64 ) ( -16 -768 64 ) measure/counter [ 0 1 0 0 ] [ -0 -0 -1 0 ] -0 0.5 0.5 0 0 0
+( -24 -768 -8 ) ( -8 -768 -8 ) ( -24 -760 -8 ) measure/counter [ 1 0 0 48 ] [ -0 -1 -0 0 ] -0 0.5 0.5 0 0 0
+( -32 -768 -64 ) ( -32 -768 64 ) ( -16 -768 -64 ) measure/counter [ 1 0 0 0 ] [ -0 -0 -1 0 ] -0 0.5 0.5 0 0 0
+( -32 -768 -64 ) ( -32 -760 -64 ) ( -32 -768 64 ) measure/counter [ 0 1 0 0 ] [ -0 -0 -1 0 ] -0 0.5 0.5 0 0 0
+}
 }
