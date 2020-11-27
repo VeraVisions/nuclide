@@ -838,7 +838,6 @@ CSQC_Ent_Update(float new)
 		}
 		spr.ReceiveEntity(readfloat());
 		break;
-		break;
 	case ENT_SPRAY:
 		Spray_Parse();
 		break;
@@ -861,6 +860,13 @@ CSQC_Ent_Update(float new)
 			spawnfunc_env_laser();
 		}
 		l.ReceiveEntity(readfloat());
+		break;
+	case ENT_PARTSYSTEM:
+		info_particle_system ips = (info_particle_system)self;
+		if (new) {
+			spawnfunc_info_particle_system();
+		}
+		ips.ReceiveEntity(readfloat());
 		break;
 	default:
 		if (Game_Entity_Update(t, new) == FALSE) {

@@ -7,4 +7,5 @@ shared/decals.cpp
 shared/spraylogo.cpp
 shared/func_friction.cpp
 shared/trigger_gravity.cpp
+shared/info_particle_system.cpp
 #endlist

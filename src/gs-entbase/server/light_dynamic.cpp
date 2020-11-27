@@ -82,11 +82,8 @@ light_dynamic::ParentUpdate(void)
 	if (m_parent) {
 		entity p = find(world, ::targetname, m_parent);
 
-		if (!p) {
-			return;
-		}
-
-		SetOrigin(p.origin);
+		if (p)
+			SetOrigin(p.origin);
 	}
 }
 

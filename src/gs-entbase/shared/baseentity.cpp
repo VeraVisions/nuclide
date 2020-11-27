@@ -131,6 +131,7 @@ CBaseEntity::RenderFXPass(void)
 }
 #endif
 
+var int autocvar_r_showSkeleton = 0;
 float
 CBaseEntity::predraw(void)
 {
@@ -141,6 +142,23 @@ CBaseEntity::predraw(void)
 #ifdef GS_RENDERFX
 	RenderFXPass();
 #endif
+
+	if (autocvar_r_showSkeleton == 1) {
+		for (int i = 1; i < 64; i++) {
+			vector v1 = gettaginfo(this, i);
+
+			if (v1 != this.origin) {
+				makevectors(input_angles);
+				R_BeginPolygon("textures/dev/model_bone", 0, 0);
+				R_PolygonVertex(v1 + v_right * 1 - v_up * 1, [1,1], [1,1,1], 1.0f);
+				R_PolygonVertex(v1 - v_right * 1 - v_up * 1, [0,1], [1,1,1], 1.0f);
+				R_PolygonVertex(v1 - v_right * 1 + v_up * 1, [0,0], [1,1,1], 1.0f);
+				R_PolygonVertex(v1 + v_right * 1 + v_up * 1, [1,0], [1,1,1], 1.0f);
+				R_EndPolygon();
+				alpha = 0.25f;
+			}
+		}
+	}
 
 	/* mouth flapping action */
 	bonecontrol5 = getchannellevel(this, CHAN_VOICE) * 20;
@@ -695,11 +713,8 @@ CBaseEntity::ParentUpdate(void)
 	if (m_parent) {
 		entity p = find(world, ::targetname, m_parent);
 
-		if (!p) {
-			return;
-		}
-
-		SetOrigin(p.origin);
+		if (p)
+			SetOrigin(p.origin);
 	}
 }
 
