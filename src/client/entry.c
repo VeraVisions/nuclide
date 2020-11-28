@@ -251,19 +251,7 @@ CSQC_UpdateView(float w, float h, float focus)
 		addentities(MASK_ENGINE);
 
 		if (pSeat->m_flCameraTime > time) {
-			vector lastang;
-			float lerp;
-
-			lerp = bound(0.0f, 1.0f - clframetime, 1.0f);
-			makevectors(view_angles);
-			lastang = v_forward;
-			makevectors(pSeat->m_vecCameraAngle);
-
-			lastang[0] = Math_Lerp(lastang[0], v_forward[0], clframetime);
-			lastang[1] = Math_Lerp(lastang[1], v_forward[1], clframetime);
-			lastang[2] = Math_Lerp(lastang[2], v_forward[2], clframetime);
-			view_angles = vectoangles(lastang);
-
+			view_angles = pSeat->m_vecCameraAngle;
 			setproperty(VF_ORIGIN, pSeat->m_vecCameraOrigin);
 			setproperty(VF_CL_VIEWANGLES, view_angles);
 			setproperty(VF_ANGLES, view_angles);
@@ -846,6 +834,13 @@ CSQC_Ent_Update(float new)
 		break;
 	case ENT_AMBIENTSOUND:
 		Sound_ParseLoopingEntity(self, new);
+		break;
+	case ENT_OLDCAMERA:
+		trigger_camera tc = (trigger_camera)self;
+		if (new) {
+			spawnfunc_trigger_camera();
+		}
+		tc.ReceiveEntity(readfloat());
 		break;
 	case ENT_DLIGHT:
 		light_dynamic dl = (light_dynamic)self;

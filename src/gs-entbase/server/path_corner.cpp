@@ -66,7 +66,7 @@ path_corner::Trigger(entity act, int state)
 {
 	entity a;
 
-	if ((spawnflags & PC_FIREONCE) && (m_iFired)) {
+	if ((spawnflags & PC_FIREONCE) && m_iFired) {
 		return;
 	}
 
@@ -114,5 +114,6 @@ void
 path_corner::path_corner(void)
 {
 	m_flWait = 1.0f;
+	m_flSpeed = 100.0f;
 	CBaseTrigger::CBaseTrigger();
 }

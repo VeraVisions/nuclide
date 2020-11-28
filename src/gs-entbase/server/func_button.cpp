@@ -234,10 +234,8 @@ func_button::Trigger(entity act, int state)
 
 	MoveAway();
 
-	if (m_strOnPressed)
-		UseOutput(act, m_strOnPressed);
-	else
-		UseTargets(act, TRIG_TOGGLE, m_flDelay);
+	UseOutput(act, m_strOnPressed);
+	UseTargets(act, TRIG_TOGGLE, m_flDelay);
 }
 
 void

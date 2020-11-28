@@ -72,7 +72,6 @@ server/target_cdaudio.cpp
 server/trigger_auto.cpp
 server/trigger_autosave.cpp
 server/trigger_cdaudio.cpp
-server/trigger_camera.cpp
 server/trigger_counter.cpp
 server/trigger_hurt.cpp
 server/trigger_changelevel.cpp
