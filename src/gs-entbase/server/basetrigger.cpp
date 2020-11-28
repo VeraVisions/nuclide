@@ -18,6 +18,9 @@
 void
 CBaseTrigger::UseOutput(entity act, string outname)
 {
+	if (!outname)
+		return;
+
 	for (entity f = world; (f = find(f, ::targetname, outname));) {
 		CBaseOutput op = (CBaseOutput)f;
 

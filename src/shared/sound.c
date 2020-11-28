@@ -210,6 +210,9 @@ Sound_Precache(string shader)
 	string line;
 	int index;
 
+	if (!shader)
+		return -1;
+
 	index = g_sounds_count;
 	shader = strtolower(shader);
 

@@ -21,6 +21,11 @@
 "interval"     Override for spawn intervals.
 "spawncount"   Override for the amount of particles that will be emitted
 
+Inputs:
+"Start"        Starts the emitter.
+"Stop"         Stops the emitter.
+"Toggle"       Toggles the emitter from an on/off state.
+
 An entity that's spawns particles from the engine's particle system.
 
 Trivia:

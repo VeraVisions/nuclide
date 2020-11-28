@@ -26,6 +26,18 @@
 "style"             Select one of the hard-coded lightstyles.
 "start_active"      Override for if the entity should start on or off.
 
+Inputs:
+"TurnOn"            Turns the light on.
+"TurnOff"           Turns the light off.
+"Toggle"            Toggles the light from an on/off state.
+"Color"             Sets the light color in RGB255 format.
+"brightness"        Sets the light brightness.
+"distance"          Sets the distance of which the light will travel/radius.
+"_inner_cone"       Sets the length of the inner light cone.
+"_cone"             Sets the length of the light cone.
+"spotlight_radius"  Sets the radius of the projected spotlight.
+"style"             Sets the light appearance in integer form.
+
 Dynamic light entity. Can be parented to things, it even has some inputs that
 may be interesting.
 
@@ -306,17 +318,6 @@ light_dynamic::Respawn(void)
 	SetAngles(m_oldAngle);
 
 	m_iState = (m_iStartActive == 1) ? 1 : 0;
-
-	SendFlags = DLIGHTFL_CHANGED_ORIGIN | \
-		DLIGHTFL_CHANGED_ANGLES | \
-		DLIGHTFL_CHANGED_LIGHT | \
-		DLIGHTFL_CHANGED_INTENSITY | \
-		DLIGHTFL_CHANGED_INNERCONE | \
-		DLIGHTFL_CHANGED_CONE | \
-		DLIGHTFL_CHANGED_DISTANCE | \
-		DLIGHTFL_CHANGED_RADIUS | \
-		DLIGHTFL_CHANGED_STYLE | \
-		DLIGHTFL_CHANGED_STATE;
 }
 #endif
 
