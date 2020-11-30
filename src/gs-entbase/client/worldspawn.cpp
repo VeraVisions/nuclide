@@ -20,6 +20,7 @@ var float g_flHDRIrisMaxValue = 2.0;
 var float g_flHDRIrisMultiplier = 1.0;
 var float g_flHDRIrisFadeUp = 0.1;
 var float g_flHDRIrisFadeDown = 0.5;
+var int g_iHDREnabled = 0;
 
 #ifdef VALVE
 var string g_strSkyName = "desert";
@@ -36,6 +37,19 @@ class worldspawn:CBaseEntity
 void worldspawn::Initialized(void)
 {
 	g_vecSunDir = [90,0];
+
+	if (g_iHDREnabled)
+		cvar_set("r_hdr_irisadaptation", "1");
+	else
+		cvar_set("r_hdr_irisadaptation", "0");
+
+	cvar_set("r_hdr_irisadaptation_minvalue", ftos(g_flHDRIrisMinValue));
+	cvar_set("r_hdr_irisadaptation_maxvalue", ftos(g_flHDRIrisMaxValue));
+	cvar_set("r_hdr_irisadaptation_multiplier", ftos(g_flHDRIrisMultiplier));
+	cvar_set("r_hdr_irisadaptation_fade_up", ftos(g_flHDRIrisFadeUp));
+	cvar_set("r_hdr_irisadaptation_fade_down", ftos(g_flHDRIrisFadeDown));
+
+
 	remove(this);
 }
 
@@ -62,23 +76,23 @@ void worldspawn::SpawnKey(string strField, string strKey)
 #endif
 	case "hdr_iris_minvalue":
 		g_flHDRIrisMinValue = stof(strKey);
-			cvar_set("r_hdr_irisadaptation_minvalue", ftos(g_flHDRIrisMinValue));
+		g_iHDREnabled = 1;
 		break;
 	case "hdr_iris_maxvalue":
 		g_flHDRIrisMaxValue = stof(strKey);
-		cvar_set("r_hdr_irisadaptation_maxvalue", ftos(g_flHDRIrisMaxValue));
+		g_iHDREnabled = 1;
 		break;
 	case "hdr_iris_multiplier":
 		g_flHDRIrisMultiplier = stof(strKey);
-		cvar_set("r_hdr_irisadaptation_multiplier", ftos(g_flHDRIrisMultiplier));
+		g_iHDREnabled = 1;
 		break;
 	case "hdr_iris_fade_up":
 		g_flHDRIrisFadeUp = stof(strKey);
-		cvar_set("r_hdr_irisadaptation_fade_up", ftos(g_flHDRIrisFadeUp));
+		g_iHDREnabled = 1;
 		break;
 	case "hdr_iris_fade_down":
 		g_flHDRIrisFadeDown = stof(strKey);
-		cvar_set("r_hdr_irisadaptation_fade_down", ftos(g_flHDRIrisFadeDown));
+		g_iHDREnabled = 1;
 		break;
 	default:
 		break;

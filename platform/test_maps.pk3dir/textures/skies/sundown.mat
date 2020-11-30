@@ -1,0 +1,23 @@
+// Vera Visions Material
+{
+	qer_editorImage textures/skies/sundown/250th/bg_ft.tga
+	skyParms - 256 -
+	vmap_globalTexture
+
+	surfaceParm sky
+	surfaceParm noimpact
+	surfaceParm nolightmap
+	surfaceParm nodlight
+
+	nopicmip
+	nomipmaps
+
+	{
+		program skybox_hdr
+		map $cube:textures/skies/sundown/40th/bg
+		map $cube:textures/skies/sundown/250th/bg
+		map $cube:textures/skies/sundown/1600th/bg
+		map textures/skies/clouds/dunecloud.tga
+		map textures/skies/clouds/dunecloud_layer.tga
+	}
+}
