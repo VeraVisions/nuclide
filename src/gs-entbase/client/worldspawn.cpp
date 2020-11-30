@@ -49,7 +49,6 @@ void worldspawn::Initialized(void)
 	cvar_set("r_hdr_irisadaptation_fade_up", ftos(g_flHDRIrisFadeUp));
 	cvar_set("r_hdr_irisadaptation_fade_down", ftos(g_flHDRIrisFadeDown));
 
-
 	remove(this);
 }
 
