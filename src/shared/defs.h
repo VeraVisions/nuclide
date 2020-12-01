@@ -28,6 +28,8 @@
 #include "pmove.h"
 #include "memory.h"
 
+#define CLASSEXPORT(classname,classa) void classname(void) { spawnfunc_##classa(); }
+
 /* Those are constant for HL BSP and CANNOT be changed.
  * Blame Valve for purchasing a Quake II license but not
  * scrapping hull sizes for their .bsp format... */
