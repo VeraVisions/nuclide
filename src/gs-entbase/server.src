@@ -67,6 +67,7 @@ server/infodecal.cpp
 server/player_weaponstrip.cpp
 server/player_loadsaved.cpp
 server/prop_physics.cpp
+server/point_camera.cpp
 server/targ_speaker.cpp
 server/target_cdaudio.cpp
 server/trigger_auto.cpp
