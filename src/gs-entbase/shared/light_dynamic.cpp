@@ -25,6 +25,7 @@
 "spotlight_radius"  Radius of the resulting spotlight that's cast at a wall.
 "style"             Select one of the hard-coded lightstyles.
 "start_active"      Override for if the entity should start on or off.
+"pattern"           Override the lightstyle pattern with a string.
 
 Inputs:
 "TurnOn"            Turns the light on.
@@ -37,6 +38,7 @@ Inputs:
 "_cone"             Sets the length of the light cone.
 "spotlight_radius"  Sets the radius of the projected spotlight.
 "style"             Sets the light appearance in integer form.
+"SetPattern"        Sets the light pattern in string form! a = dark, z = bright
 
 Dynamic light entity. Can be parented to things, it even has some inputs that
 may be interesting.
@@ -59,7 +61,8 @@ enumflags
 	DLIGHTFL_CHANGED_DISTANCE,
 	DLIGHTFL_CHANGED_RADIUS,
 	DLIGHTFL_CHANGED_STYLE,
-	DLIGHTFL_CHANGED_STATE
+	DLIGHTFL_CHANGED_STATE,
+	DLIGHTFL_CHANGED_PATTERN
 };
 
 #ifdef CLIENT
@@ -75,6 +78,7 @@ class light_dynamic:CBaseTrigger
 	float m_flDistance;
 	float m_flRadius;
 	float m_flStyle;
+	string m_strPattern;
 	int m_iState;
 
 	void(void) light_dynamic;
@@ -102,8 +106,11 @@ light_dynamic::predraw(void)
 		return PREDRAW_NEXT;
 	}
 
-	/* TODO: We need to handle the second cone light */
-	dynamiclight_add(origin, m_flDistance, m_vecLight, m_flStyle);
+	float p = dynamiclight_add(origin, m_flDistance, m_vecLight, m_flStyle);
+	dynamiclight_set(p, LFIELD_ANGLES, angles);
+
+	if (m_strPattern)
+		dynamiclight_set(p, LFIELD_STYLESTRING, m_strPattern);
 
 	addentity(this);
 	return PREDRAW_NEXT;
@@ -145,6 +152,8 @@ light_dynamic::ReceiveEntity(float flFlags)
 		m_flStyle = readbyte();
 	if (flFlags & DLIGHTFL_CHANGED_STATE)
 		m_iState = readbyte();
+	if (flFlags & DLIGHTFL_CHANGED_PATTERN)
+		m_strPattern = readstring();
 
 	classname = "light_dynamic";
 }
@@ -224,6 +233,8 @@ light_dynamic::SendEntity(entity ePVSEnt, float flFlags)
 		WriteByte(MSG_ENTITY, m_flStyle);
 	if (flFlags & DLIGHTFL_CHANGED_STATE)
 		WriteByte(MSG_ENTITY, m_iState);
+	if (flFlags & DLIGHTFL_CHANGED_PATTERN)
+		WriteString(MSG_ENTITY, m_strPattern);
 
 	return TRUE;
 }
@@ -269,6 +280,10 @@ light_dynamic::Input(entity eAct, string strInput, string strData)
 	case "Toggle":
 		Trigger(eAct, TRIG_TOGGLE);
 		break;
+	case "SetPattern":
+		m_strPattern = strData;
+		SendFlags |= DLIGHTFL_CHANGED_PATTERN;
+		break;
 	default:
 		CBaseTrigger::Input(eAct, strInput, strData);
 	}
@@ -303,6 +318,9 @@ light_dynamic::SpawnKey(string strKey, string strValue)
 	/* out-of-spec */
 	case "start_active":
 		m_iStartActive = stoi(strValue);
+		break;
+	case "pattern":
+		m_strPattern = strValue;
 		break;
 	default:
 		CBaseTrigger::SpawnKey(strKey, strValue);

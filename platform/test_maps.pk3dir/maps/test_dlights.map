@@ -224,7 +224,7 @@
 {
 "classname" "dynamic_light"
 "origin" "-192.000000 -64.000000 64.000000"
-"style" "9"
+"pattern" "zm"
 "_light" "255 255 128"
 "brightness" "150"
 }
