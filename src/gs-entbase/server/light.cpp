@@ -14,18 +14,24 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED light (1 0 0) (-8 -8 -8) (8 8 8) OFF_OR_LINEAR
+/*QUAKED light (1 0 0) (-8 -8 -8) (8 8 8) LFL_LINEAR LFL_NOANGLE LFL_DARK LFL_NOGRID x LFL_DISTATTN
 "targetname"    Name
+"target"        When set, targets an enity instead, becoming a spotlight
+"light"         Light intensity value. Default is '300'
+"_color"        Normalized RGB color value. Default is [1,1,1]
+"_color255"     RGB255 color value. e.g. '255 255 255' for white
+"_extradist"    The additional distance it should attempt to travel.
+"radius"        Sets the light cone radius for spotlights. Default is '64'
+"fade"          Sets the fade-distance of a light when LFL_LINEAR is set
+"_anglescale"   Sets the light angle scale of non-linear lights
+"_deviance"     Sets the deviance, jitter effect for each light sample.
+"_samples"      Number of light samples. This also needs to be set > 1 for deviance to work.
+"_filter"       Setting to blur the light/shadows resulting from this light.
+"start_active"  Set to either 0 or 1 to tell the light in what mode to start in.
 
 Infinitely small point of light illuminating the scene.
 
-idTech 3 BSP relevant keys:
-"light"         Light intensity value. Default is '300'.
-"_color"        Normalized RGB color value. Default is [1,1,1].
-"radius"        Sets the light cone radius. Default is '64'.
-"target"        When set, targets an enity instead, becoming a spotlight.
-
-If OFF_OR_LINEAR is set, the light will be cast with a linear falloff instead
+If LFL_LINEAR is set, the light will be cast with a linear falloff instead
 of inverse square. This is useful for bright lights that'll travel long
 distances.
 
@@ -50,7 +56,8 @@ idTech 2 BSP relevant keys:
                 'a' being dark. 'z' being fully lit. Can be a string of characters
                 that'll interpolate between at 10 FPS ingame.
 
-If OFF_OR_LINEAR is set, it starts off/disabled.
+In idTech 2/GoldSrc etc. spawnflag 1 means a light starts off.
+This doesn't exist in idTech3 because lightstyles were not a thing.
 
 Trivia:
 This entity was introduced in Quake (1996).
@@ -62,6 +69,7 @@ class light:CBaseTrigger
 	float m_flStyle;
 	float m_flSwitchStyle;
 	string m_strPattern;
+	int m_iStartActive;
 
 	void(void) light;
 	virtual void(entity, int) Trigger;
@@ -93,12 +101,31 @@ light::Trigger(entity act, int state)
 void
 light::Respawn(void)
 {
-	if (spawnflags & 1 && targetname) {
-		lightstyle(m_flStyle, "a");
-		m_iEnabled = 0;
-	} else {
-		lightstyle(m_flStyle, m_strPattern);
-		m_iEnabled = 1;
+	switch (serverkeyfloat("*bspversion")) {
+	case BSPVER_PREREL:
+	case BSPVER_Q1:
+	case BSPVER_HL:
+	case BSPVER_Q2:
+	case BSPVER_Q2W:
+		if (spawnflags & 1 && targetname) {
+			lightstyle(m_flStyle, "a");
+			m_iEnabled = 0;
+		} else {
+			lightstyle(m_flStyle, m_strPattern);
+			m_iEnabled = 1;
+		}
+		break;
+	case BSPVER_Q3:
+	case BSPVER_RTCW:
+	case BSPVER_RBSP:
+		if (!m_iStartActive && targetname) {
+			lightstyle(m_flStyle, "a");
+			m_iEnabled = 0;
+		} else {
+			lightstyle(m_flStyle, m_strPattern);
+			m_iEnabled = 1;
+		}
+		break;
 	}
 }
 
@@ -116,6 +143,9 @@ light::SpawnKey(string strKey, string strValue)
 		m_flStyle = stof(strValue);
 		style = __NULL__;
 		break;
+	case "start_active":
+		m_iStartActive = stoi(strValue);
+		break;
 	/* level-compiler keys we don't really use right now */
 	case "_cone":
 	case "_cone2":
@@ -131,6 +161,7 @@ light::SpawnKey(string strKey, string strValue)
 void
 light::light(void)
 {
+	m_iStartActive = TRUE;
 	m_strPattern = "m";
 	CBaseTrigger::CBaseTrigger();
 
