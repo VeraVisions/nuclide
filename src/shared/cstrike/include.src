@@ -48,5 +48,6 @@
 ../../shared/cstrike/weapons.c
 ../../shared/valve/weapon_common.c
 ../../shared/cstrike/pmove.c
+../../shared/valve/pmove_water.c
 ../../shared/cstrike/item_c4bomb.cpp
 #endlist

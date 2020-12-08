@@ -14,6 +14,54 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifndef PMOVE_STEPHEIGHT
+	#define PMOVE_STEPHEIGHT 18
+#endif
+
+#ifndef PMOVE_AIRSTEPHEIGHT
+	#define PMOVE_AIRSTEPHEIGHT 18
+#endif
+
+#ifndef PMOVE_FRICTION
+	#define PMOVE_FRICTION 4
+#endif
+
+#ifndef PMOVE_EDGEFRICTION
+	#define PMOVE_EDGEFRICTION 1
+#endif
+
+#ifndef PMOVE_STOPSPEED
+	#define PMOVE_STOPSPEED 75
+#endif
+
+#ifndef PMOVE_GRAVITY
+	#define PMOVE_GRAVITY 800
+#endif
+
+#ifndef PMOVE_AIRACCELERATE
+	#define PMOVE_AIRACCELERATE 10
+#endif
+
+#ifndef PMOVE_WATERACCELERATE
+	#define PMOVE_WATERACCELERATE 8
+#endif
+
+#ifndef PMOVE_ACCELERATE
+	#define PMOVE_ACCELERATE 8
+#endif
+
+#ifndef PMOVE_MAXSPEED
+	#define PMOVE_MAXSPEED 270
+#endif
+
+#ifndef PMOVE_STEP_WALKSPEED
+	#define PMOVE_STEP_WALKSPEED 135
+#endif
+
+#ifndef PMOVE_STEP_RUNSPEED
+	#define PMOVE_STEP_RUNSPEED 220
+#endif
+
 /* FIXME: jumptime should use the time global, as time intervals are not
  * predictable - decrement it based upon input_timelength */
 
@@ -25,26 +73,16 @@ void
 PMove_Init(void)
 {
 #ifdef SERVER
-	localcmd("serverinfo phy_stepheight 18\n");
-	localcmd("serverinfo phy_airstepheight 18\n");
-	localcmd("serverinfo phy_friction 4\n");
-	localcmd("serverinfo phy_edgefriction 1\n");
-	localcmd("serverinfo phy_stopspeed 75\n");
-	localcmd("serverinfo phy_gravity 800\n");
-	localcmd("serverinfo phy_airaccelerate 10\n");
-	localcmd("serverinfo phy_wateraccelerate 8\n");
-
-#ifdef VALVE
-	localcmd("serverinfo phy_accelerate 8\n");
-	localcmd("serverinfo phy_maxspeed 270\n");
-#elif CSTRIKE
-	localcmd("serverinfo phy_accelerate 4\n");
-	localcmd("serverinfo phy_maxspeed 250\n");
-#else
-	localcmd("serverinfo phy_accelerate 8\n");
-	localcmd("serverinfo phy_maxspeed 270\n");
-#endif
-
+	readcmd(sprintf("serverinfo phy_stepheight %d\n", PMOVE_STEPHEIGHT));
+	readcmd(sprintf("serverinfo phy_airstepheight %d\n", PMOVE_AIRSTEPHEIGHT));
+	readcmd(sprintf("serverinfo phy_friction %d\n", PMOVE_FRICTION));
+	readcmd(sprintf("serverinfo phy_edgefriction %d\n", PMOVE_EDGEFRICTION));
+	readcmd(sprintf("serverinfo phy_stopspeed %d\n", PMOVE_STOPSPEED));
+	readcmd(sprintf("serverinfo phy_gravity %d\n", PMOVE_GRAVITY));
+	readcmd(sprintf("serverinfo phy_airaccelerate %d\n", PMOVE_AIRACCELERATE));
+	readcmd(sprintf("serverinfo phy_wateraccelerate %d\n", PMOVE_WATERACCELERATE));
+	readcmd(sprintf("serverinfo phy_accelerate %d\n", PMOVE_ACCELERATE));
+	readcmd(sprintf("serverinfo phy_maxspeed %d\n", PMOVE_MAXSPEED));
 #endif
 }
 
@@ -152,76 +190,6 @@ PMove_Categorize(void)
 	}
 }
 
-/* this is technically run every frame, not just when we're in water */
-void
-PMove_WaterMove(void)
-{
-	if (self.movetype == MOVETYPE_NOCLIP) {
-		return;
-	}
-
-	/*if (self.health < 0) {
-		return;
-	}*/
-
-#if 0
-	CPlayer plPlayer = (CPlayer)self;
-	if (plPlayer.waterlevel != 3) {
-		if (plPlayer.m_flAirFinished < time) {
-			//sound (plPlayer, CHAN_VOICE, "player/gasp2.wav", 1, ATTN_NORM);
-		} else if (plPlayer.m_flAirFinished < time + 9) {
-			//sound (plPlayer, CHAN_VOICE, "player/gasp1.wav", 1, ATTN_NORM);
-		}
-		plPlayer.m_flAirFinished = time + 12;
-		plPlayer.dmg = 2;
-	} else if (plPlayer.m_flAirFinished < time) {
-		if (plPlayer.m_flPainFinished < time) {
-			plPlayer.dmg = plPlayer.dmg + 2;
-			if (plPlayer.dmg > 15) {
-				plPlayer.dmg = 10;
-			}
-
-			Damage_Apply(plPlayer, world, plPlayer.dmg, DAMAGE_DROWNING, WEAPON_NONE);
-			plPlayer.m_flPainFinished = time + 1;
-		}
-	}
-#endif
-
-	if (!self.waterlevel){
-		if (self.flags & FL_INWATER) {
-#if 0
-			//sound (self, CHAN_BODY, "misc/outwater.wav", 1, ATTN_NORM);
-#endif
-			self.flags &= ~FL_INWATER;
-		}
-		return;
-	}
-
-#if 0
-	if (plPlayer.watertype == CONTENT_LAVA) {
-		if (plPlayer.m_flDamageTime < time) {
-			plPlayer.m_flDamageTime = time + 0.2;
-			Damage_Apply(plPlayer, world, 10*plPlayer.waterlevel, DAMAGE_BURN, WEAPON_NONE);
-		}
-	} else if (plPlayer.watertype == CONTENT_SLIME) {
-		if (plPlayer.m_flDamageTime < time) {
-			plPlayer.m_flDamageTime = time + 1;
-			Damage_Apply(plPlayer, world, 4*plPlayer.waterlevel, DAMAGE_ACID, WEAPON_NONE);
-		}
-	}
-#endif
-	if (!(self.flags & FL_INWATER)) {
-#if 0
-		sound (self, CHAN_BODY, "player/land/slosh.wav", 1, ATTN_NORM);
-		plPlayer.m_flDamageTime = 0;
-#endif
-		self.flags |= FL_INWATER;
-	}
-
-	if (!(self.flags & FL_WATERJUMP)) {
-		self.velocity = self.velocity - 0.8 * self.waterlevel * input_timelength * self.velocity;
-	}
-}
 
 /* spammed whenever we're near a ledge, getting out of a pool or something */
 void
@@ -734,7 +702,7 @@ PMove_Run(void)
 	}
 
 	/* establish which water elements we're dealing in */
-	PMove_WaterMove();
+	GamePMove_WaterMove(pl);
 
 	/* we might need to apply extra-velocity to get out of water-volumes */
 	if (self.waterlevel >= 2) {

@@ -78,5 +78,9 @@ class base_player
 	int voted;
 	int step;
 	float step_time;
+
+	float underwater_time;
+	float underwater_dmg;
+	float pain_time;
 #endif
 }; 

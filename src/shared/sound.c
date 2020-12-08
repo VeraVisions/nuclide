@@ -315,14 +315,13 @@ Sound_Play(entity target, int chan, string shader)
 	}
 	if (g_sounds[sample].flags & SNDFL_STEP) {
 		float s = vlen(target.velocity);
-		float m = target.maxspeed;
 
 		if (target.flags & FL_CROUCHING)
-			m *= 2.0f;
+			s *= 2.0f;
 		
-		if (s <= (m * 0.5f)) {
+		if (s < PMOVE_STEP_WALKSPEED) {
 			return;
-		} else if (s < (m * 0.8f)) {
+		} else if (s < PMOVE_STEP_RUNSPEED) {
 			volume = 0.35f;
 		} else {
 			volume = 0.75;

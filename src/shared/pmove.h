@@ -26,7 +26,6 @@ void PMove_Init(void);
 int PMove_Contents(vector org);
 float PMove_Gravity(entity ent);
 void PMove_Categorize(void);
-void PMove_WaterMove(void);
 void PMove_CheckWaterJump(void);
 int QPMove_IsStuck(entity eTarget, vector vOffset, vector vecMins, vector vecMaxs);
 void PMove_AccelToss(float move_time, float premove);

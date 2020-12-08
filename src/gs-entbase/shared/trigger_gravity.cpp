@@ -80,7 +80,7 @@ trigger_gravity::trigger_gravity(void)
 
 #ifdef CLIENT
 void
-trigger_gravity::Initialized (void)
+trigger_gravity::Initialized(void)
 {
 	setmodel(this, model);
 	movetype = MOVETYPE_NONE;

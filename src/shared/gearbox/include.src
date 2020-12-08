@@ -6,6 +6,7 @@
 ../../shared/valve/animations.h
 ../../shared/valve/animations.c
 ../../shared/valve/pmove.c
+../../shared/valve/pmove_water.c
 
 ../../shared/valve/fx_blood.c
 ../../shared/valve/fx_breakmodel.c

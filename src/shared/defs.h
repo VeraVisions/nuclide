@@ -32,7 +32,7 @@
 #define BSPVER_Q1		29
 #define BSPVER_HL		30
 #define BSPVER_Q2		38
-#define BSPVER_Q2W		69 
+#define BSPVER_Q2W		69
 #define BSPVER_Q3		46
 #define BSPVER_RTCW		47
 #define BSPVER_RBSP 	1
