@@ -297,23 +297,6 @@ CSQC_UpdateView(float w, float h, float focus)
 
 		setproperty(VF_DRAWWORLD, 1);
 
-		if (g_skyscale != 0 && g_skypos) {
-			vector porg;
-			vector realpos;
-
-			porg = getproperty(VF_ORIGIN);
-			if (autocvar_dev_skyscale) {
-				realpos[0] = porg[0] / autocvar_dev_skyscale;
-				realpos[1] = porg[1] / autocvar_dev_skyscale;
-				realpos[2] = porg[2] / autocvar_dev_skyscale;
-			} else {
-				realpos[0] = porg[0] / g_skyscale;
-				realpos[1] = porg[1] / g_skyscale;
-				realpos[2] = porg[2] / g_skyscale;
-			}
-			setproperty(VF_SKYROOM_CAMERA, g_skypos + realpos);
-		}
-
 		/* draw the viewmodel in a second pass if desired */
 		if (autocvar_r_viewmodelpass) {
 			renderscene();

@@ -60,8 +60,10 @@ point_camera::Input(entity eAct, string strInput, string strData)
 		m_flFOV = stof(strInput);
 		break;
 	case "SetOnAndTurnOthersOff":
-		for (point_camera e = world; e = (point_camera)find(e, ::classname, "point_camera");)
-			e.m_iValue = FALSE;
+		for (entity e = world; (e = find(e, ::classname, "point_camera"));) {
+			point_camera p = (point_camera)e;
+			p.m_iValue = FALSE;
+		}
 
 		m_iValue = TRUE;
 		break;

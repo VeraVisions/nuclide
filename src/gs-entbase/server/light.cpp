@@ -166,7 +166,7 @@ light::light(void)
 	CBaseTrigger::CBaseTrigger();
 
 	/* switch styles before 12 are builtins from Quake. */
-	if (m_flSwitchStyle <= 11) {
+	if (m_flSwitchStyle > 0 && m_flSwitchStyle <= 11) {
 		m_strPattern = getlightstyle(m_flSwitchStyle);
 	}
 }
