@@ -357,6 +357,8 @@
 "OnPressed" "sky_cube,SpotlightTexture,textures/skies/yukongold/bg,0,-1"
 "OnPressed" "sky_cube,SpotlightTexture,textures/skies/dune_hdr/250th/bg,2.5,-1"
 "OnPressed" "sky_cube,SpotlightTexture,textures/skies/smudge/bg,5,-1"
+"OnPressed" "sky_cube,SetPattern,zqmaamqzzqmaamqz,5,-1"
+"OnPressed" "sky_cube,SetPattern,z,7.5,-1"
 // brush 0
 {
 ( -16 -760 8 ) ( -16 -768 8 ) ( -32 -760 8 ) measure/counter [ 1 0 0 0 ] [ -0 -1 -0 0 ] -0 0.5 0.5 0 0 0

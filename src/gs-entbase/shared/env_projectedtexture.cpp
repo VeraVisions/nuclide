@@ -51,7 +51,8 @@ enumflags
 	PRTEXFL_CHANGED_STYLE,
 	PRTEXFL_CHANGED_STATE,
 	PRTEXFL_CHANGED_TEXTURE,
-	PRTEXFL_CHANGED_FOV
+	PRTEXFL_CHANGED_FOV,
+	PRTEXFL_CHANGED_PATTERN
 };
 
 #ifdef CLIENT
@@ -68,6 +69,7 @@ class env_projectedtexture:CBaseTrigger
 	float m_flNearZ;
 	float m_flRadius;
 	float m_flStyle;
+	string m_strPattern;
 	string m_strTextureName;
 	float m_flFOV;
 	int m_iState;
@@ -101,9 +103,7 @@ env_projectedtexture::predraw(void)
 	dynamiclight_set(p, LFIELD_ANGLES, angles);
 	dynamiclight_set(p, LFIELD_FLAGS, LFLAG_NORMALMODE | LFLAG_REALTIMEMODE | LFLAG_SHADOWMAP);
 	dynamiclight_set(p, LFIELD_NEARCLIP, m_flNearZ);
-
-	if (!m_flStyle)
-		dynamiclight_set(p, LFIELD_STYLESTRING, "z");
+	dynamiclight_set(p, LFIELD_STYLESTRING, m_strPattern);
 
 	addentity(this);
 	return PREDRAW_NEXT;
@@ -145,6 +145,8 @@ env_projectedtexture::ReceiveEntity(float flFlags)
 		m_strTextureName = readstring();
 	if (flFlags & PRTEXFL_CHANGED_FOV)
 		m_flFOV = readfloat();
+	if (flFlags & PRTEXFL_CHANGED_PATTERN)
+		m_strPattern = readstring();
 
 	classname = "env_projectedtexture";
 }
@@ -227,6 +229,8 @@ env_projectedtexture::SendEntity(entity ePVSEnt, float flFlags)
 		WriteString(MSG_ENTITY, m_strTextureName);
 	if (flFlags & PRTEXFL_CHANGED_FOV)
 		WriteFloat(MSG_ENTITY, m_flFOV);
+	if (flFlags & PRTEXFL_CHANGED_PATTERN)
+		WriteString(MSG_ENTITY, m_strPattern);
 
 	return TRUE;
 }
@@ -254,6 +258,10 @@ env_projectedtexture::Input(entity eAct, string strInput, string strData)
 	case "SpotlightTexture":
 		m_strTextureName = strData;
 		SendFlags |= PRTEXFL_CHANGED_TEXTURE;
+		break;
+	case "SetPattern":
+		m_strPattern = strData;
+		SendFlags |= PRTEXFL_CHANGED_PATTERN;
 		break;
 	case "TurnOn":
 		Trigger(eAct, TRIG_ON);
@@ -295,6 +303,9 @@ env_projectedtexture::SpawnKey(string strKey, string strValue)
 	case "nearz":
 		m_flNearZ = stof(strValue);
 		break;
+	case "pattern":
+		m_strPattern = strValue;
+		break;
 	default:
 		CBaseTrigger::SpawnKey(strKey, strValue);
 	}
@@ -318,6 +329,7 @@ env_projectedtexture::env_projectedtexture(void)
 #ifdef CLIENT
 	drawmask = MASK_ENGINE;
 #else
+	m_strPattern = "z";
 	m_vecLight = [255,255,255];
 	m_flIntensity = 512;
 	m_flFarZ = 512;
@@ -326,5 +338,8 @@ env_projectedtexture::env_projectedtexture(void)
 	m_flFOV = 90;
 
 	CBaseTrigger::CBaseTrigger();
+
+	if (m_flStyle > 0 && m_flStyle < 12)
+		m_strPattern = getlightstyle(m_flStyle);
 #endif
 }
