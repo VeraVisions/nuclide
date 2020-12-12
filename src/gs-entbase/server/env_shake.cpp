@@ -47,16 +47,7 @@ class env_shake:CBaseTrigger
 void
 env_shake::Trigger(entity act, int state)
 {
-	for (entity e = world; (e = find(e, ::classname, "player"));) {
-		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
-		WriteByte(MSG_MULTICAST, EV_SHAKE);
-		WriteFloat(MSG_MULTICAST, m_flRadius);
-		WriteFloat(MSG_MULTICAST, m_flAmplitude);
-		WriteFloat(MSG_MULTICAST, m_flDuration);
-		WriteFloat(MSG_MULTICAST, m_flFrequency);
-		msg_entity = e;
-		multicast([0,0,0], MULTICAST_ONE_R);
-	}
+	Client_ShakeOnce(origin, m_flRadius, m_flDuration, m_flFrequency, m_flAmplitude);
 }
 
 void

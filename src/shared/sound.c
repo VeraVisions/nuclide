@@ -79,7 +79,7 @@ Sound_ParseField(int i, int a)
 	case "shakes":
 		if (a == 2) {
 			dprint("\tShake set\n");
-			g_sounds[i].shake = stof(argv(1));
+			g_sounds[i].shakes = stof(argv(1));
 		}
 		break;
 	case "pitch":
@@ -340,6 +340,24 @@ Sound_Play(entity target, int chan, string shader)
 
 #ifdef DEVELOPER
 	print(sprintf("Sound_Play: %s\n", argv(r)));
+#endif
+
+#ifdef SERVER
+	if (g_sounds[sample].shakes > 0.0) {
+		Client_ShakeOnce(target.origin, 512, 2.5, 1.0, 1.0f);
+	}
+#else
+	if (g_sounds[sample].shakes > 0.0) {
+		float srad = 512;
+		float dist = vlen(pSeat->m_vecPredictedOrigin - target.origin);
+		if (dist < srad) {
+			float dif = 1.0 - (dist/srad);
+			pSeat->m_flShakeFreq = (1.0 * dif) * g_sounds[sample].shakes;
+			pSeat->m_flShakeAmp = (1.0 * dif) * g_sounds[sample].shakes;
+			pSeat->m_flShakeDuration = soundlength(argv(r));
+			pSeat->m_flShakeTime = pSeat->m_flShakeDuration;
+		}
+	}
 #endif
 
 	sound(

@@ -35,7 +35,7 @@ typedef struct
 	float offset;
 	float pitch_min;
 	float pitch_max;
-	float shake;
+	float shakes;
 	float volume;
 	int flags;
 	int playc;

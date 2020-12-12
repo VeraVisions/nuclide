@@ -21,9 +21,7 @@ var int FX_EXPLOSION_BS;
 void
 FX_Explosion_Init(void)
 {
-	precache_sound("weapons/explode3.wav");
-	precache_sound("weapons/explode4.wav");
-	precache_sound("weapons/explode5.wav");
+	Sound_Precache("fx.explosion");
 	precache_model("sprites/fexplo.spr");
 	FX_EXPLOSION_MAIN = particleeffectnum("fx_explosion.main");
 	FX_EXPLOSION_BS = particleeffectnum("fx_explosion.blacksmoke");
@@ -47,7 +45,7 @@ FX_Explosion(vector vecPos)
 	env_sprite eExplosion = spawn(env_sprite);
 	setorigin(eExplosion, vecPos);
 	setmodel(eExplosion, "sprites/fexplo.spr");
-	sound(eExplosion, CHAN_WEAPON, sprintf("weapons/explode%d.wav", floor(random() * 3) + 3), 1, ATTN_NORM);
+	Sound_Play(eExplosion, CHAN_WEAPON, "fx.explosion");
 
 	//eExplosion.think = FX_Explosion_Animate;
 	eExplosion.effects = EF_ADDITIVE;

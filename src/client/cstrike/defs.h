@@ -119,6 +119,12 @@ struct
 	int m_iFadeActive;
 	entity m_pWeaponFX;
 
+	/* shake */
+	float m_flShakeFreq;
+	float m_flShakeDuration;
+	float m_flShakeTime;
+	float m_flShakeAmp;
+
 	/* cstrike additions */
 	float m_iMoneyOld;
 	float m_flMoneyAlpha;

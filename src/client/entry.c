@@ -292,6 +292,15 @@ CSQC_UpdateView(float w, float h, float focus)
 				setproperty(VF_ORIGIN, pSeat->m_vecCameraOrigin);
 				setproperty(VF_CL_VIEWANGLES, view_angles);
 			}
+
+			if (pSeat->m_flShakeDuration > 0.0) {
+				vector vecShake = [0,0,0];
+				vecShake[0] += random() * 3;
+				vecShake[1] += random() * 3;
+				vecShake[2] += random() * 3;
+				pl.punchangle += (vecShake * pSeat->m_flShakeAmp) * (pSeat->m_flShakeDuration / pSeat->m_flShakeTime);
+				pSeat->m_flShakeDuration -= clframetime;
+			}
 			setproperty(VF_ANGLES, view_angles + pl.punchangle);
 		}
 
@@ -585,11 +594,10 @@ CSQC_Parse_Event(void)
 		setproperty(VF_ANGLES, a);
 		break;
 	case EV_SHAKE:
-		float rad, amp, dur, freq;
-		rad = readfloat();
-		amp = readfloat();
-		dur = readfloat();
-		freq = readfloat();
+		pSeat->m_flShakeFreq = readfloat();
+		pSeat->m_flShakeDuration = readfloat();
+		pSeat->m_flShakeAmp = readfloat();
+		pSeat->m_flShakeTime = pSeat->m_flShakeDuration;
 	default:
 		Game_Parse_Event(fHeader);
 	}

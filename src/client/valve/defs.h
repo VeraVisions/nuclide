@@ -112,6 +112,12 @@ struct
 	vector m_vecFadeColor;
 	int m_iFadeActive;
 
+	/* shake */
+	float m_flShakeFreq;
+	float m_flShakeDuration;
+	float m_flShakeTime;
+	float m_flShakeAmp;
+
 	entity m_pWeaponFX;
 } g_seats[4], *pSeat;
 

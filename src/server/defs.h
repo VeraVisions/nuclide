@@ -47,6 +47,8 @@ void Damage_Radius(vector, entity, float, float, int, int);
 void Damage_Apply(entity, entity, float, int, int);
 void Client_TriggerCamera(entity, vector, vector, float);
 void Client_FixAngle(entity, vector);
+void Client_ShakeOnce(vector pos, float radius, float duration, float frequency, float amplitude);
+
 void Game_Input(void);
 int Rules_IsTeamPlay(void);
 

@@ -143,6 +143,7 @@ monster_alien_grunt::monster_alien_grunt(void)
 	Sound_Precache("monster_alien_grunt.die");
 	Sound_Precache("monster_alien_grunt.idle");
 	Sound_Precache("monster_alien_grunt.pain");
+
 	netname = "Alien Grunt";
 	model = "models/agrunt.mdl";
 	base_mins = [-32,-32,0];
