@@ -904,7 +904,7 @@ void
 CSQC_WorldLoaded(void)
 {
 	/* Primarily for the flashlight */
-	if (serverkeyfloat("*bspversion") != 30) {
+	if (serverkeyfloat("*bspversion") != BSPVER_HL) {
 		localcmd("r_shadow_realtime_dlight 1\n");
 	} else {
 		localcmd("r_shadow_realtime_dlight 0\n");

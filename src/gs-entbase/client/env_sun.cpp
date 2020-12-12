@@ -33,7 +33,7 @@ This entity was introduced in Half-Life 2 (2004).
 int
 Util_IsSky(vector pos)
 {
-	if (serverkeyfloat("*bspversion") == 30)
+	if (serverkeyfloat("*bspversion") == BSPVER_HL)
 	if (getsurfacetexture(world, getsurfacenearpoint(world, pos)) == "sky") {
 		return TRUE;
 	}

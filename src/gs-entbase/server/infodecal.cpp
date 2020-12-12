@@ -95,7 +95,7 @@ infodecal::SpawnKey(string strKey, string strValue)
 void
 infodecal::infodecal(void)
 {
-	if (serverkeyfloat("*bspversion") != 30) {
+	if (serverkeyfloat("*bspversion") != BSPVER_HL) {
 		remove(self);
 		return;
 	}

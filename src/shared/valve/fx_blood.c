@@ -45,7 +45,7 @@ FX_Blood(vector pos, vector color)
 #else
 	static void Blood_Touch(void)
 	{
-		if (serverkeyfloat("*bspversion") == 30)
+		if (serverkeyfloat("*bspversion") == BSPVER_HL)
 			Decals_Place(self.origin, sprintf("{blood%d", floor(random(1,9))));
 		else {
 			decal_pickwall(self, self.origin);

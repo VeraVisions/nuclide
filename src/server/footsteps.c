@@ -267,12 +267,12 @@ Footsteps_Update(void)
 		pl.step_time = time + 0.35;
 
 		switch (serverkeyfloat("*bspversion")) {
-		case 30: /* HL */
+		case BSPVER_HL:
 			Footsteps_HLBSP(pl);
 			break;
-		case 46: /* Q3 */
-		case 47: /* RtCW */
-		case 1: /* RFVBSP */
+		case BSPVER_Q3: /* Q3 */
+		case BSPVER_RTCW: /* RtCW */
+		case BSPVER_RBSP: /* RFVBSP */
 			Footsteps_VVBSP(pl);
 			break;
 		default:

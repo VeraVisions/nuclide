@@ -131,7 +131,7 @@ func_breakable::Pain(void)
 	if (spawnflags & SF_TRIGGER) {
 		return;
 	}
-	if (serverkeyfloat("*bspversion") != 30) {
+	if (serverkeyfloat("*bspversion") != BSPVER_HL) {
 		return;
 	}
 

@@ -17,7 +17,7 @@
 void
 Sky_Update(void)
 {
-	if (serverkeyfloat("*bspversion") != 30) {
+	if (serverkeyfloat("*bspversion") != BSPVER_HL) {
 		return;
 	}
 	localcmd(sprintf("sky %s\n", g_strSkyName));

@@ -62,7 +62,7 @@ decal::ReceiveEntity(void)
 
 	size = drawgetimagesize(m_strTexture);
 
-	if (serverkeyfloat("*bspversion") == 30) {
+	if (serverkeyfloat("*bspversion") == BSPVER_HL) {
 		BuildShader();
 	}
 
@@ -158,7 +158,7 @@ decal::Place(vector org, string dname)
 #else
 	size = drawgetimagesize(m_strTexture);
 
-	if (serverkeyfloat("*bspversion") == 30) {
+	if (serverkeyfloat("*bspversion") == BSPVER_HL) {
 		BuildShader();
 	}
 
@@ -222,7 +222,7 @@ decal Decals_Next(vector pos)
 /* Generalized Decal Placing Function */
 void Decals_Place(vector pos, string dname)
 {
-	if (serverkeyfloat("*bspversion") != 30) {
+	if (serverkeyfloat("*bspversion") != BSPVER_HL) {
 		return;
 	}
 

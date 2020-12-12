@@ -170,7 +170,7 @@ env_sound::env_sound(void)
 	setorigin(this, origin);
 
 	/* Valve BSP, convert their env_sound */
-	if (serverkeyfloat("*bspversion") != 30) {
+	if (serverkeyfloat("*bspversion") != BSPVER_HL) {
 		return;
 	}
 

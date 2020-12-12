@@ -153,7 +153,7 @@ void initents(void)
 	/* sound shader init */
 	Sound_Init();
 
-	if (serverkeyfloat("*bspversion") != 30) {
+	if (serverkeyfloat("*bspversion") == BSPVER_HL) {
 		/* load materials.txt because someone thought this was the best idea */
 		filestream fileMaterial = fopen("sound/materials.txt", FILE_READ);
 		hashMaterials = __NULL__;

@@ -88,7 +88,7 @@ FX_Impact(int iType, vector vecPos, vector vNormal)
 	multicast(vecPos, MULTICAST_PVS);
 #else
 	/* decals */
-	if (serverkeyfloat("*bspversion") == 30)
+	if (serverkeyfloat("*bspversion") == BSPVER_HL)
 	switch (iType) {
 	case IMPACT_GLASS:
 		Decals_Place(vecPos, sprintf("{break%d", floor(random(1,4))));
