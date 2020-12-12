@@ -1,0 +1,9 @@
+// Vera Visions Material
+{
+	surfaceparm tile
+	diffusemap textures/measure/mat_tile.tga
+
+	{
+		program lightmapped
+	}
+}

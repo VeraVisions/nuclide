@@ -1,0 +1,9 @@
+// Vera Visions Material
+{
+	surfaceparm alien
+	diffusemap textures/measure/mat_alien.tga
+
+	{
+		program lightmapped
+	}
+}

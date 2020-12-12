@@ -1,0 +1,9 @@
+// Vera Visions Material
+{
+	surfaceparm wood
+	diffusemap textures/measure/mat_wood.tga
+
+	{
+		program lightmapped
+	}
+}

@@ -1,0 +1,9 @@
+// Vera Visions Material
+{
+	surfaceparm snow
+	diffusemap textures/measure/mat_snow.tga
+
+	{
+		program lightmapped
+	}
+}

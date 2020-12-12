@@ -1,0 +1,9 @@
+// Vera Visions Material
+{
+	surfaceparm flesh
+	diffusemap textures/measure/mat_flesh.tga
+
+	{
+		program lightmapped
+	}
+}

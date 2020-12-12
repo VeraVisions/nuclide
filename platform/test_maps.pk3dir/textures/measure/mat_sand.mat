@@ -1,0 +1,9 @@
+// Vera Visions Material
+{
+	surfaceparm sand
+	diffusemap textures/measure/mat_sand.tga
+
+	{
+		program lightmapped
+	}
+}

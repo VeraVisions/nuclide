@@ -1,0 +1,9 @@
+// Vera Visions Material
+{
+	surfaceparm vent
+	diffusemap textures/measure/mat_vent.tga
+
+	{
+		program lightmapped
+	}
+}

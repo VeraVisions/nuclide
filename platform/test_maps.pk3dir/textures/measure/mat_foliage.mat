@@ -1,0 +1,9 @@
+// Vera Visions Material
+{
+	surfaceparm foliage
+	diffusemap textures/measure/mat_foliage.tga
+
+	{
+		program lightmapped
+	}
+}

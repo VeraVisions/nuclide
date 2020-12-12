@@ -1,0 +1,9 @@
+// Vera Visions Material
+{
+	surfaceparm dirt
+	diffusemap textures/measure/mat_dirt.tga
+
+	{
+		program lightmapped
+	}
+}

@@ -1,0 +1,9 @@
+// Vera Visions Material
+{
+	surfaceparm slosh
+	diffusemap textures/measure/mat_slosh.tga
+
+	{
+		program lightmapped
+	}
+}

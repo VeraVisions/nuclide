@@ -1,0 +1,9 @@
+// Vera Visions Material
+{
+	surfaceparm metal
+	diffusemap textures/measure/mat_metal.tga
+
+	{
+		program lightmapped
+	}
+}

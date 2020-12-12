@@ -1,0 +1,9 @@
+// Vera Visions Material
+{
+	surfaceparm computer
+	diffusemap textures/measure/mat_computer.tga
+
+	{
+		program lightmapped
+	}
+}

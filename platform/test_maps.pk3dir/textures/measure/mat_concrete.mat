@@ -1,0 +1,9 @@
+// Vera Visions Material
+{
+	surfaceparm concrete
+	diffusemap textures/measure/mat_concrete.tga
+
+	{
+		program lightmapped
+	}
+}
