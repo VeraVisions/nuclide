@@ -129,11 +129,11 @@ w_silencer_primary(void)
 
 	/* Different sound & accuracy without silencer */
 	if (pl.a_ammo3 == 1) {
-		TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, Skill_GetValue("plr_9mm_bullet"), [0.01, 0.01], WEAPON_GLOCK);
+		TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, Skill_GetValue("plr_9mm_bullet", 8), [0.01, 0.01], WEAPON_GLOCK);
 		Sound_Play(pl, CHAN_WEAPON, "weapon_silencer.fire");
 
 	} else {
-		TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, Skill_GetValue("plr_9mm_bullet"),  [0.1,0.1], WEAPON_GLOCK);
+		TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, Skill_GetValue("plr_9mm_bullet", 8),  [0.1,0.1], WEAPON_GLOCK);
 		Sound_Play(pl, CHAN_WEAPON, "weapon_glock.fire");
 	}
 

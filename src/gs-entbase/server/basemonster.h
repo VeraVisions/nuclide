@@ -98,7 +98,7 @@ class CBaseMonster:CBaseEntity
 	int m_iFlags;
 	vector base_mins;
 	vector base_maxs;
-	int base_health;
+	float base_health;
 
 	float m_flChaseSpeed;
 

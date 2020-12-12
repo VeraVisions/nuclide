@@ -194,7 +194,7 @@ monster_houndeye::monster_houndeye(void)
 	Sound_Precache("monster_houndeye.pain");
 	netname = "Houndeye";
 	model = "models/houndeye.mdl";
-	base_health = Skill_GetValue("houndeye_health");
+	base_health = Skill_GetValue("houndeye_health", 20);
 	base_mins = [-16,-16,0];
 	base_maxs = [16,16,36];
 	m_iAlliance = MAL_ALIEN;

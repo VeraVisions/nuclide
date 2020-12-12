@@ -145,7 +145,7 @@ void w_cannon_primary(void)
 		return;
 	}
 
-	dmg = Skill_GetValue("plr_cannon");
+	dmg = Skill_GetValue("plr_cannon", 5);
 	TraceAttack_FireBullets(20, pl.origin + pl.view_ofs, dmg, [0.08716,0.04362], WEAPON_CANNON);
 	pl.cannon_mag -= 2;
 	Weapons_PlaySound(pl, CHAN_WEAPON, "cannon/fire.wav", 1, ATTN_NORM);
@@ -178,7 +178,7 @@ void w_cannon_secondary(void)
 		return;
 	}
 
-	dmg = Skill_GetValue("plr_cannon");
+	dmg = Skill_GetValue("plr_cannon", 5);
 	TraceAttack_FireBullets(10, pl.origin + pl.view_ofs, dmg, [0.08716,0.04362], WEAPON_CANNON);
 	pl.cannon_mag--;
 	Weapons_PlaySound(pl, CHAN_WEAPON, "cannon/fire.wav", 1, ATTN_NORM);

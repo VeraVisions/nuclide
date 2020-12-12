@@ -130,9 +130,9 @@ void w_hammer_release(void)
 
 			/* players only take half damage */
 			if (trace_ent.classname == "player")
-				hdmg = Skill_GetValue("plr_hammer") / 2;
+				hdmg = Skill_GetValue("plr_hammer", 100) / 2;
 			else
-				hdmg = Skill_GetValue("plr_hammer");
+				hdmg = Skill_GetValue("plr_hammer", 100);
 
 			Damage_Apply(trace_ent, self, hdmg, WEAPON_HAMMER, DMG_BLUNT);
 
@@ -154,7 +154,7 @@ void w_hammer_release(void)
 #ifdef SERVER
 	if (trace_ent.takedamage) {
 		hitsound = floor(random(1, 4));
-		hdmg = Skill_GetValue("plr_hammeralt");
+		hdmg = Skill_GetValue("plr_hammeralt", 200);
 		Damage_Apply(trace_ent, self, hdmg, WEAPON_HAMMER, DMG_BLUNT);
 	} else {
 		if (trace_fraction < 1.0) {

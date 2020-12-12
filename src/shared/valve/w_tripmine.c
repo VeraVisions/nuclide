@@ -81,7 +81,7 @@ monster_tripmine::Trip(int walkthrough)
 	Death =
 	Pain = __NULL__;
 	takedamage = DAMAGE_NO;
-	dmg = Skill_GetValue("plr_tripmine");
+	dmg = Skill_GetValue("plr_tripmine", 150);
 	FX_Explosion(origin);
 	Damage_Radius(origin, real_owner, dmg, dmg * 2.5f, TRUE, WEAPON_TRIPMINE);
 	sound(this, CHAN_WEAPON, sprintf("weapons/explode%d.wav", floor(random() * 2) + 3), 1, ATTN_NORM);

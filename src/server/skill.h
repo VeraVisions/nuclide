@@ -16,4 +16,4 @@
  */
 
 void Skill_Init(void);
-float Skill_GetValue(string);
+float Skill_GetValue(string, float);

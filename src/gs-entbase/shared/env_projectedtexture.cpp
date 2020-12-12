@@ -22,6 +22,7 @@
 "texturename"       Name of the texture to be cast as a light.
 "farz"              Distance to which this projected light will be cast.
 "nearz"             Clipping distance for near objects that won't get lit.
+"pattern"           Sets a custom pattern. 'style' overrides this.
 
 Inputs:
 "TurnOff"           Turns the entity off.
@@ -32,6 +33,7 @@ Inputs:
 "SetLightStyle"     Sets the light appearance integer.
 "SetNearZ"          Sets clipping distance for near objects that won't get lit.
 "SetFarZ"           Sets distance to which this projected light will be cast.
+"SetPattern"        Sets the style pattern of the light to a custom one.
 
 Textured light projected. This is the type of lighting that's used for
 flashlights, lamp spotlights and so on.

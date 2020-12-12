@@ -214,7 +214,7 @@ monster_zombie::monster_zombie(void)
 	Sound_Precache("monster_zombie.pain");
 	netname = "Zombie";
 	model = "models/zombie.mdl";
-	base_health = Skill_GetValue("zombie_health");
+	base_health = Skill_GetValue("zombie_health", 50);
 	base_mins = [-16,-16,0];
 	base_maxs = [16,16,72];
 	m_iAlliance = MAL_ALIEN;

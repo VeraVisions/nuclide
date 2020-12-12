@@ -47,7 +47,7 @@ void Player_UseDown(void)
 	vecSrc = self.origin + self.view_ofs;
 
 	self.hitcontentsmaski = CONTENTBITS_POINTSOLID;
-	traceline(vecSrc, vecSrc + (v_forward * 64), MOVE_NORMAL, self);
+	traceline(vecSrc, vecSrc + (v_forward * 64), MOVE_HITMODEL, self);
 
 
 	if (trace_ent.PlayerUse) {

@@ -46,7 +46,7 @@ void item_battery::touch(void)
 		return;
 	}
 	/* Move this somewhere else? */
-	pl.armor += Skill_GetValue("battery");
+	pl.armor += Skill_GetValue("battery", 15);
 	if (pl.armor > 100) {
 		pl.armor = 100;
 	}

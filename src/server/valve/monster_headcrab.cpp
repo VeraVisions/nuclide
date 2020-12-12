@@ -167,11 +167,11 @@ monster_headcrab::monster_headcrab(void)
 	if (classname == "monster_babycrab") {
 		netname = "Baby Headcrab";
 		model = "models/baby_headcrab.mdl";
-		base_health = Skill_GetValue ("headcrab_health") /4;
+		base_health = Skill_GetValue ("headcrab_health", 10) /4;
 	} else {
 		netname = "Headcrab";
 		model = "models/headcrab.mdl";
-		base_health = Skill_GetValue("headcrab_health");
+		base_health = Skill_GetValue("headcrab_health", 10);
 	}
 
 	base_mins = [-16,-16,0];

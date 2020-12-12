@@ -127,7 +127,7 @@ void monster_nihilanth::monster_nihilanth(void)
 	Sound_Precache("monster_nihilanth.recharge");
 	netname = "Nihilanth";
 	model = "models/nihilanth.mdl";
-	base_health = Skill_GetValue("nihilanth_health");
+	base_health = Skill_GetValue("nihilanth_health", 800);
 	base_mins = [-192,-192,-32];
 	base_maxs = [192,192,384];
 	CBaseMonster::CBaseMonster();

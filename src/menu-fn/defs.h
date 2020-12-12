@@ -149,4 +149,3 @@ enum
 };
 
 void m_hide(void);
-void cvar_init(void);

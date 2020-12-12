@@ -43,6 +43,6 @@ void monster_apache::monster_apache(void)
 	model = "models/apache.mdl";
 	base_mins = [-16,-16,0];
 	base_maxs = [16,16,72];
-	base_health = Skill_GetValue("apache_health");
+	base_health = Skill_GetValue("apache_health", 250);
 	CBaseMonster::CBaseMonster();
 }

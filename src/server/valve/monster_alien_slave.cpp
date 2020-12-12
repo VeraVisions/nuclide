@@ -246,7 +246,7 @@ monster_alien_slave::monster_alien_slave(void)
 
 	netname = "Alien Slave";
 	model = "models/islave.mdl";
-	base_health = Skill_GetValue("islave_health");
+	base_health = Skill_GetValue("islave_health", 30);
 	base_mins = [-16,-16,0];
 	base_maxs = [16,16,72];
 	m_iAlliance = MAL_ALIEN;

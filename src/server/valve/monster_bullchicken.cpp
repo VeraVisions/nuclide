@@ -148,7 +148,7 @@ void monster_bullchicken::monster_bullchicken(void)
 	Sound_Precache("monster_bullchicken.pain");
 	netname = "Bullsquid";
 	model = "models/bullsquid.mdl";
-	base_health = Skill_GetValue("bullsquid_health");
+	base_health = Skill_GetValue("bullsquid_health", 40);
 	base_mins = [-32,-32,0];
 	base_maxs = [32,32,64];
 	CBaseMonster::CBaseMonster();

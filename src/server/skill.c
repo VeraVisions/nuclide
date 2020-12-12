@@ -25,8 +25,9 @@ Skill_Init(void)
 }
 
 float
-Skill_GetValue(string variable)
+Skill_GetValue(string variable, float defaultvalue)
 {
 	float skill = cvar("skill");
-	return cvar(sprintf("sk_%s%d", variable, skill));
+	float val = fabs(cvar(sprintf("sk_%s%d", variable, skill)));
+	return (val == 0) ? defaultvalue : val;
 }

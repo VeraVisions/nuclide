@@ -201,7 +201,7 @@ monster_barney::monster_barney(void)
 
 	model = "models/barney.mdl";
 	netname = "Barney";
-	base_health = Skill_GetValue("barney_health");
+	base_health = Skill_GetValue("barney_health", 35);
 	base_mins = [-16,-16,0];
 	base_maxs = [16,16,72];
 	m_iAlliance = MAL_FRIEND;

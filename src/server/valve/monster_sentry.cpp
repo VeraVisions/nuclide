@@ -71,7 +71,7 @@ void monster_sentry::monster_sentry(void)
 	Sound_Precache("monster_sentry.retract");
 	netname = "Sentry";
 	model = "models/sentry.mdl";
-	base_health = Skill_GetValue("sentry_health");
+	base_health = Skill_GetValue("sentry_health", 40);
 	base_mins = [-16,-16,0];
 	base_maxs = [16,16,72];
 	CBaseMonster::CBaseMonster();

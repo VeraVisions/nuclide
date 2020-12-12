@@ -206,7 +206,7 @@ monster_scientist::monster_scientist(void)
 	model = "models/scientist.mdl";
 	base_mins = [-16,-16,0];
 	base_maxs = [16,16,72];
-	base_health = Skill_GetValue("scientist_health");
+	base_health = Skill_GetValue("scientist_health", 20);
 
 	CBaseNPC::CBaseNPC();
 

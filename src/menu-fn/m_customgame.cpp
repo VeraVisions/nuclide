@@ -367,7 +367,6 @@ customgame_btnactivate_start(void)
 	localcmd("menu_restart\n");
 	localcmd("menu_customgame\n");
 	localcmd("menu_musicstart\n");
-	cvar_init();
 }
 
 void

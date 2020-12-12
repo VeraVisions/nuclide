@@ -131,7 +131,7 @@ void monster_gargantua::monster_gargantua(void)
 	Sound_Precache("monster_gargantua.step");
 	netname = "Gargantua";
 	model = "models/garg.mdl";
-	base_health = Skill_GetValue("gargantua_health");
+	base_health = Skill_GetValue("gargantua_health", 800);
 	base_mins = [-32,-32,0];
 	base_maxs = [32,32,128];
 	CBaseMonster::CBaseMonster();

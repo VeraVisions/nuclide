@@ -156,7 +156,7 @@ w_python_primary(void)
 	Weapons_ViewAnimation(PYTHON_FIRE1);
 #else
 	pl.python_mag--;
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, Skill_GetValue("plr_357_bullet"), [0.008, 0.008], WEAPON_PYTHON);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, Skill_GetValue("plr_357_bullet", 40), [0.008, 0.008], WEAPON_PYTHON);
 	Sound_Play(pl, CHAN_WEAPON, "weapon_357.shoot");
 #endif
 

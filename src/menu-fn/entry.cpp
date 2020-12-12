@@ -35,25 +35,6 @@ IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING\
 OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.\
 ==============================================================================";
 
-void
-cvar_init(void)
-{
-	/* TODO: Shove these into defaults.cfg instead of forcing them */
-	localcmd("seta con_textsize -12\n");
-	localcmd("seta scr_conalpha 1\n");
-	localcmd("seta cl_idlefps 0\n");
-	localcmd("seta r_ignoreentpvs 0\n");
-	localcmd("seta allow_download_packages 0\n");
-	localcmd("seta gl_mindist 4\n"); // Thanks Valve for v_shotgun.mdl
-	localcmd("seta _pext_infoblobs 1\n");
-	localcmd("seta r_shadow_realtime_dlight 1");
-	localcmd("seta r_shadow_realtime_dlight_shadows 1");
-	
-	/* Hack! */
-	localcmd("seta gl_font 0\n");
-	localcmd("seta gl_font CONCHARS?fmt=h\n");
-}
-
 var int autocvar_r_autoscale = TRUE;
 void
 Menu_AutoScale(void)
@@ -108,7 +89,6 @@ m_init(void)
 
 	localcmd("plug_load ffmpeg\n");
 
-	cvar_init();
 	shaderforname("logo_avi", "{\n{\nvideomap av:media/logo.avi\n}\n}");
 
 	for (int i = 0; i < g_bmp.length; i++) {

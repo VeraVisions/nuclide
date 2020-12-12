@@ -125,7 +125,7 @@ void monster_bigmomma::monster_bigmomma(void)
 	netname = "Gonarch";
 	model = "models/big_mom.mdl";
 	/* health is based on factor, for it's not killable until last stage */
-	base_health = Skill_GetValue("bigmomma_health_factor") * 300;
+	base_health = Skill_GetValue("bigmomma_health_factor", 1.5) * 300;
 	base_mins = [-95,-95,0];
 	base_maxs = [95,95,190];
 	CBaseMonster::CBaseMonster();

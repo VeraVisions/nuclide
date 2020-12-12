@@ -117,7 +117,7 @@ w_crossbow_holster(void)
 void Crossbolt_Touch(void) {
 	/* explode mode, multiplayer */
 	if (self.weapon) {
-		float dmg = Skill_GetValue("plr_xbow_bolt_monster");
+		float dmg = Skill_GetValue("plr_xbow_bolt_monster", 50);
 		FX_Explosion(self.origin);
 		Damage_Radius(self.origin, self.owner, dmg, dmg * 2.5f, TRUE, WEAPON_CROSSBOW);
 		if (random() < 0.5) {
@@ -138,7 +138,7 @@ void Crossbolt_Touch(void) {
 	}
 
 	/* anything else that can take damage */
-	Damage_Apply(other, self.owner, Skill_GetValue("plr_xbow_bolt_monster"), WEAPON_CROSSBOW, DMG_BLUNT);
+	Damage_Apply(other, self.owner, Skill_GetValue("plr_xbow_bolt_monster", 50), WEAPON_CROSSBOW, DMG_BLUNT);
 	Sound_Play(self, 1, "weapon_crossbow.hitbody");
 
 	if (other.iBleeds == FALSE) {
