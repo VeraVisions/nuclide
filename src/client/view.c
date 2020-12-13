@@ -25,10 +25,12 @@ View_Init(void)
 			pSeat->m_eViewModel = spawn();
 			pSeat->m_eViewModel.classname = "vm";
 			pSeat->m_eViewModel.renderflags = RF_DEPTHHACK;
+			pSeat->m_eViewModel.effects |= EF_NOSHADOW;
 			
 			pSeat->m_eMuzzleflash = spawn();
 			pSeat->m_eMuzzleflash.classname = "mflash";
 			pSeat->m_eMuzzleflash.renderflags = RF_ADDITIVE;
+			pSeat->m_eMuzzleflash.effects |= EF_NOSHADOW;
 			pSeat->m_pWeaponFX = spawn(CBaseFX);
 		}
 	}
