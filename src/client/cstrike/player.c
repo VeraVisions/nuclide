@@ -21,7 +21,7 @@ Player_PreDraw(base_player pl, int thirdperson)
 	if (pl.gflags & GF_FLASHLIGHT) {
 		vector src;
 		vector ang;
-		
+
 		if (pl.entnum != player_localentnum) {
 			src = pl.origin + pl.view_ofs;
 			ang = [pl.pitch, pl.angles[1], pl.angles[2]];

@@ -166,22 +166,7 @@ CSQC_UpdateView(float w, float h, float focus)
 		setproperty(VF_ENVMAP, "$whiteimage");
 		setproperty(VF_ORIGIN, g_vecCubePos);
 		setproperty(VF_AFOV, 90);
-		if (g_skyscale != 0 && g_skypos) {
-			vector porg;
-			vector realpos;
-			
-			if (autocvar_dev_skyscale) {
-				realpos[0] = g_vecCubePos[0] / autocvar_dev_skyscale;
-				realpos[1] = g_vecCubePos[1] / autocvar_dev_skyscale;
-				realpos[2] = g_vecCubePos[2] / autocvar_dev_skyscale;
-			} else {
-				realpos[0] = g_vecCubePos[0] / g_skyscale;
-				realpos[1] = g_vecCubePos[1] / g_skyscale;
-				realpos[2] = g_vecCubePos[2] / g_skyscale;
-			}
-			setproperty(VF_SKYROOM_CAMERA, g_skypos + realpos);
-		}
-		
+		SkyCamera_Setup();
 		renderscene();
 		return;
 	}
@@ -305,6 +290,7 @@ CSQC_UpdateView(float w, float h, float focus)
 		}
 
 		setproperty(VF_DRAWWORLD, 1);
+		SkyCamera_Setup();
 
 		/* draw the viewmodel in a second pass if desired */
 		if (autocvar_r_viewmodelpass) {

@@ -30,13 +30,15 @@ var int autocvar_dev_skyscale = 0;
 var vector g_skypos;
 var int g_skyscale;
 
-class sky_camera:CBaseEntity
+class
+sky_camera:CBaseEntity
 {
 	void(void) sky_camera;
 	virtual void(string, string) SpawnKey;
 };
 
-void sky_camera::SpawnKey(string strField, string strKey)
+void
+sky_camera::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
 		case "scale":
@@ -52,8 +54,29 @@ void sky_camera::SpawnKey(string strField, string strKey)
 	}
 }
 
-void sky_camera::sky_camera(void)
+void
+sky_camera::sky_camera(void)
 {
 	g_skyscale = 16;
 	Init();
+}
+
+void
+SkyCamera_Setup(void)
+{
+	if (g_skyscale != 0 && g_skypos) {
+		vector porg;
+		vector realpos;
+			
+		if (autocvar_dev_skyscale) {
+			realpos[0] = g_vecCubePos[0] / autocvar_dev_skyscale;
+			realpos[1] = g_vecCubePos[1] / autocvar_dev_skyscale;
+			realpos[2] = g_vecCubePos[2] / autocvar_dev_skyscale;
+		} else {
+			realpos[0] = g_vecCubePos[0] / g_skyscale;
+			realpos[1] = g_vecCubePos[1] / g_skyscale;
+			realpos[2] = g_vecCubePos[2] / g_skyscale;
+		}
+		setproperty(VF_SKYROOM_CAMERA, g_skypos + realpos);
+	}
 }

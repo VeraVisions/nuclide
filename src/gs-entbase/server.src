@@ -102,6 +102,7 @@ server/monster_furniture.cpp
 server/monster_generic.cpp
 server/monstermaker.cpp
 server/multisource.cpp
+server/prop_door_rotating.cpp
 server/random_speaker.cpp
 server/random_trigger.cpp
 server/scripted_sentence.cpp
