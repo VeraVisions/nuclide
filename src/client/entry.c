@@ -166,7 +166,7 @@ CSQC_UpdateView(float w, float h, float focus)
 		setproperty(VF_ENVMAP, "$whiteimage");
 		setproperty(VF_ORIGIN, g_vecCubePos);
 		setproperty(VF_AFOV, 90);
-		SkyCamera_Setup();
+		SkyCamera_Setup(g_vecCubePos);
 		renderscene();
 		return;
 	}
@@ -290,7 +290,7 @@ CSQC_UpdateView(float w, float h, float focus)
 		}
 
 		setproperty(VF_DRAWWORLD, 1);
-		SkyCamera_Setup();
+		SkyCamera_Setup(getproperty(VF_ORIGIN));
 
 		/* draw the viewmodel in a second pass if desired */
 		if (autocvar_r_viewmodelpass) {

@@ -26,7 +26,7 @@ View_Init(void)
 			pSeat->m_eViewModel.classname = "vm";
 			pSeat->m_eViewModel.renderflags = RF_DEPTHHACK;
 			pSeat->m_eViewModel.effects |= EF_NOSHADOW;
-			
+
 			pSeat->m_eMuzzleflash = spawn();
 			pSeat->m_eMuzzleflash.classname = "mflash";
 			pSeat->m_eMuzzleflash.renderflags = RF_ADDITIVE;
@@ -89,7 +89,6 @@ void
 View_CalcBob(void)
 {
 	float cycle;
-
 	vector vel;
 
 	if (self.flags & FL_ONGROUND == -1) {
@@ -133,7 +132,8 @@ Really convoluted function that makes the gun,
 muzzleflash, dynamic lights and so on appear
 ====================
 */
-void View_DrawViewModel(void)
+void
+View_DrawViewModel(void)
 {
 	entity m_eViewModel = pSeat->m_eViewModel;
 	entity m_eMuzzleflash = pSeat->m_eMuzzleflash;
@@ -207,7 +207,8 @@ void View_DrawViewModel(void)
 	}
 }
 
-void View_PostDraw(void)
+void
+View_PostDraw(void)
 {
 	entity m_eMuzzleflash = pSeat->m_eMuzzleflash;
 
@@ -217,7 +218,8 @@ void View_PostDraw(void)
 	}
 }
 
-void View_Stairsmooth(void)
+void
+View_Stairsmooth(void)
 {
 	vector currentpos = pSeat->m_vecPredictedOrigin;
 	vector endpos = currentpos;
@@ -253,14 +255,16 @@ Resets the timeline and plays a new sequence
 onto the view model
 ====================
 */
-void View_PlayAnimation(int iSequence)
+void
+View_PlayAnimation(int iSequence)
 {
 	pSeat->m_eViewModel.frame = (float)iSequence;
 	player pl = (player)pSeat->m_ePlayer;
 	pl.weapontime = 0.0f;
 }
 
-int View_GetAnimation(void)
+int
+View_GetAnimation(void)
 {
 	return pSeat->m_eViewModel.frame;
 }
