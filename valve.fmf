@@ -24,6 +24,7 @@ BASEGAME valve
 -set gameinfo_svonly "0"
 -set gameinfo_menutrack ""
 -set gameinfo_chatroom "halflife"
+-set gameinfo_pkgname "valve_uplink;valve_realmedia;valve_patch1110;valve_opfordemo;valve_hlds;logos_realmedia"
 
 DOWNLOADSURL http://www.frag-net.com/dl/valve_packages
 UPDATEURL http://www.frag-net.com/mods/valve.fmf
