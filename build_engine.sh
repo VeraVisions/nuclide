@@ -2,6 +2,7 @@
 set -e
 
 FTE_MAKEFILE=./src/engine/engine/Makefile
+BUILD_SDL2=0
 
 mkdir -p ./bin
 
@@ -17,9 +18,16 @@ else
 	cd ./engine/engine
 fi
 
-make -j $(nproc) makelibs FTE_TARGET=SDL2
-make -j $(nproc) m-rel FTE_TARGET=SDL2
-cp -v ./release/fteqw-sdl2 ../../../bin/fteqw
+if [ "$BUILD_SDL2" -eq 1 ]; then
+	make -j $(nproc) makelibs FTE_TARGET=SDL2
+	make -j $(nproc) m-rel FTE_TARGET=SDL2
+	cp -v ./release/fteqw-sdl2 ../../../bin/fteqw
+else
+	make -j $(nproc) makelibs
+	make -j $(nproc) m-rel
+	cp -v ./release/fteqw ../../../bin/fteqw
+fi
+
 make -j $(nproc) sv-rel
 cp -v ./release/fteqw-sv ../../../bin/fteqw-sv
 make -j $(nproc) qcc-rel

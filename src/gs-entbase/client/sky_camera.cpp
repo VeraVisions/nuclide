@@ -65,7 +65,6 @@ void
 SkyCamera_Setup(vector org)
 {
 	if (g_skyscale != 0 && g_skypos) {
-		vector porg;
 		vector realpos;
 			
 		if (autocvar_dev_skyscale) {

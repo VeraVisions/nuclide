@@ -1,0 +1,21 @@
+ #includelist
+../../shared/base/flags.h
+../../shared/base/player.cpp
+../../shared/base/weapon_common.h
+../../shared/base/animations.h
+../../shared/base/animations.c
+../../shared/base/pmove.c
+../../shared/base/pmove_water.c
+
+../../shared/base/fx_blood.c
+../../shared/base/fx_breakmodel.c
+../../shared/base/fx_explosion.c
+../../shared/base/fx_gibhuman.c
+../../shared/base/fx_spark.c
+../../shared/base/fx_impact.c
+
+../../shared/base/items.h
+../../shared/base/weapons.h
+../../shared/base/weapons.c
+../../shared/base/weapon_common.c
+#endlist

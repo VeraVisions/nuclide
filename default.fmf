@@ -1,0 +1,31 @@
+FTEMANIFEST 1
+GAME base
+NAME "Nuclide"
+BASEGAME platform
+BASEGAME logos
+BASEGAME base
+
+// custom game menu variables
+-set gameinfo_game "Nuclide Base"
+-set gameinfo_gamedir "base"
+-set gameinfo_fallback_dir ""
+-set gameinfo_mpentity "info_player_deathmatch"
+-set gameinfo_size "1000080"
+-set gameinfo_url_info "www.vera-visions.com"
+-set gameinfo_version "1.0"
+-set gameinfo_url_dl ""
+-set gameinfo_type "Both"
+-set gameinfo_nomodels 0
+-set gameinfo_gamedll "progs.dat"
+-set gameinfo_startmap "c0a0"
+-set gameinfo_trainingmap "map t0a0"
+-set gameinfo_cldll 1
+-set gameinfo_hlversion "1110"
+-set gameinfo_svonly "0"
+-set gameinfo_menutrack ""
+-set gameinfo_chatroom "lobby"
+
+// you don't really want to change these
+RTCBROKER master.frag-net.com:27950
+PROTOCOLNAME "Nuclide"
+MAINCONFIG nuclide.cfg

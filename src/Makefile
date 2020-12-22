@@ -1,11 +1,19 @@
 all:
 	make menu
+	make base
+	make plugs
 	make games
 	make mods
-	make plugs
 
 menu:
 	cd menu-fn && $(MAKE)
+
+base:
+	cd client/base && $(MAKE)
+	cd server/base && $(MAKE)
+
+plugs:
+	cd plugins && $(MAKE)
 
 games:
 	cd client/valve && $(MAKE)
@@ -16,8 +24,6 @@ games:
 	cd server/rewolf && $(MAKE)
 	cd client/gearbox && $(MAKE)
 	cd server/gearbox && $(MAKE)
-	#cd client/wastes && $(MAKE)
-	#cd server/wastes && $(MAKE)
 
 mods:
 	cd client/cstrike && $(MAKE)
@@ -28,6 +34,3 @@ mods:
 	cd server/poke646 && $(MAKE)
 	cd client/hunger && $(MAKE)
 	cd server/hunger && $(MAKE)
-
-plugs:
-	cd plugins && $(MAKE)

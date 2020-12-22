@@ -1,0 +1,35 @@
+#pragma target fte
+#pragma progs_dat  "../../../base/data.pk3dir/csprogs.dat"
+
+#define CSQC
+#define CLIENT
+#define CLASSIC_VGUI
+#define GS_RENDERFX
+
+#includelist
+../../shared/fteextensions.qc
+../../shared/defs.h
+../base/defs.h
+../defs.h
+
+../../vgui/include.src
+
+../../gs-entbase/client.src
+../../gs-entbase/shared.src
+../../shared/base/include.src
+
+../base/predict.c
+../base/init.c
+../base/player.c
+../base/entities.c
+../base/cmds.c
+../base/game_event.c
+../base/view.c
+../base/hud.c
+../base/hud_weaponselect.c
+../base/scoreboard.c
+../base/input.c
+
+../include.src
+../../shared/include.src
+#endlist

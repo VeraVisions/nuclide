@@ -1,0 +1,40 @@
+#pragma target fte
+#pragma progs_dat  "../../../base/data.pk3dir/progs.dat"
+
+#define QWSSQC
+#define SERVER
+#define GS_RENDERFX
+
+#includelist
+../../shared/fteextensions.qc
+../../gs-entbase/server/defs.h
+../../shared/defs.h
+../defs.h
+
+../../gs-entbase/server.src
+../../gs-entbase/shared.src
+../../shared/base/include.src
+
+../base/defs.h
+
+../base/player.c
+../base/spectator.c
+
+../../botlib/include.src
+
+../base/gamerules.cpp
+../base/gamerules_singleplayer.cpp
+../base/gamerules_multiplayer.cpp
+../base/client.c
+../base/server.c
+../base/damage.c
+../base/items.cpp
+../base/rules.c
+../base/flashlight.c
+
+../base/input.c
+../base/spawn.c
+
+../include.src
+../../shared/include.src
+#endlist
