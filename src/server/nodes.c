@@ -178,7 +178,8 @@ Nodes_Init(void)
 	dprint(" ^2DONE\n");
 	dprint(sprintf("[^2NODES^7] %i nodes found.\n", g_iNodes));
 
-	Nodes_Save(sprintf("%s.way", mapname));
+	if (g_iNodes)
+		Nodes_Save(sprintf("%s.way", mapname));
 
 	/* we don't need these any longer */
 #ifndef NODE_DEBUG
