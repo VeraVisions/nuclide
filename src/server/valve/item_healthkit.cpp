@@ -59,6 +59,7 @@ void item_healthkit::Respawn(void)
 	SetSize([-16,-16,0],[16,16,16]);
 	SetOrigin(m_oldOrigin);
 	SetModel(m_oldModel);
+	//botinfo = BOTINFO_HEALTH;
 
 	think = __NULL__;
 	nextthink = -1;

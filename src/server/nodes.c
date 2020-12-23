@@ -201,6 +201,8 @@ Nodes_Init(void)
 void
 SV_AddDebugPolygons(void)
 {
+	Way_DrawDebugInfo();
+
 	if (!g_iNodes) {
 		return;
 	}

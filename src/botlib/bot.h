@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#define COST_INFINITE 99999
+
 enum
 {
 	BOT_PERSONALITY_NORMAL,
@@ -23,8 +25,22 @@ enum
 
 class bot:player
 {
+	/* routing */
+	int m_iNodes;
+	int m_iCurNode;
+	nodeslist_t *m_pRoute;
+	float m_flNodeGiveup;
+	float m_flLastDist;
+	entity m_eDestination;
+	vector m_vecLastNode;
+
+	/* combat */
+	entity m_eTarget;
+
 	void(void) bot;
-	virtual void(void) PickName;
+
+	virtual void(void) RunAI;
+	virtual void(void) CheckRoute;
 };
 
 entity Bot_AddQuick(void);

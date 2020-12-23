@@ -14,30 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* parse info_node entities and convert them to FTE compatible routing data */
-#define NODE_DEBUG
-
-typedef struct node_s {
-	vector origin;
-	float radius;
-
-	struct neighbour_s
-	{
-		int node;
-		float dist;
-		int flags;
-	} *nb;
-	int nb_count;
-} node_t;
-
-node_t *g_pNodes;
-int g_iNodes;
-int g_nodes_present;
-
-/* info_nodes can do a lot more in theory, right now we don't */
-class info_node { };
-
-/* write current nodes to disk */
-void Nodes_Save(string);
-void Nodes_Load(string);
-void Nodes_Init(void);
+#include "bot.h"
+#include "botinfo.h"
+#include "route.h"

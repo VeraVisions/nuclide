@@ -14,30 +14,45 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* parse info_node entities and convert them to FTE compatible routing data */
-#define NODE_DEBUG
+void
+Bot_PickName(entity target)
+{
+	int n = 0;
+	entity pbot = world;
+	for (int i = 1; (pbot = edict_num(i)); i++) {
+		if (clienttype(pbot) == CLIENTTYPE_BOT) {
+			n++;
+		}
+	}
+	forceinfokey(target, "name", sprintf("Bot %i", n));
+}
 
-typedef struct node_s {
-	vector origin;
-	float radius;
+entity
+Bot_AddQuick(void)
+{
+	/* we've got no nodes, so generate some fake waypoints */
+	if (!g_nodes_present) {
+		return world;
+	}
 
-	struct neighbour_s
-	{
-		int node;
-		float dist;
-		int flags;
-	} *nb;
-	int nb_count;
-} node_t;
+	entity newbot;
+	entity oself;
 
-node_t *g_pNodes;
-int g_iNodes;
-int g_nodes_present;
+	oself = self;
+	self = world;
+	self = spawnclient();
 
-/* info_nodes can do a lot more in theory, right now we don't */
-class info_node { };
+	if (!self) {
+		print("^1Bot_AddQuick^7: Can't add bot. Server is full\n");
+		self = oself;
+		return world;
+	}
 
-/* write current nodes to disk */
-void Nodes_Save(string);
-void Nodes_Load(string);
-void Nodes_Init(void);
+	Bot_PickName(self);
+	ClientConnect();
+	PutClientInServer();
+
+	newbot = self;
+	self = oself;
+	return newbot;
+}

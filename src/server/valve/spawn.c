@@ -18,20 +18,24 @@ void info_player_start(void)
 {
 	self.solid = SOLID_TRIGGER;
 	setsize(self, VEC_HULL_MIN, VEC_HULL_MAX);
+	self.botinfo = BOTINFO_SPAWNPOINT;
 }
 
 void info_player_deathmatch(void)
 {
 	self.solid = SOLID_TRIGGER;
 	setsize(self, VEC_HULL_MIN, VEC_HULL_MAX);
+	self.botinfo = BOTINFO_SPAWNPOINT;
 }
 
 void info_player_team1(void)
 {
 	self.classname = "info_player_deathmatch";
+	self.botinfo = BOTINFO_SPAWNPOINT;
 }
 
 void info_player_team2(void)
 {
 	self.classname = "info_player_deathmatch";
+	self.botinfo = BOTINFO_SPAWNPOINT;
 }

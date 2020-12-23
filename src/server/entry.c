@@ -80,6 +80,12 @@ void PutClientInServer(void)
 {
 	g_grMode.PlayerSpawn((base_player)self);
 
+#ifdef BOT_INCLUDED
+	if (clienttype(self) == CLIENTTYPE_BOT) {
+		spawnfunc_bot();
+	}
+#endif
+
 	/* activate all game_playerspawn entities */
 	for (entity a = world; (a = find(a, ::targetname, "game_playerspawn"));) {
 		CBaseTrigger t = (CBaseTrigger)a;
@@ -113,6 +119,13 @@ void SetChangeParms(void)
 
 void SV_RunClientCommand(void)
 {
+#ifdef BOT_INCLUDED
+	if (time > 5.0)
+	if (clienttype(self) == CLIENTTYPE_BOT) {
+		((bot)self).RunAI();
+	}
+#endif
+
 	if (!Plugin_RunClientCommand()) {
 		Game_RunClientCommand();
 	}
@@ -253,7 +266,18 @@ void worldspawn(void)
 
 float ConsoleCmd(string cmd)
 {
-	player pl = (player)self;
+	player pl;
+
+	/* some sv commands can only be executed by a player in-world */
+	if ( !self ) {
+		for ( other = world; ( other = find( other, classname, "player" ) ); ) {
+			if ( clienttype( other ) == CLIENTTYPE_REAL ) {
+				self = other;
+				break;
+			}
+		}
+	}
+	pl = (player)self;
 
 	/* give the game-mode a chance to override us */
 	if (g_grMode.ConsoleCommand(pl, cmd) == TRUE)
@@ -274,6 +298,50 @@ float ConsoleCmd(string cmd)
 				t.Trigger(self, TRIG_TOGGLE);
 		}
 		break;
+#ifdef BOT_INCLUDED
+	case "way_add":
+		if ( !self ) {
+			return TRUE;
+		}
+		Way_Waypoint_Create( self, TRUE );
+		break;
+	case "way_addchain":
+		if ( !self ) {
+			return TRUE;
+		}
+		Way_Waypoint_Create( self, FALSE );
+		break;
+	case "way_addspawns":
+		if ( !self ) {
+			return TRUE;
+		}
+		Way_Waypoint_CreateSpawns();
+		break;
+	case "way_delete":
+		if ( !self ) {
+			return TRUE;
+		}
+		Way_Waypoint_Delete( Way_FindClosestWaypoint( self.origin ) );
+		break;
+	case "way_radius":
+		if ( !self ) {
+			return TRUE;
+		}
+		Way_Waypoint_SetRadius( Way_FindClosestWaypoint( self.origin ), stof( argv( 1 ) ) );
+		break;
+	case "way_makejump":
+		if ( !self ) {
+			return TRUE;
+		}
+		Way_Waypoint_MakeJump( Way_FindClosestWaypoint( self.origin ) );
+		break;
+	case "way_save":
+		Way_DumpWaypoints( argv( 1 ) );
+		break;
+	case "way_load":
+		Way_ReadWaypoints( argv( 1 ) );
+		break;
+#endif
 	default:
 		return FALSE;
 	}

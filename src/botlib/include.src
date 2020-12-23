@@ -1,6 +1,9 @@
 #define BOT_INCLUDED
 
 #includelist
-../botlib/bot.h
-../botlib/bot.cpp
+defs.h
+bot.cpp
+route.c
+way.c
+cmd.c
 #endlist
