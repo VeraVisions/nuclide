@@ -53,8 +53,11 @@ class env_sprite:CBaseTrigger
 };
 
 float
-env_sprite::SendEntity(entity pvsent, float flags)
+env_sprite::SendEntity(entity ePEnt, float flags)
 {
+	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
+		return FALSE;
+
 	if (spawnflags & ENVS_PLAYONCE)
 		return FALSE;
 

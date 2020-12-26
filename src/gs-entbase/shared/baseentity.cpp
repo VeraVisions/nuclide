@@ -608,9 +608,11 @@ CBaseEntity::SetRenderColor(vector newColor)
 float
 CBaseEntity::SendEntity(entity ePEnt, float fChanged)
 {
-	if (!modelindex) {
+	if (!modelindex)
 		return FALSE;
-	}
+
+	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
+		return FALSE;
 
 	WriteByte(MSG_ENTITY, ENT_ENTITY);
 	WriteFloat(MSG_ENTITY, fChanged);

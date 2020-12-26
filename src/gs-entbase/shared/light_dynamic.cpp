@@ -196,8 +196,11 @@ light_dynamic::Trigger(entity act, int state)
 }
 
 float
-light_dynamic::SendEntity(entity ePVSEnt, float flFlags)
+light_dynamic::SendEntity(entity ePEnt, float flFlags)
 {
+	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
+		return FALSE;
+
 	WriteByte(MSG_ENTITY, ENT_DLIGHT);
 	WriteFloat(MSG_ENTITY, flFlags);
 

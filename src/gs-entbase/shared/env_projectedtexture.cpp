@@ -194,8 +194,11 @@ env_projectedtexture::Trigger(entity act, int state)
 }
 
 float
-env_projectedtexture::SendEntity(entity ePVSEnt, float flFlags)
+env_projectedtexture::SendEntity(entity ePEnt, float flFlags)
 {
+	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
+		return FALSE;
+
 	WriteByte(MSG_ENTITY, ENT_PROJECTEDTEXTURE);
 	WriteFloat(MSG_ENTITY, flFlags);
 

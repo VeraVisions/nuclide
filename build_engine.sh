@@ -3,6 +3,23 @@ set -e
 
 FTE_MAKEFILE=./src/engine/engine/Makefile
 BUILD_SDL2=0
+BUILD_DEBUG=1
+
+if [ "$BUILD_DEBUG" -eq 1 ]; then
+	MAKETARGET=m-dbg
+	OUTPUT=./debug
+else
+	MAKETARGET=m-rel
+	OUTPUT=./release
+fi
+
+if [ "$BUILD_SDL2" -eq 1 ]; then
+	PLATFORM=SDL2
+	OUTPUT=$OUTPUT/fteqw64-sdl2
+else
+	PLATFORM=linux64
+	OUTPUT=$OUTPUT/fteqw64
+fi
 
 mkdir -p ./bin
 
@@ -18,15 +35,9 @@ else
 	cd ./engine/engine
 fi
 
-if [ "$BUILD_SDL2" -eq 1 ]; then
-	make -j $(nproc) makelibs FTE_TARGET=SDL2
-	make -j $(nproc) m-rel FTE_TARGET=SDL2
-	cp -v ./release/fteqw-sdl2 ../../../bin/fteqw
-else
-	make -j $(nproc) makelibs
-	make -j $(nproc) m-rel
-	cp -v ./release/fteqw ../../../bin/fteqw
-fi
+make -j $(nproc) makelibs FTE_TARGET=$PLATFORM
+make -j $(nproc) $MAKETARGET FTE_TARGET=$PLATFORM
+cp -v "$OUTPUT" ../../../bin/fteqw
 
 make -j $(nproc) sv-rel
 cp -v ./release/fteqw-sv ../../../bin/fteqw-sv

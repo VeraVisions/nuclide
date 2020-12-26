@@ -97,11 +97,22 @@ void PutClientInServer(void)
 
 void PlayerPreThink(void)
 {
+#ifdef BOT_INCLUDED
+	if (clienttype(self) == CLIENTTYPE_BOT) {
+		((bot)self).PreFrame();
+	}
+#endif
 	g_grMode.PlayerPreFrame((base_player)self);
 }
 
 void PlayerPostThink(void)
 {
+#ifdef BOT_INCLUDED
+	if (clienttype(self) == CLIENTTYPE_BOT) {
+		((bot)self).PostFrame();
+	}
+#endif
+
 	g_grMode.PlayerPostFrame((base_player)self);
 }
 
@@ -299,47 +310,8 @@ float ConsoleCmd(string cmd)
 		}
 		break;
 #ifdef BOT_INCLUDED
-	case "way_add":
-		if ( !self ) {
-			return TRUE;
-		}
-		Way_Waypoint_Create( self, TRUE );
-		break;
-	case "way_addchain":
-		if ( !self ) {
-			return TRUE;
-		}
-		Way_Waypoint_Create( self, FALSE );
-		break;
-	case "way_addspawns":
-		if ( !self ) {
-			return TRUE;
-		}
-		Way_Waypoint_CreateSpawns();
-		break;
-	case "way_delete":
-		if ( !self ) {
-			return TRUE;
-		}
-		Way_Waypoint_Delete( Way_FindClosestWaypoint( self.origin ) );
-		break;
-	case "way_radius":
-		if ( !self ) {
-			return TRUE;
-		}
-		Way_Waypoint_SetRadius( Way_FindClosestWaypoint( self.origin ), stof( argv( 1 ) ) );
-		break;
-	case "way_makejump":
-		if ( !self ) {
-			return TRUE;
-		}
-		Way_Waypoint_MakeJump( Way_FindClosestWaypoint( self.origin ) );
-		break;
-	case "way_save":
-		Way_DumpWaypoints( argv( 1 ) );
-		break;
-	case "way_load":
-		Way_ReadWaypoints( argv( 1 ) );
+	case "way":
+		Way_Cmd();
 		break;
 #endif
 	default:

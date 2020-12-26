@@ -33,8 +33,12 @@ const string g_decal_shader = \
 
 #ifdef SERVER
 float
-decal::SendEntity(entity pvsent, float changedflags)
+decal::SendEntity(entity ePEnt, float changedflags)
 {
+	if (clienttype(ePEnt) != CLIENTTYPE_REAL) {
+		return FALSE;
+	}
+
 	WriteByte(MSG_ENTITY, ENT_DECAL);
 	WriteCoord(MSG_ENTITY, origin[0]);
 	WriteCoord(MSG_ENTITY, origin[1]);

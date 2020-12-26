@@ -49,8 +49,9 @@ MultiplayerRules::PlayerDeath(base_player pl)
 		IntermissionStart();
 	}
 
-	pl.movetype = MOVETYPE_NONE;
-	pl.solid = SOLID_NOT;
+	pl.SetMovetype(MOVETYPE_NONE);
+	pl.SetSolid(SOLID_NOT);
+	pl.SetModelindex(0);
 	pl.takedamage = DAMAGE_NO;
 	pl.gflags &= ~GF_FLASHLIGHT;
 	pl.armor = pl.activeweapon = pl.g_items = 0;

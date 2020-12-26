@@ -220,3 +220,26 @@ Titles_Init(void)
 	}
 	fclose(fs_titles);
 }
+
+
+titles_t *g_titles;
+int g_titles_count;
+
+void
+Titles_AddEntry(titles_t new)
+{
+	int newcount = g_titles_count + 1;
+	g_titles = memrealloc(g_titles, sizeof(titles_t), g_titles_count, newcount);
+	g_titles[g_titles_count].m_strName = new.m_strName;
+	g_titles[g_titles_count].m_strMessage = new.m_strMessage;
+	g_titles[g_titles_count].m_flPosX = new.m_flPosX;
+	g_titles[g_titles_count].m_flPosY = new.m_flPosY;
+	g_titles[g_titles_count].m_iEffect = new.m_iEffect;
+	g_titles[g_titles_count].m_vecColor1 = new.m_vecColor1;
+	g_titles[g_titles_count].m_vecColor2 = new.m_vecColor2;
+	g_titles[g_titles_count].m_flFadeIn = new.m_flFadeIn;
+	g_titles[g_titles_count].m_flFadeOut = new.m_flFadeOut;
+	g_titles[g_titles_count].m_flHoldTime = new.m_flHoldTime;
+	g_titles[g_titles_count].m_flFXTime = new.m_flFXTime;
+	g_titles_count++;
+}

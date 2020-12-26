@@ -14,6 +14,111 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#define BOTROUTE_DESTINATION	-1
+#define BOTROUTE_END			-2
+
+void
+bot::Pain(void)
+{
+	player::Pain();
+
+	/* might as well target our attacker */
+	if (!m_eTarget)
+		m_eTarget = g_dmg_eAttacker;
+}
+
+void
+bot::RouteClear(void)
+{
+	if (!m_iNodes)
+		return;
+
+	m_iCurNode = BOTROUTE_END;
+	m_iNodes = 0;
+	m_flNodeGiveup = 0.0f;
+	memfree(m_pRoute);
+}
+
+void
+bot::WeaponThink(void)
+{
+	/* clip empty */
+	if (a_ammo1 == 0) {
+		/* still got ammo left */
+		if (a_ammo2 != 0) {
+			input_buttons &= ~INPUT_BUTTON0;
+			input_buttons |= INPUT_BUTTON4;
+		} else {
+			Weapons_SwitchBest(this);
+		}
+	}
+}
+
+void
+bot::WeaponAttack(void)
+{
+	if (m_flAttackTime < time) {
+		if (!m_iAttackMode) {
+			input_buttons |= INPUT_BUTTON0; // Attack
+		}
+		m_flAttackTime = time + 0.1f;
+	}
+	m_iAttackMode = 1 - m_iAttackMode;
+}
+
+void
+bot::BrainThink(int enemyvisible, int enemydistant)
+{
+	/* we had a target and it's now dead. now what? */
+	if (m_eTarget && m_eTarget.health <= 0) {
+		m_eTarget = __NULL__;
+		RouteClear();
+	} else if (m_eTarget && enemyvisible && enemydistant) {
+		/* we can see the player, but are too far away, plot a route */
+		route_calculate(this, m_eTarget.origin, 0, Bot_RouteCB);
+	}
+}
+
+void
+bot::SeeThink(void)
+{
+	if (m_eTarget)
+		return;
+
+	if (m_flSeeTime > time)
+		return;
+
+	if (autocvar_bot_pacifist)
+		return;
+
+	m_flSeeTime = time + 0.25f;
+
+	for (entity w = world; (w = findfloat(w, ::takedamage, DAMAGE_YES));) {
+		float flDot;
+
+		if (!(w.flags & FL_CLIENT))
+			continue;
+		if (w.health <= 0)
+			continue;
+
+		/* first, is the potential enemy in our field of view? */
+		makevectors(v_angle);
+		vector v = normalize(w.origin - origin);
+		flDot = v * v_forward;
+
+		if (flDot < 90/180)
+			continue;
+
+		other = world;
+		traceline(origin, w.origin, MOVE_OTHERONLY, this);
+
+		if (trace_fraction == 1.0f) {
+			m_eTarget = w;
+			return;
+		}
+	}
+}
+
 void
 bot::CheckRoute(void)
 {
@@ -26,21 +131,29 @@ bot::CheckRoute(void)
 
 	/* level out position/node stuff */
 	if (m_iCurNode < 0) {
-		evenpos = m_vecLastNode;
-		evenpos[2] = origin[2];
+		evenpos = m_vecLastNode - origin;
 	} else {
-		evenpos = m_pRoute[m_iCurNode].m_vecDest;
-		evenpos[2] = origin[2];
+		evenpos = m_pRoute[m_iCurNode].m_vecDest - origin;
 	}
+	evenpos[2] *= 0.25f;
 
-	flDist = floor(vlen(evenpos - origin));
+	flDist = floor(vlen(evenpos));
 
-	if ( flDist < 16 ) {
+	if (flDist < 16) {
 		dprint(sprintf("^2CBaseMonster::^3CheckRoute^7: " \
 			"%s reached node\n", this.targetname));
 		m_iCurNode--;
-		velocity = [0,0,0]; /* clamp friction */
+		velocity *= 0.5f;
 
+		if (m_iCurNode >= 0) {
+			print(sprintf("NODE FLAGS: %i\n", m_pRoute[m_iCurNode].m_iFlags));
+
+			/* if a node is flagged as jumpy, jump! */
+			if (m_pRoute[m_iCurNode].m_iFlags & WP_JUMP)
+				input_buttons |= INPUT_BUTTON2;
+		}
+
+#if 0
 		/* we've still traveling and from this node we may be able to walk
 		 * directly to our end-destination */
 		if (m_iCurNode > -1) {
@@ -53,43 +166,36 @@ bot::CheckRoute(void)
 				m_iCurNode = -1;
 			}
 		}
+#endif
 	} else {
-		traceline( origin + view_ofs, m_pRoute[m_iCurNode].m_vecDest, MOVE_NORMAL, this );
+		traceline(origin + view_ofs, m_pRoute[m_iCurNode].m_vecDest, MOVE_NORMAL, this);
 
 		/* we can't trace against our next waypoint... that should never happen */
-		if ( trace_fraction != 1.0f ) {
+		if (trace_fraction != 1.0f) {
 			m_flNodeGiveup += frametime;
 		} else {
 			/* if we're literally stuck in a corner aiming at something we should
 			 * not, also give up */
-			if ( flDist == m_flLastDist ) {
+			if (flDist == m_flLastDist) {
 				m_flNodeGiveup += frametime;
 			} else {
-				m_flNodeGiveup = bound( 0, m_flNodeGiveup - frametime, 1.0 );
+				m_flNodeGiveup = bound(0, m_flNodeGiveup - frametime, 1.0);
 			}
 		}
 	}
 
 	m_flLastDist = flDist;
 
-	if ( m_flNodeGiveup >= 1.0f ) {
-		dprint(sprintf("bot::CheckRoute: %s gave up route\n",
-			this.netname));
-
-		m_iCurNode = -2;
-		m_flNodeGiveup = 0.0f;
-	} else if ( m_flNodeGiveup >= 0.5f ) {
+	/* after one second, also give up the route */
+	if (m_flNodeGiveup >= 1.0f || m_iCurNode <= BOTROUTE_END) {
+		RouteClear();
+	} else if (m_flNodeGiveup >= 0.5f) {
+		/* attempt a jump after half a second */
 		input_buttons |= INPUT_BUTTON2;
-	}
-
-	if (m_iCurNode < -1) {
-		dprint(sprintf("bot::CheckRoute: %s calculates new route\n",
-			this.netname));
-
-		m_iNodes = 0;
-		memfree( m_pRoute );
-		route_calculate( this, Route_SelectDestination( this ), 0, Bot_RouteCB );
-		return;
+	} else {
+		/* entire way-link needs to be crouched. that's the law of the land */
+		if (m_pRoute[m_iCurNode].m_iFlags & WP_CROUCH)
+			input_buttons |= INPUT_BUTTON8;
 	}
 }
 
@@ -107,7 +213,10 @@ bot::RunAI(void)
 
 	/* attempt to respawn when dead */
 	if (health <= 0) {
-		input_buttons |= INPUT_BUTTON0;
+		RouteClear();
+		WeaponAttack();
+		m_eTarget = __NULL__;
+		return;
 	}
 
 	/* create our first route */
@@ -123,8 +232,8 @@ bot::RunAI(void)
 		}
 	}
 
-	//WeaponThink();
-	//PickEnemy();
+	WeaponThink();
+	SeeThink();
 
 	enemyvisible = FALSE;
 	enemydistant = FALSE;
@@ -138,69 +247,108 @@ bot::RunAI(void)
 		}
 
 		if (enemyvisible) {
-			//WeaponAttack();
+			WeaponAttack();
 		}
 	}
-
+	
+	BrainThink(enemyvisible, enemydistant);
 	CheckRoute();
 
 	if (m_iNodes) {
+		vector vecNewAngles;
+		vector vecDirection;
+
 		if (!m_eTarget || !enemyvisible) {
 			/* aim at the next node */
-			if (m_iCurNode == -1)
+			if (m_iCurNode == BOTROUTE_DESTINATION)
 				aimpos = m_vecLastNode;
-			else
-				aimpos = m_pRoute[m_iCurNode].m_vecDest;
+			else {
+				if (m_iCurNode > 0)
+					aimpos = m_pRoute[m_iCurNode - 1].m_vecDest;
+				else
+					aimpos = m_pRoute[m_iCurNode].m_vecDest;
+			}
 		} else {
 			/* aim towards the enemy */
 			aimpos = m_eTarget.origin;
 		}
 
-		/* lerping speed */
-		flLerp = bound(0.0f, 1.0f - (frametime * 15), 1.0f);
+		/* lerping speed, faster when we've got a target */
+		if (m_eTarget && enemyvisible)
+			flLerp = bound(0.0f, frametime * 45, 1.0f);
+		else
+			flLerp = bound(0.0f, frametime * 30, 1.0f);
 
 		/* that's the old angle */
 		makevectors(v_angle);
-		vector vNewAngles = v_forward;
+		vecNewAngles = v_forward;
 
-		/* aimdir = final angle */
+		/* aimdir = new final angle */
 		aimdir = vectoangles(aimpos - origin);
 		makevectors(aimdir);
 
 		/* slowly lerp towards the final angle */
-		vNewAngles[0] = Math_Lerp(vNewAngles[0], v_forward[0], flLerp);
-		vNewAngles[1] = Math_Lerp(vNewAngles[1], v_forward[1], flLerp);
-		vNewAngles[2] = Math_Lerp(vNewAngles[2], v_forward[2], flLerp);
+		vecNewAngles[0] = Math_Lerp(vecNewAngles[0], v_forward[0], flLerp);
+		vecNewAngles[1] = Math_Lerp(vecNewAngles[1], v_forward[1], flLerp);
+		vecNewAngles[2] = Math_Lerp(vecNewAngles[2], v_forward[2], flLerp);
 
 		/* make sure we're aiming tight */
-		v_angle = vectoangles(vNewAngles);
+		v_angle = vectoangles(vecNewAngles);
 		v_angle[0] = Math_FixDelta(v_angle[0]);
 		v_angle[1] = Math_FixDelta(v_angle[1]);
 		v_angle[2] = Math_FixDelta(v_angle[2]);
-		input_angles = v_angle;
 		angles[0] = Math_FixDelta(v_angle[0]);
 		angles[1] = Math_FixDelta(v_angle[1]);
 		angles[2] = Math_FixDelta(v_angle[2]);
+		input_angles = v_angle;
+
+		/* now that aiming is sorted, we need to correct the movement */
+		if ((m_eTarget && enemyvisible && !enemydistant) && vlen(aimpos - origin) > 256) {
+			/* we are far away, inch closer */
+			aimpos = m_eTarget.origin;
+		} else {
+			if (m_iCurNode == BOTROUTE_DESTINATION)
+				aimpos = m_vecLastNode;
+			else
+				aimpos = m_pRoute[m_iCurNode].m_vecDest;
+		}
+		
 
 		/* now we'll set the movevalues relative to the input_angle */
-		vector direction = normalize(aimpos - origin) * 240;
+		vecDirection = normalize(aimpos - origin) * 240;
 		makevectors(input_angles);
-		input_movevalues = [v_forward * direction, v_right * direction, v_up * direction];
+		input_movevalues = [v_forward * vecDirection, v_right * vecDirection, v_up * vecDirection];
 	}
 
 	/* press any buttons needed */
-	button0 = input_buttons & INPUT_BUTTON0; //attack
-	button2 = input_buttons & INPUT_BUTTON2; //jump
-	button3 = input_buttons & INPUT_BUTTON3; //tertiary
-	button4 = input_buttons & INPUT_BUTTON4; //reload
-	button5 = input_buttons & INPUT_BUTTON5; //secondary
-	button6 = input_buttons & INPUT_BUTTON6; //use
-	button7 = input_buttons & INPUT_BUTTON7; //unused
-	button8 = input_buttons & INPUT_BUTTON8; //duck
+	button0 = input_buttons & INPUT_BUTTON0; // attack
+	button2 = input_buttons & INPUT_BUTTON2; // jump
+	button3 = input_buttons & INPUT_BUTTON3; // tertiary
+	button4 = input_buttons & INPUT_BUTTON4; // reload
+	button5 = input_buttons & INPUT_BUTTON5; // secondary
+	button6 = input_buttons & INPUT_BUTTON6; // use
+	button7 = input_buttons & INPUT_BUTTON7; // unused
+	button8 = input_buttons & INPUT_BUTTON8; // duck
 	movement = input_movevalues;
+}
+
+void
+bot::PreFrame(void)
+{
+}
+
+void
+bot::PostFrame(void)
+{
+	/* we've picked something new up */
+	if (m_iOldItems != g_items) {
+		//Weapons_SwitchBest(this);
+		m_iOldItems = g_items;
+	}
 }
 
 void
 bot::bot(void)
 {
+	classname = "player";
 }

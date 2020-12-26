@@ -26,8 +26,11 @@ Spray_RemoveAll(entity entOwner)
 }
 
 float
-Spray_SendEntity(entity ePVSEnt, float fChanged)
+Spray_SendEntity(entity ePEnt, float fChanged)
 {
+	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
+		return FALSE;
+
 	WriteByte(MSG_ENTITY, ENT_SPRAY);
 	WriteCoord(MSG_ENTITY, self.origin[0]);
 	WriteCoord(MSG_ENTITY, self.origin[1]);

@@ -169,8 +169,11 @@ func_monitor::ReceiveEntity(float flFlags)
 }
 #else
 float
-func_monitor::SendEntity(entity ePVSEnt, float flFlags)
+func_monitor::SendEntity(entity ePEnt, float flFlags)
 {
+	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
+		return FALSE;
+
 	WriteByte(MSG_ENTITY, ENT_MONITOR);
 	WriteFloat(MSG_ENTITY, flFlags);
 

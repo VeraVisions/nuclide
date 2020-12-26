@@ -126,7 +126,7 @@ PMove_Categorize(void)
 		self.view_ofs = VEC_PLAYER_VIEWPOS;
 	}
 
-	tracebox(self.origin, self.mins, self.maxs, self.origin - [0,0,0.25], FALSE, self);
+	tracebox(self.origin, self.mins, self.maxs, self.origin - [0,0,0.25], MOVE_NORMAL, self);
 
 	if (!trace_startsolid) {
 		if ((trace_fraction < 1) && (trace_plane_normal[2] > 0.7)) {
@@ -149,7 +149,7 @@ PMove_Categorize(void)
 	/* ladder content testing */
 	int oldhitcontents = self.hitcontentsmaski;
 	self.hitcontentsmaski = CONTENTBIT_FTELADDER;
-	tracebox(self.origin, self.mins, self.maxs, self.origin, FALSE, self);
+	tracebox(self.origin, self.mins, self.maxs, self.origin, MOVE_NORMAL, self);
 	self.hitcontentsmaski = oldhitcontents;
 
 	if (trace_endcontentsi & CONTENTBIT_FTELADDER) {
@@ -232,7 +232,7 @@ QPMove_IsStuck(entity eTarget, vector vOffset, vector vecMins, vector vecMaxs)
 	}
 
 	bound = eTarget.origin + vOffset;
-	tracebox(bound, vecMins, vecMaxs, bound, FALSE, eTarget);
+	tracebox(bound, vecMins, vecMaxs, bound, MOVE_NORMAL, eTarget);
 	return trace_startsolid;
 }
 
@@ -546,7 +546,7 @@ PMove_Fix_Origin(void)
 			for (y = 0; y < 3; y++) {
 				norg[1] = oorg[1] + ((y==2)?-1:y)*0.0125;
 
-				tracebox(norg, self.mins, self.maxs, norg, FALSE, self);
+				tracebox(norg, self.mins, self.maxs, norg, MOVE_NORMAL, self);
 				if (!trace_startsolid) {
 					self.origin = norg;
 					return TRUE;
@@ -584,7 +584,7 @@ PMove_Move(void)
 	for (i = 3, move_time = input_timelength; move_time > 0 && i; i--) {
 		dest = self.origin + (self.velocity * move_time);
 
-		tracebox(self.origin, self.mins, self.maxs, dest, FALSE, self);
+		tracebox(self.origin, self.mins, self.maxs, dest, MOVE_NORMAL, self);
 
 		if (trace_startsolid) {
 			if (!PMove_Fix_Origin()) {
@@ -611,7 +611,7 @@ PMove_Move(void)
 				trace_endpos[2] += serverkeyfloat("phy_airstepheight");
 			}
 
-			tracebox(self.origin, self.mins, self.maxs, trace_endpos, FALSE, self);
+			tracebox(self.origin, self.mins, self.maxs, trace_endpos, MOVE_NORMAL, self);
 			stepped = trace_endpos[2] - self.origin[2];
 
 			float roof_fraction = trace_fraction;
@@ -621,7 +621,7 @@ PMove_Move(void)
 			dest[2] = trace_endpos[2]; /*only horizontally*/
 
 			/* move forwards */
-			tracebox(trace_endpos, self.mins, self.maxs, dest, FALSE, self);
+			tracebox(trace_endpos, self.mins, self.maxs, dest, MOVE_NORMAL, self);
 
 			/* if we got anywhere, make this raised-step move count */
 			if (trace_fraction != 0) {
@@ -631,7 +631,7 @@ PMove_Move(void)
 				/* move down */
 				dest = trace_endpos;
 				dest[2] -= stepped + 1;
-				tracebox(trace_endpos, self.mins, self.maxs, dest, FALSE, self);
+				tracebox(trace_endpos, self.mins, self.maxs, dest, MOVE_NORMAL, self);
 
 				if (trace_fraction < 1 && trace_plane_normal[2] > 0.7f) {
 					move_time -= move_time * fwfrac;
@@ -659,7 +659,7 @@ PMove_Move(void)
 	if (self.flags & FL_ONGROUND) {
 		dest = self.origin;
 		dest[2] -= serverkeyfloat("phy_stepheight");
-		tracebox(self.origin, self.mins, self.maxs, dest, FALSE, self);
+		tracebox(self.origin, self.mins, self.maxs, dest, MOVE_NORMAL, self);
 		if (trace_fraction >= 1) {
 			return;
 		}

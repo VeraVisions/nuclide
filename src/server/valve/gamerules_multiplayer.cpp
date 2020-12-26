@@ -63,35 +63,36 @@ HLMultiplayerRules::PlayerDeath(base_player pl)
 	}
 
 	weaponbox_spawn((player)pl);
-	pl.movetype = MOVETYPE_NONE;
-	pl.solid = SOLID_NOT;
+
+	/* either gib, or make a corpse */
+	if (pl.health < -50) {
+		FX_GibHuman(pl.origin);
+	} else {
+		/* Let's handle corpses on the clientside */
+		entity corpse = spawn();
+		setorigin(corpse, pl.origin + [0,0,32]);
+		setmodel(corpse, pl.model);
+		setsize(corpse, VEC_HULL_MIN, VEC_HULL_MAX);
+		corpse.movetype = MOVETYPE_TOSS;
+		corpse.solid = SOLID_TRIGGER;
+		corpse.modelindex = pl.modelindex;
+		corpse.frame = ANIM_DIESIMPLE;
+		corpse.angles = pl.angles;
+		corpse.velocity = pl.velocity;
+	}
+
+	/* now let's make the real client invisible */
+	pl.SetModelindex(0);
+	pl.SetMovetype(MOVETYPE_NONE);
+	pl.SetSolid(SOLID_NOT);
 	pl.takedamage = DAMAGE_NO;
 	pl.gflags &= ~GF_FLASHLIGHT;
 	pl.armor = pl.activeweapon = pl.g_items = 0;
-
-	pl.think = PutClientInServer;
-	pl.nextthink = time + 4.0f;
 	Sound_Play(pl, CHAN_AUTO, "player.die");
 
-	if (pl.health < -50) {
-		pl.health = 0;
-		FX_GibHuman(pl.origin);
-		return;
-	}
-
-	pl.health = 0;
-
-	/* Let's handle corpses on the clientside */
-	entity corpse = spawn();
-	setorigin(corpse, pl.origin + [0,0,32]);
-	setmodel(corpse, pl.model);
-	setsize(corpse, VEC_HULL_MIN, VEC_HULL_MAX);
-	corpse.movetype = MOVETYPE_TOSS;
-	corpse.solid = SOLID_TRIGGER;
-	corpse.modelindex = pl.modelindex;
-	corpse.frame = ANIM_DIESIMPLE;
-	corpse.angles = pl.angles;
-	corpse.velocity = pl.velocity;
+	/* force respawn */
+	pl.think = PutClientInServer;
+	pl.nextthink = time + 4.0f;
 }
 
 void

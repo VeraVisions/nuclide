@@ -89,6 +89,10 @@ float Player_SendEntity(entity ePEnt, float fChanged)
 		return FALSE;
 	}
 
+	if (clienttype(ePEnt) != CLIENTTYPE_REAL) {
+		return FALSE;
+	}
+
 	WriteByte(MSG_ENTITY, ENT_PLAYER);
 	WriteFloat(MSG_ENTITY, fChanged);
 

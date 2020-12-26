@@ -91,9 +91,12 @@ trigger_camera::ReceiveEntity(float flFlags)
 }
 #else
 float
-trigger_camera::SendEntity(entity ePVSEnt, float flFlags)
+trigger_camera::SendEntity(entity ePEnt, float flFlags)
 {
-	if (ePVSEnt != m_eLooker)
+	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
+		return FALSE;
+
+	if (ePEnt != m_eLooker)
 		return FALSE;
 
 	WriteByte(MSG_ENTITY, ENT_OLDCAMERA);

@@ -36,11 +36,27 @@ class bot:player
 
 	/* combat */
 	entity m_eTarget;
+	int m_iAttackMode;
+	float m_flAttackTime;
+
+	/* items */
+	int m_iOldItems;
+
+	/* visual */
+	float m_flSeeTime;
 
 	void(void) bot;
 
+	virtual void(void) Pain;
+	virtual void(void) RouteClear;
+	virtual void(void) WeaponThink;
+	virtual void(void) WeaponAttack;
+	virtual void(void) SeeThink;
+	virtual void(int, int) BrainThink;
 	virtual void(void) RunAI;
 	virtual void(void) CheckRoute;
+	virtual void(void) PreFrame;
+	virtual void(void) PostFrame;
 };
 
 entity Bot_AddQuick(void);

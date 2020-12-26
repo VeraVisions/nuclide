@@ -123,6 +123,10 @@ env_laser::Respawn(void)
 float
 env_laser::SendEntity(entity ePEnt, float fChanged)
 {
+	if (clienttype(ePEnt) != CLIENTTYPE_REAL) {
+		return FALSE;
+	}
+
 	WriteByte(MSG_ENTITY, ENT_ENVLASER);
 	WriteFloat(MSG_ENTITY, fChanged);
 

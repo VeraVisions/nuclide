@@ -403,6 +403,7 @@ HUD_Draw(void)
 	Weapons_DrawCrosshair();
 	HUD_DrawWeaponSelect();
 	Obituary_Draw();
+	Textmenu_Draw();
 
 	if (!(pl.g_items & ITEM_SUIT)) {
 		return;
@@ -420,4 +421,5 @@ void
 HUD_DrawSpectator(void)
 {
 	// FIXME
+	Textmenu_Draw();
 }

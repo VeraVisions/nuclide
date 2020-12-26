@@ -14,16 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define COST_INFINITE 99999
-
-enumflags
-{
-	WP_JUMP, /* also implies that the bot must first go behind the wp... */
-	WP_CLIMB,
-	WP_CROUCH,
-	WP_USE
-};
-
 typedef struct waypoint_s
 {
 	vector vecOrigin;
@@ -166,11 +156,18 @@ Way_Waypoint_Create(entity ePlayer, int iAutoLink)
 	n->neighbour = __NULL__;
 	n->iNeighbours = 0;
 
-	if (iAutoLink) {
+	if (iAutoLink == 1) {
 		Way_AutoLink(n);
 	} else {
 		if (iID != 0) {
-			Way_LinkWaypoints(n, &g_pWaypoints[iID-1]);
+			if (iAutoLink == 0) {
+				Way_LinkWaypoints(n, &g_pWaypoints[iID-1]);
+				Way_LinkWaypoints(&g_pWaypoints[iID-1], n);
+			} else if (iAutoLink -1) {
+				Way_LinkWaypoints(&g_pWaypoints[iID-1], n);
+			} else {
+				Way_LinkWaypoints(n, &g_pWaypoints[iID-1]);
+			}
 		}
 	}
 }
@@ -271,6 +268,26 @@ Way_FindClosestWaypoint(vector vecOrigin)
 }
 
 void
+Way_GoToPoint(entity pl)
+{
+	vector vecSrc;
+	makevectors(pl.v_angle);
+	vecSrc = pl.origin + pl.view_ofs;
+	traceline(vecSrc, vecSrc + (v_forward * 4096), FALSE, pl);
+	print(sprintf("Telling all bots to go to %v\n", trace_endpos));
+
+	for (entity a = world; ( a = find( a, classname, "player" ) ); ) {
+		if ( clienttype(a) != CLIENTTYPE_REAL ) {
+			bot targ;
+			targ = (bot)a;
+			targ.RouteClear();
+			route_calculate(targ, pl.origin, 0, Bot_RouteCB);
+			print(sprintf("Told bot to go to %v\n", trace_endpos));
+		}
+	}
+}
+
+void
 Way_DrawDebugInfo(void)
 {
 	if (!g_iWaypoints) {
@@ -317,6 +334,7 @@ Way_DrawDebugInfo(void)
 
 		for (int j = 0i; j < w->iNeighbours; j++) {
 			int k = w->neighbour[j].node;
+			int fl = w->neighbour[j].iFlags;
 
 			if (k < 0i || k >= g_iWaypoints) {
 				break;
@@ -324,9 +342,81 @@ Way_DrawDebugInfo(void)
 
 			waypoint_t *w2 = &g_pWaypoints[k];
 
-			R_PolygonVertex(org, '0 1', '1 0 1', 1);
-			R_PolygonVertex(w2->vecOrigin, '1 1', [0,1,0], 1);
+			if (fl & WP_JUMP) {
+				R_PolygonVertex(org, [0,1], [1,0,0], 1);
+				R_PolygonVertex(w2->vecOrigin, [1,1], [0,1,0], 1);
+			} else {
+				R_PolygonVertex(org, [0,1], [1,0,1], 1);
+				R_PolygonVertex(w2->vecOrigin, [1,1], [0,1,0], 1);
+			}
 			R_EndPolygon();
 		}
+	}
+}
+
+void
+Way_Cmd(void)
+{
+	switch (argv(1)) {
+		case "goto":
+		if ( !self ) {
+			return;
+		}
+		Way_GoToPoint( self );
+		break;
+	case "add":
+		if ( !self ) {
+			return;
+		}
+		Way_Waypoint_Create( self, 1 );
+		break;
+	case "addchain":
+		if ( !self ) {
+			return;
+		}
+		Way_Waypoint_Create( self, 0 );
+		break;
+	case "addltn":
+		if ( !self ) {
+			return;
+		}
+		Way_Waypoint_Create( self, -1 );
+		break;
+	case "addntl":
+		if ( !self ) {
+			return;
+		}
+		Way_Waypoint_Create( self, -2 );
+		break;
+	case "addspawns":
+		if ( !self ) {
+			return;
+		}
+		Way_Waypoint_CreateSpawns();
+		break;
+	case "delete":
+		if ( !self ) {
+			return;
+		}
+		Way_Waypoint_Delete( Way_FindClosestWaypoint( self.origin ) );
+		break;
+	case "radius":
+		if ( !self ) {
+			return;
+		}
+		Way_Waypoint_SetRadius( Way_FindClosestWaypoint( self.origin ), stof( argv( 2 ) ) );
+		break;
+	case "makejump":
+		if ( !self ) {
+			return;
+		}
+		Way_Waypoint_MakeJump( Way_FindClosestWaypoint( self.origin ) );
+		break;
+	case "save":
+		Way_DumpWaypoints( argv( 2 ) );
+		break;
+	case "load":
+		Way_ReadWaypoints( argv( 2 ) );
+		break;
 	}
 }

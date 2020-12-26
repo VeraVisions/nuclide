@@ -86,7 +86,7 @@ vector Route_SelectDestination( bot target )
 		int range;
 		for ( temp = world; ( temp = findfloat( temp, ::botinfo, BOTINFO_HEALTH ) ); ) {
 			range = vlen( temp.origin - target.origin );
-			if ( ( range < bestrange ) && ( temp.solid = SOLID_TRIGGER ) ) {
+			if ( ( range < bestrange ) && ( temp.solid == SOLID_TRIGGER ) ) {
 				bestrange = range;
 				dest = temp;
 			}

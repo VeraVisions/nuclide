@@ -69,6 +69,10 @@ class ambient_generic:CBaseTrigger
 float
 ambient_generic::SendEntity(entity ePEnt, float fChanged)
 {
+	if (clienttype(ePEnt) != CLIENTTYPE_REAL) {
+		return FALSE;
+	}
+
 	/* only override when we're doing the toggle guff */
 	if (m_iLoop == FALSE) {
 		return FALSE;

@@ -14,44 +14,4 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void
-Bot_PickName(entity target)
-{
-	int n = 0;
-	entity pbot = world;
-	for (int i = 1; (pbot = edict_num(i)); i++) {
-		if (clienttype(pbot) == CLIENTTYPE_BOT) {
-			n++;
-		}
-	}
-	forceinfokey(target, "name", sprintf("Bot %i", n));
-}
-
-entity
-Bot_AddQuick(void)
-{
-	/* we've got no nodes, so generate some fake waypoints */
-	if (!g_nodes_present) {
-		return world;
-	}
-
-	entity newbot;
-	entity oself;
-
-	oself = self;
-	self = spawnclient();
-
-	if (!self) {
-		print("^1Bot_AddQuick^7: Can't add bot. Server is full\n");
-		self = oself;
-		return world;
-	}
-
-	Bot_PickName(self);
-	ClientConnect();
-	PutClientInServer();
-
-	newbot = self;
-	self = oself;
-	return newbot;
-}
+var int autocvar_bot_pacifist = FALSE;
