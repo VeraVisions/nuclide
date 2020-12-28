@@ -270,6 +270,13 @@ void
 w_mp5_release(void)
 {
 	player pl = (player)self;
+
+	/* auto-reload if need be */
+	if (pl.w_attack_next <= 0.0)
+	if (pl.a_ammo1 == 0 && pl.a_ammo2 > 0) {
+		Weapons_Reload();
+		return;
+	}
 	if (pl.w_idle_next > 0.0) {
 		return;
 	}

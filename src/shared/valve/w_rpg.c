@@ -215,19 +215,17 @@ void w_rpg_reload(void)
 void w_rpg_release(void)
 {
 	player pl = (player)self;
-	if (pl.w_idle_next > 0.0) {
+
+	/* auto-reload if need be */
+	if (pl.w_attack_next <= 0.0)
+	if (pl.a_ammo1 == 0 && pl.a_ammo2 > 0) {
+		Weapons_Reload();
 		return;
 	}
 
-#ifdef CLIENT
-	if (pl.a_ammo1 <= 0 && pl.a_ammo2 > 0) {
-		w_rpg_reload();
+	if (pl.w_idle_next > 0.0) {
+		return;
 	}
-#else
-	if (pl.rpg_mag <= 0 && pl.ammo_rocket > 0) {
-		w_rpg_reload();
-	}
-#endif
 
 	int r = (float)input_sequence % 3;
 

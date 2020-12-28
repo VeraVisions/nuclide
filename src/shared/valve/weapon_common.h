@@ -40,6 +40,7 @@ typedef struct
 	void(int, vector, float) hudpic;
 } weapon_t;
 
+void Weapons_Reload(void);
 void Weapons_DrawCrosshair(void);
 void Weapons_MakeVectors(void);
 vector Weapons_GetCameraPos(void);
