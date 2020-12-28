@@ -88,71 +88,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	Titles_Init();
 	Sentences_Init();
 	Decals_Init();
-
-	/* waypoint menu */
-	{
-		titles_t way_text;
-		way_text.m_strName = "WAY_MENU";
-		way_text.m_strMessage = "1.\tAdd Waypoint\n" \
-								"2.\tAdd Chain Waypoint\n" \
-								"3.\tAdd Spawnpoint Waypoints\n" \
-								"4.\tDelete Closest Waypoint\n" \
-								"5.\tMake Closest Jumpy\n" \
-								"6.\tAdd One-Way New-To-Last\n" \
-								"7.\tAdd One-Way Last-To-New\n" \
-								"8.\tSave File\n" \
-								"9.\tLoad File\n" \
-								"0.\tExit\n";
-		way_text.m_flPosX = 0;
-		way_text.m_flPosY = -1;
-		way_text.m_iEffect = 0;
-		way_text.m_vecColor1 = [1,1,1];
-		way_text.m_vecColor2 = [1,1,1];
-		way_text.m_flFadeIn = 1.0f;
-		way_text.m_flFadeOut = 1.0f;
-		way_text.m_flHoldTime = 1.0f;
-		way_text.m_flFXTime = 1.0f;
-		Titles_AddEntry(way_text);
-	}
-}
-
-void
-WAY_MENU(int n)
-{
-	switch (n) {
-	case 1:
-		localcmd("sv way add\n");
-		break;
-	case 2:
-		localcmd("sv way addchain\n");
-		break;
-	case 3:
-		localcmd("sv way addspawns\n");
-		break;
-	case 4:
-		localcmd("sv way delete\n");
-		break;
-	case 5:
-		localcmd("sv way makejump\n");
-		break;
-	case 6:
-		localcmd("sv way addntl\n");
-		break;
-	case 7:
-		localcmd("sv way addltn\n");
-		break;
-	case 8:
-		localcmd(sprintf("sv way save %s.way\n", mapname));
-		Textmenu_Call("");
-		break;
-	case 9:
-		localcmd(sprintf("sv way load %s.way\n", mapname));
-		Textmenu_Call("");
-		break;
-	case 0:
-		Textmenu_Call("");
-		break;
-	}
+	Way_Init();
 }
 
 /* Rendering Caches */

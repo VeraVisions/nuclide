@@ -52,12 +52,14 @@ Weapons_SwitchBest(base_player pl)
 {
 	entity oldself = self;
 	self = pl;
-	for (int i = 0; i < g_weapons.length; i++) {
+
+	for (float i = g_weapons.length - 1; i >= 1 ; i--) {
 		if (pl.g_items & g_weapons[i].id) {
 			pl.activeweapon = i;
 			break;
 		}
 	}
+
 	Weapons_Draw();
 	self = oldself;
 	pl.gflags |= GF_SEMI_TOGGLED;

@@ -81,7 +81,7 @@ menu_customize_init(void)
 	g_sprayscount = 0;
 
 	/* scan and cache the sprays */
-	searchhandle searchy = search_begin("*.*", TRUE, TRUE);
+	searchhandle searchy = search_begin("*.*", SEARCH_NAMESORT, TRUE);
 	for (int i = 0; i < search_getsize(searchy); i++) {
 		string filename = search_getfilename(searchy, i);
 		string extension = substring(filename, strlen(filename) - 3, 3);
@@ -106,7 +106,7 @@ menu_customize_init(void)
 	search_end(searchy);
 
 	/* scan and cache the models */
-	searchy = search_begin("models/player/*/*.bmp:models/player/*/*.tga", 17, TRUE);
+	searchy = search_begin("models/player/*/*.bmp:models/player/*/*.tga", SEARCH_MULTISEARCH | SEARCH_NAMESORT, TRUE);
 
 	g_modelcount = search_getsize(searchy);
 	g_models = memalloc(sizeof(string) * g_modelcount);

@@ -355,14 +355,43 @@ Way_DrawDebugInfo(void)
 }
 
 void
+Way_ConnectTwo(void)
+{
+	static int waylink_status;
+	static int way1, way2;
+	
+	if (waylink_status == 0) {
+		way1 = Way_FindClosestWaypoint(self.origin);
+		waylink_status = 1;
+		centerprint(self, "Selected first waypoint!\n");
+	} else if (waylink_status == 1) {
+		way2 = Way_FindClosestWaypoint(self.origin);
+		waylink_status = 0;
+
+		if (way1 != way2) {
+			Way_LinkWaypoints(&g_pWaypoints[way1], &g_pWaypoints[way2]);
+			centerprint(self, "Linked first waypoint with second waypoint!\n");
+		} else {
+			centerprint(self, "Failed to link, the two points are the same!\n");
+		}
+	}
+}
+
+void
 Way_Cmd(void)
 {
 	switch (argv(1)) {
-		case "goto":
+	case "goto":
 		if ( !self ) {
 			return;
 		}
 		Way_GoToPoint( self );
+		break;
+	case "connect":
+		if (!self) {
+			return;
+		}
+		Way_ConnectTwo();
 		break;
 	case "add":
 		if ( !self ) {

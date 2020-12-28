@@ -46,7 +46,7 @@ void UI_MusicPlayer_Show ( void )
 		winMusicPlayer.SetSize( '256 180' );
 		winMusicPlayer.SetIcon( "textures/ui/icons/cd" );
 
-		searchhandle shSongs = search_begin( "music/*.ogg", TRUE, TRUE );
+		searchhandle shSongs = search_begin( "music/*.ogg", SEARCH_NAMESORT, TRUE );
 		lsbSongs = spawn( CUIList );
 		lsbSongs.SetSize( '192 96' );
 		lsbSongs.SetPos( '8 32 ' );

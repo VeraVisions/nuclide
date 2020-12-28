@@ -71,7 +71,7 @@ menu_loadgame_refreshsaves(void)
 {
 	searchhandle searchy;
 	lg_lbSaves.Clear();
-	searchy = search_begin("saves/*/info.fsv", TRUE, TRUE);
+	searchy = search_begin("saves/*/info.fsv", SEARCH_NAMESORT, TRUE);
 	g_savegame_count = search_getsize(searchy);
 	g_savegames = memalloc(sizeof(string) * g_savegame_count);
 	for (int i = 0; i < g_savegame_count; i++) {

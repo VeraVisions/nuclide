@@ -58,7 +58,7 @@ void UI_CreateServer_Show ( void )
 		winCreate.SetSize( '338 385' );
 		winCreate.SetIcon( "textures/ui/icons/server-new" );
 
-		searchhandle shMaps = search_begin( "maps/*.bsp", TRUE, TRUE );
+		searchhandle shMaps = search_begin( "maps/*.bsp", SEARCH_NAMESORT, TRUE );
 		lsbMaps = spawn( CUIList );
 		lsbMaps.SetSize( '128 306' );
 		lsbMaps.SetPos( '175 32 ' );

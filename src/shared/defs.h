@@ -71,6 +71,16 @@ const vector VEC_PLAYER_CVIEWPOS = [0,0,12];
 
 #define clamp(d,min,max) bound(min,d,max)
 
+enumflags
+{
+	SEARCH_INSENSITIVE,
+	SEARCH_FULLPACKAGE,
+	SEARCH_ALLOWDUPES,
+	SEARCH_FORCESEARCH,
+	SEARCH_MULTISEARCH,
+	SEARCH_NAMESORT
+};
+
 .float jumptime;
 .float teleport_time;
 .vector basevelocity;

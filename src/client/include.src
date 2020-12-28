@@ -19,5 +19,6 @@ chat.c
 textmenu.c
 vgui.cpp
 vox.c
+way.c
 entry.c
 #endlist

@@ -288,7 +288,7 @@ void UI_ModelViewer_Show ( void )
 		btnSeqPrev.SetTitle( "<<" );
 		btnSeqPrev.SetFunc( UI_ModelViewer_SetFrameM );
 		
-		searchhandle shModels = search_begin( "models/*.mdl", TRUE, TRUE );
+		searchhandle shModels = search_begin( "models/*.mdl", SEARCH_NAMESORT, TRUE );
 		lstModels = spawn( CUIList );
 		lstModels.SetItemCount( search_getsize( shModels ) );
 		lstModels.CallOnScroll( ModelViewer_ScrollUpdate );

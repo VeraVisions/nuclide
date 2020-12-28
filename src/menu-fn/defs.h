@@ -24,6 +24,16 @@ var int autocvar_menu_intro = TRUE;
 #define TARGET_MENU			1
 #define TARGET_CLIENT		2
 
+enumflags
+{
+	SEARCH_INSENSITIVE,
+	SEARCH_FULLPACKAGE,
+	SEARCH_ALLOWDUPES,
+	SEARCH_FORCESEARCH,
+	SEARCH_MULTISEARCH,
+	SEARCH_NAMESORT
+};
+
 /* Basic Menu Globals */
 int g_vidsize[2];
 int g_menuofs[2];
@@ -79,7 +89,6 @@ int gameinfo_count;
 gameinfo_t *games;
 string(float id, float b) getgamedirinfo = #0;
 string(int packageidx, int desiredfield) getpackagemanagerinfo = #0;
-
 
 enum
 {

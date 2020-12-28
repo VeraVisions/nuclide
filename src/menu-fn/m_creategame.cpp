@@ -168,7 +168,7 @@ menu_creategame_init(void)
 		fclose(fs_blacklist);
 	}
 
-	searchhandle mapsearch = search_begin("maps/*.bsp", TRUE, TRUE);
+	searchhandle mapsearch = search_begin("maps/*.bsp", SEARCH_NAMESORT, TRUE);
 	g_mapcount = search_getsize(mapsearch);
 	for (i = 0; i < g_mapcount; i++) {
 		string tmp;

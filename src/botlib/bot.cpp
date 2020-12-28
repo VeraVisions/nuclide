@@ -101,6 +101,11 @@ bot::SeeThink(void)
 		if (w.health <= 0)
 			continue;
 
+		/* ain't go hurt our brothers and sisters */
+		if (Rules_IsTeamPlay() == TRUE)
+			if (team == w.team)
+				continue;
+
 		/* first, is the potential enemy in our field of view? */
 		makevectors(v_angle);
 		vector v = normalize(w.origin - origin);
@@ -146,7 +151,7 @@ bot::CheckRoute(void)
 		velocity *= 0.5f;
 
 		if (m_iCurNode >= 0) {
-			print(sprintf("NODE FLAGS: %i\n", m_pRoute[m_iCurNode].m_iFlags));
+			//print(sprintf("NODE FLAGS: %i\n", m_pRoute[m_iCurNode].m_iFlags));
 
 			/* if a node is flagged as jumpy, jump! */
 			if (m_pRoute[m_iCurNode].m_iFlags & WP_JUMP)
@@ -219,6 +224,11 @@ bot::RunAI(void)
 		return;
 	}
 
+	/* freeze the bot */
+	if (autocvar_bot_wait)
+		return;
+
+#if 1
 	/* create our first route */
 	if (!m_iNodes) {
 		route_calculate(this, Route_SelectDestination(this), 0, Bot_RouteCB);
@@ -231,6 +241,7 @@ bot::RunAI(void)
 			return;
 		}
 	}
+#endif
 
 	WeaponThink();
 	SeeThink();
@@ -342,7 +353,8 @@ bot::PostFrame(void)
 {
 	/* we've picked something new up */
 	if (m_iOldItems != g_items) {
-		//Weapons_SwitchBest(this);
+		Weapons_SwitchBest(this);
+		print(sprintf("%s is now using %s (%d)\n", netname, g_weapons[activeweapon].name, activeweapon));
 		m_iOldItems = g_items;
 	}
 }

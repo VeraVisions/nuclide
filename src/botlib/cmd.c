@@ -25,6 +25,7 @@ Bot_PickName(entity target)
 		}
 	}
 	forceinfokey(target, "name", sprintf("Bot %i", n));
+	forceinfokey(target, "model", "robo");
 }
 
 entity

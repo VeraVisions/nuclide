@@ -15,3 +15,4 @@
  */
 
 var int autocvar_bot_pacifist = FALSE;
+var int autocvar_bot_wait = FALSE;
