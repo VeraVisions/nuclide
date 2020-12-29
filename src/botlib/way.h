@@ -16,10 +16,10 @@
 
 #define COST_INFINITE 99999
 
-enumflags
-{
-	WP_JUMP, /* also implies that the bot must first go behind the wp... */
-	WP_CLIMB,
-	WP_CROUCH,
-	WP_USE
-};
+#define LF_EDGE			0x00000001i
+#define LF_JUMP			0x00000002i
+#define LF_CROUCH		0x00000004i
+#define LF_TELEPORT		0x00000008i
+#define LF_WALK			0x00000010i
+#define LF_USER			0x7fffff00i
+#define LF_DESTINATION	0x80000000i

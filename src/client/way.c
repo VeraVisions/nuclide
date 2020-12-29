@@ -24,7 +24,8 @@ Way_Init(void)
 		way_menu.m_strMessage = "1.\tAdd...\n" \
 								"2.\tLink...\n" \
 								"3.\tRemove...\n" \
-								"4.\tAuto-Link Settings...\n" \
+								"4.\tLink Flags...\n" \
+								"5.\tAuto-Link Settings...\n" \
 								"\n" \
 								"\n" \
 								"7.\tSave File\n" \
@@ -88,6 +89,23 @@ Way_Init(void)
 	}
 	/* add waypoint menu */
 	{
+		titles_t way_flags;
+		way_flags.m_strName = "WAY_FLAGS";
+		way_flags.m_strMessage = "1.\tFlag jump (2 steps)\n" \
+								"2.\tFlag crouch (2 steps)\n" \
+								"3.\tFlag walk (2 steps)\n" \
+								"\n" \
+								"\n" \
+								"\n" \
+								"\n" \
+								"\n" \
+								"9.\tBack\n";
+		way_flags.m_flPosX = 0;
+		way_flags.m_flPosY = -1;
+		Titles_AddEntry(way_flags);
+	}
+	/* add waypoint menu */
+	{
 		titles_t way_text;
 		way_text.m_strName = "WAY_AUTOLINK";
 		way_text.m_strMessage = "1.\tDefault radius (256)\n" \
@@ -119,6 +137,9 @@ WAY_MENU(int n)
 		Textmenu_Call("WAY_REMOVE");
 		break;
 	case 4:
+		Textmenu_Call("WAY_FLAGS");
+		break;
+	case 5:
 		Textmenu_Call("WAY_AUTOLINK");
 		break;
 	case 7:
@@ -169,6 +190,25 @@ WAY_LINK(int n)
 		break;
 	case 3:
 		localcmd("sv way autolink\n");
+		break;
+	case 9:
+		Textmenu_Call("WAY_MENU");
+		break;
+	}
+}
+
+void
+WAY_FLAGS(int n)
+{
+	switch (n) {
+	case 1:
+		localcmd("sv way linkjump\n");
+		break;
+	case 2:
+		localcmd("sv way linkcrouch\n");
+		break;
+	case 3:
+		localcmd("sv way linkwalk\n");
 		break;
 	case 9:
 		Textmenu_Call("WAY_MENU");
