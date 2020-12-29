@@ -163,9 +163,9 @@ Way_Waypoint_Create(entity ePlayer, int iAutoLink)
 			if (iAutoLink == 0) {
 				Way_LinkWaypoints(n, &g_pWaypoints[iID-1]);
 				Way_LinkWaypoints(&g_pWaypoints[iID-1], n);
-			} else if (iAutoLink -1) {
+			} else if (iAutoLink == -1) {
 				Way_LinkWaypoints(&g_pWaypoints[iID-1], n);
-			} else {
+			} else if (iAutoLink == -2) {
 				Way_LinkWaypoints(n, &g_pWaypoints[iID-1]);
 			}
 		}
@@ -355,7 +355,7 @@ Way_DrawDebugInfo(void)
 }
 
 void
-Way_ConnectTwo(void)
+Way_ConnectOne(void)
 {
 	static int waylink_status;
 	static int way1, way2;
@@ -378,6 +378,42 @@ Way_ConnectTwo(void)
 }
 
 void
+Way_ConnectTwo(void)
+{
+	static int waylink_status;
+	static int way1, way2;
+	
+	if (waylink_status == 0) {
+		way1 = Way_FindClosestWaypoint(self.origin);
+		waylink_status = 1;
+		centerprint(self, "Selected first waypoint!\n");
+	} else if (waylink_status == 1) {
+		way2 = Way_FindClosestWaypoint(self.origin);
+		waylink_status = 0;
+
+		if (way1 != way2) {
+			Way_LinkWaypoints(&g_pWaypoints[way1], &g_pWaypoints[way2]);
+			Way_LinkWaypoints(&g_pWaypoints[way2], &g_pWaypoints[way1]);
+			centerprint(self, "Linked first waypoint with second waypoint!\n");
+		} else {
+			centerprint(self, "Failed to link, the two points are the same!\n");
+		}
+	}
+}
+
+void
+Way_ConnectAuto(void)
+{
+	Way_AutoLink(Way_FindClosestWaypoint(self.origin));
+}
+
+void
+Way_Purge(void)
+{
+	Way_WipeWaypoints();
+}
+
+void
 Way_Cmd(void)
 {
 	switch (argv(1)) {
@@ -387,7 +423,19 @@ Way_Cmd(void)
 		}
 		Way_GoToPoint( self );
 		break;
-	case "connect":
+	case "autolink":
+		if (!self) {
+			return;
+		}
+		Way_ConnectAuto();
+		break;
+	case "connect1":
+		if (!self) {
+			return;
+		}
+		Way_ConnectOne();
+		break;
+	case "connect2":
 		if (!self) {
 			return;
 		}
@@ -404,6 +452,12 @@ Way_Cmd(void)
 			return;
 		}
 		Way_Waypoint_Create( self, 0 );
+		break;
+	case "addsingle":
+		if ( !self ) {
+			return;
+		}
+		Way_Waypoint_Create( self, -3 );
 		break;
 	case "addltn":
 		if ( !self ) {
@@ -428,6 +482,12 @@ Way_Cmd(void)
 			return;
 		}
 		Way_Waypoint_Delete( Way_FindClosestWaypoint( self.origin ) );
+		break;
+	case "purge":
+		if ( !self ) {
+			return;
+		}
+		Way_Purge();
 		break;
 	case "radius":
 		if ( !self ) {
