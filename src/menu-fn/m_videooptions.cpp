@@ -92,8 +92,7 @@ void
 menu_videooptions_draw(void)
 {
 	Widget_Draw(fn_vidoptions);
-	drawpic([g_menuofs[0] + 45, g_menuofs[1] + 45], g_bmp[HEAD_VIDOPTIONS],
-			[460,80], [1,1,1], 1.0f, 1);
+	Header_Draw(HEAD_VIDOPTIONS);
 
 	drawfill([g_menuofs[0] + 246, g_menuofs[1] + 140], [288, 280], 
 			 [1,0,0], 1.0f);

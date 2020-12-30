@@ -210,7 +210,7 @@ void
 menu_multiplayer_draw(void)
 {
 	Widget_Draw(fn_multiplayer);
-	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_MULTI],[460,80], [1,1,1], 1.0f, 1);
+	Header_Draw(HEAD_MULTI);
 
 	WLabel_Static(215, 148, m_reslbl[IDS_MAIN_QUICKHELP], 10, 10, col_help,
 					1.0f, 0, font_label);

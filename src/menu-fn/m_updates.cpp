@@ -265,7 +265,7 @@ menu_updates_draw(void)
 	}
 
 	Widget_Draw(fn_updates);
-	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_CONFIG],[460,80], [1,1,1], 1.0f, 1);
+	Header_Draw(HEAD_CONFIG);
 
 	WLabel_Static(50, 143, "Data files:", 11, 11, [1,1,1],
 					1.0f, 0, font_arial);

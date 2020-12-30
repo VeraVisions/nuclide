@@ -223,7 +223,7 @@ menu_langames_draw(void)
 {
 	Widget_Draw(fn_lan);
 	Master_ResortCache();
-	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_LAN],[460,80], [1,1,1], 1.0f, 1);
+	Header_Draw(HEAD_LAN);
 	
 	/* Labels */
 	WLabel_Static(282, 128, m_reslbl[IDS_SERVER_GAMESERVER], 10, 10, [1,1,1],

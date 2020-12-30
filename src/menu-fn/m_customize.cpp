@@ -64,6 +64,9 @@ cz_cbModelChanged(void)
 	tokenizebyseparator(mdl, "/");
 	localcmd(sprintf("seta _cl_playermodel %s\n", argv(2)));
 	localcmd(sprintf("setinfo model %s\n", argv(2)));
+	localcmd(sprintf("headmodel %s\n", argv(2)));
+	localcmd(sprintf("team_model %s\n", argv(2)));
+	localcmd(sprintf("team_headmodel %s\n", argv(2)));
 }
 
 void
@@ -106,7 +109,7 @@ menu_customize_init(void)
 	search_end(searchy);
 
 	/* scan and cache the models */
-	searchy = search_begin("models/player/*/*.bmp:models/player/*/*.tga", SEARCH_MULTISEARCH | SEARCH_NAMESORT, TRUE);
+	searchy = search_begin("models/player/*/*.bmp:models/player/*/*.tga:models/players/*/icon_blue.tga", SEARCH_MULTISEARCH | SEARCH_NAMESORT, TRUE);
 
 	g_modelcount = search_getsize(searchy);
 	g_models = memalloc(sizeof(string) * g_modelcount);
@@ -164,7 +167,7 @@ void
 menu_customize_draw(void)
 {
 	Widget_Draw(fn_customize);
-	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_CUSTOMIZE],[460,80], [1,1,1], 1.0f, 1);
+	Header_Draw(HEAD_CUSTOMIZE);
 	WLabel_Static(212, 140, m_reslbl[IDS_PLAYERINFO_NAME], 14, 14, [1,1,1],
 					1.0f, 0, font_arial);
 	WLabel_Static(410, 140, sprintf(m_reslbl[IDS_MODEL_NAME], cvar_string("_cl_playermodel")), 14, 14, [1,1,1],

@@ -152,7 +152,7 @@ void
 menu_configuration_draw(void)
 {
 	Widget_Draw(fn_configuration);
-	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_CONFIG],[460,80], [1,1,1], 1.0f, 1);
+	Header_Draw(HEAD_CONFIG);
 
 	WLabel_Static(215, 148, m_reslbl[IDS_CFG_CONTROLHELP], 10, 10, col_help,
 					1.0f, 0, font_label);

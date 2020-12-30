@@ -271,7 +271,7 @@ menu_controls_draw(void)
 {
 
 	Widget_Draw(fn_controls);
-	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_CONTROLS],[460,80], [1,1,1], 1.0f, 1);
+	Header_Draw(HEAD_CONTROLS);
 
 	WField_Static(50,236+32, m_reslbl[IDS_CONTROLS_KEYHELP], 169, 64, col_help,
 					1.0f, 1, font_label);

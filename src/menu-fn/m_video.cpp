@@ -92,7 +92,7 @@ void
 menu_video_draw(void)
 {
 	Widget_Draw(fn_video);
-	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_VIDEO],[460,80], [1,1,1], 1.0f, 1);
+	Header_Draw(HEAD_VIDEO);
 	WLabel_Static(215, 148, m_reslbl[IDS_VIDSELECT_OPTIONSHELP], 10, 10, col_help,
 					1.0f, 0, font_label);
 	WLabel_Static(215, 180, m_reslbl[IDS_VIDSELECT_MODESHELP], 10, 10, col_help,

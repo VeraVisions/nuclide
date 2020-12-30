@@ -177,8 +177,7 @@ void
 menu_videomodes_draw(void)
 {
 	Widget_Draw(fn_vidmodes);
-	drawpic([g_menuofs[0] + 45, g_menuofs[1] + 45], g_bmp[HEAD_VIDMODES],
-			[460,80], [1,1,1], 1.0f, 1);
+	Header_Draw(HEAD_VIDMODES);
 
 	WLabel_Static(270, 393, m_reslbl[IDS_VIDMODE_WINDOWED], 12, 12, [0.75,0.75,0.75],
 					1.0f, 0, font_arial);

@@ -88,6 +88,79 @@ enum
 	BTN_SPECTATEGAMES
 };
 
+string g_mainbtn_text[] = {
+	"NEW GAME",
+	"RESUME GAME",
+	"TRAINING",
+	"CONFIG",
+	"LOAD GAME",
+	"SAVE LOAD",
+	"README",
+	"QUIT",
+	"MULTIPLAYER",
+	"EASY",
+	"MEDIUM",
+	"DIFFICULT",
+	"SAVE GAME",
+	"LOAD GAME",
+	"CANCEL",
+	"OPTIONS",
+	"VIDEO",
+	"AUDIO",
+	"CONTROLS",
+	"DONE",
+	"QUICK START",
+	"DEFAULTS",
+	"OK",
+	"VIDEO OPTIONS",
+	"VIDEO MODES",
+	"ADV. CONTROLS",
+	"ORDER",
+	"DELETE",
+	"INTERNET GAME",
+	"IRC CHAT",
+	"LAN GAME",
+	"CUSTOMIZE",
+	"SKIP",
+	"EXIT",
+	"CONNECT",
+	"REFRESH",
+	"FILTER1",
+	"FILTER2",
+	"CREATE",
+	"CREATE GAME",
+	"CHAT ROOMS",
+	"LIST ROOMS",
+	"SEARCH",
+	"SERVERS",
+	"JOIN",
+	"FIND",
+	"CREATE ROOM",
+	"JOIN GAME",
+	"SEARCH GAMES",
+	"FIND GAME",
+	"START GAME",
+	"GAME INFO",
+	"UPDATE LIST",
+	"ADD SERVER",
+	"DISCONNECT",
+	"CONSOLE",
+	"CONTENT CONTROL",
+	"UPDATE",
+	"VISIT FRAG-NET",
+	"PREVIEWS",
+	"ADV. OPTIONS",
+	"3D INFO",
+	"CUSTOM GAME",
+	"ACTIVATE",
+	"INSTALL",
+	"VISITWEB",
+	"REFRESH LIST",
+	"DEACTIVATE",
+	"SPECTATE GAME",
+	"SPECTATE GAMES"
+};
+
 class CMainButton:CWidget
 {
 	int m_bitmap;
@@ -114,26 +187,52 @@ CMainButton::CMainButton(void)
 	m_length = 156;
 }
 
+static int g_btns_present;
+
 void
 CMainButton::Draw(void)
 {
-	if (!m_execute) {
+	if (!g_btns_present) {
+		if (whichpack(strcat(g_bmp[0],".bmp"))) {
+			g_btns_present = 1;
+		} else {
+			g_btns_present = 2;
+		}
+	}
+
+	/* if we have btns_main */
+	if (g_btns_present == 1) {
+		if (!m_execute) {
+			drawsubpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y], [156,26], g_bmp[0], 
+					[0,(m_bitmap * 3) * g_btnofs], [1,g_btnofs], [1,1,1], 0.75f, 1);
+					return;
+		}
+		if (m_click) {
+			drawsubpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y], [156,26], g_bmp[0],
+					[0,((m_bitmap * 3)+2) * g_btnofs], [1,g_btnofs],
+					[1,1,1], 1.0f, 1);
+			return;
+		}
 		drawsubpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y], [156,26], g_bmp[0], 
-				[0,(m_bitmap * 3) * g_btnofs], [1,g_btnofs], [1,1,1], 0.75f, 1);
-				return;
-	}
-	if (m_click) {
+					[0,(m_bitmap * 3) * g_btnofs], [1,g_btnofs], [1,1,1], 1.0f, 1);
+					
 		drawsubpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y], [156,26], g_bmp[0],
-				[0,((m_bitmap * 3)+2) * g_btnofs], [1,g_btnofs],
-				[1,1,1], 1.0f, 1);
-		return;
+					[0,((m_bitmap * 3)+1) * g_btnofs], [1,g_btnofs],
+					[1,1,1], 1 - m_alpha, 1);
+	} else {
+		drawfont = font_label_p;
+		if (!m_execute) {
+			drawstring([g_menuofs[0]+m_x,g_menuofs[1]+m_y], g_mainbtn_text[m_bitmap], [16,16], [0.25,0.25,0.25], 1.0, 0);
+			return;
+		}
+		if (m_click) {
+			drawstring([g_menuofs[0]+m_x,g_menuofs[1]+m_y], g_mainbtn_text[m_bitmap], [16,16], [1,1,0], 1.0, 0);
+			return;
+		}
+
+		drawstring([g_menuofs[0]+m_x,g_menuofs[1]+m_y], g_mainbtn_text[m_bitmap], [16,16], [1,1,1], 1.0, 0);
+		drawstring([g_menuofs[0]+m_x,g_menuofs[1]+m_y], g_mainbtn_text[m_bitmap], [16,16], [1,0,0], 1 - m_alpha, 0);
 	}
-	drawsubpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y], [156,26], g_bmp[0], 
-				[0,(m_bitmap * 3) * g_btnofs], [1,g_btnofs], [1,1,1], 1.0f, 1);
-				
-	drawsubpic([g_menuofs[0]+m_x,g_menuofs[1]+m_y], [156,26], g_bmp[0],
-				[0,((m_bitmap * 3)+1) * g_btnofs], [1,g_btnofs],
-				[1,1,1], 1 - m_alpha, 1);
 
 	if (m_hover) {
 		m_alpha -= frametime * 16;

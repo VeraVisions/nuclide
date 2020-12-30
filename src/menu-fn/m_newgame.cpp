@@ -125,7 +125,7 @@ void
 menu_newgame_draw(void)
 {
 	Widget_Draw(fn_newgame);
-	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_NEWGAME],[460,80], [1,1,1], 1.0f, 1);
+	Header_Draw(HEAD_NEWGAME);
 
 	WLabel_Static(215, 148, m_reslbl[IDS_NEWGAME_EASYHELP], 10, 10, col_help,
 					1.0f, 0, font_label);

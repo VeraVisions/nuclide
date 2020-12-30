@@ -85,7 +85,7 @@ void
 menu_viewreadme_draw(void)
 {
 	Widget_Draw(vr_readme);
-	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_README],[460,80], [1,1,1], 1.0f, 1);
+	Header_Draw(HEAD_README);
 }
 
 void

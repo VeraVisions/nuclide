@@ -110,7 +110,7 @@ void
 menu_contentcontrol_draw(void)
 {
 	Widget_Draw(cc_gore);
-	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_GORE],[460,80], [1,1,1], 1.0f, 1);
+	Header_Draw(HEAD_GORE);
 
 	WField_Static(208, 140, g_cc_descr, 256, 64, col_help,
 					1.0f, 1, font_label);

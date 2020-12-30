@@ -132,7 +132,7 @@ void
 menu_chatroomslist_draw(void)
 {
 	Widget_Draw(fn_chatroomslist);
-	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_ROOMS],[460,80], [1,1,1], 1.0f, 1);
+	Header_Draw(HEAD_ROOMS);
 	drawpic([g_menuofs[0]+550,g_menuofs[1]+10], "gfx/shell/fragnet",[80,80], [1,1,1], 1.0f, 0);
 
 	if (crl_iLoading) {

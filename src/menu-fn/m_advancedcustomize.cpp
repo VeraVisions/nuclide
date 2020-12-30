@@ -69,7 +69,7 @@ void
 menu_advancedcustomize_draw(void)
 {
 	Widget_Draw(fn_advcustomize);
-	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_ADVOPTIONS],[460,80], [1,1,1], 1.0f, 1);
+	Header_Draw(HEAD_ADVOPTIONS);
 }
 
 void

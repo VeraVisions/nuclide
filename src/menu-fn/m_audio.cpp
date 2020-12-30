@@ -144,7 +144,7 @@ void
 menu_audio_draw(void)
 {
 	Widget_Draw(fn_audio);
-	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_AUDIO],[460,80], [1,1,1], 1.0f, 1);
+	Header_Draw(HEAD_AUDIO);
 	
 	WLabel_Static(206, 143, m_reslbl[IDS_AUDIO_VOLUME], 14, 14, [1,1,1],
 					1.0f, 0, font_label_b);

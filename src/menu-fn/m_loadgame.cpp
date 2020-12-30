@@ -138,7 +138,7 @@ void
 menu_loadgame_draw(void)
 {
 	Widget_Draw(fn_loadgame);
-	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_LOAD],[460,80], [1,1,1], 1.0f, 1);
+	Header_Draw(HEAD_LOAD);
 
 	if (!g_savegame_count) {
 		return;

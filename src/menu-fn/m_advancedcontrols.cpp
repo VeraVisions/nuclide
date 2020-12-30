@@ -201,11 +201,7 @@ void
 menu_advancedcontrols_draw(void)
 {
 	Widget_Draw(fn_advcontrols);
-	drawpic([g_menuofs[0]+45, g_menuofs[1]+45],
-	        g_bmp[HEAD_ADVANCED],
-	        [460,80],
-	        [1,1,1],
-	        1.0f, 1);
+	Header_Draw(HEAD_ADVANCED);
 
 	/* now come the checkbox / slider labels */
 	WLabel_Static(80, 148,

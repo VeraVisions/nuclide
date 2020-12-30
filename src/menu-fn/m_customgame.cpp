@@ -497,7 +497,7 @@ menu_customgame_init(void)
 void
 menu_customgame_draw(void)
 {
-	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_CUSTOM],[460,80], [1,1,1], 1.0f, 1);
+	Header_Draw(HEAD_CUSTOM);
 	Widget_Draw(fn_customgame);
 
 	WLabel_Static(155, 143, m_reslbl[IDS_MODLIST_TYPE], 11, 11, [1,1,1],

@@ -195,7 +195,7 @@ menu_creategame_init(void)
 void
 menu_creategame_draw(void)
 {
-	drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[HEAD_CREATEGAME],[460,80], [1,1,1], 1.0f, 1);
+	Header_Draw(HEAD_CREATEGAME);
 
 	WLabel_Static(216, 143, m_reslbl[IDS_CREATESERVER_NAME], 14, 14, [1,1,1],
 					1.0f, 0, font_arial);
