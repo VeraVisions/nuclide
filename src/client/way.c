@@ -75,12 +75,12 @@ Way_Init(void)
 		titles_t way_remove;
 		way_remove.m_strName = "WAY_REMOVE";
 		way_remove.m_strMessage = "1.\tRemove nearest\n" \
-								"2.\tRemove ALL\n" \
 								"\n" \
 								"\n" \
 								"\n" \
 								"\n" \
 								"\n" \
+								"7.\tRemove ALL\n" \
 								"\n" \
 								"9.\tBack\n";
 		way_remove.m_flPosX = 0;
@@ -223,7 +223,7 @@ WAY_REMOVE(int n)
 	case 1:
 		localcmd("sv way delete\n");
 		break;
-	case 2:
+	case 7:
 		localcmd("sv way purge\n");
 		break;
 	case 9:
