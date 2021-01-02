@@ -20,7 +20,7 @@ void
 Textmenu_Call(string menu)
 {
 	g_textmenu = menu;
-	g_textchannels[0].m_flTime = 0.0f;
+	g_textchannels[5].m_flTime = 0.0f;
 	g_textmenucheck = 0.0f;
 }
 
@@ -32,16 +32,16 @@ Textmenu_Draw(void)
 	}
 
 	if (g_textmenu) {
-		GameMessage_Setup(g_textmenu);
-		g_textchannels[0].m_flTime = 0.0f;
-		g_textchannels[0].m_flPosX = 0.1;
-		g_textchannels[0].m_flPosY = -1;
-		g_textchannels[0].m_flFadeIn =
-		g_textchannels[0].m_flFadeOut = 0.0f;
-		g_textchannels[0].m_flHoldTime = 0.5;
-		g_textchannels[0].m_vecColor1 = [1,1,1];
-		g_textchannels[0].m_vecColor2 = [0,0,0];
-		g_textchannels[0].m_iEffect = 0;
+		GameMessage_Setup(g_textmenu, 5);
+		g_textchannels[5].m_flTime = 0.0f;
+		g_textchannels[5].m_flPosX = 0.1;
+		g_textchannels[5].m_flPosY = -1;
+		g_textchannels[5].m_flFadeIn =
+		g_textchannels[5].m_flFadeOut = 0.0f;
+		g_textchannels[5].m_flHoldTime = 0.5;
+		g_textchannels[5].m_vecColor1 = [1,1,1];
+		g_textchannels[5].m_vecColor2 = [0,0,0];
+		g_textchannels[5].m_iEffect = 0;
 		g_textmenucheck = cltime + 0.5;
 	}
 }

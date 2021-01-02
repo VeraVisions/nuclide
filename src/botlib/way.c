@@ -122,7 +122,7 @@ void
 Way_DeleteNode(int iID)
 {
 	if (iID < 0i || iID >= g_iWaypoints) {
-		print("RT_DeleteWaypoint: invalid waypoint\n");
+		print("Way_DeleteNode: invalid waypoint\n");
 		return;
 	}
 
@@ -151,7 +151,7 @@ void
 Way_SetRadius(int iID, float flRadValue)
 {
 	if (iID < 0i || iID >= g_iWaypoints) {
-		print("RT_Waypoint_SetRadius: invalid waypoint\n");
+		print("Way_SetRadius: invalid waypoint\n");
 		return;
 	}
 	g_pWaypoints[iID].m_flRadius = flRadValue;
@@ -195,7 +195,7 @@ Way_FlagJump(void)
 	if (waylink_status == 0) {
 		way1 = Way_FindClosestNode(self.origin);
 		waylink_status = 1;
-		centerprint(self, "Selected first waypoint!\n");
+		env_message_single(self, "^2Selected first waypoint!\n");
 	} else if (waylink_status == 1) {
 		way2 = Way_FindClosestNode(self.origin);
 		waylink_status = 0;
@@ -204,11 +204,11 @@ Way_FlagJump(void)
 			for (int b = 0i; b < g_pWaypoints[way1].m_numNeighbours; b++) {
 				if (g_pWaypoints[way1].m_pNeighbour[b].m_iNode == way2) {
 					g_pWaypoints[way1].m_pNeighbour[b].m_iFlags |= LF_JUMP;
-					env_message_single(self, "Jump-linked the two points!\n");
+					env_message_single(self, "^2Jump-linked the two points!\n");
 				}
 			}
 		} else {
-			centerprint(self, "Failed to link, the two points are the same!\n");
+			env_message_single(self, "^1Failed to link, the two points are the same!\n");
 		}
 	}
 }
@@ -222,7 +222,7 @@ Way_FlagCrouch(void)
 	if (waylink_status == 0) {
 		way1 = Way_FindClosestNode(self.origin);
 		waylink_status = 1;
-		centerprint(self, "Selected first waypoint!\n");
+		env_message_single(self, "^2Selected first waypoint!\n");
 	} else if (waylink_status == 1) {
 		way2 = Way_FindClosestNode(self.origin);
 		waylink_status = 0;
@@ -231,11 +231,11 @@ Way_FlagCrouch(void)
 			for (int b = 0i; b < g_pWaypoints[way1].m_numNeighbours; b++) {
 				if (g_pWaypoints[way1].m_pNeighbour[b].m_iNode == way2) {
 					g_pWaypoints[way1].m_pNeighbour[b].m_iFlags |= LF_CROUCH;
-					env_message_single(self, "Crouch-linked the two points!\n");
+					env_message_single(self, "^2Crouch-linked the two points!\n");
 				}
 			}
 		} else {
-			centerprint(self, "Failed to link, the two points are the same!\n");
+			env_message_single(self, "^1Failed to link, the two points are the same!\n");
 		}
 	}
 }
@@ -249,7 +249,7 @@ Way_FlagWalk(void)
 	if (waylink_status == 0) {
 		way1 = Way_FindClosestNode(self.origin);
 		waylink_status = 1;
-		env_message_single(self, "Selected first waypoint!\n");
+		env_message_single(self, "^2Selected first waypoint!\n");
 	} else if (waylink_status == 1) {
 		way2 = Way_FindClosestNode(self.origin);
 		waylink_status = 0;
@@ -258,11 +258,11 @@ Way_FlagWalk(void)
 			for (int b = 0i; b < g_pWaypoints[way1].m_numNeighbours; b++) {
 				if (g_pWaypoints[way1].m_pNeighbour[b].m_iNode == way2) {
 					g_pWaypoints[way1].m_pNeighbour[b].m_iFlags |= LF_WALK;
-					env_message_single(self, "Walk-linked the two points!\n");
+					env_message_single(self, "^2Walk-linked the two points!\n");
 				}
 			}
 		} else {
-			env_message_single(self, "Failed to link, the two points are the same!\n");
+			env_message_single(self, "^1Failed to link, the two points are the same!\n");
 		}
 	}
 }
@@ -300,14 +300,14 @@ Way_SaveFile(string filename)
 	filestream file;
 
 	if (!g_iWaypoints) {
-		centerprint(self, "^1ERROR: Tried to save empty waypoints.\n");
+		env_message_single(self, "^1ERROR: Tried to save empty waypoints.\n");
 		return;
 	}
 
 	file = fopen(filename, FILE_WRITE);
 
 	if (file < 0) {
-		print("RT_DumpWaypoints: unable to open ", filename, "\n");
+		print("Way_SaveFile: unable to open ", filename, "\n");
 		return;
 	}
 
@@ -329,7 +329,7 @@ Way_ReadFile(string strFile)
 {
 	float file = fopen(strFile, FILE_READ);
 	if (file < 0) {
-		print("Way_SaveFile: unable to open ", strFile, "\n");
+		print("Way_ReadFile: unable to open ", strFile, "\n");
 		return;
 	}
 
@@ -368,16 +368,16 @@ Way_ConnectOne(void)
 	if (waylink_status == 0) {
 		way1 = Way_FindClosestNode(self.origin);
 		waylink_status = 1;
-		env_message_single(self, "Selected first waypoint!\n");
+		env_message_single(self, "^21/2 nodes selected...    \n");
 	} else if (waylink_status == 1) {
 		way2 = Way_FindClosestNode(self.origin);
 		waylink_status = 0;
 
 		if (way1 != way2) {
 			Way_LinkNodes(&g_pWaypoints[way1], &g_pWaypoints[way2]);
-			env_message_single(self, "Linked first waypoint with second waypoint!\n");
+			env_message_single(self, "^22/2 nodes selected, done!\n");
 		} else {
-			env_message_single(self, "Failed to link, the two points are the same!\n");
+			env_message_single(self, "^1Failed to link, the two points are the same!\n");
 		}
 	}
 }
@@ -391,7 +391,7 @@ Way_ConnectTwo(void)
 	if (waylink_status == 0) {
 		way1 = Way_FindClosestNode(self.origin);
 		waylink_status = 1;
-		env_message_single(self, "Selected first waypoint!\n");
+		env_message_single(self, "^21/2 nodes selected...    \n");
 	} else if (waylink_status == 1) {
 		way2 = Way_FindClosestNode(self.origin);
 		waylink_status = 0;
@@ -399,9 +399,9 @@ Way_ConnectTwo(void)
 		if (way1 != way2) {
 			Way_LinkNodes(&g_pWaypoints[way1], &g_pWaypoints[way2]);
 			Way_LinkNodes(&g_pWaypoints[way2], &g_pWaypoints[way1]);
-			env_message_single(self, "Linked first waypoint with second waypoint!\n");
+			env_message_single(self, "^22/2 nodes selected, done!\n");
 		} else {
-			env_message_single(self, "Failed to link, the two points are the same!\n");
+			env_message_single(self, "^1Failed to link, the two points are the same!\n");
 		}
 	}
 }

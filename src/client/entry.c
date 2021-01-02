@@ -653,7 +653,7 @@ CSQC_ConsoleCommand(string sCMD)
 		CMap_Build();
 		break;
 	case "titles_test":
-		GameMessage_Setup(argv(1));
+		GameMessage_Setup(argv(1), 0);
 		break;
 	case "vox_test":
 		Vox_Play(sCMD);

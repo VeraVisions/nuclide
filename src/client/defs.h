@@ -84,7 +84,7 @@ drawstring_r(vector p, string t, vector s, vector c, float a, float f)
 	drawstring(p, t, s, c, a, f);
 }
 
-void GameMessage_Setup(string);
+void GameMessage_Setup(string, int);
 void Game_Input(void);
 void View_SetMuzzleflash(int);
 void View_PlayAnimation(int);

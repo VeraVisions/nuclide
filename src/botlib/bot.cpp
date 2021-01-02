@@ -23,8 +23,7 @@ bot::Pain(void)
 	player::Pain();
 
 	/* might as well target our attacker */
-	if (!m_eTarget)
-		m_eTarget = g_dmg_eAttacker;
+	m_eTarget = g_dmg_eAttacker;
 }
 
 void

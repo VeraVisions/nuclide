@@ -56,7 +56,7 @@ void worldspawn::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
 	case "chaptertitle":
-		GameMessage_Setup(strKey);
+		GameMessage_Setup(strKey, 0);
 		break;
 	case "skyname":
 		g_strSkyName = strKey;
