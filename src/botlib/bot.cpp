@@ -129,6 +129,7 @@ bot::CheckRoute(void)
 {
 	float flDist;
 	vector evenpos;
+	float rad;
 
 	if (!m_iNodes) {
 		return;
@@ -137,14 +138,16 @@ bot::CheckRoute(void)
 	/* level out position/node stuff */
 	if (m_iCurNode < 0) {
 		evenpos = m_vecLastNode - origin;
+		rad = 64;
 	} else {
 		evenpos = m_pRoute[m_iCurNode].m_vecDest - origin;
+		rad = m_pRoute[m_iCurNode].m_flRadius;
 	}
-	evenpos[2] *= 0.25f;
+	//evenpos[2] *= 0.25f;
 
 	flDist = floor(vlen(evenpos));
 
-	if (flDist < 32) {
+	if (flDist < rad) {
 		dprint(sprintf("^2CBaseMonster::^3CheckRoute^7: " \
 			"%s reached node\n", this.targetname));
 		m_iCurNode--;
@@ -318,7 +321,7 @@ bot::RunAI(void)
 			/* we are far away, inch closer */
 			aimpos = m_eTarget.origin;
 		} else {
-			if (m_iCurNode == BOTROUTE_DESTINATION)
+			if (m_iCurNode <= BOTROUTE_DESTINATION)
 				aimpos = m_vecLastNode;
 			else
 				aimpos = m_pRoute[m_iCurNode].m_vecDest;

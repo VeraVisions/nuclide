@@ -20,6 +20,7 @@ typedef struct
 {
 	vector m_vecDest;
 	int m_iFlags;
+	float m_flRadius;
 } nodeslist_t;
 
 /* monster flags, these are defined by the level designers */

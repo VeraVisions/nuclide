@@ -102,12 +102,14 @@ static void
 Way_LinkWaypoints(waypoint_t *wp, waypoint_t *w2)
 {
 	int w2n = w2 - g_pWaypoints;
+
+	/* don't bother if we're already linked */
 	for (int i = 0i; i < wp->iNeighbours; i++) {
 		if (wp->neighbour[i].node == w2n) {
 			return;
 		}
 	}
-	
+
 	int idx = wp->iNeighbours++;
 	wp->neighbour = memrealloc(wp->neighbour, sizeof(*wp->neighbour), idx, wp->iNeighbours);
 	local struct wpneighbour_s *n = wp->neighbour+idx;
@@ -265,7 +267,8 @@ Way_Waypoint_LinkJump(void)
 		if (way1 != way2) {
 			for (int b = 0i; b < g_pWaypoints[way1].iNeighbours; b++) {
 				if (g_pWaypoints[way1].neighbour[b].node == way2) {
-					g_pWaypoints[way1].neighbour[b].iFlags = LF_JUMP;
+					g_pWaypoints[way1].neighbour[b].iFlags |= LF_JUMP;
+					env_message_single(self, "Jump-linked the two points!\n");
 				}
 			}
 		} else {
@@ -291,7 +294,8 @@ Way_Waypoint_LinkCrouch(void)
 		if (way1 != way2) {
 			for (int b = 0i; b < g_pWaypoints[way1].iNeighbours; b++) {
 				if (g_pWaypoints[way1].neighbour[b].node == way2) {
-					g_pWaypoints[way1].neighbour[b].iFlags = LF_CROUCH;
+					g_pWaypoints[way1].neighbour[b].iFlags |= LF_CROUCH;
+					env_message_single(self, "Crouch-linked the two points!\n");
 				}
 			}
 		} else {
@@ -309,7 +313,7 @@ Way_Waypoint_LinkWalk(void)
 	if (waylink_status == 0) {
 		way1 = Way_FindClosestWaypoint(self.origin);
 		waylink_status = 1;
-		centerprint(self, "Selected first waypoint!\n");
+		env_message_single(self, "Selected first waypoint!\n");
 	} else if (waylink_status == 1) {
 		way2 = Way_FindClosestWaypoint(self.origin);
 		waylink_status = 0;
@@ -317,11 +321,12 @@ Way_Waypoint_LinkWalk(void)
 		if (way1 != way2) {
 			for (int b = 0i; b < g_pWaypoints[way1].iNeighbours; b++) {
 				if (g_pWaypoints[way1].neighbour[b].node == way2) {
-					g_pWaypoints[way1].neighbour[b].iFlags = LF_WALK;
+					g_pWaypoints[way1].neighbour[b].iFlags |= LF_WALK;
+					env_message_single(self, "Walk-linked the two points!\n");
 				}
 			}
 		} else {
-			centerprint(self, "Failed to link, the two points are the same!\n");
+			env_message_single(self, "Failed to link, the two points are the same!\n");
 		}
 	}
 }
@@ -377,9 +382,11 @@ Way_DrawDebugInfo(void)
 	for (int i = 0i; i < g_iWaypoints; i++) {
 		waypoint_t *w = g_pWaypoints + i;
 		vector org = w->vecOrigin;
-		
-		for (float j = 0; j < (2 * M_PI); j += (2 * M_PI) / 4) {
-			R_PolygonVertex(org + [sin(j), cos(j)]*w->flRadius, '1 1', '0 0.25 0', 1);
+
+		for(int j = 0; j < 16; j++) {
+			float theta = 2.0f * M_PI * j / 16;
+			R_PolygonVertex(org + [sin(theta), cos(theta)]*w->flRadius, '1 1', '0 0.25 0', 1);
+
 		}
 		R_EndPolygon();
 	}
@@ -434,16 +441,16 @@ Way_ConnectOne(void)
 	if (waylink_status == 0) {
 		way1 = Way_FindClosestWaypoint(self.origin);
 		waylink_status = 1;
-		centerprint(self, "Selected first waypoint!\n");
+		env_message_single(self, "Selected first waypoint!\n");
 	} else if (waylink_status == 1) {
 		way2 = Way_FindClosestWaypoint(self.origin);
 		waylink_status = 0;
 
 		if (way1 != way2) {
 			Way_LinkWaypoints(&g_pWaypoints[way1], &g_pWaypoints[way2]);
-			centerprint(self, "Linked first waypoint with second waypoint!\n");
+			env_message_single(self, "Linked first waypoint with second waypoint!\n");
 		} else {
-			centerprint(self, "Failed to link, the two points are the same!\n");
+			env_message_single(self, "Failed to link, the two points are the same!\n");
 		}
 	}
 }
@@ -457,7 +464,7 @@ Way_ConnectTwo(void)
 	if (waylink_status == 0) {
 		way1 = Way_FindClosestWaypoint(self.origin);
 		waylink_status = 1;
-		centerprint(self, "Selected first waypoint!\n");
+		env_message_single(self, "Selected first waypoint!\n");
 	} else if (waylink_status == 1) {
 		way2 = Way_FindClosestWaypoint(self.origin);
 		waylink_status = 0;
@@ -465,10 +472,18 @@ Way_ConnectTwo(void)
 		if (way1 != way2) {
 			Way_LinkWaypoints(&g_pWaypoints[way1], &g_pWaypoints[way2]);
 			Way_LinkWaypoints(&g_pWaypoints[way2], &g_pWaypoints[way1]);
-			centerprint(self, "Linked first waypoint with second waypoint!\n");
+			env_message_single(self, "Linked first waypoint with second waypoint!\n");
 		} else {
-			centerprint(self, "Failed to link, the two points are the same!\n");
+			env_message_single(self, "Failed to link, the two points are the same!\n");
 		}
+	}
+}
+
+void
+Way_RadiusDefaults(void)
+{
+	for (int i = 0i; i < g_iWaypoints; i++) {
+		g_pWaypoints[i].flRadius = 48;
 	}
 }
 
@@ -487,101 +502,60 @@ Way_Purge(void)
 void
 Way_Cmd(void)
 {
+	if (!self) {
+		return;
+	}
+
 	switch (argv(1)) {
 	case "goto":
-		if ( !self ) {
-			return;
-		}
 		Way_GoToPoint( self );
 		break;
 	case "autolink":
-		if (!self) {
-			return;
-		}
 		Way_ConnectAuto();
 		break;
 	case "connect1":
-		if (!self) {
-			return;
-		}
 		Way_ConnectOne();
 		break;
 	case "connect2":
-		if (!self) {
-			return;
-		}
 		Way_ConnectTwo();
 		break;
 	case "add":
-		if ( !self ) {
-			return;
-		}
 		Way_Waypoint_Create( self, 1 );
 		break;
 	case "addchain":
-		if ( !self ) {
-			return;
-		}
 		Way_Waypoint_Create( self, 0 );
 		break;
 	case "addsingle":
-		if ( !self ) {
-			return;
-		}
 		Way_Waypoint_Create( self, -3 );
 		break;
 	case "addltn":
-		if ( !self ) {
-			return;
-		}
 		Way_Waypoint_Create( self, -1 );
 		break;
 	case "addntl":
-		if ( !self ) {
-			return;
-		}
 		Way_Waypoint_Create( self, -2 );
 		break;
 	case "addspawns":
-		if ( !self ) {
-			return;
-		}
 		Way_Waypoint_CreateSpawns();
 		break;
 	case "delete":
-		if ( !self ) {
-			return;
-		}
 		Way_Waypoint_Delete( Way_FindClosestWaypoint( self.origin ) );
 		break;
 	case "purge":
-		if ( !self ) {
-			return;
-		}
 		Way_Purge();
 		break;
 	case "radius":
-		if ( !self ) {
-			return;
-		}
 		Way_Waypoint_SetRadius( Way_FindClosestWaypoint( self.origin ), stof( argv( 2 ) ) );
 		break;
+	case "radiushack":
+		Way_RadiusDefaults();
+		break;
 	case "linkjump":
-		if ( !self ) {
-			return;
-		}
 		Way_Waypoint_LinkJump();
 		break;
 	case "linkcrouch":
-		if ( !self ) {
-			return;
-		}
 		Way_Waypoint_LinkCrouch();
 		break;
 	case "linkwalk":
-		if ( !self ) {
-			return;
-		}
 		Way_Waypoint_LinkWalk();
 		break;
 	case "save":

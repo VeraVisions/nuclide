@@ -274,6 +274,7 @@ HUD_Draw(void)
 {
 	g_hud_color = autocvar_con_color * (1 / 255);
 
+	Textmenu_Draw();
 	Obituary_Draw();
 	Damage_Draw();
 	HUD_DrawHealth();
@@ -285,4 +286,5 @@ void
 HUD_DrawSpectator(void)
 {
 	// FIXME
+	Textmenu_Draw();
 }

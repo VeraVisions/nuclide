@@ -172,6 +172,7 @@ Nodes_Init(void)
 		n->origin = a.origin;
 		n->nb = __NULL__;
 		n->nb_count = 0;
+		n->radius = 32;
 		Node_AutoLink(n);
 	}
 

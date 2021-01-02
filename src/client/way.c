@@ -22,14 +22,13 @@ Way_Init(void)
 		titles_t way_menu;
 		way_menu.m_strName = "WAY_MENU";
 		way_menu.m_strMessage = "1.\tAdd...\n" \
-								"2.\tLink...\n" \
+								"2.\tLink/Unlink...\n" \
 								"3.\tRemove...\n" \
 								"4.\tLink Flags...\n" \
-								"5.\tAuto-Link Settings...\n" \
+								"5.\tRadius Settings...\n" \
+								"6.\tAuto-Link Settings...\n" \
+								"7.\tSave/Load...\n" \
 								"\n" \
-								"\n" \
-								"7.\tSave File\n" \
-								"8.\tLoad File\n" \
 								"9.\tExit\n";
 		way_menu.m_flPosX = 0;
 		way_menu.m_flPosY = -1;
@@ -37,11 +36,29 @@ Way_Init(void)
 	}
 	/* add waypoint menu */
 	{
+		titles_t way_file;
+		way_file.m_strName = "WAY_FILE";
+		way_file.m_strMessage = "1.\tSave current file (data/mapname.way)\n" \
+								"\n" \
+								"\n" \
+								"4.\tLoad file (data/mapname.way)\n" \
+								"\n" \
+								"\n" \
+								"\n" \
+								"\n" \
+								"\n" \
+								"9.\tBack\n";
+		way_file.m_flPosX = 0;
+		way_file.m_flPosY = -1;
+		Titles_AddEntry(way_file);
+	}
+	/* add waypoint menu */
+	{
 		titles_t way_add;
 		way_add.m_strName = "WAY_ADD";
-		way_add.m_strMessage = "1.\tAdd ^1Autolink^7 Waypoint\n" \
+		way_add.m_strMessage = "1.\tAdd ^1Single^7 Waypoint\n" \
 								"2.\tAdd ^1Chain^7 Waypoint^7 (last-to-new)\n" \
-								"3.\tAdd ^1Single^7 Waypoint\n" \
+								"3.\tAdd ^1Autolink^7 Waypoint\n" \
 								"4.\tAdd ^1Spawnpoint^7 Waypoints\n" \
 								"\n" \
 								"\n" \
@@ -59,11 +76,12 @@ Way_Init(void)
 		way_link.m_strName = "WAY_LINK";
 		way_link.m_strMessage = "1.\tLink 2-way (2 steps)\n" \
 								"2.\tLink 1-way (2 steps)\n" \
+								"\n" \
+								"\n" \
+								"\n" \
+								"\n" \
+								"\n" \
 								"3.\tAutolink closest\n" \
-								"\n" \
-								"\n" \
-								"\n" \
-								"\n" \
 								"\n" \
 								"9.\tBack\n";
 		way_link.m_flPosX = 0;
@@ -80,7 +98,7 @@ Way_Init(void)
 								"\n" \
 								"\n" \
 								"\n" \
-								"7.\tRemove ALL\n" \
+								"7.\t^1DANGER^7: Remove ^1ALL\n" \
 								"\n" \
 								"9.\tBack\n";
 		way_remove.m_flPosX = 0;
@@ -103,6 +121,23 @@ Way_Init(void)
 		way_flags.m_flPosX = 0;
 		way_flags.m_flPosY = -1;
 		Titles_AddEntry(way_flags);
+	}
+	/* add waypoint menu */
+	{
+		titles_t way_radius;
+		way_radius.m_strName = "WAY_RADIUS";
+		way_radius.m_strMessage = "1.\tSet closest way-radius (0)\n" \
+								"2.\tSet closest way-radius (8)\n" \
+								"3.\tSet closest way-radius (16)\n" \
+								"4.\tSet closest way-radius (32)\n" \
+								"5.\tSet closest way-radius (48)\n" \
+								"6.\tSet closest way-radius (64)\n" \
+								"7.\tSet closest way-radius (128)\n" \
+								"\n" \
+								"9.\tBack\n";
+		way_radius.m_flPosX = 0;
+		way_radius.m_flPosY = -1;
+		Titles_AddEntry(way_radius);
 	}
 	/* add waypoint menu */
 	{
@@ -140,15 +175,13 @@ WAY_MENU(int n)
 		Textmenu_Call("WAY_FLAGS");
 		break;
 	case 5:
+		Textmenu_Call("WAY_RADIUS");
+		break;
+	case 6:
 		Textmenu_Call("WAY_AUTOLINK");
 		break;
 	case 7:
-		localcmd(sprintf("sv way save %s.way\n", mapname));
-		Textmenu_Call("");
-		break;
-	case 8:
-		localcmd(sprintf("sv way load %s.way\n", mapname));
-		Textmenu_Call("");
+		Textmenu_Call("WAY_FILE");
 		break;
 	case 9:
 		Textmenu_Call("");
@@ -157,17 +190,36 @@ WAY_MENU(int n)
 }
 
 void
+WAY_FILE(int n)
+{
+	switch (n) {
+	case 1:
+		localcmd(sprintf("sv way save %s.way\n", mapname));
+		Textmenu_Call("WAY_MENU");
+		break;
+	case 4:
+		localcmd(sprintf("sv way load %s.way\n", mapname));
+		Textmenu_Call("WAY_MENU");
+		break;
+	case 9:
+		Textmenu_Call("WAY_MENU");
+		break;
+	}
+}
+
+
+void
 WAY_ADD(int n)
 {
 	switch (n) {
 	case 1:
-		localcmd("sv way add\n");
+		localcmd("sv way addsingle\n");
 		break;
 	case 2:
 		localcmd("sv way addchain\n");
 		break;
 	case 3:
-		localcmd("sv way addsingle\n");
+		localcmd("sv way add\n");
 		break;
 	case 4:
 		localcmd("sv way addspawns\n");
@@ -188,7 +240,7 @@ WAY_LINK(int n)
 	case 2:
 		localcmd("sv way connect1\n");
 		break;
-	case 3:
+	case 7:
 		localcmd("sv way autolink\n");
 		break;
 	case 9:
@@ -225,6 +277,7 @@ WAY_REMOVE(int n)
 		break;
 	case 7:
 		localcmd("sv way purge\n");
+		Textmenu_Call("WAY_MENU");
 		break;
 	case 9:
 		Textmenu_Call("WAY_MENU");
@@ -243,10 +296,10 @@ WAY_AUTOLINK(int n)
 		localcmd("nav_linksize 32\n");
 		break;
 	case 3:
-		localcmd("nav_linksize 64\n");
+		localcmd("nav_linksize 48\n");
 		break;
 	case 4:
-		localcmd("nav_linksize 128\n");
+		localcmd("nav_linksize 64\n");
 		break;
 	case 5:
 		localcmd("nav_linksize 512\n");
@@ -256,6 +309,37 @@ WAY_AUTOLINK(int n)
 		break;
 	case 7:
 		localcmd("nav_linksize 1024\n");
+		break;
+	case 9:
+		Textmenu_Call("WAY_MENU");
+		break;
+	}
+}
+
+void
+WAY_RADIUS(int n)
+{
+	switch (n) {
+	case 1:
+		localcmd("sv way radius 0\n");
+		break;
+	case 2:
+		localcmd("sv way radius 8\n");
+		break;
+	case 3:
+		localcmd("sv way radius 16\n");
+		break;
+	case 4:
+		localcmd("sv way radius 32\n");
+		break;
+	case 5:
+		localcmd("sv way radius 48\n");
+		break;
+	case 6:
+		localcmd("sv way radius 64\n");
+		break;
+	case 7:
+		localcmd("sv way radius 128\n");
 		break;
 	case 9:
 		Textmenu_Call("WAY_MENU");
