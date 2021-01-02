@@ -46,7 +46,6 @@ Way_Init(void)
 								"\n" \
 								"\n" \
 								"\n" \
-								"\n" \
 								"9.\tBack\n";
 		way_file.m_flPosX = 0;
 		way_file.m_flPosY = -1;
@@ -60,7 +59,6 @@ Way_Init(void)
 								"2.\tAdd ^1Chain^7 Waypoint^7 (last-to-new)\n" \
 								"3.\tAdd ^1Autolink^7 Waypoint\n" \
 								"4.\tAdd ^1Spawnpoint^7 Waypoints\n" \
-								"\n" \
 								"\n" \
 								"\n" \
 								"\n" \
@@ -80,8 +78,7 @@ Way_Init(void)
 								"\n" \
 								"\n" \
 								"\n" \
-								"\n" \
-								"3.\tAutolink closest\n" \
+								"7.\tAutolink closest\n" \
 								"\n" \
 								"9.\tBack\n";
 		way_link.m_flPosX = 0;
@@ -109,9 +106,9 @@ Way_Init(void)
 	{
 		titles_t way_flags;
 		way_flags.m_strName = "WAY_FLAGS";
-		way_flags.m_strMessage = "1.\tFlag jump (2 steps)\n" \
-								"2.\tFlag crouch (2 steps)\n" \
-								"3.\tFlag walk (2 steps)\n" \
+		way_flags.m_strMessage = "1.\tFlag ^3JUMP^7 (2 steps)\n" \
+								"2.\tFlag ^2CROUCH^7 (2 steps)\n" \
+								"3.\tFlag ^1WALK^7 (2 steps)\n" \
 								"\n" \
 								"\n" \
 								"\n" \

@@ -524,8 +524,14 @@ Way_DrawDebugInfo(void)
 			}
 
 			if (fl & LF_CROUCH) {
-				R_PolygonVertex(org + [0,0,-1], [0,1], [0,0,1], 1);
-				R_PolygonVertex(w2->m_vecOrigin + [0,0,-1], [1,1], [0,0,1], 1);
+				R_PolygonVertex(org + [0,0,-2], [0,1], [0,1,0], 1);
+				R_PolygonVertex(w2->m_vecOrigin + [0,0,-2], [1,1], [0,0,0], 1);
+				R_EndPolygon();
+			}
+
+			if (fl & LF_WALK) {
+				R_PolygonVertex(org + [0,0,-1], [0,1], [1,0,0], 1);
+				R_PolygonVertex(w2->m_vecOrigin + [0,0,-1], [1,1], [0,0,0], 1);
 				R_EndPolygon();
 			}
 
