@@ -16,15 +16,15 @@
 
 typedef struct waypoint_s
 {
-	vector vecOrigin;
-	float flRadius;	 /* used for picking the closest waypoint. aka proximity weight. also relaxes routes inside the area. */
+	vector m_vecOrigin;
+	float m_flRadius;	 /* used for picking the closest waypoint. aka proximity weight. also relaxes routes inside the area. */
 	struct wpneighbour_s
 	{
-		int node;
-		float linkcost;
-		int iFlags;
-	} *neighbour;
-	int iNeighbours;
+		int m_iNode;
+		float m_flCost;
+		int m_iFlags;
+	} *m_pNeighbour;
+	int m_numNeighbours;
 } waypoint_t;
 
 static waypoint_t *g_pWaypoints;
@@ -34,88 +34,31 @@ static void
 Way_WipeWaypoints(void)
 {
 	for (int i = 0; i < g_iWaypoints; i++) {
-		memfree(g_pWaypoints[i].neighbour);
+		memfree(g_pWaypoints[i].m_pNeighbour);
 	}
 
 	memfree(g_pWaypoints);
 	g_iWaypoints = 0;
 }
 
-void
-Way_DumpWaypoints(string filename)
-{
-	filestream file = fopen(filename, FILE_WRITE);
-
-	if (file < 0) {
-		print("RT_DumpWaypoints: unable to open ", filename, "\n");
-		return;
-	}
-
-	fputs(file, sprintf("%i\n", g_iWaypoints));
-
-	for (int i = 0i; i < g_iWaypoints; i++) {
-		fputs(file, sprintf("%v %f %i\n", g_pWaypoints[i].vecOrigin, g_pWaypoints[i].flRadius, g_pWaypoints[i].iNeighbours));
-		
-		for(int j = 0i; j < g_pWaypoints[i].iNeighbours; j++) {
-			fputs(file, sprintf(" %i %f %x\n", g_pWaypoints[i].neighbour[j].node, g_pWaypoints[i].neighbour[j].linkcost, (float)g_pWaypoints[i].neighbour[j].iFlags));
-		}
-	}
-
-	fclose(file);
-}
-
-void
-Way_ReadWaypoints(string strFile)
-{
-	float file = fopen(strFile, FILE_READ);
-	if (file < 0) {
-		print("Way_DumpWaypoints: unable to open ", strFile, "\n");
-		return;
-	}
-
-	Way_WipeWaypoints();
-
-	tokenize(fgets(file));
-	g_iWaypoints = stoi(argv(0));
-	g_pWaypoints = memalloc(sizeof(*g_pWaypoints) * g_iWaypoints);
-
-	for (int i = 0i; i < g_iWaypoints; i++) {
-		tokenize(fgets(file));
-		g_pWaypoints[i].vecOrigin[0] = stof(argv(0));
-		g_pWaypoints[i].vecOrigin[1] = stof(argv(1));
-		g_pWaypoints[i].vecOrigin[2] = stof(argv(2));
-		g_pWaypoints[i].flRadius = stof(argv(3));
-		g_pWaypoints[i].iNeighbours = stoi(argv(4));
-		g_pWaypoints[i].neighbour = memalloc(sizeof(*g_pWaypoints[i].neighbour) * g_pWaypoints[i].iNeighbours);
-		
-		for (int j = 0i; j < g_pWaypoints[i].iNeighbours; j++) {
-			tokenize(fgets(file));
-			g_pWaypoints[i].neighbour[j].node = stoi(argv(0));
-			g_pWaypoints[i].neighbour[j].linkcost = stof(argv(1));
-			g_pWaypoints[i].neighbour[j].iFlags = stoh(argv(2));
-		}
-	}
-	fclose(file);
-}
-
 static void
-Way_LinkWaypoints(waypoint_t *wp, waypoint_t *w2)
+Way_LinkNodes(waypoint_t *wp, waypoint_t *w2)
 {
 	int w2n = w2 - g_pWaypoints;
 
 	/* don't bother if we're already linked */
-	for (int i = 0i; i < wp->iNeighbours; i++) {
-		if (wp->neighbour[i].node == w2n) {
+	for (int i = 0i; i < wp->m_numNeighbours; i++) {
+		if (wp->m_pNeighbour[i].m_iNode == w2n) {
 			return;
 		}
 	}
 
-	int idx = wp->iNeighbours++;
-	wp->neighbour = memrealloc(wp->neighbour, sizeof(*wp->neighbour), idx, wp->iNeighbours);
-	local struct wpneighbour_s *n = wp->neighbour+idx;
-	n->node = w2n;
-	n->linkcost = vlen(w2->vecOrigin - wp->vecOrigin);
-	n->iFlags = 0;
+	int idx = wp->m_numNeighbours++;
+	wp->m_pNeighbour = memrealloc(wp->m_pNeighbour, sizeof(*wp->m_pNeighbour), idx, wp->m_numNeighbours);
+	local struct wpneighbour_s *n = wp->m_pNeighbour+idx;
+	n->m_iNode = w2n;
+	n->m_flCost = vlen(w2->m_vecOrigin - wp->m_vecOrigin);
+	n->m_iFlags = 0;
 }
 
 static void
@@ -130,60 +73,53 @@ Way_AutoLink(waypoint_t *wp)
 		}
 
 		//autolink distance cutoff.
-		if (vlen(wp->vecOrigin - g_pWaypoints[i].vecOrigin) > autocvar(nav_linksize, 256, "Cuttoff distance between links")) {
+		if (vlen(wp->m_vecOrigin - g_pWaypoints[i].m_vecOrigin) > autocvar_nav_linksize) {
 			continue;
 		}
 
 		//not going to use the full player size because that makes steps really messy.
 		//however, we do need a little size, for sanity's sake
-		tracebox(wp->vecOrigin, '-16 -16 0', '16 16 32', g_pWaypoints[i].vecOrigin, TRUE, world);
+		tracebox(wp->m_vecOrigin, '-16 -16 0', '16 16 32', g_pWaypoints[i].m_vecOrigin, TRUE, world);
 
 		//light of sight blocked, don't try autolinking.
 		if (trace_fraction < 1) {
 			continue;
 		}
 
-		Way_LinkWaypoints(wp, &g_pWaypoints[i]);
-		Way_LinkWaypoints(&g_pWaypoints[i], wp);
+		Way_LinkNodes(wp, &g_pWaypoints[i]);
+		Way_LinkNodes(&g_pWaypoints[i], wp);
 	}
 }
 
 void
-Way_Waypoint_Create(entity ePlayer, int iAutoLink)
+Way_CreateNode(entity ePlayer, int iAutoLink)
 {
 	int iID = g_iWaypoints++;
 	g_pWaypoints = memrealloc(g_pWaypoints, sizeof(waypoint_t), iID, g_iWaypoints);
 	waypoint_t *n = g_pWaypoints + iID;
-	n->vecOrigin = ePlayer.origin;
-	n->neighbour = __NULL__;
-	n->iNeighbours = 0;
+	n->m_vecOrigin = ePlayer.origin;
+	n->m_pNeighbour = __NULL__;
+	n->m_numNeighbours = 0;
+	n->m_flRadius = autocvar_nav_radius;
 
 	if (iAutoLink == 1) {
 		Way_AutoLink(n);
 	} else {
 		if (iID != 0) {
 			if (iAutoLink == 0) {
-				Way_LinkWaypoints(n, &g_pWaypoints[iID-1]);
-				Way_LinkWaypoints(&g_pWaypoints[iID-1], n);
+				Way_LinkNodes(n, &g_pWaypoints[iID-1]);
+				Way_LinkNodes(&g_pWaypoints[iID-1], n);
 			} else if (iAutoLink == -1) {
-				Way_LinkWaypoints(&g_pWaypoints[iID-1], n);
+				Way_LinkNodes(&g_pWaypoints[iID-1], n);
 			} else if (iAutoLink == -2) {
-				Way_LinkWaypoints(n, &g_pWaypoints[iID-1]);
+				Way_LinkNodes(n, &g_pWaypoints[iID-1]);
 			}
 		}
 	}
 }
 
 void
-Way_Waypoint_CreateSpawns()
-{
-	for (entity a = world; (a = find(a, ::classname, "info_player_deathmatch"));) {
-		Way_Waypoint_Create(a, TRUE);
-	}
-}
-
-void
-Way_Waypoint_Delete(int iID)
+Way_DeleteNode(int iID)
 {
 	if (iID < 0i || iID >= g_iWaypoints) {
 		print("RT_DeleteWaypoint: invalid waypoint\n");
@@ -191,20 +127,20 @@ Way_Waypoint_Delete(int iID)
 	}
 
 	//wipe the waypoint
-	memfree(g_pWaypoints[iID].neighbour);
+	memfree(g_pWaypoints[iID].m_pNeighbour);
 	memcpy(g_pWaypoints + iID, g_pWaypoints + iID + 1, (g_iWaypoints - (iID + 1)) * sizeof(*g_pWaypoints));
 	g_iWaypoints--;
 
 	//clean up any links to it.
 	for (int i = 0; i < g_iWaypoints; i++) {
-		for (int j = 0; j < g_pWaypoints[i].iNeighbours;) {
-			int l = g_pWaypoints[i].neighbour[j].node;
+		for (int j = 0; j < g_pWaypoints[i].m_numNeighbours;) {
+			int l = g_pWaypoints[i].m_pNeighbour[j].m_iNode;
 			if (l == iID) {
-				memcpy(g_pWaypoints[i].neighbour+j, g_pWaypoints[i].neighbour+j+1, (g_pWaypoints[i].iNeighbours-(j+1))*sizeof(*g_pWaypoints[i].neighbour));
-				g_pWaypoints[i].iNeighbours--;
+				memcpy(g_pWaypoints[i].m_pNeighbour+j, g_pWaypoints[i].m_pNeighbour+j+1, (g_pWaypoints[i].m_numNeighbours-(j+1))*sizeof(*g_pWaypoints[i].m_pNeighbour));
+				g_pWaypoints[i].m_numNeighbours--;
 				continue;
 			} else if (l > iID) {
-				g_pWaypoints[i].neighbour[j].node = l-1;
+				g_pWaypoints[i].m_pNeighbour[j].m_iNode = l-1;
 			}
 			j++;
 		}
@@ -212,17 +148,17 @@ Way_Waypoint_Delete(int iID)
 }
 
 void
-Way_Waypoint_SetRadius(int iID, float flRadValue)
+Way_SetRadius(int iID, float flRadValue)
 {
 	if (iID < 0i || iID >= g_iWaypoints) {
 		print("RT_Waypoint_SetRadius: invalid waypoint\n");
 		return;
 	}
-	g_pWaypoints[iID].flRadius = flRadValue;
+	g_pWaypoints[iID].m_flRadius = flRadValue;
 }
 
 int
-Way_FindClosestWaypoint(vector vecOrigin)
+Way_FindClosestNode(vector vecOrigin)
 {
 	
 	/* -1 for no nodes anywhere... */
@@ -230,7 +166,7 @@ Way_FindClosestWaypoint(vector vecOrigin)
 	float flBestDist = COST_INFINITE;
 
 	for (int i = 0i; i < g_iWaypoints; i++) {
-		float fDist = vlen(g_pWaypoints[i].vecOrigin - vecOrigin) - g_pWaypoints[i].flRadius;
+		float fDist = vlen(g_pWaypoints[i].m_vecOrigin - vecOrigin) - g_pWaypoints[i].m_flRadius;
 		if (fDist < flBestDist) {
 			/* within the waypoint's radius */
 			if (fDist < 0) {
@@ -238,7 +174,7 @@ Way_FindClosestWaypoint(vector vecOrigin)
 				r = i;
 			} else {
 				/* outside the waypoint, make sure its valid. */
-				traceline(vecOrigin, g_pWaypoints[i].vecOrigin, TRUE, world);
+				traceline(vecOrigin, g_pWaypoints[i].m_vecOrigin, TRUE, world);
 				if (trace_fraction == 1) {
 					/* FIXME: sort them frst, to avoid traces? */
 					flBestDist = fDist;
@@ -251,23 +187,23 @@ Way_FindClosestWaypoint(vector vecOrigin)
 }
 
 void
-Way_Waypoint_LinkJump(void)
+Way_FlagJump(void)
 {
 	static int waylink_status;
 	static int way1, way2;
 	
 	if (waylink_status == 0) {
-		way1 = Way_FindClosestWaypoint(self.origin);
+		way1 = Way_FindClosestNode(self.origin);
 		waylink_status = 1;
 		centerprint(self, "Selected first waypoint!\n");
 	} else if (waylink_status == 1) {
-		way2 = Way_FindClosestWaypoint(self.origin);
+		way2 = Way_FindClosestNode(self.origin);
 		waylink_status = 0;
 
 		if (way1 != way2) {
-			for (int b = 0i; b < g_pWaypoints[way1].iNeighbours; b++) {
-				if (g_pWaypoints[way1].neighbour[b].node == way2) {
-					g_pWaypoints[way1].neighbour[b].iFlags |= LF_JUMP;
+			for (int b = 0i; b < g_pWaypoints[way1].m_numNeighbours; b++) {
+				if (g_pWaypoints[way1].m_pNeighbour[b].m_iNode == way2) {
+					g_pWaypoints[way1].m_pNeighbour[b].m_iFlags |= LF_JUMP;
 					env_message_single(self, "Jump-linked the two points!\n");
 				}
 			}
@@ -278,23 +214,23 @@ Way_Waypoint_LinkJump(void)
 }
 
 void
-Way_Waypoint_LinkCrouch(void)
+Way_FlagCrouch(void)
 {
 	static int waylink_status;
 	static int way1, way2;
 	
 	if (waylink_status == 0) {
-		way1 = Way_FindClosestWaypoint(self.origin);
+		way1 = Way_FindClosestNode(self.origin);
 		waylink_status = 1;
 		centerprint(self, "Selected first waypoint!\n");
 	} else if (waylink_status == 1) {
-		way2 = Way_FindClosestWaypoint(self.origin);
+		way2 = Way_FindClosestNode(self.origin);
 		waylink_status = 0;
 
 		if (way1 != way2) {
-			for (int b = 0i; b < g_pWaypoints[way1].iNeighbours; b++) {
-				if (g_pWaypoints[way1].neighbour[b].node == way2) {
-					g_pWaypoints[way1].neighbour[b].iFlags |= LF_CROUCH;
+			for (int b = 0i; b < g_pWaypoints[way1].m_numNeighbours; b++) {
+				if (g_pWaypoints[way1].m_pNeighbour[b].m_iNode == way2) {
+					g_pWaypoints[way1].m_pNeighbour[b].m_iFlags |= LF_CROUCH;
 					env_message_single(self, "Crouch-linked the two points!\n");
 				}
 			}
@@ -305,29 +241,37 @@ Way_Waypoint_LinkCrouch(void)
 }
 
 void
-Way_Waypoint_LinkWalk(void)
+Way_FlagWalk(void)
 {
 	static int waylink_status;
 	static int way1, way2;
 	
 	if (waylink_status == 0) {
-		way1 = Way_FindClosestWaypoint(self.origin);
+		way1 = Way_FindClosestNode(self.origin);
 		waylink_status = 1;
 		env_message_single(self, "Selected first waypoint!\n");
 	} else if (waylink_status == 1) {
-		way2 = Way_FindClosestWaypoint(self.origin);
+		way2 = Way_FindClosestNode(self.origin);
 		waylink_status = 0;
 
 		if (way1 != way2) {
-			for (int b = 0i; b < g_pWaypoints[way1].iNeighbours; b++) {
-				if (g_pWaypoints[way1].neighbour[b].node == way2) {
-					g_pWaypoints[way1].neighbour[b].iFlags |= LF_WALK;
+			for (int b = 0i; b < g_pWaypoints[way1].m_numNeighbours; b++) {
+				if (g_pWaypoints[way1].m_pNeighbour[b].m_iNode == way2) {
+					g_pWaypoints[way1].m_pNeighbour[b].m_iFlags |= LF_WALK;
 					env_message_single(self, "Walk-linked the two points!\n");
 				}
 			}
 		} else {
 			env_message_single(self, "Failed to link, the two points are the same!\n");
 		}
+	}
+}
+
+void
+Way_HelperSpawns()
+{
+	for (entity a = world; (a = find(a, ::classname, "info_player_deathmatch"));) {
+		Way_CreateNode(a, TRUE);
 	}
 }
 
@@ -350,87 +294,70 @@ Way_GoToPoint(entity pl)
 		}
 	}
 }
-
 void
-Way_DrawDebugInfo(void)
+Way_SaveFile(string filename)
 {
+	filestream file;
+
 	if (!g_iWaypoints) {
+		centerprint(self, "^1ERROR: Tried to save empty waypoints.\n");
 		return;
 	}
 
-	int iNearest = Way_FindClosestWaypoint(self.origin);
-	makevectors(self.v_angle);
-	R_BeginPolygon("textures/dev/info_node", 0, 0);
-	
-	for (int i = 0i; i < g_iWaypoints; i++) {
-		waypoint_t *w = g_pWaypoints + i;
-		vector org = w->vecOrigin;
-		vector rgb = [1,1,1];
+	file = fopen(filename, FILE_WRITE);
 
-		if (iNearest == i) {
-			rgb = [0,1,0];
-		}
-
-		R_PolygonVertex(org + v_right * 8 - v_up * 8, '1 1', rgb, 1);
-		R_PolygonVertex(org - v_right * 8 - v_up * 8, '0 1', rgb, 1);
-		R_PolygonVertex(org - v_right * 8 + v_up * 8, [0,0], rgb,  1);
-		R_PolygonVertex(org + v_right * 8 + v_up * 8, '1 0', rgb, 1);
-		R_EndPolygon();
-	}
-	
-	R_BeginPolygon("", 0, 0);
-	for (int i = 0i; i < g_iWaypoints; i++) {
-		waypoint_t *w = g_pWaypoints + i;
-		vector org = w->vecOrigin;
-
-		for(int j = 0; j < 16; j++) {
-			float theta = 2.0f * M_PI * j / 16;
-			R_PolygonVertex(org + [sin(theta), cos(theta)]*w->flRadius, '1 1', '0 0.25 0', 1);
-
-		}
-		R_EndPolygon();
+	if (file < 0) {
+		print("RT_DumpWaypoints: unable to open ", filename, "\n");
+		return;
 	}
 
-	R_BeginPolygon("", 1, 0);
-	
+	fputs(file, sprintf("%i\n", g_iWaypoints));
+
 	for (int i = 0i; i < g_iWaypoints; i++) {
-		waypoint_t *w = g_pWaypoints+i;
-		vector org = w->vecOrigin;
-		vector rgb = [1,1,1];
-
-		for (int j = 0i; j < w->iNeighbours; j++) {
-			int k = w->neighbour[j].node;
-			int fl = w->neighbour[j].iFlags;
-
-			if (k < 0i || k >= g_iWaypoints) {
-				break;
-			}
-
-			waypoint_t *w2 = &g_pWaypoints[k];
-
-			if (fl & LF_JUMP) {
-				vector middle;
-				middle = (w2->vecOrigin + org) / 2;
-				R_PolygonVertex(org + [0,0,1], [0,1], [1,1,0], 1);
-				R_PolygonVertex(middle + [0,0,32], [0,1], [0.5,0.5,0], 1);
-				R_EndPolygon();
-				R_PolygonVertex(middle + [0,0,32], [0,1], [0.5,0.5,0], 1);
-				R_PolygonVertex(w2->vecOrigin + [0,0,1], [1,1], [0,0,0], 1);
-				R_EndPolygon();
-			}
-
-			if (fl & LF_CROUCH) {
-				R_PolygonVertex(org + [0,0,-1], [0,1], [0,0,1], 1);
-				R_PolygonVertex(w2->vecOrigin + [0,0,-1], [1,1], [0,0,1], 1);
-				R_EndPolygon();
-			}
-
-			R_PolygonVertex(org, [0,1], [1,0,1], 1);
-			R_PolygonVertex(w2->vecOrigin, [1,1], [0,1,0], 1);
-			R_EndPolygon();
+		fputs(file, sprintf("%v %f %i\n", g_pWaypoints[i].m_vecOrigin, g_pWaypoints[i].m_flRadius, g_pWaypoints[i].m_numNeighbours));
+		
+		for(int j = 0i; j < g_pWaypoints[i].m_numNeighbours; j++) {
+			fputs(file, sprintf(" %i %f %x\n", g_pWaypoints[i].m_pNeighbour[j].m_iNode, g_pWaypoints[i].m_pNeighbour[j].m_flCost, (float)g_pWaypoints[i].m_pNeighbour[j].m_iFlags));
 		}
 	}
+
+	fclose(file);
 }
+
+void
+Way_ReadFile(string strFile)
+{
+	float file = fopen(strFile, FILE_READ);
+	if (file < 0) {
+		print("Way_SaveFile: unable to open ", strFile, "\n");
+		return;
+	}
+
+	Way_WipeWaypoints();
+
+	tokenize(fgets(file));
+	g_iWaypoints = stoi(argv(0));
+	g_pWaypoints = memalloc(sizeof(*g_pWaypoints) * g_iWaypoints);
+
+	for (int i = 0i; i < g_iWaypoints; i++) {
+		tokenize(fgets(file));
+		g_pWaypoints[i].m_vecOrigin[0] = stof(argv(0));
+		g_pWaypoints[i].m_vecOrigin[1] = stof(argv(1));
+		g_pWaypoints[i].m_vecOrigin[2] = stof(argv(2));
+		g_pWaypoints[i].m_flRadius = stof(argv(3));
+		g_pWaypoints[i].m_numNeighbours = stoi(argv(4));
+		g_pWaypoints[i].m_pNeighbour = memalloc(sizeof(*g_pWaypoints[i].m_pNeighbour) * g_pWaypoints[i].m_numNeighbours);
+		
+		for (int j = 0i; j < g_pWaypoints[i].m_numNeighbours; j++) {
+			tokenize(fgets(file));
+			g_pWaypoints[i].m_pNeighbour[j].m_iNode = stoi(argv(0));
+			g_pWaypoints[i].m_pNeighbour[j].m_flCost = stof(argv(1));
+			g_pWaypoints[i].m_pNeighbour[j].m_iFlags = stoh(argv(2));
+		}
+	}
+	fclose(file);
+}
+
 
 void
 Way_ConnectOne(void)
@@ -439,15 +366,15 @@ Way_ConnectOne(void)
 	static int way1, way2;
 	
 	if (waylink_status == 0) {
-		way1 = Way_FindClosestWaypoint(self.origin);
+		way1 = Way_FindClosestNode(self.origin);
 		waylink_status = 1;
 		env_message_single(self, "Selected first waypoint!\n");
 	} else if (waylink_status == 1) {
-		way2 = Way_FindClosestWaypoint(self.origin);
+		way2 = Way_FindClosestNode(self.origin);
 		waylink_status = 0;
 
 		if (way1 != way2) {
-			Way_LinkWaypoints(&g_pWaypoints[way1], &g_pWaypoints[way2]);
+			Way_LinkNodes(&g_pWaypoints[way1], &g_pWaypoints[way2]);
 			env_message_single(self, "Linked first waypoint with second waypoint!\n");
 		} else {
 			env_message_single(self, "Failed to link, the two points are the same!\n");
@@ -462,41 +389,21 @@ Way_ConnectTwo(void)
 	static int way1, way2;
 	
 	if (waylink_status == 0) {
-		way1 = Way_FindClosestWaypoint(self.origin);
+		way1 = Way_FindClosestNode(self.origin);
 		waylink_status = 1;
 		env_message_single(self, "Selected first waypoint!\n");
 	} else if (waylink_status == 1) {
-		way2 = Way_FindClosestWaypoint(self.origin);
+		way2 = Way_FindClosestNode(self.origin);
 		waylink_status = 0;
 
 		if (way1 != way2) {
-			Way_LinkWaypoints(&g_pWaypoints[way1], &g_pWaypoints[way2]);
-			Way_LinkWaypoints(&g_pWaypoints[way2], &g_pWaypoints[way1]);
+			Way_LinkNodes(&g_pWaypoints[way1], &g_pWaypoints[way2]);
+			Way_LinkNodes(&g_pWaypoints[way2], &g_pWaypoints[way1]);
 			env_message_single(self, "Linked first waypoint with second waypoint!\n");
 		} else {
 			env_message_single(self, "Failed to link, the two points are the same!\n");
 		}
 	}
-}
-
-void
-Way_RadiusDefaults(void)
-{
-	for (int i = 0i; i < g_iWaypoints; i++) {
-		g_pWaypoints[i].flRadius = 48;
-	}
-}
-
-void
-Way_ConnectAuto(void)
-{
-	Way_AutoLink(Way_FindClosestWaypoint(self.origin));
-}
-
-void
-Way_Purge(void)
-{
-	Way_WipeWaypoints();
 }
 
 void
@@ -511,7 +418,7 @@ Way_Cmd(void)
 		Way_GoToPoint( self );
 		break;
 	case "autolink":
-		Way_ConnectAuto();
+		Way_AutoLink(Way_FindClosestNode(self.origin));
 		break;
 	case "connect1":
 		Way_ConnectOne();
@@ -520,49 +427,146 @@ Way_Cmd(void)
 		Way_ConnectTwo();
 		break;
 	case "add":
-		Way_Waypoint_Create( self, 1 );
+		Way_CreateNode( self, 1 );
 		break;
 	case "addchain":
-		Way_Waypoint_Create( self, 0 );
+		Way_CreateNode( self, 0 );
 		break;
 	case "addsingle":
-		Way_Waypoint_Create( self, -3 );
+		Way_CreateNode( self, -3 );
 		break;
 	case "addltn":
-		Way_Waypoint_Create( self, -1 );
+		Way_CreateNode( self, -1 );
 		break;
 	case "addntl":
-		Way_Waypoint_Create( self, -2 );
+		Way_CreateNode( self, -2 );
 		break;
 	case "addspawns":
-		Way_Waypoint_CreateSpawns();
+		Way_HelperSpawns();
 		break;
 	case "delete":
-		Way_Waypoint_Delete( Way_FindClosestWaypoint( self.origin ) );
+		Way_DeleteNode( Way_FindClosestNode( self.origin ) );
 		break;
 	case "purge":
-		Way_Purge();
+		Way_WipeWaypoints();
 		break;
 	case "radius":
-		Way_Waypoint_SetRadius( Way_FindClosestWaypoint( self.origin ), stof( argv( 2 ) ) );
+		Way_SetRadius( Way_FindClosestNode( self.origin ), stof( argv( 2 ) ) );
 		break;
 	case "radiushack":
-		Way_RadiusDefaults();
+		for (int i = 0i; i < g_iWaypoints; i++) {
+			g_pWaypoints[i].m_flRadius = autocvar_nav_radius;
+		}
 		break;
 	case "linkjump":
-		Way_Waypoint_LinkJump();
+		Way_FlagJump();
 		break;
 	case "linkcrouch":
-		Way_Waypoint_LinkCrouch();
+		Way_FlagCrouch();
 		break;
 	case "linkwalk":
-		Way_Waypoint_LinkWalk();
+		Way_FlagWalk();
 		break;
 	case "save":
-		Way_DumpWaypoints( argv( 2 ) );
+		Way_SaveFile( argv( 2 ) );
 		break;
 	case "load":
-		Way_ReadWaypoints( argv( 2 ) );
+		Way_ReadFile( argv( 2 ) );
 		break;
+	}
+}
+void
+Way_DrawDebugInfo(void)
+{
+	if (!g_iWaypoints) {
+		return;
+	}
+
+	int iNearest = Way_FindClosestNode(self.origin);
+	makevectors(self.v_angle);
+	R_BeginPolygon("", 0, 0);
+	
+	for (int i = 0i; i < g_iWaypoints; i++) {
+		waypoint_t *w = g_pWaypoints + i;
+		vector org = w->m_vecOrigin;
+		vector rgb = [1,1,1];
+
+		if (iNearest == i) {
+			rgb = [0,1,0];
+		}
+
+		R_PolygonVertex(org + v_right * 4 - v_up * 4, [1,1], rgb, 1);
+		R_PolygonVertex(org - v_right * 4 - v_up * 4, [0,1], rgb, 1);
+		R_PolygonVertex(org - v_right * 4 + v_up * 4, [0,0], rgb, 1);
+		R_PolygonVertex(org + v_right * 4 + v_up * 4, [1,0], rgb, 1);
+		R_EndPolygon();
+	}
+
+	R_BeginPolygon("", 1, 0);
+	for (int i = 0i; i < g_iWaypoints; i++) {
+		waypoint_t *w = g_pWaypoints+i;
+		vector org = w->m_vecOrigin;
+		vector rgb = [1,1,1];
+
+		for (int j = 0i; j < w->m_numNeighbours; j++) {
+			int k = w->m_pNeighbour[j].m_iNode;
+			int fl = w->m_pNeighbour[j].m_iFlags;
+
+			if (k < 0i || k >= g_iWaypoints) {
+				break;
+			}
+
+			waypoint_t *w2 = &g_pWaypoints[k];
+
+			if (fl & LF_JUMP) {
+				vector middle;
+				middle = (w2->m_vecOrigin + org) / 2;
+				R_PolygonVertex(org + [0,0,1], [0,1], [1,1,0], 1);
+				R_PolygonVertex(middle + [0,0,32], [0,1], [0.5,0.5,0], 1);
+				R_EndPolygon();
+				R_PolygonVertex(middle + [0,0,32], [0,1], [0.5,0.5,0], 1);
+				R_PolygonVertex(w2->m_vecOrigin + [0,0,1], [1,1], [0,0,0], 1);
+				R_EndPolygon();
+			}
+
+			if (fl & LF_CROUCH) {
+				R_PolygonVertex(org + [0,0,-1], [0,1], [0,0,1], 1);
+				R_PolygonVertex(w2->m_vecOrigin + [0,0,-1], [1,1], [0,0,1], 1);
+				R_EndPolygon();
+			}
+
+			R_PolygonVertex(org, [0,1], [1,0,1], 1);
+			R_PolygonVertex(w2->m_vecOrigin, [1,1], [0,1,0], 1);
+			R_EndPolygon();
+		}
+	}
+
+	R_BeginPolygon("", 0, 0);
+	for (int i = 0i; i < g_iWaypoints; i++) {
+		vector rgb;
+		waypoint_t *w = g_pWaypoints + i;
+		vector org = w->m_vecOrigin;
+
+		if (iNearest == i) {
+			rgb = [0,1,0];
+		} else {
+			rgb = [0.5,0,1.0];
+		}
+
+		if (w->m_flRadius) {
+			for(int j = 0; j < 16; j++) {
+				float theta = 2.0f * M_PI * j / 16;
+				vector p = (v_right * sin(theta)) + (v_up * cos(theta));
+				R_PolygonVertex(org + (p * w->m_flRadius), [1,1], rgb, 0.1f);
+
+			}
+			R_EndPolygon();
+			for(int j = 0; j < 16; j++) {
+				float theta = 2.0f * M_PI * j / 16;
+				R_PolygonVertex(org + [sin(theta), cos(theta)] * w->m_flRadius, [1,1], rgb, 0.2f);
+
+			}
+			R_EndPolygon();
+		}
 	}
 }

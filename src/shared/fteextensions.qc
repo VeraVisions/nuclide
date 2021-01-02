@@ -2252,6 +2252,7 @@ typedef struct
 {
 	vector dest;
 	int linkflags;
+	float radius;
 } nodeslist_t;
 void(entity ent, vector dest, int denylinkflags, void(entity ent, vector dest, int numnodes, nodeslist_t *nodelist) callback) route_calculate = #0:route_calculate; /*
 		Begin calculating a route. The callback function will be called once the route has finished being calculated. The route must be memfreed once it is no longer needed. The route must be followed in reverse order (ie: the first node that must be reached is at index numnodes-1). If no route is available then the callback will be called with no nodes. */

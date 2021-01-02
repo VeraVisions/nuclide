@@ -143,11 +143,10 @@ bot::CheckRoute(void)
 		evenpos = m_pRoute[m_iCurNode].m_vecDest - origin;
 		rad = m_pRoute[m_iCurNode].m_flRadius;
 	}
-	//evenpos[2] *= 0.25f;
 
 	flDist = floor(vlen(evenpos));
 
-	if (flDist < rad) {
+	if (flDist <= rad) {
 		dprint(sprintf("^2CBaseMonster::^3CheckRoute^7: " \
 			"%s reached node\n", this.targetname));
 		m_iCurNode--;
@@ -231,9 +230,8 @@ bot::RunAI(void)
 	if (autocvar_bot_wait)
 		return;
 
-#if 1
 	/* create our first route */
-	if (!m_iNodes) {
+	if (!m_iNodes && autocvar_bot_aimless == 0) {
 		route_calculate(this, Route_SelectDestination(this), 0, Bot_RouteCB);
 
 		dprint(sprintf("bot::RunAI: %s is calculating first bot route\n",
@@ -244,7 +242,6 @@ bot::RunAI(void)
 			return;
 		}
 	}
-#endif
 
 	WeaponThink();
 	SeeThink();

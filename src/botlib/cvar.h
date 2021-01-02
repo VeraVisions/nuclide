@@ -16,3 +16,7 @@
 
 var int autocvar_bot_pacifist = FALSE;
 var int autocvar_bot_wait = FALSE;
+var int autocvar_bot_aimless = FALSE;
+
+var int autocvar_nav_linksize = 256;
+var int autocvar_nav_radius = 8;
