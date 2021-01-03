@@ -282,8 +282,8 @@ Way_GoToPoint(entity pl)
 	traceline(vecSrc, vecSrc + (v_forward * 4096), FALSE, pl);
 	print(sprintf("Telling all bots to go to %v\n", trace_endpos));
 
-	for (entity a = world; ( a = find( a, classname, "player" ) ); ) {
-		if ( clienttype(a) != CLIENTTYPE_REAL ) {
+	for (entity a = world; (a = find(a, classname, "player"));) {
+		if (clienttype(a) != CLIENTTYPE_REAL) {
 			bot targ;
 			targ = (bot)a;
 			targ.RouteClear();
@@ -409,7 +409,7 @@ Way_Cmd(void)
 
 	switch (argv(1)) {
 	case "goto":
-		Way_GoToPoint( self );
+		Way_GoToPoint(self);
 		break;
 	case "autolink":
 		Way_AutoLink(Way_FindClosestNode(self.origin));
@@ -421,31 +421,31 @@ Way_Cmd(void)
 		Way_ConnectTwo();
 		break;
 	case "add":
-		Way_CreateNode( self, 1 );
+		Way_CreateNode(self, 1);
 		break;
 	case "addchain":
-		Way_CreateNode( self, 0 );
+		Way_CreateNode(self, 0);
 		break;
 	case "addsingle":
-		Way_CreateNode( self, -3 );
+		Way_CreateNode(self, -3);
 		break;
 	case "addltn":
-		Way_CreateNode( self, -1 );
+		Way_CreateNode(self, -1);
 		break;
 	case "addntl":
-		Way_CreateNode( self, -2 );
+		Way_CreateNode(self, -2);
 		break;
 	case "addspawns":
 		Way_HelperSpawns();
 		break;
 	case "delete":
-		Way_DeleteNode( Way_FindClosestNode( self.origin ) );
+		Way_DeleteNode(Way_FindClosestNode(self.origin));
 		break;
 	case "purge":
 		Way_WipeWaypoints();
 		break;
 	case "radius":
-		Way_SetRadius( Way_FindClosestNode( self.origin ), stof( argv( 2 ) ) );
+		Way_SetRadius(Way_FindClosestNode(self.origin), stof(argv(2)));
 		break;
 	case "radiushack":
 		for (int i = 0i; i < g_iWaypoints; i++) {
@@ -461,11 +461,27 @@ Way_Cmd(void)
 	case "linkwalk":
 		Way_FlagWalk();
 		break;
+	case "move":
+		vector p;
+		int n = Way_FindClosestNode(self.origin);
+		if (n >= 0) {
+			p[0] = stof(argv(2));
+			p[1] = stof(argv(3));
+			p[2] = stof(argv(4));
+			g_pWaypoints[n].m_vecOrigin += p;
+		}
+		break;
+	case "movetopos":
+		int nearest = Way_FindClosestNode(self.origin);
+		if (nearest >= 0) {
+			g_pWaypoints[nearest].m_vecOrigin = self.origin;
+		}
+		break;
 	case "save":
-		Way_SaveFile( argv( 2 ) );
+		Way_SaveFile(argv(2));
 		break;
 	case "load":
-		Way_ReadFile( argv( 2 ) );
+		Way_ReadFile(argv(2));
 		break;
 	}
 }
