@@ -36,6 +36,7 @@
 ../valve/scoreboard.c
 ../valve/input.c
 ../cstrike/radio.c
+../base/event.c
 
 ../include.src
 ../../shared/include.src

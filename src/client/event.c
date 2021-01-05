@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -62,30 +62,36 @@ tries to play an event.
 void
 Event_ProcessModel(float fTimeStamp, int iCode, string sData)
 {
-	if (iCode == 5004) {
+	switch(iCode) {
+	case 5004:
 		localsound(sData, CHAN_AUTO, 1.0);
-	} else if (iCode == 5001) {
+		break;
+	case 5001:
 		pSeat->m_eMuzzleflash.alpha = 1.0f;
 		pSeat->m_eMuzzleflash.scale = 0.25;
 		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones;
 		Event_EjectShell();
-	} else if(iCode == 5011) {
+		break;
+	case 5011:
 		pSeat->m_eMuzzleflash.alpha = 1.0f;
 		pSeat->m_eMuzzleflash.scale = 0.25;
 		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 1;
 		//setmodel(pSeat->m_eMuzzleflash, sprintf("sprites/muzzleflash%s.spr", substring(sData, 1, 1)));
 		Event_EjectShell();
-	} else if (iCode == 5021) {
+		break;
+	case 5021:
 		pSeat->m_eMuzzleflash.alpha = 1.0f;
 		pSeat->m_eMuzzleflash.scale = 0.25;
 		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 2;
 		//setmodel(pSeat->m_eMuzzleflash, sprintf("sprites/muzzleflash%s.spr", substring(sData, 1, 1)));
 		Event_EjectShell();
-	} else if (iCode == 5031) {
+		break;
+	case 5031:
 		pSeat->m_eMuzzleflash.alpha = 1.0f;
 		pSeat->m_eMuzzleflash.scale = 0.25;
 		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 3;
 		//setmodel(pSeat->m_eMuzzleflash, sprintf("sprites/muzzleflash%s.spr", substring(sData, 1, 1)));
 		Event_EjectShell();
+		break;
 	}
 }

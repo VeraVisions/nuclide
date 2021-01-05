@@ -365,4 +365,5 @@ void
 bot::bot(void)
 {
 	classname = "player";
+	targetname = "_nuclide_bot_";
 }

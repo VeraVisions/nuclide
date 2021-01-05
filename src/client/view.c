@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -154,7 +154,7 @@ View_DrawViewModel(void)
 	m_eViewModel.frame2time = pl.weapontime;
     	m_eViewModel.frame1time = pl.weapontime;
 	processmodelevents(m_eViewModel.modelindex, m_eViewModel.frame, fBaseTime,
-		m_eViewModel.frame1time, Event_ProcessModel);
+		m_eViewModel.frame1time, Game_ModelEvent);
 
 	makevectors(view_angles);
 	m_eViewModel.angles = view_angles;

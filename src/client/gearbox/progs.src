@@ -32,6 +32,7 @@
 ../gearbox/hud_weaponselect.c
 ../valve/scoreboard.c
 ../valve/input.c
+../base/event.c
 
 ../include.src
 ../../shared/include.src

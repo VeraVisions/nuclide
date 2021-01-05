@@ -90,6 +90,7 @@ void View_SetMuzzleflash(int);
 void View_PlayAnimation(int);
 void View_PlayAnimation(int);
 void Vox_Play(string);
+void Event_ProcessModel(float, int, string);
 
 /* this really should be done in-engine */
 
