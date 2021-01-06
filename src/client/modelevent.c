@@ -60,37 +60,37 @@ tries to play an event.
 ====================
 */
 void
-Event_ProcessModel(float fTimeStamp, int iCode, string sData)
+Event_ProcessModel(float flTimeStamp, int iCode, string strData)
 {
 	switch(iCode) {
-	case 5004:
-		localsound(sData, CHAN_AUTO, 1.0);
+	case 5004: /* view model sound */
+		localsound(strData, CHAN_AUTO, 1.0);
 		break;
-	case 5001:
+	case 5001: /* muzzle flash on attachment 0 */
 		pSeat->m_eMuzzleflash.alpha = 1.0f;
 		pSeat->m_eMuzzleflash.scale = 0.25;
 		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones;
 		Event_EjectShell();
 		break;
-	case 5011:
+	case 5011: /* muzzle flash on attachment 1 */
 		pSeat->m_eMuzzleflash.alpha = 1.0f;
 		pSeat->m_eMuzzleflash.scale = 0.25;
 		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 1;
-		//setmodel(pSeat->m_eMuzzleflash, sprintf("sprites/muzzleflash%s.spr", substring(sData, 1, 1)));
+		//setmodel(pSeat->m_eMuzzleflash, sprintf("sprites/muzzleflash%s.spr", substring(strData, 1, 1)));
 		Event_EjectShell();
 		break;
-	case 5021:
+	case 5021: /* muzzle flash on attachment 2 */
 		pSeat->m_eMuzzleflash.alpha = 1.0f;
 		pSeat->m_eMuzzleflash.scale = 0.25;
 		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 2;
-		//setmodel(pSeat->m_eMuzzleflash, sprintf("sprites/muzzleflash%s.spr", substring(sData, 1, 1)));
+		//setmodel(pSeat->m_eMuzzleflash, sprintf("sprites/muzzleflash%s.spr", substring(strData, 1, 1)));
 		Event_EjectShell();
 		break;
-	case 5031:
+	case 5031: /* muzzle flash on attachment 3 */
 		pSeat->m_eMuzzleflash.alpha = 1.0f;
 		pSeat->m_eMuzzleflash.scale = 0.25;
 		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 3;
-		//setmodel(pSeat->m_eMuzzleflash, sprintf("sprites/muzzleflash%s.spr", substring(sData, 1, 1)));
+		//setmodel(pSeat->m_eMuzzleflash, sprintf("sprites/muzzleflash%s.spr", substring(strData, 1, 1)));
 		Event_EjectShell();
 		break;
 	}

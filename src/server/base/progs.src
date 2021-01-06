@@ -31,6 +31,7 @@
 ../base/items.cpp
 ../base/rules.c
 ../base/flashlight.c
+../base/modelevent.c
 
 ../base/input.c
 ../base/spawn.c

@@ -37,7 +37,6 @@ class CBaseEntity
 	virtual float(void) predraw;
 	virtual void(void) postdraw;
 	virtual void(void) customphysics;
-	virtual void(float, int, string) ModelEvent;
 #endif
 
 #ifdef SERVER

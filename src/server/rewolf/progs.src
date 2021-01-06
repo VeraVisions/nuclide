@@ -44,6 +44,7 @@
 ../valve/damage.c
 ../valve/rules.c
 ../valve/flashlight.c
+../base/modelevent.c
 
 ../rewolf/input.c
 ../valve/spawn.c

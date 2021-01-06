@@ -12,7 +12,7 @@ player.c
 predict.c
 npc.c
 entities.c
-event.c
+modelevent.c
 view.c
 damage.c
 chat.c

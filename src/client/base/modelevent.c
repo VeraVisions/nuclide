@@ -14,15 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-float Weapons_GetAim(int);
-void Weapons_PickupNotify(base_player pl, int w);
-void Weapons_RefreshAmmo(base_player pl);
-void Weapons_SwitchBest(base_player pl);
-int Weapons_AddItem(base_player pl, int w, int startammo);
-void Weapons_RemoveItem(base_player pl, int w);
-void Weapons_InitItem(int w);
-void Weapons_UpdateAmmo(base_player pl, int a1, int a2, int a3);
-void Weapons_ReloadWeapon(base_player pl, .int mag, .int ammo, int max);
-void Weapon_DropCurrentWeapon(base_player pl);
-int Weapon_GetCount();
-int Weapon_GetBitID(int);
+void
+Game_ClientModelEvent(float flTimeStamp, int iCode, string strData)
+{
+	switch (iCode) {
+	default:
+		Event_ProcessModel(flTimeStamp, iCode, strData);
+	}
+}

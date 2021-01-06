@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -45,9 +45,11 @@ void TraceAttack_SetPenetrationPower(int);
 
 void Damage_Radius(vector, entity, float, float, int, int);
 void Damage_Apply(entity, entity, float, int, int);
-void Client_TriggerCamera(entity, vector, vector, float);
 void Client_FixAngle(entity, vector);
-void Client_ShakeOnce(vector pos, float radius, float duration, float frequency, float amplitude);
+void Client_ShakeOnce(vector, float, float, float, float);
+
+void Game_ServerModelEvent(float, int, string);
+void Event_ServerModelEvent(float, int, string);
 
 void Game_Input(void);
 int Rules_IsTeamPlay(void);
@@ -80,3 +82,8 @@ int g_dmg_iDamage;
 int g_dmg_iHitBody;
 int g_dmg_iFlags;
 int g_dmg_iWeapon;
+
+/* main is a qcc leftover */
+void main(void)
+{
+}

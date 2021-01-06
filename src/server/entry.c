@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,11 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* main is a qcc leftover */
-void main(void)
-{
-}
+/*
+=================
+StartFrame
 
+Called once every single frame.
+=================
+*/
 void StartFrame(void)
 {
 	for (entity a = world; (a = findfloat(a, ::identity, 1));) {
@@ -30,6 +32,17 @@ void StartFrame(void)
 	Vote_Frame();
 }
 
+/*
+=================
+ClientConnect
+
+Called when the client-slot is being prepared for a player.
+The client may not fully spawn into the world (yet), as they're still
+loading or receiving packets.
+
+The 'self' global is the connecting client in question.
+=================
+*/
 void ClientConnect(float csqc_active)
 {
 	int playercount = 0;
@@ -53,29 +66,84 @@ void ClientConnect(float csqc_active)
 	}
 }
 
+/*
+=================
+ClientDisconnect
+
+Called when a player leaves the server. At the end of the function the
+client slot referred to by the 'self' global will be cleared.
+This means the fields will still be accessible inside of this function.
+=================
+*/
 void ClientDisconnect(void)
 {
 	g_grMode.PlayerDisconnect((base_player)self);
 }
 
+/*
+=================
+ClientKill
+
+Called by the 'kill' command.
+The 'self' global is the client issueing the command.
+=================
+*/
 void ClientKill(void)
 {
 	g_grMode.PlayerKill((base_player)self);
 }
 
+/*
+=================
+SpectatorThink
+
+Run every frame on every spectator.
+The 'self' global refers to one of any given amount of spectators.
+=================
+*/
 void SpectatorThink(void)
 {
 	Game_SpectatorThink();
 }
+
+/*
+=================
+SpectatorConnect
+
+Called when a spectator joins the server.
+The 'self' global is the connecting spectator in question.
+=================
+*/
 void SpectatorConnect(void)
 {
 	Game_SpectatorConnect();
 }
+
+/*
+=================
+SpectatorDisconnect
+
+Called when a spectator leaves the server.
+The 'self' global is the leaving spectator in question.
+Attributes cleared when this function is done executing.
+=================
+*/
 void SpectatorDisconnect(void)
 {
 	Game_SpectatorDisconnect();
 }
 
+/*
+=================
+PutClientInServer
+
+Called when a player enters the game, having fully connected and loaded into
+the session.
+The 'self' global is the player in question.
+The 'parmX' globals are also populated with any data carried over from
+past levels for the player in question.
+=================
+*/
 void PutClientInServer(void)
 {
 	g_grMode.PlayerSpawn((base_player)self);
@@ -95,6 +163,15 @@ void PutClientInServer(void)
 	}
 }
 
+/*
+=================
+PlayerPreThink
+
+Run before physics have taken place.
+The 'self' global refers to a single client, as this function is called
+times the amount of players in a given game.
+=================
+*/
 void PlayerPreThink(void)
 {
 #ifdef BOT_INCLUDED
@@ -105,6 +182,15 @@ void PlayerPreThink(void)
 	g_grMode.PlayerPreFrame((base_player)self);
 }
 
+/*
+=================
+PlayerPostThink
+
+Run after physics have taken place.
+The 'self' global refers to a single client, as this function is called
+times the amount of players in a given game.
+=================
+*/
 void PlayerPostThink(void)
 {
 #ifdef BOT_INCLUDED
@@ -116,21 +202,53 @@ void PlayerPostThink(void)
 	g_grMode.PlayerPostFrame((base_player)self);
 }
 
+/*
+=================
+SetNewParms
+
+Called when we spawn in a new map (both single and multiplayer) with no level
+change ever having taken place.
+The 'self' global does not refer to anything.
+=================
+*/
 void SetNewParms(void)
 {
 	iprint("Setting New Level Parameters");
 	g_grMode.LevelNewParms();
 }
 
+/*
+=================
+SetChangeParms
+
+Called whenever a single-player level change is about to happen, carrying
+over data from one level to the next. This is not called with the 'map' command.
+
+The 'self' global refers to a client that's partaking in the level-change.
+Make sure we're saving important fields/attributes in the 'parmX' globals
+allocated for every client.
+=================
+*/
 void SetChangeParms(void)
 {
 	iprint("Setting Level-Change Parameters");
 	g_grMode.LevelChangeParms((base_player)self);
 }
 
+/*
+=================
+SV_RunClientCommand
+
+Run whenever an input packet by a client has been received.
+
+The 'self' global is the entity having sent the input packet,
+with the input_X globals being set to the appropriate data.
+=================
+*/
 void SV_RunClientCommand(void)
 {
 #ifdef BOT_INCLUDED
+	/* wait a few seconds, as we may not have been spawned yet */
 	if (time > 5.0)
 	if (clienttype(self) == CLIENTTYPE_BOT) {
 		((bot)self).RunAI();
@@ -142,6 +260,17 @@ void SV_RunClientCommand(void)
 	}
 }
 
+/*
+=================
+SV_ParseClientCommand
+
+Any 'cmd' from the client get sent here and handled.
+Unlike ConsoleCommmand() if you want to let the server engine
+take over, you need to pass the string 'cmd' over via clientcommand().
+
+Notable examples of client cmd's involve the chat system.
+=================
+*/
 void SV_ParseClientCommand(string cmd)
 {
 	string newcmd = Plugin_ParseClientCommand(cmd);
@@ -152,12 +281,27 @@ void SV_ParseClientCommand(string cmd)
 		Game_ParseClientCommand(newcmd);
 }
 
+/*
+=================
+init
+
+Called when the QC module gets loaded. No entities exist yet.
+=================
+*/
 void init(float prevprogs)
 {
 	iprint("Initializing Server-Module");
 	Plugin_Init();
 }
 
+/*
+=================
+init_respawn
+
+Called inside initents() to make sure the entities have their Respawn()
+method called at the beginning of them having spawned.
+=================
+*/
 void init_respawn(void)
 {
 	iprint("Respawning Entities");
@@ -170,6 +314,13 @@ void init_respawn(void)
 	remove(self);
 }
 
+/*
+=================
+initents
+
+???
+=================
+*/
 void initents(void)
 {
 	iprint("Initializing Entities");
@@ -253,6 +404,17 @@ void initents(void)
 	}
 }
 
+/*
+=================
+worldspawn
+
+The first entity spawn function. You want to make sure to put anything in here
+that'll affect subsequent initialization of map entities.
+
+Any find() or similar function will not find any entity but 'world',
+as they do not exist yet. Keep this in mind.
+=================
+*/
 var int autocvar_sv_levelexec = 1;
 void worldspawn(void)
 {
@@ -275,6 +437,17 @@ void worldspawn(void)
 		readcmd(sprintf("exec maps/%s.cfg\n", mapname));
 }
 
+/*
+=================
+ConsoleCmd
+
+Any command executed on the server (either tty, rcon or 'sv') gets
+sent here first.
+
+When returning FALSE the server will interpret the command.
+Returning TRUE will mark the command as 'resolved'.
+=================
+*/
 float ConsoleCmd(string cmd)
 {
 	player pl;
@@ -320,10 +493,21 @@ float ConsoleCmd(string cmd)
 	return TRUE;
 }
 
+/*
+=================
+SV_ShouldPause
+
+Returns TRUE if the server should pause the game-logic when the 'pause' command
+is being executed.
+=================
+*/
 float SV_ShouldPause(float newstatus)
 {
 	if (serverkeyfloat("background") == 1)
 		return FALSE;
+
+	if (cvar("pausable") == 1)
+		return TRUE;
 
 	if (cvar("sv_playerslots") > 1)
 		return FALSE;

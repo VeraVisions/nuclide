@@ -424,7 +424,7 @@ CBaseNPC::Physics(void)
 	frame1time += frametime;
 
 	processmodelevents(modelindex, frame, m_flBaseTime,
-		frame1time, ModelEvent);
+		frame1time, Game_ServerModelEvent);
 }
 
 void

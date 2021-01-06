@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -17,18 +17,39 @@
 /* force the drawing of the first weapon that's picked up */
 var int autocvar_sv_forceweapondraw = TRUE;
 
+/*
+=================
+Weapon_GetCount
+
+Returns the total number of weapons in the game.
+=================
+*/
 int
 Weapon_GetCount(void)
 {
 	return g_weapons.length;
 }
 
+/*
+=================
+Weapon_GetBitID
+
+Returns the item bitflag of a weapon index.
+=================
+*/
 int
 Weapon_GetBitID(int i)
 {
 	return g_weapons[i].id;
 }
 
+/*
+=================
+Weapons_PickupNotify
+
+Tells the client if we picked up a NEW weapon item.
+=================
+*/
 void
 Weapons_PickupNotify(base_player pl, int w)
 {
@@ -39,6 +60,13 @@ Weapons_PickupNotify(base_player pl, int w)
 	multicast([0,0,0], MULTICAST_ONE);
 }
 
+/*
+=================
+Weapons_RefreshAmmo
+
+Just calls updateammo() when available... maybe a bit redundant.
+=================
+*/
 void
 Weapons_RefreshAmmo(base_player pl)
 {
@@ -47,6 +75,15 @@ Weapons_RefreshAmmo(base_player pl)
     }
 }
 
+/*
+=================
+Weapons_SwitchBest
+
+Really basic function that cycles through the highest-to-lowest
+weapon ID order and picks the next available item with no regard to
+ammo, or any sort of weighting system. FIXME
+=================
+*/
 void
 Weapons_SwitchBest(base_player pl)
 {
@@ -65,7 +102,13 @@ Weapons_SwitchBest(base_player pl)
 	pl.gflags |= GF_SEMI_TOGGLED;
 }
 
-/* returns TRUE if weapon pickup gets removed from this world */
+/*
+=================
+Weapons_AddItem
+
+returns TRUE if weapon pickup gets removed from this world
+=================
+*/
 int
 Weapons_AddItem(base_player pl, int w, int startammo)
 {
@@ -135,6 +178,13 @@ Weapons_AddItem(base_player pl, int w, int startammo)
 	return value;
 }
 
+/*
+=================
+Weapons_RemoveItem
+
+Makes sure the item bit of g_items is reliably unset without errors.
+=================
+*/
 void
 Weapons_RemoveItem(base_player pl, int w)
 {
@@ -147,6 +197,13 @@ Weapons_RemoveItem(base_player pl, int w)
 		Weapons_SwitchBest(pl);
 }
 
+/*
+=================
+Weapons_InitItem
+
+Called by the weapon_X function to initialize an in-world pickup.
+=================
+*/
 void
 Weapons_InitItem(int w)
 {
@@ -155,6 +212,13 @@ Weapons_InitItem(int w)
 	it.SetItem(w);
 }
 
+/*
+=================
+Weapons_UpdateAmmo
+
+Sets .a_ammoX fields and clamps them so they can be networked as a single byte.
+=================
+*/
 void
 Weapons_UpdateAmmo(base_player pl, int a1, int a2, int a3)
 {
@@ -169,12 +233,19 @@ Weapons_UpdateAmmo(base_player pl, int a1, int a2, int a3)
 		a3 = pl.a_ammo3;
 	}
 
-	/* Networked as bytes, since we don't need more. Clamp to avoid errors */
+	/* networked as bytes, since we don't need more. Clamp to avoid errors */
 	pl.a_ammo1 = bound(0, a1, 255);
 	pl.a_ammo2 = bound(0, a2, 255);
 	pl.a_ammo3 = bound(0, a3, 255);
 }
 
+/*
+=================
+Weapons_ReloadWeapon
+
+Manipulates the .mag and .ammo field pointer with some basic reload logic.
+=================
+*/
 void
 Weapons_ReloadWeapon(base_player pl, .int mag, .int ammo, int max)
 {
@@ -190,6 +261,11 @@ Weapons_ReloadWeapon(base_player pl, .int mag, .int ammo, int max)
 	}
 }
 
+/*
+=================
+Weapon_DropCurrentWeapon
+=================
+*/
 void
 Weapon_DropCurrentWeapon(base_player pl)
 {
@@ -220,6 +296,13 @@ Weapon_DropCurrentWeapon(base_player pl)
 	Weapons_RemoveItem(pl, pl.activeweapon);
 }
 
+/*
+=================
+CSEv_DropWeapon
+
+The 'drop' command from the client-module calls this.
+=================
+*/
 void
 CSEv_DropWeapon(void)
 {

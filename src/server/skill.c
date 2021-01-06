@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,6 +16,16 @@
 
 string(string cmd) readcmd = #0;
 
+/*
+=================
+Skill_Init
+
+Usually just parses a config file. Make sure readcmd() is used here because
+localcmd() does not parse files instantly - so monsters/weapons may be
+initialized before the skill variables are read!
+This will almost always result in them using default values, or (worst case) 0.
+=================
+*/
 void
 Skill_Init(void)
 {
@@ -24,6 +34,13 @@ Skill_Init(void)
 	readcmd(sprintf("exec skill_%s.cfg\n", cvar_string("game")));
 }
 
+/*
+=================
+Skill_GetValue
+
+Return a skill variable's value or return a defaultvalue if it's undefined.
+=================
+*/
 float
 Skill_GetValue(string variable, float defaultvalue)
 {

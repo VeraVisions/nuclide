@@ -14,11 +14,34 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*
+=================
+Event_ServerModelEvent
+
+Handles standard/fallback model events. This should never be called directly
+but instead be the default fallback for Game_ServerModelEvent.
+
+The 'self' global is the entity the model-event is being run on.
+=================
+*/
 void
-Game_ModelEvent(float flTimeStamp, int iCode, string strData)
+Event_ServerModelEvent(float flTimeStamp, int iCode, string strData)
 {
 	switch (iCode) {
+	case 1003:
+		for (entity f = world; (f = find(f, ::targetname, strData));) {
+			CBaseTrigger trigger = (CBaseTrigger)f;
+			if (trigger.Trigger != __NULL__) {
+				trigger.Trigger(self, TRIG_TOGGLE);
+				dprint(sprintf("^2%s^7::^3ModelEvent^7: " \
+					"Calling trigger '%s'\n",
+					self.classname, strData));
+			}
+		}
+		break;
 	default:
-		Event_ProcessModel(flTimeStamp, iCode, strData);
-	}
+		dprint(sprintf("^3[SERVER]^7 Unknown model-event code " \
+			"%i with data %s\n", iCode, strData));
+		break;
+	} 
 }

@@ -141,7 +141,6 @@ class CBaseMonster:CBaseEntity
 	virtual void(void) IdleNoise;
 	virtual void(void) Gib;
 	virtual void(string) Sound;
-	virtual void(float, int, string) ModelEvent;
 	virtual void(string, string) SpawnKey;
 
 	/* see/hear subsystem */

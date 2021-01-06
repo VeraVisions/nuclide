@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,12 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*
+=================
+Spawn_ObserverCam
+
+Find a spawnpoint for spectators and set origin and angle of the 'pl' target.
+=================
+*/
 void
 Spawn_ObserverCam(base_player pl)
 {
 	entity eTarget;
-
-	// Go find a camera if we aren't dead
 	entity eCamera = find(world, ::classname, "trigger_camera");
 
 	if (eCamera) {
@@ -33,7 +38,7 @@ Spawn_ObserverCam(base_player pl)
 			}
 		}
 	} else {
-		// Can't find a camera? Just do this lazy thing, CS seems to do the same
+		/* can't find a camera? CS chooses to pick a spawnpoint instead */
 		eCamera = find (world, ::classname, "info_player_start");
 		
 		if (eCamera) {
@@ -52,6 +57,13 @@ Spawn_ObserverCam(base_player pl)
 	Client_FixAngle(pl, pl.angles);
 }
 
+/*
+=================
+Spawn_PlayerRange
+
+Returns how close the closest player is to any given spot.
+=================
+*/
 float Spawn_PlayerRange(entity spot) {
 	entity pl;
 	float bestdist;
@@ -72,6 +84,14 @@ float Spawn_PlayerRange(entity spot) {
 	return bestdist;
 }
 
+/*
+=================
+Spawn_SelectRandom
+
+Return a point in the map that's both 'random' and also not too close to any
+living player.
+=================
+*/
 entity Spawn_SelectRandom(string cname) 
 {
 	static entity lastspot;
@@ -85,7 +105,7 @@ entity Spawn_SelectRandom(string cname)
 		spot = find(spot, classname, cname);
 	}
 
-	entity eFirstSpot = spot;
+	entity firstspot = spot;
 	do {
 		if (spot) {
 			if (Spawn_PlayerRange(spot) > 128) {
@@ -98,14 +118,14 @@ entity Spawn_SelectRandom(string cname)
 			}
 		}
 		spot = find(spot, classname, cname);
-	} while (spot != eFirstSpot);
+	} while (spot != firstspot);
 
 	if (!spot) {
 		lastspot = spot;
 		return spot;
 	}
 
-	// We still haven't found one
+	/* still not found any */
 	if (spot == __NULL__) {
 		error(sprintf("Spawn_SelectRandom: no %s on level", cname));
 		return world;

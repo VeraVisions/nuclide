@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  * Copyright (c) 2019-2020 Gethyn ThomasQuail <xylemon@posteo.net>
  *
  * Permission to use, copy, modify, and distribute this software for any
@@ -105,6 +105,13 @@ void
 w_chaingun_release(void)
 {
 	player pl = (player)self;
+
+	/* auto-reload if need be */
+	if (pl.w_attack_next <= 0.0)
+	if (pl.a_ammo1 == 0 && pl.a_ammo2 > 0) {
+		Weapons_Reload();
+		return;
+	}
 
 	if (pl.w_idle_next > 0.0) {
 		return;

@@ -29,7 +29,7 @@
 ../base/hud_weaponselect.c
 ../base/scoreboard.c
 ../base/input.c
-../base/event.c
+../base/modelevent.c
 
 ../include.src
 ../../shared/include.src

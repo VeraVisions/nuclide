@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,22 +14,14 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void
-Client_TriggerCamera(entity target, vector pos, vector end, float wait)
-{
-	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
-	WriteByte(MSG_MULTICAST, EV_CAMERATRIGGER);
-	WriteCoord(MSG_MULTICAST, pos[0]);
-	WriteCoord(MSG_MULTICAST, pos[1]);
-	WriteCoord(MSG_MULTICAST, pos[2]);
-	WriteCoord(MSG_MULTICAST, end[0]);
-	WriteCoord(MSG_MULTICAST, end[1]);
-	WriteCoord(MSG_MULTICAST, end[2]);
-	WriteFloat(MSG_MULTICAST, wait);
-	msg_entity = target;
-	multicast([0,0,0], MULTICAST_ONE);
-}
+/*
+=================
+Client_FixAngle
 
+Forces the camera-angle on the specified 'target' client
+to the euler angle in the 'ang' parameter.
+=================
+*/
 void
 Client_FixAngle(entity target, vector ang)
 {
@@ -42,6 +34,14 @@ Client_FixAngle(entity target, vector ang)
 	multicast([0,0,0], MULTICAST_ONE);
 }
 
+/*
+=================
+Client_ShakeOnce
+
+Single unreliable request to shake the screen of all
+players within a specified radius by the desired parameters.
+=================
+*/
 void
 Client_ShakeOnce(vector pos, float radius, float duration, float frequency, float amplitude)
 {

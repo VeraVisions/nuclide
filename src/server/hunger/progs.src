@@ -81,6 +81,7 @@
 ../valve/damage.c
 ../valve/rules.c
 ../valve/flashlight.c
+../base/modelevent.c
 
 ../hunger/input.c
 ../valve/spawn.c

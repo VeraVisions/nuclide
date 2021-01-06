@@ -79,6 +79,7 @@
 ../valve/damage.c
 ../valve/rules.c
 ../valve/flashlight.c
+../base/modelevent.c
 
 ../valve/input.c
 ../valve/spawn.c

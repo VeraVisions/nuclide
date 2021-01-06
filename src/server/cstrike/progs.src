@@ -52,6 +52,7 @@
 ../valve/damage.c
 ../valve/rules.c
 ../valve/flashlight.c
+../base/modelevent.c
 
 ../cstrike/input.c
 ../cstrike/spawn.c

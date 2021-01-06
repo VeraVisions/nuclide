@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,23 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* HLBSP materials.txt character id's */
-#define MATID_ALIEN			'H'
-#define MATID_BLOODYFLESH	'B'
-#define MATID_COMPUTER		'P'
-#define MATID_CONCRETE		'C'
-#define MATID_DIRT			'D'
-#define MATID_FLESH			'F'
-#define MATID_FOLIAGE		'O'
-#define MATID_GLASS			'Y'
-#define MATID_GRATE			'G'
-#define MATID_METAL			'M'
-#define MATID_SLOSH			'S'
-#define MATID_SNOW			'N'
-#define MATID_TILE			'T'
-#define MATID_VENT			'V'
-#define MATID_WOOD			'W'
+/*
+=================
+Footsteps_Init
 
+Just precaching sound shaders for all the types of material oriented footsteps.
+=================
+*/
 void
 Footsteps_Init(void)
 {
@@ -70,7 +60,14 @@ Footsteps_Init(void)
 	Sound_Precache("step_ladder.right");
 }
 
-/* Valve Half-Life BSP */
+/*
+=================
+Footsteps_HLBSP
+
+Footstep code for BSP version 30, which uses an external materials.txt
+to specify materials.
+=================
+*/
 void
 Footsteps_HLBSP(base_player target)
 {
@@ -142,7 +139,13 @@ Footsteps_HLBSP(base_player target)
 	}
 }
 
-/* Vera Visions BSP / Modified RFBSP */
+/*
+=================
+Footsteps_VVBSP
+
+Modern BSP format which uses surfaceflags to specify materials on surfaces.
+=================
+*/
 void
 Footsteps_VVBSP(base_player target)
 {
@@ -215,7 +218,14 @@ Footsteps_VVBSP(base_player target)
 	}
 }
 
-/* anything unsupported */
+/*
+=================
+Footsteps_Default
+
+Default for any map format which we don't support or don't know how to support
+materials for.
+=================
+*/
 void
 Footsteps_Default(base_player target)
 {

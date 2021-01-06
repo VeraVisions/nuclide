@@ -33,6 +33,7 @@
 ../valve/damage.c
 ../valve/rules.c
 ../valve/flashlight.c
+../base/modelevent.c
 
 ../../botlib/include.src
 

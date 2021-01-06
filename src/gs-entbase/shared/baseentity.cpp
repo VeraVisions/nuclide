@@ -170,7 +170,7 @@ CBaseEntity::predraw(void)
 	ProcessWordQue();
 
 	processmodelevents(modelindex, frame, m_flBaseTime,
-		frame1time, ModelEvent);
+		frame1time, Game_ClientModelEvent);
 
 	if (alpha > 0.0)
 		addentity(this);
@@ -389,23 +389,6 @@ CBaseEntity::customphysics(void)
 			nextthink = 0.0f;
 			think();
 		}
-	}
-}
-
-void
-CBaseEntity::ModelEvent(float fTimeStamp, int iCode, string sData)
-{
-	switch (iCode) {
-	case 1004:
-		sound(this, CHAN_BODY, sData, 1.0f, ATTN_NORM);
-		break;
-	/* things handled on the server-side */
-	case 1003:
-		break;
-	default:
-		dprint(sprintf("^3[CLIENT]^7 Unknown model-event code " \
-			"%i with data %s\n", iCode, sData));
-		break;
 	}
 }
 
@@ -711,6 +694,8 @@ CBaseEntity::ParentUpdate(void)
 		net_angles = angles;
 		SendFlags |= BASEFL_CHANGED_ANGLES;
 	}
+
+	frame1time += frametime;
 
 	if (m_parent) {
 		entity p = find(world, ::targetname, m_parent);

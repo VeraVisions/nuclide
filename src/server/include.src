@@ -14,5 +14,6 @@ footsteps.c
 vote.c
 weapons.c
 vehicles.c
+modelevent.c
 entry.c
 #endlist

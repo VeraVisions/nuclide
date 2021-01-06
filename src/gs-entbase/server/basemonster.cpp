@@ -418,31 +418,6 @@ CBaseMonster::NewRoute(vector destination)
 }
 
 void
-CBaseMonster::ModelEvent(float fTimeStamp, int iCode, string sData)
-{
-	switch (iCode) {
-	case 1003:
-		for (entity f = world; (f = find(f, ::targetname, sData));) {
-			CBaseTrigger trigger = (CBaseTrigger)f;
-			if (trigger.Trigger != __NULL__) {
-				trigger.Trigger(this, TRIG_TOGGLE);
-				dprint(sprintf("^2%s^7::^3ModelEvent^7: " \
-					"Calling trigger '%s'\n",
-					classname, sData));
-			}
-		}
-		break;
-	/* things handled on the client-side */
-	case 1004:
-		break;
-	default:
-		dprint(sprintf("^3[SERVER]^7 Unknown model-event code " \
-			"%i with data %s\n", iCode, sData));
-		break;
-	}
-}
-
-void
 CBaseMonster::Physics(void)
 {
 	input_movevalues = [0,0,0];
