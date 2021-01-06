@@ -47,13 +47,12 @@ depending on what the player is doing
 */
 void Animation_PlayerUpdate(void) {
 	self.basebone = cvar("spinebone"); // gettagindex(self, "Bip01 Spine");
-#ifdef SERVER
+
 	if (self.baseframe_time < time) {
 		base_player pl = (base_player)self;
 		self.baseframe = Weapons_GetAim(pl.activeweapon);
 		self.baseframe_old = self.frame;
 	}
-#endif
 
 	/* in order to appear jumping, we want to not be on ground, 
 	 * but also make sure we're not just going down a ramp */

@@ -49,7 +49,7 @@ Player_ReceiveEntity(float new)
 	float fl;
 	player pl = (player)self;
 
-	if (new == TRUE) {
+	if (new == TRUE || pl.classname != "player") {
 		spawnfunc_player();
 		pl.classname = "player";
 		pl.solid = SOLID_SLIDEBOX;

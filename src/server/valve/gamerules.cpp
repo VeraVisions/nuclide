@@ -114,8 +114,6 @@ HLGameRules::LevelNewParms(void)
 void
 HLGameRules::PlayerPostFrame(base_player pl)
 {
-	Animation_PlayerUpdate();
-
 	if (autocvar_sv_playerkeepalive)
 		pl.SendFlags |= PLAYER_KEEPALIVE;
 

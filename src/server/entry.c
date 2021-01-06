@@ -47,6 +47,12 @@ void ClientConnect(float csqc_active)
 {
 	int playercount = 0;
 
+#ifdef BOT_INCLUDED
+	if (clienttype(self) == CLIENTTYPE_BOT) {
+		spawnfunc_bot();
+	} else
+#endif
+
 	/* make sure you never change the classname. ever. */
 	if (self.classname != "player") {
 		spawnfunc_player();
@@ -147,12 +153,6 @@ past levels for the player in question.
 void PutClientInServer(void)
 {
 	g_grMode.PlayerSpawn((base_player)self);
-
-#ifdef BOT_INCLUDED
-	if (clienttype(self) == CLIENTTYPE_BOT) {
-		spawnfunc_bot();
-	}
-#endif
 
 	/* activate all game_playerspawn entities */
 	for (entity a = world; (a = find(a, ::targetname, "game_playerspawn"));) {

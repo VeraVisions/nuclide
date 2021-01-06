@@ -19,6 +19,7 @@ void
 Game_RunClientCommand(void)
 {
 	Footsteps_Update();
+	Animation_PlayerUpdate();
 	PMove_Run();
 }
 

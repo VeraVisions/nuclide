@@ -14,18 +14,22 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+.float baselerpfrac;
+.float lerpfrac;
 .float frame_time;
 .float frame_old;
 .float fWasCrouching;
+.float frame2time;
+.float frame2;
+.float baseframe2time;
+.float baseframe1time;
+.float baseframe2;
 
 // For lerping, sigh
-#ifdef CLIENT
 .float frame_last;
 .float baseframe_last;
-#else
 .float subblendfrac;
 .float subblend2frac;
-#endif
 
 void Animation_Print(string sWow) {
 #ifdef CLIENT
@@ -35,6 +39,9 @@ void Animation_Print(string sWow) {
 #endif	
 }
 
+var int autocvar_bone_spinebone = 0;
+var int autocvar_bone_baseframe = 0;
+var int autocvar_bone_frame = 0;
 /*
 =================
 Animation_PlayerUpdate
@@ -43,10 +50,11 @@ Called every frame to update the animation sequences
 depending on what the player is doing
 =================
 */
-void Animation_PlayerUpdate(void) {
-	self.basebone = gettagindex(self, "Bip01 Spine");
+void
+Animation_PlayerUpdate(void)
+{
+	self.basebone = gettagindex(self, "Bip01 Spine1");
 
-#ifdef SERVER
 	// TODO: Make this faster
 	if (self.frame_time < time) {
 		player pl = (player)self;
@@ -77,9 +85,7 @@ void Animation_PlayerUpdate(void) {
 			self.baseframe = ANIM_RUN;
 		}
 	}
-#endif
 
-#ifdef CLIENT
 	// Lerp it down!
 	if (self.lerpfrac > 0) {
 		self.lerpfrac -= frametime * 5;
@@ -124,7 +130,7 @@ void Animation_PlayerUpdate(void) {
 	}
 	
 	self.subblend2frac = self.angles[0];
-#endif
+
 	self.angles[0] = self.angles[2] = 0;
 	
 	if (!(self.flags & FL_ONGROUND)) {
@@ -138,7 +144,7 @@ void Animation_PlayerUpdate(void) {
 		self.fWasCrouching = (self.flags & FL_CROUCHING);
 	}
 
-#ifdef SERVER
+#ifndef CLIENT
 	// On the CSQC it's done in Player.c
 	self.subblendfrac = 
 	self.subblend2frac = self.v_angle[0] / 90;
@@ -152,15 +158,21 @@ Animation_PlayerTop
 Changes the animation sequence for the upper body part
 =================
 */
-void Animation_PlayerTop(float fFrame) {
+void
+Animation_PlayerTop(float fFrame)
+{
+#ifndef CLIENT
 	self.frame = fFrame;
 	self.frame_old = fFrame;
+#endif
 }
 
-void Animation_PlayerTopTemp(float fFrame, float fTime) {
+void
+Animation_PlayerTopTemp(float fFrame, float fTime)
+{
+#ifndef CLIENT
 	self.frame = fFrame;
 	self.frame_time = time + fTime;
-#ifdef SERVER
 	self.SendFlags |= PLAYER_FRAME;
 #endif
 }

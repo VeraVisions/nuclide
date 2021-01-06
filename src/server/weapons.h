@@ -14,7 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-float Weapons_GetAim(int);
 void Weapons_PickupNotify(base_player pl, int w);
 void Weapons_RefreshAmmo(base_player pl);
 void Weapons_SwitchBest(base_player pl);

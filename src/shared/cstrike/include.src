@@ -1,9 +1,10 @@
  #includelist
 ../../shared/cstrike/defs.h
 ../../shared/cstrike/flags.h
+../../shared/cstrike/player.h
+../../shared/valve/weapon_common.h
 ../../shared/cstrike/animations.h
 ../../shared/cstrike/animations.c
-../../shared/cstrike/player.h
 
 ../../shared/cstrike/item_c4bomb.h
 
@@ -17,7 +18,6 @@
 ../../shared/cstrike/fx_smokenade.c
 
 ../../shared/cstrike/weapons_cstrike.c
-../../shared/valve/weapon_common.h
 ../../shared/cstrike/w_ak47.c
 ../../shared/cstrike/w_deagle.c
 ../../shared/cstrike/w_knife.c

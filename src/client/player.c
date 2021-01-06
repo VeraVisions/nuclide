@@ -115,8 +115,6 @@ player::draw(void)
 	}
 }
 
-var float autocvar_standheight = 0;
-var float autocvar_crouchheight = 0;
 float
 player::predraw(void)
 {
