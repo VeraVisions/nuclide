@@ -182,6 +182,10 @@ menu_creategame_init(void)
 			}
 		}
 
+		/* ignore test_ prefix maps */
+		if (substring(tmp, 0, 5) == "test_")
+			list = FALSE;
+
 		if (list == TRUE) {
 			create_lbMaps.AddEntry(tmp);
 			realcount++;
