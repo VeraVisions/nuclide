@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+string(searchhandle handle, float num) search_getpackagename = #0:search_getpackagename;
+
 CWidget fn_create;
 CWidget fn_createshared;
 CMainButton create_btnAdv;
@@ -146,7 +148,7 @@ menu_creategame_init(void)
 	fs_blacklist = fopen("scripts/map_blacklist", FILE_READ);
 
 	if (fs_blacklist < 0) {
-		print("^1WARNING: ^7Could NOT load scripts/map_blacklist");
+		print("^1WARNING: ^7Could NOT load scripts/map_blacklist\n");
 	}
 
 	if (fs_blacklist >= 0) {
@@ -168,23 +170,31 @@ menu_creategame_init(void)
 		fclose(fs_blacklist);
 	}
 
-	searchhandle mapsearch = search_begin("maps/*.bsp", SEARCH_NAMESORT, TRUE);
+	searchhandle mapsearch = search_begin("maps/*.bsp", SEARCH_NAMESORT | SEARCH_FULLPACKAGE, TRUE);
 	g_mapcount = search_getsize(mapsearch);
 	for (i = 0; i < g_mapcount; i++) {
-		string tmp;
+		string tmp, dir;
 		int list = TRUE;
 		tmp = substring(search_getfilename(mapsearch, i), 5, -1);
+
+		/* only look for maps in the current gamedir, requires SEARCH_FULLPACKAGE */
+		dir = substring(search_getpackagename(mapsearch, i), 0, strlen(games[gameinfo_current].gamedir));
+		if (dir != games[gameinfo_current].gamedir) {
+			continue;
+		}
+
+		/* ignore test_ prefix maps */
+		if (substring(tmp, 0, 5) == "test_") {
+			continue;
+		}
 
 		/* see if any of our blacklisted names match */
 		for (int b = 0; b < map_blacklist_count; b++) {
 			if (tmp == map_blacklist[b]) {
 				list = FALSE;
+				break;
 			}
 		}
-
-		/* ignore test_ prefix maps */
-		if (substring(tmp, 0, 5) == "test_")
-			list = FALSE;
 
 		if (list == TRUE) {
 			create_lbMaps.AddEntry(tmp);
