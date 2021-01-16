@@ -26,6 +26,7 @@ void info_player_start(void)
 	if (autocvar_fcs_swapteams == TRUE) {
 		self.classname = "info_player_deathmatch";
 	}
+	self.botinfo = BOTINFO_SPAWNPOINT;
 }
 
 /*
@@ -40,6 +41,7 @@ void info_player_deathmatch(void)
 	if (autocvar_fcs_swapteams == TRUE) {
 		self.classname = "info_player_start";
 	}
+	self.botinfo = BOTINFO_SPAWNPOINT;
 }
 
 /* Counter-Strike: Source compat */

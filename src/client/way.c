@@ -279,6 +279,9 @@ WAY_FLAGS(int n)
 	case 3:
 		localcmd("sv way linkwalk\n");
 		break;
+	case 4:
+		localcmd("sv way linkaim\n");
+		break;
 	case 9:
 		Textmenu_Call("WAY_MENU");
 		break;

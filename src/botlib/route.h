@@ -16,5 +16,4 @@
 
 int Route_RoundDistance( float flDist );
 vector Route_SelectDestination( bot target );
-int Route_CanCrouch(bot target, vector endpos);
 void Bot_RouteCB( entity ent, vector dest, int numnodes, nodeslist_t *nodelist );

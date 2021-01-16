@@ -174,11 +174,16 @@ times the amount of players in a given game.
 */
 void PlayerPreThink(void)
 {
+	if (self.classname != "player") {
+		return;
+	}
+
 #ifdef BOT_INCLUDED
 	if (clienttype(self) == CLIENTTYPE_BOT) {
 		((bot)self).PreFrame();
 	}
 #endif
+
 	g_grMode.PlayerPreFrame((base_player)self);
 }
 
@@ -193,6 +198,10 @@ times the amount of players in a given game.
 */
 void PlayerPostThink(void)
 {
+	if (self.classname != "player") {
+		return;
+	}
+
 #ifdef BOT_INCLUDED
 	if (clienttype(self) == CLIENTTYPE_BOT) {
 		((bot)self).PostFrame();
@@ -247,9 +256,12 @@ with the input_X globals being set to the appropriate data.
 */
 void SV_RunClientCommand(void)
 {
+	if (self.classname != "player") {
+		return;
+	}
+
 #ifdef BOT_INCLUDED
 	/* wait a few seconds, as we may not have been spawned yet */
-	if (time > 5.0)
 	if (clienttype(self) == CLIENTTYPE_BOT) {
 		((bot)self).RunAI();
 	}

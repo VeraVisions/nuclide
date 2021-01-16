@@ -273,7 +273,7 @@ bot::RunAI(void)
 			if (m_iCurNode == BOTROUTE_DESTINATION)
 				aimpos = m_vecLastNode;
 			else {
-				if (m_iCurNode > 0)
+				if (m_iCurNode > 0 && !(m_pRoute[m_iCurNode].m_iFlags & LF_AIM))
 					aimpos = m_pRoute[m_iCurNode - 1].m_vecDest;
 				else
 					aimpos = m_pRoute[m_iCurNode].m_vecDest;

@@ -21,5 +21,6 @@
 #define LF_CROUCH		0x00000004i
 #define LF_TELEPORT		0x00000008i
 #define LF_WALK			0x00000010i
+#define LF_AIM			0x00000020i
 #define LF_USER			0x7fffff00i
 #define LF_DESTINATION	0x80000000i

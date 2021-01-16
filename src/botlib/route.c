@@ -21,16 +21,16 @@
 * The route must be followed in reverse order (ie: the first node that must be reached 
 * is at index numnodes-1). If no route is available then the callback will be called with no nodes.
 */
-
-int Route_RoundDistance( float flDist )
+int
+Route_RoundDistance(float flDist)
 {
-	float r = fabs( flDist ) % 2;
-	if ( r == 0 ) {
+	float r = fabs(flDist) % 2;
+	if (r == 0) {
 		return flDist;
 	}
 
-	if ( flDist < 0 ) {
-		return -( fabs( flDist ) - r );
+	if (flDist < 0) {
+		return -(fabs(flDist) - r);
 	} else {
 		return flDist + 2 - r;
 	}
@@ -42,10 +42,11 @@ int Route_RoundDistance( float flDist )
 Spawn_SelectRandom
 ================
 */
-entity Route_SelectRandom ( string sEntname ) 
+entity
+Route_SelectRandom(string sEntname) 
 {
 	static entity eLastSpot;
-	eLastSpot = find( eLastSpot, classname, sEntname );
+	eLastSpot = find(eLastSpot, classname, sEntname);
 	return eLastSpot;
 }
 
@@ -54,14 +55,16 @@ entity Route_SelectRandom ( string sEntname )
 Route_SelectRandomSpot
 ================
 */
-entity Route_SelectRandomSpot(void)
+entity
+Route_SelectRandomSpot(void)
 {
 	static entity eLastSpot;
-	eLastSpot = findfloat( eLastSpot, ::botinfo, BOTINFO_SPAWNPOINT );
+	eLastSpot = findfloat(eLastSpot, ::botinfo, BOTINFO_SPAWNPOINT);
 	return eLastSpot;
 }
 
-void Bot_RouteCB( entity ent, vector dest, int numnodes, nodeslist_t *nodelist )
+void
+Bot_RouteCB(entity ent, vector dest, int numnodes, nodeslist_t *nodelist)
 {
 	bot b = (bot)ent;
 	b.m_iNodes = numnodes;
@@ -69,31 +72,32 @@ void Bot_RouteCB( entity ent, vector dest, int numnodes, nodeslist_t *nodelist )
 	b.m_pRoute = nodelist;
 	b.m_vecLastNode = dest;
 
-	//dprint( "Bot: Route calculated.\n" );
-	//dprint( sprintf( "Bot: # of nodes: %i\n", bot.m_iNodes )  );
-	//dprint( sprintf( "Bot: # current node: %i\n", bot.m_iCurNode )  );
-	//dprint( sprintf( "Bot: # endpos: %v\n", dest ) );
+	//dprint("Bot: Route calculated.\n");
+	//dprint(sprintf("Bot: # of nodes: %i\n", bot.m_iNodes) );
+	//dprint(sprintf("Bot: # current node: %i\n", bot.m_iCurNode) );
+	//dprint(sprintf("Bot: # endpos: %v\n", dest));
 }
 
-vector Route_SelectDestination( bot target )
+vector
+Route_SelectDestination(bot target)
 {
 	entity dest = world;
 
 	// Need health!
-	if ( target.health < 50 ) {
+	if (target.health < 50) {
 		entity temp;
 		int bestrange = COST_INFINITE;
 		int range;
-		for ( temp = world; ( temp = findfloat( temp, ::botinfo, BOTINFO_HEALTH ) ); ) {
-			range = vlen( temp.origin - target.origin );
-			if ( ( range < bestrange ) && ( temp.solid == SOLID_TRIGGER ) ) {
+		for (temp = world; (temp = findfloat(temp, ::botinfo, BOTINFO_HEALTH));) {
+			range = vlen(temp.origin - target.origin);
+			if ((range < bestrange) && (temp.solid == SOLID_TRIGGER)) {
 				bestrange = range;
 				dest = temp;
 			}
 		}
 
-		if ( dest ) {
-			//dprint( "Route: Going for health!" );
+		if (dest) {
+			//dprint("Route: Going for health!");
 			return dest.origin + '0 0 32';
 		}
 	}
@@ -101,15 +105,4 @@ vector Route_SelectDestination( bot target )
 	dest = Route_SelectRandomSpot();
 	target.m_eDestination = dest;
 	return dest.origin;
-}
-
-int Route_CanCrouch(bot target, vector endpos)
-{
-	traceline(target.origin + [0,0,-18], endpos, FALSE, target);
-	
-	if ( trace_fraction != 1.0f ) {
-		return FALSE;
-	} else {
-		return TRUE;
-	}
 }

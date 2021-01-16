@@ -266,6 +266,31 @@ Way_FlagWalk(void)
 }
 
 void
+Way_FlagAim(void)
+{
+	if (g_waylink_status == 0) {
+		g_way1 = Way_FindClosestNode(self.origin);
+		g_waylink_status = 1;
+		env_message_single(self, "^2Selected first waypoint!\n");
+	} else if (g_waylink_status == 1) {
+		g_way2 = Way_FindClosestNode(self.origin);
+		g_waylink_status = 0;
+
+		if (g_way1 != g_way2) {
+			for (int b = 0i; b < g_pWaypoints[g_way1].m_numNeighbours; b++) {
+				if (g_pWaypoints[g_way1].m_pNeighbour[b].m_iNode == g_way2) {
+					g_pWaypoints[g_way1].m_pNeighbour[b].m_iFlags |= LF_AIM;
+					env_message_single(self, "^2Walk-linked the two points!\n");
+				}
+			}
+		} else {
+			env_message_single(self, "^1Failed to link, the two points are the same!\n");
+		}
+		g_way1 = g_way2 = -1;
+	}
+}
+
+void
 Way_HelperSpawns()
 {
 	for (entity a = world; (a = find(a, ::classname, "info_player_deathmatch"));) {
@@ -461,6 +486,9 @@ Way_Cmd(void)
 	case "linkwalk":
 		Way_FlagWalk();
 		break;
+	case "linkaim":
+		Way_FlagAim();
+		break;
 	case "move":
 		vector p;
 		int n = Way_FindClosestNode(self.origin);
@@ -548,6 +576,12 @@ Way_DrawDebugInfo(void)
 			if (fl & LF_WALK) {
 				R_PolygonVertex(org + [0,0,-1], [0,1], [1,0,0], 1);
 				R_PolygonVertex(w2->m_vecOrigin + [0,0,-1], [1,1], [0,0,0], 1);
+				R_EndPolygon();
+			}
+
+			if (fl & LF_AIM) {
+				R_PolygonVertex(org + [0,0,4], [0,1], [0.25,0.25,1], 1);
+				R_PolygonVertex(w2->m_vecOrigin + [0,0,4], [1,1], [0,0,0], 1);
 				R_EndPolygon();
 			}
 
