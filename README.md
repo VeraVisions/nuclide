@@ -21,6 +21,8 @@ while also building binaries that are crucial to running and building the game-l
 (which is all QuakeC) and putting them into the ./bin directory.
 Launch the engine with the 'nuclide' and 'nuclide-ds' scripts.
 
+On Windows, please use cygwin for a sensible experience.
+
 The 'build_editor.sh' script clones the **WorldSpawn** Git repository and installs them into the ./bin directory.
 Use the 'worldspawn' and 'vmap' scripts to launch to ensure consistency.
 
