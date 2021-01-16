@@ -1,13 +1,13 @@
 #!/bin/sh
-SCRPATH="$( cd "$( dirname $(readlink -nf $0) )" && pwd )"
-PATH="$SCRPATH"/bin:"$PATH"
+SRCPATH="$( cd "$( dirname $(readlink -nf $0) )" && pwd )"
 
-if [ ! -f "$SCRPATH"/bin/worldspawn ]; then
+if [ ! -f "$SRCPATH"/bin/worldspawn ]; then
 	printf "Map editor is not present, please run build_editor.sh\n"
 	exit
 fi
 
-worldspawn
+cd "$SRCPATH"/bin 
+./worldspawn
 
 
 
