@@ -2,12 +2,30 @@
 
 mv_wsfile()
 {
-	cp -v "./build/$1" "../../bin/$1"
+	if [ -f "./build/$1" ]; then
+		cp -v "./build/$1" "../../bin/$1"
+	fi
 }
 
 set -e
 
 WS_MAKEFILE=./src/worldspawn/CMakeLists.txt
+COMPILE_SYS=$(uname)
+
+# Check how many cores/processors we should use for building
+if ! [ -x "$(command -v nproc)" ]; then
+	# nproc doesn't exist, so make a safe assumption of having at least 1
+	BUILD_PROC=1
+else
+	BUILD_PROC=$(nproc)
+fi
+
+# OpenBSD currently doesn't build vmap, so disable it for now
+if [[ "$COMPILE_SYS" == "OpenBSD" ]]; then
+	CM_OPTION=-DBUILD_VMAP=OFF
+else
+	CM_OPTION=-DBUILD_VMAP=ON
+fi
 
 mkdir -p ./bin
 
@@ -22,7 +40,7 @@ else
 	cd ./worldspawn
 fi
 
-cmake -G "Unix Makefiles" -H. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build -- -j$(nproc)
+cmake -G "Unix Makefiles" -H. -Bbuild -DCMAKE_BUILD_TYPE=Release "$CM_OPTION" && cmake --build build -- -j $BUILD_PROC
 
 mkdir -p ../../bin/bitmaps
 mv_wsfile bitmaps/black.xpm
@@ -151,8 +169,8 @@ mv_wsfile platform.game/platform/entities.def
 mv_wsfile WorldSpawn_MAJOR
 mv_wsfile WorldSpawn_MINOR
 mv_wsfile WorldSpawn_PATCH
-mv_wsfile vmap
 mv_wsfile worldspawn
+mv_wsfile vmap
 
 cd ../../src
 ./mk_mapdef.sh
