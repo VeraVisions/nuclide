@@ -4,12 +4,13 @@ set -e
 FTE_MAKEFILE=./src/engine/engine/Makefile
 BUILD_SDL2=0
 BUILD_DEBUG=1
+COMPILE_SYS=$(uname -o)
 
 if [ "$BUILD_DEBUG" -eq 1 ]; then
-	MAKETARGET=m-dbg
+	MAKETARGET=gl-dbg
 	OUTPUT=./debug
 else
-	MAKETARGET=m-rel
+	MAKETARGET=gl-rel
 	OUTPUT=./release
 fi
 
@@ -17,8 +18,13 @@ if [ "$BUILD_SDL2" -eq 1 ]; then
 	PLATFORM=SDL2
 	OUTPUT=$OUTPUT/fteqw64-sdl2
 else
-	PLATFORM=linux64
-	OUTPUT=$OUTPUT/fteqw64
+	if [[ "$COMPILE_SYS" == "Cygwin" ]]; then
+		PLATFORM=win64
+		OUTPUT=$OUTPUT/fteglqw64.exe
+	else
+		PLATFORM=linux64
+		OUTPUT=$OUTPUT/fteqw-gl64
+	fi
 fi
 
 mkdir -p ./bin
@@ -35,12 +41,12 @@ else
 	cd ./engine/engine
 fi
 
-make -j $(nproc) makelibs FTE_TARGET=$PLATFORM
+make -j $(nproc) makelibs NATIVE_PLUGINS="bullet" FTE_TARGET=$PLATFORM
 make -j $(nproc) $MAKETARGET FTE_TARGET=$PLATFORM
 cp -v "$OUTPUT" ../../../bin/fteqw
 
-make -j $(nproc) sv-rel
-cp -v ./release/fteqw-sv ../../../bin/fteqw-sv
+make -j $(nproc) sv-dbg
+cp -v ./debug/fteqw-sv ../../../bin/fteqw-sv
 make -j $(nproc) qcc-rel
 cp -v ./release/fteqcc ../../../bin/fteqcc
 make -j $(nproc) iqm-rel
