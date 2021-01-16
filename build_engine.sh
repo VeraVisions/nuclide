@@ -26,9 +26,12 @@ if [ "$BUILD_SDL2" -eq 1 ]; then
 	PLATFORM=SDL2
 	OUTPUT=$OUTPUT/fteqw64-sdl2
 else
-	if [[ "$COMPILE_SYS" == "Cygwin" ]]; then
+	if [[ "$COMPILE_SYS" == "CYGWIN_NT-10.0" ]] || [[ "$COMPILE_SYS" == "CYGWIN_NT-6.1-WOW64" ]]; then
 		PLATFORM=win64
 		OUTPUT=$OUTPUT/fteglqw64.exe
+	elif [[ "$COMPILE_SYS" == "CYGWIN_NT-6.1" ]] || [[ "$COMPILE_SYS" == "CYGWIN_NT-5.1" ]]; then
+		PLATFORM=win32
+		OUTPUT=$OUTPUT/fteglqw32.exe
 	elif [[ "$COMPILE_SYS" == "OpenBSD" ]]; then
 		PLATFORM=bsd
 		OUTPUT=$OUTPUT/fteqw-gl
