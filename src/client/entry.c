@@ -582,9 +582,9 @@ CSQC_Parse_Event(void)
 		setproperty(VF_ANGLES, a);
 		break;
 	case EV_SHAKE:
-		pSeat->m_flShakeFreq = readfloat();
 		pSeat->m_flShakeDuration = readfloat();
 		pSeat->m_flShakeAmp = readfloat();
+		pSeat->m_flShakeFreq = readfloat();
 		pSeat->m_flShakeTime = pSeat->m_flShakeDuration;
 	default:
 		Game_Parse_Event(fHeader);
