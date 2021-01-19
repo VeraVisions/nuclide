@@ -337,6 +337,9 @@ func_breakable::func_breakable(void)
 {
 	CBaseTrigger::CBaseTrigger();
 
+	/* contrary to what some map designers think, angles are not supported */
+	m_oldAngle = angles = [0,0,0];
+
 	switch (m_iMaterial) {
 	case BREAKMT_GLASS:
 		Sound_Precache("func_breakable.impact_glass");
