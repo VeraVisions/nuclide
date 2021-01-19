@@ -103,7 +103,7 @@ FX_Impact(int iType, vector vecPos, vector vNormal)
 		case IMPACT_METAL:
 			pointsound(vecPos, sprintf("weapons/ric_metal-%d.wav", floor((random() * 2) + 1)), 1, ATTN_STATIC);
 			break;
-		case IMPACT_ROCK:
+		case IMPACT_CONCRETE:
 			pointsound(vecPos, sprintf("weapons/ric_conc-%d.wav", floor((random() * 2) + 1)), 1, ATTN_STATIC);
 			break;
 		case IMPACT_FLESH:

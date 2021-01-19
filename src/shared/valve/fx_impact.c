@@ -40,11 +40,22 @@ var int DECAL_IMPACT_CONCRETE;
 void
 FX_Impact_Init(void)
 {
-	precache_sound("weapons/ric1.wav");
-	precache_sound("weapons/ric2.wav");
-	precache_sound("weapons/ric3.wav");
-	precache_sound("weapons/ric4.wav");
-	precache_sound("weapons/ric5.wav");
+	Sound_Precache("sfx_impact.default");
+	Sound_Precache("sfx_impact.alien");
+	Sound_Precache("sfx_impact.flesh");
+	Sound_Precache("sfx_impact.foliage");
+	Sound_Precache("sfx_impact.computer");
+	Sound_Precache("sfx_impact.dirt");
+	Sound_Precache("sfx_impact.vent");
+	Sound_Precache("sfx_impact.grate");
+	Sound_Precache("sfx_impact.metal");
+	Sound_Precache("sfx_impact.glass");
+	Sound_Precache("sfx_impact.sand");
+	Sound_Precache("sfx_impact.slosh");
+	Sound_Precache("sfx_impact.snow");
+	Sound_Precache("sfx_impact.tile");
+	Sound_Precache("sfx_impact.wood");
+	Sound_Precache("sfx_impact.concrete");
 
 	FX_IMPACT_BLACKBITS = particleeffectnum("fx_impact.blackbits");
 	FX_IMPACT_SMOKE_GREY = particleeffectnum("fx_impact.smoke_grey");
@@ -88,70 +99,110 @@ FX_Impact(int iType, vector vecPos, vector vNormal)
 	multicast(vecPos, MULTICAST_PVS);
 #else
 	/* decals */
-	if (serverkeyfloat("*bspversion") == BSPVER_HL)
-	switch (iType) {
-	case IMPACT_GLASS:
-		Decals_Place(vecPos, sprintf("{break%d", floor(random(1,4))));
-		break;
-	case IMPACT_MELEE:
-		Decals_Place(vecPos, sprintf("{shot%d", floor(random(1,6))));
-		break;
-	default:
-		Decals_Place(vecPos, sprintf("{bigshot%d", floor(random(1,6))));
-		break;
-	}
-	else
-	switch (iType) {
-	case IMPACT_GLASS:
-		pointparticles(DECAL_IMPACT_GLASS, vecPos, vNormal, 1);
-		break;
-	case IMPACT_WOOD:
-		pointparticles(DECAL_IMPACT_WOOD, vecPos, vNormal, 1);
-		break;
-	case IMPACT_METAL:
-		pointparticles(DECAL_IMPACT_METAL, vecPos, vNormal, 1);
-		break;
-	case IMPACT_FLESH:
-		pointparticles(DECAL_IMPACT_FLESH, vecPos, vNormal, 1);
-		break;
-	default:
-		pointparticles(DECAL_IMPACT_DEFAULT, vecPos, vNormal, 1);
-		break;
-	}
-
-	switch (iType) {
-		case IMPACT_MELEE:
-		case IMPACT_EXPLOSION:
-			break;
+	if (serverkeyfloat("*bspversion") == BSPVER_HL) {
+		switch (iType) {
 		case IMPACT_GLASS:
-			pointparticles(FX_IMPACT_BLACKBITS, vecPos, vNormal, 1);
+			Decals_Place(vecPos, sprintf("{break%d", floor(random(1,4))));
+			break;
+		case IMPACT_MELEE:
+			Decals_Place(vecPos, sprintf("{shot%d", floor(random(1,6))));
+			break;
+		default:
+			Decals_Place(vecPos, sprintf("{bigshot%d", floor(random(1,6))));
+			break;
+		}
+	} else {
+		switch (iType) {
+		case IMPACT_GLASS:
+			pointparticles(DECAL_IMPACT_GLASS, vecPos, vNormal, 1);
 			break;
 		case IMPACT_WOOD:
-			pointparticles(FX_IMPACT_SPARK, vecPos, vNormal, 1);
-			pointparticles(FX_IMPACT_BLACKBITS, vecPos, vNormal, 1);
-			pointparticles(FX_IMPACT_SMOKE_BROWN, vecPos, vNormal, 1);
+			pointparticles(DECAL_IMPACT_WOOD, vecPos, vNormal, 1);
 			break;
 		case IMPACT_METAL:
-			pointparticles(FX_IMPACT_SPARK, vecPos, vNormal, 1);
-			pointparticles(FX_IMPACT_BLACKBITS, vecPos, vNormal, 1);
+			pointparticles(DECAL_IMPACT_METAL, vecPos, vNormal, 1);
 			break;
 		case IMPACT_FLESH:
-			FX_Blood(vecPos, vNormal);
+			pointparticles(DECAL_IMPACT_FLESH, vecPos, vNormal, 1);
 			break;
-		case IMPACT_DEFAULT:
 		default:
-			pointparticles(FX_IMPACT_SPARK, vecPos, vNormal, 1);
-			pointparticles(FX_IMPACT_BLACKBITS, vecPos, vNormal, 1);
-			pointparticles(FX_IMPACT_SMOKE_GREY, vecPos, vNormal, 1);
+			pointparticles(DECAL_IMPACT_DEFAULT, vecPos, vNormal, 1);
 			break;
+		}
 	}
 
 	switch (iType) {
-		case IMPACT_FLESH:
-			break;
-		default:
-			pointsound(vecPos, sprintf("weapons/ric%d.wav", floor((random() * 5) + 1)), 1, ATTN_STATIC);
-			break;
+	case IMPACT_MELEE:
+	case IMPACT_EXPLOSION:
+		break;
+	case IMPACT_GLASS:
+		pointparticles(FX_IMPACT_BLACKBITS, vecPos, vNormal, 1);
+		break;
+	case IMPACT_WOOD:
+		pointparticles(FX_IMPACT_SPARK, vecPos, vNormal, 1);
+		pointparticles(FX_IMPACT_BLACKBITS, vecPos, vNormal, 1);
+		pointparticles(FX_IMPACT_SMOKE_BROWN, vecPos, vNormal, 1);
+		break;
+	case IMPACT_METAL:
+		pointparticles(FX_IMPACT_SPARK, vecPos, vNormal, 1);
+		pointparticles(FX_IMPACT_BLACKBITS, vecPos, vNormal, 1);
+		break;
+	case IMPACT_FLESH:
+		FX_Blood(vecPos, vNormal);
+		break;
+	default:
+		pointparticles(FX_IMPACT_SPARK, vecPos, vNormal, 1);
+		pointparticles(FX_IMPACT_BLACKBITS, vecPos, vNormal, 1);
+		pointparticles(FX_IMPACT_SMOKE_GREY, vecPos, vNormal, 1);
+		break;
+	}
+
+	switch (iType) {
+	case IMPACT_ALIEN:
+		Sound_PlayAt(vecPos, "sfx_impact.alien");
+		break;
+	case IMPACT_COMPUTER:
+		Sound_PlayAt(vecPos, "sfx_impact.computer");
+		break;
+	case IMPACT_CONCRETE:
+		Sound_PlayAt(vecPos, "sfx_impact.concrete");
+		break;
+	case IMPACT_DIRT:
+		Sound_PlayAt(vecPos, "sfx_impact.dirt");
+		break;
+	case IMPACT_FLESH:
+		Sound_PlayAt(vecPos, "sfx_impact.flesh");
+		break;
+	case IMPACT_FOLIAGE:
+		Sound_PlayAt(vecPos, "sfx_impact.foliage");
+		break;
+	case IMPACT_GLASS:
+		Sound_PlayAt(vecPos, "sfx_impact.glass");
+		break;
+	case IMPACT_GRATE:
+		Sound_PlayAt(vecPos, "sfx_impact.grate");
+		break;
+	case IMPACT_METAL:
+		Sound_PlayAt(vecPos, "sfx_impact.metal");
+		break;
+	case IMPACT_SLOSH:
+		Sound_PlayAt(vecPos, "sfx_impact.slosh");
+		break;
+	case IMPACT_SNOW:
+		Sound_PlayAt(vecPos, "sfx_impact.snow");
+		break;
+	case IMPACT_TILE:
+		Sound_PlayAt(vecPos, "sfx_impact.tile");
+		break;
+	case IMPACT_VENT:
+		Sound_PlayAt(vecPos, "sfx_impact.vent");
+		break;
+	case IMPACT_WOOD:
+		Sound_PlayAt(vecPos, "sfx_impact.wood");
+		break;
+	default:
+		Sound_PlayAt(vecPos, "sfx_impact.default");
+		break;
 	}
 #endif
 } 

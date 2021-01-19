@@ -28,8 +28,6 @@ Footsteps_Init(void)
 	Sound_Precache("step_default.right");
 	Sound_Precache("step_alien.left");
 	Sound_Precache("step_alien.right");
-	Sound_Precache("step_bloodyflesh.left");
-	Sound_Precache("step_bloodyflesh.right");
 	Sound_Precache("step_computer.left");
 	Sound_Precache("step_computer.right");
 	Sound_Precache("step_concrete.left");
@@ -83,7 +81,7 @@ Footsteps_HLBSP(base_player target)
 			mat_name = "step_alien";
 			break;
 		case MATID_BLOODYFLESH:
-			mat_name = "step_bloodyflesh";
+			mat_name = "step_flesh";
 			break;
 		case MATID_COMPUTER:
 			mat_name = "step_computer";
@@ -162,7 +160,7 @@ Footsteps_VVBSP(base_player target)
 		case SURF_ALIEN:
 			mat_name = "step_alien";
 			break;
-		case SURF_FLESH:
+		case SURF_BLOODYFLESH:
 			mat_name = "step_flesh";
 			break;
 		case SURF_FOLIAGE:

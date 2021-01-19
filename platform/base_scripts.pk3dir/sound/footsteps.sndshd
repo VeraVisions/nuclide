@@ -28,21 +28,6 @@ step_alien.right
 	sample player/pl_step4.wav
 }
 
-step_bloodyflesh.left
-{
-	attenuation static
-	footstep
-	sample player/pl_step1.wav
-	sample player/pl_step2.wav
-}
-step_bloodyflesh.right
-{
-	attenuation static
-	footstep
-	sample player/pl_step3.wav
-	sample player/pl_step4.wav
-}
-
 step_computer.left
 {
 	attenuation static
