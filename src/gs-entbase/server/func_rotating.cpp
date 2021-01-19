@@ -96,6 +96,14 @@ func_rotating::Blocked(void)
 	}
 
 	if (other.takedamage == DAMAGE_YES) {
+		/* this is to work around a Q1 BSP bug. don't attempt to damage our
+		 * target unless we're absolutely sure he's within the bounds of the entity */
+		if not (other.absmin[0] >= absmin[0] && other.absmax[0] <= absmax[0])
+			return;
+		if not (other.absmin[1] >= absmin[1] && other.absmax[1] <= absmax[1])
+			return;
+		if not (other.absmin[2] >= absmin[2] && other.absmax[2] <= absmax[2])
+			return;
 		Damage_Apply(other, this, m_flDamage, 0, DMG_CRUSH);
 	}
 }
