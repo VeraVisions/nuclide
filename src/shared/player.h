@@ -83,4 +83,4 @@ class base_player
 	float underwater_dmg;
 	float pain_time;
 #endif
-}; 
+};

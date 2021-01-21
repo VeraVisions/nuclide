@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+.float maxspeed;
+.float flags;
 var hashtable g_hashsounds;
 
 enumflags

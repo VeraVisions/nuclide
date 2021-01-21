@@ -598,6 +598,42 @@ CBaseEntity::SendEntity(entity ePEnt, float fChanged)
 		return FALSE;
 
 	WriteByte(MSG_ENTITY, ENT_ENTITY);
+
+	/* newly popped into the PVS, sadly this is the only hacky way to check
+	 * for this right now. convince the engine maintainer to make this more sensible */
+	if (fChanged == 0xFFFFFF) {
+		/* check for defaults. if these are predictable fields, don't even bother
+		 * networking them! you're just wasting bandwidth. */
+		if (frame == 0)
+			fChanged &= ~BASEFL_CHANGED_FRAME;
+		if (skin == 0)
+			fChanged &= ~BASEFL_CHANGED_SKIN;
+		if (effects == 0)
+			fChanged &= ~BASEFL_CHANGED_EFFECTS;
+		if (m_iBody == 0)
+			fChanged &= ~BASEFL_CHANGED_BODY;
+		if (scale == 0.0 || scale == 1.0)
+			fChanged &= ~BASEFL_CHANGED_SCALE;
+		if (angles == [0,0,0])
+			fChanged &= ~BASEFL_CHANGED_ANGLES;
+		if (solid == SOLID_NOT)
+			fChanged &= ~BASEFL_CHANGED_SOLID;
+		if (movetype == MOVETYPE_NONE)
+			fChanged &= ~BASEFL_CHANGED_MOVETYPE;
+		if (m_iRenderMode == RM_NORMAL)
+			fChanged &= ~BASEFL_CHANGED_RENDERMODE;
+	}
+
+#ifdef GS_RENDERFX
+	/* let's not waste networking power on certain render-modes where they would
+	 * not apply anyway. this seems sensible enough. */
+	if (m_iRenderMode == RM_NORMAL || m_iRenderMode == RM_TRIGGER) {
+		fChanged &= ~BASEFL_CHANGED_RENDERCOLOR;
+		fChanged &= ~BASEFL_CHANGED_RENDERAMT;
+	}
+#endif
+
+	/* broadcast how much data is expected to be read */
 	WriteFloat(MSG_ENTITY, fChanged);
 
 	/* really trying to get our moneys worth with 23 bits of mantissa */
@@ -651,6 +687,7 @@ CBaseEntity::SendEntity(entity ePEnt, float fChanged)
 	if (fChanged & BASEFL_CHANGED_RENDERMODE) {
 		WriteByte(MSG_ENTITY, m_iRenderMode);
 	}
+
 	if (fChanged & BASEFL_CHANGED_RENDERCOLOR) {
 		WriteFloat(MSG_ENTITY, m_vecRenderColor[0]);
 		WriteFloat(MSG_ENTITY, m_vecRenderColor[1]);

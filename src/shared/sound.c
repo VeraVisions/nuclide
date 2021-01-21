@@ -14,9 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-.float maxspeed;
-.float flags;
-
 void
 Sound_Shutdown(void)
 {

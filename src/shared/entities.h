@@ -17,7 +17,8 @@
 /* entity update identifiers */
 enum
 {
-	ENT_ENTITY = 1,
+	ENT_NONE,
+	ENT_ENTITY,
 	ENT_PLAYER,
 	ENT_AMBIENTSOUND,
 	ENT_DLIGHT,

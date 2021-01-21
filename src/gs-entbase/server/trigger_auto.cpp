@@ -21,6 +21,7 @@
 "delay"         Time in seconds until it triggers its target.
 
 Will automatically start working when the level has spawned.
+
 If TA_USEONCE is set, it'll remove itself from the level permanently.
 It will not survive round respawns, etc.
 
@@ -42,20 +43,18 @@ class trigger_auto:CBaseTrigger
 void
 trigger_auto::Processing(void)
 {
-	// This is weird, because ents may not be spawned yet.
-	// However, Half-Life doesn't care about this, either.
-	// So why should we?
 	UseTargets(this, m_iTriggerState, m_flDelay);
 
 	if (spawnflags & 1) {
 		dprint(sprintf("^2trigger_auto::^3think^7: %s triggerer removed self\n",  target));
-		think = __NULL__;
+		remove(this);
 	}
 }
 
 void
 trigger_auto::Respawn(void)
 {
+	think = Processing;
 	nextthink = time + 0.2f;
 }
 
@@ -74,8 +73,8 @@ trigger_auto::SpawnKey(string strKey, string strValue)
 void
 trigger_auto::trigger_auto(void)
 {
-	CBaseTrigger::CBaseTrigger();
-
+	/* default is always toggle */
 	m_iTriggerState = TRIG_TOGGLE;
-	think = Processing;
+
+	CBaseTrigger::CBaseTrigger();
 }
