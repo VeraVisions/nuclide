@@ -29,7 +29,7 @@ createinet_btnok_start(void)
 		localcmd(sprintf("sv_playerslots %s\n", create_tbMaxplayers.m_text));
 		localcmd(sprintf("password %s\n", create_tbPassword.m_text));
 		localcmd(sprintf("map %s\n", startmap));
-		g_menupage = PAGE_INTERNETGAMES;
+		g_menupage = PAGE_MULTIPLAYER;
 		cr_input_enter(sprintf("ACTION is now hosting '%s' on the map %s\n", create_tbHostname.m_text, startmap));
 	}
 

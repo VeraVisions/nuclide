@@ -48,6 +48,7 @@ inet_btnjoin(void)
 	if (addr) {
 		localcmd("stopmusic\n");
 		localcmd(sprintf("connect %s\n", addr));
+		g_menupage = PAGE_MULTIPLAYER;
 	}
 }
 

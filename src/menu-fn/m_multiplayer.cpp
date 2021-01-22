@@ -15,6 +15,7 @@
  */
 
 CWidget fn_multiplayer;
+
 CMainButton mp_btnQuickstart;
 CMainButton mp_btnInternet;
 CMainButton mp_btnSpectate;
@@ -23,6 +24,17 @@ CMainButton mp_btnLAN;
 CMainButton mp_btnCustomize;
 CMainButton mp_btnControls;
 CMainButton mp_btnDone;
+
+CWidget fn_multiplayer2;
+CMainButton mp_btn2Resume;
+CMainButton mp_btn2Disconnect;
+CMainButton mp_btn2Internet;
+CMainButton mp_btn2Spectate;
+CMainButton mp_btn2Chat;
+CMainButton mp_btn2LAN;
+CMainButton mp_btn2Customize;
+CMainButton mp_btn2Controls;
+CMainButton mp_btn2Done;
 
 CDialog mp_dgConnect;
 int g_connected;
@@ -150,11 +162,25 @@ mp_btncustomize_start(void)
 }
 
 void
+mp_btnresume(void)
+{
+	m_hide();
+}
+
+void
+mp_btndisconnect(void)
+{
+	localcmd("disconnect\n");
+}
+
+void
 menu_multiplayer_init(void)
 {
 	fn_multiplayer = spawn(CWidget);
+	fn_multiplayer2 = spawn(CWidget);
 	mp_dgConnect = spawn(CDialog);
-	
+
+	/* unconnected menu */
 	mp_btnQuickstart = spawn(CMainButton);
 	mp_btnQuickstart.SetImage(BTN_QUICKSTART);
 	//mp_btnQuickstart.SetExecute(btn_console);
@@ -203,31 +229,111 @@ menu_multiplayer_init(void)
 	mp_btnDone.SetPos(50,364);
 	Widget_Add(fn_multiplayer, mp_btnDone);
 
+	
+	/* connected menu */
+	mp_btn2Resume = spawn(CMainButton);
+	mp_btn2Resume.SetImage(BTN_RESUMEGAME);
+	mp_btn2Resume.SetExecute(mp_btnresume);
+	mp_btn2Resume.SetPos(50,140);
+	Widget_Add(fn_multiplayer2, mp_btn2Resume);
+
+	mp_btn2Disconnect = spawn(CMainButton);
+	mp_btn2Disconnect.SetImage(BTN_DISCONNECT);
+	mp_btn2Disconnect.SetExecute(mp_btndisconnect);
+	mp_btn2Disconnect.SetPos(50,172);
+	Widget_Add(fn_multiplayer2, mp_btn2Disconnect);
+	
+	mp_btn2Internet = spawn(CMainButton);
+	mp_btn2Internet.SetImage(BTN_INTERNET);
+	mp_btn2Internet.SetExecute(mp_btninet_start);
+	mp_btn2Internet.SetPos(50,204);
+	Widget_Add(fn_multiplayer2, mp_btn2Internet);
+	
+	mp_btn2Spectate = spawn(CMainButton);
+	mp_btn2Spectate.SetImage(BTN_SPECTATEGAMES);
+	//mp_btnSpectate.SetExecute(btn_console);
+	mp_btn2Spectate.SetPos(50,236);
+	Widget_Add(fn_multiplayer2, mp_btn2Spectate);
+	
+	mp_btn2Chat = spawn(CMainButton);
+	mp_btn2Chat.SetImage(BTN_CHATROOMS);
+	mp_btn2Chat.SetExecute(mp_btnchatrooms_start);
+	mp_btn2Chat.SetPos(50,268);
+	Widget_Add(fn_multiplayer2, mp_btn2Chat);
+	
+	mp_btn2LAN = spawn(CMainButton);
+	mp_btn2LAN.SetImage(BTN_LAN);
+	mp_btn2LAN.SetExecute(mp_btnlan_start);
+	mp_btn2LAN.SetPos(50,300);
+	Widget_Add(fn_multiplayer2, mp_btn2LAN);
+	
+	mp_btn2Customize = spawn(CMainButton);
+	mp_btn2Customize.SetImage(BTN_CUSTOMIZE);
+	mp_btn2Customize.SetExecute(mp_btncustomize_start);
+	mp_btn2Customize.SetPos(50,332);
+	Widget_Add(fn_multiplayer2, mp_btn2Customize);
+	
+	mp_btn2Controls = spawn(CMainButton);
+	mp_btn2Controls.SetImage(BTN_CONTROLS);
+	//mp_btn2Controls.SetExecute(btn_console);
+	mp_btn2Controls.SetPos(50,364);
+	Widget_Add(fn_multiplayer2, mp_btn2Controls);
+
+	mp_btn2Done = spawn(CMainButton);
+	mp_btn2Done.SetImage(BTN_DONE);
+	mp_btn2Done.SetExecute(mp_btndone_start);
+	mp_btn2Done.SetPos(50,396);
+	Widget_Add(fn_multiplayer2, mp_btn2Done);
+
 	Master_UpdateCache();
 }
 
 void
 menu_multiplayer_draw(void)
 {
-	Widget_Draw(fn_multiplayer);
 	Header_Draw(HEAD_MULTI);
 
-	WLabel_Static(215, 148, m_reslbl[IDS_MAIN_QUICKHELP], 10, 10, col_help,
-					1.0f, 0, font_label);
-	WLabel_Static(215, 180, m_reslbl[IDS_MULTI_BROWSEHELP], 10, 10, col_help,
-					1.0f, 0, font_label);
-	WLabel_Static(215, 212, "Spectate internet games.", 10, 10, col_help,
-					1.0f, 0, font_label);
-	WLabel_Static(215, 244, m_reslbl[IDS_MULTI_CHATHELP], 10, 10, col_help,
-					1.0f, 0, font_label);
-	WLabel_Static(215, 276, m_reslbl[IDS_MULTI_LANHELP], 10, 10, col_help,
-					1.0f, 0, font_label);
-	WLabel_Static(215, 308, m_reslbl[IDS_MULTI_CUSTOMIZEHELP], 10, 10, col_help,
-					1.0f, 0, font_label);
-	WLabel_Static(215, 340, m_reslbl[IDS_CFG_CONTROLHELP], 10, 10, col_help,
-					1.0f, 0, font_label);
-	WLabel_Static(215, 372, m_reslbl[IDS_MULTI_DONEHELP], 10, 10, col_help,
-					1.0f, 0, font_label);
+	if (clientstate() == 2 && !g_background) {
+		Widget_Draw(fn_multiplayer2);
+
+		WLabel_Static(215, 148, m_reslbl[IDS_MULTI_RESUMEHELP], 10, 10, col_help,
+						1.0f, 0, font_label);
+		WLabel_Static(215, 180, m_reslbl[IDS_MULTI_DISCONNECTHELP], 10, 10, col_help,
+						1.0f, 0, font_label);
+		WLabel_Static(215, 212, m_reslbl[IDS_MULTI_BROWSEHELP], 10, 10, col_help,
+						1.0f, 0, font_label);
+		WLabel_Static(215, 244, "Spectate internet games.", 10, 10, col_help,
+						1.0f, 0, font_label);
+		WLabel_Static(215, 276, m_reslbl[IDS_MULTI_CHATHELP], 10, 10, col_help,
+						1.0f, 0, font_label);
+		WLabel_Static(215, 308, m_reslbl[IDS_MULTI_LANHELP], 10, 10, col_help,
+						1.0f, 0, font_label);
+		WLabel_Static(215, 340, m_reslbl[IDS_MULTI_CUSTOMIZEHELP], 10, 10, col_help,
+						1.0f, 0, font_label);
+		WLabel_Static(215, 372, m_reslbl[IDS_CFG_CONTROLHELP], 10, 10, col_help,
+						1.0f, 0, font_label);
+		WLabel_Static(215, 404, m_reslbl[IDS_MULTI_DONEHELP], 10, 10, col_help,
+						1.0f, 0, font_label);
+	} else {
+		Widget_Draw(fn_multiplayer);
+
+		WLabel_Static(215, 148, m_reslbl[IDS_MAIN_QUICKHELP], 10, 10, col_help,
+						1.0f, 0, font_label);
+		WLabel_Static(215, 180, m_reslbl[IDS_MULTI_BROWSEHELP], 10, 10, col_help,
+						1.0f, 0, font_label);
+		WLabel_Static(215, 212, "Spectate internet games.", 10, 10, col_help,
+						1.0f, 0, font_label);
+		WLabel_Static(215, 244, m_reslbl[IDS_MULTI_CHATHELP], 10, 10, col_help,
+						1.0f, 0, font_label);
+		WLabel_Static(215, 276, m_reslbl[IDS_MULTI_LANHELP], 10, 10, col_help,
+						1.0f, 0, font_label);
+		WLabel_Static(215, 308, m_reslbl[IDS_MULTI_CUSTOMIZEHELP], 10, 10, col_help,
+						1.0f, 0, font_label);
+		WLabel_Static(215, 340, m_reslbl[IDS_CFG_CONTROLHELP], 10, 10, col_help,
+						1.0f, 0, font_label);
+		WLabel_Static(215, 372, m_reslbl[IDS_MULTI_DONEHELP], 10, 10, col_help,
+						1.0f, 0, font_label);
+	}
 
 	if (g_connectstatus) {
 		if (Master_GetTotalServers() || g_connecttimer <= 0) {
@@ -248,7 +354,12 @@ menu_multiplayer_draw(void)
 void
 menu_multiplayer_input(float evtype, float scanx, float chary, float devid)
 {
-	if (!g_connectstatus) {
+	if (g_connectstatus)
+		return;
+
+	if (clientstate() == 2 && !g_background)
+		Widget_Input(fn_multiplayer2, evtype, scanx, chary, devid);
+	else
 		Widget_Input(fn_multiplayer, evtype, scanx, chary, devid);
-	}
+
 }

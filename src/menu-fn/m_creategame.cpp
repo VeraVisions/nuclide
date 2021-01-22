@@ -45,7 +45,7 @@ create_btnok_start(void)
 		localcmd(sprintf("sv_playerslots %s\n", create_tbMaxplayers.m_text));
 		localcmd(sprintf("password %s\n", create_tbPassword.m_text));
 		localcmd(sprintf("map %s\n", startmap));
-		g_menupage = PAGE_LANGAMES;
+		g_menupage = PAGE_MULTIPLAYER;
 	}
 	/* Strip .bsp extension before submitting */
 	startmap = substring(create_lbMaps.GetSelectedItem(), 0, -5);
