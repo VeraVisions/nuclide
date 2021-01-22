@@ -4,8 +4,7 @@ a certain amount of dependencies installed (such as the GCC, make and the X/SDL
 headers for your operating system.
 
 Building the editor:
-Handled by build_editor.sh, this will require the GCC9. It currently does not
-build on GCC10.
+Handled by build_editor.sh.
 GTK2, Pango, GTKGLEXT and MiniZip are one of a few other main dependencies.
 
 Building the game-logic:
