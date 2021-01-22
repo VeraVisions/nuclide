@@ -76,7 +76,9 @@ Footsteps_HLBSP(base_player target)
 	tex_name = getsurfacetexture(trace_ent, getsurfacenearpoint(trace_ent, trace_endpos));
 
 	if (target.flags & FL_ONGROUND) {
-		switch((float)hash_get(hashMaterials, tex_name)) { 
+		tex_name = Materials_FixName(tex_name);
+
+		switch((float)hash_get(hashMaterials, tex_name)) {
 		case MATID_ALIEN:
 			mat_name = "step_alien";
 			break;

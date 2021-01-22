@@ -18,7 +18,7 @@
 void
 TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon)
 {
-	string tex;
+	string tex_name;
 	vector range;
 	float surf;
 
@@ -68,10 +68,10 @@ TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon)
 	switch (serverkeyfloat("*bspversion")) {
 	case BSPVER_HL:
 		surf = getsurfacenearpoint(trace_ent, trace_endpos);
-		tex = getsurfacetexture(trace_ent, surf);
+		tex_name = Materials_FixName(getsurfacetexture(trace_ent, surf));
 
 		/* our hashtable is the key to all this */
-		switch ((float)hash_get(hashMaterials, tex)) {
+		switch ((float)hash_get(hashMaterials, tex_name)) {
 		case MATID_ALIEN:
 			FX_Impact(IMPACT_ALIEN, trace_endpos, trace_plane_normal);
 			break;

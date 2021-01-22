@@ -88,3 +88,30 @@ enum
 #define SURF_TILE			0xD0000000i
 #define SURF_WOOD			0xE0000000i
 #define SURF_CONCRETE		0xF0000000i
+
+/* this is used for material-lookups using the external materials.txt file
+ * method used in Half-Life. In that environment we have to strip any
+ * prefixes and limit our material-name to 12 chars for everything to be
+ * identified correctly */
+string
+Materials_FixName(string tex_name)
+{
+	dprint(sprintf("^3material_fixname^7: %s > ", tex_name));
+
+	/* strip the first 2 chars when they're frame/random indicators */
+	if (str2chr(tex_name, 0) == '-')
+		tex_name = substring(tex_name, 2, -1);
+	else if (str2chr(tex_name, 0) == '+')
+		tex_name = substring(tex_name, 2, -1);
+
+	/* also not allowed */
+	if (str2chr(tex_name, 0) == '~')
+		tex_name = substring(tex_name, 1, -1);
+
+	/* limit to 12 chars! */
+	tex_name = substring(tex_name, 0, 11);
+
+	dprint(sprintf("%s\n", tex_name));
+
+	return tex_name;
+}
