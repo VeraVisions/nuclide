@@ -614,8 +614,12 @@ CBaseEntity::SendEntity(entity ePEnt, float fChanged)
 			fChanged &= ~BASEFL_CHANGED_BODY;
 		if (scale == 0.0 || scale == 1.0)
 			fChanged &= ~BASEFL_CHANGED_SCALE;
+		if (origin == [0,0,0])
+			fChanged &= ~BASEFL_CHANGED_ORIGIN;
 		if (angles == [0,0,0])
 			fChanged &= ~BASEFL_CHANGED_ANGLES;
+		if (mins == [0,0,0] && maxs == [0,0,0])
+			fChanged &= ~BASEFL_CHANGED_SIZE;
 		if (solid == SOLID_NOT)
 			fChanged &= ~BASEFL_CHANGED_SOLID;
 		if (movetype == MOVETYPE_NONE)

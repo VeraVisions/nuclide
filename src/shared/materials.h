@@ -96,7 +96,7 @@ enum
 string
 Materials_FixName(string tex_name)
 {
-	dprint(sprintf("^3material_fixname^7: %s > ", tex_name));
+	dprint(sprintf("^3Materials_FixName^7: %s > ", tex_name));
 
 	/* strip the first 2 chars when they're frame/random indicators */
 	if (str2chr(tex_name, 0) == '-')
