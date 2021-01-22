@@ -30,6 +30,8 @@ Upon level entry, the func_train will spawn right where its first path_corner
 node is. This is so you can light the func_train somewhere else - like a lonely
 box somewhere outside the playable area.
 
+If no targetname is specified, the train will move on its own at map-launch.
+
 Marking the func_train with the flag TRAIN_NOTSOLID will make entities not
 collide with the train. This is best used for things in the distance or for
 when lasers are following this train as a sort of guide.
@@ -55,8 +57,9 @@ class func_train:CBaseTrigger
 	string m_strStopSnd;
 
 	void(void) func_train;
-	virtual void(void) NextPath;
-	virtual void(void) GoToTarget;
+	virtual void(void) AfterSpawn;
+	virtual void(void) PathNext;
+	virtual void(void) PathMove;
 	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
 	virtual void(void) Blocked;
@@ -80,7 +83,7 @@ func_train::Blocked(void)
 }
 
 void
-func_train::GoToTarget(void)
+func_train::PathMove(void)
 {
 	entity eNode;
 	float flTravelTime;
@@ -101,8 +104,8 @@ func_train::GoToTarget(void)
 	flTravelTime = (vlen(vecVelocity) / m_flSpeed);
 
 	if (!flTravelTime) {
-		print("^1func_train::^3GoToTarget^7: Distance short, going next\n");
-		think = NextPath;
+		print("^1func_train::^3PathMove^7: Distance short, going next\n");
+		think = PathNext;
 		nextthink = ltime;
 		return;
 	}
@@ -113,12 +116,12 @@ func_train::GoToTarget(void)
 	}
 
 	velocity = (vecVelocity * (1 / flTravelTime));
-	think = NextPath;
+	think = PathNext;
 	nextthink = (ltime + flTravelTime);
 }
 
 void
-func_train::NextPath(void)
+func_train::PathDone(void)
 {
 	path_corner eNode;
 	eNode = (path_corner)find(world, ::targetname, target);
@@ -136,9 +139,21 @@ func_train::NextPath(void)
 	if (m_strStopSnd) {
 		Sound_Play(this, CHAN_BODY, m_strStopSnd);
 	}
+
 	/* make the loopy noise stop */
 	if (m_strMoveSnd) {
 		sound(this, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
+	}
+}
+
+void
+func_train::PathNext(void)
+{
+	path_corner eNode;
+	eNode = (path_corner)find(world, ::targetname, target);
+
+	if (!eNode) {
+		return;
 	}
 
 	SetOrigin(eNode.origin - (mins + maxs) * 0.5);
@@ -151,24 +166,24 @@ func_train::NextPath(void)
 	target = eNode.target;
 	velocity = [0,0,0];
 
-	/* warp next frame */
+	/* warp */
 	if (eNode.spawnflags & PC_TELEPORT) {
-		print(sprintf("^1func_train::^3NextPath^7: Node %s wants %s to teleport\n", eNode.targetname, targetname));
-		think = NextPath;
-		nextthink = ltime;
-		return;
+		SetOrigin(eNode.origin - (mins + maxs) * 0.5);
+		PathDone();
 	}
 
 	/* stop until triggered again */
+	if (targetname)
 	if (eNode.spawnflags & PC_WAIT || spawnflags & TRAIN_WAIT) {
 		return;
 	}
 
+	/* move after delay, or instantly when none is given */
 	if (m_flWait > 0) {
-		think = GoToTarget;
+		think = PathMove;
 		nextthink = ltime + m_flWait;
 	} else {
-		GoToTarget();
+		PathMove();
 	}
 }
 
@@ -176,14 +191,24 @@ func_train::NextPath(void)
 void
 func_train::Trigger(entity act, int state)
 {
-	GoToTarget();
+	PathMove();
+}
+
+void
+func_train::AfterSpawn(void)
+{
+	PathNext();
+
+	if (!targetname) {
+		PathMove();
+	}
 }
 
 void
 func_train::Respawn(void)
 {
-	solid = spawnflags & TRAIN_NOTSOLID ? SOLID_NOT : SOLID_BSP;
-	movetype = MOVETYPE_PUSH;
+	SetSolid(spawnflags & TRAIN_NOTSOLID ? SOLID_NOT : SOLID_BSP);
+	SetMovetype(MOVETYPE_PUSH);
 	blocked = Blocked;
 	SetModel(m_oldModel);
 	SetOrigin(m_oldOrigin);
@@ -191,7 +216,7 @@ func_train::Respawn(void)
 	/* let's wait 1/4 a second to give the path_corner entities a chance to
 	 * spawn in case they're after us in the ent lump */
 	target = m_oldstrTarget;
-	think = NextPath;
+	think = AfterSpawn;
 	nextthink = ltime + 0.25f;
 }
 
