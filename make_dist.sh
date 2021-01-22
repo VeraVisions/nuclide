@@ -4,7 +4,7 @@ copy_mod()
 {
 	mkdir ./_release/"$1"
 	cp -R ./"$1"/data.pk3dir ./_release/"$1"/data.pk3dir
-	cp ./"$1".fmf ./_release/"$1".fmf
+	#cp ./"$1".fmf ./_release/"$1".fmf
 	rm ./_release/"$1"/data.pk3dir/*.lno
 }
 
@@ -41,10 +41,11 @@ copy_file logos/fte.png
 # one last touch
 touch ./_release/fteqw_goes_here
 mv ./_release/doc/release-readme ./_release/README
-mv ./_release/valve.fmf ./_release/default.fmf
+cp ./valve.fmf ./_release/default.fmf
+rm -rf ./_release/platform/test_maps.pk3dir
 
 # build the tarball
 export FILE_OUT=nuclide-$(date +%m-%d-%Y)
 mv ./_release "./$FILE_OUT"
 tar zcvf "$FILE_OUT".tar.gz "./$FILE_OUT"
-gpg --output "./$FILE_OUT.sig" --detach-sig "./$FILE_OUT"
+gpg --output "./$FILE_OUT.sig" --detach-sig "./$FILE_OUT.tar.gz"
