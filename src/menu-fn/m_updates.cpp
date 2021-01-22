@@ -192,6 +192,7 @@ menu_updates_refresh(void)
 		memfree(updates);
 	}
 
+#if 0
 	for (int i = 0; (getpackagemanagerinfo(i, GPMI_NAME)); i++) {
 		string cat = getpackagemanagerinfo(i, GPMI_CATEGORY);
 		if (cat == "Plugins/") {
@@ -202,10 +203,22 @@ menu_updates_refresh(void)
 		}
 		update_count++;
 	}
+#else
+	/* look for the valid packages in the gameinfo pkgname */
+	int pkgcount = tokenize(games[gameinfo_current].pkgname);
+	for (int i = 0i; i < pkgcount; i++) {
+		int id = game_getpackageid(argv(i));
+		if (id == -1)
+			continue;
+
+		update_count++;
+	}
+#endif
 
 	c = 0;
 	updates = memalloc(sizeof(update_t) * update_count);
 
+#if 0
 	for (int i = 0; (getpackagemanagerinfo(i, GPMI_NAME)); i++) {
 		string cat = getpackagemanagerinfo(i, GPMI_CATEGORY);
 		if (cat == "Plugins/") {
@@ -230,6 +243,30 @@ menu_updates_refresh(void)
 
 		c++;
 	}
+#else
+	for (int i = 0i; i < pkgcount; i++) {
+		int id = game_getpackageid(argv(i));
+
+		if (id == -1)
+			continue;
+
+		updates[c].name = getpackagemanagerinfo(id, GPMI_NAME);
+		updates[c].category = getpackagemanagerinfo(id, GPMI_CATEGORY);
+		updates[c].title = getpackagemanagerinfo(id, GPMI_TITLE);
+		updates[c].version = getpackagemanagerinfo(id, GPMI_VERSION);
+		updates[c].description = getpackagemanagerinfo(id, GPMI_DESCRIPTION);
+		updates[c].license = getpackagemanagerinfo(id, GPMI_LICENSE);
+		updates[c].author = getpackagemanagerinfo(id, GPMI_AUTHOR);
+		updates[c].website = getpackagemanagerinfo(id, GPMI_WEBSITE);
+		updates[c].installed = getpackagemanagerinfo(id, GPMI_INSTALLED);
+		updates[c].size = (int)stof(getpackagemanagerinfo(id, GPMI_FILESIZE));
+		updates[c].uid = id;
+		precache_pic(sprintf(FN_UPDATE_IMGURL, updates[c].name));
+
+		c++;
+	}
+#endif
+
 	up_sbUpdates.SetMax(update_count);
 	up_lbUpdates.SetMax(update_count);
 	up_lbUpdates.SetSelected(0);

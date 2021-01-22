@@ -35,12 +35,14 @@ IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING\
 OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.\
 ==============================================================================";
 
+/* r_autoscale forces vid_conautoscale to be one of 4 integer values.
+ * this is due to vid_conautoscale 0 scaling with in floating point... which
+ * in turns results in skipped rows/columns and shimmering. */
 var int autocvar_r_autoscale = TRUE;
 void
 Menu_AutoScale(void)
 {
 	if (autocvar_r_autoscale) {
-		/* override for vid_conautoscales */
 		vector psize = getproperty(VF_SCREENPSIZE);
 		if (psize[1] >= (480 * 4)) {
 			cvar_set("vid_conautoscale", "4");
@@ -54,7 +56,9 @@ Menu_AutoScale(void)
 	}
 }
 
-/* for old Half-Life configs */
+/* old Half-Life configs that have a completely different gamma model would
+ * mess up visibility on initial launch - so we catch that and and force
+ * our default to fix it */
 void
 Menu_GammaHack(void)
 {
@@ -69,6 +73,7 @@ Menu_GammaHack(void)
 	}
 }
 
+/* called upon menu init/restart */
 void
 m_init(void)
 {
@@ -122,13 +127,16 @@ m_init(void)
 	Menu_GammaHack();
 }
 
+/* called upon vid_reload, vid_restart, but not menu init/restart */
 void
 Menu_RendererRestarted(string rendererdesc)
 {
+	print("Menu_REndereresrsatr\n");
 	Menu_AutoScale();
 	Menu_GammaHack();
 }
 
+/* called, in theory, whenever the menu gets killed */
 void
 m_shutdown(void)
 {
@@ -147,6 +155,7 @@ m_shutdown(void)
 	memfree(games);
 }
 
+/* called every frame, influenced by cl_idlefps */
 void
 m_draw(vector screensize)
 {
