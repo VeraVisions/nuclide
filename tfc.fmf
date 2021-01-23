@@ -32,3 +32,4 @@ UPDATEURL http://www.frag-net.com/mods/tfc.fmf
 RTCBROKER master.frag-net.com:27950
 PROTOCOLNAME "Nuclide"
 MAINCONFIG nuclide.cfg
+-exec platform_default.cfg
