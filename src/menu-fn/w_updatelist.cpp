@@ -87,13 +87,13 @@ CUpdateList::Draw(void)
 			}
 			break;
 		case "pending":
-			colo = [0.5,0.5,0.5];
+			colo *= [0.5,0.5,0.5];
 			break;
 		case "enabled":
 			colo = colo;
 			break;
 		case "present":
-			colo = colo;
+			colo = colo * [0.5,0.5,0.5];
 			break;
 		case "corrupt":
 			colo = [1,0,0] * sin(time);
@@ -112,6 +112,11 @@ CUpdateList::Draw(void)
 		if (updates[i].installed == "rem") {
 			if ((time*2) & 1)
 				colo = [1,0,0];
+			else
+				colo = [0,0,0];
+		} else if (updates[i].installed == "in") {
+			if ((time*2) & 1)
+				colo = [1,1,0];
 			else
 				colo = [0,0,0];
 		}

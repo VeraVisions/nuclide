@@ -276,6 +276,8 @@ menu_updates_refresh(void)
 void
 menu_updates_draw(void)
 {
+	static int old_enabled;
+
 	float fl = 0;
 
 	if (!g_updates_initialized) {
@@ -283,15 +285,12 @@ menu_updates_draw(void)
 
 		/* query until 1 package is ready */
 		for (int i = 0; (getpackagemanagerinfo(i, GPMI_NAME)); i++) {
-			string cat = getpackagemanagerinfo(i, GPMI_CATEGORY);
-			if (cat == "Plugins/") {
-				continue;
-			}
-			if (cat == "Mod/") {
-				continue;
-			}
+			string installed = getpackagemanagerinfo(i, GPMI_INSTALLED);
+			/* increment to keep track */
+			if (installed == "enabled")
+				old_enabled++;
+
 			pkg_ready = 1;
-			break;
 		}
 
 		if (pkg_ready == 1) {
@@ -339,6 +338,21 @@ menu_updates_draw(void)
 
 	WLabel_Static(350, 143, "Preview:", 11, 11, [1,1,1],
 					1.0f, 0, font_arial);
+
+	/* check if we've got any more packages than upon init */
+	int new_packages;
+	for (int i = 0; (getpackagemanagerinfo(i, GPMI_NAME)); i++) {
+		string installed = getpackagemanagerinfo(i, GPMI_INSTALLED);
+
+		/* increment to keep track */
+		if (installed == "enabled")
+			new_packages++;
+	}
+
+	if (old_enabled != new_packages) {
+		old_enabled = new_packages;
+		localcmd("menu_restart\nmenu_updates\n");
+	}
 
 	if (g_updates_previewpic)
 	drawpic([g_menuofs[0]+350+3,g_menuofs[1]+160+3], g_updates_previewpic, [256,128], [1,1,1], 1.0f);

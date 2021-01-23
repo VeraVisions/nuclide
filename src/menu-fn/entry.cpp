@@ -82,6 +82,7 @@ m_init(void)
 	print(LICENSE_TEXT);
 	print("\n\n");
 
+	registercommand("menu_updates");
 	registercommand("menu_customgame");
 	registercommand("map_background");
 	registercommand("menu_musicstart");
@@ -116,11 +117,9 @@ m_init(void)
 		Music_MenuStart();
 	}
 
-	if (autocvar_menu_updating || !autocvar_menu_installedpackages) {
+	if (game_updatesavailable() == 1 || autocvar_menu_updating) {
+		shaderforname("logo_avi", "{\n{\nvideomap av:media/logo.avi\n}\n}");
 		g_menupage = PAGE_UPDATES;
-	}
-	if (g_iModInstallCache >= 0) {
-		g_menupage = PAGE_CUSTOMGAME;
 	}
 
 	Menu_AutoScale();
@@ -131,7 +130,6 @@ m_init(void)
 void
 Menu_RendererRestarted(string rendererdesc)
 {
-	print("Menu_REndereresrsatr\n");
 	Menu_AutoScale();
 	Menu_GammaHack();
 }
@@ -218,6 +216,13 @@ m_draw(vector screensize)
 				  0.5f, 0, font_console);
 
 	main_draw();
+
+	/* HACK! after a custom game switches .fmf files, we need to force restart
+	 * our menu. I'm so, so sorry. No, RendererRestarted doesn't see fs_game
+	 * fast enough either. */
+	if (cvar_string("fs_game") != games[gameinfo_current].gamedir) {
+		localcmd("menu_restart\n");
+	}
 	
 	oldtime = time;
 }
@@ -307,6 +312,10 @@ m_consolecommand(string cmd)
 			break;
 		case "menu_musicloop":
 			Music_ParseLoop(argv(1));
+			break;
+		case "menu_updates":
+			g_menupage = PAGE_UPDATES;
+			m_intro_skip();
 			break;
 		case "menu_customgame":
 			g_menupage = PAGE_CUSTOMGAME;
