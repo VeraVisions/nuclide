@@ -95,6 +95,11 @@ game_updateinstallcount(void)
 {
 	int count;
 
+	/* always return something positive when no packages are defined */
+	if (games[gameinfo_current].pkgname == "") {
+		return 1;
+	}
+
 	/* look for the valid packages in the gameinfo pkgname */
 	int pkgcount = tokenize(games[gameinfo_current].pkgname);
 
