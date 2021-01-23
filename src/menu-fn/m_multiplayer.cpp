@@ -293,7 +293,7 @@ menu_multiplayer_draw(void)
 {
 	Header_Draw(HEAD_MULTI);
 
-	if (clientstate() == 2 && !g_background) {
+	if (!autocvar__menu_singleplayer && clientstate() == 2 && !g_background) {
 		Widget_Draw(fn_multiplayer2);
 
 		WLabel_Static(215, 148, m_reslbl[IDS_MULTI_RESUMEHELP], 10, 10, col_help,
@@ -357,7 +357,7 @@ menu_multiplayer_input(float evtype, float scanx, float chary, float devid)
 	if (g_connectstatus)
 		return;
 
-	if (clientstate() == 2 && !g_background)
+	if (!autocvar__menu_singleplayer && clientstate() == 2 && !g_background)
 		Widget_Input(fn_multiplayer2, evtype, scanx, chary, devid);
 	else
 		Widget_Input(fn_multiplayer, evtype, scanx, chary, devid);

@@ -15,6 +15,7 @@
  */
 
 var int autocvar_menu_intro = TRUE;
+var int autocvar__menu_singleplayer;
 
 #define KEY_UNKNOWN			-1
 #define KEY_GAME			0

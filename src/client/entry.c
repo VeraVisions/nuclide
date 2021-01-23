@@ -89,6 +89,12 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	Sentences_Init();
 	Decals_Init();
 	Way_Init();
+
+	/* let the menu know we're a multi or a singleplayer game */
+	if (serverkeyfloat("sv_playerslots") == 1)
+		cvar_set("_menu_singleplayer", "1");
+	else
+		cvar_set("_menu_singleplayer", "0");
 }
 
 /* Rendering Caches */
