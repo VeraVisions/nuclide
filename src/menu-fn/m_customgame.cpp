@@ -90,6 +90,42 @@ game_updatesavailable(void)
 	return 0;
 }
 
+int
+game_updateinstallcount(void)
+{
+	int count;
+
+	/* look for the valid packages in the gameinfo pkgname */
+	int pkgcount = tokenize(games[gameinfo_current].pkgname);
+
+	for (int i = 0i; i < pkgcount; i++) {
+		int id = game_getpackageid(argv(i));
+		string status = getpackagemanagerinfo(id, GPMI_INSTALLED);
+		
+		switch (status) {
+		case "":
+			break;
+		case "pending":
+			break;
+		case "enabled":
+			count++;
+			break;
+		case "present":
+			count++;
+			break;
+		case "corrupt":
+			count++;
+			break;
+		default:
+			/* we're currently installing stuff */
+			break;
+		}
+	}
+
+	/* everything is installed */
+	return count;
+}
+
 #if 0
 /* get installing id */
 void

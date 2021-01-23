@@ -117,7 +117,7 @@ m_init(void)
 		Music_MenuStart();
 	}
 
-	if (game_updatesavailable() == 1 || autocvar_menu_updating) {
+	if (game_updateinstallcount() == 0 || autocvar_menu_updating) {
 		shaderforname("logo_avi", "{\n{\nvideomap av:media/logo.avi\n}\n}");
 		g_menupage = PAGE_UPDATES;
 	}
