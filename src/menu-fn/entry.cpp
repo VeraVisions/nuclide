@@ -221,7 +221,7 @@ m_draw(vector screensize)
 	 * our menu. I'm so, so sorry. No, RendererRestarted doesn't see fs_game
 	 * fast enough either. */
 	if (cvar_string("fs_game") != games[gameinfo_current].gamedir) {
-		localcmd("menu_restart\n");
+		localcmd(sprintf("gameinfo_gamedir %s\nmenu_restart\n", cvar_string("fs_game")));
 	}
 	
 	oldtime = time;
