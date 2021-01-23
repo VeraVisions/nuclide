@@ -259,7 +259,7 @@ CSQC_UpdateView(float w, float h, float focus)
 
 		addentities(MASK_ENGINE);
 
-		if (pSeat->m_flCameraTime > time) {
+		if (pSeat->m_flCameraTime > time || pSeat->m_flCameraTime == -1) {
 			view_angles = pSeat->m_vecCameraAngle;
 			setproperty(VF_ORIGIN, pSeat->m_vecCameraOrigin);
 			setproperty(VF_CL_VIEWANGLES, view_angles);

@@ -82,7 +82,13 @@ trigger_camera::ReceiveEntity(float flFlags)
 	pSeat->m_vecCameraAngle = angles;
 
 	if (flFlags & OCAMFL_CHANGED_WAIT) {
-		pSeat->m_flCameraTime = time + readfloat();
+		float flWait = readfloat();
+
+		if (flWait == -1)
+			pSeat->m_flCameraTime = -1;
+		else
+			pSeat->m_flCameraTime = time + flWait;
+
 		setproperty(VF_CL_VIEWANGLES, angles);
 		setproperty(VF_ANGLES, angles);
 	}
