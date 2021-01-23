@@ -157,27 +157,18 @@ void
 env_laser::ParentUpdate(void)
 {
 	/* FIXME: Check our fields for networking */
-	/*if (origin != oldnet_origin) {
+	if (origin != net_origin) {
 		SendFlags |= ENVLASER_CHANGED_ORIGIN;
-		SendFlags |= ENVLASER_CHANGED_ANGLES;
-		SendFlags |= ENVLASER_CHANGED_STATE;
-		SendFlags |= ENVLASER_CHANGED_TEXTURE;
-		oldnet_origin = origin;
+		net_origin = origin;
 	}
-	if (angles != oldnet_angles) {
-		SendFlags |= ENVLASER_CHANGED_ORIGIN;
+	if (angles != net_angles) {
 		SendFlags |= ENVLASER_CHANGED_ANGLES;
-		SendFlags |= ENVLASER_CHANGED_STATE;
-		SendFlags |= ENVLASER_CHANGED_TEXTURE;
-		oldnet_angles = angles;
+		net_angles = angles;
 	}
 	if (m_iState != m_iStateOld) {
-		SendFlags |= ENVLASER_CHANGED_ORIGIN;
-		SendFlags |= ENVLASER_CHANGED_ANGLES;
 		SendFlags |= ENVLASER_CHANGED_STATE;
-		SendFlags |= ENVLASER_CHANGED_TEXTURE;
 		m_iStateOld = m_iState;
-	}*/
+	}
 
 	if (m_parent) {
 		entity p = find(world, ::targetname, m_parent);
