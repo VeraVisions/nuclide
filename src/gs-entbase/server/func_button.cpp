@@ -26,6 +26,7 @@
 "delay"         Delay until the Target gets triggered.
 "sounds"        Obsolete legacy key for HL/Q1 style buttons to decide
                 which sounds to play.
+"health"        Amount of damage this button takes before it triggers.
 
 Outputs:
 "OnDamaged"     Fired when the button is damaged.
@@ -116,8 +117,8 @@ class func_button:CBaseTrigger
 	virtual void(void) Touch;
 	virtual void(void) Blocked;
 	virtual void(entity, int) Trigger;
+	virtual void(void) DeathTrigger;
 	virtual void(void) Use;
-	virtual void(void) Death;
 	
 	virtual void(void) SetMovementDirection;
 	virtual void(vector, void(void)) MoveToDestination;
@@ -236,6 +237,13 @@ func_button::Trigger(entity act, int state)
 
 	UseOutput(act, m_strOnPressed);
 	UseTargets(act, TRIG_TOGGLE, m_flDelay);
+	health = m_oldHealth;
+}
+
+void
+func_button::DeathTrigger(void)
+{
+	Trigger(g_dmg_eAttacker, TRIG_TOGGLE);
 }
 
 void
@@ -254,17 +262,6 @@ void
 func_button::Use(void)
 {
 	Trigger(eActivator, TRIG_TOGGLE);
-}
-
-void
-func_button::Death(void)
-{
-	if (m_strOnOut)
-		UseOutput(g_dmg_eAttacker, m_strOnDamaged);
-	else
-		Trigger(g_dmg_eAttacker, TRIG_TOGGLE);
-
-	health = m_oldHealth;
 }
 
 void
@@ -346,6 +343,7 @@ func_button::Respawn(void)
 
 	if (health > 0) {
 		takedamage = DAMAGE_YES;
+		Death = DeathTrigger;
 	}
 
 	if (!m_flSpeed) {
