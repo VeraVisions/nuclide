@@ -36,7 +36,6 @@ string(int, int) getpackagemanagerinfo = #0;
 
 var int g_updates_initialized = FALSE;
 var int autocvar_menu_updating = FALSE;
-var int autocvar_menu_installedpackages = FALSE;
 
 CWidget fn_updates;
 CMainButton up_btnDone;
