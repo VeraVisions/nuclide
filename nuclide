@@ -1,12 +1,11 @@
 #!/bin/sh
 set -e
-SCRPATH="$( cd "$( dirname $(readlink -nf $0) )" && pwd )"
-PATH="$SCRPATH"/bin:"$PATH"
+SRCPATH="$( cd "$( dirname $(readlink -nf $0) )" && pwd )"
 
-cd "$SCRPATH"
+cd "$SRCPATH/bin"
 
-if [ -f "$SCRPATH"/bin/fteqw ]; then
-	fteqw -manifest valve.fmf $*
+if [ -f "$SRCPATH"/bin/fteqw ]; then
+	./fteqw -basedir ../ -manifest ../valve.fmf $*
 else
 	printf "Engine is not present, please run build_engine.sh\n"
 fi
