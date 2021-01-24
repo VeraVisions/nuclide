@@ -59,7 +59,10 @@ game_updatesavailable(void)
 	for (int i = 0i; i < pkgcount; i++) {
 		int id = game_getpackageid(argv(i));
 		string status = getpackagemanagerinfo(id, GPMI_INSTALLED);
-		
+
+		if (id == -1)
+			continue;
+
 		switch (status) {
 		case "":
 			if (updates[id].installed == "") {
