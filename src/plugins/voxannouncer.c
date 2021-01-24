@@ -14,11 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include "../shared/events.h"
+
 void
 VoxFunc(string strMessage)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
-	WriteByte(MSG_MULTICAST, 27);
+	WriteByte(MSG_MULTICAST, EV_CHAT_VOX);
 	WriteString(MSG_MULTICAST, strMessage);
 	msg_entity = world;
 	multicast([0,0,0], MULTICAST_ALL);
