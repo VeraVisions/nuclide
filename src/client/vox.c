@@ -61,7 +61,7 @@ Vox_Update(void)
 void
 Vox_Shutdown(void)
 {
-	if (g_voxque)
+	if (g_voxcount)
 		memfree(g_voxque);
 
 	g_voxcount = 0;
