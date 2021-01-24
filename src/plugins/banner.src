@@ -1,0 +1,8 @@
+#pragma target fte
+#pragma PROGS_DAT  "../../platform/p_banner.dat"
+#define QWSSQC
+
+#includelist
+../shared/fteextensions.qc
+banner.c
+#endlist

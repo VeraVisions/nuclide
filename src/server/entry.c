@@ -420,6 +420,8 @@ void initents(void)
 	/* the maxclients serverinfo key? yeah, that one lies to the client. so
 	 * let's add our own that we can actually trust. */
 	forceinfokey(world, "sv_playerslots", cvar_string("sv_playerslots"));
+
+	Plugin_InitEnts();
 }
 
 /*

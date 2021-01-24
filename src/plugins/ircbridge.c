@@ -122,12 +122,6 @@ FMX_PlayerObituary(entity attk, entity targ, int weapon, int body, int dmg)
 string
 FMX_ParseClientCommand(string cmd)
 {
-	if (!g_ircbridge) {
-		g_ircbridge = spawn();
-		g_ircbridge.think = IRCBridge_ServerConnect;
-		g_ircbridge.nextthink = time;
-	}
-
 	tokenize(cmd);
 	switch (argv(0)) {
 	case "say":
@@ -135,4 +129,14 @@ FMX_ParseClientCommand(string cmd)
 		break;
 	}
 	return cmd;
+}
+
+
+
+void
+FMX_InitEnts(void)
+{
+	g_ircbridge = spawn();
+	g_ircbridge.think = IRCBridge_ServerConnect;
+	g_ircbridge.nextthink = time + 1.0f;
 }
