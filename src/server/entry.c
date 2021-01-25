@@ -351,9 +351,11 @@ void initents(void)
 			while ((sTemp = fgets(fileMaterial))) {
 				/* tokenize and just parse this stuff in */
 				if (tokenize_console(sTemp) == 2) {
+					string mat_type;
 					string tex_name;
+					mat_type = strtoupper(argv(0));
 					tex_name = Materials_FixName(strtolower(argv(1)));
-					hash_add(hashMaterials, strtolower(argv(1)), str2chr(argv(0), 0));
+					hash_add(hashMaterials, strtolower(argv(1)), str2chr(mat_type, 0));
 				}
 			}
 			fclose(fileMaterial);
