@@ -109,7 +109,7 @@ Materials_FixName(string tex_name)
 		tex_name = substring(tex_name, 1, -1);
 
 	/* limit to 12 chars! */
-	tex_name = substring(tex_name, 0, 11);
+	tex_name = substring(tex_name, 0, 12);
 
 	dprint(sprintf("%s\n", tex_name));
 
