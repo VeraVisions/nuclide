@@ -85,6 +85,9 @@ struct
 	int m_iHUDWeaponSelected;
 	float m_flHUDWeaponSelectTime;
 
+	/* saturn controller */
+	int m_iSaturnMenu;
+
 	/* centerprint related */
 	float m_flCenterprintAlpha;
 	float m_flCenterprintTime;

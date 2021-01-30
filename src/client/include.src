@@ -20,5 +20,6 @@ textmenu.c
 vgui.cpp
 vox.c
 way.c
+in_saturn.c
 entry.c
 #endlist

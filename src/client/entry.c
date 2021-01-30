@@ -38,6 +38,9 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	registercommand("-duck");
 	registercommand("vote");
 
+	registercommand("+saturn_menu");
+	registercommand("-saturn_menu");
+
 	/* Requested by Slacer */
 	registercommand("+zoomin");
 	registercommand("-zoomin");
@@ -325,7 +328,7 @@ CSQC_UpdateView(float w, float h, float focus)
 		}
 
 		Fade_Update((int)video_mins[0],(int)video_mins[1], (int)w, (int)h);
-
+		IN_Saturn_DrawMenu();
 #if 0
 		Cstrike_PostDraw((int)video_mins[0],(int)video_mins[1], (int)w, (int)h);
 #endif
@@ -480,6 +483,8 @@ CSQC_Input_Frame(void)
 	if (pSeat->m_flCameraTime > time) {
 		/* TODO: Supress the changing of view_angles/input_angles. */
 	}
+
+	IN_Saturn_InputFrame();
 }
 
 
@@ -732,6 +737,12 @@ CSQC_ConsoleCommand(string sCMD)
 		break;
 	case "slot10":
 		HUD_SlotSelect(9);
+		break;
+	case "+saturn_menu":
+		pSeat->m_iSaturnMenu = TRUE;
+		break;
+	case "-saturn_menu":
+		pSeat->m_iSaturnMenu = FALSE;
 		break;
 	case "way_menu":
 		Textmenu_Call("WAY_MENU");
