@@ -25,7 +25,7 @@ BASEGAME cstrike
 -set gameinfo_url_dl "http://www.frag-net.com/mods/cstrike.fmf"
 -set gameinfo_menutrack ""
 -set gameinfo_chatroom "freecs"
--set gameinfo_pkgname "cg_cstrike"
+-set gameinfo_pkgname "cg_cstrike valve_uplink valve_realmedia valve_patch1110 valve_opfordemo valve_hlds logos_realmedia valve_dayone"
 
 DOWNLOADSURL http://www.frag-net.com/dl/valve_packages
 UPDATEURL http://www.frag-net.com/mods/cstrike.fmf
