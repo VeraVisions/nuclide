@@ -51,6 +51,23 @@ rm -rf ./_release/platform/test_maps.pk3dir
 
 # build the tarball
 export FILE_OUT=nuclide-$(date +%m-%d-%Y)
+export CS_OUT=freecs-$(date +%m-%d-%Y)
 mv ./_release "./$FILE_OUT"
 zip -9 -r "$FILE_OUT".zip "./$FILE_OUT"
+
+# FreeCS specific build
+cp -R "./$FILE_OUT" "./$CS_OUT"
+rm -rf "./$CS_OUT"/valve
+rm -rf "./$CS_OUT"/scihunt
+rm -rf "./$CS_OUT"/rewolf
+rm -rf "./$CS_OUT"/hunger
+rm "./$CS_OUT"/valve.fmf
+rm "./$CS_OUT"/default.fmf
+rm "./$CS_OUT"/scihunt.fmf
+rm "./$CS_OUT"/rewolf.fmf
+rm "./$CS_OUT"/hunger.fmf
+mv "./$CS_OUT"/cstrike.fmf "./$CS_OUT"/default.fmf
+zip -9 -r "$CS_OUT".zip "./$CS_OUT"
+
+gpg --output "./$CS_OUT.sig" --detach-sig "./$CS_OUT.zip"
 gpg --output "./$FILE_OUT.sig" --detach-sig "./$FILE_OUT.zip"
