@@ -19,7 +19,7 @@
 entity g_ircbridge;
 tcpinfo_t tcp_irc;
 
-const string g_irc_channeltarget = "#lobby";
+var string g_irc_channeltarget = "#lobby";
 var string g_bridge_nick;
 
 /* irc processing functions */
@@ -131,12 +131,15 @@ FMX_ParseClientCommand(string cmd)
 	return cmd;
 }
 
-
-
 void
 FMX_InitEnts(void)
 {
 	g_ircbridge = spawn();
 	g_ircbridge.think = IRCBridge_ServerConnect;
 	g_ircbridge.nextthink = time + 1.0f;
+
+	/* join a channel other than lobby if the chatroom is set */
+	if (cvar_string("gameinfo_chatroom")) {
+		g_irc_channeltarget = strcat("#", cvar_string("gameinfo_chatroom"));
+	}
 }
