@@ -4,7 +4,7 @@ SCRPATH="$( cd "$( dirname $(readlink -nf $0) )" && pwd )"
 PATH="$SCRPATH"/bin:"$PATH"
 
 if [ -f "$SCRPATH"/bin/fteqw-sv ]; then
-	fteqw-sv -manifest valve.fmf $*
+	fteqw-sv $*
 else
 	printf "Engine is not present, please run build_engine.sh\n"
 fi
