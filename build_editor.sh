@@ -172,6 +172,12 @@ mv_wsfile WorldSpawn_PATCH
 mv_wsfile worldspawn
 mv_wsfile vmap
 
-cd ../../src
-./mk_mapdef.sh
-cp -v ./entities.def ../bin/platform.game/platform/entities.def
+cd ../../
+./make_mapdef.sh valve
+./make_mapdef.sh cstrike
+./make_mapdef.sh gearbox
+./make_mapdef.sh hunger
+./make_mapdef.sh poke646
+./make_mapdef.sh rewolf
+./make_mapdef.sh scihunt
+./make_mapdef.sh tfc
