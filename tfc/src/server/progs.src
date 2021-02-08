@@ -1,0 +1,46 @@
+#pragma target fte
+#pragma progs_dat  "../../data.pk3dir/progs.dat"
+
+#define QWSSQC
+#define SERVER
+#define VALVE
+#define TFC
+#define GS_RENDERFX
+
+#includelist
+../../../src/shared/fteextensions.qc
+../../../src/gs-entbase/server/defs.h
+../../../src/shared/defs.h
+../../../src/server/defs.h
+
+../../../src/gs-entbase/server.src
+../../../src/gs-entbase/shared.src
+../shared/include.src
+
+defs.h
+
+../../../valve/src/server/player.qc
+../../../valve/src/server/spectator.qc
+
+../../../valve/src/server/items.qc
+info_player_teamspawn.qc
+info_tfgoal.qc
+item_tfgoal.qc
+
+gamerules.qc
+../../../valve/src/server/client.qc
+server.qc
+../../../valve/src/server/damage.qc
+../../../valve/src/server/rules.qc
+../../../valve/src/server/flashlight.qc
+../../../base/src/server/modelevent.qc
+
+../../../src/botlib/include.src
+
+input.qc
+spawn.qc
+
+../../../src/server/include.src
+../../../src/shared/include.src
+#endlist
+

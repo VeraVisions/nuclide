@@ -3,13 +3,13 @@
 #endif
 
 #includelist
-shared/decals.cpp
-shared/spraylogo.cpp
-shared/func_friction.cpp
-shared/env_projectedtexture.cpp
-shared/light_dynamic.cpp
-shared/func_monitor.cpp
-shared/trigger_camera.cpp
-shared/trigger_gravity.cpp
-shared/info_particle_system.cpp
+shared/decals.qc
+shared/spraylogo.qc
+shared/func_friction.qc
+shared/env_projectedtexture.qc
+shared/light_dynamic.qc
+shared/func_monitor.qc
+shared/trigger_camera.qc
+shared/trigger_gravity.qc
+shared/info_particle_system.qc
 #endlist

@@ -1,5 +1,5 @@
 #includelist
-pmove.c
-sound.c
-math.c
+pmove.qc
+sound.qc
+math.qc
 #endlist

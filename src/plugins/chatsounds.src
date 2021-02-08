@@ -4,5 +4,5 @@
 
 #includelist
 ../shared/fteextensions.qc
-chatsounds.c
+chatsounds.qc
 #endlist

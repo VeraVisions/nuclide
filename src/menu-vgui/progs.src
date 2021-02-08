@@ -8,17 +8,17 @@ defs.h
 
 ../vgui/include.src
 
-background.cpp
-loading.cpp
+background.qc
+loading.qc
 
 main.h
-ui_console.cpp
-ui_newgame.cpp
-ui_quitgame.cpp
-ui_createserver.cpp
-ui_findservers.cpp
-ui_musicplayer.cpp
-ui_modelviewer.cpp
-desktop.cpp
-main.cpp
+ui_console.qc
+ui_newgame.qc
+ui_quitgame.qc
+ui_createserver.qc
+ui_findservers.qc
+ui_musicplayer.qc
+ui_modelviewer.qc
+desktop.qc
+main.qc
 #endlist

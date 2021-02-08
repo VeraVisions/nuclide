@@ -4,5 +4,5 @@
 
 #includelist
 ../shared/fteextensions.qc
-banner.c
+banner.qc
 #endlist

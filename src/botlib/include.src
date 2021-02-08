@@ -2,8 +2,8 @@
 
 #includelist
 defs.h
-bot.cpp
-route.c
-way.c
-cmd.c
+bot.qc
+route.qc
+way.qc
+cmd.qc
 #endlist

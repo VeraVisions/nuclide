@@ -1,0 +1,54 @@
+#pragma target fte
+#pragma progs_dat  "../../data.pk3dir/progs.dat"
+
+#define QWSSQC
+#define SERVER
+#define VALVE
+#define REWOLF
+#define GS_RENDERFX
+
+#includelist
+../../../src/shared/fteextensions.qc
+../../../src/gs-entbase/server/defs.h
+../../../src/shared/defs.h
+../../../src/server/defs.h
+
+../../../src/gs-entbase/server.src
+../../../src/gs-entbase/shared.src
+../shared/include.src
+
+../../../valve/src/server/defs.h
+
+gunman_cycler.qc
+hologram_damage.qc
+monster_human_bandit.qc
+monster_human_chopper.qc
+monster_human_demoman.qc
+monster_human_gunman.qc
+monster_human_unarmed.qc
+monster_trainingbot.qc
+
+../../../valve/src/server/player.qc
+../../../valve/src/server/spectator.qc
+
+../../../valve/src/server/items.qc
+
+../../../src/botlib/include.src
+
+gamerules.qc
+../../../valve/src/server/gamerules_singleplayer.qc
+gamerules_multiplayer.qc
+
+../../../valve/src/server/client.qc
+../../../valve/src/server/server.qc
+../../../valve/src/server/damage.qc
+../../../valve/src/server/rules.qc
+../../../valve/src/server/flashlight.qc
+../../../base/src/server/modelevent.qc
+
+input.qc
+../../../valve/src/server/spawn.qc
+
+../../../src/server/include.src
+../../../src/shared/include.src
+#endlist

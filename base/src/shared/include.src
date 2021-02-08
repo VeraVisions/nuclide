@@ -1,0 +1,21 @@
+ #includelist
+flags.h
+player.qc
+weapon_common.h
+animations.h
+animations.qc
+pmove.qc
+pmove_water.qc
+
+fx_blood.qc
+fx_breakmodel.qc
+fx_explosion.qc
+fx_gibhuman.qc
+fx_spark.qc
+fx_impact.qc
+
+items.h
+weapons.h
+weapons.qc
+weapon_common.qc
+#endlist

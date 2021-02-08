@@ -4,5 +4,5 @@
 
 #includelist
 ../shared/fteextensions.qc
-chatfilter.c
+chatfilter.qc
 #endlist

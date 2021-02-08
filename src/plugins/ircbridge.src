@@ -4,5 +4,5 @@
 
 #includelist
 ../shared/fteextensions.qc
-ircbridge.c
+ircbridge.qc
 #endlist
