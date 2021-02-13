@@ -152,7 +152,7 @@ void
 env_sprite::env_sprite(void)
 {
 	m_flFramerate = 10;
-	m_flScale = 0.25f; /* this is the default, according to Sven Manor */
+	m_flScale = 1.0f;
 
 	CBaseTrigger::CBaseTrigger();
 

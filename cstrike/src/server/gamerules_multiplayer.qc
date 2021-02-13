@@ -703,7 +703,6 @@ CSMultiplayerRules::PlayerRespawn(base_player pp, int fTeam)
 	pl.viewzoom = 1.0;
 	pl.g_items &= ~ITEM_C4BOMB;
 
-	print(sprintf("Spawnpos: %v\n", eSpawn.origin));
 	pl.SetOrigin(eSpawn.origin);
 	pl.angles = eSpawn.angles;
 	pl.SendFlags = UPDATE_ALL;
@@ -737,6 +736,7 @@ CSMultiplayerRules::PlayerRespawn(base_player pp, int fTeam)
 	default:
 		pl.model = "models/player/vip/vip.mdl";
 	}
+
 	pl.SetModel(pl.model);
 	pl.SetSize(VEC_HULL_MIN, VEC_HULL_MAX);
 
