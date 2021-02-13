@@ -18,7 +18,7 @@
 var string g_cannon_spr;
 #endif
 
-enum
+typedef enum
 {
 	CANNON_FIREBOTH,
 	CANNON_FIRELEFT,
@@ -28,9 +28,10 @@ enum
 	CANNON_PUTAWAY,
 	CANNON_IDLE1,
 	CANNON_IDLE2
-};
+} cannonAnims_t;
 
-void w_cannon_precache(void)
+void
+w_cannon_precache(void)
 {
 #ifdef SERVER
 	precache_sound("cannon/cin.wav");
@@ -44,22 +45,29 @@ void w_cannon_precache(void)
 	g_cannon_spr = spriteframe("sprites/w_cannon.spr", 0, 0.0f);
 #endif
 }
-void w_cannon_updateammo(player pl)
+
+void
+w_cannon_updateammo(player pl)
 {
 #ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.cannon_mag, pl.ammo_buckshot, __NULL__);
 #endif
 }
-string w_cannon_pmodel(void)
+
+string
+w_cannon_pmodel(void)
 {
 	return "models/p_cannon.mdl";
 }
-string w_cannon_deathmsg(void)
+
+string
+w_cannon_deathmsg(void)
 {
 	return "%s killed %s with handcannon.";
 }
 
-void w_cannon_reload(void)
+void
+w_cannon_reload(void)
 {
 	player pl = (player)self;
 	if (pl.w_attack_next > 0) {
@@ -89,7 +97,8 @@ void w_cannon_reload(void)
 	pl.w_idle_next = 3.0f;
 }
 
-int w_cannon_pickup(int new, int startammo)
+int
+w_cannon_pickup(int new, int startammo)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -107,7 +116,8 @@ int w_cannon_pickup(int new, int startammo)
 	return TRUE;
 }
 
-void w_cannon_draw(void)
+void
+w_cannon_draw(void)
 {
 	Weapons_SetModel("models/v_cannon.mdl");
 	Weapons_ViewAnimation(CANNON_DEPLOY);
@@ -117,11 +127,14 @@ void w_cannon_draw(void)
 #endif
 }
 
-void w_cannon_holster(void)
+void
+w_cannon_holster(void)
 {
 	Weapons_ViewAnimation(CANNON_PUTAWAY);
 }
-void w_cannon_primary(void)
+
+void
+w_cannon_primary(void)
 {
 	player pl = (player)self;
 
@@ -136,7 +149,6 @@ void w_cannon_primary(void)
 	}
 
 	View_SetMuzzleflash(MUZZLE_SMALL);
-	Weapons_ViewPunchAngle([-5,0,0]);
 #else
 	int dmg;
 
@@ -151,12 +163,14 @@ void w_cannon_primary(void)
 	Weapons_PlaySound(pl, CHAN_WEAPON, "cannon/fire.wav", 1, ATTN_NORM);
 	Weapons_UpdateAmmo(pl, pl.cannon_mag, pl.ammo_buckshot, __NULL__);
 #endif
+	Weapons_ViewPunchAngle([-5,0,0]);
 	Weapons_ViewAnimation(CANNON_FIREBOTH);
 	pl.w_attack_next = 1.5f;
 	pl.w_idle_next = 2.5f;
 }
 
-void w_cannon_secondary(void)
+void
+w_cannon_secondary(void)
 {
 	player pl = (player)self;
 
@@ -194,7 +208,8 @@ void w_cannon_secondary(void)
 	pl.w_attack_next = 1.5f;
 	pl.w_idle_next = 2.5f;
 }
-void w_cannon_release(void)
+void
+w_cannon_release(void)
 {
 	player pl = (player)self;
 
@@ -221,7 +236,9 @@ void w_cannon_release(void)
 
 	pl.w_idle_next = 8.0f;
 }
-void w_cannon_crosshair(void)
+
+void
+w_cannon_crosshair(void)
 {
 #ifdef CLIENT
 	static vector cross_pos;
@@ -234,12 +251,14 @@ void w_cannon_crosshair(void)
 #endif
 }
 
-float w_cannon_aimanim(void)
+float
+w_cannon_aimanim(void)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIMSHOTGUN : ANIM_AIMSHOTGUN;
 }
 
-void w_cannon_hudpic(int s, vector pos, float a)
+void
+w_cannon_hudpic(int s, vector pos, float a)
 {
 #ifdef CLIENT
 	if (s) {
@@ -250,10 +269,11 @@ void w_cannon_hudpic(int s, vector pos, float a)
 #endif
 }
 
-weapon_t w_cannon =
+weapon_t
+w_cannon =
 {
 	.name		= "handcannon",
-	.id			= ITEM_CANNON,
+	.id		= ITEM_CANNON,
 	.slot		= 2,
 	.slot_pos	= 3,
 	.draw		= w_cannon_draw,

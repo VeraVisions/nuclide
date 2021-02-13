@@ -229,7 +229,7 @@ void
 Titles_AddEntry(titles_t new)
 {
 	int newcount = g_titles_count + 1;
-	g_titles = memrealloc(g_titles, sizeof(titles_t), g_titles_count, newcount);
+	g_titles = (titles_t *)memrealloc(g_titles, sizeof(titles_t), g_titles_count, newcount);
 	g_titles[g_titles_count].m_strName = new.m_strName;
 	g_titles[g_titles_count].m_strMessage = new.m_strMessage;
 	g_titles[g_titles_count].m_flPosX = new.m_flPosX;
