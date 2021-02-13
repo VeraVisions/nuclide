@@ -16,12 +16,34 @@
 
 /* Old style Counter-Strike/TFC menus */
 
+int
+Textmenu_IsActive(void)
+{
+    return (g_textmenu != "") ? TRUE : FALSE;
+}
+
+void
+Textmenu_Hide(void)
+{
+	g_textmenu = "";
+	g_textchannels[5].m_flTime = 0.0f;
+	g_textmenucheck = 0.0f;
+}
+
 void
 Textmenu_Call(string menu)
 {
 	g_textmenu = menu;
 	g_textchannels[5].m_flTime = 0.0f;
 	g_textmenucheck = 0.0f;
+}
+void
+Textmenu_Toggle(string menu)
+{
+	if (Textmenu_IsActive())
+		Textmenu_Hide();
+	else
+		Textmenu_Call(menu);
 }
 
 void

@@ -17,5 +17,9 @@
 var string g_textmenu = "";
 var float g_textmenucheck = 0.0f; 
 
+void Textmenu_Call(string);
+void Textmenu_Toggle(string);
+int Textmenu_IsActive(void);
+void Textmenu_Hide(void);
 void Textmenu_Input(int);
 void Textmenu_Draw(void);

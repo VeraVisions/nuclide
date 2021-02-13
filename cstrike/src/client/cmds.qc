@@ -19,19 +19,19 @@ Game_ConsoleCommand(void)
 {
 	switch(argv(0)) {
 	case "chooseteam":
-		Textmenu_Call("TEAM_SELECT");
+		Textmenu_Toggle("TEAM_SELECT");
 		break;
 	case "buy":
-		Textmenu_Call("BUY");
+		Textmenu_Toggle("BUY");
 		break;
 	case "radio1":
-		Textmenu_Call("RADIOA");
+		Textmenu_Toggle("RADIOA");
 		break;
 	case "radio2":
-		Textmenu_Call("RADIOB");
+		Textmenu_Toggle("RADIOB");
 		break;
 	case "radio3":
-		Textmenu_Call("RADIOC");
+		Textmenu_Toggle("RADIOC");
 		break;
 	case "nightvision":
 		/*Nightvision_Toggle();*/
