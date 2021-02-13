@@ -57,6 +57,8 @@ class func_train:CBaseTrigger
 	string m_strStopSnd;
 
 	void(void) func_train;
+	virtual void(void) SoundMove;
+	virtual void(void) SoundStop;
 	virtual void(void) AfterSpawn;
 	virtual void(void) PathNext;
 	virtual void(void) PathMove;
@@ -79,6 +81,26 @@ func_train::Blocked(void)
 		Damage_Apply(other, this, m_flDamage, 0, DMG_CRUSH);
 	} else {
 		remove(other);
+	}
+}
+
+void
+func_train::SoundMove(void)
+{
+	if (m_strMoveSnd) {
+		Sound_Play(this, CHAN_VOICE, m_strMoveSnd);
+	}
+}
+
+void
+func_train::SoundStop(void)
+{
+	if (m_strStopSnd) {
+		Sound_Play(this, CHAN_BODY, m_strStopSnd);
+	}
+
+	if (m_strMoveSnd) {
+		sound(this, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
 	}
 }
 
@@ -110,10 +132,7 @@ func_train::PathMove(void)
 		return;
 	}
 
-	/* more stuff for the ears */
-	if (m_strMoveSnd) {
-		Sound_Play(this, CHAN_VOICE, m_strMoveSnd);
-	}
+	SoundMove();
 
 	velocity = (vecVelocity * (1 / flTravelTime));
 	think = PathNext;
@@ -134,16 +153,7 @@ func_train::PathDone(void)
 	if (eNode.m_strMessage) {
 		eNode.Trigger(this, TRIG_TOGGLE);
 	}
-
-	/* stuff for the ears */
-	if (m_strStopSnd) {
-		Sound_Play(this, CHAN_BODY, m_strStopSnd);
-	}
-
-	/* make the loopy noise stop */
-	if (m_strMoveSnd) {
-		sound(this, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
-	}
+	SoundStop();
 }
 
 void
@@ -175,6 +185,7 @@ func_train::PathNext(void)
 	/* stop until triggered again */
 	if (targetname)
 	if (eNode.spawnflags & PC_WAIT || spawnflags & TRAIN_WAIT) {
+		SoundStop();
 		return;
 	}
 
