@@ -6,3 +6,7 @@ player.lightfall
 {
 	sample player/pl_fallpain1.wav
 }
+player.die
+{
+	sample fvox/flatline.wav
+}
