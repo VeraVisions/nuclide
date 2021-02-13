@@ -237,3 +237,26 @@ step_ladder.right
 	sample player/pl_ladder3.wav
 	sample player/pl_ladder4.wav
 }
+
+step_wade.left
+{
+	sample player/pl_wade1.wav
+	sample player/pl_wade2.wav
+}
+step_wade.right
+{
+	sample player/pl_wade3.wav
+	sample player/pl_wade4.wav
+}
+
+step_swim.left
+{
+	sample player/pl_swim1.wav
+	sample player/pl_swim2.wav
+}
+step_swim.right
+{
+	sample player/pl_swim3.wav
+	sample player/pl_swim4.wav
+}
+

@@ -56,6 +56,10 @@ Footsteps_Init(void)
 	Sound_Precache("step_wood.right");
 	Sound_Precache("step_ladder.left");
 	Sound_Precache("step_ladder.right");
+	Sound_Precache("step_wade.left");
+	Sound_Precache("step_wade.right");
+	Sound_Precache("step_swim.left");
+	Sound_Precache("step_swim.right");
 }
 
 /*
@@ -267,10 +271,32 @@ Footsteps_Update(void)
 			return;
 		}
 
-		/* make it so we step once we land */
-		if (!(pl.flags & FL_ONGROUND) && !(pl.flags & FL_ONLADDER)) {
-			pl.step_time = 0.0f;
-			return;
+		if (pl.waterlevel == 1) {
+			if (pl.step) {
+				Sound_Play(pl, CHAN_BODY, "step_slosh.left");
+			} else {
+				Sound_Play(pl, CHAN_BODY, "step_slosh.right");
+			}
+			pl.step_time = time + 0.35f;
+		} else if (pl.waterlevel == 2) {
+			if (pl.step) {
+				Sound_Play(pl, CHAN_BODY, "step_wade.left");
+			} else {
+				Sound_Play(pl, CHAN_BODY, "step_wade.right");
+			}
+			pl.step_time = time + 1.0f;
+		}  else if (pl.waterlevel == 3) {
+			if (pl.step) {
+				Sound_Play(pl, CHAN_BODY, "step_swim.left");
+			} else {
+				Sound_Play(pl, CHAN_BODY, "step_swim.right");
+			}
+			pl.step_time = time + 2.0f;
+		} else {
+			/* make it so we step once we land */
+			if (!(pl.flags & FL_ONGROUND) && !(pl.flags & FL_ONLADDER)) {
+				pl.step_time = 0.0f;
+				return;
 		}
 
 		/* the footsteps call might overwrite this later */
@@ -287,6 +313,7 @@ Footsteps_Update(void)
 			break;
 		default:
 			Footsteps_Default(pl);
+		}
 		}
 
 		/* switch between feet */
