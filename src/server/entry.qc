@@ -425,6 +425,7 @@ void initents(void)
 
 	Plugin_InitEnts();
 	Mapcycle_Init();
+	Vote_Init();
 }
 
 /*
