@@ -304,7 +304,7 @@ CSQC_UpdateView(float w, float h, float focus)
 		SkyCamera_Setup(getproperty(VF_ORIGIN));
 
 		/* draw the viewmodel in a second pass if desired */
-		if (autocvar_r_viewmodelpass) {
+		if (autocvar_r_viewmodelpass && pl.health > 0) {
 			renderscene();
 			clearscene();
 			setproperty(VF_MIN, video_mins);
@@ -314,12 +314,11 @@ CSQC_UpdateView(float w, float h, float focus)
 			setproperty(VF_AFOV, autocvar_r_viewmodelfov);
 			setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin + pl.view_ofs);
 			View_DrawViewModel();
-			CSQC_RenderScene();
-		} else {
+		} else if (pl.health > 0) {
 			View_DrawViewModel();
-			CSQC_RenderScene();
 		}
 
+		CSQC_RenderScene();
 		RenderTarget_Monitor_Update();
 
 		for (entity b = world; (b = findfloat(b, ::isCSQC, 1));) {

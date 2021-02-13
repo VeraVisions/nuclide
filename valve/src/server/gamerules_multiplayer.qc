@@ -88,6 +88,8 @@ HLMultiplayerRules::PlayerDeath(base_player pl)
 	pl.takedamage = DAMAGE_NO;
 	pl.gflags &= ~GF_FLASHLIGHT;
 	pl.armor = pl.activeweapon = pl.g_items = 0;
+	pl.health = 0;
+
 	Sound_Play(pl, CHAN_AUTO, "player.die");
 
 	/* force respawn */

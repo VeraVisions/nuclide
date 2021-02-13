@@ -696,7 +696,7 @@ PMove_Run(void)
 		input_movevalues *= 0.25;
 	}
 
-	if (pl.flags & FL_FROZEN) {
+	if (pl.flags & FL_FROZEN || pl.movetype == MOVETYPE_NONE) {
 		input_movevalues = [0,0,0];
 		input_buttons &= ~INPUT_BUTTON2;
 	}
