@@ -266,6 +266,41 @@ Plugin_PlayerDisconnect(base_player cl)
 
 /*
 =================
+Plugin_PlayerEntered
+
+Called when a player has fully connected and entered the server
+=================
+*/
+int
+Plugin_PlayerEntered(base_player cl)
+{
+	int rval;
+	int tval;
+	int(entity) vFunc;
+
+	if (g_plugins_enabled == 0)
+		return FALSE;
+
+	/* rval = final return value, tval = temporary return value.
+	   if at least one of the plugins returns TRUE, then RunClientCommand
+	   will not be called by the engine, as it should be */
+	rval = FALSE;
+	tval = FALSE;
+
+	for (int i = 0; i < g_plugincount; i++) {
+		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "FMX_PlayerEntered");
+
+		if (vFunc) {
+			tval = vFunc(cl);
+			rval |= tval;
+		}
+	}
+
+	return rval;
+}
+
+/*
+=================
 Plugin_PlayerObituary
 
 Deathmessage hook

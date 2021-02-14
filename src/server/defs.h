@@ -83,6 +83,8 @@ int g_dmg_iHitBody;
 int g_dmg_iFlags;
 int g_dmg_iWeapon;
 
+var int g_ents_initialized = FALSE;
+
 /* main is a qcc leftover */
 void main(void)
 {
