@@ -25,6 +25,13 @@ CSMultiplayerRules::MaxItemPerSlot(int slot)
 }
 
 void
+CSMultiplayerRules::PlayerDisconnect(base_player pl)
+{
+	if (health > 0)
+		PlayerDeath(pl);
+}
+
+void
 CSMultiplayerRules::PlayerDeath(base_player pl)
 {
 	/* obituary networking */
@@ -989,6 +996,8 @@ void CSEv_JoinTeam_f(float flChar)
 	pl.frags = 0;
 	pl.deaths = 0;
 	forceinfokey(pl, "*deaths", ftos(pl.deaths));
+
+	rules.CountPlayers();
 
 	/* if no players are present in the chosen team, force restart round */
 	if ((pl.team == TEAM_T) && (g_cs_alive_t == 0)) {

@@ -47,6 +47,7 @@ class CSMultiplayerRules:CSGameRules
 
 	virtual void(void) InitPostEnts;
 	virtual void(void) FrameStart;
+	virtual void(base_player) PlayerDisconnect;
 	virtual void(base_player) PlayerSpawn;
 	virtual void(base_player) PlayerPreFrame;
 	virtual void(base_player) PlayerDeath;
