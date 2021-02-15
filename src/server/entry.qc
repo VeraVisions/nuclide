@@ -21,14 +21,19 @@ StartFrame
 Called once every single frame.
 =================
 */
-void StartFrame(void)
+void
+StartFrame(void)
 {
+	/* For entity parenting to work, we need to go through and run on every
+	 * this method on every CBaseEntity class */
 	for (entity a = world; (a = findfloat(a, ::identity, 1));) {
 		CBaseEntity ent = (CBaseEntity)a;
 		ent.ParentUpdate();
 	}
 
-	g_grMode.FrameStart();
+	if (g_ents_initialized)
+		g_grMode.FrameStart();
+
 	Vote_Frame();
 }
 
@@ -43,7 +48,8 @@ loading or receiving packets.
 The 'self' global is the connecting client in question.
 =================
 */
-void ClientConnect(float csqc_active)
+void
+ClientConnect(float csqc_active)
 {
 	int playercount = 0;
 
@@ -58,11 +64,13 @@ void ClientConnect(float csqc_active)
 		spawnfunc_player();
 	}
 
-	g_grMode.PlayerConnect((base_player)self);
+	if (g_ents_initialized)
+		g_grMode.PlayerConnect((base_player)self);
+
 	for (entity a = world; (a = find(a, ::classname, "player"));)
 		playercount++;
 
-	/* we're the only one. respawn all entities */	
+	/* we're the only one. respawn all entities */
 	if (playercount == 1) {
 		for (entity a = world; (a = findfloat(a, ::identity, 1));) {
 			CBaseEntity caw = (CBaseEntity)a;
@@ -81,9 +89,11 @@ client slot referred to by the 'self' global will be cleared.
 This means the fields will still be accessible inside of this function.
 =================
 */
-void ClientDisconnect(void)
+void
+ClientDisconnect(void)
 {
-	g_grMode.PlayerDisconnect((base_player)self);
+	if (g_ents_initialized)
+		g_grMode.PlayerDisconnect((base_player)self);
 }
 
 /*
@@ -94,9 +104,11 @@ Called by the 'kill' command.
 The 'self' global is the client issueing the command.
 =================
 */
-void ClientKill(void)
+void
+ClientKill(void)
 {
-	g_grMode.PlayerKill((base_player)self);
+	if (g_ents_initialized)
+		g_grMode.PlayerKill((base_player)self);
 }
 
 /*
@@ -107,7 +119,8 @@ Run every frame on every spectator.
 The 'self' global refers to one of any given amount of spectators.
 =================
 */
-void SpectatorThink(void)
+void
+SpectatorThink(void)
 {
 	Game_SpectatorThink();
 }
@@ -120,7 +133,8 @@ Called when a spectator joins the server.
 The 'self' global is the connecting spectator in question.
 =================
 */
-void SpectatorConnect(void)
+void
+SpectatorConnect(void)
 {
 	Game_SpectatorConnect();
 }
@@ -134,7 +148,8 @@ The 'self' global is the leaving spectator in question.
 Attributes cleared when this function is done executing.
 =================
 */
-void SpectatorDisconnect(void)
+void
+SpectatorDisconnect(void)
 {
 	Game_SpectatorDisconnect();
 }
@@ -150,9 +165,13 @@ The 'parmX' globals are also populated with any data carried over from
 past levels for the player in question.
 =================
 */
-void PutClientInServer(void)
+void
+PutClientInServer(void)
 {
-	g_grMode.PlayerSpawn((base_player)self);
+	if (g_ents_initialized)
+		g_grMode.PlayerSpawn((base_player)self);
+
+	Plugin_PlayerEntered((base_player)self);
 
 	/* activate all game_playerspawn entities */
 	for (entity a = world; (a = find(a, ::targetname, "game_playerspawn"));) {
@@ -172,7 +191,8 @@ The 'self' global refers to a single client, as this function is called
 times the amount of players in a given game.
 =================
 */
-void PlayerPreThink(void)
+void
+PlayerPreThink(void)
 {
 	if (self.classname != "player") {
 		return;
@@ -184,7 +204,8 @@ void PlayerPreThink(void)
 	}
 #endif
 
-	g_grMode.PlayerPreFrame((base_player)self);
+	if (g_ents_initialized)
+		g_grMode.PlayerPreFrame((base_player)self);
 }
 
 /*
@@ -196,7 +217,8 @@ The 'self' global refers to a single client, as this function is called
 times the amount of players in a given game.
 =================
 */
-void PlayerPostThink(void)
+void
+PlayerPostThink(void)
 {
 	if (self.classname != "player") {
 		return;
@@ -208,7 +230,8 @@ void PlayerPostThink(void)
 	}
 #endif
 
-	g_grMode.PlayerPostFrame((base_player)self);
+	if (g_ents_initialized)
+		g_grMode.PlayerPostFrame((base_player)self);
 }
 
 /*
@@ -220,10 +243,13 @@ change ever having taken place.
 The 'self' global does not refer to anything.
 =================
 */
-void SetNewParms(void)
+void
+SetNewParms(void)
 {
 	iprint("Setting New Level Parameters");
-	g_grMode.LevelNewParms();
+
+	if (g_ents_initialized)
+		g_grMode.LevelNewParms();
 }
 
 /*
@@ -238,10 +264,13 @@ Make sure we're saving important fields/attributes in the 'parmX' globals
 allocated for every client.
 =================
 */
-void SetChangeParms(void)
+void
+SetChangeParms(void)
 {
 	iprint("Setting Level-Change Parameters");
-	g_grMode.LevelChangeParms((base_player)self);
+
+	if (g_ents_initialized)
+		g_grMode.LevelChangeParms((base_player)self);
 }
 
 /*
@@ -254,7 +283,8 @@ The 'self' global is the entity having sent the input packet,
 with the input_X globals being set to the appropriate data.
 =================
 */
-void SV_RunClientCommand(void)
+void
+SV_RunClientCommand(void)
 {
 	if (self.classname != "player") {
 		return;
@@ -283,7 +313,8 @@ take over, you need to pass the string 'cmd' over via clientcommand().
 Notable examples of client cmd's involve the chat system.
 =================
 */
-void SV_ParseClientCommand(string cmd)
+void
+SV_ParseClientCommand(string cmd)
 {
 	string newcmd = Plugin_ParseClientCommand(cmd);
 
@@ -300,7 +331,8 @@ init
 Called when the QC module gets loaded. No entities exist yet.
 =================
 */
-void init(float prevprogs)
+void
+init(float prevprogs)
 {
 	iprint("Initializing Server-Module");
 	Plugin_Init();
@@ -314,10 +346,13 @@ Called inside initents() to make sure the entities have their Respawn()
 method called at the beginning of them having spawned.
 =================
 */
-void init_respawn(void)
+void
+init_respawn(void)
 {
 	iprint("Respawning Entities");
-	g_grMode.InitPostEnts();
+
+	if (g_ents_initialized)
+		g_grMode.InitPostEnts();
 
 	for (entity a = world; (a = findfloat(a, ::identity, 1));) {
 		CBaseEntity ent = (CBaseEntity)a;
@@ -333,7 +368,8 @@ initents
 ???
 =================
 */
-void initents(void)
+void
+initents(void)
 {
 	iprint("Initializing Entities");
 
@@ -426,6 +462,8 @@ void initents(void)
 	Plugin_InitEnts();
 	Mapcycle_Init();
 	Vote_Init();
+
+	g_ents_initialized = TRUE;
 }
 
 /*
@@ -440,7 +478,8 @@ as they do not exist yet. Keep this in mind.
 =================
 */
 var int autocvar_sv_levelexec = 1;
-void worldspawn(void)
+void
+worldspawn(void)
 {
 	iprint("Initializing World");
 	lightstyle(0, "m");
@@ -472,7 +511,8 @@ When returning FALSE the server will interpret the command.
 Returning TRUE will mark the command as 'resolved'.
 =================
 */
-float ConsoleCmd(string cmd)
+float
+ConsoleCmd(string cmd)
 {
 	player pl;
 
@@ -488,8 +528,9 @@ float ConsoleCmd(string cmd)
 	pl = (player)self;
 
 	/* give the game-mode a chance to override us */
-	if (g_grMode.ConsoleCommand(pl, cmd) == TRUE)
-		return TRUE;
+	if (g_ents_initialized)
+		if (g_grMode.ConsoleCommand(pl, cmd) == TRUE)
+			return TRUE;
 
 	/* time to handle commands that apply to all games */
 	tokenize(cmd);
@@ -504,6 +545,12 @@ float ConsoleCmd(string cmd)
 
 			if (t.Trigger)
 				t.Trigger(self, TRIG_TOGGLE);
+		}
+		break;
+	case "respawn_ents":
+		for (entity a = world; (a = findfloat(a, ::identity, 1));) {
+			CBaseEntity ent = (CBaseEntity)a;
+			ent.Respawn();
 		}
 		break;
 #ifdef BOT_INCLUDED
@@ -525,7 +572,8 @@ Returns TRUE if the server should pause the game-logic when the 'pause' command
 is being executed.
 =================
 */
-float SV_ShouldPause(float newstatus)
+float
+SV_ShouldPause(float newstatus)
 {
 	if (serverkeyfloat("background") == 1)
 		return FALSE;
