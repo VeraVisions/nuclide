@@ -118,6 +118,17 @@ Client_InitDone(void)
 void
 Game_RendererRestarted(string rstr)
 {
+	g_cs_cross = spriteframe("sprites/crosshairs.spr", 0, 0.0f);
+	g_cs_scope0 = spriteframe("sprites/sniper_scope.spr", 0, 0.0f);
+	g_cs_scope1 = spriteframe("sprites/top_left.spr", 0, 0.0f);
+	g_cs_scope2 = spriteframe("sprites/top.spr", 0, 0.0f);
+	g_cs_scope3 = spriteframe("sprites/top_right.spr", 0, 0.0f);
+	g_cs_scope4 = spriteframe("sprites/left.spr", 0, 0.0f);
+	g_cs_scope5 = spriteframe("sprites/right.spr", 0, 0.0f);
+	g_cs_scope6 = spriteframe("sprites/bottom_left.spr", 0, 0.0f);
+	g_cs_scope7 = spriteframe("sprites/bottom.spr", 0, 0.0f);
+	g_cs_scope8 = spriteframe("sprites/bottom_right.spr", 0, 0.0f);
+
 	Obituary_Precache();
 
 	FX_Blood_Init();

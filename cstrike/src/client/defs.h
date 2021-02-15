@@ -39,6 +39,17 @@ var string g_hud14_spr;
 var string g_hud15_spr;
 var string g_hud16_spr;
 
+var string g_cs_cross;
+var string g_cs_scope0;
+var string g_cs_scope1;
+var string g_cs_scope2;
+var string g_cs_scope3;
+var string g_cs_scope4;
+var string g_cs_scope5;
+var string g_cs_scope6;
+var string g_cs_scope7;
+var string g_cs_scope8;
+
 struct
 {
 	/* viewmodel stuff */
