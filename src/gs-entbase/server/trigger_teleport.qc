@@ -48,7 +48,7 @@ trigger_teleport::touch(void)
 	if (!(spawnflags & TRIGTELE_MONSTERS) && other.flags & FL_MONSTER)
 		return;
 
-	if (other.health > 0 || other.solid == SOLID_SLIDEBOX) {
+	if (other.movetype != MOVETYPE_NONE) {
 		eActivator = other;
 		entity eTarget = find(world, ::targetname, target);
 

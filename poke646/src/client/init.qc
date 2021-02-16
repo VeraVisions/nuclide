@@ -19,24 +19,24 @@ float(entity foo, float chanid) getchannellevel = #0;
 
 /*
 =================
-Client_Init
+ClientGame_Init
 
 Comparable to worldspawn in SSQC in that it's mostly used for precaches
 =================
 */
 void
-Client_Init(float apilevel, string enginename, float engineversion)
+ClientGame_Init(float apilevel, string enginename, float engineversion)
 {
 	Obituary_Init();
 }
 
 void
-Client_InitDone(void)
+ClientGame_InitDone(void)
 {
 }
 
 void
-Game_RendererRestarted(string rstr)
+ClientGame_RendererRestart(string rstr)
 {
 	Obituary_Precache();
 

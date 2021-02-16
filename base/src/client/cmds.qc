@@ -17,7 +17,7 @@
 /* This is where custom game-specific commands go!
  * You'll also inherit all the commands defined in entry.c */
 int
-Game_ConsoleCommand(void)
+ClientGame_ConsoleCommand(void)
 {
 	switch(argv(0)) {
 		default:

@@ -154,7 +154,7 @@ View_DrawViewModel(void)
 	m_eViewModel.frame2time = pl.weapontime;
     	m_eViewModel.frame1time = pl.weapontime;
 	processmodelevents(m_eViewModel.modelindex, m_eViewModel.frame, fBaseTime,
-		m_eViewModel.frame1time, Game_ClientModelEvent);
+		m_eViewModel.frame1time, ClientGame_ModelEvent);
 
 	makevectors(view_angles);
 	m_eViewModel.angles = view_angles;

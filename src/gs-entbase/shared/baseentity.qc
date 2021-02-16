@@ -170,7 +170,7 @@ CBaseEntity::predraw(void)
 	ProcessWordQue();
 
 	processmodelevents(modelindex, frame, m_flBaseTime,
-		frame1time, Game_ClientModelEvent);
+		frame1time, ClientGame_ModelEvent);
 
 	if (alpha > 0.0)
 		addentity(this);

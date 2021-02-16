@@ -15,7 +15,7 @@
  */
 
 void
-Game_Parse_Event(float fHeader)
+ClientGame_EventParse(float fHeader)
 {
 	switch (fHeader) {
 	case EV_CHAT:

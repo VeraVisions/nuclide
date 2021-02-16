@@ -85,7 +85,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	VGUI_Init();
 
 	/* Game specific inits */
-	Client_Init(apilevel, enginename, engineversion);
+	ClientGame_Init(apilevel, enginename, engineversion);
 	DSP_Init();
 	CSQC_RendererRestarted("init");
 	Titles_Init();
@@ -121,7 +121,7 @@ CSQC_RendererRestarted(string rstr)
 	Weapons_Init();
 	Scores_Init();
 	View_Init();
-	Game_RendererRestarted(rstr);
+	ClientGame_RendererRestart(rstr);
 	HUD_Init();
 
 	/* GS-Entbase */
@@ -154,7 +154,7 @@ CSQC_UpdateView(float w, float h, float focus)
 		if (!video_res[0] && !video_res[1]) {
 			video_res[0] = w;
 			video_res[1] = h;
-			Client_InitDone();
+			ClientGame_InitDone();
 		}
 	}
 
@@ -178,7 +178,7 @@ CSQC_UpdateView(float w, float h, float focus)
 		setproperty(VF_ORIGIN, g_vecCubePos);
 		setproperty(VF_AFOV, 90);
 		SkyCamera_Setup(g_vecCubePos);
-		renderscene();
+		CSQC_RenderScene();
 		return;
 	}
 
@@ -305,7 +305,7 @@ CSQC_UpdateView(float w, float h, float focus)
 
 		/* draw the viewmodel in a second pass if desired */
 		if (autocvar_r_viewmodelpass && pl.health > 0) {
-			renderscene();
+			CSQC_RenderScene();
 			clearscene();
 			setproperty(VF_MIN, video_mins);
 			setproperty(VF_SIZE, video_res);
@@ -597,7 +597,7 @@ CSQC_Parse_Event(void)
 		pSeat->m_flShakeFreq = readfloat();
 		pSeat->m_flShakeTime = pSeat->m_flShakeDuration;
 	default:
-		Game_Parse_Event(fHeader);
+		ClientGame_EventParse(fHeader);
 	}
 }
 
@@ -750,7 +750,7 @@ CSQC_ConsoleCommand(string sCMD)
 		CSQC_Parse_Print(argv(1), PRINT_CHAT);
 		break;
 	default:
-		return Game_ConsoleCommand();
+		return ClientGame_ConsoleCommand();
 	}
 	return TRUE;
 }
@@ -894,7 +894,7 @@ CSQC_Ent_Update(float new)
 		ips.ReceiveEntity(readfloat());
 		break;
 	default:
-		if (Game_Entity_Update(t, new) == FALSE) {
+		if (ClientGame_EntityUpdate(t, new) == FALSE) {
 			error("Unknown entity type update received.\n");
 		}
 	}

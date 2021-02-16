@@ -16,13 +16,13 @@
 
 /*
 =================
-Client_Init
+ClientGame_Init
 
 Comparable to worldspawn in SSQC in that it's mostly used for precaches
 =================
 */
 void
-Client_Init(float apilevel, string enginename, float engineversion)
+ClientGame_Init(float apilevel, string enginename, float engineversion)
 {
 	registercommand("chooseteam");
 	registercommand("buy");
@@ -110,13 +110,13 @@ Client_Init(float apilevel, string enginename, float engineversion)
 }
 
 void
-Client_InitDone(void)
+ClientGame_InitDone(void)
 {
 	Textmenu_Call("TEAM_SELECT");
 }
 
 void
-Game_RendererRestarted(string rstr)
+ClientGame_RendererRestart(string rstr)
 {
 	g_cs_cross = spriteframe("sprites/crosshairs.spr", 0, 0.0f);
 	g_cs_scope0 = spriteframe("sprites/sniper_scope.spr", 0, 0.0f);

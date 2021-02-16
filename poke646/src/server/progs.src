@@ -1,5 +1,5 @@
 #pragma target fte
-#pragma progs_dat  "../../data.pk3dir/progs.dat"
+#pragma progs_dat  "../../progs.dat"
 
 #define QWSSQC
 #define SERVER

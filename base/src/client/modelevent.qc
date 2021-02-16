@@ -15,7 +15,7 @@
  */
 
 void
-Game_ClientModelEvent(float flTimeStamp, int iCode, string strData)
+ClientGame_ModelEvent(float flTimeStamp, int iCode, string strData)
 {
 	switch (iCode) {
 	default:

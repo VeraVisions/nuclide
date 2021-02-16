@@ -124,7 +124,12 @@ void
 Radio_PlayMessage(float fMessage)
 {
 	sound(world, CHAN_VOICE, g_cstrikeRadioWAVs[fMessage], 1, ATTN_NONE, 0, SOUNDFLAG_NOSPACIALISE);
-	CSQC_Parse_Print(sprintf("^2[RADIO]^xF80: %s", g_cstrikeRadioChat[fMessage]), PRINT_CHAT);
+
+	if (fMessage == RADIO_CTWIN || fMessage == RADIO_TERWIN || fMessage == RADIO_ROUNDDRAW) {
+		CSQC_Parse_CenterPrint(sprintf("%s", g_cstrikeRadioChat[fMessage]));
+	} else {
+		CSQC_Parse_Print(sprintf("^2[RADIO]^xF80: %s", g_cstrikeRadioChat[fMessage]), PRINT_CHAT);
+	}
 }
 
 /*

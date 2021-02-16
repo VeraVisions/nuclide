@@ -15,7 +15,7 @@
  */
 
 int
-Game_ConsoleCommand(void)
+ClientGame_ConsoleCommand(void)
 {
 	switch(argv(0)) {
 		default:

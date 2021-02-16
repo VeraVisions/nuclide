@@ -15,7 +15,7 @@
  */
 
 int
-Game_Entity_Update(float id, float new)
+ClientGame_EntityUpdate(float id, float new)
 {
 	switch (id) {
 	case ENT_TRIPMINE:

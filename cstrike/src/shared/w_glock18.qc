@@ -313,7 +313,7 @@ w_glock18_hudpic(int selected, vector pos, float a)
 weapon_t w_glock18 =
 {
 	.name		= "glock18",
-	.id			= ITEM_GLOCK18,
+	.id		= ITEM_GLOCK18,
 	.slot		= 1,
 	.slot_pos	= 1,
 	.allow_drop	= TRUE,
