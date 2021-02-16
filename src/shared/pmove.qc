@@ -322,7 +322,6 @@ PMove_AccelWater(float move_time, float premove)
 
 	flFriction = min(wish_speed - flFriction, serverkeyfloat("phy_wateraccelerate") * wish_speed * move_time);
 	self.velocity = self.velocity + normalize(vecWishVel) * flFriction;
-	return;
 }
 
 void
@@ -471,6 +470,7 @@ PMove_Acceleration(float move_time, float premove)
 
 		if (self.waterlevel >= 2) {
 			PMove_AccelWater(move_time, premove);
+			return;
 		}
 	}
 
@@ -701,6 +701,15 @@ PMove_Run(void)
 		input_buttons &= ~INPUT_BUTTON2;
 	}
 
+	/* move camera up (noclip, fly) when holding jump */
+	if (input_buttons & INPUT_BUTTON2) {
+		input_movevalues[2] = 240;
+	}
+	/* move camera down (noclip, fly) when holding crouching */
+	if (input_buttons & INPUT_BUTTON8) {
+		input_movevalues[2] = -240;
+	}
+
 	/* establish which water elements we're dealing in */
 	GamePMove_WaterMove(pl);
 
@@ -708,17 +717,6 @@ PMove_Run(void)
 	if (self.waterlevel >= 2) {
 		PMove_CheckWaterJump();
 	}
-
-	/* move camera up (noclip, fly) when holding jump */
-	if (input_buttons & INPUT_BUTTON2) {
-		input_movevalues[2] = 240;
-	}
-
-	/* move camera down (noclip, fly) when holding crouching */
-	if (input_buttons & INPUT_BUTTON8) {
-		input_movevalues[2] = -240;
-	}
-
 	/* grappling hook stuff */
 	if (pl.hook.skin == 1) {
 		pl.velocity = (pl.hook.origin - pl.origin);
