@@ -114,7 +114,7 @@ menu_customize_init(void)
 	g_modelcount = search_getsize(searchy);
 	g_models = memalloc(sizeof(string) * g_modelcount);
 	for (int i = 0; i < g_modelcount; i++) {
-		g_models[i] = search_getfilename(searchy, i);
+		g_models[i] = substring(search_getfilename(searchy, i), 0, -5);
 		precache_pic(g_models[i]);
 	}
 	search_end(searchy);
