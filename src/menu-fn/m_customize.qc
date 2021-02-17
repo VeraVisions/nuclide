@@ -86,9 +86,9 @@ menu_customize_init(void)
 	/* scan and cache the sprays */
 	searchhandle searchy = search_begin("*.*", SEARCH_NAMESORT, TRUE);
 	for (int i = 0; i < search_getsize(searchy); i++) {
-		string filename = search_getfilename(searchy, i);
-		string extension = substring(filename, strlen(filename) - 3, 3);
-
+		string full = search_getfilename(searchy, i);
+		string filename = substring(search_getfilename(searchy, i), 0, -5);
+		string extension = substring(full, strlen(full) - 3, 3);
 		if (extension == "bmp" || extension == "png" || extension == "jpg") {
 			g_sprayscount++;
 		}
@@ -97,12 +97,12 @@ menu_customize_init(void)
 	/* only allocate what we truly need */
 	g_sprays = memalloc(sizeof(string) * g_sprayscount);
 	for (int i = 0; i < search_getsize(searchy); i++) {
-		string filename = search_getfilename(searchy, i);
-		string extension = substring(filename, strlen(filename) - 3, 3);
-		
+		string full = search_getfilename(searchy, i);
+		string filename = substring(full, 0, -5);
+		string extension = substring(full, strlen(full) - 3, 3);
+
 		if (extension == "bmp" || extension == "png" || extension == "jpg") {
-			g_sprays[sid] = filename;
-			precache_pic(g_sprays[sid]);
+			g_sprays[sid] = precache_pic(full);
 			sid++;
 		}
 	}
