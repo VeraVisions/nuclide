@@ -164,12 +164,6 @@ w_flame_primary(void)
 }
 
 void
-w_flame_secondary(void)
-{
-	w_egon_secondary();
-}
-
-void
 w_flame_reload(void)
 {
 }
@@ -238,7 +232,7 @@ weapon_t w_flame =
 	.draw		= w_flame_draw,
 	.holster	= w_egon_holster,
 	.primary	= w_flame_primary,
-	.secondary	= w_flame_secondary,
+	.secondary	= w_flame_release,
 	.reload		= __NULL__,
 	.release	= w_flame_release,
 	.crosshair	= w_flame_crosshair,

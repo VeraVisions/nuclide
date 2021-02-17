@@ -23,6 +23,47 @@ Egon/Gluon-Gun Weapon
 
 */
 
+#ifdef CLIENT
+var float TRAIL_EGONBEAM;
+
+#define FXGAUSS_BEAMCOLOR [1,0.5,0]
+class FXEgon:CBaseFX
+{
+	int m_iBeams;
+	vector m_vecStart;
+	vector m_vecAngle;
+
+	void(void) FXEgon;
+	virtual void(void) Draw;
+};
+
+void
+FXEgon::Draw(void)
+{
+	player pl = (player)self;
+	int iLoop = 6;
+	vector src, endpos;
+	vector gunpos = gettaginfo(pSeat->m_eViewModel, 33);
+
+	if (alpha <= 0.0f) {
+		return;
+	}
+
+	src = m_vecStart;
+	makevectors(input_angles);
+	endpos = src + v_forward * 1024;
+	traceline(src, endpos, FALSE, pl);
+
+	trailparticles(TRAIL_EGONBEAM, pl, gunpos, endpos);
+}
+
+void
+FXEgon::FXEgon(void)
+{
+	CBaseFX::CBaseFX();
+}
+#endif
+
 enum
 {
 	EGON_IDLE1,
@@ -43,6 +84,7 @@ void w_egon_precache(void)
 #ifdef SERVER
 	precache_model("models/w_egon.mdl");
 #else
+	TRAIL_EGONBEAM = particleeffectnum("weapon_egon.beam");
 	precache_model("models/v_egon.mdl");
 	precache_model("models/p_egon.mdl");
 #endif
@@ -50,7 +92,7 @@ void w_egon_precache(void)
 void w_egon_updateammo(player pl)
 {
 #ifdef SERVER
-	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_uranium, __NULL__);
+	Weapons_UpdateAmmo(pl, -1, pl.ammo_uranium, -1);
 #endif
 }
 string w_egon_wmodel(void)
@@ -86,12 +128,22 @@ void w_egon_draw(void)
 	Weapons_SetModel("models/v_egon.mdl");
 	Weapons_ViewAnimation(EGON_DRAW);
 	pl.w_idle_next = 1.0f;
+
+	/* link the FX class */
+#ifdef CLIENT
+	entity eold = self;
+	self = pSeat->m_pWeaponFX;
+	spawnfunc_FXEgon();
+	self = eold;
+#endif
 }
 
 void w_egon_holster(void)
 {
 	Weapons_ViewAnimation(EGON_HOLSTER);
 }
+void w_egon_release(void);
+
 void w_egon_primary(void)
 {
 	player pl = (player)self;
@@ -102,10 +154,12 @@ void w_egon_primary(void)
 	/* Ammo check */
 #ifdef CLIENT
 	if (pl.a_ammo2 <= 0) {
+		w_egon_release();
 		return;
 	}
 #else
 	if (pl.ammo_uranium <= 0) {
+		w_egon_release();
 		return;
 	}
 #endif
@@ -117,6 +171,11 @@ void w_egon_primary(void)
 		Weapons_ViewAnimation(EGON_ALTFIRECYCLE);
 	
 	pl.a_ammo2--;
+
+	FXEgon p = (FXEgon)pSeat->m_pWeaponFX;
+	p.m_vecAngle = input_angles;
+	p.m_vecStart = pl.origin + pl.view_ofs;
+	p.alpha = 1.0f;
 #else
 	Weapons_MakeVectors();
 	vector src = Weapons_GetCameraPos();
@@ -124,24 +183,53 @@ void w_egon_primary(void)
 	traceline(src, endpos, FALSE, pl);
 	Damage_Radius(trace_endpos, pl, 14, 64, TRUE, DMG_ELECTRO);
 	pl.ammo_uranium--;
-	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_uranium, __NULL__);
 #endif
 
+	if (pl.a_ammo1 == 0) {
+#ifdef SERVER
+		sound(pl, CHAN_WEAPON, "weapons/egon_windup2.wav", 1, ATTN_NORM, 100, 0);
+#endif
+		pl.a_ammo1 = 1;
+		Weapons_ViewPunchAngle([-3,0,0]);
+		pl.w_idle_next = 3.0f;
+	} else if not (pl.w_idle_next > 0.0f) {
+		/* wait 3 seconds (idle next) */
+		if (pl.a_ammo1 == 1) {
+#ifdef SERVER
+			sound(pl, CHAN_WEAPON, "weapons/egon_run3.wav", 1, ATTN_NORM, 100);
+#endif
+			pl.a_ammo1 = 2;
+		}
+		pl.w_idle_next = 3.0f;
+	}
+
 	pl.w_attack_next = 0.2f;
-	pl.w_idle_next = 2.5f;
 }
-void w_egon_secondary(void)
-{
-	w_egon_primary();
-}
+
 void w_egon_reload(void)
 {
 	
 }
 void w_egon_release(void)
 {
-#ifdef CLIENT
 	player pl = (player)self;
+
+#ifdef CLIENT
+	FXEgon p = (FXEgon)pSeat->m_pWeaponFX;
+	p.m_vecAngle = input_angles;
+	p.m_vecStart = pl.origin + pl.view_ofs;
+	p.alpha = 0.0f;
+#endif	
+
+	if (pl.a_ammo1 != 0) {
+#ifdef SERVER
+		sound(pl, CHAN_WEAPON, "weapons/egon_off1.wav", 1, ATTN_NORM, 100, 0);
+#endif
+		pl.a_ammo1 = 0;
+		Weapons_ViewPunchAngle([-2,0,0]);
+	}
+
+#ifndef SERVER
 	if (Weapons_GetAnimation() == EGON_ALTFIRECYCLE) {
 		Weapons_ViewAnimation(EGON_ALTFIREOFF);
 		pl.w_idle_next = 1.0f;
@@ -158,7 +246,7 @@ void w_egon_release(void)
 			pl.w_idle_next = 2.0f;
 		}
 	}
-#endif	
+#endif
 }
 void w_egon_crosshair(void)
 {
@@ -191,13 +279,13 @@ void w_egon_hudpic(int selected, vector pos, float a)
 weapon_t w_egon =
 {
 	.name		= "egon",
-	.id			= ITEM_EGON,
+	.id		= ITEM_EGON,
 	.slot		= 3,
 	.slot_pos	= 2,
 	.draw		= w_egon_draw,
 	.holster	= w_egon_holster,
 	.primary	= w_egon_primary,
-	.secondary	= w_egon_secondary,
+	.secondary	= w_egon_release,
 	.reload		= w_egon_reload,
 	.release	= w_egon_release,
 	.crosshair	= w_egon_crosshair,
