@@ -257,6 +257,9 @@ cr_input_enter(string text)
 	if (!text)
 		return;
 
+	if (!g_ircroom.m_iStatus || TCP_GetState(&tcp_irc) != STATE_CONNECTED)
+		return;
+
 	cr_print(
 		sprintf("%s<%s>%s %s",
 			Colors_RGB255_to_HEX([128,100,0]),
