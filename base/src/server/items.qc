@@ -21,7 +21,7 @@ void item_pickup::touch(void)
 	}
 
 	/* don't remove if AddItem fails */
-	if (Weapons_AddItem((player)other, id, m_iClip) == FALSE) {
+	if (Weapons_AddItem((base_player)other, id, m_iClip) == FALSE) {
 		return;
 	}
 

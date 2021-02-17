@@ -7,17 +7,23 @@
 #define GS_RENDERFX
 
 #includelist
+/* first the engine, then nuclide headers for client/shared */
 ../../../src/shared/fteextensions.qc
 ../../../src/shared/defs.h
-defs.h
 ../../../src/client/defs.h
 
+/* mod specific header */
+defs.h
+
+/* for VGUI elements, we want to include this (optional) */
 ../../../src/vgui/include.src
 
+/* include the entity codebase */
 ../../../src/gs-entbase/client.src
 ../../../src/gs-entbase/shared.src
-../shared/include.src
 
+/* mod specific functions */
+../shared/include.src
 predict.qc
 init.qc
 player.qc
@@ -31,6 +37,7 @@ scoreboard.qc
 input.qc
 modelevent.qc
 
+/* global client/shared code */
 ../../../src/client/include.src
 ../../../src/shared/include.src
 #endlist
