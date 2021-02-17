@@ -34,26 +34,26 @@ Colors_RGB8_to_HEX(vector color)
 		float b = rint(color[i] * 15);
 
 		switch (b) {
-			case 10:
-				a = "A";
-				break;
-			case 11:
-				a = "B";
-				break;
-			case 12:
-				a = "C";
-				break;
-			case 13:
-				a = "D";
-				break;
-			case 14:
-				a = "E";
-				break;
-			case 15:
-				a = "F";
-				break;
-			default:
-				a = ftos(b);
+		case 10:
+			a = "A";
+			break;
+		case 11:
+			a = "B";
+			break;
+		case 12:
+			a = "C";
+			break;
+		case 13:
+			a = "D";
+			break;
+		case 14:
+			a = "E";
+			break;
+		case 15:
+			a = "F";
+			break;
+		default:
+			a = ftos(b);
 		}
 		out = sprintf("%s%s", out, a);
 	}
@@ -75,7 +75,7 @@ Colors_Init(void)
 	filestream fs_colors;
 
 	/* Defaults */
-	col_help			= [127,127,127] / 255;
+	col_help		= [127,127,127] / 255;
 	col_prompt_bg		= [56,56,56] / 255;
 	col_prompt_text		= [240,180,24] / 255;
 	col_prompt_title	= [255,255,255] / 255;
@@ -105,31 +105,31 @@ Colors_Init(void)
 			}
 			coltmp = [stof(argv(1)),stof(argv(2)),stof(argv(3))] / 255;
 			switch(argv(0)) {
-				case "HELP_COLOR":
+			case "HELP_COLOR":
 				col_help = coltmp;
 				break;
-				case "PROMPT_BG_COLOR":
+			case "PROMPT_BG_COLOR":
 				col_prompt_bg = coltmp;
 				break;
-				case "PROMPT_TEXT_COLOR":
+			case "PROMPT_TEXT_COLOR":
 				col_prompt_text = coltmp;
 				break;
-				case "PROMPT_TITLE_COLOR":
+			case "PROMPT_TITLE_COLOR":
 				col_prompt_title = coltmp;
 				break;
-				case "INPUT_TEXT_COLOR":
+			case "INPUT_TEXT_COLOR":
 				col_input_text = coltmp;
 				break;
-				case "INPUT_BG_COLOR":
+			case "INPUT_BG_COLOR":
 				col_input_bg = coltmp;
 				break;
-				case "REFRESH_TITLE_COLOR":
+			case "REFRESH_TITLE_COLOR":
 				col_refresh_title = coltmp;
 				break;
-				case "REFRESH_TEXT_COLOR":
+			case "REFRESH_TEXT_COLOR":
 				col_refresh_text = coltmp;
 				break;
-				case "REFRESH_BG_COLOR":
+			case "REFRESH_BG_COLOR":
 				col_refresh_bg = coltmp;
 				break;
 			}

@@ -117,13 +117,22 @@ m_init(void)
 		Music_MenuStart();
 	}
 
-	if (game_updateinstallcount() == 0 || autocvar_menu_updating) {
+	if (!whichpack(cvar_string("gameinfo_pkgfile")) || autocvar_menu_updating) {
+		/* reload in case of video restarts? */
 		shaderforname("logo_avi", "{\n{\nvideomap av:media/logo.avi\n}\n}");
 		g_menupage = PAGE_UPDATES;
 	}
 
 	Menu_AutoScale();
 	Menu_GammaHack();
+
+	if (g_intro_stage == 0) {
+		string videofile = cvar_string("gameinfo_introvideo");
+		
+		if (videofile) {
+			localcmd(strcat("playvideo ", videofile, "\n"));
+		}
+	}
 }
 
 /* called upon vid_reload, vid_restart, but not menu init/restart */
@@ -240,21 +249,21 @@ float
 Menu_InputEvent(float evtype, float scanx, float chary, float devid)
 {
 	switch (evtype) {
-		case IE_KEYDOWN:
-			if (chary == K_ESCAPE) {
-				if (clientstate() == 2 && !g_background) {
-					m_toggle(0);
-				}
+	case IE_KEYDOWN:
+		if (chary == K_ESCAPE) {
+			if (clientstate() == 2 && !g_background) {
+				m_toggle(0);
 			}
-			break;
-		case IE_MOUSEABS:
-			g_mousepos[0] = scanx;
-			g_mousepos[1] = chary;
-			break;
-		case IE_MOUSEDELTA:
-			g_mousepos[0] += scanx;
-			g_mousepos[1] += chary;
-			break;
+		}
+		break;
+	case IE_MOUSEABS:
+		g_mousepos[0] = scanx;
+		g_mousepos[1] = chary;
+		break;
+	case IE_MOUSEDELTA:
+		g_mousepos[0] += scanx;
+		g_mousepos[1] += chary;
+		break;
 	}
 
 	main_input(evtype, scanx, chary, devid);
@@ -304,32 +313,32 @@ m_consolecommand(string cmd)
 {
 	tokenize(cmd);
 	switch (argv(0)) {
-		case "menu_musicstart":
-			Music_MenuStart();
-			break;
-		case "menu_musictrack":
-			Music_ParseTrack(argv(1));
-			break;
-		case "menu_musicloop":
-			Music_ParseLoop(argv(1));
-			break;
-		case "menu_updates":
-			g_menupage = PAGE_UPDATES;
-			m_intro_skip();
-			break;
-		case "menu_customgame":
-			g_menupage = PAGE_CUSTOMGAME;
-			m_intro_skip();
-			break;
-		case "togglemenu":
-			m_display();
-			break;
-		case "map_background":
-			localcmd(sprintf("maxplayers 2\nset coop 1\nset sv_background 1\nmap %s\n",
-				argv(1)));
-			break;
-		default:
-			return FALSE;
+	case "menu_musicstart":
+		Music_MenuStart();
+		break;
+	case "menu_musictrack":
+		Music_ParseTrack(argv(1));
+		break;
+	case "menu_musicloop":
+		Music_ParseLoop(argv(1));
+		break;
+	case "menu_updates":
+		g_menupage = PAGE_UPDATES;
+		m_intro_skip();
+		break;
+	case "menu_customgame":
+		g_menupage = PAGE_CUSTOMGAME;
+		m_intro_skip();
+		break;
+	case "togglemenu":
+		m_display();
+		break;
+	case "map_background":
+		localcmd(sprintf("maxplayers 2\nset coop 1\nset sv_background 1\nmap %s\n",
+			argv(1)));
+		break;
+	default:
+		return FALSE;
 	}
 	return TRUE;
 }

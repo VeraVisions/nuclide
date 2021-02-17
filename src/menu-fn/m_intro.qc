@@ -30,6 +30,7 @@ void
 m_intro_skip(void)
 {
 	g_intro_progress = INTRO_TIME;
+	g_intro_stage = INTRO_DONE;
 }
 
 void

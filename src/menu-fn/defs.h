@@ -17,12 +17,12 @@
 var int autocvar_menu_intro = TRUE;
 var int autocvar__menu_singleplayer;
 
-#define KEY_UNKNOWN			-1
-#define KEY_GAME			0
-#define KEY_MENU			2
+#define KEY_UNKNOWN		-1
+#define KEY_GAME		0
+#define KEY_MENU		2
 #define KEY_MENU_GRABBED	3
 
-#define TARGET_MENU			1
+#define TARGET_MENU		1
 #define TARGET_CLIENT		2
 
 enumflags
