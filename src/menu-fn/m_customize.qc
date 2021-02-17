@@ -136,31 +136,31 @@ menu_customize_init(void)
 	cz_tbNetname.SetPos(212,160);
 	cz_tbNetname.SetText(cvar_string("name"));
 	Widget_Add(fn_customize, cz_tbNetname);
-	
-	cz_psSpray = spawn(CPictureSwitch);
-	cz_psSpray.SetPos(212,226);
-	cz_psSpray.SetSize(99,124);
-	cz_psSpray.SetPicSize(64,64);
-	cz_psSpray.SetPicOffset(14,14);
-	cz_psSpray.SetPics(g_sprays);
-	cz_psSpray.SetMax(g_sprayscount);
-	cz_psSpray.SetCallback(cz_cbSprayChanged);
-	cz_psSpray.SetValueS(cvar_string("_cl_playerspray"));
-	Widget_Add(fn_customize, cz_psSpray);
 
-	if (games[gameinfo_current].nomodels == 1) {
-		return;
+	if (games[gameinfo_current].nosprays == 0) {
+		cz_psSpray = spawn(CPictureSwitch);
+		cz_psSpray.SetPos(212,226);
+		cz_psSpray.SetSize(99,124);
+		cz_psSpray.SetPicSize(64,64);
+		cz_psSpray.SetPicOffset(14,14);
+		cz_psSpray.SetPics(g_sprays);
+		cz_psSpray.SetMax(g_sprayscount);
+		cz_psSpray.SetCallback(cz_cbSprayChanged);
+		cz_psSpray.SetValueS(cvar_string("_cl_playerspray"));
+		Widget_Add(fn_customize, cz_psSpray);
 	}
 
-	cz_psModel = spawn(CPictureSwitch);
-	cz_psModel.SetPos(410,160);
-	cz_psModel.SetSize(170,221);
-	cz_psModel.SetPicSize(164,190);
-	cz_psModel.SetPics(g_models);
-	cz_psModel.SetMax(g_modelcount);
-	cz_psModel.SetCallback(cz_cbModelChanged);
-	cz_psModel.SetValueS(sprintf("models/player/%s/%s", cvar_string("_cl_playermodel"), cvar_string("_cl_playermodel")));
-	Widget_Add(fn_customize, cz_psModel);
+	if (games[gameinfo_current].nomodels == 0) {
+		cz_psModel = spawn(CPictureSwitch);
+		cz_psModel.SetPos(410,160);
+		cz_psModel.SetSize(170,221);
+		cz_psModel.SetPicSize(164,190);
+		cz_psModel.SetPics(g_models);
+		cz_psModel.SetMax(g_modelcount);
+		cz_psModel.SetCallback(cz_cbModelChanged);
+		cz_psModel.SetValueS(sprintf("models/player/%s/%s", cvar_string("_cl_playermodel"), cvar_string("_cl_playermodel")));
+		Widget_Add(fn_customize, cz_psModel);
+	}
 }
 
 void
@@ -170,8 +170,12 @@ menu_customize_draw(void)
 	Header_Draw(HEAD_CUSTOMIZE);
 	WLabel_Static(212, 140, m_reslbl[IDS_PLAYERINFO_NAME], 14, 14, [1,1,1],
 					1.0f, 0, font_arial);
+
+	if (games[gameinfo_current].nomodels == 0)
 	WLabel_Static(410, 140, sprintf(m_reslbl[IDS_MODEL_NAME], cvar_string("_cl_playermodel")), 14, 14, [1,1,1],
 					1.0f, 0, font_arial);
+
+	if (games[gameinfo_current].nosprays == 0)
 	WLabel_Static(212, 203, m_reslbl[IDS_PROFILE_LOGO], 14, 14, [1,1,1],
 					1.0f, 0, font_arial);
 }

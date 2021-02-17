@@ -232,6 +232,7 @@ games_init(void)
 		games[id].size = 0;
 		games[id].type = "Both";
 		games[id].nomodels = 0;
+		games[id].nosprays = 0;
 		games[id].mpentity = "info_player_deathmatch";
 		games[id].gamedll = "progs.dat";
 		games[id].startmap = "c0a0";
@@ -298,6 +299,9 @@ games_init(void)
 				break;
 			case "gameinfo_nomodels":
 				games[id].nomodels = (int)stof(argv(i+1));
+				break;
+			case "gameinfo_nosprays":
+				games[id].nosprays = (int)stof(argv(i+1));
 				break;
 			case "gameinfo_mpentity":
 				games[id].mpentity = argv(i+1);

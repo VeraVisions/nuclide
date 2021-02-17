@@ -76,6 +76,7 @@ typedef struct
 	string pkgname;
 	int pkgid;
 	int nomodels;
+	int nosprays;
 	int installed;
 	string mpentity;
 	string gamedll;
