@@ -38,6 +38,17 @@ class FXEgon:CBaseFX
 };
 
 void
+FXEgon::Animate_Next(void)
+{
+	frame++;
+
+	if (frame == 11)
+		frame = 0;
+
+	nextthink = time + 0.1f;
+}
+
+void
 FXEgon::Draw(void)
 {
 	player pl = (player)self;
@@ -46,21 +57,36 @@ FXEgon::Draw(void)
 	vector gunpos = gettaginfo(pSeat->m_eViewModel, 33);
 
 	if (alpha <= 0.0f) {
+		modelindex = 0;
 		return;
 	}
 
-	src = m_vecStart;
+	src = gettaginfo(pSeat->m_eViewModel, 0);;
 	makevectors(input_angles);
 	endpos = src + v_forward * 1024;
 	traceline(src, endpos, FALSE, pl);
 
-	trailparticles(TRAIL_EGONBEAM, pl, gunpos, endpos);
+	dynamiclight_add(trace_endpos + v_forward * -16, 128, [0.25, 0.25, 1.0]);
+	trailparticles(TRAIL_EGONBEAM, pl, gunpos, trace_endpos);
+	setorigin(this, trace_endpos + v_forward * -16);
+	
+	/*
+	R_BeginPolygon(SPRITE_EGONIMPACT, 1, 0);
+	R_PolygonVertex(trace_endpos + v_right * 24 - v_up * 24 + v_forward * -16, [1,1], [1,1,1], 1.0f);
+	R_PolygonVertex(trace_endpos - v_right * 24 - v_up * 24 + v_forward * -16, [0,1], [1,1,1], 1.0f);
+	R_PolygonVertex(trace_endpos - v_right * 24 + v_up * 24 + v_forward * -16, [0,0], [1,1,1], 1.0f);
+	R_PolygonVertex(trace_endpos + v_right * 24 + v_up * 24 + v_forward * -16, [1,0], [1,1,1], 1.0f);
+	R_EndPolygon();*/
+	setmodel(this, "sprites/xspark1.spr");
+	effects = EF_ADDITIVE;
 }
 
 void
 FXEgon::FXEgon(void)
 {
 	CBaseFX::CBaseFX();
+	think = Animate_Next;
+	nextthink = time + 0.1f;
 }
 #endif
 
@@ -82,11 +108,15 @@ enum
 void w_egon_precache(void)
 {
 #ifdef SERVER
+	precache_sound("weapons/egon_windup2.wav");
+	precache_sound("weapons/egon_run3.wav");
+	precache_sound("weapons/egon_off1.wav");
 	precache_model("models/w_egon.mdl");
 #else
 	TRAIL_EGONBEAM = particleeffectnum("weapon_egon.beam");
 	precache_model("models/v_egon.mdl");
 	precache_model("models/p_egon.mdl");
+	precache_model("sprites/xspark1.spr");
 #endif
 }
 void w_egon_updateammo(player pl)
@@ -190,7 +220,7 @@ void w_egon_primary(void)
 		sound(pl, CHAN_WEAPON, "weapons/egon_windup2.wav", 1, ATTN_NORM, 100, 0);
 #endif
 		pl.a_ammo1 = 1;
-		Weapons_ViewPunchAngle([-3,0,0]);
+		Weapons_ViewPunchAngle([-5,0,0]);
 		pl.w_idle_next = 3.0f;
 	} else if not (pl.w_idle_next > 0.0f) {
 		/* wait 3 seconds (idle next) */
