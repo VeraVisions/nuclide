@@ -76,6 +76,13 @@ void Weapons_Draw(void)
 	pl.w_idle_next = 2.5f;
 	pl.viewzoom = 1.0f;
 
+#ifdef CLIENT
+	entity eold = self;
+	self = pSeat->m_pWeaponFX;
+	spawnfunc_CBaseFX();
+	self = eold;
+#endif
+
 	/* make sure this is all wiped */
 	pl.a_ammo1 = pl.a_ammo2 = pl.a_ammo3 = 0;
 

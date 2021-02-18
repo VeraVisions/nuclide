@@ -66,10 +66,10 @@ FXEgon::Draw(void)
 	endpos = src + v_forward * 1024;
 	traceline(src, endpos, FALSE, pl);
 
-	dynamiclight_add(trace_endpos + v_forward * -16, 128, [0.25, 0.25, 1.0]);
+	dynamiclight_add(trace_endpos + v_forward * -16, 128, [0.5, 0.5, 1.0]);
 	trailparticles(TRAIL_EGONBEAM, pl, gunpos, trace_endpos);
 	setorigin(this, trace_endpos + v_forward * -16);
-	
+
 	/*
 	R_BeginPolygon(SPRITE_EGONIMPACT, 1, 0);
 	R_PolygonVertex(trace_endpos + v_right * 24 - v_up * 24 + v_forward * -16, [1,1], [1,1,1], 1.0f);
