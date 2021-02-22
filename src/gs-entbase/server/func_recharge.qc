@@ -42,9 +42,22 @@ class func_recharge:CBaseTrigger
 	virtual void(void) customphysics;
 	virtual void(void) OnPlayerUse;
 	virtual void(string, string) SpawnKey;
+	virtual void(void) ResetHealth;
 };
 
-void func_recharge::OnPlayerUse(void)
+void
+func_recharge::ResetHealth(void)
+{
+	if (health <= 0) {
+		sound(this, CHAN_VOICE, m_strSndFirst, 1.0, ATTN_NORM);
+	}
+
+	SetFrame(0);
+	health = max_health = Skill_GetValue("suitcharger", 75);
+}
+
+void
+func_recharge::OnPlayerUse(void)
 {
 	/* let's not let this become too funny... */
 	if (eActivator.health <= 0) {
@@ -67,6 +80,13 @@ void func_recharge::OnPlayerUse(void)
 		return;
 	}
 
+	if (health <= 0) {
+		eActivator.flags &= ~FL_USE_RELEASED;
+		sound(this, CHAN_VOICE, m_strSndDone, 1.0, ATTN_NORM);
+		m_eUser = world;
+		return;
+	}
+
 	base_player pl = (base_player)eActivator;
 	if (pl.armor >= 100) {
 		eActivator.flags &= ~FL_USE_RELEASED;
@@ -76,6 +96,23 @@ void func_recharge::OnPlayerUse(void)
 			sound(this, CHAN_ITEM, m_strSndCharging, 1.0, ATTN_NORM);
 		}
 		pl.armor = bound(0, pl.armor += 1, 100);
+
+		/* Reset 30 seconds after first being used successfully */
+		//if (health == max_health) {
+			think = ResetHealth;
+			nextthink = time + 30.0f;
+		//}
+		health -= 1;
+
+		/* Disable when empty */
+		if (health <= 0) {
+			sound(this, CHAN_ITEM, "common/null.wav", 1.0, ATTN_NORM);
+			sound(this, CHAN_VOICE, m_strSndDone, 1.0, ATTN_NORM);
+			SetFrame(1);
+			eActivator.flags &= ~FL_USE_RELEASED;
+			m_eUser = world;
+			return;
+		}
 	}
 
 	m_eUser = eActivator;
@@ -83,7 +120,8 @@ void func_recharge::OnPlayerUse(void)
 	m_flCheck = time + 0.25f;
 }
 
-void func_recharge::customphysics(void)
+void
+func_recharge::customphysics(void)
 {
 	if (m_flCheck > time) {
 		return;
@@ -92,6 +130,14 @@ void func_recharge::customphysics(void)
 	if (m_eUser) {
 		sound(this, CHAN_ITEM, "common/null.wav", 1.0, ATTN_NORM);
 		m_eUser = world;
+	}
+
+	/* support for think/nextthink */
+	if (think && nextthink > 0.0f) {
+		if (nextthink < time) {
+			nextthink = 0.0f;
+			think();
+		}
 	}
 }
 
@@ -113,7 +159,8 @@ func_recharge::SpawnKey(string strKey, string strValue)
 	}
 }
 
-void func_recharge::func_recharge(void)
+void
+func_recharge::func_recharge(void)
 {
 	m_strSndFirst = "items/suitchargeok1.wav";
 	m_strSndCharging = "items/suitcharge1.wav";
@@ -130,4 +177,5 @@ void func_recharge::func_recharge(void)
 	SetOrigin(origin);
 	SetModel(model);
 	PlayerUse = OnPlayerUse;
+	ResetHealth();
 }
