@@ -61,7 +61,7 @@ FXEgon::Draw(void)
 		return;
 	}
 
-	src = gettaginfo(pSeat->m_eViewModel, 0);;
+	src = gettaginfo(pSeat->m_eViewModel, 0);
 	makevectors(input_angles);
 	endpos = src + v_forward * 1024;
 	traceline(src, endpos, FALSE, pl);

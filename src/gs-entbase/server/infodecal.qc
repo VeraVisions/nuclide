@@ -71,8 +71,12 @@ infodecal::Respawn(void)
 {
 	/* this will be invisible by default */
 	if (!targetname) {
+#if 0
 		/* spawn automatically, remove self */
 		Trigger(this, TRIG_ON);
+#else
+		remove(this);
+#endif
 	} else {
 		Trigger(this, TRIG_OFF);
 		m_decChild = __NULL__;

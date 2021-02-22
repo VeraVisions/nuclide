@@ -35,9 +35,11 @@ const string g_decal_shader = \
 float
 decal::SendEntity(entity ePEnt, float changedflags)
 {
-	if (clienttype(ePEnt) != CLIENTTYPE_REAL) {
+	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
 		return FALSE;
-	}
+
+	if (!m_strTexture)
+		return FALSE;
 
 	WriteByte(MSG_ENTITY, ENT_DECAL);
 	WriteCoord(MSG_ENTITY, origin[0]);
