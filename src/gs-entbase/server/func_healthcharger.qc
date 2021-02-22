@@ -42,7 +42,19 @@ class func_healthcharger:CBaseTrigger
 	virtual void(void) customphysics;
 	virtual void(void) OnPlayerUse;
 	virtual void(string, string) SpawnKey;
+	virtual void(void) ResetHealth;
 };
+
+void
+func_healthcharger::ResetHealth(void)
+{
+	if (health <= 0) {
+		sound(this, CHAN_VOICE, m_strSndFirst, 1.0, ATTN_NORM);
+	}
+
+	SetFrame(0);
+	health = max_health = Skill_GetValue("healthcharger", 50);
+}
 
 void
 func_healthcharger::OnPlayerUse(void)
@@ -64,6 +76,13 @@ func_healthcharger::OnPlayerUse(void)
 	if (m_flDelay > time)
 		return;
 
+	if (health <= 0) {
+		eActivator.flags &= ~FL_USE_RELEASED;
+		sound(this, CHAN_VOICE, m_strSndDone, 1.0, ATTN_NORM);
+		m_eUser = world;
+		return;
+	}
+
 	if (eActivator.health >= 100) {
 		eActivator.flags &= ~FL_USE_RELEASED;
 		sound(this, CHAN_VOICE, m_strSndDone, 1.0, ATTN_NORM);
@@ -72,6 +91,23 @@ func_healthcharger::OnPlayerUse(void)
 			sound(this, CHAN_ITEM, m_strSndCharging, 1.0, ATTN_NORM);
 
 		eActivator.health = bound(0, eActivator.health += 1, 100);
+
+		/* Reset 30 seconds after first being used successfully */
+		//if (health == max_health) {
+			think = ResetHealth;
+			nextthink = time + 60.0f;
+		//}
+		health -= 1;
+
+		/* Disable when empty */
+		if (health <= 0) {
+			sound(this, CHAN_ITEM, "common/null.wav", 1.0, ATTN_NORM);
+			sound(this, CHAN_VOICE, m_strSndDone, 1.0, ATTN_NORM);
+			SetFrame(1);
+			eActivator.flags &= ~FL_USE_RELEASED;
+			m_eUser = world;
+			return;
+		}
 	}
 
 	m_eUser = eActivator;
@@ -88,6 +124,14 @@ func_healthcharger::customphysics(void)
 	if (m_eUser) {
 		sound(this, CHAN_ITEM, "common/null.wav", 1.0, ATTN_NORM);
 		m_eUser = world;
+	}
+
+	/* support for think/nextthink */
+	if (think && nextthink > 0.0f) {
+		if (nextthink < time) {
+			nextthink = 0.0f;
+			think();
+		}
 	}
 }
 
@@ -127,4 +171,5 @@ func_healthcharger::func_healthcharger(void)
 	SetOrigin(origin);
 	SetModel(model);
 	PlayerUse = OnPlayerUse;
+	ResetHealth();
 }
