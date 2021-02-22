@@ -22,12 +22,6 @@ var float g_flHDRIrisFadeUp = 0.1;
 var float g_flHDRIrisFadeDown = 0.5;
 var int g_iHDREnabled = 0;
 
-#ifdef VALVE
-var string g_strSkyName = "desert";
-#else
-var string g_strSkyName = "";
-#endif
-
 class worldspawn:CBaseEntity
 {
 	virtual void(string, string) SpawnKey;
@@ -57,9 +51,6 @@ void worldspawn::SpawnKey(string strField, string strKey)
 	switch (strField) {
 	case "chaptertitle":
 		GameMessage_Setup(strKey, 0);
-		break;
-	case "skyname":
-		g_strSkyName = strKey;
 		break;
 	case "ambientsound":
 		if (g_ambientsound) {

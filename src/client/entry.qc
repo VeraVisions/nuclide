@@ -126,7 +126,6 @@ CSQC_RendererRestarted(string rstr)
 
 	/* GS-Entbase */
 	Fade_Init();
-	Sky_Update();
 	Decal_Reload();
 	FX_Init();
 }
@@ -163,6 +162,7 @@ CSQC_UpdateView(float w, float h, float focus)
 	video_res[0] = w;
 	video_res[1] = h;
 
+	Sky_Update();
 	cvar_set("_background", serverkey("background"));
 
 	if (serverkeyfloat("background") == 1) {

@@ -368,6 +368,7 @@ initents
 ???
 =================
 */
+.string skyname;
 void
 initents(void)
 {
@@ -458,6 +459,14 @@ initents(void)
 	/* the maxclients serverinfo key? yeah, that one lies to the client. so
 	 * let's add our own that we can actually trust. */
 	forceinfokey(world, "sv_playerslots", cvar_string("sv_playerslots"));
+
+	/* Set the default sky */
+	if (serverkeyfloat("*bspversion") == BSPVER_HL) {
+		if (!self.skyname) {
+			self.skyname = "desert";
+		}
+		forceinfokey(world, "skyname", self.skyname);
+	}
 
 	Plugin_InitEnts();
 	Mapcycle_Init();

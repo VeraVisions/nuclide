@@ -14,11 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+var string g_strSkyName;
+
 void
 Sky_Update(void)
 {
-	if (serverkeyfloat("*bspversion") != BSPVER_HL) {
-		return;
+	if (g_strSkyName != serverkey("skyname")) {
+		g_strSkyName = serverkey("skyname");
+		localcmd(sprintf("sky %s\n", g_strSkyName));
 	}
-	localcmd(sprintf("sky %s\n", g_strSkyName));
 }
