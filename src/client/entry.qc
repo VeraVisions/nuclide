@@ -162,6 +162,7 @@ CSQC_UpdateView(float w, float h, float focus)
 	video_res[0] = w;
 	video_res[1] = h;
 
+	Fog_Update();
 	Sky_Update();
 	cvar_set("_background", serverkey("background"));
 
