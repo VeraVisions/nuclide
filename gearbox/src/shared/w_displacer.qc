@@ -61,9 +61,7 @@ w_displacer_precache(void)
 void
 w_displacer_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, pl.ammo_uranium, -1);
-#endif
 }
 
 string
@@ -189,16 +187,16 @@ w_displacer_release(void)
 		return;
 	}
 
-	if (pl.a_ammo3 == 1) {
+	if (pl.mode_displacer == 1) {
 		Weapons_ViewAnimation(DISP_FIRE);
 		w_displacer_fireball();
-		pl.a_ammo3 = 0;
+		pl.mode_displacer = 0;
 		pl.w_idle_next = pl.w_attack_next = 1.0f;
 		return;
-	} else if (pl.a_ammo3 == 2) {
+	} else if (pl.mode_displacer == 2) {
 		Weapons_ViewAnimation(DISP_FIRE);
 		w_displacer_teleport(pl);
-		pl.a_ammo3 = 0;
+		pl.mode_displacer = 0;
 		pl.w_idle_next = pl.w_attack_next = 1.0f;
 		return;
 	}
@@ -224,7 +222,7 @@ w_displacer_primary(void)
 
 	/* ammo check */
 #ifdef CLIENT
-	if (pl.a_ammo2 < 20) {
+	if (pl.ammo_uranium < 20) {
 		return;
 	}
 #else
@@ -234,12 +232,12 @@ w_displacer_primary(void)
 #endif
 
 	/* we're already in spinning mode */
-	if (pl.a_ammo3 > 0) {
+	if (pl.mode_displacer > 0) {
 		w_displacer_release();
 		return;
 	}
 
-	pl.a_ammo3 = 1;
+	pl.mode_displacer = 1;
 
 #ifdef CLIENT
 	Weapons_ViewAnimation(DISP_SPINUP);
@@ -260,7 +258,7 @@ w_displacer_secondary(void)
 
 	/* ammo check */
 #ifdef CLIENT
-	if (pl.a_ammo2 < 60) {
+	if (pl.ammo_uranium < 60) {
 		return;
 	}
 #else
@@ -270,12 +268,12 @@ w_displacer_secondary(void)
 #endif
 
 	/* we're already in spinning mode */
-	if (pl.a_ammo3 > 0) {
+	if (pl.mode_displacer > 0) {
 		w_displacer_release();
 		return;
 	}
 
-	pl.a_ammo3 = 2;
+	pl.mode_displacer = 2;
 
 #ifdef CLIENT
 	Weapons_ViewAnimation(DISP_SPINUP);

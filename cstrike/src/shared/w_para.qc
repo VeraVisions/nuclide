@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -50,9 +50,7 @@ w_para_precache(void)
 void
 w_para_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.para_mag, pl.ammo_556mmbox, -1);
-#endif
 }
 
 string
@@ -116,36 +114,16 @@ w_para_primary(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-
-	/* ammo check */
-#ifdef CLIENT
-	if (!pl.a_ammo1) {
-		return;
-	}
-#else
 	if (!pl.para_mag) {
 		return;
 	}
-#endif
 
 	Cstrike_ShotMultiplierAdd(pl, 1);
 	float accuracy = Cstrike_CalculateAccuracy(pl, 175);
-
-#ifdef CLIENT
-	pl.a_ammo1--;
-	View_SetMuzzleflash(MUZZLE_RIFLE);
-#else
-	TraceAttack_SetPenetrationPower(1);
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 35, [accuracy,accuracy], WEAPON_PARA);
 	pl.para_mag--;
 
-	if (self.flags & FL_CROUCHING)
-		Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_PARA, 0.45f);
-	else
-		Animation_PlayerTopTemp(ANIM_SHOOT_PARA, 0.45f);
-
-	Sound_Play(pl, CHAN_WEAPON, "weapon_para.fire");
-#endif
+#ifdef CLIENT
+	View_SetMuzzleflash(MUZZLE_RIFLE);
 
 	int r = (float)input_sequence % 2;
 	switch (r) {
@@ -156,6 +134,17 @@ w_para_primary(void)
 		Weapons_ViewAnimation(SCOUT_SHOOT2);
 		break;
 	}
+#else
+	TraceAttack_SetPenetrationPower(1);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 35, [accuracy,accuracy], WEAPON_PARA);
+
+	if (self.flags & FL_CROUCHING)
+		Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_PARA, 0.45f);
+	else
+		Animation_PlayerTopTemp(ANIM_SHOOT_PARA, 0.45f);
+
+	Sound_Play(pl, CHAN_WEAPON, "weapon_para.fire");
+#endif
 
 	pl.w_attack_next = 0.1f;
 	pl.w_idle_next = pl.w_attack_next;
@@ -169,15 +158,6 @@ w_para_reload(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-
-#ifdef CLIENT
-	if (pl.a_ammo1 >= 100) {
-		return;
-	}
-	if (!pl.a_ammo2) {
-		return;
-	}
-#else
 	if (pl.para_mag >= 100) {
 		return;
 	}
@@ -185,11 +165,13 @@ w_para_reload(void)
 		return;
 	}
 
+#ifdef CLIENT
+	Weapons_ViewAnimation(PARA_RELOAD);
+#else
 	Weapons_ReloadWeapon(pl, player::para_mag, player::ammo_556mmbox, 100);
 	Weapons_UpdateAmmo(pl, pl.para_mag, pl.ammo_556mmbox, -1);
 #endif
 
-	Weapons_ViewAnimation(PARA_RELOAD);
 	pl.w_attack_next = 3.0f;
 	pl.w_idle_next = pl.w_attack_next;
 }
@@ -245,7 +227,7 @@ w_para_hudpic(int selected, vector pos, float a)
 weapon_t w_para =
 {
 	.name		= "m249",
-	.id			= ITEM_PARA,
+	.id		= ITEM_PARA,
 	.slot		= 0,
 	.slot_pos	= 15,
 	.allow_drop	= TRUE,

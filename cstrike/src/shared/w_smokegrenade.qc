@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -52,9 +52,7 @@ w_smokegrenade_precache(void)
 void
 w_smokegrenade_updateammo(player pl)
 {
-#ifdef SERVER
-	Weapons_UpdateAmmo(pl, -1, pl.ammo_smokegrenade, pl.a_ammo3);
-#endif
+	Weapons_UpdateAmmo(pl, -1, pl.ammo_smokegrenade, pl.mode_temp);
 }
 
 int
@@ -95,6 +93,8 @@ w_smokegrenade_draw(void)
 {
 	Weapons_SetModel("models/v_smokegrenade.mdl");
 	Weapons_ViewAnimation(SMOKEGRENADE_DRAW);
+	player pl = (player)self;
+	pl.mode_temp = 0;
 }
 
 #ifdef SERVER
@@ -159,13 +159,13 @@ w_smokegrenade_primary(void)
 	}
 	
 	/* We're abusing this network variable for the holding check */
-	if (pl.a_ammo3 > 0) {
+	if (pl.mode_temp > 0) {
 		return;
 	}
 
 	/* Ammo check */
 #ifdef CLIENT
-	if (pl.a_ammo2 <= 0) {
+	if (pl.ammo_smokegrenade <= 0) {
 		return;
 	}
 #else
@@ -175,7 +175,7 @@ w_smokegrenade_primary(void)
 #endif
 
 	Weapons_ViewAnimation(SMOKEGRENADE_PULLPIN);
-	pl.a_ammo3 = 1;
+	pl.mode_temp = 1;
 	pl.w_attack_next = 0.975f;
 	pl.w_idle_next = pl.w_attack_next;
 }
@@ -189,18 +189,18 @@ w_smokegrenade_release(void)
 		return;
 	}
 
-	if (pl.a_ammo3 == 1) {
+	if (pl.mode_temp == 1) {
 #ifdef CLIENT
-		pl.a_ammo2--;
+		pl.ammo_smokegrenade--;
 		Weapons_ViewAnimation(SMOKEGRENADE_THROW);
 #else
 		pl.ammo_smokegrenade--;
 		w_smokegrenade_throw();
 #endif
-		pl.a_ammo3 = 2;
+		pl.mode_temp = 2;
 		pl.w_attack_next = 1.0f;
 		pl.w_idle_next = 0.5f;
-	} else if (pl.a_ammo3 == 2) {
+	} else if (pl.mode_temp == 2) {
 #ifdef CLIENT
 		Weapons_ViewAnimation(SMOKEGRENADE_DRAW);
 #else
@@ -210,7 +210,7 @@ w_smokegrenade_release(void)
 #endif
 		pl.w_attack_next = 0.5f;
 		pl.w_idle_next = 0.5f;
-		pl.a_ammo3 = 0;
+		pl.mode_temp = 0;
 	}
 }
 

@@ -71,9 +71,7 @@ w_sniperrifle_pickup(int new, int startammo)
 void
 w_sniperrifle_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.sniper_mag, pl.ammo_762, __NULL__);
-#endif
 }
 
 string
@@ -121,7 +119,7 @@ w_sniperrifle_primary(void)
 
 	/* Ammo check */
 #ifdef CLIENT
-	if (pl.a_ammo1 <= 0) {
+	if (pl.sniper_mag <= 0) {
 		return;
 	}
 #else
@@ -138,11 +136,11 @@ w_sniperrifle_primary(void)
 	pl.sniper_mag--;
 	Weapons_UpdateAmmo(pl, pl.sniper_mag, pl.ammo_762, __NULL__);
 #else
-	pl.a_ammo1--;
+	pl.sniper_mag--;
 	View_SetMuzzleflash(MUZZLE_SMALL);
 	Weapons_ViewPunchAngle([-10,0,0]);
 
-	if (pl.a_ammo1) {
+	if (pl.sniper_mag) {
 		Weapons_ViewAnimation(SNIPER_FIRE1);
 	} else {
 		Weapons_ViewAnimation(SNIPER_FIRE2);
@@ -179,10 +177,10 @@ w_sniperrifle_reload(void)
 
 	/* Ammo check */
 #ifdef CLIENT
-	if (pl.a_ammo1 >= 5) {
+	if (pl.sniper_mag >= 5) {
 		return;
 	}
-	if (pl.a_ammo2 <= 0) {
+	if (pl.ammo_762 <= 0) {
 		return;
 	}
 #else
@@ -211,7 +209,7 @@ w_sniperrifle_release(void)
 
 	/* auto-reload if need be */
 	if (pl.w_attack_next <= 0.0)
-	if (pl.a_ammo1 == 0 && pl.a_ammo2 > 0) {
+	if (pl.sniper_mag == 0 && pl.ammo_762 > 0) {
 		Weapons_Reload();
 		return;
 	}

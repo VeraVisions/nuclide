@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -61,9 +61,7 @@ w_glock18_precache(void)
 void
 w_glock18_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.glock18_mag, pl.ammo_9mm, -1);
-#endif
 }
 
 string
@@ -139,41 +137,33 @@ w_glock18_primary(void)
 	if (pl.gflags & GF_SEMI_TOGGLED) {
 		return;
 	}
-
-#ifdef CLIENT
-	if (!pl.a_ammo1) {
-		return;
-	}
-#else
 	if (!pl.glock18_mag) {
 		return;
 	}
-#endif
 
 	Cstrike_ShotMultiplierAdd(pl, 1);
 	float accuracy = Cstrike_CalculateAccuracy(pl, 200);
+	pl.glock18_mag--;
 
 #ifdef CLIENT
-	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 #else
 	TraceAttack_SetPenetrationPower(0);
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 25, [accuracy,accuracy], WEAPON_GLOCK18);
-	pl.glock18_mag--;
 
 	if (self.flags & FL_CROUCHING)
 		Animation_PlayerTopTemp(ANIM_SHOOT_ONEHAND, 0.45f);
 	else
 		Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_ONEHAND, 0.45f);
 
-	if (pl.a_ammo3) {
+	if (pl.mode_glock18) {
 		Sound_Play(pl, CHAN_WEAPON, "weapon_glock18.burstfire");
 	} else {
 		Sound_Play(pl, CHAN_WEAPON, "weapon_glock18.fire");
 	}
 #endif
 
-	if (pl.a_ammo3) {
+	if (pl.mode_glock18) {
 		int r = (float)input_sequence % 2;
 		switch (r) {
 		case 0:
@@ -185,7 +175,7 @@ w_glock18_primary(void)
 		}
 		pl.w_attack_next = 0.5f;
 	} else {
-		if (pl.a_ammo1 <= 0) {
+		if (pl.glock18_mag <= 0) {
 			Weapons_ViewAnimation(GLOCK_SHOOT_EMPTY);
 		} else {
 			Weapons_ViewAnimation(GLOCK_SHOOT);
@@ -206,10 +196,10 @@ w_glock18_secondary(void)
 	}
 
 	/* toggle burst-fire */
-	pl.a_ammo3 = 1 - pl.a_ammo3;
+	pl.mode_glock18 = 1 - pl.mode_glock18;
 
 #ifdef CLIENT
-	if (pl.a_ammo3) {
+	if (pl.mode_glock18) {
 		CSQC_Parse_CenterPrint("Switched to Burst-Fire mode");
 	} else {
 		CSQC_Parse_CenterPrint("Switched to Semi-Automatic mode");
@@ -228,15 +218,6 @@ w_glock18_reload(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-
-#ifdef CLIENT
-	if (pl.a_ammo1 >= 20) {
-		return;
-	}
-	if (!pl.a_ammo2) {
-		return;
-	}
-#else
 	if (pl.glock18_mag >= 20) {
 		return;
 	}
@@ -244,10 +225,7 @@ w_glock18_reload(void)
 		return;
 	}
 
-	Weapons_ReloadWeapon(pl, player::glock18_mag, player::ammo_9mm, 20);
-	Weapons_UpdateAmmo(pl, pl.glock18_mag, pl.ammo_9mm, -1);
-#endif
-
+#ifdef CLIENT
 	int r = (float)input_sequence % 2;
 	switch (r) {
 	case 0:
@@ -257,6 +235,11 @@ w_glock18_reload(void)
 		Weapons_ViewAnimation(GLOCK_RELOAD2);
 		break;
 	}
+#else
+
+	Weapons_ReloadWeapon(pl, player::glock18_mag, player::ammo_9mm, 20);
+	Weapons_UpdateAmmo(pl, pl.glock18_mag, pl.ammo_9mm, -1);
+#endif
 
 	pl.w_attack_next = 2.1f;
 	pl.w_idle_next = pl.w_attack_next;
@@ -284,6 +267,14 @@ void
 w_glock18_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.glock18_mag == 0 && pl.ammo_9mm == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -307,6 +298,14 @@ w_glock18_hudpic(int selected, vector pos, float a)
 			DRAWFLAG_ADDITIVE
 		);
 	}
+
+	if (pl.ammo_9mm <= 0)
+		return;
+
+	float perc;
+	perc = pl.ammo_9mm / AMMO_MAX_9MM;
+	drawfill(pos + [10,0], [20,4], hud_col, a, DRAWFLAG_NORMAL);
+	drawfill(pos + [10,0], [20 * perc,4], [0,1,0], a, DRAWFLAG_NORMAL);
 #endif
 }
 

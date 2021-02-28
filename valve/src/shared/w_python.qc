@@ -81,9 +81,7 @@ w_python_pickup(int new, int startammo)
 void
 w_python_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.python_mag, pl.ammo_357, -1);
-#endif
 }
 
 string
@@ -138,24 +136,18 @@ w_python_primary(void)
 	}
 
 	/* Ammo check */
-#ifdef CLIENT
-	if (pl.a_ammo1 <= 0) {
-		return;
-	}
-#else
 	if (pl.python_mag <= 0) {
 		return;
 	}
-#endif
+
+	pl.python_mag--;
 
 	/* Actual firing */
 #ifdef CLIENT
-	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_SMALL);
 	Weapons_ViewPunchAngle([-10,0,0]);
 	Weapons_ViewAnimation(PYTHON_FIRE1);
 #else
-	pl.python_mag--;
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, Skill_GetValue("plr_357_bullet", 40), [0.008, 0.008], WEAPON_PYTHON);
 	Sound_Play(pl, CHAN_WEAPON, "weapon_357.shoot");
 #endif
@@ -185,7 +177,7 @@ w_python_secondary(void)
 		pl.viewzoom = 1.0f;
 	}
 
-	pl.w_attack_next = 0.5f;
+	pl.w_attack_next = 0.25f;
 }
 
 void
@@ -198,21 +190,12 @@ w_python_reload(void)
 	}
 
 	/* Ammo check */
-#ifdef CLIENT
-	if (pl.a_ammo1 >= 6) {
-		return;
-	}
-	if (pl.a_ammo2 <= 0) {
-		return;
-	}
-#else
 	if (pl.python_mag >= 6) {
 		return;
 	}
 	if (pl.ammo_357 <= 0) {
 		return;
 	}
-#endif
 
 	/* Audio-Visual bit */
 #ifdef CLIENT
@@ -233,7 +216,7 @@ w_python_release(void)
 
 	/* auto-reload if need be */
 	if (pl.w_attack_next <= 0.0)
-	if (pl.a_ammo1 == 0 && pl.a_ammo2 > 0) {
+	if (pl.python_mag == 0 && pl.ammo_357 > 0) {
 		Weapons_Reload();
 		return;
 	}
@@ -310,6 +293,14 @@ void
 w_python_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.python_mag == 0 && pl.ammo_357 == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -317,7 +308,7 @@ w_python_hudpic(int selected, vector pos, float a)
 			g_hud4_spr,
 			[0,90/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);
@@ -328,18 +319,26 @@ w_python_hudpic(int selected, vector pos, float a)
 			g_hud1_spr,
 			[0,90/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);
 	}
+
+	if (pl.ammo_357 <= 0)
+		return;
+
+	float perc;
+	perc = pl.ammo_357 / MAX_A_357;
+	drawfill(pos + [10,0], [20,4], hud_col, a, DRAWFLAG_NORMAL);
+	drawfill(pos + [10,0], [20 * perc,4], [0,1,0], a, DRAWFLAG_NORMAL);
 #endif
 }
 
 weapon_t w_python =
 {
 	.name		= "357",
-	.id			= ITEM_PYTHON,
+	.id		= ITEM_PYTHON,
 	.slot		= 1,
 	.slot_pos	= 1,
 	.draw		= w_python_draw,

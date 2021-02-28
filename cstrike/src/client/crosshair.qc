@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -37,13 +37,13 @@ Cstrike_DrawCrosshair(void)
 	}
 
 	/* amount of shots that we've shot does affect our accuracy */
-	if (pl.cs_shotmultiplier > pl.cs_old_shotmultiplier) {
+	if (pl.cs_shotmultiplier > pl.cs_shotmultiplier_net) {
 		pl.cs_crosshairdistance = min(15, pl.cs_crosshairdistance + delta);
 	} else if (pl.cs_crosshairdistance > distance) {
 		pl.cs_crosshairdistance -= (pl.cs_crosshairdistance * clframetime);
 	}
 
-	pl.cs_old_shotmultiplier = pl.cs_shotmultiplier;
+	pl.cs_shotmultiplier_net = pl.cs_shotmultiplier;
 	
 	if (pl.cs_crosshairdistance < distance) {
 		 pl.cs_crosshairdistance = distance;

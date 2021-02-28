@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -73,9 +73,7 @@ w_c4bomb_precache(void)
 void
 w_c4bomb_updateammo(player pl)
 {
-#ifdef SERVER
-	Weapons_UpdateAmmo(pl, pl.a_ammo1, 1, pl.a_ammo3);
-#endif
+	Weapons_UpdateAmmo(pl, -1, 1, -1);
 }
 
 string
@@ -99,8 +97,10 @@ w_c4bomb_deathmsg(void)
 void
 w_c4bomb_draw(void)
 {
+	player pl = (player)self;
 	Weapons_SetModel("models/v_c4.mdl");
 	Weapons_ViewAnimation(C4_DRAW);
+	pl.mode_temp = 0;
 }
 
 void
@@ -108,9 +108,9 @@ w_c4bomb_release(void)
 {
 	player pl = (player)self;
 	
-	if (pl.a_ammo1 == C4S_DROPPING) {
+	if (pl.mode_temp == C4S_DROPPING) {
 		if (pl.w_idle_next <= 0.0f) {
-			pl.a_ammo1 = C4S_DONE;
+			pl.mode_temp = C4S_DONE;
 #ifdef SERVER
 			C4Bomb_Plant(pl);
 			Weapons_RemoveItem(pl, WEAPON_C4BOMB);
@@ -120,10 +120,10 @@ w_c4bomb_release(void)
 	}
 
 	/* reset animation */
-	if (pl.a_ammo1 != C4S_NONE) {
+	if (pl.mode_temp != C4S_NONE) {
 		Weapons_ViewAnimation(C4_IDLE);
 	}
-	pl.a_ammo1 = C4S_NONE;
+	pl.mode_temp = C4S_NONE;
 	pl.w_idle_next = 0.0f;
 }
 
@@ -138,15 +138,15 @@ w_c4bomb_primary(void)
 
 	pl.flags |= FL_FROZEN;
 
-	switch (pl.a_ammo1) {
+	switch (pl.mode_temp) {
 	case C4S_NONE:
-			pl.a_ammo1 = C4S_ENTERINGCODE;
+			pl.mode_temp = C4S_ENTERINGCODE;
 			Weapons_ViewAnimation(C4_ENTERCODE);
 			pl.w_idle_next = 3.0f;
 			break;
 	case C4S_ENTERINGCODE:
 			if (pl.w_idle_next <= 0.0f) {
-				pl.a_ammo1 = C4S_DROPPING;
+				pl.mode_temp = C4S_DROPPING;
 				Weapons_ViewAnimation(C4_DROP);
 				pl.w_idle_next = 1.0f;
 			}
@@ -211,7 +211,7 @@ w_c4bomb_hudpic(int selected, vector pos, float a)
 weapon_t w_c4bomb =
 {
 	.name		= "c4",
-	.id			= ITEM_C4BOMB,
+	.id		= ITEM_C4BOMB,
 	.slot		= 4,
 	.slot_pos	= 0,
 	.allow_drop	= TRUE,

@@ -15,8 +15,8 @@
  */
 
 #define PHY_JUMP_CHAINWINDOW	0.5
-#define PHY_JUMP_CHAIN			100
-#define PHY_JUMP_CHAINDECAY		50
+#define PHY_JUMP_CHAIN		100
+#define PHY_JUMP_CHAINDECAY	50
 
 .float waterlevel;
 .float watertype;
@@ -58,12 +58,10 @@ void GamePMove_Jump(player target)
 		}
 	} else {
 		/* Half-Life: Longjump module */
-#ifdef VALVE
 		if (target.flags & FL_CROUCHING && target.g_items & 0x00008000i) {
 			target.velocity = v_forward * 512;
 			target.velocity[2] += 100;
 		}
-#endif
 		target.velocity[2] += 240;
 	}
 

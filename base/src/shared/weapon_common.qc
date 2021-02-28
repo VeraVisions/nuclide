@@ -281,3 +281,29 @@ int Weapons_IsPresent(player pl, int w)
 		return FALSE;
 	}
 }
+/*
+=================
+Weapons_UpdateAmmo
+
+Sets .a_ammoX fields and clamps them so they can be networked as a single byte.
+=================
+*/
+void
+Weapons_UpdateAmmo(base_player pl, int a1, int a2, int a3)
+{
+	/* no change */
+	if (a1 == -1) {
+		a1 = pl.a_ammo1;
+	}
+	if (a2 == -1) {
+		a2 = pl.a_ammo2;
+	}
+	if (a3 == -1) {
+		a3 = pl.a_ammo3;
+	}
+
+	/* networked as bytes, since we don't need more. Clamp to avoid errors */
+	pl.a_ammo1 = bound(0, a1, 255);
+	pl.a_ammo2 = bound(0, a2, 255);
+	pl.a_ammo3 = bound(0, a3, 255);
+}

@@ -53,10 +53,6 @@ w_penguin_draw(void)
 {
 	Weapons_SetModel("models/v_penguin.mdl");
 	Weapons_ViewAnimation(PENGUIN_DRAW);
-#ifdef SERVER
-	player pl = (player)self;
-	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_penguin, __NULL__);
-#endif
 }
 
 void
@@ -196,7 +192,7 @@ w_penguin_primary(void)
 
 	/* Ammo check */
 #ifdef CLIENT
-	if (pl.a_ammo2 <= 0) {
+	if (pl.ammo_penguin <= 0) {
 		return;
 	}
 #else
@@ -209,13 +205,13 @@ w_penguin_primary(void)
 
 	/* Audio-Visual Bit */
 #ifdef CLIENT
-	pl.a_ammo2--;
+	pl.ammo_penguin--;
 #else
 	w_penguin_deploy();
 	pl.ammo_penguin--;
 	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_penguin, __NULL__);
 
-	if (pl.a_ammo2 <= 0) {
+	if (pl.ammo_penguin <= 0) {
 		Weapons_RemoveItem(pl, WEAPON_SNARK);
 	}
 #endif
@@ -283,9 +279,7 @@ w_penguin_precache(void)
 void
 w_penguin_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_penguin, __NULL__);
-#endif
 }
 
 string

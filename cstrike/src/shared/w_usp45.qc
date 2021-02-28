@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -64,9 +64,7 @@ w_usp45_precache(void)
 void
 w_usp45_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.usp45_mag, pl.ammo_45acp, -1);
-#endif
 }
 
 string
@@ -115,7 +113,7 @@ w_usp45_draw(void)
 	player pl = (player)self;
 	
 	Weapons_SetModel("models/v_usp.mdl");
-	if (pl.a_ammo3 == 1) {
+	if (pl.mode_usp45 == 1) {
 		Weapons_ViewAnimation(USP45_DRAW);
 	} else {
 		Weapons_ViewAnimation(USP45_DRAWUNSIL);
@@ -141,33 +139,24 @@ w_usp45_primary(void)
 	}
 
 	/* ammo check */
-#ifdef CLIENT
-	if (!pl.a_ammo1) {
-		return;
-	}
-#else
 	if (!pl.usp45_mag) {
 		return;
 	}
-#endif
 
 	Cstrike_ShotMultiplierAdd(pl, 1);
 	float accuracy = Cstrike_CalculateAccuracy(pl, 200);
+	pl.usp45_mag--;
 
 	/* actual firing */
 #ifdef CLIENT
-	if (pl.a_ammo3 == 1) {
+	if (pl.mode_usp45 == 1) {
 		View_SetMuzzleflash(0);
 	} else {
 		View_SetMuzzleflash(MUZZLE_SMALL);
 	}
-
-	pl.a_ammo1--;
 #else
-	pl.usp45_mag--;
-
 	/* Different sounds without silencer */
-	if (pl.a_ammo3 == 1) {
+	if (pl.mode_usp45 == 1) {
 		Sound_Play(pl, CHAN_WEAPON, "weapon_usp45.silenced");
 	} else {
 		Sound_Play(pl, CHAN_WEAPON, "weapon_usp45.fire");
@@ -184,8 +173,8 @@ w_usp45_primary(void)
 
 	/* this stuff is predicted */
 	int r = (float)input_sequence % 3;
-	if (pl.a_ammo3 == 1) {
-		if (pl.a_ammo1 <= 0) {
+	if (pl.mode_usp45 == 1) {
+		if (pl.usp45_mag <= 0) {
 			Weapons_ViewAnimation(USP45_SHOOTLAST);
 		} else {
 			switch (r) {
@@ -201,7 +190,7 @@ w_usp45_primary(void)
 			}
 		}
 	} else {
-		if (pl.a_ammo1 <= 0) {
+		if (pl.usp45_mag <= 0) {
 			Weapons_ViewAnimation(USP45_SHOOTLASTUNSIL);
 		} else {
 			switch (r) {
@@ -233,10 +222,10 @@ w_usp45_secondary(void)
 	}
 
 	/* toggle silencer */
-	pl.a_ammo3 = 1 - pl.a_ammo3;
+	pl.mode_usp45 = 1 - pl.mode_usp45;
 
 	/* play the animation */
-	if (pl.a_ammo3) {
+	if (pl.mode_usp45) {
 		Weapons_ViewAnimation(USP45_ADDSIL);
 	} else {
 		Weapons_ViewAnimation(USP45_DETACHSIL);
@@ -254,15 +243,6 @@ w_usp45_reload(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-
-#ifdef CLIENT
-	if (pl.a_ammo1 >= 12) {
-		return;
-	}
-	if (!pl.a_ammo2) {
-		return;
-	}
-#else
 	if (pl.usp45_mag >= 12) {
 		return;
 	}
@@ -270,15 +250,15 @@ w_usp45_reload(void)
 		return;
 	}
 
-	Weapons_ReloadWeapon(pl, player::usp45_mag, player::ammo_45acp, 12);
-	Weapons_UpdateAmmo(pl, pl.usp45_mag, pl.ammo_45acp, -1);
-#endif
-
-	if (pl.a_ammo3 == 1) {
+#ifdef CLIENT
+	if (pl.mode_usp45 == 1) {
 		Weapons_ViewAnimation(USP45_RELOAD);
 	} else {
 		Weapons_ViewAnimation(USP45_RELOADUNSIL);
 	}
+#else
+	Weapons_ReloadWeapon(pl, player::usp45_mag, player::ammo_45acp, 12);
+#endif
 
 	pl.w_attack_next = 2.5f;
 }
@@ -305,6 +285,14 @@ void
 w_usp45_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.usp45_mag == 0 && pl.ammo_45acp == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -312,7 +300,7 @@ w_usp45_hudpic(int selected, vector pos, float a)
 			g_hud4_spr,
 			[0,90/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			1.0f,
 			DRAWFLAG_ADDITIVE
 		);
@@ -323,18 +311,26 @@ w_usp45_hudpic(int selected, vector pos, float a)
 			g_hud1_spr,
 			[0,90/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			1.0f,
 			DRAWFLAG_ADDITIVE
 		);
 	}
+
+	if (pl.ammo_45acp <= 0)
+		return;
+
+	float perc;
+	perc = pl.ammo_45acp / AMMO_MAX_45ACP;
+	drawfill(pos + [10,0], [20,4], hud_col, a, DRAWFLAG_NORMAL);
+	drawfill(pos + [10,0], [20 * perc,4], [0,1,0], a, DRAWFLAG_NORMAL);
 #endif
 }
 
 weapon_t w_usp45 =
 {
 	.name		= "usp",
-	.id			= ITEM_USP45,
+	.id		= ITEM_USP45,
 	.slot		= 1,
 	.slot_pos	= 0,
 	.allow_drop	= TRUE,

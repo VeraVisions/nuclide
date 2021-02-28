@@ -213,9 +213,7 @@ void w_tripmine_precache(void)
 
 void w_tripmine_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, pl.ammo_tripmine, -1);
-#endif
 }
 
 string w_tripmine_wmodel(void)
@@ -270,15 +268,9 @@ w_tripmine_primary(void)
 		return;
 	}
 
-#ifdef CLIENT
-	if (pl.a_ammo2 <= 0) {
-		return;
-	}
-#else
 	if (pl.ammo_tripmine <= 0) {
 		return;
 	}
-#endif
 
 	src = Weapons_GetCameraPos();
 	Weapons_MakeVectors();
@@ -288,11 +280,11 @@ w_tripmine_primary(void)
 		return;
 	}
 
+	pl.ammo_tripmine--;
+
 #ifdef CLIENT
-	pl.a_ammo2--;
 	Weapons_ViewAnimation(TRIPMINE_FIRE2);
 #else
-	pl.ammo_tripmine--;
 	vector ang = vectoangles(trace_plane_normal);
 	monster_tripmine mine = spawn(monster_tripmine, real_owner: pl, angles: ang, spawnflags: MSF_MULTIPLAYER);
 	mine.SetOrigin(trace_endpos - (v_forward * 8));
@@ -365,18 +357,28 @@ void
 w_tripmine_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+
 	if (selected) {
 		drawsubpic(pos, [170,45], g_hud6_spr, [0,90/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	} else {
 		drawsubpic(pos, [170,45], g_hud3_spr, [0,90/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	}
+
+	if (pl.ammo_tripmine <= 0)
+		return;
+
+	float perc;
+	perc = pl.ammo_tripmine / MAX_A_TRIPMINE;
+	drawfill(pos + [10,0], [20,4], g_hud_color, a, DRAWFLAG_NORMAL);
+	drawfill(pos + [10,0], [20 * perc,4], [0,1,0], a, DRAWFLAG_NORMAL);
 #endif
 }
 
 weapon_t w_tripmine =
 {
 	.name		= "tripmine",
-	.id			= ITEM_TRIPMINE,
+	.id		= ITEM_TRIPMINE,
 	.slot		= 4,
 	.slot_pos	= 2,
 	.draw		= w_tripmine_draw,

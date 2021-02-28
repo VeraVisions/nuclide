@@ -834,7 +834,16 @@ CSQC_Ent_Update(float new)
 		me.ReceiveEntity(readfloat());
 		break;
 	case ENT_PLAYER:
-		Player_ReceiveEntity(new);
+		player pl = (player)self;
+		if (new) {
+			spawnfunc_player();
+			pl.classname = "player";
+			pl.solid = SOLID_SLIDEBOX;
+			pl.drawmask = MASK_ENGINE;
+			pl.customphysics = Empty;
+			setsize(pl, VEC_HULL_MIN, VEC_HULL_MAX);
+		}
+		pl.ReceiveEntity(new);
 		break;
 	case ENT_SPRITE:
 		env_sprite spr = (env_sprite)self;
@@ -896,7 +905,7 @@ CSQC_Ent_Update(float new)
 		break;
 	default:
 		if (ClientGame_EntityUpdate(t, new) == FALSE) {
-			error("Unknown entity type update received.\n");
+			//error(sprintf("Unknown entity type update received. (%d)\n", t));
 		}
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -51,9 +51,7 @@ w_p90_precache(void)
 void
 w_p90_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.p90_mag, pl.ammo_57mm, -1);
-#endif
 }
 
 string
@@ -117,36 +115,16 @@ w_p90_primary(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-
-	/* ammo check */
-#ifdef CLIENT
-	if (!pl.a_ammo1) {
-		return;
-	}
-#else
 	if (!pl.p90_mag) {
 		return;
 	}
-#endif
 
 	Cstrike_ShotMultiplierAdd(pl, 1);
 	float accuracy = Cstrike_CalculateAccuracy(pl, 175);
-
-#ifdef CLIENT
-	pl.a_ammo1--;
-	View_SetMuzzleflash(MUZZLE_RIFLE);
-#else
-	TraceAttack_SetPenetrationPower(0);
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 26, [accuracy,accuracy], WEAPON_P90);
 	pl.p90_mag--;
 
-	if (self.flags & FL_CROUCHING)
-		Animation_PlayerTopTemp(ANIM_SHOOT_MP5, 0.45f);
-	else
-		Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_MP5, 0.45f);
-
-	Sound_Play(pl, CHAN_WEAPON, "weapon_p90.fire");
-#endif
+#ifdef CLIENT
+	View_SetMuzzleflash(MUZZLE_RIFLE);
 
 	int r = (float)input_sequence % 3;
 	switch (r) {
@@ -160,6 +138,17 @@ w_p90_primary(void)
 		Weapons_ViewAnimation(P90_SHOOT3);
 		break;
 	}
+#else
+	TraceAttack_SetPenetrationPower(0);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 26, [accuracy,accuracy], WEAPON_P90);
+
+	if (self.flags & FL_CROUCHING)
+		Animation_PlayerTopTemp(ANIM_SHOOT_MP5, 0.45f);
+	else
+		Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_MP5, 0.45f);
+
+	Sound_Play(pl, CHAN_WEAPON, "weapon_p90.fire");
+#endif
 
 	pl.w_attack_next = 0.07f;
 	pl.w_idle_next = pl.w_attack_next;
@@ -173,15 +162,6 @@ w_p90_reload(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-
-#ifdef CLIENT
-	if (pl.a_ammo1 >= 50) {
-		return;
-	}
-	if (!pl.a_ammo2) {
-		return;
-	}
-#else
 	if (pl.p90_mag >= 50) {
 		return;
 	}
@@ -189,11 +169,13 @@ w_p90_reload(void)
 		return;
 	}
 
+#ifdef CLIENT
+	Weapons_ViewAnimation(P90_RELOAD);
+#else
 	Weapons_ReloadWeapon(pl, player::p90_mag, player::ammo_57mm, 50);
 	Weapons_UpdateAmmo(pl, pl.p90_mag, pl.ammo_57mm, -1);
 #endif
 
-	Weapons_ViewAnimation(P90_RELOAD);
 	pl.w_attack_next = 3.3f;
 	pl.w_idle_next = pl.w_attack_next;
 }
@@ -249,7 +231,7 @@ w_p90_hudpic(int selected, vector pos, float a)
 weapon_t w_p90 =
 {
 	.name		= "p90",
-	.id			= ITEM_P90,
+	.id		= ITEM_P90,
 	.slot		= 0,
 	.slot_pos	= 3,
 	.allow_drop	= TRUE,

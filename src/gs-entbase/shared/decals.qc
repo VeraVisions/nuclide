@@ -19,6 +19,13 @@ var int autocvar_sp_decals = 128;
 var int autocvar_mp_decals = 128;
 var int autocvar_cl_decals = 128;
 
+enumflags
+{
+	DECALFL_ORIGIN,
+	DECALFL_ANGLE,
+	DECALFL_MATERIAL
+};
+
 #ifdef CLIENT
 const string g_decal_shader = \
 	"{\n" \
@@ -42,29 +49,46 @@ decal::SendEntity(entity ePEnt, float changedflags)
 		return FALSE;
 
 	WriteByte(MSG_ENTITY, ENT_DECAL);
-	WriteCoord(MSG_ENTITY, origin[0]);
-	WriteCoord(MSG_ENTITY, origin[1]);
-	WriteCoord(MSG_ENTITY, origin[2]);
-	WriteCoord(MSG_ENTITY, angles[0]);
-	WriteCoord(MSG_ENTITY, angles[1]);
-	WriteCoord(MSG_ENTITY, angles[2]);
-	WriteString(MSG_ENTITY, m_strTexture);
+	WriteByte(MSG_ENTITY, changedflags);
+
+	if (changedflags & DECALFL_ORIGIN) {
+		WriteCoord(MSG_ENTITY, origin[0]);
+		WriteCoord(MSG_ENTITY, origin[1]);
+		WriteCoord(MSG_ENTITY, origin[2]);
+	}
+
+	if (changedflags & DECALFL_ANGLE) {
+		WriteCoord(MSG_ENTITY, angles[0]);
+		WriteCoord(MSG_ENTITY, angles[1]);
+		WriteCoord(MSG_ENTITY, angles[2]);
+	}
+
+	if (changedflags & DECALFL_MATERIAL)
+		WriteString(MSG_ENTITY, m_strTexture);
+
 	return TRUE;
 }
 #else
 void
 decal::ReceiveEntity(void)
 {
-	origin[0] = readcoord();
-	origin[1] = readcoord();
-	origin[2] = readcoord();
+	float changedflags = readbyte();
 
-	angles[0] = readcoord();
-	angles[1] = readcoord();
-	angles[2] = readcoord();
-	setorigin(this, origin);
+	if (changedflags & DECALFL_ORIGIN) {
+		origin[0] = readcoord();
+		origin[1] = readcoord();
+		origin[2] = readcoord();
+		setorigin(this, origin);
+	}
 
-	m_strTexture = readstring();
+	if (changedflags & DECALFL_ANGLE) {
+		angles[0] = readcoord();
+		angles[1] = readcoord();
+		angles[2] = readcoord();
+	}
+
+	if (changedflags & DECALFL_MATERIAL)
+		m_strTexture = readstring();
 
 	size = drawgetimagesize(m_strTexture);
 

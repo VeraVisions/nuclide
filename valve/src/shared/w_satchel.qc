@@ -48,8 +48,10 @@ s_satchel_drop(entity master, vector src, vector vel)
 {
 	static void s_satchel_touch(void)
 	{
-		if (other == world)
-			Sound_Play(self, CHAN_BODY, "weapon_satchel.bounce");
+		if (other != world)
+			return;
+		
+		Sound_Play(self, CHAN_BODY, "weapon_satchel.bounce");
 	}
 	entity satch;
 	satch = spawn();
@@ -72,13 +74,14 @@ void
 s_satchel_detonate(entity master)
 {
 	for (entity b = world; (b = find(b, ::classname, "satchel"));) {
-		if (b.owner == master) {
-			float dmg = Skill_GetValue("plr_satchel", 150);
-			FX_Explosion(b.origin);
-			Damage_Radius(b.origin, master, dmg, dmg * 2.5f, TRUE, WEAPON_SATCHEL);
-			sound(b, CHAN_WEAPON, sprintf("weapons/explode%d.wav", floor(random() * 2) + 3), 1, ATTN_NORM);
-			remove(b);
-		}
+		if (b.owner != master)
+			continue;
+
+		float dmg = Skill_GetValue("plr_satchel", 150);
+		FX_Explosion(b.origin);
+		Damage_Radius(b.origin, master, dmg, dmg * 2.5f, TRUE, WEAPON_SATCHEL);
+		sound(b, CHAN_WEAPON, sprintf("weapons/explode%d.wav", floor(random() * 2) + 3), 1, ATTN_NORM);
+		remove(b);
 	}
 }
 #endif
@@ -86,9 +89,7 @@ s_satchel_detonate(entity master)
 void
 w_satchel_updateammo(player pl)
 {
-#ifdef SERVER
-	Weapons_UpdateAmmo(pl, pl.satchel_chg, pl.ammo_satchel, __NULL__);
-#endif
+	Weapons_UpdateAmmo(pl, pl.satchel_chg, pl.ammo_satchel, -1);
 }
 
 string
@@ -141,8 +142,15 @@ void
 w_satchel_draw(void)
 {
 #ifdef CLIENT
-	Weapons_SetModel("models/v_satchel.mdl");
-	Weapons_ViewAnimation(SATCHEL_DRAW);
+	player pl = (player)self;
+	if (pl.satchel_chg > 0) {
+		Weapons_SetModel("models/v_satchel_radio.mdl");
+		Weapons_ViewAnimation(RADIO_DRAW);
+		
+	} else {
+		Weapons_SetModel("models/v_satchel.mdl");
+		Weapons_ViewAnimation(SATCHEL_DRAW);
+	}
 #endif
 }
 
@@ -162,21 +170,15 @@ w_satchel_primary(void)
 	}
 
 	/* Ammo check */
-#ifdef CLIENT
-	if (pl.a_ammo1 <= 0 && pl.a_ammo2 <= 0) {
+	if (pl.satchel_chg <= 0 && pl.ammo_satchel <= 0) {
 		return;
 	}
-#else
-	if (pl.satchel_chg <= 0 && pl.ammo_satchel <= 0) {
-        return;
-	}
-#endif
 
-	if (pl.a_ammo1 <= 0) {
-        Weapons_ViewAnimation(RADIO_DRAW);
-    } else {
-        Weapons_ViewAnimation(RADIO_USE);
-    }
+	if (pl.satchel_chg <= 0) {
+		Weapons_ViewAnimation(RADIO_DRAW);
+	} else {
+		Weapons_ViewAnimation(RADIO_USE);
+	}
 
 #ifdef SERVER
 	/* if we don't have any satchels placed yet, place one */
@@ -202,11 +204,11 @@ w_satchel_primary(void)
 	Weapons_SetModel("models/v_satchel_radio.mdl");
 
 	/* same thing as the SERVER ifdef above... */
-	if (!pl.a_ammo1) {
-		pl.a_ammo1++;
-		pl.a_ammo2--;
+	if (!pl.satchel_chg) {
+		pl.satchel_chg++;
+		pl.ammo_satchel--;
 	} else {
-		pl.a_ammo1 = 0;
+		pl.satchel_chg = 0;
 	}
 #endif
 
@@ -223,30 +225,23 @@ w_satchel_secondary(void)
 		return;
 	}
 
-    /* Ammo check */
-#ifdef CLIENT
-	if (pl.a_ammo2 <= 0) {
-		return;
-	}
-#else
+	/* Ammo check */
 	if (pl.ammo_satchel <= 0) {
 		return;
 	}
-#endif
 
 #ifdef SERVER
 	vector throw;
 	Weapons_MakeVectors();
 	throw = pl.velocity + (v_forward * 274);
 	s_satchel_drop(self, pl.origin, throw);
-	pl.satchel_chg++;
-	pl.ammo_satchel--;
 #else
-	pl.a_ammo1++;
-	pl.a_ammo2--;
 	Weapons_SetModel("models/v_satchel_radio.mdl");
 	Weapons_ViewAnimation(RADIO_DRAW);
 #endif
+
+	pl.satchel_chg++;
+	pl.ammo_satchel--;
 
 	pl.w_attack_next = 1.0f;
 	pl.w_idle_next = 2.5f;
@@ -267,7 +262,7 @@ w_satchel_release(void)
 		return;
 	}
 
-	if (pl.a_ammo1 <= 0) {
+	if (pl.satchel_chg <= 0) {
 		Weapons_ViewAnimation(SATCHEL_FIDGET);
 	} else {
 		Weapons_ViewAnimation(RADIO_FIDGET);
@@ -295,18 +290,28 @@ void
 w_satchel_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+
 	if (selected) {
 		drawsubpic(pos, [170,45], g_hud6_spr, [0,45/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	} else {
 		drawsubpic(pos, [170,45], g_hud3_spr, [0,45/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	}
+
+	if (pl.ammo_satchel <= 0)
+		return;
+
+	float perc;
+	perc = pl.ammo_satchel / MAX_A_SATCHEL;
+	drawfill(pos + [10,0], [20,4], g_hud_color, a, DRAWFLAG_NORMAL);
+	drawfill(pos + [10,0], [20 * perc,4], [0,1,0], a, DRAWFLAG_NORMAL);
 #endif
 }
 
 weapon_t w_satchel =
 {
 	.name		= "satchel",
-	.id			= ITEM_SATCHEL,
+	.id		= ITEM_SATCHEL,
 	.slot		= 4,
 	.slot_pos	= 1,
 	.draw		= w_satchel_draw,

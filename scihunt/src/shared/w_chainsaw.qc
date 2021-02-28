@@ -47,9 +47,7 @@ void w_chainsaw_precache(void)
 
 void w_chainsaw_updateammo(player pl)
 {
-#ifdef SERVER
-	Weapons_UpdateAmmo(pl, __NULL__, __NULL__, __NULL__);
-#endif
+	Weapons_UpdateAmmo(pl, -1, -1, -1);
 }
 string w_chainsaw_pmodel(void)
 {
@@ -64,10 +62,6 @@ void w_chainsaw_draw(void)
 {
 	Weapons_SetModel("models/v_chainsaw.mdl");
 	Weapons_ViewAnimation(CHAINSAW_DEPLOY);
-#ifdef SERVER
-	player pl = (player)self;
-	Weapons_UpdateAmmo(pl, __NULL__, __NULL__, __NULL__);
-#endif
 }
 
 void w_chainsaw_holster(void)
@@ -82,7 +76,7 @@ void w_chainsaw_primary(void)
 		return;
 	}
 
-	pl.a_ammo3 = 1;
+	pl.ammo_chainsaw_state = 1;
 	Weapons_ViewAnimation(CHAINSAW_CONTINUEFIRE);
 
 #ifdef SERVER
@@ -124,8 +118,8 @@ void w_chainsaw_release(void)
 		return;
 	}
 
-	if (pl.a_ammo3 == 1) {
-		pl.a_ammo3 = 0;
+	if (pl.ammo_chainsaw_state == 1) {
+		pl.ammo_chainsaw_state = 0;
 		pl.w_idle_next = 1.0f;
 		Weapons_ViewAnimation(CHAINSAW_STOPFIRE);
 		return;
@@ -163,7 +157,7 @@ void w_chainsaw_hudpic(int s, vector pos, float a)
 weapon_t w_chainsaw =
 {
 	.name		= "chainsaw",
-	.id			= ITEM_CHAINSAW,
+	.id		= ITEM_CHAINSAW,
 	.slot		= 0,
 	.slot_pos	= 2,
 	.draw		= w_chainsaw_draw,

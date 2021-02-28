@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -50,9 +50,7 @@ w_g3sg1_precache(void)
 void
 w_g3sg1_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.g3sg1_mag, pl.ammo_762mm, -1);
-#endif
 }
 
 string
@@ -116,35 +114,16 @@ w_g3sg1_primary(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-
-#ifdef CLIENT
-	if (!pl.a_ammo1) {
-		return;
-	}
-#else
 	if (!pl.g3sg1_mag) {
 		return;
 	}
-#endif
 
 	Cstrike_ShotMultiplierAdd(pl, 1);
 	float accuracy = Cstrike_CalculateAccuracy(pl, 200);
-
-#ifdef CLIENT
-	pl.a_ammo1--;
-	View_SetMuzzleflash(MUZZLE_RIFLE);
-#else
-	TraceAttack_SetPenetrationPower(2);
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 80, [accuracy,accuracy], WEAPON_G3SG1);
 	pl.g3sg1_mag--;
 
-	if (self.flags & FL_CROUCHING)
-		Animation_PlayerTopTemp(ANIM_SHOOT_RIFLE, 0.45f);
-	else
-		Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_RIFLE, 0.45f);
-
-	Sound_Play(pl, CHAN_WEAPON, "weapon_g3sg1.fire");
-#endif
+#ifdef CLIENT
+	View_SetMuzzleflash(MUZZLE_RIFLE);
 
 	int r = (float)input_sequence % 2;
 	switch (r) {
@@ -155,6 +134,17 @@ w_g3sg1_primary(void)
 		Weapons_ViewAnimation(SCOUT_SHOOT2);
 		break;
 	}
+#else
+	TraceAttack_SetPenetrationPower(2);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 80, [accuracy,accuracy], WEAPON_G3SG1);
+
+	if (self.flags & FL_CROUCHING)
+		Animation_PlayerTopTemp(ANIM_SHOOT_RIFLE, 0.45f);
+	else
+		Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_RIFLE, 0.45f);
+
+	Sound_Play(pl, CHAN_WEAPON, "weapon_g3sg1.fire");
+#endif
 
 	pl.w_attack_next = 0.25f;
 	pl.w_idle_next = pl.w_attack_next;
@@ -186,15 +176,6 @@ w_g3sg1_reload(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-
-#ifdef CLIENT
-	if (pl.a_ammo1 >= 20) {
-		return;
-	}
-	if (!pl.a_ammo2) {
-		return;
-	}
-#else
 	if (pl.g3sg1_mag >= 20) {
 		return;
 	}
@@ -202,11 +183,13 @@ w_g3sg1_reload(void)
 		return;
 	}
 
+#ifdef CLIENT
+	Weapons_ViewAnimation(G3SG1_RELOAD);
+#else
 	Weapons_ReloadWeapon(pl, player::g3sg1_mag, player::ammo_762mm, 20);
 	Weapons_UpdateAmmo(pl, pl.g3sg1_mag, pl.ammo_762mm, -1);
 #endif
 
-	Weapons_ViewAnimation(G3SG1_RELOAD);
 	pl.w_attack_next = 4.6f;
 	pl.w_idle_next = pl.w_attack_next;
 }
@@ -265,7 +248,7 @@ w_g3sg1_hudpic(int selected, vector pos, float a)
 weapon_t w_g3sg1 =
 {
 	.name		= "g3sg1",
-	.id			= ITEM_G3SG1,
+	.id		= ITEM_G3SG1,
 	.slot		= 0,
 	.slot_pos	= 13,
 	.allow_drop	= TRUE,

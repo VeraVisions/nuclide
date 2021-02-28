@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -51,9 +51,7 @@ w_ump45_precache(void)
 void
 w_ump45_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.ump45_mag, pl.ammo_45acp, -1);
-#endif
 }
 
 string
@@ -120,7 +118,7 @@ w_ump45_primary(void)
 
 	/* ammo check */
 #ifdef CLIENT
-	if (!pl.a_ammo1) {
+	if (!pl.ump45_mag) {
 		return;
 	}
 #else
@@ -133,7 +131,7 @@ w_ump45_primary(void)
 	float accuracy = Cstrike_CalculateAccuracy(pl, 210);
 
 #ifdef CLIENT
-	pl.a_ammo1--;
+	pl.ump45_mag--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 #else
 	TraceAttack_SetPenetrationPower(0);
@@ -175,10 +173,10 @@ w_ump45_reload(void)
 	}
 
 #ifdef CLIENT
-	if (pl.a_ammo1 >= 25) {
+	if (pl.ump45_mag >= 25) {
 		return;
 	}
-	if (!pl.a_ammo2) {
+	if (!pl.ammo_45acp) {
 		return;
 	}
 #else

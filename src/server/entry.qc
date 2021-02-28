@@ -230,8 +230,11 @@ PlayerPostThink(void)
 	}
 #endif
 
-	if (g_ents_initialized)
+	if (g_ents_initialized) {
+		player pl = (player)self;
 		g_grMode.PlayerPostFrame((base_player)self);
+		pl.EvaluateEntity();
+	}
 }
 
 /*

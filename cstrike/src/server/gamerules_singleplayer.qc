@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -50,7 +50,6 @@ CSSingleplayerRules::PlayerSpawn(base_player pl)
 	pl.velocity = [0,0,0];
 	pl.gravity = __NULL__;
 	pl.frame = 1;
-	pl.SendEntity = Player_SendEntity;
 	pl.SendFlags = UPDATE_ALL;
 	pl.customphysics = Empty;
 	pl.iBleeds = TRUE;

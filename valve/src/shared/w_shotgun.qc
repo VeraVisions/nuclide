@@ -60,9 +60,7 @@ void w_shotgun_precache(void)
 }
 void w_shotgun_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.shotgun_mag, pl.ammo_buckshot, -1);
-#endif
 }
 string w_shotgun_wmodel(void)
 {
@@ -112,20 +110,14 @@ void w_shotgun_primary(void)
 		return;
 	}
 
-	if (pl.a_ammo3 > SHOTTY_IDLE) {
+	if (pl.ammo_shotgun_state > SHOTTY_IDLE) {
 		return;
 	}
 
 	/* Ammo check */
-#ifdef SERVER
 	if (pl.shotgun_mag <= 0) {
 		return;
 	}
-#else
-	if (pl.a_ammo1 <= 0) {
-		return;
-	}
-#endif
 
 #ifdef SERVER
 	/* Singleplayer is more accurate */
@@ -135,13 +127,13 @@ void w_shotgun_primary(void)
 		TraceAttack_FireBullets(4, pl.origin + pl.view_ofs, Skill_GetValue("plr_buckshot", 5), [0.08716,0.04362], WEAPON_SHOTGUN);
 	}
 	Sound_Play(pl, CHAN_WEAPON, "weapon_shotgun.single");
-	pl.shotgun_mag--;
 #else
 	View_SetMuzzleflash(MUZZLE_WEIRD);
-	Weapons_ViewPunchAngle([-5,0,0]);
-	pl.a_ammo1--;
-#endif
 	Weapons_ViewAnimation(SHOTGUN_FIRE1);
+	Weapons_ViewPunchAngle([-5,0,0]);
+#endif
+
+	pl.shotgun_mag--;
 
 	pl.w_attack_next = 0.75;
 	pl.w_idle_next = 2.5f;
@@ -153,20 +145,14 @@ void w_shotgun_secondary(void)
 		return;
 	}
 
-	if (pl.a_ammo3 > SHOTTY_IDLE) {
+	if (pl.ammo_shotgun_state > SHOTTY_IDLE) {
 		return;
 	}
 
 	/* Ammo check */
-#ifdef CLIENT
-	if (pl.a_ammo1 <= 1) {
-		return;
-	}
-#else
 	if (pl.shotgun_mag <= 1) {
 		return;
 	}
-#endif
 
 #ifdef SERVER
 	/* Singleplayer is more accurate */
@@ -176,13 +162,13 @@ void w_shotgun_secondary(void)
 		TraceAttack_FireBullets(8, pl.origin + pl.view_ofs, 5, [0.17365,0.04362], WEAPON_SHOTGUN);
 	}
 	Sound_Play(pl, CHAN_WEAPON, "weapon_shotgun.double");
-	pl.shotgun_mag -= 2;
 	Weapons_UpdateAmmo(pl, pl.shotgun_mag, pl.ammo_buckshot, __NULL__);
 #else
-	Weapons_ViewPunchAngle([-10,0,0]);
-	pl.a_ammo1 -= 2;
-#endif
 	Weapons_ViewAnimation(SHOTGUN_FIRE2);
+	Weapons_ViewPunchAngle([-10,0,0]);
+#endif
+
+	pl.shotgun_mag -= 2;
 	pl.w_attack_next = 1.5f;
 	pl.w_idle_next = 2.5f;
 }
@@ -190,26 +176,18 @@ void w_shotgun_secondary(void)
 void w_shotgun_reload(void)
 {
 	player pl = (player)self;
-#ifdef CLIENT
-	if (pl.a_ammo1 >= 8) {
-		return;
-	}
-	if (pl.a_ammo2 <= 0) { 
-		return;
-	}
-#else
+
 	if (pl.shotgun_mag >= 8) {
 		return;
 	}
 	if (pl.ammo_buckshot <= 0) {
 		return;
 	}
-#endif
-	
-	if (pl.a_ammo3 > SHOTTY_IDLE) {
+
+	if (pl.ammo_shotgun_state > SHOTTY_IDLE) {
 		return;
 	}
-	pl.a_ammo3 = SHOTTY_RELOAD_START;
+	pl.ammo_shotgun_state = SHOTTY_RELOAD_START;
 	pl.w_idle_next = 0.0f;
 }
 
@@ -219,7 +197,7 @@ void w_shotgun_release(void)
 
 	/* auto-reload if need be */
 	if (pl.w_attack_next <= 0.0)
-	if (pl.a_ammo3 == SHOTTY_IDLE && pl.a_ammo1 == 0 && pl.a_ammo2 > 0) {
+	if (pl.ammo_shotgun_state == SHOTTY_IDLE && pl.shotgun_mag == 0 && pl.ammo_buckshot > 0) {
 		Weapons_Reload();
 		return;
 	}
@@ -228,7 +206,7 @@ void w_shotgun_release(void)
 		return;
 	}
 
-	if (pl.a_ammo3 == SHOTTY_IDLE) {
+	if (pl.ammo_shotgun_state == SHOTTY_IDLE) {
 		int r = (float)input_sequence % 3;
 		switch (r) {
 		case 1:
@@ -244,35 +222,28 @@ void w_shotgun_release(void)
 			pl.w_idle_next = 2.222222f;
 			break;
 		}
-	} else if (pl.a_ammo3 == SHOTTY_RELOAD_START) {
+	} else if (pl.ammo_shotgun_state == SHOTTY_RELOAD_START) {
 		Weapons_ViewAnimation(SHOTGUN_START_RELOAD);
-		pl.a_ammo3 = SHOTTY_RELOAD;
+		pl.ammo_shotgun_state = SHOTTY_RELOAD;
 		pl.w_idle_next = 0.65f;
-	} else if (pl.a_ammo3 == SHOTTY_RELOAD) {
+	} else if (pl.ammo_shotgun_state == SHOTTY_RELOAD) {
 		Weapons_ViewAnimation(SHOTGUN_RELOAD);
-#ifdef CLIENT
-		pl.a_ammo1++;
-		pl.a_ammo2--;
-
-		if (pl.a_ammo2 <= 0 || pl.a_ammo1 >= 8) {
-			pl.a_ammo3 = SHOTTY_RELOAD_END;
-		}
-#else
 		pl.shotgun_mag++;
 		pl.ammo_buckshot--;
-		Weapons_UpdateAmmo(pl, pl.shotgun_mag, pl.ammo_buckshot, pl.a_ammo3);
+#ifdef SERVER
 		Sound_Play(pl, CHAN_WEAPON, "weapon_shotgun.reload");
-		if (pl.ammo_buckshot <= 0 || pl.shotgun_mag >= 8) {
-			pl.a_ammo3 = SHOTTY_RELOAD_END;
-		}
 #endif
+		if (pl.ammo_buckshot <= 0 || pl.shotgun_mag >= 8) {
+			pl.ammo_shotgun_state = SHOTTY_RELOAD_END;
+		}
+		Weapons_UpdateAmmo(pl, pl.shotgun_mag, pl.ammo_buckshot, pl.ammo_shotgun_state);
 		pl.w_idle_next = 0.5f;	
-	} else if (pl.a_ammo3 == SHOTTY_RELOAD_END) {
+	} else if (pl.ammo_shotgun_state == SHOTTY_RELOAD_END) {
 		Weapons_ViewAnimation(SHOTGUN_PUMP);
 #ifdef SERVER
 		Sound_Play(pl, CHAN_WEAPON, "weapon_shotgun.cock");
 #endif
-		pl.a_ammo3 = SHOTTY_IDLE;
+		pl.ammo_shotgun_state = SHOTTY_IDLE;
 		pl.w_idle_next = 10.0f;
 		pl.w_attack_next = 0.5f;
 	}
@@ -298,11 +269,27 @@ float w_shotgun_aimanim(void)
 void w_shotgun_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.shotgun_mag == 0 && pl.ammo_buckshot == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
 	if (selected) {
-		drawsubpic(pos, [170,45], g_hud4_spr, [0,180/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
+		drawsubpic(pos, [170,45], g_hud4_spr, [0,180/256], [170/256,45/256], hud_col, a, DRAWFLAG_ADDITIVE);
 	} else {
-		drawsubpic(pos, [170,45], g_hud1_spr, [0,180/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
+		drawsubpic(pos, [170,45], g_hud1_spr, [0,180/256], [170/256,45/256], hud_col, a, DRAWFLAG_ADDITIVE);
 	}
+
+	if (pl.ammo_buckshot <= 0)
+		return;
+
+	float perc;
+	perc = pl.ammo_buckshot / MAX_A_BUCKSHOT;
+	drawfill(pos + [10,0], [20,4], hud_col, a, DRAWFLAG_NORMAL);
+	drawfill(pos + [10,0], [20 * perc,4], [0,1,0], a, DRAWFLAG_NORMAL);
 #endif
 }
 

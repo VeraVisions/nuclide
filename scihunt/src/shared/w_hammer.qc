@@ -48,9 +48,7 @@ void w_hammer_precache(void)
 
 void w_hammer_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, -1, -1);
-#endif
 }
 string w_hammer_pmodel(void)
 {
@@ -65,10 +63,6 @@ void w_hammer_draw(void)
 {
 	Weapons_SetModel("models/v_hammer.mdl");
 	Weapons_ViewAnimation(HAMMER_DRAW);
-#ifdef SERVER
-	player pl = (player)self;
-	Weapons_UpdateAmmo(pl, -1, -1, -1);
-#endif
 }
 
 void w_hammer_holster(void)
@@ -81,9 +75,9 @@ void w_hammer_primary(void)
 
 	if (!pl.w_attack_next) {
 		/* Hack */
-		if (pl.a_ammo1 != 1) {
+		if (pl.ammo_hammer_state != 1) {
 			Weapons_ViewAnimation(HAMMER_HOLSTER2);
-			pl.a_ammo1 = 1;
+			pl.ammo_hammer_state = 1;
 			pl.w_attack_next = 0.5f;
 		}
 	}
@@ -95,9 +89,9 @@ void w_hammer_secondary(void)
 
 	if (!pl.w_attack_next) {
 		/* Hack */
-		if (pl.a_ammo1 != 2) {
+		if (pl.ammo_hammer_state != 2) {
 			Weapons_ViewAnimation(HAMMER_HOLSTER3);
-			pl.a_ammo1 = 2;
+			pl.ammo_hammer_state = 2;
 			pl.w_attack_next = 0.5f;
 		}
 	}
@@ -123,7 +117,7 @@ void w_hammer_release(void)
 	traceline(src, src + v_forward * 64, FALSE, self);
 #endif
 
-	if (pl.a_ammo1 == 1) {
+	if (pl.ammo_hammer_state == 1) {
 	#ifdef SERVER
 		if (trace_ent.takedamage) {
 			hitsound = floor(random(1, 4));
@@ -150,7 +144,7 @@ void w_hammer_release(void)
 	#endif
 		Weapons_ViewAnimation(HAMMER_ATTACK1);
 		pl.w_attack_next = 1.0f;
-	} else if (pl.a_ammo1 == 2) {
+	} else if (pl.ammo_hammer_state == 2) {
 #ifdef SERVER
 	if (trace_ent.takedamage) {
 		hitsound = floor(random(1, 4));
@@ -167,7 +161,7 @@ void w_hammer_release(void)
 	}
 
 #ifdef SERVER
-	if (pl.a_ammo1 > 0) {
+	if (pl.ammo_hammer_state > 0) {
 		string snd = "sh/ham_swing.wav";
 		switch (hitsound) {
 		case 1:
@@ -188,7 +182,7 @@ void w_hammer_release(void)
 #endif
 
 	/* Reset the hack */
-	pl.a_ammo1 = 0;
+	pl.ammo_hammer_state = 0;
 
 	/* Pure cosmetics start here */
 	if (pl.w_idle_next) {
@@ -229,7 +223,7 @@ void w_hammer_hudpic(int s, vector pos, float a)
 weapon_t w_hammer =
 {
 	.name		= "hammer",
-	.id			= ITEM_HAMMER,
+	.id		= ITEM_HAMMER,
 	.slot		= 0,
 	.slot_pos	= 1,
 	.draw		= w_hammer_draw,

@@ -37,14 +37,11 @@ Predict_PreFrame(player pl)
 	pl.net_punchangle = pl.punchangle;
 	pl.net_w_attack_next = pl.w_attack_next;
 	pl.net_w_idle_next = pl.w_idle_next;
-	pl.net_ammo1 = pl.a_ammo1;
-	pl.net_ammo2 = pl.a_ammo2;
-	pl.net_ammo3 = pl.a_ammo3;
 	pl.net_weapontime = pl.weapontime;
 
 	/* this is where a game/mod would decide to add more prediction rollback
 	 * information. */
-	GamePredict_PreFrame(pl);
+	pl.PredictPreFrame();
 
 	/* run physics code for all the input frames which we've not heard back
 	 * from yet. This continues on in Player_ReceiveEntity! */
@@ -94,13 +91,10 @@ Predict_PostFrame(player pl)
 	pl.punchangle = pl.net_punchangle;
 	pl.w_attack_next = pl.net_w_attack_next;
 	pl.w_idle_next = pl.net_w_idle_next;
-	pl.a_ammo1 = pl.net_ammo1;
-	pl.a_ammo2 = pl.net_ammo2;
-	pl.a_ammo3 = pl.net_ammo3;
 	pl.weapontime = pl.net_weapontime;
 
 	/* give the game/mod a chance to roll back its values too */
-	GamePredict_PostFrame(pl);
+	pl.PredictPostFrame();
 
 	/* update bounds */
 	setorigin(pl, pl.origin);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -51,9 +51,7 @@ w_sg552_precache(void)
 void
 w_sg552_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.sg552_mag, pl.ammo_556mm, -1);
-#endif
 }
 
 string
@@ -117,36 +115,16 @@ w_sg552_primary(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-
-	/* ammo check */
-#ifdef CLIENT
-	if (!pl.a_ammo1) {
-		return;
-	}
-#else
 	if (!pl.sg552_mag) {
 		return;
 	}
-#endif
 
 	Cstrike_ShotMultiplierAdd(pl, 1);
 	float accuracy = Cstrike_CalculateAccuracy(pl, 220);
-
-#ifdef CLIENT
-	pl.a_ammo1--;
-	View_SetMuzzleflash(MUZZLE_RIFLE);
-#else
-	TraceAttack_SetPenetrationPower(1);
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 33, [accuracy,accuracy], WEAPON_SG552);
 	pl.sg552_mag--;
 
-	if (self.flags & FL_CROUCHING)
-		Animation_PlayerTopTemp(ANIM_SHOOT_RIFLE, 0.45f);
-	else
-		Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_RIFLE, 0.45f);
-
-	Sound_Play(pl, CHAN_WEAPON, "weapon_sg552.fire");
-#endif
+#ifdef CLIENT
+	View_SetMuzzleflash(MUZZLE_RIFLE);
 
 	int r = (float)input_sequence % 3;
 	switch (r) {
@@ -160,6 +138,17 @@ w_sg552_primary(void)
 		Weapons_ViewAnimation(SG552_SHOOT3);
 		break;
 	}
+#else
+	TraceAttack_SetPenetrationPower(1);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 33, [accuracy,accuracy], WEAPON_SG552);
+
+	if (self.flags & FL_CROUCHING)
+		Animation_PlayerTopTemp(ANIM_SHOOT_RIFLE, 0.45f);
+	else
+		Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_RIFLE, 0.45f);
+
+	Sound_Play(pl, CHAN_WEAPON, "weapon_sg552.fire");
+#endif
 
 	if (pl.viewzoom == 1.0f) {
 		pl.w_attack_next = 0.0825f;
@@ -193,15 +182,6 @@ w_sg552_reload(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-
-#ifdef CLIENT
-	if (pl.a_ammo1 >= 30) {
-		return;
-	}
-	if (!pl.a_ammo2) {
-		return;
-	}
-#else
 	if (pl.sg552_mag >= 30) {
 		return;
 	}
@@ -209,11 +189,13 @@ w_sg552_reload(void)
 		return;
 	}
 
+#ifdef CLIENT
+	Weapons_ViewAnimation(SG552_RELOAD);
+#else
 	Weapons_ReloadWeapon(pl, player::sg552_mag, player::ammo_556mm, 30);
 	Weapons_UpdateAmmo(pl, pl.sg552_mag, pl.ammo_556mm, -1);
 #endif
 
-	Weapons_ViewAnimation(SG552_RELOAD);
 	pl.w_attack_next = 3.2f;
 	pl.w_idle_next = pl.w_attack_next;
 }
@@ -274,7 +256,7 @@ w_sg552_hudpic(int selected, vector pos, float a)
 weapon_t w_sg552 =
 {
 	.name		= "sg552",
-	.id			= ITEM_SG552,
+	.id		= ITEM_SG552,
 	.slot		= 0,
 	.slot_pos	= 8,
 	.allow_drop	= TRUE,

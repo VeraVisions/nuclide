@@ -32,6 +32,7 @@ SV_SendChat(entity sender, string msg, entity eEnt, float fType)
 	WriteByte(MSG_MULTICAST, num_for_edict(sender) - 1); 
 	WriteByte(MSG_MULTICAST, sender.team); 
 	WriteString(MSG_MULTICAST, msg);
+
 	if (eEnt) {
 		msg_entity = eEnt;
 		multicast([0,0,0], MULTICAST_ONE);

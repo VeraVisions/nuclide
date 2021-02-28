@@ -73,9 +73,7 @@ w_m249_pickup(int new, int startammo)
 void
 w_m249_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.m249_mag, pl.ammo_556, -1);
-#endif
 }
 
 string
@@ -118,7 +116,7 @@ w_m249_release(void)
 
 	/* auto-reload if need be */
 	if (pl.w_attack_next <= 0.0)
-	if (pl.a_ammo1 == 0 && pl.a_ammo2 > 0) {
+	if (pl.m249_mag == 0 && pl.ammo_556 > 0) {
 		Weapons_Reload();
 		return;
 	}
@@ -127,9 +125,9 @@ w_m249_release(void)
 		return;
 	}
 
-	if (pl.a_ammo3 == 1) {
+	if (pl.mode_m249 == 1) {
 		Weapons_ViewAnimation(M249_RELOAD2);
-		pl.a_ammo3 = 0;
+		pl.mode_m249 = 0;
 		pl.w_attack_next = 2.45f;
 		pl.w_idle_next = 15.0f;
 		return;
@@ -150,7 +148,7 @@ w_m249_primary(void)
 	player pl = (player)self;
 	vector push;
 
-	if (pl.a_ammo3 == 1) {
+	if (pl.mode_m249 == 1) {
 		w_m249_release();
 		return;
 	}
@@ -161,7 +159,7 @@ w_m249_primary(void)
 
 	/* ammo check */
 #ifdef CLIENT
-	if (pl.a_ammo1 <= 0) {
+	if (pl.m249_mag <= 0) {
 		return;
 	}
 #else
@@ -178,7 +176,7 @@ w_m249_primary(void)
 
 	/* actual firing */
 #ifdef CLIENT
-	pl.a_ammo1--;
+	pl.m249_mag--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 	Weapons_ViewPunchAngle([-5,0,0]);
 #else
@@ -214,10 +212,10 @@ w_m249_reload(void)
 	}
 
 #ifdef CLIENT
-	if (pl.a_ammo1 >= 50) {
+	if (pl.m249_mag >= 50) {
 		return;
 	}
-	if (pl.a_ammo2 <= 0) {
+	if (pl.ammo_556 <= 0) {
 		return;
 	}
 	Weapons_ViewAnimation(M249_RELOAD1);
@@ -232,7 +230,7 @@ w_m249_reload(void)
 	Weapons_UpdateAmmo(pl, pl.m249_mag, pl.ammo_556, __NULL__);
 #endif
 
-	pl.a_ammo3 = 1;
+	pl.mode_m249 = 1;
 	pl.w_attack_next = pl.w_idle_next = 1.5f;
 }
 

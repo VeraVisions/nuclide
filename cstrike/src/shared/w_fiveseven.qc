@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -51,9 +51,7 @@ w_fiveseven_precache(void)
 void
 w_fiveseven_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.fiveseven_mag, pl.ammo_57mm, -1);
-#endif
 }
 
 string
@@ -121,37 +119,18 @@ w_fiveseven_primary(void)
 	if (pl.gflags & GF_SEMI_TOGGLED) {
 		return;
 	}
-
-#ifdef CLIENT
-	if (!pl.a_ammo1) {
-		return;
-	}
-#else
 	if (!pl.fiveseven_mag) {
 		return;
 	}
-#endif
 
 	Cstrike_ShotMultiplierAdd(pl, 1);
 	float accuracy = Cstrike_CalculateAccuracy(pl, 200);
-
-#ifdef CLIENT
-	pl.a_ammo1--;
-	View_SetMuzzleflash(MUZZLE_RIFLE);
-#else
-	TraceAttack_SetPenetrationPower(0);
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 25, [accuracy,accuracy], WEAPON_FIVESEVEN);
 	pl.fiveseven_mag--;
 
-	if (self.flags & FL_CROUCHING)
-		Animation_PlayerTopTemp(ANIM_SHOOT_ONEHAND, 0.45f);
-	else
-		Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_ONEHAND, 0.45f);
+#ifdef CLIENT
+	View_SetMuzzleflash(MUZZLE_RIFLE);
 
-	Sound_Play(pl, CHAN_WEAPON, "weapon_fiveseven.fire");
-#endif
-
-	if (pl.a_ammo1 <= 0) {
+	if (pl.fiveseven_mag <= 0) {
 		Weapons_ViewAnimation(FIVESEVEN_SHOOT_EMPTY);
 	} else {
 		int r = (float)input_sequence % 2;
@@ -164,6 +143,17 @@ w_fiveseven_primary(void)
 			break;
 		}
 	}
+#else
+	TraceAttack_SetPenetrationPower(0);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 25, [accuracy,accuracy], WEAPON_FIVESEVEN);
+
+	if (self.flags & FL_CROUCHING)
+		Animation_PlayerTopTemp(ANIM_SHOOT_ONEHAND, 0.45f);
+	else
+		Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_ONEHAND, 0.45f);
+
+	Sound_Play(pl, CHAN_WEAPON, "weapon_fiveseven.fire");
+#endif
 
 	pl.gflags |= GF_SEMI_TOGGLED;
 	pl.w_attack_next = 0.15f;
@@ -178,15 +168,6 @@ w_fiveseven_reload(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-
-#ifdef CLIENT
-	if (pl.a_ammo1 >= 20) {
-		return;
-	}
-	if (!pl.a_ammo2) {
-		return;
-	}
-#else
 	if (pl.fiveseven_mag >= 20) {
 		return;
 	}
@@ -194,11 +175,12 @@ w_fiveseven_reload(void)
 		return;
 	}
 
+#ifdef CLIENT
+	Weapons_ViewAnimation(FIVESEVEN_RELOAD);
+#else
 	Weapons_ReloadWeapon(pl, player::fiveseven_mag, player::ammo_57mm, 20);
-	Weapons_UpdateAmmo(pl, pl.fiveseven_mag, pl.ammo_57mm, -1);
 #endif
 
-	Weapons_ViewAnimation(FIVESEVEN_RELOAD);
 	pl.w_attack_next = 3.1f;
 	pl.w_idle_next = pl.w_attack_next;
 }
@@ -254,7 +236,7 @@ w_fiveseven_hudpic(int selected, vector pos, float a)
 weapon_t w_fiveseven =
 {
 	.name		= "fiveseven",
-	.id			= ITEM_FIVESEVEN,
+	.id		= ITEM_FIVESEVEN,
 	.slot		= 1,
 	.slot_pos	= 5,
 	.allow_drop	= TRUE,

@@ -68,9 +68,7 @@ w_pipewrench_precache(void)
 void
 w_pipewrench_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, -1, -1);
-#endif
 }
 
 string
@@ -190,9 +188,9 @@ w_pipewrench_secondary(void)
 
 	if (!pl.w_attack_next) {
 		/* Hack */
-		if (pl.a_ammo1 != 1) {
+		if (pl.mode_wrench != 1) {
 			Weapons_ViewAnimation(PIPE_ATTACKBIGWIND);
-			pl.a_ammo1 = 1;
+			pl.mode_wrench = 1;
 			pl.w_attack_next = 0.75f;
 		}
 	}
@@ -209,7 +207,7 @@ w_pipewrench_release(void)
 		return;
 	}
 
-	if (pl.a_ammo1 == 1) {
+	if (pl.mode_wrench == 1) {
 	#ifdef SERVER
 		int hitsound = 0;
 		string snd;
@@ -258,7 +256,7 @@ w_pipewrench_release(void)
 #endif
 		pl.w_attack_next = 1.0f;
 		pl.w_idle_next = 10.0f;
-		pl.a_ammo1 = 0;
+		pl.mode_wrench = 0;
 	}
 
 	/* Pure cosmetics start here */
@@ -322,7 +320,7 @@ w_pipewrench_hudpic(int selected, vector pos, float a)
 weapon_t w_pipewrench =
 {
 	.name		= "pipewrench",
-	.id			= ITEM_PIPEWRENCH,
+	.id		= ITEM_PIPEWRENCH,
 	.slot		= 0,
 	.slot_pos	= 1,
 	.draw		= w_pipewrench_draw,

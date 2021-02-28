@@ -70,6 +70,18 @@ void Game_Input(void)
 			Weapons_AddItem(pl, WEAPON_SATCHEL, -1);
 			Weapons_AddItem(pl, WEAPON_TRIPMINE, -1);
 			Weapons_AddItem(pl, WEAPON_SNARK, -1);
+#ifdef GEARBOX
+			Weapons_AddItem(pl, WEAPON_PIPEWRENCH, -1);
+			Weapons_AddItem(pl, WEAPON_KNIFE, -1);
+			Weapons_AddItem(pl, WEAPON_GRAPPLE, -1);
+			Weapons_AddItem(pl, WEAPON_EAGLE, -1);
+			Weapons_AddItem(pl, WEAPON_PENGUIN, -1);
+			Weapons_AddItem(pl, WEAPON_M249, -1);
+			Weapons_AddItem(pl, WEAPON_DISPLACER, -1);
+			Weapons_AddItem(pl, WEAPON_SNIPERRIFLE, -1);
+			Weapons_AddItem(pl, WEAPON_SPORELAUNCHER, -1);
+			Weapons_AddItem(pl, WEAPON_SHOCKRIFLE, -1);
+#endif
 		}
 
 		if (self.impulse == 102) {

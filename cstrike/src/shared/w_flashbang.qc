@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -52,9 +52,7 @@ w_flashbang_precache(void)
 void
 w_flashbang_updateammo(player pl)
 {
-#ifdef SERVER
-	Weapons_UpdateAmmo(pl, -1, pl.ammo_fbgrenade, pl.a_ammo3);
-#endif
+	Weapons_UpdateAmmo(pl, -1, pl.ammo_fbgrenade, pl.mode_temp);
 }
 
 int
@@ -93,8 +91,10 @@ w_flashbang_deathmsg(void)
 void
 w_flashbang_draw(void)
 {
+	player pl = (player)self;
 	Weapons_SetModel("models/v_flashbang.mdl");
 	Weapons_ViewAnimation(FLASHBANG_DRAW);
+	pl.mode_temp = 0;
 }
 
 #ifdef SERVER
@@ -159,24 +159,18 @@ w_flashbang_primary(void)
 	}
 	
 	/* We're abusing this network variable for the holding check */
-	if (pl.a_ammo3 > 0) {
+	if (pl.mode_temp > 0) {
 		return;
 	}
 
 	/* Ammo check */
-#ifdef CLIENT
-	if (pl.a_ammo2 <= 0) {
-		return;
-	}
-#else
 	if (pl.ammo_fbgrenade <= 0) {
 		return;
 	}
-#endif
 
 	Weapons_ViewAnimation(FLASHBANG_PULLPIN);
 
-	pl.a_ammo3 = 1;
+	pl.mode_temp = 1;
 	pl.w_attack_next = 0.975f;
 	pl.w_idle_next = pl.w_attack_next;
 }
@@ -190,18 +184,17 @@ w_flashbang_release(void)
 		return;
 	}
 
-	if (pl.a_ammo3 == 1) {
+	if (pl.mode_temp == 1) {
+		pl.ammo_fbgrenade--;
 #ifdef CLIENT
-		pl.a_ammo2--;
 		Weapons_ViewAnimation(FLASHBANG_THROW);
 #else
-		pl.ammo_fbgrenade--;
 		w_flashbang_throw();
 #endif
-		pl.a_ammo3 = 2;
+		pl.mode_temp = 2;
 		pl.w_attack_next = 1.0f;
 		pl.w_idle_next = 0.5f;
-	} else if (pl.a_ammo3 == 2) {
+	} else if (pl.mode_temp == 2) {
 #ifdef CLIENT
 		Weapons_ViewAnimation(FLASHBANG_DRAW);
 #else
@@ -211,7 +204,7 @@ w_flashbang_release(void)
 #endif
 		pl.w_attack_next = 0.5f;
 		pl.w_idle_next = 0.5f;
-		pl.a_ammo3 = 0;
+		pl.mode_temp = 0;
 	}
 }
 
@@ -265,7 +258,7 @@ w_flashbang_hudpic(int selected, vector pos, float a)
 weapon_t w_flashbang =
 {
 	.name		= "flashbang",
-	.id			= ITEM_FLASHBANG,
+	.id		= ITEM_FLASHBANG,
 	.slot		= 3,
 	.slot_pos	= 1,
 	.allow_drop	= FALSE,

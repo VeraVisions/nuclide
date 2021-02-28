@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -52,9 +52,7 @@ w_ak47_precache(void)
 void
 w_ak47_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.ak47_mag, pl.ammo_762mm, -1);
-#endif
 }
 
 string
@@ -118,35 +116,16 @@ w_ak47_primary(void)
 	if (pl.w_attack_next > 0) {
 		return;
 	}
-
-#ifdef CLIENT
-	if (!pl.a_ammo1) {
-		return;
-	}
-#else
 	if (!pl.ak47_mag) {
 		return;
 	}
-#endif
 
 	Cstrike_ShotMultiplierAdd(pl, 1);
 	float accuracy = Cstrike_CalculateAccuracy(pl, 200);
-
-#ifdef CLIENT
-	pl.a_ammo1--;
-	View_SetMuzzleflash(MUZZLE_RIFLE);
-#else
-	TraceAttack_SetPenetrationPower(1);
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 36, [accuracy,accuracy], WEAPON_AK47);
 	pl.ak47_mag--;
 
-	if (self.flags & FL_CROUCHING)
-		Animation_PlayerTopTemp(ANIM_SHOOT_AK47, 0.45f);
-	else
-		Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_AK47, 0.45f);
-	
-	Sound_Play(pl, CHAN_WEAPON, "weapon_ak47.fire");
-#endif
+#ifdef CLIENT
+	View_SetMuzzleflash(MUZZLE_RIFLE);
 
 	int r = (float)input_sequence % 3;
 	switch (r) {
@@ -160,6 +139,17 @@ w_ak47_primary(void)
 		Weapons_ViewAnimation(AK47_SHOOT3);
 		break;
 	}
+#else
+	TraceAttack_SetPenetrationPower(1);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 36, [accuracy,accuracy], WEAPON_AK47);
+
+	if (self.flags & FL_CROUCHING)
+		Animation_PlayerTopTemp(ANIM_SHOOT_AK47, 0.45f);
+	else
+		Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_AK47, 0.45f);
+	
+	Sound_Play(pl, CHAN_WEAPON, "weapon_ak47.fire");
+#endif
 
 	pl.w_attack_next = 0.0955f;
 	pl.w_idle_next = pl.w_attack_next;
@@ -173,15 +163,6 @@ w_ak47_reload(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-
-#ifdef CLIENT
-	if (pl.a_ammo1 >= 30) {
-		return;
-	}
-	if (!pl.a_ammo2) {
-		return;
-	}
-#else
 	if (pl.ak47_mag >= 30) {
 		return;
 	}
@@ -189,10 +170,11 @@ w_ak47_reload(void)
 		return;
 	}
 
-	Weapons_ReloadWeapon(pl, player::ak47_mag, player::ammo_762mm, 30);
-	Weapons_UpdateAmmo(pl, pl.ak47_mag, pl.ammo_762mm, -1);
-#endif
+#ifdef CLIENT
 	Weapons_ViewAnimation(AK47_RELOAD);
+#else
+	Weapons_ReloadWeapon(pl, player::ak47_mag, player::ammo_762mm, 30);
+#endif
 
 	pl.w_attack_next = 2.4f;
 	pl.w_idle_next = pl.w_attack_next;
@@ -249,7 +231,7 @@ w_ak47_hudpic(int selected, vector pos, float a)
 weapon_t w_ak47 =
 {
 	.name		= "ak47",
-	.id			= ITEM_AK47,
+	.id		= ITEM_AK47,
 	.slot		= 0,
 	.slot_pos	= 7,
 	.allow_drop	= TRUE,

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -45,6 +45,7 @@ enum
 	ELITES_RELOAD,
 	ELITES_DRAW
 };
+
 void
 w_elites_precache(void)
 {
@@ -60,9 +61,7 @@ w_elites_precache(void)
 void
 w_elites_updateammo(player pl)
 {
-#ifdef SERVER
-	Weapons_UpdateAmmo(pl, pl.elites_mag, pl.ammo_9mm, pl.a_ammo3);
-#endif
+	Weapons_UpdateAmmo(pl, pl.elites_mag, pl.ammo_9mm, -1);
 }
 
 string
@@ -111,6 +110,7 @@ w_elites_draw(void)
 	player pl = (player)self;
 	Weapons_SetModel("models/v_elite.mdl");
 	Weapons_ViewAnimation(ELITES_DRAW);
+	pl.mode_temp = 0;
 
 #ifdef CLIENT
 	pl.cs_cross_mindist = 4;
@@ -126,52 +126,25 @@ w_elites_primary(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-
 	if (pl.gflags & GF_SEMI_TOGGLED) {
 		return;
 	}
-
-#ifdef CLIENT
-	if (!pl.a_ammo1) {
-		return;
-	}
-#else
 	if (!pl.elites_mag) {
 		return;
 	}
-#endif
 
-	pl.a_ammo3 = 1 - pl.a_ammo3;
+	pl.mode_temp = 1 - pl.mode_temp;
 
 	Cstrike_ShotMultiplierAdd(pl, 1);
 	float accuracy = Cstrike_CalculateAccuracy(pl, 200);
-
-#ifdef CLIENT
-	pl.a_ammo1--;
-	View_SetMuzzleflash(MUZZLE_RIFLE);
-#else
-	TraceAttack_SetPenetrationPower(0);
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 45, [accuracy,accuracy], WEAPON_ELITES);
 	pl.elites_mag--;
 
-	if (self.flags & FL_CROUCHING) {
-		if (pl.a_ammo3)
-			Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT2_DUALPISTOLS, 0.45f);
-		else
-			Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_DUALPISTOLS, 0.45f);
-	} else {
-		if (pl.a_ammo3)
-			Animation_PlayerTopTemp(ANIM_SHOOT2_DUALPISTOLS, 0.45f);
-		else
-			Animation_PlayerTopTemp(ANIM_SHOOT_DUALPISTOLS, 0.45f);
-	}
-
-	Sound_Play(pl, CHAN_WEAPON, "weapon_elites.fire");
-#endif
+#ifdef CLIENT
+	View_SetMuzzleflash(MUZZLE_RIFLE);
 
 	int r = (float)input_sequence % 5;
-	if (pl.a_ammo3) {
-		if (pl.a_ammo1 <= 0) {
+	if (pl.mode_temp) {
+		if (pl.elites_mag <= 0) {
 			Weapons_ViewAnimation(ELITES_SHOOT_LEFTLAST);
 		} else {
 			switch (r) {
@@ -193,7 +166,7 @@ w_elites_primary(void)
 			}
 		}
 	} else {
-		if (pl.a_ammo1 <= 0) {
+		if (pl.elites_mag <= 0) {
 			Weapons_ViewAnimation(ELITES_SHOOT_RIGHTLAST);
 		} else {
 			switch (r) {
@@ -215,6 +188,24 @@ w_elites_primary(void)
 			}
 		}
 	}
+#else
+	TraceAttack_SetPenetrationPower(0);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 45, [accuracy,accuracy], WEAPON_ELITES);
+
+	if (self.flags & FL_CROUCHING) {
+		if (pl.mode_temp)
+			Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT2_DUALPISTOLS, 0.45f);
+		else
+			Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_DUALPISTOLS, 0.45f);
+	} else {
+		if (pl.mode_temp)
+			Animation_PlayerTopTemp(ANIM_SHOOT2_DUALPISTOLS, 0.45f);
+		else
+			Animation_PlayerTopTemp(ANIM_SHOOT_DUALPISTOLS, 0.45f);
+	}
+
+	Sound_Play(pl, CHAN_WEAPON, "weapon_elites.fire");
+#endif
 
 	pl.gflags |= GF_SEMI_TOGGLED;
 	pl.w_attack_next = 0.15f;
@@ -229,15 +220,6 @@ w_elites_reload(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-
-#ifdef CLIENT
-	if (pl.a_ammo1 >= 30) {
-		return;
-	}
-	if (!pl.a_ammo2) {
-		return;
-	}
-#else
 	if (pl.elites_mag >= 30) {
 		return;
 	}
@@ -245,11 +227,12 @@ w_elites_reload(void)
 		return;
 	}
 
+#ifdef CLIENT
+	Weapons_ViewAnimation(ELITES_RELOAD);
+#else
 	Weapons_ReloadWeapon(pl, player::elites_mag, player::ammo_9mm, 30);
-	Weapons_UpdateAmmo(pl, pl.elites_mag, pl.ammo_9mm, -1);
 #endif
 
-	Weapons_ViewAnimation(ELITES_RELOAD);
 	pl.w_attack_next = 4.6f;
 	pl.w_idle_next = pl.w_attack_next;
 }
@@ -305,7 +288,7 @@ w_elites_hudpic(int selected, vector pos, float a)
 weapon_t w_elites =
 {
 	.name		= "elites",
-	.id			= ITEM_ELITES,
+	.id		= ITEM_ELITES,
 	.slot		= 1,
 	.slot_pos	= 4,
 	.allow_drop	= TRUE,

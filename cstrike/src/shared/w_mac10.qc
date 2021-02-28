@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -51,9 +51,7 @@ w_mac10_precache(void)
 void
 w_mac10_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.mac10_mag, pl.ammo_45acp, -1);
-#endif
 }
 
 string
@@ -117,35 +115,16 @@ w_mac10_primary(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-
-#ifdef CLIENT
-	if (!pl.a_ammo1) {
-		return;
-	}
-#else
 	if (!pl.mac10_mag) {
 		return;
 	}
-#endif
 
 	Cstrike_ShotMultiplierAdd(pl, 1);
 	float accuracy = Cstrike_CalculateAccuracy(pl, 200);
-
-#ifdef CLIENT
-	pl.a_ammo1--;
-	View_SetMuzzleflash(MUZZLE_RIFLE);
-#else
-	TraceAttack_SetPenetrationPower(0);
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 29, [accuracy,accuracy], WEAPON_MAC10);
 	pl.mac10_mag--;
 
-	if (self.flags & FL_CROUCHING)
-		Animation_PlayerTopTemp(ANIM_SHOOT_MP5, 0.45f);
-	else
-		Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_MP5, 0.45f);
-
-	Sound_Play(pl, CHAN_WEAPON, "weapon_mac10.fire");
-#endif
+#ifdef CLIENT
+	View_SetMuzzleflash(MUZZLE_RIFLE);
 
 	int r = (float)input_sequence % 3;
 	switch (r) {
@@ -159,6 +138,17 @@ w_mac10_primary(void)
 		Weapons_ViewAnimation(MAC10_SHOOT3);
 		break;
 	}
+#else
+	TraceAttack_SetPenetrationPower(0);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 29, [accuracy,accuracy], WEAPON_MAC10);
+
+	if (self.flags & FL_CROUCHING)
+		Animation_PlayerTopTemp(ANIM_SHOOT_MP5, 0.45f);
+	else
+		Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_MP5, 0.45f);
+
+	Sound_Play(pl, CHAN_WEAPON, "weapon_mac10.fire");
+#endif
 
 	pl.w_attack_next = 0.07f;
 	pl.w_idle_next = pl.w_attack_next;
@@ -172,15 +162,6 @@ w_mac10_reload(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-
-#ifdef CLIENT
-	if (pl.a_ammo1 >= 30) {
-		return;
-	}
-	if (!pl.a_ammo2) {
-		return;
-	}
-#else
 	if (pl.mac10_mag >= 30) {
 		return;
 	}
@@ -188,11 +169,13 @@ w_mac10_reload(void)
 		return;
 	}
 
+#ifdef CLIENT
+	Weapons_ViewAnimation(MAC10_RELOAD);
+#else
 	Weapons_ReloadWeapon(pl, player::mac10_mag, player::ammo_45acp, 30);
 	Weapons_UpdateAmmo(pl, pl.mac10_mag, pl.ammo_45acp, -1);
 #endif
 
-	Weapons_ViewAnimation(MAC10_RELOAD);
 	pl.w_attack_next = 3.2f;
 	pl.w_idle_next = pl.w_attack_next;
 }
@@ -248,7 +231,7 @@ w_mac10_hudpic(int selected, vector pos, float a)
 weapon_t w_mac10 =
 {
 	.name		= "mac10",
-	.id			= ITEM_MAC10,
+	.id		= ITEM_MAC10,
 	.slot		= 0,
 	.slot_pos	= 5,
 	.allow_drop	= TRUE,

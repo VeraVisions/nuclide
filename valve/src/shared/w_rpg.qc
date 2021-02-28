@@ -52,9 +52,7 @@ void w_rpg_precache(void)
 
 void w_rpg_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.rpg_mag, pl.ammo_rocket, -1);
-#endif
 }
 string w_rpg_wmodel(void)
 {
@@ -108,20 +106,14 @@ void w_rpg_primary(void)
 	}
 
 	/* Ammo check */
-#ifdef CLIENT
-	if (pl.a_ammo1 <= 0) {
-		return;
-	}
-#else
 	if (pl.rpg_mag <= 0) {
 		return;
 	}
-#endif
 
-	Weapons_ViewAnimation(RPG_FIRE2);
+	pl.rpg_mag--;
 
 #ifdef CLIENT
-	pl.a_ammo1--;
+	Weapons_ViewAnimation(RPG_FIRE2);
 	Weapons_ViewPunchAngle([-10,0,0]);
 #else
 	static void Rocket_Touch(void) {
@@ -162,13 +154,12 @@ void w_rpg_primary(void)
 	rocket.nextthink = time + 0.15f;
 	rocket.traileffectnum = particleeffectnum("weapon_rpg.trail");
 
-	if (pl.a_ammo3 > 0) {
+	if (pl.ammo_rpg_state > 0) {
 		rocket.weapon = 1;
 	}
 
 	setsize(rocket, [0,0,0], [0,0,0]);
 	Sound_Play(pl, CHAN_WEAPON, "weapon_rpg.shoot");
-	pl.rpg_mag--;
 #endif
 
 	pl.w_attack_next = 
@@ -178,28 +169,18 @@ void w_rpg_primary(void)
 void w_rpg_reload(void)
 {
 	player pl = (player)self;
-	
 
 	if (pl.w_attack_next > 0) {
 		return;
 	}
 
 	/* Ammo check */
-#ifdef CLIENT
-	if (pl.a_ammo1 >= 1) {
-		return;
-	}
-	if (pl.a_ammo2 <= 0) {
-		return;
-	}
-#else
 	if (pl.rpg_mag >= 1) {
 		return;
 	}
 	if (pl.ammo_rocket <= 0) {
 		return;
 	}
-#endif
 
 	/* Audio-Visual Bit */
 #ifdef CLIENT
@@ -218,7 +199,7 @@ void w_rpg_release(void)
 
 	/* auto-reload if need be */
 	if (pl.w_attack_next <= 0.0)
-	if (pl.a_ammo1 == 0 && pl.a_ammo2 > 0) {
+	if (pl.rpg_mag == 0 && pl.ammo_rocket > 0) {
 		Weapons_Reload();
 		return;
 	}
@@ -255,9 +236,9 @@ void w_rpg_secondary(void)
 	}
 
 	/* toggle laser */
-	pl.a_ammo3 = 1 - pl.a_ammo3;
+	pl.ammo_rpg_state = 1 - pl.ammo_rpg_state;
 
-	pl.w_attack_next = 1.0f;
+	pl.w_attack_next = 0.25f;
 	w_rpg_release();
 }
 
@@ -269,11 +250,27 @@ float w_rpg_aimanim(void)
 void w_rpg_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.rpg_mag == 0 && pl.ammo_rocket == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
 	if (selected) {
-		drawsubpic(pos, [170,45], g_hud5_spr, [0,45/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
+		drawsubpic(pos, [170,45], g_hud5_spr, [0,45/256], [170/256,45/256], hud_col, a, DRAWFLAG_ADDITIVE);
 	} else {
-		drawsubpic(pos, [170,45], g_hud2_spr, [0,45/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
+		drawsubpic(pos, [170,45], g_hud2_spr, [0,45/256], [170/256,45/256], hud_col, a, DRAWFLAG_ADDITIVE);
 	}
+
+	if (pl.ammo_rocket <= 0)
+		return;
+
+	float perc;
+	perc = pl.ammo_rocket / MAX_A_ROCKET;
+	drawfill(pos + [10,0], [20,4], hud_col, a, DRAWFLAG_NORMAL);
+	drawfill(pos + [10,0], [20 * perc,4], [0,1,0], a, DRAWFLAG_NORMAL);
 #endif
 }
 
@@ -285,7 +282,7 @@ void w_rpg_hud(void)
 	vector aicon_pos;
 
 	/* crosshair/laser */
-	if (pl.a_ammo3 == 1) {
+	if (pl.ammo_rpg_state == 1) {
 		float lerp;
 		vector jitter;
 		Weapons_MakeVectors();
@@ -366,4 +363,3 @@ void weapon_rpg(void) {
 	Weapons_InitItem(WEAPON_RPG);
 }
 #endif
-

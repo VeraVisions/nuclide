@@ -89,11 +89,11 @@ void Weapons_Draw(void)
 	if (g_weapons[i].draw != __NULL__) {
 		g_weapons[i].draw();
 	}
-#ifdef SERVER
+
 	if (g_weapons[i].updateammo != __NULL__) {
 		g_weapons[i].updateammo(pl);
 	}
-#endif
+
 }
 
 void Weapons_Holster(void)
@@ -117,11 +117,19 @@ void Weapons_Primary(void)
 		g_weapons[i].primary();
 	}
 
-#ifdef SERVER
 	if (g_weapons[i].updateammo != __NULL__) {
 		g_weapons[i].updateammo(pl);
 	}
-#endif
+}
+
+void Weapons_AmmoUpdate(entity target)
+{
+	player pl = (player)target;
+	int i = pl.activeweapon;
+
+	if (g_weapons[i].updateammo != __NULL__) {
+		g_weapons[i].updateammo(pl);
+	}
 }
 
 void Weapons_Secondary(void)
@@ -135,11 +143,11 @@ void Weapons_Secondary(void)
 	if (g_weapons[i].secondary != __NULL__) {
 		g_weapons[i].secondary();
 	}
-#ifdef SERVER
+
 	if (g_weapons[i].updateammo != __NULL__) {
 		g_weapons[i].updateammo(pl);
 	}
-#endif
+
 }
 
 void Weapons_Reload(void)
@@ -153,11 +161,10 @@ void Weapons_Reload(void)
 	if (g_weapons[i].reload != __NULL__) {
 		g_weapons[i].reload();
 	}
-#ifdef SERVER
+
 	if (g_weapons[i].updateammo != __NULL__) {
 		g_weapons[i].updateammo(pl);
 	}
-#endif
 }
 
 void Weapons_Release(void)
@@ -285,4 +292,30 @@ int Weapons_IsPresent(player pl, int w)
 	} else {
 		return FALSE;
 	}
+}
+/*
+=================
+Weapons_UpdateAmmo
+
+Sets .a_ammoX fields and clamps them so they can be networked as a single byte.
+=================
+*/
+void
+Weapons_UpdateAmmo(base_player pl, int a1, int a2, int a3)
+{
+	/* no change */
+	if (a1 == -1) {
+		a1 = pl.a_ammo1;
+	}
+	if (a2 == -1) {
+		a2 = pl.a_ammo2;
+	}
+	if (a3 == -1) {
+		a3 = pl.a_ammo3;
+	}
+
+	/* networked as bytes, since we don't need more. Clamp to avoid errors */
+	pl.a_ammo1 = bound(0, a1, 255);
+	pl.a_ammo2 = bound(0, a2, 255);
+	pl.a_ammo3 = bound(0, a3, 255);
 }

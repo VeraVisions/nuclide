@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -52,9 +52,7 @@ w_aug_precache(void)
 void
 w_aug_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.aug_mag, pl.ammo_762mm, -1);
-#endif
 }
 
 string
@@ -118,35 +116,16 @@ w_aug_primary(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-
-#ifdef CLIENT
-	if (!pl.a_ammo1) {
-		return;
-	}
-#else
 	if (!pl.aug_mag) {
 		return;
 	}
-#endif
 
 	Cstrike_ShotMultiplierAdd(pl, 1);
 	float accuracy = Cstrike_CalculateAccuracy(pl, 215);
+	pl.aug_mag--;
 
 #ifdef CLIENT
-	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
-#else
-	pl.aug_mag--;
-	TraceAttack_SetPenetrationPower(1);
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 32, [accuracy,accuracy], WEAPON_AUG);
-
-	if (self.flags & FL_CROUCHING)
-		Animation_PlayerTopTemp(ANIM_SHOOT_RIFLE, 0.45f);
-	else
-		Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_RIFLE, 0.45f);
-
-	Sound_Play(pl, CHAN_WEAPON, "weapon_aug.fire");
-#endif
 
 	int r = (float)input_sequence % 3;
 	switch (r) {
@@ -160,6 +139,17 @@ w_aug_primary(void)
 		Weapons_ViewAnimation(AUG_SHOOT3);
 		break;
 	}
+#else
+	TraceAttack_SetPenetrationPower(1);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 32, [accuracy,accuracy], WEAPON_AUG);
+
+	if (self.flags & FL_CROUCHING)
+		Animation_PlayerTopTemp(ANIM_SHOOT_RIFLE, 0.45f);
+	else
+		Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_RIFLE, 0.45f);
+
+	Sound_Play(pl, CHAN_WEAPON, "weapon_aug.fire");
+#endif
 
 	if (pl.viewzoom == 1.0f) {
 		pl.w_attack_next = 0.0825f;
@@ -193,15 +183,6 @@ w_aug_reload(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-
-#ifdef CLIENT
-	if (pl.a_ammo1 >= 30) {
-		return;
-	}
-	if (!pl.a_ammo2) {
-		return;
-	}
-#else
 	if (pl.aug_mag >= 30) {
 		return;
 	}
@@ -209,10 +190,11 @@ w_aug_reload(void)
 		return;
 	}
 
-	Weapons_ReloadWeapon(pl, player::aug_mag, player::ammo_762mm, 30);
-	Weapons_UpdateAmmo(pl, pl.aug_mag, pl.ammo_762mm, -1);
-#endif
+#ifdef CLIENT
 	Weapons_ViewAnimation(AUG_RELOAD);
+#else
+	Weapons_ReloadWeapon(pl, player::aug_mag, player::ammo_762mm, 30);
+#endif
 
 	pl.w_attack_next = 3.3f;
 	pl.w_idle_next = pl.w_attack_next;
@@ -274,7 +256,7 @@ w_aug_hudpic(int selected, vector pos, float a)
 weapon_t w_aug =
 {
 	.name		= "aug",
-	.id			= ITEM_AUG,
+	.id		= ITEM_AUG,
 	.slot		= 0,
 	.slot_pos	= 10,
 	.allow_drop	= TRUE,

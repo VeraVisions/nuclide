@@ -53,9 +53,7 @@ w_crowbar_precache(void)
 void
 w_crowbar_updateammo(player pl)
 {
-#ifdef SERVER
-	Weapons_UpdateAmmo(pl, -1, -1, -1);
-#endif
+
 }
 
 string

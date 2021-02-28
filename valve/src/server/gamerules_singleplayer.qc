@@ -77,7 +77,7 @@ HLSingleplayerRules::PlayerSpawn(base_player pl)
 	pl.velocity = [0,0,0];
 	pl.gravity = __NULL__;
 	pl.frame = 1;
-	pl.SendEntity = Player_SendEntity;
+	//pl.SendEntity = Player_SendEntity;
 	pl.SendFlags = UPDATE_ALL;
 	pl.customphysics = Empty;
 	pl.iBleeds = TRUE;

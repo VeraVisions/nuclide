@@ -59,9 +59,7 @@ w_knife_precache(void)
 void 
 w_knife_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, -1, -1);
-#endif
 }
 
 string

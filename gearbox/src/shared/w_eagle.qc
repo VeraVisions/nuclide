@@ -74,9 +74,7 @@ w_eagle_pickup(int new, int startammo)
 void
 w_eagle_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.eagle_mag, pl.ammo_357, -1);
-#endif
 }
 
 string
@@ -120,7 +118,7 @@ w_eagle_release(void)
 
 	/* auto-reload if need be */
 	if (pl.w_attack_next <= 0.0)
-	if (pl.a_ammo1 == 0 && pl.a_ammo2 > 0) {
+	if (pl.eagle_mag == 0 && pl.ammo_357 > 0) {
 		Weapons_Reload();
 		return;
 	}
@@ -131,7 +129,7 @@ w_eagle_release(void)
 
 	/* these idles don't support the 'empty' animation style */
 #ifdef CLIENT
-	if (pl.a_ammo1 <= 0) {
+	if (pl.eagle_mag <= 0) {
 		return;
 	}
 #else
@@ -170,7 +168,7 @@ w_eagle_primary(void)
 
 	/* Ammo check */
 #ifdef CLIENT
-	if (pl.a_ammo1 <= 0) {
+	if (pl.eagle_mag <= 0) {
 		return;
 	}
 #else
@@ -180,7 +178,7 @@ w_eagle_primary(void)
 #endif
 
 	/* Actual firing */
-	if (pl.a_ammo3 == 1) {
+	if (pl.mode_eagle == 1) {
 #ifdef SERVER
 		TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 34, [0, 0], WEAPON_EAGLE);
 #endif
@@ -197,11 +195,11 @@ w_eagle_primary(void)
 	pl.eagle_mag--;
 	Weapons_UpdateAmmo(pl, pl.eagle_mag, pl.ammo_357, -1);
 #else
-	pl.a_ammo1--;
+	pl.eagle_mag--;
 	View_SetMuzzleflash(MUZZLE_SMALL);
 	Weapons_ViewPunchAngle([-10,0,0]);
 
-	if (pl.a_ammo1 <= 0) {
+	if (pl.eagle_mag <= 0) {
 		Weapons_ViewAnimation(EAGLE_SHOOT_EMPTY);
 	} else {
 		Weapons_ViewAnimation(EAGLE_SHOOT);
@@ -219,10 +217,10 @@ w_eagle_secondary(void)
 	}
 
 	/* toggle laser */
-	pl.a_ammo3 = 1 - pl.a_ammo3;
+	pl.mode_eagle = 1 - pl.mode_eagle;
 
 #ifdef SERVER
-	if (pl.a_ammo3) {
+	if (pl.mode_eagle) {
 		sound(pl, 8, "weapons/desert_eagle_sight.wav", 1, ATTN_NORM);
 	} else {
 		sound(pl, 8, "weapons/desert_eagle_sight2.wav", 1, ATTN_NORM);
@@ -243,10 +241,10 @@ w_eagle_reload(void)
 
 	/* Ammo check */
 #ifdef CLIENT
-	if (pl.a_ammo1 >= 7) {
+	if (pl.eagle_mag >= 7) {
 		return;
 	}
-	if (pl.a_ammo2 <= 0) {
+	if (pl.ammo_357 <= 0) {
 		return;
 	}
 #else
@@ -260,7 +258,7 @@ w_eagle_reload(void)
 
 	/* Audio-Visual bit */
 #ifdef CLIENT
-	if (pl.a_ammo1 <= 0) {
+	if (pl.eagle_mag <= 0) {
 		Weapons_ViewAnimation(EAGLE_RELOAD);
 	} else {
 		Weapons_ViewAnimation(EAGLE_RELOAD_NOSHOT);
@@ -283,7 +281,7 @@ w_eagle_crosshair(void)
 	vector aicon_pos;
 
 	/* crosshair/laser */
-	if (pl.a_ammo3 == 1) {
+	if (pl.mode_eagle == 1) {
 		float lerp;
 		vector jitter;
 		Weapons_MakeVectors();

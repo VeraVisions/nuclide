@@ -176,24 +176,17 @@ void w_snark_primary(void)
 	}
 
 	/* Ammo check */
-#ifdef CLIENT
-	if (pl.a_ammo2 <= 0) {
-		return;
-	}
-#else
 	if (pl.ammo_snark <= 0) {
 		return;
 	}
-#endif
 
-	Weapons_ViewAnimation(SNARK_THROW);
+	pl.ammo_snark--;
 
 	/* Audio-Visual Bit */
 #ifdef CLIENT
-	pl.a_ammo2--;
+	Weapons_ViewAnimation(SNARK_THROW);
 #else
 	w_snark_deploy();
-	pl.ammo_snark--;
 
 	if (pl.ammo_snark <= 0) {
 		Weapons_RemoveItem(pl, WEAPON_SNARK);
@@ -252,9 +245,7 @@ void w_snark_precache(void)
 }
 void w_snark_updateammo(player pl)
 {
-#ifdef SERVER
-	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_snark, __NULL__);
-#endif
+	Weapons_UpdateAmmo(pl, -1, pl.ammo_snark, -1);
 }
 string w_snark_wmodel(void)
 {
@@ -287,6 +278,8 @@ void w_snark_hud(void)
 void w_snark_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+
 	if (selected) {
 		drawsubpic(pos, [170,45], g_hud6_spr,
 			[0,135/256], [170/256,45/256],
@@ -296,13 +289,21 @@ void w_snark_hudpic(int selected, vector pos, float a)
 			[0,135/256], [170/256,45/256],
 			g_hud_color, a, DRAWFLAG_ADDITIVE);
 	}
+
+	if (pl.ammo_snark <= 0)
+		return;
+
+	float perc;
+	perc = pl.ammo_snark / MAX_A_SNARK;
+	drawfill(pos + [10,0], [20,4], g_hud_color, a, DRAWFLAG_NORMAL);
+	drawfill(pos + [10,0], [20 * perc,4], [0,1,0], a, DRAWFLAG_NORMAL);
 #endif
 }
 
 weapon_t w_snark =
 {
 	.name		= "snark",
-	.id			= ITEM_SNARK,
+	.id		= ITEM_SNARK,
 	.slot		= 4,
 	.slot_pos	= 3,
 	.draw		= w_snark_draw,

@@ -70,13 +70,6 @@ FXEgon::Draw(void)
 	trailparticles(TRAIL_EGONBEAM, pl, gunpos, trace_endpos);
 	setorigin(this, trace_endpos + v_forward * -16);
 
-	/*
-	R_BeginPolygon(SPRITE_EGONIMPACT, 1, 0);
-	R_PolygonVertex(trace_endpos + v_right * 24 - v_up * 24 + v_forward * -16, [1,1], [1,1,1], 1.0f);
-	R_PolygonVertex(trace_endpos - v_right * 24 - v_up * 24 + v_forward * -16, [0,1], [1,1,1], 1.0f);
-	R_PolygonVertex(trace_endpos - v_right * 24 + v_up * 24 + v_forward * -16, [0,0], [1,1,1], 1.0f);
-	R_PolygonVertex(trace_endpos + v_right * 24 + v_up * 24 + v_forward * -16, [1,0], [1,1,1], 1.0f);
-	R_EndPolygon();*/
 	setmodel(this, "sprites/xspark1.spr");
 	effects = EF_ADDITIVE;
 }
@@ -121,9 +114,7 @@ void w_egon_precache(void)
 }
 void w_egon_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, pl.ammo_uranium, -1);
-#endif
 }
 string w_egon_wmodel(void)
 {
@@ -182,25 +173,16 @@ void w_egon_primary(void)
 	}
 
 	/* Ammo check */
-#ifdef CLIENT
-	if (pl.a_ammo2 <= 0) {
-		w_egon_release();
-		return;
-	}
-#else
 	if (pl.ammo_uranium <= 0) {
 		w_egon_release();
 		return;
 	}
-#endif
 
 #ifdef CLIENT
 	if (Weapons_GetAnimation() == EGON_IDLE1)
 		Weapons_ViewAnimation(EGON_ALTFIREON);
 	else if (Weapons_GetAnimation() == EGON_ALTFIREON)
 		Weapons_ViewAnimation(EGON_ALTFIRECYCLE);
-	
-	pl.a_ammo2--;
 
 	FXEgon p = (FXEgon)pSeat->m_pWeaponFX;
 	p.m_vecAngle = input_angles;
@@ -212,23 +194,24 @@ void w_egon_primary(void)
 	vector endpos = src + v_forward * 1024;
 	traceline(src, endpos, FALSE, pl);
 	Damage_Radius(trace_endpos, pl, 14, 64, TRUE, DMG_ELECTRO);
-	pl.ammo_uranium--;
 #endif
 
-	if (pl.a_ammo1 == 0) {
+	pl.ammo_uranium--;
+
+	if (pl.ammo_egon_state == 0) {
 #ifdef SERVER
 		sound(pl, CHAN_WEAPON, "weapons/egon_windup2.wav", 1, ATTN_NORM, 100, 0);
 #endif
-		pl.a_ammo1 = 1;
+		pl.ammo_egon_state = 1;
 		Weapons_ViewPunchAngle([-5,0,0]);
 		pl.w_idle_next = 3.0f;
 	} else if not (pl.w_idle_next > 0.0f) {
 		/* wait 3 seconds (idle next) */
-		if (pl.a_ammo1 == 1) {
+		if (pl.ammo_egon_state == 1) {
 #ifdef SERVER
 			sound(pl, CHAN_WEAPON, "weapons/egon_run3.wav", 1, ATTN_NORM, 100);
 #endif
-			pl.a_ammo1 = 2;
+			pl.ammo_egon_state = 2;
 		}
 		pl.w_idle_next = 3.0f;
 	}
@@ -240,6 +223,7 @@ void w_egon_reload(void)
 {
 	
 }
+
 void w_egon_release(void)
 {
 	player pl = (player)self;
@@ -251,11 +235,11 @@ void w_egon_release(void)
 	p.alpha = 0.0f;
 #endif	
 
-	if (pl.a_ammo1 != 0) {
+	if (pl.ammo_egon_state != 0) {
 #ifdef SERVER
 		sound(pl, CHAN_WEAPON, "weapons/egon_off1.wav", 1, ATTN_NORM, 100, 0);
 #endif
-		pl.a_ammo1 = 0;
+		pl.ammo_egon_state = 0;
 		Weapons_ViewPunchAngle([-2,0,0]);
 	}
 
@@ -298,11 +282,27 @@ float w_egon_aimanim(void)
 void w_egon_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.ammo_uranium == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
 	if (selected) {
-		drawsubpic(pos, [170,45], g_hud5_spr, [0,135/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
+		drawsubpic(pos, [170,45], g_hud5_spr, [0,135/256], [170/256,45/256], hud_col, a, DRAWFLAG_ADDITIVE);
 	} else {
-		drawsubpic(pos, [170,45], g_hud2_spr, [0,135/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
+		drawsubpic(pos, [170,45], g_hud2_spr, [0,135/256], [170/256,45/256], hud_col, a, DRAWFLAG_ADDITIVE);
 	}
+
+	if (pl.ammo_uranium <= 0)
+		return;
+
+	float perc;
+	perc = pl.ammo_uranium / MAX_A_URANIUM;
+	drawfill(pos + [10,0], [20,4], hud_col, a, DRAWFLAG_NORMAL);
+	drawfill(pos + [10,0], [20 * perc,4], [0,1,0], a, DRAWFLAG_NORMAL);
 #endif
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -55,9 +55,7 @@ w_knife_precache(void)
 void
 w_knife_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, -1, -1);
-#endif
 }
 
 string
@@ -95,7 +93,9 @@ w_knife_primary(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
+	pl.w_attack_next = 0.7f;
 
+#ifdef CLIENT
 	int r = (float)input_sequence % 2;
 	switch (r) {
 	case 0:
@@ -105,9 +105,7 @@ w_knife_primary(void)
 		Weapons_ViewAnimation(KNIFE_SLASH2);
 		break;
 	}
-	pl.w_attack_next = 0.7f;
-
-#ifdef SERVER
+#else
 	vector src;
 	Weapons_MakeVectors();
 	src = pl.origin + pl.view_ofs;
@@ -145,11 +143,12 @@ w_knife_secondary(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-
-	Weapons_ViewAnimation(KNIFE_STAB);
 	pl.w_attack_next = 1.2f;
 
-#ifdef SERVER
+#ifdef CLIENT
+	Weapons_ViewAnimation(KNIFE_STAB);
+#else
+	
 	vector src;
 	Weapons_MakeVectors();
 	src = pl.origin + pl.view_ofs;
@@ -214,7 +213,7 @@ w_knife_hudpic(int selected, vector pos, float a)
 weapon_t w_knife =
 {
 	.name		= "knife",
-	.id			= ITEM_KNIFE,
+	.id		= ITEM_KNIFE,
 	.slot		= 2,
 	.slot_pos	= 0,
 	.allow_drop	= FALSE,

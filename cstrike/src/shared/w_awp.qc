@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -52,9 +52,7 @@ w_awp_precache(void)
 void
 w_awp_updateammo(player pl)
 {
-#ifdef SERVER
-	Weapons_UpdateAmmo(pl, pl.awp_mag, pl.ammo_338mag, pl.a_ammo3);
-#endif
+	Weapons_UpdateAmmo(pl, pl.awp_mag, pl.ammo_338mag, pl.mode_temp);
 }
 
 string
@@ -103,6 +101,7 @@ w_awp_draw(void)
 	player pl = (player)self;
 	Weapons_SetModel("models/v_awp.mdl");
 	Weapons_ViewAnimation(AWP_DRAW);
+	pl.mode_temp = 0;
 
 #ifdef CLIENT
 	pl.cs_cross_mindist = 8;
@@ -122,9 +121,9 @@ w_awp_release(void)
 		return;
 	}
 
-	if (pl.a_ammo3 == 1) {
+	if (pl.mode_temp == 1) {
 		pl.viewzoom = 0.45f;
-	} else if (pl.a_ammo3 == 2) {
+	} else if (pl.mode_temp == 2) {
 		pl.viewzoom = 0.1f;
 	} else {
 		pl.viewzoom = 1.0f;
@@ -144,12 +143,12 @@ w_awp_secondary(void)
 #endif
 
 	/* Simple toggle of fovs */
-	if (pl.a_ammo3 == 1) {
-		pl.a_ammo3 = 2;
-	} else if (pl.a_ammo3 == 2) {
-		pl.a_ammo3 = 0;
+	if (pl.mode_temp == 1) {
+		pl.mode_temp = 2;
+	} else if (pl.mode_temp == 2) {
+		pl.mode_temp = 0;
 	} else {
-		pl.a_ammo3 = 1;
+		pl.mode_temp = 1;
 	}
 
 	pl.w_attack_next = 0.3f;
@@ -166,35 +165,16 @@ w_awp_primary(void)
 		w_awp_release();
 		return;
 	}
-
-#ifdef CLIENT
-	if (!pl.a_ammo1) {
-		return;
-	}
-#else
 	if (!pl.awp_mag) {
 		return;
 	}
-#endif
 
 	Cstrike_ShotMultiplierAdd(pl, 1);
 	float accuracy = Cstrike_CalculateAccuracy(pl, -1);
+	pl.awp_mag--;
 
 #ifdef CLIENT
-	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
-#else
-	pl.awp_mag--;
-	TraceAttack_SetPenetrationPower(2);
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 115, [accuracy,accuracy], WEAPON_AWP);
-
-	if (self.flags & FL_CROUCHING)
-		Animation_PlayerTopTemp(ANIM_SHOOT_RIFLE, 0.45f);
-	else
-		Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_RIFLE, 0.45f);
-
-	Sound_Play(pl, CHAN_WEAPON, "weapon_awp.fire");
-#endif
 
 	int r = (float)input_sequence % 3;
 	switch (r) {
@@ -208,6 +188,17 @@ w_awp_primary(void)
 		Weapons_ViewAnimation(AWP_SHOOT3);
 		break;
 	}
+#else
+	TraceAttack_SetPenetrationPower(2);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 115, [accuracy,accuracy], WEAPON_AWP);
+
+	if (self.flags & FL_CROUCHING)
+		Animation_PlayerTopTemp(ANIM_SHOOT_RIFLE, 0.45f);
+	else
+		Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_RIFLE, 0.45f);
+
+	Sound_Play(pl, CHAN_WEAPON, "weapon_awp.fire");
+#endif
 
 	pl.w_attack_next = 1.2f;
 	pl.w_idle_next = pl.w_attack_next;
@@ -221,15 +212,6 @@ w_awp_reload(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-
-#ifdef CLIENT
-	if (pl.a_ammo1 >= 10) {
-		return;
-	}
-	if (!pl.a_ammo2) {
-		return;
-	}
-#else
 	if (pl.awp_mag >= 10) {
 		return;
 	}
@@ -237,10 +219,11 @@ w_awp_reload(void)
 		return;
 	}
 
-	Weapons_ReloadWeapon(pl, player::awp_mag, player::ammo_338mag, 10);
-	Weapons_UpdateAmmo(pl, pl.awp_mag, pl.ammo_338mag, -1);
-#endif
+#ifdef CLIENT
 	Weapons_ViewAnimation(AWP_RELOAD);
+#else
+	Weapons_ReloadWeapon(pl, player::awp_mag, player::ammo_338mag, 10);
+#endif
 
 	pl.w_attack_next = 2.9f;
 	pl.w_idle_next = pl.w_attack_next;
@@ -300,7 +283,7 @@ w_awp_hudpic(int selected, vector pos, float a)
 weapon_t w_awp =
 {
 	.name		= "awp",
-	.id			= ITEM_AWP,
+	.id		= ITEM_AWP,
 	.slot		= 0,
 	.slot_pos	= 12,
 	.allow_drop	= TRUE,

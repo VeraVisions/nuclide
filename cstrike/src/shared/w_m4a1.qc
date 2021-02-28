@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -61,9 +61,7 @@ w_m4a1_precache(void)
 void
 w_m4a1_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.m4a1_mag, pl.ammo_556mm, -1);
-#endif
 }
 
 string
@@ -113,7 +111,7 @@ w_m4a1_draw(void)
 	
 	Weapons_SetModel("models/v_m4a1.mdl");
 	
-	if (pl.a_ammo3 == 1) {
+	if (pl.mode_m4a1 == 1) {
 		Weapons_ViewAnimation(M4A1_DRAW);
 	} else {
 		Weapons_ViewAnimation(M4A1_DRAWUNSIL);
@@ -133,53 +131,25 @@ w_m4a1_primary(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-
-	/* ammo check */
-#ifdef CLIENT
-	if (!pl.a_ammo1) {
-		return;
-	}
-#else
 	if (!pl.m4a1_mag) {
 		return;
 	}
-#endif
 
 	Cstrike_ShotMultiplierAdd(pl, 1);
 	float accuracy = Cstrike_CalculateAccuracy(pl, 220);
+	pl.m4a1_mag--;
 
 	/* actual firing */
 #ifdef CLIENT
-	if (pl.a_ammo3 == 1) {
+	if (pl.mode_m4a1 == 1) {
 		View_SetMuzzleflash(0);
 	} else {
 		View_SetMuzzleflash(MUZZLE_RIFLE);
 	}
 
-	pl.a_ammo1--;
-	View_SetMuzzleflash(MUZZLE_RIFLE);
-#else
-	pl.m4a1_mag--;
-
-	/* Different sounds without silencer */
-	if (pl.a_ammo3 == 1) {
-		Sound_Play(pl, CHAN_WEAPON, "weapon_m4a1.silenced");
-	} else {
-		Sound_Play(pl, CHAN_WEAPON, "weapon_m4a1.fire");
-	}
-
-	TraceAttack_SetPenetrationPower(1);
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 33,  [accuracy,accuracy], WEAPON_M4A1);
-
-	if (self.flags & FL_CROUCHING)
-		Animation_PlayerTopTemp(ANIM_SHOOT_RIFLE, 0.45f);
-	else
-		Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_RIFLE, 0.45f);
-#endif
-
 	/* this stuff is predicted */
 	int r = (float)input_sequence % 3;
-	if (pl.a_ammo3 == 1) {
+	if (pl.mode_m4a1 == 1) {
 		switch (r) {
 		case 0:
 			Weapons_ViewAnimation(M4A1_SHOOT1);
@@ -204,6 +174,22 @@ w_m4a1_primary(void)
 			break;
 		}
 	}
+#else
+	/* Different sounds without silencer */
+	if (pl.mode_m4a1 == 1) {
+		Sound_Play(pl, CHAN_WEAPON, "weapon_m4a1.silenced");
+	} else {
+		Sound_Play(pl, CHAN_WEAPON, "weapon_m4a1.fire");
+	}
+
+	TraceAttack_SetPenetrationPower(1);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 33,  [accuracy,accuracy], WEAPON_M4A1);
+
+	if (self.flags & FL_CROUCHING)
+		Animation_PlayerTopTemp(ANIM_SHOOT_RIFLE, 0.45f);
+	else
+		Animation_PlayerTopTemp(ANIM_CROUCH_SHOOT_RIFLE, 0.45f);
+#endif
 
 	pl.w_attack_next = 0.0875f;
 	pl.w_idle_next = 2.0f;
@@ -219,10 +205,10 @@ w_m4a1_secondary(void)
 	}
 
 	/* toggle silencer */
-	pl.a_ammo3 = 1 - pl.a_ammo3;
+	pl.mode_m4a1 = 1 - pl.mode_m4a1;
 
 	/* play the animation */
-	if (pl.a_ammo3) {
+	if (pl.mode_m4a1) {
 		Weapons_ViewAnimation(M4A1_ADDSIL);
 	} else {
 		Weapons_ViewAnimation(M4A1_DETACHSIL);
@@ -240,15 +226,6 @@ w_m4a1_reload(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-
-#ifdef CLIENT
-	if (pl.a_ammo1 >= 30) {
-		return;
-	}
-	if (!pl.a_ammo2) {
-		return;
-	}
-#else
 	if (pl.m4a1_mag >= 30) {
 		return;
 	}
@@ -256,14 +233,15 @@ w_m4a1_reload(void)
 		return;
 	}
 
-	Weapons_ReloadWeapon(pl, player::m4a1_mag, player::ammo_556mm, 30);
-#endif
-
-	if (pl.a_ammo3 == 1) {
+#ifdef CLIENT
+	if (pl.mode_m4a1 == 1) {
 		Weapons_ViewAnimation(M4A1_RELOAD);
 	} else {
 		Weapons_ViewAnimation(M4A1_RELOADUNSIL);
 	}
+#else
+	Weapons_ReloadWeapon(pl, player::m4a1_mag, player::ammo_556mm, 30);
+#endif
 	
 	pl.w_attack_next = 3.1f;
 	pl.w_idle_next = pl.w_attack_next;
@@ -298,7 +276,7 @@ w_m4a1_release(void)
 		return;
 	}
 
-	if (pl.a_ammo3) {
+	if (pl.mode_m4a1) {
 		Weapons_ViewAnimation(M4A1_IDLE);
 	} else {
 		Weapons_ViewAnimation(M4A1_IDLEUNSIL);
@@ -310,6 +288,14 @@ void
 w_m4a1_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.m4a1_mag == 0 && pl.ammo_556mm == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -317,7 +303,7 @@ w_m4a1_hudpic(int selected, vector pos, float a)
 			g_hud5_spr,
 			[0,45/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			1.0f,
 			DRAWFLAG_ADDITIVE
 		);
@@ -328,21 +314,29 @@ w_m4a1_hudpic(int selected, vector pos, float a)
 			g_hud2_spr,
 			[0,45/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			1.0f,
 			DRAWFLAG_ADDITIVE
 		);
 	}
+
+	if (pl.ammo_556mm <= 0)
+		return;
+
+	float perc;
+	perc = pl.ammo_556mm / AMMO_MAX_556MM;
+	drawfill(pos + [10,0], [20,4], hud_col, a, DRAWFLAG_NORMAL);
+	drawfill(pos + [10,0], [20 * perc,4], [0,1,0], a, DRAWFLAG_NORMAL);
 #endif
 }
 
 weapon_t w_m4a1 =
 {
 	.name		= "m4a1",
-	.id			= ITEM_M4A1,
+	.id		= ITEM_M4A1,
 	.slot		= 0,
 	.slot_pos	= 9,
-	.allow_drop = TRUE,
+	.allow_drop 	= TRUE,
 	.draw		= w_m4a1_draw,
 	.holster	= __NULL__,
 	.primary	= w_m4a1_primary,

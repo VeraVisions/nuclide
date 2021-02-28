@@ -66,9 +66,7 @@ w_hornetgun_pickup(int new, int startammo)
 void
 w_hornetgun_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, pl.ammo_hornet, -1);
-#endif
 }
 string w_hornetgun_wmodel(void)
 {
@@ -88,10 +86,6 @@ w_hornetgun_draw(void)
 {
 	Weapons_SetModel("models/v_hgun.mdl");
 	Weapons_ViewAnimation(HORNETGUN_DRAW);
-#ifdef SERVER
-	player pl = (player)self;
-	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_hornet, __NULL__);
-#endif
 }
 
 void
@@ -140,19 +134,13 @@ w_hornetgun_release(void)
 		return;
 	}
 
-#ifdef CLIENT
-	if (pl.a_ammo2 < MAX_A_HORNET) {
-		pl.a_ammo2 = bound(0, pl.a_ammo2 + 1, MAX_A_HORNET);
-		pl.w_idle_next = 0.35f;
-	}
-#else
+	/* slow regeneration of ammunition */
 	if (pl.ammo_hornet < MAX_A_HORNET) {
 		pl.ammo_hornet = bound(0, pl.ammo_hornet + 1, MAX_A_HORNET);
 		Weapons_UpdateAmmo(pl, -1, pl.ammo_hornet, -1);
 		pl.w_idle_next = 0.35f;
 		return;
 	}
-#endif
 
 	if (pl.w_idle_next > 0.0) {
 		return;
@@ -184,29 +172,17 @@ w_hornetgun_primary(void)
 	}
 
 	/* Ammo check */
-#ifdef CLIENT
-	if (pl.a_ammo2 <= 0) {
-		w_hornetgun_release();
-		return;
-	}
-#else
 	if (pl.ammo_hornet <= 0) {
 		w_hornetgun_release();
 		return;
 	}
-#endif
-
 
 #ifdef SERVER
 	w_hornetgun_shoothornet();
 	Sound_Play(pl, CHAN_WEAPON, "weapon_hornetgun.fire");
-
-	pl.ammo_hornet--;
-	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_hornet, __NULL__);
-#else
-	pl.a_ammo2--;
 #endif
 
+	pl.ammo_hornet--;
 	Weapons_ViewAnimation(HORNETGUN_SHOOT);
 
 	pl.w_attack_next = 0.25;
@@ -222,27 +198,17 @@ w_hornetgun_secondary(void)
 	}
 
     /* Ammo check */
-#ifdef CLIENT
-	if (pl.a_ammo2 <= 0) {
-		w_hornetgun_release();
-		return;
-	}
-#else
 	if (pl.ammo_hornet <= 0) {
 		w_hornetgun_release();
 		return;
 	}
-#endif
 
 #ifdef SERVER
-	pl.ammo_hornet--;
 	w_hornetgun_shoothornet();
 	Weapons_PlaySound(pl, CHAN_WEAPON, sprintf("agrunt/ag_fire%d.wav", floor(random(1,4))), 1, ATTN_NORM);
-	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_hornet, __NULL__);
-#else
-	pl.a_ammo2--;
 #endif
 
+	pl.ammo_hornet--;
 	Weapons_ViewAnimation(HORNETGUN_SHOOT);
 
 	pl.w_attack_next = 0.1;
@@ -295,6 +261,8 @@ void
 w_hornetgun_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -318,6 +286,14 @@ w_hornetgun_hudpic(int selected, vector pos, float a)
 			DRAWFLAG_ADDITIVE
 		);
 	}
+
+	if (pl.ammo_hornet <= 0)
+		return;
+
+	float perc;
+	perc = pl.ammo_hornet / MAX_A_HORNET;
+	drawfill(pos + [10,0], [20,4], g_hud_color, a, DRAWFLAG_NORMAL);
+	drawfill(pos + [10,0], [20 * perc,4], [0,1,0], a, DRAWFLAG_NORMAL);
 #endif
 }
 

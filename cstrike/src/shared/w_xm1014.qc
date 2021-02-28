@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -61,9 +61,7 @@ w_xm1014_precache(void)
 void
 w_xm1014_updateammo(player pl)
 {
-#ifdef SERVER
-	Weapons_UpdateAmmo(pl, pl.xm1014_mag, pl.ammo_buckshot, pl.a_ammo3);
-#endif
+	Weapons_UpdateAmmo(pl, pl.xm1014_mag, pl.ammo_buckshot, -1);
 }
 
 string
@@ -112,6 +110,7 @@ w_xm1014_draw(void)
 	player pl = (player)self;
 	Weapons_SetModel("models/v_xm1014.mdl");
 	Weapons_ViewAnimation(XM1014_DRAW);
+	pl.mode_temp = 0;
 
 #ifdef CLIENT
 	pl.cs_cross_mindist = 9;
@@ -130,7 +129,7 @@ w_xm1014_primary(void)
 
 	/* ammo check */
 #ifdef CLIENT
-	if (!pl.a_ammo1) {
+	if (!pl.xm1014_mag) {
 		return;
 	}
 #else
@@ -143,7 +142,7 @@ w_xm1014_primary(void)
 	float accuracy = Cstrike_CalculateAccuracy(pl, 200);
 
 #ifdef CLIENT
-	pl.a_ammo1--;
+	pl.xm1014_mag--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 #else
 	TraceAttack_SetPenetrationPower(0);
@@ -177,10 +176,10 @@ w_xm1014_reload(void)
 {
 	player pl = (player)self;
 #ifdef CLIENT
-	if (pl.a_ammo1 >= 7) {
+	if (pl.xm1014_mag >= 7) {
 		return;
 	}
-	if (pl.a_ammo2 <= 0) { 
+	if (pl.ammo_buckshot <= 0) { 
 		return;
 	}
 #else
@@ -192,10 +191,10 @@ w_xm1014_reload(void)
 	}
 #endif
 	
-	if (pl.a_ammo3 > XM1014S_IDLE) {
+	if (pl.mode_temp > XM1014S_IDLE) {
 		return;
 	}
-	pl.a_ammo3 = XM1014S_RELOAD_START;
+	pl.mode_temp = XM1014S_RELOAD_START;
 	pl.w_idle_next = 0.0f;
 }
 
@@ -210,18 +209,18 @@ w_xm1014_release(void)
 		return;
 	}
 
-	if (pl.a_ammo3 == XM1014S_RELOAD_START) {
+	if (pl.mode_temp == XM1014S_RELOAD_START) {
 		Weapons_ViewAnimation(XM1014_RELOAD_START);
-		pl.a_ammo3 = XM1014S_RELOAD;
+		pl.mode_temp = XM1014S_RELOAD;
 		pl.w_idle_next = 0.65f;
-	} else if (pl.a_ammo3 == XM1014S_RELOAD) {
+	} else if (pl.mode_temp == XM1014S_RELOAD) {
 		Weapons_ViewAnimation(XM1014_INSERT);
 #ifdef CLIENT
-		pl.a_ammo1++;
-		pl.a_ammo2--;
+		pl.xm1014_mag++;
+		pl.ammo_buckshot--;
 
-		if (pl.a_ammo2 <= 0 || pl.a_ammo1 >= 7) {
-			pl.a_ammo3 = XM1014S_RELOAD_END;
+		if (pl.ammo_buckshot <= 0 || pl.xm1014_mag >= 7) {
+			pl.mode_temp = XM1014S_RELOAD_END;
 		}
 #else
 		pl.xm1014_mag++;
@@ -229,13 +228,13 @@ w_xm1014_release(void)
 		w_xm1014_updateammo(pl);
 		Sound_Play(pl, CHAN_WEAPON, "weapon_xm1014.insertshell");
 		if (pl.ammo_buckshot <= 0 || pl.xm1014_mag >= 7) {
-			pl.a_ammo3 = XM1014S_RELOAD_END;
+			pl.mode_temp = XM1014S_RELOAD_END;
 		}
 #endif
 		pl.w_idle_next = 0.5f;
-	} else if (pl.a_ammo3 == XM1014S_RELOAD_END) {
+	} else if (pl.mode_temp == XM1014S_RELOAD_END) {
 		Weapons_ViewAnimation(XM1014_RELOAD_END);
-		pl.a_ammo3 = XM1014S_IDLE;
+		pl.mode_temp = XM1014S_IDLE;
 		pl.w_idle_next = 10.0f;
 		pl.w_attack_next = 0.5f;
 	}

@@ -58,9 +58,7 @@ w_crossbow_precache(void)
 void
 w_crossbow_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.crossbow_mag, pl.ammo_bolt, -1);
-#endif
 }
 
 string
@@ -103,8 +101,13 @@ w_crossbow_pickup(int new, int startammo)
 void
 w_crossbow_draw(void)
 {
+	player pl = (player)self;
 	Weapons_SetModel("models/v_crossbow.mdl");
-	Weapons_ViewAnimation(CROSSBOW_DRAW1);
+
+	if (pl.crossbow_mag <= 0)
+		Weapons_ViewAnimation(CROSSBOW_DRAW2);
+	else
+		Weapons_ViewAnimation(CROSSBOW_DRAW1);
 }
 
 void
@@ -160,19 +163,13 @@ w_crossbow_primary(void)
 	}
 
 	/* ammo check */
-#ifdef CLIENT
-	if (pl.a_ammo1 <= 0) {
-		return;
-	}
-#else
 	if (pl.crossbow_mag <= 0) {
 		return;
 	}
-#endif
 
-#ifdef CLIENT
-	pl.a_ammo1--;
-#else
+	pl.crossbow_mag--;
+
+#ifndef CLIENT
 	Weapons_MakeVectors();
 	entity bolt = spawn();
 	setmodel(bolt, "models/crossbow_bolt.mdl");
@@ -189,17 +186,14 @@ w_crossbow_primary(void)
 	bolt.weapon = pl.viewzoom == 1.0 ? 1 : 0;
 	setsize(bolt, [0,0,0], [0,0,0]);
 
-	pl.crossbow_mag--;
-
 	if (pl.crossbow_mag > 0) {
 		Sound_Play(pl, 8, "weapon_crossbow.hitbody");
 	}
 
 	Sound_Play(pl, CHAN_WEAPON, "weapon_crossbow.fire");
-	Weapons_UpdateAmmo(pl, pl.crossbow_mag, pl.ammo_bolt, -1);
 #endif
 
-	if (pl.a_ammo1) {
+	if (pl.crossbow_mag) {
 		Weapons_ViewAnimation(CROSSBOW_FIRE1);
 	} else {
 		Weapons_ViewAnimation(CROSSBOW_FIRE3);
@@ -236,21 +230,12 @@ w_crossbow_reload(void)
 		return;
 	}
 
-#ifdef SERVER
 	if (pl.ammo_bolt <= 0) {
 		return;
 	}
 	if (pl.crossbow_mag >= 5) {
 		return;
 	}
-#else
-	if (pl.a_ammo1 >= 5) {
-		return;
-	}
-	if (pl.a_ammo2 <= 0) {
-		return;
-	}
-#endif
 
 #ifdef SERVER
 	Weapons_ReloadWeapon(pl, player::crossbow_mag, player::ammo_bolt, 5);
@@ -270,7 +255,7 @@ w_crossbow_release(void)
 
 	/* auto-reload if need be */
 	if (pl.w_attack_next <= 0.0)
-	if (pl.a_ammo1 == 0 && pl.a_ammo2 > 0) {
+	if (pl.crossbow_mag == 0 && pl.ammo_bolt > 0) {
 		Weapons_Reload();
 		return;
 	}
@@ -281,13 +266,13 @@ w_crossbow_release(void)
 
 	int r = (float)input_sequence % 2;
 	if (r == 1) {
-		if (pl.a_ammo1) {
+		if (pl.ammo_bolt) {
 			Weapons_ViewAnimation(CROSSBOW_IDLE1);
 		} else {
 			Weapons_ViewAnimation(CROSSBOW_IDLE2);
 		}
 	} else {
-		if (pl.a_ammo1) {
+		if (pl.ammo_bolt) {
 			Weapons_ViewAnimation(CROSSBOW_FIDGET1);
 		} else {
 			Weapons_ViewAnimation(CROSSBOW_FIDGET2);
@@ -343,6 +328,14 @@ void
 w_crossbow_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.crossbow_mag == 0 && pl.ammo_bolt == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -350,7 +343,7 @@ w_crossbow_hudpic(int selected, vector pos, float a)
 			g_hud5_spr,
 			[0,0],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);
@@ -361,18 +354,26 @@ w_crossbow_hudpic(int selected, vector pos, float a)
 			g_hud2_spr,
 			[0,0],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);
 	}
+
+	if (pl.ammo_bolt <= 0)
+		return;
+
+	float perc;
+	perc = pl.ammo_bolt / MAX_A_BOLT;
+	drawfill(pos + [10,0], [20,4], hud_col, a, DRAWFLAG_NORMAL);
+	drawfill(pos + [10,0], [20 * perc,4], [0,1,0], a, DRAWFLAG_NORMAL);
 #endif
 }
 
 weapon_t w_crossbow =
 {
 	.name		= "crossbow",
-	.id			= ITEM_CROSSBOW,
+	.id		= ITEM_CROSSBOW,
 	.slot		= 2,
 	.slot_pos	= 2,
 	.draw		= w_crossbow_draw,
@@ -399,4 +400,3 @@ weapon_crossbow(void)
 	Weapons_InitItem(WEAPON_CROSSBOW);
 }
 #endif
-

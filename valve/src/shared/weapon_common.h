@@ -51,6 +51,7 @@ void Weapons_PlaySound(entity, float, string, float, float);
 int Weapons_IsPresent(player, int);
 void Weapons_SetModel(string);
 void Weapons_SetGeomset(string);
+void Weapons_UpdateAmmo(base_player, int, int, int);
 
 #ifdef CLIENT
 string Weapons_GetPlayermodel(int);

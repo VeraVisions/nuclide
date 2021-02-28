@@ -161,9 +161,7 @@ w_sporelauncher_precache(void)
 void
 w_sporelauncher_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.sporelauncher_mag, pl.ammo_spore, -1);
-#endif
 }
 
 string
@@ -240,7 +238,7 @@ w_sporelauncher_primary(void)
 	pl.sporelauncher_mag--;
 	Weapons_UpdateAmmo(pl, pl.sporelauncher_mag, pl.ammo_spore, -1);
 #else
-	if (pl.a_ammo1 <= 0) {
+	if (pl.sporelauncher_mag <= 0) {
 		return;
 	}
 
@@ -272,7 +270,7 @@ w_sporelauncher_secondary(void)
 	pl.sporelauncher_mag--;
 	Weapons_UpdateAmmo(pl, pl.sporelauncher_mag, pl.ammo_spore, -1);
 #else
-	if (pl.a_ammo1 <= 0) {
+	if (pl.sporelauncher_mag <= 0) {
 		return;
 	}
 
@@ -290,7 +288,7 @@ void w_sporelauncher_release(void)
 
 	/* auto-reload if need be */
 	if (pl.w_attack_next <= 0.0)
-	if (pl.a_ammo3 == SLSTATE_IDLE && pl.a_ammo1 == 0 && pl.a_ammo2 > 0) {
+	if (pl.mode_sporelauncher == SLSTATE_IDLE && pl.sporelauncher_mag == 0 && pl.ammo_spore > 0) {
 		Weapons_Reload();
 		return;
 	}
@@ -299,7 +297,7 @@ void w_sporelauncher_release(void)
 		return;
 	}
 
-	if (pl.a_ammo3 == SLSTATE_IDLE) {
+	if (pl.mode_sporelauncher == SLSTATE_IDLE) {
 		int r = (float)input_sequence % 3;
 		switch (r) {
 		case 0:
@@ -315,32 +313,32 @@ void w_sporelauncher_release(void)
 			pl.w_idle_next = 4.0f;
 			break;
 		}
-	} else if (pl.a_ammo3 == SLSTATE_RELOAD_START) {
+	} else if (pl.mode_sporelauncher == SLSTATE_RELOAD_START) {
 		Weapons_ViewAnimation(SPORE_RELOAD1);
-		pl.a_ammo3 = SLSTATE_RELOAD;
+		pl.mode_sporelauncher = SLSTATE_RELOAD;
 		pl.w_idle_next = 0.65f;
-	} else if (pl.a_ammo3 == SLSTATE_RELOAD) {
+	} else if (pl.mode_sporelauncher == SLSTATE_RELOAD) {
 		Weapons_ViewAnimation(SPORE_RELOAD2);
 #ifdef CLIENT
-		pl.a_ammo1++;
-		pl.a_ammo2--;
+		pl.sporelauncher_mag++;
+		pl.ammo_spore--;
 
-		if (pl.a_ammo2 <= 0 || pl.a_ammo1 >= 5) {
-			pl.a_ammo3 = SLSTATE_RELOAD_END;
+		if (pl.ammo_spore <= 0 || pl.sporelauncher_mag >= 5) {
+			pl.mode_sporelauncher = SLSTATE_RELOAD_END;
 		}
 #else
 		pl.sporelauncher_mag++;
 		pl.ammo_spore--;
 
 		if (pl.ammo_spore <= 0 || pl.sporelauncher_mag >= 5) {
-			pl.a_ammo3 = SLSTATE_RELOAD_END;
+			pl.mode_sporelauncher = SLSTATE_RELOAD_END;
 		}
 #endif
 		pl.w_idle_next = 1.0f;
-	} else if (pl.a_ammo3 == SLSTATE_RELOAD_END) {
+	} else if (pl.mode_sporelauncher == SLSTATE_RELOAD_END) {
 		Weapons_ViewAnimation(SPORE_RELOAD3);
 
-		pl.a_ammo3 = SLSTATE_IDLE;
+		pl.mode_sporelauncher = SLSTATE_IDLE;
 		pl.w_idle_next = 10.0f;
 		pl.w_attack_next = 0.5f;
 	}
@@ -352,10 +350,10 @@ w_sporelauncher_reload(void)
 	player pl = (player)self;
 
 #ifdef CLIENT
-	if (pl.a_ammo1 >= 5) {
+	if (pl.sporelauncher_mag >= 5) {
 		return;
 	}
-	if (pl.a_ammo2 <= 0) { 
+	if (pl.ammo_spore <= 0) { 
 		return;
 	}
 #else
@@ -367,11 +365,11 @@ w_sporelauncher_reload(void)
 	}
 #endif
 
-	if (pl.a_ammo3 > SLSTATE_IDLE) {
+	if (pl.mode_sporelauncher > SLSTATE_IDLE) {
 		return;
 	}
 
-	pl.a_ammo3 = SLSTATE_RELOAD_START;
+	pl.mode_sporelauncher = SLSTATE_RELOAD_START;
 	pl.w_idle_next = 0.0f;
 }
 

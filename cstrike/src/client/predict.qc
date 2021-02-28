@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -26,8 +26,6 @@ Propagate our pmove state to whatever the current frame before its stomped on
 void
 GamePredict_PreFrame(player pl)
 {
-	pl.net_cs_shotmultiplier = pl.cs_shotmultiplier;
-	pl.net_cs_shottime = pl.cs_shottime;
 }
 
 /*
@@ -42,6 +40,4 @@ Rewind our pmove state back to before we started predicting.
 void
 GamePredict_PostFrame(player pl)
 {
-	pl.cs_shotmultiplier = pl.net_cs_shotmultiplier;
-	pl.cs_shottime = pl.net_cs_shottime;
 }

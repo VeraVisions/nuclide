@@ -48,7 +48,7 @@ FXGauss::Draw(void)
 	}
 
 	src = m_vecStart;
-	makevectors(m_vecAngle);
+	makevectors(input_angles);
 	endpos = src + v_forward * 1024;
 	traceline(src, endpos, FALSE, pl);
 
@@ -140,9 +140,7 @@ void w_gauss_precache(void)
 }
 void w_gauss_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, pl.ammo_uranium, -1);
-#endif
 }
 string w_gauss_wmodel(void)
 {
@@ -289,8 +287,8 @@ void w_gauss_secondary(void)
 	player pl = (player)self;
 
 #ifdef CLIENT
-	if (pl.a_ammo3)
-		soundupdate(pl, CHAN_WEAPON, "", 2, ATTN_NORM, 100 + (200 * (pl.a_ammo1/255)), 0, 0);
+	if (pl.ammo_gauss_state)
+		soundupdate(pl, CHAN_WEAPON, "", 2, ATTN_NORM, 100 + (200 * (pl.ammo_gauss_volume/255)), 0, 0);
 #endif
 	
 	if (pl.w_attack_next) {
@@ -301,14 +299,14 @@ void w_gauss_secondary(void)
 	/* Ammo check */
 #ifdef CLIENT
     if (pl.a_ammo2 <= 0) {
-        if (pl.a_ammo3 > 0) {
+        if (pl.ammo_gauss_state > 0) {
 			w_gauss_release();
 		}
 		return;
     }
 #else
     if (pl.ammo_uranium <= 0) {
-        if (pl.a_ammo3 > 0) {
+        if (pl.ammo_gauss_state > 0) {
             w_gauss_release();
         }
 		return;
@@ -316,29 +314,29 @@ void w_gauss_secondary(void)
 #endif
 
 #ifdef CLIENT
-	if (pl.a_ammo1 < 255)
+	if (pl.ammo_gauss_volume < 255)
 		pl.a_ammo2--;
 #else
-	if (pl.a_ammo1 < 255)
+	if (pl.ammo_gauss_volume < 255)
 		pl.ammo_uranium--;
 #endif
 
 	/* Set pitch sound shift */
-	pl.a_ammo1 += 16;
-	if (pl.a_ammo1 > 255) {
-		pl.a_ammo1 = 255;
+	pl.ammo_gauss_volume += 16;
+	if (pl.ammo_gauss_volume > 255) {
+		pl.ammo_gauss_volume = 255;
 	}
 
-	if (pl.a_ammo3 == 1) {
+	if (pl.ammo_gauss_state == 1) {
 		Weapons_ViewAnimation(GAUSS_SPIN);
-		pl.a_ammo3 = 2;
+		pl.ammo_gauss_state = 2;
 		pl.w_idle_next = 0.0f;
-	} else if (!pl.a_ammo3) {
+	} else if (!pl.ammo_gauss_state) {
 		Weapons_ViewAnimation(GAUSS_SPINUP);
 #ifdef CLIENT
 		sound(pl, CHAN_WEAPON, "ambience/pulsemachine.wav", 2, ATTN_NORM);
 #endif
-		pl.a_ammo3 = 1;
+		pl.ammo_gauss_state = 1;
 	}
 }
 
@@ -350,15 +348,15 @@ void w_gauss_release(void)
 	}
 
 	/* Reset the pitch sound shift */
-	pl.a_ammo1 = 0;
+	pl.ammo_gauss_volume = 0;
 
-	if (pl.a_ammo3 == 1) {
+	if (pl.ammo_gauss_state == 1) {
 		pl.w_attack_next = 0.0f;
 		pl.w_idle_next = 4.0f;
 		w_gauss_primary();
-		pl.a_ammo3 = 0;
+		pl.ammo_gauss_state = 0;
 		return;
-	} else if (pl.a_ammo3 == 2) {
+	} else if (pl.ammo_gauss_state == 2) {
 		Weapons_ViewAnimation(GAUSS_FIRE1);
 #ifdef CLIENT
 		FXGauss p = (FXGauss)pSeat->m_pWeaponFX;
@@ -373,7 +371,7 @@ void w_gauss_release(void)
 #endif
 		pl.w_attack_next = 1.5f;
 		pl.w_idle_next = 4.0f;
-		pl.a_ammo3 = 0;
+		pl.ammo_gauss_state = 0;
 		return;
 	}
 
@@ -439,6 +437,14 @@ float w_gauss_aimanim(void)
 void w_gauss_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.ammo_uranium == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -446,7 +452,7 @@ void w_gauss_hudpic(int selected, vector pos, float a)
 			g_hud5_spr,
 			[0,90/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);
@@ -457,11 +463,19 @@ void w_gauss_hudpic(int selected, vector pos, float a)
 			g_hud2_spr,
 			[0,90/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);
 	}
+
+	if (pl.ammo_uranium <= 0)
+		return;
+
+	float perc;
+	perc = pl.ammo_uranium / MAX_A_URANIUM;
+	drawfill(pos + [10,0], [20,4], hud_col, a, DRAWFLAG_NORMAL);
+	drawfill(pos + [10,0], [20 * perc,4], [0,1,0], a, DRAWFLAG_NORMAL);
 #endif
 }
 

@@ -49,9 +49,7 @@ w_cannon_precache(void)
 void
 w_cannon_updateammo(player pl)
 {
-#ifdef SERVER
-	Weapons_UpdateAmmo(pl, pl.cannon_mag, pl.ammo_buckshot, __NULL__);
-#endif
+	Weapons_UpdateAmmo(pl, pl.cannon_mag, pl.ammo_buckshot, -1);
 }
 
 string
@@ -73,14 +71,6 @@ w_cannon_reload(void)
 	if (pl.w_attack_next > 0) {
 		return;
 	}
-#ifdef CLIENT
-	if (pl.a_ammo1 >= 2) {
-		return;
-	}
-	if (!pl.a_ammo2) {
-		return;
-	}
-#else
 	if (pl.cannon_mag >= 2) {
 		return;
 	}
@@ -88,10 +78,11 @@ w_cannon_reload(void)
 		return;
 	}
 
-	Weapons_ReloadWeapon(pl, player::cannon_mag, player::ammo_buckshot, 2);
-	Weapons_UpdateAmmo(pl, pl.cannon_mag, pl.ammo_buckshot, __NULL__);
-#endif
+#ifdef CLIENT
 	Weapons_ViewAnimation(CANNON_RELOAD);
+#else
+	Weapons_ReloadWeapon(pl, player::cannon_mag, player::ammo_buckshot, 2);
+#endif
 
 	pl.w_attack_next = 3.0f;
 	pl.w_idle_next = 3.0f;
@@ -121,10 +112,6 @@ w_cannon_draw(void)
 {
 	Weapons_SetModel("models/v_cannon.mdl");
 	Weapons_ViewAnimation(CANNON_DEPLOY);
-#ifdef SERVER
-	player pl = (player)self;
-	Weapons_UpdateAmmo(pl, pl.cannon_mag, pl.ammo_buckshot, __NULL__);
-#endif
 }
 
 void
@@ -142,21 +129,15 @@ w_cannon_primary(void)
 		return;
 	}
 
-#ifdef CLIENT
-	if (pl.a_ammo1 != 2) {
-		w_cannon_reload();
-		return;
-	}
-
-	View_SetMuzzleflash(MUZZLE_SMALL);
-#else
-	int dmg;
-
 	if (pl.cannon_mag != 2) {
 		w_cannon_reload();
 		return;
 	}
 
+#ifdef CLIENT
+	View_SetMuzzleflash(MUZZLE_SMALL);
+#else
+	int dmg;
 	dmg = Skill_GetValue("plr_cannon", 5);
 	TraceAttack_FireBullets(20, pl.origin + pl.view_ofs, dmg, [0.08716,0.04362], WEAPON_CANNON);
 	pl.cannon_mag -= 2;
@@ -178,32 +159,26 @@ w_cannon_secondary(void)
 		return;
 	}
 
-#ifdef CLIENT
-	if (!pl.a_ammo1) {
-		w_cannon_reload();
-		return;
-	}
-
-	Weapons_ViewPunchAngle([-5,0,0]);
-#else
-	int dmg;
 	if (!pl.cannon_mag) {
 		w_cannon_reload();
 		return;
 	}
 
+#ifdef CLIENT
+	Weapons_ViewPunchAngle([-5,0,0]);
+#else
+	int dmg;
 	dmg = Skill_GetValue("plr_cannon", 5);
 	TraceAttack_FireBullets(10, pl.origin + pl.view_ofs, dmg, [0.08716,0.04362], WEAPON_CANNON);
 	pl.cannon_mag--;
 	Weapons_PlaySound(pl, CHAN_WEAPON, "cannon/fire.wav", 1, ATTN_NORM);
-	Weapons_UpdateAmmo(pl, pl.cannon_mag, pl.ammo_buckshot, __NULL__);
 #endif
 
-	if (pl.a_ammo1 == 2) {
-        Weapons_ViewAnimation(CANNON_FIRELEFT);
-    } else {
-        Weapons_ViewAnimation(CANNON_FIRERIGHT);
-    }
+	if (pl.cannon_mag == 2) {
+		Weapons_ViewAnimation(CANNON_FIRELEFT);
+	} else {
+		Weapons_ViewAnimation(CANNON_FIRERIGHT);
+	}
 
 	pl.w_attack_next = 1.5f;
 	pl.w_idle_next = 2.5f;
@@ -215,7 +190,7 @@ w_cannon_release(void)
 
 	/* auto-reload if need be */
 	if (pl.w_attack_next <= 0.0)
-	if (pl.a_ammo1 == 0 && pl.a_ammo2 > 0) {
+	if (pl.cannon_mag == 0 && pl.ammo_buckshot > 0) {
 		Weapons_Reload();
 		return;
 	}
@@ -261,11 +236,27 @@ void
 w_cannon_hudpic(int s, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.cannon_mag == 0 && pl.ammo_buckshot == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
 	if (s) {
 		drawsubpic(pos, [170,45], g_cannon_spr, [0,48/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	} else {
 		drawsubpic(pos, [170,45], g_cannon_spr, [0,0], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	}
+
+	if (pl.ammo_buckshot <= 0)
+		return;
+
+	float perc;
+	perc = pl.ammo_buckshot / MAX_A_BUCKSHOT;
+	drawfill(pos + [10,0], [20,4], hud_col, a, DRAWFLAG_NORMAL);
+	drawfill(pos + [10,0], [20 * perc,4], [0,1,0], a, DRAWFLAG_NORMAL);
 #endif
 }
 

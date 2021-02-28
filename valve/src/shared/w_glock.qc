@@ -62,9 +62,7 @@ w_glock_precache(void)
 void
 w_glock_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.glock_mag, pl.ammo_9mm, -1);
-#endif
 }
 
 string
@@ -131,29 +129,23 @@ w_glock_primary(void)
 	}
 
 	/* ammo check */
-#ifdef CLIENT
-	if (!pl.a_ammo1) {
-		return;
-	}
-#else
 	if (!pl.glock_mag) {
 		return;
 	}
-#endif
 
 	/* actual firing */
+	pl.glock_mag--;
+
 #ifdef CLIENT
-	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_SMALL);
 	Weapons_ViewPunchAngle([-2,0,0]);
 
-	if (pl.a_ammo1) {
+	if (pl.glock_mag) {
 		Weapons_ViewAnimation(GLOCK_SHOOT);
 	} else {
 		Weapons_ViewAnimation(GLOCK_SHOOT_EMPTY);
 	}
 #else
-	pl.glock_mag--;
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, Skill_GetValue("plr_9mm_bullet", 8), [0.01,0.01], WEAPON_GLOCK);
 	Sound_Play(pl, CHAN_WEAPON, "weapon_glock.fire");
 
@@ -177,28 +169,22 @@ w_glock_secondary(void)
 	}
 
 	/* ammo check */
-#ifdef CLIENT
-	if (!pl.a_ammo1) {
-		return;
-	}
-#else
 	if (!pl.glock_mag) {
 		return;
 	}
-#endif
+
+	pl.glock_mag--;
 
 #ifdef CLIENT
-	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_SMALL);
 	Weapons_ViewPunchAngle([-2,0,0]);
 
-	if (pl.a_ammo1) {
+	if (pl.glock_mag) {
 		Weapons_ViewAnimation(GLOCK_SHOOT);
 	} else {
 		Weapons_ViewAnimation(GLOCK_SHOOT_EMPTY);
 	}
 #else
-	pl.glock_mag--;
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, Skill_GetValue("plr_9mm_bullet", 8), [0.1,0.1], WEAPON_GLOCK);
 	Sound_Play(pl, CHAN_WEAPON, "weapon_glock.fire");
 
@@ -221,20 +207,6 @@ w_glock_reload(void)
 		return;
 	}
 
-#ifdef CLIENT
-	if (pl.a_ammo1 >= 18) {
-		return;
-	}
-	if (pl.a_ammo2 <= 0) {
-		return;
-	}
-
-	if (pl.a_ammo1) {
-		Weapons_ViewAnimation(GLOCK_RELOAD);
-	} else {
-		Weapons_ViewAnimation(GLOCK_RELOAD_EMPTY);
-	}
-#else
 	if (pl.glock_mag >= 18) {
 		return;
 	}
@@ -242,6 +214,13 @@ w_glock_reload(void)
 		return;
 	}
 
+	if (pl.glock_mag) {
+		Weapons_ViewAnimation(GLOCK_RELOAD);
+	} else {
+		Weapons_ViewAnimation(GLOCK_RELOAD_EMPTY);
+	}
+
+#ifdef SERVER
 	Weapons_ReloadWeapon(pl, player::glock_mag, player::ammo_9mm, 18);
 #endif
 
@@ -257,7 +236,7 @@ w_glock_release(void)
 
 	/* auto-reload if need be */
 	if (pl.w_attack_next <= 0.0)
-	if (pl.a_ammo1 == 0 && pl.a_ammo2 > 0) {
+	if (pl.glock_mag == 0 && pl.ammo_9mm > 0) {
 		Weapons_Reload();
 		return;
 	}
@@ -330,6 +309,14 @@ void
 w_glock_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.glock_mag == 0 && pl.ammo_9mm == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -337,7 +324,7 @@ w_glock_hudpic(int selected, vector pos, float a)
 			g_hud4_spr,
 			[0,45/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);
@@ -348,18 +335,26 @@ w_glock_hudpic(int selected, vector pos, float a)
 			g_hud1_spr,
 			[0,45/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);
 	}
+
+	if (pl.ammo_9mm <= 0)
+		return;
+
+	float perc;
+	perc = pl.ammo_9mm / MAX_A_9MM;
+	drawfill(pos + [10,0], [20,4], hud_col, a, DRAWFLAG_NORMAL);
+	drawfill(pos + [10,0], [20 * perc,4], [0,1,0], a, DRAWFLAG_NORMAL);
 #endif
 }
 
 weapon_t w_glock =
 {
 	.name		= "9mmhandgun",
-	.id			= ITEM_GLOCK,
+	.id		= ITEM_GLOCK,
 	.slot		= 1,
 	.slot_pos	= 0,
 	.draw		= w_glock_draw,

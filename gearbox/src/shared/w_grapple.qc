@@ -66,9 +66,7 @@ w_grapple_precache(void)
 void
 w_grapple_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, -1, -1);
-#endif
 }
 
 string
@@ -286,7 +284,7 @@ w_grapple_hudpic(int selected, vector pos, float a)
 weapon_t w_grapple =
 {
 	.name		= "grapple",
-	.id			= ITEM_GRAPPLE,
+	.id		= ITEM_GRAPPLE,
 	.slot		= 0,
 	.slot_pos	= 3,
 	.draw		= w_grapple_draw,

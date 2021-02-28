@@ -71,9 +71,7 @@ w_shockrifle_pickup(int new, int startammo)
 void
 w_shockrifle_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, pl.ammo_shock, -1);
-#endif
 }
 
 string
@@ -153,8 +151,8 @@ w_shockrifle_release(void)
 	}
 
 #ifdef CLIENT
-	if (pl.a_ammo2 < 10) {
-		pl.a_ammo2 = bound(0, pl.a_ammo2 + 1, 10);
+	if (pl.ammo_shock < 10) {
+		pl.ammo_shock = bound(0, pl.ammo_shock + 1, 10);
 		pl.w_idle_next = 0.35f;
 	}
 #else
@@ -188,7 +186,7 @@ w_shockrifle_primary(void)
 
 	/* Ammo check */
 #ifdef CLIENT
-	if (pl.a_ammo2 <= 0) {
+	if (pl.ammo_shock <= 0) {
 		w_shockrifle_release();
 		return;
 	}
@@ -210,7 +208,7 @@ w_shockrifle_primary(void)
 	Weapons_MakeVectors();
 	vector src = Weapons_GetCameraPos() + (v_forward * 16) + (v_up * -8);
 	pointparticles(PART_SHOCKPIECE, src, v_forward * 1000, 1);
-	pl.a_ammo2--;
+	pl.ammo_shock--;
 #endif
 
 	Weapons_ViewAnimation(SHOCKRIFLE_SHOOT);

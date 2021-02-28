@@ -47,9 +47,7 @@ void w_handgrenade_precache(void)
 }
 void w_handgrenade_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, pl.ammo_handgrenade, -1);
-#endif
 }
 string w_handgrenade_wmodel(void)
 {
@@ -153,26 +151,20 @@ void w_handgrenade_primary(void)
 	}
 	
 	/* We're abusing this network variable for the holding check */
-	if (pl.a_ammo3 > 0) {
+	if (pl.ammo_handgrenade_state > 0) {
 		return;
 	}
 
 	/* Ammo check */
-#ifdef CLIENT
-	if (pl.a_ammo2 <= 0) {
-		return;
-	}
-#else
 	if (pl.ammo_handgrenade <= 0) {
 		return;
 	}
-#endif
 
 #ifdef CLIENT
 	Weapons_ViewAnimation(HANDGRENADE_PULLPIN);
 #endif
 
-	pl.a_ammo3 = 1;
+	pl.ammo_handgrenade_state = 1;
 	pl.w_attack_next = 0.5f;
 	pl.w_idle_next = 0.5f;
 }
@@ -194,18 +186,17 @@ void w_handgrenade_release(void)
 		return;
 	}
 
-	if (pl.a_ammo3 == 1) {
+	if (pl.ammo_handgrenade_state == 1) {
 #ifdef CLIENT
-		pl.a_ammo2--;
 		Weapons_ViewAnimation(HANDGRENADE_THROW1);
 #else
-		pl.ammo_handgrenade--;
 		w_handgrenade_throw();
 #endif
-		pl.a_ammo3 = 2;
+		pl.ammo_handgrenade--;
+		pl.ammo_handgrenade_state = 2;
 		pl.w_attack_next = 1.0f;
 		pl.w_idle_next = 0.5f;
-	} else if (pl.a_ammo3 == 2) {
+	} else if (pl.ammo_handgrenade_state == 2) {
 #ifdef CLIENT
 		Weapons_ViewAnimation(HANDGRENADE_DRAW);
 #else
@@ -215,7 +206,7 @@ void w_handgrenade_release(void)
 #endif
 		pl.w_attack_next = 0.5f;
 		pl.w_idle_next = 0.5f;
-		pl.a_ammo3 = 0;
+		pl.ammo_handgrenade_state = 0;
 	} else {
 		int r = (float)input_sequence % 8;
 		if (r == 1) {
@@ -238,18 +229,28 @@ void
 w_handgrenade_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+
 	if (selected) {
 		drawsubpic(pos, [170,45], g_hud6_spr, [0,0], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	} else {
 		drawsubpic(pos, [170,45], g_hud3_spr, [0,0], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	}
+
+	if (pl.ammo_handgrenade <= 0)
+		return;
+
+	float perc;
+	perc = pl.ammo_handgrenade / MAX_A_HANDGRENADE;
+	drawfill(pos + [10,0], [20,4], g_hud_color, a, DRAWFLAG_NORMAL);
+	drawfill(pos + [10,0], [20 * perc,4], [0,1,0], a, DRAWFLAG_NORMAL);
 #endif
 }
 
 weapon_t w_handgrenade =
 {
 	.name		= "grenade",
-	.id			= ITEM_HANDGRENADE,
+	.id		= ITEM_HANDGRENADE,
 	.slot		= 4,
 	.slot_pos	= 0,
 	.draw		= w_handgrenade_draw,

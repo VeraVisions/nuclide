@@ -86,9 +86,7 @@ w_mp5_pickup(int new, int startammo)
 void
 w_mp5_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.mp5_mag, pl.ammo_9mm, pl.ammo_m203_grenade);
-#endif
 }
 
 string
@@ -134,19 +132,12 @@ w_mp5_primary(void)
 	}
 
 	/* Ammo check */
-#ifdef CLIENT
-	if (pl.a_ammo1 <= 0) {
-		return;
-	}
-#else
 	if (pl.mp5_mag <= 0) {
 		return;
 	}
-#endif
 
 #ifdef CLIENT
 	View_SetMuzzleflash(MUZZLE_RIFLE);
-	pl.a_ammo1--;
 #else
 	/* singleplayer is more accurate */
 	if (cvar("sv_playerslots") == 1) {
@@ -156,9 +147,9 @@ w_mp5_primary(void)
 	}
 
 	Sound_Play(pl, CHAN_WEAPON, "weapon_mp5.shoot");
+#endif
 
 	pl.mp5_mag--;
-#endif
 
 	/* Actual firing */
 	int r = (float)input_sequence % 2;
@@ -183,12 +174,14 @@ w_mp5_secondary(void)
 		return;
 	}
 
-#ifdef CLIENT
-	if (pl.a_ammo3 <= 0) {
+
+	if (pl.ammo_m203_grenade <= 0) {
 		return;
 	}
- 
-	pl.a_ammo3--;
+
+	pl.ammo_m203_grenade--;
+
+#ifdef CLIENT
 	Weapons_ViewPunchAngle([-10,0,0]);
 	Weapons_ViewAnimation(MP5_GRENADE);
 #else
@@ -203,10 +196,6 @@ w_mp5_secondary(void)
 			sound(self, 1, "weapons/explode4.wav", 1, ATTN_NORM);
 		}
 		remove(self);
-	}
-
-	if (pl.ammo_m203_grenade <= 0) {
-		return;
 	}
 
 	Weapons_MakeVectors();
@@ -224,7 +213,6 @@ w_mp5_secondary(void)
 	setsize(gren, [0,0,0], [0,0,0]);
 	gren.touch = Grenade_ExplodeTouch;
 	Sound_Play(pl, CHAN_WEAPON, "weapon_mp5.gl");
-	pl.ammo_m203_grenade--;
 #endif
 
 	pl.w_attack_next = 1.0f;
@@ -240,21 +228,12 @@ w_mp5_reload(void)
 	}
 
 	/* Ammo check */
-#ifdef CLIENT
-	if (pl.a_ammo1 >= 50) {
-		return;
-	}
-	if (pl.a_ammo2 <= 0) {
-		return;
-	}
-#else
 	if (pl.mp5_mag >= 50) {
 		return;
 	}
 	if (pl.ammo_9mm <= 0) {
 		return;
 	}
-#endif
 
 #ifdef CLIENT
 	Weapons_ViewAnimation(MP5_RELOAD);
@@ -273,7 +252,7 @@ w_mp5_release(void)
 
 	/* auto-reload if need be */
 	if (pl.w_attack_next <= 0.0)
-	if (pl.a_ammo1 == 0 && pl.a_ammo2 > 0) {
+	if (pl.mp5_mag == 0 && pl.ammo_9mm > 0) {
 		Weapons_Reload();
 		return;
 	}
@@ -351,6 +330,14 @@ void
 w_mp5_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.mp5_mag == 0 && pl.ammo_9mm == 0 && pl.ammo_m203_grenade == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -358,7 +345,7 @@ w_mp5_hudpic(int selected, vector pos, float a)
 			g_hud4_spr,
 			[0,135/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);
@@ -369,10 +356,24 @@ w_mp5_hudpic(int selected, vector pos, float a)
 			g_hud1_spr,
 			[0,135/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);
+	}
+
+	float perc;
+
+	if (pl.ammo_9mm > 0) {
+		perc = pl.ammo_9mm / MAX_A_9MM;
+		drawfill(pos + [10,0], [20,4], hud_col, a, DRAWFLAG_NORMAL);
+		drawfill(pos + [10,0], [20 * perc,4], [0,1,0], a, DRAWFLAG_NORMAL);
+	}
+
+	if (pl.ammo_m203_grenade > 0) {
+		perc = pl.ammo_m203_grenade / MAX_A_M203_GRENADE;
+		drawfill(pos + [35,0], [20,4], hud_col, a, DRAWFLAG_NORMAL);
+		drawfill(pos + [35,0], [20 * perc,4], [0,1,0], a, DRAWFLAG_NORMAL);
 	}
 #endif
 }
@@ -380,7 +381,7 @@ w_mp5_hudpic(int selected, vector pos, float a)
 weapon_t w_mp5 =
 {
 	.name		= "9mmAR",
-	.id			= ITEM_MP5,
+	.id		= ITEM_MP5,
 	.slot		= 2,
 	.slot_pos	= 0,
 	.draw		= w_mp5_draw,

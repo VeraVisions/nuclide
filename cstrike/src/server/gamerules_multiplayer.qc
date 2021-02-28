@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -866,7 +866,6 @@ CSMultiplayerRules::PlayerMakeSpectator(base_player pl)
 	pl.takedamage = DAMAGE_NO;
 	pl.solid = SOLID_NOT;
 	pl.movetype = MOVETYPE_NOCLIP;
-	pl.SendEntity = Player_SendEntity;
 	pl.flags = FL_CLIENT;
 	pl.weapon = 0;
 	pl.viewzoom = 1.0f;
