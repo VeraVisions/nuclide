@@ -822,26 +822,19 @@ CSMultiplayerRules::PlayerMakePlayable(base_player pp, int chara)
 	pl.g_items |= ITEM_SUIT;
 	Weapons_AddItem(pl, WEAPON_KNIFE, -1);
 
+	/* terrorists */
 	if (chara < 5) {
-		/* terrorists */
 		pl.team = TEAM_T;
 		if (autocvar_fcs_knifeonly == FALSE) {
 			Weapons_AddItem(pl, WEAPON_GLOCK18, -1);
-			/*Weapon_GiveAmmo(WEAPON_GLOCK18, 40);*/
-			/*Weapon_Draw(WEAPON_GLOCK18);*/
-		} else {
-			/*Weapon_Draw(WEAPON_KNIFE);*/
+			pl.ammo_9mm = 40;
 		}
 	} else {
-		/* counter */
 		pl.team = TEAM_CT;
 
 		if (autocvar_fcs_knifeonly == FALSE) {
 			Weapons_AddItem(pl, WEAPON_USP45, -1);
-			/*Weapon_GiveAmmo(WEAPON_USP45, 24);*/
-			/*Weapon_Draw(WEAPON_USP45);*/
-		} else {
-			/*Weapon_Draw(WEAPON_KNIFE);*/
+			pl.ammo_45acp = 24;
 		}
 	}
 

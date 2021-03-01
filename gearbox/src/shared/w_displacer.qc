@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -42,8 +42,8 @@ void
 w_displacer_precache(void)
 {
 #ifdef SERVER
-	precache_sound("weapons/displacer_fire.wav");
 	precache_sound("weapons/displacer_impact.wav");
+	precache_sound("weapons/displacer_fire.wav");
 	precache_sound("weapons/displacer_self.wav");
 	precache_sound("weapons/displacer_spin.wav");
 	precache_sound("weapons/displacer_spin2.wav");
@@ -51,10 +51,10 @@ w_displacer_precache(void)
 	precache_sound("weapons/displacer_teleport.wav");
 	precache_sound("weapons/displacer_teleport_player.wav");
 	precache_model("models/w_displacer.mdl");
+	precache_model("sprites/exit1.spr");
 #else
 	precache_model("models/v_displacer.mdl");
 	precache_model("models/p_displacer.mdl");
-	precache_model("sprites/exit1.spr");
 #endif
 }
 
@@ -88,8 +88,8 @@ w_displacer_pickup(int new, int startammo)
 #ifdef SERVER
 	player pl = (player)self;
 
-	if (pl.ammo_uranium < 100) {
-		pl.ammo_uranium = bound(0, pl.ammo_uranium + 40, 100);
+	if (pl.ammo_uranium < MAX_A_URANIUM) {
+		pl.ammo_uranium = bound(0, pl.ammo_uranium + 40, MAX_A_URANIUM);
 	} else {
 		return FALSE;
 	}
@@ -133,37 +133,33 @@ w_displacer_teleport(entity target)
 void
 w_displacer_fireball(void)
 {
+#ifdef SERVER
 	player pl = (player)self;
 
 	static void displacerball_touch(void)
 	{
-#ifdef SERVER
 		if (other.flags & FL_CLIENT) {
 			w_displacer_teleport(other);
 		}
 		Damage_Radius(self.origin, self.owner, 250, 250 * 2.5f, TRUE, WEAPON_DISPLACER);
 		sound(self, 1, "weapons/displacer_impact.wav", 1, ATTN_NORM);
-#endif
 		remove(self);
 	}
-#ifdef CLIENT
-	static float displacerball_predraw(void)
+
+	static void displacerball_animate(void)
 	{
+		self.frame++;
 		
-		addentity(self);
-		return PREDRAW_NEXT;
+		if (self.frame > 25)
+			self.frame = 0;
+		
+		self.nextthink = time + 0.1f;
 	}
-#endif
 
 	Weapons_MakeVectors();
 	entity ball = spawn();
-	
-#ifdef CLIENT
-	setmodel(ball, "sprites/exit1.spr");
-	ball.drawmask = MASK_ENGINE;
-	ball.predraw = displacerball_predraw;
-#endif
 
+	setmodel(ball, "sprites/exit1.spr");
 	setorigin(ball, Weapons_GetCameraPos() + (v_forward * 16));
 	ball.owner = self;
 	ball.velocity = v_forward * 500;
@@ -171,9 +167,10 @@ w_displacer_fireball(void)
 	ball.solid = SOLID_BBOX;
 	ball.angles = vectoangles(ball.velocity);
 	ball.touch = displacerball_touch;
+	ball.effects = EF_ADDITIVE;
+	ball.think = displacerball_animate;
+	ball.nextthink = time + 0.1f;
 	setsize(ball, [0,0,0], [0,0,0]);
-
-#ifdef SERVER
 	sound(pl, CHAN_WEAPON, "weapons/displacer_fire.wav", 1, ATTN_NORM);
 #endif
 }
@@ -192,12 +189,14 @@ w_displacer_release(void)
 		w_displacer_fireball();
 		pl.mode_displacer = 0;
 		pl.w_idle_next = pl.w_attack_next = 1.0f;
+		pl.ammo_uranium -= 20;
 		return;
 	} else if (pl.mode_displacer == 2) {
 		Weapons_ViewAnimation(DISP_FIRE);
 		w_displacer_teleport(pl);
 		pl.mode_displacer = 0;
 		pl.w_idle_next = pl.w_attack_next = 1.0f;
+		pl.ammo_uranium -= 60;
 		return;
 	}
 
@@ -207,7 +206,7 @@ w_displacer_release(void)
 	} else {
 		Weapons_ViewAnimation(DISP_IDLE2);
 	}
-	
+
 	pl.w_idle_next = 3.0f;
 }
 
@@ -221,15 +220,9 @@ w_displacer_primary(void)
 	}
 
 	/* ammo check */
-#ifdef CLIENT
 	if (pl.ammo_uranium < 20) {
 		return;
 	}
-#else
-	if (pl.ammo_uranium < 20) {
-		return;
-	}
-#endif
 
 	/* we're already in spinning mode */
 	if (pl.mode_displacer > 0) {
@@ -256,16 +249,9 @@ w_displacer_secondary(void)
 		return;
 	}
 
-	/* ammo check */
-#ifdef CLIENT
 	if (pl.ammo_uranium < 60) {
 		return;
 	}
-#else
-	if (pl.ammo_uranium < 60) {
-		return;
-	}
-#endif
 
 	/* we're already in spinning mode */
 	if (pl.mode_displacer > 0) {
@@ -329,6 +315,16 @@ void
 w_displacer_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.ammo_uranium == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
+	HUD_DrawAmmoBar(pos, pl.ammo_uranium, MAX_A_URANIUM, a);
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -336,7 +332,7 @@ w_displacer_hudpic(int selected, vector pos, float a)
 			"sprites/640hudof02.spr_0.tga",
 			[0,180/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);
@@ -347,7 +343,7 @@ w_displacer_hudpic(int selected, vector pos, float a)
 			"sprites/640hudof01.spr_0.tga",
 			[0,180/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);
@@ -358,7 +354,7 @@ w_displacer_hudpic(int selected, vector pos, float a)
 weapon_t w_displacer =
 {
 	.name		= "displacer",
-	.id			= ITEM_DISPLACER,
+	.id		= ITEM_DISPLACER,
 	.slot		= 5,
 	.slot_pos	= 1,
 	.draw		= w_displacer_draw,

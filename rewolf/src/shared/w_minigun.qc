@@ -49,7 +49,7 @@ w_minigun_release(void)
 		return;
 	}
 
-	if (pl.a_ammo3 == 1) {
+	if (pl.menu_active == 1) {
 		Weapons_ViewAnimation(MG_IDLELOOP);
 		pl.w_idle_next = 0.666667f;
 		return;
@@ -78,18 +78,10 @@ w_minigun_primary(void)
 	if (pl.w_attack_next) {
 		return;
 	}
-	
-#ifdef CLIENT
-	if (pl.a_ammo2 <= 0) {
-		w_minigun_release();
-		return;
-	}
-#else
 	if (pl.ammo_minigun <= 0) {
 		w_minigun_release();
 		return;
 	}
-#endif
 
 	src = Weapons_GetCameraPos();
 
@@ -100,13 +92,9 @@ w_minigun_primary(void)
 	Weapons_ViewPunchAngle([-2,0,0]);
 #endif
 
-#ifdef CLIENT
-	pl.a_ammo2--;
-#else
 	pl.ammo_minigun--;
-#endif
 
-	if (pl.a_ammo3 == 1) {
+	if (pl.menu_active == 1) {
 #ifdef CLIENT
 		Weapons_ViewAnimation(MG_FIRELOOP);
 #else
@@ -135,19 +123,19 @@ w_minigun_secondary(void)
 	}
 
 #ifdef SERVER
-	if (pl.a_ammo3 == 0) {
+	if (pl.menu_active == 0) {
 		Sound_Play(pl, 8, "weapon_minigun.spinup");
 	} else {
 		Sound_Play(pl, 8, "weapon_minigun.spindown");
 	}
 #else
-	if (pl.a_ammo3 == 0) {
+	if (pl.menu_active == 0) {
 		Weapons_ViewAnimation(MG_SPINUP);
 	} else {
 		Weapons_ViewAnimation(MG_SPINDOWN);
 	}
 #endif
-	pl.a_ammo3 = 1 - pl.a_ammo3;
+	pl.menu_active = 1 - pl.menu_active;
 
 	pl.w_attack_next = 2.0f;
 	pl.w_idle_next = 2.0f;
@@ -156,9 +144,7 @@ w_minigun_secondary(void)
 void
 w_minigun_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, pl.ammo_minigun, -1);
-#endif
 }
 
 string
@@ -265,7 +251,7 @@ w_minigun_precache(void)
 weapon_t w_minigun =
 {
 	.name		= "minigun",
-	.id			= ITEM_MINIGUN,
+	.id		= ITEM_MINIGUN,
 	.slot		= 2,
 	.slot_pos	= 1,
 	.draw		= w_minigun_draw,

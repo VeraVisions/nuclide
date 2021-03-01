@@ -83,8 +83,8 @@ w_para_pickup(int new, int startammo)
 		else
 			pl.para_mag = startammo;
 	} else {
-		if (pl.ammo_556mmbox < 200) {
-			pl.ammo_556mmbox = bound(0, pl.ammo_556mmbox + 100, 200);
+		if (pl.ammo_556mmbox < AMMO_MAX_556MMBOX) {
+			pl.ammo_556mmbox = bound(0, pl.ammo_556mmbox + 100, AMMO_MAX_556MMBOX);
 		} else {
 			return FALSE;
 		}
@@ -198,6 +198,16 @@ void
 w_para_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.para_mag == 0 && pl.ammo_556mmbox == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
+	HUD_DrawAmmoBar(pos, pl.ammo_556mmbox, AMMO_MAX_556MMBOX, a);
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -205,7 +215,7 @@ w_para_hudpic(int selected, vector pos, float a)
 			g_hud6_spr,
 			[0,0],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			1.0f,
 			DRAWFLAG_ADDITIVE
 		);
@@ -216,7 +226,7 @@ w_para_hudpic(int selected, vector pos, float a)
 			g_hud3_spr,
 			[0,0],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			1.0f,
 			DRAWFLAG_ADDITIVE
 		);

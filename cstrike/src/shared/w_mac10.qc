@@ -84,8 +84,8 @@ w_mac10_pickup(int new, int startammo)
 		else
 			pl.mac10_mag = startammo;
 	} else {
-		if (pl.ammo_45acp < 90) {
-			pl.ammo_45acp = bound(0, pl.ammo_45acp + 30, 90);
+		if (pl.ammo_45acp < AMMO_MAX_45ACP) {
+			pl.ammo_45acp = bound(0, pl.ammo_45acp + 30, AMMO_MAX_45ACP);
 		} else {
 			return FALSE;
 		}
@@ -202,6 +202,16 @@ void
 w_mac10_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.mac10_mag == 0 && pl.ammo_45acp == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
+	HUD_DrawAmmoBar(pos, pl.ammo_45acp, AMMO_MAX_45ACP, a);
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -209,7 +219,7 @@ w_mac10_hudpic(int selected, vector pos, float a)
 			g_hud15_spr,
 			[0,0],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			1.0f,
 			DRAWFLAG_ADDITIVE
 		);
@@ -220,7 +230,7 @@ w_mac10_hudpic(int selected, vector pos, float a)
 			g_hud14_spr,
 			[0,0],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			1.0f,
 			DRAWFLAG_ADDITIVE
 		);

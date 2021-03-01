@@ -48,43 +48,15 @@ enum
 };
 
 #define AMMO_MAX_50AE		35
-// drawsubpic(aicon_pos, [24,24], g_hud7_spr, [24/256,72/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
-
 #define AMMO_MAX_762MM		90
-// drawsubpic(aicon_pos, [24,24], g_hud7_spr, [72/256,72/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
-
 #define AMMO_MAX_556MM		90
-// drawsubpic(aicon_pos, [24,24], g_hud7_spr, [0,96/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
-
 #define AMMO_MAX_556MMBOX	200
-// drawsubpic(aicon_pos, [24,24], g_hud7_spr, [0,96/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
-
 #define AMMO_MAX_338MAG		30
-// drawsubpic(aicon_pos, [24,24], g_hud7_spr, [24/256,96/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
-
 #define AMMO_MAX_9MM		150
-// drawsubpic(aicon_pos, [24,24], g_hud7_spr, [48/256,72/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
-
 #define AMMO_MAX_BUCKSHOT	32
-// drawsubpic(aicon_pos, [24,24], g_hud7_spr, [0,72/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
-
 #define AMMO_MAX_45ACP		100
-// drawsubpic(aicon_pos, [24,24], g_hud7_spr, [96/256,72/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
-
 #define AMMO_MAX_357SIG		52
-// drawsubpic(aicon_pos, [24,24], g_hud7_spr, [120/256,72/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
-
 #define AMMO_MAX_57MM		100
-// drawsubpic(aicon_pos, [24,24], g_hud7_spr, [120/256,96/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
-
-// flashbang
-// drawsubpic(aicon_pos, [24,24], g_hud7_spr, [48/256,96/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
-
-// he
-// drawsubpic(aicon_pos, [24,24], g_hud7_spr, [72/256,96/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
-
-// smoke
-// drawsubpic(aicon_pos, [24,24], g_hud7_spr, [144/256,96/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
-
-// c4
-// drawsubpic(aicon_pos, [24,24], g_hud7_spr, [96/256,96/256], [24/256, 24/256], g_hud_color, pSeat->m_flAmmo2Alpha, DRAWFLAG_ADDITIVE);
+#define AMMO_MAX_FLASHBANG	2
+#define AMMO_MAX_SMOKE		1
+#define AMMO_MAX_HENADE		1

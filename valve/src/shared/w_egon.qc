@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -296,13 +296,7 @@ void w_egon_hudpic(int selected, vector pos, float a)
 		drawsubpic(pos, [170,45], g_hud2_spr, [0,135/256], [170/256,45/256], hud_col, a, DRAWFLAG_ADDITIVE);
 	}
 
-	if (pl.ammo_uranium <= 0)
-		return;
-
-	float perc;
-	perc = pl.ammo_uranium / MAX_A_URANIUM;
-	drawfill(pos + [10,0], [20,4], hud_col, a, DRAWFLAG_NORMAL);
-	drawfill(pos + [10,0], [20 * perc,4], [0,1,0], a, DRAWFLAG_NORMAL);
+	HUD_DrawAmmoBar(pos, pl.ammo_uranium, MAX_A_URANIUM, a);
 #endif
 }
 

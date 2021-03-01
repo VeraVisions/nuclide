@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -237,13 +237,7 @@ w_handgrenade_hudpic(int selected, vector pos, float a)
 		drawsubpic(pos, [170,45], g_hud3_spr, [0,0], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	}
 
-	if (pl.ammo_handgrenade <= 0)
-		return;
-
-	float perc;
-	perc = pl.ammo_handgrenade / MAX_A_HANDGRENADE;
-	drawfill(pos + [10,0], [20,4], g_hud_color, a, DRAWFLAG_NORMAL);
-	drawfill(pos + [10,0], [20 * perc,4], [0,1,0], a, DRAWFLAG_NORMAL);
+	HUD_DrawAmmoBar(pos, pl.ammo_handgrenade, MAX_A_HANDGRENADE, a);
 #endif
 }
 

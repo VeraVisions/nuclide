@@ -85,8 +85,8 @@ w_p228_pickup(int new, int startammo)
 		else
 			pl.p228_mag = startammo;
 	} else {
-		if (pl.ammo_357sig < 26) {
-			pl.ammo_357sig = bound(0, pl.ammo_357sig + 13, 26);
+		if (pl.ammo_357sig < AMMO_MAX_357SIG) {
+			pl.ammo_357sig = bound(0, pl.ammo_357sig + 13, AMMO_MAX_357SIG);
 		} else {
 			return FALSE;
 		}
@@ -211,6 +211,16 @@ void
 w_p228_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.p228_mag == 0 && pl.ammo_357sig == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
+	HUD_DrawAmmoBar(pos, pl.ammo_357sig, AMMO_MAX_357SIG, a);
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -218,7 +228,7 @@ w_p228_hudpic(int selected, vector pos, float a)
 			g_hud13_spr,
 			[0,90/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			1.0f,
 			DRAWFLAG_ADDITIVE
 		);
@@ -229,7 +239,7 @@ w_p228_hudpic(int selected, vector pos, float a)
 			g_hud12_spr,
 			[0,90/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			1.0f,
 			DRAWFLAG_ADDITIVE
 		);

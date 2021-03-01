@@ -218,6 +218,16 @@ void
 w_ump45_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.ump45_mag == 0 && pl.ammo_45acp == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
+	HUD_DrawAmmoBar(pos, pl.ammo_45acp, AMMO_MAX_45ACP, a);
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -225,7 +235,7 @@ w_ump45_hudpic(int selected, vector pos, float a)
 			g_hud16_spr,
 			[0,0],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			1.0f,
 			DRAWFLAG_ADDITIVE
 		);
@@ -236,7 +246,7 @@ w_ump45_hudpic(int selected, vector pos, float a)
 			g_hud16_spr,
 			[0,0],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			1.0f,
 			DRAWFLAG_ADDITIVE
 		);
@@ -247,7 +257,7 @@ w_ump45_hudpic(int selected, vector pos, float a)
 weapon_t w_ump45 =
 {
 	.name		= "ump45",
-	.id			= ITEM_UMP45,
+	.id		= ITEM_UMP45,
 	.slot		= 0,
 	.slot_pos	= 4,
 	.allow_drop	= TRUE,

@@ -17,7 +17,7 @@
 /* values courtesy of https://wiki.alliedmods.net/Cs_weapons_information */
 int g_cstrikeWeaponPrice[] =
 {
-	0,		/* WEAPON_NONE */
+	0,	/* WEAPON_NONE */
 	1700,	/* WEAPON_M3 */
 	3000,	/* WEAPON_XM1014 */
 	1500,	/* WEAPON_MP5 */
@@ -40,11 +40,11 @@ int g_cstrikeWeaponPrice[] =
 	600,	/* WEAPON_P228 */
 	800,	/* WEAPON_ELITES */
 	750,	/* WEAPON_FIVESEVEN */
-	0,		/* WEAPON_KNIFE */
+	0,	/* WEAPON_KNIFE */
 	300,	/* WEAPON_HEGRENADE */
 	200,	/* WEAPON_FLASHBANG */
 	300,	/* WEAPON_SMOKEGRENADE */
-	0		/* WEAPON_C4BOMB */
+	0	/* WEAPON_C4BOMB */
 };
 
 void
@@ -73,6 +73,9 @@ CSEv_BuyWeapon_f(float fWeapon)
 		if (iWeapon == WEAPON_ELITES) { return; }
 		if (iWeapon == WEAPON_MAC10) { return; }
 	}
+
+	if (Weapons_IsPresent(pl, iWeapon))
+		return;
 
 	if ((pl.money - g_cstrikeWeaponPrice[iWeapon]) >= 0) {
 		/* let's check if we've got a limit */
@@ -133,31 +136,64 @@ CSEv_BuyEquipment_f(float fUtil)
 	if ((pl.money - g_cstrikeUtilPrice[iUtil]) >= 0) {
 		switch (iUtil) {
 		case 0:
+			if (pl.armor >= 100)
+				return;
+
 			pl.armor = 100;
 			Sound_Play(pl, CHAN_ITEM, "buy.kevlar");
 			break;
 		case 1:
+			if (pl.g_items & ITEM_HELMET && pl.armor >= 0)
+				return;
+
 			pl.armor = 100;
 			pl.g_items |= ITEM_HELMET;
 			Sound_Play(pl, CHAN_ITEM, "buy.kevlar");
 			break;
 		case 2:
-			Weapons_AddItem(pl, WEAPON_FLASHBANG, -1);
+			if (Weapons_IsPresent(pl, WEAPON_FLASHBANG)) {
+				if (pl.ammo_fbgrenade >= AMMO_MAX_FLASHBANG)
+					return;
+				else
+					pl.ammo_fbgrenade++;
+			} else
+				Weapons_AddItem(pl, WEAPON_FLASHBANG, -1);
+
 			Sound_Play(pl, CHAN_ITEM, "buy.weapon");
 			break;
 		case 3:
-			Weapons_AddItem(pl, WEAPON_HEGRENADE, -1);
+			if (Weapons_IsPresent(pl, WEAPON_HEGRENADE)) {
+				if (pl.ammo_hegrenade >= AMMO_MAX_HENADE)
+					return;
+				else
+					pl.ammo_hegrenade++;
+			} else
+				Weapons_AddItem(pl, WEAPON_HEGRENADE, -1);
+
 			Sound_Play(pl, CHAN_ITEM, "buy.weapon");
 			break;
 		case 4:
-			Weapons_AddItem(pl, WEAPON_SMOKEGRENADE, -1);
+			if (Weapons_IsPresent(pl, WEAPON_SMOKEGRENADE)) {
+				if (pl.ammo_smokegrenade >= AMMO_MAX_SMOKE)
+					return;
+				else
+					pl.ammo_smokegrenade++;
+			} else
+				Weapons_AddItem(pl, WEAPON_SMOKEGRENADE, -1);
+
 			Sound_Play(pl, CHAN_ITEM, "buy.weapon");
 			break;
 		case 5:
+			if (pl.g_items & ITEM_DEFUSAL)
+				return;
+
 			pl.g_items |= ITEM_DEFUSAL;
 			Sound_Play(pl, CHAN_ITEM, "buy.weapon");
 			break;
 		case 6:
+			if (pl.g_items & ITEM_NIGHTVISION)
+				return;
+
 			pl.g_items |= ITEM_NIGHTVISION;
 			Sound_Play(pl, CHAN_ITEM, "buy.weapon");
 			break;

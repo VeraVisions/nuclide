@@ -190,8 +190,8 @@ w_sporelauncher_pickup(int new, int startammo)
 	if (new) {
 		pl.sporelauncher_mag = 5;
 	} else {
-		if (pl.ammo_spore < 20) {
-			pl.ammo_spore = bound(0, pl.ammo_spore + 5, 20);
+		if (pl.ammo_spore < MAX_A_SPORE) {
+			pl.ammo_spore = bound(0, pl.ammo_spore + 5, MAX_A_SPORE);
 		} else {
 			return FALSE;
 		}
@@ -422,6 +422,16 @@ void
 w_sporelauncher_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.sporelauncher_mag == 0 && pl.ammo_spore == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
+	HUD_DrawAmmoBar(pos, pl.ammo_spore, MAX_A_SPORE, a);
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -429,7 +439,7 @@ w_sporelauncher_hudpic(int selected, vector pos, float a)
 			"sprites/640hudof04.spr_0.tga",
 			[0,0],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);
@@ -440,7 +450,7 @@ w_sporelauncher_hudpic(int selected, vector pos, float a)
 			"sprites/640hudof03.spr_0.tga",
 			[0,0],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);
@@ -451,7 +461,7 @@ w_sporelauncher_hudpic(int selected, vector pos, float a)
 weapon_t w_sporelauncher =
 {
 	.name		= "sporelauncher",
-	.id			= ITEM_SPORELAUNCHER,
+	.id		= ITEM_SPORELAUNCHER,
 	.slot		= 6,
 	.slot_pos	= 0,
 	.draw		= w_sporelauncher_draw,

@@ -262,6 +262,16 @@ void
 w_xm1014_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.xm1014_mag == 0 && pl.ammo_buckshot == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
+	HUD_DrawAmmoBar(pos, pl.ammo_buckshot, AMMO_MAX_BUCKSHOT, a);
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -269,7 +279,7 @@ w_xm1014_hudpic(int selected, vector pos, float a)
 			g_hud13_spr,
 			[0,135/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			1.0f,
 			DRAWFLAG_ADDITIVE
 		);
@@ -280,7 +290,7 @@ w_xm1014_hudpic(int selected, vector pos, float a)
 			g_hud12_spr,
 			[0,135/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			1.0f,
 			DRAWFLAG_ADDITIVE
 		);
@@ -291,7 +301,7 @@ w_xm1014_hudpic(int selected, vector pos, float a)
 weapon_t w_xm1014 =
 {
 	.name		= "xm1014",
-	.id			= ITEM_XM1014,
+	.id		= ITEM_XM1014,
 	.slot		= 0,
 	.slot_pos	= 1,
 	.allow_drop	= TRUE,

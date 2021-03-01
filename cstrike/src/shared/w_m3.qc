@@ -259,6 +259,16 @@ void
 w_m3_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.m3_mag == 0 && pl.ammo_buckshot == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
+	HUD_DrawAmmoBar(pos, pl.ammo_buckshot, AMMO_MAX_BUCKSHOT, a);
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -266,7 +276,7 @@ w_m3_hudpic(int selected, vector pos, float a)
 			g_hud4_spr,
 			[0,135/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			1.0f,
 			DRAWFLAG_ADDITIVE
 		);
@@ -277,7 +287,7 @@ w_m3_hudpic(int selected, vector pos, float a)
 			g_hud1_spr,
 			[0,135/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			1.0f,
 			DRAWFLAG_ADDITIVE
 		);

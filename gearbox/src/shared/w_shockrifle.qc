@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -61,7 +61,7 @@ w_shockrifle_pickup(int new, int startammo)
 
 	/* only pick it up once */
 	if (new) {
-		pl.ammo_shock = 10;
+		pl.ammo_shock = MAX_A_SHOCK;
 		return TRUE;
 	}
 #endif
@@ -150,18 +150,10 @@ w_shockrifle_release(void)
 		return;
 	}
 
-#ifdef CLIENT
-	if (pl.ammo_shock < 10) {
-		pl.ammo_shock = bound(0, pl.ammo_shock + 1, 10);
+	if (pl.ammo_shock < MAX_A_SHOCK) {
+		pl.ammo_shock = bound(0, pl.ammo_shock + 1, MAX_A_SHOCK);
 		pl.w_idle_next = 0.35f;
 	}
-#else
-	if (pl.ammo_shock < 10) {
-		pl.ammo_shock = bound(0, pl.ammo_shock + 1, 10);
-		Weapons_UpdateAmmo(pl, -1, pl.ammo_shock, -1);
-		pl.w_idle_next = 0.35f;
-	}
-#endif
 
 	if (pl.w_idle_next > 0.0) {
 		return;
@@ -185,17 +177,10 @@ w_shockrifle_primary(void)
 	}
 
 	/* Ammo check */
-#ifdef CLIENT
 	if (pl.ammo_shock <= 0) {
 		w_shockrifle_release();
 		return;
 	}
-#else
-	if (pl.ammo_shock <= 0) {
-		w_shockrifle_release();
-		return;
-	}
-#endif
 
 
 #ifdef SERVER
@@ -264,6 +249,16 @@ void
 w_shockrifle_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.ammo_shock == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
+	HUD_DrawAmmoBar(pos, pl.ammo_shock, MAX_A_SHOCK, a);
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -271,7 +266,7 @@ w_shockrifle_hudpic(int selected, vector pos, float a)
 			"sprites/640hudof04.spr_0.tga",
 			[0,45/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);
@@ -282,7 +277,7 @@ w_shockrifle_hudpic(int selected, vector pos, float a)
 			"sprites/640hudof03.spr_0.tga",
 			[0,45/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);
@@ -293,7 +288,7 @@ w_shockrifle_hudpic(int selected, vector pos, float a)
 weapon_t w_shockrifle =
 {
 	.name		= "shockrifle",
-	.id			= ITEM_SHOCKRIFLE,
+	.id		= ITEM_SHOCKRIFLE,
 	.slot		= 6,
 	.slot_pos	= 1,
 	.draw		= w_shockrifle_draw,

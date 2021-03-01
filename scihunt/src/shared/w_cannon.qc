@@ -250,13 +250,7 @@ w_cannon_hudpic(int s, vector pos, float a)
 		drawsubpic(pos, [170,45], g_cannon_spr, [0,0], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
 	}
 
-	if (pl.ammo_buckshot <= 0)
-		return;
-
-	float perc;
-	perc = pl.ammo_buckshot / MAX_A_BUCKSHOT;
-	drawfill(pos + [10,0], [20,4], hud_col, a, DRAWFLAG_NORMAL);
-	drawfill(pos + [10,0], [20 * perc,4], [0,1,0], a, DRAWFLAG_NORMAL);
+	HUD_DrawAmmoBar(pos, pl.ammo_buckshot, MAX_A_BUCKSHOT, a);
 #endif
 }
 

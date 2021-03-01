@@ -95,8 +95,8 @@ w_dml_release(void)
 		return;
 	}
 	
-	if (pl.a_ammo3 == DS_RELOADING) {
-		if (pl.a_ammo1 == 1) {
+	if (pl.dml_state == DS_RELOADING) {
+		if (pl.menu_active == 1) {
 			Weapons_ViewAnimation(DML_RELOADRIGHT);
 		} else {
 			Weapons_ViewAnimation(DML_RELOADLEFT);
@@ -106,7 +106,7 @@ w_dml_release(void)
 #endif
 		pl.w_attack_next = 1.6f;
 		pl.w_idle_next = pl.w_attack_next;
-		pl.a_ammo3 = DS_FULL;
+		pl.dml_state = DS_FULL;
 		return;
 	}
 
@@ -135,8 +135,8 @@ w_dml_primary(void)
 		return;
 	}
 
-	if (pl.a_ammo1 > 0) {
-		pl.a_ammo1 = 0;
+	if (pl.menu_active > 0) {
+		pl.menu_active = 0;
 		pl.gflags |= GF_SEMI_TOGGLED;
 		Weapons_ViewAnimation(DML_CUSTOMIZE);
 #ifdef SERVER
@@ -151,7 +151,7 @@ w_dml_primary(void)
 		return;
 	}
 
-	if (pl.a_ammo3 == DS_RELOADING) {
+	if (pl.dml_state == DS_RELOADING) {
 		w_dml_release();
 		return;
 	}
@@ -165,7 +165,7 @@ w_dml_primary(void)
 	Weapons_ViewAnimation(DML_FIRE);
 	pl.w_attack_next = 1.222222f;
 	pl.w_idle_next = 1.222222f;
-	pl.a_ammo3 = DS_RELOADING;
+	pl.dml_state = DS_RELOADING;
 }
 
 void
@@ -184,19 +184,17 @@ w_dml_secondary(void)
 	}
 
 	/* activate menu */
-	if (pl.a_ammo1 <= 0 || pl.a_ammo1 == DMENU_PAYLOAD) {
-		pl.a_ammo1 = 1;
+	if (pl.menu_active <= 0 || pl.menu_active == DMENU_PAYLOAD) {
+		pl.menu_active = 1;
 	} else {
-		pl.a_ammo1 = bound(DMENU_LAUNCH, pl.a_ammo1 + 1, DMENU_PAYLOAD);
+		pl.menu_active = bound(DMENU_LAUNCH, pl.menu_active + 1, DMENU_PAYLOAD);
 	}
 }
 
 void
 w_dml_updateammo(player pl)
 {
-#ifdef SERVER
-	Weapons_UpdateAmmo(pl, -1, pl.ammo_rockets, -1);
-#endif
+	Weapons_UpdateAmmo(pl, -1, pl.ammo_rocket, -1);
 }
 
 string
@@ -286,12 +284,12 @@ w_dml_hud(void)
 	);
 
 	/* menu */
-	if (pl.a_ammo1 > 0) {
+	if (pl.menu_active > 0) {
 		vector col1, col2, col3, col4;
 		string txt1, txt2, txt3, txt4;
 
 		col1 = col2 = col3 = col4 = [1,1,1];
-		switch (pl.a_ammo1) {
+		switch (pl.menu_active) {
 		case DMENU_LAUNCH:
 			col1 = [0,1,0];
 			break;
@@ -412,11 +410,11 @@ weapon_dml(void)
 int
 w_dml_hudforward(player pl)
 {
-	if (pl.a_ammo1 <= 0) {
+	if (pl.menu_active <= 0) {
 		return TRUE;
 	}
 
-	switch (pl.a_ammo1) {
+	switch (pl.menu_active) {
 	case DMENU_LAUNCH:
 		sendevent("w_dml_launch", "i", 1i);
 		break;
@@ -435,11 +433,11 @@ w_dml_hudforward(player pl)
 int
 w_dml_hudback(player pl)
 {
-	if (pl.a_ammo1 <= 0) {
+	if (pl.menu_active <= 0) {
 		return TRUE;
 	}
 	
-	switch (pl.a_ammo1) {
+	switch (pl.menu_active) {
 	case DMENU_LAUNCH:
 		sendevent("w_dml_launch", "i", -1i);
 		break;

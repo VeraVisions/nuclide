@@ -207,6 +207,16 @@ void
 w_deagle_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.deagle_mag == 0 && pl.ammo_50ae == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
+	HUD_DrawAmmoBar(pos, pl.ammo_50ae, AMMO_MAX_50AE, a);
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -214,7 +224,7 @@ w_deagle_hudpic(int selected, vector pos, float a)
 			g_hud11_spr,
 			[0,90/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			1.0f,
 			DRAWFLAG_ADDITIVE
 		);
@@ -225,7 +235,7 @@ w_deagle_hudpic(int selected, vector pos, float a)
 			g_hud10_spr,
 			[0,90/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			1.0f,
 			DRAWFLAG_ADDITIVE
 		);

@@ -61,8 +61,8 @@ w_hegrenade_pickup(int new, int startammo)
 #ifdef SERVER
 	player pl = (player)self;
 
-	if (pl.ammo_hegrenade < 3) {
-		pl.ammo_hegrenade = bound(0, pl.ammo_hegrenade + 1, 3);
+	if (pl.ammo_hegrenade < AMMO_MAX_HENADE) {
+		pl.ammo_hegrenade = bound(0, pl.ammo_hegrenade + 1, AMMO_MAX_HENADE);
 	} else {
 		return FALSE;
 	}
@@ -238,6 +238,10 @@ void
 w_hegrenade_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+
+	HUD_DrawAmmoBar(pos, pl.ammo_hegrenade, AMMO_MAX_HENADE, a);
+
 	if (selected) {
 		drawsubpic(
 			pos,

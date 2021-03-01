@@ -94,8 +94,8 @@ w_m4a1_pickup(int new, int startammo)
 		else
 			pl.m4a1_mag = startammo;
 	} else {
-		if (pl.ammo_556mm < AMMO_MAX_762MM) {
-			pl.ammo_556mm = bound(0, pl.ammo_556mm + 30, AMMO_MAX_762MM);
+		if (pl.ammo_556mm < AMMO_MAX_556MM) {
+			pl.ammo_556mm = bound(0, pl.ammo_556mm + 30, AMMO_MAX_556MM);
 		} else {
 			return FALSE;
 		}
@@ -296,6 +296,8 @@ w_m4a1_hudpic(int selected, vector pos, float a)
 	else
 		hud_col = g_hud_color;
 
+	HUD_DrawAmmoBar(pos, pl.ammo_556mm, AMMO_MAX_556MM, a);
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -319,14 +321,6 @@ w_m4a1_hudpic(int selected, vector pos, float a)
 			DRAWFLAG_ADDITIVE
 		);
 	}
-
-	if (pl.ammo_556mm <= 0)
-		return;
-
-	float perc;
-	perc = pl.ammo_556mm / AMMO_MAX_556MM;
-	drawfill(pos + [10,0], [20,4], hud_col, a, DRAWFLAG_NORMAL);
-	drawfill(pos + [10,0], [20 * perc,4], [0,1,0], a, DRAWFLAG_NORMAL);
 #endif
 }
 

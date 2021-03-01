@@ -94,8 +94,8 @@ w_glock18_pickup(int new, int startammo)
 		else
 			pl.glock18_mag = startammo;
 	} else {
-		if (pl.ammo_9mm < 40) {
-			pl.ammo_9mm = bound(0, pl.ammo_9mm + 20, 40);
+		if (pl.ammo_9mm < AMMO_MAX_9MM) {
+			pl.ammo_9mm = bound(0, pl.ammo_9mm + 20, AMMO_MAX_9MM);
 		} else {
 			return FALSE;
 		}
@@ -275,6 +275,8 @@ w_glock18_hudpic(int selected, vector pos, float a)
 	else
 		hud_col = g_hud_color;
 
+	HUD_DrawAmmoBar(pos, pl.ammo_9mm, AMMO_MAX_9MM, a);
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -282,7 +284,7 @@ w_glock18_hudpic(int selected, vector pos, float a)
 			g_hud4_spr,
 			[0,45/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			1.0f,
 			DRAWFLAG_ADDITIVE
 		);
@@ -293,19 +295,11 @@ w_glock18_hudpic(int selected, vector pos, float a)
 			g_hud1_spr,
 			[0,45/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			1.0f,
 			DRAWFLAG_ADDITIVE
 		);
 	}
-
-	if (pl.ammo_9mm <= 0)
-		return;
-
-	float perc;
-	perc = pl.ammo_9mm / AMMO_MAX_9MM;
-	drawfill(pos + [10,0], [20,4], hud_col, a, DRAWFLAG_NORMAL);
-	drawfill(pos + [10,0], [20 * perc,4], [0,1,0], a, DRAWFLAG_NORMAL);
 #endif
 }
 

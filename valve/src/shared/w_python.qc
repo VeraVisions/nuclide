@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -325,13 +325,7 @@ w_python_hudpic(int selected, vector pos, float a)
 		);
 	}
 
-	if (pl.ammo_357 <= 0)
-		return;
-
-	float perc;
-	perc = pl.ammo_357 / MAX_A_357;
-	drawfill(pos + [10,0], [20,4], hud_col, a, DRAWFLAG_NORMAL);
-	drawfill(pos + [10,0], [20 * perc,4], [0,1,0], a, DRAWFLAG_NORMAL);
+	HUD_DrawAmmoBar(pos, pl.ammo_357, MAX_A_357, a);
 #endif
 }
 

@@ -61,8 +61,8 @@ w_flashbang_pickup(int new, int startammo)
 #ifdef SERVER
 	player pl = (player)self;
 
-	if (pl.ammo_fbgrenade < 3) {
-		pl.ammo_fbgrenade = bound(0, pl.ammo_fbgrenade + 1, 3);
+	if (pl.ammo_fbgrenade < AMMO_MAX_FLASHBANG) {
+		pl.ammo_fbgrenade = bound(0, pl.ammo_fbgrenade + 1, AMMO_MAX_FLASHBANG);
 	} else {
 		return FALSE;
 	}
@@ -229,6 +229,10 @@ void
 w_flashbang_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+
+	HUD_DrawAmmoBar(pos, pl.ammo_fbgrenade, AMMO_MAX_FLASHBANG, a);
+
 	if (selected) {
 		drawsubpic(
 			pos,

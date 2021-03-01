@@ -83,8 +83,8 @@ w_sg550_pickup(int new, int startammo)
 		else
 			pl.sg550_mag = startammo;
 	} else {
-		if (pl.ammo_556mm < 90) {
-			pl.ammo_556mm = bound(0, pl.ammo_556mm + 30, 90);
+		if (pl.ammo_556mm < AMMO_MAX_556MM) {
+			pl.ammo_556mm = bound(0, pl.ammo_556mm + 30, AMMO_MAX_556MM);
 		} else {
 			return FALSE;
 		}
@@ -219,6 +219,16 @@ void
 w_sg550_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.sg550_mag == 0 && pl.ammo_556mm == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
+	HUD_DrawAmmoBar(pos, pl.ammo_556mm, AMMO_MAX_556MM, a);
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -226,7 +236,7 @@ w_sg550_hudpic(int selected, vector pos, float a)
 			g_hud15_spr,
 			[0,180/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			1.0f,
 			DRAWFLAG_ADDITIVE
 		);
@@ -237,7 +247,7 @@ w_sg550_hudpic(int selected, vector pos, float a)
 			g_hud14_spr,
 			[0,180/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			1.0f,
 			DRAWFLAG_ADDITIVE
 		);

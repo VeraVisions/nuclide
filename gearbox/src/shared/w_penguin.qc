@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -39,8 +39,8 @@ w_penguin_pickup(int new, int startammo)
 #ifdef SERVER
 	player pl = (player)self;
 
-	if (pl.ammo_penguin < 9) {
-		pl.ammo_penguin = bound(0, pl.ammo_penguin + 3, 9);
+	if (pl.ammo_penguin < MAX_A_PENGUIN) {
+		pl.ammo_penguin = bound(0, pl.ammo_penguin + 3, MAX_A_PENGUIN);
 	} else {
 		return FALSE;
 	}
@@ -279,7 +279,7 @@ w_penguin_precache(void)
 void
 w_penguin_updateammo(player pl)
 {
-	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_penguin, __NULL__);
+	Weapons_UpdateAmmo(pl, -1, pl.ammo_penguin, -1);
 }
 
 string
@@ -321,14 +321,24 @@ void
 w_penguin_hudpic(int s, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.ammo_penguin == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
+	HUD_DrawAmmoBar(pos, pl.ammo_penguin, MAX_A_PENGUIN, a);
+
 	if (s) {
 		drawsubpic(pos, [170,45], "sprites/640hudof04.spr_0.tga",
 			[0,180/256], [170/256,45/256],
-			g_hud_color, a, DRAWFLAG_ADDITIVE);
+			hud_col, a, DRAWFLAG_ADDITIVE);
 	} else {
 		drawsubpic(pos, [170,45], "sprites/640hudof03.spr_0.tga",
 			[0,180/256], [170/256,45/256],
-			g_hud_color, a, DRAWFLAG_ADDITIVE);
+			hud_col, a, DRAWFLAG_ADDITIVE);
 	}
 #endif
 }

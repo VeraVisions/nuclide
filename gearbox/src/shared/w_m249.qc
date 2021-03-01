@@ -60,8 +60,8 @@ w_m249_pickup(int new, int startammo)
 	if (new) {
 		pl.m249_mag = 50;
 	} else {
-		if (pl.ammo_556 < 200) {
-			pl.ammo_556 = bound(0, pl.ammo_556 + 50, 200);
+		if (pl.ammo_556 < MAX_A_556) {
+			pl.ammo_556 = bound(0, pl.ammo_556 + 50, MAX_A_556);
 		} else {
 			return FALSE;
 		}
@@ -283,6 +283,16 @@ void
 w_m249_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.m249_mag == 0 && pl.ammo_556 == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
+	HUD_DrawAmmoBar(pos, pl.ammo_556, MAX_A_556, a);
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -290,7 +300,7 @@ w_m249_hudpic(int selected, vector pos, float a)
 			"sprites/640hudof02.spr_0.tga",
 			[0,135/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);
@@ -301,7 +311,7 @@ w_m249_hudpic(int selected, vector pos, float a)
 			"sprites/640hudof01.spr_0.tga",
 			[0,135/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);

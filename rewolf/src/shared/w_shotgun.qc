@@ -72,8 +72,8 @@ w_shotgun_primary(void)
 		return;
 	}
 
-	if (pl.a_ammo1 > 0) {
-		pl.a_ammo1 = 0;
+	if (pl.menu_active > 0) {
+		pl.menu_active = 0;
 		pl.gflags |= GF_SEMI_TOGGLED;
 		Weapons_ViewAnimation(SHOTGUN_CUSTOMIZE);
 		pl.w_attack_next = 2.25f;
@@ -146,13 +146,13 @@ w_shotgun_secondary(void)
 	}
 
 	/* activate menu */
-	if (pl.a_ammo1 <= 0) {
-		pl.a_ammo1 = 1;
+	if (pl.menu_active <= 0) {
+		pl.menu_active = 1;
 	} else {
-		if (pl.a_ammo1 == 1) {
-			pl.a_ammo1 = 2;
+		if (pl.menu_active == 1) {
+			pl.menu_active = 2;
 		} else {
-			pl.a_ammo1 = 1;
+			pl.menu_active = 1;
 		}
 	}
 
@@ -186,9 +186,7 @@ w_shotgun_release(void)
 void
 w_shotgun_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, pl.ammo_buckshot, -1);
-#endif
 }
 
 string
@@ -258,12 +256,12 @@ w_shotgun_hud(void)
 	HUD_DrawAmmo2();
 
 	/* menu */
-	if (pl.a_ammo1 > 0) {
+	if (pl.menu_active > 0) {
 		vector col1, col2;
 		string shellstr, spreadstr;
 		
 		col1 = col2 = [1,1,1];
-		switch (pl.a_ammo1) {
+		switch (pl.menu_active) {
 		case SMENU_SHELLS:
 			col1 = [0,1,0];
 			break;
@@ -323,15 +321,13 @@ w_shotgun_precache(void)
 
 #ifdef SERVER
 	Sound_Precache("weapon_shotgun.fire");
-	clientstat(40, EV_INTEGER, player::shotgun_shells);
-	clientstat(41, EV_INTEGER, player::shotgun_spread);
 #endif
 }
 
 weapon_t w_shotgun =
 {
 	.name		= "shotgun",
-	.id			= ITEM_SHOTGUN,
+	.id		= ITEM_SHOTGUN,
 	.slot		= 2,
 	.slot_pos	= 0,
 	.draw		= w_shotgun_draw,
@@ -364,11 +360,11 @@ weapon_shotgun(void)
 int
 w_shotgun_hudforward(player pl)
 {
-	if (pl.a_ammo1 <= 0) {
+	if (pl.menu_active <= 0) {
 		return TRUE;
 	}
 
-	switch (pl.a_ammo1) {
+	switch (pl.menu_active) {
 	case SMENU_SHELLS:
 		sendevent("w_shot_shell", "i", 1i);
 		break;
@@ -382,11 +378,11 @@ w_shotgun_hudforward(player pl)
 int
 w_shotgun_hudback(player pl)
 {
-	if (pl.a_ammo1 <= 0) {
+	if (pl.menu_active <= 0) {
 		return TRUE;
 	}
 	
-	switch (pl.a_ammo1) {
+	switch (pl.menu_active) {
 	case SMENU_SHELLS:
 		sendevent("w_shot_shell", "i", -1i);
 		break;

@@ -466,6 +466,19 @@ HUD_DrawAmmo3(void)
 	HUD_DrawNums(pl.a_ammo3, pos, pSeat->m_flAmmo3Alpha, g_hud_color);
 }
 
+/* ammo bar */
+void
+HUD_DrawAmmoBar(vector pos, float val, float max, float a)
+{
+	if (val <= 0)
+		return;
+
+	float perc;
+	perc = val / max;
+	drawfill(pos + [10,5], [20,4], g_hud_color, a, DRAWFLAG_NORMAL);
+	drawfill(pos + [10,5], [20 * perc,4], [0,1,0], a, DRAWFLAG_NORMAL);
+}
+
 /* flashlight/torch indicator */
 void
 HUD_DrawFlashlight(void)

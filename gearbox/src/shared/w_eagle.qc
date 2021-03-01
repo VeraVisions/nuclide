@@ -61,8 +61,8 @@ w_eagle_pickup(int new, int startammo)
 	if (new) {
 		pl.eagle_mag = 7;
 	} else {
-		if (pl.ammo_357 < 36) {
-			pl.ammo_357 = bound(0, pl.ammo_357 + 7, 36);
+		if (pl.ammo_357 < MAX_A_357) {
+			pl.ammo_357 = bound(0, pl.ammo_357 + 7, MAX_A_357);
 		} else {
 			return FALSE;
 		}
@@ -344,6 +344,14 @@ void
 w_eagle_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.eagle_mag == 0 && pl.ammo_357 == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -367,13 +375,15 @@ w_eagle_hudpic(int selected, vector pos, float a)
 			DRAWFLAG_ADDITIVE
 		);
 	}
+
+	HUD_DrawAmmoBar(pos, pl.ammo_357, MAX_A_357, a);
 #endif
 }
 
 weapon_t w_eagle =
 {
 	.name		= "eagle",
-	.id			= ITEM_EAGLE,
+	.id		= ITEM_EAGLE,
 	.slot		= 1,
 	.slot_pos	= 2,
 	.draw		= w_eagle_draw,

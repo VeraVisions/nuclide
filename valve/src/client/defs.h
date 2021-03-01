@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -127,4 +127,5 @@ struct
 void HUD_DrawAmmo1(void);
 void HUD_DrawAmmo2(void);
 void HUD_DrawAmmo3(void);
+void HUD_DrawAmmoBar(vector pos, float val, float max, float a);
 void HUD_WeaponPickupNotify(int);

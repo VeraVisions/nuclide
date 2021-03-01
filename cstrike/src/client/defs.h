@@ -152,6 +152,7 @@ void HUD_DrawAmmo1(void);
 void HUD_DrawAmmo2(void);
 void HUD_DrawAmmo3(void);
 void HUD_WeaponPickupNotify(int);
+void HUD_DrawAmmoBar(vector pos, float val, float max, float a);
 
 void Cstrike_DrawCrosshair(void);
 void Cstrike_DrawSimpleCrosshair(void);

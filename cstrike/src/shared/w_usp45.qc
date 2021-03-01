@@ -293,6 +293,8 @@ w_usp45_hudpic(int selected, vector pos, float a)
 	else
 		hud_col = g_hud_color;
 
+	HUD_DrawAmmoBar(pos, pl.ammo_45acp, AMMO_MAX_45ACP, a);
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -316,14 +318,6 @@ w_usp45_hudpic(int selected, vector pos, float a)
 			DRAWFLAG_ADDITIVE
 		);
 	}
-
-	if (pl.ammo_45acp <= 0)
-		return;
-
-	float perc;
-	perc = pl.ammo_45acp / AMMO_MAX_45ACP;
-	drawfill(pos + [10,0], [20,4], hud_col, a, DRAWFLAG_NORMAL);
-	drawfill(pos + [10,0], [20 * perc,4], [0,1,0], a, DRAWFLAG_NORMAL);
 #endif
 }
 

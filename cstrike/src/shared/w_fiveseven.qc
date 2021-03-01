@@ -84,8 +84,8 @@ w_fiveseven_pickup(int new, int startammo)
 		else
 			pl.fiveseven_mag = startammo;
 	} else {
-		if (pl.ammo_57mm < 40) {
-			pl.ammo_57mm = bound(0, pl.ammo_57mm + 20, 40);
+		if (pl.ammo_57mm < AMMO_MAX_57MM) {
+			pl.ammo_57mm = bound(0, pl.ammo_57mm + 20, AMMO_MAX_57MM);
 		} else {
 			return FALSE;
 		}
@@ -207,6 +207,16 @@ void
 w_fiveseven_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.fiveseven_mag == 0 && pl.ammo_57mm == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
+	HUD_DrawAmmoBar(pos, pl.ammo_57mm, AMMO_MAX_57MM, a);
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -214,7 +224,7 @@ w_fiveseven_hudpic(int selected, vector pos, float a)
 			g_hud15_spr,
 			[0,135/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			1.0f,
 			DRAWFLAG_ADDITIVE
 		);
@@ -225,7 +235,7 @@ w_fiveseven_hudpic(int selected, vector pos, float a)
 			g_hud14_spr,
 			[0,135/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			1.0f,
 			DRAWFLAG_ADDITIVE
 		);

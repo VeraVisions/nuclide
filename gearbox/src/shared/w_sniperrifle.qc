@@ -58,8 +58,8 @@ w_sniperrifle_pickup(int new, int startammo)
 	if (new) {
 		pl.sniper_mag = 5;
 	} else {
-		if (pl.ammo_762 < 15) {
-			pl.ammo_762 = bound(0, pl.ammo_762 + 5, 15);
+		if (pl.ammo_762 < MAX_A_762) {
+			pl.ammo_762 = bound(0, pl.ammo_762 + 5, MAX_A_762);
 		} else {
 			return FALSE;
 		}
@@ -71,7 +71,7 @@ w_sniperrifle_pickup(int new, int startammo)
 void
 w_sniperrifle_updateammo(player pl)
 {
-	Weapons_UpdateAmmo(pl, pl.sniper_mag, pl.ammo_762, __NULL__);
+	Weapons_UpdateAmmo(pl, pl.sniper_mag, pl.ammo_762, -1);
 }
 
 string
@@ -99,7 +99,7 @@ w_sniperrifle_draw(void)
 	Weapons_ViewAnimation(SNIPER_DRAW);
 #ifdef SERVER
 	player pl = (player)self;
-	Weapons_UpdateAmmo(pl, pl.sniper_mag, pl.ammo_762, __NULL__);
+	Weapons_UpdateAmmo(pl, pl.sniper_mag, pl.ammo_762, -1);
 #endif
 }
 
@@ -277,10 +277,20 @@ void
 w_sniperrifle_hudpic(int s, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.sniper_mag == 0 && pl.ammo_762 == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
+	HUD_DrawAmmoBar(pos, pl.ammo_762, MAX_A_762, a);
+
 	if (s) {
-		drawsubpic(pos, [170,45], "sprites/640hudof04.spr_0.tga", [0,135/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
+		drawsubpic(pos, [170,45], "sprites/640hudof04.spr_0.tga", [0,135/256], [170/256,45/256], hud_col, a, DRAWFLAG_ADDITIVE);
 	} else {
-		drawsubpic(pos, [170,45], "sprites/640hudof03.spr_0.tga", [0,135/256], [170/256,45/256], g_hud_color, a, DRAWFLAG_ADDITIVE);
+		drawsubpic(pos, [170,45], "sprites/640hudof03.spr_0.tga", [0,135/256], [170/256,45/256], hud_col, a, DRAWFLAG_ADDITIVE);
 	}
 #endif
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -362,19 +362,8 @@ w_mp5_hudpic(int selected, vector pos, float a)
 		);
 	}
 
-	float perc;
-
-	if (pl.ammo_9mm > 0) {
-		perc = pl.ammo_9mm / MAX_A_9MM;
-		drawfill(pos + [10,0], [20,4], hud_col, a, DRAWFLAG_NORMAL);
-		drawfill(pos + [10,0], [20 * perc,4], [0,1,0], a, DRAWFLAG_NORMAL);
-	}
-
-	if (pl.ammo_m203_grenade > 0) {
-		perc = pl.ammo_m203_grenade / MAX_A_M203_GRENADE;
-		drawfill(pos + [35,0], [20,4], hud_col, a, DRAWFLAG_NORMAL);
-		drawfill(pos + [35,0], [20 * perc,4], [0,1,0], a, DRAWFLAG_NORMAL);
-	}
+	HUD_DrawAmmoBar(pos, pl.ammo_9mm, MAX_A_9MM, a);
+	HUD_DrawAmmoBar(pos + [25, 0], pl.ammo_m203_grenade, MAX_A_M203_GRENADE, a);
 #endif
 }
 

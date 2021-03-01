@@ -61,8 +61,8 @@ w_smokegrenade_pickup(int new, int startammo)
 #ifdef SERVER
 	player pl = (player)self;
 
-	if (pl.ammo_smokegrenade < 3) {
-		pl.ammo_smokegrenade = bound(0, pl.ammo_smokegrenade + 1, 3);
+	if (pl.ammo_smokegrenade < AMMO_MAX_SMOKE) {
+		pl.ammo_smokegrenade = bound(0, pl.ammo_smokegrenade + 1, AMMO_MAX_SMOKE);
 	} else {
 		return FALSE;
 	}
@@ -234,6 +234,10 @@ void
 w_smokegrenade_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+
+	HUD_DrawAmmoBar(pos, pl.ammo_smokegrenade, AMMO_MAX_SMOKE, a);
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -263,7 +267,7 @@ w_smokegrenade_hudpic(int selected, vector pos, float a)
 weapon_t w_smokegrenade =
 {
 	.name		= "smokegrenade",
-	.id			= ITEM_SMOKEGRENADE,
+	.id		= ITEM_SMOKEGRENADE,
 	.slot		= 3,
 	.slot_pos	= 2,
 	.allow_drop	= FALSE,
