@@ -188,7 +188,7 @@ w_fiveseven_reload(void)
 float
 w_fiveseven_aimanim(void)
 {
-	return w_fiveseven_aimanim();
+	return self.flags & FL_CROUCHING ? ANIM_CROUCH_AIM_ONEHAND : ANIM_AIM_ONEHAND;
 }
 
 void

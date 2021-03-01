@@ -52,7 +52,7 @@ enum
 #define AMMO_MAX_556MM		90
 #define AMMO_MAX_556MMBOX	200
 #define AMMO_MAX_338MAG		30
-#define AMMO_MAX_9MM		150
+#define AMMO_MAX_9MM		120
 #define AMMO_MAX_BUCKSHOT	32
 #define AMMO_MAX_45ACP		100
 #define AMMO_MAX_357SIG		52

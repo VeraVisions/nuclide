@@ -149,10 +149,16 @@ Ammo_BuyCaliber(player pl, int cal, int free)
 			error("Ammo_BuyCaliber: Impossible caliber definition.");
 		}
 
-		if (*ptr_ammo >= cs_ammoinfo[cal].a_max)
+		if (*ptr_ammo >= cs_ammoinfo[cal].a_max) {
 			break;
+		}
 
 		*ptr_ammo += cs_ammoinfo[cal].a_size;
+
+		/* clamp */
+		if (*ptr_ammo >= cs_ammoinfo[cal].a_max) {
+			*ptr_ammo = cs_ammoinfo[cal].a_max;
+		}
 
 		if (!free)
 			Money_AddMoney(pl, -cs_ammoinfo[cal].price);
