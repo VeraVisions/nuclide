@@ -119,10 +119,10 @@ void w_tnt_throw(void)
 
 void w_tnt_draw(void)
 {
-#ifdef CLIENT
 	player pl = (player)self;
 	pl.mode_tempstate = 0;
 
+#ifdef CLIENT
 	Weapons_SetModel("models/v_tnt.mdl");
 	Weapons_ViewAnimation(HANDGRENADE_DRAW);
 #endif

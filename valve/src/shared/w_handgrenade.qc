@@ -133,10 +133,10 @@ void w_handgrenade_throw(void)
 
 void w_handgrenade_draw(void)
 {
-#ifdef CLIENT
 	player pl = (player)self;
 	pl.mode_tempstate = 0;
 
+#ifdef CLIENT
 	Weapons_SetModel("models/v_grenade.mdl");
 	Weapons_ViewAnimation(HANDGRENADE_DRAW);
 #endif

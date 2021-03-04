@@ -146,12 +146,13 @@ int w_egon_pickup(int new, int startammo)
 void w_egon_draw(void)
 {
 	player pl = (player)self;
-	Weapons_SetModel("models/v_egon.mdl");
-	Weapons_ViewAnimation(EGON_DRAW);
-	pl.w_idle_next = 1.0f;
+	pl.mode_tempstate = 0;
 
 	/* link the FX class */
 #ifdef CLIENT
+	Weapons_SetModel("models/v_egon.mdl");
+	Weapons_ViewAnimation(EGON_DRAW);
+
 	entity eold = self;
 	self = pSeat->m_pWeaponFX;
 	spawnfunc_FXEgon();
@@ -163,6 +164,7 @@ void w_egon_holster(void)
 {
 	Weapons_ViewAnimation(EGON_HOLSTER);
 }
+
 void w_egon_release(void);
 
 void w_egon_primary(void)
@@ -198,20 +200,20 @@ void w_egon_primary(void)
 
 	pl.ammo_uranium--;
 
-	if (pl.ammo_egon_state == 0) {
+	if (pl.mode_tempstate == 0) {
 #ifdef SERVER
 		sound(pl, CHAN_WEAPON, "weapons/egon_windup2.wav", 1, ATTN_NORM, 100, 0);
 #endif
-		pl.ammo_egon_state = 1;
+		pl.mode_tempstate = 1;
 		Weapons_ViewPunchAngle([-5,0,0]);
 		pl.w_idle_next = 3.0f;
 	} else if not (pl.w_idle_next > 0.0f) {
 		/* wait 3 seconds (idle next) */
-		if (pl.ammo_egon_state == 1) {
+		if (pl.mode_tempstate == 1) {
 #ifdef SERVER
 			sound(pl, CHAN_WEAPON, "weapons/egon_run3.wav", 1, ATTN_NORM, 100);
 #endif
-			pl.ammo_egon_state = 2;
+			pl.mode_tempstate = 2;
 		}
 		pl.w_idle_next = 3.0f;
 	}
@@ -235,11 +237,11 @@ void w_egon_release(void)
 	p.alpha = 0.0f;
 #endif	
 
-	if (pl.ammo_egon_state != 0) {
+	if (pl.mode_tempstate != 0) {
 #ifdef SERVER
 		sound(pl, CHAN_WEAPON, "weapons/egon_off1.wav", 1, ATTN_NORM, 100, 0);
 #endif
-		pl.ammo_egon_state = 0;
+		pl.mode_tempstate = 0;
 		Weapons_ViewPunchAngle([-2,0,0]);
 	}
 

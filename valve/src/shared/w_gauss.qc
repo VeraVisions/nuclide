@@ -171,11 +171,14 @@ int w_gauss_pickup(int new, int startammo)
 
 void w_gauss_draw(void)
 {
-	Weapons_SetModel("models/v_gauss.mdl");
-	Weapons_ViewAnimation(GAUSS_DRAW);
+	player pl = (player)self;
+	pl.mode_tempstate = 0;
 
 	/* link the FX class */
 #ifdef CLIENT
+	Weapons_SetModel("models/v_gauss.mdl");
+	Weapons_ViewAnimation(GAUSS_DRAW);
+
 	entity eold = self;
 	self = pSeat->m_pWeaponFX;
 	spawnfunc_FXGauss();
@@ -287,7 +290,7 @@ void w_gauss_secondary(void)
 	player pl = (player)self;
 
 #ifdef CLIENT
-	if (pl.ammo_gauss_state)
+	if (pl.mode_tempstate)
 		soundupdate(pl, CHAN_WEAPON, "", 2, ATTN_NORM, 100 + (200 * (pl.ammo_gauss_volume/255)), 0, 0);
 #endif
 	
@@ -299,14 +302,14 @@ void w_gauss_secondary(void)
 	/* Ammo check */
 #ifdef CLIENT
     if (pl.a_ammo2 <= 0) {
-        if (pl.ammo_gauss_state > 0) {
+        if (pl.mode_tempstate > 0) {
 			w_gauss_release();
 		}
 		return;
     }
 #else
     if (pl.ammo_uranium <= 0) {
-        if (pl.ammo_gauss_state > 0) {
+        if (pl.mode_tempstate > 0) {
             w_gauss_release();
         }
 		return;
@@ -327,16 +330,16 @@ void w_gauss_secondary(void)
 		pl.ammo_gauss_volume = 255;
 	}
 
-	if (pl.ammo_gauss_state == 1) {
+	if (pl.mode_tempstate == 1) {
 		Weapons_ViewAnimation(GAUSS_SPIN);
-		pl.ammo_gauss_state = 2;
+		pl.mode_tempstate = 2;
 		pl.w_idle_next = 0.0f;
-	} else if (!pl.ammo_gauss_state) {
+	} else if (!pl.mode_tempstate) {
 		Weapons_ViewAnimation(GAUSS_SPINUP);
 #ifdef CLIENT
 		sound(pl, CHAN_WEAPON, "ambience/pulsemachine.wav", 2, ATTN_NORM);
 #endif
-		pl.ammo_gauss_state = 1;
+		pl.mode_tempstate = 1;
 	}
 }
 
@@ -350,13 +353,13 @@ void w_gauss_release(void)
 	/* Reset the pitch sound shift */
 	pl.ammo_gauss_volume = 0;
 
-	if (pl.ammo_gauss_state == 1) {
+	if (pl.mode_tempstate == 1) {
 		pl.w_attack_next = 0.0f;
 		pl.w_idle_next = 4.0f;
 		w_gauss_primary();
-		pl.ammo_gauss_state = 0;
+		pl.mode_tempstate = 0;
 		return;
-	} else if (pl.ammo_gauss_state == 2) {
+	} else if (pl.mode_tempstate == 2) {
 		Weapons_ViewAnimation(GAUSS_FIRE1);
 #ifdef CLIENT
 		FXGauss p = (FXGauss)pSeat->m_pWeaponFX;
@@ -371,7 +374,7 @@ void w_gauss_release(void)
 #endif
 		pl.w_attack_next = 1.5f;
 		pl.w_idle_next = 4.0f;
-		pl.ammo_gauss_state = 0;
+		pl.mode_tempstate = 0;
 		return;
 	}
 

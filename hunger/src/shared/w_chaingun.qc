@@ -87,10 +87,10 @@ w_chaingun_deathmsg(void)
 void
 w_chaingun_draw(void)
 {
-#ifdef CLIENT
 	player pl = (player)self;
 	pl.mode_tempstate = 0;
 
+#ifdef CLIENT
 	Weapons_SetModel("models/v_tfac.mdl");
 	Weapons_ViewAnimation(CHAINGUN_DRAW);
 #endif

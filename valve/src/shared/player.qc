@@ -125,14 +125,8 @@ class player:base_player
 
 	int ammo_m203_grenade;
 	int  ammo_m203_grenade_net;
-	int ammo_shotgun_state;
-	int  ammo_shotgun_state_net;
-	int ammo_gauss_state;
-	int  ammo_gauss_state_net;
 	int ammo_gauss_volume;
 	int  ammo_gauss_volume_net;
-	int ammo_egon_state;
-	int  ammo_egon_state_net;
 	int ammo_rpg_state;
 	int  ammo_rpg_state_net;
 	int mode_tempstate;
@@ -278,10 +272,7 @@ player::ReceiveEntity(float new)
 
 	if (fl & PLAYER_AMMO3) {
 		ammo_m203_grenade = readbyte();
-		ammo_shotgun_state = readbyte();
-		ammo_gauss_state = readbyte();
 		ammo_gauss_volume = readbyte();
-		ammo_egon_state = readbyte();
 		ammo_rpg_state = readbyte();
 		mode_tempstate = readbyte();
 	}
@@ -323,10 +314,7 @@ player::PredictPreFrame(void)
 	ammo_hornet_net = ammo_hornet;
 
 	ammo_m203_grenade_net = ammo_m203_grenade;
-	ammo_shotgun_state_net = ammo_shotgun_state;
-	ammo_gauss_state_net = ammo_gauss_state;
 	ammo_gauss_volume_net = ammo_gauss_volume;
-	ammo_egon_state_net = ammo_egon_state;
 	ammo_rpg_state_net = ammo_rpg_state;
 	mode_tempstate_net = mode_tempstate;
 }
@@ -362,10 +350,7 @@ player::PredictPostFrame(void)
 	ammo_hornet = ammo_hornet_net;
 
 	ammo_m203_grenade = ammo_m203_grenade_net;
-	ammo_shotgun_state = ammo_shotgun_state_net;
-	ammo_gauss_state = ammo_gauss_state_net;
 	ammo_gauss_volume = ammo_gauss_volume_net;
-	ammo_egon_state = ammo_egon_state_net;
 	ammo_rpg_state = ammo_rpg_state_net;
 	mode_tempstate = mode_tempstate_net;
 }
@@ -497,16 +482,7 @@ player::EvaluateEntity(void)
 	if (ammo_m203_grenade != ammo_m203_grenade_net) {
 		SendFlags |= PLAYER_AMMO3;
 	}
-	if (ammo_shotgun_state != ammo_shotgun_state_net) {
-		SendFlags |= PLAYER_AMMO3;
-	}
-	if (ammo_gauss_state != ammo_gauss_state_net) {
-		SendFlags |= PLAYER_AMMO3;
-	}
 	if (ammo_gauss_volume != ammo_gauss_volume_net) {
-		SendFlags |= PLAYER_AMMO3;
-	}
-	if (ammo_egon_state != ammo_egon_state_net) {
 		SendFlags |= PLAYER_AMMO3;
 	}
 	if (ammo_rpg_state != ammo_rpg_state_net) {
@@ -554,10 +530,7 @@ player::EvaluateEntity(void)
 	ammo_hornet_net = ammo_hornet;
 
 	ammo_m203_grenade_net = ammo_m203_grenade;
-	ammo_shotgun_state_net = ammo_shotgun_state;
-	ammo_gauss_state_net = ammo_gauss_state;
 	ammo_gauss_volume_net = ammo_gauss_volume;
-	ammo_egon_state_net = ammo_egon_state;
 	ammo_rpg_state_net = ammo_rpg_state;
 	mode_tempstate_net = mode_tempstate;
 }
@@ -659,10 +632,7 @@ player::SendEntity(entity ePEnt, float fChanged)
 
 	if (fChanged & PLAYER_AMMO3) {
 		WriteByte(MSG_ENTITY, ammo_m203_grenade);
-		WriteByte(MSG_ENTITY, ammo_shotgun_state);
-		WriteByte(MSG_ENTITY, ammo_gauss_state);
 		WriteByte(MSG_ENTITY, ammo_gauss_volume);
-		WriteByte(MSG_ENTITY, ammo_egon_state);
 		WriteByte(MSG_ENTITY, ammo_rpg_state);
 		WriteByte(MSG_ENTITY, mode_tempstate);
 	}

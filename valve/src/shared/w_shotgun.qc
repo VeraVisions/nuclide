@@ -95,8 +95,13 @@ int w_shotgun_pickup(int new, int startammo)
 
 void w_shotgun_draw(void)
 {
+	player pl = (player)self;
+	pl.mode_tempstate = 0;
+
+#ifdef CLIENT
 	Weapons_SetModel("models/v_shotgun.mdl");
 	Weapons_ViewAnimation(SHOTGUN_DRAW);
+#endif
 }
 
 void w_shotgun_holster(void)
@@ -110,7 +115,7 @@ void w_shotgun_primary(void)
 		return;
 	}
 
-	if (pl.ammo_shotgun_state > SHOTTY_IDLE) {
+	if (pl.mode_tempstate > SHOTTY_IDLE) {
 		return;
 	}
 
@@ -145,7 +150,7 @@ void w_shotgun_secondary(void)
 		return;
 	}
 
-	if (pl.ammo_shotgun_state > SHOTTY_IDLE) {
+	if (pl.mode_tempstate > SHOTTY_IDLE) {
 		return;
 	}
 
@@ -184,10 +189,10 @@ void w_shotgun_reload(void)
 		return;
 	}
 
-	if (pl.ammo_shotgun_state > SHOTTY_IDLE) {
+	if (pl.mode_tempstate > SHOTTY_IDLE) {
 		return;
 	}
-	pl.ammo_shotgun_state = SHOTTY_RELOAD_START;
+	pl.mode_tempstate = SHOTTY_RELOAD_START;
 	pl.w_idle_next = 0.0f;
 }
 
@@ -197,7 +202,7 @@ void w_shotgun_release(void)
 
 	/* auto-reload if need be */
 	if (pl.w_attack_next <= 0.0)
-	if (pl.ammo_shotgun_state == SHOTTY_IDLE && pl.shotgun_mag == 0 && pl.ammo_buckshot > 0) {
+	if (pl.mode_tempstate == SHOTTY_IDLE && pl.shotgun_mag == 0 && pl.ammo_buckshot > 0) {
 		Weapons_Reload();
 		return;
 	}
@@ -206,7 +211,7 @@ void w_shotgun_release(void)
 		return;
 	}
 
-	if (pl.ammo_shotgun_state == SHOTTY_IDLE) {
+	if (pl.mode_tempstate == SHOTTY_IDLE) {
 		int r = (float)input_sequence % 3;
 		switch (r) {
 		case 1:
@@ -222,11 +227,11 @@ void w_shotgun_release(void)
 			pl.w_idle_next = 2.222222f;
 			break;
 		}
-	} else if (pl.ammo_shotgun_state == SHOTTY_RELOAD_START) {
+	} else if (pl.mode_tempstate == SHOTTY_RELOAD_START) {
 		Weapons_ViewAnimation(SHOTGUN_START_RELOAD);
-		pl.ammo_shotgun_state = SHOTTY_RELOAD;
+		pl.mode_tempstate = SHOTTY_RELOAD;
 		pl.w_idle_next = 0.65f;
-	} else if (pl.ammo_shotgun_state == SHOTTY_RELOAD) {
+	} else if (pl.mode_tempstate == SHOTTY_RELOAD) {
 		Weapons_ViewAnimation(SHOTGUN_RELOAD);
 		pl.shotgun_mag++;
 		pl.ammo_buckshot--;
@@ -234,16 +239,16 @@ void w_shotgun_release(void)
 		Sound_Play(pl, CHAN_WEAPON, "weapon_shotgun.reload");
 #endif
 		if (pl.ammo_buckshot <= 0 || pl.shotgun_mag >= 8) {
-			pl.ammo_shotgun_state = SHOTTY_RELOAD_END;
+			pl.mode_tempstate = SHOTTY_RELOAD_END;
 		}
-		Weapons_UpdateAmmo(pl, pl.shotgun_mag, pl.ammo_buckshot, pl.ammo_shotgun_state);
+		Weapons_UpdateAmmo(pl, pl.shotgun_mag, pl.ammo_buckshot, pl.mode_tempstate);
 		pl.w_idle_next = 0.5f;	
-	} else if (pl.ammo_shotgun_state == SHOTTY_RELOAD_END) {
+	} else if (pl.mode_tempstate == SHOTTY_RELOAD_END) {
 		Weapons_ViewAnimation(SHOTGUN_PUMP);
 #ifdef SERVER
 		Sound_Play(pl, CHAN_WEAPON, "weapon_shotgun.cock");
 #endif
-		pl.ammo_shotgun_state = SHOTTY_IDLE;
+		pl.mode_tempstate = SHOTTY_IDLE;
 		pl.w_idle_next = 10.0f;
 		pl.w_attack_next = 0.5f;
 	}

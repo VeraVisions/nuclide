@@ -83,10 +83,10 @@ w_sniper_deathmsg(void)
 void
 w_sniper_draw(void)
 {
-#ifdef CLIENT
 	player pl = (player)self;
 	pl.mode_tempstate = 0;
 
+#ifdef CLIENT
 	Weapons_SetModel("models/v_tfc_sniper.mdl");
 	Weapons_ViewAnimation(SNIPER_DRAW);
 #endif
