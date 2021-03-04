@@ -134,6 +134,9 @@ void w_handgrenade_throw(void)
 void w_handgrenade_draw(void)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	pl.mode_tempstate = 0;
+
 	Weapons_SetModel("models/v_grenade.mdl");
 	Weapons_ViewAnimation(HANDGRENADE_DRAW);
 #endif
@@ -151,7 +154,7 @@ void w_handgrenade_primary(void)
 	}
 	
 	/* We're abusing this network variable for the holding check */
-	if (pl.ammo_handgrenade_state > 0) {
+	if (pl.mode_tempstate > 0) {
 		return;
 	}
 
@@ -164,7 +167,7 @@ void w_handgrenade_primary(void)
 	Weapons_ViewAnimation(HANDGRENADE_PULLPIN);
 #endif
 
-	pl.ammo_handgrenade_state = 1;
+	pl.mode_tempstate = 1;
 	pl.w_attack_next = 0.5f;
 	pl.w_idle_next = 0.5f;
 }
@@ -186,17 +189,17 @@ void w_handgrenade_release(void)
 		return;
 	}
 
-	if (pl.ammo_handgrenade_state == 1) {
+	if (pl.mode_tempstate == 1) {
 #ifdef CLIENT
 		Weapons_ViewAnimation(HANDGRENADE_THROW1);
 #else
 		w_handgrenade_throw();
 #endif
 		pl.ammo_handgrenade--;
-		pl.ammo_handgrenade_state = 2;
+		pl.mode_tempstate = 2;
 		pl.w_attack_next = 1.0f;
 		pl.w_idle_next = 0.5f;
-	} else if (pl.ammo_handgrenade_state == 2) {
+	} else if (pl.mode_tempstate == 2) {
 #ifdef CLIENT
 		Weapons_ViewAnimation(HANDGRENADE_DRAW);
 #else
@@ -206,7 +209,7 @@ void w_handgrenade_release(void)
 #endif
 		pl.w_attack_next = 0.5f;
 		pl.w_idle_next = 0.5f;
-		pl.ammo_handgrenade_state = 0;
+		pl.mode_tempstate = 0;
 	} else {
 		int r = (float)input_sequence % 8;
 		if (r == 1) {

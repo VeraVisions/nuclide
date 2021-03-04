@@ -140,8 +140,8 @@ class player:base_player
 	int  ammo_egon_state_net;
 	int ammo_rpg_state;
 	int  ammo_rpg_state_net;
-	int ammo_handgrenade_state;
-	int  ammo_handgrenade_state_net;
+	int mode_tempstate;
+	int  mode_tempstate_net;
 	int ammo_chainsaw_state;
 	int  ammo_chainsaw_state_net;
 	int ammo_hammer_state;
@@ -297,7 +297,7 @@ player::ReceiveEntity(float new)
 		ammo_gauss_volume = readbyte();
 		ammo_egon_state = readbyte();
 		ammo_rpg_state = readbyte();
-		ammo_handgrenade_state = readbyte();
+		mode_tempstate = readbyte();
 		ammo_chainsaw_state = readbyte();
 		ammo_hammer_state = readbyte();
 	}
@@ -345,7 +345,7 @@ player::PredictPreFrame(void)
 	ammo_gauss_volume_net = ammo_gauss_volume;
 	ammo_egon_state_net = ammo_egon_state;
 	ammo_rpg_state_net = ammo_rpg_state;
-	ammo_handgrenade_state_net = ammo_handgrenade_state;
+	mode_tempstate_net = mode_tempstate;
 	ammo_chainsaw_state_net = ammo_chainsaw_state;
 	ammo_hammer_state_net = ammo_hammer_state;
 }
@@ -388,7 +388,7 @@ player::PredictPostFrame(void)
 	ammo_gauss_volume = ammo_gauss_volume_net;
 	ammo_egon_state = ammo_egon_state_net;
 	ammo_rpg_state = ammo_rpg_state_net;
-	ammo_handgrenade_state = ammo_handgrenade_state_net;
+	mode_tempstate = mode_tempstate_net;
 	ammo_chainsaw_state = ammo_chainsaw_state_net;
 	ammo_hammer_state = ammo_hammer_state_net;
 }
@@ -538,7 +538,7 @@ player::EvaluateEntity(void)
 	if (ammo_rpg_state != ammo_rpg_state_net) {
 		SendFlags |= PLAYER_AMMO3;
 	}
-	if (ammo_handgrenade_state != ammo_handgrenade_state_net) {
+	if (mode_tempstate != mode_tempstate_net) {
 		SendFlags |= PLAYER_AMMO3;
 	}
 	if (ammo_chainsaw_state != ammo_chainsaw_state_net) {
@@ -592,7 +592,7 @@ player::EvaluateEntity(void)
 	ammo_gauss_volume_net = ammo_gauss_volume;
 	ammo_egon_state_net = ammo_egon_state;
 	ammo_rpg_state_net = ammo_rpg_state;
-	ammo_handgrenade_state_net = ammo_handgrenade_state;
+	mode_tempstate_net = mode_tempstate;
 	ammo_chainsaw_state_net = ammo_chainsaw_state;
 	ammo_hammer_state_net = ammo_hammer_state;
 }
@@ -700,7 +700,7 @@ player::SendEntity(entity ePEnt, float fChanged)
 		WriteByte(MSG_ENTITY, ammo_gauss_volume);
 		WriteByte(MSG_ENTITY, ammo_egon_state);
 		WriteByte(MSG_ENTITY, ammo_rpg_state);
-		WriteByte(MSG_ENTITY, ammo_handgrenade_state);
+		WriteByte(MSG_ENTITY, mode_tempstate);
 		WriteByte(MSG_ENTITY, ammo_chainsaw_state);
 		WriteByte(MSG_ENTITY, ammo_hammer_state);
 	}

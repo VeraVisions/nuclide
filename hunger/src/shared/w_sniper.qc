@@ -84,6 +84,9 @@ void
 w_sniper_draw(void)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	pl.mode_tempstate = 0;
+
 	Weapons_SetModel("models/v_tfc_sniper.mdl");
 	Weapons_ViewAnimation(SNIPER_DRAW);
 #endif
@@ -113,9 +116,9 @@ w_sniper_release(void)
 		return;
 	}
 
-	if (pl.ammo_handgrenade_state == 1) {
+	if (pl.mode_tempstate == 1) {
 		Weapons_ViewAnimation(SNIPER_DRAW);
-		pl.ammo_handgrenade_state = 0;
+		pl.mode_tempstate = 0;
 		pl.w_attack_next = 0.0f;
 		pl.w_idle_next = 15.0f;
 		return;
@@ -213,7 +216,7 @@ w_sniper_reload(void)
 	Weapons_ReloadWeapon(pl, player::sniper_mag, player::ammo_sniper, 5);
 #endif
 
-	pl.ammo_handgrenade_state = 1;
+	pl.mode_tempstate = 1;
 	pl.w_attack_next = 2.5f;
 	pl.w_idle_next = 2.0f;
 }

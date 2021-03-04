@@ -135,8 +135,8 @@ class player:base_player
 	int  ammo_egon_state_net;
 	int ammo_rpg_state;
 	int  ammo_rpg_state_net;
-	int ammo_handgrenade_state;
-	int  ammo_handgrenade_state_net;
+	int mode_tempstate;
+	int  mode_tempstate_net;
 
 	/* gearbox */
 	int eagle_mag; int eagle_mag_net;
@@ -312,7 +312,7 @@ player::ReceiveEntity(float new)
 		ammo_gauss_volume = readbyte();
 		ammo_egon_state = readbyte();
 		ammo_rpg_state = readbyte();
-		ammo_handgrenade_state = readbyte();
+		mode_tempstate = readbyte();
 
 		/* gearbox */
 		mode_displacer = readbyte();
@@ -364,7 +364,7 @@ player::PredictPreFrame(void)
 	ammo_gauss_volume_net = ammo_gauss_volume;
 	ammo_egon_state_net = ammo_egon_state;
 	ammo_rpg_state_net = ammo_rpg_state;
-	ammo_handgrenade_state_net = ammo_handgrenade_state;
+	mode_tempstate_net = mode_tempstate;
 
 	/* gearbox */
 	eagle_mag_net = eagle_mag;
@@ -419,7 +419,7 @@ player::PredictPostFrame(void)
 	ammo_gauss_volume = ammo_gauss_volume_net;
 	ammo_egon_state = ammo_egon_state_net;
 	ammo_rpg_state = ammo_rpg_state_net;
-	ammo_handgrenade_state = ammo_handgrenade_state_net;
+	mode_tempstate = mode_tempstate_net;
 
 	/* gearbox */
 	eagle_mag = eagle_mag_net;
@@ -580,7 +580,7 @@ player::EvaluateEntity(void)
 	if (ammo_rpg_state != ammo_rpg_state_net) {
 		SendFlags |= PLAYER_AMMO3;
 	}
-	if (ammo_handgrenade_state != ammo_handgrenade_state_net) {
+	if (mode_tempstate != mode_tempstate_net) {
 		SendFlags |= PLAYER_AMMO3;
 	}
 
@@ -627,7 +627,7 @@ player::EvaluateEntity(void)
 	ammo_gauss_volume_net = ammo_gauss_volume;
 	ammo_egon_state_net = ammo_egon_state;
 	ammo_rpg_state_net = ammo_rpg_state;
-	ammo_handgrenade_state_net = ammo_handgrenade_state;
+	mode_tempstate_net = mode_tempstate;
 
 	/* gearbox */
 	if (eagle_mag_net != eagle_mag)
@@ -790,7 +790,7 @@ player::SendEntity(entity ePEnt, float fChanged)
 		WriteByte(MSG_ENTITY, ammo_gauss_volume);
 		WriteByte(MSG_ENTITY, ammo_egon_state);
 		WriteByte(MSG_ENTITY, ammo_rpg_state);
-		WriteByte(MSG_ENTITY, ammo_handgrenade_state);
+		WriteByte(MSG_ENTITY, mode_tempstate);
 
 		/* gearbox */
 		WriteByte(MSG_ENTITY, mode_displacer);

@@ -88,6 +88,9 @@ void
 w_chaingun_draw(void)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	pl.mode_tempstate = 0;
+
 	Weapons_SetModel("models/v_tfac.mdl");
 	Weapons_ViewAnimation(CHAINGUN_DRAW);
 #endif
@@ -116,8 +119,8 @@ w_chaingun_release(void)
 	}
 
 	/* end firing */
-	if (pl.ammo_handgrenade_state == 1) {
-		pl.ammo_handgrenade_state = 0;
+	if (pl.mode_tempstate == 1) {
+		pl.mode_tempstate = 0;
 #ifdef SERVER
 		Sound_Play(pl, CHAN_WEAPON, "weapon_chaingun.spindown");
 #endif
@@ -128,8 +131,8 @@ w_chaingun_release(void)
 	}
 
 	/* end reload */
-	if (pl.ammo_handgrenade_state == 2) {
-		pl.ammo_handgrenade_state = 0;
+	if (pl.mode_tempstate == 2) {
+		pl.mode_tempstate = 0;
 		Weapons_ViewAnimation(CHAINGUN_DRAW);
 		pl.w_attack_next = 1.0f;
 		pl.w_idle_next = pl.w_attack_next;
@@ -152,7 +155,7 @@ w_chaingun_primary(void)
 	player pl = (player)self;
 
 	/* in case we're spamming primary while reloading */
-	if (pl.ammo_handgrenade_state == 2) {
+	if (pl.mode_tempstate == 2) {
 		w_chaingun_release();
 		return;
 	}
@@ -167,8 +170,8 @@ w_chaingun_primary(void)
 	}
 
 	/* spin up first */
-	if (pl.ammo_handgrenade_state == 0) {
-		pl.ammo_handgrenade_state = 1;
+	if (pl.mode_tempstate == 0) {
+		pl.mode_tempstate = 1;
 		Weapons_ViewAnimation(CHAINGUN_SPINUP);
 #ifdef SERVER
 		Sound_Play(pl, CHAN_WEAPON, "weapon_chaingun.spinup");
@@ -217,7 +220,7 @@ w_chaingun_reload(void)
 	Weapons_ReloadWeapon(pl, player::chaingun_mag, player::ammo_9mm, 100);
 #endif
 
-	pl.ammo_handgrenade_state = 2;
+	pl.mode_tempstate = 2;
 	pl.w_attack_next = 10.0f;
 	pl.w_idle_next = 1.5f;
 }

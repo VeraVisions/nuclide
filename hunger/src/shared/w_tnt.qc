@@ -120,6 +120,9 @@ void w_tnt_throw(void)
 void w_tnt_draw(void)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	pl.mode_tempstate = 0;
+
 	Weapons_SetModel("models/v_tnt.mdl");
 	Weapons_ViewAnimation(HANDGRENADE_DRAW);
 #endif
@@ -152,7 +155,7 @@ void w_tnt_release(void)
 		return;
 	}
 
-	if (pl.ammo_handgrenade_state == 1) {
+	if (pl.mode_tempstate == 1) {
 #ifdef CLIENT
 		pl.ammo_handgrenade--;
 		Weapons_ViewAnimation(HANDGRENADE_THROW1);
@@ -160,10 +163,10 @@ void w_tnt_release(void)
 		pl.ammo_handgrenade--;
 		w_tnt_throw();
 #endif
-		pl.ammo_handgrenade_state = 2;
+		pl.mode_tempstate = 2;
 		pl.w_attack_next = 1.0f;
 		pl.w_idle_next = 0.5f;
-	} else if (pl.ammo_handgrenade_state == 2) {
+	} else if (pl.mode_tempstate == 2) {
 #ifdef CLIENT
 		Weapons_ViewAnimation(HANDGRENADE_DRAW);
 #else
@@ -173,7 +176,7 @@ void w_tnt_release(void)
 #endif
 		pl.w_attack_next = 0.5f;
 		pl.w_idle_next = 0.5f;
-		pl.ammo_handgrenade_state = 0;
+		pl.mode_tempstate = 0;
 	} else {
 		int r = (float)input_sequence % 8;
 		if (r == 1) {
