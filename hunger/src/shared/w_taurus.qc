@@ -44,9 +44,7 @@ w_taurus_precache(void)
 void
 w_taurus_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.taurus_mag, pl.ammo_taurus, -1);
-#endif
 }
 
 string
@@ -113,29 +111,23 @@ w_taurus_primary(void)
 	}
 
 	/* ammo check */
-#ifdef CLIENT
-	if (!pl.a_ammo1) {
-		return;
-	}
-#else
 	if (!pl.taurus_mag) {
 		return;
 	}
-#endif
+
+	pl.taurus_mag--;
 
 	/* actual firing */
 #ifdef CLIENT
-	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_SMALL);
 	Weapons_ViewPunchAngle([-2,0,0]);
 
-	if (pl.a_ammo1) {
+	if (pl.taurus_mag) {
 		Weapons_ViewAnimation(TAURUS_SHOOT);
 	} else {
 		Weapons_ViewAnimation(TAURUS_SHOOT_EMPTY);
 	}
 #else
-	pl.taurus_mag--;
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 12, [0.01,0.01], WEAPON_TAURUS);
 	Sound_Play(pl, CHAN_WEAPON, "weapon_taurus.fire");
 
@@ -163,21 +155,6 @@ w_taurus_reload(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-
-#ifdef CLIENT
-	if (pl.a_ammo1 >= 10) {
-		return;
-	}
-	if (pl.a_ammo2 <= 0) {
-		return;
-	}
-
-	if (pl.a_ammo1) {
-		Weapons_ViewAnimation(TAURUS_RELOAD);
-	} else {
-		Weapons_ViewAnimation(TAURUS_RELOAD2);
-	}
-#else
 	if (pl.taurus_mag >= 10) {
 		return;
 	}
@@ -185,6 +162,13 @@ w_taurus_reload(void)
 		return;
 	}
 
+#ifdef CLIENT
+	if (pl.taurus_mag) {
+		Weapons_ViewAnimation(TAURUS_RELOAD);
+	} else {
+		Weapons_ViewAnimation(TAURUS_RELOAD2);
+	}
+#else
 	Weapons_ReloadWeapon(pl, player::taurus_mag, player::ammo_taurus, 10);
 #endif
 
@@ -200,7 +184,7 @@ w_taurus_release(void)
 
 	/* auto-reload if need be */
 	if (pl.w_attack_next <= 0.0)
-	if (pl.a_ammo1 == 0 && pl.a_ammo2 > 0) {
+	if (pl.taurus_mag == 0 && pl.ammo_taurus > 0) {
 		Weapons_Reload();
 		return;
 	}

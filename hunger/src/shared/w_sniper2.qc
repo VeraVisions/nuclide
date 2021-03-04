@@ -56,9 +56,7 @@ w_sniper2_pickup(int new, int startammo)
 void
 w_sniper2_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.sniper_mag, pl.ammo_sniper, -1);
-#endif
 }
 
 string
@@ -100,7 +98,7 @@ w_sniper2_release(void)
 
 	/* auto-reload if need be */
 	if (pl.w_attack_next <= 0.0)
-	if (pl.a_ammo1 == 0 && pl.a_ammo2 > 0) {
+	if (pl.sniper_mag == 0 && pl.ammo_sniper > 0) {
 		Weapons_Reload();
 		return;
 	}
@@ -134,29 +132,21 @@ w_sniper2_primary(void)
 	}
 
 	/* Ammo check */
-#ifdef CLIENT
-	if (pl.a_ammo1 <= 0) {
-		return;
-	}
-#else
 	if (pl.sniper_mag <= 0) {
 		return;
 	}
-#endif
+
+	pl.sniper_mag--;
 
 	/* Actual firing */
 #ifdef CLIENT
-	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_SMALL);
 	Weapons_ViewPunchAngle([-20,0,0]);
 	Weapons_ViewAnimation(SNIPER_FIRE);
 #else
-	pl.sniper_mag--;
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 40, [0.008, 0.008], WEAPON_SNIPER);
-
 	Sound_Play(pl, CHAN_WEAPON, "weapon_sniper.fire");
 #endif
-
 
 	/* Simple toggle of fovs */
 	if (pl.viewzoom == 1.0f) {
@@ -182,24 +172,19 @@ w_sniper2_reload(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-
-#ifdef CLIENT
-	if (pl.a_ammo1 >= 5) {
-		return;
-	}
-	if (pl.a_ammo2 <= 0) {
-		return;
-	}
-	Weapons_ViewAnimation(SNIPER_RELOAD);
-#else
 	if (pl.sniper_mag >= 5) {
 		return;
 	}
 	if (pl.ammo_sniper <= 0) {
 		return;
 	}
+
+#ifdef CLIENT
+	Weapons_ViewAnimation(SNIPER_RELOAD);
+#else
 	Weapons_ReloadWeapon(pl, player::sniper_mag, player::ammo_sniper, 5);
 #endif
+
 	pl.w_attack_next = 3.82f;
 	pl.w_idle_next = 5.0f;
 }
@@ -227,7 +212,7 @@ w_sniper2_hudpic(int selected, vector pos, float a)
 weapon_t w_sniper2 =
 {
 	.name		= "sniper2",
-	.id			= ITEM_SNIPER2,
+	.id		= ITEM_SNIPER2,
 	.slot		= 2,
 	.slot_pos	= 4,
 	.draw		= w_sniper2_draw,

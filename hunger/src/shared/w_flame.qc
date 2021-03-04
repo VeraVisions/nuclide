@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  * Copyright (c) 2019-2020 Gethyn ThomasQuail <xylemon@posteo.net>
  *
  * Permission to use, copy, modify, and distribute this software for any
@@ -45,9 +45,7 @@ w_flame_precache(void)
 void
 w_flame_updateammo(player pl)
 {
-#ifdef SERVER
-	Weapons_UpdateAmmo(pl, __NULL__, pl.ammo_gas, __NULL__);
-#endif
+	Weapons_UpdateAmmo(pl, -1, pl.ammo_gas, -1);
 }
 
 string
@@ -120,23 +118,17 @@ w_flame_primary(void)
 	}
 
 	/* Ammo check */
-#ifdef CLIENT
-	if (pl.a_ammo2 <= 0) {
-		return;
-	}
-#else
 	if (pl.ammo_gas <= 0) {
 		return;
 	}
-#endif
+
+	pl.ammo_gas--;
 
 #ifdef CLIENT
 	if (Weapons_GetAnimation() == EGON_IDLE1)
 		Weapons_ViewAnimation(EGON_ALTFIREON);
 	else if (Weapons_GetAnimation() == EGON_ALTFIREON)
 		Weapons_ViewAnimation(EGON_ALTFIRECYCLE);
-
-	pl.a_ammo2--;
 #else
 
 	Sound_Play(pl, CHAN_WEAPON, "weapon_flame.fire");
@@ -156,7 +148,6 @@ w_flame_primary(void)
 	flame.nextthink = time + 2.0f;*/
 	flame.effects |= EF_BRIGHTLIGHT;
 	setsize(flame, [0,0,0], [0,0,0]);
-	pl.ammo_gas--;
 #endif
 
 	pl.w_attack_next = 0.2f;
@@ -197,6 +188,16 @@ void
 w_flame_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.ammo_gas == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
+	HUD_DrawAmmoBar(pos, pl.ammo_gas, MAX_A_GAS, a);
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -204,7 +205,7 @@ w_flame_hudpic(int selected, vector pos, float a)
 			"sprites/tfchud04.spr_0.tga",
 			[0,45/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);
@@ -215,7 +216,7 @@ w_flame_hudpic(int selected, vector pos, float a)
 			"sprites/tfchud03.spr_0.tga",
 			[0,0/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);
@@ -226,7 +227,7 @@ w_flame_hudpic(int selected, vector pos, float a)
 weapon_t w_flame =
 {
 	.name		= "flame",
-	.id			= ITEM_EGON,
+	.id		= ITEM_EGON,
 	.slot		= 3,
 	.slot_pos	= 2,
 	.draw		= w_flame_draw,

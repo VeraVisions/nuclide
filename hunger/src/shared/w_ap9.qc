@@ -42,9 +42,7 @@ w_ap9_precache(void)
 void
 w_ap9_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.ap9_mag, pl.ammo_ap9, -1);
-#endif
 }
 
 string
@@ -109,19 +107,15 @@ w_ap9_primary(void)
 	}
 
 	/* ammo check */
-#ifdef CLIENT
-	if (!pl.a_ammo1) {
-		return;
-	}
-#else
 	if (!pl.ap9_mag) {
 		return;
 	}
-#endif
+
+	pl.ap9_mag--;
 
 	/* actual firing */
 #ifdef CLIENT
-	pl.a_ammo1--;
+	pl.ap9_mag--;
 	View_SetMuzzleflash(MUZZLE_SMALL);
 	Weapons_ViewPunchAngle([-2,0,0]);
 
@@ -139,7 +133,6 @@ w_ap9_primary(void)
 	}
 
 #else
-	pl.ap9_mag--;
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 8, [0.1,0.1], WEAPON_AP9);
 	Sound_Play(pl, CHAN_WEAPON, "weapon_ap9.fire");
 
@@ -163,18 +156,12 @@ w_ap9_secondary(void)
 	}
 
 	/* ammo check */
-#ifdef CLIENT
-	if (!pl.a_ammo1) {
+	if ((pl.ap9_mag - 3) < 0) {
 		return;
 	}
-#else
-	if (!pl.ap9_mag) {
-		return;
-	}
-#endif
+	pl.ap9_mag -= 3;
 
 #ifdef CLIENT
-	pl.a_ammo1 -= 3;
 	View_SetMuzzleflash(MUZZLE_SMALL);
 	Weapons_ViewPunchAngle([-2,0,0]);
 
@@ -191,7 +178,6 @@ w_ap9_secondary(void)
 		break;
 	}
 #else
-	pl.ap9_mag -= 3;
 	TraceAttack_FireBullets(3, pl.origin + pl.view_ofs, 8, [0.02,0.02], WEAPON_AP9);
 	Sound_Play(pl, CHAN_WEAPON, "weapon_ap9.fire");
 
@@ -213,24 +199,16 @@ w_ap9_reload(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-
-#ifdef CLIENT
-	if (pl.a_ammo1 >= 40) {
+	if (pl.ap9_mag >= 40) {
 		return;
 	}
 	if (pl.a_ammo2 <= 0) {
 		return;
 	}
 
+#ifdef CLIENT
 	Weapons_ViewAnimation(AP9_RELOAD);
 #else
-	if (pl.ap9_mag >= 40) {
-		return;
-	}
-	if (pl.ammo_ap9 <= 0) {
-		return;
-	}
-
 	Weapons_ReloadWeapon(pl, player::ap9_mag, player::ammo_ap9, 40);
 #endif
 
@@ -245,7 +223,7 @@ w_ap9_release(void)
 
 	/* auto-reload if need be */
 	if (pl.w_attack_next <= 0.0)
-	if (pl.a_ammo1 == 0 && pl.a_ammo2 > 0) {
+	if (pl.ap9_mag == 0 && pl.ammo_ap9 > 0) {
 		Weapons_Reload();
 		return;
 	}
@@ -273,6 +251,16 @@ void
 w_ap9_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.ap9_mag == 0 && pl.ammo_ap9 == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
+	HUD_DrawAmmoBar(pos, pl.ammo_ap9, MAX_A_AP9, a);
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -280,7 +268,7 @@ w_ap9_hudpic(int selected, vector pos, float a)
 			"sprites/tfchud05.spr_0.tga",
 			[0,0],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);
@@ -291,7 +279,7 @@ w_ap9_hudpic(int selected, vector pos, float a)
 			"sprites/tfchud05.spr_0.tga",
 			[0,0],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);
@@ -302,7 +290,7 @@ w_ap9_hudpic(int selected, vector pos, float a)
 weapon_t w_ap9 =
 {
 	.name		= "ap9",
-	.id			= ITEM_AP9,
+	.id		= ITEM_AP9,
 	.slot		= 1,
 	.slot_pos	= 2,
 	.draw		= w_ap9_draw,

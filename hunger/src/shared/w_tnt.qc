@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -152,18 +152,18 @@ void w_tnt_release(void)
 		return;
 	}
 
-	if (pl.a_ammo3 == 1) {
+	if (pl.ammo_handgrenade_state == 1) {
 #ifdef CLIENT
-		pl.a_ammo2--;
+		pl.ammo_handgrenade--;
 		Weapons_ViewAnimation(HANDGRENADE_THROW1);
 #else
 		pl.ammo_handgrenade--;
 		w_tnt_throw();
 #endif
-		pl.a_ammo3 = 2;
+		pl.ammo_handgrenade_state = 2;
 		pl.w_attack_next = 1.0f;
 		pl.w_idle_next = 0.5f;
-	} else if (pl.a_ammo3 == 2) {
+	} else if (pl.ammo_handgrenade_state == 2) {
 #ifdef CLIENT
 		Weapons_ViewAnimation(HANDGRENADE_DRAW);
 #else
@@ -173,7 +173,7 @@ void w_tnt_release(void)
 #endif
 		pl.w_attack_next = 0.5f;
 		pl.w_idle_next = 0.5f;
-		pl.a_ammo3 = 0;
+		pl.ammo_handgrenade_state = 0;
 	} else {
 		int r = (float)input_sequence % 8;
 		if (r == 1) {

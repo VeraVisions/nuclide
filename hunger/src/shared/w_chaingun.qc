@@ -63,9 +63,7 @@ w_chaingun_pickup(int new, int startammo)
 void
 w_chaingun_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.chaingun_mag, pl.ammo_9mm, -1);
-#endif
 }
 
 string
@@ -108,7 +106,7 @@ w_chaingun_release(void)
 
 	/* auto-reload if need be */
 	if (pl.w_attack_next <= 0.0)
-	if (pl.a_ammo1 == 0 && pl.a_ammo2 > 0) {
+	if (pl.chaingun_mag == 0 && pl.ammo_9mm > 0) {
 		Weapons_Reload();
 		return;
 	}
@@ -118,9 +116,11 @@ w_chaingun_release(void)
 	}
 
 	/* end firing */
-	if (pl.a_ammo3 == 1) {
-		pl.a_ammo3 = 0;
+	if (pl.ammo_handgrenade_state == 1) {
+		pl.ammo_handgrenade_state = 0;
+#ifdef SERVER
 		Sound_Play(pl, CHAN_WEAPON, "weapon_chaingun.spindown");
+#endif
 		Weapons_ViewAnimation(CHAINGUN_SPINDOWN);
 		pl.w_attack_next = 1.0f;
 		pl.w_idle_next = pl.w_attack_next;
@@ -128,8 +128,8 @@ w_chaingun_release(void)
 	}
 
 	/* end reload */
-	if (pl.a_ammo3 == 2) {
-		pl.a_ammo3 = 0;
+	if (pl.ammo_handgrenade_state == 2) {
+		pl.ammo_handgrenade_state = 0;
 		Weapons_ViewAnimation(CHAINGUN_DRAW);
 		pl.w_attack_next = 1.0f;
 		pl.w_idle_next = pl.w_attack_next;
@@ -152,7 +152,7 @@ w_chaingun_primary(void)
 	player pl = (player)self;
 
 	/* in case we're spamming primary while reloading */
-	if (pl.a_ammo3 == 2) {
+	if (pl.ammo_handgrenade_state == 2) {
 		w_chaingun_release();
 		return;
 	}
@@ -162,34 +162,29 @@ w_chaingun_primary(void)
 	}
 
 	/* ammo check */
-#ifdef CLIENT
-	if (pl.a_ammo1 <= 0) {
-		return;
-	}
-#else
 	if (pl.chaingun_mag <= 0) {
 		return;
 	}
-#endif
 
 	/* spin up first */
-	if (pl.a_ammo3 == 0) {
-		pl.a_ammo3 = 1;
+	if (pl.ammo_handgrenade_state == 0) {
+		pl.ammo_handgrenade_state = 1;
 		Weapons_ViewAnimation(CHAINGUN_SPINUP);
+#ifdef SERVER
 		Sound_Play(pl, CHAN_WEAPON, "weapon_chaingun.spinup");
+#endif
 		pl.w_attack_next = 0.5f;
 		pl.w_idle_next = pl.w_attack_next;
 		return;
 	}
+	pl.chaingun_mag--;
 
 	/* actual firing */
 #ifdef CLIENT
-	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_RIFLE);
 	Weapons_ViewAnimation(CHAINGUN_FIRE);
 	Weapons_ViewPunchAngle([random(-2, 2),0,0]);
 #else
-	pl.chaingun_mag--;
 	TraceAttack_FireBullets(1, Weapons_GetCameraPos(), 8, [0.15,0.15], WEAPON_CHAINGUN);
 	Sound_Play(pl, CHAN_WEAPON, "weapon_chaingun.fire");
 #endif
@@ -208,21 +203,12 @@ w_chaingun_reload(void)
 	}
 
 	/* ammo check */
-#ifdef CLIENT
-	if (pl.a_ammo1 >= 100) {
-		return;
-	}
-	if (pl.a_ammo2 <= 0) {
-		return;
-	}
-#else
 	if (pl.chaingun_mag >= 100) {
 		return;
 	}
 	if (pl.ammo_9mm <= 0) {
 		return;
 	}
-#endif
 
 #ifdef CLIENT
 	Weapons_ViewAnimation(CHAINGUN_HOLSTER);
@@ -231,7 +217,7 @@ w_chaingun_reload(void)
 	Weapons_ReloadWeapon(pl, player::chaingun_mag, player::ammo_9mm, 100);
 #endif
 
-	pl.a_ammo3 = 2;
+	pl.ammo_handgrenade_state = 2;
 	pl.w_attack_next = 10.0f;
 	pl.w_idle_next = 1.5f;
 }
@@ -252,6 +238,16 @@ void
 w_chaingun_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.chaingun_mag == 0 && pl.ammo_9mm == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
+	HUD_DrawAmmoBar(pos, pl.ammo_9mm, MAX_A_9MM, a);
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -259,7 +255,7 @@ w_chaingun_hudpic(int selected, vector pos, float a)
 			"sprites/tfchud04.spr_0.tga",
 			[0,90/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);
@@ -270,7 +266,7 @@ w_chaingun_hudpic(int selected, vector pos, float a)
 			"sprites/tfchud03.spr_0.tga",
 			[0,45/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);
@@ -281,7 +277,7 @@ w_chaingun_hudpic(int selected, vector pos, float a)
 weapon_t w_chaingun =
 {
 	.name		= "chaingun",
-	.id			= ITEM_CHAINGUN,
+	.id		= ITEM_CHAINGUN,
 	.slot		= 3,
 	.slot_pos	= 3,
 	.draw		= w_chaingun_draw,

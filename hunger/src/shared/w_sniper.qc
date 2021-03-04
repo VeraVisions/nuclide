@@ -59,9 +59,7 @@ w_sniper_pickup(int new, int startammo)
 void
 w_sniper_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.sniper_mag, pl.ammo_sniper, -1);
-#endif
 }
 
 string
@@ -106,7 +104,7 @@ w_sniper_release(void)
 
 	/* auto-reload if need be */
 	if (pl.w_attack_next <= 0.0)
-	if (pl.a_ammo1 == 0 && pl.a_ammo2 > 0) {
+	if (pl.sniper_mag == 0 && pl.ammo_sniper > 0) {
 		Weapons_Reload();
 		return;
 	}
@@ -115,9 +113,9 @@ w_sniper_release(void)
 		return;
 	}
 
-	if (pl.a_ammo3 == 1) {
+	if (pl.ammo_handgrenade_state == 1) {
 		Weapons_ViewAnimation(SNIPER_DRAW);
-		pl.a_ammo3 = 0;
+		pl.ammo_handgrenade_state = 0;
 		pl.w_attack_next = 0.0f;
 		pl.w_idle_next = 15.0f;
 		return;
@@ -148,29 +146,21 @@ w_sniper_primary(void)
 	}
 
 	/* Ammo check */
-#ifdef CLIENT
-	if (pl.a_ammo1 <= 0) {
-		return;
-	}
-#else
 	if (pl.sniper_mag <= 0) {
 		return;
 	}
-#endif
+
+	pl.sniper_mag--;
 
 	/* Actual firing */
 #ifdef CLIENT
-	pl.a_ammo1--;
 	View_SetMuzzleflash(MUZZLE_SMALL);
 	Weapons_ViewPunchAngle([-20,0,0]);
 	Weapons_ViewAnimation(SNIPER_FIRE1);
 #else
-	pl.sniper_mag--;
 	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, 40, [0.008, 0.008], WEAPON_SNIPER);
-
 	Sound_Play(pl, CHAN_WEAPON, "weapon_sniper.fire");
 #endif
-
 
 	/* Simple toggle of fovs */
 	if (pl.viewzoom == 1.0f) {
@@ -209,27 +199,21 @@ w_sniper_reload(void)
 		w_sniper_release();
 		return;
 	}
-
-#ifdef CLIENT
-	if (pl.a_ammo1 >= 5) {
-		return;
-	}
-	if (pl.a_ammo2 <= 0) {
-		return;
-	}
-	Weapons_ViewAnimation(SNIPER_HOLSTER);
-#else
 	if (pl.sniper_mag >= 5) {
 		return;
 	}
 	if (pl.ammo_sniper <= 0) {
 		return;
 	}
+
+#ifdef CLIENT
+	Weapons_ViewAnimation(SNIPER_HOLSTER);
+#else
 	Sound_Play(pl, CHAN_WEAPON, "weapon_sniper.reload");
 	Weapons_ReloadWeapon(pl, player::sniper_mag, player::ammo_sniper, 5);
 #endif
 
-	pl.a_ammo3 = 1;
+	pl.ammo_handgrenade_state = 1;
 	pl.w_attack_next = 2.5f;
 	pl.w_idle_next = 2.0f;
 }
@@ -301,6 +285,16 @@ void
 w_sniper_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.sniper_mag == 0 && pl.ammo_sniper == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
+	HUD_DrawAmmoBar(pos, pl.ammo_sniper, MAX_A_SNIPER, a);
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -308,7 +302,7 @@ w_sniper_hudpic(int selected, vector pos, float a)
 			"sprites/tfchud02.spr_0.tga",
 			[0,45/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);
@@ -319,7 +313,7 @@ w_sniper_hudpic(int selected, vector pos, float a)
 			"sprites/tfchud01.spr_0.tga",
 			[0,45/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);
@@ -330,7 +324,7 @@ w_sniper_hudpic(int selected, vector pos, float a)
 weapon_t w_sniper =
 {
 	.name		= "sniper",
-	.id			= ITEM_SNIPER,
+	.id		= ITEM_SNIPER,
 	.slot		= 2,
 	.slot_pos	= 3,
 	.draw		= w_sniper_draw,

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  * Copyright (c) 2019-2020 Gethyn ThomasQuail <xylemon@posteo.net>
  *
  * Permission to use, copy, modify, and distribute this software for any

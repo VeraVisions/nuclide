@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  * Copyright (c) 2019-2020 Gethyn ThomasQuail <xylemon@posteo.net>
  *
  * Permission to use, copy, modify, and distribute this software for any
@@ -39,9 +39,7 @@ w_medkit_precache(void)
 void
 w_medkit_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, -1, pl.ammo_medkit, -1);
-#endif
 }
 
 string
@@ -97,8 +95,6 @@ w_medkit_primary(void)
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-
-#ifdef SERVER
 	if (!pl.ammo_medkit) {
 		return;
 	}
@@ -106,11 +102,15 @@ w_medkit_primary(void)
 	/* Don't give the player more than 100 health */
 	if (pl.health >= 100) {
 		return;
+	} else {
+		Weapons_ViewAnimation(MEDKIT_USE);
 	}
 
+	pl.ammo_medkit--;
+
+#ifdef SERVER
 	/* We want to only give health to the player & skip armor */
 	Damage_Apply(pl, pl, -15, WEAPON_MEDKIT, DMG_GENERIC);
-	pl.ammo_medkit--;
 
 	if (self.flags & FL_CROUCHING)
 		Animation_PlayerTopTemp(ANIM_SHOOT1HAND, 0.45f);
@@ -119,12 +119,6 @@ w_medkit_primary(void)
 
 	Sound_Play(pl, CHAN_WEAPON, "weapon_medkit.heal");
 #endif
-
-	if (pl.health >= 100) {
-		return;
-	} else {
-		Weapons_ViewAnimation(MEDKIT_USE);
-	}
 
 	pl.w_attack_next = 2.4f;
 	pl.w_idle_next = 5.0f;
@@ -184,6 +178,16 @@ void
 w_medkit_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.ammo_medkit == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
+	HUD_DrawAmmoBar(pos, pl.ammo_medkit, MAX_A_MEDKIT, a);
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -191,7 +195,7 @@ w_medkit_hudpic(int selected, vector pos, float a)
 			"sprites/tfchud05.spr_0.tga",
 			[0,180/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);
@@ -202,7 +206,7 @@ w_medkit_hudpic(int selected, vector pos, float a)
 			"sprites/tfchud06.spr_0.tga",
 			[0,90/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);
@@ -213,7 +217,7 @@ w_medkit_hudpic(int selected, vector pos, float a)
 weapon_t w_medkit =
 {
 	.name		= "medkit",
-	.id			= ITEM_MEDKIT2,
+	.id		= ITEM_MEDKIT2,
 	.slot		= 4,
 	.slot_pos	= 4,
 	.draw		= w_medkit_draw,

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  * Copyright (c) 2019-2020 Gethyn ThomasQuail <xylemon@posteo.net>
  *
  * Permission to use, copy, modify, and distribute this software for any
@@ -76,6 +76,15 @@ void
 w_silencer_draw(void)
 {
 	w_glock_draw();
+
+#ifdef CLIENT
+	player pl = (player)self;
+	if (pl.mode_silencer) {
+		Weapons_SetGeomset("geomset 2 2\n");
+	} else {
+		Weapons_SetGeomset("geomset 2 0\n");
+	}
+#endif
 }
 void
 w_silencer_holster(void)
@@ -93,42 +102,30 @@ w_silencer_primary(void)
 	}
 
 	/* ammo check */
-#ifdef CLIENT
-	if (!pl.a_ammo1) {
+	if (!pl.glock_mag) {
 		return;
 	}
-	
-	if (pl.a_ammo3 == 1) {
-		View_SetMuzzleflash(0);
 
+	pl.glock_mag--;
+
+	/* actual firing */
+	Weapons_ViewPunchAngle([-2,0,0]);
+
+#ifdef CLIENT
+	if (pl.mode_silencer == 1) {
+		View_SetMuzzleflash(0);
 	} else {
 		View_SetMuzzleflash(MUZZLE_SMALL);
 	}
 
-	Weapons_ViewPunchAngle([-2,0,0]);
-	
-#else
-	if (!pl.glock_mag) {
-		return;
-	}
-#endif
-
-	/* actual firing */
-#ifdef CLIENT
-	pl.a_ammo1--;
-	View_SetMuzzleflash(MUZZLE_SMALL);
-	Weapons_ViewPunchAngle([-2,0,0]);
-
-	if (pl.a_ammo1) {
+	if (pl.glock_mag) {
 		Weapons_ViewAnimation(GLOCK_SHOOT);
 	} else {
 		Weapons_ViewAnimation(GLOCK_SHOOT_EMPTY);
 	}
 #else
-	pl.glock_mag--;
-
 	/* Different sound & accuracy without silencer */
-	if (pl.a_ammo3 == 1) {
+	if (pl.mode_silencer == 1) {
 		TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, Skill_GetValue("plr_9mm_bullet", 8), [0.01, 0.01], WEAPON_GLOCK);
 		Sound_Play(pl, CHAN_WEAPON, "weapon_silencer.fire");
 
@@ -144,11 +141,12 @@ w_silencer_primary(void)
 #endif
 
 	/* Fires faster without silencer */
-	if (pl.a_ammo3 == 1) {
+	if (pl.mode_silencer == 1) {
 		pl.w_attack_next = 0.3f;
 	} else {
 		pl.w_attack_next = 0.2f;
 	}
+
 	pl.w_idle_next = 5.0f;
 }
 
@@ -162,19 +160,19 @@ w_silencer_secondary(void)
 	}
 
 	/* toggle silencer */
-	pl.a_ammo3 = 1 - pl.a_ammo3;
+	pl.mode_silencer = 1 - pl.mode_silencer;
 
 	/* the sub model isn't setting right, need the right values */
 #ifdef CLIENT
-	if (pl.a_ammo3) {
-		Weapons_SetGeomset("geomset 1 3\n");
+	if (pl.mode_silencer) {
+		Weapons_SetGeomset("geomset 2 2\n");
 		Weapons_ViewAnimation(GLOCK_SILENCER);
 	} else {
-		Weapons_SetGeomset("geomset 0 1\n");
+		Weapons_SetGeomset("geomset 2 0\n");
 		Weapons_ViewAnimation(GLOCK_HOLSTER);
 	}
 #endif
-	if (pl.a_ammo3) {
+	if (pl.mode_silencer) {
 		pl.w_attack_next = 3.3f;
 		pl.w_idle_next = pl.w_attack_next;
 	} else {
@@ -212,6 +210,16 @@ void
 w_silencer_hudpic(int selected, vector pos, float a)
 {
 #ifdef CLIENT
+	player pl = (player)self;
+	vector hud_col;
+
+	if (pl.glock_mag == 0 && pl.ammo_9mm == 0)
+		hud_col = [1,0,0];
+	else
+		hud_col = g_hud_color;
+
+	HUD_DrawAmmoBar(pos, pl.ammo_9mm, MAX_A_9MM, a);
+
 	if (selected) {
 		drawsubpic(
 			pos,
@@ -219,7 +227,7 @@ w_silencer_hudpic(int selected, vector pos, float a)
 			"sprites/tfchud05.spr_0.tga",
 			[0,135/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);
@@ -230,7 +238,7 @@ w_silencer_hudpic(int selected, vector pos, float a)
 			"sprites/tfchud06.spr_0.tga",
 			[0,45/256],
 			[170/256,45/256],
-			g_hud_color,
+			hud_col,
 			a,
 			DRAWFLAG_ADDITIVE
 		);
@@ -241,7 +249,7 @@ w_silencer_hudpic(int selected, vector pos, float a)
 weapon_t w_silencer =
 {
 	.name		= "silencer",
-	.id			= ITEM_GLOCK,
+	.id		= ITEM_GLOCK,
 	.slot		= 1,
 	.slot_pos	= 0,
 	.draw		= w_silencer_draw,
