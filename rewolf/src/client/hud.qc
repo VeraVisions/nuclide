@@ -264,6 +264,12 @@ HUD_DrawAmmo3(void)
 }
 
 void
+HUD_DrawAmmoBar(vector pos, float val, float max, float a)
+{
+	
+}
+
+void
 HUD_WeaponPickupNotify(int w)
 {
 	

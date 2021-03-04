@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -56,9 +56,7 @@ w_bradnailer_precache(void)
 void
 w_bradnailer_updateammo(player pl)
 {
-#ifdef SERVER
 	Weapons_UpdateAmmo(pl, pl.bradnailer_mag, pl.ammo_nail, -1);
-#endif
 }
 
 string
@@ -240,7 +238,7 @@ w_bradnailer_hudpic(int selected, vector pos, float a)
 weapon_t w_bradnailer =
 {
 	.name		= "bradnailer",
-	.id			= ITEM_BRADNAILER,
+	.id		= ITEM_BRADNAILER,
 	.slot		= 1,
 	.slot_pos	= 0,
 	.draw		= w_bradnailer_draw,

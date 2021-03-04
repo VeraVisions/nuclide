@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -110,7 +110,7 @@ w_heaterpipe_hudpic(int selected, vector pos, float a)
 weapon_t w_heaterpipe =
 {
 	.name		= "heaterpipe",
-	.id			= ITEM_HEATERPIPE,
+	.id		= ITEM_HEATERPIPE,
 	.slot		= 0,
 	.slot_pos	= 0,
 	.draw		= w_heaterpipe_draw,

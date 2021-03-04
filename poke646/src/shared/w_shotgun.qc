@@ -253,7 +253,7 @@ void w_shotgun_hudpic(int s, vector pos, float a)
 weapon_t w_shotgun =
 {
 	.name		= "shotgun",
-	.id			= ITEM_SHOTGUN,
+	.id		= ITEM_SHOTGUN,
 	.slot		= 2,
 	.slot_pos	= 1,
 	.draw		= w_shotgun_draw,

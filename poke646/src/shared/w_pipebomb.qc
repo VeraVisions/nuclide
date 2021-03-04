@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  * Copyright (c) 2019-2020 Gethyn ThomasQuail <xylemon@posteo.net>
  *
  * Permission to use, copy, modify, and distribute this software for any
@@ -136,7 +136,7 @@ void w_pipebomb_primary(void)
 
 	/* Ammo check */
 #ifdef CLIENT
-	if (pl.a_ammo1 <= 0 && pl.a_ammo2 <= 0) {
+	if (pl.satchel_chg <= 0 && pl.ammo_satchel <= 0) {
 		return;
 	}
 #else
@@ -145,7 +145,7 @@ void w_pipebomb_primary(void)
 	}
 #endif
 
-	if (pl.a_ammo1 <= 0) {
+	if (pl.satchel_chg <= 0) {
         Weapons_ViewAnimation(RADIO_DRAW);
     } else {
         Weapons_ViewAnimation(RADIO_USE);
@@ -171,8 +171,8 @@ void w_pipebomb_primary(void)
 	Weapons_UpdateAmmo(pl, pl.satchel_chg, pl.ammo_satchel, __NULL__);
 #else
 	setmodel(pSeat->m_eViewModel, "models/v_pipebomb_watch.mdl");
-	pl.a_ammo1++;
-	pl.a_ammo2--;
+	pl.satchel_chg++;
+	pl.ammo_satchel--;
 #endif
 
 	pl.w_attack_next = 1.0f;
@@ -188,7 +188,7 @@ void w_pipebomb_secondary(void)
 
     /* Ammo check */
 #ifdef CLIENT
-	if (pl.a_ammo2 <= 0) {
+	if (pl.ammo_satchel <= 0) {
 		return;
 	}
 #else
@@ -206,8 +206,8 @@ void w_pipebomb_secondary(void)
 	pl.ammo_satchel--;
 	Weapons_UpdateAmmo(pl, pl.satchel_chg, pl.ammo_satchel, __NULL__);
 #else
-	pl.a_ammo1++;
-	pl.a_ammo2--;
+	pl.satchel_chg++;
+	pl.ammo_satchel--;
 	setmodel(pSeat->m_eViewModel, "models/v_pipebomb_watch.mdl");
 #endif
 
@@ -249,7 +249,7 @@ void w_pipebomb_hudpic(int selected, vector pos, float a)
 weapon_t w_pipebomb =
 {
 	.name		= "pipebomb",
-	.id			= ITEM_SATCHEL,
+	.id		= ITEM_SATCHEL,
 	.slot		= 4,
 	.slot_pos	= 1,
 	.draw		= w_pipebomb_draw,

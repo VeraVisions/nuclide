@@ -165,7 +165,7 @@ TFCGameRules::PlayerSpawn(base_player pp)
 	pl.takedamage = DAMAGE_NO;
 	pl.solid = SOLID_NOT;
 	pl.movetype = MOVETYPE_NOCLIP;
-	pl.SendEntity = Player_SendEntity;
+//	pl.SendEntity = Player_SendEntity;
 	pl.flags = FL_CLIENT;
 	pl.weapon = 0;
 	pl.viewzoom = 1.0f;

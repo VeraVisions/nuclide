@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -121,7 +121,7 @@ w_cmlwbr_hudpic(int selected, vector pos, float a)
 weapon_t w_cmlwbr =
 {
 	.name		= "cmlwbr",
-	.id			= ITEM_CMLWBR,
+	.id		= ITEM_CMLWBR,
 	.slot		= 2,
 	.slot_pos	= 1,
 	.draw		= w_cmlwbr_draw,

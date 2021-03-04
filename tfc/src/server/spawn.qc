@@ -79,7 +79,7 @@ CSEv_TeamJoin_f(float f)
 	pl.velocity = [0,0,0];
 	pl.gravity = __NULL__;
 	pl.frame = 1;
-	pl.SendEntity = Player_SendEntity;
+//	pl.SendEntity = Player_SendEntity;
 	pl.SendFlags = UPDATE_ALL;
 	pl.armor = pl.activeweapon = pl.g_items = 0;
 
