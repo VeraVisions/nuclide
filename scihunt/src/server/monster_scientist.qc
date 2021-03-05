@@ -455,6 +455,7 @@ void monster_scientist::Physics(void)
 		}
 
 		if (m_flChangePath < time) {
+#if 0
 			float add;
 			vector pos;
 
@@ -474,6 +475,11 @@ void monster_scientist::Physics(void)
 					break;
 				}
 			}
+#else
+			v_angle[1] -= 180 + ((random() - 0.5) * 90);
+			v_angle[1] = Math_FixDelta(v_angle[1]);
+			
+#endif
 			m_flChangePath = time + floor(random(2,10));
 		}
 	} else {
