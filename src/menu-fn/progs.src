@@ -1,5 +1,5 @@
 #pragma target fte
-#pragma progs_dat  "../../platform/data.pk3dir/menu.dat"
+#pragma progs_dat  "../../platform/menu.dat"
 #define MENU
 
 #includelist

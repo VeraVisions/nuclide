@@ -74,6 +74,7 @@ typedef struct
 	string type;
 	string hlversion;
 	string pkgname;
+	string pkgfile;
 	int pkgid;
 	int nomodels;
 	int nosprays;
@@ -84,6 +85,7 @@ typedef struct
 	string trainingmap;
 	string fallback_dir;
 	string chatroom;
+	string introvideo;
 } gameinfo_t;
 
 var int gameinfo_current = -1;

@@ -112,12 +112,13 @@ m_init(void)
 	Strings_Init();
 	g_initialized = TRUE;
 
-	if (cvar_string("gameinfo_gamedir") != "valve") {
+	if (games[gameinfo_current].gamedir != "valve") {
 		m_intro_skip();
 		Music_MenuStart();
 	}
 
-	if (!whichpack(cvar_string("gameinfo_pkgfile")) || autocvar_menu_updating) {
+	if (games[gameinfo_current].pkgfile != "")
+	if (!whichpack(games[gameinfo_current].pkgfile) || autocvar_menu_updating) {
 		/* reload in case of video restarts? */
 		shaderforname("logo_avi", "{\n{\nvideomap av:media/logo.avi\n}\n}");
 		g_menupage = PAGE_UPDATES;
@@ -127,7 +128,7 @@ m_init(void)
 	Menu_GammaHack();
 
 	if (g_intro_stage == 0) {
-		string videofile = cvar_string("gameinfo_introvideo");
+		string videofile = games[gameinfo_current].introvideo;
 		
 		if (videofile) {
 			localcmd(strcat("playvideo ", videofile, "\n"));

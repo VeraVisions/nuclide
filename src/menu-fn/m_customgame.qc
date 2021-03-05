@@ -319,11 +319,17 @@ games_init(void)
 				games[id].pkgname = argv(i+1);
 				games[id].pkgid = game_getpackageid(games[id].pkgname);
 				break;
+			case "gameinfo_pkgfile":
+				games[id].pkgfile = argv(i+1);
+				break;
 			case "gameinfo_chatroom":
 				games[id].chatroom = argv(i+1);
 				break;
 			case "gameinfo_readme":
 				games[id].readme = argv(i+1);
+				break;
+			case "gameinfo_introvideo":
+				games[id].introvideo = argv(i+1);
 				break;
 			default:
 				break;
