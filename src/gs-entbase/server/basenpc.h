@@ -47,6 +47,7 @@ class CBaseNPC:CBaseMonster
 	string m_talkAllyShot; /* asks to not shoot an ally further */
 	string m_talkGreet; /* greet other NPCs */
 	string m_talkIdle; /* idle chatter */
+	string m_talkPanic; /* panic screams */
 	string m_talkHearing; /* what did we just hear? */
 	string m_talkSmelling; /* is something smelling bad? */
 	string m_talkStare; /* when NPC is being stared at */
@@ -68,6 +69,7 @@ class CBaseNPC:CBaseMonster
 	virtual void(string) Speak;
 	virtual void(string) Sentence;
 	virtual void(void) WarnAllies;
+	virtual void(void) StartleAllies;
 	virtual void(void) FollowPlayer;
 	virtual void(void) FollowChain;
 	virtual void(void) Physics;
@@ -86,6 +88,7 @@ class CBaseNPC:CBaseMonster
 	virtual void(void) TalkStare;
 	virtual void(void) TalkSurvived;
 	virtual void(void) TalkWounded;*/
+	virtual void(void) TalkPanic;
 	virtual void(void) TalkPlayerAsk; 
 	virtual void(void) TalkPlayerGreet;
 	virtual void(void) TalkPlayerIdle;

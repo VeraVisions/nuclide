@@ -26,6 +26,18 @@ CBaseNPC::WarnAllies(void)
 		}
 	}
 }
+void
+CBaseNPC::StartleAllies(void)
+{
+	for (entity b = world; (b = find(b, ::classname, classname));) {
+		if (vlen(b.origin - origin) < PLAYER_DETECT_RADIUS) {
+			CBaseNPC w = (CBaseNPC)b;
+			w.m_iFlags |= MONSTER_FEAR;
+			w.m_eFollowing = world;
+			w.m_eFollowingChain = world;
+		}
+	}
+}
 
 void
 CBaseNPC::Sentence(string sentence)
@@ -219,6 +231,17 @@ CBaseNPC::TalkPlayerWounded3(void)
 }
 
 void
+CBaseNPC::TalkPanic(void)
+{
+	if (m_iSequenceState != SEQUENCESTATE_NONE)
+		return;
+
+	Sentence(m_talkPanic);
+	m_flNextSentence = time + 2.5;
+}
+
+
+void
 CBaseNPC::TalkUnfollow(void)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE)
@@ -306,27 +329,16 @@ CBaseNPC::PanicFrame(void)
 	}
 
 	if (m_flChangePath < time) {
-		float add;
-		vector pos;
-
-		pos = origin + [0,0,-18];
-		if (random() < 0.5) {
-			add = 45;
-		} else {
-			add = -45;
-		}
-
-		/* test every 45 degrees */
-		for (int i = 0; i < 8; i++) {
-			v_angle[1] = Math_FixDelta(v_angle[1] + add);
-			makevectors(v_angle);
-			traceline(pos, pos + (v_forward * 64), FALSE, this);
-			if (trace_fraction >= 1.0f) {
-				break;
-			}
-		}
+		v_angle[1] -= 180 + ((random() - 0.5) * 90);
+		v_angle[1] = Math_FixDelta(v_angle[1]);
 		m_flChangePath = time + floor(random(2,10));
+		angles = input_angles = v_angle;
 	}
+
+	if (m_flNextSentence > time)
+		return;
+
+	TalkPanic();
 }
 
 void
