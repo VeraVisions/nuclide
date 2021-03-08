@@ -17,9 +17,9 @@
 var string g_strSkyName;
 
 void
-Sky_Update(void)
+Sky_Update(int force)
 {
-	if (g_strSkyName != serverkey("skyname")) {
+	if (g_strSkyName != serverkey("skyname") || force == TRUE) {
 		g_strSkyName = serverkey("skyname");
 		localcmd(sprintf("sky %s\n", g_strSkyName));
 	}

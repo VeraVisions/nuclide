@@ -65,6 +65,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	registercommand("dev_sunpos");
 	registercommand("dev_measure");
 	registercommand("way_menu");
+	registercommand("view_geomtest");
 
 	precache_model("sprites/640_pain.spr");
 	precache_model("sprites/crosshairs.spr");
@@ -128,6 +129,7 @@ CSQC_RendererRestarted(string rstr)
 	Fade_Init();
 	Decal_Reload();
 	FX_Init();
+	Sky_Update(TRUE);
 }
 
 /* this is so that profile_csqc reports more accurate statistics as to
@@ -163,7 +165,7 @@ CSQC_UpdateView(float w, float h, float focus)
 	video_res[1] = h;
 
 	Fog_Update();
-	Sky_Update();
+	Sky_Update(FALSE);
 	cvar_set("_background", serverkey("background"));
 
 	if (serverkeyfloat("background") == 1) {
@@ -750,6 +752,9 @@ CSQC_ConsoleCommand(string sCMD)
 	case "_fnchat_msg":
 		CSQC_Parse_Print(argv(1), PRINT_CHAT);
 		break;
+	case "view_geomtest":
+		Weapons_SetGeomset(sprintf("geomset %s %s\n", argv(1), argv(2)));
+		break;
 	default:
 		return ClientGame_ConsoleCommand();
 	}
@@ -947,7 +952,7 @@ CSQC_WorldLoaded(void)
 
 	/* we've gone through all ent-lumps, so we can read sky-overrides from
 	   worldspawn now. */
-	Sky_Update();
+	Sky_Update(TRUE);
 }
 
 /*
