@@ -4,13 +4,16 @@ SCRPATH="$( cd "$( dirname $(readlink -nf $0) )" && pwd )"
 
 grab_mod()
 {
-    if [ -f "$SCRPATH/$1"/LICENSE ]; then
-	cd "$SCRPATH/$1"
-	git pull
-    else
+	if [ -f "$SCRPATH/$1"/LICENSE ]; then
+		cd "$SCRPATH/$1"
+	    git pull
+	else
+		cd "$SCRPATH"
+		git clone "$2" "$1"
+	fi
+
 	cd "$SCRPATH"
-	git clone "$2" "$1"
-    fi
+	wget -O $1.fmf http://www.frag-net.com/mods/$1.fmf
 }
 
 grab_mod gearbox https://www.github.com/eukara/freegearbox
