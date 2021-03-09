@@ -8,6 +8,15 @@ if [ ! -f "$SCRPATH"/bin/vmap ]; then
 fi
 
 set -e
-"$SCRPATH"/bin/vmap -v -custinfoparms -fs_basepath "$SCRPATH" -fs_game platform -threads $(nproc) -samplesize 8 $*
-"$SCRPATH"/bin/vmap -vis -v -fs_basepath "$SCRPATH" -fs_game platform $*
-"$SCRPATH"/bin/vmap -light -custinfoparms -fs_basepath "$SCRPATH" -v -fs_game platform -bounce 8 -fastbounce -samplesize 8 -threads $(nproc) -shade -shadeangle 60 -patchshadows $*
+
+if [ "$VMAP_NOBSP" != "1" ]; then
+	"$SCRPATH"/bin/vmap -v -custinfoparms -fs_basepath "$SCRPATH" -fs_game platform -threads $(nproc) -samplesize 8 $*
+fi
+
+if [ "$VMAP_NOVIS" != "1" ]; then
+	"$SCRPATH"/bin/vmap -vis -v -fs_basepath "$SCRPATH" -fs_game platform $*
+fi
+
+if [ "$VMAP_NOLIGHT" != "1" ]; then
+	"$SCRPATH"/bin/vmap -light -custinfoparms -fs_basepath "$SCRPATH" -v -fs_game platform -bounce 8 -fastbounce -samplesize 8 -threads $(nproc) -shade -shadeangle 60 -patchshadows $*
+fi
