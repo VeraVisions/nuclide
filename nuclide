@@ -5,7 +5,7 @@ SRCPATH="$( cd "$( dirname $(readlink -nf $0) )" && pwd )"
 cd "$SRCPATH/bin"
 
 if [ -f "$SRCPATH"/bin/fteqw ]; then
-	./fteqw -basedir ../ -manifest ../valve.fmf $*
+	./fteqw -basedir ../ $*
 else
 	printf "Engine is not present, please run build_engine.sh\n"
 fi
