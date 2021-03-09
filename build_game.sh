@@ -3,7 +3,18 @@ set -e
 SCRPATH="$( cd "$( dirname $(readlink -nf $0) )" && pwd )"
 PATH="$SCRPATH"/bin:"$PATH"
 
+
 if [ -f "$SCRPATH"/bin/fteqcc ]; then
+
+	# We want to compile a specific game
+	if [ $# -gt 0 ]; then
+		cd "$SCRPATH/$1"/src
+		make
+		cd "$SCRPATH"
+		./make_mapdef.sh "$1"
+		exit 0
+	fi
+
 	export OLDDIR=$(pwd)
 	cd ./src
 	make
