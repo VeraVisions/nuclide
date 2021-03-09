@@ -24,7 +24,6 @@ defs.h
 
 /* mod specific functions */
 ../shared/include.src
-predict.qc
 init.qc
 player.qc
 entities.qc
@@ -34,7 +33,6 @@ view.qc
 hud.qc
 hud_weaponselect.qc
 scoreboard.qc
-input.qc
 modelevent.qc
 
 /* global client/shared code */

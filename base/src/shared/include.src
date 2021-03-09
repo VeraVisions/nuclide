@@ -18,4 +18,5 @@ items.h
 weapons.h
 weapons.qc
 weapon_common.qc
+input.qc
 #endlist

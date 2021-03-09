@@ -13,10 +13,11 @@
 ../../../src/server/defs.h
 ../../../src/gs-entbase/server.src
 ../../../src/gs-entbase/shared.src
-../shared/include.src
 
 /* mod specific header */
 defs.h
+
+../shared/include.src
 
 /* include the botlib if desired (optional) */
 ../../../src/botlib/include.src
@@ -34,7 +35,6 @@ items.qc
 rules.qc
 flashlight.qc
 modelevent.qc
-input.qc
 spawn.qc
 
 /* global server/shared code */

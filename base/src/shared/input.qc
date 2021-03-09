@@ -23,12 +23,34 @@ Handles impulse and whatnot
 */
 void Game_Input(void)
 {
+#ifdef SERVER
 	CGameRules rules = (CGameRules)g_grMode;
 
 	if (rules.m_iIntermission) {
 		rules.IntermissionEnd();
 		return;
 	}
+
+	if (self.impulse == 100) {
+		Flashlight_Toggle();
+	}
+
+	if (input_buttons & INPUT_BUTTON5) {
+		Player_UseDown(); 
+	} else {
+		Player_UseUp();
+	}
+
+	if (cvar("sv_cheats") == 1) {
+		player pl = (player)self;
+		if (self.impulse == 101) {
+			pl.health = 100;
+			pl.armor = 100;
+		}
+	}
+
+	self.impulse = 0;
+#endif
 
 	if (input_buttons & INPUT_BUTTON0) {
 		Weapons_Primary();
@@ -39,33 +61,4 @@ void Game_Input(void)
 	} else {
 		Weapons_Release();
 	}
-
-	if (input_buttons & INPUT_BUTTON5) {
-		Player_UseDown(); 
-	} else {
-		Player_UseUp();
-	}
-
-	if (self.impulse == 100) {
-		Flashlight_Toggle();
-	}
-
-	if (cvar("sv_cheats") == 1) {
-		player pl = (player)self;
-		if (self.impulse == 101) {
-			pl.health = 100;
-			pl.armor = 100;
-		}
-
-		if (self.impulse == 102) {
-			// Respawn all the entities
-			for (entity a = world; (a = findfloat(a, ::identity, 1));) {
-				CBaseEntity caw = (CBaseEntity)a;
-				caw.Respawn();
-			}
-			bprint(PRINT_HIGH, "Respawning all map entities...\n");
-		}
-	}
-
-	self.impulse = 0;
 }
