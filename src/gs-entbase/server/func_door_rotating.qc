@@ -237,6 +237,7 @@ void func_door_rotating::Trigger(entity act, int state)
 	}
 
 	m_flNextAction = time + m_flWait;
+	eActivator = act;
 
 	if (state == TRIG_TOGGLE) {
 		if ((m_iState == STATE_UP) || (m_iState == STATE_RAISED)) {
@@ -272,7 +273,6 @@ void func_door_rotating::Touch(void)
 	if (other.movetype == MOVETYPE_WALK) {
 		Trigger(other, TRIG_TOGGLE);
 	}
-	touch = __NULL__;
 }
 
 void func_door_rotating::Blocked(void)
@@ -315,10 +315,17 @@ void func_door_rotating::RotToDest(vector vDestAngle, void(void) func)
 	vecAngleDifference = (vDestAngle - angles);
 	flTravelLength = vlen(vecAngleDifference);
 	flTravelTime = (flTravelLength / m_flSpeed);
-	avelocity = (vecAngleDifference * (1 / flTravelTime));
-	m_vecDest = vDestAngle;
-	think = func;
-	nextthink = (ltime + flTravelTime);
+
+	/* Avoid NAN hack */
+	if (flTravelTime <= 0.0f) {
+		func();
+		nextthink = 0.0f;
+	} else {
+		avelocity = (vecAngleDifference * (1 / flTravelTime));
+		m_vecDest = vDestAngle;
+		think = func;
+		nextthink = (ltime + flTravelTime);
+	}
 }
 
 void func_door_rotating::Respawn(void)
