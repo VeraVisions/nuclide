@@ -6,7 +6,7 @@ grab_mod()
 {
 	if [ -f "$SCRPATH/$1"/LICENSE ]; then
 		cd "$SCRPATH/$1"
-	    git pull
+		git pull
 	else
 		cd "$SCRPATH"
 		git clone "$2" "$1"

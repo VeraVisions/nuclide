@@ -167,6 +167,7 @@ func_train::PathNext(void)
 	}
 
 	SetOrigin(eNode.origin - (mins + maxs) * 0.5);
+	PathDone();
 
 	/* if speed is 0, retain current speed */
 	if (eNode.m_flSpeed > 0)
@@ -179,11 +180,9 @@ func_train::PathNext(void)
 	/* warp */
 	if (eNode.spawnflags & PC_TELEPORT) {
 		SetOrigin(eNode.origin - (mins + maxs) * 0.5);
-		PathDone();
 	}
 
 	/* stop until triggered again */
-	if (targetname)
 	if (eNode.spawnflags & PC_WAIT || spawnflags & TRAIN_WAIT) {
 		SoundStop();
 		return;
