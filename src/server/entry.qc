@@ -440,6 +440,11 @@ initents(void)
 	precache_sound("items/flashlight1.wav");
 	precache_sound("common/null.wav");
 
+	Sound_Precache("player.gasplight");
+	Sound_Precache("player.gaspheavy");
+	Sound_Precache("player.waterenter");
+	Sound_Precache("player.waterexit");
+
 	Game_InitRules();
 	Game_Worldspawn();
 	Decals_Init();

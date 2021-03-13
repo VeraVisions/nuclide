@@ -276,9 +276,14 @@ Sound_Play(entity target, int chan, string shader)
 	int sample;
 
 	flag = 0;
-	sample = (int)hash_get(g_hashsounds, shader);
+	sample = (int)hash_get(g_hashsounds, shader, -1);
 
 	if (sample < 0) {
+#ifdef SERVER
+		error(sprintf("Sound_Speak: shader %s is not precached (SERVER)\n", shader));
+#else
+		error(sprintf("Sound_Speak: shader %s is not precached (CLIENT)\n", shader));
+#endif
 		return;
 	}
 
@@ -379,9 +384,14 @@ Sound_PlayAt(vector pos, string shader)
 	int sample;
 
 	flag = 0;
-	sample = (int)hash_get(g_hashsounds, shader);
+	sample = (int)hash_get(g_hashsounds, shader, -1);
 
 	if (sample < 0) {
+#ifdef SERVER
+		error(sprintf("Sound_Speak: shader %s is not precached (SERVER)\n", shader));
+#else
+		error(sprintf("Sound_Speak: shader %s is not precached (CLIENT)\n", shader));
+#endif
 		return;
 	}
 
@@ -481,9 +491,14 @@ Sound_Speak(entity target, string shader)
 	int flag;
 	int sample;
 
-	sample = (int)hash_get(g_hashsounds, shader);
+	sample = (int)hash_get(g_hashsounds, shader, -1);
 
 	if (sample < 0) {
+#ifdef SERVER
+		error(sprintf("Sound_Speak: shader %s is not precached (SERVER)\n", shader));
+#else
+		error(sprintf("Sound_Speak: shader %s is not precached (CLIENT)\n", shader));
+#endif
 		return;
 	}
 
