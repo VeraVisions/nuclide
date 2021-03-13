@@ -37,6 +37,9 @@ Material list:
 8 = Rock
 9 = None
 
+When SF_TRIGGER is set, the breakable is invincible and has to be triggered
+in order to be detroyed/broken.
+
 When SF_TOUCH is set, it'll break when an entity runs into it at high
 velocities (damage is speed in units * 0.01).
 
