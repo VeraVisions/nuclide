@@ -270,6 +270,9 @@ void func_door_rotating::Touch(void)
 		return;
 	}
 
+	if ((m_iState == STATE_UP) || (m_iState == STATE_DOWN))
+		return;
+
 	if (other.movetype == MOVETYPE_WALK) {
 		Trigger(other, TRIG_TOGGLE);
 	}
