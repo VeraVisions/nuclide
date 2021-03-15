@@ -2,7 +2,7 @@ Getting started
 =======================================
 
 1) Get FTE QW for your platform
-   http://fte.triptohell.info/downloads
+   https://www.fteqw.org/
 
 2) Put it into the same directory as this README
 
@@ -19,7 +19,7 @@ Make sure you're running the latest version of FTEQW.
 If your entire engine/binary crashes to desktop or whatever, it's an FTE bug.
 Contact #fte at irc.quakenet.org
 
-If you crash to console, contact #freecs at irc.freenode.net or irc.frag-net.com
+If you crash to console, contact #freecs at irc.freenode.net
 
 Notes
 =======================================

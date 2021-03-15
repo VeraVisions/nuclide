@@ -1,73 +1,81 @@
 #!/bin/sh
 
-copy_mod()
-{
-	mkdir ./_release/"$1"
-	cp -R ./"$1"/data.pk3dir ./_release/"$1"/data.pk3dir
-	cp ./"$1".fmf ./_release/"$1".fmf
-	rm ./_release/"$1"/data.pk3dir/*.lno
-}
+if [ $# -lt 0 ]; then
+	printf "At least supply the name of the mod/game dir you want to pack.\n"
+	exit
+fi
 
-copy_file()
-{
-	cp -R ./"$1" ./_release/"$1"
-	
-}
+GAME_DIR="$1"
+BUILD_DIR=$1-$(date +%m-%d-%Y)
+OLD_DIR=$(pwd)
 
-# clean up
-mkdir ./_release
+if [ -f "$GAME_DIR"/src/Makefile ]; then
+	mkdir -p "$BUILD_DIR/$GAME_DIR"
+	mkdir -p "$BUILD_DIR/platform"
+	cd $GAME_DIR/src
+	make
+else
+	printf "Not a valid game to bundle.\n"
+	exit
+fi
 
-# build binaries
-cd src
-make
-cd ..
+cd "$OLD_DIR"
+
+# build the pk3s
+find ./$GAME_DIR -name *.pk3dir | xargs -I @ sh -c 'echo `basename "@"`' | while read PK3DIR; do
+	# strip the .pk3dir from the folder name to get the final .pk3 basename
+	PK3NAME=$(echo $PK3DIR | cut -f 1 -d '.')
+
+	# go into the pk3dir and compile your zip
+	cd "./$GAME_DIR/$PK3DIR"
+	tree -fi > ./build_contents.txt
+	sed -i '/build_contents/d' ./build_contents.txt
+	sed -i '/directories,/d' ./build_contents.txt
+	zip -0 "$PK3NAME".pk3 -@ < ./build_contents.txt
+	rm ./build_contents.txt
+
+	# Go back and move it over into the build directory
+	cd "$OLD_DIR"
+	mv "./$GAME_DIR/$PK3DIR/$PK3NAME.pk3" "./$BUILD_DIR/$GAME_DIR/$PK3NAME.pk3"
+done;
+cp "./$GAME_DIR/progs.dat" "./$BUILD_DIR/$GAME_DIR/progs.dat"
+cp "./$GAME_DIR/csprogs.dat" "./$BUILD_DIR/$GAME_DIR/csprogs.dat"
+
+find 'platform' -name '*.pk3dir' | xargs -I @ sh -c 'echo `basename "@"`' | while read PK3DIR; do
+	# strip the .pk3dir from the folder name to get the final .pk3 basename
+	PK3NAME=$(echo $PK3DIR | cut -f 1 -d '.')
+
+	# go into the pk3dir and compile your zip
+	cd "./platform/$PK3DIR"
+	tree -fi > ./build_contents.txt
+	sed -i '/build_contents/d' ./build_contents.txt
+	sed -i '/directories,/d' ./build_contents.txt
+	zip -0 "$PK3NAME".pk3 -@ < ./build_contents.txt
+	rm ./build_contents.txt
+
+	# Go back and move it over into the build directory
+	cd "$OLD_DIR"
+	mv "./platform/$PK3DIR/$PK3NAME.pk3" "./$BUILD_DIR/platform/$PK3NAME.pk3"
+done;
+cp "./platform/platform_default.cfg" "./$BUILD_DIR/platform/platform_default.cfg"
+cp "./platform/readme.txt" "./$BUILD_DIR/platform/readme.txt"
+cp "./platform/menu.dat" "./$BUILD_DIR/platform/menu.dat"
+rm "./$BUILD_DIR/platform/test_maps.pk3"
 
 # copy platform
-cp -R ./platform ./_release/platform
-cp -R ./doc ./_release/doc
-
-# copy mods
-copy_mod valve
-copy_mod cstrike
-copy_mod scihunt
-copy_mod rewolf
-copy_mod hunger
+#cp -R ./platform ./$BUILD_DIR/platform
+#cp -R ./doc ./$BUILD_DIR/doc
+echo "version 2" > ./$BUILD_DIR/installed.lst
+echo "set updatemode \"1\"" >> ./$BUILD_DIR/installed.lst
+echo "set declined \"\"" >> ./$BUILD_DIR/installed.lst
+echo "sublist \"http://www.frag-net.com/dl/valve_packages\" \"\" \"enabled\"" >> ./$BUILD_DIR/installed.lst
 
 # spray logos
-mkdir ./_release/logos
-copy_file logos/README
-copy_file logos/fte.png
+mkdir -p ./$BUILD_DIR/logos
+cp ./logos/README ./$BUILD_DIR/logos/README
+cp ./logos/fte.png ./$BUILD_DIR/logos/fte.png
+cp ./$GAME_DIR.fmf ./$BUILD_DIR/default.fmf
+cp ./doc/release-readme ./$BUILD_DIR/README.txt
 
-# one last touch
-touch ./_release/fteqw_goes_here
-mv ./_release/doc/release-readme ./_release/README
-cp ./valve.fmf ./_release/default.fmf
-echo "version 2" > ./_release/installed.lst
-echo "set updatemode \"1\"" >> ./_release/installed.lst
-echo "set declined \"\"" >> ./_release/installed.lst
-echo "sublist \"http://www.frag-net.com/dl/valve_packages\" \"\" \"enabled\"" >> ./_release/installed.lst
-
-rm -rf ./_release/platform/test_maps.pk3dir
-
-# build the tarball
-export FILE_OUT=nuclide-$(date +%m-%d-%Y)
-export CS_OUT=freecs-$(date +%m-%d-%Y)
-mv ./_release "./$FILE_OUT"
-zip -9 -r "$FILE_OUT".zip "./$FILE_OUT"
-
-# FreeCS specific build
-cp -R "./$FILE_OUT" "./$CS_OUT"
-rm -rf "./$CS_OUT"/valve
-rm -rf "./$CS_OUT"/scihunt
-rm -rf "./$CS_OUT"/rewolf
-rm -rf "./$CS_OUT"/hunger
-rm "./$CS_OUT"/valve.fmf
-rm "./$CS_OUT"/default.fmf
-rm "./$CS_OUT"/scihunt.fmf
-rm "./$CS_OUT"/rewolf.fmf
-rm "./$CS_OUT"/hunger.fmf
-mv "./$CS_OUT"/cstrike.fmf "./$CS_OUT"/default.fmf
-zip -9 -r "$CS_OUT".zip "./$CS_OUT"
-
-gpg --output "./$CS_OUT.sig" --detach-sig "./$CS_OUT.zip"
-gpg --output "./$FILE_OUT.sig" --detach-sig "./$FILE_OUT.zip"
+zip -9 -r "$BUILD_DIR".zip "./$BUILD_DIR"
+gpg --output "./$BUILD_DIR.sig" --detach-sig "./$BUILD_DIR.zip"
