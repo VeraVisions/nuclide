@@ -27,28 +27,32 @@ Event_EjectShell(void)
 	static void Event_EjectShell_Death(void) {
 		remove(self);
 	}
+
+	if (!pSeat->m_fEjectModel)
+		return;
+
 	vector vOrigin = pSeat->m_vecPredictedOrigin + [0, 0, getstatf(STAT_VIEWHEIGHT)];
 	vector vEndPos = gettaginfo(pSeat->m_eViewModel, pSeat->m_iVMEjectBone);
-	makevectors(view_angles);
-	
+	makevectors(input_angles);
+
 	vOrigin += (v_forward * vEndPos[0]);
 	vOrigin += (v_right * -vEndPos[1]);
 	vOrigin += (v_up * vEndPos[2]) ;
 	
 	entity eShell = spawn();
-	setorigin(eShell, vOrigin);
-#if 0
-	setmodel(eShell, sShellModel[wptTable[getstati(STAT_ACTIVEWEAPON)].iShellType]);
-#endif
+	eShell.modelindex = pSeat->m_fEjectModel;
 	eShell.movetype = MOVETYPE_BOUNCE;
 	eShell.drawmask = MASK_ENGINE;
-	eShell.angles = [view_angles[0], view_angles[1], 0];
+	eShell.angles = [input_angles[0], input_angles[1], 0];
 	eShell.velocity = pSeat->m_vecPredictedVelocity;
 	eShell.velocity += (v_up * random(70, 120));
 	eShell.velocity += (v_right * -random(50, 70));
 	eShell.avelocity = [0,45,900];
 	eShell.think = Event_EjectShell_Death;
-	eShell.nextthink = time + 2.5f; 
+	eShell.nextthink = time + 2.5f;
+	pSeat->m_fEjectModel = 0;
+	setsize(eShell, [0,0,0], [0,0,0]);
+	setorigin(eShell, vEndPos);
 }
 
 /*
@@ -76,21 +80,18 @@ Event_ProcessModel(float flTimeStamp, int iCode, string strData)
 		pSeat->m_eMuzzleflash.alpha = 1.0f;
 		pSeat->m_eMuzzleflash.scale = 0.25;
 		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 1;
-		//setmodel(pSeat->m_eMuzzleflash, sprintf("sprites/muzzleflash%s.spr", substring(strData, 1, 1)));
 		Event_EjectShell();
 		break;
 	case 5021: /* muzzle flash on attachment 2 */
 		pSeat->m_eMuzzleflash.alpha = 1.0f;
 		pSeat->m_eMuzzleflash.scale = 0.25;
 		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 2;
-		//setmodel(pSeat->m_eMuzzleflash, sprintf("sprites/muzzleflash%s.spr", substring(strData, 1, 1)));
 		Event_EjectShell();
 		break;
 	case 5031: /* muzzle flash on attachment 3 */
 		pSeat->m_eMuzzleflash.alpha = 1.0f;
 		pSeat->m_eMuzzleflash.scale = 0.25;
 		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 3;
-		//setmodel(pSeat->m_eMuzzleflash, sprintf("sprites/muzzleflash%s.spr", substring(strData, 1, 1)));
 		Event_EjectShell();
 		break;
 	}

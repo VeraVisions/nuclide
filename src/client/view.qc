@@ -39,12 +39,20 @@ View_Init(void)
 	MUZZLE_RIFLE = (int)getmodelindex("sprites/muzzleflash1.spr");
 	MUZZLE_SMALL = (int)getmodelindex("sprites/muzzleflash2.spr");
 	MUZZLE_WEIRD = (int)getmodelindex("sprites/muzzleflash3.spr");
+	SHELL_DEFAULT = (int)getmodelindex("models/shell.mdl");
 }
 
 void
 View_SetMuzzleflash(int index)
 {
 	pSeat->m_eMuzzleflash.modelindex = (float)index;
+}
+
+void
+View_EjectShell(int index, int ofs)
+{
+	pSeat->m_fEjectModel = (float)index;
+	pSeat->m_iVMEjectBone = pSeat->m_iVMBones + 1 + ofs;
 }
 
 void 
