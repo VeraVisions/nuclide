@@ -55,5 +55,8 @@ string Util_FixModel(string mdl)
 	/* Kill the first / again */
 	mdl = substring(mdl, 1, strlen(mdl)-1);
 
+	if (substring(mdl, 0, 1) == "/")
+		mdl = substring(mdl, 1, -1);
+
 	return mdl;
 }
