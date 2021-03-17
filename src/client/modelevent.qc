@@ -27,32 +27,30 @@ Event_EjectShell(void)
 	static void Event_EjectShell_Death(void) {
 		remove(self);
 	}
+	vector vEndPos;
 
 	if (!pSeat->m_fEjectModel)
 		return;
 
-	vector vOrigin = pSeat->m_vecPredictedOrigin + [0, 0, getstatf(STAT_VIEWHEIGHT)];
-	vector vEndPos = gettaginfo(pSeat->m_eViewModel, pSeat->m_iVMEjectBone);
-	makevectors(input_angles);
-
-	vOrigin += (v_forward * vEndPos[0]);
-	vOrigin += (v_right * -vEndPos[1]);
-	vOrigin += (v_up * vEndPos[2]) ;
 	
 	entity eShell = spawn();
 	eShell.modelindex = pSeat->m_fEjectModel;
 	eShell.movetype = MOVETYPE_BOUNCE;
 	eShell.drawmask = MASK_ENGINE;
-	eShell.angles = [input_angles[0], input_angles[1], 0];
+	eShell.angles = [pSeat->m_eViewModel.angles[0], pSeat->m_eViewModel.angles[1], 0];
 	eShell.velocity = pSeat->m_vecPredictedVelocity;
-	eShell.velocity += (v_up * random(70, 120));
-	eShell.velocity += (v_right * -random(50, 70));
+
+	makevectors(pSeat->m_eViewModel.angles);
+	eShell.velocity += (v_forward * pSeat->m_vecEjectVel[0]);
+	eShell.velocity += (v_right * pSeat->m_vecEjectVel[1]);
+	eShell.velocity += (v_up * pSeat->m_vecEjectVel[2]);
+
 	eShell.avelocity = [0,45,900];
 	eShell.think = Event_EjectShell_Death;
 	eShell.nextthink = time + 2.5f;
 	pSeat->m_fEjectModel = 0;
 	setsize(eShell, [0,0,0], [0,0,0]);
-	setorigin(eShell, vEndPos);
+	setorigin(eShell, pSeat->m_vecEjectPos);
 }
 
 /*

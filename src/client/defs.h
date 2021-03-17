@@ -89,7 +89,11 @@ drawstring_r(vector p, string t, vector s, vector c, float a, float f)
 void GameMessage_Setup(string, int);
 void Game_Input(void);
 void View_SetMuzzleflash(int);
-void View_EjectShell(int, int);
+
+void View_EjectShellBone(int index, int ofs, vector range);
+void View_EjectShellAttachment(int index, int ofs, vector range);
+void View_EjectShellPos(int index, vector pos, vector range);
+
 void View_PlayAnimation(int);
 void View_PlayAnimation(int);
 void Vox_Play(string);

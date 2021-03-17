@@ -49,10 +49,31 @@ View_SetMuzzleflash(int index)
 }
 
 void
-View_EjectShell(int index, int ofs)
+View_EjectShellBone(int index, int ofs, vector range)
 {
 	pSeat->m_fEjectModel = (float)index;
-	pSeat->m_iVMEjectBone = pSeat->m_iVMBones + 1 + ofs;
+	pSeat->m_vecEjectPos = gettaginfo(pSeat->m_eViewModel, ofs);
+	pSeat->m_vecEjectVel = range;
+}
+
+void
+View_EjectShellAttachment(int index, int ofs, vector range)
+{
+	pSeat->m_fEjectModel = (float)index;
+	pSeat->m_vecEjectPos = gettaginfo(pSeat->m_eViewModel, pSeat->m_iVMBones + 1 + ofs);
+	pSeat->m_vecEjectVel = range;
+}
+
+void
+View_EjectShellPos(int index, vector pos, vector range)
+{
+	makevectors(view_angles);
+	pSeat->m_fEjectModel = (float)index;
+	pSeat->m_vecEjectPos = gettaginfo(pSeat->m_eViewModel, 0) + pSeat->m_ePlayer.view_ofs;
+	pSeat->m_vecEjectPos += v_forward * pos[0];
+	pSeat->m_vecEjectPos += v_right * pos[1];
+	pSeat->m_vecEjectPos += v_up * pos[2];
+	pSeat->m_vecEjectVel = range;
 }
 
 void 
