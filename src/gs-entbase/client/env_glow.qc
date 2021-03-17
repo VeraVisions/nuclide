@@ -81,6 +81,7 @@ env_glow::predraw(void)
 
 	/* Project it, always facing the player */
 	makevectors(view_angles);
+#ifndef FTE_QUADFIX
 	R_BeginPolygon(m_strSprite, 1, 0);
 	R_PolygonVertex(forg + v_right * fsize[0] - v_up * fsize[1],
 		[1,1], m_vecColor * m_flMaxAlpha, m_flAlpha);
@@ -91,6 +92,24 @@ env_glow::predraw(void)
 	R_PolygonVertex(forg + v_right * fsize[0] + v_up * fsize[1],
 		[1,0], m_vecColor * m_flMaxAlpha, m_flAlpha);
 	R_EndPolygon();
+#else
+	R_BeginPolygon(m_strSprite, 1, 0);
+	R_PolygonVertex(forg + v_right * fsize[0] - v_up * fsize[1],
+		[1,1], m_vecColor * m_flMaxAlpha, m_flAlpha);
+	R_PolygonVertex(forg - v_right * fsize[0] - v_up * fsize[1],
+		[0,1], m_vecColor * m_flMaxAlpha, m_flAlpha);
+	R_PolygonVertex(forg - v_right * fsize[0] + v_up * fsize[1],
+		[0,0], m_vecColor * m_flMaxAlpha, m_flAlpha);
+	R_EndPolygon();
+	R_BeginPolygon(m_strSprite, 1, 0);
+	R_PolygonVertex(forg - v_right * fsize[0] - v_up * fsize[1],
+		[0,1], m_vecColor * m_flMaxAlpha, m_flAlpha);
+	R_PolygonVertex(forg - v_right * fsize[0] + v_up * fsize[1],
+		[0,0], m_vecColor * m_flMaxAlpha, m_flAlpha);
+	R_PolygonVertex(forg + v_right * fsize[0] + v_up * fsize[1],
+		[1,0], m_vecColor * m_flMaxAlpha, m_flAlpha);
+	R_EndPolygon();
+#endif
 	addentity(this);
 
 	return PREDRAW_NEXT;
@@ -139,5 +158,6 @@ env_glow::env_glow(void)
 	drawmask = MASK_ENGINE;
 	setsize(this, [0,0,0], [0,0,0]);
 	setorigin(this, origin);
+	effects &= ~EF_NOSHADOW;
 	Init();
 }

@@ -256,7 +256,7 @@ CSQC_UpdateView(float w, float h, float focus)
 
 		pl.viewzoom = oldzoom;
 
-		View_Stairsmooth();
+		View_PreDraw();
 
 		if (pSeat->m_pWeaponFX) {
 			CBaseFX p = (CBaseFX)pSeat->m_pWeaponFX;
@@ -331,9 +331,6 @@ CSQC_UpdateView(float w, float h, float focus)
 
 		Fade_Update((int)video_mins[0],(int)video_mins[1], (int)w, (int)h);
 		IN_Saturn_DrawMenu();
-#if 0
-		Cstrike_PostDraw((int)video_mins[0],(int)video_mins[1], (int)w, (int)h);
-#endif
 		View_PostDraw();
 
 		if (g_iIntermission) {

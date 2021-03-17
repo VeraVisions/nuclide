@@ -208,17 +208,6 @@ View_DrawViewModel(void)
 }
 
 void
-View_PostDraw(void)
-{
-	entity m_eMuzzleflash = pSeat->m_eMuzzleflash;
-
-	// Take away alpha once it has drawn fully at least once
-	if (m_eMuzzleflash.alpha > 0.0f) {
-		m_eMuzzleflash.alpha -= (clframetime * 16);
-	}
-}
-
-void
 View_Stairsmooth(void)
 {
 	vector currentpos = pSeat->m_vecPredictedOrigin;
@@ -245,6 +234,24 @@ View_Stairsmooth(void)
 	//setproperty(VF_ORIGIN, endpos);
 	pSeat->m_vecPredictedOrigin = endpos;
 	oldpos = endpos;
+}
+
+
+void
+View_PreDraw(void)
+{
+	View_Stairsmooth();
+}
+
+void
+View_PostDraw(void)
+{
+	entity m_eMuzzleflash = pSeat->m_eMuzzleflash;
+
+	// Take away alpha once it has drawn fully at least once
+	if (m_eMuzzleflash.alpha > 0.0f) {
+		m_eMuzzleflash.alpha -= (clframetime * 16);
+	}
 }
 
 /*

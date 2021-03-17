@@ -31,9 +31,9 @@ class trigger_gravity:CBaseTrigger
 #endif
 {
 	float m_flGravity;
+
 	void(void) trigger_gravity;
 	virtual void(void) touch;
-	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
 
 #ifdef CLIENT
@@ -47,25 +47,15 @@ trigger_gravity::touch(void)
 	other.gravity = m_flGravity;
 }
 
-/* TODO: Make this redundant */
-void
-trigger_gravity::Respawn(void)
-{
-	solid = SOLID_BSPTRIGGER;
-#ifdef GS_DEVELOPER
-	alpha = 0.5f;
-#endif
-}
-
 void
 trigger_gravity::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
-		case "gravity":
-			m_flGravity = stof(strKey);
-			break;
-		default:
-			CBaseEntity::SpawnKey(strField, strKey);
+	case "gravity":
+		m_flGravity = stof(strKey);
+		break;
+	default:
+		CBaseEntity::SpawnKey(strField, strKey);
 	}
 }
 
@@ -75,6 +65,7 @@ trigger_gravity::trigger_gravity(void)
 #ifdef SERVER
 	CBaseEntity::CBaseEntity();
 	CBaseTrigger::InitBrushTrigger();
+	SetSolid(SOLID_BSPTRIGGER);
 #endif
 }
 
