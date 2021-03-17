@@ -1,3 +1,7 @@
+func_door.move_0
+{
+	sample misc/null.wav
+}
 func_door.move_1
 {
 	sample doors/doormove1.wav
@@ -39,6 +43,10 @@ func_door.move_10
 	sample doors/doormove10.wav
 }
 
+func_door.stop_0
+{
+	sample misc/null.wav
+}
 func_door.stop_1
 {
 	sample doors/doorstop1.wav
