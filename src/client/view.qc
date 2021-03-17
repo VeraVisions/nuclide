@@ -240,6 +240,7 @@ View_Stairsmooth(void)
 void
 View_PreDraw(void)
 {
+	ClientGame_PreDraw();
 	View_Stairsmooth();
 }
 
@@ -252,6 +253,8 @@ View_PostDraw(void)
 	if (m_eMuzzleflash.alpha > 0.0f) {
 		m_eMuzzleflash.alpha -= (clframetime * 16);
 	}
+
+	ClientGame_PostDraw();
 }
 
 /*
