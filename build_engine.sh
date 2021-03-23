@@ -44,6 +44,9 @@ else
 	elif [[ "$COMPILE_SYS" == "Linux" ]]; then
 		PLATFORM=linux64
 		OUTPUT=$OUTPUT/fteqw-gl64
+	elif [[ "$COMPILE_SYS" == "GNU/Linux" ]]; then
+		PLATFORM=linux64
+		OUTPUT=$OUTPUT/fteqw-gl64
 	else
 		printf "Unsupported platform.\n"
 		exit
