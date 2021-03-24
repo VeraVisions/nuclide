@@ -30,6 +30,8 @@ class base_player
 	vector view_ofs;
 	float weapontime;
 
+	vector v_angle;
+
 	/* any mods that use hooks */
 	entity hook;
 

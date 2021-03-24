@@ -62,6 +62,7 @@ var int MUZZLE_RIFLE;
 var int MUZZLE_WEIRD;
 
 var int SHELL_DEFAULT;
+var int SHELL_SHOTGUN;
 
 /* misc globals */
 vector video_mins;

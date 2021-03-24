@@ -33,6 +33,7 @@ Bot_AddQuick(void)
 {
 	/* we've got no nodes, so generate some fake waypoints */
 	if (!g_nodes_present) {
+		print("^1Bot_AddQuick^7: Can't add bot. No waypoints.\n");
 		return world;
 	}
 

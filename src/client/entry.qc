@@ -140,6 +140,7 @@ void
 CSQC_UpdateView(float w, float h, float focus)
 {
 	player pl;
+	spectator spec;
 	int s;
 
 	if (w == 0 || h == 0) {
@@ -210,49 +211,57 @@ CSQC_UpdateView(float w, float h, float focus)
 			continue;
 		}
 
-		pl = (player)self;
+		if (self.classname == "player") {
+			pl = (player)self;
+			Predict_PlayerPreFrame(pl);
 
-		Predict_PreFrame((player)self);
+			pSeat->m_vecPredictedOrigin = pl.origin;
+			pSeat->m_vecPredictedVelocity = pl.velocity;
+			pSeat->m_flPredictedFlags = pl.flags;
 
-		pSeat->m_vecPredictedOrigin = pl.origin;
-		pSeat->m_vecPredictedVelocity = pl.velocity;
-		pSeat->m_flPredictedFlags = pl.flags;
-
-		/* Don't hide the player entity */
-		if (autocvar_cl_thirdperson == TRUE && pl.health) {
-			setproperty(VF_VIEWENTITY, (float)0);
-		} else {
-			setproperty(VF_VIEWENTITY, (float)player_localentnum);
-		}
-
-		float oldzoom = pl.viewzoom;
-		if (pl.viewzoom == 1.0f) {
-			pl.viewzoom = 1.0 - (0.5 * pSeat->m_flZoomTime);
-
-			/* +zoomin requested by Slacer */
-			if (pSeat->m_iZoomed) {
-				pSeat->m_flZoomTime += clframetime * 15;
+			/* Don't hide the player entity */
+			if (autocvar_cl_thirdperson == TRUE && pl.health) {
+				setproperty(VF_VIEWENTITY, (float)0);
 			} else {
-				pSeat->m_flZoomTime -= clframetime * 15;
+				setproperty(VF_VIEWENTITY, (float)player_localentnum);
 			}
-			pSeat->m_flZoomTime = bound(0, pSeat->m_flZoomTime, 1);
+
+			float oldzoom = pl.viewzoom;
+			if (pl.viewzoom == 1.0f) {
+				pl.viewzoom = 1.0 - (0.5 * pSeat->m_flZoomTime);
+
+				/* +zoomin requested by Slacer */
+				if (pSeat->m_iZoomed) {
+					pSeat->m_flZoomTime += clframetime * 15;
+				} else {
+					pSeat->m_flZoomTime -= clframetime * 15;
+				}
+				pSeat->m_flZoomTime = bound(0, pSeat->m_flZoomTime, 1);
+			}
+
+			setproperty(VF_AFOV, cvar("fov") * pl.viewzoom);
+
+			if (autocvar_zoom_sensitivity && pl.viewzoom < 1.0f) {
+				setsensitivityscaler(pl.viewzoom * autocvar_zoom_sensitivity);
+			} else {
+				setsensitivityscaler(pl.viewzoom);
+			}
+
+			if (pl.viewzoom <= 0.0f) {
+				setsensitivityscaler(1.0f);
+			}
+
+			pl.viewzoom = oldzoom;
+
+			View_PreDraw();
+		} else if (self.classname == "spectator") {
+			spec = (spectator)self;
+			Predict_SpectatorPreFrame(spec);
+
+			pSeat->m_vecPredictedOrigin = spec.origin;
+			pSeat->m_vecPredictedVelocity = spec.velocity;
+			pSeat->m_flPredictedFlags = spec.flags;
 		}
-
-		setproperty(VF_AFOV, cvar("fov") * pl.viewzoom);
-
-		if (autocvar_zoom_sensitivity && pl.viewzoom < 1.0f) {
-			setsensitivityscaler(pl.viewzoom * autocvar_zoom_sensitivity);
-		} else {
-			setsensitivityscaler(pl.viewzoom);
-		}
-
-		if (pl.viewzoom <= 0.0f) {
-			setsensitivityscaler(1.0f);
-		}
-
-		pl.viewzoom = oldzoom;
-
-		View_PreDraw();
 
 		if (pSeat->m_pWeaponFX) {
 			CBaseFX p = (CBaseFX)pSeat->m_pWeaponFX;
@@ -267,18 +276,58 @@ CSQC_UpdateView(float w, float h, float focus)
 			setproperty(VF_CL_VIEWANGLES, view_angles);
 			setproperty(VF_ANGLES, view_angles);
 		} else {
-			if (pl.health) {
-				if (autocvar_cl_thirdperson == TRUE) {
-					makevectors(view_angles);
-					vector vStart = [pSeat->m_vecPredictedOrigin[0], pSeat->m_vecPredictedOrigin[1], pSeat->m_vecPredictedOrigin[2] + 16] + (v_right * 4);
-					vector vEnd = vStart + (v_forward * -48) + [0,0,16] + (v_right * 4);
-					traceline(vStart, vEnd, FALSE, self);
-					setproperty(VF_ORIGIN, trace_endpos + (v_forward * 5));
+			if (self.classname == "player") {
+				if (pl.health) {
+					if (autocvar_cl_thirdperson == TRUE) {
+						makevectors(view_angles);
+						vector vStart = [pSeat->m_vecPredictedOrigin[0], pSeat->m_vecPredictedOrigin[1], pSeat->m_vecPredictedOrigin[2] + 16] + (v_right * 4);
+						vector vEnd = vStart + (v_forward * -48) + [0,0,16] + (v_right * 4);
+						traceline(vStart, vEnd, FALSE, self);
+						setproperty(VF_ORIGIN, trace_endpos + (v_forward * 5));
+					} else {
+						setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin + pl.view_ofs);
+					}
 				} else {
-					setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin + pl.view_ofs);
+					setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin);
 				}
-			} else {
-				setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin);
+
+				if (pSeat->m_flShakeDuration > 0.0) {
+					vector vecShake = [0,0,0];
+					vecShake[0] += random() * 3;
+					vecShake[1] += random() * 3;
+					vecShake[2] += random() * 3;
+					pl.punchangle += (vecShake * pSeat->m_flShakeAmp) * (pSeat->m_flShakeDuration / pSeat->m_flShakeTime);
+					pSeat->m_flShakeDuration -= clframetime;
+				}
+				setproperty(VF_ANGLES, view_angles + pl.punchangle);
+			} else if (self.classname == "spectator") {
+				switch (spec.spec_mode) {
+				case SPECMODE_THIRDPERSON:
+					makevectors(view_angles);
+					vector vecStart;
+					vecStart[0] = pSeat->m_vecPredictedOrigin[0];
+					vecStart[1] = pSeat->m_vecPredictedOrigin[1];
+					vecStart[2] = pSeat->m_vecPredictedOrigin[2] + 16;
+					vecStart += (v_right * 4);
+
+					vector vecEnd = vecStart + (v_forward * -48) + [0,0,16] + (v_right * 4);
+					traceline(vecStart, vecEnd, FALSE, self);
+					setproperty(VF_ORIGIN, trace_endpos + (v_forward * 5));
+					break;
+				case SPECMODE_FIRSTPERSON:
+					entity b;
+					b = findfloat(world, ::entnum, spec.spec_ent);
+					
+					if (b.classname == "player") {
+						player bp = (player)b;
+						setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin + bp.view_ofs);
+						setproperty(VF_ANGLES, bp.v_angle);
+						setproperty(VF_CL_VIEWANGLES, [bp.pitch, bp.angles[1], bp.angles[2]]);
+					}
+					break;
+				default:
+					setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin);
+				}
 			}
 
 			if (g_iIntermission) {
@@ -287,16 +336,6 @@ CSQC_UpdateView(float w, float h, float focus)
 				setproperty(VF_ORIGIN, pSeat->m_vecCameraOrigin);
 				setproperty(VF_CL_VIEWANGLES, view_angles);
 			}
-
-			if (pSeat->m_flShakeDuration > 0.0) {
-				vector vecShake = [0,0,0];
-				vecShake[0] += random() * 3;
-				vecShake[1] += random() * 3;
-				vecShake[2] += random() * 3;
-				pl.punchangle += (vecShake * pSeat->m_flShakeAmp) * (pSeat->m_flShakeDuration / pSeat->m_flShakeTime);
-				pSeat->m_flShakeDuration -= clframetime;
-			}
-			setproperty(VF_ANGLES, view_angles + pl.punchangle);
 		}
 
 		setproperty(VF_DRAWWORLD, 1);
@@ -335,9 +374,9 @@ CSQC_UpdateView(float w, float h, float focus)
 			GameText_Draw();
 			PointMessage_Draw();
 
-			if (getplayerkeyvalue(player_localnum, "*spec") != "0") {
+			if (self.classname == "spectator") {
 				HUD_DrawSpectator();
-			} else {
+			} else if (self.classname == "player") {
 				HUD_Draw();
 			}
 
@@ -354,7 +393,10 @@ CSQC_UpdateView(float w, float h, float focus)
 			}
 		}
 
-		Predict_PostFrame((player)self);
+		if (self.classname == "player")
+			Predict_PlayerPostFrame((player)self);
+		else if (self.classname == "spectator")
+			Predict_SpectatorPostFrame((spectator)self);
 	}
 
 	DSP_UpdateListener();
@@ -588,10 +630,13 @@ CSQC_Parse_Event(void)
 		setproperty(VF_ANGLES, a);
 		break;
 	case EV_SHAKE:
+		if (self.classname == "spectator")
+			break;
 		pSeat->m_flShakeDuration = readfloat();
 		pSeat->m_flShakeAmp = readfloat();
 		pSeat->m_flShakeFreq = readfloat();
 		pSeat->m_flShakeTime = pSeat->m_flShakeDuration;
+		break;
 	default:
 		ClientGame_EventParse(fHeader);
 	}
@@ -833,7 +878,7 @@ CSQC_Ent_Update(float new)
 		break;
 	case ENT_PLAYER:
 		player pl = (player)self;
-		if (new) {
+		if (new || self.classname != "player") {
 			spawnfunc_player();
 			pl.classname = "player";
 			pl.solid = SOLID_SLIDEBOX;
@@ -842,6 +887,18 @@ CSQC_Ent_Update(float new)
 			setsize(pl, VEC_HULL_MIN, VEC_HULL_MAX);
 		}
 		pl.ReceiveEntity(new);
+		break;
+	case ENT_SPECTATOR:
+		spectator spec = (spectator)self;
+		if (new || self.classname != "spectator") {
+			spawnfunc_spectator();
+			spec.classname = "spectator";
+			spec.solid = SOLID_SLIDEBOX;
+			spec.drawmask = MASK_ENGINE;
+			spec.customphysics = Empty;
+			setsize(spec, [0,0,0], [0,0,0]);
+		}
+		spec.ReceiveEntity(new);
 		break;
 	case ENT_SPRITE:
 		env_sprite spr = (env_sprite)self;

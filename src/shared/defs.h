@@ -27,6 +27,7 @@
 #include "sound.h"
 #include "pmove.h"
 #include "memory.h"
+#include "spectator.h"
 
 #define BSPVER_PREREL 	28
 #define BSPVER_Q1		29

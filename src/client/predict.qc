@@ -24,7 +24,7 @@ Propagate our pmove state to whatever the current frame before its stomped on
 =================
 */
 void
-Predict_PreFrame(player pl)
+Predict_PlayerPreFrame(player pl)
 {
 	/* base player attributes/fields we're going to roll back */
 	pl.net_origin = pl.origin;
@@ -78,7 +78,7 @@ Rewind our pmove state back to before we started predicting.
 =================
 */
 void
-Predict_PostFrame(player pl)
+Predict_PlayerPostFrame(player pl)
 {
 	/* finally roll the values back */
 	pl.origin = pl.net_origin;
@@ -98,4 +98,34 @@ Predict_PostFrame(player pl)
 
 	/* update bounds */
 	setorigin(pl, pl.origin);
+}
+
+/*
+=================
+Predict_PreFrame
+
+We're part way through parsing new player data.
+Propagate our pmove state to whatever the current frame before its stomped on 
+(so any non-networked state updates locally).
+=================
+*/
+void
+Predict_SpectatorPreFrame(spectator pl)
+{
+	pl.PreFrame();
+}
+
+/*
+=================
+Predict_SpectatorPostFrame
+
+We're part way through parsing new player data.
+Rewind our pmove state back to before we started predicting. 
+(to give consistent state instead of accumulating errors)
+=================
+*/
+void
+Predict_SpectatorPostFrame(spectator pl)
+{
+	pl.PostFrame();
 }

@@ -123,6 +123,13 @@ void
 SpectatorThink(void)
 {
 	Game_SpectatorThink();
+
+	if (self.classname == "spectator") {
+		spectator spec = (spectator)self;
+		spec.PreFrame();
+		spec.PostFrame();
+		return;
+	}
 }
 
 /*
@@ -137,6 +144,7 @@ void
 SpectatorConnect(void)
 {
 	Game_SpectatorConnect();
+	spawnfunc_spectator();
 }
 
 /*
@@ -194,6 +202,12 @@ times the amount of players in a given game.
 void
 PlayerPreThink(void)
 {
+	if (self.classname == "spectator") {
+		//spectator spec = (spectator)self;
+		//spec.PreFrame();
+		return;
+	}
+
 	if (self.classname != "player") {
 		return;
 	}
@@ -220,6 +234,11 @@ times the amount of players in a given game.
 void
 PlayerPostThink(void)
 {
+	if (self.classname == "spectator") {
+		SpectatorThink();
+		return;
+	}
+
 	if (self.classname != "player") {
 		return;
 	}
@@ -289,6 +308,11 @@ with the input_X globals being set to the appropriate data.
 void
 SV_RunClientCommand(void)
 {
+	if (self.classname == "spectator") {
+		spectator spec = (spectator)self;
+		spec.RunClientCommand();
+	}
+
 	if (self.classname != "player") {
 		return;
 	}
@@ -325,6 +349,23 @@ SV_ParseClientCommand(string cmd)
 		Game_ParseClientCommand(cmd);
 	else 
 		Game_ParseClientCommand(newcmd);
+
+	tokenize(cmd);
+
+	switch (argv(0)) {
+	case "spectate":
+		if (self.classname != "player")
+			break;
+		ClientKill();
+		spawnfunc_spectator();
+		break;
+	case "play":
+		if (self.classname != "spectator")
+			break;
+		spawnfunc_player();
+		PutClientInServer();
+		break;	
+	}
 }
 
 /*
@@ -542,6 +583,16 @@ ConsoleCmd(string cmd)
 			}
 		}
 	}
+
+	if (!self) {
+		for ( other = world; ( other = find( other, classname, "spectator" ) ); ) {
+			if ( clienttype( other ) == CLIENTTYPE_REAL ) {
+				self = other;
+				break;
+			}
+		}
+	}
+
 	pl = (player)self;
 
 	/* give the game-mode a chance to override us */

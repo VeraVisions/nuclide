@@ -40,6 +40,7 @@ View_Init(void)
 	MUZZLE_SMALL = (int)getmodelindex("sprites/muzzleflash2.spr");
 	MUZZLE_WEIRD = (int)getmodelindex("sprites/muzzleflash3.spr");
 	SHELL_DEFAULT = (int)getmodelindex("models/shell.mdl");
+	SHELL_SHOTGUN = (int)getmodelindex("models/shotgunshell.mdl");
 }
 
 void

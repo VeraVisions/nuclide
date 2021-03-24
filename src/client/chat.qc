@@ -31,6 +31,8 @@ Chat_Draw(void)
 {
 	int i;
 
+	drawfont = FONT_CON;
+
 	/* the voting stuff resides here too, for now */
 	if (serverkey("vote_cmd")) {
 		string tempstr;
