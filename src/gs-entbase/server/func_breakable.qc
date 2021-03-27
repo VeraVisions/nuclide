@@ -146,7 +146,7 @@ func_breakable::Pain(void)
 		Sound_Play(this, CHAN_VOICE, "func_breakable.impact_computer");
 		break;
 	case BREAKMT_GLASS_UNBREAKABLE:
-		Sound_Play(this, CHAN_VOICE, "func_breakable.impact_glassunreakable");
+		Sound_Play(this, CHAN_VOICE, "func_breakable.impact_glassunbreakable");
 		break;
 	case BREAKMT_WOOD:
 		Sound_Play(this, CHAN_VOICE, "func_breakable.impact_wood");
@@ -351,7 +351,7 @@ func_breakable::func_breakable(void)
 		Sound_Precache("func_breakable.impact_computer");
 		break;
 	case BREAKMT_GLASS_UNBREAKABLE:
-		Sound_Precache("func_breakable.impact_glassunreakable");
+		Sound_Precache("func_breakable.impact_glassunbreakable");
 		break;
 	case BREAKMT_WOOD:
 		Sound_Precache("func_breakable.impact_wood");
