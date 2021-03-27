@@ -111,3 +111,15 @@ __wrap void(vector pos, vector sz, string pic, vector srcpos, vector srcsz, vect
 {
 	return prior([(int)pos[0],(int)pos[1]], sz, pic, srcpos, srcsz, rgb, alpha, drawflag);
 };
+
+void drawrect(vector pos, vector sz, float thickness, vector rgb, float al, optional float dfl)
+{
+	/* top */
+	drawfill(pos, [sz[0], thickness], rgb, al, dfl);
+	/* bottom */
+	drawfill(pos + [0, sz[1] - thickness], [sz[0], thickness], rgb, al, dfl);
+	/* left */
+	drawfill(pos + [0, thickness], [thickness, sz[1] - (thickness * 2)], rgb, al, dfl);
+	/* right */
+	drawfill(pos + [sz[0] - thickness, thickness], [thickness, sz[1] - (thickness * 2)], rgb, al, dfl);
+}
