@@ -1,0 +1,9 @@
+modelevent_shell.eject
+{
+	sample misc/null.wav
+}
+
+modelevent_shell.land
+{
+	sample misc/null.wav
+}

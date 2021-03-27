@@ -27,6 +27,10 @@ Event_EjectShell(void)
 	static void Event_EjectShell_Death(void) {
 		remove(self);
 	}
+	static void Event_EjectShell_Touch(void) {
+		if (other == world)
+			Sound_Play(self, CHAN_BODY, "modelevent_shell.land");
+	}
 	vector vEndPos;
 
 	if (!pSeat->m_fEjectModel)
@@ -35,6 +39,7 @@ Event_EjectShell(void)
 	
 	entity eShell = spawn();
 	eShell.modelindex = pSeat->m_fEjectModel;
+	eShell.solid = SOLID_BBOX;
 	eShell.movetype = MOVETYPE_BOUNCE;
 	eShell.drawmask = MASK_ENGINE;
 	eShell.angles = [pSeat->m_eViewModel.angles[0], pSeat->m_eViewModel.angles[1], 0];
@@ -44,6 +49,7 @@ Event_EjectShell(void)
 	eShell.velocity += (v_forward * pSeat->m_vecEjectVel[0]);
 	eShell.velocity += (v_right * pSeat->m_vecEjectVel[1]);
 	eShell.velocity += (v_up * pSeat->m_vecEjectVel[2]);
+	eShell.touch = Event_EjectShell_Touch;
 
 	eShell.avelocity = [0,45,900];
 	eShell.think = Event_EjectShell_Death;
@@ -51,6 +57,7 @@ Event_EjectShell(void)
 	pSeat->m_fEjectModel = 0;
 	setsize(eShell, [0,0,0], [0,0,0]);
 	setorigin(eShell, pSeat->m_vecEjectPos);
+	Sound_Play(eShell, CHAN_BODY, "modelevent_shell.eject");
 }
 
 /*
