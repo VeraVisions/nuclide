@@ -27,13 +27,15 @@ class spectator
 	float spec_mode; float spec_mode_net;
 	float spec_flags; float spec_flags_net;
 
+	vector spec_org;
+
 	int sequence;
 
 	void(void) spectator;
 
-	virtual void(void) playernext;
-	virtual void(void) playerprevious;
-	virtual void(void) modeswitch;
+	virtual void(void) InputNext;
+	virtual void(void) InputPrevious;
+	virtual void(void) InputMode;
 
 	virtual void(void) PreFrame;
 	virtual void(void) PostFrame;

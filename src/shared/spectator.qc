@@ -26,18 +26,11 @@ void
 spectator::Input(void)
 {
 	if (input_buttons & INPUT_BUTTON0) {
-		playernext();
+		InputNext();
 	} else if (input_buttons & INPUT_BUTTON3) {
-		playerprevious();
+		InputPrevious();
 	} else if (input_buttons & INPUT_BUTTON2) {
-		if (spec_flags & GF_SEMI_TOGGLED)
-			return;
-		spec_mode++;
-
-		if (spec_mode > SPECMODE_FIRSTPERSON)
-			spec_mode = SPECMODE_FREE;
-
-		spec_flags |= GF_SEMI_TOGGLED;
+		InputMode();
 	} else {
 		spec_flags &= ~GF_SEMI_TOGGLED;
 	}
@@ -156,7 +149,7 @@ spectator::predraw(void)
 #endif
 
 void
-spectator::playernext(void)
+spectator::InputNext(void)
 {
 	if (spec_flags & GF_SEMI_TOGGLED)
 		return;
@@ -211,7 +204,7 @@ spectator::playernext(void)
 }
 
 void
-spectator::playerprevious(void)
+spectator::InputPrevious(void)
 {
 	if (spec_flags & GF_SEMI_TOGGLED)
 		return;
@@ -268,9 +261,17 @@ spectator::playerprevious(void)
 }
 
 void
-spectator::modeswitch(void)
+spectator::InputMode(void)
 {
-	
+	if (spec_flags & GF_SEMI_TOGGLED)
+		return;
+
+	spec_mode++;
+
+	if (spec_mode > SPECMODE_FIRSTPERSON)
+		spec_mode = SPECMODE_FREE;
+
+	spec_flags |= GF_SEMI_TOGGLED;
 }
 
 void
@@ -320,7 +321,15 @@ spectator::PreFrame(void)
 	#else
 		b = edict_num(spec_ent);
 	#endif
-		setorigin(this, b.origin);
+
+		/* if the ent is dead... or not available in this current frame
+		   just warp to the last 'good' one */
+		if (b) {
+			setorigin(this, b.origin);
+			spec_org = b.origin;
+		} else {
+			setorigin(this, spec_org);
+		}
 	}
 }
 
