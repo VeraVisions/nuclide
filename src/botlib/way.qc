@@ -289,6 +289,31 @@ Way_FlagAim(void)
 }
 
 void
+Way_FlagUse(void)
+{
+	if (g_waylink_status == 0) {
+		g_way1 = Way_FindClosestNode(self.origin);
+		g_waylink_status = 1;
+		env_message_single(self, "^2Selected first waypoint!\n");
+	} else if (g_waylink_status == 1) {
+		g_way2 = Way_FindClosestNode(self.origin);
+		g_waylink_status = 0;
+
+		if (g_way1 != g_way2) {
+			for (int b = 0i; b < g_pWaypoints[g_way1].m_numNeighbours; b++) {
+				if (g_pWaypoints[g_way1].m_pNeighbour[b].m_iNode == g_way2) {
+					g_pWaypoints[g_way1].m_pNeighbour[b].m_iFlags |= LF_USER;
+					env_message_single(self, "^2Walk-linked the two points!\n");
+				}
+			}
+		} else {
+			env_message_single(self, "^1Failed to link, the two points are the same!\n");
+		}
+		g_way1 = g_way2 = -1;
+	}
+}
+
+void
 Way_HelperSpawns()
 {
 	for (entity a = world; (a = find(a, ::classname, "info_player_deathmatch"));) {
@@ -338,7 +363,7 @@ Way_SaveFile(string filename)
 		fputs(file, sprintf("%v %f %i\n", g_pWaypoints[i].m_vecOrigin, g_pWaypoints[i].m_flRadius, g_pWaypoints[i].m_numNeighbours));
 		
 		for(int j = 0i; j < g_pWaypoints[i].m_numNeighbours; j++) {
-			fputs(file, sprintf(" %i %f %x\n", g_pWaypoints[i].m_pNeighbour[j].m_iNode, g_pWaypoints[i].m_pNeighbour[j].m_flCost, (float)g_pWaypoints[i].m_pNeighbour[j].m_iFlags));
+			fputs(file, sprintf(" %i %f %i\n", g_pWaypoints[i].m_pNeighbour[j].m_iNode, g_pWaypoints[i].m_pNeighbour[j].m_flCost, g_pWaypoints[i].m_pNeighbour[j].m_iFlags));
 		}
 	}
 
@@ -373,7 +398,7 @@ Way_ReadFile(string strFile)
 			tokenize(fgets(file));
 			g_pWaypoints[i].m_pNeighbour[j].m_iNode = stoi(argv(0));
 			g_pWaypoints[i].m_pNeighbour[j].m_flCost = stof(argv(1));
-			g_pWaypoints[i].m_pNeighbour[j].m_iFlags = stoh(argv(2));
+			g_pWaypoints[i].m_pNeighbour[j].m_iFlags = stoi(argv(2));
 		}
 	}
 	fclose(file);
@@ -600,6 +625,9 @@ Way_Cmd(void)
 		break;
 	case "linkaim":
 		Way_FlagAim();
+		break;
+	case "linkuse":
+		Way_FlagUse();
 		break;
 	case "move":
 		vector p;

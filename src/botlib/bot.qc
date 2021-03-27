@@ -79,6 +79,57 @@ bot::BrainThink(int enemyvisible, int enemydistant)
 }
 
 void
+bot::UseButton(void)
+{
+#if 1
+	float best;
+	func_button best_button = __NULL__;
+
+	best = COST_INFINITE;
+	for (entity e = world; (e = find(e, ::classname, "func_button"));) {
+		float dist;
+		vector pos;
+		pos[0] = e.absmin[0] + (0.5 * (e.absmax[0] - e.absmin[0]));
+		pos[1] = e.absmin[1] + (0.5 * (e.absmax[1] - e.absmin[1]));
+		pos[2] = e.absmin[2] + (0.5 * (e.absmax[2] - e.absmin[2]));
+		dist = vlen(origin - pos);
+
+		if (dist < best) {
+			best = dist;
+			best_button = (func_button)e;
+		}
+	}
+
+	if (best_button == __NULL__)
+		return;
+
+	best_button.Trigger(this, TRIG_TOGGLE);
+	sound(this, CHAN_ITEM, "common/wpn_select.wav", 0.25, ATTN_IDLE);
+#else
+	float best;
+	vector foo;
+
+	best = COST_INFINITE;
+	for (entity e = world; (e = find(e, ::classname, "func_button"));) {
+		float dist;
+		vector pos;
+		pos[0] = e.absmin[0] + (0.5 * (e.absmax[0] - e.absmin[0]));
+		pos[1] = e.absmin[1] + (0.5 * (e.absmax[1] - e.absmin[1]));
+		pos[2] = e.absmin[2] + (0.5 * (e.absmax[2] - e.absmin[2]));
+		dist = vlen(origin - pos);
+
+		if (dist < best) {
+			best = dist;
+			foo = pos;
+		}
+	}
+
+	v_angle = vectoangles(origin - foo);
+	Player_UseDown();
+#endif
+}
+
+void
 bot::SeeThink(void)
 {
 	if (m_eTarget)
@@ -157,6 +208,10 @@ bot::CheckRoute(void)
 			/* if a node is flagged as jumpy, jump! */
 			if (m_pRoute[m_iCurNode].m_iFlags & LF_JUMP)
 				input_buttons |= INPUT_BUTTON2;
+
+			/* find the nearest usable item (func_button) and use them */
+			if (m_pRoute[m_iCurNode].m_iFlags & LF_USER)
+				UseButton();
 		}
 
 #if 0

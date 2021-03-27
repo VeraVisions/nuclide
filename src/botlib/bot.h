@@ -57,6 +57,7 @@ class bot:player
 	virtual void(void) CheckRoute;
 	virtual void(void) PreFrame;
 	virtual void(void) PostFrame;
+	virtual void(void) UseButton;
 };
 
 entity Bot_AddQuick(void);
