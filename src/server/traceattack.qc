@@ -58,6 +58,7 @@ TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon)
 			iDamage *= 3;
 #endif
 		Damage_Apply(trace_ent, self, iDamage, iWeapon, DMG_BULLET);
+		Sound_Play(trace_ent, CHAN_BODY, "damage_bullet.hit");
 	}
 
 	if (trace_ent.iBleeds == TRUE) {

@@ -485,6 +485,7 @@ initents(void)
 	Sound_Precache("player.gaspheavy");
 	Sound_Precache("player.waterenter");
 	Sound_Precache("player.waterexit");
+	Sound_Precache("damage_bullet.hit");
 
 	Game_InitRules();
 	Game_Worldspawn();

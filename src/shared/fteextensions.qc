@@ -1509,7 +1509,7 @@ void(entity e, vector min, vector max) setsize = #4; /*
 		Sets the e's mins and maxs fields. Also relinks collision state, which sets absmin and absmax too. */
 
 #endif
-#ifdef SSQC
+#if defined(CSQC) || defined(SSQC)
 void() breakpoint = #6; /*
 		Trigger a debugging event. FTE will break into the qc debugger. Other engines may crash with a debug execption. */
 
