@@ -158,10 +158,17 @@ Weapons_AddItem(base_player pl, int w, int startammo)
 		/* call pickup to handle the ammo */
 		if (pl.g_items & g_weapons[w].id) {
 			value = g_weapons[w].pickup(FALSE, startammo);
+
+			if (!value)
+				return value;
 		} else {
 			/* new to our arsenal */
-			pl.g_items |= g_weapons[w].id;
 			value = g_weapons[w].pickup(TRUE, startammo);
+
+			if (!value)
+				return value;
+
+			pl.g_items |= g_weapons[w].id;
 
 			/* it's new, so autoswitch? */
 			if (pl.activeweapon == 0 && autocvar_sv_forceweapondraw == 1) {
