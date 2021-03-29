@@ -22,42 +22,49 @@ Spawns a shell tempentity. Looking fancy
 ====================
 */
 void
-Event_EjectShell(void)
+Event_EjectShell(float mtime, __inout float btime)
 {
-	static void Event_EjectShell_Death(void) {
-		remove(self);
-	}
-	static void Event_EjectShell_Touch(void) {
-		if (other == world)
-			Sound_Play(self, CHAN_BODY, "modelevent_shell.land");
-	}
-	vector vEndPos;
-
-	if (!pSeat->m_fEjectModel)
-		return;
-
-	
-	entity eShell = spawn();
-	eShell.modelindex = pSeat->m_fEjectModel;
-	eShell.solid = SOLID_BBOX;
-	eShell.movetype = MOVETYPE_BOUNCE;
-	eShell.drawmask = MASK_ENGINE;
-	eShell.angles = [pSeat->m_eViewModel.angles[0], pSeat->m_eViewModel.angles[1], 0];
-	eShell.velocity = pSeat->m_vecPredictedVelocity;
-
-	makevectors(pSeat->m_eViewModel.angles);
-	eShell.velocity += (v_forward * pSeat->m_vecEjectVel[0]);
-	eShell.velocity += (v_right * pSeat->m_vecEjectVel[1]);
-	eShell.velocity += (v_up * pSeat->m_vecEjectVel[2]);
-	eShell.touch = Event_EjectShell_Touch;
-
-	eShell.avelocity = [0,45,900];
-	eShell.think = Event_EjectShell_Death;
-	eShell.nextthink = time + 2.5f;
-	pSeat->m_fEjectModel = 0;
-	setsize(eShell, [0,0,0], [0,0,0]);
-	setorigin(eShell, pSeat->m_vecEjectPos);
-	Sound_Play(eShell, CHAN_BODY, "modelevent_shell.eject");
+// 	static void Event_EjectShell_Death(void) {
+// 		remove(self);
+// 	}
+// 	static void Event_EjectShell_Touch(void) {
+// 		if (other == world)
+// 			Sound_Play(self, CHAN_BODY, "modelevent_shell.land");
+// 	}
+// 	vector vEndPos;
+// 
+// 	/* only play once */
+// 	if (mtime == btime)
+// 		return;
+// 
+// 	if (pSeat->m_fEjectModel)
+// 	if (btime <= pSeat->m_flEjectTime && (mtime > pSeat->m_flEjectTime)) {
+// 		entity eShell = spawn();
+// 		eShell.modelindex = pSeat->m_fEjectModel;
+// 		eShell.solid = SOLID_BBOX;
+// 		eShell.movetype = MOVETYPE_BOUNCE;
+// 		eShell.drawmask = MASK_ENGINE;
+// 		eShell.angles = [pSeat->m_eViewModel.angles[0], pSeat->m_eViewModel.angles[1], 0];
+// 		eShell.velocity = pSeat->m_vecPredictedVelocity;
+// 
+// 		makevectors(pSeat->m_eViewModel.angles);
+// 		eShell.velocity += (v_forward * pSeat->m_vecEjectVel[0]);
+// 		eShell.velocity += (v_right * pSeat->m_vecEjectVel[1]);
+// 		eShell.velocity += (v_up * pSeat->m_vecEjectVel[2]);
+// 		eShell.touch = Event_EjectShell_Touch;
+// 
+// 		eShell.avelocity = [0,45,900];
+// 		eShell.think = Event_EjectShell_Death;
+// 		eShell.nextthink = time + 2.5f;
+// 		pSeat->m_fEjectModel = 0;
+// 		pSeat->m_flEjectTime = 0.0f;
+// 		setsize(eShell, [0,0,0], [0,0,0]);
+// 		setorigin(eShell, pSeat->m_vecEjectPos);
+// 		Sound_Play(eShell, CHAN_BODY, "modelevent_shell.eject");
+// 		print(sprintf("%f %f\n", mtime, btime));
+// 		
+// 	}
+// 	btime = mtime;
 }
 
 /*
@@ -79,25 +86,50 @@ Event_ProcessModel(float flTimeStamp, int iCode, string strData)
 		pSeat->m_eMuzzleflash.alpha = 1.0f;
 		pSeat->m_eMuzzleflash.scale = 0.25;
 		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones;
-		Event_EjectShell();
+// 		Event_EjectShell();
 		break;
 	case 5011: /* muzzle flash on attachment 1 */
 		pSeat->m_eMuzzleflash.alpha = 1.0f;
 		pSeat->m_eMuzzleflash.scale = 0.25;
 		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 1;
-		Event_EjectShell();
+// 		Event_EjectShell();
 		break;
 	case 5021: /* muzzle flash on attachment 2 */
 		pSeat->m_eMuzzleflash.alpha = 1.0f;
 		pSeat->m_eMuzzleflash.scale = 0.25;
 		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 2;
-		Event_EjectShell();
+// 		Event_EjectShell();
 		break;
 	case 5031: /* muzzle flash on attachment 3 */
 		pSeat->m_eMuzzleflash.alpha = 1.0f;
 		pSeat->m_eMuzzleflash.scale = 0.25;
 		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 3;
-		Event_EjectShell();
+// 		Event_EjectShell();
 		break;
 	}
+}
+
+/*
+====================
+View_ShellEject
+
+Spawns a shell tempentity. Looking fancy
+====================
+*/
+void
+Event_Callback(float mtime, __inout float btime)
+{
+	if (pSeat->m_pEventCall == __NULL__)
+		return;
+
+	/* only play once */
+	if (mtime == btime)
+		return;
+
+	if (btime <= pSeat->m_flEventTime && (mtime > pSeat->m_flEventTime)) {
+		pSeat->m_pEventCall();
+		pSeat->m_pEventCall = __NULL__;
+	}
+
+	btime = mtime;
 }

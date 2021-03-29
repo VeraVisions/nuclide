@@ -39,11 +39,6 @@ View_Init(void)
 	MUZZLE_RIFLE = (int)getmodelindex("sprites/muzzleflash1.spr");
 	MUZZLE_SMALL = (int)getmodelindex("sprites/muzzleflash2.spr");
 	MUZZLE_WEIRD = (int)getmodelindex("sprites/muzzleflash3.spr");
-	SHELL_DEFAULT = (int)getmodelindex("models/shell.mdl");
-	SHELL_SHOTGUN = (int)getmodelindex("models/shotgunshell.mdl");
-
-	Sound_Precache("modelevent_shell.eject");
-	Sound_Precache("modelevent_shell.land");
 }
 
 void
@@ -53,31 +48,10 @@ View_SetMuzzleflash(int index)
 }
 
 void
-View_EjectShellBone(int index, int ofs, vector range)
+View_AddEvent(void(void) pCallback, float flTime)
 {
-	pSeat->m_fEjectModel = (float)index;
-	pSeat->m_vecEjectPos = gettaginfo(pSeat->m_eViewModel, ofs);
-	pSeat->m_vecEjectVel = range;
-}
-
-void
-View_EjectShellAttachment(int index, int ofs, vector range)
-{
-	pSeat->m_fEjectModel = (float)index;
-	pSeat->m_vecEjectPos = gettaginfo(pSeat->m_eViewModel, pSeat->m_iVMBones + 1 + ofs);
-	pSeat->m_vecEjectVel = range;
-}
-
-void
-View_EjectShellPos(int index, vector pos, vector range)
-{
-	makevectors(view_angles);
-	pSeat->m_fEjectModel = (float)index;
-	pSeat->m_vecEjectPos = gettaginfo(pSeat->m_eViewModel, 0) + pSeat->m_ePlayer.view_ofs;
-	pSeat->m_vecEjectPos += v_forward * pos[0];
-	pSeat->m_vecEjectPos += v_right * pos[1];
-	pSeat->m_vecEjectPos += v_up * pos[2];
-	pSeat->m_vecEjectVel = range;
+	pSeat->m_pEventCall = pCallback;
+	pSeat->m_flEventTime = flTime;
 }
 
 void 
@@ -183,9 +157,12 @@ View_DrawViewModel(void)
 
 	View_CalcBob();
 	View_UpdateWeapon(m_eViewModel, m_eMuzzleflash);
+
+	float fBaseTime2 = m_eViewModel.frame1time;
 	float fBaseTime = m_eViewModel.frame1time;
 	m_eViewModel.frame2time = pl.weapontime;
     	m_eViewModel.frame1time = pl.weapontime;
+	Event_Callback(m_eViewModel.frame1time, fBaseTime2);
 	processmodelevents(m_eViewModel.modelindex, m_eViewModel.frame, fBaseTime,
 		m_eViewModel.frame1time, ClientGame_ModelEvent);
 

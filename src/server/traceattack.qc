@@ -30,22 +30,28 @@ TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon)
 		return;
 
 	if (trace_ent.takedamage == DAMAGE_YES) {
+		Sound_Play(trace_ent, CHAN_BODY, "damage_bullet.hit");
+
 #ifdef CSTRIKE
+		player pl = (player)trace_ent;
 		/* modify the damage based on the location */
 		switch (trace_surface_id) {
 		case BODY_HEAD:
 			/* the helmet is one power house */
-			if (trace_ent.items & ITEM_HELMET) {
+			if (pl.g_items & ITEM_HELMET) {
 				iDamage = 0;
-				sound(self, CHAN_ITEM, "weapons/ric_metal-2.wav", 1, ATTN_IDLE);
-				trace_ent.items &= ~ITEM_HELMET;
+				Sound_Play(trace_ent, CHAN_BODY, "player.headshotarmor");
+				pl.g_items &= ~ITEM_HELMET;
 				return;
 			} else {
 				iDamage *= 4;
+				Sound_Play(trace_ent, CHAN_BODY, "player.headshot");
 			}
 			break;
 		case BODY_STOMACH:
 			iDamage *= 0.9;
+			if (pl.armor > 0)
+				Sound_Play(trace_ent, CHAN_BODY, "player.hitarmor");
 			break;
 		case BODY_LEGLEFT:
 		case BODY_LEGRIGHT:
@@ -58,7 +64,6 @@ TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon)
 			iDamage *= 3;
 #endif
 		Damage_Apply(trace_ent, self, iDamage, iWeapon, DMG_BULLET);
-		Sound_Play(trace_ent, CHAN_BODY, "damage_bullet.hit");
 	}
 
 	if (trace_ent.iBleeds == TRUE) {

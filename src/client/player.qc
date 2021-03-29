@@ -84,7 +84,7 @@ player::draw(void)
 	}
 	
 	this.subblendfrac = -fCorrect * 0.05f;
-	this.subblend2frac *= -0.1f;
+	//this.subblend2frac *= -0.1f;
 	this.angles[1] -= fCorrect;
 #else
 	/* hack, we can't play the animations in reverse the normal way */

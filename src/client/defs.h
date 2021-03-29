@@ -91,10 +91,8 @@ void GameMessage_Setup(string, int);
 void Game_Input(void);
 void View_SetMuzzleflash(int);
 
-void View_EjectShellBone(int index, int ofs, vector range);
-void View_EjectShellAttachment(int index, int ofs, vector range);
-void View_EjectShellPos(int index, vector pos, vector range);
-
+void Event_Callback(float mtime, __inout float btime);
+void View_AddEvent(void(void) pCallback, float flTime);
 void View_PlayAnimation(int);
 void View_PlayAnimation(int);
 void Vox_Play(string);

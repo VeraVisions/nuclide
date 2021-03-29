@@ -878,6 +878,11 @@ CSQC_Ent_Update(float new)
 		break;
 	case ENT_PLAYER:
 		player pl = (player)self;
+
+		/* splitscreen */
+		int s = (float)getproperty(VF_ACTIVESEAT);
+		pSeat = &g_seats[s];
+
 		if (new || self.classname != "player") {
 			spawnfunc_player();
 			pl.classname = "player";
@@ -885,7 +890,21 @@ CSQC_Ent_Update(float new)
 			pl.drawmask = MASK_ENGINE;
 			pl.customphysics = Empty;
 			setsize(pl, VEC_HULL_MIN, VEC_HULL_MAX);
+		} else {
+			if (pl.entnum == player_localentnum) {
+				for (int i = pl.sequence+1; i <= servercommandframe; i++) {
+					/* ...maybe the input state is too old? */
+					if (!getinputstate(i)) {
+						break;
+					}
+					input_sequence = i;
+					PMove_Run();
+				}
+			}
 		}
+
+		/* any differences in things that are read below are now
+		   officially from prediction misses. */
 		pl.ReceiveEntity(new);
 		break;
 	case ENT_SPECTATOR:
