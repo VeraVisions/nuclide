@@ -122,6 +122,9 @@ Event_Callback(float mtime, __inout float btime)
 	if (pSeat->m_pEventCall == __NULL__)
 		return;
 
+	if (pSeat->m_flEventFrame != pSeat->m_eViewModel.frame)
+		return;
+
 	/* only play once */
 	if (mtime == btime)
 		return;
