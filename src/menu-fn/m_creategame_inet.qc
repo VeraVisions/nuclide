@@ -24,7 +24,7 @@ createinet_btnok_start(void)
 {
 	static string startmap;
 	static void createinet_btnok_end(void) {
-		localcmd("stopmusic\n");
+		localcmd("stopmusic\nset sv_public 2\n");
 		localcmd(sprintf("hostname %s\n", create_tbHostname.m_text));
 		localcmd(sprintf("sv_playerslots %s\n", create_tbMaxplayers.m_text));
 		localcmd(sprintf("password %s\n", create_tbPassword.m_text));

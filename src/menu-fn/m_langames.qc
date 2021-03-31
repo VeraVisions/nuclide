@@ -49,7 +49,6 @@ lan_btncreate_start(void)
 	static void lan_btncreate_end(void) {
 		g_menupage = PAGE_CREATEGAME;
 	}
-	cvar_set("sv_public", "0");
 	localsound("../media/launch_upmenu1.wav");
 	header.SetStartEndPos(30,172,45,45);
 	header.SetStartEndSize(156,26,460,80);

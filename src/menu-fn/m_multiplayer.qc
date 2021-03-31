@@ -70,7 +70,6 @@ mp_btninet_start(void)
 		g_menupage = PAGE_INTERNETGAMES;
 	}
 
-	cvar_set("sv_public", "1");
 	localsound("../media/launch_upmenu1.wav");
 	
 	if (g_connected == TRUE) {
@@ -97,7 +96,6 @@ cr_btnservers_start(void)
 
 	/* hack - jump to here so we draw the connection thing */
 	g_menupage = PAGE_MULTIPLAYER;
-	cvar_set("sv_public", "1");
 	localsound("../media/launch_upmenu1.wav");
 
 	if (g_connected == TRUE) {
@@ -120,7 +118,6 @@ mp_btnlan_start(void)
 	static void mp_btnlan_end(void) {
 		g_menupage = PAGE_LANGAMES;
 	}
-	cvar_set("sv_public", "0");
 	Master_GetLANList();
 	localsound("../media/launch_upmenu1.wav");
 	header.SetStartEndPos(50,268,45,45);

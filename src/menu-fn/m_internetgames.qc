@@ -58,7 +58,6 @@ inet_btncreate_start(void)
 	static void inet_btncreate_end(void) {
 		g_menupage = PAGE_CREATEGAMEINET;
 	}
-	cvar_set("sv_public", "2");
 	localsound("../media/launch_upmenu1.wav");
 	header.SetStartEndPos(30,172,45,45);
 	header.SetStartEndSize(156,26,460,80);
