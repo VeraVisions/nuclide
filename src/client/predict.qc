@@ -64,7 +64,7 @@ Predict_PlayerPreFrame(player pl)
 		input_sequence = i;
 
 		/* run our custom physics */
-		PMove_Run(FALSE);
+		PMove_Run();
 	}
 }
 

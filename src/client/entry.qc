@@ -22,6 +22,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 {
 	Sound_Init();
 	pSeat = &g_seats[0];
+	pSeatLocal = &g_seatslocal[0];
 
 	registercommand("getpos");
 	registercommand("callvote");
@@ -193,11 +194,13 @@ CSQC_UpdateView(float w, float h, float focus)
 
 	for (s = g_seats.length; s-- > numclientseats;) {
 		pSeat = &g_seats[s];
+		pSeatLocal = &g_seatslocal[s];
 		pSeat->m_ePlayer = world;
 	}
 
 	for (s = numclientseats; s-- > 0;) {
 		pSeat = &g_seats[s];
+		pSeatLocal = &g_seatslocal[s];
 
 		View_CalcViewport(s, w, h);
 		setproperty(VF_ACTIVESEAT, (float)s);
@@ -277,6 +280,7 @@ CSQC_UpdateView(float w, float h, float focus)
 			setproperty(VF_ANGLES, view_angles);
 		} else {
 			if (self.classname == "player") {
+				pl = (player)self;
 				if (pl.health) {
 					if (autocvar_cl_thirdperson == TRUE) {
 						makevectors(view_angles);
@@ -301,6 +305,7 @@ CSQC_UpdateView(float w, float h, float focus)
 				}
 				setproperty(VF_ANGLES, view_angles + pl.punchangle);
 			} else if (self.classname == "spectator") {
+				spec = (spectator)self;
 				switch (spec.spec_mode) {
 				case SPECMODE_THIRDPERSON:
 					makevectors(view_angles);
@@ -315,11 +320,11 @@ CSQC_UpdateView(float w, float h, float focus)
 					setproperty(VF_ORIGIN, trace_endpos + (v_forward * 5));
 					break;
 				case SPECMODE_FIRSTPERSON:
-					entity b;
-					b = findfloat(world, ::entnum, spec.spec_ent);
+					entity c;
+					c = findfloat(world, ::entnum, spec.spec_ent);
 					
-					if (b.classname == "player") {
-						player bp = (player)b;
+					if (c.classname == "player") {
+						player bp = (player)c;
 						setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin + bp.view_ofs);
 						setproperty(VF_ANGLES, bp.v_angle);
 						setproperty(VF_CL_VIEWANGLES, [bp.pitch, bp.angles[1], bp.angles[2]]);
@@ -401,6 +406,7 @@ CSQC_UpdateView(float w, float h, float focus)
 
 	DSP_UpdateListener();
 	pSeat = (void*)0x70000000i;
+	pSeatLocal = (void*)0x70000000i;
 
 	Vox_Update();
 }
@@ -417,6 +423,7 @@ CSQC_InputEvent(float fEventType, float fKey, float fCharacter, float fDeviceID)
 {
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
+	pSeatLocal = &g_seatslocal[s];
 
 	switch (fEventType) {
 	case IE_KEYDOWN:
@@ -470,6 +477,7 @@ CSQC_Input_Frame(void)
 {
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
+	pSeatLocal = &g_seatslocal[s];
 
 	/* If we are inside a VGUI, don't let the client do stuff outside */
 	if (g_vguiWidgetCount > 0) {
@@ -538,6 +546,7 @@ CSQC_Parse_Event(void)
 	/* always 0, unless it was sent with a MULTICAST_ONE or MULTICAST_ONE_R to p2+ */
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
+	pSeatLocal = &g_seatslocal[s];
 
 	float fHeader = readbyte();
 
@@ -648,6 +657,7 @@ CSQC_ConsoleCommand(string sCMD)
 	/* the engine will hide the p1 etc commands... which is fun... */
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
+	pSeatLocal = &g_seatslocal[s];
 
 	tokenize(sCMD);
 
@@ -804,6 +814,7 @@ CSQC_Parse_Print(string sMessage, float fLevel)
 {
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
+	pSeatLocal = &g_seatslocal[s];
 
 	/* This gives messages other than chat an orange tint */
 	if (fLevel == PRINT_CHAT) {
@@ -842,6 +853,7 @@ CSQC_Parse_CenterPrint(string sMessage)
 {
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
+	pSeatLocal = &g_seatslocal[s];
 
 	pSeat->m_iCenterprintLines = tokenizebyseparator(sMessage, "\n");
 
@@ -882,6 +894,7 @@ CSQC_Ent_Update(float new)
 		/* splitscreen */
 		int s = (float)getproperty(VF_ACTIVESEAT);
 		pSeat = &g_seats[s];
+		pSeatLocal = &g_seatslocal[s];
 
 		if (new || self.classname != "player") {
 			spawnfunc_player();
