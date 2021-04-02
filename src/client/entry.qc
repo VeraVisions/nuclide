@@ -24,11 +24,20 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	pSeat = &g_seats[0];
 	pSeatLocal = &g_seatslocal[0];
 
+	/* developer/debug commands */
 	registercommand("getpos");
-	registercommand("callvote");
 	registercommand("dev_sentence");
 	registercommand("titles_test");
 	registercommand("vox_test");
+	registercommand("buildcubemaps");
+	registercommand("dev_sunpos");
+	registercommand("dev_measure");
+	registercommand("view_geomtest");
+	registercommand("way_menu");
+
+	/* basic actions */
+	registercommand("+attack");
+	registercommand("-attack");
 	registercommand("+attack2");
 	registercommand("-attack2");
 	registercommand("+reload");
@@ -37,15 +46,15 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	registercommand("-use");
 	registercommand("+duck");
 	registercommand("-duck");
+
+	/* voting */
 	registercommand("vote");
+	registercommand("callvote");
 
 	registercommand("+saturn_menu");
 	registercommand("-saturn_menu");
 
-	/* Requested by Slacer */
-	registercommand("+zoomin");
-	registercommand("-zoomin");
-
+	/* hud weapon selection system */
 	registercommand("slot1");
 	registercommand("slot2");
 	registercommand("slot3");
@@ -59,17 +68,17 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	registercommand("lastinv");
 	registercommand("invnext");
 	registercommand("invprev");
+
+	/* scoreboard */
 	registercommand("+showscores");
 	registercommand("-showscores");
-	registercommand("buildcubemaps");
-	registercommand("_fnchat_msg");
-	registercommand("dev_sunpos");
-	registercommand("dev_measure");
-	registercommand("way_menu");
-	registercommand("view_geomtest");
 
-	precache_model("sprites/640_pain.spr");
-	precache_model("sprites/crosshairs.spr");
+	/* meant to be hidden */
+	registercommand("_fnchat_msg");
+
+	/* Requested by Slacer */
+	registercommand("+zoomin");
+	registercommand("-zoomin");
 
 	/* VOX */
 	Vox_Init();
@@ -121,6 +130,7 @@ CSQC_RendererRestarted(string rstr)
 	View_Init();
 	ClientGame_RendererRestart(rstr);
 	HUD_Init();
+	Damage_Precache();
 
 	/* GS-Entbase */
 	Fade_Init();
@@ -1031,10 +1041,6 @@ CSQC_WorldLoaded(void)
 			return;
 		}
 	}
-
-	/* we've gone through all ent-lumps, so we can read sky-overrides from
-	   worldspawn now. */
-	Sky_Update(TRUE);
 }
 
 /*
