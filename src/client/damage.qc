@@ -14,6 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+var string g_damage_spr_t;
+var string g_damage_spr_b;
+var string g_damage_spr_l;
+var string g_damage_spr_r;
+
+void
+Damage_Precache(void)
+{
+	g_damage_spr_t = spriteframe("sprites/640_pain.spr", 0, 0.0f);
+	g_damage_spr_r = spriteframe("sprites/640_pain.spr", 1, 0.0f);
+	g_damage_spr_b = spriteframe("sprites/640_pain.spr", 2, 0.0f);
+	g_damage_spr_l = spriteframe("sprites/640_pain.spr", 3, 0.0f);
+}
+
 void
 Damage_Draw(void)
 {
@@ -41,19 +55,19 @@ Damage_Draw(void)
 
 	fw_alpha = fabs(fw) * pSeat->m_flDamageAlpha;
 	if (fw > 0.25f) {
-		drawpic(center + [-64,-102], "sprites/640_pain.spr_0.tga", 
+		drawpic(center + [-64,-102], g_damage_spr_t, 
 			[128,48], [1,1,1], fw_alpha, DRAWFLAG_ADDITIVE);
 	} else if (fw < -0.25f) {
-		drawpic(center + [-64,70], "sprites/640_pain.spr_2.tga",
+		drawpic(center + [-64,70], g_damage_spr_b,
 			[128,48], [1,1,1], fw_alpha, DRAWFLAG_ADDITIVE);
 	}
 
 	rt_alpha = fabs(rt) * pSeat->m_flDamageAlpha;
 	if (rt > 0.25f) {
-		drawpic(center + [70,-64], "sprites/640_pain.spr_1.tga",
+		drawpic(center + [70,-64], g_damage_spr_r,
 			[48,128], [1,1,1], rt_alpha, DRAWFLAG_ADDITIVE);
 	} else if (rt < -0.25f) {
-		drawpic(center + [-102,-64], "sprites/640_pain.spr_3.tga",
+		drawpic(center + [-102,-64], g_damage_spr_l,
 			[48,128], [1,1,1], rt_alpha, DRAWFLAG_ADDITIVE);
 	}
 
