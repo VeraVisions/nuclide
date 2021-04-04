@@ -37,6 +37,7 @@ CBaseEntity::RenderFXPass(void)
 
 	switch (m_iRenderMode) {
 	case RM_NORMAL:
+		colormod = [1,1,1];
 		alpha = 1.0f;
 		break;
 	case RM_COLOR:
@@ -73,6 +74,8 @@ CBaseEntity::RenderFXPass(void)
 			scale = bound(1, vlen(vecPlayer - origin) / 256, 4);
 		break;
 	case RM_SOLID:
+		colormod = [1,1,1];
+		alpha = 1.0f;
 		break;
 	case RM_ADDITIVE:
 		effects = EF_ADDITIVE;
