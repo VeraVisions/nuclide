@@ -14,6 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+void
+Animation_TimerUpdate(player pl)
+{
+}
+
 /*
 =================
 Animation_PlayerUpdate
@@ -23,25 +28,7 @@ depending on what the player is doing
 =================
 */
 void
-Animation_PlayerUpdate(void)
-{
-
-}
-
-/*
-=================
-Animation_PlayerTop
-
-Changes the animation sequence for the upper body part
-=================
-*/
-void
-Animation_PlayerTop(float fFrame)
-{
-}
-
-void
-Animation_PlayerTopTemp(float fFrame, float fTime)
+Animation_PlayerUpdate(player pl)
 {
 
 }

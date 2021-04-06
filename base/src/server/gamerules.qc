@@ -74,7 +74,6 @@ GameRules::LevelNewParms(void)
 void
 GameRules::PlayerPostFrame(base_player pl)
 {
-	Animation_PlayerUpdate();
 }
 
 void

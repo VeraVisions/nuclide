@@ -107,6 +107,8 @@ Materials_FixName(string tex_name)
 	/* also not allowed */
 	if (str2chr(tex_name, 0) == '~')
 		tex_name = substring(tex_name, 1, -1);
+	else if (str2chr(tex_name, 0) == '{')
+		tex_name = substring(tex_name, 1, -1);
 
 	/* limit to 12 chars! */
 	tex_name = substring(tex_name, 0, 12);

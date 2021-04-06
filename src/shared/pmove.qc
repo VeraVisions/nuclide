@@ -758,6 +758,10 @@ PMove_Run(void)
 	pl.punchangle[1] *= punch;
 	pl.punchangle[2] *= punch;
 
+	/* player animation code */
+	Animation_TimerUpdate(pl);
+	Animation_PlayerUpdate(pl);
+
 	/* allow vehicles to prevent weapon logic from happening */
 #ifdef SERVER
 	Vehicle_Input();

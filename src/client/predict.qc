@@ -111,7 +111,7 @@ Propagate our pmove state to whatever the current frame before its stomped on
 */
 void
 Predict_SpectatorPreFrame(spectator pl)
-{
+{	
 	pl.PreFrame();
 }
 

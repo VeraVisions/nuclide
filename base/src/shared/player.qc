@@ -52,7 +52,6 @@ class player:base_player
 	int p_model_bone;
 	float lastweapon;
 
-	virtual void(void) gun_offset;
 	virtual void(void) draw;
 	virtual float() predraw;
 	virtual void(void) postdraw;

@@ -1045,6 +1045,21 @@ CSQC_WorldLoaded(void)
 
 /*
 =================
+CSQC_Ent_Remove
+
+Whenever an entity gets removed from the server and will no longer
+receive entity updates.
+=================
+*/
+void
+CSQC_Ent_Remove(void)
+{
+	ClientGame_EntityRemove();
+	remove(self);
+}
+
+/*
+=================
 CSQC_Shutdown
 
 Incase you need to free something
