@@ -22,6 +22,10 @@ int trace_endcontentsi;
 .vector basevelocity;
 .entity groundentity;
 
+#ifdef SERVER
+void PMove_StartFrame(void);
+#endif
+
 void PMove_Init(void);
 int PMove_Contents(vector org);
 float PMove_Gravity(entity ent);

@@ -24,6 +24,8 @@ Called once every single frame.
 void
 StartFrame(void)
 {
+	PMove_StartFrame();
+
 	/* For entity parenting to work, we need to go through and run on every
 	 * this method on every CBaseEntity class */
 	for (entity a = world; (a = findfloat(a, ::identity, 1));) {

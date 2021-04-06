@@ -62,6 +62,18 @@
 	#define PMOVE_STEP_RUNSPEED 220
 #endif
 
+/* if they're undefined by a config, they'll be set by the game/mod default */
+var float autocvar_sv_stepheight = PMOVE_STEPHEIGHT;
+var float autocvar_sv_airstepheight = PMOVE_AIRSTEPHEIGHT;
+var float autocvar_sv_friction = PMOVE_FRICTION;
+var float autocvar_sv_edgefriction = PMOVE_EDGEFRICTION;
+var float autocvar_sv_stopspeed = PMOVE_STOPSPEED;
+var float autocvar_sv_gravity = PMOVE_GRAVITY;
+var float autocvar_sv_airaccelerate = PMOVE_AIRACCELERATE;
+var float autocvar_sv_wateraccelerate = PMOVE_WATERACCELERATE;
+var float autocvar_sv_accelerate = PMOVE_ACCELERATE;
+var float autocvar_sv_maxspeed = PMOVE_MAXSPEED;
+
 /* FIXME: jumptime should use the time global, as time intervals are not
  * predictable - decrement it based upon input_timelength */
 
@@ -72,19 +84,34 @@
 void
 PMove_Init(void)
 {
-#ifdef SERVER
-	readcmd(sprintf("serverinfo phy_stepheight %d\n", PMOVE_STEPHEIGHT));
-	readcmd(sprintf("serverinfo phy_airstepheight %d\n", PMOVE_AIRSTEPHEIGHT));
-	readcmd(sprintf("serverinfo phy_friction %d\n", PMOVE_FRICTION));
-	readcmd(sprintf("serverinfo phy_edgefriction %d\n", PMOVE_EDGEFRICTION));
-	readcmd(sprintf("serverinfo phy_stopspeed %d\n", PMOVE_STOPSPEED));
-	readcmd(sprintf("serverinfo phy_gravity %d\n", PMOVE_GRAVITY));
-	readcmd(sprintf("serverinfo phy_airaccelerate %d\n", PMOVE_AIRACCELERATE));
-	readcmd(sprintf("serverinfo phy_wateraccelerate %d\n", PMOVE_WATERACCELERATE));
-	readcmd(sprintf("serverinfo phy_accelerate %d\n", PMOVE_ACCELERATE));
-	readcmd(sprintf("serverinfo phy_maxspeed %d\n", PMOVE_MAXSPEED));
-#endif
 }
+
+#ifdef SERVER
+/* we need to network our changes everytime cvars are updated */
+void
+PMove_UpdateVar(string info, string cv)
+{
+	float d = cvar(cv);
+	if (serverkeyfloat(info) != d) {
+		readcmd(sprintf("serverinfo %s %d\n", info, d));
+	}
+}
+
+void
+PMove_StartFrame(void)
+{
+	PMove_UpdateVar("phy_stepheight", "sv_stepheight");
+	PMove_UpdateVar("phy_airstepheight", "sv_airstepheight");
+	PMove_UpdateVar("phy_friction", "sv_friction");
+	PMove_UpdateVar("phy_edgefriction", "sv_edgefriction");
+	PMove_UpdateVar("phy_stopspeed", "sv_stopspeed");
+	PMove_UpdateVar("phy_gravity", "sv_gravity");
+	PMove_UpdateVar("phy_airaccelerate", "sv_airaccelerate");
+	PMove_UpdateVar("phy_wateraccelerate", "sv_wateraccelerate");
+	PMove_UpdateVar("phy_accelerate", "sv_accelerate");
+	PMove_UpdateVar("phy_maxspeed", "sv_maxspeed");
+}
+#endif
 
 /* pointcontents reimplementation, only way we can effectively trace 
  * against ladders and liquids that are defined in the game-logic.

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -45,8 +45,6 @@ HLMaterials_Load(string filename)
 void
 HLMaterials_Init(void)
 {
-	/* load materials.txt because someone thought this was the best idea */
-
 	hashMaterials = __NULL__;
 	hashMaterials = hash_createtab(2, HASH_ADD);
 
@@ -68,6 +66,6 @@ HLMaterials_Init(void)
 	/* the way TW did it back in '03 */
 	HLMaterials_Load(sprintf("maps/%s.mat", mapname));
 
-	/* the way TW did it back in '03 */
+	/* Trinity does it this way */
 	HLMaterials_Load(sprintf("maps/%s_materials.txt", mapname));
 }
