@@ -421,28 +421,9 @@ initents(void)
 	/* sound shader init */
 	Sound_Init();
 
+	/* only bother doing so on Half-Life BSP */
 	if (serverkeyfloat("*bspversion") == BSPVER_HL) {
-		/* load materials.txt because someone thought this was the best idea */
-		filestream fileMaterial = fopen("sound/materials.txt", FILE_READ);
-		hashMaterials = __NULL__;
-		hashMaterials = hash_createtab(2, HASH_ADD);
-
-		if (fileMaterial >= 0) {
-			string sTemp;
-			while ((sTemp = fgets(fileMaterial))) {
-				/* tokenize and just parse this stuff in */
-				if (tokenize_console(sTemp) == 2) {
-					string mat_type;
-					string tex_name;
-					mat_type = strtoupper(argv(0));
-					tex_name = Materials_FixName(strtolower(argv(1)));
-					hash_add(hashMaterials, strtolower(argv(1)), str2chr(mat_type, 0));
-				}
-			}
-			fclose(fileMaterial);
-		} else {
-			print("Failed to load sound/materials.txt!\n");
-		}
+		HLMaterials_Init();
 	}
 
 	PMove_Init();

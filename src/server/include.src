@@ -16,5 +16,6 @@ weapons.qc
 vehicles.qc
 modelevent.qc
 mapcycle.qc
+hlmaterials.qc
 entry.qc
 #endlist

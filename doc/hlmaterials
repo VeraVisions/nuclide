@@ -1,0 +1,56 @@
+hlmaterials - Nuclide Documentation
+Written by Gethyn ThomasQuail, 6th April 2021
+
+This document gives a general overview of what the materials.txt files is,
+and how it's used in Nuclide, and why the decisions were chosen for the
+current implementation. It is not an in-depth explanation of the format
+itself.
+
+The materials.txt is how the GoldSrc engine defined sounds for various
+textures throughout the game. For example, crates make "wood" sounds,
+vents produce metallic feedback, etc. It is an analogue to surfaceparms
+for those familiar with idTech engines, this was just Valve Software's
+way of doing it before adopting standards.
+
+In stock Half-Life, this file is located at:
+
+sounds/materials.txt
+
+It is allowed to be overwritten by a modification, and users could customize
+the file on the client-side only for themselves. This means there was no
+map specific materials, and mods could not inherit HL's materials, so
+mods would always have to manage a nearly duplicate file if they desired
+custom texture sounds.
+
+A few mods tried to remedy this problem, the following below is methods
+documented so far:
+
+- maps/MAPNAME.mat
+Introduced in The Wastes.
+
+- maps/MAPNAME_materials.txt
+Convention by Andrew Lucas, creator of Trinity SDK, modeled after 
+MAPNAME_details.txt
+
+- materials_file "PATH/FILE.txt" via "worldspawn" entity 
+Introduced in Sven Co-op 5.0
+
+All these methods are supported by Nuclide, as one goal is to implement
+conventions by not only Valve but the community as well.
+
+In addition Nuclide has also implemented a way of giving modifications
+their own inheritable materials file:
+
+sounds/materials_UNIQUENAME.txt
+
+The idea here is that any mod or even map pack can include ONLY the textures
+used, and no longer will anyone have to manage a near-clone of materials.txt
+
+For repackaging or modding purposes, if you desire to give your map custom
+sound definitions, we recommend The Wastes method for individual maps, while
+the Nuclide method should be used for Mods or Map Packs. We find these to be
+the most clean and efficient way.
+
+NOTE: We recommend only using materials text files for GoldSrc related modding purposes. It is inefficient for modern projects as there are much better
+standards already supported in Nuclide. Keep in mind, it takes memory to load
+big text files, and lots of text files adds up over play sessions.
