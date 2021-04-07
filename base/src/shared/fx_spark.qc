@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -20,6 +20,7 @@ var float PARTICLE_SPARK;
 void
 FX_Spark_Init(void)
 {
+	Sound_Precache("env_spark.sfx");
 	PARTICLE_SPARK = particleeffectnum("fx_spark.effect");
 }
 #endif
@@ -40,5 +41,6 @@ FX_Spark(vector pos, vector ang)
 	multicast(pos, MULTICAST_PVS);
 #else
 	pointparticles(PARTICLE_SPARK, pos, ang, 1);
+	Sound_PlayAt(pos, "env_spark.sfx");
 #endif
 } 
