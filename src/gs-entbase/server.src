@@ -40,7 +40,6 @@ server/func_button.qc
 server/func_brush.qc
 server/func_door.qc
 server/func_door_rotating.qc
-server/func_illusionary.qc
 server/func_lod.qc
 server/func_ladder.qc
 server/func_train.qc
@@ -51,7 +50,6 @@ server/func_tank.qc
 server/func_tankmortar.qc
 server/func_tankcontrols.qc
 server/func_pushable.qc
-server/func_wall.qc
 server/func_wall_toggle.qc
 server/func_conveyor.qc
 server/func_rotating.qc

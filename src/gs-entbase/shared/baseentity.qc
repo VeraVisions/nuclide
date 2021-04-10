@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -324,61 +324,6 @@ CBaseEntity::ReceiveEntity(float flChanged)
 }
 
 void
-CBaseEntity::SpawnKey(string strField, string strKey)
-{
-	switch (strField) {
-	/* compiler specific stuff */
-	case "angle":
-	case "_minlight":
-	case "_cs":
-		break;
-	case "shadows":
-		if (stof(strKey) == 1)
-			effects &= ~EF_NOSHADOW;
-		break;
-	case "targetname":
-		targetname = strKey;
-		break;
-	case "target":
-		target = strKey;
-		break;
-	case "origin":
-		origin = stov(strKey);
-		setorigin(this, origin);
-		break;
-	case "angles":
-		angles = stov(strKey);
-		break;
-	case "model":
-		model = strKey;
-		break;
-	case "style":
-		style = stof(strKey);
-		break;
-	case "color":
-		color = stov(strKey);
-		break;
-	case "movetype":
-		movetype = stof(strKey);
-		break;
-	case "solid":
-		solid = stof(strKey);
-		break;
-	case "scale":
-		scale = stof(strKey);
-		break;
-	case "spawnflags":
-		spawnflags = stof(strKey);
-		break;
-	default:
-#ifdef GS_DEVELOPER
-		print(sprintf("%s::SpawnKey: Unknown '%s' value '%s'\n", 
-			this.classname, strField, strKey));
-#endif
-	}
-}
-
-void
 CBaseEntity::postdraw(void)
 {
 }
@@ -440,156 +385,6 @@ CBaseEntity_ParseSentence(void)
 	}
 }
 #else
-/* we want to really use those set functions because they'll notify of any
- * networking related changes. otherwise we'll have to keep track of copies
- * that get updated every frame */
-void
-CBaseEntity::SetEffects(float newEffects)
-{
-	if (newEffects == effects)
-		return;
-
-	effects = newEffects;
-	SendFlags |= BASEFL_CHANGED_EFFECTS;
-}
-void
-CBaseEntity::SetFrame(float newFrame)
-{
-	if (newFrame == frame)
-		return;
-
-	frame = newFrame;
-	frame1time = 0.0f;
-	SendFlags |= BASEFL_CHANGED_FRAME;
-}
-void
-CBaseEntity::SetModel(string newModel)
-{
-	model = newModel;
-	setmodel(this, newModel);
-	SendFlags |= BASEFL_CHANGED_MODELINDEX;
-}
-void
-CBaseEntity::SetModelindex(float newModelIndex)
-{
-	if (newModelIndex == modelindex)
-		return;
-
-	modelindex = newModelIndex;
-	SendFlags |= BASEFL_CHANGED_MODELINDEX;
-}
-void
-CBaseEntity::SetMovetype(float newMovetype)
-{
-	if (newMovetype == movetype)
-		return;
-
-	movetype = newMovetype;
-	SendFlags |= BASEFL_CHANGED_MOVETYPE;
-}
-void
-CBaseEntity::SetSkin(float newSkin)
-{
-	if (newSkin == skin)
-		return;
-
-	skin = newSkin;
-	SendFlags |= BASEFL_CHANGED_SKIN;
-}
-void
-CBaseEntity::SetSolid(float newSolid)
-{
-	if (newSolid == solid)
-		return;
-
-	solid = newSolid;
-	SendFlags |= BASEFL_CHANGED_SOLID;
-}
-void
-CBaseEntity::SetBody(int newBody)
-{
-	if (newBody == m_iBody)
-		return;
-
-	m_iBody = newBody;
-	SendFlags |= BASEFL_CHANGED_BODY;
-}
-void
-CBaseEntity::SetScale(float newScale)
-{
-	if (newScale == scale)
-		return;
-
-	scale = newScale;
-	SendFlags |= BASEFL_CHANGED_SCALE;
-}
-void
-CBaseEntity::SetAngles(vector newAngles)
-{
-	if (newAngles == angles)
-		return;
-
-	angles = newAngles;
-	SendFlags |= BASEFL_CHANGED_ANGLES;
-}
-void
-CBaseEntity::SetSize(vector newMins, vector newMaxs)
-{
-	if (newMins == mins && newMaxs == maxs)
-		return;
-
-	setsize(this, newMins, newMaxs);
-	SendFlags |= BASEFL_CHANGED_SIZE;
-}
-void
-CBaseEntity::SetOrigin(vector newOrigin)
-{
-	if (newOrigin == origin)
-		return;
-
-	setorigin(this, newOrigin);
-	SendFlags |= BASEFL_CHANGED_ORIGIN;
-}
-
-#ifdef GS_RENDERFX
-void
-CBaseEntity::SetRenderFX(int newFX)
-{
-	if (newFX == m_iRenderFX)
-		return;
-
-	m_iRenderFX = newFX;
-	SendFlags |= BASEFL_CHANGED_RENDERFX;
-}
-void
-CBaseEntity::SetRenderMode(float newMode)
-{
-	if (newMode == m_iRenderMode)
-		return;
-
-	m_iRenderMode = newMode;
-	SendFlags |= BASEFL_CHANGED_RENDERMODE;
-}
-void
-CBaseEntity::SetRenderAmt(float newAmt)
-{
-	if (newAmt == m_flRenderAmt)
-		return;
-
-	m_flRenderAmt = newAmt;
-	SendFlags |= BASEFL_CHANGED_RENDERAMT;
-}
-void
-CBaseEntity::SetRenderColor(vector newColor)
-{
-	if (newColor == m_vecRenderColor)
-		return;
-
-	m_vecRenderColor = newColor;
-	SendFlags |= BASEFL_CHANGED_RENDERCOLOR;
-}
-#endif
-
 /* Make sure StartFrame calls this */
 float
 CBaseEntity::SendEntity(entity ePEnt, float fChanged)
@@ -790,6 +585,204 @@ CBaseEntity::Hide(void)
 }
 
 void
+CBaseEntity::CBaseEntity(void)
+{
+	/* Not in Deathmatch */
+	if (spawnflags & 2048) {
+		if (cvar("sv_playerslots") > 1) {
+			remove(this);
+			return;
+		}
+	}
+
+	identity = 1;
+	effects |= EF_NOSHADOW;
+	scale = 1.0f;
+
+	SpawnInit();
+
+	m_oldAngle = angles;
+	m_oldOrigin = origin;
+	m_oldSolid = solid;
+	m_oldHealth = health;
+	m_oldModel = Util_FixModel(model);
+
+#ifdef GS_RENDERFX
+	m_oldiRenderFX = m_iRenderFX;
+	m_oldiRenderMode = m_iRenderMode;
+	m_oldvecRenderColor = m_vecRenderColor;
+	m_oldflRenderAmt = m_flRenderAmt;
+	m_oldvecRenderColor = m_vecRenderColor;
+	m_oldflRenderAmt = m_flRenderAmt;
+#endif
+
+	m_oldstrTarget = target;
+
+	if (m_oldModel != "") {
+		precache_model(m_oldModel);
+	}
+}
+#endif
+
+/* we want to really use those set functions because they'll notify of any
+ * networking related changes. otherwise we'll have to keep track of copies
+ * that get updated every frame */
+void
+CBaseEntity::SetSendFlags(float flSendFlags)
+{
+#ifdef SERVER
+	SendFlags |= flSendFlags;
+#endif
+}
+
+void
+CBaseEntity::SetEffects(float newEffects)
+{
+	if (newEffects == effects)
+		return;
+
+	effects = newEffects;
+	SetSendFlags(BASEFL_CHANGED_EFFECTS);
+}
+void
+CBaseEntity::SetFrame(float newFrame)
+{
+	if (newFrame == frame)
+		return;
+
+	frame = newFrame;
+	frame1time = 0.0f;
+	SetSendFlags(BASEFL_CHANGED_FRAME);
+}
+void
+CBaseEntity::SetModel(string newModel)
+{
+	model = newModel;
+	setmodel(this, newModel);
+	SetSendFlags(BASEFL_CHANGED_MODELINDEX);
+}
+void
+CBaseEntity::SetModelindex(float newModelIndex)
+{
+	if (newModelIndex == modelindex)
+		return;
+
+	modelindex = newModelIndex;
+	SetSendFlags(BASEFL_CHANGED_MODELINDEX);
+}
+void
+CBaseEntity::SetMovetype(float newMovetype)
+{
+	if (newMovetype == movetype)
+		return;
+
+	movetype = newMovetype;
+	SetSendFlags(BASEFL_CHANGED_MOVETYPE);
+}
+void
+CBaseEntity::SetSkin(float newSkin)
+{
+	if (newSkin == skin)
+		return;
+
+	skin = newSkin;
+	SetSendFlags(BASEFL_CHANGED_SKIN);
+}
+void
+CBaseEntity::SetSolid(float newSolid)
+{
+	if (newSolid == solid)
+		return;
+
+	solid = newSolid;
+	SetSendFlags(BASEFL_CHANGED_SOLID);
+}
+void
+CBaseEntity::SetBody(int newBody)
+{
+	if (newBody == m_iBody)
+		return;
+
+	m_iBody = newBody;
+	SetSendFlags(BASEFL_CHANGED_BODY);
+}
+void
+CBaseEntity::SetScale(float newScale)
+{
+	if (newScale == scale)
+		return;
+
+	scale = newScale;
+	SetSendFlags(BASEFL_CHANGED_SCALE);
+}
+void
+CBaseEntity::SetAngles(vector newAngles)
+{
+	if (newAngles == angles)
+		return;
+
+	angles = newAngles;
+	SetSendFlags(BASEFL_CHANGED_ANGLES);
+}
+void
+CBaseEntity::SetSize(vector newMins, vector newMaxs)
+{
+	if (newMins == mins && newMaxs == maxs)
+		return;
+
+	setsize(this, newMins, newMaxs);
+	SetSendFlags(BASEFL_CHANGED_SIZE);
+}
+void
+CBaseEntity::SetOrigin(vector newOrigin)
+{
+	if (newOrigin == origin)
+		return;
+
+	setorigin(this, newOrigin);
+	SetSendFlags(BASEFL_CHANGED_ORIGIN);
+}
+
+#ifdef GS_RENDERFX
+void
+CBaseEntity::SetRenderFX(int newFX)
+{
+	if (newFX == m_iRenderFX)
+		return;
+
+	m_iRenderFX = newFX;
+	SetSendFlags(BASEFL_CHANGED_RENDERFX);
+}
+void
+CBaseEntity::SetRenderMode(float newMode)
+{
+	if (newMode == m_iRenderMode)
+		return;
+
+	m_iRenderMode = newMode;
+	SetSendFlags(BASEFL_CHANGED_RENDERMODE);
+}
+void
+CBaseEntity::SetRenderAmt(float newAmt)
+{
+	if (newAmt == m_flRenderAmt)
+		return;
+
+	m_flRenderAmt = newAmt;
+	SetSendFlags(BASEFL_CHANGED_RENDERAMT);
+}
+void
+CBaseEntity::SetRenderColor(vector newColor)
+{
+	if (newColor == m_vecRenderColor)
+		return;
+
+	m_vecRenderColor = newColor;
+	SetSendFlags(BASEFL_CHANGED_RENDERCOLOR);
+}
+#endif
+
+void
 CBaseEntity::SpawnKey(string strKey, string strValue)
 {
 	/* we do re-read a lot of the builtin fields in case we want to set
@@ -809,9 +802,6 @@ CBaseEntity::SpawnKey(string strKey, string strValue)
 		break;
 	case "solid":
 		solid = stof(strValue);
-		break;
-	case "health":
-		health = stof(strValue);
 		break;
 	case "shadows":
 		if (stof(strValue) == 1) {
@@ -852,61 +842,26 @@ CBaseEntity::SpawnKey(string strKey, string strValue)
 		m_iRenderFX = stoi(strValue);
 		break;
 #endif
-	case "parentname":
-		m_parent = strValue;
-		break;
 	case "model":
 		model = strValue;
 		break;
 	case "classname":
 	case "spawnflags":
 		break;
+#ifdef SERVER
+	case "health":
+		health = stof(strValue);
+		break;
+	case "parentname":
+		m_parent = strValue;
+		break;
 	case "ignorepvs":
 		pvsflags = PVSF_IGNOREPVS;
 		break;
+#endif
 	default:
 		print(sprintf("^3%s^7::SpawnKey:: Unknown key '%s' with value '%s'\n",
 		      classname, strKey, strValue));
 		break;
 	}
 }
-
-void
-CBaseEntity::CBaseEntity(void)
-{
-	/* Not in Deathmatch */
-	if (spawnflags & 2048) {
-		if (cvar("sv_playerslots") > 1) {
-			remove(this);
-			return;
-		}
-	}
-
-	identity = 1;
-	effects |= EF_NOSHADOW;
-	scale = 1.0f;
-
-	SpawnInit();
-
-	m_oldAngle = angles;
-	m_oldOrigin = origin;
-	m_oldSolid = solid;
-	m_oldHealth = health;
-	m_oldModel = Util_FixModel(model);
-
-#ifdef GS_RENDERFX
-	m_oldiRenderFX = m_iRenderFX;
-	m_oldiRenderMode = m_iRenderMode;
-	m_oldvecRenderColor = m_vecRenderColor;
-	m_oldflRenderAmt = m_flRenderAmt;
-	m_oldvecRenderColor = m_vecRenderColor;
-	m_oldflRenderAmt = m_flRenderAmt;
-#endif
-
-	m_oldstrTarget = target;
-
-	if (m_oldModel != "") {
-		precache_model(m_oldModel);
-	}
-}
-#endif

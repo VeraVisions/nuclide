@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -30,7 +30,6 @@ class CBaseEntity
 	void(void) CBaseEntity;
 	virtual void(void) Init;
 	virtual void(void) Initialized;
-	virtual void(string, string) SpawnKey;
 	virtual void(string) Sentence;
 	virtual void(void) ProcessWordQue;
 	virtual void(float flChanged) ReceiveEntity;
@@ -62,6 +61,8 @@ class CBaseEntity
 	virtual float(entity, float) SendEntity;
 	virtual void(void) Pain;
 	virtual void(void) Death;
+	virtual void(void) SpawnInit;
+#endif
 
 	virtual void(float) SetEffects;
 	virtual void(float) SetFrame;
@@ -76,14 +77,18 @@ class CBaseEntity
 	virtual void(vector) SetOrigin;
 	virtual void(vector, vector) SetSize;
 	virtual void(string, string) SpawnKey;
-	virtual void(void) SpawnInit;
-#endif
-
+	
 #ifdef GS_RENDERFX
 	int m_iRenderFX;
 	float m_iRenderMode;
 	float m_flRenderAmt;
 	vector m_vecRenderColor;
+
+	/* set */
+	virtual void(int) SetRenderFX;
+	virtual void(float) SetRenderMode;
+	virtual void(float) SetRenderAmt;
+	virtual void(vector) SetRenderColor;
 
 	#ifdef CLIENT
 		virtual void(void) RenderFXPass;
@@ -93,11 +98,6 @@ class CBaseEntity
 		float m_oldiRenderMode;
 		float m_oldflRenderAmt;
 		vector m_oldvecRenderColor;
-
-		virtual void(int) SetRenderFX;
-		virtual void(float) SetRenderMode;
-		virtual void(float) SetRenderAmt;
-		virtual void(vector) SetRenderColor;
 	#endif
 #endif
 };
