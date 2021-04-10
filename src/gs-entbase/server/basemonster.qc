@@ -126,6 +126,9 @@ CBaseMonster::AttackThink(void)
 		return;
 	}
 
+	if (!m_eEnemy)
+		return;
+
 	/* reset */
 	if (m_eEnemy.solid == SOLID_CORPSE || (m_eEnemy && m_eEnemy.health <= 0)) {
 		m_eEnemy = __NULL__;
