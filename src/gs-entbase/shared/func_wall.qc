@@ -51,7 +51,7 @@ float
 func_wall::SendEntity(entity pvsent, float fl)
 {
 	if (targetname)
-		CBaseTrigger::SendEntity(pvsent, fl);
+		return CBaseTrigger::SendEntity(pvsent, fl);
 	else
 		return FALSE;
 }

@@ -51,7 +51,7 @@ float
 func_illusionary::SendEntity(entity pvsent, float fl)
 {
 	if (targetname)
-		CBaseTrigger::SendEntity(pvsent, fl);
+		return CBaseTrigger::SendEntity(pvsent, fl);
 	else
 		return FALSE;
 }
