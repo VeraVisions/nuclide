@@ -29,7 +29,7 @@ TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon)
 	if (trace_fraction >= 1.0f)
 		return;
 
-	if (trace_ent.takedamage == DAMAGE_YES) {
+	if (trace_ent.takedamage == DAMAGE_YES && trace_ent.iBleeds) {
 		Sound_Play(trace_ent, CHAN_BODY, "damage_bullet.hit");
 
 #ifdef CSTRIKE
