@@ -53,6 +53,10 @@ int font_console;
 int font_arial;
 int font_label_p;
 
+var int autocvar_menu_helptext_size = 11;
+
+#define HELPTXT_SIZE autocvar_menu_helptext_size
+
 typedef struct
 {
 	void(void) m_init;

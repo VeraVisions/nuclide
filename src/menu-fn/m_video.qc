@@ -93,11 +93,11 @@ menu_video_draw(void)
 {
 	Widget_Draw(fn_video);
 	Header_Draw(HEAD_VIDEO);
-	WLabel_Static(215, 148, m_reslbl[IDS_VIDSELECT_OPTIONSHELP], 10, 10, col_help,
+	WLabel_Static(215, 148, m_reslbl[IDS_VIDSELECT_OPTIONSHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 					1.0f, 0, font_label);
-	WLabel_Static(215, 180, m_reslbl[IDS_VIDSELECT_MODESHELP], 10, 10, col_help,
+	WLabel_Static(215, 180, m_reslbl[IDS_VIDSELECT_MODESHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 					1.0f, 0, font_label);
-	WLabel_Static(215, 212, m_reslbl[IDS_VIDSELECT_RETURNHELP], 10, 10, col_help,
+	WLabel_Static(215, 212, m_reslbl[IDS_VIDSELECT_RETURNHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 					1.0f, 0, font_label);
 }
 

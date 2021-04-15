@@ -154,17 +154,17 @@ menu_configuration_draw(void)
 	Widget_Draw(fn_configuration);
 	Header_Draw(HEAD_CONFIG);
 
-	WLabel_Static(215, 148, m_reslbl[IDS_CFG_CONTROLHELP], 10, 10, col_help,
+	WLabel_Static(215, 148, m_reslbl[IDS_CFG_CONTROLHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 					1.0f, 0, font_label);
-	WLabel_Static(215, 180, m_reslbl[IDS_CFG_AUDIOHELP], 10, 10, col_help,
+	WLabel_Static(215, 180, m_reslbl[IDS_CFG_AUDIOHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 					1.0f, 0, font_label);
-	WLabel_Static(215, 212, m_reslbl[IDS_CFG_VIDHELP], 10, 10, col_help,
+	WLabel_Static(215, 212, m_reslbl[IDS_CFG_VIDHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 					1.0f, 0, font_label);
-	WLabel_Static(215, 244, m_reslbl[IDS_CONFIGURE_GOREHELP], 10, 10, col_help,
+	WLabel_Static(215, 244, m_reslbl[IDS_CONFIGURE_GOREHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 					1.0f, 0, font_label);
-	WLabel_Static(215, 276, m_reslbl[IDS_CONFIGURE_AUTOPATCHHELP], 10, 10, col_help,
+	WLabel_Static(215, 276, m_reslbl[IDS_CONFIGURE_AUTOPATCHHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 					1.0f, 0, font_label);
-	WLabel_Static(215, 308, m_reslbl[IDS_MULTI_DONEHELP], 10, 10, col_help,
+	WLabel_Static(215, 308, m_reslbl[IDS_MULTI_DONEHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 					1.0f, 0, font_label);
 }
 

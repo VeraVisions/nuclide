@@ -127,13 +127,13 @@ menu_newgame_draw(void)
 	Widget_Draw(fn_newgame);
 	Header_Draw(HEAD_NEWGAME);
 
-	WLabel_Static(215, 148, m_reslbl[IDS_NEWGAME_EASYHELP], 10, 10, col_help,
+	WLabel_Static(215, 148, m_reslbl[IDS_NEWGAME_EASYHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 					1.0f, 0, font_label);
-	WLabel_Static(215, 180, m_reslbl[IDS_NEWGAME_MEDIUMHELP], 10, 10, col_help,
+	WLabel_Static(215, 180, m_reslbl[IDS_NEWGAME_MEDIUMHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 					1.0f, 0, font_label);
-	WLabel_Static(215, 212, m_reslbl[IDS_NEWGAME_DIFFICULTHELP], 10, 10, col_help,
+	WLabel_Static(215, 212, m_reslbl[IDS_NEWGAME_DIFFICULTHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 					1.0f, 0, font_label);
-	WLabel_Static(215, 244, m_reslbl[IDS_NEWGAME_RETURNHELP], 10, 10, col_help,
+	WLabel_Static(215, 244, m_reslbl[IDS_NEWGAME_RETURNHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 					1.0f, 0, font_label);
 }
 

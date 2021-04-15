@@ -293,42 +293,42 @@ menu_multiplayer_draw(void)
 	if (!autocvar__menu_singleplayer && clientstate() == 2 && !g_background) {
 		Widget_Draw(fn_multiplayer2);
 
-		WLabel_Static(215, 148, m_reslbl[IDS_MULTI_RESUMEHELP], 10, 10, col_help,
+		WLabel_Static(215, 148, m_reslbl[IDS_MULTI_RESUMEHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 						1.0f, 0, font_label);
-		WLabel_Static(215, 180, m_reslbl[IDS_MULTI_DISCONNECTHELP], 10, 10, col_help,
+		WLabel_Static(215, 180, m_reslbl[IDS_MULTI_DISCONNECTHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 						1.0f, 0, font_label);
-		WLabel_Static(215, 212, m_reslbl[IDS_MULTI_BROWSEHELP], 10, 10, col_help,
+		WLabel_Static(215, 212, m_reslbl[IDS_MULTI_BROWSEHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 						1.0f, 0, font_label);
-		WLabel_Static(215, 244, "Spectate internet games.", 10, 10, col_help,
+		WLabel_Static(215, 244, "Spectate internet games.", HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 						1.0f, 0, font_label);
-		WLabel_Static(215, 276, m_reslbl[IDS_MULTI_CHATHELP], 10, 10, col_help,
+		WLabel_Static(215, 276, m_reslbl[IDS_MULTI_CHATHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 						1.0f, 0, font_label);
-		WLabel_Static(215, 308, m_reslbl[IDS_MULTI_LANHELP], 10, 10, col_help,
+		WLabel_Static(215, 308, m_reslbl[IDS_MULTI_LANHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 						1.0f, 0, font_label);
-		WLabel_Static(215, 340, m_reslbl[IDS_MULTI_CUSTOMIZEHELP], 10, 10, col_help,
+		WLabel_Static(215, 340, m_reslbl[IDS_MULTI_CUSTOMIZEHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 						1.0f, 0, font_label);
-		WLabel_Static(215, 372, m_reslbl[IDS_CFG_CONTROLHELP], 10, 10, col_help,
+		WLabel_Static(215, 372, m_reslbl[IDS_CFG_CONTROLHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 						1.0f, 0, font_label);
-		WLabel_Static(215, 404, m_reslbl[IDS_MULTI_DONEHELP], 10, 10, col_help,
+		WLabel_Static(215, 404, m_reslbl[IDS_MULTI_DONEHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 						1.0f, 0, font_label);
 	} else {
 		Widget_Draw(fn_multiplayer);
 
-		WLabel_Static(215, 148, m_reslbl[IDS_MAIN_QUICKHELP], 10, 10, col_help,
+		WLabel_Static(215, 148, m_reslbl[IDS_MAIN_QUICKHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 						1.0f, 0, font_label);
-		WLabel_Static(215, 180, m_reslbl[IDS_MULTI_BROWSEHELP], 10, 10, col_help,
+		WLabel_Static(215, 180, m_reslbl[IDS_MULTI_BROWSEHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 						1.0f, 0, font_label);
-		WLabel_Static(215, 212, "Spectate internet games.", 10, 10, col_help,
+		WLabel_Static(215, 212, "Spectate internet games.", HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 						1.0f, 0, font_label);
-		WLabel_Static(215, 244, m_reslbl[IDS_MULTI_CHATHELP], 10, 10, col_help,
+		WLabel_Static(215, 244, m_reslbl[IDS_MULTI_CHATHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 						1.0f, 0, font_label);
-		WLabel_Static(215, 276, m_reslbl[IDS_MULTI_LANHELP], 10, 10, col_help,
+		WLabel_Static(215, 276, m_reslbl[IDS_MULTI_LANHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 						1.0f, 0, font_label);
-		WLabel_Static(215, 308, m_reslbl[IDS_MULTI_CUSTOMIZEHELP], 10, 10, col_help,
+		WLabel_Static(215, 308, m_reslbl[IDS_MULTI_CUSTOMIZEHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 						1.0f, 0, font_label);
-		WLabel_Static(215, 340, m_reslbl[IDS_CFG_CONTROLHELP], 10, 10, col_help,
+		WLabel_Static(215, 340, m_reslbl[IDS_CFG_CONTROLHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 						1.0f, 0, font_label);
-		WLabel_Static(215, 372, m_reslbl[IDS_MULTI_DONEHELP], 10, 10, col_help,
+		WLabel_Static(215, 372, m_reslbl[IDS_MULTI_DONEHELP], HELPTXT_SIZE, HELPTXT_SIZE, col_help,
 						1.0f, 0, font_label);
 	}
 
