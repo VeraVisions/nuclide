@@ -44,6 +44,8 @@ Footsteps_Init(void)
 	Sound_Precache("step_grate.right");
 	Sound_Precache("step_metal.left");
 	Sound_Precache("step_metal.right");
+	Sound_Precache("step_sand.left");
+	Sound_Precache("step_sand.right");
 	Sound_Precache("step_slosh.left");
 	Sound_Precache("step_slosh.right");
 	Sound_Precache("step_snow.left");

@@ -278,7 +278,7 @@ Way_FlagAim(void)
 			for (int b = 0i; b < g_pWaypoints[g_way1].m_numNeighbours; b++) {
 				if (g_pWaypoints[g_way1].m_pNeighbour[b].m_iNode == g_way2) {
 					g_pWaypoints[g_way1].m_pNeighbour[b].m_iFlags |= LF_AIM;
-					env_message_single(self, "^2Walk-linked the two points!\n");
+					env_message_single(self, "^2Aim-linked the two points!\n");
 				}
 			}
 		} else {
@@ -303,7 +303,7 @@ Way_FlagUse(void)
 			for (int b = 0i; b < g_pWaypoints[g_way1].m_numNeighbours; b++) {
 				if (g_pWaypoints[g_way1].m_pNeighbour[b].m_iNode == g_way2) {
 					g_pWaypoints[g_way1].m_pNeighbour[b].m_iFlags |= LF_USER;
-					env_message_single(self, "^2Walk-linked the two points!\n");
+					env_message_single(self, "^2Use-linked the two points!\n");
 				}
 			}
 		} else {

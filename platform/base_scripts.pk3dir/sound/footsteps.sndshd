@@ -163,6 +163,21 @@ step_slosh.right
 	sample player/pl_slosh4.wav
 }
 
+step_sand.left
+{
+	attenuation static
+	footstep
+	sample player/pl_sand1.wav
+	sample player/pl_sand2.wav
+}
+step_sand.right
+{
+	attenuation static
+	footstep
+	sample player/pl_sand3.wav
+	sample player/pl_sand4.wav
+}
+
 step_snow.left
 {
 	attenuation static

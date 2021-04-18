@@ -14,13 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define FN_UPDATE_IMGURL "https://www.frag-net.com/dl/img/%s.jpg"
+#define FN_UPDATE_IMGURL "http://www.frag-net.com/dl/img/%s.jpg"
 
 enum
 {
-	GPMI_NAME,			// name of the package, for use with the pkg command.
+	GPMI_NAME,		// name of the package, for use with the pkg command.
 	GPMI_CATEGORY,		// category text
-	GPMI_TITLE,			// name of the package, for showing the user.
+	GPMI_TITLE,		// name of the package, for showing the user.
 	GPMI_VERSION,		// version info (may have multiple with the same name but different versions)
 	GPMI_DESCRIPTION,	// some blurb
 	GPMI_LICENSE,		// what license its distributed under
