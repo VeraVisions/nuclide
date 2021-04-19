@@ -15,21 +15,22 @@
  */
 
 /* HLBSP materials.txt character id's */
-#define MATID_ALIEN			'H'
+#define MATID_ALIEN		'H'
 #define MATID_BLOODYFLESH	'B'
 #define MATID_COMPUTER		'P'
 #define MATID_CONCRETE		'C'
-#define MATID_DIRT			'D'
-#define MATID_FLESH			'F'
+#define MATID_DIRT		'D'
+#define MATID_FLESH		'F'
 #define MATID_FOLIAGE		'O'
-#define MATID_GLASS			'Y'
-#define MATID_GRATE			'G'
-#define MATID_METAL			'M'
-#define MATID_SLOSH			'S'
-#define MATID_SNOW			'N'
-#define MATID_TILE			'T'
-#define MATID_VENT			'V'
-#define MATID_WOOD			'W'
+#define MATID_GLASS		'Y'
+#define MATID_GRATE		'G'
+#define MATID_METAL		'M'
+#define MATID_SLOSH		'S'
+#define MATID_SNOW		'N'
+#define MATID_SNOW_OP4		'O' /* Gearbox uses a different symbol */
+#define MATID_TILE		'T'
+#define MATID_VENT		'V'
+#define MATID_WOOD		'W'
 
 void Footsteps_Init(void);
 void Footsteps_HLBSP(base_player target);
