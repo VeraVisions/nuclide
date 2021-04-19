@@ -119,7 +119,6 @@ Footsteps_HLBSP(base_player target)
 		case MATID_SLOSH:
 			mat_name = "step_slosh";
 			break;
-		case MATID_SNOW_OP4:
 		case MATID_SNOW:
 			mat_name = "step_snow";
 			break;
