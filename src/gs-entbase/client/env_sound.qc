@@ -163,10 +163,7 @@ env_sound::env_sound(void)
 	m_iRadius = 256;
 	Init();
 
-	movetype = MOVETYPE_NONE;
-	solid = SOLID_TRIGGER;
-	geomtype = GEOMTYPE_CAPSULE;
-	setsize(this, [-m_iRadius,-m_iRadius,-m_iRadius], [m_iRadius,m_iRadius,m_iRadius]);
+	setsize(this, [0,0,0], [0,0,0]);
 	setorigin(this, origin);
 
 	/* Valve BSP, convert their env_sound */
@@ -329,10 +326,6 @@ DSP_UpdateListener(void)
 
 	vector vecPlayer;
 
-	if (!g_iWorldInitialized) {
-		return;
-	}
-
 	if (autocvar_dsp_environments == FALSE) {
 		return;
 	}
@@ -382,10 +375,8 @@ DSP_UpdateListener(void)
 	g_flDSPTime += clframetime;
 #else
 
-#ifdef GS_DEVELOPER
-	print(sprintf("DSP_UpdateListener: Changed style to %i\n", 
+	dprint(sprintf("DSP_UpdateListener: Changed style to %i\n", 
 		g_iDSP));
-#endif
 
 	old_dsp = g_iDSP;
 	setup_reverb(12, &reverbPresets[g_iDSP], sizeof(reverbinfo_t));
