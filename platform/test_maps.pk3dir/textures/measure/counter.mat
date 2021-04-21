@@ -1,10 +1,17 @@
 // Vera Visions Material
 {
+if $programs
+	program lightmapped
 	diffusemap textures/measure/counter.tga
-
+else
 	{
-		program lightmapped
-		map $diffuse
-		map $normalmap
+		map $lightmap
+		rgbGen identity
 	}
+	{
+		map textures/measure/counter.tga
+		rgbGen identity
+		blendFunc GL_DST_COLOR GL_ZERO
+	}
+endif
 }

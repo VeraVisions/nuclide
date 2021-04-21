@@ -1,10 +1,23 @@
 // Vera Visions Material
 {
-	diffusemap textures/next/vent1.tga
+	surfaceParm vent
 
+if $programs
+	diffusemap "textures/next/vent1.tga"
 	{
 		program lightmapped
 		map $diffuse
 		map $normalmap
 	}
+else
+	{
+		map $lightmap
+		rgbGen identity
+	}
+	{
+		map "textures/next/vent1.tga"
+		rgbGen identity
+		blendFunc GL_DST_COLOR GL_ZERO
+	}
+endif
 }

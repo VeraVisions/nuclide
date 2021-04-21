@@ -1,17 +1,15 @@
 // Vera Visions Material
 {
-	qer_editorImage textures/skies/yukongold.tga
-	skyParms - 256 -
-	vmap_globalTexture
-
+	qer_editorImage "textures/skies/yukongold.tga"
 	surfaceParm sky
 	surfaceParm noimpact
 	surfaceParm nolightmap
 	surfaceParm nodlight
-
-	nopicmip
+	noPicMip
 	nomipmaps
-	
+
+if $programs
+	skyParms - 256 -
 	{
 		program skybox_parallax
 		map textures/skies/clouds/dustycloud.tga
@@ -19,4 +17,14 @@
 		map $cube:textures/skies/yukongold/bg
 		map $cube:textures/skies/yukongold/fg
 	}
+else
+	skyParms textures/skies/yukongold/bg 256 textures/skies/yukongold/fg
+	{
+		map "textures/skies/clouds/dustycloud.tga"
+		tcMod scroll 0.001 0.001
+		tcMod scale 5 5
+		blendFunc blend
+		rgbGen identity
+	}
+endif
 }

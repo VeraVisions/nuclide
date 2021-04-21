@@ -1,12 +1,24 @@
 // Vera Visions Material
 {
-	diffusemap textures/next/earth2.tga
-	normalmap textures/next/earth2_normal.tga
+	surfaceParm dirt
 
+if $programs
+	diffusemap "textures/next/earth2.tga"
+	normalmap "textures/next/earth2_normal.tga"
 	{
-		program lightmapped_reflectcube
+		program lightmapped
 		map $diffuse
 		map $normalmap
-		map $reflectcube
 	}
+else
+	{
+		map $lightmap
+		rgbGen identity
+	}
+	{
+		map "textures/next/earth2.tga"
+		rgbGen identity
+		blendFunc GL_DST_COLOR GL_ZERO
+	}
+endif
 }

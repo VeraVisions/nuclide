@@ -1,9 +1,19 @@
 // Vera Visions Material
 {
-	surfaceparm glass
-	diffusemap textures/measure/mat_glass.tga
+	surfaceParm glass
 
+if $programs
+	program lightmapped
+	diffusemap textures/measure/mat_glass.tga
+else
 	{
-		program lightmapped
+		map $lightmap
+		rgbGen identity
 	}
+	{
+		map textures/measure/mat_glass.tga
+		rgbGen identity
+		blendFunc GL_DST_COLOR GL_ZERO
+	}
+endif
 }

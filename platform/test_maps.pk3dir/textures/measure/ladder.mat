@@ -1,5 +1,23 @@
 // Vera Visions Material
 {
+	surfaceparm alphashadow
+	surfaceparm trans
+
+if $programs
 	program lightmapped_alphatest
-	diffusemap textures/measure/ladder.tga
+	diffusemap "textures/measure/ladder.tga"
+else
+        {
+                map "textures/measure/ladder.tga"
+                alphaFunc GE128
+		depthWrite
+		rgbGen identity
+        }
+        {
+		map $lightmap
+		rgbGen identity
+		blendFunc filter
+		depthFunc equal
+	}
+endif
 }

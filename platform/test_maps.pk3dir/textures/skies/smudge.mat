@@ -1,21 +1,22 @@
 // Vera Visions Material
 {
-	qer_editorImage textures/skies/smudge.tga
-	skyParms - 256 -
-	vmap_globalTexture
-
+	qer_editorImage "textures/skies/smudge.tga"
 	surfaceParm sky
 	surfaceParm noimpact
 	surfaceParm nolightmap
 	surfaceParm nodlight
-
-	nopicmip
+	noPicMip
 	nomipmaps
 
+if $programs
+	skyParms - 256 -
 	{
 		program skybox
 		map $cube:textures/skies/smudge/bg
 		map $blackimage
 		map $blackimage
 	}
+else
+	skyParms textures/skies/smudge/bg 256 -
+endif
 }

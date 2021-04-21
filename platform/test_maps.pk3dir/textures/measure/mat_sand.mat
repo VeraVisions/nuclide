@@ -1,9 +1,19 @@
 // Vera Visions Material
 {
-	surfaceparm sand
-	diffusemap textures/measure/mat_sand.tga
+	surfaceParm sand
 
+if $programs
+	program lightmapped
+	diffusemap textures/measure/mat_sand.tga
+else
 	{
-		program lightmapped
+		map $lightmap
+		rgbGen identity
 	}
+	{
+		map textures/measure/mat_sand.tga
+		rgbGen identity
+		blendFunc GL_DST_COLOR GL_ZERO
+	}
+endif
 }

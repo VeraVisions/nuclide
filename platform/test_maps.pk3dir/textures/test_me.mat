@@ -1,10 +1,21 @@
 // Vera Visions Material
 {
-	diffusemap textures/test_me.tga
-
+if $programs
+	diffusemap "textures/test_me.tga"
 	{
 		program lightmapped
 		map $diffuse
 		map $normalmap
 	}
+else
+	{
+		map $lightmap
+		rgbGen identity
+	}
+	{
+		map "textures/test_me.tga"
+		rgbGen identity
+		blendFunc GL_DST_COLOR GL_ZERO
+	}
+endif
 }

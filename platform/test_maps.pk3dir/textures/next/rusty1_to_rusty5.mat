@@ -3,6 +3,7 @@
 	qer_editorImage "textures/next/rusty1.tga"
 	polygonOffset 1
 
+if $programs
 	{
 		program terrain
 		map "textures/next/rusty5.tga"
@@ -10,4 +11,21 @@
 		map $normalmap
 		map $normalmap
 	}
+else
+	{
+		map "textures/next/rusty5.tga"
+		rgbGen identity
+	}
+	{
+		map "textures/next/rusty7.tga"
+		blendFunc GL_SRC_ALPHA GL_ONE_MINUS_SRC_ALPHA
+		alphaGen vertex
+	}
+        {
+		map $lightmap
+		rgbGen identity
+		blendFunc filter
+		depthFunc equal
+	}
+endif
 }

@@ -1,10 +1,23 @@
 // Vera Visions Material
 {
-	diffusemap textures/next/rusty7.tga
+	surfaceParm metal
 
+if $programs
+	diffusemap "textures/next/rusty7.tga"
 	{
 		program lightmapped
 		map $diffuse
 		map $normalmap
 	}
+else
+	{
+		map $lightmap
+		rgbGen identity
+	}
+	{
+		map "textures/next/rusty7.tga"
+		rgbGen identity
+		blendFunc GL_DST_COLOR GL_ZERO
+	}
+endif
 }

@@ -1,10 +1,23 @@
 // Vera Visions Material
 {
-	diffusemap textures/next/earth5.tga
+	surfaceParm dirt
 
+if $programs
+	diffusemap "textures/next/earth5.tga"
 	{
 		program lightmapped
 		map $diffuse
 		map $normalmap
 	}
+else
+	{
+		map $lightmap
+		rgbGen identity
+	}
+	{
+		map "textures/next/earth5.tga"
+		rgbGen identity
+		blendFunc GL_DST_COLOR GL_ZERO
+	}
+endif
 }
