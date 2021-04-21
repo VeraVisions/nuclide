@@ -6,6 +6,7 @@
 	surfaceParm nonsolid
 	surfaceParm trans
 	surfaceParm water
+	surfaceParm nolightmap
 	nomipmaps
 
 	fogParms ( 0 0 0 ) 128

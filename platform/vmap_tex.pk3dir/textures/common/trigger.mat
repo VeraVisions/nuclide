@@ -4,5 +4,6 @@
 	qer_trans 0.50
 	qer_noCarve
 	surfaceParm nodraw
+	surfaceParm nolightmap
 	nomipmaps
 }

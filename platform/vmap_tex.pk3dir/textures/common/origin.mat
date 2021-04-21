@@ -6,5 +6,6 @@
 	surfaceParm nodraw
 	surfaceParm nonsolid
 	surfaceParm origin
+	surfaceParm nolightmap
 	nomipmaps
 }

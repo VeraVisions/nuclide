@@ -5,5 +5,6 @@
 	surfaceParm nodraw
 	surfaceParm trans
 	surfaceParm wood
+	surfaceParm nolightmap
 	nomipmaps
 }

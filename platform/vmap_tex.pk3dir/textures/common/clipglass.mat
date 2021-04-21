@@ -5,5 +5,6 @@
 	surfaceParm nodraw
 	surfaceParm trans
 	surfaceParm glass
+	surfaceParm nolightmap
 	nomipmaps
 }

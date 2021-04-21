@@ -8,5 +8,6 @@
 	surfaceparm nomarks
 	surfaceparm detail
 	surfaceparm donotenter
+	surfaceParm nolightmap
 	nomipmaps
 }

@@ -7,4 +7,5 @@
 	surfaceParm trans
 	surfaceParm nomarks
 	surfaceParm areaportal
+	surfaceParm nolightmap
 }

@@ -8,5 +8,6 @@
 	surfaceParm structural
 	surfaceParm trans
 	surfaceParm noimpact
+	surfaceParm nolightmap
 	nomipmaps
 }

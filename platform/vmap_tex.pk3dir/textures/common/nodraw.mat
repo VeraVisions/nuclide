@@ -6,5 +6,6 @@
 	surfaceParm nonsolid
 	surfaceParm trans
 	surfaceParm nomarks
+	surfaceParm nolightmap
 	nomipmaps
 }
