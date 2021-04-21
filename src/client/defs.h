@@ -67,8 +67,6 @@ vector video_res;
 vector mouse_pos;
 int g_iIntermission;
 
-int g_iWorldInitialized;
-
 /* this actually belongs in builtins.h since its an undocumented global */
 float clframetime;
 

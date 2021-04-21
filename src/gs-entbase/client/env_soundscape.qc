@@ -84,10 +84,6 @@ DSP_UpdateSoundscape(void)
 {
 	vector vecPlayer;
 
-	if (!g_iWorldInitialized) {
-		return;
-	}
-
 	if (autocvar_dsp_soundscapes == FALSE) {
 		return;
 	}
