@@ -24,8 +24,9 @@
 "wait"          When to move back.
 "netname"       Target to trigger when door returns to its initial position.
 "dmg"           Damage to inflict upon anything blocking the way.
-"noise1"        Path to sound sample to play when the door is moving.
-"noise2"        Path to sound sample to play when the door stops moving.
+"snd_open"      Sound shader to play for when the door opens.
+"snd_close"     Sound shader to play for when the door closes.
+"snd_stop"      Sound shader to play for when the door stops moving.
 "movesnd"       Legacy integer value pointing to a predefined move sound.
 "stopsnd"       Legacy integer value pointing to a predefined stop sound.
 
@@ -89,7 +90,8 @@ class func_door:CBaseTrigger
 	int m_iDamage;
 	int m_iLocked;
 
-	string m_strSndMove;
+	string m_strSndOpen;
+	string m_strSndClose;
 	string m_strSndStop;
 
 	void(void) func_door;
@@ -176,8 +178,8 @@ func_door::Returned(void)
 void
 func_door::MoveBack(void)
 {
-	if (m_strSndMove) {
-		Sound_Play(this, CHAN_VOICE, m_strSndMove);
+	if (m_strSndClose) {
+		Sound_Play(this, CHAN_VOICE, m_strSndClose);
 	} else {
 		sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
 	}
@@ -198,8 +200,8 @@ func_door::MoveAway(void)
 		return;
 	}
 
-	if (m_strSndMove) {
-		Sound_Play(this, CHAN_VOICE, m_strSndMove);
+	if (m_strSndOpen) {
+		Sound_Play(this, CHAN_VOICE, m_strSndOpen);
 	} else {
 		sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
 	}
@@ -422,16 +424,23 @@ func_door::SpawnKey(string strKey, string strValue)
 	case "dmg":
 		m_iDamage = stoi(strValue);
 		break;
-	case "noise1":
-		m_strSndMove = strValue;
+	case "snd_open":
+		m_strSndOpen = strValue;
 		break;
+	case "snd_close":
+		m_strSndClose = strValue;
+		break;
+	case "noise1":
+		m_strSndOpen = m_strSndClose = strValue;
+		break;
+	case "snd_stop":
 	case "noise2":
 		m_strSndStop = strValue;
 		break;
 	/* GoldSrc compat */
 	case "movesnd":
 		x = stoi(strValue);
-		m_strSndMove = sprintf("func_door.move_%i", x);
+		m_strSndOpen = m_strSndClose = sprintf("func_door.move_%i", x);
 		break;
 	case "stopsnd":
 		x = stoi(strValue);
@@ -447,8 +456,10 @@ func_door::func_door(void)
 {
 	CBaseTrigger::CBaseTrigger();
 
-	if (m_strSndMove)
-		Sound_Precache(m_strSndMove);
+	if (m_strSndOpen)
+		Sound_Precache(m_strSndOpen);
+	if (m_strSndClose)
+		Sound_Precache(m_strSndClose);
 	if (m_strSndStop)
 		Sound_Precache(m_strSndStop);
 }

@@ -19,8 +19,11 @@
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
 "speed"         Speed at which the door turns.
-"noise1"        Sound shader name to play for when the door moves.
-"noise2"        Sound shader name to play for when the door stops.
+"snd_open"      Sound shader to play for when the door opens.
+"snd_close"     Sound shader to play for when the door closes.
+"snd_stop"      Sound shader to play for when the door stops rotating.
+"movesnd"       Legacy integer value pointing to a predefined move sound.
+"stopsnd"       Legacy integer value pointing to a predefined stop sound.
 "distance"      The degrees which the door will turn.
 "dmg"           The damage inflicted upon objects blocking the way of the door.
 "wait"          Time that has to pass for the door to automatically close.
@@ -63,8 +66,11 @@ enumflags
 class func_door_rotating:CBaseTrigger
 {
 	string targetClose;
-	string m_strSndMove;
 	string m_strSndStop;
+
+	string m_strSndOpen;
+	string m_strSndClose;
+
 	int m_iDamage;
 	int m_iLocked;
 	float m_flDistance;
@@ -168,8 +174,8 @@ void func_door_rotating::Back(void)
 {
 	if (!(spawnflags & SF_DOOR_SILENT)) {
 		
-		if (m_strSndMove) {
-			Sound_Play(this, CHAN_VOICE, m_strSndMove);
+		if (m_strSndClose) {
+			Sound_Play(this, CHAN_VOICE, m_strSndClose);
 		} else {
 			sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
 		}
@@ -192,8 +198,8 @@ void func_door_rotating::Away(void)
 	}
 
 	if (!(spawnflags & SF_DOOR_SILENT)) {
-		if (m_strSndMove) {
-			Sound_Play(this, CHAN_VOICE, m_strSndMove);
+		if (m_strSndOpen) {
+			Sound_Play(this, CHAN_VOICE, m_strSndOpen);
 		} else {
 			sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
 		}
@@ -402,16 +408,23 @@ func_door_rotating::SpawnKey(string strKey, string strValue)
 	/*case "lip":
 		m_flLip = stof(strValue);
 		break;*/
-	case "noise1":
-		m_strSndMove = strValue;
+	case "snd_open":
+		m_strSndOpen = strValue;
 		break;
+	case "snd_close":
+		m_strSndClose = strValue;
+		break;
+	case "noise1":
+		m_strSndOpen = m_strSndClose = strValue;
+		break;
+	case "snd_stop":
 	case "noise2":
 		m_strSndStop = strValue;
 		break;
 	/* GoldSrc compat */
 	case "movesnd":
 		x = stoi(strValue);
-		m_strSndMove = sprintf("func_door_rotating.move_%i", x);
+		m_strSndOpen = m_strSndClose = sprintf("func_door_rotating.move_%i", x);
 		break;
 	case "stopsnd":
 		x = stoi(strValue);
@@ -442,8 +455,10 @@ void func_door_rotating::func_door_rotating(void)
 
 	CBaseTrigger::CBaseTrigger();
 
-	if (m_strSndMove)
-		Sound_Precache(m_strSndMove);
+	if (m_strSndOpen)
+		Sound_Precache(m_strSndOpen);
+	if (m_strSndClose)
+		Sound_Precache(m_strSndClose);
 	if (m_strSndStop)
 		Sound_Precache(m_strSndStop);
 }
