@@ -156,9 +156,13 @@ EFX_Load(string efx_file)
 void
 EFX_SetEnvironment(int id)
 {
-	if (g_iEFX == id) {
+	/* out of bounds... MAP BUG! */
+	if (id >= g_efx_count)
 		return;
-	}
+
+	/* same as before, skip */
+	if (g_iEFX == id)
+		return;
 
 	g_iEFXold = g_iEFX;
 	g_iEFX = id;

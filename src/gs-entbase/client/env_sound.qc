@@ -94,7 +94,12 @@ env_sound::SpawnKey(string strField, string strKey)
 		/* GoldSrc, legacy */
 		case "roomtype":
 			int efx_alias = stoi(strKey);
-			m_iRoomType = EFX_Load(g_hlefx[efx_alias]);
+
+			if (efx_alias >= g_hlefx.length) {
+				print("^1env_sound::SpawnKey: Invalid roomtype!\n");
+				m_iRoomType = 0;
+			} else
+				m_iRoomType = EFX_Load(g_hlefx[efx_alias]);
 			break;
 		default:
 			CBaseEntity::SpawnKey(strField, strKey);
