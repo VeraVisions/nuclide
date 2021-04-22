@@ -93,7 +93,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 
 	/* Game specific inits */
 	ClientGame_Init(apilevel, enginename, engineversion);
-	DSP_Init();
+	EFX_Init();
 	CSQC_RendererRestarted("init");
 	Titles_Init();
 	Sentences_Init();
@@ -414,7 +414,7 @@ CSQC_UpdateView(float w, float h, float focus)
 			Predict_SpectatorPostFrame((spectator)self);
 	}
 
-	DSP_UpdateListener();
+	EFX_UpdateListener();
 	pSeat = (void*)0x70000000i;
 	pSeatLocal = (void*)0x70000000i;
 

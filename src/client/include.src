@@ -22,5 +22,6 @@ vgui.qc
 vox.qc
 way.qc
 in_saturn.qc
+efx.qc
 entry.qc
 #endlist

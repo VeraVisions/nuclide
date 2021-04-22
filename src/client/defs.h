@@ -15,6 +15,7 @@
  */
 
 #include "textmenu.h"
+#include "efx.h"
 
 /* flags for 2d drawing */
 #define DRAWFLAG_NORMAL		0
