@@ -21,6 +21,6 @@ Sky_Update(int force)
 {
 	if (g_strSkyName != serverkey("skyname") || force == TRUE) {
 		g_strSkyName = serverkey("skyname");
-		localcmd(sprintf("sky %s\n", g_strSkyName));
+		localcmd(sprintf("sky \"%s\"\n", g_strSkyName));
 	}
 }

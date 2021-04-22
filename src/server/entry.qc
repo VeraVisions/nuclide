@@ -533,6 +533,10 @@ worldspawn(void)
 	if (autocvar_sv_levelexec)
 		readcmd(sprintf("exec maps/%s.cfg\n", mapname));
 
+	/* we need to flush this, so that any leftover serverinfo
+	 * in the server-config gets overwritten */
+	forceinfokey(world, "skyname", "");
+
 	/* Set the default sky */
 	if (serverkeyfloat("*bspversion") == BSPVER_HL) {
 		if (!self.skyname) {
