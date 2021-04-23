@@ -59,7 +59,7 @@ EFX_Load(string efx_file)
 	g_efx[i].flDecayLFRatio = 1.000000;
 	g_efx[i].flReflectionsGain = 0.000000;
 	g_efx[i].flReflectionsDelay = 0.000000;
-	g_efx[i].flLateReverbPan = [0,0,0];
+	g_efx[i].flReflectionsPan = [0,0,0];
 	g_efx[i].flLateReverbGain = 1.000000;
 	g_efx[i].flLateReverbDelay = 0.000000;
 	g_efx[i].flLateReverbPan = [0,0,0];
