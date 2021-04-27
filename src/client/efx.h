@@ -19,6 +19,8 @@ string *g_efx_name;
 int g_efx_count;
 
 var int autocvar_s_al_use_reverb = TRUE;
+var int autocvar_s_al_debug = FALSE;
+
 reverbinfo_t mix;
 
 int g_iEFX;

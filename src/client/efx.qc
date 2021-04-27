@@ -13,6 +13,45 @@
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+ 
+void
+EFX_DebugInfo(void)
+{
+	static vector pos = [16, 16];
+
+	static void epr(string tx) {
+		drawfont = FONT_CON;
+		drawstring(pos, tx, [12,12], [1,1,1], 1.0f, 0);
+		pos[1] += 12;
+	}
+
+	pos = [16,16];
+	epr("OpenAL EFX Debug Information:");
+	epr(strcat("EFX Name: ", g_efx_name[g_iEFX]));
+	epr(sprintf("Density: %d", g_efx[g_iEFX].flDensity));
+	epr(sprintf("Diffusion: %d", g_efx[g_iEFX].flDiffusion));
+	epr(sprintf("Gain: %d", g_efx[g_iEFX].flGain));
+	epr(sprintf("Gain HF: %d", g_efx[g_iEFX].flGainHF));
+	epr(sprintf("Gain LF: %d", g_efx[g_iEFX].flGainLF));
+	epr(sprintf("Decay Time: %d", g_efx[g_iEFX].flDecayTime));
+	epr(sprintf("Decay HF Ratio: %d", g_efx[g_iEFX].flDecayHFRatio));
+	epr(sprintf("Decay LF Ratio: %d", g_efx[g_iEFX].flDecayLFRatio));
+	epr(sprintf("Reflections Gain: %d", g_efx[g_iEFX].flReflectionsGain));
+	epr(sprintf("Reflections Delay: %d", g_efx[g_iEFX].flReflectionsDelay));
+	epr(sprintf("Reflections Pan: %v", g_efx[g_iEFX].flReflectionsPan));
+	epr(sprintf("Late Reverb Gain: %d", g_efx[g_iEFX].flLateReverbGain));
+	epr(sprintf("Late Reverb Delay: %d", g_efx[g_iEFX].flLateReverbDelay));
+	epr(sprintf("Late Reverb Pan: %v", g_efx[g_iEFX].flLateReverbPan));
+	epr(sprintf("Echo Time: %d", g_efx[g_iEFX].flEchoTime));
+	epr(sprintf("Echo Depth: %d", g_efx[g_iEFX].flEchoDepth));
+	epr(sprintf("Modulation Time: %d", g_efx[g_iEFX].flModulationTime));
+	epr(sprintf("Modulation Depth: %d", g_efx[g_iEFX].flModulationDepth));
+	epr(sprintf("Air Absorption Gain HF: %d", g_efx[g_iEFX].flAirAbsorptionGainHF));
+	epr(sprintf("HF Reference: %d", g_efx[g_iEFX].flHFReference));
+	epr(sprintf("LF Reference: %d", g_efx[g_iEFX].flLFReference));
+	epr(sprintf("Romm Rolloff Factor: %d", g_efx[g_iEFX].flRoomRolloffFactor));
+	epr(sprintf("Decay HF Limit: %i", g_efx[g_iEFX].iDecayHFLimit));
+}
 
 int
 EFX_Load(string efx_file)

@@ -415,6 +415,10 @@ CSQC_UpdateView(float w, float h, float focus)
 	}
 
 	EFX_UpdateListener();
+
+	if (autocvar_s_al_debug)
+		EFX_DebugInfo();
+
 	pSeat = (void*)0x70000000i;
 	pSeatLocal = (void*)0x70000000i;
 
