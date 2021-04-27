@@ -48,7 +48,7 @@ CBaseEntity::RenderFXPass(void)
 			abslight = 0;
 		} else {
 			drawflags = 7;
-			abslight = 255;
+			abslight = 128;
 		}
 		break;
 	case RM_GLOW:
@@ -84,13 +84,13 @@ CBaseEntity::RenderFXPass(void)
 			abslight = 0;
 		} else {
 			drawflags = 7;
-			abslight = 255;
+			abslight = 128;
 		}
 		break;
 	case RM_FULLBRIGHT:
 		alpha = 1.0f;
 		drawflags = 7;
-		abslight = 255;
+		abslight = 128;
 		break;
 	case RM_TRIGGER:
 		if (autocvar_cl_showtriggers) {
@@ -130,6 +130,8 @@ CBaseEntity::RenderFXPass(void)
 		}
 		colormod *= 0.5;
 		effects = EF_ADDITIVE;
+		drawflags = 7;
+		abslight = 128;
 	}
 }
 #endif
@@ -291,6 +293,11 @@ CBaseEntity::ReceiveEntity(float flChanged)
 	if (flChanged & BASEFL_CHANGED_SCALE) {
 		scale = readfloat();
 	}
+	if (flChanged & BASEFL_CHANGED_VELOCITY) {
+		velocity[0] = readfloat();
+		velocity[1] = readfloat();
+		velocity[2] = readfloat();
+	}
 
 #ifdef GS_RENDERFX
 	if (flChanged & BASEFL_CHANGED_RENDERFX) {
@@ -331,6 +338,9 @@ CBaseEntity::postdraw(void)
 void
 CBaseEntity::customphysics(void)
 {
+	if (movetype == MOVETYPE_PUSH)
+		setorigin(this, origin + (velocity * clframetime));
+
 	/* support for think/nextthink */
 	if (think && nextthink > 0.0f) {
 		if (nextthink < time) {
@@ -416,6 +426,8 @@ CBaseEntity::SendEntity(entity ePEnt, float fChanged)
 			fChanged &= ~BASEFL_CHANGED_ORIGIN;
 		if (angles == [0,0,0])
 			fChanged &= ~BASEFL_CHANGED_ANGLES;
+		if (velocity == [0,0,0])
+			fChanged &= ~BASEFL_CHANGED_VELOCITY;
 		if (mins == [0,0,0] && maxs == [0,0,0])
 			fChanged &= ~BASEFL_CHANGED_SIZE;
 		if (solid == SOLID_NOT)
@@ -481,6 +493,11 @@ CBaseEntity::SendEntity(entity ePEnt, float fChanged)
 	if (fChanged & BASEFL_CHANGED_SCALE) {
 		WriteFloat(MSG_ENTITY, scale);
 	}
+	if (fChanged & BASEFL_CHANGED_VELOCITY) {
+		WriteFloat(MSG_ENTITY, velocity[0]);
+		WriteFloat(MSG_ENTITY, velocity[1]);
+		WriteFloat(MSG_ENTITY, velocity[2]);
+	}
 
 #ifdef GS_RENDERFX
 	if (fChanged & BASEFL_CHANGED_RENDERFX) {
@@ -532,6 +549,10 @@ CBaseEntity::ParentUpdate(void)
 	if (net_angles != angles) {
 		net_angles = angles;
 		SendFlags |= BASEFL_CHANGED_ANGLES;
+	}
+	if (net_velocity != velocity) {
+		net_velocity = velocity;
+		SendFlags |= BASEFL_CHANGED_VELOCITY;
 	}
 
 	frame1time += frametime;

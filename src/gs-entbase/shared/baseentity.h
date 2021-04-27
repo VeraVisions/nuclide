@@ -51,6 +51,7 @@ class CBaseEntity
 	/* keep track of these variables */
 	vector net_origin;
 	vector net_angles;
+	vector net_velocity;
 
 	string m_parent;
 	
