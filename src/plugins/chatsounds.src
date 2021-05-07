@@ -1,5 +1,5 @@
 #pragma target fte
-#pragma PROGS_DAT  "../../platform/p_chatsounds.dat"
+#pragma PROGS_DAT  "../../platform/plugins/chatsounds.dat"
 #define QWSSQC
 
 #includelist

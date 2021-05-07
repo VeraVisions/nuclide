@@ -1,5 +1,5 @@
 #pragma target fte
-#pragma PROGS_DAT  "../../platform/p_banner.dat"
+#pragma PROGS_DAT  "../../platform/plugins/banner.dat"
 #define QWSSQC
 
 #includelist

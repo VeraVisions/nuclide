@@ -49,6 +49,12 @@ Plugin_Init(void)
 	/* count valid progs */
 	g_plugincount = 0;
 	while ((tmp = fgets(pdb))) {
+		int argc = tokenize_console(tmp);
+
+		/* check for valid entries/comments */
+		if (argc <= 0)
+			continue;
+
 		g_plugincount++;
 	}
 
@@ -57,8 +63,14 @@ Plugin_Init(void)
 	i = 0;
 
 	while ((tmp = fgets(pdb))) {
-		g_plugindb[i].m_strPath = tmp;
-		g_plugindb[i].m_flProgsID = addprogs(tmp);
+		int a = tokenize_console(tmp);
+
+		/* check for valid entries/comments */
+		if (a <= 0)
+			continue;
+
+		g_plugindb[i].m_strPath = strcat("plugins/", argv(0));
+		g_plugindb[i].m_flProgsID = addprogs(g_plugindb[i].m_strPath);
 		i++;
 	}
 

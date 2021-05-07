@@ -1,5 +1,5 @@
 #pragma target fte
-#pragma PROGS_DAT  "../../platform/p_ircbridge.dat"
+#pragma PROGS_DAT  "../../platform/plugins/ircbridge.dat"
 #define QWSSQC
 
 #includelist

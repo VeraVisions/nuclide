@@ -1,5 +1,5 @@
 #pragma target fte
-#pragma PROGS_DAT  "../../platform/p_connectsounds.dat"
+#pragma PROGS_DAT  "../../platform/plugins/connectsounds.dat"
 #define QWSSQC
 
 #includelist

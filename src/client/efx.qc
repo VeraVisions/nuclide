@@ -61,7 +61,7 @@ EFX_Load(string efx_file)
 	int i;
 
 	if (!efx_file) {
-		return;
+		return 0;
 	}
 
 	i = g_efx_count;

@@ -1,5 +1,5 @@
 #pragma target fte
-#pragma PROGS_DAT  "../../platform/p_voxannouncer.dat"
+#pragma PROGS_DAT  "../../platform/plugins/voxannouncer.dat"
 #define QWSSQC
 
 #includelist
