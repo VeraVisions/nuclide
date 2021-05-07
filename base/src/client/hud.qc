@@ -30,5 +30,4 @@ HUD_Draw(void)
 void
 HUD_DrawSpectator(void)
 {
-	// FIXME
 }

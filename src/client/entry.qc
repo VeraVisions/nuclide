@@ -1077,4 +1077,5 @@ CSQC_Shutdown(void)
 	Titles_Shutdown();
 	Sound_Shutdown();
 	Vox_Shutdown();
+	EFX_Shutdown();
 }

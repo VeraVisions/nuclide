@@ -322,3 +322,13 @@ EFX_Init(void)
 	setup_reverb(12, &g_efx[g_iEFX], sizeof(reverbinfo_t));
 	setup_reverb(10, &g_efx[efx_underwater], sizeof(reverbinfo_t));
 }
+
+void
+EFX_Shutdown(void)
+{
+	if (!g_efx_count)
+		return;
+
+	g_efx_count = 0;
+	memfree(g_efx);
+}

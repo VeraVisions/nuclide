@@ -33,6 +33,8 @@
 "invprev"				"Previous weapon"
 "invnext"				"Next weapon"
 "lastinv"				"Last used weapon"
+"impulse 100"				"Toggle flashlight"
+"impulse 201"				"Spray graffiti"
 "blank"					"=========================="
 "blank"					"Communication"
 "blank"					"=========================="

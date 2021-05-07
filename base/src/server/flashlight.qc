@@ -22,13 +22,6 @@ void Flashlight_Toggle(void)
 		}
 	}
 
-#ifdef VALVE
-	player pl = (player)self;
-	if (!(pl.g_items & ITEM_SUIT)) {
-		return;
-	}
-#endif
-
 	if (self.health <= 0) {
 		return;
 	}
@@ -38,5 +31,4 @@ void Flashlight_Toggle(void)
 	} else {
 		self.gflags |= GF_FLASHLIGHT;
 	}
-	sound(self, CHAN_ITEM, "items/flashlight1.wav", 1, ATTN_IDLE);
 }

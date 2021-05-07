@@ -32,20 +32,20 @@ Scores_DrawTeam(player pl, vector pos)
 	drawfill(pos, [290, 1], SCORE_LINE_C, 1.0f, DRAWFLAG_ADDITIVE);
 
 	drawfont = FONT_20;
-	drawstring(pos + [0,-18], "Teams", [20,20], SCORE_HEADER_C, 1.0f, DRAWFLAG_ADDITIVE);
-	drawstring(pos + [124,-18], "kills / deaths", [20,20], SCORE_HEADER_C, 1.0f, DRAWFLAG_ADDITIVE);
-	drawstring(pos + [240,-18], "latency", [20,20], SCORE_HEADER_C, 1.0f, DRAWFLAG_ADDITIVE);
+	drawstring(pos + [0,-18], "Teams", [8,8], SCORE_HEADER_C, 1.0f, DRAWFLAG_ADDITIVE);
+	drawstring(pos + [124,-18], "kills / deaths", [8,8], SCORE_HEADER_C, 1.0f, DRAWFLAG_ADDITIVE);
+	drawstring(pos + [240,-18], "latency", [8,8], SCORE_HEADER_C, 1.0f, DRAWFLAG_ADDITIVE);
 	
 	pos[1] += 12;
 
 	for (int t = 1; t <= serverkeyfloat("teams"); t++) {
 		float l;
 		string temp;
-		drawstring(pos, serverkey(sprintf("team_%i", t)), [20,20], SCORE_HEADER_C, 1.0f, DRAWFLAG_ADDITIVE);
+		drawstring(pos, serverkey(sprintf("team_%i", t)), [8,8], SCORE_HEADER_C, 1.0f, DRAWFLAG_ADDITIVE);
 		temp = serverkey(sprintf("teamscore_%i", t));
-		l = stringwidth(temp, FALSE, [20,20]);
-		drawstring(pos + [150-l, 0], temp, [20,20], SCORE_HEADER_C, 1.0f, DRAWFLAG_ADDITIVE);
-		drawstring(pos + [158, 0], "wins", [20,20], SCORE_HEADER_C, 1.0f, DRAWFLAG_ADDITIVE);
+		l = stringwidth(temp, FALSE, [8,8]);
+		drawstring(pos + [150-l, 0], temp, [8,8], SCORE_HEADER_C, 1.0f, DRAWFLAG_ADDITIVE);
+		drawstring(pos + [158, 0], "wins", [8,8], SCORE_HEADER_C, 1.0f, DRAWFLAG_ADDITIVE);
 		pos[1] += 16;
 
 		for (int i = -1; i > -32; i--) {
@@ -62,23 +62,23 @@ Scores_DrawTeam(player pl, vector pos)
 				drawfill(pos, [290, 13], [0,0,1], 0.5f, DRAWFLAG_ADDITIVE);
 			}
 
-			drawstring(pos + [24,0], getplayerkeyvalue(i, "name"), [20,20], [1,1,1], 1.0f, DRAWFLAG_ADDITIVE);
-			drawstring(pos + [154,0], "/", [20,20], [1,1,1], 1.0f, DRAWFLAG_ADDITIVE);
+			drawstring(pos + [24,0], getplayerkeyvalue(i, "name"), [8,8], [1,1,1], 1.0f, DRAWFLAG_ADDITIVE);
+			drawstring(pos + [154,0], "/", [8,8], [1,1,1], 1.0f, DRAWFLAG_ADDITIVE);
 
 			/* Get the kills and align them left to right */
 			temp = getplayerkeyvalue(i, "frags");
-			l = stringwidth(temp, FALSE, [20,20]);
-			drawstring(pos + [150 - l,0], temp, [20,20], [1,1,1], 1.0f, DRAWFLAG_ADDITIVE);
+			l = stringwidth(temp, FALSE, [8,8]);
+			drawstring(pos + [150 - l,0], temp, [8,8], [1,1,1], 1.0f, DRAWFLAG_ADDITIVE);
 
 			/* Deaths are right to left aligned */
 			temp = getplayerkeyvalue(i, "*deaths");
-			drawstring(pos + [165,0], temp, [20,20], [1,1,1], 1.0f, DRAWFLAG_ADDITIVE);
+			drawstring(pos + [165,0], temp, [8,8], [1,1,1], 1.0f, DRAWFLAG_ADDITIVE);
 
 			/* Get the latency and align it left to right */
 			temp = getplayerkeyvalue(i, "ping");
-			l = stringwidth(temp, FALSE, [20,20]);
+			l = stringwidth(temp, FALSE, [8,8]);
 
-			drawstring(pos + [290 - l,0], temp, [20,20], [1,1,1], 1.0f, DRAWFLAG_ADDITIVE);
+			drawstring(pos + [290 - l,0], temp, [8,8], [1,1,1], 1.0f, DRAWFLAG_ADDITIVE);
 			pos[1] += 20;
 		}
 		pos[1] += 12;
@@ -93,9 +93,9 @@ Scores_DrawNormal(player pl, vector pos)
 	drawfill(pos, [290, 1], SCORE_LINE_C, 1.0f, DRAWFLAG_ADDITIVE);
 
 	drawfont = FONT_20;
-	drawstring(pos + [0,-18], "Player", [20,20], SCORE_HEADER_C, 1.0f, DRAWFLAG_ADDITIVE);
-	drawstring(pos + [124,-18], "kills / deaths", [20,20], SCORE_HEADER_C, 1.0f, DRAWFLAG_ADDITIVE);
-	drawstring(pos + [240,-18], "latency", [20,20], SCORE_HEADER_C, 1.0f, DRAWFLAG_ADDITIVE);
+	drawstring(pos + [0,-18], "Player", [8,8], SCORE_HEADER_C, 1.0f, DRAWFLAG_ADDITIVE);
+	drawstring(pos + [124,-18], "kills / deaths", [8,8], SCORE_HEADER_C, 1.0f, DRAWFLAG_ADDITIVE);
+	drawstring(pos + [240,-18], "latency", [8,8], SCORE_HEADER_C, 1.0f, DRAWFLAG_ADDITIVE);
 	
 	pos[1] += 12;
 	for (int i = -1; i > -32; i--) {
@@ -114,23 +114,23 @@ Scores_DrawNormal(player pl, vector pos)
 			drawfill(pos, [290, 13], [0,0,1], 0.5f, DRAWFLAG_ADDITIVE);
 		}
 
-		drawstring(pos, getplayerkeyvalue(i, "name"), [20,20], [1,1,1], 1.0f, DRAWFLAG_ADDITIVE);
-		drawstring(pos + [154,0], "/", [20,20], [1,1,1], 1.0f, DRAWFLAG_ADDITIVE);
+		drawstring(pos, getplayerkeyvalue(i, "name"), [8,8], [1,1,1], 1.0f, DRAWFLAG_ADDITIVE);
+		drawstring(pos + [154,0], "/", [8,8], [1,1,1], 1.0f, DRAWFLAG_ADDITIVE);
 
 		/* Get the kills and align them left to right */
 		kills = getplayerkeyvalue(i, "frags");
-		l = stringwidth(kills, FALSE, [20,20]);
-		drawstring(pos + [150 - l,0], kills, [20,20], [1,1,1], 1.0f, DRAWFLAG_ADDITIVE);
+		l = stringwidth(kills, FALSE, [8,8]);
+		drawstring(pos + [150 - l,0], kills, [8,8], [1,1,1], 1.0f, DRAWFLAG_ADDITIVE);
 
 		/* Deaths are right to left aligned */
 		deaths = getplayerkeyvalue(i, "*deaths");
-		drawstring(pos + [165,0], deaths, [20,20], [1,1,1], 1.0f, DRAWFLAG_ADDITIVE);
+		drawstring(pos + [165,0], deaths, [8,8], [1,1,1], 1.0f, DRAWFLAG_ADDITIVE);
 
 		/* Get the latency and align it left to right */
 		ping = getplayerkeyvalue(i, "ping");
-		l = stringwidth(ping, FALSE, [20,20]);
+		l = stringwidth(ping, FALSE, [8,8]);
 
-		drawstring(pos + [290 - l,0], ping, [20,20], [1,1,1], 1.0f, DRAWFLAG_ADDITIVE);
+		drawstring(pos + [290 - l,0], ping, [8,8], [1,1,1], 1.0f, DRAWFLAG_ADDITIVE);
 		pos[1] += 20;
 	}
 	
