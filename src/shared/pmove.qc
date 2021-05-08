@@ -153,7 +153,7 @@ PMove_Categorize(void)
 		self.view_ofs = VEC_PLAYER_VIEWPOS;
 	}
 
-	tracebox(self.origin, self.mins, self.maxs, self.origin - [0,0,0.25], MOVE_NORMAL, self);
+	tracebox(self.origin, self.mins, self.maxs, self.origin - [0,0,1], MOVE_NORMAL, self);
 
 	if (!trace_startsolid) {
 		if ((trace_fraction < 1) && (trace_plane_normal[2] > 0.7)) {

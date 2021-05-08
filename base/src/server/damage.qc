@@ -16,7 +16,7 @@
 
 /* generic function that applies damage, pain and suffering */
 void
-Damage_Apply(entity t, entity c, float dmg, int w, int type)
+Damage_Apply(entity t, entity c, float dmg, int w, damageType_t type)
 {
 	base_player tp = (base_player)t;
 

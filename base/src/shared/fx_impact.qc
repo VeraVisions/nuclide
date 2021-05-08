@@ -15,7 +15,6 @@
  */
 
 #ifdef CLIENT
-
 void
 FX_Impact_Init(void)
 {
@@ -24,7 +23,7 @@ FX_Impact_Init(void)
 #endif
 
 void
-FX_Impact(int iType, vector vecPos, vector vNormal)
+FX_Impact(impactType_t iType, vector vecPos, vector vNormal)
 {
 
 } 

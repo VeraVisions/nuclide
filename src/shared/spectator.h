@@ -1,19 +1,19 @@
-enumflags
+typedef enumflags
 {
 	SPECFL_ORIGIN,
 	SPECFL_VELOCITY,
 	SPECFL_TARGET,
 	SPECFL_MODE,
 	SPECFL_FLAGS
-};
+} spectatorFlags_t;
 
-enum
+typedef enum
 {
 	SPECMODE_FREE,
 	SPECMODE_THIRDPERSON,
 	SPECMODE_FIRSTPERSON,
 	SPECMODE_OVERVIEW
-};
+} spectatorMode_t;
 
 #ifdef SERVER
 class spectator:CBaseEntity
@@ -24,8 +24,8 @@ class spectator
 	vector origin_net;
 	vector velocity_net;
 	float spec_ent; float spec_ent_net;
-	float spec_mode; float spec_mode_net;
 	float spec_flags; float spec_flags_net;
+	spectatorMode_t spec_mode; spectatorMode_t spec_mode_net;
 
 	vector spec_org;
 

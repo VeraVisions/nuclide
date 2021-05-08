@@ -18,7 +18,8 @@
 void Decals_Init(void);
 #endif
 
-void Weapons_Init(void)
+void
+Weapons_Init(void)
 {
 	/* in the future we'll have no internal weapon table, then this will fill
 	 * one up... */
@@ -53,21 +54,24 @@ void Weapons_Init(void)
 	}
 }
 
-void Weapons_SetModel(string mdl)
+void
+Weapons_SetModel(string mdl)
 {
 #ifdef CLIENT
 	setmodel(pSeat->m_eViewModel, mdl);
 #endif
 }
 
-void Weapons_SetGeomset(string set)
+void
+Weapons_SetGeomset(string set)
 {
 #ifdef CLIENT
 	setcustomskin(pSeat->m_eViewModel, "", set);
 #endif
 }
 
-void Weapons_Draw(void)
+void
+Weapons_Draw(void)
 {
 	player pl = (player)self;
 	int i = pl.activeweapon;
@@ -89,7 +93,8 @@ void Weapons_Draw(void)
 #endif
 }
 
-void Weapons_Holster(void)
+void
+Weapons_Holster(void)
 {
 	player pl = (player)self;
 	int i = pl.activeweapon;
@@ -98,7 +103,8 @@ void Weapons_Holster(void)
 	}
 }
 
-void Weapons_Primary(void)
+void
+Weapons_Primary(void)
 {
 	player pl = (player)self;
 	int i = pl.activeweapon;
@@ -117,7 +123,8 @@ void Weapons_Primary(void)
 #endif
 }
 
-void Weapons_Secondary(void)
+void
+Weapons_Secondary(void)
 {
 	player pl = (player)self;
 	int i = pl.activeweapon;
@@ -135,7 +142,8 @@ void Weapons_Secondary(void)
 #endif
 }
 
-void Weapons_Reload(void)
+void
+Weapons_Reload(void)
 {
 	player pl = (player)self;
 	int i = pl.activeweapon;
@@ -153,7 +161,8 @@ void Weapons_Reload(void)
 #endif
 }
 
-void Weapons_Release(void)
+void
+Weapons_Release(void)
 {
 	player pl = (player)self;
 	int i = pl.activeweapon;
@@ -164,7 +173,8 @@ void Weapons_Release(void)
 	pl.gflags &= ~GF_SEMI_TOGGLED;
 }
 
-void Weapons_DrawCrosshair(void)
+void
+Weapons_DrawCrosshair(void)
 {
 	player pl = (player)self;
 	int i = pl.activeweapon;
@@ -173,7 +183,8 @@ void Weapons_DrawCrosshair(void)
 	}
 }
 
-string Weapons_GetWorldmodel(int id)
+string
+Weapons_GetWorldmodel(int id)
 {
 	if (g_weapons[id].wmodel != __NULL__) {
 		return g_weapons[id].wmodel();
@@ -182,7 +193,8 @@ string Weapons_GetWorldmodel(int id)
 	return "";
 }
 
-string Weapons_GetPlayermodel(int id)
+string
+Weapons_GetPlayermodel(int id)
 {
 	if (g_weapons[id].pmodel != __NULL__) {
 		return g_weapons[id].pmodel();
@@ -191,7 +203,8 @@ string Weapons_GetPlayermodel(int id)
 	return "";
 }
 
-string Weapons_GetDeathmessage(int id)
+string
+Weapons_GetDeathmessage(int id)
 {
 	if (g_weapons[id].deathmsg != __NULL__) {
 		return g_weapons[id].deathmsg();
@@ -201,7 +214,8 @@ string Weapons_GetDeathmessage(int id)
 }
 
 #ifdef SERVER
-float Weapons_GetAim(int id)
+float
+Weapons_GetAim(int id)
 {
 	if (g_weapons[id].aimanim != __NULL__) {
 		return g_weapons[id].aimanim();
@@ -212,7 +226,8 @@ float Weapons_GetAim(int id)
 #endif
 
 #ifdef CLIENT
-void Weapons_HUDPic(int id, int s, vector pos, float a)
+void
+Weapons_HUDPic(int id, int s, vector pos, float a)
 {
 	if (g_weapons[id].hudpic != __NULL__) {
 		g_weapons[id].hudpic(s, pos, a);
@@ -220,7 +235,8 @@ void Weapons_HUDPic(int id, int s, vector pos, float a)
 }
 #endif
 
-void Weapons_MakeVectors(void)
+void
+Weapons_MakeVectors(void)
 {
 #ifdef SERVER
 	player pl = (player)self;
@@ -230,7 +246,8 @@ void Weapons_MakeVectors(void)
 #endif
 }
 
-vector Weapons_GetCameraPos(void)
+vector
+Weapons_GetCameraPos(void)
 {
 #ifdef SERVER
 	return self.origin + self.view_ofs;
@@ -239,7 +256,8 @@ vector Weapons_GetCameraPos(void)
 #endif
 }
 
-void Weapons_ViewAnimation(int i)
+void
+Weapons_ViewAnimation(int i)
 {
 #ifdef CLIENT
 	player pl = (player)pSeat->m_ePlayer;
@@ -252,13 +270,20 @@ void Weapons_ViewAnimation(int i)
 
 #ifdef CLIENT
 int View_GetAnimation(void);
-int Weapons_GetAnimation(void)
-{
-	return View_GetAnimation();
-}
 #endif
 
-void Weapons_ViewPunchAngle(vector add)
+int
+Weapons_GetAnimation(void)
+{
+#ifdef CLIENT
+	return View_GetAnimation();
+#else
+	return 0;
+#endif
+}
+
+void
+Weapons_ViewPunchAngle(vector add)
 {
 #ifdef CLIENT
 	player pl = (player)self;
@@ -266,7 +291,8 @@ void Weapons_ViewPunchAngle(vector add)
 #endif
 }
 
-int Weapons_IsPresent(player pl, int w)
+int
+Weapons_IsPresent(player pl, int w)
 {
 	if (pl.g_items & g_weapons[w].id) {
 		return TRUE;

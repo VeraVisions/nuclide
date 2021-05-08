@@ -17,7 +17,6 @@
 #include "player.h"
 #include "damage.h"
 #include "flags.h"
-#include "hitmesh.h"
 #include "entities.h"
 #include "events.h"
 #include "flags.h"

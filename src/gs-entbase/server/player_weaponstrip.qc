@@ -43,9 +43,6 @@ player_weaponstrip::Trigger(entity act, int unused)
 	for (int i = 1; i < Weapon_GetCount(); i++) {
 		pl.g_items &= ~Weapon_GetBitID(i);
 		pl.activeweapon = 0;
-		pl.a_ammo1 = 0;
-		pl.a_ammo2 = 0;
-		pl.a_ammo3 = 0;
 	}
 }
 

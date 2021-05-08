@@ -21,7 +21,8 @@ Input_Handle
 Handles impulse and whatnot
 =================
 */
-void Game_Input(void)
+void
+Game_Input(void)
 {
 #ifdef SERVER
 	CGameRules rules = (CGameRules)g_grMode;

@@ -15,7 +15,7 @@
  */
 
 // Impact types
-enum
+typedef enum
 {
 	IMPACT_MELEE,
 	IMPACT_EXPLOSION,
@@ -34,8 +34,7 @@ enum
 	IMPACT_TILE,
 	IMPACT_VENT,
 	IMPACT_WOOD
-};
-
+} impactType_t;
 
 /* TW/NEXT specific game flags */
 

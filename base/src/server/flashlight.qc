@@ -14,7 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void Flashlight_Toggle(void)
+void
+Flashlight_Toggle(void)
 {
 	if (cvar("sv_playerslots") != 1) {
 		if (cvar("mp_flashlight") != 1) {

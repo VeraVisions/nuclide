@@ -14,15 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void Game_SpectatorThink(void)
+void
+Game_SpectatorThink(void)
 {
 	
 }
-void Game_SpectatorConnect(void)
+
+void
+Game_SpectatorConnect(void)
 {
 	
 }
-void Game_SpectatorDisconnect(void)
+
+void
+Game_SpectatorDisconnect(void)
 {
 	
 }

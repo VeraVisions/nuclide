@@ -14,7 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* EV_MUSICTRACK */
+/* We'll let the menu handle the music, as it may want to do special stuff with
+ * track orders and whatnot. We also cannot predict the paths that easily
+ * without making wrong assumptions. */
+
+/*
+====================
+Music_ParseTrack
+
+Handles EV_MUSICTRACK, a type of music track that only plays once.
+====================
+*/
 void
 Music_ParseTrack(void)
 {
@@ -23,7 +33,13 @@ Music_ParseTrack(void)
 	localcmd(sprintf("menu_musictrack %i\n", track));
 }
 
-/* EV_MUSICLOOP */
+/*
+====================
+Music_ParseLoop
+
+Handles EV_MUSICLOOP, a type of music track that loops continously.
+====================
+*/
 void
 Music_ParseLoop(void)
 {

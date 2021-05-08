@@ -14,7 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class CBaseNPC:CBaseEntity
+class
+CBaseNPC:CBaseEntity
 {
 	int body;
 	float frame_last;

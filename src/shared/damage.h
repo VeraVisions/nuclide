@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-enumflags
+typedef enumflags
 {
 	DMG_GENERIC,
 	DMG_CRUSH,
@@ -41,4 +41,4 @@ enumflags
 	DMG_SLOWFREEZE,
 	DMG_SKIP_ARMOR,
 	DMG_SKIP_RAGDOLL
-}; 
+} damageType_t;

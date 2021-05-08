@@ -16,7 +16,7 @@
 
 /*
 =================
-HUD_DrawVoice
+Voice_DrawHUD
 
 Draws a little notification for anyone using voice chat
 =================
@@ -64,7 +64,9 @@ Voice_DrawHUD(void)
 
 /*
 =================
-Player_PreDraw
+Voice_Draw3D
+
+Draws an image above a player in-world if they're speaking over VoIP
 =================
 */
 void

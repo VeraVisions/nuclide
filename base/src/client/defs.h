@@ -14,7 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-vector g_hud_color;
 vector g_hudmins;
 vector g_hudres;
 

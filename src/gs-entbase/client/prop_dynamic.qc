@@ -83,6 +83,8 @@ prop_dynamic::Init(void)
 	CBaseEntity::Init();
 
 	precache_model(model);
+	print(model);
+	print("\n");
 	setmodel(this, model);
 	setorigin(this, origin);
 	solid = SOLID_NOT;

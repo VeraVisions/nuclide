@@ -33,13 +33,13 @@ enumflags
 	PLAYER_ARMOR,
 	PLAYER_MOVETYPE,
 	PLAYER_VIEWOFS,
-	PLAYER_BASEFRAME,
-	PLAYER_FRAME,
-	PLAYER_AMMO1,
-	PLAYER_AMMO2,
-	PLAYER_AMMO3,
 	PLAYER_UNUSED1,
-	PLAYER_UNUSED2
+	PLAYER_UNUSED2,
+	PLAYER_UNUSED3,
+	PLAYER_UNUSED4,
+	PLAYER_UNUSED5,
+	PLAYER_UNUSED6,
+	PLAYER_UNUSED7
 };
 
 noref int input_sequence;
@@ -55,7 +55,7 @@ class player:base_player
 	virtual void(void) draw;
 	virtual float() predraw;
 	virtual void(void) postdraw;
-	virtual void(float) ReceiveEntity;
+	virtual void(float,float) ReceiveEntity;
 	virtual void(void) PredictPreFrame;
 	virtual void(void) PredictPostFrame;
 #else
@@ -65,88 +65,15 @@ class player:base_player
 };
 
 #ifdef CLIENT
-//void Weapons_AmmoUpdate(entity);
 /*
 =================
 player::ReceiveEntity
 =================
 */
 void
-player::ReceiveEntity(float new)
+player::ReceiveEntity(float new, float fl)
 {
-	float fl;
-
-	/* seed for our prediction table */
-	sequence = servercommandframe;
-
-	fl = readfloat();
-
-	/* HACK: we need to make this more reliable */
-	if (fl == UPDATE_ALL) {
-		/* we respawned */
-		gravity = __NULL__;
-	}
-
-	if (fl & PLAYER_MODELINDEX)
-		modelindex = readshort();
-
-	if (fl & PLAYER_ORIGIN) {
-		origin[0] = readcoord();
-		origin[1] = readcoord();
-	}
-
-	if (fl & PLAYER_ORIGIN_Z)
-		origin[2] = readcoord();
-	if (fl & PLAYER_ANGLES_X)
-		pitch = readfloat();
-	if (fl & PLAYER_ANGLES_Y)
-		angles[1] = readfloat();
-	if (fl & PLAYER_ANGLES_Z)
-		angles[2] = readfloat();
-
-	if (fl & PLAYER_VELOCITY) {
-		velocity[0] = readcoord();
-		velocity[1] = readcoord();
-	}
-
-	if (fl & PLAYER_VELOCITY_Z)
-		velocity[2] = readcoord();
-	if (fl & PLAYER_FLAGS) {
-		flags = readfloat();
-		gflags = readfloat();
-	}
-	if (fl & PLAYER_WEAPON)
-		activeweapon = readbyte();
-	if (fl & PLAYER_ITEMS)
-		g_items = (__variant)readfloat();
-	if (fl & PLAYER_HEALTH)
-		health = readbyte();
-	if (fl & PLAYER_ARMOR)
-		armor = readbyte();
-	if (fl & PLAYER_MOVETYPE)
-		movetype = readbyte();
-	if (fl & PLAYER_VIEWOFS)
-		view_ofs[2] = readfloat();
-	if (fl & PLAYER_BASEFRAME)
-		baseframe = readbyte();
-	if (fl & PLAYER_FRAME) {
-		frame = readbyte();
-		frame1time = 0.0f;
-		frame2time = 0.0f;
-	}
-
-	if (fl & PLAYER_AMMO1) {
-	}
-	
-	if (fl & PLAYER_AMMO2) {
-	}
-
-	if (fl & PLAYER_AMMO3) {
-	}
-
-	//if (fl & PLAYER_AMMO1 || fl & PLAYER_AMMO2 || fl & PLAYER_AMMO3)
-	//	Weapons_AmmoUpdate(this);
-
+	base_player::ReceiveEntity(new, fl);
 	setorigin(this, origin);
 }
 
@@ -161,6 +88,7 @@ so we can roll them back later.
 void
 player::PredictPreFrame(void)
 {
+	base_player::PredictPreFrame();
 }
 
 /*
@@ -173,89 +101,14 @@ Where we roll back our values to the ones last sent/verified by the server.
 void
 player::PredictPostFrame(void)
 {
+	base_player::PredictPostFrame();
 }
 
 #else
 void
 player::EvaluateEntity(void)
 {
-	SendFlags |= PLAYER_KEEPALIVE;
-
-	if (old_modelindex != modelindex)
-		SendFlags |= PLAYER_MODELINDEX;
-
-	if (old_origin[0] != origin[0])
-		SendFlags |= PLAYER_ORIGIN;
-
-	if (old_origin[1] != origin[1])
-		SendFlags |= PLAYER_ORIGIN;
-
-	if (old_origin[2] != origin[2])
-		SendFlags |= PLAYER_ORIGIN_Z;
-
-	if (old_angles[0] != v_angle[0])
-		SendFlags |= PLAYER_ANGLES_X;
-
-	if (old_angles[1] != angles[1])
-		SendFlags |= PLAYER_ANGLES_Y;
-
-	if (old_angles[2] != angles[2])
-		SendFlags |= PLAYER_ANGLES_Z;
-
-	if (old_velocity[0] != velocity[0])
-		SendFlags |= PLAYER_VELOCITY;
-
-	if (old_velocity[1] != velocity[1])
-		SendFlags |= PLAYER_VELOCITY;
-
-	if (old_velocity[2] != velocity[2])
-		SendFlags |= PLAYER_VELOCITY_Z;
-
-	if (old_flags != flags)
-		SendFlags |= PLAYER_FLAGS;
-
-	if (old_gflags != gflags)
-		SendFlags |= PLAYER_FLAGS;
-
-	if (old_activeweapon != activeweapon)
-		SendFlags |= PLAYER_WEAPON;
-
-	if (old_items != g_items)
-		SendFlags |= PLAYER_ITEMS;
-
-	if (old_health != health)
-		SendFlags |= PLAYER_HEALTH;
-
-	if (old_armor != armor)
-		SendFlags |= PLAYER_ARMOR;
-
-	if (old_movetype != movetype)
-		SendFlags |= PLAYER_MOVETYPE;
-
-	if (old_viewofs != view_ofs[2])
-		SendFlags |= PLAYER_VIEWOFS;
-
-	if (old_baseframe != baseframe)
-		SendFlags |= PLAYER_BASEFRAME;
-
-	if (old_frame != frame)
-		SendFlags |= PLAYER_FRAME;
-
-	old_modelindex = modelindex;
-	old_origin = origin;
-	old_angles = angles;
-	old_angles[0] = v_angle[0];
-	old_velocity = velocity;
-	old_flags = flags;
-	old_gflags = gflags;
-	old_activeweapon = activeweapon;
-	old_items = g_items;
-	old_health = health;
-	old_armor = armor;
-	old_movetype = movetype;
-	old_viewofs = view_ofs[2];
-	old_baseframe = baseframe;
-	old_frame = frame;
+	base_player::EvaluateEntity();
 }
 
 /*
@@ -266,78 +119,29 @@ player::SendEntity
 float
 player::SendEntity(entity ePEnt, float fChanged)
 {
+	/* remove our entity to other clients if we're dead */
 	if (health <= 0 && ePEnt != this) {
 		return FALSE;
 	}
 
+	/* target client isn't real, they have no client-side. abandon */
 	if (clienttype(ePEnt) != CLIENTTYPE_REAL) {
 		return FALSE;
 	}
 
+	/* other players don't need to know about these attributes */
 	if (ePEnt != self) {
 		fChanged &= ~PLAYER_ITEMS;
 		fChanged &= ~PLAYER_HEALTH;
 		fChanged &= ~PLAYER_ARMOR;
 		fChanged &= ~PLAYER_VIEWOFS;
-		fChanged &= ~PLAYER_AMMO1;
-		fChanged &= ~PLAYER_AMMO2;
-		fChanged &= ~PLAYER_AMMO3;
 	}
 
 	WriteByte(MSG_ENTITY, ENT_PLAYER);
 	WriteFloat(MSG_ENTITY, fChanged);
 
-	/* really trying to get our moneys worth with 23 bits of mantissa */
-	if (fChanged & PLAYER_MODELINDEX)
-		WriteShort(MSG_ENTITY, modelindex);
-	if (fChanged & PLAYER_ORIGIN) {
-		WriteCoord(MSG_ENTITY, origin[0]);
-		WriteCoord(MSG_ENTITY, origin[1]);
-	}
-	if (fChanged & PLAYER_ORIGIN_Z)
-		WriteCoord(MSG_ENTITY, origin[2]);
-	if (fChanged & PLAYER_ANGLES_X)
-		WriteFloat(MSG_ENTITY, v_angle[0]);
-	if (fChanged & PLAYER_ANGLES_Y)
-		WriteFloat(MSG_ENTITY, angles[1]);
-	if (fChanged & PLAYER_ANGLES_Z)
-		WriteFloat(MSG_ENTITY, angles[2]);
-	if (fChanged & PLAYER_VELOCITY) {
-		WriteCoord(MSG_ENTITY, velocity[0]);
-		WriteCoord(MSG_ENTITY, velocity[1]);
-	}
-	if (fChanged & PLAYER_VELOCITY_Z)
-		WriteCoord(MSG_ENTITY, velocity[2]);
-	if (fChanged & PLAYER_FLAGS) {
-		WriteFloat(MSG_ENTITY, flags);
-		WriteFloat(MSG_ENTITY, gflags);
-	}
-	if (fChanged & PLAYER_WEAPON)
-		WriteByte(MSG_ENTITY, activeweapon);
-	if (fChanged & PLAYER_ITEMS)
-		WriteFloat(MSG_ENTITY, (__variant)g_items);
-	if (fChanged & PLAYER_HEALTH)
-		WriteByte(MSG_ENTITY, bound(0, health, 255));
-	if (fChanged & PLAYER_ARMOR)
-		WriteByte(MSG_ENTITY, armor);
-	if (fChanged & PLAYER_MOVETYPE)
-		WriteByte(MSG_ENTITY, movetype);
-	if (fChanged & PLAYER_VIEWOFS)
-		WriteFloat(MSG_ENTITY, view_ofs[2]);
-	if (fChanged & PLAYER_BASEFRAME)
-		WriteByte(MSG_ENTITY, baseframe);
-	if (fChanged & PLAYER_FRAME)
-		WriteByte(MSG_ENTITY, frame);
-
-	if (fChanged & PLAYER_AMMO1) {
-	}
-
-	if (fChanged & PLAYER_AMMO2) {
-	}
-
-	if (fChanged & PLAYER_AMMO3) {
-	}
-
+	/* the generic client attributes */
+	base_player::SendEntity(ePEnt, fChanged);
 	return TRUE;
 }
 #endif

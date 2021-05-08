@@ -26,4 +26,4 @@ string Plugin_ParseClientCommand(string);
 int Plugin_PlayerConnect(base_player);
 int Plugin_PlayerDisconnect(base_player);
 int Plugin_PlayerEntered(base_player);
-void Plugin_PlayerObituary(entity, entity, int, int, int);
+void Plugin_PlayerObituary(entity, entity, int, bodyType_t, int);

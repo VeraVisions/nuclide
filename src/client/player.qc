@@ -17,8 +17,10 @@
 void
 player::draw(void)
 {
+	/* mouth flapping */
 	this.bonecontrol5 = getplayerkeyfloat(this.entnum - 1, "voiploudness");
 
+	/* DEBUG! */
 	if (cvar("bonetest") == 1) {
 		this.bonecontrol1 = cvar("bonecontrol1");
 		this.bonecontrol2 = cvar("bonecontrol2");
@@ -35,8 +37,10 @@ player::draw(void)
 float
 player::predraw(void)
 {
-	/* Run animations regardless of rendering the player */
+	/* run animations regardless of rendering the player */
 	draw();
+
+	/* make sure we're enabling shadow rendering on us */
 	effects &= ~EF_NOSHADOW;
 
 	if (autocvar_cl_thirdperson == TRUE || this.entnum != player_localentnum) {
@@ -47,6 +51,7 @@ player::predraw(void)
 		Player_PreDraw(this, FALSE);
 		removeentity(this);
 	}
+
 	return PREDRAW_NEXT;
 }
 

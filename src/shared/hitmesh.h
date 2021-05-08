@@ -15,7 +15,7 @@
  */
 
 /* global hitmesh definitions */
-enum
+typedef enum
 {
 	BODY_DEFAULT,
 	BODY_HEAD,
@@ -25,4 +25,4 @@ enum
 	BODY_ARMRIGHT,
 	BODY_LEGLEFT,
 	BODY_LEGRIGHT
-}; 
+} bodyType_t;

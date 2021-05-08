@@ -319,7 +319,7 @@ Deathmessage hook
 =================
 */
 void
-Plugin_PlayerObituary(entity attk, entity targ, int weapon, int body, int dmg)
+Plugin_PlayerObituary(entity attk, entity targ, int weapon, bodyType_t body, int dmg)
 {
 	void(entity,entity,int,int,int) vFunc;
 

@@ -26,19 +26,6 @@ Propagate our pmove state to whatever the current frame before its stomped on
 void
 Predict_PlayerPreFrame(player pl)
 {
-	/* base player attributes/fields we're going to roll back */
-	pl.net_origin = pl.origin;
-	pl.net_velocity = pl.velocity;
-	pl.net_flags = pl.flags;
-	pl.net_gflags = pl.gflags;
-	pl.net_jumptime = pl.jumptime;
-	pl.net_teleport_time = pl.teleport_time;
-	pl.net_viewzoom = pl.viewzoom;
-	pl.net_punchangle = pl.punchangle;
-	pl.net_w_attack_next = pl.w_attack_next;
-	pl.net_w_idle_next = pl.w_idle_next;
-	pl.net_weapontime = pl.weapontime;
-
 	/* this is where a game/mod would decide to add more prediction rollback
 	 * information. */
 	pl.PredictPreFrame();
@@ -80,19 +67,6 @@ Rewind our pmove state back to before we started predicting.
 void
 Predict_PlayerPostFrame(player pl)
 {
-	/* finally roll the values back */
-	pl.origin = pl.net_origin;
-	pl.velocity = pl.net_velocity;
-	pl.flags = pl.net_flags;
-	pl.gflags = pl.net_gflags;
-	pl.jumptime = pl.net_jumptime;
-	pl.teleport_time = pl.net_teleport_time;
-	pl.viewzoom = pl.net_viewzoom;
-	pl.punchangle = pl.net_punchangle;
-	pl.w_attack_next = pl.net_w_attack_next;
-	pl.w_idle_next = pl.net_w_idle_next;
-	pl.weapontime = pl.net_weapontime;
-
 	/* give the game/mod a chance to roll back its values too */
 	pl.PredictPostFrame();
 

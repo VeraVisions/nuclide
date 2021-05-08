@@ -150,7 +150,7 @@ CSQC_RenderScene(void)
 void
 CSQC_UpdateView(float w, float h, float focus)
 {
-	player pl;
+	player pl = __NULL__;
 	spectator spec;
 	int s;
 
@@ -695,16 +695,6 @@ CSQC_ConsoleCommand(string sCMD)
 			measurepos = [0,0,0];
 		}
 		break;
-	case "dev_sentence":
-		static CBaseEntity foo;
-		if (!foo) {
-			foo = spawn(CBaseEntity);
-			foo.drawmask = MASK_ENGINE;
-			setmodel(foo, "sprites/muzzleflash1.spr");
-		}
-		setorigin(foo, getproperty(VF_ORIGIN));
-		foo.Sentence(argv(1));
-		break;
 	case "vote":
 		if (argv(1) == "yes") {
 			sendevent("VoteY", "");
@@ -932,7 +922,8 @@ CSQC_Ent_Update(float new)
 
 		/* any differences in things that are read below are now
 		   officially from prediction misses. */
-		pl.ReceiveEntity(new);
+		float a = readfloat();
+		pl.ReceiveEntity(new, a);
 		break;
 	case ENT_SPECTATOR:
 		spectator spec = (spectator)self;

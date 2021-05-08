@@ -18,7 +18,7 @@
 .float flags;
 var hashtable g_hashsounds;
 
-enumflags
+typedef enumflags
 {
 	SNDFL_LOOPING,	/* forceloop */
 	SNDFL_NODUPS,	/* don't random the samples */
@@ -28,7 +28,7 @@ enumflags
 	SNDFL_PRIVATE,	/* only play on target */
 	SNDFL_STEP, /* volume is calculated from entity speed */
 	SNDFL_FOLLOW
-};
+} soundFlag_t;
 
 typedef struct
 {
@@ -39,7 +39,7 @@ typedef struct
 	float pitch_max;
 	float shakes;
 	float volume;
-	int flags;
+	soundFlag_t flags;
 	int playc;
 	int sample_count;
 	string samples;

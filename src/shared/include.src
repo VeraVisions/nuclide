@@ -3,4 +3,5 @@ spectator.qc
 pmove.qc
 sound.qc
 math.qc
+player.qc
 #endlist

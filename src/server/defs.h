@@ -32,7 +32,7 @@
 
 var int autocvar_mp_flashlight = TRUE;
 
-void FX_Impact(int, vector, vector);
+void FX_Impact(impactType_t, vector, vector);
 void FX_Explosion(vector);
 void FX_GibHuman(vector);
 void Footsteps_Update(void);
@@ -44,7 +44,7 @@ void TraceAttack_SetPenetrationPower(int);
 #endif
 
 void Damage_Radius(vector, entity, float, float, int, int);
-void Damage_Apply(entity, entity, float, int, int);
+void Damage_Apply(entity, entity, float, int, damageType_t);
 void Client_FixAngle(entity, vector);
 void Client_ShakeOnce(vector, float, float, float, float);
 
@@ -79,7 +79,7 @@ hashtable hashMaterials;
 entity g_dmg_eAttacker;
 entity g_dmg_eTarget;
 int g_dmg_iDamage;
-int g_dmg_iHitBody;
+bodyType_t g_dmg_iHitBody;
 int g_dmg_iFlags;
 int g_dmg_iWeapon;
 

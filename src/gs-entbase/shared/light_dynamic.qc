@@ -66,10 +66,14 @@ enumflags
 };
 
 #ifdef CLIENT
-class light_dynamic
-#else
-class light_dynamic:CBaseTrigger
+class CBaseTrigger:CBaseEntity
+{
+	
+};
 #endif
+
+
+class light_dynamic:CBaseTrigger
 {
 	vector m_vecLight;
 	float m_flIntensity;
@@ -80,19 +84,21 @@ class light_dynamic:CBaseTrigger
 	float m_flStyle;
 	string m_strPattern;
 	int m_iState;
+	int m_iStartActive;
 
 	void(void) light_dynamic;
+	virtual void(string, string) SpawnKey;
 
 #ifdef CLIENT
 	virtual void(float) ReceiveEntity;
 	virtual float(void) predraw;
+	virtual void(void) Initialized;
+	virtual void(void) RendererRestarted;
 #else
-	int m_iStartActive;
 
 	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
 	virtual float(entity, float) SendEntity;
-	virtual void(string, string) SpawnKey;
 	virtual void(entity, string, string) Input;
 	virtual void(void) ParentUpdate;
 #endif
@@ -156,6 +162,48 @@ light_dynamic::ReceiveEntity(float flFlags)
 		m_strPattern = readstring();
 
 	classname = "light_dynamic";
+}
+void
+DLight_Restart(void)
+{
+	for (entity b = world; (b = find(b, ::classname, "light_dynamic"));) {
+		light_dynamic pf = (light_dynamic) b;
+		pf.RendererRestarted();
+		print("RELOADED LIGHT!\n");
+	}
+}
+void
+light_dynamic::RendererRestarted(void)
+{
+	float p = dynamiclight_spawnstatic(origin, m_flDistance, m_vecLight);
+	dynamiclight_set(p, LFIELD_ANGLES, angles);
+	
+	if (m_flStyle)
+		dynamiclight_set(p, LFIELD_STYLE, m_flStyle);
+	if (m_strPattern)
+		dynamiclight_set(p, LFIELD_STYLESTRING, m_strPattern);
+
+	print("I'm a static light! At ");
+	print(vtos(origin));
+	print("at a color of ");
+	print(vtos(m_vecLight));
+	print(" and an intensity of ");
+	print(ftos(m_flDistance));
+	print("!\n");
+}
+void
+light_dynamic::Initialized(void)
+{
+	/* we're meant to be a server controlled entity. cancel out and kill us ASAP */
+	if (targetname) {
+		think = Util_Destroy;
+		nextthink = time + 0.1f;
+		return;
+	}
+
+	print("static!\n");
+	RendererRestarted();
+	//remove(this);
 }
 #else
 void
@@ -291,6 +339,17 @@ light_dynamic::Input(entity eAct, string strInput, string strData)
 		CBaseTrigger::Input(eAct, strInput, strData);
 	}
 }
+void
+light_dynamic::Respawn(void)
+{
+	SetSolid(SOLID_NOT);
+	SetSize([-16,-16,-16], [16,16,16]);
+	SetOrigin(m_oldOrigin);
+	SetAngles(m_oldAngle);
+
+	m_iState = (m_iStartActive == 1) ? 1 : 0;
+}
+#endif
 
 void
 light_dynamic::SpawnKey(string strKey, string strValue)
@@ -331,33 +390,27 @@ light_dynamic::SpawnKey(string strKey, string strValue)
 }
 
 void
-light_dynamic::Respawn(void)
-{
-	SetSolid(SOLID_NOT);
-	SetSize([-16,-16,-16], [16,16,16]);
-	SetOrigin(m_oldOrigin);
-	SetAngles(m_oldAngle);
-
-	m_iState = (m_iStartActive == 1) ? 1 : 0;
-}
-#endif
-
-void
 light_dynamic::light_dynamic(void)
 {
-#ifdef CLIENT
-	drawmask = MASK_ENGINE;
-#else
 	m_vecLight = [255,255,255];
 	m_flDistance = 256;
 	m_iStartActive = 1;
 
+#ifdef CLIENT
+	drawmask = MASK_ENGINE;
+#else
+
 	CBaseTrigger::CBaseTrigger();
+
+	/* the client-side will handle dlights without targetnames */
+	if (!targetname) {
+		think = Util_Destroy;
+		nextthink = time + 0.1f;
+	}
 #endif
 }
 
-/* workaround for q3map2, as it turns any entity starting with light*
-   into a generic static world light. */
-#ifndef CLIENT
-CLASSEXPORT(dynamic_light, light_dynamic)
-#endif
+class dynamic_light:light_dynamic
+{
+	
+};

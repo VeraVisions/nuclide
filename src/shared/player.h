@@ -1,36 +1,69 @@
+/*
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
+ *
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
+ * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
+ * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+
+#define PREDICTED_INT(x) int x; int x ##_net
+#define PREDICTED_FLOAT(x) float x; float x ##_net
+#define PREDICTED_VECTOR(x) vector x; vector x ##_net
+
+#define PREDICTED_INT_N(x) int x ##_net
+#define PREDICTED_FLOAT_N(x) float x ##_net
+#define PREDICTED_VECTOR_N(x) vector x ##_net
+
+#define ROLL_BACK(x) x = x ##_net
+#define SAVE_STATE(x) x ##_net = x
+#define ATTR_CHANGED(x) (x ##_net != x)
+#define VEC_CHANGED(x,y) (x ##_net[y] != x[y])
+
+class
 #ifdef SERVER
-class base_player:CBaseEntity
+base_player:CBaseEntity
 #else
-class base_player
+base_player
 #endif
 {
-	float health;
-	float armor;
+	PREDICTED_FLOAT(health);
+	PREDICTED_FLOAT(armor);
 
-	/* When the weapon is done firing */
-	float w_attack_next;
-	/* When to play the next idle animation */ 
-	float w_idle_next;
+	PREDICTED_FLOAT_N(modelindex);
+	PREDICTED_VECTOR_N(origin);
+	PREDICTED_VECTOR_N(velocity);
+	PREDICTED_VECTOR_N(angles);
+	PREDICTED_FLOAT_N(flags);
+	PREDICTED_FLOAT_N(gflags);
+	PREDICTED_FLOAT(viewzoom);
+	PREDICTED_VECTOR_N(view_ofs);
+	PREDICTED_FLOAT_N(movetype);
+	PREDICTED_VECTOR(v_angle);
 
-	/* Magazine/Clip */
-	int a_ammo1;
-	/* Rest in the inventory */
-	int a_ammo2;
-	/* Special ammo */
-	int a_ammo3;
+	PREDICTED_FLOAT(w_attack_next);
+	PREDICTED_FLOAT(w_idle_next);
+	PREDICTED_FLOAT(teleport_time);
+	PREDICTED_FLOAT(weapontime);
+	PREDICTED_VECTOR(punchangle);
 
 	/* We can't use the default .items field, because FTE will assume
 	 * effects of some bits. Such as invisibility, quad, etc. 
 	 * also, modders probably want 32 bits for items. */
-	int g_items; 
+	PREDICTED_INT(g_items);
+	PREDICTED_FLOAT(activeweapon);
 
-	float activeweapon;
-	float viewzoom;
-	vector punchangle;
-	vector view_ofs;
-	float weapontime;
-
-	vector v_angle;
+	/* these are NOT networked */
+	int a_ammo1;
+	int a_ammo2;
+	int a_ammo3;
 
 	/* any mods that use hooks */
 	entity hook;
@@ -39,43 +72,13 @@ class base_player
 	entity vehicle;
 
 #ifdef CLIENT
-	/* Prediction */
-	vector net_origin;
-	vector net_velocity;
-	float net_flags;
-	float net_gflags;
-	float net_w_attack_next;
-	float net_w_idle_next;
-	float net_jumptime;
-	float net_teleport_time;
-	float net_weapontime;
-	float net_viewzoom;
-	vector net_punchangle;
-	int net_ammo1;
-	int net_ammo2;
-	int net_ammo3;
 	int sequence;
 	float pitch;
-#else
 
-	/* conditional networking */
-	int old_modelindex;
-	vector old_origin;
-	vector old_angles;
-	vector old_velocity;
-	int old_flags;
-	int old_gflags;
-	int old_activeweapon;
-	int old_items;
-	float old_health;
-	float old_armor;
-	int old_movetype;
-	float old_viewofs;
-	int old_baseframe;
-	int old_frame;
-	int old_a_ammo1;
-	int old_a_ammo2;
-	int old_a_ammo3;
+	virtual void(float, float) ReceiveEntity;
+	virtual void(void) PredictPreFrame;
+	virtual void(void) PredictPostFrame;
+#else
 	
 	int voted;
 	int step;
@@ -84,5 +87,8 @@ class base_player
 	float underwater_time;
 	float underwater_dmg;
 	float pain_time;
+
+	virtual void(void) EvaluateEntity;
+	virtual float(entity, float) SendEntity;
 #endif
 };

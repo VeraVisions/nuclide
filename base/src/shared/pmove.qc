@@ -21,12 +21,14 @@
 .float waterlevel;
 .float watertype;
 
-float GamePMove_Maxspeed(player target)
+float
+GamePMove_Maxspeed(player target)
 {
 	return (target.flags & FL_CROUCHING) ? 135 : 270;
 }
 
-void GamePMove_Fall(player target, float impactspeed)
+void
+GamePMove_Fall(player target, float impactspeed)
 {
 	if (impactspeed > 580) {
 #ifdef SERVER
@@ -43,7 +45,8 @@ void GamePMove_Fall(player target, float impactspeed)
 	}
 }
 
-void GamePMove_Jump(player target)
+void
+GamePMove_Jump(player target)
 {
 	float flJumptimeDelta;
 	float flChainBonus;

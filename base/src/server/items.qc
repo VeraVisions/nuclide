@@ -14,7 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void item_pickup::touch(void)
+void
+item_pickup::touch(void)
 {
 	if (other.classname != "player") {
 		return;
@@ -38,19 +39,22 @@ void item_pickup::touch(void)
 	}
 }
 
-void item_pickup::SetItem(int i)
+void
+item_pickup::SetItem(int i)
 {
 	id = i;
 	m_oldModel = Weapons_GetWorldmodel(id);
 	SetModel(m_oldModel);
 }
 
-void item_pickup::SetFloating(int i)
+void
+item_pickup::SetFloating(int i)
 {
 	m_bFloating = rint(bound(0, m_bFloating, 1));
 }
 
-void item_pickup::Respawn(void)
+void
+item_pickup::Respawn(void)
 {
 	SetSolid(SOLID_TRIGGER);
 	SetOrigin(m_oldOrigin);
@@ -75,7 +79,8 @@ void item_pickup::Respawn(void)
 	}
 }
 
-void item_pickup::item_pickup(void)
+void
+item_pickup::item_pickup(void)
 {
 	CBaseTrigger::CBaseTrigger();
 	Respawn();
