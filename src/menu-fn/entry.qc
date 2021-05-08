@@ -211,8 +211,11 @@ m_draw(vector screensize)
 			drawfill([0,0], screensize, [0,0,0], 0.75f);
 	} else {
 		drawfill([0,0], screensize, [0,0,0], 1.0f);
-		drawpic([g_menuofs[0],g_menuofs[1]], g_bmp[SPLASH],
-				[640,480], [1,1,1], 1.0f);
+
+		if (games[gameinfo_current].steambg == 0)
+				Background_WON();
+		else
+				Background_Steam();
 	}
 
 	const string ver = "Nuclide (build " __DATE__ ")";

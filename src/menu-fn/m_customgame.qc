@@ -244,6 +244,7 @@ games_init(void)
 		games[id].chatroom = gamedirname;
 		games[id].readme = "readme.txt";
 		games[id].pkgid = -1;
+		games[id].steambg = 0;
 
 		for (int i = 0; i < county; i++) {
 			switch(argv(i)) {
@@ -330,6 +331,9 @@ games_init(void)
 				break;
 			case "gameinfo_introvideo":
 				games[id].introvideo = argv(i+1);
+				break;
+			case "gameinfo_steambg":
+				games[id].steambg = (int)stof(argv(i+1));
 				break;
 			default:
 				break;

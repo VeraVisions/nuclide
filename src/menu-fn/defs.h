@@ -90,6 +90,7 @@ typedef struct
 	string fallback_dir;
 	string chatroom;
 	string introvideo;
+	int steambg;
 } gameinfo_t;
 
 var int gameinfo_current = -1;

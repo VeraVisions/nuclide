@@ -373,7 +373,7 @@ menu_main_draw(void)
 						col_help,1.0f, 0, font_label);
 	} else {
 		/* Don't even attempt to display the logo.avi otherwise */
-		if (checkcommand("ffmpeg_videobitrate")) {
+		if (games[gameinfo_current].steambg == 0 && checkcommand("ffmpeg_videobitrate")) {
 			drawpic([g_menuofs[0],g_menuofs[1] + 70], "logo_avi",
 					g_logosize, [1,1,1], 1.0f);
 			g_logosize = gecko_get_texture_extent("logo_avi");

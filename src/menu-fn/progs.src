@@ -69,5 +69,6 @@ m_intro.qc
 m_main.qc
 music.qc
 menu.qc
+background.qc
 entry.qc
 #endlist
