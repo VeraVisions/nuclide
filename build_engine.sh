@@ -8,8 +8,12 @@ COMPILE_SYS=$(uname)
 
 # Check how many cores/processors we should use for building
 if ! [ -x "$(command -v nproc)" ]; then
-	# nproc doesn't exist, so make a safe assumption of having at least 1
-	BUILD_PROC=1
+	# check if we're on OpenBSD then
+	if ! [ -x "$(command -v sysctl)" ]; then
+		BUILD_PROC=1
+	else
+		BUILD_PROC=$(sysctl -n hw.ncpu)
+	fi
 else
 	BUILD_PROC=$(nproc)
 fi
