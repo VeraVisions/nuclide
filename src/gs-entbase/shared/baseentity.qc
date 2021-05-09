@@ -426,8 +426,8 @@ CBaseEntity::SendEntity(entity ePEnt, float fChanged)
 	}
 
 	/* don't network triggers unless provoked */
-	if (cvar("developer") == 0 && m_iRenderMode == RM_TRIGGER)
-		return FALSE;
+	/*if (cvar("developer") == 0 && m_iRenderMode == RM_TRIGGER)
+		return FALSE;*/
 
 #ifdef GS_RENDERFX
 	/* let's not waste networking power on certain render-modes where they would
