@@ -336,21 +336,6 @@ CBaseEntity::postdraw(void)
 }
 
 void
-CBaseEntity::customphysics(void)
-{
-	if (movetype == MOVETYPE_PUSH)
-		setorigin(this, origin + (velocity * clframetime));
-
-	/* support for think/nextthink */
-	if (think && nextthink > 0.0f) {
-		if (nextthink < time) {
-			nextthink = 0.0f;
-			think();
-		}
-	}
-}
-
-void
 CBaseEntity::Init(void)
 {
 	isCSQC = TRUE;
@@ -434,9 +419,15 @@ CBaseEntity::SendEntity(entity ePEnt, float fChanged)
 			fChanged &= ~BASEFL_CHANGED_SOLID;
 		if (movetype == MOVETYPE_NONE)
 			fChanged &= ~BASEFL_CHANGED_MOVETYPE;
+#ifdef GS_RENDERFX
 		if (m_iRenderMode == RM_NORMAL)
 			fChanged &= ~BASEFL_CHANGED_RENDERMODE;
+#endif
 	}
+
+	/* don't network triggers unless provoked */
+	if (cvar("developer") == 0 && m_iRenderMode == RM_TRIGGER)
+		return FALSE;
 
 #ifdef GS_RENDERFX
 	/* let's not waste networking power on certain render-modes where they would

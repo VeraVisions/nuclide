@@ -35,7 +35,6 @@ class CBaseEntity
 	virtual void(float flChanged) ReceiveEntity;
 	virtual float(void) predraw;
 	virtual void(void) postdraw;
-	virtual void(void) customphysics;
 #endif
 
 #ifdef SERVER
