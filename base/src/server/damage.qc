@@ -21,33 +21,36 @@ Damage_Apply(entity t, entity c, float dmg, int w, damageType_t type)
 	base_player tp = (base_player)t;
 
 	CGameRules rules = (CGameRules)g_grMode;
-	if (t.flags & FL_GODMODE) {
+
+	/* player god mode */
+	if (t.flags & FL_CLIENT && t.flags & FL_GODMODE)
 		return;
-	}
 
 	/* already dead, please avoid recursion */
-	if (t.health <= 0) {
+	if (t.health <= 0)
 		return;
-	}
 
-	/* skip armor */
-	if not (type & DMG_SKIP_ARMOR)
-	if (tp.armor && dmg > 0) {
-		float flArmor;
-		float flNewDamage;
+	/* only clients have armor */
+	if (t.flags & FL_CLIENT) {
+		/* skip armor */
+		if not (type & DMG_SKIP_ARMOR)
+		if (tp.armor && dmg > 0) {
+			float flArmor;
+			float flNewDamage;
 
-		flNewDamage = dmg * 0.2;
-		flArmor = (dmg - flNewDamage) * 0.5;
+			flNewDamage = dmg * 0.2;
+			flArmor = (dmg - flNewDamage) * 0.5;
 
-		if (flArmor > tp.armor) {
-			flArmor = tp.armor;
-			flArmor *= (1/0.5);
-			flNewDamage = dmg - flArmor;
-			tp.armor = 0;
-		} else {
-			tp.armor -= flArmor;
+			if (flArmor > tp.armor) {
+				flArmor = tp.armor;
+				flArmor *= (1/0.5);
+				flNewDamage = dmg - flArmor;
+				tp.armor = 0;
+			} else {
+				tp.armor -= flArmor;
+			}
+			dmg = flNewDamage;
 		}
-		dmg = flNewDamage;
 	}
 
 	dmg = rint(dmg);
@@ -67,9 +70,6 @@ Damage_Apply(entity t, entity c, float dmg, int w, damageType_t type)
 	} else if (t.max_health && t.health > t.max_health) {
 		t.health = t.max_health;
 	}
-
-	/* set this global in case we need it later */
-	g_eAttacker = c;
 
 	CBaseEntity s = (CBaseEntity)t;
 
@@ -137,20 +137,16 @@ Damage_Radius(vector org, entity attacker, float dmg, float r, int check, int w)
 
 		/* don't bother if it's not anywhere near us */
 		dist = vlen(org - pos);
-		if (dist > r) {
+		if (dist > r)
 			continue;
-		}
 
 		/* can we physically hit this thing? */
-		if (Damage_CheckTrace(e, org) == FALSE) {
-			if (check == TRUE) {
+		if (check == TRUE)
+			if (Damage_CheckTrace(e, org) == FALSE)
 				continue;
-			}
-		}
 
 		/* calculate new damage values */
-		diff = vlen(org - pos);
-		diff = (r - diff) / r;
+		diff = (r - dist) / r;
 		new_dmg = rint(dmg * diff);
 
 		if (diff > 0) {

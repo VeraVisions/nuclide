@@ -175,7 +175,7 @@ Sound_Parse(int i, string line, string shader)
 		dprint("}\n");
 		braced = FALSE;
 		t_name = "";
-		return TRUE;
+		return (1);
 		break;
 	default:
 		if (braced == TRUE) {
@@ -196,7 +196,7 @@ Sound_Parse(int i, string line, string shader)
 			}
 		}
 	}
-	return FALSE;
+	return (0);
 }
 
 int

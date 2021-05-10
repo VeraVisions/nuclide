@@ -55,7 +55,6 @@ void Game_Input(void);
 int Rules_IsTeamPlay(void);
 
 entity eActivator;
-entity g_eAttacker;
 
 /* Generic entity fields */
 .void(void) PlayerUse;

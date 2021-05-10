@@ -14,24 +14,44 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+entity g_multiDamage_Target;
+int g_multiDamage_Value;
+
+static void
+TraceAttack_Apply(entity eAttacker, int iWeapon)
+{
+	/* may not be defined yet */
+	if (g_multiDamage_Target == __NULL__)
+		return;
+
+	if (trace_ent.iBleeds == 1) {
+		FX_Blood(trace_endpos, [1,0,0]);
+	}
+
+	Damage_Apply(g_multiDamage_Target, self, g_multiDamage_Value, iWeapon, DMG_BULLET);
+	g_multiDamage_Target = __NULL__;
+	g_multiDamage_Value = 0;
+}
+
 /* cast a single bullet shot */
-void
+static void
 TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon)
 {
-	string tex_name;
 	vector range;
-	float surf;
 
 	range = (vAngle * 8196);
 
+	/* make sure we can gib corpses */
+	int oldhitcontents = self.hitcontentsmaski;
+	self.hitcontentsmaski = CONTENTBITS_POINTSOLID | CONTENTBIT_CORPSE;
 	traceline(vecPos, vecPos + range, MOVE_LAGGED | MOVE_HITMODEL, self);
+	self.hitcontentsmaski = oldhitcontents;
 
 	if (trace_fraction >= 1.0f)
 		return;
 
 	if (trace_ent.takedamage == DAMAGE_YES && trace_ent.iBleeds) {
 		Sound_Play(trace_ent, CHAN_BODY, "damage_bullet.hit");
-		FX_Blood(trace_endpos, [1,0,0]);
 
 #ifdef CSTRIKE
 		player pl = (player)trace_ent;
@@ -64,7 +84,13 @@ TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon)
 		if (trace_surface_id == BODY_HEAD)
 			iDamage *= 3;
 #endif
-	} else {
+	}
+
+	/* impact per bullet */
+	if (trace_ent.iBleeds == 0) {
+		string tex_name;
+		float surf;
+
 		switch (serverkeyfloat("*bspversion")) {
 		case BSPVER_HL:
 			surf = getsurfacenearpoint(trace_ent, trace_endpos);
@@ -176,8 +202,16 @@ TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon)
 		}
 	}
 
-	if (trace_ent.takedamage == DAMAGE_YES)
-		Damage_Apply(trace_ent, self, iDamage, iWeapon, DMG_BULLET);
+	/* combine them into one single Damage_Apply call later */
+	if (trace_ent.takedamage == DAMAGE_YES) {
+		if (trace_ent != g_multiDamage_Target) {
+			TraceAttack_Apply(self, iWeapon);
+			g_multiDamage_Target = trace_ent;
+			g_multiDamage_Value = iDamage;
+		} else {
+			g_multiDamage_Value += iDamage;
+		}
+	}
 
 #ifdef BULLETPENETRATION
 	if (iTotalPenetrations > 0) {
@@ -193,6 +227,9 @@ TraceAttack_FireBullets(int iShots, vector vecPos, int iDamage, vector vecSpread
 {
 	vector vDir;
 	makevectors(self.v_angle);
+
+	g_multiDamage_Target = __NULL__;
+	g_multiDamage_Value = 0;
 
 	while (iShots > 0) {
 		vDir = aim(self, 100000);
@@ -217,6 +254,10 @@ TraceAttack_FireBullets(int iShots, vector vecPos, int iDamage, vector vecSpread
 #endif
 		TraceAttack_FireSingle(vecPos, vDir, iDamage, iWeapon);
 		iShots--;
+	}
+	
+	if (g_multiDamage_Target) {
+		TraceAttack_Apply(self, iWeapon);
 	}
 }
 

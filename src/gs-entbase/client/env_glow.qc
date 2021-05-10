@@ -53,7 +53,7 @@ env_glow::predraw(void)
 	vecPlayer = pSeat->m_vecPredictedOrigin;
 
 	if (checkpvs(vecPlayer, this) == FALSE)
-		return PREDRAW_NEXT;
+		return (PREDRAW_NEXT);
 
 	other = world;
 	traceline(this.origin, vecPlayer, MOVE_OTHERONLY, this);
@@ -67,7 +67,7 @@ env_glow::predraw(void)
 	m_flAlpha = bound(0.0f, m_flAlpha, 1.0f);
 
 	if (m_flAlpha <= 0.0f)
-		return PREDRAW_NEXT;
+		return (PREDRAW_NEXT);
 
 	/* Scale the glow somewhat with the players distance */
 	fsize = m_vecSize * m_flScale;
@@ -112,7 +112,7 @@ env_glow::predraw(void)
 #endif
 	addentity(this);
 
-	return PREDRAW_NEXT;
+	return (PREDRAW_NEXT);
 }
 
 void

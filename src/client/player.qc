@@ -52,7 +52,7 @@ player::predraw(void)
 		removeentity(this);
 	}
 
-	return PREDRAW_NEXT;
+	return (PREDRAW_NEXT);
 }
 
 void

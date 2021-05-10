@@ -18,7 +18,6 @@
 	var int iTotalPenetrations;
 #endif
 
-void TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon);
 void TraceAttack_FireBullets(int iShots, vector vecPos, int iDamage, vector vecSpread, int iWeapon);
 
 #ifdef BULLETPENETRATION

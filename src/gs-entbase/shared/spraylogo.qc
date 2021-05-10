@@ -29,7 +29,7 @@ float
 Spray_SendEntity(entity ePEnt, float fChanged)
 {
 	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
-		return FALSE;
+		return (0);
 
 	WriteByte(MSG_ENTITY, ENT_SPRAY);
 	WriteCoord(MSG_ENTITY, self.origin[0]);
@@ -39,7 +39,7 @@ Spray_SendEntity(entity ePEnt, float fChanged)
 	WriteCoord(MSG_ENTITY, self.angles[1]);
 	WriteCoord(MSG_ENTITY, self.angles[2]);
 	WriteEntity(MSG_ENTITY, self.owner);
-	return TRUE;
+	return (1);
 }
 
 void
@@ -118,7 +118,7 @@ CSpraylogo::predraw(void)
 	iSize = getplayerkeyblob(m_iOwnerID, "spray", __NULL__, 0);
 
 	if (iSize <= 0) {
-		return PREDRAW_NEXT;
+		return (PREDRAW_NEXT);
 	}
 
 	if (m_iInitialized == FALSE) {
@@ -147,7 +147,7 @@ CSpraylogo::predraw(void)
 		adddecal(m_strName, m_vecPosition, width, height, light, 1.0f);
 		addentity(this);
 	}
-	return PREDRAW_NEXT;
+	return (PREDRAW_NEXT);
 }
 
 void

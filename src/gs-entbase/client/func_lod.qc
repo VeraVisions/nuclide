@@ -53,27 +53,27 @@ func_lod::predraw(void)
 	vecPlayer = pSeat->m_vecPredictedOrigin;
 
 	if (checkpvs(vecPlayer, this) == FALSE) {
-		return PREDRAW_NEXT;
+		return (PREDRAW_NEXT);
 	}
 
 #ifdef DEVELOPER
 	if (autocvar_dev_loddistance != 0) {
 		if (vlen(vecPlayer - m_vecTestPos) > autocvar_dev_loddistance) {
-			return PREDRAW_NEXT;
+			return (PREDRAW_NEXT);
 		}
 	} else {
 		if (vlen(vecPlayer - m_vecTestPos) > m_iDisappearDist) {
-			return PREDRAW_NEXT;
+			return (PREDRAW_NEXT);
 		}
 	}
 #else
 	if (vlen(vecPlayer - m_vecTestPos) > m_iDisappearDist) {
-		return PREDRAW_NEXT;
+		return (PREDRAW_NEXT);
 	}
 #endif
 
 	addentity(self);
-	return PREDRAW_NEXT;
+	return (PREDRAW_NEXT);
 }
 
 void

@@ -75,10 +75,10 @@ PointMessage_Visible(vector p1, vector p2, vector ang)
 	if (fov > 0.3) {
 		traceline(p2, p1, TRUE, self);
 		if (trace_fraction == 1.0) {
-			return TRUE;
+			return (1);
 		}
 	}
-	return FALSE;
+	return (0);
 }
 
 void

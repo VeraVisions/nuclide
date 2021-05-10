@@ -30,7 +30,7 @@ CGameRules::FrameStart(void)
 float
 CGameRules::ConsoleCommand(base_player pl, string cmd)
 {
-	return FALSE;
+	return (0);
 }
 
 /* client */

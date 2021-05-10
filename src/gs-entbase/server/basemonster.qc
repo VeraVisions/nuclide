@@ -17,19 +17,19 @@
 int
 CBaseMonster::AnimIdle(void)
 {
-	return 0;
+	return (0);
 }
 
 int
 CBaseMonster::AnimWalk(void)
 {
-	return 0;
+	return (0);
 }
 
 int
 CBaseMonster::AnimRun(void)
 {
-	return 0;
+	return (0);
 }
 
 void
@@ -67,11 +67,11 @@ CBaseMonster::IsFriend(int al)
 {
 
 	if (m_iAlliance == MAL_ROGUE)
-		return FALSE;
+		return (0);
 	else if (al == m_iAlliance)
-		return TRUE;
+		return (1);
 
-	return FALSE;
+	return (0);
 }
 
 
@@ -125,9 +125,8 @@ CBaseMonster::AttackThink(void)
 	if (m_iSequenceState != SEQUENCESTATE_NONE)
 		return;
 
-	if (m_flAttackThink > time) {
+	if (m_flAttackThink > time)
 		return;
-	}
 
 	if (!m_eEnemy)
 		return;
@@ -179,14 +178,14 @@ int
 CBaseMonster::AttackMelee(void)
 {
 	m_flAttackThink = time + 0.5f;
-	return FALSE;
+	return (0);
 }
 
 int
 CBaseMonster::AttackRanged(void)
 {
 	m_flAttackThink = time + 0.5f;
-	return FALSE;
+	return (0);
 }
 
 void
@@ -255,9 +254,8 @@ CBaseMonster::CheckRoute(void)
 	float flDist;
 	vector evenpos;
 
-	if (!m_iNodes) {
+	if (!m_iNodes)
 		return;
-	}
 
 	/* level out position/node stuff */
 	if (m_iCurNode < 0) {
@@ -351,9 +349,8 @@ CBaseMonster::WalkRoute(void)
 		endangles = vectoangles(m_eEnemy.origin - origin);
 		input_movevalues = [m_flChaseSpeed, 0, 0];
 		m_vecTurnAngle[1] = endangles[1];
-	} else {
+	} else
 		return;
-	}
 
 	/* functional */
 	input_angles[1] = v_angle[1] = m_vecTurnAngle[1];
@@ -479,9 +476,8 @@ CBaseMonster::Physics(void)
 void
 CBaseMonster::touch(void)
 {
-	if (movetype != MOVETYPE_WALK) {
+	if (movetype != MOVETYPE_WALK)
 		return;
-	}
 
 	if (other.movetype == MOVETYPE_WALK) {
 		velocity = normalize(other.origin - origin) * -128;

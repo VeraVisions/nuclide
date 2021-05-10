@@ -117,7 +117,7 @@ float prop_rope::predraw(void)
 
 	if (checkpvs(getproperty(VF_ORIGIN), this) == FALSE) {
 		if (checkpvs(getproperty(VF_ORIGIN), x) == FALSE) {
-			return PREDRAW_NEXT;
+			return (PREDRAW_NEXT);
 		}
 	}
 
@@ -127,7 +127,7 @@ float prop_rope::predraw(void)
 			this.classname, target));
 #endif
 		remove(this);
-		return PREDRAW_NEXT;
+		return (PREDRAW_NEXT);
 	}
 
 	/* draw the start/end without segments */
@@ -171,7 +171,7 @@ float prop_rope::predraw(void)
 	/* only drawing one segment. */
 	if (spawnflags & 1) {
 		addentity(this);
-		return PREDRAW_NEXT;
+		return (PREDRAW_NEXT);
 	}
 
 	sc = 0;
@@ -202,7 +202,7 @@ float prop_rope::predraw(void)
 	}
 
 	addentity(this);
-	return PREDRAW_NEXT;
+	return (PREDRAW_NEXT);
 }
 
 void prop_rope::SpawnKey(string strField, string strKey)

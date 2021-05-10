@@ -39,10 +39,10 @@ float
 func_dustmotes::predraw(void)
 {
 	if (m_flNexTime > cltime)
-		return PREDRAW_NEXT;
+		return (PREDRAW_NEXT);
 
 	if (checkpvs(getproperty(VF_ORIGIN), this) == FALSE)
-		return PREDRAW_NEXT;
+		return (PREDRAW_NEXT);
 
 	for (int i = 0; i < m_iCount; i++) {
 		vector vecPos;
@@ -55,7 +55,7 @@ func_dustmotes::predraw(void)
 	m_flNexTime = cltime + 3.0f;
 
 	addentity(self);
-	return PREDRAW_NEXT;
+	return (PREDRAW_NEXT);
 }
 
 void

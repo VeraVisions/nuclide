@@ -59,9 +59,9 @@ void CUIRadio::SetTitle (string strName)
 int CUIRadio::GetValue(void)
 {
 	if (m_iFlags & RADIO_ACTIVE) {
-		return TRUE;
+		return (1);
 	} else {
-		return FALSE;
+		return (0);
 	}
 }
 void CUIRadio::SetValue (int iValue)

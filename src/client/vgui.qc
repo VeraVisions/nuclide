@@ -28,12 +28,12 @@ int
 VGUI_Draw(void)
 {
 	g_uiDesktop.Draw();
-	return 1;
+	return (1);
 }
 
 int
 VGUI_Input(float flEvType, float flScanX, float flCharY, float flDevID)
 {
 	g_uiDesktop.Input(flEvType, flScanX, flCharY, flDevID);
-	return 1;
+	return (1);
 }

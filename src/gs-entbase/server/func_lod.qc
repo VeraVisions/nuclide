@@ -34,7 +34,7 @@ class func_lod:CBaseEntity
 float
 func_lod::SendEntity(entity a, float b)
 {
-	return FALSE;
+	return (0);
 }
 
 void

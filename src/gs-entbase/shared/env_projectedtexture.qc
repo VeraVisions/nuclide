@@ -97,7 +97,7 @@ float
 env_projectedtexture::predraw(void)
 {
 	if (!m_iState) {
-		return PREDRAW_NEXT;
+		return (PREDRAW_NEXT);
 	}
 
 	/* TODO: We need to handle the second cone light */
@@ -108,7 +108,7 @@ env_projectedtexture::predraw(void)
 	dynamiclight_set(p, LFIELD_STYLESTRING, m_strPattern);
 
 	addentity(this);
-	return PREDRAW_NEXT;
+	return (PREDRAW_NEXT);
 }
 
 void
@@ -197,7 +197,7 @@ float
 env_projectedtexture::SendEntity(entity ePEnt, float flFlags)
 {
 	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
-		return FALSE;
+		return (0);
 
 	WriteByte(MSG_ENTITY, ENT_PROJECTEDTEXTURE);
 	WriteFloat(MSG_ENTITY, flFlags);
@@ -237,7 +237,7 @@ env_projectedtexture::SendEntity(entity ePEnt, float flFlags)
 	if (flFlags & PRTEXFL_CHANGED_PATTERN)
 		WriteString(MSG_ENTITY, m_strPattern);
 
-	return TRUE;
+	return (1);
 }
 
 void

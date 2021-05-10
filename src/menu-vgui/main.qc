@@ -166,8 +166,8 @@ float m_consolecommand ( string strCommand )
 			argv(1)));
 		break;
 	default:
-		return FALSE;
+		return (0);
 	}
 
-	return TRUE;
+	return (1);
 }

@@ -70,12 +70,12 @@ float
 ambient_generic::SendEntity(entity ePEnt, float fChanged)
 {
 	if (clienttype(ePEnt) != CLIENTTYPE_REAL) {
-		return FALSE;
+		return (0);
 	}
 
 	/* only override when we're doing the toggle guff */
 	if (m_iLoop == FALSE) {
-		return FALSE;
+		return (0);
 	}
 
 	WriteByte(MSG_ENTITY, ENT_AMBIENTSOUND);
@@ -95,7 +95,7 @@ ambient_generic::SendEntity(entity ePEnt, float fChanged)
 		WriteString(MSG_ENTITY, m_strActivePath);
 	}
 
-	return TRUE;
+	return (1);
 }
 
 void

@@ -465,7 +465,7 @@ CSQC_InputEvent(float fEventType, float fKey, float fCharacter, float fDeviceID)
 		}
 		break;
 	default:
-		return TRUE;
+		return (1);
 	}
 
 	VGUI_Input(fEventType, fKey, fCharacter, fDeviceID);
@@ -476,7 +476,7 @@ CSQC_InputEvent(float fEventType, float fKey, float fCharacter, float fDeviceID)
 		setcursormode(FALSE, "gfx/cursor", [0,0,0], 1.0f);
 	}
 
-	return FALSE;
+	return (0);
 }
 
 /*
@@ -810,7 +810,7 @@ CSQC_ConsoleCommand(string sCMD)
 	default:
 		return ClientGame_ConsoleCommand();
 	}
-	return TRUE;
+	return (1);
 }
 
 void
@@ -868,7 +868,7 @@ CSQC_Parse_CenterPrint(string sMessage)
 	pSeat->m_flCenterprintAlpha = 1;
 	pSeat->m_flCenterprintTime = time + 3;
 
-	return TRUE;
+	return (1);
 }
 
 /*

@@ -141,7 +141,7 @@ float
 CBaseEntity::predraw(void)
 {
 	if (!modelindex) {
-		return PREDRAW_NEXT;
+		return (PREDRAW_NEXT);
 	}
 
 #ifdef GS_RENDERFX
@@ -180,7 +180,7 @@ CBaseEntity::predraw(void)
 	if (alpha > 0.0)
 		addentity(this);
 
-	return PREDRAW_NEXT;
+	return (PREDRAW_NEXT);
 }
 
 void
@@ -385,10 +385,10 @@ float
 CBaseEntity::SendEntity(entity ePEnt, float fChanged)
 {
 	if (!modelindex)
-		return FALSE;
+		return (0);
 
 	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
-		return FALSE;
+		return (0);
 
 	WriteByte(MSG_ENTITY, ENT_ENTITY);
 
@@ -427,7 +427,7 @@ CBaseEntity::SendEntity(entity ePEnt, float fChanged)
 
 	/* don't network triggers unless provoked */
 	/*if (cvar("developer") == 0 && m_iRenderMode == RM_TRIGGER)
-		return FALSE;*/
+		return (0);*/
 
 #ifdef GS_RENDERFX
 	/* let's not waste networking power on certain render-modes where they would
@@ -512,7 +512,7 @@ CBaseEntity::SendEntity(entity ePEnt, float fChanged)
 	}
 #endif
 
-	return TRUE;
+	return (1);
 }
 
 void

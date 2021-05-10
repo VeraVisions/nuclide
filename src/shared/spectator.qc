@@ -43,11 +43,11 @@ float
 spectator::SendEntity(entity ePVSent, float flChangedFlags)
 {
 	if (this != ePVSent) {
-		return FALSE;
+		return (0);
 	}
 
 	if (clienttype(ePVSent) != CLIENTTYPE_REAL) {
-		return FALSE;
+		return (0);
 	}
 
 	WriteByte(MSG_ENTITY, ENT_SPECTATOR);
@@ -74,7 +74,7 @@ spectator::SendEntity(entity ePVSent, float flChangedFlags)
 	if (flChangedFlags & SPECFL_FLAGS)
 		WriteByte(MSG_ENTITY, spec_flags);
 
-	return TRUE;
+	return (1);
 }
 
 void
@@ -144,7 +144,7 @@ float
 spectator::predraw(void)
 {
 	addentity(this);
-	return PREDRAW_NEXT;
+	return (PREDRAW_NEXT);
 }
 #endif
 

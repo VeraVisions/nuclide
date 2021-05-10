@@ -171,7 +171,7 @@ float
 func_monitor::SendEntity(entity ePEnt, float flFlags)
 {
 	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
-		return FALSE;
+		return (0);
 
 	WriteByte(MSG_ENTITY, ENT_MONITOR);
 	WriteFloat(MSG_ENTITY, flFlags);
@@ -216,7 +216,7 @@ func_monitor::SendEntity(entity ePEnt, float flFlags)
 	if (flFlags & MONITORFL_CHANGED_STATUS)
 		WriteByte(MSG_ENTITY, m_iValue);
 
-	return TRUE;
+	return (1);
 }
 
 void

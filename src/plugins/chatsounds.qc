@@ -46,13 +46,13 @@ ChatLookUp(string cmd)
 		for (int c = 0; c < sc; c++) {
 			if (cmd == argv(c)) {
 				ChatPlay(i);
-				return __NULL__;
+				return (__NULL__);
 			}
 		}
 	}
 
 	/* some joker might set it to non 0/1 */
-	return __NULL__;
+	return (__NULL__);
 }
 
 /* plugin hook */
@@ -65,7 +65,7 @@ FMX_ParseClientCommand(string cmd)
 			return ChatLookUp(strtolower(argv(1)));
 			break;
 	}
-	return cmd;
+	return (cmd);
 }
 
 void

@@ -19,11 +19,11 @@ Bot_PickName(entity target)
 {
 	int n = 0;
 	entity pbot = world;
-	for (int i = 1; (pbot = edict_num(i)); i++) {
-		if (clienttype(pbot) == CLIENTTYPE_BOT) {
+
+	for (int i = 1; (pbot = edict_num(i)); i++)
+		if (clienttype(pbot) == CLIENTTYPE_BOT)
 			n++;
-		}
-	}
+
 	forceinfokey(target, "name", sprintf("Bot %i", n));
 	forceinfokey(target, "model", "robo");
 }
@@ -34,7 +34,7 @@ Bot_AddQuick(void)
 	/* we've got no nodes, so generate some fake waypoints */
 	if (!g_nodes_present) {
 		print("^1Bot_AddQuick^7: Can't add bot. No waypoints.\n");
-		return world;
+		return (__NULL__);
 	}
 
 	entity newbot;
@@ -46,7 +46,7 @@ Bot_AddQuick(void)
 	if (!self) {
 		print("^1Bot_AddQuick^7: Can't add bot. Server is full\n");
 		self = oself;
-		return world;
+		return (__NULL__);
 	}
 
 	Bot_PickName(self);
@@ -55,5 +55,5 @@ Bot_AddQuick(void)
 
 	newbot = self;
 	self = oself;
-	return newbot;
+	return (newbot);
 }

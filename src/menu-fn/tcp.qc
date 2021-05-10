@@ -81,7 +81,7 @@ TCP_Receive(tcpinfo_t *in)
 {
 	/* not even open */
 	if (in.m_fSocket <= 0)
-		return "";
+		return ("");
 
 	return fgets(in.m_fSocket);
 }

@@ -91,7 +91,7 @@ Sentences_GetSamples(string word)
 
 	/* you never know what NPCs might do */
 	if (word == "") {
-		return "";
+		return ("");
 	}
 
 	/* check if the word is present at all */
@@ -120,5 +120,5 @@ Sentences_GetSamples(string word)
 
 	/* we've somehow messed up catastrophically */
 	print(sprintf("^1ERROR: Invalid sentence keyword %s\n", word));
-	return "";
+	return ("");
 }

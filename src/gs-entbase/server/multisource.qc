@@ -58,7 +58,7 @@ multisource::QueryTargets(void)
 		} else {
 			/* exit out immediately as there's no point unless in-dev */
 			if (tTemp.GetValue() == FALSE) {
-				return FALSE;
+				return (0);
 			}
 		}
 	}

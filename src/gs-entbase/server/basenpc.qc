@@ -44,9 +44,8 @@ CBaseNPC::Sentence(string sentence)
 {
 	string seq = Sentences_GetSamples(sentence);
 
-	if (seq == "") {
+	if (seq == "")
 		return;
-	}
 
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_SENTENCE);
@@ -74,13 +73,11 @@ CBaseNPC::TalkPlayerGreet(void)
 	if (m_iSequenceState != SEQUENCESTATE_NONE)
 		return;
 
-	if (m_flNextSentence > time) {
+	if (m_flNextSentence > time)
 		return;
-	}
 
-	if (m_iFlags & MONSTER_METPLAYER) {
+	if (m_iFlags & MONSTER_METPLAYER)
 		return;
-	}
 
 	for (entity p = world; (p = find(p, ::classname, "player"));) {
 		/* Find players in a specific radius */
@@ -154,13 +151,11 @@ CBaseNPC::TalkPlayerWounded1(void)
 	if (m_iSequenceState != SEQUENCESTATE_NONE)
 		return;
 
-	if (m_flNextSentence > time) {
+	if (m_flNextSentence > time)
 		return;
-	}
 
-	if (base_health < health) {
+	if (base_health < health)
 		return;
-	}
 
 	for (entity p = world; (p = find(p, ::classname, "player"));) {
 		/* Find players in a specific radius */
@@ -182,13 +177,11 @@ CBaseNPC::TalkPlayerWounded2(void)
 	if (m_iSequenceState != SEQUENCESTATE_NONE)
 		return;
 
-	if (m_flNextSentence > time) {
+	if (m_flNextSentence > time)
 		return;
-	}
 
-	if ((base_health / 2) < health) {
+	if ((base_health / 2) < health)
 		return;
-	}
 
 	for (entity p = world; (p = find(p, ::classname, "player"));) {
 		/* Find players in a specific radius */
@@ -211,9 +204,8 @@ CBaseNPC::TalkPlayerWounded3(void)
 	if (m_iSequenceState != SEQUENCESTATE_NONE)
 		return;
 
-	if (m_flNextSentence > time) {
+	if (m_flNextSentence > time)
 		return;
-	}
 
 	for (entity p = world; (p = find(p, ::classname, "player"));) {
 		/* Find players in a specific radius */
@@ -450,14 +442,12 @@ CBaseNPC::Respawn(void)
 void
 CBaseNPC::OnPlayerUse(void)
 {
-	if (m_iFlags & MONSTER_FEAR) {
+	if (m_iFlags & MONSTER_FEAR)
 		return;
-	}
 
 	/* can't press use any non-allies */
-	if (!(m_iFlags & MONSTER_CANFOLLOW)) {
+	if (!(m_iFlags & MONSTER_CANFOLLOW))
 		return;
-	}
 
 	if ((m_eFollowing == world)) {
 		if (!(m_iFlags & MONSTER_USED)) {

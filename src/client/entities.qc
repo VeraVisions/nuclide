@@ -40,14 +40,14 @@ Entities_ParseLump(void)
 			/* when we've reached the end of the lump, initialize the class! */
 			if (iClass == TRUE) {
 				eEnt.Init();
-				return TRUE;
+				return (1);
 			}
 
 			/* remove if we've found no valid class to go with us */
 			if (eEnt) {
 				remove(eEnt);
 			}
-			return TRUE;
+			return (1);
 		}
 
 		strValue = getentitytoken();
@@ -76,5 +76,5 @@ Entities_ParseLump(void)
 		}
 	}
 
-	return FALSE;
+	return (0);
 }

@@ -35,13 +35,13 @@ Util_IsSky(vector pos)
 {
 	if (serverkeyfloat("*bspversion") == BSPVER_HL)
 	if (getsurfacetexture(world, getsurfacenearpoint(world, pos)) == "sky") {
-		return TRUE;
+		return (1);
 	}
 
 	if (trace_surfaceflagsi & SURF_SKY) {
-		return TRUE;
+		return (1);
 	}
-	return FALSE;
+	return (0);
 }
 
 class env_sun:CBaseEntity
@@ -62,7 +62,7 @@ float
 env_sun::predraw(void)
 {
 	addentity(this);
-	return PREDRAW_NEXT;
+	return (PREDRAW_NEXT);
 }
 
 void

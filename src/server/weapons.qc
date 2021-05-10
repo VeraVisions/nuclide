@@ -130,7 +130,7 @@ Weapons_AddItem(base_player pl, int w, int startammo)
 				/* we're over the slot limit. */
 				if (c >= maxit) {
 					self = oldself;
-					return FALSE;
+					return (0);
 				}
 			}
 		}

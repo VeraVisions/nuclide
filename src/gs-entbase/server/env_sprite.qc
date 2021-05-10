@@ -56,14 +56,14 @@ float
 env_sprite::SendEntity(entity ePEnt, float flags)
 {
 	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
-		return FALSE;
+		return (0);
 
 	if (spawnflags & ENVS_PLAYONCE)
-		return FALSE;
+		return (0);
 
 	/* Delete it on the client. */
 	if (m_iToggled == FALSE)
-		return FALSE;
+		return (0);
 
 	WriteByte(MSG_ENTITY, ENT_SPRITE);
 	WriteFloat(MSG_ENTITY, 666);
@@ -88,7 +88,7 @@ env_sprite::SendEntity(entity ePEnt, float flags)
 	WriteFloat(MSG_ENTITY, alpha);
 #endif
 
-	return TRUE;
+	return (1);
 }
 
 void

@@ -95,10 +95,10 @@ env_global::GlobalPresent(string strName)
 {
 	for (int i = 1; i < (tokenize(cvar_string(CENVGLOBAL_CVAR)) - 1); i += 2) {
 		if (argv(i) == strName) {
-			return 1;
+			return (1);
 		}
 	}
-	return 0;
+	return (0);
 }
 
 void
@@ -126,7 +126,7 @@ env_global::GetGlobal(string strName)
 			return stoi(argv(i+1));
 		}
 	}
-	return 0;
+	return (0);
 }
 
 void

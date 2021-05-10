@@ -46,7 +46,7 @@ CBaseTrigger::CreateOutput(string outmsg)
 	float c;
 
 	if (!outmsg)
-		return "";
+		return ("");
 
 	outname = sprintf("output_%i\n", outcount);
 	outcount++;
@@ -159,7 +159,7 @@ CBaseTrigger::GetMaster(void)
 	if (!m_strMaster) {
 		/*dprint(sprintf("^2%s::^3GetMaster^7: No master, return success\n", 
 		this.classname));*/
-		return TRUE;
+		return (1);
 	}
 
 	t = (CBaseTrigger)find(world, ::target, m_strMaster);
@@ -168,7 +168,7 @@ CBaseTrigger::GetMaster(void)
 	if (!t) {
 		/*dprint(sprintf("^2%s::^3GetMaster^7: Invalid master, return success\n", 
 		this.classname));*/
-		return TRUE;
+		return (1);
 	}
 
 	/*if (t.GetValue() == 1)

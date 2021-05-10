@@ -128,7 +128,7 @@ Plugin_InitEnts(void)
 	void(void) vFunc;
 
 	if (g_plugins_enabled == 0)
-		return FALSE;
+		return (0);
 
 	for (int i = 0; i < g_plugincount; i++) {
 		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "FMX_InitEnts");
@@ -154,7 +154,7 @@ Plugin_RunClientCommand(void)
 	int(void) vFunc;
 
 	if (g_plugins_enabled == 0)
-		return FALSE;
+		return (0);
 
 	/* rval = final return value, tval = temporary return value.
 	   if at least one of the plugins returns TRUE, then RunClientCommand
@@ -188,7 +188,7 @@ Plugin_ParseClientCommand(string msg)
 	string(string msg) vFunc;
 
 	if (g_plugins_enabled == 0)
-		return FALSE;
+		return (0);
 
 	for (int i = 0; i < g_plugincount; i++) {
 		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "FMX_ParseClientCommand");
@@ -221,7 +221,7 @@ Plugin_PlayerConnect(base_player cl)
 	int(entity) vFunc;
 
 	if (g_plugins_enabled == 0)
-		return FALSE;
+		return (0);
 
 	/* rval = final return value, tval = temporary return value.
 	   if at least one of the plugins returns TRUE, then RunClientCommand
@@ -256,7 +256,7 @@ Plugin_PlayerDisconnect(base_player cl)
 	int(entity) vFunc;
 
 	if (g_plugins_enabled == 0)
-		return FALSE;
+		return (0);
 
 	/* rval = final return value, tval = temporary return value.
 	   if at least one of the plugins returns TRUE, then RunClientCommand
@@ -291,7 +291,7 @@ Plugin_PlayerEntered(base_player cl)
 	int(entity) vFunc;
 
 	if (g_plugins_enabled == 0)
-		return FALSE;
+		return (0);
 
 	/* rval = final return value, tval = temporary return value.
 	   if at least one of the plugins returns TRUE, then RunClientCommand
@@ -324,7 +324,7 @@ Plugin_PlayerObituary(entity attk, entity targ, int weapon, bodyType_t body, int
 	void(entity,entity,int,int,int) vFunc;
 
 	if (g_plugins_enabled == 0)
-		return FALSE;
+		return (0);
 
 	for (int i = 0; i < g_plugincount; i++) {
 		 vFunc = externvalue(g_plugindb[i].m_flProgsID, "FMX_PlayerObituary");

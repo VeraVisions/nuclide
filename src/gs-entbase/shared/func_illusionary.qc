@@ -53,7 +53,7 @@ func_illusionary::SendEntity(entity pvsent, float fl)
 	if (targetname)
 		return CBaseTrigger::SendEntity(pvsent, fl);
 	else
-		return FALSE;
+		return (0);
 }
 
 void
@@ -101,12 +101,12 @@ func_illusionary::predraw(void)
 	vecPlayer = pSeat->m_vecPredictedOrigin;
 
 	if (checkpvs(vecPlayer, this) == FALSE) {
-		return PREDRAW_NEXT;
+		return (PREDRAW_NEXT);
 	}
 
 	CBaseEntity::predraw();
 	addentity(self);
-	return PREDRAW_NEXT;
+	return (PREDRAW_NEXT);
 }
 
 void

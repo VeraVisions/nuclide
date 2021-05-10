@@ -25,15 +25,14 @@ int
 Route_RoundDistance(float flDist)
 {
 	float r = fabs(flDist) % 2;
-	if (r == 0) {
-		return flDist;
-	}
 
-	if (flDist < 0) {
+	if (r == 0)
+		return (flDist);
+
+	if (flDist < 0)
 		return -(fabs(flDist) - r);
-	} else {
-		return flDist + 2 - r;
-	}
+	else
+		return (flDist + 2 - r);
 }
 
 
@@ -47,7 +46,7 @@ Route_SelectRandom(string sEntname)
 {
 	static entity eLastSpot;
 	eLastSpot = find(eLastSpot, classname, sEntname);
-	return eLastSpot;
+	return (eLastSpot);
 }
 
 /*
@@ -60,7 +59,7 @@ Route_SelectRandomSpot(void)
 {
 	static entity eLastSpot;
 	eLastSpot = findfloat(eLastSpot, ::botinfo, BOTINFO_SPAWNPOINT);
-	return eLastSpot;
+	return (eLastSpot);
 }
 
 void
@@ -83,11 +82,11 @@ Route_SelectDestination(bot target)
 {
 	entity dest = world;
 
-	// Need health!
 	if (target.health < 50) {
 		entity temp;
 		int bestrange = COST_INFINITE;
 		int range;
+
 		for (temp = world; (temp = findfloat(temp, ::botinfo, BOTINFO_HEALTH));) {
 			range = vlen(temp.origin - target.origin);
 			if ((range < bestrange) && (temp.solid == SOLID_TRIGGER)) {
@@ -98,11 +97,11 @@ Route_SelectDestination(bot target)
 
 		if (dest) {
 			//dprint("Route: Going for health!");
-			return dest.origin + '0 0 32';
+			return (dest.origin + [0,0,32]);
 		}
 	}
 
 	dest = Route_SelectRandomSpot();
 	target.m_eDestination = dest;
-	return dest.origin;
+	return (dest.origin);
 }

@@ -124,7 +124,7 @@ float
 env_laser::SendEntity(entity ePEnt, float fChanged)
 {
 	if (clienttype(ePEnt) != CLIENTTYPE_REAL) {
-		return FALSE;
+		return (0);
 	}
 
 	WriteByte(MSG_ENTITY, ENT_ENVLASER);
@@ -150,7 +150,7 @@ env_laser::SendEntity(entity ePEnt, float fChanged)
 		WriteByte(MSG_ENTITY, m_iState);
 	}
 
-	return TRUE;
+	return (1);
 }
 
 void

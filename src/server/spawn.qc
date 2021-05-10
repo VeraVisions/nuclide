@@ -128,7 +128,7 @@ entity Spawn_SelectRandom(string cname)
 	/* still not found any */
 	if (spot == __NULL__) {
 		error(sprintf("Spawn_SelectRandom: no %s on level", cname));
-		return world;
+		return (__NULL__);
 	}
 
 	lastspot = spot;

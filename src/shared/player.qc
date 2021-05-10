@@ -326,6 +326,6 @@ base_player::SendEntity(entity ePEnt, float fChanged)
 	WriteFloat(MSG_ENTITY, punchangle[1]);
 	WriteFloat(MSG_ENTITY, punchangle[2]);
 
-	return TRUE;
+	return (1);
 }
 #endif

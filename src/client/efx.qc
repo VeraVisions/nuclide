@@ -61,7 +61,7 @@ EFX_Load(string efx_file)
 	int i;
 
 	if (!efx_file) {
-		return 0;
+		return (0);
 	}
 
 	i = g_efx_count;
@@ -81,7 +81,7 @@ EFX_Load(string efx_file)
 	fh = fopen(strcat("efx/", efx_file, ".efx"), FILE_READ);
 
 	if (fh < 0) {
-		return 0;
+		return (0);
 	}
 
 	/* cache the name */

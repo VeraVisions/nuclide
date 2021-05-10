@@ -94,5 +94,5 @@ CSQC_Parse_Damage(float save, float take, vector abs_pos)
 		pSeat->m_flDamageAlpha = 1.0f;
 	}
 
-	return TRUE;
+	return (1);
 }

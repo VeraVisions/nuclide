@@ -37,7 +37,7 @@ ChatFilter(string cmd)
 	for (int i = 0; i < g_words; i++)
 		cmd = strreplace(g_wordlist[i], ChatFilter_CreateWord(i), cmd);
 
-	return cmd;
+	return (cmd);
 }
 
 /* plugin hook */
@@ -50,7 +50,7 @@ FMX_ParseClientCommand(string cmd)
 			return ChatFilter(cmd);
 			break;
 	}
-	return cmd;
+	return (cmd);
 }
 
 void

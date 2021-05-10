@@ -75,8 +75,8 @@ trigger_changelevel::IsInside(entity ePlayer, entity eVolume)
 		 ePlayer.absmax[0] < eVolume.absmin[0] ||
 		 ePlayer.absmax[1] < eVolume.absmin[1] ||
 		 ePlayer.absmax[2] < eVolume.absmin[2])
-		 return FALSE;
-	return TRUE;
+		 return (0);
+	return (1);
 }
 
 void

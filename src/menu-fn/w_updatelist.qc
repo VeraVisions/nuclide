@@ -225,7 +225,7 @@ CUpdateList::GetSelected(void)
 CUpdateList::GetSelectedItem(void)
 {
 	if (m_selected == -1) {
-		return __NULL__;
+		return (__NULL__);
 	}
 	return m_entries[m_selected];
 }*/

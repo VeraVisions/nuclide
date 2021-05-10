@@ -128,7 +128,7 @@ FMX_ParseClientCommand(string cmd)
 		irc_send(sprintf("PRIVMSG %s :<%s> %s\n", g_irc_channeltarget, self.netname, argv(1)));
 		break;
 	}
-	return cmd;
+	return (cmd);
 }
 
 void

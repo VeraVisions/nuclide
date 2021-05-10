@@ -127,7 +127,7 @@ float
 info_particle_system::SendEntity(entity ePEnt, float flFlags)
 {
 	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
-		return FALSE;
+		return (0);
 
 	WriteByte(MSG_ENTITY, ENT_PARTSYSTEM);
 	WriteFloat(MSG_ENTITY, flFlags);
@@ -156,7 +156,7 @@ info_particle_system::SendEntity(entity ePEnt, float flFlags)
 	if (flFlags & PARTSYSFL_CHANGED_COUNT)
 		WriteByte(MSG_ENTITY, m_iSpawnCount);
 
-	return TRUE;
+	return (1);
 }
 
 void

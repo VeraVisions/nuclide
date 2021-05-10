@@ -255,7 +255,7 @@ QPMove_IsStuck(entity eTarget, vector vOffset, vector vecMins, vector vecMaxs)
 	vector bound;
 
 	if (eTarget.solid != SOLID_SLIDEBOX) {
-		return FALSE;
+		return (0);
 	}
 
 	bound = eTarget.origin + vOffset;
@@ -576,12 +576,12 @@ PMove_Fix_Origin(void)
 				tracebox(norg, self.mins, self.maxs, norg, MOVE_NORMAL, self);
 				if (!trace_startsolid) {
 					self.origin = norg;
-					return TRUE;
+					return (1);
 				}
 			}
 		}
 	}
-	return FALSE;
+	return (0);
 }
 
 /* move the player based on the given acceleration */

@@ -586,7 +586,7 @@ ConsoleCmd(string cmd)
 	/* give the game-mode a chance to override us */
 	if (g_ents_initialized)
 		if (g_grMode.ConsoleCommand(pl, cmd) == TRUE)
-			return TRUE;
+			return (1);
 
 	/* time to handle commands that apply to all games */
 	tokenize(cmd);
@@ -615,9 +615,9 @@ ConsoleCmd(string cmd)
 		break;
 #endif
 	default:
-		return FALSE;
+		return (0);
 	}
-	return TRUE;
+	return (1);
 }
 
 /*
@@ -632,13 +632,13 @@ float
 SV_ShouldPause(float newstatus)
 {
 	if (serverkeyfloat("background") == 1)
-		return FALSE;
+		return (0);
 
 	if (cvar("pausable") == 1)
-		return TRUE;
+		return (1);
 
 	if (cvar("sv_playerslots") > 1)
-		return FALSE;
+		return (0);
 
 	return newstatus;
 }

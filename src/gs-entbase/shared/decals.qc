@@ -43,10 +43,10 @@ float
 decal::SendEntity(entity ePEnt, float changedflags)
 {
 	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
-		return FALSE;
+		return (0);
 
 	if (!m_strTexture)
-		return FALSE;
+		return (0);
 
 	WriteByte(MSG_ENTITY, ENT_DECAL);
 	WriteByte(MSG_ENTITY, changedflags);
@@ -66,7 +66,7 @@ decal::SendEntity(entity ePEnt, float changedflags)
 	if (changedflags & DECALFL_MATERIAL)
 		WriteString(MSG_ENTITY, m_strTexture);
 
-	return TRUE;
+	return (1);
 }
 #else
 void
@@ -116,21 +116,21 @@ decal::predraw(void)
 
 	decal dcl = (decal)self;
 	if (!autocvar_r_drawdecals) {
-		return PREDRAW_NEXT;
+		return (PREDRAW_NEXT);
 	}
 
 	/* skip empty decals */
 	if (!dcl.m_strShader)
-		return PREDRAW_NEXT;
+		return (PREDRAW_NEXT);
 
 	/* don't draw us, unnecessary */
 	if (checkpvs(vecPlayer, this) == FALSE) {
-		return PREDRAW_NEXT;
+		return (PREDRAW_NEXT);
 	}
 
 	adddecal(dcl.m_strShader, dcl.origin, dcl.mins, dcl.maxs, dcl.color, 1.0f);
 	addentity(dcl);
-	return PREDRAW_NEXT;
+	return (PREDRAW_NEXT);
 }
 
 void
@@ -241,7 +241,7 @@ decal Decals_Next(vector pos)
 	/* Check for a tempdecal within a radius of 8 units and overwrite that one
 	 * instead */
 	for (entity b = world; (b = find(b, ::classname, "tempdecal"));) {
-		if (vlen(b.origin - pos) < 2) {
+		if (vlen(b.origin - pos) < 4) {
 			return b;
 		}
 	}

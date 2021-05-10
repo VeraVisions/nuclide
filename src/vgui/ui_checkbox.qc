@@ -57,9 +57,9 @@ void CUICheckbox::SetTitle (string strName)
 int CUICheckbox::GetValue(void)
 {
 	if (m_iFlags & CHECKBOX_CHECKED) {
-		return TRUE;
+		return (1);
 	} else {
-		return FALSE;
+		return (0);
 	}
 }
 void CUICheckbox::SetValue (int iValue)

@@ -100,10 +100,10 @@ float
 trigger_camera::SendEntity(entity ePEnt, float flFlags)
 {
 	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
-		return FALSE;
+		return (0);
 
 	if (ePEnt != m_eLooker)
-		return FALSE;
+		return (0);
 
 	WriteByte(MSG_ENTITY, ENT_OLDCAMERA);
 	WriteFloat(MSG_ENTITY, flFlags);
@@ -124,7 +124,7 @@ trigger_camera::SendEntity(entity ePEnt, float flFlags)
 		WriteFloat(MSG_ENTITY, m_flWait);
 	}
 
-	return TRUE;
+	return (1);
 }
 
 void

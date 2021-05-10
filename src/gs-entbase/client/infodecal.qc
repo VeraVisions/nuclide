@@ -43,7 +43,7 @@ infodecal::predraw(void)
 		m_decChild.Place(origin, m_strTexture);
 		remove(this);
 	}
-	return PREDRAW_NEXT;
+	return (PREDRAW_NEXT);
 }
 
 void

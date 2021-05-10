@@ -40,7 +40,7 @@ class env_laser
 float env_laser::predraw(void)
 {
 	if (!m_iState)
-		return PREDRAW_NEXT;
+		return (PREDRAW_NEXT);
 
 	R_BeginPolygon(m_strBeamTex, 0, 0);
 		R_PolygonVertex(angles, [0,0], [1,1,1], 1.0f);
@@ -48,7 +48,7 @@ float env_laser::predraw(void)
 	R_EndPolygonRibbon(2, [1,0]);
 
 	addentity(this);
-	return PREDRAW_NEXT;
+	return (PREDRAW_NEXT);
 }
 
 void

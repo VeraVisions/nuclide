@@ -68,7 +68,7 @@ Music_GetPath(int id)
 		}
 	}
 
-	return "";
+	return ("");
 }
 
 /* EV_MUSICTRACK */

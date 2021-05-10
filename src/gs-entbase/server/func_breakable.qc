@@ -202,7 +202,7 @@ func_breakable::Death(void)
 	}
 
 	health = 0;
-	eActivator = g_eAttacker;
+	eActivator = g_dmg_eAttacker;
 
 	if (m_strBreakSpawn != "" && isfunction(m_strBreakSpawn)) {
 		entity unit = spawn();

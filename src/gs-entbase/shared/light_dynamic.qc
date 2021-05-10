@@ -109,7 +109,7 @@ float
 light_dynamic::predraw(void)
 {
 	if (!m_iState) {
-		return PREDRAW_NEXT;
+		return (PREDRAW_NEXT);
 	}
 
 	float p = dynamiclight_add(origin, m_flDistance, m_vecLight, m_flStyle);
@@ -119,7 +119,7 @@ light_dynamic::predraw(void)
 		dynamiclight_set(p, LFIELD_STYLESTRING, m_strPattern);
 
 	addentity(this);
-	return PREDRAW_NEXT;
+	return (PREDRAW_NEXT);
 }
 
 void
@@ -247,7 +247,7 @@ float
 light_dynamic::SendEntity(entity ePEnt, float flFlags)
 {
 	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
-		return FALSE;
+		return (0);
 
 	WriteByte(MSG_ENTITY, ENT_DLIGHT);
 	WriteFloat(MSG_ENTITY, flFlags);
@@ -287,7 +287,7 @@ light_dynamic::SendEntity(entity ePEnt, float flFlags)
 	if (flFlags & DLIGHTFL_CHANGED_PATTERN)
 		WriteString(MSG_ENTITY, m_strPattern);
 
-	return TRUE;
+	return (1);
 }
 
 void
