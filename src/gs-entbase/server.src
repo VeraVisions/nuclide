@@ -41,7 +41,6 @@ server/func_brush.qc
 server/func_door.qc
 server/func_door_rotating.qc
 server/func_lod.qc
-server/func_ladder.qc
 server/func_train.qc
 server/func_guntarget.qc
 server/func_tracktrain.qc
