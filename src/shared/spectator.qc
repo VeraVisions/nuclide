@@ -380,6 +380,8 @@ spectator::spectator(void)
 	think = __NULL__;
 	nextthink = 0.0f;
 	maxspeed = 250;
+	spec_ent = 0;
+	spec_mode = 0;
 
 #ifdef SERVER
 	forceinfokey(this, "*spec", "1");
