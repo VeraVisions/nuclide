@@ -119,7 +119,7 @@ func_wall::Init(void)
 	precache_model(model);
 	setmodel(this, model);
 	setorigin(this, origin);
-	movetype = MOVETYPE_NONE;
+	movetype = MOVETYPE_PUSH;
 	drawmask = MASK_ENGINE;
 	solid = SOLID_BSP;
 }

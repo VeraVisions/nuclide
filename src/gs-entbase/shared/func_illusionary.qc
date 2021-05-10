@@ -79,8 +79,8 @@ func_illusionary::Respawn(void)
 
 	/* func_illusionary specifics */
 	SetAngles([0,0,0]);
-	SetMovetype(MOVETYPE_PUSH);
-	SetSolid(SOLID_BSP);
+	SetMovetype(MOVETYPE_NONE);
+	SetSolid(SOLID_NOT);
 	SetModel(m_oldModel);
 	SetOrigin(m_oldOrigin);
 	SetSkin(0);
