@@ -15,7 +15,7 @@
  */
 
 void
-Animation_TimerUpdate(player pl)
+Animation_TimerUpdate(player pl, float ftime)
 {
 }
 

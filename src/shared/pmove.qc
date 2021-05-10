@@ -786,7 +786,7 @@ PMove_Run(void)
 	pl.punchangle[2] *= punch;
 
 	/* player animation code */
-	Animation_TimerUpdate(pl);
+	Animation_TimerUpdate(pl, input_timelength);
 	Animation_PlayerUpdate(pl);
 
 	/* allow vehicles to prevent weapon logic from happening */
