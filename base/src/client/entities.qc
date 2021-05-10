@@ -19,10 +19,10 @@ ClientGame_EntityUpdate(float id, float new)
 {
 	switch (id) {
 	default:
-		return FALSE;
+		return (0);
 	}
 
-	return TRUE;
+	return (1);
 }
 
 void

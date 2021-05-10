@@ -30,11 +30,11 @@ Util_CheckMouse(int x, int y, int sx, int sy)
 
 	if (g_mousepos[0] >= mins[0] && g_mousepos[0] <= maxs[0]) {
 		if (g_mousepos[1] >= mins[1] && g_mousepos[1] <= maxs[1]) {
-			return TRUE;
+			return (1);
 		}
 	}
 
-	return FALSE;
+	return (0);
 }
 
 string

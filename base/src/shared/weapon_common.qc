@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -13,10 +13,6 @@
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-
-#ifdef SERVER
-void Decals_Init(void);
-#endif
 
 void
 Weapons_Init(void)
@@ -47,11 +43,9 @@ Weapons_Init(void)
 		fclose(fh);
 	}*/
 
-	for (int i = 0; i < g_weapons.length; i++) {
-		if (g_weapons[i].precache != __NULL__) {
+	for (int i = 0; i < g_weapons.length; i++)
+		if (g_weapons[i].precache != __NULL__)
 			g_weapons[i].precache();
-		}
-	}
 }
 
 void
@@ -80,17 +74,21 @@ Weapons_Draw(void)
 	pl.w_idle_next = 2.5f;
 	pl.viewzoom = 1.0f;
 
+#ifdef CLIENT
+	entity eold = self;
+	self = pSeat->m_pWeaponFX;
+	spawnfunc_CBaseFX();
+	self = eold;
+#endif
+
 	/* make sure this is all wiped */
 	pl.a_ammo1 = pl.a_ammo2 = pl.a_ammo3 = 0;
 
-	if (g_weapons[i].draw != __NULL__) {
+	if (g_weapons[i].draw != __NULL__)
 		g_weapons[i].draw();
-	}
-#ifdef SERVER
-	if (g_weapons[i].updateammo != __NULL__) {
+
+	if (g_weapons[i].updateammo != __NULL__)
 		g_weapons[i].updateammo(pl);
-	}
-#endif
 }
 
 void
@@ -98,9 +96,9 @@ Weapons_Holster(void)
 {
 	player pl = (player)self;
 	int i = pl.activeweapon;
-	if (g_weapons[i].holster != __NULL__) {
+
+	if (g_weapons[i].holster != __NULL__)
 		g_weapons[i].holster();
-	}
 }
 
 void
@@ -112,15 +110,22 @@ Weapons_Primary(void)
 	if (pl.flags & FL_NOATTACK)
 		return;
 
-	if (g_weapons[i].primary != __NULL__) {
+	if (g_weapons[i].primary != __NULL__)
 		g_weapons[i].primary();
-	}
 
-#ifdef SERVER
-	if (g_weapons[i].updateammo != __NULL__) {
+	if (g_weapons[i].updateammo != __NULL__)
 		g_weapons[i].updateammo(pl);
-	}
-#endif
+}
+
+void 
+Weapons_AmmoUpdate(entity target)
+{
+	player pl = (player)target;
+	int i = pl.activeweapon;
+
+	if (g_weapons[i].updateammo != __NULL__)
+		g_weapons[i].updateammo(pl);
+
 }
 
 void
@@ -132,14 +137,11 @@ Weapons_Secondary(void)
 	if (pl.flags & FL_NOATTACK)
 		return;
 
-	if (g_weapons[i].secondary != __NULL__) {
+	if (g_weapons[i].secondary != __NULL__)
 		g_weapons[i].secondary();
-	}
-#ifdef SERVER
-	if (g_weapons[i].updateammo != __NULL__) {
+
+	if (g_weapons[i].updateammo != __NULL__)
 		g_weapons[i].updateammo(pl);
-	}
-#endif
 }
 
 void
@@ -151,14 +153,11 @@ Weapons_Reload(void)
 	if (pl.flags & FL_NOATTACK)
 		return;
 
-	if (g_weapons[i].reload != __NULL__) {
+	if (g_weapons[i].reload != __NULL__)
 		g_weapons[i].reload();
-	}
-#ifdef SERVER
-	if (g_weapons[i].updateammo != __NULL__) {
+
+	if (g_weapons[i].updateammo != __NULL__)
 		g_weapons[i].updateammo(pl);
-	}
-#endif
 }
 
 void
@@ -166,10 +165,10 @@ Weapons_Release(void)
 {
 	player pl = (player)self;
 	int i = pl.activeweapon;
-	if (g_weapons[i].release != __NULL__) {
+
+	if (g_weapons[i].release != __NULL__)
 		g_weapons[i].release();
-	}
-	
+
 	pl.gflags &= ~GF_SEMI_TOGGLED;
 }
 
@@ -178,60 +177,53 @@ Weapons_DrawCrosshair(void)
 {
 	player pl = (player)self;
 	int i = pl.activeweapon;
-	if (g_weapons[i].crosshair != __NULL__) {
+
+	if (g_weapons[i].crosshair != __NULL__)
 		g_weapons[i].crosshair();
-	}
 }
 
 string
 Weapons_GetWorldmodel(int id)
 {
-	if (g_weapons[id].wmodel != __NULL__) {
+	if (g_weapons[id].wmodel != __NULL__)
 		return g_weapons[id].wmodel();
-	}
-	
+
 	return "";
 }
 
 string
 Weapons_GetPlayermodel(int id)
 {
-	if (g_weapons[id].pmodel != __NULL__) {
+	if (g_weapons[id].pmodel != __NULL__)
 		return g_weapons[id].pmodel();
-	}
-	
+
 	return "";
 }
 
 string
 Weapons_GetDeathmessage(int id)
 {
-	if (g_weapons[id].deathmsg != __NULL__) {
+	if (g_weapons[id].deathmsg != __NULL__)
 		return g_weapons[id].deathmsg();
-	}
-	
+
 	return "";
 }
 
-#ifdef SERVER
 float
 Weapons_GetAim(int id)
 {
-	if (g_weapons[id].aimanim != __NULL__) {
+	if (g_weapons[id].aimanim != __NULL__)
 		return g_weapons[id].aimanim();
-	}
-	
-	return 0;
+
+	return (0);
 }
-#endif
 
 #ifdef CLIENT
 void
 Weapons_HUDPic(int id, int s, vector pos, float a)
 {
-	if (g_weapons[id].hudpic != __NULL__) {
+	if (g_weapons[id].hudpic != __NULL__)
 		g_weapons[id].hudpic(s, pos, a);
-	}
 }
 #endif
 
@@ -250,7 +242,7 @@ vector
 Weapons_GetCameraPos(void)
 {
 #ifdef SERVER
-	return self.origin + self.view_ofs;
+	return (self.origin + self.view_ofs);
 #else
 	return getproperty(VF_ORIGIN);
 #endif
@@ -259,11 +251,9 @@ Weapons_GetCameraPos(void)
 void
 Weapons_ViewAnimation(int i)
 {
-#ifdef CLIENT
-	player pl = (player)pSeat->m_ePlayer;
-	View_PlayAnimation(i);
-#else
 	player pl = (player)self;
+#ifdef CLIENT
+	View_PlayAnimation(i);
 #endif
 	pl.weapontime = 0.0f;
 }
@@ -278,26 +268,24 @@ Weapons_GetAnimation(void)
 #ifdef CLIENT
 	return View_GetAnimation();
 #else
-	return 0;
+	return (0);
 #endif
 }
 
 void
 Weapons_ViewPunchAngle(vector add)
 {
-#ifdef CLIENT
 	player pl = (player)self;
 	pl.punchangle += add;
-#endif
 }
 
 int
 Weapons_IsPresent(player pl, int w)
 {
 	if (pl.g_items & g_weapons[w].id) {
-		return TRUE;
+		return (1);
 	} else {
-		return FALSE;
+		return (0);
 	}
 }
 /*
@@ -311,15 +299,12 @@ void
 Weapons_UpdateAmmo(base_player pl, int a1, int a2, int a3)
 {
 	/* no change */
-	if (a1 == -1) {
+	if (a1 == -1)
 		a1 = pl.a_ammo1;
-	}
-	if (a2 == -1) {
+	if (a2 == -1)
 		a2 = pl.a_ammo2;
-	}
-	if (a3 == -1) {
+	if (a3 == -1)
 		a3 = pl.a_ammo3;
-	}
 
 	/* networked as bytes, since we don't need more. Clamp to avoid errors */
 	pl.a_ammo1 = bound(0, a1, 255);

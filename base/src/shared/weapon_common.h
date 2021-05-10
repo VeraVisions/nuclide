@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -45,6 +45,8 @@ void Weapons_Secondary(void);
 void Weapons_Reload(void);
 void Weapons_Release(void);
 
+float Weapons_GetAim(int);
+void Weapons_Reload(void);
 void Weapons_DrawCrosshair(void);
 void Weapons_MakeVectors(void);
 vector Weapons_GetCameraPos(void);
@@ -53,6 +55,7 @@ void Weapons_ViewPunchAngle(vector);
 int Weapons_IsPresent(player, int);
 void Weapons_SetModel(string);
 void Weapons_SetGeomset(string);
+void Weapons_UpdateAmmo(base_player, int, int, int);
 int Weapons_GetAnimation(void);
 
 #ifdef CLIENT

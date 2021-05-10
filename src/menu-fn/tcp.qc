@@ -62,18 +62,18 @@ TCP_Send(tcpinfo_t *in, string msg)
 {
 	if (in.m_iState == STATE_DISCONNECTED) {
 		dprint("^1TCP_Send^7: Can't send, we're disconnected\n");
-		return 0;
+		return (0);
 	}
 
 	/* the buffer is full. we've been unable to send messages for a while */
 	if (in.m_iBufferLines >= (TCP_BUFFER_LENGTH - 1)) {
 		dprint("^1TCP_Send^7: Buffer full.\n");
-		return 0;
+		return (0);
 	}
 
 	in.m_strBuffer[in.m_iBufferLines] = msg;
 	in.m_iBufferLines++;
-	return 1;
+	return (1);
 }
 
 string

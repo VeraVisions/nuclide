@@ -99,6 +99,9 @@ CBaseMonster::SeeThink(void)
 		if (w.health <= 0)
 			continue;
 
+		if ((w.flags & FL_CLIENT) && (spawnflags & MSF_IGNOREPLAYER))
+			continue;
+
 		/* first, is the potential enemy in our field of view? */
 		makevectors(v_angle);
 		vector v = normalize(w.origin - origin);

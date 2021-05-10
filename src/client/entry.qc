@@ -900,25 +900,8 @@ CSQC_Ent_Update(float new)
 		pSeat = &g_seats[s];
 		pSeatLocal = &g_seatslocal[s];
 
-		if (new || self.classname != "player") {
-			spawnfunc_player();
-			pl.classname = "player";
-			pl.solid = SOLID_SLIDEBOX;
-			pl.drawmask = MASK_ENGINE;
-			pl.customphysics = Empty;
-			setsize(pl, VEC_HULL_MIN, VEC_HULL_MAX);
-		} else {
-			if (pl.entnum == player_localentnum) {
-				for (int i = pl.sequence+1; i <= servercommandframe; i++) {
-					/* ...maybe the input state is too old? */
-					if (!getinputstate(i)) {
-						break;
-					}
-					input_sequence = i;
-					PMove_Run();
-				}
-			}
-		}
+
+		Predict_EntityUpdate(pl, new);
 
 		/* any differences in things that are read below are now
 		   officially from prediction misses. */

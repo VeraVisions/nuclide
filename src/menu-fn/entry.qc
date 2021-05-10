@@ -271,7 +271,7 @@ Menu_InputEvent(float evtype, float scanx, float chary, float devid)
 	}
 
 	main_input(evtype, scanx, chary, devid);
-	return TRUE;
+	return (1);
 }
 
 void
@@ -342,7 +342,7 @@ m_consolecommand(string cmd)
 			argv(1)));
 		break;
 	default:
-		return FALSE;
+		return (0);
 	}
-	return TRUE;
+	return (1);
 }

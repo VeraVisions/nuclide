@@ -15,10 +15,21 @@
  */
 
 #ifdef CLIENT
+/*
+=================
+base_player::ReceiveEntity
+
+Receive the generic client attributes from the server.
+If you want to override this, do not call this
+at the top of player::ReceiveEntity
+=================
+*/
 void
 base_player::ReceiveEntity(float new, float fl)
 {
-	/* seed for our prediction table */
+	/* store which input sequence we're on, this helps us
+	 * later when we run prediction again between last/latest
+	 * servercommandframe */
 	sequence = servercommandframe;
 
 	/* HACK: we need to make this more reliable */
@@ -79,6 +90,15 @@ base_player::ReceiveEntity(float new, float fl)
 	punchangle[2] = readfloat();
 }
 
+/*
+=================
+base_player::PredictPreFrame
+
+Save the state of the last server-confirmed attributes.
+If you want to override this, do not call this
+at the top of player::PredictPreFrame
+=================
+*/
 void
 base_player::PredictPreFrame(void)
 {
@@ -105,6 +125,16 @@ base_player::PredictPreFrame(void)
 	SAVE_STATE(punchangle);
 }
 
+/*
+=================
+base_player::PredictPostFrame
+
+After running prediction on the client, roll back the values
+to the server's confirmed saved attributes from PredictPreFrame.
+If you want to override this, do not call this
+at the top of player::PredictPostFrame
+=================
+*/
 void
 base_player::PredictPostFrame(void)
 {
@@ -130,8 +160,16 @@ base_player::PredictPostFrame(void)
 	ROLL_BACK(w_idle_next);
 	ROLL_BACK(punchangle);
 }
-
 #else
+/*
+=================
+base_player::EvaluateEntity
+
+Check which attributes have changed and flag the ones that did.
+If you want to override this, do not call this
+at the top of player::EvaluateEntity
+=================
+*/
 void
 base_player::EvaluateEntity(void)
 {
@@ -213,18 +251,32 @@ base_player::EvaluateEntity(void)
 	SAVE_STATE(punchangle);
 }
 
+/*
+=================
+base_player::SendEntity
+
+Network any attributes that have been flagged for networking.
+If you want to override this, do not call this
+at the top of player::SendEntity
+=================
+*/
 float
 base_player::SendEntity(entity ePEnt, float fChanged)
 {
 	/* really trying to get our moneys worth with 23 bits of mantissa */
 	if (fChanged & PLAYER_MODELINDEX)
 		WriteShort(MSG_ENTITY, modelindex);
+
+	/* if origin[0] changes, it's very likely [1] changes too, since
+	 * we rarely ever walk in a straight line on the world grid */
 	if (fChanged & PLAYER_ORIGIN) {
 		WriteCoord(MSG_ENTITY, origin[0]);
 		WriteCoord(MSG_ENTITY, origin[1]);
 	}
+	/* the height doesn't change as much */
 	if (fChanged & PLAYER_ORIGIN_Z)
 		WriteCoord(MSG_ENTITY, origin[2]);
+
 	if (fChanged & PLAYER_ANGLES_X)
 		WriteFloat(MSG_ENTITY, v_angle[0]);
 	if (fChanged & PLAYER_ANGLES_Y)
@@ -232,11 +284,11 @@ base_player::SendEntity(entity ePEnt, float fChanged)
 	if (fChanged & PLAYER_ANGLES_Z)
 		WriteFloat(MSG_ENTITY, angles[2]);
 
+	/* similar as with origin, we separate x/y from z */
 	if (fChanged & PLAYER_VELOCITY) {
 		WriteCoord(MSG_ENTITY, velocity[0]);
 		WriteCoord(MSG_ENTITY, velocity[1]);
 	}
-
 	if (fChanged & PLAYER_VELOCITY_Z)
 		WriteCoord(MSG_ENTITY, velocity[2]);
 
@@ -246,14 +298,21 @@ base_player::SendEntity(entity ePEnt, float fChanged)
 	}
 	if (fChanged & PLAYER_WEAPON)
 		WriteByte(MSG_ENTITY, activeweapon);
+
+	/* g_items is a proper integer, so we can't let WriteFloat truncate it (hence __variant) */
 	if (fChanged & PLAYER_ITEMS)
 		WriteFloat(MSG_ENTITY, (__variant)g_items);
+
+	/* only got byte precision, clamp to avoid weird values on the client-side */
 	if (fChanged & PLAYER_HEALTH)
 		WriteByte(MSG_ENTITY, bound(0, health, 255));
 	if (fChanged & PLAYER_ARMOR)
 		WriteByte(MSG_ENTITY, bound(0, armor, 255));
+
 	if (fChanged & PLAYER_MOVETYPE)
 		WriteByte(MSG_ENTITY, movetype);
+
+	/* the view_ofs[0] and [1] are rarely changed */
 	if (fChanged & PLAYER_VIEWOFS)
 		WriteFloat(MSG_ENTITY, view_ofs[2]);
 

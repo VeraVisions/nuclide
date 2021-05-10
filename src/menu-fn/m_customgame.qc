@@ -46,7 +46,7 @@ game_getpackageid(string pkgname)
 	}
 
 	/* no package id whatsoever */
-	return -1;
+	return (-1);
 }
 
 /* return 1 if any of the packages are pending, installing, or corrupt */
@@ -66,31 +66,31 @@ game_updatesavailable(void)
 		switch (status) {
 		case "":
 			if (updates[id].installed == "") {
-				return 1;
+				return (1);
 			} else if (updates[id].installed == "pending") {
-				return 1;
+				return (1);
 			}
 			break;
 		case "pending":
-			return 1;
+			return (1);
 			break;
 		case "enabled":
 			break;
 		case "present":
-			return 1;
+			return (1);
 			break;
 		case "corrupt":
-			return 1;
+			return (1);
 			break;
 		default:
 			/* we're currently installing stuff */
-			return 1;
+			return (1);
 			break;
 		}
 	}
 
 	/* everything is installed */
-	return 0;
+	return (0);
 }
 
 int
@@ -100,7 +100,7 @@ game_updateinstallcount(void)
 
 	/* always return something positive when no packages are defined */
 	if (games[gameinfo_current].pkgname == "") {
-		return 1;
+		return (1);
 	}
 
 	/* look for the valid packages in the gameinfo pkgname */

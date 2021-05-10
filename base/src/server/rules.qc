@@ -16,5 +16,5 @@
 
 int Rules_IsTeamPlay(void)
 {
-	return cvar("teamplay");
+	return (int)(cvar("teamplay"));
 }

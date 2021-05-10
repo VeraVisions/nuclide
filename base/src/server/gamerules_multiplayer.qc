@@ -109,8 +109,8 @@ MultiplayerRules::ConsoleCommand(base_player pp, string cmd)
 		Bot_AddQuick();
 		break;
 	default:
-		return FALSE;
+		return (0);
 	}
 
-	return TRUE;
+	return (1);
 }

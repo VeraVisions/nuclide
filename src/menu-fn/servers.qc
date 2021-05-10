@@ -18,13 +18,13 @@ int
 Server_IsLan(string address)
 {
 #if 0
-	return FALSE;
+	return (0);
 #endif
 	tokenizebyseparator(address, ".");
 	
 	if (argv(0) == "192" && argv(1) == "168") {
-		return TRUE;
+		return (1);
 	} else {
-		return FALSE;
+		return (0);
 	}
 }

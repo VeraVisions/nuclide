@@ -16,6 +16,54 @@
 
 /*
 =================
+Predict_EntityUpdate
+
+We're part way through parsing new player data.
+Propagate our pmove state to whatever the current frame before its stomped on 
+(so any non-networked state updates locally).
+=================
+*/
+void
+Predict_EntityUpdate(player pl, float new)
+{
+	/* this is a new client entity, let's set it up right */
+	if (new || self.classname != "player") {
+		spawnfunc_player();
+		pl.classname = "player";
+		
+		if (pl.entnum == player_localentnum) {
+			pl.solid = SOLID_SLIDEBOX;
+			pl.movetype = MOVETYPE_NONE;
+			pl.customphysics = Empty;
+		} else {
+			/* other players will act like missiles for interpolation purposes */
+			pl.solid = SOLID_SLIDEBOX;
+			pl.movetype = MOVETYPE_FLY;
+			pl.customphysics = __NULL__;
+		}
+
+		pl.drawmask = MASK_ENGINE;
+		setsize(pl, VEC_HULL_MIN, VEC_HULL_MAX);
+		return;
+	}
+
+	/* this is us, so we know about this clients' input_ fields */
+	if (pl.entnum == player_localentnum) {
+		/* run the player physics from the last approved servercommandframe to the current one */
+		for (int i = pl.sequence+1; i <= servercommandframe; i++) {
+			/* ...maybe the input state is too old? */
+			if (!getinputstate(i)) {
+				break;
+			}
+			input_sequence = i;
+			PMove_Run();
+		}
+	}
+	
+}
+
+/*
+=================
 Predict_PreFrame
 
 We're part way through parsing new player data.

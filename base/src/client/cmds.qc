@@ -21,7 +21,7 @@ ClientGame_ConsoleCommand(void)
 {
 	switch(argv(0)) {
 		default:
-		return FALSE;
+		return (0);
 	}
-	return TRUE;
+	return (1);
 }

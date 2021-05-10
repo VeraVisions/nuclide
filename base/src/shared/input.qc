@@ -14,13 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*
-=================
-Input_Handle
-
-Handles impulse and whatnot
-=================
-*/
 void
 Game_Input(void)
 {
@@ -32,34 +25,23 @@ Game_Input(void)
 		return;
 	}
 
-	if (self.impulse == 100) {
-		Flashlight_Toggle();
-	}
-
-	if (input_buttons & INPUT_BUTTON5) {
+	if (input_buttons & INPUT_BUTTON5)
 		Player_UseDown(); 
-	} else {
+	else
 		Player_UseUp();
-	}
 
-	if (cvar("sv_cheats") == 1) {
-		player pl = (player)self;
-		if (self.impulse == 101) {
-			pl.health = 100;
-			pl.armor = 100;
-		}
-	}
+	if (self.impulse == 100)
+		Flashlight_Toggle();
 
 	self.impulse = 0;
 #endif
 
-	if (input_buttons & INPUT_BUTTON0) {
+	if (input_buttons & INPUT_BUTTON0)
 		Weapons_Primary();
-	} else if (input_buttons & INPUT_BUTTON4) {
+	else if (input_buttons & INPUT_BUTTON4)
 		Weapons_Reload();
-	} else if (input_buttons & INPUT_BUTTON3) {
+	else if (input_buttons & INPUT_BUTTON3)
 		Weapons_Secondary();
-	} else {
+	else
 		Weapons_Release();
-	}
 }

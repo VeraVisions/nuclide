@@ -31,7 +31,7 @@ memrealloc(__variant *oldptr, int elementsize, int old_num, int new_num)
 
 	if (!n) {
 		print("^1memrealloc^7: Out of memory\n");
-		return 0;
+		return (0);
 	}
 
 	memcpy(n, oldptr, elementsize * old_num);

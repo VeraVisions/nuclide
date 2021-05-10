@@ -23,7 +23,7 @@ FMX_PlayerConnect(entity cl)
 	sound(g_cnspk, CHAN_VOICE, "sound/buttons/bell1.wav", 1.0f, ATTN_NONE);
 	strIP = infokey(cl, INFOKEY_P_IP);
 	bprint(PRINT_CHAT, sprintf("%s joined (%s)\n", cl.netname, strIP));
-	return TRUE;
+	return (1);
 }
 
 int
@@ -33,7 +33,7 @@ FMX_PlayerDisconnect(entity cl)
 	sound(g_cnspk, CHAN_VOICE, "sound/buttons/blip1.wav", 1.0f, ATTN_NONE);
 	strIP = infokey(cl, INFOKEY_P_IP);
 	bprint(PRINT_CHAT, sprintf("%s left (%s)\n", cl.netname, strIP));
-	return TRUE;
+	return (1);
 }
 
 void
