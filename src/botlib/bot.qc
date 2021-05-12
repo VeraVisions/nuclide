@@ -17,6 +17,25 @@
 #define BOTROUTE_DESTINATION	-1
 #define BOTROUTE_END			-2
 
+void SV_SendChat(entity sender, string msg, entity eEnt, float fType);
+
+void
+bot::ChatSay(string msg)
+{
+	SV_SendChat(this, msg, world, 0);
+}
+
+void
+bot::ChatSayTeam(string msg)
+{
+	entity a;
+	for (a = world; (a = find(a, ::classname, "player"));) { 
+		if (a.team == this.team) {
+			SV_SendChat(self, msg, a, 1);
+		}
+	}
+}
+
 void
 bot::Pain(void)
 {
@@ -43,7 +62,7 @@ bot::WeaponThink(void)
 {
 	/* clip empty */
 	if (a_ammo1 == 0) {
-		/* still got ammo left */
+		/* still got ammo left, reload! */
 		if (a_ammo2 != 0) {
 			input_buttons &= ~INPUT_BUTTON0;
 			input_buttons |= INPUT_BUTTON4;
@@ -261,6 +280,12 @@ bot::CheckRoute(void)
 }
 
 void
+bot::CreateObjective(void)
+{
+	route_calculate(this, Route_SelectDestination(this), 0, Bot_RouteCB);
+}
+
+void
 bot::RunAI(void)
 {
 	vector aimdir, aimpos;
@@ -286,7 +311,7 @@ bot::RunAI(void)
 
 	/* create our first route */
 	if (!m_iNodes && autocvar_bot_aimless == 0) {
-		route_calculate(this, Route_SelectDestination(this), 0, Bot_RouteCB);
+		CreateObjective();
 
 		dprint(sprintf("bot::RunAI: %s is calculating first bot route\n",
 			this.netname));

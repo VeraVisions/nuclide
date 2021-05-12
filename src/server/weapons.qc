@@ -79,9 +79,7 @@ Weapons_RefreshAmmo(base_player pl)
 =================
 Weapons_SwitchBest
 
-Really basic function that cycles through the highest-to-lowest
-weapon ID order and picks the next available item with no regard to
-ammo, or any sort of weighting system. FIXME
+Switch to the 'best' weapon according to our weight system.
 =================
 */
 void
@@ -91,8 +89,9 @@ Weapons_SwitchBest(base_player pl)
 	self = pl;
 
 	for (float i = g_weapons.length - 1; i >= 1 ; i--) {
-		if (pl.g_items & g_weapons[i].id) {
-			pl.activeweapon = i;
+		int x = g_weapon_weights[i];
+		if ((pl.g_items & g_weapons[x].id) && (!Weapons_IsEmpty((player)pl, x))) {
+			pl.activeweapon = x;
 			break;
 		}
 	}

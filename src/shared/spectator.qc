@@ -251,7 +251,6 @@ spectator::InputPrevious(void)
 	spec_ent = best;
 #endif
 
-	print(sprintf("dddd: %d\n", spec_ent));
 	spec_flags |= GF_SEMI_TOGGLED;
 
 	WarpToTarget();
@@ -374,7 +373,7 @@ void
 spectator::spectator(void)
 {
 	modelindex = 0;
-	flags = 0;
+	flags = FL_CLIENT;
 	solid = SOLID_NOT;
 	movetype = MOVETYPE_NOCLIP;
 	think = __NULL__;

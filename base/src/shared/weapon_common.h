@@ -21,6 +21,7 @@ typedef struct
 	int slot;
 	int slot_pos;
 	int allow_drop;
+	int weight; /* required for bestweapon */
 
 	void(void) draw;
 	void(void) holster;
@@ -29,6 +30,7 @@ typedef struct
 	void(void) reload;
 	void(void) release;
 	void(void) crosshair;
+	int(void) isempty; /* kinda handy */
 
 	void(void) precache;
 	int(int, int) pickup;
@@ -47,6 +49,7 @@ void Weapons_Release(void);
 
 float Weapons_GetAim(int);
 void Weapons_Reload(void);
+int Weapons_IsEmpty(player, int);
 void Weapons_DrawCrosshair(void);
 void Weapons_MakeVectors(void);
 vector Weapons_GetCameraPos(void);

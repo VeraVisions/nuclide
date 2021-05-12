@@ -47,6 +47,8 @@ class bot:player
 
 	void(void) bot;
 
+	virtual void(string) ChatSay;
+	virtual void(string) ChatSayTeam;
 	virtual void(void) Pain;
 	virtual void(void) RouteClear;
 	virtual void(void) WeaponThink;
@@ -54,6 +56,7 @@ class bot:player
 	virtual void(void) SeeThink;
 	virtual void(int, int) BrainThink;
 	virtual void(void) RunAI;
+	virtual void(void) CreateObjective;
 	virtual void(void) CheckRoute;
 	virtual void(void) PreFrame;
 	virtual void(void) PostFrame;

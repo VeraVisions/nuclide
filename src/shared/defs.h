@@ -47,15 +47,6 @@ const vector VEC_HULL_MAX = [16,16,36];
 const vector VEC_CHULL_MIN = [-16,-16,-18];
 const vector VEC_CHULL_MAX = [16,16,18];
 
-/* Counter-Strike players are hunched over a little bit */
-#ifdef CSTRIKE
-const vector VEC_PLAYER_VIEWPOS =  [0,0,20];
-const vector VEC_PLAYER_CVIEWPOS = [0,0,12];
-#else
-const vector VEC_PLAYER_VIEWPOS = [0,0,24];
-const vector VEC_PLAYER_CVIEWPOS = [0,0,12];
-#endif
-
 // Actually used by input_button etc.
 #define INPUT_BUTTON0 0x00000001
 #define INPUT_BUTTON2 0x00000002

@@ -34,7 +34,7 @@ Spawn_ObserverCam(base_player pl)
 			eTarget = find(world, ::targetname, eCamera.target);
 			if (eTarget) {
 				pl.angles = vectoangles(eTarget.origin - eCamera.origin);
-				pl.angles[0] *= -1;
+				//pl.angles[0] *= -1;
 			}
 		}
 	} else {
@@ -43,14 +43,7 @@ Spawn_ObserverCam(base_player pl)
 		
 		if (eCamera) {
 			pl.origin = eCamera.origin;
-			
-			if (eCamera.target) {
-				eTarget = find(world, ::targetname, eCamera.target);
-				if (eTarget) {
-					pl.angles = vectoangles(eTarget.origin - eCamera.origin);
-					pl.angles[0] *= -1;
-				}
-			}
+			pl.angles = eCamera.angles;
 		}
 	}
 

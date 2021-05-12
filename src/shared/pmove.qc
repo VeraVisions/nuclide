@@ -62,6 +62,14 @@
 	#define PMOVE_STEP_RUNSPEED 220
 #endif
 
+#ifndef PHY_VIEWPOS
+#define PHY_VIEWPOS [0,0,24]
+#endif
+
+#ifndef PHY_VIEWPOS_CROUCHED
+#define PHY_VIEWPOS_CROUCHED [0,0,12]
+#endif
+
 /* if they're undefined by a config, they'll be set by the game/mod default */
 var float autocvar_sv_stepheight = PMOVE_STEPHEIGHT;
 var float autocvar_sv_airstepheight = PMOVE_AIRSTEPHEIGHT;
@@ -146,11 +154,11 @@ PMove_Categorize(void)
 	if (self.flags & FL_CROUCHING) {
 		self.mins = VEC_CHULL_MIN;
 		self.maxs = VEC_CHULL_MAX;
-		self.view_ofs = VEC_PLAYER_CVIEWPOS;
+		self.view_ofs = PHY_VIEWPOS_CROUCHED;
 	} else {
 		self.mins = VEC_HULL_MIN;
 		self.maxs = VEC_HULL_MAX;
-		self.view_ofs = VEC_PLAYER_VIEWPOS;
+		self.view_ofs = PHY_VIEWPOS;
 	}
 
 	tracebox(self.origin, self.mins, self.maxs, self.origin - [0,0,1], MOVE_NORMAL, self);
@@ -289,7 +297,7 @@ PMove_AccelMove(float move_time, float premove)
 
 	if (self.flags & FL_CROUCHING) {
 		setsize(self, VEC_CHULL_MIN, VEC_CHULL_MAX);
-		self.view_ofs = VEC_PLAYER_CVIEWPOS;
+		self.view_ofs = PHY_VIEWPOS_CROUCHED;
 	} else {
 		setsize(self, VEC_HULL_MIN, VEC_HULL_MAX);
 		if (iFixCrouch && QPMove_IsStuck(self, [0,0,0], VEC_HULL_MIN, VEC_HULL_MAX)) {
@@ -301,7 +309,7 @@ PMove_AccelMove(float move_time, float premove)
 			}
 		}
 		setorigin(self, self.origin);
-		self.view_ofs = VEC_PLAYER_VIEWPOS;
+		self.view_ofs = PHY_VIEWPOS;
 	}
 }
 

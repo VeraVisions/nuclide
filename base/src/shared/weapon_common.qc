@@ -14,6 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+var int g_weapon_weights[g_weapons.length];
+
+#ifdef CLIENT
+var int g_weapon_order[g_weapons.length];
+#endif
+
 void
 Weapons_Init(void)
 {
@@ -46,6 +52,68 @@ Weapons_Init(void)
 	for (int i = 0; i < g_weapons.length; i++)
 		if (g_weapons[i].precache != __NULL__)
 			g_weapons[i].precache();
+
+	/* check our weapon weights */
+	int max = 0;
+	for (int i = 0; i < g_weapons.length; i++)
+		if (g_weapons[i].weight > max)
+			max = g_weapons[i].weight;
+
+	/* don't bother building the list if we've got no weights */
+	if (max <= 0)
+		return;
+
+	/* position in the weight array */
+	int w = 0;
+
+	/* loop through all weights */
+	for (int b = 0; b <= max; b++) {
+		/* loop through all weapons */
+		for (int i = 0; i < g_weapons.length; i++) {
+			/* if we've found a valid weight, add the weapon to the list */
+			if (g_weapons[i].weight == b) {
+				g_weapon_weights[w] = i;
+				w++;
+			}
+		}
+	}
+
+#if 1
+	for (int i = 0; i < g_weapons.length; i++)
+		print(sprintf("Weapon-Weight order: %s, %i\n", g_weapons[g_weapon_weights[i]].name, i));
+#endif
+
+#ifdef CLIENT
+	/* build our slot-order table */
+	int st = 0;
+
+	int max_slots = 0;
+	for (int i = 0; i < g_weapons.length; i++)
+		if (g_weapons[i].slot > max_slots)
+			max_slots = g_weapons[i].slot;
+	int max_pos = 0;
+	for (int i = 0; i < g_weapons.length; i++)
+		if (g_weapons[i].slot_pos > max_pos)
+			max_pos = g_weapons[i].slot_pos;
+
+	/* loop through all slots */
+	for (int s = 0; s <= max_slots; s++) {
+		/* loop through all positions */
+		for (int p = 0; p < max_pos; p++) {
+			/* loop through all the weapons */
+			for (int i = 0; i < g_weapons.length; i++) {
+				if (g_weapons[i].slot == s && g_weapons[i].slot_pos == p) {
+					g_weapon_order[st] = i;
+					st++;
+				}
+			}
+		}
+	}
+#if 0
+	for (int i = 0; i < g_weapons.length; i++)
+		print(sprintf("Weapon-List order: %s, %i\n", g_weapons[g_weapon_order[i]].name, i));
+#endif
+#endif
 }
 
 void
@@ -170,6 +238,23 @@ Weapons_Release(void)
 		g_weapons[i].release();
 
 	pl.gflags &= ~GF_SEMI_TOGGLED;
+}
+
+int
+Weapons_IsEmpty(player pl, int w)
+{
+	int i = pl.activeweapon;
+	int r = 0;
+
+	entity oself = self;
+	self = pl;
+
+	if (g_weapons[i].isempty != __NULL__)
+		r = g_weapons[i].isempty();
+
+	self = oself;
+
+	return (r);
 }
 
 void
