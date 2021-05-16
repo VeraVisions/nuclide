@@ -91,6 +91,7 @@ prop_dynamic::Init(void)
 	movetype = MOVETYPE_NONE;
 	setsize(this, mins * scale, maxs * scale);
 	drawmask = MASK_ENGINE;
+	MakeStatic();
 }
 
 void

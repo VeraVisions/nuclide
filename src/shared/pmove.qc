@@ -63,11 +63,32 @@
 #endif
 
 #ifndef PHY_VIEWPOS
-#define PHY_VIEWPOS [0,0,24]
+	#define PHY_VIEWPOS [0,0,24]
 #endif
 
 #ifndef PHY_VIEWPOS_CROUCHED
-#define PHY_VIEWPOS_CROUCHED [0,0,12]
+	#define PHY_VIEWPOS_CROUCHED [0,0,12]
+#endif
+
+
+/* Those are constant for HL BSP and CANNOT be changed.
+ * Blame Valve for purchasing a Quake II license but not
+ * scrapping hull sizes for their .bsp format... 
+ * however, you can offset them */
+#ifndef PHY_HULL_MIN
+	#define PHY_HULL_MIN [-16,-16,-36]
+#endif
+
+#ifndef PHY_HULL_MAX
+	#define PHY_HULL_MAX [16,16,36]
+#endif
+
+#ifndef PHY_HULL_CROUCHED_MIN
+	#define PHY_HULL_CROUCHED_MIN [-16,-16,-18]
+#endif
+
+#ifndef PHY_HULL_CROUCHED_MAX
+	#define PHY_HULL_CROUCHED_MAX [16,16,18]
 #endif
 
 /* if they're undefined by a config, they'll be set by the game/mod default */
@@ -92,6 +113,15 @@ var float autocvar_sv_maxspeed = PMOVE_MAXSPEED;
 void
 PMove_Init(void)
 {
+}
+
+void
+PMove_SetSize(entity targ)
+{
+	if (targ.flags & FL_CROUCHING)
+		setsize(targ, PHY_HULL_CROUCHED_MIN, PHY_HULL_CROUCHED_MAX);
+	else
+		setsize(targ, PHY_HULL_MIN, PHY_HULL_MAX);
 }
 
 #ifdef SERVER
@@ -145,21 +175,25 @@ PMove_Gravity(entity ent)
 	}
 }
 
+void
+PMove_SetViewOfs(void)
+{
+	if (self.flags & FL_CROUCHING) {
+		self.mins = PHY_HULL_CROUCHED_MIN;
+		self.maxs = PHY_HULL_CROUCHED_MAX;
+		self.view_ofs = PHY_VIEWPOS_CROUCHED;
+	} else {
+		self.mins = PHY_HULL_MIN;
+		self.maxs = PHY_HULL_MAX;
+		self.view_ofs = PHY_VIEWPOS;
+	}
+}
+
 /* figure out where we are in the geometry. void, solid, liquid, etc. */
 void
 PMove_Categorize(void)
 {
 	int contents;
-
-	if (self.flags & FL_CROUCHING) {
-		self.mins = VEC_CHULL_MIN;
-		self.maxs = VEC_CHULL_MAX;
-		self.view_ofs = PHY_VIEWPOS_CROUCHED;
-	} else {
-		self.mins = VEC_HULL_MIN;
-		self.maxs = VEC_HULL_MAX;
-		self.view_ofs = PHY_VIEWPOS;
-	}
 
 	tracebox(self.origin, self.mins, self.maxs, self.origin - [0,0,1], MOVE_NORMAL, self);
 
@@ -282,11 +316,11 @@ PMove_AccelMove(float move_time, float premove)
 {
 	int iFixCrouch = FALSE;
 	if (input_buttons & INPUT_BUTTON8) {
-			self.flags |= FL_CROUCHING;
+		self.flags |= FL_CROUCHING;
 	} else {
 		// If we aren't holding down duck anymore and 'attempt' to stand up, prevent it
 		if (self.flags & FL_CROUCHING) {
-			if (QPMove_IsStuck(self, '0 0 36', VEC_HULL_MIN, VEC_HULL_MAX) == FALSE) {
+			if (QPMove_IsStuck(self, '0 0 36', PHY_HULL_MIN, PHY_HULL_MAX) == FALSE) {
 				self.flags &= ~FL_CROUCHING;
 				iFixCrouch = TRUE;
 			}
@@ -296,11 +330,11 @@ PMove_AccelMove(float move_time, float premove)
 	}
 
 	if (self.flags & FL_CROUCHING) {
-		setsize(self, VEC_CHULL_MIN, VEC_CHULL_MAX);
+		setsize(self, PHY_HULL_CROUCHED_MIN, PHY_HULL_CROUCHED_MAX);
 		self.view_ofs = PHY_VIEWPOS_CROUCHED;
 	} else {
-		setsize(self, VEC_HULL_MIN, VEC_HULL_MAX);
-		if (iFixCrouch && QPMove_IsStuck(self, [0,0,0], VEC_HULL_MIN, VEC_HULL_MAX)) {
+		setsize(self, PHY_HULL_MIN, PHY_HULL_MAX);
+		if (iFixCrouch && QPMove_IsStuck(self, [0,0,0], PHY_HULL_MIN, PHY_HULL_MAX)) {
 			for (int i = 0; i < 36; i++) {
 				self.origin[2] += 1;
 				if (QPMove_IsStuck(self, [0,0,0], self.mins, self.maxs) == FALSE) {
@@ -397,7 +431,7 @@ PMove_AccelFriction(float move_time, float premove, vector wish_dir, float wish_
 		flFriction = vlen(vecTemp);
 
 		// if the leading edge is over a dropoff, increase friction
-		vecTemp = self.origin + normalize(vecTemp) * 16 + '0 0 1' * VEC_HULL_MIN[2];
+		vecTemp = self.origin + normalize(vecTemp) * 16 + '0 0 1' * PHY_HULL_MIN[2];
 		traceline(vecTemp, vecTemp + '0 0 -34', TRUE, self);
 
 		// apply friction
@@ -758,9 +792,12 @@ PMove_Run(void)
 		pl.velocity = (pl.velocity * (1 / (vlen(pl.velocity) / 750)));
 	}
 
+	PMove_SetViewOfs();
+
 	/* call accelerate before and after the actual move, 
 	 * with half the move each time. this reduces framerate dependence. 
 	 * and makes controlling jumps slightly easier */
+#ifdef CUSTOMPLAYERPHYSICS
 	PMove_Acceleration(input_timelength / 2, TRUE);
 	PMove_Move();
 	PMove_Acceleration(input_timelength / 2, FALSE);
@@ -775,6 +812,10 @@ PMove_Run(void)
 
 	/* activate any SOLID_TRIGGER entities */
 	touchtriggers();
+#else
+	PMove_AccelMove(input_timelength, FALSE);
+	runstandardplayerphysics(self);
+#endif
 
 	if (self.waterlevel != 0) {
 		flFallVel = 0;

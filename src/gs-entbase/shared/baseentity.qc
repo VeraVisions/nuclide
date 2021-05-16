@@ -136,6 +136,21 @@ CBaseEntity::RenderFXPass(void)
 }
 #endif
 
+void
+CBaseEntity::MakeStatic(void)
+{
+	if (m_iRenderMode > RM_FULLBRIGHT)
+		return;
+
+	RenderFXPass();
+
+	/* static ents = no collision, so let's make a copy for visibility */
+	makestatic(copyentity(this));
+
+	/* now *this* is only used for csqc collision */
+	drawmask = 0;
+}
+
 var int autocvar_r_showSkeleton = 0;
 float
 CBaseEntity::predraw(void)

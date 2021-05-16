@@ -335,8 +335,9 @@ CSQC_UpdateView(float w, float h, float focus)
 					
 					if (c.classname == "player") {
 						player bp = (player)c;
+						removeentity(c);
 						setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin + bp.view_ofs);
-						setproperty(VF_ANGLES, bp.v_angle);
+						setproperty(VF_ANGLES, [bp.pitch, bp.angles[1], bp.angles[2]]);
 						setproperty(VF_CL_VIEWANGLES, [bp.pitch, bp.angles[1], bp.angles[2]]);
 					}
 					break;

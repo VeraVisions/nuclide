@@ -127,7 +127,7 @@ func_illusionary::Init(void)
 	SetAngles([0,0,0]);
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_NOT);
-	drawmask = MASK_ENGINE;
+	MakeStatic();
 }
 #endif
 

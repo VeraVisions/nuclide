@@ -30,6 +30,7 @@ class CUIButton:CUIWidget
 	string m_strTitle;
 	string m_strTitleActive;
 	string m_strIcon;
+	string m_strExec;
 
 	void(void) CUIButton;
 	virtual void(void) m_vFunc = 0;
@@ -41,7 +42,10 @@ class CUIButton:CUIWidget
 	virtual void(string) SetTitle;
 	virtual void(string) SetIcon;
 	virtual void(void(void)) SetFunc;
+	virtual void(string) SetExec;
 	virtual void(float, float, float, float) Input;
+	virtual void(void) Show;
+	virtual void(void) Hide;
 };
 
 void
@@ -102,10 +106,28 @@ CUIButton::SetFunc(void(void) vFunc)
 {
 	m_vFunc = vFunc;
 }
+void
+CUIButton::SetExec(string exe)
+{
+	m_strExec = exe;
+}
+
+void
+CUIButton::Show(void)
+{
+	m_iFlags |= BUTTON_VISIBLE;
+}
+void
+CUIButton::Hide(void)
+{
+	m_iFlags -= (m_iFlags & BUTTON_VISIBLE);
+}
 
 void
 CUIButton::Draw(void)
 {
+	if (!(m_iFlags & BUTTON_VISIBLE))
+		return;
 
 #ifndef CLASSIC_VGUI
 	drawfill(m_parent.m_vecOrigin + m_vecOrigin, m_vecSize, m_vecColor, m_flAlpha);
@@ -146,6 +168,9 @@ CUIButton::Draw(void)
 void
 CUIButton::Input(float flEVType, float flKey, float flChar, float flDevID)
 {
+	if (!(m_iFlags & BUTTON_VISIBLE))
+		return;
+
 	if (flEVType == IE_KEYDOWN) {
 		if (flKey == K_MOUSE1) {
 			FlagRemove(BUTTON_LASTACTIVE);
@@ -157,9 +182,10 @@ CUIButton::Input(float flEVType, float flKey, float flChar, float flDevID)
 	} else if (flEVType == IE_KEYUP) {
 		if (flKey == K_MOUSE1) {
 			if (m_iFlags & BUTTON_DOWN && Util_MouseAbove(getmousepos(), m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
-				if (m_vFunc) {
+				if (m_vFunc)
 					m_vFunc();
-				}
+				if (m_strExec)
+					localcmd(sprintf("%s\n", m_strExec));
 			}
 			FlagRemove(BUTTON_DOWN);
 		}

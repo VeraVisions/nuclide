@@ -120,8 +120,8 @@ func_wall::Init(void)
 	setmodel(this, model);
 	setorigin(this, origin);
 	movetype = MOVETYPE_PUSH;
-	drawmask = MASK_ENGINE;
 	solid = SOLID_BSP;
+	MakeStatic();
 }
 #endif
 
