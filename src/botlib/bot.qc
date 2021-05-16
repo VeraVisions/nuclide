@@ -404,13 +404,19 @@ bot::RunAI(void)
 		}
 
 		/* now we'll set the movevalues relative to the input_angle */
-		if (m_iCurNode >= 0 && m_pRoute[m_iCurNode].m_iFlags & LF_WALK)
+		if ((m_iCurNode >= 0 && m_pRoute[m_iCurNode].m_iFlags & LF_WALK) || m_eTarget && enemyvisible && vlen(aimpos-origin) < 512)
 			vecDirection = normalize(aimpos - origin) * 120;
 		else
 			vecDirection = normalize(aimpos - origin) * 240;
 
 		makevectors(input_angles);
 		input_movevalues = [v_forward * vecDirection, v_right * vecDirection, v_up * vecDirection];
+
+		/* duck and stand still when our enemy is far away */
+		if (m_eTarget && enemyvisible && vlen(aimpos-origin) > 512) {
+			input_buttons |= INPUT_BUTTON8;
+			input_movevalues = [0,0,0];
+		}
 	}
 
 	/* press any buttons needed */
