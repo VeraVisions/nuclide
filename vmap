@@ -7,10 +7,22 @@ if [ ! -f "$SCRPATH"/bin/vmap ]; then
 	exit
 fi
 
+# Check how many cores/processors we should use for building
+if ! [ -x "$(command -v nproc)" ]; then
+	# check if we're on OpenBSD then
+	if ! [ -x "$(command -v sysctl)" ]; then
+		BUILD_PROC=1
+	else
+		BUILD_PROC=$(sysctl -n hw.ncpu)
+	fi
+else
+	BUILD_PROC=$(nproc)
+fi
+
 set -e
 
 if [ "$VMAP_NOBSP" != "1" ]; then
-	"$SCRPATH"/bin/vmap -v -custinfoparms -fs_basepath "$SCRPATH" -fs_game platform -threads $(nproc) -samplesize 8 $*
+	"$SCRPATH"/bin/vmap -v -custinfoparms -fs_basepath "$SCRPATH" -fs_game platform -threads $BUILD_PROC -samplesize 8 $*
 fi
 
 if [ "$VMAP_NOVIS" != "1" ]; then
@@ -18,5 +30,5 @@ if [ "$VMAP_NOVIS" != "1" ]; then
 fi
 
 if [ "$VMAP_NOLIGHT" != "1" ]; then
-	"$SCRPATH"/bin/vmap -light -custinfoparms -fs_basepath "$SCRPATH" -v -fs_game platform -bounce 8 -fastbounce -samplesize 8 -threads $(nproc) -shade -shadeangle 60 -patchshadows $*
+	"$SCRPATH"/bin/vmap -light -custinfoparms -fs_basepath "$SCRPATH" -v -fs_game platform -bounce 8 -fastbounce -samplesize 8 -threads $BUILD_PROC -shade -shadeangle 60 -patchshadows $*
 fi
