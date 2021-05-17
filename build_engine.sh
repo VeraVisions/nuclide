@@ -71,6 +71,10 @@ else
 	cd ./engine/engine
 fi
 
+if [ "$BUILD_CLEAN" ]; then
+	gmake clean
+fi
+
 gmake -j $BUILD_PROC makelibs FTE_TARGET=$PLATFORM
 gmake -j $BUILD_PROC $MAKETARGET FTE_TARGET=$PLATFORM
 cp -v "$OUTPUT" ../../../bin/fteqw
