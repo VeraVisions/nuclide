@@ -61,6 +61,8 @@ void Weapons_SetGeomset(string);
 void Weapons_UpdateAmmo(base_player, int, int, int);
 int Weapons_GetAnimation(void);
 
+void Weapons_Sound(entity, float, string);
+
 #ifdef CLIENT
 string Weapons_GetPlayermodel(int);
 void Weapons_HUDPic(int, int, vector, float);

@@ -396,3 +396,23 @@ Weapons_UpdateAmmo(base_player pl, int a1, int a2, int a3)
 	pl.a_ammo2 = bound(0, a2, 255);
 	pl.a_ammo3 = bound(0, a3, 255);
 }
+
+void
+Weapons_Sound(entity pl, float channel, string snd)
+{
+#if 0
+#ifdef SERVER
+	float prev = pl.dimension_see;
+	pl.dimension_see=0;
+	Sound_Play(pl, channel, snd);
+	pl.dimension_see = prev;
+#else
+	/* client side == immediately */
+	Sound_Play(pl, channel, snd);
+#endif
+#else
+	#ifdef SERVER
+	Sound_Play(pl, channel, snd);
+	#endif
+#endif
+}
