@@ -61,7 +61,6 @@ func_breakable.impact_concrete
 	sample debris/concrete1.wav
 	sample debris/concrete2.wav
 	sample debris/concrete3.wav
-	sample debris/concrete4.wav
 }
 
 func_breakable.impact_rock
