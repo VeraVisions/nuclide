@@ -41,6 +41,7 @@ base_player
 	PREDICTED_VECTOR_N(origin);
 	PREDICTED_VECTOR_N(velocity);
 	PREDICTED_VECTOR_N(angles);
+	PREDICTED_FLOAT_N(colormap);
 	PREDICTED_FLOAT_N(flags);
 	PREDICTED_FLOAT_N(gflags);
 	PREDICTED_FLOAT(viewzoom);

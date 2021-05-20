@@ -33,6 +33,45 @@ If the compiler isn't found it will ask you to build them.
 For best results, symlink the desired scripts into your home directory's bin folder.
 The scripts are designed to be aware of their actual location in the filesystem.
 
+## Dependencies
+
+Rough list of dependencies for the average Linux system.
+On some systems the names may slightly differ. These should be correct for OpenSUSE.
+
+### Engine
+* subversion
+* gmake
+* gcc
+* mesa-libGL-devel
+* libgnutls-devel
+* libopenal-devel
+* libX11-devel
+* libXcursor-devel
+* libXrandr-devel
+* libSDL2-devel (only if you pass BUILD_SDL2=1 to build_engine.sh)
+
+For WinNT and Darwin systems it's recommended you use the SDL2 backend, but native backends
+may be available in FTEQW.
+
+The X development packages are obviously only a requirement for when you do not compile an SDL2 build on a UNIX-like system.
+
+### FFMPEG Plugin
+* ffmpeg-4-libavformat-devel
+* ffmpeg-4-libswscale-devel
+
+You want this plugin if you want playback of a variety of media formats, including video decoding.
+
+### Worldspawn Level Editor
+* cmake
+* gcc-c++
+* gtk2-devel
+* gtkglext-devel
+* libxml2-devel
+* libjpeg8-devel
+* minizip-devel
+
+This is the only component that requires a C++ compiler. 
+
 ## Support
 Join us on irc.vera-visions.com and chat if you're interested in using this in production.
 **All this is provided to you for free as-is otherwise.**

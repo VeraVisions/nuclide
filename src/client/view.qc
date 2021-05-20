@@ -170,6 +170,7 @@ View_DrawViewModel(void)
 
 	makevectors(view_angles);
 	m_eViewModel.angles = view_angles;
+	m_eViewModel.colormap = pSeat->m_ePlayer.colormap;
 
 	// Give the gun a tilt effect like in old HL/CS versions
 	if (autocvar_v_bobclassic == 1) {

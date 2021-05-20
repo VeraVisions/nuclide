@@ -20,6 +20,8 @@ CMainButton cz_btnAdvanced;
 CTextBox cz_tbNetname;
 CPictureSwitch cz_psSpray;
 CPictureSwitch cz_psModel;
+CSlider cz_sldTopcolor;
+CSlider cz_sldBottomcolor;
 
 string *g_models;
 int g_modelcount;
@@ -75,6 +77,82 @@ cz_cbSprayChanged(void)
 	string mdl = cz_psSpray.GetPic();
 	localcmd(sprintf("seta _cl_playerspray %s\n", mdl));
 	localcmd(sprintf("setinfoblob spray %s\n", mdl));
+}
+
+vector hsv2rgb(float h, float s, float v)
+{
+	float i,f,p,q,t;
+	vector col = [0,0,0];
+
+	h = max(0.0, min(360.0, h));
+	s = max(0.0, min(100.0, s));
+	v = max(0.0, min(100.0, v));
+
+	s /= 100;
+	v /= 100;
+
+	if (s == 0) {
+		col[0] = col[1] = col[2] = rint(v*255);
+		return col;
+	}
+
+	h /= 60;
+	i = floor(h);
+	f = h - i;
+	p = v * (1 - s);
+	q = v * (1 - s * f);
+	t = v * (1 - s * (1 - f));
+
+	switch (i) {
+	case 0:
+		col[0] = rint(255*v);
+		col[1] = rint(255*t);
+		col[2] = rint(255*p);
+		break;
+	case 1:
+		col[0] = rint(255*q);
+		col[1] = rint(255*v);
+		col[2] = rint(255*p);
+		break;
+	case 2:
+		col[0] = rint(255*p);
+		col[1] = rint(255*v);
+		col[2] = rint(255*t);
+		break;
+	case 3:
+		col[0] = rint(255*p);
+		col[1] = rint(255*q);
+		col[2] = rint(255*v);
+		break;
+	case 4:
+		col[0] = rint(255*t);
+		col[1] = rint(255*p);
+		col[2] = rint(255*v);
+		break;
+	default: // case 5:
+		col[0] = rint(255*v);
+		col[1] = rint(255*p);
+		col[2] = rint(255*q);
+	}
+	return col;
+}
+
+void
+cz_sldTopcolorChanged(float val)
+{
+	vector x = hsv2rgb(val * 360, 100, 100);
+	float id = x[2] + (x[1] << 8) + (x[0] << 16);
+	cvar_set("topcolor", sprintf("0x%x", id));
+	localcmd(sprintf("seta _cl_topcolor %f\n", val));
+}
+
+void
+cz_sldBottomcolorChanged(float val)
+{
+	vector x = hsv2rgb(val * 360, 100, 100);
+	float id = x[2] + (x[1] << 8) + (x[0] << 16);
+	cvar_set("bottomcolor", sprintf("0x%x", id));
+	localcmd(sprintf("seta _cl_bottomcolor %f\n", val));
 }
 
 void
@@ -136,6 +214,19 @@ menu_customize_init(void)
 	cz_tbNetname.SetPos(212,160);
 	cz_tbNetname.SetText(cvar_string("name"));
 	Widget_Add(fn_customize, cz_tbNetname);
+	
+	cz_sldTopcolor = spawn(CSlider);
+	cz_sldTopcolor.SetPos(420,400);
+	cz_sldTopcolor.SetValue(cvar("_cl_topcolor"));
+	cz_sldTopcolor.SetCallback(cz_sldTopcolorChanged);
+	Widget_Add(fn_customize, cz_sldTopcolor);
+	
+	cz_sldBottomcolor = spawn(CSlider);
+	cz_sldBottomcolor.SetPos(420,420);
+	cz_sldBottomcolor.SetValue(cvar("_cl_bottomcolor"));
+	cz_sldBottomcolor.SetCallback(cz_sldBottomcolorChanged);
+	Widget_Add(fn_customize, cz_sldBottomcolor);
+
 
 	if (games[gameinfo_current].nosprays == 0) {
 		cz_psSpray = spawn(CPictureSwitch);
@@ -171,9 +262,16 @@ menu_customize_draw(void)
 	WLabel_Static(212, 140, m_reslbl[IDS_PLAYERINFO_NAME], 14, 14, [1,1,1],
 					1.0f, 0, font_arial);
 
-	if (games[gameinfo_current].nomodels == 0)
-	WLabel_Static(410, 140, sprintf(m_reslbl[IDS_MODEL_NAME], cvar_string("_cl_playermodel")), 14, 14, [1,1,1],
-					1.0f, 0, font_arial);
+	if (games[gameinfo_current].nomodels == 0) {
+		WLabel_Static(410, 140, sprintf(m_reslbl[IDS_MODEL_NAME], cvar_string("_cl_playermodel")), 14, 14, [1,1,1],
+						1.0f, 0, font_arial);
+		
+		vector t, b;
+		t = hsv2rgb(cvar("_cl_topcolor") * 360, 100, 100) / 255;
+		b = hsv2rgb(cvar("_cl_bottomcolor") * 360, 100, 100) / 255;
+		drawfill([g_menuofs[0] + 414,g_menuofs[1] + 346], [64,12], t, 0.75f);
+		drawfill([g_menuofs[0] + 510,g_menuofs[1] + 346], [64,12], b, 0.75f);
+	}
 
 	if (games[gameinfo_current].nosprays == 0)
 	WLabel_Static(212, 203, m_reslbl[IDS_PROFILE_LOGO], 14, 14, [1,1,1],

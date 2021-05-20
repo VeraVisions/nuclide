@@ -52,8 +52,8 @@ base_player::ReceiveEntity(float new, float fl)
 		pitch = readfloat();
 	if (fl & PLAYER_ANGLES_Y)
 		angles[1] = readfloat();
-	if (fl & PLAYER_ANGLES_Z)
-		angles[2] = readfloat();
+	if (fl & PLAYER_COLORMAP)
+		colormap = readfloat();
 
 	if (fl & PLAYER_VELOCITY) {
 		velocity[0] = readcoord();
@@ -106,6 +106,7 @@ base_player::PredictPreFrame(void)
 	SAVE_STATE(modelindex);
 	SAVE_STATE(origin);
 	SAVE_STATE(angles);
+	SAVE_STATE(colormap);
 	SAVE_STATE(velocity);
 	SAVE_STATE(flags);
 	SAVE_STATE(gflags);
@@ -142,6 +143,7 @@ base_player::PredictPostFrame(void)
 	ROLL_BACK(modelindex);
 	ROLL_BACK(origin);
 	ROLL_BACK(angles);
+	ROLL_BACK(colormap);
 	ROLL_BACK(velocity);
 	ROLL_BACK(flags);
 	ROLL_BACK(gflags);
@@ -193,8 +195,8 @@ base_player::EvaluateEntity(void)
 	if (VEC_CHANGED(angles, 1))
 		SendFlags |= PLAYER_ANGLES_Y;
 
-	if (VEC_CHANGED(angles, 2))
-		SendFlags |= PLAYER_ANGLES_Z;
+	if (ATTR_CHANGED(colormap))
+		SendFlags |= PLAYER_COLORMAP;
 
 	if (VEC_CHANGED(velocity, 0))
 		SendFlags |= PLAYER_VELOCITY;
@@ -232,6 +234,7 @@ base_player::EvaluateEntity(void)
 	SAVE_STATE(modelindex);
 	SAVE_STATE(origin);
 	SAVE_STATE(angles);
+	SAVE_STATE(colormap);
 	SAVE_STATE(velocity);
 	SAVE_STATE(flags);
 	SAVE_STATE(gflags);
@@ -281,8 +284,8 @@ base_player::SendEntity(entity ePEnt, float fChanged)
 		WriteFloat(MSG_ENTITY, v_angle[0]);
 	if (fChanged & PLAYER_ANGLES_Y)
 		WriteFloat(MSG_ENTITY, angles[1]);
-	if (fChanged & PLAYER_ANGLES_Z)
-		WriteFloat(MSG_ENTITY, angles[2]);
+	if (fChanged & PLAYER_COLORMAP)
+		WriteFloat(MSG_ENTITY, colormap);
 
 	/* similar as with origin, we separate x/y from z */
 	if (fChanged & PLAYER_VELOCITY) {

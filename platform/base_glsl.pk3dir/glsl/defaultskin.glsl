@@ -1,8 +1,9 @@
 !!ver 130
 !!permu FRAMEBLEND
 !!permu SKELETAL
+!!permu UPPERLOWER
 !!permu FOG
-!!samps diffuse reflectcube
+!!samps diffuse reflectcube upper lower
 !!cvardf gl_affinemodels=0
 !!cvardf gl_ldr=1
 !!cvardf gl_halflambert=1
@@ -145,6 +146,15 @@ varying vec3 light;
 		diffuse_f = texture2D(s_diffuse, tex_c);
 	#endif
 #endif
+
+	#ifdef UPPER
+		vec4 uc = texture2D(s_upper, tex_c);
+		diffuse_f.rgb += uc.rgb*e_uppercolour*uc.a;
+	#endif
+	#ifdef LOWER
+		vec4 lc = texture2D(s_lower, tex_c);
+		diffuse_f.rgb += lc.rgb*e_lowercolour*lc.a;
+	#endif
 
 		diffuse_f.rgb *= light;
 
