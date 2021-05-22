@@ -142,6 +142,12 @@ Weapons_Draw(void)
 	pl.w_idle_next = 2.5f;
 	pl.viewzoom = 1.0f;
 
+	/* we're meant to respawn when we're dead, don't unset! */
+	if (pl.health > 0) {
+		pl.think = __NULL__;
+		pl.nextthink = 0.0f;
+	}
+
 #ifdef CLIENT
 	entity eold = self;
 	self = pSeat->m_pWeaponFX;
