@@ -23,6 +23,9 @@ CPictureSwitch cz_psModel;
 CSlider cz_sldTopcolor;
 CSlider cz_sldBottomcolor;
 
+vector g_vecTopcolor;
+vector g_vecBottomcolor;
+
 string *g_models;
 int g_modelcount;
 string *g_sprays;
@@ -129,7 +132,7 @@ vector hsv2rgb(float h, float s, float v)
 		col[1] = rint(255*p);
 		col[2] = rint(255*v);
 		break;
-	default: // case 5:
+	default:
 		col[0] = rint(255*v);
 		col[1] = rint(255*p);
 		col[2] = rint(255*q);
@@ -144,6 +147,7 @@ cz_sldTopcolorChanged(float val)
 	float id = x[2] + (x[1] << 8) + (x[0] << 16);
 	cvar_set("topcolor", sprintf("0x%x", id));
 	localcmd(sprintf("seta _cl_topcolor %f\n", val));
+	g_vecTopcolor = x / 255;
 }
 
 void
@@ -153,6 +157,7 @@ cz_sldBottomcolorChanged(float val)
 	float id = x[2] + (x[1] << 8) + (x[0] << 16);
 	cvar_set("bottomcolor", sprintf("0x%x", id));
 	localcmd(sprintf("seta _cl_bottomcolor %f\n", val));
+	g_vecBottomcolor = x / 255;
 }
 
 void
@@ -250,7 +255,10 @@ menu_customize_init(void)
 		cz_psModel.SetMax(g_modelcount);
 		cz_psModel.SetCallback(cz_cbModelChanged);
 		cz_psModel.SetValueS(sprintf("models/player/%s/%s", cvar_string("_cl_playermodel"), cvar_string("_cl_playermodel")));
-		Widget_Add(fn_customize, cz_psModel);
+		Widget_Add(fn_customize, cz_psModel);		
+
+		g_vecTopcolor = hsv2rgb(cvar("_cl_topcolor") * 360, 100, 100) / 255;
+		g_vecBottomcolor = hsv2rgb(cvar("_cl_bottomcolor") * 360, 100, 100) / 255;
 	}
 }
 
@@ -265,12 +273,9 @@ menu_customize_draw(void)
 	if (games[gameinfo_current].nomodels == 0) {
 		WLabel_Static(410, 140, sprintf(m_reslbl[IDS_MODEL_NAME], cvar_string("_cl_playermodel")), 14, 14, [1,1,1],
 						1.0f, 0, font_arial);
-		
-		vector t, b;
-		t = hsv2rgb(cvar("_cl_topcolor") * 360, 100, 100) / 255;
-		b = hsv2rgb(cvar("_cl_bottomcolor") * 360, 100, 100) / 255;
-		drawfill([g_menuofs[0] + 414,g_menuofs[1] + 346], [64,12], t, 0.75f);
-		drawfill([g_menuofs[0] + 510,g_menuofs[1] + 346], [64,12], b, 0.75f);
+
+		drawfill([g_menuofs[0] + 414,g_menuofs[1] + 346], [64,12], g_vecTopcolor, 0.75f);
+		drawfill([g_menuofs[0] + 510,g_menuofs[1] + 346], [64,12], g_vecBottomcolor, 0.75f);
 	}
 
 	if (games[gameinfo_current].nosprays == 0)
