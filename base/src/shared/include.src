@@ -16,6 +16,11 @@ fx_impact.qc
 
 items.h
 weapons.h
+
+weapon_basesemi.qc
+weapon_baseshotgun.qc
+weapon_baseautomatic.qc
+
 weapons.qc
 weapon_common.qc
 input.qc

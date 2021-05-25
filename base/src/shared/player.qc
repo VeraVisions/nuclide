@@ -45,6 +45,8 @@ enumflags
 noref int input_sequence;
 class player:base_player
 {
+	PREDICTED_INT(mode_tempstate);
+
 #ifdef CLIENT
 	/* External model */
 	entity p_model;
