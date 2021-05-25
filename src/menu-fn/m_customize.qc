@@ -219,19 +219,6 @@ menu_customize_init(void)
 	cz_tbNetname.SetPos(212,160);
 	cz_tbNetname.SetText(cvar_string("name"));
 	Widget_Add(fn_customize, cz_tbNetname);
-	
-	cz_sldTopcolor = spawn(CSlider);
-	cz_sldTopcolor.SetPos(420,400);
-	cz_sldTopcolor.SetValue(cvar("_cl_topcolor"));
-	cz_sldTopcolor.SetCallback(cz_sldTopcolorChanged);
-	Widget_Add(fn_customize, cz_sldTopcolor);
-	
-	cz_sldBottomcolor = spawn(CSlider);
-	cz_sldBottomcolor.SetPos(420,420);
-	cz_sldBottomcolor.SetValue(cvar("_cl_bottomcolor"));
-	cz_sldBottomcolor.SetCallback(cz_sldBottomcolorChanged);
-	Widget_Add(fn_customize, cz_sldBottomcolor);
-
 
 	if (games[gameinfo_current].nosprays == 0) {
 		cz_psSpray = spawn(CPictureSwitch);
@@ -255,7 +242,19 @@ menu_customize_init(void)
 		cz_psModel.SetMax(g_modelcount);
 		cz_psModel.SetCallback(cz_cbModelChanged);
 		cz_psModel.SetValueS(sprintf("models/player/%s/%s", cvar_string("_cl_playermodel"), cvar_string("_cl_playermodel")));
-		Widget_Add(fn_customize, cz_psModel);		
+		Widget_Add(fn_customize, cz_psModel);
+	
+		cz_sldTopcolor = spawn(CSlider);
+		cz_sldTopcolor.SetPos(420,400);
+		cz_sldTopcolor.SetValue(cvar("_cl_topcolor"));
+		cz_sldTopcolor.SetCallback(cz_sldTopcolorChanged);
+		Widget_Add(fn_customize, cz_sldTopcolor);
+		
+		cz_sldBottomcolor = spawn(CSlider);
+		cz_sldBottomcolor.SetPos(420,420);
+		cz_sldBottomcolor.SetValue(cvar("_cl_bottomcolor"));
+		cz_sldBottomcolor.SetCallback(cz_sldBottomcolorChanged);
+		Widget_Add(fn_customize, cz_sldBottomcolor);
 
 		g_vecTopcolor = hsv2rgb(cvar("_cl_topcolor") * 360, 100, 100) / 255;
 		g_vecBottomcolor = hsv2rgb(cvar("_cl_bottomcolor") * 360, 100, 100) / 255;
