@@ -332,3 +332,9 @@ base_player::SendEntity(entity ePEnt, float fChanged)
 	return (1);
 }
 #endif
+
+void
+base_player::base_player(void)
+{
+	
+}

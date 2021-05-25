@@ -72,6 +72,8 @@ base_player
 	/* vehicle info */
 	entity vehicle;
 
+	void(void) base_player;
+
 #ifdef CLIENT
 	int sequence;
 	float pitch;
