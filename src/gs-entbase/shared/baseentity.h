@@ -30,6 +30,7 @@ class CBaseEntity
 	void(void) CBaseEntity;
 	virtual void(void) Init;
 	virtual void(void) Initialized;
+	virtual void(string) SentenceSample;
 	virtual void(string) Sentence;
 	virtual void(void) ProcessWordQue;
 	virtual void(float flChanged) ReceiveEntity;

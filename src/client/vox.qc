@@ -687,4 +687,43 @@ Vox_Init(void)
 	precache_sound("vox/zero.wav");
 	precache_sound("vox/zone.wav");
 	precache_sound("vox/zulu.wav");
-} 
+}
+
+class CVoxSpeaker:CBaseEntity
+{
+	void CVoxSpeaker;
+	virtual void(string) SentenceSample;
+	virtual float(void) predraw;
+};
+
+void
+CVoxSpeaker::SentenceSample(string sample)
+{
+	sound(this, CHAN_VOICE, sample, 1.0, ATTN_NONE);
+}
+
+float
+CVoxSpeaker::predraw(void)
+{
+	ProcessWordQue();
+	return (PREDRAW_NEXT);
+}
+
+void
+CVoxSpeaker::CVoxSpeaker(void)
+{
+	// blaaa
+	drawmask = MASK_ENGINE;
+}
+
+CVoxSpeaker g_voxSpeaker;
+
+void
+Vox_PlaySentence(string sentence)
+{
+	if (!g_voxSpeaker) {
+		g_voxSpeaker = spawn(CVoxSpeaker);
+	}
+
+	g_voxSpeaker.Sentence(sentence);
+}

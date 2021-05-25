@@ -104,12 +104,41 @@ void env_message::env_message(void)
 void
 env_message_single(entity target, string msg)
 {
+	if (!msg)
+		return;
+
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_MESSAGE);
-	WriteString(MSG_MULTICAST, msg);
+
+	if (substring(msg, 0, 1) != "#")
+		WriteString(MSG_MULTICAST, msg);
+	else
+		WriteString(MSG_MULTICAST, substring(msg, 1, -1));
+
 	WriteString(MSG_MULTICAST, "misc/talk.wav");
 	WriteFloat(MSG_MULTICAST, 1.0);
 	WriteByte(MSG_MULTICAST, ATTN_NORM);
 	msg_entity = target;
 	multicast([0,0,0], MULTICAST_ONE_R);
+}
+
+void
+env_message_broadcast(string msg)
+{
+	if (!msg)
+		return;
+
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_MESSAGE);
+
+	if (substring(msg, 0, 1) != "#")
+		WriteString(MSG_MULTICAST, msg);
+	else
+		WriteString(MSG_MULTICAST, substring(msg, 1, -1));
+
+	WriteString(MSG_MULTICAST, "misc/talk.wav");
+	WriteFloat(MSG_MULTICAST, 1.0);
+	WriteByte(MSG_MULTICAST, ATTN_NORM);
+	msg_entity = world;
+	multicast([0,0,0], MULTICAST_ALL_R);
 }

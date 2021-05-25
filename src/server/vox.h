@@ -17,3 +17,5 @@
 string Vox_TimeToString(float);
 void Vox_Broadcast(string);
 void Vox_Singlecast(entity, string);
+void Vox_Sentence_Single(entity, string);
+void Vox_Sentence_Broadcast(string);

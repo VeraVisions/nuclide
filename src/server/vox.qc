@@ -78,3 +78,34 @@ Vox_Singlecast(entity eClient, string sMessage)
 	msg_entity = eClient;
 	multicast([0,0,0], MULTICAST_ONE_R);
 }
+
+void
+Vox_Sentence_Single(entity eClient, string strSentence)
+{
+	if (!strSentence)
+		return;
+
+	localcmd(sprintf("echo [VOX] Sentence to %s: %s\n", eClient.netname, strSentence));
+
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_SENTENCE_VOX);
+	WriteString(MSG_MULTICAST, strSentence);
+	msg_entity = eClient;
+	multicast([0,0,0], MULTICAST_ONE_R);
+}
+
+void
+Vox_Sentence_Broadcast(string strSentence)
+{
+	if (!strSentence)
+		return;
+
+	localcmd(sprintf("echo [VOX] Broadcast: %s\n", strSentence));
+
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EV_SENTENCE_VOX);
+	WriteString(MSG_MULTICAST, strSentence);
+
+	msg_entity = world;
+	multicast([0,0,0], MULTICAST_ALL_R);
+}

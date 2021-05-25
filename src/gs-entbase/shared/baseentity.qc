@@ -199,6 +199,12 @@ CBaseEntity::predraw(void)
 }
 
 void
+CBaseEntity::SentenceSample(string sample)
+{
+	sound(this, CHAN_VOICE, sample, 1.0, ATTN_NORM, 100, SOUNDFLAG_FOLLOW);
+}
+
+void
 CBaseEntity::ProcessWordQue(void)
 {
 	if (time < 1 || !m_iSentenceCount) {
@@ -209,7 +215,8 @@ CBaseEntity::ProcessWordQue(void)
 		return;
 	}
 
-	sound(this, CHAN_VOICE, m_pSentenceQue[m_iSentencePos].m_strSnd, 1.0, ATTN_NORM, 100, SOUNDFLAG_FOLLOW);
+	SentenceSample(m_pSentenceQue[m_iSentencePos].m_strSnd);
+
 	dprint(sprintf("^2CBaseEntity::^3ProcessWordQue^7: Speaking %s\n", m_pSentenceQue[m_iSentencePos].m_strSnd));
 	m_iSentencePos++;
 
