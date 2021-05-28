@@ -68,6 +68,7 @@ typedef struct
 {
 	string game;
 	string gamedir;
+	string base_dir;
 	string url_info;
 	string url_dl;
 	string version;

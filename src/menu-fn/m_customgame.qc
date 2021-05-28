@@ -134,47 +134,6 @@ game_updateinstallcount(void)
 	return count;
 }
 
-#if 0
-/* get installing id */
-void
-game_getinstallcache(void)
-{
-	int ret;
-	filestream fs_cache;
-
-	ret = 0;
-	fs_cache = fopen("mcache.dat", FILE_READ);
-
-	if (fs_cache >= 0) {
-		g_iModInstallCache = (int)stof(fgets(fs_cache));
-		g_strModInstallCache = fgets(fs_cache);
-		fclose(fs_cache);
-	} else {
-		g_iModInstallCache = -1;
-		g_strModInstallCache = "";
-	}
-
-	print(sprintf("id: %i, name: %s\n", ret, g_strModInstallCache));
-}
-
-/* write installing id */
-void
-game_writeinstallcache(int id, string gamedir)
-{
-	filestream fs_cache;
-
-	fs_cache = fopen("mcache.dat", FILE_WRITE);
-	g_iModInstallCache = id;
-	g_strModInstallCache = gamedir;
-
-	if (fs_cache >= 0) {
-		fputs(fs_cache, sprintf("%i\n",id));
-		fputs(fs_cache, gamedir);
-		fclose(fs_cache);
-	}
-}
-#endif
-
 /* local game/mod info parsing */
 void
 games_set(int id)
@@ -188,18 +147,39 @@ void
 games_init(void)
 {
 	int id;
-	float county;
 	string gamedirname;
-	string gamedescription;
 	gameinfo_count = 0;
 
+	searchhandle sh;
+	searchhandle psh;
+	string temp;
+	filestream fh;
+
 	for (id = 0; (gamedirname = getgamedirinfo(id, 0)); id++) {
-		/* skip any manifest (or modinfo) without cvars setting things */
-		if (getgamedirinfo(id, 2) == "") {
-			continue;
+		/* first let's see if we've got a liblist.gam just floating inside the gamedir */
+		sh = search_begin("liblist.gam", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
+		
+		/* we do not. let's search for pk3's to sift through */
+		if (search_getsize(sh) < 0) {
+			/* let's search for every pk3 in the gamedir and search for a liblist, one at a time. */
+			psh = search_begin("*.pk3", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
+
+			/* loop through each pk3 */
+			for (int i = 0; i < search_getsize(psh); i++) {
+				string full = search_getfilename(psh, i);
+				sh = search_begin("liblist.gam", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, strcat(gamedirname, "/", full));
+				print(sprintf("%s\n", full));
+				
+				/* we found one */
+				if (search_getsize(sh) >= 0)
+					gameinfo_count++;
+			}
+			search_end(psh);
+		} else {
+			gameinfo_count++;
 		}
 
-		gameinfo_count++;
+		search_end(sh);
 	}
 
 	if (!gameinfo_count) {
@@ -210,22 +190,16 @@ games_init(void)
 
 	games = memalloc(sizeof(gameinfo_t) * gameinfo_count);
 
+	/* The things we do for frequent flyer mileage. */
 	if (!games)
 		error(sprintf("Attempting to allocate mod data for %i entries failed\n", gameinfo_count));
 
 	for (id = 0; (gamedirname = getgamedirinfo(id, 0)); id++) {
-		gamedescription = getgamedirinfo(id, 2);
-
-		/* CONT: skip any manifest (or modinfo) without cvars setting things */
-		if (gamedescription == "") {
-			continue;
-		}
-
-		county = tokenize_console(gamedescription);
 
 		/* Fill in the defaults */
 		games[id].game = gamedirname;
 		games[id].gamedir = gamedirname;
+		games[id].base_dir = GAME_DIR;
 		games[id].url_info = "";
 		games[id].url_dl = "";
 		games[id].version = "1.0";
@@ -246,205 +220,162 @@ games_init(void)
 		games[id].pkgid = -1;
 		games[id].steambg = 0;
 
-		for (int i = 0; i < county; i++) {
-			switch(argv(i)) {
-			case "gameinfo_game":
-				games[id].game = argv(i+1);
-				break;
-			case "gameinfo_gamedir":
-				games[id].gamedir = argv(i+1);
-				break;
-			case "gameinfo_fallback_dir":
-				games[id].fallback_dir = argv(i+1);
-				break;
-			case "gameinfo_url_info":
-				games[id].url_info = argv(i+1);
-				break;
-			case "gameinfo_url_dl":
-				games[id].url_dl = argv(i+1);
-				break;
-			case "gameinfo_version":
-				games[id].version = argv(i+1);
-				break;
-			case "gameinfo_size":
-				games[id].size = (int)stof(argv(i+1));
-				break;
-			case "gameinfo_svonly":
-				games[id].svonly = (int)stof(argv(i+1));
-				break;
-			case "gameinfo_cldll":
-				games[id].cldll = (int)stof(argv(i+1));
-				break;
-			case "gameinfo_type":
-				switch (strtolower(argv(i+1))) {
-					case "multiplayer_only":
-					case "multiplayer only":
-					case "mp":
-					case "multi":
-					case "multiplayer":
-						games[id].type = "Multiplayer";
-						break;
-					case "singleplayer_only":
-					case "singleplayer only":
-					case "sp":
-					case "single":
-					case "singleplayer":
-						games[id].type = "Singleplayer";
-						break;
-					default:
-						games[id].type = "Both";
-				}
-				break;
-			case "gameinfo_hlversion":
-				games[id].hlversion = argv(i+1);
-				break;
-			case "gameinfo_nomodels":
-				games[id].nomodels = (int)stof(argv(i+1));
-				break;
-			case "gameinfo_nosprays":
-				games[id].nosprays = (int)stof(argv(i+1));
-				break;
-			case "gameinfo_mpentity":
-				games[id].mpentity = argv(i+1);
-				break;
-			case "gameinfo_gamedll":
-				games[id].gamedll = argv(i+1);
-				break;
-			case "gameinfo_startmap":
-				games[id].startmap = argv(i+1);
-				break;
-			case "gameinfo_trainingmap":
-				games[id].trainingmap = argv(i+1);
-				break;
-			case "gameinfo_pkgname":
-				games[id].pkgname = argv(i+1);
-				games[id].pkgid = game_getpackageid(games[id].pkgname);
-				break;
-			case "gameinfo_pkgfile":
-				games[id].pkgfile = argv(i+1);
-				break;
-			case "gameinfo_chatroom":
-				games[id].chatroom = argv(i+1);
-				break;
-			case "gameinfo_readme":
-				games[id].readme = argv(i+1);
-				break;
-			case "gameinfo_introvideo":
-				games[id].introvideo = argv(i+1);
-				break;
-			case "gameinfo_steambg":
-				games[id].steambg = (int)stof(argv(i+1));
-				break;
-			default:
-				break;
+#if 1
+		/* first let's see if we've got a liblist.gam just floating inside the gamedir */
+		sh = search_begin("liblist.gam", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
+		fh = search_fopen(sh, 0);
+
+		/* we do not. let's search for pk3's to sift through */
+		if (fh < 0) {
+			/* let's search for every pk3 in the gamedir and search for a liblist, one at a time. */
+			psh = search_begin("*.pk3", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
+
+			/* loop through each pk3 */
+			for (int i = 0; i < search_getsize(psh); i++) {
+				string full = search_getfilename(psh, i);
+				sh = search_begin("liblist.gam", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, strcat(gamedirname, "/", full));
+				fh = search_fopen(sh, 0);
+				
+				/* we found one */
+				if (fh >= 0)
+					break;
 			}
+			search_end(psh);
 		}
-		if (games[id].gamedir == cvar_string("gameinfo_gamedir")) {
+
+		/* we still haven't found a liblist.gam */
+		if (fh < 0) {
+			/* sift through dlcache. that's where downloaded mods go */
+			psh = search_begin("dlcache/*.pk3.*", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
+
+			/* loop through each pk3 hash */
+			for (int i = 0; i < search_getsize(psh); i++) {
+				string full = search_getfilename(psh, i);
+				sh = search_begin("liblist.gam", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, strcat(gamedirname, "/dlcache/", full));
+				fh = search_fopen(sh, 0);
+				
+				/* we finally found one */
+				if (fh >= 0)
+					break;
+			}
+			search_end(psh);
+		}
+#endif
+
+		if (fh >= 0) {
+			while ((temp = fgets(fh))) {
+				int i = 0;
+				tokenize(temp);
+				switch(argv(i)) {
+				case "game":
+					games[id].game = argv(i+1);
+					break;
+				case "gamedir":
+					games[id].gamedir = argv(i+1);
+					break;
+				case "fallback_dir":
+					games[id].fallback_dir = argv(i+1);
+					break;
+				case "base_dir":
+					games[id].base_dir = argv(i+1);
+					break;
+				case "url_info":
+					games[id].url_info = argv(i+1);
+					break;
+				case "url_dl":
+					games[id].url_dl = argv(i+1);
+					break;
+				case "version":
+					games[id].version = argv(i+1);
+					break;
+				case "size":
+					games[id].size = (int)stof(argv(i+1));
+					break;
+				case "svonly":
+					games[id].svonly = (int)stof(argv(i+1));
+					break;
+				case "cldll":
+					games[id].cldll = (int)stof(argv(i+1));
+					break;
+				case "type":
+					switch (strtolower(argv(i+1))) {
+						case "multiplayer_only":
+						case "multiplayer only":
+						case "mp":
+						case "multi":
+						case "multiplayer":
+							games[id].type = "Multiplayer";
+							break;
+						case "singleplayer_only":
+						case "singleplayer only":
+						case "sp":
+						case "single":
+						case "singleplayer":
+							games[id].type = "Singleplayer";
+							break;
+						default:
+							games[id].type = "Both";
+					}
+					break;
+				case "hlversion":
+					games[id].hlversion = argv(i+1);
+					break;
+				case "nomodels":
+					games[id].nomodels = (int)stof(argv(i+1));
+					break;
+				case "nosprays":
+					games[id].nosprays = (int)stof(argv(i+1));
+					break;
+				case "mpentity":
+					games[id].mpentity = argv(i+1);
+					break;
+				case "gamedll":
+					games[id].gamedll = argv(i+1);
+					break;
+				case "startmap":
+					games[id].startmap = argv(i+1);
+					break;
+				case "trainingmap":
+					games[id].trainingmap = argv(i+1);
+					break;
+				case "pkgname":
+					games[id].pkgname = argv(i+1);
+					games[id].pkgid = game_getpackageid(games[id].pkgname);
+					break;
+				case "pkgfile":
+					games[id].pkgfile = argv(i+1);
+					break;
+				case "chatroom":
+					games[id].chatroom = argv(i+1);
+					break;
+				case "readme":
+					games[id].readme = argv(i+1);
+					break;
+				case "introvideo":
+					games[id].introvideo = argv(i+1);
+					break;
+				case "steambg":
+					games[id].steambg = (int)stof(argv(i+1));
+					break;
+				default:
+					break;
+				}
+			}
+			fclose(fh);
+		}
+		search_end(sh);
+
+		if (games[id].gamedir == cvar_string("game")) {
 			games_set(id);
 		}
 	}
 
-#if 0
-	game_getinstallcache();
-#endif
-
 	if (gameinfo_current == -1) {
-		print("^1FATAL ERROR: NO MODINFO.TXT FOR CURRENT MOD FOUND!\n");
+		print("^1FATAL ERROR: NO LIBLIST.GAM FOR CURRENT MOD FOUND!\n");
 		crash();
 		return;
 	}
 }
-
-#if 0
-void
-customgame_installstart(int gameid)
-{
-	int count;
-	count = tokenize(games[gameid].pkgname);
-
-	for (int i = 0; i < count; i++) {
-		int pkgid = game_getpackageid(argv(i));
-		localcmd(sprintf("pkg add %s\n", argv(i)));
-		print(sprintf("Marking package %s for install.\n",
-		      argv(i)));
-	}
-
-	game_writeinstallcache(gameid, games[gameid].gamedir);
-	localcmd("pkg apply\n");
-	print("Starting installation of custom game packages\n");
-}
-
-void
-customgame_installend(void)
-{
-	int gid = g_iModInstallCache;
-	print("install-end!\n");
-
-	localcmd(sprintf("fs_changegame %s http://www.frag-net.com/mods/%s.fmf\n", g_strModInstallCache, g_strModInstallCache));
-	game_writeinstallcache(-1, g_strModInstallCache);
-}
-
-void
-customgame_installframe(void)
-{
-	int id;
-	float perc;
-	float c;
-	int loading;
-
-	/* graphical frame */
-	customgame_dlgWait.Draw();
-	WField_Static(162, 180, "Installing mod data...", 320, 260,
-		col_prompt_text, 1.0f, 2, font_label_p);
-
-	/* download percentage */
-	perc = 0.0f;
-	loading = FALSE;
-
-	/* a game can have multiple packages associated */
-	id = g_iModInstallCache;
-	c = tokenize(games[id].pkgname);
-
-	/* go through all invididual packages */
-	for (float i = 0; i < c; i++) {
-		string st;
-		int pkgid;
-
-		/* package query */
-		pkgid = game_getpackageid(argv(i));
-		st = getpackagemanagerinfo(pkgid, GPMI_INSTALLED);
-
-		/* filter out statuses so we can calculate percentage */
-		switch (st) {
-		case "":
-		case "pending":
-		case "enabled":
-		case "present":
-		case "corrupt":
-			break;
-		default:
-			perc += stof(st);
-		}
-
-		/* all packages need to be 'enabled', else fail to end */
-		if (st != "enabled")
-			loading = TRUE;
-	}
-
-	/* display download percentage we calculated */
-	perc = perc / c;
-	WField_Static(162, 220, sprintf("%d%%", perc), 320, 260,
-		[1,1,1], 1.0f, 2, font_label_p);
-	WField_Static(162, 260, "Service provided by frag-net.com through archive.org", 320, 260,
-		[1,1,1], 1.0f, 2, font_label);
-
-	/* not everything has been downloaded */
-	if (loading == TRUE)
-		return;
-
-	customgame_installend();
-}
-#endif
 
 void
 customgame_btnactivate_start(void)
@@ -453,14 +384,14 @@ customgame_btnactivate_start(void)
 
 	games_set(nextgame);
 
-#if 1
-	localcmd(sprintf("fs_changegame %s %s.fmf\nfs_changegame %s -\n", games[nextgame].gamedir, games[nextgame].gamedir, games[nextgame].gamedir));
+#if 0
+	localcmd(sprintf("gamedir %s %s.fmf\nfs_changegame %s -\n", games[nextgame].gamedir, games[nextgame].gamedir, games[nextgame].gamedir));
 #else
 	/* some games/mods inherit other directories */
 	if (games[nextgame].fallback_dir) {
-		localcmd(sprintf("gamedir \"%s;%s\"\n", games[nextgame].fallback_dir, games[nextgame].gamedir));
+		localcmd(sprintf("gamedir \"logos;platform;%s;%s;%s\"\n", games[nextgame].base_dir, games[nextgame].fallback_dir, games[nextgame].gamedir));
 	} else {
-		localcmd(sprintf("gamedir \"%s\"\n", games[nextgame].gamedir));
+		localcmd(sprintf("gamedir \"logos;platform;%s;%s\"\n", games[nextgame].base_dir, games[nextgame].gamedir));
 	}
 #endif
 
@@ -474,32 +405,14 @@ customgame_btnactivate_start(void)
 void
 customgame_btninstall_start(void)
 {
-#if 0
-	int id = customgame_lbMods.GetSelected();
-	string st;
-
-	st = getpackagemanagerinfo(games[id].pkgid, GPMI_INSTALLED);
-
-	print(st);
-	print("\n");
-
-	if (st != "enabled") {
-		customgame_installstart(id);
-		return;
-	}
-
-	game_writeinstallcache(id, games[id].gamedir);
-	customgame_installend();
-#else
 	int nextgame = customgame_lbMods.GetSelected();
 	localcmd(sprintf("fs_changegame %s http://www.frag-net.com/mods/%s.fmf\n", games[nextgame].gamedir, games[nextgame].gamedir));
-#endif
 }
 
 void 
 customgame_btndeactivate_start(void)
 {
-	localcmd(sprintf("fs_changegame %s %s.fmf\n", GAME_DIR, GAME_DIR));
+	localcmd(sprintf("gamedir %s\n", GAME_DIR));
 	localcmd("stopmusic\nsnd_restart\nwait\nvid_reload\n");
 	localcmd("menu_restart\n");
 	localcmd("menu_customgame\n");
@@ -631,12 +544,6 @@ menu_customgame_draw(void)
 	}
 
 	customgame_sbMods.SetMax(gameinfo_count-1); /* don't show our current game */
-
-#if 0
-	if (g_iModInstallCache >= 0) {
-		customgame_installframe();
-	}
-#endif
 }
 
 void

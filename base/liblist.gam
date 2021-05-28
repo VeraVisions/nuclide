@@ -1,0 +1,18 @@
+game "Nuclide Base"
+gamedir "base"
+base_dir ""
+fallback_dir ""
+mpentity "info_player_deathmatch"
+size "1000080"
+url_info "www.vera-visions.com"
+version "1.0"
+url_dl ""
+type "Both"
+nomodels 1
+gamedll "progs.dat"
+startmap "test_shader"
+trainingmap "map test_hdr"
+cldll 1
+svonly "0"
+menutrack ""
+chatroom "lobby"

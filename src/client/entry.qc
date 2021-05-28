@@ -33,6 +33,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	registercommand("dev_sunpos");
 	registercommand("dev_measure");
 	registercommand("view_geomtest");
+	registercommand("player_geomtest");
 	registercommand("way_menu");
 
 	/* basic actions */
@@ -661,6 +662,9 @@ CSQC_Parse_Event(void)
 		pSeat->m_flShakeFreq = readfloat();
 		pSeat->m_flShakeTime = pSeat->m_flShakeDuration;
 		break;
+	case EV_SENTENCE_VOX:
+		Vox_PlaySentence(readstring());
+		break;
 	default:
 		ClientGame_EventParse(fHeader);
 	}
@@ -807,6 +811,9 @@ CSQC_ConsoleCommand(string sCMD)
 		break;
 	case "view_geomtest":
 		Weapons_SetGeomset(sprintf("geomset %s %s\n", argv(1), argv(2)));
+		break;
+	case "player_geomtest":
+		setcustomskin(pSeat->m_ePlayer, "", sprintf("geomset %s %s\n", argv(1), argv(2)));
 		break;
 	default:
 		return ClientGame_ConsoleCommand();

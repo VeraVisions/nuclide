@@ -51,7 +51,7 @@ The 'self' global is the connecting client in question.
 =================
 */
 void
-ClientConnect(float csqc_active)
+ClientConnect(void)
 {
 	int playercount = 0;
 
@@ -512,6 +512,14 @@ as they do not exist yet. Keep this in mind.
 =================
 */
 var int autocvar_sv_levelexec = 1;
+
+void
+worldspawn_save(float fh)
+{
+	SAVE_VECTOR(fh, "origin", self.origin);
+	SAVE_STRING(fh, "model", self.model);
+}
+
 void
 worldspawn(void)
 {
@@ -544,6 +552,8 @@ worldspawn(void)
 		}
 		forceinfokey(world, "skyname", self.skyname);
 	}
+
+	self.Save = worldspawn_save;
 }
 
 /*
@@ -642,3 +652,94 @@ SV_ShouldPause(float newstatus)
 
 	return newstatus;
 }
+
+void
+SV_PerformLoad(float fh)
+{
+	entity e;
+	entity eold;
+	string l;
+	float n;
+	eold = self;
+	e = world;
+
+/*
+	while ((e=nextent(e))) {
+		if (edict_num(1) != e)
+			remove(e);
+	}
+*/
+
+#if 1
+	while ((l=fgets(fh))) {
+		float braced = FALSE;
+		float args = tokenize(l);
+
+		if (!args)
+			break;
+
+		if (args != 3) {
+			continue;
+		}
+		
+		if (argv(0) == "ENTITY") {
+			string cname;
+			n = stof(argv(1));
+			cname = argv(2);
+			e = edict_num(n);
+
+			__fullspawndata = fgets(fh);
+
+			print(sprintf("Try spawning %s\n", cname));
+			/* call the constructor if one is present, init the default fields */
+			if (isfunction(strcat("spawnfunc_", cname))) {
+				e.classname = cname;
+				print(sprintf("I'm actually spawning %s\n", cname));
+
+				self = e;
+				callfunction(strcat("spawnfunc_", cname));
+				e.classname = cname;
+				self = eold;
+
+				setmodel(e, e.model);
+				setsize(e, e.mins, e.maxs);
+				setorigin(e, e.origin);
+			} else {
+				print(sprintf("Could not spawn %s\n", cname));
+				remove(e);
+				continue;
+			}
+		} else if (argv(1) == "GLOBAL") {
+			// TODO
+		}
+	}
+#endif
+}
+
+void
+SV_PerformSave(float fh, float numents)
+{
+	float i = 0;
+	entity e;
+
+	for (i = 0; i < numents; i++) {
+		e = edict_num(i);
+
+		if (e==world && i)
+			continue;
+
+		if (wasfreed(e))
+			continue;
+
+		if (e.Save) {
+			entity oself = self;
+			self = e;
+			fputs(fh, sprintf("ENTITY \"%d\" %S\n", i, e.classname));
+			fputs(fh, "{ ");
+			e.Save(fh);
+			fputs(fh, "}\n");
+			self = oself;
+		}
+	}
+	fclose(fh);
+};

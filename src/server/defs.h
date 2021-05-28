@@ -64,6 +64,7 @@ entity eActivator;
 .float deaths;
 .float identity;
 .float botinfo;
+.void(float) Save;
 
 /* in idTech the .owner field causes collisions to fail against set entity,
  * we don't want this all of the time. so use this as a fallback */
@@ -88,3 +89,10 @@ var int g_ents_initialized = FALSE;
 void main(void)
 {
 }
+
+#define SAVE_DECIMAL(x,y,z) fputs(x, sprintf("%S \"%d\" ", y, z))
+#define SAVE_INTEGER(x,y,z) fputs(x, sprintf("%S \"%i\" ", y, z))
+#define SAVE_FLOAT(x,y,z) fputs(x, sprintf("%S \"%f\" ", y, z))
+#define SAVE_VECTOR(x,y,z) fputs(x, sprintf("%S \"%v\" ", y, z))
+#define SAVE_STRING(x,y,z) fputs(x, sprintf("%S \"%s\" ", y, z))
+#define SAVE_HEX(x,y,z) fputs(x, sprintf("%S \"%x\" ", y, z))
