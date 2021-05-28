@@ -144,6 +144,106 @@ games_set(int id)
 }
 
 void
+customgame_liblist_parse(int id, string strKey, string strValue)
+{
+	switch(strKey) {
+	case "game":
+		games[id].game = strValue;
+		break;
+	case "gamedir":
+		games[id].gamedir = strValue;
+		break;
+	case "fallback_dir":
+		games[id].fallback_dir = strValue;
+		break;
+	case "url_info":
+		games[id].url_info = strValue;
+		break;
+	case "url_dl":
+		games[id].url_dl = strValue;
+		break;
+	case "version":
+		games[id].version = strValue;
+		break;
+	case "size":
+		games[id].size = (int)stof(strValue);
+		break;
+	case "svonly":
+		games[id].svonly = (int)stof(strValue);
+		break;
+	case "cldll":
+		games[id].cldll = (int)stof(strValue);
+		break;
+	case "type":
+		switch (strtolower(strValue)) {
+		case "multiplayer_only":
+		case "multiplayer only":
+		case "mp":
+		case "multi":
+		case "multiplayer":
+			games[id].type = "Multiplayer";
+			break;
+		case "singleplayer_only":
+		case "singleplayer only":
+		case "sp":
+		case "single":
+		case "singleplayer":
+			games[id].type = "Singleplayer";
+			break;
+		default:
+			games[id].type = "Both";
+		}
+		break;
+	case "hlversion":
+		games[id].hlversion = strValue;
+		break;
+	case "nomodels":
+		games[id].nomodels = (int)stof(strValue);
+		break;
+	case "nosprays":
+		games[id].nosprays = (int)stof(strValue);
+		break;
+	case "mpentity":
+		games[id].mpentity = strValue;
+		break;
+	case "gamedll":
+		games[id].gamedll = strValue;
+		break;
+	case "startmap":
+		games[id].startmap = strValue;
+		break;
+	case "trainingmap":
+		games[id].trainingmap = strValue;
+		break;
+	/* newly added with Nuclide */
+	case "pkgname":
+		games[id].pkgname = strValue;
+		games[id].pkgid = game_getpackageid(games[id].pkgname);
+		break;
+	case "pkgfile":
+		games[id].pkgfile = strValue;
+		break;
+	case "chatroom":
+		games[id].chatroom = strValue;
+		break;
+	case "readme":
+		games[id].readme = strValue;
+		break;
+	case "introvideo":
+		games[id].introvideo = strValue;
+		break;
+	case "steambg":
+		games[id].steambg = (int)stof(strValue);
+		break;
+	case "base_dir":
+		games[id].base_dir = strValue;
+		break;
+	default:
+		break;
+	}
+}
+
+void
 games_init(void)
 {
 	int id;
@@ -182,6 +282,7 @@ games_init(void)
 		search_end(sh);
 	}
 
+	/* this means no valid gamedirs of any type. something is seriously wrong */
 	if (!gameinfo_count) {
 		print("^1FATAL ERROR: NO VALID MOD DIRECTORIES FOUND!\n");
 		crash();
@@ -194,8 +295,8 @@ games_init(void)
 	if (!games)
 		error(sprintf("Attempting to allocate mod data for %i entries failed\n", gameinfo_count));
 
+	/* now loop through all the mods we found and load in the metadata */
 	for (id = 0; (gamedirname = getgamedirinfo(id, 0)); id++) {
-
 		/* Fill in the defaults */
 		games[id].game = gamedirname;
 		games[id].gamedir = gamedirname;
@@ -262,114 +363,23 @@ games_init(void)
 		}
 #endif
 
+		/* we have found a liblist.gam */
 		if (fh >= 0) {
 			while ((temp = fgets(fh))) {
-				int i = 0;
 				tokenize(temp);
-				switch(argv(i)) {
-				case "game":
-					games[id].game = argv(i+1);
-					break;
-				case "gamedir":
-					games[id].gamedir = argv(i+1);
-					break;
-				case "fallback_dir":
-					games[id].fallback_dir = argv(i+1);
-					break;
-				case "base_dir":
-					games[id].base_dir = argv(i+1);
-					break;
-				case "url_info":
-					games[id].url_info = argv(i+1);
-					break;
-				case "url_dl":
-					games[id].url_dl = argv(i+1);
-					break;
-				case "version":
-					games[id].version = argv(i+1);
-					break;
-				case "size":
-					games[id].size = (int)stof(argv(i+1));
-					break;
-				case "svonly":
-					games[id].svonly = (int)stof(argv(i+1));
-					break;
-				case "cldll":
-					games[id].cldll = (int)stof(argv(i+1));
-					break;
-				case "type":
-					switch (strtolower(argv(i+1))) {
-						case "multiplayer_only":
-						case "multiplayer only":
-						case "mp":
-						case "multi":
-						case "multiplayer":
-							games[id].type = "Multiplayer";
-							break;
-						case "singleplayer_only":
-						case "singleplayer only":
-						case "sp":
-						case "single":
-						case "singleplayer":
-							games[id].type = "Singleplayer";
-							break;
-						default:
-							games[id].type = "Both";
-					}
-					break;
-				case "hlversion":
-					games[id].hlversion = argv(i+1);
-					break;
-				case "nomodels":
-					games[id].nomodels = (int)stof(argv(i+1));
-					break;
-				case "nosprays":
-					games[id].nosprays = (int)stof(argv(i+1));
-					break;
-				case "mpentity":
-					games[id].mpentity = argv(i+1);
-					break;
-				case "gamedll":
-					games[id].gamedll = argv(i+1);
-					break;
-				case "startmap":
-					games[id].startmap = argv(i+1);
-					break;
-				case "trainingmap":
-					games[id].trainingmap = argv(i+1);
-					break;
-				case "pkgname":
-					games[id].pkgname = argv(i+1);
-					games[id].pkgid = game_getpackageid(games[id].pkgname);
-					break;
-				case "pkgfile":
-					games[id].pkgfile = argv(i+1);
-					break;
-				case "chatroom":
-					games[id].chatroom = argv(i+1);
-					break;
-				case "readme":
-					games[id].readme = argv(i+1);
-					break;
-				case "introvideo":
-					games[id].introvideo = argv(i+1);
-					break;
-				case "steambg":
-					games[id].steambg = (int)stof(argv(i+1));
-					break;
-				default:
-					break;
-				}
+				customgame_liblist_parse(id, argv(0), argv(1));
 			}
 			fclose(fh);
 		}
 		search_end(sh);
 
+		/* if we're this mod, make sure to let the rest of the menu know */
 		if (games[id].gamedir == cvar_string("game")) {
 			games_set(id);
 		}
 	}
 
+	/* we may have some mods, but we're not running any of them. Fatal */
 	if (gameinfo_current == -1) {
 		print("^1FATAL ERROR: NO LIBLIST.GAM FOR CURRENT MOD FOUND!\n");
 		crash();
@@ -496,7 +506,7 @@ menu_customgame_init(void)
 
 	customgame_frMods = spawn(CFrame);
 	customgame_frMods.SetPos(141,156);
-	customgame_frMods.SetSize(463,289);
+	customgame_frMods.SetSize(463,296);
 	Widget_Add(fn_customgame, customgame_frMods);
 	
 	customgame_lbMods = spawn(CModList);

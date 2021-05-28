@@ -20,7 +20,9 @@
 #define ML_COL_3 [240,180,20] / 255 // Other
 #define ML_COL_4 [200,200,200] / 255 // Grey Info
 
-#define GAME_DIR "valve" // THE game dir ignored in the mod menu.
+#ifndef GAME_DIR
+#define GAME_DIR "base" // THE game dir ignored in the mod menu.
+#endif
 
 class CModList:CWidget
 {
