@@ -194,6 +194,7 @@ customgame_liblist_parse(int id, string strKey, string strValue)
 			games[id].type = "Both";
 		}
 		break;
+	case "minversion":
 	case "hlversion":
 		games[id].hlversion = strValue;
 		break;
