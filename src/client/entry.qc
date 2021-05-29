@@ -1040,6 +1040,10 @@ receive entity updates.
 void
 CSQC_Ent_Remove(void)
 {
+	/* avoid spawning dupes */
+	if (self.classname == "CCSAmbientSound")
+		sound(self, CHAN_VOICE, "", 0.0f, ATTN_NONE);
+
 	ClientGame_EntityRemove();
 	remove(self);
 }

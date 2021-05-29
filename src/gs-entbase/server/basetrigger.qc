@@ -85,15 +85,31 @@ CBaseTrigger::CreateOutput(string outmsg)
 /* entities receive the inputs here and need to act on intype and data
    accordingly. this is just a stub for unknown event troubleshooting */
 void
-CBaseTrigger::Input(entity act, string intype, string data)
+CBaseTrigger::Input(entity eAct, string strInput, string strData)
 {
-	if (data != "")
-	dprint(sprintf("^2%s::^3Input^7: Receives input %s from %s with data %s\n", 
-		this.classname, intype, act.classname, data));
-	else
-	dprint(sprintf("^2%s::^3Input^7: Receives input %s from %s\n", 
-		this.classname, intype, act.classname));
+	switch (strInput) {
+	case "FireUser1":
+		UseOutput(eAct, m_strOnUser1);
+		break;
+	case "FireUser2":
+		UseOutput(eAct, m_strOnUser2);
+		break;
+	case "FireUser3":
+		UseOutput(eAct, m_strOnUser3);
+		break;
+	case "FireUser4":
+		UseOutput(eAct, m_strOnUser4);
+		break;
+	default:
+		if (strData != "")
+		print(sprintf("^2%s::^3Input^7: Receives input %s from %s with data %s\n", 
+			this.classname, strInput, eAct.classname, strData));
+		else
+		print(sprintf("^2%s::^3Input^7: Receives input %s from %s\n", 
+			this.classname, strInput, eAct.classname));
+	}
 }
+
 
 /* legacy trigger architecture */
 void
@@ -223,6 +239,22 @@ CBaseTrigger::SpawnKey(string strKey, string strValue)
 		strValue = strreplace(",", ",_", strValue);
 		m_strOnTrigger = strcat(m_strOnTrigger, ",_", strValue);
 		break;
+	case "OnUser1":
+		strValue = strreplace(",", ",_", strValue);
+		m_strOnUser1 = strcat(m_strOnUser1, ",_", strValue);
+		break;
+	case "OnUser2":
+		strValue = strreplace(",", ",_", strValue);
+		m_strOnUser2 = strcat(m_strOnUser2, ",_", strValue);
+		break;
+	case "OnUser3":
+		strValue = strreplace(",", ",_", strValue);
+		m_strOnUser3 = strcat(m_strOnUser3, ",_", strValue);
+		break;
+	case "OnUser4":
+		strValue = strreplace(",", ",_", strValue);
+		m_strOnUser4 = strcat(m_strOnUser4, ",_", strValue);
+		break;
 	default:
 		CBaseEntity::SpawnKey(strKey, strValue);
 		break;
@@ -235,4 +267,8 @@ CBaseTrigger::CBaseTrigger(void)
 	CBaseEntity::CBaseEntity();
 
 	m_strOnTrigger = CreateOutput(m_strOnTrigger);
+	m_strOnUser1 = CreateOutput(m_strOnUser1);
+	m_strOnUser2 = CreateOutput(m_strOnUser2);
+	m_strOnUser3 = CreateOutput(m_strOnUser3);
+	m_strOnUser4 = CreateOutput(m_strOnUser4);
 }

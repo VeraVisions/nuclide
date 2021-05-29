@@ -23,7 +23,7 @@ enum
 };
 
 int
-w_basesemi_fire(int w, .int mag, int d)
+w_basesemi_fire(int w, .int mag, int d, vector bs)
 {
 	player pl = (player)self;
 
@@ -41,7 +41,7 @@ w_basesemi_fire(int w, .int mag, int d)
 	pl.(mag)--;
 
 #ifdef SERVER
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, d, [0,0,0], w);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, d, bs, w);
 #endif
 
 	pl.gflags |= GF_SEMI_TOGGLED;

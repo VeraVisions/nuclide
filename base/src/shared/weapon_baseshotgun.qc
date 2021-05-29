@@ -44,8 +44,6 @@ w_baseshotgun_fire(int w, .int mag, int c, int d, vector bs)
 	TraceAttack_FireBullets(c, pl.origin + pl.view_ofs, d, bs, w);
 #endif
 
-	pl.gflags |= GF_SEMI_TOGGLED;
-
 	if (pl.(mag) == 0)
 		return (SHOTGUN_LAST);
 	else

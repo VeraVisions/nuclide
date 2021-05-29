@@ -23,7 +23,7 @@ enum
 };
 
 int
-w_baseauto_fire(int w, .int mag, int d)
+w_baseauto_fire(int w, .int mag, int d, vector bs)
 {
 	player pl = (player)self;
 
@@ -41,7 +41,7 @@ w_baseauto_fire(int w, .int mag, int d)
 	pl.(mag)--;
 
 #ifdef SERVER
-	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, d, [0.1,0.1], w);
+	TraceAttack_FireBullets(1, pl.origin + pl.view_ofs, d, bs, w);
 #endif
 
 	if (pl.(mag) == 0)

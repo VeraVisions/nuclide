@@ -41,6 +41,11 @@ class CBaseTrigger:CBaseEntity
 
 	/* modern trigger architecture */
 	string m_strOnTrigger;
+	string m_strOnUser1;
+	string m_strOnUser2;
+	string m_strOnUser3;
+	string m_strOnUser4;
+
 	virtual void(entity, string) UseOutput;
 	virtual string(string) CreateOutput;
 	virtual void(entity, string, string) Input;
