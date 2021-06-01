@@ -13,7 +13,9 @@
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+
 #define CUSTOMPLAYERPHYSICS
+
 #ifndef PMOVE_STEPHEIGHT
 	#define PMOVE_STEPHEIGHT 18
 #endif
@@ -312,7 +314,7 @@ PMove_AccelToss(float move_time, float premove)
 }
 
 void
-PMove_AccelMove(float move_time, float premove)
+PMove_Crouch(float move_time, float premove)
 {
 	int iFixCrouch = FALSE;
 	if (input_buttons & INPUT_BUTTON8) {
@@ -320,7 +322,7 @@ PMove_AccelMove(float move_time, float premove)
 	} else {
 		// If we aren't holding down duck anymore and 'attempt' to stand up, prevent it
 		if (self.flags & FL_CROUCHING) {
-			if (QPMove_IsStuck(self, '0 0 36', PHY_HULL_MIN, PHY_HULL_MAX) == FALSE) {
+			if (QPMove_IsStuck(self, [0,0,36], PHY_HULL_MIN, PHY_HULL_MAX) == FALSE) {
 				self.flags &= ~FL_CROUCHING;
 				iFixCrouch = TRUE;
 			}
@@ -486,7 +488,7 @@ PMove_AccelGravity(float move_time, float premove, vector wish_dir, float wish_s
 }
 
 void
-PMove_AccelJump(float move_time, float premove)
+PMove_Jump(float move_time, float premove)
 {
 	/* unset jump-key whenever it's not set */
 	if (!(input_buttons & INPUT_BUTTON2)) {
@@ -533,8 +535,6 @@ PMove_Acceleration(float move_time, float premove)
 		if (self.movetype == MOVETYPE_TOSS) {
 			PMove_AccelToss(move_time, premove);
 			return;
-		} else if (self.movetype == MOVETYPE_WALK) {
-			PMove_AccelMove(move_time, premove);
 		}
 
 		if (self.waterlevel >= 2) {
@@ -577,7 +577,6 @@ PMove_Acceleration(float move_time, float premove)
 		} else {
 			PMove_AccelGravity(move_time, premove, wish_dir, wish_speed);
 		}
-		PMove_AccelJump(move_time, premove);
 	}
 }
 
@@ -599,6 +598,11 @@ static void
 PMove_Rebound(vector normal)
 {
 	self.velocity = self.velocity - normal * (self.velocity * normal);
+
+	if (normal[2] > 0.7) {
+		self.groundentity = trace_ent;
+		self.flags |= FL_ONGROUND;
+	}
 }
 
 /* brute force unstuck function */
@@ -794,6 +798,9 @@ PMove_Run(void)
 
 	PMove_SetViewOfs();
 
+	PMove_Crouch(input_timelength, TRUE);
+	PMove_Jump(input_timelength, TRUE);
+
 	/* call accelerate before and after the actual move, 
 	 * with half the move each time. this reduces framerate dependence. 
 	 * and makes controlling jumps slightly easier */
@@ -813,7 +820,7 @@ PMove_Run(void)
 	/* activate any SOLID_TRIGGER entities */
 	touchtriggers();
 #else
-	PMove_AccelMove(input_timelength, FALSE);
+	/* fast engine-side player physics */
 	runstandardplayerphysics(self);
 #endif
 

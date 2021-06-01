@@ -40,6 +40,7 @@ find ./$GAME_DIR -name *.pk3dir | xargs -I @ sh -c 'echo `basename "@"`' | while
 done;
 cp "./$GAME_DIR/progs.dat" "./$BUILD_DIR/$GAME_DIR/progs.dat"
 cp "./$GAME_DIR/csprogs.dat" "./$BUILD_DIR/$GAME_DIR/csprogs.dat"
+cp "./$GAME_DIR/menu.dat" "./$BUILD_DIR/$GAME_DIR/menu.dat"
 
 if [ "$EXCLUDE_PLATFORM" ]; then
 	cp ./$GAME_DIR.fmf ./$BUILD_DIR/$GAME_DIR.fmf
@@ -77,9 +78,13 @@ else
 	mkdir -p ./$BUILD_DIR/logos
 	cp ./logos/README ./$BUILD_DIR/logos/README
 	cp ./logos/fte.png ./$BUILD_DIR/logos/fte.png
-	cp ./$GAME_DIR.fmf ./$BUILD_DIR/default.fmf
+	cp ./default.fmf ./$BUILD_DIR/default.fmf
+	sed -i "s|base|$GAME_DIR|g" ./$BUILD_DIR/default.fmf
 	cp ./doc/release-readme ./$BUILD_DIR/README.txt
 fi
 
+tree ./$BUILD_DIR
+printf "ENTER to continue\n"
+read cont
 zip -9 -r "$BUILD_DIR".zip "./$BUILD_DIR"
 gpg --output "./$BUILD_DIR.sig" --detach-sig "./$BUILD_DIR.zip"

@@ -538,6 +538,8 @@ worldspawn(void)
 	lightstyle(11, "abcdefghijklmnopqrrqponmlkjihgfedcba");
 	Skill_Init();
 
+	precache_model("models/error.vvm");
+
 	if (autocvar_sv_levelexec)
 		readcmd(sprintf("exec maps/%s.cfg\n", mapname));
 

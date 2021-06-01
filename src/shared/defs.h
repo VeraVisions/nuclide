@@ -106,6 +106,17 @@ precache_model(string m)
 	return prior(m);
 }
 
+__wrap void
+setmodel(entity ent, string mname)
+{
+	if (mname != "") /* not empty */
+	if (substring(mname, 0, 1) != "*") /* not a brush */
+		if not(whichpack(mname)) /* not present on disk */
+			return prior(ent, "models/error.vvm");
+
+	return prior(ent, mname);
+}
+
 /* info print */
 void
 iprint(string m)
