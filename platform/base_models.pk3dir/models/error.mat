@@ -1,5 +1,11 @@
 {
 	{
-		rgbGen const ( 1 0 0 )
+		map $whiteimage
+		rgbGen entity
+	}
+	{
+		rgbGen const (1 0 0)
+		alphagen wave sin .6 .5 0 2
+		blendFunc blend
 	}
 }
