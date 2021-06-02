@@ -24,11 +24,17 @@ else
 	BUILD_PROC=$(nproc)
 fi
 
-# OpenBSD currently doesn't build vmap, so disable it for now
+# handle search directories and platform specific libraries
 if [[ "$COMPILE_SYS" == "OpenBSD" ]]; then
-	CM_OPTION=-DBUILD_VMAP=OFF
+	WS_CFLAGS="-I/usr/local/include -I/usr/local/include/gtkglext-1.0 -I/usr/local/lib/gtkglext-1.0/include -I/usr/local/include/libxml2/"
+	WS_LDFLAGS="-L/usr/local/lib"
+	WS_CC=cc
+	WS_CXX=c++
 else
-	CM_OPTION=-DBUILD_VMAP=ON
+	WS_CFLAGS=""
+	WS_LDFLAGS="-ldl"
+	WS_CC=gcc
+	WS_CXX=g++
 fi
 
 mkdir -p ./bin
@@ -45,7 +51,7 @@ else
 fi
 
 gmake clean
-gmake -j $BUILD_PROC
+CC=$WS_CC CXX=$WS_CXX CFLAGS="$WS_CFLAGS" LDFLAGS="$WS_LDFLAGS" gmake -j $BUILD_PROC
 
 mkdir -p ../../bin/bitmaps
 mv_wsfile bitmaps/black.xpm
