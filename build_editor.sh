@@ -9,7 +9,7 @@ mv_wsfile()
 
 set -e
 
-WS_MAKEFILE=./src/worldspawn/CMakeLists.txt
+WS_MAKEFILE=./src/worldspawn/Makefile
 COMPILE_SYS=$(uname)
 
 # Check how many cores/processors we should use for building
@@ -44,7 +44,8 @@ else
 	cd ./worldspawn
 fi
 
-cmake -G "Unix Makefiles" -H. -Bbuild -DCMAKE_BUILD_TYPE=Release "$CM_OPTION" && cmake --build build -- -j $BUILD_PROC
+gmake clean
+gmake -j $BUILD_PROC
 
 mkdir -p ../../bin/bitmaps
 mv_wsfile bitmaps/black.xpm
@@ -154,24 +155,20 @@ mv_wsfile gl/zfill_fp.glsl
 mv_wsfile gl/zfill_vp.glp
 mv_wsfile gl/zfill_vp.glsl
 mv_wsfile global.xlink
-mkdir -p ../../bin/modules
-mv_wsfile modules/libarchivezip.so
-mv_wsfile modules/libentity.so
-mv_wsfile modules/libimage.so
-mv_wsfile modules/libiqmmodel.so
-mv_wsfile modules/libmapq3.so
-mv_wsfile modules/libmodel.so
-mv_wsfile modules/libshaders.so
-mv_wsfile modules/libvfspk3.so
 mkdir -p ../../bin/plugins
+mv_wsfile plugins/libarchivezip.so
+mv_wsfile plugins/libentity.so
+mv_wsfile plugins/libimage.so
+mv_wsfile plugins/libiqmmodel.so
+mv_wsfile plugins/libmapq3.so
+mv_wsfile plugins/libmodel.so
+mv_wsfile plugins/libshaders.so
+mv_wsfile plugins/libvfspk3.so
 mv_wsfile plugins/libbrushexport.so
 mv_wsfile plugins/libprtview.so
 mkdir -p ../../bin/platform.game
 mv_wsfile platform.game/default_build_menu.xml
 mkdir -p ../../bin/platform.game/platform
 mv_wsfile platform.game/platform/entities.def
-mv_wsfile WorldSpawn_MAJOR
-mv_wsfile WorldSpawn_MINOR
-mv_wsfile WorldSpawn_PATCH
 mv_wsfile worldspawn
 mv_wsfile vmap
