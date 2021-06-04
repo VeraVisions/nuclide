@@ -62,7 +62,6 @@ The X development packages are obviously only a requirement for when you do not 
 You want this plugin if you want playback of a variety of media formats, including video decoding.
 
 ### Worldspawn Level Editor
-* cmake
 * gcc-c++
 * gtk2-devel
 * gtkglext-devel
