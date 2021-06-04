@@ -49,9 +49,9 @@ base_player::ReceiveEntity(float new, float fl)
 	if (fl & PLAYER_ORIGIN_Z)
 		origin[2] = readcoord();
 	if (fl & PLAYER_ANGLES_X)
-		pitch = readfloat();
+		pitch = readshort() / (65535/360);
 	if (fl & PLAYER_ANGLES_Y)
-		angles[1] = readfloat();
+		angles[1] = readshort() / (65535/360);
 	if (fl & PLAYER_COLORMAP)
 		colormap = readfloat();
 
@@ -281,9 +281,9 @@ base_player::SendEntity(entity ePEnt, float fChanged)
 		WriteCoord(MSG_ENTITY, origin[2]);
 
 	if (fChanged & PLAYER_ANGLES_X)
-		WriteFloat(MSG_ENTITY, v_angle[0]);
+		WriteShort(MSG_ENTITY, v_angle[0] * (65535/360));
 	if (fChanged & PLAYER_ANGLES_Y)
-		WriteFloat(MSG_ENTITY, angles[1]);
+		WriteShort(MSG_ENTITY, angles[1] * (65535/360));
 	if (fChanged & PLAYER_COLORMAP)
 		WriteFloat(MSG_ENTITY, colormap);
 

@@ -272,9 +272,9 @@ CBaseEntity::ReceiveEntity(float flChanged)
 		origin[2] = readcoord();
 	}
 	if (flChanged & BASEFL_CHANGED_ANGLES) {
-		angles[0] = readfloat();
-		angles[1] = readfloat();
-		angles[2] = readfloat();
+		angles[0] = readshort() / (65535/360);
+		angles[1] = readshort() / (65535/360);
+		angles[2] = readshort() / (65535/360);
 	}
 	if (flChanged & BASEFL_CHANGED_MODELINDEX) {
 		modelindex = readshort();
@@ -470,9 +470,9 @@ CBaseEntity::SendEntity(entity ePEnt, float fChanged)
 		WriteCoord(MSG_ENTITY, origin[2]);
 	}
 	if (fChanged & BASEFL_CHANGED_ANGLES) {
-		WriteFloat(MSG_ENTITY, angles[0]);
-		WriteFloat(MSG_ENTITY, angles[1]);
-		WriteFloat(MSG_ENTITY, angles[2]);
+		WriteShort(MSG_ENTITY, angles[0] * (65535/360));
+		WriteShort(MSG_ENTITY, angles[1] * (65535/360));
+		WriteShort(MSG_ENTITY, angles[2] * (65535/360));
 	}
 	if (fChanged & BASEFL_CHANGED_MODELINDEX) {
 		WriteShort(MSG_ENTITY, modelindex);

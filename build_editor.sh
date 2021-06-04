@@ -50,7 +50,10 @@ else
 	cd ./worldspawn
 fi
 
-gmake clean
+if [ "$BUILD_CLEAN" ]; then
+	gmake clean
+fi
+
 CC=$WS_CC CXX=$WS_CXX CFLAGS="$WS_CFLAGS" LDFLAGS="$WS_LDFLAGS" gmake -j $BUILD_PROC
 
 mkdir -p ../../bin/bitmaps
