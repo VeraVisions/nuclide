@@ -463,7 +463,7 @@ Strings_Init(void)
 	m_reslbl[IDS_MODEM_CUSTOM] = "Custom";
 	m_reslbl[IDS_MODEM_RATE] = "Enter data transfer rate (100 - 9999)";
 	m_reslbl[IDS_REGISTRY_UPDATE] = "Updating registry settings for Half-Life.  You will need to reconfigure your settings.";
-	m_reslbl[IDS_CHAT_JOIN] = "Tyring to join %s";
+	m_reslbl[IDS_CHAT_JOIN] = "Trying to join %s";
 	m_reslbl[IDS_CHAT_FLOOD] = "Too much text, please wait.";
 	m_reslbl[IDS_CHAT_SEARCH] = "Searching for user %s...";
 	m_reslbl[IDS_CHAT_NOINFO] = "Directory server did not return any user information.";
