@@ -57,6 +57,7 @@ fi
 CC=$WS_CC CXX=$WS_CXX CFLAGS="$WS_CFLAGS" LDFLAGS="$WS_LDFLAGS" gmake -j $BUILD_PROC
 
 mkdir -p ../../bin/bitmaps
+mv_wsfile defaultkeys.ini
 mv_wsfile bitmaps/black.xpm
 mv_wsfile bitmaps/brush_flipx.xpm
 mv_wsfile bitmaps/brush_flipy.xpm
