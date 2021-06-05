@@ -164,7 +164,6 @@ mv_wsfile gl/zfill_fp.glp
 mv_wsfile gl/zfill_fp.glsl
 mv_wsfile gl/zfill_vp.glp
 mv_wsfile gl/zfill_vp.glsl
-mv_wsfile global.xlink
 mkdir -p ../../bin/plugins
 mv_wsfile plugins/libarchivezip.so
 mv_wsfile plugins/libentity.so
