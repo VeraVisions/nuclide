@@ -13,7 +13,6 @@ grab_mod()
 	fi
 
 	cd "$SCRPATH"
-	wget -O $1.fmf http://www.frag-net.com/mods/$1.fmf
 }
 
 grab_mod gearbox https://www.github.com/eukara/freegearbox
