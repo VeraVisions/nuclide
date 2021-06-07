@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED func_lod (1 0 0) (-8 -8 -8) (8 8 8) ?
+/*QUAKED func_lod (0 .5 .8) ?
 "targetname"    Name
 "DisappearDist"    Distance in units for of when the func_lod will "pop" out of view.
 "Solid" 
