@@ -35,7 +35,7 @@ base_player::ReceiveEntity(float new, float fl)
 	/* HACK: we need to make this more reliable */
 	if (fl == UPDATE_ALL) {
 		/* we respawned */
-		gravity = __NULL__;
+		gravity = 1.0f;
 	}
 
 	if (fl & PLAYER_MODELINDEX)
@@ -344,5 +344,4 @@ base_player::SendEntity(entity ePEnt, float fChanged)
 void
 base_player::base_player(void)
 {
-	
 }

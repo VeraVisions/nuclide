@@ -1,7 +1,9 @@
 #includelist
 spectator.qc
 pmove.qc
+pmove_custom.qc
 sound.qc
 math.qc
 player.qc
+player_pmove.qc
 #endlist

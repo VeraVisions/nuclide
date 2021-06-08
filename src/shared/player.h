@@ -75,6 +75,18 @@ base_player
 
 	void(void) base_player;
 
+	virtual void(float) Physics_Fall;
+	virtual void(void) Physics_Crouch;
+	virtual void(void) Physics_Jump;
+	virtual void(float) Physics_CheckJump;
+	virtual void(void) Physics_SetViewParms;
+	virtual void(void) Physics_WaterJump;
+	virtual void(void) Physics_WaterMove;
+	virtual float(void) Physics_MaxSpeed;
+	virtual void(void) Physics_InputPreMove;
+	virtual void(void) Physics_InputPostMove;
+	virtual void(void) Physics_Run;
+
 #ifdef CLIENT
 	int sequence;
 	float pitch;

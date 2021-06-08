@@ -14,8 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void PMove_SetSize(entity targ);
-
 /*
 =================
 Predict_EntityUpdate
@@ -44,7 +42,7 @@ Predict_EntityUpdate(player pl, float new)
 			pl.customphysics = __NULL__;
 		}
 
-		PMove_SetSize(pl);
+		pl.Physics_SetViewParms();
 		pl.drawmask = MASK_ENGINE;
 		return;
 	}
