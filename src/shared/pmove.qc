@@ -189,6 +189,7 @@ PMove_SetViewOfs(void)
 		self.maxs = PHY_HULL_MAX;
 		self.view_ofs = PHY_VIEWPOS;
 	}
+	setsize(self, self.mins, self.maxs);
 }
 
 /* figure out where we are in the geometry. void, solid, liquid, etc. */
@@ -514,6 +515,7 @@ PMove_Jump(float move_time, float premove)
 	}
 }
 
+#ifdef CUSTOMPLAYERPHYSICS
 /* two-pass acceleration */
 void
 PMove_Acceleration(float move_time, float premove)
@@ -748,6 +750,7 @@ PMove_Move(void)
 	/* make sure that the basevelocity we've applied is discarded by next frame */
 	self.velocity -= self.basevelocity;
 }
+#endif
 
 /* it all starts here, this function is called by both CLIENT and SERVER for
    obvious prediction purposes. The SERVER will usually do this in the
@@ -820,6 +823,10 @@ PMove_Run(void)
 	/* activate any SOLID_TRIGGER entities */
 	touchtriggers();
 #else
+	/* fix gravity */
+	if (self.gravity == 0.0f)
+		self.gravity = 1.0f;
+
 	/* fast engine-side player physics */
 	runstandardplayerphysics(self);
 #endif

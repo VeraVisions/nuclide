@@ -48,6 +48,7 @@ base_player
 	PREDICTED_VECTOR_N(view_ofs);
 	PREDICTED_FLOAT_N(movetype);
 	PREDICTED_VECTOR(v_angle);
+	PREDICTED_FLOAT_N(pmove_flags);
 
 	PREDICTED_FLOAT(w_attack_next);
 	PREDICTED_FLOAT(w_idle_next);

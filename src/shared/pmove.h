@@ -39,8 +39,4 @@ void PMove_AccelLadder(float move_time, float premove, vector wish_dir, float wi
 void PMove_AccelFriction(float move_time, float premove, vector wish_dir, float wish_speed);
 void PMove_AccelGravity(float move_time, float premove, vector wish_dir, float wish_speed);
 void PMove_Jump(float move_time, float premove);
-void PMove_Acceleration(float move_time, float premove);
-void PMove_DoTouch(entity tother);
-float PMove_Fix_Origin(void);
-void PMove_Move(void);
 void PMove_Run(void);

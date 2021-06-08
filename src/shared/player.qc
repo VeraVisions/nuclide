@@ -65,6 +65,7 @@ base_player::ReceiveEntity(float new, float fl)
 	if (fl & PLAYER_FLAGS) {
 		flags = readfloat();
 		gflags = readfloat();
+		pmove_flags = readfloat();
 	}
 	if (fl & PLAYER_WEAPON)
 		activeweapon = readbyte();
@@ -110,6 +111,7 @@ base_player::PredictPreFrame(void)
 	SAVE_STATE(velocity);
 	SAVE_STATE(flags);
 	SAVE_STATE(gflags);
+	SAVE_STATE(pmove_flags);
 	SAVE_STATE(activeweapon);
 	SAVE_STATE(g_items);
 	SAVE_STATE(health);
@@ -147,6 +149,7 @@ base_player::PredictPostFrame(void)
 	ROLL_BACK(velocity);
 	ROLL_BACK(flags);
 	ROLL_BACK(gflags);
+	ROLL_BACK(pmove_flags);
 	ROLL_BACK(activeweapon);
 	ROLL_BACK(g_items);
 	ROLL_BACK(health);
@@ -213,6 +216,9 @@ base_player::EvaluateEntity(void)
 	if (ATTR_CHANGED(gflags))
 		SendFlags |= PLAYER_FLAGS;
 
+	if (ATTR_CHANGED(pmove_flags))
+		SendFlags |= PLAYER_FLAGS;
+
 	if (ATTR_CHANGED(activeweapon))
 		SendFlags |= PLAYER_WEAPON;
 
@@ -238,6 +244,7 @@ base_player::EvaluateEntity(void)
 	SAVE_STATE(velocity);
 	SAVE_STATE(flags);
 	SAVE_STATE(gflags);
+	SAVE_STATE(pmove_flags);
 	SAVE_STATE(activeweapon);
 	SAVE_STATE(g_items);
 	SAVE_STATE(health);
@@ -298,6 +305,7 @@ base_player::SendEntity(entity ePEnt, float fChanged)
 	if (fChanged & PLAYER_FLAGS) {
 		WriteFloat(MSG_ENTITY, flags);
 		WriteFloat(MSG_ENTITY, gflags);
+		WriteFloat(MSG_ENTITY, pmove_flags);
 	}
 	if (fChanged & PLAYER_WEAPON)
 		WriteByte(MSG_ENTITY, activeweapon);

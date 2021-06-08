@@ -277,7 +277,7 @@ CBaseEntity::ReceiveEntity(float flChanged)
 		angles[2] = readshort() / (65535/360);
 	}
 	if (flChanged & BASEFL_CHANGED_MODELINDEX) {
-		modelindex = readshort();
+		setmodelindex(this, readshort());
 	}
 	if (flChanged & BASEFL_CHANGED_SOLID) {
 		solid = readbyte();
@@ -296,6 +296,7 @@ CBaseEntity::ReceiveEntity(float flChanged)
 		maxs[0] = readcoord();
 		maxs[1] = readcoord();
 		maxs[2] = readcoord();
+		setsize(this, mins, maxs);
 	}
 	if (flChanged & BASEFL_CHANGED_FRAME) {
 		frame1time = 0.0;
@@ -348,8 +349,10 @@ CBaseEntity::ReceiveEntity(float flChanged)
 		drawmask = 0;
 	}
 
+	if (scale == 0.0)
+		scale = 1.0f;
+
 	setorigin(this, origin);
-	setsize(this, mins, maxs);
 }
 
 void

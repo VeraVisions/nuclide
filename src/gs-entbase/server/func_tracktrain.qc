@@ -14,303 +14,263 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-var float autocvar_tracktrain_dir = 1.0f;
-
-/*QUAKED func_tracktrain (0 .5 .8) ?
+/*QUAKED func_tracktrain (0 .5 .8) ? TRAIN_WAIT x x TRAIN_NOTSOLID
 "targetname"    Name
-"target"        Target when triggered.
+"target"        First node.
 "killtarget"    Target to kill when triggered.
+"dmg"           Damage to inflict upon a person blocking the way.
+"snd_move"      Path to sound sample which plays when it's moving.
+"snd_stop"      Path to sound sample which plays when it stops moving.
 
-Moving platform following along path_* entities that's fully user controlled.
-Very unfinished.
+Moving platform following along path_corner entities, aka nodes.
+Most of its behaviour is controlled by the path_corner entities it passes over.
+See the entity definition for path_corner to find out more.
+
+Upon level entry, the func_tracktrain will spawn right where its first path_corner
+node is. This is so you can light the func_tracktrain somewhere else - like a lonely
+box somewhere outside the playable area.
+
+If no targetname is specified, the train will move on its own at map-launch.
+
+Marking the func_tracktrain with the flag TRAIN_NOTSOLID will make entities not
+collide with the train. This is best used for things in the distance or for
+when lasers are following this train as a sort of guide.
 
 Trivia:
-This entity was introduced in Half-Life (1998).
+This entity was introduced in Quake (1996).
 */
 
 enumflags
 {
-	FTRTRAIN_NOPITCH,
-	FTRTRAIN_NOUSE,
-	FTRTRAIN_UNUSED,
-	FTRTRAIN_NONSOLID
+	TRAIN_WAIT,
+	TRAIN_UNUSED1,
+	TRAIN_UNUSED2,
+	TRAIN_NOTSOLID
 };
 
-class func_tracktrain:CBaseVehicle
+class func_tracktrain:CBaseTrigger
 {
-	/* attributes... */
-	float m_flMaxSpeed;
-	float m_flStartSpeed;
-
-	CBaseEntity m_ePath;
-	CBaseEntity m_eOldPath;
+	float m_flWait;
 	float m_flSpeed;
-	vector m_vecControlMins;
-	vector m_vecControlMaxs;
+	float m_flDamage;
+	float m_flHeight;
+	float m_flStartSpeed;
+	string m_strMoveSnd;
+	string m_strStopSnd;
 
 	void(void) func_tracktrain;
-
-	virtual void(void) customphysics;
+	virtual void(void) SoundMove;
+	virtual void(void) SoundStop;
+	virtual void(void) AfterSpawn;
+	virtual void(void) PathNext;
+	virtual void(void) PathMove;
 	virtual void(entity, int) Trigger;
-	virtual void(void) CheckPathFW;
-	virtual void(void) CheckPathRV;
-	virtual void(void) UpdateAngles;
-	virtual void(void) OnPlayerUse;
-	virtual void(void) Realign;
 	virtual void(void) Respawn;
+	virtual void(void) Blocked;
 	virtual void(string, string) SpawnKey;
 };
 
 void
+func_tracktrain::Blocked(void)
+{
+	/* HACK: Make corpses gib instantly */
+	if (other.solid == SOLID_CORPSE) {
+		Damage_Apply(other, this, 500, 0, DMG_EXPLODE);
+		return;
+	}
+
+	if (other.takedamage != DAMAGE_NO) {
+		Damage_Apply(other, this, m_flDamage, 0, DMG_CRUSH);
+	} else {
+		remove(other);
+	}
+}
+
+void
+func_tracktrain::SoundMove(void)
+{
+	if (m_strMoveSnd) {
+		Sound_Play(this, CHAN_VOICE, m_strMoveSnd);
+	}
+}
+
+void
+func_tracktrain::SoundStop(void)
+{
+	if (m_strStopSnd) {
+		Sound_Play(this, CHAN_BODY, m_strStopSnd);
+	}
+
+	if (m_strMoveSnd) {
+		sound(this, CHAN_VOICE, "common/null.wav", 1.0, ATTN_NORM);
+	}
+}
+
+void
+func_tracktrain::PathMove(void)
+{
+	entity eNode;
+	float flTravelTime;
+	vector vecVelocity;
+	vector vecWorldPos;
+
+	eNode = find(world, ::targetname, target);
+
+	if (!eNode) {
+		return;
+	}
+
+	vecWorldPos = origin;
+
+	vecVelocity = (eNode.origin + [0,0,m_flHeight]) - vecWorldPos;
+	flTravelTime = (vlen(vecVelocity) / m_flSpeed);
+
+	if (!flTravelTime) {
+		print("^1func_tracktrain::^3PathMove^7: Distance short, going next\n");
+		think = PathNext;
+		nextthink = ltime;
+		return;
+	}
+
+	SoundMove();
+
+	velocity = (vecVelocity * (1 / flTravelTime));
+
+	vector angledest;
+	/* get the difference in perspective */
+	angledest = vectoangles(eNode.origin - vecWorldPos);
+	angledest[1] += 180.0f; /* this is an evil hack */
+	angledest = (angledest - angles);
+	angledest[0] = 0;
+	angledest[1] = Math_FixDelta(angledest[1]);
+	angledest[2] = 0;
+
+	avelocity = angledest;
+
+	think = PathNext;
+	nextthink = (ltime + flTravelTime);
+}
+
+void
+func_tracktrain::PathDone(void)
+{
+	path_corner eNode;
+	eNode = (path_corner)find(world, ::targetname, target);
+
+	/* stop */
+	avelocity = [0,0,0];
+
+	if (!eNode) {
+		return;
+	}
+
+	/* fire the path_corners' target */
+	if (eNode.m_strMessage) {
+		eNode.Trigger(this, TRIG_TOGGLE);
+	}
+	SoundStop();
+}
+
+void
+func_tracktrain::PathNext(void)
+{
+	path_corner eNode;
+	eNode = (path_corner)find(world, ::targetname, target);
+
+	if (!eNode) {
+		return;
+	}
+
+	SetOrigin((eNode.origin) + [0,0,m_flHeight]);
+	PathDone();
+
+	/* if speed is 0, retain current speed */
+	if (eNode.m_flSpeed > 0)
+		m_flSpeed = eNode.m_flSpeed;
+
+	m_flWait = eNode.m_flWait;
+	target = eNode.target;
+	velocity = [0,0,0];
+
+	/* warp */
+	if (eNode.spawnflags & PC_TELEPORT) {
+		SetOrigin((eNode.origin) + [0,0,m_flHeight]);
+	}
+
+	/* stop until triggered again */
+	if (eNode.spawnflags & PC_WAIT) {
+		SoundStop();
+		return;
+	}
+
+	/* move after delay, or instantly when none is given */
+	/*if (m_flWait > 0) {
+		think = PathMove;
+		nextthink = ltime + m_flWait;
+	} else */ {
+		PathMove();
+	}
+}
+
+/* TODO: Handle state? */
+void
 func_tracktrain::Trigger(entity act, int state)
 {
-	m_flSpeed = 1.0f;
+	PathMove();
 }
 
 void
-func_tracktrain::CheckPathFW(void)
+func_tracktrain::AfterSpawn(void)
 {
-	if (vlen(m_ePath.origin - origin) < 1.0f) {
-		entity f;
-		CBaseEntity current, next;
-		current = (CBaseEntity)m_ePath;
-		next = __NULL__;
+	PathNext();
 
-		for (f = world; (f = find(f, ::targetname, current.target));) {
-			/* we found the right entity */
-			if (f.classname == "path_track" || f.classname == "path_corner") {
-				CBaseTrigger oldtrig;
-				oldtrig = (CBaseTrigger)m_ePath;
-				oldtrig.Trigger(this, TRIG_TOGGLE);
-				next = (CBaseEntity)f;
-				break;
-			}
-		}
-
-		m_eOldPath = m_ePath;
-		m_ePath = next;
+	if (!targetname) {
+		PathMove();
 	}
-}
-
-void
-func_tracktrain::CheckPathRV(void)
-{
-	if (vlen(m_ePath.origin - origin) < 1.0f) {
-		entity f;
-		CBaseEntity current, next;
-		current = (CBaseEntity)m_ePath;
-		next = __NULL__;
-
-		for (f = world; (f = find(f, ::target, current.targetname));) {
-			/* we found the right entity */
-			if (f.classname == "path_track" || f.classname == "path_corner") {
-				next = (CBaseEntity)f;
-			}
-		}
-
-		m_eOldPath = m_ePath;
-		m_ePath = next;
-	}
-}
-
-void
-func_tracktrain::UpdateAngles(void)
-{
-	vector new_ang;
-	vector old_ang;
-	vector tmp;
-	float progress;
-	CBaseEntity reallyold, reallynew;
-	entity f;
-
-	reallynew = reallyold = __NULL__;
-
-	for (f = world; (f = find(f, ::target, m_eOldPath.targetname));) {
-		if (f.classname == "path_track" || f.classname == "path_corner") {
-			reallyold = (CBaseEntity)f;
-		}
-	}
-	
-	for (f = world; (f = find(f, ::targetname, m_ePath.target));) {
-		if (f.classname == "path_track" || f.classname == "path_corner") {
-			reallynew = (CBaseEntity)f;
-		}
-	}
-
-	makevectors(vectoangles(m_eOldPath.origin - reallyold.origin));
-	old_ang = v_forward;
-
-	makevectors(vectoangles(m_ePath.origin - m_eOldPath.origin));
-	new_ang = v_forward;
-
-	progress = vlen(m_ePath.origin - origin);
-	progress /= vlen(m_eOldPath.origin - m_ePath.origin);
-	progress = 1.0f - progress;
-
-	/* print(sprintf("%f %d %d\n", progress, vlen(m_ePath.origin - origin), vlen(m_eOldPath.origin - m_ePath.origin))); */
-
-	tmp[0] = Math_Lerp(old_ang[0], new_ang[0], progress);
-	tmp[1] = Math_Lerp(old_ang[1], new_ang[1], progress);
-	tmp[2] = Math_Lerp(old_ang[2], new_ang[2], progress);
-	angles = vectoangles(tmp);
-}
-
-void
-func_tracktrain::customphysics(void)
-{
-	/* eject the dead */
-	if (m_eDriver && m_eDriver.health <= 0) {
-		PlayerLeave((base_player)m_eDriver);
-	}
-
-	if (m_eDriver) {
-		if (m_eDriver.movement[0] > 0) {
-			m_flSpeed = bound(0, m_flSpeed += frametime, 1.0f);
-		} else if (m_eDriver.movement[0] < 0) {
-			m_flSpeed = bound(0, m_flSpeed -= frametime, 1.0f);
-		}
-		PlayerUpdateFlags();
-	}
-
-	//m_flSpeed = autocvar_tracktrain_dir;
-
-	if (m_flSpeed > 0.0f) {
-		makevectors(vectoangles(m_ePath.origin - origin));
-		velocity = (v_forward * (m_flMaxSpeed * m_flSpeed));
-		setorigin(this, origin + (velocity * frametime));
-		UpdateAngles();
-	} else {
-		makevectors(vectoangles(m_eOldPath.origin - origin));
-		velocity = (v_forward * (m_flMaxSpeed * m_flSpeed));
-		setorigin(this, origin + (velocity * frametime));
-	}
-
-	if (m_flSpeed > 0.0f)
-		CheckPathFW();
-	else if (m_flSpeed < 0.0f)
-		CheckPathRV();
-
-	PlayerAlign();
-
-	/* support for think/nextthink */
-	if (think && nextthink > 0.0f) {
-		if (nextthink < time) {
-			nextthink = 0.0f;
-			think();
-		}
-	}
-}
-
-void
-func_tracktrain::OnPlayerUse(void)
-{
-	vector matrix;
-	vector offs;
-	offs = eActivator.origin - origin;
-
-	makevectors(angles);
-	matrix[0] = dotproduct(offs, v_forward);
-	matrix[1] = -dotproduct(offs, v_right);
-	matrix[2] = dotproduct(offs, v_up);
-
-	if not (matrix[0] >= m_vecControlMins[0] && matrix[0] <= m_vecControlMaxs[0])
-		return;
-	if not (matrix[1] >= m_vecControlMins[1] && matrix[1] <= m_vecControlMaxs[1])
-		return;
-	if not (matrix[2] >= m_vecControlMins[2] && matrix[2] <= m_vecControlMaxs[2])
-		return;
-
-	if (m_eDriver == eActivator) {
-		PlayerLeave((base_player)eActivator);
-	} else if (!m_eDriver) {
-		PlayerEnter((base_player)eActivator);
-	}
-}
-
-void
-func_tracktrain::Realign(void)
-{
-	entity t;
-	entity f;
-	CBaseEntity first, second;
-	string strFirst, strSecond;
-
-	first = second = __NULL__;
-	t = f = __NULL__;
-
-	for (f = world; (f = find(f, ::target, targetname));) {
-		/* we found the right entity */
-		if (f.classname == "func_tracktraincontrols") {
-			t = f;
-		}
-	}
-
-	if (t) {
-		vector offs;
-		offs = t.origin - origin;
-		m_vecControlMins = t.mins + offs;
-		m_vecControlMaxs = t.maxs + offs;
-	} else if (!(spawnflags & FTRTRAIN_NOUSE)) {
-		m_vecControlMins = [-1024,-1024,-1024];
-		m_vecControlMaxs = m_vecControlMins * -1;
-	}
-
-	/* we rotate and position ourselves after the first path_track/corner */
-	strFirst = target;
-	for (f = world; (f = find(f, ::targetname, strFirst));) {
-		/* we found the right entity */
-		if (f.classname == "path_track" || f.classname == "path_corner") {
-			first = (CBaseEntity)f;
-		}
-	}
-
-	/* now get the second one... */
-	strSecond = first.target;
-	for (f = world; (f = find(f, ::targetname, strSecond));) {
-		/* we found the right entity */
-		if (f.classname == "path_track" || f.classname == "path_corner") {
-			second = (CBaseEntity)f;
-		}
-	}
-
-	if (first && second) {
-		first = (CBaseEntity)first;
-		second = (CBaseEntity)second;
-		angles = vectoangles(first.origin - second.origin);
-		setorigin(this, first.origin);
-	}
-
-	m_eOldPath = first;
-	m_ePath = second;
 }
 
 void
 func_tracktrain::Respawn(void)
 {
-	movetype = MOVETYPE_PUSH;
-	solid = SOLID_BSP;
+	SetSolid(spawnflags & TRAIN_NOTSOLID ? SOLID_NOT : SOLID_BSP);
+	SetMovetype(MOVETYPE_PUSH);
+	blocked = Blocked;
 	SetModel(m_oldModel);
 	SetOrigin(m_oldOrigin);
-	SetAngles(m_oldAngle);
-	owner = m_eDriver = __NULL__;
-	velocity = [0,0,0];
+	m_flSpeed = m_flStartSpeed;
 
-	think = Realign;
-	nextthink = time + 0.1f;
-	PlayerUse = OnPlayerUse;
-
-	m_flSpeed = m_flStartSpeed / m_flMaxSpeed;
+	/* let's wait 1/4 a second to give the path_corner entities a chance to
+	 * spawn in case they're after us in the ent lump */
+	target = m_oldstrTarget;
+	think = AfterSpawn;
+	nextthink = ltime + 0.25f;
 }
 
 void
 func_tracktrain::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "speed":
-		m_flMaxSpeed = stof(strValue);
-		break;
 	case "startspeed":
 		m_flStartSpeed = stof(strValue);
+		break;
+	case "height":
+		m_flHeight = stof(strValue);
+		break;
+	case "dmg":
+		m_flDamage = stof(strValue);
+		break;
+	case "snd_move":
+		m_strMoveSnd = strValue;
+		break;
+	case "snd_stop":
+		m_strStopSnd = strValue;
+		break;
+	/* compatibility */
+	case "movesnd":
+		m_strMoveSnd = sprintf("func_tracktrain.move_%i", stoi(strValue) + 1i);
+		break;
+	case "stopsnd":
+		m_strStopSnd = sprintf("func_tracktrain.stop_%i", stoi(strValue) + 1i);
 		break;
 	default:
 		CBaseTrigger::SpawnKey(strKey, strValue);
@@ -320,7 +280,13 @@ func_tracktrain::SpawnKey(string strKey, string strValue)
 void
 func_tracktrain::func_tracktrain(void)
 {
-	m_iVehicleFlags |= VHF_FROZEN;
+	/* FIXME: This is all decided by the first path_corner pretty much */
+	m_flSpeed = 100;
+	CBaseTrigger::CBaseTrigger();
 
-	CBaseVehicle::CBaseVehicle();
+	if (m_strMoveSnd)
+		Sound_Precache(m_strMoveSnd);
+
+	if (m_strStopSnd)
+		Sound_Precache(m_strStopSnd);
 }
