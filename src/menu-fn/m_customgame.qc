@@ -244,6 +244,133 @@ customgame_liblist_parse(int id, string strKey, string strValue)
 	}
 }
 
+int
+games_check_manifest(int id, string gamedirname)
+{
+	int ret = 0;
+	float count;
+
+	string gamedescription = getgamedirinfo(id, 2);
+
+	if (gamedescription == "") {
+		return (0);
+	}
+
+	count = tokenize_console(gamedescription);
+
+	for (int i = 0; i < count; i++) {
+		string full = argv(i);
+		string first = substring(full, 0, 9);
+		string second = substring(full, 9, -1);
+
+		if (first == "gameinfo_") {
+			customgame_liblist_parse(id, second, argv(i+1));
+			ret = 1;
+		}
+	}
+
+	return (ret);
+}
+
+int
+games_check_liblist(int id, string gamedirname)
+{
+	searchhandle sh;
+	searchhandle psh;
+	string temp;
+	filestream fh;
+	int ret = 0;
+
+	/* first let's see if we've got a liblist.gam just floating inside the gamedir */
+	sh = search_begin("liblist.gam", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
+	fh = search_fopen(sh, 0);
+
+	/* we do not. let's search for pk3's to sift through */
+	if (fh < 0) {
+		/* let's search for every pk3 in the gamedir and search for a liblist, one at a time. */
+		psh = search_begin("*.pk3", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
+
+		/* loop through each pk3 */
+		for (int i = 0; i < search_getsize(psh); i++) {
+			string full = search_getfilename(psh, i);
+			sh = search_begin("liblist.gam", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, strcat(gamedirname, "/", full));
+			fh = search_fopen(sh, 0);
+
+			/* we found one */
+			if (fh >= 0)
+				break;
+		}
+		search_end(psh);
+	}
+
+	/* still nothing. let's search for pk4's to sift through */
+	if (fh < 0) {
+		/* let's search for every pk3 in the gamedir and search for a liblist, one at a time. */
+		psh = search_begin("*.pk4", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
+
+		/* loop through each pk3 */
+		for (int i = 0; i < search_getsize(psh); i++) {
+			string full = search_getfilename(psh, i);
+			sh = search_begin("liblist.gam", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, strcat(gamedirname, "/", full));
+			fh = search_fopen(sh, 0);
+
+			/* we found one */
+			if (fh >= 0)
+				break;
+		}
+		search_end(psh);
+	}
+
+	/* we still haven't found a liblist.gam */
+	if (fh < 0) {
+		/* sift through dlcache. that's where downloaded mods go */
+		psh = search_begin("dlcache/*.pk3.*", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
+
+		/* loop through each pk3 hash */
+		for (int i = 0; i < search_getsize(psh); i++) {
+			string full = search_getfilename(psh, i);
+			sh = search_begin("liblist.gam", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, strcat(gamedirname, "/dlcache/", full));
+			fh = search_fopen(sh, 0);
+
+			/* we finally found one */
+			if (fh >= 0)
+				break;
+		}
+		search_end(psh);
+	}
+
+	/* we still haven't found a liblist.gam */
+	if (fh < 0) {
+		/* sift through dlcache. that's where downloaded mods go */
+		psh = search_begin("dlcache/*.pk4.*", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
+
+		/* loop through each pk3 hash */
+		for (int i = 0; i < search_getsize(psh); i++) {
+			string full = search_getfilename(psh, i);
+			sh = search_begin("liblist.gam", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, strcat(gamedirname, "/dlcache/", full));
+			fh = search_fopen(sh, 0);
+
+			/* we finally found one */
+			if (fh >= 0)
+				break;
+		}
+		search_end(psh);
+	}
+
+	/* we have found a liblist.gam */
+	if (fh >= 0) {
+		while ((temp = fgets(fh))) {
+			tokenize(temp);
+			customgame_liblist_parse(id, argv(0), argv(1));
+		}
+		fclose(fh);
+		ret = 1;
+	}
+	search_end(sh);
+
+	return (ret);
+}
+
 void
 games_init(void)
 {
@@ -251,36 +378,8 @@ games_init(void)
 	string gamedirname;
 	gameinfo_count = 0;
 
-	searchhandle sh;
-	searchhandle psh;
-	string temp;
-	filestream fh;
-
 	for (id = 0; (gamedirname = getgamedirinfo(id, 0)); id++) {
-		/* first let's see if we've got a liblist.gam just floating inside the gamedir */
-		sh = search_begin("liblist.gam", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
-		
-		/* we do not. let's search for pk3's to sift through */
-		if (search_getsize(sh) < 0) {
-			/* let's search for every pk3 in the gamedir and search for a liblist, one at a time. */
-			psh = search_begin("*.pk3", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
-
-			/* loop through each pk3 */
-			for (int i = 0; i < search_getsize(psh); i++) {
-				string full = search_getfilename(psh, i);
-				sh = search_begin("liblist.gam", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, strcat(gamedirname, "/", full));
-				print(sprintf("%s\n", full));
-				
-				/* we found one */
-				if (search_getsize(sh) >= 0)
-					gameinfo_count++;
-			}
-			search_end(psh);
-		} else {
-			gameinfo_count++;
-		}
-
-		search_end(sh);
+		gameinfo_count++;
 	}
 
 	/* this means no valid gamedirs of any type. something is seriously wrong */
@@ -322,57 +421,13 @@ games_init(void)
 		games[id].pkgid = -1;
 		games[id].steambg = 0;
 
-#if 1
-		/* first let's see if we've got a liblist.gam just floating inside the gamedir */
-		sh = search_begin("liblist.gam", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
-		fh = search_fopen(sh, 0);
-
-		/* we do not. let's search for pk3's to sift through */
-		if (fh < 0) {
-			/* let's search for every pk3 in the gamedir and search for a liblist, one at a time. */
-			psh = search_begin("*.pk3", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
-
-			/* loop through each pk3 */
-			for (int i = 0; i < search_getsize(psh); i++) {
-				string full = search_getfilename(psh, i);
-				sh = search_begin("liblist.gam", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, strcat(gamedirname, "/", full));
-				fh = search_fopen(sh, 0);
-				
-				/* we found one */
-				if (fh >= 0)
-					break;
-			}
-			search_end(psh);
+		if (games_check_manifest(id, gamedirname) == 1) {
+			print(sprintf("[MENU] Found manifest for %s\n", gamedirname));
+		} else if (games_check_liblist(id, gamedirname) == 1) {
+			print(sprintf("[MENU] Found liblist for %s\n", gamedirname));
+		} else {
+			print(sprintf("[MENU] Found nothing for %s\n", gamedirname));
 		}
-
-		/* we still haven't found a liblist.gam */
-		if (fh < 0) {
-			/* sift through dlcache. that's where downloaded mods go */
-			psh = search_begin("dlcache/*.pk3.*", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
-
-			/* loop through each pk3 hash */
-			for (int i = 0; i < search_getsize(psh); i++) {
-				string full = search_getfilename(psh, i);
-				sh = search_begin("liblist.gam", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, strcat(gamedirname, "/dlcache/", full));
-				fh = search_fopen(sh, 0);
-				
-				/* we finally found one */
-				if (fh >= 0)
-					break;
-			}
-			search_end(psh);
-		}
-#endif
-
-		/* we have found a liblist.gam */
-		if (fh >= 0) {
-			while ((temp = fgets(fh))) {
-				tokenize(temp);
-				customgame_liblist_parse(id, argv(0), argv(1));
-			}
-			fclose(fh);
-		}
-		search_end(sh);
 
 		/* if we're this mod, make sure to let the rest of the menu know */
 		if (games[id].gamedir == cvar_string("game")) {
