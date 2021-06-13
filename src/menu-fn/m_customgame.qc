@@ -244,6 +244,149 @@ customgame_liblist_parse(int id, string strKey, string strValue)
 	}
 }
 
+/* looks for a single find inside a gamedir, including its pk3s and returns
+ * a valid filehandle if it is found */
+filestream
+games_find_in_gamedir(string filename, string gamedirname)
+{
+	searchhandle sh;
+	filestream fh;
+	searchhandle psh;
+
+	/* first let's see if we've got a liblist.gam just floating inside the gamedir */
+	sh = search_begin(filename, SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
+	fh = search_fopen(sh, 0);
+
+	/* we do not. let's search for pk3's to sift through */
+	if (fh < 0) {
+		/* let's search for every pk3 in the gamedir and search for a liblist, one at a time. */
+		psh = search_begin("*.pk3", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
+
+		/* loop through each pk3 */
+		for (int i = 0; i < search_getsize(psh); i++) {
+			string full = search_getfilename(psh, i);
+			sh = search_begin(filename, SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, strcat(gamedirname, "/", full));
+			fh = search_fopen(sh, 0);
+
+			/* we found one */
+			if (fh >= 0)
+				break;
+		}
+		search_end(psh);
+	}
+
+	/* still nothing. let's search for pk4's to sift through */
+	if (fh < 0) {
+		/* let's search for every pk3 in the gamedir and search for a liblist, one at a time. */
+		psh = search_begin("*.pk4", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
+
+		/* loop through each pk3 */
+		for (int i = 0; i < search_getsize(psh); i++) {
+			string full = search_getfilename(psh, i);
+			sh = search_begin(filename, SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, strcat(gamedirname, "/", full));
+			fh = search_fopen(sh, 0);
+
+			/* we found one */
+			if (fh >= 0)
+				break;
+		}
+		search_end(psh);
+	}
+	search_end(sh);
+
+	return (fh);
+}
+
+/* check if a gameinfo.txt for the gamedir contains gameinfo, parse it if present */
+int
+games_check_gtxt(int id, string gamedirname)
+{
+	string temp;
+	filestream fh;
+	int ret = 0;
+
+	fh = games_find_in_gamedir("gameinfo.txt", gamedirname);
+
+	if (fh < 0)
+		fh = games_find_in_gamedir("GameInfo.txt", gamedirname);
+
+	/* we have found a liblist.gam */
+	if (fh >= 0) {
+		string gamedirchain = "";
+		int braced = 0;
+
+		while ((temp = fgets(fh))) {
+			string token;
+			tokenize_console(temp);
+			token = strtolower(argv(0));
+
+			if (!token)
+				continue;
+
+			if (token == "{")
+				braced++;
+
+			if (token == "}")
+				braced--;
+
+			if (braced == 1) {
+				/* GameInfo */
+				switch (token) {
+				case "game":
+					games[id].game = argv(1);
+					break;
+				case "type":
+					games[id].type = argv(1);
+					break;
+				}
+				print(sprintf("GameInfo: %s\n", temp));
+			} else if (braced == 2) {
+				/* FileSystem */
+				switch (token) {
+				case "steamappid":
+					break;
+				case "toolsappid":
+					break;
+				}
+				print(sprintf("FileSystem: %s\n", temp));
+			} else if (braced == 3) {
+				/* SearchPaths */
+				switch (token) {
+				case "game":
+					if (argv(1) == "|gameinfo_path|.")
+						gamedirchain = strcat(gamedirchain, games[id].gamedir, " ");
+					else
+						gamedirchain = strcat(gamedirchain, argv(1), " ");
+					break;
+				}
+				print(sprintf("SearchPaths: %s\n", temp));
+			}
+		}
+
+		/* in gameinfo.txt files, we list game load-order in reverse */
+		if (gamedirchain) {
+			string maindir = games[id].gamedir;
+			float c = tokenize(gamedirchain);
+
+			for (float i = c-1; i >= 0; i--) {
+				if (argv(i) == maindir)
+					continue;
+
+				if (i == 0)
+					games[id].gamedir = strcat(games[id].gamedir, argv(i));
+				else
+					games[id].gamedir = strcat(games[id].gamedir, argv(i), ";");
+			}
+		}
+		print(sprintf("Final GameDir: %s\n", games[id].gamedir));
+
+		fclose(fh);
+		ret = 1;
+	}
+
+	return (ret);
+}
+
 /* check if a manifest for the gamedir contains gameinfo, parse it if present */
 int
 games_check_manifest(int id, string gamedirname)
@@ -281,87 +424,12 @@ games_check_manifest(int id, string gamedirname)
 int
 games_check_liblist(int id, string gamedirname)
 {
-	searchhandle sh;
-	searchhandle psh;
 	string temp;
 	filestream fh;
 	int ret = 0;
 
 	/* first let's see if we've got a liblist.gam just floating inside the gamedir */
-	sh = search_begin("liblist.gam", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
-	fh = search_fopen(sh, 0);
-
-	/* we do not. let's search for pk3's to sift through */
-	if (fh < 0) {
-		/* let's search for every pk3 in the gamedir and search for a liblist, one at a time. */
-		psh = search_begin("*.pk3", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
-
-		/* loop through each pk3 */
-		for (int i = 0; i < search_getsize(psh); i++) {
-			string full = search_getfilename(psh, i);
-			sh = search_begin("liblist.gam", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, strcat(gamedirname, "/", full));
-			fh = search_fopen(sh, 0);
-
-			/* we found one */
-			if (fh >= 0)
-				break;
-		}
-		search_end(psh);
-	}
-
-	/* still nothing. let's search for pk4's to sift through */
-	if (fh < 0) {
-		/* let's search for every pk3 in the gamedir and search for a liblist, one at a time. */
-		psh = search_begin("*.pk4", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
-
-		/* loop through each pk3 */
-		for (int i = 0; i < search_getsize(psh); i++) {
-			string full = search_getfilename(psh, i);
-			sh = search_begin("liblist.gam", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, strcat(gamedirname, "/", full));
-			fh = search_fopen(sh, 0);
-
-			/* we found one */
-			if (fh >= 0)
-				break;
-		}
-		search_end(psh);
-	}
-
-	/* we still haven't found a liblist.gam */
-	if (fh < 0) {
-		/* sift through dlcache. that's where downloaded mods go */
-		psh = search_begin("dlcache/*.pk3.*", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
-
-		/* loop through each pk3 hash */
-		for (int i = 0; i < search_getsize(psh); i++) {
-			string full = search_getfilename(psh, i);
-			sh = search_begin("liblist.gam", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, strcat(gamedirname, "/dlcache/", full));
-			fh = search_fopen(sh, 0);
-
-			/* we finally found one */
-			if (fh >= 0)
-				break;
-		}
-		search_end(psh);
-	}
-
-	/* we still haven't found a liblist.gam */
-	if (fh < 0) {
-		/* sift through dlcache. that's where downloaded mods go */
-		psh = search_begin("dlcache/*.pk4.*", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
-
-		/* loop through each pk3 hash */
-		for (int i = 0; i < search_getsize(psh); i++) {
-			string full = search_getfilename(psh, i);
-			sh = search_begin("liblist.gam", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, strcat(gamedirname, "/dlcache/", full));
-			fh = search_fopen(sh, 0);
-
-			/* we finally found one */
-			if (fh >= 0)
-				break;
-		}
-		search_end(psh);
-	}
+	fh = games_find_in_gamedir("liblist.gam", gamedirname);
 
 	/* we have found a liblist.gam */
 	if (fh >= 0) {
@@ -372,7 +440,6 @@ games_check_liblist(int id, string gamedirname)
 		fclose(fh);
 		ret = 1;
 	}
-	search_end(sh);
 
 	return (ret);
 }
@@ -381,7 +448,7 @@ void
 games_init(void)
 {
 	int id;
-	int foundself;
+	int foundself = 0;
 	string gamedirname;
 	gameinfo_count = 0;
 
@@ -395,14 +462,8 @@ games_init(void)
 
 	/* append current game to the very end */
 	if (!foundself) {
+		//games_set(gameinfo_count);
 		gameinfo_count++;
-	}
-
-	/* this means no valid gamedirs of any type. something is seriously wrong */
-	if (!gameinfo_count) {
-		print("^1FATAL ERROR: NO VALID MOD DIRECTORIES FOUND!\n");
-		crash();
-		return;
 	}
 
 	games = memalloc(sizeof(gameinfo_t) * gameinfo_count);
@@ -413,12 +474,12 @@ games_init(void)
 
 	/* now loop through all the mods we found and load in the metadata */
 	for (id = 0; id < gameinfo_count; id++) {
+		gamedirname = getgamedirinfo(id, 0);
+
 		/* handle the case if we didn't get reported our own game */
 		if (!foundself)
 		if (id == (gameinfo_count-1)) {
 			gamedirname = cvar_string("game");
-		} else {
-			gamedirname = getgamedirinfo(id, 0);
 		}
 
 		/* Fill in the defaults */
@@ -447,6 +508,8 @@ games_init(void)
 
 		if (games_check_manifest(id, gamedirname) == 1) {
 			print(sprintf("[MENU] Found manifest for %s\n", gamedirname));
+		} else if (games_check_gtxt(id, gamedirname) == 1) {
+			print(sprintf("[MENU] Found gameinfo for %s\n", gamedirname));
 		} else if (games_check_liblist(id, gamedirname) == 1) {
 			print(sprintf("[MENU] Found liblist for %s\n", gamedirname));
 		} else {

@@ -56,7 +56,7 @@ Predict_EntityUpdate(player pl, float new)
 				break;
 			}
 			input_sequence = i;
-			PMove_Run();
+			pl.Physics_Run();
 		}
 	}
 	
@@ -99,7 +99,7 @@ Predict_PlayerPreFrame(player pl)
 		input_sequence = i;
 
 		/* run our custom physics */
-		PMove_Run();
+		pl.Physics_Run();
 	}
 }
 

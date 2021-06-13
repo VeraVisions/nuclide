@@ -152,7 +152,6 @@ PMove_IsStuck(entity eTarget, vector vOffset, vector vecMins, vector vecMaxs)
 void
 PMove_Run(void)
 {
-
 	player pl = (player)self;
 	pl.Physics_Run();
 }
