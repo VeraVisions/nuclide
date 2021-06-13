@@ -244,6 +244,7 @@ customgame_liblist_parse(int id, string strKey, string strValue)
 	}
 }
 
+/* check if a manifest for the gamedir contains gameinfo, parse it if present */
 int
 games_check_manifest(int id, string gamedirname)
 {
@@ -252,6 +253,7 @@ games_check_manifest(int id, string gamedirname)
 
 	string gamedescription = getgamedirinfo(id, 2);
 
+	/* no manifest, or no cvar strings inside */
 	if (gamedescription == "") {
 		return (0);
 	}
@@ -263,6 +265,9 @@ games_check_manifest(int id, string gamedirname)
 		string first = substring(full, 0, 9);
 		string second = substring(full, 9, -1);
 
+		/* we may have a game manifest, but if it doesn't
+		 * contains any gameinfo entries a different file
+		 * should probably be parsed later */
 		if (first == "gameinfo_") {
 			customgame_liblist_parse(id, second, argv(i+1));
 			ret = 1;
@@ -272,6 +277,7 @@ games_check_manifest(int id, string gamedirname)
 	return (ret);
 }
 
+/* check if a liblist, parse it if present */
 int
 games_check_liblist(int id, string gamedirname)
 {
@@ -375,10 +381,20 @@ void
 games_init(void)
 {
 	int id;
+	int foundself;
 	string gamedirname;
 	gameinfo_count = 0;
 
 	for (id = 0; (gamedirname = getgamedirinfo(id, 0)); id++) {
+		/* in case FTE does not report the current game we're playing, sigh */
+		if (gamedirname == cvar_string("game"))
+			foundself = 1;
+
+		gameinfo_count++;
+	}
+
+	/* append current game to the very end */
+	if (!foundself) {
 		gameinfo_count++;
 	}
 
@@ -396,7 +412,15 @@ games_init(void)
 		error(sprintf("Attempting to allocate mod data for %i entries failed\n", gameinfo_count));
 
 	/* now loop through all the mods we found and load in the metadata */
-	for (id = 0; (gamedirname = getgamedirinfo(id, 0)); id++) {
+	for (id = 0; id < gameinfo_count; id++) {
+		/* handle the case if we didn't get reported our own game */
+		if (!foundself)
+		if (id == (gameinfo_count-1)) {
+			gamedirname = cvar_string("game");
+		} else {
+			gamedirname = getgamedirinfo(id, 0);
+		}
+
 		/* Fill in the defaults */
 		games[id].game = gamedirname;
 		games[id].gamedir = gamedirname;
