@@ -64,6 +64,14 @@ typedef struct
 	void(float evtype, float scanx, float chary, float devid) m_input;
 } menupage_t;
 
+typedef enum
+{
+	GAMEINFO_NONE,
+	GAMEINFO_MANIFEST,
+	GAMEINFO_GITXT,
+	GAMEINFO_LIBLIST
+} gi_type;
+
 typedef struct
 {
 	string game;
@@ -92,6 +100,7 @@ typedef struct
 	string chatroom;
 	string introvideo;
 	int steambg;
+	gi_type info_type;
 } gameinfo_t;
 
 var int gameinfo_current = -1;

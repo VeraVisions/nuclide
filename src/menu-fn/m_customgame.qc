@@ -508,12 +508,16 @@ games_init(void)
 
 		if (games_check_manifest(id, gamedirname) == 1) {
 			print(sprintf("[MENU] Found manifest for %s\n", gamedirname));
+			games[id].info_type = GAMEINFO_MANIFEST;
 		} else if (games_check_gtxt(id, gamedirname) == 1) {
 			print(sprintf("[MENU] Found gameinfo for %s\n", gamedirname));
+			games[id].info_type = GAMEINFO_GITXT;
 		} else if (games_check_liblist(id, gamedirname) == 1) {
 			print(sprintf("[MENU] Found liblist for %s\n", gamedirname));
+			games[id].info_type = GAMEINFO_LIBLIST;
 		} else {
 			print(sprintf("[MENU] Found nothing for %s\n", gamedirname));
+			games[id].info_type = GAMEINFO_NONE;
 		}
 
 		/* if we're this mod, make sure to let the rest of the menu know */
@@ -540,12 +544,17 @@ customgame_btnactivate_start(void)
 #if 0
 	localcmd(sprintf("gamedir %s %s.fmf\nfs_changegame %s -\n", games[nextgame].gamedir, games[nextgame].gamedir, games[nextgame].gamedir));
 #else
-	/* some games/mods inherit other directories */
-	if (games[nextgame].fallback_dir) {
-		localcmd(sprintf("gamedir \"logos;platform;%s;%s;%s\"\n", games[nextgame].base_dir, games[nextgame].fallback_dir, games[nextgame].gamedir));
-	} else {
+	if (games[nextgame].info_type == GAMEINFO_MANIFEST)
+		localcmd(sprintf("gamedir %s %s.fmf\nfs_changegame %s -\n", games[nextgame].gamedir, games[nextgame].gamedir, games[nextgame].gamedir));
+	else if (games[nextgame].info_type == GAMEINFO_LIBLIST) {
+		/* some games/mods inherit other directories */
+		if (games[nextgame].fallback_dir) {
+			localcmd(sprintf("gamedir \"logos;platform;%s;%s;%s\"\n", games[nextgame].base_dir, games[nextgame].fallback_dir, games[nextgame].gamedir));
+		} else {
+			localcmd(sprintf("gamedir \"logos;platform;%s;%s\"\n", games[nextgame].base_dir, games[nextgame].gamedir));
+		}
+	} else
 		localcmd(sprintf("gamedir \"logos;platform;%s;%s\"\n", games[nextgame].base_dir, games[nextgame].gamedir));
-	}
 #endif
 
 	localcmd("stopmusic\nsnd_restart\nwait\nvid_reload\n");
