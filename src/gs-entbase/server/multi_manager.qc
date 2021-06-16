@@ -34,6 +34,7 @@ class multi_manager_sub:CBaseTrigger
 {
 	entity m_eActivator;
 	int m_iValue;
+	float m_flUntilTriggered;
 };
 
 class multi_manager:CBaseTrigger
@@ -77,22 +78,14 @@ multi_manager::Trigger(entity act, int state)
 	}
 
 	/* time to trigger our sub triggers */
-	int iFields = tokenizebyseparator(m_strBuffer, " ");
-	int b = 0;
-	for (int i = 0; i < iFields; i+=2) {
+	for (int i = 0; i < 16; i++) {
+		if (!m_eTriggers[i].target)
+			continue;
 
-		if (b >= 16) {
-			break;
-		}
-
-		// HACK: Avoid infinite loops
-		if (targetname != argv(i)) {
-			m_eTriggers[b].think = mm_enttrigger;
-			m_eTriggers[b].nextthink = time + stof(argv(i+1));
-			m_eTriggers[b].m_iValue = TRUE;
-			m_eTriggers[b].m_eActivator = act;
-			b++;
-		}
+		m_eTriggers[i].think = mm_enttrigger;
+		m_eTriggers[i].nextthink = time + m_eTriggers[i].m_flUntilTriggered;
+		m_eTriggers[i].m_iValue = TRUE;
+		m_eTriggers[i].m_eActivator = act;
 	}
 }
 
@@ -147,6 +140,7 @@ multi_manager::multi_manager(void)
 	m_strBuffer = "";
 
 	CBaseTrigger::CBaseTrigger();
+	print(sprintf("multitrigger: %s\n", m_strBuffer));
 
 	for (b = 0; b < 16; b++) {
 		m_eTriggers[b] = spawn(multi_manager_sub);
@@ -160,10 +154,15 @@ multi_manager::multi_manager(void)
 			break;
 		}
 
+		if (!argv(i))
+			break;
+
 		// HACK: Avoid infinite loops
 		if (targetname != argv(i)) {
 			m_eTriggers[b].target = argv(i);
 			m_eTriggers[b].m_oldstrTarget = argv(i);
+			m_eTriggers[b].m_flUntilTriggered = stof(argv(i+1));
+			print(sprintf("Created multitrigger: %s %d\n", m_eTriggers[b].target, m_eTriggers[b].m_flUntilTriggered));
 			b++;
 		}
 	}
