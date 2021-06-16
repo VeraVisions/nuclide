@@ -56,10 +56,10 @@ func_wall_toggle::Trigger(entity act, int state)
 	}
 
 	if (m_iVisible) {
-		modelindex = m_oldmodelindex;
+		SetModelindex(m_oldmodelindex);
 		solid = SOLID_BSP;
 	} else {
-		modelindex = 0;
+		SetModelindex(0);
 		solid = SOLID_NOT;
 	}
 }
