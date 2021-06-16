@@ -744,4 +744,13 @@ SV_PerformSave(float fh, float numents)
 		}
 	}
 	fclose(fh);
-};
+}
+
+void
+CheckSpawn(void() spawnfunc)
+{
+	if (spawnfunc)
+		spawnfunc();
+	else
+		remove();
+}
