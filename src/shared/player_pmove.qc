@@ -317,4 +317,8 @@ base_player::Physics_Run(void)
 	}
 
 	Physics_InputPostMove();
+
+	angles[0] = Math_FixDelta(angles[0]);
+	angles[1] = Math_FixDelta(angles[1]);
+	angles[2] = Math_FixDelta(angles[2]);
 }

@@ -752,5 +752,5 @@ CheckSpawn(void() spawnfunc)
 	if (spawnfunc)
 		spawnfunc();
 	else
-		remove();
+		remove(self);
 }
