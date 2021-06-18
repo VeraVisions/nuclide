@@ -272,9 +272,9 @@ CBaseEntity::ReceiveEntity(float flChanged)
 		origin[2] = readcoord();
 	}
 	if (flChanged & BASEFL_CHANGED_ANGLES) {
-		angles[0] = readshort() / (65535/360);
-		angles[1] = readshort() / (65535/360);
-		angles[2] = readshort() / (65535/360);
+		angles[0] = readshort() / (32767 / 360);
+		angles[1] = readshort() / (32767 / 360);
+		angles[2] = readshort() / (32767 / 360);
 	}
 	if (flChanged & BASEFL_CHANGED_MODELINDEX) {
 		setmodelindex(this, readshort());
@@ -473,12 +473,9 @@ CBaseEntity::SendEntity(entity ePEnt, float fChanged)
 		WriteCoord(MSG_ENTITY, origin[2]);
 	}
 	if (fChanged & BASEFL_CHANGED_ANGLES) {
-		angles[0] = Math_FixDelta(angles[0]);
-		angles[1] = Math_FixDelta(angles[1]);
-		angles[2] = Math_FixDelta(angles[2]);
-		WriteShort(MSG_ENTITY, angles[0] * (65535/360));
-		WriteShort(MSG_ENTITY, angles[1] * (65535/360));
-		WriteShort(MSG_ENTITY, angles[2] * (65535/360));
+		WriteShort(MSG_ENTITY, angles[0] * 32767 / 360);
+		WriteShort(MSG_ENTITY, angles[1] * 32767 / 360);
+		WriteShort(MSG_ENTITY, angles[2] * 32767 / 360);
 	}
 	if (fChanged & BASEFL_CHANGED_MODELINDEX) {
 		WriteShort(MSG_ENTITY, modelindex);
@@ -566,6 +563,10 @@ CBaseEntity::ParentUpdate(void)
 		SendFlags |= BASEFL_CHANGED_ORIGIN;
 	}
 	if (net_angles != angles) {
+		angles[0] = Math_FixDelta(angles[0]);
+		angles[1] = Math_FixDelta(angles[1]);
+		angles[2] = Math_FixDelta(angles[2]);
+
 		net_angles = angles;
 		SendFlags |= BASEFL_CHANGED_ANGLES;
 	}

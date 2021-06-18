@@ -27,6 +27,7 @@
 #include "pmove.h"
 #include "memory.h"
 #include "spectator.h"
+#include "platform.h"
 
 #define BSPVER_PREREL 	28
 #define BSPVER_Q1		29
@@ -39,7 +40,7 @@
 
 #define CLASSEXPORT(classname,classa) void classname(void) { spawnfunc_##classa(); }
 
-#define printf(a) print(sprintf(a))
+#define printf(x, ...) print(sprintf(x, ...))
 
 const vector VEC_HULL_MIN = [-16,-16,-36];
 const vector VEC_HULL_MAX = [16,16,36];

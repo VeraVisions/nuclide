@@ -250,8 +250,8 @@ filestream
 games_find_in_gamedir(string filename, string gamedirname)
 {
 	searchhandle sh;
-	filestream fh;
 	searchhandle psh;
+	filestream fh;
 
 	/* first let's see if we've got a liblist.gam just floating inside the gamedir */
 	sh = search_begin(filename, SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
