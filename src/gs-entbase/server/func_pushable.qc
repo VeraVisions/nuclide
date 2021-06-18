@@ -73,7 +73,10 @@ func_pushable::customphysics(void)
 
 	/* run the physics, then fix our helper bbox! */
 	friction = 0.5f;
-	runstandardplayerphysics(this);
+
+	if (vlen(velocity))
+		runstandardplayerphysics(this);
+
 	setorigin(m_eCollBox, absmin + (0.5 * (absmax - absmin)));
 }
 
