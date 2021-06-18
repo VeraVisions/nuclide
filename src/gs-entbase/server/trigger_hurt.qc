@@ -34,6 +34,8 @@ Trivia:
 This entity was introduced in Quake (1996).
 */
 
+.float hurt_next;
+
 #define SF_HURT_ONCE			1 // Turn off once it fired the first time
 #define SF_HURT_OFF				2 // Needs to be triggered in order to work again
 #define SF_HURT_NOPLAYERS		8 // Don't hurt players
@@ -81,15 +83,15 @@ trigger_hurt::Trigger(entity act, int state)
 void
 trigger_hurt::touch(void)
 {
-	if (m_flNextTrigger > time) {
-		return;
-	} else if (other.takedamage == DAMAGE_NO) {
+	if (other.takedamage == DAMAGE_NO) {
 		return;
 	} else if ((spawnflags & SF_HURT_TOUCHPLAYER) && !(other.flags & FL_CLIENT)) {
 		return;
 	} else if ((spawnflags & SF_HURT_NOPLAYERS) && (other.flags & FL_CLIENT)) {
 		return;
-	}
+	} else if (other.hurt_next > time) {
+		return;
+	} else 
 
 	if (!target) {
 		if (other.flags & FL_CLIENT)
@@ -118,15 +120,12 @@ trigger_hurt::touch(void)
 		Trigger(other, TRIG_OFF);
 	}
 
-	m_flNextTrigger = time + m_flNextDmg;
+	other.hurt_next = time + m_flNextDmg;
 }
 
 void
 trigger_hurt::Respawn(void)
 {
-	/* reset */
-	m_flNextTrigger = 0.0f;
-
 	if (spawnflags & SF_HURT_OFF) {
 		Trigger(this, TRIG_OFF);
 	} else {
