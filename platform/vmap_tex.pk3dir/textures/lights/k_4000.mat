@@ -1,0 +1,11 @@
+// Vera Visions Material
+{
+	program unlit
+	diffusemap "textures/lights/k_4000.tga"
+
+	nomipmaps
+	surfaceParm nodraw2
+	vmap_surfaceLight 4000
+	vmap_lightImage "textures/lights/k_4000.tga"
+}
+ 
