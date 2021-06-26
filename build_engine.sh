@@ -1,5 +1,5 @@
 #!/bin/sh
-source ./build.cfg
+. ./build.cfg
 set -e
 
 FTE_MAKEFILE=./src/engine/engine/Makefile

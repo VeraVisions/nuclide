@@ -1,5 +1,5 @@
 #!/bin/sh
-source ./build.cfg
+. ./build.cfg
 
 mv_wsfile()
 {
