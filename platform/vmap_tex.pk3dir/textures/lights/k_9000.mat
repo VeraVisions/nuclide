@@ -5,7 +5,8 @@
 
 	nomipmaps
 	surfaceParm nodraw2
-	vmap_surfaceLight 9000
+	surfaceParm trans
+	vmap_surfaceLight 5000
 	vmap_lightImage "textures/lights/k_9000.tga"
 }
  

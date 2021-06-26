@@ -177,30 +177,39 @@ menu_customize_init(void)
 		}
 	}
 
-	/* only allocate what we truly need */
-	g_sprays = memalloc(sizeof(string) * g_sprayscount);
-	for (int i = 0; i < search_getsize(searchy); i++) {
-		string full = search_getfilename(searchy, i);
-		string filename = substring(full, 0, -5);
-		string extension = substring(full, strlen(full) - 3, 3);
+	if (g_sprayscount) {
+		/* only allocate what we truly need */
+		g_sprays = memalloc(sizeof(string) * g_sprayscount);
+		for (int i = 0; i < search_getsize(searchy); i++) {
+			string full = search_getfilename(searchy, i);
+			string filename = substring(full, 0, -5);
+			string extension = substring(full, strlen(full) - 3, 3);
 
-		if (extension == "bmp" || extension == "png" || extension == "jpg") {
-			g_sprays[sid] = precache_pic(full);
-			sid++;
+			if (extension == "bmp" || extension == "png" || extension == "jpg") {
+				g_sprays[sid] = precache_pic(full);
+				sid++;
+			}
 		}
+		search_end(searchy);
+	} else {
+		games[gameinfo_current].nosprays = 1;
 	}
-	search_end(searchy);
 
 	/* scan and cache the models */
 	searchy = search_begin("models/player/*/*.bmp:models/player/*/*.tga:models/players/*/icon_blue.tga", SEARCH_MULTISEARCH | SEARCH_NAMESORT, TRUE);
 
 	g_modelcount = search_getsize(searchy);
-	g_models = memalloc(sizeof(string) * g_modelcount);
-	for (int i = 0; i < g_modelcount; i++) {
-		g_models[i] = substring(search_getfilename(searchy, i), 0, -5);
-		precache_pic(g_models[i]);
+
+	if (g_modelcount) {
+		g_models = memalloc(sizeof(string) * g_modelcount);
+		for (int i = 0; i < g_modelcount; i++) {
+			g_models[i] = substring(search_getfilename(searchy, i), 0, -5);
+			precache_pic(g_models[i]);
+		}
+		search_end(searchy);
+	} else {
+		games[gameinfo_current].nomodels = 1;
 	}
-	search_end(searchy);
 	
 	fn_customize = spawn(CWidget);
 	cz_btnDone = spawn(CMainButton);
