@@ -26,18 +26,18 @@ else
 fi
 
 if [ "$BUILD_DEBUG" -eq 1 ]; then
-	WS_CFLAGS="-g "
+	WS_CFLAGS="-g"
 fi
 
 # handle search directories and platform specific libraries
 if [[ "$COMPILE_SYS" == "OpenBSD" ]]; then
-	WS_CFLAGS+="-I/usr/local/include -I/usr/local/include/gtkglext-1.0 -I/usr/local/lib/gtkglext-1.0/include -I/usr/local/include/libxml2/"
-	WS_LDFLAGS+="-L/usr/local/lib"
+	WS_CFLAGS="$WS_CFLAGS -I/usr/local/include -I/usr/local/include/gtkglext-1.0 -I/usr/local/lib/gtkglext-1.0/include -I/usr/local/include/libxml2/"
+	WS_LDFLAGS="$WS_LDFLAGS -L/usr/local/lib"
 	WS_CC=cc
 	WS_CXX=c++
 else
-	WS_CFLAGS+=""
-	WS_LDFLAGS+="-ldl"
+	WS_CFLAGS="$WS_CFLAGS"
+	WS_LDFLAGS="$WS_LDFLAGS -ldl"
 	WS_CC=gcc
 	WS_CXX=g++
 fi
