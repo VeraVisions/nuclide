@@ -1,9 +1,8 @@
 #!/bin/sh
+source ./build.cfg
 set -e
 
 FTE_MAKEFILE=./src/engine/engine/Makefile
-BUILD_SDL2=0
-BUILD_DEBUG=1
 COMPILE_SYS=$(uname)
 
 # Check how many cores/processors we should use for building
@@ -28,7 +27,7 @@ fi
 
 if [ "$BUILD_SDL2" -eq 1 ]; then
 	PLATFORM=SDL2
-	OUTPUT=$OUTPUT/fteqw64-sdl2
+	OUTPUT=$OUTPUT/fteqw-glsdl2
 else
 	if [[ "$COMPILE_SYS" == "CYGWIN_NT-10.0" ]] || [[ "$COMPILE_SYS" == "CYGWIN_NT-6.1-WOW64" ]]; then
 		PLATFORM=win64
@@ -71,11 +70,14 @@ else
 	cd ./engine/engine
 fi
 
-if [ "$BUILD_CLEAN" ]; then
+if [ "$BUILD_CLEAN" -eq 1 ]; then
 	gmake clean
 fi
 
-gmake -j $BUILD_PROC makelibs FTE_TARGET=$PLATFORM
+if [ "$BUILD_ENGINE_DEPENDENCIES" -eq 1 ]; then
+	gmake -j $BUILD_PROC makelibs FTE_TARGET=$PLATFORM
+fi
+
 gmake -j $BUILD_PROC $MAKETARGET FTE_TARGET=$PLATFORM
 cp -v "$OUTPUT" ../../../bin/fteqw
 
@@ -83,13 +85,24 @@ gmake -j $BUILD_PROC sv-dbg
 cp -v ./debug/fteqw-sv ../../../bin/fteqw-sv
 gmake -j $BUILD_PROC qcc-rel
 cp -v ./release/fteqcc ../../../bin/fteqcc
-gmake -j $BUILD_PROC iqm-rel
-cp -v ./release/iqm ../../../bin/iqm
-gmake -j $BUILD_PROC imgtool-rel
-cp -v ./release/imgtool ../../../bin/imgtool
-#gmake -j $BUILD_PROC plugins-rel NATIVE_PLUGINS="bullet"
-#find ./release/ -name 'fteplug_bullet_*.so' -exec cp -prv '{}' '../../../bin/' ';'
-gmake -j $BUILD_PROC plugins-rel NATIVE_PLUGINS="ffmpeg"
-find ./release/ -name 'fteplug_ffmpeg_*.so' -exec cp -prv '{}' '../../../bin/' ';'
 
 
+if [ "$BUILD_IQMTOOL" -eq 1 ]; then
+	gmake -j $BUILD_PROC iqm-rel
+	cp -v ./release/iqm ../../../bin/iqm
+fi
+
+if [ "$BUILD_IMGTOOL" -eq 1 ]; then
+	gmake -j $BUILD_PROC imgtool-rel
+	cp -v ./release/imgtool ../../../bin/imgtool
+fi
+
+if [ "$BUILD_BULLET" -eq 1 ]; then
+	gmake -j $BUILD_PROC plugins-rel NATIVE_PLUGINS="bullet"
+	find ./release/ -name 'fteplug_bullet_*.so' -exec cp -prv '{}' '../../../bin/' ';'
+fi
+
+if [ "$BUILD_FFMPEG" -eq 1 ]; then
+	gmake -j $BUILD_PROC plugins-rel NATIVE_PLUGINS="ffmpeg"
+	find ./release/ -name 'fteplug_ffmpeg_*.so' -exec cp -prv '{}' '../../../bin/' ';'
+fi

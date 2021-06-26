@@ -1,4 +1,5 @@
 #!/bin/sh
+source ./build.cfg
 set -e
 SCRPATH="$( cd "$( dirname $(readlink -nf $0) )" && pwd )"
 PATH="$SCRPATH"/bin:"$PATH"
