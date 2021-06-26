@@ -1,5 +1,6 @@
 #includelist
 fog.qc
+font.qc
 sky.qc
 music.qc
 sound.qc

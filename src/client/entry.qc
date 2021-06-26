@@ -113,9 +113,9 @@ void
 CSQC_RendererRestarted(string rstr)
 {
 	/* Fonts */
-	FONT_16 = loadfont("16", "fonts/default", "16", -1);
-	FONT_20 = loadfont("cr", "creditsfont?fmt=h", "20", -1);
-	FONT_CON = loadfont("font", "", "12", -1);
+	FONT_16 = Font_LoadFont("fonts/font16.font");
+	FONT_20 = Font_LoadFont("fonts/font20.font");
+	FONT_CON = Font_LoadFont("fonts/fontcon.font");
 	drawfont = FONT_CON;
 
 	/* Particles */

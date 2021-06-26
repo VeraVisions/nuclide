@@ -106,7 +106,7 @@ m_init(void)
 	cvar_set("v_bobup", "0.5");
 	cvar_set("v_contentblend", "0");
 	cvar_set("gl_mindist", "4");
-	cvar_set("con_textsize", "-12");
+	cvar_set("con_textsize", "12");
 	cvar_set("scr_conalpha", "1");
 	cvar_set("scr_sshot_type", "tga");
 	cvar_set("con_notifylines", "0");
