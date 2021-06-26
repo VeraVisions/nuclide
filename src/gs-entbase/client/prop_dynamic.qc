@@ -83,15 +83,15 @@ prop_dynamic::Init(void)
 	CBaseEntity::Init();
 
 	precache_model(model);
-	print(model);
-	print("\n");
 	setmodel(this, model);
 	setorigin(this, origin);
 	solid = SOLID_NOT;
 	movetype = MOVETYPE_NONE;
 	setsize(this, mins * scale, maxs * scale);
 	drawmask = MASK_ENGINE;
-	MakeStatic();
+
+	if (vlen(avelocity) == 0)
+		MakeStatic();
 }
 
 void

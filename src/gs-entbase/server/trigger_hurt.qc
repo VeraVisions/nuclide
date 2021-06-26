@@ -91,7 +91,7 @@ trigger_hurt::touch(void)
 		return;
 	} else if (other.hurt_next > time) {
 		return;
-	} else 
+	}
 
 	if (!target) {
 		if (other.flags & FL_CLIENT)
