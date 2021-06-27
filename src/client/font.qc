@@ -29,9 +29,10 @@ Font_LoadFont(string filename)
 		return -1;
 	}
 
-	string font;
-	string size;
-	string shortname;
+	string font = "gfx/conchars";
+	string size = "8";
+	string shortname "";
+
 	while ((line = fgets(fs_font))) {
 		int c = tokenize_console(line);
 
