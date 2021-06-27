@@ -61,7 +61,7 @@ Way_Init(void)
 								"4.\tAdd ^1Spawnpoint^7 Waypoints\n" \
 								"\n" \
 								"\n" \
-								"\n" \
+								"7.\tRemove nearest\n" \
 								"\n" \
 								"9.\tBack\n";
 		way_add.m_flPosX = 0;
@@ -89,7 +89,7 @@ Way_Init(void)
 	{
 		titles_t way_remove;
 		way_remove.m_strName = "WAY_REMOVE";
-		way_remove.m_strMessage = "1.\tRemove nearest\n" \
+		way_remove.m_strMessage = "\n" \
 								"\n" \
 								"\n" \
 								"\n" \
@@ -241,6 +241,9 @@ WAY_ADD(int n)
 	case 4:
 		localcmd("sv way addspawns\n");
 		break;
+	case 7:
+		localcmd("sv way delete\n");
+		break;
 	case 9:
 		Textmenu_Call("WAY_MENU");
 		break;
@@ -295,9 +298,6 @@ void
 WAY_REMOVE(int n)
 {
 	switch (n) {
-	case 1:
-		localcmd("sv way delete\n");
-		break;
 	case 7:
 		localcmd("sv way purge\n");
 		Textmenu_Call("WAY_MENU");
