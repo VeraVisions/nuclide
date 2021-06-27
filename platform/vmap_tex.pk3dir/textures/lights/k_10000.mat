@@ -6,6 +6,9 @@
 	nomipmaps
 	surfaceParm nodraw2
 	surfaceParm trans
+	surfaceParm nonsolid
+	surfaceParm nomarks 
+	surfaceParm nolightmap
 	vmap_surfaceLight 5000
 	vmap_lightImage "textures/lights/k_10000.tga"
 }
