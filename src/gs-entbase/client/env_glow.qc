@@ -39,7 +39,21 @@ class env_glow:CBaseEntity
 	void(void) env_glow;
 	virtual float() predraw;
 	virtual void(string, string) SpawnKey;
+	virtual void(void) RendererRestarted;
 };
+
+void
+env_glow::RendererRestarted(void)
+{
+	if (!model && m_strSprite) {
+		precache_pic(m_strSprite);
+		m_vecSize = drawgetimagesize(m_strSprite) / 2;
+	} else {
+		precache_model(model);
+		m_strSprite = spriteframe(model, 0, 0.0f);
+		m_vecSize = drawgetimagesize(m_strSprite) / 2;
+	}
+}
 
 float
 env_glow::predraw(void)
@@ -52,8 +66,12 @@ env_glow::predraw(void)
 	pSeat = &g_seats[s];
 	vecPlayer = pSeat->m_vecPredictedOrigin;
 
+	#warning "FTE broke this completely, in Half-Life BSP, partially in Q3 BSP, consult engine guru"
+	/* FIXME: READ ABOVE WARNING */
+#if 0
 	if (checkpvs(vecPlayer, this) == FALSE)
 		return (PREDRAW_NEXT);
+#endif
 
 	other = world;
 	traceline(this.origin, vecPlayer, MOVE_OTHERONLY, this);
@@ -121,15 +139,12 @@ env_glow::SpawnKey(string strField, string strKey)
 	switch (strField) {
 	case "material":
 	case "shader":
+		model = __NULL__;
 		m_strSprite = strKey;
-		precache_pic(m_strSprite);
-		m_vecSize = drawgetimagesize(m_strSprite) / 2;
 		break;
 	case "sprite":
 	case "model":
-		precache_model(strKey);
-		m_strSprite = sprintf("%s_0.tga", strKey);
-		m_vecSize = drawgetimagesize(m_strSprite) / 2;
+		model = strKey;
 		break;
 	case "scale":
 		m_flScale = stof(strKey);
@@ -160,4 +175,5 @@ env_glow::env_glow(void)
 	setorigin(this, origin);
 	effects &= ~EF_NOSHADOW;
 	Init();
+	RendererRestarted();
 }

@@ -23,6 +23,12 @@ string __fullspawndata;
 string Sentences_GetSamples(string);
 string Sentences_ProcessSample(string);
 
+void
+CBaseEntity::RendererRestarted(void)
+{
+	
+};
+
 #ifdef GS_RENDERFX
 void
 CBaseEntity::RenderFXPass(void)

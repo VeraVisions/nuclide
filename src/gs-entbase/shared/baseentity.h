@@ -37,6 +37,7 @@ class CBaseEntity
 	virtual float(void) predraw;
 	virtual void(void) postdraw;
 	virtual void(void) MakeStatic;
+	virtual void(void) RendererRestarted;
 #endif
 
 #ifdef SERVER

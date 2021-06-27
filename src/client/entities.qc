@@ -78,3 +78,12 @@ Entities_ParseLump(void)
 
 	return (0);
 }
+
+void
+Entities_RendererRestarted(void)
+{
+	for (entity b = world; (b = findfloat(b, ::isCSQC, TRUE));) {
+		CBaseEntity pf = (CBaseEntity) b;
+		pf.RendererRestarted();
+	}
+}

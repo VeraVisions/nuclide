@@ -138,6 +138,7 @@ CSQC_RendererRestarted(string rstr)
 	Decal_Reload();
 	FX_Init();
 	Sky_Update(TRUE);
+	Entities_RendererRestarted();
 }
 
 /* this is so that profile_csqc reports more accurate statistics as to

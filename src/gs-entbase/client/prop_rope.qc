@@ -47,6 +47,7 @@ class prop_rope:CBaseEntity
 	void(void) prop_rope;
 	virtual float() predraw;
 	virtual void(string, string) SpawnKey;
+	virtual void(void) RendererRestarted;
 
 #ifndef ROPE_RIBBON
 	virtual void(vector, vector, int) draw_segment;
@@ -54,7 +55,8 @@ class prop_rope:CBaseEntity
 };
 
 #ifndef ROPE_RIBBON
-void prop_rope::draw_segment(vector start, vector end, int flip)
+void
+prop_rope::draw_segment(vector start, vector end, int flip)
 {
 	vector fsize = [2,2];
 	vector lit1 = /*[0.1,0.1,0.1] */ getlight(start) / 255;
@@ -105,7 +107,8 @@ void prop_rope::draw_segment(vector start, vector end, int flip)
 }
 #endif
 
-float prop_rope::predraw(void)
+float
+prop_rope::predraw(void)
 {
 	vector pos1;
 	vector pos2;
@@ -205,7 +208,8 @@ float prop_rope::predraw(void)
 	return (PREDRAW_NEXT);
 }
 
-void prop_rope::SpawnKey(string strField, string strKey)
+void
+prop_rope::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
 	case "sag":
@@ -216,7 +220,6 @@ void prop_rope::SpawnKey(string strField, string strKey)
 		break;
 	case "shader":
 		m_strShader = strKey;
-		precache_pic(m_strShader);
 		break;
 	case "swingfactor":
 		m_flSwingFactor = stof(strKey);
@@ -226,7 +229,14 @@ void prop_rope::SpawnKey(string strField, string strKey)
 	}
 }
 
-void prop_rope::prop_rope(void)
+void
+prop_rope::RendererRestarted(void)
+{
+	precache_pic(m_strShader);
+}
+
+void
+prop_rope::prop_rope(void)
 {
 	m_flSwingFactor = random();
 	m_flSag = 15.0f;
@@ -234,4 +244,5 @@ void prop_rope::prop_rope(void)
 	m_strShader = "textures/props/wire_default";
 	drawmask = MASK_ENGINE;
 	Init();
+	RendererRestarted();
 }
