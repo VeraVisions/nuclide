@@ -107,6 +107,17 @@ precache_model(string m)
 	return prior(m);
 }
 
+/* fun little hack for us engine bug lovers */
+var int autocvar_ftebug_checkpvs = 1;
+__wrap float
+checkpvs(vector viewpos, entity ent)
+{
+	if (autocvar_ftebug_checkpvs)
+		return 1;
+	else
+		return prior(viewpos, ent);
+}
+
 __wrap void
 setmodel(entity ent, string mname)
 {

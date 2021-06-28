@@ -66,12 +66,8 @@ env_glow::predraw(void)
 	pSeat = &g_seats[s];
 	vecPlayer = pSeat->m_vecPredictedOrigin;
 
-	#warning "FTE broke this completely, in Half-Life BSP, partially in Q3 BSP, consult engine guru"
-	/* FIXME: READ ABOVE WARNING */
-#if 0
 	if (checkpvs(vecPlayer, this) == FALSE)
 		return (PREDRAW_NEXT);
-#endif
 
 	other = world;
 	traceline(this.origin, vecPlayer, MOVE_OTHERONLY, this);
