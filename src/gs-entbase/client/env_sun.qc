@@ -61,7 +61,6 @@ class env_sun:CBaseEntity
 float
 env_sun::predraw(void)
 {
-	addentity(this);
 	return (PREDRAW_NEXT);
 }
 

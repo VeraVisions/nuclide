@@ -145,7 +145,6 @@ CSpraylogo::predraw(void)
 		width = v_up / 64;
 		height = v_forward / 64;
 		adddecal(m_strName, m_vecPosition, width, height, light, 1.0f);
-		addentity(this);
 	}
 	return (PREDRAW_NEXT);
 }

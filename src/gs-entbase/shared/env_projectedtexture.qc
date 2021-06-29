@@ -107,7 +107,6 @@ env_projectedtexture::predraw(void)
 	dynamiclight_set(p, LFIELD_NEARCLIP, m_flNearZ);
 	dynamiclight_set(p, LFIELD_STYLESTRING, m_strPattern);
 
-	addentity(this);
 	return (PREDRAW_NEXT);
 }
 

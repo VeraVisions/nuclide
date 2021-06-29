@@ -47,7 +47,6 @@ float env_laser::predraw(void)
 		R_PolygonVertex(origin, [0,1], [1,1,1], 1.0f);
 	R_EndPolygonRibbon(2, [1,0]);
 
-	addentity(this);
 	return (PREDRAW_NEXT);
 }
 

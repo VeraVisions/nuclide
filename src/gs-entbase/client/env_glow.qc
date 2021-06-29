@@ -124,7 +124,6 @@ env_glow::predraw(void)
 		[1,0], m_vecColor * m_flMaxAlpha, m_flAlpha);
 	R_EndPolygon();
 #endif
-	addentity(this);
 
 	return (PREDRAW_NEXT);
 }

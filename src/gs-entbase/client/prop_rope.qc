@@ -178,7 +178,6 @@ prop_rope::predraw(void)
 
 	/* only drawing one segment. */
 	if (spawnflags & 1) {
-		addentity(this);
 		return (PREDRAW_NEXT);
 	}
 
@@ -209,7 +208,6 @@ prop_rope::predraw(void)
 		sc += (M_PI * (1 / segments));
 	}
 
-	addentity(this);
 	return (PREDRAW_NEXT);
 }
 
