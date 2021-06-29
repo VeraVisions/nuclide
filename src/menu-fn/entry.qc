@@ -108,7 +108,6 @@ m_init(void)
 	cvar_set("gl_mindist", "4");
 	cvar_set("con_textsize", "12");
 	cvar_set("scr_conalpha", "1");
-	cvar_set("scr_sshot_type", "tga");
 	cvar_set("con_notifylines", "0");
 	cvar_set("cfg_save_auto", "1");
 	cvar_set("r_imageextensions", "tga bmp pcx png jpg");
