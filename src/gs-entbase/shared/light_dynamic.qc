@@ -162,33 +162,17 @@ light_dynamic::ReceiveEntity(float flFlags)
 
 	classname = "light_dynamic";
 }
-void
-DLight_Restart(void)
-{
-	for (entity b = world; (b = find(b, ::classname, "light_dynamic"));) {
-		light_dynamic pf = (light_dynamic) b;
-		pf.RendererRestarted();
-		print("RELOADED LIGHT!\n");
-	}
-}
+
 void
 light_dynamic::RendererRestarted(void)
 {
-	float p = dynamiclight_spawnstatic(origin, m_flDistance, m_vecLight);
+	float p = dynamiclight_spawnstatic(origin, m_flDistance, m_vecLight / 255);
 	dynamiclight_set(p, LFIELD_ANGLES, angles);
 	
 	if (m_flStyle)
 		dynamiclight_set(p, LFIELD_STYLE, m_flStyle);
 	if (m_strPattern)
 		dynamiclight_set(p, LFIELD_STYLESTRING, m_strPattern);
-
-	print("I'm a static light! At ");
-	print(vtos(origin));
-	print("at a color of ");
-	print(vtos(m_vecLight));
-	print(" and an intensity of ");
-	print(ftos(m_flDistance));
-	print("!\n");
 }
 void
 light_dynamic::Initialized(void)
@@ -200,9 +184,7 @@ light_dynamic::Initialized(void)
 		return;
 	}
 
-	print("static!\n");
 	RendererRestarted();
-	//remove(this);
 }
 #else
 void
@@ -409,7 +391,5 @@ light_dynamic::light_dynamic(void)
 #endif
 }
 
-class dynamic_light:light_dynamic
-{
-	
-};
+/* compatibility for q3map users, stay safe out there */
+class dynamic_light:light_dynamic { };
