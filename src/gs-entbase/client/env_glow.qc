@@ -168,8 +168,8 @@ env_glow::env_glow(void)
 	m_vecColor = [1,1,1];
 	drawmask = MASK_ENGINE;
 	setsize(this, [0,0,0], [0,0,0]);
-	setorigin(this, origin);
 	effects &= ~EF_NOSHADOW;
 	Init();
 	RendererRestarted();
+	setorigin(this, origin);
 }

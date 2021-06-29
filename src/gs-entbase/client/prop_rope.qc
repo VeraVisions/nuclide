@@ -115,11 +115,16 @@ prop_rope::predraw(void)
 	float travel;
 	float segments;
 	float sc;
+	vector vecPlayer;
 
 	entity x = find(world, ::targetname, target);
 
-	if (checkpvs(getproperty(VF_ORIGIN), this) == FALSE) {
-		if (checkpvs(getproperty(VF_ORIGIN), x) == FALSE) {
+	int s = (float)getproperty(VF_ACTIVESEAT);
+	pSeat = &g_seats[s];
+	vecPlayer = pSeat->m_vecPredictedOrigin;
+
+	if (checkpvs(vecPlayer, this) == FALSE) {
+		if (checkpvs(vecPlayer, x) == FALSE) {
 			return (PREDRAW_NEXT);
 		}
 	}

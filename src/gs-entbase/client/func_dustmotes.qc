@@ -38,10 +38,16 @@ class func_dustmotes:CBaseEntity
 float
 func_dustmotes::predraw(void)
 {
-	if (m_flNexTime > cltime)
+	vector vecPlayer;
+
+	int s = (float)getproperty(VF_ACTIVESEAT);
+	pSeat = &g_seats[s];
+	vecPlayer = pSeat->m_vecPredictedOrigin;
+
+	if (checkpvs(vecPlayer, this) == FALSE)
 		return (PREDRAW_NEXT);
 
-	if (checkpvs(getproperty(VF_ORIGIN), this) == FALSE)
+	if (m_flNexTime > cltime)
 		return (PREDRAW_NEXT);
 
 	for (int i = 0; i < m_iCount; i++) {
