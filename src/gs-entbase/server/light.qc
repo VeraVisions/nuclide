@@ -25,7 +25,7 @@
 "fade"          Sets the fade-distance of a light when LFL_LINEAR is set
 "_anglescale"   Sets the light angle scale of non-linear lights
 "_deviance"     Sets the deviance, jitter effect for each light sample.
-"_samples"      Number of light samples. This also needs to be set > 1 for deviance to work.
+"_samples"      Number of light samples. This also needs to be set > 0.0 for deviance to work.
 "_filter"       Setting to blur the light/shadows resulting from this light.
 "start_active"  Set to either 0 or 1 to tell the light in what mode to start in.
 
