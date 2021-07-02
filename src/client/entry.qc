@@ -683,13 +683,22 @@ CSQC_ConsoleCommand(string sCMD)
 
 	switch (argv(0)) {
 	case "dev_sunpos":
-		vector sunpos;
-		vector sunang;
+		vector sunpos, sunang;
+		vector lepos, leang;
+
 		makevectors(getproperty(VF_ANGLES));
 		sunpos = v_forward * -1;
 		sunang = vectoangles(sunpos);
+
+		makevectors(getproperty(VF_ANGLES));
+		lepos = v_forward * -1;
+		leang = vectoangles(lepos);
+		leang[1] -= 180;
+		leang[0] *= -1;
+
 		localcmd(sprintf("r_shadows_throwdirection %v\n", sunpos));
 		print(sprintf("env_sun: pitch: %d; angle: %d\n", -sunang[0], sunang[1]));
+		print(sprintf("light_environment: sunangle: %d; pitch: %d\n", leang[1], leang[0]));
 		break;
 	case "dev_measure":
 		static vector measurepos;
