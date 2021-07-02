@@ -26,11 +26,13 @@ View_Init(void)
 			pSeat->m_eViewModel.classname = "vm";
 			pSeat->m_eViewModel.renderflags = RF_DEPTHHACK;
 			pSeat->m_eViewModel.effects |= EF_NOSHADOW;
+			setsize(pSeat->m_eViewModel, [0,0,0], [0,0,0]);
 
 			pSeat->m_eMuzzleflash = spawn();
 			pSeat->m_eMuzzleflash.classname = "mflash";
 			pSeat->m_eMuzzleflash.renderflags = RF_ADDITIVE;
 			pSeat->m_eMuzzleflash.effects |= EF_NOSHADOW;
+			setsize(pSeat->m_eMuzzleflash, [0,0,0], [0,0,0]);
 			pSeat->m_pWeaponFX = spawn(CBaseFX);
 		}
 	}
@@ -180,8 +182,8 @@ View_DrawViewModel(void)
 	/* now apply the scale hack */
 	m_eViewModel.scale = autocvar_r_viewmodelscale;
 	pSeat->m_flBob *= autocvar_r_viewmodelscale;
-
 	m_eViewModel.origin = pSeat->m_vecPredictedOrigin + pl.view_ofs;
+
 	m_eViewModel.origin += [0,0,-1] + (v_forward * (pSeat->m_flBob * 0.4))
 			+ (v_forward * autocvar_v_gunofs[0])
 			+ (v_right * autocvar_v_gunofs[1])
@@ -205,8 +207,11 @@ View_DrawViewModel(void)
 		if (m_eMuzzleflash.alpha > 0.0f) {
 			makevectors(getproperty(VF_ANGLES));
 			m_eMuzzleflash.origin = gettaginfo(m_eViewModel, m_eMuzzleflash.skin);
+			m_eMuzzleflash.angles = m_eViewModel.angles;
+			m_eMuzzleflash.angles[2] += (random() * 10) - 5;
+
 			/*dynamiclight_add(pSeat->m_vecPredictedOrigin + (v_forward * 32), 400 * m_eMuzzleflash.alpha, [1,0.45,0]);*/
-			
+
 			setorigin(m_eMuzzleflash, m_eMuzzleflash.origin);
 			addentity(m_eMuzzleflash);
 		}
