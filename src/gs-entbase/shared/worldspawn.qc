@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,6 +14,28 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*QUAKED worldspawn (0 0 0) ?
+"message"                   Full name of the map.
+"author"                    Author of the map.
+"chaptertitle"              Titles entry to display when entering the level.
+"sounds"                    CD track to play.
+"_fog"                      Fog in the playable area. Format:
+                            (density red green blue alpha depthbias)
+"_skyroomfog"               Fog in the skybox area. Format:
+                            (density red green blue alpha depthbias)
+"skyname"                   Which skybox to use. (e.g. textures/skies/sundown)
+"ambientsound"              Sound shader to play in the background (looping) for
+                            when other env_soundscape entities are NOT active.
+"hdr_iris_minvalue"         Minimum HDR brightness adjustment.
+"hdr_iris_maxvalue"         Maximum HDR brightness adjustment.
+"hdr_iris_multiplier"       HDR effect multiplier.
+"hdr_iris_fade_up"          HDR iris fade up speed.
+"hdr_iris_fade_down"        HDR iris fade down speed.
+
+Only used for the world.
+*/
+
+#ifdef CLIENT
 /* High Dynamic Range - Iris Adaption */
 var float g_flHDRIrisMinValue = 0.0;
 var float g_flHDRIrisMaxValue = 2.0;
@@ -88,3 +110,4 @@ void worldspawn::SpawnKey(string strField, string strKey)
 		break;
 	}
 }
+#endif

@@ -15,4 +15,5 @@ shared/func_wall.qc
 shared/trigger_camera.qc
 shared/trigger_gravity.qc
 shared/info_particle_system.qc
+shared/worldspawn.qc
 #endlist
