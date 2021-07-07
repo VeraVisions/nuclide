@@ -10,7 +10,7 @@
 !!permu FOG
 !!permu BUMP
 !!permu DELUXE
-!!samps diffuse=0 normalmap=1 box:samplerCube=2 lightmap deluxemap
+!!samps diffuse normalmap reflectcube lightmap deluxemap
 
 !!permu FAKESHADOWS
 !!cvardf r_glsl_pcf
@@ -163,7 +163,7 @@ varying vec2 lm1, lm2, lm3;
 		cube_c = reflect(normalize(-eyevector), normal_f.rgb);
 		cube_c = cube_c.x * invsurface[0] + cube_c.y * invsurface[1] + cube_c.z * invsurface[2];
 		cube_c = (m_model * vec4(cube_c.xyz, 0.0)).xyz;
-		env_f = textureCube(s_box, cube_c).rgb * (e_lmscale.rgb * 0.25);
+		env_f = textureCube(s_reflectcube, cube_c).rgb * (e_lmscale.rgb * 0.25);
 		out_f.rgb = mix(env_f, diffuse_f.rgb, refl);
 
 		// Add fog to the final fragment
