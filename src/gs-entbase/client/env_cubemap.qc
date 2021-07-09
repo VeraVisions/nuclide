@@ -92,7 +92,7 @@ CMap_Shoot(void)
 					g_vecCubePos[1],
 					g_vecCubePos[2]);
 		localcmd(sprintf(
-			"screenshot_cubemap %s.ktx %i\n",
+			"screenshot_cubemap %s %i\n",
 			strReflectcube,
 			tmp.m_iSize));
 		self.think = CMap_Check;

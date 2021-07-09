@@ -190,6 +190,8 @@ CSQC_UpdateView(float w, float h, float focus)
 		setproperty(VF_ENVMAP, "$whiteimage");
 		setproperty(VF_ORIGIN, g_vecCubePos);
 		setproperty(VF_AFOV, 90);
+		setproperty(VF_CL_VIEWANGLES, [0,0,0]);
+		setproperty(VF_ANGLES, [0,0,0]);
 		SkyCamera_Setup(g_vecCubePos);
 		CSQC_RenderScene();
 		return;
