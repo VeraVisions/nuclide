@@ -44,13 +44,9 @@ void env_particle::customphysics(void)
 {
 	vector vecPlayer;
 
-#ifdef WASTES
-	vecPlayer = viewClient.vecPlayerOrigin;
-#else
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
 	vecPlayer = pSeat->m_vecPredictedOrigin;
-#endif
 	
 	if (checkpvs(vecPlayer, this) == FALSE) {
 		return;
@@ -71,12 +67,6 @@ void env_particle::customphysics(void)
 	}
 	pointparticles(m_flPartID, origin, angles * m_flVelocity, m_iCount);
 	m_flNextTime = time + m_flWait;
-}
-
-void env_particle::env_particle(void)
-{
-	drawmask = MASK_ENGINE;
-	Init();
 }
 
 void env_particle::SpawnKey(string strField, string strKey)
@@ -100,4 +90,12 @@ void env_particle::SpawnKey(string strField, string strKey)
 	default:
 		CBaseEntity::SpawnKey(strField, strKey);
 	}
+}
+
+void env_particle::env_particle(void)
+{
+	drawmask = MASK_ENGINE;
+	Init();
+	setorigin(this, origin);
+	setsize(this, [0,0,0], [0,0,0]);
 }
