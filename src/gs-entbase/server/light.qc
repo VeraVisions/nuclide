@@ -15,30 +15,24 @@
  */
 
 /*QUAKED light (1 0 0) (-8 -8 -8) (8 8 8) LFL_LINEAR LFL_NOANGLE LFL_DARK LFL_NOGRID x LFL_DISTATTN
-"targetname"    Name
-"target"        When set, targets an enity instead, becoming a spotlight
-"light"         Light intensity value. Default is '300'
-"_color"        Normalized RGB color value. Default is [1,1,1]
-"_color255"     RGB255 color value. e.g. '255 255 255' for white
-"_extradist"    The additional distance it should attempt to travel.
-"radius"        Sets the light cone radius for spotlights. Default is '64'
-"fade"          Sets the fade-distance of a light when LFL_LINEAR is set
-"_anglescale"   Sets the light angle scale of non-linear lights
-"_deviance"     Sets the deviance, jitter effect for each light sample.
-"_samples"      Number of light samples. This also needs to be set > 0.0 for deviance to work.
-"_filter"       Setting to blur the light/shadows resulting from this light.
-"start_active"  Set to either 0 or 1 to tell the light in what mode to start in.
-
 Infinitely small point of light illuminating the scene.
 
-If LFL_LINEAR is set, the light will be cast with a linear falloff instead
-of inverse square. This is useful for bright lights that'll travel long
-distances.
-
-idTech 2 BSP relevant keys:
-"light"         Defines the brightness of the light.
-"style"         Light style ID. 0-11 are defined, 12-32 are reserved for switched
-                lights. List of pre-defined styles:
+-------- KEYS --------
+"targetname" : Name
+"target" : When set, targets an enity instead, becoming a spotlight
+"light" : Light intensity value. Default is '300'
+"color" : Normalized RGB color value. Default is [1,1,1]
+"color255" : RGB255 color value. e.g. '255 255 255' for white
+"extradist" : The additional distance it should attempt to travel.
+"radius" : Sets the light cone radius for spotlights. Default is '64'
+"fade" : Sets the fade-distance of a light when LFL_LINEAR is set
+"anglescale" : Sets the light angle scale of non-linear lights
+"deviance" : Sets the deviance, jitter effect for each light sample.
+"samples" : Number of light samples. This also needs to be set > 0.0 for deviance to work.
+"filter" : Setting to blur the light/shadows resulting from this light.
+"start_active" : Set to either 0 or 1 to tell the light in what mode to start in.
+"style" : Light style ID. 0-11 are defined, 12-32 are reserved for switched
+          lights. List of pre-defined styles:
                     0 = Normal
                     1 = Flicker A
                     2 = Slow strong pulse
@@ -51,16 +45,53 @@ idTech 2 BSP relevant keys:
                     9 = Slow strobe
                     10 = Fluorescent flicker
                     11 = Slow pulse, no black
-"pattern"       Custom light style pattern. Needs unique light style ID.
-                Patterns are defined with letters of the alphabet.
-                'a' being dark. 'z' being fully lit. Can be a string of characters
-                that'll interpolate between at 10 FPS ingame.
+"pattern" : Custom light style pattern. Needs unique light style ID.
+            Patterns are defined with letters of the alphabet.
+            'a' being dark. 'z' being fully lit. Can be a string of characters
+            that'll interpolate between at 10 FPS ingame.
+
+-------- NOTES --------
+If LFL_LINEAR is set, the light will be cast with a linear falloff instead
+of inverse square. This is useful for bright lights that'll travel long
+distances.
 
 In idTech 2/GoldSrc etc. spawnflag 1 means a light starts off.
 This doesn't exist in idTech3 because lightstyles were not a thing.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Quake (1996).
+*/
+
+/*QUAKED light_surface (1 0 0) (-8 -8 -8) (8 8 8)
+Material property modifier related to lighting.
+
+-------- KEYS --------
+"targetname" : Name
+"surfacename" : Material to make a light emitting surface.
+"light" : Light intensity value.
+"color" : Normalized RGB color value. E.g. '1.0 1.0 1.0'
+"color255" : RGB255 color value. E.g. '255 255 255'
+"subdivisions" : Defines how many surfacelights are spawned for this surface.
+"bouncescale" : How strong photons will bounce for radiosity operations. Default is 1.0.
+"backsplash_fraction" : When > 0, creates a backsplash light that illuminates our material. Default is 5 (percent).
+"backsplash_distance" : How many units away from the surface the backsplash light will be placed. Default is 23 (units).
+"style" : What lightstyle group the emitted light will belong to.
+
+-------- NOTES --------
+Instead of having hundreds of off-shoot materials for your level, you can use
+this to quickly make sure an existing material is adjusted for your level.
+
+The backsplash_fraction key can be set to 100 (percent) to ensure it's mostly
+illuminated, however since the lights are round you might have some slightly
+darker parts in the corners of a perfectly square surface. Keep this in mind.
+
+If you have round surfaces, especially patches, you should definitely adjust the
+backsplash_distance key to make sure the light is spawning out far enough.
+One giant, half circle patch surface might see issues otherwise. Not tested
+though.
+
+-------- TRIVIA --------
+This entity was introduced in Nuclide (2021).
 */
 
 class light:CBaseTrigger
@@ -173,3 +204,4 @@ light::light(void)
 
 CLASSEXPORT(light_spot, light)
 CLASSEXPORT(light_environment, light)
+CLASSEXPORT(light_surface, light)
