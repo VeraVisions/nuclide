@@ -15,26 +15,28 @@
  */
 
 /*QUAKED func_brush (0 .5 .8) ?
+Combination of func_illusionary, func_wall, func_wall_toggle.
+When triggered, it'll become invisible and lose its collision.
+
+-------- KEYS --------
 "targetname"        Name
 
 "Solidity"          Mode for choosing solidity:
                     0 - Toggle
-                    1 - Not solid
-                    2 - Solid
-"StartDisabled"     Only valid when Solidity is 0. Will make it spawn invisible
-                    and without collision.
+                    1 - Never solid
+                    2 - Always Solid
+"StartDisabled"     Will make it spawn invisible and without collision.
 "solidbsp"          Type of collision model to choose
 "excludednpc"       Name of the NPC classname that will not collide with this
                     entity
 "invert_exclusion"  Set to 1 if you want the 'excludednpc' key to act inverted
 
-Description:
-Combination of func_illusionary, func_wall, func_wall_toggle.
-Triggering it causes to become invisible if the key 'Solidity' is set to 0 as
-well as lose its collision.
+-------- NOTES --------
+The main thing func_brush is concerned with is appearance, if it's toggled on
+it will always become visible, when toggled off it'll always be invisible.
+Collision however depends on the setting of the "Solidity" key.
 
-
-Trivia:
+-------- HISTORY --------
 This entity was introduced in Half-Life 2 (2004).
 */
 
@@ -53,20 +55,37 @@ class func_brush:CBaseTrigger
 void
 func_brush::Trigger(entity act, int state)
 {
-	switch (state) {
-	case TRIG_OFF:
+	/* collision */
+	switch (m_iSolidity) {
+	case 1:
 		SetSolid(SOLID_NOT);
 		break;
-	case TRIG_ON:
+	case 2:
 		SetSolid(SOLID_BSP);
 		break;
 	default:
-		SetSolid(solid == SOLID_BSP ? SOLID_NOT : SOLID_BSP);
+		switch (state) {
+		case TRIG_OFF:
+			SetSolid(SOLID_NOT);
+			break;
+		case TRIG_ON:
+			SetSolid(SOLID_BSP);
+			break;
+		default:
+			SetSolid(modelindex != 0 ? SOLID_NOT : SOLID_BSP);
+		}
 	}
 
-	/* toggle appareance */
-	if (m_iSolidity == 0) {
-		if (solid == SOLID_NOT)
+	/* visual */
+	switch (state) {
+	case TRIG_OFF:
+		SetModelindex(0);
+		break;
+	case TRIG_ON:
+		SetModel(m_oldModel);
+		break;
+	default:
+		if (modelindex != 0)
 			SetModelindex(0);
 		else
 			SetModel(m_oldModel);
@@ -100,20 +119,11 @@ func_brush::Respawn(void)
 	SetModel(m_oldModel);
 	SetOrigin(m_oldOrigin);
 
-	switch (m_iSolidity) {
-	case 1:
-		SetSolid(SOLID_NOT);
-		break;
-	case 2:
-		SetSolid(SOLID_BSP);
-		break;
-	default:
-		if (m_iStartOff) {
-			SetSolid(SOLID_NOT);
-			SetModelindex(0);
-		} else {
-			SetSolid(SOLID_BSP);
-		}
+	/* make sure solid and so on are set */
+	if (m_iStartOff) {
+		Trigger(this, TRIG_OFF);
+	} else {
+		Trigger(this, TRIG_ON);
 	}
 }
 
@@ -121,4 +131,5 @@ void
 func_brush::func_brush(void)
 {
 	CBaseTrigger::CBaseTrigger();
+	Respawn();
 }
