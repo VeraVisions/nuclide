@@ -15,6 +15,9 @@
  */
 
 /*QUAKED cycler (1 0 0) (-8 -8 -8) (8 8 8)
+Animation cycler entity. For development purposes mainly.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
@@ -22,10 +25,11 @@
 "sequence"      Sets the animation the model should start in. 
 "model"         Model file that will be displayed by the entity.
 
+-------- NOTES --------
 Upon damage, the cycler will switch between all available animation
 sequences. This is really for test-maps and showroom entities.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

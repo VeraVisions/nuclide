@@ -15,12 +15,12 @@
  */
 
 /*QUAKED momentary_door (0 .5 .8) ?
+Dynamic door that will move back down if it's not being used.
+
+-------- KEYS --------
 "targetname"    Name
 
-Brush that lets light to pass through it.
-On idTech 2 BSPs, it will change texture variants when triggered.
-
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

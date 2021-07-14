@@ -15,11 +15,12 @@
  */
 
 /*QUAKED func_dustmotes (0 .5 .8) ?
-"count"    Number of dustmote particles that will float around on average.
-
 Dustmote emitting brush volume.
 
-Trivia:
+-------- KEYS --------
+"count"    Number of dustmote particles that will float around on average.
+
+-------- TRIVIA --------
 This entity was introduced in Half-Life 2 (2004).
 */
 

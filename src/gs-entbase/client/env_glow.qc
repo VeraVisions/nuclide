@@ -15,15 +15,16 @@
  */
 
 /*QUAKED env_glow (0 0.5 1) (-8 -8 -8) (8 8 8)
+Client-side glare/glow orb effect like the flares in 1997's Unreal.
+
+-------- KEYS --------
 "shader"        Material to use for the glare/glow effect.
 "model"         Sprite model to use for the glare/glow (idTech 2 BSPs only)
 "scale"         Scale multiplier.
 "rendercolor"   Material color override in RGB8.
 "renderamt"     Material alpha override in A8.
 
-Client-side glare/glow orb effect like the flares in 1997's Unreal.
-
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

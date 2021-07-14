@@ -15,6 +15,9 @@
  */
 
 /*QUAKED gibshooter (1 0 0) (-8 -8 -8) (8 8 8)
+Shoots model bouncy entities from its location.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
@@ -28,9 +31,7 @@
 "m_flGibLife"   Life of the individual model piece.
 "scale"         Scale modifier of the model pieces.
 
-Shoots model entities from its location.
-
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

@@ -20,6 +20,13 @@ It is almost identical to func_detail except that it has no collision.
 Think of it as an alternative to func_illusionary and nonsolid surfaceparms,
 except that it does not use an entity slot or require custom materials.
 
-Trivia:
-This entity was introduced in Half-Life 2 (2004).
+-------- KEYS --------
+"_rs"      Specifies if the geometry will recieve shadows (RAD lighting).
+"_cs"      Specifies if the geometry will cast shadows (RAD lighting).
+
+-------- NOTES --------
+If you want this entity to have collision, consider using func_detail.
+
+-------- TRIVIA --------
+This entity was introduced in Quake II (1997).
 */

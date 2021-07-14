@@ -15,14 +15,17 @@
  */
 
 /*QUAKED point_message (0.2 1 0.2) (-8 -8 -8) (8 8 8)
+Client-side overlay/message that is projected in relation to its position
+in 3D space.
+
+-------- KEYS --------
 "message"       The message to display.
 "radius"        The radius in which it will appear.
 
-Client-side overlay/message that is projected in relation to its position
-in 3D space.
+-------- NOTES --------
 Used for zoo and test maps in which less interactive overlays are desired.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life 2 (2004).
 */
 

@@ -15,15 +15,16 @@
  */
 
 /*QUAKED func_rotating (0 .5 .8) ? FR_STARTON FR_REVERSE FR_ZAXIS FR_XAXIS FR_ACCDCC FR_FANPAIN FR_NOTSOLID FR_SMALLRADIUS FR_MRADIUS FR_LRADIUS FR_TOGGLEDIR
+Rotating brush object. Useful for fans, etc.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
 "speed"         Speed in units per second.
 "dmg"           Damage applied to entity blocking its rotational path.
 
-Rotating brush object. Useful for fans, etc.
-
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

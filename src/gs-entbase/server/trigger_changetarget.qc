@@ -15,14 +15,15 @@
  */
 
 /*QUAKED trigger_changetarget (1 0 0) (-8 -8 -8) (8 8 8)
+When triggered, trigger_changetarget changes the 'target' value of any entity
+to something else.
+
+-------- KEYS --------
 "targetname"        Name
 "target"            Target when triggered
 "m_iszNewTarget"    Name of the new 'target' value for the targeted entity
 
-When triggered, trigger_changetarget changes the 'target' value of any entity
-to something else.
-
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

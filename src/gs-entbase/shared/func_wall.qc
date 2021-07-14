@@ -15,12 +15,15 @@
  */
 
 /*QUAKED func_wall (0 .5 .8) ?
+Brush that lets light to pass through it.
+
+-------- KEYS --------
 "targetname"    Name
 
-Brush that lets light to pass through it.
+-------- NOTES --------
 On idTech 2 BSPs, it will change texture variants when triggered.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Quake (1996).
 */
 

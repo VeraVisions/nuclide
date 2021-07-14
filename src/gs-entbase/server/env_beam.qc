@@ -15,11 +15,12 @@
  */
 
 /*QUAKED env_beam (1 0 0) (-8 -8 -8) (8 8 8)
-"targetname"    Name
-
 This entity is incomplete. Purely stub.
 
-Trivia:
+-------- KEYS --------
+"targetname"    Name
+
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

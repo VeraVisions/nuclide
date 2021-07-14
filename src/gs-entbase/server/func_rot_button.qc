@@ -15,6 +15,9 @@
  */
 
 /*QUAKED func_rot_button (0 .5 .8) ? FNCROTBUT_NONSOLID FNCROTBUT_REVERSE x x x FNCROTBUT_TOGGLE FNCROTBUT_XAXIS FNCROTBUT_YAXIS FNCROTBUT_TOUCHABLE
+A button that rotates. Used for valves, spigots and alike.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Name of the entity to trigger when opened
 "speed"         How fast the button rotates when activated.
@@ -22,10 +25,7 @@
 "wait"          Time to wait before button resets itself. -1 makes it stay set.
 "distance"      Distance in degrees the button will rotate
 
-
-A button that rotates. Used for valves, spigots and alike.
-
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

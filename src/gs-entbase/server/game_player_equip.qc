@@ -15,25 +15,26 @@
  */
 
 /*QUAKED game_player_equip (1 0 0) (-8 -8 -8) (8 8 8) GPEFL_TRIGGERONLY
+Entity that emits items when triggered, or upon player spawn (MP-only).
+
+-------- KEYS --------
 "targetname"    Name
 "master"        Team Master
 
-Entity that emits items when triggered, or upon player spawn (MP-only).
-
+-------- NOTES --------
 When the flag GPEFL_TRIGGERONLY is set, the entity has to be triggered
 in order to 'give' the activator the item. Otherwise it'll automatically
 'give' every client its noted items upon spawning.
 However, this only applies to Multiplayer games. In Singleplayer, the entity
 will only work with GPEFL_TRIGGERONLY being set.
 
-Notes:
 I say 'give' very loosely because the entity spawns the item in physical pickup
 form above the player. As you can imagine, it's kind of wasteful but this is the
 expected behaviour. Some modifications might depend on that...
 
 I still need to implement the Team Master functionality.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

@@ -15,14 +15,16 @@
  */
 
 /*QUAKED multisource (1 0 0) (-8 -8 -8) (8 8 8)
+An AND-gate of sorts. Every entity that targets this must return a positive
+state for it to trigger its target.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
 "delay"         Delay until we trigger our target
 
-STUB!
-
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

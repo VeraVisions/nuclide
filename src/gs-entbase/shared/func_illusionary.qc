@@ -15,12 +15,15 @@
  */
 
 /*QUAKED func_illusionary (0 .5 .8) ?
+Brush that lets light to pass through it and is non-solid.
+
+-------- KEYS --------
 "targetname"    Name
 
-Brush that lets light to pass through it and is non-solid.
+-------- NOTES --------
 On idTech 2 BSPs, it will change texture variants when triggered.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Quake (1996).
 */
 

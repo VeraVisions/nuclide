@@ -15,6 +15,9 @@
  */
 
 /*QUAKED env_message (1 0 0) (-8 -8 -8) (8 8 8) EMF_ONCE EMF_ALLPLAYERS
+Displays a basic message or titles.txt entry.
+
+-------- KEYS --------
 "targetname"            Name
 "target"                Target when triggered.
 "killtarget"            Target to kill when triggered.
@@ -23,10 +26,11 @@
 "messagevolume"         PCM sample volume
 "messageattenuation"    PCM sample attenuation
 
+-------- NOTES --------
 Sends a message to either one or all players, depending on if EMF_ALLPLAYERS
 is set. An optional sound effect can be supplied as well.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

@@ -15,6 +15,9 @@
  */
 
 /*QUAKED env_sprite (1 0 0) (-8 -8 -8) (8 8 8) ENVS_STARTON ENVS_PLAYONCE
+A sprite entity manager with fancy overrides.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
@@ -26,10 +29,10 @@
 "framerate"     Rate between frames in seconds.
 "scale"         Scale modifier of the sprite.
 
-A sprite entity manager with fancy overrides.
+-------- NOTES --------
 Only used with an external sprite format, like SPR, SPRHL and SPR32.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

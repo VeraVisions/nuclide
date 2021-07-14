@@ -15,14 +15,15 @@
  */
 
 /*QUAKED env_explosion (1 0 0) (-8 -8 -8) (8 8 8) ENVEXPLO_NODAMAGE ENVEXPLO_REPEATABLE ENVEXPLO_NOBALL ENVEXPLO_NOSMOKE ENVEXPLO_NODECAL ENVEXPLO_NOSPARKS
+When triggered, creates an explosion at its location.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
 "iMagnitude"    Magnitude of the explosion.
 
-When triggered, creates an explosion at its location.
-
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

@@ -15,6 +15,9 @@
  */
 
 /*QUAKED func_healthcharger (0 .5 .8) ?
+Brush that fills up your health when used, to a maximum of 100 HP.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
@@ -22,9 +25,7 @@
 "snd_charging"  Sound to play when first charging.
 "snd_done"      Sound to play when first finished charging.
 
-Brush that fills up your health when used, to a maximum of 100 HP.
-
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

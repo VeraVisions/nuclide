@@ -15,14 +15,17 @@
  */
 
 /*QUAKED sky_camera (1 0.3 1) (-8 -8 -8) (8 8 8)
+Defines the position of a skyroom camera.
+
+-------- KEYS --------
 "scale"    Scale modifier. Default is '16'.
 
-Defines the position of a skyroom camera.
+-------- NOTES --------
 You want to put this into a dedicated room that contains a 3D skybox.
 The scale modifier is more like a divider. You want to keep these
 divisable by 2 to avoid any precision funkyness.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life 2 (2004).
 */
 

@@ -15,6 +15,9 @@
  */
 
 /*QUAKED env_global (1 0 0) (-8 -8 -8) (8 8 8) GLOBAL_SETSPAWN
+Somewhat persistent storage for variables that carry over level changes.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
@@ -22,11 +25,12 @@
 "initialstate"  Initial mode: 0 = off, 1 = on, 2 = dead
 "triggermode"   Mode when triggered: 0 = off, 1 = on, 2 = dead
 
+-------- NOTES --------
 Sets/kills a global variable that carries across levels.
 Without GLOBAL_SETSPAWN set, it'll only modify existing
 values when triggered.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

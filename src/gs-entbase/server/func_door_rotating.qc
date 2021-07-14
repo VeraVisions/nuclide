@@ -15,6 +15,10 @@
  */
 
 /*QUAKED func_door_rotating (0 .5 .8) ? SF_ROT_OPEN SF_ROT_BACKWARDS x SF_ROT_PASSABLE SF_ROT_ONEWAY SF_ROT_TOGGLE SF_ROT_ZAXIS SF_ROT_XAXIS SF_ROT_USE SF_ROT_NOMONSTERS
+Rotating brush door entity. It's basically the same as func_door, it just does
+not move on any axis, it tilts along a pivot point defined by an origin brush.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
@@ -29,10 +33,7 @@
 "wait"          Time that has to pass for the door to automatically close.
 "netname"       Target to trigger when the door closes back up.
 
-Rotating brush door entity. It's basically the same as func_door, it just does
-not move on any axis, it tilts along a pivot point defined by an origin brush.
-
-Flags:
+-------- SPAWNFLAGS --------
 SF_ROT_OPEN          Door is in the open position by default.
 SF_ROT_BACKWARDS     Flip the direction of a one-way door.
 SF_ROT_PASSABLE      Door has no collision model to speak of.
@@ -43,7 +44,7 @@ SF_ROT_XAXIS         Door will tilt on the X axis.
 SF_ROT_USE           Player has to press the 'use' key to interact with it.
 SF_ROT_NOMONSTERS    Monsters cannot open this door.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Quake II (1997).
 */
 

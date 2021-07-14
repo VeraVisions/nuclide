@@ -15,15 +15,18 @@
  */
 
 /*QUAKED func_pushable (0 .5 .8) ? SF_TRIGGER SF_TOUCH SF_PRESSURE
+This is essentially the same entity as a func_breakable, but
+a player can push and pull it around the level.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
 
-This is essentially the same entity as a func_breakable, but
-a player can push and pull it around the level.
+-------- NOTES --------
 It uses stepping player physics to move around.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

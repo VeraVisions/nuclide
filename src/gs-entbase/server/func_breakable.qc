@@ -15,6 +15,9 @@
  */
 
 /*QUAKED func_breakable (0 .5 .8) ? SF_TRIGGER SF_TOUCH SF_PRESSURE
+Brush volume that can break into lots of little pieces.
+
+-------- KEYS --------
 "targetname"        Name
 "target"            Target when triggered.
 "killtarget"        Target to kill when triggered.
@@ -22,8 +25,7 @@
 "delay"             Delay in seconds of when it breaks under pressure.
 "explodemagnitude"  Strength of the explosion.
 
-Brush volume that can break into lots of little pieces.
-
+-------- NOTES --------
 Material list:
 
 0 = Glass
@@ -50,7 +52,7 @@ breaks.
 The strength of the explosion decides the radius (magnitude * 2.5) and the
 maximum damage the explosion will do (you have to stand in the center for that).
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

@@ -15,6 +15,9 @@
  */
 
 /*QUAKED ambient_generic (1 1 1) (-8 -8 -8) (8 8 8) AS_ARADIUS AS_SRADIUS AS_MRADIUS AS_LRADIUS AS_SILENT AS_NOTTOGGLED
+Plays a sound sample of whatever format the engine is configured to support.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
@@ -22,13 +25,11 @@
 "volume"        Playback volume from 0.0 to 1.0
 "pitch"         Playback pitch from 0.0 to 2.0
 
-Plays a sound sample of whatever format the engine is configured to support.
+-------- NOTES --------
 If you want it to loop, you have to give the file itself a loop flag.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
-
-TODO: Add a forced loop flag for non .wav samples?
 */
 
 enumflags

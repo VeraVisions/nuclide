@@ -15,6 +15,10 @@
  */
 
 /*QUAKED light_dynamic (1 0 0) (-8 -8 -8) (8 8 8)
+Dynamic light entity. Can be parented to things, it even has some inputs that
+may be interesting.
+
+-------- KEYS --------
 "targetname"        Name
 "target"            Name of an entity in the map that light will point at.
 "_light"            Color of the spotlight in RGB255 format.
@@ -27,7 +31,7 @@
 "start_active"      Override for if the entity should start on or off.
 "pattern"           Override the lightstyle pattern with a string.
 
-Inputs:
+-------- INPUTS --------
 "TurnOn"            Turns the light on.
 "TurnOff"           Turns the light off.
 "Toggle"            Toggles the light from an on/off state.
@@ -40,13 +44,11 @@ Inputs:
 "style"             Sets the light appearance in integer form.
 "SetPattern"        Sets the light pattern in string form! a = dark, z = bright
 
-Dynamic light entity. Can be parented to things, it even has some inputs that
-may be interesting.
-
+-------- NOTES --------
 The 'start_active' is a Nuclide specific one. There is no way in Source engine
 games to tell the entity to start inactive as far as I can tell.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life 2 (2004).
 */
 

@@ -15,16 +15,18 @@
  */
 
 /*QUAKED trigger_once (0 .5 .8) ? TO_MONSTERS TO_NOCLIENTS TO_PUSHABLES
+A trigger volume which works only once.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
 "delay"         Delay until target is triggered.
 
-A trigger volume which works only once.
-
+-------- NOTES --------
 None of the spawnflags are implemented yet.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Quake (1996).
 */
 

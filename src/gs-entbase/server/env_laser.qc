@@ -14,14 +14,22 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED env_laser (1 0 0) (-8 -8 -8) (8 8 8)
+/*QUAKED env_laser (1 0 0) (-8 -8 -8) (8 8 8) ENVLAZ_STARTON x x x ENVLAZ_STARTSPARK ENVLAZ_ENDSPARK ENVLAZ_DECALEND
+Shoots a frickin lazer.
+
+-------- KEYS --------
 "targetname"            Name
 "target"                Target when triggered.
 "killtarget"            Target to kill when triggered.
+"texture"               Sprite to use as a texture.
+"EndSprite"             Sprite to draw at the end of the laser beam impact.
+"LaserTarget"           Which entity determines the end position.
+"damage"                Damage-per-second when something passes through.
 
-Shoots a frickin lazer.
+-------- NOTES --------
+Use an info_notnull for a LaserTarget.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

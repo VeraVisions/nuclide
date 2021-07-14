@@ -15,12 +15,13 @@
  */
 
 /*QUAKED env_soundscape (0 1 0.3) (-8 -8 -8) (8 8 8)
+Client-side environmental soundscape modifier.
+
+-------- KEYS --------
 "radius"    Radius in units.
 "shader"    Sound shader to play.
 
-Client-side environmental soundscape modifier.
-
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life 2 (2004).
 */
 

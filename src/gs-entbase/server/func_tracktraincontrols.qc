@@ -15,13 +15,14 @@
  */
 
 /*QUAKED func_tracktraincontrols (0 .5 .8) ?
-"targetname"    Name
-"target"        Name of the func_vehicle to control
-
 Brush that marks the usable region of a func_tracktrain, in order
 to gain control.
 
-Trivia:
+-------- KEYS --------
+"targetname"    Name
+"target"        Name of the func_vehicle to control
+
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

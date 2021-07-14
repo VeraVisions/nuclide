@@ -15,17 +15,19 @@
  */
 
 /*QUAKED trigger_multiple (0 .5 .8) ? TM_MONSTERS TM_NOCLIENTS TM_PUSHABLES
+A trigger volume which works more than once. 
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
 "delay"         Delay until target is triggered.
 "wait"          Time until this entity can trigger again
 
-A trigger volume which works more than once. 
-
+-------- NOTES --------
 None of the spawnflags are implemented yet.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Quake (1996).
 */
 

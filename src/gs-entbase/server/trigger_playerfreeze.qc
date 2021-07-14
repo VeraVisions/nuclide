@@ -15,16 +15,18 @@
  */
 
 /*QUAKED trigger_playerfreeze (1 0 0) (-8 -8 -8) (8 8 8)
-"targetname"    Name
-"killtarget"    Target to kill when triggered.
-
 Trigger that freezes all clients, until it is triggered again.
 Freezing a player means they're unable to move, they can still look around.
 
+-------- KEYS --------
+"targetname"    Name
+"killtarget"    Target to kill when triggered.
+
+-------- NOTES --------
 Ideas: Add ability to supress looking around, firing weapons, using items
 and so on.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Opposing Force (1999).
 */
 

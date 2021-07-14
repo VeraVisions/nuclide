@@ -15,6 +15,9 @@
  */
 
 /*QUAKED path_corner (1 0 0) (-8 -8 -8) (8 8 8) PC_WAIT PC_TELEPORT PC_FIREONCE
+Node entities used for func_trains and func_guntargets.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Next node.
 "message"       Target to trigger when a train passes this node.
@@ -22,8 +25,7 @@
 "yaw_speed"     New yaw rotation for passing train. Currently unused.
 "wait"          Waiting time until we go to the next node.
 
-Node entities used for func_trains and func_guntargets.
-
+-------- NOTES --------
 When the PC_WAIT flag is set, the train will stop moving once it's passed this
 node. The train will have to be triggered again for it to continue moving.
 This is useful for elevators.
@@ -33,7 +35,7 @@ teleport to the position of the next node (target).
 
 With the PC_FIREONCE flag set, it'll only fire its target (message) once.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Quake (1996).
 */
 

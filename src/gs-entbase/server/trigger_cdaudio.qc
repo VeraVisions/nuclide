@@ -15,12 +15,13 @@
  */
 
 /*QUAKED trigger_cdaudio (0 .5 .8) ?
+Switches the background music track when triggered.
+
+-------- KEYS --------
 "targetname"    Name
 "health"        Music track to play.
 
-Switches the background music track when triggered.
-
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

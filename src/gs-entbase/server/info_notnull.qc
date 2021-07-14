@@ -15,17 +15,19 @@
  */
 
 /*QUAKED info_notnull (1 0 0) (-8 -8 -8) (8 8 8)
-"targetname" Name
-
 Helper entity for the game-logic its vast array of entities.
 It is most commonly used to aim active in-game entities towards a specific
 location.
 
+-------- KEYS --------
+"targetname" Name
+
+-------- NOTES --------
 For tasks such as aiming static/lightmapped light sources during the compiling
 process, please use info_null instead as it'll get removed after it has served
 its purpose.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Quake (1996).
 */
 

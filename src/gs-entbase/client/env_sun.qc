@@ -24,7 +24,7 @@ int trace_surfaceflagsi;
 
 STUB!
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life 2 (2004).
 */
 

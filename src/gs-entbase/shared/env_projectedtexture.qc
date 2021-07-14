@@ -15,6 +15,10 @@
  */
 
 /*QUAKED env_projectedtexture (1 0 0) (-8 -8 -8) (8 8 8) PRTEXSF_STARTON
+Textured light projected. This is the type of lighting that's used for
+flashlights, lamp spotlights and so on.
+
+-------- KEYS --------
 "targetname"        Name
 "target"            Name of an entity in the map that light will point at.
 "lightcolor"        Color of the projected texture light + intensity (unused?)
@@ -24,7 +28,7 @@
 "nearz"             Clipping distance for near objects that won't get lit.
 "pattern"           Sets a custom pattern. 'style' overrides this.
 
-Inputs:
+-------- INPUTS --------
 "TurnOff"           Turns the entity off.
 "TurnOn"            Turns the entity on.
 "Toggle"            Toggles the entity to an on/off state.
@@ -35,10 +39,7 @@ Inputs:
 "SetFarZ"           Sets distance to which this projected light will be cast.
 "SetPattern"        Sets the style pattern of the light to a custom one.
 
-Textured light projected. This is the type of lighting that's used for
-flashlights, lamp spotlights and so on.
-
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life 2: Episode One (2006).
 */
 

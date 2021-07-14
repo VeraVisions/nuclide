@@ -15,17 +15,19 @@
  */
 
 /*QUAKED target_cdaudio (1 0 0) (-8 -8 -8) (8 8 8)
+A radius based trigger_cdaudio.
+Disables itself upon activation.
+
+-------- KEYS --------
 "targetname"    Name
 "health"        Music track to play (1-30). -1 to stop.
 "radius"        Radius in which the entity will be triggered in.
 
-A radius based trigger_cdaudio.
-Disables itself upon activation.
-
+-------- NOTES --------
 I honestly don't know what the point is, as trigger_cdaudio should
 act the same in practice.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

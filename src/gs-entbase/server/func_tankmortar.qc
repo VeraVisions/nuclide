@@ -15,6 +15,11 @@
  */
 
 /*QUAKED func_tankmortar (0 .5 .8) ?
+A mountable tank mortar turret type entity. A player (or NPC) can interact with
+it and shoot it. It's in the same family as the func_tank entity, the
+difference being that this shoots mortar blasts and not bullets.
+
+-------- KEYS --------
 "targetname"    Name
 "yawrate"       The speed of the left/right movement of the mortar.
 "yawrange"      Range of left/right movement in degrees.
@@ -34,19 +39,14 @@
 "spritescale"   Scale multiplier for both smoke and flash sprites.
 "rotatesound"   Sound file to play in a loop while barrel is rotating.
 
-Description:
-A mountable tank mortar turret type entity. A player (or NPC) can interact with
-it and shoot it. It's in the same family as the func_tank entity, the
-difference being that this shoots mortar blasts and not bullets.
-
-Notes:
+-------- NOTES --------
 I don't like the sprite stuff tacked on at all because of the extra networking
 involved and because it's so awfully GoldSrc specific.
 Eventually I need to design a more generic routine that allows people to just
 refer to materials with the appropriate blend-modes instead of hardcoding that
 some random sprites needs to be treated additive.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

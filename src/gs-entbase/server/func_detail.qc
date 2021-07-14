@@ -19,6 +19,13 @@ A "fake" entity for level editors.
 All geometry that's turned into a func_detail will be ignored during VIS.
 This will speed up compile time and reduce tesselation, in theory.
 
-Trivia:
+-------- KEYS --------
+"_rs"      Specifies if the geometry will recieve shadows (RAD lighting).
+"_cs"      Specifies if the geometry will cast shadows (RAD lighting).
+
+-------- NOTES --------
+If you don't want this entity to have collision, consider using func_detail_illusionary.
+
+-------- TRIVIA --------
 This entity was introduced in Quake II (1997).
 */

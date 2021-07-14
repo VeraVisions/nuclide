@@ -15,17 +15,22 @@
  */
 
 /*QUAKED button_target (0 .5 .8) ? BUTTA_USE BUTTA_TEXON
-"targetname"    Name
-"target"        Target when triggered.
-"delay"         Time until target is triggered."
-
 Non-moving button that can either be used by hand, or shot.
 
+-------- KEYS --------
+"targetname"    Name
+"target"        Target when triggered.
+"delay"         Time until target is triggered.
+
+-------- NOTES --------
 If BUTTA_USE is set, the button becomes 'use' only and the players
 have to interact with it manually instead of shooting it.
 
 If BUTTA_TEXON is set, the texture choices will be inverted in case
 multiple frames exist.
+
+-------- TRIVIA --------
+This entity was introduced in Quake (1996).
 */
 
 enumflags

@@ -15,12 +15,13 @@
  */
 
 /*QUAKED trigger_transition (0 .5 .8) ?
-"targetname"    Name
-
 Currently unused. This is meant for defining level transition regions.
 All entities touching this volume would carry across to the next level.
 
-Trivia:
+-------- KEYS --------
+"targetname"    Name
+
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

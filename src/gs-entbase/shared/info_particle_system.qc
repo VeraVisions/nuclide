@@ -15,20 +15,21 @@
  */
 
 /*QUAKED info_particle_system (1 0 0) (-8 -8 -8) (8 8 8)
+An entity that's spawns particles from the engine's particle system.
+
+-------- KEYS --------
 "targetname"   Name
 "effect_name"  Name of the particle effect to spawn
 "start_active" Whether or not the entity needs to be triggered first
 "interval"     Override for spawn intervals.
 "spawncount"   Override for the amount of particles that will be emitted
 
-Inputs:
+-------- INPUTS --------
 "Start"        Starts the emitter.
 "Stop"         Stops the emitter.
 "Toggle"       Toggles the emitter from an on/off state.
 
-An entity that's spawns particles from the engine's particle system.
-
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in The Orange Box (2007).
 */
 

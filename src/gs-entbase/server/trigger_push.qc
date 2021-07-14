@@ -15,16 +15,18 @@
  */
 
 /*QUAKED trigger_push (0 .5 .8) ? TP_ONCE TP_STARTOFF
+Pushes anything in its volume into a direction of your choosing.
+
+-------- KEYS --------
 "targetname"    Name
 "speed"         The speed (units per second) it'll apply to touchers.
 "angles"        Sets the direction of the push.
 
-Pushes anything in its volume into a direction of your choosing.
-
+-------- NOTES --------
 If TP_ONCE is set, It'll only emit a single push once before disabling itself.
 If TP_STARTOFF is set, it needs to be triggered first in order to function.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Quake (1996).
 */
 

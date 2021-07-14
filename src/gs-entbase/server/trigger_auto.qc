@@ -15,17 +15,19 @@
  */
 
 /*QUAKED trigger_auto (1 0 0) (-8 -8 -8) (8 8 8) TA_USEONCE
+Will automatically trigger its target when the level has spawned.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
 "delay"         Time in seconds until it triggers its target.
 
-Will automatically start working when the level has spawned.
-
+-------- NOTES --------
 If TA_USEONCE is set, it'll remove itself from the level permanently.
 It will not survive round respawns, etc.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

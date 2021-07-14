@@ -15,6 +15,10 @@
  */
 
 /*QUAKED random_trigger (1 0 0) (-8 -8 -8) (8 8 8)
+When triggered, it'll calculate some random interval until it triggers
+its targets, based on some limits given.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered
 "killtarget"    Target to kill when triggered
@@ -23,10 +27,7 @@
 "random_min"    Minimum added random time
 "random_max"    Maximum added random time
 
-When triggered, it'll calculate some random interval until it triggers
-its targets, based on some limits given.
-
-Trivia:
+-------- TRIVIA --------
 It was introduced in Gunman Chronicles (2000).
 */
 

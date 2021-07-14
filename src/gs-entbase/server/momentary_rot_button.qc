@@ -15,9 +15,13 @@
  */
 
 /*QUAKED momentary_rot_button (0 .5 .8) ? MRBFL_DOORHACK MRBFL_NOTUSE x x MRBFL_AUTORETURN x MRBFL_XAXIS MRBFL_YAXIS
+Dyanmic button/wheel/lever that moves back into its original position when not
+in use. It affects momentary_door.
+
+-------- KEYS --------
 "targetname"    Name
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

@@ -15,6 +15,10 @@
  */
 
 /*QUAKED point_camera (1 0 0) (-8 -8 -8) (8 8 8) PCAMFL_STARTOFF
+A virtual camera of which its output can be displayed on a rendertarget.
+This plays well with the func_monitor entity.
+
+-------- KEYS --------
 "targetname"            Name
 "FOV"                   Field of view in degrees
 "UseScreenAspectRatio"  Forces the aspect ratio to be the same as the game (?)
@@ -23,16 +27,13 @@
 "fogStart"              Near fog plane
 "fogEnd"                Far fog plane
 
-Inputs:
+-------- INPUTS --------
 "ChangeFOV"             Change the camera's field of view
 "SetOnAndTurnOthersOff" Turn this camera on while deactivating all others
 "SetOn"                 Turn this camera on
 "SetOff"                Turn this camera off
 
-A virtual camera of which its output can be displayed on a rendertarget.
-This plays well with the func_monitor entity.
-
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life 2 (2004).
 */
 

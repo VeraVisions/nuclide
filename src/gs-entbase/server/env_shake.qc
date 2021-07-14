@@ -15,6 +15,9 @@
  */
 
 /*QUAKED env_shake (1 0.5 0) (-8 -8 -8) (8 8 8) EVS_GLOBAL
+Causes an earthquake/shaking effect when triggered.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
@@ -23,10 +26,10 @@
 "duration"      Duration of the effect in seconds.
 "frequency"     The frequency of the shake.
 
-Causes an earthquake/shaking effect when triggered.
+-------- NOTES --------
 Affects all clients (radius ignored) when EVS_GLOBAL is set.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

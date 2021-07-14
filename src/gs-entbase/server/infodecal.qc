@@ -15,13 +15,16 @@
  */
 
 /*QUAKED infodecal (1 0 0) (-8 -8 -8) (8 8 8)
-"targetname" Name
-"texture"    Name of the texture inside decals.wad it projects onto a surface.
-
-This entity currently only works on BSP version 30 levels.
 Projects a decals.wad texture onto the nearest surface.
 It'll automatically figure out the surface based on distance.
 The texture will be aligned along the surface texture normals.
+
+-------- KEYS --------
+"targetname" Name
+"texture"    Name of the texture inside decals.wad it projects onto a surface.
+
+-------- NOTES --------
+This entity currently only works on BSP version 30 levels.
 
 If a targetname is supplied, it will have to be triggered by an entity in order
 to appear. Afterwards it cannot be triggered again.
@@ -29,7 +32,7 @@ to appear. Afterwards it cannot be triggered again.
 It will pick the nearest wall (currently checking a distance of 128 units,
 which is probably overkill). No angle has to be supplied.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

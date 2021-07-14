@@ -15,6 +15,10 @@
  */
 
 /*QUAKED func_door (0 .5 .8) ? SF_MOV_OPEN x SF_MOV_UNLINK SF_MOV_PASSABLE x SF_MOV_TOGGLE x x SF_MOV_USE
+This sliding door entity has the ability to slide forth and back on any
+axis. It is often used for primitive elevators as well.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
@@ -30,9 +34,7 @@
 "movesnd"       Legacy integer value pointing to a predefined move sound.
 "stopsnd"       Legacy integer value pointing to a predefined stop sound.
 
-This sliding door entity has the ability to slide forth and back on any
-axis. It is often used for primitive elevators as well.
-
+-------- NOTES --------
 The keys "movesnd" and "stopsnd" are obsolete. Their values point towards
 the samples doors/doormoveX.wav and doors/doorstopX.wav respectively, where
 X is the integer value set in "movesnd" and "stopsnd".
@@ -50,7 +52,7 @@ It will have to be triggered by another map entity.
 When SF_MOV_USE is set, the door can be triggered by a player using the 'use'
 key/button. Not every game may implement such a function.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Quake (1996).
 */
 

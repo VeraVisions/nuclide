@@ -15,16 +15,15 @@
  */
 
 /*QUAKED func_lod (0 .5 .8) ?
-"targetname"    Name
-"DisappearDist"    Distance in units for of when the func_lod will "pop" out of view.
-"Solid" 
-0 = Solid
-1 = Nonsolid
-
 Level of Detail brush entity, disappears at a set distance.
 Useful for when VIS is impossible or not enough.
 
-Trivia:
+-------- KEYS --------
+"targetname"    Name
+"DisappearDist"    Distance in units for of when the func_lod will "pop" out of view.
+"Solid"            0 when solid, 1 when not-solid.
+
+-------- TRIVIA --------
 This entity was introduced in Half-Life 2 (2004).
 */
 

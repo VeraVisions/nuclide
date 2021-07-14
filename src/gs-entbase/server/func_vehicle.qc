@@ -15,6 +15,9 @@
  */
 
 /*QUAKED func_vehicle (0 .5 .8) ?
+Primitive brush-based vehicle entity.
+
+-------- KEYS --------
 "targetname"        Name
 "target"            Name of the first path_track/corner (See Notes)
 "acceleration"      Acceleration multiplier
@@ -35,8 +38,7 @@ Unimplemented:
 "volume"            Volume at which said sounds play at (from 0-10)
 "dmg"               Damage inflicted upon entities when blocked
 
-Primitive brush-based vehicle entity.
-
+-------- NOTES --------
 The vehicle's position is set via the 'target' key, which sets the first
 path_track/corner. The vehicle is then teleported to the 'target' but
 it stays at the same vertical position as originally placed.
@@ -45,7 +47,7 @@ The angle is calculated by aiming the 'target' path_track/corner entity
 to its own 'target' entity. So yes, you need two of these path_track/corner
 entities.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Counter-Strike (2000).
 */
 

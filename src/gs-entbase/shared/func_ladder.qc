@@ -15,11 +15,12 @@
  */
 
 /*QUAKED func_ladder (0 .5 .8) ?
-"targetname"    Name
-
 Ladder volume. Climb up ladders with this one simple brush.
 
-Trivia:
+-------- KEYS --------
+"targetname"    Name
+
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

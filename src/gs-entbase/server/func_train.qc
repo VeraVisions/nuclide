@@ -15,6 +15,11 @@
  */
 
 /*QUAKED func_train (0 .5 .8) ? TRAIN_WAIT x x TRAIN_NOTSOLID
+Moving platform following along path_corner entities, aka nodes.
+Most of its behaviour is controlled by the path_corner entities it passes over.
+See the entity definition for path_corner to find out more.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        First node.
 "killtarget"    Target to kill when triggered.
@@ -22,10 +27,7 @@
 "snd_move"      Path to sound sample which plays when it's moving.
 "snd_stop"      Path to sound sample which plays when it stops moving.
 
-Moving platform following along path_corner entities, aka nodes.
-Most of its behaviour is controlled by the path_corner entities it passes over.
-See the entity definition for path_corner to find out more.
-
+-------- NOTES --------
 Upon level entry, the func_train will spawn right where its first path_corner
 node is. This is so you can light the func_train somewhere else - like a lonely
 box somewhere outside the playable area.
@@ -36,7 +38,7 @@ Marking the func_train with the flag TRAIN_NOTSOLID will make entities not
 collide with the train. This is best used for things in the distance or for
 when lasers are following this train as a sort of guide.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Quake (1996).
 */
 

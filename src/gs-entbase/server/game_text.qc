@@ -15,6 +15,9 @@
  */
 
 /*QUAKED game_text (1 0 0) (-8 -8 -8) (8 8 8) GTF_ALLPLAYERS
+This entity displays a message of your choice on-screen.
+
+-------- KEYS --------
 "targetname"    Name
 "x"             Horizontal position of text. 
                     (0 - 1.0 = left to right, -1 = center)
@@ -34,13 +37,13 @@
                 seconds.
 "channel"       Message channel to use. Meant for overriding messages.
 
-This entity displays a message of your choice on-screen.
+-------- NOTES --------
 Line breaks can be added with a \n character.
 
 If GTF_ALLPLAYERS is set, it'll display the message to not just the activator,
 but all players on the level.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

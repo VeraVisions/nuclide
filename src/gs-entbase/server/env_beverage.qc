@@ -15,16 +15,17 @@
  */
 
 /*QUAKED env_beverage (1 0 0) (-8 -8 -8) (8 8 8)
+Upon triggered, the entity will spawn item_food in its place in
+the shape of a soda can.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
 "health"        Amount of soda-cans that can be dispensed at maximum
 "angles"        Sets the pitch, yaw and roll angles of the soda
 
-Upon triggered, the entity will spawn item_food in its place in
-the shape of a soda can.
-
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

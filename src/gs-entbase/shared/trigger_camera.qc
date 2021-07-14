@@ -15,11 +15,14 @@
  */
 
 /*QUAKED trigger_camera (1 0 0) (-8 -8 -8) (8 8 8)
+Forces a camera change when triggered.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Camera aims at this target.
 "moveto"        First path_corner entity, if present.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

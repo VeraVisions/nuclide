@@ -15,16 +15,19 @@
  */
 
 /*QUAKED info_intermission (1 0 0) (-8 -8 -8) (8 8 8)
+An entity that's used to create an 'Intermission' camera.
+
+-------- KEYS --------
 "targetname" Name
 
-An entity that's used to create an 'Intermission' camera.
+-------- NOTES --------
 Some mods use this while displaying the final scores, once a timelimit
 is hit etc.
 
 When Intermission is active, the players camera will be teleported here
 and angles towards the aim target.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Quake (1996).
 */
 

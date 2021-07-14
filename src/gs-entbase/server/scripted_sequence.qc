@@ -15,6 +15,10 @@
  */
 
 /*QUAKED scripted_sequence (1 0 0) (-8 -8 -8) (8 8 8) x x SSFL_REPEATABLE SSFL_LEAVECORPSE x SSFL_NOINTERRUPT SSFL_OVERRIDEAI SSFL_NOSCRIPTMOVE
+Allow a monster to be selected and given an action to perform.
+This is done in the form of olaying an animation.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
@@ -25,6 +29,7 @@
 "m_flRepeat"    Loop? Unused.
 "m_fMoveTo"     How we move to perform m_iActionAnim
 
+-------- NOTES --------
 f_fMoveTo values:
     0 = Don't move or turn
     1 = Walk to the scripted_sequence
@@ -33,10 +38,7 @@ f_fMoveTo values:
     4 = Warp to the location of the scripted_sequence and perform the animation.
     5 = Turn to the scripted_sequence's angle before performing the animation.
 
-Allow a monster to be selected and given an action to perform.
-This is done in the form of olaying an animation.
-
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

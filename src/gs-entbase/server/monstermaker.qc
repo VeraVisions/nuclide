@@ -15,25 +15,26 @@
  */
 
 /*QUAKED monstermaker (1 0 0) (-8 -8 -8) (8 8 8) MMF_STARTON x MMF_NONTOGGLE MMF_MONSTERCLIP
+The monster maker is the end-all solution to timed/controlled spawning of
+monster entities.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
-
 "monstertype"     Type of monster to spawn, represents their entity classname.
 "monstercount"    Maximum amount of monsters you want spawned in total.
 "delay"           Delay between spawns in seconds.
 "child_name"      Applies this as a 'targetname' to spawned monsters.
 "child_alivemax"  Maximum amount of spawned monsters that are alive at a time.
 
-The monster maker is the end-all solution to timed/controlled spawning of
-monster entities.
-
+-------- NOTES --------
 When MMF_STARTON is checked, it'll start on automatically.
 When MMF_NONTOGGLE is checked, it'll spawn only one monster with each trigger
 When MMF_MONSTERCLIP is checked, all spawned monsters will be blocked by
 func_monsterclip entities.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

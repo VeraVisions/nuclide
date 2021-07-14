@@ -15,18 +15,22 @@
  */
 
 /*QUAKED prop_dynamic (0 0.2 1) (-8 -8 -8) (8 8 8) SF_BASIC_COL
+Client-side decorative model entity.
+
+-------- KEYS --------
 "model"       Model file that will be displayed by the entity.
 "modelscale"  Scale modifier of the model. Default is '1'.
 "angles"      Sets the pitch, yaw and roll angles of the model.
 "_cs"         Toggles if the prop casts a shadow or not.
 
-Client-side decorative model entity.
-
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life 2 (2004).
 */
 
 /*QUAKED prop_static (0 0.2 1) (-8 -8 -8) (8 8 8) SF_BASIC_COL
+Decorative model entity that gets baked into the level file.
+
+-------- KEYS --------
 "model"           Model file that will be displayed by the entity.
 "modelscale"      Scale modifier of the model. Default is '1'.
 "modelscale_vec"  Scale modifier, but in vector format
@@ -36,11 +40,14 @@ This entity was introduced in Half-Life 2 (2004).
 "_sn"             Shading angle related to lightmap phong shading.
 "_remap"          Force the model surfaces to use a specified material.
 
-Decorative model entity that gets baked into the level file.
+-------- NOTES --------
 After compilation, the source model is no longer required and the
-resulting entity is removed.
+resulting entity is removed. This ensures that models are rendered in the
+same batch as the world. This makes sense for one giant unique model in
+the map, but for multiple repetitive uses of the same model you'll actually
+waste disk space and memory. Use wisely.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life 2 (2004).
 */
 

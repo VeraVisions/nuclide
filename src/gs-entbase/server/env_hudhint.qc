@@ -14,7 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED env_hudhint (0 0 0) (-8 -8 -8) (8 8 8) EVF_FADEDROM EVF_MODULATE EVF_ONLYUSER
+/*QUAKED env_hudhint (0 0 0) (-8 -8 -8) (8 8 8) EHH_ALLPLAYERS
+Will display a hint message to the client who activates it.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
@@ -23,10 +26,11 @@
 "duration"      Duration of the effect in seconds.
 "holdtime"      How long we'll hold on the max color/alpha.
 
-When triggered, creates a colored overlay that blinds all players, or just
-the one who triggered it if EVF_ONLYUSER is set.
+-------- NOTES --------
+With EHH_ALLPLAYERS set, it will force to send the hint notifcation to
+all active clients.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life 2 (2004).
 */
 

@@ -15,13 +15,14 @@
  */
 
 /*QUAKED func_conveyor (0 .5 .8) ?
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
 
 STUB!
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

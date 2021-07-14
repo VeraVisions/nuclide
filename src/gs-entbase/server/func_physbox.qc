@@ -15,11 +15,12 @@
  */
 
 /*QUAKED func_physbox (0 .5 .8) ?
+Physics brush.
+
+-------- KEYS --------
 "targetname"    Name
 
-Physics brush
-
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life 2 (2004).
 */
 

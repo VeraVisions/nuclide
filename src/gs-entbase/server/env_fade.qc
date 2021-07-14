@@ -15,6 +15,9 @@
  */
 
 /*QUAKED env_fade (0 0 0) (-8 -8 -8) (8 8 8) EVF_FADEDROM EVF_MODULATE EVF_ONLYUSER
+Overlay that blinds/obscures players vision when triggered.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
@@ -23,10 +26,11 @@
 "duration"      Duration of the effect in seconds.
 "holdtime"      How long we'll hold on the max color/alpha.
 
-When triggered, creates a colored overlay that blinds all players, or just
-the one who triggered it if EVF_ONLYUSER is set.
+-------- NOTES --------
+When triggered, it blinds all players, or just the one who triggered it if
+EVF_ONLYUSER is set.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

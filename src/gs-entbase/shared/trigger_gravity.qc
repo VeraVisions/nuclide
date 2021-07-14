@@ -15,12 +15,13 @@
  */
 
 /*QUAKED trigger_gravity (0 .5 .8) ?
+Volume that permanently adds a multiplier that affects an entities' gravity.
+
+-------- KEYS --------
 "targetname"    Name
 "gravity"       Gravity multiplier.
 
-Volume that permanently adds a multiplier that affects an entities' gravity.
-
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Quake II (1997).
 */
 

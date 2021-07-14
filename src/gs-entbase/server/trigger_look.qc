@@ -15,6 +15,14 @@
  */
 
 /*QUAKED trigger_look (0 .5 .8) ?
+Triggers itself when a player is inside its volume and is looking at a
+specific entity within a specified field-of-view cone.
+It then disables itself.
+
+It's like the beginning in Halo - you know, where you have to look up/down
+at lights and stuff? No...? Well... ever played Splinter Cell?... Nevermind.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered.
 "delay"         Delay until target is triggered.
@@ -24,14 +32,7 @@
 "fov"           Area of the view-cone check, 1.0 is straight ahead, 0.0 is
                 in the realm of 90 degrees. Default is 0.9.
 
-Triggers itself when a player is inside its volume and is looking at a
-specific entity within a specified field-of-view cone.
-It then disables itself.
-
-It's like the beginning in Halo - you know, where you have to look up/down
-at lights and stuff? No...? Well... ever played Splinter Cell?... Nevermind.
-
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life 2 (2004).
 */
 

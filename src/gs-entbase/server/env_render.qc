@@ -15,6 +15,9 @@
  */
 
 /*QUAKED env_render (1 0 0) (-8 -8 -8) (8 8 8) SF_NORENDERFX SF_NORENDERAMT SF_NORENDERMODE SF_NORENDERCOLOR
+Changes the visual appearance of a target.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
@@ -22,9 +25,7 @@
 "renderamt"     Render-Alpha the target changes to.
 "rendercolor"   Render-Color the target changes to.
 
-Changes the visual appearance of a target.
-
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

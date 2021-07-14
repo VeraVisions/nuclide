@@ -14,16 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED env_cubemap (0 0 1) (-8 -8 -8) (8 8 8)
-"scale"    Texture dimension at which to render the cubemap. Default is '32'.
-
-Specifies a location for which a cubemap will be generated when the 
-buildcubemaps console command is executed.
-
-Trivia:
-This entity was introduced in Half-Life 2 (2004).
-*/
-
 class
 infodecal:CBaseEntity
 {

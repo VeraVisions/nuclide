@@ -15,12 +15,13 @@
  */
 
 /*QUAKED trigger_autosave (0 .5 .8) ?
-"targetname"    Name
-
 Volume that'll save the current game when a client enters its bounds.
 This entity does not work in multiplayer.
 
-Trivia:
+-------- KEYS --------
+"targetname"    Name
+
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

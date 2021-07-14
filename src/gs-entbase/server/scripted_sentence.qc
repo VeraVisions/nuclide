@@ -15,6 +15,10 @@
  */
 
 /*QUAKED scripted_sentence (1 0 0) (-8 -8 -8) (8 8 8)
+Triggers a sound event on the client side associated with an entity in the
+world. It'll enable mouth flapping and all sorts of other cool effects.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
@@ -24,10 +28,7 @@
 "delay"         Delay before it'll be triggered? UNUSED RIGHT NOW.
 "wait"          Delay before it can be triggered again? UNUSED RIGHT NOW.
 
-Triggers a sound event on the client side associated with an entity in the
-world. It'll enable mouth flapping and all sorts of other cool effects.
-
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

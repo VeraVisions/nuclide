@@ -15,13 +15,15 @@
  */
 
 /*QUAKED func_wall_toggle (0 .5 .8) ? FTW_STARTHIDDEN
-"targetname"    Name
-
 Brush that can be hidden and reappear when triggered.
 
+-------- KEYS --------
+"targetname"    Name
+
+An alternative is func_brush, which also can control aspects such as collision.
 If FTW_STARTHIDDEN is set, it'll start hidden.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

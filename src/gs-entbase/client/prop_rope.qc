@@ -15,19 +15,21 @@
  */
 
 /*QUAKED prop_rope (1 1 0.5) (-8 -8 -8) (8 8 8) ROPE_HALF
+Client-side decorative rope entity. 
+Connect the entity to a named info_notnull and watch it swing around.
+
+-------- KEYS --------
 "sag"         Multiplier on how much sagginess will be applied to the rope.
 "segments"    Number of total segments. Default is 16.
 "material"    The texture to use on the rope.
 "swingfactor" Multiplier on how much the rope swings about.
 "target"      The info_notnull to connect the rope to.
 
-Client-side decorative entity. Connect the entity to a named info_notnull
-and watch it swing around.
-
+-------- NOTES --------
 Set spawnflag to 1 (ROPE_HALF) to cut it off half-way. Useful for vertically
 swinging ropes.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in The Wastes (2018).
 */
 

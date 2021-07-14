@@ -15,11 +15,12 @@
  */
 
 /*QUAKED player_weaponstrip (1 0 0) (-8 -8 -8) (8 8 8)
-"targetname"    Name
-
 Strips the activator of all of its weapons.
 
-Trivia:
+-------- KEYS --------
+"targetname"    Name
+
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

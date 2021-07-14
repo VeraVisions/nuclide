@@ -18,7 +18,7 @@
 
 STUB!
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

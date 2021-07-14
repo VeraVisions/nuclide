@@ -15,13 +15,15 @@
  */
 
 /*QUAKED path_track (1 0 0) (-8 -8 -8) (8 8 8)
+Node entities used for func_tracktrains.
+It's like a path_corner, but for tracktrains.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
 
-STUB!
-
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

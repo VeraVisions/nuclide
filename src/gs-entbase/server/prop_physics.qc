@@ -14,12 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED prop_physics (0 0 0.8) (-16 -16 -16) (16 16 16) 
-"targetname"    Name
-
+/*QUAKED prop_physics (0 0 0.8) (-16 -16 -16) (16 16 16)
 Physics model
 
-Trivia:
+-------- KEYS --------
+"targetname"    Name
+
+-------- TRIVIA --------
 This entity was introduced in Half-Life 2 (2004).
 */
 

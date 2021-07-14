@@ -15,13 +15,14 @@
  */
 
 /*QUAKED func_friction (0 .5 .8) ?
-"targetname"    Name
-"modifier"      Friction modifier.
-
 Volume that permanently adds a modifier that affects an entities' friction.
 Higher value = less friction.
 
-Trivia:
+-------- KEYS --------
+"targetname"    Name
+"modifier"      Friction modifier.
+
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

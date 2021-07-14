@@ -15,15 +15,16 @@
  */
 
 /*QUAKED func_guntarget (0 .5 .8) ?
+Gun targets brushes that trigger a target once they 'die'.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
 "health"        Health until it stops and triggers its targets.
 "speed"         Speed in units per second at which it moves.
 
-Gun targets brushes that trigger a target once they 'die'.
-
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

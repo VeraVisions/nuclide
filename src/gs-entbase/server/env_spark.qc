@@ -15,15 +15,16 @@
  */
 
 /*QUAKED env_spark (1 0 0) (-8 -8 -8) (8 8 8) x x x x x EVSPARK_TOGGLE EVSPARK_STARTON
+Creates a series (or just one) spark effect with sound when triggered.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
 "angles"        Sets the pitch, yaw and roll angles of the spark.
 "MaxDelay"      Delay between sparks when start-on (or toggle) is set
 
-Creates a series (or just one) spark effect with sound when triggered.
-
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

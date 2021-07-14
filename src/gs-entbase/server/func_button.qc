@@ -15,6 +15,13 @@
  */
 
 /*QUAKED func_button (0 .5 .8) ? SF_BTT_NOMOVE x x x x SF_BTT_TOGGLE SF_BTT_SPARKS x SF_BTT_TOUCH_ONLY
+A brush entity which can be used either by touching, interaction (via a games'
+use-key/button or other targetting methods.
+It will then travel, similar to a door to a specified direction.
+Once it's fully pushed in, it'll trigger its targets, then return back to its
+original position.
+
+-------- KEYS --------
 "targetname"    Name
 "target"        Target when triggered.
 "killtarget"    Target to kill when triggered.
@@ -28,19 +35,14 @@
                 which sounds to play.
 "health"        Amount of damage this button takes before it triggers.
 
-Outputs:
+-------- OUTPUTS --------
 "OnDamaged"     Fired when the button is damaged.
 "OnPressed"     Fired when the button is pressed.
 "OnUseLocked"   Fired when the button is used while locked.
 "OnIn"          Fired when the button reaches the in/pressed position.
 "OnOut"         Fired when the button reaches the out/released position.
-                
-A brush entity which can be used either by touching, interaction (via a games'
-use-key/button or other targetting methods.
-It will then travel, similar to a door to a specified direction.
-Once it's fully pushed in, it'll trigger its targets, then return back to its
-original position.
 
+-------- NOTES --------
 When SF_BTT_NOMOVE is set, the only visual indicator you'll get is a possible
 change of texture of your button. The button will not move.
 
@@ -53,7 +55,7 @@ When SF_BTT_SPARKS is set, the button will create a bunch of sparks when used.
 When SF_BTT_TOUCH_ONLY is set, the use key/button cannot be used to interact
 with the button, it has to collide against a player.
 
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Quake (1996).
 */
 

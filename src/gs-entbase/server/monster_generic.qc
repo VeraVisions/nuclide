@@ -15,13 +15,14 @@
  */
 
 /*QUAKED monster_generic (1 0 0) (-8 -8 -8) (8 8 8) x x MGF_NONSOLID
+Decorative, does nothing yet.
+
+-------- KEYS --------
 "targetname"    Name
 "angles"        Sets the pitch, yaw and roll angles of the model.
 "model"         Model file that will be displayed by the entity.
 
-Decorative, does nothing yet.
-
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

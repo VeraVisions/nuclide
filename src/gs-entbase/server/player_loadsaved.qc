@@ -15,6 +15,10 @@
  */
 
 /*QUAKED player_loadsaved (1 0 0) (-8 -8 -8) (8 8 8)
+This trigger reloads the last autosaved game with a custom message.
+This is commonly used when a mission objective has failed.
+
+-------- KEYS --------
 "targetname"    Name
 "message"       Message to display
 "messagetime"   Message lifetime (not implemented)
@@ -24,10 +28,7 @@
 "rendercolor"   Fade effect color vector (RGB255)
 "renderamt"     Fade effect alpha value
 
-This trigger reloads the last autosaved game with a custom message.
-This is commonly used when a mission objective has failed.
-
-Trivia:
+-------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
 

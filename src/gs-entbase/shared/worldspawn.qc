@@ -15,6 +15,9 @@
  */
 
 /*QUAKED worldspawn (0 0 0) ?
+Only used for the world.
+
+-------- KEYS --------
 "message"                   Full name of the map.
 "author"                    Author of the map.
 "chaptertitle"              Titles entry to display when entering the level.
@@ -32,7 +35,8 @@
 "hdr_iris_fade_up"          HDR iris fade up speed.
 "hdr_iris_fade_down"        HDR iris fade down speed.
 
-Only used for the world.
+-------- TRIVIA --------
+This entity was introduced in Quake (1996).
 */
 
 #ifdef CLIENT
