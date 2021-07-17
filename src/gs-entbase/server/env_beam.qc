@@ -18,7 +18,7 @@
 This entity is incomplete. Purely stub.
 
 -------- KEYS --------
-"targetname"    Name
+"targetname" : Name
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).

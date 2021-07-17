@@ -18,9 +18,9 @@
 Decorative, does nothing yet.
 
 -------- KEYS --------
-"targetname"    Name
-"angles"        Sets the pitch, yaw and roll angles of the model.
-"model"         Model file that will be displayed by the entity.
+"targetname" : Name
+"angles" : Sets the pitch, yaw and roll angles of the model.
+"model" : Model file that will be displayed by the entity.
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).

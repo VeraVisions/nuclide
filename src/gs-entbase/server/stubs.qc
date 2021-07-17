@@ -18,7 +18,7 @@
 Player spawn position for single-player games.
 
 -------- KEYS --------
-"targetname"    Name
+"targetname" : Name
 
 -------- NOTES --------
 This entity is also used in Counter-Strike (2000) and its beta versions to mark
@@ -38,7 +38,7 @@ This entity was introduced in Quake (1996).
 Player spawn position for deathmatch games.
 
 -------- KEYS --------
-"targetname"    Name
+"targetname" : Name
 
 -------- NOTES --------
 This entity is also used in Counter-Strike (2000) and its beta versions to mark
@@ -59,7 +59,7 @@ This entity was introduced in Quake (1996).
 Player spawn position for cooperative games.
 
 -------- KEYS --------
-"targetname"    Name
+"targetname" : Name
 
 -------- NOTES --------
 In order for a player to spawn here, the game needs to take place on a map

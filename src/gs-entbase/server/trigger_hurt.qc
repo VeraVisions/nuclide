@@ -18,19 +18,18 @@
 Trigger volume that damages everything it touches.
 
 -------- KEYS --------
-"targetname"    Name
-"target"        Target when triggered.
-"delay"         Delay until target is triggered.
-"killtarget"    Target to kill when triggered.
-"dmg"           Damage inflicted.
+"targetname" : Name
+"target" : Target when triggered.
+"delay" : Delay until target is triggered.
+"killtarget" : Target to kill when triggered.
+"dmg" : Damage inflicted.
 
--------- NOTES --------
-If SF_HURT_ONCE is set, it'll stop once it's been triggered the first time.
-If SF_HURT_OFF is set, it needs to be triggered in order to work again.
-If SF_HURT_NOPLAYERS is set, it will only NPCs.
-If SF_HURT_TOUCHPLAYER is set, it'll only hurt players.
-If SF_HURT_FIREONPLAYER is set, it'll only trigger a target if a player
-activates it.
+-------- SPAWNFLAGS --------
+SF_HURT_ONCE : Stop once it's been triggered the first time.
+SF_HURT_OFF : Needs to be triggered in order to work again.
+SF_HURT_NOPLAYERS : Will only hurt NPCs.
+SF_HURT_TOUCHPLAYER : Will only hurt players.
+SF_HURT_FIREONPLAYER : Only trigger a target if a player activates it.
 
 -------- TRIVIA --------
 This entity was introduced in Quake (1996).

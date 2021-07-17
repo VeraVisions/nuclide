@@ -19,9 +19,9 @@ When triggered, trigger_changetarget changes the 'target' value of any entity
 to something else.
 
 -------- KEYS --------
-"targetname"        Name
-"target"            Target when triggered
-"m_iszNewTarget"    Name of the new 'target' value for the targeted entity
+"targetname" : Name
+"target" : Target when triggered
+"m_iszNewTarget" : Name of the new 'target' value for the targeted entity
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).

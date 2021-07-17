@@ -19,9 +19,9 @@ Node entities used for func_tracktrains.
 It's like a path_corner, but for tracktrains.
 
 -------- KEYS --------
-"targetname"    Name
-"target"        Target when triggered.
-"killtarget"    Target to kill when triggered.
+"targetname" : Name
+"target" : Target when triggered.
+"killtarget" : Target to kill when triggered.
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).

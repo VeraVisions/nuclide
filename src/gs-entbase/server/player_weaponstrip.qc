@@ -18,7 +18,7 @@
 Strips the activator of all of its weapons.
 
 -------- KEYS --------
-"targetname"    Name
+"targetname" : Name
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).

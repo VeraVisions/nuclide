@@ -19,7 +19,17 @@ Dyanmic button/wheel/lever that moves back into its original position when not
 in use. It affects momentary_door.
 
 -------- KEYS --------
-"targetname"    Name
+"targetname" : Name
+"distance" : Maximum distance it'll turn until it stops.
+"speed" : Speed at which it rotates/turns.
+"returnspeed" : Speed at which it returns to its original position.
+
+-------- SPAWNFLAGS --------
+MRBFL_DOORHACK : Unimplemented.
+MRBFL_NOTUSE : Don't allow interaction via "use" key/button.
+MRBFL_AUTORETURN : Rotate back to its original state when not being used.
+MRBFL_XAXIS : Rotate along the X-axis.
+MRBFL_YAXIS : Rotate along the Y-axis.
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).

@@ -18,9 +18,9 @@
 It's a simple elevator. It goes down... and back up.
 
 -------- KEYS --------
-"targetname"    Name
-"speed"         Speed of the lift in units per second
-"height"        Number of units the lift is supposed to move down
+"targetname" : Name
+"speed" : Speed of the lift in units per second
+"height" : Number of units the lift is supposed to move down
 
 -------- TRIVIA --------
 This entity was introduced in Quake (1996).

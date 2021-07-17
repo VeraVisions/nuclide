@@ -19,10 +19,10 @@ Creates a public announcement system that randomly plays announcements from
 the sentences.txt file.
 
 -------- KEYS --------
-"targetname"    Name
-"preset"        Preset sentence group.
-"message"       Sentence group name (used when preset is 0)
-"health"        Message volume (value from 0-10)
+"targetname" : Name
+"preset" : Preset sentence group.
+"message" : Sentence group name (used when preset is 0)
+"health" : Message volume (value from 0-10)
 
 -------- NOTES --------
 Valid values for 'preset":

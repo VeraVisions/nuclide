@@ -20,17 +20,14 @@ entities across your two levels with the same name. They'll mark a translation
 point for the coordinates in your levels.
 
 -------- KEYS --------
-"targetname"    Name
-"map"           Next .bsp file name to transition to.
-"landmark"      Landmark name to target.
-"changedelay"   Time in seconds until the transition happens.
+"targetname" : Name
+"map" : Next .bsp file name to transition to.
+"landmark" : Landmark name to target.
+"changedelay" : Time in seconds until the transition happens.
 
--------- NOTES --------
-When LC_NOINTERMISSION is set, there'll be no stats screen at the end of the
-level.
-
-When LC_USEONLY is set, it will not act as a trigger volume people can step in.
-It'll have to be triggered by another entity.
+-------- SPAWNFLAGS --------
+LC_NOINTERMISSION : Don't show intermission cam (unimplemented).
+LC_USEONLY : Can't activate through touching, only via triggers.
 
 -------- TRIVIA --------
 This entity was introduced in Quake (1996).

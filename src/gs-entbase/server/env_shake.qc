@@ -18,16 +18,16 @@
 Causes an earthquake/shaking effect when triggered.
 
 -------- KEYS --------
-"targetname"    Name
-"target"        Target when triggered.
-"killtarget"    Target to kill when triggered.
-"radius"        Radius of the quake/shake effect.
-"amplitude"     Amplitude of the effect.
-"duration"      Duration of the effect in seconds.
-"frequency"     The frequency of the shake.
+"targetname" : Name
+"target" : Target when triggered.
+"killtarget" : Target to kill when triggered.
+"radius" : Radius of the quake/shake effect.
+"amplitude" : Amplitude of the effect.
+"duration" : Duration of the effect in seconds.
+"frequency" : The frequency of the shake.
 
--------- NOTES --------
-Affects all clients (radius ignored) when EVS_GLOBAL is set.
+-------- SPAWNFLAGS --------
+EVS_GLOBAL : Affect all clients, ignoring "radius" entirely.
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).

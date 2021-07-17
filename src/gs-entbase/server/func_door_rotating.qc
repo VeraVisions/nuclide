@@ -19,30 +19,33 @@ Rotating brush door entity. It's basically the same as func_door, it just does
 not move on any axis, it tilts along a pivot point defined by an origin brush.
 
 -------- KEYS --------
-"targetname"    Name
-"target"        Target when triggered.
-"killtarget"    Target to kill when triggered.
-"speed"         Speed at which the door turns.
-"snd_open"      Sound shader to play for when the door opens.
-"snd_close"     Sound shader to play for when the door closes.
-"snd_stop"      Sound shader to play for when the door stops rotating.
-"movesnd"       Legacy integer value pointing to a predefined move sound.
-"stopsnd"       Legacy integer value pointing to a predefined stop sound.
-"distance"      The degrees which the door will turn.
-"dmg"           The damage inflicted upon objects blocking the way of the door.
-"wait"          Time that has to pass for the door to automatically close.
-"netname"       Target to trigger when the door closes back up.
+"targetname" : Name
+"target" : Target when triggered.
+"killtarget" : Target to kill when triggered.
+"speed" : Speed at which the door turns.
+"snd_open" : Sound shader to play for when the door opens.
+"snd_close" : Sound shader to play for when the door closes.
+"snd_stop" : Sound shader to play for when the door stops rotating.
+"movesnd" : Legacy integer value pointing to a predefined move sound.
+"stopsnd" : Legacy integer value pointing to a predefined stop sound.
+"distance" : The degrees which the door will turn.
+"dmg" : The damage inflicted upon objects blocking the way of the door.
+"wait" : Time that has to pass for the door to automatically close.
+"netname" : Target to trigger when the door closes back up.
 
 -------- SPAWNFLAGS --------
-SF_ROT_OPEN          Door is in the open position by default.
-SF_ROT_BACKWARDS     Flip the direction of a one-way door.
-SF_ROT_PASSABLE      Door has no collision model to speak of.
-SF_ROT_ONEWAY        Door will only open one-way as opposed to both ways.
-SF_ROT_TOGGLE        Door will have to be triggered by something to open/close.
-SF_ROT_ZAXIS         Door will tilt along the Z axis.
-SF_ROT_XAXIS         Door will tilt on the X axis.
-SF_ROT_USE           Player has to press the 'use' key to interact with it.
-SF_ROT_NOMONSTERS    Monsters cannot open this door.
+SF_ROT_OPEN : Door is in the open position by default.
+SF_ROT_BACKWARDS : Flip the direction of a one-way door.
+SF_ROT_PASSABLE : Door has no collision model to speak of.
+SF_ROT_ONEWAY : Door will only open one-way as opposed to both ways.
+SF_ROT_TOGGLE : Door will have to be triggered by something to open/close.
+SF_ROT_ZAXIS : Door will tilt along the Z axis.
+SF_ROT_XAXIS : Door will tilt on the X axis.
+SF_ROT_USE : Player has to press the 'use' key to interact with it.
+SF_ROT_NOMONSTERS : Monsters cannot open this door.
+
+-------- NOTES --------
+Please include an origin brush so that a pivot point will be defined.
 
 -------- TRIVIA --------
 This entity was introduced in Quake II (1997).

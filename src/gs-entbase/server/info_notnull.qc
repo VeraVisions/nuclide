@@ -20,7 +20,7 @@ It is most commonly used to aim active in-game entities towards a specific
 location.
 
 -------- KEYS --------
-"targetname" Name
+"targetname" : Name
 
 -------- NOTES --------
 For tasks such as aiming static/lightmapped light sources during the compiling

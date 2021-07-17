@@ -19,14 +19,14 @@ This trigger reloads the last autosaved game with a custom message.
 This is commonly used when a mission objective has failed.
 
 -------- KEYS --------
-"targetname"    Name
-"message"       Message to display
-"messagetime"   Message lifetime (not implemented)
-"loadtime"      Time until we load the last autosave
-"duration"      Fade effect total duration
-"holdtime"      Fade effect hold time
-"rendercolor"   Fade effect color vector (RGB255)
-"renderamt"     Fade effect alpha value
+"targetname" : Name
+"message" : Message to display
+"messagetime" : Message lifetime (not implemented)
+"loadtime" : Time until we load the last autosave
+"duration" : Fade effect total duration
+"holdtime" : Fade effect hold time
+"rendercolor" : Fade effect color vector (RGB255)
+"renderamt" : Fade effect alpha value
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).

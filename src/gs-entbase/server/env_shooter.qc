@@ -18,18 +18,18 @@
 Shoots model entities from its location.
 
 -------- KEYS --------
-"targetname"    Name
-"target"        Target when triggered.
-"killtarget"    Target to kill when triggered.
-"angles"        Sets the pitch, yaw and roll direction of the shooter.
-"shootmodel"    Model file to shoot.
-"shootsounds"   PCM sample to play whenever a piece shoots out.
-"m_iGibs"       Amount of models shot in total.
-"m_flDelay"     Delay before being able to be fired again.
-"m_flVelocity"  Speed of the models in units per second.
-"m_flVariance"  Delay between shots.
-"m_flGibLife"   Life of the individual model piece.
-"scale"         Scale modifier of the model pieces.
+"targetname" : Name
+"target" : Target when triggered.
+"killtarget" : Target to kill when triggered.
+"angles" : Sets the pitch, yaw and roll direction of the shooter.
+"shootmodel" : Model file to shoot.
+"shootsounds" : PCM sample to play whenever a piece shoots out.
+"m_iGibs" : Amount of models shot in total.
+"m_flDelay" : Delay before being able to be fired again.
+"m_flVelocity" : Speed of the models in units per second.
+"m_flVariance" : Delay between shots.
+"m_flGibLife" : Life of the individual model piece.
+"scale" : Scale modifier of the model pieces.
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).

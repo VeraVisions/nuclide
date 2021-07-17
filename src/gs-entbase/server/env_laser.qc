@@ -18,13 +18,13 @@
 Shoots a frickin lazer.
 
 -------- KEYS --------
-"targetname"            Name
-"target"                Target when triggered.
-"killtarget"            Target to kill when triggered.
-"texture"               Sprite to use as a texture.
-"EndSprite"             Sprite to draw at the end of the laser beam impact.
-"LaserTarget"           Which entity determines the end position.
-"damage"                Damage-per-second when something passes through.
+"targetname" : Name
+"target" : Target when triggered.
+"killtarget" : Target to kill when triggered.
+"texture" : Sprite to use as a texture.
+"EndSprite" : Sprite to draw at the end of the laser beam impact.
+"LaserTarget" : Which entity determines the end position.
+"damage" : Damage-per-second when something passes through.
 
 -------- NOTES --------
 Use an info_notnull for a LaserTarget.

@@ -19,17 +19,12 @@ Combination of func_illusionary, func_wall, func_wall_toggle.
 When triggered, it'll become invisible and lose its collision.
 
 -------- KEYS --------
-"targetname"        Name
-
-"Solidity"          Mode for choosing solidity:
-                    0 - Toggle
-                    1 - Never solid
-                    2 - Always Solid
-"StartDisabled"     Will make it spawn invisible and without collision.
-"solidbsp"          Type of collision model to choose
-"excludednpc"       Name of the NPC classname that will not collide with this
-                    entity
-"invert_exclusion"  Set to 1 if you want the 'excludednpc' key to act inverted
+"targetname" : Name
+"Solidity" : Mode for choosing solidity. 0 : Toggle, 1 : Never, 2 : Always.
+"StartDisabled" : Will make it spawn invisible.
+"solidbsp" : Type of collision model to choose. 0 : Per-Poly, 1 : BSP file.
+"excludednpc" : Name of the NPC classname that will not collide with this entity
+"invert_exclusion" : Set to 1 if you want the 'excludednpc' key to act inverted
 
 -------- NOTES --------
 The main thing func_brush is concerned with is appearance, if it's toggled on

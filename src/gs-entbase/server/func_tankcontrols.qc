@@ -19,7 +19,7 @@ Brush that marks the usable region of a func_tankmortar, in order
 to gain control.
 
 -------- KEYS --------
-"targetname"    Name
+"targetname" : Name
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).

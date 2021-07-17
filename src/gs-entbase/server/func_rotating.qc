@@ -18,11 +18,27 @@
 Rotating brush object. Useful for fans, etc.
 
 -------- KEYS --------
-"targetname"    Name
-"target"        Target when triggered.
-"killtarget"    Target to kill when triggered.
-"speed"         Speed in units per second.
-"dmg"           Damage applied to entity blocking its rotational path.
+"targetname" : Name
+"target" : Target when triggered.
+"killtarget" : Target to kill when triggered.
+"speed" : Speed in units per second.
+"dmg" : Damage applied to entity blocking its rotational path.
+
+-------- SPAWNFLAGS --------
+FR_STARTON : Start on.
+FR_REVERSE : Spin in reverse.
+FR_ZAXIS : Spin on the Z-axis.
+FR_XAXIS : Spin on the X-axis.
+FR_ACCDCC : Enable acceleration and de-acceleration.
+FR_FANPAIN : Will damage entities that collide when turned on.
+FR_NOTSOLID : Don't do collision testing against this entity.
+FR_SMALLRADIUS : Fan sound will have a small playback radius.
+FR_MRADIUS : Fan sound will have a medium playback radius.
+FR_LRADIUS : Fan sound will have a large playback radius.
+FR_TOGGLEDIR : Reverses direction when triggered.
+
+-------- NOTES --------
+Please include an origin brush so that a pivot point will be defined.
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).

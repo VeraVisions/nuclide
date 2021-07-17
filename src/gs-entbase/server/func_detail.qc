@@ -20,8 +20,8 @@ All geometry that's turned into a func_detail will be ignored during VIS.
 This will speed up compile time and reduce tesselation, in theory.
 
 -------- KEYS --------
-"_rs"      Specifies if the geometry will recieve shadows (RAD lighting).
-"_cs"      Specifies if the geometry will cast shadows (RAD lighting).
+"_rs" : Specifies if the geometry will recieve shadows (RAD lighting).
+"_cs" : Specifies if the geometry will cast shadows (RAD lighting).
 
 -------- NOTES --------
 If you don't want this entity to have collision, consider using func_detail_illusionary.

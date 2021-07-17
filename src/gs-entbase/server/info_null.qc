@@ -19,7 +19,7 @@ Helper entity for the map creation process only.
 It is supposed to be removed after compilation of a .bsp file.
 
 -------- KEYS --------
-"targetname" Name
+"targetname" : Name
 
 -------- NOTES --------
 If you're pointing any active game-logic entities to this entity,

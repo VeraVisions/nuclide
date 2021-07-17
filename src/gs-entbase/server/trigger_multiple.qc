@@ -18,14 +18,16 @@
 A trigger volume which works more than once. 
 
 -------- KEYS --------
-"targetname"    Name
-"target"        Target when triggered.
-"killtarget"    Target to kill when triggered.
-"delay"         Delay until target is triggered.
-"wait"          Time until this entity can trigger again
+"targetname" : Name
+"target" : Target when triggered.
+"killtarget" : Target to kill when triggered.
+"delay" : Delay until target is triggered.
+"wait" : Time until this entity can trigger again
 
--------- NOTES --------
-None of the spawnflags are implemented yet.
+-------- SPAWNFLAGS --------
+TM_MONSTERS : Allow NPCs to activate this entity.
+TM_NOCLIENTS : Don't allow players to activate this entity.
+TM_PUSHABLES : Allow func_pushables to trigger this entity.
 
 -------- TRIVIA --------
 This entity was introduced in Quake (1996).
@@ -57,7 +59,6 @@ trigger_multiple::touch(void)
 {
 	if (GetMaster() == FALSE)
 		return;
-
 	if (spawnflags & TM_NOCLIENTS && other.flags & FL_CLIENT)
 		return;
 	if (!(spawnflags & TM_MONSTERS) && other.flags & FL_MONSTER)

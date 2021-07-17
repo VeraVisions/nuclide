@@ -19,10 +19,10 @@ An AND-gate of sorts. Every entity that targets this must return a positive
 state for it to trigger its target.
 
 -------- KEYS --------
-"targetname"    Name
-"target"        Target when triggered.
-"killtarget"    Target to kill when triggered.
-"delay"         Delay until we trigger our target
+"targetname" : Name
+"target" : Target when triggered.
+"killtarget" : Target to kill when triggered.
+"delay" : Delay until we trigger our target.
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).

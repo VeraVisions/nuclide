@@ -18,10 +18,18 @@
 When triggered, creates an explosion at its location.
 
 -------- KEYS --------
-"targetname"    Name
-"target"        Target when triggered.
-"killtarget"    Target to kill when triggered.
-"iMagnitude"    Magnitude of the explosion.
+"targetname" : Name
+"target" : Target when triggered.
+"killtarget" : Target to kill when triggered.
+"iMagnitude" : Magnitude of the explosion.
+
+-------- SPAWNFLAGS --------
+ENVEXPLO_NODAMAGE : Make this explosion purely decorative, without radius damage.
+ENVEXPLO_REPEATABLE : Makes this explosion triggerable more than once.
+ENVEXPLO_NOBALL : Spawn no fireball.
+ENVEXPLO_NOSMOKE : Spawn no smoke.
+ENVEXPLO_NODECAL : Leave no decal upon explosion.
+ENVEXPLO_NOSPARKS : Don't spawn any sparks upon exploding.
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).

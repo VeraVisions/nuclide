@@ -15,19 +15,25 @@
  */
 
 /*QUAKED scripted_sequence (1 0 0) (-8 -8 -8) (8 8 8) x x SSFL_REPEATABLE SSFL_LEAVECORPSE x SSFL_NOINTERRUPT SSFL_OVERRIDEAI SSFL_NOSCRIPTMOVE
-Allow a monster to be selected and given an action to perform.
-This is done in the form of olaying an animation.
+Allow an actor to be selected and given an action to perform.
+This is done in the form of playing an animation.
 
 -------- KEYS --------
-"targetname"    Name
-"target"        Target when triggered.
-"killtarget"    Target to kill when triggered.
-"m_iszEntity"   Entity targetname OR classname description to target
-"m_iszPlay"     After the monster has moved to the action point, play this animation
-"m_iszIdle"     Animation to play until the scripted_sequence is triggered
-"m_flRadius"    Search radius for m_targetMonster if a classname is specified
-"m_flRepeat"    Loop? Unused.
-"m_fMoveTo"     How we move to perform m_iActionAnim
+"targetname" : Name
+"target" : Target when triggered.
+"killtarget" : Target to kill when triggered.
+"m_iszEntity" : Entity targetname OR classname description to target
+"m_iszPlay" : After the monster has moved to the action point, play this animation
+"m_iszIdle" : Animation to play until the scripted_sequence is triggered
+"m_flRadius" : Search radius for m_targetMonster if a classname is specified
+"m_flRepeat" : Loop? Unused.
+"m_fMoveTo" : How we move to perform m_iActionAnim
+
+-------- SPAWNFLAGS --------
+SSFL_REPEATABLE : Can trigger the sequence more than once.
+SSFL_LEAVECORPSE : When the actor is done, they'll be frozen.
+SSFL_NOINTERRUPT : Don't allow any interruption of the actor when in-sequence.
+SSFL_OVERRIDEAI : Don't allow the actor to call think/sound functions while playing.
 
 -------- NOTES --------
 f_fMoveTo values:

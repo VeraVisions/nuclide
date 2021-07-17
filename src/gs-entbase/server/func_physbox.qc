@@ -18,7 +18,7 @@
 Physics brush.
 
 -------- KEYS --------
-"targetname"    Name
+"targetname" : Name
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life 2 (2004).

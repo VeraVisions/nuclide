@@ -19,8 +19,12 @@ Volume that permanently adds a modifier that affects an entities' friction.
 Higher value = less friction.
 
 -------- KEYS --------
-"targetname"    Name
-"modifier"      Friction modifier.
+"targetname" : Name
+"modifier" : Friction modifier.
+
+-------- NOTES --------
+Similar to trigger_gravity in that you want to make sure the friction is reset
+around the primary volume in case that's the effect that you desire.
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).

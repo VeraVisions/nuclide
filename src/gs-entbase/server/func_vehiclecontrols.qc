@@ -19,8 +19,8 @@ Brush that marks the usable region of a func_vehicle, in order
 to gain control.
 
 -------- KEYS --------
-"targetname"    Name
-"target"        Name of the func_vehicle to control
+"targetname" : Name
+"target" : Name of the func_vehicle to control
 
 -------- NOTES --------
 It's the same as func_tracktraincontrols, except that it's for

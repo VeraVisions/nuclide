@@ -19,7 +19,7 @@ Specifies a location for which a cubemap will be generated when the
 buildcubemaps console command is executed.
 
 -------- KEYS --------
-"scale"    Texture dimension at which to render the cubemap. Default is '32'.
+"scale" : Texture dimension at which to render the cubemap. Default is "32".
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life 2 (2004).

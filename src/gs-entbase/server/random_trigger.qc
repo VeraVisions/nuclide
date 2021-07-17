@@ -19,13 +19,13 @@ When triggered, it'll calculate some random interval until it triggers
 its targets, based on some limits given.
 
 -------- KEYS --------
-"targetname"    Name
-"target"        Target when triggered
-"killtarget"    Target to kill when triggered
-"start_state"   Start state (either 0 or 1)
-"wait"          Minimum time
-"random_min"    Minimum added random time
-"random_max"    Maximum added random time
+"targetname" : Name
+"target" : Target when triggered
+"killtarget" : Target to kill when triggered
+"start_state" : Start state (either 0 or 1)
+"wait" : Minimum time
+"random_min" : Minimum added random time
+"random_max" : Maximum added random time
 
 -------- TRIVIA --------
 It was introduced in Gunman Chronicles (2000).

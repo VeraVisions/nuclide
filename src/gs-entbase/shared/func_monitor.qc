@@ -18,13 +18,13 @@
 A monitor that renders the view of a linked point_camera entity.
 
 -------- KEYS --------
-"targetname"   Name
-"target"       Camera it's linked to
+"targetname" : Name
+"target" : Camera it's linked to.
 
 -------- INPUTS --------
-"Enable"       Turns the monitor on
-"Disable"      Turns the monitor on.
-"Toggle"       Toggles the state of the monitor between on and off
+"Enable" : Turns the monitor on
+"Disable" : Turns the monitor on.
+"Toggle" : Toggles the state of the monitor between on and off.
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life 2 (2004).

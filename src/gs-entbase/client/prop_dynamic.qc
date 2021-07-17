@@ -18,10 +18,10 @@
 Client-side decorative model entity.
 
 -------- KEYS --------
-"model"       Model file that will be displayed by the entity.
-"modelscale"  Scale modifier of the model. Default is '1'.
-"angles"      Sets the pitch, yaw and roll angles of the model.
-"_cs"         Toggles if the prop casts a shadow or not.
+"model" : Model file that will be displayed by the entity.
+"modelscale" : Scale modifier of the model. Default is "1".
+"angles" : Sets the pitch, yaw and roll angles of the model.
+"_cs" : Toggles if the prop casts a shadow or not.
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life 2 (2004).
@@ -31,14 +31,14 @@ This entity was introduced in Half-Life 2 (2004).
 Decorative model entity that gets baked into the level file.
 
 -------- KEYS --------
-"model"           Model file that will be displayed by the entity.
-"modelscale"      Scale modifier of the model. Default is '1'.
-"modelscale_vec"  Scale modifier, but in vector format
-"angles"          Sets the pitch, yaw and roll angles of the model.
-"_cs"             Toggles if the prop casts a shadow or not.
-"_ls"             Lightmap scale multiplier for the resulting surfaces.
-"_sn"             Shading angle related to lightmap phong shading.
-"_remap"          Force the model surfaces to use a specified material.
+"model" : Model file that will be displayed by the entity.
+"modelscale" : Scale modifier of the model. Default is "1".
+"modelscale_vec" : Scale modifier, but in vector format
+"angles" : Sets the pitch, yaw and roll angles of the model.
+"_cs" : Toggles if the prop casts a shadow or not.
+"_ls" : Lightmap scale multiplier for the resulting surfaces.
+"_sn" : Shading angle related to lightmap phong shading.
+"_remap" : Force the model surfaces to use a specified material.
 
 -------- NOTES --------
 After compilation, the source model is no longer required and the

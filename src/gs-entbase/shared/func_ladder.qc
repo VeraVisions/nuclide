@@ -18,7 +18,7 @@
 Ladder volume. Climb up ladders with this one simple brush.
 
 -------- KEYS --------
-"targetname"    Name
+"targetname" : Name
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).

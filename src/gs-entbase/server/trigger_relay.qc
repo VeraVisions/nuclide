@@ -19,15 +19,14 @@ This is an inbetween trigger that forces a desired output state
 instead of toggling e.g. a door open.
 
 -------- KEYS --------
-"targetname"    Name
-"target"        Target when triggered.
-"killtarget"    Target to kill when triggered.
-"delay"         Delay til the target is triggered.
-"triggerstate"  Desired state of the triggered entity.
+"targetname" : Name
+"target" : Target when triggered.
+"killtarget" : Target to kill when triggered.
+"delay" : Delay til the target is triggered.
+"triggerstate" : Desired state of the triggered entity.
 
--------- NOTES --------
-When the spawnflag TRLY_ONCE is set, the trigger_relay will be removed upon
-triggering its targets.
+-------- SPAWNFLAGS --------
+TRLY_ONCE : Will be removed upon triggering its targets.
 
 -------- TRIVIA --------
 This entity was introduced in Quake (1996).

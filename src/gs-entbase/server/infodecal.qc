@@ -20,8 +20,8 @@ It'll automatically figure out the surface based on distance.
 The texture will be aligned along the surface texture normals.
 
 -------- KEYS --------
-"targetname" Name
-"texture"    Name of the texture inside decals.wad it projects onto a surface.
+"targetname" : Name
+"texture" : Name of the texture inside decals.wad it projects onto a surface.
 
 -------- NOTES --------
 This entity currently only works on BSP version 30 levels.

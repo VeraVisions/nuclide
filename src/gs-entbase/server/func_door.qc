@@ -19,38 +19,32 @@ This sliding door entity has the ability to slide forth and back on any
 axis. It is often used for primitive elevators as well.
 
 -------- KEYS --------
-"targetname"    Name
-"target"        Target when triggered.
-"killtarget"    Target to kill when triggered.
-"speed"         Movement speed in game-units per second.
-"lip"           Sets how many units are still visible after a door moved.
-"delay"         Time until triggering target.
-"wait"          When to move back.
-"netname"       Target to trigger when door returns to its initial position.
-"dmg"           Damage to inflict upon anything blocking the way.
-"snd_open"      Sound shader to play for when the door opens.
-"snd_close"     Sound shader to play for when the door closes.
-"snd_stop"      Sound shader to play for when the door stops moving.
-"movesnd"       Legacy integer value pointing to a predefined move sound.
-"stopsnd"       Legacy integer value pointing to a predefined stop sound.
+"targetname" : Name
+"target" : Target when triggered.
+"killtarget" : Target to kill when triggered.
+"speed" : Movement speed in game-units per second.
+"lip" : Sets how many units are still visible after a door moved.
+"delay" : Time until triggering target.
+"wait" : When to move back.
+"netname" : Target to trigger when door returns to its initial position.
+"dmg" : Damage to inflict upon anything blocking the way.
+"snd_open" : Sound shader to play for when the door opens.
+"snd_close" : Sound shader to play for when the door closes.
+"snd_stop" : Sound shader to play for when the door stops moving.
+"movesnd" : Legacy integer value pointing to a predefined move sound.
+"stopsnd" : Legacy integer value pointing to a predefined stop sound.
+
+-------- SPAWNFLAGS --------
+SF_MOV_OPEN : Swaps the positions between raised and lowered state.
+SF_MOV_UNLINK : Currently unimplemented.
+SF_MOV_PASSABLE : Don't test against any collision with this door.
+SF_MOV_TOGGLE : Door cannot be opened by physical means, only by a trigger.
+SF_MOV_USE : Players can press the "use" button/key to activate this door.
 
 -------- NOTES --------
 The keys "movesnd" and "stopsnd" are obsolete. Their values point towards
 the samples doors/doormoveX.wav and doors/doorstopX.wav respectively, where
 X is the integer value set in "movesnd" and "stopsnd".
-
-When SF_MOV_OPEN is set, the door starts 'open'. This helps getting the surface
-of the door lit properly before hiding it away somewhere.
-
-The spawnflag SF_MOV_UNLINK is currently unimplemented.
-
-When SF_MOV_PASSABLE is set, the door won't have any collision.
-
-When SF_MOV_TOGGLE is set, the door cannot be opened by any conventional means.
-It will have to be triggered by another map entity.
-
-When SF_MOV_USE is set, the door can be triggered by a player using the 'use'
-key/button. Not every game may implement such a function.
 
 -------- TRIVIA --------
 This entity was introduced in Quake (1996).

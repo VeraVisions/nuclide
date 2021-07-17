@@ -20,12 +20,16 @@ Most of its behaviour is controlled by the path_corner entities it passes over.
 See the entity definition for path_corner to find out more.
 
 -------- KEYS --------
-"targetname"    Name
-"target"        First node.
-"killtarget"    Target to kill when triggered.
-"dmg"           Damage to inflict upon a person blocking the way.
-"snd_move"      Path to sound sample which plays when it's moving.
-"snd_stop"      Path to sound sample which plays when it stops moving.
+"targetname" : Name
+"target" : First node.
+"killtarget" : Target to kill when triggered.
+"dmg" : Damage to inflict upon a person blocking the way.
+"snd_move" : Path to sound sample which plays when it's moving.
+"snd_stop" : Path to sound sample which plays when it stops moving.
+
+-------- SPAWNFLAGS --------
+TRAIN_WAIT : Stop at each path_corner until we're triggered again.
+TRAIN_NOTSOLID : Don't do collision testing against this entity.
 
 -------- NOTES --------
 Upon level entry, the func_train will spawn right where its first path_corner

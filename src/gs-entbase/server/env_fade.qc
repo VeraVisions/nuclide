@@ -18,17 +18,18 @@
 Overlay that blinds/obscures players vision when triggered.
 
 -------- KEYS --------
-"targetname"    Name
-"target"        Target when triggered.
-"killtarget"    Target to kill when triggered.
-"rendercolor"   RGB8 Color of the fade effect.
-"renderamt"     A8 alpha value we'll hit at max.
-"duration"      Duration of the effect in seconds.
-"holdtime"      How long we'll hold on the max color/alpha.
+"targetname" : Name
+"target" : Target when triggered.
+"killtarget" : Target to kill when triggered.
+"rendercolor" : RGB8 Color of the fade effect.
+"renderamt" : A8 alpha value we'll hit at max.
+"duration" : Duration of the effect in seconds.
+"holdtime" : How long we'll hold on the max color/alpha.
 
--------- NOTES --------
-When triggered, it blinds all players, or just the one who triggered it if
-EVF_ONLYUSER is set.
+-------- SPAWNFLAGS --------
+EVF_FADEDROM : Inverts the fading animation.
+EVF_MODULATE : Modulate tints the image after "rendercolor" instead of obscuring it.
+EVF_ONLYUSER : Don't blind everyone, just the activator.
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).

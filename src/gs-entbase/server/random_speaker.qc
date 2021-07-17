@@ -18,13 +18,13 @@
 This entity plays a .wav file at random intervals.
 
 -------- KEYS --------
-"targetname"    Name
-"target"        Target when triggered
-"killtarget"    Target to kill when triggered
-"rsnoise"       Path to the sound file
-"volume"        Volume to play the sound as (normalized, 0.0 - 1.0)
-"wait"          Minimum time for sound repetition in %
-"random"        Random % of this added to wait
+"targetname" : Name
+"target" : Target when triggered
+"killtarget" : Target to kill when triggered
+"rsnoise" : Path to the sound file.
+"volume" : Volume to play the sound as (normalized, 0.0 - 1.0).
+"wait" : Minimum time for sound repetition in %.
+"random" : Random % of this added to wait.
 
 -------- NOTES --------
 To explain the math behind it:

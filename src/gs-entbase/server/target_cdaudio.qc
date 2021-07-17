@@ -19,9 +19,9 @@ A radius based trigger_cdaudio.
 Disables itself upon activation.
 
 -------- KEYS --------
-"targetname"    Name
-"health"        Music track to play (1-30). -1 to stop.
-"radius"        Radius in which the entity will be triggered in.
+"targetname" : Name
+"health" : Music track to play (1-30). -1 to stop.
+"radius" : Radius in which the entity will be triggered in.
 
 -------- NOTES --------
 I honestly don't know what the point is, as trigger_cdaudio should

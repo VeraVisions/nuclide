@@ -19,7 +19,7 @@ Currently unused. This is meant for defining level transition regions.
 All entities touching this volume would carry across to the next level.
 
 -------- KEYS --------
-"targetname"    Name
+"targetname" : Name
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).

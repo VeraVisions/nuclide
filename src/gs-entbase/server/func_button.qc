@@ -22,38 +22,30 @@ Once it's fully pushed in, it'll trigger its targets, then return back to its
 original position.
 
 -------- KEYS --------
-"targetname"    Name
-"target"        Target when triggered.
-"killtarget"    Target to kill when triggered.
-"speed"         Movement speed of the door in game-units per second.
-"lip"           How many units remain visible when fully pushed in.
-"snd_pressed"   The sound shader name to play when pressed.
-"snd_unpressed" The sound shader name to play when the button becomes unpressed.
-"wait"          Time to wait in seconds before the button becomes unpressed.
-"delay"         Delay until the Target gets triggered.
-"sounds"        Obsolete legacy key for HL/Q1 style buttons to decide
-                which sounds to play.
-"health"        Amount of damage this button takes before it triggers.
+"targetname" :  Name
+"target" : Target when triggered.
+"killtarget" : Target to kill when triggered.
+"speed" : Movement speed of the door in game-units per second.
+"lip" : How many units remain visible when fully pushed in.
+"snd_pressed" : The sound shader name to play when pressed down.
+"snd_unpressed" : The sound shader name to play when the button becomes raised.
+"wait" : Time to wait in seconds before the button becomes raised.
+"delay" : Delay until the Target gets triggered.
+"sounds" : Obsolete legacy key for HL/Q1 style buttons to decide which sounds to play.
+"health" : Amount of damage this button takes before it triggers. Will reset.
 
 -------- OUTPUTS --------
-"OnDamaged"     Fired when the button is damaged.
-"OnPressed"     Fired when the button is pressed.
-"OnUseLocked"   Fired when the button is used while locked.
-"OnIn"          Fired when the button reaches the in/pressed position.
-"OnOut"         Fired when the button reaches the out/released position.
+"OnDamaged" : Fired when the button is damaged.
+"OnPressed" : Fired when the button is pressed.
+"OnUseLocked" : Fired when the button is used while locked.
+"OnIn" : Fired when the button reaches the in/pressed position.
+"OnOut" : Fired when the button reaches the out/released position.
 
--------- NOTES --------
-When SF_BTT_NOMOVE is set, the only visual indicator you'll get is a possible
-change of texture of your button. The button will not move.
-
-When SF_BTT_TOGGLE is set, the button will never return to its original position
-or state automatically. The 'wait' key will be ignored and a something will have
-to manually untoggle it again.
-
-When SF_BTT_SPARKS is set, the button will create a bunch of sparks when used.
-
-When SF_BTT_TOUCH_ONLY is set, the use key/button cannot be used to interact
-with the button, it has to collide against a player.
+-------- SPAWNFLAGS --------
+SF_BTT_NOMOVE : Don't move when it's activated.
+SF_BTT_TOGGLE : Don't move back to the raised state automatically.
+SF_BTT_SPARKS : Spawn decorative sparks when used.
+SF_BTT_TOUCH_ONLY : Disable 'use' key/button. Only collision will activate it.
 
 -------- TRIVIA --------
 This entity was introduced in Quake (1996).

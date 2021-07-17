@@ -17,10 +17,10 @@
 int trace_surfaceflagsi;
 
 /*QUAKED env_sun (1 0 0) (-8 -8 -8) (8 8 8)
-"targetname"    Name
-"pitch"         Sun glow pitch.
-"angle"         Sun glow angle.
-"use_angles"    Use the 'angles' yaw value instead of the one from 'angle'.
+"targetname" : Name
+"pitch" : Sun glow pitch.
+"angle" : Sun glow angle.
+"use_angles" : Use the 'angles' yaw value instead of the one from 'angle'.
 
 STUB!
 

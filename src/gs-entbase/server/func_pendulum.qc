@@ -14,14 +14,24 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED func_wall_toggle (0 .5 .8) ? FTW_STARTHIDDEN
-Brush that can be hidden and reappear when triggered.
+/*QUAKED func_pendulum (0 .5 .8) ? FUNCPEND_STARTON x x FUNCPEND_NONSOLID FUNCPEND_RETURNONTRIGGER x FUNCPEND_XAXIS FUNCPEND_YAXIS
+A brush that swings along a pivot point like a pendulum.
 
 -------- KEYS --------
-"targetname"    Name
+"targetname" : Name
+"damp" : Dampening factor.
+"distance" : Swinging distance in euler-angles.
+"speed" : Speed at which it swings in units-per-second.
+
+-------- SPAWNFLAGS --------
+FUNCPEND_STARTON : Start swinging immediately.
+FUNCPEND_NONSOLID : Don't do collision testing against this entity.
+FUNCPEND_RETURNONTRIGGER : Once it gets triggered it'll return to its starting position.
+FUNCPEND_XAXIS : Swing on the X-axis.
+FUNCPEND_YAXIS : Swing on the Y-axis.
 
 -------- NOTES --------
-If FTW_STARTHIDDEN is set, it'll start hidden.
+Please include an origin brush so that a pivot point will be defined.
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).

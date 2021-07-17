@@ -15,11 +15,18 @@
  */
 
 /*QUAKED trigger_gravity (0 .5 .8) ?
-Volume that permanently adds a multiplier that affects an entities' gravity.
+Volume that will, when an entity enters it, permanently alters how it
+experiences gravity.
 
 -------- KEYS --------
-"targetname"    Name
-"gravity"       Gravity multiplier.
+"targetname" : Name
+"gravity" : Gravity multiplier.
+
+-------- NOTES --------
+Entities leaving the volume will NOT lose the gravity modifier.
+If you don't desire this behaviour, then make sure a trigger_gravity with a
+modifier value of "1.0" surrounds the aforementioned volume so it can reset itself.
+Other than that gravity will naturally reset when the entity respawns.
 
 -------- TRIVIA --------
 This entity was introduced in Quake II (1997).

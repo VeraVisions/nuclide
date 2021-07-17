@@ -18,12 +18,20 @@
 Plays a sound sample of whatever format the engine is configured to support.
 
 -------- KEYS --------
-"targetname"    Name
-"target"        Target when triggered.
-"killtarget"    Target to kill when triggered.
-"message"       Sound file to play
-"volume"        Playback volume from 0.0 to 1.0
-"pitch"         Playback pitch from 0.0 to 2.0
+"targetname" : Name
+"target" : Target when triggered.
+"killtarget" : Target to kill when triggered.
+"message" : Sound file to play
+"volume" : Playback volume from 0.0 to 1.0
+"pitch" : Playback pitch from 0.0 to 2.0
+
+-------- SPAWNFLAGS --------
+AS_ARADIUS : Plays the sound everywhere. Heard by everyone.
+AS_SRADIUS : Small playback radius.
+AS_MRADIUS : Medium playback radius.
+AS_LRADIUS : Large playback radius.
+AS_SILENT : Start silent, trigger to make it play!
+AS_NOTTOGGLED : Don't toggle playback. When triggered, only play the sample once.
 
 -------- NOTES --------
 If you want it to loop, you have to give the file itself a loop flag.

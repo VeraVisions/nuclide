@@ -18,7 +18,7 @@
 An entity that's used to create an 'Intermission' camera.
 
 -------- KEYS --------
-"targetname" Name
+"targetname" : Name
 
 -------- NOTES --------
 Some mods use this while displaying the final scores, once a timelimit

@@ -18,12 +18,12 @@
 Animation cycler entity. For development purposes mainly.
 
 -------- KEYS --------
-"targetname"    Name
-"target"        Target when triggered.
-"killtarget"    Target to kill when triggered.
-"angles"        Sets the pitch, yaw and roll angles of the model.
-"sequence"      Sets the animation the model should start in. 
-"model"         Model file that will be displayed by the entity.
+"targetname" : Name
+"target" : Target when triggered.
+"killtarget" : Target to kill when triggered.
+"angles" : Sets the pitch, yaw and roll angles of the model.
+"sequence" : Sets the animation the model should start in. 
+"model" : Model file that will be displayed by the entity.
 
 -------- NOTES --------
 Upon damage, the cycler will switch between all available animation

@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED light (1 0 0) (-8 -8 -8) (8 8 8) LFL_LINEAR LFL_NOANGLE LFL_DARK LFL_NOGRID x LFL_DISTATTN
+/*QUAKED light (1 0 0) (-8 -8 -8) (8 8 8) LFL_LINEAR x LFL_DARK LFL_NOGRID x x
 Infinitely small point of light illuminating the scene.
 
 -------- KEYS --------
@@ -50,13 +50,16 @@ Infinitely small point of light illuminating the scene.
             'a' being dark. 'z' being fully lit. Can be a string of characters
             that'll interpolate between at 10 FPS ingame.
 
--------- NOTES --------
-If LFL_LINEAR is set, the light will be cast with a linear falloff instead
-of inverse square. This is useful for bright lights that'll travel long
-distances.
+-------- SPAWNFLAGS --------
+LFL_LINEAR : Use linear falloff instead of inverse-square falloff.
+LFL_DARK : Darken, instead of lighting the lightmap.
+LFL_NOGRID : This light does not affect the lightgrid.
 
+-------- NOTES --------
 In idTech 2/GoldSrc etc. spawnflag 1 means a light starts off.
 This doesn't exist in idTech3 because lightstyles were not a thing.
+To avoid huge amounts of lightmap abuse, please consider using light_dynamic
+or env_projectedtexture for toggled or flickering lights.
 
 -------- TRIVIA --------
 This entity was introduced in Quake (1996).

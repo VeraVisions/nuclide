@@ -18,10 +18,10 @@
 Brush that can be hidden and reappear when triggered.
 
 -------- KEYS --------
-"targetname"    Name
+"targetname" : Name
 
-An alternative is func_brush, which also can control aspects such as collision.
-If FTW_STARTHIDDEN is set, it'll start hidden.
+-------- SPAWNFLAGS --------
+FTW_STARTHIDDEN : Start invisible upon spawning.
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).

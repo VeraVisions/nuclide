@@ -19,8 +19,8 @@ Client-side overlay/message that is projected in relation to its position
 in 3D space.
 
 -------- KEYS --------
-"message"       The message to display.
-"radius"        The radius in which it will appear.
+"message" : The message to display.
+"radius" : The radius in which it will appear.
 
 -------- NOTES --------
 Used for zoo and test maps in which less interactive overlays are desired.

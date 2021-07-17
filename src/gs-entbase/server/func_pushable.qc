@@ -19,12 +19,13 @@ This is essentially the same entity as a func_breakable, but
 a player can push and pull it around the level.
 
 -------- KEYS --------
-"targetname"    Name
-"target"        Target when triggered.
-"killtarget"    Target to kill when triggered.
+"targetname" : Name
+"target" : Target when triggered.
+"killtarget" : Target to kill when triggered.
 
 -------- NOTES --------
 It uses stepping player physics to move around.
+Please look at func_breakable for more entity keys, inputs and outputs.
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).

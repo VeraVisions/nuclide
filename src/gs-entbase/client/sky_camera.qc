@@ -18,7 +18,7 @@
 Defines the position of a skyroom camera.
 
 -------- KEYS --------
-"scale"    Scale modifier. Default is '16'.
+"scale" : Scale modifier. Default is "16".
 
 -------- NOTES --------
 You want to put this into a dedicated room that contains a 3D skybox.

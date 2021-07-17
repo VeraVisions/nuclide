@@ -18,17 +18,17 @@
 Displays a basic message or titles.txt entry.
 
 -------- KEYS --------
-"targetname"            Name
-"target"                Target when triggered.
-"killtarget"            Target to kill when triggered.
-"message"               Message to send to players
-"messagesound"          PCM sample to play when triggered
-"messagevolume"         PCM sample volume
-"messageattenuation"    PCM sample attenuation
+"targetname" : Name
+"target" : Target when triggered.
+"killtarget" : Target to kill when triggered.
+"message" : Message to send to players
+"messagesound" : PCM sample to play when triggered. Leave empty if desired.
+"messagevolume" : PCM sample volume. Only relevant when "messagesound" is set.
+"messageattenuation" : PCM sample attenuation. Ditto.
 
--------- NOTES --------
-Sends a message to either one or all players, depending on if EMF_ALLPLAYERS
-is set. An optional sound effect can be supplied as well.
+-------- SPAWNFLAGS --------
+EMF_ONCE : Removes itself after being triggered once.
+EMF_ALLPLAYERS : Send the message to all clients instead of only the activator.
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).

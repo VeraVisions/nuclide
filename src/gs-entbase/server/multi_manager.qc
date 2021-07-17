@@ -20,11 +20,11 @@ Add a target's name as an entity key, with the value set to the time in seconds
 that'll pass before the entity will be triggered.
 
 -------- KEYS --------
-"targetname"    Name
+"targetname" : Name
 
--------- NOTES --------
-If MM_MULTITHREADED is set, it'll allow the multi_manager to be triggered
-again before it has finished triggering it's previous list of entities.
+-------- SPAWNFLAGS --------
+MM_MULTITHREADED : Allow the multi_manager to be triggered again before it has
+finished triggering it's previous list of entities.
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).

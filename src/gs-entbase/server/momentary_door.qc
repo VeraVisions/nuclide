@@ -18,7 +18,7 @@
 Dynamic door that will move back down if it's not being used.
 
 -------- KEYS --------
-"targetname"    Name
+"targetname" : Name
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).

@@ -18,7 +18,7 @@
 Brush that lets light to pass through it and is non-solid.
 
 -------- KEYS --------
-"targetname"    Name
+"targetname" : Name
 
 -------- NOTES --------
 On idTech 2 BSPs, it will change texture variants when triggered.

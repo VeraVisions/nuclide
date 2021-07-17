@@ -18,39 +18,34 @@
 Brush volume that can break into lots of little pieces.
 
 -------- KEYS --------
-"targetname"        Name
-"target"            Target when triggered.
-"killtarget"        Target to kill when triggered.
-"material"          Material it's made of.
-"delay"             Delay in seconds of when it breaks under pressure.
-"explodemagnitude"  Strength of the explosion.
+"targetname" : Name
+"target" : Target when triggered.
+"killtarget" : Target to kill when triggered.
+"health" : Health of the entity.
+"material" : Material it's made of (See material-list below).
+"delay" : Delay in seconds of when it breaks under pressure.
+"explodemagnitude" : Strength of the explosion.
+
+-------- SPAWNFLAGS --------
+SF_TRIGGER : Breakable is invincible and has to be triggered in order to break.
+SF_TOUCH : Break when an entity collides into it at high speed (damage is speed in units * 0.01).
+SF_PRESSURE : Initiate break once someone is standing on top of it.
 
 -------- NOTES --------
-Material list:
-
-0 = Glass
-1 = Wood
-2 = Metal
-3 = Flesh
-4 = Cinder
-5 = Tile
-6 = Computer
-7 = Glass (Unbreakable)
-8 = Rock
-9 = None
-
-When SF_TRIGGER is set, the breakable is invincible and has to be triggered
-in order to be detroyed/broken.
-
-When SF_TOUCH is set, it'll break when an entity runs into it at high
-velocities (damage is speed in units * 0.01).
-
-When SF_PRESSURE is set, it'll collapse once someone is standing on top of it.
-At that point the "delay" key will decide after how many seconds the object
-breaks.
-
 The strength of the explosion decides the radius (magnitude * 2.5) and the
-maximum damage the explosion will do (you have to stand in the center for that).
+maximum damage the explosion will do in the center. It has a linear fall-off.
+
+Material-list:
+0 : Glass
+1 : Wood
+2 : Metal
+3 : Flesh
+4 : Cinder
+5 : Tile
+6 ; Computer
+7 : Glass (Unbreakable)
+8 : Rock
+9 : None
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).

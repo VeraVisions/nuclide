@@ -18,14 +18,16 @@
 Will automatically trigger its target when the level has spawned.
 
 -------- KEYS --------
-"targetname"    Name
-"target"        Target when triggered.
-"killtarget"    Target to kill when triggered.
-"delay"         Time in seconds until it triggers its target.
+"targetname" : Name
+"target" : Target when triggered.
+"killtarget" : Target to kill when triggered.
+"delay" : Time in seconds until it triggers its target.
+
+-------- SPAWNFLAGS --------
+TA_USEONCE : Remove itself from the level permanently when activated.
 
 -------- NOTES --------
-If TA_USEONCE is set, it'll remove itself from the level permanently.
-It will not survive round respawns, etc.
+When a trigger_auto is removed via TA_USEONCE it won't survive match respawns.
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).

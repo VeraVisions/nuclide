@@ -20,12 +20,12 @@ When triggered, it'll drop mortar shells straight to the ground (with a bit
 of spread if specified).
 
 -------- KEYS --------
-"targetname"        Name
-"m_flSpread"        Maximum spread in game-units
-"m_flCount"         Number of bombs dropped per strike
-"m_flControl"       Targeting type. 0 = random, 1 = activator, 2 = controlled
-"m_iszXController"  Name of the momentary_rot_button providing X-offset
-"m_iszYController"  Name of the momentary_rot_button providing Y-offset
+"targetname" : Name
+"m_flSpread" : Maximum spread in game-units
+"m_flCount" : Number of bombs dropped per strike
+"m_flControl" : Targeting type. 0 = random, 1 = activator, 2 = controlled
+"m_iszXController" : Name of the momentary_rot_button providing X-offset
+"m_iszYController" : Name of the momentary_rot_button providing Y-offset
 
 -------- NOTES --------
 It can be set to three different targeting modes, 0 will pick any

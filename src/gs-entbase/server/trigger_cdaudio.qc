@@ -18,8 +18,8 @@
 Switches the background music track when triggered.
 
 -------- KEYS --------
-"targetname"    Name
-"health"        Music track to play.
+"targetname" : Name
+"health" : Music track to play.
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).

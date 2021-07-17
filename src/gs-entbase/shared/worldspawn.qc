@@ -18,22 +18,24 @@
 Only used for the world.
 
 -------- KEYS --------
-"message"                   Full name of the map.
-"author"                    Author of the map.
-"chaptertitle"              Titles entry to display when entering the level.
-"sounds"                    CD track to play.
-"_fog"                      Fog in the playable area. Format:
-                            (density red green blue alpha depthbias)
-"_skyroomfog"               Fog in the skybox area. Format:
-                            (density red green blue alpha depthbias)
-"skyname"                   Which skybox to use. (e.g. textures/skies/sundown)
-"ambientsound"              Sound shader to play in the background (looping) for
-                            when other env_soundscape entities are NOT active.
-"hdr_iris_minvalue"         Minimum HDR brightness adjustment.
-"hdr_iris_maxvalue"         Maximum HDR brightness adjustment.
-"hdr_iris_multiplier"       HDR effect multiplier.
-"hdr_iris_fade_up"          HDR iris fade up speed.
-"hdr_iris_fade_down"        HDR iris fade down speed.
+"message" : Full name of the map.
+"author" : Author of the map.
+"chaptertitle" : Titles entry to display when entering the level.
+"sounds" : CD track to play.
+"_fog" : Fog in the playable area. Format: (density red green blue alpha depthbias)
+"_skyroomfog" : Fog in the skybox area. Format: (density red green blue alpha depthbias)
+"skyname" : Which skybox to use. (e.g. textures/skies/sundown)
+"ambientsound" : Sound shader to play in the background (looping) for when other env_soundscape entities are NOT active.
+"hdr_iris_minvalue" : Minimum HDR brightness adjustment. Default is "0.0".
+"hdr_iris_maxvalue" : Maximum HDR brightness adjustment. Default is "2.0".
+"hdr_iris_multiplier" : HDR effect multiplier. Default is "1.0".
+"hdr_iris_fade_up" : HDR iris fade up speed. Default is "0.1".
+"hdr_iris_fade_down" : HDR iris fade down speed. Default is "0.5".
+
+-------- NOTES --------
+A map must only have one worldspawn entity.
+Every game can have varying key definitions for the worldspawn entity.
+It's also not affected by "killtarget".
 
 -------- TRIVIA --------
 This entity was introduced in Quake (1996).

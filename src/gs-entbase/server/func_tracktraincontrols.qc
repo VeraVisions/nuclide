@@ -19,8 +19,8 @@ Brush that marks the usable region of a func_tracktrain, in order
 to gain control.
 
 -------- KEYS --------
-"targetname"    Name
-"target"        Name of the func_vehicle to control
+"targetname" : Name
+"target" : Name of the func_vehicle to control
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).

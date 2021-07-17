@@ -19,7 +19,7 @@ Volume that'll save the current game when a client enters its bounds.
 This entity does not work in multiplayer.
 
 -------- KEYS --------
-"targetname"    Name
+"targetname" : Name
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).

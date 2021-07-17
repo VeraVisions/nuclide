@@ -18,8 +18,8 @@
 Client-side environmental soundscape modifier.
 
 -------- KEYS --------
-"radius"    Radius in units.
-"shader"    Sound shader to play.
+"radius" : Radius in units.
+"shader" : Sound shader to play.
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life 2 (2004).

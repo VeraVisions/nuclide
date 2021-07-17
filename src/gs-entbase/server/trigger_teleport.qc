@@ -19,8 +19,8 @@ Teleportation volume. Teleports anything it touches to the position of
 any entity set as the "target". Works best with info_teleport_destination.
 
 -------- KEYS --------
-"targetname"    Name
-"target"        Which target to teleport to.
+"targetname" : Name
+"target" : Which target to teleport to.
 
 -------- TRIVIA --------
 This entity was introduced in Quake (1996).

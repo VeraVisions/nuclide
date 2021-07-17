@@ -18,8 +18,8 @@
 Entity that emits items when triggered, or upon player spawn (MP-only).
 
 -------- KEYS --------
-"targetname"    Name
-"master"        Team Master
+"targetname" : Name
+"master" : Team Master
 
 -------- NOTES --------
 When the flag GPEFL_TRIGGERONLY is set, the entity has to be triggered

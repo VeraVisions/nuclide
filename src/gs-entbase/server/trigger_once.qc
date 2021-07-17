@@ -18,13 +18,15 @@
 A trigger volume which works only once.
 
 -------- KEYS --------
-"targetname"    Name
-"target"        Target when triggered.
-"killtarget"    Target to kill when triggered.
-"delay"         Delay until target is triggered.
+"targetname" : Name
+"target" : Target when triggered.
+"killtarget" : Target to kill when triggered.
+"delay" : Delay until target is triggered.
 
--------- NOTES --------
-None of the spawnflags are implemented yet.
+-------- SPAWNFLAGS --------
+TO_MONSTERS : Allow NPCs to activate this entity.
+TO_NOCLIENTS : Don't allow players to activate this entity.
+TO_PUSHABLES : Allow func_pushables to trigger this entity.
 
 -------- TRIVIA --------
 This entity was introduced in Quake (1996).
@@ -53,11 +55,13 @@ class trigger_once:CBaseTrigger
 void
 trigger_once::touch(void)
 {
-	if (!(spawnflags & TO_MONSTERS) && other.spawnflags & FL_MONSTER)
-		return;
-	if (spawnflags & TO_NOCLIENTS && other.spawnflags & FL_CLIENT)
-		return;
 	if (GetMaster() == FALSE)
+		return;
+	if (spawnflags & TO_NOCLIENTS && other.flags & FL_CLIENT)
+		return;
+	if (!(spawnflags & TO_MONSTERS) && other.flags & FL_MONSTER)
+		return;
+	if (!(spawnflags & TO_PUSHABLES) && other.classname == "func_pushable")
 		return;
 
 	solid = SOLID_NOT; /* make inactive */

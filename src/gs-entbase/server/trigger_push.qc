@@ -18,13 +18,13 @@
 Pushes anything in its volume into a direction of your choosing.
 
 -------- KEYS --------
-"targetname"    Name
-"speed"         The speed (units per second) it'll apply to touchers.
-"angles"        Sets the direction of the push.
+"targetname" : Name
+"speed" : The speed (units per second) it'll apply to touchers.
+"angles" : Sets the direction of the push.
 
--------- NOTES --------
-If TP_ONCE is set, It'll only emit a single push once before disabling itself.
-If TP_STARTOFF is set, it needs to be triggered first in order to function.
+-------- SPAWNFLAGS --------
+TP_ONCE : Only emit a single push once before disabling itself.
+TP_STARTOFF : Needs to be triggered first in order to function.
 
 -------- TRIVIA --------
 This entity was introduced in Quake (1996).

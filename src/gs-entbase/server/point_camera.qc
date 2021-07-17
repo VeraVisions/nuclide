@@ -19,19 +19,22 @@ A virtual camera of which its output can be displayed on a rendertarget.
 This plays well with the func_monitor entity.
 
 -------- KEYS --------
-"targetname"            Name
-"FOV"                   Field of view in degrees
-"UseScreenAspectRatio"  Forces the aspect ratio to be the same as the game (?)
-"fogEnable"             Enable fog in the camera's view
-"fogColor"              Color of the fog in RGB255
-"fogStart"              Near fog plane
-"fogEnd"                Far fog plane
+"targetname" : Name
+"FOV" : Field of view in degrees
+"UseScreenAspectRatio" : Forces the aspect ratio to be the same as the game's.
+"fogEnable" : Enable fog in the camera's view.
+"fogColor" : Color of the fog in RGB255.
+"fogStart" : Near fog plane.
+"fogEnd" : Far fog plane.
 
 -------- INPUTS --------
-"ChangeFOV"             Change the camera's field of view
-"SetOnAndTurnOthersOff" Turn this camera on while deactivating all others
-"SetOn"                 Turn this camera on
-"SetOff"                Turn this camera off
+"ChangeFOV" : Change the camera's field of view.
+"SetOnAndTurnOthersOff" : Turn this camera on while deactivating all others.
+"SetOn" : Turn this camera on.
+"SetOff" : Turn this camera off.
+
+-------- SPAWNFLAGS --------
+PCAMFL_STARTOFF : Start with the camera turned off, outputting no signal.
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life 2 (2004).

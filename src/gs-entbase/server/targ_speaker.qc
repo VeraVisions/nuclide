@@ -18,11 +18,11 @@
 This entity plays a sample upon triggering at a specified volume.
 
 -------- KEYS --------
-"targetname"    Name
-"target"        Target when triggered
-"killtarget"    Target to kill when triggered
-"tsnoise"       Path to the sound file
-"volume"        Volume to play the sound as (normalized, 0.0 - 1.0)
+"targetname" : Name
+"target" : Target when triggered
+"killtarget" : Target to kill when triggered
+"tsnoise" : Path to the sound file
+"volume" : Volume to play the sound as (normalized, 0.0 - 1.0)
 
 -------- TRIVIA --------
 It was introduced in Gunman Chronicles (2000).

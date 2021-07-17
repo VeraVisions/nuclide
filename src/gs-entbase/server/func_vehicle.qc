@@ -14,29 +14,36 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED func_vehicle (0 .5 .8) ?
+/*QUAKED func_vehicle (0 .5 .8) ? FUNCVEH_NOPITCH FUNCVEH_NOUSER x FUNCVEH_PASSABLE FUNCVEH_FWDRIVE FUNCVEH_RWDRIVE
 Primitive brush-based vehicle entity.
 
 -------- KEYS --------
-"targetname"        Name
-"target"            Name of the first path_track/corner (See Notes)
-"acceleration"      Acceleration multiplier
-"speed"             Top-speed of the vehicle in q-units per second
-"height"            Wheel-height in units
-"width"             Width of the vehicle, used to calculate the wheels
-"length"            Length of the vehicle, used to calculate the wheels
-"bouncefactor"      Multiplier for the bouncyness of the vehicle
-"skidspeed"         At which speed the vehicle starts skidding
-"traction"          Multiplier for the traction affecting the vehicle
-"breakfactor"       Multiplier for the breaking mechanics
-"steerfactor"       Multiplier for the steering speed
-"straightenfactor"  Multiplier for affecting the straightening mechanism
-"gravitydir"        Normalized vector setting the direction of gravity
+"targetname" : Name
+"target" : Name of the first path_track/corner (See Notes)
+"acceleration" : Acceleration multiplier
+"speed" : Top-speed of the vehicle in q-units per second
+"height" : Wheel-height in units
+"width" : Width of the vehicle, used to calculate the wheels
+"length" : Length of the vehicle, used to calculate the wheels
+"bouncefactor" : Multiplier for the bouncyness of the vehicle
+"skidspeed" : At which speed the vehicle starts skidding
+"traction" : Multiplier for the traction affecting the vehicle
+"breakfactor" : Multiplier for the breaking mechanics
+"steerfactor" : Multiplier for the steering speed
+"straightenfactor" : Multiplier for affecting the straightening mechanism
+"gravitydir" : Normalized vector setting the direction of gravity
 
 Unimplemented:
-"sounds"            A sound-set to use
-"volume"            Volume at which said sounds play at (from 0-10)
-"dmg"               Damage inflicted upon entities when blocked
+"sounds" : A sound-set to use
+"volume" : Volume at which said sounds play at (from 0-10)
+"dmg" : Damage inflicted upon entities when blocked
+
+-------- SPAWNFLAGS --------
+FUNCVEH_NOPITCH : Don't adjust the pitch angle of the vehicle, only point forward.
+FUNCVEH_NOUSER : Don't allow pressing "use" key/button to control it.
+FUNCVEH_PASSABLE : Don't do collision testing against this entity.
+FUNCVEH_FWDRIVE : Front wheel drive mode.
+FUNCVEH_RWDRIVE : Rear wheel drive mode.
 
 -------- NOTES --------
 The vehicle's position is set via the 'target' key, which sets the first
@@ -52,7 +59,7 @@ This entity was introduced in Counter-Strike (2000).
 */
 
 enumflags
-{	
+{
 	FUNCVEH_NOPITCH,
 	FUNCVEH_NOUSER,
 	FUNCVEH_UNUSED,

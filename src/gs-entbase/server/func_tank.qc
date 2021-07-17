@@ -20,24 +20,29 @@ it and shoot it. It's in the same family as the func_tankmortar entity, the
 difference being that this shoots bullets and not mortar blasts.
 
 -------- KEYS --------
-"targetname"    Name
-"yawrate"       The speed of the left/right movement of the gun.
-"yawrange"      Range of left/right movement in degrees.
-"pitchrate"     The speed of the up/down movement of the gun.
-"pitchrange"    Range of up/down movement in degrees.
-"barrel"        Distance from origin to barrel tip in units.
-"barrely"       Horizontal distance origin to the center of the barrel tip.
-"barrelz"       Vertical distance origin to the center of the barrel tip.
-"firerate"      Number of bullets fired per second.
-"bullet_damage" Damage each fired bullet does.
-"firespread"    Accuracy of the gun. 0 is best, 4 is worst.
-"persistance"   Time in seconds for how long an NPC might continue shooting.
-"minRange"      Minimum range the target can be at for an NPC to fire.
-"maxRange"      Maximum range the target can be at for an NPC to fire.
-"spritesmoke"   Sprite to spawn for 'smoke' when the entity is fired.
-"spriteflash"   Sprite to spawn for a 'muzzleflash' when the entity is fired.
-"spritescale"   Scale multiplier for both smoke and flash sprites.
-"rotatesound"   Sound file to play in a loop while barrel is rotating.
+"targetname" : Name
+"yawrate" : The speed of the left/right movement of the gun.
+"yawrange" : Range of left/right movement in degrees.
+"pitchrate" : The speed of the up/down movement of the gun.
+"pitchrange" : Range of up/down movement in degrees.
+"barrel" : Distance from origin to barrel tip in units.
+"barrely" : Horizontal distance origin to the center of the barrel tip.
+"barrelz" : Vertical distance origin to the center of the barrel tip.
+"firerate" : Number of bullets fired per second.
+"bullet_damage" : Damage each fired bullet does.
+"firespread" : Accuracy of the gun. 0 is best, 4 is worst.
+"persistance" : Time in seconds for how long an NPC might continue shooting.
+"minRange" : Minimum range the target can be at for an NPC to fire.
+"maxRange" : Maximum range the target can be at for an NPC to fire.
+"spritesmoke" : Sprite to spawn for 'smoke' when the entity is fired.
+"spriteflash" : Sprite to spawn for a 'muzzleflash' when the entity is fired.
+"spritescale" : Scale multiplier for both smoke and flash sprites.
+"rotatesound" : Sound file to play in a loop while barrel is rotating.
+
+-------- SPAWNFLAGS --------
+FNCTANK_ACTIVE : Unimplemented.
+FNCTANK_DIRECTONLY : Unimplemented.
+FNCTANK_CONTROLLABLE : Unimplemented.
 
 -------- NOTES --------
 I don't like the sprite stuff tacked on at all because of the extra networking

@@ -21,10 +21,9 @@
 Client-side environmental reverb modifier.
 
 -------- KEYS --------
-"radius"    Radius in units.
-"efx_file"  Name of the OpenAL EFX definiton to use.
-"roomtype"  Legacy enumeration for GoldSrc support.
-            Please don't use this.
+"radius" : Radius in units.
+"efx_file" : Name of the OpenAL EFX definiton to use.
+"roomtype" : Legacy enumeration for GoldSrc support. Please don't use this.
 
 -------- NOTES --------
 This works only with the OpenAL sound backend.

@@ -19,11 +19,11 @@ This entity counts the number of times it is triggered and activates its
 target when it reaches a specified number.
 
 -------- KEYS --------
-"targetname"    Name
-"target"        Target when triggered.
-"killtarget"    Target to kill when triggered.
-"count"         Number of times the entity has to be triggered.
-"delay"         Delay in seconds until target is triggered.
+"targetname" : Name
+"target" : Target when triggered.
+"killtarget" : Target to kill when triggered.
+"count" : Number of times the entity has to be triggered.
+"delay" : Delay in seconds until target is triggered.
 
 -------- TRIVIA --------
 This entity was introduced in Quake (1996).

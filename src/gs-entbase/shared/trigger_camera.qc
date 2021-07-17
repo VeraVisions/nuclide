@@ -18,9 +18,17 @@
 Forces a camera change when triggered.
 
 -------- KEYS --------
-"targetname"    Name
-"target"        Camera aims at this target.
-"moveto"        First path_corner entity, if present.
+"targetname" : Name
+"target" : Camera aims at this target.
+"moveto" : First path_corner entity, if present.
+"wait" : The total time the camera effect is active.
+
+-------- NOTES --------
+The client who triggers it will get its camera perspective changed to this
+trigger_camera. It is capable of following a track in case "moveto" is set.
+The movement finishes independently of the "wait" key.
+In case you are follow a path, the triggers of the respective path_corners will
+be respected.
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).

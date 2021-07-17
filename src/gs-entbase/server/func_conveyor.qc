@@ -16,9 +16,9 @@
 
 /*QUAKED func_conveyor (0 .5 .8) ?
 -------- KEYS --------
-"targetname"    Name
-"target"        Target when triggered.
-"killtarget"    Target to kill when triggered.
+"targetname" : Name
+"target" : Target when triggered.
+"killtarget" : Target to kill when triggered.
 
 STUB!
 

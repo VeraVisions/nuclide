@@ -19,9 +19,9 @@ Level of Detail brush entity, disappears at a set distance.
 Useful for when VIS is impossible or not enough.
 
 -------- KEYS --------
-"targetname"    Name
-"DisappearDist"    Distance in units for of when the func_lod will "pop" out of view.
-"Solid"            0 when solid, 1 when not-solid.
+"targetname" : Name
+"DisappearDist" : Distance in units for of when the func_lod will pop out of view.
+"Solid" : Defines solidity. Is "0" when solid, "1" when not-solid.
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life 2 (2004).

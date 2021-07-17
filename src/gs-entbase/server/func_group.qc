@@ -20,8 +20,8 @@ brushes for easy moving. All geometry in the group will become
 worldspawn upon compile.
 
 -------- KEYS --------
-"_rs"      Specifies if the geometry will recieve shadows (RAD lighting).
-"_cs"      Specifies if the geometry will cast shadows (RAD lighting).
+"_rs" : Specifies if the geometry will recieve shadows (RAD lighting).
+"_cs" : Specifies if the geometry will cast shadows (RAD lighting).
 
 -------- TRIVIA --------
 This entity was introduced in Quake III Arena (1999).
