@@ -70,13 +70,13 @@ trigger_push::Trigger(entity act, int state)
 {
 	switch (state) {
 	case TRIG_OFF:
-		solid = SOLID_NOT;
+		SetSolid(SOLID_NOT);
 		break;
 	case TRIG_ON:
-		solid = SOLID_TRIGGER;
+		SetSolid(SOLID_TRIGGER);
 		break;
 	default:
-		solid = (solid == SOLID_NOT) ? SOLID_TRIGGER : SOLID_NOT;
+		SetSolid(solid == SOLID_NOT ? SOLID_TRIGGER : SOLID_NOT);
 	}
 }
 
@@ -116,7 +116,7 @@ trigger_push::Respawn(void)
 	SetMovementDirection();
 
 	if (spawnflags & TP_STARTOFF) {
-		solid = SOLID_NOT;
+		SetSolid(SOLID_NOT);
 	}
 }
 

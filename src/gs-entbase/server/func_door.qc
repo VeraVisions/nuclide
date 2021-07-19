@@ -463,11 +463,13 @@ func_door::func_door(void)
 void
 func_water(void)
 {
+	func_door door;
 	spawnfunc_func_door();
-	self.classname = "func_water";
-	self.solid = SOLID_BSP;
-	self.skin = CONTENT_WATER;
-	self.effects |= EF_FULLBRIGHT;
-	self.spawnflags |= SF_MOV_TOGGLE;
-	setorigin(self, self.origin); // relink. have to do this.
+	door = (func_door)self;
+	door.classname = "func_water";
+	door.SetSolid(SOLID_BSP);
+	door.SetSkin(CONTENT_WATER);
+	door.effects |= EF_FULLBRIGHT;
+	door.spawnflags |= SF_MOV_TOGGLE;
+	setorigin(door, door.origin); // relink. have to do this.
 }

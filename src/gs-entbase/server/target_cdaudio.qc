@@ -57,17 +57,17 @@ target_cdaudio::touch(void)
 	WriteByte(MSG_MULTICAST, m_iCDTrack);
 	msg_entity = world;
 	multicast([0,0,0], MULTICAST_ALL_R);
-	solid = SOLID_NOT;
+	SetSolid(SOLID_NOT);
 }
 
 void
 target_cdaudio::Respawn(void)
 {
 	/* nobody cares that this is non-spherical... right? */
-	solid = SOLID_TRIGGER;
 	mins = [-m_flRadius, -m_flRadius, -m_flRadius];
 	maxs = [m_flRadius, m_flRadius, m_flRadius];
-	setsize(this, mins, maxs);
+	SetSolid(SOLID_TRIGGER);
+	SetSize(mins, maxs);
 }
 
 void

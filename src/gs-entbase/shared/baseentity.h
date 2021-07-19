@@ -67,6 +67,7 @@ class CBaseEntity
 	virtual void(void) SpawnInit;
 #endif
 
+	/* we only provide these for networked keys, so we can send updates */
 	virtual void(float) SetEffects;
 	virtual void(float) SetFrame;
 	virtual void(string) SetModel;
@@ -76,9 +77,12 @@ class CBaseEntity
 	virtual void(float) SetSolid;
 	virtual void(int) SetBody;
 	virtual void(float) SetScale;
+
+	/* these are monitored at all times */
 	virtual void(vector) SetAngles;
 	virtual void(vector) SetOrigin;
 	virtual void(vector, vector) SetSize;
+
 	virtual void(string, string) SpawnKey;
 	
 #ifdef GS_RENDERFX

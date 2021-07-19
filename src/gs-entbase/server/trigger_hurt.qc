@@ -67,10 +67,10 @@ trigger_hurt::Trigger(entity act, int state)
 {
 	switch (state) {
 	case TRIG_OFF:
-		solid = SOLID_NOT;
+		SetSolid(SOLID_NOT);
 		break;
 	case TRIG_ON:
-		solid = SOLID_TRIGGER;
+		SetSolid(SOLID_TRIGGER);
 		InitBrushTrigger();
 		break;
 	default:

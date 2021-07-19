@@ -493,8 +493,8 @@ func_vehicle::Realign(void)
 void
 func_vehicle::Respawn(void)
 {
-	movetype = MOVETYPE_PUSH;
-	solid = SOLID_BSP;
+	SetMovetype(MOVETYPE_PUSH);
+	SetSolid(SOLID_BSP);
 	SetModel(m_oldModel);
 	SetOrigin(m_oldOrigin);
 	SetAngles(m_oldAngle);

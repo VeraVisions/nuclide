@@ -85,7 +85,7 @@ trigger_counter::Respawn(void)
 {
 	m_iValue = 0;
 	m_iCounted = 0;
-	solid = SOLID_TRIGGER;
+	SetSolid(SOLID_TRIGGER);
 
 #ifdef GS_RENDERFX
 	SetRenderMode(RM_TRIGGER);

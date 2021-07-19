@@ -64,7 +64,7 @@ trigger_once::touch(void)
 	if (!(spawnflags & TO_PUSHABLES) && other.classname == "func_pushable")
 		return;
 
-	solid = SOLID_NOT; /* make inactive */
+	SetSolid(SOLID_NOT); /* make inactive */
 	m_iValue = 1;
 
 	if (!target) {
@@ -79,7 +79,7 @@ void
 trigger_once::Respawn(void)
 {
 	m_iValue = 0;
-	solid = SOLID_TRIGGER;
+	SetSolid(SOLID_TRIGGER);
 
 #ifdef GS_RENDERFX
 	SetRenderMode(RM_TRIGGER);

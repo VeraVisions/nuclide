@@ -83,7 +83,7 @@ trigger_multiple::touch(void)
 		think = Respawn;
 		nextthink = time + m_flWait;
 	}
-	solid = SOLID_NOT;
+	SetSolid(SOLID_NOT);
 }
 
 void

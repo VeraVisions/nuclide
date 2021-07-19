@@ -55,7 +55,7 @@ void
 cycler::Respawn(void)
 {
 	CBaseEntity::Respawn();
-	solid = SOLID_BBOX;
+	SetSolid(SOLID_BBOX);
 	takedamage = DAMAGE_YES;
 	health = 9999;
 }

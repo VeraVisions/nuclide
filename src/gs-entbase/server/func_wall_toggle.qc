@@ -58,19 +58,19 @@ func_wall_toggle::Trigger(entity act, int state)
 	}
 
 	if (m_iVisible) {
+		SetSolid(SOLID_BSP);
 		SetModelindex(m_oldmodelindex);
-		solid = SOLID_BSP;
 	} else {
+		SetSolid(SOLID_NOT);
 		SetModelindex(0);
-		solid = SOLID_NOT;
 	}
 }
 
 void
 func_wall_toggle::Respawn(void)
 {
-	movetype = MOVETYPE_PUSH;
-	solid = SOLID_BSP;
+	SetMovetype(MOVETYPE_PUSH);
+	SetSolid(SOLID_BSP);
 	SetModel(m_oldModel);
 	SetOrigin(origin);
 	m_iVisible = 1;

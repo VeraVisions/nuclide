@@ -33,11 +33,10 @@ class trigger_transition:CBaseEntity
 void
 trigger_transition::trigger_transition(void)
 {
-	solid = SOLID_NOT;
-	movetype = MOVETYPE_NONE;
+	SetSolid(SOLID_NOT);
+	SetMovetype(MOVETYPE_NONE);
 	SetModel(model);
-	model = __NULL__;
-	modelindex = 0;
+	SetModelindex(0);
 
 #ifdef GS_RENDERFX
 	SetRenderMode(RM_TRIGGER);

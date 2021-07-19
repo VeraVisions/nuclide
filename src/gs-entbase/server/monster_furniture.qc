@@ -41,17 +41,24 @@ enumflags
 class monster_furniture:CBaseMonster
 {
 	void(void) monster_furniture;
-	//virtual void(void) Respawn;
+	virtual void(void) Respawn;
 };
 
-void monster_furniture::monster_furniture(void)
+void
+monster_furniture::Respawn(void)
+{
+	SetMovetype(MOVETYPE_NOCLIP);
+	SetSolid(SOLID_NOT);
+	SetModel(m_oldModel);
+	SetOrigin(m_oldOrigin);
+	SetAngles(m_oldAngle);
+}
+
+void
+monster_furniture::monster_furniture(void)
 {
 	precache_model(model);
-	SetModel(model);
 	CBaseEntity::CBaseEntity();
-	
-	movetype = MOVETYPE_NOCLIP;
-	solid = SOLID_NOT;
 	spawnflags |= MSF_MULTIPLAYER;
 }
 

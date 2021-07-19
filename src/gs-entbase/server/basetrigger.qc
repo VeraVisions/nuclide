@@ -200,8 +200,8 @@ CBaseTrigger::GetMaster(void)
 void
 CBaseTrigger::InitPointTrigger(void)
 {
-	setsize(this, VEC_HULL_MIN, VEC_HULL_MAX);
-	solid = SOLID_TRIGGER;
+	SetSize(VEC_HULL_MIN, VEC_HULL_MAX);
+	SetSolid(SOLID_TRIGGER);
 }
 
 void

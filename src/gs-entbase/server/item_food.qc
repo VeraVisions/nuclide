@@ -26,7 +26,7 @@ This is a food item that will give the user 1 health when touched.
 This entity was introduced in Half-Life (1998).
 */
 
-class item_food
+class item_food:CBaseEntity
 {
 	int m_iIsCan;
 	void(void) item_food;
@@ -46,14 +46,14 @@ void item_food::Touch(void)
 	}
 	
 	Damage_Apply(other, this, -1, 0, DMG_GENERIC);
-	solid = SOLID_NOT;
+	SetSolid(SOLID_NOT);
 	remove(this);
 }
 
 void item_food::Setup(void)
 {
-	solid = SOLID_TRIGGER;
-	setsize(this, [-16,-16,-16], [16,16,16]);
+	SetSolid(SOLID_TRIGGER);
+	SetSize([-16,-16,-16], [16,16,16]);
 	touch = Touch;
 
 	if (m_iIsCan) {
@@ -66,14 +66,14 @@ void item_food::item_food(void)
 	// TODO: differentiate between item_sodacan and item_food
 	m_iIsCan = 1;
 
-	solid = SOLID_NOT;
-	movetype = MOVETYPE_TOSS;
+	SetSolid(SOLID_NOT);
+	SetMovetype(MOVETYPE_TOSS);
 
 	if (m_iIsCan) {
-		setmodel(this,"models/can.mdl");
+		SetModel("models/can.mdl");
 	}
 
-	setsize(this, [0,0,0], [0,0,0]);
+	SetSize([0,0,0], [0,0,0]);
 	think = Setup;
 	nextthink = time + 1.0f;
 }

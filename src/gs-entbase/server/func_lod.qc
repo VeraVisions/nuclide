@@ -33,7 +33,7 @@ func_lod::SpawnKey(string strKey, string strValue)
 	switch (strKey) {
 	case "Solid":
 	case "solid":
-		solid = stoi(strValue) == 1 ? SOLID_NOT : SOLID_BSP;
+		SetSolid(stoi(strValue) == 1 ? SOLID_NOT : SOLID_BSP);
 		break;
 	default:
 		CBaseEntity::SpawnKey(strKey, strValue);
