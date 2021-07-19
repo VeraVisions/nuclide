@@ -160,7 +160,7 @@ varying vec2 lm1, lm2, lm3;
 		diffuse_f *= ShadowmapFilter(s_shadowmap, vtexprojcoord);
 		#endif
 
-		gl_FragColor = fog4( vec4(diffuse_f, alpha) );
+		gl_FragColor = vec4(fog3(diffuse_f), alpha);
 	}
 #endif
 
