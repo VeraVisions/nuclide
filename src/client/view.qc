@@ -14,8 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-var int autocvar_v_camroll = TRUE;
-
 void
 View_Init(void)
 {
@@ -58,7 +56,7 @@ View_AddEvent(void(void) pCallback, float flTime)
 	pSeat->m_flEventMdl = pSeat->m_eViewModel.modelindex;
 }
 
-void 
+void
 View_CalcViewport(int s, float fWinWidth, float fWinHeight)
 {
 	//FIXME: this is awkward. renderscene internally rounds to pixels.
@@ -96,45 +94,6 @@ View_CalcViewport(int s, float fWinWidth, float fWinHeight)
 	}
 }
 
-void
-View_CalcBob(void)
-{
-	float cycle;
-	vector vel;
-
-	if (self.flags & FL_ONGROUND == -1) {
-		return;	
-	}
-
-	pSeat->m_flBobTime += clframetime;
-	cycle = pSeat->m_flBobTime - (int)(pSeat->m_flBobTime / autocvar_v_bobcycle) * autocvar_v_bobcycle;
-	cycle /= autocvar_v_bobcycle;
-	
-	if (cycle < autocvar_v_bobup) {
-		cycle = MATH_PI * cycle / autocvar_v_bobup;
-	} else {
-		cycle = MATH_PI + MATH_PI * (cycle - autocvar_v_bobup)/(1.0 - autocvar_v_bobup);
-	}
-
-	vel = pSeat->m_vecPredictedVelocity;
-	vel[2] = 0;
-
-	float flBob = sqrt(vel[0] * vel[0] + vel[1] * vel[1]) * autocvar_v_bob;
-	flBob = flBob * 0.3 + flBob * 0.7 * sin(cycle);
-	pSeat->m_flBob = bound(-7, flBob, 4);
-}
-
-float
-View_CalcRoll(void)
-{
-	float roll;
-	makevectors(view_angles);
-
-	roll = dotproduct(pSeat->m_vecPredictedVelocity, v_right);
-	roll *= 0.015f;
-	return autocvar_v_camroll ? roll : 0;
-}
-
 /*
 ====================
 View_DrawViewModel
@@ -159,13 +118,12 @@ View_DrawViewModel(void)
 		return;
 	}
 
-	View_CalcBob();
 	View_UpdateWeapon(m_eViewModel, m_eMuzzleflash);
 
 	float fBaseTime2 = m_eViewModel.frame1time;
 	float fBaseTime = m_eViewModel.frame1time;
 	m_eViewModel.frame2time = pl.weapontime;
-    	m_eViewModel.frame1time = pl.weapontime;
+	m_eViewModel.frame1time = pl.weapontime;
 	Event_Callback(m_eViewModel.frame1time, fBaseTime2);
 	processmodelevents(m_eViewModel.modelindex, m_eViewModel.frame, fBaseTime,
 		m_eViewModel.frame1time, ClientGame_ModelEvent);
@@ -174,20 +132,12 @@ View_DrawViewModel(void)
 	m_eViewModel.angles = view_angles;
 	m_eViewModel.colormap = pSeat->m_ePlayer.colormap;
 
-	// Give the gun a tilt effect like in old HL/CS versions
-	if (autocvar_v_bobclassic == 1) {
-		m_eViewModel.angles[2] = -pSeat->m_flBob;
-	}
-
 	/* now apply the scale hack */
 	m_eViewModel.scale = autocvar_r_viewmodelscale;
-	pSeat->m_flBob *= autocvar_r_viewmodelscale;
 	m_eViewModel.origin = pSeat->m_vecPredictedOrigin + pl.view_ofs;
 
-	m_eViewModel.origin += [0,0,-1] + (v_forward * (pSeat->m_flBob * 0.4))
-			+ (v_forward * autocvar_v_gunofs[0])
-			+ (v_right * autocvar_v_gunofs[1])
-			+ (v_up * autocvar_v_gunofs[2]);
+	Viewmodel_CalcBob();
+	Viewmodel_ApplyBob(m_eViewModel);
 
 	// Left-handed weapons
 	if (autocvar_v_lefthanded) {
@@ -220,7 +170,8 @@ View_DrawViewModel(void)
 	}
 
 	if (pl.movetype == MOVETYPE_WALK) {
-		view_angles[2] = View_CalcRoll();
+		Camera_StrafeRoll(view_angles);
+		Camera_RunBob(view_angles);
 		setproperty(VF_ANGLES, view_angles + pl.punchangle);
 	}
 }

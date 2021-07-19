@@ -35,14 +35,9 @@ var float FONT_20;
 var float FONT_CON;
 
 /* clientside cvars */
-var float autocvar_cl_bob = 0;
-var float autocvar_v_bob = 0.01;
-var float autocvar_v_bobcycle = 0.8;
-var float autocvar_v_bobup = 0.5;
 var float autocvar_zoom_sensitivity = 1.0f;
 var int autocvar_cl_smoothstairs = TRUE;
 var int autocvar_cl_thirdperson = FALSE;
-var int autocvar_v_bobclassic = TRUE;
 var int autocvar_v_lefthanded = FALSE;
 var string autocvar_cl_logofile = "lambda";
 var vector autocvar_cl_logocolor = [255,0,0];
@@ -134,8 +129,6 @@ struct
 
 	int m_iLastWeapon;
 	int m_iOldWeapon;
-	float m_flBobTime;
-	float m_flBob;
 
 	/* damage overlay */
 	float m_flDamageAlpha;
