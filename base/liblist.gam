@@ -36,7 +36,7 @@ gamedll "progs.dat"
 // which map we'll start a new singleplayer game on
 startmap "test_shaders"
 // which map the training button will go to
-trainingmap "map test_hdr"
+trainingmap "test_hdr"
 // names of the packages this game needs
 pkgname ""
 // name of file inside the packages we should check for 
