@@ -78,7 +78,7 @@ btn_training(void)
 {
 	localcmd("stopmusic\n");
 	localcmd("maxplayers 1\n");
-	localcmd(sprintf("%s\n", games[gameinfo_current].trainingmap));
+	localcmd(sprintf("map %s\n", games[gameinfo_current].trainingmap));
 }
 
 void
