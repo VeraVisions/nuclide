@@ -91,20 +91,18 @@ Viewmodel_VisionsBobRun(entity gun)
 	vector angmod;
 	angmod[0] += pViewBob->m_flBob * 0.5f;
 	angmod[1] += pViewBob->m_flBob;
-	angmod[2] += pViewBob->m_flBob * 2.0f;
-	gun.angles += angmod * 2.0f;
+	angmod[2] += pViewBob->m_flBob * 2.5f;
+	gun.angles += angmod * 1.5f;
 
 	/* sway with speed */
-	sintime = sin( time * 1.5f);
+	sintime = sin(time);
 	strength = pViewBob->m_flSpeed * 0.01f;
+
 	gun.angles[0] += strength * sintime;
 	gun.angles[1] += strength * sintime;
 	gun.angles[2] += strength * sintime;
 
-	gun.origin += [0,0,-1] - (v_up * (-pViewBob->m_flBob * 0.2))
-			+ (v_forward * autocvar_v_gunofs[0])
-			+ (v_right * autocvar_v_gunofs[1])
-			+ (v_up * autocvar_v_gunofs[2]);
+	gun.origin += [0,0,-1];
 }
 
 /* bob vars are calculated separately from application, so that if there's

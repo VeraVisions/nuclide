@@ -89,7 +89,7 @@ cp -v ./release/fteqcc ../../../bin/fteqcc
 
 if [ "$BUILD_IQMTOOL" -eq 1 ]; then
 	gmake -j $BUILD_PROC iqm-rel
-	cp -v ./release/iqm ../../../bin/iqm
+	cp -v ./release/iqmtool ../../../bin/iqmtool
 fi
 
 if [ "$BUILD_IMGTOOL" -eq 1 ]; then

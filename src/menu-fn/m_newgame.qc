@@ -28,7 +28,7 @@ ng_btneasy_start(void)
 		g_menupage = PAGE_MAIN;
 		localcmd("stopmusic\n");
 		localcmd("set skill 1; maxplayers 1\n");
-		localcmd(sprintf("map %s\n", games[gameinfo_current].startmap));
+		localcmd(games[gameinfo_current].startmap);
 	}
 	localsound("../media/launch_upmenu1.wav");
 	header.SetStartEndPos(45,45,70,208);
@@ -46,7 +46,7 @@ ng_btnnormal_start(void)
 		g_menupage = PAGE_MAIN;
 		localcmd("stopmusic\n");
 		localcmd("set skill 2; maxplayers 1\n");
-		localcmd(sprintf("map %s\n", games[gameinfo_current].startmap));
+		localcmd(games[gameinfo_current].startmap);
 	}
 	localsound("../media/launch_upmenu1.wav");
 	header.SetStartEndPos(45,45,70,208);
@@ -64,7 +64,7 @@ ng_btnhard_start(void)
 		g_menupage = PAGE_MAIN;
 		localcmd("stopmusic\n");
 		localcmd("set skill 3; maxplayers 1\n");
-		localcmd(sprintf("map %s\n", games[gameinfo_current].startmap));
+		localcmd(games[gameinfo_current].startmap);
 	}
 	localsound("../media/launch_upmenu1.wav");
 	header.SetStartEndPos(45,45,70,208);

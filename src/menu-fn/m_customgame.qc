@@ -211,10 +211,10 @@ customgame_liblist_parse(int id, string strKey, string strValue)
 		games[id].gamedll = strValue;
 		break;
 	case "startmap":
-		games[id].startmap = strValue;
+		games[id].startmap = strcat("map ", strValue, "\n");
 		break;
 	case "trainingmap":
-		games[id].trainingmap = strValue;
+		games[id].trainingmap = strcat("map ", strValue, "\n");
 		break;
 	/* newly added with Nuclide */
 	case "pkgname":
@@ -495,8 +495,8 @@ games_init(void)
 		games[id].nosprays = 0;
 		games[id].mpentity = "info_player_deathmatch";
 		games[id].gamedll = "progs.dat";
-		games[id].startmap = "c0a0";
-		games[id].trainingmap = "t0a0";
+		games[id].startmap = "map c0a0\n";
+		games[id].trainingmap = "map t0a0\n";
 		games[id].cldll = 1;
 		games[id].hlversion = "1000";
 		games[id].svonly = 0;

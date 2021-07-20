@@ -35,6 +35,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	registercommand("view_geomtest");
 	registercommand("player_geomtest");
 	registercommand("way_menu");
+	registercommand("dev_explode");
 
 	/* basic actions */
 	registercommand("+attack");
@@ -684,6 +685,11 @@ CSQC_ConsoleCommand(string sCMD)
 	tokenize(sCMD);
 
 	switch (argv(0)) {
+	case "dev_explode":
+		makevectors(getproperty(VF_ANGLES));
+		traceline(getproperty(VF_ORIGIN), getproperty(VF_ORIGIN) + v_forward * 4096, FALSE, pSeat->m_ePlayer);
+		FX_Explosion(trace_endpos);
+		break;
 	case "dev_sunpos":
 		vector sunpos, sunang;
 		vector lepos, leang;

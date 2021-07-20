@@ -63,7 +63,7 @@ Camera_RunBob(__inout vector camera_angle)
 }
 
 /* applies a tilt to the camera for when we're strafing left to right */
-float
+void
 Camera_StrafeRoll(__inout vector camera_angle)
 {
 	if (!autocvar(v_camroll, 1, "Enables strafe-roll for the first-person camera"))
