@@ -178,18 +178,20 @@ customgame_liblist_parse(int id, string strKey, string strValue)
 		switch (strtolower(strValue)) {
 		case "multiplayer_only":
 		case "multiplayer only":
-		case "mp":
-		case "multi":
-		case "multiplayer":
 			games[id].type = "Multiplayer";
 			break;
 		case "singleplayer_only":
 		case "singleplayer only":
+			games[id].type = "Singleplayer";
+			break;
+		/* this... kind of sucks, but some games (gearbox) never updated
+		 * their liblist to reflect that they do multiplayer */
 		case "sp":
 		case "single":
 		case "singleplayer":
-			games[id].type = "Singleplayer";
-			break;
+		case "mp":
+		case "multi":
+		case "multiplayer":
 		default:
 			games[id].type = "Both";
 		}
@@ -262,9 +264,13 @@ games_find_in_gamedir(string filename, string gamedirname)
 		/* let's search for every pk3 in the gamedir and search for a liblist, one at a time. */
 		psh = search_begin("*.pk3", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
 
-		/* loop through each pk3 */
-		for (int i = 0; i < search_getsize(psh); i++) {
+		/* loop through each pk3 in reverse (newest to old) */
+		for (int i = search_getsize(psh); i >= 0; i--) {
 			string full = search_getfilename(psh, i);
+
+			if (!full)
+				continue;
+
 			sh = search_begin(filename, SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, strcat(gamedirname, "/", full));
 			fh = search_fopen(sh, 0);
 
@@ -277,12 +283,16 @@ games_find_in_gamedir(string filename, string gamedirname)
 
 	/* still nothing. let's search for pk4's to sift through */
 	if (fh < 0) {
-		/* let's search for every pk3 in the gamedir and search for a liblist, one at a time. */
+		/* let's search for every pk4 in the gamedir and search for a liblist, one at a time. */
 		psh = search_begin("*.pk4", SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
 
-		/* loop through each pk3 */
-		for (int i = 0; i < search_getsize(psh); i++) {
+		/* loop through each pk4 in reverse (newest to old) */
+		for (int i = search_getsize(psh); i >= 0; i--) {
 			string full = search_getfilename(psh, i);
+
+			if (!full)
+				continue;
+
 			sh = search_begin(filename, SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, strcat(gamedirname, "/", full));
 			fh = search_fopen(sh, 0);
 

@@ -118,8 +118,13 @@ menu_creategame_init(void)
 	create_tbMaxplayers = spawn(CTextBox);
 	create_tbMaxplayers.SetPos(216,226);
 	create_tbMaxplayers.m_length = 156;
-	create_tbMaxplayers.SetText(cvar_string("sv_playerslots"));
 	Widget_Add(fn_createshared, create_tbMaxplayers);
+
+	/* if it's 1, that means we recently played a SP game, reset to default for now */
+	if (cvar("sv_playerslots") <= 1)
+		create_tbMaxplayers.SetText("8");
+	else
+		create_tbMaxplayers.SetText(cvar_string("sv_playerslots"));
 
 	create_tbPassword = spawn(CTextBox);
 	create_tbPassword.SetPos(216,280);

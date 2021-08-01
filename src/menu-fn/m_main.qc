@@ -324,7 +324,8 @@ menu_main_init(void)
 	main_btn2Multiplayer = spawn(CMainButton);
 	main_btn2Multiplayer.SetImage(BTN_MULTIPLAYER);
 	main_btn2Multiplayer.SetPos(70,348);
-	main_btn2Multiplayer.SetExecute(btn_multiplayer_start);
+	if (games[gameinfo_current].type != "Singleplayer")
+		main_btn2Multiplayer.SetExecute(btn_multiplayer_start);
 	Widget_Add(fn_main2, main_btn2Multiplayer);
 
 	/* Custom game */
