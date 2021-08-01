@@ -150,6 +150,10 @@ CSQC_RenderScene(void)
 	renderscene();
 }
 
+void(float, float, float, float) gp_rumble = #0;
+void(float devid, float amp_low, float amp_high, float duration) gp_rumbletriggers = #0;
+void(float devid, vector color) gp_setledcolor = #0;
+float g_deviceid;
 void
 CSQC_UpdateView(float w, float h, float focus)
 {
@@ -178,6 +182,9 @@ CSQC_UpdateView(float w, float h, float focus)
 	Fog_Update();
 	Sky_Update(FALSE);
 	cvar_set("_background", serverkey("background"));
+
+	vector color = getlight(getproperty(VF_ORIGIN)) / 255.0f;
+	gp_setledcolor(g_deviceid, color);
 
 	if (serverkeyfloat("background") == 1) {
 		setpause(FALSE);
@@ -445,8 +452,16 @@ CSQC_InputEvent(float fEventType, float fKey, float fCharacter, float fDeviceID)
 	pSeat = &g_seats[s];
 	pSeatLocal = &g_seatslocal[s];
 
+	g_deviceid = fDeviceID;
+
 	switch (fEventType) {
 	case IE_KEYDOWN:
+		gp_rumble(fDeviceID, 0xFFFF, 0xFFFF, 100);
+		//gp_rumble(fDeviceID, 0xFFFF, 0xFFFF, 100);
+		if (random() < 0.5)
+			gp_rumbletriggers(fDeviceID, 0xFFFF, 0xFFFF, 100);
+		else
+			gp_rumbletriggers(fDeviceID, 0xFFFF, 0xFFFF, 100);
 		break;
 	case IE_KEYUP:
 		break;

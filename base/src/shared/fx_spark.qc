@@ -43,4 +43,4 @@ FX_Spark(vector pos, vector ang)
 	pointparticles(PARTICLE_SPARK, pos, ang, 1);
 	Sound_PlayAt(pos, "env_spark.sfx");
 #endif
-} 
+}

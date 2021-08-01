@@ -28,7 +28,7 @@ struct
 void
 Camera_RunBob(__inout vector camera_angle)
 {
-	if (!autocvar(v_cambob, 0, "Enables bobbing effect for the first-person camera"))
+	if (!autocvar(v_cambob, 1, "Enables bobbing effect for the first-person camera"))
 		return;
 
 	int s = (float)getproperty(VF_ACTIVESEAT);
@@ -66,7 +66,7 @@ Camera_RunBob(__inout vector camera_angle)
 void
 Camera_StrafeRoll(__inout vector camera_angle)
 {
-	if (!autocvar(v_camroll, 1, "Enables strafe-roll for the first-person camera"))
+	if (!autocvar(v_camroll, 0, "Enables strafe-roll for the first-person camera"))
 		return;
 
 	float roll;

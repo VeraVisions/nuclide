@@ -93,6 +93,10 @@ trigger_push::touch(void)
 		return;
 	}
 
+	/* trigger_push is not supposed to work underwater */
+	if (other.waterlevel > 1)
+		return;
+
 	if (other.solid != SOLID_NOT && other.solid != SOLID_BSP) {
 		vector vecPush;
 		vecPush = (m_flSpeed * m_vecMoveDir);

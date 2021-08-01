@@ -30,6 +30,8 @@ player.qc
 entities.qc
 cmds.qc
 game_event.qc
+camera.qc
+viewmodel.qc
 view.qc
 hud.qc
 hud_weaponselect.qc

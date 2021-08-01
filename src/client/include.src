@@ -15,8 +15,6 @@ predict.qc
 npc.qc
 entities.qc
 modelevent.qc
-camera.qc
-viewmodel.qc
 view.qc
 damage.qc
 chat.qc
