@@ -145,10 +145,14 @@ CBaseEntity::RenderFXPass(void)
 void
 CBaseEntity::MakeStatic(void)
 {
+	/* give renderFX the opportunity to write into renderable
+	 * fields at least once before forever pulling it out the cgame */
+#ifdef GS_RENDERFX
 	if (m_iRenderMode > RM_FULLBRIGHT)
 		return;
 
 	RenderFXPass();
+#endif
 
 	/* static ents = no collision, so let's make a copy for visibility */
 	makestatic(copyentity(this));

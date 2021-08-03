@@ -101,9 +101,6 @@ m_init(void)
 	cvar_set("maxpitch", "89");
 	cvar_set("minpitch", "-89");
 	cvar_set("r_meshpitch", "1");
-	cvar_set("v_bob", "0.01");
-	cvar_set("v_bobcycle", "0.8");
-	cvar_set("v_bobup", "0.5");
 	cvar_set("v_contentblend", "0");
 	cvar_set("gl_mindist", "4");
 	cvar_set("con_textsize", "12");
