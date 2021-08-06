@@ -25,6 +25,8 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	pSeatLocal = &g_seatslocal[0];
 
 	/* developer/debug commands */
+	registercommand("testLight");
+	registercommand("testPointLight");
 	registercommand("getpos");
 	registercommand("dev_sentence");
 	registercommand("titles_test");
@@ -685,6 +687,11 @@ CSQC_ConsoleCommand(string sCMD)
 	tokenize(sCMD);
 
 	switch (argv(0)) {
+	case "testPointLight":
+		makevectors(getproperty(VF_ANGLES));
+		traceline(getproperty(VF_ORIGIN), getproperty(VF_ORIGIN) + v_forward * 4096, FALSE, pSeat->m_ePlayer);
+		dynamiclight_spawnstatic(trace_endpos + (v_forward * -16), 1024, [1,1,1]);
+		break;
 	case "dev_explode":
 		makevectors(getproperty(VF_ANGLES));
 		traceline(getproperty(VF_ORIGIN), getproperty(VF_ORIGIN) + v_forward * 4096, FALSE, pSeat->m_ePlayer);

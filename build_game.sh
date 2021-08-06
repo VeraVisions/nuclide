@@ -21,7 +21,7 @@ if [ -f "$SCRPATH"/bin/fteqcc ]; then
 	make
 	cd "$OLDDIR"
 
-	find "$SCRPATH" -name Makefile | grep 'src\/Makefile' | grep -v engine | while read MFILE_N; do
+	find "$SCRPATH" -name Makefile | grep 'src\/Makefile' | grep -v engine | grep -v worldspawn | while read MFILE_N; do
 		cd $(dirname $MFILE_N)
 		make
 		cd ..
