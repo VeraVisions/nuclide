@@ -61,12 +61,12 @@ mkdir -p ./bin
 if [ -f "$FTE_MAKEFILE" ]; then
 	printf "Engine is present, updating...\n"
 	cd ./src/engine/
-	svn up
+	svn -r $BUILD_ENGINEREVISION up
 	cd ./engine
 else
 	printf "Engine is NOT present, cloning...\n"
 	cd ./src/
-	svn checkout https://svn.code.sf.net/p/fteqw/code/trunk engine
+	svn -r $BUILD_ENGINEREVISION checkout https://svn.code.sf.net/p/fteqw/code/trunk engine
 	cd ./engine/engine
 fi
 
