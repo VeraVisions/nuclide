@@ -4,12 +4,17 @@ set -e
 SCRPATH="$( cd "$( dirname $(readlink -nf $0) )" && pwd )"
 PATH="$SCRPATH"/bin:"$PATH"
 
-
 if [ -f "$SCRPATH"/bin/fteqcc ]; then
 
 	# We want to compile a specific game
 	if [ $# -gt 0 ]; then
 		cd "$SCRPATH/$1"/src
+
+		if [ "$BUILD_UPDATE" -eq 1 ]; then
+			# git pull on the main repo
+			git pull
+		fi
+
 		make
 		cd "$SCRPATH"
 		./make_mapdef.sh "$1"
@@ -21,8 +26,14 @@ if [ -f "$SCRPATH"/bin/fteqcc ]; then
 	make
 	cd "$OLDDIR"
 
+	if [ "$BUILD_UPDATE" -eq 1 ]; then
+		# git pull on the main repo
+		git pull
+	fi
+
 	find "$SCRPATH" -name Makefile | grep 'src\/Makefile' | grep -v engine | grep -v worldspawn | while read MFILE_N; do
 		cd $(dirname $MFILE_N)
+		git pull
 		make
 		cd ..
 		export GAMEDIR=$(basename $PWD)

@@ -1,4 +1,5 @@
 #!/bin/sh
+. ./build.cfg
 set -e
 SCRPATH="$( cd "$( dirname $(readlink -nf $0) )" && pwd )"
 
@@ -6,7 +7,10 @@ grab_mod()
 {
 	if [ -f "$SCRPATH/$1"/LICENSE ]; then
 		cd "$SCRPATH/$1"
-		git pull
+
+		if [ "$BUILD_UPDATE" -eq 1 ]; then
+			git pull
+		fi
 	else
 		cd "$SCRPATH"
 		git clone "$2" "$1"
@@ -23,3 +27,4 @@ grab_mod scihunt https://www.github.com/eukara/freesci
 grab_mod hunger https://www.github.com/eukara/freehunger
 grab_mod valve https://www.github.com/eukara/freehl
 grab_mod cstrike https://www.github.com/eukara/freecs
+grab_mod ts https://www.github.com/Frag-Net/FreeTS

@@ -45,9 +45,13 @@ fi
 mkdir -p ./bin
 
 if [ -f "$WS_MAKEFILE" ]; then
-	printf "WorldSpawn is present, updating...\n"
-	cd ./src/worldspawn/
-	git pull
+	if [ "$BUILD_UPDATE" -eq 1 ]; then
+		printf "WorldSpawn is present, updating...\n"
+		cd ./src/worldspawn/
+		git pull
+	else
+		cd ./src/worldspawn/
+	fi
 else
 	printf "WorldSpawn is NOT present, cloning...\n"
 	cd ./src/

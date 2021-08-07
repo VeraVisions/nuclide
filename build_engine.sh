@@ -59,10 +59,14 @@ fi
 mkdir -p ./bin
 
 if [ -f "$FTE_MAKEFILE" ]; then
-	printf "Engine is present, updating...\n"
-	cd ./src/engine/
-	svn -r $BUILD_ENGINEREVISION up
-	cd ./engine
+	if [ "$BUILD_UPDATE" -eq 1 ]; then
+		printf "Engine is present, updating...\n"
+		cd ./src/engine/
+		svn -r $BUILD_ENGINEREVISION up
+		cd ./engine
+	else
+		cd ./src/engine/engine
+	fi
 else
 	printf "Engine is NOT present, cloning...\n"
 	cd ./src/
