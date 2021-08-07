@@ -8,6 +8,11 @@ mv_wsfile()
 	fi
 }
 
+if ! [ -x "$(command -v git)" ]; then
+	printf "'git' is not installed.\n"
+	exit
+fi
+
 set -e
 
 WS_MAKEFILE=./src/worldspawn/Makefile
@@ -190,3 +195,4 @@ mkdir -p ../../bin/platform.game/platform
 mv_wsfile platform.game/platform/entities.def
 mv_wsfile worldspawn
 mv_wsfile vmap
+printf "Built the editor successfully.\nInsert './worldspawn' to run.\n"

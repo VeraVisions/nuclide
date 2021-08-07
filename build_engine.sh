@@ -1,5 +1,11 @@
 #!/bin/sh
 . ./build.cfg
+
+if ! [ -x "$(command -v svn)" ]; then
+	printf "'svn' is not installed.\n"
+	exit
+fi
+
 set -e
 
 FTE_MAKEFILE=./src/engine/engine/Makefile
@@ -76,37 +82,49 @@ fi
 
 if [ "$BUILD_CLEAN" -eq 1 ]; then
 	gmake clean
+	printf "Cleaned the build directory.\n\n"
 fi
 
 if [ "$BUILD_ENGINE_DEPENDENCIES" -eq 1 ]; then
 	gmake -j $BUILD_PROC makelibs FTE_TARGET=$PLATFORM
+	printf "Built the static dependencies successfully.\n\n"
 fi
 
 gmake -j $BUILD_PROC $MAKETARGET FTE_TARGET=$PLATFORM
 cp -v "$OUTPUT" ../../../bin/fteqw
+printf "Built the client engine successfully.\n\n"
 
 gmake -j $BUILD_PROC sv-dbg
 cp -v ./debug/fteqw-sv ../../../bin/fteqw-sv
+printf "Built the dedicated server successfully.\n\n"
+
 gmake -j $BUILD_PROC qcc-rel
 cp -v ./release/fteqcc ../../../bin/fteqcc
+printf "Built the QuakeC compiler successfully.\n\n"
 
 
 if [ "$BUILD_IQMTOOL" -eq 1 ]; then
 	gmake -j $BUILD_PROC iqm-rel
 	cp -v ./release/iqmtool ../../../bin/iqmtool
+	printf "Built the iqmtool successfully.\n\n"
 fi
 
 if [ "$BUILD_IMGTOOL" -eq 1 ]; then
 	gmake -j $BUILD_PROC imgtool-rel
 	cp -v ./release/imgtool ../../../bin/imgtool
+	printf "Built the imgtool successfully.\n\n"
 fi
 
 if [ "$BUILD_BULLET" -eq 1 ]; then
 	gmake -j $BUILD_PROC plugins-rel NATIVE_PLUGINS="bullet"
 	find ./release/ -name 'fteplug_bullet_*.so' -exec cp -prv '{}' '../../../bin/' ';'
+	printf "Built the bullet plugin successfully.\n\n"
 fi
 
 if [ "$BUILD_FFMPEG" -eq 1 ]; then
 	gmake -j $BUILD_PROC plugins-rel NATIVE_PLUGINS="ffmpeg"
 	find ./release/ -name 'fteplug_ffmpeg_*.so' -exec cp -prv '{}' '../../../bin/' ';'
+	printf "Built the ffmpeg plugin successfully.\n\n"
 fi
+
+printf "DONE. Built ALL components successfully.\n"

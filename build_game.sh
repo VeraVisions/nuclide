@@ -1,5 +1,14 @@
 #!/bin/sh
 . ./build.cfg
+
+# if we're attempting to update the projects, check for git
+if [ "$BUILD_UPDATE" -eq 1 ]; then
+	if ! [ -x "$(command -v git)" ]; then
+		printf "'git' is not installed.\n"
+		exit
+	fi
+fi
+
 set -e
 SCRPATH="$( cd "$( dirname $(readlink -nf $0) )" && pwd )"
 PATH="$SCRPATH"/bin:"$PATH"
@@ -32,8 +41,16 @@ if [ -f "$SCRPATH"/bin/fteqcc ]; then
 	fi
 
 	find "$SCRPATH" -name Makefile | grep 'src\/Makefile' | grep -v engine | grep -v worldspawn | while read MFILE_N; do
-		cd $(dirname $MFILE_N)
-		git pull
+		NEWDIR=$(dirname "$MFILE_N")
+		cd "$NEWDIR"
+		if [ -f "$NEWDIR/../.git/config" ]; then
+			printf "Updating git repo inside $NEWDIR\n"
+			if [ "$BUILD_UPDATE" -eq 1 ]; then
+				set +e
+				git pull
+				set -e
+			fi
+		fi
 		make
 		cd ..
 		export GAMEDIR=$(basename $PWD)

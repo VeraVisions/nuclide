@@ -1,5 +1,14 @@
 #!/bin/sh
 
+if ! [ -x "$(command -v zip)" ]; then
+	printf "'zip' is not installed.\n"
+	exit
+fi
+if ! [ -x "$(command -v tree)" ]; then
+	printf "'tree' is not installed.\n"
+	exit
+fi
+
 if [ $# -lt 0 ]; then
 	printf "At least supply the name of the mod/game dir you want to pack.\n"
 	exit
@@ -38,6 +47,7 @@ find ./$GAME_DIR -name *.pk3dir | xargs -I @ sh -c 'echo `basename "@"`' | while
 	cd "$OLD_DIR"
 	mv "./$GAME_DIR/$PK3DIR/$PK3NAME.pk3" "./$BUILD_DIR/$GAME_DIR/$PK3NAME.pk3"
 done;
+
 cp "./$GAME_DIR/progs.dat" "./$BUILD_DIR/$GAME_DIR/progs.dat"
 cp "./$GAME_DIR/csprogs.dat" "./$BUILD_DIR/$GAME_DIR/csprogs.dat"
 cp "./$GAME_DIR/menu.dat" "./$BUILD_DIR/$GAME_DIR/menu.dat"
@@ -66,14 +76,6 @@ else
 	cp "./platform/menu.dat" "./$BUILD_DIR/platform/menu.dat"
 	rm "./$BUILD_DIR/platform/test_maps.pk3"
 
-	# copy platform
-	#cp -R ./platform ./$BUILD_DIR/platform
-	#cp -R ./doc ./$BUILD_DIR/doc
-	echo "version 2" > ./$BUILD_DIR/installed.lst
-	echo "set updatemode \"1\"" >> ./$BUILD_DIR/installed.lst
-	echo "set declined \"\"" >> ./$BUILD_DIR/installed.lst
-	echo "sublist \"http://www.frag-net.com/dl/valve_packages\" \"\" \"enabled\"" >> ./$BUILD_DIR/installed.lst
-
 	# spray logos
 	mkdir -p ./$BUILD_DIR/logos
 	cp ./logos/README ./$BUILD_DIR/logos/README
@@ -84,7 +86,13 @@ else
 fi
 
 tree ./$BUILD_DIR
-printf "ENTER to continue\n"
+printf "DONE, press ENTER to create .zip with gpg signature (or CTRL+C to cancel)\n"
 read cont
 zip -9 -r "$BUILD_DIR".zip "./$BUILD_DIR"
+
+if ! [ -x "$(command -v gpg)" ]; then
+	printf "'gpg' is not installed.\n"
+	exit
+fi
+
 gpg --output "./$BUILD_DIR.sig" --detach-sig "./$BUILD_DIR.zip"
