@@ -124,11 +124,8 @@ prop_rope::predraw(void)
 	pSeat = &g_seats[s];
 	vecPlayer = pSeat->m_vecPredictedOrigin;
 
-	if (checkpvs(vecPlayer, this) == FALSE) {
-		if (checkpvs(vecPlayer, x) == FALSE) {
-			return (PREDRAW_NEXT);
-		}
-	}
+	if (checkpvs(vecPlayer, this) == FALSE)
+		return (PREDRAW_NEXT);
 
 	if (!x) {
 #ifdef GS_DEVELOPER
@@ -167,6 +164,8 @@ prop_rope::predraw(void)
 #else
 		vector lit1 = /*[0.1,0.1,0.1] */ getlight(pos1) / 255;
 		vector lit2 = /*[0.1,0.1,0.1] */ getlight(pos2) / 255;
+
+		makevectors(getproperty(VF_CL_VIEWANGLES));
 		R_BeginPolygon(m_strShader, 0, 0);
 			R_PolygonVertex(pos1, [0,0], lit1, 1.0f);
 			R_PolygonVertex(pos2, [0,1], lit2, 1.0f);
@@ -199,6 +198,7 @@ prop_rope::predraw(void)
 		vector lit1 = /*[0.1,0.1,0.1] */ getlight(pos1) / 255;
 		vector lit2 = /*[0.1,0.1,0.1] */ getlight(pos2) / 255;
 
+		makevectors(getproperty(VF_CL_VIEWANGLES));
 		R_BeginPolygon(m_strShader, 0, 0);
 			R_PolygonVertex(pos1, [0,0], lit1, 1.0f);
 			R_PolygonVertex(pos2, [0,1], lit2, 1.0f);
@@ -249,4 +249,6 @@ prop_rope::prop_rope(void)
 	drawmask = MASK_ENGINE;
 	Init();
 	RendererRestarted();
+	setsize(this, [0,0,0], [0,0,0]);
+	setorigin(this, origin);
 }
