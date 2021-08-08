@@ -375,12 +375,17 @@ menu_main_draw(void)
 	} else {
 		/* Don't even attempt to display the logo.avi otherwise */
 		if (games[gameinfo_current].steambg == 0 && checkcommand("ffmpeg_videobitrate")) {
-			drawpic([g_menuofs[0],g_menuofs[1] + 70], g_bmp[LOGO],
+			drawpic([g_menuofs[0],g_menuofs[1] + 70], g_bmp[LOGO_AVI],
 					g_logosize, [1,1,1], 1.0f);
-			g_logosize = gecko_get_texture_extent(g_bmp[LOGO]);
+			g_logosize = gecko_get_texture_extent(g_bmp[LOGO_AVI]);
 		}
-		drawpic([g_menuofs[0],g_menuofs[1] + 48], g_bmp[LOGO],
-				[512, 128], [1,1,1], 1.0f);
+
+		{
+			vector ofs = drawgetimagesize(g_bmp[LOGO_STATIC]);
+			drawpic([g_menuofs[0] + 320 - (ofs[0] / 2),g_menuofs[1] + 48], g_bmp[LOGO_STATIC],
+				ofs, [1,1,1], 1.0f);
+			
+		}
 
 		Widget_Draw(fn_main);
 		WLabel_Static(235, 216, m_reslbl[IDS_MAIN_NEWGAMEHELP], HELPTXT_SIZE, HELPTXT_SIZE,
