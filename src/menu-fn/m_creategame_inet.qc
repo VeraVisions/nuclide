@@ -91,7 +91,7 @@ void
 menu_creategameinet_draw(void)
 {
 	Header_Draw(HEAD_CREATEGAME);
-	drawpic([g_menuofs[0]+550,g_menuofs[1]+10], "gfx/shell/fragnet",[80,80], [1,1,1], 1.0f, 0);
+	drawpic([g_menuofs[0]+550,g_menuofs[1]+10], g_bmp[FN_LOGO],[80,80], [1,1,1], 1.0f, 0);
 
 	WLabel_Static(216, 143, m_reslbl[IDS_CREATESERVER_NAME], 14, 14, [1,1,1],
 					1.0f, 0, font_arial);

@@ -286,7 +286,7 @@ menu_internetgames_draw(void)
 	Widget_Draw(fn_inet);
 	resorthostcache();
 	Header_Draw(HEAD_INETGAMES);
-	drawpic([g_menuofs[0]+550,g_menuofs[1]+10], "gfx/shell/fragnet",[80,80], [1,1,1], 1.0f, 0);
+	drawpic([g_menuofs[0]+550,g_menuofs[1]+10], g_bmp[FN_LOGO],[80,80], [1,1,1], 1.0f, 0);
 
 	/* Labels */
 	WLabel_Static(252, 128, m_reslbl[IDS_SERVER_GAMESERVER], 10, 10, [1,1,1],

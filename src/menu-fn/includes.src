@@ -67,5 +67,7 @@ m_main.qc
 music.qc
 menu.qc
 background.qc
+
+../client/font.qc
 entry.qc
 #endlist

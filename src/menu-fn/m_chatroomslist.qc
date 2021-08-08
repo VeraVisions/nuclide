@@ -133,7 +133,7 @@ menu_chatroomslist_draw(void)
 {
 	Widget_Draw(fn_chatroomslist);
 	Header_Draw(HEAD_ROOMS);
-	drawpic([g_menuofs[0]+550,g_menuofs[1]+10], "gfx/shell/fragnet",[80,80], [1,1,1], 1.0f, 0);
+	drawpic([g_menuofs[0]+550,g_menuofs[1]+10], g_bmp[FN_LOGO],[80,80], [1,1,1], 1.0f, 0);
 
 	if (crl_iLoading) {
 		cr_dgConnect.Draw();

@@ -400,7 +400,7 @@ menu_chatrooms_draw(void)
 	static float timeout;
 
 	Widget_Draw(fn_chatrooms);
-	drawpic([g_menuofs[0]+550,g_menuofs[1]+10], "gfx/shell/fragnet",[80,80], [1,1,1], 1.0f, 0);
+	drawpic([g_menuofs[0]+550,g_menuofs[1]+10], g_bmp[FN_LOGO],[80,80], [1,1,1], 1.0f, 0);
 
 	if (!g_ircroom.m_iStatus) {
 		cr_makeconnection();

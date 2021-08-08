@@ -24,6 +24,11 @@ vector col_refresh_title;
 vector col_refresh_text;
 vector col_refresh_bg;
 
+vector col_button_bg; /* 1,1,1 */
+vector col_button_select; /* 1,0,0 */
+vector col_button_click; /* 1,1,0 */
+vector col_button_disabled; /* 0.25, 0.25, 0.25 */
+
 string
 Colors_RGB8_to_HEX(vector color)
 {
@@ -84,6 +89,11 @@ Colors_Init(void)
 	col_refresh_title	= [240,180,24] / 255;
 	col_refresh_text	= [255,255,255] / 255;
 	col_refresh_bg		= [56,56,56] / 255;
+
+	col_button_bg		= [1,1,1];
+	col_button_select	= [1,0,0];
+	col_button_click	= [1,1,0];
+	col_button_disabled	= [0.25, 0.25, 0.25];
 	
 	fs_colors = fopen("gfx/shell/colors.lst", FILE_READ);
 
@@ -131,6 +141,18 @@ Colors_Init(void)
 				break;
 			case "REFRESH_BG_COLOR":
 				col_refresh_bg = coltmp;
+				break;
+			case "BUTTON_BG_COLOR":
+				col_button_bg = coltmp;
+				break;
+			case "BUTTON_SELECT_COLOR":
+				col_button_select = coltmp;
+				break;
+			case "BUTTON_CLICK_COLOR":
+				col_button_click = coltmp;
+				break;
+			case "BUTTON_DISABLED_COLOR":
+				col_button_disabled = coltmp;
 				break;
 			}
 		}

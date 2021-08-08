@@ -119,14 +119,12 @@ m_init(void)
 	registercommand("menu_musicstart");
 
 	font_console = loadfont("font", "", "12", -1);
-	font_label = loadfont("label", "gfx/shell/mssansserif.ttf", "10 12 14", -1);
-	font_arial = loadfont("label", "gfx/shell/arial.ttf", "14 11 12", -1);
-	font_label_b = loadfont("label_b", "gfx/shell/arialbd.ttf", "14 12", -1);
-	font_label_p = loadfont("label_p", "gfx/shell/arialbd.ttf", "16 21", -1);
+	font_label = Font_LoadFont("fonts/menu_label.font");
+	font_arial = Font_LoadFont("fonts/menu_main.font");
+	font_label_b = Font_LoadFont("fonts/menu_label_bold.font");
+	font_label_p = Font_LoadFont("fonts/menu_header.font");
 
 	localcmd("plug_load ffmpeg\n");
-
-	shaderforname("logo_avi", "{\n{\nvideomap av:media/logo.avi\n}\n}");
 
 	for (int i = 0; i < g_bmp.length; i++) {
 		precache_pic(g_bmp[i]);
@@ -134,7 +132,6 @@ m_init(void)
 
 	g_btnsize = drawgetimagesize(g_bmp[BTNS_MAIN]);
 	g_btnofs = 26 / g_btnsize[1];
-	precache_pic("gfx/shell/fragnet");
 
 	games_init();
 	main_init();
