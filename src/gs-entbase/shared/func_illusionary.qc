@@ -130,6 +130,10 @@ func_illusionary::Init(void)
 	SetAngles([0,0,0]);
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_NOT);
+
+	if (skin == -1 && m_iRenderMode == RM_TEXTURE)
+		SetRenderMode(RM_TRIGGER);
+
 	MakeStatic();
 }
 #endif

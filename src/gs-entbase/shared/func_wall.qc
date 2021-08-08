@@ -124,6 +124,7 @@ func_wall::Init(void)
 	setorigin(this, origin);
 	movetype = MOVETYPE_PUSH;
 	solid = SOLID_BSP;
+
 	MakeStatic();
 }
 #endif

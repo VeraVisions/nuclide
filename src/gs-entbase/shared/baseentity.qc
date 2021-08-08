@@ -155,7 +155,8 @@ CBaseEntity::MakeStatic(void)
 #endif
 
 	/* static ents = no collision, so let's make a copy for visibility */
-	makestatic(copyentity(this));
+	if (alpha > 0.0)
+		makestatic(copyentity(this));
 
 	/* now *this* is only used for csqc collision */
 	drawmask = 0;
@@ -853,6 +854,9 @@ CBaseEntity::SpawnKey(string strKey, string strValue)
 		break;
 	case "solid":
 		solid = stof(strValue);
+		break;
+	case "skin":
+		skin = stof(strValue);
 		break;
 	case "shadows":
 		if (stof(strValue) == 1) {
