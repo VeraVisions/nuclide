@@ -339,7 +339,7 @@ menu_multiplayer_draw(void)
 			mp_btninet_start();
 		}
 		mp_dgConnect.Draw();
-		WField_Static(162, 180, m_reslbl[IDS_WON_LOGIN], 320, 260,
+		WField_Static(162, 180, m_reslbl[IDS_FNET_LOGIN], 320, 260,
 						col_prompt_text, 1.0f, 2, font_label_p);
 		WField_Static(162, 280, sprintf(m_reslbl[IDS_QUICK_REQUEST],g_connecttimer), 320, 260,
 						col_prompt_title, 1.0f, 2, font_label);

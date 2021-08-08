@@ -411,7 +411,7 @@ menu_chatrooms_draw(void)
 	if (TCP_GetState(&tcp_irc) == STATE_CONNECTING || !g_ircroom.m_iReady) {
 		/* connecting... dialog */
 		cr_dgConnect.Draw();
-		WField_Static(162, 180, m_reslbl[IDS_WON_LOGIN], 320, 260,
+		WField_Static(162, 180, m_reslbl[IDS_FNET_LOGIN], 320, 260,
 						col_prompt_text, 1.0f, 2, font_label_p);
 		WField_Static(162, 200, sprintf("%d seconds remaining...\n", timeout), 320, 260,
 						col_prompt_text, 1.0f, 2, font_label_p);
