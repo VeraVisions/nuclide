@@ -384,7 +384,6 @@ menu_main_draw(void)
 			vector ofs = drawgetimagesize(g_bmp[LOGO_STATIC]);
 			drawpic([g_menuofs[0] + 320 - (ofs[0] / 2),g_menuofs[1] + 48], g_bmp[LOGO_STATIC],
 				ofs, [1,1,1], 1.0f);
-			
 		}
 
 		Widget_Draw(fn_main);

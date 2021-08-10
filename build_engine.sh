@@ -102,13 +102,6 @@ gmake -j $BUILD_PROC qcc-rel
 cp -v ./release/fteqcc ../../../bin/fteqcc
 printf "Built the QuakeC compiler successfully.\n\n"
 
-
-if [ "$BUILD_IQMTOOL" -eq 1 ]; then
-	gmake -j $BUILD_PROC iqm-rel
-	cp -v ./release/iqmtool ../../../bin/iqmtool
-	printf "Built the iqmtool successfully.\n\n"
-fi
-
 if [ "$BUILD_IMGTOOL" -eq 1 ]; then
 	gmake -j $BUILD_PROC imgtool-rel
 	cp -v ./release/imgtool ../../../bin/imgtool
