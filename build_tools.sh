@@ -46,5 +46,5 @@ fi
 
 gmake -j $BUILD_PROC
 printf "Built vvmtool successfully.\n"
-cp -v vvm ../../bin/vvm
+cp -v vvmtool ../../bin/vvmtool
 printf "DONE. Built ALL components successfully.\n"
