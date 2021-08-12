@@ -252,12 +252,13 @@ filestream
 games_find_in_gamedir(string filename, string gamedirname)
 {
 	searchhandle sh;
+	searchhandle gsh;
 	searchhandle psh;
 	filestream fh;
 
 	/* first let's see if we've got a liblist.gam just floating inside the gamedir */
-	sh = search_begin(filename, SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
-	fh = search_fopen(sh, 0);
+	gsh = search_begin(filename, SB_FULLPACKAGEPATH | SB_FORCESEARCH, FALSE, gamedirname);
+	fh = search_fopen(gsh, 0);
 
 	/* we do not. let's search for pk3's to sift through */
 	if (fh < 0) {
@@ -275,8 +276,11 @@ games_find_in_gamedir(string filename, string gamedirname)
 			fh = search_fopen(sh, 0);
 
 			/* we found one */
-			if (fh >= 0)
+			if (fh >= 0) {
+				search_end(sh);
 				break;
+			}
+			search_end(sh);
 		}
 		search_end(psh);
 	}
@@ -297,13 +301,16 @@ games_find_in_gamedir(string filename, string gamedirname)
 			fh = search_fopen(sh, 0);
 
 			/* we found one */
-			if (fh >= 0)
+			if (fh >= 0) {
+				search_end(sh);
 				break;
+			}
+			search_end(sh);
 		}
 		search_end(psh);
 	}
-	search_end(sh);
 
+	search_end(gsh);
 	return (fh);
 }
 

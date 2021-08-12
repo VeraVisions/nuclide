@@ -108,6 +108,109 @@ irc_autoname(void)
 	irc_send(sprintf("NICK %s\n", g_ircroom.m_strNick));
 }
 
+int
+irc_charisnum(int i)
+{
+	if (i >= 48 && i <= 57)
+		return TRUE;
+
+	return FALSE;
+}
+
+string
+irc_hexfrommirc(float num)
+{
+	switch (num) {
+	case 1:
+		return Colors_RGB255_to_HEX([0,0,0]);
+		break;
+	case 2:
+		return Colors_RGB255_to_HEX([0,0,127]);
+		break;
+	case 3:
+		return Colors_RGB255_to_HEX([0,147,0]);
+		break;
+	case 4:
+		return Colors_RGB255_to_HEX([255,0,0]);
+		break;
+	case 5:
+		return Colors_RGB255_to_HEX([127,0,0]);
+		break;
+	case 6:
+		return Colors_RGB255_to_HEX([156,0,156]);
+		break;
+	case 7:
+		return Colors_RGB255_to_HEX([252,127,0]);
+		break;
+	case 8:
+		return Colors_RGB255_to_HEX([255,255,0]);
+		break;
+	case 9:
+		return Colors_RGB255_to_HEX([0,252,0]);
+		break;
+	case 10:
+		return Colors_RGB255_to_HEX([0,147,147]);
+		break;
+	case 11:
+		return Colors_RGB255_to_HEX([0,255,255]);
+		break;
+	case 12:
+		return Colors_RGB255_to_HEX([0,0,252]);
+		break;
+	case 13:
+		return Colors_RGB255_to_HEX([255,0,255]);
+		break;
+	case 14:
+		return Colors_RGB255_to_HEX([127,127,127]);
+		break;
+	case 15:
+		return Colors_RGB255_to_HEX([210,210,210]);
+		break;
+	default:
+		return Colors_RGB255_to_HEX([255,255,255]);
+	}
+}
+
+/* decodes mIRC color messages */
+string
+irc_decode_colors(string msg)
+{
+	int out[1024]; /* maxline */
+	int m;
+	string ret;
+
+	m = 0;
+	for (float i = 0; i < strlen(msg);) {
+		/* we're in color territory now */
+		if ((int)msg[i] == 3) {
+			i++; /* forward */
+			
+			/* we've got a two symbol foreground code */
+			if (irc_charisnum((int)msg[i]) && irc_charisnum((int)msg[i+1])) {
+				float ci = stof(sprintf("%c%c", msg[i], msg[i+1]));
+				string col = irc_hexfrommirc(ci);
+				out[m] = col[0];
+				out[m+1] = col[1];
+				out[m+2] = col[2];
+				out[m+3] = col[3];
+				out[m+4] = col[4];
+				m += 5; /* ^xFFF is 5 chars */
+				i += 2; /* already skipped ^C, so now skip the num */
+			}
+		} else {
+			out[m] = msg[i];
+			m++;
+			i++;
+		}
+	}
+
+	ret = (string)memalloc(m);
+	for (float i = 0; i < m; i++)
+		ret[i] = out[i];
+
+	return ret;
+}
+
 /* irc processing functions */
 void
 irc_receive(string buffer)
@@ -146,15 +249,17 @@ irc_receive(string buffer)
 	switch (argv(2)) {
 	case "PRIVMSG": /* a message */
 		string msg = substring(buffer, strstrofs(buffer, ":", 1) + 1, -1);
+		string out = irc_decode_colors(msg);
 		cr_print(
 			sprintf("%s<%s>%s %s",
 				Colors_RGB255_to_HEX([192,192,192]),
 				src,
 				Colors_RGB255_to_HEX([255,255,255]),
-				msg
+				out
 			)
 		);
-		localcmd(sprintf("_fnchat_msg \"^2[Chat-room] ^7%s^7: %s\"\n", src, msg));
+		localcmd(sprintf("_fnchat_msg \"^2[Chat-room] ^7%s^7: %s\"\n", src, out));
+		memfree((__variant *)out);
 		break;
 	case "321":
 		crl_clearrooms();
