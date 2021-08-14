@@ -28,4 +28,6 @@ find ./src/gs-entbase/ -type f \( -iname \*.qc \) | while read EDEF_N; do
 done;
 
 # each game gets its own ents + general purpose ents appended at the end
-ent_for_mod $1
+if [ $# -gt 0 ]; then
+	ent_for_mod $1
+fi

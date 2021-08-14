@@ -83,16 +83,6 @@ m_init(void)
 	 * them the first time - however FTE doesn't do that when switching manifests
 	 * for unknown reasons. It'll be fixed */
 	cvar_set("r_ignoreentpvs", "0");
-	cvar_set("sv_stepheight", "18");
-	cvar_set("sv_airstepheight", "18");
-	cvar_set("sv_friction", "4");
-	cvar_set("sv_edgefriction", "1");
-	cvar_set("sv_stopspeed", "75");
-	cvar_set("sv_gravity", "800");
-	cvar_set("sv_airaccelerate", "10");
-	cvar_set("sv_wateraccelerate", "8");
-	cvar_set("sv_accelerate", "8");
-	cvar_set("sv_maxspeed", "270");
 	cvar_set("_pext_infoblobs", "1");
 	cvar_set("_q3bsp_bihtraces", "1");
 	cvar_set("sv_gameplayfix_setmodelsize_qw", "1");
