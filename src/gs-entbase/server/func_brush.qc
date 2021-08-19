@@ -27,9 +27,12 @@ When triggered, it'll become invisible and lose its collision.
 "invert_exclusion" : Set to 1 if you want the 'excludednpc' key to act inverted
 
 -------- NOTES --------
-The main thing func_brush is concerned with is appearance, if it's toggled on
-it will always become visible, when toggled off it'll always be invisible.
+The main thing func_brush is concerned with is appearance.
+When you trigger it on/off, it'll be made visible/invisible.
 Collision however depends on the setting of the "Solidity" key.
+If "Solidity" is toggle, the collision will ne enabled/disabled depending
+on whether or not the entity is visible/invisible.
+By default it's visible and has collision.
 
 -------- HISTORY --------
 This entity was introduced in Half-Life 2 (2004).
