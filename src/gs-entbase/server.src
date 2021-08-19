@@ -12,7 +12,8 @@ server/basetrigger.qc
 server/basemonster.qc
 server/basenpc.qc
 server/basephysics.qc
-server/basevehicle.qc
+shared/basevehicle.h
+shared/basevehicle.qc
 server/info_null.qc
 server/info_notnull.qc
 server/info_intermission.qc
@@ -46,7 +47,6 @@ server/func_guntarget.qc
 server/func_tracktrain.qc
 server/func_tracktraincontrols.qc
 server/func_tank.qc
-server/func_tankmortar.qc
 server/func_tankcontrols.qc
 server/func_pushable.qc
 server/func_wall_toggle.qc

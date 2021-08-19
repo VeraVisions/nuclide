@@ -15,12 +15,14 @@
  */
 
 void
-Vehicle_Input(void)
+Vehicle_Input(base_player bp)
 {
-	player pl = (player)self;
+	player pl = (player)bp;
 	
 	if (pl.vehicle) {
 		CBaseVehicle veh = (CBaseVehicle)pl.vehicle;
-		veh.PlayerInput();
+
+		if (veh.PlayerInput)
+			veh.PlayerInput();
 	}
 };

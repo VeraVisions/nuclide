@@ -67,14 +67,6 @@ enumflags
 	DLIGHTFL_CHANGED_PATTERN
 };
 
-#ifdef CLIENT
-class CBaseTrigger:CBaseEntity
-{
-	
-};
-#endif
-
-
 class light_dynamic:CBaseTrigger
 {
 	vector m_vecLight;

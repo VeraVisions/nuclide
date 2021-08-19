@@ -17,6 +17,7 @@
 #define PREDICTED_INT(x) int x; int x ##_net
 #define PREDICTED_FLOAT(x) float x; float x ##_net
 #define PREDICTED_VECTOR(x) vector x; vector x ##_net
+#define PREDICTED_ENT(x) entity x; entity x ##_net
 
 #define PREDICTED_INT_N(x) int x ##_net
 #define PREDICTED_FLOAT_N(x) float x ##_net
@@ -62,6 +63,9 @@ base_player
 	PREDICTED_INT(g_items);
 	PREDICTED_FLOAT(activeweapon);
 
+	/* vehicle info */
+	PREDICTED_ENT(vehicle);
+
 	/* these are NOT networked */
 	int a_ammo1;
 	int a_ammo2;
@@ -69,9 +73,6 @@ base_player
 
 	/* any mods that use hooks */
 	entity hook;
-
-	/* vehicle info */
-	entity vehicle;
 
 	void(void) base_player;
 

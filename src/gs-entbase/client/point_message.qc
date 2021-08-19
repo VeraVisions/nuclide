@@ -111,3 +111,17 @@ PointMessage_Draw(void)
 		}
 	}
 }
+
+void
+PointMessage_StringAtPos(vector org, string message)
+{
+	vector vecPlayer;
+
+	int s = (float)getproperty(VF_ACTIVESEAT);
+	pSeat = &g_seats[s];
+	vecPlayer = pSeat->m_vecPredictedOrigin;
+
+		drawfont = FONT_CON;
+		vector vTemp = project(org) - [(stringwidth(message, FALSE,[12,12]) / 2), 0];
+		drawstring(vTemp, message, [12,12], [1,1,1], 1.0f, 0);
+}

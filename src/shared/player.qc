@@ -89,6 +89,7 @@ base_player::ReceiveEntity(float new, float fl)
 	punchangle[0] = readfloat();
 	punchangle[1] = readfloat();
 	punchangle[2] = readfloat();
+	vehicle = findfloat(world, ::entnum, readentitynum());
 }
 
 /*
@@ -126,6 +127,7 @@ base_player::PredictPreFrame(void)
 	SAVE_STATE(w_attack_next);
 	SAVE_STATE(w_idle_next);
 	SAVE_STATE(punchangle);
+	SAVE_STATE(vehicle);
 }
 
 /*
@@ -164,6 +166,7 @@ base_player::PredictPostFrame(void)
 	ROLL_BACK(w_attack_next);
 	ROLL_BACK(w_idle_next);
 	ROLL_BACK(punchangle);
+	ROLL_BACK(vehicle);
 }
 #else
 /*
@@ -259,6 +262,7 @@ base_player::EvaluateEntity(void)
 	SAVE_STATE(w_attack_next);
 	SAVE_STATE(w_idle_next);
 	SAVE_STATE(punchangle);
+	SAVE_STATE(vehicle);
 }
 
 /*
@@ -337,6 +341,11 @@ base_player::SendEntity(entity ePEnt, float fChanged)
 	WriteFloat(MSG_ENTITY, punchangle[1]);
 	WriteFloat(MSG_ENTITY, punchangle[2]);
 
+	if (vehicle)
+		WriteEntity(MSG_ENTITY, vehicle);
+	else
+		WriteEntity(MSG_ENTITY, __NULL__);
+
 	return (1);
 }
 #endif
@@ -344,4 +353,5 @@ base_player::SendEntity(entity ePEnt, float fChanged)
 void
 base_player::base_player(void)
 {
+	vehicle = __NULL__;
 }

@@ -23,7 +23,6 @@
 #include "spawn.h"
 #include "weapons.h"
 #include "plugins.h"
-#include "vehicles.h"
 #include "traceattack.h"
 #include "footsteps.h"
 

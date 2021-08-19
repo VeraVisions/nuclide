@@ -20,21 +20,21 @@ enumflags
 	VHF_NOATTACK
 };
 
-class CBaseVehicle:CBaseTrigger
+void
+CBaseVehicle::PredictPreFrame(void)
 {
-	int m_iVehicleFlags;
+	SAVE_STATE(angles);
+	SAVE_STATE(origin);
+	SAVE_STATE(velocity);
+}
 
-	entity m_eDriver;
-
-	void(void) CBaseVehicle;
-	vector m_vecPlayerPos;
-
-	virtual void(void) PlayerUpdateFlags;
-	virtual void(void) PlayerAlign;
-	virtual void(base_player) PlayerEnter;
-	virtual void(base_player) PlayerLeave;
-	virtual void() PlayerInput;
-};
+void
+CBaseVehicle::PredictPostFrame(void)
+{
+	ROLL_BACK(angles);
+	ROLL_BACK(origin);
+	ROLL_BACK(velocity);
+}
 
 void
 CBaseVehicle::PlayerInput(void)
@@ -83,12 +83,14 @@ CBaseVehicle::PlayerEnter(base_player pl)
 	pl.movetype = MOVETYPE_NOCLIP;
 	m_eDriver = (entity)pl;
 	pl.vehicle = this;
+	pl.flags |= FL_INVEHICLE;
 }
 
 void
 CBaseVehicle::PlayerLeave(base_player pl)
 {
 	pl.movetype = MOVETYPE_WALK;
+	pl.flags &= ~FL_INVEHICLE;
 
 	if (m_iVehicleFlags & VHF_FROZEN)
 		pl.flags &= ~FL_FROZEN;

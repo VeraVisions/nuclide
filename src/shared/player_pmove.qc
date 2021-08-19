@@ -1,4 +1,6 @@
 
+vector saved_input_movevalues;
+int saved_input_buttons;
 
 void
 base_player::Physics_Fall(float flDownforce)
@@ -262,9 +264,7 @@ base_player::Physics_InputPostMove(void)
 	Animation_PlayerUpdate((player)this);
 
 	/* allow vehicles to prevent weapon logic from happening */
-#ifdef SERVER
-	Vehicle_Input();
-#endif
+	Vehicle_Input(this);
 
 	/* weapon/item logic of what the player controls */
 	Game_Input();
@@ -275,6 +275,9 @@ void
 base_player::Physics_Run(void)
 {
 	float flFallVel = (flags & FL_ONGROUND) ? 0 : -velocity[2];
+
+	saved_input_movevalues = input_movevalues;
+	saved_input_buttons = input_buttons;
 
 	/* maxspeed changes when crouching, TODO: make this game-specific */
 	maxspeed = Physics_MaxSpeed();
@@ -316,6 +319,8 @@ base_player::Physics_Run(void)
 		Physics_Fall(flFallVel);
 	}
 
+	input_movevalues = saved_input_movevalues;
+	input_buttons = saved_input_buttons;
 	Physics_InputPostMove();
 
 	angles[0] = Math_FixDelta(angles[0]);

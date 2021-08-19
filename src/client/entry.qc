@@ -298,7 +298,15 @@ CSQC_UpdateView(float w, float h, float focus)
 		} else {
 			if (self.classname == "player") {
 				pl = (player)self;
-				if (pl.health) {
+				if (pl.flags & FL_INVEHICLE) {
+					CBaseVehicle veh = (CBaseVehicle)pl.vehicle;
+					pSeat->m_vecPredictedOrigin = veh.origin;
+					makevectors(view_angles);
+					vector vStart = [pSeat->m_vecPredictedOrigin[0], pSeat->m_vecPredictedOrigin[1], pSeat->m_vecPredictedOrigin[2] + 16] + (v_right * 4);
+					vector vEnd = vStart + (v_forward * -256) + [0,0,16] + (v_right * 4);
+					traceline(vStart, vEnd, FALSE, self);
+					setproperty(VF_ORIGIN, trace_endpos + (v_forward * 16));
+				} else if (pl.health) {
 					if (autocvar_cl_thirdperson == TRUE) {
 						makevectors(view_angles);
 						vector vStart = [pSeat->m_vecPredictedOrigin[0], pSeat->m_vecPredictedOrigin[1], pSeat->m_vecPredictedOrigin[2] + 16] + (v_right * 4);
@@ -415,6 +423,13 @@ CSQC_UpdateView(float w, float h, float focus)
 				Print_DrawCenterprint();
 			}
 		}
+
+#if 1
+		if (pl.flags & FL_INVEHICLE) {
+			CBaseVehicle veh = (CBaseVehicle)pl.vehicle;
+			PointMessage_StringAtPos(veh.origin, sprintf("Speed: %d", vlen(veh.velocity)));
+		}
+#endif
 
 		if (self.classname == "player")
 			Predict_PlayerPostFrame((player)self);

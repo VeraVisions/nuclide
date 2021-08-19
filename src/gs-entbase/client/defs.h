@@ -15,6 +15,7 @@
  */
 
 #include "../shared/baseentity.h"
+#include "../shared/basevehicle.h"
 
 vector g_vecSunDir;
 

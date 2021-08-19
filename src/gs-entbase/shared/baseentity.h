@@ -108,3 +108,5 @@ class CBaseEntity
 	#endif
 #endif
 };
+
+class CBaseTrigger:CBaseEntity {};

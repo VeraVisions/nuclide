@@ -50,6 +50,7 @@ some random sprites needs to be treated additive.
 This entity was introduced in Half-Life (1998).
 */
 
+#ifdef SERVER
 /* TODO: Implement these */
 enumflags
 {
@@ -65,20 +66,20 @@ class func_tankmortar:CBaseVehicle
 {
 	/* attributes */
 	float m_flYawRate;
-	float m_flYawRange; /* TODO */
 	float m_flPitchRate;
-	float m_flPitchRange; /* TODO */
 	vector m_vecTipPos;
 	float m_flFireRate;
 	int m_iDamage;
-	vector m_vecSpread; /* TODO: Needs checking */
 	string m_strSpriteSmoke;
 	string m_strSpriteFlash;
 	float m_flSpriteScale;
+	vector m_vecSpread; /* TODO: Needs checking */
 	string m_strSndRotate; /* TODO */
 	float m_flPersistance; /* TODO */
 	float m_flMinRange; /* TODO */
 	float m_flMaxRange; /* TODO */
+	float m_flYawRange; /* TODO */
+	float m_flPitchRange; /* TODO */
 
 	float m_flFireTime;
 	void(void) func_tankmortar;
@@ -277,3 +278,4 @@ func_tankmortar::func_tankmortar(void)
 	if (m_strSpriteSmoke)
 		precache_model(m_strSpriteSmoke);
 }
+#endif

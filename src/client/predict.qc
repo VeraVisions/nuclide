@@ -78,6 +78,12 @@ Predict_PlayerPreFrame(player pl)
 	 * information. */
 	pl.PredictPreFrame();
 
+	if (pl.flags & FL_INVEHICLE)
+		if (pl.vehicle) {
+			CBaseVehicle veh = (CBaseVehicle)pl.vehicle;
+			veh.PredictPreFrame();
+		}
+
 	/* run physics code for all the input frames which we've not heard back
 	 * from yet. This continues on in Player_ReceiveEntity! */
 	for (int i = pl.sequence + 1; i <= clientcommandframe; i++) {
@@ -117,6 +123,12 @@ Predict_PlayerPostFrame(player pl)
 {
 	/* give the game/mod a chance to roll back its values too */
 	pl.PredictPostFrame();
+
+	if (pl.flags & FL_INVEHICLE)
+		if (pl.vehicle) {
+			CBaseVehicle veh = (CBaseVehicle)pl.vehicle;
+			veh.PredictPostFrame();
+		}
 
 	/* update bounds */
 	setorigin(pl, pl.origin);

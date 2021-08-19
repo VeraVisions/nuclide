@@ -14,4 +14,4 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void Vehicle_Input(void);
+void Vehicle_Input(base_player);
