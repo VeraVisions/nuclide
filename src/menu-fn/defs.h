@@ -106,6 +106,8 @@ typedef struct
 var int gameinfo_current = -1;
 int gameinfo_count;
 gameinfo_t *games;
+
+#ifndef WEBMENU
 string(float id, float b) getgamedirinfo = #0;
 string(int packageidx, int desiredfield) getpackagemanagerinfo = #0;
 
@@ -141,6 +143,7 @@ typedef struct
 } update_t;
 int update_count;
 update_t *updates;
+#endif
 
 int g_menupage;
 

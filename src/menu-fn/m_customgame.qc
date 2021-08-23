@@ -15,6 +15,7 @@
  */
 
 /* the menu specific variables */
+#ifndef WEBMENU
 CWidget fn_customgame;
 CFrame customgame_frMods;
 CModList customgame_lbMods;
@@ -133,6 +134,7 @@ game_updateinstallcount(void)
 	/* everything is installed */
 	return count;
 }
+#endif
 
 /* local game/mod info parsing */
 void
@@ -143,6 +145,7 @@ games_set(int id)
 	cvar_set("com_fullgamename", games[id].game);
 }
 
+#ifndef WEBMENU
 void
 customgame_liblist_parse(int id, string strKey, string strValue)
 {
@@ -462,8 +465,92 @@ games_check_liblist(int id, string gamedirname)
 }
 
 void
+customgame_btnactivate_start(void)
+{
+	int nextgame = customgame_lbMods.GetSelected();
+
+	games_set(nextgame);
+
+#if 0
+	localcmd(sprintf("gamedir %s %s.fmf\nfs_changegame %s -\n", games[nextgame].gamedir, games[nextgame].gamedir, games[nextgame].gamedir));
+#else
+	if (games[nextgame].info_type == GAMEINFO_MANIFEST)
+		localcmd(sprintf("gamedir %s %s.fmf\nfs_changegame %s -\n", games[nextgame].gamedir, games[nextgame].gamedir, games[nextgame].gamedir));
+	else if (games[nextgame].info_type == GAMEINFO_LIBLIST) {
+		/* some games/mods inherit other directories */
+		if (games[nextgame].fallback_dir) {
+			localcmd(sprintf("gamedir \"logos;platform;%s;%s;%s\"\n", games[nextgame].base_dir, games[nextgame].fallback_dir, games[nextgame].gamedir));
+		} else {
+			localcmd(sprintf("gamedir \"logos;platform;%s;%s\"\n", games[nextgame].base_dir, games[nextgame].gamedir));
+		}
+	} else
+		localcmd(sprintf("gamedir \"logos;platform;%s;%s\"\n", games[nextgame].base_dir, games[nextgame].gamedir));
+#endif
+
+	localcmd("stopmusic\nsnd_restart\nwait\nvid_reload\n");
+	localcmd("menu_restart\n");
+	localcmd("menu_customgame\n");
+	localcmd("menu_musicstart\n");
+}
+
+/* download the .fmf and switch games immediately */
+void
+customgame_btninstall_start(void)
+{
+	int nextgame = customgame_lbMods.GetSelected();
+	localcmd(sprintf("fs_changegame %s http://www.frag-net.com/mods/%s.fmf\n", games[nextgame].gamedir, games[nextgame].gamedir));
+}
+
+void 
+customgame_btndeactivate_start(void)
+{
+	localcmd(sprintf("gamedir %s\n", GAME_DIR));
+	localcmd("stopmusic\nsnd_restart\nwait\nvid_reload\n");
+	localcmd("menu_restart\n");
+	localcmd("menu_customgame\n");
+	localcmd("menu_musicstart\n");
+}
+
+void
+customgame_btndone_start(void)
+{
+	static void customgame_btndone_end(void) {
+		g_menupage = PAGE_MAIN;
+	}
+	localsound("../media/launch_dnmenu1.wav");
+	header.SetStartEndPos(45,45,70,348);
+	header.SetStartEndSize(460,80,156,26);
+	header.m_lerp = 0.0f;
+	header.m_visible = TRUE;
+	header.SetHeader(HEAD_CUSTOM);
+	header.SetExecute(customgame_btndone_end);
+}
+
+void
+customgame_sbmods_changed(int val)
+{
+	customgame_lbMods.SetScroll(val);
+}
+
+void
+customgame_lbmods_changed(void)
+{
+	int gid = customgame_lbMods.GetSelected();
+
+	if (games[gid].installed == TRUE) {
+		customgame_btnActivate.SetExecute(customgame_btnactivate_start);
+		customgame_btnInstall.SetExecute(__NULL__);
+	} else {
+		customgame_btnActivate.SetExecute(__NULL__);
+		customgame_btnInstall.SetExecute(customgame_btninstall_start);
+	}
+}
+#endif
+
+void
 games_init(void)
 {
+#ifndef WEBMENU
 	int id;
 	int foundself = 0;
 	string gamedirname;
@@ -549,93 +636,41 @@ games_init(void)
 		crash();
 		return;
 	}
-}
-
-void
-customgame_btnactivate_start(void)
-{
-	int nextgame = customgame_lbMods.GetSelected();
-
-	games_set(nextgame);
-
-#if 0
-	localcmd(sprintf("gamedir %s %s.fmf\nfs_changegame %s -\n", games[nextgame].gamedir, games[nextgame].gamedir, games[nextgame].gamedir));
 #else
-	if (games[nextgame].info_type == GAMEINFO_MANIFEST)
-		localcmd(sprintf("gamedir %s %s.fmf\nfs_changegame %s -\n", games[nextgame].gamedir, games[nextgame].gamedir, games[nextgame].gamedir));
-	else if (games[nextgame].info_type == GAMEINFO_LIBLIST) {
-		/* some games/mods inherit other directories */
-		if (games[nextgame].fallback_dir) {
-			localcmd(sprintf("gamedir \"logos;platform;%s;%s;%s\"\n", games[nextgame].base_dir, games[nextgame].fallback_dir, games[nextgame].gamedir));
-		} else {
-			localcmd(sprintf("gamedir \"logos;platform;%s;%s\"\n", games[nextgame].base_dir, games[nextgame].gamedir));
-		}
-	} else
-		localcmd(sprintf("gamedir \"logos;platform;%s;%s\"\n", games[nextgame].base_dir, games[nextgame].gamedir));
+	int id = 0;
+	string gamedirname = cvar_string("game");
+	gameinfo_count++;
+	games = memalloc(sizeof(gameinfo_t) * gameinfo_count);
+	/* Fill in the defaults */
+	games[id].game = gamedirname;
+	games[id].gamedir = gamedirname;
+	games[id].base_dir = GAME_DIR;
+	games[id].url_info = "";
+	games[id].url_dl = "";
+	games[id].version = "1.0";
+	games[id].size = 0;
+	games[id].type = "Both";
+	games[id].nomodels = 0;
+	games[id].nosprays = 0;
+	games[id].mpentity = "info_player_deathmatch";
+	games[id].gamedll = "progs.dat";
+	games[id].startmap = "map c0a0\n";
+	games[id].trainingmap = "map t0a0\n";
+	games[id].cldll = 1;
+	games[id].hlversion = "1000";
+	games[id].svonly = 0;
+	games[id].installed = 1;
+	games[id].chatroom = gamedirname;
+	games[id].readme = "readme.txt";
+	games[id].pkgid = -1;
+	games[id].steambg = 0;
 #endif
-
-	localcmd("stopmusic\nsnd_restart\nwait\nvid_reload\n");
-	localcmd("menu_restart\n");
-	localcmd("menu_customgame\n");
-	localcmd("menu_musicstart\n");
-}
-
-/* download the .fmf and switch games immediately */
-void
-customgame_btninstall_start(void)
-{
-	int nextgame = customgame_lbMods.GetSelected();
-	localcmd(sprintf("fs_changegame %s http://www.frag-net.com/mods/%s.fmf\n", games[nextgame].gamedir, games[nextgame].gamedir));
-}
-
-void 
-customgame_btndeactivate_start(void)
-{
-	localcmd(sprintf("gamedir %s\n", GAME_DIR));
-	localcmd("stopmusic\nsnd_restart\nwait\nvid_reload\n");
-	localcmd("menu_restart\n");
-	localcmd("menu_customgame\n");
-	localcmd("menu_musicstart\n");
-}
-
-void
-customgame_btndone_start(void)
-{
-	static void customgame_btndone_end(void) {
-		g_menupage = PAGE_MAIN;
-	}
-	localsound("../media/launch_dnmenu1.wav");
-	header.SetStartEndPos(45,45,70,348);
-	header.SetStartEndSize(460,80,156,26);
-	header.m_lerp = 0.0f;
-	header.m_visible = TRUE;
-	header.SetHeader(HEAD_CUSTOM);
-	header.SetExecute(customgame_btndone_end);
-}
-
-void
-customgame_sbmods_changed(int val)
-{
-	customgame_lbMods.SetScroll(val);
-}
-
-void
-customgame_lbmods_changed(void)
-{
-	int gid = customgame_lbMods.GetSelected();
-
-	if (games[gid].installed == TRUE) {
-		customgame_btnActivate.SetExecute(customgame_btnactivate_start);
-		customgame_btnInstall.SetExecute(__NULL__);
-	} else {
-		customgame_btnActivate.SetExecute(__NULL__);
-		customgame_btnInstall.SetExecute(customgame_btninstall_start);
-	}
 }
 
 void
 menu_customgame_init(void)
 {
+#ifndef WEBMENU
 	fn_customgame = spawn(CWidget);
 	customgame_dlgWait = spawn(CDialog);
 
@@ -691,11 +726,13 @@ menu_customgame_init(void)
 	customgame_sbMods.SetCallback(customgame_sbmods_changed);
 	customgame_sbMods.SetMax(gameinfo_count);
 	Widget_Add(fn_customgame, customgame_sbMods);
+#endif
 }
 
 void
 menu_customgame_draw(void)
 {
+#ifndef WEBMENU
 	Header_Draw(HEAD_CUSTOM);
 	Widget_Draw(fn_customgame);
 
@@ -723,10 +760,13 @@ menu_customgame_draw(void)
 	}
 
 	customgame_sbMods.SetMax(gameinfo_count-1); /* don't show our current game */
+#endif
 }
 
 void
 menu_customgame_input(float evtype, float scanx, float chary, float devid)
 {
+#ifndef WEBMENU
 	Widget_Input(fn_customgame, evtype, scanx, chary, devid);
+#endif
 }

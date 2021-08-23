@@ -252,13 +252,14 @@ m_draw(vector screensize)
 
 	main_draw();
 
+#ifndef WEBMENU
 	/* HACK! after a custom game switches .fmf files, we need to force restart
 	 * our menu. I'm so, so sorry. No, RendererRestarted doesn't see fs_game
 	 * fast enough either. */
 	if (cvar_string("fs_game") != games[gameinfo_current].gamedir) {
 		localcmd(sprintf("gameinfo_gamedir %s\nmenu_restart\n", cvar_string("fs_game")));
 	}
-	
+#endif
 	oldtime = time;
 }
 

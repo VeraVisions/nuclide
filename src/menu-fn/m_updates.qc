@@ -16,6 +16,7 @@
 
 #define FN_UPDATE_IMGURL "http://www.frag-net.com/dl/img/%s.jpg"
 
+#ifndef WEBMENU
 enum
 {
 	GPMI_NAME,		// name of the package, for use with the pkg command.
@@ -125,61 +126,6 @@ up_sbupdates_changed(int val)
 	up_lbUpdates.SetScroll(val);
 }
 
-/* Init */
-void
-menu_updates_init(void)
-{
-	fn_updates = spawn(CWidget);
-
-	up_btnDone = spawn(CMainButton);
-	up_btnDone.SetImage(BTN_DONE);
-	up_btnDone.SetExecute(up_btndone_start);
-	up_btnDone.SetPos(50,420+13);
-	Widget_Add(fn_updates, up_btnDone);
-
-	up_btnApply = spawn(CMainButton);
-	up_btnApply.SetImage(BTN_UPDATE);
-	up_btnApply.SetExecute(up_btnapply_start);
-	up_btnApply.SetPos(350+96,420+30);
-	Widget_Add(fn_updates, up_btnApply);
-
-	up_btnInstall = spawn(CMainButton);
-	up_btnInstall.SetImage(BTN_INSTALL);
-	up_btnInstall.SetExecute(up_btninstall_start);
-	up_btnInstall.SetPos(350,420);
-	Widget_Add(fn_updates, up_btnInstall);
-
-	up_btnDelete = spawn(CMainButton);
-	up_btnDelete.SetImage(BTN_DELETE);
-	up_btnDelete.SetExecute(up_btnremove_start);
-	up_btnDelete.SetPos(350+200,420);
-	Widget_Add(fn_updates, up_btnDelete);
-
-	up_frUpdates = spawn(CFrame);
-	up_frUpdates.SetPos(50,160);
-	up_frUpdates.SetSize(200+50,250);
-	Widget_Add(fn_updates, up_frUpdates);
-	
-	up_lbUpdates = spawn(CUpdateList);
-	up_lbUpdates.SetPos(53,163);
-	up_lbUpdates.SetSize(194+50,244);
-	up_lbUpdates.SetChanged(up_lbupdates_changed);
-	up_lbUpdates.SetDClicked(up_toggleinstall);
-	Widget_Add(fn_updates, up_lbUpdates);
-	
-	up_sbUpdates = spawn(CScrollbar);
-	up_sbUpdates.SetPos(53+194+50,160);
-	up_sbUpdates.SetItemheight(18);
-	up_sbUpdates.SetHeight(250);
-	up_sbUpdates.SetCallback(up_sbupdates_changed);
-	up_sbUpdates.SetMax(0);
-	Widget_Add(fn_updates, up_sbUpdates);
-
-	up_frPreview = spawn(CFrame);
-	up_frPreview.SetPos(350,160);
-	up_frPreview.SetSize(256+6,128+6);
-	Widget_Add(fn_updates, up_frPreview);
-}
 
 void
 menu_updates_refresh(void)
@@ -270,11 +216,72 @@ menu_updates_refresh(void)
 	up_lbUpdates.SetMax(update_count);
 	up_lbUpdates.SetSelected(0);
 }
+#endif
+
+/* Init */
+void
+menu_updates_init(void)
+{
+#ifndef WEBMENU
+	fn_updates = spawn(CWidget);
+
+	up_btnDone = spawn(CMainButton);
+	up_btnDone.SetImage(BTN_DONE);
+	up_btnDone.SetExecute(up_btndone_start);
+	up_btnDone.SetPos(50,420+13);
+	Widget_Add(fn_updates, up_btnDone);
+
+	up_btnApply = spawn(CMainButton);
+	up_btnApply.SetImage(BTN_UPDATE);
+	up_btnApply.SetExecute(up_btnapply_start);
+	up_btnApply.SetPos(350+96,420+30);
+	Widget_Add(fn_updates, up_btnApply);
+
+	up_btnInstall = spawn(CMainButton);
+	up_btnInstall.SetImage(BTN_INSTALL);
+	up_btnInstall.SetExecute(up_btninstall_start);
+	up_btnInstall.SetPos(350,420);
+	Widget_Add(fn_updates, up_btnInstall);
+
+	up_btnDelete = spawn(CMainButton);
+	up_btnDelete.SetImage(BTN_DELETE);
+	up_btnDelete.SetExecute(up_btnremove_start);
+	up_btnDelete.SetPos(350+200,420);
+	Widget_Add(fn_updates, up_btnDelete);
+
+	up_frUpdates = spawn(CFrame);
+	up_frUpdates.SetPos(50,160);
+	up_frUpdates.SetSize(200+50,250);
+	Widget_Add(fn_updates, up_frUpdates);
+	
+	up_lbUpdates = spawn(CUpdateList);
+	up_lbUpdates.SetPos(53,163);
+	up_lbUpdates.SetSize(194+50,244);
+	up_lbUpdates.SetChanged(up_lbupdates_changed);
+	up_lbUpdates.SetDClicked(up_toggleinstall);
+	Widget_Add(fn_updates, up_lbUpdates);
+	
+	up_sbUpdates = spawn(CScrollbar);
+	up_sbUpdates.SetPos(53+194+50,160);
+	up_sbUpdates.SetItemheight(18);
+	up_sbUpdates.SetHeight(250);
+	up_sbUpdates.SetCallback(up_sbupdates_changed);
+	up_sbUpdates.SetMax(0);
+	Widget_Add(fn_updates, up_sbUpdates);
+
+	up_frPreview = spawn(CFrame);
+	up_frPreview.SetPos(350,160);
+	up_frPreview.SetSize(256+6,128+6);
+	Widget_Add(fn_updates, up_frPreview);
+#endif
+}
+
 
 /* Drawing */
 void
 menu_updates_draw(void)
 {
+#ifndef WEBMENU
 	static int old_enabled;
 
 	float fl = 0;
@@ -355,10 +362,13 @@ menu_updates_draw(void)
 
 	if (g_updates_previewpic)
 	drawpic([g_menuofs[0]+350+3,g_menuofs[1]+160+3], g_updates_previewpic, [256,128], [1,1,1], 1.0f);
+#endif
 }
 
 void
 menu_updates_input(float evtype, float scanx, float chary, float devid)
 {
+#ifndef WEBMENU
 	Widget_Input(fn_updates, evtype, scanx, chary, devid);
+#endif
 }

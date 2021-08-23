@@ -20,7 +20,7 @@
 #define ML_COL_3 [240,180,20] / 255 // Other
 #define ML_COL_4 [200,200,200] / 255 // Grey Info
 
-
+#ifndef WEBMENU
 class CUpdateList:CWidget
 {
 	int m_size[2];
@@ -229,3 +229,4 @@ CUpdateList::GetSelectedItem(void)
 	}
 	return m_entries[m_selected];
 }*/
+#endif

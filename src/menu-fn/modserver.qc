@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifndef WEBMENU
 #define MODSERVER_REQ_LIST 100
 #define MODSERVER_REQ_ITEM 101
 
@@ -214,3 +215,4 @@ ModServer_URI_Callback(float id, float code, string data, int resourcebytes)
 		print(sprintf("^1ModServer_URI_Callback^7: Unknown request id %d with code %d\n", id, code));
 	}
 }
+#endif

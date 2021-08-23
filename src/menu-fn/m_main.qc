@@ -373,6 +373,7 @@ menu_main_draw(void)
 		WLabel_Static(235, 440, m_reslbl[IDS_MAIN_QUITHELP], HELPTXT_SIZE, HELPTXT_SIZE,
 						col_help,1.0f, 0, font_label);
 	} else {
+#ifndef WEBMENU
 		/* Don't even attempt to display the logo.avi otherwise */
 		if (games[gameinfo_current].steambg == 0 && checkcommand("ffmpeg_videobitrate")) {
 			drawpic([g_menuofs[0],g_menuofs[1] + 70], g_bmp[LOGO_AVI],
@@ -385,7 +386,7 @@ menu_main_draw(void)
 			drawpic([g_menuofs[0] + 320 - (ofs[0] / 2),g_menuofs[1] + 48], g_bmp[LOGO_STATIC],
 				ofs, [1,1,1], 1.0f);
 		}
-
+#endif
 		Widget_Draw(fn_main);
 		WLabel_Static(235, 216, m_reslbl[IDS_MAIN_NEWGAMEHELP], HELPTXT_SIZE, HELPTXT_SIZE,
 						col_help,1.0f, 0, font_label);
