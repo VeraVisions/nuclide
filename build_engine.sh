@@ -68,7 +68,13 @@ if [ -f "$FTE_MAKEFILE" ]; then
 	if [ "$BUILD_UPDATE" -eq 1 ]; then
 		printf "Engine is present, updating...\n"
 		cd ./src/engine/
-		svn -r $BUILD_ENGINEREVISION up
+
+		if [ "$BUILD_ENGINEREVISION" == 0 ]; then
+			svn up
+		else
+			svn -r $BUILD_ENGINEREVISION up
+		fi
+
 		cd ./engine
 	else
 		cd ./src/engine/engine
@@ -76,7 +82,12 @@ if [ -f "$FTE_MAKEFILE" ]; then
 else
 	printf "Engine is NOT present, cloning...\n"
 	cd ./src/
-	svn -r $BUILD_ENGINEREVISION checkout https://svn.code.sf.net/p/fteqw/code/trunk engine
+
+	if [ "$BUILD_ENGINEREVISION" == 0 ]; then
+		svn checkout https://svn.code.sf.net/p/fteqw/code/trunk engine
+	else
+		svn -r $BUILD_ENGINEREVISION checkout https://svn.code.sf.net/p/fteqw/code/trunk engine
+	fi
 	cd ./engine/engine
 fi
 

@@ -34,5 +34,5 @@ if [ "$VMAP_NOVIS" != "1" ]; then
 fi
 
 if [ "$VMAP_NOLIGHT" != "1" ]; then
-	"$SCRPATH"/bin/vmap -light -custinfoparms -fs_basepath "$SCRPATH" -v -fs_game platform -bounce 8 -samplesize 8 -threads $BUILD_PROC -shade -shadeangle 60 -patchshadows $*
+	"$SCRPATH"/bin/vmap -light -custinfoparms -fs_basepath "$SCRPATH" -v -dirty -fs_game platform -bounce 8 -samplesize 8 -threads $BUILD_PROC -shade -shadeangle 60 -patchshadows $*
 fi

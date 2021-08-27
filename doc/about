@@ -1,21 +1,23 @@
 About Nuclide
 
 The Nuclide project produces a freely available game-logic component and 
-development platform on top of FTEQW.
-Our goals is to create a modern research base for new advancements, features
-as well as support games whose formats are supported by FTEQW but their code
-isn't freely accessible.
+development platform on top of FTEQW; which is the engine we use.
+Our goals is to create a modern research base for new advancements, as well
+as to have a stable base with a good API for games.
+
+- Client-side predicted movement and inputs for things like weapons-systems
+- Lots of well documented objects to use in level formats supported by FTEQW
+- Reference implementations for a lot of features exlusive to FTEQW compared
+  to other idTech engines
+- Designed to be familar to developers who're used to GoldSrc and Source engine
+  projects
 
 1. Why might I want to use it?
 
-Nuclide is for you when:
-
-- You want to play one of our supported games on the platform/arch of your
-  choice.
-- You want to develop a game using a lot of complex and well-tested objects
-  we have written for you.
-- You want to make modifications for a game we support and have full control
-  over what you can do.
+You want to develop a game using a lot of complex and well-tested objects
+which might be tedious to implement on your own.
+You want to run or make modifications for a game using Nuclide and need full
+control over what you can do.
 
 2. How free is Nuclide?
 
@@ -25,17 +27,8 @@ instead uses a ISC-like license. This means you can use, copy, modify and
 distribute the code and work resulting from it for any purpose.
 Please read the very short 'license' document for details.
 
-3. What is the release cycle?
+3. What are the alternatives?
 
-At the current moment, there is no strict release cycle as everthing is
-still very early (albeit usable). I am aiming for a stable release cycle of
-every 3-6 months once we leave Beta.
-
-4. How can I support the project?
-
-Currently, the only way to support the efforts of the one-man-team behind
-this, is to use https://www.paypal.me/eukara/
-
-It was only possible for Nuclide to get this far because of the contributions
-of single individuals from the free-software community.
-Thanks you so much, everyone who has contributed! 
+Implementing systems such as prediction, complex map objects and entities on
+your own or licensing another engine such as Source that ships with its own
+Source SDK Base.
