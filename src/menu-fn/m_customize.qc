@@ -19,9 +19,15 @@ CMainButton cz_btnDone;
 CMainButton cz_btnAdvanced;
 CTextBox cz_tbNetname;
 CPictureSwitch cz_psSpray;
-CPictureSwitch cz_psModel;
 CSlider cz_sldTopcolor;
 CSlider cz_sldBottomcolor;
+
+#ifdef MODEL_PREVIEW
+CUI3DView cz_3dModel;
+var int g_iModel;
+#else
+CPictureSwitch cz_psModel;
+#endif
 
 vector g_vecTopcolor;
 vector g_vecBottomcolor;
@@ -65,7 +71,11 @@ cz_btnadvanced_start(void)
 void
 cz_cbModelChanged(void)
 {
+#ifdef MODEL_PREVIEW
+	string mdl = g_models[g_iModel];
+#else
 	string mdl = cz_psModel.GetPic();
+#endif
 	tokenizebyseparator(mdl, "/");
 	localcmd(sprintf("seta _cl_playermodel %s\n", argv(2)));
 	localcmd(sprintf("setinfo model %s\n", argv(2)));
@@ -243,6 +253,98 @@ menu_customize_init(void)
 	}
 
 	if (games[gameinfo_current].nomodels == 0) {
+#ifdef MODEL_PREVIEW
+		static entity eModel;
+		static vector vecDistance = [ 45, 0, 0 ];
+		static void ModelPreview_SetModel( string strModel ) {
+			setmodel( eModel, strModel );
+			eModel.colormap = 0;
+			AngleVectors( cz_3dModel.Get3DAngles() );
+			cz_3dModel.Set3DPos( v_forward * -vecDistance[0] + v_right * vecDistance[1] + v_up * vecDistance[2] );
+		}
+		static void ModelPreview_Draw ( void ) {
+			static int initialized = FALSE;
+			if ( !initialized ) {
+				initialized = TRUE;
+				eModel = spawn();
+				eModel.angles[1] -= 180;
+				ModelPreview_SetModel(sprintf("models/player/%s/%s.mdl", cvar_string("_cl_playermodel"), cvar_string("_cl_playermodel")));
+			}
+			addentity( eModel );
+			eModel.frame1time += frametime;
+		}
+		static void ModelPreview_Input ( float type, float x, float y, float flDevID ) {
+			if (type == IE_KEYUP && x == K_MOUSE1 && Util_CheckMouse(414, 340, 64, 24) == TRUE) {
+				g_iModel--;
+				if (g_iModel < 0)
+					g_iModel = g_modelcount - 1;
+
+				cz_cbModelChanged();
+				ModelPreview_SetModel(sprintf("%s.mdl", g_models[g_iModel]));
+			}
+			if (type == IE_KEYUP && x == K_MOUSE1 && Util_CheckMouse(510, 340, 64, 24) == TRUE) {
+				g_iModel++;
+				if (g_iModel >= g_modelcount)
+					g_iModel = 0;
+
+				cz_cbModelChanged();
+				ModelPreview_SetModel(sprintf("%s.mdl", g_models[g_iModel]));
+			}
+			/*static int iMouseDrag = FALSE;
+			static int iShiftDrag = FALSE;
+			static vector vecDragOfs;
+			vector vecDifference;
+
+			int iMouseOver =  Util_MouseAbove( getmousepos(), cz_3dModel.m_parent.GetPos() + cz_3dModel.GetPos(), cz_3dModel.GetSize() );
+			if ( flEVType == IE_KEYDOWN ) {
+				if ( flKey == K_MOUSE1 && iMouseOver == TRUE ) {
+					iMouseDrag = TRUE;
+					vecDragOfs = getmousepos();
+				} else if ( flKey == K_MWHEELUP && iMouseOver == TRUE ) {
+					vecDistance[0] = bound( 0, --vecDistance[0], 512 );
+					AngleVectors( cz_3dModel.Get3DAngles() );
+					cz_3dModel.Set3DPos( v_forward * -vecDistance[0] + v_right * vecDistance[1] + v_up * vecDistance[2] );
+				} else if ( flKey == K_MWHEELDOWN && iMouseOver == TRUE ) {
+					vecDistance[0] = bound( 0, ++vecDistance[0], 512 );
+					AngleVectors( cz_3dModel.Get3DAngles() );
+					cz_3dModel.Set3DPos( v_forward * -vecDistance[0] + v_right * vecDistance[1] + v_up * vecDistance[2] );
+				} else if ( flKey == K_LSHIFT && iMouseOver == TRUE ) {
+					iShiftDrag = TRUE;
+				}
+			} else if ( flEVType == IE_KEYUP ) {
+				if ( flKey == K_MOUSE1 ) {
+					iMouseDrag = FALSE;
+				} else if ( flKey == K_LSHIFT ) {
+					iShiftDrag = FALSE;
+				}
+			}
+
+			if ( iMouseDrag == TRUE && iShiftDrag == FALSE ) {
+				if ( flEVType == IE_MOUSEABS ) {
+					vecDifference = [ flChar, flKey ] - [ vecDragOfs[1], vecDragOfs[0] ];
+					cz_3dModel.Set3DAngles( cz_3dModel.Get3DAngles() + vecDifference );
+					AngleVectors( cz_3dModel.Get3DAngles() );
+					cz_3dModel.Set3DPos( v_forward * -vecDistance[0] + v_right * vecDistance[1] + v_up * vecDistance[2] );
+					vecDragOfs = getmousepos();
+				}
+			} else if ( iMouseDrag == TRUE && iShiftDrag == TRUE ) {
+				if ( flEVType == IE_MOUSEABS ) {
+					vecDifference = [ flChar, flKey ] - [ vecDragOfs[1], vecDragOfs[0] ];
+					vecDistance[1] -= vecDifference[1];
+					vecDistance[2] += vecDifference[0];
+					cz_3dModel.Set3DPos( v_forward * -vecDistance[0] + v_right * vecDistance[1] + v_up * vecDistance[2] );
+					vecDragOfs = getmousepos();
+				}
+			}*/
+		}
+
+		cz_3dModel = spawn(CUI3DView);
+		cz_3dModel.SetPos(410,160);
+		cz_3dModel.SetSize(170,221);
+		cz_3dModel.SetDrawFunc(ModelPreview_Draw);
+		cz_3dModel.SetInputFunc(ModelPreview_Input);
+		Widget_Add(fn_customize, cz_3dModel);
+#else
 		cz_psModel = spawn(CPictureSwitch);
 		cz_psModel.SetPos(410,160);
 		cz_psModel.SetSize(170,221);
@@ -252,7 +354,8 @@ menu_customize_init(void)
 		cz_psModel.SetCallback(cz_cbModelChanged);
 		cz_psModel.SetValueS(sprintf("models/player/%s/%s", cvar_string("_cl_playermodel"), cvar_string("_cl_playermodel")));
 		Widget_Add(fn_customize, cz_psModel);
-	
+#endif
+
 		cz_sldTopcolor = spawn(CSlider);
 		cz_sldTopcolor.SetPos(420,400);
 		cz_sldTopcolor.SetValue(cvar("_cl_topcolor"));
@@ -281,14 +384,26 @@ menu_customize_draw(void)
 	if (games[gameinfo_current].nomodels == 0) {
 		WLabel_Static(410, 140, sprintf(m_reslbl[IDS_MODEL_NAME], cvar_string("_cl_playermodel")), 14, 14, [1,1,1],
 						1.0f, 0, font_arial);
-
+#ifdef MODEL_PREVIEW
+		drawfill([g_menuofs[0] + 414,g_menuofs[1] + 370], [64,12], g_vecTopcolor, 0.75f);
+		drawfill([g_menuofs[0] + 510,g_menuofs[1] + 370], [64,12], g_vecBottomcolor, 0.75f);
+#else
 		drawfill([g_menuofs[0] + 414,g_menuofs[1] + 346], [64,12], g_vecTopcolor, 0.75f);
 		drawfill([g_menuofs[0] + 510,g_menuofs[1] + 346], [64,12], g_vecBottomcolor, 0.75f);
+#endif
 	}
 
 	if (games[gameinfo_current].nosprays == 0)
 	WLabel_Static(212, 203, m_reslbl[IDS_PROFILE_LOGO], 14, 14, [1,1,1],
 					1.0f, 0, font_arial);
+
+#ifdef MODEL_PREVIEW
+	/* fake buttons */
+	WLabel_Static(414, 340, "Previous", 14, 14, [1,1,1],
+						1.0f, 0, font_arial);
+	WLabel_StaticR(575, 340, "Next", 14, 14, [1,1,1],
+						1.0f, 0, font_arial);
+#endif
 }
 
 void

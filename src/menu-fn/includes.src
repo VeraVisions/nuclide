@@ -15,6 +15,7 @@ modserver.qc
 tcp.qc
 
 widgets.qc
+w_3dview.qc
 w_checkbox.qc
 w_colorlist.qc
 w_dialog.qc
