@@ -258,7 +258,6 @@ menu_customize_init(void)
 		static vector vecDistance = [ 45, 0, 0 ];
 		static void ModelPreview_SetModel( string strModel ) {
 			setmodel( eModel, strModel );
-			eModel.colormap = 0;
 			AngleVectors( cz_3dModel.Get3DAngles() );
 			cz_3dModel.Set3DPos( v_forward * -vecDistance[0] + v_right * vecDistance[1] + v_up * vecDistance[2] );
 		}
@@ -272,6 +271,7 @@ menu_customize_init(void)
 			}
 			addentity( eModel );
 			eModel.frame1time += frametime;
+			eModel.colormod = [cz_sldTopcolor.m_value, cz_sldBottomcolor.m_value, 2.0];
 		}
 		static void ModelPreview_Input ( float type, float x, float y, float flDevID ) {
 			if (type == IE_KEYUP && x == K_MOUSE1 && Util_CheckMouse(414, 340, 64, 24) == TRUE) {

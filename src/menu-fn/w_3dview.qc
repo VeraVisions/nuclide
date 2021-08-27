@@ -1,4 +1,5 @@
 
+noref .vector colormod;
 noref .vector angles;
 noref .float colormap;
 noref .float frame, frame2, lerpfrac, renderflags, frame1time;

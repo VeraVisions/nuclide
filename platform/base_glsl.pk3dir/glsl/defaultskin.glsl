@@ -133,6 +133,65 @@ varying vec3 light;
 		return texture2D(targ, texc + coord_ofs * size);
 	}
 
+	vec3 hsv2rgb(float h, float s, float v)
+	{
+		int i;
+		float f,p,q,t;
+		vec3 col = vec3(0,0,0);
+
+		h = max(0.0, min(360.0, h));
+		s = max(0.0, min(100.0, s));
+		v = max(0.0, min(100.0, v));
+
+		s /= 100;
+		v /= 100;
+
+		if (s == 0) {
+			col.x= col.y = col.z = int(v*255);
+			return col / 255.0;
+		}
+
+		h /= 60;
+		i = int(floor(h));
+		f = h - i;
+		p = v * (1 - s);
+		q = v * (1 - s * f);
+		t = v * (1 - s * (1 - f));
+
+		switch (i) {
+		case 0:
+			col[0] = int(255*v);
+			col[1] = int(255*t);
+			col[2] = int(255*p);
+			break;
+		case 1:
+			col[0] = int(255*q);
+			col[1] = int(255*v);
+			col[2] = int(255*p);
+			break;
+		case 2:
+			col[0] = int(255*p);
+			col[1] = int(255*v);
+			col[2] = int(255*t);
+			break;
+		case 3:
+			col[0] = int(255*p);
+			col[1] = int(255*q);
+			col[2] = int(255*v);
+			break;
+		case 4:
+			col[0] = int(255*t);
+			col[1] = int(255*p);
+			col[2] = int(255*v);
+			break;
+		default:
+			col[0] = int(255*v);
+			col[1] = int(255*p);
+			col[2] = int(255*q);
+		}
+		return col / 255.0;
+	}
+
 	void main ()
 	{
 		vec4 diffuse_f;
@@ -149,11 +208,24 @@ varying vec3 light;
 
 	#ifdef UPPER
 		vec4 uc = texture2D(s_upper, tex_c);
-		diffuse_f.rgb += uc.rgb*e_uppercolour*uc.a;
+
+		if (e_colourident.z == 2.0) {
+			vec3 topcolor = hsv2rgb(e_colourident.x * 360, 100, 100);
+			diffuse_f.rgb += uc.rgb*topcolor*uc.a;
+		} else {
+			diffuse_f.rgb += uc.rgb*e_uppercolour*uc.a;
+		}
 	#endif
+
 	#ifdef LOWER
 		vec4 lc = texture2D(s_lower, tex_c);
-		diffuse_f.rgb += lc.rgb*e_lowercolour*lc.a;
+
+		if (e_colourident.z == 2.0) {
+			vec3 bottomcolor = hsv2rgb(e_colourident.y * 360, 100, 100);
+			diffuse_f.rgb += lc.rgb*bottomcolor*lc.a;
+		} else {
+			diffuse_f.rgb += lc.rgb*e_lowercolour*lc.a;
+		}
 	#endif
 
 		diffuse_f.rgb *= light;
@@ -169,7 +241,9 @@ varying vec3 light;
 		diffuse_f = out_f;
 #endif
 
+	if (e_colourident.z != 2.0) {
 		diffuse_f *= e_colourident;
+	}
 
 	#if gl_stipplealpha==1
 		float alpha = e_colourident.a;
