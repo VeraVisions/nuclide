@@ -438,6 +438,7 @@ CSQC_UpdateView(float w, float h, float focus)
 	}
 
 	EFX_UpdateListener();
+	DSP_UpdateSoundscape();
 
 	if (autocvar_s_al_debug)
 		EFX_DebugInfo();

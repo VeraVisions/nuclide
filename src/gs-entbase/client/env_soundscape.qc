@@ -71,6 +71,8 @@ env_soundscape::env_soundscape(void)
 	g_scapes+=1;
 	m_iID = g_scapes;
 	m_iRadius = 1024;
+	setsize(this, [0,0,0], [0,0,0]);
+	Init();
 	setorigin(this, origin);
 }
 
@@ -92,6 +94,8 @@ DSP_UpdateSoundscape(void)
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
 	vecPlayer = pSeat->m_vecPredictedOrigin;
+
+	g_entSoundScape = __NULL__;
 
 	float bestdist = 999999;
 	for (entity e = world; (e = find(e, classname, "env_soundscape"));) {
@@ -117,7 +121,7 @@ DSP_UpdateSoundscape(void)
 	}
 
 	/* fix? */
-	if (g_entOldScape != world) {
+	if (g_entOldScape != __NULL__) {
 		/* if the shader isn't any different... don't bother changing it? */
 		if (g_entOldScape.m_iShader == g_entSoundScape.m_iShader) {
 			g_entSoundScape = g_entOldScape;
