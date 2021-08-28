@@ -31,7 +31,8 @@ enum
 	ENT_DECAL,
 	ENT_OLDCAMERA,
 	ENT_MONITOR,
-	ENT_SEPARATOR
+	ENT_VEHICLE,
+	ENT_SEPARATOR,
 };
 
 /* entity update flags */

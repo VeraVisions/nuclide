@@ -19,6 +19,9 @@ class CBaseVehicle:CBaseTrigger
 #ifdef CLIENT
 	virtual void(void) PredictPreFrame;
 	virtual void(void) PredictPostFrame;
+	virtual void(float, float) ReadEntity;
+#else
+	virtual float(entity, float) SendEntity;
 #endif
 
 	virtual void(void) PlayerUpdateFlags;
