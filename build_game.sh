@@ -17,6 +17,11 @@ if [ -f "$SCRPATH"/bin/fteqcc ]; then
 
 	# We want to compile a specific game
 	if [ $# -gt 0 ]; then
+		if [ "$BUILD_UPDATE" -eq 1 ]; then
+			# git pull on the main repo
+			git pull
+		fi
+
 		cd "$SCRPATH/$1"/src
 
 		if [ "$BUILD_UPDATE" -eq 1 ]; then
