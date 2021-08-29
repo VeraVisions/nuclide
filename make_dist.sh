@@ -48,6 +48,11 @@ find ./$GAME_DIR -name *.pk3dir | xargs -I @ sh -c 'echo `basename "@"`' | while
 	mv "./$GAME_DIR/$PK3DIR/$PK3NAME.pk3" "./$BUILD_DIR/$GAME_DIR/$PK3NAME.pk3"
 done;
 
+# copy over the shell scripts inside the game-dir
+find ./$GAME_DIR -name 'install_*.sh' | xargs -I @ sh -c 'echo `basename "@"`' | while read SCRIPTNAME; do
+	cp "./$GAME_DIR/$SCRIPTNAME" "./$BUILD_DIR/$GAME_DIR/$SCRIPTNAME"
+done;
+
 cp "./$GAME_DIR/progs.dat" "./$BUILD_DIR/$GAME_DIR/progs.dat"
 cp "./$GAME_DIR/csprogs.dat" "./$BUILD_DIR/$GAME_DIR/csprogs.dat"
 cp "./$GAME_DIR/menu.dat" "./$BUILD_DIR/$GAME_DIR/menu.dat"
