@@ -2,7 +2,6 @@ FTEMANIFEST 1
 GAME base
 NAME "Nuclide"
 BASEGAME platform
-BASEGAME logos
 BASEGAME base
 
 // you don't really want to change these

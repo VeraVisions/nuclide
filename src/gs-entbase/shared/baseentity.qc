@@ -563,9 +563,8 @@ CBaseEntity::Death(void)
 	
 }
 
-/* Make sure StartFrame calls this */
 void
-CBaseEntity::ParentUpdate(void)
+CBaseEntity::EvaluateEntity(void)
 {
 	/* while the engine is still handling physics for these, we can't
 	 * predict when origin/angle might change */
@@ -585,6 +584,13 @@ CBaseEntity::ParentUpdate(void)
 		net_velocity = velocity;
 		SendFlags |= BASEFL_CHANGED_VELOCITY;
 	}
+}
+
+/* Make sure StartFrame calls this */
+void
+CBaseEntity::ParentUpdate(void)
+{
+	EvaluateEntity();
 
 	frame1time += frametime;
 

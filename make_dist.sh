@@ -76,10 +76,7 @@ else
 	cp "./platform/menu.dat" "./$BUILD_DIR/platform/menu.dat"
 	rm "./$BUILD_DIR/platform/test_maps.pk3"
 
-	# spray logos
-	mkdir -p ./$BUILD_DIR/logos
-	cp ./logos/README ./$BUILD_DIR/logos/README
-	cp ./logos/fte.png ./$BUILD_DIR/logos/fte.png
+	# manifest
 	cp ./default.fmf ./$BUILD_DIR/default.fmf
 	sed -i "s|base|$GAME_DIR|g" ./$BUILD_DIR/default.fmf
 	cp ./doc/release-readme ./$BUILD_DIR/README.txt

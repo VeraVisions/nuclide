@@ -61,6 +61,7 @@ class CBaseEntity
 	virtual void(void) Respawn;
 	virtual void(void) Hide;
 	virtual void(void) ParentUpdate;
+	virtual void(void) EvaluateEntity;
 	virtual float(entity, float) SendEntity;
 	virtual void(void) Pain;
 	virtual void(void) Death;

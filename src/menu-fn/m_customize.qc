@@ -177,12 +177,15 @@ menu_customize_init(void)
 	g_sprayscount = 0;
 
 	/* scan and cache the sprays */
-	searchhandle searchy = search_begin("*.*", SEARCH_NAMESORT, TRUE);
+	searchhandle searchy = search_begin("logos/*.*", SEARCH_NAMESORT, TRUE);
 	for (int i = 0; i < search_getsize(searchy); i++) {
 		string full = search_getfilename(searchy, i);
 		string filename = substring(search_getfilename(searchy, i), 0, -5);
 		string extension = substring(full, strlen(full) - 3, 3);
-		if (extension == "bmp" || extension == "png" || extension == "jpg") {
+		print(full);
+		print("\n");
+		
+		/*if (extension == "bmp" || extension == "png" || extension == "jpg")*/ {
 			g_sprayscount++;
 		}
 	}
@@ -194,8 +197,10 @@ menu_customize_init(void)
 			string full = search_getfilename(searchy, i);
 			string filename = substring(full, 0, -5);
 			string extension = substring(full, strlen(full) - 3, 3);
+			print(full);
+			print("\n");
 
-			if (extension == "bmp" || extension == "png" || extension == "jpg") {
+			/*if (extension == "bmp" || extension == "png" || extension == "jpg")*/ {
 				g_sprays[sid] = precache_pic(full);
 				sid++;
 			}
