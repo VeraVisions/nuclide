@@ -92,17 +92,6 @@ void ClientGame_ModelEvent(float, int, string);
 
 /* this really should be done in-engine */
 
-__wrap float(vector position, string pic, vector size, vector rgb='1 1 1', float alpha=1, optional float drawflag=0) drawpic =
-{
-	position[0] = rint(position[0]);
-	position[1] = rint(position[1]);
-	return prior(position, pic, size, rgb, alpha, drawflag);
-};
-__wrap void(vector pos, vector sz, string pic, vector srcpos, vector srcsz, vector rgb, float alpha, optional float drawflag) drawsubpic =
-{
-	return prior([(int)pos[0],(int)pos[1]], sz, pic, srcpos, srcsz, rgb, alpha, drawflag);
-};
-
 void drawrect(vector pos, vector sz, float thickness, vector rgb, float al, optional float dfl)
 {
 	/* top */
