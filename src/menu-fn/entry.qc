@@ -39,6 +39,7 @@ OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.\
  * this is due to vid_conautoscale 0 scaling with in floating point... which
  * in turns results in skipped rows/columns and shimmering. */
 var int autocvar_r_autoscale = TRUE;
+var int autocvar_r_pixelscale = FALSE;
 void
 Menu_AutoScale(void)
 {
@@ -52,6 +53,11 @@ Menu_AutoScale(void)
 			cvar_set("vid_conautoscale", "2");
 		} else {
 			cvar_set("vid_conautoscale", "1");
+		}
+
+		if (autocvar_r_pixelscale) {
+			float scale = bound(0.0, 480 / psize[1], 1.0);
+			cvar_set("r_renderscale", sprintf("-%f", scale));
 		}
 	}
 }

@@ -182,8 +182,6 @@ menu_customize_init(void)
 		string full = search_getfilename(searchy, i);
 		string filename = substring(search_getfilename(searchy, i), 0, -5);
 		string extension = substring(full, strlen(full) - 3, 3);
-		print(full);
-		print("\n");
 		
 		/*if (extension == "bmp" || extension == "png" || extension == "jpg")*/ {
 			g_sprayscount++;
@@ -197,8 +195,6 @@ menu_customize_init(void)
 			string full = search_getfilename(searchy, i);
 			string filename = substring(full, 0, -5);
 			string extension = substring(full, strlen(full) - 3, 3);
-			print(full);
-			print("\n");
 
 			/*if (extension == "bmp" || extension == "png" || extension == "jpg")*/ {
 				g_sprays[sid] = precache_pic(full);
@@ -392,6 +388,12 @@ menu_customize_draw(void)
 #ifdef MODEL_PREVIEW
 		drawfill([g_menuofs[0] + 414,g_menuofs[1] + 370], [64,12], g_vecTopcolor, 0.75f);
 		drawfill([g_menuofs[0] + 510,g_menuofs[1] + 370], [64,12], g_vecBottomcolor, 0.75f);
+
+		/* fake buttons */
+		WLabel_Static(414, 340, "Previous", 14, 14, [1,1,1],
+							1.0f, 0, font_arial);
+		WLabel_StaticR(575, 340, "Next", 14, 14, [1,1,1],
+							1.0f, 0, font_arial);
 #else
 		drawfill([g_menuofs[0] + 414,g_menuofs[1] + 346], [64,12], g_vecTopcolor, 0.75f);
 		drawfill([g_menuofs[0] + 510,g_menuofs[1] + 346], [64,12], g_vecBottomcolor, 0.75f);
@@ -402,13 +404,6 @@ menu_customize_draw(void)
 	WLabel_Static(212, 203, m_reslbl[IDS_PROFILE_LOGO], 14, 14, [1,1,1],
 					1.0f, 0, font_arial);
 
-#ifdef MODEL_PREVIEW
-	/* fake buttons */
-	WLabel_Static(414, 340, "Previous", 14, 14, [1,1,1],
-						1.0f, 0, font_arial);
-	WLabel_StaticR(575, 340, "Next", 14, 14, [1,1,1],
-						1.0f, 0, font_arial);
-#endif
 }
 
 void
