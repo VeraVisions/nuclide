@@ -48,10 +48,13 @@ base_player::ReceiveEntity(float new, float fl)
 
 	if (fl & PLAYER_ORIGIN_Z)
 		origin[2] = readcoord();
-	if (fl & PLAYER_ANGLES_X)
-		pitch = readshort() / (32767 / 360);
-	if (fl & PLAYER_ANGLES_Y)
+	if (fl & PLAYER_ANGLES_X) {
+		v_angle[0] = pitch = readshort() / (32767 / 360);
+	}
+	if (fl & PLAYER_ANGLES_Y) {
 		angles[1] = readshort() / (32767 / 360);
+		v_angle[1] = readshort() / (32767 / 360);
+	}
 	if (fl & PLAYER_COLORMAP)
 		colormap = readfloat();
 
@@ -108,6 +111,7 @@ base_player::PredictPreFrame(void)
 	SAVE_STATE(modelindex);
 	SAVE_STATE(origin);
 	SAVE_STATE(angles);
+	SAVE_STATE(v_angle);
 	SAVE_STATE(colormap);
 	SAVE_STATE(velocity);
 	SAVE_STATE(flags);
@@ -147,6 +151,7 @@ base_player::PredictPostFrame(void)
 	ROLL_BACK(modelindex);
 	ROLL_BACK(origin);
 	ROLL_BACK(angles);
+	ROLL_BACK(v_angle);
 	ROLL_BACK(colormap);
 	ROLL_BACK(velocity);
 	ROLL_BACK(flags);
@@ -291,10 +296,13 @@ base_player::SendEntity(entity ePEnt, float fChanged)
 	if (fChanged & PLAYER_ORIGIN_Z)
 		WriteCoord(MSG_ENTITY, origin[2]);
 
-	if (fChanged & PLAYER_ANGLES_X)
+	if (fChanged & PLAYER_ANGLES_X) {
 		WriteShort(MSG_ENTITY, v_angle[0] * 32767 / 360);
-	if (fChanged & PLAYER_ANGLES_Y)
+	}
+	if (fChanged & PLAYER_ANGLES_Y) {
 		WriteShort(MSG_ENTITY, angles[1] * 32767 / 360);
+		WriteShort(MSG_ENTITY, v_angle[1] * 32767 / 360);
+	}
 	if (fChanged & PLAYER_COLORMAP)
 		WriteFloat(MSG_ENTITY, colormap);
 
