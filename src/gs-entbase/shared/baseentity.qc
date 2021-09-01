@@ -490,6 +490,19 @@ void
 CBaseEntity::Input(entity eAct, string strInput, string strData)
 {
 	switch (strInput) {
+	case "Kill":
+		think = Util_Destroy;
+		nextthink = time;
+		break;
+	case "KillHierarchy":
+		/* this works because ents are basically just entnums */
+		for (entity e = world; (e=findfloat(e, ::owner, this));) {
+			e.think = Util_Destroy;
+			e.nextthink = time;
+		}
+		think = Util_Destroy;
+		nextthink = time;
+		break;
 	case "FireUser1":
 		UseOutput(eAct, m_strOnUser1);
 		break;
