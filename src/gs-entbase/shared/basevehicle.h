@@ -1,6 +1,4 @@
 
-.int m_iVehNum;
-
 class CBaseVehicle:CBaseTrigger
 {
 	int m_iVehicleFlags;

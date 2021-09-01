@@ -176,6 +176,19 @@ base_player::PredictPostFrame(void)
 #else
 /*
 =================
+base_player::Respawn
+
+it'd be pretty unfortunate if 'sv respawn_ents' or something called this
+=================
+*/
+void
+base_player::Respawn(void)
+{
+	/* make sure nothing happens here */
+}
+
+/*
+=================
 base_player::EvaluateEntity
 
 Check which attributes have changed and flag the ones that did.
@@ -186,64 +199,64 @@ at the top of player::EvaluateEntity
 void
 base_player::EvaluateEntity(void)
 {
-	SendFlags |= PLAYER_KEEPALIVE;
+	SetSendFlags(PLAYER_KEEPALIVE);
 
 	if (ATTR_CHANGED(modelindex))
-		SendFlags |= PLAYER_MODELINDEX;
+		SetSendFlags(PLAYER_MODELINDEX);
 
 	if (VEC_CHANGED(origin, 0))
-		SendFlags |= PLAYER_ORIGIN;
+		SetSendFlags(PLAYER_ORIGIN);
 
 	if (VEC_CHANGED(origin, 1))
-		SendFlags |= PLAYER_ORIGIN;
+		SetSendFlags(PLAYER_ORIGIN);
 
 	if (VEC_CHANGED(origin, 2))
-		SendFlags |= PLAYER_ORIGIN_Z;
+		SetSendFlags(PLAYER_ORIGIN_Z);
 
 	if (VEC_CHANGED(v_angle, 0))
-		SendFlags |= PLAYER_ANGLES_X;
+		SetSendFlags(PLAYER_ANGLES_X);
 
 	if (VEC_CHANGED(angles, 1))
-		SendFlags |= PLAYER_ANGLES_Y;
+		SetSendFlags(PLAYER_ANGLES_Y);
 
 	if (ATTR_CHANGED(colormap))
-		SendFlags |= PLAYER_COLORMAP;
+		SetSendFlags(PLAYER_COLORMAP);
 
 	if (VEC_CHANGED(velocity, 0))
-		SendFlags |= PLAYER_VELOCITY;
+		SetSendFlags(PLAYER_VELOCITY);
 
 	if (VEC_CHANGED(velocity, 1))
-		SendFlags |= PLAYER_VELOCITY;
+		SetSendFlags(PLAYER_VELOCITY);
 
 	if (VEC_CHANGED(velocity, 2))
-		SendFlags |= PLAYER_VELOCITY_Z;
+		SetSendFlags(PLAYER_VELOCITY_Z);
 
 	if (ATTR_CHANGED(flags))
-		SendFlags |= PLAYER_FLAGS;
+		SetSendFlags(PLAYER_FLAGS);
 
 	if (ATTR_CHANGED(gflags))
-		SendFlags |= PLAYER_FLAGS;
+		SetSendFlags(PLAYER_FLAGS);
 
 	if (ATTR_CHANGED(pmove_flags))
-		SendFlags |= PLAYER_FLAGS;
+		SetSendFlags(PLAYER_FLAGS);
 
 	if (ATTR_CHANGED(activeweapon))
-		SendFlags |= PLAYER_WEAPON;
+		SetSendFlags(PLAYER_WEAPON);
 
 	if (ATTR_CHANGED(g_items))
-		SendFlags |= PLAYER_ITEMS;
+		SetSendFlags(PLAYER_ITEMS);
 
 	if (ATTR_CHANGED(health))
-		SendFlags |= PLAYER_HEALTH;
+		SetSendFlags(PLAYER_HEALTH);
 
 	if (ATTR_CHANGED(armor))
-		SendFlags |= PLAYER_ARMOR;
+		SetSendFlags(PLAYER_ARMOR);
 
 	if (ATTR_CHANGED(movetype))
-		SendFlags |= PLAYER_MOVETYPE;
+		SetSendFlags(PLAYER_MOVETYPE);
 
 	if (ATTR_CHANGED(view_ofs))
-		SendFlags |= PLAYER_VIEWOFS;
+		SetSendFlags(PLAYER_VIEWOFS);
 
 	SAVE_STATE(modelindex);
 	SAVE_STATE(origin);

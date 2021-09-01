@@ -87,7 +87,7 @@ prop_door_rotating::Interact(void)
 	m_iValue = 1 - m_iValue;
 	frame = 1;
 	frame1time = 0.0f;
-	SendFlags |= BASEFL_CHANGED_FRAME;
+	SetSendFlags(BASEFL_CHANGED_FRAME);
 
 	if (m_iValue)
 		think = TurnAway;

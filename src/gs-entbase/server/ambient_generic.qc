@@ -129,7 +129,7 @@ ambient_generic::UseLoop(entity act, int state)
 	}
 
 	m_iToggleSwitch = 1 - m_iToggleSwitch;
-	SendFlags |= AG_SAMPLE;
+	SetSendFlags(AG_SAMPLE);
 }
 
 void
@@ -153,7 +153,7 @@ ambient_generic::Respawn(void)
 		}
 
 		Trigger = UseLoop;
-		SendFlags |= AG_SAMPLE;
+		SetSendFlags(AG_SAMPLE);
 	}
 }
 

@@ -67,7 +67,7 @@ class env_laser:CBaseTrigger
 	virtual void(void) think;
 	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
-	virtual void(void) ParentUpdate;
+	virtual void(void) EvaluateEntity;
 	virtual float(entity, float) SendEntity;
 	virtual void(string, string) SpawnKey;
 };
@@ -162,30 +162,20 @@ env_laser::SendEntity(entity ePEnt, float fChanged)
 }
 
 void
-env_laser::ParentUpdate(void)
+env_laser::EvaluateEntity(void)
 {
 	/* FIXME: Check our fields for networking */
 	if (origin != net_origin) {
-		SendFlags |= ENVLASER_CHANGED_ORIGIN;
+		SetSendFlags(ENVLASER_CHANGED_ORIGIN);
 		net_origin = origin;
 	}
 	if (angles != net_angles) {
-		SendFlags |= ENVLASER_CHANGED_ANGLES;
+		SetSendFlags(ENVLASER_CHANGED_ANGLES);
 		net_angles = angles;
 	}
 	if (m_iState != m_iStateOld) {
-		SendFlags |= ENVLASER_CHANGED_STATE;
+		SetSendFlags(ENVLASER_CHANGED_STATE);
 		m_iStateOld = m_iState;
-	}
-
-	if (m_parent) {
-		entity p = find(world, ::targetname, m_parent);
-
-		if (!p) {
-			return;
-		}
-
-		SetOrigin(p.origin);
 	}
 }
 

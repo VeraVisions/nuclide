@@ -249,27 +249,27 @@ env_projectedtexture::Input(entity eAct, string strInput, string strData)
 	switch (strInput) {
 	case "LightColor":
 		m_vecLight = stov(strData);
-		SendFlags |= PRTEXFL_CHANGED_LIGHT;
+		SetSendFlags(PRTEXFL_CHANGED_LIGHT);
 		break;
 	case "SetNearZ":
 		m_flNearZ = stof(strData);
-		SendFlags |= PRTEXFL_CHANGED_NEARZ;
+		SetSendFlags(PRTEXFL_CHANGED_NEARZ);
 		break;
 	case "SetFarZ":
 		m_flFarZ = stof(strData);
-		SendFlags |= PRTEXFL_CHANGED_FARZ;
+		SetSendFlags(PRTEXFL_CHANGED_FARZ);
 		break;
 	case "SetLightStyle":
 		m_flStyle = stof(strData);
-		SendFlags |= PRTEXFL_CHANGED_STYLE;
+		SetSendFlags(PRTEXFL_CHANGED_STYLE);
 		break;
 	case "SpotlightTexture":
 		m_strTextureName = strData;
-		SendFlags |= PRTEXFL_CHANGED_TEXTURE;
+		SetSendFlags(PRTEXFL_CHANGED_TEXTURE);
 		break;
 	case "SetPattern":
 		m_strPattern = strData;
-		SendFlags |= PRTEXFL_CHANGED_PATTERN;
+		SetSendFlags(PRTEXFL_CHANGED_PATTERN);
 		break;
 	case "TurnOn":
 		Trigger(eAct, TRIG_ON);

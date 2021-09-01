@@ -65,7 +65,7 @@ class info_particle_system:CBaseTrigger
 	virtual void(float) ReceiveEntity;
 #else
 	virtual void(void) Respawn;
-	virtual void(void) ParentUpdate;
+	virtual void(void) EvaluateEntity;
 	virtual float(entity, float) SendEntity;
 	virtual void(string, string) SpawnKey;
 	virtual void(entity, int) Trigger;
@@ -161,23 +161,16 @@ info_particle_system::SendEntity(entity ePEnt, float flFlags)
 }
 
 void
-info_particle_system::ParentUpdate(void)
+info_particle_system::EvaluateEntity(void)
 {
 	if (net_origin != origin) {
 		net_origin = origin;
-		SendFlags |= PARTSYSFL_CHANGED_ORIGIN;
+		SetSendFlags(PARTSYSFL_CHANGED_ORIGIN);
 	}
 
 	if (net_angles != angles) {
 		net_angles = angles;
-		SendFlags |= PARTSYSFL_CHANGED_ANGLES;
-	}
-
-	if (m_parent) {
-		entity p = find(world, ::targetname, m_parent);
-
-		if (p)
-			SetOrigin(p.origin);
+		SetSendFlags(PARTSYSFL_CHANGED_ANGLES);
 	}
 }
 

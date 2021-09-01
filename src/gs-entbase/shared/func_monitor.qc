@@ -97,7 +97,7 @@ class func_monitor:CBaseTrigger
 	virtual void(float) ReceiveEntity;
 #else
 	virtual void(void) Respawn;
-	virtual void(void) ParentUpdate;
+	virtual void(void) EvaluateEntity;
 	virtual float(entity, float) SendEntity;
 	virtual void(string, string) SpawnKey;
 	virtual void(entity, int) Trigger;
@@ -221,18 +221,11 @@ func_monitor::SendEntity(entity ePEnt, float flFlags)
 }
 
 void
-func_monitor::ParentUpdate(void)
+func_monitor::EvaluateEntity(void)
 {
 	if (net_origin != origin) {
 		net_origin = origin;
-		SendFlags |= MONITORFL_CHANGED_BASE;
-	}
-
-	if (m_parent) {
-		entity p = find(world, ::targetname, m_parent);
-
-		if (p)
-			SetOrigin(p.origin);
+		SetSendFlags(MONITORFL_CHANGED_BASE);
 	}
 
 	/* this monitor is disabled */
@@ -251,35 +244,35 @@ func_monitor::ParentUpdate(void)
 
 	if (m_vecCamOrigin != viewer.origin) {
 		m_vecCamOrigin = viewer.origin;
-		SendFlags |= MONITORFL_CHANGED_ORIGIN;
+		SetSendFlags(MONITORFL_CHANGED_ORIGIN);
 	}
 	if (m_vecCamAngles != viewer.angles) {
 		m_vecCamAngles = viewer.angles;
-		SendFlags |= MONITORFL_CHANGED_ANGLES;
+		SetSendFlags(MONITORFL_CHANGED_ANGLES);
 	}
 	if (m_flFOV != viewer.m_flFOV) {
 		m_flFOV = viewer.m_flFOV;
-		SendFlags |= MONITORFL_CHANGED_FOV;
+		SetSendFlags(MONITORFL_CHANGED_FOV);
 	}
 	if (m_iUseSAR != viewer.m_iUseSAR) {
 		m_iUseSAR = viewer.m_iUseSAR;
-		SendFlags |= MONITORFL_CHANGED_ASPECT;
+		SetSendFlags(MONITORFL_CHANGED_ASPECT);
 	}
 	if (m_vecFogColor != viewer.m_vecFogColor) {
 		m_vecFogColor = viewer.m_vecFogColor;
-		SendFlags |= MONITORFL_CHANGED_FOGCOLOR;
+		SetSendFlags(MONITORFL_CHANGED_FOGCOLOR);
 	}
 	if (m_flFogStart != viewer.m_flFogStart) {
 		m_flFogStart = viewer.m_flFogStart;
-		SendFlags |= MONITORFL_CHANGED_FOGSTART;
+		SetSendFlags(MONITORFL_CHANGED_FOGSTART);
 	}
 	if (m_flFogEnd != viewer.m_flFogEnd) {
 		m_flFogEnd = viewer.m_flFogEnd;
-		SendFlags |= MONITORFL_CHANGED_FOGEND;
+		SetSendFlags(MONITORFL_CHANGED_FOGEND);
 	}
 	if (m_flFogEnd != viewer.m_flFogEnd) {
 		m_flFogEnd = viewer.m_flFogEnd;
-		SendFlags |= MONITORFL_CHANGED_STATUS;
+		SetSendFlags(MONITORFL_CHANGED_STATUS);
 	}
 }
 
@@ -297,7 +290,7 @@ func_monitor::Trigger(entity act, int state)
 		m_iValue = 1 - m_iValue;
 	}
 
-	SendFlags |= MONITORFL_CHANGED_STATUS;
+	SetSendFlags(MONITORFL_CHANGED_STATUS);
 }
 
 void

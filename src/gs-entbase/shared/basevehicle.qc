@@ -107,7 +107,7 @@ CBaseVehicle::EvaluateEntity(void)
 	 * predict when origin/angle might change */
 	if (net_origin != origin) {
 		net_origin = origin;
-		SendFlags |= VEHFL_CHANGED_ORIGIN;
+		SetSendFlags(VEHFL_CHANGED_ORIGIN);
 	}
 	if (net_angles != angles) {
 		angles[0] = Math_FixDelta(angles[0]);
@@ -115,11 +115,11 @@ CBaseVehicle::EvaluateEntity(void)
 		angles[2] = Math_FixDelta(angles[2]);
 
 		net_angles = angles;
-		SendFlags |= VEHFL_CHANGED_ANGLES;
+		SetSendFlags(VEHFL_CHANGED_ANGLES);
 	}
 	if (net_velocity != velocity) {
 		net_velocity = velocity;
-		SendFlags |= VEHFL_CHANGED_VELOCITY;
+		SetSendFlags(VEHFL_CHANGED_VELOCITY);
 	}
 }
 
@@ -227,7 +227,7 @@ CBaseVehicle::PlayerEnter(base_player pl)
 	pl.flags |= FL_INVEHICLE;
 
 #ifdef SERVER
-	SendFlags |= VEHFL_CHANGED_DRIVER;
+	SetSendFlags(VEHFL_CHANGED_DRIVER);
 #endif
 }
 
@@ -247,7 +247,7 @@ CBaseVehicle::PlayerLeave(base_player pl)
 	m_eDriver = __NULL__;
 
 #ifdef SERVER
-	SendFlags |= VEHFL_CHANGED_DRIVER;
+	SetSendFlags(VEHFL_CHANGED_DRIVER);
 #endif
 }
 

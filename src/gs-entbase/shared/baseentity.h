@@ -79,6 +79,7 @@ class CBaseEntity
 #endif
 
 	/* we only provide these for networked keys, so we can send updates */
+	virtual void(float) SetSendFlags;
 	virtual void(float) SetEffects;
 	virtual void(float) SetFrame;
 	virtual void(string) SetModel;

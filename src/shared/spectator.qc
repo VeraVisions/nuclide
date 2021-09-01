@@ -339,19 +339,19 @@ spectator::PostFrame(void)
 	/* check for which values have changed in this frame
 	   and announce to network said changes */
 	if (origin != origin_net)
-		SendFlags |= SPECFL_ORIGIN;
+		SetSendFlags(SPECFL_ORIGIN);
 
 	if (velocity != velocity_net)
-		SendFlags |= SPECFL_VELOCITY;
+		SetSendFlags(SPECFL_VELOCITY);
 
 	if (spec_ent != spec_ent_net)
-		SendFlags |= SPECFL_TARGET;
+		SetSendFlags(SPECFL_TARGET);
 
 	if (spec_mode != spec_mode_net)
-		SendFlags |= SPECFL_MODE;
+		SetSendFlags(SPECFL_MODE);
 
 	if (spec_flags != spec_flags_net)
-		SendFlags |= SPECFL_FLAGS;
+		SetSendFlags(SPECFL_FLAGS);
 
 	origin_net = origin;
 	velocity_net = velocity;

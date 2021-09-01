@@ -388,11 +388,6 @@ CBaseEntity::Initialized(void)
 {
 }
 
-void
-CBaseEntity::CBaseEntity(void)
-{
-}
-
 /* our EV_SENTENCE event */
 void
 CBaseEntity_ParseSentence(void)
@@ -688,7 +683,7 @@ CBaseEntity::EvaluateEntity(void)
 	 * predict when origin/angle might change */
 	if (net_origin != origin) {
 		net_origin = origin;
-		SendFlags |= BASEFL_CHANGED_ORIGIN;
+		SetSendFlags(BASEFL_CHANGED_ORIGIN);
 	}
 	if (net_angles != angles) {
 		angles[0] = Math_FixDelta(angles[0]);
@@ -696,11 +691,11 @@ CBaseEntity::EvaluateEntity(void)
 		angles[2] = Math_FixDelta(angles[2]);
 
 		net_angles = angles;
-		SendFlags |= BASEFL_CHANGED_ANGLES;
+		SetSendFlags(BASEFL_CHANGED_ANGLES);
 	}
 	if (net_velocity != velocity) {
 		net_velocity = velocity;
-		SendFlags |= BASEFL_CHANGED_VELOCITY;
+		SetSendFlags(BASEFL_CHANGED_VELOCITY);
 	}
 }
 
@@ -759,10 +754,19 @@ CBaseEntity::Hide(void)
 	SetMovetype(MOVETYPE_NONE);
 	takedamage = DAMAGE_NO;
 }
+#endif
 
+/*
+============
+CBaseEntity::CBaseEntity
+
+client doesn't have to do a whole lot here
+============
+*/
 void
 CBaseEntity::CBaseEntity(void)
 {
+#ifdef SERVER
 	/* Not in Deathmatch */
 	if (spawnflags & 2048) {
 		if (cvar("sv_playerslots") > 1) {
@@ -771,7 +775,9 @@ CBaseEntity::CBaseEntity(void)
 		}
 	}
 
-	identity = 1;
+	identity = 1; /* .identity is a global ent field we abuse to let find() calls
+			reliably know that those are CBaseEntity class-based */
+
 	effects |= EF_NOSHADOW;
 	scale = 1.0f;
 
@@ -804,8 +810,8 @@ CBaseEntity::CBaseEntity(void)
 	if (m_oldModel != "") {
 		precache_model(m_oldModel);
 	}
-}
 #endif
+}
 
 /* we want to really use those set functions because they'll notify of any
  * networking related changes. otherwise we'll have to keep track of copies
@@ -965,6 +971,15 @@ CBaseEntity::SetRenderColor(vector newColor)
 }
 #endif
 
+/*
+============
+CBaseEntity::SpawnKey
+
+note that the engine still likes to try and map key/value
+pairs on its own, but we can at least undo some of that in
+here if needed
+============
+*/
 void
 CBaseEntity::SpawnKey(string strKey, string strValue)
 {

@@ -66,7 +66,7 @@ class trigger_camera:CBaseTrigger
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
 	virtual float(entity, float) SendEntity;
-	virtual void(void) ParentUpdate;
+	virtual void(void) EvaluateEntity;
 #endif
 };
 
@@ -139,7 +139,7 @@ trigger_camera::SendEntity(entity ePEnt, float flFlags)
 }
 
 void
-trigger_camera::ParentUpdate(void)
+trigger_camera::EvaluateEntity(void)
 {
 	entity t = find(world, ::targetname, m_strAimAt);
 	if (t) {
@@ -148,19 +148,11 @@ trigger_camera::ParentUpdate(void)
 
 	if (net_origin != origin) {
 		net_origin = origin;
-		SendFlags |= OCAMFL_CHANGED_ORIGIN;
+		SetSendFlags(OCAMFL_CHANGED_ORIGIN);
 	}
 	if (net_angles != angles) {
 		net_angles = angles;
-		SendFlags |= OCAMFL_CHANGED_ANGLES;
-	}
-
-	/* camera don't support parenting when we're following paths! */
-	if (m_parent && !m_strMoveTo) {
-		entity p = find(world, ::targetname, m_parent);
-
-		if (p)
-			SetOrigin(p.origin);
+		SetSendFlags(OCAMFL_CHANGED_ANGLES);
 	}
 }
 
@@ -250,7 +242,7 @@ trigger_camera::Trigger(entity act, int state)
 	target = m_strMoveTo;
 	NextPath();
 	GoToTarget();
-	SendFlags |= OCAMFL_CHANGED_ORIGIN | OCAMFL_CHANGED_ANGLES | OCAMFL_CHANGED_WAIT;
+	SetSendFlags(OCAMFL_CHANGED_ORIGIN | OCAMFL_CHANGED_ANGLES | OCAMFL_CHANGED_WAIT);
 }
 
 void

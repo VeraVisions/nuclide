@@ -94,7 +94,7 @@ class light_dynamic:CBaseTrigger
 	virtual void(void) Respawn;
 	virtual float(entity, float) SendEntity;
 	virtual void(entity, string, string) Input;
-	virtual void(void) ParentUpdate;
+	virtual void(void) EvaluateEntity;
 #endif
 };
 
@@ -182,22 +182,15 @@ light_dynamic::Initialized(void)
 }
 #else
 void
-light_dynamic::ParentUpdate(void)
+light_dynamic::EvaluateEntity(void)
 {
 	if (net_origin != origin) {
 		net_origin = origin;
-		SendFlags |= DLIGHTFL_CHANGED_ORIGIN;
+		SetSendFlags(DLIGHTFL_CHANGED_ORIGIN);
 	}
 	if (net_angles != angles) {
 		net_angles = angles;
-		SendFlags |= DLIGHTFL_CHANGED_ANGLES;
-	}
-
-	if (m_parent) {
-		entity p = find(world, ::targetname, m_parent);
-
-		if (p)
-			SetOrigin(p.origin);
+		SetSendFlags(DLIGHTFL_CHANGED_ANGLES);
 	}
 }
 

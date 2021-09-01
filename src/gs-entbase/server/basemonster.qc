@@ -36,7 +36,7 @@ void
 CBaseMonster::AnimPlay(float seq)
 {
 	/* forces a client-side update */
-	SendFlags |= BASEFL_CHANGED_FRAME;
+	SetSendFlags(BASEFL_CHANGED_FRAME);
 
 	SetFrame(seq);
 	m_flAnimTime = time + frameduration(modelindex, frame);
