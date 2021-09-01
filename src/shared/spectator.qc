@@ -23,7 +23,7 @@ spectator::WarpToTarget(void)
 }
 
 void
-spectator::Input(void)
+spectator::SpectatorInput(void)
 {
 	if (input_buttons & INPUT_BUTTON0) {
 		InputNext();
@@ -81,7 +81,7 @@ void
 spectator::RunClientCommand(void)
 {
 	runstandardplayerphysics(this);
-	Input();
+	SpectatorInput();
 }
 
 #else
@@ -106,7 +106,7 @@ spectator::ReceiveEntity(float new)
 				}
 				input_sequence = i;
 				runstandardplayerphysics(this);
-				Input();
+				SpectatorInput();
 			}
 
 			/* any differences in things that are read below are now
@@ -308,7 +308,7 @@ spectator::PreFrame(void)
 
 		/* run our custom physics */
 		runstandardplayerphysics(this);
-		Input();
+		SpectatorInput();
 	}
 #endif
 

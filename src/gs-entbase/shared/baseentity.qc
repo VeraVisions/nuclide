@@ -416,6 +416,111 @@ CBaseEntity_ParseSentence(void)
 	}
 }
 #else
+/* Input/Output system */
+void
+CBaseEntity::UseOutput(entity act, string outname)
+{
+	if (!outname)
+		return;
+
+	for (entity f = world; (f = find(f, ::targetname, outname));) {
+		CBaseOutput op = (CBaseOutput)f;
+
+		/* no more tries and not -1 (infinite) */
+		if (op.m_iCount == 0) {
+			return;
+		}
+
+		op.m_eActivator = act;
+		op.think = CBaseOutput::TriggerOutput;
+		op.nextthink = time + op.m_flDelay;
+	}
+}
+
+/* input is a 5 parameter, commar separated string, output is the targetname
+   of a minion entity that'll handle the triggering (and counting down of uses)
+   as defined in the Source Input/Output specs */
+string
+CBaseEntity::CreateOutput(string outmsg)
+{
+	static int outcount = 0;
+	string outname = "";
+	float c;
+
+	if (!outmsg)
+		return ("");
+
+	outname = sprintf("output_%i\n", outcount);
+	outcount++;
+
+	/* to make sure tokenize 'remembers' to tell us about the commonly
+	   empty data string, we prepared the output string beforehand to
+	   at least contain a _ symbol after the comma separator... now
+	   we gotta clip that away using substring(). messy, but that's the
+	   only way to keep them at 5 argv() calls per output */
+	c = tokenizebyseparator(outmsg, ",");
+	for (float i = 1; i < c; i+=5) {
+		CBaseOutput new_minion = spawn(CBaseOutput);
+
+		new_minion.classname = "triggerminion";
+		new_minion.targetname = outname;
+		new_minion.m_strTarget = substring(argv(i), 1,-1);
+		new_minion.m_strInput = substring(argv(i+1), 1,-1);
+		new_minion.m_strData = substring(argv(i+2), 1,-1);
+		new_minion.m_flDelay = stof(substring(argv(i+3), 1,-1));
+		new_minion.m_iCount = stoi(substring(argv(i+4), 1,-1));
+		new_minion.m_iOldCount = new_minion.m_iCount;
+
+		/* print final debug output */
+		dprint(sprintf("^2%s::CreateOutput report:\n", classname));
+		dprint(sprintf("Target: %s\n", new_minion.m_strTarget));
+		dprint(sprintf("Input: %s\n", new_minion.m_strInput));
+		dprint(sprintf("Data Message: %s\n", new_minion.m_strData));
+		dprint(sprintf("Delay: %f\n", new_minion.m_flDelay));
+		dprint(sprintf("Uses: %i\n\n", new_minion.m_iCount));
+	}
+
+	/* return the name that'll act as the trigger for all outputs */
+	return outname;
+}
+
+/* entities receive the inputs here and need to act on intype and data
+   accordingly. this is just a stub for unknown event troubleshooting */
+void
+CBaseEntity::Input(entity eAct, string strInput, string strData)
+{
+	switch (strInput) {
+	case "FireUser1":
+		UseOutput(eAct, m_strOnUser1);
+		break;
+	case "FireUser2":
+		UseOutput(eAct, m_strOnUser2);
+		break;
+	case "FireUser3":
+		UseOutput(eAct, m_strOnUser3);
+		break;
+	case "FireUser4":
+		UseOutput(eAct, m_strOnUser4);
+		break;
+	case "Skin":
+		SetSkin(stof(strData));
+		break;
+	case "DisableShadow":
+		effects |= EF_NOSHADOW;
+		break;
+	case "EnableShadow":
+		effects &= ~EF_NOSHADOW;
+		break;
+	default:
+		if (strData != "")
+		print(sprintf("^2%s::^3Input^7: Receives input %s from %s with data %s\n", 
+			this.classname, strInput, eAct.classname, strData));
+		else
+		print(sprintf("^2%s::^3Input^7: Receives input %s from %s\n", 
+			this.classname, strInput, eAct.classname));
+	}
+}
+
 /* Make sure StartFrame calls this */
 float
 CBaseEntity::SendEntity(entity ePEnt, float fChanged)
@@ -665,6 +770,13 @@ CBaseEntity::CBaseEntity(void)
 	m_oldHealth = health;
 	m_oldModel = Util_FixModel(model);
 
+	/* Input/Output system */
+	m_strOnTrigger = CreateOutput(m_strOnTrigger);
+	m_strOnUser1 = CreateOutput(m_strOnUser1);
+	m_strOnUser2 = CreateOutput(m_strOnUser2);
+	m_strOnUser3 = CreateOutput(m_strOnUser3);
+	m_strOnUser4 = CreateOutput(m_strOnUser4);
+
 #ifdef GS_RENDERFX
 	m_oldiRenderFX = m_iRenderFX;
 	m_oldiRenderMode = m_iRenderMode;
@@ -869,6 +981,12 @@ CBaseEntity::SpawnKey(string strKey, string strValue)
 			effects &= ~EF_NOSHADOW;
 		}
 		break;
+	/* Source */
+	case "disableshadows":
+		if (stof(strValue) == 1) {
+			effects |= EF_NOSHADOW;
+		}
+		break;
 	case "targetname":
 		targetname = strValue;
 		break;
@@ -918,6 +1036,27 @@ CBaseEntity::SpawnKey(string strKey, string strValue)
 		break;
 	case "ignorepvs":
 		pvsflags = PVSF_IGNOREPVS;
+		break;
+	/* Input/Output system */
+	case "OnTrigger":
+		strValue = strreplace(",", ",_", strValue);
+		m_strOnTrigger = strcat(m_strOnTrigger, ",_", strValue);
+		break;
+	case "OnUser1":
+		strValue = strreplace(",", ",_", strValue);
+		m_strOnUser1 = strcat(m_strOnUser1, ",_", strValue);
+		break;
+	case "OnUser2":
+		strValue = strreplace(",", ",_", strValue);
+		m_strOnUser2 = strcat(m_strOnUser2, ",_", strValue);
+		break;
+	case "OnUser3":
+		strValue = strreplace(",", ",_", strValue);
+		m_strOnUser3 = strcat(m_strOnUser3, ",_", strValue);
+		break;
+	case "OnUser4":
+		strValue = strreplace(",", ",_", strValue);
+		m_strOnUser4 = strcat(m_strOnUser4, ",_", strValue);
 		break;
 #endif
 	default:

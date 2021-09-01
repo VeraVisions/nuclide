@@ -40,7 +40,7 @@ class spectator
 	virtual void(void) PreFrame;
 	virtual void(void) PostFrame;
 
-	virtual void(void) Input;
+	virtual void(void) SpectatorInput;
 
 	virtual void(void) WarpToTarget;
 
