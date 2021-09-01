@@ -56,7 +56,7 @@ base_player::ReceiveEntity(float new, float fl)
 		v_angle[1] = readshort() / (32767 / 360);
 	}
 	if (fl & PLAYER_COLORMAP)
-		colormap = readfloat();
+		colormap = readbyte();
 
 	if (fl & PLAYER_VELOCITY) {
 		velocity[0] = readcoord();
@@ -317,7 +317,7 @@ base_player::SendEntity(entity ePEnt, float fChanged)
 		WriteShort(MSG_ENTITY, v_angle[1] * 32767 / 360);
 	}
 	if (fChanged & PLAYER_COLORMAP)
-		WriteFloat(MSG_ENTITY, colormap);
+		WriteByte(MSG_ENTITY, colormap);
 
 	/* similar as with origin, we separate x/y from z */
 	if (fChanged & PLAYER_VELOCITY) {

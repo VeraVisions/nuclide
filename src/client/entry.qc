@@ -419,13 +419,6 @@ CSQC_UpdateView(float w, float h, float focus)
 			}
 		}
 
-#if 1
-		if (pl.flags & FL_INVEHICLE) {
-			CBaseVehicle veh = (CBaseVehicle)pl.vehicle;
-			PointMessage_StringAtPos(veh.origin, sprintf("Speed: %d", vlen(veh.velocity)));
-		}
-#endif
-
 		if (self.classname == "player")
 			Predict_PlayerPostFrame((player)self);
 		else if (self.classname == "spectator")

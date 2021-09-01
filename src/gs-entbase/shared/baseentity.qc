@@ -58,6 +58,7 @@ CBaseEntity::RenderFXPass(void)
 		}
 		break;
 	case RM_GLOW:
+	case RM_WORLDGLOW: /* TODO: Figure out what this does differently */
 		if (checkpvs(vecPlayer, this) == FALSE)
 			alpha -= clframetime;
 
@@ -84,6 +85,7 @@ CBaseEntity::RenderFXPass(void)
 		alpha = 1.0f;
 		break;
 	case RM_ADDITIVE:
+	case RM_ADDFRAC: /* TODO: Figure out what this does differently */
 		effects = EF_ADDITIVE;
 		if (autocvar_rm_unlit_additive == 0) {
 			drawflags = 0;
@@ -107,6 +109,9 @@ CBaseEntity::RenderFXPass(void)
 			alpha = 0.0f;
 		}
 		break;
+	case RM_DONTRENDER:
+		/* prevent addentity() from being called */
+		alpha = 0.0f;
 	}
 
 	/* messy hologram imitation */
