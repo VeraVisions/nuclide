@@ -108,6 +108,22 @@ precache_model(string m)
 	return prior(m);
 }
 
+/* this could probably be a lot better, use this from now on so that it can be improved later */
+noref int input_sequence;
+float
+pseudorandom()
+{
+	float a = (float)input_sequence % 5;
+	float b = (float)input_sequence % 8;
+	float c = (float)input_sequence % 4;
+	float d = (float)input_sequence % 13;
+	float f = (float)input_sequence % 70;
+	print(sprintf("random %f\n", (a+b+c+d+f) / 100.0f));
+
+	/* like the engine its random(), never return 0, never return 1 */
+	return bound(0.01, (a+b+c+d+f) / 100.0f, 0.99f);
+}
+
 __wrap void
 setmodel(entity ent, string mname)
 {

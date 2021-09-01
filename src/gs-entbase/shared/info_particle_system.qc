@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED info_particle_system (1 0 0) (-8 -8 -8) (8 8 8)
+/*QUAKED info_particle_system (1 0 0) (-8 -8 -8) (8 8 8) PSFL_STARTACTIVE
 An entity that's spawns particles from the engine's particle system.
 
 -------- KEYS --------

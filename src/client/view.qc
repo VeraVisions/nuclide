@@ -239,7 +239,6 @@ View_PlayAnimation(int iSequence)
 {
 	pSeat->m_eViewModel.frame = (float)iSequence;
 	player pl = (player)pSeat->m_ePlayer;
-	pl.weapontime = 0.0f;
 }
 
 int

@@ -22,6 +22,19 @@ enumflags
 
 #ifdef CLIENT
 void
+CBaseVehicle::UpdateView(void)
+{
+	vector vecStart, vecEnd;
+
+	pSeat->m_vecPredictedOrigin = origin;
+	makevectors(view_angles);
+	vecStart = [pSeat->m_vecPredictedOrigin[0], pSeat->m_vecPredictedOrigin[1], pSeat->m_vecPredictedOrigin[2] + 16] + (v_right * 4);
+	vecEnd = vecStart + (v_forward * -256) + [0,0,16] + (v_right * 4);
+	traceline(vecStart, vecEnd, FALSE, self);
+	setproperty(VF_ORIGIN, trace_endpos + (v_forward * 16));
+}
+
+void
 CBaseVehicle::PredictPreFrame(void)
 {
 	SAVE_STATE(angles);
@@ -40,33 +53,31 @@ CBaseVehicle::PredictPostFrame(void)
 void
 CBaseVehicle::ReadEntity(float fChanged, float new)
 {
-	m_eDriver = findfloat(world, ::entnum, readentitynum());
-
-	if (fChanged & BASEFL_CHANGED_ORIGIN) {
+	if (fChanged & VEHFL_CHANGED_ORIGIN) {
 		origin[0] = readcoord();
 		origin[1] = readcoord();
 		origin[2] = readcoord();
 	}
 
-	if (fChanged & BASEFL_CHANGED_ANGLES) {
+	if (fChanged & VEHFL_CHANGED_ANGLES) {
 		angles[0] = readshort() / (32767 / 360);
 		angles[1] = readshort() / (32767 / 360);
 		angles[2] = readshort() / (32767 / 360);
 	}
 
-	if (fChanged & BASEFL_CHANGED_MODELINDEX) {
+	if (fChanged & VEHFL_CHANGED_MODELINDEX) {
 		setmodelindex(this, readshort());
 	}
 
-	if (fChanged & BASEFL_CHANGED_SOLID) {
+	if (fChanged & VEHFL_CHANGED_SOLID) {
 		solid = readbyte();
 	}
 
-	if (fChanged & BASEFL_CHANGED_MOVETYPE) {
+	if (fChanged & VEHFL_CHANGED_MOVETYPE) {
 		movetype = readbyte();
 	}
 
-	if (fChanged & BASEFL_CHANGED_SIZE) {
+	if (fChanged & VEHFL_CHANGED_SIZE) {
 		mins[0] = readcoord();
 		mins[1] = readcoord();
 		mins[2] = readcoord();
@@ -75,50 +86,75 @@ CBaseVehicle::ReadEntity(float fChanged, float new)
 		maxs[2] = readcoord();
 	}
 
-	if (fChanged & BASEFL_CHANGED_VELOCITY) {
+	if (fChanged & VEHFL_CHANGED_VELOCITY) {
 		velocity[0] = readfloat();
 		velocity[1] = readfloat();
 		velocity[2] = readfloat();
+	}
+
+	if (fChanged & VEHFL_CHANGED_DRIVER) {
+		m_eDriver = findfloat(world, ::entnum, readentitynum());
 	}
 
 	if (new)
 		drawmask = MASK_ENGINE;
 }
 #else
+void
+CBaseVehicle::EvaluateEntity(void)
+{
+	/* while the engine is still handling physics for these, we can't
+	 * predict when origin/angle might change */
+	if (net_origin != origin) {
+		net_origin = origin;
+		SendFlags |= VEHFL_CHANGED_ORIGIN;
+	}
+	if (net_angles != angles) {
+		angles[0] = Math_FixDelta(angles[0]);
+		angles[1] = Math_FixDelta(angles[1]);
+		angles[2] = Math_FixDelta(angles[2]);
+
+		net_angles = angles;
+		SendFlags |= VEHFL_CHANGED_ANGLES;
+	}
+	if (net_velocity != velocity) {
+		net_velocity = velocity;
+		SendFlags |= VEHFL_CHANGED_VELOCITY;
+	}
+}
+
 float
 CBaseVehicle::SendEntity(entity ePEnt, float fChanged)
 {
 	WriteByte(MSG_ENTITY, ENT_VEHICLE);
 	WriteFloat(MSG_ENTITY, fChanged);
 
-	WriteEntity(MSG_ENTITY, m_eDriver);
-
 	/* really trying to get our moneys worth with 23 bits of mantissa */
-	if (fChanged & BASEFL_CHANGED_ORIGIN) {
+	if (fChanged & VEHFL_CHANGED_ORIGIN) {
 		WriteCoord(MSG_ENTITY, origin[0]);
 		WriteCoord(MSG_ENTITY, origin[1]);
 		WriteCoord(MSG_ENTITY, origin[2]);
 	}
 
-	if (fChanged & BASEFL_CHANGED_ANGLES) {
+	if (fChanged & VEHFL_CHANGED_ANGLES) {
 		WriteShort(MSG_ENTITY, angles[0] * 32767 / 360);
 		WriteShort(MSG_ENTITY, angles[1] * 32767 / 360);
 		WriteShort(MSG_ENTITY, angles[2] * 32767 / 360);
 	}
 
-	if (fChanged & BASEFL_CHANGED_MODELINDEX) {
+	if (fChanged & VEHFL_CHANGED_MODELINDEX) {
 		WriteShort(MSG_ENTITY, modelindex);
 	}
 
-	if (fChanged & BASEFL_CHANGED_SOLID) {
+	if (fChanged & VEHFL_CHANGED_SOLID) {
 		WriteByte(MSG_ENTITY, solid);
 	}
 
-	if (fChanged & BASEFL_CHANGED_MOVETYPE) {
+	if (fChanged & VEHFL_CHANGED_MOVETYPE) {
 		WriteByte(MSG_ENTITY, movetype);
 	}
 
-	if (fChanged & BASEFL_CHANGED_SIZE) {
+	if (fChanged & VEHFL_CHANGED_SIZE) {
 		WriteCoord(MSG_ENTITY, mins[0]);
 		WriteCoord(MSG_ENTITY, mins[1]);
 		WriteCoord(MSG_ENTITY, mins[2]);
@@ -127,10 +163,14 @@ CBaseVehicle::SendEntity(entity ePEnt, float fChanged)
 		WriteCoord(MSG_ENTITY, maxs[2]);
 	}
 
-	if (fChanged & BASEFL_CHANGED_VELOCITY) {
+	if (fChanged & VEHFL_CHANGED_VELOCITY) {
 		WriteFloat(MSG_ENTITY, velocity[0]);
 		WriteFloat(MSG_ENTITY, velocity[1]);
 		WriteFloat(MSG_ENTITY, velocity[2]);
+	}
+
+	if (fChanged & VEHFL_CHANGED_DRIVER) {
+		WriteEntity(MSG_ENTITY, m_eDriver);
 	}
 
 	return (1);
@@ -184,14 +224,18 @@ CBaseVehicle::PlayerEnter(base_player pl)
 	pl.movetype = MOVETYPE_NOCLIP;
 	m_eDriver = (entity)pl;
 	pl.vehicle = this;
-	//pl.flags |= FL_INVEHICLE;
+	pl.flags |= FL_INVEHICLE;
+
+#ifdef SERVER
+	SendFlags |= VEHFL_CHANGED_DRIVER;
+#endif
 }
 
 void
 CBaseVehicle::PlayerLeave(base_player pl)
 {
 	pl.movetype = MOVETYPE_WALK;
-	//pl.flags &= ~FL_INVEHICLE;
+	pl.flags &= ~FL_INVEHICLE;
 
 	if (m_iVehicleFlags & VHF_FROZEN)
 		pl.flags &= ~FL_FROZEN;
@@ -201,6 +245,10 @@ CBaseVehicle::PlayerLeave(base_player pl)
 
 	pl.vehicle = __NULL__;
 	m_eDriver = __NULL__;
+
+#ifdef SERVER
+	SendFlags |= VEHFL_CHANGED_DRIVER;
+#endif
 }
 
 void

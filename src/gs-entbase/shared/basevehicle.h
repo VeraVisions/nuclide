@@ -8,6 +8,7 @@ class CBaseVehicle:CBaseTrigger
 	vector m_vecMoveValues;
 
 	entity m_eDriver;
+	entity m_eDriver_net;
 
 	void(void) CBaseVehicle;
 	vector m_vecPlayerPos;
@@ -20,6 +21,7 @@ class CBaseVehicle:CBaseTrigger
 	virtual void(void) PredictPreFrame;
 	virtual void(void) PredictPostFrame;
 	virtual void(float, float) ReadEntity;
+	virtual void(void) UpdateView;
 #else
 	virtual float(entity, float) SendEntity;
 #endif
@@ -29,4 +31,16 @@ class CBaseVehicle:CBaseTrigger
 	virtual void(base_player) PlayerEnter;
 	virtual void(base_player) PlayerLeave;
 	virtual void() PlayerInput;
-}; 
+};
+
+enumflags
+{
+	VEHFL_CHANGED_ORIGIN,
+	VEHFL_CHANGED_ANGLES,
+	VEHFL_CHANGED_MODELINDEX,
+	VEHFL_CHANGED_SOLID,
+	VEHFL_CHANGED_MOVETYPE,
+	VEHFL_CHANGED_SIZE,
+	VEHFL_CHANGED_VELOCITY,
+	VEHFL_CHANGED_DRIVER
+};

@@ -298,14 +298,13 @@ CSQC_UpdateView(float w, float h, float focus)
 		} else {
 			if (self.classname == "player") {
 				pl = (player)self;
+				setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin + pl.view_ofs);
+
 				if (pl.flags & FL_INVEHICLE) {
 					CBaseVehicle veh = (CBaseVehicle)pl.vehicle;
-					pSeat->m_vecPredictedOrigin = veh.origin;
-					makevectors(view_angles);
-					vector vStart = [pSeat->m_vecPredictedOrigin[0], pSeat->m_vecPredictedOrigin[1], pSeat->m_vecPredictedOrigin[2] + 16] + (v_right * 4);
-					vector vEnd = vStart + (v_forward * -256) + [0,0,16] + (v_right * 4);
-					traceline(vStart, vEnd, FALSE, self);
-					setproperty(VF_ORIGIN, trace_endpos + (v_forward * 16));
+					
+					if (veh.UpdateView)
+						veh.UpdateView();
 				} else if (pl.health) {
 					if (autocvar_cl_thirdperson == TRUE) {
 						makevectors(view_angles);
@@ -313,11 +312,7 @@ CSQC_UpdateView(float w, float h, float focus)
 						vector vEnd = vStart + (v_forward * -48) + [0,0,16] + (v_right * 4);
 						traceline(vStart, vEnd, FALSE, self);
 						setproperty(VF_ORIGIN, trace_endpos + (v_forward * 5));
-					} else {
-						setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin + pl.view_ofs);
 					}
-				} else {
-					setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin);
 				}
 
 				if (pSeat->m_flShakeDuration > 0.0) {
