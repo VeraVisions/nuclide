@@ -113,15 +113,14 @@ noref int input_sequence;
 float
 pseudorandom()
 {
-	float a = (float)input_sequence % 5;
-	float b = (float)input_sequence % 8;
-	float c = (float)input_sequence % 4;
-	float d = (float)input_sequence % 13;
-	float f = (float)input_sequence % 70;
-	print(sprintf("random %f\n", (a+b+c+d+f) / 100.0f));
+	float seed = (float)input_sequence % 5;
+	seed += (float)input_sequence % 8;
+	seed += (float)input_sequence % 4;
+	seed += (float)input_sequence % 13;
+	seed += (float)input_sequence % 70;
 
 	/* like the engine its random(), never return 0, never return 1 */
-	return bound(0.01, (a+b+c+d+f) / 100.0f, 0.99f);
+	return bound(0.01, (seed) / 100.0f, 0.99f);
 }
 
 __wrap void
