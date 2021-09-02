@@ -44,6 +44,7 @@ typedef struct
 	int sample_count;
 	string samples;
 	string name;
+	string distshader;
 } snd_t;
 
 typedef struct

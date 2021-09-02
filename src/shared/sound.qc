@@ -135,6 +135,8 @@ Sound_ParseField(int i, int a)
 	case "footstep":
 		g_sounds[i].flags |= SNDFL_STEP;
 		break;
+	case "distshader":
+		g_sounds[i].distshader = argv(1);
 	case "sample":
 		if (a == 2) {
 			dprint("\tAdded sample ");
@@ -251,6 +253,12 @@ Sound_Precache(string shader)
 				search_end(sh);
 				fclose(fh);
 				hash_add(g_hashsounds, shader, (int)index);
+
+				/* distant shader */
+				if (g_sounds[index].distshader) {
+					Sound_Precache(g_sounds[index].distshader);
+				}
+
 				return index;
 			}
 		}
@@ -263,6 +271,73 @@ Sound_Precache(string shader)
 
 	search_end(sh);
 	return -1;
+}
+
+void
+Sound_Distance(string shader)
+{
+	int r;
+	float volume;
+	float radius;
+	float pitch;
+	int flag;
+	int sample;
+
+	flag = 0;
+	sample = (int)hash_get(g_hashsounds, shader, -1);
+
+	if (sample < 0) {
+#ifdef SERVER
+		print(sprintf("^1Sound_Distance: shader %s is not precached (SERVER)\n", shader));
+#else
+		print(sprintf("^1Sound_Distance: shader %s is not precached (CLIENT)\n", shader));
+#endif
+		return;
+	}
+
+	/* pick a sample */
+	r = floor(random(0,  g_sounds[sample].sample_count));
+	tokenizebyseparator(g_sounds[sample].samples, "\n");
+
+	/* set pitch */
+	pitch = random(g_sounds[sample].pitch_min, g_sounds[sample].pitch_max);
+	radius = g_sounds[sample].dist_max;
+	volume = g_sounds[sample].volume;
+
+	/* flags */
+	if (g_sounds[sample].flags & SNDFL_NOREVERB) {
+		flag |= SOUNDFLAG_NOREVERB;
+	}
+	if (g_sounds[sample].flags & SNDFL_LOOPING) {
+		flag |= SOUNDFLAG_FORCELOOP;
+	}
+	if (g_sounds[sample].flags & SNDFL_NODUPS) {
+		if (g_sounds[sample].playc >= g_sounds[sample].sample_count) {
+			g_sounds[sample].playc = 0;
+		}
+		r = g_sounds[sample].playc++;
+	}
+
+#ifdef CLIENT
+	if (g_sounds[sample].flags & SNDFL_OMNI) {
+		flag |= SOUNDFLAG_NOSPACIALISE;
+	}
+#endif
+
+#ifdef DEVELOPER
+	print(sprintf("Sound_Distance: %s\n", argv(r)));
+#endif
+
+	sound(
+		world,
+		CHAN_AUTO, 
+		argv(r),
+		volume,
+		ATTN_NONE,
+		pitch,
+		flag,
+		g_sounds[sample].offset
+	);
 }
 
 void
@@ -361,6 +436,10 @@ Sound_Play(entity target, int chan, string shader)
 		}
 	}
 #endif
+
+	if (g_sounds[sample].distshader) {
+		Sound_Distance(g_sounds[sample].distshader);
+	}
 
 	sound(
 		target,
