@@ -37,14 +37,16 @@ if [ -f "$SCRPATH"/bin/fteqcc ]; then
 
 	export OLDDIR=$(pwd)
 	cd ./src
-	make
-	cd "$OLDDIR"
 
 	if [ "$BUILD_UPDATE" -eq 1 ]; then
 		# git pull on the main repo
 		git pull
 	fi
 
+	make
+	cd "$OLDDIR"
+
+	# update repos first in case there's dependencies 
 	find "$SCRPATH" -name Makefile | grep 'src\/Makefile' | grep -v engine | grep -v worldspawn | while read MFILE_N; do
 		NEWDIR=$(dirname "$MFILE_N")
 		cd "$NEWDIR"
@@ -56,12 +58,19 @@ if [ -f "$SCRPATH"/bin/fteqcc ]; then
 				set -e
 			fi
 		fi
+		cd $OLDDIR
+	done;
+
+	# now loop through _again_ to build
+	find "$SCRPATH" -name Makefile | grep 'src\/Makefile' | grep -v engine | grep -v worldspawn | while read MFILE_N; do
+		NEWDIR=$(dirname "$MFILE_N")
+		cd "$NEWDIR"
 		make
 		cd ..
 		export GAMEDIR=$(basename $PWD)
 		cd $OLDDIR
 		if [ -f "$SCRPATH"/bin/worldspawn ]; then
-		./make_mapdef.sh $GAMEDIR
+			./make_mapdef.sh $GAMEDIR
 		fi
 	done;
 else
