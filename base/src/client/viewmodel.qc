@@ -97,7 +97,7 @@ Viewmodel_ApplyBob(entity gun)
 	float strength;
 	gun.angles[2] = -pViewBob->m_flBob;
 
-	vector angmod;
+	vector angmod = [0,0,0];
 	angmod[0] -= pViewBob->m_flBob2 * 0.5f;
 	angmod[1] += pViewBob->m_flBob * 2.5f;
 	angmod[2] += pViewBob->m_flBob * 3.0f;

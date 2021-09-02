@@ -29,7 +29,10 @@ typedef struct
 	void(void) secondary;
 	void(void) reload;
 	void(void) release;
-	void(void) crosshair;
+
+	void(int) predraw; /* predraw... */
+	void(void) crosshair; /* postdraw... */
+
 	int(void) isempty; /* kinda handy */
 
 	void(void) precache;
@@ -46,6 +49,7 @@ void Weapons_Primary(void);
 void Weapons_Secondary(void);
 void Weapons_Reload(void);
 void Weapons_Release(void);
+void Weapons_PreDraw(int);
 
 float Weapons_GetAim(int);
 void Weapons_Reload(void);

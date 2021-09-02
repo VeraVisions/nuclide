@@ -283,11 +283,6 @@ CSQC_UpdateView(float w, float h, float focus)
 			pSeat->m_flPredictedFlags = spec.flags;
 		}
 
-		if (pSeat->m_pWeaponFX) {
-			CBaseFX p = (CBaseFX)pSeat->m_pWeaponFX;
-			p.Draw();
-		}
-
 		addentities(MASK_ENGINE);
 
 		if (pSeat->m_flCameraTime > time || pSeat->m_flCameraTime == -1) {

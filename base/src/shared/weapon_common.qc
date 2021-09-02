@@ -148,13 +148,6 @@ Weapons_Draw(void)
 		pl.nextthink = 0.0f;
 	}
 
-#ifdef CLIENT
-	entity eold = self;
-	self = pSeat->m_pWeaponFX;
-	spawnfunc_CBaseFX();
-	self = eold;
-#endif
-
 	/* make sure this is all wiped */
 	pl.a_ammo1 = pl.a_ammo2 = pl.a_ammo3 = 0;
 
@@ -244,6 +237,16 @@ Weapons_Release(void)
 		g_weapons[i].release();
 
 	pl.gflags &= ~GF_SEMI_TOGGLED;
+}
+
+void
+Weapons_PreDraw(int thirdperson)
+{
+	player pl = (player)self;
+	int i = pl.activeweapon;
+
+	if (g_weapons[i].predraw != __NULL__)
+		g_weapons[i].predraw(thirdperson);
 }
 
 int

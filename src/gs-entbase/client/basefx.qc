@@ -14,28 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class CBaseFX
-{
-	int m_iBaseJoint;
-
-	void(void) CBaseFX;
-
-	virtual void(void) Draw;
-};
-
-void
-CBaseFX::Draw(void)
-{
-	
-}
-
-void
-CBaseFX::CBaseFX(void)
-{
-	drawmask = MASK_ENGINE;
-}
-
-
 void FX_Init(void)
 {
 	precache_pic("textures/fx/flare1");

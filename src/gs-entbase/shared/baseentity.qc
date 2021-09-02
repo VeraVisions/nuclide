@@ -23,13 +23,204 @@ string __fullspawndata;
 string Sentences_GetSamples(string);
 string Sentences_ProcessSample(string);
 
+/*
+============
+CBaseEntity::RendererRestarted
+
+make sure any child-classes precache their assets in here
+for vid_reload calls or other sudden deaths (driver restarts)
+============
+*/
 void
 CBaseEntity::RendererRestarted(void)
 {
 	
 };
 
+/*
+============
+CBaseEntity::MakeStatic
+
+after this gets called the entity is unreachable in the QC-logic
+and merged with the world to optimise drawcalls
+
+we usually want to do this with most decorative ents without
+a valid targetname
+============
+*/
+void
+CBaseEntity::MakeStatic(void)
+{
+	/* give renderFX the opportunity to write into renderable
+	 * fields at least once before forever pulling it out the cgame */
 #ifdef GS_RENDERFX
+	if (m_iRenderMode > RM_FULLBRIGHT)
+		return;
+
+	RenderFXPass();
+#endif
+
+	/* static ents = no collision, so let's make a copy for visibility */
+	if (alpha > 0.0)
+		makestatic(copyentity(this));
+
+	/* now *this* is only used for csqc collision */
+	drawmask = 0;
+}
+
+/*
+============
+CBaseEntity::predraw
+
+a lot of the things in here don't even apply to most
+entities, so TODO: make things like anims, sentences apply
+only to relevant child-classes
+============
+*/
+float
+CBaseEntity::predraw(void)
+{
+	if (!modelindex) {
+		return (PREDRAW_NEXT);
+	}
+
+#ifdef GS_RENDERFX
+	RenderFXPass();
+#endif
+
+	if (autocvar(r_showSkeleton, 0))
+	for (int i = 1; i < 64; i++) {
+		vector v1 = gettaginfo(this, i);
+
+		if (v1 == this.origin) {
+			continue;
+		}
+
+		makevectors(input_angles);
+		R_BeginPolygon("textures/dev/model_bone", 0, 0);
+		R_PolygonVertex(v1 + v_right * 1 - v_up * 1, [1,1], [1,1,1], 1.0f);
+		R_PolygonVertex(v1 - v_right * 1 - v_up * 1, [0,1], [1,1,1], 1.0f);
+		R_PolygonVertex(v1 - v_right * 1 + v_up * 1, [0,0], [1,1,1], 1.0f);
+		R_PolygonVertex(v1 + v_right * 1 + v_up * 1, [1,0], [1,1,1],1.0f);
+		R_EndPolygon();
+		alpha = 0.25f;
+	}
+
+	/* mouth flapping action */
+	bonecontrol5 = getchannellevel(this, CHAN_VOICE) * 20;
+	m_flBaseTime = frame1time;
+
+	if (serverkeyfloat(SERVERKEY_PAUSESTATE) != 1)
+		frame1time += frametime;
+
+	ProcessWordQue();
+
+	processmodelevents(modelindex, frame, m_flBaseTime,
+		frame1time, ClientGame_ModelEvent);
+
+	if (alpha > 0.0)
+		addentity(this);
+
+	return (PREDRAW_NEXT);
+}
+
+/*
+============
+CBaseEntity::SentenceSample
+
+whatever comes out of the 'mouth',
+TODO: Move to CBaseNPC
+============
+*/
+void
+CBaseEntity::SentenceSample(string sample)
+{
+	sound(this, CHAN_VOICE, sample, 1.0, ATTN_NORM, 100, SOUNDFLAG_FOLLOW);
+}
+
+/*
+============
+CBaseEntity::ProcessWordQue
+
+Handles the sentences word que
+TODO: Move to CBaseNPC
+============
+*/
+void
+CBaseEntity::ProcessWordQue(void)
+{
+	if (time < 1 || !m_iSentenceCount) {
+		return;
+	}
+
+	if (m_flSentenceTime > time) {
+		return;
+	}
+
+	SentenceSample(m_pSentenceQue[m_iSentencePos].m_strSnd);
+
+	dprint(sprintf("^2CBaseEntity::^3ProcessWordQue^7: Speaking %s\n", m_pSentenceQue[m_iSentencePos].m_strSnd));
+	m_iSentencePos++;
+
+	if (m_iSentencePos == m_iSentenceCount) {
+		memfree(m_pSentenceQue);
+		m_iSentenceCount = 0;
+		m_iSentencePos = 0;
+		m_pSentenceQue = 0;
+	} else {
+		m_flSentenceTime = time + m_pSentenceQue[m_iSentencePos - 1].m_flLength;
+	}
+}
+
+/*
+============
+CBaseEntity::Sentence
+
+we'll pass it a sentences.txt word (e.g. !BA_TEST) and start queing it
+TODO: Move to CBaseNPC
+============
+*/
+void
+CBaseEntity::Sentence(string msg)
+{
+	/* not defined */
+	if (msg == "") {
+		return;
+	}
+
+	if (m_iSentenceCount) {
+		memfree(m_pSentenceQue);
+		m_iSentenceCount = 0;
+		m_pSentenceQue = 0;
+		m_iSentencePos = 0;
+	}
+
+	m_iSentenceCount = tokenize(Sentences_GetSamples(msg));
+	m_pSentenceQue = memalloc(sizeof(sound_t) * m_iSentenceCount);
+
+	/* first we have to get the info out of the token */
+	for (int i = 0; i < m_iSentenceCount; i++) {
+		m_pSentenceQue[i].m_strSnd = sprintf("%s.wav", argv(i));
+	}
+
+	/* process more info, we'll need to override argv() here */
+	for (int i = 0; i < m_iSentenceCount; i++) {
+		m_pSentenceQue[i].m_strSnd = Sentences_ProcessSample(m_pSentenceQue[i].m_strSnd);
+		m_pSentenceQue[i].m_flLength = soundlength(m_pSentenceQue[i].m_strSnd);
+		m_pSentenceQue[i].m_flPitch = 100;
+	}
+	m_flSentenceTime = time;
+}
+
+#ifdef GS_RENDERFX
+/*
+============
+CBaseEntity::RenderFXPass
+
+all the render-modes manipulating the final colormod, alpha and effects
+fields that the engine cares about
+============
+*/
 void
 CBaseEntity::RenderFXPass(void)
 {
@@ -146,139 +337,11 @@ CBaseEntity::RenderFXPass(void)
 	}
 }
 #endif
-
-void
-CBaseEntity::MakeStatic(void)
-{
-	/* give renderFX the opportunity to write into renderable
-	 * fields at least once before forever pulling it out the cgame */
-#ifdef GS_RENDERFX
-	if (m_iRenderMode > RM_FULLBRIGHT)
-		return;
-
-	RenderFXPass();
-#endif
-
-	/* static ents = no collision, so let's make a copy for visibility */
-	if (alpha > 0.0)
-		makestatic(copyentity(this));
-
-	/* now *this* is only used for csqc collision */
-	drawmask = 0;
-}
-
-var int autocvar_r_showSkeleton = 0;
-float
-CBaseEntity::predraw(void)
-{
-	if (!modelindex) {
-		return (PREDRAW_NEXT);
-	}
-
-#ifdef GS_RENDERFX
-	RenderFXPass();
-#endif
-
-	if (autocvar_r_showSkeleton == 1) {
-		for (int i = 1; i < 64; i++) {
-			vector v1 = gettaginfo(this, i);
-
-			if (v1 != this.origin) {
-				makevectors(input_angles);
-				R_BeginPolygon("textures/dev/model_bone", 0, 0);
-				R_PolygonVertex(v1 + v_right * 1 - v_up * 1, [1,1], [1,1,1], 1.0f);
-				R_PolygonVertex(v1 - v_right * 1 - v_up * 1, [0,1], [1,1,1], 1.0f);
-				R_PolygonVertex(v1 - v_right * 1 + v_up * 1, [0,0], [1,1,1], 1.0f);
-				R_PolygonVertex(v1 + v_right * 1 + v_up * 1, [1,0], [1,1,1], 1.0f);
-				R_EndPolygon();
-				alpha = 0.25f;
-			}
-		}
-	}
-
-	/* mouth flapping action */
-	bonecontrol5 = getchannellevel(this, CHAN_VOICE) * 20;
-	m_flBaseTime = frame1time;
-
-	if (serverkeyfloat(SERVERKEY_PAUSESTATE) != 1)
-		frame1time += frametime;
-
-	ProcessWordQue();
-
-	processmodelevents(modelindex, frame, m_flBaseTime,
-		frame1time, ClientGame_ModelEvent);
-
-	if (alpha > 0.0)
-		addentity(this);
-
-	return (PREDRAW_NEXT);
-}
-
-void
-CBaseEntity::SentenceSample(string sample)
-{
-	sound(this, CHAN_VOICE, sample, 1.0, ATTN_NORM, 100, SOUNDFLAG_FOLLOW);
-}
-
-void
-CBaseEntity::ProcessWordQue(void)
-{
-	if (time < 1 || !m_iSentenceCount) {
-		return;
-	}
-
-	if (m_flSentenceTime > time) {
-		return;
-	}
-
-	SentenceSample(m_pSentenceQue[m_iSentencePos].m_strSnd);
-
-	dprint(sprintf("^2CBaseEntity::^3ProcessWordQue^7: Speaking %s\n", m_pSentenceQue[m_iSentencePos].m_strSnd));
-	m_iSentencePos++;
-
-	if (m_iSentencePos == m_iSentenceCount) {
-		memfree(m_pSentenceQue);
-		m_iSentenceCount = 0;
-		m_iSentencePos = 0;
-		m_pSentenceQue = 0;
-	} else {
-		m_flSentenceTime = time + m_pSentenceQue[m_iSentencePos - 1].m_flLength;
-	}
-}
-
-/* we'll pass it a sentences.txt word (e.g. !BA_TEST) and start queing it */
-void
-CBaseEntity::Sentence(string msg)
-{
-	/* not defined */
-	if (msg == "") {
-		return;
-	}
-
-	if (m_iSentenceCount) {
-		memfree(m_pSentenceQue);
-		m_iSentenceCount = 0;
-		m_pSentenceQue = 0;
-		m_iSentencePos = 0;
-	}
-
-	m_iSentenceCount = tokenize(Sentences_GetSamples(msg));
-	m_pSentenceQue = memalloc(sizeof(sound_t) * m_iSentenceCount);
-
-	/* first we have to get the info out of the token */
-	for (int i = 0; i < m_iSentenceCount; i++) {
-		m_pSentenceQue[i].m_strSnd = sprintf("%s.wav", argv(i));
-	}
-
-	/* process more info, we'll need to override argv() here */
-	for (int i = 0; i < m_iSentenceCount; i++) {
-		m_pSentenceQue[i].m_strSnd = Sentences_ProcessSample(m_pSentenceQue[i].m_strSnd);
-		m_pSentenceQue[i].m_flLength = soundlength(m_pSentenceQue[i].m_strSnd);
-		m_pSentenceQue[i].m_flPitch = 100;
-	}
-	m_flSentenceTime = time;
-}
-
+/*
+============
+CBaseEntity::ReceiveEntity
+============
+*/
 void
 CBaseEntity::ReceiveEntity(float flChanged)
 {
@@ -371,11 +434,21 @@ CBaseEntity::ReceiveEntity(float flChanged)
 	setorigin(this, origin);
 }
 
+/*
+============
+CBaseEntity::postdraw
+============
+*/
 void
 CBaseEntity::postdraw(void)
 {
 }
 
+/*
+============
+CBaseEntity::Init
+============
+*/
 void
 CBaseEntity::Init(void)
 {
@@ -388,12 +461,23 @@ CBaseEntity::Init(void)
 	Initialized();
 }
 
+/*
+============
+CBaseEntity::Init
+============
+*/
 void
 CBaseEntity::Initialized(void)
 {
 }
 
-/* our EV_SENTENCE event */
+/*
+============
+CBaseEntity_ParseSentence
+
+our EV_SENTENCE event
+============
+*/
 void
 CBaseEntity_ParseSentence(void)
 {
@@ -515,8 +599,19 @@ CBaseEntity::Input(entity eAct, string strInput, string strData)
 	case "FireUser4":
 		UseOutput(eAct, m_strOnUser4);
 		break;
-	case "Skin":
-		SetSkin(stof(strData));
+	case "Color":
+#ifdef GS_RENDERFX
+		SetRenderColor(stov(strData) / 255);
+#else
+		colormod = stov(strData) / 255;
+#endif
+		break;
+	case "Alpha":
+#ifdef GS_RENDERFX
+		SetRenderAmt(stof(strData) / 255);
+#else
+		alpha = stof(strData) / 255;
+#endif
 		break;
 	case "DisableShadow":
 		effects |= EF_NOSHADOW;

@@ -31,7 +31,6 @@ View_Init(void)
 			pSeat->m_eMuzzleflash.renderflags = RF_ADDITIVE;
 			pSeat->m_eMuzzleflash.effects |= EF_NOSHADOW;
 			setsize(pSeat->m_eMuzzleflash, [0,0,0], [0,0,0]);
-			pSeat->m_pWeaponFX = spawn(CBaseFX);
 		}
 	}
 
