@@ -274,7 +274,7 @@ Sound_Precache(string shader)
 }
 
 void
-Sound_Distance(string shader)
+Sound_Distance(entity target, string shader)
 {
 	int r;
 	float volume;
@@ -329,8 +329,8 @@ Sound_Distance(string shader)
 #endif
 
 	sound(
-		world,
-		CHAN_AUTO, 
+		target,
+		5,
 		argv(r),
 		volume,
 		ATTN_NONE,
@@ -437,10 +437,6 @@ Sound_Play(entity target, int chan, string shader)
 	}
 #endif
 
-	if (g_sounds[sample].distshader) {
-		Sound_Distance(g_sounds[sample].distshader);
-	}
-
 	sound(
 		target,
 		chan, 
@@ -451,6 +447,10 @@ Sound_Play(entity target, int chan, string shader)
 		flag,
 		g_sounds[sample].offset
 	);
+
+	if (g_sounds[sample].distshader) {
+		Sound_Distance(target, g_sounds[sample].distshader);
+	}
 }
 
 void

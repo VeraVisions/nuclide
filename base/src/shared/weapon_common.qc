@@ -78,7 +78,7 @@ Weapons_Init(void)
 		}
 	}
 
-#if 1
+#if 0
 	for (int i = 0; i < g_weapons.length; i++)
 		print(sprintf("Weapon-Weight order: %s, %i\n", g_weapons[g_weapon_weights[i]].name, i));
 #endif

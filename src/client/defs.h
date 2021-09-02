@@ -104,6 +104,17 @@ void drawrect(vector pos, vector sz, float thickness, vector rgb, float al, opti
 	drawfill(pos + [sz[0] - thickness, thickness], [thickness, sz[1] - (thickness * 2)], rgb, al, dfl);
 }
 
+void
+precache_cubemap(string path)
+{
+	precache_pic(strcat(path, "_bk"));
+	precache_pic(strcat(path, "_dn"));
+	precache_pic(strcat(path, "_ft"));
+	precache_pic(strcat(path, "_lf"));
+	precache_pic(strcat(path, "_rt"));
+	precache_pic(strcat(path, "_up"));
+}
+
 struct
 {
 	/* viewmodel stuff */
