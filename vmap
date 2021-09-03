@@ -22,7 +22,7 @@ fi
 set -e
 
 if [ "$VMAP_NOBSP" != "1" ]; then
-	"$SCRPATH"/bin/vmap -v -custinfoparms -fs_basepath "$SCRPATH" -fs_game platform -threads $BUILD_PROC -samplesize 8 $*
+	"$SCRPATH"/bin/vmap -v -custinfoparms -fs_basepath "$SCRPATH" -fs_game platform -threads $BUILD_PROC -samplesize 4 $*
 fi
 
 if [ "$VMAP_NOVIS" != "1" ]; then
@@ -34,5 +34,29 @@ if [ "$VMAP_NOVIS" != "1" ]; then
 fi
 
 if [ "$VMAP_NOLIGHT" != "1" ]; then
-	"$SCRPATH"/bin/vmap -light -custinfoparms -fs_basepath "$SCRPATH" -v -dirty -fs_game platform -bounce 8 -samplesize 8 -threads $BUILD_PROC -shade -shadeangle 60 -patchshadows $*
+	if [ "$VMAP_FASTLIGHT" != "1" ]; then
+		"$SCRPATH"/bin/vmap -light \
+			-custinfoparms \
+			-fs_basepath "$SCRPATH" \
+			-v \
+			-dirty \
+			-fs_game platform \
+			-bounce 8 \
+			-samplesize 4 \
+			-threads $BUILD_PROC \
+			-shade \
+			-shadeangle 60 \
+			-patchshadows $*
+	else
+		"$SCRPATH"/bin/vmap -light \
+			-custinfoparms \
+			-fs_basepath "$SCRPATH" \
+			-v \
+			-fs_game platform \
+			-samplesize 64 \
+			-threads $BUILD_PROC \
+			-shade \
+			-shadeangle 60 \
+			-patchshadows $*
+	fi
 fi
