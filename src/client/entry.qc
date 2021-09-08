@@ -927,6 +927,9 @@ CSQC_Ent_Update(float new)
 	case ENT_VEHICLE:
 		basevehicle_readentity(new);
 		break;
+	case ENT_VEH_TANKMORTAR:
+		func_tankmortar_readentity(new);
+		break;
 	case ENT_PLAYER:
 		player pl = (player)self;
 

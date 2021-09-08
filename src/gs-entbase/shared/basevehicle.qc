@@ -24,14 +24,6 @@ enumflags
 void
 CBaseVehicle::UpdateView(void)
 {
-	vector vecStart, vecEnd;
-
-	pSeat->m_vecPredictedOrigin = origin;
-	makevectors(view_angles);
-	vecStart = [pSeat->m_vecPredictedOrigin[0], pSeat->m_vecPredictedOrigin[1], pSeat->m_vecPredictedOrigin[2] + 16] + (v_right * 4);
-	vecEnd = vecStart + (v_forward * -256) + [0,0,16] + (v_right * 4);
-	traceline(vecStart, vecEnd, FALSE, self);
-	setproperty(VF_ORIGIN, trace_endpos + (v_forward * 16));
 }
 
 void

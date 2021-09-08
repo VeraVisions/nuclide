@@ -50,10 +50,13 @@ base_player::ReceiveEntity(float new, float fl)
 		origin[2] = readcoord();
 	if (fl & PLAYER_ANGLES_X) {
 		v_angle[0] = pitch = readshort() / (32767 / 360);
+		v_angle[1] = pitch = readshort() / (32767 / 360);
+		v_angle[2] = pitch = readshort() / (32767 / 360);
 	}
 	if (fl & PLAYER_ANGLES_Y) {
+		angles[0] = readshort() / (32767 / 360);
 		angles[1] = readshort() / (32767 / 360);
-		v_angle[1] = readshort() / (32767 / 360);
+		angles[1] = readshort() / (32767 / 360);
 	}
 	if (fl & PLAYER_COLORMAP)
 		colormap = readbyte();
@@ -213,10 +216,10 @@ base_player::EvaluateEntity(void)
 	if (VEC_CHANGED(origin, 2))
 		SetSendFlags(PLAYER_ORIGIN_Z);
 
-	if (VEC_CHANGED(v_angle, 0))
+	if (VEC_CHANGED(v_angle, 0) || VEC_CHANGED(v_angle, 1) || VEC_CHANGED(v_angle, 2))
 		SetSendFlags(PLAYER_ANGLES_X);
 
-	if (VEC_CHANGED(angles, 1))
+	if (VEC_CHANGED(angles, 0) || VEC_CHANGED(angles, 1) || VEC_CHANGED(angles, 2))
 		SetSendFlags(PLAYER_ANGLES_Y);
 
 	if (ATTR_CHANGED(colormap))
@@ -311,10 +314,13 @@ base_player::SendEntity(entity ePEnt, float fChanged)
 
 	if (fChanged & PLAYER_ANGLES_X) {
 		WriteShort(MSG_ENTITY, v_angle[0] * 32767 / 360);
+		WriteShort(MSG_ENTITY, v_angle[1] * 32767 / 360);
+		WriteShort(MSG_ENTITY, v_angle[2] * 32767 / 360);
 	}
 	if (fChanged & PLAYER_ANGLES_Y) {
+		WriteShort(MSG_ENTITY, angles[0] * 32767 / 360);
 		WriteShort(MSG_ENTITY, angles[1] * 32767 / 360);
-		WriteShort(MSG_ENTITY, v_angle[1] * 32767 / 360);
+		WriteShort(MSG_ENTITY, angles[2] * 32767 / 360);
 	}
 	if (fChanged & PLAYER_COLORMAP)
 		WriteByte(MSG_ENTITY, colormap);
