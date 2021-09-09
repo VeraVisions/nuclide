@@ -1,6 +1,10 @@
 #!/bin/sh
 . ./build.cfg
 
+if [ "$SKIP_UPDATE" == "1" ]; then
+	BUILD_UPDATE=0
+fi
+
 # if we're attempting to update the projects, check for git
 if [ "$BUILD_UPDATE" -eq 1 ]; then
 	if ! [ -x "$(command -v git)" ]; then
