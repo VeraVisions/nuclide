@@ -28,6 +28,8 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	registercommand("testLight");
 	registercommand("testPointLight");
 	registercommand("getpos");
+	registercommand("setpos");
+	registercommand("setang");
 	registercommand("dev_sentence");
 	registercommand("titles_test");
 	registercommand("vox_test");
@@ -733,6 +735,13 @@ CSQC_ConsoleCommand(string sCMD)
 		break;
 	case "getpos":
 		print(sprintf("setpos %v;setang -%v\n", getproperty(VF_ORIGIN), getproperty(VF_ANGLES)));
+		break;
+	case "setpos":
+		localcmd(sprintf("cmd setpos \"%s\"\n", argv(1)));
+		break;
+	case "setang":
+		setproperty(VF_CL_VIEWANGLES, stov(argv(1)));
+		setproperty(VF_ANGLES, stov(argv(1)));
 		break;
 	case "callvote":
 		sendevent("CallVote", "s", substring(sCMD, 9, strlen(sCMD)-9));

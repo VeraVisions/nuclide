@@ -366,6 +366,11 @@ SV_ParseClientCommand(string cmd)
 			break;
 		spawnfunc_player();
 		PutClientInServer();
+		break;
+	case "setpos":
+		if (cvar("sv_cheats") == 1) {
+			setorigin(self, stov(argv(1)));
+		}
 		break;	
 	}
 }
