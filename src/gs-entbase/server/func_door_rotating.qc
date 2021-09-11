@@ -74,6 +74,8 @@ class func_door_rotating:CBaseTrigger
 
 	string m_strSndOpen;
 	string m_strSndClose;
+	string m_strLockedSfx;
+	float m_flSoundWait;
 
 	int m_iDamage;
 	int m_iLocked;
@@ -273,10 +275,15 @@ void func_door_rotating::Use(void)
 
 void func_door_rotating::Touch(void)
 {
-	if (spawnflags & SF_ROT_USE) {
+	if (m_iLocked || !GetMaster()) {
+		if (m_flSoundWait < time)
+			Sound_Play(this, CHAN_VOICE, m_strLockedSfx);
+
+		m_flSoundWait = time + 0.3f;
 		return;
 	}
-	if (m_iLocked) {
+
+	if (spawnflags & SF_ROT_USE) {
 		return;
 	}
 
@@ -446,6 +453,10 @@ func_door_rotating::SpawnKey(string strKey, string strValue)
 	case "netname":
 		targetClose = strValue;
 		break;
+	case "locked_sound":
+		x = stoi(strValue);
+		m_strLockedSfx = sprintf("func_button.hlsfx_%i", x+1i);
+		break;
 	default:
 		CBaseTrigger::SpawnKey(strKey, strValue);
 	}
@@ -465,4 +476,6 @@ void func_door_rotating::func_door_rotating(void)
 		Sound_Precache(m_strSndClose);
 	if (m_strSndStop)
 		Sound_Precache(m_strSndStop);
+	if (m_strLockedSfx)
+		Sound_Precache(m_strLockedSfx);
 }
