@@ -16,5 +16,6 @@ shared/func_tankmortar.qc
 shared/trigger_camera.qc
 shared/trigger_gravity.qc
 shared/info_particle_system.qc
+shared/prop_vehicle_driveable.qc
 shared/worldspawn.qc
 #endlist

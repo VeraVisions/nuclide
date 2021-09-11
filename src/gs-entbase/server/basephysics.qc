@@ -22,6 +22,8 @@ CBasePhysics::PhysicsEnable(void)
 	else {
 		print("^1CBasePhysics::PhysicsEnable: ");
 		print("^7Physics simulator not enabled.\n");
+		SetMovetype(MOVETYPE_BOUNCE);
+		SetSolid(SOLID_NOT);
 	}
 	m_iEnabled = TRUE;
 }
@@ -34,6 +36,8 @@ CBasePhysics::PhysicsDisable(void)
 	else {
 		print("^1CBasePhysics::PhysicsDisable: ");
 		print("^7Physics simulator not enabled.\n");
+		SetMovetype(MOVETYPE_NONE);
+		SetSolid(SOLID_NOT);
 	}
 	m_iEnabled = FALSE;
 }
@@ -90,6 +94,7 @@ CBasePhysics::ApplyForceCenter(vector vecForce)
 	else {
 		print("^1CBasePhysics::ApplyForceCenter: ");
 		print("^7Physics simulator not enabled.\n");
+		velocity = vecForce;
 	}
 }
 
@@ -101,6 +106,7 @@ CBasePhysics::ApplyForceOffset(vector vecForce, vector vecOffset)
 	else {
 		print("^1CBasePhysics::ApplyForceOffset: ");
 		print("^7Physics simulator not enabled.\n");
+		velocity = vecForce;
 	}
 }
 
@@ -112,6 +118,9 @@ CBasePhysics::ApplyTorqueCenter(vector vecTorque)
 	else {
 		print("^1CBasePhysics::ApplyTorqueCenter: ");
 		print("^7Physics simulator not enabled.\n");
+		avelocity = vecTorque;
+		velocity = vecTorque;
+		velocity[2] = 96;
 	}
 }
 
@@ -129,15 +138,33 @@ CBasePhysics::TouchThink(void)
 		if (trace_ent.flags & FL_CLIENT) {
 			PhysicsEnable();
 			makevectors(vectoangles(origin - trace_ent.origin));
-			ApplyTorqueCenter([25,0,0]);
+			ApplyTorqueCenter(v_forward * 240);
 		}
 	}
 
 	/* If we barely move, disable the physics simulator */
-	if (vlen(velocity) <= 1 && m_iEnabled) {
-		PhysicsDisable();
-		velocity = [0,0,0];
-		avelocity = [0,0,0];
+	if (vlen(velocity) <= 1) {
+		if (m_iEnabled) {
+			PhysicsDisable();
+			velocity = [0,0,0];
+			avelocity = [0,0,0];
+		}
+
+		if (physics_supported() == FALSE) {
+			vector wantangle;
+			vector newangle;
+			wantangle[0] = (int)((angles[0] + 45) / 90) * 90;
+			wantangle[1] = angles[1];
+			wantangle[2] = (int)((angles[2] + 45) / 90) * 90;
+
+			makevectors(angles);
+			angles = v_forward;
+			makevectors(wantangle);
+			newangle[0] = Math_Lerp(angles[0], v_forward[0], frametime * 5.0f);
+			newangle[1] = Math_Lerp(angles[1], v_forward[1], frametime * 5.0f);
+			newangle[2] = Math_Lerp(angles[2], v_forward[2], frametime * 5.0f);
+			angles = vectoangles(newangle);
+		}
 	}
 
 	/* don't let players collide */
@@ -172,16 +199,16 @@ CBasePhysics::Pain(void)
 void
 CBasePhysics::Respawn(void)
 {
-	SetModel(m_oldModel);
-	SetOrigin(m_oldOrigin);
 	SetMovetype(MOVETYPE_PHYSICS);
 	SetSolid(SOLID_PHYSICS_BOX + m_iShape);
+	SetModel(m_oldModel);
 	geomtype = GEOMTYPE_BOX;
 	takedamage = DAMAGE_YES;
 	health = 100000;
 	PhysicsDisable();
 	SetFriction(2.0f);
 	SetBounceFactor(0.25f);
+	SetOrigin(m_oldOrigin);
 
 	/* don't let players collide */
 	dimension_solid = 1;
