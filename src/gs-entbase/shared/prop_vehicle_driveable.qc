@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED prop_vehicle_driveable (0 .5 .8) ?
+/*QUAKED prop_vehicle_driveable (0 0 1) (-50 -50 0) (50 50 70)
 Point entity defining a 4-wheel vehicle that you can drive.
 
 -------- KEYS --------
