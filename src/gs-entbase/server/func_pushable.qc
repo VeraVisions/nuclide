@@ -53,6 +53,14 @@ func_pushable::customphysics(void)
 	input_angles = [0,0,0];
 	input_timelength = frametime;
 
+	/* we're destroyed, most likely */
+	if (m_eCollBox)
+	if (modelindex == 0) {
+		m_eCollBox.solid = SOLID_NOT;
+	} else {
+		m_eCollBox.solid = SOLID_BBOX;
+	}
+
 	/* when we pull the box, it'll follow us whereever we go, just not too fast so it doesn't clip into us! */
 	if (!m_pPuller.button5) {
 		m_pPuller = world;
