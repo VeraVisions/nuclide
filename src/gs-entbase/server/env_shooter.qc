@@ -107,6 +107,7 @@ void
 env_shooter::Respawn(void)
 {
 	m_iGibsLeft = m_iGibs;
+	think = __NULL__;
 }
 
 void
