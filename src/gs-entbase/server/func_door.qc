@@ -86,6 +86,10 @@ class func_door:CBaseTrigger
 	int m_iDamage;
 	int m_iLocked;
 
+	float m_flSoundWait;
+	string m_strLockedSfx;
+	string m_strUnlockedSfx;
+
 	string m_strSndOpen;
 	string m_strSndClose;
 	string m_strSndStop;
@@ -250,11 +254,15 @@ func_door::Trigger(entity act, int state)
 void
 func_door::Touch(void)
 {
-	if (spawnflags & SF_MOV_TOGGLE) {
+	if (m_iLocked || !GetMaster()) {
+		if (m_flSoundWait < time)
+			Sound_Play(this, CHAN_VOICE, m_strLockedSfx);
+
+		m_flSoundWait = time + 0.3f;
 		return;
 	}
 
-	if (m_iLocked) {
+	if (spawnflags & SF_MOV_TOGGLE) {
 		return;
 	}
 
@@ -374,6 +382,8 @@ func_door::Respawn(void)
 		PlayerUse = __NULL__;
 	}
 
+	touch = Touch;
+
 	m_iValue = 0;
 	m_iState = DOORSTATE_LOWERED;
 	m_vecPos1 = m_oldOrigin;
@@ -442,6 +452,14 @@ func_door::SpawnKey(string strKey, string strValue)
 		x = stoi(strValue);
 		m_strSndStop = sprintf("func_door.stop_%i", x);
 		break;
+	case "locked_sound":
+		x = stoi(strValue);
+		m_strLockedSfx = sprintf("func_button.hlsfx_%i", x+1i);
+		break;
+	case "unlocked_sound":
+		x = stoi(strValue);
+		m_strUnlockedSfx = sprintf("func_button.hlsfx_%i", x+1i);
+		break;
 	default:
 		CBaseTrigger::SpawnKey(strKey, strValue);
 	}
@@ -458,6 +476,12 @@ func_door::func_door(void)
 		Sound_Precache(m_strSndClose);
 	if (m_strSndStop)
 		Sound_Precache(m_strSndStop);
+
+	/* GoldSrc compat */
+	if (m_strLockedSfx)
+		Sound_Precache(m_strLockedSfx);
+	if (m_strUnlockedSfx)
+		Sound_Precache(m_strUnlockedSfx);
 }
 
 void
