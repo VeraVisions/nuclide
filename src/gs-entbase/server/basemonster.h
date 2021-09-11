@@ -169,4 +169,6 @@ class CBaseMonster:CBaseEntity
 	virtual int(void) AnimWalk;
 	virtual int(void) AnimRun;
 	virtual void(float) AnimPlay;
+
+	virtual float(entity, float) SendEntity;
 };

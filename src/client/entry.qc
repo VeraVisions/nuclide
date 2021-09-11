@@ -933,6 +933,9 @@ CSQC_Ent_Update(float new)
 		}
 		me.ReceiveEntity(readfloat());
 		break;
+	case ENT_MONSTER:
+		basemonster_readentity(new);
+		break;
 	case ENT_VEHICLE:
 		basevehicle_readentity(new);
 		break;

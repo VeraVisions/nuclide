@@ -9,6 +9,7 @@ materials.h
 client/defs.h
 client/basefx.qc
 shared/baseentity.qc
+client/basemonster.qc
 shared/basevehicle.qc
 client/env_cubemap.qc
 client/env_glow.qc

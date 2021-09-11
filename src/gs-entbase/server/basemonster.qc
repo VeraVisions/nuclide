@@ -572,6 +572,141 @@ CBaseMonster::SpawnKey(string strKey, string strValue)
 	}
 }
 
+/* Make sure StartFrame calls this */
+float
+CBaseMonster::SendEntity(entity ePEnt, float fChanged)
+{
+	if (!modelindex)
+		return (0);
+
+	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
+		return (0);
+
+	WriteByte(MSG_ENTITY, ENT_MONSTER);
+
+	/* newly popped into the PVS, sadly this is the only hacky way to check
+	 * for this right now. convince the engine maintainer to make this more sensible */
+	if (fChanged == 0xFFFFFF) {
+		/* check for defaults. if these are predictable fields, don't even bother
+		 * networking them! you're just wasting bandwidth. */
+		if (frame == 0)
+			fChanged &= ~BASEFL_CHANGED_FRAME;
+		if (skin == 0)
+			fChanged &= ~BASEFL_CHANGED_SKIN;
+		if (effects == 0)
+			fChanged &= ~BASEFL_CHANGED_EFFECTS;
+		if (m_iBody == 0)
+			fChanged &= ~BASEFL_CHANGED_BODY;
+		if (scale == 0.0 || scale == 1.0)
+			fChanged &= ~BASEFL_CHANGED_SCALE;
+		if (origin == [0,0,0])
+			fChanged &= ~BASEFL_CHANGED_ORIGIN;
+		if (angles == [0,0,0])
+			fChanged &= ~BASEFL_CHANGED_ANGLES;
+		if (velocity == [0,0,0])
+			fChanged &= ~BASEFL_CHANGED_VELOCITY;
+		if (mins == [0,0,0] && maxs == [0,0,0])
+			fChanged &= ~BASEFL_CHANGED_SIZE;
+		if (solid == SOLID_NOT)
+			fChanged &= ~BASEFL_CHANGED_SOLID;
+		if (movetype == MOVETYPE_NONE)
+			fChanged &= ~BASEFL_CHANGED_MOVETYPE;
+#ifdef GS_RENDERFX
+		if (m_iRenderMode == RM_NORMAL)
+			fChanged &= ~BASEFL_CHANGED_RENDERMODE;
+#endif
+	}
+
+	/* don't network triggers unless provoked */
+	/*if (cvar("developer") == 0 && m_iRenderMode == RM_TRIGGER)
+		return (0);*/
+
+#ifdef GS_RENDERFX
+	/* let's not waste networking power on certain render-modes where they would
+	 * not apply anyway. this seems sensible enough. */
+	if (m_iRenderMode == RM_NORMAL || m_iRenderMode == RM_TRIGGER) {
+		fChanged &= ~BASEFL_CHANGED_RENDERCOLOR;
+		fChanged &= ~BASEFL_CHANGED_RENDERAMT;
+	}
+#endif
+
+	/* broadcast how much data is expected to be read */
+	WriteFloat(MSG_ENTITY, fChanged);
+
+	/* really trying to get our moneys worth with 23 bits of mantissa */
+	if (fChanged & BASEFL_CHANGED_ORIGIN) {
+		WriteCoord(MSG_ENTITY, origin[0]);
+		WriteCoord(MSG_ENTITY, origin[1]);
+		WriteCoord(MSG_ENTITY, origin[2]);
+	}
+	if (fChanged & BASEFL_CHANGED_ANGLES) {
+		WriteShort(MSG_ENTITY, angles[0] * 32767 / 360);
+		WriteShort(MSG_ENTITY, angles[1] * 32767 / 360);
+		WriteShort(MSG_ENTITY, angles[2] * 32767 / 360);
+	}
+	if (fChanged & BASEFL_CHANGED_MODELINDEX) {
+		WriteShort(MSG_ENTITY, modelindex);
+	}
+	if (fChanged & BASEFL_CHANGED_SOLID) {
+		WriteByte(MSG_ENTITY, solid);
+	}
+	if (fChanged & BASEFL_CHANGED_MOVETYPE) {
+		WriteByte(MSG_ENTITY, movetype);
+	}
+	if (fChanged & BASEFL_CHANGED_SIZE) {
+		WriteCoord(MSG_ENTITY, mins[0]);
+		WriteCoord(MSG_ENTITY, mins[1]);
+		WriteCoord(MSG_ENTITY, mins[2]);
+		WriteCoord(MSG_ENTITY, maxs[0]);
+		WriteCoord(MSG_ENTITY, maxs[1]);
+		WriteCoord(MSG_ENTITY, maxs[2]);
+	}
+	if (fChanged & BASEFL_CHANGED_FRAME) {
+		WriteByte(MSG_ENTITY, frame);
+	}
+	if (fChanged & BASEFL_CHANGED_SKIN) {
+		WriteByte(MSG_ENTITY, skin + 128);
+	}
+	if (fChanged & BASEFL_CHANGED_EFFECTS) {
+		WriteFloat(MSG_ENTITY, effects);
+	}
+	if (fChanged & BASEFL_CHANGED_BODY) {
+		WriteByte(MSG_ENTITY, m_iBody);
+	}
+	if (fChanged & BASEFL_CHANGED_SCALE) {
+		WriteFloat(MSG_ENTITY, scale);
+	}
+	if (fChanged & BASEFL_CHANGED_VELOCITY) {
+		WriteFloat(MSG_ENTITY, velocity[0]);
+		WriteFloat(MSG_ENTITY, velocity[1]);
+		WriteFloat(MSG_ENTITY, velocity[2]);
+	}
+
+#ifdef GS_RENDERFX
+	if (fChanged & BASEFL_CHANGED_RENDERFX) {
+		WriteByte(MSG_ENTITY, m_iRenderFX);
+	}
+	if (fChanged & BASEFL_CHANGED_RENDERMODE) {
+		WriteByte(MSG_ENTITY, m_iRenderMode);
+	}
+
+	if (fChanged & BASEFL_CHANGED_RENDERCOLOR) {
+		WriteFloat(MSG_ENTITY, m_vecRenderColor[0]);
+		WriteFloat(MSG_ENTITY, m_vecRenderColor[1]);
+		WriteFloat(MSG_ENTITY, m_vecRenderColor[2]);
+	}
+	if (fChanged & BASEFL_CHANGED_RENDERAMT) {
+		WriteFloat(MSG_ENTITY, m_flRenderAmt);
+	}
+#else
+	if (fChanged & BASEFL_CHANGED_ALPHA) {
+		WriteFloat(MSG_ENTITY, alpha);
+	}
+#endif
+
+	return (1);
+}
+
 void
 CBaseMonster::CBaseMonster(void)
 {

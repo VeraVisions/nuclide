@@ -137,6 +137,7 @@ Sound_ParseField(int i, int a)
 		break;
 	case "distshader":
 		g_sounds[i].distshader = argv(1);
+		break;
 	case "sample":
 		if (a == 2) {
 			dprint("\tAdded sample ");

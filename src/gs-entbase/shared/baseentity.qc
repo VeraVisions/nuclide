@@ -106,14 +106,8 @@ CBaseEntity::predraw(void)
 		alpha = 0.25f;
 	}
 
-	/* mouth flapping action */
-	bonecontrol5 = getchannellevel(this, CHAN_VOICE) * 20;
-	m_flBaseTime = frame1time;
-
 	if (serverkeyfloat(SERVERKEY_PAUSESTATE) != 1)
 		frame1time += frametime;
-
-	ProcessWordQue();
 
 	processmodelevents(modelindex, frame, m_flBaseTime,
 		frame1time, ClientGame_ModelEvent);
