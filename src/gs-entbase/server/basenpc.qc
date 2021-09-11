@@ -42,6 +42,9 @@ CBaseNPC::StartleAllies(void)
 void
 CBaseNPC::Sentence(string sentence)
 {
+	if (style == MONSTER_DEAD)
+		return;
+
 	string seq = Sentences_GetSamples(sentence);
 
 	if (seq == "")
@@ -58,6 +61,9 @@ CBaseNPC::Sentence(string sentence)
 void
 CBaseNPC::Speak(string sentence)
 {
+	if (style == MONSTER_DEAD)
+		return;
+
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_SPEAK);
 	WriteEntity(MSG_MULTICAST, this);
