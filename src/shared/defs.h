@@ -134,6 +134,23 @@ setmodel(entity ent, string mname)
 	return prior(ent, mname);
 }
 
+void
+setorigin_safe(entity target, vector testorg)
+{
+
+	for (int i = 0; i < 16; i++) {
+		tracebox(testorg, target.mins, target.maxs, testorg, MOVE_NORMAL, target);
+
+		if (!trace_startsolid) {
+			break;
+		}
+
+		testorg[2] += 1.0;
+	}
+
+	setorigin(target, testorg);
+}
+
 /* info print */
 void
 iprint(string m)
