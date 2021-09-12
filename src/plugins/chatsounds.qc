@@ -55,38 +55,17 @@ ChatLookUp(string cmd)
 	return (__NULL__);
 }
 
-/* plugin hook */
-string
-FMX_ParseClientCommand(string cmd)
-{
-	tokenize(cmd);
-	switch (argv(0)) {
-		case "say":
-			return ChatLookUp(strtolower(argv(1)));
-			break;
-	}
-	return (cmd);
-}
-
 void
-FMX_Init(void)
+ChatLoadFile(string filename)
 {
 	string temp;
-	int i = 0;
 	int c = 0;
+	int i = g_sounds;
 	filestream chatfile;
-	searchhandle list;
-
-	list = search_begin("plugins/chatsounds/*.txt", FALSE, TRUE);
-	for (i = 0; i < search_getsize(list); i++) {
-		print(sprintf("Found %s\n", search_getfilename(list, i)));
-	}
-	search_end(list);
-
-	chatfile = fopen("chatsounds.txt", FILE_READ);
+	chatfile = fopen(filename, FILE_READ);
 
 	if (chatfile < 0) {
-		print("Chat Sound Plugin: chatsounds.txt not found.\n");
+		print(sprintf("[CHATSOUNDS] %s not found.\n", filename));
 		return;
 	}
 
@@ -100,7 +79,8 @@ FMX_Init(void)
 	}
 	fseek(chatfile, 0);
 
-	g_table = memalloc(sizeof(chatsentence_t) * g_sounds);
+	g_table = (chatsentence_t *)memrealloc(g_table, sizeof(chatsentence_t), i, g_sounds);
+
 	while ((temp = fgets(chatfile))) {
 		c = tokenize_console(temp);
 		if (c != 2) {
@@ -111,11 +91,38 @@ FMX_Init(void)
 		c = tokenizebyseparator(g_table[i].sample, ";");
 		for (int x = 0; x < c; x++) {
 			precache_sound(argv(x));
-			print(sprintf("Caching: %s\n", argv(x)));
+			print(sprintf("[CHATSOUNDS] Caching: %s\n", argv(x)));
 		}
 		i++;
 	}
 	fclose(chatfile);
+}
+
+/* plugin hook */
+string
+FMX_ParseClientCommand(string cmd)
+{
+	tokenize(cmd);
+	switch (argv(0)) {
+	case "say":
+		return ChatLookUp(strtolower(argv(1)));
+		break;
+	}
+	return (cmd);
+}
+
+void
+FMX_Init(void)
+{
+	int i = 0;
+	searchhandle list;
+
+	list = search_begin("chatsounds_*.txt", FALSE, TRUE);
+	for (i = 0; i < search_getsize(list); i++) {
+		print(sprintf("[CHATSOUNDS] Found %s\n", search_getfilename(list, i)));
+		ChatLoadFile(search_getfilename(list, i));
+	}
+	search_end(list);
 }
 
 void

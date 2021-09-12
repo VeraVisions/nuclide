@@ -4,5 +4,6 @@
 
 #includelist
 ../shared/fteextensions.qc
+../shared/memory.h
 chatsounds.qc
 #endlist
