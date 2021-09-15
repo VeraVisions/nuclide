@@ -329,7 +329,7 @@ Sound_Distance(entity target, string shader)
 	print(sprintf("Sound_Distance: %s\n", argv(r)));
 #endif
 
-	/*sound(
+	sound(
 		target,
 		5,
 		argv(r),
@@ -338,8 +338,7 @@ Sound_Distance(entity target, string shader)
 		pitch,
 		flag,
 		g_sounds[sample].offset
-	);*/
-	pointsound(target.origin, argv(r), volume, ATTN_NONE);
+	);
 }
 
 void

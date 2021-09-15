@@ -97,6 +97,23 @@ dprint(string m)
 		return prior(m);
 }
 
+/* info print */
+void
+iprint(string m)
+{
+	print(sprintf("^Ue080^Ue081^Ue081^Ue081^Ue081^Ue081^Ue081 %s ^Ue081^Ue081^Ue081^Ue081^Ue081^Ue081^Ue082\n", m));
+}
+
+void
+crossprint(string m)
+{
+#ifdef CLIENT
+	print(strcat("CLIENT: ", m));
+#else
+	print(strcat("SERVER: ", m));
+#endif
+}
+
 __wrap string
 precache_model(string m)
 {
@@ -109,7 +126,7 @@ precache_model(string m)
 }
 
 /* this could probably be a lot better, use this from now on so that it can be improved later */
-noref int input_sequence;
+noref float input_sequence;
 float
 pseudorandom()
 {
@@ -149,11 +166,4 @@ setorigin_safe(entity target, vector testorg)
 	}
 
 	setorigin(target, testorg);
-}
-
-/* info print */
-void
-iprint(string m)
-{
-	print(sprintf("^Ue080^Ue081^Ue081^Ue081^Ue081^Ue081^Ue081 %s ^Ue081^Ue081^Ue081^Ue081^Ue081^Ue081^Ue082\n", m));
 }

@@ -42,7 +42,6 @@ enumflags
 	PLAYER_UNUSED7
 };
 
-noref int input_sequence;
 class player:base_player
 {
 	PREDICTED_INT(mode_tempstate);
