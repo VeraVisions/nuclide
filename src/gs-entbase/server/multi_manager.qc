@@ -142,7 +142,6 @@ multi_manager::multi_manager(void)
 	m_strBuffer = "";
 
 	CBaseTrigger::CBaseTrigger();
-	print(sprintf("multitrigger: %s\n", m_strBuffer));
 
 	for (b = 0; b < 16; b++) {
 		m_eTriggers[b] = spawn(multi_manager_sub);
@@ -164,7 +163,6 @@ multi_manager::multi_manager(void)
 			m_eTriggers[b].target = argv(i);
 			m_eTriggers[b].m_oldstrTarget = argv(i);
 			m_eTriggers[b].m_flUntilTriggered = stof(argv(i+1));
-			print(sprintf("Created multitrigger: %s %d\n", m_eTriggers[b].target, m_eTriggers[b].m_flUntilTriggered));
 			b++;
 		}
 	}
