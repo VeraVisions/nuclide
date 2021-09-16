@@ -366,6 +366,10 @@ void func_door_rotating::Respawn(void)
 	nextthink = 0.0f;
 	avelocity = [0,0,0];
 
+	/* this is a terrible hack */
+	if (m_flWait == 0)
+		m_flWait = 0.01f;
+
 	blocked = Blocked;
 
 	if (spawnflags & SF_ROT_USE) {

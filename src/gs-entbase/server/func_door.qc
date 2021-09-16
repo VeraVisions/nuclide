@@ -346,6 +346,10 @@ func_door::Respawn(void)
 	m_vecDest = [0,0,0];
 	m_vecMoveDir = [0,0,0];
 
+	/* this is a terrible hack */
+	if (m_flWait == 0)
+		m_flWait = 0.01f;
+
 	/* angles to vecMoveDir */
 	SetMovementDirection();
 
