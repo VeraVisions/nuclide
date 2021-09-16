@@ -107,7 +107,7 @@ CGameRules::SpectatorThink(player pl)
 int
 CGameRules::MaxItemPerSlot(int slot)
 {
-	return -1;
+	return (-1);
 }
 
 void
@@ -169,6 +169,12 @@ CGameRules::IntermissionCycle(void)
 	else
 		m_flIntermissionCycle = time + 5.0f;
 	
+}
+
+int
+CGameRules::MonstersSpawn(void)
+{
+	return (TRUE);
 }
 
 void

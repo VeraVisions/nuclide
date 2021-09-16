@@ -208,7 +208,6 @@ func_breakable::Death(void)
 		unit.nextthink = time;
 		unit.real_owner = this;
 		setorigin(unit, absmin + (0.5 * (absmax - absmin)));
-		print(sprintf("breakable spawning %s\n", unit.classname));
 	}
 
 	/* This may seem totally absurd. That's because it is. It's very

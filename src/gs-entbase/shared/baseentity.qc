@@ -490,7 +490,7 @@ CBaseEntity_ParseSentence(void)
 		targ = (CBaseEntity)ent;
 		targ.Sentence(sentence);
 	} else {
-		print(sprintf("^3CBaseNPC_ParseSentence^7: Entity %d not in PVS\n", e));
+		dprint(sprintf("^3CBaseNPC_ParseSentence^7: Entity %d not in PVS\n", e));
 	}
 }
 #else

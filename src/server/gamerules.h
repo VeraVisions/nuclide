@@ -43,6 +43,7 @@ class CGameRules
 	virtual void(base_player) LevelChangeParms;
 
 	virtual int(int) MaxItemPerSlot;
+	virtual int(void) MonstersSpawn;
 
 	/* end of a game */
 	virtual void(void) IntermissionStart;

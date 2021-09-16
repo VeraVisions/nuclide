@@ -239,6 +239,7 @@ Sound_Precache(string shader)
 	g_sounds[index].volume = 1.0f;
 	g_sounds[index].dist_max = 1;
 	g_sounds[index].pitch_min = g_sounds[index].pitch_max = 100;
+	g_sounds[index].offset = 0;
 
 	sh = search_begin("sound/*.sndshd", TRUE, TRUE);
 

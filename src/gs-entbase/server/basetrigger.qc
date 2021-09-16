@@ -85,17 +85,17 @@ CBaseTrigger::GetMaster(void)
 
 	/* we couldn't find it, so let's not even bother going further */
 	if (!t) {
-		/*dprint(sprintf("^2%s::^3GetMaster^7: Invalid master, return success\n", 
-		this.classname));*/
+		print(sprintf("^2%s::^3GetMaster^7: Invalid master, return success\n", 
+		this.classname));
 		return (1);
 	}
 
-	/*if (t.GetValue() == 1)
-		dprint(sprintf("^2%s::^3GetMaster^7: %s learns %s ^2POSITIVE\n", 
+	if (t.GetValue() == 1)
+		print(sprintf("^2%s::^3GetMaster^7: %s learns %s ^2POSITIVE\n", 
 		this.classname, targetname, m_strMaster));
 	else
-		dprint(sprintf("^2%s::^3GetMaster^7: %s learns %s ^1NEGATIVE\n", 
-		this.classname, targetname, m_strMaster));*/
+		print(sprintf("^2%s::^3GetMaster^7: %s learns %s ^1NEGATIVE\n", 
+		this.classname, targetname, m_strMaster));
 	
 	return t.GetValue();
 }
@@ -110,7 +110,7 @@ CBaseTrigger::InitPointTrigger(void)
 void
 CBaseTrigger::InitBrushTrigger(void)
 {
-	SetModel(m_oldModel);
+	SetModel(GetSpawnModel());
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_BSPTRIGGER);
 

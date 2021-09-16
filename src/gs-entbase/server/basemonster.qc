@@ -711,9 +711,8 @@ CBaseMonster::SendEntity(entity ePEnt, float fChanged)
 void
 CBaseMonster::CBaseMonster(void)
 {
-	/* FIXME: Put this somewhere else? */
 	if (!(spawnflags & MSF_MULTIPLAYER))
-	if (!(cvar("coop") == 1 || cvar("sv_playerslots") == 1)) {
+	if (g_grMode.MonstersSpawn() == FALSE) {
 		remove(this);
 		return;
 	}
