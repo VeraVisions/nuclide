@@ -226,8 +226,8 @@ func_train::Respawn(void)
 	SetSolid(spawnflags & TRAIN_NOTSOLID ? SOLID_NOT : SOLID_BSP);
 	SetMovetype(MOVETYPE_PUSH);
 	blocked = Blocked;
-	SetModel(m_oldModel);
-	SetOrigin(m_oldOrigin);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
 
 	/* let's wait 1/4 a second to give the path_corner entities a chance to
 	 * spawn in case they're after us in the ent lump */

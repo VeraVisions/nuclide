@@ -312,8 +312,8 @@ light_dynamic::Respawn(void)
 {
 	SetSolid(SOLID_NOT);
 	SetSize([-16,-16,-16], [16,16,16]);
-	SetOrigin(m_oldOrigin);
-	SetAngles(m_oldAngle);
+	SetOrigin(GetSpawnOrigin());
+	SetAngles(GetSpawnAngles());
 
 	m_iState = (m_iStartActive == 1) ? 1 : 0;
 }

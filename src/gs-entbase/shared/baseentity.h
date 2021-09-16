@@ -57,6 +57,12 @@ class CBaseEntity
 
 	string m_parent;
 
+	/* Reliable APIs */
+	virtual vector(void) GetSpawnOrigin;
+	virtual vector(void) GetSpawnAngles;
+	virtual string(void) GetSpawnModel;
+	virtual float(void) GetSpawnHealth;
+
 	/* Input/Output System */
 	string m_strOnTrigger;
 	string m_strOnUser1;
@@ -121,4 +127,6 @@ class CBaseEntity
 #endif
 };
 
+#ifdef CLIENT
 class CBaseTrigger:CBaseEntity {};
+#endif

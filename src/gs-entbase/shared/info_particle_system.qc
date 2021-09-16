@@ -237,8 +237,8 @@ info_particle_system::Respawn(void)
 {
 	SetSolid(SOLID_NOT);
 	SetSize([-16,-16,-16], [16,16,16]);
-	SetOrigin(m_oldOrigin);
-	SetAngles(m_oldAngle);
+	SetOrigin(GetSpawnOrigin());
+	SetAngles(GetSpawnAngles());
 
 	if (spawnflags & PSFL_STARTACTIVE) {
 		Trigger(this, TRIG_ON);

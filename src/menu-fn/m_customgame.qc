@@ -359,7 +359,6 @@ games_check_gtxt(int id, string gamedirname)
 					games[id].type = argv(1);
 					break;
 				}
-				print(sprintf("GameInfo: %s\n", temp));
 			} else if (braced == 2) {
 				/* FileSystem */
 				switch (token) {
@@ -368,7 +367,6 @@ games_check_gtxt(int id, string gamedirname)
 				case "toolsappid":
 					break;
 				}
-				print(sprintf("FileSystem: %s\n", temp));
 			} else if (braced == 3) {
 				/* SearchPaths */
 				switch (token) {
@@ -379,7 +377,6 @@ games_check_gtxt(int id, string gamedirname)
 						gamedirchain = strcat(gamedirchain, argv(1), " ");
 					break;
 				}
-				print(sprintf("SearchPaths: %s\n", temp));
 			}
 		}
 
@@ -398,7 +395,6 @@ games_check_gtxt(int id, string gamedirname)
 					games[id].gamedir = strcat(games[id].gamedir, argv(i), ";");
 			}
 		}
-		print(sprintf("Final GameDir: %s\n", games[id].gamedir));
 
 		fclose(fh);
 		ret = 1;
@@ -611,16 +607,16 @@ games_init(void)
 		games[id].steambg = 0;
 
 		if (games_check_manifest(id, gamedirname) == 1) {
-			print(sprintf("[MENU] Found manifest for %s\n", gamedirname));
+			dprint(sprintf("[MENU] Found manifest for %s\n", gamedirname));
 			games[id].info_type = GAMEINFO_MANIFEST;
 		} else if (games_check_gtxt(id, gamedirname) == 1) {
-			print(sprintf("[MENU] Found gameinfo for %s\n", gamedirname));
+			dprint(sprintf("[MENU] Found gameinfo for %s\n", gamedirname));
 			games[id].info_type = GAMEINFO_GITXT;
 		} else if (games_check_liblist(id, gamedirname) == 1) {
-			print(sprintf("[MENU] Found liblist for %s\n", gamedirname));
+			dprint(sprintf("[MENU] Found liblist for %s\n", gamedirname));
 			games[id].info_type = GAMEINFO_LIBLIST;
 		} else {
-			print(sprintf("[MENU] Found nothing for %s\n", gamedirname));
+			dprint(sprintf("[MENU] Found nothing for %s\n", gamedirname));
 			games[id].info_type = GAMEINFO_NONE;
 		}
 

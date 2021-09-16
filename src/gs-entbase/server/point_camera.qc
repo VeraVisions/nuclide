@@ -115,8 +115,8 @@ point_camera::Respawn(void)
 	SetModelindex(0);
 	SetSolid(SOLID_NOT);
 	SetSize([-16,-16,-16], [16,16,16]);
-	SetOrigin(m_oldOrigin);
-	SetAngles(m_oldAngle);
+	SetOrigin(GetSpawnOrigin());
+	SetAngles(GetSpawnAngles());
 	m_iValue = TRUE;
 }
 

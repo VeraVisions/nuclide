@@ -80,13 +80,13 @@ func_brush::Trigger(entity act, int state)
 		SetModelindex(0);
 		break;
 	case TRIG_ON:
-		SetModel(m_oldModel);
+		SetModel(GetSpawnModel());
 		break;
 	default:
 		if (modelindex != 0)
 			SetModelindex(0);
 		else
-			SetModel(m_oldModel);
+			SetModel(GetSpawnModel());
 	}
 }
 
@@ -114,8 +114,8 @@ void
 func_brush::Respawn(void)
 {
 	SetMovetype(MOVETYPE_PUSH);
-	SetModel(m_oldModel);
-	SetOrigin(m_oldOrigin);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
 
 	/* make sure solid and so on are set */
 	if (m_iStartOff) {

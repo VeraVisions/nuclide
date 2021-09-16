@@ -112,7 +112,7 @@ func_pendulum::Respawn(void)
 		SetSolid(SOLID_BSP);
 
 	movetype = MOVETYPE_PUSH;
-	SetModel(m_oldModel);
+	SetModel(GetSpawnModel());
 	SetOrigin(origin);
 }
 

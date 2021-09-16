@@ -82,8 +82,8 @@ func_ladder::Respawn(void)
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_BSP);
 	SetSkin(CONTENT_LADDER);
-	SetModel(m_oldModel);
-	SetOrigin(m_oldOrigin);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
 	SetFrame(0);
 #ifdef GS_RENDERFX
 	SetRenderMode(RM_TRIGGER);

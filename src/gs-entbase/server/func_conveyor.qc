@@ -74,13 +74,13 @@ void
 func_conveyor::Respawn(void)
 {
 	m_vecMoveDir = [0,0,0];
-	angles = m_oldAngle;
+	angles = GetSpawnAngles();
 
 	SetMovementDirection();
 	SetSolid(SOLID_BSP);
 	SetMovetype(MOVETYPE_PUSH);
-	SetModel(m_oldModel);
-	SetOrigin(m_oldOrigin);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
 
 	/* TODO: Apply some effect flag the engine handles? */
 	if (!(spawnflags & SF_CONVEYOR_VISUAL)) {

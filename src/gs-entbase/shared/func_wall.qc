@@ -84,8 +84,8 @@ func_wall::Respawn(void)
 	SetAngles([0,0,0]);
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid(SOLID_BSP);
-	SetModel(m_oldModel);
-	SetOrigin(m_oldOrigin);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
 	SetFrame(0);
 }
 #else

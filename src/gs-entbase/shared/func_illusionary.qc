@@ -84,8 +84,8 @@ func_illusionary::Respawn(void)
 	SetAngles([0,0,0]);
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_NOT);
-	SetModel(m_oldModel);
-	SetOrigin(m_oldOrigin);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
 	SetSkin(0);
 
 	// TODO: Add support for (skin) -1 = Empty, -7 = Volumetric light

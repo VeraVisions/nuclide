@@ -71,7 +71,7 @@ func_wall_toggle::Respawn(void)
 {
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid(SOLID_BSP);
-	SetModel(m_oldModel);
+	SetModel(GetSpawnModel());
 	SetOrigin(origin);
 	m_iVisible = 1;
 	m_oldmodelindex = modelindex;

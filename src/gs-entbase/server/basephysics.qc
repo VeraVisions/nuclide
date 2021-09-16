@@ -201,14 +201,14 @@ CBasePhysics::Respawn(void)
 {
 	SetMovetype(MOVETYPE_PHYSICS);
 	SetSolid(SOLID_PHYSICS_BOX + m_iShape);
-	SetModel(m_oldModel);
+	SetModel(GetSpawnModel());
 	geomtype = GEOMTYPE_BOX;
 	takedamage = DAMAGE_YES;
 	health = 100000;
 	PhysicsDisable();
 	SetFriction(2.0f);
 	SetBounceFactor(0.25f);
-	SetOrigin(m_oldOrigin);
+	SetOrigin(GetSpawnOrigin());
 
 	/* don't let players collide */
 	dimension_solid = 1;

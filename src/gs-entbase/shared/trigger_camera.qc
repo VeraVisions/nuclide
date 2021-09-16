@@ -235,7 +235,7 @@ trigger_camera::Trigger(entity act, int state)
 {
 	m_eLooker = act;
 
-	SetOrigin(m_oldOrigin);
+	SetOrigin(GetSpawnOrigin());
 	velocity = [0,0,0];
 	think = __NULL__;
 	nextthink = 0.0f;
@@ -250,8 +250,8 @@ trigger_camera::Respawn(void)
 {
 	SetSolid(SOLID_NOT);
 	SetMovetype(MOVETYPE_PUSH);
-	SetModel(m_oldModel);
-	SetOrigin(m_oldOrigin);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
 }
 
 void

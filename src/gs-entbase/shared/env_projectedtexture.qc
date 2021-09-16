@@ -92,7 +92,7 @@ class env_projectedtexture:CBaseTrigger
 	virtual float(entity, float) SendEntity;
 	virtual void(string, string) SpawnKey;
 	virtual void(entity, string, string) Input;
-	virtual void(void) ParentUpdate;
+	virtual void(void) EvaluateEntity;
 #endif
 };
 
@@ -157,7 +157,7 @@ env_projectedtexture::ReceiveEntity(float flFlags)
 }
 #else
 void
-env_projectedtexture::ParentUpdate(void)
+env_projectedtexture::EvaluateEntity(void)
 {
 	if (net_origin != origin) {
 		net_origin = origin;
@@ -166,16 +166,6 @@ env_projectedtexture::ParentUpdate(void)
 	if (net_angles != angles) {
 		net_angles = angles;
 		SendFlags |= PRTEXFL_CHANGED_ANGLES;
-	}
-
-	if (m_parent) {
-		entity p = find(world, ::targetname, m_parent);
-
-		if (p) {
-			CBaseEntity t = (CBaseEntity)p;
-			vector ofs = m_oldOrigin - t.m_oldOrigin;
-			SetOrigin(p.origin + ofs);
-		}
 	}
 }
 
@@ -324,8 +314,8 @@ env_projectedtexture::Respawn(void)
 {
 	SetSolid(SOLID_NOT);
 	SetSize([-16,-16,-16], [16,16,16]);
-	SetOrigin(m_oldOrigin);
-	SetAngles(m_oldAngle);
+	SetOrigin(GetSpawnOrigin());
+	SetAngles(GetSpawnAngles());
 
 	m_iState = (spawnflags & 1) ? 1 : 0;
 }

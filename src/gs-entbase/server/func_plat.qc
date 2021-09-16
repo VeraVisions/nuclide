@@ -97,9 +97,9 @@ void
 func_plat::MoveToggle(void)
 {
 	if (m_iState == PLATSTATE_RAISED) {
-		Move(m_oldOrigin - [0,0,m_flHeight], ArrivedDown);
+		Move(GetSpawnOrigin() - [0,0,m_flHeight], ArrivedDown);
 	} else if (m_iState == PLATSTATE_LOWERED) {
-		Move(m_oldOrigin, ArrivedUp);
+		Move(GetSpawnOrigin(), ArrivedUp);
 	}
 }
 
@@ -111,10 +111,10 @@ func_plat::Trigger(entity act, int state)
 	
 	switch (state) {
 	case TRIG_OFF:
-		Move(m_oldOrigin - [0,0,m_flHeight], ArrivedDown);
+		Move(GetSpawnOrigin() - [0,0,m_flHeight], ArrivedDown);
 		break;
 	case TRIG_ON:
-		Move(m_oldOrigin, ArrivedUp);
+		Move(GetSpawnOrigin(), ArrivedUp);
 		break;
 	default:
 		MoveToggle();
@@ -136,8 +136,8 @@ func_plat::Respawn(void)
 {
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid(SOLID_BSP);
-	SetModel(m_oldModel);
-	SetOrigin(m_oldOrigin);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
 	
 	m_iState = PLATSTATE_RAISED;
 	think = __NULL__;

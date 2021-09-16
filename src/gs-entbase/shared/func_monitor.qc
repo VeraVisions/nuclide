@@ -325,9 +325,9 @@ func_monitor::Respawn(void)
 {
 	SetSolid(SOLID_BSP);
 	SetMovetype(MOVETYPE_NONE);
-	SetOrigin(m_oldOrigin);
-	SetAngles(m_oldAngle);
-	SetModel(m_oldModel);
+	SetOrigin(GetSpawnOrigin());
+	SetAngles(GetSpawnAngles());
+	SetModel(GetSpawnModel());
 	m_iValue = TRUE;
 }
 #endif

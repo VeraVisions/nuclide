@@ -49,9 +49,9 @@ monster_furniture::Respawn(void)
 {
 	SetMovetype(MOVETYPE_NOCLIP);
 	SetSolid(SOLID_NOT);
-	SetModel(m_oldModel);
-	SetOrigin(m_oldOrigin);
-	SetAngles(m_oldAngle);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
+	SetAngles(GetSpawnAngles());
 }
 
 void

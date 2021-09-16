@@ -66,7 +66,7 @@ game_player_equip::SpawnUnit(string cname, vector org)
 		callfunction(self.classname);
 
 		/* apply the saved values back */
-		t.origin = t.m_oldOrigin = neworg;
+		t.origin = t.GetSpawnOrigin() = neworg;
 
 		/* spawn anew */
 		t.Respawn();

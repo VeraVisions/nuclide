@@ -91,7 +91,7 @@ ChatLoadFile(string filename)
 		c = tokenizebyseparator(g_table[i].sample, ";");
 		for (int x = 0; x < c; x++) {
 			precache_sound(argv(x));
-			print(sprintf("[CHATSOUNDS] Caching: %s\n", argv(x)));
+			dprint(sprintf("[CHATSOUNDS] Caching: %s\n", argv(x)));
 		}
 		i++;
 	}

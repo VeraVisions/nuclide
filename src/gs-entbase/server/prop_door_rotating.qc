@@ -101,12 +101,12 @@ prop_door_rotating::Interact(void)
 void
 prop_door_rotating::Respawn(void)
 {
-	SetModel(m_oldModel);
+	SetModel(GetSpawnModel());
 	SetSolid(SOLID_BSP);
 	SetMovetype(MOVETYPE_PUSH);
-	SetOrigin(m_oldOrigin);
+	SetOrigin(GetSpawnOrigin());
 	PlayerUse = Interact;
-	m_vecDest1 = m_oldAngle;
+	m_vecDest1 = GetSpawnAngles();
 	m_vecDest2 = m_vecDest1 + [0, m_flDistance, 0];
 }
 

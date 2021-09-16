@@ -825,11 +825,11 @@ CBaseEntity::SpawnInit(void)
 void
 CBaseEntity::Respawn(void)
 {
-	health = m_oldHealth;
-	SetModel(m_oldModel);
+	health = GetSpawnHealth();
+	SetModel(GetSpawnModel());
 	SetSolid(m_oldSolid);
-	SetAngles(m_oldAngle);
-	SetOrigin(m_oldOrigin);
+	SetAngles(GetSpawnAngles());
+	SetOrigin(GetSpawnOrigin());
 	target = m_oldstrTarget;
 
 #ifdef GS_RENDERFX
@@ -902,7 +902,7 @@ CBaseEntity::CBaseEntity(void)
 	m_oldstrTarget = target;
 
 	if (m_oldModel != "") {
-		precache_model(m_oldModel);
+		precache_model(GetSpawnModel());
 	}
 #endif
 }
@@ -1065,6 +1065,29 @@ CBaseEntity::SetRenderColor(vector newColor)
 }
 #endif
 
+#ifdef SERVER
+vector
+CBaseEntity::GetSpawnOrigin(void)
+{
+	return m_oldOrigin;
+}
+vector
+CBaseEntity::GetSpawnAngles(void)
+{
+	return m_oldAngle;
+}
+string
+CBaseEntity::GetSpawnModel(void)
+{
+	return m_oldModel;
+}
+float
+CBaseEntity::GetSpawnHealth(void)
+{
+	return m_oldHealth;
+}
+#endif
+
 /*
 ============
 CBaseEntity::SpawnKey
@@ -1146,6 +1169,7 @@ CBaseEntity::SpawnKey(string strKey, string strValue)
 	case "model":
 		model = strValue;
 		break;
+	case "zhlt_lightflags":
 	case "classname":
 	case "spawnflags":
 		break;
@@ -1182,7 +1206,7 @@ CBaseEntity::SpawnKey(string strKey, string strValue)
 		break;
 #endif
 	default:
-		print(sprintf("^3%s^7::SpawnKey:: Unknown key '%s' with value '%s'\n",
+		dprint(sprintf("^3%s^7::SpawnKey:: Unknown key '%s' with value '%s'\n",
 		      classname, strKey, strValue));
 		break;
 	}

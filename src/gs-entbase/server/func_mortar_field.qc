@@ -174,8 +174,8 @@ func_mortar_field::Respawn(void)
 {
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_NOT);
-	SetModel(m_oldModel);
-	SetOrigin(m_oldOrigin);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
 
 #ifdef GS_RENDERFX
 	SetRenderMode(RM_TRIGGER);

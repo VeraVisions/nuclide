@@ -360,8 +360,8 @@ void func_door_rotating::Respawn(void)
 
 	SetSolid(SOLID_BSP);
 	SetMovetype(MOVETYPE_PUSH);
-	SetModel(m_oldModel);
-	SetOrigin(m_oldOrigin);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
 	think = __NULL__;
 	nextthink = 0.0f;
 	avelocity = [0,0,0];
@@ -377,12 +377,12 @@ void func_door_rotating::Respawn(void)
 	}
 
 	m_iState = STATE_LOWERED;
-	m_vecPos1 = m_oldAngle;
+	m_vecPos1 = GetSpawnAngles();
 
 	if (spawnflags & SF_ROT_BACKWARDS) {
-		m_vecPos2 = m_oldAngle + m_vecMoveDir * -m_flDistance;
+		m_vecPos2 = GetSpawnAngles() + m_vecMoveDir * -m_flDistance;
 	} else {
-		m_vecPos2 = m_oldAngle + m_vecMoveDir * m_flDistance;
+		m_vecPos2 = GetSpawnAngles() + m_vecMoveDir * m_flDistance;
 	}
 
 	if (spawnflags & SF_ROT_OPEN) {

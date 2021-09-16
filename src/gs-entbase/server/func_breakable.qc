@@ -187,7 +187,7 @@ func_breakable::Death(void)
 		callfunction(self.classname);
 
 		/* apply the saved values back */
-		t.origin = t.m_oldOrigin = neworg;
+		t.origin = t.GetSpawnOrigin() = neworg;
 
 		/* spawn anew */
 		if (t.Respawn)
@@ -284,8 +284,8 @@ func_breakable::Respawn(void)
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_BSP);
 
-	SetModel(m_oldModel);
-	SetOrigin(m_oldOrigin);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
 	touch = PlayerTouch;
 	think = __NULL__;
 
@@ -295,7 +295,7 @@ func_breakable::Respawn(void)
 		takedamage = DAMAGE_YES;
 	}
 
-	health = m_oldHealth;
+	health = GetSpawnHealth();
 
 	if (!health) {
 		health = 15;
@@ -338,7 +338,7 @@ func_breakable::func_breakable(void)
 	CBaseTrigger::CBaseTrigger();
 
 	/* contrary to what some map designers think, angles are not supported */
-	m_oldAngle = angles = [0,0,0];
+	GetSpawnAngles() = angles = [0,0,0];
 
 	switch (m_iMaterial) {
 	case BREAKMT_GLASS:

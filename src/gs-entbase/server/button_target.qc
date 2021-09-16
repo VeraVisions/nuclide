@@ -55,8 +55,8 @@ button_target::Respawn(void)
 
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid(SOLID_BSP);
-	SetModel(m_oldModel);
-	SetOrigin(m_oldOrigin);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
 
 	/* it's either one or the other */
 	if (spawnflags & BUTTA_USE) {

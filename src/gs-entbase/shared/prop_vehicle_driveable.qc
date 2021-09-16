@@ -476,9 +476,9 @@ prop_vehicle_driveable::Respawn(void)
 {
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_BBOX);
-	SetOrigin(m_oldOrigin + [0,0,32]);
-	SetAngles(m_oldAngle);
-	SetModel(m_oldModel);
+	SetOrigin(GetSpawnOrigin() + [0,0,32]);
+	SetAngles(GetSpawnAngles());
+	SetModel(GetSpawnModel());
 
 	m_flBRWheelAxel = gettagindex( this, "RRWheelAxel" );
 	m_flBLWheelAxel = gettagindex( this, "RLWheelAxel" );

@@ -171,8 +171,8 @@ func_guntarget::Respawn(void)
 
 	SetSolid(SOLID_BSP);
 	SetMovetype(MOVETYPE_PUSH);
-	SetModel(m_oldModel);
-	SetOrigin(m_oldOrigin);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
 
 	if (spawnflags & SF_GUNTARGET_ON) {
 		think = ThinkWrap;

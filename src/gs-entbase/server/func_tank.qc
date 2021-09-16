@@ -190,9 +190,9 @@ func_tank::Respawn(void)
 {
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid(SOLID_BSP);
-	SetModel(m_oldModel);
-	SetOrigin(m_oldOrigin);
-	SetAngles(m_oldAngle);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
+	SetAngles(GetSpawnAngles());
 
 	if (m_eDriver)
 		PlayerLeave((base_player)m_eDriver);

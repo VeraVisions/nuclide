@@ -231,7 +231,7 @@ func_button::Trigger(entity act, int state)
 
 	UseOutput(act, m_strOnPressed);
 	UseTargets(act, TRIG_TOGGLE, m_flDelay);
-	health = m_oldHealth;
+	health = GetSpawnHealth();
 }
 
 void
@@ -277,12 +277,12 @@ func_button::Blocked(void)
 void
 func_button::SetMovementDirection(void)
 {
-	if (m_oldAngle == [0,-1,0]) {
+	if (GetSpawnAngles() == [0,-1,0]) {
 		m_vecMoveDir = [0,0,1];
-	} else if (m_oldAngle == [0,-2,0]) {
+	} else if (GetSpawnAngles() == [0,-2,0]) {
 		m_vecMoveDir = [0,0,-1];
 	} else {
-		makevectors(m_oldAngle);
+		makevectors(GetSpawnAngles());
 		m_vecMoveDir = v_forward;
 	}
 }
@@ -327,13 +327,13 @@ func_button::Respawn(void)
 
 	SetSolid(SOLID_BSP);
 	SetMovetype(MOVETYPE_PUSH);
-	SetOrigin(m_oldOrigin);
-	SetModel(m_oldModel);
+	SetOrigin(GetSpawnOrigin());
+	SetModel(GetSpawnModel());
 
 	blocked = Blocked;
 	velocity = [0,0,0];
 	nextthink = -1;
-	health = m_oldHealth;
+	health = GetSpawnHealth();
 
 	if (health > 0) {
 		takedamage = DAMAGE_YES;
@@ -352,7 +352,7 @@ func_button::Respawn(void)
 		PlayerUse = Use;
 	}
 
-	m_vecPos1 = m_oldOrigin;
+	m_vecPos1 = GetSpawnOrigin();
 
 	if (spawnflags & SF_BTT_NOMOVE) {
 		m_vecPos2 = m_vecPos1;

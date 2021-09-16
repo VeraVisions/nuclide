@@ -484,7 +484,7 @@ func_vehicle::Realign(void)
 		angles = vectoangles(first.origin - second.origin);
 
 		end_pos = first.origin;
-		end_pos[2] = m_oldOrigin[2] + 64;
+		end_pos[2] = GetSpawnOrigin()[2] + 64;
 		setorigin(this, end_pos);
 	}
 }
@@ -494,9 +494,9 @@ func_vehicle::Respawn(void)
 {
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid(SOLID_BSP);
-	SetModel(m_oldModel);
-	SetOrigin(m_oldOrigin);
-	SetAngles(m_oldAngle);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
+	SetAngles(GetSpawnAngles());
 	think = Realign;
 	nextthink = time + 0.1f;
 

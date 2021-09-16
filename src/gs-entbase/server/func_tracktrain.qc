@@ -237,8 +237,8 @@ func_tracktrain::Respawn(void)
 	SetSolid(spawnflags & TRAIN_NOTSOLID ? SOLID_NOT : SOLID_BSP);
 	SetMovetype(MOVETYPE_PUSH);
 	blocked = Blocked;
-	SetModel(m_oldModel);
-	SetOrigin(m_oldOrigin);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
 	m_flSpeed = m_flStartSpeed;
 
 	/* let's wait 1/4 a second to give the path_corner entities a chance to

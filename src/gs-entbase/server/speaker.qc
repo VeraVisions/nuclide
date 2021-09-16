@@ -101,7 +101,7 @@ speaker::Respawn(void)
 {
 	/* force this thing to be networked */
 	SetModel("models/player.mdl");
-	SetOrigin(m_oldOrigin);
+	SetOrigin(GetSpawnOrigin());
 
 #ifdef GS_RENDERFX
 	SetRenderMode(RM_COLOR);

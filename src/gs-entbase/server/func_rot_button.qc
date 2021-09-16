@@ -144,7 +144,7 @@ func_rot_button::TurnToggle(void)
 	if (m_iState == ROTBTNSTATE_OPENED) {
 		Rotate(m_vecMoveAngle, ArrivedClosed);
 	} else if (m_iState == ROTBTNSTATE_CLOSED) {
-		Rotate(m_oldAngle, ArrivedOpened);
+		Rotate(GetSpawnAngles(), ArrivedOpened);
 
 		/* in toggle mode, we trigger our targets every turn */
 		if (spawnflags & FNCROTBUT_TOGGLE)
@@ -169,9 +169,9 @@ func_rot_button::Respawn(void)
 	else
 		SetSolid(SOLID_BSP);
 
-	SetModel(m_oldModel);
-	SetOrigin(m_oldOrigin);
-	SetAngles(m_oldAngle);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
+	SetAngles(GetSpawnAngles());
 	PlayerUse = OnPlayerUse;
 	
 	m_iState = ROTBTNSTATE_OPENED;

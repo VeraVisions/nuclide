@@ -81,12 +81,12 @@ momentary_door::customphysics(void)
 void
 momentary_door::SetMovementDirection(void)
 {
-	if (m_oldAngle == [0,-1,0]) {
+	if (GetSpawnAngles() == [0,-1,0]) {
 		m_vecMoveDir = [0,0,1];
-	} else if (m_oldAngle == [0,-2,0]) {
+	} else if (GetSpawnAngles() == [0,-2,0]) {
 		m_vecMoveDir = [0,0,-1];
 	} else {
-		makevectors(m_oldAngle);
+		makevectors(GetSpawnAngles());
 		m_vecMoveDir = v_forward;
 	}
 }
@@ -96,12 +96,12 @@ momentary_door::Respawn(void)
 {
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid(SOLID_BSP);
-	SetModel(m_oldModel);
-	SetOrigin(m_oldOrigin);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
 	SetMovementDirection();
 	SetAngles([0,0,0]);
 
-	m_vecPos1 = m_oldOrigin;
+	m_vecPos1 = GetSpawnOrigin();
 	m_vecPos2 = (m_vecPos1 + m_vecMoveDir * (fabs(m_vecMoveDir * size) - m_flDistance));
 }
 

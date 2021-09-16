@@ -94,8 +94,8 @@ monstermaker::Spawner(void)
 		callfunction(self.classname);
 
 		/* apply the saved values back */
-		t.origin = t.m_oldOrigin = neworg;
-		t.angles = t.m_oldAngle = newang;
+		t.origin = t.GetSpawnOrigin() = neworg;
+		t.angles = t.GetSpawnAngles() = newang;
 		t.targetname = tname;
 		t.spawnflags |= MSF_MULTIPLAYER;
 

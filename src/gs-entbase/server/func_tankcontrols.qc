@@ -65,8 +65,8 @@ func_tankcontrols::Respawn(void)
 {
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid(SOLID_BSP);
-	SetModel(m_oldModel);
-	SetOrigin(m_oldOrigin);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
 	PlayerUse = OnPlayerUse;
 
 #ifdef GS_RENDERFX
