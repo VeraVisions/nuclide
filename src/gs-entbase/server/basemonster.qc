@@ -466,7 +466,7 @@ CBaseMonster::Physics(void)
 		}
 	}
 
-	if (velocity[2] < -100) {
+	if (!(flags & FL_ONGROUND) && velocity[2] < -415) {
 		if (!(m_iFlags & MSF_FALLING))
 			FallNoise();
 
