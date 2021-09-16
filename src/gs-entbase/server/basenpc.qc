@@ -416,10 +416,14 @@ CBaseNPC::Physics(void)
 		SetOrigin(origin);
 	}
 
-	if (!(flags & FL_ONGROUND) && velocity[2] < -100) {
-		m_iFlags |= MONSTER_FALLING;
+	if (velocity[2] < -100) {
+		if (!(m_iFlags & MSF_FALLING)) {
+			FallNoise();
+		}
+
+		m_iFlags |= MSF_FALLING;
 	} else {
-		m_iFlags &= ~MONSTER_FALLING;
+		m_iFlags &= ~MSF_FALLING;
 	}
 
 	/* support for think/nextthink */

@@ -36,7 +36,8 @@ typedef enumflags
 	MSF_WAITFORSCRIPT,
 	MSF_PREDISASTER,
 	MSF_FADECORPSE,
-	MSF_MULTIPLAYER
+	MSF_MULTIPLAYER,
+	MSF_FALLING
 } monsterFlag_t;
 
 /* movement states */
@@ -139,6 +140,7 @@ class CBaseMonster:CBaseEntity
 	virtual void(void) Death;
 	virtual void(void) Physics;
 	virtual void(void) IdleNoise;
+	virtual void(void) FallNoise;
 	virtual void(void) Gib;
 	virtual void(string) Sound;
 	virtual void(string, string) SpawnKey;

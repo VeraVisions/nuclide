@@ -57,9 +57,13 @@ CBaseMonster::Gib(void)
 }
 
 void
+CBaseMonster::FallNoise(void)
+{
+}
+
+void
 CBaseMonster::IdleNoise(void)
 {
-
 }
 
 int
@@ -460,6 +464,15 @@ CBaseMonster::Physics(void)
 				}
 			}
 		}
+	}
+
+	if (velocity[2] < -100) {
+		if (!(m_iFlags & MSF_FALLING))
+			FallNoise();
+
+		m_iFlags |= MSF_FALLING;
+	} else {
+		m_iFlags &= ~MSF_FALLING;
 	}
 
 	/* support for think/nextthink */
