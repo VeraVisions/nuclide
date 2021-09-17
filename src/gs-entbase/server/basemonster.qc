@@ -493,7 +493,8 @@ CBaseMonster::touch(void)
 		return;
 
 	if (other.movetype == MOVETYPE_WALK) {
-		velocity = normalize(other.origin - origin) * -128;
+		if (other.absmin[2] < origin[2])
+			velocity = normalize(other.origin - origin) * -128;
 	}
 }
 
