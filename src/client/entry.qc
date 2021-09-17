@@ -20,7 +20,6 @@
 void
 CSQC_Init(float apilevel, string enginename, float engineversion)
 {
-	Sound_Init();
 	pSeat = &g_seats[0];
 	pSeatLocal = &g_seatslocal[0];
 
@@ -85,6 +84,10 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	/* Requested by Slacer */
 	registercommand("+zoomin");
 	registercommand("-zoomin");
+
+	/* Sound shaders */
+	Sound_Init();
+	PropData_Init();
 
 	/* VOX */
 	Vox_Init();
@@ -1107,6 +1110,7 @@ CSQC_Shutdown(void)
 	Sentences_Shutdown();
 	Titles_Shutdown();
 	Sound_Shutdown();
+	PropData_Shutdown();
 	Vox_Shutdown();
 	EFX_Shutdown();
 }

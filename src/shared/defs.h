@@ -28,6 +28,7 @@
 #include "memory.h"
 #include "spectator.h"
 #include "platform.h"
+#include "propdata.h"
 #include "vehicles.h"
 
 #define BSPVER_PREREL 	28

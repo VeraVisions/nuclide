@@ -108,6 +108,7 @@ class func_breakable:CBaseTrigger
 	int m_iMaterial;
 	float m_flDelay;
 	float m_flExplodeMag;
+	float m_flExplodeRad;
 	string m_strBreakSpawn;
 
 	/*entity m_pressAttacker;
@@ -170,7 +171,7 @@ func_breakable::Explode(void)
 	vector rp = absmin + (0.5 * (absmax - absmin));
 	FX_BreakModel(vlen(size) / 10, absmin, absmax, [0,0,0], m_iMaterial);
 	FX_Explosion(rp);
-	Damage_Radius(rp, this, m_flExplodeMag, m_flExplodeMag * 2.5f, TRUE, 0);
+	Damage_Radius(rp, this, m_flExplodeMag, m_flExplodeRad, TRUE, 0);
 	UseTargets(this, TRIG_TOGGLE, 0.0f); /* delay... ignored. */
 	Hide();
 }
@@ -299,6 +300,12 @@ func_breakable::Respawn(void)
 	if (!health) {
 		health = 15;
 	}
+
+	if (HasPropData()) {
+		health = GetPropData(PROPINFO_HEALTH);
+		m_flExplodeMag = GetPropData(PROPINFO_EXPLOSIVE_DMG);
+		m_flExplodeRad = GetPropData(PROPINFO_EXPLOSIVE_RADIUS);
+	}
 }
 
 void
@@ -310,6 +317,7 @@ func_breakable::SpawnKey(string strKey, string strValue)
 		break;
 	case "explodemagnitude":
 		m_flExplodeMag = stof(strValue);
+		m_flExplodeRad = m_flExplodeMag * 2.5f;
 		break;
 	case "spawnobject":
 		int oid = stoi(strValue);

@@ -6,5 +6,6 @@ sound.qc
 math.qc
 player.qc
 player_pmove.qc
+propdata.qc
 vehicles.qc
 #endlist

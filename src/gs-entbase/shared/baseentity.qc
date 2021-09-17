@@ -816,6 +816,9 @@ CBaseEntity::SpawnInit(void)
 		SpawnKey(argv(i), argv(i+1));
 	}
 
+	/* tokenization complete, now we can load propdata */
+	PropData_Finish();
+
 	/* some entity might involuntarily call SpawnInit as part of being
 	   a member of CBaseEntity. So we need to make sure that it doesn't
 	   inherit stuff from the last previously loaded entity */
@@ -848,6 +851,18 @@ CBaseEntity::Hide(void)
 	SetMovetype(MOVETYPE_NONE);
 	takedamage = DAMAGE_NO;
 }
+
+int
+CBaseEntity::HasPropData(void)
+{
+	return (m_iPropData != -1) ? TRUE : FALSE;
+}
+
+__variant
+CBaseEntity::GetPropData(int type)
+{
+	return Prop_GetInfo(m_iPropData, type);
+}
 #endif
 
 /*
@@ -860,7 +875,14 @@ client doesn't have to do a whole lot here
 void
 CBaseEntity::CBaseEntity(void)
 {
+
 #ifdef SERVER
+	/* don't call this function more than once per entity */
+	if (identity == 1)
+		return;
+
+	m_iPropData = -1;
+
 	/* Not in Deathmatch */
 	if (spawnflags & 2048) {
 		if (cvar("sv_playerslots") > 1) {
@@ -943,6 +965,10 @@ CBaseEntity::SetModel(string newModel)
 	model = newModel;
 	setmodel(this, newModel);
 	SetSendFlags(BASEFL_CHANGED_MODELINDEX);
+
+	if (model && m_iPropData == -1) {
+		PropData_ForModel(model);
+	}
 }
 void
 CBaseEntity::SetModelindex(float newModelIndex)
@@ -1103,6 +1129,9 @@ CBaseEntity::SpawnKey(string strKey, string strValue)
 	/* we do re-read a lot of the builtin fields in case we want to set
 	   defaults. just in case anybody is wondering. */
 	switch (strKey) {
+	case "propdata":
+		PropData_SetStage(strValue);
+		break;
 	case "scale":
 		scale = stof(strValue);
 		break;

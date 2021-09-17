@@ -27,6 +27,9 @@ void
 Event_ProcessModel(float flTimeStamp, int iCode, string strData)
 {
 	switch(iCode) {
+	case 1004:
+		sound(self, CHAN_BODY, strData, 1.0f, ATTN_NORM);
+		break;
 	case 5004: /* view model sound */
 		localsound(strData, CHAN_AUTO, 1.0);
 		break;

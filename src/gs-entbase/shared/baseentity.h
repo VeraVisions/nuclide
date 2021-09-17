@@ -18,6 +18,9 @@ class CBaseEntity
 {
 	int m_iBody;
 
+	/* prop data */
+	int m_iPropData;
+
 #ifdef CLIENT
 	float m_flSentenceTime;
 	sound_t *m_pSentenceQue;
@@ -62,6 +65,8 @@ class CBaseEntity
 	virtual vector(void) GetSpawnAngles;
 	virtual string(void) GetSpawnModel;
 	virtual float(void) GetSpawnHealth;
+	virtual int(void) HasPropData;
+	virtual __variant(int) GetPropData;
 
 	/* Input/Output System */
 	string m_strOnTrigger;

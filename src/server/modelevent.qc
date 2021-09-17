@@ -39,6 +39,8 @@ Event_ServerModelEvent(float flTimeStamp, int iCode, string strData)
 			}
 		}
 		break;
+	case 1004:
+		break;
 	default:
 		dprint(sprintf("^3[SERVER]^7 Unknown model-event code " \
 			"%i with data %s\n", iCode, strData));
