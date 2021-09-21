@@ -42,6 +42,7 @@ class CBasePhysics:CBaseEntity
 	virtual void(void) touch;
 	virtual void(void) TouchThink;
 	virtual void(void) Pain;
+	virtual void(void) Death;
 
 	virtual void(float) SetMass;
 	virtual float(void) GetMass;

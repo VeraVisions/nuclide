@@ -20,15 +20,14 @@ PropData_Shutdown(void)
 	if (g_propdata) {
 		memfree(g_propdata);
 	}
+	if (g_breakmodel) {
+		memfree(g_breakmodel);
+	}
 
 	g_propdata_count = 0;
 	g_hashpropdata = 0;
-}
-
-void
-PropData_Init(void)
-{
-	PropData_Shutdown();
+	g_breakmodel_count = 0;
+	g_hashbreakmodel = 0;
 }
 
 __variant
@@ -97,10 +96,18 @@ PropData_ParseField(int i, int a)
 		g_propdata[i].breakable_model = argv(1);
 		break;
 	case "breakable_count":
-		g_propdata[i].breakable_count = stof(argv(1));
+		g_propdata[i].breakable_count = stoi(argv(1));
 		break;
 	}
 }
+
+void
+BreakModel_ParseField(int i, int a)
+{
+	if (a == 2) {
+		g_breakmodel[i].data = sprintf("%s%S %S\n", g_breakmodel[i].data, argv(0), argv(1)); 
+	}
+};
 
 /* concerned with dealing with keeping track of braces and parsing lines */
 int
@@ -129,7 +136,7 @@ PropData_Parse(int i, string line, string type)
 	default:
 		if (braced == 2 && t_name != "") {
 			PropData_ParseField(i, c);
-		} else if (braced == 1) {
+		} else if (braced == 1 && key != "BreakableModels") {
 			/* name/identifer of our message */
 			t_name = strtolower(key);
 			
@@ -143,66 +150,6 @@ PropData_Parse(int i, string line, string type)
 		}
 	}
 	return (0);
-}
-
-/* goes through and looks for a specifically named propdata type inside the scripts dir */
-int
-PropData_Load(string type)
-{
-	searchhandle sh;
-	filestream fh;
-	string line;
-	int index;
-
-	if (!type)
-		return -1;
-
-	index = g_propdata_count;
-	type = strtolower(type);
-
-	/* create the hash-table if it doesn't exist */
-	if (!g_hashpropdata) {
-		g_hashpropdata = hash_createtab(2, HASH_ADD);
-	}
-
-	/* check if it's already cached */
-	for (int i = 0; i < g_propdata_count; i++) {
-		if (type == g_propdata[i].name) {
-			return i;
-		}
-	}
-
-	g_propdata_count++;
-	g_propdata = (propdata_t *)memrealloc(g_propdata, sizeof(propdata_t), index, g_propdata_count);
-
-	/* Defaults go here */
-
-	sh = search_begin("scripts/propdata*.txt", TRUE, TRUE);
-
-	for (int i = 0; i < search_getsize(sh); i++) {
-		fh = fopen(search_getfilename(sh, i), FILE_READ);
-		if (fh < 0) {
-			continue;
-		}
-
-		while ((line = fgets(fh))) {
-			/* when we found it, quit */
-			if (PropData_Parse(index, line, type) == TRUE) {
-				search_end(sh);
-				fclose(fh);
-				hash_add(g_hashpropdata, type, (int)index);
-				return index;
-			}
-		}
-		fclose(fh);
-	}
-
-	print("^1[PROPDATA] No type found for ");
-	print(type);
-	print("\n");
-
-	search_end(sh);
-	return -1;
 }
 
 /* goes through and looks for a specifically named propdata type inside the scripts dir */
@@ -265,18 +212,249 @@ PropData_ForModel(string modelname)
 	return -1;
 }
 
+int
+PropData_Load(string type)
+{
+	int index;
+
+	if (!type)
+		return -1;
+
+	type = strtolower(type);
+
+	index = (int)hash_get(g_hashpropdata, type, -1);
+
+	if (index < 0) {
+		crossprint(sprintf("^1 PropData_Load: type %s is not defined\n", type));
+		return -1;
+	} else {
+		return index;
+	}
+}
+
+/* stripped down ParseLine that just counts how many slots we have to allocate */
+void
+PropData_CountLine(string line)
+{
+	int c;
+	string key;
+	static string t_name;
+	static int braced = 0;
+	static int inmodel = FALSE;
+
+	c = tokenize_console(line);
+	key = argv(0);
+
+	switch(key) {
+	case "{":
+		braced++;
+		break;
+	case "}":
+		braced--;
+
+		/* move out of BreakableModels */
+		if (inmodel  == TRUE && braced == 1)
+			inmodel = FALSE;
+
+		t_name = "";
+
+		/* done */
+		if (braced == 0)
+			return;
+		break;
+	default:
+		if (key == "") {
+			break;
+		} else if (braced == 2 && t_name != "" && inmodel == FALSE) {
+			
+		} else if (braced == 3 && t_name != "" && inmodel == TRUE) {
+			
+		} else if (braced == 1) {
+			/* BreakableModels get parsed differently */
+			if (key == "BreakableModels") {
+				inmodel = TRUE;
+			} else {
+				g_propdata_count++;
+			}
+		} else if (braced == 2 && inmodel == TRUE) {
+			g_breakmodel_count++;
+		}
+	}
+	return;
+}
+
+int
+PropData_ParseLine(string line)
+{
+	int c;
+	string key;
+	static string t_name;
+	static int braced = 0;
+	static int inmodel = FALSE;
+	static int i_p = -1;
+	static int i_b = -1;
+
+	c = tokenize_console(line);
+	key = argv(0);
+
+	switch(key) {
+	case "{":
+		braced++;
+		break;
+	case "}":
+		braced--;
+
+		/* move out of BreakableModels */
+		if (inmodel == TRUE && braced == 1)
+			inmodel = FALSE;
+
+		t_name = "";
+
+		/* done */
+		if (braced == 0)
+			return (1);
+		break;
+	default:
+		if (key == "") {
+			break;
+		} else if (braced == 2 && t_name != "" && inmodel == FALSE) {
+			PropData_ParseField(i_p, c);
+		} else if (braced == 3 && t_name != "" && inmodel == TRUE) {
+			BreakModel_ParseField(i_b, c);
+		} else if (braced == 1) {
+			/* BreakableModels get parsed differently */
+			if (key == "BreakableModels") {
+				inmodel = TRUE;
+			} else {
+				i_p++;
+				g_propdata[i_p].name = strtolower(key);
+				t_name = g_propdata[i_p].name;
+				hash_add(g_hashpropdata, g_propdata[i_p].name, (int)i_p);
+				print(sprintf("Parsed propdata %s at index %i\n", key, i_p));
+			}
+		} else if (braced == 2 && inmodel == TRUE) {
+			i_b++;
+			g_breakmodel[i_b].name = strtolower(key);
+			t_name = g_breakmodel[i_b].name;
+			hash_add(g_hashbreakmodel, g_breakmodel[i_b].name, (int)i_b);
+			print(sprintf("Parsed breakmodel %s at index %i\n", key, i_b));
+		}
+	}
+	return (0);
+}
+
+void
+PropData_Init(void)
+{
+
+	filestream fh;
+	string line;
+	int index;
+
+	/* remove old data */
+	PropData_Shutdown();
+
+	index = g_propdata_count;
+
+	/* create the hash-table if it doesn't exist */
+	if (!g_hashpropdata) {
+		g_hashpropdata = hash_createtab(2, HASH_ADD);
+		g_hashbreakmodel = hash_createtab(2, HASH_ADD);
+	}
+
+	/* Defaults go here */
+
+	fh = fopen("scripts/propdata.txt", FILE_READ);
+	if (fh < 0) {
+		print("^1[PROPDATA] Can't find propdata.txt\n");
+		return;
+	}
+
+	/* count content */
+	while ((line = fgets(fh))) {
+		PropData_CountLine(line);
+	}
+
+	/* alocate our stuff */
+	g_propdata = (propdata_t *)memalloc(sizeof(propdata_t) * g_propdata_count);
+	g_breakmodel = (breakmodel_t *)memalloc(sizeof(breakmodel_t) * g_breakmodel_count);
+
+	fseek(fh, 0);
+
+	while ((line = fgets(fh))) {
+		/* when we found it, quit */
+		PropData_ParseLine(line);
+	}
+	fclose(fh);
+}
+
 /* we can only tokenize one thing at a time, so we save the type for the current
    entity away for later, so we can parse it properly by then when we've exited the
    SpawnKey loop. Using a global will save us some memory at least */
 void
 PropData_SetStage(string type)
 {
+	print("Setting propdata\n");
 	g_curPropData = type;
 }
 
-void
+int
 PropData_Finish(void)
 {
-	PropData_Load(g_curPropData);
-	g_curPropData = "";
+	string toload = g_curPropData;
+	g_curPropData = __NULL__;
+
+	if (toload) {
+		return PropData_Load(toload);
+	} else {
+		return -1;
+	}
+
+}
+
+/* BreakModel related helper API */
+void
+BreakModel_Spawn(vector pos, vector dir, vector spread, float speed, int count, string type)
+{
+	int index;
+	index = (int)hash_get(g_hashbreakmodel, type, -1);
+
+	if (index < 0) {
+		crossprint(sprintf("^1 BreakModel_Spawn: type %s is not defined\n", type));
+		return;
+	}
+
+	float x = tokenize(g_breakmodel[index].data);
+	int modelcount = x / 2;
+
+	print(sprintf("breakmodel: %s, %i\n", type, count));
+
+	for (int i = 0; i < count; i++) {
+		string mname;
+		float fadetime;
+		entity gib;
+		int r;
+
+		/* pick a model between 0 and num) */
+		r = floor(random(0, modelcount));
+
+		/* two entries, always have to skip by 2 */
+		mname = argv((r * 2));
+		fadetime = stof(argv((r * 2) + 1));
+
+		gib = spawn();
+		setmodel(gib, mname);
+		setsize(gib, [0,0,0], [0,0,0]);
+		setorigin(gib, pos);
+		makevectors(dir);
+		gib.velocity = v_forward * speed;
+		gib.velocity += random(-1,1) * spread[0] * v_right;
+		gib.velocity += random(-1,1) * spread[1] * v_up;
+		gib.avelocity = vectoangles(gib.velocity);
+		gib.movetype = MOVETYPE_BOUNCE;
+
+		#ifdef CLIENT
+			gib.drawmask = MASK_ENGINE;
+		#endif
+	}
 }

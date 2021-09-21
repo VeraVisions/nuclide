@@ -356,11 +356,7 @@ Sound_Play(entity target, int chan, string shader)
 	sample = (int)hash_get(g_hashsounds, shader, -1);
 
 	if (sample < 0) {
-#ifdef SERVER
-		print(sprintf("^1Sound_Play: shader %s is not precached (SERVER)\n", shader));
-#else
-		print(sprintf("^1Sound_Play: shader %s is not precached (CLIENT)\n", shader));
-#endif
+		crossprint(sprintf("^1Sound_Play: shader %s is not precached\n", shader));
 		return;
 	}
 

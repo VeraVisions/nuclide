@@ -387,6 +387,7 @@ init(float prevprogs)
 {
 	iprint("Initializing Server-Module");
 	Plugin_Init();
+	PropData_Init();
 }
 
 /*
@@ -427,7 +428,6 @@ initents(void)
 
 	/* sound shader init */
 	Sound_Init();
-	PropData_Init();
 
 	/* only bother doing so on Half-Life BSP */
 	if (serverkeyfloat("*bspversion") == BSPVER_HL) {

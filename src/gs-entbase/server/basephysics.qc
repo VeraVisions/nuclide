@@ -20,10 +20,8 @@ CBasePhysics::PhysicsEnable(void)
 	if (physics_supported() == TRUE)
 		physics_enable(this, TRUE);
 	else {
-		print("^1CBasePhysics::PhysicsEnable: ");
-		print("^7Physics simulator not enabled.\n");
 		SetMovetype(MOVETYPE_BOUNCE);
-		SetSolid(SOLID_NOT);
+		SetSolid(SOLID_CORPSE);
 	}
 	m_iEnabled = TRUE;
 }
@@ -31,11 +29,9 @@ CBasePhysics::PhysicsEnable(void)
 void
 CBasePhysics::PhysicsDisable(void)
 {
-	if (physics_supported() == TRUE)
+	if (physics_supported() == TRUE) {
 		physics_enable(this, FALSE);
-	else {
-		print("^1CBasePhysics::PhysicsDisable: ");
-		print("^7Physics simulator not enabled.\n");
+	} else {
 		SetMovetype(MOVETYPE_NONE);
 		SetSolid(SOLID_NOT);
 	}
@@ -89,11 +85,9 @@ CBasePhysics::GetInertia(void)
 void
 CBasePhysics::ApplyForceCenter(vector vecForce)
 {
-	if (physics_supported() == TRUE)
+	if (physics_supported() == TRUE) {
 		physics_addforce(this, vecForce, [0,0,0]);
-	else {
-		print("^1CBasePhysics::ApplyForceCenter: ");
-		print("^7Physics simulator not enabled.\n");
+	} else {
 		velocity = vecForce;
 	}
 }
@@ -101,11 +95,9 @@ CBasePhysics::ApplyForceCenter(vector vecForce)
 void
 CBasePhysics::ApplyForceOffset(vector vecForce, vector vecOffset)
 {
-	if (physics_supported() == TRUE)
+	if (physics_supported() == TRUE) {
 		physics_addforce(this, vecForce, vecOffset);
-	else {
-		print("^1CBasePhysics::ApplyForceOffset: ");
-		print("^7Physics simulator not enabled.\n");
+	} else {
 		velocity = vecForce;
 	}
 }
@@ -116,8 +108,6 @@ CBasePhysics::ApplyTorqueCenter(vector vecTorque)
 	if (physics_supported() == TRUE)
 		physics_addtorque(this, vecTorque * m_flInertiaScale);
 	else {
-		print("^1CBasePhysics::ApplyTorqueCenter: ");
-		print("^7Physics simulator not enabled.\n");
 		avelocity = vecTorque;
 		velocity = vecTorque;
 		velocity[2] = 96;
@@ -193,7 +183,21 @@ CBasePhysics::Pain(void)
 	PhysicsEnable();
 	makevectors(vectoangles(origin - trace_endpos));
 	ApplyForceOffset(v_forward * 20, origin - trace_endpos);
-	health = 100000;
+
+
+	if (!HasPropData()) {
+		health = 100000;
+	}
+}
+
+void
+CBasePhysics::Death(void)
+{
+	Hide();
+
+	string gibeffect = GetPropData(PROPINFO_BREAKMODEL);
+	int breakcount = GetPropData(PROPINFO_BREAKCOUNT);
+	BreakModel_Spawn(origin, [0,0,0], [100,100], 100, breakcount, gibeffect);
 }
 
 void
@@ -204,7 +208,6 @@ CBasePhysics::Respawn(void)
 	SetModel(GetSpawnModel());
 	geomtype = GEOMTYPE_BOX;
 	takedamage = DAMAGE_YES;
-	health = 100000;
 	PhysicsDisable();
 	SetFriction(2.0f);
 	SetBounceFactor(0.25f);
@@ -217,6 +220,12 @@ CBasePhysics::Respawn(void)
 	think = TouchThink;
 	nextthink = time + 0.1f;
 	effects &= ~EF_NOSHADOW;
+
+	if (HasPropData()) {
+		health = GetPropData(PROPINFO_HEALTH);
+	} else {
+		health = 100000;
+	}
 }
 
 void
@@ -258,6 +267,5 @@ CBasePhysics::CBasePhysics(void)
 {
 	mass = 1.0f;
 	m_flInertiaScale = 1.0f;
-
 	CBaseEntity::CBaseEntity();
 }

@@ -816,9 +816,6 @@ CBaseEntity::SpawnInit(void)
 		SpawnKey(argv(i), argv(i+1));
 	}
 
-	/* tokenization complete, now we can load propdata */
-	PropData_Finish();
-
 	/* some entity might involuntarily call SpawnInit as part of being
 	   a member of CBaseEntity. So we need to make sure that it doesn't
 	   inherit stuff from the last previously loaded entity */
@@ -898,6 +895,9 @@ CBaseEntity::CBaseEntity(void)
 	scale = 1.0f;
 
 	SpawnInit();
+
+	/* tokenization complete, now we can load propdata */
+	m_iPropData = PropData_Finish();
 
 	m_oldAngle = angles;
 	m_oldOrigin = origin;

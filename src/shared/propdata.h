@@ -91,7 +91,7 @@ int PropData_ForModel(string);	/* called when we set a model, returns -1 when no
 //int PropData_Read(string);	/* this just handles the contents of a prop_data model string */
 
 void PropData_SetStage(string);
-void PropData_Finish(void);
+int PropData_Finish(void);
 
 /* querying API */
 typedef enum
@@ -110,13 +110,16 @@ __variant Prop_GetInfo(int, int);
 
 typedef struct
 {
-	string model;
-	float fadetime;
+	string name;
+	string data;
 } breakmodel_t;
 
 /* entity will have a .breakmodel field pointing to a breakmodel id */
-propdata_t *g_breakmodel;
+breakmodel_t *g_breakmodel;
 int g_breakmodel_count;
+var hashtable g_hashbreakmodel;
+
+void BreakModel_Spawn(vector pos, vector dir, vector spread, float speed, int count, string type);
 
 /* necessary API functions */
 //void BreakModel_Init(void);
