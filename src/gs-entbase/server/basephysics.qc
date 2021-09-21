@@ -32,8 +32,8 @@ CBasePhysics::PhysicsDisable(void)
 	if (physics_supported() == TRUE) {
 		physics_enable(this, FALSE);
 	} else {
-		SetMovetype(MOVETYPE_NONE);
-		SetSolid(SOLID_NOT);
+		SetMovetype(MOVETYPE_BOUNCE);
+		SetSolid(SOLID_CORPSE);
 	}
 	m_iEnabled = FALSE;
 }
@@ -184,7 +184,6 @@ CBasePhysics::Pain(void)
 	makevectors(vectoangles(origin - trace_endpos));
 	ApplyForceOffset(v_forward * 20, origin - trace_endpos);
 
-
 	if (!HasPropData()) {
 		health = 100000;
 	}
@@ -198,6 +197,19 @@ CBasePhysics::Death(void)
 	string gibeffect = GetPropData(PROPINFO_BREAKMODEL);
 	int breakcount = GetPropData(PROPINFO_BREAKCOUNT);
 	BreakModel_Spawn(origin, [0,0,0], [100,100], 100, breakcount, gibeffect);
+
+	/* handle explosions */
+	float flExplodeMag, flExplodeRad;
+	flExplodeMag = GetPropData(PROPINFO_EXPLOSIVE_DMG);
+	flExplodeRad = GetPropData(PROPINFO_EXPLOSIVE_RADIUS);
+
+	if (flExplodeMag) {
+		if (!flExplodeRad)
+			flExplodeRad = flExplodeMag * 2.5f;
+
+		FX_Explosion(origin);
+		Damage_Radius(origin, this, flExplodeMag, flExplodeRad, TRUE, 0);
+	}
 }
 
 void

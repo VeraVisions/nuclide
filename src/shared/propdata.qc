@@ -140,7 +140,7 @@ PropData_Parse(int i, string line, string type)
 			/* name/identifer of our message */
 			t_name = strtolower(key);
 			
-			if (t_name == type) {
+			if (t_name == "prop_data") {
 				/* I guess it's what we want */
 				g_propdata[i].name = type;
 			} else {
@@ -197,9 +197,10 @@ PropData_ForModel(string modelname)
 	}
 	while ((line = fgets(fh))) {
 		/* when we found it, quit */
-		if (PropData_Parse(index, line, "prop_data") == TRUE) {
+		if (PropData_Parse(index, line, modelname) == TRUE) {
 			fclose(fh);
 			hash_add(g_hashpropdata, modelname, (int)index);
+			print(sprintf("adding propdata %s at %i\n", modelname, index));
 			return index;
 		}
 	}
@@ -426,8 +427,6 @@ BreakModel_Spawn(vector pos, vector dir, vector spread, float speed, int count, 
 
 	float x = tokenize(g_breakmodel[index].data);
 	int modelcount = x / 2;
-
-	print(sprintf("breakmodel: %s, %i\n", type, count));
 
 	for (int i = 0; i < count; i++) {
 		string mname;

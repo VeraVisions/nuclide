@@ -967,7 +967,7 @@ CBaseEntity::SetModel(string newModel)
 	SetSendFlags(BASEFL_CHANGED_MODELINDEX);
 
 	if (model && m_iPropData == -1) {
-		PropData_ForModel(model);
+		m_iPropData = PropData_ForModel(model);
 	}
 }
 void
