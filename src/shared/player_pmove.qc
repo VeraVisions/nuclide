@@ -323,6 +323,23 @@ base_player::Physics_Run(void)
 	input_buttons = saved_input_buttons;
 	Physics_InputPostMove();
 
+#ifdef SERVER
+	/* Use Flagger */
+	vector src, dest;
+	makevectors(input_angles);
+	src = origin + view_ofs;
+	dest = src + v_forward * 64;
+	traceline(src, dest, MOVE_NORMAL, this);
+
+	flags &= ~FL_ONUSABLE;
+	if (trace_ent.identity == 1) {
+		CBaseEntity foo = (CBaseEntity)trace_ent;
+		if (foo.PlayerUse) {
+			flags |= FL_ONUSABLE;
+		}
+	}
+#endif
+
 	angles[0] = Math_FixDelta(angles[0]);
 	angles[1] = Math_FixDelta(angles[1]);
 	angles[2] = Math_FixDelta(angles[2]);
