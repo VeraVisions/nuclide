@@ -200,7 +200,6 @@ PropData_ForModel(string modelname)
 		if (PropData_Parse(index, line, modelname) == TRUE) {
 			fclose(fh);
 			hash_add(g_hashpropdata, modelname, (int)index);
-			print(sprintf("adding propdata %s at %i\n", modelname, index));
 			return index;
 		}
 	}
@@ -331,14 +330,12 @@ PropData_ParseLine(string line)
 				g_propdata[i_p].name = strtolower(key);
 				t_name = g_propdata[i_p].name;
 				hash_add(g_hashpropdata, g_propdata[i_p].name, (int)i_p);
-				print(sprintf("Parsed propdata %s at index %i\n", key, i_p));
 			}
 		} else if (braced == 2 && inmodel == TRUE) {
 			i_b++;
 			g_breakmodel[i_b].name = strtolower(key);
 			t_name = g_breakmodel[i_b].name;
 			hash_add(g_hashbreakmodel, g_breakmodel[i_b].name, (int)i_b);
-			print(sprintf("Parsed breakmodel %s at index %i\n", key, i_b));
 		}
 	}
 	return (0);
@@ -395,7 +392,6 @@ PropData_Init(void)
 void
 PropData_SetStage(string type)
 {
-	print("Setting propdata\n");
 	g_curPropData = type;
 }
 

@@ -44,6 +44,7 @@ class func_recharge:CBaseTrigger
 	virtual void(void) OnPlayerUse;
 	virtual void(string, string) SpawnKey;
 	virtual void(void) ResetHealth;
+	virtual void(void) Respawn;
 };
 
 void
@@ -161,6 +162,17 @@ func_recharge::SpawnKey(string strKey, string strValue)
 }
 
 void
+func_recharge::Respawn(void)
+{
+	SetSolid(SOLID_BSP);
+	SetMovetype(MOVETYPE_PUSH);
+	SetOrigin(GetSpawnOrigin());
+	SetModel(GetSpawnModel());
+	PlayerUse = OnPlayerUse;
+	ResetHealth();
+}
+
+void
 func_recharge::func_recharge(void)
 {
 	m_strSndFirst = "items/suitchargeok1.wav";
@@ -172,11 +184,4 @@ func_recharge::func_recharge(void)
 	precache_sound(m_strSndFirst);
 	precache_sound(m_strSndCharging);
 	precache_sound(m_strSndDone);
-
-	SetSolid(SOLID_BSP);
-	SetMovetype(MOVETYPE_PUSH);
-	SetOrigin(origin);
-	SetModel(model);
-	PlayerUse = OnPlayerUse;
-	ResetHealth();
 }

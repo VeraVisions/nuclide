@@ -61,12 +61,12 @@ class CBaseEntity
 	string m_parent;
 
 	/* Reliable APIs */
-	virtual vector(void) GetSpawnOrigin;
-	virtual vector(void) GetSpawnAngles;
-	virtual string(void) GetSpawnModel;
-	virtual float(void) GetSpawnHealth;
-	virtual int(void) HasPropData;
-	virtual __variant(int) GetPropData;
+	nonvirtual vector(void) GetSpawnOrigin;
+	nonvirtual vector(void) GetSpawnAngles;
+	nonvirtual string(void) GetSpawnModel;
+	nonvirtual float(void) GetSpawnHealth;
+	nonvirtual int(void) HasPropData;
+	nonvirtual __variant(int) GetPropData;
 
 	/* Input/Output System */
 	string m_strOnTrigger;
@@ -74,37 +74,37 @@ class CBaseEntity
 	string m_strOnUser2;
 	string m_strOnUser3;
 	string m_strOnUser4;
-	virtual void(entity, string) UseOutput;
-	virtual string(string) CreateOutput;
+	nonvirtual void(entity, string) UseOutput;
+	nonvirtual string(string) CreateOutput;
 	virtual void(entity, string, string) Input;
 	
 	void(void) CBaseEntity;
 	virtual void(void) Respawn;
 	virtual void(void) Hide;
-	virtual void(void) ParentUpdate;
 	virtual void(void) EvaluateEntity;
 	virtual float(entity, float) SendEntity;
 	virtual void(void) Pain;
 	virtual void(void) Death;
-	virtual void(void) SpawnInit;
+	nonvirtual void(void) SpawnInit;
+	nonvirtual void(void) ParentUpdate;
 #endif
 
 	/* we only provide these for networked keys, so we can send updates */
-	virtual void(float) SetSendFlags;
-	virtual void(float) SetEffects;
-	virtual void(float) SetFrame;
-	virtual void(string) SetModel;
-	virtual void(float) SetModelindex;
-	virtual void(float) SetMovetype;
-	virtual void(float) SetSkin;
-	virtual void(float) SetSolid;
-	virtual void(int) SetBody;
-	virtual void(float) SetScale;
+	nonvirtual void(float) SetSendFlags;
+	nonvirtual void(float) SetEffects;
+	nonvirtual void(float) SetFrame;
+	nonvirtual void(string) SetModel;
+	nonvirtual void(float) SetModelindex;
+	nonvirtual void(float) SetMovetype;
+	nonvirtual void(float) SetSkin;
+	nonvirtual void(float) SetSolid;
+	nonvirtual void(int) SetBody;
+	nonvirtual void(float) SetScale;
 
 	/* these are monitored at all times */
-	virtual void(vector) SetAngles;
-	virtual void(vector) SetOrigin;
-	virtual void(vector, vector) SetSize;
+	nonvirtual void(vector) SetAngles;
+	nonvirtual void(vector) SetOrigin;
+	nonvirtual void(vector, vector) SetSize;
 
 	virtual void(string, string) SpawnKey;
 	
@@ -115,13 +115,13 @@ class CBaseEntity
 	vector m_vecRenderColor;
 
 	/* set */
-	virtual void(int) SetRenderFX;
-	virtual void(float) SetRenderMode;
-	virtual void(float) SetRenderAmt;
-	virtual void(vector) SetRenderColor;
+	nonvirtual void(int) SetRenderFX;
+	nonvirtual void(float) SetRenderMode;
+	nonvirtual void(float) SetRenderAmt;
+	nonvirtual void(vector) SetRenderColor;
 
 	#ifdef CLIENT
-		virtual void(void) RenderFXPass;
+		nonvirtual void(void) RenderFXPass;
 	#else
 		/* respawn */
 		int m_oldiRenderFX;

@@ -44,6 +44,7 @@ class func_healthcharger:CBaseTrigger
 	virtual void(void) OnPlayerUse;
 	virtual void(string, string) SpawnKey;
 	virtual void(void) ResetHealth;
+	virtual void(void) Respawn;
 };
 
 void
@@ -155,6 +156,17 @@ func_healthcharger::SpawnKey(string strKey, string strValue)
 }
 
 void
+func_healthcharger::Respawn(void)
+{
+	SetSolid(SOLID_BSP);
+	SetMovetype(MOVETYPE_PUSH);
+	SetOrigin(GetSpawnOrigin());
+	SetModel(GetSpawnModel());
+	PlayerUse = OnPlayerUse;
+	ResetHealth();
+}
+
+void
 func_healthcharger::func_healthcharger(void)
 {
 	m_strSndFirst = "items/medshot4.wav";
@@ -166,11 +178,4 @@ func_healthcharger::func_healthcharger(void)
 	precache_sound(m_strSndFirst);
 	precache_sound(m_strSndCharging);
 	precache_sound(m_strSndDone);
-
-	SetSolid(SOLID_BSP);
-	SetMovetype(MOVETYPE_PUSH);
-	SetOrigin(origin);
-	SetModel(model);
-	PlayerUse = OnPlayerUse;
-	ResetHealth();
 }

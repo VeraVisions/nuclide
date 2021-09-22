@@ -32,17 +32,15 @@ Other than that gravity will naturally reset when the entity respawns.
 This entity was introduced in Quake II (1997).
 */
 
-#ifdef CLIENT
-class trigger_gravity:CBaseEntity
-#else
 class trigger_gravity:CBaseTrigger
-#endif
 {
 	float m_flGravity;
 
 	void(void) trigger_gravity;
+
 	virtual void(void) touch;
 	virtual void(string, string) SpawnKey;
+	virtual void(void) Respawn;
 
 #ifdef CLIENT
 	virtual void(void) Initialized;
@@ -53,6 +51,19 @@ void
 trigger_gravity::touch(void)
 {
 	other.gravity = m_flGravity;
+}
+
+void
+trigger_gravity::Respawn(void)
+{
+#ifdef CLIENT
+	setmodel(this, model);
+	movetype = MOVETYPE_NONE;
+	solid = SOLID_BSPTRIGGER;
+#else
+	SetModel(GetSpawnModel());
+	SetSolid(SOLID_BSPTRIGGER);
+#endif
 }
 
 void
@@ -73,7 +84,6 @@ trigger_gravity::trigger_gravity(void)
 #ifdef SERVER
 	CBaseEntity::CBaseEntity();
 	CBaseTrigger::InitBrushTrigger();
-	SetSolid(SOLID_BSPTRIGGER);
 #endif
 }
 
@@ -81,8 +91,6 @@ trigger_gravity::trigger_gravity(void)
 void
 trigger_gravity::Initialized(void)
 {
-	setmodel(this, model);
-	movetype = MOVETYPE_NONE;
-	solid = SOLID_BSPTRIGGER;
+	Respawn();
 }
 #endif
