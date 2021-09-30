@@ -25,11 +25,7 @@ This entity was introduced in Half-Life (1998).
 */
 
 class
-#ifdef CLIENT
-func_ladder:CBaseEntity
-#else
 func_ladder:CBaseTrigger
-#endif
 {
 	void(void) func_ladder;
 

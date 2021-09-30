@@ -208,6 +208,14 @@ PMoveCustom_AccelLadder(float move_time, float premove, vector wish_dir, float w
 	} else {
 		self.velocity = [0,0,0];
 	}
+
+	if (input_buttons & INPUT_BUTTON2) {
+		makevectors([0, input_angles[1], 0]);
+		self.velocity = v_forward * -250;
+		self.velocity += v_up * 100;
+		self.flags &= ~FL_ONGROUND;
+		self.flags &= ~FL_JUMPRELEASED;
+	}
 }
 
 void
