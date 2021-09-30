@@ -12,7 +12,6 @@ titles.qc
 text.qc
 player.qc
 predict.qc
-npc.qc
 entities.qc
 modelevent.qc
 view.qc
