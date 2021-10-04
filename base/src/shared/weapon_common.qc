@@ -121,6 +121,7 @@ Weapons_SetModel(string mdl)
 {
 #ifdef CLIENT
 	setmodel(pSeat->m_eViewModel, mdl);
+	setsize(pSeat->m_eViewModel, [0,0,0], [0,0,0]);
 #endif
 }
 
