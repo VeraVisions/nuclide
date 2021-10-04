@@ -60,6 +60,15 @@ class CBaseEntity
 
 	string m_parent;
 
+	/* fire */
+	entity m_eBurner;
+	int m_iBurnWeapon;
+	float m_flBurnTime;
+	float m_flBurnNext;
+	nonvirtual void(entity, float, int) Ignite;
+	nonvirtual void(void) Extinguish;
+	nonvirtual int(void) IsOnFire;
+
 	/* Reliable APIs */
 	nonvirtual vector(void) GetSpawnOrigin;
 	nonvirtual vector(void) GetSpawnAngles;

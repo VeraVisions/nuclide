@@ -613,6 +613,15 @@ CBaseEntity::Input(entity eAct, string strInput, string strData)
 	case "EnableShadow":
 		effects &= ~EF_NOSHADOW;
 		break;
+	case "Ignite":
+		Ignite(eAct, 5000, 0);
+		break;
+	case "IgniteLifetime":
+		Ignite(eAct, stof(strData), 0);
+		break;
+	case "Extinguish":
+		Extinguish();
+		break;
 	default:
 		if (strData != "")
 		print(sprintf("^2%s::^3Input^7: Receives input %s from %s with data %s\n", 
@@ -770,6 +779,29 @@ CBaseEntity::Death(void)
 	
 }
 
+/* Burning, fire, flames, etc. */
+void
+CBaseEntity::Ignite(entity attacker, float flLifetime, int iWeapon)
+{
+	flags |= FL_ONFIRE;
+	m_eBurner = attacker;
+	m_iBurnWeapon = iWeapon;
+	m_flBurnTime = time + flLifetime;
+}
+void
+CBaseEntity::Extinguish(void)
+{
+	flags &= ~FL_ONFIRE;
+	m_eBurner = __NULL__;
+	m_iBurnWeapon =
+	m_flBurnTime = 0;
+}
+int
+CBaseEntity::IsOnFire(void)
+{
+	return (flags & FL_ONFIRE) ? TRUE : FALSE;
+}
+
 void
 CBaseEntity::EvaluateEntity(void)
 {
@@ -797,6 +829,18 @@ CBaseEntity::EvaluateEntity(void)
 void
 CBaseEntity::ParentUpdate(void)
 {
+	/* TODO: Move out */
+	if (flags & FL_ONFIRE) {
+		if (m_flBurnNext < time) {
+			if (time > m_flBurnTime) {
+				flags &= ~FL_ONFIRE;
+			}
+
+			Damage_Apply(this, m_eBurner, 5, m_iBurnWeapon, DMG_BURN);
+			m_flBurnNext = time + 0.5f;
+		}
+	}
+
 	EvaluateEntity();
 
 	frame1time += frametime;
