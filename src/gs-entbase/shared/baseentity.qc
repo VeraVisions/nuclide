@@ -622,6 +622,12 @@ CBaseEntity::Input(entity eAct, string strInput, string strData)
 	case "Extinguish":
 		Extinguish();
 		break;
+	case "SetParent":
+		SetParent(strData);
+		break;
+	case "Extinguish":
+		ClearParent();
+		break;
 	default:
 		if (strData != "")
 		print(sprintf("^2%s::^3Input^7: Receives input %s from %s with data %s\n", 
@@ -852,6 +858,17 @@ CBaseEntity::ParentUpdate(void)
 			SetOrigin(p.origin);
 	}
 }
+void
+CBaseEntity::SetParent(string name)
+{
+	m_parent = name;
+}
+void
+CBaseEntity::ClearParent(void)
+{
+	m_parent = __NULL__;
+}
+
 
 void
 CBaseEntity::SpawnInit(void)
@@ -1251,7 +1268,7 @@ CBaseEntity::SpawnKey(string strKey, string strValue)
 		health = stof(strValue);
 		break;
 	case "parentname":
-		m_parent = strValue;
+		SetParent(strValue);
 		break;
 	case "ignorepvs":
 		pvsflags = PVSF_IGNOREPVS;

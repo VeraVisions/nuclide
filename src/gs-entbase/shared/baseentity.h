@@ -95,6 +95,9 @@ class CBaseEntity
 	virtual void(void) Pain;
 	virtual void(void) Death;
 	nonvirtual void(void) SpawnInit;
+
+	nonvirtual void(string) SetParent;
+	nonvirtual void(void) ClearParent;
 	nonvirtual void(void) ParentUpdate;
 #endif
 
