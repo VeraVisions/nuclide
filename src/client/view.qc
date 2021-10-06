@@ -24,6 +24,7 @@ View_Init(void)
 			pSeat->m_eViewModel.classname = "vm";
 			pSeat->m_eViewModel.renderflags = RF_DEPTHHACK;
 			pSeat->m_eViewModel.effects |= EF_NOSHADOW;
+			pSeat->m_eViewModel.alpha = 1.0f;
 			setsize(pSeat->m_eViewModel, [0,0,0], [0,0,0]);
 
 			pSeat->m_eMuzzleflash = spawn();
@@ -33,11 +34,6 @@ View_Init(void)
 			setsize(pSeat->m_eMuzzleflash, [0,0,0], [0,0,0]);
 		}
 	}
-
-	/* there's also muzzleflash.spr, but that's just MUZZLE_SMALL again */
-	MUZZLE_RIFLE = (int)getmodelindex("sprites/muzzleflash1.spr");
-	MUZZLE_SMALL = (int)getmodelindex("sprites/muzzleflash2.spr");
-	MUZZLE_WEIRD = (int)getmodelindex("sprites/muzzleflash3.spr");
 }
 
 void
@@ -151,7 +147,7 @@ View_DrawViewModel(void)
 	}
 
 	// Only bother when zoomed out
-	if (pl.viewzoom == 1.0f) {
+	if (m_eViewModel.alpha != 0.0f) {
 		// Update muzzleflash position and draw it
 		if (m_eMuzzleflash.alpha > 0.0f) {
 			makevectors(getproperty(VF_ANGLES));
