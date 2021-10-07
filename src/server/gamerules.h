@@ -42,8 +42,12 @@ class CGameRules
 	virtual void(void) LevelNewParms;
 	virtual void(base_player) LevelChangeParms;
 
+	/* Entities/Item manipulation */
 	virtual int(int) MaxItemPerSlot;
 	virtual int(void) MonstersSpawn;
+	virtual void(entity,entity,float,int,damageType_t) DamageApply;
+	virtual int(entity, vector) DamageCheckTrace;
+	virtual void(vector,entity,float,float,int,int) DamageRadius;
 
 	/* end of a game */
 	virtual void(void) IntermissionStart;
