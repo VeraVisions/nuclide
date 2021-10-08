@@ -383,6 +383,23 @@ Weapons_IsPresent(player pl, int w)
 		return (0);
 	}
 }
+
+void
+Weapons_EnableModel(void)
+{
+#ifdef CLIENT
+	View_EnableViewmodel();
+#endif
+}
+
+void
+Weapons_DisableModel(void)
+{
+#ifdef CLIENT
+	View_DisableViewmodel();
+#endif
+}
+
 /*
 =================
 Weapons_UpdateAmmo

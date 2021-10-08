@@ -241,3 +241,18 @@ View_GetAnimation(void)
 {
 	return pSeat->m_eViewModel.frame;
 }
+
+
+void
+View_EnableViewmodel(void)
+{
+	entity m_eViewModel = pSeat->m_eViewModel;
+	m_eViewModel.alpha = 1.0f;
+}
+
+void
+View_DisableViewmodel(void)
+{
+	entity m_eViewModel = pSeat->m_eViewModel;
+	m_eViewModel.alpha = 0.0f;
+}

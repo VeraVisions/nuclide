@@ -218,9 +218,7 @@ CBaseVehicle::PlayerEnter(base_player pl)
 	pl.vehicle = this;
 	pl.flags |= FL_INVEHICLE;
 
-#ifdef SERVER
 	SetSendFlags(VEHFL_CHANGED_DRIVER);
-#endif
 }
 
 void
@@ -238,9 +236,7 @@ CBaseVehicle::PlayerLeave(base_player pl)
 	pl.vehicle = __NULL__;
 	m_eDriver = __NULL__;
 
-#ifdef SERVER
 	SetSendFlags(VEHFL_CHANGED_DRIVER);
-#endif
 }
 
 void
@@ -248,6 +244,7 @@ CBaseVehicle::CBaseVehicle(void)
 {
 	CBaseEntity::CBaseEntity();
 }
+
 #ifdef CLIENT
 void
 basevehicle_readentity(float isnew)

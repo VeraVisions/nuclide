@@ -64,6 +64,8 @@ void Weapons_SetModel(string);
 void Weapons_SetGeomset(string);
 void Weapons_UpdateAmmo(base_player, int, int, int);
 int Weapons_GetAnimation(void);
+void Weapons_EnableModel(void);
+void Weapons_DisableModel(void);
 
 void Weapons_Sound(entity, float, string);
 

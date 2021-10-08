@@ -90,6 +90,9 @@ void Vox_Play(string);
 void Event_ProcessModel(float, int, string);
 void ClientGame_ModelEvent(float, int, string);
 
+void View_EnableViewmodel(void);
+void View_DisableViewmodel(void);
+
 /* this really should be done in-engine */
 
 void drawrect(vector pos, vector sz, float thickness, vector rgb, float al, optional float dfl)
