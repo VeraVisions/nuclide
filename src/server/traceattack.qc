@@ -126,6 +126,9 @@ TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon)
 			case MATID_METAL:
 				FX_Impact(IMPACT_METAL, trace_endpos, trace_plane_normal);
 				break;
+			case MATID_SAND:
+				FX_Impact(IMPACT_SAND, trace_endpos, trace_plane_normal);
+				break;
 			case MATID_SLOSH:
 				FX_Impact(IMPACT_SLOSH, trace_endpos, trace_plane_normal);
 				break;
@@ -176,6 +179,9 @@ TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon)
 				break;
 			case SURF_METAL:
 				FX_Impact(IMPACT_METAL, trace_endpos, trace_plane_normal);
+				break;
+			case SURF_SAND:
+				FX_Impact(IMPACT_SAND, trace_endpos, trace_plane_normal);
 				break;
 			case SURF_SLOSH:
 				FX_Impact(IMPACT_SLOSH, trace_endpos, trace_plane_normal);

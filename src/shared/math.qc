@@ -43,3 +43,19 @@ Math_Reflect(vector v1, vector v2)
 {
 	return v1 - 2 * dotproduct(v1, v2) * v2;
 }
+
+vector
+Math_RandomVector(float fFlyUp)
+{
+	vector tmp;
+	tmp[0] = random() - 0.5f;
+	tmp[1] = random() - 0.5f;
+	
+	if ( fFlyUp == TRUE ) {
+		tmp[2] = random();
+	} else {
+		tmp[2] = random() - 0.5f;
+	}
+
+	return tmp * 2.0f;
+}

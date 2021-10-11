@@ -20,3 +20,4 @@ float Math_LerpAngle(float fStart, float fEnd, float fAmount);
 float Math_Lerp(float fA, float fB, float fPercent);
 float Math_FixDelta(float fDelta);
 vector Math_Reflect(vector v1, vector v2);
+vector Math_RandomVector(float flyup);

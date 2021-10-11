@@ -115,7 +115,7 @@ var float autocvar_sv_maxspeed = PMOVE_MAXSPEED;
 void
 PMove_Init(void)
 {
-#ifdef SERVER
+	#ifdef SERVER
 	cvar_set("sv_stepheight", ftos(PMOVE_STEPHEIGHT));
 	cvar_set("sv_airstepheight", ftos(PMOVE_AIRSTEPHEIGHT));
 	cvar_set("sv_friction", ftos(PMOVE_FRICTION));
@@ -126,20 +126,20 @@ PMove_Init(void)
 	cvar_set("sv_wateraccelerate", ftos(PMOVE_WATERACCELERATE));
 	cvar_set("sv_accelerat", ftos(PMOVE_ACCELERATE));
 	cvar_set("sv_maxspeed", ftos(PMOVE_MAXSPEED));
-#endif
+	#endif
 
-#ifdef CUSTOMPLAYERPHYSICS
+	#ifdef CUSTOMPLAYERPHYSICS
 	PMoveCustom_Init();
-#endif
+	#endif
 }
 
 #ifdef SERVER
 void
 PMove_StartFrame(void)
 {
-#ifdef CUSTOMPLAYERPHYSICS
+	#ifdef CUSTOMPLAYERPHYSICS
 	PMoveCustom_StartFrame();
-#endif
+	#endif
 }
 #endif
 
