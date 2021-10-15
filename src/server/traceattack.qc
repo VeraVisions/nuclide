@@ -33,6 +33,129 @@ TraceAttack_Apply(entity eAttacker, int iWeapon)
 	g_multiDamage_Value = 0;
 }
 
+void
+TraceAttack_ImpactWorld(void)
+{
+	string tex_name;
+	float surf;
+
+	switch (serverkeyfloat("*bspversion")) {
+	case BSPVER_HL:
+		surf = getsurfacenearpoint(trace_ent, trace_endpos);
+		tex_name = Materials_FixName(getsurfacetexture(trace_ent, surf));
+
+		/* our hashtable is the key to all this */
+		switch ((float)hash_get(hashMaterials, tex_name)) {
+		case MATID_ALIEN:
+			FX_Impact(IMPACT_ALIEN, trace_endpos, trace_plane_normal);
+			break;
+		case MATID_COMPUTER:
+			FX_Impact(IMPACT_COMPUTER, trace_endpos, trace_plane_normal);
+			break;
+		case MATID_CONCRETE:
+			FX_Impact(IMPACT_CONCRETE, trace_endpos, trace_plane_normal);
+			break;
+		case MATID_DIRT:
+			FX_Impact(IMPACT_DIRT, trace_endpos, trace_plane_normal);
+			break;
+		case MATID_BLOODYFLESH:
+		case MATID_FLESH:
+			FX_Impact(IMPACT_FLESH, trace_endpos, trace_plane_normal);
+			break;
+		case MATID_FOLIAGE:
+			FX_Impact(IMPACT_FOLIAGE, trace_endpos, trace_plane_normal);
+			break;
+		case MATID_GLASS:
+			FX_Impact(IMPACT_GLASS, trace_endpos, trace_plane_normal);
+			break;
+		case MATID_GRATE:
+			FX_Impact(IMPACT_GRATE, trace_endpos, trace_plane_normal);
+			break;
+		case MATID_METAL:
+			FX_Impact(IMPACT_METAL, trace_endpos, trace_plane_normal);
+			break;
+		case MATID_SAND:
+			FX_Impact(IMPACT_SAND, trace_endpos, trace_plane_normal);
+			break;
+		case MATID_SLOSH:
+			FX_Impact(IMPACT_SLOSH, trace_endpos, trace_plane_normal);
+			break;
+		case MATID_SNOW:
+			FX_Impact(IMPACT_SNOW, trace_endpos, trace_plane_normal);
+			break;
+		case MATID_TILE:
+			FX_Impact(IMPACT_TILE, trace_endpos, trace_plane_normal);
+			break;
+		case MATID_VENT:
+			FX_Impact(IMPACT_VENT, trace_endpos, trace_plane_normal);
+			break;
+		case MATID_WOOD:
+			FX_Impact(IMPACT_WOOD, trace_endpos, trace_plane_normal);
+			break;
+		default:
+			FX_Impact(IMPACT_DEFAULT, trace_endpos, trace_plane_normal);
+			break;
+		}
+		break;
+	case BSPVER_Q3: /* Q3 */
+	case BSPVER_RTCW: /* RtCW */
+	case BSPVER_RBSP: /* RFVBSP */
+		switch (trace_surfaceflagsi) {
+		case SURF_ALIEN:
+			FX_Impact(IMPACT_ALIEN, trace_endpos, trace_plane_normal);
+			break;
+		case SURF_COMPUTER:
+			FX_Impact(IMPACT_COMPUTER, trace_endpos, trace_plane_normal);
+			break;
+		case SURF_CONCRETE:
+			FX_Impact(IMPACT_CONCRETE, trace_endpos, trace_plane_normal);
+			break;
+		case SURF_DIRT:
+			FX_Impact(IMPACT_DIRT, trace_endpos, trace_plane_normal);
+			break;
+		case SURF_BLOODYFLESH:
+			FX_Impact(IMPACT_FLESH, trace_endpos, trace_plane_normal);
+			break;
+		case SURF_FOLIAGE:
+			FX_Impact(IMPACT_FOLIAGE, trace_endpos, trace_plane_normal);
+			break;
+		case SURF_GLASS:
+			FX_Impact(IMPACT_GLASS, trace_endpos, trace_plane_normal);
+			break;
+		case SURF_GRATE:
+			FX_Impact(IMPACT_GRATE, trace_endpos, trace_plane_normal);
+			break;
+		case SURF_METAL:
+			FX_Impact(IMPACT_METAL, trace_endpos, trace_plane_normal);
+			break;
+		case SURF_SAND:
+			FX_Impact(IMPACT_SAND, trace_endpos, trace_plane_normal);
+			break;
+		case SURF_SLOSH:
+			FX_Impact(IMPACT_SLOSH, trace_endpos, trace_plane_normal);
+			break;
+		case SURF_SNOW:
+			FX_Impact(IMPACT_SNOW, trace_endpos, trace_plane_normal);
+			break;
+		case SURF_TILE:
+			FX_Impact(IMPACT_TILE, trace_endpos, trace_plane_normal);
+			break;
+		case SURF_VENT:
+			FX_Impact(IMPACT_VENT, trace_endpos, trace_plane_normal);
+			break;
+		case SURF_WOOD:
+			FX_Impact(IMPACT_WOOD, trace_endpos, trace_plane_normal);
+			break;
+		default:
+			FX_Impact(IMPACT_DEFAULT, trace_endpos, trace_plane_normal);
+			break;
+		}
+		break;
+	default:
+		FX_Impact(IMPACT_DEFAULT, trace_endpos, trace_plane_normal);
+	}
+}
+
 /* cast a single bullet shot */
 static void
 TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon)
@@ -88,123 +211,42 @@ TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon)
 
 	/* impact per bullet */
 	if (trace_ent.iBleeds == 0) {
-		string tex_name;
-		float surf;
-
-		switch (serverkeyfloat("*bspversion")) {
-		case BSPVER_HL:
-			surf = getsurfacenearpoint(trace_ent, trace_endpos);
-			tex_name = Materials_FixName(getsurfacetexture(trace_ent, surf));
-
-			/* our hashtable is the key to all this */
-			switch ((float)hash_get(hashMaterials, tex_name)) {
-			case MATID_ALIEN:
-				FX_Impact(IMPACT_ALIEN, trace_endpos, trace_plane_normal);
-				break;
-			case MATID_COMPUTER:
-				FX_Impact(IMPACT_COMPUTER, trace_endpos, trace_plane_normal);
-				break;
-			case MATID_CONCRETE:
-				FX_Impact(IMPACT_CONCRETE, trace_endpos, trace_plane_normal);
-				break;
-			case MATID_DIRT:
-				FX_Impact(IMPACT_DIRT, trace_endpos, trace_plane_normal);
-				break;
-			case MATID_BLOODYFLESH:
-			case MATID_FLESH:
-				FX_Impact(IMPACT_FLESH, trace_endpos, trace_plane_normal);
-				break;
-			case MATID_FOLIAGE:
-				FX_Impact(IMPACT_FOLIAGE, trace_endpos, trace_plane_normal);
-				break;
-			case MATID_GLASS:
+		if (trace_ent == world) {
+			TraceAttack_ImpactWorld();
+		} else {
+			CBaseEntity foo = (CBaseEntity)trace_ent;
+			switch (foo.m_iMaterial) {
+			case BREAKMT_GLASS:
 				FX_Impact(IMPACT_GLASS, trace_endpos, trace_plane_normal);
 				break;
-			case MATID_GRATE:
-				FX_Impact(IMPACT_GRATE, trace_endpos, trace_plane_normal);
-				break;
-			case MATID_METAL:
-				FX_Impact(IMPACT_METAL, trace_endpos, trace_plane_normal);
-				break;
-			case MATID_SAND:
-				FX_Impact(IMPACT_SAND, trace_endpos, trace_plane_normal);
-				break;
-			case MATID_SLOSH:
-				FX_Impact(IMPACT_SLOSH, trace_endpos, trace_plane_normal);
-				break;
-			case MATID_SNOW:
-				FX_Impact(IMPACT_SNOW, trace_endpos, trace_plane_normal);
-				break;
-			case MATID_TILE:
-				FX_Impact(IMPACT_TILE, trace_endpos, trace_plane_normal);
-				break;
-			case MATID_VENT:
-				FX_Impact(IMPACT_VENT, trace_endpos, trace_plane_normal);
-				break;
-			case MATID_WOOD:
+			case BREAKMT_WOOD:
 				FX_Impact(IMPACT_WOOD, trace_endpos, trace_plane_normal);
 				break;
-			default:
+			case BREAKMT_METAL:
+				FX_Impact(IMPACT_METAL, trace_endpos, trace_plane_normal);
+				break;
+			case BREAKMT_FLESH:
+				FX_Impact(IMPACT_FLESH, trace_endpos, trace_plane_normal);
+				break;
+			case BREAKMT_CINDER:
+				FX_Impact(IMPACT_CONCRETE, trace_endpos, trace_plane_normal);
+				break;
+			case BREAKMT_TILE:
+				FX_Impact(IMPACT_TILE, trace_endpos, trace_plane_normal);
+				break;
+			case BREAKMT_COMPUTER:
+				FX_Impact(IMPACT_COMPUTER, trace_endpos, trace_plane_normal);
+				break;
+			case BREAKMT_GLASS_UNBREAKABLE:
+				FX_Impact(IMPACT_GLASS, trace_endpos, trace_plane_normal);
+				break;
+			case BREAKMT_ROCK:
+				FX_Impact(IMPACT_DEFAULT, trace_endpos, trace_plane_normal);
+				break;
+			case BREAKMT_NONE:
 				FX_Impact(IMPACT_DEFAULT, trace_endpos, trace_plane_normal);
 				break;
 			}
-			break;
-		case BSPVER_Q3: /* Q3 */
-		case BSPVER_RTCW: /* RtCW */
-		case BSPVER_RBSP: /* RFVBSP */
-			switch (trace_surfaceflagsi) {
-			case SURF_ALIEN:
-				FX_Impact(IMPACT_ALIEN, trace_endpos, trace_plane_normal);
-				break;
-			case SURF_COMPUTER:
-				FX_Impact(IMPACT_COMPUTER, trace_endpos, trace_plane_normal);
-				break;
-			case SURF_CONCRETE:
-				FX_Impact(IMPACT_CONCRETE, trace_endpos, trace_plane_normal);
-				break;
-			case SURF_DIRT:
-				FX_Impact(IMPACT_DIRT, trace_endpos, trace_plane_normal);
-				break;
-			case SURF_BLOODYFLESH:
-				FX_Impact(IMPACT_FLESH, trace_endpos, trace_plane_normal);
-				break;
-			case SURF_FOLIAGE:
-				FX_Impact(IMPACT_FOLIAGE, trace_endpos, trace_plane_normal);
-				break;
-			case SURF_GLASS:
-				FX_Impact(IMPACT_GLASS, trace_endpos, trace_plane_normal);
-				break;
-			case SURF_GRATE:
-				FX_Impact(IMPACT_GRATE, trace_endpos, trace_plane_normal);
-				break;
-			case SURF_METAL:
-				FX_Impact(IMPACT_METAL, trace_endpos, trace_plane_normal);
-				break;
-			case SURF_SAND:
-				FX_Impact(IMPACT_SAND, trace_endpos, trace_plane_normal);
-				break;
-			case SURF_SLOSH:
-				FX_Impact(IMPACT_SLOSH, trace_endpos, trace_plane_normal);
-				break;
-			case SURF_SNOW:
-				FX_Impact(IMPACT_SNOW, trace_endpos, trace_plane_normal);
-				break;
-			case SURF_TILE:
-				FX_Impact(IMPACT_TILE, trace_endpos, trace_plane_normal);
-				break;
-			case SURF_VENT:
-				FX_Impact(IMPACT_VENT, trace_endpos, trace_plane_normal);
-				break;
-			case SURF_WOOD:
-				FX_Impact(IMPACT_WOOD, trace_endpos, trace_plane_normal);
-				break;
-			default:
-				FX_Impact(IMPACT_DEFAULT, trace_endpos, trace_plane_normal);
-				break;
-			}
-			break;
-		default:
-			FX_Impact(IMPACT_DEFAULT, trace_endpos, trace_plane_normal);
 		}
 	}
 

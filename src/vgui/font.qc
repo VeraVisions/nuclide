@@ -32,7 +32,7 @@ typedef struct
 } font_s;
 
 void
-Font_Load (string strFile, font_s &fntNew)
+Font_Load(string strFile, font_s &fntNew)
 {
 #ifdef CLASSIC_VGUI
 	fntNew.iID = (int)loadfont("", "gfx/conchars", "12", -1, 0, 0);

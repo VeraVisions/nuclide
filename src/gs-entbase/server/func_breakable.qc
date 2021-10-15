@@ -105,7 +105,6 @@ const string funcbreakable_objtable[] = {
 
 class func_breakable:CBaseTrigger
 {
-	int m_iMaterial;
 	float m_flDelay;
 	float m_flExplodeMag;
 	float m_flExplodeRad;

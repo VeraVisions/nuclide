@@ -70,6 +70,7 @@ class CBaseEntity
 	nonvirtual int(void) IsOnFire;
 
 	/* Reliable APIs */
+	int m_iMaterial;
 	nonvirtual vector(void) GetSpawnOrigin;
 	nonvirtual vector(void) GetSpawnAngles;
 	nonvirtual string(void) GetSpawnModel;

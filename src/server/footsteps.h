@@ -49,6 +49,26 @@
 #define MATID_SAND			'N'
 #endif
 
+/* other notes:
+
+	in The Wastes (2003) 'I' is sand, 'U' is plaster,
+	'R' is rust.
+*/
+
+/* modern additions, not implemented yet */
+#define MATID_CLAY			1
+#define MATID_PLASTER			2
+#define MATID_ROCK			3
+#define MATID_RUBBER			4
+#define MATID_SHEETROCK			5
+#define MATID_CLOTH			6
+#define MATID_CARPET			7
+#define MATID_PAPER			8
+#define MATID_UPHOLSTERY		9
+#define MATID_PUDDLE			10
+#define MATID_MUD			11
+#define MATID_SANDBARREL		12
+
 void Footsteps_Init(void);
 void Footsteps_HLBSP(base_player target);
 void Footsteps_VVBSP(base_player target);

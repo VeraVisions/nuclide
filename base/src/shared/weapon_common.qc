@@ -122,6 +122,7 @@ Weapons_SetModel(string mdl)
 #ifdef CLIENT
 	setmodel(pSeat->m_eViewModel, mdl);
 	setsize(pSeat->m_eViewModel, [0,0,0], [0,0,0]);
+	pSeat->m_eViewModel.effects |= EF_NOSHADOW;
 #endif
 }
 
