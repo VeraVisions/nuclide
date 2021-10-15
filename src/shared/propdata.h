@@ -73,6 +73,7 @@ typedef struct
 	float damage_explosive;
 	float explosive_damage;	/* once the damage/radius keys are set, make explosion upon break */
 	float explosive_radius;
+	string breakable_particle;	/* name of BreakableModels entry in PropData.txt */
 	string breakable_model;	/* name of BreakableModels entry in PropData.txt */
 	int breakable_count;
 } propdata_t;

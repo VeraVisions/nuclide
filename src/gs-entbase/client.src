@@ -5,7 +5,6 @@
 #includelist
 baseentity.h
 decals.h
-materials.h
 client/defs.h
 client/basefx.qc
 shared/baseentity.qc

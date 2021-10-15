@@ -921,6 +921,18 @@ CBaseEntity::GetPropData(int type)
 {
 	return Prop_GetInfo(m_iPropData, type);
 }
+
+int
+CBaseEntity::HasSurfaceData(void)
+{
+	return (m_iMaterial != -1) ? TRUE : FALSE;
+}
+
+__variant
+CBaseEntity::GetSurfaceData(int type)
+{
+	return SurfData_GetInfo(m_iMaterial, type);
+}
 #endif
 
 /*
@@ -940,6 +952,7 @@ CBaseEntity::CBaseEntity(void)
 		return;
 
 	m_iPropData = -1;
+	m_iMaterial = -1;
 
 	/* Not in Deathmatch */
 	if (spawnflags & 2048) {
@@ -959,6 +972,7 @@ CBaseEntity::CBaseEntity(void)
 
 	/* tokenization complete, now we can load propdata */
 	m_iPropData = PropData_Finish();
+	m_iMaterial = SurfData_Finish();
 
 	m_oldAngle = angles;
 	m_oldOrigin = origin;

@@ -196,7 +196,7 @@ CBasePhysics::Death(void)
 
 	string gibeffect = GetPropData(PROPINFO_BREAKMODEL);
 	int breakcount = GetPropData(PROPINFO_BREAKCOUNT);
-	BreakModel_Spawn(origin, [0,0,0], [100,100], 100, breakcount, gibeffect);
+	BreakModel_Spawn(absmin, absmax, [0,0,0], 100, breakcount, gibeffect);
 
 	/* handle explosions */
 	float flExplodeMag, flExplodeRad;

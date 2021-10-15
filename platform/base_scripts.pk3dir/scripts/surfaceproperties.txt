@@ -1,0 +1,53 @@
+gs_material_glass
+{
+	gamematerial Y
+	bulletimpact "func_breakable.impact_glass"
+}
+
+gs_material_wood
+{
+	gamematerial W
+	bulletimpact "func_breakable.impact_wood"
+}
+
+gs_material_metal
+{
+	gamematerial M
+	bulletimpact "func_breakable.impact_metal"
+}
+
+gs_material_flesh
+{
+	gamematerial F
+	bulletimpact "func_breakable.impact_flesh"
+}
+
+gs_material_cinderblock
+{
+	gamematerial C
+	bulletimpact "func_breakable.impact_cinderblock"
+}
+
+gs_material_tile
+{
+	gamematerial T
+	bulletimpact "func_breakable.impact_tile"
+}
+
+gs_material_computer
+{
+	gamematerial P
+	bulletimpact "func_breakable.impact_computer"
+}
+
+gs_material_unbreakableglass
+{
+	gamematerial Y
+	bulletimpact "func_breakable.impact_glassunbreakable"
+}
+
+gs_material_rocks
+{
+	gamematerial C
+	bulletimpact "func_breakable.impact_rock"
+}

@@ -17,6 +17,12 @@
 /* FIXME: world.... sigh, we should box this into a worldspawn class */
 .string materials_file;
 
+float
+HLMaterials_Fetch(string tex_name)
+{
+	return (float)hash_get(hashMaterials, tex_name);
+}
+
 void
 HLMaterials_Load(string filename)
 {

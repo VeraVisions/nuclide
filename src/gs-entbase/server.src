@@ -5,7 +5,6 @@
 #includelist
 baseentity.h
 decals.h
-materials.h
 shared/baseentity.qc
 server/baseoutput.qc
 server/basetrigger.qc

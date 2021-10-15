@@ -92,6 +92,9 @@ PropData_ParseField(int i, int a)
 	case "explosive_radius":
 		g_propdata[i].explosive_radius = stof(argv(1));
 		break;
+	case "breakable_particle":
+		g_propdata[i].breakable_particle = argv(1);
+		break;
 	case "breakable_model":
 		g_propdata[i].breakable_model = argv(1);
 		break;
@@ -411,7 +414,7 @@ PropData_Finish(void)
 
 /* BreakModel related helper API */
 void
-BreakModel_Spawn(vector pos, vector dir, vector spread, float speed, int count, string type)
+BreakModel_Spawn(vector smins, vector smaxs, vector dir, float speed, int count, string type)
 {
 	int index;
 	index = (int)hash_get(g_hashbreakmodel, type, -1);
@@ -425,6 +428,7 @@ BreakModel_Spawn(vector pos, vector dir, vector spread, float speed, int count, 
 	int modelcount = x / 2;
 
 	for (int i = 0; i < count; i++) {
+		vector endpos;
 		string mname;
 		float fadetime;
 		entity gib;
@@ -437,14 +441,16 @@ BreakModel_Spawn(vector pos, vector dir, vector spread, float speed, int count, 
 		mname = argv((r * 2));
 		fadetime = stof(argv((r * 2) + 1));
 
+		endpos[0] = smins[0] + ( random() * ( smaxs[0] - smins[0] ) );
+		endpos[1] = smins[1] + ( random() * ( smaxs[1] - smins[1] ) );
+		endpos[2] = smins[2] + ( random() * ( smaxs[2] - smins[2] ) );
+
 		gib = spawn();
 		setmodel(gib, mname);
 		setsize(gib, [0,0,0], [0,0,0]);
-		setorigin(gib, pos);
+		setorigin(gib, endpos);
 		makevectors(dir);
 		gib.velocity = v_forward * speed;
-		gib.velocity += random(-1,1) * spread[0] * v_right;
-		gib.velocity += random(-1,1) * spread[1] * v_up;
 		gib.avelocity = vectoangles(gib.velocity);
 		gib.movetype = MOVETYPE_BOUNCE;
 

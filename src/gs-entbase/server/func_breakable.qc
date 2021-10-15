@@ -103,6 +103,18 @@ const string funcbreakable_objtable[] = {
 };
 #endif
 
+const string funcbreakable_surftable[] = {
+"gs_material_glass",
+"gs_material_wood",
+"gs_material_metal",
+"gs_material_flesh",
+"gs_material_cinderblock",
+"gs_material_tile",
+"gs_material_computer",
+"gs_material_unbreakableglass",
+"gs_material_rocks"
+};
+
 class func_breakable:CBaseTrigger
 {
 	float m_flDelay;
@@ -131,36 +143,8 @@ func_breakable::Pain(void)
 	if (spawnflags & SF_TRIGGER) {
 		return;
 	}
-	if (serverkeyfloat("*bspversion") != BSPVER_HL) {
-		return;
-	}
 
-	switch (m_iMaterial) {
-	case BREAKMT_GLASS:
-		Sound_Play(this, CHAN_VOICE, "func_breakable.impact_glass");
-		break;
-	case BREAKMT_COMPUTER:
-		Sound_Play(this, CHAN_VOICE, "func_breakable.impact_computer");
-		break;
-	case BREAKMT_GLASS_UNBREAKABLE:
-		Sound_Play(this, CHAN_VOICE, "func_breakable.impact_glassunbreakable");
-		break;
-	case BREAKMT_WOOD:
-		Sound_Play(this, CHAN_VOICE, "func_breakable.impact_wood");
-		break;
-	case BREAKMT_METAL:
-		Sound_Play(this, CHAN_VOICE, "func_breakable.impact_metal");
-		break;
-	case BREAKMT_FLESH:
-		Sound_Play(this, CHAN_VOICE, "func_breakable.impact_flesh");
-		break;
-	case BREAKMT_CINDER:
-		Sound_Play(this, CHAN_VOICE, "func_breakable.impact_cinder");
-		break;
-	case BREAKMT_ROCK:
-		Sound_Play(this, CHAN_VOICE, "func_breakable.impact_rock");
-		break;
-	}
+	Sound_Play(this, CHAN_VOICE, SurfData_GetInfo(m_iMaterial, SURFDATA_SND_BULLETIMPACT));
 }
 
 
@@ -168,7 +152,7 @@ void
 func_breakable::Explode(void)
 {
 	vector rp = absmin + (0.5 * (absmax - absmin));
-	FX_BreakModel(vlen(size) / 10, absmin, absmax, [0,0,0], m_iMaterial);
+	FX_BreakModel(vlen(size) / 10, absmin, absmax, [0,0,0], SurfData_GetInfo(m_iMaterial, SURFDATA_MATERIAL));
 	FX_Explosion(rp);
 	Damage_Radius(rp, this, m_flExplodeMag, m_flExplodeRad, TRUE, 0);
 	UseTargets(this, TRIG_TOGGLE, 0.0f); /* delay... ignored. */
@@ -220,7 +204,7 @@ func_breakable::Death(void)
 		think = Explode;
 		nextthink = time + random(0.0,0.5);
 	} else {
-		FX_BreakModel(vlen(size) / 10, absmin, absmax, [0,0,0], m_iMaterial);
+		FX_BreakModel(vlen(size) / 10, absmin, absmax, [0,0,0], SurfData_GetInfo(m_iMaterial, SURFDATA_MATERIAL));
 		/* TODO: ability to have whoever destroyed the crate be the activator */
 		UseTargets(this, TRIG_TOGGLE, 0.0f);
 		Hide();
@@ -296,14 +280,14 @@ func_breakable::Respawn(void)
 
 	health = GetSpawnHealth();
 
-	if (!health) {
-		health = 15;
-	}
-
 	if (HasPropData()) {
 		health = GetPropData(PROPINFO_HEALTH);
 		m_flExplodeMag = GetPropData(PROPINFO_EXPLOSIVE_DMG);
 		m_flExplodeRad = GetPropData(PROPINFO_EXPLOSIVE_RADIUS);
+	}
+
+	if (!health) {
+		health = 15;
 	}
 }
 
@@ -312,7 +296,8 @@ func_breakable::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "material":
-		m_iMaterial = stoi(strValue);
+		float id = stof(strValue);
+		SurfData_SetStage(funcbreakable_surftable[id]);
 		break;
 	case "explodemagnitude":
 		m_flExplodeMag = stof(strValue);
@@ -341,35 +326,21 @@ func_breakable::SpawnKey(string strKey, string strValue)
 void
 func_breakable::func_breakable(void)
 {
+	/* func_breakable defaults to glass */
+	if (classname == "func_breakable") {
+		PropData_SetStage(funcbreakable_surftable[0]);
+		SurfData_SetStage(funcbreakable_surftable[0]);
+	} else {
+		PropData_SetStage(funcbreakable_surftable[1]);
+		SurfData_SetStage(funcbreakable_surftable[1]);
+	}
+
+	/* proper init */
 	CBaseTrigger::CBaseTrigger();
 
 	/* contrary to what some map designers think, angles are not supported */
 	GetSpawnAngles() = angles = [0,0,0];
 
-	switch (m_iMaterial) {
-	case BREAKMT_GLASS:
-		Sound_Precache("func_breakable.impact_glass");
-		break;
-	case BREAKMT_COMPUTER:
-		Sound_Precache("func_breakable.impact_computer");
-		break;
-	case BREAKMT_GLASS_UNBREAKABLE:
-		Sound_Precache("func_breakable.impact_glassunbreakable");
-		break;
-	case BREAKMT_WOOD:
-		Sound_Precache("func_breakable.impact_wood");
-		break;
-	case BREAKMT_METAL:
-		Sound_Precache("func_breakable.impact_metal");
-		break;
-	case BREAKMT_FLESH:
-		Sound_Precache("func_breakable.impact_flesh");
-		break;
-	case BREAKMT_CINDER:
-		Sound_Precache("func_breakable.impact_cinder");
-		break;
-	case BREAKMT_ROCK:
-		Sound_Precache("func_breakable.impact_rock");
-		break;
-	}
+	/* precache impact sound */
+	Sound_Precache(SurfData_GetInfo(m_iMaterial, SURFDATA_SND_BULLETIMPACT));
 }

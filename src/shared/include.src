@@ -7,5 +7,6 @@ math.qc
 player.qc
 player_pmove.qc
 propdata.qc
+surfaceproperties.qc
 vehicles.qc
 #endlist

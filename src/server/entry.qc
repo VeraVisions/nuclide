@@ -388,6 +388,7 @@ init(float prevprogs)
 	iprint("Initializing Server-Module");
 	Plugin_Init();
 	PropData_Init();
+	SurfData_Init();
 }
 
 /*
