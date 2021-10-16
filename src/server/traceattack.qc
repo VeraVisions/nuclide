@@ -16,6 +16,7 @@
 
 entity g_multiDamage_Target;
 int g_multiDamage_Value;
+int g_multiDamage_HitBod;
 
 static void
 TraceAttack_Apply(entity eAttacker, int iWeapon)
@@ -28,9 +29,11 @@ TraceAttack_Apply(entity eAttacker, int iWeapon)
 		FX_Blood(trace_endpos, [1,0,0]);
 	}
 
+	trace_surface_id = g_multiDamage_HitBod;
 	Damage_Apply(g_multiDamage_Target, self, g_multiDamage_Value, iWeapon, DMG_BULLET);
 	g_multiDamage_Target = __NULL__;
 	g_multiDamage_Value = 0;
+	g_multiDamage_HitBod = 0;
 }
 
 void
@@ -52,6 +55,7 @@ TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon)
 	self.hitcontentsmaski = CONTENTBITS_POINTSOLID | CONTENTBIT_CORPSE;
 	traceline(vecPos, vecPos + range, MOVE_LAGGED | MOVE_HITMODEL, self);
 	self.hitcontentsmaski = oldhitcontents;
+	g_multiDamage_HitBod |= trace_surface_id;
 
 	if (trace_fraction >= 1.0f)
 		return;
