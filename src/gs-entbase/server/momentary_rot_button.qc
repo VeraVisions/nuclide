@@ -37,14 +37,14 @@ This entity was introduced in Half-Life (1998).
 
 enumflags
 {
-    MRBFL_DOORHACK,
-    MRBFL_NOTUSE,
+	MRBFL_DOORHACK,
+	MRBFL_NOTUSE,
 	MRBFL_UNUSED4,
 	MRBFL_UNUSED8,
-    MRBFL_AUTORETURN,
+	MRBFL_AUTORETURN,
 	MRBFL_UNUSED32,
 	MRBFL_XAXIS,
-    MRBFL_YAXIS
+	MRBFL_YAXIS
 };
 
 class momentary_rot_button:CBaseMomentary
@@ -151,12 +151,12 @@ momentary_rot_button::SpawnKey(string strKey, string strValue)
 		m_flReturnspeed = stof(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
 void
 momentary_rot_button::momentary_rot_button(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::CBaseMomentary();
 }

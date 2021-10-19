@@ -40,7 +40,7 @@ enumflags
 	TM_PUSHABLES
 };
 
-class trigger_multiple:CBaseTrigger
+class trigger_multiple:NSBrushTrigger
 {
 	float m_flWait;
 
@@ -109,14 +109,14 @@ trigger_multiple::SpawnKey(string strKey, string strValue)
 		m_strOnTrigger = strcat(m_strOnTrigger, ",_", strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
 void
 trigger_multiple::trigger_multiple(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSBrushTrigger();
 
 	if (m_strOnTrigger)
 		m_strOnTrigger = CreateOutput(m_strOnTrigger);

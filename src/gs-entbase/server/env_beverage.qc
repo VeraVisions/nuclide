@@ -44,7 +44,7 @@ enum
 	SKIN_RANDOM
 };
 
-class env_beverage:CBaseTrigger
+class env_beverage:NSRenderableEntity
 {
 	int m_iUses;
 	int m_iReady;
@@ -80,7 +80,7 @@ env_beverage::SpawnKey(string strKey, string strValue)
 		m_iUses = stoi(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -90,7 +90,7 @@ env_beverage::env_beverage(void)
 	precache_model("models/can.mdl");
 	precache_sound("weapons/g_bounce3.wav");
 
-	CBaseTrigger::CBaseTrigger();
+	super::NSRenderableEntity();
 
 	if (!m_iUses) {
 		m_iUses = 10;

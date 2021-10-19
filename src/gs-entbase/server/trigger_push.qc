@@ -36,7 +36,7 @@ enumflags
 	TP_STARTOFF
 };
 
-class trigger_push:CBaseTrigger
+class trigger_push:NSBrushTrigger
 {
 	vector m_vecMoveDir;
 	float m_flSpeed;
@@ -132,7 +132,7 @@ trigger_push::SpawnKey(string strKey, string strValue)
 		m_flSpeed = stof(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -140,5 +140,5 @@ void
 trigger_push::trigger_push(void)
 {
 	m_flSpeed = 100;
-	CBaseTrigger::CBaseTrigger();
+	super::NSBrushTrigger();
 }

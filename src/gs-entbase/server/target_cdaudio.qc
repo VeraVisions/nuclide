@@ -31,7 +31,7 @@ act the same in practice.
 This entity was introduced in Half-Life (1998).
 */
 
-class target_cdaudio:CBaseTrigger
+class target_cdaudio:NSPointTrigger
 {
 	float m_flRadius;
 	int m_iCDTrack;
@@ -63,7 +63,7 @@ target_cdaudio::touch(void)
 void
 target_cdaudio::Respawn(void)
 {
-	/* nobody cares that this is non-spherical... right? */
+	geomtype = GEOMTYPE_SPHERE;
 	mins = [-m_flRadius, -m_flRadius, -m_flRadius];
 	maxs = [m_flRadius, m_flRadius, m_flRadius];
 	SetSolid(SOLID_TRIGGER);
@@ -81,12 +81,12 @@ target_cdaudio::SpawnKey(string strKey, string strValue)
 		m_flRadius = stof(strValue) / 2;
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
 void
 target_cdaudio::target_cdaudio(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 }

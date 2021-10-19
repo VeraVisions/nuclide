@@ -14,12 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifdef SERVER
 void
-CBaseNPC::WarnAllies(void)
+NSTalkMonster::WarnAllies(void)
 {
 	for (entity b = world; (b = find(b, ::classname, classname));) {
 		if (vlen(b.origin - origin) < PLAYER_DETECT_RADIUS) {
-			CBaseNPC w = (CBaseNPC)b;
+			NSTalkMonster w = (NSTalkMonster)b;
 			w.m_iFlags |= MONSTER_METPLAYER;
 			w.m_eFollowing = world;
 			w.m_eFollowingChain = world;
@@ -27,11 +28,11 @@ CBaseNPC::WarnAllies(void)
 	}
 }
 void
-CBaseNPC::StartleAllies(void)
+NSTalkMonster::StartleAllies(void)
 {
 	for (entity b = world; (b = find(b, ::classname, classname));) {
 		if (vlen(b.origin - origin) < PLAYER_DETECT_RADIUS) {
-			CBaseNPC w = (CBaseNPC)b;
+			NSTalkMonster w = (NSTalkMonster)b;
 			w.m_iFlags |= MONSTER_FEAR;
 			w.m_eFollowing = world;
 			w.m_eFollowingChain = world;
@@ -40,7 +41,7 @@ CBaseNPC::StartleAllies(void)
 }
 
 void
-CBaseNPC::Sentence(string sentence)
+NSTalkMonster::Sentence(string sentence)
 {
 	if (style == MONSTER_DEAD)
 		return;
@@ -59,7 +60,7 @@ CBaseNPC::Sentence(string sentence)
 }
 
 void
-CBaseNPC::Speak(string sentence)
+NSTalkMonster::Speak(string sentence)
 {
 	if (style == MONSTER_DEAD)
 		return;
@@ -74,7 +75,7 @@ CBaseNPC::Speak(string sentence)
 }
 
 void
-CBaseNPC::TalkPlayerGreet(void)
+NSTalkMonster::TalkPlayerGreet(void)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE)
 		return;
@@ -102,7 +103,7 @@ CBaseNPC::TalkPlayerGreet(void)
 }
 
 void
-CBaseNPC::TalkPlayerIdle(void)
+NSTalkMonster::TalkPlayerIdle(void)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE)
 		return;
@@ -127,7 +128,7 @@ CBaseNPC::TalkPlayerIdle(void)
 }
 
 void
-CBaseNPC::TalkPlayerAsk(void)
+NSTalkMonster::TalkPlayerAsk(void)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE)
 		return;
@@ -152,7 +153,7 @@ CBaseNPC::TalkPlayerAsk(void)
 }
 
 void
-CBaseNPC::TalkPlayerWounded1(void)
+NSTalkMonster::TalkPlayerWounded1(void)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE)
 		return;
@@ -178,7 +179,7 @@ CBaseNPC::TalkPlayerWounded1(void)
 	}
 }
 void
-CBaseNPC::TalkPlayerWounded2(void)
+NSTalkMonster::TalkPlayerWounded2(void)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE)
 		return;
@@ -205,7 +206,7 @@ CBaseNPC::TalkPlayerWounded2(void)
 }
 
 void
-CBaseNPC::TalkPlayerWounded3(void)
+NSTalkMonster::TalkPlayerWounded3(void)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE)
 		return;
@@ -229,7 +230,7 @@ CBaseNPC::TalkPlayerWounded3(void)
 }
 
 void
-CBaseNPC::TalkPanic(void)
+NSTalkMonster::TalkPanic(void)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE)
 		return;
@@ -240,7 +241,7 @@ CBaseNPC::TalkPanic(void)
 
 
 void
-CBaseNPC::TalkUnfollow(void)
+NSTalkMonster::TalkUnfollow(void)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE)
 		return;
@@ -250,7 +251,7 @@ CBaseNPC::TalkUnfollow(void)
 }
 
 void
-CBaseNPC::TalkFollow(void)
+NSTalkMonster::TalkFollow(void)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE)
 		return;
@@ -260,7 +261,7 @@ CBaseNPC::TalkFollow(void)
 }
 
 void
-CBaseNPC::TalkStopFollow(void)
+NSTalkMonster::TalkStopFollow(void)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE)
 		return;
@@ -270,7 +271,7 @@ CBaseNPC::TalkStopFollow(void)
 }
 
 void
-CBaseNPC::FollowPlayer(void)
+NSTalkMonster::FollowPlayer(void)
 {
 	v_angle = vectoangles(m_eFollowingChain.origin - origin);
 	v_angle[0] = 0;
@@ -300,7 +301,7 @@ CBaseNPC::FollowPlayer(void)
 		 * follow them instead, this makes pathing easier */
 		traceline(origin, /*mins, maxs,*/ m_vecLastUserPos, FALSE, this);
 		if (trace_ent.classname == classname) {
-			CBaseNPC que = (CBaseNPC)trace_ent;
+			NSTalkMonster que = (NSTalkMonster)trace_ent;
 			if (que.m_eFollowingChain == m_eFollowing) {
 				if (trace_ent != this) {
 					m_eFollowingChain = trace_ent;
@@ -311,7 +312,7 @@ CBaseNPC::FollowPlayer(void)
 }
 
 void
-CBaseNPC::PanicFrame(void)
+NSTalkMonster::PanicFrame(void)
 {
 	m_iFlags |= MONSTER_METPLAYER;
 	maxspeed = 240;
@@ -340,7 +341,7 @@ CBaseNPC::PanicFrame(void)
 }
 
 void
-CBaseNPC::FollowChain(void)
+NSTalkMonster::FollowChain(void)
 {
 	/* Deal with a hostage being rescued when it's following someone else */
 	if (m_eFollowingChain.classname == classname) {
@@ -355,7 +356,7 @@ CBaseNPC::FollowChain(void)
 }
 
 void
-CBaseNPC::Physics(void)
+NSTalkMonster::Physics(void)
 {
 	float spvel;
 	input_movevalues = [0,0,0];
@@ -442,15 +443,15 @@ CBaseNPC::Physics(void)
 }
 
 void
-CBaseNPC::Respawn(void)
+NSTalkMonster::Respawn(void)
 {
-	CBaseMonster::Respawn();
+	NSMonster::Respawn();
 	m_eFollowing = world;
 	m_eFollowingChain = world;
 }
 
 void
-CBaseNPC::OnPlayerUse(void)
+NSTalkMonster::OnPlayerUse(void)
 {
 	if (m_iFlags & MONSTER_FEAR)
 		return;
@@ -475,7 +476,7 @@ CBaseNPC::OnPlayerUse(void)
 }
 
 void
-CBaseNPC::SpawnKey(string strKey, string strValue)
+NSTalkMonster::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "UnUseSentence":
@@ -485,21 +486,299 @@ CBaseNPC::SpawnKey(string strKey, string strValue)
 		m_talkFollow = strcat("!", strValue);
 		break;
 	default:
-		CBaseMonster::SpawnKey(strKey, strValue);
+		NSMonster::SpawnKey(strKey, strValue);
 		break;
 	}
 }
 
 void
-CBaseNPC::Hide(void)
+NSTalkMonster::Hide(void)
 {
 	m_eFollowing = world;
-	CBaseMonster::Hide();
+	NSMonster::Hide();
+}
+
+float
+NSTalkMonster::SendEntity(entity ePEnt, float fChanged)
+{
+	if (!modelindex)
+		return (0);
+
+	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
+		return (0);
+
+	WriteByte(MSG_ENTITY, ENT_TALKMONSTER);
+
+	/* newly popped into the PVS, sadly this is the only hacky way to check
+	 * for this right now. convince the engine maintainer to make this more sensible */
+	if (fChanged == 0xFFFFFF) {
+		/* check for defaults. if these are predictable fields, don't even bother
+		 * networking them! you're just wasting bandwidth. */
+		if (frame == 0)
+			fChanged &= ~BASEFL_CHANGED_FRAME;
+		if (skin == 0)
+			fChanged &= ~BASEFL_CHANGED_SKIN;
+		if (effects == 0)
+			fChanged &= ~BASEFL_CHANGED_EFFECTS;
+		if (m_iBody == 0)
+			fChanged &= ~BASEFL_CHANGED_BODY;
+		if (scale == 0.0 || scale == 1.0)
+			fChanged &= ~BASEFL_CHANGED_SCALE;
+		if (origin == [0,0,0])
+			fChanged &= ~BASEFL_CHANGED_ORIGIN;
+		if (angles == [0,0,0])
+			fChanged &= ~BASEFL_CHANGED_ANGLES;
+		if (velocity == [0,0,0])
+			fChanged &= ~BASEFL_CHANGED_VELOCITY;
+		if (mins == [0,0,0] && maxs == [0,0,0])
+			fChanged &= ~BASEFL_CHANGED_SIZE;
+		if (solid == SOLID_NOT)
+			fChanged &= ~BASEFL_CHANGED_SOLID;
+		if (movetype == MOVETYPE_NONE)
+			fChanged &= ~BASEFL_CHANGED_MOVETYPE;
+#ifdef GS_RENDERFX
+		if (m_iRenderMode == RM_NORMAL)
+			fChanged &= ~BASEFL_CHANGED_RENDERMODE;
+#endif
+	}
+
+	/* don't network triggers unless provoked */
+	/*if (cvar("developer") == 0 && m_iRenderMode == RM_TRIGGER)
+		return (0);*/
+
+#ifdef GS_RENDERFX
+	/* let's not waste networking power on certain render-modes where they would
+	 * not apply anyway. this seems sensible enough. */
+	if (m_iRenderMode == RM_NORMAL || m_iRenderMode == RM_TRIGGER) {
+		fChanged &= ~BASEFL_CHANGED_RENDERCOLOR;
+		fChanged &= ~BASEFL_CHANGED_RENDERAMT;
+	}
+#endif
+
+	/* broadcast how much data is expected to be read */
+	WriteFloat(MSG_ENTITY, fChanged);
+
+	/* really trying to get our moneys worth with 23 bits of mantissa */
+	if (fChanged & BASEFL_CHANGED_ORIGIN) {
+		WriteCoord(MSG_ENTITY, origin[0]);
+		WriteCoord(MSG_ENTITY, origin[1]);
+		WriteCoord(MSG_ENTITY, origin[2]);
+	}
+	if (fChanged & BASEFL_CHANGED_ANGLES) {
+		WriteShort(MSG_ENTITY, angles[0] * 32767 / 360);
+		WriteShort(MSG_ENTITY, angles[1] * 32767 / 360);
+		WriteShort(MSG_ENTITY, angles[2] * 32767 / 360);
+	}
+	if (fChanged & BASEFL_CHANGED_MODELINDEX) {
+		WriteShort(MSG_ENTITY, modelindex);
+	}
+	if (fChanged & BASEFL_CHANGED_SOLID) {
+		WriteByte(MSG_ENTITY, solid);
+	}
+	if (fChanged & BASEFL_CHANGED_MOVETYPE) {
+		WriteByte(MSG_ENTITY, movetype);
+	}
+	if (fChanged & BASEFL_CHANGED_SIZE) {
+		WriteCoord(MSG_ENTITY, mins[0]);
+		WriteCoord(MSG_ENTITY, mins[1]);
+		WriteCoord(MSG_ENTITY, mins[2]);
+		WriteCoord(MSG_ENTITY, maxs[0]);
+		WriteCoord(MSG_ENTITY, maxs[1]);
+		WriteCoord(MSG_ENTITY, maxs[2]);
+	}
+	if (fChanged & BASEFL_CHANGED_FRAME) {
+		WriteByte(MSG_ENTITY, frame);
+	}
+	if (fChanged & BASEFL_CHANGED_SKIN) {
+		WriteByte(MSG_ENTITY, skin + 128);
+	}
+	if (fChanged & BASEFL_CHANGED_EFFECTS) {
+		WriteFloat(MSG_ENTITY, effects);
+	}
+	if (fChanged & BASEFL_CHANGED_BODY) {
+		WriteByte(MSG_ENTITY, m_iBody);
+	}
+	if (fChanged & BASEFL_CHANGED_SCALE) {
+		WriteFloat(MSG_ENTITY, scale);
+	}
+	if (fChanged & BASEFL_CHANGED_VELOCITY) {
+		WriteFloat(MSG_ENTITY, velocity[0]);
+		WriteFloat(MSG_ENTITY, velocity[1]);
+		WriteFloat(MSG_ENTITY, velocity[2]);
+	}
+
+#ifdef GS_RENDERFX
+	if (fChanged & BASEFL_CHANGED_RENDERFX) {
+		WriteByte(MSG_ENTITY, m_iRenderFX);
+	}
+	if (fChanged & BASEFL_CHANGED_RENDERMODE) {
+		WriteByte(MSG_ENTITY, m_iRenderMode);
+	}
+
+	if (fChanged & BASEFL_CHANGED_RENDERCOLOR) {
+		WriteFloat(MSG_ENTITY, m_vecRenderColor[0]);
+		WriteFloat(MSG_ENTITY, m_vecRenderColor[1]);
+		WriteFloat(MSG_ENTITY, m_vecRenderColor[2]);
+	}
+	if (fChanged & BASEFL_CHANGED_RENDERAMT) {
+		WriteFloat(MSG_ENTITY, m_flRenderAmt);
+	}
+#else
+	if (fChanged & BASEFL_CHANGED_ALPHA) {
+		WriteFloat(MSG_ENTITY, alpha);
+	}
+#endif
+
+	return (1);
+}
+
+#else
+
+/*
+============
+NSTalkMonster::SentenceSample
+
+whatever comes out of the 'mouth',
+============
+*/
+void
+NSTalkMonster::SentenceSample(string sample)
+{
+	sound(this, CHAN_VOICE, sample, 1.0, ATTN_NORM, 100, SOUNDFLAG_FOLLOW);
+}
+
+/*
+============
+NSTalkMonster::ProcessWordQue
+
+Handles the sentences word que
+============
+*/
+void
+NSTalkMonster::ProcessWordQue(void)
+{
+	if (time < 1 || !m_iSentenceCount) {
+		return;
+	}
+
+	if (m_flSentenceTime > time) {
+		return;
+	}
+
+	SentenceSample(m_pSentenceQue[m_iSentencePos].m_strSnd);
+
+	dprint(sprintf("^2NSEntity::^3ProcessWordQue^7: Speaking %s\n", m_pSentenceQue[m_iSentencePos].m_strSnd));
+	m_iSentencePos++;
+
+	if (m_iSentencePos == m_iSentenceCount) {
+		memfree(m_pSentenceQue);
+		m_iSentenceCount = 0;
+		m_iSentencePos = 0;
+		m_pSentenceQue = 0;
+	} else {
+		m_flSentenceTime = time + m_pSentenceQue[m_iSentencePos - 1].m_flLength;
+	}
+}
+
+/*
+============
+NSTalkMonster::Sentence
+
+we'll pass it a sentences.txt word (e.g. !BA_TEST) and start queing it
+============
+*/
+void
+NSTalkMonster::Sentence(string msg)
+{
+	/* not defined */
+	if (msg == "") {
+		return;
+	}
+
+	if (m_iSentenceCount) {
+		memfree(m_pSentenceQue);
+		m_iSentenceCount = 0;
+		m_pSentenceQue = 0;
+		m_iSentencePos = 0;
+	}
+
+	m_iSentenceCount = tokenize(Sentences_GetSamples(msg));
+	m_pSentenceQue = memalloc(sizeof(sound_t) * m_iSentenceCount);
+
+	/* first we have to get the info out of the token */
+	for (int i = 0; i < m_iSentenceCount; i++) {
+		m_pSentenceQue[i].m_strSnd = sprintf("%s.wav", argv(i));
+	}
+
+	/* process more info, we'll need to override argv() here */
+	for (int i = 0; i < m_iSentenceCount; i++) {
+		m_pSentenceQue[i].m_strSnd = Sentences_ProcessSample(m_pSentenceQue[i].m_strSnd);
+		m_pSentenceQue[i].m_flLength = soundlength(m_pSentenceQue[i].m_strSnd);
+		m_pSentenceQue[i].m_flPitch = 100;
+	}
+	m_flSentenceTime = time;
+}
+
+float
+NSTalkMonster::predraw(void)
+{
+	float render;
+	render = super::predraw();
+
+	/* mouth flapping action */
+	bonecontrol5 = getchannellevel(this, CHAN_VOICE) * 20;
+	m_flBaseTime = frame1time;
+	ProcessWordQue();
+
+	return render;
 }
 
 void
-CBaseNPC::CBaseNPC(void)
+NSTalkMonster_ParseSentence(void)
 {
-	CBaseMonster::CBaseMonster();
-	m_eFollowing = world;
+	entity ent;
+	NSTalkMonster targ;
+	string sentence;
+	float e;
+
+	/* parse packets */
+	e = readentitynum();
+	sentence = readstring();
+
+	ent = findfloat(world, entnum, e);
+
+	if (ent) {
+		if (ent.classname != "NSTalkMonster")
+		dprint(sprintf("^3 NSTalkMonster_ParseSentence ^7: Entity %d not a NSTalkMonster!\n", e));
+		else {
+			targ = (NSTalkMonster)ent;
+			targ.Sentence(sentence);
+		}
+	} else {
+		dprint(sprintf("^3 NSTalkMonster_ParseSentence ^7: Entity %d not in PVS\n", e));
+	}
 }
+
+#endif
+
+void
+NSTalkMonster::NSTalkMonster(void)
+{
+	super::NSMonster();
+#ifdef SERVER
+	m_eFollowing = world;
+#endif
+}
+
+
+#ifdef CLIENT
+void
+NSTalkMonster_ReadEntity(float new)
+{
+	NSTalkMonster me = (NSTalkMonster)self;
+	if (new) {
+		spawnfunc_NSTalkMonster();
+	}
+	me.ReceiveEntity(readfloat());
+}
+#endif

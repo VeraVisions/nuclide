@@ -26,22 +26,21 @@ to gain control.
 This entity was introduced in Half-Life (1998).
 */
 
-class func_tracktraincontrols:CBaseTrigger
+class func_tracktraincontrols:NSBrushTrigger
 {
 	void(void) func_tracktraincontrols;
+
+	virtual void(void) Respawn;
 };
+
+void
+func_tracktraincontrols::Respawn(void)
+{
+	InitBrushTrigger();
+}
 
 void
 func_tracktraincontrols::func_tracktraincontrols(void)
 {
-	precache_model(model);
-	SetModel(model);
-	SetOrigin(origin);
-
-#ifdef GS_RENDERFX
-	SetRenderMode(RM_TRIGGER);
-#endif
-
-	SetSolid(SOLID_NOT);
-	CBaseTrigger::CBaseTrigger();
+	super::NSBrushTrigger();
 }

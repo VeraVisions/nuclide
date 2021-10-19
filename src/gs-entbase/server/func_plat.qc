@@ -39,7 +39,7 @@ enum
 	PLATSTATE_DOWN
 };
 
-class func_plat:CBaseTrigger
+class func_plat:NSRenderableEntity
 {
 	int m_iState;
 
@@ -155,7 +155,7 @@ func_plat::SpawnKey(string strKey, string strValue)
 		m_flSpeed = stof(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -163,5 +163,5 @@ void
 func_plat::func_plat(void)
 {
 	m_flSpeed = 100.0f;
-	CBaseTrigger::CBaseTrigger();
+	super::NSRenderableEntity();
 }

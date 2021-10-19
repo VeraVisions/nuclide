@@ -45,7 +45,7 @@ enumflags
 	PC_FIREONCE
 };
 
-class path_corner:CBaseTrigger
+class path_corner:NSPointTrigger
 {
 	int m_iFired;
 	float m_flSpeed;
@@ -68,7 +68,7 @@ path_corner::Trigger(entity act, int state)
 	}
 
 	for (a = world; (a = find(a, ::targetname, m_strMessage));) {
-		CBaseTrigger trigger = (CBaseTrigger)a;
+		NSEntity trigger = (NSEntity)a;
 		trigger.Trigger(act, state);
 		m_iFired = TRUE;
 	}
@@ -103,7 +103,7 @@ path_corner::SpawnKey(string strKey, string strValue)
 		m_strMessage = strValue;
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -112,5 +112,5 @@ path_corner::path_corner(void)
 {
 	m_flWait = 1.0f;
 	m_flSpeed = 100.0f;
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 }

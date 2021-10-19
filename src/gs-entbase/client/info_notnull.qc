@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class info_notnull:CBaseEntity
+class info_notnull:NSEntity
 {
 	
 };

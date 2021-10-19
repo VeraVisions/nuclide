@@ -66,7 +66,7 @@ enumflags
 	FNCTANK_CONTROLLABLE
 };
 
-class func_tank:CBaseVehicle
+class func_tank:NSVehicle
 {
 	/* attributes */
 	float m_flYawRate; /* TODO */
@@ -254,7 +254,7 @@ func_tank::SpawnKey(string strKey, string strValue)
 		m_strSndRotate = strValue;
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -262,7 +262,7 @@ void
 func_tank::func_tank(void)
 {
 	m_iVehicleFlags |= VHF_FROZEN | VHF_NOATTACK;
-	CBaseVehicle::CBaseVehicle();
+	super::NSVehicle();
 
 	if (m_strSpriteFlash)
 		precache_model(m_strSpriteFlash);

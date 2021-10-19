@@ -33,9 +33,10 @@ sequences. This is really for test-maps and showroom entities.
 This entity was introduced in Half-Life (1998).
 */
 
-class cycler:CBaseTrigger
+class cycler:NSSurfacePropEntity
 {
 	void(void) cycler;
+
 	virtual void(void) Respawn;
 	virtual void(void) Pain;
 };
@@ -54,7 +55,8 @@ cycler::Pain(void)
 void
 cycler::Respawn(void)
 {
-	CBaseEntity::Respawn();
+	super::Respawn();
+
 	SetSolid(SOLID_BBOX);
 	takedamage = DAMAGE_YES;
 	health = 9999;
@@ -63,5 +65,5 @@ cycler::Respawn(void)
 void
 cycler::cycler(void)
 {
-	CBaseEntity::CBaseEntity();
+	super::NSSurfacePropEntity();
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,20 +14,14 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-enumflags
-{
-	VHF_FROZEN,
-	VHF_NOATTACK
-};
-
 #ifdef CLIENT
 void
-CBaseVehicle::UpdateView(void)
+NSVehicle::UpdateView(void)
 {
 }
 
 void
-CBaseVehicle::PredictPreFrame(void)
+NSVehicle::PredictPreFrame(void)
 {
 	SAVE_STATE(angles);
 	SAVE_STATE(origin);
@@ -35,7 +29,7 @@ CBaseVehicle::PredictPreFrame(void)
 }
 
 void
-CBaseVehicle::PredictPostFrame(void)
+NSVehicle::PredictPostFrame(void)
 {
 	ROLL_BACK(angles);
 	ROLL_BACK(origin);
@@ -43,7 +37,7 @@ CBaseVehicle::PredictPostFrame(void)
 }
 
 void
-CBaseVehicle::ReadEntity(float fChanged, float new)
+NSVehicle::ReadEntity(float fChanged, float new)
 {
 	if (fChanged & VEHFL_CHANGED_ORIGIN) {
 		origin[0] = readcoord();
@@ -93,7 +87,7 @@ CBaseVehicle::ReadEntity(float fChanged, float new)
 }
 #else
 void
-CBaseVehicle::EvaluateEntity(void)
+NSVehicle::EvaluateEntity(void)
 {
 	/* while the engine is still handling physics for these, we can't
 	 * predict when origin/angle might change */
@@ -116,7 +110,7 @@ CBaseVehicle::EvaluateEntity(void)
 }
 
 float
-CBaseVehicle::SendEntity(entity ePEnt, float fChanged)
+NSVehicle::SendEntity(entity ePEnt, float fChanged)
 {
 	WriteByte(MSG_ENTITY, ENT_VEHICLE);
 	WriteFloat(MSG_ENTITY, fChanged);
@@ -170,13 +164,13 @@ CBaseVehicle::SendEntity(entity ePEnt, float fChanged)
 #endif
 
 void
-CBaseVehicle::PlayerInput(void)
+NSVehicle::PlayerInput(void)
 {
 
 }
 
 void
-CBaseVehicle::PlayerUpdateFlags(void)
+NSVehicle::PlayerUpdateFlags(void)
 {
 	if (m_iVehicleFlags & VHF_FROZEN)
 		m_eDriver.flags |= FL_FROZEN;
@@ -186,7 +180,7 @@ CBaseVehicle::PlayerUpdateFlags(void)
 }
 
 void
-CBaseVehicle::PlayerAlign(void)
+NSVehicle::PlayerAlign(void)
 {
 	vector vecPlayerPos;
 
@@ -202,7 +196,7 @@ CBaseVehicle::PlayerAlign(void)
 }
 
 void
-CBaseVehicle::PlayerEnter(base_player pl)
+NSVehicle::PlayerEnter(base_player pl)
 {
 	vector offs;
 
@@ -222,7 +216,7 @@ CBaseVehicle::PlayerEnter(base_player pl)
 }
 
 void
-CBaseVehicle::PlayerLeave(base_player pl)
+NSVehicle::PlayerLeave(base_player pl)
 {
 	pl.movetype = MOVETYPE_WALK;
 	pl.flags &= ~FL_INVEHICLE;
@@ -240,20 +234,20 @@ CBaseVehicle::PlayerLeave(base_player pl)
 }
 
 void
-CBaseVehicle::CBaseVehicle(void)
+NSVehicle::NSVehicle(void)
 {
-	CBaseEntity::CBaseEntity();
+	super::NSSurfacePropEntity();
 }
 
 #ifdef CLIENT
 void
 basevehicle_readentity(float isnew)
 {
-	CBaseVehicle veh = (CBaseVehicle)self;
+	NSVehicle veh = (NSVehicle)self;
 	float flags = readfloat();
 
 	if (isnew)
-		spawnfunc_CBaseVehicle();
+		spawnfunc_NSVehicle();
 
 	veh.ReadEntity(flags, isnew);
 }

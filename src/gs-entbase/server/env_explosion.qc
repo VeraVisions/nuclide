@@ -45,7 +45,7 @@ enumflags
 	ENVEXPLO_NOSPARKS
 };
 
-class env_explosion:CBaseTrigger
+class env_explosion:NSPointTrigger
 {
 	int m_iMagnitude;
 	float m_flMaxDelay;
@@ -78,12 +78,12 @@ env_explosion::SpawnKey(string strKey, string strValue)
 		m_iMagnitude = stoi(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
 void
 env_explosion::env_explosion(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 }

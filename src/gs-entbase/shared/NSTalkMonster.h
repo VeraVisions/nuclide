@@ -17,6 +17,7 @@
 /* NPCs are more advanced than regular monsters in that they express emotions
  * and are able to interact more with the environment */
 
+#ifdef SERVER
 #define PLAYER_DETECT_RADIUS 512
 
 enumflags
@@ -26,9 +27,11 @@ enumflags
 	MONSTER_METPLAYER,
 	MONSTER_CANFOLLOW
 };
+#endif
 
-class CBaseNPC:CBaseMonster
+class NSTalkMonster:NSMonster
 {
+#ifdef SERVER
 	/* our NPCs can have a unique pitch to their voice */
 	float m_flPitch;
 	float m_flNextSentence;
@@ -63,8 +66,17 @@ class CBaseNPC:CBaseMonster
 	string m_talkUnfollow; /* when the player asks us to stop following */
 	string m_talkFollow; /* whenever player asks the NPC to follow */
 	string m_talkStopFollow; /* we have to stop following */
+#else
+	/* sentence system */
+	float m_flSentenceTime;
+	sound_t *m_pSentenceQue;
+	int m_iSentenceCount;
+	int m_iSentencePos;
+#endif
 
-	void(void) CBaseNPC;
+	void(void) NSTalkMonster;
+
+#ifdef SERVER
 	virtual void(string) Speak;
 	virtual void(string) Sentence;
 	virtual void(void) WarnAllies;
@@ -98,4 +110,12 @@ class CBaseNPC:CBaseMonster
 	virtual void(void) TalkFollow;
 	virtual void(void) TalkStopFollow;
 	virtual void(string, string) SpawnKey;
+	virtual float(entity, float) SendEntity;
+#else
+
+	virtual float(void) predraw;
+	virtual void(string) SentenceSample;
+	virtual void(string) Sentence;
+	virtual void(void) ProcessWordQue;
+#endif
 };

@@ -14,23 +14,41 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* inspired by https://developer.valvesoftware.com/wiki/Inputs_and_Outputs 
-   a lot of the action also happens in CBaseTrigger.
-*/
-
-/* modern trigger architecture */
-class CBaseOutput:CBaseEntity
+void
+NSOutput::TriggerOutput(void)
 {
-	entity m_eActivator;
-	string m_strTarget;
-	string m_strInput;
-	string m_strData;
-	float m_flDelay;
-	int m_iCount;
-	int m_iOldCount;
+	/* plug into all the inputs. */
+	for (entity f = world; (f = find(f, ::targetname, m_strTarget));) {
+		NSEntity trigger = (NSEntity)f;
 
-	void(void) CBaseOutput;
-	virtual void(void) TriggerOutput;
-	virtual void(void) SpawnInit;
-	virtual void(void) Respawn;
-};
+		if (trigger.Input != __NULL__) {
+			trigger.Input(m_eActivator, m_strInput, m_strData);
+		}
+	}
+
+	/* we're not -1 (infinite) and we've still got one use to deduct */
+	if (m_iCount > 0)
+		m_iCount--;
+}
+
+void
+NSOutput::Init(void)
+{
+	/* Init of NSIO will tokenize __fullspawndata which
+	   in turn will break NSIO::CreateOutput's tokenize loop,
+	   as we'll be creating a bunch of NSOutputs in there */
+}
+
+void
+NSOutput::Respawn(void)
+{
+	/* gotta reset our counter */
+	m_iCount = m_iOldCount;
+}
+
+void
+NSOutput::NSOutput(void)
+{
+	/* Make sure Respawn() will be called between rounds */
+	identity = 1;
+}

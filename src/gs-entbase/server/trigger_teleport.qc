@@ -32,11 +32,12 @@ enumflags
 	TRIGTELE_NOCLIENTS
 };
 
-class trigger_teleport:CBaseTrigger
+class trigger_teleport:NSBrushTrigger
 {
 	void(void) trigger_teleport;
 
 	virtual void(void) touch;
+	virtual void(void) Respawn;
 };
 
 void
@@ -66,10 +67,15 @@ trigger_teleport::touch(void)
 }
 
 void
+trigger_teleport::Respawn(void)
+{
+	InitBrushTrigger();
+}
+
+void
 trigger_teleport::trigger_teleport(void)
 {
-	CBaseTrigger::CBaseTrigger();
-	CBaseTrigger::InitBrushTrigger();
+	super::NSBrushTrigger();
 }
 
 /*QUAKED info_teleport_destination (1 0 0) (-8 -8 -8) (8 8 8)

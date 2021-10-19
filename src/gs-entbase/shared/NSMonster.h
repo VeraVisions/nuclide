@@ -89,12 +89,13 @@ typedef enum
 	MTRIG_SEEPLAYER_RELAXED,	/* we see a player and we're currently attacking anything */
 } triggerCondition_t;
 
-/* FIXME: I'd like to move this into CBaseMonster, but our current IsFriend()
+/* FIXME: I'd like to move this into NSMonster, but our current IsFriend()
  * check is currently only checking on a .takedamage basis. */
 .int m_iAlliance;
 
-class CBaseMonster:CBaseEntity
+class NSMonster:NSSurfacePropEntity
 {
+#ifdef SERVER
 	vector oldnet_velocity;
 	float m_flPitch;
 	int m_iFlags;
@@ -131,8 +132,11 @@ class CBaseMonster:CBaseEntity
 	int m_iCurNode;
 	nodeslist_t *m_pRoute;
 	vector m_vecLastNode;
+#endif
 
-	void(void) CBaseMonster;
+	void(void) NSMonster;
+
+#ifdef SERVER
 	virtual void(void) touch;
 	virtual void(void) Hide;
 	virtual void(void) Respawn;
@@ -173,4 +177,14 @@ class CBaseMonster:CBaseEntity
 	virtual void(float) AnimPlay;
 
 	virtual float(entity, float) SendEntity;
+#else
+	virtual void(void) customphysics;
+	virtual float(void) predraw;
+	virtual void(float) ReceiveEntity;
+#endif
 };
+
+#ifdef CLIENT
+string Sentences_GetSamples(string);
+string Sentences_ProcessSample(string);
+#endif

@@ -28,7 +28,7 @@ Decorative, does nothing yet.
 This entity was introduced in Half-Life (1998).
 */
 
-class cycler_sprite:CBaseEntity
+class cycler_sprite:NSRenderableEntity
 {
 
 };

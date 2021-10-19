@@ -47,11 +47,12 @@ enumflags
 	EVSPARK_STARTON
 };
 
-class env_spark:CBaseTrigger
+class env_spark:NSPointTrigger
 {
 	float m_flMaxDelay;
 
 	void(void) env_spark;
+
 	virtual void(void) CreateSpark;
 	virtual void(void) TimedSpark;
 	virtual void(entity, int) Trigger;
@@ -118,7 +119,7 @@ env_spark::SpawnKey(string strKey, string strValue)
 		m_flMaxDelay = stof(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -126,5 +127,5 @@ void
 env_spark::env_spark(void)
 {
 	Sound_Precache("env_spark.sfx");
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 }

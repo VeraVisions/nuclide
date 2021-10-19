@@ -86,7 +86,6 @@ void Event_Callback(float mtime, __inout float btime);
 void View_AddEvent(void(void) pCallback, float flTime);
 void View_PlayAnimation(int);
 void View_PlayAnimation(int);
-void Vox_Play(string);
 void Event_ProcessModel(float, int, string);
 void ClientGame_ModelEvent(float, int, string);
 

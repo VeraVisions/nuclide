@@ -33,7 +33,7 @@ When a trigger_auto is removed via TA_USEONCE it won't survive match respawns.
 This entity was introduced in Half-Life (1998).
 */
 
-class trigger_auto:CBaseTrigger
+class trigger_auto:NSPointTrigger
 {
 	int m_iTriggerState;
 	float m_flDelay;
@@ -70,7 +70,7 @@ trigger_auto::SpawnKey(string strKey, string strValue)
 		m_iTriggerState = stoi(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -80,5 +80,5 @@ trigger_auto::trigger_auto(void)
 	/* default is always toggle */
 	m_iTriggerState = TRIG_TOGGLE;
 
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 }

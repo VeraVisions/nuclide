@@ -25,9 +25,10 @@ This entity does not work in multiplayer.
 This entity was introduced in Half-Life (1998).
 */
 
-class trigger_autosave:CBaseTrigger
+class trigger_autosave:NSBrushTrigger
 {
 	float m_flDelay;
+
 	void(void) trigger_autosave;
 
 	virtual void(void) touch;
@@ -57,7 +58,7 @@ trigger_autosave::touch(void)
 	Hide();
 	SetSolid(SOLID_NOT);
 
-	CBaseTrigger::UseTargets(other, TRIG_TOGGLE, m_flDelay);
+	UseTargets(other, TRIG_TOGGLE, m_flDelay);
 }
 
 void
@@ -74,5 +75,5 @@ trigger_autosave::trigger_autosave(void)
 		return;
 	}
 
-	CBaseTrigger::CBaseTrigger();
+	super::NSBrushTrigger();
 }

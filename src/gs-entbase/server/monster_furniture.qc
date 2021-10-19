@@ -38,9 +38,10 @@ enumflags
 	MF_FADECORPSE
 };
 
-class monster_furniture:CBaseMonster
+class monster_furniture:NSMonster
 {
 	void(void) monster_furniture;
+
 	virtual void(void) Respawn;
 };
 
@@ -57,8 +58,7 @@ monster_furniture::Respawn(void)
 void
 monster_furniture::monster_furniture(void)
 {
-	precache_model(model);
-	CBaseEntity::CBaseEntity();
+	super::NSMonster();
 	spawnflags |= MSF_MULTIPLAYER;
 }
 

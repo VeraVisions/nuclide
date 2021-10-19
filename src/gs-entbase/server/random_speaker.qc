@@ -38,7 +38,7 @@ a random interval between 10 and 15 seconds in total.
 It was introduced in Gunman Chronicles (2000).
 */
 
-class random_speaker:CBaseTrigger
+class random_speaker:NSPointTrigger
 {
 	string m_strSample;
 	float m_flVolume;
@@ -142,12 +142,12 @@ random_speaker::SpawnKey(string strKey, string strValue)
 		m_flRandPercent = stof(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
 void
 random_speaker::random_speaker(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 }

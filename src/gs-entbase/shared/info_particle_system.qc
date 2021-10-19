@@ -45,11 +45,7 @@ enumflags
 	PARTSYSFL_CHANGED_COUNT
 };
 
-#ifdef CLIENT
-class info_particle_system
-#else
-class info_particle_system:CBaseTrigger
-#endif
+class info_particle_system:NSPointTrigger
 {
 	string m_strEffectName;
 	float m_flInterval;
@@ -206,7 +202,7 @@ info_particle_system::Input(entity eAct, string strInput, string strData)
 		Trigger(eAct, TRIG_TOGGLE);
 		break;
 	default:
-		CBaseTrigger::Input(eAct, strInput, strData);
+		super::Input(eAct, strInput, strData);
 	}
 }
 
@@ -228,7 +224,7 @@ info_particle_system::SpawnKey(string strKey, string strValue)
 		m_iSpawnCount = stoi(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -255,6 +251,6 @@ info_particle_system::info_particle_system(void)
 	drawmask = MASK_ENGINE;
 	think = Emit;
 #elif SERVER
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 #endif
 }

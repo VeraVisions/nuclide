@@ -35,7 +35,7 @@ This entity was introduced in Half-Life (1998).
 
 #define EVS_GLOBAL 1
 
-class env_shake:CBaseTrigger
+class env_shake:NSPointTrigger
 {
 	float m_flRadius;
 	float m_flAmplitude;
@@ -70,12 +70,12 @@ env_shake::SpawnKey(string strKey, string strValue)
 		m_flFrequency = stof(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
 void
 env_shake::env_shake(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 }

@@ -119,12 +119,12 @@ momentary_door::SpawnKey(string strKey, string strValue)
 		m_flReturnspeed = stof(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
 void
 momentary_door::momentary_door(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::CBaseMomentary();
 }

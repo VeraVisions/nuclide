@@ -31,7 +31,6 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	registercommand("setang");
 	registercommand("dev_sentence");
 	registercommand("titles_test");
-	registercommand("vox_test");
 	registercommand("buildcubemaps");
 	registercommand("dev_sunpos");
 	registercommand("dev_measure");
@@ -88,10 +87,6 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	/* Sound shaders */
 	Sound_Init();
 	PropData_Init();
-
-	/* VOX */
-	Vox_Init();
-
 	precache_sound("common/wpn_hudon.wav");
 	precache_sound("common/wpn_hudoff.wav");
 	precache_sound("common/wpn_moveselect.wav");
@@ -144,7 +139,6 @@ CSQC_RendererRestarted(string rstr)
 	/* GS-Entbase */
 	Fade_Init();
 	Decal_Reload();
-	FX_Init();
 	Sky_Update(TRUE);
 	Entities_RendererRestarted();
 }
@@ -301,7 +295,7 @@ CSQC_UpdateView(float w, float h, float focus)
 				setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin + pl.view_ofs);
 
 				if (pl.flags & FL_INVEHICLE) {
-					CBaseVehicle veh = (CBaseVehicle)pl.vehicle;
+					NSVehicle veh = (NSVehicle)pl.vehicle;
 					
 					if (veh.UpdateView)
 						veh.UpdateView();
@@ -386,7 +380,7 @@ CSQC_UpdateView(float w, float h, float focus)
 		RenderTarget_Monitor_Update();
 
 		for (entity b = world; (b = findfloat(b, ::isCSQC, 1));) {
-			CBaseEntity pf = (CBaseEntity) b;
+			NSEntity pf = (NSEntity) b;
 			pf.postdraw();
 		}
 
@@ -433,8 +427,6 @@ CSQC_UpdateView(float w, float h, float focus)
 
 	pSeat = __NULL__;
 	pSeatLocal = __NULL__;
-
-	Vox_Update();
 }
 
 /*
@@ -615,7 +607,7 @@ CSQC_Parse_Event(void)
 		sound(t, CHAN_VOICE, msg, 1.0, ATTN_NORM, pit);
 		break;
 	case EV_SENTENCE:
-		CBaseEntity_ParseSentence();
+		NSTalkMonster_ParseSentence();
 		break;
 	case EV_HUDHINT:
 		string hint;
@@ -671,9 +663,6 @@ CSQC_Parse_Event(void)
 		pSeat->m_flShakeAmp = readfloat();
 		pSeat->m_flShakeFreq = readfloat();
 		pSeat->m_flShakeTime = pSeat->m_flShakeDuration;
-		break;
-	case EV_SENTENCE_VOX:
-		Vox_PlaySentence(readstring());
 		break;
 	default:
 		ClientGame_EventParse(fHeader);
@@ -760,9 +749,6 @@ CSQC_ConsoleCommand(string sCMD)
 		break;
 	case "titles_test":
 		GameMessage_Setup(argv(1), 0);
-		break;
-	case "vox_test":
-		Vox_Play(sCMD);
 		break;
 	case "+attack2":
 		pSeat->m_iInputAttack2 = TRUE;
@@ -930,14 +916,24 @@ CSQC_Ent_Update(float new)
 
 	switch (t) {
 	case ENT_ENTITY:
-		CBaseEntity me = (CBaseEntity)self;
+		NSEntity me = (NSEntity)self;
 		if (new) {
-			spawnfunc_CBaseEntity();
+			spawnfunc_NSEntity();
 		}
 		me.ReceiveEntity(readfloat());
 		break;
+	case ENT_ENTITYRENDERABLE:
+		NSRenderableEntity rend = (NSRenderableEntity)self;
+		if (new) {
+			spawnfunc_NSRenderableEntity();
+		}
+		rend.ReceiveEntity(readfloat());
+		break;
 	case ENT_MONSTER:
-		basemonster_readentity(new);
+		NSMonster_ReadEntity(new);
+		break;
+	case ENT_TALKMONSTER:
+		NSTalkMonster_ReadEntity(new);
 		break;
 	case ENT_VEHICLE:
 		basevehicle_readentity(new);
@@ -1111,6 +1107,5 @@ CSQC_Shutdown(void)
 	Titles_Shutdown();
 	Sound_Shutdown();
 	PropData_Shutdown();
-	Vox_Shutdown();
 	EFX_Shutdown();
 }

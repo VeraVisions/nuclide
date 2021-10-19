@@ -67,7 +67,7 @@ enumflags
 	DLIGHTFL_CHANGED_PATTERN
 };
 
-class light_dynamic:CBaseTrigger
+class light_dynamic:NSPointTrigger
 {
 	vector m_vecLight;
 	float m_flIntensity;
@@ -304,7 +304,7 @@ light_dynamic::Input(entity eAct, string strInput, string strData)
 		SendFlags |= DLIGHTFL_CHANGED_PATTERN;
 		break;
 	default:
-		CBaseTrigger::Input(eAct, strInput, strData);
+		super::Input(eAct, strInput, strData);
 	}
 }
 void
@@ -353,7 +353,7 @@ light_dynamic::SpawnKey(string strKey, string strValue)
 		m_strPattern = strValue;
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -368,7 +368,7 @@ light_dynamic::light_dynamic(void)
 	drawmask = MASK_ENGINE;
 #else
 
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 
 	/* the client-side will handle dlights without targetnames */
 	if (!targetname) {

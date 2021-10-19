@@ -24,7 +24,7 @@ Physics model
 This entity was introduced in Half-Life 2 (2004).
 */
 
-class prop_physics:CBasePhysics
+class prop_physics:NSPhysicsEntity
 {
 	void(void) prop_physics;
 	virtual void(string, string) SpawnKey;
@@ -33,7 +33,7 @@ class prop_physics:CBasePhysics
 void
 prop_physics::Respawn(void)
 {
-	CBasePhysics::Respawn();
+	NSPhysicsEntity::Respawn();
 }
 
 void
@@ -41,12 +41,12 @@ prop_physics::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	default:
-		CBasePhysics::SpawnKey(strKey, strValue);
+		NSPhysicsEntity::SpawnKey(strKey, strValue);
 	}
 }
 
 void
 prop_physics::prop_physics(void)
 {
-	CBasePhysics::CBasePhysics();
+	super::NSPhysicsEntity();
 }

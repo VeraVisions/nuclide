@@ -32,14 +32,14 @@ This entity was introduced in Half-Life (1998).
 
 #define MM_MULTITHREADED 1
 
-class multi_manager_sub:CBaseTrigger
+class multi_manager_sub:NSPointTrigger
 {
 	entity m_eActivator;
 	int m_iValue;
 	float m_flUntilTriggered;
 };
 
-class multi_manager:CBaseTrigger
+class multi_manager:NSPointTrigger
 {
 	multi_manager_sub m_eTriggers[16];
 	string m_strBuffer;
@@ -62,7 +62,7 @@ multi_manager::Trigger(entity act, int state)
 		dprint(sprintf("^2%s::^3Trigger^7: %s (%s)\n", 
 			this.classname, wow.target, eFind.classname));
 
-		CBaseTrigger::UseTargets(wow.m_eActivator, TRIG_TOGGLE, 0.0f);
+		UseTargets(wow.m_eActivator, TRIG_TOGGLE, 0.0f);
 	}
 
 	if (GetMaster() == FALSE)
@@ -141,7 +141,7 @@ multi_manager::multi_manager(void)
 	int b;
 	m_strBuffer = "";
 
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 
 	for (b = 0; b < 16; b++) {
 		m_eTriggers[b] = spawn(multi_manager_sub);

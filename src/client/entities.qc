@@ -18,7 +18,7 @@ float
 Entities_ParseLump(void)
 {
 	entity eOld;
-	CBaseEntity eEnt = __NULL__;
+	NSEntity eEnt = __NULL__;
 	string strField, strValue;
 	__fullspawndata = "";
 	int iClass = FALSE;
@@ -57,7 +57,7 @@ Entities_ParseLump(void)
 
 		switch (strField) {
 		case "classname":
-			eEnt = (CBaseEntity)spawn();
+			eEnt = (NSEntity)spawn();
 
 			/* check if our classname has a matching class */
 			if (isfunction(strcat("spawnfunc_", strValue))) {
@@ -83,7 +83,7 @@ void
 Entities_RendererRestarted(void)
 {
 	for (entity b = world; (b = findfloat(b, ::isCSQC, TRUE));) {
-		CBaseEntity pf = (CBaseEntity) b;
+		NSEntity pf = (NSEntity) b;
 		pf.RendererRestarted();
 	}
 }

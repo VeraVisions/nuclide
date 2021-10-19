@@ -24,7 +24,7 @@ Dustmote emitting brush volume.
 This entity was introduced in Half-Life 2 (2004).
 */
 
-class func_dustmotes:CBaseEntity
+class func_dustmotes:NSEntity
 {
 	int m_iCount;
 	int m_iPart;
@@ -68,7 +68,7 @@ func_dustmotes::predraw(void)
 void
 func_dustmotes::Init(void)
 {
-	CBaseEntity::Init();
+	super::Init();
 
 	precache_model(model);
 	setmodel(this, model);
@@ -86,7 +86,7 @@ func_dustmotes::SpawnKey(string strField, string strKey)
 		m_iCount = stoi(strKey);
 		break;
 	default:
-		CBaseEntity::SpawnKey(strField, strKey);
+		super::SpawnKey(strField, strKey);
 	}
 }
 

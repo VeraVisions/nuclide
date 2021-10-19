@@ -30,7 +30,7 @@
 
 class
 #ifdef SERVER
-base_player:CBaseEntity
+base_player:NSSurfacePropEntity
 #else
 base_player
 #endif

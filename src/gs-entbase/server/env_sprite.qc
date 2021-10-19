@@ -46,7 +46,7 @@ enumflags
 	ENVS_PLAYONCE
 };
 
-class env_sprite:CBaseTrigger
+class env_sprite:NSRenderableEntity
 {
 	int m_iToggled;
 	float m_flFramerate;
@@ -151,7 +151,7 @@ env_sprite::SpawnKey(string strKey, string strValue)
 		m_flScale = stof(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -161,7 +161,7 @@ env_sprite::env_sprite(void)
 	m_flFramerate = 10;
 	m_flScale = 1.0f;
 
-	CBaseTrigger::CBaseTrigger();
+	super::NSRenderableEntity();
 
 	m_iToggled = ((spawnflags & ENVS_STARTON) > 0);
 

@@ -32,7 +32,7 @@ enumflags
 	FTW_STARTHIDDEN
 };
 
-class func_wall_toggle:CBaseTrigger
+class func_wall_toggle:NSRenderableEntity
 {
 	int m_oldmodelindex;
 	int m_iVisible;
@@ -89,13 +89,12 @@ func_wall_toggle::Input(entity eAct, string strInput, string strData)
 		Trigger(eAct, TRIG_TOGGLE);
 		break;
 	default:
-		CBaseTrigger::Input(eAct, strInput, strData);
+		super::Input(eAct, strInput, strData);
 	}
 }
 
 void
 func_wall_toggle::func_wall_toggle(void)
 {
-	precache_model(model);
-	CBaseTrigger::CBaseTrigger();
+	super::NSRenderableEntity();
 }

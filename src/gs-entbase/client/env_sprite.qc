@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class env_sprite:CBaseEntity
+class env_sprite:NSRenderableEntity
 {
 	float framerate;
 	int loops;

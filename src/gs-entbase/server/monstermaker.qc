@@ -45,7 +45,7 @@ enumflags
 	MMF_MONSTERCLIP
 };
 
-class monstermaker:CBaseTrigger
+class monstermaker:NSPointTrigger
 {
 	string m_strMonster;
 	int m_iMonsterSpawned;
@@ -90,7 +90,7 @@ monstermaker::Spawner(void)
 		string tname = self.netname;
 
 		/* become the classname assigned */
-		CBaseMonster t = (CBaseMonster)self;
+		NSMonster t = (NSMonster)self;
 		callfunction(self.classname);
 
 		/* apply the saved values back */
@@ -218,7 +218,7 @@ monstermaker::SpawnKey(string strKey, string strValue)
 		netname = __NULL__;
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -226,5 +226,5 @@ void
 monstermaker::monstermaker(void)
 {
 	m_flDelay = 1.0f;
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 }

@@ -31,7 +31,7 @@ This entity was introduced in Half-Life (1998).
 
 #define MGF_NONSOLID 4
 
-class monster_generic:CBaseNPC
+class monster_generic:NSTalkMonster
 {
 	void(void) monster_generic;
 
@@ -41,7 +41,7 @@ class monster_generic:CBaseNPC
 void
 monster_generic::Respawn(void)
 {
-	CBaseNPC::Respawn();
+	NSTalkMonster::Respawn();
 
 	if (spawnflags & MGF_NONSOLID) {
 		takedamage = DAMAGE_NO;
@@ -63,5 +63,5 @@ monster_generic::monster_generic(void)
 	}
 
 	spawnflags |= MSF_MULTIPLAYER;
-	CBaseNPC::CBaseNPC();
+	super::NSTalkMonster();
 }

@@ -44,7 +44,7 @@ Util_IsSky(vector pos)
 	return (0);
 }
 
-class env_sun:CBaseEntity
+class env_sun:NSEntity
 {
 	vector m_vecLensPos;
 	float m_flLensAlpha;
@@ -56,7 +56,17 @@ class env_sun:CBaseEntity
 	virtual void(void) postdraw;
 	virtual float(void) predraw;
 	virtual void(string, string) SpawnKey;
+	virtual void(void) RendererRestarted;
 };
+
+void
+env_sun::RendererRestarted(void)
+{
+	precache_pic("textures/sfx/flare1");
+	precache_pic("textures/sfx/flare2");
+	precache_pic("textures/sfx/flare3");
+	precache_pic("textures/sfx/flare4");
+}
 
 float
 env_sun::predraw(void)
@@ -116,7 +126,7 @@ env_sun::postdraw(void)
 void
 env_sun::Init(void)
 {
-	CBaseEntity::Init();
+	super::Init();
 	setorigin(this, origin);
 	drawmask = MASK_ENGINE;
 }
@@ -127,19 +137,6 @@ env_sun::Initialized(void)
 	makevectors(m_vecLensPos);
 	m_vecLensPos = vectoangles(v_forward);
 	localcmd(sprintf("r_shadows_throwdirection %v\n", v_forward));
-}
-
-void
-env_sun::env_sun(void)
-{
-	precache_pic("textures/sfx/flare1");
-	precache_pic("textures/sfx/flare2");
-	precache_pic("textures/sfx/flare3");
-	precache_pic("textures/sfx/flare4");
-	drawmask = MASK_ENGINE;
-	setsize(this, [0,0,0], [0,0,0]);
-	setorigin(this, origin);
-	Init();
 }
 
 void
@@ -156,6 +153,15 @@ env_sun::SpawnKey(string strField, string strKey)
 		m_iUseAngles = stoi(strKey);
 		break;
 	default:
-		CBaseEntity::SpawnKey(strField, strKey);
+		super::SpawnKey(strField, strKey);
 	}
+}
+
+void
+env_sun::env_sun(void)
+{
+	drawmask = MASK_ENGINE;
+	setsize(this, [0,0,0], [0,0,0]);
+	setorigin(this, origin);
+	Init();
 }

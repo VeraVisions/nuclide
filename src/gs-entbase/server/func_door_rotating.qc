@@ -67,7 +67,7 @@ enumflags
 
 #define SF_DOOR_SILENT 0x80000000i
 
-class func_door_rotating:CBaseTrigger
+class func_door_rotating:NSRenderableEntity
 {
 	string targetClose;
 	string m_strSndStop;
@@ -164,7 +164,7 @@ void func_door_rotating::Returned(void)
 
 	if (targetClose)
 	for (entity f = world; (f = find(f, ::targetname, targetClose));) {
-		CBaseTrigger trigger = (CBaseTrigger)f;
+		NSEntity trigger = (NSEntity)f;
 		if (trigger.Trigger != __NULL__) {
 			trigger.Trigger(this, TRIG_TOGGLE);
 		}
@@ -462,7 +462,7 @@ func_door_rotating::SpawnKey(string strKey, string strValue)
 		m_strLockedSfx = sprintf("func_button.hlsfx_%i", x+1i);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -472,7 +472,7 @@ void func_door_rotating::func_door_rotating(void)
 	m_flDelay = 4;
 	m_flDistance = 90;
 
-	CBaseTrigger::CBaseTrigger();
+	super::NSRenderableEntity();
 
 	if (m_strSndOpen)
 		Sound_Precache(m_strSndOpen);

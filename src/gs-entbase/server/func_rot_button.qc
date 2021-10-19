@@ -60,7 +60,7 @@ enum
 	ROTBTNSTATE_CLOSING
 };
 
-class func_rot_button:CBaseTrigger
+class func_rot_button:NSRenderableEntity
 {
 	vector m_vecMoveAngle;
 	int m_iState;
@@ -216,12 +216,12 @@ func_rot_button::SpawnKey(string strKey, string strValue)
 		m_iHealth = stoi(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
 void
 func_rot_button::func_rot_button(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSRenderableEntity();
 }

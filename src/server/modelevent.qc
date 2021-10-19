@@ -30,7 +30,7 @@ Event_ServerModelEvent(float flTimeStamp, int iCode, string strData)
 	switch (iCode) {
 	case 1003:
 		for (entity f = world; (f = find(f, ::targetname, strData));) {
-			CBaseTrigger trigger = (CBaseTrigger)f;
+			NSEntity trigger = (NSEntity)f;
 			if (trigger.Trigger != __NULL__) {
 				trigger.Trigger(self, TRIG_TOGGLE);
 				dprint(sprintf("^2%s^7::^3ModelEvent^7: " \

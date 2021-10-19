@@ -33,7 +33,7 @@ void CMap_Check(void);
 void CMap_Shoot(void);
 
 class
-env_cubemap:CBaseEntity
+env_cubemap:NSEntity
 {
 	int m_iSize;
 
@@ -60,7 +60,7 @@ env_cubemap::SpawnKey(string strField, string strKey)
 		}
 		break;
 	default:
-		CBaseEntity::SpawnKey(strField, strKey);
+		super::SpawnKey(strField, strKey);
 	}
 }
 

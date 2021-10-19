@@ -77,9 +77,10 @@ enumflags
 	SF_NORENDERCOLOR
 };
 
-class env_render:CBaseTrigger
+class env_render:NSRenderableEntity
 {
 	void(void) env_render;
+
 	virtual void(entity, int) Trigger;
 };
 
@@ -88,7 +89,7 @@ env_render::Trigger(entity act, int state)
 {
 	for (entity e = world;
 		(e = find(e, ::targetname, target));) {
-		CBaseEntity trigger = (CBaseEntity)e;
+		NSRenderableEntity trigger = (NSRenderableEntity)e;
 
 		dprint(sprintf("^2env_render::^3Trigger^7: with spawnflags %d\n", spawnflags));
 			dprint(sprintf("\tTarget: %s\n", target));
@@ -114,6 +115,6 @@ env_render::Trigger(entity act, int state)
 void
 env_render::env_render(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSRenderableEntity();
 }
 #endif

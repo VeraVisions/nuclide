@@ -64,24 +64,15 @@ string g_hlefx[] = {
 	"gs_weirdo3"
 };
 
-class env_sound:CBaseEntity
+class env_sound:NSEntity
 {
 	int m_iRoomType;
 	int m_iRadius;
 
 	void(void) env_sound;
+
 	virtual void(string, string) SpawnKey;
 };
-
-void
-env_sound::env_sound(void)
-{
-	m_iRadius = 256;
-	Init();
-
-	setsize(this, [0,0,0], [0,0,0]);
-	setorigin(this, origin);
-}
 
 void
 env_sound::SpawnKey(string strField, string strKey)
@@ -104,6 +95,16 @@ env_sound::SpawnKey(string strField, string strKey)
 				m_iRoomType = EFX_Load(g_hlefx[efx_alias]);
 			break;
 		default:
-			CBaseEntity::SpawnKey(strField, strKey);
+			super::SpawnKey(strField, strKey);
 	}
+}
+
+void
+env_sound::env_sound(void)
+{
+	m_iRadius = 256;
+	Init();
+
+	setsize(this, [0,0,0], [0,0,0]);
+	setorigin(this, origin);
 }

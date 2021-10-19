@@ -31,7 +31,7 @@ and angles towards the aim target.
 This entity was introduced in Quake (1996).
 */
 
-class info_intermission:CBaseTrigger
+class info_intermission:NSPointTrigger
 {
 	void(void) info_intermission;
 };
@@ -39,5 +39,5 @@ class info_intermission:CBaseTrigger
 void
 info_intermission::info_intermission(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 }

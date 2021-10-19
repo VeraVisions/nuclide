@@ -43,7 +43,7 @@ enumflags
 	GPEFL_TRIGGERONLY
 };
 
-class game_player_equip:CBaseTrigger
+class game_player_equip:NSPointTrigger
 {
 	string m_strBuffer;
 
@@ -62,7 +62,7 @@ game_player_equip::SpawnUnit(string cname, vector org)
 		vector neworg = self.origin;
 
 		/* become the classname assigned */
-		CBaseEntity t = (CBaseEntity)self;
+		NSEntity t = (NSEntity)self;
 		callfunction(self.classname);
 
 		/* apply the saved values back */
@@ -103,9 +103,9 @@ game_player_equip::Trigger(entity act, int state)
 		for (x = 0; x < count; x++) {
 			if (isfunction(strcat("spawnfunc_", cname))) {
 				cname = strcat("spawnfunc_", cname);
-				game_player_equip::SpawnUnit(cname, act.origin);
+				SpawnUnit(cname, act.origin);
 			} else if (isfunction(cname)) {
-				game_player_equip::SpawnUnit(cname, act.origin);
+				SpawnUnit(cname, act.origin);
 			}
 		}
 	}
@@ -133,5 +133,5 @@ game_player_equip::SpawnKey(string strKey, string strValue)
 void
 game_player_equip::game_player_equip(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 }

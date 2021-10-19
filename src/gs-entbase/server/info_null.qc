@@ -29,7 +29,7 @@ prepare to crash.
 This entity was introduced in Quake (1996).
 */
 
-class info_null:CBaseEntity
+class info_null:NSPointTrigger
 {
 	void(void) info_null;
 
@@ -47,7 +47,7 @@ info_null::WarnDeveloper(void)
 		return;
 
 	for (entity f = world; (f = find(f, ::target, targetname));) {
-		CBaseEntity enty = (CBaseTrigger)f;
+		NSEntity enty = (NSEntity)f;
 		if (enty.identity)
 		if (enty.target == targetname) {
 			print(sprintf("^1info_null::WarnDeveloper^7: " \
@@ -69,7 +69,7 @@ void
 info_null::info_null(void)
 {
 #ifdef DEBUG_INFONULL
-		CBaseEntity::CBaseEntity();
+		super::NSPointTrigger();
 #else
 		remove(self);
 #endif

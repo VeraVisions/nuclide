@@ -30,7 +30,7 @@ and so on.
 This entity was introduced in Opposing Force (1999).
 */
 
-class trigger_playerfreeze:CBaseTrigger
+class trigger_playerfreeze:NSBrushTrigger
 {
 	void(void) trigger_playerfreeze;
 
@@ -82,5 +82,5 @@ trigger_playerfreeze::Respawn(void)
 void
 trigger_playerfreeze::trigger_playerfreeze(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSBrushTrigger();
 }

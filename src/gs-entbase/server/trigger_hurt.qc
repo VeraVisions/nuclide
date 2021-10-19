@@ -43,7 +43,7 @@ This entity was introduced in Quake (1996).
 #define SF_HURT_FIREONPLAYER	16 // Only call UseTarget functions when it's a player
 #define SF_HURT_TOUCHPLAYER		32 // Only hurt players
 
-class trigger_hurt:CBaseTrigger
+class trigger_hurt:NSBrushTrigger
 {
 	float m_flNextTrigger;
 	float m_flNextDmg;
@@ -142,7 +142,7 @@ trigger_hurt::Input(entity eAct, string strInput, string strData)
 		m_iDamage = stoi(strData);
 		break;
 	default:
-		CBaseTrigger::Input(eAct, strInput, strData);
+		super::Input(eAct, strInput, strData);
 	}
 }
 
@@ -165,7 +165,7 @@ trigger_hurt::SpawnKey(string strKey, string strValue)
 		m_strOnHurtPlayer = strcat(m_strOnHurtPlayer, ",_", strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -176,7 +176,7 @@ trigger_hurt::trigger_hurt(void)
 	m_iDamage = 15;
 	m_flNextDmg = 0.5f;
 
-	CBaseTrigger::CBaseTrigger();
+	super::NSBrushTrigger();
 
 	if (m_strOnHurt)
 		m_strOnHurt = CreateOutput(m_strOnHurt);

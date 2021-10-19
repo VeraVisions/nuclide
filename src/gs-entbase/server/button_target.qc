@@ -36,7 +36,7 @@ enumflags
 	BUTTA_TEXON
 };
 
-class button_target:CBaseTrigger
+class button_target:NSSurfacePropEntity
 {
 	void(void) button_target;
 
@@ -91,5 +91,5 @@ button_target::Damage(void)
 void
 button_target::button_target(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSSurfacePropEntity();
 }

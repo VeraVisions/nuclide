@@ -123,8 +123,8 @@ CGameRules::IntermissionStart(void)
 void
 CGameRules::IntermissionCycle(void)
 {
-	static CBaseEntity cam;
-	CBaseEntity targ;
+	static NSEntity cam;
+	NSEntity targ;
 
 	if (!m_iIntermission)
 		return;
@@ -136,10 +136,10 @@ CGameRules::IntermissionCycle(void)
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_INTERMISSION);
 
-	cam = (CBaseEntity)find(cam, ::classname, "info_intermission");
+	cam = (NSEntity)find(cam, ::classname, "info_intermission");
 
 	if (cam) {
-		targ = (CBaseEntity)find(world, ::targetname, cam.target);
+		targ = (NSEntity)find(world, ::targetname, cam.target);
 
 		if (targ) {
 			vector foo;
@@ -232,7 +232,7 @@ CGameRules::DamageApply(entity t, entity c, float dmg, int w, damageType_t type)
 		t.health = t.max_health;
 	}
 
-	CBaseEntity s = (CBaseEntity)t;
+	NSSurfacePropEntity s = (NSSurfacePropEntity)t;
 
 	if (s.health <= 0) {
 		if (s.flags & FL_CLIENT) {

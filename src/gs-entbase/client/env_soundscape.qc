@@ -29,7 +29,7 @@ var int autocvar_dsp_soundscapes = TRUE;
 
 int g_scapes;
 
-class env_soundscape:CBaseEntity
+class env_soundscape:NSEntity
 {
 	int m_iID;
 	int m_iShader;
@@ -37,6 +37,7 @@ class env_soundscape:CBaseEntity
 	float m_flVolume;
 
 	void(void) env_soundscape;
+
 	virtual void(string, string) SpawnKey;
 };
 
@@ -61,7 +62,7 @@ env_soundscape::SpawnKey(string strField, string strKey)
 		m_iRadius = stoi(strKey);
 		break;
 	default:
-		CBaseEntity::SpawnKey(strField, strKey);
+		super::SpawnKey(strField, strKey);
 	}
 }
 

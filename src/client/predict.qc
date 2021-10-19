@@ -80,7 +80,7 @@ Predict_PlayerPreFrame(player pl)
 
 	if (pl.flags & FL_INVEHICLE)
 		if (pl.vehicle) {
-			CBaseVehicle veh = (CBaseVehicle)pl.vehicle;
+			NSVehicle veh = (NSVehicle)pl.vehicle;
 			veh.PredictPreFrame();
 		}
 
@@ -126,7 +126,7 @@ Predict_PlayerPostFrame(player pl)
 
 	if (pl.flags & FL_INVEHICLE)
 		if (pl.vehicle) {
-			CBaseVehicle veh = (CBaseVehicle)pl.vehicle;
+			NSVehicle veh = (NSVehicle)pl.vehicle;
 			veh.PredictPostFrame();
 		}
 

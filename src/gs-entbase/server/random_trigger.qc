@@ -31,7 +31,7 @@ its targets, based on some limits given.
 It was introduced in Gunman Chronicles (2000).
 */
 
-class random_trigger:CBaseTrigger
+class random_trigger:NSPointTrigger
 {
 	float m_flMinTime;
 	float m_flRandMin;
@@ -81,12 +81,12 @@ random_trigger::SpawnKey(string strKey, string strValue)
 		m_flRandMax = stof(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
 void
 random_trigger::random_trigger(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 }

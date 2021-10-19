@@ -40,7 +40,7 @@ PCAMFL_STARTOFF : Start with the camera turned off, outputting no signal.
 This entity was introduced in Half-Life 2 (2004).
 */
 
-class point_camera:CBaseTrigger
+class point_camera:NSPointTrigger
 {
 	float m_flFOV;
 	int m_iUseSAR;
@@ -78,7 +78,7 @@ point_camera::Input(entity eAct, string strInput, string strData)
 		m_iValue = FALSE;
 		break;
 	default:
-		CBaseTrigger::Input(eAct, strInput, strData);
+		super::Input(eAct, strInput, strData);
 	}
 }
 
@@ -105,7 +105,7 @@ point_camera::SpawnKey(string strKey, string strValue)
 		m_flFogEnd = stof(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -125,5 +125,5 @@ point_camera::point_camera(void)
 {
 	m_flFOV = 90;
 
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 }

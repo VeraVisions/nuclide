@@ -42,7 +42,7 @@ sound, damage, delay and so on.
 This entity was introduced in Half-Life (1998).
 */
 
-class func_mortar_field:CBaseTrigger
+class func_mortar_field:NSBrushTrigger
 {
 	int m_iType;
 	int m_iCount;
@@ -172,14 +172,7 @@ func_mortar_field::Trigger(entity act, int state)
 void
 func_mortar_field::Respawn(void)
 {
-	SetMovetype(MOVETYPE_NONE);
-	SetSolid(SOLID_NOT);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
-
-#ifdef GS_RENDERFX
-	SetRenderMode(RM_TRIGGER);
-#endif
+	InitBrushTrigger();
 }
 
 void
@@ -202,12 +195,12 @@ func_mortar_field::SpawnKey(string strKey, string strValue)
 		m_flSpread = stof(strValue) / 2;
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
 void
 func_mortar_field::func_mortar_field(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSBrushTrigger();
 }

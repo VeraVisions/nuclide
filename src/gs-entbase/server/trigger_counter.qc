@@ -15,7 +15,7 @@
  */
 
 /*QUAKED trigger_counter (0 .5 .8) ? TRCNT_SILENT TRCNT_NOCLIENTS TRCNT_PUSHABLES
-This entity counts the number of times it is triggered and activates its
+This entity counts the number of times it has been triggered and activates its
 target when it reaches a specified number.
 
 -------- KEYS --------
@@ -36,7 +36,7 @@ enumflags
     TRCNT_PUSHABLES
 };
 
-class trigger_counter:CBaseTrigger
+class trigger_counter:NSBrushTrigger
 {
 	int m_iCounted;
 	int m_iMaxCount;
@@ -88,7 +88,7 @@ trigger_counter::Respawn(void)
 	SetSolid(SOLID_TRIGGER);
 
 #ifdef GS_RENDERFX
-	SetRenderMode(RM_TRIGGER);
+	//SetRenderMode(RM_TRIGGER);
 #endif
 
 	InitBrushTrigger();
@@ -102,12 +102,12 @@ trigger_counter::SpawnKey(string strKey, string strValue)
 		m_iMaxCount = stoi(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
 void
 trigger_counter::trigger_counter(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSBrushTrigger();
 }

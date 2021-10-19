@@ -38,7 +38,7 @@ By default it's visible and has collision.
 This entity was introduced in Half-Life 2 (2004).
 */
 
-class func_brush:CBaseTrigger
+class func_brush:NSRenderableEntity
 {
 	int m_iSolidity;
 	int m_iStartOff;
@@ -107,6 +107,8 @@ func_brush::SpawnKey(string strKey, string strValue)
 		break;
 	case "invert_exclusion":
 		break;
+	default:
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -128,6 +130,5 @@ func_brush::Respawn(void)
 void
 func_brush::func_brush(void)
 {
-	CBaseTrigger::CBaseTrigger();
-	Respawn();
+	super::NSRenderableEntity();
 }

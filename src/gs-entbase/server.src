@@ -5,14 +5,9 @@
 #includelist
 baseentity.h
 decals.h
-shared/baseentity.qc
-server/baseoutput.qc
-server/basetrigger.qc
-server/basemonster.qc
-server/basenpc.qc
-server/basephysics.qc
-shared/basevehicle.h
-shared/basevehicle.qc
+server/NSOutput.qc
+server/NSPhysicsEntity.qc
+shared/NSVehicle.h
 server/info_null.qc
 server/info_notnull.qc
 server/info_intermission.qc

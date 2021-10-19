@@ -32,7 +32,7 @@ world. It'll enable mouth flapping and all sorts of other cool effects.
 This entity was introduced in Half-Life (1998).
 */
 
-class scripted_sentence:CBaseTrigger
+class scripted_sentence:NSPointTrigger
 {
 	string m_strSpeaker;
 	string m_strSentence;
@@ -42,6 +42,7 @@ class scripted_sentence:CBaseTrigger
 	float m_flDuration;
 
 	void(void) scripted_sentence;
+
 	virtual void(entity, int) Trigger;
 	virtual void(string, string) SpawnKey;
 };
@@ -75,7 +76,7 @@ scripted_sentence::Trigger(entity act, int unused)
 
 	dprint(sprintf("^2scripted_sentence::^3Trigger^7: %s on %s\n", m_strSentence, m_strSpeaker));
 
-	CBaseNPC npc = (CBaseNPC)spe;
+	NSTalkMonster npc = (NSTalkMonster)spe;
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_SENTENCE);
 	WriteEntity(MSG_MULTICAST, npc);
@@ -105,12 +106,12 @@ scripted_sentence::SpawnKey(string strKey, string strValue)
 		m_flWait = stof(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
 void
 scripted_sentence::scripted_sentence(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 }

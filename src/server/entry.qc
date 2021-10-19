@@ -27,9 +27,9 @@ StartFrame(void)
 	PMove_StartFrame();
 
 	/* For entity parenting to work, we need to go through and run on every
-	 * this method on every CBaseEntity class */
+	 * this method on every NSEntity class */
 	for (entity a = world; (a = findfloat(a, ::identity, 1));) {
-		CBaseEntity ent = (CBaseEntity)a;
+		NSEntity ent = (NSEntity)a;
 		ent.ParentUpdate();
 	}
 
@@ -75,7 +75,7 @@ ClientConnect(void)
 	/* we're the only one. respawn all entities */
 	if (playercount == 1) {
 		for (entity a = world; (a = findfloat(a, ::identity, 1));) {
-			CBaseEntity caw = (CBaseEntity)a;
+			NSEntity caw = (NSEntity)a;
 			caw.Respawn();
 		}
 		Nodes_Init();
@@ -185,7 +185,7 @@ PutClientInServer(void)
 
 	/* activate all game_playerspawn entities */
 	for (entity a = world; (a = find(a, ::targetname, "game_playerspawn"));) {
-		CBaseTrigger t = (CBaseTrigger)a;
+		NSEntity t = (NSEntity)a;
 
 		if (t.Trigger)
 			t.Trigger(self, TRIG_TOGGLE);
@@ -408,7 +408,7 @@ init_respawn(void)
 		g_grMode.InitPostEnts();
 
 	for (entity a = world; (a = findfloat(a, ::identity, 1));) {
-		CBaseEntity ent = (CBaseEntity)a;
+		NSEntity ent = (NSEntity)a;
 		ent.Respawn();
 	}
 	remove(self);
@@ -616,7 +616,7 @@ ConsoleCmd(string cmd)
 
 		if (targ)
 		for (entity a = world; (a = find(a, ::targetname, argv(1)));) {
-			CBaseTrigger t = (CBaseTrigger)a;
+			NSEntity t = (NSEntity)a;
 
 			if (t.Trigger)
 				t.Trigger(self, TRIG_TOGGLE);
@@ -624,7 +624,7 @@ ConsoleCmd(string cmd)
 		break;
 	case "respawn_ents":
 		for (entity a = world; (a = findfloat(a, ::identity, 1));) {
-			CBaseEntity ent = (CBaseEntity)a;
+			NSEntity ent = (NSEntity)a;
 			ent.Respawn();
 		}
 		break;

@@ -61,11 +61,7 @@ enumflags
 	PRTEXFL_CHANGED_PATTERN
 };
 
-#ifdef CLIENT
-class env_projectedtexture
-#else
-class env_projectedtexture:CBaseTrigger
-#endif
+class env_projectedtexture:NSPointTrigger
 {
 	vector m_vecLight;
 	float m_flIntensity;
@@ -271,7 +267,7 @@ env_projectedtexture::Input(entity eAct, string strInput, string strData)
 		Trigger(eAct, TRIG_TOGGLE);
 		break;
 	default:
-		CBaseTrigger::Input(eAct, strInput, strData);
+		super::Input(eAct, strInput, strData);
 	}
 }
 
@@ -305,7 +301,7 @@ env_projectedtexture::SpawnKey(string strKey, string strValue)
 		m_strPattern = strValue;
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -335,7 +331,7 @@ env_projectedtexture::env_projectedtexture(void)
 	m_strTextureName = "textures/flashlight";
 	m_flFOV = 90;
 
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 
 	if (m_flStyle > 0 && m_flStyle < 12)
 		m_strPattern = getlightstyle(m_flStyle);

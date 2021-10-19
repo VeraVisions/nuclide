@@ -39,17 +39,17 @@ This entity was introduced in Half-Life (1998).
 
 enumflags
 {
-    FUNCPEND_STARTON,
+	FUNCPEND_STARTON,
 	FUNCPEND_UNUSED1,
 	FUNCPEND_UNUSED2,
-    FUNCPEND_NONSOLID,
-    FUNCPEND_RETURNONTRIGGER,
-    FUNCPEND_UNUSED3,
-    FUNCPEND_XAXIS,
-    FUNCPEND_YAXIS
+	FUNCPEND_NONSOLID,
+	FUNCPEND_RETURNONTRIGGER,
+	FUNCPEND_UNUSED3,
+	FUNCPEND_XAXIS,
+	FUNCPEND_YAXIS
 };
 
-class func_pendulum:CBaseTrigger
+class func_pendulum:NSRenderableEntity
 {
 	int m_iActive;
 	float m_flProgress;
@@ -127,12 +127,12 @@ func_pendulum::SpawnKey(string strKey, string strValue)
 		m_flDistance = stof(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
 void
 func_pendulum::func_pendulum(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSRenderableEntity();
 }

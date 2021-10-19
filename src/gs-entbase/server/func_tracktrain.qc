@@ -50,7 +50,7 @@ enumflags
 	TRAIN_NOTSOLID
 };
 
-class func_tracktrain:CBaseTrigger
+class func_tracktrain:NSBrushTrigger
 {
 	float m_flWait;
 	float m_flSpeed;
@@ -275,7 +275,7 @@ func_tracktrain::SpawnKey(string strKey, string strValue)
 		m_strStopSnd = sprintf("func_tracktrain.stop_%i", stoi(strValue) + 1i);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -284,7 +284,7 @@ func_tracktrain::func_tracktrain(void)
 {
 	/* FIXME: This is all decided by the first path_corner pretty much */
 	m_flSpeed = 100;
-	CBaseTrigger::CBaseTrigger();
+	super::NSBrushTrigger();
 
 	if (m_strMoveSnd)
 		Sound_Precache(m_strMoveSnd);

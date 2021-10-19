@@ -18,7 +18,6 @@
 #include "sentences.h"
 #include "skill.h"
 #include "logging.h"
-#include "vox.h"
 #include "nodes.h"
 #include "spawn.h"
 #include "weapons.h"
@@ -35,7 +34,6 @@ void FX_Impact(impactType_t, vector, vector);
 void FX_Explosion(vector);
 void FX_GibHuman(vector);
 void Footsteps_Update(void);
-void Vox_Broadcast(string sMessage);
 
 void TraceAttack_FireBullets(int, vector, int, vector, int);
 #ifdef BULLETPENETRATION

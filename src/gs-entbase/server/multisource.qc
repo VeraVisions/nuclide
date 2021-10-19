@@ -28,7 +28,7 @@ state for it to trigger its target.
 This entity was introduced in Half-Life (1998).
 */
 
-class multisource:CBaseTrigger
+class multisource:NSPointTrigger
 {
 	void(void) multisource;
 
@@ -45,7 +45,7 @@ multisource::QueryTargets(void)
 
 	/* normal triggers */
 	for (a = world; (a = find(a, ::target, targetname));) {
-		CBaseTrigger tTemp = (CBaseTrigger) a;
+		NSEntity tTemp = (NSEntity) a;
 		if (cvar("developer") == 1) {
 			dprint("[^1MULTISOURCE^7] ");
 			dprint(tTemp.classname);
@@ -91,5 +91,5 @@ multisource::Respawn(void)
 void
 multisource::multisource(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 }

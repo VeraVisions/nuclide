@@ -27,7 +27,7 @@ to something else.
 This entity was introduced in Half-Life (1998).
 */
 
-class trigger_changetarget:CBaseTrigger
+class trigger_changetarget:NSPointTrigger
 {
 	string m_strNewTarget;
 
@@ -40,9 +40,9 @@ class trigger_changetarget:CBaseTrigger
 void
 trigger_changetarget::Trigger(entity act, int state)
 {
-	CBaseEntity f;
+	NSEntity f;
 
-	f = (CBaseEntity)find(world, ::targetname, target);
+	f = (NSEntity)find(world, ::targetname, target);
 
 	if (f) {
 		dprint("^2trigger_changetarget::^3Trigger^7: " \
@@ -62,12 +62,12 @@ trigger_changetarget::SpawnKey(string strKey, string strValue)
 		m_strNewTarget = strValue;
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
 void
 trigger_changetarget::trigger_changetarget(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 }

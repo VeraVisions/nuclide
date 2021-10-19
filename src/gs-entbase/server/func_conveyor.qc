@@ -29,7 +29,7 @@ This entity was introduced in Half-Life (1998).
 #define SF_CONVEYOR_VISUAL		1
 #define SF_CONVEYOR_NOTSOLID	2
 
-class func_conveyor:CBaseTrigger
+class func_conveyor:NSRenderableEntity
 {
 	float m_flSpeed;
 	vector m_vecMoveDir;
@@ -77,10 +77,9 @@ func_conveyor::Respawn(void)
 	angles = GetSpawnAngles();
 
 	SetMovementDirection();
-	SetSolid(SOLID_BSP);
-	SetMovetype(MOVETYPE_PUSH);
 	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
+	SetMovetype(MOVETYPE_NONE);
+	SetSolid(SOLID_BSPTRIGGER);
 
 	/* TODO: Apply some effect flag the engine handles? */
 	if (!(spawnflags & SF_CONVEYOR_VISUAL)) {
@@ -105,7 +104,7 @@ func_conveyor::Input(entity eAct, string strInput, string strData)
 		m_flSpeed = stof(strData);
 		break;
 	default:
-		CBaseTrigger::Input(eAct, strInput, strData);
+		super::Input(eAct, strInput, strData);
 	}
 }
 
@@ -113,5 +112,5 @@ void
 func_conveyor::func_conveyor(void)
 {
 	m_flSpeed = 100;
-	CBaseTrigger::CBaseTrigger();
+	super::NSRenderableEntity();
 }

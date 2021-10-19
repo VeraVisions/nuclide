@@ -40,7 +40,7 @@ enumflags
 	TO_PUSHABLES
 };
 
-class trigger_once:CBaseTrigger
+class trigger_once:NSBrushTrigger
 {
 	string m_strOnStartTouch;
 	string m_strOnTrigger;
@@ -80,11 +80,6 @@ trigger_once::Respawn(void)
 {
 	m_iValue = 0;
 	SetSolid(SOLID_TRIGGER);
-
-#ifdef GS_RENDERFX
-	SetRenderMode(RM_TRIGGER);
-#endif
-
 	InitBrushTrigger();
 }
 
@@ -101,7 +96,7 @@ trigger_once::SpawnKey(string strKey, string strValue)
 		m_strOnTrigger = strcat(m_strOnTrigger, ",_", strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 		break;
 	}
 }
@@ -109,7 +104,7 @@ trigger_once::SpawnKey(string strKey, string strValue)
 void
 trigger_once::trigger_once(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSBrushTrigger();
 
 	if (m_strOnTrigger)
 		m_strOnTrigger = CreateOutput(m_strOnTrigger);

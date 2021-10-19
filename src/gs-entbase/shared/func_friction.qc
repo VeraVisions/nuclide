@@ -30,14 +30,12 @@ around the primary volume in case that's the effect that you desire.
 This entity was introduced in Half-Life (1998).
 */
 
-#ifdef CLIENT
-class func_friction:CBaseEntity
-#else
-class func_friction:CBaseTrigger
-#endif
+class func_friction:NSEntity
 {
 	float m_flFriction;
+
 	void(void) func_friction;
+
 	virtual void(void) touch;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
@@ -53,10 +51,13 @@ func_friction::touch(void)
 	other.friction = m_flFriction;
 }
 
-/* TODO: Make this redundant */
 void
 func_friction::Respawn(void)
 {
+	SetModel(model);
+	SetMovetype(MOVETYPE_NONE);
+	SetSolid(SOLID_BSPTRIGGER);
+
 	solid = SOLID_BSPTRIGGER;
 #ifdef GS_DEVELOPER
 	alpha = 0.5f;
@@ -71,7 +72,7 @@ func_friction::SpawnKey(string strField, string strKey)
 		m_flFriction = stof(strKey);
 		break;
 	default:
-		CBaseEntity::SpawnKey(strField, strKey);
+		super::SpawnKey(strField, strKey);
 	}
 }
 
@@ -88,8 +89,5 @@ func_friction::Initialized(void)
 void
 func_friction::func_friction(void)
 {
-#ifdef SERVER
-	CBaseEntity::CBaseEntity();
-	CBaseTrigger::InitBrushTrigger();
-#endif
+	super::NSEntity();
 }

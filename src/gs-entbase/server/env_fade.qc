@@ -42,7 +42,7 @@ enumflags
 	EVF_ONLYUSER
 };
 
-class env_fade:CBaseTrigger
+class env_fade:NSRenderableEntity
 {
 	float m_flFadeDuration;
 	float m_flFadeHold;
@@ -92,12 +92,12 @@ env_fade::SpawnKey(string strKey, string strValue)
 		m_flFadeHold = stof(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
 void
 env_fade::env_fade(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSRenderableEntity();
 }

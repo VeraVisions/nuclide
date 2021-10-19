@@ -24,7 +24,7 @@ Physics brush.
 This entity was introduced in Half-Life 2 (2004).
 */
 
-class func_physbox:CBasePhysics
+class func_physbox:NSPhysicsEntity
 {
 	void(void) func_physbox;
 	virtual void(string, string) SpawnKey;
@@ -33,7 +33,7 @@ class func_physbox:CBasePhysics
 void
 func_physbox::Respawn(void)
 {
-	CBasePhysics::Respawn();
+	NSPhysicsEntity::Respawn();
 }
 
 void
@@ -41,12 +41,12 @@ func_physbox::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	default:
-		CBasePhysics::SpawnKey(strKey, strValue);
+		NSPhysicsEntity::SpawnKey(strKey, strValue);
 	}
 }
 
 void
 func_physbox::func_physbox(void)
 {
-	CBasePhysics::CBasePhysics();
+	super::NSPhysicsEntity();
 }

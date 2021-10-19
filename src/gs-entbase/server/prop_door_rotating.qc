@@ -21,7 +21,7 @@
 #define PRPDRFL_NOALERT		16384
 #define PRPDRFL_NOUSE		32768
 
-class prop_door_rotating:CBaseTrigger
+class prop_door_rotating:NSPointTrigger
 {
 	vector m_vecDest1;
 	vector m_vecDest2;
@@ -121,7 +121,7 @@ prop_door_rotating::SpawnKey(string strKey, string strValue)
 		m_flSpeed = stof(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -130,5 +130,5 @@ prop_door_rotating::prop_door_rotating(void)
 {
 	m_flDistance = 90;
 	m_flSpeed = 100;
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 }

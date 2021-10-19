@@ -14,11 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class func_lod:CBaseEntity
+class func_lod:NSEntity
 {
 	void(void) func_lod;
+
 	virtual float(entity, float) SendEntity;
 	virtual void(string, string) SpawnKey;
+	virtual void(void) Respawn;
 };
 
 float
@@ -36,15 +38,20 @@ func_lod::SpawnKey(string strKey, string strValue)
 		SetSolid(stoi(strValue) == 1 ? SOLID_NOT : SOLID_BSP);
 		break;
 	default:
-		CBaseEntity::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
+}
+
+void
+func_lod::Respawn(void)
+{
+	SetMovetype(MOVETYPE_PUSH);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
 }
 
 void
 func_lod::func_lod(void)
 {
-	CBaseEntity::CBaseEntity();
-	SetMovetype(MOVETYPE_PUSH);
-	SetModel(model);
-	SetOrigin(origin);
+	super::NSEntity();
 }

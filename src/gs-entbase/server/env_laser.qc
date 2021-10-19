@@ -53,7 +53,7 @@ enumflags
 	ENVLAZ_DECALEND
 };
 
-class env_laser:CBaseTrigger
+class env_laser:NSPointTrigger
 {
 	int m_iState;
 	int m_iStateOld;
@@ -83,7 +83,7 @@ env_laser::think(void)
 		nextthink = time + 0.1;
 	}
 
-	t = (CBaseTrigger)find(world, ::targetname, m_strLaserDest);
+	t = find(world, ::targetname, m_strLaserDest);
 	angles = t.origin;
 
 	if (!t) {
@@ -198,14 +198,13 @@ env_laser::SpawnKey(string strKey, string strValue)
 		m_flDPS = stof(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
 void
 env_laser::env_laser(void)
 {
-	CBaseTrigger::CBaseTrigger();
-	identity = 1;
+	super::NSPointTrigger();
 	pvsflags = PVSF_IGNOREPVS;
 }

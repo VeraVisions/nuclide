@@ -37,12 +37,13 @@ enumflags
 	TRLY_ONCE,
 };
 
-class trigger_relay:CBaseTrigger
+class trigger_relay:NSPointTrigger
 {
 	int m_iTriggerState;
 	int m_iEnabled;
 
 	void(void) trigger_relay;
+
 	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
@@ -73,12 +74,12 @@ trigger_relay::SpawnKey(string strKey, string strValue)
 		m_iTriggerState = stoi(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
 void
 trigger_relay::trigger_relay(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 }

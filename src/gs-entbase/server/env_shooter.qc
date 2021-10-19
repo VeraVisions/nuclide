@@ -35,7 +35,7 @@ Shoots model entities from its location.
 This entity was introduced in Half-Life (1998).
 */
 
-class env_shooter:CBaseTrigger
+class env_shooter:NSPointTrigger
 {
 	int m_iGibs;
 	int m_iGibsLeft;
@@ -143,14 +143,14 @@ env_shooter::SpawnKey(string strKey, string strValue)
 		m_flSkin = stof(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
 void
 env_shooter::env_shooter(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 
 	if (!m_strShootModel) {
 		remove(this);

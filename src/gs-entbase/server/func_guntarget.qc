@@ -30,7 +30,7 @@ This entity was introduced in Half-Life (1998).
 
 #define SF_GUNTARGET_ON 1
 
-class func_guntarget:CBaseTrigger
+class func_guntarget:NSSurfacePropEntity
 {
 	float m_flSpeed;
 	string m_strOnDeath;
@@ -117,7 +117,7 @@ func_guntarget::Death(void)
 	} else {
 		entity a;
 		for (a = world; (a = find(a, ::targetname, m_strOnDeathLegacy));) {
-			CBaseTrigger trigger = (CBaseTrigger)a;
+			NSEntity trigger = (NSEntity)a;
 			trigger.Trigger(g_dmg_eAttacker, TRIG_TOGGLE);
 		}
 	}
@@ -194,7 +194,7 @@ func_guntarget::Input(entity eAct, string strInput, string strData)
 		Trigger(eAct, TRIG_TOGGLE);
 		break;
 	default:
-		CBaseTrigger::Input(eAct, strInput, strData);
+		super::Input(eAct, strInput, strData);
 	}
 }
 
@@ -216,14 +216,14 @@ func_guntarget::SpawnKey(string strKey, string strValue)
 		m_strOnDeath = strcat(m_strOnDeath, ",_", strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
 void func_guntarget::func_guntarget(void)
 {
 	m_flSpeed = 100;
-	CBaseTrigger::CBaseTrigger();
+	super::NSSurfacePropEntity();
 
 	if (m_strOnDeath)
 		m_strOnDeath = CreateOutput(m_strOnDeath);

@@ -34,9 +34,10 @@ var vector g_skypos;
 var int g_skyscale;
 
 class
-sky_camera:CBaseEntity
+sky_camera:NSEntity
 {
 	void(void) sky_camera;
+
 	virtual void(string, string) SpawnKey;
 };
 
@@ -44,16 +45,16 @@ void
 sky_camera::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
-		case "scale":
-			g_skyscale = stoi(strKey);
-			break;
-		case "origin":
-			origin = stov(strKey);
-			setorigin(this, origin);
-			g_skypos = origin;
-			break;
-		default:
-			CBaseEntity::SpawnKey(strField, strKey);
+	case "scale":
+		g_skyscale = stoi(strKey);
+		break;
+	case "origin":
+		origin = stov(strKey);
+		setorigin(this, origin);
+		g_skypos = origin;
+		break;
+	default:
+		super::SpawnKey(strField, strKey);
 	}
 }
 

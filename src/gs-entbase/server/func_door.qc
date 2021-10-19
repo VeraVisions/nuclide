@@ -70,7 +70,7 @@ enum
 	DOORSTATE_DOWN
 };
 
-class func_door:CBaseTrigger
+class func_door:NSRenderableEntity
 {
 	string targetClose;
 	vector m_vecPos1;
@@ -95,6 +95,7 @@ class func_door:CBaseTrigger
 	string m_strSndStop;
 
 	void(void) func_door;
+
 	virtual void(void) SetMovementDirection;
 	virtual void(vector, void(void) func) MoveToDestination;
 	virtual void(void) MoveAway;
@@ -133,7 +134,7 @@ func_door::Arrived(void)
 
 	if (targetClose)
 	for (entity f = world; (f = find(f, ::targetname, targetClose));) {
-		CBaseTrigger trigger = (CBaseTrigger)f;
+		NSEntity trigger = (NSEntity)f;
 		if (trigger.Trigger != __NULL__) {
 			trigger.Trigger(this, TRIG_TOGGLE);
 		}
@@ -465,14 +466,14 @@ func_door::SpawnKey(string strKey, string strValue)
 		m_strUnlockedSfx = sprintf("func_button.hlsfx_%i", x+1i);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
 void
 func_door::func_door(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSRenderableEntity();
 
 	if (m_strSndOpen)
 		Sound_Precache(m_strSndOpen);

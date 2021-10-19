@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,19 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifdef SERVER
 /* legacy trigger architecture */
 void
-CBaseTrigger::Trigger(entity act, int state)
+NSTrigger::Trigger(entity act, int state)
 {
 	dprint(sprintf("^2%s::^3Input^7: Triggerd by %s with no consequence\n", 
 		this.classname, act.classname));
 }
 
 void
-CBaseTrigger::UseTargets(entity act, int state, float fDelay)
+NSTrigger::UseTargets(entity act, int state, float fDelay)
 {
 	static void Entities_UseTargets_Think(void) {
-		CBaseTrigger::UseTargets(self.owner, self.health, 0.0f);
+		NSTrigger::UseTargets(self.owner, self.health, 0.0f);
 		remove(self);
 	}
 
@@ -34,7 +35,7 @@ CBaseTrigger::UseTargets(entity act, int state, float fDelay)
 		dprint(sprintf("^2%s::^3UseTargets^7: Triggering `%s`\n", 
 			this.classname, target));
 
-		CBaseTrigger eTimer = spawn(CBaseTrigger);
+		NSTrigger eTimer = spawn(NSTrigger);
 		eTimer.owner = act;
 		eTimer.think = Entities_UseTargets_Think;
 		eTimer.target = target;
@@ -42,7 +43,7 @@ CBaseTrigger::UseTargets(entity act, int state, float fDelay)
 		eTimer.health = state;  /* ugly */
 	} else {
 		for (entity f = world; (f = find(f, ::targetname, target));) {
-			CBaseTrigger trigger = (CBaseTrigger)f;
+			NSTrigger trigger = (NSTrigger)f;
 
 			dprint(sprintf("^2%s::^3UseTargets^7:" \
 			       "Triggering %s `%s` from %s\n", \
@@ -64,15 +65,15 @@ CBaseTrigger::UseTargets(entity act, int state, float fDelay)
 }
 
 int
-CBaseTrigger::GetValue(void)
+NSTrigger::GetValue(void)
 {
 	return m_iValue;
 }
 
 int
-CBaseTrigger::GetMaster(void)
+NSTrigger::GetMaster(void)
 {
-	CBaseTrigger t;
+	NSTrigger t;
 
 	/* default to success */
 	if (!m_strMaster) {
@@ -81,7 +82,7 @@ CBaseTrigger::GetMaster(void)
 		return (1);
 	}
 
-	t = (CBaseTrigger)find(world, ::target, m_strMaster);
+	t = (NSTrigger)find(world, ::target, m_strMaster);
 
 	/* we couldn't find it, so let's not even bother going further */
 	if (!t) {
@@ -101,26 +102,7 @@ CBaseTrigger::GetMaster(void)
 }
 
 void
-CBaseTrigger::InitPointTrigger(void)
-{
-	SetSize(VEC_HULL_MIN, VEC_HULL_MAX);
-	SetSolid(SOLID_TRIGGER);
-}
-
-void
-CBaseTrigger::InitBrushTrigger(void)
-{
-	SetModel(GetSpawnModel());
-	SetMovetype(MOVETYPE_NONE);
-	SetSolid(SOLID_BSPTRIGGER);
-
-#ifdef GS_RENDERFX
-	SetRenderMode(RM_TRIGGER);
-#endif
-}
-
-void
-CBaseTrigger::SpawnKey(string strKey, string strValue)
+NSTrigger::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "killtarget":
@@ -139,13 +121,14 @@ CBaseTrigger::SpawnKey(string strKey, string strValue)
 		m_flDelay = stof(strValue);
 		break;
 	default:
-		CBaseEntity::SpawnKey(strKey, strValue);
+		NSIO::SpawnKey(strKey, strValue);
 		break;
 	}
 }
+#endif
 
 void
-CBaseTrigger::CBaseTrigger(void)
+NSTrigger::NSTrigger(void)
 {
-	CBaseEntity::CBaseEntity();
+	super::NSIO();
 }

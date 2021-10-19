@@ -115,7 +115,7 @@ const string funcbreakable_surftable[] = {
 "gs_material_rocks"
 };
 
-class func_breakable:CBaseTrigger
+class func_breakable:NSSurfacePropEntity
 {
 	float m_flDelay;
 	float m_flExplodeMag;
@@ -144,7 +144,7 @@ func_breakable::Pain(void)
 		return;
 	}
 
-	Sound_Play(this, CHAN_VOICE, SurfData_GetInfo(m_iMaterial, SURFDATA_SND_BULLETIMPACT));
+	Sound_Play(this, CHAN_VOICE, GetSurfaceData(SURFDATA_SND_BULLETIMPACT));
 }
 
 
@@ -152,7 +152,7 @@ void
 func_breakable::Explode(void)
 {
 	vector rp = absmin + (0.5 * (absmax - absmin));
-	FX_BreakModel(vlen(size) / 10, absmin, absmax, [0,0,0], SurfData_GetInfo(m_iMaterial, SURFDATA_MATERIAL));
+	FX_BreakModel(vlen(size) / 10, absmin, absmax, [0,0,0], GetSurfaceData(SURFDATA_MATERIAL));
 	FX_Explosion(rp);
 	Damage_Radius(rp, this, m_flExplodeMag, m_flExplodeRad, TRUE, 0);
 	UseTargets(this, TRIG_TOGGLE, 0.0f); /* delay... ignored. */
@@ -167,7 +167,7 @@ func_breakable::Death(void)
 		vector neworg = self.origin;
 
 		/* become the classname assigned */
-		CBaseEntity t = (CBaseEntity)self;
+		NSEntity t = (NSEntity)self;
 		callfunction(self.classname);
 
 		/* apply the saved values back */
@@ -178,7 +178,7 @@ func_breakable::Death(void)
 			t.Respawn();
 	}
 
-	if (m_iMaterial == BREAKMT_GLASS_UNBREAKABLE) {
+	if (material == BREAKMT_GLASS_UNBREAKABLE) {
 		return;
 	}
 
@@ -204,7 +204,7 @@ func_breakable::Death(void)
 		think = Explode;
 		nextthink = time + random(0.0,0.5);
 	} else {
-		FX_BreakModel(vlen(size) / 10, absmin, absmax, [0,0,0], SurfData_GetInfo(m_iMaterial, SURFDATA_MATERIAL));
+		FX_BreakModel(vlen(size) / 10, absmin, absmax, [0,0,0], GetSurfaceData(SURFDATA_MATERIAL));
 		/* TODO: ability to have whoever destroyed the crate be the activator */
 		UseTargets(this, TRIG_TOGGLE, 0.0f);
 		Hide();
@@ -215,7 +215,7 @@ void
 func_breakable::Trigger(entity act, int state)
 {
 	if (health > 0)
-		func_breakable::Death();
+		Death();
 }
 
 void
@@ -243,7 +243,7 @@ func_breakable::PlayerTouch(void)
 			touch = __NULL__;
 			Damage_Apply(this, other, fDamage, 0, DMG_CRUSH);
 
-			if ((m_iMaterial == BREAKMT_GLASS) || (m_iMaterial == BREAKMT_COMPUTER)) {
+			if ((GetSurfaceData(SURFDATA_MATERIAL) == GSMATERIAL_GLASS) || (GetSurfaceData(SURFDATA_MATERIAL) == GSMATERIAL_COMPUTER)) {
 				Damage_Apply(other, this, fDamage / 4, 0, DMG_CRUSH);
 			}
 		}
@@ -297,7 +297,8 @@ func_breakable::SpawnKey(string strKey, string strValue)
 	switch (strKey) {
 	case "material":
 		float id = stof(strValue);
-		SurfData_SetStage(funcbreakable_surftable[id]);
+		SetSurfaceData(funcbreakable_surftable[id]);
+		SetPropData(funcbreakable_surftable[id]);
 		break;
 	case "explodemagnitude":
 		m_flExplodeMag = stof(strValue);
@@ -318,7 +319,7 @@ func_breakable::SpawnKey(string strKey, string strValue)
 		m_strBreakSpawn = strValue;
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 		break;
 	}
 }
@@ -328,19 +329,19 @@ func_breakable::func_breakable(void)
 {
 	/* func_breakable defaults to glass */
 	if (classname == "func_breakable") {
-		PropData_SetStage(funcbreakable_surftable[0]);
-		SurfData_SetStage(funcbreakable_surftable[0]);
+		SetPropData(funcbreakable_surftable[0]);
+		SetSurfaceData(funcbreakable_surftable[0]);
 	} else {
-		PropData_SetStage(funcbreakable_surftable[1]);
-		SurfData_SetStage(funcbreakable_surftable[1]);
+		SetPropData(funcbreakable_surftable[1]);
+		SetSurfaceData(funcbreakable_surftable[1]);
 	}
 
 	/* proper init */
-	CBaseTrigger::CBaseTrigger();
+	super::NSSurfacePropEntity();
 
 	/* contrary to what some map designers think, angles are not supported */
 	GetSpawnAngles() = angles = [0,0,0];
 
 	/* precache impact sound */
-	Sound_Precache(SurfData_GetInfo(m_iMaterial, SURFDATA_SND_BULLETIMPACT));
+	Sound_Precache(GetSurfaceData(SURFDATA_SND_BULLETIMPACT));
 }

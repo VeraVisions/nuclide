@@ -43,7 +43,7 @@ enum
 
 const string CENVGLOBAL_CVAR = "env_global_data";
 
-class env_global:CBaseTrigger
+class env_global:NSPointTrigger
 {
 	string m_strGlobalState;
 	int m_iTriggerMode;
@@ -145,14 +145,14 @@ env_global::SpawnKey(string strKey, string strValue)
 		m_iInitialState = stoi(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
 void
 env_global::env_global(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 
 	if (!m_strGlobalState) {
 		objerror("env_global: No globalstate name given! Aborting\n");

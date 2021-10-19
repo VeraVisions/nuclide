@@ -38,7 +38,7 @@ void(float radius, vector texcoordbias) R_EndPolygonRibbon = #0;
 
 var int autocvar_rope_debug = FALSE;
 
-class prop_rope:CBaseEntity
+class prop_rope:NSEntity
 {
 	string m_strShader;
 	float m_flSag;
@@ -229,7 +229,7 @@ prop_rope::SpawnKey(string strField, string strKey)
 		m_flSwingFactor = stof(strKey);
 		break;
 	default:
-		CBaseEntity::SpawnKey(strField, strKey);
+		super::SpawnKey(strField, strKey);
 	}
 }
 

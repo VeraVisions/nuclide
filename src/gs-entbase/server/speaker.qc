@@ -64,7 +64,7 @@ string g_speaker_hlpresets[] = {
 	"!C3A2_"
 };
 
-class speaker:CBaseNPC
+class speaker:NSTalkMonster
 {
 	string m_strSentence;
 	float m_flVolume;
@@ -73,7 +73,7 @@ class speaker:CBaseNPC
 
 	virtual void(void) Annouce;
 	virtual void(void) Respawn;
-	virtual void(void) Trigger;
+	virtual void(entity, int) Trigger;
 	virtual void(string, string) SpawnKey;
 };
 
@@ -115,7 +115,7 @@ speaker::Respawn(void)
 }
 
 void
-speaker::Trigger(void)
+speaker::Trigger(entity eAct, int foo)
 {
 	nextthink = time;
 }
@@ -138,12 +138,12 @@ speaker::SpawnKey(string strKey, string strValue)
 		m_flVolume = stof(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
 void
 speaker::speaker(void)
 {
-	CBaseNPC::CBaseNPC();
+	super::NSTalkMonster();
 }

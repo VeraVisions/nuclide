@@ -32,7 +32,7 @@ Other than that gravity will naturally reset when the entity respawns.
 This entity was introduced in Quake II (1997).
 */
 
-class trigger_gravity:CBaseTrigger
+class trigger_gravity:NSBrushTrigger
 {
 	float m_flGravity;
 
@@ -61,6 +61,7 @@ trigger_gravity::Respawn(void)
 	movetype = MOVETYPE_NONE;
 	solid = SOLID_BSPTRIGGER;
 #else
+	InitBrushTrigger();
 	SetModel(GetSpawnModel());
 	SetSolid(SOLID_BSPTRIGGER);
 #endif
@@ -74,7 +75,7 @@ trigger_gravity::SpawnKey(string strField, string strKey)
 		m_flGravity = stof(strKey);
 		break;
 	default:
-		CBaseEntity::SpawnKey(strField, strKey);
+		super::SpawnKey(strField, strKey);
 	}
 }
 
@@ -82,8 +83,7 @@ void
 trigger_gravity::trigger_gravity(void)
 {
 #ifdef SERVER
-	CBaseEntity::CBaseEntity();
-	CBaseTrigger::InitBrushTrigger();
+	super::NSBrushTrigger();
 #endif
 }
 

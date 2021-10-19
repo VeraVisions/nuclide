@@ -32,7 +32,7 @@ This is commonly used when a mission objective has failed.
 This entity was introduced in Half-Life (1998).
 */
 
-class player_loadsaved:CBaseTrigger
+class player_loadsaved:NSRenderableEntity // for the rendercolor values
 {
 	string m_strMessage;
 	float m_flLoadTime;
@@ -40,6 +40,7 @@ class player_loadsaved:CBaseTrigger
 	float m_flFadeHold;
 
 	void(void) player_loadsaved;
+
 	virtual void(entity, int) Trigger;
 	virtual void(void) ReloadSave;
 	virtual void(string, string) SpawnKey;
@@ -97,12 +98,12 @@ player_loadsaved::SpawnKey(string strKey, string strValue)
 		m_flLoadTime = stof(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
 void
 player_loadsaved::player_loadsaved(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSRenderableEntity();
 }

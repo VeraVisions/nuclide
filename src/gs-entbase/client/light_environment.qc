@@ -49,9 +49,10 @@ from 4 positions across the entire horizon - thus eliminating any harsh shadows.
 This entity was introduced in Half-Life (1998).
 */
 
-class light_environment:CBaseEntity
+class light_environment:NSEntity
 {
 	void(void) light_environment;
+
 	virtual void(void) Init;
 	virtual void(void) Initialized;
 	virtual void(string, string) SpawnKey;
@@ -60,7 +61,7 @@ class light_environment:CBaseEntity
 void
 light_environment::Init(void)
 {
-	CBaseEntity::Init();
+	super::Init();
 	setorigin(this, origin);
 	drawmask = MASK_ENGINE;
 }
@@ -83,7 +84,7 @@ light_environment::SpawnKey(string strField, string strKey)
 		g_vecSunDir[1] = stof(strKey);
 		break;
 	default:
-		CBaseEntity::SpawnKey(strField, strKey);
+		super::SpawnKey(strField, strKey);
 	}
 }
 

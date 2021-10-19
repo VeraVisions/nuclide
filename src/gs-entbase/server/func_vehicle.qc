@@ -78,7 +78,7 @@ class func_vehicle_wheel
 	virtual void(float) Physics;
 };
 
-class func_vehicle:CBaseVehicle
+class func_vehicle:NSVehicle
 {
 	/* map-entity fields */
 	float m_flBounceFactor;
@@ -102,6 +102,7 @@ class func_vehicle:CBaseVehicle
 	float m_flTurn;
 
 	void(void) func_vehicle;
+
 	virtual void(void) customphysics;
 	virtual void(void) Respawn;
 	virtual void(void) Realign;
@@ -439,7 +440,7 @@ func_vehicle::Realign(void)
 {
 	entity t;
 	entity f;
-	CBaseEntity first, second;
+	NSEntity first, second;
 	string strFirst, strSecond;
 
 	first = second = __NULL__;
@@ -464,7 +465,7 @@ func_vehicle::Realign(void)
 	for (f = world; (f = find(f, ::targetname, strFirst));) {
 		/* we found the right entity */
 		if (f.classname == "path_track" || f.classname == "path_corner") {
-			first = (CBaseEntity)f;
+			first = (NSEntity)f;
 		}
 	}
 
@@ -473,14 +474,14 @@ func_vehicle::Realign(void)
 	for (f = world; (f = find(f, ::targetname, strSecond));) {
 		/* we found the right entity */
 		if (f.classname == "path_track" || f.classname == "path_corner") {
-			second = (CBaseEntity)f;
+			second = (NSEntity)f;
 		}
 	}
 
 	if (first && second) {
 		vector end_pos;
-		first = (CBaseEntity)first;
-		second = (CBaseEntity)second;
+		first = (NSEntity)first;
+		second = (NSEntity)second;
 		angles = vectoangles(first.origin - second.origin);
 
 		end_pos = first.origin;
@@ -561,7 +562,7 @@ func_vehicle::SpawnKey(string strKey, string strValue)
 		// TODO
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -578,7 +579,7 @@ func_vehicle::func_vehicle(void)
 	m_vecGravityDir = [0,0,-1];
 	m_iVehicleFlags |= VHF_FROZEN;
 
-	CBaseVehicle::CBaseVehicle();
+	super::NSVehicle();
 
 	m_wlFL = spawn(func_vehicle_wheel);
 	m_wlFR = spawn(func_vehicle_wheel);

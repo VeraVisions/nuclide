@@ -28,7 +28,7 @@ Client-side glare/glow orb effect like the flares in 1997's Unreal.
 This entity was introduced in Half-Life (1998).
 */
 
-class env_glow:CBaseEntity
+class env_glow:NSEntity /* change to renderablentity? */
 {
 	vector m_vecColor;
 	float m_flAlpha;
@@ -156,7 +156,7 @@ env_glow::SpawnKey(string strField, string strKey)
 		m_flMaxAlpha = stof(strKey) / 255;
 		break;
 	default:
-		CBaseEntity::SpawnKey(strField, strKey);
+		super::SpawnKey(strField, strKey);
 	}
 }
 

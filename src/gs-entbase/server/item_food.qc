@@ -26,10 +26,12 @@ This is a food item that will give the user 1 health when touched.
 This entity was introduced in Half-Life (1998).
 */
 
-class item_food:CBaseEntity
+class item_food:NSEntity
 {
 	int m_iIsCan;
+
 	void(void) item_food;
+
 	virtual void(void) Setup;
 	virtual void(void) Touch;
 };

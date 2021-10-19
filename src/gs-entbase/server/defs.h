@@ -15,11 +15,8 @@
  */
 
 #include "../shared/baseentity.h"
-#include "basetrigger.h"
-#include "basemonster.h"
-#include "basenpc.h"
-#include "baseoutput.h"
-#include "basephysics.h"
+#include "NSOutput.h"
+#include "NSPhysicsEntity.h"
 
 void FX_Spark(vector, vector);
 void FX_BreakModel(int, vector, vector, vector, float);
@@ -59,4 +56,35 @@ string Util_FixModel(string mdl)
 		mdl = substring(mdl, 1, -1);
 
 	return mdl;
+}
+
+/* Backwards compat */
+class CBaseMonster:NSMonster
+{
+	void(void) CBaseMonster;
+};
+void
+CBaseMonster::CBaseMonster(void)
+{
+	super::NSMonster();
+}
+
+class CBaseNPC:NSTalkMonster
+{
+	void(void) CBaseNPC;
+};
+void
+CBaseNPC::CBaseNPC(void)
+{
+	super::NSTalkMonster();
+}
+
+class CBasePhysics:NSPhysicsEntity
+{
+	void(void) CBasePhysics;
+};
+void
+CBasePhysics::CBasePhysics(void)
+{
+	super::NSPhysicsEntity();
 }

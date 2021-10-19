@@ -40,11 +40,12 @@ enumflags
 	EHH_ALLPLAYERS
 };
 
-class env_hudhint:CBaseTrigger
+class env_hudhint:NSPointTrigger
 {
 	string m_strMessage;
 
 	void(void) env_hudhint;
+
 	virtual void(entity, int) Trigger;
 	virtual void(string, string) SpawnKey;
 };
@@ -63,14 +64,14 @@ env_hudhint::SpawnKey(string strKey, string strValue)
 		m_strMessage = strValue;
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
 void
 env_hudhint::env_hudhint(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 }
 
 void

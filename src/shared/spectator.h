@@ -16,7 +16,7 @@ typedef enum
 } spectatorMode_t;
 
 #ifdef SERVER
-class spectator:CBaseEntity
+class spectator:NSEntity
 #else
 class spectator
 #endif

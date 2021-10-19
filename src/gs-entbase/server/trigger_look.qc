@@ -35,7 +35,7 @@ at lights and stuff? No...? Well... ever played Splinter Cell?... Nevermind.
 This entity was introduced in Half-Life 2 (2004).
 */
 
-class trigger_look:CBaseTrigger
+class trigger_look:NSBrushTrigger
 {
 	float m_flFOV;
 	float m_flLookTime;
@@ -131,6 +131,7 @@ trigger_look::SpawnKey(string strKey, string strValue)
 		m_strOnTrigger = strcat(m_strOnTrigger, ",_", strValue);
 		break;
 	default:
+		super::SpawnKey(strKey, strValue);
 		break;
 	}
 }
@@ -141,7 +142,7 @@ trigger_look::trigger_look(void)
 	m_flLookTime = 0.5f;
 	m_flFOV = 0.9f;
 
-	CBaseEntity::CBaseEntity();
+	super::NSBrushTrigger();
 
 	if (m_strOnTrigger)
 		m_strOnTrigger = CreateOutput(m_strOnTrigger);

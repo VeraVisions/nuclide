@@ -46,7 +46,7 @@ enumflags
 	GTF_ALLPLAYERS
 };
 
-class game_text:CBaseTrigger
+class game_text:NSPointTrigger
 {
 	float m_flPosX;
 	float m_flPosY;
@@ -129,11 +129,11 @@ game_text::SpawnKey(string strKey, string strValue)
 		m_iChannel = stoi(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
 void game_text::game_text(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 }

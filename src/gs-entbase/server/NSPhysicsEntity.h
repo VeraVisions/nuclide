@@ -29,7 +29,7 @@ enumflags
 	BPHY_SHARP
 };
 
-class CBasePhysics:CBaseEntity
+class NSPhysicsEntity:NSSurfacePropEntity
 {
 	int m_iEnabled;
 	int m_iShape;
@@ -37,7 +37,7 @@ class CBasePhysics:CBaseEntity
 	int m_iFlags;
 	float m_flInertiaScale;
 
-	void(void) CBasePhysics;
+	void(void) NSPhysicsEntity;
 	virtual void(void) Respawn;
 	virtual void(void) touch;
 	virtual void(void) TouchThink;

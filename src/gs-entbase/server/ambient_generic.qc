@@ -56,7 +56,7 @@ enumflags
 	AG_SAMPLE
 };
 
-class ambient_generic:CBaseTrigger
+class ambient_generic:NSPointTrigger
 {
 	string m_strActivePath;
 	string m_strSoundPath;
@@ -192,7 +192,7 @@ ambient_generic::SpawnKey(string strKey, string strValue)
 	case "cspinup":
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 		break;
 	}
 }
@@ -200,7 +200,7 @@ ambient_generic::SpawnKey(string strKey, string strValue)
 void
 ambient_generic::ambient_generic(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 
 	if (!m_strSoundPath) {
 		objerror("ambient_generic: No sound file specified!");

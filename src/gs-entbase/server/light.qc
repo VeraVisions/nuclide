@@ -97,7 +97,7 @@ though.
 This entity was introduced in Nuclide (2021).
 */
 
-class light:CBaseTrigger
+class light:NSPointTrigger
 {
 	int m_iEnabled;
 	float m_flStyle;
@@ -188,7 +188,7 @@ light::SpawnKey(string strKey, string strValue)
 	case "_light":
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -197,7 +197,8 @@ light::light(void)
 {
 	m_iStartActive = TRUE;
 	m_strPattern = "m";
-	CBaseTrigger::CBaseTrigger();
+
+	super::NSPointTrigger();
 
 	/* switch styles before 12 are builtins from Quake. */
 	if (m_flSwitchStyle > 0 && m_flSwitchStyle <= 11) {

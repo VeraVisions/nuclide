@@ -29,7 +29,7 @@ Cannot be triggered. Repeats automatically.
 This entity was introduced in The Wastes (2018).
 */
 
-class env_particle:CBaseEntity
+class env_particle:NSEntity
 {
 	entity m_eTarget;
 	float m_flNextTime;
@@ -92,7 +92,7 @@ void env_particle::SpawnKey(string strField, string strKey)
 		m_iCount = stoi(strKey);
 		break;
 	default:
-		CBaseEntity::SpawnKey(strField, strKey);
+		super::SpawnKey(strField, strKey);
 	}
 }
 

@@ -393,6 +393,9 @@ static string g_curSurfData;
 void
 SurfData_SetStage(string type)
 {
+	if (!type)
+		return;
+
 	g_curSurfData = type;
 }
 
@@ -430,8 +433,8 @@ SurfData_Impact(entity e, int fl, vector org, vector ang)
 			FX_Impact(IMPACT_DEFAULT, org, ang);
 		}
 	} else { /* props, entities */
-		CBaseEntity foo = (CBaseEntity)e;
-		FX_Impact(SurfData_GetInfo(foo.m_iMaterial, SURFDATA_FX_IMPACT), org, ang);
+		NSSurfacePropEntity foo = (NSSurfacePropEntity)e;
+		FX_Impact(foo.GetSurfaceData(SURFDATA_FX_IMPACT), org, ang);
 	}
 }
 #endif

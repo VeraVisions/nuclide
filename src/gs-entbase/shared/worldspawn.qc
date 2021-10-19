@@ -50,13 +50,16 @@ var float g_flHDRIrisFadeUp = 0.1;
 var float g_flHDRIrisFadeDown = 0.5;
 var int g_iHDREnabled = 0;
 
-class worldspawn:CBaseEntity
+class worldspawn:NSEntity
 {
+	void(void) worldspawn;
+
 	virtual void(string, string) SpawnKey;
 	virtual void(void) Initialized;
 };
 
-void worldspawn::Initialized(void)
+void
+worldspawn::Initialized(void)
 {
 	g_vecSunDir = [90,0];
 
@@ -74,7 +77,8 @@ void worldspawn::Initialized(void)
 	remove(this);
 }
 
-void worldspawn::SpawnKey(string strField, string strKey)
+void
+worldspawn::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
 	case "chaptertitle":
@@ -115,5 +119,11 @@ void worldspawn::SpawnKey(string strField, string strKey)
 	default:
 		break;
 	}
+}
+
+void
+worldspawn::worldspawn(void)
+{
+	super::NSEntity();
 }
 #endif

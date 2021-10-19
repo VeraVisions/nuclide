@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class CBaseMomentary:CBaseTrigger
+class CBaseMomentary:NSRenderableEntity
 {
 	entity m_eUser;
 	float m_flProgress;
@@ -33,4 +33,5 @@ class CBaseMomentary:CBaseTrigger
 
 void CBaseMomentary::CBaseMomentary(void)
 {
+	super::NSRenderableEntity();
 }

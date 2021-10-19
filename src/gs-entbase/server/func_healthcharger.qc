@@ -29,7 +29,7 @@ Brush that fills up your health when used, to a maximum of 100 HP.
 This entity was introduced in Half-Life (1998).
 */
 
-class func_healthcharger:CBaseTrigger
+class func_healthcharger:NSRenderableEntity
 {
 	entity m_eUser;
 	float m_flDelay;
@@ -151,7 +151,7 @@ func_healthcharger::SpawnKey(string strKey, string strValue)
 		m_strSndDone = strValue;
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -173,7 +173,7 @@ func_healthcharger::func_healthcharger(void)
 	m_strSndCharging = "items/medcharge4.wav";
 	m_strSndDone = "items/medshotno1.wav";
 
-	CBaseTrigger::CBaseTrigger();
+	super::NSRenderableEntity();
 
 	precache_sound(m_strSndFirst);
 	precache_sound(m_strSndCharging);

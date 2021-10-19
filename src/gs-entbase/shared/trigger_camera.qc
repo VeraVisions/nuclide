@@ -41,11 +41,7 @@ enumflags
 	OCAMFL_CHANGED_WAIT
 };
 
-#ifdef CLIENT
-class trigger_camera
-#else
-class trigger_camera:CBaseTrigger
-#endif
+class trigger_camera:NSPointTrigger
 {
 #ifdef CLIENT
 #else
@@ -268,7 +264,7 @@ trigger_camera::SpawnKey(string strKey, string strValue)
 		m_flWait = stof(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 #endif
@@ -280,6 +276,6 @@ trigger_camera::trigger_camera(void)
 	drawmask = MASK_ENGINE;
 #else
 	m_flWait = 4.0f;
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 #endif
 }

@@ -14,26 +14,27 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifdef SERVER
 int
-CBaseMonster::AnimIdle(void)
+NSMonster::AnimIdle(void)
 {
 	return (0);
 }
 
 int
-CBaseMonster::AnimWalk(void)
+NSMonster::AnimWalk(void)
 {
 	return (0);
 }
 
 int
-CBaseMonster::AnimRun(void)
+NSMonster::AnimRun(void)
 {
 	return (0);
 }
 
 void
-CBaseMonster::AnimPlay(float seq)
+NSMonster::AnimPlay(float seq)
 {
 	/* forces a client-side update */
 	SetSendFlags(BASEFL_CHANGED_FRAME);
@@ -43,13 +44,13 @@ CBaseMonster::AnimPlay(float seq)
 }
 
 void
-CBaseMonster::Sound(string msg)
+NSMonster::Sound(string msg)
 {
 	sound(this, CHAN_VOICE, msg, 1.0, ATTN_NORM);
 }
 
 void
-CBaseMonster::Gib(void)
+NSMonster::Gib(void)
 {
 	takedamage = DAMAGE_NO;
 	FX_GibHuman(this.origin);
@@ -57,17 +58,17 @@ CBaseMonster::Gib(void)
 }
 
 void
-CBaseMonster::FallNoise(void)
+NSMonster::FallNoise(void)
 {
 }
 
 void
-CBaseMonster::IdleNoise(void)
+NSMonster::IdleNoise(void)
 {
 }
 
 int
-CBaseMonster::IsFriend(int al)
+NSMonster::IsFriend(int al)
 {
 
 	if (m_iAlliance == MAL_ROGUE)
@@ -80,13 +81,13 @@ CBaseMonster::IsFriend(int al)
 
 
 float
-CBaseMonster::SeeFOV(void)
+NSMonster::SeeFOV(void)
 {
 	return 90;
 }
 
 void
-CBaseMonster::SeeThink(void)
+NSMonster::SeeThink(void)
 {
 	if (m_eEnemy)
 		return;
@@ -124,7 +125,7 @@ CBaseMonster::SeeThink(void)
 	}
 }
 void
-CBaseMonster::AttackThink(void)
+NSMonster::AttackThink(void)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE)
 		return;
@@ -179,35 +180,35 @@ CBaseMonster::AttackThink(void)
 }
 
 int
-CBaseMonster::AttackMelee(void)
+NSMonster::AttackMelee(void)
 {
 	m_flAttackThink = time + 0.5f;
 	return (0);
 }
 
 int
-CBaseMonster::AttackRanged(void)
+NSMonster::AttackRanged(void)
 {
 	m_flAttackThink = time + 0.5f;
 	return (0);
 }
 
 void
-CBaseMonster::AttackDraw(void)
+NSMonster::AttackDraw(void)
 {
 	dprint(sprintf("^1%s::AttackDraw: Not defined!\n", classname));
 	m_flAttackThink = time + 0.5f;
 }
 
 void
-CBaseMonster::AttackHolster(void)
+NSMonster::AttackHolster(void)
 {
 	dprint(sprintf("^1%s::AttackHolster: Not defined!\n", classname));
 	m_flAttackThink = time + 0.5f;
 }
 
 void
-CBaseMonster::ClearRoute(void)
+NSMonster::ClearRoute(void)
 {
 	if (m_iNodes) {
 		m_iNodes = 0;
@@ -216,7 +217,7 @@ CBaseMonster::ClearRoute(void)
 }
 
 void
-CBaseMonster::FreeState(void)
+NSMonster::FreeState(void)
 {
 	string to_trigger;
 	m_flSequenceEnd = 0;
@@ -231,7 +232,7 @@ CBaseMonster::FreeState(void)
 	/* trigger when required */
 	if (to_trigger) {
 		for (entity f = world; (f = find(f, ::targetname, to_trigger));) {
-			CBaseTrigger trigger = (CBaseTrigger)f;
+			NSEntity trigger = (NSEntity)f;
 			if (trigger.Trigger != __NULL__) {
 				trigger.Trigger(this, TRIG_TOGGLE);
 			}
@@ -244,7 +245,7 @@ CBaseMonster::FreeState(void)
 }
 
 void
-CBaseMonster::FreeStateMoved(void)
+NSMonster::FreeStateMoved(void)
 {
 	vector new_origin;
 	new_origin = gettaginfo(this, 0);
@@ -253,7 +254,7 @@ CBaseMonster::FreeStateMoved(void)
 }
 
 void
-CBaseMonster::CheckRoute(void)
+NSMonster::CheckRoute(void)
 {
 	float flDist;
 	vector evenpos;
@@ -273,7 +274,7 @@ CBaseMonster::CheckRoute(void)
 	flDist = floor(vlen(evenpos - origin));
 
 	if (flDist < 8) {
-		dprint(sprintf("^2CBaseMonster::^3CheckRoute^7: " \
+		dprint(sprintf("^2NSMonster::^3CheckRoute^7: " \
 			"%s reached node\n", this.targetname));
 		m_iCurNode--;
 		velocity = [0,0,0]; /* clamp friction */
@@ -285,7 +286,7 @@ CBaseMonster::CheckRoute(void)
 
 			/* can we walk directly to our target destination? */
 			if (trace_fraction == 1.0) {
-				dprint("^2CBaseMonster::^3CheckRoute^7: " \
+				dprint("^2NSMonster::^3CheckRoute^7: " \
 					"Walking directly to last node\n");
 				m_iCurNode = -1;
 			}
@@ -294,7 +295,7 @@ CBaseMonster::CheckRoute(void)
 
 	if (m_iCurNode < -1) {
 		ClearRoute();
-		dprint(sprintf("^2CBaseMonster::^3CheckRoute^7: %s reached end\n", this.targetname));
+		dprint(sprintf("^2NSMonster::^3CheckRoute^7: %s reached end\n", this.targetname));
 
 		/* mark that we've ended a sequence, if we're in one and que anim */
 		if (m_iSequenceState == SEQUENCESTATE_ACTIVE) {
@@ -303,12 +304,12 @@ CBaseMonster::CheckRoute(void)
 				m_iSequenceState = SEQUENCESTATE_ENDING;
 				think = FreeState;
 				nextthink = time + duration;
-				dprint(sprintf("^2CBaseMonster::^3CheckRoute^7: %s overriding anim for %f seconds (modelindex %d, frame %d)\n", this.targetname, duration, modelindex, m_flSequenceEnd));
+				dprint(sprintf("^2NSMonster::^3CheckRoute^7: %s overriding anim for %f seconds (modelindex %d, frame %d)\n", this.targetname, duration, modelindex, m_flSequenceEnd));
 			} else {
 				/* we still need to trigger targets */
 				think = FreeState;
 				nextthink = time;
-				dprint(sprintf("^2CBaseMonster::^3CheckRoute^7: %s has no anim, finished sequence.\n", this.targetname));
+				dprint(sprintf("^2NSMonster::^3CheckRoute^7: %s has no anim, finished sequence.\n", this.targetname));
 			}
 		}
 	}
@@ -322,14 +323,14 @@ CBaseMonster::CheckRoute(void)
 	m_flLastDist = flDist;
 
 	if (m_flNodeGiveup >= 1.0f) {
-		print(sprintf("CBaseMonster::CheckNode: %s gave up route\n",
+		print(sprintf("NSMonster::CheckNode: %s gave up route\n",
 			this.netname));
 		ClearRoute();
 	}*/
 }
 
 void
-CBaseMonster::WalkRoute(void)
+NSMonster::WalkRoute(void)
 {
 	vector endangles;
 
@@ -377,12 +378,12 @@ CBaseMonster::WalkRoute(void)
 }
 
 void
-CBaseMonster::NewRoute(vector destination)
+NSMonster::NewRoute(vector destination)
 {
 	/* engine calls this upon successfully creating a route */
 	static void NewRoute_RouteCB(entity ent, vector dest, int numnodes, nodeslist_t *nodelist)
 	{
-		CBaseMonster p = (CBaseMonster)ent;
+		NSMonster p = (NSMonster)ent;
 		p.m_iNodes = numnodes;
 		p.m_iCurNode = numnodes - 1;
 		p.m_pRoute = nodelist;
@@ -392,11 +393,11 @@ CBaseMonster::NewRoute(vector destination)
 
 		/* can we walk directly to our target destination? */
 		if (trace_fraction == 1.0) {
-			dprint("^2CBaseMonster::^3NewRoute^7: " \
+			dprint("^2NSMonster::^3NewRoute^7: " \
 				"Walking directly to last node\n");
 			p.m_iCurNode = -1;
 		} else {
-			dprint("^2CBaseMonster::^3NewRoute^7: " \
+			dprint("^2NSMonster::^3NewRoute^7: " \
 				"Path obstructed, calculating route\n");
 
 			/* run through all nodes, mark the closest direct path possible */
@@ -425,7 +426,7 @@ CBaseMonster::NewRoute(vector destination)
 }
 
 void
-CBaseMonster::Physics(void)
+NSMonster::Physics(void)
 {
 	input_movevalues = [0,0,0];
 	input_impulse = 0;
@@ -487,7 +488,7 @@ CBaseMonster::Physics(void)
 }
 
 void
-CBaseMonster::touch(void)
+NSMonster::touch(void)
 {
 	if (movetype != MOVETYPE_WALK)
 		return;
@@ -499,14 +500,14 @@ CBaseMonster::touch(void)
 }
 
 void
-CBaseMonster::Pain(void)
+NSMonster::Pain(void)
 {
 	if (!m_eEnemy)
 		m_eEnemy = g_dmg_eAttacker;
 }
 
 void
-CBaseMonster::Death(void)
+NSMonster::Death(void)
 {
 	/* we were already dead before, so gib */
 	if (style == MONSTER_DEAD) {
@@ -534,7 +535,7 @@ CBaseMonster::Death(void)
 }
 
 void
-CBaseMonster::Hide(void)
+NSMonster::Hide(void)
 {
 	SetModelindex(0);
 	SetSolid(SOLID_NOT);
@@ -543,7 +544,7 @@ CBaseMonster::Hide(void)
 }
 
 void
-CBaseMonster::Respawn(void)
+NSMonster::Respawn(void)
 {
 	v_angle = GetSpawnAngles();
 	v_angle[0] = Math_FixDelta(v_angle[0]);
@@ -571,7 +572,7 @@ CBaseMonster::Respawn(void)
 }
 
 void
-CBaseMonster::SpawnKey(string strKey, string strValue)
+NSMonster::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	/* The legacy GoldSrc trigger condition system */
@@ -582,14 +583,14 @@ CBaseMonster::SpawnKey(string strKey, string strValue)
 		m_strTriggerTarget = strValue;
 		break;
 	default:
-		CBaseEntity::SpawnKey(strKey, strValue);
+		NSSurfacePropEntity::SpawnKey(strKey, strValue);
 		break;
 	}
 }
 
 /* Make sure StartFrame calls this */
 float
-CBaseMonster::SendEntity(entity ePEnt, float fChanged)
+NSMonster::SendEntity(entity ePEnt, float fChanged)
 {
 	if (!modelindex)
 		return (0);
@@ -721,19 +722,150 @@ CBaseMonster::SendEntity(entity ePEnt, float fChanged)
 
 	return (1);
 }
+#else
 
 void
-CBaseMonster::CBaseMonster(void)
+NSMonster::customphysics(void)
 {
+	/* Page intentionally left blank */
+}
+
+float
+NSMonster::predraw(void)
+{
+	float render;
+
+	render = super::predraw();
+
+	return render;
+}
+
+/*
+============
+NSMonster::ReceiveEntity
+============
+*/
+void
+NSMonster::ReceiveEntity(float flChanged)
+{
+	if (flChanged & BASEFL_CHANGED_ORIGIN) {
+		origin[0] = readcoord();
+		origin[1] = readcoord();
+		origin[2] = readcoord();
+	}
+	if (flChanged & BASEFL_CHANGED_ANGLES) {
+		angles[0] = readshort() / (32767 / 360);
+		angles[1] = readshort() / (32767 / 360);
+		angles[2] = readshort() / (32767 / 360);
+	}
+	if (flChanged & BASEFL_CHANGED_MODELINDEX) {
+		setmodelindex(this, readshort());
+	}
+	if (flChanged & BASEFL_CHANGED_SOLID) {
+		solid = readbyte();
+	}
+	if (flChanged & BASEFL_CHANGED_MOVETYPE) {
+		movetype = readbyte();
+
+		if (movetype == MOVETYPE_PHYSICS) {
+			movetype = MOVETYPE_NONE;
+		}
+	}
+	if (flChanged & BASEFL_CHANGED_SIZE) {
+		mins[0] = readcoord();
+		mins[1] = readcoord();
+		mins[2] = readcoord();
+		maxs[0] = readcoord();
+		maxs[1] = readcoord();
+		maxs[2] = readcoord();
+		setsize(this, mins, maxs);
+	}
+	if (flChanged & BASEFL_CHANGED_FRAME) {
+		frame1time = 0.0;
+		frame2time = 0.0f;
+		frame = readbyte();
+	}
+	if (flChanged & BASEFL_CHANGED_SKIN) {
+		skin = readbyte() - 128;
+	}
+	if (flChanged & BASEFL_CHANGED_EFFECTS) {
+		effects = readfloat();
+	}
+	if (flChanged & BASEFL_CHANGED_BODY) {
+		m_iBody = readbyte();
+		setcustomskin(this, "", sprintf("geomset 1 %i\n", m_iBody));
+	}
+	if (flChanged & BASEFL_CHANGED_SCALE) {
+		scale = readfloat();
+	}
+	if (flChanged & BASEFL_CHANGED_VELOCITY) {
+		velocity[0] = readfloat();
+		velocity[1] = readfloat();
+		velocity[2] = readfloat();
+	}
+
+#ifdef GS_RENDERFX
+	if (flChanged & BASEFL_CHANGED_RENDERFX) {
+		m_iRenderFX = readbyte();
+	}
+	if (flChanged & BASEFL_CHANGED_RENDERMODE) {
+		m_iRenderMode = readbyte();
+	}
+	if (flChanged & BASEFL_CHANGED_RENDERCOLOR) {
+		m_vecRenderColor[0] = readfloat();
+		m_vecRenderColor[1] = readfloat();
+		m_vecRenderColor[2] = readfloat();
+	}
+	if (flChanged & BASEFL_CHANGED_RENDERAMT) {
+		m_flRenderAmt = readfloat();
+	}
+#else
+	if (flChanged & BASEFL_CHANGED_ALPHA) {
+		alpha = readfloat();
+	}
+#endif
+
+	if (modelindex) {
+		drawmask = MASK_ENGINE;
+	} else {
+		drawmask = 0;
+	}
+
+	if (scale == 0.0)
+		scale = 1.0f;
+
+	setorigin(this, origin);
+}
+#endif
+
+void
+NSMonster::NSMonster(void)
+{
+#ifdef SERVER
 	if (!(spawnflags & MSF_MULTIPLAYER))
 	if (g_grMode.MonstersSpawn() == FALSE) {
 		remove(this);
 		return;
 	}
+#endif
 
-	CBaseEntity::CBaseEntity();
+	super::NSSurfacePropEntity();
 
+#ifdef SERVER
 	/* give us a 65 degree view cone */
 	m_flFOV = 1.0 / 65;
 	m_flChaseSpeed = 140;
+#endif
 }
+
+#ifdef CLIENT
+void
+NSMonster_ReadEntity(float new)
+{
+	NSMonster me = (NSMonster)self;
+	if (new) {
+		spawnfunc_NSMonster();
+	}
+	me.ReceiveEntity(readfloat());
+}
+#endif

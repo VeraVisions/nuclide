@@ -72,11 +72,7 @@ enumflags
 	MONITORFL_CHANGED_STATUS
 };
 
-#ifdef CLIENT
-class func_monitor
-#else
-class func_monitor:CBaseTrigger
-#endif
+class func_monitor:NSRenderableEntity
 {
 	/* these mirror the fields of a point_camera */
 	vector m_vecCamOrigin;
@@ -307,7 +303,7 @@ func_monitor::Input(entity eAct, string strInput, string strData)
 		Trigger(eAct, TRIG_TOGGLE);
 		break;
 	default:
-		CBaseTrigger::Input(eAct, strInput, strData);
+		super::Input(eAct, strInput, strData);
 	}
 }
 
@@ -316,7 +312,7 @@ func_monitor::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -338,6 +334,6 @@ func_monitor::func_monitor(void)
 #ifdef CLIENT
 	drawmask = MASK_ENGINE;
 #elif SERVER
-	CBaseTrigger::CBaseTrigger();
+	super::NSRenderableEntity();
 #endif
 }

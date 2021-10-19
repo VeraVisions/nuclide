@@ -20,7 +20,7 @@ Vehicle_Input(base_player bp)
 	player pl = (player)bp;
 	
 	if (pl.vehicle) {
-		CBaseVehicle veh = (CBaseVehicle)pl.vehicle;
+		NSVehicle veh = (NSVehicle)pl.vehicle;
 
 		if (veh.PlayerInput)
 			veh.PlayerInput();

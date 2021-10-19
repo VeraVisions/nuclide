@@ -54,7 +54,7 @@ enumflags
 	TRAIN_NOTSOLID
 };
 
-class func_train:CBaseTrigger
+class func_train:NSRenderableEntity
 {
 	float m_flWait;
 	float m_flSpeed;
@@ -257,7 +257,7 @@ func_train::SpawnKey(string strKey, string strValue)
 		m_strStopSnd = sprintf("func_train.stop_%i", stoi(strValue) + 1i);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -266,7 +266,7 @@ func_train::func_train(void)
 {
 	/* FIXME: This is all decided by the first path_corner pretty much */
 	m_flSpeed = 100;
-	CBaseTrigger::CBaseTrigger();
+	super::NSRenderableEntity();
 
 	if (m_strMoveSnd)
 		Sound_Precache(m_strMoveSnd);

@@ -333,7 +333,7 @@ base_player::Physics_Run(void)
 
 	flags &= ~FL_ONUSABLE;
 	if (trace_ent.identity == 1) {
-		CBaseEntity foo = (CBaseEntity)trace_ent;
+		NSEntity foo = (NSEntity)trace_ent;
 		if (foo.PlayerUse) {
 			flags |= FL_ONUSABLE;
 		}

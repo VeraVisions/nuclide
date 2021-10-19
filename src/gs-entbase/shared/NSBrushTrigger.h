@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,10 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void FX_Init(void)
+class NSBrushTrigger:NSEntity
 {
-	precache_pic("textures/fx/flare1");
-	precache_pic("textures/fx/flare2");
-	precache_pic("textures/fx/flare3");
-	precache_pic("textures/fx/flare4");
-}
+	void(void) NSBrushTrigger;
+
+#ifdef SERVER
+	virtual void(void) InitBrushTrigger;
+#endif
+};

@@ -216,7 +216,7 @@ bot::CheckRoute(void)
 	flDist = floor(vlen(evenpos));
 
 	if (flDist <= rad) {
-		dprint(sprintf("^2CBaseMonster::^3CheckRoute^7: " \
+		dprint(sprintf("^2bot::^3CheckRoute^7: " \
 			"%s reached node\n", this.targetname));
 		m_iCurNode--;
 
@@ -241,7 +241,7 @@ bot::CheckRoute(void)
 
 			/* can we walk directly to our target destination? */
 			if (trace_fraction == 1.0) {
-				dprint("^2CBaseMonster::^3CheckRoute^7: " \
+				dprint("^2bot::^3CheckRoute^7: " \
 					"Walking directly to last node\n");
 				m_iCurNode = -1;
 			}

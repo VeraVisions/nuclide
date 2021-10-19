@@ -28,11 +28,7 @@ This entity was introduced in Quake (1996).
 */
 
 class
-#ifdef CLIENT
-func_wall:CBaseEntity
-#else
-func_wall:CBaseTrigger
-#endif
+func_wall:NSRenderableEntity
 {
 	void(void) func_wall;
 
@@ -54,7 +50,7 @@ float
 func_wall::SendEntity(entity pvsent, float fl)
 {
 	if (targetname)
-		return CBaseTrigger::SendEntity(pvsent, fl);
+		return super::SendEntity(pvsent, fl);
 	else
 		return (0);
 }
@@ -78,7 +74,7 @@ void
 func_wall::Respawn(void)
 {
 	/* reset the visual parameters */
-	CBaseEntity::Respawn();
+	super::Respawn();
 
 	/* func_wall specifics */
 	SetAngles([0,0,0]);
@@ -102,7 +98,7 @@ func_wall::predraw(void)
 		return (PREDRAW_NEXT);
 	}
 
-	CBaseEntity::predraw();
+	super::predraw();
 	addentity(self);
 	return (PREDRAW_NEXT);
 }
@@ -110,7 +106,7 @@ func_wall::predraw(void)
 void
 func_wall::Init(void)
 {
-	CBaseEntity::Init();
+	super::Init();
 
 	/* this entity is being controlled by the server, remove it */
 	if (targetname) {
@@ -135,6 +131,6 @@ func_wall::func_wall(void)
 #ifdef CLIENT
 	Init();
 #else
-	CBaseTrigger::CBaseTrigger();
+	super::NSRenderableEntity();
 #endif
 }

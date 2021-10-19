@@ -51,7 +51,7 @@ waste disk space and memory. Use wisely.
 This entity was introduced in Half-Life 2 (2004).
 */
 
-class prop_dynamic:CBaseEntity
+class prop_dynamic:NSRenderableEntity
 {
 	void(void) prop_dynamic;
 
@@ -74,20 +74,20 @@ prop_dynamic::SpawnKey(string strField, string strKey)
 			avelocity = stov(strKey);
 			break;
 		default:
-			CBaseEntity::SpawnKey(strField, strKey);
+			super::SpawnKey(strField, strKey);
 	}
 }
 float
 prop_dynamic::predraw(void)
 {
 	angles += avelocity * frametime;
-	return CBaseEntity::predraw();
+	return super::predraw();
 }
 
 void
 prop_dynamic::Init(void)
 {
-	CBaseEntity::Init();
+	super::Init();
 
 	precache_model(model);
 	setmodel(this, model);

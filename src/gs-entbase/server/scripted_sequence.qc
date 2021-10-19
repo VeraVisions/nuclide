@@ -87,7 +87,7 @@ enum
     SS_TURNTOFACE /* Turn to the scripted_sequence's angle before performing the animation. */
 };
 
-class scripted_sequence:CBaseTrigger
+class scripted_sequence:NSPointTrigger
 {
 	int m_iEnabled;
 
@@ -114,10 +114,10 @@ class scripted_sequence:CBaseTrigger
 void
 scripted_sequence::RunOnEntity(entity targ)
 {	
-	CBaseMonster f;
+	NSMonster f;
 	float duration;
 
-	f = (CBaseMonster)targ;
+	f = (NSMonster)targ;
 
 	if (!m_iEnabled)
 		return;
@@ -199,9 +199,9 @@ scripted_sequence::RunOnEntity(entity targ)
 	f.m_iSequenceState = SEQUENCESTATE_ENDING;
 
 	if (spawnflags & SSFL_NOSCRIPTMOVE)
-		f.think = CBaseMonster::FreeState;
+		f.think = NSMonster::FreeState;
 	else
-		f.think = CBaseMonster::FreeStateMoved;
+		f.think = NSMonster::FreeStateMoved;
 
 	dprint(sprintf("\tEnding: %f\n", f.nextthink));
 
@@ -214,17 +214,17 @@ scripted_sequence::RunOnEntity(entity targ)
 void
 scripted_sequence::Trigger(entity act, int unused)
 {
-	CBaseMonster f;
+	NSMonster f;
 
 	dprint(sprintf("^2scripted_sequence::^3Trigger^7: with spawnflags %d\n", spawnflags));
-	f = (CBaseMonster)find(world, ::targetname, m_strMonster);
+	f = (NSMonster)find(world, ::targetname, m_strMonster);
 
 	/* target doesn't exist/hasn't spawned */
 	if (!f) {
 		for (entity c = world; (c = find(c, ::classname, m_strMonster));) {
 			/* within radius */
 			if (vlen(origin - c.origin) < m_flSearchRadius) {
-				f = (CBaseMonster)c;
+				f = (NSMonster)c;
 				break;
 			}
 		}
@@ -241,10 +241,10 @@ scripted_sequence::Trigger(entity act, int unused)
 void
 scripted_sequence::InitIdle(void)
 {
-	CBaseMonster f;
+	NSMonster f;
 
 	dprint(sprintf("^2scripted_sequence::^3InitIdle^7: with spawnflags %d\n", spawnflags));
-	f = (CBaseMonster)find(world, ::targetname, m_strMonster);
+	f = (NSMonster)find(world, ::targetname, m_strMonster);
 
 	/* target doesn't exist/hasn't spawned */
 	if (!f) {
@@ -252,7 +252,7 @@ scripted_sequence::InitIdle(void)
 		for (entity c = world; (c = find(c, ::classname, m_strMonster));) {
 			/* within radius */
 			if (vlen(origin - c.origin) < m_flSearchRadius) {
-				f = (CBaseMonster)c;
+				f = (NSMonster)c;
 				break;
 			}
 		}
@@ -273,12 +273,12 @@ scripted_sequence::InitIdle(void)
 void
 scripted_sequence::touch(void)
 {
-	CBaseMonster f;
+	NSMonster f;
 
 	if (other.classname != m_strMonster)
 		return;
 
-	f = (CBaseMonster)other;
+	f = (NSMonster)other;
 
 	/* we already ARE on a sequence. */
 	if (f.m_iSequenceState != SEQUENCESTATE_NONE)
@@ -325,19 +325,20 @@ scripted_sequence::SpawnKey(string strKey, string strValue)
 		m_flSearchRadius = stof(strValue);
 		break;
 	case "m_flRepeat":
+		/* TODO: */
 		break;
 	case "m_fMoveTo":
 		m_iMove = stoi(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
 void
 scripted_sequence::scripted_sequence(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 }
 
 CLASSEXPORT(aiscripted_sequence, scripted_sequence)

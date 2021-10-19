@@ -19,7 +19,6 @@ damage.qc
 chat.qc
 textmenu.qc
 vgui.qc
-vox.qc
 way.qc
 in_saturn.qc
 efx.qc

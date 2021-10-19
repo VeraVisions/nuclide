@@ -31,7 +31,7 @@ This entity was introduced in Half-Life 2 (2004).
 var int autocvar_dev_loddistance = 0;
 #endif
 
-class func_lod:CBaseEntity
+class func_lod:NSRenderableEntity
 {
 	int m_iDisappearDist;
 	vector m_vecTestPos;
@@ -87,14 +87,14 @@ func_lod::SpawnKey(string strField, string strKey)
 		solid = stoi(strKey) == 1 ? SOLID_NOT : SOLID_BSP;
 		break;
 	default:
-		CBaseEntity::SpawnKey(strField, strKey);
+		super::SpawnKey(strField, strKey);
 	}
 }
 
 void
 func_lod::Init(void)
 {
-	CBaseEntity::Init();
+	super::Init();
 
 	precache_model(model);
 	setmodel(this, model);

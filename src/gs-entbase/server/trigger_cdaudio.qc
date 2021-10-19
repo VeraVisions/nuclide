@@ -25,9 +25,10 @@ Switches the background music track when triggered.
 This entity was introduced in Half-Life (1998).
 */
 
-class trigger_cdaudio:CBaseTrigger
+class trigger_cdaudio:NSBrushTrigger
 {
 	int m_iCDTrack;
+
 	void(void) trigger_cdaudio;
 
 	virtual void(entity, int) Trigger;
@@ -75,7 +76,7 @@ trigger_cdaudio::SpawnKey(string strKey, string strValue)
 		m_iCDTrack = stoi(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 		break;
 	}
 }
@@ -83,5 +84,5 @@ trigger_cdaudio::SpawnKey(string strKey, string strValue)
 void
 trigger_cdaudio::trigger_cdaudio(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSBrushTrigger();
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,6 +14,42 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/* NSTrigger class is responsible for the legacy trigger architecture.
+   In the future, NSEntity can be configured so that legacy
+   triggers can be disabled. That's why this class is separate from NSIO.
+
+   This is a very low-level class. You're never meant to use this.
+   Use NSEntity as a basis for your classes.
+*/
+
+class NSTrigger:NSIO
+{
+	void(void) NSTrigger;
+
+#ifdef SERVER
+	string m_oldstrTarget; /* needed due to trigger_changetarget */
+
+	int m_strGlobalState;
+	string m_strKillTarget;
+	string m_strMessage;
+	string m_strMaster;
+	int m_iUseType;
+	int m_iTeam;
+	int m_iValue;
+
+	/* legacy trigger architecture */
+	float m_flDelay;
+	virtual void(entity, int) Trigger;
+	virtual void(entity, int, float) UseTargets;
+
+	/* master feature */
+	virtual int(void) GetValue;
+	virtual int(void) GetMaster;
+
+	virtual void(string, string) SpawnKey;
+#endif
+};
+
 enum
 { 
 	USE_TOGGLE,
@@ -25,32 +61,4 @@ enum
 	TRIG_OFF,
 	TRIG_ON,
 	TRIG_TOGGLE
-};
-
-class CBaseTrigger:CBaseEntity
-{
-	int m_strGlobalState;
-	string m_strKillTarget;
-	string m_strMessage;
-	string m_strMaster;
-	int m_iUseType;
-	int m_iTeam;
-	int m_iValue;
-
-	void(void) CBaseTrigger;
-
-	/* legacy trigger architecture */
-	float m_flDelay;
-	virtual void(entity, int) Trigger;
-	virtual void(entity, int, float) UseTargets;
-
-	/* master feature */
-	virtual int(void) GetValue;
-	virtual int(void) GetMaster;
-
-	/* spawn setup helpers */
-	virtual void(void) InitBrushTrigger;
-	virtual void(void) InitPointTrigger;
-
-	virtual void(string, string) SpawnKey;
 };

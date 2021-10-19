@@ -40,7 +40,7 @@ enumflags
 	EMF_ALLPLAYERS
 };
 
-class env_message:CBaseTrigger
+class env_message:NSPointTrigger
 {
 	string m_strSound;
 	float m_flVolume;
@@ -96,13 +96,13 @@ env_message::SpawnKey(string strKey, string strValue)
 		m_iAttenuation = stoi(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
 void env_message::env_message(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 }
 
 void

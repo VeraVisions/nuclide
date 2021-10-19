@@ -36,13 +36,14 @@ which is probably overkill). No angle has to be supplied.
 This entity was introduced in Half-Life (1998).
 */
 
-class infodecal:CBaseTrigger
+class infodecal:NSPointTrigger
 {
 	decal m_decChild;
 
 	string m_strTexture;
 
 	void(void) infodecal;
+
 	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
@@ -95,7 +96,7 @@ infodecal::SpawnKey(string strKey, string strValue)
 		m_strTexture = strtolower(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -107,5 +108,5 @@ infodecal::infodecal(void)
 		return;
 	}
 
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 }

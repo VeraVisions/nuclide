@@ -32,13 +32,14 @@ Quake/Quake II did not have an entity that allowed custom sound samples
 to be played.
 */
 
-class targ_speaker:CBaseTrigger
+class targ_speaker:NSPointTrigger
 {
 	string m_strSample;
 	float m_flVolume;
 
 	void(void) targ_speaker;
 
+	virtual void(void) Respawn;
 	virtual void(entity,int) Trigger;
 	virtual void(string, string) SpawnKey;
 };
@@ -69,7 +70,13 @@ targ_speaker::SpawnKey(string strKey, string strValue)
 }
 
 void
+targ_speaker::Respawn(void)
+{
+	InitPointTrigger();
+}
+
+void
 targ_speaker::targ_speaker(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSPointTrigger();
 }

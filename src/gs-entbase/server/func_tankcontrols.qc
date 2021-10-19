@@ -25,7 +25,7 @@ to gain control.
 This entity was introduced in Half-Life (1998).
 */
 
-class func_tankcontrols:CBaseTrigger
+class func_tankcontrols:NSBrushTrigger
 {
 	void(void) func_tankcontrols;
 
@@ -37,7 +37,7 @@ void
 func_tankcontrols::OnPlayerUse(void)
 {
 	entity f;
-	CBaseVehicle tank;
+	NSVehicle tank;
 
 	tank = __NULL__;
 
@@ -48,7 +48,7 @@ func_tankcontrols::OnPlayerUse(void)
 	for (f = world; (f = find(f, ::targetname, target));) {
 		/* we found the right entity */
 		if (f.classname == "func_tank" || f.classname == "func_tankmortar") {
-			tank = (CBaseVehicle)f;
+			tank = (NSVehicle)f;
 		}
 	}
 
@@ -63,19 +63,12 @@ func_tankcontrols::OnPlayerUse(void)
 void
 func_tankcontrols::Respawn(void)
 {
-	SetMovetype(MOVETYPE_PUSH);
-	SetSolid(SOLID_BSP);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
+	InitBrushTrigger();
 	PlayerUse = OnPlayerUse;
-
-#ifdef GS_RENDERFX
-	SetRenderMode(RM_TRIGGER);
-#endif
 }
 
 void
 func_tankcontrols::func_tankcontrols(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSBrushTrigger();
 }

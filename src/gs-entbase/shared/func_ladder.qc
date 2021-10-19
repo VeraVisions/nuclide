@@ -25,7 +25,7 @@ This entity was introduced in Half-Life (1998).
 */
 
 class
-func_ladder:CBaseTrigger
+func_ladder:NSRenderableEntity
 {
 	void(void) func_ladder;
 
@@ -47,7 +47,7 @@ float
 func_ladder::SendEntity(entity pvsent, float fl)
 {
 	if (targetname)
-		return CBaseTrigger::SendEntity(pvsent, fl);
+		return super::SendEntity(pvsent, fl);
 	else
 		return (0);
 }
@@ -71,7 +71,7 @@ void
 func_ladder::Respawn(void)
 {
 	/* reset the visual parameters */
-	CBaseEntity::Respawn();
+	super::Respawn();
 
 	/* func_ladder specifics */
 	SetAngles([0,0,0]);
@@ -99,7 +99,7 @@ func_ladder::predraw(void)
 		return (PREDRAW_NEXT);
 	}
 
-	CBaseEntity::predraw();
+	super::predraw();
 	addentity(self);
 	return (PREDRAW_NEXT);
 }
@@ -107,7 +107,7 @@ func_ladder::predraw(void)
 void
 func_ladder::Init(void)
 {
-	CBaseEntity::Init();
+	super::Init();
 
 	/* this entity is being controlled by the server, remove it */
 	if (targetname) {
@@ -131,6 +131,6 @@ func_ladder::func_ladder(void)
 #ifdef CLIENT
 	Init();
 #else
-	CBaseTrigger::CBaseTrigger();
+	super::NSRenderableEntity();
 #endif
 }

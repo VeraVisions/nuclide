@@ -15,7 +15,7 @@
  */
 
 void
-CBasePhysics::PhysicsEnable(void)
+NSPhysicsEntity::PhysicsEnable(void)
 {
 	if (physics_supported() == TRUE)
 		physics_enable(this, TRUE);
@@ -27,7 +27,7 @@ CBasePhysics::PhysicsEnable(void)
 }
 
 void
-CBasePhysics::PhysicsDisable(void)
+NSPhysicsEntity::PhysicsDisable(void)
 {
 	if (physics_supported() == TRUE) {
 		physics_enable(this, FALSE);
@@ -39,51 +39,51 @@ CBasePhysics::PhysicsDisable(void)
 }
 
 void
-CBasePhysics::SetMass(float val)
+NSPhysicsEntity::SetMass(float val)
 {
 	mass = val;
 }
 float
-CBasePhysics::GetMass(void)
+NSPhysicsEntity::GetMass(void)
 {
 	return mass;
 }
 
 void
-CBasePhysics::SetFriction(float val)
+NSPhysicsEntity::SetFriction(float val)
 {
 	friction = val;
 }
 float
-CBasePhysics::GetFriction(void)
+NSPhysicsEntity::GetFriction(void)
 {
 	return friction;
 }
 
 void
-CBasePhysics::SetBounceFactor(float val)
+NSPhysicsEntity::SetBounceFactor(float val)
 {
 	bouncefactor = val;
 }
 float
-CBasePhysics::GetBounceFactor(void)
+NSPhysicsEntity::GetBounceFactor(void)
 {
 	return bouncefactor;
 }
 
 void
-CBasePhysics::SetInertia(float val)
+NSPhysicsEntity::SetInertia(float val)
 {
 	m_flInertiaScale = val;
 }
 float
-CBasePhysics::GetInertia(void)
+NSPhysicsEntity::GetInertia(void)
 {
 	return m_flInertiaScale;
 }
 
 void
-CBasePhysics::ApplyForceCenter(vector vecForce)
+NSPhysicsEntity::ApplyForceCenter(vector vecForce)
 {
 	if (physics_supported() == TRUE) {
 		physics_addforce(this, vecForce, [0,0,0]);
@@ -93,7 +93,7 @@ CBasePhysics::ApplyForceCenter(vector vecForce)
 }
 
 void
-CBasePhysics::ApplyForceOffset(vector vecForce, vector vecOffset)
+NSPhysicsEntity::ApplyForceOffset(vector vecForce, vector vecOffset)
 {
 	if (physics_supported() == TRUE) {
 		physics_addforce(this, vecForce, vecOffset);
@@ -103,7 +103,7 @@ CBasePhysics::ApplyForceOffset(vector vecForce, vector vecOffset)
 }
 
 void
-CBasePhysics::ApplyTorqueCenter(vector vecTorque)
+NSPhysicsEntity::ApplyTorqueCenter(vector vecTorque)
 {
 	if (physics_supported() == TRUE)
 		physics_addtorque(this, vecTorque * m_flInertiaScale);
@@ -115,7 +115,7 @@ CBasePhysics::ApplyTorqueCenter(vector vecTorque)
 }
 
 void
-CBasePhysics::TouchThink(void)
+NSPhysicsEntity::TouchThink(void)
 {
 	/* let players collide */
 	dimension_solid = 255;
@@ -167,7 +167,7 @@ CBasePhysics::TouchThink(void)
 }
 
 void
-CBasePhysics::touch(void)
+NSPhysicsEntity::touch(void)
 {
 	PhysicsEnable();
 	makevectors(vectoangles(origin - other.origin));
@@ -175,7 +175,7 @@ CBasePhysics::touch(void)
 }
 
 void
-CBasePhysics::Pain(void)
+NSPhysicsEntity::Pain(void)
 {
 	if (m_iFlags & BPHY_NODMGPUSH)
 		return;
@@ -190,7 +190,7 @@ CBasePhysics::Pain(void)
 }
 
 void
-CBasePhysics::Death(void)
+NSPhysicsEntity::Death(void)
 {
 	Hide();
 
@@ -213,7 +213,7 @@ CBasePhysics::Death(void)
 }
 
 void
-CBasePhysics::Respawn(void)
+NSPhysicsEntity::Respawn(void)
 {
 	SetMovetype(MOVETYPE_PHYSICS);
 	SetSolid(SOLID_PHYSICS_BOX + m_iShape);
@@ -241,7 +241,7 @@ CBasePhysics::Respawn(void)
 }
 
 void
-CBasePhysics::SpawnKey(string strKey, string strValue)
+NSPhysicsEntity::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "physmodel":
@@ -269,15 +269,15 @@ CBasePhysics::SpawnKey(string strKey, string strValue)
 			m_iFlags |= BPHY_SHARP;
 		break;
 	default:
-		CBaseEntity::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 		break;
 	}
 }
 
 void
-CBasePhysics::CBasePhysics(void)
+NSPhysicsEntity::NSPhysicsEntity(void)
 {
 	mass = 1.0f;
 	m_flInertiaScale = 1.0f;
-	CBaseEntity::CBaseEntity();
+	super::NSSurfacePropEntity();
 }

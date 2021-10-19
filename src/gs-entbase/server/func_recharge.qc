@@ -29,7 +29,7 @@ Brush that fills up your armor when used, to a maximum of 100 points.
 This entity was introduced in Half-Life (1998).
 */
 
-class func_recharge:CBaseTrigger
+class func_recharge:NSRenderableEntity
 {
 	entity m_eUser;
 	float m_flDelay;
@@ -157,7 +157,7 @@ func_recharge::SpawnKey(string strKey, string strValue)
 		m_strSndDone = strValue;
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -179,7 +179,7 @@ func_recharge::func_recharge(void)
 	m_strSndCharging = "items/suitcharge1.wav";
 	m_strSndDone = "items/suitchargeno1.wav";
 
-	CBaseTrigger::CBaseTrigger();
+	super::NSRenderableEntity();
 
 	precache_sound(m_strSndFirst);
 	precache_sound(m_strSndCharging);

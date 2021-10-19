@@ -15,11 +15,10 @@
  */
 
 #include "../shared/baseentity.h"
-#include "../shared/basevehicle.h"
 
 vector g_vecSunDir;
 
-/* TODO: Find a better way to figure out what's a CBaseEntity at heart */
+/* TODO: Find a better way to figure out what's a NSEntity at heart */
 .float isCSQC;
 
 /* things we don't have in CSQC normally and oughta be global */

@@ -48,17 +48,6 @@ Game_ParseClientCommand(string cmd)
 {
 	tokenize(cmd);
 
-	if (argv(1) == "timeleft") {
-		string msg;
-		string timestring;
-		float timeleft;
-		timeleft = cvar("mp_timelimit") - (time / 60);
-		timestring = Vox_TimeToString(timeleft);
-		msg = sprintf("we have %s minutes remaining", timestring);
-		Vox_Singlecast(self, msg);
-		return;
-	}
-
 	if (argv(0) == "say") {
 		SV_SendChat(self, argv(1), world, 0);
 		return;

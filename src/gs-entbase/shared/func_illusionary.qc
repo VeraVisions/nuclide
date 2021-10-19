@@ -28,11 +28,7 @@ This entity was introduced in Quake (1996).
 */
 
 class
-#ifdef CLIENT
-func_illusionary:CBaseEntity
-#else
-func_illusionary:CBaseTrigger
-#endif
+func_illusionary:NSRenderableEntity
 {
 	void(void) func_illusionary;
 
@@ -54,7 +50,7 @@ float
 func_illusionary::SendEntity(entity pvsent, float fl)
 {
 	if (targetname)
-		return CBaseTrigger::SendEntity(pvsent, fl);
+		return super::SendEntity(pvsent, fl);
 	else
 		return (0);
 }
@@ -78,7 +74,7 @@ void
 func_illusionary::Respawn(void)
 {
 	/* reset the visual parameters */
-	CBaseEntity::Respawn();
+	super::Respawn();
 
 	/* func_illusionary specifics */
 	SetAngles([0,0,0]);
@@ -107,7 +103,7 @@ func_illusionary::predraw(void)
 		return (PREDRAW_NEXT);
 	}
 
-	CBaseEntity::predraw();
+	super::predraw();
 	addentity(self);
 	return (PREDRAW_NEXT);
 }
@@ -115,7 +111,7 @@ func_illusionary::predraw(void)
 void
 func_illusionary::Init(void)
 {
-	CBaseEntity::Init();
+	super::Init();
 
 	/* this entity is being controlled by the server, remove it */
 	if (targetname) {
@@ -144,6 +140,6 @@ func_illusionary::func_illusionary(void)
 #ifdef CLIENT
 	Init();
 #else
-	CBaseTrigger::CBaseTrigger();
+	super::NSRenderableEntity();
 #endif
 }

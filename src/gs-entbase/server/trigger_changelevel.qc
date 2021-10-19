@@ -35,7 +35,7 @@ This entity was introduced in Quake (1996).
 
 vector g_landmarkpos;
 
-class info_landmark:CBaseTrigger
+class info_landmark:NSPointTrigger
 {
 	
 };
@@ -46,7 +46,7 @@ enumflags
 	LC_USEONLY
 };
 
-class trigger_changelevel:CBaseTrigger
+class trigger_changelevel:NSBrushTrigger
 {
 	string m_strMap;
 	string m_strLandmark;
@@ -163,7 +163,7 @@ trigger_changelevel::Input(entity eAct, string strInput, string strData)
 		Trigger(eAct, TRIG_TOGGLE);
 		break;
 	default:
-		CBaseTrigger::Input(eAct, strInput, strData);
+		super::Input(eAct, strInput, strData);
 	}
 }
 
@@ -186,14 +186,14 @@ trigger_changelevel::SpawnKey(string strKey, string strValue)
 		m_strOnLevelChange = strcat(m_strOnLevelChange, ",_", strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
 void
 trigger_changelevel::trigger_changelevel(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSBrushTrigger();
 
 	if (m_strOnLevelChange)
 		m_strOnLevelChange = CreateOutput(m_strOnLevelChange);

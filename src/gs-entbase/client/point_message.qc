@@ -29,12 +29,13 @@ Used for zoo and test maps in which less interactive overlays are desired.
 This entity was introduced in Half-Life 2 (2004).
 */
 
-class point_message:CBaseEntity
+class point_message:NSEntity
 {
 	float m_flRadius;
 	string m_strMessage;
 
 	void(void) point_message;
+
 	virtual void(string, string) SpawnKey;
 };
 
@@ -53,7 +54,7 @@ point_message::SpawnKey(string strField, string strKey)
 			setorigin(this, origin);
 			break;
 		default:
-			CBaseEntity::SpawnKey(strField, strKey);
+			super::SpawnKey(strField, strKey);
 	}
 }
 

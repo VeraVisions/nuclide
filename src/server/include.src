@@ -5,7 +5,6 @@ nodes.qc
 skill.qc
 sentences.qc
 spawn.qc
-vox.qc
 gamerules.qc
 client.qc
 server.qc

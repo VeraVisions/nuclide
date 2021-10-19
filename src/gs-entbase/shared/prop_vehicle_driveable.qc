@@ -49,7 +49,7 @@ class prop_vehicle_driveable_wheel
 	virtual void(float, float) Physics;
 };
 
-class prop_vehicle_driveable:CBaseVehicle
+class prop_vehicle_driveable:NSVehicle
 {
 	/* map-entity fields */
 	float m_flBounceFactor;
@@ -570,7 +570,7 @@ prop_vehicle_driveable::prop_vehicle_driveable(void)
 	m_vecGravityDir = [0,0,-1];
 	m_iVehicleFlags |= VHF_FROZEN;
 
-	CBaseVehicle::CBaseVehicle();
+	super::NSVehicle();
 
 	m_wlFL = spawn(prop_vehicle_driveable_wheel);
 	m_wlFR = spawn(prop_vehicle_driveable_wheel);

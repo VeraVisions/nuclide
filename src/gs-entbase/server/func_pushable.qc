@@ -129,7 +129,7 @@ func_pushable::OnPlayerUse(void)
 void
 func_pushable::Respawn(void)
 {
-	func_breakable::Respawn();
+	super::Respawn();
 	movetype = MOVETYPE_STEP;
 	touch = PlayerTouch;
 	PlayerUse = OnPlayerUse;
@@ -147,5 +147,5 @@ func_pushable::Respawn(void)
 void
 func_pushable::func_pushable(void)
 {
-	func_breakable::func_breakable();
+	super::func_breakable();
 }

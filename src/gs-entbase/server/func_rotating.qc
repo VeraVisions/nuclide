@@ -63,7 +63,7 @@ enumflags
 	FR_TOGGLEDIR
 };
 
-class func_rotating:CBaseTrigger
+class func_rotating:NSRenderableEntity
 {
 	vector m_vecMoveDir;
 	float m_flSpeed;
@@ -181,7 +181,7 @@ func_rotating::SpawnKey(string strKey, string strValue)
 		m_flDamage = stof(strValue);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -189,6 +189,6 @@ void
 func_rotating::func_rotating(void)
 {
 	m_flSpeed = 100;
-	CBaseTrigger::CBaseTrigger();
-	func_rotating::SetMovementDirection();
+	super::NSRenderableEntity();
+	SetMovementDirection();
 }

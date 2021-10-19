@@ -78,7 +78,7 @@ enum
 	FRAME_ON
 };
 
-class func_button:CBaseTrigger
+class func_button:NSSurfacePropEntity
 {
 	float m_flSpeed;
 	float m_flLip;
@@ -409,7 +409,7 @@ func_button::SpawnKey(string strKey, string strValue)
 		m_strSndPressed = sprintf("func_button.hlsfx_%i", stoi(strValue) + 1i);
 		break;
 	default:
-		CBaseTrigger::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 	}
 }
 
@@ -418,7 +418,7 @@ func_button::func_button(void)
 {
 	m_flWait = 4.0f;
 
-	CBaseTrigger::CBaseTrigger();
+	super::NSSurfacePropEntity();
 
 	/* sounds */
 	Sound_Precache(m_strSndPressed);

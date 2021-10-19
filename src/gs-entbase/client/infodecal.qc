@@ -15,7 +15,7 @@
  */
 
 class
-infodecal:CBaseEntity
+infodecal:NSEntity
 {
 	decal m_decChild;
 	string m_strTexture;
@@ -48,7 +48,7 @@ infodecal::SpawnKey(string strField, string strKey)
 		targetname = strKey;
 		break;
 	default:
-		CBaseEntity::SpawnKey(strField, strKey);
+		super::SpawnKey(strField, strKey);
 	}
 }
 

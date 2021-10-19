@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,8 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-string Vox_TimeToString(float);
-void Vox_Broadcast(string);
-void Vox_Singlecast(entity, string);
-void Vox_Sentence_Single(entity, string);
-void Vox_Sentence_Broadcast(string);
+class NSPointTrigger:NSEntity
+{
+	void(void) NSPointTrigger;
+
+#ifdef SERVER
+	virtual void(void) InitPointTrigger;
+#endif
+};
