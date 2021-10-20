@@ -32,7 +32,6 @@ class NSEntity:NSTrigger
 #ifdef SERVER
 	virtual void(void) Respawn;
 	virtual void(entity, string, string) Input;
-	virtual void(string, string) SpawnKey;
 #endif
 
 #ifdef SERVER
@@ -71,4 +70,5 @@ class NSEntity:NSTrigger
 	virtual void(vector) SetAngles;
 	virtual void(vector) SetOrigin;
 	virtual void(vector, vector) SetSize;
+	virtual void(string, string) SpawnKey;
 };
