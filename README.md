@@ -72,7 +72,7 @@ You want this plugin if you want playback of a variety of media formats, includi
 This is the only component that requires a C++ compiler. 
 
 ## Support
-Join us on irc.vera-visions.com and chat if you're interested in using this in production.
+Join us in #nuclide on irc.libera.chat and chat if you're interested in using this in production.
 **All this is provided to you for free as-is otherwise.**
 
 ## Special Thanks

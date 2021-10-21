@@ -61,7 +61,6 @@ entity eActivator;
 .float deaths;
 .float identity;
 .float botinfo;
-.void(float) Save;
 
 /* in idTech the .owner field causes collisions to fail against set entity,
  * we don't want this all of the time. so use this as a fallback */

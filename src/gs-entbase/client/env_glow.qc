@@ -38,6 +38,7 @@ class env_glow:NSEntity /* change to renderablentity? */
 	float m_flScale;
 
 	void(void) env_glow;
+
 	virtual float() predraw;
 	virtual void(string, string) SpawnKey;
 	virtual void(void) RendererRestarted;
@@ -169,7 +170,9 @@ env_glow::env_glow(void)
 	drawmask = MASK_ENGINE;
 	setsize(this, [0,0,0], [0,0,0]);
 	effects &= ~EF_NOSHADOW;
+	
 	Init();
+
 	RendererRestarted();
 	setorigin(this, origin);
 }

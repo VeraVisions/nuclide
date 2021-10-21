@@ -150,6 +150,17 @@ NSIO::Respawn(void)
 {
 	// Respawn code goes here...
 }
+
+void
+NSIO::Save(float handle)
+{
+	
+}
+void
+NSIO::Restore(float handle)
+{
+	
+}
 #endif
 
 /*

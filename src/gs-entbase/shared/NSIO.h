@@ -47,6 +47,9 @@ class NSIO
 	/* whenever gamerules want entities to respawn */
 	virtual void(void) Respawn;
 
+	virtual void(float) Save;
+	virtual void(float) Restore;
+
 	/* Handle incoming entities input messaging */
 	virtual void(entity, string, string) Input;
 #endif

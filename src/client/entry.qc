@@ -134,7 +134,6 @@ CSQC_RendererRestarted(string rstr)
 	View_Init();
 	ClientGame_RendererRestart(rstr);
 	HUD_Init();
-	Damage_Precache();
 
 	/* GS-Entbase */
 	Fade_Init();

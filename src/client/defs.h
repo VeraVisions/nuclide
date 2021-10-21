@@ -66,9 +66,6 @@ int g_iIntermission;
 /* this actually belongs in builtins.h since its an undocumented global */
 float clframetime;
 
-/* prototypes */
-void Damage_Draw(void);
-
 string(string modelname, int frame, float frametime) spriteframe = #0;
 
 void

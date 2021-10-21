@@ -521,13 +521,6 @@ as they do not exist yet. Keep this in mind.
 var int autocvar_sv_levelexec = 1;
 
 void
-worldspawn_save(float fh)
-{
-	SAVE_VECTOR(fh, "origin", self.origin);
-	SAVE_STRING(fh, "model", self.model);
-}
-
-void
 worldspawn(void)
 {
 	iprint("Initializing World");
@@ -561,8 +554,6 @@ worldspawn(void)
 		}
 		forceinfokey(world, "skyname", self.skyname);
 	}
-
-	self.Save = worldspawn_save;
 }
 
 /*
@@ -669,8 +660,10 @@ SV_PerformLoad(float fh)
 	entity eold;
 	string l;
 	float n;
-	eold = self;
 	e = world;
+
+	int inentity;
+	int inworld;
 
 /*
 	while ((e=nextent(e))) {
@@ -680,6 +673,7 @@ SV_PerformLoad(float fh)
 */
 
 #if 1
+	/* read line per line of our file handle */
 	while ((l=fgets(fh))) {
 		float braced = FALSE;
 		float args = tokenize(l);
@@ -687,10 +681,6 @@ SV_PerformLoad(float fh)
 		if (!args)
 			break;
 
-		if (args != 3) {
-			continue;
-		}
-		
 		if (argv(0) == "ENTITY") {
 			string cname;
 			n = stof(argv(1));
@@ -702,17 +692,16 @@ SV_PerformLoad(float fh)
 			print(sprintf("Try spawning %s\n", cname));
 			/* call the constructor if one is present, init the default fields */
 			if (isfunction(strcat("spawnfunc_", cname))) {
+				NSEntity willload;
 				e.classname = cname;
 				print(sprintf("I'm actually spawning %s\n", cname));
 
+				eold = self;
 				self = e;
 				callfunction(strcat("spawnfunc_", cname));
 				e.classname = cname;
 				self = eold;
-
-				setmodel(e, e.model);
-				setsize(e, e.mins, e.maxs);
-				setorigin(e, e.origin);
+				inentity = TRUE;
 			} else {
 				print(sprintf("Could not spawn %s\n", cname));
 				remove(e);
@@ -720,6 +709,13 @@ SV_PerformLoad(float fh)
 			}
 		} else if (argv(1) == "GLOBAL") {
 			// TODO
+		} else if (argv(0) == "{") {
+			if (inentity)
+
+				willload = (NSEntity)e;
+				willload.Restore(fh);
+		} else if (argv(0) == "}") {
+			
 		}
 	}
 #endif
@@ -732,6 +728,7 @@ SV_PerformSave(float fh, float numents)
 	entity e;
 
 	for (i = 0; i < numents; i++) {
+		NSEntity willsave;
 		e = edict_num(i);
 
 		if (e==world && i)
@@ -740,15 +737,14 @@ SV_PerformSave(float fh, float numents)
 		if (wasfreed(e))
 			continue;
 
-		if (e.Save) {
-			entity oself = self;
-			self = e;
-			fputs(fh, sprintf("ENTITY \"%d\" %S\n", i, e.classname));
-			fputs(fh, "{ ");
-			e.Save(fh);
-			fputs(fh, "}\n");
-			self = oself;
-		}
+		if (e.identity == 0)
+			continue;
+
+		willsave = (NSEntity)e;
+		fputs(fh, sprintf("ENTITY \"%d\" %S\n", i, willsave.classname));
+		fputs(fh, "{ ");
+		willsave.Save(fh);
+		fputs(fh, "}\n");
 	}
 	fclose(fh);
 }
