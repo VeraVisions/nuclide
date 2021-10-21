@@ -407,6 +407,36 @@ PMoveCustom_Fix_Origin(void)
 			}
 		}
 	}
+
+	/* still not done */
+	for (z = 0; z < 3; z++) {
+		norg = oorg;
+		norg[z] = oorg[z] + 0.25;
+		tracebox(norg, self.mins, self.maxs, norg, MOVE_NORMAL, self);
+		if (!trace_startsolid) {
+			self.origin = norg;
+			return (1);
+		}
+		
+		norg = oorg;
+		norg[z] = oorg[z] - 0.25;
+		tracebox(norg, self.mins, self.maxs, norg, MOVE_NORMAL, self);
+		if (!trace_startsolid) {
+			self.origin = norg;
+			return (1);
+		}
+	}
+
+	for (z = 0; z < 64; z++) {
+		norg = oorg;
+		norg[2] += z * 0.125;
+		tracebox(norg, self.mins, self.maxs, norg, MOVE_NORMAL, self);
+		if (!trace_startsolid) {
+			tracebox(norg, self.mins, self.maxs, norg + [0,0,18], MOVE_NORMAL, self);
+			self.origin = norg;
+			return (1);
+		}
+	}
 	return (0);
 }
 
@@ -441,6 +471,7 @@ PMoveCustom_Move(void)
 
 		if (trace_startsolid) {
 			if (!PMoveCustom_Fix_Origin()) {
+				dprint("PHYSICS ERROR: We are stuck!\n");
 				return;
 			}
 			continue;
@@ -527,6 +558,8 @@ PMoveCustom_Move(void)
 
 	/* make sure that the basevelocity we've applied is discarded by next frame */
 	self.velocity -= self.basevelocity;
+
+	tracebox(self.origin, self.mins, self.maxs, self.origin, MOVE_NORMAL, self);
 }
 
 /* this is called for when we want to run the custom QC player physics */
