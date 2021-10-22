@@ -31,6 +31,8 @@ class NSRenderableEntity:NSEntity
 	virtual float(entity, float) SendEntity;
 	virtual void(entity, string, string) Input;
 	virtual void(void) Respawn;
+	virtual void(float) Save;
+	virtual void(string,string) Restore;
 #else
 	virtual void(float flChanged) ReceiveEntity;
 	virtual float(void) predraw;

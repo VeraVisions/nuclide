@@ -32,6 +32,8 @@ class NSEntity:NSTrigger
 #ifdef SERVER
 	virtual void(void) Respawn;
 	virtual void(entity, string, string) Input;
+	virtual void(float) Save;
+	virtual void(string,string) Restore;
 #endif
 
 #ifdef SERVER

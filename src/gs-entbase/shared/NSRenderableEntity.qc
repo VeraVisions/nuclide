@@ -573,6 +573,68 @@ NSRenderableEntity::SetRenderColor(vector newColor)
 
 #ifdef SERVER
 void
+NSRenderableEntity::Save(float handle)
+{
+	SaveInt(handle, "body", m_iBody);
+	SaveFloat(handle, "scale", scale);
+	SaveFloat(handle, "skin", skin);
+	SaveFloat(handle, "effects", effects);
+
+#ifndef GS_RENDERFX
+	SaveVector(handle, "color", colormod);
+	SaveFloat(handle, "alpha", alpha);
+#else
+	SaveFloat(handle, "renderamt", m_flRenderAmt);
+	SaveVector(handle, "rendercolor", m_vecRenderColor);
+	SaveInt(handle, "rendermode", m_iRenderMode);
+	SaveInt(handle, "renderfx", m_iRenderFX);
+#endif
+
+	super::Save(handle);
+}
+void
+NSRenderableEntity::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "body":
+		m_iBody = stoi(strValue);
+		break;
+	case "scale":
+		scale = stof(strValue);
+		break;
+	case "skin":
+		skin = stof(strValue);
+		break;
+	case "effects":
+		effects = stof(strValue);
+		break;
+#ifndef GS_RENDERFX
+	case "color":
+		colormod = stov(strValue);
+		break;
+	case "alpha":
+		alpha = stof(strValue);
+		break;
+#else
+	case "renderamt":
+		m_flRenderAmt = stof(strValue) / 255;
+		break;
+	case "rendercolor":
+		m_vecRenderColor = stov(strValue) / 255;
+		break;
+	case "rendermode":
+		m_iRenderMode = stoi(strValue);
+		break;
+	case "renderfx":
+		m_iRenderFX = stoi(strValue);
+		break;
+#endif
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
+
+void
 NSRenderableEntity::Input(entity eAct, string strInput, string strData)
 {
 	switch (strInput) {

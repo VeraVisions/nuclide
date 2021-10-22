@@ -111,6 +111,8 @@ class NSTalkMonster:NSMonster
 	virtual void(void) TalkStopFollow;
 	virtual void(string, string) SpawnKey;
 	virtual float(entity, float) SendEntity;
+	virtual void(float) Save;
+	virtual void(string,string) Restore;
 #else
 
 	virtual float(void) predraw;

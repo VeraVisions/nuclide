@@ -661,9 +661,9 @@ SV_PerformLoad(float fh)
 	string l;
 	float n;
 	e = world;
+	int braced;
 
-	int inentity;
-	int inworld;
+	NSEntity loadent;
 
 /*
 	while ((e=nextent(e))) {
@@ -675,7 +675,6 @@ SV_PerformLoad(float fh)
 #if 1
 	/* read line per line of our file handle */
 	while ((l=fgets(fh))) {
-		float braced = FALSE;
 		float args = tokenize(l);
 
 		if (!args)
@@ -686,13 +685,13 @@ SV_PerformLoad(float fh)
 			n = stof(argv(1));
 			cname = argv(2);
 			e = edict_num(n);
+			loadent = __NULL__;
 
 			__fullspawndata = fgets(fh);
 
 			print(sprintf("Try spawning %s\n", cname));
 			/* call the constructor if one is present, init the default fields */
 			if (isfunction(strcat("spawnfunc_", cname))) {
-				NSEntity willload;
 				e.classname = cname;
 				print(sprintf("I'm actually spawning %s\n", cname));
 
@@ -700,22 +699,24 @@ SV_PerformLoad(float fh)
 				self = e;
 				callfunction(strcat("spawnfunc_", cname));
 				e.classname = cname;
+				loadent = (NSEntity)e;
 				self = eold;
-				inentity = TRUE;
 			} else {
 				print(sprintf("Could not spawn %s\n", cname));
 				remove(e);
 				continue;
 			}
-		} else if (argv(1) == "GLOBAL") {
-			// TODO
 		} else if (argv(0) == "{") {
-			if (inentity)
-
-				willload = (NSEntity)e;
-				willload.Restore(fh);
+			braced++;
 		} else if (argv(0) == "}") {
-			
+			braced--;
+		} else if (braced == 1) {
+			if (loadent) {
+				int c = tokenize(l);
+
+				if (c == 2)
+					loadent.Restore(argv(0), argv(1));
+			}
 		}
 	}
 #endif
@@ -742,7 +743,7 @@ SV_PerformSave(float fh, float numents)
 
 		willsave = (NSEntity)e;
 		fputs(fh, sprintf("ENTITY \"%d\" %S\n", i, willsave.classname));
-		fputs(fh, "{ ");
+		fputs(fh, "{\n");
 		willsave.Save(fh);
 		fputs(fh, "}\n");
 	}

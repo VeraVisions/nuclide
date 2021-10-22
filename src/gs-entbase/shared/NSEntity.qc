@@ -349,6 +349,55 @@ NSEntity::Respawn(void)
 }
 
 void
+NSEntity::Save(float handle)
+{
+	SaveVector(handle, "origin", origin);
+	SaveString(handle, "model", model);
+	SaveVector(handle, "angles", angles);
+	SaveString(handle, "targetname", targetname);
+	SaveString(handle, "target", target);
+	SaveFloat(handle, "health", health);
+	SaveString(handle, "parentname", m_parent);
+	SaveFloat(handle, "ignorepvs", pvsflags);
+	super::Save(handle);
+}
+void
+NSEntity::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "origin":
+		origin = stov(strValue);
+		break;
+	case "model":
+		model = strValue;
+		break;
+	case "angles":
+		angles = stov(strValue);
+		break;
+	case "solid":
+		solid = stof(strValue);
+		break;
+	case "targetname":
+		targetname = strValue;
+		break;
+	case "target":
+		target = strValue;
+		break;
+	case "health":
+		health = stof(strValue);
+		break;
+	case "parentname":
+		SetParent(strValue);
+		break;
+	case "ignorepvs":
+		pvsflags = PVSF_IGNOREPVS;
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
+
+void
 NSEntity::Input(entity eAct, string strInput, string strData)
 {
 	switch (strInput) {

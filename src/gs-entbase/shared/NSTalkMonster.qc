@@ -16,6 +16,102 @@
 
 #ifdef SERVER
 void
+NSTalkMonster::Save(float handle)
+{
+	SaveString(handle, "talkAnswer", m_talkAnswer);
+	SaveString(handle, "talkAsk", m_talkAsk);
+	SaveString(handle, "talkAllyShot", m_talkAllyShot);
+	SaveString(handle, "talkGreet", m_talkGreet);
+	SaveString(handle, "talkIdle", m_talkIdle);
+	SaveString(handle, "talkPanic", m_talkPanic);
+	SaveString(handle, "talkHearing", m_talkHearing);
+	SaveString(handle, "talkSmelling", m_talkSmelling);
+	SaveString(handle, "talkStare", m_talkStare);
+	SaveString(handle, "talkSurvived", m_talkSurvived);
+	SaveString(handle, "talkWounded", m_talkWounded);
+	SaveString(handle, "talkPlayerAsk", m_talkPlayerAsk);
+	SaveString(handle, "talkPlayerGreet", m_talkPlayerGreet);
+	SaveString(handle, "talkPlayerIdle", m_talkPlayerIdle);
+	SaveString(handle, "talkPlayerWounded1", m_talkPlayerWounded1);
+	SaveString(handle, "talkPlayerWounded2", m_talkPlayerWounded2);
+	SaveString(handle, "talkPlayerWounded3", m_talkPlayerWounded3);
+	SaveString(handle, "talkUnfollow", m_talkUnfollow);
+	SaveString(handle, "talkFollow", m_talkFollow);
+	SaveString(handle, "talkStopFollow", m_talkStopFollow);
+
+	super::Save(handle);
+}
+void
+NSTalkMonster::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "talkAnswer":
+		m_talkAnswer = strValue;
+		break;
+	case "talkAsk":
+		m_talkAsk = strValue;
+		break;
+	case "talkAllyShot":
+		m_talkAllyShot = strValue;
+		break;
+	case "talkGreet":
+		m_talkGreet = strValue;
+		break;
+	case "talkIdle":
+		m_talkIdle = strValue;
+		break;
+	case "talkPanic":
+		m_talkPanic = strValue;
+		break;
+	case "talkHearing":
+		m_talkHearing = strValue;
+		break;
+	case "talkSmelling":
+		m_talkSmelling = strValue;
+		break;
+	case "talkStare":
+		m_talkStare = strValue;
+		break;
+	case "talkSurvived":
+		m_talkSurvived = strValue;
+		break;
+	case "talkWounded":
+		m_talkWounded = strValue;
+		break;
+
+	case "talkPlayerAsk":
+		m_talkPlayerAsk = strValue;
+		break;
+	case "talkPlayerGreet":
+		m_talkPlayerGreet = strValue;
+		break;
+	case "talkPlayerIdle":
+		m_talkPlayerIdle = strValue;
+		break;
+	case "talkPlayerWounded1":
+		m_talkPlayerWounded1 = strValue;
+		break;
+	case "talkPlayerWounded2":
+		m_talkPlayerWounded2 = strValue;
+		break;
+	case "talkPlayerWounded3":
+		m_talkPlayerWounded3 = strValue;
+		break;
+	case "talkUnfollow":
+		m_talkUnfollow = strValue;
+		break;
+	case "talkFollow":
+		m_talkFollow = strValue;
+		break;
+	case "talkStopFollow":
+		m_talkStopFollow = strValue;
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
+
+void
 NSTalkMonster::WarnAllies(void)
 {
 	for (entity b = world; (b = find(b, ::classname, classname));) {

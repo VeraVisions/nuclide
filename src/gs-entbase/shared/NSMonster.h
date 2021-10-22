@@ -137,6 +137,9 @@ class NSMonster:NSSurfacePropEntity
 	void(void) NSMonster;
 
 #ifdef SERVER
+	virtual void(float) Save;
+	virtual void(string,string) Restore;
+
 	virtual void(void) touch;
 	virtual void(void) Hide;
 	virtual void(void) Respawn;

@@ -15,6 +15,34 @@
  */
 
 #ifdef SERVER
+void
+NSMonster::Save(float handle)
+{
+	SaveInt(handle, "TriggerCondition", m_iTriggerCondition);
+	SaveString(handle, "TriggerTarget", m_strTriggerTarget);
+	SaveFloat(handle, "flPitch", m_flPitch);
+	SaveInt(handle, "iFlags", m_iFlags);
+	super::Save(handle);
+}
+void
+NSMonster::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "TriggerCondition":
+		m_iTriggerCondition = stoi(strValue);
+		break;
+	case "TriggerTarget":
+		m_strTriggerTarget = strValue;
+		break;
+	case "flPitch":
+		m_flPitch = stof(strValue);
+		break;
+	case "iFlags":
+		m_iFlags = stoi(strValue);
+		break;
+	}
+}
+
 int
 NSMonster::AnimIdle(void)
 {

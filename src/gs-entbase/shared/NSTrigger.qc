@@ -102,6 +102,40 @@ NSTrigger::GetMaster(void)
 }
 
 void
+NSTrigger::Save(float handle)
+{
+	SaveString(handle, "killtarget", m_strKillTarget);
+	SaveString(handle, "message", m_strMessage);
+	SaveString(handle, "master", m_strMaster);
+	SaveInt(handle, "team_no", m_iTeam);
+	SaveFloat(handle, "delay", m_flDelay);
+	super::Save(handle);
+}
+void
+NSTrigger::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "killtarget":
+		m_strKillTarget = strValue;
+		break;
+	case "message":
+		m_strMessage = strValue;
+		break;
+	case "master":
+		m_strMaster = strValue;
+		break;
+	case "team_no":
+		m_iTeam = stoi(strValue);
+		break;
+	case "delay":
+		m_flDelay = stof(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
+
+void
 NSTrigger::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {

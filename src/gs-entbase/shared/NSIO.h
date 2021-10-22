@@ -48,7 +48,11 @@ class NSIO
 	virtual void(void) Respawn;
 
 	virtual void(float) Save;
-	virtual void(float) Restore;
+	virtual void(string,string) Restore;
+	nonvirtual void(float, string, float) SaveFloat;
+	nonvirtual void(float, string, int) SaveInt;
+	nonvirtual void(float, string, string) SaveString;
+	nonvirtual void(float, string, vector) SaveVector;
 
 	/* Handle incoming entities input messaging */
 	virtual void(entity, string, string) Input;

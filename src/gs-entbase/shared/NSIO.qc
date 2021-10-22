@@ -152,14 +152,56 @@ NSIO::Respawn(void)
 }
 
 void
-NSIO::Save(float handle)
+NSIO::SaveFloat(float handle, string key, float value)
 {
-	
+	fputs(handle, sprintf("%S \"%f\"\n", key, value));
 }
 void
-NSIO::Restore(float handle)
+NSIO::SaveInt(float handle, string key, int value)
 {
-	
+	fputs(handle, sprintf("%S \"%i\"\n", key, value));
+}
+void
+NSIO::SaveString(float handle, string key, string value)
+{
+	fputs(handle, sprintf("%S %S\n", key, value));
+}
+void
+NSIO::SaveVector(float handle, string key, vector value)
+{
+	fputs(handle, sprintf("%S \"%v\"\n", key, value));
+}
+
+
+void
+NSIO::Save(float handle)
+{
+	SaveString(handle, "OnTrigger", m_strOnTrigger);
+	SaveString(handle, "OnUser1", m_strOnUser1);
+	SaveString(handle, "OnUser2", m_strOnUser2);
+	SaveString(handle, "OnUser3", m_strOnUser3);
+	SaveString(handle, "OnUser4", m_strOnUser4);
+}
+void
+NSIO::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "OnTrigger":
+		m_strOnTrigger = strValue;
+		break;
+	case "OnUser1":
+		m_strOnUser1 = strValue;
+		break;
+	case "OnUser1":
+		m_strOnUser1 = strValue;
+		break;
+	case "OnUser1":
+		m_strOnUser1 = strValue;
+		break;
+	case "OnUser1":
+		m_strOnUser1 = strValue;
+		break;
+	}
 }
 #endif
 
