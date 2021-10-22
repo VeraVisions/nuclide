@@ -345,26 +345,22 @@ NSEntity::Respawn(void)
 	SetAngles(GetSpawnAngles());
 	SetOrigin(GetSpawnOrigin());
 	SetModel(GetSpawnModel());
-	target = m_oldstrTarget;
+	target = m_oldstrTarget; /* FIXME: Move into NSTrigger::Respawn */
 }
 
 void
 NSEntity::Save(float handle)
 {
-	SaveVector(handle, "origin", origin);
-	SaveVector(handle, "absmin", absmin);
-	SaveVector(handle, "absmax", absmax);
-	SaveVector(handle, "mins", mins);
-	SaveVector(handle, "maxs", mins);
-	SaveString(handle, "model", model);
-	SaveVector(handle, "angles", angles);
 	SaveFloat(handle, "solid", solid);
 	SaveFloat(handle, "movetype", movetype);
-	SaveString(handle, "targetname", targetname);
-	SaveString(handle, "target", target);
 	SaveFloat(handle, "health", health);
+	SaveFloat(handle, "pvsflags", pvsflags);
+	SaveVector(handle, "mins", mins);
+	SaveVector(handle, "maxs", maxs);
+	SaveVector(handle, "origin", origin);
+	SaveVector(handle, "angles", angles);
 	SaveString(handle, "parentname", m_parent);
-	SaveFloat(handle, "ignorepvs", pvsflags);
+	SaveString(handle, "model", model);
 	super::Save(handle);
 }
 void
@@ -373,6 +369,7 @@ NSEntity::Restore(string strKey, string strValue)
 	switch (strKey) {
 	case "origin":
 		origin = stov(strValue);
+		setorigin(this, origin);
 		break;
 	case "absmin":
 		absmin = stov(strValue);
@@ -382,12 +379,15 @@ NSEntity::Restore(string strKey, string strValue)
 		break;
 	case "mins":
 		mins = stov(strValue);
+		setsize(this, mins, maxs);
 		break;
 	case "maxs":
 		maxs = stov(strValue);
+		setsize(this, mins, maxs);
 		break;
 	case "model":
 		model = strValue;
+		setmodel(this, model);
 		break;
 	case "angles":
 		angles = stov(strValue);
@@ -398,20 +398,15 @@ NSEntity::Restore(string strKey, string strValue)
 	case "movetype":
 		movetype = stof(strValue);
 		break;
-	case "targetname":
-		targetname = strValue;
-		break;
-	case "target":
-		target = strValue;
-		break;
 	case "health":
 		health = stof(strValue);
 		break;
 	case "parentname":
-		SetParent(strValue);
+		if (strValue != "")
+			SetParent(strValue);
 		break;
-	case "ignorepvs":
-		pvsflags = PVSF_IGNOREPVS;
+	case "pvsflags":
+		pvsflags = stof(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
@@ -476,12 +471,6 @@ NSEntity::SpawnKey(string strKey, string strValue)
 		break;
 	case "solid":
 		solid = stof(strValue);
-		break;
-	case "targetname":
-		targetname = strValue;
-		break;
-	case "target":
-		target = strValue;
 		break;
 #ifdef SERVER
 	case "health":

@@ -31,6 +31,9 @@ NSTrigger::UseTargets(entity act, int state, float fDelay)
 		remove(self);
 	}
 
+	if (!target || target == "")
+		return;
+
 	if (fDelay > 0.0f) {
 		dprint(sprintf("^2%s::^3UseTargets^7: Triggering `%s`\n", 
 			this.classname, target));
@@ -55,7 +58,7 @@ NSTrigger::UseTargets(entity act, int state, float fDelay)
 			}
 		}
 
-		if (m_strKillTarget) {
+		if (m_strKillTarget && m_strKillTarget != "") {
 			entity eKill = find(world, ::targetname, m_strKillTarget);
 			if (eKill) {
 				remove(eKill);
@@ -104,6 +107,7 @@ NSTrigger::GetMaster(void)
 void
 NSTrigger::Save(float handle)
 {
+	SaveString(handle, "target", target);
 	SaveString(handle, "killtarget", m_strKillTarget);
 	SaveString(handle, "message", m_strMessage);
 	SaveString(handle, "master", m_strMaster);
@@ -115,20 +119,23 @@ void
 NSTrigger::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
+	case "target":
+		target = ReadString(strValue);
+		break;
 	case "killtarget":
-		m_strKillTarget = strValue;
+		m_strKillTarget = ReadString(strValue);
 		break;
 	case "message":
-		m_strMessage = strValue;
+		m_strMessage = ReadString(strValue);
 		break;
 	case "master":
-		m_strMaster = strValue;
+		m_strMaster = ReadString(strValue);
 		break;
 	case "team_no":
-		m_iTeam = stoi(strValue);
+		m_iTeam = ReadInt(strValue);
 		break;
 	case "delay":
-		m_flDelay = stof(strValue);
+		m_flDelay = ReadFloat(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
@@ -139,6 +146,9 @@ void
 NSTrigger::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
+	case "target":
+		target = strValue;
+		break;
 	case "killtarget":
 		m_strKillTarget = strValue;
 		break;

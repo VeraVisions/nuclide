@@ -686,6 +686,7 @@ SV_PerformLoad(float fh)
 #ifndef REEDICT
 			n = stof(argv(1));
 			e = edict_num(n);
+			print(sprintf("Creating edict num %d\n", n));
 #else
 			entity e = spawn();
 #endif
@@ -712,7 +713,6 @@ SV_PerformLoad(float fh)
 		} else if (argv(0) == "{") {
 		} else if (argv(0) == "}") {
 			if (loadent) {
-				loadent.Respawn();
 				loadent = __NULL__;
 			}
 		} else {

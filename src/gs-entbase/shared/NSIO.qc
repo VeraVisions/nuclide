@@ -154,52 +154,100 @@ NSIO::Respawn(void)
 void
 NSIO::SaveFloat(float handle, string key, float value)
 {
+	if (value)
 	fputs(handle, sprintf("%S \"%f\"\n", key, value));
 }
 void
 NSIO::SaveInt(float handle, string key, int value)
 {
+	if (value)
 	fputs(handle, sprintf("%S \"%i\"\n", key, value));
 }
 void
 NSIO::SaveString(float handle, string key, string value)
 {
+	if (value && value != "")
 	fputs(handle, sprintf("%S %S\n", key, value));
 }
 void
 NSIO::SaveVector(float handle, string key, vector value)
 {
+	if (value)
 	fputs(handle, sprintf("%S \"%v\"\n", key, value));
+}
+
+float
+NSIO::ReadFloat(string strValue)
+{
+	if (strValue && strValue != "")
+		return stof(strValue);
+	return __NULL__;
+}
+int
+NSIO::ReadInt(string strValue)
+{
+	if (strValue && strValue != "")
+		return stoi(strValue);
+	return __NULL__;
+}
+string
+NSIO::ReadString(string strValue)
+{
+	if (strValue && strValue != "")
+		return strValue;
+	return __NULL__;
+}
+vector
+NSIO::ReadVector(string strValue)
+{
+	if (strValue && strValue != "")
+		return stov(strValue);
+	return __NULL__;
 }
 
 
 void
 NSIO::Save(float handle)
 {
+	SaveFloat(handle, "nextthink", bound(0, (nextthink - time), nextthink));
+	SaveString(handle, "think", getentityfieldstring(findentityfield("think"), this));
 	SaveString(handle, "OnTrigger", m_strOnTrigger);
 	SaveString(handle, "OnUser1", m_strOnUser1);
 	SaveString(handle, "OnUser2", m_strOnUser2);
 	SaveString(handle, "OnUser3", m_strOnUser3);
 	SaveString(handle, "OnUser4", m_strOnUser4);
+	SaveString(handle, "targetname", targetname);
 }
 void
 NSIO::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
+	case "targetname":
+		targetname = ReadString(strValue);
+		break;
+	case "nextthink":
+		float nt = ReadFloat(strValue);
+
+		if (nt)
+			nextthink = time + stof(strValue);
+		break;
+	case "think":
+		think = externvalue(-1, strValue);
+		break;
 	case "OnTrigger":
-		m_strOnTrigger = strValue;
+		m_strOnTrigger = ReadString(strValue);
 		break;
 	case "OnUser1":
-		m_strOnUser1 = strValue;
+		m_strOnUser1 = ReadString(strValue);
 		break;
 	case "OnUser1":
-		m_strOnUser1 = strValue;
+		m_strOnUser1 = ReadString(strValue);
 		break;
 	case "OnUser1":
-		m_strOnUser1 = strValue;
+		m_strOnUser1 = ReadString(strValue);
 		break;
 	case "OnUser1":
-		m_strOnUser1 = strValue;
+		m_strOnUser1 = ReadString(strValue);
 		break;
 	}
 }
@@ -223,6 +271,9 @@ NSIO::SpawnKey(string strKey, string strValue)
 	case "zhlt_lightflags":
 	case "classname":
 	case "spawnflags":
+		break;
+	case "targetname":
+		targetname = strValue;
 		break;
 #ifdef SERVER
 	/* Input/Output system */
