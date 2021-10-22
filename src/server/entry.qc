@@ -653,6 +653,7 @@ SV_ShouldPause(float newstatus)
 	return newstatus;
 }
 
+//#define REEDICT 0
 void
 SV_PerformLoad(float fh)
 {
@@ -660,40 +661,42 @@ SV_PerformLoad(float fh)
 	entity eold;
 	string l;
 	float n;
-	e = world;
+	NSEntity loadent;
 	int braced;
 
-	NSEntity loadent;
 
-/*
+#ifdef REEDICT
 	while ((e=nextent(e))) {
 		if (edict_num(1) != e)
 			remove(e);
 	}
-*/
+#else
+	entity e = world;
+#endif
 
-#if 1
 	/* read line per line of our file handle */
 	while ((l=fgets(fh))) {
-		float args = tokenize(l);
+		float args = tokenize_console(l);
 
 		if (!args)
 			break;
 
 		if (argv(0) == "ENTITY") {
 			string cname;
+#ifndef REEDICT
 			n = stof(argv(1));
-			cname = argv(2);
 			e = edict_num(n);
+#else
+			entity e = spawn();
+#endif
+			cname = argv(2);
 			loadent = __NULL__;
 
 			__fullspawndata = fgets(fh);
 
-			print(sprintf("Try spawning %s\n", cname));
 			/* call the constructor if one is present, init the default fields */
 			if (isfunction(strcat("spawnfunc_", cname))) {
 				e.classname = cname;
-				print(sprintf("I'm actually spawning %s\n", cname));
 
 				eold = self;
 				self = e;
@@ -707,19 +710,21 @@ SV_PerformLoad(float fh)
 				continue;
 			}
 		} else if (argv(0) == "{") {
-			braced++;
 		} else if (argv(0) == "}") {
-			braced--;
-		} else if (braced == 1) {
+			if (loadent) {
+				loadent.Respawn();
+				loadent = __NULL__;
+			}
+		} else {
 			if (loadent) {
 				int c = tokenize(l);
 
-				if (c == 2)
+				if (c == 2) {
 					loadent.Restore(argv(0), argv(1));
+				}
 			}
 		}
 	}
-#endif
 }
 
 void

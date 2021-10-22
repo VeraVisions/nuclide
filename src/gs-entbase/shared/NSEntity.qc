@@ -352,8 +352,14 @@ void
 NSEntity::Save(float handle)
 {
 	SaveVector(handle, "origin", origin);
+	SaveVector(handle, "absmin", absmin);
+	SaveVector(handle, "absmax", absmax);
+	SaveVector(handle, "mins", mins);
+	SaveVector(handle, "maxs", mins);
 	SaveString(handle, "model", model);
 	SaveVector(handle, "angles", angles);
+	SaveFloat(handle, "solid", solid);
+	SaveFloat(handle, "movetype", movetype);
 	SaveString(handle, "targetname", targetname);
 	SaveString(handle, "target", target);
 	SaveFloat(handle, "health", health);
@@ -368,6 +374,18 @@ NSEntity::Restore(string strKey, string strValue)
 	case "origin":
 		origin = stov(strValue);
 		break;
+	case "absmin":
+		absmin = stov(strValue);
+		break;
+	case "absmax":
+		absmax = stov(strValue);
+		break;
+	case "mins":
+		mins = stov(strValue);
+		break;
+	case "maxs":
+		maxs = stov(strValue);
+		break;
 	case "model":
 		model = strValue;
 		break;
@@ -376,6 +394,9 @@ NSEntity::Restore(string strKey, string strValue)
 		break;
 	case "solid":
 		solid = stof(strValue);
+		break;
+	case "movetype":
+		movetype = stof(strValue);
 		break;
 	case "targetname":
 		targetname = strValue;
