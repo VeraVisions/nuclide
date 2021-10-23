@@ -40,16 +40,16 @@ Sound_ParseField(int i, int a)
 		if (a == 2) {
 			switch(argv(1)) {
 			case "idle":
-				g_sounds[i].dist_max = ATTN_IDLE;
+				g_sounds[i].dist_max = 1000 / ATTN_IDLE;
 				break;
 			case "static":
-				g_sounds[i].dist_max = ATTN_STATIC;
+				g_sounds[i].dist_max = 1000 / ATTN_STATIC;
 				break;
 			case "none":
-				g_sounds[i].dist_max = ATTN_NONE;
+				g_sounds[i].dist_max = 0;
 				break;
 			case "normal":
-				g_sounds[i].dist_max = ATTN_NORM;
+				g_sounds[i].dist_max = 1000 / ATTN_NORM;
 			default:
 				break;
 			}
@@ -151,6 +151,15 @@ Sound_ParseField(int i, int a)
 	}
 }
 
+static float
+Sound_GetAttenuation(int i)
+{
+	if (g_sounds[i].dist_max == 0)
+		return 0;
+	else
+		return cvar("s_nominaldistance") / g_sounds[i].dist_max;
+}
+
 int
 Sound_Parse(int i, string line, string shader)
 {
@@ -237,7 +246,7 @@ Sound_Precache(string shader)
 	g_sounds = (snd_t *)memrealloc(g_sounds, sizeof(snd_t), index, g_sounds_count);
 
 	g_sounds[index].volume = 1.0f;
-	g_sounds[index].dist_max = 1;
+	g_sounds[index].dist_max = 1000;
 	g_sounds[index].pitch_min = g_sounds[index].pitch_max = 100;
 	g_sounds[index].offset = 0;
 
@@ -303,7 +312,7 @@ Sound_Distance(entity target, string shader)
 
 	/* set pitch */
 	pitch = random(g_sounds[sample].pitch_min, g_sounds[sample].pitch_max);
-	radius = g_sounds[sample].dist_max;
+	radius = Sound_GetAttenuation(sample);
 	volume = g_sounds[sample].volume;
 
 	/* flags */
@@ -366,7 +375,7 @@ Sound_Play(entity target, int chan, string shader)
 
 	/* set pitch */
 	pitch = random(g_sounds[sample].pitch_min, g_sounds[sample].pitch_max);
-	radius = g_sounds[sample].dist_max;
+	radius = Sound_GetAttenuation(sample);
 	volume = g_sounds[sample].volume;
 
 	/* flags */
@@ -502,7 +511,7 @@ Sound_PlayAt(vector pos, string shader)
 #endif
 
 	/* really? this doesn't do any more? */
-	pointsound(pos, argv(r), g_sounds[sample].volume, g_sounds[sample].dist_max);
+	pointsound(pos, argv(r), g_sounds[sample].volume, Sound_GetAttenuation(sample));
 }
 
 #ifdef CLIENT
@@ -524,7 +533,7 @@ Sound_Update(entity target, int channel, int sample, float volume)
 
 	/* set pitch */
 	pitch = random(g_sounds[sample].pitch_min, g_sounds[sample].pitch_max);
-	radius = g_sounds[sample].dist_max;
+	radius = Sound_GetAttenuation(sample);
 	flag = 0;
 
 	/* flags */
