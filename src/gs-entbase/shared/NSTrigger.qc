@@ -141,6 +141,7 @@ NSTrigger::Restore(string strKey, string strValue)
 		super::Restore(strKey, strValue);
 	}
 }
+#endif
 
 void
 NSTrigger::SpawnKey(string strKey, string strValue)
@@ -149,6 +150,7 @@ NSTrigger::SpawnKey(string strKey, string strValue)
 	case "target":
 		target = strValue;
 		break;
+#ifdef SERVER
 	case "killtarget":
 		m_strKillTarget = strValue;
 		break;
@@ -164,12 +166,12 @@ NSTrigger::SpawnKey(string strKey, string strValue)
 	case "delay":
 		m_flDelay = stof(strValue);
 		break;
+#endif
 	default:
 		NSIO::SpawnKey(strKey, strValue);
 		break;
 	}
 }
-#endif
 
 void
 NSTrigger::NSTrigger(void)

@@ -166,6 +166,7 @@ prop_rope::predraw(void)
 		vector lit2 = /*[0.1,0.1,0.1] */ getlight(pos2) / 255;
 
 		makevectors(getproperty(VF_CL_VIEWANGLES));
+		setproperty(VF_ORIGIN, vecPlayer);
 		R_BeginPolygon(m_strShader, 0, 0);
 			R_PolygonVertex(pos1, [0,0], lit1, 1.0f);
 			R_PolygonVertex(pos2, [0,1], lit2, 1.0f);
@@ -195,10 +196,11 @@ prop_rope::predraw(void)
 #ifndef ROPE_RIBBON
 		draw_segment(pos1, pos2, 0);
 #else
-		vector lit1 = /*[0.1,0.1,0.1] */ getlight(pos1) / 255;
-		vector lit2 = /*[0.1,0.1,0.1] */ getlight(pos2) / 255;
+		vector lit1 = getlight(pos1) / 255;
+		vector lit2 = getlight(pos2) / 255;
 
 		makevectors(getproperty(VF_CL_VIEWANGLES));
+		setproperty(VF_ORIGIN, vecPlayer);
 		R_BeginPolygon(m_strShader, 0, 0);
 			R_PolygonVertex(pos1, [0,0], lit1, 1.0f);
 			R_PolygonVertex(pos2, [0,1], lit2, 1.0f);

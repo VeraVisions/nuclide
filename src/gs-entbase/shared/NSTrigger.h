@@ -47,11 +47,10 @@ class NSTrigger:NSIO
 	virtual int(void) GetMaster;
 
 	/* overrides */
-	virtual void(string, string) SpawnKey;
 	virtual void(float) Save;
 	virtual void(string,string) Restore;
-	
 #endif
+	virtual void(string, string) SpawnKey;
 };
 
 enum
