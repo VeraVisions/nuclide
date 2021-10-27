@@ -415,7 +415,7 @@ SurfData_Finish(void)
 void
 SurfData_Impact(entity e, int fl, vector org, vector ang)
 {
-	if (e == world) { /* the static world */
+	if (e == world || e.health == 0) { /* the static world */
 		switch (serverkeyfloat("*bspversion")) {
 		case BSPVER_HL:
 			float surf;
@@ -432,7 +432,7 @@ SurfData_Impact(entity e, int fl, vector org, vector ang)
 		default:
 			FX_Impact(IMPACT_DEFAULT, org, ang);
 		}
-	} else { /* props, entities */
+	} else { /* props */
 		NSSurfacePropEntity foo = (NSSurfacePropEntity)e;
 		FX_Impact(foo.GetSurfaceData(SURFDATA_FX_IMPACT), org, ang);
 	}
