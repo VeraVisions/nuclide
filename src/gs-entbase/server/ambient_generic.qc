@@ -67,13 +67,60 @@ class ambient_generic:NSPointTrigger
 	int m_iLoop;
 
 	void(void) ambient_generic;
-	
-	virtual void(void) Respawn;
-	virtual void(entity, int) UseNormal;
-	virtual void(entity, int) UseLoop;
+
+	/* overrides */
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual float(entity, float) SendEntity;
 	virtual void(string, string) SpawnKey;
+	virtual void(void) Respawn;
+
+	virtual void(entity, int) UseNormal;
+	virtual void(entity, int) UseLoop;
 };
+
+void
+ambient_generic::Save(float handle)
+{
+	SaveInt(handle, "loop", m_iLoop);
+	SaveInt(handle, "toggleswitch", m_iToggleSwitch);
+	SaveFloat(handle, "pitch", m_flPitch);
+	SaveFloat(handle, "radius", m_flRadius);
+	SaveFloat(handle, "volume", m_flVolume);
+	SaveString(handle, "soundpath", m_strSoundPath);
+	SaveString(handle, "activepath", m_strActivePath);
+	super::Save(handle);
+}
+
+void
+ambient_generic::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "loop":
+		m_iLoop = ReadInt(strValue);
+		break;
+	case "toggleswitch":
+		m_iToggleSwitch = ReadInt(strValue);
+		break;
+	case "pitch":
+		m_flPitch = ReadFloat(strValue);
+		break;
+	case "radius":
+		m_flRadius = ReadFloat(strValue);
+		break;
+	case "volume":
+		m_flVolume = ReadFloat(strValue);
+		break;
+	case "soundpath":
+		m_strSoundPath = ReadString(strValue);
+		break;
+	case "activepath":
+		m_strActivePath = ReadString(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 float
 ambient_generic::SendEntity(entity ePEnt, float fChanged)

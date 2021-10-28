@@ -30,13 +30,47 @@ class prop_door_rotating:NSPointTrigger
 
 	void(void) prop_door_rotating;
 
+	/* overrides */
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(void) Respawn;
-	virtual void(void) Interact;
 
+	virtual void(void) Interact;
 	virtual void(vector, void(void)) Turn;
 	virtual void(void) Opened;
 	virtual void(void) Closed;
 };
+
+void
+prop_door_rotating::Save(float handle)
+{
+	SaveVector(handle, "dest1", m_vecDest1);
+	SaveVector(handle, "dest2", m_vecDest2);
+	SaveFloat(handle, "distance", m_flDistance);
+	SaveFloat(handle, "speed", m_flSpeed);
+	super::Save(handle);
+}
+
+void
+prop_door_rotating::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "dest1":
+		m_vecDest1 = ReadVector(strValue);
+		break;
+	case "dest2":
+		m_vecDest2 = ReadVector(strValue);
+		break;
+	case "distance":
+		m_flDistance = ReadFloat(strValue);
+		break;
+	case "speed":
+		m_flSpeed = ReadFloat(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 prop_door_rotating::Turn(vector vecDest, void(void) vFunc)

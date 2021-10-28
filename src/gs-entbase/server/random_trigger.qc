@@ -40,10 +40,43 @@ class random_trigger:NSPointTrigger
 
 	void(void) random_trigger;
 
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(entity,int) Trigger;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
 };
+
+void
+random_trigger::Save(float handle)
+{
+	SaveFloat(handle, "min_time", m_flMinTime);
+	SaveFloat(handle, "rand_min", m_flRandMin);
+	SaveFloat(handle, "rand_max", m_flRandMax);
+	SaveInt(handle, "start_state", m_iStartState);
+	super::Save(handle);
+}
+
+void
+random_trigger::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "min_time":
+		m_flMinTime = ReadFloat(strValue);
+		break;
+	case "rand_min":
+		m_flRandMin = ReadFloat(strValue);
+		break;
+	case "rand_max":
+		m_flRandMax = ReadFloat(strValue);
+		break;
+	case "start_state":
+		m_iStartState = ReadInt(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 random_trigger::Trigger(entity act, int state)

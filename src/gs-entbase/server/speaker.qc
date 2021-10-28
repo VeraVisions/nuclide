@@ -71,11 +71,38 @@ class speaker:NSTalkMonster
 
 	void(void) speaker;
 
-	virtual void(void) Annouce;
+	/* overrides */
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(void) Respawn;
 	virtual void(entity, int) Trigger;
 	virtual void(string, string) SpawnKey;
+
+	virtual void(void) Annouce;
 };
+
+void
+speaker::Save(float handle)
+{
+	SaveString(handle, "sentence", m_strSentence);
+	SaveFloat(handle, "volume", m_flVolume);
+	super::Save(handle);
+}
+
+void
+speaker::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "sentence":
+		m_strSentence = ReadString(strValue);
+		break;
+	case "volume":
+		m_flVolume = ReadFloat(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 speaker::Annouce(void)

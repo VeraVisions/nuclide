@@ -39,19 +39,60 @@ class trigger_look:NSBrushTrigger
 {
 	float m_flFOV;
 	float m_flLookTime;
-	string m_strLookTarget;
 	float m_flDelay;
 	float m_flLooked;
+	string m_strLookTarget;
 
 	/* Input/Output */
 	string m_strOnTrigger;
 
 	void(void) trigger_look;
-	
+
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(void) Touch;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
 };
+
+void
+trigger_look::Save(float handle)
+{
+	SaveFloat(handle, "fov", m_flFOV);
+	SaveFloat(handle, "looktime", m_flLookTime);
+	SaveFloat(handle, "delay", m_flDelay);
+	SaveFloat(handle, "looked", m_flLooked);
+	SaveString(handle, "looktarget", m_strLookTarget);
+	SaveString(handle, "OnTrigger", m_strOnTrigger);
+	super::Save(handle);
+}
+
+void
+trigger_look::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "fov":
+		m_flFOV = ReadFloat(strValue);
+		break;
+	case "looktime":
+		m_flLookTime = ReadFloat(strValue);
+		break;
+	case "delay":
+		m_flDelay = ReadFloat(strValue);
+		break;
+	case "looked":
+		m_flLooked = ReadFloat(strValue);
+		break;
+	case "looktarget":
+		m_strLookTarget = ReadString(strValue);
+		break;
+	case "OnTrigger":
+		m_strOnTrigger = ReadString(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 trigger_look::Touch(void)

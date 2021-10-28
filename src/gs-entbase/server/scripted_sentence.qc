@@ -43,9 +43,51 @@ class scripted_sentence:NSPointTrigger
 
 	void(void) scripted_sentence;
 
+	/* overrides */
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(entity, int) Trigger;
 	virtual void(string, string) SpawnKey;
 };
+
+void
+scripted_sentence::Save(float handle)
+{
+	SaveString(handle, "speaker", m_strSpeaker);
+	SaveString(handle, "sentence", m_strSentence);
+	SaveFloat(handle, "delay", m_flDelay);
+	SaveFloat(handle, "wait", m_flWait);
+	SaveFloat(handle, "pitch", m_flPitch);
+	SaveFloat(handle, "duration", m_flDuration);
+	super::Save(handle);
+}
+
+void
+scripted_sentence::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "speaker":
+		m_strSpeaker = ReadString(strValue);
+		break;
+	case "sentence":
+		m_strSentence = ReadString(strValue);
+		break;
+	case "delay":
+		m_flDelay = ReadFloat(strValue);
+		break;
+	case "wait":
+		m_flWait = ReadFloat(strValue);
+		break;
+	case "pitch":
+		m_flPitch = ReadFloat(strValue);
+		break;
+	case "duration":
+		m_flDuration = ReadFloat(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 scripted_sentence::Trigger(entity act, int unused)

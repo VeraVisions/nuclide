@@ -47,10 +47,35 @@ class trigger_once:NSBrushTrigger
 
 	void(void) trigger_once;
 
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(void) touch;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
 };
+
+void
+trigger_once::Save(float handle)
+{
+	SaveString(handle, "OnStartTouch", m_strOnStartTouch);
+	SaveString(handle, "OnTrigger", m_strOnTrigger);
+	super::Save(handle);
+}
+
+void
+trigger_once::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "OnStartTouch":
+		m_strOnStartTouch = ReadString(strValue);
+		break;
+	case "OnTrigger":
+		m_strOnTrigger = ReadString(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 trigger_once::touch(void)

@@ -17,7 +17,6 @@
 class CBaseMomentary:NSRenderableEntity
 {
 	entity m_eUser;
-	float m_flProgress;
 	vector m_vecMoveDir;
 	vector m_vecPos1;
 	vector m_vecPos2;
@@ -29,9 +28,62 @@ class CBaseMomentary:NSRenderableEntity
 	float m_flReturnspeed;
 
 	void(void) CBaseMomentary;
+
+	/* overrides */
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 };
 
-void CBaseMomentary::CBaseMomentary(void)
+void
+CBaseMomentary::Save(float handle)
+{
+	SaveFloat(handle, "user", num_for_edict(m_eUser));
+	SaveVector(handle, "move_dir", m_vecMoveDir);
+	SaveVector(handle, "pos1", m_vecPos1);
+	SaveVector(handle, "pos2", m_vecPos2);
+	SaveFloat(handle, "distance", m_flDistance);
+	SaveFloat(handle, "progress", m_flProgress);
+	SaveFloat(handle, "speed", m_flSpeed);
+	SaveFloat(handle, "returnspeed", m_flReturnspeed);
+
+	super::Save(handle);
+}
+
+void
+CBaseMomentary::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "user":
+		m_eUser = edict_num(ReadFloat(strValue));
+		break;
+	case "move_dir":
+		m_vecMoveDir = ReadVector(strValue);
+		break;
+	case "pos1":
+		m_vecPos1 = ReadVector(strValue);
+		break;
+	case "pos2":
+		m_vecPos2 = ReadVector(strValue);
+		break;
+	case "distance":
+		m_flProgress = ReadFloat(strValue);
+		break;
+	case "progress":
+		m_flProgress = ReadFloat(strValue);
+		break;
+	case "speed":
+		m_flSpeed = ReadFloat(strValue);
+		break;
+	case "returnspeed":
+		m_flReturnspeed = ReadFloat(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
+
+void
+CBaseMomentary::CBaseMomentary(void)
 {
 	super::NSRenderableEntity();
 }

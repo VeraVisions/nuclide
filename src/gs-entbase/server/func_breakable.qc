@@ -127,15 +127,51 @@ class func_breakable:NSSurfacePropEntity
 	int m_pressDamage;*/
 
 	void(void) func_breakable;
+
+	/* overrides */
 	virtual void(void) Respawn;
-	virtual void(void) Explode;
-	virtual void(entity, int) Trigger;
-	virtual void(void) PlayerTouch;
-	/*virtual void(void) PressureDeath;*/
 	virtual void(void) Pain;
 	virtual void(void) Death;
 	virtual void(string, string) SpawnKey;
+	virtual void(entity, int) Trigger;
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
+
+	virtual void(void) Explode;
+	virtual void(void) PlayerTouch;
+	/*virtual void(void) PressureDeath;*/
 };
+
+void
+func_breakable::Save(float handle)
+{
+	SaveFloat(handle, "delay", m_flDelay);
+	SaveFloat(handle, "explode_mag", m_flExplodeMag);
+	SaveFloat(handle, "explode_rad", m_flExplodeRad);
+	SaveString(handle, "breakspawn", m_strBreakSpawn);
+	super::Save(handle);
+}
+
+void
+func_breakable::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "delay":
+		m_flDelay = ReadFloat(strValue);
+		break;
+	case "explode_mag":
+		m_flExplodeMag = ReadFloat(strValue);
+		break;
+	case "explode_rad":
+		m_flExplodeRad = ReadFloat(strValue);
+		break;
+	case "breakspawn":
+		m_strBreakSpawn = ReadString(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 func_breakable::Pain(void)

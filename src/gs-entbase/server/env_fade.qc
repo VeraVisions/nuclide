@@ -48,9 +48,36 @@ class env_fade:NSRenderableEntity
 	float m_flFadeHold;
 
 	void(void) env_fade;
+
+	/* overrides */
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(entity, int) Trigger;
 	virtual void(string, string) SpawnKey;
 };
+
+void
+env_fade::Save(float handle)
+{
+	SaveFloat(handle, "fade_duration", m_flFadeDuration);
+	SaveFloat(handle, "hold", m_flFadeHold);
+	super::Save(handle);
+}
+
+void
+env_fade::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "fade_duration":
+		m_flFadeDuration = ReadFloat(strValue);
+		break;
+	case "hold":
+		m_flFadeHold = ReadFloat(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 env_fade::Trigger(entity act, int state)

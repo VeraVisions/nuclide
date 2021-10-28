@@ -105,6 +105,8 @@ base_player
 	float underwater_dmg;
 	float pain_time;
 
+	virtual void(float) Save;
+	virtual void(string,string) Restore;
 	virtual void(void) Respawn;
 	virtual void(void) EvaluateEntity;
 	virtual float(entity, float) SendEntity;

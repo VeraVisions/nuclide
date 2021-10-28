@@ -43,12 +43,37 @@ class trigger_push:NSBrushTrigger
 
 	void(void) trigger_push;
 
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(void) touch;
 	virtual void(void) Respawn;
 	virtual void(entity, int) Trigger;
 	virtual void(void) SetMovementDirection;
 	virtual void(string, string) SpawnKey;
 };
+
+void
+trigger_push::Save(float handle)
+{
+	SaveVector(handle, "movedir", m_vecMoveDir);
+	SaveFloat(handle, "speed", m_flSpeed);
+	super::Save(handle);
+}
+
+void
+trigger_push::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "movedir":
+		m_vecMoveDir = ReadVector(strValue);
+		break;
+	case "speed":
+		m_flSpeed = ReadFloat(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 trigger_push::SetMovementDirection(void)

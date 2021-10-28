@@ -43,11 +43,36 @@ class trigger_counter:NSBrushTrigger
 
 	void(void) trigger_counter;
 
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(void) touch;
 	virtual void(entity,int) Trigger;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
 };
+
+void
+trigger_counter::Save(float handle)
+{
+	SaveInt(handle, "counted", m_iCounted);
+	SaveInt(handle, "maxcount", m_iMaxCount);
+	super::Save(handle);
+}
+
+void
+trigger_counter::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "counted":
+		m_iCounted = ReadInt(strValue);
+		break;
+	case "maxcount":
+		m_iMaxCount = ReadInt(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 trigger_counter::touch(void)

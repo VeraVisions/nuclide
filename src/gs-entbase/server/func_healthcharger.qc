@@ -40,12 +40,56 @@ class func_healthcharger:NSRenderableEntity
 	string m_strSndDone;
 
 	void(void) func_healthcharger;
-	virtual void(void) customphysics;
-	virtual void(void) OnPlayerUse;
+
+	/* overrides */
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(string, string) SpawnKey;
-	virtual void(void) ResetHealth;
+	virtual void(void) customphysics;
 	virtual void(void) Respawn;
+
+	virtual void(void) OnPlayerUse;
+	virtual void(void) ResetHealth;
 };
+
+void
+func_healthcharger::Save(float handle)
+{
+	SaveFloat(handle, "user", num_for_edict(m_eUser));
+	SaveFloat(handle, "delay", m_flDelay);
+	SaveFloat(handle, "check", m_flCheck);
+	SaveString(handle, "snd_first", m_strSndFirst);
+	SaveString(handle, "snd_charging", m_strSndCharging);
+	SaveString(handle, "snd_done", m_strSndDone);
+	super::Save(handle);
+}
+
+void
+func_healthcharger::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "user":
+		m_eUser = edict_num(ReadFloat(strValue));
+		break;
+	case "delay":
+		m_flDelay = ReadFloat(strValue);
+		break;
+	case "check":
+		m_flCheck = ReadFloat(strValue);
+		break;
+	case "snd_first":
+		m_strSndFirst = ReadString(strValue);
+		break;
+	case "snd_charging":
+		m_strSndCharging = ReadString(strValue);
+		break;
+	case "snd_done":
+		m_strSndDone = ReadString(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 func_healthcharger::ResetHealth(void)

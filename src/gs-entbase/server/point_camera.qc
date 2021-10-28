@@ -42,19 +42,61 @@ This entity was introduced in Half-Life 2 (2004).
 
 class point_camera:NSPointTrigger
 {
-	float m_flFOV;
 	int m_iUseSAR;
 	int m_iUseFog;
 	vector m_vecFogColor;
 	float m_flFogStart;
 	float m_flFogEnd;
+	float m_flFOV;
 
 	void(void) point_camera;
 
+	/* overrides */
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(entity,string,string) Input;
 	virtual void(string,string) SpawnKey;
 	virtual void(void) Respawn;
 };
+
+void
+point_camera::Save(float handle)
+{
+	SaveInt(handle, "use_sar", m_iUseSAR);
+	SaveInt(handle, "use_fog", m_iUseFog);
+	SaveVector(handle, "fog_color", m_vecFogColor);
+	SaveFloat(handle, "fog_start", m_flFogStart);
+	SaveFloat(handle, "fog_end", m_flFogEnd);
+	SaveFloat(handle, "fov", m_flFOV);
+	super::Save(handle);
+}
+
+void
+point_camera::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "use_sar":
+		m_iUseSAR = ReadInt(strValue);
+		break;
+	case "use_fog":
+		m_iUseFog = ReadInt(strValue);
+		break;
+	case "fog_color":
+		m_vecFogColor = ReadVector(strValue);
+		break;
+	case "fog_start":
+		m_flFogStart = ReadFloat(strValue);
+		break;
+	case "fog_end":
+		m_flFogEnd = ReadFloat(strValue);
+		break;
+	case "fov":
+		m_flFOV = ReadFloat(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 point_camera::Input(entity eAct, string strInput, string strData)

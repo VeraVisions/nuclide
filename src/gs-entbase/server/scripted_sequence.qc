@@ -103,13 +103,57 @@ class scripted_sequence:NSPointTrigger
 	int m_iMove;
 
 	void(void) scripted_sequence;
+
+	/* overrides */
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(entity, int) Trigger;
+	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
+	
 	virtual void(entity) RunOnEntity;
 	virtual void(void) InitIdle;
-	virtual void(void) Respawn;
 	virtual void(void) touch;
-	virtual void(string, string) SpawnKey;
 };
+
+void
+scripted_sequence::Save(float handle)
+{
+	SaveInt(handle, "enabled", m_iEnabled);
+	SaveString(handle, "monster", m_strMonster);
+	SaveString(handle, "action_anim", m_strActionAnim);
+	SaveString(handle, "idle_anim", m_strIdleAnim);
+	SaveFloat(handle, "search_radius", m_flSearchRadius);
+	SaveInt(handle, "move", m_iMove);
+	super::Save(handle);
+}
+
+void
+scripted_sequence::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "enabled":
+		m_iEnabled = ReadInt(strValue);
+		break;
+	case "monster":
+		m_strMonster = ReadString(strValue);
+		break;
+	case "action_anim":
+		m_strActionAnim = ReadString(strValue);
+		break;
+	case "idle_anim":
+		m_strIdleAnim = ReadString(strValue);
+		break;
+	case "search_radius":
+		m_flSearchRadius = ReadFloat(strValue);
+		break;
+	case "move":
+		m_iMove = ReadInt(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 scripted_sequence::RunOnEntity(entity targ)

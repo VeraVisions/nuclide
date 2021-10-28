@@ -49,10 +49,32 @@ class game_player_equip:NSPointTrigger
 
 	void(void) game_player_equip;
 
-	virtual void(string, vector) SpawnUnit;
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(entity, int) Trigger;
 	virtual void(string, string) SpawnKey;
+
+	virtual void(string, vector) SpawnUnit;
 };
+
+void
+game_player_equip::Save(float handle)
+{
+	SaveString(handle, "buffer", m_strBuffer);
+	super::Save(handle);
+}
+
+void
+game_player_equip::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "buffer":
+		m_strBuffer = ReadString(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 game_player_equip::SpawnUnit(string cname, vector org)

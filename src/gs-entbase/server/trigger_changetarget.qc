@@ -33,9 +33,30 @@ class trigger_changetarget:NSPointTrigger
 
 	void(void) trigger_changetarget;
 
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(entity,int) Trigger;
 	virtual void(string, string) SpawnKey;
 };
+
+void
+trigger_changetarget::Save(float handle)
+{
+	SaveString(handle, "new_target", m_strNewTarget);
+	super::Save(handle);
+}
+
+void
+trigger_changetarget::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "new_target":
+		m_strNewTarget = ReadString(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 trigger_changetarget::Trigger(entity act, int state)

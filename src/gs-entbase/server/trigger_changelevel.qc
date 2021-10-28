@@ -48,22 +48,57 @@ enumflags
 
 class trigger_changelevel:NSBrushTrigger
 {
+	float m_flChangeDelay;
 	string m_strMap;
 	string m_strLandmark;
-	float m_flChangeDelay;
+	string m_strOnLevelChange;
 	entity m_activator;
 
-	string m_strOnLevelChange;
-
 	void(void) trigger_changelevel;
-	virtual void(void) Change;
+
+	/* overrides */
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(entity, int) Trigger;
-	virtual void(void) TouchTrigger;
 	virtual void(void) Respawn;
-	virtual int(entity, entity) IsInside;
 	virtual void(entity, string, string) Input;
 	virtual void(string, string) SpawnKey;
+
+	virtual void(void) Change;
+	virtual void(void) TouchTrigger;
+	virtual int(entity, entity) IsInside;
 };
+
+void
+trigger_changelevel::Save(float handle)
+{
+	SaveFloat(handle, "changedelay", m_flChangeDelay);
+	SaveString(handle, "map", m_strMap);
+	SaveString(handle, "landmark", m_strLandmark);
+	SaveString(handle, "OnLevelChange", m_strOnLevelChange);
+	super::Save(handle);
+}
+
+void
+trigger_changelevel::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "changedelay":
+		m_flChangeDelay = ReadFloat(strValue);
+		break;
+	case "map":
+		m_strMap = ReadString(strValue);
+		break;
+	case "landmark":
+		m_strLandmark = ReadString(strValue);
+		break;
+	case "OnLevelChange":
+		m_strOnLevelChange = ReadString(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 int
 trigger_changelevel::IsInside(entity ePlayer, entity eVolume)

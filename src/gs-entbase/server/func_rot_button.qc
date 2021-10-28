@@ -64,13 +64,21 @@ class func_rot_button:NSRenderableEntity
 {
 	vector m_vecMoveAngle;
 	int m_iState;
+	int m_iHealth;
 
 	float m_flSpeed;
 	float m_flDistance;
 	float m_flReturnTime;
-	int m_iHealth;
 
 	void(void) func_rot_button;
+
+	/* overrides */
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
+	virtual void(string, string) SpawnKey;
+	virtual void(void) touch;
+	virtual void(void) Respawn;
+	virtual void(void) Death;
 
 	virtual void(void) ArrivedClosed;
 	virtual void(void) ArrivedOpened;
@@ -78,11 +86,46 @@ class func_rot_button:NSRenderableEntity
 	virtual void(vector, void()) Rotate;
 	virtual void(void) TurnToggle;
 	virtual void(void) OnPlayerUse;
-	virtual void(void) Respawn;
-	virtual void(void) Death;
-	virtual void(void) touch;
-	virtual void(string, string) SpawnKey;
 };
+
+void
+func_rot_button::Save(float handle)
+{
+	SaveVector(handle, "moveangle", m_vecMoveAngle);
+	SaveInt(handle, "state", m_iState);
+	SaveInt(handle, "health", m_iHealth);
+	SaveFloat(handle, "speed", m_flSpeed);
+	SaveFloat(handle, "distance", m_flDistance);
+	SaveFloat(handle, "returntime", m_flReturnTime);
+	super::Save(handle);
+}
+
+void
+func_rot_button::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "moveangle":
+		m_vecMoveAngle = ReadVector(strValue);
+		break;
+	case "state":
+		m_iState = ReadInt(strValue);
+		break;
+	case "health":
+		m_iHealth = ReadInt(strValue);
+		break;
+	case "speed":
+		m_flSpeed = ReadFloat(strValue);
+		break;
+	case "distance":
+		m_flDistance = ReadFloat(strValue);
+		break;
+	case "returntime":
+		m_flReturnTime = ReadFloat(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 func_rot_button::TriggerTargets(void)

@@ -50,6 +50,29 @@ class trigger_relay:NSPointTrigger
 };
 
 void
+trigger_relay::Save(float handle)
+{
+	SaveInt(handle, "trigger_state", m_iTriggerState);
+	SaveInt(handle, "enabled", m_iEnabled);
+	super::Save(handle);
+}
+
+void
+trigger_relay::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "trigger_state":
+		m_iTriggerState = ReadInt(strValue);
+		break;
+	case "enabled":
+		m_iEnabled = ReadInt(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
+
+void
 trigger_relay::Trigger(entity act, int state)
 {
 	if (m_iEnabled == FALSE)

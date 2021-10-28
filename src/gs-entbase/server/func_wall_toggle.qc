@@ -38,10 +38,36 @@ class func_wall_toggle:NSRenderableEntity
 	int m_iVisible;
 
 	void(void) func_wall_toggle;
+
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(void) Respawn;
 	virtual void(entity, int) Trigger;
 	virtual void(entity, string, string) Input;
 };
+
+void
+func_wall_toggle::Save(float handle)
+{
+	SaveInt(handle, "old_modelindex", m_oldmodelindex);
+	SaveInt(handle, "visible", m_iVisible);
+	super::Save(handle);
+}
+
+void
+func_wall_toggle::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "old_modelindex":
+		m_oldmodelindex = ReadInt(strValue);
+		break;
+	case "visible":
+		m_iVisible = ReadInt(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 func_wall_toggle::Trigger(entity act, int state)

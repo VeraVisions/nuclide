@@ -41,10 +41,45 @@ class player_loadsaved:NSRenderableEntity // for the rendercolor values
 
 	void(void) player_loadsaved;
 
+	/* overrides */
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(entity, int) Trigger;
-	virtual void(void) ReloadSave;
 	virtual void(string, string) SpawnKey;
+
+	virtual void(void) ReloadSave;
 };
+
+void
+player_loadsaved::Save(float handle)
+{
+	SaveString(handle, "message", m_strMessage);
+	SaveFloat(handle, "load_time", m_flLoadTime);
+	SaveFloat(handle, "fade_duration", m_flFadeDuration);
+	SaveFloat(handle, "fade_hold", m_flFadeHold);
+	super::Save(handle);
+}
+
+void
+player_loadsaved::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "message":
+		m_strMessage = ReadString(strValue);
+		break;
+	case "load_time":
+		m_flLoadTime = ReadFloat(strValue);
+		break;
+	case "fade_duration":
+		m_flFadeDuration = ReadFloat(strValue);
+		break;
+	case "fade_hold":
+		m_flFadeHold = ReadFloat(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 player_loadsaved::ReloadSave(void)

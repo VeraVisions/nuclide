@@ -37,10 +37,34 @@ class target_cdaudio:NSPointTrigger
 	int m_iCDTrack;
 
 	void(void) target_cdaudio;
+
 	virtual void(void) touch;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
 };
+
+void
+target_cdaudio::Save(float handle)
+{
+	SaveFloat(handle, "radius", m_flRadius);
+	SaveInt(handle, "cdtrack", m_iCDTrack);
+	super::Save(handle);
+}
+
+void
+target_cdaudio::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "radius":
+		m_flRadius = ReadFloat(strValue);
+		break;
+	case "cdtrack":
+		m_iCDTrack = ReadInt(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 target_cdaudio::touch(void)

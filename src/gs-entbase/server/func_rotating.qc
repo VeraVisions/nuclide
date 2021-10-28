@@ -71,13 +71,49 @@ class func_rotating:NSRenderableEntity
 	float m_flDir;
 
 	void(void) func_rotating;
+
+	/* overrides */
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(void) Respawn;
 	virtual void(entity, int) Trigger;
+	virtual void(string, string) SpawnKey;
+
 	virtual void(void) Rotate;
 	virtual void(void) Blocked;
 	virtual void(void) SetMovementDirection;
-	virtual void(string, string) SpawnKey;
 };
+
+void
+func_rotating::Save(float handle)
+{
+	SaveVector(handle, "movedir", m_vecMoveDir);
+	SaveFloat(handle, "speed", m_flSpeed);
+	SaveFloat(handle, "damage", m_flDamage);
+	SaveFloat(handle, "dir", m_flDir);
+	super::Save(handle);
+}
+
+void
+func_rotating::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "movedir":
+		m_vecMoveDir = ReadVector(strValue);
+		break;
+	case "speed":
+		m_flSpeed = ReadFloat(strValue);
+		break;
+	case "damage":
+		m_flDamage = ReadFloat(strValue);
+		break;
+	case "dir":
+		m_flDir = ReadFloat(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 func_rotating::Rotate(void)

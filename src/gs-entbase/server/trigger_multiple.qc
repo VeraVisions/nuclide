@@ -49,10 +49,40 @@ class trigger_multiple:NSBrushTrigger
 	string m_strOnTrigger;
 
 	void(void) trigger_multiple;
+
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(void) touch;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
 };
+
+void
+trigger_multiple::Save(float handle)
+{
+	SaveFloat(handle, "wait", m_flWait);
+	SaveString(handle, "OnStartTouch", m_strOnStartTouch);
+	SaveString(handle, "OnTrigger", m_strOnTrigger);
+	super::Save(handle);
+}
+
+void
+trigger_multiple::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "wait":
+		m_flWait = ReadFloat(strValue);
+		break;
+	case "OnStartTouch":
+		m_strOnStartTouch = ReadString(strValue);
+		break;
+	case "OnTrigger":
+		m_strOnTrigger = ReadString(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 trigger_multiple::touch(void)

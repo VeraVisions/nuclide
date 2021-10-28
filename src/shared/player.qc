@@ -177,6 +177,105 @@ base_player::PredictPostFrame(void)
 	ROLL_BACK(vehicle);
 }
 #else
+void
+base_player::Save(float handle)
+{
+	SaveFloat(handle, "health", health);
+	SaveFloat(handle, "armor", armor);
+	SaveFloat(handle, "modelindex", modelindex);
+	SaveVector(handle, "origin", origin);
+	SaveVector(handle, "velocity", velocity);
+	SaveVector(handle, "angles", angles);
+	SaveFloat(handle, "colormap", colormap);
+	SaveFloat(handle, "flags", flags);
+	SaveFloat(handle, "gflags", gflags);
+	SaveFloat(handle, "viewzoom", viewzoom);
+	SaveVector(handle, "view_ofs", view_ofs);
+	SaveVector(handle, "v_angle", v_angle);
+	SaveVector(handle, "punchangle", punchangle);
+	SaveFloat(handle, "movetype", movetype);
+	SaveFloat(handle, "pmove_flags", pmove_flags);
+	SaveFloat(handle, "w_attack_next", w_attack_next);
+	SaveFloat(handle, "w_idle_next", w_idle_next);
+	SaveFloat(handle, "teleport_time", teleport_time);
+	SaveFloat(handle, "weapontime", weapontime);
+	SaveInt(handle, "g_items", g_items);
+	SaveFloat(handle, "activeweapon", activeweapon);
+	SaveFloat(handle, "vehicle", num_for_edict(vehicle));
+}
+
+void
+base_player::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "health":
+		health = ReadFloat(strValue);
+		break;
+	case "armor":
+		armor = ReadFloat(strValue);
+		break;
+	case "modelindex":
+		modelindex = ReadFloat(strValue);
+		break;
+	case "origin":
+		origin = ReadVector(strValue);
+		break;
+	case "velocity":
+		velocity = ReadVector(strValue);
+		break;
+	case "angles":
+		angles = ReadVector(strValue);
+		break;
+	case "colormap":
+		colormap = ReadFloat(strValue);
+		break;
+	case "flags":
+		flags = ReadFloat(strValue);
+		break;
+	case "gflags":
+		gflags = ReadFloat(strValue);
+		break;
+	case "view_ofs":
+		view_ofs = ReadVector(strValue);
+		break;
+	case "v_angle":
+		v_angle = ReadVector(strValue);
+		break;
+	case "punchangle":
+		punchangle = ReadVector(strValue);
+		break;
+	case "movetype":
+		movetype = ReadFloat(strValue);
+		break;
+	case "pmove_flags":
+		pmove_flags = ReadFloat(strValue);
+		break;
+	case "w_attack_next":
+		w_attack_next = ReadFloat(strValue);
+		break;
+	case "w_idle_next":
+		w_idle_next = ReadFloat(strValue);
+		break;
+	case "teleport_time":
+		teleport_time = ReadFloat(strValue);
+		break;
+	case "weapontime":
+		weapontime = ReadFloat(strValue);
+		break;
+	case "g_items":
+		g_items = ReadInt(strValue);
+		break;
+	case "activeweapon":
+		activeweapon = ReadFloat(strValue);
+		break;
+	case "vehicle":
+		vehicle = edict_num(ReadFloat(strValue));
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
+
 /*
 =================
 base_player::Respawn

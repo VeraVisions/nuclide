@@ -51,9 +51,36 @@ class env_explosion:NSPointTrigger
 	float m_flMaxDelay;
 
 	void(void) env_explosion;
+
+	/* overrides */
+	virtual void(float) Save;
+	virtual void(string,string) Restore;
 	virtual void(entity, int) Trigger;
 	virtual void(string, string) SpawnKey;
 };
+
+void
+env_explosion::Save(float handle)
+{
+	SaveInt(handle, "magnitude", m_iMagnitude);
+	SaveFloat(handle, "max_delay", m_flMaxDelay);
+	super::Save(handle);
+}
+
+void
+env_explosion::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "magnitude":
+		m_iMagnitude = ReadInt(strValue);
+		break;
+	case "max_delay":
+		m_flMaxDelay = ReadFloat(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 env_explosion::Trigger(entity act, int state)

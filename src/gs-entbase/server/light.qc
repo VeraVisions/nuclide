@@ -100,16 +100,55 @@ This entity was introduced in Nuclide (2021).
 class light:NSPointTrigger
 {
 	int m_iEnabled;
+	int m_iStartActive;
 	float m_flStyle;
 	float m_flSwitchStyle;
 	string m_strPattern;
-	int m_iStartActive;
 
 	void(void) light;
+
+	/* overrides */
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
 };
+
+void
+light::Save(float handle)
+{
+	SaveInt(handle, "enabled", m_iEnabled);
+	SaveInt(handle, "start_active", m_iStartActive);
+	SaveFloat(handle, "style", m_flStyle);
+	SaveFloat(handle, "switch_style", m_flSwitchStyle);
+	SaveString(handle, "pattern", m_strPattern);
+	super::Save(handle);
+}
+
+void
+light::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "enabled":
+		m_iEnabled = ReadInt(strValue);
+		break;
+	case "start_active":
+		m_iStartActive = ReadInt(strValue);
+		break;
+	case "style":
+		m_flStyle = ReadFloat(strValue);
+		break;
+	case "switch_style":
+		m_flSwitchStyle = ReadFloat(strValue);
+		break;
+	case "pattern":
+		m_strPattern = ReadString(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 light::Trigger(entity act, int state)

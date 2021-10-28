@@ -31,11 +31,32 @@ class trigger_cdaudio:NSBrushTrigger
 
 	void(void) trigger_cdaudio;
 
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
 	virtual void(void) touch;
 	virtual void(string, string) SpawnKey;
 };
+
+void
+trigger_cdaudio::Save(float handle)
+{
+	SaveInt(handle, "cdtrack", m_iCDTrack);
+	super::Save(handle);
+}
+
+void
+trigger_cdaudio::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "cdtrack":
+		m_iCDTrack = ReadInt(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 trigger_cdaudio::Trigger(entity act, int unused)

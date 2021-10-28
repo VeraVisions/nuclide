@@ -48,21 +48,64 @@ enumflags
 class monstermaker:NSPointTrigger
 {
 	string m_strMonster;
+	string m_strChildName;
 	int m_iMonsterSpawned;
 	int m_iTotalMonsters;
-	float m_flDelay;
 	int m_iMaxChildren;
-	string m_strChildName;
+	float m_flDelay;
 
 	void(void) monstermaker;
 
-	virtual void(void) Spawner;
+	/* overrides */
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
+
+	virtual void(void) Spawner;
 	virtual void(void) TurnOn;
 	virtual void(void) TurnOff;
-	virtual void(string, string) SpawnKey;
 };
+
+void
+monstermaker::Save(float handle)
+{
+	SaveString(handle, "monster", m_strMonster);
+	SaveString(handle, "child_name", m_strChildName);
+	SaveInt(handle, "monster_spawned", m_iMonsterSpawned);
+	SaveInt(handle, "total_monsters", m_iTotalMonsters);
+	SaveInt(handle, "max_children", m_iMaxChildren);
+	SaveFloat(handle, "delay", m_flDelay);
+	super::Save(handle);
+}
+
+void
+monstermaker::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "enabled":
+		m_strMonster = ReadString(strValue);
+		break;
+	case "child_name":
+		m_strChildName = ReadString(strValue);
+		break;
+	case "monster_spawned":
+		m_iMonsterSpawned = ReadInt(strValue);
+		break;
+	case "total_monsters":
+		m_iTotalMonsters = ReadInt(strValue);
+		break;
+	case "max_children":
+		m_iMaxChildren = ReadInt(strValue);
+		break;
+	case "delay":
+		m_flDelay = ReadFloat(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 monstermaker::TurnOff(void)

@@ -39,10 +39,35 @@ class targ_speaker:NSPointTrigger
 
 	void(void) targ_speaker;
 
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(void) Respawn;
 	virtual void(entity,int) Trigger;
 	virtual void(string, string) SpawnKey;
 };
+
+void
+targ_speaker::Save(float handle)
+{
+	SaveString(handle, "sample", m_strSample);
+	SaveFloat(handle, "volume", m_flVolume);
+	super::Save(handle);
+}
+
+void
+targ_speaker::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "sample":
+		m_strSample = ReadString(strValue);
+		break;
+	case "volume":
+		m_flVolume = ReadFloat(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 targ_speaker::Trigger(entity act, int state)

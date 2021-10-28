@@ -39,15 +39,39 @@ This entity was introduced in Half-Life (1998).
 class infodecal:NSPointTrigger
 {
 	decal m_decChild;
-
 	string m_strTexture;
 
 	void(void) infodecal;
 
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
 };
+
+void
+infodecal::Save(float handle)
+{
+	SaveFloat(handle, "child", num_for_edict(m_decChild));
+	SaveString(handle, "texture", m_strTexture);
+	super::Save(handle);
+}
+
+void
+infodecal::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "child":
+		m_decChild = edict_num(ReadFloat(strValue));
+		break;
+	case "texture":
+		m_strTexture = ReadString(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 infodecal::Trigger(entity act, int state)

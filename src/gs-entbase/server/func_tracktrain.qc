@@ -50,7 +50,7 @@ enumflags
 	TRAIN_NOTSOLID
 };
 
-class func_tracktrain:NSBrushTrigger
+class func_tracktrain:NSRenderableEntity
 {
 	float m_flWait;
 	float m_flSpeed;
@@ -61,16 +61,63 @@ class func_tracktrain:NSBrushTrigger
 	string m_strStopSnd;
 
 	void(void) func_tracktrain;
+
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
+	virtual void(entity, int) Trigger;
+	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
+
 	virtual void(void) SoundMove;
 	virtual void(void) SoundStop;
 	virtual void(void) AfterSpawn;
 	virtual void(void) PathNext;
 	virtual void(void) PathMove;
-	virtual void(entity, int) Trigger;
-	virtual void(void) Respawn;
 	virtual void(void) Blocked;
-	virtual void(string, string) SpawnKey;
 };
+
+void
+func_tracktrain::Save(float handle)
+{
+	SaveFloat(handle, "wait", m_flWait);
+	SaveFloat(handle, "speed", m_flSpeed);
+	SaveFloat(handle, "damage", m_flDamage);
+	SaveFloat(handle, "height", m_flHeight);
+	SaveFloat(handle, "startspeed", m_flStartSpeed);
+	SaveString(handle, "snd_move", m_strMoveSnd);
+	SaveString(handle, "snd_stop", m_strStopSnd);
+	super::Save(handle);
+}
+
+void
+func_tracktrain::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "wait":
+		m_flWait = ReadFloat(strValue);
+		break;
+	case "speed":
+		m_flSpeed = ReadFloat(strValue);
+		break;
+	case "damage":
+		m_flDamage = ReadFloat(strValue);
+		break;
+	case "height":
+		m_flHeight = ReadFloat(strValue);
+		break;
+	case "startspeed":
+		m_flStartSpeed = ReadFloat(strValue);
+		break;
+	case "snd_move":
+		m_strMoveSnd = ReadString(strValue);
+		break;
+	case "snd_stop":
+		m_strStopSnd = ReadString(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 func_tracktrain::Blocked(void)
@@ -284,7 +331,7 @@ func_tracktrain::func_tracktrain(void)
 {
 	/* FIXME: This is all decided by the first path_corner pretty much */
 	m_flSpeed = 100;
-	super::NSBrushTrigger();
+	super::NSRenderableEntity();
 
 	if (m_strMoveSnd)
 		Sound_Precache(m_strMoveSnd);

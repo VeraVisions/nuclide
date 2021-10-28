@@ -53,10 +53,44 @@ class path_corner:NSPointTrigger
 	float m_flWait;
 
 	void(void) path_corner;
+
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
 };
+
+void
+path_corner::Save(float handle)
+{
+	SaveInt(handle, "fired", m_iFired);
+	SaveFloat(handle, "speed", m_flSpeed);
+	SaveFloat(handle, "yaw_speed", m_flYawSpeed);
+	SaveFloat(handle, "wait", m_flWait);
+	super::Save(handle);
+}
+
+void
+path_corner::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "fired":
+		m_iFired = ReadInt(strValue);
+		break;
+	case "speed":
+		m_flSpeed = ReadFloat(strValue);
+		break;
+	case "yaw_speed":
+		m_flYawSpeed = ReadFloat(strValue);
+		break;
+	case "wait":
+		m_flWait = ReadFloat(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 path_corner::Trigger(entity act, int state)

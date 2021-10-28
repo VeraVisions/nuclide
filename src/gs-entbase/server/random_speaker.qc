@@ -47,13 +47,48 @@ class random_speaker:NSPointTrigger
 
 	void(void) random_speaker;
 
+	/* overrides */
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(entity,int) Trigger;
 	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
+
 	virtual void(void) PlaySample;
 	virtual void(void) Enable;
 	virtual void(void) Disable;
-	virtual void(string, string) SpawnKey;
 };
+
+void
+random_speaker::Save(float handle)
+{
+	SaveString(handle, "sample", m_strSample);
+	SaveFloat(handle, "volume", m_flVolume);
+	SaveFloat(handle, "min_pos", m_flMinPos);
+	SaveFloat(handle, "rand_percent", m_flRandPercent);
+	super::Save(handle);
+}
+
+void
+random_speaker::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "sample":
+		m_strSample = ReadString(strValue);
+		break;
+	case "volume":
+		m_flVolume = ReadFloat(strValue);
+		break;
+	case "min_pos":
+		m_flMinPos = ReadFloat(strValue);
+		break;
+	case "rand_percent":
+		m_flRandPercent = ReadFloat(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 random_speaker::PlaySample(void)

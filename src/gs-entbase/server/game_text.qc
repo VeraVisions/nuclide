@@ -48,24 +48,82 @@ enumflags
 
 class game_text:NSPointTrigger
 {
-	float m_flPosX;
-	float m_flPosY;
-	int m_iEffect;
 	vector m_vecColor1;
 	vector m_vecColor2;
+	float m_flPosX;
+	float m_flPosY;
 	float m_flFadeIn;
 	float m_flFadeOut;
 	float m_flHoldTime;
 	float m_flFXTime;
 	int m_iChannel;
-		
+	int m_iEffect;
+
 	void(void) game_text;
 
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(entity, int) Trigger;
 	virtual void(string, string) SpawnKey;
 };
 
-void game_text::Trigger(entity act, int state)
+void
+game_text::Save(float handle)
+{
+	SaveVector(handle, "color1", m_vecColor1);
+	SaveVector(handle, "color2", m_vecColor2);
+	SaveFloat(handle, "pos_x", m_flPosX);
+	SaveFloat(handle, "pos_y", m_flPosY);
+	SaveFloat(handle, "fade_in", m_flFadeIn);
+	SaveFloat(handle, "fade_out", m_flFadeOut);
+	SaveFloat(handle, "hold_time", m_flHoldTime);
+	SaveFloat(handle, "fx_time", m_flFXTime);
+	SaveInt(handle, "channel", m_iChannel);
+	SaveInt(handle, "effect", m_iEffect);
+	super::Save(handle);
+}
+
+void
+game_text::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "color1":
+		m_vecColor1 = ReadVector(strValue);
+		break;
+	case "color2":
+		m_vecColor2 = ReadVector(strValue);
+		break;
+	case "pos_x":
+		m_flPosX = ReadFloat(strValue);
+		break;
+	case "pos_y":
+		m_flPosY = ReadFloat(strValue);
+		break;
+	case "fade_in":
+		m_flFadeIn = ReadFloat(strValue);
+		break;
+	case "fade_out":
+		m_flFadeOut = ReadFloat(strValue);
+		break;
+	case "hold_time":
+		m_flHoldTime = ReadFloat(strValue);
+		break;
+	case "fx_time":
+		m_flFXTime = ReadFloat(strValue);
+		break;
+	case "channel":
+		m_iChannel = ReadInt(strValue);
+		break;
+	case "effect":
+		m_iEffect = ReadInt(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
+
+void
+game_text::Trigger(entity act, int state)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_TEXT);
@@ -133,7 +191,8 @@ game_text::SpawnKey(string strKey, string strValue)
 	}
 }
 
-void game_text::game_text(void)
+void
+game_text::game_text(void)
 {
 	super::NSPointTrigger();
 }

@@ -39,10 +39,38 @@ class trigger_auto:NSPointTrigger
 	float m_flDelay;
 
 	void(void) trigger_auto;
-	virtual void(void) Processing;
+
+	/* overrides */
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
+
+	virtual void(void) Processing;
 };
+
+void
+trigger_auto::Save(float handle)
+{
+	SaveInt(handle, "triggerstate", m_iTriggerState);
+	SaveFloat(handle, "delay", m_flDelay);
+	super::Save(handle);
+}
+
+void
+trigger_auto::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "triggerstate":
+		m_iTriggerState = ReadInt(strValue);
+		break;
+	case "delay":
+		m_flDelay = ReadFloat(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 trigger_auto::Processing(void)

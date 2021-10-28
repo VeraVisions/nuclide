@@ -36,6 +36,25 @@ class trigger_autosave:NSBrushTrigger
 };
 
 void
+trigger_autosave::Save(float handle)
+{
+	SaveFloat(handle, "delay", m_flDelay);
+	super::Save(handle);
+}
+
+void
+trigger_autosave::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "delay":
+		m_flDelay = ReadFloat(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
+
+void
 trigger_autosave::touch(void)
 {
 	if (GetMaster() == FALSE)

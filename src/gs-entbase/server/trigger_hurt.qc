@@ -45,9 +45,9 @@ This entity was introduced in Quake (1996).
 
 class trigger_hurt:NSBrushTrigger
 {
+	int m_iDamage;
 	float m_flNextTrigger;
 	float m_flNextDmg;
-	int m_iDamage;
 	float m_flDelay;
 
 	string m_strOnHurt;
@@ -55,12 +55,53 @@ class trigger_hurt:NSBrushTrigger
 
 	void(void) trigger_hurt;
 
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(entity, int) Trigger;
 	virtual void(void) touch;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
 	virtual void(entity, string, string) Input;
 };
+
+void
+trigger_hurt::Save(float handle)
+{
+	SaveInt(handle, "damage", m_iDamage);
+	SaveFloat(handle, "nexttrigger", m_flNextTrigger);
+	SaveFloat(handle, "nextdmg", m_flNextDmg);
+	SaveFloat(handle, "delay", m_flDelay);
+	SaveString(handle, "OnHurt", m_strOnHurt);
+	SaveString(handle, "OnHurtPlayer", m_strOnHurtPlayer);
+	super::Save(handle);
+}
+
+void
+trigger_hurt::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "damage":
+		m_iDamage = ReadInt(strValue);
+		break;
+	case "nexttrigger":
+		m_flNextTrigger = ReadFloat(strValue);
+		break;
+	case "nextdmg":
+		m_flNextDmg = ReadFloat(strValue);
+		break;
+	case "delay":
+		m_flDelay = ReadFloat(strValue);
+		break;
+	case "OnHurt":
+		m_strOnHurt = ReadString(strValue);
+		break;
+	case "OnHurtPlayer":
+		m_strOnHurtPlayer = ReadString(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 trigger_hurt::Trigger(entity act, int state)
