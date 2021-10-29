@@ -190,5 +190,5 @@ struct
 	float m_flShakeTime;
 	float m_flShakeAmp;
 
-	entity m_pWeaponFX;
+	vector m_vecLag;
 } g_seats[4], *pSeat;

@@ -72,6 +72,12 @@ base_player::ReceiveEntity(float new, float fl)
 		flags = readfloat();
 		gflags = readfloat();
 		pmove_flags = readfloat();
+
+		/* mainly used for other players receiving us */
+		if (flags & FL_CROUCHING)
+			setsize(self, PHY_HULL_CROUCHED_MIN, PHY_HULL_CROUCHED_MAX);
+		else
+			setsize(self, PHY_HULL_MIN, PHY_HULL_MAX);
 	}
 	if (fl & PLAYER_WEAPON)
 		activeweapon = readbyte();

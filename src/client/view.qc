@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+var int autocvar_v_modellag = 0;
+
 void
 View_Init(void)
 {
@@ -124,7 +126,20 @@ View_DrawViewModel(void)
 		m_eViewModel.frame1time, ClientGame_ModelEvent);
 
 	makevectors(view_angles);
-	m_eViewModel.angles = view_angles;
+
+	if (autocvar_v_modellag == 0)
+		m_eViewModel.angles = view_angles;
+	else {
+		makevectors(pSeat->m_vecLag);
+		pSeat->m_vecLag = v_forward;
+		makevectors(view_angles);
+		pSeat->m_vecLag[0] = Math_Lerp(pSeat->m_vecLag[0], v_forward[0], clframetime * 20);
+		pSeat->m_vecLag[1] = Math_Lerp(pSeat->m_vecLag[1], v_forward[1], clframetime * 20);
+		pSeat->m_vecLag[2] = Math_Lerp(pSeat->m_vecLag[2], v_forward[2], clframetime * 20);
+		pSeat->m_vecLag = vectoangles(pSeat->m_vecLag);
+		m_eViewModel.angles = pSeat->m_vecLag;
+	}
+
 	m_eViewModel.colormap = pSeat->m_ePlayer.colormap;
 
 	/* now apply the scale hack */
