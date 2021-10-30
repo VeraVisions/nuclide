@@ -64,7 +64,7 @@ else
 	cd ./worldspawn
 fi
 
-if [ "$BUILD_CLEAN" ]; then
+if [ "$BUILD_CLEAN" -eq 1 ]; then
 	gmake clean
 fi
 
