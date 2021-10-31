@@ -351,16 +351,18 @@ NSEntity::Respawn(void)
 void
 NSEntity::Save(float handle)
 {
+	SaveVector(handle, "origin", origin);
+	SaveVector(handle, "absmin", absmin);
+	SaveVector(handle, "absmax", absmax);
+	SaveVector(handle, "mins", mins);
+	SaveVector(handle, "maxs", maxs);
+	SaveString(handle, "model", model);
+	SaveVector(handle, "angles", angles);
 	SaveFloat(handle, "solid", solid);
 	SaveFloat(handle, "movetype", movetype);
 	SaveFloat(handle, "health", health);
-	SaveFloat(handle, "pvsflags", pvsflags);
-	SaveVector(handle, "mins", mins);
-	SaveVector(handle, "maxs", maxs);
-	SaveVector(handle, "origin", origin);
-	SaveVector(handle, "angles", angles);
 	SaveString(handle, "parentname", m_parent);
-	SaveString(handle, "model", model);
+	SaveFloat(handle, "pvsflags", pvsflags);
 	super::Save(handle);
 }
 void

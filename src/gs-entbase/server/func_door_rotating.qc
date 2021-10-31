@@ -90,8 +90,12 @@ class func_door_rotating:NSRenderableEntity
 	vector m_vecPos1;
 	vector m_vecPos2;
 	vector m_vecMoveDir;
+	int m_iPortalState;
 	
 	void(void) func_door_rotating;
+
+	virtual void(void) PortalOpen;
+	virtual void(void) PortalClose;
 	virtual void(void) Respawn;
 	virtual void(void) Arrived;
 	virtual void(void) Returned;
@@ -110,8 +114,30 @@ class func_door_rotating:NSRenderableEntity
 #endif
 };
 
+void
+func_door_rotating::PortalOpen(void)
+{
+	if (m_iPortalState == 1)
+		return;
+
+	m_iPortalState = 1;
+	setorigin(this, origin);
+	openportal(this, AREAPORTAL_OPEN);
+}
+void
+func_door_rotating::PortalClose(void)
+{
+	if (m_iPortalState == 0)
+		return;
+
+	m_iPortalState = 0;
+	setorigin(this, origin);
+	openportal(this, AREAPORTAL_CLOSED);
+}
+
 #ifdef GS_PHYSICS
-void func_door_rotating::Unhinge(void)
+void
+func_door_rotating::Unhinge(void)
 {
 	takedamage = DAMAGE_NO;
 	touch = think = __NULL__;
@@ -121,7 +147,8 @@ void func_door_rotating::Unhinge(void)
 }
 #endif
 
-void func_door_rotating::Arrived(void)
+void
+func_door_rotating::Arrived(void)
 {
 	SetAngles(m_vecDest);
 	avelocity = [0,0,0];
@@ -146,7 +173,8 @@ void func_door_rotating::Arrived(void)
 	nextthink = (ltime + m_flWait);
 }
 
-void func_door_rotating::Returned(void)
+void
+func_door_rotating::Returned(void)
 {
 	SetAngles(m_vecDest);
 	avelocity = [0,0,0];
@@ -172,11 +200,11 @@ void func_door_rotating::Returned(void)
     
 	m_iState = STATE_LOWERED;
 
-	setorigin(this, origin);
-	openportal(this, AREAPORTAL_CLOSED);
+	PortalClose();
 }
 
-void func_door_rotating::Back(void)
+void
+func_door_rotating::Back(void)
 {
 	if (!(spawnflags & SF_DOOR_SILENT)) {
 		
@@ -195,7 +223,8 @@ void func_door_rotating::Back(void)
 	RotToDest(m_vecPos1, Returned);
 }
 
-void func_door_rotating::Away(void)
+void
+func_door_rotating::Away(void)
 {
 	float fDirection = 1.0;
 
@@ -235,11 +264,11 @@ void func_door_rotating::Away(void)
 	}
 	RotToDest(m_vecPos2 * fDirection, Arrived);
 
-	setorigin(this, origin);
-	openportal(this, AREAPORTAL_OPEN);
+	PortalOpen();
 }
 
-void func_door_rotating::Trigger(entity act, int state)
+void
+func_door_rotating::Trigger(entity act, int state)
 {
 	if (GetMaster() == FALSE) {
 		return;
@@ -267,13 +296,15 @@ void func_door_rotating::Trigger(entity act, int state)
 	UseTargets(act, TRIG_TOGGLE, m_flDelay);
 }
 
-void func_door_rotating::Use(void)
+void
+func_door_rotating::Use(void)
 {
 	eActivator.flags &= ~FL_USE_RELEASED;
 	Trigger(eActivator, TRIG_TOGGLE);
 }
 
-void func_door_rotating::Touch(void)
+void
+func_door_rotating::Touch(void)
 {
 	if (m_iLocked || !GetMaster()) {
 		if (m_flSoundWait < time)
@@ -295,7 +326,8 @@ void func_door_rotating::Touch(void)
 	}
 }
 
-void func_door_rotating::Blocked(void)
+void
+func_door_rotating::Blocked(void)
 {
 	if (m_iDamage) {
 		Damage_Apply(other, this, m_iDamage, 0, DMG_CRUSH);
@@ -310,7 +342,8 @@ void func_door_rotating::Blocked(void)
 	}
 }
 
-void func_door_rotating::SetMovementDirection(void)
+void
+func_door_rotating::SetMovementDirection(void)
 {
 	if (spawnflags & SF_ROT_ZAXIS) {
 		m_vecMoveDir = [0,0,1];
@@ -321,7 +354,8 @@ void func_door_rotating::SetMovementDirection(void)
 	}
 }
 
-void func_door_rotating::RotToDest(vector vDestAngle, void(void) func)
+void
+func_door_rotating::RotToDest(vector vDestAngle, void(void) func)
 {
 	vector vecAngleDifference;
 	float flTravelLength, flTravelTime;
@@ -348,7 +382,8 @@ void func_door_rotating::RotToDest(vector vDestAngle, void(void) func)
 	}
 }
 
-void func_door_rotating::Respawn(void)
+void
+func_door_rotating::Respawn(void)
 {
 	func_door_rotating::SetMovementDirection();
 
@@ -380,7 +415,6 @@ void func_door_rotating::Respawn(void)
 		PlayerUse = __NULL__;
 	}
 
-	m_iState = STATE_LOWERED;
 	m_vecPos1 = GetSpawnAngles();
 
 	if (spawnflags & SF_ROT_BACKWARDS) {
@@ -394,11 +428,9 @@ void func_door_rotating::Respawn(void)
 		m_vecPos2 = m_vecPos1;
 		m_vecPos1 = vTemp;
 		m_vecMoveDir = m_vecMoveDir * -1;
-		setorigin(this, origin);
-		openportal(this, AREAPORTAL_OPEN);
+		PortalOpen();
 	} else {
-		setorigin(this, origin);
-		openportal(this, AREAPORTAL_CLOSED);
+		PortalClose();
 	}
 
 	if (spawnflags & SF_ROT_PASSABLE) {
@@ -466,7 +498,8 @@ func_door_rotating::SpawnKey(string strKey, string strValue)
 	}
 }
 
-void func_door_rotating::func_door_rotating(void)
+void
+func_door_rotating::func_door_rotating(void)
 {
 	m_flSpeed = 100;
 	m_flDelay = 4;

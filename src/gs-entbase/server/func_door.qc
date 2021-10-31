@@ -85,6 +85,7 @@ class func_door:NSRenderableEntity
 	float m_flDelay;
 	int m_iDamage;
 	int m_iLocked;
+	int m_iPortalState;
 
 	float m_flSoundWait;
 	string m_strLockedSfx;
@@ -96,6 +97,8 @@ class func_door:NSRenderableEntity
 
 	void(void) func_door;
 
+	virtual void(void) PortalOpen;
+	virtual void(void) PortalClose;
 	virtual void(void) SetMovementDirection;
 	virtual void(vector, void(void) func) MoveToDestination;
 	virtual void(void) MoveAway;
@@ -109,6 +112,27 @@ class func_door:NSRenderableEntity
 	virtual void(void) Use;
 	virtual void(string, string) SpawnKey;
 };
+
+void
+func_door::PortalOpen(void)
+{
+	if (m_iPortalState == 1)
+		return;
+
+	m_iPortalState = 1;
+	setorigin(this, origin);
+	openportal(this, AREAPORTAL_OPEN);
+}
+void
+func_door::PortalClose(void)
+{
+	if (m_iPortalState == 0)
+		return;
+
+	m_iPortalState = 0;
+	setorigin(this, origin);
+	openportal(this, AREAPORTAL_CLOSED);
+}
 
 void
 func_door::Use(void)
@@ -171,9 +195,7 @@ func_door::Returned(void)
 	}
 
 	m_iState = DOORSTATE_LOWERED;
-
-	setorigin(this, origin);
-	openportal(this, AREAPORTAL_CLOSED);
+	PortalClose();
 }
 
 void
@@ -217,8 +239,7 @@ func_door::MoveAway(void)
 	m_iValue = 1;
 	m_iState = DOORSTATE_UP;
 	MoveToDestination(m_vecPos2, Arrived);
-	setorigin(this, origin);
-	openportal(this, AREAPORTAL_OPEN);
+	PortalOpen();
 }
 
 void
@@ -399,11 +420,9 @@ func_door::Respawn(void)
 		m_vecPos2 = m_vecPos1;
 		m_vecPos1 = origin;
 		m_iValue = 1;
-		setorigin(this, origin);
-		openportal(this, AREAPORTAL_OPEN);
+		PortalOpen();
 	} else {
-		setorigin(this, origin);
-		openportal(this, AREAPORTAL_CLOSED);
+		PortalClose();
 	}
 
 	if (targetname) {
