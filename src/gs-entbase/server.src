@@ -28,6 +28,7 @@ server/game_text.qc
 server/game_player_equip.qc
 server/path_corner.qc
 server/path_track.qc
+server/func_areaportal.qc
 server/func_recharge.qc
 server/func_healthcharger.qc
 server/func_breakable.qc
