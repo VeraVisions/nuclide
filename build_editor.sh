@@ -145,6 +145,9 @@ mv_wsfile bitmaps/side_scale.png
 mv_wsfile bitmaps/side_select.png
 mv_wsfile bitmaps/side_surfspec.png
 mv_wsfile bitmaps/side_tex.png
+mv_wsfile bitmaps/side_resize.png
+mv_wsfile bitmaps/side_selectface.png
+mv_wsfile bitmaps/side_selectwhole.png
 mv_wsfile bitmaps/splash.xcf
 mv_wsfile bitmaps/splash.xpm
 mv_wsfile bitmaps/texture_browser.xpm
