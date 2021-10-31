@@ -244,7 +244,7 @@ NSRenderableEntity::RenderFXPass(void)
 		break;
 	case RM_SOLID:
 		colormod = [1,1,1];
-		alpha = 1.0f;
+		alpha = (m_flRenderAmt == 0.0) ? 0.0f : 1.0f;
 		break;
 	case RM_ADDITIVE:
 	case RM_ADDFRAC: /* TODO: Figure out what this does differently */
