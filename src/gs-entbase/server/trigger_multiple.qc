@@ -24,6 +24,10 @@ A trigger volume which works more than once.
 "delay" : Delay until target is triggered.
 "wait" : Time until this entity can trigger again
 
+-------- OUTPUTS ---------
+"OnStartTouch": Triggered when something starts touching this volume
+"OnEndTouchAll": Triggered when nothing touched the entity no more
+
 -------- SPAWNFLAGS --------
 TM_MONSTERS : Allow NPCs to activate this entity.
 TM_NOCLIENTS : Don't allow players to activate this entity.
@@ -43,9 +47,11 @@ enumflags
 class trigger_multiple:NSBrushTrigger
 {
 	float m_flWait;
+	entity m_eLastToucher;
 
 	/* Input/Output */
 	string m_strOnStartTouch;
+	string m_strOnEndTouchAll;
 	string m_strOnTrigger;
 
 	void(void) trigger_multiple;
@@ -55,7 +61,29 @@ class trigger_multiple:NSBrushTrigger
 	virtual void(void) touch;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
+
+	virtual void(void) EndTouchCheck;
 };
+
+void
+trigger_multiple::EndTouchCheck(void)
+{
+	if (m_eLastToucher) {
+		tracebox(origin, absmin, absmax, origin, MOVE_NORMAL, this);
+		if (!(trace_ent.flags & FL_CLIENT)) {
+			UseOutput(other, m_strOnEndTouchAll);
+			m_eLastToucher = __NULL__;
+		}
+	}
+
+	/* support for think/nextthink */
+	if (think && nextthink > 0.0f) {
+		if (nextthink < time) {
+			nextthink = 0.0f;
+			think();
+		}
+	}
+}
 
 void
 trigger_multiple::Save(float handle)
@@ -75,6 +103,9 @@ trigger_multiple::Restore(string strKey, string strValue)
 		break;
 	case "OnStartTouch":
 		m_strOnStartTouch = ReadString(strValue);
+		break;
+	case "OnEndTouchAll":
+		m_strOnEndTouchAll = ReadString(strValue);
 		break;
 	case "OnTrigger":
 		m_strOnTrigger = ReadString(strValue);
@@ -113,13 +144,19 @@ trigger_multiple::touch(void)
 		think = Respawn;
 		nextthink = time + m_flWait;
 	}
+
 	SetSolid(SOLID_NOT);
+	m_eLastToucher = other;
 }
 
 void
 trigger_multiple::Respawn(void)
 {
 	InitBrushTrigger();
+
+	if (m_strOnEndTouchAll) {
+		customphysics = EndTouchCheck;
+	}
 }
 
 void
@@ -134,6 +171,9 @@ trigger_multiple::SpawnKey(string strKey, string strValue)
 		strValue = strreplace(",", ",_", strValue);
 		m_strOnStartTouch = strcat(m_strOnStartTouch, ",_", strValue);
 		break;
+	case "OnEndTouchAll":
+		strValue = strreplace(",", ",_", strValue);
+		m_strOnEndTouchAll = strcat(m_strOnEndTouchAll, ",_", strValue);
 	case "OnTrigger":
 		strValue = strreplace(",", ",_", strValue);
 		m_strOnTrigger = strcat(m_strOnTrigger, ",_", strValue);
@@ -150,7 +190,8 @@ trigger_multiple::trigger_multiple(void)
 
 	if (m_strOnTrigger)
 		m_strOnTrigger = CreateOutput(m_strOnTrigger);
-
 	if (m_strOnStartTouch)
 		m_strOnStartTouch = CreateOutput(m_strOnStartTouch);
+	if (m_strOnEndTouchAll)
+		m_strOnEndTouchAll = CreateOutput(m_strOnEndTouchAll);
 }
