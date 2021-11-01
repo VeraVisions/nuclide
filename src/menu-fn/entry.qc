@@ -136,7 +136,7 @@ m_init(void)
 	Strings_Init();
 	g_initialized = TRUE;
 
-	if (games[gameinfo_current].gamedir != "valve") {
+	if (games[gameinfo_current].gamedir != "valve" || games[gameinfo_current].steambg == 1) {
 		m_intro_skip();
 		Music_MenuStart();
 	}
