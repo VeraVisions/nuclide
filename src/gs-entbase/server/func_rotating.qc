@@ -125,8 +125,10 @@ func_rotating::Rotate(void)
 void
 func_rotating::Trigger(entity act, int state)
 {
-	if (vlen(avelocity)) {
+	if (vlen(avelocity) > 0) {
 		avelocity = [0,0,0];
+		think = __NULL__;
+		nextthink = 0.0f;
 	} else {
 		float flSpeed;
 
@@ -138,13 +140,17 @@ func_rotating::Trigger(entity act, int state)
 
 		avelocity = m_vecMoveDir * flSpeed;
 		m_flDir = 1 - m_flDir;
+
+		/* HACK HACK HACK! This is terrible */
+		think = Rotate;
+		nextthink = ltime + 99999.0f;
 	}
 }
 
 void
 func_rotating::Blocked(void)
 {
-	if (avelocity == [0,0,0]) {
+	if (vlen(avelocity) <= 0) {
 		return;
 	}
 
@@ -172,10 +178,11 @@ func_rotating::Respawn(void)
 
 	m_flDir = 0; /* Reset */
 
+	SetModel(GetSpawnModel());
 	SetMovetype(MOVETYPE_PUSH);
-	SetOrigin(origin);
-	SetModel(model);
 	SetSolid((spawnflags & FR_NOTSOLID) ? SOLID_NOT : SOLID_BSP);
+	SetOrigin(GetSpawnOrigin());
+	SetMovementDirection();
 
 	if (spawnflags & FR_STARTON) {
 		avelocity = m_vecMoveDir * m_flSpeed;
@@ -226,5 +233,5 @@ func_rotating::func_rotating(void)
 {
 	m_flSpeed = 100;
 	super::NSRenderableEntity();
-	SetMovementDirection();
+	Respawn();
 }
