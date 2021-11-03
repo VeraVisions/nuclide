@@ -396,6 +396,7 @@ NSEntity::Restore(string strKey, string strValue)
 		break;
 	case "solid":
 		solid = stof(strValue);
+		setorigin(this, origin);
 		break;
 	case "movetype":
 		movetype = stof(strValue);

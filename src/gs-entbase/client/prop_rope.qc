@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED prop_rope (1 1 0.5) (-8 -8 -8) (8 8 8) 
+/*QUAKED prop_rope (1 1 0.5) (-8 -8 -8) (8 8 8) ROPE_VERTICAL
 Client-side decorative rope entity. 
 Connect the entity to a named info_notnull and watch it swing around.
 

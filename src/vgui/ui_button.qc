@@ -85,14 +85,12 @@ void
 CUIButton::SetTitle(string strName)
 {
 	vector newsize;
-	int scale;
 
 	m_strTitle = strName;
 	m_strTitleActive = sprintf("^3%s", m_strTitle);
 	drawfont = g_fntDefault.iID;
 
-	scale = g_fntDefault.iScale;
-	newsize[0] = stringwidth(m_strTitle, TRUE, [scale, scale]) + 16;
+	newsize[0] = stringwidth(m_strTitle, TRUE, [g_fntDefault.iScaleX, g_fntDefault.iScaleY]) + 16;
 	newsize[1] = 24;
 	SetSize(newsize);
 }

@@ -47,7 +47,7 @@ void CUILabel::SetTitle (string strName)
 
 	/* hack, add 2 just to make sure it doesn't immediately wrap. bug
 	 * in engines' textfield thing in combo with ttf. */
-	SetSize([2 + stringwidth(m_strTitle, TRUE, [g_fntDefault.iScale, g_fntDefault.iScale]), 16]);
+	SetSize([2 + stringwidth(m_strTitle, TRUE, [g_fntDefault.iScaleX, g_fntDefault.iScaleY]), 16]);
 }
 void CUILabel::Draw(void)
 {

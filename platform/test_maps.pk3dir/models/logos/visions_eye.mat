@@ -1,14 +1,6 @@
 // Vera Visions Material
 {
+	program unlit
 	diffusemap models/logos/visions_eye.ktx
 	normalmap models/logos/visions_eye_n.tga
-
-	{
-		program vertexlit_specular
-	}
-	{
-		clampmap models/logos/visions_eye.tga
-		blendFunc add
-		rgbGen wave sin 1 0.2 1 .8
-	}
 }

@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include "../shared/colors.h"
+
 vector col_help;
 vector col_prompt_bg;
 vector col_prompt_text;
@@ -28,48 +30,6 @@ vector col_button_bg; /* 1,1,1 */
 vector col_button_select; /* 1,0,0 */
 vector col_button_click; /* 1,1,0 */
 vector col_button_disabled; /* 0.25, 0.25, 0.25 */
-
-string
-Colors_RGB8_to_HEX(vector color)
-{
-	string out = "^x";
-
-	for (int i = 0; i < 3; i++) {
-		string a = "";
-		float b = rint(color[i] * 15);
-
-		switch (b) {
-		case 10:
-			a = "A";
-			break;
-		case 11:
-			a = "B";
-			break;
-		case 12:
-			a = "C";
-			break;
-		case 13:
-			a = "D";
-			break;
-		case 14:
-			a = "E";
-			break;
-		case 15:
-			a = "F";
-			break;
-		default:
-			a = ftos(b);
-		}
-		out = sprintf("%s%s", out, a);
-	}
-	return out;
-}
-
-string
-Colors_RGB255_to_HEX(vector color)
-{
-	return Colors_RGB8_to_HEX(color / 255);
-}
 
 void
 Colors_Init(void)

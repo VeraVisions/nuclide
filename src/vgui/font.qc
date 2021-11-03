@@ -25,7 +25,8 @@ enumflags
 typedef struct
 {
 	int iID;
-	int iScale;
+	int iScaleX;
+	int iScaleY;
 	vector vecColor;
 	float flAlpha;
 	int iFlags;
@@ -36,7 +37,7 @@ Font_Load(string strFile, font_s &fntNew)
 {
 #ifdef CLASSIC_VGUI
 	fntNew.iID = (int)loadfont("", "gfx/conchars", "12", -1, 0, 0);
-	fntNew.iScale = 12;
+	fntNew.iScaleX = fntNew.iScaleY = 12;
 	fntNew.vecColor = [255,200,0] / 255;
 	fntNew.flAlpha = 1.0f;
 	fntNew.iFlags = 0;
@@ -45,14 +46,16 @@ Font_Load(string strFile, font_s &fntNew)
 	string strFontPath = "";
 	filestream fileFont = fopen(strFile, FILE_READ);
 	fntNew.iID = 0;
-	fntNew.iScale = 8;
+	fntNew.iScaleX = fntNew.iScaleY = 8;
 	fntNew.vecColor = [1,1,1];
 	fntNew.flAlpha = 1.0f;
 	fntNew.iFlags = 0;
 
 	if (fileFont >= 0) {
+		int argc;
 		while ((strTemp = fgets(fileFont))) {
-			if (tokenizebyseparator(strTemp, "=") == 2) {
+			argc = tokenizebyseparator(strTemp, "=");
+			if (argc == 2) {
 				switch (argv(0)) {
 					case "COLOR":
 						fntNew.vecColor = stov(argv(1)) / 255;
@@ -60,14 +63,20 @@ Font_Load(string strFile, font_s &fntNew)
 					case "ALPHA":
 						fntNew.flAlpha = stof(argv(1)) / 255;
 						break;
+					case "SIZE_X":
+						fntNew.iScaleX = stoi(argv(1));
+						break;
+					case "SIZE_Y":
+						fntNew.iScaleY = stoi(argv(1));
+						break;
 					case "SIZE":
-						fntNew.iScale = (int)stof(argv(1));
+						fntNew.iScaleY = fntNew.iScaleX = stoi(argv(1));
 						break;
 					case "PATH":
 						strFontPath = argv(1);
 						break;
 					case "FLAGS":
-						fntNew.iFlags = (int)stof(argv(1));
+						fntNew.iFlags = stoi(argv(1));
 						break;
 					default:
 						break;
@@ -79,19 +88,19 @@ Font_Load(string strFile, font_s &fntNew)
 		error(sprintf("[MENU] Cannot load font file %s!", strFile));
 	}
 
-	fntNew.iID = (int)loadfont("", strFontPath, ftos((float)fntNew.iScale), -1, 0, 0);
+	fntNew.iID = (int)loadfont("", strFontPath, ftos((float)fntNew.iScaleY), -1, 0, 0);
 #endif
 }
 
 void
-Font_DrawText (vector vecOrigin, string strText, font_s fnt)
+Font_DrawText(vector vecOrigin, string strText, font_s fnt)
 {
 	drawfont = (float)fnt.iID;
-	drawstring(vecOrigin, strText, [fnt.iScale, fnt.iScale], fnt.vecColor, fnt.flAlpha, (float)fnt.iFlags);
+	drawstring(vecOrigin, strText, [fnt.iScaleX, fnt.iScaleY], fnt.vecColor, fnt.flAlpha, (float)fnt.iFlags);
 }
 
 void
-Font_DrawField (vector vecOrigin, vector vecSize, string strText, font_s fnt, int iAlignFlags)
+Font_DrawField(vector vecOrigin, vector vecSize, string strText, font_s fnt, int iAlignFlags)
 {
 	drawfont = (float)fnt.iID;
 	drawtextfield(vecOrigin, vecSize, (float)iAlignFlags, strText);

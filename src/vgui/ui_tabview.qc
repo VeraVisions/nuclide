@@ -60,7 +60,7 @@ vector CUITabView::GetSize(void)
 void CUITabView::SetTitle (string strName)
 {
 	m_strTitle = strName;
-	SetSize([stringwidth(m_strTitle, TRUE, [g_fntDefault.iScale, g_fntDefault.iScale]), 16]);
+	SetSize([stringwidth(m_strTitle, TRUE, [g_fntDefault.iScaleX, g_fntDefault.iScaleY]), 16]);
 }
 void CUITabView::Draw(void)
 {

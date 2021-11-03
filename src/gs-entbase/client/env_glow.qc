@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED env_glow (0 0.5 1) (-8 -8 -8) (8 8 8)
+/*QUAKED env_glow (0 0.5 1) (-8 -8 -8) (8 8 8) EVGLOW_ORIENT
 Client-side glare/glow orb effect like the flares in 1997's Unreal.
 
 -------- KEYS --------
@@ -37,6 +37,8 @@ class env_glow:NSEntity /* change to renderablentity? */
 	vector m_vecSize;
 	float m_flScale;
 
+	vector m_vecOrientation;
+
 	void(void) env_glow;
 
 	virtual float() predraw;
@@ -54,6 +56,12 @@ env_glow::RendererRestarted(void)
 		precache_model(model);
 		m_strSprite = spriteframe(model, 0, 0.0f);
 		m_vecSize = drawgetimagesize(m_strSprite) / 2;
+	}
+
+	if (spawnflags & 1) {
+		hitcontentsmaski = CONTENTBIT_SOLID;
+		decal_pickwall(this, origin);
+		m_vecOrientation = vectoangles(g_tracedDecal.normal * -1);
 	}
 }
 
@@ -95,8 +103,11 @@ env_glow::predraw(void)
 	makevectors(vectoangles(origin - vecPlayer));
 	forg = origin + (v_forward * -16);
 
-	/* Project it, always facing the player */
-	makevectors(view_angles);
+	if (spawnflags & 1)
+		makevectors(m_vecOrientation);
+	else
+		makevectors(view_angles);
+
 #ifndef FTE_QUADFIX
 	R_BeginPolygon(m_strSprite, 1, 0);
 	R_PolygonVertex(forg + v_right * fsize[0] - v_up * fsize[1],
@@ -170,7 +181,6 @@ env_glow::env_glow(void)
 	drawmask = MASK_ENGINE;
 	setsize(this, [0,0,0], [0,0,0]);
 	effects &= ~EF_NOSHADOW;
-	
 	Init();
 
 	RendererRestarted();

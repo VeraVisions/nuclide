@@ -1,7 +1,7 @@
 {
 	climb		0x00004000
 	vehicleclip	0x00008000
-	grenadeclip	0x00010000
+	grenadeclip	0x00000080
 }
 {
 	leakssteam	0x00080000

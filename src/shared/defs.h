@@ -31,6 +31,7 @@
 #include "propdata.h"
 #include "surfaceproperties.h"
 #include "vehicles.h"
+#include "colors.h"
 
 #define BSPVER_PREREL 	28
 #define BSPVER_Q1		29
