@@ -106,9 +106,8 @@ PointMessage_Draw(void)
 		}
 
 		if (PointMessage_Visible(m.origin, vecPlayer, getproperty(VF_ANGLES)) == TRUE) {
-			drawfont = FONT_CON;
 			vector vTemp = project(m.origin) - [(stringwidth(msg, FALSE,[12,12]) / 2), 0];
-			drawstring(vTemp, msg, [12,12], [1,1,1], 1.0f, 0);
+			Font_DrawText(vTemp, msg, FONT_CON);
 		}
 	}
 }
@@ -122,7 +121,6 @@ PointMessage_StringAtPos(vector org, string message)
 	pSeat = &g_seats[s];
 	vecPlayer = pSeat->m_vecPredictedOrigin;
 
-		drawfont = FONT_CON;
-		vector vTemp = project(org) - [(stringwidth(message, FALSE,[12,12]) / 2), 0];
-		drawstring(vTemp, message, [12,12], [1,1,1], 1.0f, 0);
+	vector vTemp = project(org) - [(stringwidth(message, FALSE,[12,12]) / 2), 0];
+	Font_DrawText(vTemp, message, FONT_CON);
 }

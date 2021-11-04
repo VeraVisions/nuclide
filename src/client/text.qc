@@ -132,7 +132,7 @@ GameText_DrawMessage(int i, float timer, int highlight)
 void
 GameText_Draw(void)
 {
-	drawfont = FONT_20;
+	drawfont = Font_GetID(FONT_20);
 
 	for (int i = 0i; i < 6; i++) {
 		GameText_DrawMessage(i, g_textchannels[i].m_flTime - g_textchannels[i].m_flFXTime, 0);
@@ -140,7 +140,7 @@ GameText_Draw(void)
 		g_textchannels[i].m_flTime += clframetime;
 	}
 
-	drawfont = FONT_CON;
+	drawfont = Font_GetID(FONT_CON);
 }
 
 void

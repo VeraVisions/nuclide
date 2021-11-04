@@ -49,15 +49,7 @@ Voice_DrawHUD(void)
 		);
 
 		/* speaker name */
-		drawfont = FONT_CON;
-		drawstring(
-			[pos[0] + 28, pos[1] + 8],
-			getplayerkeyvalue(i, "name"),
-			[12,12],
-			[1,1,1],
-			1.0f,
-			DRAWFLAG_NORMAL
-		);
+		Font_DrawText([pos[0] + 28, pos[1] + 8], getplayerkeyvalue(i, "name"), FONT_CON);
 		pos[1] -= 32;
 	}
 }

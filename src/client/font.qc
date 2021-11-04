@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,42 +14,123 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* very basic wrapper around loadfont(), as we don't want to hard-code
- * paths to fonts used in the cgame */
 float
-Font_LoadFont(string filename)
+Font_GetID(font_s fnt)
 {
-	string line;
-	filestream fs_font;
+	return (float)fnt.iID;
+}
 
-	fs_font = fopen(filename, FILE_READ);
+void
+Font_Load(string strFile, font_s &fntNew)
+{
+	string strTemp = "";
+	string strFontPath = "";
+	string strRenderSize = "";
 
-	if (fs_font < 0) {
-		print(sprintf("[FONT] ^1WARNING: ^7Could NOT load %s\n", filename));
-		return -1;
-	}
+	filestream fileFont = fopen(strFile, FILE_READ);
+	fntNew.iID = 0;
+	fntNew.iScaleX = fntNew.iScaleY = 8;
+	fntNew.vecColor = [1,1,1];
+	fntNew.flAlpha = 1.0f;
+	fntNew.iFlags = 0;
 
-	string font = "gfx/conchars";
-	string size = "8";
-	string shortname = "";
+	if (fileFont >= 0) {
+		int argc;
+		while ((strTemp = fgets(fileFont))) {
+			argc = tokenize_console(strTemp);
+			if (argc != 2)
+				continue;
 
-	while ((line = fgets(fs_font))) {
-		int c = tokenize_console(line);
-
-		switch (argv(0)) {
-		case "font":
-			font = argv(1);
-			break;
-		case "size":
-			size = argv(1);
-			break;
-		case "name":
-			shortname = argv(1);
-			break;
+			switch (argv(0)) {
+			case "color":
+				fntNew.vecColor = stov(argv(1)) / 255;
+				break;
+			case "alpha":
+				fntNew.flAlpha = stof(argv(1)) / 255;
+				break;
+			case "size_x":
+				fntNew.iScaleX = (int)stof(argv(1));
+				break;
+			case "size_y":
+				fntNew.iScaleY = (int)stof(argv(1));
+				break;
+			case "size":
+				fntNew.iScaleY = fntNew.iScaleX = (int)stof(argv(1));
+				break;
+			case "path":
+				strFontPath = argv(1);
+				break;
+			case "rendersize":
+				strRenderSize = argv(1);
+				break;
+			case "flags":
+				fntNew.iFlags = (int)stof(argv(1));
+				break;
+			default:
+				break;
+			}
 		}
+		fclose(fileFont);
+	} else {
+		error(sprintf("[MENU] Cannot load font file %s!", strFile));
 	}
 
-	fclose(fs_font);
+	//print(sprintf("[FONT] %s: %s %s\n", strFile, strFontPath, strRenderSize));
 
-	return loadfont(shortname, font, size, -1);
+	if (strRenderSize != "")
+		fntNew.iID = (int)loadfont("", strFontPath, strRenderSize, -1, 0, 0);
+	else
+		fntNew.iID = (int)loadfont("", strFontPath, ftos((float)fntNew.iScaleY), -1, 0, 0);
+}
+
+void
+Font_DrawText(vector vecOrigin, string strText, font_s fnt)
+{
+	drawfont = (float)fnt.iID;
+	drawstring(vecOrigin, strText, [fnt.iScaleX, fnt.iScaleY], fnt.vecColor, fnt.flAlpha, (float)fnt.iFlags);
+}
+
+void
+Font_DrawText_A(vector vecOrigin, string strText, vector rgb, float a, font_s fnt)
+{
+	drawfont = (float)fnt.iID;
+	drawstring(vecOrigin, strText, [fnt.iScaleX, fnt.iScaleY], fnt.vecColor, a, (float)fnt.iFlags);
+}
+
+void
+Font_DrawText_RGB(vector vecOrigin, string strText, vector rgb, font_s fnt)
+{
+	drawfont = (float)fnt.iID;
+	drawstring(vecOrigin, strText, [fnt.iScaleX, fnt.iScaleY], rgb, fnt.flAlpha, (float)fnt.iFlags);
+}
+
+void
+Font_DrawText_RGBA(vector vecOrigin, string strText, vector rgb, float a, font_s fnt)
+{
+	drawfont = (float)fnt.iID;
+	drawstring(vecOrigin, strText, [fnt.iScaleX, fnt.iScaleY], rgb, a, (float)fnt.iFlags);
+}
+
+void
+Font_DrawField(vector vecOrigin, vector vecSize, string strText, font_s fnt, int iAlignFlags)
+{
+	drawfont = (float)fnt.iID;
+	drawtextfield(vecOrigin, vecSize, (float)iAlignFlags, strText);
+}
+
+string
+Font_RGBtoHex(vector vecColor)
+{
+	static string numtohex(float x) {
+		x = rint(x * 15);
+		if (x <= 9)
+			return ftos(x);
+		else {
+			x -= 10;
+			return sprintf("%c", 'A' + x);
+		}
+		
+	}
+
+	return sprintf("^x%s%s%s", numtohex(vecColor[0]), numtohex(vecColor[1]), numtohex(vecColor[2]));
 }

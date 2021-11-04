@@ -84,7 +84,7 @@ CTextBuffer::InsertWrapped(string m)
 	string tmp;
 	string new;
 
-	drawfont = font_label;
+	drawfont = Font_GetID(font_label);
 
 	argc = tokenizebyseparator(m, " ");
 

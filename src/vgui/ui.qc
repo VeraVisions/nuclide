@@ -161,7 +161,7 @@ UISystem_Init(void)
 	}
 #endif
 
-	Font_Load("scripts/ui_font.txt", g_fntDefault);
+	Font_Load("fonts/ui.font", g_fntDefault);
 	precache_pic("textures/ui/steam/icon_radiosel");
 	precache_pic("textures/ui/steam/icon_radiounsel");
 	precache_pic("textures/ui/steam/icon_checked");

@@ -3,7 +3,6 @@
 
 #define CSQC
 #define CLIENT
-#define CLASSIC_VGUI
 #define GS_RENDERFX
 
 #includelist

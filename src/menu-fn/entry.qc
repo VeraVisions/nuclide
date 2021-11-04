@@ -114,11 +114,11 @@ m_init(void)
 	registercommand("map_background");
 	registercommand("menu_musicstart");
 
-	font_console = loadfont("font", "", "12", -1);
-	font_label = Font_LoadFont("fonts/menu_label.font");
-	font_arial = Font_LoadFont("fonts/menu_main.font");
-	font_label_b = Font_LoadFont("fonts/menu_label_bold.font");
-	font_label_p = Font_LoadFont("fonts/menu_header.font");
+	Font_Load("fonts/fontcon.font", font_console);
+	Font_Load("fonts/menu_label.font", font_label);
+	Font_Load("fonts/menu_main.font", font_arial);
+	Font_Load("fonts/menu_label_bold.font", font_label_b);
+	Font_Load("fonts/menu_header.font", font_label_p);
 
 	localcmd("plug_load ffmpeg\n");
 
@@ -247,7 +247,7 @@ m_draw(vector screensize)
 	}
 
 	const string ver = "Nuclide (build " __DATE__ ")";
-	drawfont = font_console;
+	drawfont = Font_GetID(font_console);
 
 	WLabel_Static(640 - 8 - stringwidth(ver, TRUE, [12,12]),
 				  466,

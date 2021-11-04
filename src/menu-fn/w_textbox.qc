@@ -53,7 +53,7 @@ CTextBox::Draw(void)
 		drawfill([g_menuofs[0]+m_x,g_menuofs[1]+m_y], [m_length,24], [0.25,0.25,0.25], 1.0f);
 	}
 	drawfill([g_menuofs[0]+m_x+3,g_menuofs[1]+m_y+3], [m_length-6,18], [0,0,0], 1.0f);
-	drawfont = font_label;
+	drawfont = Font_GetID(font_label);
 
 	if (m_flags & TEXTBOX_FOCUS) {
 		if (rint(time*4) & 1) {

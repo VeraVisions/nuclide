@@ -21,6 +21,13 @@ var int g_chatpos[2];
 var float g_chattime;
 var int g_chatlines = -1;
 string g_chatbuffer[CHAT_LINES];
+font_s g_fntChat;
+
+void
+Chat_Init(void)
+{
+	Font_Load("fonts/chat.font", g_fntChat);
+}
 
 /*
  * called every frame pretty much and prints whatever is in the chatbuffer.
@@ -31,8 +38,6 @@ Chat_Draw(void)
 {
 	int i;
 
-	drawfont = FONT_CON;
-
 	/* the voting stuff resides here too, for now */
 	if (serverkey("vote_cmd")) {
 		string tempstr;
@@ -40,7 +45,7 @@ Chat_Draw(void)
 		tempstr = sprintf("^3Vote: %s", serverkey("vote_cmd"));
 		temppos[0] = (g_hudres[0]/2) - (stringwidth(tempstr, TRUE, [12,12]) / 2);
 		temppos[1] = 96;
-		drawstring(temppos, tempstr, [12,12], [1,1,1], 1.0f, 0);
+		Font_DrawText(temppos, tempstr, g_fntChat);
 
 		tempstr = sprintf(
 			"^2Yes: %s    ^1No: %s",
@@ -48,7 +53,7 @@ Chat_Draw(void)
 					serverkey("votes_n")
 			);
 		temppos[0] = (g_hudres[0]/2) - (stringwidth(tempstr, TRUE, [12,12]) / 2);
-		drawstring(temppos + [0,16], tempstr, [12,12], [1,1,1], 1.0f, 0);
+		Font_DrawText(temppos + [0,16], tempstr, g_fntChat);
 	}
 
 	g_chatpos[0] = g_hudmins[0] + 16;
@@ -73,8 +78,7 @@ Chat_Draw(void)
 	}
 
 	for (i = 0; i < CHAT_LINES; i++) {
-		drawstring([g_chatpos[0],g_chatpos[1]], g_chatbuffer[i], 
-			[12,12], [1,1,1], 1.0f, 0);
+		Font_DrawText([g_chatpos[0],g_chatpos[1]], g_chatbuffer[i], g_fntChat);
 		g_chatpos[1] += 14;
 	}
 }

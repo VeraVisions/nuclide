@@ -16,6 +16,7 @@
 
 #include "textmenu.h"
 #include "efx.h"
+#include "font.h"
 
 /* flags for 2d drawing */
 #define DRAWFLAG_NORMAL		0
@@ -30,9 +31,9 @@
 #define PRINT_CHAT		3
 
 /* fonts */
-var float FONT_16;
-var float FONT_20;
-var float FONT_CON;
+font_s FONT_16;
+font_s FONT_20;
+font_s FONT_CON;
 
 /* clientside cvars */
 var float autocvar_zoom_sensitivity = 1.0f;

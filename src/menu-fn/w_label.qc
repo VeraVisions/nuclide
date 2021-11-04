@@ -46,9 +46,9 @@ CLabel::Draw(void)
 /* Sometimes all you need is a static label */
 void
 WLabel_Static(int x, int y, string msg, int sx, int sy, vector col,
-				float alpha, float flags, int font)
+				float alpha, float flags, font_s font)
 {
-	drawfont = font;
+	drawfont = Font_GetID(font);
 	x += g_menuofs[0];
 	y += g_menuofs[1];
 	drawstring([x,y], msg, [sx,sy], col, alpha, flags);
@@ -56,9 +56,9 @@ WLabel_Static(int x, int y, string msg, int sx, int sy, vector col,
 
 void
 WLabel_StaticR(int x, int y, string msg, int sx, int sy, vector col,
-				float alpha, float flags, int font)
+				float alpha, float flags, font_s font)
 {
-	drawfont = font;
+	drawfont = Font_GetID(font);
 	x += g_menuofs[0] - stringwidth(msg, TRUE,[sx,sy]);
 	y += g_menuofs[1];
 	drawstring([x,y], msg, [sx,sy], col, alpha, flags);
@@ -66,9 +66,9 @@ WLabel_StaticR(int x, int y, string msg, int sx, int sy, vector col,
 
 void
 WField_Static(int x, int y, string msg, int sx, int sy, vector col,
-				float alpha, float flags, int font)
+				float alpha, float flags, font_s font)
 {
-	drawfont = font;
+	drawfont = Font_GetID(font);
 	x += g_menuofs[0];
 	y += g_menuofs[1];
 	drawtextfield([x,y], [sx,sy], flags, sprintf("%s%s", 

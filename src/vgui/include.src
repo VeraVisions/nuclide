@@ -1,5 +1,4 @@
 #includelist
-../vgui/font.qc
 ../vgui/ui.qc
 ../vgui/ui_button.qc
 ../vgui/ui_menubutton.qc

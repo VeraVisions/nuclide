@@ -55,9 +55,6 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	registercommand("vote");
 	registercommand("callvote");
 
-	registercommand("+saturn_menu");
-	registercommand("-saturn_menu");
-
 	/* hud weapon selection system */
 	registercommand("slot1");
 	registercommand("slot2");
@@ -116,10 +113,9 @@ void
 CSQC_RendererRestarted(string rstr)
 {
 	/* Fonts */
-	FONT_16 = Font_LoadFont("fonts/font16.font");
-	FONT_20 = Font_LoadFont("fonts/font20.font");
-	FONT_CON = Font_LoadFont("fonts/fontcon.font");
-	drawfont = FONT_CON;
+	Font_Load("fonts/font16.font", FONT_16);
+	Font_Load("fonts/font20.font", FONT_20);
+	Font_Load("fonts/fontcon.font", FONT_CON);
 
 	/* Particles */
 	PART_DUSTMOTE = particleeffectnum("volume.dustmote");
@@ -129,6 +125,7 @@ CSQC_RendererRestarted(string rstr)
 	precache_pic("gfx/vgui/icntlk_pl");
 
 	/* View */
+	Chat_Init();
 	Weapons_Init();
 	Scores_Init();
 	View_Init();
@@ -384,7 +381,6 @@ CSQC_UpdateView(float w, float h, float focus)
 		}
 
 		Fade_Update((int)video_mins[0],(int)video_mins[1], (int)w, (int)h);
-		IN_Saturn_DrawMenu();
 		View_PostDraw();
 
 		if (g_iIntermission) {
@@ -545,8 +541,6 @@ CSQC_Input_Frame(void)
 	if (pSeat->m_flCameraTime > time) {
 		/* TODO: Supress the changing of view_angles/input_angles. */
 	}
-
-	IN_Saturn_InputFrame();
 }
 
 
@@ -817,12 +811,6 @@ CSQC_ConsoleCommand(string sCMD)
 		break;
 	case "slot10":
 		HUD_SlotSelect(9);
-		break;
-	case "+saturn_menu":
-		pSeat->m_iSaturnMenu = TRUE;
-		break;
-	case "-saturn_menu":
-		pSeat->m_iSaturnMenu = FALSE;
 		break;
 	case "way_menu":
 		Textmenu_Call("WAY_MENU");

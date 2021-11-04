@@ -20,8 +20,7 @@ EFX_DebugInfo(void)
 	static vector pos = [16, 16];
 
 	static void epr(string tx) {
-		drawfont = FONT_CON;
-		drawstring(pos, tx, [12,12], [1,1,1], 1.0f, 0);
+		Font_DrawText(pos, tx, FONT_CON);
 		pos[1] += 12;
 	}
 

@@ -220,7 +220,7 @@ CMainButton::Draw(void)
 					[0,((m_bitmap * 3)+1) * g_btnofs], [1,g_btnofs],
 					[1,1,1], 1 - m_alpha, 1);
 	} else {
-		drawfont = font_label_p;
+		drawfont = Font_GetID(font_label_p);
 		if (!m_execute) {
 			drawstring([g_menuofs[0]+m_x,g_menuofs[1]+m_y], g_mainbtn_text[m_bitmap], [16,16], col_button_disabled, 1.0, 0);
 			return;

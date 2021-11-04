@@ -1,3 +1,2 @@
-name "label_p"
-font "gfx/shell/arialbd.ttf"
-size "16 21"
+rendersize "16 21"
+path gfx/shell/arialbd.ttf

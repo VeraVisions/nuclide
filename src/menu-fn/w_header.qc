@@ -144,7 +144,7 @@ Header_Draw(int id)
 	if (whichpack(strcat(g_bmp[id],".bmp"))) {
 		drawpic([g_menuofs[0]+45,g_menuofs[1]+45], g_bmp[id],[460,80], [1,1,1], 1.0f, 1);
 	} else {
-		drawfont = font_label_p;
+		drawfont = Font_GetID(font_label_p);
 		drawstring([g_menuofs[0]+45,g_menuofs[1]+45], g_header_text[id-HEAD_ADVANCED], [32,32], [1,1,1], 1.0f, 1);
 	}
 }

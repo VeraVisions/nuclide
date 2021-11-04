@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include "../client/font.h"
+
 var int autocvar_menu_intro = TRUE;
 var int autocvar__menu_singleplayer;
 
@@ -47,11 +49,11 @@ float frametime;
 var int g_background = FALSE;
 
 /* Font IDs */
-int font_label;
-int font_label_b;
-int font_console;
-int font_arial;
-int font_label_p;
+font_s font_label;
+font_s font_label_b;
+font_s font_console;
+font_s font_arial;
+font_s font_label_p;
 
 var int autocvar_menu_helptext_size = 11;
 
