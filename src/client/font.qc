@@ -29,7 +29,7 @@ Font_Load(string strFile, font_s &fntNew)
 
 	filestream fileFont = fopen(strFile, FILE_READ);
 	fntNew.iID = 0;
-	fntNew.iScaleX = fntNew.iScaleY = 8;
+	fntNew.iScaleX = fntNew.iScaleY = -1;
 	fntNew.vecColor = [1,1,1];
 	fntNew.flAlpha = 1.0f;
 	fntNew.iFlags = 0;
@@ -72,7 +72,11 @@ Font_Load(string strFile, font_s &fntNew)
 		}
 		fclose(fileFont);
 	} else {
-		error(sprintf("[MENU] Cannot load font file %s!", strFile));
+		error(sprintf("[FONT] Cannot load font file %s!", strFile));
+	}
+
+	if (!fntNew.iScaleX || !fntNew.iScaleY) {
+		error(sprintf("[FONT] No valid size defined for %s!", strFile));
 	}
 
 	//print(sprintf("[FONT] %s: %s %s\n", strFile, strFontPath, strRenderSize));
@@ -88,6 +92,7 @@ Font_DrawText(vector vecOrigin, string strText, font_s fnt)
 {
 	drawfont = (float)fnt.iID;
 	drawstring(vecOrigin, strText, [fnt.iScaleX, fnt.iScaleY], fnt.vecColor, fnt.flAlpha, (float)fnt.iFlags);
+	drawfont = 0;
 }
 
 void
@@ -95,6 +100,7 @@ Font_DrawText_A(vector vecOrigin, string strText, vector rgb, float a, font_s fn
 {
 	drawfont = (float)fnt.iID;
 	drawstring(vecOrigin, strText, [fnt.iScaleX, fnt.iScaleY], fnt.vecColor, a, (float)fnt.iFlags);
+	drawfont = 0;
 }
 
 void
@@ -102,6 +108,7 @@ Font_DrawText_RGB(vector vecOrigin, string strText, vector rgb, font_s fnt)
 {
 	drawfont = (float)fnt.iID;
 	drawstring(vecOrigin, strText, [fnt.iScaleX, fnt.iScaleY], rgb, fnt.flAlpha, (float)fnt.iFlags);
+	drawfont = 0;
 }
 
 void
@@ -109,13 +116,18 @@ Font_DrawText_RGBA(vector vecOrigin, string strText, vector rgb, float a, font_s
 {
 	drawfont = (float)fnt.iID;
 	drawstring(vecOrigin, strText, [fnt.iScaleX, fnt.iScaleY], rgb, a, (float)fnt.iFlags);
+	drawfont = 0;
 }
 
 void
 Font_DrawField(vector vecOrigin, vector vecSize, string strText, font_s fnt, int iAlignFlags)
 {
 	drawfont = (float)fnt.iID;
+	drawfontscale[0] = (float)fnt.iScaleX / 8;
+	drawfontscale[1] = (float)fnt.iScaleY / 8;
 	drawtextfield(vecOrigin, vecSize, (float)iAlignFlags, strText);
+	drawfont = 0;
+	drawfontscale = [1,1,0];
 }
 
 string

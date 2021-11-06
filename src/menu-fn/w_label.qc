@@ -62,15 +62,14 @@ WLabel_StaticR(int x, int y, string msg, int sx, int sy, vector col,
 	x += g_menuofs[0] - stringwidth(msg, TRUE,[sx,sy]);
 	y += g_menuofs[1];
 	drawstring([x,y], msg, [sx,sy], col, alpha, flags);
+	drawfont = 0;
 }
 
 void
 WField_Static(int x, int y, string msg, int sx, int sy, vector col,
 				float alpha, float flags, font_s font)
 {
-	drawfont = Font_GetID(font);
 	x += g_menuofs[0];
 	y += g_menuofs[1];
-	drawtextfield([x,y], [sx,sy], flags, sprintf("%s%s", 
-				  Colors_RGB8_to_HEX(col), msg));
+	Font_DrawField([x,y], [sx,sy], sprintf("%s%s", Colors_RGB8_to_HEX(col), msg), font, (int)flags);
 }
