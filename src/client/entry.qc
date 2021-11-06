@@ -503,25 +503,6 @@ CSQC_Input_Frame(void)
 	if (serverkeyfloat("background") == 1)
 		return;
 
-	/* The HUD needs more time */
-	if ((pSeat->m_iHUDWeaponSelected) && (input_buttons & INPUT_BUTTON0)) {
-		HUD_DrawWeaponSelect_Trigger();
-		input_buttons = 0;
-		pSeat->m_flInputBlockTime = time + 0.2;
-	}
-
-	/* prevent accidental input packets */
-	if (pSeat->m_flInputBlockTime > time) {
-		input_impulse = 0;
-		input_buttons = 0;
-		return;
-	}
-
-	/* compat*/
-	if (input_impulse == 201) {
-		sendevent("Spraylogo", "");
-	}
-
 	if (pSeat->m_iInputAttack2 == TRUE) {
 		input_buttons |= INPUT_BUTTON3;
 	}
@@ -537,6 +518,31 @@ CSQC_Input_Frame(void)
 	if (pSeat->m_iInputDuck == TRUE) {
 		input_buttons |= INPUT_BUTTON8;
 	}
+
+	/* The HUD needs more time */
+	if (pSeat->m_iHUDWeaponSelected) {
+		if ((input_buttons & INPUT_BUTTON0))
+			HUD_DrawWeaponSelect_Trigger();
+		else if ((input_buttons & INPUT_BUTTON3))
+			pSeat->m_iHUDWeaponSelected = pSeat->m_flHUDWeaponSelectTime = 0;
+
+		pSeat->m_flInputBlockTime = time + 0.2;
+	}
+
+	/* prevent accidental input packets */
+	if (pSeat->m_flInputBlockTime > time) {
+		input_buttons &= ~INPUT_BUTTON0;
+		input_buttons &= ~INPUT_BUTTON3;
+		pSeat->m_iInputAttack2 = FALSE;
+		return;
+	}
+
+	/* compat*/
+	if (input_impulse == 201) {
+		sendevent("Spraylogo", "");
+	}
+
+
 
 	if (pSeat->m_flCameraTime > time) {
 		/* TODO: Supress the changing of view_angles/input_angles. */
