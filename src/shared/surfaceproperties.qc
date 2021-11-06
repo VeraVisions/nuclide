@@ -415,7 +415,7 @@ SurfData_Finish(void)
 void
 SurfData_Impact(entity e, int fl, vector org, vector ang)
 {
-	if (e == world || e.health == 0) { /* the static world */
+	if (e == world || e.health == 0 || e.takedamage == 3) { /* the static world */
 		switch (serverkeyfloat("*bspversion")) {
 		case BSPVER_HL:
 			float surf;

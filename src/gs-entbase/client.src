@@ -22,6 +22,5 @@ client/infodecal.qc
 client/sky_camera.qc
 client/info_notnull.qc
 client/point_message.qc
-client/prop_dynamic.qc
 client/prop_rope.qc
 #endlist

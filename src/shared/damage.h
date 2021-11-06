@@ -42,3 +42,9 @@ typedef enumflags
 	DMG_SKIP_ARMOR,
 	DMG_SKIP_RAGDOLL
 } damageType_t;
+
+/* takedamage types */
+const float DAMAGE_NO = 0;
+const float DAMAGE_YES = 1;
+const float DAMAGE_AIM = 2;
+const float DAMAGE_MATERIAL = 3;

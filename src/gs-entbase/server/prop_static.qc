@@ -14,19 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED prop_dynamic (0 0.2 1) (-8 -8 -8) (8 8 8) SF_BASIC_COL
-Client-side decorative model entity.
-
--------- KEYS --------
-"model" : Model file that will be displayed by the entity.
-"modelscale" : Scale modifier of the model. Default is "1".
-"angles" : Sets the pitch, yaw and roll angles of the model.
-"_cs" : Toggles if the prop casts a shadow or not.
-
--------- TRIVIA --------
-This entity was introduced in Half-Life 2 (2004).
-*/
-
 /*QUAKED prop_static (0 0.2 1) (-8 -8 -8) (8 8 8) SF_BASIC_COL
 Decorative model entity that gets baked into the level file.
 
@@ -51,61 +38,37 @@ waste disk space and memory. Use wisely.
 This entity was introduced in Half-Life 2 (2004).
 */
 
-class prop_dynamic:NSRenderableEntity
+class prop_static:NSRenderableEntity
 {
-	void(void) prop_dynamic;
+	void(void) prop_static;
 
-	virtual void(void) Init;
+	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
-	virtual float(void) predraw;
 };
 
 void
-prop_dynamic::SpawnKey(string strField, string strKey)
+prop_static::Respawn(void)
 {
-	switch (strField) {
-		case "modelscale":
-			scale = stof(strKey);
-			break;
-		case "angle":
-			angles[1] = stof(strKey);
-			break;
-		case "avelocity":
-			avelocity = stov(strKey);
-			break;
-		default:
-			super::SpawnKey(strField, strKey);
+	super::Respawn();
+	SetModel(GetSpawnModel());
+	SetSolid(SOLID_CORPSE);
+	takedamage = DAMAGE_MATERIAL;
+}
+
+void
+prop_static::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "modelscale":
+		scale = stof(strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
 	}
 }
-float
-prop_dynamic::predraw(void)
-{
-	angles += avelocity * frametime;
-	return super::predraw();
-}
 
 void
-prop_dynamic::Init(void)
+prop_static::prop_static(void)
 {
-	super::Init();
-
-	precache_model(model);
-	setmodel(this, model);
-	setorigin(this, origin);
-	solid = SOLID_NOT;
-	movetype = MOVETYPE_NONE;
-	setsize(this, mins * scale, maxs * scale);
-	drawmask = MASK_ENGINE;
-
-	if (vlen(avelocity) == 0)
-		MakeStatic();
+	super::NSRenderableEntity();
 }
-
-void
-prop_dynamic::prop_dynamic(void)
-{
-	scale = 1.0f;
-	Init();
-}
-
-CLASSEXPORT(prop_static, prop_dynamic)
