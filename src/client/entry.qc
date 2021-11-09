@@ -221,13 +221,13 @@ CSQC_UpdateView(float w, float h, float focus)
 		setproperty(VF_SIZE, video_res);
 
 		pSeat->m_ePlayer = self = findfloat(world, entnum, player_localentnum);
+		pl = (player)self;
 
 		if (!self) {
 			continue;
 		}
 
 		if (self.classname == "player") {
-			pl = (player)self;
 			Predict_PlayerPreFrame(pl);
 
 			pSeat->m_vecPredictedOrigin = pl.origin;
@@ -286,8 +286,7 @@ CSQC_UpdateView(float w, float h, float focus)
 			setproperty(VF_CL_VIEWANGLES, view_angles);
 			setproperty(VF_ANGLES, view_angles);
 		} else {
-			if (self.classname == "player") {
-				pl = (player)self;
+			if (getplayerkeyvalue(pl.entnum-1, "*spec") == "0") {
 				setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin + pl.view_ofs);
 
 				if (pl.flags & FL_INVEHICLE) {
@@ -314,7 +313,7 @@ CSQC_UpdateView(float w, float h, float focus)
 					pSeat->m_flShakeDuration -= clframetime;
 				}
 				setproperty(VF_ANGLES, view_angles + pl.punchangle);
-			} else if (self.classname == "spectator") {
+			} else if (getplayerkeyvalue(pl.entnum-1, "*spec") == "1") {
 				spec = (spectator)self;
 				switch (spec.spec_mode) {
 				case SPECMODE_THIRDPERSON:
@@ -344,6 +343,18 @@ CSQC_UpdateView(float w, float h, float focus)
 				default:
 					setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin);
 				}
+			} else if (getplayerkeyvalue(pl.entnum-1, "*spec") == "2") {
+				setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin);
+
+				if (pSeat->m_flShakeDuration > 0.0) {
+					vector vecShake = [0,0,0];
+					vecShake[0] += random() * 3;
+					vecShake[1] += random() * 3;
+					vecShake[2] += random() * 3;
+					pl.punchangle += (vecShake * pSeat->m_flShakeAmp) * (pSeat->m_flShakeDuration / pSeat->m_flShakeTime);
+					pSeat->m_flShakeDuration -= clframetime;
+				}
+				setproperty(VF_ANGLES, view_angles + pl.punchangle);
 			}
 
 			if (g_iIntermission) {
@@ -389,10 +400,10 @@ CSQC_UpdateView(float w, float h, float focus)
 			GameText_Draw();
 			PointMessage_Draw();
 
-			if (self.classname == "spectator") {
-				HUD_DrawSpectator();
-			} else if (self.classname == "player") {
+			if (getplayerkeyvalue(pl.entnum-1, "*spec") == "0") {
 				HUD_Draw();
+			} else if (self.classname == "player") {
+				HUD_DrawSpectator();
 			}
 
 			Voice_DrawHUD();

@@ -101,7 +101,7 @@ if [ "$BUILD_ENGINE_DEPENDENCIES" -eq 1 ]; then
 	printf "Built the static dependencies successfully.\n\n"
 fi
 
-gmake -j $BUILD_PROC $MAKETARGET FTE_TARGET=$PLATFORM
+gmake -j $BUILD_PROC $MAKETARGET  CFLAGS=-DMULTITHREAD FTE_TARGET=$PLATFORM
 cp -v "$OUTPUT" ../../../bin/fteqw
 printf "Built the client engine successfully.\n\n"
 
@@ -117,6 +117,12 @@ if [ "$BUILD_IMGTOOL" -eq 1 ]; then
 	gmake -j $BUILD_PROC imgtool-rel
 	cp -v ./release/imgtool ../../../bin/imgtool
 	printf "Built the imgtool successfully.\n\n"
+fi
+
+if [ "$BUILD_SOURCE" -eq 1 ]; then
+	gmake -j $BUILD_PROC plugins-rel CFLAGS=-DGLQUAKE NATIVE_PLUGINS="hl2"
+	find ./release/ -name 'fteplug_hl2_*.so' -exec cp -prv '{}' '../../../bin/' ';'
+	printf "Built the Source Engine plugin successfully.\n\n"
 fi
 
 if [ "$BUILD_BULLET" -eq 1 ]; then

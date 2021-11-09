@@ -296,6 +296,67 @@ base_player::Respawn(void)
 }
 
 /*
+=================*
+base_player::MakeTempSpectator
+ 
+This is what dead players in round matches become, or when we spawn
+for the first time before selecting a loadout or something.
+=================
+ */
+void
+base_player::MakeTempSpectator(void)
+{
+	classname = "player";
+	flags = FL_CLIENT;
+	max_health = health = 0;
+	armor = 0;
+	g_items = 0;
+	activeweapon = 0;
+	effects = 0;
+	alpha = 0.0f;
+	solid = SOLID_NOT;
+	movetype = MOVETYPE_NOCLIP;
+	maxspeed = 250;
+	takedamage = DAMAGE_NO;
+	forceinfokey(this, "*spec", "2");
+}
+
+/*
+=================*
+base_player::MakeTempSpectator
+ 
+This is what dead players in round matches become, or when we spawn
+for the first time before selecting a loadout or something.
+=================
+ */
+void
+base_player::MakePlayer(void)
+{
+	classname = "player";
+	flags = FL_CLIENT;
+	health = max_health = 100;
+	armor = 0;
+	g_items = 0;
+	activeweapon = 0;
+	effects = 0;
+	alpha = 1.0f;
+	takedamage = DAMAGE_YES;
+	solid = SOLID_SLIDEBOX;
+	movetype = MOVETYPE_WALK;
+	takedamage = DAMAGE_YES;
+	forceinfokey(this, "*spec", "0");
+	viewzoom = 1.0;
+	vehicle = __NULL__;
+	velocity = [0,0,0];
+	gravity = __NULL__;
+	SendFlags = UPDATE_ALL;
+	customphysics = Empty;
+	iBleeds = TRUE;
+	forceinfokey(this, "*deaths", ftos(deaths));
+	setsize(this, VEC_HULL_MIN, VEC_HULL_MAX);
+}
+
+/*
 =================
 base_player::EvaluateEntity
 

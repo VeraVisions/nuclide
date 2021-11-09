@@ -34,6 +34,8 @@
 varying vec2 tex_c;
 varying vec3 lightvector;
 
+#define VERTEXCOLOURS
+
 #if defined(VERTEXCOLOURS)
 	varying vec4 vc;
 #endif
@@ -134,9 +136,6 @@ varying vec3 lightvector;
 		#else
 			vec4 bases = vec4(0.5, 0.5, 0.5, 1.0);
 		#endif
-		#ifdef VERTEXCOLOURS
-			bases.rgb *= bases.a;
-		#endif
 	#endif
 
 	#if defined(BUMP) || defined(SPECULAR) || defined(REFLECTCUBEMASK)
@@ -188,9 +187,11 @@ varying vec3 lightvector;
 		diff *= textureCube(s_projectionmap, vtexprojcoord.xyz).rgb;
 	#endif
 
-	#if defined(VERTEXCOLOURS)
-		diff *= vc.rgb * vc.a;
-	#endif
+		if (bases.a < 0.5)
+			discard;
+
+		if (vc.a < 0.5)
+			discard;
 
 		diff *= colorscale * l_lightcolour;
 		gl_FragColor = vec4(fog3additive(diff), 1.0);

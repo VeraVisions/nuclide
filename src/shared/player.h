@@ -110,5 +110,8 @@ base_player
 	virtual void(void) Respawn;
 	virtual void(void) EvaluateEntity;
 	virtual float(entity, float) SendEntity;
+
+	virtual void(void) MakePlayer;
+	virtual void(void) MakeTempSpectator;
 #endif
 };

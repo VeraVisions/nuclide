@@ -668,6 +668,7 @@ void
 NSRenderableEntity::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
+	case "modelscale":
 	case "scale":
 		scale = stof(strValue);
 		break;
@@ -722,7 +723,7 @@ void
 NSRenderableEntity::NSRenderableEntity(void)
 {
 	effects |= EF_NOSHADOW;
-	scale = 1.0f;
+	//scale = 1.0f;
 
 	super::NSEntity();
 
@@ -736,5 +737,4 @@ NSRenderableEntity::NSRenderableEntity(void)
 	m_oldflRenderAmt = m_flRenderAmt;
 #endif
 #endif
-
 }

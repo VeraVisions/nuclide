@@ -32,7 +32,6 @@ class prop_dynamic:NSRenderableEntity
 	void(void) prop_dynamic;
 
 	virtual void(void) Respawn;
-	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -42,18 +41,6 @@ prop_dynamic::Respawn(void)
 	SetModel(GetSpawnModel());
 	SetSolid(SOLID_CORPSE);
 	takedamage = DAMAGE_MATERIAL;
-}
-
-void
-prop_dynamic::SpawnKey(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "modelscale":
-		scale = stof(strValue);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
 }
 
 void

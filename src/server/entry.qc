@@ -661,8 +661,7 @@ SV_PerformLoad(float fh)
 	entity eold;
 	string l;
 	float n;
-	NSEntity loadent;
-	int braced;
+	NSEntity loadent = __NULL__;
 
 
 #ifdef REEDICT
@@ -671,7 +670,7 @@ SV_PerformLoad(float fh)
 			remove(e);
 	}
 #else
-	entity e = world;
+	e = world;
 #endif
 
 	/* read line per line of our file handle */

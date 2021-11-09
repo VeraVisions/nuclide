@@ -63,7 +63,7 @@ infodecal::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "child":
-		m_decChild = edict_num(ReadFloat(strValue));
+		m_decChild = (decal)edict_num(ReadFloat(strValue));
 		break;
 	case "texture":
 		m_strTexture = ReadString(strValue);
