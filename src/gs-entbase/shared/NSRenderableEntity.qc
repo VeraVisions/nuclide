@@ -346,7 +346,6 @@ NSRenderableEntity::ReceiveEntity(float flChanged)
 		maxs[0] = readcoord();
 		maxs[1] = readcoord();
 		maxs[2] = readcoord();
-		setsize(this, mins, maxs);
 	}
 	if (flChanged & BASEFL_CHANGED_FRAME) {
 		frame1time = 0.0;
@@ -401,6 +400,9 @@ NSRenderableEntity::ReceiveEntity(float flChanged)
 
 	if (scale == 0.0)
 		scale = 1.0f;
+
+	if (flChanged & BASEFL_CHANGED_SIZE)
+		setsize(this, mins * scale, maxs * scale);
 
 	setorigin(this, origin);
 }
@@ -528,6 +530,7 @@ NSRenderableEntity::SetScale(float newScale)
 		return;
 
 	scale = newScale;
+	setsize(this, m_vecMins * scale, m_vecMaxs * scale);
 	SetSendFlags(BASEFL_CHANGED_SCALE);
 }
 

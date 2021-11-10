@@ -284,10 +284,9 @@ NSEntity::SetAngles(vector newAngles)
 void
 NSEntity::SetSize(vector newMins, vector newMaxs)
 {
-	if (newMins == mins && newMaxs == maxs)
-		return;
-
-	setsize(this, newMins, newMaxs);
+	m_vecMins = newMins;
+	m_vecMaxs = newMaxs;
+	setsize(this, m_vecMins * scale, m_vecMaxs * scale);
 	SetSendFlags(BASEFL_CHANGED_SIZE);
 }
 void
@@ -306,6 +305,7 @@ NSEntity::SetModel(string newModel)
 {
 	model = newModel;
 	setmodel(this, newModel);
+	SetSize(mins, maxs);
 	SetSendFlags(BASEFL_CHANGED_MODELINDEX);
 }
 void
@@ -315,9 +315,9 @@ NSEntity::SetModelindex(float newModelIndex)
 		return;
 
 	modelindex = newModelIndex;
+	SetSize(mins, maxs);
 	SetSendFlags(BASEFL_CHANGED_MODELINDEX);
 }
-
 
 #ifdef SERVER
 vector

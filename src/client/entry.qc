@@ -553,8 +553,6 @@ CSQC_Input_Frame(void)
 		sendevent("Spraylogo", "");
 	}
 
-
-
 	if (pSeat->m_flCameraTime > time) {
 		/* TODO: Supress the changing of view_angles/input_angles. */
 	}

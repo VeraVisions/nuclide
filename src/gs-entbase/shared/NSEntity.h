@@ -22,6 +22,10 @@ class NSEntity:NSTrigger
 {
 	void(void) NSEntity;
 
+	/* these are the real bounds, whereas .mins .maxs are affected by .scale */
+	vector m_vecMins;
+	vector m_vecMaxs;
+
 #ifdef CLIENT
 	virtual void(float flChanged) ReceiveEntity;
 	virtual void(void) postdraw;
