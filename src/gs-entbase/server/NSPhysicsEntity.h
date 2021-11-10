@@ -38,11 +38,14 @@ class NSPhysicsEntity:NSSurfacePropEntity
 	float m_flInertiaScale;
 
 	void(void) NSPhysicsEntity;
+
+	/* overrides */
 	virtual void(void) Respawn;
 	virtual void(void) touch;
 	virtual void(void) TouchThink;
 	virtual void(void) Pain;
 	virtual void(void) Death;
+	virtual void(string, string) SpawnKey;
 
 	virtual void(float) SetMass;
 	virtual float(void) GetMass;
@@ -55,6 +58,6 @@ class NSPhysicsEntity:NSSurfacePropEntity
 	virtual void(vector) ApplyForceCenter;
 	virtual void(vector, vector) ApplyForceOffset;
 	virtual void(vector) ApplyTorqueCenter;
+	virtual float(int, int) CalculateImpactDamage;
 
-	virtual void(string, string) SpawnKey;
 };

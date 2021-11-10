@@ -82,6 +82,29 @@ NSPhysicsEntity::GetInertia(void)
 	return m_flInertiaScale;
 }
 
+float
+NSPhysicsEntity::CalculateImpactDamage(int iDamage, int dmgType)
+{
+	int filter = 0i;
+
+	/* if we're any of these dmg types, we don't transfer any kinetic energy */
+	filter |= (dmgType & DMG_BURN);
+	filter |= (dmgType & DMG_ELECTRO);
+	filter |= (dmgType & DMG_SOUND);
+	filter |= (dmgType & DMG_ENERGYBEAM);
+	filter |= (dmgType & DMG_DROWN);
+	filter |= (dmgType & DMG_POISON);
+	filter |= (dmgType & DMG_RADIATION);
+	filter |= (dmgType & DMG_ACID);
+	filter |= (dmgType & DMG_ACID);
+	filter |= (dmgType & DMG_SLOWFREEZE);
+
+	if (filter == 0i)
+		return (float)iDamage * 0.1f;
+	else
+		return 0.0f;
+}
+
 void
 NSPhysicsEntity::ApplyForceCenter(vector vecForce)
 {
@@ -177,12 +200,17 @@ NSPhysicsEntity::touch(void)
 void
 NSPhysicsEntity::Pain(void)
 {
+	float force;
+
 	if (m_iFlags & BPHY_NODMGPUSH)
 		return;
 
 	PhysicsEnable();
 	makevectors(vectoangles(origin - trace_endpos));
-	ApplyForceOffset(v_forward * 20, origin - trace_endpos);
+	force = CalculateImpactDamage(g_dmg_iDamage, g_dmg_iFlags);
+
+	if (force > 0.0f)
+		ApplyForceOffset(v_forward * force, origin - trace_endpos);
 
 	if (!HasPropData()) {
 		health = 100000;
