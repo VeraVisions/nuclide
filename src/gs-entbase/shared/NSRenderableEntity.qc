@@ -360,7 +360,7 @@ NSRenderableEntity::ReceiveEntity(float flChanged)
 	}
 	if (flChanged & BASEFL_CHANGED_BODY) {
 		m_iBody = readbyte();
-		setcustomskin(this, "", sprintf("geomset 1 %i\n", m_iBody));
+		setcustomskin(this, "", sprintf("geomset 0 %i\ngeomset 1 %i\n", m_iBody, m_iBody));
 	}
 	if (flChanged & BASEFL_CHANGED_SCALE) {
 		scale = readfloat();
