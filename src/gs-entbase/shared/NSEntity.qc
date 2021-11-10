@@ -284,9 +284,14 @@ NSEntity::SetAngles(vector newAngles)
 void
 NSEntity::SetSize(vector newMins, vector newMaxs)
 {
+	float sz = 1.0f;
 	m_vecMins = newMins;
 	m_vecMaxs = newMaxs;
-	setsize(this, m_vecMins * scale, m_vecMaxs * scale);
+
+	if (scale != 0.0)
+		sz = scale;
+
+	setsize(this, m_vecMins * sz, m_vecMaxs * sz);
 	SetSendFlags(BASEFL_CHANGED_SIZE);
 }
 void
