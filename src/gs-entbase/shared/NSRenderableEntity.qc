@@ -671,6 +671,9 @@ void
 NSRenderableEntity::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
+	case "body":
+		m_iBody = stoi(strValue);
+		break;
 	case "modelscale":
 	case "scale":
 		scale = stof(strValue);
