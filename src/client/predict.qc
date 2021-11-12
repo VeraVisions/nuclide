@@ -19,18 +19,23 @@
 Predict_EntityUpdate
 
 We're part way through parsing new player data.
-Propagate our pmove state to whatever the current frame before its stomped on 
+Propagate our pmove state to whatever the current frame before its stomped on
 (so any non-networked state updates locally).
 =================
 */
 void
 Predict_EntityUpdate(player pl, float new)
 {
+	if (serverkeyfloat(SERVERKEY_PAUSESTATE) == 1)
+	{
+		return;
+	}
+
 	/* this is a new client entity, let's set it up right */
 	if (new || self.classname != "player") {
 		spawnfunc_player();
 		pl.classname = "player";
-		
+
 		if (pl.entnum == player_localentnum) {
 			pl.solid = SOLID_SLIDEBOX;
 			pl.movetype = MOVETYPE_NONE;
@@ -59,7 +64,7 @@ Predict_EntityUpdate(player pl, float new)
 			pl.Physics_Run();
 		}
 	}
-	
+
 }
 
 /*
@@ -67,13 +72,19 @@ Predict_EntityUpdate(player pl, float new)
 Predict_PreFrame
 
 We're part way through parsing new player data.
-Propagate our pmove state to whatever the current frame before its stomped on 
+Propagate our pmove state to whatever the current frame before its stomped on
 (so any non-networked state updates locally).
 =================
 */
 void
 Predict_PlayerPreFrame(player pl)
 {
+
+	if (serverkeyfloat(SERVERKEY_PAUSESTATE) == 1)
+	{
+		return;
+	}
+
 	/* this is where a game/mod would decide to add more prediction rollback
 	 * information. */
 	pl.PredictPreFrame();
@@ -114,13 +125,19 @@ Predict_PlayerPreFrame(player pl)
 Predict_PostFrame
 
 We're part way through parsing new player data.
-Rewind our pmove state back to before we started predicting. 
+Rewind our pmove state back to before we started predicting.
 (to give consistent state instead of accumulating errors)
 =================
 */
 void
 Predict_PlayerPostFrame(player pl)
 {
+
+	if (serverkeyfloat(SERVERKEY_PAUSESTATE) == 1)
+	{
+		return;
+	}
+
 	/* give the game/mod a chance to roll back its values too */
 	pl.PredictPostFrame();
 
@@ -139,13 +156,18 @@ Predict_PlayerPostFrame(player pl)
 Predict_PreFrame
 
 We're part way through parsing new player data.
-Propagate our pmove state to whatever the current frame before its stomped on 
+Propagate our pmove state to whatever the current frame before its stomped on
 (so any non-networked state updates locally).
 =================
 */
 void
 Predict_SpectatorPreFrame(spectator pl)
-{	
+{
+	if (serverkeyfloat(SERVERKEY_PAUSESTATE) == 1)
+	{
+		return;
+	}
+
 	pl.PreFrame();
 }
 
@@ -154,12 +176,17 @@ Predict_SpectatorPreFrame(spectator pl)
 Predict_SpectatorPostFrame
 
 We're part way through parsing new player data.
-Rewind our pmove state back to before we started predicting. 
+Rewind our pmove state back to before we started predicting.
 (to give consistent state instead of accumulating errors)
 =================
 */
 void
 Predict_SpectatorPostFrame(spectator pl)
 {
+	if (serverkeyfloat(SERVERKEY_PAUSESTATE) == 1)
+	{
+		return;
+	}
+
 	pl.PostFrame();
 }
