@@ -95,6 +95,54 @@ NSSurfacePropEntity::Respawn(void)
 }
 
 void
+NSSurfacePropEntity::Save(float handle)
+{
+	SaveFloat(handle, "m_eBurner", num_for_edict(m_eBurner));
+	SaveInt(handle, "m_iBurnWeapon", m_iBurnWeapon);
+	SaveFloat(handle,"m_flBurnTime", m_flBurnTime);
+	SaveFloat(handle, "m_flBurnNext", m_flBurnNext);
+	SaveString(handle, "m_strOnBreak", m_strOnBreak);
+	SaveFloat(handle, "m_oldHealth", m_oldHealth);
+	SaveInt(handle, "m_iMaterial", m_iMaterial);
+	SaveInt(handle, "m_iPropData", m_iPropData);
+
+	super::Save(handle);
+}
+
+void
+NSSurfacePropEntity::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_eBurner":
+		m_eBurner = edict_num(ReadFloat(strValue));
+		break;
+	case "m_iBurnWeapon":
+		m_iBurnWeapon = ReadInt(strValue);
+		break;
+	case "m_flBurnTime":
+		m_flBurnTime = ReadFloat(strValue);
+		break;
+	case "m_flBurnNext":
+		m_flBurnNext = ReadFloat(strValue);
+		break;
+	case "m_strOnBreak":
+		m_strOnBreak = ReadInt(strValue);
+		break;
+	case "m_oldHealth":
+		m_oldHealth = ReadFloat(strValue);
+		break;
+	case "m_iMaterial":
+		m_iMaterial = ReadInt(strValue);
+		break;
+	case "m_iPropData":
+		m_iPropData = ReadInt(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
+
+void
 NSSurfacePropEntity::Input(entity eAct, string strInput, string strData)
 {
 	switch (strInput) {
@@ -124,6 +172,13 @@ NSSurfacePropEntity::SpawnKey(string strKey, string strValue)
 	case "materialdata":
 		SetSurfaceData(strValue);
 		break;
+	/* Input/Output system */
+#ifdef SERVER
+	case "OnBreak":
+		strValue = strreplace(",", ",_", strValue);
+		m_strOnBreak = strcat(m_strOnBreak, ",_", strValue);
+		break;
+#endif
 	default:
 		NSRenderableEntity::SpawnKey(strKey, strValue);
 		break;
@@ -139,7 +194,29 @@ NSSurfacePropEntity::Pain(void)
 void
 NSSurfacePropEntity::Death(void)
 {
-	
+	Hide();
+
+	UseOutput(g_dmg_eAttacker, m_strOnBreak);
+
+	if (HasPropData() == FALSE)
+		return;
+
+	string gibeffect = GetPropData(PROPINFO_BREAKMODEL);
+	int breakcount = GetPropData(PROPINFO_BREAKCOUNT);
+	BreakModel_Spawn(absmin, absmax, [0,0,0], 100, breakcount, gibeffect);
+
+	/* handle explosions */
+	float flExplodeMag, flExplodeRad;
+	flExplodeMag = GetPropData(PROPINFO_EXPLOSIVE_DMG);
+	flExplodeRad = GetPropData(PROPINFO_EXPLOSIVE_RADIUS);
+
+	if (flExplodeMag) {
+		if (!flExplodeRad)
+			flExplodeRad = flExplodeMag * 2.5f;
+
+		FX_Explosion(origin);
+		Damage_Radius(origin, this, flExplodeMag, flExplodeRad, TRUE, 0);
+	}
 }
 
 void
@@ -195,5 +272,8 @@ NSSurfacePropEntity::NSSurfacePropEntity(void)
 	/* tokenization complete, now we can load propdata */
 	SurfaceDataFinish();
 	PropDataFinish();
+
+	/* Input/Output system */
+	m_strOnBreak = CreateOutput(m_strOnBreak);
 #endif
 }
