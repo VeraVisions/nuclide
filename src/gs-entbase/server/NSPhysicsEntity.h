@@ -59,5 +59,4 @@ class NSPhysicsEntity:NSSurfacePropEntity
 	virtual void(vector, vector) ApplyForceOffset;
 	virtual void(vector) ApplyTorqueCenter;
 	virtual float(int, int) CalculateImpactDamage;
-
 };

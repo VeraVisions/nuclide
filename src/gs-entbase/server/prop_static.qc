@@ -51,7 +51,6 @@ prop_static::Respawn(void)
 	super::Respawn();
 	SetModel(GetSpawnModel());
 	SetSolid(SOLID_CORPSE);
-	takedamage = DAMAGE_MATERIAL;
 }
 
 void

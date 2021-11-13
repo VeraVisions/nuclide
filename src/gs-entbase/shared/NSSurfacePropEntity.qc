@@ -120,6 +120,7 @@ NSSurfacePropEntity::SpawnKey(string strKey, string strValue)
 	case "propdata":
 		SetPropData(strValue);
 		break;
+	case "surfdata":
 	case "materialdata":
 		SetSurfaceData(strValue);
 		break;

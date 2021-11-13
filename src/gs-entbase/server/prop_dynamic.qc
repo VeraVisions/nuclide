@@ -27,7 +27,7 @@ Client-side decorative model entity.
 This entity was introduced in Half-Life 2 (2004).
 */
 
-class prop_dynamic:NSRenderableEntity
+class prop_dynamic:NSSurfacePropEntity
 {
 	void(void) prop_dynamic;
 
@@ -40,11 +40,16 @@ prop_dynamic::Respawn(void)
 	super::Respawn();
 	SetModel(GetSpawnModel());
 	SetSolid(SOLID_CORPSE);
-	takedamage = DAMAGE_MATERIAL;
+
+	if (HasPropData()) {
+		health = GetPropData(PROPINFO_HEALTH);
+		takedamage = DAMAGE_YES;
+	} else {
+	}
 }
 
 void
 prop_dynamic::prop_dynamic(void)
 {
-	super::NSRenderableEntity();
+	super::NSSurfacePropEntity();
 }
