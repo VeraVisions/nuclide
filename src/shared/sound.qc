@@ -14,6 +14,22 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifndef SOUNDSHADER_DYNAMIC
+	#ifndef SOUNDSHADER_MAX
+		#define SOUNDSHADER_MAX 512
+	#endif
+#endif
+
+/*
+#define SOUNDSHADER_DYNAMIC
+
+Your game can define SOUNDSHADER_DYNAMIC in its progs.src if you want an unpredictable amount of sound shaders.
+Other than that, you can increase the value of SOUNDSHADER_MAX.
+
+We switched to up-front allocation because QCLIB fragments memory like hell as there's
+no real garbage collector to speak of
+*/
+
 void
 Sound_Shutdown(void)
 {
@@ -30,6 +46,11 @@ Sound_Init(void)
 {
 	/* make sure it's all reset */
 	Sound_Shutdown();
+
+#ifndef SOUNDSHADER_DYNAMIC
+	g_sounds = (snd_t *)memalloc(sizeof(snd_t) * SOUNDSHADER_MAX);
+	print(sprintf("Sound_Init: Allocated %d bytes\n", sizeof(snd_t) * SOUNDSHADER_MAX));
+#endif
 }
 
 void
@@ -235,15 +256,25 @@ Sound_Precache(string shader)
 	}
 
 	/* check if it's already cached */
-	for (int i = 0; i < g_sounds_count; i++) {
-		if (shader == g_sounds[i].name) {
-			dprint("[SOUND] Shader already precached.\n");
-			return i;
+	{
+		int cache;
+		cache = (int)hash_get(g_hashsounds, shader, -1);
+
+		if (cache >= 0) {
+			dprint(sprintf("^1Sound_Precache: shader %s already precached\n", shader));
+			return cache;
 		}
 	}
 
 	g_sounds_count++;
+
+#ifdef SOUNDSHADER_DYNAMIC
 	g_sounds = (snd_t *)memrealloc(g_sounds, sizeof(snd_t), index, g_sounds_count);
+#else
+	if (g_sounds_count >= SOUNDSHADER_MAX) {
+		error(sprintf("Sound_Precache: Reached SOUNDSHADER_MAX (%d)\n", SOUNDSHADER_MAX));
+	}
+#endif
 
 	g_sounds[index].volume = 1.0f;
 	g_sounds[index].dist_max = 1000;

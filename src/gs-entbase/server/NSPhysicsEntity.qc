@@ -218,29 +218,6 @@ NSPhysicsEntity::Pain(void)
 }
 
 void
-NSPhysicsEntity::Death(void)
-{
-	Hide();
-
-	string gibeffect = GetPropData(PROPINFO_BREAKMODEL);
-	int breakcount = GetPropData(PROPINFO_BREAKCOUNT);
-	BreakModel_Spawn(absmin, absmax, [0,0,0], 100, breakcount, gibeffect);
-
-	/* handle explosions */
-	float flExplodeMag, flExplodeRad;
-	flExplodeMag = GetPropData(PROPINFO_EXPLOSIVE_DMG);
-	flExplodeRad = GetPropData(PROPINFO_EXPLOSIVE_RADIUS);
-
-	if (flExplodeMag) {
-		if (!flExplodeRad)
-			flExplodeRad = flExplodeMag * 2.5f;
-
-		FX_Explosion(origin);
-		Damage_Radius(origin, this, flExplodeMag, flExplodeRad, TRUE, 0);
-	}
-}
-
-void
 NSPhysicsEntity::Respawn(void)
 {
 	SetMovetype(MOVETYPE_PHYSICS);

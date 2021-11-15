@@ -364,8 +364,6 @@ SurfData_Init(void)
 		g_hashsurfdata = hash_createtab(2, HASH_ADD);
 	}
 
-	/* Defaults go here */
-
 	fh = fopen("scripts/surfaceproperties.txt", FILE_READ);
 	if (fh < 0) {
 		print("^1[SURFDATA] Can't find surfaceproperties.txt\n");
@@ -380,6 +378,31 @@ SurfData_Init(void)
 	/* alocate our stuff */
 	g_surfdata = (surfaceData_t *)memalloc(sizeof(surfaceData_t) * g_surfdata_count);
 
+	/* Defaults */
+	for (int i = 0; i < g_surfdata_count; i++) {
+		g_surfdata[i].m_strBase = "";
+		g_surfdata[i].m_flMaterial = -1;
+		g_surfdata[i].m_flThickness = 1.0f;
+		g_surfdata[i].m_flDensity = 1.0f;
+		g_surfdata[i].m_flElasticity = 1.0f;
+		g_surfdata[i].m_flFriction = 1.0f;
+		g_surfdata[i].m_flDampening = 1.0f;
+		g_surfdata[i].m_flJumpFactor = 1.0f;
+		g_surfdata[i].m_flMaxSpeedFactor = 1.0f;
+
+		g_surfdata[i].m_sndStepLeft = "";
+		g_surfdata[i].m_sndStepRight = "";
+		g_surfdata[i].m_sndBulletImpact = "";
+		g_surfdata[i].m_sndScrapeRough = "";
+		g_surfdata[i].m_sndScrapeSoft = "";
+		g_surfdata[i].m_sndImpactHard = "";
+		g_surfdata[i].m_sndImpactSoft = "";
+		g_surfdata[i].m_sndShake = "";
+		g_surfdata[i].m_sndStrain = "";
+		g_surfdata[i].m_sndRoll = "";
+		g_surfdata[i].m_sndBreak = "";
+	}
+	
 	fseek(fh, 0);
 
 	while ((line = fgets(fh))) {
@@ -415,7 +438,7 @@ SurfData_Finish(void)
 void
 SurfData_Impact(entity e, int fl, vector org, vector ang)
 {
-	if (e == world || e.health == 0 || e.takedamage == 3) { /* the static world */
+	static void SurfData_Impact_SurfaceParm(entity e, int fl, vector org, vector ang) {
 		switch (serverkeyfloat("*bspversion")) {
 		case BSPVER_HL:
 			float surf;
@@ -432,9 +455,18 @@ SurfData_Impact(entity e, int fl, vector org, vector ang)
 		default:
 			FX_Impact(IMPACT_DEFAULT, org, ang);
 		}
-	} else { /* props */
+	}
+
+	/* the static world */
+	if (e == world || e.takedamage == DAMAGE_NO) {
+		SurfData_Impact_SurfaceParm(e, fl, org, ang);
+	} else { /* anything with takedamage = DAMAGE_YES is a NSurfacePropEntity. */
 		NSSurfacePropEntity foo = (NSSurfacePropEntity)e;
-		FX_Impact(foo.GetSurfaceData(SURFDATA_FX_IMPACT), org, ang);
+
+		if (foo.GetSurfaceData(SURFDATA_MATERIAL) == -1)
+			SurfData_Impact_SurfaceParm(e, fl, org, ang);
+		else
+			FX_Impact(foo.GetSurfaceData(SURFDATA_FX_IMPACT), org, ang);
 	}
 }
 #endif

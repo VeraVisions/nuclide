@@ -21,6 +21,8 @@ class NSSurfacePropEntity:NSRenderableEntity
 	/* overrides */
 	virtual void(string) SetModel;
 #ifdef SERVER
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(void) Respawn;
 	virtual void(entity, string, string) Input;
 	virtual void(string, string) SpawnKey;
@@ -34,6 +36,9 @@ class NSSurfacePropEntity:NSRenderableEntity
 	int m_iBurnWeapon;
 	float m_flBurnTime;
 	float m_flBurnNext;
+
+	/* I/O */
+	string m_strOnBreak;
 
 	nonvirtual void(entity, float, int) Ignite;
 	nonvirtual void(void) Extinguish;
