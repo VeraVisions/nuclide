@@ -13,7 +13,23 @@
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
- 
+
+#ifndef EFXDATA_DYNAMIC
+	#ifndef EFXDATA_MAX
+		#define EFXDATA_MAX 64
+	#endif
+#endif
+
+/*
+#define EFXDATA_DYNAMIC
+
+Your game can define EFXDATA_DYNAMIC in its progs.src if you want an unpredictable amount of EFX definitions.
+Other than that, you can increase the value of EFXDATA_MAX.
+
+We switched to up-front allocation because QCLIB fragments memory like hell as there's
+no real garbage collector to speak of
+*/
+
 void
 EFX_DebugInfo(void)
 {
@@ -74,8 +90,15 @@ EFX_Load(string efx_file)
 	}
 
 	g_efx_count++;
+
+#ifdef EFXDATA_DYNAMIC
 	g_efx = (reverbinfo_t *)memrealloc(g_efx, sizeof(reverbinfo_t), i, g_efx_count);
 	g_efx_name = (string *)memrealloc(g_efx_name, sizeof(string), i, g_efx_count);
+#else
+	if (g_efx_count > EFXDATA_MAX) {
+		error(sprintf("EFX_Load: Reached EFXDATA_MAX (%d)\n", EFXDATA_MAX));
+	}
+#endif
 
 	fh = fopen(strcat("efx/", efx_file, ".efx"), FILE_READ);
 
@@ -307,6 +330,12 @@ EFX_Init(void)
 {
 	int efx_default;
 	int efx_underwater;
+
+#ifndef EFXDATA_DYNAMIC
+	g_efx = (reverbinfo_t *)memalloc(sizeof(reverbinfo_t) * EFXDATA_MAX);
+	g_efx_name = (string *)memalloc(sizeof(string) * EFXDATA_MAX);
+	print(sprintf("EFX_Init: Allocated %d bytes\n", (sizeof(string) * EFXDATA_MAX) + (sizeof(reverbinfo_t) * EFXDATA_MAX)));
+#endif
 
 	efx_default = EFX_Load("default");
 	efx_underwater = EFX_Load("underwater");

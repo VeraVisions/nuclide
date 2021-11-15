@@ -23,8 +23,8 @@
 /*
 #define SOUNDSHADER_DYNAMIC
 
-Your game can define PRODATA_DYNAMIC in its progs.src if you want an unpredictable amount of prop data.
-Other than that, you can increase the value of PROPDATA_MAX.
+Your game can define SOUNDSHADER_DYNAMIC in its progs.src if you want an unpredictable amount of sound shaders.
+Other than that, you can increase the value of SOUNDSHADER_MAX.
 
 We switched to up-front allocation because QCLIB fragments memory like hell as there's
 no real garbage collector to speak of
@@ -47,7 +47,7 @@ Sound_Init(void)
 	/* make sure it's all reset */
 	Sound_Shutdown();
 
-#ifndef PROPDATA_DYNAMIC
+#ifndef SOUNDSHADER_DYNAMIC
 	g_sounds = (snd_t *)memalloc(sizeof(snd_t) * SOUNDSHADER_MAX);
 	print(sprintf("Sound_Init: Allocated %d bytes\n", sizeof(snd_t) * SOUNDSHADER_MAX));
 #endif
@@ -268,7 +268,7 @@ Sound_Precache(string shader)
 
 	g_sounds_count++;
 
-#ifdef PROPDATA_DYNAMIC
+#ifdef SOUNDSHADER_DYNAMIC
 	g_sounds = (snd_t *)memrealloc(g_sounds, sizeof(snd_t), index, g_sounds_count);
 #else
 	if (g_sounds_count >= SOUNDSHADER_MAX) {
