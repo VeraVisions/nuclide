@@ -14,6 +14,22 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*
+#define PROPDATA_DYNAMIC
+
+Your game can define PRODATA_DYNAMIC in its progs.src if you want an unpredictable amount of prop data.
+Other than that, you can increase the value of PROPDATA_MAX.
+
+We switched to up-front allocation because QCLIB fragments memory like hell as there's
+no real garbage collector to speak of
+*/
+
+#ifndef PROPDATA_DYNAMIC
+	#ifndef PROPDATA_MAX
+		#define PROPDATA_MAX 128
+	#endif
+#endif
+
 void
 PropData_Shutdown(void)
 {
@@ -182,14 +198,23 @@ PropData_ForModel(string modelname)
 	}
 
 	/* check if it's already cached */
-	for (int i = 0; i < g_propdata_count; i++) {
-		if (modelname == g_propdata[i].name) {
-			return i;
-		}
+	{
+		int cache;
+		cache = (int)hash_get(g_hashpropdata, modelname);
+		
+		if (cache >= 0)
+			return cache;
 	}
 
 	g_propdata_count++;
+
+#ifdef PROPDATA_DYNAMIC
 	g_propdata = (propdata_t *)memrealloc(g_propdata, sizeof(propdata_t), index, g_propdata_count);
+#else
+	if (g_propdata_count >= PROPDATA_MAX) {
+		error(sprintf("PropData_ForModel: Reached PROPDATA_MAX (%d)\n", PROPDATA_MAX));
+	}
+#endif
 
 	/* Defaults go here */
 
@@ -364,7 +389,6 @@ PropData_Init(void)
 	}
 
 	/* Defaults go here */
-
 	fh = fopen("scripts/propdata.txt", FILE_READ);
 	if (fh < 0) {
 		print("^1[PROPDATA] Can't find propdata.txt\n");
@@ -376,9 +400,17 @@ PropData_Init(void)
 		PropData_CountLine(line);
 	}
 
+#ifdef PROPDATA_DYNAMIC
 	/* alocate our stuff */
 	g_propdata = (propdata_t *)memalloc(sizeof(propdata_t) * g_propdata_count);
 	g_breakmodel = (breakmodel_t *)memalloc(sizeof(breakmodel_t) * g_breakmodel_count);
+#else
+	/* alocate our stuff */
+	g_propdata = (propdata_t *)memalloc(sizeof(propdata_t) * PROPDATA_MAX);
+	g_breakmodel = (breakmodel_t *)memalloc(sizeof(breakmodel_t) * PROPDATA_MAX);
+	print(sprintf("PropData_Init: Allocated %d bytes for prop data\n", sizeof(propdata_t) * PROPDATA_MAX));
+	print(sprintf("PropData_Init: Allocated %d bytes for breakmodels\n", sizeof(breakmodel_t) * PROPDATA_MAX));
+#endif
 
 	fseek(fh, 0);
 
