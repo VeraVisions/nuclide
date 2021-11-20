@@ -14,7 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "../menu-fn/tcp.qc"
+#include "../platform/tcp.h"
+#include "../platform/tcp.qc"
 
 entity g_ircbridge;
 tcpinfo_t tcp_irc;

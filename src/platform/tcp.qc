@@ -14,23 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define TCP_BUFFER_LENGTH 32
-
-typedef struct
-{
-	filestream m_fSocket;
-	string m_strBuffer[TCP_BUFFER_LENGTH];
-	int m_iBufferLines;
-	int m_iState;
-} tcpinfo_t;
-
-enum
-{
-	STATE_DISCONNECTED,
-	STATE_CONNECTING,
-	STATE_CONNECTED
-};
-
 int
 TCP_Connect(tcpinfo_t *in, string path)
 {

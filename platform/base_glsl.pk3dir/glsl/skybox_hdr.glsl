@@ -48,9 +48,12 @@ void main ()
 	vec4 cloud1_f = texture2D( s_cloudA, tccoord );
 	tccoord = ( dir.xy + e_time * 0.02 );
 	vec4 cloud2_f = texture2D( s_cloudB, tccoord );
-	vec3 dodged = vec3(1.0,1.0,1.0) - (cloud1_f.rgb * vec3(cloud1_f.a, cloud1_f.a, cloud1_f.a));
 
-	gl_FragColor.rgb = sky_out / dodged;
+	vec3 dodged1 = vec3(1.0,1.0,1.0) - (cloud1_f.rgb * vec3(cloud1_f.a, cloud1_f.a, cloud1_f.a));
+	vec3 dodged2 = vec3(1.0,1.0,1.0) - (cloud2_f.rgb * vec3(cloud2_f.a, cloud2_f.a, cloud2_f.a));
+
+	gl_FragColor.rgb = sky_out / dodged1;
+	gl_FragColor.rgb = gl_FragColor.rgb / dodged2;
 	//gl_FragColor *= e_lmscale;
 }
 #endif

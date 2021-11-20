@@ -14,12 +14,24 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#define ODE_MODE 1
+
+.float geomtype;
+.float friction;
+.float erp;
+.float jointtype;
+.float mass;
+.float bouncefactor;
+.float bouncestop;
+
 void
 NSPhysicsEntity::PhysicsEnable(void)
 {
-	if (physics_supported() == TRUE)
+	if (physics_supported() == TRUE) {
+		SetMovetype(MOVETYPE_PHYSICS);
+		SetSolid(SOLID_PHYSICS_BOX + m_iShape);
 		physics_enable(this, TRUE);
-	else {
+	} else {
 		SetMovetype(MOVETYPE_BOUNCE);
 		SetSolid(SOLID_CORPSE);
 	}
@@ -31,6 +43,7 @@ NSPhysicsEntity::PhysicsDisable(void)
 {
 	if (physics_supported() == TRUE) {
 		physics_enable(this, FALSE);
+		SetMovetype(MOVETYPE_NONE);
 	} else {
 		SetMovetype(MOVETYPE_BOUNCE);
 		SetSolid(SOLID_CORPSE);
@@ -72,6 +85,17 @@ NSPhysicsEntity::GetBounceFactor(void)
 }
 
 void
+NSPhysicsEntity::SetBounceStop(float val)
+{
+	bouncestop = val;
+}
+float
+NSPhysicsEntity::GetBounceStop(void)
+{
+	return bouncestop;
+}
+
+void
 NSPhysicsEntity::SetInertia(float val)
 {
 	m_flInertiaScale = val;
@@ -100,7 +124,7 @@ NSPhysicsEntity::CalculateImpactDamage(int iDamage, int dmgType)
 	filter |= (dmgType & DMG_SLOWFREEZE);
 
 	if (filter == 0i)
-		return (float)iDamage * 0.1f;
+		return (float)iDamage * 100;
 	else
 		return 0.0f;
 }
@@ -140,6 +164,7 @@ NSPhysicsEntity::ApplyTorqueCenter(vector vecTorque)
 void
 NSPhysicsEntity::TouchThink(void)
 {
+#if 0
 	/* let players collide */
 	dimension_solid = 255;
 	dimension_hit = 255;
@@ -154,6 +179,8 @@ NSPhysicsEntity::TouchThink(void)
 			ApplyTorqueCenter(v_forward * 240);
 		}
 	}
+
+#endif
 
 	/* If we barely move, disable the physics simulator */
 	if (vlen(velocity) <= 1) {
@@ -180,9 +207,11 @@ NSPhysicsEntity::TouchThink(void)
 		}
 	}
 
+#if 0
 	/* don't let players collide */
 	dimension_solid = 1;
 	dimension_hit = 1;
+#endif
 
 	/* continue testing next frame */
 	nextthink = time;
@@ -194,7 +223,7 @@ NSPhysicsEntity::touch(void)
 {
 	PhysicsEnable();
 	makevectors(vectoangles(origin - other.origin));
-	ApplyForceOffset(v_forward, origin - other.origin);
+	ApplyForceOffset(v_forward * 100, origin - other.origin);
 }
 
 void
@@ -206,6 +235,7 @@ NSPhysicsEntity::Pain(void)
 		return;
 
 	PhysicsEnable();
+
 	makevectors(vectoangles(origin - trace_endpos));
 	force = CalculateImpactDamage(g_dmg_iDamage, g_dmg_iFlags);
 
@@ -223,19 +253,29 @@ NSPhysicsEntity::Respawn(void)
 	SetMovetype(MOVETYPE_PHYSICS);
 	SetSolid(SOLID_PHYSICS_BOX + m_iShape);
 	SetModel(GetSpawnModel());
-	geomtype = GEOMTYPE_BOX;
+	geomtype = GEOMTYPE_TRIMESH;
 	takedamage = DAMAGE_YES;
+
+#ifndef ODE_MODE
 	PhysicsDisable();
 	SetFriction(2.0f);
 	SetBounceFactor(0.25f);
+#else
+	PhysicsDisable();
+	SetMass(1.0f);
+	SetFriction(1.0f);
+	SetBounceFactor(0.1f);
+#endif
+
 	SetOrigin(GetSpawnOrigin());
 
 	/* don't let players collide */
-	dimension_solid = 1;
-	dimension_hit = 1;
+	//dimension_solid = 1;
+	//dimension_hit = 1;
 
 	think = TouchThink;
 	nextthink = time + 0.1f;
+
 	effects &= ~EF_NOSHADOW;
 
 	if (HasPropData()) {
@@ -285,4 +325,6 @@ NSPhysicsEntity::NSPhysicsEntity(void)
 	mass = 1.0f;
 	m_flInertiaScale = 1.0f;
 	super::NSSurfacePropEntity();
+
+	cvar_set("physics_ode_iterationsperframe", "1");
 }

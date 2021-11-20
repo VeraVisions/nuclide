@@ -126,7 +126,7 @@ NSSurfacePropEntity::Restore(string strKey, string strValue)
 		m_flBurnNext = ReadFloat(strValue);
 		break;
 	case "m_strOnBreak":
-		m_strOnBreak = ReadInt(strValue);
+		m_strOnBreak = ReadString(strValue);
 		break;
 	case "m_oldHealth":
 		m_oldHealth = ReadFloat(strValue);

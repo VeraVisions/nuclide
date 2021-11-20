@@ -3,16 +3,13 @@
 ../shared/math.h
 ../shared/math.qc
 ../shared/platform.h
+../platform/defs.h
+
 defs.h
 bitmaps.h
 strings.h
 strings.qc
-util.qc
 colors.qc
-master.qc
-servers.qc
-modserver.qc
-tcp.qc
 
 widgets.qc
 w_3dview.qc
@@ -65,9 +62,10 @@ m_viewreadme.qc
 m_updates.qc
 m_intro.qc
 m_main.qc
-music.qc
 menu.qc
 background.qc
+
+../platform/includes.src
 
 ../client/font.qc
 entry.qc

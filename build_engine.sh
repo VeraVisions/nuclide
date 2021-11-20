@@ -131,6 +131,12 @@ if [ "$BUILD_BULLET" -eq 1 ]; then
 	printf "Built the bullet plugin successfully.\n\n"
 fi
 
+if [ "$BUILD_ODE" -eq 1 ]; then
+	gmake -j $BUILD_PROC plugins-rel NATIVE_PLUGINS="ode"
+	find ./release/ -name 'fteplug_ode_*.so' -exec cp -prv '{}' '../../../bin/' ';'
+	printf "Built the ode plugin successfully.\n\n"
+fi
+
 if [ "$BUILD_FFMPEG" -eq 1 ]; then
 	gmake -j $BUILD_PROC plugins-rel NATIVE_PLUGINS="ffmpeg"
 	find ./release/ -name 'fteplug_ffmpeg_*.so' -exec cp -prv '{}' '../../../bin/' ';'

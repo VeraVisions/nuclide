@@ -569,6 +569,9 @@ PMoveCustom_RunPlayerPhysics(entity target)
 	entity oldself = self;
 	self = target;
 
+	self.dimension_solid = 254;
+	self.dimension_hit = 254;
+
 	/* call accelerate before and after the actual move, 
 	 * with half the move each time. this reduces framerate dependence. 
 	 * and makes controlling jumps slightly easier */

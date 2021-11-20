@@ -15,16 +15,6 @@
  */
 
 #ifndef WEBMENU
-#define MODSERVER_REQ_LIST 100
-#define MODSERVER_REQ_ITEM 101
-
-#define ModServer_URI_Callback URI_Get_Callback
-
-var int g_iModServerLoading;
-var int g_iModServerReqCount;
-
-int game_getpackageid(string pkgname);
-
 void*
 memrealloc(__variant *oldptr, int elementsize, int old_num, int new_num)
 {

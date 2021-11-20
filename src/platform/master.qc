@@ -14,19 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-int Server_IsLan(string address);
-
-#define MASTER_DNS "master.frag-net.com"
-#define MASTER_PORT 27950
-
-float srv_fldAdress;
-float srv_fldName;
-float srv_fldPing;
-float srv_fldPlayers;
-float srv_fldMaxplayers;
-float srv_fldMap;
-float srv_fldGame;
-
 string
 Master_Resolve(void)
 {

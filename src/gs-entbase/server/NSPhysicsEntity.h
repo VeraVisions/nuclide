@@ -52,6 +52,8 @@ class NSPhysicsEntity:NSSurfacePropEntity
 	virtual float(void) GetFriction;
 	virtual void(float) SetBounceFactor;
 	virtual float(void) GetBounceFactor;
+	virtual void(float) SetBounceStop;
+	virtual float(void) GetBounceStop;
 	virtual void(void) PhysicsEnable;
 	virtual void(void) PhysicsDisable;
 	virtual void(vector) ApplyForceCenter;

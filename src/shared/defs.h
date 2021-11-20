@@ -175,6 +175,18 @@ setmodel(entity ent, string mname)
 	return prior(ent, mname);
 }
 
+__wrap __variant*
+memalloc(int size)
+{
+#if 0
+	if (size > 55000)
+		breakpoint();
+
+	print(sprintf("memalloc: %i\n", size));
+#endif
+	return prior(size);
+}
+
 void
 setorigin_safe(entity target, vector testorg)
 {

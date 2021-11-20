@@ -50,11 +50,18 @@ TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon)
 
 	range = (vAngle * 8196);
 
+	self.dimension_solid = 255;
+	self.dimension_hit = 255;
+
 	/* make sure we can gib corpses */
 	int oldhitcontents = self.hitcontentsmaski;
 	self.hitcontentsmaski = CONTENTBITS_POINTSOLID | CONTENTBIT_CORPSE;
 	traceline(vecPos, vecPos + range, MOVE_LAGGED | MOVE_HITMODEL, self);
 	self.hitcontentsmaski = oldhitcontents;
+
+	self.dimension_solid = 254;
+	self.dimension_hit = 254;
+
 	g_multiDamage_HitBod |= trace_surface_id;
 
 	if (trace_fraction >= 1.0f)
