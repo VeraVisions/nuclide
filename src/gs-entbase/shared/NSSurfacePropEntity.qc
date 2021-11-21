@@ -90,8 +90,19 @@ NSSurfacePropEntity::IsOnFire(void)
 void
 NSSurfacePropEntity::Respawn(void)
 {
+	float sh = GetSpawnHealth();
 	NSRenderableEntity::Respawn();
-	health = GetSpawnHealth();
+
+	if (HasPropData() && sh == -1) {
+		health = (float)GetPropData(PROPINFO_HEALTH);
+	} else {
+		health = sh;
+	}
+
+	if (health > 0)
+		takedamage = DAMAGE_YES;
+	else
+		takedamage = DAMAGE_NO;
 }
 
 void
@@ -263,6 +274,7 @@ NSSurfacePropEntity::NSSurfacePropEntity(void)
 #ifdef SERVER
 	m_iPropData = -1;
 	m_iMaterial = -1;
+	health = -1;
 
 	super::NSRenderableEntity();
 
