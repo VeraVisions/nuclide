@@ -40,12 +40,6 @@ prop_dynamic::Respawn(void)
 	super::Respawn();
 	SetModel(GetSpawnModel());
 	SetSolid(SOLID_CORPSE);
-
-	if (HasPropData()) {
-		health = GetPropData(PROPINFO_HEALTH);
-		takedamage = DAMAGE_YES;
-	} else {
-	}
 }
 
 void

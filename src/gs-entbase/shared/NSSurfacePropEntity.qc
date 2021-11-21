@@ -93,7 +93,7 @@ NSSurfacePropEntity::Respawn(void)
 	float sh = GetSpawnHealth();
 	NSRenderableEntity::Respawn();
 
-	if (HasPropData() && sh == -1) {
+	if (HasPropData() == TRUE && sh == -1) {
 		health = (float)GetPropData(PROPINFO_HEALTH);
 	} else {
 		health = sh;

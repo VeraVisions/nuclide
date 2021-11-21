@@ -200,7 +200,7 @@ PropData_ForModel(string modelname)
 	/* check if it's already cached */
 	{
 		int cache;
-		cache = (int)hash_get(g_hashpropdata, modelname);
+		cache = (int)hash_get(g_hashpropdata, modelname, -1);
 		
 		if (cache >= 0)
 			return cache;
@@ -220,6 +220,7 @@ PropData_ForModel(string modelname)
 
 	fh = fopen(strcat(modelname, ".propdata"), FILE_READ);
 	if (fh < 0) {
+		g_propdata_count--;
 		dprint(sprintf("Can't find propdata for model %s\n", modelname));
 		return -1;
 	}
