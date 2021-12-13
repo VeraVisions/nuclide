@@ -13,6 +13,7 @@ fx_explosion.qc
 fx_gibhuman.qc
 fx_spark.qc
 fx_impact.qc
+fx_corpse.qc
 
 items.h
 weapons.h

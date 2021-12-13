@@ -122,6 +122,7 @@ NSRenderableEntity::SendEntity(entity ePEnt, float fChanged)
 	}
 	if (fChanged & BASEFL_CHANGED_MODELINDEX) {
 		WriteShort(MSG_ENTITY, modelindex);
+		WriteByte(MSG_ENTITY, colormap);
 	}
 	if (fChanged & BASEFL_CHANGED_SOLID) {
 		WriteByte(MSG_ENTITY, solid);
@@ -139,6 +140,7 @@ NSRenderableEntity::SendEntity(entity ePEnt, float fChanged)
 	}
 	if (fChanged & BASEFL_CHANGED_FRAME) {
 		WriteByte(MSG_ENTITY, frame);
+		WriteByte(MSG_ENTITY, frame1time);
 	}
 	if (fChanged & BASEFL_CHANGED_SKIN) {
 		WriteByte(MSG_ENTITY, skin + 128);
@@ -328,6 +330,7 @@ NSRenderableEntity::ReceiveEntity(float flChanged)
 	}
 	if (flChanged & BASEFL_CHANGED_MODELINDEX) {
 		setmodelindex(this, readshort());
+		colormap = readbyte();
 	}
 	if (flChanged & BASEFL_CHANGED_SOLID) {
 		solid = readbyte();
@@ -348,9 +351,9 @@ NSRenderableEntity::ReceiveEntity(float flChanged)
 		maxs[2] = readcoord();
 	}
 	if (flChanged & BASEFL_CHANGED_FRAME) {
-		frame1time = 0.0;
-		frame2time = 0.0f;
 		frame = readbyte();
+		frame1time =
+		frame2time = readbyte();
 	}
 	if (flChanged & BASEFL_CHANGED_SKIN) {
 		skin = readbyte() - 128;
