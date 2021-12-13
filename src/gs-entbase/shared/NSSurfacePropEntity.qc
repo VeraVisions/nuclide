@@ -63,7 +63,6 @@ NSSurfacePropEntity::ParentUpdate(void)
 	NSRenderableEntity::ParentUpdate();
 }
 
-
 /* Burning, fire, flames, etc. */
 void
 NSSurfacePropEntity::Ignite(entity attacker, float flLifetime, int iWeapon)
@@ -73,6 +72,7 @@ NSSurfacePropEntity::Ignite(entity attacker, float flLifetime, int iWeapon)
 	m_iBurnWeapon = iWeapon;
 	m_flBurnTime = time + flLifetime;
 }
+
 void
 NSSurfacePropEntity::Extinguish(void)
 {
@@ -81,6 +81,7 @@ NSSurfacePropEntity::Extinguish(void)
 	m_iBurnWeapon =
 	m_flBurnTime = 0;
 }
+
 int
 NSSurfacePropEntity::IsOnFire(void)
 {
@@ -169,7 +170,6 @@ NSSurfacePropEntity::Input(entity eAct, string strInput, string strData)
 	default:
 		NSRenderableEntity::Input(eAct, strInput, strData);
 	}
-
 }
 
 void
@@ -252,7 +252,6 @@ NSSurfacePropEntity::PropDataFinish(void)
 	PropData_SetStage(m_strPropData);
 	m_iPropData = PropData_Finish();
 }
-
 #endif
 
 void
@@ -266,7 +265,6 @@ NSSurfacePropEntity::SetModel(string newModel)
 	}
 #endif
 }
-
 
 void
 NSSurfacePropEntity::NSSurfacePropEntity(void)

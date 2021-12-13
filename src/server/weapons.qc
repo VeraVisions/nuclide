@@ -156,18 +156,17 @@ Weapons_AddItem(base_player pl, int w, int startammo)
 	} else {
 		/* call pickup to handle the ammo */
 		if (pl.g_items & g_weapons[w].id) {
+			/* we have the item already, se let's see if we hit maxammo */
 			value = g_weapons[w].pickup(FALSE, startammo);
 
+			/* FALSE means maxammo is hit */
 			if (!value)
 				return value;
 		} else {
-			/* new to our arsenal */
-			value = g_weapons[w].pickup(TRUE, startammo);
-
-			if (!value)
-				return value;
-
+			/* new to our arsenal, so always return TRUE */
+			g_weapons[w].pickup(TRUE, startammo);
 			pl.g_items |= g_weapons[w].id;
+			value = TRUE;
 
 			/* it's new, so autoswitch? */
 			if (pl.activeweapon == 0 && autocvar_sv_forceweapondraw == 1) {
