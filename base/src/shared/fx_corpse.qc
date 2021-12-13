@@ -44,8 +44,8 @@ FX_Corpse_Next(void)
 	return r;
 }
 
-NSRenderableEntity
-FX_Corpse_Spawn(player pl)
+entity
+FX_Corpse_Spawn(player pl, float anim)
 {
 	NSRenderableEntity body_next = FX_Corpse_Next();
 	setorigin(body_next, pl.origin + [0,0,32]);
@@ -57,6 +57,7 @@ FX_Corpse_Spawn(player pl)
 	body_next.SetAngles(pl.angles);
 	body_next.velocity = (pl.velocity);
 	body_next.colormap = pl.colormap;
-	return body_next;
+	body_next.SetFrame(anim);
+	return (entity)body_next;
 }
 #endif
