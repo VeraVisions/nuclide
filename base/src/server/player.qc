@@ -48,8 +48,10 @@ Player_UseDown(void)
 	makevectors(self.v_angle);
 	vecSrc = self.origin + self.view_ofs;
 
+	int oldmask = self.hitcontentsmaski;
 	self.hitcontentsmaski = CONTENTBITS_POINTSOLID;
 	traceline(vecSrc, vecSrc + (v_forward * 64), MOVE_HITMODEL, self);
+	self.hitcontentsmaski = oldmask;
 
 
 	if (trace_ent.PlayerUse) {
