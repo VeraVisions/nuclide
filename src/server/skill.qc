@@ -32,6 +32,7 @@ Skill_Init(void)
 	/* sometimes we have extra overrides that the original does not
 	   provide. so we execute our mod-specific config here */
 	readcmd(sprintf("exec skill_%s.cfg\n", cvar_string("game")));
+	readcmd(sprintf("exec maps/%s_skl.cfg\n", mapname));
 }
 
 /*
