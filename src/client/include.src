@@ -21,5 +21,6 @@ textmenu.qc
 vgui.qc
 way.qc
 efx.qc
+detailtex.qc
 entry.qc
 #endlist

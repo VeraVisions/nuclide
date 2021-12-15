@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -95,7 +95,6 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	/* Game specific inits */
 	ClientGame_Init(apilevel, enginename, engineversion);
 	EFX_Init();
-	CSQC_RendererRestarted("init");
 	Titles_Init();
 	Sentences_Init();
 	Decals_Init();
@@ -137,6 +136,7 @@ CSQC_RendererRestarted(string rstr)
 	Decal_Reload();
 	Sky_Update(TRUE);
 	Entities_RendererRestarted();
+	DetailTex_Init();
 }
 
 /* this is so that profile_csqc reports more accurate statistics as to
@@ -1049,6 +1049,8 @@ Whenever the world is fully initialized...
 void
 CSQC_WorldLoaded(void)
 {
+	DetailTex_Init();
+
 	/* Primarily for the flashlight */
 	if (serverkeyfloat("*bspversion") != BSPVER_HL) {
 		localcmd("r_shadow_realtime_dlight 1\n");
