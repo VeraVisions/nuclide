@@ -62,9 +62,13 @@ SurfData_IDtoImpact(float mat)
 	case MATID_WOOD:
 		return IMPACT_WOOD;
 		break;
-	case MATID_METAL:
-		return IMPACT_METAL;
+	case MATID_GRATE:
+		return IMPACT_GRATE;
 		break;
+	case MATID_VENT:
+		return IMPACT_VENT;
+		break;
+	case MATID_BLOODYFLESH:
 	case MATID_FLESH:
 		return IMPACT_FLESH;
 		break;
@@ -79,6 +83,24 @@ SurfData_IDtoImpact(float mat)
 		break;
 	case MATID_GLASS:
 		return IMPACT_GLASS;
+		break;
+	case MATID_DIRT:
+		return IMPACT_DIRT;
+		break;
+	case MATID_FOLIAGE:
+		return IMPACT_FOLIAGE;
+		break;
+	case MATID_SAND:
+		return IMPACT_SAND;
+		break;
+	case MATID_SNOW:
+		return IMPACT_SNOW;
+		break;
+	case MATID_SLOSH:
+		return IMPACT_SLOSH;
+		break;
+	case MATID_ALIEN:
+		return IMPACT_ALIEN;
 		break;
 	default:
 		return IMPACT_DEFAULT;
