@@ -541,12 +541,10 @@ customgame_lbmods_changed(void)
 		customgame_btnInstall.SetExecute(customgame_btninstall_start);
 	}
 }
-#endif
 
 void
-games_init(void)
+games_init_2(void)
 {
-#ifndef WEBMENU
 	int id;
 	int foundself = 0;
 	string gamedirname;
@@ -566,6 +564,7 @@ games_init(void)
 		gameinfo_count++;
 	}
 
+	memfree(games);
 	games = memalloc(sizeof(gameinfo_t) * gameinfo_count);
 
 	/* The things we do for frequent flyer mileage. */
@@ -632,7 +631,12 @@ games_init(void)
 		crash();
 		return;
 	}
-#else
+}
+#endif
+
+void
+games_init(void)
+{
 	int id = 0;
 	string gamedirname = cvar_string("game");
 	gameinfo_count++;
@@ -660,6 +664,22 @@ games_init(void)
 	games[id].readme = "readme.txt";
 	games[id].pkgid = -1;
 	games[id].steambg = 0;
+	gameinfo_current = 0;
+
+#ifndef WEBMENU
+	if (games_check_manifest(id, gamedirname) == 1) {
+		dprint(sprintf("[MENU] Found manifest for %s\n", gamedirname));
+		games[id].info_type = GAMEINFO_MANIFEST;
+	} else if (games_check_gtxt(id, gamedirname) == 1) {
+		dprint(sprintf("[MENU] Found gameinfo for %s\n", gamedirname));
+		games[id].info_type = GAMEINFO_GITXT;
+	} else if (games_check_liblist(id, gamedirname) == 1) {
+		dprint(sprintf("[MENU] Found liblist for %s\n", gamedirname));
+		games[id].info_type = GAMEINFO_LIBLIST;
+	} else {
+		dprint(sprintf("[MENU] Found nothing for %s\n", gamedirname));
+		games[id].info_type = GAMEINFO_NONE;
+	}
 #endif
 }
 
@@ -725,11 +745,28 @@ menu_customgame_init(void)
 #endif
 }
 
+#ifndef WEBMENU
+var int g_customgame_initialized = 0;
+#endif
+
 void
 menu_customgame_draw(void)
 {
 #ifndef WEBMENU
 	Header_Draw(HEAD_CUSTOM);
+
+	/* init all the other mod directories here */
+	if (g_customgame_initialized < 2) {
+		customgame_dlgWait.Draw();
+		WField_Static(162, 180, "Indexing all local games, please wait...", 320, 260,
+						col_prompt_text, 1.0f, 2, font_label_p);
+		if (g_customgame_initialized == 1)
+			games_init_2();
+
+		g_customgame_initialized++;
+		return;
+	}
+
 	Widget_Draw(fn_customgame);
 
 	WLabel_Static(155, 143, m_reslbl[IDS_MODLIST_TYPE], 11, 11, [1,1,1],
