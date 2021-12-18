@@ -65,6 +65,9 @@ SurfData_IDtoImpact(float mat)
 	case MATID_GRATE:
 		return IMPACT_GRATE;
 		break;
+	case MATID_METAL:
+		return IMPACT_METAL;
+		break;
 	case MATID_VENT:
 		return IMPACT_VENT;
 		break;
