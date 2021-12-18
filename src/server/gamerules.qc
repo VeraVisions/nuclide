@@ -183,6 +183,10 @@ CGameRules::DamageApply(entity t, entity c, float dmg, int w, damageType_t type)
 	/* Damage */
 	base_player tp = (base_player)t;
 
+	/* for armor damage */
+	float flArmor;
+	float flNewDamage;
+
 	/* player god mode */
 	if (t.flags & FL_CLIENT && t.flags & FL_GODMODE)
 		return;
@@ -191,13 +195,14 @@ CGameRules::DamageApply(entity t, entity c, float dmg, int w, damageType_t type)
 	if (t.health <= 0)
 		return;
 
+	/* before any calculation is done... */
+	g_dmg_iRealDamage = dmg;
+
 	/* only clients have armor */
 	if (t.flags & FL_CLIENT) {
 		/* skip armor */
 		if not (type & DMG_SKIP_ARMOR)
 		if (tp.armor && dmg > 0) {
-			float flArmor;
-			float flNewDamage;
 
 			flNewDamage = dmg * 0.2;
 			flArmor = (dmg - flNewDamage) * 0.5;
@@ -225,18 +230,20 @@ CGameRules::DamageApply(entity t, entity c, float dmg, int w, damageType_t type)
 	g_dmg_iFlags = type;
 	g_dmg_iWeapon = w;
 
-	if (dmg > 0) {
+	if (dmg > 0 || flArmor > 0) {
 		vector dmg_origin;
 
 		if (c.origin == [0,0,0])
 			dmg_origin = g_dmg_eTarget.origin;
+		else
+			dmg_origin = g_dmg_eAttacker.origin;
 
 		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 		WriteByte(MSG_MULTICAST, EV_DAMAGE);
 		WriteCoord(MSG_MULTICAST, dmg_origin[0]);
 		WriteCoord(MSG_MULTICAST, dmg_origin[1]);
 		WriteCoord(MSG_MULTICAST, dmg_origin[2]);
-		WriteInt(MSG_MULTICAST, g_dmg_iDamage);
+		WriteInt(MSG_MULTICAST, g_dmg_iRealDamage);
 		WriteInt(MSG_MULTICAST, g_dmg_iFlags);
 		msg_entity = g_dmg_eTarget;
 		multicast([0,0,0], MULTICAST_ONE_R);

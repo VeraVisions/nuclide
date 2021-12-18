@@ -75,6 +75,7 @@ hashtable hashMaterials;
 entity g_dmg_eAttacker;
 entity g_dmg_eTarget;
 int g_dmg_iDamage;
+int g_dmg_iRealDamage;
 bodyType_t g_dmg_iHitBody;
 int g_dmg_iFlags;
 int g_dmg_iWeapon;
