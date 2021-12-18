@@ -1,0 +1,9 @@
+func_door.move_0
+{
+	sample misc/missing.wav
+}
+
+func_door.stop_0
+{
+	sample misc/missing.wav
+}

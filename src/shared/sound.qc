@@ -51,6 +51,8 @@ Sound_Init(void)
 	g_sounds = (snd_t *)memalloc(sizeof(snd_t) * SOUNDSHADER_MAX);
 	print(sprintf("Sound_Init: Allocated %d bytes\n", sizeof(snd_t) * SOUNDSHADER_MAX));
 #endif
+
+	precache_sound("misc/missing.wav");
 }
 
 void
@@ -334,7 +336,6 @@ Sound_Distance(entity target, string shader)
 #else
 		print(sprintf("^1Sound_Distance: shader %s is not precached (CLIENT)\n", shader));
 #endif
-		return;
 	}
 
 	/* pick a sample */
@@ -397,6 +398,7 @@ Sound_Play(entity target, int chan, string shader)
 
 	if (sample < 0) {
 		crossprint(sprintf("^1Sound_Play: shader %s is not precached\n", shader));
+		sound(target, chan, "misc/missing.wav", 1.0f, ATTN_NORM);
 		return;
 	}
 
@@ -509,6 +511,7 @@ Sound_PlayAt(vector pos, string shader)
 #else
 		print(sprintf("^1Sound_PlayAt: shader %s is not precached (CLIENT)\n", shader));
 #endif
+		pointsound(pos, "misc/missing.wav", 1.0f, ATTN_NORM);
 		return;
 	}
 

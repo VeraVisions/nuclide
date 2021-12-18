@@ -1,0 +1,44 @@
+func_breakable.impact_glassunbreakable
+{
+	sample misc/missing.wav
+}
+
+func_breakable.impact_computer
+{
+	sample misc/missing.wav
+}
+
+func_breakable.impact_glass
+{
+	sample misc/missing.wav
+}
+
+func_breakable.impact_wood
+{
+	sample misc/missing.wav
+}
+
+func_breakable.impact_metal
+{
+	sample misc/missing.wav
+}
+
+func_breakable.impact_flesh
+{
+	sample misc/missing.wav
+}
+
+func_breakable.impact_cinder
+{
+	sample misc/missing.wav
+}
+
+func_breakable.impact_concrete
+{
+	sample misc/missing.wav
+}
+
+func_breakable.impact_rock
+{
+	sample misc/missing.wav
+}

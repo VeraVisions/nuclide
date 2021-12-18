@@ -1,0 +1,4 @@
+damage_bullet.hit
+{
+	sample misc/missing.wav
+}

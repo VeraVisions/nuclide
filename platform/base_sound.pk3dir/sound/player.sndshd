@@ -1,0 +1,28 @@
+player.fall
+{
+	sample misc/missing.wav
+}
+player.lightfall
+{
+	sample misc/missing.wav
+}
+player.die
+{
+	sample misc/missing.wav
+}
+player.gasplight
+{
+	sample misc/missing.wav
+}
+player.gaspheavy
+{
+	sample misc/missing.wav
+}
+player.waterexit
+{
+	sample misc/missing.wav
+}
+player.waterenter
+{
+	sample misc/missing.wav
+}

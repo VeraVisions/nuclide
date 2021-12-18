@@ -1,0 +1,239 @@
+step_default.left
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+step_default.right
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+
+step_alien.left
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+step_alien.right
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+
+step_computer.left
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+step_computer.right
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+
+step_concrete.left
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+step_concrete.right
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+
+step_dirt.left
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+step_dirt.right
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+
+step_flesh.left
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+step_flesh.right
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+
+step_foliage.left
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+step_foliage.right
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+
+step_glass.left
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+step_glass.right
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+
+step_grate.left
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+step_grate.right
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+
+step_metal.left
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+step_metal.right
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+
+step_slosh.left
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+step_slosh.right
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+
+step_sand.left
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+step_sand.right
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+
+step_snow.left
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+step_snow.right
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+
+step_tile.left
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+step_tile.right
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+
+step_vent.left
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+step_vent.right
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+
+step_wood.left
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+step_wood.right
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+
+step_ladder.left
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+step_ladder.right
+{
+	attenuation static
+	footstep
+	sample misc/null.wav
+}
+
+step_wade.left
+{
+	sample misc/null.wav
+}
+step_wade.right
+{
+	sample misc/null.wav
+}
+
+step_swim.left
+{
+	sample misc/null.wav
+}
+step_swim.right
+{
+	sample misc/null.wav
+}
+
