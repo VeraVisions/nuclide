@@ -37,6 +37,31 @@ This entity was introduced in Quake (1996).
 
 .float hurt_next;
 
+typedef enumflags
+{
+HURTTYPE_GENERIC,
+HURTTYPE_CRUSH,
+HURTTYPE_BULLET,
+HURTTYPE_SLASH,
+HURTTYPE_BURN,
+HURTTYPE_FREEZE,
+HURTTYPE_FALL,
+HURTTYPE_BLAST,
+HURTTYPE_CLUB,
+HURTTYPE_SHOCK,
+HURTTYPE_SONIC,
+HURTTYPE_ENERGYBEAM,
+HURTTYPE_DROWN,
+HURTTYPE_PARALYSE,
+HURTTYPE_NERVEGAS,
+HURTTYPE_POISON,
+HURTTYPE_RADIATION,
+HURTTYPE_DROWNRECOVER,
+HURTTYPE_CHEMICAL,
+HURTTYPE_SLOWBURN,
+HURTTYPE_SLOWFREEZE,
+} hurttype_e;
+
 #define SF_HURT_ONCE			1 // Turn off once it fired the first time
 #define SF_HURT_OFF				2 // Needs to be triggered in order to work again
 #define SF_HURT_NOPLAYERS		8 // Don't hurt players
@@ -49,6 +74,7 @@ class trigger_hurt:NSBrushTrigger
 	float m_flNextTrigger;
 	float m_flNextDmg;
 	float m_flDelay;
+	int m_iDamageType;
 
 	string m_strOnHurt;
 	string m_strOnHurtPlayer;
@@ -68,6 +94,7 @@ void
 trigger_hurt::Save(float handle)
 {
 	SaveInt(handle, "damage", m_iDamage);
+	SaveInt(handle, "damagetype", m_iDamageType);
 	SaveFloat(handle, "nexttrigger", m_flNextTrigger);
 	SaveFloat(handle, "nextdmg", m_flNextDmg);
 	SaveFloat(handle, "delay", m_flDelay);
@@ -82,6 +109,9 @@ trigger_hurt::Restore(string strKey, string strValue)
 	switch (strKey) {
 	case "damage":
 		m_iDamage = ReadInt(strValue);
+		break;
+	case "damagetype":
+		m_iDamageType = ReadInt(strValue);
 		break;
 	case "nexttrigger":
 		m_flNextTrigger = ReadFloat(strValue);
@@ -152,7 +182,31 @@ trigger_hurt::touch(void)
 		}
 	}
 
-	Damage_Apply(other, this, m_iDamage, 0, DMG_GENERIC);
+	{
+		int type = 0;
+		if (m_iDamageType & HURTTYPE_BURN)
+			type |= DMG_BURN;
+		if (m_iDamageType & HURTTYPE_SLOWBURN)
+			type |= DMG_SLOWBURN;
+		if (m_iDamageType & HURTTYPE_FREEZE)
+			type |= DMG_FREEZE;
+		if (m_iDamageType & HURTTYPE_SLOWFREEZE)
+			type |= DMG_SLOWFREEZE;
+		if (m_iDamageType & HURTTYPE_SHOCK)
+			type |= DMG_ELECTRO;
+		if (m_iDamageType & HURTTYPE_DROWN)
+			type |= DMG_DROWN;
+		if (m_iDamageType & HURTTYPE_NERVEGAS)
+			type |= DMG_NERVEGAS;
+		if (m_iDamageType & HURTTYPE_POISON)
+			type |= DMG_POISON;
+		if (m_iDamageType & HURTTYPE_RADIATION)
+			type |= DMG_RADIATION;
+		if (m_iDamageType & HURTTYPE_CHEMICAL)
+			type |= DMG_CHEMICAL;
+	}
+
+	Damage_Apply(other, this, m_iDamage, 0, type);
 
 	dprint(sprintf("^2trigger_hurt::^3Touch^7: Hurting '%s' with %i\n", 
 		other.netname, m_iDamage));
@@ -193,6 +247,9 @@ trigger_hurt::SpawnKey(string strKey, string strValue)
 	switch (strKey) {
 	case "dmg":
 		m_iDamage = stoi(strValue);
+		break;
+	case "damagetype":
+		m_iDamageType = stoi(strValue);
 		break;
 	case "wait":
 		m_flNextDmg = stof(strValue);

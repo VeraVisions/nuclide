@@ -17,10 +17,10 @@
 /*
  * engine specific callback for when dmg_ fields are set on the client side.
  * might want to replace it at some point? probably not...
- * hence why 'save' and 'take' are unused.
+ * hence why 'take' is unused.
  */
 float
-CSQC_Parse_Damage(float save, float take, vector abs_pos)
+CSQC_Parse_Damage_New(vector abs_pos, int take, int flags)
 {
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
@@ -32,6 +32,7 @@ CSQC_Parse_Damage(float save, float take, vector abs_pos)
 	if (abs_pos) {
 		pSeat->m_vecDamagePos = abs_pos;
 		pSeat->m_flDamageAlpha = 1.0f;
+		pSeat->m_iDamageFlags |= flags;
 	}
 
 	return (1);

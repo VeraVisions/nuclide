@@ -14,9 +14,16 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+void
+CSQC_UpdateSeat(void)
+{
+	int s = (float)getproperty(VF_ACTIVESEAT);
+	pSeat = &g_seats[s];
+	pSeatLocal = &g_seatslocal[s];
+}
+
 /* This file houses all of the callbacks and entry points the engine
    calls by itself */
-
 void
 CSQC_Init(float apilevel, string enginename, float engineversion)
 {
@@ -445,9 +452,7 @@ Updates all our input related globals for use in other functions
 float
 CSQC_InputEvent(float fEventType, float fKey, float fCharacter, float fDeviceID)
 {
-	int s = (float)getproperty(VF_ACTIVESEAT);
-	pSeat = &g_seats[s];
-	pSeatLocal = &g_seatslocal[s];
+	CSQC_UpdateSeat();
 
 	switch (fEventType) {
 	case IE_KEYDOWN:
@@ -499,9 +504,7 @@ Hijacks and controls what input globals are being sent to the server
 void
 CSQC_Input_Frame(void)
 {
-	int s = (float)getproperty(VF_ACTIVESEAT);
-	pSeat = &g_seats[s];
-	pSeatLocal = &g_seatslocal[s];
+	CSQC_UpdateSeat();
 
 	/* If we are inside a VGUI, don't let the client do stuff outside */
 	if (g_vguiWidgetCount > 0) {
@@ -570,13 +573,22 @@ void
 CSQC_Parse_Event(void)
 {
 	/* always 0, unless it was sent with a MULTICAST_ONE or MULTICAST_ONE_R to p2+ */
-	int s = (float)getproperty(VF_ACTIVESEAT);
-	pSeat = &g_seats[s];
-	pSeatLocal = &g_seatslocal[s];
+	CSQC_UpdateSeat();
 
 	float fHeader = readbyte();
 
 	switch (fHeader) {
+	case EV_DAMAGE:
+		vector vecDmgPos;
+		int iDmgTake;
+		int iDmgFlags;
+		vecDmgPos[0] = readcoord();
+		vecDmgPos[1] = readcoord();
+		vecDmgPos[2] = readcoord();
+		iDmgTake = readint();
+		iDmgFlags = readint();
+		CSQC_Parse_Damage_New(vecDmgPos, iDmgTake, iDmgFlags);
+		break;
 	case EV_INTERMISSION:
 		int cam;
 		vector pos, ang;
@@ -681,9 +693,7 @@ float
 CSQC_ConsoleCommand(string sCMD)
 {
 	/* the engine will hide the p1 etc commands... which is fun... */
-	int s = (float)getproperty(VF_ACTIVESEAT);
-	pSeat = &g_seats[s];
-	pSeatLocal = &g_seatslocal[s];
+	CSQC_UpdateSeat();
 
 	tokenize(sCMD);
 
@@ -848,9 +858,7 @@ CSQC_ConsoleCommand(string sCMD)
 void
 CSQC_Parse_Print(string sMessage, float fLevel)
 {
-	int s = (float)getproperty(VF_ACTIVESEAT);
-	pSeat = &g_seats[s];
-	pSeatLocal = &g_seatslocal[s];
+	CSQC_UpdateSeat();
 
 	/* This gives messages other than chat an orange tint */
 	if (fLevel == PRINT_CHAT) {
@@ -887,9 +895,7 @@ Keep in mind that newlines need to be tokenized
 float
 CSQC_Parse_CenterPrint(string sMessage)
 {
-	int s = (float)getproperty(VF_ACTIVESEAT);
-	pSeat = &g_seats[s];
-	pSeatLocal = &g_seatslocal[s];
+	CSQC_UpdateSeat();
 
 	pSeat->m_iCenterprintLines = tokenizebyseparator(sMessage, "\n");
 
@@ -950,10 +956,7 @@ CSQC_Ent_Update(float new)
 		player pl = (player)self;
 
 		/* splitscreen */
-		int s = (float)getproperty(VF_ACTIVESEAT);
-		pSeat = &g_seats[s];
-		pSeatLocal = &g_seatslocal[s];
-
+		CSQC_UpdateSeat();
 
 		Predict_EntityUpdate(pl, new);
 

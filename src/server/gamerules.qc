@@ -226,8 +226,20 @@ CGameRules::DamageApply(entity t, entity c, float dmg, int w, damageType_t type)
 	g_dmg_iWeapon = w;
 
 	if (dmg > 0) {
-		t.dmg_take = dmg;
-		t.dmg_inflictor = c;
+		vector dmg_origin;
+
+		if (c.origin == [0,0,0])
+			dmg_origin = g_dmg_eTarget.origin;
+
+		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+		WriteByte(MSG_MULTICAST, EV_DAMAGE);
+		WriteCoord(MSG_MULTICAST, dmg_origin[0]);
+		WriteCoord(MSG_MULTICAST, dmg_origin[1]);
+		WriteCoord(MSG_MULTICAST, dmg_origin[2]);
+		WriteInt(MSG_MULTICAST, g_dmg_iDamage);
+		WriteInt(MSG_MULTICAST, g_dmg_iFlags);
+		msg_entity = g_dmg_eTarget;
+		multicast([0,0,0], MULTICAST_ONE_R);
 	} else if (t.max_health && t.health > t.max_health) {
 		t.health = t.max_health;
 	}

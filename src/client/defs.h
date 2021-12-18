@@ -69,6 +69,8 @@ float clframetime;
 
 string(string modelname, int frame, float frametime) spriteframe = #0;
 
+void CSQC_UpdateSeat(void);
+
 void
 drawstring_r(vector p, string t, vector s, vector c, float a, float f)
 {
@@ -133,6 +135,7 @@ struct
 	/* damage overlay */
 	float m_flDamageAlpha;
 	vector m_vecDamagePos;
+	int m_iDamageFlags;
 
 	/* +zoomin cmd */
 	int m_iZoomed;
