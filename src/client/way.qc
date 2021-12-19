@@ -59,6 +59,7 @@ Way_Init(void)
 								"2.\tAdd ^1Chain^7 Waypoint^7 (last-to-new)\n" \
 								"3.\tAdd ^1Autolink^7 Waypoint\n" \
 								"4.\tAdd ^1Spawnpoint^7 Waypoints\n" \
+								"5.\tAdd ^1Chain-To-Nearest^7 Waypoint\n" \
 								"\n" \
 								"\n" \
 								"7.\tRemove nearest\n" \
@@ -249,6 +250,9 @@ WAY_ADD(int n)
 		break;
 	case 4:
 		localcmd("sv way addspawns\n");
+		break;
+	case 5:
+		localcmd("sv way addnear\n");
 		break;
 	case 7:
 		localcmd("sv way delete\n");

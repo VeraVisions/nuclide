@@ -93,9 +93,39 @@ Way_AutoLink(int wpidx)
 	}
 }
 
+int
+Way_FindClosestNode(vector vecOrigin)
+{
+	
+	/* -1 for no nodes anywhere... */
+	int r = -1i;
+	float flBestDist = COST_INFINITE;
+
+	for (int i = 0i; i < g_iWaypoints; i++) {
+		float fDist = vlen(g_pWaypoints[i].m_vecOrigin - vecOrigin) - g_pWaypoints[i].m_flRadius;
+		if (fDist < flBestDist) {
+			/* within the waypoint's radius */
+			if (fDist < 0) {
+				flBestDist = fDist;
+				r = i;
+			} else {
+				/* outside the waypoint, make sure its valid. */
+				traceline(vecOrigin, g_pWaypoints[i].m_vecOrigin, TRUE, world);
+				if (trace_fraction == 1) {
+					/* FIXME: sort them frst, to avoid traces? */
+					flBestDist = fDist;
+					r = i;
+				}
+			}
+		}
+	}
+	return r;
+}
+
 void
 Way_CreateNode(entity ePlayer, int iAutoLink)
 {
+	int iNearest = Way_FindClosestNode(self.origin);
 	int iID = g_iWaypoints++;
 	g_pWaypoints = (waypoint_t *)memrealloc(g_pWaypoints, sizeof(waypoint_t), iID, g_iWaypoints);
 	waypoint_t *n = g_pWaypoints + iID;
@@ -115,6 +145,9 @@ Way_CreateNode(entity ePlayer, int iAutoLink)
 				Way_LinkNodes(&g_pWaypoints[iID-1], n);
 			} else if (iAutoLink == -2) {
 				Way_LinkNodes(n, &g_pWaypoints[iID-1]);
+			} else if (iAutoLink == -4) {
+				Way_LinkNodes(n, &g_pWaypoints[iNearest]);
+				Way_LinkNodes(&g_pWaypoints[iNearest], n);
 			}
 		}
 	}
@@ -157,35 +190,6 @@ Way_SetRadius(int iID, float flRadValue)
 		return;
 	}
 	g_pWaypoints[iID].m_flRadius = flRadValue;
-}
-
-int
-Way_FindClosestNode(vector vecOrigin)
-{
-	
-	/* -1 for no nodes anywhere... */
-	int r = -1i;
-	float flBestDist = COST_INFINITE;
-
-	for (int i = 0i; i < g_iWaypoints; i++) {
-		float fDist = vlen(g_pWaypoints[i].m_vecOrigin - vecOrigin) - g_pWaypoints[i].m_flRadius;
-		if (fDist < flBestDist) {
-			/* within the waypoint's radius */
-			if (fDist < 0) {
-				flBestDist = fDist;
-				r = i;
-			} else {
-				/* outside the waypoint, make sure its valid. */
-				traceline(vecOrigin, g_pWaypoints[i].m_vecOrigin, TRUE, world);
-				if (trace_fraction == 1) {
-					/* FIXME: sort them frst, to avoid traces? */
-					flBestDist = fDist;
-					r = i;
-				}
-			}
-		}
-	}
-	return r;
 }
 
 void
@@ -596,6 +600,9 @@ Way_Cmd(void)
 		break;
 	case "addntl":
 		Way_CreateNode(self, -2);
+		break;
+	case "addnear":
+		Way_CreateNode(self, -4);
 		break;
 	case "addspawns":
 		Way_HelperSpawns();
