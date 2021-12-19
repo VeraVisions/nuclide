@@ -838,6 +838,7 @@ CSQC_ConsoleCommand(string sCMD)
 		HUD_SlotSelect(9);
 		break;
 	case "way_menu":
+		Way_Autoload();
 		Textmenu_Call("WAY_MENU");
 		break;
 	case "_fnchat_msg":

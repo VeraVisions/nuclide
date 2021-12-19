@@ -206,6 +206,15 @@ WAY_MENU(int n)
 	}
 }
 
+var int g_waymenu_opened = 0;
+void
+Way_Autoload(void)
+{
+	if (!g_waymenu_opened && autocvar(way_autoload, 1))
+		localcmd(sprintf("sv way load %s.way\n", mapname));
+	g_waymenu_opened = 1;
+}
+
 void
 WAY_FILE(int n)
 {
