@@ -204,6 +204,7 @@ Way_FlagJump(void)
 		g_waylink_status = 0;
 
 		if (g_way1 != g_way2) {
+			Way_LinkNodes(&g_pWaypoints[g_way1], &g_pWaypoints[g_way2]);
 			for (int b = 0i; b < g_pWaypoints[g_way1].m_numNeighbours; b++) {
 				if (g_pWaypoints[g_way1].m_pNeighbour[b].m_iNode == g_way2) {
 					g_pWaypoints[g_way1].m_pNeighbour[b].m_iFlags |= LF_JUMP;
@@ -229,6 +230,7 @@ Way_FlagCrouch(void)
 		g_waylink_status = 0;
 
 		if (g_way1 != g_way2) {
+			Way_LinkNodes(&g_pWaypoints[g_way1], &g_pWaypoints[g_way2]);
 			for (int b = 0i; b < g_pWaypoints[g_way1].m_numNeighbours; b++) {
 				if (g_pWaypoints[g_way1].m_pNeighbour[b].m_iNode == g_way2) {
 					g_pWaypoints[g_way1].m_pNeighbour[b].m_iFlags |= LF_CROUCH;
@@ -254,6 +256,7 @@ Way_FlagWalk(void)
 		g_waylink_status = 0;
 
 		if (g_way1 != g_way2) {
+			Way_LinkNodes(&g_pWaypoints[g_way1], &g_pWaypoints[g_way2]);
 			for (int b = 0i; b < g_pWaypoints[g_way1].m_numNeighbours; b++) {
 				if (g_pWaypoints[g_way1].m_pNeighbour[b].m_iNode == g_way2) {
 					g_pWaypoints[g_way1].m_pNeighbour[b].m_iFlags |= LF_WALK;
@@ -279,6 +282,7 @@ Way_FlagAim(void)
 		g_waylink_status = 0;
 
 		if (g_way1 != g_way2) {
+			Way_LinkNodes(&g_pWaypoints[g_way1], &g_pWaypoints[g_way2]);
 			for (int b = 0i; b < g_pWaypoints[g_way1].m_numNeighbours; b++) {
 				if (g_pWaypoints[g_way1].m_pNeighbour[b].m_iNode == g_way2) {
 					g_pWaypoints[g_way1].m_pNeighbour[b].m_iFlags |= LF_AIM;
@@ -304,6 +308,7 @@ Way_FlagUse(void)
 		g_waylink_status = 0;
 
 		if (g_way1 != g_way2) {
+			Way_LinkNodes(&g_pWaypoints[g_way1], &g_pWaypoints[g_way2]);
 			for (int b = 0i; b < g_pWaypoints[g_way1].m_numNeighbours; b++) {
 				if (g_pWaypoints[g_way1].m_pNeighbour[b].m_iNode == g_way2) {
 					g_pWaypoints[g_way1].m_pNeighbour[b].m_iFlags |= LF_USER;
