@@ -75,8 +75,8 @@ Way_Init(void)
 		way_link.m_strName = "WAY_LINK";
 		way_link.m_strMessage = "1.\tLink 1-way (2 steps)\n" \
 								"2.\tLink 2-way (2 steps)\n" \
-								"\n" \
-								"\n" \
+								"3.\tUnlink 1-way (2 steps)\n" \
+								"4.\tUnlink 2-way (2 steps)\n" \
 								"\n" \
 								"\n" \
 								"7.\tAutolink closest\n" \
@@ -272,6 +272,12 @@ WAY_LINK(int n)
 		break;
 	case 2:
 		localcmd("sv way connect2\n");
+		break;
+	case 3:
+		localcmd("sv way unlink1\n");
+		break;
+	case 4:
+		localcmd("sv way unlink2\n");
 		break;
 	case 7:
 		localcmd("sv way autolink\n");

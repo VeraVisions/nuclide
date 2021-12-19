@@ -66,6 +66,44 @@ Way_LinkNodes(waypoint_t *wp, waypoint_t *w2)
 }
 
 static void
+Way_UnlinkNodes(waypoint_t *wp, waypoint_t *w2)
+{
+	int w2n = w2 - g_pWaypoints;
+	int nilled = 0;
+
+	for (int i = 0i; i < wp->m_numNeighbours; i++) {
+		if (wp->m_pNeighbour[i].m_iNode == w2n) {
+			wp->m_pNeighbour[i].m_iNode = -1;
+			wp->m_pNeighbour[i].m_flCost = 0;
+			wp->m_pNeighbour[i].m_iFlags = 0;
+			nilled = 1;
+		}	
+	}
+
+	/* we nilled an entry, so let's recreate the neighbour list */
+	if (nilled) {
+		int new_neighbours = wp->m_numNeighbours - 1; /* one less. */
+		wpneighbour_s *new = (wpneighbour_s *)memalloc(sizeof(*wp->m_pNeighbour) * new_neighbours);
+		int b = 0;
+
+		/* loop through all of our neighbours... */
+		for (int i = 0i; i < wp->m_numNeighbours; i++) {
+			if (wp->m_pNeighbour[i].m_iNode != -1) {
+				new[b].m_iNode = wp->m_pNeighbour[i].m_iNode;
+				new[b].m_flCost = wp->m_pNeighbour[i].m_flCost;
+				new[b].m_iFlags = wp->m_pNeighbour[i].m_iFlags;
+				b++;
+			}
+		}
+
+		/* assign our new neighbour list to the old one, which will be freed. */
+		wp->m_numNeighbours = new_neighbours;
+		memfree(wp->m_pNeighbour);
+		wp->m_pNeighbour = new;
+	}
+}
+
+static void
 Way_AutoLink(int wpidx)
 {
 	for (int i = 0i; i < g_iWaypoints; i++) {
@@ -315,6 +353,47 @@ Way_FlagUse(void)
 					env_message_single(self, "^2Use-linked the two points!\n");
 				}
 			}
+		} else {
+			env_message_single(self, "^1Failed to link, the two points are the same!\n");
+		}
+		g_way1 = g_way2 = -1;
+	}
+}
+
+void
+Way_Unlink(void)
+{
+	if (g_waylink_status == 0) {
+		g_way1 = Way_FindClosestNode(self.origin);
+		g_waylink_status = 1;
+		env_message_single(self, "^2Selected first waypoint!\n");
+	} else if (g_waylink_status == 1) {
+		g_way2 = Way_FindClosestNode(self.origin);
+		g_waylink_status = 0;
+
+		if (g_way1 != g_way2) {
+			Way_UnlinkNodes(&g_pWaypoints[g_way1], &g_pWaypoints[g_way2]);
+		} else {
+			env_message_single(self, "^1Failed to link, the two points are the same!\n");
+		}
+		g_way1 = g_way2 = -1;
+	}
+}
+
+void
+Way_UnlinkTwo(void)
+{
+	if (g_waylink_status == 0) {
+		g_way1 = Way_FindClosestNode(self.origin);
+		g_waylink_status = 1;
+		env_message_single(self, "^2Selected first waypoint!\n");
+	} else if (g_waylink_status == 1) {
+		g_way2 = Way_FindClosestNode(self.origin);
+		g_waylink_status = 0;
+
+		if (g_way1 != g_way2) {
+			Way_UnlinkNodes(&g_pWaypoints[g_way1], &g_pWaypoints[g_way2]);
+			Way_UnlinkNodes(&g_pWaypoints[g_way2], &g_pWaypoints[g_way1]);
 		} else {
 			env_message_single(self, "^1Failed to link, the two points are the same!\n");
 		}
@@ -640,6 +719,12 @@ Way_Cmd(void)
 		break;
 	case "linkuse":
 		Way_FlagUse();
+		break;
+	case "unlink1":
+		Way_Unlink();
+		break;
+	case "unlink2":
+		Way_UnlinkTwo();
 		break;
 	case "move":
 		vector p;
