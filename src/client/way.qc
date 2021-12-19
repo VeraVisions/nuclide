@@ -73,8 +73,8 @@ Way_Init(void)
 	{
 		titles_t way_link;
 		way_link.m_strName = "WAY_LINK";
-		way_link.m_strMessage = "1.\tLink 2-way (2 steps)\n" \
-								"2.\tLink 1-way (2 steps)\n" \
+		way_link.m_strMessage = "1.\tLink 1-way (2 steps)\n" \
+								"2.\tLink 2-way (2 steps)\n" \
 								"\n" \
 								"\n" \
 								"\n" \
@@ -268,10 +268,10 @@ WAY_LINK(int n)
 {
 	switch (n) {
 	case 1:
-		localcmd("sv way connect2\n");
+		localcmd("sv way connect1\n");
 		break;
 	case 2:
-		localcmd("sv way connect1\n");
+		localcmd("sv way connect2\n");
 		break;
 	case 7:
 		localcmd("sv way autolink\n");
