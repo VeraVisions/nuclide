@@ -114,6 +114,7 @@ NSSurfacePropEntity::Save(float handle)
 	SaveFloat(handle,"m_flBurnTime", m_flBurnTime);
 	SaveFloat(handle, "m_flBurnNext", m_flBurnNext);
 	SaveString(handle, "m_strOnBreak", m_strOnBreak);
+	SaveFloat(handle, "health", health);
 	SaveFloat(handle, "m_oldHealth", m_oldHealth);
 	SaveInt(handle, "m_iMaterial", m_iMaterial);
 	SaveInt(handle, "m_iPropData", m_iPropData);
@@ -139,6 +140,9 @@ NSSurfacePropEntity::Restore(string strKey, string strValue)
 		break;
 	case "m_strOnBreak":
 		m_strOnBreak = ReadString(strValue);
+		break;
+	case "health":
+		health = ReadFloat(strValue);
 		break;
 	case "m_oldHealth":
 		m_oldHealth = ReadFloat(strValue);
@@ -176,6 +180,10 @@ void
 NSSurfacePropEntity::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
+	case "health":
+		health = stof(strValue);
+		m_oldHealth = health;
+		break;
 	case "propdata":
 		SetPropData(strValue);
 		break;
@@ -275,9 +283,6 @@ NSSurfacePropEntity::NSSurfacePropEntity(void)
 	health = -1;
 
 	super::NSRenderableEntity();
-
-	/* after spawn init */
-	m_oldHealth = health;
 
 	/* tokenization complete, now we can load propdata */
 	SurfaceDataFinish();

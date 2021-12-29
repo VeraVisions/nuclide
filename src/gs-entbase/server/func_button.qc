@@ -82,7 +82,6 @@ class func_button:NSSurfacePropEntity
 {
 	float m_flSpeed;
 	float m_flLip;
-	int m_iDamage;
 	int m_iState;
 	vector m_vecPos1;
 	vector m_vecPos2;
@@ -261,10 +260,6 @@ func_button::Use(void)
 void
 func_button::Blocked(void)
 {
-	if (m_iDamage) {
-		//Damage_Apply(other, this, dmg, other.origin, FALSE);
-	}
-
 	if (m_flWait >= 0) {
 		if (m_iState == STATE_DOWN) {
 			MoveAway();
