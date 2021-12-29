@@ -36,12 +36,37 @@ class func_conveyor:NSRenderableEntity
 
 	void(void) func_conveyor;
 
+	virtual void(float) Save;
+	virtual void(string,string) Restore;
 	virtual void(void) Respawn;
 	virtual void(entity, int) Trigger;
 	virtual void(void) touch;
 	virtual void(void) SetMovementDirection;
 	virtual void(entity, string, string) Input;
 };
+
+void
+func_conveyor::Save(float handle)
+{
+	SaveFloat(handle, "m_flSpeed", m_flSpeed);
+	SaveVector(handle, "m_vecMoveDir", m_vecMoveDir);
+	super::Save(handle);
+}
+
+void
+func_conveyor::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_flSpeed":
+		m_flSpeed = ReadFloat(strValue);
+		break;
+	case "m_vecMoveDir":
+		m_vecMoveDir = ReadVector(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 func_conveyor::SetMovementDirection(void)
@@ -79,7 +104,7 @@ func_conveyor::Respawn(void)
 	SetMovementDirection();
 	SetModel(GetSpawnModel());
 	SetMovetype(MOVETYPE_NONE);
-	SetSolid(SOLID_BSPTRIGGER);
+	SetSolid(SOLID_BSP);
 
 	/* TODO: Apply some effect flag the engine handles? */
 	if (!(spawnflags & SF_CONVEYOR_VISUAL)) {
