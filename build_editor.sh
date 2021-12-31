@@ -116,6 +116,8 @@ mv_wsfile bitmaps/refresh_models.xpm
 mv_wsfile bitmaps/scalelockx.xpm
 mv_wsfile bitmaps/scalelocky.xpm
 mv_wsfile bitmaps/scalelockz.xpm
+mv_wsfile bitmaps/select_additive.xpm
+mv_wsfile bitmaps/select_autoexpand.xpm
 mv_wsfile bitmaps/selection_csgmerge.xpm
 mv_wsfile bitmaps/selection_csgsubtract.xpm
 mv_wsfile bitmaps/selection_makehollow.xpm
