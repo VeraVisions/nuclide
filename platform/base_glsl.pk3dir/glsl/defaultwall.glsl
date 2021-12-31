@@ -128,6 +128,8 @@ varying mat3 invsurface;
 
 /* get the alphatesting out of the way first */
 #ifdef MASK
+		/* terrible hack, CSQC sets this to mark surface as an entity */
+		if (e_glowmod == vec3(1.0, 0.0, 1.0))
 		if (diffuse_f.a < 0.6) {
 			discard;
 		}

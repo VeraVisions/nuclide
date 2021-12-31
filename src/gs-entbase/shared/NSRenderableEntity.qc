@@ -202,6 +202,8 @@ NSRenderableEntity::RenderFXPass(void)
 	pSeat = &g_seats[s];
 	vecPlayer = pSeat->m_vecPredictedOrigin;
 
+	/* HACK: this tells our GLSL to render this masked */
+	glowmod = [1.0,0.0,1.0];
 	colormod = m_vecRenderColor;
 	alpha = m_flRenderAmt;
 
