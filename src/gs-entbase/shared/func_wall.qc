@@ -77,12 +77,12 @@ func_wall::Respawn(void)
 	super::Respawn();
 
 	/* func_wall specifics */
-	SetAngles([0,0,0]);
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid(SOLID_BSP);
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
 	SetFrame(0);
+	ClearAngles();
 }
 #else
 float
@@ -120,6 +120,7 @@ func_wall::Init(void)
 	setorigin(this, origin);
 	movetype = MOVETYPE_PUSH;
 	solid = SOLID_BSP;
+	angles = [0,0,0];
 
 	MakeStatic();
 }

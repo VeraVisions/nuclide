@@ -138,6 +138,7 @@ func_plat::Respawn(void)
 	SetSolid(SOLID_BSP);
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
+	ClearAngles();
 	
 	m_iState = PLATSTATE_RAISED;
 	think = __NULL__;

@@ -182,7 +182,10 @@ func_rotating::Respawn(void)
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid((spawnflags & FR_NOTSOLID) ? SOLID_NOT : SOLID_BSP);
 	SetOrigin(GetSpawnOrigin());
+
+	RestoreAngles();
 	SetMovementDirection();
+	ClearAngles();
 
 	if (spawnflags & FR_STARTON) {
 		avelocity = m_vecMoveDir * m_flSpeed;

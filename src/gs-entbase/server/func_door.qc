@@ -372,8 +372,9 @@ func_door::Respawn(void)
 	if (m_flWait == 0)
 		m_flWait = 0.01f;
 
-	/* angles to vecMoveDir */
+	RestoreAngles();
 	SetMovementDirection();
+	ClearAngles();
 
 	if (spawnflags & SF_MOV_PASSABLE)
 		SetSolid(SOLID_NOT);
@@ -428,8 +429,6 @@ func_door::Respawn(void)
 	if (targetname) {
 		m_iLocked = TRUE;
 	}
-
-	SetAngles([0,0,0]);
 }
 
 void

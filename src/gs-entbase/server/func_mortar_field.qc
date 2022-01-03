@@ -173,6 +173,7 @@ void
 func_mortar_field::Respawn(void)
 {
 	InitBrushTrigger();
+	ClearAngles();
 }
 
 void

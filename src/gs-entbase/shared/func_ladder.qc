@@ -74,13 +74,14 @@ func_ladder::Respawn(void)
 	super::Respawn();
 
 	/* func_ladder specifics */
-	SetAngles([0,0,0]);
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_BSP);
 	SetSkin(CONTENT_LADDER);
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
 	SetFrame(0);
+	ClearAngles();
+
 #ifdef GS_RENDERFX
 	SetRenderMode(RM_TRIGGER);
 #endif
@@ -122,6 +123,7 @@ func_ladder::Init(void)
 	movetype = MOVETYPE_NONE;
 	solid = SOLID_BSP;
 	skin = CONTENT_LADDER;
+	angles = [0,0,0];
 }
 #endif
 

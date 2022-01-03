@@ -318,7 +318,9 @@ func_button::MoveToDestination(vector vecDest, void(void) func)
 void
 func_button::Respawn(void)
 {
+	RestoreAngles();
 	SetMovementDirection();
+	ClearAngles();
 
 	SetSolid(SOLID_BSP);
 	SetMovetype(MOVETYPE_PUSH);
@@ -356,7 +358,6 @@ func_button::Respawn(void)
 	}
 
 	m_iState = STATE_LOWERED;
-	SetAngles([0,0,0]);
 }
 
 void

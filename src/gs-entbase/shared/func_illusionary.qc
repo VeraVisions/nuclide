@@ -77,12 +77,12 @@ func_illusionary::Respawn(void)
 	super::Respawn();
 
 	/* func_illusionary specifics */
-	SetAngles([0,0,0]);
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_NOT);
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
 	SetSkin(0);
+	ClearAngles();
 
 	// TODO: Add support for (skin) -1 = Empty, -7 = Volumetric light
 	if (skin < 0) {
@@ -126,6 +126,7 @@ func_illusionary::Init(void)
 	SetAngles([0,0,0]);
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_NOT);
+	angles = [0,0,0];
 
 	if (skin == -1 && m_iRenderMode == RM_TEXTURE)
 		SetRenderMode(RM_TRIGGER);

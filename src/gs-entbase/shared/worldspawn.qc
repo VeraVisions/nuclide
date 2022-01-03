@@ -83,7 +83,8 @@ worldspawn::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
 	case "startdark":
-		Fade_StartDark();
+		if (stof(strKey) == 1)
+			Fade_StartDark();
 		break;
 	case "chaptertitle":
 		GameMessage_Setup(strKey, 0);

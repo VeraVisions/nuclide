@@ -305,6 +305,7 @@ func_breakable::Respawn(void)
 
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
+	ClearAngles();
 	touch = PlayerTouch;
 	think = __NULL__;
 
@@ -374,9 +375,6 @@ func_breakable::func_breakable(void)
 
 	/* proper init */
 	super::NSSurfacePropEntity();
-
-	/* contrary to what some map designers think, angles are not supported */
-	GetSpawnAngles() = angles = [0,0,0];
 
 	/* precache impact sound */
 	Sound_Precache(GetSurfaceData(SURFDATA_SND_BULLETIMPACT));

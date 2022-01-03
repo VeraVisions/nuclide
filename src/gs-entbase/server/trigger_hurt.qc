@@ -37,30 +37,27 @@ This entity was introduced in Quake (1996).
 
 .float hurt_next;
 
-typedef enumflags
-{
-HURTTYPE_GENERIC,
-HURTTYPE_CRUSH,
-HURTTYPE_BULLET,
-HURTTYPE_SLASH,
-HURTTYPE_BURN,
-HURTTYPE_FREEZE,
-HURTTYPE_FALL,
-HURTTYPE_BLAST,
-HURTTYPE_CLUB,
-HURTTYPE_SHOCK,
-HURTTYPE_SONIC,
-HURTTYPE_ENERGYBEAM,
-HURTTYPE_DROWN,
-HURTTYPE_PARALYSE,
-HURTTYPE_NERVEGAS,
-HURTTYPE_POISON,
-HURTTYPE_RADIATION,
-HURTTYPE_DROWNRECOVER,
-HURTTYPE_CHEMICAL,
-HURTTYPE_SLOWBURN,
-HURTTYPE_SLOWFREEZE,
-} hurttype_e;
+#define HURTTYPE_GENERIC	0
+#define HURTTYPE_CRUSH		1
+#define HURTTYPE_BULLET		2
+#define HURTTYPE_SLASH		4
+#define HURTTYPE_BURN		8
+#define HURTTYPE_FREEZE		16
+#define HURTTYPE_FALL		32
+#define HURTTYPE_BLAST		64
+#define HURTTYPE_CLUB		128
+#define HURTTYPE_SHOCK		256
+#define HURTTYPE_SONIC		512
+#define HURTTYPE_ENERGYBEAM	1024
+#define HURTTYPE_DROWN		16384
+#define HURTTYPE_PARALYSE	32768
+#define HURTTYPE_NERVEGAS	65536
+#define HURTTYPE_POISON		131072
+#define HURTTYPE_RADIATION	262144
+#define HURTTYPE_DROWNRECOVER	524288
+#define HURTTYPE_CHEMICAL	1048576
+#define HURTTYPE_SLOWBURN	2097152
+#define HURTTYPE_SLOWFREEZE	4194304
 
 #define SF_HURT_ONCE			1 // Turn off once it fired the first time
 #define SF_HURT_OFF				2 // Needs to be triggered in order to work again
@@ -249,7 +246,7 @@ trigger_hurt::SpawnKey(string strKey, string strValue)
 		m_iDamage = stoi(strValue);
 		break;
 	case "damagetype":
-		m_iDamageType = stoi(strValue);
+		m_iDamageType = (int)stoi(strValue);
 		break;
 	case "wait":
 		m_flNextDmg = stof(strValue);

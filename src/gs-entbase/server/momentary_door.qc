@@ -98,8 +98,10 @@ momentary_door::Respawn(void)
 	SetSolid(SOLID_BSP);
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
+
+	RestoreAngles();
 	SetMovementDirection();
-	SetAngles([0,0,0]);
+	ClearAngles();
 
 	m_vecPos1 = GetSpawnOrigin();
 	m_vecPos2 = (m_vecPos1 + m_vecMoveDir * (fabs(m_vecMoveDir * size) - m_flDistance));

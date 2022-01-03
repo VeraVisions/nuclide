@@ -63,6 +63,10 @@ class NSEntity:NSTrigger
 	nonvirtual void(void) ClearParent;
 	virtual void(void) ParentUpdate;
 
+	/* some ents need this */
+	nonvirtual void(void) RestoreAngles;
+	nonvirtual void(void) ClearAngles;
+
 	nonvirtual vector(void) GetSpawnOrigin;
 	nonvirtual vector(void) GetSpawnAngles;
 	nonvirtual string(void) GetSpawnModel;

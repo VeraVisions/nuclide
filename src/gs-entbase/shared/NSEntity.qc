@@ -240,6 +240,17 @@ NSEntity::ClearParent(void)
 {
 	m_parent = __NULL__;
 }
+
+void
+NSEntity::RestoreAngles(void)
+{
+	angles = GetSpawnAngles();
+}
+void
+NSEntity::ClearAngles(void)
+{
+	angles = [0,0,0];
+}
 #endif
 
 /* we want to really use those set functions because they'll notify of any

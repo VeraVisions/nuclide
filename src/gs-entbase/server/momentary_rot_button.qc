@@ -129,8 +129,11 @@ momentary_rot_button::Respawn(void)
 	SetSolid(SOLID_BSP);
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
+
+	RestoreAngles();
 	SetMovementDirection();
-	SetAngles([0,0,0]);
+	ClearAngles();
+
 	PlayerUse = OnPlayerUse;
 
 	m_vecPos1 = [0,0,0];

@@ -165,9 +165,9 @@ func_door_rotating::Arrived(void)
 	if (!(spawnflags & SF_ROT_USE)) {
 		touch = Touch;
 	}
-	if (m_flWait < 0) {
+
+	if ((spawnflags & SF_ROT_TOGGLE) || m_flWait < 0)
 		return;
-	}
 
 	think = Back;
 	nextthink = (ltime + m_flWait);
@@ -385,7 +385,9 @@ func_door_rotating::RotToDest(vector vDestAngle, void(void) func)
 void
 func_door_rotating::Respawn(void)
 {
-	func_door_rotating::SetMovementDirection();
+	RestoreAngles();
+	SetMovementDirection();
+	ClearAngles();
 
 #ifdef GS_PHYSICS
 	takedamage = DAMAGE_YES;
@@ -432,6 +434,8 @@ func_door_rotating::Respawn(void)
 	} else {
 		PortalClose();
 	}
+
+	m_iState = STATE_LOWERED;
 
 	if (spawnflags & SF_ROT_PASSABLE) {
 		SetSolid(SOLID_NOT);

@@ -132,15 +132,17 @@ monstermaker::Spawner(void)
 		vector newang = self.angles;
 		string tname = self.netname;
 
+		/* prevent us from being deleted by callfunction() */
+		self.spawnflags |= MSF_MULTIPLAYER;
+
 		/* become the classname assigned */
 		NSMonster t = (NSMonster)self;
 		callfunction(self.classname);
 
 		/* apply the saved values back */
-		t.origin = t.GetSpawnOrigin() = neworg;
-		t.angles = t.GetSpawnAngles() = newang;
+		t.origin = t.m_oldOrigin = neworg;
+		t.angles = t.m_oldAngle = newang;
 		t.targetname = tname;
-		t.spawnflags |= MSF_MULTIPLAYER;
 
 		/* spawn anew */
 		t.Respawn();

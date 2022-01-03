@@ -33,6 +33,6 @@ This entity was introduced in Counter-Strike (2000).
 void
 func_vehiclecontrols(void)
 {
-	spawnfunc_func_tracktraincontrols();
+	spawnfunc_func_traincontrols();
 	self.classname = "func_vehiclecontrols";
 }

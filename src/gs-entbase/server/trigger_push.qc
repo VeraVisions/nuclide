@@ -86,8 +86,6 @@ trigger_push::SetMovementDirection(void)
 		makevectors(GetSpawnAngles());
 		m_vecMoveDir = v_forward;
 	}
-
-	angles = [0,0,0];
 }
 
 void
@@ -142,7 +140,10 @@ void
 trigger_push::Respawn(void)
 {
 	InitBrushTrigger();
+
+	RestoreAngles();
 	SetMovementDirection();
+	ClearAngles();
 
 	if (spawnflags & TP_STARTOFF) {
 		SetSolid(SOLID_NOT);

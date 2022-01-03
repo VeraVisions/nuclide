@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED func_tracktraincontrols (0 .5 .8) ?
+/*QUAKED func_traincontrols (0 .5 .8) ?
 Brush that marks the usable region of a func_tracktrain, in order
 to gain control.
 
@@ -26,21 +26,22 @@ to gain control.
 This entity was introduced in Half-Life (1998).
 */
 
-class func_tracktraincontrols:NSBrushTrigger
+class func_traincontrols:NSBrushTrigger
 {
-	void(void) func_tracktraincontrols;
+	void(void) func_traincontrols;
 
 	virtual void(void) Respawn;
 };
 
 void
-func_tracktraincontrols::Respawn(void)
+func_traincontrols::Respawn(void)
 {
 	InitBrushTrigger();
+	ClearAngles();
 }
 
 void
-func_tracktraincontrols::func_tracktraincontrols(void)
+func_traincontrols::func_traincontrols(void)
 {
 	super::NSBrushTrigger();
 }

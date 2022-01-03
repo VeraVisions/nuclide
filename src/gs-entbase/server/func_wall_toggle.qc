@@ -99,6 +99,8 @@ func_wall_toggle::Respawn(void)
 	SetSolid(SOLID_BSP);
 	SetModel(GetSpawnModel());
 	SetOrigin(origin);
+	ClearAngles();
+
 	m_iVisible = 1;
 	m_oldmodelindex = modelindex;
 

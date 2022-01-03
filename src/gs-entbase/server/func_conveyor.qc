@@ -118,10 +118,9 @@ func_conveyor::Respawn(void)
 	if (!m_flSpeed)
 		m_flSpeed = 100;
 
-	m_vecMoveDir = [0,0,0];
-	angles = GetSpawnAngles();
-
+	RestoreAngles();
 	SetMovementDirection();
+	ClearAngles();
 	SetModel(GetSpawnModel());
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_BSP);
@@ -133,7 +132,6 @@ func_conveyor::Respawn(void)
 		SetSkin(0);
 	}
 
-	SetAngles([0,0,0]);
 }
 
 void
