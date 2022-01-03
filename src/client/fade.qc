@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2022 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -99,7 +99,7 @@ Fade_StartDark(void)
 }
 
 void
-Fade_Parse (void)
+Fade_Parse(void)
 {
 	pSeat->m_vecFadeColor[0] = readfloat();
 	pSeat->m_vecFadeColor[1] = readfloat();

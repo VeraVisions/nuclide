@@ -26,6 +26,7 @@ Only used for the world.
 "_skyroomfog" : Fog in the skybox area. Format: (density red green blue alpha depthbias)
 "skyname" : Which skybox to use. (e.g. textures/skies/sundown)
 "ambientsound" : Sound shader to play in the background (looping) for when other env_soundscape entities are NOT active.
+"startdark" : Starts the level with a fade in similar to using an env_fade, which lasts for nine seconds.
 "hdr_iris_minvalue" : Minimum HDR brightness adjustment. Default is "0.0".
 "hdr_iris_maxvalue" : Maximum HDR brightness adjustment. Default is "2.0".
 "hdr_iris_multiplier" : HDR effect multiplier. Default is "1.0".
@@ -49,8 +50,6 @@ var float g_flHDRIrisMultiplier = 1.0;
 var float g_flHDRIrisFadeUp = 0.1;
 var float g_flHDRIrisFadeDown = 0.5;
 var int g_iHDREnabled = 0;
-
-void Fade_StartDark(void);
 
 class worldspawn:NSEntity
 {
