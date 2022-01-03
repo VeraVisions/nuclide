@@ -86,6 +86,19 @@ Fade_Update (int x, int y, int w, int h)
 }
 
 void
+Fade_StartDark(void)
+{
+	pSeat->m_vecFadeColor = [0.0, 0.0, 0.0];
+	pSeat->m_flFadeMaxAlpha = 1.0;
+	pSeat->m_flFadeDuration = 5.0;
+	pSeat->m_flFadeHold = 4.0f;
+	pSeat->m_flFadeStyle = EVF_FADEDROM;
+	pSeat->m_flFadeTime = 0.0f;
+	pSeat->m_flFadeAlpha = 1.0f;
+	pSeat->m_iFadeActive = TRUE;
+}
+
+void
 Fade_Parse (void)
 {
 	pSeat->m_vecFadeColor[0] = readfloat();

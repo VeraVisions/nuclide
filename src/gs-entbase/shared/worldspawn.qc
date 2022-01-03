@@ -50,6 +50,8 @@ var float g_flHDRIrisFadeUp = 0.1;
 var float g_flHDRIrisFadeDown = 0.5;
 var int g_iHDREnabled = 0;
 
+void Fade_StartDark(void);
+
 class worldspawn:NSEntity
 {
 	void(void) worldspawn;
@@ -81,6 +83,9 @@ void
 worldspawn::SpawnKey(string strField, string strKey)
 {
 	switch (strField) {
+	case "startdark":
+		Fade_StartDark();
+		break;
 	case "chaptertitle":
 		GameMessage_Setup(strKey, 0);
 		break;
