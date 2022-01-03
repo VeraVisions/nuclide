@@ -51,7 +51,13 @@ varying mat3 invsurface;
 		lightmapped_init();
 		tex_c = v_texcoord;
 		gl_Position = ftetransform();
-		
+
+#ifdef SCROLL
+		/* HACK: func_conveyor needs us to scroll this surface! */
+		if (e_glowmod.g == 0.5)
+			tex_c[0] += (e_time * (e_glowmod.b * 1024.0)) * -0.01;
+#endif
+
 #ifdef REFLECTCUBE
 		invsurface[0] = v_svector;
 		invsurface[1] = v_tvector;
@@ -128,8 +134,9 @@ varying mat3 invsurface;
 
 /* get the alphatesting out of the way first */
 #ifdef MASK
-		/* terrible hack, CSQC sets this to mark surface as an entity */
-		if (e_glowmod == vec3(1.0, 0.0, 1.0))
+		/* HACK: terrible hack, CSQC sets this to mark surface as an entity
+		   only entities are alphatested - ever */
+		if (e_glowmod.r == 0.5)
 		if (diffuse_f.a < 0.6) {
 			discard;
 		}

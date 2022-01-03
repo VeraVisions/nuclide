@@ -101,7 +101,8 @@ NSRenderableEntity::SendEntity(entity ePEnt, float fChanged)
 	/* let's not waste networking power on certain render-modes where they would
 	 * not apply anyway. this seems sensible enough. */
 	if (m_iRenderMode == RM_NORMAL || m_iRenderMode == RM_TRIGGER) {
-		fChanged &= ~BASEFL_CHANGED_RENDERCOLOR;
+		if (!glowmod) /* FIXME: Get rid of this, network this hack on its own. */
+			fChanged &= ~BASEFL_CHANGED_RENDERCOLOR;
 		fChanged &= ~BASEFL_CHANGED_RENDERAMT;
 	}
 #endif
@@ -172,6 +173,9 @@ NSRenderableEntity::SendEntity(entity ePEnt, float fChanged)
 		WriteFloat(MSG_ENTITY, m_vecRenderColor[0]);
 		WriteFloat(MSG_ENTITY, m_vecRenderColor[1]);
 		WriteFloat(MSG_ENTITY, m_vecRenderColor[2]);
+		WriteFloat(MSG_ENTITY, glowmod[0]);
+		WriteFloat(MSG_ENTITY, glowmod[1]);
+		WriteFloat(MSG_ENTITY, glowmod[2]);
 	}
 	if (fChanged & BASEFL_CHANGED_RENDERAMT) {
 		WriteFloat(MSG_ENTITY, m_flRenderAmt);
@@ -203,7 +207,7 @@ NSRenderableEntity::RenderFXPass(void)
 	vecPlayer = pSeat->m_vecPredictedOrigin;
 
 	/* HACK: this tells our GLSL to render this masked */
-	glowmod = [1.0,0.0,1.0];
+	//glowmod = [1.0,0.0,1.0];
 	colormod = m_vecRenderColor;
 	alpha = m_flRenderAmt;
 
@@ -310,6 +314,13 @@ NSRenderableEntity::RenderFXPass(void)
 		drawflags = 7;
 		abslight = 128;
 	}
+
+	/* HACK: This marks this entity as alphatested in platform's defaultwall.glsl */
+	if (m_iRenderMode != RM_NORMAL) {
+		glowmod[0] = 0.5f;
+	} else {
+		glowmod[0] = 1.0f;
+	}
 }
 #endif
 /*
@@ -387,6 +398,9 @@ NSRenderableEntity::ReceiveEntity(float flChanged)
 		m_vecRenderColor[0] = readfloat();
 		m_vecRenderColor[1] = readfloat();
 		m_vecRenderColor[2] = readfloat();
+		glowmod[0] = readfloat();
+		glowmod[1] = readfloat();
+		glowmod[2] = readfloat();
 	}
 	if (flChanged & BASEFL_CHANGED_RENDERAMT) {
 		m_flRenderAmt = readfloat();

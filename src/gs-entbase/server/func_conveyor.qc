@@ -26,7 +26,7 @@ STUB!
 This entity was introduced in Half-Life (1998).
 */
 
-#define SF_CONVEYOR_VISUAL		1
+#define SF_CONVEYOR_VISUAL	1
 #define SF_CONVEYOR_NOTSOLID	2
 
 class func_conveyor:NSRenderableEntity
@@ -43,6 +43,7 @@ class func_conveyor:NSRenderableEntity
 	virtual void(void) touch;
 	virtual void(void) SetMovementDirection;
 	virtual void(entity, string, string) Input;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -84,20 +85,39 @@ func_conveyor::SetMovementDirection(void)
 void
 func_conveyor::touch(void)
 {
-	other.basevelocity = m_vecMoveDir * (m_flSpeed * -0.2f);
+	if (spawnflags & SF_CONVEYOR_VISUAL)
+		return;
+
+	other.basevelocity = m_vecMoveDir * (m_flSpeed * -0.2);
 }
 
-/* TODO: Handle state? */
 void 
 func_conveyor::Trigger(entity act, int state)
 {
+	switch (state) {
+	case TRIG_ON:
+		m_flSpeed = fabs(m_flSpeed);
+		break;
+	case TRIG_OFF:
+		m_flSpeed = -fabs(m_flSpeed);
+		break;
+	default:
+		m_flSpeed = -m_flSpeed;
+		break;
+	}
+
 	/* changes direction */
-	m_flSpeed = -m_flSpeed;
+	glowmod[1] = 0.5f;
+	glowmod[2] = m_flSpeed / 1024;
+	SetSendFlags(BASEFL_CHANGED_RENDERCOLOR);
 }
 
 void
 func_conveyor::Respawn(void)
 {
+	if (!m_flSpeed)
+		m_flSpeed = 100;
+
 	m_vecMoveDir = [0,0,0];
 	angles = GetSpawnAngles();
 
@@ -106,9 +126,7 @@ func_conveyor::Respawn(void)
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_BSP);
 
-	/* TODO: Apply some effect flag the engine handles? */
-	if (!(spawnflags & SF_CONVEYOR_VISUAL)) {
-	}
+	Trigger(this, TRIG_ON);
 
 	if (spawnflags & SF_CONVEYOR_NOTSOLID) {
 		SetSolid(SOLID_NOT);
@@ -134,8 +152,20 @@ func_conveyor::Input(entity eAct, string strInput, string strData)
 }
 
 void
+func_conveyor::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "speed":
+		m_flSpeed = stof(strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+		break;
+	}
+}
+
+void
 func_conveyor::func_conveyor(void)
 {
-	m_flSpeed = 100;
 	super::NSRenderableEntity();
 }
