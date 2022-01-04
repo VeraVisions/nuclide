@@ -38,16 +38,47 @@ class func_guntarget:NSSurfacePropEntity
 
 	void(void) func_guntarget;
 	
+	/* overrides */
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(void) Respawn;
-	virtual void(void) NextPath;
-	virtual void(void) Move;
-	virtual void(void) Start;
-	virtual void(void) Stop;
 	virtual void(entity act, int) Trigger;
 	virtual void(void) Death;
 	virtual void(string, string) SpawnKey;
 	virtual void(entity, string, string) Input;
+
+	virtual void(void) NextPath;
+	virtual void(void) Move;
+	virtual void(void) Start;
+	virtual void(void) Stop;
 };
+
+void
+func_guntarget::Save(float handle)
+{
+	SaveFloat(handle, "m_flSpeed", m_flSpeed);
+	SaveString(handle, "m_strOnDeath", m_strOnDeath);
+	SaveString(handle, "m_strOnDeathLegacy", m_strOnDeathLegacy);
+	super::Save(handle);
+}
+
+void
+func_guntarget::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_flSpeed":
+		m_flSpeed =  ReadFloat(strValue);
+		break;
+	case "m_strOnDeath":
+		m_strOnDeath = ReadString(strValue);
+		break;
+	case "m_strOnDeathLegacy":
+		m_strOnDeathLegacy = ReadString(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 func_guntarget::Move(void)
@@ -86,13 +117,13 @@ func_guntarget::NextPath(void)
 {
 	path_corner node;
 
-	print(sprintf("^2func_guntarget::^3NextPath^7: Talking to current target %s... ", target));
+	dprint(sprintf("^2func_guntarget::^3NextPath^7: Talking to current target %s... ", target));
 	node = (path_corner)find(world, ::targetname, target);
 
 	if (!node) {
-		print("^1FAILED.\n");
+		dprint("^1FAILED.\n");
 	} else {
-		print("^2SUCCESS.\n");
+		dprint("^2SUCCESS.\n");
 	}
 
 	target = node.target;
@@ -173,6 +204,7 @@ func_guntarget::Respawn(void)
 	SetMovetype(MOVETYPE_PUSH);
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
+	health = GetSpawnHealth();
 
 	if (spawnflags & SF_GUNTARGET_ON) {
 		think = ThinkWrap;
@@ -202,9 +234,6 @@ void
 func_guntarget::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
-	case "health":
-		health = stof(strValue);
-		break;
 	case "speed":
 		m_flSpeed = stof(strValue);
 		break;
