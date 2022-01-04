@@ -163,17 +163,21 @@ Weapons_AddItem(base_player pl, int w, int startammo)
 			if (!value)
 				return value;
 		} else {
-			/* new to our arsenal, so always return TRUE */
-			g_weapons[w].pickup(TRUE, startammo);
-			pl.g_items |= g_weapons[w].id;
-			value = TRUE;
+			/* new to our arsenal */
+			if (g_weapons[w].pickup(TRUE, startammo) == TRUE) {
+				pl.g_items |= g_weapons[w].id;
+				value = TRUE;
 
-			/* it's new, so autoswitch? */
-			if (pl.activeweapon == 0 && autocvar_sv_forceweapondraw == 1) {
-				pl.activeweapon = w;
-				Weapons_Draw();
+				/* it's new, so autoswitch? */
+				if (pl.activeweapon == 0 && autocvar_sv_forceweapondraw == 1) {
+					pl.activeweapon = w;
+					Weapons_Draw();
+				} else {
+					Weapons_PickupNotify(pl, w);
+				}
 			} else {
-				Weapons_PickupNotify(pl, w);
+				/* cannot pickup this weapon (weapon says no) */
+				return FALSE;
 			}
 		}
 	}
