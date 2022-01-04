@@ -136,6 +136,14 @@ trigger_changelevel::Change(void)
 		m_activator = find(world, ::classname, "player");
 	}
 
+	if (m_strLandmark) {
+		for (entity e = world; (e = find(e, ::classname, "trigger_transition"));) { 
+			if (e.targetname == m_strLandmark)
+				if (IsInside(m_activator, e) == FALSE)
+					return;
+		}
+	}
+
 	/* a trigger_transition may share the same targetname, thus we do this */
 	for (entity e = world; (e = find(e, ::classname, "info_landmark"));) {
 		info_landmark lm = (info_landmark)e;

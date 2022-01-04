@@ -181,7 +181,8 @@ NSSurfacePropEntity::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "health":
-		health = stof(strValue);
+		int h = stoi(strValue);
+		health = (float)h;
 		m_oldHealth = health;
 		break;
 	case "propdata":
