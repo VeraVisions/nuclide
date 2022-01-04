@@ -156,14 +156,6 @@ func_door::Arrived(void)
 		sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
 	}
 
-	if (targetClose)
-	for (entity f = world; (f = find(f, ::targetname, targetClose));) {
-		NSEntity trigger = (NSEntity)f;
-		if (trigger.Trigger != __NULL__) {
-			trigger.Trigger(this, TRIG_TOGGLE);
-		}
-	}
-
 	if (!(spawnflags & SF_MOV_USE)) {
 		touch = Touch;
 	}
@@ -183,6 +175,14 @@ func_door::Returned(void)
 	SetOrigin(m_vecDest);
 	velocity = [0,0,0];
 	nextthink = 0.0f;
+
+	if (targetClose)
+	for (entity f = world; (f = find(f, ::targetname, targetClose));) {
+		NSEntity trigger = (NSEntity)f;
+		if (trigger.Trigger != __NULL__) {
+			trigger.Trigger(this, TRIG_TOGGLE);
+		}
+	}
 
 	if (m_strSndStop) {
 		Sound_Play(this, CHAN_VOICE, m_strSndStop);
