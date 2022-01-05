@@ -393,6 +393,9 @@ Sound_Play(entity target, int chan, string shader)
 	int flag;
 	int sample;
 
+	if (shader == "")
+		return;
+
 	flag = 0;
 	sample = (int)hash_get(g_hashsounds, shader, -1);
 
@@ -501,6 +504,9 @@ Sound_PlayAt(vector pos, string shader)
 	float pitch;
 	int flag;
 	int sample;
+
+	if (shader == "")
+		return;
 
 	flag = 0;
 	sample = (int)hash_get(g_hashsounds, shader, -1);

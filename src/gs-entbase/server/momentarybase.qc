@@ -14,16 +14,25 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+typedef enum
+{
+	MOMENTARY_IDLE,
+	MOMENTARY_ROTATING,
+	MOMENTARY_RETURNING
+};
+
 class CBaseMomentary:NSRenderableEntity
 {
 	entity m_eUser;
 	vector m_vecMoveDir;
 	vector m_vecPos1;
 	vector m_vecPos2;
+	vector m_vecDest;
+
+	int m_iMoveState;
 
 	/* map keys */
 	float m_flDistance;
-	float m_flProgress;
 	float m_flSpeed;
 	float m_flReturnspeed;
 
@@ -32,7 +41,33 @@ class CBaseMomentary:NSRenderableEntity
 	/* overrides */
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
+
+	virtual void(int) SetMoveState;
+	virtual void(void) MovementStateChanged;
+	virtual float(void) GetProgress;
 };
+
+float
+CBaseMomentary::GetProgress(void)
+{
+	return 0.0f;
+}
+
+void
+CBaseMomentary::MovementStateChanged(void)
+{
+	/* this is handled by the respective sub entity */
+}
+
+void
+CBaseMomentary::SetMoveState(int status)
+{
+	if (m_iMoveState == status)
+		return;
+
+	m_iMoveState = status;
+	MovementStateChanged();
+}
 
 void
 CBaseMomentary::Save(float handle)
@@ -42,7 +77,6 @@ CBaseMomentary::Save(float handle)
 	SaveVector(handle, "pos1", m_vecPos1);
 	SaveVector(handle, "pos2", m_vecPos2);
 	SaveFloat(handle, "distance", m_flDistance);
-	SaveFloat(handle, "progress", m_flProgress);
 	SaveFloat(handle, "speed", m_flSpeed);
 	SaveFloat(handle, "returnspeed", m_flReturnspeed);
 
@@ -66,10 +100,7 @@ CBaseMomentary::Restore(string strKey, string strValue)
 		m_vecPos2 = ReadVector(strValue);
 		break;
 	case "distance":
-		m_flProgress = ReadFloat(strValue);
-		break;
-	case "progress":
-		m_flProgress = ReadFloat(strValue);
+		m_flDistance = ReadFloat(strValue);
 		break;
 	case "speed":
 		m_flSpeed = ReadFloat(strValue);

@@ -144,8 +144,8 @@ func_mortar_field::FireControlled(void)
 	vecPos[2] = absmin[2] + (0.5f * (absmax[2] - absmin[2]));
 
 	/* now offset the position to the rot_buttons */
-	vecPos[0] += mins[0] + (mX.m_flProgress * size[0]);
-	vecPos[1] += mins[1] + (mY.m_flProgress * size[1]);
+	vecPos[0] += mins[0] + (mX.GetProgress() * size[0]);
+	vecPos[1] += mins[1] + (mY.GetProgress() * size[1]);
 
 	for (int i = 0; i < m_iCount; i++);
 		Fire(vecPos);
@@ -186,7 +186,7 @@ func_mortar_field::SpawnKey(string strKey, string strValue)
 	case "m_iszYController":
 		m_strYController = strValue;
 		break;
-	case "m_flControl":
+	case "m_fControl":
 		m_iType = stoi(strValue);
 		break;
 	case "m_flCount":

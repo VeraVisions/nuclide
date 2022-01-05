@@ -39,7 +39,7 @@ trigger_endsection::Trigger(entity act, int state)
 	if (GetMaster() == FALSE)
 		return;
 
-	localcmd("echo disconnect\n");
+	localcmd("disconnect\n");
 }
 
 void

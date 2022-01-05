@@ -49,64 +49,130 @@ enumflags
 
 class momentary_rot_button:CBaseMomentary
 {
+	int m_iTurnDir;
+
 	void(void) momentary_rot_button;
 
 	virtual void(void) OnPlayerUse;
-	virtual void(void) customphysics;
 	virtual void(void) Respawn;
 	virtual void(void) SetMovementDirection;
 	virtual void(string, string) SpawnKey;
+
+	virtual void(void) MovementDone;
+	virtual void(void) MovementStateChanged;
+	virtual float(void) GetProgress;
 };
+
+float
+momentary_rot_button::GetProgress(void)
+{
+	return (vlen(angles) / vlen(m_vecPos2));
+}
+
+void
+momentary_rot_button::MovementDone(void)
+{
+	m_vecDest = avelocity = [0,0,0];
+}
+
+void
+momentary_rot_button::MovementStateChanged(void)
+{
+	vector vecAngleDifference;
+	float flTravelLength;
+	float flTravelTime;
+	float flSpeed;
+
+	switch (m_iMoveState) {
+	case MOMENTARY_IDLE:
+		MovementDone();
+		return;
+		break;
+	case MOMENTARY_ROTATING:
+		m_vecDest = m_vecPos2;
+		flSpeed = m_flSpeed;
+		break;
+	case MOMENTARY_RETURNING:
+		m_vecDest = m_vecPos1;
+		flSpeed = m_flReturnspeed;
+		break;
+	}
+
+	vecAngleDifference = (m_vecDest - angles);
+	flTravelLength = vlen(vecAngleDifference);
+	flTravelTime = (flTravelLength / flSpeed);
+
+	/* Avoid NAN hack */
+	if (flTravelTime <= 0.0f) {
+		angles = m_vecDest;
+		MovementDone();
+		nextthink = 0.0f;
+	} else {
+		avelocity = (vecAngleDifference * (1 / flTravelTime));
+		think = MovementDone;
+		nextthink = (ltime + flTravelTime);
+	}
+}
 
 void
 momentary_rot_button::OnPlayerUse(void)
 {
-	if (spawnflags & MRBFL_NOTUSE)
-		return;
+	int iEndState;
 
 	m_eUser = eActivator;
+
+	/* if we're not already rotating (or can only turn 1 way) */
+	if (m_iTurnDir == 0 || (spawnflags & MRBFL_AUTORETURN))
+		iEndState = (MOMENTARY_ROTATING); /* always turning one way on auto-return */
+	else
+		iEndState = (MOMENTARY_RETURNING);
+
+	/* apply the end state */
+	SetMoveState(iEndState);
+
+	m_iTurnDir = 1 - m_iTurnDir;
+
+	for (entity e = world; (e = find(e, ::targetname, target));) { 
+		CBaseMomentary b = (CBaseMomentary)e;
+		b.SetMoveState(iEndState);
+	}
+
+	for (entity e = world; (e = find(e, ::targetname, targetname));) { 
+		CBaseMomentary b = (CBaseMomentary)e;
+		
+		/* door hack: any entity with the same name as ours will follow our states */
+		if (b.spawnflags & MRBFL_DOORHACK)
+			b.SetMoveState(iEndState);
+	}
 }
 
 void
-momentary_rot_button::customphysics(void)
+momentary_rot_button::OnPlayerUnUse(void)
 {
-	entity e = find(world, ::targetname, target);
-	CBaseMomentary bl = (CBaseMomentary)e;
+	int iEndState;
 
-	if (m_eUser != world) {
-		base_player pl = (base_player)m_eUser;
-		/* we need to check if the user has changed every frame. */
-		if (!m_eUser.button5) {
-			/* clear user */
-			m_eUser = world;
+	m_eUser = world;
 
-			if (e) {
-				bl.m_eUser = world;
-			}
-		} else {
-			if (e) {
-				bl.m_eUser = m_eUser;
-			}
+	/* instead of stopping, auto-return. */
+	if (spawnflags & MRBFL_AUTORETURN)
+		iEndState = (MOMENTARY_RETURNING);
+	else
+		iEndState = (MOMENTARY_IDLE);
 
-			m_flProgress += frametime;
-		
-			if (m_flProgress >= 1.0f)
-				m_flProgress = 1.0f;
-		}
-	} else {
-		m_flProgress = Math_Lerp(m_flProgress, 0.0f, frametime * 0.5);
+	/* apply the end state */
+	SetMoveState(iEndState);
+
+	for (entity e = world; (e = find(e, ::targetname, target));) { 
+		CBaseMomentary b = (CBaseMomentary)e;
+		b.SetMoveState(iEndState);
 	}
 
-	angles[0] = Math_Lerp(m_vecPos1[0], m_vecPos2[0], m_flProgress);
-	angles[1] = Math_Lerp(m_vecPos1[1], m_vecPos2[1], m_flProgress);
-	angles[2] = Math_Lerp(m_vecPos1[2], m_vecPos2[2], m_flProgress);
-
-	/* support for think/nextthink */
-	if (think && nextthink > 0.0f) {
-		if (nextthink < time) {
-			nextthink = 0.0f;
-			think();
-		}
+	for (entity e = world; (e = find(e, ::targetname, targetname));) {
+		CBaseMomentary b = (CBaseMomentary)e;
+		
+		/* door hack: any entity with the same name as ours will follow our states */
+		if (b.spawnflags & MRBFL_DOORHACK)
+			b.SetMoveState(iEndState);
 	}
 }
 
@@ -125,19 +191,31 @@ momentary_rot_button::SetMovementDirection(void)
 void
 momentary_rot_button::Respawn(void)
 {
-	SetMovetype(MOVETYPE_PUSH);
-	SetSolid(SOLID_BSP);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
-
 	RestoreAngles();
 	SetMovementDirection();
 	ClearAngles();
 
-	PlayerUse = OnPlayerUse;
+	if (m_flSpeed == -1)
+		m_flSpeed = 100;
+	if (m_flReturnspeed == -1)
+		m_flReturnspeed = m_flSpeed;
+
+	SetSolid(SOLID_BSP);
+	SetMovetype(MOVETYPE_PUSH);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
+
+	/* purely visual, can't use this */
+	if (!(spawnflags & MRBFL_NOTUSE)) {
+		PlayerUse = OnPlayerUse;
+		PlayerUseUnpressed = OnPlayerUnUse;
+	}
 
 	m_vecPos1 = [0,0,0];
-	m_vecPos2 = GetSpawnAngles() + m_vecMoveDir * m_flDistance;
+	m_vecPos2 = m_vecMoveDir * m_flDistance;
+
+	SetSkin(0);
+	SetMoveState(MOMENTARY_IDLE);
 }
 
 void
@@ -161,5 +239,6 @@ momentary_rot_button::SpawnKey(string strKey, string strValue)
 void
 momentary_rot_button::momentary_rot_button(void)
 {
+	m_flReturnspeed = m_flSpeed = -1;
 	super::CBaseMomentary();
 }

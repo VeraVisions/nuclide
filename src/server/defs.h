@@ -55,6 +55,7 @@ entity eActivator;
 
 /* Generic entity fields */
 .void(void) PlayerUse;
+.void(void) PlayerUseUnpressed;
 .int iBleeds;
 .entity eUser;
 .float material;

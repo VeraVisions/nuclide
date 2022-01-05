@@ -27,6 +27,19 @@ UseWorkaround(entity eTarget)
 	self = eTarget;
 	self.PlayerUse();
 	self = eOldSelf;
+	print("pressed\n");
+}
+
+void
+UnUseWorkaround(entity eTarget)
+{
+	eActivator = self;
+	entity eOldSelf = self;
+	self = eTarget;
+	if (self.PlayerUseUnpressed)
+		self.PlayerUseUnpressed();
+	self = eOldSelf;
+	print("unpressed\n");
 }
 
 /*
@@ -38,6 +51,7 @@ void
 Player_UseDown(void)
 {
 	vector vecSrc;
+	player pl = (player)self;
 
 	if (self.health <= 0) {
 		return;
@@ -58,6 +72,7 @@ Player_UseDown(void)
 		self.flags &= ~FL_USE_RELEASED;
 
 		UseWorkaround(trace_ent);
+		pl.last_used = trace_ent;
 
 		/* Some entities want to support Use spamming */
 		if (!(self.flags & FL_USE_RELEASED)) {
@@ -76,7 +91,10 @@ Player_UseUp
 */
 void
 Player_UseUp(void) {
+	player pl = (player)self;
 	if (!(self.flags & FL_USE_RELEASED)) {
+		UnUseWorkaround(pl.last_used);
+		pl.last_used = world;
 		self.flags |= FL_USE_RELEASED;
 	}
 }

@@ -28,54 +28,63 @@ class momentary_door:CBaseMomentary
 {
 	void(void) momentary_door;
 
-	virtual void(void) customphysics;
 	virtual void(void) Respawn;
 	virtual void(void) SetMovementDirection;
 	virtual void(string, string) SpawnKey;
+
+	virtual void(void) MovementDone;
+	virtual void(void) MovementStateChanged;
+	virtual float(void) GetProgress;
 };
 
-void
-momentary_door::customphysics(void)
+float
+momentary_door::GetProgress(void)
 {
-	entity e = find(world, ::targetname, target);
-	CBaseMomentary bl = (CBaseMomentary)e;
+	return (vlen(origin) / vlen(m_vecPos2));
+}
 
-	if (m_eUser != world) {
-		base_player pl = (base_player)m_eUser;
-		/* we need to check if the user has changed every frame. */
-		if (!m_eUser.button5) {
-			/* clear user */
-			m_eUser = world;
 
-			if (e) {
-				bl.m_eUser = world;
-			}
-		} else {
-			if (e) {
-				bl.m_eUser = m_eUser;
-			}
+void
+momentary_door::MovementDone(void)
+{
+	m_vecDest = velocity = [0,0,0];
+}
 
-			m_flProgress += frametime;
-		
-			if (m_flProgress >= 1.0f)
-				m_flProgress = 1.0f;
-		}
-	} else {
-		m_flProgress = Math_Lerp(m_flProgress, 0.0f, frametime * 0.5);
+void
+momentary_door::MovementStateChanged(void)
+{
+	vector vecDifference;
+	float flTravelLength;
+	float flTravelTime;
+	float flSpeed;
+
+	switch (m_iMoveState) {
+	case MOMENTARY_IDLE:
+		MovementDone();
+		return;
+		break;
+	case MOMENTARY_ROTATING:
+		m_vecDest = m_vecPos2;
+		flSpeed = m_flSpeed;
+		break;
+	case MOMENTARY_RETURNING:
+		m_vecDest = m_vecPos1;
+		flSpeed = m_flReturnspeed;
+		break;
 	}
 
-	origin[0] = Math_Lerp(m_vecPos1[0], m_vecPos2[0], m_flProgress);
-	origin[1] = Math_Lerp(m_vecPos1[1], m_vecPos2[1], m_flProgress);
-	origin[2] = Math_Lerp(m_vecPos1[2], m_vecPos2[2], m_flProgress);
-	setorigin(this, origin);
+	vecDifference = (m_vecDest - origin);
+	flTravelLength = vlen(vecDifference);
+	flTravelTime = (flTravelLength / m_flSpeed);
 
-	/* support for think/nextthink */
-	if (think && nextthink > 0.0f) {
-		if (nextthink < time) {
-			nextthink = 0.0f;
-			think();
-		}
+	if (flTravelTime < 0.1) {
+		MovementDone();
+		return;
 	}
+
+	think = MovementDone;
+	nextthink = (ltime + flTravelTime);
+	velocity = (vecDifference * (1.0f / flTravelTime));
 }
 
 void
@@ -94,14 +103,14 @@ momentary_door::SetMovementDirection(void)
 void
 momentary_door::Respawn(void)
 {
+	RestoreAngles();
+	SetMovementDirection();
+	ClearAngles();
+
 	SetMovetype(MOVETYPE_PUSH);
 	SetSolid(SOLID_BSP);
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
-
-	RestoreAngles();
-	SetMovementDirection();
-	ClearAngles();
 
 	m_vecPos1 = GetSpawnOrigin();
 	m_vecPos2 = (m_vecPos1 + m_vecMoveDir * (fabs(m_vecMoveDir * size) - m_flDistance));
