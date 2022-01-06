@@ -45,6 +45,7 @@ item_pickup::SetItem(int i)
 	id = i;
 	m_oldModel = Weapons_GetWorldmodel(id);
 	SetModel(m_oldModel);
+	SetSize([-16,-16,0], [16,16,16]);
 }
 
 void
