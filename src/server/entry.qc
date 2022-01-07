@@ -655,7 +655,7 @@ SV_ShouldPause(float newstatus)
 
 //#define REEDICT 0
 void
-SV_PerformLoad(float fh)
+SV_PerformLoad(float fh, float entcount, float playerslots)
 {
 	entity e;
 	entity eold;
@@ -727,12 +727,12 @@ SV_PerformLoad(float fh)
 }
 
 void
-SV_PerformSave(float fh, float numents)
+SV_PerformSave(float fh, float entcount, float playerslots)
 {
 	float i = 0;
 	entity e;
 
-	for (i = 0; i < numents; i++) {
+	for (i = 0; i < entcount; i++) {
 		NSEntity willsave;
 		e = edict_num(i);
 

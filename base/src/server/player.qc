@@ -27,7 +27,6 @@ UseWorkaround(entity eTarget)
 	self = eTarget;
 	self.PlayerUse();
 	self = eOldSelf;
-	print("pressed\n");
 }
 
 void
@@ -39,7 +38,6 @@ UnUseWorkaround(entity eTarget)
 	if (self.PlayerUseUnpressed)
 		self.PlayerUseUnpressed();
 	self = eOldSelf;
-	print("unpressed\n");
 }
 
 /*

@@ -46,19 +46,19 @@ NSMonster::Restore(string strKey, string strValue)
 int
 NSMonster::AnimIdle(void)
 {
-	return (0);
+	return frameforaction(modelindex, ACT_IDLE);
 }
 
 int
 NSMonster::AnimWalk(void)
 {
-	return (0);
+	return frameforaction(modelindex, ACT_WALK);
 }
 
 int
 NSMonster::AnimRun(void)
 {
-	return (0);
+	return frameforaction(modelindex, ACT_RUN);
 }
 
 void
