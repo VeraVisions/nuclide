@@ -66,6 +66,7 @@ void Sound_Play(entity target, int chan, string shader);
 void Sound_PlayAt(vector pos, string shader);
 
 #ifdef CLIENT
+void Sound_PlayLocal(string shader);
 void Sound_Update(entity target, int channel, int sample, float volume);
 #else
 void Sound_Speak(entity target, string shader);

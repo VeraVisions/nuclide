@@ -512,11 +512,7 @@ Sound_PlayAt(vector pos, string shader)
 	sample = (int)hash_get(g_hashsounds, shader, -1);
 
 	if (sample < 0) {
-#ifdef SERVER
-		print(sprintf("^1Sound_PlayAt: shader %s is not precached (SERVER)\n", shader));
-#else
-		print(sprintf("^1Sound_PlayAt: shader %s is not precached (CLIENT)\n", shader));
-#endif
+		crossprint(sprintf("^1Sound_PlayAt: shader %s is not precached\n", shader));
 		pointsound(pos, "misc/missing.wav", 1.0f, ATTN_NORM);
 		return;
 	}
@@ -555,6 +551,35 @@ Sound_PlayAt(vector pos, string shader)
 }
 
 #ifdef CLIENT
+void
+Sound_PlayLocal(string shader)
+{
+	int r;
+	float radius;
+	float pitch;
+	int flag;
+	int sample;
+
+	if (shader == "")
+		return;
+
+	flag = 0;
+	sample = (int)hash_get(g_hashsounds, shader, -1);
+
+	if (sample < 0) {
+		crossprint(sprintf("^1Sound_PlayLocal: shader %s is not precached\n", shader));
+		localsound("misc/missing.wav");
+		return;
+	}
+
+	/* pick a sample */
+	r = floor(random(0,  g_sounds[sample].sample_count));
+	tokenizebyseparator(g_sounds[sample].samples, "\n");
+
+	/* really? this doesn't do any more? */
+	localsound(argv(r));
+}
+
 void
 Sound_Update(entity target, int channel, int sample, float volume)
 {
