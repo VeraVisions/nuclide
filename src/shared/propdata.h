@@ -121,6 +121,7 @@ int g_breakmodel_count;
 var hashtable g_hashbreakmodel;
 
 void BreakModel_Spawn(vector pos, vector dir, vector spread, float speed, int count, string type);
+void BreakModel_SpawnUnit(vector pos, vector dir, vector spread, float speed, string type);
 
 /* necessary API functions */
 //void BreakModel_Init(void);

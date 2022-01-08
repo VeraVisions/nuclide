@@ -104,9 +104,10 @@ env_glow::predraw(void)
 	forg = origin + (v_forward * -16);
 
 	if (spawnflags & 1)
-		makevectors(m_vecOrientation);
-	else
-		makevectors(view_angles);
+		makevectors(m_vecOrientation+[0,0,angles[2]]);
+	else {
+		makevectors(view_angles+[0,0,angles[2]]);
+	}
 
 #ifndef FTE_QUADFIX
 	R_BeginPolygon(m_strSprite, 1, 0);
@@ -166,6 +167,9 @@ env_glow::SpawnKey(string strField, string strKey)
 		break;
 	case "renderamt":
 		m_flMaxAlpha = stof(strKey) / 255;
+		break;
+	case "rotate":
+		angles[2] = stof(strKey);
 		break;
 	default:
 		super::SpawnKey(strField, strKey);

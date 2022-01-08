@@ -124,7 +124,8 @@ void
 BreakModel_ParseField(int i, int a)
 {
 	if (a == 2) {
-		g_breakmodel[i].data = sprintf("%s%S %S\n", g_breakmodel[i].data, argv(0), argv(1)); 
+		precache_model(argv(0));
+		g_breakmodel[i].data = sprintf("%s%S %S\n", g_breakmodel[i].data, argv(0), argv(1));
 	}
 };
 
@@ -483,7 +484,10 @@ BreakModel_Spawn(vector smins, vector smaxs, vector dir, float speed, int count,
 		setsize(gib, [0,0,0], [0,0,0]);
 		setorigin(gib, endpos);
 		makevectors(dir);
-		gib.velocity = v_forward * speed;
+		gib.velocity = (v_forward * speed) * 0.75;
+		gib.velocity[0] += (random() - 0.5) * (speed * 0.25);
+		gib.velocity[1] += (random() - 0.5) * (speed * 0.25);
+		gib.velocity[2] += (random() - 0.5) * (speed * 0.25);
 		gib.avelocity = vectoangles(gib.velocity);
 		gib.movetype = MOVETYPE_BOUNCE;
 
@@ -492,3 +496,55 @@ BreakModel_Spawn(vector smins, vector smaxs, vector dir, float speed, int count,
 		#endif
 	}
 }
+
+void
+BreakModel_SpawnUnit(vector smins, vector smaxs, vector dir, float speed, string type)
+{
+	int index;
+	index = (int)hash_get(g_hashbreakmodel, type, -1);
+
+	if (index < 0) {
+		crossprint(sprintf("^1 BreakModel_Spawn: type %s is not defined\n", type));
+		return;
+	}
+
+	float x = tokenize(g_breakmodel[index].data);
+	int modelcount = x / 2;
+
+	for (int i = 0; i < modelcount; i++) {
+		vector endpos;
+		string mname;
+		float fadetime;
+		entity gib;
+		int r;
+
+		/* pick a model between 0 and num) */
+		r = i;
+
+		/* two entries, always have to skip by 2 */
+		mname = argv((r * 2));
+		fadetime = stof(argv((r * 2) + 1));
+
+		endpos[0] = smins[0] + ( random() * ( smaxs[0] - smins[0] ) );
+		endpos[1] = smins[1] + ( random() * ( smaxs[1] - smins[1] ) );
+		endpos[2] = smins[2] + ( random() * ( smaxs[2] - smins[2] ) );
+
+		gib = spawn();
+		setmodel(gib, mname);
+		setsize(gib, [0,0,0], [0,0,0]);
+		setorigin(gib, endpos);
+		makevectors(dir);
+		gib.velocity = (v_forward * speed) * 0.75;
+		gib.velocity[0] += (random() - 0.5) * (speed * 0.25);
+		gib.velocity[1] += (random() - 0.5) * (speed * 0.25);
+		gib.velocity[2] += (random() - 0.5) * (speed * 0.25);
+		gib.avelocity = vectoangles(gib.velocity);
+		gib.movetype = MOVETYPE_BOUNCE;
+
+		#ifdef CLIENT
+			gib.drawmask = MASK_ENGINE;
+		#endif
+	}
+}
+
+
