@@ -81,4 +81,5 @@ class NSEntity:NSTrigger
 	virtual void(vector) SetOrigin;
 	virtual void(vector, vector) SetSize;
 	virtual void(string, string) SpawnKey;
+	nonvirtual void(void) Destroy;
 };

@@ -115,8 +115,7 @@ func_illusionary::Init(void)
 
 	/* this entity is being controlled by the server, remove it */
 	if (targetname) {
-		think = Util_Destroy;
-		nextthink = time + 0.01f; /* time may be 0.0 */
+		Destroy();
 		return;
 	}
 

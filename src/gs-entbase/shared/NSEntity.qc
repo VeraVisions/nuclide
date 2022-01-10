@@ -508,6 +508,27 @@ NSEntity::SpawnKey(string strKey, string strValue)
 	}
 }
 
+
+/*
+============
+NSEntity::Destroy
+
+Call if the entity is to be removed the next possible frame.
+If you want an entity to be purged immediately, you'll have to jump
+through your own hoops. This however will be sufficient 99,99% of the time.
+============
+*/
+void
+NSEntity::Destroy(void)
+{
+	think = Util_Destroy;
+
+	if (!time)
+		nextthink = time + 0.01;
+	else
+		nextthink = time;
+};
+
 /*
 ============
 NSEntity::NSEntity

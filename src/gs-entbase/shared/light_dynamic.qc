@@ -173,8 +173,7 @@ light_dynamic::Initialized(void)
 {
 	/* we're meant to be a server controlled entity. cancel out and kill us ASAP */
 	if (targetname) {
-		think = Util_Destroy;
-		nextthink = time + 0.1f;
+		Destroy();
 		return;
 	}
 

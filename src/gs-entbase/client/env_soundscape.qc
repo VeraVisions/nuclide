@@ -53,8 +53,7 @@ env_soundscape::SpawnKey(string strField, string strKey)
 		m_iShader = Sound_Precache(strKey);
 		
 		if (m_iShader == -1) {
-			think = Util_Destroy;
-			nextthink = time;
+			Destroy();
 		}
 
 		break;
