@@ -90,6 +90,7 @@ trigger_multiple::Save(float handle)
 {
 	SaveFloat(handle, "wait", m_flWait);
 	SaveString(handle, "OnStartTouch", m_strOnStartTouch);
+	SaveString(handle, "OnEndTouchAll", m_strOnEndTouchAll);
 	SaveString(handle, "OnTrigger", m_strOnTrigger);
 	super::Save(handle);
 }
