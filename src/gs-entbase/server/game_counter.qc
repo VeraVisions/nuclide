@@ -48,12 +48,28 @@ class game_counter:NSPointTrigger
 
 	void(void) game_counter;
 
+	/* overrides */
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
 	virtual void(entity,int) Trigger;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
+
+	virtual int(void) GetCount;
+	virtual void(int) SetCount;
 };
+
+void
+game_counter::SetCount(int value)
+{
+	m_iCounted = value;
+}
+
+int
+game_counter::GetCount(void)
+{
+	return m_iCounted;
+}
 
 void
 game_counter::Save(float handle)
