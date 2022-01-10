@@ -259,6 +259,10 @@ class NSMonster:NSSurfacePropEntity
 	virtual int(void) AnimRun;
 	virtual void(float) AnimPlay;
 
+	/* TriggerTarget/Condition */
+	virtual int(void) GetTriggerCondition;
+	virtual void(void) TriggerTargets;
+
 	virtual float(entity, float) SendEntity;
 #else
 	virtual void(void) customphysics;

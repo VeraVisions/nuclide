@@ -15,6 +15,24 @@
  */
 
 #ifdef SERVER
+
+int
+NSMonster::GetTriggerCondition(void)
+{
+	return m_iTriggerCondition;
+}
+
+void
+NSMonster::TriggerTargets(void)
+{
+	for (entity f = world; (f = find(f, ::targetname, m_strTriggerTarget));) {
+		NSTrigger trigger = (NSTrigger)f;
+		if (trigger.Trigger != __NULL__) {
+			trigger.Trigger(this, TRIG_TOGGLE);
+		}
+	}
+}
+
 void
 NSMonster::Save(float handle)
 {
@@ -560,6 +578,9 @@ NSMonster::Death(void)
 	SetSolid(SOLID_CORPSE);
 	health = 50 + health; 
 	style = MONSTER_DEAD;
+
+	if (GetTriggerCondition() == MTRIG_DEATH)
+		TriggerTargets();
 }
 
 void
