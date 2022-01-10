@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED game_counter (0 .5 .8) ? GMCNT_REMOVE GMCNT_RESET
+/*QUAKED game_counter (0 .5 .8) (-8 -8 -8) (8 8 8) GMCNT_REMOVE GMCNT_RESET
 This entity counts the number of times it has been triggered and activates its
 target when it reaches a specified number.
 
