@@ -76,6 +76,7 @@ trigger_changelevel::Save(float handle)
 	SaveString(handle, "map", m_strMap);
 	SaveString(handle, "landmark", m_strLandmark);
 	SaveString(handle, "OnLevelChange", m_strOnLevelChange);
+	SaveFloat(handle, "activator", num_for_edict(m_activator));
 	super::Save(handle);
 }
 
@@ -94,6 +95,9 @@ trigger_changelevel::Restore(string strKey, string strValue)
 		break;
 	case "OnLevelChange":
 		m_strOnLevelChange = ReadString(strValue);
+		break;
+	case "activator":
+		m_activator = edict_num(ReadFloat(strValue));
 		break;
 	default:
 		super::Restore(strKey, strValue);

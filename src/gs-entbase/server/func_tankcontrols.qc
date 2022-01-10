@@ -65,7 +65,7 @@ func_tankcontrols::Respawn(void)
 {
 	InitBrushTrigger();
 	solid = SOLID_BBOX;
-	setorigin(this, origin);
+	SetOrigin(GetSpawnOrigin());
 	PlayerUse = OnPlayerUse;
 }
 

@@ -79,6 +79,7 @@ CBaseMomentary::Save(float handle)
 	SaveFloat(handle, "distance", m_flDistance);
 	SaveFloat(handle, "speed", m_flSpeed);
 	SaveFloat(handle, "returnspeed", m_flReturnspeed);
+	SaveInt(handle, "movestate", m_iMoveState);
 
 	super::Save(handle);
 }
@@ -107,6 +108,9 @@ CBaseMomentary::Restore(string strKey, string strValue)
 		break;
 	case "returnspeed":
 		m_flReturnspeed = ReadFloat(strValue);
+		break;
+	case "movestate":
+		m_iMoveState = ReadInt(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);

@@ -71,17 +71,14 @@ class func_door_rotating:NSRenderableEntity
 {
 	string targetClose;
 	string m_strSndStop;
-
 	string m_strSndOpen;
 	string m_strSndClose;
 	string m_strLockedSfx;
 	float m_flSoundWait;
-
 	int m_iDamage;
 	int m_iLocked;
 	float m_flDistance;
 	float m_flSpeed;
-	/*float m_flLip;*/
 	float m_iState;
 	float m_flNextAction;
 	float m_flWait;

@@ -53,6 +53,9 @@ class momentary_rot_button:CBaseMomentary
 
 	void(void) momentary_rot_button;
 
+	/* overrides */
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(void) OnPlayerUse;
 	virtual void(void) Respawn;
 	virtual void(void) SetMovementDirection;
@@ -62,6 +65,25 @@ class momentary_rot_button:CBaseMomentary
 	virtual void(void) MovementStateChanged;
 	virtual float(void) GetProgress;
 };
+
+void
+momentary_rot_button::Save(float handle)
+{
+	SaveInt(handle, "turndir", m_iTurnDir);
+	super::Save(handle);
+}
+
+void
+momentary_rot_button::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "turndir":
+		m_iTurnDir = ReadInt(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 float
 momentary_rot_button::GetProgress(void)

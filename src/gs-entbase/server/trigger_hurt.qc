@@ -68,11 +68,10 @@ This entity was introduced in Quake (1996).
 class trigger_hurt:NSBrushTrigger
 {
 	int m_iDamage;
+	int m_iDamageType;
 	float m_flNextTrigger;
 	float m_flNextDmg;
 	float m_flDelay;
-	int m_iDamageType;
-
 	string m_strOnHurt;
 	string m_strOnHurtPlayer;
 

@@ -89,6 +89,8 @@ class func_tank:NSVehicle
 
 	void(void) func_tank;
 
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(void) customphysics;
 	virtual void(void) PlayerInput;
 	virtual void(void) Respawn;
@@ -96,6 +98,82 @@ class func_tank:NSVehicle
 	virtual void(vector) SpriteFlash;
 	virtual void(string, string) SpawnKey;
 };
+
+void
+func_tank::Save(float handle)
+{
+	SaveInt(handle, "damage", m_iDamage);
+	SaveFloat(handle, "yawrate", m_flYawRate);
+	SaveFloat(handle, "yawrange", m_flYawRange);
+	SaveFloat(handle, "pitchrate", m_flPitchRate);
+	SaveFloat(handle, "pitchrange", m_flPitchRange);
+	SaveFloat(handle, "firerate", m_flFireRate);
+	SaveFloat(handle, "spritescale", m_flSpriteScale);
+	SaveFloat(handle, "persistence", m_flPersistance);
+	SaveFloat(handle, "minrange", m_flMinRange);
+	SaveFloat(handle, "maxrange", m_flMaxRange);
+	SaveString(handle, "spritesmoke", m_strSpriteSmoke);
+	SaveString(handle, "spriteflash", m_strSpriteFlash);
+	SaveString(handle, "sndrotate", m_strSndRotate);
+	SaveVector(handle, "tippos", m_vecTipPos);
+	SaveVector(handle, "spread", m_vecSpread);
+
+	super::Save(handle);
+}
+
+void
+func_tank::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "damage":
+		m_iDamage = ReadInt(strValue);
+		break;
+	case "yawrate":
+		m_flYawRate = ReadFloat(strValue);
+		break;
+	case "yawrange":
+		m_flYawRange = ReadFloat(strValue);
+		break;
+	case "pitchrate":
+		m_flPitchRate = ReadFloat(strValue);
+		break;
+	case "pitchrange":
+		m_flPitchRange = ReadFloat(strValue);
+		break;
+	case "firerate":
+		m_flFireRate = ReadFloat(strValue);
+		break;
+	case "spritescale":
+		m_flSpriteScale = ReadFloat(strValue);
+		break;
+	case "persistence":
+		m_flPersistance = ReadFloat(strValue);
+		break;
+	case "minrange":
+		m_flMinRange = ReadFloat(strValue);
+		break;
+	case "maxrange":
+		m_flMaxRange = ReadFloat(strValue);
+		break;
+	case "spritesmoke":
+		m_strSpriteSmoke = ReadString(strValue);
+		break;
+	case "spriteflash":
+		m_strSpriteFlash = ReadString(strValue);
+		break;
+	case "sndrotate":
+		m_strSndRotate = ReadString(strValue);
+		break;
+	case "tippos":
+		m_vecTipPos = ReadVector(strValue);
+		break;
+	case "spread":
+		m_vecSpread = ReadVector(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 func_tank::SpriteSmoke(vector org)

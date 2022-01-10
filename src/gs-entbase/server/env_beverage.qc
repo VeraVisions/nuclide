@@ -49,10 +49,41 @@ class env_beverage:NSRenderableEntity
 	int m_iUses;
 	int m_iReady;
 	int m_iSkin;
+
 	void(void) env_beverage;
+
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(entity, int) Trigger;
 	virtual void(string, string) SpawnKey;
 };
+
+void
+env_beverage::Save(float handle)
+{
+	SaveInt(handle, "uses", m_iUses);
+	SaveInt(handle, "ready", m_iReady);
+	SaveInt(handle, "skin_value", m_iSkin);
+	super::Save(handle);
+}
+
+void
+env_beverage::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "uses":
+		m_iUses = ReadInt(strValue);
+		break;
+	case "ready":
+		m_iReady = ReadInt(strValue);
+		break;
+	case "skin_value":
+		m_iSkin = ReadInt(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 env_beverage::Trigger(entity act, int unused)

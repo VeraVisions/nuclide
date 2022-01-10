@@ -82,13 +82,13 @@ class ambient_generic:NSPointTrigger
 void
 ambient_generic::Save(float handle)
 {
-	SaveInt(handle, "loop", m_iLoop);
-	SaveInt(handle, "toggleswitch", m_iToggleSwitch);
-	SaveFloat(handle, "pitch", m_flPitch);
-	SaveFloat(handle, "radius", m_flRadius);
-	SaveFloat(handle, "volume", m_flVolume);
-	SaveString(handle, "soundpath", m_strSoundPath);
 	SaveString(handle, "activepath", m_strActivePath);
+	SaveString(handle, "soundpath", m_strSoundPath);
+	SaveFloat(handle, "volume", m_flVolume);
+	SaveFloat(handle, "radius", m_flRadius);
+	SaveFloat(handle, "pitch", m_flPitch);
+	SaveInt(handle, "toggleswitch", m_iToggleSwitch);
+	SaveInt(handle, "loop", m_iLoop);
 	super::Save(handle);
 }
 

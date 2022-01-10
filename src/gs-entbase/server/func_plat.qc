@@ -42,11 +42,13 @@ enum
 class func_plat:NSRenderableEntity
 {
 	int m_iState;
-
 	float m_flSpeed;
 	float m_flHeight;
 
 	void(void) func_plat;
+
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(entity, int) Trigger;
 	virtual void(void) ArrivedUp;
 	virtual void(void) ArrivedDown;
@@ -56,6 +58,33 @@ class func_plat:NSRenderableEntity
 	virtual void(void) touch;
 	virtual void(string, string) SpawnKey;
 };
+
+void
+func_plat::Save(float handle)
+{
+	SaveInt(handle, "state", m_iState);
+	SaveFloat(handle, "speed", m_flSpeed);
+	SaveFloat(handle, "height", m_flHeight);
+	super::Save(handle);
+}
+
+void
+func_plat::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "state":
+		m_iState = ReadInt(strValue);
+		break;
+	case "spped":
+		m_flSpeed = ReadFloat(strValue);
+		break;
+	case "height":
+		m_flHeight = ReadFloat(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 func_plat::ArrivedUp(void)

@@ -58,11 +58,44 @@ class func_pendulum:NSRenderableEntity
 
 	void(void) func_pendulum;
 
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(void) customphysics;
 	virtual void(void) Respawn;
 	virtual void(entity, int) Trigger;
 	virtual void(string, string) SpawnKey;
 };
+
+void
+func_pendulum::Save(float handle)
+{
+	SaveInt(handle, "active", m_iActive);
+	SaveFloat(handle, "progress", m_flProgress);
+	SaveFloat(handle, "dampening", m_flDampening);
+	SaveFloat(handle, "distance", m_flDistance);
+	super::Save(handle);
+}
+
+void
+func_pendulum::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "active":
+		m_iActive = ReadInt(strValue);
+		break;
+	case "progress":
+		m_flProgress = ReadFloat(strValue);
+		break;
+	case "dampening":
+		m_flDampening = ReadFloat(strValue);
+		break;
+	case "distance":
+		m_flDistance = ReadFloat(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 func_pendulum::customphysics(void)

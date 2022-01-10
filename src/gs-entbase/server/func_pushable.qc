@@ -38,11 +38,36 @@ class func_pushable:func_breakable
 
 	void(void) func_pushable;
 
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(void) customphysics;
 	virtual void(void) Respawn;
 	virtual void(void) PlayerTouch;
 	virtual void(void) OnPlayerUse;
 };
+
+void
+func_pushable::Save(float handle)
+{
+	SaveFloat(handle, "puller", num_for_edict(m_pPuller));
+	SaveFloat(handle, "collbox", num_for_edict(m_eCollBox));
+	super::Save(handle);
+}
+
+void
+func_pushable::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "puller":
+		m_pPuller = edict_num(ReadFloat(strValue));
+		break;
+	case "collbox":
+		m_eCollBox = edict_num(ReadFloat(strValue));
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 func_pushable::customphysics(void)

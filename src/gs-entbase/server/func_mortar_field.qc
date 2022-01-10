@@ -52,14 +52,53 @@ class func_mortar_field:NSBrushTrigger
 
 	void(void) func_mortar_field;
 
+	/* overrides */
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
+	virtual void(entity,int) Trigger;
+	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
+
 	virtual void(vector) Fire;
 	virtual void(void) FireRandom;
 	virtual void(entity) FireTarget;
 	virtual void(void) FireControlled;
-	virtual void(entity,int) Trigger;
-	virtual void(void) Respawn;
-	virtual void(string, string) SpawnKey;
 };
+
+void
+func_mortar_field::Save(float handle)
+{
+	SaveInt(handle, "type", m_iType);
+	SaveInt(handle, "count", m_iCount);
+	SaveFloat(handle, "spread", m_flSpread);
+	SaveString(handle, "x_controller", m_strXController);
+	SaveString(handle, "y_controller", m_strYController);
+	super::Save(handle);
+}
+
+void
+func_mortar_field::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "type":
+		m_iType = ReadInt(strValue);
+		break;
+	case "count":
+		m_iCount = ReadInt(strValue);
+		break;
+	case "spread":
+		m_flSpread = ReadFloat(strValue);
+		break;
+	case "x_controller":
+		m_strXController = ReadString(strValue);
+		break;
+	case "y_controller":
+		m_strYController = ReadString(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 func_mortar_field::Fire(vector vecOrg)
