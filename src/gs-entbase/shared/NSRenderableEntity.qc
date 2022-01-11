@@ -598,6 +598,7 @@ void
 NSRenderableEntity::Save(float handle)
 {
 	SaveInt(handle, "body", m_iBody);
+	SaveFloat(handle, "frame", frame);
 	SaveFloat(handle, "scale", scale);
 	SaveFloat(handle, "skin", skin);
 	SaveFloat(handle, "effects", effects);
@@ -620,6 +621,9 @@ NSRenderableEntity::Restore(string strKey, string strValue)
 	switch (strKey) {
 	case "body":
 		m_iBody = stoi(strValue);
+		break;
+	case "frame":
+		frame = stof(strValue);
 		break;
 	case "scale":
 		scale = stof(strValue);
