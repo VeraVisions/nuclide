@@ -74,6 +74,17 @@ NSTrigger::GetValue(void)
 }
 
 int
+NSTrigger::GetGlobalValue(string strName)
+{
+	for (int i = 0; i < (tokenize(cvar_string(CENVGLOBAL_CVAR))); i += 2) {
+		if (argv(i) == strName) {
+			return stoi(argv(i+1));
+		}
+	}
+	return (0);
+}
+
+int
 NSTrigger::GetMaster(void)
 {
 	NSTrigger t;
@@ -85,12 +96,12 @@ NSTrigger::GetMaster(void)
 		return (1);
 	}
 
-	t = (NSTrigger)find(world, ::target, m_strMaster);
+	t = (NSTrigger)find(world, ::targetname, m_strMaster);
 
 	/* we couldn't find it, so let's not even bother going further */
 	if (!t) {
-		print(sprintf("^2%s::^3GetMaster^7: Invalid master, return success\n", 
-		this.classname));
+		print(sprintf("^2%s::^3GetMaster^7: Invalid master (%s), return success\n", 
+		this.classname, m_strMaster));
 		return (1);
 	}
 

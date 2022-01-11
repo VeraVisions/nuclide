@@ -66,6 +66,7 @@ server/prop_static.qc
 server/point_camera.qc
 server/targ_speaker.qc
 server/target_cdaudio.qc
+server/env_global.qc
 server/trigger_auto.qc
 server/trigger_autosave.qc
 server/trigger_cdaudio.qc
@@ -85,7 +86,6 @@ server/trigger_relay.qc
 server/env_shooter.qc
 server/gibshooter.qc
 server/env_beverage.qc
-//server/env_global.qc
 server/env_laser.qc
 server/item_food.qc
 server/speaker.qc

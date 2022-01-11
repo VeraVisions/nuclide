@@ -22,6 +22,8 @@
    Use NSEntity as a basis for your classes.
 */
 
+#define CENVGLOBAL_CVAR "env_global_data"
+
 class NSTrigger:NSIO
 {
 	void(void) NSTrigger;
@@ -45,6 +47,7 @@ class NSTrigger:NSIO
 	/* master feature */
 	virtual int(void) GetValue;
 	virtual int(void) GetMaster;
+	virtual int(string) GetGlobalValue;
 
 	/* overrides */
 	virtual void(float) Save;

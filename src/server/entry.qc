@@ -503,6 +503,7 @@ initents(void)
 	Plugin_InitEnts();
 	Mapcycle_Init();
 	Vote_Init();
+	ChangeTarget_Activate();
 
 	g_ents_initialized = TRUE;
 }

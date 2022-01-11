@@ -35,6 +35,7 @@ This entity was introduced in Half-Life (1998).
 
 class trigger_auto:NSPointTrigger
 {
+	string m_strGlobalState;
 	int m_iTriggerState;
 	float m_flDelay;
 
@@ -54,6 +55,7 @@ trigger_auto::Save(float handle)
 {
 	SaveInt(handle, "triggerstate", m_iTriggerState);
 	SaveFloat(handle, "delay", m_flDelay);
+	SaveString(handle, "globalstate", m_strGlobalState);
 	super::Save(handle);
 }
 
@@ -67,6 +69,11 @@ trigger_auto::Restore(string strKey, string strValue)
 	case "delay":
 		m_flDelay = ReadFloat(strValue);
 		break;
+	case "globalstate":
+		m_strGlobalState = ReadString(strValue);
+		think = Processing;
+		nextthink = time + 0.2f;
+		break;
 	default:
 		super::Restore(strKey, strValue);
 	}
@@ -75,6 +82,10 @@ trigger_auto::Restore(string strKey, string strValue)
 void
 trigger_auto::Processing(void)
 {
+	if (m_strGlobalState)
+		if (GetGlobalValue(m_strGlobalState) == 0)
+			return;
+
 	UseTargets(this, m_iTriggerState, m_flDelay);
 
 	if (spawnflags & 1) {
@@ -94,6 +105,9 @@ void
 trigger_auto::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
+	case "globalstate":
+		m_strGlobalState = strValue;
+		break;
 	case "triggerstate":
 		m_iTriggerState = stoi(strValue);
 		break;

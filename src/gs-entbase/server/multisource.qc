@@ -22,6 +22,7 @@ state for it to trigger its target.
 "targetname" : Name
 "target" : Target when triggered.
 "killtarget" : Target to kill when triggered.
+"globalstate" : env_global variable to track.
 "delay" : Delay until we trigger our target.
 
 -------- TRIVIA --------
@@ -30,18 +31,56 @@ This entity was introduced in Half-Life (1998).
 
 class multisource:NSPointTrigger
 {
+	string m_strGlobalState;
+
 	void(void) multisource;
 
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(void) Respawn;
 	virtual int(void) QueryTargets;
+	virtual int(void) GetValue;
 	virtual void(entity, int) Trigger;
+	virtual void(string, string) SpawnKey;
 };
+
+void
+multisource::Save(float handle)
+{
+	SaveString(handle, "globalstate", m_strGlobalState);
+	super::Save(handle);
+}
+
+void
+multisource::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "globalstate":
+		m_strGlobalState = ReadString(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
+
+int
+multisource::GetValue(void)
+{
+	return QueryTargets();
+}
 
 int
 multisource::QueryTargets(void)
 {
 	entity a;
 	int out = TRUE;
+
+	/* ENV_GLOBAL QUERY */
+	if (m_strGlobalState)
+		if (GetGlobalValue(m_strGlobalState) == 0)
+			return FALSE;
+		else
+			return TRUE;
 
 	/* normal triggers */
 	for (a = world; (a = find(a, ::target, targetname));) {
@@ -89,7 +128,20 @@ multisource::Respawn(void)
 }
 
 void
+multisource::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "globalstate":
+		m_strGlobalState = strValue;
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
 multisource::multisource(void)
 {
+	m_strGlobalState = __NULL__;
 	super::NSPointTrigger();
 }

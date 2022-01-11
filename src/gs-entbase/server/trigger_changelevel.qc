@@ -46,9 +46,34 @@ enumflags
 	LC_USEONLY
 };
 
+string(string cmd) readcmd = #0;
+void
+ChangeTarget_Activate(void)
+{
+	static void Finalize(void) {
+		string ctarg = cvar_string("_bsp_changetarget");
+		if (ctarg) {
+			for (entity a = world; (a = find(a, ::targetname, ctarg));) {
+				NSEntity t = (NSEntity)a;
+
+				if (t.Trigger)
+					t.Trigger(self, TRIG_TOGGLE);
+			}
+		}
+		readcmd("set _bsp_changetarget \"\"\n");
+		readcmd("set _bsp_changedelay \"\"\n");
+	}
+
+	entity foo = spawn();
+	float cdel = cvar("_bsp_changedelay");
+	foo.think = Finalize;
+	foo.nextthink = time + 0.1f + cdel;
+}
+
 class trigger_changelevel:NSBrushTrigger
 {
 	float m_flChangeDelay;
+	string m_strChangeTarget;
 	string m_strMap;
 	string m_strLandmark;
 	string m_strOnLevelChange;
@@ -72,6 +97,7 @@ class trigger_changelevel:NSBrushTrigger
 void
 trigger_changelevel::Save(float handle)
 {
+	SaveString(handle, "changetarget", m_strChangeTarget);
 	SaveFloat(handle, "changedelay", m_flChangeDelay);
 	SaveString(handle, "map", m_strMap);
 	SaveString(handle, "landmark", m_strLandmark);
@@ -84,6 +110,9 @@ void
 trigger_changelevel::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
+	case "changetarget":
+		m_strChangeTarget = ReadString(strValue);
+		break;
 	case "changedelay":
 		m_flChangeDelay = ReadFloat(strValue);
 		break;
@@ -124,6 +153,7 @@ trigger_changelevel::Change(void)
 	if (!m_strLandmark) {
 		dprint(sprintf("^2trigger_changelevel::^3Change^7: Change to `%s`\n", 
 			m_strMap));
+		parm_string = m_strChangeTarget;
 		changelevel(m_strMap);
 		return;
 	}
@@ -173,14 +203,10 @@ trigger_changelevel::Trigger(entity act, int unused)
 	/* eActivator == player who triggered the damn thing */
 	m_activator = act;
 
-	if (m_flChangeDelay) {
-		dprint(sprintf("^2trigger_changelevel::^3Trigger^7: Delayed change to `%s` in %d sec/s\n", m_strMap, m_flChangeDelay));
-		think = Change;
-		nextthink = time + m_flChangeDelay;
-	} else {
-		dprint(sprintf("^2trigger_changelevel::^3Trigger^7: Change to `%s` requested\n", m_strMap));
-		Change();
-	}
+	readcmd(sprintf("set _bsp_changetarget %S\n", m_strChangeTarget));
+	readcmd(sprintf("set _bsp_changedelay %f\n", m_flChangeDelay));
+
+	Change();
 }
 
 void
@@ -218,6 +244,9 @@ void
 trigger_changelevel::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
+	case "changetarget":
+		m_strChangeTarget = strValue;
+		break;
 	case "map":
 		m_strMap = strValue;
 		break;
@@ -240,6 +269,8 @@ trigger_changelevel::SpawnKey(string strKey, string strValue)
 void
 trigger_changelevel::trigger_changelevel(void)
 {
+	m_strChangeTarget = __NULL__;
+
 	super::NSBrushTrigger();
 
 	if (m_strOnLevelChange)

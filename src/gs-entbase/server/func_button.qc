@@ -80,18 +80,16 @@ enum
 
 class func_button:NSSurfacePropEntity
 {
+	int m_iState;
 	float m_flSpeed;
 	float m_flLip;
-	int m_iState;
-	vector m_vecPos1;
-	vector m_vecPos2;
-
 	float m_flNextTrigger;
-	vector m_vecDest;
 	float m_flWait;
 	float m_flDelay;
+	vector m_vecPos1;
+	vector m_vecPos2;
+	vector m_vecDest;
 	vector m_vecMoveDir;
-
 	string m_strSndPressed;
 	string m_strSndUnpressed;
 
@@ -117,6 +115,90 @@ class func_button:NSSurfacePropEntity
 	virtual void(vector, void(void)) MoveToDestination;
 	virtual void(string, string) SpawnKey;
 };
+
+void
+func_button::Save(float handle)
+{
+	SaveInt(handle, "state", m_iState);
+	SaveFloat(handle, "speed", m_flSpeed);
+	SaveFloat(handle, "lip", m_flLip);
+	SaveFloat(handle, "next_trigger", m_flNextTrigger);
+	SaveFloat(handle, "wait", m_flWait);
+	SaveFloat(handle, "delay", m_flDelay);
+	SaveVector(handle, "pos1", m_vecPos1);
+	SaveVector(handle, "pos2", m_vecPos2);
+	SaveVector(handle, "dest", m_vecDest);
+	SaveVector(handle, "movedir", m_vecMoveDir);
+	SaveString(handle, "snd_pressed", m_strSndPressed);
+	SaveString(handle, "snd_unpressed", m_strSndUnpressed);
+	SaveString(handle, "on_pressed", m_strOnPressed);
+	SaveString(handle, "on_damaged", m_strOnDamaged);
+	SaveString(handle, "on_uselocked", m_strOnUseLocked);
+	SaveString(handle, "on_in", m_strOnIn);
+	SaveString(handle, "on_out", m_strOnOut);
+
+	super::Save(handle);
+}
+
+void
+func_button::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "state":
+		m_iState = ReadInt(strValue);
+		break;
+	case "speed":
+		m_flSpeed = ReadFloat(strValue);
+		break;
+	case "lip":
+		m_flLip = ReadFloat(strValue);
+		break;
+	case "next_trigger":
+		m_flNextTrigger = ReadFloat(strValue);
+		break;
+	case "wait":
+		m_flWait = ReadFloat(strValue);
+		break;
+	case "delay":
+		m_flDelay = ReadFloat(strValue);
+		break;
+	case "pos1":
+		m_vecPos1 = ReadVector(strValue);
+		break;
+	case "pos2":
+		m_vecPos2 = ReadVector(strValue);
+		break;
+	case "dest":
+		m_vecDest = ReadVector(strValue);
+		break;
+	case "movedir":
+		m_vecMoveDir = ReadVector(strValue);
+		break;
+	case "snd_pressed":
+		m_strSndPressed = ReadString(strValue);
+		break;
+	case "snd_unpressed":
+		m_strSndUnpressed = ReadString(strValue);
+		break;
+	case "on_pressed":
+		m_strOnPressed = ReadString(strValue);
+		break;
+	case "on_damaged":
+		m_strOnDamaged = ReadString(strValue);
+		break;
+	case "on_uselocked":
+		m_strOnUseLocked = ReadString(strValue);
+		break;
+	case "on_in":
+		m_strOnIn = ReadString(strValue);
+		break;
+	case "on_out":
+		m_strOnOut = ReadString(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
 
 void
 func_button::Arrived(void)
@@ -207,7 +289,9 @@ func_button::MoveAway(void)
 void
 func_button::Trigger(entity act, int state)
 {
-	
+	if (GetMaster() == FALSE)
+		return;
+
 	UseOutput(act, m_strOnUseLocked);
 
 	if (m_flNextTrigger > time) {
