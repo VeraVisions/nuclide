@@ -78,9 +78,19 @@ varying vec3 light;
 
 		light *= e_lmscale.r;
 
-	#if gl_ldr==1
-		light *= 0.75;
-	#endif
+		if (gl_ldr == 1.0) {
+			if (light.r > 1.5)
+				light.r = 1.5f;
+			if (light.g > 1.5)
+				light.g = 1.5f;
+			if (light.b > 1.5)
+				light.b = 1.5f;
+
+			light.rgb * 0.5f;
+			light.rgb = floor(light.rgb * vec3(32,64,32))/vec3(32,64,32);
+			light.rgb * 2.0f;
+			light.rgb *= 0.75f;
+		}
 
 #ifdef CHROME
 		vec3 rorg = rlv(vec3(0,0,0), w, e_light_dir);
