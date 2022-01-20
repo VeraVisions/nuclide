@@ -22,6 +22,7 @@ Client-side decorative model entity.
 "modelscale" : Scale modifier of the model. Default is "1".
 "angles" : Sets the pitch, yaw and roll angles of the model.
 "_cs" : Toggles if the prop casts a shadow or not.
+"solid" : Specifies which collision model to use (0: Nonsolid; 2: BBox; 6: Per-poly)
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life 2 (2004).
@@ -34,6 +35,7 @@ class prop_dynamic:NSSurfacePropEntity
 	void(void) prop_dynamic;
 
 	virtual void(void) Respawn;
+	virtual void(string, string) SpawnKey;
 };
 
 void
@@ -44,8 +46,30 @@ prop_dynamic::Respawn(void)
 
 	if (spawnflags & PRPDYN_NONSOLID)
 		SetSolid(SOLID_NOT);
-	else
-		SetSolid(SOLID_BBOX);
+}
+
+void
+prop_dynamic::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "solid":
+		float s = stof(strValue);
+
+		switch (s) {
+		case 0:
+			SetSolid(SOLID_NOT);
+			break;
+		case 2:
+			SetSolid(SOLID_BBOX);
+			break;
+		case 6:
+			SetSolid(SOLID_BSP);
+			break;
+		}
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
 }
 
 void
