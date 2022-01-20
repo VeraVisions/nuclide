@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED prop_physics (0 0 0.8) (-16 -16 -16) (16 16 16)
+/*QUAKED prop_physics (0 0 0.8) (-16 -16 -16) (16 16 16) PRPPHYS_ASLEEP
 Physics model
 
 -------- KEYS --------
@@ -23,6 +23,8 @@ Physics model
 -------- TRIVIA --------
 This entity was introduced in Half-Life 2 (2004).
 */
+
+#define PRPPHYS_ASLEEP 1
 
 class prop_physics:NSPhysicsEntity
 {
@@ -34,6 +36,11 @@ void
 prop_physics::Respawn(void)
 {
 	NSPhysicsEntity::Respawn();
+
+	if (spawnflags & PRPPHYS_ASLEEP)
+		PhysicsDisable();
+	else
+		PhysicsEnable();
 }
 
 void

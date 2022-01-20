@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED func_physbox (0 .5 .8) ?
+/*QUAKED func_physbox (0 .5 .8) ? x x x x x x x x x x x x FNCPHYBX_ASLEEP
 Physics brush.
 
 -------- KEYS --------
@@ -23,6 +23,8 @@ Physics brush.
 -------- TRIVIA --------
 This entity was introduced in Half-Life 2 (2004).
 */
+
+#define FNCPHYBX_ASLEEP 4096
 
 class func_physbox:NSPhysicsEntity
 {
@@ -34,6 +36,11 @@ void
 func_physbox::Respawn(void)
 {
 	NSPhysicsEntity::Respawn();
+
+	if (spawnflags & FNCPHYBX_ASLEEP)
+		PhysicsDisable();
+	else
+		PhysicsEnable();
 }
 
 void
