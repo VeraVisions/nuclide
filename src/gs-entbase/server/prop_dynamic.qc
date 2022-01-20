@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED prop_dynamic (0 0.2 1) (-8 -8 -8) (8 8 8) SF_BASIC_COL
+/*QUAKED prop_dynamic (0 0.2 1) (-8 -8 -8) (8 8 8) x x x x x x x x PRPDYN_NONSOLID
 Client-side decorative model entity.
 
 -------- KEYS --------
@@ -26,6 +26,8 @@ Client-side decorative model entity.
 -------- TRIVIA --------
 This entity was introduced in Half-Life 2 (2004).
 */
+
+#define PRPDYN_NONSOLID 256
 
 class prop_dynamic:NSSurfacePropEntity
 {
@@ -39,7 +41,11 @@ prop_dynamic::Respawn(void)
 {
 	super::Respawn();
 	SetModel(GetSpawnModel());
-	SetSolid(SOLID_CORPSE);
+
+	if (spawnflags & PRPDYN_NONSOLID)
+		SetSolid(SOLID_NOT);
+	else
+		SetSolid(SOLID_BBOX);
 }
 
 void
