@@ -59,3 +59,12 @@ Math_RandomVector(float fFlyUp)
 
 	return tmp * 2.0f;
 }
+
+vector
+Math_RotateAroundPivot(vector pos, vector pivot, float degr)
+{
+	vector new = pos;
+	new[0] = pivot[0] + (pos[0] - pivot[0]) * cos(degr) - (pos[1] - pivot[1]) * sin(degr);
+	new[1] = pivot[1] + (pos[0] - pivot[0]) * sin(degr) + (pos[1] - pivot[1]) * cos(degr);
+	return new;
+}
