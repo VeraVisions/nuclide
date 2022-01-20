@@ -195,8 +195,7 @@ NSSurfacePropEntity::SpawnKey(string strKey, string strValue)
 	/* Input/Output system */
 #ifdef SERVER
 	case "OnBreak":
-		strValue = strreplace(",", ",_", strValue);
-		m_strOnBreak = strcat(m_strOnBreak, ",_", strValue);
+		m_strOnBreak = PrepareOutput(m_strOnBreak, strValue);
 		break;
 #endif
 	default:

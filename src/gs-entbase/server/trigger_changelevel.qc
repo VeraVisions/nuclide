@@ -258,8 +258,7 @@ trigger_changelevel::SpawnKey(string strKey, string strValue)
 		break;
 	case "OnLevelChange":
 	case "OnChangeLevel":
-		strValue = strreplace(",", ",_", strValue);
-		m_strOnLevelChange = strcat(m_strOnLevelChange, ",_", strValue);
+		m_strOnLevelChange = PrepareOutput(m_strOnLevelChange, strValue);
 		break;
 	default:
 		super::SpawnKey(strKey, strValue);

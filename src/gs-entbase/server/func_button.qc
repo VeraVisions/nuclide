@@ -465,24 +465,19 @@ func_button::SpawnKey(string strKey, string strValue)
 		break;
 	/* input/output */
 	case "OnPressed":
-		strValue = strreplace(",", ",_", strValue);
-		m_strOnPressed = strcat(m_strOnPressed, ",_", strValue);
+		m_strOnPressed = PrepareOutput(m_strOnPressed, strValue);
 		break;
 	case "OnDamaged":
-		strValue = strreplace(",", ",_", strValue);
-		m_strOnDamaged = strcat(m_strOnDamaged, ",_", strValue);
+		m_strOnDamaged = PrepareOutput(m_strOnDamaged, strValue);
 		break;
 	case "OnUseLocked":
-		strValue = strreplace(",", ",_", strValue);
-		m_strOnUseLocked = strcat(m_strOnUseLocked, ",_", strValue);
+		m_strOnUseLocked = PrepareOutput(m_strOnUseLocked, strValue);
 		break;
 	case "OnIn":
-		strValue = strreplace(",", ",_", strValue);
-		m_strOnIn = strcat(m_strOnIn, ",_", strValue);
+		m_strOnIn = PrepareOutput(m_strOnIn, strValue);
 		break;
 	case "OnOut":
-		strValue = strreplace(",", ",_", strValue);
-		m_strOnOut = strcat(m_strOnOut, ",_", strValue);
+		m_strOnOut = PrepareOutput(m_strOnOut, strValue);
 		break;
 	/* compatibility */
 	case "sounds":

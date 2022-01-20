@@ -168,8 +168,7 @@ trigger_look::SpawnKey(string strKey, string strValue)
 		m_flLookTime = stof(strValue);
 		break;
 	case "OnTrigger":
-		strValue = strreplace(",", ",_", strValue);
-		m_strOnTrigger = strcat(m_strOnTrigger, ",_", strValue);
+		m_strOnTrigger = PrepareOutput(m_strOnTrigger, strValue);
 		break;
 	default:
 		super::SpawnKey(strKey, strValue);

@@ -251,12 +251,10 @@ trigger_hurt::SpawnKey(string strKey, string strValue)
 		m_flNextDmg = stof(strValue);
 		break;
 	case "OnHurt":
-		strValue = strreplace(",", ",_", strValue);
-		m_strOnHurt = strcat(m_strOnHurt, ",_", strValue);
+		m_strOnHurt = PrepareOutput(m_strOnHurt, strValue);
 		break;
 	case "OnHurtPlayer":
-		strValue = strreplace(",", ",_", strValue);
-		m_strOnHurtPlayer = strcat(m_strOnHurtPlayer, ",_", strValue);
+		m_strOnHurtPlayer = PrepareOutput(m_strOnHurtPlayer, strValue);
 		break;
 	default:
 		super::SpawnKey(strKey, strValue);

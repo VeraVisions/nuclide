@@ -241,8 +241,7 @@ func_guntarget::SpawnKey(string strKey, string strValue)
 		m_strOnDeathLegacy = strValue;
 		break;
 	case "OnDeath":
-		strValue = strreplace(",", ",_", strValue);
-		m_strOnDeath = strcat(m_strOnDeath, ",_", strValue);
+		m_strOnDeath = PrepareOutput(m_strOnDeath, strValue);
 		break;
 	default:
 		super::SpawnKey(strKey, strValue);

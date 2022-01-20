@@ -113,12 +113,10 @@ trigger_once::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "OnStartTouch":
-		strValue = strreplace(",", ",_", strValue);
-		m_strOnStartTouch = strcat(m_strOnStartTouch, ",_", strValue);
+		m_strOnStartTouch = PrepareOutput(m_strOnStartTouch, strValue);
 		break;
 	case "OnTrigger":
-		strValue = strreplace(",", ",_", strValue);
-		m_strOnTrigger = strcat(m_strOnTrigger, ",_", strValue);
+		m_strOnTrigger = PrepareOutput(m_strOnTrigger, strValue);
 		break;
 	default:
 		super::SpawnKey(strKey, strValue);

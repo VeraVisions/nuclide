@@ -169,15 +169,13 @@ trigger_multiple::SpawnKey(string strKey, string strValue)
 		break;
 	case "OnStartTouch":
 	case "OnStartTouchAll":
-		strValue = strreplace(",", ",_", strValue);
-		m_strOnStartTouch = strcat(m_strOnStartTouch, ",_", strValue);
+		m_strOnStartTouch = PrepareOutput(m_strOnStartTouch, strValue);
 		break;
 	case "OnEndTouchAll":
-		strValue = strreplace(",", ",_", strValue);
-		m_strOnEndTouchAll = strcat(m_strOnEndTouchAll, ",_", strValue);
+		m_strOnEndTouchAll = PrepareOutput(m_strOnEndTouchAll, strValue);
+		break;
 	case "OnTrigger":
-		strValue = strreplace(",", ",_", strValue);
-		m_strOnTrigger = strcat(m_strOnTrigger, ",_", strValue);
+		m_strOnTrigger = PrepareOutput(m_strOnTrigger, strValue);
 		break;
 	default:
 		super::SpawnKey(strKey, strValue);

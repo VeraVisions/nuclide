@@ -42,6 +42,7 @@ class NSIO
 
 	/* helper functions to allocate outputs */
 	nonvirtual void(entity, string) UseOutput;
+	nonvirtual string(string, string) PrepareOutput;
 	nonvirtual string(string) CreateOutput;
 
 	/* whenever gamerules want entities to respawn */

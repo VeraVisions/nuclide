@@ -117,6 +117,14 @@ NSIO::CreateOutput(string outmsg)
 	return outname;
 }
 
+string
+NSIO::PrepareOutput(string strOut, string strValue)
+{
+	strValue = strreplace(",", ",_", strValue);
+	strOut = strcat(strOut, ",_", strValue);
+	return strOut;
+}
+
 /* entities receive the inputs here and need to act on intype and data
    accordingly. this is just a stub for unknown event troubleshooting */
 void
@@ -278,24 +286,19 @@ NSIO::SpawnKey(string strKey, string strValue)
 #ifdef SERVER
 	/* Input/Output system */
 	case "OnTrigger":
-		strValue = strreplace(",", ",_", strValue);
-		m_strOnTrigger = strcat(m_strOnTrigger, ",_", strValue);
+		m_strOnTrigger = PrepareOutput(m_strOnTrigger, strValue);
 		break;
 	case "OnUser1":
-		strValue = strreplace(",", ",_", strValue);
-		m_strOnUser1 = strcat(m_strOnUser1, ",_", strValue);
+		m_strOnUser1 = PrepareOutput(m_strOnUser1, strValue);
 		break;
 	case "OnUser2":
-		strValue = strreplace(",", ",_", strValue);
-		m_strOnUser2 = strcat(m_strOnUser2, ",_", strValue);
+		m_strOnUser2 = PrepareOutput(m_strOnUser2, strValue);
 		break;
 	case "OnUser3":
-		strValue = strreplace(",", ",_", strValue);
-		m_strOnUser3 = strcat(m_strOnUser3, ",_", strValue);
+		m_strOnUser3 = PrepareOutput(m_strOnUser3, strValue);
 		break;
 	case "OnUser4":
-		strValue = strreplace(",", ",_", strValue);
-		m_strOnUser4 = strcat(m_strOnUser4, ",_", strValue);
+		m_strOnUser4 = PrepareOutput(m_strOnUser4, strValue);
 		break;
 #endif
 	default:
