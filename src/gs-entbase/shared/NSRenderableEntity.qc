@@ -329,7 +329,7 @@ NSRenderableEntity::ReceiveEntity
 ============
 */
 void
-NSRenderableEntity::ReceiveEntity(float flChanged)
+NSRenderableEntity::ReceiveEntity(float flNew, float flChanged)
 {
 	if (flChanged & BASEFL_CHANGED_ORIGIN) {
 		origin[0] = readcoord();

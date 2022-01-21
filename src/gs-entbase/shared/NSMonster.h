@@ -267,7 +267,7 @@ class NSMonster:NSSurfacePropEntity
 #else
 	virtual void(void) customphysics;
 	virtual float(void) predraw;
-	virtual void(float) ReceiveEntity;
+	virtual void(float,float) ReceiveEntity;
 #endif
 };
 

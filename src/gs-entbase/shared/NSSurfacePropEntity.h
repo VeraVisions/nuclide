@@ -16,6 +16,8 @@
 
 class NSSurfacePropEntity:NSRenderableEntity
 {
+	float m_flBurnNext;
+
 	void(void) NSSurfacePropEntity;
 
 	/* overrides */
@@ -27,6 +29,8 @@ class NSSurfacePropEntity:NSRenderableEntity
 	virtual void(entity, string, string) Input;
 	virtual void(string, string) SpawnKey;
 	virtual void(void) ParentUpdate;
+#else
+	virtual float(void) predraw;
 #endif
 
 	/* new */
@@ -35,7 +39,6 @@ class NSSurfacePropEntity:NSRenderableEntity
 	entity m_eBurner;
 	int m_iBurnWeapon;
 	float m_flBurnTime;
-	float m_flBurnNext;
 
 	/* I/O */
 	string m_strOnBreak;

@@ -728,6 +728,7 @@ NSMonster::SendEntity(entity ePEnt, float fChanged)
 	}
 	if (fChanged & BASEFL_CHANGED_FRAME) {
 		WriteByte(MSG_ENTITY, frame);
+		WriteFloat(MSG_ENTITY, frame1time);
 	}
 	if (fChanged & BASEFL_CHANGED_SKIN) {
 		WriteByte(MSG_ENTITY, skin + 128);
@@ -795,7 +796,7 @@ NSMonster::ReceiveEntity
 ============
 */
 void
-NSMonster::ReceiveEntity(float flChanged)
+NSMonster::ReceiveEntity(float flNew, float flChanged)
 {
 	if (flChanged & BASEFL_CHANGED_ORIGIN) {
 		origin[0] = readcoord();
@@ -830,9 +831,9 @@ NSMonster::ReceiveEntity(float flChanged)
 		setsize(this, mins, maxs);
 	}
 	if (flChanged & BASEFL_CHANGED_FRAME) {
-		frame1time = 0.0;
-		frame2time = 0.0f;
 		frame = readbyte();
+		frame1time = readfloat();
+		frame2time = frame1time;
 	}
 	if (flChanged & BASEFL_CHANGED_SKIN) {
 		skin = readbyte() - 128;
@@ -915,6 +916,6 @@ NSMonster_ReadEntity(float new)
 	if (new) {
 		spawnfunc_NSMonster();
 	}
-	me.ReceiveEntity(readfloat());
+	me.ReceiveEntity(new, readfloat());
 }
 #endif

@@ -90,7 +90,7 @@ class func_monitor:NSRenderableEntity
 #ifdef CLIENT
 	int m_iValue;
 
-	virtual void(float) ReceiveEntity;
+	virtual void(float,float) ReceiveEntity;
 #else
 	virtual void(void) Respawn;
 	virtual void(void) EvaluateEntity;
@@ -103,7 +103,7 @@ class func_monitor:NSRenderableEntity
 
 #ifdef CLIENT
 void
-func_monitor::ReceiveEntity(float flFlags)
+func_monitor::ReceiveEntity(float flNew, float flFlags)
 {
 	if (flFlags & MONITORFL_CHANGED_ORIGIN) {
 		modelindex = readfloat();

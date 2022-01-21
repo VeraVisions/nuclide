@@ -14,6 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include "sound.h"
+
+#ifdef CLIENT
+#include "../gs-entbase/client/defs.h"
+#else
+#include "../gs-entbase/server/defs.h"
+#endif
+
+#include "../gs-entbase/shared/baseentity.h"
 #include "player.h"
 #include "damage.h"
 #include "flags.h"
@@ -23,7 +32,6 @@
 #include "hitmesh.h"
 #include "materials.h"
 #include "math.h"
-#include "sound.h"
 #include "pmove.h"
 #include "memory.h"
 #include "spectator.h"

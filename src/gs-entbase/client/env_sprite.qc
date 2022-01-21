@@ -22,7 +22,7 @@ class env_sprite:NSRenderableEntity
 
 	virtual void(void) Init;
 	virtual void(void) Initialized;
-	virtual void(float flChanged) ReceiveEntity;
+	virtual void(float,float) ReceiveEntity;
 	virtual void(void) think;
 };
 
@@ -43,7 +43,7 @@ env_sprite::think(void)
 }
 
 void
-env_sprite::ReceiveEntity(float flChanged)
+env_sprite::ReceiveEntity(float flNew, float flChanged)
 {
 	origin[0] = readcoord();
 	origin[1] = readcoord();

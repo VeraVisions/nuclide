@@ -14,8 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "../shared/baseentity.h"
-
 vector g_vecSunDir;
 
 /* TODO: Find a better way to figure out what's a NSEntity at heart */

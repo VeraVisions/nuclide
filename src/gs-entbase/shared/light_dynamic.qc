@@ -84,7 +84,7 @@ class light_dynamic:NSPointTrigger
 	virtual void(string, string) SpawnKey;
 
 #ifdef CLIENT
-	virtual void(float) ReceiveEntity;
+	virtual void(float,float) ReceiveEntity;
 	virtual float(void) predraw;
 	virtual void(void) Initialized;
 	virtual void(void) RendererRestarted;
@@ -116,7 +116,7 @@ light_dynamic::predraw(void)
 }
 
 void
-light_dynamic::ReceiveEntity(float flFlags)
+light_dynamic::ReceiveEntity(float flNew, float flFlags)
 {
 	if (flFlags & DLIGHTFL_CHANGED_ORIGIN) {
 		origin[0] = readcoord();

@@ -53,6 +53,7 @@ var float autocvar_cl_hudaspect = 0.0f;
 
 /* particle descriptors */
 var float PART_DUSTMOTE;
+var float PART_BURNING;
 
 /* muzzleflash indices */
 var int MUZZLE_SMALL;

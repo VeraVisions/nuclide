@@ -27,7 +27,7 @@ class NSEntity:NSTrigger
 	vector m_vecMaxs;
 
 #ifdef CLIENT
-	virtual void(float flChanged) ReceiveEntity;
+	virtual void(float,float) ReceiveEntity;
 	virtual void(void) postdraw;
 	virtual void(void) RendererRestarted;
 #endif

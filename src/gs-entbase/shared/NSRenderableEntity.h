@@ -34,7 +34,7 @@ class NSRenderableEntity:NSEntity
 	virtual void(float) Save;
 	virtual void(string,string) Restore;
 #else
-	virtual void(float flChanged) ReceiveEntity;
+	virtual void(float,float) ReceiveEntity;
 	virtual float(void) predraw;
 #endif
 

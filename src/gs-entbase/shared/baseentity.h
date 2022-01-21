@@ -14,6 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifndef BASEENTITY
+#define BASEENTITY
+
 #include "NSIO.h"
 #include "NSTrigger.h"
 #include "NSEntity.h"
@@ -57,3 +60,4 @@ CBaseTrigger::CBaseTrigger(void)
 {
 	CBaseEntity::CBaseEntity();
 }
+#endif

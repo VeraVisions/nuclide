@@ -58,7 +58,7 @@ class info_particle_system:NSPointTrigger
 	int m_iEffectID;
 
 	virtual void(void) Emit;
-	virtual void(float) ReceiveEntity;
+	virtual void(float,float) ReceiveEntity;
 #else
 	virtual void(void) Respawn;
 	virtual void(void) EvaluateEntity;
@@ -83,7 +83,7 @@ info_particle_system::Emit(void)
 }
 
 void
-info_particle_system::ReceiveEntity(float flFlags)
+info_particle_system::ReceiveEntity(float flNew, float flFlags)
 {
 	if (flFlags & PARTSYSFL_CHANGED_ORIGIN) {
 		origin[0] = readcoord();

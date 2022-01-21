@@ -684,6 +684,7 @@ NSTalkMonster::SendEntity(entity ePEnt, float fChanged)
 	}
 	if (fChanged & BASEFL_CHANGED_FRAME) {
 		WriteByte(MSG_ENTITY, frame);
+		WriteFloat(MSG_ENTITY, frame1time);
 	}
 	if (fChanged & BASEFL_CHANGED_SKIN) {
 		WriteByte(MSG_ENTITY, skin + 128);
@@ -875,6 +876,6 @@ NSTalkMonster_ReadEntity(float new)
 	if (new) {
 		spawnfunc_NSTalkMonster();
 	}
-	me.ReceiveEntity(readfloat());
+	me.ReceiveEntity(new, readfloat());
 }
 #endif

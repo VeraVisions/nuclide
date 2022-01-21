@@ -79,7 +79,7 @@ class env_projectedtexture:NSPointTrigger
 	void(void) env_projectedtexture;
 
 #ifdef CLIENT
-	virtual void(float) ReceiveEntity;
+	virtual void(float,float) ReceiveEntity;
 	virtual float(void) predraw;
 #else
 
@@ -111,7 +111,7 @@ env_projectedtexture::predraw(void)
 }
 
 void
-env_projectedtexture::ReceiveEntity(float flFlags)
+env_projectedtexture::ReceiveEntity(float flNew, float flFlags)
 {
 	if (flFlags & PRTEXFL_CHANGED_ORIGIN) {
 		origin[0] = readcoord();

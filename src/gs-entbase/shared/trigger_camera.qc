@@ -54,7 +54,7 @@ class trigger_camera:NSPointTrigger
 	void(void) trigger_camera;
 
 #ifdef CLIENT
-	virtual void(float) ReceiveEntity;
+	virtual void(float,float) ReceiveEntity;
 #else
 	virtual void(void) NextPath;
 	virtual void(void) GoToTarget;
@@ -68,7 +68,7 @@ class trigger_camera:NSPointTrigger
 
 #ifdef CLIENT
 void
-trigger_camera::ReceiveEntity(float flFlags)
+trigger_camera::ReceiveEntity(float flNew, float flFlags)
 {
 	if (flFlags & OCAMFL_CHANGED_ORIGIN) {
 		origin[0] = readcoord();

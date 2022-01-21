@@ -260,6 +260,23 @@ NSSurfacePropEntity::PropDataFinish(void)
 	PropData_SetStage(m_strPropData);
 	m_iPropData = PropData_Finish();
 }
+#else
+float
+NSSurfacePropEntity::predraw(void)
+{
+	if (flags & FL_ONFIRE) {
+		vector someorg;
+
+		if (m_flBurnNext < time) {
+			someorg[0] = absmin[0] + ( random() * ( absmax[0] - absmin[0] ) );
+			someorg[1] = absmin[1] + ( random() * ( absmax[1] - absmin[1] ) );
+			someorg[2] = absmin[2] + ( random() * ( absmax[2] - absmin[2] ) );
+			pointparticles(PART_BURNING, someorg, [0,0,0], 1);
+			m_flBurnNext = time + 0.1f;
+		}
+	}
+	super::predraw();
+}
 #endif
 
 void

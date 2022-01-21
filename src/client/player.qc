@@ -37,6 +37,8 @@ player::draw(void)
 float
 player::predraw(void)
 {
+	super::predraw();
+
 	/* run animations regardless of rendering the player */
 	draw();
 

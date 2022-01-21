@@ -33,7 +33,7 @@ class env_laser
 
 	void(void) env_laser;
 
-	virtual void(float flChanged) ReceiveEntity;
+	virtual void(float,float) ReceiveEntity;
 	virtual float(void) predraw;
 };
 
@@ -51,7 +51,7 @@ float env_laser::predraw(void)
 }
 
 void
-env_laser::ReceiveEntity(float flChanged)
+env_laser::ReceiveEntity(float flNew, float flChanged)
 {
 	if (flChanged & ENVLASER_CHANGED_ORIGIN) {
 		origin[0] = readcoord();

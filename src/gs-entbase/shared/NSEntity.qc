@@ -35,7 +35,7 @@ NSEntity::ReceiveEntity
 ============
 */
 void
-NSEntity::ReceiveEntity(float flChanged)
+NSEntity::ReceiveEntity(float flNew, float flChanged)
 {
 	if (flChanged & BASEFL_CHANGED_ORIGIN) {
 		origin[0] = readcoord();

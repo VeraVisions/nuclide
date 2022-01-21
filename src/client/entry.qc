@@ -125,6 +125,7 @@ CSQC_RendererRestarted(string rstr)
 
 	/* Particles */
 	PART_DUSTMOTE = particleeffectnum("volume.dustmote");
+	PART_BURNING = particleeffectnum("burn.burning");
 
 	/* 2D Pics */
 	precache_pic("gfx/vgui/icntlk_sv");
@@ -195,8 +196,8 @@ CSQC_UpdateView(float w, float h, float focus)
 		setproperty(VF_ENVMAP, "$whiteimage");
 		setproperty(VF_ORIGIN, g_vecCubePos);
 		setproperty(VF_AFOV, 90);
-		setproperty(VF_CL_VIEWANGLES, [0,0,0]);
-		setproperty(VF_ANGLES, [0,0,0]);
+		//setproperty(VF_CL_VIEWANGLES, [0,0,0]);
+		//setproperty(VF_ANGLES, [0,0,0]);
 		SkyCamera_Setup(g_vecCubePos);
 		CSQC_RenderScene();
 		return;
@@ -929,14 +930,14 @@ CSQC_Ent_Update(float new)
 		if (new) {
 			spawnfunc_NSEntity();
 		}
-		me.ReceiveEntity(readfloat());
+		me.ReceiveEntity(new, readfloat());
 		break;
 	case ENT_ENTITYRENDERABLE:
 		NSRenderableEntity rend = (NSRenderableEntity)self;
 		if (new) {
 			spawnfunc_NSRenderableEntity();
 		}
-		rend.ReceiveEntity(readfloat());
+		rend.ReceiveEntity(new, readfloat());
 		break;
 	case ENT_MONSTER:
 		NSMonster_ReadEntity(new);
@@ -983,7 +984,7 @@ CSQC_Ent_Update(float new)
 		if (new) {
 			spawnfunc_env_sprite();
 		}
-		spr.ReceiveEntity(readfloat());
+		spr.ReceiveEntity(new, readfloat());
 		break;
 	case ENT_SPRAY:
 		Spray_Parse();
@@ -999,42 +1000,42 @@ CSQC_Ent_Update(float new)
 		if (new) {
 			spawnfunc_trigger_camera();
 		}
-		tc.ReceiveEntity(readfloat());
+		tc.ReceiveEntity(new, readfloat());
 		break;
 	case ENT_MONITOR:
 		func_monitor fc = (func_monitor)self;
 		if (new) {
 			spawnfunc_func_monitor();
 		}
-		fc.ReceiveEntity(readfloat());
+		fc.ReceiveEntity(new, readfloat());
 		break;
 	case ENT_DLIGHT:
 		light_dynamic dl = (light_dynamic)self;
 		if (new) {
 			spawnfunc_light_dynamic();
 		}
-		dl.ReceiveEntity(readfloat());
+		dl.ReceiveEntity(new, readfloat());
 		break;
 	case ENT_PROJECTEDTEXTURE:
 		env_projectedtexture ept = (env_projectedtexture)self;
 		if (new) {
 			spawnfunc_env_projectedtexture();
 		}
-		ept.ReceiveEntity(readfloat());
+		ept.ReceiveEntity(new, readfloat());
 		break;
 	case ENT_ENVLASER:
 		env_laser l = (env_laser)self;
 		if (new) {
 			spawnfunc_env_laser();
 		}
-		l.ReceiveEntity(readfloat());
+		l.ReceiveEntity(new, readfloat());
 		break;
 	case ENT_PARTSYSTEM:
 		info_particle_system ips = (info_particle_system)self;
 		if (new) {
 			spawnfunc_info_particle_system();
 		}
-		ips.ReceiveEntity(readfloat());
+		ips.ReceiveEntity(new, readfloat());
 		break;
 	default:
 		if (ClientGame_EntityUpdate(t, new) == FALSE) {
