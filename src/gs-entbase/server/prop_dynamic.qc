@@ -43,6 +43,7 @@ prop_dynamic::Respawn(void)
 {
 	super::Respawn();
 	SetModel(GetSpawnModel());
+	UpdateBounds();
 
 	if (spawnflags & PRPDYN_NONSOLID)
 		SetSolid(SOLID_NOT);
@@ -56,15 +57,14 @@ prop_dynamic::SpawnKey(string strKey, string strValue)
 		float s = stof(strValue);
 
 		switch (s) {
-		case 0:
-			SetSolid(SOLID_NOT);
-			break;
 		case 2:
 			SetSolid(SOLID_BBOX);
 			break;
 		case 6:
 			SetSolid(SOLID_BSP);
 			break;
+		default:
+			SetSolid(SOLID_NOT);
 		}
 		break;
 	default:

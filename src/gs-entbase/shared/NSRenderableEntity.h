@@ -55,13 +55,13 @@ class NSRenderableEntity:NSEntity
 	virtual void(void) MakeStatic;
 
 #ifdef GS_RENDERFX
-	int m_iRenderFX;
+	float m_iRenderFX;
 	float m_iRenderMode;
 	float m_flRenderAmt;
 	vector m_vecRenderColor;
 
 	/* set */
-	nonvirtual void(int) SetRenderFX;
+	nonvirtual void(float) SetRenderFX;
 	nonvirtual void(float) SetRenderMode;
 	nonvirtual void(float) SetRenderAmt;
 	nonvirtual void(vector) SetRenderColor;
@@ -70,7 +70,7 @@ class NSRenderableEntity:NSEntity
 		nonvirtual void(void) RenderFXPass;
 	#else
 		/* respawn */
-		int m_oldiRenderFX;
+		float m_oldiRenderFX;
 		float m_oldiRenderMode;
 		float m_oldflRenderAmt;
 		vector m_oldvecRenderColor;

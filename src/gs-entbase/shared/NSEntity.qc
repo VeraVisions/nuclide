@@ -286,27 +286,8 @@ NSEntity::SetSolid(float newSolid)
 void
 NSEntity::UpdateBounds(void)
 {
-	SetSize(m_vecMins, m_vecMaxs);
-}
-
-void
-NSEntity::SetAngles(vector newAngles)
-{
-	if (newAngles == angles)
-		return;
-
-	angles = newAngles;
-	SetSendFlags(BASEFL_CHANGED_ANGLES);
-	UpdateBounds();
-}
-
-void
-NSEntity::SetSize(vector newMins, vector newMaxs)
-{
+	vector newMins, newMaxs;
 	float flScale = 1.0f;
-
-	m_vecMins = newMins;
-	m_vecMaxs = newMaxs;
 
 	/* avoid useless computation */
 	if (angles != [0,0,0]) {
@@ -336,6 +317,32 @@ NSEntity::SetSize(vector newMins, vector newMaxs)
 				newMins[2] = vecCorner[i][2];
 		}
 	}
+
+	/* 0.0 is never valid, if you want it to disappear do something else */
+	if (scale != 0.0)
+		flScale = scale;
+
+	setsize(this, newMins * flScale, newMaxs * flScale);
+	SetSendFlags(BASEFL_CHANGED_SIZE);
+}
+
+void
+NSEntity::SetAngles(vector newAngles)
+{
+	if (newAngles == angles)
+		return;
+
+	angles = newAngles;
+	SetSendFlags(BASEFL_CHANGED_ANGLES);
+}
+
+void
+NSEntity::SetSize(vector newMins, vector newMaxs)
+{
+	float flScale = 1.0f;
+
+	m_vecMins = newMins;
+	m_vecMaxs = newMaxs;
 
 	/* 0.0 is never valid, if you want it to disappear do something else */
 	if (scale != 0.0)

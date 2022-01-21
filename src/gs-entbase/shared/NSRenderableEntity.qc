@@ -162,11 +162,9 @@ NSRenderableEntity::SendEntity(entity ePEnt, float fChanged)
 	}
 
 #ifdef GS_RENDERFX
-	if (fChanged & BASEFL_CHANGED_RENDERFX) {
-		WriteByte(MSG_ENTITY, m_iRenderFX);
-	}
 	if (fChanged & BASEFL_CHANGED_RENDERMODE) {
 		WriteByte(MSG_ENTITY, m_iRenderMode);
+		WriteByte(MSG_ENTITY, m_iRenderFX);
 	}
 
 	if (fChanged & BASEFL_CHANGED_RENDERCOLOR) {
@@ -211,6 +209,12 @@ NSRenderableEntity::RenderFXPass(void)
 	colormod = m_vecRenderColor;
 	alpha = m_flRenderAmt;
 
+	/* these should be reset! */
+	renderflags = 0;
+	effects = 0;
+	drawflags = 0;
+	abslight = 0;
+
 	switch (m_iRenderMode) {
 	case RM_NORMAL:
 		colormod = [1,1,1];
@@ -226,6 +230,7 @@ NSRenderableEntity::RenderFXPass(void)
 			drawflags = 7;
 			abslight = 128;
 		}
+
 		break;
 	case RM_GLOW:
 	case RM_WORLDGLOW: /* TODO: Figure out what this does differently */
@@ -284,8 +289,49 @@ NSRenderableEntity::RenderFXPass(void)
 		alpha = 0.0f;
 	}
 
-	/* messy hologram imitation */
-	if (m_iRenderFX == RFX_HOLOGRAM) {
+	switch (m_iRenderFX) {
+	case RFX_SLOWPULSE:
+		alpha = sin(cltime * 0.5);
+		break;
+	case RFX_FASTPULSE:
+		alpha = sin(cltime * 2.0);
+		break;
+	case RFX_SLOWWIDEPULSE:
+		alpha = sin(cltime * 0.5);
+		break;
+	case RFX_FASTWIDEPULSE:
+		alpha = sin(cltime * 2.0);
+		break;
+	case RFX_SLOWFADEAWAY:
+		alpha -= clframetime * 0.25;
+		break;
+	case RFX_FASTFADEAWAY:
+		effects = 0;
+		alpha -= clframetime;
+		break;
+	case RFX_SLOWBECOMESOLID:
+		break;
+	case RFX_FASTBECOMESOLID:
+		break;
+	case RFX_SLOWSTROBE:
+		alpha = (cltime & 1) ? 1.0 : 0.0f;
+		break;
+	case RFX_FASTSTROBE:
+		alpha = ((cltime*2.0) & 1) ? 1.0 : 0.0f;
+		break;
+	case RFX_FASTERSTROBE:
+		alpha = ((cltime*4.0) & 1) ? 1.0 : 0.0f;
+		break;
+	case RFX_SLOWFLICKER:
+		break;
+	case RFX_FASTFLICKER:
+		break;
+	case RFX_CONSTANTGLOW:
+		break;
+	case RFX_DISTORT:
+		break;
+	case RFX_HOLOGRAM:
+		/* messy hologram imitation */
 		float dist;
 		float r;
 
@@ -313,6 +359,9 @@ NSRenderableEntity::RenderFXPass(void)
 		effects = EF_ADDITIVE;
 		drawflags = 7;
 		abslight = 128;
+		break;
+	default:
+		break;
 	}
 
 	/* HACK: This marks this entity as alphatested in platform's defaultwall.glsl */
@@ -388,11 +437,9 @@ NSRenderableEntity::ReceiveEntity(float flNew, float flChanged)
 	}
 
 #ifdef GS_RENDERFX
-	if (flChanged & BASEFL_CHANGED_RENDERFX) {
-		m_iRenderFX = readbyte();
-	}
 	if (flChanged & BASEFL_CHANGED_RENDERMODE) {
 		m_iRenderMode = readbyte();
+		m_iRenderFX = readbyte();
 	}
 	if (flChanged & BASEFL_CHANGED_RENDERCOLOR) {
 		m_vecRenderColor[0] = readfloat();
@@ -555,13 +602,13 @@ NSRenderableEntity::SetScale(float newScale)
 
 #ifdef GS_RENDERFX
 void
-NSRenderableEntity::SetRenderFX(int newFX)
+NSRenderableEntity::SetRenderFX(float newFX)
 {
 	if (newFX == m_iRenderFX)
 		return;
 
 	m_iRenderFX = newFX;
-	SetSendFlags(BASEFL_CHANGED_RENDERFX);
+	SetSendFlags(BASEFL_CHANGED_RENDERMODE);
 }
 void
 NSRenderableEntity::SetRenderMode(float newMode)
@@ -609,8 +656,8 @@ NSRenderableEntity::Save(float handle)
 #else
 	SaveFloat(handle, "renderamt", m_flRenderAmt);
 	SaveVector(handle, "rendercolor", m_vecRenderColor);
-	SaveInt(handle, "rendermode", m_iRenderMode);
-	SaveInt(handle, "renderfx", m_iRenderFX);
+	SaveFloat(handle, "rendermode", m_iRenderMode);
+	SaveFloat(handle, "renderfx", m_iRenderFX);
 #endif
 
 	super::Save(handle);
@@ -649,10 +696,10 @@ NSRenderableEntity::Restore(string strKey, string strValue)
 		m_vecRenderColor = stov(strValue) / 255;
 		break;
 	case "rendermode":
-		m_iRenderMode = stoi(strValue);
+		m_iRenderMode = stof(strValue);
 		break;
 	case "renderfx":
-		m_iRenderFX = stoi(strValue);
+		m_iRenderFX = stof(strValue);
 		break;
 #endif
 	default:
@@ -736,10 +783,10 @@ NSRenderableEntity::SpawnKey(string strKey, string strValue)
 		m_vecRenderColor = stov(strValue) / 255;
 		break;
 	case "rendermode":
-		m_iRenderMode = stoi(strValue);
+		m_iRenderMode = stof(strValue);
 		break;
 	case "renderfx":
-		m_iRenderFX = stoi(strValue);
+		m_iRenderFX = stof(strValue);
 		break;
 #endif
 	default:

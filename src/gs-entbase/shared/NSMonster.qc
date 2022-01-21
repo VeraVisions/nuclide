@@ -294,7 +294,7 @@ void
 NSMonster::FreeStateMoved(void)
 {
 	vector new_origin;
-	new_origin = gettaginfo(this, 0);
+	new_origin = gettaginfo(this, 1);
 	SetOrigin(new_origin);
 	FreeState();
 }
@@ -749,11 +749,9 @@ NSMonster::SendEntity(entity ePEnt, float fChanged)
 	}
 
 #ifdef GS_RENDERFX
-	if (fChanged & BASEFL_CHANGED_RENDERFX) {
-		WriteByte(MSG_ENTITY, m_iRenderFX);
-	}
 	if (fChanged & BASEFL_CHANGED_RENDERMODE) {
 		WriteByte(MSG_ENTITY, m_iRenderMode);
+		WriteByte(MSG_ENTITY, m_iRenderFX);
 	}
 
 	if (fChanged & BASEFL_CHANGED_RENDERCOLOR) {
@@ -855,11 +853,9 @@ NSMonster::ReceiveEntity(float flNew, float flChanged)
 	}
 
 #ifdef GS_RENDERFX
-	if (flChanged & BASEFL_CHANGED_RENDERFX) {
-		m_iRenderFX = readbyte();
-	}
 	if (flChanged & BASEFL_CHANGED_RENDERMODE) {
 		m_iRenderMode = readbyte();
+		m_iRenderFX = readbyte();
 	}
 	if (flChanged & BASEFL_CHANGED_RENDERCOLOR) {
 		m_vecRenderColor[0] = readfloat();

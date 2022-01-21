@@ -106,7 +106,7 @@ env_render::Trigger(entity act, int state)
 			trigger.SetRenderAmt(m_flRenderAmt);
 		}
 		if (!(spawnflags & SF_NORENDERFX)) {
-			dprint(sprintf("\tFX change from %i to %i\n", trigger.m_iRenderFX, m_iRenderFX));
+			dprint(sprintf("\tFX change from %d to %d\n", trigger.m_iRenderFX, m_iRenderFX));
 			trigger.SetRenderFX(m_iRenderFX);
 		}
 	}

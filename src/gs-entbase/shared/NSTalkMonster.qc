@@ -605,51 +605,9 @@ NSTalkMonster::SendEntity(entity ePEnt, float fChanged)
 
 	WriteByte(MSG_ENTITY, ENT_TALKMONSTER);
 
-	/* newly popped into the PVS, sadly this is the only hacky way to check
-	 * for this right now. convince the engine maintainer to make this more sensible */
-	if (fChanged == 0xFFFFFF) {
-		/* check for defaults. if these are predictable fields, don't even bother
-		 * networking them! you're just wasting bandwidth. */
-		if (frame == 0)
-			fChanged &= ~BASEFL_CHANGED_FRAME;
-		if (skin == 0)
-			fChanged &= ~BASEFL_CHANGED_SKIN;
-		if (effects == 0)
-			fChanged &= ~BASEFL_CHANGED_EFFECTS;
-		if (m_iBody == 0)
-			fChanged &= ~BASEFL_CHANGED_BODY;
-		if (scale == 0.0 || scale == 1.0)
-			fChanged &= ~BASEFL_CHANGED_SCALE;
-		if (origin == [0,0,0])
-			fChanged &= ~BASEFL_CHANGED_ORIGIN;
-		if (angles == [0,0,0])
-			fChanged &= ~BASEFL_CHANGED_ANGLES;
-		if (velocity == [0,0,0])
-			fChanged &= ~BASEFL_CHANGED_VELOCITY;
-		if (mins == [0,0,0] && maxs == [0,0,0])
-			fChanged &= ~BASEFL_CHANGED_SIZE;
-		if (solid == SOLID_NOT)
-			fChanged &= ~BASEFL_CHANGED_SOLID;
-		if (movetype == MOVETYPE_NONE)
-			fChanged &= ~BASEFL_CHANGED_MOVETYPE;
-#ifdef GS_RENDERFX
-		if (m_iRenderMode == RM_NORMAL)
-			fChanged &= ~BASEFL_CHANGED_RENDERMODE;
-#endif
-	}
-
 	/* don't network triggers unless provoked */
 	/*if (cvar("developer") == 0 && m_iRenderMode == RM_TRIGGER)
 		return (0);*/
-
-#ifdef GS_RENDERFX
-	/* let's not waste networking power on certain render-modes where they would
-	 * not apply anyway. this seems sensible enough. */
-	if (m_iRenderMode == RM_NORMAL || m_iRenderMode == RM_TRIGGER) {
-		fChanged &= ~BASEFL_CHANGED_RENDERCOLOR;
-		fChanged &= ~BASEFL_CHANGED_RENDERAMT;
-	}
-#endif
 
 	/* broadcast how much data is expected to be read */
 	WriteFloat(MSG_ENTITY, fChanged);
@@ -705,11 +663,9 @@ NSTalkMonster::SendEntity(entity ePEnt, float fChanged)
 	}
 
 #ifdef GS_RENDERFX
-	if (fChanged & BASEFL_CHANGED_RENDERFX) {
-		WriteByte(MSG_ENTITY, m_iRenderFX);
-	}
 	if (fChanged & BASEFL_CHANGED_RENDERMODE) {
 		WriteByte(MSG_ENTITY, m_iRenderMode);
+		WriteByte(MSG_ENTITY, m_iRenderFX);
 	}
 
 	if (fChanged & BASEFL_CHANGED_RENDERCOLOR) {
@@ -828,6 +784,101 @@ NSTalkMonster::predraw(void)
 	ProcessWordQue();
 
 	return render;
+}
+
+/*
+============
+NSTalkMonster::ReceiveEntity
+============
+*/
+void
+NSTalkMonster::ReceiveEntity(float flNew, float flChanged)
+{
+	if (flChanged & BASEFL_CHANGED_ORIGIN) {
+		origin[0] = readcoord();
+		origin[1] = readcoord();
+		origin[2] = readcoord();
+	}
+	if (flChanged & BASEFL_CHANGED_ANGLES) {
+		angles[0] = readshort() / (32767 / 360);
+		angles[1] = readshort() / (32767 / 360);
+		angles[2] = readshort() / (32767 / 360);
+	}
+	if (flChanged & BASEFL_CHANGED_MODELINDEX) {
+		setmodelindex(this, readshort());
+	}
+	if (flChanged & BASEFL_CHANGED_SOLID) {
+		solid = readbyte();
+	}
+	if (flChanged & BASEFL_CHANGED_MOVETYPE) {
+		movetype = readbyte();
+
+		if (movetype == MOVETYPE_PHYSICS) {
+			movetype = MOVETYPE_NONE;
+		}
+	}
+	if (flChanged & BASEFL_CHANGED_SIZE) {
+		mins[0] = readcoord();
+		mins[1] = readcoord();
+		mins[2] = readcoord();
+		maxs[0] = readcoord();
+		maxs[1] = readcoord();
+		maxs[2] = readcoord();
+		setsize(this, mins, maxs);
+	}
+	if (flChanged & BASEFL_CHANGED_FRAME) {
+		frame = readbyte();
+		frame1time = readfloat();
+		frame2time = frame1time;
+	}
+	if (flChanged & BASEFL_CHANGED_SKIN) {
+		skin = readbyte() - 128;
+	}
+	if (flChanged & BASEFL_CHANGED_EFFECTS) {
+		effects = readfloat();
+	}
+	if (flChanged & BASEFL_CHANGED_BODY) {
+		m_iBody = readbyte();
+		setcustomskin(this, "", sprintf("geomset 1 %i\n", m_iBody));
+	}
+	if (flChanged & BASEFL_CHANGED_SCALE) {
+		scale = readfloat();
+	}
+	if (flChanged & BASEFL_CHANGED_VELOCITY) {
+		velocity[0] = readfloat();
+		velocity[1] = readfloat();
+		velocity[2] = readfloat();
+	}
+
+#ifdef GS_RENDERFX
+	if (flChanged & BASEFL_CHANGED_RENDERMODE) {
+		m_iRenderMode = readbyte();
+		m_iRenderFX = readbyte();
+	}
+	if (flChanged & BASEFL_CHANGED_RENDERCOLOR) {
+		m_vecRenderColor[0] = readfloat();
+		m_vecRenderColor[1] = readfloat();
+		m_vecRenderColor[2] = readfloat();
+	}
+	if (flChanged & BASEFL_CHANGED_RENDERAMT) {
+		m_flRenderAmt = readfloat();
+	}
+#else
+	if (flChanged & BASEFL_CHANGED_ALPHA) {
+		alpha = readfloat();
+	}
+#endif
+
+	if (modelindex) {
+		drawmask = MASK_ENGINE;
+	} else {
+		drawmask = 0;
+	}
+
+	if (scale == 0.0)
+		scale = 1.0f;
+
+	setorigin(this, origin);
 }
 
 void

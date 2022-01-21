@@ -119,5 +119,6 @@ class NSTalkMonster:NSMonster
 	virtual void(string) SentenceSample;
 	virtual void(string) Sentence;
 	virtual void(void) ProcessWordQue;
+	virtual void(float,float) ReceiveEntity;
 #endif
 };
