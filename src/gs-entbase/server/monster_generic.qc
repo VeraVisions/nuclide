@@ -61,6 +61,7 @@ monster_generic::monster_generic(void)
 		base_mins = [-16,-16,0];
 		base_maxs = [16,16,72];
 	}
+	base_health = 100;
 
 	spawnflags |= MSF_MULTIPLAYER;
 	super::NSTalkMonster();

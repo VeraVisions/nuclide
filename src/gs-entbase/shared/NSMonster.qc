@@ -268,6 +268,7 @@ NSMonster::FreeState(void)
 	string to_trigger;
 	m_flSequenceEnd = 0;
 	m_iSequenceState = SEQUENCESTATE_NONE;
+	m_iSequenceFlags = 0;
 
 	/* we're clearing m_strRouteEnded early, because m_strRouteEnded
 	   might change when .Trigger is executed. It could be another scripted
@@ -288,14 +289,17 @@ NSMonster::FreeState(void)
 	if (m_iSequenceRemove) {
 		Hide();
 	}
+	dprint("NSMonster::FreeState\n");
 }
 
 void
 NSMonster::FreeStateMoved(void)
 {
 	vector new_origin;
+	dprint("NSMonster::FreeStateMoved\n");
 	new_origin = gettaginfo(this, 1);
 	SetOrigin(new_origin);
+	droptofloor(this);
 	FreeState();
 }
 
@@ -348,12 +352,12 @@ NSMonster::CheckRoute(void)
 			if (m_flSequenceEnd) {
 				float duration = frameduration(modelindex, m_flSequenceEnd);
 				m_iSequenceState = SEQUENCESTATE_ENDING;
-				think = FreeState;
+				think = (m_iSequenceFlags & SSFL_NOSCRIPTMOVE) ? FreeState : FreeStateMoved;
 				nextthink = time + duration;
 				dprint(sprintf("^2NSMonster::^3CheckRoute^7: %s overriding anim for %f seconds (modelindex %d, frame %d)\n", this.targetname, duration, modelindex, m_flSequenceEnd));
 			} else {
 				/* we still need to trigger targets */
-				think = FreeState;
+				think = (m_iSequenceFlags & SSFL_NOSCRIPTMOVE) ? FreeState : FreeStateMoved;
 				nextthink = time;
 				dprint(sprintf("^2NSMonster::^3CheckRoute^7: %s has no anim, finished sequence.\n", this.targetname));
 			}

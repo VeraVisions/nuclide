@@ -200,6 +200,10 @@ scripted_sequence::RunOnEntity(entity targ)
 
 	/* seems to be active at all times? contrary to SS_TURNTOFACE existing? */
 	f.m_vecSequenceAngle = angles;
+	f.m_iSequenceFlags = spawnflags;
+
+	if (spawnflags & SSFL_REPEATABLE)
+		f.SetOrigin(origin);
 
 	if (m_iMove == SS_NO) {
 		dprint("\tType: SS_NO\n");
@@ -207,10 +211,12 @@ scripted_sequence::RunOnEntity(entity targ)
 		f.NewRoute(origin);
 		f.m_flSequenceSpeed = 64;
 		dprint("\tType: SS_WALK\n");
+		return;
 	} else if (m_iMove == SS_RUN) {
 		f.NewRoute(origin);
 		f.m_flSequenceSpeed = 200;
 		dprint("\tType: SS_RUN\n");
+		return;
 	} else if (m_iMove == SS_INSTANTANEOUS) {
 		setorigin(f, this.origin);
 		dprint("\tType: SS_INSTANTANEOUS\n");

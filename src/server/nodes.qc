@@ -176,6 +176,17 @@ Nodes_Init(void)
 		Node_AutoLink(n);
 	}
 
+	for (entity a = world; (a = find(a, ::classname, "scripted_sequence"));) {
+		int iID = g_iNodes++;
+		g_pNodes = (node_t *)memrealloc(g_pNodes, sizeof(node_t), iID, g_iNodes);
+		node_t *n = g_pNodes + iID;
+		n->origin = a.origin;
+		n->nb = __NULL__;
+		n->nb_count = 0;
+		n->radius = 32;
+		Node_AutoLink(n);
+	}
+
 	dprint(" ^2DONE\n");
 	dprint(sprintf("[^2NODES^7] %i nodes found.\n", g_iNodes));
 

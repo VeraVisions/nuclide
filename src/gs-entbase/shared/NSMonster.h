@@ -193,6 +193,7 @@ class NSMonster:NSSurfacePropEntity
 	float m_flSequenceSpeed;
 	vector m_vecSequenceAngle;
 	vector m_vecTurnAngle;
+	int m_iSequenceFlags;
 
 	int m_iTriggerCondition;
 	string m_strTriggerTarget;
