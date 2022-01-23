@@ -169,6 +169,7 @@ mv_wsfile bitmaps/window3.xpm
 mv_wsfile bitmaps/window4.xpm
 mkdir -p ../../bin/games
 mv_wsfile games/platform.game
+mv_wsfile games/goldsrc.game
 mkdir -p ../../bin/gl
 mv_wsfile gl/lighting_DBS_omni_fp.glp
 mv_wsfile gl/lighting_DBS_omni_fp.glsl
@@ -185,19 +186,28 @@ mv_wsfile gl/zfill_vp.glp
 mv_wsfile gl/zfill_vp.glsl
 mkdir -p ../../bin/plugins
 mv_wsfile plugins/libarchivezip.so
+mv_wsfile plugins/libarchivepak.so
+mv_wsfile plugins/libarchivewad.so
 mv_wsfile plugins/libentity.so
 mv_wsfile plugins/libimage.so
+mv_wsfile plugins/libimagehl.so
 mv_wsfile plugins/libiqmmodel.so
 mv_wsfile plugins/libmapq3.so
 mv_wsfile plugins/libmodel.so
 mv_wsfile plugins/libshaders.so
+mv_wsfile plugins/libmatsys.so
 mv_wsfile plugins/libvfspk3.so
 mv_wsfile plugins/libbrushexport.so
 mv_wsfile plugins/libprtview.so
+
 mkdir -p ../../bin/platform.game
 mv_wsfile platform.game/default_build_menu.xml
 mkdir -p ../../bin/platform.game/platform
 mv_wsfile platform.game/platform/entities.def
+
+mkdir -p ../../bin/goldsrc.game
+mv_wsfile goldsrc.game/default_build_menu.xml
+
 mv_wsfile worldspawn
 mv_wsfile vmap
 printf "Built the editor successfully.\nInsert './worldspawn' to run.\n"
