@@ -202,9 +202,6 @@ scripted_sequence::RunOnEntity(entity targ)
 	f.m_vecSequenceAngle = angles;
 	f.m_iSequenceFlags = spawnflags;
 
-	if (spawnflags & SSFL_REPEATABLE)
-		f.SetOrigin(origin);
-
 	if (m_iMove == SS_NO) {
 		dprint("\tType: SS_NO\n");
 	} else if (m_iMove == SS_WALK) {

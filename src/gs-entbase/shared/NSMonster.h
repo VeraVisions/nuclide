@@ -245,6 +245,9 @@ class NSMonster:NSSurfacePropEntity
 	virtual int(void) AttackMelee;
 	virtual int(void) AttackRanged;
 
+	virtual float(void) MeleeMaxDistance;
+	virtual int(void) MeleeCondition;
+
 	/* sequences */
 	virtual void(void) FreeState;
 	virtual void(void) FreeStateMoved;

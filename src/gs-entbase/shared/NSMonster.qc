@@ -125,6 +125,19 @@ NSMonster::IsFriend(int al)
 	return (0);
 }
 
+/* The maximum distance to which we should attempt an attack */
+float
+NSMonster::MeleeMaxDistance(void)
+{
+	return 96;
+}
+
+/* Whether or not we should attempt a melee attack */
+int
+NSMonster::MeleeCondition(void)
+{
+	return (vlen(origin - m_eEnemy.origin) < MeleeMaxDistance()) ? TRUE : FALSE;
+}
 
 float
 NSMonster::SeeFOV(void)
@@ -212,7 +225,7 @@ NSMonster::AttackThink(void)
 
 	if (m_iMState == MONSTER_AIMING) {
 		int m;
-		if (vlen(origin - m_eEnemy.origin) < 96)
+		if (MeleeCondition() == TRUE)
 			m = AttackMelee();
 		else {
 			m = AttackRanged();
@@ -510,7 +523,7 @@ NSMonster::Physics(void)
 					SetFrame(AnimIdle());
 				} else if (spvel <= 140) {
 					SetFrame(AnimWalk());
-				} else if (spvel <= 240) {
+				} else /*if (spvel <= 240)*/ {
 					SetFrame(AnimRun());
 				}
 			}

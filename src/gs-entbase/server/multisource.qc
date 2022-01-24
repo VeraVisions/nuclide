@@ -94,7 +94,7 @@ multisource::QueryTargets(void)
 			} else {
 				dprint(" is ^2ON^7, name: ");
 			}
-			dprint(tTemp.targetname);
+			dprint(tTemp.target);
 			dprint("\n");
 		} else {
 			/* exit out immediately as there's no point unless in-dev */

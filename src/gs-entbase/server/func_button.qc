@@ -441,6 +441,7 @@ func_button::Respawn(void)
 		m_vecPos2 = (m_vecPos1 + m_vecMoveDir * (fabs(m_vecMoveDir * size) - m_flLip));
 	}
 
+	m_iValue = 0;
 	m_iState = STATE_LOWERED;
 }
 
