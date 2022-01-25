@@ -802,6 +802,19 @@ NSMonster::predraw(void)
 
 	render = super::predraw();
 
+	/* are we inside of an interpolation? */
+	if (frame != frame2) {
+		/* we're done lerping */
+		if (lerpfrac <= 0.0f)
+			frame2 = frame;
+
+		lerpfrac -= frametime * 4.0f;
+	} else {
+		/* make sure we're set up for next lerp */
+		lerpfrac = 1.0f;
+		frame2time = frame1time;
+	}
+
 	return render;
 }
 
@@ -848,7 +861,6 @@ NSMonster::ReceiveEntity(float flNew, float flChanged)
 	if (flChanged & BASEFL_CHANGED_FRAME) {
 		frame = readbyte();
 		frame1time = readfloat();
-		frame2time = frame1time;
 	}
 	if (flChanged & BASEFL_CHANGED_SKIN) {
 		skin = readbyte() - 128;
