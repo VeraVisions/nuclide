@@ -698,6 +698,13 @@ CSQC_ConsoleCommand(string sCMD)
 
 	tokenize(sCMD);
 
+	/* give us a chance to override commands */
+	int ret = ClientGame_ConsoleCommand();
+
+	/* successful override */
+	if (ret == (1))
+		return (1);
+
 	switch (argv(0)) {
 	case "testPointLight":
 		makevectors(getproperty(VF_ANGLES));
@@ -852,7 +859,7 @@ CSQC_ConsoleCommand(string sCMD)
 		setcustomskin(pSeat->m_ePlayer, "", sprintf("geomset %s %s\n", argv(1), argv(2)));
 		break;
 	default:
-		return ClientGame_ConsoleCommand();
+		return (0);
 	}
 	return (1);
 }
