@@ -183,6 +183,27 @@ NSMonster::SeeThink(void)
 		}
 	}
 }
+
+float
+NSMonster::GetWalkSpeed(void)
+{
+	return 64;
+}
+
+float
+NSMonster::GetChaseSpeed(void)
+{
+	return 240;
+}
+
+
+float
+NSMonster::GetRunSpeed(void)
+{
+	return 140;
+}
+
+
 void
 NSMonster::AttackThink(void)
 {
@@ -415,7 +436,7 @@ NSMonster::WalkRoute(void)
 	} else if (m_iMState == MONSTER_CHASING) {
 		/* we've got 'em in our sights, just need to walk closer */
 		endangles = vectoangles(m_eEnemy.origin - origin);
-		input_movevalues = [m_flChaseSpeed, 0, 0];
+		input_movevalues = [GetChaseSpeed(), 0, 0];
 		m_vecTurnAngle[1] = endangles[1];
 	} else
 		return;
@@ -518,12 +539,13 @@ NSMonster::Physics(void)
 				input_movevalues = [0,0,0];
 			} else {
 				float spvel = vlen(velocity);
+				float midspeed = GetWalkSpeed() + ((GetRunSpeed() -  GetWalkSpeed()) * 0.5f);
 
 				if (spvel < 5) {
 					SetFrame(AnimIdle());
-				} else if (spvel <= 140) {
+				} else if (spvel < midspeed) {
 					SetFrame(AnimWalk());
-				} else /*if (spvel <= 240)*/ {
+				} else {
 					SetFrame(AnimRun());
 				}
 			}
@@ -925,12 +947,6 @@ NSMonster::NSMonster(void)
 #endif
 
 	super::NSSurfacePropEntity();
-
-#ifdef SERVER
-	/* give us a 65 degree view cone */
-	m_flFOV = 1.0 / 65;
-	m_flChaseSpeed = 140;
-#endif
 }
 
 #ifdef CLIENT

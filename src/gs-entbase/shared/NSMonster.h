@@ -183,8 +183,6 @@ class NSMonster:NSSurfacePropEntity
 	vector base_maxs;
 	float base_health;
 
-	float m_flChaseSpeed;
-
 	/* sequences */
 	string m_strRouteEnded;
 	int m_iSequenceRemove;
@@ -203,7 +201,6 @@ class NSMonster:NSSurfacePropEntity
 
 	/* attack/alliance system */
 	entity m_eEnemy;
-	float m_flFOV;
 	float m_flAttackThink;
 	int m_iMState;
 	vector m_vecLKPos; /* last-known pos */
@@ -237,6 +234,11 @@ class NSMonster:NSSurfacePropEntity
 	float m_flSeeTime;
 	virtual void(void) SeeThink;
 	virtual float(void) SeeFOV;
+
+	/* movement */
+	virtual float(void) GetWalkSpeed;
+	virtual float(void) GetChaseSpeed;
+	virtual float(void) GetRunSpeed;
 
 	/* attack system */
 	virtual void(void) AttackDraw;

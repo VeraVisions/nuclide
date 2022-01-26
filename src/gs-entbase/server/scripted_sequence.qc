@@ -206,12 +206,12 @@ scripted_sequence::RunOnEntity(entity targ)
 		dprint("\tType: SS_NO\n");
 	} else if (m_iMove == SS_WALK) {
 		f.NewRoute(origin);
-		f.m_flSequenceSpeed = 64;
+		f.m_flSequenceSpeed = f.GetWalkSpeed();
 		dprint("\tType: SS_WALK\n");
 		return;
 	} else if (m_iMove == SS_RUN) {
 		f.NewRoute(origin);
-		f.m_flSequenceSpeed = 200;
+		f.m_flSequenceSpeed = f.GetRunSpeed();
 		dprint("\tType: SS_RUN\n");
 		return;
 	} else if (m_iMove == SS_INSTANTANEOUS) {

@@ -378,7 +378,7 @@ NSTalkMonster::FollowPlayer(void)
 	if (vlen(m_eFollowingChain.origin - origin) > 1024) {
 		m_eFollowing = world;
 	} else if (vlen(m_eFollowingChain.origin - origin) > 64) {
-		input_movevalues[0] = m_flChaseSpeed;
+		input_movevalues[0] = GetChaseSpeed();
 
 		other = world;
 		traceline(origin, m_eFollowingChain.origin, MOVE_OTHERONLY, this);
@@ -497,12 +497,13 @@ NSTalkMonster::Physics(void)
 				input_movevalues = [0,0,0];
 			} else {
 				spvel = vlen(velocity);
+				float midspeed = GetWalkSpeed() + ((GetRunSpeed() -  GetWalkSpeed()) * 0.5f);
 
 				if (spvel < 5) {
 					SetFrame(AnimIdle());
-				} else if (spvel <= 140) {
+				} else if (spvel < midspeed) {
 					SetFrame(AnimWalk());
-				} else if (spvel <= 240) {
+				} else {
 					SetFrame(AnimRun());
 				}
 			}
