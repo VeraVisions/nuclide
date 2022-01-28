@@ -76,6 +76,7 @@ typedef struct
 	string breakable_particle;	/* name of BreakableModels entry in PropData.txt */
 	string breakable_model;	/* name of BreakableModels entry in PropData.txt */
 	int breakable_count;
+	float breakable_skin;
 } propdata_t;
 
 /* entity will have to have a .propdata field pointing to a propdata id */
@@ -105,7 +106,8 @@ typedef enum
 	PROPINFO_EXPLOSIVE_DMG,
 	PROPINFO_EXPLOSIVE_RADIUS,
 	PROPINFO_BREAKMODEL,
-	PROPINFO_BREAKCOUNT
+	PROPINFO_BREAKCOUNT,
+	PROPINFO_SKIN
 } propinfo_t;
 __variant Prop_GetInfo(int, int);
 

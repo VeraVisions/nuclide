@@ -94,6 +94,7 @@ NSSurfacePropEntity::Respawn(void)
 	float sh = GetSpawnHealth();
 	NSRenderableEntity::Respawn();
 
+	/* only use spawndata's health if we aren't overriding it */
 	if (HasPropData() == TRUE && sh == -1) {
 		health = (float)GetPropData(PROPINFO_HEALTH);
 	} else {
@@ -213,16 +214,21 @@ NSSurfacePropEntity::Pain(void)
 void
 NSSurfacePropEntity::Death(void)
 {
-	Hide();
-
 	UseOutput(g_dmg_eAttacker, m_strOnBreak);
 
 	if (HasPropData() == FALSE)
 		return;
 
-	string gibeffect = GetPropData(PROPINFO_BREAKMODEL);
-	int breakcount = GetPropData(PROPINFO_BREAKCOUNT);
-	BreakModel_Spawn(absmin, absmax, [0,0,0], 100, breakcount, gibeffect);
+	if (GetPropData(PROPINFO_SKIN) != 0) {
+		SetSkin(GetPropData(PROPINFO_SKIN));
+	} else if (GetPropData(PROPINFO_BREAKMODEL)) {
+		string gibeffect = GetPropData(PROPINFO_BREAKMODEL);
+		int breakcount = GetPropData(PROPINFO_BREAKCOUNT);
+		BreakModel_Spawn(absmin, absmax, [0,0,0], 100, breakcount, gibeffect);
+		Hide();
+	} else {
+		Hide();
+	}
 
 	/* handle explosions */
 	float flExplodeMag, flExplodeRad;
@@ -297,7 +303,7 @@ NSSurfacePropEntity::NSSurfacePropEntity(void)
 #ifdef SERVER
 	m_iPropData = -1;
 	m_iMaterial = -1;
-	health = -1;
+	m_oldHealth = health = -1;
 
 	super::NSRenderableEntity();
 

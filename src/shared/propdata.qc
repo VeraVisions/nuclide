@@ -69,6 +69,8 @@ Prop_GetInfo(int i, int type)
 		return (__variant)g_propdata[i].breakable_model;
 	case PROPINFO_BREAKCOUNT:
 		return (__variant)g_propdata[i].breakable_count;
+	case PROPINFO_SKIN:
+		return (__variant)g_propdata[i].breakable_skin;
 	default:
 		return __NULL__;
 	}
@@ -116,6 +118,9 @@ PropData_ParseField(int i, int a)
 		break;
 	case "breakable_count":
 		g_propdata[i].breakable_count = stoi(argv(1));
+		break;
+	case "breakable_skin":
+		g_propdata[i].breakable_skin = stof(argv(1));
 		break;
 	}
 }
