@@ -235,6 +235,9 @@ class NSMonster:NSSurfacePropEntity
 	virtual void(void) SeeThink;
 	virtual float(void) SeeFOV;
 
+	/* reactions */
+	virtual void(void) AlertNearby;
+
 	/* movement */
 	virtual float(void) GetWalkSpeed;
 	virtual float(void) GetChaseSpeed;

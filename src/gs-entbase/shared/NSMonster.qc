@@ -116,7 +116,6 @@ NSMonster::IdleNoise(void)
 int
 NSMonster::IsFriend(int al)
 {
-
 	if (m_iAlliance == MAL_ROGUE)
 		return (0);
 	else if (al == m_iAlliance)
@@ -146,6 +145,27 @@ NSMonster::SeeFOV(void)
 }
 
 void
+NSMonster::AlertNearby(void)
+{
+	if (m_eEnemy == __NULL__)
+		return;
+
+	for (entity w = world; (w = findfloat(w, ::takedamage, DAMAGE_YES));) {
+		if (!IsFriend(w.m_iAlliance))
+			continue;
+
+		/* only bother if within 512 unit radius */
+		if (vlen(origin - w.origin) > 512)
+			continue;
+
+		//dprint(sprintf("Alert! %s get %s\n", w.classname, m_eEnemy.classname));
+		NSMonster f = (NSMonster)w;
+		f.m_eEnemy = m_eEnemy;
+	}
+}
+
+
+void
 NSMonster::SeeThink(void)
 {
 	if (m_eEnemy)
@@ -157,12 +177,19 @@ NSMonster::SeeThink(void)
 	m_flSeeTime = time + 0.25f;
 
 	for (entity w = world; (w = findfloat(w, ::takedamage, DAMAGE_YES));) {
+		/* prevent them from shooting non-sentient stuff */
+		if (!(w.flags & FL_MONSTER) && !(w.flags & FL_CLIENT))
+			continue;
+
+		/* if they're our friend... ignore*/
 		if (IsFriend(w.m_iAlliance))
 			continue;
 
+		/* is the target dead? */
 		if (w.health <= 0)
 			continue;
 
+		/* some monsters will ignore players */
 		if ((w.flags & FL_CLIENT) && (spawnflags & MSF_IGNOREPLAYER))
 			continue;
 
@@ -177,8 +204,13 @@ NSMonster::SeeThink(void)
 		other = world;
 		traceline(origin, w.origin, MOVE_OTHERONLY, this);
 
+		/* we have line of sight with the player */
 		if (trace_fraction == 1.0f) {
-			m_eEnemy = w;
+			if (m_eEnemy != w) {
+				m_eEnemy = w;
+				AlertNearby();
+			}
+
 			return;
 		}
 	}
@@ -589,6 +621,8 @@ NSMonster::Pain(void)
 {
 	if (!m_eEnemy)
 		m_eEnemy = g_dmg_eAttacker;
+
+	AlertNearby();
 }
 
 void
