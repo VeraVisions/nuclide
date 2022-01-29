@@ -26,8 +26,9 @@ typedef enumflags
 	SNDFL_NOREVERB,	/* skip reverb */
 	SNDFL_OMNI,	/* volume on all channels is equal */
 	SNDFL_PRIVATE,	/* only play on target */
-	SNDFL_STEP, /* volume is calculated from entity speed */
-	SNDFL_FOLLOW
+	SNDFL_STEP,	/* volume is calculated from entity speed */
+	SNDFL_FOLLOW,
+	SNDFL_ALERTS	/* this sounds alerts AI, takes distance into account */
 } soundFlag_t;
 
 typedef struct

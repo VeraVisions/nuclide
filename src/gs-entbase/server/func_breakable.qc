@@ -316,18 +316,15 @@ func_breakable::Respawn(void)
 	}
 
 	/* initially set the health to that of the ent-data */
-	health = GetSpawnHealth();
+	float sh = GetSpawnHealth();
 
-	if (HasPropData() == TRUE) {
+	if (HasPropData() == TRUE && sh == 0) {
 		/* assign propdata health */
 		health = GetPropData(PROPINFO_HEALTH);
-
-		/* didn't supply valid health */
-		if (health <= 0)
-			health = GetSpawnHealth();
-
 		m_flExplodeMag = GetPropData(PROPINFO_EXPLOSIVE_DMG);
 		m_flExplodeRad = GetPropData(PROPINFO_EXPLOSIVE_RADIUS);
+	} else {
+		health = sh;
 	}
 
 	/* unassigned health isn't valid */

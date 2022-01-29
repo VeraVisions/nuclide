@@ -70,7 +70,7 @@ item_pickup::Respawn(void)
 	think = __NULL__;
 	nextthink = -1;
 
-	if (!m_iWasDropped && cvar("sv_playerslots") > 1) {
+	if (!m_iWasDropped) {
 		m_iClip = -1;
 	}
 

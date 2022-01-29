@@ -283,4 +283,6 @@ class NSMonster:NSSurfacePropEntity
 #ifdef CLIENT
 string Sentences_GetSamples(string);
 string Sentences_ProcessSample(string);
+#else
+void NSMonster_AlertEnemyAlliance(vector pos, float radius, int alliance);
 #endif

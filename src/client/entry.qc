@@ -492,7 +492,10 @@ CSQC_InputEvent(float fEventType, float fKey, float fCharacter, float fDeviceID)
 		setcursormode(FALSE, "gfx/cursor", [0,0,0], 1.0f);
 	}
 
-	return (0);
+	if (VGUI_Active())
+		return (1);
+	else
+		return (0);
 }
 
 /*
@@ -508,7 +511,7 @@ CSQC_Input_Frame(void)
 	CSQC_UpdateSeat();
 
 	/* If we are inside a VGUI, don't let the client do stuff outside */
-	if (g_vguiWidgetCount > 0) {
+	if (VGUI_Active()) {
 		input_impulse = 0;
 		input_buttons = 0;
 		return;

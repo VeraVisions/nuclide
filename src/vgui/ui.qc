@@ -25,6 +25,12 @@ var int g_vguiWidgetCount;
 	var float UI_MAINALPHA;
 #endif
 
+void
+VGUI_Active(void)
+{
+	return (g_vguiWidgetCount > 0) ? TRUE : FALSE;
+}
+
 int
 Util_MouseAbove(vector vecMousePos, vector vecPos, vector vecSize)
 {

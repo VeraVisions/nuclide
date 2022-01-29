@@ -161,6 +161,10 @@ Sound_ParseField(int i, int a)
 	case "distshader":
 		g_sounds[i].distshader = argv(1);
 		break;
+	case "alerts":
+		dprint("\tSound set to alert enemy AI\n");
+		g_sounds[i].flags |= SNDFL_ALERTS;
+		break;
 	case "sample":
 		if (a == 2) {
 			dprint("\tAdded sample ");
@@ -455,6 +459,9 @@ Sound_Play(entity target, int chan, string shader)
 	if (g_sounds[sample].flags & SNDFL_PRIVATE) {
 		flag |= SOUNDFLAG_UNICAST;
 		msg_entity = target;
+	}
+	if (g_sounds[sample].flags & SNDFL_ALERTS) {
+		NSMonster_AlertEnemyAlliance(target.origin, g_sounds[sample].dist_max, target.m_iAlliance);
 	}
 #endif
 

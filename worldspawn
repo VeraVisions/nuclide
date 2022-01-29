@@ -7,7 +7,12 @@ if [ ! -f "$SRCPATH"/bin/worldspawn ]; then
 fi
 
 cd "$SRCPATH"/bin 
-./worldspawn
+
+if [[ -z "${NUCLIDE_GDB}" ]]; then
+	./worldspawn ../ $*
+else
+	gdb --args ./worldspawn ../ $*
+fi
 
 
 

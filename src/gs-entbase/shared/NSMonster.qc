@@ -993,4 +993,36 @@ NSMonster_ReadEntity(float new)
 	}
 	me.ReceiveEntity(new, readfloat());
 }
+#else
+void
+NSMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
+{
+	for (entity w = world; (w = findfloat(w, ::takedamage, DAMAGE_YES));) {
+		/* out of radius */
+		if (vlen(pos - w.origin) > radius)
+			continue;
+
+		/* only target monsters */
+		if (!(w.flags & FL_MONSTER))
+			continue;
+
+		NSMonster f = (NSMonster)w;
+
+		/* they already got a target of some kind */
+		if (f.m_eEnemy)
+			continue;
+
+		/* if they're our friend... ignore*/
+		if (f.IsFriend(alliance))
+			continue;
+		/* if the monster is dead... ignore */
+		if (f.health <= 0)
+			continue;
+
+		/* we've heard a noise. investigate the location */
+		f.ClearRoute();
+		f.NewRoute(pos);
+		f.m_flSequenceSpeed = 140;
+	}
+}
 #endif
