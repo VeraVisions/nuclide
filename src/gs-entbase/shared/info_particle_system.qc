@@ -73,11 +73,13 @@ class info_particle_system:NSPointTrigger
 void
 info_particle_system::Emit(void)
 {
+	makevectors(angles);
+
 	if (m_iValue)
 	if (m_iSpawnCount)
-		pointparticles((float)m_iEffectID, origin, angles, m_iSpawnCount);
+		pointparticles((float)m_iEffectID, origin, v_forward, m_iSpawnCount);
 	else
-		pointparticles((float)m_iEffectID, origin, angles, 1);
+		pointparticles((float)m_iEffectID, origin, v_forward, 1);
 
 	nextthink = time + m_flInterval;
 }
