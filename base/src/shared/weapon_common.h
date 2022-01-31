@@ -45,6 +45,7 @@ typedef struct
 	void(int, vector, float) hudpic;
 } weapon_t;
 
+void Weapons_Holster(void);
 void Weapons_Primary(void);
 void Weapons_Secondary(void);
 void Weapons_Reload(void);

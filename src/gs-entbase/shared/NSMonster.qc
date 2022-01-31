@@ -15,7 +15,6 @@
  */
 
 #ifdef SERVER
-
 int
 NSMonster::GetTriggerCondition(void)
 {
@@ -42,6 +41,7 @@ NSMonster::Save(float handle)
 	SaveInt(handle, "iFlags", m_iFlags);
 	super::Save(handle);
 }
+
 void
 NSMonster::Restore(string strKey, string strValue)
 {
@@ -169,7 +169,6 @@ NSMonster::AlertNearby(void)
 	}
 }
 
-
 void
 NSMonster::SeeThink(void)
 {
@@ -239,7 +238,6 @@ NSMonster::GetRunSpeed(void)
 {
 	return 140;
 }
-
 
 void
 NSMonster::AttackThink(void)

@@ -50,7 +50,7 @@ GameText_DrawString(vector pos, string msg, vector col, float alpha)
 	int c = tokenizebyseparator(msg, "\n");
 
 	for (int i = 0; i < c; i++) {
-		float strwidth = stringwidth(argv(i), TRUE, [20,20]);
+		float strwidth = Font_GetStringWidth(argv(i), TRUE, FONT_20);
 
 		if (pos[0] == -1) {
 			rpos[0] = g_hudmins[0] + (g_hudres[0] / 2) - (strwidth/2);
@@ -67,10 +67,10 @@ GameText_DrawString(vector pos, string msg, vector col, float alpha)
 		} else {
 			rpos[1] = g_hudmins[1] + ((g_hudres[1] - 12) * pos[1]);
 		}
-		rpos[1] += 20 * i;
-		rpos[1] -= (20 * c) / 2;
-		drawstring(rpos, argv(i), '20 20', col, alpha,
-			DRAWFLAG_ADDITIVE);
+		rpos[1] += Font_GetHeight(FONT_20) * i;
+		rpos[1] -= (Font_GetHeight(FONT_20) * c) / 2;
+
+		Font_DrawText(rpos, argv(i), FONT_20);
 	}
 }
 
@@ -132,15 +132,11 @@ GameText_DrawMessage(int i, float timer, int highlight)
 void
 GameText_Draw(void)
 {
-	drawfont = Font_GetID(FONT_20);
-
 	for (int i = 0i; i < 6; i++) {
 		GameText_DrawMessage(i, g_textchannels[i].m_flTime - g_textchannels[i].m_flFXTime, 0);
 		GameText_DrawMessage(i, g_textchannels[i].m_flTime, 1);
 		g_textchannels[i].m_flTime += clframetime;
 	}
-
-	drawfont = Font_GetID(FONT_CON);
 }
 
 void

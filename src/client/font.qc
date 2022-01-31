@@ -146,3 +146,18 @@ Font_RGBtoHex(vector vecColor)
 
 	return sprintf("^x%s%s%s", numtohex(vecColor[0]), numtohex(vecColor[1]), numtohex(vecColor[2]));
 }
+
+int
+Font_GetHeight(font_s fnt)
+{
+	return (float)fnt.iScaleY;
+}
+
+float
+Font_GetStringWidth(string strText, float flColors, font_s fnt)
+{
+	drawfont = (float)fnt.iID;
+	stringwidth(strText, flColors, [(float)fnt.iScaleX,(float)fnt.iScaleY]);
+	drawfont = 0;
+	drawfontscale = [1,1,0];
+}
