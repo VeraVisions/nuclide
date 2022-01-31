@@ -50,7 +50,7 @@ GameText_DrawString(vector pos, string msg, vector col, float alpha)
 	int c = tokenizebyseparator(msg, "\n");
 
 	for (int i = 0; i < c; i++) {
-		float strwidth = Font_GetStringWidth(argv(i), TRUE, FONT_20);
+		float strwidth = Font_StringWidth(argv(i), TRUE, FONT_20);
 
 		if (pos[0] == -1) {
 			rpos[0] = g_hudmins[0] + (g_hudres[0] / 2) - (strwidth/2);

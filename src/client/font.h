@@ -38,5 +38,5 @@ void Font_DrawText_RGBA(vector vecOrigin, string strText, vector col, float a, f
 void Font_DrawField(vector vecOrigin, vector vecSize, string strText, font_s fnt, int iAlignFlags);
 string Font_RGBtoHex(vector vecColor);
 int Font_GetHeight(font_s);
-float Font_GetStringWidth(string strText, float flColors, font_s fnt);
+float Font_StringWidth(string strText, float flColors, font_s fnt);
 float Font_GetID(font_s fnt);
