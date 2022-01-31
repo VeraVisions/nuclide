@@ -160,6 +160,11 @@ NSMonster::AlertNearby(void)
 
 		//dprint(sprintf("Alert! %s get %s\n", w.classname, m_eEnemy.classname));
 		NSMonster f = (NSMonster)w;
+
+		/* we shouldn't override this when they already got a target */
+		if (f.m_eEnemy != __NULL__)
+			continue;
+
 		f.m_eEnemy = m_eEnemy;
 	}
 }
@@ -619,7 +624,7 @@ NSMonster::touch(void)
 void
 NSMonster::Pain(void)
 {
-	if (!m_eEnemy)
+	if (!m_eEnemy || (random() < 0.5))
 		m_eEnemy = g_dmg_eAttacker;
 
 	AlertNearby();
