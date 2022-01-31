@@ -48,6 +48,7 @@ class spectator
 	virtual float(entity, float) SendEntity;
 	virtual void(void) RunClientCommand;
 #else
+	virtual void(void) ClientInputFrame;
 	virtual void(float) ReceiveEntity;
 	virtual float(void) predraw;
 #endif

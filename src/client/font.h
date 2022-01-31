@@ -39,5 +39,4 @@ void Font_DrawField(vector vecOrigin, vector vecSize, string strText, font_s fnt
 string Font_RGBtoHex(vector vecColor);
 int Font_GetHeight(font_s);
 float Font_GetStringWidth(string strText, float flColors, font_s fnt);
-
 float Font_GetID(font_s fnt);

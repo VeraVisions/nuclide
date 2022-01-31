@@ -91,6 +91,7 @@ base_player:NSSurfacePropEntity
 	virtual void(float, float) ReceiveEntity;
 	virtual void(void) PredictPreFrame;
 	virtual void(void) PredictPostFrame;
+	virtual void(void) ClientInputFrame;
 #else
 	
 	int voted;

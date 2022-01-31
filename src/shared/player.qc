@@ -17,6 +17,71 @@
 #ifdef CLIENT
 /*
 =================
+base_player::ClientInputFrame
+
+This is basically CSQC_Input_Frame! So games can override this as they please.
+=================
+*/
+void
+base_player::ClientInputFrame(void)
+{
+	/* If we are inside a VGUI, don't let the client do stuff outside */
+	if (VGUI_Active()) {
+		input_impulse = 0;
+		input_buttons = 0;
+		return;
+	}
+
+	/* background maps have no input */
+	if (serverkeyfloat("background") == 1)
+		return;
+
+	if (pSeat->m_iInputAttack2 == TRUE) {
+		input_buttons |= INPUT_BUTTON3;
+	}
+
+	if (pSeat->m_iInputReload == TRUE) {
+		input_buttons |= INPUT_BUTTON4;
+	}
+
+	if (pSeat->m_iInputUse == TRUE) {
+		input_buttons |= INPUT_BUTTON5;
+	}
+
+	if (pSeat->m_iInputDuck == TRUE) {
+		input_buttons |= INPUT_BUTTON8;
+	}
+
+	/* The HUD needs more time */
+	if (pSeat->m_iHUDWeaponSelected) {
+		if ((input_buttons & INPUT_BUTTON0))
+			HUD_DrawWeaponSelect_Trigger();
+		else if ((input_buttons & INPUT_BUTTON3))
+			pSeat->m_iHUDWeaponSelected = pSeat->m_flHUDWeaponSelectTime = 0;
+
+		pSeat->m_flInputBlockTime = time + 0.2;
+	}
+
+	/* prevent accidental input packets */
+	if (pSeat->m_flInputBlockTime > time) {
+		input_buttons &= ~INPUT_BUTTON0;
+		input_buttons &= ~INPUT_BUTTON3;
+		pSeat->m_iInputAttack2 = FALSE;
+		return;
+	}
+
+	/* compat*/
+	if (input_impulse == 201) {
+		sendevent("Spraylogo", "");
+	}
+
+	if (pSeat->m_flCameraTime > time) {
+		/* TODO: Supress the changing of view_angles/input_angles. */
+	}
+}
+
+/*
+=================
 base_player::ReceiveEntity
 
 Receive the generic client attributes from the server.

@@ -86,6 +86,21 @@ spectator::RunClientCommand(void)
 
 #else
 void
+spectator::ClientInputFrame(void)
+{
+	/* If we are inside a VGUI, don't let the client do stuff outside */
+	if (VGUI_Active()) {
+		input_impulse = 0;
+		input_buttons = 0;
+		return;
+	}
+
+	/* background maps have no input */
+	if (serverkeyfloat("background") == 1)
+		return;
+}
+
+void
 spectator::ReceiveEntity(float new)
 {
 	float fl;
