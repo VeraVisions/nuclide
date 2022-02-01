@@ -101,9 +101,9 @@ spectator::ClientInputFrame(void)
 }
 
 void
-spectator::ReceiveEntity(float new)
+spectator::ReceiveEntity(float new, float fl)
 {
-	float fl;
+
 	if (new == FALSE) {
 		/* Go through all the physics code between the last received frame
 		 * and the newest frame and keep the changes this time around instead
@@ -131,8 +131,6 @@ spectator::ReceiveEntity(float new)
 
 	/* seed for our prediction table */
 	sequence = servercommandframe;
-
-	fl = readfloat();
 
 	if (fl & SPECFL_ORIGIN) {
 		origin[0] = readcoord();
@@ -401,3 +399,23 @@ spectator::spectator(void)
 	forceinfokey(this, "*spec", "1");
 #endif
 }
+
+#ifdef CLIENT
+void
+Spectator_ReadEntity(float new)
+{
+	spectator spec = (spectator)self;
+
+	if (new || self.classname != "spectator") {
+		spawnfunc_spectator();
+		spec.classname = "spectator";
+		spec.solid = SOLID_SLIDEBOX;
+		spec.drawmask = MASK_ENGINE;
+		spec.customphysics = Empty;
+		setsize(spec, [0,0,0], [0,0,0]);
+	}
+
+	float flags = readfloat();
+	spec.ReceiveEntity(new, flags);
+}
+#endif

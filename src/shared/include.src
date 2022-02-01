@@ -1,4 +1,5 @@
 #includelist
+client.qc
 spectator.qc
 pmove.qc
 pmove_custom.qc

@@ -23,6 +23,7 @@
 #endif
 
 #include "../gs-entbase/shared/baseentity.h"
+#include "client.h"
 #include "player.h"
 #include "damage.h"
 #include "flags.h"

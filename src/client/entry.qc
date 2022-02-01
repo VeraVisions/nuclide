@@ -517,7 +517,7 @@ CSQC_Input_Frame(void)
 	} else if (self.classname == "spectator") {
 		spectator spec;
 		spec = (spectator)pSeat->m_ePlayer;
-		pl.ClientInputFrame();
+		spec.ClientInputFrame();
 	}
 }
 
@@ -934,16 +934,7 @@ CSQC_Ent_Update(float new)
 		pl.ReceiveEntity(new, a);
 		break;
 	case ENT_SPECTATOR:
-		spectator spec = (spectator)self;
-		if (new || self.classname != "spectator") {
-			spawnfunc_spectator();
-			spec.classname = "spectator";
-			spec.solid = SOLID_SLIDEBOX;
-			spec.drawmask = MASK_ENGINE;
-			spec.customphysics = Empty;
-			setsize(spec, [0,0,0], [0,0,0]);
-		}
-		spec.ReceiveEntity(new);
+		Spectator_ReadEntity(new);
 		break;
 	case ENT_SPRITE:
 		env_sprite spr = (env_sprite)self;

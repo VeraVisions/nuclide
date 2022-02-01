@@ -66,6 +66,10 @@ Font_Load(string strFile, font_s &fntNew)
 			case "flags":
 				fntNew.iFlags = (int)stof(argv(1));
 				break;
+			case "additive":
+				if (stof(argv(1)) == 1)
+					fntNew.iFlags = DRAWFLAG_ADDITIVE;
+				break;
 			default:
 				break;
 			}

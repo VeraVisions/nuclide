@@ -29,7 +29,7 @@
 #define VEC_CHANGED(x,y) (x ##_net[y] != x[y])
 
 class
-base_player:NSSurfacePropEntity
+base_player:base_client
 {
 	PREDICTED_FLOAT(health);
 	PREDICTED_FLOAT(armor);

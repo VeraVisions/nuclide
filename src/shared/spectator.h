@@ -15,11 +15,7 @@ typedef enum
 	SPECMODE_OVERVIEW
 } spectatorMode_t;
 
-#ifdef SERVER
-class spectator:NSEntity
-#else
-class spectator
-#endif
+class spectator:base_client
 {
 	vector origin_net;
 	vector velocity_net;
@@ -49,7 +45,11 @@ class spectator
 	virtual void(void) RunClientCommand;
 #else
 	virtual void(void) ClientInputFrame;
-	virtual void(float) ReceiveEntity;
+	virtual void(float,float) ReceiveEntity;
 	virtual float(void) predraw;
 #endif
-}; 
+};
+
+#ifdef CLIENT
+void Spectator_ReadEntity(float new);
+#endif
