@@ -156,8 +156,10 @@ Font_GetHeight(font_s fnt)
 float
 Font_StringWidth(string strText, float flColors, font_s fnt)
 {
+	float w;
 	drawfont = (float)fnt.iID;
-	stringwidth(strText, flColors, [(float)fnt.iScaleX,(float)fnt.iScaleY]);
+	w = stringwidth(strText, flColors, [fnt.iScaleX, fnt.iScaleY]);
 	drawfont = 0;
 	drawfontscale = [1,1,0];
+	return w;
 }
