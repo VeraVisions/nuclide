@@ -33,10 +33,29 @@ typedef struct
 } font_s;
 
 void Font_Load(string strFile, font_s &fntNew);
+
+/* standard drawing */
 void Font_DrawText(vector vecOrigin, string strText, font_s fnt);
+void Font_DrawText_A(vector vecOrigin, string strText, float a, font_s fnt);
+void Font_DrawText_RGB(vector vecOrigin, string strText, vector col, font_s fnt);
 void Font_DrawText_RGBA(vector vecOrigin, string strText, vector col, float a, font_s fnt);
+
+/* right aligned variants */
+void Font_DrawRText(vector vecOrigin, string strText, font_s fnt);
+void Font_DrawRText_A(vector vecOrigin, string strText, float a, font_s fnt);
+void Font_DrawRText_RGB(vector vecOrigin, string strText, vector col, font_s fnt);
+void Font_DrawRText_RGBA(vector vecOrigin, string strText, vector col, float a, font_s fnt);
+
 void Font_DrawField(vector vecOrigin, vector vecSize, string strText, font_s fnt, int iAlignFlags);
+
+/* returns a 0xFFFFFF type color code you can put into your strings */
 string Font_RGBtoHex(vector vecColor);
+
+/* gets the height for a single character of the specified font */
 int Font_GetHeight(font_s);
+
+/* gets the width of a series of characters */
 float Font_StringWidth(string strText, float flColors, font_s fnt);
+
+/* get the 'drawfont' ID, only use this when porting old code quickly. */
 float Font_GetID(font_s fnt);

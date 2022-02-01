@@ -96,7 +96,7 @@ Font_DrawText(vector vecOrigin, string strText, font_s fnt)
 }
 
 void
-Font_DrawText_A(vector vecOrigin, string strText, vector rgb, float a, font_s fnt)
+Font_DrawText_A(vector vecOrigin, string strText, float a, font_s fnt)
 {
 	drawfont = (float)fnt.iID;
 	drawstring(vecOrigin, strText, [fnt.iScaleX, fnt.iScaleY], fnt.vecColor, a, (float)fnt.iFlags);
@@ -117,6 +117,34 @@ Font_DrawText_RGBA(vector vecOrigin, string strText, vector rgb, float a, font_s
 	drawfont = (float)fnt.iID;
 	drawstring(vecOrigin, strText, [fnt.iScaleX, fnt.iScaleY], rgb, a, (float)fnt.iFlags);
 	drawfont = 0;
+}
+
+void
+Font_DrawRText(vector vecOrigin, string strText, font_s fnt)
+{
+	vecOrigin[0] -= Font_StringWidth(strText, TRUE, fnt);
+	Font_DrawText(vecOrigin, strText, fnt);
+}
+
+void
+Font_DrawRText_A(vector vecOrigin, string strText, float a, font_s fnt)
+{
+	vecOrigin[0] -= Font_StringWidth(strText, TRUE, fnt);
+	Font_DrawText_A(vecOrigin, strText, a, fnt);
+}
+
+void
+Font_DrawRText_RGB(vector vecOrigin, string strText, vector rgb, font_s fnt)
+{
+	vecOrigin[0] -= Font_StringWidth(strText, TRUE, fnt);
+	Font_DrawText_RGB(vecOrigin, strText, rgb, fnt);
+}
+
+void
+Font_DrawRText_RGBA(vector vecOrigin, string strText, vector rgb, float a, font_s fnt)
+{
+	vecOrigin[0] -= Font_StringWidth(strText, TRUE, fnt);
+	Font_DrawText_RGBA(vecOrigin, strText, rgb, a, fnt);
 }
 
 void
