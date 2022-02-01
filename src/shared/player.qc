@@ -114,14 +114,14 @@ base_player::ReceiveEntity(float new, float fl)
 	if (fl & PLAYER_ORIGIN_Z)
 		origin[2] = readcoord();
 	if (fl & PLAYER_ANGLES_X) {
-		v_angle[0] = pitch = readshort() / (32767 / 360);
-		v_angle[1] = pitch = readshort() / (32767 / 360);
-		v_angle[2] = pitch = readshort() / (32767 / 360);
+		v_angle[0] = readshort() / (32767 / 360);
+		v_angle[1] = readshort() / (32767 / 360);
+		v_angle[2] = readshort() / (32767 / 360);
 	}
 	if (fl & PLAYER_ANGLES_Y) {
 		angles[0] = readshort() / (32767 / 360);
 		angles[1] = readshort() / (32767 / 360);
-		angles[1] = readshort() / (32767 / 360);
+		angles[2] = readshort() / (32767 / 360);
 	}
 	if (fl & PLAYER_COLORMAP)
 		colormap = readbyte();

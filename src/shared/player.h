@@ -86,7 +86,6 @@ base_player:base_client
 
 #ifdef CLIENT
 	int sequence;
-	float pitch;
 
 	virtual void(float, float) ReceiveEntity;
 	virtual void(void) PredictPreFrame;

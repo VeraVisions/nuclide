@@ -4,5 +4,10 @@ class
 base_client:NSSurfacePropEntity
 {
 	void(void) base_client;
+
 	virtual void(void) ClientInputFrame;
+
+#ifdef CLIENT
+	virtual float(void) predraw;
+#endif
 };
