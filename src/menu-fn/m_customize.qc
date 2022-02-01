@@ -341,7 +341,7 @@ menu_customize_init(void)
 
 		cz_3dModel = spawn(CUI3DView);
 		cz_3dModel.SetPos(410,160);
-		cz_3dModel.SetSize(170,221);
+		cz_3dModel.SetSize([170,221]);
 		cz_3dModel.SetDrawFunc(ModelPreview_Draw);
 		cz_3dModel.SetInputFunc(ModelPreview_Input);
 		Widget_Add(fn_customize, cz_3dModel);

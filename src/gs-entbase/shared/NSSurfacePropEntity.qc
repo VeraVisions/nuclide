@@ -220,7 +220,7 @@ NSSurfacePropEntity::Death(void)
 
 	if (GetPropData(PROPINFO_SKIN) != 0) {
 		SetSkin(GetPropData(PROPINFO_SKIN));
-	} else if (GetPropData(PROPINFO_BREAKMODEL)) {
+	} else if (GetPropData(PROPINFO_BREAKMODEL) != __NULL__) {
 		string gibeffect = GetPropData(PROPINFO_BREAKMODEL);
 		int breakcount = GetPropData(PROPINFO_BREAKCOUNT);
 		BreakModel_Spawn(absmin, absmax, [0,0,0], 100, breakcount, gibeffect);
@@ -280,7 +280,7 @@ NSSurfacePropEntity::predraw(void)
 			m_flBurnNext = time + 0.1f;
 		}
 	}
-	super::predraw();
+	return super::predraw();
 }
 #endif
 

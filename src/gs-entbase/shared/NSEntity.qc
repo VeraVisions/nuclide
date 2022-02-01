@@ -289,6 +289,9 @@ NSEntity::UpdateBounds(void)
 	vector newMins, newMaxs;
 	float flScale = 1.0f;
 
+	newMins = m_vecMins;
+	newMaxs = m_vecMaxs;
+
 	/* avoid useless computation */
 	if (angles != [0,0,0]) {
 		/* adjust bbox according to rotation */

@@ -25,7 +25,7 @@ var int g_vguiWidgetCount;
 	var float UI_MAINALPHA;
 #endif
 
-void
+int
 VGUI_Active(void)
 {
 	return (g_vguiWidgetCount > 0) ? TRUE : FALSE;

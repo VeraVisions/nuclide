@@ -47,7 +47,7 @@ FX_Corpse_Next(void)
 entity
 FX_Corpse_Spawn(player pl, float anim)
 {
-	NSRenderableEntity body_next = FX_Corpse_Next();
+	NSRenderableEntity body_next = (NSRenderableEntity)FX_Corpse_Next();
 	setorigin(body_next, pl.origin + [0,0,32]);
 	setmodel(body_next, pl.model);
 	setsize(body_next, VEC_HULL_MIN, VEC_HULL_MAX);

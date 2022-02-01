@@ -184,8 +184,8 @@ CGameRules::DamageApply(entity t, entity c, float dmg, int w, damageType_t type)
 	base_player tp = (base_player)t;
 
 	/* for armor damage */
-	float flArmor;
-	float flNewDamage;
+	float flArmor = 0;
+	float flNewDamage = 0;
 
 	/* player god mode */
 	if (t.flags & FL_CLIENT && t.flags & FL_GODMODE)

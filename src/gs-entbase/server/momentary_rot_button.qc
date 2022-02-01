@@ -103,7 +103,7 @@ momentary_rot_button::MovementStateChanged(void)
 	vector vecAngleDifference;
 	float flTravelLength;
 	float flTravelTime;
-	float flSpeed;
+	float flSpeed = 0;
 
 	switch (m_iMoveState) {
 	case MOMENTARY_IDLE:

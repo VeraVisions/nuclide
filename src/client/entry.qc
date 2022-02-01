@@ -312,14 +312,7 @@ CSQC_UpdateView(float w, float h, float focus)
 					}
 				}
 
-				if (pSeat->m_flShakeDuration > 0.0) {
-					vector vecShake = [0,0,0];
-					vecShake[0] += random() * 3;
-					vecShake[1] += random() * 3;
-					vecShake[2] += random() * 3;
-					pl.punchangle += (vecShake * pSeat->m_flShakeAmp) * (pSeat->m_flShakeDuration / pSeat->m_flShakeTime);
-					pSeat->m_flShakeDuration -= clframetime;
-				}
+				Shake_Update(pl);
 				setproperty(VF_ANGLES, view_angles + pl.punchangle);
 			} else if (getplayerkeyvalue(pl.entnum-1, "*spec") == "1") {
 				spec = (spectator)self;
@@ -353,15 +346,7 @@ CSQC_UpdateView(float w, float h, float focus)
 				}
 			} else if (getplayerkeyvalue(pl.entnum-1, "*spec") == "2") {
 				setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin);
-
-				if (pSeat->m_flShakeDuration > 0.0) {
-					vector vecShake = [0,0,0];
-					vecShake[0] += random() * 3;
-					vecShake[1] += random() * 3;
-					vecShake[2] += random() * 3;
-					pl.punchangle += (vecShake * pSeat->m_flShakeAmp) * (pSeat->m_flShakeDuration / pSeat->m_flShakeTime);
-					pSeat->m_flShakeDuration -= clframetime;
-				}
+				Shake_Update(pl);
 				setproperty(VF_ANGLES, view_angles + pl.punchangle);
 			}
 

@@ -562,8 +562,6 @@ void
 Sound_PlayLocal(string shader)
 {
 	int r;
-	float radius;
-	float pitch;
 	int flag;
 	int sample;
 

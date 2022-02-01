@@ -368,7 +368,7 @@ NSMonster::FreeStateMoved(void)
 	dprint("NSMonster::FreeStateMoved\n");
 	new_origin = gettaginfo(this, 1);
 	SetOrigin(new_origin);
-	droptofloor(this);
+	droptofloor();
 	FreeState();
 }
 

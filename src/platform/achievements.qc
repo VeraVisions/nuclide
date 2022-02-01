@@ -14,18 +14,21 @@ Achievement_Clear(string strName)
 int
 Achievement_Get(string strName)
 {
+	return 0;
 }
 
 /* get the icon of an achievement */
 string
 Achievement_GetIcon(string strName)
 {
+	return __NULL__;
 }
 
 /* STUB, returns how many other users achieved this */
 float
 Achievement_GetPercentage(string strName)
 {
+	return 0.0f;
 }
 
 /* called when you want to show a pop-up indicating progress */
