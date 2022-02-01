@@ -27,6 +27,8 @@ var int autocvar__menu_singleplayer;
 #define TARGET_MENU		1
 #define TARGET_CLIENT		2
 
+#define DRAWFLAG_ADDITIVE 1
+
 enumflags
 {
 	SEARCH_INSENSITIVE,
