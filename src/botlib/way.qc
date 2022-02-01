@@ -184,6 +184,9 @@ Way_CreateNode(entity ePlayer, int iAutoLink)
 			} else if (iAutoLink == -2) {
 				Way_LinkNodes(n, &g_pWaypoints[iID-1]);
 			} else if (iAutoLink == -4) {
+				if (iNearest == -1i)
+					return;
+
 				Way_LinkNodes(n, &g_pWaypoints[iNearest]);
 				Way_LinkNodes(&g_pWaypoints[iNearest], n);
 			}
@@ -235,10 +238,18 @@ Way_FlagJump(void)
 {
 	if (g_waylink_status == 0) {
 		g_way1 = Way_FindClosestNode(self.origin);
+
+		if (g_way1 == -1i)
+			return;
+
 		g_waylink_status = 1;
 		env_message_single(self, "^2Selected first waypoint!\n");
 	} else if (g_waylink_status == 1) {
 		g_way2 = Way_FindClosestNode(self.origin);
+
+		if (g_way2 == -1i)
+			return;
+
 		g_waylink_status = 0;
 
 		if (g_way1 != g_way2) {
@@ -261,10 +272,18 @@ Way_FlagCrouch(void)
 {
 	if (g_waylink_status == 0) {
 		g_way1 = Way_FindClosestNode(self.origin);
+
+		if (g_way1 == -1i)
+			return;
+
 		g_waylink_status = 1;
 		env_message_single(self, "^2Selected first waypoint!\n");
 	} else if (g_waylink_status == 1) {
 		g_way2 = Way_FindClosestNode(self.origin);
+
+		if (g_way2 == -1i)
+			return;
+
 		g_waylink_status = 0;
 
 		if (g_way1 != g_way2) {
@@ -287,10 +306,18 @@ Way_FlagWalk(void)
 {
 	if (g_waylink_status == 0) {
 		g_way1 = Way_FindClosestNode(self.origin);
+
+		if (g_way1 == -1i)
+			return;
+
 		g_waylink_status = 1;
 		env_message_single(self, "^2Selected first waypoint!\n");
 	} else if (g_waylink_status == 1) {
 		g_way2 = Way_FindClosestNode(self.origin);
+
+		if (g_way2 == -1i)
+			return;
+
 		g_waylink_status = 0;
 
 		if (g_way1 != g_way2) {
@@ -313,10 +340,18 @@ Way_FlagAim(void)
 {
 	if (g_waylink_status == 0) {
 		g_way1 = Way_FindClosestNode(self.origin);
+
+		if (g_way1 == -1i)
+			return;
+
 		g_waylink_status = 1;
 		env_message_single(self, "^2Selected first waypoint!\n");
 	} else if (g_waylink_status == 1) {
 		g_way2 = Way_FindClosestNode(self.origin);
+
+		if (g_way2 == -1i)
+			return;
+
 		g_waylink_status = 0;
 
 		if (g_way1 != g_way2) {
@@ -339,10 +374,18 @@ Way_FlagUse(void)
 {
 	if (g_waylink_status == 0) {
 		g_way1 = Way_FindClosestNode(self.origin);
+
+		if (g_way1 == -1i)
+			return;
+
 		g_waylink_status = 1;
 		env_message_single(self, "^2Selected first waypoint!\n");
 	} else if (g_waylink_status == 1) {
 		g_way2 = Way_FindClosestNode(self.origin);
+
+		if (g_way2 == -1i)
+			return;
+
 		g_waylink_status = 0;
 
 		if (g_way1 != g_way2) {
@@ -365,10 +408,18 @@ Way_Unlink(void)
 {
 	if (g_waylink_status == 0) {
 		g_way1 = Way_FindClosestNode(self.origin);
+
+		if (g_way1 == -1i)
+			return;
+
 		g_waylink_status = 1;
 		env_message_single(self, "^2Selected first waypoint!\n");
 	} else if (g_waylink_status == 1) {
 		g_way2 = Way_FindClosestNode(self.origin);
+
+		if (g_way2 == -1i)
+			return;
+
 		g_waylink_status = 0;
 
 		if (g_way1 != g_way2) {
@@ -385,10 +436,18 @@ Way_UnlinkTwo(void)
 {
 	if (g_waylink_status == 0) {
 		g_way1 = Way_FindClosestNode(self.origin);
+
+		if (g_way1 == -1i)
+			return;
+
 		g_waylink_status = 1;
 		env_message_single(self, "^2Selected first waypoint!\n");
 	} else if (g_waylink_status == 1) {
 		g_way2 = Way_FindClosestNode(self.origin);
+
+		if (g_way2 == -1i)
+			return;
+
 		g_waylink_status = 0;
 
 		if (g_way1 != g_way2) {
@@ -498,10 +557,18 @@ Way_ConnectOne(void)
 {
 	if (g_waylink_status == 0) {
 		g_way1 = Way_FindClosestNode(self.origin);
+
+		if (g_way1 == -1i)
+			return;
+
 		g_waylink_status = 1;
 		env_message_single(self, "^21/2 nodes selected...    \n");
 	} else if (g_waylink_status == 1) {
 		g_way2 = Way_FindClosestNode(self.origin);
+
+		if (g_way2 == -1i)
+			return;
+
 		g_waylink_status = 0;
 
 		if (g_way1 != g_way2) {
@@ -519,10 +586,18 @@ Way_ConnectTwo(void)
 {
 	if (g_waylink_status == 0) {
 		g_way1 = Way_FindClosestNode(self.origin);
+
+		if (g_way1 == -1i)
+			return;
+
 		g_waylink_status = 1;
 		env_message_single(self, "^21/2 nodes selected...    \n");
 	} else if (g_waylink_status == 1) {
 		g_way2 = Way_FindClosestNode(self.origin);
+
+		if (g_way2 == -1i)
+			return;
+
 		g_waylink_status = 0;
 
 		if (g_way1 != g_way2) {
