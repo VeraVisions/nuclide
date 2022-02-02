@@ -72,6 +72,10 @@ class NSEntity:NSTrigger
 	nonvirtual string(void) GetSpawnModel;
 #endif
 
+	virtual void(float) SetScale;
+	virtual void(entity) SetOwner;
+	virtual void(vector) SetVelocity;
+	virtual void(void()) SetTouch;
 	virtual void(float) SetSendFlags;
 	virtual void(float) SetSolid;
 	virtual void(string) SetModel;

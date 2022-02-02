@@ -26,6 +26,7 @@
 #include "NSPointTrigger.h"
 #include "NSMonster.h"
 #include "NSTalkMonster.h"
+#include "NSProjectile.h"
 
 /*
 ============

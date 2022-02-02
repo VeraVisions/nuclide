@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2022 Vera Visions L.L.C.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,11 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class NSBrushTrigger:NSEntity
+class NSProjectile:NSSurfacePropEntity
 {
-	void(void) NSBrushTrigger;
+	void(void) NSProjectile;
 
-#ifdef SERVER
-	virtual void(void) InitBrushTrigger;
-#endif
+	virtual void(entity, entity) m_pImpact = 0;
+
+	virtual void(void()) SetImpact;
+	virtual void(string) SetModel;
+	virtual void(void) ProjectileTouch;
 };

@@ -253,6 +253,28 @@ NSEntity::ClearAngles(void)
 }
 #endif
 
+void
+NSEntity::SetOwner(entity newOwner)
+{
+	owner = newOwner;
+};
+
+void
+NSEntity::SetVelocity(vector vecNew)
+{
+	if (vecNew == velocity)
+		return;
+
+	velocity = vecNew;
+	SetSendFlags(BASEFL_CHANGED_VELOCITY);
+};
+
+void
+NSEntity::SetTouch(void() newTouch)
+{
+	touch = newTouch;
+};
+
 /* we want to really use those set functions because they'll notify of any
  * networking related changes. otherwise we'll have to keep track of copies
  * that get updated every frame */
@@ -281,6 +303,15 @@ NSEntity::SetSolid(float newSolid)
 
 	solid = newSolid;
 	SetSendFlags(BASEFL_CHANGED_SOLID);
+}
+void
+NSEntity::SetScale(float newScale)
+{
+	if (newScale == scale)
+		return;
+
+	scale = newScale;
+	SetSendFlags(BASEFL_CHANGED_SCALE);
 }
 
 void
