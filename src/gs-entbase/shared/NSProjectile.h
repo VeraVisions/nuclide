@@ -20,7 +20,7 @@ class NSProjectile:NSSurfacePropEntity
 
 	virtual void(entity, entity) m_pImpact = 0;
 
-	virtual void(void()) SetImpact;
+	virtual void(void(entity, entity)) SetImpact;
 	virtual void(string) SetModel;
 	virtual void(void) ProjectileTouch;
 };

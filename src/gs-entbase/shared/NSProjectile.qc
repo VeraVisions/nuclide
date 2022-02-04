@@ -24,7 +24,7 @@ NSProjectile::ProjectileTouch(void)
 }
 
 void
-NSProjectile::SetImpact(void() func)
+NSProjectile::SetImpact(void(entity a,entity b) func)
 {
 	m_pImpact = func;
 }
