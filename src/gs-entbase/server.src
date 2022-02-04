@@ -62,7 +62,6 @@ server/player_weaponstrip.qc
 server/player_loadsaved.qc
 server/prop_physics.qc
 server/prop_dynamic.qc
-server/prop_static.qc
 server/point_camera.qc
 server/targ_speaker.qc
 server/target_cdaudio.qc
