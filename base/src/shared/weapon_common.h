@@ -61,12 +61,20 @@ vector Weapons_GetCameraPos(void);
 void Weapons_ViewAnimation(int);
 void Weapons_ViewPunchAngle(vector);
 int Weapons_IsPresent(player, int);
-void Weapons_SetModel(string);
-void Weapons_SetGeomset(string);
 void Weapons_UpdateAmmo(base_player, int, int, int);
 int Weapons_GetAnimation(void);
 void Weapons_EnableModel(void);
 void Weapons_DisableModel(void);
+
+void Weapons_SetLeftModel(string);
+void Weapons_SetRightModel(string);
+
+void Weapons_SetRightGeomset(string);
+void Weapons_SetLeftGeomset(string);
+
+/* compat */
+void Weapons_SetGeomset(string);
+void Weapons_SetModel(string);
 
 void Weapons_Sound(entity, float, string);
 

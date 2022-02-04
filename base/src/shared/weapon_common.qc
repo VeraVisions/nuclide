@@ -117,7 +117,16 @@ Weapons_Init(void)
 }
 
 void
-Weapons_SetModel(string mdl)
+Weapons_SetLeftModel(string mdl)
+{
+#ifdef CLIENT
+	setmodel(pSeat->m_eViewModelL, mdl);
+	setsize(pSeat->m_eViewModelL, [0,0,0], [0,0,0]);
+	pSeat->m_eViewModelL.effects |= EF_NOSHADOW;
+#endif
+}
+void
+Weapons_SetRightModel(string mdl)
 {
 #ifdef CLIENT
 	setmodel(pSeat->m_eViewModel, mdl);
@@ -127,11 +136,31 @@ Weapons_SetModel(string mdl)
 }
 
 void
-Weapons_SetGeomset(string set)
+Weapons_SetModel(string mdl)
+{
+	Weapons_SetRightModel(mdl);
+	Weapons_SetLeftModel("");
+}
+
+void
+Weapons_SetRightGeomset(string set)
 {
 #ifdef CLIENT
 	setcustomskin(pSeat->m_eViewModel, "", set);
 #endif
+}
+void
+Weapons_SetLeftGeomset(string set)
+{
+#ifdef CLIENT
+	setcustomskin(pSeat->m_eViewModelL, "", set);
+#endif
+}
+
+void
+Weapons_SetGeomset(string set)
+{
+	Weapons_SetRightGeomset(set);
 }
 
 void

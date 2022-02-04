@@ -125,6 +125,9 @@ struct
 	entity m_eViewModel;
 	entity m_eMuzzleflash;
 	int m_iVMBones;
+	entity m_eViewModelL;
+	entity m_eMuzzleflashL;
+	int m_iVMBonesL;
 
 	void(void) m_pEventCall;
 	float m_flEventTime;

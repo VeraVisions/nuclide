@@ -48,9 +48,13 @@ class prop_static:NSRenderableEntity
 void
 prop_static::Respawn(void)
 {
-	super::Respawn();
-	SetModel(GetSpawnModel());
-	SetSolid(SOLID_CORPSE);
+	//super::Respawn();
+	solid = SOLID_NOT;
+	setmodel(this, GetSpawnModel());
+	mins = [0,0,0];
+	maxs = [0,0,0];
+	setsize(this, mins, maxs);
+	setorigin(this, GetSpawnOrigin());
 }
 
 void

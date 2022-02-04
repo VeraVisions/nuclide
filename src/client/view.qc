@@ -22,6 +22,7 @@ View_Init(void)
 	for (int s = g_seats.length; s-- > numclientseats;) {
 		pSeat = &g_seats[s];
 		if(!pSeat->m_eViewModel) {
+			/* right side */
 			pSeat->m_eViewModel = spawn();
 			pSeat->m_eViewModel.classname = "vm";
 			pSeat->m_eViewModel.renderflags = RF_DEPTHHACK;
@@ -34,6 +35,20 @@ View_Init(void)
 			pSeat->m_eMuzzleflash.renderflags = RF_ADDITIVE;
 			pSeat->m_eMuzzleflash.effects |= EF_NOSHADOW;
 			setsize(pSeat->m_eMuzzleflash, [0,0,0], [0,0,0]);
+
+			/* left side */
+			pSeat->m_eViewModelL = spawn();
+			pSeat->m_eViewModelL.classname = "vm";
+			pSeat->m_eViewModelL.renderflags = RF_DEPTHHACK;
+			pSeat->m_eViewModelL.effects |= EF_NOSHADOW;
+			pSeat->m_eViewModelL.alpha = 1.0f;
+			setsize(pSeat->m_eViewModelL, [0,0,0], [0,0,0]);
+
+			pSeat->m_eMuzzleflashL = spawn();
+			pSeat->m_eMuzzleflashL.classname = "mflash";
+			pSeat->m_eMuzzleflashL.renderflags = RF_ADDITIVE;
+			pSeat->m_eMuzzleflashL.effects |= EF_NOSHADOW;
+			setsize(pSeat->m_eMuzzleflashL, [0,0,0], [0,0,0]);
 		}
 	}
 }
@@ -104,6 +119,8 @@ View_DrawViewModel(void)
 {
 	entity m_eViewModel = pSeat->m_eViewModel;
 	entity m_eMuzzleflash = pSeat->m_eMuzzleflash;
+	entity m_eViewModelL = pSeat->m_eViewModelL;
+	entity m_eMuzzleflashL = pSeat->m_eMuzzleflashL;
 	
 	player pl = (player) self;
 
@@ -115,11 +132,14 @@ View_DrawViewModel(void)
 		return;
 	}
 
+	View_UpdateWeapon(m_eViewModelL, m_eMuzzleflashL);
 	View_UpdateWeapon(m_eViewModel, m_eMuzzleflash);
 
 	float fBaseTime2 = m_eViewModel.frame1time;
 	float fBaseTime = m_eViewModel.frame1time;
-	m_eViewModel.frame2time = pl.weapontime;
+	m_eViewModelL.frame1time =
+	m_eViewModelL.frame2time =
+	m_eViewModel.frame2time =
 	m_eViewModel.frame1time = pl.weapontime;
 	Event_Callback(m_eViewModel.frame1time, fBaseTime2);
 	processmodelevents(m_eViewModel.modelindex, m_eViewModel.frame, fBaseTime,
@@ -152,15 +172,22 @@ View_DrawViewModel(void)
 		m_eViewModel.angles = pSeat->m_vecLag;
 	}
 
-	m_eViewModel.colormap = pSeat->m_ePlayer.colormap;
+	/* apply to the left side */
+	m_eViewModelL.angles = m_eViewModel.angles;
+
+	m_eViewModelL.colormap = m_eViewModel.colormap = pSeat->m_ePlayer.colormap;
 
 	/* now apply the scale hack */
-	m_eViewModel.scale = autocvar_r_viewmodelscale;
-	m_eViewModel.origin = pSeat->m_vecPredictedOrigin + pl.view_ofs;
+	m_eViewModelL.scale = m_eViewModel.scale = autocvar_r_viewmodelscale;
+	m_eViewModelL.origin = m_eViewModel.origin = pSeat->m_vecPredictedOrigin + pl.view_ofs;
 
+	/* we only calculate bob on the right model, to avoid double speed bobbing */
 	Viewmodel_CalcBob();
 	Viewmodel_ApplyBob(m_eViewModel);
+	Viewmodel_ApplyBob(m_eViewModelL);
 
+	/* this is currently broken */
+#if 0
 	// Left-handed weapons
 	if (autocvar_v_lefthanded) {
 		v_right *= -1;
@@ -172,8 +199,9 @@ View_DrawViewModel(void)
 			m_eViewModel.renderflags &= ~RF_USEAXIS;
 		}
 	}
+#endif
 
-	// Only bother when zoomed out
+	/* only draw the model when it's 'enabled'... */
 	if (m_eViewModel.alpha != 0.0f) {
 		// Update muzzleflash position and draw it
 		if (m_eMuzzleflash.alpha > 0.0f) {
@@ -185,12 +213,17 @@ View_DrawViewModel(void)
 			/*dynamiclight_add(pSeat->m_vecPredictedOrigin + (v_forward * 32), 400 * m_eMuzzleflash.alpha, [1,0.45,0]);*/
 
 			setorigin(m_eMuzzleflash, m_eMuzzleflash.origin);
+			setorigin(m_eMuzzleflashL, m_eMuzzleflash.origin);
 			addentity(m_eMuzzleflash);
+			addentity(m_eMuzzleflashL);
 		}
 		setorigin(m_eViewModel, m_eViewModel.origin);
+		setorigin(m_eViewModelL, m_eViewModel.origin);
 		addentity(m_eViewModel);
+		addentity(m_eViewModelL);
 	}
 
+	/* view roll */
 	if (pl.movetype == MOVETYPE_WALK) {
 		Camera_StrafeRoll(view_angles);
 		Camera_RunBob(view_angles);
@@ -238,11 +271,12 @@ View_PreDraw(void)
 void
 View_PostDraw(void)
 {
-	entity m_eMuzzleflash = pSeat->m_eMuzzleflash;
-
 	// Take away alpha once it has drawn fully at least once
-	if (m_eMuzzleflash.alpha > 0.0f) {
-		m_eMuzzleflash.alpha -= (clframetime * 16);
+	if (pSeat->m_eMuzzleflash.alpha > 0.0f) {
+		pSeat->m_eMuzzleflash.alpha -= (clframetime * 16);
+	}
+	if (pSeat->m_eMuzzleflashL.alpha > 0.0f) {
+		pSeat->m_eMuzzleflashL.alpha -= (clframetime * 16);
 	}
 
 	ClientGame_PostDraw();
@@ -259,8 +293,8 @@ onto the view model
 void
 View_PlayAnimation(int iSequence)
 {
-	pSeat->m_eViewModel.frame = (float)iSequence;
-	player pl = (player)pSeat->m_ePlayer;
+	pSeat->m_eViewModel.frame =
+	pSeat->m_eViewModelL.frame = (float)iSequence;
 }
 
 int
@@ -269,17 +303,16 @@ View_GetAnimation(void)
 	return pSeat->m_eViewModel.frame;
 }
 
-
 void
 View_EnableViewmodel(void)
 {
-	entity m_eViewModel = pSeat->m_eViewModel;
-	m_eViewModel.alpha = 1.0f;
+	pSeat->m_eViewModel.alpha =
+	pSeat->m_eViewModelL.alpha = 1.0f;
 }
 
 void
 View_DisableViewmodel(void)
 {
-	entity m_eViewModel = pSeat->m_eViewModel;
-	m_eViewModel.alpha = 0.0f;
+	pSeat->m_eViewModel.alpha =
+	pSeat->m_eViewModelL.alpha = 0.0f;
 }

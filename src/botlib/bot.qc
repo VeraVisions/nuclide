@@ -411,6 +411,7 @@ bot::RunAI(void)
 
 		makevectors(input_angles);
 		input_movevalues = [v_forward * vecDirection, v_right * vecDirection, v_up * vecDirection];
+		input_movevalues[2] = 0;
 
 		/* duck and stand still when our enemy is far away */
 		if (m_eTarget && enemyvisible && vlen(aimpos-origin) > 512) {
