@@ -43,12 +43,9 @@ prop_dynamic::Respawn(void)
 {
 	super::Respawn();
 	SetModel(GetSpawnModel());
-	//UpdateBounds();
 
 	if (spawnflags & PRPDYN_NONSOLID)
 		SetSolid(SOLID_NOT);
-
-	SetSolid(SOLID_BBOX);
 }
 
 void

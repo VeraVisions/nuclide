@@ -200,6 +200,9 @@ NSVehicle::PlayerEnter(base_player pl)
 {
 	vector offs;
 
+	if (!pl)
+		return;
+
 	/* cache the position */
 	offs = pl.origin - origin;
 
@@ -218,6 +221,9 @@ NSVehicle::PlayerEnter(base_player pl)
 void
 NSVehicle::PlayerLeave(base_player pl)
 {
+	if (!pl)
+		return;
+
 	pl.movetype = MOVETYPE_WALK;
 	pl.flags &= ~FL_INVEHICLE;
 

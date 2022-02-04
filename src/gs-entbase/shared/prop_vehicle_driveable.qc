@@ -242,8 +242,11 @@ prop_vehicle_driveable_wheel::Accel(float flMoveTime, float m_flTurn)
 	makevectors(vecAngle);
 
 	if (m_flTurn) {
+		/* cripple turnrate by our current velocity */
+		float turnbreak = bound(0, vlen(velocity), 100) * 0.5;
+
 		/* rotates v_forward */
-		rotatevectorsbyangle([ 0, m_flTurn * 50, 0]);
+		rotatevectorsbyangle([ 0, m_flTurn * turnbreak, 0]);
 	}
 
 	tracebox(origin, mins, maxs, origin - v_up, MOVE_NOMONSTERS, owner);
@@ -404,7 +407,6 @@ prop_vehicle_driveable::RunVehiclePhysics(void)
 	angles[2] = Math_FixDelta(angles[2]);
 	angles[0] = bound(-45, angles[0], 45);
 	angles[2] = bound(-45, angles[2], 45);
-
 
 	velocity[0] = bound(-1000, velocity[0], 1000);
 	velocity[1] = bound(-1000, velocity[1], 1000);
