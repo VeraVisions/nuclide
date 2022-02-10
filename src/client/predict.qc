@@ -92,13 +92,13 @@ Predict_PlayerPreFrame(player pl)
 			continue;
 		}
 
-		if (i==clientcommandframe){
-			CSQC_Input_Frame();
-		}
-
 		/* don't do partial frames, aka incomplete input packets */
 		if (input_timelength == 0) {
 			break;
+		}
+
+		if (i==clientcommandframe){
+			CSQC_Input_Frame();
 		}
 
 		/* this global is for our shared random number seed */

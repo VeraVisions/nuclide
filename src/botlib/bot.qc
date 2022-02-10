@@ -392,6 +392,9 @@ bot::RunAI(void)
 		angles[2] = Math_FixDelta(v_angle[2]);
 		input_angles = v_angle;
 
+		/* always look ahead as the default */
+		aimpos = origin + (v_forward * 32);
+
 		/* now that aiming is sorted, we need to correct the movement */
 		if ((m_eTarget && enemyvisible && !enemydistant) && vlen(aimpos - origin) > 256) {
 			/* we are far away, inch closer */

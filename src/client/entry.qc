@@ -493,13 +493,16 @@ Hijacks and controls what input globals are being sent to the server
 void
 CSQC_Input_Frame(void)
 {
-	CSQC_UpdateSeat();
+	entity me;
 
-	if (self.classname == "player") {
+	CSQC_UpdateSeat();
+	me = pSeat->m_ePlayer;
+
+	if (me.classname == "player") {
 		player pl;
 		pl = (player)pSeat->m_ePlayer;
 		pl.ClientInputFrame();
-	} else if (self.classname == "spectator") {
+	} else if (me.classname == "spectator") {
 		spectator spec;
 		spec = (spectator)pSeat->m_ePlayer;
 		spec.ClientInputFrame();
@@ -517,8 +520,10 @@ Whenever we call a SVC_CGAMEPACKET on the SSQC, this is being run
 void
 CSQC_Parse_Event(void)
 {
+	entity me;
 	/* always 0, unless it was sent with a MULTICAST_ONE or MULTICAST_ONE_R to p2+ */
 	CSQC_UpdateSeat();
+	me = pSeat->m_ePlayer;
 
 	float fHeader = readbyte();
 
@@ -622,7 +627,7 @@ CSQC_Parse_Event(void)
 		setproperty(VF_ANGLES, a);
 		break;
 	case EV_SHAKE:
-		if (self.classname == "spectator")
+		if (me.classname == "spectator")
 			break;
 		pSeat->m_flShakeDuration = readfloat();
 		pSeat->m_flShakeAmp = readfloat();
