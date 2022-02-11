@@ -44,9 +44,12 @@ TraceAttack_ImpactWorld(void)
 
 /* cast a single bullet shot */
 static void
-TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon)
+TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon, float dist)
 {
 	vector range;
+
+	if (dist <= 0)
+		return;
 
 	range = (vAngle * 8196);
 
@@ -55,9 +58,11 @@ TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon)
 
 	/* make sure we can gib corpses */
 	int oldhitcontents = self.hitcontentsmaski;
-	self.hitcontentsmaski = CONTENTBITS_POINTSOLID | CONTENTBIT_CORPSE;
+	self.hitcontentsmaski = CONTENTBITS_POINTSOLID | CONTENTBIT_CORPSE | CONTENTBIT_WATER | CONTENTBIT_SLIME | CONTENTBIT_LAVA;
 	traceline(vecPos, vecPos + range, MOVE_LAGGED | MOVE_HITMODEL, self);
 	self.hitcontentsmaski = oldhitcontents;
+
+	dist -= trace_plane_dist;
 
 	self.dimension_solid = 254;
 	self.dimension_hit = 254;
@@ -66,6 +71,18 @@ TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon)
 
 	if (trace_fraction >= 1.0f)
 		return;
+
+	/* water impact */
+	if (trace_endcontentsi & CONTENTBIT_WATER) {
+		FX_Impact(IMPACT_SLOSH, trace_endpos, trace_plane_normal);
+		TraceAttack_FireSingle(trace_endpos + (v_forward * 2), vAngle, iDamage / 2, iWeapon, dist);
+	} else if (trace_endcontentsi & CONTENTBIT_SLIME) {
+		FX_Impact(IMPACT_SLOSH, trace_endpos, trace_plane_normal);
+		TraceAttack_FireSingle(trace_endpos + (v_forward * 2), vAngle, iDamage / 2, iWeapon, dist);
+	} else if (trace_endcontentsi & CONTENTBIT_LAVA) {
+		FX_Impact(IMPACT_SLOSH, trace_endpos, trace_plane_normal);
+		TraceAttack_FireSingle(trace_endpos + (v_forward * 2), vAngle, iDamage / 2, iWeapon, dist);
+	}
 
 	if (trace_ent.takedamage == DAMAGE_YES && trace_ent.iBleeds) {
 		Sound_Play(trace_ent, CHAN_BODY, "damage_bullet.hit");
@@ -122,7 +139,7 @@ TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon)
 #ifdef BULLETPENETRATION
 	if (iTotalPenetrations > 0) {
 		iTotalPenetrations -= 1;
-		TraceAttack_FireSingle(trace_endpos + (v_forward * 2), vAngle, iDamage / 2, iWeapon);
+		TraceAttack_FireSingle(trace_endpos + (v_forward * 2), vAngle, iDamage / 2, iWeapon, dist);
 	}
 #endif
 }
@@ -158,7 +175,7 @@ TraceAttack_FireBullets(int iShots, vector vecPos, int iDamage, vector vecSpread
 		vDir += frand * vecSpread[0] * v_right;
 		vDir += (vecSpread[1] * v_up) * 2;
 #endif
-		TraceAttack_FireSingle(vecPos, vDir, iDamage, iWeapon);
+		TraceAttack_FireSingle(vecPos, vDir, iDamage, iWeapon, 8196);
 		iShots--;
 	}
 	
