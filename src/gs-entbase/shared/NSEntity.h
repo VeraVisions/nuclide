@@ -51,6 +51,7 @@ class NSEntity:NSTrigger
 	vector net_origin;
 	vector net_angles;
 	vector net_velocity;
+	float net_modelindex;
 
 	string m_parent;
 

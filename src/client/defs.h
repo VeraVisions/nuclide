@@ -200,4 +200,8 @@ struct
 	float m_flShakeAmp;
 
 	vector m_vecLag;
+
+	/* vehicles */
+	float m_flVehTransition;
+	vector m_vecVehEntry;
 } g_seats[4], *pSeat;

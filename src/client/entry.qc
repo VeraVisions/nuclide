@@ -45,6 +45,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	registercommand("player_geomtest");
 	registercommand("way_menu");
 	registercommand("dev_explode");
+	registercommand("dev_modeltest");
 
 	/* basic actions */
 	registercommand("+attack");
@@ -660,6 +661,15 @@ CSQC_ConsoleCommand(string sCMD)
 		traceline(getproperty(VF_ORIGIN), getproperty(VF_ORIGIN) + v_forward * 4096, FALSE, pSeat->m_ePlayer);
 		dynamiclight_spawnstatic(trace_endpos + (v_forward * -16), 1024, [1,1,1]);
 		break;
+	case "dev_modeltest":
+		entity mt = spawn();
+		mt.drawmask = MASK_ENGINE;
+		setmodel(mt, argv(1));
+		setsize(mt, [0,0,0], [0,0,0]);
+		setorigin(mt, getproperty(VF_ORIGIN));
+		mt.angles = getproperty(VF_ANGLES);
+		mt.angles[0] = mt.angles[2] = 0;
+		break;
 	case "dev_explode":
 		makevectors(getproperty(VF_ANGLES));
 		traceline(getproperty(VF_ORIGIN), getproperty(VF_ORIGIN) + v_forward * 4096, FALSE, pSeat->m_ePlayer);
@@ -880,6 +890,11 @@ CSQC_Ent_Update(float new)
 	float t;
 	t = readbyte();
 
+	/* client didn't override anything */
+	if (ClientGame_EntityUpdate(t, new)) {
+		return;
+	}
+
 	switch (t) {
 	case ENT_ENTITY:
 		NSEntity me = (NSEntity)self;
@@ -985,9 +1000,7 @@ CSQC_Ent_Update(float new)
 		ips.ReceiveEntity(new, readfloat());
 		break;
 	default:
-		if (ClientGame_EntityUpdate(t, new) == FALSE) {
 			//error(sprintf("Unknown entity type update received. (%d)\n", t));
-		}
 	}
 }
 

@@ -30,12 +30,24 @@ Point entity defining a 4-wheel vehicle that you can drive.
 This entity was introduced in Half-Life 2 (2004).
 */
 
+enumflags
+{
+	VEHFL_DRIVER,
+	VEHFL_MODELINDEX,
+	VEHFL_ORIGIN,
+	VEHFL_ANGLES,
+	VEHFL_VELOCITY,
+	VEHFL_TURNING
+};
 
 class prop_vehicle_driveable_wheel
 {
 	void() prop_vehicle_driveable_wheel;
+	float m_flSuspension;
+	float m_flSuspensionForce;
 
 #ifdef CLIENT
+
 	vector origin_net;
 	vector velocity_net;
 	vector angles_net;
@@ -43,6 +55,7 @@ class prop_vehicle_driveable_wheel
 	virtual void(void) PredictPostFrame;
 #endif
 
+	virtual void(float) UpdateSuspension;
 	virtual void(float) Move;
 	virtual void(vector) Bounce;
 	virtual void(float, float m_flTurn) Accel;
@@ -87,6 +100,7 @@ class prop_vehicle_driveable:NSVehicle
 #else
 	virtual void(void) Respawn;
 	virtual void(void) OnPlayerUse;
+	virtual void(void) EvaluateEntity;
 	virtual float(entity, float) SendEntity;
 #endif
 };
@@ -302,6 +316,26 @@ prop_vehicle_driveable_wheel::Accel(float flMoveTime, float m_flTurn)
 }
 
 void
+prop_vehicle_driveable_wheel::UpdateSuspension(float flTimeLength)
+{
+	float flDamp;
+	float flForce;
+
+	if (fabs(m_flSuspension) > 0.001 || fabs(m_flSuspensionForce) > 0.001) {
+		m_flSuspension += m_flSuspensionForce * flTimeLength;
+		
+		flForce = bound(0, flTimeLength * 65, 2);
+		flDamp = 1 - (flTimeLength * 4);
+		if (flDamp < 0) {
+			flDamp = 0;
+		}
+		m_flSuspensionForce *= flDamp;
+		m_flSuspensionForce -= m_flSuspension * flForce;
+		m_flSuspension = bound(-15, m_flSuspension, 15);
+	}
+}
+
+void
 prop_vehicle_driveable_wheel::Physics(float turnrate, float flTimeLength)
 {
 	vector owner_pos;
@@ -311,9 +345,23 @@ prop_vehicle_driveable_wheel::Physics(float turnrate, float flTimeLength)
 	tracebox(owner_pos, mins, maxs, origin, MOVE_NOMONSTERS, owner);
 	setorigin(this, trace_endpos);
 
+	/* see if we're in-air */
+	other = world;
+	tracebox(origin, mins, maxs, origin - [0,0,1], MOVE_OTHERONLY, this);
+	if (!trace_startsolid) {
+		if ((trace_fraction < 1) && (trace_plane_normal[2] > 0.7)) {
+			flags |= FL_ONGROUND;
+		} else {
+			flags &= ~FL_ONGROUND;
+			m_flSuspensionForce += flTimeLength * 200.0;
+		}
+	}
+
 	Accel(flTimeLength / 2, turnrate);
 	Move(flTimeLength);
 	Accel(flTimeLength / 2, turnrate);
+	UpdateSuspension(flTimeLength);
+	print(sprintf("suspension: %d, force: %d\n", m_flSuspension, m_flSuspensionForce));
 }
 
 void
@@ -405,8 +453,6 @@ prop_vehicle_driveable::RunVehiclePhysics(void)
 	angles[0] = Math_FixDelta(angles[0]);
 	angles[1] = Math_FixDelta(angles[1]);
 	angles[2] = Math_FixDelta(angles[2]);
-	angles[0] = bound(-45, angles[0], 45);
-	angles[2] = bound(-45, angles[2], 45);
 
 	velocity[0] = bound(-1000, velocity[0], 1000);
 	velocity[1] = bound(-1000, velocity[1], 1000);
@@ -504,23 +550,34 @@ prop_vehicle_driveable::Respawn(void)
 void
 prop_vehicle_driveable::ReadEntity(float flSendFlags, float flNew)
 {
-	m_eDriver = findfloat(world, ::entnum, readentitynum());
+	if (flSendFlags & VEHFL_DRIVER) {
+		m_eDriver = findfloat(world, ::entnum, readentitynum());
+	}
 
-	modelindex = readshort();
+	if (flSendFlags & VEHFL_MODELINDEX) {
+		modelindex = readshort();
+	}
 
-	origin[0] = readcoord();
-	origin[1] = readcoord();
-	origin[2] = readcoord();
+	if (flSendFlags & VEHFL_ORIGIN) {
+		origin[0] = readcoord();
+		origin[1] = readcoord();
+		origin[2] = readcoord();
+	}
 
-	angles[0] = readfloat();
-	angles[1] = readfloat();
-	angles[2] = readfloat();
+	if (flSendFlags & VEHFL_ANGLES) {
+		angles[0] = readfloat();
+		angles[1] = readfloat();
+		angles[2] = readfloat();
+	}
 
-	velocity[0] = readfloat();
-	velocity[1] = readfloat();
-	velocity[2] = readfloat();
+	if (flSendFlags & VEHFL_VELOCITY) {
+		velocity[0] = readfloat();
+		velocity[1] = readfloat();
+		velocity[2] = readfloat();
+	}
 
-	m_flTurn = readfloat();
+	if (flSendFlags & VEHFL_TURNING)
+		m_flTurn = readfloat();
 
 	if (flNew) {
 		drawmask = MASK_ENGINE;
@@ -532,29 +589,76 @@ prop_vehicle_driveable::ReadEntity(float flSendFlags, float flNew)
 	}
 }
 #else
+void
+prop_vehicle_driveable::EvaluateEntity(void)
+{
+	/* while the engine is still handling physics for these, we can't
+	 * predict when origin/angle might change */
+	if (net_origin != origin) {
+		net_origin = origin;
+		SetSendFlags(VEHFL_ORIGIN);
+	}
+	if (net_angles != angles) {
+		angles[0] = Math_FixDelta(angles[0]);
+		angles[1] = Math_FixDelta(angles[1]);
+		angles[2] = Math_FixDelta(angles[2]);
+
+		net_angles = angles;
+		SetSendFlags(VEHFL_ANGLES);
+	}
+	if (net_modelindex != modelindex) {
+		net_modelindex = modelindex;
+		SetSendFlags(VEHFL_MODELINDEX);
+	}
+	if (net_velocity != velocity) {
+		net_velocity = velocity;
+		SetSendFlags(VEHFL_VELOCITY);
+	}
+	if (m_flTurn_net != m_flTurn) {
+		m_flTurn_net = m_flTurn;
+		SetSendFlags(VEHFL_TURNING);
+	}
+	if (m_eDriver_net != m_eDriver) {
+		m_eDriver_net = m_eDriver;
+		SetSendFlags(VEHFL_DRIVER);
+	}
+}
+
 float
 prop_vehicle_driveable::SendEntity(entity ePVSent, float flSendFlags)
 {
 	WriteByte(MSG_ENTITY, ENT_VEH_4WHEEL);
 	WriteFloat(MSG_ENTITY, flSendFlags);
 
-	WriteEntity(MSG_ENTITY, m_eDriver);
+	if (flSendFlags & VEHFL_DRIVER) {
+		WriteEntity(MSG_ENTITY, m_eDriver);
+	}
 
-	WriteShort(MSG_ENTITY, modelindex);
+	if (flSendFlags & VEHFL_MODELINDEX) {
+		WriteShort(MSG_ENTITY, modelindex);
+	}
 
-	WriteCoord(MSG_ENTITY, origin[0]);
-	WriteCoord(MSG_ENTITY, origin[1]);
-	WriteCoord(MSG_ENTITY, origin[2]);
+	if (flSendFlags & VEHFL_ORIGIN) {
+		WriteCoord(MSG_ENTITY, origin[0]);
+		WriteCoord(MSG_ENTITY, origin[1]);
+		WriteCoord(MSG_ENTITY, origin[2]);
+	}
 
-	WriteFloat(MSG_ENTITY, angles[0]);
-	WriteFloat(MSG_ENTITY, angles[1]);
-	WriteFloat(MSG_ENTITY, angles[2]);
+	if (flSendFlags & VEHFL_ANGLES) {
+		WriteFloat(MSG_ENTITY, angles[0]);
+		WriteFloat(MSG_ENTITY, angles[1]);
+		WriteFloat(MSG_ENTITY, angles[2]);
+	}
 
-	WriteFloat(MSG_ENTITY, velocity[0]);
-	WriteFloat(MSG_ENTITY, velocity[1]);
-	WriteFloat(MSG_ENTITY, velocity[2]);
+	if (flSendFlags & VEHFL_VELOCITY) {
+		WriteFloat(MSG_ENTITY, velocity[0]);
+		WriteFloat(MSG_ENTITY, velocity[1]);
+		WriteFloat(MSG_ENTITY, velocity[2]);
+	}
 
-	WriteFloat(MSG_ENTITY, m_flTurn);
+	if (flSendFlags & VEHFL_TURNING)
+		WriteFloat(MSG_ENTITY, m_flTurn);
+
 	return TRUE;
 }
 #endif
