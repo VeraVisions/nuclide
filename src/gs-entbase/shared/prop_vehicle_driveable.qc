@@ -30,6 +30,8 @@ Point entity defining a 4-wheel vehicle that you can drive.
 This entity was introduced in Half-Life 2 (2004).
 */
 
+#define VEH_SKIDDING FL_USE_RELEASED
+
 enumflags
 {
 	VEHFL_DRIVER,
@@ -37,7 +39,8 @@ enumflags
 	VEHFL_ORIGIN,
 	VEHFL_ANGLES,
 	VEHFL_VELOCITY,
-	VEHFL_TURNING
+	VEHFL_TURNING,
+	VEHFL_FLAGS
 };
 
 class prop_vehicle_driveable_wheel
@@ -309,6 +312,12 @@ prop_vehicle_driveable_wheel::Accel(float flMoveTime, float m_flTurn)
 			velocity += v_forward * bound(-1, vehParent.m_vecMoveValues[0] / 400, 1) * vehParent.m_flAcceleration * flMoveTime * flTraction;
 		}
 
+		/* test if this car is skidding */
+		float skid = (velocity * v_right);
+		if ( fabs(skid) > vehParent.m_flSkidSpeed ) {
+			vehParent.flags |= VEH_SKIDDING;
+		}
+
 		/* nuke sideways velocity. if a wheel is off the ground this probably
 		   means that it'll be pushed further. players should try not to roll
 		   too much. */
@@ -413,6 +422,7 @@ prop_vehicle_driveable::PredictPreFrame(void)
 	SAVE_STATE(origin);
 	SAVE_STATE(velocity);
 	SAVE_STATE(m_flTurn);
+	SAVE_STATE(flags);
 
 	m_wlFL.PredictPreFrame();
 	m_wlFR.PredictPreFrame();
@@ -427,6 +437,7 @@ prop_vehicle_driveable::PredictPostFrame(void)
 	ROLL_BACK(origin);
 	ROLL_BACK(velocity);
 	ROLL_BACK(m_flTurn);
+	ROLL_BACK(flags);
 
 	m_wlFL.PredictPostFrame();
 	m_wlFR.PredictPostFrame();
@@ -489,6 +500,8 @@ prop_vehicle_driveable::RunVehiclePhysics(void)
 		m_iMoveButtons = 0;
 		m_flTimeLength = frametime;
 	}
+
+	flags &= ~VEH_SKIDDING;
 
 	angles[0] = Math_FixDelta(angles[0]);
 	angles[1] = Math_FixDelta(angles[1]);
@@ -614,6 +627,9 @@ prop_vehicle_driveable::ReadEntity(float flSendFlags, float flNew)
 	if (flSendFlags & VEHFL_TURNING)
 		m_flTurn = readfloat();
 
+	if (flSendFlags & VEHFL_FLAGS)
+		flags = readfloat();
+
 	if (flNew) {
 		drawmask = MASK_ENGINE;
 		SetMovetype(MOVETYPE_NONE);
@@ -640,36 +656,40 @@ prop_vehicle_driveable::EvaluateEntity(void)
 {
 	/* while the engine is still handling physics for these, we can't
 	 * predict when origin/angle might change */
-	if (net_origin != origin) {
-		net_origin = origin;
+	if (ATTR_CHANGED(origin)) {
 		SetSendFlags(VEHFL_ORIGIN);
 	}
 
-		SetSendFlags(VEHFL_ORIGIN);
-	if (net_angles != angles) {
+	if (ATTR_CHANGED(angles)) {
 		angles[0] = Math_FixDelta(angles[0]);
 		angles[1] = Math_FixDelta(angles[1]);
 		angles[2] = Math_FixDelta(angles[2]);
 
-		net_angles = angles;
 		SetSendFlags(VEHFL_ANGLES);
 	}
-	if (net_modelindex != modelindex) {
-		net_modelindex = modelindex;
+	if (ATTR_CHANGED(modelindex)) {
 		SetSendFlags(VEHFL_MODELINDEX);
 	}
-	if (net_velocity != velocity) {
-		net_velocity = velocity;
+	if (ATTR_CHANGED(velocity)) {
 		SetSendFlags(VEHFL_VELOCITY);
 	}
 	if (m_flTurn_net != m_flTurn) {
-		m_flTurn_net = m_flTurn;
 		SetSendFlags(VEHFL_TURNING);
 	}
 	if (m_eDriver_net != m_eDriver) {
-		m_eDriver_net = m_eDriver;
 		SetSendFlags(VEHFL_DRIVER);
 	}
+	if (ATTR_CHANGED(flags)) {
+		SetSendFlags(VEHFL_FLAGS);
+	}
+
+	SAVE_STATE(origin);
+	SAVE_STATE(angles);
+	SAVE_STATE(modelindex);
+	SAVE_STATE(velocity);
+	SAVE_STATE(m_flTurn);
+	SAVE_STATE(m_eDriver);
+	SAVE_STATE(flags);
 }
 
 float
@@ -709,6 +729,9 @@ prop_vehicle_driveable::SendEntity(entity ePVSent, float flSendFlags)
 
 	if (flSendFlags & VEHFL_TURNING)
 		WriteFloat(MSG_ENTITY, m_flTurn);
+
+	if (flSendFlags & VEHFL_FLAGS)
+		WriteFloat(MSG_ENTITY, flags);
 
 	return TRUE;
 }

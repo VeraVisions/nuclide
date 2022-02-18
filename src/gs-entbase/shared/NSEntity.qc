@@ -211,22 +211,49 @@ NSEntity::EvaluateEntity(void)
 {
 	/* while the engine is still handling physics for these, we can't
 	 * predict when origin/angle might change */
-	if (net_origin != origin) {
-		net_origin = origin;
+	if (ATTR_CHANGED(origin)) {
 		SetSendFlags(BASEFL_CHANGED_ORIGIN);
 	}
-	if (net_angles != angles) {
+
+	if (ATTR_CHANGED(angles)) {
 		angles[0] = Math_FixDelta(angles[0]);
 		angles[1] = Math_FixDelta(angles[1]);
 		angles[2] = Math_FixDelta(angles[2]);
-
-		net_angles = angles;
 		SetSendFlags(BASEFL_CHANGED_ANGLES);
 	}
-	if (net_velocity != velocity) {
-		net_velocity = velocity;
+
+	if (ATTR_CHANGED(modelindex)) {
+		SetSendFlags(BASEFL_CHANGED_MODELINDEX);
+	}
+
+	if (ATTR_CHANGED(size)) {
+		SetSendFlags(BASEFL_CHANGED_SIZE);
+	}
+
+	if (ATTR_CHANGED(solid)) {
+		SetSendFlags(BASEFL_CHANGED_SOLID);
+	}
+
+	if (ATTR_CHANGED(movetype)) {
+		SetSendFlags(BASEFL_CHANGED_MOVETYPE);
+	}
+
+	if (ATTR_CHANGED(scale)) {
+		SetSendFlags(BASEFL_CHANGED_SCALE);
+	}
+
+	if (ATTR_CHANGED(velocity)) {
 		SetSendFlags(BASEFL_CHANGED_VELOCITY);
 	}
+
+	SAVE_STATE(origin);
+	SAVE_STATE(angles);
+	SAVE_STATE(modelindex);
+	SAVE_STATE(size);
+	SAVE_STATE(solid);
+	SAVE_STATE(movetype);
+	SAVE_STATE(scale);
+	SAVE_STATE(velocity);
 }
 
 /* Make sure StartFrame calls this */
@@ -280,7 +307,6 @@ NSEntity::SetVelocity(vector vecNew)
 		return;
 
 	velocity = vecNew;
-	SetSendFlags(BASEFL_CHANGED_VELOCITY);
 };
 
 void
@@ -307,7 +333,6 @@ NSEntity::SetMovetype(float newMovetype)
 		return;
 
 	movetype = newMovetype;
-	SetSendFlags(BASEFL_CHANGED_MOVETYPE);
 }
 void
 NSEntity::SetSolid(float newSolid)
@@ -316,7 +341,6 @@ NSEntity::SetSolid(float newSolid)
 		return;
 
 	solid = newSolid;
-	SetSendFlags(BASEFL_CHANGED_SOLID);
 }
 void
 NSEntity::SetScale(float newScale)
@@ -325,7 +349,6 @@ NSEntity::SetScale(float newScale)
 		return;
 
 	scale = newScale;
-	SetSendFlags(BASEFL_CHANGED_SCALE);
 }
 
 void
@@ -371,7 +394,6 @@ NSEntity::UpdateBounds(void)
 		flScale = scale;
 
 	setsize(this, newMins * flScale, newMaxs * flScale);
-	SetSendFlags(BASEFL_CHANGED_SIZE);
 }
 
 void
@@ -381,7 +403,6 @@ NSEntity::SetAngles(vector newAngles)
 		return;
 
 	angles = newAngles;
-	SetSendFlags(BASEFL_CHANGED_ANGLES);
 }
 
 void
@@ -397,7 +418,6 @@ NSEntity::SetSize(vector newMins, vector newMaxs)
 		flScale = scale;
 
 	setsize(this, newMins * flScale, newMaxs * flScale);
-	SetSendFlags(BASEFL_CHANGED_SIZE);
 }
 
 void
@@ -407,7 +427,6 @@ NSEntity::SetOrigin(vector newOrigin)
 		return;
 
 	setorigin(this, newOrigin);
-	SetSendFlags(BASEFL_CHANGED_ORIGIN);
 }
 
 void
@@ -418,8 +437,6 @@ NSEntity::SetModel(string newModel)
 
 	/* mins/maxs have been updated by setmodel */
 	SetSize(mins, maxs);
-
-	SetSendFlags(BASEFL_CHANGED_MODELINDEX);
 }
 void
 NSEntity::SetModelindex(float newModelIndex)
@@ -429,7 +446,6 @@ NSEntity::SetModelindex(float newModelIndex)
 
 	modelindex = newModelIndex;
 	SetSize(mins, maxs);
-	SetSendFlags(BASEFL_CHANGED_MODELINDEX);
 }
 
 #ifdef SERVER
@@ -659,7 +675,5 @@ NSEntity::NSEntity(void)
 	if (m_oldModel != "") {
 		precache_model(GetSpawnModel());
 	}
-#else
-	isCSQC = 1;
 #endif
 }

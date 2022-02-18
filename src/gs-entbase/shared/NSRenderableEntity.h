@@ -33,13 +33,17 @@ class NSRenderableEntity:NSEntity
 	virtual void(void) Respawn;
 	virtual void(float) Save;
 	virtual void(string,string) Restore;
+	virtual void(void) EvaluateEntity;
 #else
 	virtual void(float,float) ReceiveEntity;
 	virtual float(void) predraw;
 #endif
 
 	/* new */
-	int m_iBody;
+	PREDICTED_INT(m_iBody);
+	PREDICTED_FLOAT_N(frame);
+	PREDICTED_FLOAT_N(skin);
+	PREDICTED_FLOAT_N(effects);
 	/* model events */
 	float m_flBaseTime;
 
@@ -55,10 +59,10 @@ class NSRenderableEntity:NSEntity
 	virtual void(void) MakeStatic;
 
 #ifdef GS_RENDERFX
-	float m_iRenderFX;
-	float m_iRenderMode;
-	float m_flRenderAmt;
-	vector m_vecRenderColor;
+	PREDICTED_FLOAT(m_iRenderFX);
+	PREDICTED_FLOAT(m_iRenderMode);
+	PREDICTED_FLOAT(m_flRenderAmt);
+	PREDICTED_VECTOR(m_vecRenderColor);
 
 	/* set */
 	nonvirtual void(float) SetRenderFX;

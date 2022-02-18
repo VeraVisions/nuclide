@@ -26,6 +26,17 @@ class NSEntity:NSTrigger
 	vector m_vecMins;
 	vector m_vecMaxs;
 
+	/* keep track of these variables */
+	PREDICTED_VECTOR_N(origin);
+	PREDICTED_VECTOR_N(angles);
+	PREDICTED_FLOAT_N(modelindex);
+	PREDICTED_VECTOR_N(size);
+	PREDICTED_FLOAT_N(solid);
+	PREDICTED_FLOAT_N(movetype);
+	PREDICTED_FLOAT_N(scale);
+	PREDICTED_FLOAT_N(flags);
+	PREDICTED_VECTOR_N(velocity);
+
 #ifdef CLIENT
 	virtual void(float,float) ReceiveEntity;
 	virtual void(void) postdraw;
@@ -47,12 +58,6 @@ class NSEntity:NSTrigger
 	vector m_oldOrigin;
 	vector m_oldAngle;
 	string m_oldModel;
-
-	/* keep track of these variables */
-	vector net_origin;
-	vector net_angles;
-	vector net_velocity;
-	float net_modelindex;
 
 	string m_parent;
 

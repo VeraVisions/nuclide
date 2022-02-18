@@ -155,14 +155,18 @@ env_projectedtexture::ReceiveEntity(float flNew, float flFlags)
 void
 env_projectedtexture::EvaluateEntity(void)
 {
-	if (net_origin != origin) {
-		net_origin = origin;
-		SendFlags |= PRTEXFL_CHANGED_ORIGIN;
+	if (ATTR_CHANGED(origin)) {
+		SetSendFlags(PRTEXFL_CHANGED_ORIGIN);
 	}
-	if (net_angles != angles) {
-		net_angles = angles;
-		SendFlags |= PRTEXFL_CHANGED_ANGLES;
+	if (ATTR_CHANGED(angles)) {
+		angles[0] = Math_FixDelta(angles[0]);
+		angles[1] = Math_FixDelta(angles[1]);
+		angles[2] = Math_FixDelta(angles[2]);
+
+		SetSendFlags(PRTEXFL_CHANGED_ANGLES);
 	}
+	SAVE_STATE(origin);
+	SAVE_STATE(angles);
 }
 
 void

@@ -219,10 +219,10 @@ func_monitor::SendEntity(entity ePEnt, float flFlags)
 void
 func_monitor::EvaluateEntity(void)
 {
-	if (net_origin != origin) {
-		net_origin = origin;
+	if (ATTR_CHANGED(origin)) {
 		SetSendFlags(MONITORFL_CHANGED_BASE);
 	}
+	SAVE_STATE(origin);
 
 	/* this monitor is disabled */
 	if (!m_iValue)

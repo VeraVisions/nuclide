@@ -161,15 +161,16 @@ info_particle_system::SendEntity(entity ePEnt, float flFlags)
 void
 info_particle_system::EvaluateEntity(void)
 {
-	if (net_origin != origin) {
-		net_origin = origin;
+	if (ATTR_CHANGED(origin)) {
 		SetSendFlags(PARTSYSFL_CHANGED_ORIGIN);
 	}
 
-	if (net_angles != angles) {
-		net_angles = angles;
+	if (ATTR_CHANGED(angles)) {
 		SetSendFlags(PARTSYSFL_CHANGED_ANGLES);
 	}
+
+	SAVE_STATE(origin);
+	SAVE_STATE(angles);
 }
 
 void

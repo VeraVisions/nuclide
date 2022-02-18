@@ -165,18 +165,19 @@ void
 env_laser::EvaluateEntity(void)
 {
 	/* FIXME: Check our fields for networking */
-	if (origin != net_origin) {
+	if (ATTR_CHANGED(angles)) {
 		SetSendFlags(ENVLASER_CHANGED_ORIGIN);
-		net_origin = origin;
 	}
-	if (angles != net_angles) {
+	if (ATTR_CHANGED(origin)) {
 		SetSendFlags(ENVLASER_CHANGED_ANGLES);
-		net_angles = angles;
 	}
 	if (m_iState != m_iStateOld) {
 		SetSendFlags(ENVLASER_CHANGED_STATE);
 		m_iStateOld = m_iState;
 	}
+
+	SAVE_STATE(origin);
+	SAVE_STATE(angles);
 }
 
 void

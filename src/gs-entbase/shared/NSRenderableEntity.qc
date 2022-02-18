@@ -48,6 +48,77 @@ NSRenderableEntity::MakeStatic(void)
 }
 
 #ifdef SERVER
+void
+NSRenderableEntity::EvaluateEntity(void)
+{
+	if (ATTR_CHANGED(origin)) {
+		SetSendFlags(BASEFL_CHANGED_ORIGIN);
+	}
+	if (ATTR_CHANGED(angles)) {
+		SetSendFlags(BASEFL_CHANGED_ANGLES);
+	}
+	if (ATTR_CHANGED(modelindex)) {
+		SetSendFlags(BASEFL_CHANGED_MODELINDEX);
+	}
+	if (ATTR_CHANGED(solid)) {
+		SetSendFlags(BASEFL_CHANGED_SOLID);
+	}
+	if (ATTR_CHANGED(movetype)) {
+		SetSendFlags(BASEFL_CHANGED_MOVETYPE);
+	}
+	if (ATTR_CHANGED(size)) {
+		SetSendFlags(BASEFL_CHANGED_SIZE);
+	}
+	if (ATTR_CHANGED(frame)) {
+		SetSendFlags(BASEFL_CHANGED_FRAME);
+	}
+	if (ATTR_CHANGED(skin)) {
+		SetSendFlags(BASEFL_CHANGED_SKIN);
+	}
+	if (ATTR_CHANGED(effects)) {
+		SetSendFlags(BASEFL_CHANGED_EFFECTS);
+	}
+	if (ATTR_CHANGED(m_iBody)) {
+		SetSendFlags(BASEFL_CHANGED_BODY);
+	}
+	if (ATTR_CHANGED(scale)) {
+		SetSendFlags(BASEFL_CHANGED_SCALE);
+	}
+	if (ATTR_CHANGED(velocity)) {
+		SetSendFlags(BASEFL_CHANGED_VELOCITY);
+	}
+
+	SAVE_STATE(origin);
+	SAVE_STATE(angles);
+	SAVE_STATE(modelindex);
+	SAVE_STATE(solid);
+	SAVE_STATE(movetype);
+	SAVE_STATE(size);
+	SAVE_STATE(frame);
+	SAVE_STATE(skin);
+	SAVE_STATE(effects);
+	SAVE_STATE(m_iBody);
+	SAVE_STATE(scale);
+	SAVE_STATE(velocity);
+
+#ifdef GS_RENDERFX
+	if (ATTR_CHANGED(m_iRenderMode)) {
+		SetSendFlags(BASEFL_CHANGED_RENDERMODE);
+	}
+
+	if (ATTR_CHANGED(m_vecRenderColor)) {
+		SetSendFlags(BASEFL_CHANGED_RENDERCOLOR);
+	}
+	if (ATTR_CHANGED(m_flRenderAmt)) {
+		SetSendFlags(BASEFL_CHANGED_RENDERAMT);
+	}
+#else
+	if (ATTR_CHANGED(alpha)) {
+		SetSendFlags(BASEFL_CHANGED_ALPHA);
+	}
+#endif
+}
+
 /* Make sure StartFrame calls this */
 float
 NSRenderableEntity::SendEntity(entity ePEnt, float fChanged)
@@ -559,7 +630,6 @@ NSRenderableEntity::SetEffects(float newEffects)
 		return;
 
 	effects = newEffects;
-	SetSendFlags(BASEFL_CHANGED_EFFECTS);
 }
 void
 NSRenderableEntity::SetFrame(float newFrame)
@@ -569,7 +639,6 @@ NSRenderableEntity::SetFrame(float newFrame)
 
 	frame = newFrame;
 	frame1time = 0.0f;
-	SetSendFlags(BASEFL_CHANGED_FRAME);
 }
 void
 NSRenderableEntity::SetSkin(float newSkin)
@@ -578,7 +647,6 @@ NSRenderableEntity::SetSkin(float newSkin)
 		return;
 
 	skin = newSkin;
-	SetSendFlags(BASEFL_CHANGED_SKIN);
 }
 void
 NSRenderableEntity::SetBody(int newBody)
@@ -587,7 +655,6 @@ NSRenderableEntity::SetBody(int newBody)
 		return;
 
 	m_iBody = newBody;
-	SetSendFlags(BASEFL_CHANGED_BODY);
 }
 void
 NSRenderableEntity::SetScale(float newScale)
@@ -597,7 +664,6 @@ NSRenderableEntity::SetScale(float newScale)
 
 	scale = newScale;
 	setsize(this, m_vecMins * scale, m_vecMaxs * scale);
-	SetSendFlags(BASEFL_CHANGED_SCALE);
 }
 
 #ifdef GS_RENDERFX
@@ -608,7 +674,6 @@ NSRenderableEntity::SetRenderFX(float newFX)
 		return;
 
 	m_iRenderFX = newFX;
-	SetSendFlags(BASEFL_CHANGED_RENDERMODE);
 }
 void
 NSRenderableEntity::SetRenderMode(float newMode)
@@ -617,7 +682,6 @@ NSRenderableEntity::SetRenderMode(float newMode)
 		return;
 
 	m_iRenderMode = newMode;
-	SetSendFlags(BASEFL_CHANGED_RENDERMODE);
 }
 void
 NSRenderableEntity::SetRenderAmt(float newAmt)
@@ -626,7 +690,6 @@ NSRenderableEntity::SetRenderAmt(float newAmt)
 		return;
 
 	m_flRenderAmt = newAmt;
-	SetSendFlags(BASEFL_CHANGED_RENDERAMT);
 }
 void
 NSRenderableEntity::SetRenderColor(vector newColor)
@@ -635,7 +698,6 @@ NSRenderableEntity::SetRenderColor(vector newColor)
 		return;
 
 	m_vecRenderColor = newColor;
-	SetSendFlags(BASEFL_CHANGED_RENDERCOLOR);
 }
 #endif
 

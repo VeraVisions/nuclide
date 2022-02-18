@@ -91,22 +91,23 @@ NSVehicle::EvaluateEntity(void)
 {
 	/* while the engine is still handling physics for these, we can't
 	 * predict when origin/angle might change */
-	if (net_origin != origin) {
-		net_origin = origin;
+	if (ATTR_CHANGED(origin)) {
 		SetSendFlags(VEHFL_CHANGED_ORIGIN);
 	}
-	if (net_angles != angles) {
+	if (ATTR_CHANGED(angles)) {
 		angles[0] = Math_FixDelta(angles[0]);
 		angles[1] = Math_FixDelta(angles[1]);
 		angles[2] = Math_FixDelta(angles[2]);
 
-		net_angles = angles;
 		SetSendFlags(VEHFL_CHANGED_ANGLES);
 	}
-	if (net_velocity != velocity) {
-		net_velocity = velocity;
+	if (ATTR_CHANGED(velocity)) {
 		SetSendFlags(VEHFL_CHANGED_VELOCITY);
 	}
+
+	SAVE_STATE(origin);
+	SAVE_STATE(angles);
+	SAVE_STATE(velocity);
 }
 
 float

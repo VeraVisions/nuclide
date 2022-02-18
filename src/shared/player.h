@@ -14,36 +14,16 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define PREDICTED_INT(x) int x; int x ##_net
-#define PREDICTED_FLOAT(x) float x; float x ##_net
-#define PREDICTED_VECTOR(x) vector x; vector x ##_net
-#define PREDICTED_ENT(x) entity x; entity x ##_net
-
-#define PREDICTED_INT_N(x) int x ##_net
-#define PREDICTED_FLOAT_N(x) float x ##_net
-#define PREDICTED_VECTOR_N(x) vector x ##_net
-
-#define ROLL_BACK(x) x = x ##_net
-#define SAVE_STATE(x) x ##_net = x
-#define ATTR_CHANGED(x) (x ##_net != x)
-#define VEC_CHANGED(x,y) (x ##_net[y] != x[y])
-
 class
 base_player:base_client
 {
 	PREDICTED_FLOAT(health);
 	PREDICTED_FLOAT(armor);
 
-	PREDICTED_FLOAT_N(modelindex);
-	PREDICTED_VECTOR_N(origin);
-	PREDICTED_VECTOR_N(velocity);
-	PREDICTED_VECTOR_N(angles);
 	PREDICTED_FLOAT_N(colormap);
-	PREDICTED_FLOAT_N(flags);
 	PREDICTED_FLOAT_N(gflags);
 	PREDICTED_FLOAT(viewzoom);
 	PREDICTED_VECTOR_N(view_ofs);
-	PREDICTED_FLOAT_N(movetype);
 	PREDICTED_VECTOR(v_angle);
 	PREDICTED_FLOAT_N(pmove_flags);
 
