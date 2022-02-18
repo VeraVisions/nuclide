@@ -44,6 +44,10 @@ void main ()
 	gl_FragColor.rgb = skybox.rgb / dodged1;
 	gl_FragColor.rgb = gl_FragColor.rgb / dodged2;
 	gl_FragColor *= e_lmscale;
+
+#ifdef FOGGED
+	gl_FragColor.rgb = fog3(gl_FragColor.rgb);
+#endif
 }
 #endif
  

@@ -7,6 +7,7 @@
 //==============================================================================
 
 !!ver 110
+!!permu FOG
 !!samps cloudA=0 cloudB=1 box:samplerCube=2 mountains:samplerCube=3
 #include "sys/defs.h"
 #include "sys/fog.h"
@@ -44,6 +45,10 @@ void main ()
 	}
 
 	gl_FragColor *= e_lmscale;
+
+#ifdef FOGGED
+	gl_FragColor.rgb = fog3(gl_FragColor.rgb);
+#endif
 }
 #endif
  
