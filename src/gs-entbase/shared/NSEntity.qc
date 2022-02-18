@@ -17,6 +17,20 @@
 #ifdef CLIENT
 /*
 ============
+NSEntity::ClientRemove
+
+The client-side has received information that this entity has been
+removed on the server. This is where sub-entities of a class can safely
+get removed from the world as well.
+============
+*/
+void
+NSEntity::ClientRemove(void)
+{
+	
+};
+/*
+============
 NSEntity::RendererRestarted
 
 make sure any child-classes precache their assets in here
@@ -645,5 +659,7 @@ NSEntity::NSEntity(void)
 	if (m_oldModel != "") {
 		precache_model(GetSpawnModel());
 	}
+#else
+	isCSQC = 1;
 #endif
 }

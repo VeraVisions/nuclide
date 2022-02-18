@@ -74,6 +74,7 @@ class prop_vehicle_driveable:NSVehicle
 	float m_flStraightenFactor;
 	vector m_vecGravityDir;
 	float m_flTimeLength;
+	vector m_vecSeatOffest;
 
 	prop_vehicle_driveable_wheel m_wlFL;
 	prop_vehicle_driveable_wheel m_wlFR;
@@ -89,6 +90,8 @@ class prop_vehicle_driveable:NSVehicle
 	float m_flFRWheelAxel;
 
 	void(void) prop_vehicle_driveable;
+
+	virtual void(void) Physics;
 	virtual void(void) RunVehiclePhysics;
 	virtual void(void) PlayerInput;
 
@@ -97,6 +100,7 @@ class prop_vehicle_driveable:NSVehicle
 	virtual void(void) PredictPostFrame;
 	virtual void(float, float) ReadEntity;
 	virtual void(void) UpdateView;
+	virtual void(void) ClientRemove;
 #else
 	virtual void(void) Respawn;
 	virtual void(void) OnPlayerUse;
@@ -105,7 +109,36 @@ class prop_vehicle_driveable:NSVehicle
 #endif
 };
 
+void
+prop_vehicle_driveable::Physics(void)
+{
+	/* if nobody is in the car, we need to run physics here
+	 * with fake input frames */
+	if (num_for_edict(m_eDriver) == 0) {
+		RunVehiclePhysics();
+	}
+
+#ifdef SERVER
+	/* support for think/nextthink */
+	if (think && nextthink > 0.0f) {
+		if (nextthink < time) {
+			nextthink = 0.0f;
+			think();
+		}
+	}
+#endif
+}
+
 #ifdef CLIENT
+void
+prop_vehicle_driveable::ClientRemove(void)
+{
+	remove(m_wlFL);
+	remove(m_wlFR);
+	remove(m_wlBL);
+	remove(m_wlBR);
+}
+
 void
 prop_vehicle_driveable::UpdateView(void)
 {
@@ -115,7 +148,8 @@ prop_vehicle_driveable::UpdateView(void)
 	makevectors(view_angles);
 	vecStart = [pSeat->m_vecPredictedOrigin[0], pSeat->m_vecPredictedOrigin[1], pSeat->m_vecPredictedOrigin[2] + 16] + (v_right * 4);
 	vecEnd = vecStart + (v_forward * -256) + [0,0,16] + (v_right * 4);
-	traceline(vecStart, vecEnd, FALSE, self);
+	other = world;
+	traceline(vecStart, vecEnd, MOVE_OTHERONLY, this);
 	setproperty(VF_ORIGIN, trace_endpos + (v_forward * 16));
 }
 
@@ -142,7 +176,6 @@ prop_vehicle_driveable_wheel::Bounce(vector normal)
 	prop_vehicle_driveable vehParent;
 	vehParent = (prop_vehicle_driveable)owner;
 	velocity -= (velocity * normal) * normal * vehParent.m_flBounceFactor;
-	velocity *= 0.95f; /* absorb some energy */
 }
 
 void
@@ -361,7 +394,7 @@ prop_vehicle_driveable_wheel::Physics(float turnrate, float flTimeLength)
 	Move(flTimeLength);
 	Accel(flTimeLength / 2, turnrate);
 	UpdateSuspension(flTimeLength);
-	print(sprintf("suspension: %d, force: %d\n", m_flSuspension, m_flSuspensionForce));
+	//print(sprintf("suspension: %d, force: %d\n", m_flSuspension, m_flSuspensionForce));
 }
 
 void
@@ -448,6 +481,13 @@ prop_vehicle_driveable::RunVehiclePhysics(void)
 		}
 
 		PlayerUpdateFlags();
+
+		if (angles[2] > 125 || angles[2] < -125)
+			PlayerLeave((base_player)m_eDriver);
+	} else {
+		m_vecMoveValues = [240,0,0];
+		m_iMoveButtons = 0;
+		m_flTimeLength = frametime;
 	}
 
 	angles[0] = Math_FixDelta(angles[0]);
@@ -495,16 +535,6 @@ prop_vehicle_driveable::RunVehiclePhysics(void)
 	new_origin *= 0.25f;
 	setorigin(this, new_origin);
 	PlayerAlign();
-
-#ifdef SERVER
-	/* support for think/nextthink */
-	if (think && nextthink > 0.0f) {
-		if (nextthink < time) {
-			nextthink = 0.0f;
-			think();
-		}
-	}
-#endif
 }
 
 #ifdef SERVER
@@ -556,12 +586,17 @@ prop_vehicle_driveable::ReadEntity(float flSendFlags, float flNew)
 
 	if (flSendFlags & VEHFL_MODELINDEX) {
 		modelindex = readshort();
+		m_vecSeatOffest[0] = readfloat();
+		m_vecSeatOffest[1] = readfloat();
+		m_vecSeatOffest[2] = readfloat();
+		setsize( this, [-50,-50,0], [50,50,70]);
 	}
 
 	if (flSendFlags & VEHFL_ORIGIN) {
 		origin[0] = readcoord();
 		origin[1] = readcoord();
 		origin[2] = readcoord();
+		setorigin(this, origin);
 	}
 
 	if (flSendFlags & VEHFL_ANGLES) {
@@ -581,11 +616,22 @@ prop_vehicle_driveable::ReadEntity(float flSendFlags, float flNew)
 
 	if (flNew) {
 		drawmask = MASK_ENGINE;
+		SetMovetype(MOVETYPE_NONE);
+		SetSolid(SOLID_BBOX);
+
 		m_flBRWheelAxel = gettagindex( this, "RRWheelAxel" );
 		m_flBLWheelAxel = gettagindex( this, "RLWheelAxel" );
 		m_flFLWheelAxel = gettagindex( this, "FLWheelAxel" );
 		m_flFRWheelAxel = gettagindex( this, "FRWheelAxel" );
-		setsize( this, [-50,-50,0], [50,50,70]);
+
+		m_wlFL.velocity =
+		m_wlFR.velocity =
+		m_wlBL.velocity =
+		m_wlBR.velocity =
+		velocity = [0,0,0];
+		RunVehiclePhysics();
+
+		print(sprintf("%v\n", origin));
 	}
 }
 #else
@@ -598,6 +644,8 @@ prop_vehicle_driveable::EvaluateEntity(void)
 		net_origin = origin;
 		SetSendFlags(VEHFL_ORIGIN);
 	}
+
+		SetSendFlags(VEHFL_ORIGIN);
 	if (net_angles != angles) {
 		angles[0] = Math_FixDelta(angles[0]);
 		angles[1] = Math_FixDelta(angles[1]);
@@ -636,6 +684,9 @@ prop_vehicle_driveable::SendEntity(entity ePVSent, float flSendFlags)
 
 	if (flSendFlags & VEHFL_MODELINDEX) {
 		WriteShort(MSG_ENTITY, modelindex);
+		WriteFloat(MSG_ENTITY, m_vecSeatOffest[0]);
+		WriteFloat(MSG_ENTITY, m_vecSeatOffest[1]);
+		WriteFloat(MSG_ENTITY, m_vecSeatOffest[2]);
 	}
 
 	if (flSendFlags & VEHFL_ORIGIN) {
@@ -669,7 +720,7 @@ prop_vehicle_driveable::prop_vehicle_driveable(void)
 	m_flBounceFactor = 1.5f;
 	m_flAcceleration = 600.0f;
 	m_flSkidSpeed = 256.0f;
-	m_flTraction = 2.0f;
+	m_flTraction = 4.0f;
 	m_flBreakFactor = 2.0f;
 	m_flSteerFactor = 1.0f;
 	m_flStraightenFactor = 1.0f;
@@ -683,6 +734,7 @@ prop_vehicle_driveable::prop_vehicle_driveable(void)
 	m_wlBL = spawn(prop_vehicle_driveable_wheel);
 	m_wlBR = spawn(prop_vehicle_driveable_wheel);
 	m_wlFL.owner = m_wlFR.owner = m_wlBL.owner = m_wlBR.owner = this;
+	customphysics = Physics;
 }
 
 #ifdef CLIENT

@@ -28,6 +28,7 @@ This entity was introduced in Half-Life 2 (2004).
 int g_iCubeProcess;
 entity g_eCubeCycle;
 vector g_vecCubePos;
+float g_dCubeSize;
 
 void CMap_Check(void);
 void CMap_Shoot(void);
@@ -86,6 +87,7 @@ CMap_Shoot(void)
 		env_cubemap tmp = (env_cubemap) self.owner;
 		print("^3Cubemap processing...\n");
 		g_vecCubePos = tmp.origin;
+		g_dCubeSize = (float)tmp.m_iSize;
 		strReflectcube = sprintf(
 					"env/%s_%d_%d_%d",
 					mapname,
@@ -93,7 +95,7 @@ CMap_Shoot(void)
 					g_vecCubePos[1],
 					g_vecCubePos[2]);
 		localcmd(sprintf(
-			"screenshot_cubemap %s %i\n",
+			"screenshot_cubemap %S %i\n",
 			strReflectcube,
 			tmp.m_iSize));
 		self.think = CMap_Check;

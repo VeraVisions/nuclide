@@ -37,3 +37,16 @@ VGUI_Input(float flEvType, float flScanX, float flCharY, float flDevID)
 	g_uiDesktop.Input(flEvType, flScanX, flCharY, flDevID);
 	return (1);
 }
+
+void
+VGUI_Reposition(void)
+{
+	
+	CUIWidget wNext = g_uiDesktop;
+	do {
+		wNext = wNext.m_next;
+		if (wNext && wNext.Reposition) {
+			wNext.Reposition();
+		}
+	} while (wNext);
+}

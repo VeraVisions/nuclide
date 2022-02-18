@@ -178,8 +178,11 @@ CSQC_UpdateView(float w, float h, float focus)
 
 	/* While the init above may have already happened,
 	   people are able to resize windows dynamically too. */
-	video_res[0] = w;
-	video_res[1] = h;
+	if (w != video_res[0] || h != video_res[1]) {
+		video_res[0] = w;
+		video_res[1] = h;
+		VGUI_Reposition();
+	}
 
 	Fog_Update();
 	Sky_Update(FALSE);
@@ -187,21 +190,6 @@ CSQC_UpdateView(float w, float h, float focus)
 
 	if (serverkeyfloat("background") == 1) {
 		setpause(FALSE);
-	}
-
-	if (g_iCubeProcess == TRUE) {
-		clearscene();
-		setproperty(VF_DRAWWORLD, TRUE);
-		setproperty(VF_DRAWENGINESBAR, FALSE);
-		setproperty(VF_DRAWCROSSHAIR, FALSE);
-		setproperty(VF_ENVMAP, "$whiteimage");
-		setproperty(VF_ORIGIN, g_vecCubePos);
-		setproperty(VF_AFOV, 90);
-		//setproperty(VF_CL_VIEWANGLES, [0,0,0]);
-		//setproperty(VF_ANGLES, [0,0,0]);
-		SkyCamera_Setup(g_vecCubePos);
-		CSQC_RenderScene();
-		return;
 	}
 
 	clearscene();
@@ -375,6 +363,14 @@ CSQC_UpdateView(float w, float h, float focus)
 			View_DrawViewModel();
 		} else if (pl.health > 0) {
 			View_DrawViewModel();
+		}
+
+		if (g_iCubeProcess == TRUE) {
+			setproperty(VF_ORIGIN, g_vecCubePos);
+			setproperty(VF_SIZE_X, g_dCubeSize);
+			setproperty(VF_SIZE_Y, g_dCubeSize);
+			print(sprintf("cubesize: %d\n", g_dCubeSize));
+			setproperty(VF_AFOV, 90);
 		}
 
 		CSQC_RenderScene();
@@ -1053,12 +1049,11 @@ receive entity updates.
 void
 CSQC_Ent_Remove(void)
 {
-	/* avoid spawning dupes */
-	if (self.classname == "CCSAmbientSound")
-		sound(self, CHAN_VOICE, "", 0.0f, ATTN_NONE);
-
-	ClientGame_EntityRemove();
-	remove(self);
+	if (self.isCSQC) {
+		NSEntity me = (NSEntity)self;
+		me.ClientRemove();
+		remove(self);
+	}
 }
 
 /*

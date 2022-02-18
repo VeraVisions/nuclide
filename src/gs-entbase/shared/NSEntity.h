@@ -30,6 +30,7 @@ class NSEntity:NSTrigger
 	virtual void(float,float) ReceiveEntity;
 	virtual void(void) postdraw;
 	virtual void(void) RendererRestarted;
+	virtual void(void) ClientRemove;
 #endif
 
 	/* overrides */

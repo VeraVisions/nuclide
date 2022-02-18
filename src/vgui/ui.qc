@@ -57,6 +57,7 @@ class CUIWidget
 	virtual int(void) GetPosWidth;
 	virtual int(void) GetPosHeight;
 	virtual void(void) Draw;
+	virtual void(void) Reposition;
 	virtual void(float, float, float, float) Input;
 };
 
@@ -94,6 +95,12 @@ void
 CUIWidget::FlagRemove(int iFlag)
 {
 	m_iFlags -= (m_iFlags & iFlag);
+}
+
+void
+CUIWidget::Reposition(void)
+{
+
 }
 
 void

@@ -104,7 +104,7 @@ const string g_spray_mat = \
 		"polygonOffset\n" \
 		"{\n" \
 			"map $rt:%s\n" \
-			"blendfunc blend\n" \
+			"blendfunc blendFunc GL_DST_COLOR GL_ZERO\n" \
 			"rgbGen vertex\n" \
 		"}\n" \
 	"}";
