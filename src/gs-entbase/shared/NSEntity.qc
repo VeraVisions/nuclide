@@ -675,5 +675,7 @@ NSEntity::NSEntity(void)
 	if (m_oldModel != "") {
 		precache_model(GetSpawnModel());
 	}
+#else
+	isCSQC = 1;
 #endif
 }

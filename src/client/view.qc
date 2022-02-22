@@ -121,7 +121,7 @@ View_DrawViewModel(void)
 	entity m_eMuzzleflash = pSeat->m_eMuzzleflash;
 	entity m_eViewModelL = pSeat->m_eViewModelL;
 	entity m_eMuzzleflashL = pSeat->m_eMuzzleflashL;
-	
+
 	player pl = (player) self;
 
 	if (pl.health <= 0) {
@@ -132,8 +132,8 @@ View_DrawViewModel(void)
 		return;
 	}
 
-	View_UpdateWeapon(m_eViewModelL, m_eMuzzleflashL);
 	View_UpdateWeapon(m_eViewModel, m_eMuzzleflash);
+	View_UpdateWeapon(m_eViewModelL, m_eMuzzleflashL);
 
 	float fBaseTime2 = m_eViewModel.frame1time;
 	float fBaseTime = m_eViewModel.frame1time;
@@ -174,7 +174,6 @@ View_DrawViewModel(void)
 
 	/* apply to the left side */
 	m_eViewModelL.angles = m_eViewModel.angles;
-
 	m_eViewModelL.colormap = m_eViewModel.colormap = pSeat->m_ePlayer.colormap;
 
 	/* now apply the scale hack */
@@ -203,18 +202,26 @@ View_DrawViewModel(void)
 
 	/* only draw the model when it's 'enabled'... */
 	if (m_eViewModel.alpha != 0.0f) {
-		// Update muzzleflash position and draw it
 		if (m_eMuzzleflash.alpha > 0.0f) {
 			makevectors(getproperty(VF_ANGLES));
 			m_eMuzzleflash.origin = gettaginfo(m_eViewModel, m_eMuzzleflash.skin);
 			m_eMuzzleflash.angles = m_eViewModel.angles;
 			m_eMuzzleflash.angles[2] += (random() * 10) - 5;
 
-			dynamiclight_add(pSeat->m_vecPredictedOrigin + (v_forward * 32), 400, [1,0.45,0]);
+			//dynamiclight_add(pSeat->m_vecPredictedOrigin + (v_forward * 32), 400, [1,0.45,0]);
 
 			setorigin(m_eMuzzleflash, m_eMuzzleflash.origin);
-			setorigin(m_eMuzzleflashL, m_eMuzzleflash.origin);
 			addentity(m_eMuzzleflash);
+		}
+		if (m_eMuzzleflashL.alpha > 0.0f) {
+			makevectors(getproperty(VF_ANGLES));
+			m_eMuzzleflashL.origin = gettaginfo(m_eViewModelL, m_eMuzzleflashL.skin);
+			m_eMuzzleflashL.angles = m_eViewModelL.angles;
+			m_eMuzzleflashL.angles[2] += (random() * 10) - 5;
+
+			//dynamiclight_add(pSeat->m_vecPredictedOrigin + (v_forward * 32), 400, [1,0.45,0]);
+
+			setorigin(m_eMuzzleflashL, m_eMuzzleflashL.origin);
 			addentity(m_eMuzzleflashL);
 		}
 		setorigin(m_eViewModel, m_eViewModel.origin);
