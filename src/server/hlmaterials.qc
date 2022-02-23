@@ -17,6 +17,8 @@
 /* FIXME: world.... sigh, we should box this into a worldspawn class */
 .string materials_file;
 
+var int g_hlmaterial_entries;
+
 float
 HLMaterials_Fetch(string tex_name)
 {
@@ -33,13 +35,14 @@ HLMaterials_Load(string filename)
 
 	fileMaterial = fopen(filename, FILE_READ);
 	if (fileMaterial >= 0) {
-		print(strcat("^2HLMaterials_Load: loading ", filename,"!\n"));
+		print(strcat("parsing material definitions from ", filename,"\n"));
 		while ((sTemp = fgets(fileMaterial))) {
 			/* tokenize and just parse this stuff in */
 			if (tokenize_console(sTemp) == 2) {
 				mat_type = strtoupper(argv(0));
 				tex_name = Materials_FixName(strtolower(argv(1)));
 				hash_add(hashMaterials, tex_name, str2chr(mat_type, 0));
+				g_hlmaterial_entries++;
 			}
 		}
 		fclose(fileMaterial);
@@ -51,6 +54,9 @@ HLMaterials_Load(string filename)
 void
 HLMaterials_Init(void)
 {
+	print("--------- Initializing HLMaterials ----------\n");
+
+	g_hlmaterial_entries = 0;
 	hashMaterials = __NULL__;
 	hashMaterials = hash_createtab(2, HASH_ADD);
 
@@ -72,6 +78,8 @@ HLMaterials_Init(void)
 	/* the way TW did it back in '03 */
 	HLMaterials_Load(sprintf("maps/%s.mat", mapname));
 
-	/* Trinity does it this way */
+	/* Trinity-Renderer does it this way */
 	HLMaterials_Load(sprintf("maps/%s_materials.txt", mapname));
+
+	print(sprintf("HLMaterials initiailized with %i entries.\n", g_hlmaterial_entries));
 }

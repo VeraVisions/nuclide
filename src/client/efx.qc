@@ -331,10 +331,12 @@ EFX_Init(void)
 	int efx_default;
 	int efx_underwater;
 
+	print("--------- Initializing EFXDefs ----------\n");
+
 #ifndef EFXDATA_DYNAMIC
 	g_efx = (reverbinfo_t *)memalloc(sizeof(reverbinfo_t) * EFXDATA_MAX);
 	g_efx_name = (string *)memalloc(sizeof(string) * EFXDATA_MAX);
-	print(sprintf("EFX_Init: Allocated %d bytes\n", (sizeof(string) * EFXDATA_MAX) + (sizeof(reverbinfo_t) * EFXDATA_MAX)));
+	print(sprintf("allocated %d bytes for EFXDefs.\n", (sizeof(string) * EFXDATA_MAX) + (sizeof(reverbinfo_t) * EFXDATA_MAX)));
 #endif
 
 	efx_default = EFX_Load("default");

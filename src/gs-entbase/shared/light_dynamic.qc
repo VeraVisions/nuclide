@@ -160,6 +160,7 @@ light_dynamic::ReceiveEntity(float flNew, float flFlags)
 void
 light_dynamic::RendererRestarted(void)
 {
+#if 0
 	float p = dynamiclight_spawnstatic(origin, m_flDistance, m_vecLight / 255);
 	dynamiclight_set(p, LFIELD_ANGLES, angles);
 	
@@ -167,6 +168,7 @@ light_dynamic::RendererRestarted(void)
 		dynamiclight_set(p, LFIELD_STYLE, m_flStyle);
 	if (m_strPattern)
 		dynamiclight_set(p, LFIELD_STYLESTRING, m_strPattern);
+#endif
 }
 void
 light_dynamic::Initialized(void)

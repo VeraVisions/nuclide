@@ -1,8 +1,9 @@
-//======= Copyright (c) 2015-2020 Vera Visions LLC. All rights reserved. =======
+//======= Copyright (c) 2015-2022 Vera Visions LLC. All rights reserved. =======
 //
 // Purpose: 
 //
-// Blending terrain and masking its edges for a smooth transition into alpha.
+// Scrolling shader for patches that get blended on top of existing geometry
+// with vertex colors defining fading out
 //==============================================================================
 
 !!ver 110

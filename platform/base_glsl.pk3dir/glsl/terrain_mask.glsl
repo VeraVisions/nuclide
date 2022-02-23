@@ -2,26 +2,33 @@
 //
 // Purpose: 
 //
-// Lightmapped surface of which the alpha channel decides the masking.
+// Blending terrain and masking its edges for a smooth transition into alpha.
 //==============================================================================
 
 !!ver 110
 !!permu FOG
 !!permu BUMP
 !!permu DELUXE
-!!samps diffuse normalmap lightmap deluxemap
+!!samps diffuse normalmap
+
+!!samps lightmap
+!!samps =LIGHTSTYLED lightmap1 lightmap2 lightmap3
+!!samps =DELUXE deluxemap
+!!samps =LIGHTSTYLED =DELUXE deluxemap1 deluxemap2 deluxemap3
 
 !!permu FAKESHADOWS
 !!cvardf r_glsl_pcf
+!!cvardf r_fullbright
 !!samps =FAKESHADOWS shadowmap
 
 !!cvardf r_skipDiffuse
-!!cvardf r_skipNormal
 !!cvardf r_skipLightmap
+!!cvardf r_skipNormal
 
 #include "sys/defs.h"
 
 varying vec2 tex_c;
+varying vec4 vex_color;
 
 varying vec2 lm0;
 #ifdef LIGHTSTYLED
@@ -43,10 +50,12 @@ varying vec2 lm1, lm2, lm3;
 		#endif
 	}
 
-	void main ()
+	void main ( void )
 	{
 		lightmapped_init();
 		tex_c = v_texcoord;
+		vex_color = v_colour;
+
 		gl_Position = ftetransform();
 		
 		#ifdef FAKESHADOWS
@@ -91,7 +100,7 @@ varying vec2 lm1, lm2, lm3;
 #else
 		lightmaps  = LIGHTMAP * e_lmscale.rgb;
 #endif
-		return lightmaps;
+		return (r_fullbright == 1) ? vec3(1.0, 1.0, 1.0) : lightmaps;
 	}
 
 #if r_skipNormal==0
@@ -111,39 +120,47 @@ varying vec2 lm1, lm2, lm3;
 		lightmaps  = LIGHTMAP * e_lmscale.rgb * dot(normal_f, (texture2D(s_deluxemap, lm0).rgb - 0.5) * 2.0);
 	#endif
 
-		return lightmaps;
+		return (r_fullbright == 1) ? vec3(1.0, 1.0, 1.0) : lightmaps;
 #endif
 	}
 #endif
 
-	void main (void)
+	void main ( void )
 	{
 	#if r_skipDiffuse==0
-		vec4 diffuse_f = texture2D(s_diffuse, tex_c);
+		vec3 diffuse_f = texture2D(s_diffuse, tex_c).rgb;
 	#else
-		vec4 diffuse_f = vec4(1.0,1.0,1.0,1.0);
+		vec3 diffuse_f = vec3(1.0,1.0,1.0);
 	#endif
 
-	#if r_skipNormal==1
-		vec3 normal_f = normalize(texture2D(s_normalmap, tex_c).rgb - 0.5);
-	#else
-		#define normal_f vec3(0.0,0.0,1.0)
+		float bw = 1.0 - (diffuse_f.r + diffuse_f.g + diffuse_f.b) / 3.0;
+		vec4 vcol = vex_color;
+
+	#if r_skipNormal==0
+		vec3 normal_f;
+		normal_f = normalize(texture2D(s_normalmap, tex_c).rgb - 0.5);
 	#endif
 
-		if (diffuse_f.a < 0.5) {
-			discard;
+		if (vcol.a < 1.0) {
+		// contrast enhancement
+		#ifdef BWMASK
+			bw *= ((bw * 2.0) * BWMASK);
+		#endif
+			if (bw > vcol.a) {
+				discard;
+			}
 		}
 
-	#ifdef FAKESHADOWS
-		diffuse_f.rgb *= ShadowmapFilter(s_shadowmap, vtexprojcoord);
-	#endif
-
-	#if r_skipNormal==1
-		diffuse_f.rgb *= lightmap_fragment();
-	#else
+	#if r_skipNormal==0
 		diffuse_f.rgb *= lightmap_fragment(normal_f);
+	#else
+		diffuse_f.rgb *= lightmap_fragment();
 	#endif
 
-		gl_FragColor = fog4(diffuse_f);
+		#ifdef FAKESHADOWS
+		diffuse_f *= ShadowmapFilter(s_shadowmap, vtexprojcoord);
+		#endif
+
+		gl_FragColor = vec4(fog3(diffuse_f), 1.0);
 	}
 #endif

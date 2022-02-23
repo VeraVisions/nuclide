@@ -1,13 +1,11 @@
 // Vera Visions Material
 {
-	surfaceparm metal
-
-	diffusemap textures/sfx/alpha.tga
+	polygonOffset 1
+	diffusemap "textures/sfx/mirror.tga"
+	normalmap "textures/sfx/mirror_n.tga"
 
 	{
-		program lightmapped_reflectcube
-		map $diffuse
-		map $normalmap
-		map $reflectcube
+		program lightmapped_reflect
+		map $reflection
 	}
 }

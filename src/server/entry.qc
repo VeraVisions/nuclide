@@ -270,7 +270,7 @@ The 'self' global does not refer to anything.
 void
 SetNewParms(void)
 {
-	iprint("Setting New Level Parameters");
+	print("--------- Setting New Level Parameters ----------\n");
 
 	if (g_ents_initialized)
 		g_grMode.LevelNewParms();
@@ -291,7 +291,7 @@ allocated for every client.
 void
 SetChangeParms(void)
 {
-	iprint("Setting Level-Change Parameters");
+	print("--------- Setting Level-Change Parameters ----------\n");
 
 	if (g_ents_initialized)
 		g_grMode.LevelChangeParms((base_player)self);
@@ -385,7 +385,7 @@ Called when the QC module gets loaded. No entities exist yet.
 void
 init(float prevprogs)
 {
-	iprint("Initializing Server-Module");
+	print("--------- Initializing Server-Module ----------\n");
 	Plugin_Init();
 	PropData_Init();
 	SurfData_Init();
@@ -402,7 +402,7 @@ method called at the beginning of them having spawned.
 void
 init_respawn(void)
 {
-	iprint("Respawning Entities");
+	print("--------- Respawning Server Entities ----------\n");
 
 	if (g_ents_initialized)
 		g_grMode.InitPostEnts();
@@ -425,7 +425,7 @@ initents
 void
 initents(void)
 {
-	iprint("Initializing Entities");
+	print("--------- Initializing Server Entities ----------\n");
 
 	/* sound shader init */
 	Sound_Init();
@@ -524,7 +524,7 @@ var int autocvar_sv_levelexec = 1;
 void
 worldspawn(void)
 {
-	iprint("Initializing World");
+	print("--------- Initializing World ----------\n");
 	lightstyle(0, "m");
 	lightstyle(1, "mmnmmommommnonmmonqnmmo");
 	lightstyle(2, "abcdefghijklmnopqrstuvwxyzyxwvutsrqponmlkjihgfedcba");
@@ -664,6 +664,7 @@ SV_PerformLoad(float fh, float entcount, float playerslots)
 	float n;
 	NSEntity loadent = __NULL__;
 
+	print("--------- Loading Existing Save ----------\n");
 
 #ifdef REEDICT
 	while ((e=nextent(e))) {
@@ -732,6 +733,8 @@ SV_PerformSave(float fh, float entcount, float playerslots)
 {
 	float i = 0;
 	entity e;
+
+	print("--------- Performing Save ----------\n");
 
 	for (i = 0; i < entcount; i++) {
 		NSEntity willsave;

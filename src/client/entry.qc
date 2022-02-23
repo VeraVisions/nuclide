@@ -14,6 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/*
+=================
+CSQC_UpdateSeat
+
+Updates our seat pointers, call this when you need to verify we're
+getting the current player's info and not someone elses on the same
+machine (splitscreen)
+=================
+*/
 void
 CSQC_UpdateSeat(void)
 {
@@ -22,11 +31,18 @@ CSQC_UpdateSeat(void)
 	pSeatLocal = &g_seatslocal[s];
 }
 
-/* This file houses all of the callbacks and entry points the engine
-   calls by itself */
+/*
+=================
+CSQC_Init
+
+First thing inited in the progs. Before any world is initialized.
+=================
+*/
 void
 CSQC_Init(float apilevel, string enginename, float engineversion)
 {
+	print("--------- Initializing Client Game ----------\n");
+
 	pSeat = &g_seats[0];
 	pSeatLocal = &g_seatslocal[0];
 
@@ -113,12 +129,23 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 		cvar_set("_menu_singleplayer", "1");
 	else
 		cvar_set("_menu_singleplayer", "0");
+
+	/* end msg */
+	print("Client game initialized.\n");
 }
 
-/* Rendering Caches */
+/*
+=================
+CSQC_RendererRestarted
+
+Called by vid_reload callbacks
+=================
+*/
 void
 CSQC_RendererRestarted(string rstr)
 {
+	print("--------- Reloading Graphical Resources ----------\n");
+
 	/* Fonts */
 	Font_Load("fonts/font16.font", FONT_16);
 	Font_Load("fonts/font20.font", FONT_20);
@@ -146,6 +173,9 @@ CSQC_RendererRestarted(string rstr)
 	Sky_Update(TRUE);
 	Entities_RendererRestarted();
 	DetailTex_Init();
+
+	/* end msg */
+	print("Graphical resources reloaded.\n");
 }
 
 /* this is so that profile_csqc reports more accurate statistics as to
@@ -156,6 +186,13 @@ CSQC_RenderScene(void)
 	renderscene();
 }
 
+/*
+=================
+CSQC_UpdateView
+
+Run every single frame we're connected to a session.
+=================
+*/
 void
 CSQC_UpdateView(float w, float h, float focus)
 {
@@ -211,19 +248,22 @@ CSQC_UpdateView(float w, float h, float focus)
 		pSeat = &g_seats[s];
 		pSeatLocal = &g_seatslocal[s];
 
+		/* set up our single/split viewport */
 		View_CalcViewport(s, w, h);
 		setproperty(VF_ACTIVESEAT, (float)s);
-
 		setproperty(VF_MIN, video_mins);
 		setproperty(VF_SIZE, video_res);
 
 		pSeat->m_ePlayer = self = findfloat(world, entnum, player_localentnum);
 		pl = (player)self;
 
+		/* player slot not present */
 		if (!self) {
 			continue;
 		}
 
+		/* this needs to be moved into a base_client method */
+#if 1
 		if (self.classname == "player") {
 			Predict_PlayerPreFrame(pl);
 
@@ -274,9 +314,12 @@ CSQC_UpdateView(float w, float h, float focus)
 			pSeat->m_vecPredictedVelocity = spec.velocity;
 			pSeat->m_flPredictedFlags = spec.flags;
 		}
+#endif
 
 		addentities(MASK_ENGINE);
 
+		/* ideally move this into a base_player method */
+#if 1
 		if (pSeat->m_flCameraTime > time || pSeat->m_flCameraTime == -1) {
 			view_angles = pSeat->m_vecCameraAngle;
 			setproperty(VF_ORIGIN, pSeat->m_vecCameraOrigin);
@@ -346,6 +389,7 @@ CSQC_UpdateView(float w, float h, float focus)
 				setproperty(VF_CL_VIEWANGLES, view_angles);
 			}
 		}
+#endif
 
 		setproperty(VF_DRAWWORLD, 1);
 		SkyCamera_Setup(getproperty(VF_ORIGIN));
@@ -365,6 +409,7 @@ CSQC_UpdateView(float w, float h, float focus)
 			View_DrawViewModel();
 		}
 
+		/* this is running whenever we're doing 'buildcubemaps' */
 		if (g_iCubeProcess == TRUE) {
 			setproperty(VF_ORIGIN, g_vecCubePos);
 			setproperty(VF_SIZE_X, g_dCubeSize);
@@ -373,9 +418,11 @@ CSQC_UpdateView(float w, float h, float focus)
 			setproperty(VF_AFOV, 90);
 		}
 
+		/* render the scene, then put monitor RenderTargets on top */
 		CSQC_RenderScene();
 		RenderTarget_Monitor_Update();
 
+		/* all 2D operations happen after this point */
 		for (entity b = world; (b = findfloat(b, ::isCSQC, 1));) {
 			NSEntity pf = (NSEntity) b;
 			pf.postdraw();
@@ -409,18 +456,24 @@ CSQC_UpdateView(float w, float h, float focus)
 			}
 		}
 
+		/* move this into base_client methods */
+#if 1
 		if (self.classname == "player")
 			Predict_PlayerPostFrame((player)self);
 		else if (self.classname == "spectator")
 			Predict_SpectatorPostFrame((spectator)self);
+#endif
 	}
 
+	/* this sucks and doesn't take seats into account */
 	EFX_UpdateListener();
 	DSP_UpdateSoundscape();
 
+	/* draw AL debug info (no regard for seating */
 	if (autocvar_s_al_debug)
 		EFX_DebugInfo();
 
+	/* make sure we're not running these on invalid seats post frame */
 	pSeat = __NULL__;
 	pSeatLocal = __NULL__;
 }
@@ -1010,6 +1063,7 @@ Whenever the world is fully initialized...
 void
 CSQC_WorldLoaded(void)
 {
+	print("--------- Initializing Client World ----------\n");
 	DetailTex_Init();
 
 	/* Primarily for the flashlight */
@@ -1029,13 +1083,15 @@ CSQC_WorldLoaded(void)
 		}
 		if (strTokenized != "{") {
 			print("^1[WARNING] ^7Bad entity data\n");
-			return;
+			break;
 		}
 		if (!Entities_ParseLump()) {
 			print("^1[WARNING] ^7Bad entity data\n");
-			return;
+			break;
 		}
 	}
+
+	print("Client world initialized.\n");
 }
 
 /*
@@ -1066,10 +1122,12 @@ Incase you need to free something
 void
 CSQC_Shutdown(void)
 {
+	print("--------- Shutting Client Game ----------\n");
 	Decal_Shutdown();
 	Sentences_Shutdown();
 	Titles_Shutdown();
 	Sound_Shutdown();
 	PropData_Shutdown();
 	EFX_Shutdown();
+	print("Client game shutdown.\n");
 }

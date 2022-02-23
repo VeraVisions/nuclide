@@ -2,7 +2,7 @@
 //
 // Purpose: 
 //
-// Lightmapped surface.
+// Lightmapped surface that sticks to walls.
 //
 // diffusemap = albedo (rgba)
 // normalmap = normal (rgb), reflectmask (a)
@@ -10,11 +10,9 @@
 
 !!ver 110
 !!permu FOG
-
 !!permu BUMP
 !!permu DELUXE
 !!permu LIGHTSTYLED
-!!permu FULLBRIGHT
 !!samps diffuse 
 
 !!samps lightmap
@@ -22,18 +20,11 @@
 !!samps =LIGHTSTYLED lightmap1 lightmap2 lightmap3
 !!samps =DELUXE deluxemap
 !!samps =LIGHTSTYLED =DELUXE deluxemap1 deluxemap2 deluxemap3
-!!samps =FULLBRIGHT fullbright
 
 !!permu FAKESHADOWS
 !!cvardf r_glsl_pcf
 !!cvardf r_fullbright
 !!samps =FAKESHADOWS shadowmap
-
-!!cvardf r_skipDiffuse
-!!cvardf r_skipFullbright
-!!cvardf r_skipNormal
-!!cvardf r_skipEnvmap
-!!cvardf r_skipLightmap
 
 #include "sys/defs.h"
 
@@ -106,7 +97,6 @@ varying mat3 invsurface;
 		#define LIGHTMAP texture2D(s_lightmap, lm0).rgb 
 	#endif
 
-#if r_skipLightmap == 0
 	vec3 lightmap_fragment()
 	{
 		vec3 lightmaps;
@@ -141,34 +131,14 @@ varying mat3 invsurface;
 		return (r_fullbright == 1) ? vec3(1.0, 1.0, 1.0) : lightmaps;
 #endif
 	}
-#else
-	vec3 lightmap_fragment()
-	{
-		return vec3(1.0,1.0,1.0);
-	}
-	vec3 lightmap_fragment(vec3 normal_f)
-	{
-		return vec3(1.0,1.0,1.0);
-	}
-#endif
 
 	void main (void)
 	{
 		vec4 diffuse_f;
 		float alpha;
 
-		#if r_skipDiffuse == 0
-			diffuse_f = texture2D(s_diffuse, tex_c);
-		#else
-			diffuse_f = vec4(1.0, 1.0, 1.0, 1.0);
-		#endif
-
-#ifdef MASK
-		// alpha-testing happens here
-		if (vex_color.a >= 0.99)
-		if (diffuse_f.a < MASK)
-			discard;
-#endif
+		diffuse_f = texture2D(s_diffuse, tex_c);
+		diffuse_f.rgb *= diffuse_f.a;
 
 		#ifdef FAKESHADOWS
 			diffuse_f.rgb *= ShadowmapFilter(s_shadowmap, vtexprojcoord);
@@ -176,39 +146,23 @@ varying mat3 invsurface;
 
 		// the lighting stage for the world
 		#if defined(BUMP)
-
-			// whether to respect our bump, or to act flat
-			#if r_skipNormal == 0
-				vec3 normal_f = normalize(texture2D(s_normalmap, tex_c).rgb - 0.5);
-				diffuse_f.rgb *= lightmap_fragment(normal_f);
-			#else
-				vec3 normal_f = vec3(0.0, 0.0, 1.0);
-				diffuse_f.rgb *= lightmap_fragment();
-			#endif
-
-			// environment mapping happens here
-			#if r_skipEnvmap == 0
-				vec3 cube_c;
-				vec3 env_f;
-				float refl = texture2D(s_normalmap, tex_c).a;
-				cube_c = reflect(normalize(-eyevector), normal_f.rgb);
-				cube_c = cube_c.x * invsurface[0] + 
-						 cube_c.y * invsurface[1] + 
-						 cube_c.z * invsurface[2];
-				cube_c = (m_model * vec4(cube_c.xyz, 0.0)).xyz;
-				env_f = textureCube(s_reflectcube, cube_c).rgb * (e_lmscale.rgb * 0.25);
-				diffuse_f.rgb = mix(env_f, diffuse_f.rgb, refl);
-			#endif
+			vec3 cube_c;
+			vec3 env_f;
+			vec3 normal_f = normalize(texture2D(s_normalmap, tex_c).rgb - 0.5);
+			float refl = texture2D(s_normalmap, tex_c).a;
+			diffuse_f.rgb *= lightmap_fragment(normal_f);
+		
+			cube_c = reflect(normalize(-eyevector), normal_f.rgb);
+			cube_c = cube_c.x * invsurface[0] + cube_c.y * invsurface[1] + cube_c.z * invsurface[2];
+			cube_c = (m_model * vec4(cube_c.xyz, 0.0)).xyz;
+			env_f = textureCube(s_reflectcube, cube_c).rgb * (e_lmscale.rgb * 0.25);
+			diffuse_f.rgb = mix(env_f, diffuse_f.rgb, refl);
 		#else
 			diffuse_f.rgb *= lightmap_fragment();
 		#endif
 
-		#if defined(FULLBRIGHT) && r_skipFullbright == 0
-			diffuse_f.rgb += texture2D(s_fullbright, tex_c).rgb;
-		#endif
-
 		// start blend at half-way point
-		alpha = vex_color.a * 1.5;
+		alpha = diffuse_f.a;
 
 		if (alpha > 1.0)
 			alpha = 1.0;

@@ -4,6 +4,8 @@
 	surfaceParm nonsolid
 	surfaceParm trans
 	surfaceParm nodlight
+	surfaceParm noshadows
+
 	diffusemap textures/decals/puddle01.tga
 	normalmap textures/liquid/water1_n.tga
 

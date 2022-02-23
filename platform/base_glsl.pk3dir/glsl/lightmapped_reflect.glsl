@@ -10,13 +10,15 @@
 !!permu FOG
 !!permu BUMP
 !!permu DELUXE
-!!samps diffuse lightmap deluxemap reflection
+!!samps diffuse lightmap deluxemap normalmap
+!!samps reflect=0
 
 !!permu FAKESHADOWS
 !!cvardf r_glsl_pcf
 !!samps =FAKESHADOWS shadowmap
 
-!!cvardf r_skipSpecular
+!!cvardf r_skipDiffuse
+!!cvardf r_skipNormal
 !!cvardf r_skipLightmap
 
 #include "sys/defs.h"
@@ -128,13 +130,21 @@ varying vec2 lm1, lm2, lm3;
 	void main (void)
 	{
 		vec2 stc;
-		vec4 diffuse_f = texture2D(s_diffuse, tex_c);
+		vec4 diffuse_f;
+
+		#if r_skipDiffuse == 0
+			diffuse_f = texture2D(s_diffuse, tex_c);
+		#else
+			diffuse_f = vec4(1.0, 1.0, 1.0, 1.0);
+		#endif
 
 	#if r_skipNormal==1
-		vec3 normal_f = normalize(texture2D(s_normalmap, tex_c).rgb - 0.5);
-	#else
 		#define normal_f vec3(0.0,0.0,0.5)
+	#else
+		vec3 normal_f = normalize(texture2D(s_normalmap, tex_c).rgb - 0.5);
 	#endif
+
+		float refl = texture2D(s_normalmap, tex_c).a;
 
 	#if r_skipNormal==1
 		diffuse_f.rgb *= lightmap_fragment();
@@ -146,8 +156,7 @@ varying vec2 lm1, lm2, lm3;
 		stc = (1.0 + (tf.xy / tf.w)) * 0.5;
 		stc.t -= 1.5* invsurface[2].z / 1080.0;
 
-		diffuse_f.rgb = mix(texture2D(s_reflection, stc).rgb, diffuse_f.rgb, diffuse_f.a);
-		diffuse_f.a = 1.0;
+		diffuse_f.rgb = mix(texture2D(s_reflect, stc).rgb, diffuse_f.rgb, refl);
 
 	#ifdef FAKESHADOWS
 		diffuse_f.rgb *= ShadowmapFilter(s_shadowmap, vtexprojcoord);

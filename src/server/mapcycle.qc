@@ -28,13 +28,16 @@ Mapcycle_Init(void)
 
 	if (!autocvar_mapcycle_enabled)
 		return;
+
+	print("--------- Initializing MapCycle ----------\n");
+
 	/*if (Rules_IsMultiplayer())
 		return;*/
 
 	fs_mapcycle = fopen(autocvar_mapcycle_file, FILE_READ);
 
 	if (fs_mapcycle < 0) {
-		print(strcat("^1WARNING: ^7Could NOT load ", autocvar_mapcycle_file, "\n"));
+		print(strcat("^1could not load ", autocvar_mapcycle_file, "\n"));
 		return;
 	}
 
@@ -61,4 +64,6 @@ Mapcycle_Init(void)
 
 	/* the current map in the list will decide the nextmap */
 	readcmd(sprintf("alias nextmap m%i\n", map_next));
+
+	print(sprintf("mapcycle initialized with %i entries.\n", mapcount));
 }

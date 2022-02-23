@@ -95,12 +95,14 @@ Sentences_Init(void)
 	string temp;
 	int c, i;
 
+	print("--------- Initializing SentencesDef (CLIENT) ----------\n");
+
 	Sentences_Shutdown();
 
 	fs_sentences = fopen("sound/sentences.txt", FILE_READ);
 
 	if (fs_sentences < 0) {
-		print("^1WARNING: ^7Could NOT load sound/sentences.txt\n");
+		print("^1could not load sound/sentences.txt\n");
 		return;
 	}
 
@@ -126,7 +128,7 @@ Sentences_Init(void)
 				g_sentences_count);
 #else
 		if (g_sentences_count + 1 >= SENTENCES_LIMIT) {
-			print("^1WARNING: ^7Reached limit of max sentences!\n");
+			print("^1reached limit of max sentences!\n");
 			return;
 		}
 
@@ -152,6 +154,7 @@ Sentences_Init(void)
 	}
 	
 	fclose(fs_sentences);
+	print(sprintf("SentencesDef initialized with %i entries.\n", g_sentences_count));
 }
 
 string

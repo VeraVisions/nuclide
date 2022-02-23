@@ -2,26 +2,41 @@
 //
 // Purpose: 
 //
-// Basic lightgrid-lit surface. Also supports a fullbrightmap.
+// Lightgrid-lit surface, normalmap's alpha contains environment cube reflec-
+// tivity.
 //==============================================================================
 
 !!ver 110
 !!permu FRAMEBLEND
-!!permu BUMP
+!!permu FULLBRIGHT
 !!permu FOG
+!!permu BUMP
 !!permu SKELETAL
-!!samps diffuse fullbright normalmap
+!!samps diffuse
+!!samps =BUMP normalmap reflectcube
+!!samps =FULLBRIGHT fullbright
+
+!!cvardf r_skipDiffuse
+!!cvardf r_skipFullbright
+!!cvardf r_skipNormal
+!!cvardf r_skipEnvmap
+!!cvardf r_skipLightmap
 
 !!permu FAKESHADOWS
 !!cvardf r_glsl_pcf
+!!cvardf r_fullbright
+!!cvardf r_lambertscale
 !!samps =FAKESHADOWS shadowmap
-
-!!cvardf r_skipDiffuse
 
 #include "sys/defs.h"
 
 varying vec2 tex_c;
 varying vec3 norm;
+
+#ifdef BUMP
+varying vec3 eyevector;
+varying mat3 invsurface;
+#endif
 
 #ifdef FAKESHADOWS
 	varying vec4 vtexprojcoord;
@@ -30,55 +45,102 @@ varying vec3 norm;
 #ifdef VERTEX_SHADER
 	#include "sys/skeletal.h"
 
-	void main (void)
+	void main ()
 	{
 		vec3 n, s, t, w;
-		tex_c = v_texcoord;
 		gl_Position = skeletaltransform_wnst(w,n,s,t);
 		norm = n;
-		
+		n = normalize(n);
+		s = normalize(s);
+		t = normalize(t);
+		tex_c = v_texcoord;
+
+		#ifdef BUMP
+		/* normalmap */
+		invsurface = mat3(s, t, n);
+
+		/* reflect */
+		vec3 eyeminusvertex = e_eyepos - w.xyz;
+		eyevector.x = dot(eyeminusvertex, s.xyz);
+		eyevector.y = dot(eyeminusvertex, t.xyz);
+		eyevector.z = dot(eyeminusvertex, n.xyz);
+		#endif
+
 		#ifdef FAKESHADOWS
 		vtexprojcoord = (l_cubematrix*vec4(v_position.xyz, 1.0));
 		#endif
 	}
 #endif
 
-
 #ifdef FRAGMENT_SHADER
 	#include "sys/fog.h"
 	#include "sys/pcf.h"
 
+#ifdef HALFLAMBERT
+	float lambert(vec3 normal, vec3 dir)
+	{
+		return (lambert(normal, dir) * 0.5) + 0.5;
+	}
+#else
 	float lambert(vec3 normal, vec3 dir)
 	{
 		return max(dot(normal, dir), 0.0);
 	}
-
-	float halflambert(vec3 normal, vec3 dir)
-	{
-		return (lambert(normal, dir) * 0.5) + 0.5;
-	}
+#endif
 
 	void main (void)
 	{
-		vec4 diff_f = texture2D(s_diffuse, tex_c);
-		vec4 fb_f = texture2D(s_fullbright, tex_c);
+		vec4 diff_f;
 		vec3 light;
 
-		if (diff_f.a < 0.5) {
+		#if r_skipDiffuse == 0
+			diff_f = texture2D(s_diffuse, tex_c);
+		#else
+			diff_f = vec4(1.0, 1.0, 1.0, 1.0);
+		#endif
+
+		// bump goes here
+		#if defined(BUMP)
+		#if r_skipNormal==0
+			vec3 normal_f = (texture2D(s_normalmap, tex_c).rgb - 0.5) * 2.0;
+		#else
+			vec3 normal_f = vec3(0.0, 0.0, 1.0);
+		#endif
+		#endif
+
+		#ifdef MASK
+		if (diff_f.a < MASK) {
 			discard;
 		}
+		#endif
 
-	#ifdef HALFLAMBERT
-		light = e_light_ambient + (e_light_mul * halflambert(norm, e_light_dir));
-	#else
-		light = e_light_ambient + (e_light_mul * lambert(norm, e_light_dir));
-	#endif
-
-		diff_f.rgb *= light;
-		diff_f.rgb += fb_f.rgb;
+		#if defined(BUMP)
+		/* directional light */
+		light = (e_light_mul * lambert(normal_f, e_light_dir)) * 2.0f;
+		/* reverse ambient */
+		light += (e_light_ambient * lambert(normal_f, reflect(normal_f, e_light_dir))) * 0.5f;
+		#else
+		light = (e_light_mul * lambert(norm, e_light_dir)) * 2.0f;
+		light += (e_light_ambient * lambert(norm, reflect(norm, e_light_dir))) * 0.5f;
+		light *= 2.0f;
+		#endif
 
 	#ifdef FAKESHADOWS
 		diff_f.rgb *= ShadowmapFilter(s_shadowmap, vtexprojcoord);
+	#endif
+		diff_f.rgb *= light;
+	
+	#if defined(BUMP) && r_skipEnvmap==0
+		vec3 cube_c;
+		float refl = 1.0 - texture2D(s_normalmap, tex_c).a;
+		cube_c = reflect(normalize(eyevector), normal_f.rgb);
+		cube_c = cube_c.x * invsurface[0] + cube_c.y * invsurface[1] + cube_c.z * invsurface[2];
+		cube_c = (m_model * vec4(cube_c.xyz, 0.0)).xyz;
+		diff_f.rgb += textureCube(s_reflectcube, cube_c).rgb * refl;
+	#endif
+
+	#if defined(FULLBRIGHT) && r_skipFullbright==0
+		diff_f.rgb += texture2D(s_fullbright, tex_c).rgb;
 	#endif
 
 		gl_FragColor = fog4(diff_f * e_colourident) * e_lmscale;

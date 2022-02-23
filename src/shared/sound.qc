@@ -44,15 +44,23 @@ Sound_Shutdown(void)
 void
 Sound_Init(void)
 {
+#ifdef SERVER
+	print("--------- Initializing SoundDef (SERVER) ----------\n");
+#else
+	print("--------- Initializing SoundDef (CLIENT) ----------\n");
+#endif
+
 	/* make sure it's all reset */
 	Sound_Shutdown();
 
 #ifndef SOUNDSHADER_DYNAMIC
 	g_sounds = (snd_t *)memalloc(sizeof(snd_t) * SOUNDSHADER_MAX);
-	print(sprintf("Sound_Init: Allocated %d bytes\n", sizeof(snd_t) * SOUNDSHADER_MAX));
+	print(sprintf("allocated %d bytes for soundDef\n", sizeof(snd_t) * SOUNDSHADER_MAX));
 #endif
 
 	precache_sound("misc/missing.wav");
+
+	print("SoundDef initialized.\n");
 }
 
 void
@@ -313,9 +321,9 @@ Sound_Precache(string shader)
 		fclose(fh);
 	}
 
-	dprint("^1[SOUND] No shader found for ");
-	dprint(shader);
-	dprint("\n");
+	print("^1no soundDef found for ");
+	print(shader);
+	print("\n");
 
 	search_end(sh);
 	return -1;

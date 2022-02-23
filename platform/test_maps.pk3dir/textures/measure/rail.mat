@@ -1,5 +1,5 @@
 // Vera Visions Material
 {
-	program lightmapped_alphatest
+	program lightmapped
 	diffusemap textures/measure/rail.tga
 }

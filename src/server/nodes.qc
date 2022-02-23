@@ -146,23 +146,10 @@ Node_AutoLink(node_t *new)
 	}
 }
 
-/* generate node tree, used for AI movement/navigation */
 void
-Nodes_Init(void)
+Nodes_BuildFromEnts(void)
 {
-	iprint("Initializing Nodes-Subsystem");
-	g_nodes_present = FALSE;
-
-	/* skip if present. TODO: check if they're out of date? */
-	if (whichpack(sprintf("data/%s.way", mapname))) {
-		g_nodes_present = TRUE;
-#ifdef NODE_DEBUG
-		Nodes_Load(sprintf("%s.way", mapname));
-#endif
-		return;
-	}
-
-	dprint("[^2NODES^7] Rebuilding node tree...");
+	print("rebuilding node tree...");
 
 	/* run through the ents and rebuild the tree */
 	for (entity a = world; (a = find(a, ::classname, "info_node"));) {
@@ -187,11 +174,33 @@ Nodes_Init(void)
 		Node_AutoLink(n);
 	}
 
-	dprint(" ^2DONE\n");
-	dprint(sprintf("[^2NODES^7] %i nodes found.\n", g_iNodes));
+	print(sprintf("%i possible nodes found in %s\n", g_iNodes, mapname));
 
-	if (g_iNodes)
+	if (g_iNodes) {
+		print(sprintf("saving nodes nodes for %s\n", mapname));
 		Nodes_Save(sprintf("%s.way", mapname));
+	} else {
+		print(sprintf("no node data found for %s\n", mapname));
+	}
+}
+
+/* generate node tree, used for AI movement/navigation */
+void
+Nodes_Init(void)
+{
+	print("--------- Initializing Nodes Subsystem ----------\n");
+	g_nodes_present = FALSE;
+
+	/* skip if present. TODO: check if they're out of date? */
+	if (whichpack(sprintf("data/%s.way", mapname))) {
+		g_nodes_present = TRUE;
+#ifdef NODE_DEBUG
+		print(sprintf("loading existing nodes for %s\n", mapname));
+		Nodes_Load(sprintf("%s.way", mapname));
+#endif
+	} else {
+		Nodes_BuildFromEnts();
+	}
 
 	/* we don't need these any longer */
 #ifndef NODE_DEBUG
@@ -201,6 +210,8 @@ Nodes_Init(void)
 	memfree(g_pNodes);
 	g_iNodes = 0;
 #endif
+
+	print("Nodes subsystem initialized.\n");
 }
 
 #ifdef NODE_DEBUG

@@ -4,16 +4,16 @@
 	surfaceparm trans
 
 if $programs
-	program lightmapped_alphatest
+	program lightmapped
 	diffusemap "textures/measure/ladder.tga"
 else
-        {
-                map "textures/measure/ladder.tga"
-                alphaFunc GE128
+	{
+		map "textures/measure/ladder.tga"
+		alphaFunc GE128
 		depthWrite
 		rgbGen identity
-        }
-        {
+	}
+	{
 		map $lightmap
 		rgbGen identity
 		blendFunc filter

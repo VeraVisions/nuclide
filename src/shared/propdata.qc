@@ -379,10 +379,15 @@ PropData_ParseLine(string line)
 void
 PropData_Init(void)
 {
-
 	filestream fh;
 	string line;
 	int index;
+
+#ifdef SERVER
+	print("--------- Initializing PropDefs (SERVER) ----------\n");
+#else
+	print("--------- Initializing PropDefs (CLIENT) ----------\n");
+#endif
 
 	/* remove old data */
 	PropData_Shutdown();
@@ -415,8 +420,8 @@ PropData_Init(void)
 	/* alocate our stuff */
 	g_propdata = (propdata_t *)memalloc(sizeof(propdata_t) * PROPDATA_MAX);
 	g_breakmodel = (breakmodel_t *)memalloc(sizeof(breakmodel_t) * PROPDATA_MAX);
-	print(sprintf("PropData_Init: Allocated %d bytes for prop data\n", sizeof(propdata_t) * PROPDATA_MAX));
-	print(sprintf("PropData_Init: Allocated %d bytes for breakmodels\n", sizeof(breakmodel_t) * PROPDATA_MAX));
+	print(sprintf("allocated %d bytes for prop data.\n", sizeof(propdata_t) * PROPDATA_MAX));
+	print(sprintf("allocated %d bytes for breakmodels.\n", sizeof(breakmodel_t) * PROPDATA_MAX));
 #endif
 
 	fseek(fh, 0);
@@ -426,6 +431,8 @@ PropData_Init(void)
 		PropData_ParseLine(line);
 	}
 	fclose(fh);
+
+	print("PropData initialized.\n");
 }
 
 /* we can only tokenize one thing at a time, so we save the type for the current

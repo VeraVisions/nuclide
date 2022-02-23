@@ -1,8 +1,8 @@
-//======= Copyright (c) 2015-2020 Vera Visions LLC. All rights reserved. =======
+//======= Copyright (c) 2015-2022 Vera Visions LLC. All rights reserved. =======
 //
 // Purpose: 
 //
-// Blending terrain and masking its edges for a smooth transition into alpha.
+// Alternate version of caustics that's practically inverted for subtract blends
 //==============================================================================
 
 !!ver 110

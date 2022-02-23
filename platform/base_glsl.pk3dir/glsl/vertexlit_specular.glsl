@@ -89,15 +89,17 @@ varying mat3 invsurface;
 	#include "sys/fog.h"
 	#include "sys/pcf.h"
 
+#ifdef HALFLAMBERT
+	float lambert(vec3 normal, vec3 dir)
+	{
+		return (lambert(normal, dir) * 0.5) + 0.5;
+	}
+#else
 	float lambert(vec3 normal, vec3 dir)
 	{
 		return max(dot(normal, dir), 0.0);
 	}
-
-	float halflambert(vec3 normal, vec3 dir)
-	{
-		return (lambert(normal, dir) * 0.5) + 0.5;
-	}
+#endif
 	
 	void main ()
 	{
@@ -122,11 +124,9 @@ varying mat3 invsurface;
 			discard;
 		}
 
-	#ifdef HALFLAMBERT
-		light = e_light_ambient + (e_light_mul * halflambert(norm, e_light_dir));
-	#else
-		light = e_light_ambient + (e_light_mul * lambert(norm, e_light_dir));
-	#endif
+		light += (e_light_mul * lambert(norm, e_light_dir)) * 2.0f; /* directional light */
+		light += (e_light_ambient * lambert(norm, reflect(norm, e_light_dir))) * 0.5f; /* reverse ambient */
+		light *= 2.0f;
 
 	#if r_skipSpecular==0
 		vec3 halfdir = normalize(normalize(eyevector) + e_light_dir);

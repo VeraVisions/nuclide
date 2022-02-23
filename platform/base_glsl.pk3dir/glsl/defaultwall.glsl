@@ -87,18 +87,19 @@ varying mat3 invsurface;
 #else
 		lightmaps  = texture2D(s_lightmap, lm0).rgb * e_lmscale.rgb;
 #endif
-	#if gl_ldr==1
-		if (lightmaps.r > 1.5)
-			lightmaps.r = 1.5f;
-		if (lightmaps.g > 1.5)
-			lightmaps.g = 1.5f;
-		if (lightmaps.b > 1.5)
-			lightmaps.b = 1.5f;
+		if (gl_ldr == 1.0) {
 
-		lightmaps.rgb * 0.5f;
-		lightmaps.rgb = floor(lightmaps.rgb * vec3(32,64,32))/vec3(32,64,32);
-		lightmaps.rgb * 2.0f;
-	#endif
+			if (lightmaps.r > 1.5)
+				lightmaps.r = 1.5f;
+			if (lightmaps.g > 1.5)
+				lightmaps.g = 1.5f;
+			if (lightmaps.b > 1.5)
+				lightmaps.b = 1.5f;
+
+			lightmaps.rgb * 0.5f;
+			lightmaps.rgb = floor(lightmaps.rgb * vec3(32,64,32))/vec3(32,64,32);
+			lightmaps.rgb * 2.0f;
+		}
 
 		return lightmaps;
 	}

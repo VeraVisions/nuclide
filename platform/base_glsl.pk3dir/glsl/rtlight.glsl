@@ -5,6 +5,9 @@
 // Code for all the dynamic light passes. The renderer is not aware of any
 // surface properties beyond diffuse, normal and specularity.
 // Alpha-masked surfaces suffer greatly because of this.
+//
+// diffusemap = albedo (rgba)
+// normalmap = normal (rgb), reflectmask (a)
 //==============================================================================
 
 !!ver 100 300
@@ -12,15 +15,12 @@
 !!permu FRAMEBLEND
 !!permu SKELETAL
 !!permu FOG
-!!permu REFLECTCUBEMASK
 
 !!cvardf r_glsl_pcf
-!!samps diffuse normalmap specular reflectcube reflectmask
+!!samps diffuse
+!!samps =BUMP normalmap reflectcube
 !!samps =PCF shadowmap
 !!samps =CUBE projectionmap
-
-!!cvardf r_skipDiffuse
-!!cvardf r_skipNormal
 
 #include "sys/defs.h"
 
@@ -40,11 +40,8 @@ varying vec3 lightvector;
 	varying vec4 vc;
 #endif
 
-#if defined(SPECULAR) || defined(REFLECTCUBEMASK)
+#ifdef BUMP
 	varying vec3 eyevector;
-#endif
-
-#ifdef REFLECTCUBEMASK
 	varying mat3 invsurface;
 #endif
 
@@ -84,14 +81,11 @@ varying vec3 lightvector;
 		vc = v_colour;
 	#endif
 
-	#if defined(SPECULAR) || defined(REFLECTCUBEMASK)
+	#ifdef BUMP
 		vec3 eyeminusvertex = e_eyepos - w.xyz;
 		eyevector.x = dot(eyeminusvertex, s.xyz);
 		eyevector.y = dot(eyeminusvertex, t.xyz);
 		eyevector.z = dot(eyeminusvertex, n.xyz);
-	#endif
-
-	#ifdef REFLECTCUBEMASK
 		invsurface = mat3(v_svector, v_tvector, v_normal);
 	#endif
 
@@ -131,27 +125,12 @@ varying vec3 lightvector;
 	#if defined(FLAT)
 		vec4 bases = vec4(FLAT, FLAT, FLAT, 1.0);
 	#else
-		#if r_skipDiffuse==0
-			vec4 bases = texture2D(s_diffuse, tex_c);
-		#else
-			vec4 bases = vec4(0.5, 0.5, 0.5, 1.0);
-		#endif
+		vec4 bases = texture2D(s_diffuse, tex_c);
 	#endif
 
-	#if defined(BUMP) || defined(SPECULAR) || defined(REFLECTCUBEMASK)
-		#if r_skipNormal==0
-			vec3 normal_f = normalize(texture2D(s_normalmap, tex_c).rgb - 0.5) * 2.0;
-		#else
-			#define normal_f vec3(0.0,0.0,1.0)
-		#endif
-	#elif defined(REFLECTCUBEMASK)
-		#define normal_f vec3(0.0,0.0,1.0)
-	#endif
-
-	#ifdef SPECULAR
-		vec4 specs = texture2D(s_specular, tex_c);
-		#define gloss specs.a
-		#define specrgb specs.rgb
+	#ifdef BUMP
+		vec3 normal_f = normalize(texture2D(s_normalmap, tex_c).rgb - 0.5) * 2.0;
+		float refl = 1.0 - texture2D(s_normalmap, tex_c).a;
 	#endif
 
 	#ifdef NOBUMP
@@ -167,19 +146,12 @@ varying vec3 lightvector;
 		#endif
 	#endif
 
-	/* take existing specular map into account to appoint a new glossy light */
-	#ifdef SPECULAR
-		vec3 halfdir = normalize(normalize(eyevector) + nl);
-		float spec = pow(max(dot(halfdir, normal_f), 0.0), gloss);
-		diff += l_lightcolourscale.z * spec * specrgb;
-	#endif
-
 	/* respect the reflectcube surface */
-	#ifdef REFLECTCUBEMASK
+	#ifdef BUMP
 		vec3 rtc = reflect(-eyevector, normal_f);
 		rtc = rtc.x * invsurface[0] + rtc.y * invsurface[1] + rtc.z * invsurface[2];
 		rtc = (m_model * vec4(rtc.xyz,0.0)).xyz;
-		diff += texture2D(s_reflectmask, tex_c).rgb * textureCube(s_reflectcube, rtc).rgb;
+		diff += textureCube(s_reflectcube, rtc).rgb * refl;
 	#endif
 
 	/* filter the colour by the cubemap projection */
@@ -187,13 +159,11 @@ varying vec3 lightvector;
 		diff *= textureCube(s_projectionmap, vtexprojcoord.xyz).rgb;
 	#endif
 
-		if (bases.a < 0.5)
-			discard;
-
-		if (vc.a < 0.5)
-			discard;
+		diff.rgb *= bases.a;
 
 		diff *= colorscale * l_lightcolour;
-		gl_FragColor = vec4(fog3additive(diff), 1.0);
+		diff.rgb *= vc.a;
+
+		gl_FragColor = vec4(fog3additive(diff), vc.a);
 	}
 #endif

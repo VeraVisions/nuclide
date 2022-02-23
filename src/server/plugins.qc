@@ -31,7 +31,7 @@ Plugin_Init(void)
 	int i;
 
 	if (autocvar_sv_plugins) {
-		iprint("Initializing Plugins");
+		print("--------- Initializing Plugins ----------\n");
 		g_plugins_enabled = 1;
 	} else {
 		g_plugins_enabled = 0;
@@ -41,7 +41,7 @@ Plugin_Init(void)
 	pdb = fopen("plugins.txt", FILE_READ);
 
 	if (pdb < 0) {
-		print("^2Plugins^7: No plugins.txt found. Disabling.\n");
+		print("^1no plugins.txt found.\n");
 		g_plugins_enabled = 0;
 		return;
 	}
@@ -85,7 +85,7 @@ Plugin_Init(void)
 		}
 	}
 
-	print(sprintf("^1Plugins^7: Initialized %i plugins\n", g_plugincount));
+	print(sprintf("initialized %i plugins.\n", g_plugincount));
 }
 
 /*
