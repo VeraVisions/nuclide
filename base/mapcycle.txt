@@ -1,0 +1,5 @@
+test_dlights
+test_monitor
+test_lightwarmth
+test_areaportal
+test_skyroom

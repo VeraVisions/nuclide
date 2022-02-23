@@ -1,0 +1,14 @@
+$position -1 -1
+$effect 0
+$color 255 255 255
+$color2 255 0 0
+$fxtime 0.25
+$holdtime 1
+$fadein 0.5
+$fadeout 0.5
+
+TESTMSG
+{
+	= Test Message =
+	This should be centered.
+}
