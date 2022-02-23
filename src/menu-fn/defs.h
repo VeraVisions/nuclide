@@ -102,6 +102,7 @@ typedef struct
 	string trainingmap;
 	string fallback_dir;
 	string chatroom;
+	string menumap;
 	string introvideo;
 	int steambg;
 	gi_type info_type;

@@ -160,6 +160,11 @@ m_init(void)
 			localcmd(strcat("playvideo ", videofile, "\n"));
 		}
 	}
+
+	if (games[gameinfo_current].menumap != "") {
+		string mapname = games[gameinfo_current].menumap;
+		localcmd(strcat("map_background ", mapname, "\n"));
+	}
 }
 
 /* called upon vid_reload, vid_restart, but not menu init/restart */

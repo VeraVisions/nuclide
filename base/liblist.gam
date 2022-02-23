@@ -45,6 +45,8 @@ pkgfile ""
 chatroom "lobby"
 // which file is to view when clicking the readme menu button
 readme "readme.txt"
+// which map to use as a level background
+menumap "test_dlights"
 // what movie to play when starting the game
 introvideo ""
 // whether to use a steam styled resource background cut into multiple parts

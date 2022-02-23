@@ -235,6 +235,9 @@ customgame_liblist_parse(int id, string strKey, string strValue)
 	case "readme":
 		games[id].readme = strValue;
 		break;
+	case "menumap":
+		games[id].menumap = strValue;
+		break;
 	case "introvideo":
 		games[id].introvideo = strValue;
 		break;
