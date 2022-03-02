@@ -54,6 +54,8 @@ class CGameRules
 	virtual void(void) IntermissionCycle;
 	virtual void(void) IntermissionEnd;
 
+	virtual float(void) IsTeamPlay;
+
 	/* spectator */
 	/*virtual void(base_player) SpectatorConnect;
 	virtual void(base_player) SpectatorDisconnect;

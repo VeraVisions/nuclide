@@ -53,11 +53,13 @@ void
 CGameRules::PlayerDeath(base_player pl)
 {
 	//print("PlayerDeath!\n");
+	pl.Death();
 }
 void
 CGameRules::PlayerPain(base_player pl)
 {
 	//print("ClientKill!\n");
+	pl.Pain();
 }
 void
 CGameRules::PlayerSpawn(base_player pl)
@@ -175,6 +177,13 @@ int
 CGameRules::MonstersSpawn(void)
 {
 	return (TRUE);
+}
+
+/* init */
+float
+CGameRules::IsTeamPlay(void)
+{
+	return (FALSE);
 }
 
 void
