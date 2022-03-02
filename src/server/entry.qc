@@ -55,6 +55,8 @@ ClientConnect(void)
 {
 	int playercount = 0;
 
+	forceinfokey(self, "*team", "0");
+
 #ifdef BOT_INCLUDED
 	if (clienttype(self) == CLIENTTYPE_BOT) {
 		spawnfunc_bot();
