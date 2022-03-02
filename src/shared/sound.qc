@@ -511,6 +511,7 @@ Sound_Play(entity target, int chan, string shader)
 	}
 }
 
+void(vector origin, string sample, float volume, float attenuation, float pitch) pointsound_proper = #483;
 void
 Sound_PlayAt(vector pos, string shader)
 {
@@ -562,7 +563,7 @@ Sound_PlayAt(vector pos, string shader)
 #endif
 
 	/* really? this doesn't do any more? */
-	pointsound(pos, argv(r), g_sounds[sample].volume, Sound_GetAttenuation(sample));
+	pointsound_proper(pos, argv(r), g_sounds[sample].volume, Sound_GetAttenuation(sample), pitch);
 }
 
 #ifdef CLIENT
