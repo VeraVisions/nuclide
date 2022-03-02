@@ -36,6 +36,76 @@ Route_RoundDistance(float flDist)
 }
 
 
+/* returns a botinfo point that's nearest to us */
+entity
+Route_SelectNearest(float type, vector org) 
+{
+	entity temp;
+	int bestrange = COST_INFINITE;
+	int range;
+	entity dest = __NULL__;
+
+	for (temp = world; (temp = findfloat(temp, ::botinfo, type));) {
+		range = vlen(temp.origin - org);
+
+		if ((range < bestrange) && (temp.solid != SOLID_NOT)) {
+			bestrange = range;
+			dest = temp;
+		}
+	}
+
+	return dest;
+}
+
+/* returns a botinfo point belonging to our team */
+entity
+Route_SelectNearestTeam(float type, vector org, float tt) 
+{
+	entity temp;
+	int bestrange = COST_INFINITE;
+	int range;
+	entity dest = __NULL__;
+
+	for (temp = world; (temp = findfloat(temp, ::botinfo, type));) {
+		if (temp.team != tt)
+			continue;
+
+		range = vlen(temp.origin - org);
+
+		if ((range < bestrange) && (temp.solid != SOLID_NOT)) {
+			bestrange = range;
+			dest = temp;
+		}
+	}
+
+	return dest;
+}
+
+/* returns a botinfo point belonging to the enemy team */
+entity
+Route_SelectNearestEnemyTeam(float type, vector org, float tt) 
+{
+	entity temp;
+	int bestrange = COST_INFINITE;
+	int range;
+	entity dest = __NULL__;
+
+	for (temp = world; (temp = findfloat(temp, ::botinfo, type));) {
+		if (temp.team == tt)
+			continue;
+
+		range = vlen(temp.origin - org);
+
+		if ((range < bestrange) && (temp.solid != SOLID_NOT)) {
+			bestrange = range;
+			dest = temp;
+		}
+	}
+
+	return dest;
+}
+
+
 /*
 ================
 Spawn_SelectRandom
@@ -80,28 +150,72 @@ Bot_RouteCB(entity ent, vector dest, int numnodes, nodeslist_t *nodelist)
 vector
 Route_SelectDestination(bot target)
 {
+	CGameRules rules;
+	rules = (CGameRules)g_grMode;
+
 	entity dest = world;
+	
 
-	if (target.health < 50) {
-		entity temp;
-		int bestrange = COST_INFINITE;
-		int range;
-
-		for (temp = world; (temp = findfloat(temp, ::botinfo, BOTINFO_HEALTH));) {
-			range = vlen(temp.origin - target.origin);
-			if ((range < bestrange) && (temp.solid == SOLID_TRIGGER)) {
-				bestrange = range;
-				dest = temp;
+	if (rules.IsTeamPlay()) {
+		/* we have the goal item, so capture it */
+		if (target.flags & FL_GOALITEM) {
+			print(sprintf("%s going for capture\n", target.netname));
+			dest = Route_SelectNearestTeam(BOTINFO_TEAM_GOALCAPTURE, target.origin, target.team);
+			
+			/* we may have to go to our teams' goal item then */
+			if (!dest) {
+				dest = Route_SelectNearestTeam(BOTINFO_TEAM_GOALITEM, target.origin, target.team);
 			}
+		} else {
+			print(sprintf("%s hunting for goal item\n", target.netname));
+			dest = Route_SelectNearestEnemyTeam(BOTINFO_TEAM_GOALITEM, target.origin, target.team);
 		}
 
-		if (dest) {
-			//dprint("Route: Going for health!");
-			return (dest.origin + [0,0,32]);
-		}
+		if (dest)
+			return dest.origin + [0,0,32];
+
+		print(sprintf("%s can't figure out where to go for the goal\n", target.netname));
 	}
 
+	/* if we're low on health, look for health items */
+	if (target.health < 50) {
+		print(sprintf("%s going for health\n", target.netname));
+		dest = Route_SelectNearest(BOTINFO_HEALTH, target.origin);
+		
+		if (dest)
+			return dest.origin + [0,0,32];
+
+		print(sprintf("%s can't figure out where to go for health\n", target.netname));
+	}
+
+	/* armor is always a good idea to have */
+	if (target.armor < 50) {
+		print(sprintf("%s going for armor\n", target.netname));
+		dest = Route_SelectNearest(BOTINFO_ARMOR, target.origin);
+		
+		if (dest)
+			return dest.origin + [0,0,32];
+
+		print(sprintf("%s can't figure out where to go for armor\n", target.netname));
+	}
+
+	/* if all else fails... select a random spot */
+	print(sprintf("%s found nothing, going for random PoI\n", target.netname));
 	dest = Route_SelectRandomSpot();
 	target.m_eDestination = dest;
 	return (dest.origin);
+}
+
+int
+Route_GetNodeFlags(nodeslist_t *node)
+{
+	int fl = node.m_iFlags;
+
+	/* to avoid random buttons being pressed */
+	if (fl == LF_DESTINATION)
+		return 0;
+	else if (fl == -1i)
+		return 0;
+	else
+		return fl;
 }

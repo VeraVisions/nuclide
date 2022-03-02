@@ -39,10 +39,14 @@ bot::ChatSayTeam(string msg)
 void
 bot::Pain(void)
 {
+	CGameRules rules = g_grMode;
+
 	player::Pain();
 
-	/* might as well target our attacker */
-	m_eTarget = g_dmg_eAttacker;
+	if (rules.IsTeamPlay()) {
+		if (g_dmg_eAttacker.flags & FL_CLIENT && g_dmg_eAttacker.team == team)
+			ChatSayTeam("Stop shooting me!");
+	}
 }
 
 void
@@ -151,6 +155,8 @@ bot::UseButton(void)
 void
 bot::SeeThink(void)
 {
+	CGameRules rules = (CGameRules)g_grMode;
+
 	if (m_eTarget)
 		return;
 
@@ -171,7 +177,7 @@ bot::SeeThink(void)
 			continue;
 
 		/* ain't go hurt our brothers and sisters */
-		if (Rules_IsTeamPlay() == TRUE)
+		if (rules.IsTeamPlay() == TRUE)
 			if (team == w.team)
 				continue;
 
@@ -221,15 +227,15 @@ bot::CheckRoute(void)
 		m_iCurNode--;
 
 		if (m_iCurNode >= 0) {
-			if (m_pRoute[m_iCurNode].m_iFlags)
-			print(sprintf("NODE FLAGS: %i\n", m_pRoute[m_iCurNode].m_iFlags));
+			if (Route_GetNodeFlags(&m_pRoute[m_iCurNode]))
+				dprint(sprintf("NODE FLAGS: %i\n", Route_GetNodeFlags(&m_pRoute[m_iCurNode])));
 
 			/* if a node is flagged as jumpy, jump! */
-			if (m_pRoute[m_iCurNode].m_iFlags & LF_JUMP)
+			if (Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_JUMP)
 				input_buttons |= INPUT_BUTTON2;
 
 			/* find the nearest usable item (func_button) and use them */
-			if (m_pRoute[m_iCurNode].m_iFlags & LF_USER)
+			if (Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_USER)
 				UseButton();
 		}
 
@@ -274,7 +280,7 @@ bot::CheckRoute(void)
 		input_buttons |= INPUT_BUTTON2;
 	} else {
 		/* entire way-link needs to be crouched. that's the law of the land */
-		if (m_pRoute[m_iCurNode].m_iFlags & LF_CROUCH)
+		if (Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_CROUCH)
 			input_buttons |= INPUT_BUTTON8;
 	}
 }
@@ -344,6 +350,8 @@ bot::RunAI(void)
 	BrainThink(enemyvisible, enemydistant);
 	CheckRoute();
 
+	aimpos = [0,0,0];
+
 	if (m_iNodes) {
 		vector vecNewAngles;
 		vector vecDirection;
@@ -353,7 +361,7 @@ bot::RunAI(void)
 			if (m_iCurNode == BOTROUTE_DESTINATION)
 				aimpos = m_vecLastNode;
 			else {
-				if (m_iCurNode > 0 && !(m_pRoute[m_iCurNode].m_iFlags & LF_AIM))
+				if (m_iCurNode > 0 && !(Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_AIM))
 					aimpos = m_pRoute[m_iCurNode - 1].m_vecDest;
 				else
 					aimpos = m_pRoute[m_iCurNode].m_vecDest;
@@ -361,6 +369,12 @@ bot::RunAI(void)
 		} else {
 			/* aim towards the enemy */
 			aimpos = m_eTarget.origin;
+		}
+
+		/* aim ahead */
+		if (aimpos == [0,0,0]) {
+			makevectors(angles);
+			aimpos = origin + v_forward * 128;
 		}
 
 		/* lerping speed, faster when we've got a target */
@@ -407,7 +421,7 @@ bot::RunAI(void)
 		}
 
 		/* now we'll set the movevalues relative to the input_angle */
-		if ((m_iCurNode >= 0 && m_pRoute[m_iCurNode].m_iFlags & LF_WALK) || m_eTarget && enemyvisible && vlen(aimpos-origin) < 512)
+		if ((m_iCurNode >= 0 && Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_WALK) || m_eTarget && enemyvisible && vlen(aimpos-origin) < 512)
 			vecDirection = normalize(aimpos - origin) * 120;
 		else
 			vecDirection = normalize(aimpos - origin) * 240;

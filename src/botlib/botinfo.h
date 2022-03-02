@@ -14,11 +14,14 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/* we need to keep this an enum so find() does its work faster */
 enum
 {
-	BOTINFO_NONE,
-	BOTINFO_HEALTH,
-	BOTINFO_ARMOR,
-	BOTINFO_SPAWNPOINT,
-	BOTINFO_END
+	BOTINFO_NONE,				/* no info */
+	BOTINFO_HEALTH,				/* health item */
+	BOTINFO_ARMOR,				/* armor item */
+	BOTINFO_SPAWNPOINT,			/* place where to find new players */
+	BOTINFO_TEAM_GOALITEM,		/* team-mode goal item (flag, intel) */
+	BOTINFO_TEAM_GOALCAPTURE,	/* where to go when goal-item present */
+	BOTINFO_END					/* end destination */
 };

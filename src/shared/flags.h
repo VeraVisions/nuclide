@@ -40,4 +40,4 @@
 #define FL_NOATTACK		(1<<21)
 #define FL_ONUSABLE		(1<<22)
 #define FL_ONFIRE		(1<<23)
-#define FL_RESERVED3		(1<<15)
+#define FL_GOALITEM		(1<<15)
