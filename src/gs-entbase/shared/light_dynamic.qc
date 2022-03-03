@@ -52,6 +52,8 @@ games to tell the entity to start inactive as far as I can tell.
 This entity was introduced in Half-Life 2 (2004).
 */
 
+int autocvar_r_showDlights = 0;
+
 enumflags
 {
 	DLIGHTFL_CHANGED_ORIGIN,
@@ -102,6 +104,18 @@ class light_dynamic:NSPointTrigger
 float
 light_dynamic::predraw(void)
 {
+	/* debug drawing */
+	if (autocvar_r_showDlights) {
+		float a = (m_iState) ? 1.0 : 0.25f;
+		makevectors(view_angles);
+		R_BeginPolygon("textures/dev/light_dynamic", 0, 0);
+		R_PolygonVertex(origin + v_right * 24 - v_up * 24, [1,1], m_vecLight, a);
+		R_PolygonVertex(origin - v_right * 24 - v_up * 24, [0,1], m_vecLight, a);
+		R_PolygonVertex(origin - v_right * 24 + v_up * 24, [0,0], m_vecLight, a);
+		R_PolygonVertex(origin + v_right * 24 + v_up * 24, [1,0], m_vecLight, a);
+		R_EndPolygon();
+	}
+
 	if (!m_iState) {
 		return (PREDRAW_NEXT);
 	}
