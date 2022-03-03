@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2022 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -22,6 +22,8 @@
 
    MAPTEXTURENAME PATH_TO_SOME_OVERLAY XSCALE YSCALE
 */
+
+static int g_detail_initialized;
 
 const string g_detail_shader = \
 	"{\n" \
@@ -65,13 +67,17 @@ DetailTex_Init(void)
 {
 	filestream fh;
 	string line;
+	int n = 0;
 
 	if (!autocvar(r_detailtextures, 0, "High-res detail texture overlays for selected maps"))
 		return;
 
+	print("--------- Initializing DetailTex ----------\n");
+
 	fh = fopen(strcat("maps/", mapname, "_detail.txt"), FILE_READ);
 
 	if (fh < 0) {
+		print(sprintf("DeailTex definition not found for %s.\n", mapname));
 		return;
 	}
 
@@ -82,7 +88,9 @@ DetailTex_Init(void)
 			continue;
 
 		DetailTex_Parse(strtolower(argv(0)), argv(1), stof(argv(2)), stof(argv(3)));
+		n++;
 	}
 
+	print(sprintf("DeailTex initialized with %i entries.\n", n));
 	fclose(fh);
 }

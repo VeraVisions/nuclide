@@ -46,64 +46,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	pSeat = &g_seats[0];
 	pSeatLocal = &g_seatslocal[0];
 
-	/* developer/debug commands */
-	registercommand("testLight");
-	registercommand("testPointLight");
-	registercommand("getpos");
-	registercommand("setpos");
-	registercommand("setang");
-	registercommand("dev_sentence");
-	registercommand("titles_test");
-	registercommand("buildcubemaps");
-	registercommand("dev_sunpos");
-	registercommand("dev_measure");
-	registercommand("view_geomtest");
-	registercommand("player_geomtest");
-	registercommand("way_menu");
-	registercommand("dev_explode");
-	registercommand("dev_modeltest");
-
-	/* basic actions */
-	registercommand("+attack");
-	registercommand("-attack");
-	registercommand("+attack2");
-	registercommand("-attack2");
-	registercommand("+reload");
-	registercommand("-reload");
-	registercommand("+use");
-	registercommand("-use");
-	registercommand("+duck");
-	registercommand("-duck");
-
-	/* voting */
-	registercommand("vote");
-	registercommand("callvote");
-
-	/* hud weapon selection system */
-	registercommand("slot1");
-	registercommand("slot2");
-	registercommand("slot3");
-	registercommand("slot4");
-	registercommand("slot5");
-	registercommand("slot6");
-	registercommand("slot7");
-	registercommand("slot8");
-	registercommand("slot9");
-	registercommand("slot10");
-	registercommand("lastinv");
-	registercommand("invnext");
-	registercommand("invprev");
-
-	/* scoreboard */
-	registercommand("+showscores");
-	registercommand("-showscores");
-
-	/* meant to be hidden */
-	registercommand("_fnchat_msg");
-
-	/* Requested by Slacer */
-	registercommand("+zoomin");
-	registercommand("-zoomin");
+	Cmd_Init();
 
 	/* Sound shaders */
 	Sound_Init();
@@ -175,7 +118,7 @@ CSQC_RendererRestarted(string rstr)
 	DetailTex_Init();
 
 	/* end msg */
-	print("Graphical resources reloaded.\n");
+	print("Graphical resources reloaded\n");
 }
 
 /* this is so that profile_csqc reports more accurate statistics as to
@@ -550,14 +493,9 @@ CSQC_Input_Frame(void)
 	CSQC_UpdateSeat();
 	me = pSeat->m_ePlayer;
 
-	if (me.classname == "player") {
-		player pl;
-		pl = (player)pSeat->m_ePlayer;
+	if (me.classname == "player" || me.classname == "spectator") {
+		base_client pl = (base_client)me;
 		pl.ClientInputFrame();
-	} else if (me.classname == "spectator") {
-		spectator spec;
-		spec = (spectator)pSeat->m_ePlayer;
-		spec.ClientInputFrame();
 	}
 }
 
@@ -572,125 +510,28 @@ Whenever we call a SVC_CGAMEPACKET on the SSQC, this is being run
 void
 CSQC_Parse_Event(void)
 {
-	entity me;
 	/* always 0, unless it was sent with a MULTICAST_ONE or MULTICAST_ONE_R to p2+ */
 	CSQC_UpdateSeat();
-	me = pSeat->m_ePlayer;
 
 	float fHeader = readbyte();
 
-	switch (fHeader) {
-	case EV_DAMAGE:
-		vector vecDmgPos;
-		int iDmgTake;
-		int iDmgFlags;
-		vecDmgPos[0] = readcoord();
-		vecDmgPos[1] = readcoord();
-		vecDmgPos[2] = readcoord();
-		iDmgTake = readint();
-		iDmgFlags = readint();
-		CSQC_Parse_Damage_New(vecDmgPos, iDmgTake, iDmgFlags);
-		break;
-	case EV_INTERMISSION:
-		int cam;
-		vector pos, ang;
-
-		cam = (int)readbyte();
-
-		if (cam) {
-			ang[0] = readfloat();
-			ang[1] = readfloat();
-			ang[2] = readfloat();
-
-			pos[0] = readcoord();
-			pos[1] = readcoord();
-			pos[2] = readcoord();
-		} else {
-			pos = getproperty(VF_ORIGIN);
-			ang = getproperty(VF_ANGLES);
-		}
-
-		pSeat->m_vecCameraOrigin = pos;
-		pSeat->m_vecCameraAngle = ang;
-		g_iIntermission = TRUE;
-		break;
-	case EV_MUSICTRACK:
-		Music_ParseTrack();
-		break;
-	case EV_MUSICLOOP:
-		Music_ParseLoop();
-		break;
-	case EV_SPEAK:
-		string msg;
-		float pit;
-		entity t = findfloat(world, entnum, readentitynum());
-		msg = readstring();
-		pit = readfloat();
-		sound(t, CHAN_VOICE, msg, 1.0, ATTN_NORM, pit);
-		break;
-	case EV_SENTENCE:
-		NSTalkMonster_ParseSentence();
-		break;
-	case EV_HUDHINT:
-		string hint;
-		hint = readstring();
-		/* TODO: Handle the event properly */
-		Chat_Parse(sprintf("Hint: %s", hint));
-		break;
-	case EV_FADE:
-		Fade_Parse();
-		break;
-	case EV_SPRITE:
-		EnvSprite_ParseEvent();
-		break;
-	case EV_TEXT:
-		GameText_Parse();
-		break;
-	case EV_MESSAGE:
-		GameMessage_Parse();
-		break;
-	case EV_CAMERATRIGGER:
-		vector cam_newpos;
-
-		cam_newpos[0] = readcoord();
-		cam_newpos[1] = readcoord();
-		cam_newpos[2] = readcoord();
-
-		pSeat->m_vecCameraAngle[0] = readcoord();
-		pSeat->m_vecCameraAngle[1] = readcoord();
-		pSeat->m_vecCameraAngle[2] = readcoord();
-
-		pSeat->m_flCameraTime = time + readfloat();
-
-		/* if the same camera as last-time (hack) is still active,
-		   then make sure it becomes inactive... */
-		if (pSeat->m_vecCameraOrigin == cam_newpos) {
-			pSeat->m_flCameraTime = 0.0f;
-		} else {
-			pSeat->m_vecCameraOrigin = cam_newpos;
-		}
-		break;
-	case EV_ANGLE:
-		vector a;
-		a[0] = readfloat();
-		a[1] = readfloat();
-		a[2] = readfloat();
-		setproperty(VF_CL_VIEWANGLES, a);
-		setproperty(VF_ANGLES, a);
-		break;
-	case EV_SHAKE:
-		if (me.classname == "spectator")
-			break;
-		pSeat->m_flShakeDuration = readfloat();
-		pSeat->m_flShakeAmp = readfloat();
-		pSeat->m_flShakeFreq = readfloat();
-		pSeat->m_flShakeTime = pSeat->m_flShakeDuration;
-		break;
-	default:
-		ClientGame_EventParse(fHeader);
+	int ret = ClientGame_EventParse(fHeader);
+	if (ret == 1) {
+		return;
 	}
+
+	Event_Parse(fHeader);
 }
 
+/*
+=================
+CSQC_ConsoleCommand
+
+Commands not protected by the engine get passed here.
+If we return 0 this means the engine needs to either handle
+the command or throw a 'unrecognized command' message.
+=================
+*/
 float
 CSQC_ConsoleCommand(string sCMD)
 {
@@ -706,185 +547,36 @@ CSQC_ConsoleCommand(string sCMD)
 	if (ret == (1))
 		return (1);
 
-	switch (argv(0)) {
-	case "testPointLight":
-		makevectors(getproperty(VF_ANGLES));
-		traceline(getproperty(VF_ORIGIN), getproperty(VF_ORIGIN) + v_forward * 4096, FALSE, pSeat->m_ePlayer);
-		dynamiclight_spawnstatic(trace_endpos + (v_forward * -16), 1024, [1,1,1]);
-		break;
-	case "dev_modeltest":
-		entity mt = spawn();
-		mt.drawmask = MASK_ENGINE;
-		setmodel(mt, argv(1));
-		setsize(mt, [0,0,0], [0,0,0]);
-		setorigin(mt, getproperty(VF_ORIGIN));
-		mt.angles = getproperty(VF_ANGLES);
-		mt.angles[0] = mt.angles[2] = 0;
-		break;
-	case "dev_explode":
-		makevectors(getproperty(VF_ANGLES));
-		traceline(getproperty(VF_ORIGIN), getproperty(VF_ORIGIN) + v_forward * 4096, FALSE, pSeat->m_ePlayer);
-		FX_Explosion(trace_endpos);
-		break;
-	case "dev_sunpos":
-		vector sunpos, sunang;
-		vector lepos, leang;
-
-		makevectors(getproperty(VF_ANGLES));
-		sunpos = v_forward * -1;
-		sunang = vectoangles(sunpos);
-
-		makevectors(getproperty(VF_ANGLES));
-		lepos = v_forward * -1;
-		leang = vectoangles(lepos);
-		leang[1] -= 180;
-		leang[0] *= -1;
-
-		localcmd(sprintf("r_shadows_throwdirection %v\n", sunpos));
-		print(sprintf("env_sun: pitch: %d; angle: %d\n", -sunang[0], sunang[1]));
-		print(sprintf("light_environment: sunangle: %d; pitch: %d\n", leang[1], leang[0]));
-		break;
-	case "dev_measure":
-		static vector measurepos;
-		if (!vlen(measurepos)) {
-			measurepos = getproperty(VF_ORIGIN);
-			CSQC_Parse_CenterPrint(sprintf( "First marker set at\n%v", measurepos));
-		} else {
-			CSQC_Parse_CenterPrint(sprintf("Distance: %d\n", vlen(measurepos - getproperty(VF_ORIGIN))));
-			measurepos = [0,0,0];
-		}
-		break;
-	case "vote":
-		if (argv(1) == "yes") {
-			sendevent("VoteY", "");
-		} else if (argv(1) == "no") {
-			sendevent("VoteN", "");
-		}
-		break;
-	case "getpos":
-		print(sprintf("setpos %v;setang -%v\n", getproperty(VF_ORIGIN), getproperty(VF_ANGLES)));
-		break;
-	case "setpos":
-		localcmd(sprintf("cmd setpos \"%s\"\n", argv(1)));
-		break;
-	case "setang":
-		setproperty(VF_CL_VIEWANGLES, stov(argv(1)));
-		setproperty(VF_ANGLES, stov(argv(1)));
-		break;
-	case "callvote":
-		sendevent("CallVote", "s", substring(sCMD, 9, strlen(sCMD)-9));
-		break;
-	case "+zoomin":
-		pSeat->m_iZoomed = TRUE;
-		break;
-	case "-zoomin":
-		pSeat->m_iZoomed = FALSE;
-		break;
-	case "buildcubemaps":
-		CMap_Build();
-		break;
-	case "titles_test":
-		GameMessage_Setup(argv(1), 0);
-		break;
-	case "+attack2":
-		pSeat->m_iInputAttack2 = TRUE;
-		break;
-	case "-attack2":
-		pSeat->m_iInputAttack2 = FALSE;
-		break;
-	case "+reload":
-		pSeat->m_iInputReload = TRUE;
-		break;
-	case "-reload":
-		pSeat->m_iInputReload = FALSE;
-		break;
-	case "+use":
-		pSeat->m_iInputUse = TRUE;
-		break;
-	case "-use":
-		pSeat->m_iInputUse = FALSE;
-		break;
-	case "+duck":
-		pSeat->m_iInputDuck = TRUE;
-		break;
-	case "-duck":
-		pSeat->m_iInputDuck = FALSE;
-		break;
-	case "invnext":
-		HUD_DrawWeaponSelect_Back();
-		break;
-	case "invprev":
-		HUD_DrawWeaponSelect_Forward();
-		break;
-	case "lastinv":
-		HUD_DrawWeaponSelect_Last();
-		break;
-	case "+showscores":
-		pSeat->m_iScoresVisible = TRUE;
-		break;
-	case "-showscores":
-		pSeat->m_iScoresVisible = FALSE;
-		break;
-	case "slot1":
-		HUD_SlotSelect(0);
-		break;
-	case "slot2":
-		HUD_SlotSelect(1);
-		break;
-	case "slot3":
-		HUD_SlotSelect(2);
-		break;
-	case "slot4":
-		HUD_SlotSelect(3);
-		break;
-	case "slot5":
-		HUD_SlotSelect(4);
-		break;
-	case "slot6":
-		HUD_SlotSelect(5);
-		break;
-	case "slot7":
-		HUD_SlotSelect(6);
-		break;
-	case "slot8":
-		HUD_SlotSelect(7);
-		break;
-	case "slot9":
-		HUD_SlotSelect(8);
-		break;
-	case "slot10":
-		HUD_SlotSelect(9);
-		break;
-	case "way_menu":
-		Way_Autoload();
-		Textmenu_Call("WAY_MENU");
-		break;
-	case "_fnchat_msg":
-		CSQC_Parse_Print(argv(1), PRINT_CHAT);
-		break;
-	case "view_geomtest":
-		Weapons_SetGeomset(sprintf("geomset %s %s\n", argv(1), argv(2)));
-		break;
-	case "player_geomtest":
-		setcustomskin(pSeat->m_ePlayer, "", sprintf("geomset %s %s\n", argv(1), argv(2)));
-		break;
-	default:
-		return (0);
-	}
-	return (1);
+	return Cmd_Parse(sCMD);
 }
 
+/*
+=================
+CSQC_ConsoleCommand
+
+Engine or server game will occasionally pass messages through here.
+There are 4 different types currently:
+PRINT_LOW = low on the screen.
+PRINT_MEDIUM = medium level on the screen.
+PRINT_HIGH  = top level on the screen
+PRINT_CHAT = chat message
+Currently, everything but chat gets piped into a single printbuffer,
+similar to NetQuake. 
+FIXME: We'd like to expose this further to modification.
+=================
+*/
 void
 CSQC_Parse_Print(string sMessage, float fLevel)
 {
 	CSQC_UpdateSeat();
 
-	/* This gives messages other than chat an orange tint */
+	/* chat goes through here */
 	if (fLevel == PRINT_CHAT) {
 		Chat_Parse(sMessage);
 		return;
 	}
 
+	/* the rest goes into our print buffer */
 	if (pSeat->m_iPrintLines < 4) {
 		pSeat->m_strPrintBuffer[pSeat->m_iPrintLines + 1] = sMessage;
 		pSeat->m_iPrintLines++;
@@ -897,7 +589,7 @@ CSQC_Parse_Print(string sMessage, float fLevel)
 
 	pSeat->m_flPrintTime = time + CHAT_TIME;
 
-	// Log to console
+	/* log to console */
 	localcmd(sprintf("echo \"%s\"\n", sMessage));
 }
 
@@ -932,7 +624,10 @@ CSQC_Parse_CenterPrint(string sMessage)
 =================
 CSQC_Ent_Update
 
-Called whenever an entity is sent manually via .SendFlags and so on
+Called when an entity is being networked from the server game.
+ClientGame_EntityUpdate allows the project to do game specific
+overrides. If that returns 0 Nuclide will attempt to handle it.
+If neither handles it we'll get a protocol error.
 =================
 */
 void
@@ -946,113 +641,7 @@ CSQC_Ent_Update(float new)
 		return;
 	}
 
-	switch (t) {
-	case ENT_ENTITY:
-		NSEntity me = (NSEntity)self;
-		if (new) {
-			spawnfunc_NSEntity();
-		}
-		me.ReceiveEntity(new, readfloat());
-		break;
-	case ENT_ENTITYRENDERABLE:
-		NSRenderableEntity rend = (NSRenderableEntity)self;
-		if (new) {
-			spawnfunc_NSRenderableEntity();
-		}
-		rend.ReceiveEntity(new, readfloat());
-		break;
-	case ENT_MONSTER:
-		NSMonster_ReadEntity(new);
-		break;
-	case ENT_TALKMONSTER:
-		NSTalkMonster_ReadEntity(new);
-		break;
-	case ENT_VEHICLE:
-		basevehicle_readentity(new);
-		break;
-	case ENT_VEH_TANKMORTAR:
-		func_tankmortar_readentity(new);
-		break;
-	case ENT_VEH_4WHEEL:
-		prop_vehicle_driveable_readentity(new);
-		break;
-	case ENT_PLAYER:
-		player pl = (player)self;
-
-		/* splitscreen */
-		CSQC_UpdateSeat();
-
-		Predict_EntityUpdate(pl, new);
-
-		/* any differences in things that are read below are now
-		   officially from prediction misses. */
-		float a = readfloat();
-		pl.ReceiveEntity(new, a);
-		break;
-	case ENT_SPECTATOR:
-		Spectator_ReadEntity(new);
-		break;
-	case ENT_SPRITE:
-		env_sprite spr = (env_sprite)self;
-		if (new) {
-			spawnfunc_env_sprite();
-		}
-		spr.ReceiveEntity(new, readfloat());
-		break;
-	case ENT_SPRAY:
-		Spray_Parse();
-		break;
-	case ENT_DECAL:
-		Decal_Parse();
-		break;
-	case ENT_AMBIENTSOUND:
-		Sound_ParseLoopingEntity(self, new);
-		break;
-	case ENT_OLDCAMERA:
-		trigger_camera tc = (trigger_camera)self;
-		if (new) {
-			spawnfunc_trigger_camera();
-		}
-		tc.ReceiveEntity(new, readfloat());
-		break;
-	case ENT_MONITOR:
-		func_monitor fc = (func_monitor)self;
-		if (new) {
-			spawnfunc_func_monitor();
-		}
-		fc.ReceiveEntity(new, readfloat());
-		break;
-	case ENT_DLIGHT:
-		light_dynamic dl = (light_dynamic)self;
-		if (new) {
-			spawnfunc_light_dynamic();
-		}
-		dl.ReceiveEntity(new, readfloat());
-		break;
-	case ENT_PROJECTEDTEXTURE:
-		env_projectedtexture ept = (env_projectedtexture)self;
-		if (new) {
-			spawnfunc_env_projectedtexture();
-		}
-		ept.ReceiveEntity(new, readfloat());
-		break;
-	case ENT_ENVLASER:
-		env_laser l = (env_laser)self;
-		if (new) {
-			spawnfunc_env_laser();
-		}
-		l.ReceiveEntity(new, readfloat());
-		break;
-	case ENT_PARTSYSTEM:
-		info_particle_system ips = (info_particle_system)self;
-		if (new) {
-			spawnfunc_info_particle_system();
-		}
-		ips.ReceiveEntity(new, readfloat());
-		break;
-	default:
-			//error(sprintf("Unknown entity type update received. (%d)\n", t));
-	}
+	Entity_EntityUpdate(t, new);
 }
 
 /*
@@ -1066,7 +655,7 @@ void
 CSQC_WorldLoaded(void)
 {
 	print("--------- Initializing Client World ----------\n");
-	DetailTex_Init();
+	//DetailTex_Init();
 
 	/* Primarily for the flashlight */
 	if (serverkeyfloat("*bspversion") != BSPVER_HL) {

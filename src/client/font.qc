@@ -76,14 +76,14 @@ Font_Load(string strFile, font_s &fntNew)
 		}
 		fclose(fileFont);
 	} else {
-		error(sprintf("[FONT] Cannot load font file %s!", strFile));
+		error(sprintf("cannot load font file %s!", strFile));
 	}
 
 	if (!fntNew.iScaleX || !fntNew.iScaleY) {
-		error(sprintf("[FONT] No valid size defined for %s!", strFile));
+		error(sprintf("no valid size defined for %s!", strFile));
 	}
 
-	//print(sprintf("[FONT] %s: %s %s\n", strFile, strFontPath, strRenderSize));
+	print(sprintf("loaded font definition for %s\n", strFile));
 
 	if (strRenderSize != "")
 		fntNew.iID = (int)loadfont("", strFontPath, strRenderSize, -1, 0, 0);

@@ -188,9 +188,9 @@ NSRenderableEntity::SendEntity(entity ePEnt, float fChanged)
 		WriteCoord(MSG_ENTITY, origin[2]);
 	}
 	if (fChanged & BASEFL_CHANGED_ANGLES) {
-		angles[0] = Math_FixDelta(angles[0]);
-		angles[1] = Math_FixDelta(angles[1]);
-		angles[2] = Math_FixDelta(angles[2]);
+		/* fix angles and try to avoid a net update next frame */
+		angles = Math_FixDeltaVector(angles);
+		angles_net = angles;
 		WriteShort(MSG_ENTITY, angles[0] * 32767 / 360);
 		WriteShort(MSG_ENTITY, angles[1] * 32767 / 360);
 		WriteShort(MSG_ENTITY, angles[2] * 32767 / 360);

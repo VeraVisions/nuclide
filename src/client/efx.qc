@@ -210,6 +210,7 @@ EFX_Load(string efx_file)
 		}
 	}
 
+	print(sprintf("parsed EFXDef file %s\n", efx_file));
 	fclose(fh);
 	return i;
 }
@@ -337,6 +338,8 @@ EFX_Init(void)
 	g_efx = (reverbinfo_t *)memalloc(sizeof(reverbinfo_t) * EFXDATA_MAX);
 	g_efx_name = (string *)memalloc(sizeof(string) * EFXDATA_MAX);
 	print(sprintf("allocated %d bytes for EFXDefs.\n", (sizeof(string) * EFXDATA_MAX) + (sizeof(reverbinfo_t) * EFXDATA_MAX)));
+#else
+	print("dynamic allocation for EFXDefs enabled.\n");
 #endif
 
 	efx_default = EFX_Load("default");

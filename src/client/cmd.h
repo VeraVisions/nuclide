@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2022 Marco Hladik <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -13,15 +13,6 @@
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-
-var string g_strSkyName;
-
-void
-Sky_Update(int force)
-{
-	if (g_strSkyName != serverkey("skyname") || force == TRUE) {
-		g_strSkyName = serverkey("skyname");
-		localcmd(sprintf("sky \"%s\"\n", g_strSkyName));
-		print(sprintf("sky update applying %s.\n", g_strSkyName));
-	}
-}
+ 
+void Cmd_Init(void);
+int Cmd_Parse(string);

@@ -23,5 +23,7 @@ way.qc
 efx.qc
 detailtex.qc
 shake.qc
+cmd.qc
+event.qc
 entry.qc
 #endlist

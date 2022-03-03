@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void
+int
 ClientGame_EventParse(float fHeader)
 {
 	switch (fHeader) {
@@ -32,5 +32,8 @@ ClientGame_EventParse(float fHeader)
 
 		CSQC_Parse_Print(sprintf("[TEAM] %s: %s", getplayerkeyvalue(fSender2, "name"), sMessage2), PRINT_CHAT);
 		break;
+	default:
+		return (0);
 	}
+	return (1);
 }
