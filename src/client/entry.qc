@@ -407,6 +407,8 @@ CSQC_UpdateView(float w, float h, float focus)
 			View_DrawViewModel();
 		} else if (pl.health > 0) {
 			View_DrawViewModel();
+		} else if (getplayerkeyvalue(pl.entnum-1, "*dead") == "1") {
+			pl.UpdateDeathcam();
 		}
 
 		/* this is running whenever we're doing 'buildcubemaps' */

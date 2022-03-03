@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/* lerping function that accounts for negative degrees */
 float
 Math_LerpAngle(float fStart, float fEnd, float fAmount)
 {
@@ -21,12 +22,15 @@ Math_LerpAngle(float fStart, float fEnd, float fAmount)
 	return shortest_angle * fAmount;
 }
 
+/* linear lerp function */
 float
 Math_Lerp(float fA, float fB, float fPercent)
 {
 	return (fA * (1 - fPercent)) + (fB * fPercent);
 }
 
+/* tries to make sure an angle value stays within certain constraints...
+ * however it doesn't account for much larger discrepancies */
 float
 Math_FixDelta(float fDelta)
 {
@@ -35,15 +39,28 @@ Math_FixDelta(float fDelta)
 	} else if (fDelta <= -180) {
 		fDelta += 360;
 	}
+
 	return fDelta;
 }
 
+vector
+Math_FixDeltaVector(vector in)
+{
+	in[0] = Math_FixDelta(in[0]);
+	in[1] = Math_FixDelta(in[1]);
+	in[2] = Math_FixDelta(in[2]);
+	return in;
+}
+
+/* takes an impact angle and a plane normal, returns a new trajectory */
 vector
 Math_Reflect(vector v1, vector v2)
 {
 	return v1 - 2 * dotproduct(v1, v2) * v2;
 }
 
+/* returns a random vector, if the first paramete is true it'll make
+ * sure that vertical velocity is ALWAYS positive */
 vector
 Math_RandomVector(float fFlyUp)
 {
@@ -60,6 +77,7 @@ Math_RandomVector(float fFlyUp)
 	return tmp * 2.0f;
 }
 
+/* takes a position and a pivot point and rotates point by X degrees around the pivot (YAW) */
 vector
 Math_RotateAroundPivot(vector pos, vector pivot, float degr)
 {

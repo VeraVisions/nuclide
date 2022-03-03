@@ -361,7 +361,7 @@ base_player::Respawn(void)
 }
 
 /*
-=================*
+=================
 base_player::MakeTempSpectator
  
 This is what dead players in round matches become, or when we spawn
@@ -384,10 +384,45 @@ base_player::MakeTempSpectator(void)
 	maxspeed = 250;
 	takedamage = DAMAGE_NO;
 	forceinfokey(this, "*spec", "2");
+	forceinfokey(this, "*dead", "0");
 }
 
 /*
-=================*
+=================
+base_player::MakeDead
+ 
+Sets all the appropriate attributes to make sure we're dead
+=================
+ */
+void
+base_player::Death(void)
+{
+	classname = "player";
+	health = max_health = 0;
+	armor = 0;
+	g_items = 0;
+	activeweapon = 0;
+	effects = 0;
+	alpha = 1.0f;
+	SetModelindex(0);
+	SetMovetype(MOVETYPE_NONE);
+	SetSolid(SOLID_NOT);
+	takedamage = DAMAGE_NO;
+	forceinfokey(this, "*spec", "0");
+	forceinfokey(this, "*dead", "1");
+	viewzoom = 1.0;
+	view_ofs = [0,0,0];
+	vehicle = __NULL__;
+	velocity = [0,0,0];
+	gravity = __NULL__;
+	customphysics = Empty;
+	iBleeds = FALSE;
+	forceinfokey(this, "*deaths", ftos(deaths));
+	setsize(this, [0,0,0], [0,0,0]);
+}
+
+/*
+=================
 base_player::MakeTempSpectator
  
 This is what dead players in round matches become, or when we spawn
@@ -410,6 +445,7 @@ base_player::MakePlayer(void)
 	movetype = MOVETYPE_WALK;
 	takedamage = DAMAGE_YES;
 	forceinfokey(this, "*spec", "0");
+	forceinfokey(this, "*dead", "0");
 	viewzoom = 1.0;
 	vehicle = __NULL__;
 	velocity = [0,0,0];

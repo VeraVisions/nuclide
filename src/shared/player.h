@@ -89,6 +89,7 @@ base_player:base_client
 	virtual void(void) EvaluateEntity;
 	virtual float(entity, float) SendEntity;
 
+	virtual void(void) Death;
 	virtual void(void) MakePlayer;
 	virtual void(void) MakeTempSpectator;
 #endif

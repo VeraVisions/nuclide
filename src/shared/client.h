@@ -8,6 +8,7 @@ base_client:NSSurfacePropEntity
 	virtual void(void) ClientInputFrame;
 
 #ifdef CLIENT
+	virtual void(void) UpdateDeathcam;
 	virtual float(void) predraw;
 #endif
 };
