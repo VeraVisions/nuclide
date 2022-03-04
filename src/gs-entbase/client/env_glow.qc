@@ -28,6 +28,8 @@ Client-side glare/glow orb effect like the flares in 1997's Unreal.
 This entity was introduced in Half-Life (1998).
 */
 
+var int autocvar_r_skipFlares = 0;
+
 class env_glow:NSEntity /* change to renderablentity? */
 {
 	vector m_vecColor;
@@ -71,6 +73,9 @@ env_glow::predraw(void)
 	vector forg;
 	vector fsize;
 	vector vecPlayer;
+
+	if (autocvar_r_skipFlares)
+		return PREDRAW_NEXT;
 
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
