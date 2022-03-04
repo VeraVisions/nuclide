@@ -34,9 +34,11 @@ Entity_EntityUpdate(float type, float new)
 		break;
 	case ENT_MONSTER:
 		NSMonster_ReadEntity(new);
+		self.customphysics = Empty;
 		break;
 	case ENT_TALKMONSTER:
 		NSTalkMonster_ReadEntity(new);
+		self.customphysics = Empty;
 		break;
 	case ENT_VEHICLE:
 		basevehicle_readentity(new);
@@ -52,6 +54,7 @@ Entity_EntityUpdate(float type, float new)
 
 		/* splitscreen */
 		CSQC_UpdateSeat();
+		self.customphysics = Empty;
 
 		Predict_EntityUpdate(pl, new);
 
