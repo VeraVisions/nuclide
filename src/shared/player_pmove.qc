@@ -263,6 +263,8 @@ base_player::Physics_InputPostMove(void)
 	Animation_TimerUpdate((player)this, input_timelength);
 	Animation_PlayerUpdate((player)this);
 
+	flags &= ~FL_FROZEN;
+
 	/* allow vehicles to prevent weapon logic from happening */
 	Vehicle_Input(this);
 
