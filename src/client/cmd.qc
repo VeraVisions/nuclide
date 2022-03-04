@@ -14,6 +14,122 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+void
+CMD_testPointLight(void)
+{
+	makevectors(getproperty(VF_ANGLES));
+	traceline(getproperty(VF_ORIGIN), getproperty(VF_ORIGIN) + v_forward * 4096, FALSE, pSeat->m_ePlayer);
+	dynamiclight_spawnstatic(trace_endpos + (v_forward * -16), 1024, [1,1,1]);
+}
+
+void
+CMD_dev_modeltest(void)
+{
+	entity mt = spawn();
+	mt.drawmask = MASK_ENGINE;
+	setmodel(mt, argv(1));
+	setsize(mt, [0,0,0], [0,0,0]);
+	setorigin(mt, getproperty(VF_ORIGIN));
+	mt.angles = getproperty(VF_ANGLES);
+	mt.angles[0] = mt.angles[2] = 0;
+}
+
+void
+CMD_dev_explode(void)
+{
+	makevectors(getproperty(VF_ANGLES));
+	traceline(getproperty(VF_ORIGIN), getproperty(VF_ORIGIN) + v_forward * 4096, FALSE, pSeat->m_ePlayer);
+	FX_Explosion(trace_endpos);
+}
+
+void
+CMD_dev_sunpos(void)
+{
+	vector sunpos, sunang;
+	vector lepos, leang;
+
+	makevectors(getproperty(VF_ANGLES));
+	sunpos = v_forward * -1;
+	sunang = vectoangles(sunpos);
+
+	makevectors(getproperty(VF_ANGLES));
+	lepos = v_forward * -1;
+	leang = vectoangles(lepos);
+	leang[1] -= 180;
+	leang[0] *= -1;
+
+	localcmd(sprintf("r_shadows_throwdirection %v\n", sunpos));
+	print(sprintf("env_sun: pitch: %d; angle: %d\n", -sunang[0], sunang[1]));
+	print(sprintf("light_environment: sunangle: %d; pitch: %d\n", leang[1], leang[0]));
+}
+
+void
+CMD_dev_measure(void)
+{
+	static vector measurepos;
+	if (!vlen(measurepos)) {
+		measurepos = getproperty(VF_ORIGIN);
+		CSQC_Parse_CenterPrint(sprintf( "First marker set at\n%v", measurepos));
+	} else {
+		CSQC_Parse_CenterPrint(sprintf("Distance: %d\n", vlen(measurepos - getproperty(VF_ORIGIN))));
+		measurepos = [0,0,0];
+	}
+}
+
+void
+CMD_vote(void)
+{
+	if (argv(1) == "yes") {
+		sendevent("VoteY", "");
+	} else if (argv(1) == "no") {
+		sendevent("VoteN", "");
+	}
+}
+
+void
+CMD_getpos(void)
+{
+	print(sprintf("setpos %v;setang -%v\n", getproperty(VF_ORIGIN), getproperty(VF_ANGLES)));
+}
+
+void
+CMD_setpos(void)
+{
+	localcmd(sprintf("cmd setpos \"%s\"\n", argv(1)));
+}
+
+void
+CMD_setang(void)
+{
+	setproperty(VF_CL_VIEWANGLES, stov(argv(1)));
+	setproperty(VF_ANGLES, stov(argv(1)));
+}
+
+void
+CMD_titles_test(void)
+{
+	GameMessage_Setup(argv(1), 0);
+}
+
+void
+CMD_way_menu(void)
+{
+	Way_Autoload();
+	Textmenu_Call("WAY_MENU");
+}
+
+void
+CMD_view_geomtest(void)
+{
+	Weapons_SetGeomset(sprintf("geomset %s %s\n", argv(1), argv(2)));
+}
+
+void
+CMD_player_geomtest(void)
+{
+	setcustomskin(pSeat->m_ePlayer, "", sprintf("geomset %s %s\n", argv(1), argv(2)));
+}
+
 /*
 =================
 Cmd_Parse
@@ -29,68 +145,31 @@ Cmd_Parse(string sCMD)
 {
 	switch (argv(0)) {
 	case "testPointLight":
-		makevectors(getproperty(VF_ANGLES));
-		traceline(getproperty(VF_ORIGIN), getproperty(VF_ORIGIN) + v_forward * 4096, FALSE, pSeat->m_ePlayer);
-		dynamiclight_spawnstatic(trace_endpos + (v_forward * -16), 1024, [1,1,1]);
+		CMD_testPointLight();
 		break;
 	case "dev_modeltest":
-		entity mt = spawn();
-		mt.drawmask = MASK_ENGINE;
-		setmodel(mt, argv(1));
-		setsize(mt, [0,0,0], [0,0,0]);
-		setorigin(mt, getproperty(VF_ORIGIN));
-		mt.angles = getproperty(VF_ANGLES);
-		mt.angles[0] = mt.angles[2] = 0;
+		CMD_dev_modeltest();
 		break;
 	case "dev_explode":
-		makevectors(getproperty(VF_ANGLES));
-		traceline(getproperty(VF_ORIGIN), getproperty(VF_ORIGIN) + v_forward * 4096, FALSE, pSeat->m_ePlayer);
-		FX_Explosion(trace_endpos);
+		CMD_dev_explode();
 		break;
 	case "dev_sunpos":
-		vector sunpos, sunang;
-		vector lepos, leang;
-
-		makevectors(getproperty(VF_ANGLES));
-		sunpos = v_forward * -1;
-		sunang = vectoangles(sunpos);
-
-		makevectors(getproperty(VF_ANGLES));
-		lepos = v_forward * -1;
-		leang = vectoangles(lepos);
-		leang[1] -= 180;
-		leang[0] *= -1;
-
-		localcmd(sprintf("r_shadows_throwdirection %v\n", sunpos));
-		print(sprintf("env_sun: pitch: %d; angle: %d\n", -sunang[0], sunang[1]));
-		print(sprintf("light_environment: sunangle: %d; pitch: %d\n", leang[1], leang[0]));
+		CMD_dev_sunpos();
 		break;
 	case "dev_measure":
-		static vector measurepos;
-		if (!vlen(measurepos)) {
-			measurepos = getproperty(VF_ORIGIN);
-			CSQC_Parse_CenterPrint(sprintf( "First marker set at\n%v", measurepos));
-		} else {
-			CSQC_Parse_CenterPrint(sprintf("Distance: %d\n", vlen(measurepos - getproperty(VF_ORIGIN))));
-			measurepos = [0,0,0];
-		}
+		CMD_dev_measure();
 		break;
 	case "vote":
-		if (argv(1) == "yes") {
-			sendevent("VoteY", "");
-		} else if (argv(1) == "no") {
-			sendevent("VoteN", "");
-		}
+		CMD_vote();
 		break;
 	case "getpos":
-		print(sprintf("setpos %v;setang -%v\n", getproperty(VF_ORIGIN), getproperty(VF_ANGLES)));
+		CMD_getpos();
 		break;
 	case "setpos":
-		localcmd(sprintf("cmd setpos \"%s\"\n", argv(1)));
+		CMD_setpos();
 		break;
 	case "setang":
-		setproperty(VF_CL_VIEWANGLES, stov(argv(1)));
-		setproperty(VF_ANGLES, stov(argv(1)));
+		CMD_setang();
 		break;
 	case "callvote":
 		sendevent("CallVote", "s", substring(sCMD, 9, strlen(sCMD)-9));
@@ -105,7 +184,7 @@ Cmd_Parse(string sCMD)
 		CMap_Build();
 		break;
 	case "titles_test":
-		GameMessage_Setup(argv(1), 0);
+		CMD_titles_test();
 		break;
 	case "+attack2":
 		pSeat->m_iInputAttack2 = TRUE;
@@ -177,17 +256,16 @@ Cmd_Parse(string sCMD)
 		HUD_SlotSelect(9);
 		break;
 	case "way_menu":
-		Way_Autoload();
-		Textmenu_Call("WAY_MENU");
+		CMD_way_menu();
 		break;
 	case "_fnchat_msg":
 		CSQC_Parse_Print(argv(1), PRINT_CHAT);
 		break;
 	case "view_geomtest":
-		Weapons_SetGeomset(sprintf("geomset %s %s\n", argv(1), argv(2)));
+		CMD_view_geomtest();
 		break;
 	case "player_geomtest":
-		setcustomskin(pSeat->m_ePlayer, "", sprintf("geomset %s %s\n", argv(1), argv(2)));
+		CMD_player_geomtest();
 		break;
 	default:
 		return (0);

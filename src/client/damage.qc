@@ -15,10 +15,16 @@
  */
 
 /*
- * engine specific callback for when dmg_ fields are set on the client side.
- * might want to replace it at some point? probably not...
- * hence why 'take' is unused.
- */
+=================
+CSQC_Parse_Damage_New
+
+Our replacement for CSQC_Parse_Damage, which is now ignored.
+We needed to be able to handle extra flags for damagetypes
+and others. Can be overridden by mods by handling the EV_DAMAGE
+event.
+Currently will always return 1.
+=================
+*/
 float
 CSQC_Parse_Damage_New(vector abs_pos, int take, int flags)
 {
