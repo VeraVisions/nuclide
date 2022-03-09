@@ -283,14 +283,30 @@ Weapons_PreDraw(int thirdperson)
 int
 Weapons_IsEmpty(player pl, int w)
 {
-	int i = pl.activeweapon;
 	int r = 0;
 
 	entity oself = self;
 	self = pl;
 
-	if (g_weapons[i].isempty != __NULL__)
-		r = g_weapons[i].isempty();
+	if (g_weapons[w].isempty != __NULL__)
+		r = g_weapons[w].isempty();
+
+	self = oself;
+
+	return (r);
+}
+
+
+weapontype_t
+Weapons_GetType(player pl, int w)
+{
+	weapontype_t r = WPNTYPE_INVALID;
+
+	entity oself = self;
+	self = pl;
+
+	if (g_weapons[w].type != __NULL__)
+		r = g_weapons[w].type();
 
 	self = oself;
 

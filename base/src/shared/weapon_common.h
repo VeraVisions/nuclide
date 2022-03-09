@@ -14,6 +14,15 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/* for AI identification purposes */
+typedef enum
+{
+	WPNTYPE_INVALID,	/* no logic */
+	WPNTYPE_RANGED,		/* will want to keep their distance mostly */
+	WPNTYPE_THROW,		/* has to keep some distance, but not too far */
+	WPNTYPE_CLOSE		/* have to get really close */
+} weapontype_t;
+
 typedef struct
 {
 	string name;
@@ -22,6 +31,7 @@ typedef struct
 	int slot_pos;
 	int allow_drop;
 	int weight; /* required for bestweapon */
+	weapontype_t(void) type; /* required for bot-AI */
 
 	void(void) draw;
 	void(void) holster;
@@ -65,6 +75,7 @@ void Weapons_UpdateAmmo(base_player, int, int, int);
 int Weapons_GetAnimation(void);
 void Weapons_EnableModel(void);
 void Weapons_DisableModel(void);
+weapontype_t Weapons_GetType(player, int);
 
 void Weapons_SetLeftModel(string);
 void Weapons_SetRightModel(string);

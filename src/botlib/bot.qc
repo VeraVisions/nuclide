@@ -19,6 +19,29 @@
 
 void SV_SendChat(entity sender, string msg, entity eEnt, float fType);
 
+float
+bot::GetWalkSpeed(void)
+{
+	return 120;
+}
+
+float
+bot::GetRunSpeed(void)
+{
+	return 240;
+}
+
+void
+bot::SetEnemy(entity en)
+{
+	m_eTarget = en;
+
+	if (m_eTarget)
+		m_flEnemyDist = vlen(origin - m_eTarget.origin);
+	else
+		m_flEnemyDist = -1;
+}
+
 void
 bot::ChatSay(string msg)
 {
@@ -44,8 +67,22 @@ bot::Pain(void)
 	player::Pain();
 
 	if (rules.IsTeamPlay()) {
-		if (g_dmg_eAttacker.flags & FL_CLIENT && g_dmg_eAttacker.team == team)
+		if (g_dmg_eAttacker.flags & FL_CLIENT && g_dmg_eAttacker.team == team) {
 			ChatSayTeam("Stop shooting me!");
+			return;
+		}
+	}
+
+	/* make this pain our new enemy! */
+	if (g_dmg_eAttacker && g_dmg_eAttacker != this) {
+		float enemydist = vlen(origin - m_eTarget.origin);
+		float newdist = vlen(origin - g_dmg_eAttacker.origin);
+
+		if (m_eTarget) 
+			if (newdist < enemydist)
+				SetEnemy(g_dmg_eAttacker);
+		else
+			SetEnemy(g_dmg_eAttacker);
 	}
 }
 
@@ -64,27 +101,48 @@ bot::RouteClear(void)
 void
 bot::WeaponThink(void)
 {
-	/* clip empty */
-	if (a_ammo1 == 0) {
-		/* still got ammo left, reload! */
-		if (a_ammo2 != 0) {
-			input_buttons &= ~INPUT_BUTTON0;
-			input_buttons |= INPUT_BUTTON4;
-		} else {
-			Weapons_SwitchBest(this);
-		}
+	int r = Weapons_IsEmpty(this, activeweapon);
+
+	/* clip empty, but the whole weapon isn't */
+	if (r == 0 && a_ammo1 <= 0) {
+		input_buttons &= ~INPUT_BUTTON0;
+		input_buttons |= INPUT_BUTTON4;
+	} else if (r == 1) {
+		Weapons_SwitchBest(this, activeweapon);
 	}
+
+	m_wtWeaponType = Weapons_GetType(this, activeweapon);
 }
 
 void
 bot::WeaponAttack(void)
 {
-	if (m_flAttackTime < time) {
+	int should_attack = 0;
+
+	if (m_wtWeaponType == WPNTYPE_RANGED) {
+		if (m_flEnemyDist <= 1024)
+			should_attack = 1;
+	} else if (m_wtWeaponType == WPNTYPE_THROW) {
+		if (m_flEnemyDist <= 512)
+			should_attack = 1;
+	} else if (m_wtWeaponType == WPNTYPE_CLOSE) {
+		if (m_flEnemyDist <= 128)
+			should_attack = 1;
+	} else {
+		should_attack = 1;
+	}
+
+	if (should_attack && m_flAttackTime < time) {
 		if (!m_iAttackMode) {
-			input_buttons |= INPUT_BUTTON0; // Attack
+			input_buttons |= INPUT_BUTTON0;
 		}
 		m_flAttackTime = time + 0.1f;
+	} else {
+		input_buttons &= ~INPUT_BUTTON0;
+		input_buttons &= ~INPUT_BUTTON4;
+		input_buttons &= ~INPUT_BUTTON5;
 	}
+
 	m_iAttackMode = 1 - m_iAttackMode;
 }
 
@@ -92,9 +150,11 @@ void
 bot::BrainThink(int enemyvisible, int enemydistant)
 {
 	/* we had a target and it's now dead. now what? */
-	if (m_eTarget && m_eTarget.health <= 0) {
-		m_eTarget = __NULL__;
-		RouteClear();
+	if (m_eTarget) {
+		if (m_eTarget.health <= 0) {
+			SetEnemy(__NULL__);
+			RouteClear();
+		}
 	} else if (m_eTarget && enemyvisible && enemydistant) {
 		/* we can see the player, but are too far away, plot a route */
 		route_calculate(this, m_eTarget.origin, 0, Bot_RouteCB);
@@ -157,8 +217,8 @@ bot::SeeThink(void)
 {
 	CGameRules rules = (CGameRules)g_grMode;
 
-	if (m_eTarget)
-		return;
+	/*if (m_eTarget)
+		return; */
 
 	if (m_flSeeTime > time)
 		return;
@@ -171,8 +231,11 @@ bot::SeeThink(void)
 	for (entity w = world; (w = findfloat(w, ::takedamage, DAMAGE_YES));) {
 		float flDot;
 
+		/* is w a client? */
 		if (!(w.flags & FL_CLIENT))
 			continue;
+
+		/* is w alive? */
 		if (w.health <= 0)
 			continue;
 
@@ -189,11 +252,12 @@ bot::SeeThink(void)
 		if (flDot < 90/180)
 			continue;
 
-		other = world;
-		traceline(origin, w.origin, MOVE_OTHERONLY, this);
+		/* is it even physically able to be seen? */
+		traceline(origin, w.origin, MOVE_NORMAL, this);
 
-		if (trace_fraction == 1.0f) {
-			m_eTarget = w;
+		/* break out if at all a valid trace */
+		if (trace_ent == w) {
+			SetEnemy(w);
 			return;
 		}
 	}
@@ -213,7 +277,7 @@ bot::CheckRoute(void)
 	/* level out position/node stuff */
 	if (m_iCurNode < 0) {
 		evenpos = m_vecLastNode - origin;
-		rad = 64;
+		rad = 128; /* destination is not a node, therefore has a virtual radius */
 	} else {
 		evenpos = m_pRoute[m_iCurNode].m_vecDest - origin;
 		rad = m_pRoute[m_iCurNode].m_flRadius;
@@ -221,15 +285,14 @@ bot::CheckRoute(void)
 
 	flDist = floor(vlen(evenpos));
 
+	/* we're inside the radius */
 	if (flDist <= rad) {
 		dprint(sprintf("^2bot::^3CheckRoute^7: " \
 			"%s reached node\n", this.targetname));
 		m_iCurNode--;
 
+		/* if we're inside an actual node (not a virtual one */
 		if (m_iCurNode >= 0) {
-			if (Route_GetNodeFlags(&m_pRoute[m_iCurNode]))
-				dprint(sprintf("NODE FLAGS: %i\n", Route_GetNodeFlags(&m_pRoute[m_iCurNode])));
-
 			/* if a node is flagged as jumpy, jump! */
 			if (Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_JUMP)
 				input_buttons |= INPUT_BUTTON2;
@@ -239,7 +302,6 @@ bot::CheckRoute(void)
 				UseButton();
 		}
 
-#if 0
 		/* we've still traveling and from this node we may be able to walk
 		 * directly to our end-destination */
 		if (m_iCurNode > -1) {
@@ -252,11 +314,10 @@ bot::CheckRoute(void)
 				m_iCurNode = -1;
 			}
 		}
-#endif
-	} else {
-		traceline(origin + view_ofs, m_pRoute[m_iCurNode].m_vecDest, MOVE_NORMAL, this);
+	} else { /* we're not near the node quite yet */
+		traceline(origin, m_pRoute[m_iCurNode].m_vecDest, MOVE_NORMAL, this);
 
-		/* we can't trace against our next waypoint... that should never happen */
+		/* we can't trace against our next node... that should never happen */
 		if (trace_fraction != 1.0f) {
 			m_flNodeGiveup += frametime;
 		} else {
@@ -307,7 +368,7 @@ bot::RunAI(void)
 	if (health <= 0) {
 		RouteClear();
 		WeaponAttack();
-		m_eTarget = __NULL__;
+		SetEnemy(__NULL__);
 		return;
 	}
 
@@ -328,34 +389,51 @@ bot::RunAI(void)
 		}
 	}
 
+	/* prepare our weapons for firing */
 	WeaponThink();
+
+	/* see if enemies are nearby */
 	SeeThink();
+
+	/* calculate enemy distance _once_ */
+	if (m_eTarget) {
+		m_flEnemyDist = vlen(origin - m_eTarget.origin);
+	} else {
+		m_flEnemyDist = -1;
+	}
 
 	enemyvisible = FALSE;
 	enemydistant = FALSE;
 
 	if (m_eTarget != __NULL__) {
 		traceline(origin + view_ofs, m_eTarget.origin, TRUE, this);
+
+		/* is it 'visible'? can we 'see' them? */
 		enemyvisible = (trace_ent == m_eTarget || trace_fraction == 1.0f);
 
-		if (vlen(trace_endpos - origin) > 1024) {
+		/* if they're distant, remember that */
+		if (m_flEnemyDist > 1024) {
 			enemydistant = TRUE;
 		}
 
+		/* attack if visible! */
 		if (enemyvisible) {
 			WeaponAttack();
 		}
 	}
-	
+
 	BrainThink(enemyvisible, enemydistant);
 	CheckRoute();
 
 	aimpos = [0,0,0];
 
+	/* if we've got a path (we always should) move the bot */
 	if (m_iNodes) {
+		float goroute;
 		vector vecNewAngles;
 		vector vecDirection;
 
+		/* no enemy, or it isn't visible... then stare at nodes! */
 		if (!m_eTarget || !enemyvisible) {
 			/* aim at the next node */
 			if (m_iCurNode == BOTROUTE_DESTINATION)
@@ -371,7 +449,7 @@ bot::RunAI(void)
 			aimpos = m_eTarget.origin;
 		}
 
-		/* aim ahead */
+		/* aim ahead if aimpos is somehow invalid */
 		if (aimpos == [0,0,0]) {
 			makevectors(angles);
 			aimpos = origin + v_forward * 128;
@@ -406,14 +484,36 @@ bot::RunAI(void)
 		angles[2] = Math_FixDelta(v_angle[2]);
 		input_angles = v_angle;
 
-		/* always look ahead as the default */
-		aimpos = origin + (v_forward * 32);
+		float shouldwalk = 0;
 
-		/* now that aiming is sorted, we need to correct the movement */
-		if ((m_eTarget && enemyvisible && !enemydistant) && vlen(aimpos - origin) > 256) {
-			/* we are far away, inch closer */
-			aimpos = m_eTarget.origin;
-		} else {
+		if (m_wtWeaponType == WPNTYPE_RANGED) {
+			/* walk _directly_ towards the enemy if we're less than 512 units away */
+			if (m_eTarget && enemyvisible && m_flEnemyDist < 1024) {
+				aimpos = m_eTarget.origin;
+			} else {
+				goroute = 1;
+			}
+
+			/* we should probably walk we're distant enough to be more accurate */
+			if ((m_eTarget && enemyvisible && m_flEnemyDist > 512))
+				shouldwalk = 1;
+		} else if (m_wtWeaponType == WPNTYPE_CLOSE) {
+			/* move directly towards the enemy if we're 256 units away */
+			if (m_eTarget && enemyvisible && m_flEnemyDist < 256) {
+				/* we are far away, inch closer */
+				aimpos = m_eTarget.origin;
+			} else {
+				goroute = 1;
+			}
+		} else if (m_wtWeaponType == WPNTYPE_THROW) {
+			if ((m_eTarget && enemyvisible && !enemydistant) && m_flEnemyDist < 512) {
+				aimpos = m_eTarget.origin;
+			} else {
+				goroute = 1;
+			}
+		}
+
+		if (goroute) {
 			if (m_iCurNode <= BOTROUTE_DESTINATION)
 				aimpos = m_vecLastNode;
 			else
@@ -421,20 +521,22 @@ bot::RunAI(void)
 		}
 
 		/* now we'll set the movevalues relative to the input_angle */
-		if ((m_iCurNode >= 0 && Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_WALK) || m_eTarget && enemyvisible && vlen(aimpos-origin) < 512)
-			vecDirection = normalize(aimpos - origin) * 120;
+		if ((m_iCurNode >= 0 && Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_WALK) || shouldwalk)
+			vecDirection = normalize(aimpos - origin) * GetWalkSpeed();
 		else
-			vecDirection = normalize(aimpos - origin) * 240;
+			vecDirection = normalize(aimpos - origin) * GetRunSpeed();
 
 		makevectors(input_angles);
 		input_movevalues = [v_forward * vecDirection, v_right * vecDirection, v_up * vecDirection];
 		input_movevalues[2] = 0;
 
+#if 0
 		/* duck and stand still when our enemy is far away */
 		if (m_eTarget && enemyvisible && vlen(aimpos-origin) > 512) {
 			input_buttons |= INPUT_BUTTON8;
 			input_movevalues = [0,0,0];
 		}
+#endif
 	}
 
 	/* press any buttons needed */

@@ -83,18 +83,29 @@ Switch to the 'best' weapon according to our weight system.
 =================
 */
 void
-Weapons_SwitchBest(base_player pl)
+Weapons_SwitchBest(base_player pl, optional float skip = 0)
 {
 	entity oldself = self;
 	self = pl;
+	float old = pl.activeweapon;
 
+	/* loop through n weapon count */
 	for (float i = g_weapons.length - 1; i >= 1 ; i--) {
-		int x = g_weapon_weights[i];
-		if ((pl.g_items & g_weapons[x].id) && (!Weapons_IsEmpty((player)pl, x))) {
+		int x = g_weapon_weights[i]; /* map i to weapon table weight */
+
+		/* skip the weapon inside skip */
+		if (x == (int)skip)
+			continue;
+
+		/* do we have the weapon and is not not empty? */
+		if ((pl.g_items & g_weapons[x].id) && (Weapons_IsEmpty((player)pl, x) == 0)) {
 			pl.activeweapon = x;
 			break;
 		}
 	}
+
+	if (old == pl.activeweapon)
+		return;
 
 	Weapons_Draw();
 	self = oldself;

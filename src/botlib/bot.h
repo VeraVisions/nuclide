@@ -45,6 +45,10 @@ class bot:player
 	/* visual */
 	float m_flSeeTime;
 
+	/* cache, these are just here so we won't have to calc them often */
+	float m_flEnemyDist;
+	weapontype_t m_wtWeaponType;
+
 	void(void) bot;
 
 	virtual void(string) ChatSay;
@@ -61,6 +65,9 @@ class bot:player
 	virtual void(void) PreFrame;
 	virtual void(void) PostFrame;
 	virtual void(void) UseButton;
+	virtual void(entity) SetEnemy;
+	virtual float(void) GetRunSpeed;
+	virtual float(void) GetWalkSpeed;
 };
 
 entity Bot_AddQuick(void);
