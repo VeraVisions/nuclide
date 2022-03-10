@@ -250,6 +250,8 @@ info_particle_system::Respawn(void)
 void
 info_particle_system::info_particle_system(void)
 {
+	angles = [90, 0, 0]; /* default pointing up! */
+
 #ifdef CLIENT
 	drawmask = MASK_ENGINE;
 	think = Emit;
