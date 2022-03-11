@@ -470,6 +470,7 @@ Sound_Play(entity target, int chan, string shader)
 	}
 	if (g_sounds[sample].flags & SNDFL_ALERTS) {
 		NSMonster_AlertEnemyAlliance(target.origin, g_sounds[sample].dist_max, target.m_iAlliance);
+		BotLib_Alert(target.origin, g_sounds[sample].dist_max, target.team);
 	}
 #endif
 

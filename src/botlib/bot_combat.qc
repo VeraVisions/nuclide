@@ -19,7 +19,7 @@ bot::Pain(void)
 {
 	CGameRules rules = g_grMode;
 
-	player::Pain();
+	super::Pain();
 
 	if (rules.IsTeamPlay()) {
 		if (g_dmg_eAttacker.flags & FL_CLIENT && g_dmg_eAttacker.team == team) {
@@ -98,4 +98,43 @@ bot::WeaponAttack(void)
 	}
 
 	m_iAttackMode = 1 - m_iAttackMode;
+}
+
+var float g_botalert_timer;
+void
+BotLib_Alert(vector pos, float radius, float t)
+{
+	CGameRules rules = g_grMode;
+
+	/* sometimes many alert-sounds happen at once... we don't really want that */
+	if (g_botalert_timer > time)
+		return;
+
+	for (entity w = world; (w = find(w, ::targetname, "_nuclide_bot_"));) {
+		/* out of radius */
+		if (vlen(pos - w.origin) > radius)
+			continue;
+
+		bot f = (bot)w;
+
+		/* they already got a target of some kind */
+		if (f.m_eTarget)
+			continue;
+
+		/* if they're our friend... ignore*/
+		if (rules.IsTeamPlay()) 
+			if (w.team == t)
+				continue;
+
+		/* if the bot is dead... ignore */
+		if (f.health <= 0)
+			continue;
+
+		/* we've heard a noise. investigate the location */
+		print(sprintf("bot alerted by noise at %v\n", pos));
+		f.RouteClear();
+		f.NewRoute(pos);
+	}
+
+	g_botalert_timer = time + 0.5f;
 }

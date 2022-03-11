@@ -79,6 +79,7 @@ class bot:player
 	virtual void(void) SeeThink;
 	virtual void(int, int) BrainThink;
 	virtual void(void) RunAI;
+	virtual void(vector) NewRoute;
 	virtual void(void) CreateObjective;
 	virtual void(void) CheckRoute;
 	virtual void(void) PreFrame;

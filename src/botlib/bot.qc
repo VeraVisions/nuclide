@@ -260,6 +260,12 @@ bot::CheckRoute(void)
 }
 
 void
+bot::NewRoute(vector pos)
+{
+	route_calculate(this, pos, 0, Bot_RouteCB);
+}
+
+void
 bot::CreateObjective(void)
 {
 	route_calculate(this, Route_SelectDestination(this), 0, Bot_RouteCB);

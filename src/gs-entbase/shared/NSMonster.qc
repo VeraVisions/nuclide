@@ -997,9 +997,15 @@ NSMonster_ReadEntity(float new)
 	me.ReceiveEntity(new, readfloat());
 }
 #else
+
+var float g_monsteralert_timer;
 void
 NSMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
 {
+	/* sometimes many alert-sounds happen at once... we don't really want that */
+	if (g_monsteralert_timer > time)
+		return;
+
 	for (entity w = world; (w = findfloat(w, ::takedamage, DAMAGE_YES));) {
 		/* out of radius */
 		if (vlen(pos - w.origin) > radius)
@@ -1027,5 +1033,7 @@ NSMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
 		f.NewRoute(pos);
 		f.m_flSequenceSpeed = 140;
 	}
+
+	g_monsteralert_timer = time + 0.5f;
 }
 #endif
