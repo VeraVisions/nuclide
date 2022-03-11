@@ -3,6 +3,8 @@
 #includelist
 defs.h
 bot.qc
+bot_chat.qc
+bot_combat.qc
 route.qc
 way.qc
 cmd.qc

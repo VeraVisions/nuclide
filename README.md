@@ -86,7 +86,7 @@ Timothee Besset and the **GtkRadiant** contributors.
 ![idTech Logo](doc/idtech.svg)
 
 ## License
-Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+Copyright (c) 2016-2022 Vera Visions L.L.C.
 
 Permission to use, copy, modify, and distribute this software for any
 purpose with or without fee is hereby granted, provided that the above

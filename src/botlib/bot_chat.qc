@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Cawthorne <marco@icculus.org>
+ * Copyright (c) 2016-2022 Marco Cawthorne <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,19 +15,18 @@
  */
 
 void
-Game_SpectatorThink(void)
+bot::ChatSay(string msg)
 {
-	
+	SV_SendChat(this, msg, world, 0);
 }
 
 void
-Game_SpectatorConnect(void)
+bot::ChatSayTeam(string msg)
 {
-	
-}
-
-void
-Game_SpectatorDisconnect(void)
-{
-	
+	entity a;
+	for (a = world; (a = find(a, ::classname, "player"));) { 
+		if (a.team == this.team) {
+			SV_SendChat(self, msg, a, 1);
+		}
+	}
 }

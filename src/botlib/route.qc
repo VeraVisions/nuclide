@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2020 Marco Cawthorne <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -212,10 +212,8 @@ Route_GetNodeFlags(nodeslist_t *node)
 	int fl = node.m_iFlags;
 
 	/* to avoid random buttons being pressed */
-	if (fl == LF_DESTINATION)
-		return 0;
-	else if (fl == -1i)
-		return 0;
+	if (fl < 0)
+		return LF_DESTINATION;
 	else
 		return fl;
 }

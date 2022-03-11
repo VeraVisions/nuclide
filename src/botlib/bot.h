@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2022 Marco Cawthorne <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,13 +15,24 @@
  */
 
 #define COST_INFINITE 99999
+#define BOTROUTE_DESTINATION	-1
+#define BOTROUTE_END			-2
 
-enum
+typedef enum
 {
-	BOT_PERSONALITY_NORMAL,
-	BOT_PERSONALITY_AGRESSIVE,
-	BOT_PERSONALITY_DEFENSIVE
-};
+	BOT_PERSONALITY_NORMAL,		/* this bot will be dynamic */
+	BOT_PERSONALITY_AGRESSIVE,	/* this bot will always prefer to be attacking */
+	BOT_PERSONALITY_DEFENSIVE	/* this bot will always prefer to stay behind */
+} botpersonality_t;
+
+typedef enum
+{
+	BOT_STATE_IDLE,			/* this should rarely happen */
+	BOT_STATE_PATROLLING,	/* this is basically most deathmatch cases */
+	BOT_STATE_DEFENDING,	/* this is for when bots stay put and stay around spawn, or their teams goalitem */
+	BOT_STATE_ATTACKING,	/* this is for when bots go to the enemy spawn, or to the enemy team's goalitem */
+	BOT_STATE_FLEEING		/* this is for when the AI should just get as far away as possible */
+} botstate_t;
 
 class bot:player
 {
@@ -45,11 +56,19 @@ class bot:player
 	/* visual */
 	float m_flSeeTime;
 
+	/* personality and state */
+	botstate_t m_bsState;
+	botpersonality_t m_bpPersonality;
+
 	/* cache, these are just here so we won't have to calc them often */
 	float m_flEnemyDist;
 	weapontype_t m_wtWeaponType;
 
 	void(void) bot;
+
+	virtual void(botstate_t) SetState;
+	virtual botstate_t(void) GetState;
+	virtual botpersonality_t(void) GetPersonality;
 
 	virtual void(string) ChatSay;
 	virtual void(string) ChatSayTeam;

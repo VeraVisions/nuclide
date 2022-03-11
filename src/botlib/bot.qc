@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Hladik <marco@icculus.org>
+ * Copyright (c) 2016-2022 Marco Cawthorne <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,10 +14,26 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define BOTROUTE_DESTINATION	-1
-#define BOTROUTE_END			-2
-
 void SV_SendChat(entity sender, string msg, entity eEnt, float fType);
+
+
+botstate_t
+bot::GetState(void)
+{
+	return m_bsState;
+}
+
+void
+bot::SetState(botstate_t state)
+{
+	m_bsState = state;
+}
+
+botpersonality_t
+bot::GetPersonality(void)
+{
+	return m_bpPersonality;
+}
 
 float
 bot::GetWalkSpeed(void)
@@ -32,61 +48,6 @@ bot::GetRunSpeed(void)
 }
 
 void
-bot::SetEnemy(entity en)
-{
-	m_eTarget = en;
-
-	if (m_eTarget)
-		m_flEnemyDist = vlen(origin - m_eTarget.origin);
-	else
-		m_flEnemyDist = -1;
-}
-
-void
-bot::ChatSay(string msg)
-{
-	SV_SendChat(this, msg, world, 0);
-}
-
-void
-bot::ChatSayTeam(string msg)
-{
-	entity a;
-	for (a = world; (a = find(a, ::classname, "player"));) { 
-		if (a.team == this.team) {
-			SV_SendChat(self, msg, a, 1);
-		}
-	}
-}
-
-void
-bot::Pain(void)
-{
-	CGameRules rules = g_grMode;
-
-	player::Pain();
-
-	if (rules.IsTeamPlay()) {
-		if (g_dmg_eAttacker.flags & FL_CLIENT && g_dmg_eAttacker.team == team) {
-			ChatSayTeam("Stop shooting me!");
-			return;
-		}
-	}
-
-	/* make this pain our new enemy! */
-	if (g_dmg_eAttacker && g_dmg_eAttacker != this) {
-		float enemydist = vlen(origin - m_eTarget.origin);
-		float newdist = vlen(origin - g_dmg_eAttacker.origin);
-
-		if (m_eTarget) 
-			if (newdist < enemydist)
-				SetEnemy(g_dmg_eAttacker);
-		else
-			SetEnemy(g_dmg_eAttacker);
-	}
-}
-
-void
 bot::RouteClear(void)
 {
 	if (!m_iNodes)
@@ -96,54 +57,6 @@ bot::RouteClear(void)
 	m_iNodes = 0;
 	m_flNodeGiveup = 0.0f;
 	memfree(m_pRoute);
-}
-
-void
-bot::WeaponThink(void)
-{
-	int r = Weapons_IsEmpty(this, activeweapon);
-
-	/* clip empty, but the whole weapon isn't */
-	if (r == 0 && a_ammo1 <= 0) {
-		input_buttons &= ~INPUT_BUTTON0;
-		input_buttons |= INPUT_BUTTON4;
-	} else if (r == 1) {
-		Weapons_SwitchBest(this, activeweapon);
-	}
-
-	m_wtWeaponType = Weapons_GetType(this, activeweapon);
-}
-
-void
-bot::WeaponAttack(void)
-{
-	int should_attack = 0;
-
-	if (m_wtWeaponType == WPNTYPE_RANGED) {
-		if (m_flEnemyDist <= 1024)
-			should_attack = 1;
-	} else if (m_wtWeaponType == WPNTYPE_THROW) {
-		if (m_flEnemyDist <= 512)
-			should_attack = 1;
-	} else if (m_wtWeaponType == WPNTYPE_CLOSE) {
-		if (m_flEnemyDist <= 128)
-			should_attack = 1;
-	} else {
-		should_attack = 1;
-	}
-
-	if (should_attack && m_flAttackTime < time) {
-		if (!m_iAttackMode) {
-			input_buttons |= INPUT_BUTTON0;
-		}
-		m_flAttackTime = time + 0.1f;
-	} else {
-		input_buttons &= ~INPUT_BUTTON0;
-		input_buttons &= ~INPUT_BUTTON4;
-		input_buttons &= ~INPUT_BUTTON5;
-	}
-
-	m_iAttackMode = 1 - m_iAttackMode;
 }
 
 void
