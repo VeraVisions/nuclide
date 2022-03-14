@@ -67,6 +67,13 @@ base_player:base_client
 #ifdef CLIENT
 	int sequence;
 
+	/* external weapon model */
+	entity p_model;
+	int p_hand_bone;
+	int p_model_bone;
+	float lastweapon;
+
+	virtual void(void) ClientRemove;
 	virtual void(float, float) ReceiveEntity;
 	virtual void(void) PredictPreFrame;
 	virtual void(void) PredictPostFrame;

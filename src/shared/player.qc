@@ -15,6 +15,12 @@
  */
 
 #ifdef CLIENT
+void
+base_player::ClientRemove(void)
+{
+	remove(p_model);
+}
+
 /*
 =================
 base_player::ClientInputFrame
