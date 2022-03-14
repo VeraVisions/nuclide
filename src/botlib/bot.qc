@@ -16,7 +16,6 @@
 
 void SV_SendChat(entity sender, string msg, entity eEnt, float fType);
 
-
 botstate_t
 bot::GetState(void)
 {
@@ -57,6 +56,7 @@ bot::RouteClear(void)
 	m_iNodes = 0;
 	m_flNodeGiveup = 0.0f;
 	memfree(m_pRoute);
+	print(sprintf("%s cleared his route.\n", netname));
 }
 
 void
@@ -180,8 +180,8 @@ void
 bot::CheckRoute(void)
 {
 	float flDist;
-	vector evenpos;
-	float rad;
+	vector vecEndPos;
+	float flRadius;
 
 	if (!m_iNodes) {
 		return;
@@ -189,17 +189,24 @@ bot::CheckRoute(void)
 
 	/* level out position/node stuff */
 	if (m_iCurNode < 0) {
-		evenpos = m_vecLastNode - origin;
-		rad = 128; /* destination is not a node, therefore has a virtual radius */
+		vecEndPos = m_vecLastNode;
+		flRadius = 128; /* destination is not a node, therefore has a virtual radius */
 	} else {
-		evenpos = m_pRoute[m_iCurNode].m_vecDest - origin;
-		rad = m_pRoute[m_iCurNode].m_flRadius;
+		vecEndPos = m_pRoute[m_iCurNode].m_vecDest;
+		flRadius = m_pRoute[m_iCurNode].m_flRadius;
 	}
 
-	flDist = floor(vlen(evenpos));
+	/* we need to have a sensible radius */
+	if (flRadius <= 16)
+		flRadius = 16.0f;
+
+	/* we only check if we've moved anywhere on the X/Y axis */
+	flDist = floor(vlen([vecEndPos[0],vecEndPos[1],origin[2]] - origin));
+
+//	print(sprintf("%s node dist: %d; radius: %d\n", netname, flDist, rad));
 
 	/* we're inside the radius */
-	if (flDist <= rad) {
+	if (flDist <= flRadius) {
 		dprint(sprintf("^2bot::^3CheckRoute^7: " \
 			"%s reached node\n", this.targetname));
 		m_iCurNode--;
@@ -207,28 +214,32 @@ bot::CheckRoute(void)
 		/* if we're inside an actual node (not a virtual one */
 		if (m_iCurNode >= 0) {
 			/* if a node is flagged as jumpy, jump! */
-			if (Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_JUMP)
-				input_buttons |= INPUT_BUTTON2;
+			if (Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_JUMP) {
+				//input_buttons |= INPUT_BUTTON2;
+				velocity = Route_GetJumpVelocity(origin, m_pRoute[m_iCurNode].m_vecDest, gravity);
+			}
 
 			/* find the nearest usable item (func_button) and use them */
 			if (Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_USER)
 				UseButton();
 		}
 
+#if 0
 		/* we've still traveling and from this node we may be able to walk
 		 * directly to our end-destination */
 		if (m_iCurNode > -1) {
-			tracebox(origin, mins, maxs, m_vecLastNode, MOVE_NORMAL, this);
+			tracebox(origin, mins, maxs, vecEndPos, MOVE_NORMAL, this);
 
 			/* can we walk directly to our target destination? */
 			if (trace_fraction == 1.0) {
-				dprint("^2bot::^3CheckRoute^7: " \
+				print("^2bot::^3CheckRoute^7: " \
 					"Walking directly to last node\n");
 				m_iCurNode = -1;
 			}
 		}
+#endif
 	} else { /* we're not near the node quite yet */
-		traceline(origin, m_pRoute[m_iCurNode].m_vecDest, MOVE_NORMAL, this);
+		traceline(origin, vecEndPos, MOVE_NORMAL, this);
 
 		/* we can't trace against our next node... that should never happen */
 		if (trace_fraction != 1.0f) {
@@ -248,10 +259,14 @@ bot::CheckRoute(void)
 
 	/* after one second, also give up the route */
 	if (m_flNodeGiveup >= 1.0f || m_iCurNode <= BOTROUTE_END) {
+		print("taking too long! giving up!\n");
 		RouteClear();
 	} else if (m_flNodeGiveup >= 0.5f) {
 		/* attempt a jump after half a second */
-		input_buttons |= INPUT_BUTTON2;
+
+		/* don't bother if it's too high (we're aiming at air... */
+		if ((vecEndPos[2] - 32) < origin[2])
+			input_buttons |= INPUT_BUTTON2;
 	} else {
 		/* entire way-link needs to be crouched. that's the law of the land */
 		if (Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_CROUCH)
@@ -406,37 +421,54 @@ bot::RunAI(void)
 		float shouldwalk = 0;
 
 		if (m_wtWeaponType == WPNTYPE_RANGED) {
-			/* walk _directly_ towards the enemy if we're less than 512 units away */
-			if (m_eTarget && enemyvisible && m_flEnemyDist < 1024) {
-				aimpos = m_eTarget.origin;
+			other = world;
+
+			if (m_eTarget) {
+				tracebox(origin, m_eTarget.origin, mins, maxs, MOVE_OTHERONLY, this);
+				/* walk _directly_ towards the enemy if we're less than 512 units away */
+				if (trace_fraction >= 1.0 && m_eTarget && enemyvisible && m_eTarget.health < 50 && m_flEnemyDist < 512) {
+					aimpos = m_eTarget.origin;
+					goroute = 1;
+				} else {
+					goroute = 1;
+				}
 			} else {
 				goroute = 1;
 			}
 
 			/* we should probably walk we're distant enough to be more accurate */
-			if ((m_eTarget && enemyvisible && m_flEnemyDist > 512))
+			if ((m_eTarget && enemyvisible && m_flEnemyDist < 512))
 				shouldwalk = 1;
 		} else if (m_wtWeaponType == WPNTYPE_CLOSE) {
 			/* move directly towards the enemy if we're 256 units away */
 			if (m_eTarget && enemyvisible && m_flEnemyDist < 256) {
 				/* we are far away, inch closer */
 				aimpos = m_eTarget.origin;
+				printf("going to target\n");
 			} else {
 				goroute = 1;
 			}
 		} else if (m_wtWeaponType == WPNTYPE_THROW) {
 			if ((m_eTarget && enemyvisible && !enemydistant) && m_flEnemyDist < 512) {
 				aimpos = m_eTarget.origin;
+				printf("going to target\n");
 			} else {
 				goroute = 1;
 			}
+		} else {
+			goroute = 1;
 		}
 
 		if (goroute) {
-			if (m_iCurNode <= BOTROUTE_DESTINATION)
+			if (m_iCurNode <= BOTROUTE_DESTINATION) {
 				aimpos = m_vecLastNode;
-			else
+				printf("going to last node\n");
+			} else {
 				aimpos = m_pRoute[m_iCurNode].m_vecDest;
+				printf("going to next node\n");
+			}
+		} else {
+			RouteClear();
 		}
 
 		/* now we'll set the movevalues relative to the input_angle */
@@ -449,11 +481,13 @@ bot::RunAI(void)
 		input_movevalues = [v_forward * vecDirection, v_right * vecDirection, v_up * vecDirection];
 		input_movevalues[2] = 0;
 
-#if 0
-		/* duck and stand still when our enemy is far away */
-		if (m_eTarget && enemyvisible && vlen(aimpos-origin) > 512) {
-			input_buttons |= INPUT_BUTTON8;
-			input_movevalues = [0,0,0];
+#if 1
+		/* duck and stand still when our enemy seems strong */
+		if (m_eTarget && enemyvisible && m_eTarget.health >= 75) {
+			if (m_wtWeaponType == WPNTYPE_RANGED) {
+				input_buttons |= INPUT_BUTTON8;
+				input_movevalues = [0,0,0];
+			}
 		}
 #endif
 	}

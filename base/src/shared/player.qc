@@ -47,12 +47,6 @@ class player:base_player
 	PREDICTED_INT(mode_tempstate);
 
 #ifdef CLIENT
-	/* External model */
-	entity p_model;
-	int p_hand_bone;
-	int p_model_bone;
-	float lastweapon;
-
 	virtual void(void) draw;
 	virtual float() predraw;
 	virtual void(void) postdraw;

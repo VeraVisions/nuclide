@@ -63,6 +63,7 @@ class bot:player
 	/* cache, these are just here so we won't have to calc them often */
 	float m_flEnemyDist;
 	weapontype_t m_wtWeaponType;
+	vector m_vecLastPOI;
 
 	void(void) bot;
 
