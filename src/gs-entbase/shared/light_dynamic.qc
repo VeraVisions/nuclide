@@ -52,7 +52,7 @@ games to tell the entity to start inactive as far as I can tell.
 This entity was introduced in Half-Life 2 (2004).
 */
 
-int autocvar_r_showDlights = 0;
+var int autocvar_r_showDlights = 0;
 
 enumflags
 {

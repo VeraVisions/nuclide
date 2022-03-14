@@ -363,7 +363,7 @@ bot::RunAI(void)
 
 	/* if we've got a path (we always should) move the bot */
 	if (m_iNodes) {
-		float goroute;
+		float goroute = 0;
 		vector vecNewAngles;
 		vector vecDirection;
 
@@ -444,14 +444,14 @@ bot::RunAI(void)
 			if (m_eTarget && enemyvisible && m_flEnemyDist < 256) {
 				/* we are far away, inch closer */
 				aimpos = m_eTarget.origin;
-				printf("going to target\n");
+				//printf("going to target\n");
 			} else {
 				goroute = 1;
 			}
 		} else if (m_wtWeaponType == WPNTYPE_THROW) {
 			if ((m_eTarget && enemyvisible && !enemydistant) && m_flEnemyDist < 512) {
 				aimpos = m_eTarget.origin;
-				printf("going to target\n");
+				//printf("going to target\n");
 			} else {
 				goroute = 1;
 			}
@@ -462,10 +462,10 @@ bot::RunAI(void)
 		if (goroute) {
 			if (m_iCurNode <= BOTROUTE_DESTINATION) {
 				aimpos = m_vecLastNode;
-				printf("going to last node\n");
+				//printf("going to last node\n");
 			} else {
 				aimpos = m_pRoute[m_iCurNode].m_vecDest;
-				printf("going to next node\n");
+				//printf("going to next node\n");
 			}
 		} else {
 			RouteClear();

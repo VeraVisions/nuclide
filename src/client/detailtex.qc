@@ -69,6 +69,8 @@ DetailTex_Init(void)
 	string line;
 	int n = 0;
 
+	g_detail_initialized = 0;
+
 	if (!autocvar(r_detailtextures, 0, "High-res detail texture overlays for selected maps"))
 		return;
 
@@ -93,4 +95,5 @@ DetailTex_Init(void)
 
 	print(sprintf("DeailTex initialized with %i entries.\n", n));
 	fclose(fh);
+	g_detail_initialized = 1;
 }

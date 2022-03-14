@@ -16,7 +16,7 @@
 
 void Weapons_PickupNotify(base_player pl, int w);
 void Weapons_RefreshAmmo(base_player pl);
-void Weapons_SwitchBest(base_player pl);
+void Weapons_SwitchBest(base_player pl, optional float skip);
 int Weapons_AddItem(base_player pl, int w, int startammo);
 void Weapons_RemoveItem(base_player pl, int w);
 void Weapons_InitItem(int w);
