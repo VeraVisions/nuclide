@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Cawthorne <marco@icculus.org>
+ * Copyright (c) 2016-2022 Marco Cawthorne <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -20,6 +20,8 @@ enum
 	BOTINFO_NONE,				/* no info */
 	BOTINFO_HEALTH,				/* health item */
 	BOTINFO_ARMOR,				/* armor item */
+	BOTINFO_AMMO,				/* ammo pickup */
+	BOTINFO_WEAPON,				/* weapon pickup */
 	BOTINFO_SPAWNPOINT,			/* place where to find new players */
 	BOTINFO_TEAM_GOALITEM,		/* team-mode goal item (flag, intel) */
 	BOTINFO_TEAM_GOALCAPTURE,	/* where to go when goal-item present */
