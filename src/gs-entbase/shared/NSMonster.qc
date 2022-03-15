@@ -762,15 +762,6 @@ NSMonster::SendEntity(entity ePEnt, float fChanged)
 	/*if (cvar("developer") == 0 && m_iRenderMode == RM_TRIGGER)
 		return (0);*/
 
-#ifdef GS_RENDERFX
-	/* let's not waste networking power on certain render-modes where they would
-	 * not apply anyway. this seems sensible enough. */
-	if (m_iRenderMode == RM_NORMAL || m_iRenderMode == RM_TRIGGER) {
-		fChanged &= ~BASEFL_CHANGED_RENDERCOLOR;
-		fChanged &= ~BASEFL_CHANGED_RENDERAMT;
-	}
-#endif
-
 	/* broadcast how much data is expected to be read */
 	WriteFloat(MSG_ENTITY, fChanged);
 

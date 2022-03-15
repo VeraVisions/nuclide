@@ -37,6 +37,9 @@ font_s FONT_16;
 font_s FONT_20;
 font_s FONT_CON;
 
+var string g_shellchrome;
+var float g_shellchromeshader;
+
 /* clientside cvars */
 var float autocvar_zoom_sensitivity = 1.0f;
 var int autocvar_cl_smoothstairs = TRUE;
@@ -82,7 +85,6 @@ drawstring_r(vector p, string t, vector s, vector c, float a, float f)
 }
 
 void GameMessage_Setup(string, int);
-void Game_Input(void);
 void View_SetMuzzleflash(int);
 
 void Event_Callback(float mtime, __inout float btime);

@@ -105,6 +105,9 @@ NSRenderableEntity::EvaluateEntity(void)
 	if (ATTR_CHANGED(m_iRenderMode)) {
 		SetSendFlags(BASEFL_CHANGED_RENDERMODE);
 	}
+	if (ATTR_CHANGED(m_iRenderFX)) {
+		SetSendFlags(BASEFL_CHANGED_RENDERMODE);
+	}
 
 	if (ATTR_CHANGED(m_vecRenderColor)) {
 		SetSendFlags(BASEFL_CHANGED_RENDERCOLOR);
@@ -167,16 +170,6 @@ NSRenderableEntity::SendEntity(entity ePEnt, float fChanged)
 	/* don't network triggers unless provoked */
 	/*if (cvar("developer") == 0 && m_iRenderMode == RM_TRIGGER)
 		return (0);*/
-
-#ifdef GS_RENDERFX
-	/* let's not waste networking power on certain render-modes where they would
-	 * not apply anyway. this seems sensible enough. */
-	if (m_iRenderMode == RM_NORMAL || m_iRenderMode == RM_TRIGGER) {
-		if (!glowmod) /* FIXME: Get rid of this, network this hack on its own. */
-			fChanged &= ~BASEFL_CHANGED_RENDERCOLOR;
-		fChanged &= ~BASEFL_CHANGED_RENDERAMT;
-	}
-#endif
 
 	/* broadcast how much data is expected to be read */
 	WriteFloat(MSG_ENTITY, fChanged);
@@ -433,6 +426,22 @@ NSRenderableEntity::RenderFXPass(void)
 		effects = EF_ADDITIVE;
 		drawflags = 7;
 		abslight = 128;
+		break;
+	case RFX_GLOWSHELL:
+		/* make this entity shellchrome */
+		effects = EF_ADDITIVE;
+		fatness = 0;
+		colormod = m_vecRenderColor;
+		forceshader = g_shellchromeshader;
+		alpha = 1.0;
+		/* copy entity into rendering queue */
+		addentity(this);
+		/* reset */
+		forceshader = 0;
+		fatness = 0;
+		colormod = [1,1,1];
+		alpha = 1.0f;
+		effects = 0;
 		break;
 	default:
 		break;
