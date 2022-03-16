@@ -107,7 +107,7 @@ Weapons_SwitchBest(base_player pl, optional float skip = 0)
 	if (old == pl.activeweapon)
 		return;
 
-	Weapons_Draw();
+	Weapons_Draw((player)pl);
 	self = oldself;
 	pl.gflags |= GF_SEMI_TOGGLED;
 }
@@ -159,7 +159,7 @@ Weapons_AddItem(base_player pl, int w, int startammo)
 			/* it's new, so autoswitch? */
 			if (pl.activeweapon == 0 && autocvar_sv_forceweapondraw == 1) {
 				pl.activeweapon = w;
-				Weapons_Draw();
+				Weapons_Draw((player)pl);
 			} else {
 				Weapons_PickupNotify(pl, w);
 			}
@@ -168,21 +168,21 @@ Weapons_AddItem(base_player pl, int w, int startammo)
 		/* call pickup to handle the ammo */
 		if (pl.g_items & g_weapons[w].id) {
 			/* we have the item already, se let's see if we hit maxammo */
-			value = g_weapons[w].pickup(FALSE, startammo);
+			value = g_weapons[w].pickup((player)pl, FALSE, startammo);
 
 			/* FALSE means maxammo is hit */
 			if (!value)
 				return value;
 		} else {
 			/* new to our arsenal */
-			if (g_weapons[w].pickup(TRUE, startammo) == TRUE) {
+			if (g_weapons[w].pickup((player)pl, TRUE, startammo) == TRUE) {
 				pl.g_items |= g_weapons[w].id;
 				value = TRUE;
 
 				/* it's new, so autoswitch? */
 				if (pl.activeweapon == 0 && autocvar_sv_forceweapondraw == 1) {
 					pl.activeweapon = w;
-					Weapons_Draw();
+					Weapons_Draw((player)pl);
 				} else {
 					Weapons_PickupNotify(pl, w);
 				}

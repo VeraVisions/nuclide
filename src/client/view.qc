@@ -106,6 +106,12 @@ View_CalcViewport(int s, float fWinWidth, float fWinHeight)
 	}
 }
 
+void
+View_DrawViewmodel_Single(int weapon, float weapontime)
+{
+	
+}
+
 /*
 ====================
 View_DrawViewModel
@@ -122,21 +128,38 @@ View_DrawViewModel(void)
 	entity m_eViewModelL = pSeat->m_eViewModelL;
 	entity m_eMuzzleflashL = pSeat->m_eMuzzleflashL;
 
-	player pl = (player) self;
+	player pl = __NULL__;
 
-	if (pl.health <= 0) {
-		return;
+	/* it's either us or us spectating */
+	if (self.classname == "spectator") {
+		spectator spec = (spectator)self;
+		pl = (player)findfloat(world, ::entnum, spec.spec_ent);
+
+		if (spec.spec_mode != SPECMODE_FIRSTPERSON)
+			return;
+	} else {
+		pl = (player)self;
+
+		if (pl.health <= 0) {
+			return;
+		}
 	}
+
+	if (!pl)
+		return;
 
 	if (cvar("r_drawviewmodel") == 0 || autocvar_cl_thirdperson == TRUE) {
 		return;
 	}
 
-	View_UpdateWeapon(m_eViewModel, m_eMuzzleflash);
-	View_UpdateWeapon(m_eViewModelL, m_eMuzzleflashL);
+//	print(sprintf("%s: %f %d\n", pl.classname, pl.weapontime, pl.activeweapon));
+
+	View_UpdateWeapon(pl, m_eViewModel, m_eMuzzleflash);
+	View_UpdateWeapon(pl, m_eViewModelL, m_eMuzzleflashL);
 
 	float fBaseTime2 = m_eViewModel.frame1time;
 	float fBaseTime = m_eViewModel.frame1time;
+	m_eViewModel.frame = pl.weaponframe;
 	m_eViewModelL.frame1time =
 	m_eViewModelL.frame2time =
 	m_eViewModel.frame2time =

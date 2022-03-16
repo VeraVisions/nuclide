@@ -23,10 +23,8 @@ enum
 };
 
 int
-w_baseprojectile_fire(int w, .int mag, void() spawnfunc)
+w_baseprojectile_fire(player pl, int w, .int mag, void(player) spawnfunc)
 {
-	player pl = (player)self;
-
 	if (pl.w_attack_next > 0.0) {
 		return (SEMI_FIRE_FAILED);
 	}
@@ -40,7 +38,7 @@ w_baseprojectile_fire(int w, .int mag, void() spawnfunc)
 	pl.(mag)--;
 
 #ifdef SERVER
-	spawnfunc();
+	spawnfunc(pl);
 #endif
 
 	if (pl.(mag) == 0)

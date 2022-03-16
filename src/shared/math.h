@@ -23,3 +23,5 @@ vector Math_FixDeltaVector(vector);
 vector Math_Reflect(vector v1, vector v2);
 vector Math_RandomVector(float flyup);
 vector Math_RotateAroundPivot(vector pos, vector pivot, float degr);
+
+vector hsv2rgb(float h, float s, float v);

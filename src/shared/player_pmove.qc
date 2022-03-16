@@ -269,7 +269,7 @@ base_player::Physics_InputPostMove(void)
 	Vehicle_Input(this);
 
 	/* weapon/item logic of what the player controls */
-	Game_Input();
+	Game_Input((player)this);
 }
 
 /* the main physics routine, the head */

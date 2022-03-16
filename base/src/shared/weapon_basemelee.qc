@@ -17,7 +17,7 @@ w_basemelee_fire(int d, int w)
 		return (MELEE_FAILED);
 	}
 
-	Weapons_MakeVectors();
+	Weapons_MakeVectors(pl);
 	src = pl.origin + pl.view_ofs;
 
 	/* make sure we can gib corpses */

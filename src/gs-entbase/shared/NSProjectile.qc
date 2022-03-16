@@ -37,6 +37,28 @@ NSProjectile::SetModel(string mdl)
 }
 
 void
+NSProjectile::AnimateThink(void)
+{
+	frame++;
+
+	if (frame > (float)m_iProjectileAnimEnd)
+		frame = (float)m_iProjectileAnimStart;
+
+	nextthink = time + m_flProjectileFramerate;
+}
+
+void
+NSProjectile::Animate(int startframe, int endframe, float framerate)
+{
+	m_iProjectileAnimEnd = startframe;
+	m_iProjectileAnimStart = endframe;
+	m_flProjectileFramerate = framerate;
+	frame = startframe;
+	think = AnimateThink;
+	nextthink = time + m_flProjectileFramerate;
+}
+
+void
 NSProjectile::NSProjectile(void)
 {
 	super::NSSurfacePropEntity();

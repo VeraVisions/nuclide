@@ -15,7 +15,7 @@
  */
 
 void
-Game_Input(void)
+Game_Input(player pl)
 {
 #ifdef SERVER
 	CGameRules rules = (CGameRules)g_grMode;
@@ -30,18 +30,18 @@ Game_Input(void)
 	else
 		Player_UseUp();
 
-	if (self.impulse == 100)
+	if (pl.impulse == 100)
 		Flashlight_Toggle();
 
-	self.impulse = 0;
+	pl.impulse = 0;
 #endif
 
 	if (input_buttons & INPUT_BUTTON0)
-		Weapons_Primary();
+		Weapons_Primary(pl);
 	else if (input_buttons & INPUT_BUTTON4)
-		Weapons_Reload();
+		Weapons_Reload(pl);
 	else if (input_buttons & INPUT_BUTTON3)
-		Weapons_Secondary();
+		Weapons_Secondary(pl);
 	else
-		Weapons_Release();
+		Weapons_Release(pl);
 }

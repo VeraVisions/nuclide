@@ -20,7 +20,9 @@ typedef enum
 	WPNTYPE_INVALID,	/* no logic */
 	WPNTYPE_RANGED,		/* will want to keep their distance mostly */
 	WPNTYPE_THROW,		/* has to keep some distance, but not too far */
-	WPNTYPE_CLOSE		/* have to get really close */
+	WPNTYPE_CLOSE,		/* have to get really close */
+	WPNTYPE_FULLAUTO,	/* for things that need to be held down */
+	WPNTYPE_SEMI		/* semi automatic */
 } weapontype_t;
 
 typedef struct
@@ -31,48 +33,47 @@ typedef struct
 	int slot_pos;
 	int allow_drop;
 	int weight; /* required for bestweapon */
-	weapontype_t(void) type; /* required for bot-AI */
-
-	void(void) draw;
-	void(void) holster;
-	void(void) primary;
-	void(void) secondary;
-	void(void) reload;
-	void(void) release;
-
-	void(int) predraw; /* predraw... */
-	void(void) crosshair; /* postdraw... */
-
-	int(void) isempty; /* kinda handy */
-
 	void(void) precache;
-	int(int, int) pickup;
-	void(player) updateammo;
 	string() wmodel;
-	string() pmodel;
 	string() deathmsg;
-	float() aimanim;
-	void(int, vector, float) hudpic;
+
+	/* player specific */
+	string(player) pmodel;
+	float(player) aimanim;
+	weapontype_t(player) type; /* required for bot-AI */
+	void(player) draw;
+	void(player) holster;
+	void(player) primary;
+	void(player) secondary;
+	void(player) reload;
+	void(player) release;
+	int(player, int, int) pickup;
+	void(player) updateammo;
+
+	void(player, int) predraw; /* predraw... */
+	void(player) postdraw; /* postdraw... */
+
+	int(player) isempty; /* kinda handy */
+	void(player, int, vector, float) hudpic;
 } weapon_t;
 
-void Weapons_Holster(void);
-void Weapons_Primary(void);
-void Weapons_Secondary(void);
-void Weapons_Reload(void);
-void Weapons_Release(void);
-void Weapons_PreDraw(int);
+void Weapons_Holster(player pl);
+void Weapons_Primary(player pl);
+void Weapons_Secondary(player pl);
+void Weapons_Reload(player pl);
+void Weapons_Release(player pl);
+void Weapons_PreDraw(player pl, int);
 
-float Weapons_GetAim(int);
-void Weapons_Reload(void);
+float Weapons_GetAim(player, int);
 int Weapons_IsEmpty(player, int);
-void Weapons_DrawCrosshair(void);
-void Weapons_MakeVectors(void);
-vector Weapons_GetCameraPos(void);
-void Weapons_ViewAnimation(int);
-void Weapons_ViewPunchAngle(vector);
+void Weapons_DrawCrosshair(player pl);
+void Weapons_MakeVectors(player pl);
+vector Weapons_GetCameraPos(player pl);
+void Weapons_ViewAnimation(player pl, int);
+void Weapons_ViewPunchAngle(player pl, vector);
 int Weapons_IsPresent(player, int);
 void Weapons_UpdateAmmo(base_player, int, int, int);
-int Weapons_GetAnimation(void);
+int Weapons_GetAnimation(player pl);
 void Weapons_EnableModel(void);
 void Weapons_DisableModel(void);
 weapontype_t Weapons_GetType(player, int);
@@ -90,6 +91,6 @@ void Weapons_SetModel(string);
 void Weapons_Sound(entity, float, string);
 
 #ifdef CLIENT
-string Weapons_GetPlayermodel(int);
-void Weapons_HUDPic(int, int, vector, float);
+string Weapons_GetPlayermodel(player, int);
+void Weapons_HUDPic(player, int, int, vector, float);
 #endif

@@ -92,64 +92,6 @@ cz_cbSprayChanged(void)
 	localcmd(sprintf("setinfoblob spray %s\n", mdl));
 }
 
-vector hsv2rgb(float h, float s, float v)
-{
-	float i,f,p,q,t;
-	vector col = [0,0,0];
-
-	h = max(0.0, min(360.0, h));
-	s = max(0.0, min(100.0, s));
-	v = max(0.0, min(100.0, v));
-
-	s /= 100;
-	v /= 100;
-
-	if (s == 0) {
-		col[0] = col[1] = col[2] = rint(v*255);
-		return col;
-	}
-
-	h /= 60;
-	i = floor(h);
-	f = h - i;
-	p = v * (1 - s);
-	q = v * (1 - s * f);
-	t = v * (1 - s * (1 - f));
-
-	switch (i) {
-	case 0:
-		col[0] = rint(255*v);
-		col[1] = rint(255*t);
-		col[2] = rint(255*p);
-		break;
-	case 1:
-		col[0] = rint(255*q);
-		col[1] = rint(255*v);
-		col[2] = rint(255*p);
-		break;
-	case 2:
-		col[0] = rint(255*p);
-		col[1] = rint(255*v);
-		col[2] = rint(255*t);
-		break;
-	case 3:
-		col[0] = rint(255*p);
-		col[1] = rint(255*q);
-		col[2] = rint(255*v);
-		break;
-	case 4:
-		col[0] = rint(255*t);
-		col[1] = rint(255*p);
-		col[2] = rint(255*v);
-		break;
-	default:
-		col[0] = rint(255*v);
-		col[1] = rint(255*p);
-		col[2] = rint(255*q);
-	}
-	return col;
-}
-
 void
 cz_sldTopcolorChanged(float val)
 {

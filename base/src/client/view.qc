@@ -15,10 +15,8 @@
  */
 
 void
-View_UpdateWeapon(entity vm, entity mflash)
+View_UpdateWeapon(player pl, entity vm, entity mflash)
 {
-	player pl = (player)pSeat->m_ePlayer;
-
 	/* only bother upon change */
 	if (pSeat->m_iLastWeapon == pl.activeweapon) {
 		return;
@@ -31,7 +29,7 @@ View_UpdateWeapon(entity vm, entity mflash)
 	}
 
 	/* hack, we changed the wep, move this into Game_Input/PMove */
-	Weapons_Draw();
+	Weapons_Draw(pl);
 
 	/* we forced a weapon call outside the prediction,
 	 * thus we need to update all the net variables to

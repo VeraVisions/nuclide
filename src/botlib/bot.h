@@ -92,3 +92,14 @@ class bot:player
 };
 
 entity Bot_AddQuick(void);
+
+void
+Bot_RandomColormap(bot target)
+{
+	vector x = hsv2rgb(random() * 360, 100, 100);
+	float top = x[2] + (x[1] << 8) + (x[0] << 16);
+	x = hsv2rgb(random() * 360, 100, 100);
+	float bottom = x[2] + (x[1] << 8) + (x[0] << 16);
+	forceinfokey(target, "topcolor", sprintf("0x%x", top));
+	forceinfokey(target, "bottomcolor", sprintf("0x%x", bottom));
+}

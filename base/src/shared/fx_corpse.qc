@@ -15,7 +15,7 @@
  */
 
 #ifdef SERVER
-#define CORPSES_MAX 32
+#define CORPSES_MAX 16
 entity g_bodies;
 
 void

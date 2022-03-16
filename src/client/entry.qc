@@ -256,9 +256,16 @@ CSQC_UpdateView(float w, float h, float focus)
 			spec = (spectator)self;
 			Predict_SpectatorPreFrame(spec);
 
-			pSeat->m_vecPredictedOrigin = spec.origin;
-			pSeat->m_vecPredictedVelocity = spec.velocity;
-			pSeat->m_flPredictedFlags = spec.flags;
+			if (spec.spec_mode == SPECMODE_FIRSTPERSON || spec.spec_mode == SPECMODE_THIRDPERSON) {
+				entity c = findfloat(world, ::entnum, spec.spec_ent);
+				pSeat->m_vecPredictedOrigin = c.origin;
+				pSeat->m_vecPredictedVelocity = c.velocity;
+				pSeat->m_flPredictedFlags = c.flags;
+			} else {
+				pSeat->m_vecPredictedOrigin = spec.origin;
+				pSeat->m_vecPredictedVelocity = spec.velocity;
+				pSeat->m_flPredictedFlags = spec.flags;
+			}
 		}
 #endif
 
@@ -308,8 +315,7 @@ CSQC_UpdateView(float w, float h, float focus)
 					setproperty(VF_ORIGIN, trace_endpos + (v_forward * 5));
 					break;
 				case SPECMODE_FIRSTPERSON:
-					entity c;
-					c = findfloat(world, ::entnum, spec.spec_ent);
+					entity c = findfloat(world, ::entnum, spec.spec_ent);
 					
 					if (c.classname == "player") {
 						player bp = (player)c;

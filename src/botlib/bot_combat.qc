@@ -73,6 +73,7 @@ bot::WeaponAttack(void)
 {
 	int should_attack = 0;
 
+	/* only attack when the type's suggested distance makes sense to */
 	if (m_wtWeaponType == WPNTYPE_RANGED) {
 		if (m_flEnemyDist <= 1024)
 			should_attack = 1;
@@ -83,21 +84,27 @@ bot::WeaponAttack(void)
 		if (m_flEnemyDist <= 128)
 			should_attack = 1;
 	} else {
-		should_attack = 1;
+		if (m_flEnemyDist <= 1024)
+			should_attack = 1;
 	}
 
 	if (should_attack && m_flAttackTime < time) {
 		if (!m_iAttackMode) {
 			input_buttons |= INPUT_BUTTON0;
 		}
-		m_flAttackTime = time + 0.1f;
+
+		if (m_wtWeaponType != WPNTYPE_FULLAUTO)
+			m_flAttackTime = time + 0.1f;
 	} else {
 		input_buttons &= ~INPUT_BUTTON0;
 		input_buttons &= ~INPUT_BUTTON4;
 		input_buttons &= ~INPUT_BUTTON5;
 	}
 
-	m_iAttackMode = 1 - m_iAttackMode;
+	if (m_wtWeaponType != WPNTYPE_FULLAUTO)
+		m_iAttackMode = 1 - m_iAttackMode;
+	else
+		m_iAttackMode = 0;
 }
 
 var float g_botalert_timer;

@@ -202,7 +202,7 @@ Route_SelectDestination(bot target)
 			dest = Route_SelectNearestEnemyTeam(BOTINFO_TEAM_GOALITEM, target.origin, target.team);
 		}
 
-		if (dest) {
+		if (dest != __NULL__) {
 			target.m_vecLastPOI = dest.origin;
 			return dest.origin + [0,0,32];
 		}
@@ -215,7 +215,7 @@ Route_SelectDestination(bot target)
 		print(sprintf("%s going for health\n", target.netname));
 		dest = Route_SelectNearest(BOTINFO_HEALTH, target.origin, target.m_vecLastPOI);
 
-		if (dest) {
+		if (dest != __NULL__) {
 			target.m_vecLastPOI = dest.origin;
 			return dest.origin + [0,0,32];
 		}
@@ -229,7 +229,7 @@ Route_SelectDestination(bot target)
 		print(sprintf("%s going for armor\n", target.netname));
 		dest = Route_SelectNearest(BOTINFO_ARMOR, target.origin, target.m_vecLastPOI);
 		
-		if (dest) {
+		if (dest != __NULL__) {
 			target.m_vecLastPOI = dest.origin;
 			return dest.origin + [0,0,32];
 		}
@@ -247,7 +247,7 @@ Route_SelectDestination(bot target)
 		else
 			dest = Route_SelectFarthest(BOTINFO_AMMO, target.origin, target.m_vecLastPOI);
 		
-		if (dest) {
+		if (dest != __NULL__) {
 			target.m_vecLastPOI = dest.origin;
 			return dest.origin + [0,0,32];
 		}
@@ -296,7 +296,7 @@ Route_GetNodeFlags(nodeslist_t *node)
 vector
 Route_GetJumpVelocity(vector vecFrom, vector vecTo, float flGravMod)
 {
-#if 0
+#if 1
 	float flHeight, flGravity, flTime, flDistance, flDir;
 	vector vecJump = [0,0,0];
 

@@ -16,6 +16,11 @@
 
 class NSProjectile:NSSurfacePropEntity
 {
+	/* sprite animation gubbins */
+	int m_iProjectileAnimEnd;
+	int m_iProjectileAnimStart;
+	float m_flProjectileFramerate;
+
 	void(void) NSProjectile;
 
 	virtual void(entity, entity) m_pImpact = 0;
@@ -23,4 +28,5 @@ class NSProjectile:NSSurfacePropEntity
 	virtual void(void(entity, entity)) SetImpact;
 	virtual void(string) SetModel;
 	virtual void(void) ProjectileTouch;
+	virtual void(int, int, float) Animate;
 };

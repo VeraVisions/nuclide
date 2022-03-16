@@ -164,9 +164,8 @@ Weapons_SetGeomset(string set)
 }
 
 void
-Weapons_Draw(void)
+Weapons_Draw(player pl)
 {
-	player pl = (player)self;
 	int i = pl.activeweapon;
 
 	pl.w_attack_next = 0.5f;
@@ -183,33 +182,31 @@ Weapons_Draw(void)
 	pl.a_ammo1 = pl.a_ammo2 = pl.a_ammo3 = 0;
 
 	if (g_weapons[i].draw != __NULL__)
-		g_weapons[i].draw();
+		g_weapons[i].draw(pl);
 
 	if (g_weapons[i].updateammo != __NULL__)
 		g_weapons[i].updateammo(pl);
 }
 
 void
-Weapons_Holster(void)
+Weapons_Holster(player pl)
 {
-	player pl = (player)self;
 	int i = pl.activeweapon;
 
 	if (g_weapons[i].holster != __NULL__)
-		g_weapons[i].holster();
+		g_weapons[i].holster(pl);
 }
 
 void
-Weapons_Primary(void)
+Weapons_Primary(player pl)
 {
-	player pl = (player)self;
 	int i = pl.activeweapon;
 
 	if (pl.flags & FL_NOATTACK)
 		return;
 
 	if (g_weapons[i].primary != __NULL__)
-		g_weapons[i].primary();
+		g_weapons[i].primary(pl);
 
 	if (g_weapons[i].updateammo != __NULL__)
 		g_weapons[i].updateammo(pl);
@@ -227,57 +224,53 @@ Weapons_AmmoUpdate(entity target)
 }
 
 void
-Weapons_Secondary(void)
+Weapons_Secondary(player pl)
 {
-	player pl = (player)self;
 	int i = pl.activeweapon;
 
 	if (pl.flags & FL_NOATTACK)
 		return;
 
 	if (g_weapons[i].secondary != __NULL__)
-		g_weapons[i].secondary();
+		g_weapons[i].secondary(pl);
 
 	if (g_weapons[i].updateammo != __NULL__)
 		g_weapons[i].updateammo(pl);
 }
 
 void
-Weapons_Reload(void)
+Weapons_Reload(player pl)
 {
-	player pl = (player)self;
 	int i = pl.activeweapon;
 
 	if (pl.flags & FL_NOATTACK)
 		return;
 
 	if (g_weapons[i].reload != __NULL__)
-		g_weapons[i].reload();
+		g_weapons[i].reload(pl);
 
 	if (g_weapons[i].updateammo != __NULL__)
 		g_weapons[i].updateammo(pl);
 }
 
 void
-Weapons_Release(void)
+Weapons_Release(player pl)
 {
-	player pl = (player)self;
 	int i = pl.activeweapon;
 
 	if (g_weapons[i].release != __NULL__)
-		g_weapons[i].release();
+		g_weapons[i].release(pl);
 
 	pl.gflags &= ~GF_SEMI_TOGGLED;
 }
 
 void
-Weapons_PreDraw(int thirdperson)
+Weapons_PreDraw(player pl, int thirdperson)
 {
-	player pl = (player)self;
 	int i = pl.activeweapon;
 
 	if (g_weapons[i].predraw != __NULL__)
-		g_weapons[i].predraw(thirdperson);
+		g_weapons[i].predraw(pl, thirdperson);
 }
 
 int
@@ -289,7 +282,7 @@ Weapons_IsEmpty(player pl, int w)
 	self = pl;
 
 	if (g_weapons[w].isempty != __NULL__)
-		r = g_weapons[w].isempty();
+		r = g_weapons[w].isempty(pl);
 
 	self = oself;
 
@@ -306,7 +299,7 @@ Weapons_GetType(player pl, int w)
 	self = pl;
 
 	if (g_weapons[w].type != __NULL__)
-		r = g_weapons[w].type();
+		r = g_weapons[w].type(pl);
 
 	self = oself;
 
@@ -314,13 +307,12 @@ Weapons_GetType(player pl, int w)
 }
 
 void
-Weapons_DrawCrosshair(void)
+Weapons_DrawCrosshair(player pl)
 {
-	player pl = (player)self;
 	int i = pl.activeweapon;
 
-	if (g_weapons[i].crosshair != __NULL__)
-		g_weapons[i].crosshair();
+	if (g_weapons[i].postdraw != __NULL__)
+		g_weapons[i].postdraw(pl);
 }
 
 string
@@ -333,10 +325,10 @@ Weapons_GetWorldmodel(int id)
 }
 
 string
-Weapons_GetPlayermodel(int id)
+Weapons_GetPlayermodel(player pl, int id)
 {
 	if (g_weapons[id].pmodel != __NULL__)
-		return g_weapons[id].pmodel();
+		return g_weapons[id].pmodel(pl);
 
 	return "";
 }
@@ -351,28 +343,27 @@ Weapons_GetDeathmessage(int id)
 }
 
 float
-Weapons_GetAim(int id)
+Weapons_GetAim(player pl, int id)
 {
 	if (g_weapons[id].aimanim != __NULL__)
-		return g_weapons[id].aimanim();
+		return g_weapons[id].aimanim(pl);
 
 	return (0);
 }
 
 #ifdef CLIENT
 void
-Weapons_HUDPic(int id, int s, vector pos, float a)
+Weapons_HUDPic(player pl, int id, int s, vector pos, float a)
 {
 	if (g_weapons[id].hudpic != __NULL__)
-		g_weapons[id].hudpic(s, pos, a);
+		g_weapons[id].hudpic(pl, s, pos, a);
 }
 #endif
 
 void
-Weapons_MakeVectors(void)
+Weapons_MakeVectors(player pl)
 {
 #ifdef SERVER
-	player pl = (player)self;
 	makevectors(pl.v_angle);
 #else
 	makevectors(view_angles);
@@ -380,22 +371,22 @@ Weapons_MakeVectors(void)
 }
 
 vector
-Weapons_GetCameraPos(void)
+Weapons_GetCameraPos(player pl)
 {
 #ifdef SERVER
-	return (self.origin + self.view_ofs);
+	return (pl.origin + pl.view_ofs);
 #else
 	return getproperty(VF_ORIGIN);
 #endif
 }
 
 void
-Weapons_ViewAnimation(int i)
+Weapons_ViewAnimation(player pl, int i)
 {
-	player pl = (player)self;
-#ifdef CLIENT
+#if 0
 	View_PlayAnimation(i);
 #endif
+	pl.weaponframe = i;
 	pl.weapontime = 0.0f;
 }
 
@@ -404,19 +395,14 @@ int View_GetAnimation(void);
 #endif
 
 int
-Weapons_GetAnimation(void)
+Weapons_GetAnimation(player pl)
 {
-#ifdef CLIENT
-	return View_GetAnimation();
-#else
-	return (0);
-#endif
+	return pl.weaponframe;
 }
 
 void
-Weapons_ViewPunchAngle(vector add)
+Weapons_ViewPunchAngle(player pl, vector add)
 {
-	player pl = (player)self;
 	pl.punchangle += add;
 }
 
@@ -465,9 +451,9 @@ Weapons_UpdateAmmo(base_player pl, int a1, int a2, int a3)
 		a3 = pl.a_ammo3;
 
 	/* networked as bytes, since we don't need more. Clamp to avoid errors */
-	pl.a_ammo1 = bound(0, a1, 255);
-	pl.a_ammo2 = bound(0, a2, 255);
-	pl.a_ammo3 = bound(0, a3, 255);
+	pl.a_ammo1 = a1;
+	pl.a_ammo2 = a2;
+	pl.a_ammo3 = a3;
 }
 
 void

@@ -18,7 +18,8 @@
 void
 base_player::ClientRemove(void)
 {
-	remove(p_model);
+	if (p_model)
+		remove(p_model);
 }
 
 /*
@@ -109,8 +110,9 @@ base_player::ReceiveEntity(float new, float fl)
 		gravity = 1.0f;
 	}
 
-	if (fl & PLAYER_MODELINDEX)
+	if (fl & PLAYER_MODELINDEX) {
 		modelindex = readshort();
+	}
 
 	if (fl & PLAYER_ORIGIN) {
 		origin[0] = readcoord();
@@ -150,8 +152,10 @@ base_player::ReceiveEntity(float new, float fl)
 		else
 			setsize(self, PHY_HULL_MIN, PHY_HULL_MAX);
 	}
-	if (fl & PLAYER_WEAPON)
+	if (fl & PLAYER_WEAPON) {
 		activeweapon = readbyte();
+		weaponframe = (int)readbyte();
+	}
 	if (fl & PLAYER_ITEMS)
 		g_items = (__variant)readfloat();
 	if (fl & PLAYER_HEALTH)
@@ -207,6 +211,7 @@ base_player::PredictPreFrame(void)
 	/* TO OPTIMISE */
 	SAVE_STATE(teleport_time);
 	SAVE_STATE(viewzoom);
+	SAVE_STATE(weaponframe);
 	SAVE_STATE(weapontime);
 	SAVE_STATE(w_attack_next);
 	SAVE_STATE(w_idle_next);
@@ -247,6 +252,7 @@ base_player::PredictPostFrame(void)
 	/* TO OPTIMISE */
 	ROLL_BACK(teleport_time);
 	ROLL_BACK(viewzoom);
+	ROLL_BACK(weaponframe);
 	ROLL_BACK(weapontime);
 	ROLL_BACK(w_attack_next);
 	ROLL_BACK(w_idle_next);
@@ -275,6 +281,7 @@ base_player::Save(float handle)
 	SaveFloat(handle, "w_attack_next", w_attack_next);
 	SaveFloat(handle, "w_idle_next", w_idle_next);
 	SaveFloat(handle, "teleport_time", teleport_time);
+	SaveInt(handle, "weaponframe", weaponframe);
 	SaveFloat(handle, "weapontime", weapontime);
 	SaveInt(handle, "g_items", g_items);
 	SaveFloat(handle, "activeweapon", activeweapon);
@@ -335,6 +342,9 @@ base_player::Restore(string strKey, string strValue)
 		break;
 	case "teleport_time":
 		teleport_time = ReadFloat(strValue);
+		break;
+	case "weaponframe":
+		weaponframe = ReadInt(strValue);
 		break;
 	case "weapontime":
 		weapontime = ReadFloat(strValue);
@@ -516,6 +526,9 @@ base_player::EvaluateEntity(void)
 	if (ATTR_CHANGED(pmove_flags))
 		SetSendFlags(PLAYER_FLAGS);
 
+	if (ATTR_CHANGED(weaponframe))
+		SetSendFlags(PLAYER_WEAPON);
+
 	if (ATTR_CHANGED(activeweapon))
 		SetSendFlags(PLAYER_WEAPON);
 
@@ -552,6 +565,7 @@ base_player::EvaluateEntity(void)
 	/* TO OPTIMISE */
 	SAVE_STATE(teleport_time);
 	SAVE_STATE(viewzoom);
+	SAVE_STATE(weaponframe);
 	SAVE_STATE(weapontime);
 	SAVE_STATE(w_attack_next);
 	SAVE_STATE(w_idle_next);
@@ -572,8 +586,9 @@ float
 base_player::SendEntity(entity ePEnt, float fChanged)
 {
 	/* really trying to get our moneys worth with 23 bits of mantissa */
-	if (fChanged & PLAYER_MODELINDEX)
+	if (fChanged & PLAYER_MODELINDEX) {
 		WriteShort(MSG_ENTITY, modelindex);
+	}
 
 	/* if origin[0] changes, it's very likely [1] changes too, since
 	 * we rarely ever walk in a straight line on the world grid */
@@ -611,8 +626,10 @@ base_player::SendEntity(entity ePEnt, float fChanged)
 		WriteFloat(MSG_ENTITY, gflags);
 		WriteFloat(MSG_ENTITY, pmove_flags);
 	}
-	if (fChanged & PLAYER_WEAPON)
+	if (fChanged & PLAYER_WEAPON) {
 		WriteByte(MSG_ENTITY, activeweapon);
+		WriteByte(MSG_ENTITY, weaponframe);
+	}
 
 	/* g_items is a proper integer, so we can't let WriteFloat truncate it (hence __variant) */
 	if (fChanged & PLAYER_ITEMS)

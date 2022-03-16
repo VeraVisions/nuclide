@@ -24,8 +24,3 @@ ClientGame_EntityUpdate(float id, float new)
 
 	return (1);
 }
-
-void
-ClientGame_EntityRemove(void)
-{
-}

@@ -37,6 +37,8 @@ player::draw(void)
 float
 player::predraw(void)
 {
+	int this_us = 0;
+
 	super::predraw();
 
 	/* run animations regardless of rendering the player */
@@ -45,12 +47,27 @@ player::predraw(void)
 	/* make sure we're enabling shadow rendering on us */
 	effects &= ~EF_NOSHADOW;
 
-	if (autocvar_cl_thirdperson == TRUE || this.entnum != player_localentnum) {
+	if (getplayerkeyvalue(pSeat->m_ePlayer.entnum-1, "*spec") == "1") {
+		spectator spec = (spectator)pSeat->m_ePlayer;
+		if (entnum == spec.spec_ent && spec.spec_mode == SPECMODE_FIRSTPERSON) {
+			this_us = 1;
+		}
+	} else {
+		if (entnum == player_localentnum) {
+			this_us = 1;
+		}
+	}
+
+	if (autocvar_cl_thirdperson == TRUE || !this_us) {
 		Voice_Draw3D(this);
 		Player_PreDraw(this, TRUE);
+		if (p_model)
+			addentity(p_model);
 		addentity(this);
 	} else {
 		Player_PreDraw(this, FALSE);
+		if (p_model)
+			removeentity(p_model);
 		removeentity(this);
 	}
 

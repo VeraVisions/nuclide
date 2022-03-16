@@ -17,6 +17,7 @@
 class
 base_player:base_client
 {
+	PREDICTED_INT(weaponframe);
 	PREDICTED_FLOAT(health);
 	PREDICTED_FLOAT(armor);
 
