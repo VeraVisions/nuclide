@@ -480,6 +480,7 @@ NSEntity::Respawn(void)
 void
 NSEntity::Save(float handle)
 {
+	SaveFloat(handle, "spawnflags", spawnflags);
 	SaveVector(handle, "origin", origin);
 	SaveVector(handle, "absmin", absmin);
 	SaveVector(handle, "absmax", absmax);
@@ -498,6 +499,9 @@ void
 NSEntity::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
+	case "spawnflags":
+		spawnflags = stof(strValue);
+		break;
 	case "origin":
 		origin = stov(strValue);
 		setorigin(this, origin);
@@ -589,6 +593,9 @@ NSEntity::SpawnKey(string strKey, string strValue)
 	/* we do re-read a lot of the builtin fields in case we want to set
 	   defaults. just in case anybody is wondering. */
 	switch (strKey) {
+	case "spawnflags":
+		spawnflags = stof(strValue);
+		break;
 	case "origin":
 		origin = stov(strValue);
 		break;

@@ -22,6 +22,8 @@
 !!samps =PCF shadowmap
 !!samps =CUBE projectionmap
 
+!!cvardf r_skipDiffuse
+
 #include "sys/defs.h"
 
 //if there's no vertex normals known, disable some stuff.
@@ -125,7 +127,11 @@ varying vec3 lightvector;
 	#if defined(FLAT)
 		vec4 bases = vec4(FLAT, FLAT, FLAT, 1.0);
 	#else
-		vec4 bases = texture2D(s_diffuse, tex_c);
+		#if r_skipDiffuse == 0
+			vec4 bases = texture2D(s_diffuse, tex_c);
+		#else
+			vec4 bases = vec4(1.0, 1.0, 1.0, 1.0);
+		#endif
 	#endif
 
 	#ifdef BUMP

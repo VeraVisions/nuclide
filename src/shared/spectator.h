@@ -15,12 +15,15 @@ typedef enum
 	SPECMODE_OVERVIEW
 } spectatorMode_t;
 
+typedef enumflags
+{
+	SPECFLAG_BUTTON_RELEASED,
+};
+
 class spectator:base_client
 {
-	vector origin_net;
-	vector velocity_net;
-	float spec_ent; float spec_ent_net;
-	float spec_flags; float spec_flags_net;
+	PREDICTED_FLOAT(spec_ent);
+	PREDICTED_FLOAT(spec_flags);
 	spectatorMode_t spec_mode; spectatorMode_t spec_mode_net;
 
 	vector spec_org;
@@ -29,18 +32,20 @@ class spectator:base_client
 
 	void(void) spectator;
 
+	virtual void(void) ClientInput;
+
 	virtual void(void) InputNext;
 	virtual void(void) InputPrevious;
 	virtual void(void) InputMode;
 
-	virtual void(void) PreFrame;
-	virtual void(void) PostFrame;
-
-	virtual void(void) SpectatorInput;
-
 	virtual void(void) WarpToTarget;
 
+	virtual void(void) PreFrame;
+	virtual void(void) PostFrame;
+	virtual void(void) SpectatorTrackPlayer;
+
 #ifdef SERVER
+	virtual void(void) EvaluateEntity;
 	virtual float(entity, float) SendEntity;
 	virtual void(void) RunClientCommand;
 #else

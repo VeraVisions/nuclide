@@ -26,4 +26,5 @@ shake.qc
 cmd.qc
 event.qc
 entry.qc
+util.cpp
 #endlist

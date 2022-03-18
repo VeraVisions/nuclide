@@ -5,6 +5,7 @@
 	surfaceParm nodraw
 	surfaceParm trans
 	surfaceParm metal
+	surfaceParm penetrate
 	surfaceParm nolightmap
 	nomipmaps
 }

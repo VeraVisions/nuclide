@@ -15,7 +15,7 @@
  */
 
 class
-base_player:base_client
+base_player:spectator
 {
 	PREDICTED_INT(weaponframe);
 	PREDICTED_FLOAT(health);
@@ -53,6 +53,11 @@ base_player:base_client
 
 	void(void) base_player;
 
+	virtual void(void) ClientInput;
+
+	virtual void(void) PreFrame;
+	virtual void(void) PostFrame;
+
 	virtual void(float) Physics_Fall;
 	virtual void(void) Physics_Crouch;
 	virtual void(void) Physics_Jump;
@@ -64,6 +69,8 @@ base_player:base_client
 	virtual void(void) Physics_InputPreMove;
 	virtual void(void) Physics_InputPostMove;
 	virtual void(void) Physics_Run;
+
+	virtual int(void) IsFakeSpectator;
 
 #ifdef CLIENT
 	int sequence;

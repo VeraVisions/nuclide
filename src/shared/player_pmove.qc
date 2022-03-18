@@ -265,11 +265,7 @@ base_player::Physics_InputPostMove(void)
 
 	flags &= ~FL_FROZEN;
 
-	/* allow vehicles to prevent weapon logic from happening */
-	Vehicle_Input(this);
-
-	/* weapon/item logic of what the player controls */
-	Game_Input((player)this);
+	ClientInput();
 }
 
 /* the main physics routine, the head */

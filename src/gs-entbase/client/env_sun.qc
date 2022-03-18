@@ -165,3 +165,52 @@ env_sun::env_sun(void)
 	setorigin(this, origin);
 	Init();
 }
+
+void
+env_sun_lensflare(vector m_vecLensPos, float m_flLensAlpha, vector vecColor)
+{
+	vector lens_pos = project(m_vecLensPos);
+	vector lens_1 = lens_pos - (FLARE_SIZE / 2);
+	vector player_pos = getproperty(VF_ORIGIN);
+	vector player_angle = getproperty(VF_CL_VIEWANGLES);
+
+	m_flLensAlpha *= 0.15f;
+
+	if (m_flLensAlpha <= 0.0f) {
+		return;
+	}
+
+{
+	vector delta;
+	float fov;
+
+	makevectors(player_angle);
+	delta = normalize (m_vecLensPos - player_pos);
+	fov = delta * v_forward;
+
+	/* we're in field-of-view */
+	if (fov > 0.3) {
+		traceline(player_pos, m_vecLensPos, TRUE, self);
+		if (trace_fraction != 1.0) {
+			return;
+		}
+	} else {
+		return;
+	}
+}
+	player_angle[0] *= -1;
+
+	vector test1, test2;
+	makevectors(vectoangles(m_vecLensPos - player_pos));
+	test1 = v_forward;
+	makevectors(player_angle);
+	test2 = v_forward;
+
+	vector c = (test1 - test2) * 512;
+	drawpic(lens_1, "textures/sfx/flare1", FLARE_SIZE, vecColor * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
+	drawpic(lens_1 - c * 0.1, "textures/sfx/flare2", FLARE_SIZE, vecColor * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
+	drawpic(lens_1 + c * 0.2, "textures/sfx/flare3", FLARE_SIZE, vecColor * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
+	drawpic(lens_1 - c * 0.3, "textures/sfx/flare4", FLARE_SIZE, vecColor * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
+	drawpic(lens_1 + c * 0.4, "textures/sfx/flare2", FLARE_SIZE, vecColor * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
+	drawpic(lens_1 - c * 0.5, "textures/sfx/flare3", FLARE_SIZE, vecColor * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
+}

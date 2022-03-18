@@ -46,8 +46,10 @@ player::predraw(void)
 
 	/* make sure we're enabling shadow rendering on us */
 	effects &= ~EF_NOSHADOW;
+	base_client cl = (base_client)pSeat->m_ePlayer;
 
-	if (getplayerkeyvalue(pSeat->m_ePlayer.entnum-1, "*spec") == "1") {
+	/* it's either us or us spectating */
+	if (Client_IsSpectator(cl)) {
 		spectator spec = (spectator)pSeat->m_ePlayer;
 		if (entnum == spec.spec_ent && spec.spec_mode == SPECMODE_FIRSTPERSON) {
 			this_us = 1;

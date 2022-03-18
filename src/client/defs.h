@@ -19,6 +19,7 @@
 #include "font.h"
 #include "fade.h"
 #include "cmd.h"
+#include "util.h"
 
 /* flags for 2d drawing */
 #define DRAWFLAG_NORMAL		0

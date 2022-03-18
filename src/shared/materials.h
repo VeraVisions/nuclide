@@ -132,7 +132,7 @@ typedef enum
 #define SURF_RESERVED4		0x01000000i
 #define SURF_RESERVED5		0x02000000i
 #define SURF_RESERVED6		0x04000000i
-#define SURF_RESERVED7		0x08000000i
+#define SURF_PENETRATE		0x08000000i
 
 /* material surfaceflags (need to be masked) */
 #define SURF_MASK		0x0FFFFFFFi

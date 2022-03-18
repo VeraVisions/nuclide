@@ -14,6 +14,93 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+int
+base_player::IsFakeSpectator(void)
+{
+#ifdef SERVER
+	if (infokey(this, "*spec") == "2")
+#else
+	if (getplayerkeyfloat(entnum - 1, "*spec") == 2)
+#endif
+		return (TRUE);
+
+	return (FALSE);
+}
+
+void
+base_player::PreFrame(void)
+{
+#ifdef CLIENT
+	/* this is where a game/mod would decide to add more prediction rollback
+	 * information. */
+	PredictPreFrame();
+
+	if (flags & FL_INVEHICLE)
+		if (vehicle) {
+			NSVehicle veh = (NSVehicle)vehicle;
+			veh.PredictPreFrame();
+		}
+
+	/* run physics code for all the input frames which we've not heard back
+	 * from yet. This continues on in Player_ReceiveEntity! */
+	for (int i = sequence + 1; i <= clientcommandframe; i++) {
+		float flSuccess = getinputstate(i);
+		if (flSuccess == FALSE) {
+			continue;
+		}
+
+		/* don't do partial frames, aka incomplete input packets */
+		if (input_timelength == 0) {
+			break;
+		}
+
+		if (i==clientcommandframe){
+			CSQC_Input_Frame();
+		}
+
+		/* this global is for our shared random number seed */
+		input_sequence = i;
+
+		/* run our custom physics */
+		Physics_Run();
+	}
+#endif
+}
+void
+base_player::PostFrame(void)
+{
+#ifdef CLIENT
+	/* give the game/mod a chance to roll back its values too */
+	PredictPostFrame();
+
+	if (flags & FL_INVEHICLE)
+		if (vehicle) {
+			NSVehicle veh = (NSVehicle)vehicle;
+			veh.PredictPostFrame();
+		}
+
+	/* update bounds */
+	setorigin(this, origin);
+#endif
+}
+
+
+void
+base_player::ClientInput(void)
+{
+	if (IsFakeSpectator()) {
+		spectator::ClientInput();
+		SpectatorTrackPlayer();
+		return;
+	}
+
+	/* allow vehicles to prevent weapon logic from happening */
+	Vehicle_Input(this);
+
+	/* weapon/item logic of what the player controls */
+	Game_Input((player)this);
+}
+
 #ifdef CLIENT
 void
 base_player::ClientRemove(void)
@@ -32,6 +119,11 @@ This is basically CSQC_Input_Frame! So games can override this as they please.
 void
 base_player::ClientInputFrame(void)
 {
+	if (IsFakeSpectator()) {
+		spectator::ClientInputFrame();
+		return;
+	}
+
 	/* If we are inside a VGUI, don't let the client do stuff outside */
 	if (VGUI_Active()) {
 		input_impulse = 0;
@@ -177,6 +269,11 @@ base_player::ReceiveEntity(float new, float fl)
 	punchangle[1] = readfloat();
 	punchangle[2] = readfloat();
 	vehicle = findfloat(world, ::entnum, readentitynum());
+
+	/* FIXME: Make this temp spec only */
+	spec_ent = readbyte();
+	spec_mode = readbyte();
+	spec_flags = readbyte();
 }
 
 /*
@@ -217,6 +314,10 @@ base_player::PredictPreFrame(void)
 	SAVE_STATE(w_idle_next);
 	SAVE_STATE(punchangle);
 	SAVE_STATE(vehicle);
+
+	SAVE_STATE(spec_ent);
+	SAVE_STATE(spec_mode);
+	SAVE_STATE(spec_flags);
 }
 
 /*
@@ -258,6 +359,10 @@ base_player::PredictPostFrame(void)
 	ROLL_BACK(w_idle_next);
 	ROLL_BACK(punchangle);
 	ROLL_BACK(vehicle);
+
+	ROLL_BACK(spec_ent);
+	ROLL_BACK(spec_mode);
+	ROLL_BACK(spec_flags);
 }
 #else
 void
@@ -439,10 +544,9 @@ base_player::Death(void)
 
 /*
 =================
-base_player::MakeTempSpectator
+base_player::MakePlayer
  
-This is what dead players in round matches become, or when we spawn
-for the first time before selecting a loadout or something.
+True participating player, can walk around and everything.
 =================
  */
 void
@@ -571,6 +675,11 @@ base_player::EvaluateEntity(void)
 	SAVE_STATE(w_idle_next);
 	SAVE_STATE(punchangle);
 	SAVE_STATE(vehicle);
+
+	/* FIXME: Make this temp spec only */
+	SAVE_STATE(spec_ent);
+	SAVE_STATE(spec_mode);
+	SAVE_STATE(spec_flags);
 }
 
 /*
@@ -662,6 +771,11 @@ base_player::SendEntity(entity ePEnt, float fChanged)
 		WriteEntity(MSG_ENTITY, vehicle);
 	else
 		WriteEntity(MSG_ENTITY, __NULL__);
+
+	/* FIXME: Make this fake spectator only. */
+	WriteByte(MSG_ENTITY, spec_ent);
+	WriteByte(MSG_ENTITY, spec_mode);
+	WriteByte(MSG_ENTITY, spec_flags);
 
 	return (1);
 }

@@ -138,7 +138,8 @@ TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon, f
 
 #ifdef BULLETPENETRATION
 	if (iTotalPenetrations > 0) {
-		iTotalPenetrations -= 1;
+		if (!(trace_surfaceflagsi & SURF_PENETRATE))
+			iTotalPenetrations -= 1;
 		TraceAttack_FireSingle(trace_endpos + (v_forward * 2), vAngle, iDamage / 2, iWeapon, dist);
 	}
 #endif

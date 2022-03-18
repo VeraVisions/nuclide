@@ -12,7 +12,7 @@
 	fl_r4		0x01000000
 	fl_r5		0x02000000
 	fl_r6		0x04000000
-	fl_r7		0x08000000
+	penetrate	0x08000000
 
 	alien		0x10000000
 	flesh		0x20000000

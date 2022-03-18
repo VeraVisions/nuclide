@@ -39,6 +39,7 @@
 
 #include "../gs-entbase/shared/baseentity.h"
 #include "client.h"
+#include "spectator.h"
 #include "player.h"
 #include "damage.h"
 #include "flags.h"
@@ -50,7 +51,6 @@
 #include "math.h"
 #include "pmove.h"
 #include "memory.h"
-#include "spectator.h"
 #include "platform.h"
 #include "propdata.h"
 #include "surfaceproperties.h"
@@ -136,6 +136,21 @@ Util_TimeToString(float fTime)
 		case 10: return "ten";
 		default: return "over ten";
 	}
+}
+
+
+/* returns whether or not the mode we're playing is a team game */
+#ifdef SERVER
+int Gamerules_IsTeamPlay(void);
+#endif
+int
+Util_IsTeamPlay(void)
+{
+#ifdef SERVER
+	return Gamerules_IsTeamPlay();
+#else
+	return (serverkeyfloat("teams") > 0) ? TRUE : FALSE;
+#endif
 }
 
 __wrap void

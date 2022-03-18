@@ -28,7 +28,8 @@ Client-side glare/glow orb effect like the flares in 1997's Unreal.
 This entity was introduced in Half-Life (1998).
 */
 
-var int autocvar_r_skipFlares = 0;
+var int autocvar_r_skipGlows = 0;
+var int autocvar_r_skipLensFlares = 0;
 
 class env_glow:NSEntity /* change to renderablentity? */
 {
@@ -44,9 +45,18 @@ class env_glow:NSEntity /* change to renderablentity? */
 	void(void) env_glow;
 
 	virtual float() predraw;
+	virtual void() postdraw;
 	virtual void(string, string) SpawnKey;
 	virtual void(void) RendererRestarted;
 };
+
+void env_sun_lensflare(vector, float, vector);
+void
+env_glow::postdraw(void)
+{
+	if (!autocvar_r_skipLensFlares)
+		env_sun_lensflare(origin, m_flAlpha, m_vecColor);
+}
 
 void
 env_glow::RendererRestarted(void)
@@ -74,7 +84,7 @@ env_glow::predraw(void)
 	vector fsize;
 	vector vecPlayer;
 
-	if (autocvar_r_skipFlares)
+	if (autocvar_r_skipGlows)
 		return PREDRAW_NEXT;
 
 	int s = (float)getproperty(VF_ACTIVESEAT);
@@ -108,9 +118,9 @@ env_glow::predraw(void)
 	makevectors(vectoangles(origin - vecPlayer));
 	forg = origin + (v_forward * -16);
 
-	if (spawnflags & 1)
+	if (spawnflags & 1) {
 		makevectors(m_vecOrientation+[0,0,angles[2]]);
-	else {
+	} else {
 		makevectors(view_angles+[0,0,angles[2]]);
 	}
 

@@ -372,3 +372,9 @@ CGameRules::CGameRules(void)
 
 /* our currently running mode */
 CGameRules g_grMode;
+
+int
+Gamerules_IsTeamPlay(void)
+{
+	return (g_grMode.IsTeamPlay()) ? TRUE : FALSE;
+}

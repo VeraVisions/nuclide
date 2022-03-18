@@ -475,6 +475,7 @@ SurfData_Impact(entity e, int fl, vector org, vector ang)
 		case BSPVER_Q3: /* Q3 */
 		case BSPVER_RTCW: /* RtCW */
 		case BSPVER_RBSP: /* RFVBSP */
+			fl &= ~SURF_MASK;
 			FX_Impact(SurfData_SurfaceFlagtoImpact(fl), org, ang);
 		break;
 		default:

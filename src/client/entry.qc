@@ -143,6 +143,7 @@ void
 CSQC_UpdateView(float w, float h, float focus)
 {
 	player pl = __NULL__;
+	base_client cl = __NULL__;
 	spectator spec;
 	int s;
 
@@ -202,6 +203,7 @@ CSQC_UpdateView(float w, float h, float focus)
 
 		pSeat->m_ePlayer = self = findfloat(world, entnum, player_localentnum);
 		pl = (player)self;
+		cl = (base_client)self;
 
 		/* player slot not present */
 		if (!self) {
@@ -210,8 +212,9 @@ CSQC_UpdateView(float w, float h, float focus)
 
 		/* this needs to be moved into a base_client method */
 #if 1
-		if (self.classname == "player") {
-			Predict_PlayerPreFrame(pl);
+		cl.PreFrame();
+
+		if (!Client_IsSpectator(pl)) {
 
 			pSeat->m_vecPredictedOrigin = pl.origin;
 			pSeat->m_vecPredictedVelocity = pl.velocity;
@@ -252,9 +255,8 @@ CSQC_UpdateView(float w, float h, float focus)
 			pl.viewzoom = oldzoom;
 
 			View_PreDraw();
-		} else if (self.classname == "spectator") {
+		} else if (Client_IsSpectator(pl)) {
 			spec = (spectator)self;
-			Predict_SpectatorPreFrame(spec);
 
 			if (spec.spec_mode == SPECMODE_FIRSTPERSON || spec.spec_mode == SPECMODE_THIRDPERSON) {
 				entity c = findfloat(world, ::entnum, spec.spec_ent);
@@ -279,7 +281,8 @@ CSQC_UpdateView(float w, float h, float focus)
 			setproperty(VF_CL_VIEWANGLES, view_angles);
 			setproperty(VF_ANGLES, view_angles);
 		} else {
-			if (getplayerkeyvalue(pl.entnum-1, "*spec") == "0") {
+			/* we're not spectating at all */
+			if (!Client_IsSpectator(pl)) {
 				setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin + pl.view_ofs);
 
 				if (pl.flags & FL_INVEHICLE) {
@@ -299,7 +302,7 @@ CSQC_UpdateView(float w, float h, float focus)
 
 				Shake_Update(pl);
 				setproperty(VF_ANGLES, view_angles + pl.punchangle);
-			} else if (getplayerkeyvalue(pl.entnum-1, "*spec") == "1") {
+			} else if (Client_IsSpectator(pl)) {
 				spec = (spectator)self;
 				switch (spec.spec_mode) {
 				case SPECMODE_THIRDPERSON:
@@ -328,13 +331,9 @@ CSQC_UpdateView(float w, float h, float focus)
 				default:
 					setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin);
 				}
-			} else if (getplayerkeyvalue(pl.entnum-1, "*spec") == "2") {
-				setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin);
-				Shake_Update(pl);
-				setproperty(VF_ANGLES, view_angles + pl.punchangle);
 			}
 
-			if (g_iIntermission) {
+			if (Client_InIntermission()) {
 				view_angles = pSeat->m_vecCameraAngle;
 				view_angles += [sin(time), sin(time * 2)];
 				setproperty(VF_ORIGIN, pSeat->m_vecCameraOrigin);
@@ -357,10 +356,27 @@ CSQC_UpdateView(float w, float h, float focus)
 			setproperty(VF_AFOV, autocvar_r_viewmodelfov);
 			setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin + pl.view_ofs);
 			View_DrawViewModel();
-		} else if (pl.health > 0) {
-			View_DrawViewModel();
-		} else if (getplayerkeyvalue(pl.entnum-1, "*dead") == "1") {
-			pl.UpdateDeathcam();
+		} else {
+			if (Client_IsSpectator(pl)) {
+				/* 0 means world */
+				if (spec.spec_ent) {
+					spec = (spectator)self;
+					entity c = findfloat(world, ::entnum, spec.spec_ent);
+
+					/* we found them */
+					if (c && c != spec) {
+						player ps = (player)c;
+						if (ps.health <= 0)
+							pl.UpdateDeathcam();
+						else
+							View_DrawViewModel();
+					}
+				}
+			} else if (Client_IsDead(pl)) {
+				pl.UpdateDeathcam();
+			} else {
+				View_DrawViewModel();
+			}
 		}
 
 		/* this is running whenever we're doing 'buildcubemaps' */
@@ -368,7 +384,6 @@ CSQC_UpdateView(float w, float h, float focus)
 			setproperty(VF_ORIGIN, g_vecCubePos);
 			setproperty(VF_SIZE_X, g_dCubeSize);
 			setproperty(VF_SIZE_Y, g_dCubeSize);
-			print(sprintf("cubesize: %d\n", g_dCubeSize));
 			setproperty(VF_AFOV, 90);
 		}
 
@@ -385,15 +400,15 @@ CSQC_UpdateView(float w, float h, float focus)
 		Fade_Update((int)video_mins[0],(int)video_mins[1], (int)w, (int)h);
 		View_PostDraw();
 
-		if (g_iIntermission) {
+		if (Client_InIntermission()) {
 			Scores_Draw();
 		} else if (focus == TRUE) {
 			GameText_Draw();
 			PointMessage_Draw();
 
-			if (getplayerkeyvalue(pl.entnum-1, "*spec") == "0") {
+			if (!Client_IsSpectator(pl)) {
 				HUD_Draw();
-			} else if (self.classname == "player") {
+			} else {
 				HUD_DrawSpectator();
 			}
 
@@ -412,10 +427,7 @@ CSQC_UpdateView(float w, float h, float focus)
 
 		/* move this into base_client methods */
 #if 1
-		if (self.classname == "player")
-			Predict_PlayerPostFrame((player)self);
-		else if (self.classname == "spectator")
-			Predict_SpectatorPostFrame((spectator)self);
+		cl.PostFrame();
 #endif
 	}
 

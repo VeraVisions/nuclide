@@ -15,15 +15,7 @@
  */
 
 void
-spectator::WarpToTarget(void)
-{
-	entity b = edict_num(spec_ent);
-
-	setorigin(this, b.origin);
-}
-
-void
-spectator::SpectatorInput(void)
+spectator::ClientInput(void)
 {
 	if (input_buttons & INPUT_BUTTON0) {
 		InputNext();
@@ -32,10 +24,19 @@ spectator::SpectatorInput(void)
 	} else if (input_buttons & INPUT_BUTTON2) {
 		InputMode();
 	} else {
-		spec_flags &= ~GF_SEMI_TOGGLED;
+		spec_flags &= ~SPECFLAG_BUTTON_RELEASED;
 	}
 
 	input_buttons = 0;
+	//crossprint(sprintf("%d %d %d\n", spec_ent, spec_mode, spec_flags));
+}
+
+void
+spectator::WarpToTarget(void)
+{
+	entity b = edict_num(spec_ent);
+
+	setorigin(this, b.origin);
 }
 
 #ifdef SERVER
@@ -81,7 +82,7 @@ void
 spectator::RunClientCommand(void)
 {
 	runstandardplayerphysics(this);
-	SpectatorInput();
+	ClientInput();
 }
 
 #else
@@ -103,7 +104,6 @@ spectator::ClientInputFrame(void)
 void
 spectator::ReceiveEntity(float new, float fl)
 {
-
 	if (new == FALSE) {
 		/* Go through all the physics code between the last received frame
 		 * and the newest frame and keep the changes this time around instead
@@ -121,7 +121,7 @@ spectator::ReceiveEntity(float new, float fl)
 				}
 				input_sequence = i;
 				runstandardplayerphysics(this);
-				SpectatorInput();
+				ClientInput();
 			}
 
 			/* any differences in things that are read below are now
@@ -164,7 +164,7 @@ spectator::predraw(void)
 void
 spectator::InputNext(void)
 {
-	if (spec_flags & GF_SEMI_TOGGLED)
+	if (spec_flags & SPECFLAG_BUTTON_RELEASED)
 		return;
 
 #if 0
@@ -190,14 +190,14 @@ spectator::InputNext(void)
 
 		if (i <= sep && best == 0) {
 			f = edict_num(i);
-			if (f && f.classname == "player") {
+			if (f && f.classname == "player" && f != this) {
 				best = i;
 			}
 		}
 
 		if (i > sep) {
 			f = edict_num(i);
-			if (f && f.classname == "player") {
+			if (f && f.classname == "player" && f != this) {
 				best = i;
 				break;
 			}
@@ -209,7 +209,7 @@ spectator::InputNext(void)
 
 	spec_ent = best;
 #endif
-	spec_flags |= GF_SEMI_TOGGLED;
+	spec_flags |= SPECFLAG_BUTTON_RELEASED;
 	WarpToTarget();
 
 	if (spec_mode == SPECMODE_FREE)
@@ -219,7 +219,7 @@ spectator::InputNext(void)
 void
 spectator::InputPrevious(void)
 {
-	if (spec_flags & GF_SEMI_TOGGLED)
+	if (spec_flags & SPECFLAG_BUTTON_RELEASED)
 		return;
 #if 0
 	float max_edict;
@@ -264,7 +264,7 @@ spectator::InputPrevious(void)
 	spec_ent = best;
 #endif
 
-	spec_flags |= GF_SEMI_TOGGLED;
+	spec_flags |= SPECFLAG_BUTTON_RELEASED;
 
 	WarpToTarget();
 
@@ -275,29 +275,28 @@ spectator::InputPrevious(void)
 void
 spectator::InputMode(void)
 {
-	if (spec_flags & GF_SEMI_TOGGLED)
+	if (spec_flags & SPECFLAG_BUTTON_RELEASED)
 		return;
 
+	crossprint("MODE\n");
 	spec_mode++;
 
 	if (spec_mode > SPECMODE_FIRSTPERSON)
 		spec_mode = SPECMODE_FREE;
 
-	spec_flags |= GF_SEMI_TOGGLED;
+	spec_flags |= SPECFLAG_BUTTON_RELEASED;
 }
 
 void
 spectator::PreFrame(void)
 {
-#ifdef SERVER
-
-#else
+#ifdef CLIENT
 	/* base player attributes/fields we're going to roll back */
-	origin_net = origin;
-	velocity_net = velocity;
-	spec_ent_net = spec_ent;
-	spec_mode_net = spec_mode;
-	spec_flags_net = spec_flags;
+	SAVE_STATE(origin);
+	SAVE_STATE(velocity);
+	SAVE_STATE(spec_ent);
+	SAVE_STATE(spec_mode);
+	SAVE_STATE(spec_flags);
 
 	/* run physics code for all the input frames which we've not heard back
 	 * from yet. This continues on in Player_ReceiveEntity! */
@@ -321,10 +320,16 @@ spectator::PreFrame(void)
 
 		/* run our custom physics */
 		runstandardplayerphysics(this);
-		SpectatorInput();
+		ClientInput();
 	}
 #endif
 
+	SpectatorTrackPlayer();
+}
+
+void
+spectator::SpectatorTrackPlayer(void)
+{
 	if (spec_mode == SPECMODE_THIRDPERSON || spec_mode == SPECMODE_FIRSTPERSON ) {
 		entity b;
 
@@ -345,10 +350,10 @@ spectator::PreFrame(void)
 	}
 }
 
-void
-spectator::PostFrame(void)
-{
 #ifdef SERVER
+void
+spectator::EvaluateEntity(void)
+{
 	/* check for which values have changed in this frame
 	   and announce to network said changes */
 	if (origin != origin_net)
@@ -366,19 +371,23 @@ spectator::PostFrame(void)
 	if (spec_flags != spec_flags_net)
 		SetSendFlags(SPECFL_FLAGS);
 
-	origin_net = origin;
-	velocity_net = velocity;
-	spec_ent_net = spec_ent;
-	spec_mode_net = spec_mode;
-	spec_flags_net = spec_flags;
-#else
-	/* finally roll the values back */
-	origin = origin_net;
-	velocity = velocity_net;
-	spec_ent = spec_ent_net;
-	spec_mode = spec_mode_net;
-	spec_flags = spec_flags_net;
-	setorigin(this, origin);
+	SAVE_STATE(origin);
+	SAVE_STATE(velocity);
+	SAVE_STATE(spec_ent);
+	SAVE_STATE(spec_mode);
+	SAVE_STATE(spec_flags);
+}
+#endif
+
+void
+spectator::PostFrame(void)
+{
+#ifdef CLIENT
+	ROLL_BACK(origin);
+	ROLL_BACK(velocity);
+	ROLL_BACK(spec_ent);
+	ROLL_BACK(spec_mode);
+	ROLL_BACK(spec_flags);
 #endif
 }
 

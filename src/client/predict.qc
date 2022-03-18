@@ -74,39 +74,7 @@ Propagate our pmove state to whatever the current frame before its stomped on
 void
 Predict_PlayerPreFrame(player pl)
 {
-	/* this is where a game/mod would decide to add more prediction rollback
-	 * information. */
-	pl.PredictPreFrame();
 
-	if (pl.flags & FL_INVEHICLE)
-		if (pl.vehicle) {
-			NSVehicle veh = (NSVehicle)pl.vehicle;
-			veh.PredictPreFrame();
-		}
-
-	/* run physics code for all the input frames which we've not heard back
-	 * from yet. This continues on in Player_ReceiveEntity! */
-	for (int i = pl.sequence + 1; i <= clientcommandframe; i++) {
-		float flSuccess = getinputstate(i);
-		if (flSuccess == FALSE) {
-			continue;
-		}
-
-		/* don't do partial frames, aka incomplete input packets */
-		if (input_timelength == 0) {
-			break;
-		}
-
-		if (i==clientcommandframe){
-			CSQC_Input_Frame();
-		}
-
-		/* this global is for our shared random number seed */
-		input_sequence = i;
-
-		/* run our custom physics */
-		pl.Physics_Run();
-	}
 }
 
 /*
@@ -121,17 +89,7 @@ Rewind our pmove state back to before we started predicting.
 void
 Predict_PlayerPostFrame(player pl)
 {
-	/* give the game/mod a chance to roll back its values too */
-	pl.PredictPostFrame();
 
-	if (pl.flags & FL_INVEHICLE)
-		if (pl.vehicle) {
-			NSVehicle veh = (NSVehicle)pl.vehicle;
-			veh.PredictPostFrame();
-		}
-
-	/* update bounds */
-	setorigin(pl, pl.origin);
 }
 
 /*
@@ -146,7 +104,6 @@ Propagate our pmove state to whatever the current frame before its stomped on
 void
 Predict_SpectatorPreFrame(spectator pl)
 {	
-	pl.PreFrame();
 }
 
 /*
@@ -161,5 +118,4 @@ Rewind our pmove state back to before we started predicting.
 void
 Predict_SpectatorPostFrame(spectator pl)
 {
-	pl.PostFrame();
 }

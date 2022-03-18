@@ -1,10 +1,30 @@
 void
-base_client::ClientInputFrame(void)
+base_client::ClientInput(void)
 {
+}
 
+void
+base_client::PreFrame(void)
+{
+}
+
+void
+base_client::PostFrame(void)
+{
+}
+
+int
+base_client::IsFakeSpectator(void)
+{
+	return (FALSE);
 }
 
 #ifdef CLIENT
+void
+base_client::ClientInputFrame(void)
+{
+}
+
 void
 base_client::UpdateDeathcam(void)
 {
