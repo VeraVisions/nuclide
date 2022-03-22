@@ -35,5 +35,6 @@ void main ()
 {
 	gl_FragColor = vec4( texture2D( s_diffuse, tex_c ).rgb * eyedist, eyedist );
 	gl_FragColor *= e_colourident;
+	gl_FragColor *= v_colour;
 }
 #endif
