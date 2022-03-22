@@ -124,6 +124,9 @@ Entity_EntityUpdate(float type, float new)
 		}
 		ips.ReceiveEntity(new, readfloat());
 		break;
+	case ENT_PROPROPE:
+		prop_rope_readentity(new);
+		break;
 	default:
 			//error(sprintf("Unknown entity type update received. (%d)\n", t));
 	}

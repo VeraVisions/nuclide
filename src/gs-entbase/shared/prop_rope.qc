@@ -32,6 +32,16 @@ ROPE_HALF : Only draw the first half of the rope, useful for vertical setups.
 This entity was introduced in The Wastes (2018).
 */
 
+typedef enumflags
+{
+	PROPROPE_CHANGED_MAT,
+	PROPROPE_CHANGED_SAG,
+	PROPROPE_CHANGED_SWING,
+	PROPROPE_CHANGED_SEGMENTS,
+	PROPROPE_CHANGED_ORIGIN,
+	PROPROPE_CHANGED_TARGET
+};
+
 #define ROPE_RIBBON
 
 void(float radius, vector texcoordbias) R_EndPolygonRibbon = #0;
@@ -41,19 +51,25 @@ var int autocvar_rope_debug = FALSE;
 class prop_rope:NSEntity
 {
 	string m_strShader;
-	float m_flSag;
-	float m_flSwingFactor;
-	int m_iSegments;
+	PREDICTED_FLOAT(m_flSag);
+	PREDICTED_FLOAT(m_flSwingFactor);
+	PREDICTED_INT(m_iSegments);
+	PREDICTED_VECTOR(m_vecTarget);
 
 	void(void) prop_rope;
-	virtual float() predraw;
-	virtual void(string, string) SpawnKey;
-	virtual void(void) RendererRestarted;
 
-#ifndef ROPE_RIBBON
-	virtual void(vector, vector, int) draw_segment;
+#ifdef CLIENT
+	virtual float() predraw;
+	virtual void(float,float) ReadEntity;
+#else
+	virtual void(void) Respawn;
+	virtual void(void) EvaluateEntity;
+	virtual float(entity, float) SendEntity;
+	virtual void(string, string) SpawnKey;
 #endif
 };
+
+#ifdef CLIENT
 
 #ifndef ROPE_RIBBON
 void
@@ -118,8 +134,6 @@ prop_rope::predraw(void)
 	float sc;
 	vector vecPlayer;
 
-	entity x = find(world, ::targetname, target);
-
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
 	vecPlayer = pSeat->m_vecPredictedOrigin;
@@ -127,26 +141,17 @@ prop_rope::predraw(void)
 	if (checkpvs(vecPlayer, this) == FALSE)
 		return (PREDRAW_NEXT);
 
-	if (!x) {
-#ifdef GS_DEVELOPER
-		print(sprintf("%s::predraw: Unknown target '%s'\n", 
-			this.classname, target));
-#endif
-		remove(this);
-		return (PREDRAW_NEXT);
-	}
-
 	/* draw the start/end without segments */
 	if (autocvar_rope_debug == TRUE) {
 		R_BeginPolygon("", 0, 0);
 		R_PolygonVertex(origin, [0,1], [0,1,0], 1.0f);
-		R_PolygonVertex(x.origin, [1,1], [0,1,0], 1.0f);
+		R_PolygonVertex(m_vecTarget, [1,1], [0,1,0], 1.0f);
 		R_EndPolygon();
 	}
 
 	segments = m_iSegments;
 
-	travel = vlen(origin - x.origin) / segments;
+	travel = vlen(origin - m_vecTarget) / segments;
 
 	sc = 0;
 	pos1 = origin;
@@ -154,7 +159,7 @@ prop_rope::predraw(void)
 		float sag = cos(sc) * m_flSag;
 
 		/* get the direction */
-		makevectors(vectoangles(x.origin - origin));
+		makevectors(vectoangles(m_vecTarget - origin));
 
 		/* travel further and sag */
 		pos2 = pos1 + (v_forward * travel) + (v_up * -sag) + ((v_right * sin(time)) * m_flSwingFactor);
@@ -183,12 +188,12 @@ prop_rope::predraw(void)
 	}
 
 	sc = 0;
-	pos1 = x.origin;
+	pos1 = m_vecTarget;
 	for (float i = 0; i < segments / 2; i++) {
 		float sag = cos(sc) * m_flSag;
 
 		/* get the direction */
-		makevectors(vectoangles(origin - x.origin));
+		makevectors(vectoangles(origin - m_vecTarget));
 
 		/* travel further and sag */
 		pos2 = pos1 + (v_forward * travel) + (v_up * -sag) - ((v_right * sin(time)) * m_flSwingFactor);
@@ -215,42 +220,149 @@ prop_rope::predraw(void)
 }
 
 void
-prop_rope::SpawnKey(string strField, string strKey)
+prop_rope::ReadEntity(float flSendFlags, float new)
 {
-	switch (strField) {
-	case "sag":
-		m_flSag = stof(strKey);
-		break;
-	case "segments":
-		m_iSegments = stoi(strKey);
-		break;
-	case "shader":
-		m_strShader = strKey;
-		break;
-	case "swingfactor":
-		m_flSwingFactor = stof(strKey);
-		break;
-	default:
-		super::SpawnKey(strField, strKey);
+	if (flSendFlags & PROPROPE_CHANGED_MAT)
+		m_strShader = readstring();
+	if (flSendFlags & PROPROPE_CHANGED_SAG)
+		m_flSag = readfloat();
+	if (flSendFlags & PROPROPE_CHANGED_SWING)
+		m_flSwingFactor = readfloat();
+	if (flSendFlags & PROPROPE_CHANGED_SEGMENTS)
+		m_iSegments = readint();
+	if (flSendFlags & PROPROPE_CHANGED_ORIGIN) {
+		origin[0] = readcoord();
+		origin[1] = readcoord();
+		origin[2] = readcoord();
+		setsize(this, [0,0,0], [0,0,0]);
+		setorigin(this, origin);
 	}
+	if (flSendFlags & PROPROPE_CHANGED_TARGET) {
+		m_vecTarget[0] = readcoord();
+		m_vecTarget[1] = readcoord();
+		m_vecTarget[2] = readcoord();
+	}
+}
+#else
+void
+prop_rope::Respawn(void)
+{
+	SetOrigin(GetSpawnOrigin());
+	SetSize([0,0,0], [0,0,0]);
+}
+void
+prop_rope::EvaluateEntity(void)
+{
+	entity eFind = find(world, ::targetname, target);
+
+	if (!eFind) {
+		print(sprintf("prop_rope: Unable to find target %S\n", target));
+		return;
+	}
+
+	m_vecTarget = eFind.origin;
+
+	if (ATTR_CHANGED(m_flSag)) {
+		SetSendFlags(PROPROPE_CHANGED_SAG);
+	}
+	if (ATTR_CHANGED(m_flSwingFactor)) {
+		SetSendFlags(PROPROPE_CHANGED_SWING);
+	}
+	if (ATTR_CHANGED(m_iSegments)) {
+		SetSendFlags(PROPROPE_CHANGED_SEGMENTS);
+	}
+
+	if (ATTR_CHANGED(origin)) {
+		SetSendFlags(PROPROPE_CHANGED_ORIGIN);
+	}
+	if (ATTR_CHANGED(m_vecTarget)) {
+		SetSendFlags(PROPROPE_CHANGED_TARGET);
+	}
+
+	SAVE_STATE(m_flSag);
+	SAVE_STATE(m_flSwingFactor);
+	SAVE_STATE(m_iSegments);
+	SAVE_STATE(origin);
+	SAVE_STATE(m_vecTarget);
+}
+
+float
+prop_rope::SendEntity(entity ePVEnt, float flSendFlags)
+{
+	WriteByte(MSG_ENTITY, ENT_PROPROPE);
+	WriteFloat(MSG_ENTITY, flSendFlags);
+
+	if (flSendFlags & PROPROPE_CHANGED_MAT)
+		WriteString(MSG_ENTITY, m_strShader);
+	if (flSendFlags & PROPROPE_CHANGED_SAG)
+		WriteFloat(MSG_ENTITY, m_flSag);
+	if (flSendFlags & PROPROPE_CHANGED_SWING)
+		WriteFloat(MSG_ENTITY, m_flSwingFactor);
+	if (flSendFlags & PROPROPE_CHANGED_SEGMENTS)
+		WriteInt(MSG_ENTITY, m_iSegments);
+	if (flSendFlags & PROPROPE_CHANGED_ORIGIN) {
+		WriteCoord(MSG_ENTITY, origin[0]);
+		WriteCoord(MSG_ENTITY, origin[1]);
+		WriteCoord(MSG_ENTITY, origin[2]);
+	}
+	if (flSendFlags & PROPROPE_CHANGED_TARGET) {
+		WriteCoord(MSG_ENTITY, m_vecTarget[0]);
+		WriteCoord(MSG_ENTITY, m_vecTarget[1]);
+		WriteCoord(MSG_ENTITY, m_vecTarget[2]);
+	}
+
+	return 1;
 }
 
 void
-prop_rope::RendererRestarted(void)
+prop_rope::SpawnKey(string strKey, string strValue)
 {
-	precache_pic(m_strShader);
+	switch (strKey) {
+	case "sag":
+		m_flSag = stof(strValue);
+		break;
+	case "segments":
+		m_iSegments = stoi(strValue);
+		break;
+	case "shader":
+		m_strShader = strValue;
+		break;
+	case "swingfactor":
+		m_flSwingFactor = stof(strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
 }
+#endif
 
 void
 prop_rope::prop_rope(void)
 {
+#ifdef SERVER
 	m_flSwingFactor = random();
 	m_flSag = 15.0f;
 	m_iSegments = 16;
 	m_strShader = "textures/props/wire_default";
+
+	super::NSEntity();
+#else
+	/* this is empty for a good reason */
 	drawmask = MASK_ENGINE;
-	Init();
-	RendererRestarted();
-	setsize(this, [0,0,0], [0,0,0]);
-	setorigin(this, origin);
+#endif
 }
+
+
+#ifdef CLIENT
+void
+prop_rope_readentity(float isnew)
+{
+	prop_rope rope = (prop_rope)self;
+	float flags = readfloat();
+
+	if (isnew)
+		spawnfunc_prop_rope();
+
+	rope.ReadEntity(flags, isnew);
+}
+#endif

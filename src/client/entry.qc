@@ -391,6 +391,11 @@ CSQC_UpdateView(float w, float h, float focus)
 		CSQC_RenderScene();
 		RenderTarget_Monitor_Update();
 
+		if (g_iCubeProcess == TRUE) {
+			cl.PostFrame();
+			continue;
+		}
+
 		/* all 2D operations happen after this point */
 		for (entity b = world; (b = findfloat(b, ::isCSQC, 1));) {
 			NSEntity pf = (NSEntity) b;

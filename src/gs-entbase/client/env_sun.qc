@@ -174,7 +174,7 @@ env_sun_lensflare(vector m_vecLensPos, float m_flLensAlpha, vector vecColor)
 	vector player_pos = getproperty(VF_ORIGIN);
 	vector player_angle = getproperty(VF_CL_VIEWANGLES);
 
-	m_flLensAlpha *= 0.15f;
+	m_flLensAlpha *= 0.5f;
 
 	if (m_flLensAlpha <= 0.0f) {
 		return;
@@ -201,12 +201,12 @@ env_sun_lensflare(vector m_vecLensPos, float m_flLensAlpha, vector vecColor)
 	player_angle[0] *= -1;
 
 	vector test1, test2;
-	makevectors(vectoangles(m_vecLensPos - player_pos));
-	test1 = v_forward;
-	makevectors(player_angle);
-	test2 = v_forward;
+	test1 = project(m_vecLensPos);
+	test2 = video_res / 2;
 
-	vector c = (test1 - test2) * 512;
+	vector c = (test2 - test1) * 1.25f;
+	m_flLensAlpha = bound(0.0, 1.0 - (vlen(c) / 350), 1.0f) * m_flLensAlpha;
+
 	drawpic(lens_1, "textures/sfx/flare1", FLARE_SIZE, vecColor * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
 	drawpic(lens_1 - c * 0.1, "textures/sfx/flare2", FLARE_SIZE, vecColor * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
 	drawpic(lens_1 + c * 0.2, "textures/sfx/flare3", FLARE_SIZE, vecColor * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
