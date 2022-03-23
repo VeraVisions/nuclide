@@ -18,6 +18,7 @@ shared/decals.qc
 shared/spraylogo.qc
 shared/func_friction.qc
 shared/env_projectedtexture.qc
+shared/env_fog_controller.qc
 shared/light_dynamic.qc
 shared/func_monitor.qc
 shared/func_illusionary.qc

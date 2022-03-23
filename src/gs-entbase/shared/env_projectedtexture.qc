@@ -82,7 +82,6 @@ class env_projectedtexture:NSPointTrigger
 	virtual void(float,float) ReceiveEntity;
 	virtual float(void) predraw;
 #else
-
 	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
 	virtual float(entity, float) SendEntity;

@@ -110,6 +110,9 @@ Entity_EntityUpdate(float type, float new)
 		}
 		ept.ReceiveEntity(new, readfloat());
 		break;
+	case ENT_FOGCONTROLLER:
+		env_fog_controller_readentity(new);
+		break;
 	case ENT_ENVLASER:
 		env_laser l = (env_laser)self;
 		if (new) {
