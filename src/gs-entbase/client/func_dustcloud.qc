@@ -74,11 +74,11 @@ func_dustcloud_cloud::predraw(void)
 		alpha = 1.0 - bound(0.0, ((lifetime-(m_flLifeTime / 2)) / (m_flLifeTime / 2)), 1.0);
 	}
 
-	R_BeginPolygon("textures/sfx/dust2", 1, 0);
-	R_PolygonVertex(origin + v_right * cloudsize[0] - v_up * cloudsize[1], [1,1], m_vecColor, alpha);
-	R_PolygonVertex(origin - v_right * cloudsize[0] - v_up * cloudsize[1], [0,1], m_vecColor, alpha);
-	R_PolygonVertex(origin - v_right * cloudsize[0] + v_up * cloudsize[1], [0,0], m_vecColor, alpha);
-	R_PolygonVertex(origin + v_right * cloudsize[0] + v_up * cloudsize[1], [1,0], m_vecColor, alpha);
+	R_BeginPolygon("textures/sfx/dustcloud", 0, 0);
+	R_PolygonVertex(origin + v_right * cloudsize[0] - v_up * cloudsize[1], [1,1], m_vecColor * alpha, alpha);
+	R_PolygonVertex(origin - v_right * cloudsize[0] - v_up * cloudsize[1], [0,1], m_vecColor * alpha, alpha);
+	R_PolygonVertex(origin - v_right * cloudsize[0] + v_up * cloudsize[1], [0,0], m_vecColor * alpha, alpha);
+	R_PolygonVertex(origin + v_right * cloudsize[0] + v_up * cloudsize[1], [1,0], m_vecColor * alpha, alpha);
 	R_EndPolygon();
 
 	if (lifetime >= 10.0f) {
