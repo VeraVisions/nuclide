@@ -203,9 +203,13 @@ env_sun_lensflare(vector m_vecLensPos, float m_flLensAlpha, vector vecColor)
 	vector test1, test2;
 	test1 = project(m_vecLensPos);
 	test2 = video_res / 2;
+	float dist_alpha = 1.0 - bound(0.0, vlen(player_pos - m_vecLensPos) / 1024, 1.0);
 
 	vector c = (test2 - test1) * 1.25f;
 	m_flLensAlpha = bound(0.0, 1.0 - (vlen(c) / 350), 1.0f) * m_flLensAlpha;
+	m_flLensAlpha *= dist_alpha;
+	dist_alpha = 1.0 - bound(0.0, vlen(player_pos - m_vecLensPos) / 512, 1.0);
+
 
 	drawpic(lens_1, "textures/sfx/flare1", FLARE_SIZE, vecColor * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
 	drawpic(lens_1 - c * 0.1, "textures/sfx/flare2", FLARE_SIZE, vecColor * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
@@ -213,4 +217,7 @@ env_sun_lensflare(vector m_vecLensPos, float m_flLensAlpha, vector vecColor)
 	drawpic(lens_1 - c * 0.3, "textures/sfx/flare4", FLARE_SIZE, vecColor * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
 	drawpic(lens_1 + c * 0.4, "textures/sfx/flare2", FLARE_SIZE, vecColor * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
 	drawpic(lens_1 - c * 0.5, "textures/sfx/flare3", FLARE_SIZE, vecColor * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
+
+	m_flLensAlpha = bound(0.0, 1.0 - (vlen(c) / 100), 1.0f) * m_flLensAlpha;
+	drawfill(video_mins, video_res, vecColor, m_flLensAlpha * dist_alpha);
 }

@@ -17,6 +17,7 @@ client/env_particle.qc
 client/env_laser.qc
 client/func_lod.qc
 client/func_dustmotes.qc
+client/func_dustcloud.qc
 client/light_environment.qc
 client/infodecal.qc
 client/sky_camera.qc
