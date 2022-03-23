@@ -49,7 +49,6 @@ class func_dustcloud:NSEntity
 #if 1
 class func_dustcloud_cloud
 {
-	float alpha;
 	vector cloudsize;
 	float lifetime;
 
@@ -66,6 +65,7 @@ class func_dustcloud_cloud
 float
 func_dustcloud_cloud::predraw(void)
 {
+	float alpha;
 	makevectors(view_angles);
 
 	if (lifetime < (m_flLifeTime / 2)) {
@@ -74,11 +74,13 @@ func_dustcloud_cloud::predraw(void)
 		alpha = 1.0 - bound(0.0, ((lifetime-(m_flLifeTime / 2)) / (m_flLifeTime / 2)), 1.0);
 	}
 
+	alpha *= m_flMaxAlpha;
+
 	R_BeginPolygon("textures/sfx/dustcloud", 0, 0);
-	R_PolygonVertex(origin + v_right * cloudsize[0] - v_up * cloudsize[1], [1,1], m_vecColor * alpha, alpha);
-	R_PolygonVertex(origin - v_right * cloudsize[0] - v_up * cloudsize[1], [0,1], m_vecColor * alpha, alpha);
-	R_PolygonVertex(origin - v_right * cloudsize[0] + v_up * cloudsize[1], [0,0], m_vecColor * alpha, alpha);
-	R_PolygonVertex(origin + v_right * cloudsize[0] + v_up * cloudsize[1], [1,0], m_vecColor * alpha, alpha);
+	R_PolygonVertex(origin + v_right * cloudsize[0] - v_up * cloudsize[1], [1,1], m_vecColor, alpha);
+	R_PolygonVertex(origin - v_right * cloudsize[0] - v_up * cloudsize[1], [0,1], m_vecColor, alpha);
+	R_PolygonVertex(origin - v_right * cloudsize[0] + v_up * cloudsize[1], [0,0], m_vecColor, alpha);
+	R_PolygonVertex(origin + v_right * cloudsize[0] + v_up * cloudsize[1], [1,0], m_vecColor, alpha);
 	R_EndPolygon();
 
 	if (lifetime >= 10.0f) {
