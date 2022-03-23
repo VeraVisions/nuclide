@@ -29,6 +29,9 @@ prop_static::SpawnKey(string strKey, string strValue)
 	case "modelscale":
 		scale = stof(strValue);
 		break;
+	case "skin":
+		skin = stof(strValue);
+		break;
 	default:
 		super::SpawnKey(strKey, strValue);
 	}
