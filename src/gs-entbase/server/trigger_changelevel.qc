@@ -149,6 +149,9 @@ trigger_changelevel::IsInside(entity ePlayer, entity eVolume)
 void
 trigger_changelevel::Change(void)
 {
+	/* needed for logic_auto */
+	readcmd("set _bsp_change_auto \"1\"\n");
+
 	/* standard level change */
 	if (!m_strLandmark) {
 		dprint(sprintf("^2trigger_changelevel::^3Change^7: Change to `%s`\n", 

@@ -121,6 +121,9 @@ env_sun::postdraw(void)
 	drawpic(lens_1 - c * 0.3, "textures/sfx/flare4", FLARE_SIZE, [1,1,1] * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
 	drawpic(lens_1 + c * 0.4, "textures/sfx/flare2", FLARE_SIZE, [1,1,1] * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
 	drawpic(lens_1 - c * 0.5, "textures/sfx/flare3", FLARE_SIZE, [1,1,1] * m_flLensAlpha, 1.0f, DRAWFLAG_ADDITIVE);
+
+	float flGlare = bound(0.0, 1.0 - (vlen(c) / 400), 1.0f) * m_flLensAlpha;
+	drawfill(video_mins, video_res, [1,1,1], flGlare * 0.25f, DRAWFLAG_ADDITIVE);
 }
 
 void

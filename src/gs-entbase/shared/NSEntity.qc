@@ -265,10 +265,18 @@ NSEntity::ParentUpdate(void)
 	frame1time += frametime;
 
 	if (m_parent) {
+		NSEntity parent;
 		entity p = find(world, ::targetname, m_parent);
 
-		if (p)
-			SetOrigin(p.origin);
+		if (p) {
+			if (!m_parent_attachment) {
+				parent = (NSEntity)p;
+				vector ofs = parent.GetSpawnOrigin() - GetSpawnOrigin();
+				SetOrigin(p.origin + ofs);
+			} else if (m_parent_attachment == "origin") {
+				SetOrigin(p.origin);
+			}
+		}
 	}
 }
 void
@@ -277,9 +285,15 @@ NSEntity::SetParent(string name)
 	m_parent = name;
 }
 void
+NSEntity::SetParentAttachment(string name)
+{
+	m_parent_attachment = name;
+}
+void
 NSEntity::ClearParent(void)
 {
 	m_parent = __NULL__;
+	m_parent_attachment = __NULL__;
 }
 
 void
@@ -568,6 +582,9 @@ NSEntity::Input(entity eAct, string strInput, string strData)
 		break;
 	case "SetParent":
 		SetParent(strData);
+		break;
+	case "SetParentAttachment":
+		SetParentAttachment(strData);
 		break;
 	case "ClearParent":
 		ClearParent();

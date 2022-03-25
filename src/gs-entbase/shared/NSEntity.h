@@ -60,6 +60,7 @@ class NSEntity:NSTrigger
 	string m_oldModel;
 
 	string m_parent;
+	string m_parent_attachment;
 
 	virtual void(void) Show;
 	virtual void(void) Hide;
@@ -67,6 +68,7 @@ class NSEntity:NSTrigger
 	virtual float(entity, float) SendEntity;
 
 	nonvirtual void(string) SetParent;
+	nonvirtual void(string) SetParentAttachment;
 	nonvirtual void(void) ClearParent;
 	virtual void(void) ParentUpdate;
 
