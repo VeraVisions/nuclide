@@ -152,6 +152,17 @@ NSTrigger::Restore(string strKey, string strValue)
 		super::Restore(strKey, strValue);
 	}
 }
+void
+NSTrigger::Input(entity eAct, string strInput, string strData)
+{
+	switch (strInput) {
+	case "Trigger":
+		Trigger(eAct, TRIG_TOGGLE);
+		break;
+	default:
+		super:: Input(eAct, strInput, strData);
+	}
+}
 #endif
 
 void

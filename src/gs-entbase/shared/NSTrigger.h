@@ -52,6 +52,7 @@ class NSTrigger:NSIO
 	/* overrides */
 	virtual void(float) Save;
 	virtual void(string,string) Restore;
+	virtual void(entity, string, string) Input;
 #endif
 	virtual void(string, string) SpawnKey;
 };
