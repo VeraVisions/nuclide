@@ -589,6 +589,12 @@ NSEntity::Input(entity eAct, string strInput, string strData)
 	case "ClearParent":
 		ClearParent();
 		break;
+	case "Use":
+		eActivator = eAct;
+
+		if (PlayerUse)
+			PlayerUse();
+		break;
 	default:
 		NSTrigger::Input(eAct, strInput, strData);
 	}
