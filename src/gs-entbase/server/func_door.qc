@@ -112,6 +112,8 @@ class func_door:NSRenderableEntity
 	virtual void(void) Blocked;
 	virtual void(void) Touch;
 	virtual void(void) Use;
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
 	virtual void(string, string) SpawnKey;
 };
 
@@ -431,6 +433,112 @@ func_door::Respawn(void)
 
 	if (targetname) {
 		m_iLocked = TRUE;
+	}
+}
+
+void
+func_door::Save(float handle)
+{
+	SaveVector(handle, "m_vecPos1", m_vecPos1);
+	SaveVector(handle, "m_vecPos2", m_vecPos2);
+	SaveVector(handle, "m_vecDest", m_vecDest);
+	SaveVector(handle, "m_vecMoveDir", m_vecMoveDir);
+
+	SaveFloat(handle, "m_flSpeed", m_flSpeed);
+	SaveFloat(handle, "m_flLip", m_flLip);
+	SaveFloat(handle, "m_iState", m_iState);
+	SaveFloat(handle, "m_flNextTrigger", m_flNextTrigger);
+	SaveFloat(handle, "m_flWait", m_flWait);
+	SaveFloat(handle, "m_flDelay", m_flDelay);
+	SaveFloat(handle, "m_flSoundWait", m_flSoundWait);
+
+	SaveInt(handle, "m_iDamage", m_iDamage);
+	SaveInt(handle, "m_iLocked", m_iLocked);
+	SaveInt(handle, "m_iPortalState", m_iPortalState);
+	SaveInt(handle, "m_iForceClosed", m_iForceClosed);
+
+	SaveString(handle, "m_strLockedSfx", m_strLockedSfx);
+	SaveString(handle, "m_strUnlockedSfx", m_strUnlockedSfx);
+	SaveString(handle, "m_strSndOpen", m_strSndOpen);
+	SaveString(handle, "m_strSndClose", m_strSndClose);
+	SaveString(handle, "m_strSndStop", m_strSndStop);
+	SaveString(handle, "targetClose", targetClose);
+
+	super::Save(handle);
+}
+
+void
+func_door::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_vecPos1":
+		m_vecPos1 = ReadVector(strValue);
+		break;
+	case "m_vecPos2":
+		m_vecPos2 = ReadVector(strValue);
+		break;
+	case "m_vecDest":
+		m_vecDest = ReadVector(strValue);
+		break;
+	case "m_vecMoveDir":
+		m_vecMoveDir = ReadVector(strValue);
+		break;
+
+	case "m_flSpeed":
+		m_flSpeed = ReadFloat(strValue);
+		break;
+	case "m_flLip":
+		m_flLip = ReadFloat(strValue);
+		break;
+	case "m_iState":
+		m_iState = ReadFloat(strValue);
+		break;
+	case "m_flNextTrigger":
+		m_flNextTrigger = ReadFloat(strValue);
+		break;
+	case "m_flWait":
+		m_flWait = ReadFloat(strValue);
+		break;
+	case "m_flDelay":
+		m_flDelay = ReadFloat(strValue);
+		break;
+	case "m_flSoundWait":
+		m_flSoundWait = ReadFloat(strValue);
+		break;
+
+	case "m_iDamage":
+		m_iDamage = ReadInt(strValue);
+		break;
+	case "m_iLocked":
+		m_iLocked = ReadInt(strValue);
+		break;
+	case "m_iPortalState":
+		m_iPortalState = ReadInt(strValue);
+		break;
+	case "m_iForceClosed":
+		m_iForceClosed = ReadInt(strValue);
+		break;
+
+	case "m_strLockedSfx":
+		m_strLockedSfx = ReadString(strValue);
+		break;
+	case "m_strUnlockedSfx":
+		m_strUnlockedSfx = ReadString(strValue);
+		break;
+	case "m_strSndOpen":
+		m_strSndOpen = ReadString(strValue);
+		break;
+	case "m_strSndClose":
+		m_strSndClose = ReadString(strValue);
+		break;
+	case "m_strSndStop":
+		m_strSndStop = ReadString(strValue);
+		break;
+	case "targetClose":
+		targetClose = ReadString(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
 	}
 }
 
