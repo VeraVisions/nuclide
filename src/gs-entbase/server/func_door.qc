@@ -33,6 +33,7 @@ axis. It is often used for primitive elevators as well.
 "snd_stop" : Sound shader to play for when the door stops moving.
 "movesnd" : Legacy integer value pointing to a predefined move sound.
 "stopsnd" : Legacy integer value pointing to a predefined stop sound.
+"forceclosed": Will make sure the door will not bounce back when something is blocking it
 
 -------- SPAWNFLAGS --------
 SF_MOV_OPEN : Swaps the positions between raised and lowered state.
@@ -86,6 +87,7 @@ class func_door:NSRenderableEntity
 	int m_iDamage;
 	int m_iLocked;
 	int m_iPortalState;
+	int m_iForceClosed;
 
 	float m_flSoundWait;
 	string m_strLockedSfx;
@@ -302,6 +304,7 @@ func_door::Blocked(void)
 		Damage_Apply(other, this, m_iDamage, 0, DMG_CRUSH);
 	}
 
+	if (!m_iForceClosed)
 	if (m_flWait >= 0) {
 		if (m_iState == DOORSTATE_DOWN) {
 			MoveAway();
@@ -465,6 +468,9 @@ func_door::SpawnKey(string strKey, string strValue)
 	case "snd_stop":
 	case "noise2":
 		m_strSndStop = strValue;
+		break;
+	case "forceclosed":
+		m_iForceClosed = stoi(strValue);
 		break;
 	/* GoldSrc compat */
 	case "movesnd":
