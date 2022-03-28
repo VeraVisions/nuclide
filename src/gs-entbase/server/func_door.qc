@@ -95,6 +95,7 @@ class func_door:NSRenderableEntity
 
 	string m_strSndOpen;
 	string m_strSndClose;
+	string m_strSndMove;
 	string m_strSndStop;
 
 	void(void) func_door;
@@ -160,6 +161,9 @@ func_door::Arrived(void)
 		sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
 	}
 
+	if (m_strSndMove)
+		sound(this, CHAN_WEAPON, "common/null.wav", 1.0f, ATTN_NORM);
+
 	if (!(spawnflags & SF_MOV_USE)) {
 		touch = Touch;
 	}
@@ -194,6 +198,9 @@ func_door::Returned(void)
 		sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
 	}
 
+	if (m_strSndMove)
+		sound(this, CHAN_WEAPON, "common/null.wav", 1.0f, ATTN_NORM);
+
 	if (!(spawnflags & SF_MOV_USE)) {
 		touch = Touch;
 	}
@@ -210,6 +217,9 @@ func_door::MoveBack(void)
 	} else {
 		sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
 	}
+
+	if (m_strSndMove)
+		Sound_Play(this, CHAN_WEAPON, m_strSndMove);
 
 	if (!(spawnflags & SF_MOV_USE)) {
 		touch = __NULL__;
@@ -232,6 +242,9 @@ func_door::MoveAway(void)
 	} else {
 		sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
 	}
+
+	if (m_strSndMove)
+		Sound_Play(this, CHAN_WEAPON, m_strSndMove);
 
 	if (!(spawnflags & SF_MOV_TOGGLE)) {
 		if (m_iState == DOORSTATE_RAISED) {
@@ -462,6 +475,7 @@ func_door::Save(float handle)
 	SaveString(handle, "m_strSndOpen", m_strSndOpen);
 	SaveString(handle, "m_strSndClose", m_strSndClose);
 	SaveString(handle, "m_strSndStop", m_strSndStop);
+	SaveString(handle, "m_strSndMove", m_strSndMove);
 	SaveString(handle, "targetClose", targetClose);
 
 	super::Save(handle);
@@ -534,6 +548,9 @@ func_door::Restore(string strKey, string strValue)
 	case "m_strSndStop":
 		m_strSndStop = ReadString(strValue);
 		break;
+	case "m_strSndMove":
+		m_strSndMove = ReadString(strValue);
+		break;
 	case "targetClose":
 		targetClose = ReadString(strValue);
 		break;
@@ -577,6 +594,9 @@ func_door::SpawnKey(string strKey, string strValue)
 	case "noise2":
 		m_strSndStop = strValue;
 		break;
+	case "snd_move":
+		m_strSndMove = strValue;
+		break;
 	case "forceclosed":
 		m_iForceClosed = stoi(strValue);
 		break;
@@ -613,6 +633,8 @@ func_door::func_door(void)
 		Sound_Precache(m_strSndClose);
 	if (m_strSndStop)
 		Sound_Precache(m_strSndStop);
+	if (m_strSndMove)
+		Sound_Precache(m_strSndMove);
 
 	/* GoldSrc compat */
 	if (m_strLockedSfx)

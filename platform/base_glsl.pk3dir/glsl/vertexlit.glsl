@@ -100,12 +100,10 @@ varying mat3 invsurface;
 		#endif
 
 		// bump goes here
-		#if defined(BUMP)
-		#if r_skipNormal==0
+		#if r_skipNormal==0 || defined(BUMP)
 			vec3 normal_f = (texture2D(s_normalmap, tex_c).rgb - 0.5) * 2.0;
 		#else
 			vec3 normal_f = vec3(0.0, 0.0, 1.0);
-		#endif
 		#endif
 
 		#ifdef MASK
@@ -114,16 +112,10 @@ varying mat3 invsurface;
 		}
 		#endif
 
-		#if defined(BUMP)
 		/* directional light */
-		light = (e_light_mul * lambert(normal_f, e_light_dir)) * 2.0f;
-		/* reverse ambient */
-		light += (e_light_ambient * lambert(normal_f, reflect(normal_f, e_light_dir))) * 0.5f;
-		#else
 		light = (e_light_mul * lambert(norm, e_light_dir)) * 2.0f;
 		light += (e_light_ambient * lambert(norm, reflect(norm, e_light_dir))) * 0.5f;
 		light *= 2.0f;
-		#endif
 
 	#ifdef FAKESHADOWS
 		diff_f.rgb *= ShadowmapFilter(s_shadowmap, vtexprojcoord);

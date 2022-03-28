@@ -165,7 +165,6 @@ varying mat3 invsurface;
 
 #ifdef MASK
 		// alpha-testing happens here
-		if (vex_color.a >= 0.99)
 		if (diffuse_f.a < MASK)
 			discard;
 #endif

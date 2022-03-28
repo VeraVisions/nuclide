@@ -14,6 +14,10 @@
 varying vec2 tex_c;
 varying float eyedist;
 
+#ifndef TINT
+#define TINT 1.0,1.0,1.0
+#endif
+
 #ifdef VERTEX_SHADER
 void main ()
 {
@@ -35,6 +39,6 @@ void main ()
 {
 	gl_FragColor = vec4( texture2D( s_diffuse, tex_c ).rgb * eyedist, eyedist );
 	gl_FragColor *= e_colourident;
-	gl_FragColor *= v_colour;
+	gl_FragColor.rgb *= vec3(TINT);
 }
 #endif
