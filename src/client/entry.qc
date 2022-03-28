@@ -253,8 +253,6 @@ CSQC_UpdateView(float w, float h, float focus)
 			}
 
 			pl.viewzoom = oldzoom;
-
-			View_PreDraw();
 		} else if (Client_IsSpectator(pl)) {
 			spec = (spectator)self;
 
@@ -269,6 +267,8 @@ CSQC_UpdateView(float w, float h, float focus)
 				pSeat->m_flPredictedFlags = spec.flags;
 			}
 		}
+
+		View_PreDraw();
 #endif
 
 		addentities(MASK_ENGINE);
