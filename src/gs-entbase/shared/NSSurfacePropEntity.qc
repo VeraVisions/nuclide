@@ -257,13 +257,21 @@ void
 NSSurfacePropEntity::SurfaceDataFinish(void)
 {
 	SurfData_SetStage(m_strSurfData);
-	m_iMaterial = SurfData_Finish();
+
+	if (m_strSurfData)
+		m_iMaterial = SurfData_Finish();
+	else
+		m_iMaterial = -1;
 }
 void
 NSSurfacePropEntity::PropDataFinish(void)
 {
 	PropData_SetStage(m_strPropData);
-	m_iPropData = PropData_Finish();
+
+	if (m_strPropData)
+		m_iPropData = PropData_Finish();
+	else
+		m_iPropData = -1;
 }
 #else
 float

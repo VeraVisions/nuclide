@@ -489,10 +489,10 @@ SurfData_Impact(entity e, int fl, vector org, vector ang)
 	} else { /* anything with takedamage = DAMAGE_YES is a NSurfacePropEntity. */
 		NSSurfacePropEntity foo = (NSSurfacePropEntity)e;
 
-		if (foo.GetSurfaceData(SURFDATA_MATERIAL) == -1)
-			SurfData_Impact_SurfaceParm(e, fl, org, ang);
-		else
+		if (foo.HasSurfaceData() && foo.GetSurfaceData(SURFDATA_MATERIAL) != -1)
 			FX_Impact(foo.GetSurfaceData(SURFDATA_FX_IMPACT), org, ang);
+		else
+			SurfData_Impact_SurfaceParm(e, fl, org, ang);
 	}
 }
 #endif
