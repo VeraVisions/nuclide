@@ -271,8 +271,8 @@ NSEntity::ParentUpdate(void)
 		if (p) {
 			if (!m_parent_attachment) {
 				parent = (NSEntity)p;
-				vector ofs = parent.GetSpawnOrigin() - GetSpawnOrigin();
-				SetOrigin(p.origin + ofs);
+				vector ofs = parent.origin - parent.GetSpawnOrigin();
+				SetOrigin(GetSpawnOrigin() + ofs);
 			} else if (m_parent_attachment == "origin") {
 				SetOrigin(p.origin);
 			}
