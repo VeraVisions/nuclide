@@ -90,7 +90,14 @@ entity Spawn_SelectRandom(string cname)
 	static entity lastspot;
 	entity spot = lastspot;
 
-	for (int i = random(1, 5); i > 0; i--) {
+	float max = 0;
+
+	/* count our max count */
+	for (entity e = world;(e = find(e, ::classname, cname));) {
+		max++;
+	}
+
+	for (int i = random(1, max); i > 0; i--) {
 		spot = find(spot, classname, cname);
 	}
 

@@ -47,3 +47,14 @@ base_client::base_client(void)
 {
 
 }
+
+
+float
+Client_InIntermission(void)
+{
+#ifdef CLIENT
+	return g_iIntermission;
+#else
+	return (float)g_grMode.InIntermission();
+#endif
+}

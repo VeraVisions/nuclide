@@ -31,10 +31,3 @@ Client_IsPlayer(base_client cl)
 {
 	return (cl.classname == "player") ? TRUE : FALSE;
 }
-
-
-float
-Client_InIntermission(void)
-{
-	return g_iIntermission;
-}

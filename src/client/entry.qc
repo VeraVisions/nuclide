@@ -335,7 +335,7 @@ CSQC_UpdateView(float w, float h, float focus)
 
 			if (Client_InIntermission()) {
 				view_angles = pSeat->m_vecCameraAngle;
-				view_angles += [sin(time), sin(time * 2)];
+				view_angles += [sin(time), sin(time * 1.5f)] * 0.1f;
 				setproperty(VF_ORIGIN, pSeat->m_vecCameraOrigin);
 				setproperty(VF_CL_VIEWANGLES, view_angles);
 			}

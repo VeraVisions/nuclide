@@ -174,6 +174,12 @@ CGameRules::IntermissionCycle(void)
 }
 
 int
+CGameRules::InIntermission(void)
+{
+	return (m_iIntermission) ? 1 : 0;
+}
+
+int
 CGameRules::MonstersSpawn(void)
 {
 	return (TRUE);

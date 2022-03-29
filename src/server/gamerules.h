@@ -53,6 +53,7 @@ class CGameRules
 	virtual void(void) IntermissionStart;
 	virtual void(void) IntermissionCycle;
 	virtual void(void) IntermissionEnd;
+	virtual int(void) InIntermission;
 
 	virtual float(void) IsTeamPlay;
 

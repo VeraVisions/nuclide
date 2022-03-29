@@ -88,7 +88,7 @@ base_player::PostFrame(void)
 void
 base_player::ClientInput(void)
 {
-	if (IsFakeSpectator()) {
+	if (!Client_InIntermission() && IsFakeSpectator()) {
 		spectator::ClientInput();
 		SpectatorTrackPlayer();
 		return;
