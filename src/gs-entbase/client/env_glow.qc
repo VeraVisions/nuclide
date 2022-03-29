@@ -40,6 +40,7 @@ class env_glow:NSEntity /* change to renderablentity? */
 	vector m_vecSize;
 	float m_flScale;
 
+	vector m_vecRotate;
 	vector m_vecOrientation;
 
 	void(void) env_glow;
@@ -119,9 +120,17 @@ env_glow::predraw(void)
 	forg = origin + (v_forward * -16);
 
 	if (spawnflags & 1) {
-		makevectors(m_vecOrientation+[0,0,angles[2]]);
+		vector above;
+		makevectors(m_vecOrientation);
+		above = origin + (v_forward * 16);
+
+		/* we're aiming right down */
+		if (above[2] > origin[2])
+			makevectors(m_vecOrientation+[0, m_vecRotate[2],0]);
+		else
+			makevectors(m_vecOrientation+[0,0, m_vecRotate[2]]);
 	} else {
-		makevectors(view_angles+[0,0,angles[2]]);
+		makevectors(view_angles+[0, m_vecRotate[1], m_vecRotate[2]]);
 	}
 
 #ifndef FTE_QUADFIX
@@ -184,7 +193,9 @@ env_glow::SpawnKey(string strField, string strKey)
 		m_flMaxAlpha = stof(strKey) / 255;
 		break;
 	case "rotate":
-		angles[2] = stof(strKey);
+		m_vecRotate[2] = stof(strKey);
+		break;
+	case "rotate":
 		break;
 	default:
 		super::SpawnKey(strField, strKey);
