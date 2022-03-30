@@ -248,14 +248,14 @@ NSIO::Restore(string strKey, string strValue)
 	case "OnUser1":
 		m_strOnUser1 = ReadString(strValue);
 		break;
-	case "OnUser1":
-		m_strOnUser1 = ReadString(strValue);
+	case "OnUser2":
+		m_strOnUser2 = ReadString(strValue);
 		break;
-	case "OnUser1":
-		m_strOnUser1 = ReadString(strValue);
+	case "OnUser3":
+		m_strOnUser3 = ReadString(strValue);
 		break;
-	case "OnUser1":
-		m_strOnUser1 = ReadString(strValue);
+	case "OnUser4":
+		m_strOnUser4 = ReadString(strValue);
 		break;
 	}
 }
