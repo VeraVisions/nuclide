@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include "text.h"
 #include "textmenu.h"
 #include "efx.h"
 #include "font.h"
