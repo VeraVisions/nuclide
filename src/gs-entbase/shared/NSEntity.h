@@ -50,6 +50,7 @@ class NSEntity:NSTrigger
 	virtual void(entity, string, string) Input;
 	virtual void(float) Save;
 	virtual void(string,string) Restore;
+	virtual void(void) RestoreComplete;
 #endif
 
 #ifdef SERVER

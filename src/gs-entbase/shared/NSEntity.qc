@@ -562,6 +562,11 @@ NSEntity::Restore(string strKey, string strValue)
 		super::Restore(strKey, strValue);
 	}
 }
+void
+NSEntity::RestoreComplete(void)
+{
+	/* this is where we can handle anything post-loading */
+}
 
 void
 NSEntity::Input(entity eAct, string strInput, string strData)

@@ -716,6 +716,7 @@ SV_PerformLoad(float fh, float entcount, float playerslots)
 		} else if (argv(0) == "{") {
 		} else if (argv(0) == "}") {
 			if (loadent) {
+				loadent.RestoreComplete();
 				loadent = __NULL__;
 			}
 		} else {

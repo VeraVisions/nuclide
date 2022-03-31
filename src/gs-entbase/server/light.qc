@@ -110,6 +110,7 @@ class light:NSPointTrigger
 	/* overrides */
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
+	virtual void(void) RestoreComplete;
 	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
@@ -151,6 +152,16 @@ light::Restore(string strKey, string strValue)
 }
 
 void
+light::RestoreComplete(void)
+{
+	if (m_iEnabled == 0) {
+		lightstyle(m_flStyle, "a");
+	} else {
+		lightstyle(m_flStyle, m_strPattern);
+	}
+}
+
+void
 light::Trigger(entity act, int state)
 {
 	switch (state) {
@@ -164,11 +175,7 @@ light::Trigger(entity act, int state)
 		m_iEnabled = 1 - m_iEnabled;
 	}
 
-	if (m_iEnabled == 0) {
-		lightstyle(m_flStyle, "a");
-	} else {
-		lightstyle(m_flStyle, m_strPattern);
-	}
+	RestoreComplete();
 }
 
 void
@@ -181,10 +188,8 @@ light::Respawn(void)
 	case BSPVER_Q2:
 	case BSPVER_Q2W:
 		if (spawnflags & 1 && targetname) {
-			lightstyle(m_flStyle, "a");
 			m_iEnabled = 0;
 		} else {
-			lightstyle(m_flStyle, m_strPattern);
 			m_iEnabled = 1;
 		}
 		break;
@@ -192,14 +197,14 @@ light::Respawn(void)
 	case BSPVER_RTCW:
 	case BSPVER_RBSP:
 		if (!m_iStartActive && targetname) {
-			lightstyle(m_flStyle, "a");
 			m_iEnabled = 0;
 		} else {
-			lightstyle(m_flStyle, m_strPattern);
 			m_iEnabled = 1;
 		}
 		break;
 	}
+
+	RestoreComplete();
 }
 
 void
@@ -234,8 +239,11 @@ light::SpawnKey(string strKey, string strValue)
 void
 light::light(void)
 {
+	m_iEnabled = 0;
 	m_iStartActive = TRUE;
 	m_strPattern = "m";
+	m_flStyle = 0;
+	m_flSwitchStyle = 0;
 
 	super::NSPointTrigger();
 
