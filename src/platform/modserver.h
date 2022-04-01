@@ -17,6 +17,7 @@
 #ifndef WEBMENU
 #define MODSERVER_REQ_LIST 100
 #define MODSERVER_REQ_ITEM 101
+#define MODSERVER_REQ_PKGNAMES 102
 
 #define ModServer_URI_Callback URI_Get_Callback
 

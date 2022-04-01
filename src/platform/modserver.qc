@@ -201,6 +201,10 @@ ModServer_URI_Callback(float id, float code, string data, int resourcebytes)
 	case MODSERVER_REQ_ITEM:
 		ModServer_ParseItem(data);
 		break;
+	case MODSERVER_REQ_PKGNAMES:
+		games[gameinfo_current].pkgname = data;
+		g_pkgname_updating = 0;
+		break;
 	default:
 		print(sprintf("^1ModServer_URI_Callback^7: Unknown request id %d with code %d\n", id, code));
 	}

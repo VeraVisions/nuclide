@@ -115,6 +115,10 @@ up_lbupdates_changed(void)
 	string newpic;
 
 	pkgid = up_lbUpdates.GetSelected();
+
+	if (!pkgid)
+		return;
+
 	newpic = sprintf(FN_UPDATE_IMGURL, updates[pkgid].name);
 	g_updates_previewpic = newpic;
 	precache_pic(g_updates_previewpic);
@@ -278,6 +282,7 @@ menu_updates_init(void)
 
 
 /* Drawing */
+int g_pkgname_updating;
 void
 menu_updates_draw(void)
 {
@@ -288,6 +293,19 @@ menu_updates_draw(void)
 
 	if (!g_updates_initialized) {
 		int pkg_ready = 0;
+
+		/* we have no hard-coded list of supported packages, so query frag-net.com */
+		if (!games[gameinfo_current].pkgname && !g_pkgname_updating) {
+			string gamedir = games[gameinfo_current].gamedir;
+			print(sprintf("Querying package names for %s\n", gamedir));
+			uri_get(sprintf("http://www.frag-net.com/dl/packages_%s", uri_escape(gamedir)), MODSERVER_REQ_PKGNAMES);
+			g_pkgname_updating = 1;
+		}
+
+		/* don't query packages YET until we get a response */
+		if (g_pkgname_updating == 1) {
+			return;
+		}
 
 		/* query until 1 package is ready */
 		for (int i = 0; (getpackagemanagerinfo(i, GPMI_NAME)); i++) {

@@ -136,7 +136,7 @@ menu_configuration_init(void)
 	
 	cf_btnUpdate = spawn(CMainButton);
 	cf_btnUpdate.SetImage(BTN_UPDATE);
-	//cf_btnUpdate.SetExecute(cf_btnupdates_start);
+	cf_btnUpdate.SetExecute(cf_btnupdates_start);
 	cf_btnUpdate.SetPos(50,268);
 	Widget_Add(fn_configuration, cf_btnUpdate);
 	

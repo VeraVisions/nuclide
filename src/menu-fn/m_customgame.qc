@@ -29,6 +29,51 @@ CMainButton customgame_btnRefresh;
 CMainButton customgame_btnDeactivate;
 CMainButton customgame_btnDone;
 
+int g_iModInstallCache;
+string g_strModInstallCache;
+
+
+#if 1
+/* get installing id */
+void
+game_getinstallcache(void)
+{
+	int ret;
+	filestream fs_cache;
+
+	ret = 0;
+	fs_cache = fopen("mcache.dat", FILE_READ);
+
+	if (fs_cache >= 0) {
+		g_iModInstallCache = (int)stof(fgets(fs_cache));
+		g_strModInstallCache = fgets(fs_cache);
+		fclose(fs_cache);
+	} else {
+		g_iModInstallCache = -1;
+		g_strModInstallCache = "";
+	}
+
+	print(sprintf("id: %i, name: %s\n", ret, g_strModInstallCache));
+}
+
+/* write installing id */
+void
+game_writeinstallcache(int id, string gamedir)
+{
+	filestream fs_cache;
+
+	fs_cache = fopen("mcache.dat", FILE_WRITE);
+	g_iModInstallCache = id;
+	g_strModInstallCache = gamedir;
+
+	if (fs_cache >= 0) {
+		fputs(fs_cache, sprintf("%i\n",id));
+		fputs(fs_cache, gamedir);
+		fclose(fs_cache);
+	}
+}
+#endif
+
 int
 game_getpackageid(string pkgname)
 {
@@ -492,12 +537,123 @@ customgame_btnactivate_start(void)
 	localcmd("menu_musicstart\n");
 }
 
+
+
+#if 1
+void
+customgame_installstart(int gameid)
+{
+	int count;
+	count = tokenize(games[gameid].pkgname);
+
+	for (int i = 0; i < count; i++) {
+		int pkgid = game_getpackageid(argv(i));
+		localcmd(sprintf("pkg add %s\n", argv(i)));
+		print(sprintf("Marking package %s for install.\n",
+		      argv(i)));
+	}
+
+	game_writeinstallcache(gameid, games[gameid].gamedir);
+	localcmd("pkg apply\n");
+	print("Starting installation of custom game packages\n");
+}
+
+void
+customgame_installend(void)
+{
+	int gid = g_iModInstallCache;
+	print("install-end!\n");
+
+	localcmd(sprintf("fs_changegame %s http://www.frag-net.com/mods/%s.fmf\n", g_strModInstallCache, g_strModInstallCache));
+	game_writeinstallcache(-1, g_strModInstallCache);
+}
+
+void
+customgame_installframe(void)
+{
+	int id;
+	float perc;
+	float c;
+	int loading;
+
+	/* graphical frame */
+	customgame_dlgWait.Draw();
+	WField_Static(162, 180, "Installing mod data...", 320, 260,
+		col_prompt_text, 1.0f, 2, font_label_p);
+
+	/* download percentage */
+	perc = 0.0f;
+	loading = FALSE;
+
+	/* a game can have multiple packages associated */
+	id = g_iModInstallCache;
+	c = tokenize(games[id].pkgname);
+
+	/* go through all invididual packages */
+	for (float i = 0; i < c; i++) {
+		string st;
+		int pkgid;
+
+		/* package query */
+		pkgid = game_getpackageid(argv(i));
+		st = getpackagemanagerinfo(pkgid, GPMI_INSTALLED);
+
+		/* filter out statuses so we can calculate percentage */
+		switch (st) {
+		case "":
+		case "pending":
+		case "enabled":
+		case "present":
+		case "corrupt":
+			break;
+		default:
+			perc += stof(st);
+		}
+
+		/* all packages need to be 'enabled', else fail to end */
+		if (st != "enabled")
+			loading = TRUE;
+	}
+
+	/* display download percentage we calculated */
+	perc = perc / c;
+	WField_Static(162, 220, sprintf("%d%%", perc), 320, 260,
+		[1,1,1], 1.0f, 2, font_label_p);
+	WField_Static(162, 260, "Service provided by frag-net.com through archive.org", 320, 260,
+		[1,1,1], 1.0f, 2, font_label);
+
+	/* not everything has been downloaded */
+	if (loading == TRUE)
+		return;
+
+	customgame_installend();
+}
+#endif
+
 /* download the .fmf and switch games immediately */
 void
 customgame_btninstall_start(void)
 {
+#if 1
+	int id = customgame_lbMods.GetSelected();
+	string st;
+
+	st = getpackagemanagerinfo(games[id].pkgid, GPMI_INSTALLED);
+
+	print(st);
+	print("\n");
+
+	if (st != "enabled") {
+		customgame_installstart(id);
+		return;
+	}
+
+	game_writeinstallcache(id, games[id].gamedir);
+	customgame_installend();
+#else
 	int nextgame = customgame_lbMods.GetSelected();
 	localcmd(sprintf("fs_changegame %s http://www.frag-net.com/mods/%s.fmf\n", games[nextgame].gamedir, games[nextgame].gamedir));
+#endif
 }
 
 void 
@@ -794,6 +950,13 @@ menu_customgame_draw(void)
 		WField_Static(162, 180, m_reslbl[IDS_MODREQ_TITLE], 320, 260,
 			col_prompt_text, 1.0f, 2, font_label_p);
 	}
+
+
+#if 1
+	if (g_iModInstallCache >= 0) {
+		customgame_installframe();
+	}
+#endif
 
 	customgame_sbMods.SetMax(gameinfo_count-1); /* don't show our current game */
 #endif
