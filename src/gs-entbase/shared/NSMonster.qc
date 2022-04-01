@@ -715,8 +715,10 @@ NSMonster::SpawnKey(string strKey, string strValue)
 
 /* Make sure StartFrame calls this */
 float
-NSMonster::SendEntity(entity ePEnt, float fChanged)
+NSMonster::SendEntity(entity ePEnt, vector vecChangedBits)
 {
+	float fChanged = vecChangedBits[2];
+
 	if (!modelindex)
 		return (0);
 

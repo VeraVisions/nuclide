@@ -31,7 +31,7 @@ func_ladder:NSRenderableEntity
 
 #ifdef SERVER
 	virtual void(void) Respawn;
-	virtual float(entity, float) SendEntity;
+	virtual float(entity, vector) SendEntity;
 	virtual void(entity, int) Trigger;
 #else
 	virtual float() predraw;
@@ -44,7 +44,7 @@ func_ladder:NSRenderableEntity
  * without a targetname. They'll never experience gameplay changes
  * and therefore can be handled fully client-side */
 float
-func_ladder::SendEntity(entity pvsent, float fl)
+func_ladder::SendEntity(entity pvsent, vector fl)
 {
 	if (targetname)
 		return super::SendEntity(pvsent, fl);

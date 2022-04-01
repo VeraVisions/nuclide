@@ -34,7 +34,7 @@ func_wall:NSRenderableEntity
 
 #ifdef SERVER
 	virtual void(void) Respawn;
-	virtual float(entity, float) SendEntity;
+	virtual float(entity, vector) SendEntity;
 	virtual void(entity, int) Trigger;
 #else
 	virtual float() predraw;
@@ -47,10 +47,10 @@ func_wall:NSRenderableEntity
  * without a targetname. They'll never experience gameplay changes
  * and therefore can be handled fully client-side */
 float
-func_wall::SendEntity(entity pvsent, float fl)
+func_wall::SendEntity(entity pvsent, vector vecChangedBits)
 {
 	if (targetname)
-		return super::SendEntity(pvsent, fl);
+		return super::SendEntity(pvsent, vecChangedBits);
 	else
 		return (0);
 }

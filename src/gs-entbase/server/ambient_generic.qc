@@ -71,7 +71,7 @@ class ambient_generic:NSPointTrigger
 	/* overrides */
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
-	virtual float(entity, float) SendEntity;
+	virtual float(entity, vector) SendEntity;
 	virtual void(string, string) SpawnKey;
 	virtual void(void) Respawn;
 
@@ -123,8 +123,10 @@ ambient_generic::Restore(string strKey, string strValue)
 }
 
 float
-ambient_generic::SendEntity(entity ePEnt, float fChanged)
+ambient_generic::SendEntity(entity ePEnt, vector vecChangedBits)
 {
+	float fChanged = vecChangedBits[2];
+
 	if (clienttype(ePEnt) != CLIENTTYPE_REAL) {
 		return (0);
 	}

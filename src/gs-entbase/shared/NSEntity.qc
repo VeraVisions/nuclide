@@ -128,8 +128,10 @@ NSEntity::Hide(void)
 
 /* Make sure StartFrame calls this */
 float
-NSEntity::SendEntity(entity ePEnt, float fChanged)
+NSEntity::SendEntity(entity ePEnt, vector vecChangedBits)
 {
+	float fChanged = vecChangedBits[2];
+
 	if (!modelindex)
 		return (0);
 
@@ -336,7 +338,8 @@ void
 NSEntity::SetSendFlags(float flSendFlags)
 {
 #ifdef SERVER
-	SendFlags |= flSendFlags;
+	setsendneeded(this, [flSendFlags, flSendFlags, flSendFlags], world);
+	//SendFlags |= flSendFlags;
 #endif
 }
 

@@ -68,7 +68,7 @@ class env_laser:NSPointTrigger
 	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
 	virtual void(void) EvaluateEntity;
-	virtual float(entity, float) SendEntity;
+	virtual float(entity, vector) SendEntity;
 	virtual void(string, string) SpawnKey;
 };
 
@@ -129,8 +129,10 @@ env_laser::Respawn(void)
 }
 
 float
-env_laser::SendEntity(entity ePEnt, float fChanged)
+env_laser::SendEntity(entity ePEnt, vector vecChangedBits)
 {
+	float fChanged = vecChangedBits[2];
+
 	if (clienttype(ePEnt) != CLIENTTYPE_REAL) {
 		return (0);
 	}

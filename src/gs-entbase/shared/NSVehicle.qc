@@ -111,8 +111,10 @@ NSVehicle::EvaluateEntity(void)
 }
 
 float
-NSVehicle::SendEntity(entity ePEnt, float fChanged)
+NSVehicle::SendEntity(entity ePEnt, vector vecChangedBits)
 {
+	float fChanged = vecChangedBits[2];
+
 	WriteByte(MSG_ENTITY, ENT_VEHICLE);
 	WriteFloat(MSG_ENTITY, fChanged);
 

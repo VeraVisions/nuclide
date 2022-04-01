@@ -641,7 +641,7 @@ __deprecated("Does not work with MVDs nor splitscreen.") .float dimension_see;	/
 __deprecated("Does not work with MVDs nor splitscreen.") .float dimension_seen;	/* This is the dimension mask (bitfield) that the client is visible within. Clients that cannot see this dimension mask will not see this entity. */
 __deprecated("Does not work with MVDs nor splitscreen.") .float dimension_ghost;	/* If this entity is visible only within these dimensions, it will become transparent, as if a ghost. */
 __deprecated("Does not work with MVDs nor splitscreen.") .float dimension_ghost_alpha;	/* If this entity is subject to dimension_ghost, this is the scaler for its alpha value. If 0, 0.5 will be used instead. */
-.float(entity playerent, float changedflags) SendEntity;	/* Called by the engine whenever an entity needs to be (re)sent to a client's csprogs, either because SendFlags was set or because data was lost. Must write its data to the MSG_ENTITY buffer. Will be called at the engine's leasure. */
+.float(entity playerent, vector changedflags) SendEntity;	/* Called by the engine whenever an entity needs to be (re)sent to a client's csprogs, either because SendFlags was set or because data was lost. Must write its data to the MSG_ENTITY buffer. Will be called at the engine's leasure. */
 .float SendFlags;	/* Indicates that something in the entity has been changed, and that it needs to be updated to all players that can see it. The engine will clear it at some point, with the cleared bits appearing in the 'changedflags' argument of the SendEntity method. */
 __deprecated("Use SendFlags instead.") .float Version;	/* Obsolete */
 __deprecated("Doesn't support RGB player colours.") .float clientcolors;

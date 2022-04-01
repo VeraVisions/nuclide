@@ -55,13 +55,15 @@ class env_sprite:NSRenderableEntity
 
 	void(void) env_sprite;
 	virtual void(entity, int) Trigger;
-	virtual float(entity, float) SendEntity;
+	virtual float(entity, vector) SendEntity;
 	virtual void(string, string) SpawnKey;
 };
 
 float
-env_sprite::SendEntity(entity ePEnt, float flags)
+env_sprite::SendEntity(entity ePEnt, vector vecChangedBits)
 {
+	float flFlags = vecChangedBits[2];
+
 	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
 		return (0);
 

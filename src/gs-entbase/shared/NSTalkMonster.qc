@@ -596,8 +596,10 @@ NSTalkMonster::Hide(void)
 }
 
 float
-NSTalkMonster::SendEntity(entity ePEnt, float fChanged)
+NSTalkMonster::SendEntity(entity ePEnt, vector vecChangedBits)
 {
+	float fChanged = vecChangedBits[2];
+
 	if (!modelindex)
 		return (0);
 

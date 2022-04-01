@@ -41,8 +41,10 @@ spectator::WarpToTarget(void)
 
 #ifdef SERVER
 float
-spectator::SendEntity(entity ePVSent, float flChangedFlags)
+spectator::SendEntity(entity ePVSent, vector vecChangedBits)
 {
+	float flChangedFlags = vecChangedBits[2];
+
 	if (this != ePVSent) {
 		return (0);
 	}

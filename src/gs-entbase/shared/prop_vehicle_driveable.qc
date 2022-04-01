@@ -108,7 +108,7 @@ class prop_vehicle_driveable:NSVehicle
 	virtual void(void) Respawn;
 	virtual void(void) OnPlayerUse;
 	virtual void(void) EvaluateEntity;
-	virtual float(entity, float) SendEntity;
+	virtual float(entity, vector) SendEntity;
 #endif
 };
 
@@ -693,8 +693,10 @@ prop_vehicle_driveable::EvaluateEntity(void)
 }
 
 float
-prop_vehicle_driveable::SendEntity(entity ePVSent, float flSendFlags)
+prop_vehicle_driveable::SendEntity(entity ePVSent, vector vecChangedBits)
 {
+	float flSendFlags = vecChangedBits[2];
+
 	WriteByte(MSG_ENTITY, ENT_VEH_4WHEEL);
 	WriteFloat(MSG_ENTITY, flSendFlags);
 

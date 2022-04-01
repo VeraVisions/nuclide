@@ -40,8 +40,10 @@ const string g_decal_shader = \
 
 #ifdef SERVER
 float
-decal::SendEntity(entity ePEnt, float changedflags)
+decal::SendEntity(entity ePEnt, vector vecChangedBits)
 {
+	float changedflags = vecChangedBits[2];
+
 	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
 		return (0);
 

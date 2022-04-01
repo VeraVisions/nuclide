@@ -93,7 +93,7 @@ class func_tankmortar:NSVehicle
 	virtual void(float, float) ReadEntity;
 	virtual void(void) UpdateView;
 #else
-	virtual float(entity, float) SendEntity;
+	virtual float(entity, vector) SendEntity;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
 #endif
@@ -197,8 +197,10 @@ func_tankmortar::EvaluateEntity(void)
 }
 
 float
-func_tankmortar::SendEntity(entity ePEnt, float fChanged)
+func_tankmortar::SendEntity(entity ePEnt, vector vecChangedBits)
 {
+	float fChanged = vecChangedBits[2];
+
 	WriteByte(MSG_ENTITY, ENT_VEH_TANKMORTAR);
 	WriteFloat(MSG_ENTITY, fChanged);
 

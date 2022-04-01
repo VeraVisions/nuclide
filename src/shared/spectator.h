@@ -46,7 +46,7 @@ class spectator:base_client
 
 #ifdef SERVER
 	virtual void(void) EvaluateEntity;
-	virtual float(entity, float) SendEntity;
+	virtual float(entity, vector) SendEntity;
 	virtual void(void) RunClientCommand;
 #else
 	virtual void(void) ClientInputFrame;

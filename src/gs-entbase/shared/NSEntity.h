@@ -66,7 +66,7 @@ class NSEntity:NSTrigger
 	virtual void(void) Show;
 	virtual void(void) Hide;
 	virtual void(void) EvaluateEntity;
-	virtual float(entity, float) SendEntity;
+	virtual float(entity, vector) SendEntity;
 
 	nonvirtual void(string) SetParent;
 	nonvirtual void(string) SetParentAttachment;

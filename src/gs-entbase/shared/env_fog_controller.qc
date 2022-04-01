@@ -103,7 +103,7 @@ env_fog_controller:NSPointTrigger
 	vector m_vecSpawnDir;
 	int m_iUseAngles;
 
-	virtual float(entity, float) SendEntity;
+	virtual float(entity, vector) SendEntity;
 	virtual void(void) EvaluateEntity;
 	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
@@ -238,8 +238,10 @@ env_fog_controller::ReadEntity(float flSendFlags, float flNew)
 }
 #else
 float
-env_fog_controller::SendEntity(entity ePVEnt, float flSendFlags)
+env_fog_controller::SendEntity(entity ePVEnt, vector vecChangedBits)
 {
+	float flSendFlags = vecChangedBits[2];
+
 	WriteByte(MSG_ENTITY, ENT_FOGCONTROLLER);
 	WriteFloat(MSG_ENTITY, flSendFlags);
 

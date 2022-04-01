@@ -26,7 +26,7 @@ Spray_RemoveAll(entity entOwner)
 }
 
 float
-Spray_SendEntity(entity ePEnt, float fChanged)
+Spray_SendEntity(entity ePEnt, vector vecChangedBits)
 {
 	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
 		return (0);

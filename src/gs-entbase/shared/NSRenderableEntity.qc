@@ -124,8 +124,10 @@ NSRenderableEntity::EvaluateEntity(void)
 
 /* Make sure StartFrame calls this */
 float
-NSRenderableEntity::SendEntity(entity ePEnt, float fChanged)
+NSRenderableEntity::SendEntity(entity ePEnt, vector vecChangedBits)
 {
+	float fChanged = vecChangedBits[2];
+
 	if (!modelindex)
 		return (0);
 

@@ -84,7 +84,7 @@ class env_projectedtexture:NSPointTrigger
 #else
 	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
-	virtual float(entity, float) SendEntity;
+	virtual float(entity, vector) SendEntity;
 	virtual void(string, string) SpawnKey;
 	virtual void(entity, string, string) Input;
 	virtual void(void) EvaluateEntity;
@@ -186,8 +186,10 @@ env_projectedtexture::Trigger(entity act, int state)
 }
 
 float
-env_projectedtexture::SendEntity(entity ePEnt, float flFlags)
+env_projectedtexture::SendEntity(entity ePEnt, vector vecChangedBits)
 {
+	float flFlags = vecChangedBits[2];
+
 	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
 		return (0);
 

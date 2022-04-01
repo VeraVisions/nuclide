@@ -692,8 +692,10 @@ at the top of player::SendEntity
 =================
 */
 float
-base_player::SendEntity(entity ePEnt, float fChanged)
+base_player::SendEntity(entity ePEnt, vector vecChangedBits)
 {
+	float fChanged = vecChangedBits[2];
+
 	/* really trying to get our moneys worth with 23 bits of mantissa */
 	if (fChanged & PLAYER_MODELINDEX) {
 		WriteShort(MSG_ENTITY, modelindex);

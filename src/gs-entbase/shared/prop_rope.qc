@@ -64,7 +64,7 @@ class prop_rope:NSEntity
 #else
 	virtual void(void) Respawn;
 	virtual void(void) EvaluateEntity;
-	virtual float(entity, float) SendEntity;
+	virtual float(entity, vector) SendEntity;
 	virtual void(string, string) SpawnKey;
 #endif
 };
@@ -287,8 +287,10 @@ prop_rope::EvaluateEntity(void)
 }
 
 float
-prop_rope::SendEntity(entity ePVEnt, float flSendFlags)
+prop_rope::SendEntity(entity ePVEnt, vector vecChangedBits)
 {
+	float flSendFlags = vecChangedBits[2];
+
 	WriteByte(MSG_ENTITY, ENT_PROPROPE);
 	WriteFloat(MSG_ENTITY, flSendFlags);
 

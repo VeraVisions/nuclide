@@ -37,7 +37,7 @@ class NSVehicle:NSSurfacePropEntity
 	virtual void(float, float) ReadEntity;
 	virtual void(void) UpdateView;
 #else
-	virtual float(entity, float) SendEntity;
+	virtual float(entity, vector) SendEntity;
 #endif
 
 	virtual void(void) PlayerUpdateFlags;

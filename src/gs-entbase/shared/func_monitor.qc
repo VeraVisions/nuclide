@@ -94,7 +94,7 @@ class func_monitor:NSRenderableEntity
 #else
 	virtual void(void) Respawn;
 	virtual void(void) EvaluateEntity;
-	virtual float(entity, float) SendEntity;
+	virtual float(entity, vector) SendEntity;
 	virtual void(string, string) SpawnKey;
 	virtual void(entity, int) Trigger;
 	virtual void(entity, string, string) Input;
@@ -165,8 +165,10 @@ func_monitor::ReceiveEntity(float flNew, float flFlags)
 }
 #else
 float
-func_monitor::SendEntity(entity ePEnt, float flFlags)
+func_monitor::SendEntity(entity ePEnt, vector vecChangedBits)
 {
+	float flFlags = vecChangedBits[2];
+
 	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
 		return (0);
 

@@ -61,7 +61,7 @@ class trigger_camera:NSPointTrigger
 	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
-	virtual float(entity, float) SendEntity;
+	virtual float(entity, vector) SendEntity;
 	virtual void(void) EvaluateEntity;
 #endif
 };
@@ -104,8 +104,10 @@ trigger_camera::ReceiveEntity(float flNew, float flFlags)
 }
 #else
 float
-trigger_camera::SendEntity(entity ePEnt, float flFlags)
+trigger_camera::SendEntity(entity ePEnt, vector vecChangedBits)
 {
+	float flFlags = vecChangedBits[2];
+
 	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
 		return (0);
 

@@ -18,13 +18,13 @@ class func_lod:NSEntity
 {
 	void(void) func_lod;
 
-	virtual float(entity, float) SendEntity;
+	virtual float(entity, vector) SendEntity;
 	virtual void(string, string) SpawnKey;
 	virtual void(void) Respawn;
 };
 
 float
-func_lod::SendEntity(entity a, float b)
+func_lod::SendEntity(entity a, vector b)
 {
 	return (0);
 }

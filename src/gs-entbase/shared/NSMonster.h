@@ -272,7 +272,7 @@ class NSMonster:NSSurfacePropEntity
 	virtual int(void) GetTriggerCondition;
 	virtual void(void) TriggerTargets;
 
-	virtual float(entity, float) SendEntity;
+	virtual float(entity, vector) SendEntity;
 #else
 	virtual void(void) customphysics;
 	virtual float(void) predraw;

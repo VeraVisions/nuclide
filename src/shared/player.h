@@ -102,7 +102,7 @@ base_player:spectator
 	virtual void(string,string) Restore;
 	virtual void(void) Respawn;
 	virtual void(void) EvaluateEntity;
-	virtual float(entity, float) SendEntity;
+	virtual float(entity, vector) SendEntity;
 
 	virtual void(void) Death;
 	virtual void(void) MakePlayer;

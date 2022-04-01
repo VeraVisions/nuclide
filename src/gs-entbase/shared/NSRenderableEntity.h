@@ -28,7 +28,7 @@ class NSRenderableEntity:NSEntity
 	/* overrides */
 	virtual void(string, string) SpawnKey;
 #ifdef SERVER
-	virtual float(entity, float) SendEntity;
+	virtual float(entity, vector) SendEntity;
 	virtual void(entity, string, string) Input;
 	virtual void(void) Respawn;
 	virtual void(float) Save;
