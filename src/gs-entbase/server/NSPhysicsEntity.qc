@@ -164,7 +164,8 @@ NSPhysicsEntity::ApplyTorqueCenter(vector vecTorque)
 void
 NSPhysicsEntity::TouchThink(void)
 {
-#if 0
+
+	if (physics_supported() == FALSE) {
 	/* let players collide */
 	dimension_solid = 255;
 	dimension_hit = 255;
@@ -174,13 +175,17 @@ NSPhysicsEntity::TouchThink(void)
 	/* stuck */
 	if (trace_startsolid) {
 		if (trace_ent.flags & FL_CLIENT) {
-			PhysicsEnable();
-			makevectors(vectoangles(origin - trace_ent.origin));
-			ApplyTorqueCenter(v_forward * 240);
+			if (trace_ent.absmin[2] < absmax[2]) {
+				PhysicsEnable();
+				makevectors(vectoangles(origin - trace_ent.origin));
+				ApplyTorqueCenter(v_forward * 240);
+			} else {
+				PhysicsDisable();
+				velocity = [0,0,0];
+			}
 		}
 	}
-
-#endif
+	}
 
 	/* If we barely move, disable the physics simulator */
 	if (vlen(velocity) <= 1) {
@@ -207,11 +212,11 @@ NSPhysicsEntity::TouchThink(void)
 		}
 	}
 
-#if 0
-	/* don't let players collide */
-	dimension_solid = 1;
-	dimension_hit = 1;
-#endif
+	if (physics_supported() == FALSE) {
+		/* don't let players collide */
+		dimension_solid = 1;
+		dimension_hit = 1;
+	}
 
 	/* continue testing next frame */
 	nextthink = time;
@@ -221,6 +226,14 @@ NSPhysicsEntity::TouchThink(void)
 void
 NSPhysicsEntity::touch(void)
 {
+	if (trace_ent.flags & FL_CLIENT) {
+		if (trace_ent.absmin[2] > absmax[2]) {
+			velocity = [0,0,0];
+			PhysicsDisable();
+			return;
+		}
+	}
+
 	PhysicsEnable();
 	makevectors(vectoangles(origin - other.origin));
 	ApplyForceOffset(v_forward * 100, origin - other.origin);
@@ -258,8 +271,9 @@ NSPhysicsEntity::Respawn(void)
 
 #ifndef ODE_MODE
 	PhysicsDisable();
-	SetFriction(2.0f);
-	SetBounceFactor(0.25f);
+	SetFriction(4.0f);
+	SetBounceFactor(0.05f);
+	SetMass(1.0f);
 #else
 	PhysicsDisable();
 	SetMass(1.0f);
@@ -269,9 +283,11 @@ NSPhysicsEntity::Respawn(void)
 
 	SetOrigin(GetSpawnOrigin());
 
-	/* don't let players collide */
-	//dimension_solid = 1;
-	//dimension_hit = 1;
+	if (physics_supported() == FALSE) {
+		/* don't let players collide */
+		dimension_solid = 1;
+		dimension_hit = 1;
+	}
 
 	think = TouchThink;
 	nextthink = time + 0.1f;
@@ -327,4 +343,5 @@ NSPhysicsEntity::NSPhysicsEntity(void)
 	super::NSSurfacePropEntity();
 
 	cvar_set("physics_ode_iterationsperframe", "1");
+	cvar_set("physics_ode_movelimit", "0.1");
 }
