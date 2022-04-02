@@ -97,7 +97,7 @@ path_corner::Trigger(entity act, int state)
 {
 	entity a;
 
-	if ((spawnflags & PC_FIREONCE) && m_iFired) {
+	if (HasSpawnFlags(PC_FIREONCE) && m_iFired) {
 		return;
 	}
 

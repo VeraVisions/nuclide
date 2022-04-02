@@ -83,9 +83,9 @@ trigger_counter::touch(void)
 void
 trigger_counter::Trigger(entity act, int state)
 {
-	if (act.classname == "func_pushable" && !(spawnflags & TRCNT_PUSHABLES))
+	if (act.classname == "func_pushable" && !HasSpawnFlags(TRCNT_PUSHABLES))
 		return;
-	if (spawnflags & TRCNT_NOCLIENTS && act.spawnflags & FL_CLIENT)
+	if (HasSpawnFlags(TRCNT_NOCLIENTS) && act.flags & FL_CLIENT)
 		return;
 	if (GetMaster() == FALSE)
 		return;

@@ -122,9 +122,7 @@ func_mortar_field::FireRandom(void)
 	vector vecPos;
 
 	/* get our center */
-	vecPos[0] = absmin[0] + (0.5f * (absmax[0] - absmin[0]));
-	vecPos[1] = absmin[1] + (0.5f * (absmax[1] - absmin[1]));
-	vecPos[2] = absmin[2] + (0.5f * (absmax[2] - absmin[2]));
+	vecPos = WorldSpaceCenter();
 
 	/* now randomize the position in the volume */
 	vecPos[0] += mins[0] + (random() * size[0]);
@@ -140,9 +138,7 @@ func_mortar_field::FireTarget(entity act)
 	vector vecPos;
 
 	/* get our center */
-	vecPos[0] = absmin[0] + (0.5f * (absmax[0] - absmin[0]));
-	vecPos[1] = absmin[1] + (0.5f * (absmax[1] - absmin[1]));
-	vecPos[2] = absmin[2] + (0.5f * (absmax[2] - absmin[2]));
+	vecPos = WorldSpaceCenter();
 
 	/* orient towards the nearest player pos, clamping by our bounds */
 	vecPos[0] = bound(vecPos[0] + mins[0], act.origin[0], vecPos[0] + maxs[0]);
@@ -178,9 +174,7 @@ func_mortar_field::FireControlled(void)
 		return;
 
 	/* find our center */
-	vecPos[0] = absmin[0] + (0.5f * (absmax[0] - absmin[0]));
-	vecPos[1] = absmin[1] + (0.5f * (absmax[1] - absmin[1]));
-	vecPos[2] = absmin[2] + (0.5f * (absmax[2] - absmin[2]));
+	vecPos = WorldSpaceCenter();
 
 	/* now offset the position to the rot_buttons */
 	vecPos[0] += mins[0] + (mX.GetProgress() * size[0]);

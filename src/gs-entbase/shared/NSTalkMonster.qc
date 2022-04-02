@@ -203,7 +203,7 @@ NSTalkMonster::TalkPlayerIdle(void)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE)
 		return;
-	if (spawnflags & MSF_PREDISASTER)
+	if (HasSpawnFlags(MSF_PREDISASTER))
 		return;
 	if (m_flNextSentence > time)
 		return;
@@ -228,7 +228,7 @@ NSTalkMonster::TalkPlayerAsk(void)
 {
 	if (m_iSequenceState != SEQUENCESTATE_NONE)
 		return;
-	if (spawnflags & MSF_PREDISASTER)
+	if (HasSpawnFlags(MSF_PREDISASTER))
 		return;
 	if (m_flNextSentence > time)
 		return;

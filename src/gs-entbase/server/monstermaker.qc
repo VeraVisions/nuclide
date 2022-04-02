@@ -190,7 +190,7 @@ monstermaker::Spawner(void)
 		}
 
 		/* inherit the monsterclip flag */
-		if (spawnflags & MMF_MONSTERCLIP) {
+		if (HasSpawnFlags(MMF_MONSTERCLIP)) {
 			unit.spawnflags |= MSF_MONSTERCLIP;
 		}
 	} else {
@@ -206,7 +206,7 @@ monstermaker::Spawner(void)
 	}
 
 	/* sometimes all we do is just spawn a single monster at a time */
-	if (spawnflags & MMF_NONTOGGLE) {
+	if (HasSpawnFlags(MMF_NONTOGGLE)) {
 		TurnOff();
 	} else {
 		nextthink = time + m_flDelay;
@@ -234,7 +234,7 @@ monstermaker::Trigger(entity act, int state)
 void
 monstermaker::Respawn(void)
 {
-	if (spawnflags & MMF_STARTON) {
+	if (HasSpawnFlags(MMF_STARTON)) {
 		TurnOn();
 	} else {
 		TurnOff();

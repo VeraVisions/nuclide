@@ -86,7 +86,7 @@ game_counter_set::Trigger(entity act, int state)
 		targ.SetCount(m_iCount);
 	}
 
-	if (spawnflags & GMCNTS_REMOVE)
+	if (HasSpawnFlags(GMCNTS_REMOVE))
 		Destroy();
 }
 

@@ -184,14 +184,14 @@ ambient_generic::Respawn(void)
 {
 	m_strActivePath = m_strSoundPath;
 
-	if (spawnflags & AS_NOTTOGGLED) {
+	if (HasSpawnFlags(AS_NOTTOGGLED)) {
 		Trigger = UseNormal;
 		m_iLoop = FALSE;
 	} else {
 		m_iLoop = TRUE;
 
 		/* set our sample up */
-		if (spawnflags & AS_SILENT) {
+		if (HasSpawnFlags(AS_SILENT)) {
 			m_iToggleSwitch = FALSE;
 			m_strActivePath = "common/null.wav";
 		} else {
@@ -258,13 +258,13 @@ ambient_generic::ambient_generic(void)
 	}
 
 	// There can be only one
-	if (spawnflags & AS_ARADIUS) {
+	if (HasSpawnFlags(AS_ARADIUS)) {
 		m_flRadius = ATTN_NONE;
-	} else if (spawnflags & AS_SRADIUS) {
+	} else if (HasSpawnFlags(AS_SRADIUS)) {
 		m_flRadius = ATTN_IDLE;
-	} else if (spawnflags & AS_MRADIUS) {
+	} else if (HasSpawnFlags(AS_MRADIUS)) {
 		m_flRadius = ATTN_STATIC;
-	} else if (spawnflags & AS_LRADIUS) {
+	} else if (HasSpawnFlags(AS_LRADIUS)) {
 		m_flRadius = ATTN_NORM;
 	} else {
 		m_flRadius = ATTN_STATIC;

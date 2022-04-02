@@ -122,7 +122,7 @@ env_laser::Trigger(entity act, int state)
 void
 env_laser::Respawn(void)
 {
-	if (spawnflags & ENVLAZ_STARTON) {
+	if (HasSpawnFlags(ENVLAZ_STARTON)) {
 		m_iState = 1;
 		nextthink = time + 0.1;
 	}

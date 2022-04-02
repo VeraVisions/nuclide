@@ -110,7 +110,7 @@ class func_door:NSRenderableEntity
 	virtual void(void) Returned;
 	virtual void(void) Respawn;
 	virtual void(entity, int) Trigger;
-	virtual void(void) Blocked;
+	virtual void(entity) Blocked;
 	virtual void(void) Touch;
 	virtual void(void) Use;
 	virtual void(float) Save;
@@ -164,14 +164,14 @@ func_door::Arrived(void)
 	if (m_strSndMove)
 		sound(this, CHAN_WEAPON, "common/null.wav", 1.0f, ATTN_NORM);
 
-	if (!(spawnflags & SF_MOV_USE)) {
+	if (!HasSpawnFlags(SF_MOV_USE)) {
 		touch = Touch;
 	}
 	if (m_flWait < 0) {
 		return;
 	}
 
-	if (!(spawnflags & SF_MOV_TOGGLE)) {
+	if (!HasSpawnFlags(SF_MOV_TOGGLE)) {
 		think = MoveBack;
 		nextthink = (ltime + m_flWait);
 	}
@@ -201,7 +201,7 @@ func_door::Returned(void)
 	if (m_strSndMove)
 		sound(this, CHAN_WEAPON, "common/null.wav", 1.0f, ATTN_NORM);
 
-	if (!(spawnflags & SF_MOV_USE)) {
+	if (!HasSpawnFlags(SF_MOV_USE)) {
 		touch = Touch;
 	}
 
@@ -221,7 +221,7 @@ func_door::MoveBack(void)
 	if (m_strSndMove)
 		Sound_Play(this, CHAN_WEAPON, m_strSndMove);
 
-	if (!(spawnflags & SF_MOV_USE)) {
+	if (!HasSpawnFlags(SF_MOV_USE)) {
 		touch = __NULL__;
 	}
 
@@ -246,7 +246,7 @@ func_door::MoveAway(void)
 	if (m_strSndMove)
 		Sound_Play(this, CHAN_WEAPON, m_strSndMove);
 
-	if (!(spawnflags & SF_MOV_TOGGLE)) {
+	if (!HasSpawnFlags(SF_MOV_TOGGLE)) {
 		if (m_iState == DOORSTATE_RAISED) {
 			nextthink = (ltime + m_flWait);
 			return;
@@ -266,7 +266,7 @@ func_door::Trigger(entity act, int state)
 		return;
 
 	if (m_flNextTrigger > time) {
-		if (!(spawnflags & SF_MOV_TOGGLE)) {
+		if (!HasSpawnFlags(SF_MOV_TOGGLE)) {
 			return;
 		}
 	}
@@ -301,7 +301,7 @@ func_door::Touch(void)
 		return;
 	}
 
-	if (spawnflags & SF_MOV_TOGGLE) {
+	if (HasSpawnFlags(SF_MOV_TOGGLE)) {
 		return;
 	}
 
@@ -313,10 +313,10 @@ func_door::Touch(void)
 }
 
 void
-func_door::Blocked(void)
+func_door::Blocked(entity eBlocker)
 {
 	if (m_iDamage) {
-		Damage_Apply(other, this, m_iDamage, 0, DMG_CRUSH);
+		Damage_Apply(eBlocker, this, m_iDamage, 0, DMG_CRUSH);
 	}
 
 	if (!m_iForceClosed)
@@ -394,7 +394,7 @@ func_door::Respawn(void)
 	SetMovementDirection();
 	ClearAngles();
 
-	if (spawnflags & SF_MOV_PASSABLE)
+	if (HasSpawnFlags(SF_MOV_PASSABLE))
 		SetSolid(SOLID_NOT);
 	else
 		SetSolid(SOLID_BSP);
@@ -402,7 +402,7 @@ func_door::Respawn(void)
 	SetMovetype(MOVETYPE_PUSH);
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
-	blocked = Blocked;
+
 	think = __NULL__;
 	nextthink = 0.0f;
 
@@ -419,7 +419,7 @@ func_door::Respawn(void)
 		m_iDamage = 2;
 	}
 
-	if (spawnflags & SF_MOV_USE) {
+	if (HasSpawnFlags(SF_MOV_USE)) {
 		touch = __NULL__;
 		PlayerUse = Use;
 	} else {
@@ -434,7 +434,7 @@ func_door::Respawn(void)
 	m_vecPos1 = GetSpawnOrigin();
 	m_vecPos2 = (m_vecPos1 + m_vecMoveDir * (fabs(m_vecMoveDir * size) - m_flLip));
 
-	if (spawnflags & SF_MOV_OPEN) {
+	if (HasSpawnFlags(SF_MOV_OPEN)) {
 		SetOrigin(m_vecPos2);
 		m_vecPos2 = m_vecPos1;
 		m_vecPos1 = origin;

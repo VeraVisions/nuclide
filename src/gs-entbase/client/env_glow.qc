@@ -71,7 +71,7 @@ env_glow::RendererRestarted(void)
 		m_vecSize = drawgetimagesize(m_strSprite) / 2;
 	}
 
-	if (spawnflags & 1) {
+	if (HasSpawnFlags(1)) {
 		hitcontentsmaski = CONTENTBIT_SOLID;
 		decal_pickwall(this, origin);
 		m_vecOrientation = vectoangles(g_tracedDecal.normal * -1);
@@ -119,7 +119,7 @@ env_glow::predraw(void)
 	makevectors(vectoangles(origin - vecPlayer));
 	forg = origin + (v_forward * -16);
 
-	if (spawnflags & 1) {
+	if (HasSpawnFlags(1)) {
 		vector above;
 		makevectors(m_vecOrientation);
 		above = origin + (v_forward * 16);

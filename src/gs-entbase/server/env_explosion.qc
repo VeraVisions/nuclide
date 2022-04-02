@@ -87,12 +87,12 @@ env_explosion::Trigger(entity act, int state)
 {
 	FX_Explosion(origin);
 
-	if (!(spawnflags & ENVEXPLO_NODAMAGE)) {
+	if (!HasSpawnFlags(ENVEXPLO_NODAMAGE)) {
 		Damage_Radius(origin, this, m_iMagnitude, m_iMagnitude * 2.5f, TRUE, 0);
 	}
 
 	// TODO: Respawn after round instead?
-	if (!(spawnflags & ENVEXPLO_REPEATABLE)) {
+	if (!HasSpawnFlags(ENVEXPLO_REPEATABLE)) {
 		remove(this);
 	}
 }

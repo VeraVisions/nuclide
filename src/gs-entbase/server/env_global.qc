@@ -177,7 +177,7 @@ env_global::env_global(void)
 		objerror("env_global: No globalstate name given! Aborting\n");
 	}
 
-	if (spawnflags & GLOBAL_SETSPAWN) {
+	if (HasSpawnFlags(GLOBAL_SETSPAWN)) {
 		if (!GlobalPresent(m_strGlobalState)) {
 			AddNewGlobal(m_strGlobalState, m_iInitialState);
 		}

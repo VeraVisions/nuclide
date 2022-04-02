@@ -176,7 +176,7 @@ func_breakable::Restore(string strKey, string strValue)
 void
 func_breakable::Pain(void)
 {
-	if (spawnflags & SF_TRIGGER) {
+	if (HasSpawnFlags(SF_TRIGGER)) {
 		return;
 	}
 
@@ -187,7 +187,7 @@ func_breakable::Pain(void)
 void
 func_breakable::Explode(void)
 {
-	vector rp = absmin + (0.5 * (absmax - absmin));
+	vector rp = WorldSpaceCenter();
 	FX_BreakModel(vlen(size) / 10, absmin, absmax, [0,0,0], GetSurfaceData(SURFDATA_MATERIAL));
 	FX_Explosion(rp);
 	Damage_Radius(rp, this, m_flExplodeMag, m_flExplodeRad, TRUE, 0);
@@ -227,7 +227,7 @@ func_breakable::Death(void)
 		unit.think = break_spawnobject;
 		unit.nextthink = time;
 		unit.real_owner = this;
-		setorigin(unit, absmin + (0.5 * (absmax - absmin)));
+		setorigin(unit, WorldSpaceCenter());
 	}
 
 	/* This may seem totally absurd. That's because it is. It's very
@@ -272,7 +272,7 @@ func_breakable::PlayerTouch(void)
 		}
 	}
 
-	if (spawnflags & SF_TOUCH) {
+	if (HasSpawnFlags(SF_TOUCH)) {
 		int fDamage = (float)(vlen(other.velocity) * 0.01f);
 
 		if (fDamage >= health) {
@@ -285,7 +285,7 @@ func_breakable::PlayerTouch(void)
 		}
 	}
 
-	if ((spawnflags & SF_PRESSURE) && (other.absmin[2] >= maxs[2] - 2)) {
+	if (HasSpawnFlags(SF_PRESSURE) && (other.absmin[2] >= maxs[2] - 2)) {
 		touch = __NULL__;
 		think = TriggerWrap;
 
@@ -309,7 +309,7 @@ func_breakable::Respawn(void)
 	touch = PlayerTouch;
 	think = __NULL__;
 
-	if (spawnflags & SF_TRIGGER) {
+	if (HasSpawnFlags(SF_TRIGGER)) {
 		takedamage = DAMAGE_NO;
 	} else {
 		takedamage = DAMAGE_YES;

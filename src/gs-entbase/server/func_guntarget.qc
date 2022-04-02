@@ -95,9 +95,7 @@ func_guntarget::Move(void)
 	}
 
 	vector vecWorldPos;
-	vecWorldPos[0] = absmin[0] + (0.5 * (absmax[0] - absmin[0]));
-	vecWorldPos[1] = absmin[1] + (0.5 * (absmax[1] - absmin[1]));
-	vecWorldPos[2] = absmin[2] + (0.5 * (absmax[2] - absmin[2]));
+	vecWorldPos = WorldSpaceCenter();
 
 	vel_to_pos = (node.origin - vecWorldPos);
 	flTravelTime = (vlen(vel_to_pos) / m_flSpeed);
@@ -206,7 +204,7 @@ func_guntarget::Respawn(void)
 	SetOrigin(GetSpawnOrigin());
 	health = GetSpawnHealth();
 
-	if (spawnflags & SF_GUNTARGET_ON) {
+	if (HasSpawnFlags(SF_GUNTARGET_ON)) {
 		think = ThinkWrap;
 		nextthink = ltime + 0.25f;
 	}

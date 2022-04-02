@@ -194,7 +194,7 @@ NSMonster::SeeThink(void)
 			continue;
 
 		/* some monsters will ignore players */
-		if ((w.flags & FL_CLIENT) && (spawnflags & MSF_IGNOREPLAYER))
+		if ((w.flags & FL_CLIENT) && HasSpawnFlags(MSF_IGNOREPLAYER))
 			continue;
 
 		/* first, is the potential enemy in our field of view? */
@@ -967,7 +967,7 @@ void
 NSMonster::NSMonster(void)
 {
 #ifdef SERVER
-	if (!(spawnflags & MSF_MULTIPLAYER))
+	if (!HasSpawnFlags(MSF_MULTIPLAYER))
 	if (g_grMode.MonstersSpawn() == FALSE) {
 		remove(this);
 		return;

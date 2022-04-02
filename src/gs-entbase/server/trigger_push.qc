@@ -124,7 +124,7 @@ trigger_push::touch(void)
 		vector vecPush;
 		vecPush = (m_flSpeed * m_vecMoveDir);
 
-		if (spawnflags & TP_ONCE) {
+		if (HasSpawnFlags(TP_ONCE)) {
 			other.velocity += vecPush;
 			if (other.velocity[2] > 0) {
 				other.flags &= ~FL_ONGROUND;
@@ -145,7 +145,7 @@ trigger_push::Respawn(void)
 	SetMovementDirection();
 	ClearAngles();
 
-	if (spawnflags & TP_STARTOFF) {
+	if (HasSpawnFlags(TP_STARTOFF)) {
 		SetSolid(SOLID_NOT);
 	}
 }

@@ -85,7 +85,7 @@ func_conveyor::SetMovementDirection(void)
 void
 func_conveyor::touch(void)
 {
-	if (spawnflags & SF_CONVEYOR_VISUAL)
+	if (HasSpawnFlags(SF_CONVEYOR_VISUAL))
 		return;
 
 	other.basevelocity = m_vecMoveDir * (m_flSpeed * -0.2);
@@ -127,7 +127,7 @@ func_conveyor::Respawn(void)
 
 	Trigger(this, TRIG_ON);
 
-	if (spawnflags & SF_CONVEYOR_NOTSOLID) {
+	if (HasSpawnFlags(SF_CONVEYOR_NOTSOLID)) {
 		SetSolid(SOLID_NOT);
 		SetSkin(0);
 	}

@@ -93,19 +93,19 @@ env_render::Trigger(entity act, int state)
 
 		dprint(sprintf("^2env_render::^3Trigger^7: with spawnflags %d\n", spawnflags));
 			dprint(sprintf("\tTarget: %s\n", target));
-		if (!(spawnflags & SF_NORENDERMODE)) {
+		if (!HasSpawnFlags(SF_NORENDERMODE)) {
 			dprint(sprintf("\tMode change from %d to %d\n", trigger.m_iRenderMode, m_iRenderMode));
 			trigger.SetRenderMode(m_iRenderMode);
 		}
-		if (!(spawnflags & SF_NORENDERCOLOR)) {
+		if (!HasSpawnFlags(SF_NORENDERCOLOR)) {
 			dprint(sprintf("\tColor change from %v to %v\n", trigger.m_vecRenderColor, m_vecRenderColor));
 			trigger.SetRenderColor(m_vecRenderColor);
 		}
-		if (!(spawnflags & SF_NORENDERAMT)) {
+		if (!HasSpawnFlags(SF_NORENDERAMT)) {
 			dprint(sprintf("\tAmt change from %d to %d\n", trigger.m_flRenderAmt, m_flRenderAmt));
 			trigger.SetRenderAmt(m_flRenderAmt);
 		}
-		if (!(spawnflags & SF_NORENDERFX)) {
+		if (!HasSpawnFlags(SF_NORENDERFX)) {
 			dprint(sprintf("\tFX change from %d to %d\n", trigger.m_iRenderFX, m_iRenderFX));
 			trigger.SetRenderFX(m_iRenderFX);
 		}

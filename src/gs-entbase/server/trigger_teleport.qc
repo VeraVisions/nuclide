@@ -45,9 +45,9 @@ trigger_teleport::touch(void)
 {
 	if (GetMaster() == FALSE)
 		return;
-	if (spawnflags & TRIGTELE_NOCLIENTS && other.flags & FL_CLIENT)
+	if (HasSpawnFlags(TRIGTELE_NOCLIENTS) && other.flags & FL_CLIENT)
 		return;
-	if (!(spawnflags & TRIGTELE_MONSTERS) && other.flags & FL_MONSTER)
+	if (!HasSpawnFlags(TRIGTELE_MONSTERS) && other.flags & FL_MONSTER)
 		return;
 
 	if (other.movetype != MOVETYPE_NONE) {

@@ -104,7 +104,7 @@ func_wall_toggle::Respawn(void)
 	m_iVisible = 1;
 	m_oldmodelindex = modelindex;
 
-	if (spawnflags & FTW_STARTHIDDEN) {
+	if (HasSpawnFlags(FTW_STARTHIDDEN)) {
 		Trigger(this, TRIG_OFF);
 	}
 }

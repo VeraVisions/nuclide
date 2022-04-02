@@ -37,7 +37,7 @@ prop_physics::Respawn(void)
 {
 	NSPhysicsEntity::Respawn();
 
-	if (spawnflags & PRPPHYS_ASLEEP)
+	if (HasSpawnFlags(PRPPHYS_ASLEEP))
 		PhysicsDisable();
 	else
 		PhysicsEnable();

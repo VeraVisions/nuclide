@@ -106,7 +106,7 @@ class func_button:NSSurfacePropEntity
 	virtual void(void) MoveBack;
 	virtual void(void) MoveAway;
 	virtual void(void) Touch;
-	virtual void(void) Blocked;
+	virtual void(entity) Blocked;
 	virtual void(entity, int) Trigger;
 	virtual void(void) DeathTrigger;
 	virtual void(void) Use;
@@ -210,13 +210,13 @@ func_button::Arrived(void)
 	UseOutput(this, m_strOnIn);
 	m_iState = STATE_RAISED;
 	
-	if (spawnflags & SF_BTT_TOUCH_ONLY) {
+	if (HasSpawnFlags(SF_BTT_TOUCH_ONLY)) {
 		touch = Touch;
 	} else {
 		touch = __NULL__;
 	}
 
-	if (spawnflags & SF_BTT_TOGGLE) {
+	if (HasSpawnFlags(SF_BTT_TOGGLE)) {
 		return;
 	}
 	
@@ -234,7 +234,7 @@ func_button::Returned(void)
 	velocity = [0,0,0];
 	nextthink = 0;
 
-	if (spawnflags & SF_BTT_TOUCH_ONLY) {
+	if (HasSpawnFlags(SF_BTT_TOUCH_ONLY)) {
 		touch = Touch;
 	}
     
@@ -329,7 +329,7 @@ func_button::Touch(void)
 	if (other.movetype == MOVETYPE_WALK) {
 		Trigger(other, TRIG_TOGGLE);
     
-		if (!(spawnflags & SF_BTT_TOUCH_ONLY)) {
+		if (!HasSpawnFlags(SF_BTT_TOUCH_ONLY)) {
 			touch = __NULL__;
 		}
 	}
@@ -342,7 +342,7 @@ func_button::Use(void)
 }
 
 void
-func_button::Blocked(void)
+func_button::Blocked(entity eBlocker)
 {
 	if (m_flWait >= 0) {
 		if (m_iState == STATE_DOWN) {
@@ -411,7 +411,6 @@ func_button::Respawn(void)
 	SetOrigin(GetSpawnOrigin());
 	SetModel(GetSpawnModel());
 
-	blocked = Blocked;
 	velocity = [0,0,0];
 	nextthink = -1;
 	health = GetSpawnHealth();
@@ -425,7 +424,7 @@ func_button::Respawn(void)
 		m_flSpeed = 100;
 	}
 
-	if (spawnflags & SF_BTT_TOUCH_ONLY) {
+	if (HasSpawnFlags(SF_BTT_TOUCH_ONLY)) {
 		touch = Touch;
 		PlayerUse = __NULL__;
 	} else {
@@ -435,7 +434,7 @@ func_button::Respawn(void)
 
 	m_vecPos1 = GetSpawnOrigin();
 
-	if (spawnflags & SF_BTT_NOMOVE) {
+	if (HasSpawnFlags(SF_BTT_NOMOVE)) {
 		m_vecPos2 = m_vecPos1;
 	} else {
 		m_vecPos2 = (m_vecPos1 + m_vecMoveDir * (fabs(m_vecMoveDir * size) - m_flLip));

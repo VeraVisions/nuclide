@@ -183,7 +183,7 @@ prop_rope::predraw(void)
 	}
 
 	/* only drawing one segment. */
-	if (spawnflags & 1) {
+	if (HasSpawnFlags(1)) {
 		return (PREDRAW_NEXT);
 	}
 

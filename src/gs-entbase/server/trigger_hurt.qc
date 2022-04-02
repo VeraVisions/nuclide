@@ -153,9 +153,9 @@ trigger_hurt::touch(void)
 {
 	if (other.takedamage == DAMAGE_NO) {
 		return;
-	} else if ((spawnflags & SF_HURT_TOUCHPLAYER) && !(other.flags & FL_CLIENT)) {
+	} else if (HasSpawnFlags(SF_HURT_TOUCHPLAYER) && !(other.flags & FL_CLIENT)) {
 		return;
-	} else if ((spawnflags & SF_HURT_NOPLAYERS) && (other.flags & FL_CLIENT)) {
+	} else if (HasSpawnFlags(SF_HURT_NOPLAYERS) && (other.flags & FL_CLIENT)) {
 		return;
 	} else if (other.hurt_next > time) {
 		return;
@@ -167,7 +167,7 @@ trigger_hurt::touch(void)
 		else
 			UseOutput(other, m_strOnHurt);
 	} else {
-		if (spawnflags & SF_HURT_FIREONPLAYER) {
+		if (HasSpawnFlags(SF_HURT_FIREONPLAYER)) {
 			if (other.flags & FL_CLIENT) {
 				eActivator = other;
 				UseTargets(other, TRIG_TOGGLE, m_flDelay);
@@ -208,7 +208,7 @@ trigger_hurt::touch(void)
 		other.netname, m_iDamage));
 
 	/* shut it down if used once */
-	if (spawnflags & SF_HURT_ONCE) {
+	if (HasSpawnFlags(SF_HURT_ONCE)) {
 		Trigger(other, TRIG_OFF);
 	}
 
@@ -218,7 +218,7 @@ trigger_hurt::touch(void)
 void
 trigger_hurt::Respawn(void)
 {
-	if (spawnflags & SF_HURT_OFF) {
+	if (HasSpawnFlags(SF_HURT_OFF)) {
 		Trigger(this, TRIG_OFF);
 	} else {
 		Trigger(this, TRIG_ON);

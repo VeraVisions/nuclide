@@ -15,6 +15,18 @@
  */
 
 #ifdef SERVER
+void
+NSSurfacePropEntity::SetTakedamage(float type)
+{
+	takedamage = type;
+}
+
+void
+NSSurfacePropEntity::SetHealth(float new_health)
+{
+	health = new_health;
+}
+
 float
 NSSurfacePropEntity::GetSpawnHealth(void)
 {

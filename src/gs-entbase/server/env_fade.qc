@@ -102,7 +102,7 @@ env_fade::Trigger(entity act, int state)
 	WriteByte(MSG_MULTICAST, spawnflags);
 	msg_entity = act;
 
-	if (spawnflags & EVF_ONLYUSER)
+	if (HasSpawnFlags(EVF_ONLYUSER))
 		multicast([0,0,0], MULTICAST_ONE_R);
 	else
 		multicast([0,0,0], MULTICAST_ALL);

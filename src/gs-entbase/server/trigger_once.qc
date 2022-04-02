@@ -82,11 +82,11 @@ trigger_once::touch(void)
 {
 	if (GetMaster() == FALSE)
 		return;
-	if (spawnflags & TO_NOCLIENTS && other.flags & FL_CLIENT)
+	if (HasSpawnFlags(TO_NOCLIENTS) && other.flags & FL_CLIENT)
 		return;
-	if (!(spawnflags & TO_MONSTERS) && other.flags & FL_MONSTER)
+	if (!HasSpawnFlags(TO_MONSTERS) && other.flags & FL_MONSTER)
 		return;
-	if (!(spawnflags & TO_PUSHABLES) && other.classname == "func_pushable")
+	if (!HasSpawnFlags(TO_PUSHABLES) && other.classname == "func_pushable")
 		return;
 
 	SetSolid(SOLID_NOT); /* make inactive */

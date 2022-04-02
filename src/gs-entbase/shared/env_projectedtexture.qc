@@ -316,7 +316,7 @@ env_projectedtexture::Respawn(void)
 	SetOrigin(GetSpawnOrigin());
 	SetAngles(GetSpawnAngles());
 
-	m_iState = (spawnflags & 1) ? 1 : 0;
+	m_iState = HasSpawnFlags(1) ? 1 : 0;
 }
 #endif
 

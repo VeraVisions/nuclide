@@ -135,7 +135,7 @@ func_plat::MoveToggle(void)
 void
 func_plat::Trigger(entity act, int state)
 {
-	if (spawnflags & FNCPLAT_TRIGGER)
+	if (HasSpawnFlags(FNCPLAT_TRIGGER))
 		return;
 	
 	switch (state) {

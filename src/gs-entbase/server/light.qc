@@ -187,7 +187,7 @@ light::Respawn(void)
 	case BSPVER_HL:
 	case BSPVER_Q2:
 	case BSPVER_Q2W:
-		if (spawnflags & 1 && targetname) {
+		if (HasSpawnFlags(1) && targetname) {
 			m_iEnabled = 0;
 		} else {
 			m_iEnabled = 1;
@@ -202,6 +202,8 @@ light::Respawn(void)
 			m_iEnabled = 1;
 		}
 		break;
+	default:
+		m_iEnabled = 1;
 	}
 
 	RestoreComplete();

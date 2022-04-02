@@ -177,7 +177,7 @@ func_rot_button::OnPlayerUse(void)
 void
 func_rot_button::touch(void)
 {
-	if (spawnflags & FNCROTBUT_TOUCHABLE)
+	if (HasSpawnFlags(FNCROTBUT_TOUCHABLE))
 		TurnToggle();
 }
 
@@ -190,7 +190,7 @@ func_rot_button::TurnToggle(void)
 		Rotate(GetSpawnAngles(), ArrivedOpened);
 
 		/* in toggle mode, we trigger our targets every turn */
-		if (spawnflags & FNCROTBUT_TOGGLE)
+		if (HasSpawnFlags(FNCROTBUT_TOGGLE))
 			TriggerTargets();
 	}
 }
@@ -207,7 +207,7 @@ func_rot_button::Respawn(void)
 {
 	SetMovetype(MOVETYPE_PUSH);
 
-	if (spawnflags & FNCROTBUT_NONSOLID)
+	if (HasSpawnFlags(FNCROTBUT_NONSOLID))
 		SetSolid(SOLID_NOT);
 	else
 		SetSolid(SOLID_BSP);
@@ -227,15 +227,15 @@ func_rot_button::Respawn(void)
 	}
 
 	vector vecMoveDir;
-	if (spawnflags & FNCROTBUT_XAXIS) {
+	if (HasSpawnFlags(FNCROTBUT_XAXIS)) {
 		vecMoveDir = [0,0,1];
-	} else if (spawnflags & FNCROTBUT_YAXIS) {
+	} else if (HasSpawnFlags(FNCROTBUT_YAXIS)) {
 		vecMoveDir = [0,1,0];
 	} else {
 		vecMoveDir = [1,0,0];
 	}
 
-	if (spawnflags & FNCROTBUT_REVERSE) {
+	if (HasSpawnFlags(FNCROTBUT_REVERSE)) {
 		vecMoveDir *= -1;
 	}
 

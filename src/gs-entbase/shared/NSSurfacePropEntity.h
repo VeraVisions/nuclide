@@ -52,6 +52,10 @@ class NSSurfacePropEntity:NSRenderableEntity
 	virtual void(void) Pain;
 	virtual void(void) Death;
 
+	/* Generic Damage */
+	virtual void(float) SetTakedamage;
+	virtual void(float) SetHealth;
+
 	/* Surface/PropKit */
 	int m_iMaterial;
 	int m_iPropData;

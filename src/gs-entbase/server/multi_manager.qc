@@ -207,7 +207,7 @@ multi_manager::Trigger(entity act, int state)
 	m_iValue = TRUE;
 
 	/* If not multi-threaded, we have to watch out 'til all triggers are done. */
-	if (!(spawnflags & MM_MULTITHREADED)) {
+	if (!HasSpawnFlags(MM_MULTITHREADED)) {
 		for (int i = 0; i < 16; i++) {
 			if (m_eTriggers[i].nextthink > time) {
 				return;

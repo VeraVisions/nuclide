@@ -37,7 +37,7 @@ func_physbox::Respawn(void)
 {
 	NSPhysicsEntity::Respawn();
 
-	if (spawnflags & FNCPHYBX_ASLEEP)
+	if (HasSpawnFlags(FNCPHYBX_ASLEEP))
 		PhysicsDisable();
 	else
 		PhysicsEnable();

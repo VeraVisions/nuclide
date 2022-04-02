@@ -360,12 +360,12 @@ func_vehicle::customphysics(void)
 	setorigin(m_wlBR, origin + v_right * m_flWidth - v_forward * m_flLength);
 	setorigin(m_wlBL, origin - v_right * m_flWidth - v_forward * m_flLength);
 
-	if (spawnflags & FUNCVEH_FWDRIVE) {
+	if (HasSpawnFlags(FUNCVEH_FWDRIVE)) {
 		m_wlFL.Physics(0);
 		m_wlFR.Physics(0);
 		m_wlBL.Physics(m_flTurn);
 		m_wlBR.Physics(m_flTurn);
-	} else if (spawnflags & FUNCVEH_RWDRIVE) {
+	} else if (HasSpawnFlags(FUNCVEH_RWDRIVE)) {
 		m_wlFL.Physics(-m_flTurn);
 		m_wlFR.Physics(-m_flTurn);
 		m_wlBL.Physics(0);

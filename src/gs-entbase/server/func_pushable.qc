@@ -96,7 +96,7 @@ func_pushable::customphysics(void)
 	}
 
 	/* see if we're clipping against entities or other func_pushable_bbox helper entities */
-	vector position = absmin + (0.5 * (absmax - absmin));
+	vector position = WorldSpaceCenter();
 
 	/* if we're too far away from our box, split */
 	if ((vlen(m_pPuller.origin - position) - vlen(size)) > 64)
@@ -114,7 +114,7 @@ func_pushable::customphysics(void)
 	if (vlen(velocity))
 		runstandardplayerphysics(this);
 
-	setorigin(m_eCollBox, absmin + (0.5 * (absmax - absmin)));
+	setorigin(m_eCollBox, WorldSpaceCenter());
 }
 
 void
@@ -126,7 +126,7 @@ func_pushable::PlayerTouch(void)
 	}
 
 	/* get the real position of the pushable */
-	vector position = absmin + (0.5 * (absmax - absmin));
+	vector position = WorldSpaceCenter();
 
 	/* check if we're inside the pushable */
 	if (other.origin[0] >= absmin[0] && other.origin[0] <= absmax[0])
@@ -165,7 +165,7 @@ func_pushable::Respawn(void)
 		m_eCollBox.solid = SOLID_BBOX;
 		m_eCollBox.owner = this;
 		setsize(m_eCollBox, -(size/2) * 0.9f, (size/2) * 0.9f);
-		setorigin(m_eCollBox, absmin + (0.5 * (absmax - absmin)));
+		setorigin(m_eCollBox, WorldSpaceCenter());
 	}
 }
 

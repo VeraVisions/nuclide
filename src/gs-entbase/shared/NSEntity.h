@@ -68,6 +68,7 @@ class NSEntity:NSTrigger
 	virtual void(void) EvaluateEntity;
 	virtual float(entity, float) SendEntity;
 
+	nonvirtual entity(void) GetParent;
 	nonvirtual void(string) SetParent;
 	nonvirtual void(string) SetParentAttachment;
 	nonvirtual void(void) ClearParent;
@@ -97,4 +98,21 @@ class NSEntity:NSTrigger
 	virtual void(string, string) SpawnKey;
 	nonvirtual void(void) Destroy;
 	virtual void(void) UpdateBounds;
+
+	/* useful methods, based on GMod's API */
+	nonvirtual float(void) EntIndex;
+	nonvirtual void(void) DropToFloor;
+	nonvirtual vector(void) GetForward;
+	nonvirtual vector(void) GetRight;
+	nonvirtual vector(void) GetUp;
+	nonvirtual vector(void) WorldSpaceCenter;
+	nonvirtual float(void) WaterLevel;
+	nonvirtual bool(entity) Visible;
+	nonvirtual bool(vector) VisibleVec;
+	nonvirtual entity(void) GetOwner;
+	nonvirtual bool(float) HasSpawnFlags;
+	nonvirtual bool(void) IsOnGround;
+	nonvirtual entity(void) GetGroundEntity;
+	virtual void(entity) Blocked;
+	nonvirtual void(void) _BlockedHandler;
 };

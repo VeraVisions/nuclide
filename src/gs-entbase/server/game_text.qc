@@ -143,7 +143,7 @@ game_text::Trigger(entity act, int state)
 	WriteFloat(MSG_MULTICAST, m_flHoldTime);
 	WriteFloat(MSG_MULTICAST, m_flFXTime);
 
-	if (spawnflags & GTF_ALLPLAYERS) {
+	if (HasSpawnFlags(GTF_ALLPLAYERS)) {
 		msg_entity = this;
 		multicast(origin, MULTICAST_ALL);
 	} else {

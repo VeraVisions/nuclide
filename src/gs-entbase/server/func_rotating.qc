@@ -80,7 +80,8 @@ class func_rotating:NSRenderableEntity
 	virtual void(string, string) SpawnKey;
 
 	virtual void(void) Rotate;
-	virtual void(void) Blocked;
+	virtual void(entity) Blocked;
+	virtual void(void) BlockedTouch;
 	virtual void(void) SetMovementDirection;
 };
 
@@ -132,7 +133,7 @@ func_rotating::Trigger(entity act, int state)
 	} else {
 		float flSpeed;
 
-		if (spawnflags & FR_TOGGLEDIR && m_flDir) {
+		if (HasSpawnFlags(FR_TOGGLEDIR) && m_flDir) {
 			flSpeed = m_flSpeed * -1;
 		} else {
 			flSpeed = m_flSpeed;
@@ -148,7 +149,7 @@ func_rotating::Trigger(entity act, int state)
 }
 
 void
-func_rotating::Blocked(void)
+func_rotating::Blocked(entity eBlocker)
 {
 	if (vlen(avelocity) <= 0) {
 		return;
@@ -168,6 +169,12 @@ func_rotating::Blocked(void)
 }
 
 void
+func_rotating::BlockedTouch(void)
+{
+	Blocked(other);
+}
+
+void
 func_rotating::Respawn(void)
 {
 #ifdef GS_DEVELOPER
@@ -180,38 +187,36 @@ func_rotating::Respawn(void)
 
 	SetModel(GetSpawnModel());
 	SetMovetype(MOVETYPE_PUSH);
-	SetSolid((spawnflags & FR_NOTSOLID) ? SOLID_NOT : SOLID_BSP);
+	SetSolid(HasSpawnFlags(FR_NOTSOLID) ? SOLID_NOT : SOLID_BSP);
 	SetOrigin(GetSpawnOrigin());
 
 	RestoreAngles();
 	SetMovementDirection();
 	ClearAngles();
 
-	if (spawnflags & FR_STARTON) {
+	if (HasSpawnFlags(FR_STARTON)) {
 		avelocity = m_vecMoveDir * m_flSpeed;
 		think = Rotate;
 		nextthink = ltime + 1.5f;
 	}
 	
-	blocked = Blocked;
-	
-	if (spawnflags & FR_FANPAIN) {
-		touch = Blocked;
+	if (HasSpawnFlags(FR_FANPAIN)) {
+		touch = BlockedTouch;
 	}
 }
 
 void
 func_rotating::SetMovementDirection(void)
 {
-	if (spawnflags & FR_ZAXIS) {
+	if (HasSpawnFlags(FR_ZAXIS)) {
 		m_vecMoveDir = [0,0,1];
-	} else if (spawnflags & FR_XAXIS) {
+	} else if (HasSpawnFlags(FR_XAXIS)) {
 		m_vecMoveDir = [1,0,0];
 	} else {
 		m_vecMoveDir = [0,1,0];
 	}
 
-	if (spawnflags & FR_REVERSE) {
+	if (HasSpawnFlags(FR_REVERSE)) {
 		m_vecMoveDir *= -1;
 	}
 }

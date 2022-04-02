@@ -14,6 +14,170 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+float
+NSEntity::EntIndex(void)
+{
+	return num_for_edict(this);
+}
+
+void
+droptofloorwrapper(entity foo)
+{
+	entity old_self = self;
+	self = foo;
+	droptofloor();
+	self = old_self;
+}
+
+void
+NSEntity::DropToFloor(void)
+{
+	droptofloorwrapper(this);
+}
+
+vector
+NSEntity::GetForward(void)
+{
+	makevectors(angles);
+	return v_forward;
+}
+
+vector
+NSEntity::GetRight(void)
+{
+	makevectors(angles);
+	return v_right;
+}
+
+vector
+NSEntity::GetUp(void)
+{
+	makevectors(angles);
+	return v_up;
+}
+
+/*
+============
+NSEntity::WorldSpaceCenter
+
+Returns the center of an entity's bounding boxes.
+Useful on brush entities that have no real 'origin' defined.
+============
+*/
+vector
+NSEntity::WorldSpaceCenter(void)
+{
+	return absmin + (0.5 * (absmax - absmin));
+}
+
+/*
+============
+NSEntity::VisibleVec
+
+Returns whether or not the entity is able to see a given position
+============
+*/
+float
+NSEntity::WaterLevel(void)
+{
+	return waterlevel;
+}
+
+
+/*
+============
+NSEntity::VisibleVec
+
+Returns whether or not the entity is able to see a given position
+============
+*/
+bool
+NSEntity::VisibleVec(vector org)
+{
+	vector flDelta;
+	float flFoV;
+
+	makevectors(angles);
+	flDelta = normalize (org - origin);
+	flFoV = flDelta * v_forward;
+
+	if (flFoV > 0.3) {
+		traceline(origin, org, TRUE, this);
+		if (trace_fraction == 1.0) {
+			return (TRUE);
+		}
+	}
+	return (FALSE);
+}
+
+/*
+============
+NSEntity::Visible
+
+Returns whether or not the entity is able to see a given entity
+============
+*/
+bool
+NSEntity::Visible(entity ent)
+{
+	vector flDelta;
+	float flFoV;
+
+	makevectors(angles);
+	flDelta = normalize (ent.origin - origin);
+	flFoV = flDelta * v_forward;
+
+	if (flFoV > 0.3) {
+		traceline(origin, ent.origin, MOVE_NORMAL, this);
+		if (trace_fraction == 1.0) {
+			return (true);
+		}
+	}
+	return (false);
+}
+
+entity
+NSEntity::GetOwner(void)
+{
+	return owner;
+}
+
+bool
+NSEntity::HasSpawnFlags(float sf)
+{
+	return (spawnflags & sf) ? true : false;
+}
+
+bool
+NSEntity::IsOnGround(void)
+{
+	return (flags & FL_ONGROUND) ? true : false;
+}
+
+bool
+NSEntity::IsSolid(void)
+{
+	return (solid != SOLID_NOT) ? true : false;
+}
+
+entity
+NSEntity::GetGroundEntity(void)
+{
+	return groundentity;
+}
+
+void
+NSEntity::Blocked(entity eBlocker)
+{
+	/* To be handled by sub-classes */
+}
+
+void
+NSEntity::_BlockedHandler(void)
+{
+	Blocked(other);
+}
+
 #ifdef CLIENT
 /*
 ============
@@ -278,6 +442,11 @@ NSEntity::ParentUpdate(void)
 			}
 		}
 	}
+}
+entity
+NSEntity::GetParent(void)
+{
+	return find(world, ::targetname, m_parent);
 }
 void
 NSEntity::SetParent(string name)
@@ -701,6 +870,7 @@ NSEntity::NSEntity(void)
 	m_oldOrigin = origin;
 	m_oldSolid = solid;
 	m_oldModel = Util_FixModel(model);
+	blocked = _BlockedHandler;
 
 	/* Input/Output system */
 	m_strOnTrigger = CreateOutput(m_strOnTrigger);

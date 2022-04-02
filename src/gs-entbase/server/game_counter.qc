@@ -109,9 +109,9 @@ game_counter::Trigger(entity act, int state)
 	if (m_iCounted < m_iMaxCount)
 		return;
 
-	if (spawnflags & GMCNT_REMOVE)
+	if (HasSpawnFlags(GMCNT_REMOVE))
 		Destroy();
-	else if (spawnflags & GMCNT_RESET)
+	else if (HasSpawnFlags(GMCNT_RESET))
 		Respawn();
 	else
 		m_iValue = 1;

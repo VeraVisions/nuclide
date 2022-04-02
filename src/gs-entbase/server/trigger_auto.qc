@@ -88,7 +88,7 @@ trigger_auto::Processing(void)
 
 	UseTargets(this, m_iTriggerState, m_flDelay);
 
-	if (spawnflags & 1) {
+	if (HasSpawnFlags(1)) {
 		dprint(sprintf("^2trigger_auto::^3think^7: %s triggerer removed self\n",  target));
 		remove(this);
 	}

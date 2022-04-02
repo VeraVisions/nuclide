@@ -239,7 +239,7 @@ info_particle_system::Respawn(void)
 	SetOrigin(GetSpawnOrigin());
 	SetAngles(GetSpawnAngles());
 
-	if (spawnflags & PSFL_STARTACTIVE) {
+	if (HasSpawnFlags(PSFL_STARTACTIVE)) {
 		Trigger(this, TRIG_ON);
 	} else {
 		Trigger(this, TRIG_OFF);

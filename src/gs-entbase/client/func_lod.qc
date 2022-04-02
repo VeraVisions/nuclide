@@ -34,7 +34,6 @@ var int autocvar_dev_loddistance = 0;
 class func_lod:NSRenderableEntity
 {
 	int m_iDisappearDist;
-	vector m_vecTestPos;
 
 	void(void) func_lod;
 	virtual void(void) Init;
@@ -57,16 +56,16 @@ func_lod::predraw(void)
 
 #ifdef DEVELOPER
 	if (autocvar_dev_loddistance != 0) {
-		if (vlen(vecPlayer - m_vecTestPos) > autocvar_dev_loddistance) {
+		if (vlen(vecPlayer - WorldSpaceCenter()) > autocvar_dev_loddistance) {
 			return (PREDRAW_NEXT);
 		}
 	} else {
-		if (vlen(vecPlayer - m_vecTestPos) > m_iDisappearDist) {
+		if (vlen(vecPlayer - WorldSpaceCenter()) > m_iDisappearDist) {
 			return (PREDRAW_NEXT);
 		}
 	}
 #else
-	if (vlen(vecPlayer - m_vecTestPos) > m_iDisappearDist) {
+	if (vlen(vecPlayer - WorldSpaceCenter()) > m_iDisappearDist) {
 		return (PREDRAW_NEXT);
 	}
 #endif
@@ -101,10 +100,6 @@ func_lod::Init(void)
 	setorigin(this, origin);
 	movetype = MOVETYPE_NONE;
 	drawmask = MASK_ENGINE;
-
-	m_vecTestPos[0] = absmin[0] + (0.5 * (absmax[0] - absmin[0]));
-	m_vecTestPos[1] = absmin[1] + (0.5 * (absmax[1] - absmin[1]));
-	m_vecTestPos[2] = absmin[2] + (0.5 * (absmax[2] - absmin[2]));
 }
 
 void

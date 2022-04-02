@@ -105,9 +105,9 @@ func_pendulum::customphysics(void)
 
 	m_flProgress += frametime;
 
-	if (spawnflags & FUNCPEND_XAXIS)
+	if (HasSpawnFlags(FUNCPEND_XAXIS))
 		angles[2] = sin(m_flProgress);
-	else if (spawnflags & FUNCPEND_YAXIS)
+	else if (HasSpawnFlags(FUNCPEND_YAXIS))
 		angles[0] = sin(m_flProgress);
 	else
 		angles[1] = sin(m_flProgress);
@@ -129,17 +129,17 @@ func_pendulum::Trigger(entity act, int state)
 		m_iActive = 1 - m_iActive;
 	}
 
-	if (m_iActive == 0 && spawnflags & FUNCPEND_RETURNONTRIGGER)
+	if (m_iActive == 0 && HasSpawnFlags(FUNCPEND_RETURNONTRIGGER))
 		angles = [0,0,0];
 }
 
 void
 func_pendulum::Respawn(void)
 {
-	if (spawnflags & FUNCPEND_STARTON)
+	if (HasSpawnFlags(FUNCPEND_STARTON))
 		m_iActive = TRUE;
 
-	if (spawnflags & FUNCPEND_NONSOLID)
+	if (HasSpawnFlags(FUNCPEND_NONSOLID))
 		SetSolid(SOLID_NOT);
 	else
 		SetSolid(SOLID_BSP);

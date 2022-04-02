@@ -137,7 +137,7 @@ speaker::Respawn(void)
 
 	think = Annouce;
 
-	if (!(spawnflags & SPEAKFL_SILENT))
+	if (!HasSpawnFlags(SPEAKFL_SILENT))
 		nextthink = time + 10.0f;
 }
 

@@ -226,7 +226,7 @@ trigger_changelevel::Respawn(void)
 {
 	InitBrushTrigger();
 
-	if (!(spawnflags & LC_USEONLY)) {
+	if (!HasSpawnFlags(LC_USEONLY)) {
 		touch = TouchTrigger;
 	}
 }

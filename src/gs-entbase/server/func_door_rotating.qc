@@ -101,7 +101,7 @@ class func_door_rotating:NSRenderableEntity
 	virtual void(entity, int) Trigger;
 	virtual void(void) Use;
 	virtual void(void) Touch;
-	virtual void(void) Blocked;
+	virtual void(entity) Blocked;
 	virtual void(void) SetMovementDirection;
 	virtual void(vector angle, void(void) func) RotToDest;
 	virtual void(string, string) SpawnKey;
@@ -159,11 +159,11 @@ func_door_rotating::Arrived(void)
 		sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
 	}
 
-	if (!(spawnflags & SF_ROT_USE)) {
+	if (!HasSpawnFlags(SF_ROT_USE)) {
 		touch = Touch;
 	}
 
-	if ((spawnflags & SF_ROT_TOGGLE) || m_flWait < 0)
+	if (HasSpawnFlags(SF_ROT_TOGGLE) || m_flWait < 0)
 		return;
 
 	think = Back;
@@ -177,7 +177,7 @@ func_door_rotating::Returned(void)
 	avelocity = [0,0,0];
 	nextthink = 0.0f;
 
-	if (!(spawnflags & SF_ROT_USE)) {
+	if (!HasSpawnFlags(SF_ROT_USE)) {
 		touch = Touch;
 	}
 
@@ -203,7 +203,7 @@ func_door_rotating::Returned(void)
 void
 func_door_rotating::Back(void)
 {
-	if (!(spawnflags & SF_DOOR_SILENT)) {
+	if (!HasSpawnFlags(SF_DOOR_SILENT)) {
 		
 		if (m_strSndClose) {
 			Sound_Play(this, CHAN_VOICE, m_strSndClose);
@@ -212,7 +212,7 @@ func_door_rotating::Back(void)
 		}
 	}
 
-	if (!(spawnflags & SF_ROT_USE)) {
+	if (!HasSpawnFlags(SF_ROT_USE)) {
 		touch = __NULL__;
 	}
     
@@ -229,7 +229,7 @@ func_door_rotating::Away(void)
 		return;
 	}
 
-	if (!(spawnflags & SF_DOOR_SILENT)) {
+	if (!HasSpawnFlags(SF_DOOR_SILENT)) {
 		if (m_strSndOpen) {
 			Sound_Play(this, CHAN_VOICE, m_strSndOpen);
 		} else {
@@ -244,9 +244,9 @@ func_door_rotating::Away(void)
 
 	m_iState = STATE_UP;
 
-	if (!(spawnflags & SF_ROT_ONEWAY)) {
+	if (!HasSpawnFlags(SF_ROT_ONEWAY)) {
 		/* One way doors only work on the Y axis */
-		if (!(spawnflags & SF_ROT_ZAXIS || spawnflags & SF_ROT_XAXIS)) {
+		if (!HasSpawnFlags(SF_ROT_ZAXIS) || HasSpawnFlags(SF_ROT_XAXIS)) {
 			vector vDifference = (eActivator.origin - eActivator.view_ofs) - origin;
 			vector vAngles = eActivator.angles;
 			vAngles[0] = vAngles[2] = 0;
@@ -311,7 +311,7 @@ func_door_rotating::Touch(void)
 		return;
 	}
 
-	if (spawnflags & SF_ROT_USE) {
+	if (HasSpawnFlags(SF_ROT_USE)) {
 		return;
 	}
 
@@ -324,10 +324,10 @@ func_door_rotating::Touch(void)
 }
 
 void
-func_door_rotating::Blocked(void)
+func_door_rotating::Blocked(entity eBlocker)
 {
 	if (m_iDamage) {
-		Damage_Apply(other, this, m_iDamage, 0, DMG_CRUSH);
+		Damage_Apply(eBlocker, this, m_iDamage, 0, DMG_CRUSH);
 	}
 
 	if (m_flWait >= 0) {
@@ -342,9 +342,9 @@ func_door_rotating::Blocked(void)
 void
 func_door_rotating::SetMovementDirection(void)
 {
-	if (spawnflags & SF_ROT_ZAXIS) {
+	if (HasSpawnFlags(SF_ROT_ZAXIS)) {
 		m_vecMoveDir = [0,0,1];
-	} else if (spawnflags & SF_ROT_XAXIS) {
+	} else if (HasSpawnFlags(SF_ROT_XAXIS)) {
 		m_vecMoveDir = [1,0,0];
 	} else {
 		m_vecMoveDir = [0,1,0];
@@ -404,9 +404,7 @@ func_door_rotating::Respawn(void)
 	if (m_flWait == 0)
 		m_flWait = 0.01f;
 
-	blocked = Blocked;
-
-	if (spawnflags & SF_ROT_USE) {
+	if (HasSpawnFlags(SF_ROT_USE)) {
 		touch = __NULL__;
 		PlayerUse = Use;
 	} else {
@@ -416,13 +414,13 @@ func_door_rotating::Respawn(void)
 
 	m_vecPos1 = GetSpawnAngles();
 
-	if (spawnflags & SF_ROT_BACKWARDS) {
+	if (HasSpawnFlags(SF_ROT_BACKWARDS)) {
 		m_vecPos2 = GetSpawnAngles() + m_vecMoveDir * -m_flDistance;
 	} else {
 		m_vecPos2 = GetSpawnAngles() + m_vecMoveDir * m_flDistance;
 	}
 
-	if (spawnflags & SF_ROT_OPEN) {
+	if (HasSpawnFlags(SF_ROT_OPEN)) {
 		vector vTemp = m_vecPos2;
 		m_vecPos2 = m_vecPos1;
 		m_vecPos1 = vTemp;
@@ -434,7 +432,7 @@ func_door_rotating::Respawn(void)
 
 	m_iState = STATE_LOWERED;
 
-	if (spawnflags & SF_ROT_PASSABLE) {
+	if (HasSpawnFlags(SF_ROT_PASSABLE)) {
 		SetSolid(SOLID_NOT);
 	}
 

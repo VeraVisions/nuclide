@@ -3763,3 +3763,11 @@ accessor filestream : float
 #undef FTEDEP
 #undef DEP
 #pragma noref 0
+
+typedef enum
+{
+	true = 1,
+	false = 0,
+	TRUE = 1,
+	FALSE = 0
+} bool;

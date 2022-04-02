@@ -43,7 +43,7 @@ monster_generic::Respawn(void)
 {
 	NSTalkMonster::Respawn();
 
-	if (spawnflags & MGF_NONSOLID) {
+	if (HasSpawnFlags(MGF_NONSOLID)) {
 		takedamage = DAMAGE_NO;
 		SetSolid(SOLID_NOT);
 		iBleeds = FALSE;

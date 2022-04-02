@@ -77,7 +77,7 @@ trigger_relay::Trigger(entity act, int state)
 {
 	if (m_iEnabled == FALSE)
 		return;
-	if (spawnflags & TRLY_ONCE)
+	if (HasSpawnFlags(TRLY_ONCE))
 		m_iEnabled = FALSE;
 
 	UseTargets(act, m_iTriggerState, m_flDelay);

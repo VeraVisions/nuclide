@@ -77,7 +77,7 @@ env_spark::TimedSpark(void)
 void
 env_spark::Trigger(entity act, int state)
 {
-	if (spawnflags & EVSPARK_TOGGLE) {
+	if (HasSpawnFlags(EVSPARK_TOGGLE)) {
 		switch (state) {
 		case TRIG_OFF:
 			think = __NULL__;
@@ -106,7 +106,7 @@ env_spark::Respawn(void)
 		m_flMaxDelay = 1.0f;
 	}
 
-	if (spawnflags & EVSPARK_STARTON) {
+	if (HasSpawnFlags(EVSPARK_STARTON)) {
 		Trigger(this, TRIG_ON);
 	}
 }

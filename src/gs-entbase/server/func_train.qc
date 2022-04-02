@@ -76,7 +76,7 @@ class func_train:NSRenderableEntity
 	virtual void(void) AfterSpawn;
 	virtual void(void) PathNext;
 	virtual void(void) PathMove;
-	virtual void(void) Blocked;
+	virtual void(entity) Blocked;
 };
 
 void
@@ -115,18 +115,18 @@ func_train::Restore(string strKey, string strValue)
 }
 
 void
-func_train::Blocked(void)
+func_train::Blocked(entity eBlocker)
 {
 	/* HACK: Make corpses gib instantly */
 	if (other.solid == SOLID_CORPSE) {
-		Damage_Apply(other, this, 500, 0, DMG_EXPLODE);
+		Damage_Apply(eBlocker, this, 500, 0, DMG_EXPLODE);
 		return;
 	}
 
 	if (other.takedamage != DAMAGE_NO) {
-		Damage_Apply(other, this, m_flDamage, 0, DMG_CRUSH);
+		Damage_Apply(eBlocker, this, m_flDamage, 0, DMG_CRUSH);
 	} else {
-		remove(other);
+		remove(eBlocker);
 	}
 }
 
@@ -164,9 +164,7 @@ func_train::PathMove(void)
 		return;
 	}
 
-	vecWorldPos[0] = absmin[0] + (0.5 * (absmax[0] - absmin[0]));
-	vecWorldPos[1] = absmin[1] + (0.5 * (absmax[1] - absmin[1]));
-	vecWorldPos[2] = absmin[2] + (0.5 * (absmax[2] - absmin[2]));
+	vecWorldPos = WorldSpaceCenter();
 
 	vecVelocity = (eNode.origin - vecWorldPos);
 	flTravelTime = (vlen(vecVelocity) / m_flSpeed);
@@ -224,12 +222,12 @@ func_train::PathNext(void)
 	velocity = [0,0,0];
 
 	/* warp */
-	if (eNode.spawnflags & PC_TELEPORT) {
+	if (eNode.HasSpawnFlags(PC_TELEPORT)) {
 		SetOrigin(eNode.origin - (mins + maxs) * 0.5);
 	}
 
 	/* stop until triggered again */
-	if (eNode.spawnflags & PC_WAIT || spawnflags & TRAIN_WAIT) {
+	if (eNode.HasSpawnFlags(PC_WAIT) || HasSpawnFlags(TRAIN_WAIT)) {
 		SoundStop();
 		return;
 	}
@@ -263,9 +261,8 @@ func_train::AfterSpawn(void)
 void
 func_train::Respawn(void)
 {
-	SetSolid(spawnflags & TRAIN_NOTSOLID ? SOLID_NOT : SOLID_BSP);
+	SetSolid(HasSpawnFlags(TRAIN_NOTSOLID) ? SOLID_NOT : SOLID_BSP);
 	SetMovetype(MOVETYPE_PUSH);
-	blocked = Blocked;
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
 

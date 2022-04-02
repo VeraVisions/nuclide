@@ -167,7 +167,7 @@ scripted_sequence::RunOnEntity(entity targ)
 		return;
 
 	/* aaaaand it's gone */
-	if (!(spawnflags & SSFL_REPEATABLE))
+	if (!HasSpawnFlags(SSFL_REPEATABLE))
 		m_iEnabled = FALSE;
 
 	dprint(sprintf("\tName: %s\n", targetname));
@@ -243,7 +243,7 @@ scripted_sequence::RunOnEntity(entity targ)
 
 	f.m_iSequenceState = SEQUENCESTATE_ENDING;
 
-	if (spawnflags & SSFL_NOSCRIPTMOVE)
+	if (HasSpawnFlags(SSFL_NOSCRIPTMOVE))
 		f.think = NSMonster::FreeState;
 	else
 		f.think = NSMonster::FreeStateMoved;

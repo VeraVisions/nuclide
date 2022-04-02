@@ -121,11 +121,11 @@ trigger_multiple::touch(void)
 {
 	if (GetMaster() == FALSE)
 		return;
-	if (spawnflags & TM_NOCLIENTS && other.flags & FL_CLIENT)
+	if (HasSpawnFlags(TM_NOCLIENTS) && other.flags & FL_CLIENT)
 		return;
-	if (!(spawnflags & TM_MONSTERS) && other.flags & FL_MONSTER)
+	if (!HasSpawnFlags(TM_MONSTERS) && other.flags & FL_MONSTER)
 		return;
-	if (!(spawnflags & TM_PUSHABLES) && other.classname == "func_pushable")
+	if (!HasSpawnFlags(TM_PUSHABLES) && other.classname == "func_pushable")
 		return;
 
 	if (Rules_IsTeamPlay() == TRUE) {

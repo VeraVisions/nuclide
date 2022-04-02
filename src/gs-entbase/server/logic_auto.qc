@@ -157,7 +157,7 @@ logic_auto::Processing(void)
 	if (serverkeyfloat("background") == 1)
 		UseOutput(this, m_strOnBackgroundMap);
 
-	if (spawnflags & 1) {
+	if (HasSpawnFlags(1)) {
 		dprint(sprintf("^2logic_auto::^3think^7: %s triggerer removed self\n",  target));
 		remove(this);
 	}

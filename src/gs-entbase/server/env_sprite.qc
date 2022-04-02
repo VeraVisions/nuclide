@@ -65,7 +65,7 @@ env_sprite::SendEntity(entity ePEnt, float flags)
 	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
 		return (0);
 
-	if (spawnflags & ENVS_PLAYONCE)
+	if (HasSpawnFlags(ENVS_PLAYONCE))
 		return (0);
 
 	/* Delete it on the client. */
@@ -132,7 +132,7 @@ env_sprite::NetworkOnce(void)
 void
 env_sprite::Trigger(entity act, int state)
 {
-	if (spawnflags & ENVS_PLAYONCE) {
+	if (HasSpawnFlags(ENVS_PLAYONCE)) {
 		NetworkOnce();
 	} else {
 		m_iToggled = 1 - m_iToggled;
@@ -163,7 +163,7 @@ env_sprite::env_sprite(void)
 
 	super::NSRenderableEntity();
 
-	m_iToggled = ((spawnflags & ENVS_STARTON) > 0);
+	m_iToggled = (HasSpawnFlags(ENVS_STARTON) > 0) ? TRUE : FALSE;
 
 	/* how pointless this would be otherwise. */
 	if (!targetname)

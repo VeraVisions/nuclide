@@ -44,7 +44,7 @@ prop_dynamic::Respawn(void)
 	super::Respawn();
 	SetModel(GetSpawnModel());
 
-	if (spawnflags & PRPDYN_NONSOLID)
+	if (HasSpawnFlags(PRPDYN_NONSOLID))
 		SetSolid(SOLID_NOT);
 }
 

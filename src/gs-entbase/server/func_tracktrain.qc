@@ -73,7 +73,7 @@ class func_tracktrain:NSRenderableEntity
 	virtual void(void) AfterSpawn;
 	virtual void(void) PathNext;
 	virtual void(void) PathMove;
-	virtual void(void) Blocked;
+	virtual void(entity) Blocked;
 };
 
 void
@@ -120,18 +120,18 @@ func_tracktrain::Restore(string strKey, string strValue)
 }
 
 void
-func_tracktrain::Blocked(void)
+func_tracktrain::Blocked(entity eBlocker)
 {
 	/* HACK: Make corpses gib instantly */
-	if (other.solid == SOLID_CORPSE) {
-		Damage_Apply(other, this, 500, 0, DMG_EXPLODE);
+	if (eBlocker.solid == SOLID_CORPSE) {
+		Damage_Apply(eBlocker, this, 500, 0, DMG_EXPLODE);
 		return;
 	}
 
-	if (other.takedamage != DAMAGE_NO) {
-		Damage_Apply(other, this, m_flDamage, 0, DMG_CRUSH);
+	if (eBlocker.takedamage != DAMAGE_NO) {
+		Damage_Apply(eBlocker, this, m_flDamage, 0, DMG_CRUSH);
 	} else {
-		remove(other);
+		remove(eBlocker);
 	}
 }
 
@@ -242,12 +242,12 @@ func_tracktrain::PathNext(void)
 	velocity = [0,0,0];
 
 	/* warp */
-	if (eNode.spawnflags & PC_TELEPORT) {
+	if (eNode.HasSpawnFlags(PC_TELEPORT)) {
 		SetOrigin((eNode.origin) + [0,0,m_flHeight]);
 	}
 
 	/* stop until triggered again */
-	if (eNode.spawnflags & PC_WAIT) {
+	if (eNode.HasSpawnFlags(PC_WAIT)) {
 		SoundStop();
 		return;
 	}
@@ -281,9 +281,8 @@ func_tracktrain::AfterSpawn(void)
 void
 func_tracktrain::Respawn(void)
 {
-	SetSolid(spawnflags & TRAIN_NOTSOLID ? SOLID_NOT : SOLID_BSP);
+	SetSolid(HasSpawnFlags(TRAIN_NOTSOLID) ? SOLID_NOT : SOLID_BSP);
 	SetMovetype(MOVETYPE_PUSH);
-	blocked = Blocked;
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
 	m_flSpeed = m_flStartSpeed;

@@ -206,7 +206,7 @@ trigger_camera::NextPath(void)
 	velocity = [0,0,0];
 
 	/* warp next frame */
-	if (eNode.spawnflags & PC_TELEPORT) {
+	if (eNode.HasSpawnFlags(PC_TELEPORT)) {
 		print(sprintf("^1trigger_camera::^3NextPath^7: Node %s wants %s to teleport\n", eNode.targetname, targetname));
 		think = NextPath;
 		nextthink = ltime;
@@ -214,7 +214,7 @@ trigger_camera::NextPath(void)
 	}
 
 	/* stop until triggered again */
-	if (eNode.spawnflags & PC_WAIT) {
+	if (eNode.HasSpawnFlags(PC_WAIT)) {
 		return;
 	}
 

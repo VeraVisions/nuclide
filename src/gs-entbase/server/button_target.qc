@@ -59,7 +59,7 @@ button_target::Respawn(void)
 	SetOrigin(GetSpawnOrigin());
 
 	/* it's either one or the other */
-	if (spawnflags & BUTTA_USE) {
+	if (HasSpawnFlags(BUTTA_USE)) {
 		PlayerUse = PUseWrapper;
 	} else {
 		health = 1;
@@ -68,7 +68,7 @@ button_target::Respawn(void)
 	}
 
 	/* purely cosmetic */
-	frame = (spawnflags & BUTTA_TEXON) ? 1 : 0;
+	frame = HasSpawnFlags(BUTTA_TEXON) ? 1 : 0;
 }
 
 void

@@ -144,7 +144,7 @@ momentary_rot_button::OnPlayerUse(void)
 	m_eUser = eActivator;
 
 	/* if we're not already rotating (or can only turn 1 way) */
-	if (m_iTurnDir == 0 || (spawnflags & MRBFL_AUTORETURN))
+	if (m_iTurnDir == 0 || HasSpawnFlags(MRBFL_AUTORETURN))
 		iEndState = (MOMENTARY_ROTATING); /* always turning one way on auto-return */
 	else
 		iEndState = (MOMENTARY_RETURNING);
@@ -163,7 +163,7 @@ momentary_rot_button::OnPlayerUse(void)
 		CBaseMomentary b = (CBaseMomentary)e;
 		
 		/* door hack: any entity with the same name as ours will follow our states */
-		if (b.spawnflags & MRBFL_DOORHACK)
+		if (HasSpawnFlags(MRBFL_DOORHACK))
 			b.SetMoveState(iEndState);
 	}
 }
@@ -176,7 +176,7 @@ momentary_rot_button::OnPlayerUnUse(void)
 	m_eUser = world;
 
 	/* instead of stopping, auto-return. */
-	if (spawnflags & MRBFL_AUTORETURN)
+	if (HasSpawnFlags(MRBFL_AUTORETURN))
 		iEndState = (MOMENTARY_RETURNING);
 	else
 		iEndState = (MOMENTARY_IDLE);
@@ -193,7 +193,7 @@ momentary_rot_button::OnPlayerUnUse(void)
 		CBaseMomentary b = (CBaseMomentary)e;
 		
 		/* door hack: any entity with the same name as ours will follow our states */
-		if (b.spawnflags & MRBFL_DOORHACK)
+		if (b.HasSpawnFlags(MRBFL_DOORHACK))
 			b.SetMoveState(iEndState);
 	}
 }
@@ -201,9 +201,9 @@ momentary_rot_button::OnPlayerUnUse(void)
 void
 momentary_rot_button::SetMovementDirection(void)
 {
-	if (spawnflags & MRBFL_XAXIS) {
+	if (HasSpawnFlags(MRBFL_XAXIS)) {
 		m_vecMoveDir = [0,0,1];
-	} else if (spawnflags & MRBFL_YAXIS) {
+	} else if (HasSpawnFlags(MRBFL_YAXIS)) {
 		m_vecMoveDir = [1,0,0];
 	} else {
 		m_vecMoveDir = [0,1,0];
@@ -228,7 +228,7 @@ momentary_rot_button::Respawn(void)
 	SetOrigin(GetSpawnOrigin());
 
 	/* purely visual, can't use this */
-	if (!(spawnflags & MRBFL_NOTUSE)) {
+	if (!HasSpawnFlags(MRBFL_NOTUSE)) {
 		PlayerUse = OnPlayerUse;
 		PlayerUseUnpressed = OnPlayerUnUse;
 	}

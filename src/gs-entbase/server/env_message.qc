@@ -63,7 +63,7 @@ env_message::Play(entity act, int state)
 	WriteFloat(MSG_MULTICAST, m_flVolume);
 	WriteByte(MSG_MULTICAST, m_iAttenuation);
 
-	if (spawnflags & EMF_ALLPLAYERS) {
+	if (HasSpawnFlags(EMF_ALLPLAYERS)) {
 		msg_entity = this;
 		multicast(origin, MULTICAST_ALL);
 	} else {
@@ -71,7 +71,7 @@ env_message::Play(entity act, int state)
 		multicast(origin, MULTICAST_ONE_R);
 	}
 
-	if (spawnflags & EMF_ONCE) {
+	if (HasSpawnFlags(EMF_ONCE)) {
 		Trigger = __NULL__;
 	}
 }
