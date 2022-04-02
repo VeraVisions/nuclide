@@ -196,25 +196,31 @@ void
 CGameRules::DamageApply(entity t, entity c, float dmg, int w, damageType_t type)
 {
 	/* Damage */
-	base_player tp = (base_player)t;
+	NSSurfacePropEntity eTarget = (NSSurfacePropEntity)t;
+
+	/* sanity check */
+	if (t.takedamage == DAMAGE_NO)
+		return;
 
 	/* for armor damage */
 	float flArmor = 0;
 	float flNewDamage = 0;
 
 	/* player god mode */
-	if (t.flags & FL_CLIENT && t.flags & FL_GODMODE)
+	if (eTarget.flags & FL_CLIENT && eTarget.flags & FL_GODMODE)
 		return;
 
 	/* already dead, please avoid recursion */
-	if (t.health <= 0)
+	if (eTarget.GetHealth() <= 0)
 		return;
 
 	/* before any calculation is done... */
 	g_dmg_iRealDamage = dmg;
 
 	/* only clients have armor */
-	if (t.flags & FL_CLIENT) {
+	if (eTarget.flags & FL_CLIENT) {
+		base_player tp = (base_player)t;
+
 		/* skip armor */
 		if not (type & DMG_SKIP_ARMOR)
 		if (tp.armor && dmg > 0) {
@@ -235,7 +241,7 @@ CGameRules::DamageApply(entity t, entity c, float dmg, int w, damageType_t type)
 	}
 
 	dmg = rint(dmg);
-	t.health -= dmg;
+	eTarget.SetHealth(eTarget.GetHealth() - dmg);
 
 	/* the globals... */
 	g_dmg_eAttacker = c;
@@ -262,23 +268,20 @@ CGameRules::DamageApply(entity t, entity c, float dmg, int w, damageType_t type)
 		WriteInt(MSG_MULTICAST, g_dmg_iFlags);
 		msg_entity = g_dmg_eTarget;
 		multicast([0,0,0], MULTICAST_ONE_R);
-	} else if (t.max_health && t.health > t.max_health) {
-		t.health = t.max_health;
 	}
 
-	NSSurfacePropEntity s = (NSSurfacePropEntity)t;
-
-	if (s.health <= 0) {
-		if (s.flags & FL_CLIENT) {
-			PlayerDeath((player)s);
+	/* they died */
+	if (eTarget.GetHealth() <= 0) {
+		if (eTarget.flags & FL_CLIENT) {
+			PlayerDeath((player)eTarget);
 		} else {
-			s.Death();
+			eTarget.Death();
 		}
 	} else {
-		if (s.flags & FL_CLIENT) {
-			PlayerPain((player)s);
+		if (eTarget.flags & FL_CLIENT) {
+			PlayerPain((player)eTarget);
 		} else {
-			s.Pain();
+			eTarget.Pain();
 		}
 	}
 }

@@ -17,7 +17,11 @@
 class
 base_player:spectator
 {
+#ifdef SERVER
+	PREDICTED_INT_N(weaponframe);
+#else
 	PREDICTED_INT(weaponframe);
+#endif
 	PREDICTED_FLOAT(health);
 	PREDICTED_FLOAT(armor);
 

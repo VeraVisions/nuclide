@@ -39,7 +39,7 @@ font_s FONT_16;
 font_s FONT_20;
 font_s FONT_CON;
 
-var string g_shellchrome;
+//var string g_shellchrome;
 var float g_shellchromeshader;
 
 /* clientside cvars */

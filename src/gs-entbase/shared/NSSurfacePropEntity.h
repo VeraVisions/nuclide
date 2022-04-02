@@ -45,7 +45,7 @@ class NSSurfacePropEntity:NSRenderableEntity
 
 	nonvirtual void(entity, float, int) Ignite;
 	nonvirtual void(void) Extinguish;
-	nonvirtual int(void) IsOnFire;
+	nonvirtual bool(void) IsOnFire;
 
 	/* life, death */
 	float m_oldHealth;
@@ -53,16 +53,19 @@ class NSSurfacePropEntity:NSRenderableEntity
 	virtual void(void) Death;
 
 	/* Generic Damage */
-	virtual void(float) SetTakedamage;
-	virtual void(float) SetHealth;
+	nonvirtual void(float) SetTakedamage;
+	nonvirtual void(float) SetHealth;
+	nonvirtual void(float) SetMaxHealth;
+	nonvirtual float(void) GetHealth;
+	nonvirtual float(void) GetMaxHealth;
 
 	/* Surface/PropKit */
 	int m_iMaterial;
 	int m_iPropData;
 	nonvirtual float(void) GetSpawnHealth;
-	nonvirtual int(void) HasPropData;
+	nonvirtual bool(void) HasPropData;
 	nonvirtual __variant(int) GetPropData;
-	nonvirtual int(void) HasSurfaceData;
+	nonvirtual bool(void) HasSurfaceData;
 	nonvirtual __variant(int) GetSurfaceData;
 
 	string m_strSurfData;

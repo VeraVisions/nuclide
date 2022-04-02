@@ -129,17 +129,18 @@ env_fog_controller::StartToBias(void)
 		return 0.025;
 	else if (m_flFogStart < 4096)
 		return 0.0175;
+	else
+		return 0.05;
 }
 
 /* this is mainly for the 'blended' fog. Which is more expensive. */
 float
 env_fog_controller::FogRender(void)
 {
-	vector vecNewColor;
 	vector p1, p2;
 
 	if (!m_iFogActive)
-		return;
+		return (PREDRAW_NEXT);
 
 	CSQC_UpdateSeat();
 
@@ -152,12 +153,14 @@ env_fog_controller::FogRender(void)
 
 	/* cache so we don't call 'fog' every frame */
 	if (delta == m_flLastDelta)
-		return;
+		return (PREDRAW_NEXT);
+
 	m_flLastDelta = delta;
 
 	/* we also only need to call this maybe once every second... */
 	if (m_flNextDraw > cltime)
-		return;
+		return (PREDRAW_NEXT);
+
 	m_flNextDraw = cltime + 1.0f;
 
 	/* apply the fog. wish there was a builtin for this instead... */

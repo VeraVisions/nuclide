@@ -24,19 +24,40 @@ NSSurfacePropEntity::SetTakedamage(float type)
 void
 NSSurfacePropEntity::SetHealth(float new_health)
 {
-	health = new_health;
+	if (max_health > 0)
+		health = min(new_health, max_health);
+	else
+		health = new_health;
 }
 
+void
+NSSurfacePropEntity::SetMaxHealth(float new_health)
+{
+	max_health = new_health;
+	health =  min(health, max_health);
+}
+
+
+float
+NSSurfacePropEntity::GetHealth(void)
+{
+	return health;
+}
+float
+NSSurfacePropEntity::GetMaxHealth(void)
+{
+	return max_health;
+}
 float
 NSSurfacePropEntity::GetSpawnHealth(void)
 {
 	return m_oldHealth;
 }
 
-int
+bool
 NSSurfacePropEntity::HasPropData(void)
 {
-	return (m_iPropData != -1) ? TRUE : FALSE;
+	return (m_iPropData != -1) ? true : false;
 }
 
 __variant
@@ -45,10 +66,10 @@ NSSurfacePropEntity::GetPropData(int type)
 	return Prop_GetInfo(m_iPropData, type);
 }
 
-int
+bool
 NSSurfacePropEntity::HasSurfaceData(void)
 {
-	return (m_iMaterial != -1) ? TRUE : FALSE;
+	return (m_iMaterial != -1) ? true : false;
 }
 
 __variant
@@ -94,10 +115,10 @@ NSSurfacePropEntity::Extinguish(void)
 	m_flBurnTime = 0;
 }
 
-int
+bool
 NSSurfacePropEntity::IsOnFire(void)
 {
-	return (flags & FL_ONFIRE) ? TRUE : FALSE;
+	return (flags & FL_ONFIRE) ? true : false;
 }
 
 void
@@ -107,7 +128,7 @@ NSSurfacePropEntity::Respawn(void)
 	NSRenderableEntity::Respawn();
 
 	/* only use spawndata's health if we aren't overriding it */
-	if (HasPropData() == TRUE && sh <= 0) {
+	if (HasPropData() == false && sh <= 0) {
 		health = (float)GetPropData(PROPINFO_HEALTH);
 	} else {
 		health = sh;
@@ -227,7 +248,7 @@ NSSurfacePropEntity::Death(void)
 {
 	UseOutput(g_dmg_eAttacker, m_strOnBreak);
 
-	if (HasPropData() == FALSE)
+	if (HasPropData() == false)
 		return;
 
 	if (GetPropData(PROPINFO_SKIN) != 0) {
@@ -310,7 +331,7 @@ NSSurfacePropEntity::SetModel(string newModel)
 	NSRenderableEntity::SetModel(newModel);
 
 #ifdef SERVER
-	if (model && m_iPropData == -1) {
+	if (model && HasPropData() == false) {
 		m_iPropData = PropData_ForModel(model);
 	}
 #endif
