@@ -136,12 +136,6 @@ NSEntity::Visible(entity ent)
 	return (false);
 }
 
-entity
-NSEntity::GetOwner(void)
-{
-	return owner;
-}
-
 bool
 NSEntity::HasSpawnFlags(float sf)
 {
@@ -173,9 +167,44 @@ NSEntity::Blocked(entity eBlocker)
 }
 
 void
-NSEntity::_BlockedHandler(void)
+NSEntity::BlockedHandler(void)
 {
 	Blocked(other);
+}
+
+void
+NSEntity::Touch(entity eToucher)
+{
+	/* To be handled by sub-classes */
+	print("touched!\n");
+}
+
+void
+NSEntity::StartTouch(entity eToucher)
+{
+	/* To be handled by sub-classes */
+	print("start touched!\n");
+}
+
+void
+NSEntity::EndTouch(entity eToucher)
+{
+	/* To be handled by sub-classes */
+	print("end touched!\n");
+}
+
+void
+NSEntity::TouchHandler(void)
+{
+	/* start touch in case we haven't */
+	if (m_beingTouched != true)
+		StartTouch(other);
+
+	Touch(other);
+
+	m_flTouchTime = time;
+	m_beingTouched = true;
+	m_eTouchLast = other;
 }
 
 #ifdef CLIENT
@@ -442,6 +471,14 @@ NSEntity::ParentUpdate(void)
 			}
 		}
 	}
+
+	/* handle end-touch */
+	if (m_beingTouched == true)
+		if (m_flTouchTime < time) {
+				EndTouch(m_eTouchLast);
+				m_beingTouched = false;
+				m_eTouchLast = __NULL__;
+		}
 }
 entity
 NSEntity::GetParent(void)
@@ -486,9 +523,6 @@ NSEntity::SetOwner(entity newOwner)
 void
 NSEntity::SetVelocity(vector vecNew)
 {
-	if (vecNew == velocity)
-		return;
-
 	velocity = vecNew;
 };
 
@@ -512,25 +546,23 @@ NSEntity::SetSendFlags(float flSendFlags)
 void
 NSEntity::SetMovetype(float newMovetype)
 {
-	if (newMovetype == movetype)
-		return;
-
 	movetype = newMovetype;
 }
+
+void
+NSEntity::SetGravity(float newGrav)
+{
+	gravity = newGrav;
+}
+
 void
 NSEntity::SetSolid(float newSolid)
 {
-	if (newSolid == solid)
-		return;
-
 	solid = newSolid;
 }
 void
 NSEntity::SetScale(float newScale)
 {
-	if (newScale == scale)
-		return;
-
 	scale = newScale;
 }
 
@@ -582,10 +614,13 @@ NSEntity::UpdateBounds(void)
 void
 NSEntity::SetAngles(vector newAngles)
 {
-	if (newAngles == angles)
-		return;
-
 	angles = newAngles;
+}
+
+void
+NSEntity::SetAngularVelocity(vector newAvel)
+{
+	avelocity = newAvel;
 }
 
 void
@@ -606,9 +641,6 @@ NSEntity::SetSize(vector newMins, vector newMaxs)
 void
 NSEntity::SetOrigin(vector newOrigin)
 {
-	if (newOrigin == origin)
-		return;
-
 	setorigin(this, newOrigin);
 }
 
@@ -630,6 +662,127 @@ NSEntity::SetModelindex(float newModelIndex)
 	modelindex = newModelIndex;
 	SetSize(mins, maxs);
 }
+
+void
+NSEntity::AddFlags(float fl)
+{
+	flags |= fl;
+}
+
+void
+NSEntity::RemoveFlags(float fl)
+{
+	flags &= ~fl;
+}
+
+float
+NSEntity::GetScale(void)
+{
+	return scale;
+}
+
+entity
+NSEntity::GetOwner(void)
+{
+	return owner;
+}
+
+vector
+NSEntity::GetVelocity(void)
+{
+	return velocity;
+}
+
+float
+NSEntity::GetSolid(void)
+{
+	return solid;
+}
+
+string
+NSEntity::GetModel(void)
+{
+	return model;
+}
+
+float
+NSEntity::GetModelindex(void)
+{
+	return modelindex;
+}
+
+float
+NSEntity::GetMovetype(void)
+{
+	return movetype;
+}
+
+float
+NSEntity::GetGravity(void)
+{
+	return gravity;
+}
+
+vector
+NSEntity::GetAngles(void)
+{
+	return angles;
+}
+
+vector
+NSEntity::GetAngularVelocity(void)
+{
+	return avelocity;
+}
+
+vector
+NSEntity::GetOrigin(void)
+{
+	return origin;
+}
+
+vector
+NSEntity::GetMins(void)
+{
+	return mins;
+}
+
+vector
+NSEntity::GetMaxs(void)
+{
+	return maxs;
+}
+
+vector
+NSEntity::GetRealMins(void)
+{
+	return m_vecMins;
+}
+
+vector
+NSEntity::GetRealMaxs(void)
+{
+	return m_vecMaxs;
+}
+
+vector
+NSEntity::GetAbsoluteMins(void)
+{
+	return absmin;
+}
+
+vector
+NSEntity::GetAbsoluteMaxs(void)
+{
+	return absmax;
+}
+
+float
+NSEntity::GetFlags(void)
+{
+	return flags;
+}
+
 
 #ifdef SERVER
 vector
@@ -870,7 +1023,8 @@ NSEntity::NSEntity(void)
 	m_oldOrigin = origin;
 	m_oldSolid = solid;
 	m_oldModel = Util_FixModel(model);
-	blocked = _BlockedHandler;
+	blocked = BlockedHandler;
+	touch = TouchHandler;
 
 	/* Input/Output system */
 	m_strOnTrigger = CreateOutput(m_strOnTrigger);

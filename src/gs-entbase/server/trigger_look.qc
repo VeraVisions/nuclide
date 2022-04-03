@@ -50,7 +50,7 @@ class trigger_look:NSBrushTrigger
 
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
-	virtual void(void) Touch;
+	virtual void(entity) Touch;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
 };
@@ -95,7 +95,7 @@ trigger_look::Restore(string strKey, string strValue)
 }
 
 void
-trigger_look::Touch(void)
+trigger_look::Touch(entity eToucher)
 {
 	float dot;
 	entity lt;
@@ -103,7 +103,7 @@ trigger_look::Touch(void)
 	if (GetMaster() == FALSE)
 		return;
 
-	if (!(other.flags & FL_CLIENT)) {
+	if (!(eToucher.flags & FL_CLIENT)) {
 		/* FIXME: could this conflict with other entities? probably. */
 		m_flLooked = 0.0f;
 		return;
@@ -118,7 +118,7 @@ trigger_look::Touch(void)
 	}
 
 	/* test against the looktarget position */
-	makevectors(other.v_angle);
+	makevectors(eToucher.v_angle);
 	vector v = normalize (lt.origin - other.origin);
 	dot = v * v_forward;
 
@@ -138,9 +138,9 @@ trigger_look::Touch(void)
 	SetSolid(SOLID_NOT);
 
 	if (!target)
-		UseOutput(other, m_strOnTrigger);
+		UseOutput(eToucher, m_strOnTrigger);
 	else
-		UseTargets(other, TRIG_TOGGLE, m_flDelay);
+		UseTargets(eToucher, TRIG_TOGGLE, m_flDelay);
 }
 
 void

@@ -47,7 +47,6 @@ enumflags
 class trigger_multiple:NSBrushTrigger
 {
 	float m_flWait;
-	entity m_eLastToucher;
 
 	/* Input/Output */
 	string m_strOnStartTouch;
@@ -58,31 +57,18 @@ class trigger_multiple:NSBrushTrigger
 
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
-	virtual void(void) touch;
+	virtual void(entity) Touch;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
 
-	virtual void(void) EndTouchCheck;
+	virtual void(entity) EndTouch;
 };
 
 void
-trigger_multiple::EndTouchCheck(void)
+trigger_multiple::EndTouch(entity eToucher)
 {
-	if (m_eLastToucher) {
-		tracebox(origin, absmin, absmax, origin, MOVE_NORMAL, this);
-		if (!(trace_ent.flags & FL_CLIENT)) {
-			UseOutput(other, m_strOnEndTouchAll);
-			m_eLastToucher = __NULL__;
-		}
-	}
-
-	/* support for think/nextthink */
-	if (think && nextthink > 0.0f) {
-		if (nextthink < time) {
-			nextthink = 0.0f;
-			think();
-		}
-	}
+	if (m_strOnEndTouchAll)
+		UseOutput(eToucher, m_strOnEndTouchAll);
 }
 
 void
@@ -117,15 +103,15 @@ trigger_multiple::Restore(string strKey, string strValue)
 }
 
 void
-trigger_multiple::touch(void)
+trigger_multiple::Touch(entity eToucher)
 {
 	if (GetMaster() == FALSE)
 		return;
-	if (HasSpawnFlags(TM_NOCLIENTS) && other.flags & FL_CLIENT)
+	if (HasSpawnFlags(TM_NOCLIENTS) && eToucher.flags & FL_CLIENT)
 		return;
-	if (!HasSpawnFlags(TM_MONSTERS) && other.flags & FL_MONSTER)
+	if (!HasSpawnFlags(TM_MONSTERS) && eToucher.flags & FL_MONSTER)
 		return;
-	if (!HasSpawnFlags(TM_PUSHABLES) && other.classname == "func_pushable")
+	if (!HasSpawnFlags(TM_PUSHABLES) && eToucher.classname == "func_pushable")
 		return;
 
 	if (Rules_IsTeamPlay() == TRUE) {
@@ -136,9 +122,9 @@ trigger_multiple::touch(void)
 
 	/* if the target key isn't used, assume we're using the new I/O system */
 	if (!target)
-		UseOutput(other, m_strOnStartTouch);
+		UseOutput(eToucher, m_strOnStartTouch);
 	else
-		UseTargets(other, TRIG_TOGGLE, m_flDelay);
+		UseTargets(eToucher, TRIG_TOGGLE, m_flDelay);
 
 	/* This is effectively a trigger_once...*/
 	if (m_flWait != -1) {
@@ -147,17 +133,12 @@ trigger_multiple::touch(void)
 	}
 
 	SetSolid(SOLID_NOT);
-	m_eLastToucher = other;
 }
 
 void
 trigger_multiple::Respawn(void)
 {
 	InitBrushTrigger();
-
-	if (m_strOnEndTouchAll) {
-		customphysics = EndTouchCheck;
-	}
 }
 
 void

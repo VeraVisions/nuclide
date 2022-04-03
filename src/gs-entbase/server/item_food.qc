@@ -33,12 +33,12 @@ class item_food:NSEntity
 	void(void) item_food;
 
 	virtual void(void) Setup;
-	virtual void(void) Touch;
+	virtual void(entity) Touch;
 };
 
-void item_food::Touch(void)
+void item_food::Touch(entity eToucher)
 {
-	if (other.classname != "player") {
+	if (eToucher.classname != "player") {
 		return;
 	}
 	
@@ -47,7 +47,7 @@ void item_food::Touch(void)
 		bevOwner.m_iReady = TRUE;
 	}
 	
-	Damage_Apply(other, this, -1, 0, DMG_GENERIC);
+	Damage_Apply(eToucher, this, -1, 0, DMG_GENERIC);
 	SetSolid(SOLID_NOT);
 	remove(this);
 }
@@ -56,7 +56,6 @@ void item_food::Setup(void)
 {
 	SetSolid(SOLID_TRIGGER);
 	SetSize([-16,-16,-16], [16,16,16]);
-	touch = Touch;
 
 	if (m_iIsCan) {
 		sound(this, CHAN_ITEM, "weapons/g_bounce3.wav", 1.0f, ATTN_NORM);

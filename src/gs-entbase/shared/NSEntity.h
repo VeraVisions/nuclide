@@ -37,6 +37,11 @@ class NSEntity:NSTrigger
 	PREDICTED_FLOAT_N(flags);
 	PREDICTED_VECTOR_N(velocity);
 
+	/* not needed to be saved right now */
+	float m_flTouchTime;
+	bool m_beingTouched;
+	entity m_eTouchLast;
+
 #ifdef CLIENT
 	virtual void(float,float) ReceiveEntity;
 	virtual void(void) postdraw;
@@ -83,6 +88,7 @@ class NSEntity:NSTrigger
 	nonvirtual string(void) GetSpawnModel;
 #endif
 
+	/* sets */
 	virtual void(float) SetScale;
 	virtual void(entity) SetOwner;
 	virtual void(vector) SetVelocity;
@@ -92,11 +98,35 @@ class NSEntity:NSTrigger
 	virtual void(string) SetModel;
 	virtual void(float) SetModelindex;
 	virtual void(float) SetMovetype;
+	virtual void(float) SetGravity;
 	virtual void(vector) SetAngles;
+	virtual void(vector) SetAngularVelocity;
 	virtual void(vector) SetOrigin;
 	virtual void(vector, vector) SetSize;
+	virtual void(float) AddFlags;
+	virtual void(float) RemoveFlags;
+	/* gets */
+	virtual float(void) GetScale;
+	virtual entity(void) GetOwner;
+	virtual vector(void) GetVelocity;
+	virtual float(void) GetSolid;
+	virtual string(void) GetModel;
+	virtual float(void) GetModelindex;
+	virtual float(void) GetMovetype;
+	virtual float(void) GetGravity;
+	virtual vector(void) GetAngles;
+	virtual vector(void) GetAngularVelocity;
+	virtual vector(void) GetOrigin;
+	virtual vector(void) GetMins;
+	virtual vector(void) GetMaxs;
+	virtual vector(void) GetRealMins;
+	virtual vector(void) GetRealMaxs;
+	virtual vector(void) GetAbsoluteMins;
+	virtual vector(void) GetAbsoluteMaxs;
+	virtual float(void) GetFlags;
+
 	virtual void(string, string) SpawnKey;
-	nonvirtual void(void) Destroy;
+	virtual void(void) Destroy;
 	virtual void(void) UpdateBounds;
 
 	/* useful methods, based on GMod's API */
@@ -109,10 +139,14 @@ class NSEntity:NSTrigger
 	nonvirtual float(void) WaterLevel;
 	nonvirtual bool(entity) Visible;
 	nonvirtual bool(vector) VisibleVec;
-	nonvirtual entity(void) GetOwner;
 	nonvirtual bool(float) HasSpawnFlags;
 	nonvirtual bool(void) IsOnGround;
 	nonvirtual entity(void) GetGroundEntity;
 	virtual void(entity) Blocked;
-	nonvirtual void(void) _BlockedHandler;
+	nonvirtual void(void) BlockedHandler;
+
+	virtual void(entity) StartTouch;
+	virtual void(entity) Touch;
+	virtual void(entity) EndTouch;
+	nonvirtual void(void) TouchHandler;
 };

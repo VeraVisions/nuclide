@@ -15,20 +15,20 @@
  */
 
 void
-item_pickup::touch(void)
+item_pickup::Touch(entity eToucher)
 {
-	if (other.classname != "player") {
+	if (eToucher.classname != "player") {
 		return;
 	}
 
 	/* don't remove if AddItem fails */
-	if (Weapons_AddItem((base_player)other, id, m_iClip) == FALSE) {
+	if (Weapons_AddItem((base_player)eToucher, id, m_iClip) == FALSE) {
 		return;
 	}
 
-	Logging_Pickup(other, this, __NULL__);
+	Logging_Pickup(eToucher, this, __NULL__);
 
-	UseTargets(other, TRIG_TOGGLE, m_flDelay);
+	UseTargets(eToucher, TRIG_TOGGLE, m_flDelay);
 
 	if (real_owner || m_iWasDropped == 1 || cvar("sv_playerslots") == 1) {
 		remove(self);
@@ -44,8 +44,7 @@ item_pickup::SetItem(int i)
 {
 	id = i;
 	m_oldModel = Weapons_GetWorldmodel(id);
-	SetModel(m_oldModel);
-	SetSize([-16,-16,0], [16,16,16]);
+	Respawn();
 }
 
 void
@@ -58,7 +57,7 @@ void
 item_pickup::Respawn(void)
 {
 	SetSolid(SOLID_TRIGGER);
-	SetOrigin(m_oldOrigin);
+	SetOrigin(GetSpawnOrigin());
 
 	/* At some points, the item id might not yet be set */
 	if (m_oldModel) {
@@ -83,6 +82,6 @@ item_pickup::Respawn(void)
 void
 item_pickup::item_pickup(void)
 {
-	CBaseTrigger::CBaseTrigger();
+	super::NSRenderableEntity();
 	Respawn();
 }

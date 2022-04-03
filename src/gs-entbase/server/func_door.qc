@@ -111,7 +111,7 @@ class func_door:NSRenderableEntity
 	virtual void(void) Respawn;
 	virtual void(entity, int) Trigger;
 	virtual void(entity) Blocked;
-	virtual void(void) Touch;
+	virtual void(entity) Touch;
 	virtual void(void) Use;
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
@@ -291,8 +291,11 @@ func_door::Trigger(entity act, int state)
 }
 
 void
-func_door::Touch(void)
+func_door::Touch(entity eToucher)
 {
+	if (HasSpawnFlags(SF_MOV_USE))
+		return;
+
 	if (m_iLocked || !GetMaster()) {
 		if (m_flSoundWait < time)
 			Sound_Play(this, CHAN_VOICE, m_strLockedSfx);
@@ -305,9 +308,9 @@ func_door::Touch(void)
 		return;
 	}
 
-	if (other.movetype == MOVETYPE_WALK) {
-		if (other.absmin[2] <= maxs[2] - 2) {
-			Trigger(other, TRIG_TOGGLE);
+	if (eToucher.movetype == MOVETYPE_WALK) {
+		if (eToucher.absmin[2] <= maxs[2] - 2) {
+			Trigger(eToucher, TRIG_TOGGLE);
 		}
 	}
 }
@@ -420,14 +423,10 @@ func_door::Respawn(void)
 	}
 
 	if (HasSpawnFlags(SF_MOV_USE)) {
-		touch = __NULL__;
 		PlayerUse = Use;
 	} else {
-		touch = Touch;
 		PlayerUse = __NULL__;
 	}
-
-	touch = Touch;
 
 	m_iValue = 0;
 	m_iState = DOORSTATE_LOWERED;

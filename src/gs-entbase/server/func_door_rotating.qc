@@ -100,7 +100,7 @@ class func_door_rotating:NSRenderableEntity
 	virtual void(void) Away;
 	virtual void(entity, int) Trigger;
 	virtual void(void) Use;
-	virtual void(void) Touch;
+	virtual void(entity) Touch;
 	virtual void(entity) Blocked;
 	virtual void(void) SetMovementDirection;
 	virtual void(vector angle, void(void) func) RotToDest;
@@ -301,7 +301,7 @@ func_door_rotating::Use(void)
 }
 
 void
-func_door_rotating::Touch(void)
+func_door_rotating::Touch(entity eToucher)
 {
 	if (m_iLocked || !GetMaster()) {
 		if (m_flSoundWait < time)
@@ -318,8 +318,8 @@ func_door_rotating::Touch(void)
 	if ((m_iState == STATE_UP) || (m_iState == STATE_DOWN))
 		return;
 
-	if (other.movetype == MOVETYPE_WALK) {
-		Trigger(other, TRIG_TOGGLE);
+	if (eToucher.movetype == MOVETYPE_WALK) {
+		Trigger(eToucher, TRIG_TOGGLE);
 	}
 }
 
@@ -405,10 +405,8 @@ func_door_rotating::Respawn(void)
 		m_flWait = 0.01f;
 
 	if (HasSpawnFlags(SF_ROT_USE)) {
-		touch = __NULL__;
 		PlayerUse = Use;
 	} else {
-		touch = Touch;
 		PlayerUse = __NULL__;
 	}
 

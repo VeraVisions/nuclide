@@ -15,7 +15,7 @@
  */
 
 /* PICKUP ITEMS */
-class item_pickup:CBaseTrigger
+class item_pickup:NSRenderableEntity
 {
 	int m_bFloating;
 	int m_iClip;
@@ -23,7 +23,7 @@ class item_pickup:CBaseTrigger
 	int id;
 	void(void) item_pickup;
 
-	virtual void(void) touch;
+	virtual void(entity) Touch;
 	virtual void(int i) SetItem;
 	virtual void(void) Respawn;
 	virtual void(int) SetFloating;

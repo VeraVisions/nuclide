@@ -105,7 +105,7 @@ class func_button:NSSurfacePropEntity
 	virtual void(void) Returned;
 	virtual void(void) MoveBack;
 	virtual void(void) MoveAway;
-	virtual void(void) Touch;
+	virtual void(entity) Touch;
 	virtual void(entity) Blocked;
 	virtual void(entity, int) Trigger;
 	virtual void(void) DeathTrigger;
@@ -324,14 +324,14 @@ func_button::DeathTrigger(void)
 }
 
 void
-func_button::Touch(void)
+func_button::Touch(entity eToucher)
 {
-	if (other.movetype == MOVETYPE_WALK) {
-		Trigger(other, TRIG_TOGGLE);
-    
-		if (!HasSpawnFlags(SF_BTT_TOUCH_ONLY)) {
-			touch = __NULL__;
-		}
+	if (!HasSpawnFlags(SF_BTT_TOUCH_ONLY)) {
+		return;
+	}
+
+	if (eToucher.movetype == MOVETYPE_WALK) {
+		Trigger(eToucher, TRIG_TOGGLE);
 	}
 }
 
@@ -425,10 +425,8 @@ func_button::Respawn(void)
 	}
 
 	if (HasSpawnFlags(SF_BTT_TOUCH_ONLY)) {
-		touch = Touch;
 		PlayerUse = __NULL__;
 	} else {
-		touch = __NULL__;
 		PlayerUse = Use;
 	}
 
