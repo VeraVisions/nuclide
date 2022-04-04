@@ -164,9 +164,6 @@ func_door::Arrived(void)
 	if (m_strSndMove)
 		sound(this, CHAN_WEAPON, "common/null.wav", 1.0f, ATTN_NORM);
 
-	if (!HasSpawnFlags(SF_MOV_USE)) {
-		touch = Touch;
-	}
 	if (m_flWait < 0) {
 		return;
 	}
@@ -200,10 +197,6 @@ func_door::Returned(void)
 
 	if (m_strSndMove)
 		sound(this, CHAN_WEAPON, "common/null.wav", 1.0f, ATTN_NORM);
-
-	if (!HasSpawnFlags(SF_MOV_USE)) {
-		touch = Touch;
-	}
 
 	m_iState = DOORSTATE_LOWERED;
 	PortalClose();

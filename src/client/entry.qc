@@ -146,6 +146,7 @@ CSQC_UpdateView(float w, float h, float focus)
 	base_client cl = __NULL__;
 	spectator spec;
 	int s;
+	entity c;
 
 	if (w == 0 || h == 0) {
 		return;
@@ -257,7 +258,7 @@ CSQC_UpdateView(float w, float h, float focus)
 			spec = (spectator)self;
 
 			if (spec.spec_mode == SPECMODE_FIRSTPERSON || spec.spec_mode == SPECMODE_THIRDPERSON) {
-				entity c = findfloat(world, ::entnum, spec.spec_ent);
+				c = findfloat(world, ::entnum, spec.spec_ent);
 				pSeat->m_vecPredictedOrigin = c.origin;
 				pSeat->m_vecPredictedVelocity = c.velocity;
 				pSeat->m_flPredictedFlags = c.flags;
@@ -318,7 +319,7 @@ CSQC_UpdateView(float w, float h, float focus)
 					setproperty(VF_ORIGIN, trace_endpos + (v_forward * 5));
 					break;
 				case SPECMODE_FIRSTPERSON:
-					entity c = findfloat(world, ::entnum, spec.spec_ent);
+					c = findfloat(world, ::entnum, spec.spec_ent);
 					
 					if (c.classname == "player") {
 						player bp = (player)c;
@@ -358,10 +359,11 @@ CSQC_UpdateView(float w, float h, float focus)
 			View_DrawViewModel();
 		} else {
 			if (Client_IsSpectator(pl)) {
+				spec = (spectator)self;
+
 				/* 0 means world */
 				if (spec.spec_ent) {
-					spec = (spectator)self;
-					entity c = findfloat(world, ::entnum, spec.spec_ent);
+					c = findfloat(world, ::entnum, spec.spec_ent);
 
 					/* we found them */
 					if (c && c != spec) {
@@ -725,6 +727,8 @@ CSQC_Ent_Remove(void)
 	if (self.isCSQC) {
 		NSEntity me = (NSEntity)self;
 		me.ClientRemove();
+		remove(self);
+	} else {
 		remove(self);
 	}
 }

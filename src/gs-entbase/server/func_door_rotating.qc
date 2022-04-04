@@ -159,10 +159,6 @@ func_door_rotating::Arrived(void)
 		sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
 	}
 
-	if (!HasSpawnFlags(SF_ROT_USE)) {
-		touch = Touch;
-	}
-
 	if (HasSpawnFlags(SF_ROT_TOGGLE) || m_flWait < 0)
 		return;
 
@@ -176,10 +172,6 @@ func_door_rotating::Returned(void)
 	SetAngles(m_vecDest);
 	avelocity = [0,0,0];
 	nextthink = 0.0f;
-
-	if (!HasSpawnFlags(SF_ROT_USE)) {
-		touch = Touch;
-	}
 
 	if (m_strSndStop) {
 		Sound_Play(this, CHAN_VOICE, m_strSndStop);

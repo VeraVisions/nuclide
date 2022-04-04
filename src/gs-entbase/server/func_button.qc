@@ -209,12 +209,6 @@ func_button::Arrived(void)
 
 	UseOutput(this, m_strOnIn);
 	m_iState = STATE_RAISED;
-	
-	if (HasSpawnFlags(SF_BTT_TOUCH_ONLY)) {
-		touch = Touch;
-	} else {
-		touch = __NULL__;
-	}
 
 	if (HasSpawnFlags(SF_BTT_TOGGLE)) {
 		return;
@@ -234,10 +228,6 @@ func_button::Returned(void)
 	velocity = [0,0,0];
 	nextthink = 0;
 
-	if (HasSpawnFlags(SF_BTT_TOUCH_ONLY)) {
-		touch = Touch;
-	}
-    
 	m_iState = STATE_LOWERED;
 	SetFrame(FRAME_OFF);
 }
