@@ -39,14 +39,15 @@ typedef enumflags
 	PROPROPE_CHANGED_SWING,
 	PROPROPE_CHANGED_SEGMENTS,
 	PROPROPE_CHANGED_ORIGIN,
-	PROPROPE_CHANGED_TARGET
+	PROPROPE_CHANGED_TARGET,
+	PROPROPE_CHANGED_FLAGS
 };
-
-#define ROPE_RIBBON
 
 void(float radius, vector texcoordbias) R_EndPolygonRibbon = #0;
 
 var int autocvar_rope_debug = FALSE;
+var float autocvar_rope_sag = 2.0;
+var float autocvar_rope_swing = 2.0;
 
 class prop_rope:NSEntity
 {
@@ -61,6 +62,7 @@ class prop_rope:NSEntity
 #ifdef CLIENT
 	virtual float() predraw;
 	virtual void(float,float) ReadEntity;
+	virtual void(vector, vector, vector) DrawSegment;
 #else
 	virtual void(void) Respawn;
 	virtual void(void) EvaluateEntity;
@@ -71,67 +73,26 @@ class prop_rope:NSEntity
 
 #ifdef CLIENT
 
-#ifndef ROPE_RIBBON
 void
-prop_rope::draw_segment(vector start, vector end, int flip)
+prop_rope::DrawSegment(vector pos1, vector pos2, vector vecPlayer)
 {
-	vector fsize = [2,2];
-	vector lit1 = /*[0.1,0.1,0.1] */ getlight(start) / 255;
-	vector lit2 = /*[0.1,0.1,0.1] */ getlight(end) / 255;
+	vector lit1 = /*[0.1,0.1,0.1] */ getlight(pos1) / 255;
+	vector lit2 = /*[0.1,0.1,0.1] */ getlight(pos2) / 255;
 
-	if (autocvar_rope_debug == TRUE) {
-		R_BeginPolygon("", 0, 0);
-		R_PolygonVertex(start, [0,1], lit1, 1);
-		R_PolygonVertex(end, [1,1], lit2, 1);
-		R_EndPolygon();
-		return;
-	}
-
-	makevectors(view_angles);
-
-	vector tex1, tex2, tex3, tex4;
-	vector eyepos = getproperty(VF_ORIGIN);
-	vector dir = normalize(start-end);
-	vector eyevector = normalize(start - eyepos);
-	vector tangent = crossproduct(dir, eyevector);
-
-	tex1 = start + tangent * fsize[0];
-	tex2 = start - tangent * fsize[1];
-
-	eyevector = normalize(end - eyepos);
-	tangent = crossproduct(dir, eyevector);
-
-	tex3 = end - tangent * fsize[0];
-	tex4 = end + tangent * fsize[1];
-
-	if (!flip) {
-		R_BeginPolygon(m_strShader, 0, 0);
-			R_PolygonVertex(tex1, [0,1], lit1, 1.0f);
-			R_PolygonVertex(tex2, [1,1], lit1, 1.0f);
-
-			R_PolygonVertex(tex3, [1,0], lit2, 1.0f);
-			R_PolygonVertex(tex4, [0,0], lit2, 1.0f);
-		R_EndPolygon();
-	} else {
-		R_BeginPolygon(m_strShader, 0, 0);
-			R_PolygonVertex(tex1, [1,0], lit1, 1.0f);
-			R_PolygonVertex(tex2, [0,0], lit1, 1.0f);
-
-			R_PolygonVertex(tex3, [0,1], lit2, 1.0f);
-			R_PolygonVertex(tex4, [1,1], lit2, 1.0f);
-		R_EndPolygon();
-	}
+	makevectors(getproperty(VF_CL_VIEWANGLES));
+	setproperty(VF_ORIGIN, vecPlayer);
+	R_BeginPolygon(m_strShader, 0, 0);
+		R_PolygonVertex(pos1, [0,0], lit1, 1.0f);
+		R_PolygonVertex(pos2, [0,1], lit2, 1.0f);
+	R_EndPolygonRibbon(2, [-1,0]);
 }
-#endif
 
 float
 prop_rope::predraw(void)
 {
 	vector pos1;
 	vector pos2;
-	float travel;
 	float segments;
-	float sc;
 	vector vecPlayer;
 
 	int s = (float)getproperty(VF_ACTIVESEAT);
@@ -149,71 +110,36 @@ prop_rope::predraw(void)
 		R_EndPolygon();
 	}
 
-	segments = m_iSegments;
-
-	travel = vlen(origin - m_vecTarget) / segments;
-
-	sc = 0;
+	segments = 32;
+	float travel = 1.0f / segments;
+	float progress= 0.0f;
 	pos1 = origin;
-	for (float i = 0; i < segments / 2; i++) {
-		float sag = cos(sc) * m_flSag;
+
+	for (float i = 0; i < segments; i++) {
+		float sag = 0.0f;
+		float swing = 0.0f;
+		progress += travel;
+
+		if (flags & 1) {
+			sag = cos(M_PI * (progress * 0.5) - (M_PI/2)) * m_flSag;
+			swing = cos(M_PI * (progress * 0.5) - (M_PI/2)) * m_flSwingFactor;
+		} else {
+			sag = cos(M_PI * (progress) - (M_PI/2)) * m_flSag;
+			swing = cos(M_PI * (progress) - (M_PI/2)) * m_flSwingFactor;
+		}
 
 		/* get the direction */
 		makevectors(vectoangles(m_vecTarget - origin));
 
 		/* travel further and sag */
-		pos2 = pos1 + (v_forward * travel) + (v_up * -sag) + ((v_right * sin(time)) * m_flSwingFactor);
+		pos2[0] = Math_Lerp(origin[0], m_vecTarget[0], progress);
+		pos2[1] = Math_Lerp(origin[1], m_vecTarget[1], progress);
+		pos2[2] = Math_Lerp(origin[2], m_vecTarget[2], progress);
+		pos2 += (v_up * -sag) * autocvar_rope_sag;
+		pos2 += ((v_right * swing) * sin(time)) * autocvar_rope_swing;
 
-#ifndef ROPE_RIBBON
-		draw_segment(pos1, pos2, 0);
-#else
-		vector lit1 = /*[0.1,0.1,0.1] */ getlight(pos1) / 255;
-		vector lit2 = /*[0.1,0.1,0.1] */ getlight(pos2) / 255;
-
-		makevectors(getproperty(VF_CL_VIEWANGLES));
-		setproperty(VF_ORIGIN, vecPlayer);
-		R_BeginPolygon(m_strShader, 0, 0);
-			R_PolygonVertex(pos1, [0,0], lit1, 1.0f);
-			R_PolygonVertex(pos2, [0,1], lit2, 1.0f);
-		R_EndPolygonRibbon(2, [1,0]);
-#endif
+		DrawSegment(pos1, pos2, vecPlayer);
 		pos1 = pos2;
-
-		sc += (M_PI * (1 / segments));
-	}
-
-	/* only drawing one segment. */
-	if (HasSpawnFlags(1)) {
-		return (PREDRAW_NEXT);
-	}
-
-	sc = 0;
-	pos1 = m_vecTarget;
-	for (float i = 0; i < segments / 2; i++) {
-		float sag = cos(sc) * m_flSag;
-
-		/* get the direction */
-		makevectors(vectoangles(origin - m_vecTarget));
-
-		/* travel further and sag */
-		pos2 = pos1 + (v_forward * travel) + (v_up * -sag) - ((v_right * sin(time)) * m_flSwingFactor);
-
-#ifndef ROPE_RIBBON
-		draw_segment(pos1, pos2, 0);
-#else
-		vector lit1 = getlight(pos1) / 255;
-		vector lit2 = getlight(pos2) / 255;
-
-		makevectors(getproperty(VF_CL_VIEWANGLES));
-		setproperty(VF_ORIGIN, vecPlayer);
-		R_BeginPolygon(m_strShader, 0, 0);
-			R_PolygonVertex(pos1, [0,0], lit1, 1.0f);
-			R_PolygonVertex(pos2, [0,1], lit2, 1.0f);
-		R_EndPolygonRibbon(2, [-1,0]);
-#endif
-		pos1 = pos2;
-
-		sc += (M_PI * (1 / segments));
 	}
 
 	return (PREDRAW_NEXT);
@@ -242,11 +168,16 @@ prop_rope::ReadEntity(float flSendFlags, float new)
 		m_vecTarget[1] = readcoord();
 		m_vecTarget[2] = readcoord();
 	}
+	if (flSendFlags & PROPROPE_CHANGED_FLAGS)
+		flags = readfloat();
 }
 #else
 void
 prop_rope::Respawn(void)
 {
+	if (HasSpawnFlags(1)) {
+		flags = 1;
+	}
 	SetOrigin(GetSpawnOrigin());
 	SetSize([0,0,0], [0,0,0]);
 }
@@ -278,12 +209,16 @@ prop_rope::EvaluateEntity(void)
 	if (ATTR_CHANGED(m_vecTarget)) {
 		SetSendFlags(PROPROPE_CHANGED_TARGET);
 	}
+	if (ATTR_CHANGED(flags)) {
+		SetSendFlags(PROPROPE_CHANGED_FLAGS);
+	}
 
 	SAVE_STATE(m_flSag);
 	SAVE_STATE(m_flSwingFactor);
 	SAVE_STATE(m_iSegments);
 	SAVE_STATE(origin);
 	SAVE_STATE(m_vecTarget);
+	SAVE_STATE(flags);
 }
 
 float
@@ -309,6 +244,9 @@ prop_rope::SendEntity(entity ePVEnt, float flSendFlags)
 		WriteCoord(MSG_ENTITY, m_vecTarget[0]);
 		WriteCoord(MSG_ENTITY, m_vecTarget[1]);
 		WriteCoord(MSG_ENTITY, m_vecTarget[2]);
+	}
+	if (flSendFlags & PROPROPE_CHANGED_FLAGS) {
+		WriteFloat(MSG_ENTITY, flags);
 	}
 
 	return 1;
