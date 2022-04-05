@@ -176,21 +176,18 @@ void
 NSEntity::Touch(entity eToucher)
 {
 	/* To be handled by sub-classes */
-	print("touched!\n");
 }
 
 void
 NSEntity::StartTouch(entity eToucher)
 {
 	/* To be handled by sub-classes */
-	print("start touched!\n");
 }
 
 void
 NSEntity::EndTouch(entity eToucher)
 {
 	/* To be handled by sub-classes */
-	print("end touched!\n");
 }
 
 void

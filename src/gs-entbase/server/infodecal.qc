@@ -116,6 +116,8 @@ infodecal::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "material":
+		m_strTexture = strValue;
+		break;
 	case "texture":
 		m_strTexture = strtolower(strValue);
 		break;
@@ -127,7 +129,15 @@ infodecal::SpawnKey(string strKey, string strValue)
 void
 infodecal::infodecal(void)
 {
-	if (serverkeyfloat("*bspversion") != BSPVER_HL) {
+	float bsp_version = serverkeyfloat("*bspversion");
+
+	switch (bsp_version) {
+		case BSPVER_HL:
+		case BSPVER_RBSP:
+		case BSPVER_Q3:
+		case BSPVER_RTCW:
+			break;
+		default:
 		remove(self);
 		return;
 	}

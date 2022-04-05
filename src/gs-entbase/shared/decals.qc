@@ -94,6 +94,8 @@ decal::ReceiveEntity(void)
 
 	if (serverkeyfloat("*bspversion") == BSPVER_HL) {
 		BuildShader();
+	} else {
+		m_strShader = m_strTexture;
 	}
 
 	makevectors(angles);
@@ -152,11 +154,14 @@ decal::BuildShader(void)
 void
 decal::Place(vector org, string dname)
 {
+	if (!dname)
+		return;
+
 	decal_pickwall(this, org);
 
 	/* we never hit any wall. */
 	if (g_tracedDecal.fraction == 1.0f) {
-		dprint(sprintf("^1infodecal tracing failed at %v\n", org));
+		print(sprintf("^1infodecal tracing failed at %v\n", org));
 		if (classname != "tempdecal")
 			remove(this);
 		return;
@@ -190,6 +195,8 @@ decal::Place(vector org, string dname)
 
 	if (serverkeyfloat("*bspversion") == BSPVER_HL) {
 		BuildShader();
+	} else {
+		m_strShader = m_strTexture;
 	}
 
 	makevectors(angles);
@@ -252,8 +259,16 @@ decal Decals_Next(vector pos)
 /* Generalized Decal Placing Function */
 void Decals_Place(vector pos, string dname)
 {
-	if (serverkeyfloat("*bspversion") != BSPVER_HL) {
-		return;
+	float bsp_version = serverkeyfloat("*bspversion");
+
+	switch (bsp_version) {
+		case BSPVER_HL:
+		case BSPVER_RBSP:
+		case BSPVER_Q3:
+		case BSPVER_RTCW:
+			break;
+		default:
+			return;
 	}
 
 	decal x = Decals_Next(pos);
