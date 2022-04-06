@@ -128,7 +128,7 @@ NSSurfacePropEntity::Respawn(void)
 	NSRenderableEntity::Respawn();
 
 	/* only use spawndata's health if we aren't overriding it */
-	if (HasPropData() == false && sh <= 0) {
+	if (HasPropData() != false && sh <= 0) {
 		health = (float)GetPropData(PROPINFO_HEALTH);
 	} else {
 		health = sh;
@@ -343,6 +343,7 @@ NSSurfacePropEntity::NSSurfacePropEntity(void)
 #ifdef SERVER
 	m_iPropData = -1;
 	m_iMaterial = -1;
+	max_health = 100;
 
 	super::NSRenderableEntity();
 
