@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Cawthorne <marco@icculus.org>
+ * Copyright (c) 2016-2022 Marco Cawthorne <marco@icculus.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -110,7 +110,7 @@ prop_rope::predraw(void)
 		R_EndPolygon();
 	}
 
-	segments = 32;
+	segments = (float)m_iSegments;
 	float travel = 1.0f / segments;
 	float progress= 0.0f;
 	pos1 = origin;
