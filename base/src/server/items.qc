@@ -27,8 +27,11 @@ item_pickup::Touch(entity eToucher)
 	}
 
 	Logging_Pickup(eToucher, this, __NULL__);
-
 	UseTargets(eToucher, TRIG_TOGGLE, m_flDelay);
+
+#ifdef WASTES
+	Sound_Play(eToucher, CHAN_ITEM, "item_weapon.pickup");
+#endif
 
 	if (real_owner || m_iWasDropped == 1 || cvar("sv_playerslots") == 1) {
 		remove(self);
@@ -60,6 +63,7 @@ item_pickup::Respawn(void)
 	SetOrigin(GetSpawnOrigin());
 
 	/* At some points, the item id might not yet be set */
+
 	if (m_oldModel) {
 		SetModel(m_oldModel);
 	}
@@ -74,7 +78,7 @@ item_pickup::Respawn(void)
 	}
 
 	if (!m_bFloating) {
-		droptofloor();
+		DropToFloor();
 		SetMovetype(MOVETYPE_TOSS);
 	}
 }
@@ -82,6 +86,10 @@ item_pickup::Respawn(void)
 void
 item_pickup::item_pickup(void)
 {
+#ifdef WASTES
+	Sound_Precache("item_weapon.pickup");
+#endif
+
 	super::NSRenderableEntity();
 	Respawn();
 }

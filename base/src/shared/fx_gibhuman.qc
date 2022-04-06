@@ -24,7 +24,7 @@ FX_GibHuman_Init(void)
 #endif
 
 void
-FX_GibHuman(vector pos)
+FX_GibHuman(vector vecOrigin, vector vecDir, float flForce)
 {
 
 } 

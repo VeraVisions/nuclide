@@ -99,7 +99,7 @@ void
 NSMonster::Gib(void)
 {
 	takedamage = DAMAGE_NO;
-	FX_GibHuman(this.origin);
+	FX_GibHuman(origin, vectoangles(origin - g_dmg_eAttacker.origin), g_dmg_iDamage * 2.0f);
 	Hide();
 }
 
@@ -205,8 +205,7 @@ NSMonster::SeeThink(void)
 		if (flDot < SeeFOV()/180)
 			continue;
 
-		other = world;
-		traceline(origin, w.origin, MOVE_OTHERONLY, this);
+		traceline(origin, w.origin, MOVE_EVERYTHING, this);
 
 		/* we have line of sight with the player */
 		if (trace_fraction == 1.0f) {
