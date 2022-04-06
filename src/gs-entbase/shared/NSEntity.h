@@ -144,6 +144,7 @@ class NSEntity:NSTrigger
 	nonvirtual entity(void) GetGroundEntity;
 	virtual void(entity) Blocked;
 	nonvirtual void(void) BlockedHandler;
+	nonvirtual bool(void) CreatedByMap;
 
 	virtual void(entity) StartTouch;
 	virtual void(entity) Touch;

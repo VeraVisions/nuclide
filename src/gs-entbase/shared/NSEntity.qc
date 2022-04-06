@@ -160,6 +160,12 @@ NSEntity::GetGroundEntity(void)
 	return groundentity;
 }
 
+bool
+NSEntity::CreatedByMap(void)
+{
+	return _mapspawned;
+}
+
 void
 NSEntity::Blocked(entity eBlocker)
 {
@@ -826,6 +832,7 @@ NSEntity::Save(float handle)
 	SaveFloat(handle, "health", health);
 	SaveString(handle, "parentname", m_parent);
 	SaveFloat(handle, "pvsflags", pvsflags);
+	SaveFloat(handle, "_mapspawned", _mapspawned);
 	super::Save(handle);
 }
 void
@@ -876,6 +883,9 @@ NSEntity::Restore(string strKey, string strValue)
 		break;
 	case "pvsflags":
 		pvsflags = stof(strValue);
+		break;
+	case "_mapspawned":
+		_mapspawned = stof(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);

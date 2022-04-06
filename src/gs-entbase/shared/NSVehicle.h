@@ -32,6 +32,10 @@ class NSVehicle:NSSurfacePropEntity
 	vector velocity_net;
 
 #ifdef CLIENT
+	PREDICTED_FLOAT(driver_entnum);
+
+	virtual void(void) DriverRelink;
+	virtual bool(void) IsLocalDriver;
 	virtual void(void) PredictPreFrame;
 	virtual void(void) PredictPostFrame;
 	virtual void(float, float) ReadEntity;
@@ -40,6 +44,7 @@ class NSVehicle:NSSurfacePropEntity
 	virtual float(entity, float) SendEntity;
 #endif
 
+	virtual entity(void) GetDriver;
 	virtual void(void) PlayerUpdateFlags;
 	virtual void(void) PlayerAlign;
 	virtual void(base_player) PlayerEnter;

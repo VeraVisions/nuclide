@@ -286,7 +286,7 @@ CSQC_UpdateView(float w, float h, float focus)
 			if (!Client_IsSpectator(pl)) {
 				setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin + pl.view_ofs);
 
-				if (pl.flags & FL_INVEHICLE) {
+				if (pl.vehicle) {
 					NSVehicle veh = (NSVehicle)pl.vehicle;
 					
 					if (veh.UpdateView)

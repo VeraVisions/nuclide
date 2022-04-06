@@ -14,7 +14,36 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+entity
+NSVehicle::GetDriver(void)
+{
+	return (m_eDriver);
+}
+
 #ifdef CLIENT
+void
+NSVehicle::DriverRelink(void)
+{
+	if (!driver_entnum)
+		m_eDriver = __NULL__;
+	else {
+		base_player pl;
+		m_eDriver = findentity(world, ::entnum, driver_entnum);
+		pl = (base_player)m_eDriver;
+		pl.vehicle = this;
+	}
+}
+bool
+NSVehicle::IsLocalDriver(void)
+{
+	DriverRelink();
+
+	if (m_eDriver == pSeat->m_ePlayer)
+		return true;
+	else
+		return false;
+}
+
 void
 NSVehicle::UpdateView(void)
 {
@@ -26,6 +55,11 @@ NSVehicle::PredictPreFrame(void)
 	SAVE_STATE(angles);
 	SAVE_STATE(origin);
 	SAVE_STATE(velocity);
+	SAVE_STATE(size);
+	SAVE_STATE(modelindex);
+	SAVE_STATE(solid);
+	SAVE_STATE(movetype);
+	SAVE_STATE(m_eDriver);
 }
 
 void
@@ -34,6 +68,11 @@ NSVehicle::PredictPostFrame(void)
 	ROLL_BACK(angles);
 	ROLL_BACK(origin);
 	ROLL_BACK(velocity);
+	ROLL_BACK(size);
+	ROLL_BACK(modelindex);
+	ROLL_BACK(solid);
+	ROLL_BACK(movetype);
+	ROLL_BACK(m_eDriver);
 }
 
 void
@@ -91,9 +130,9 @@ NSVehicle::EvaluateEntity(void)
 {
 	/* while the engine is still handling physics for these, we can't
 	 * predict when origin/angle might change */
-	if (ATTR_CHANGED(origin)) {
+	if (ATTR_CHANGED(origin))
 		SetSendFlags(VEHFL_CHANGED_ORIGIN);
-	}
+
 	if (ATTR_CHANGED(angles)) {
 		angles[0] = Math_FixDelta(angles[0]);
 		angles[1] = Math_FixDelta(angles[1]);
@@ -101,13 +140,32 @@ NSVehicle::EvaluateEntity(void)
 
 		SetSendFlags(VEHFL_CHANGED_ANGLES);
 	}
-	if (ATTR_CHANGED(velocity)) {
+	if (ATTR_CHANGED(velocity))
 		SetSendFlags(VEHFL_CHANGED_VELOCITY);
-	}
+
+	if (ATTR_CHANGED(modelindex))
+		SetSendFlags(VEHFL_CHANGED_MODELINDEX);
+
+	if (ATTR_CHANGED(solid))
+		SetSendFlags(VEHFL_CHANGED_SOLID);
+
+	if (ATTR_CHANGED(movetype))
+		SetSendFlags(VEHFL_CHANGED_MOVETYPE);
+
+	if (ATTR_CHANGED(size))
+		SetSendFlags(VEHFL_CHANGED_SIZE);
+
+	if (ATTR_CHANGED(m_eDriver))
+		SetSendFlags(VEHFL_CHANGED_DRIVER);
 
 	SAVE_STATE(origin);
 	SAVE_STATE(angles);
 	SAVE_STATE(velocity);
+	SAVE_STATE(modelindex);
+	SAVE_STATE(solid);
+	SAVE_STATE(movetype);
+	SAVE_STATE(size);
+	SAVE_STATE(m_eDriver);
 }
 
 float
@@ -243,6 +301,7 @@ NSVehicle::PlayerLeave(base_player pl)
 void
 NSVehicle::NSVehicle(void)
 {
+	m_eDriver = __NULL__;
 	super::NSSurfacePropEntity();
 }
 

@@ -21,6 +21,7 @@ base_player:spectator
 	PREDICTED_INT_N(weaponframe);
 #else
 	PREDICTED_INT(weaponframe);
+	PREDICTED_FLOAT(vehicle_entnum);
 #endif
 	PREDICTED_FLOAT(health);
 	PREDICTED_FLOAT(armor);
@@ -85,6 +86,7 @@ base_player:spectator
 	int p_model_bone;
 	float lastweapon;
 
+	virtual void(void) VehicleRelink;
 	virtual void(void) ClientRemove;
 	virtual void(float, float) ReceiveEntity;
 	virtual void(void) PredictPreFrame;

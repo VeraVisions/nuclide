@@ -183,6 +183,7 @@ Entities_ParseLump(void)
 			/* check if our classname has a matching class */
 			if (isfunction(strcat("spawnfunc_", strValue))) {
 				self = eEnt;
+				self._mapspawned = true;
 				callfunction(strcat("spawnfunc_", strValue));
 				self = eOld;
 				iClass = TRUE;

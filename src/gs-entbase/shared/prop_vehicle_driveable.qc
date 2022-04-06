@@ -92,6 +92,8 @@ class prop_vehicle_driveable:NSVehicle
 	float m_flFLWheelAxel;
 	float m_flFRWheelAxel;
 
+	float m_flUseTime;
+
 	void(void) prop_vehicle_driveable;
 
 	virtual void(void) Physics;
@@ -115,11 +117,24 @@ class prop_vehicle_driveable:NSVehicle
 void
 prop_vehicle_driveable::Physics(void)
 {
+#ifdef CLIENT
+	DriverRelink();
+#endif
+
 	/* if nobody is in the car, we need to run physics here
 	 * with fake input frames */
-	if (num_for_edict(m_eDriver) == 0) {
+	if (GetDriver() == __NULL__) {
+#ifdef SERVER
+		m_flTimeLength = frametime;
+		m_vecMoveValues = [0,0,0];
+		m_iMoveButtons = 0;
 		RunVehiclePhysics();
-	}
+#else
+		setorigin(this, origin);
+#endif
+	} /* else {
+		crossprint(sprintf("Driver: %s\n", GetDriver().classname));
+	} */
 
 #ifdef SERVER
 	/* support for think/nextthink */
@@ -418,11 +433,13 @@ prop_vehicle_driveable_wheel::prop_vehicle_driveable_wheel(void)
 void
 prop_vehicle_driveable::PredictPreFrame(void)
 {
-	SAVE_STATE(angles);
+	SAVE_STATE(modelindex);
 	SAVE_STATE(origin);
+	SAVE_STATE(angles);
 	SAVE_STATE(velocity);
 	SAVE_STATE(m_flTurn);
 	SAVE_STATE(flags);
+	SAVE_STATE(driver_entnum);
 
 	m_wlFL.PredictPreFrame();
 	m_wlFR.PredictPreFrame();
@@ -433,11 +450,13 @@ prop_vehicle_driveable::PredictPreFrame(void)
 void
 prop_vehicle_driveable::PredictPostFrame(void)
 {
+	ROLL_BACK(modelindex);
 	ROLL_BACK(angles);
 	ROLL_BACK(origin);
 	ROLL_BACK(velocity);
 	ROLL_BACK(m_flTurn);
 	ROLL_BACK(flags);
+	ROLL_BACK(driver_entnum);
 
 	m_wlFL.PredictPostFrame();
 	m_wlFR.PredictPostFrame();
@@ -493,12 +512,10 @@ prop_vehicle_driveable::RunVehiclePhysics(void)
 
 		PlayerUpdateFlags();
 
+#ifdef SERVER
 		if (angles[2] > 125 || angles[2] < -125)
 			PlayerLeave((base_player)m_eDriver);
-	} else {
-		m_vecMoveValues = [240,0,0];
-		m_iMoveButtons = 0;
-		m_flTimeLength = frametime;
+#endif
 	}
 
 	flags &= ~VEH_SKIDDING;
@@ -560,6 +577,7 @@ prop_vehicle_driveable::OnPlayerUse(void)
 		PlayerEnter((base_player)eActivator);
 		m_vecPlayerPos = [0,0,0];
 	}
+	m_flUseTime = time + 2.0f;
 }
 
 void
@@ -594,7 +612,8 @@ void
 prop_vehicle_driveable::ReadEntity(float flSendFlags, float flNew)
 {
 	if (flSendFlags & VEHFL_DRIVER) {
-		m_eDriver = findfloat(world, ::entnum, readentitynum());
+		driver_entnum = readentitynum();
+		DriverRelink();
 	}
 
 	if (flSendFlags & VEHFL_MODELINDEX) {
@@ -646,9 +665,12 @@ prop_vehicle_driveable::ReadEntity(float flSendFlags, float flNew)
 		m_wlBR.velocity =
 		velocity = [0,0,0];
 		RunVehiclePhysics();
+		customphysics = Physics;
 
 		print(sprintf("%v\n", origin));
 	}
+
+	PredictPreFrame();
 }
 #else
 void
@@ -673,10 +695,10 @@ prop_vehicle_driveable::EvaluateEntity(void)
 	if (ATTR_CHANGED(velocity)) {
 		SetSendFlags(VEHFL_VELOCITY);
 	}
-	if (m_flTurn_net != m_flTurn) {
+	if (ATTR_CHANGED(m_flTurn)) {
 		SetSendFlags(VEHFL_TURNING);
 	}
-	if (m_eDriver_net != m_eDriver) {
+	if (ATTR_CHANGED(m_eDriver)) {
 		SetSendFlags(VEHFL_DRIVER);
 	}
 	if (ATTR_CHANGED(flags)) {
@@ -740,6 +762,7 @@ prop_vehicle_driveable::SendEntity(entity ePVSent, float flSendFlags)
 void
 prop_vehicle_driveable::prop_vehicle_driveable(void)
 {
+	m_eDriver = __NULL__;
 	m_flBounceFactor = 1.5f;
 	m_flAcceleration = 600.0f;
 	m_flSkidSpeed = 256.0f;

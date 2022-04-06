@@ -74,4 +74,6 @@ enumflags
 #else
 	BASEFL_CHANGED_ALPHA,
 #endif
-}; 
+};
+
+.bool _mapspawned;

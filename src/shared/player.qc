@@ -35,11 +35,10 @@ base_player::PreFrame(void)
 	 * information. */
 	PredictPreFrame();
 
-	if (flags & FL_INVEHICLE)
-		if (vehicle) {
-			NSVehicle veh = (NSVehicle)vehicle;
-			veh.PredictPreFrame();
-		}
+	if (vehicle) {
+		NSVehicle veh = (NSVehicle)vehicle;
+		veh.PredictPreFrame();
+	}
 
 	/* run physics code for all the input frames which we've not heard back
 	 * from yet. This continues on in Player_ReceiveEntity! */
@@ -72,15 +71,13 @@ base_player::PostFrame(void)
 #ifdef CLIENT
 	/* give the game/mod a chance to roll back its values too */
 	PredictPostFrame();
+	setorigin(this, origin);  /* update bounds */
 
-	if (flags & FL_INVEHICLE)
-		if (vehicle) {
-			NSVehicle veh = (NSVehicle)vehicle;
-			veh.PredictPostFrame();
-		}
-
-	/* update bounds */
-	setorigin(this, origin);
+	if (vehicle) {
+		NSVehicle veh = (NSVehicle)vehicle;
+		veh.PredictPostFrame();
+		setorigin(veh, veh.origin);
+	}
 #endif
 }
 
@@ -102,6 +99,15 @@ base_player::ClientInput(void)
 }
 
 #ifdef CLIENT
+void
+base_player::VehicleRelink(void)
+{
+	if (!vehicle_entnum)
+		vehicle = __NULL__;
+	else
+		vehicle = findentity(world, ::entnum, vehicle_entnum);
+}
+
 void
 base_player::ClientRemove(void)
 {
@@ -268,12 +274,15 @@ base_player::ReceiveEntity(float new, float fl)
 	punchangle[0] = readfloat();
 	punchangle[1] = readfloat();
 	punchangle[2] = readfloat();
-	vehicle = findfloat(world, ::entnum, readentitynum());
+	vehicle_entnum = readentitynum();
+	VehicleRelink();
 
 	/* FIXME: Make this temp spec only */
 	spec_ent = readbyte();
 	spec_mode = readbyte();
 	spec_flags = readbyte();
+
+	PredictPreFrame();
 }
 
 /*
@@ -313,7 +322,7 @@ base_player::PredictPreFrame(void)
 	SAVE_STATE(w_attack_next);
 	SAVE_STATE(w_idle_next);
 	SAVE_STATE(punchangle);
-	SAVE_STATE(vehicle);
+	SAVE_STATE(vehicle_entnum);
 
 	SAVE_STATE(spec_ent);
 	SAVE_STATE(spec_mode);
@@ -358,7 +367,7 @@ base_player::PredictPostFrame(void)
 	ROLL_BACK(w_attack_next);
 	ROLL_BACK(w_idle_next);
 	ROLL_BACK(punchangle);
-	ROLL_BACK(vehicle);
+	ROLL_BACK(vehicle_entnum);
 
 	ROLL_BACK(spec_ent);
 	ROLL_BACK(spec_mode);

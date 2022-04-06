@@ -764,8 +764,9 @@ SV_PerformSave(float fh, float entcount, float playerslots)
 void
 CheckSpawn(void() spawnfunc)
 {
-	if (spawnfunc)
+	if (spawnfunc) {
 		spawnfunc();
-	else
+		self._mapspawned = true;
+	} else
 		remove(self);
 }
