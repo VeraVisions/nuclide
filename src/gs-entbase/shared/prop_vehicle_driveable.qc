@@ -565,6 +565,8 @@ prop_vehicle_driveable::RunVehiclePhysics(void)
 	new_origin *= 0.25f;
 	setorigin(this, new_origin);
 	PlayerAlign();
+
+	/* actiony stuff */
 }
 
 #ifdef SERVER
@@ -604,6 +606,8 @@ prop_vehicle_driveable::Respawn(void)
 
 	if (m_eDriver)
 		PlayerLeave((base_player)m_eDriver);
+
+	SendFlags = -1;
 }
 #endif
 
@@ -719,6 +723,9 @@ prop_vehicle_driveable::SendEntity(entity ePVSent, float flSendFlags)
 {
 	WriteByte(MSG_ENTITY, ENT_VEH_4WHEEL);
 	WriteFloat(MSG_ENTITY, flSendFlags);
+
+	if (!modelindex)
+		return (false);
 
 	if (flSendFlags & VEHFL_DRIVER) {
 		WriteEntity(MSG_ENTITY, m_eDriver);

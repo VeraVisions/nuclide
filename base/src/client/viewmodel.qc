@@ -113,6 +113,18 @@ Viewmodel_ApplyBob(entity gun)
 	strength = 240 - strength;
 	strength *= 0.005f;
 
+#ifdef WASTES
+	float sprint;
+	if (pSeatLocal->m_iSprinting && vlen(pSeat->m_vecPredictedVelocity) > 240) {
+		pSeatLocal->m_flSprintLerp = bound(0.0f, pSeatLocal->m_flSprintLerp + clframetime, 1.0f);
+	} else {
+		pSeatLocal->m_flSprintLerp = bound(0.0f, pSeatLocal->m_flSprintLerp - clframetime, 1.0f);
+	}
+	sprint = 20 * pSeatLocal->m_flSprintLerp;
+	gun.angles[0] += sprint;
+	gun.angles[1] += sprint + (sprint * pViewBob->m_flBob) * 0.25f;
+#endif
+
 	gun.angles[0] += strength * sintime;
 	gun.angles[1] += strength * sintime;
 	gun.angles[2] += strength * sintime;

@@ -41,6 +41,7 @@ font_s FONT_CON;
 
 //var string g_shellchrome;
 var float g_shellchromeshader;
+var float g_shellchromeshader_cull;
 
 /* clientside cvars */
 var float autocvar_zoom_sensitivity = 1.0f;

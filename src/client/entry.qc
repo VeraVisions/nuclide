@@ -119,6 +119,7 @@ CSQC_RendererRestarted(string rstr)
 
 	//g_shellchrome = spriteframe("sprites/shellchrome.spr", 0, 0.0f);
 	g_shellchromeshader = shaderforname("shellchrome", sprintf("{\ndeformVertexes bulge 1.25 1.25 0\n{\nmap %s\ntcMod scroll -0.1 0.1\ntcGen environment\nrgbGen entity\n}\n}", "textures/sfx/reflection.tga"));
+	g_shellchromeshader_cull = shaderforname("shellchrome2", sprintf("{\ncull back\ndeformVertexes bulge 1.5 1.5 0\n{\nmap %s\ntcMod scroll -0.1 0.1\ntcGen environment\nrgbGen entity\n}\n}", "textures/sfx/reflection.tga"));
 
 	/* end msg */
 	print("Graphical resources reloaded\n");

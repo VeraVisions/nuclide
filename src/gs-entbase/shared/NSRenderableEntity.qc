@@ -427,6 +427,22 @@ NSRenderableEntity::RenderFXPass(void)
 		drawflags = 7;
 		abslight = 128;
 		break;
+	case RFX_GLOWSHELL2:
+		/* make this entity shellchrome */
+		effects = EF_ADDITIVE;
+		fatness = 0;
+		colormod = m_vecRenderColor;
+		forceshader = g_shellchromeshader_cull;
+		alpha = 1.0;
+		/* copy entity into rendering queue */
+		addentity(this);
+		/* reset */
+		forceshader = 0;
+		fatness = 0;
+		colormod = [1,1,1];
+		alpha = 1.0f;
+		effects = 0;
+		break;
 	case RFX_GLOWSHELL:
 		/* make this entity shellchrome */
 		effects = EF_ADDITIVE;
