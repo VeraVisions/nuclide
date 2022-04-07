@@ -149,6 +149,13 @@ View_DrawViewModel(void)
 		return;
 	}
 
+	if (pl.vehicle) {
+		NSVehicle veh = (NSVehicle)pl.vehicle;
+
+		if (veh.HideViewWeapon() == true)
+			return;
+	}
+
 	if (cvar("r_drawviewmodel") == 0 || autocvar_cl_thirdperson == TRUE) {
 		return;
 	}

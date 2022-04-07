@@ -21,6 +21,17 @@ NSVehicle::GetDriver(void)
 }
 
 #ifdef CLIENT
+bool
+NSVehicle::HideViewWeapon(void)
+{
+	return false;
+}
+bool
+NSVehicle::HideCrosshair(void)
+{
+	return true;
+}
+
 void
 NSVehicle::DriverRelink(void)
 {
@@ -125,6 +136,77 @@ NSVehicle::ReadEntity(float fChanged, float new)
 		drawmask = MASK_ENGINE;
 }
 #else
+vector
+NSVehicle::GetExitPos(void)
+{
+	vector vecOut;
+	makevectors(angles);
+	vecOut = origin;
+	vecOut += v_forward * m_vecExitPos[0];
+	vecOut += v_right * m_vecExitPos[1];
+	vecOut += v_up * m_vecExitPos[2];
+
+	/* check if we get stuck inside a wall */
+	tracebox(vecOut, VEC_HULL_MIN, VEC_HULL_MAX, vecOut, MOVE_NORMAL, this);
+
+	/* we're inside a wall... */
+	if (trace_startsolid) {
+		float test_distance = 256.0f;
+		float start_distance = 128.0f;
+		vector test;
+		vector startpos = origin + [0,0,48];
+
+		/* see how far we have to go in each dir */
+		makevectors(angles);
+
+		/* let's try left /right */
+		for (float i = 128; i < test_distance; i += 16) {
+			test = startpos + (v_right * i);
+			tracebox(startpos, VEC_HULL_MIN, VEC_HULL_MAX, test, MOVE_NOMONSTERS, m_eDriverLast);
+
+			if (!trace_startsolid)
+				return trace_endpos;
+		}
+		for (float i = 128; i < test_distance; i += 16) {
+			test = startpos - (v_right * i);
+			tracebox(startpos, VEC_HULL_MIN, VEC_HULL_MAX, test, MOVE_NOMONSTERS, m_eDriverLast);
+
+			if (!trace_startsolid)
+				return trace_endpos;
+		}
+
+		/* forward / back */
+		for (float i = 164; i < test_distance; i += 16) {
+			test = startpos + (v_forward * i);
+			tracebox(startpos, VEC_HULL_MIN, VEC_HULL_MAX, test, MOVE_NOMONSTERS, m_eDriverLast);
+
+			if (!trace_startsolid)
+				return trace_endpos;
+		}
+		for (float i = 164; i < test_distance; i += 16) {
+			test = startpos + (v_forward * -i);
+			tracebox(startpos, VEC_HULL_MIN, VEC_HULL_MAX, test, MOVE_NOMONSTERS, m_eDriverLast);
+
+			if (!trace_startsolid)
+				return trace_endpos;
+		}
+
+		/* up */
+		for (float i = 128; i < test_distance; i += 16) {
+			test = startpos + (v_up * i);
+			tracebox(startpos, VEC_HULL_MIN, VEC_HULL_MAX, test, MOVE_NOMONSTERS, m_eDriverLast);
+
+			if (!trace_startsolid)
+				return trace_endpos;
+		}
+
+		print("Warning: vehicle exit position is not OK.\n");
+		return origin;
+	} else {
+		return vecOut;
+	}
+}
+
 void
 NSVehicle::EvaluateEntity(void)
 {
@@ -269,8 +351,10 @@ NSVehicle::PlayerEnter(base_player pl)
 	m_vecPlayerPos[0] = dotproduct(offs, v_forward);
 	m_vecPlayerPos[1] = dotproduct(offs, v_right);
 	m_vecPlayerPos[2] = dotproduct(offs, v_up);
+	m_vecExitPos = m_vecPlayerPos;
 	pl.movetype = MOVETYPE_NOCLIP;
 	m_eDriver = (entity)pl;
+	m_eDriverLast = m_eDriver;
 	pl.vehicle = this;
 	pl.flags |= FL_INVEHICLE;
 

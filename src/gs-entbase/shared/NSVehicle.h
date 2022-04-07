@@ -23,6 +23,8 @@ class NSVehicle:NSSurfacePropEntity
 	entity m_eDriver;
 	entity m_eDriver_net;
 
+	entity m_eDriverLast;
+
 	void(void) NSVehicle;
 
 	vector m_vecPlayerPos;
@@ -30,6 +32,7 @@ class NSVehicle:NSSurfacePropEntity
 	vector angles_net;
 	vector origin_net;
 	vector velocity_net;
+	vector m_vecExitPos;
 
 #ifdef CLIENT
 	PREDICTED_FLOAT(driver_entnum);
@@ -40,7 +43,11 @@ class NSVehicle:NSSurfacePropEntity
 	virtual void(void) PredictPostFrame;
 	virtual void(float, float) ReadEntity;
 	virtual void(void) UpdateView;
+	virtual bool(void) HideViewWeapon;
+	virtual bool(void) HideCrosshair;
 #else
+	virtual vector(void) GetExitPos;
+	virtual void(void) EvaluateEntity;
 	virtual float(entity, float) SendEntity;
 #endif
 

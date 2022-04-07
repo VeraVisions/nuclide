@@ -101,6 +101,7 @@ class prop_vehicle_driveable:NSVehicle
 	virtual void(void) PlayerInput;
 
 #ifdef CLIENT
+	virtual bool(void) HideViewWeapon;
 	virtual void(void) PredictPreFrame;
 	virtual void(void) PredictPostFrame;
 	virtual void(float, float) ReadEntity;
@@ -113,6 +114,14 @@ class prop_vehicle_driveable:NSVehicle
 	virtual float(entity, float) SendEntity;
 #endif
 };
+
+#ifdef CLIENT
+bool
+prop_vehicle_driveable::HideViewWeapon(void)
+{
+	return true;
+}
+#endif
 
 void
 prop_vehicle_driveable::Physics(void)
@@ -132,9 +141,9 @@ prop_vehicle_driveable::Physics(void)
 #else
 		setorigin(this, origin);
 #endif
-	} /* else {
-		crossprint(sprintf("Driver: %s\n", GetDriver().classname));
-	} */
+	} else {
+		//crossprint(sprintf("Driver: %s\n", GetDriver().classname));
+	}
 
 #ifdef SERVER
 	/* support for think/nextthink */
@@ -474,6 +483,20 @@ prop_vehicle_driveable::PlayerInput(void)
 
 	/* prediction frame... */
 	RunVehiclePhysics();
+
+	/* only allow use key */
+	input_buttons = (input_buttons & INPUT_BUTTON5);
+
+#ifdef SERVER
+	/* allow us to exit */
+	if (m_flUseTime < time) {
+		if (input_buttons & INPUT_BUTTON5) {
+			eActivator = m_eDriver;
+			OnPlayerUse();
+			input_buttons &= ~INPUT_BUTTON5;
+		}
+	}
+#endif
 }
 
 void
@@ -511,11 +534,6 @@ prop_vehicle_driveable::RunVehiclePhysics(void)
 		}
 
 		PlayerUpdateFlags();
-
-#ifdef SERVER
-		if (angles[2] > 125 || angles[2] < -125)
-			PlayerLeave((base_player)m_eDriver);
-#endif
 	}
 
 	flags &= ~VEH_SKIDDING;
@@ -573,8 +591,12 @@ prop_vehicle_driveable::RunVehiclePhysics(void)
 void
 prop_vehicle_driveable::OnPlayerUse(void)
 {
+	if (m_flUseTime > time)
+		return;
+
 	if (m_eDriver == eActivator) {
 		PlayerLeave((base_player)eActivator);
+		setorigin(eActivator, GetExitPos());
 	} else if (!m_eDriver) {
 		PlayerEnter((base_player)eActivator);
 		m_vecPlayerPos = [0,0,0];
@@ -633,6 +655,17 @@ prop_vehicle_driveable::ReadEntity(float flSendFlags, float flNew)
 		origin[1] = readcoord();
 		origin[2] = readcoord();
 		setorigin(this, origin);
+
+
+	makevectors(angles);
+
+	setorigin( m_wlFL, origin );
+	setorigin( m_wlBL, m_wlFL.origin - v_forward * 85 );
+	setorigin( m_wlFL, m_wlFL.origin + v_forward * 85 );
+	setorigin( m_wlFR, m_wlFL.origin + v_right * 40 );
+	setorigin( m_wlFL, m_wlFL.origin - v_right * 40 );
+	setorigin( m_wlBR, m_wlBL.origin + v_right * 40 );
+	setorigin( m_wlBL, m_wlBL.origin - v_right * 40 );
 	}
 
 	if (flSendFlags & VEHFL_ANGLES) {
@@ -682,9 +715,8 @@ prop_vehicle_driveable::EvaluateEntity(void)
 {
 	/* while the engine is still handling physics for these, we can't
 	 * predict when origin/angle might change */
-	if (ATTR_CHANGED(origin)) {
+	if (ATTR_CHANGED(origin))
 		SetSendFlags(VEHFL_ORIGIN);
-	}
 
 	if (ATTR_CHANGED(angles)) {
 		angles[0] = Math_FixDelta(angles[0]);
@@ -693,21 +725,17 @@ prop_vehicle_driveable::EvaluateEntity(void)
 
 		SetSendFlags(VEHFL_ANGLES);
 	}
-	if (ATTR_CHANGED(modelindex)) {
+	if (ATTR_CHANGED(modelindex))
 		SetSendFlags(VEHFL_MODELINDEX);
-	}
-	if (ATTR_CHANGED(velocity)) {
+	if (ATTR_CHANGED(velocity))
 		SetSendFlags(VEHFL_VELOCITY);
-	}
-	if (ATTR_CHANGED(m_flTurn)) {
+	if (ATTR_CHANGED(m_flTurn))
 		SetSendFlags(VEHFL_TURNING);
-	}
-	if (ATTR_CHANGED(m_eDriver)) {
+	if (ATTR_CHANGED(m_eDriver))
 		SetSendFlags(VEHFL_DRIVER);
-	}
-	if (ATTR_CHANGED(flags)) {
+	if (ATTR_CHANGED(flags))
 		SetSendFlags(VEHFL_FLAGS);
-	}
+
 
 	SAVE_STATE(origin);
 	SAVE_STATE(angles);
@@ -762,7 +790,7 @@ prop_vehicle_driveable::SendEntity(entity ePVSent, float flSendFlags)
 	if (flSendFlags & VEHFL_FLAGS)
 		WriteFloat(MSG_ENTITY, flags);
 
-	return TRUE;
+	return true;
 }
 #endif
 
