@@ -503,6 +503,7 @@ base_player::MakeTempSpectator(void)
 {
 	classname = "player";
 	flags = FL_CLIENT;
+	modelindex = 0;
 	max_health = health = 0;
 	armor = 0;
 	g_items = 0;

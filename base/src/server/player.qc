@@ -104,6 +104,11 @@ CSEv_PlayerSwitchWeapon_i(int w)
 {
 	player pl = (player)self;
 
+#ifdef WASTES
+	if (pl.gflags & GF_IS_HEALING)
+		return;
+#endif
+
 	if (pl.activeweapon != w) {
 		pl.activeweapon = w;
 		Weapons_Draw(pl);
