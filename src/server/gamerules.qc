@@ -221,6 +221,17 @@ CGameRules::DamageApply(entity t, entity c, float dmg, int w, damageType_t type)
 	if (eTarget.flags & FL_CLIENT) {
 		base_player tp = (base_player)t;
 
+		/* don't allow any damage */
+		if (PlayerCanAttack(tp) == false) {
+			g_dmg_eAttacker = c;
+			g_dmg_eTarget = t;
+			g_dmg_iDamage = 0;
+			g_dmg_iHitBody = 0;
+			g_dmg_iFlags = type;
+			g_dmg_iWeapon = w;
+			return;
+		}
+
 		/* skip armor */
 		if not (type & DMG_SKIP_ARMOR)
 		if (tp.armor && dmg > 0) {
@@ -386,4 +397,10 @@ int
 Gamerules_IsTeamPlay(void)
 {
 	return (g_grMode.IsTeamPlay()) ? TRUE : FALSE;
+}
+
+bool
+CGameRules::PlayerCanAttack(base_player bp)
+{
+	return true;
 }

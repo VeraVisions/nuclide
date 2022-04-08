@@ -37,6 +37,7 @@ class CGameRules
 	virtual void(base_player) PlayerPostFrame;
 	virtual void(base_player) PlayerDeath;
 	virtual void(base_player) PlayerPain;
+	virtual bool(base_player) PlayerCanAttack;
 
 	/* level transitions */
 	virtual void(void) LevelNewParms;

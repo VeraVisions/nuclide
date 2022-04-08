@@ -123,6 +123,14 @@ Viewmodel_ApplyBob(entity gun)
 	sprint = 20 * pSeatLocal->m_flSprintLerp;
 	gun.angles[0] += sprint;
 	gun.angles[1] += sprint + (sprint * pViewBob->m_flBob) * 0.25f;
+
+	if (pSeat->m_ePlayer.gflags & GF_IS_HEALING) {
+		pSeatLocal->m_flHealLerp = bound(0.0f, pSeatLocal->m_flHealLerp + clframetime, 1.0f);
+	} else {
+		pSeatLocal->m_flHealLerp = bound(0.0f, pSeatLocal->m_flHealLerp - clframetime, 1.0f);
+	}
+	gun.angles[0] += pSeatLocal->m_flHealLerp * 45;
+	gun.origin[2] -= pSeatLocal->m_flHealLerp * 5;
 #endif
 
 	gun.angles[0] += strength * sintime;
