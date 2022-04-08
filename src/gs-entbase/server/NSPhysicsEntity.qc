@@ -255,9 +255,21 @@ NSPhysicsEntity::Pain(void)
 	if (force > 0.0f)
 		ApplyForceOffset(v_forward * force, origin - trace_endpos);
 
-	if (!HasPropData()) {
-		health = 100000;
+	/* if we don't have prop data, don't consider death */
+	if (HasPropData() == false)
+		health = 10000;
+}
+
+void
+NSPhysicsEntity::Death(void)
+{
+	Pain();
+	super::Death();
+
+	if (takedamage != DAMAGE_YES) {
+		takedamage = (DAMAGE_YES);
 	}
+	health = 1000;
 }
 
 void

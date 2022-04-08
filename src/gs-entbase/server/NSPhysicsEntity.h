@@ -44,6 +44,7 @@ class NSPhysicsEntity:NSSurfacePropEntity
 	virtual void(void) touch;
 	virtual void(void) TouchThink;
 	virtual void(void) Pain;
+	virtual void(void) Death;
 	virtual void(string, string) SpawnKey;
 
 	virtual void(float) SetMass;

@@ -14,7 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-var int autocvar_v_modellag = 0;
+var bool autocvar_v_modellag = 0;
+var bool autocvar_v_muzzledlight = 1;
 
 void
 View_Init(void)
@@ -236,7 +237,8 @@ View_DrawViewModel(void)
 			m_eMuzzleflash.angles = m_eViewModel.angles;
 			m_eMuzzleflash.angles[2] += (random() * 10) - 5;
 
-			//dynamiclight_add(pSeat->m_vecPredictedOrigin + (v_forward * 32), 400, [1,0.45,0]);
+			if (autocvar_v_muzzledlight == true)
+				dynamiclight_add(pSeat->m_vecPredictedOrigin + (v_forward * 32), 400, [1,0.45,0]);
 
 			setorigin(m_eMuzzleflash, m_eMuzzleflash.origin);
 			addentity(m_eMuzzleflash);
@@ -247,7 +249,8 @@ View_DrawViewModel(void)
 			m_eMuzzleflashL.angles = m_eViewModelL.angles;
 			m_eMuzzleflashL.angles[2] += (random() * 10) - 5;
 
-			//dynamiclight_add(pSeat->m_vecPredictedOrigin + (v_forward * 32), 400, [1,0.45,0]);
+			if (autocvar_v_muzzledlight == true)
+				dynamiclight_add(pSeat->m_vecPredictedOrigin + (v_forward * 32), 400, [1,0.45,0]);
 
 			setorigin(m_eMuzzleflashL, m_eMuzzleflashL.origin);
 			addentity(m_eMuzzleflashL);
