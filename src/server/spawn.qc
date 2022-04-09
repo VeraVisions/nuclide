@@ -92,9 +92,17 @@ entity Spawn_SelectRandom(string cname)
 
 	float max = 0;
 
+	/* check if _any_ entity of this type exists */
+	entity testcase = find(world, ::classname, cname);
+
 	/* count our max count */
 	for (entity e = world;(e = find(e, ::classname, cname));) {
 		max++;
+	}
+
+	if (max <= 0) {
+		print(sprintf("^1Error: %s is not present on this map.\n", cname));
+		return __NULL__;
 	}
 
 	for (int i = random(1, max); i > 0; i--) {
