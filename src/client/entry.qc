@@ -344,6 +344,7 @@ CSQC_UpdateView(float w, float h, float focus)
 		}
 #endif
 
+		addentities(MASK_GLOWS);
 		setproperty(VF_DRAWWORLD, 1);
 		SkyCamera_Setup(getproperty(VF_ORIGIN));
 

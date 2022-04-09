@@ -208,7 +208,7 @@ env_glow::env_glow(void)
 	m_flScale = 1.0f;
 	m_flMaxAlpha = 1.0f;
 	m_vecColor = [1,1,1];
-	drawmask = MASK_ENGINE;
+	drawmask = MASK_GLOWS;
 	setsize(this, [0,0,0], [0,0,0]);
 	effects &= ~EF_NOSHADOW;
 	Init();

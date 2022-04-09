@@ -543,6 +543,8 @@ NSMonster::NewRoute(vector destination)
 	}
 }
 
+const int CONTENTBITS_MONSTER = CONTENTBIT_SOLID|0x00000002i|CONTENTBIT_BODY|CONTENTBIT_MONSTERCLIP;	
+
 void
 NSMonster::Physics(void)
 {
@@ -564,6 +566,8 @@ NSMonster::Physics(void)
 
 		CheckRoute();
 		WalkRoute();
+
+		hitcontentsmaski = CONTENTBITS_MONSTER;
 		runstandardplayerphysics(this);
 		SetOrigin(origin);
 		IdleNoise();

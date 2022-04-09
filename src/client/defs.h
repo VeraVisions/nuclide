@@ -34,6 +34,8 @@
 #define PRINT_HIGH		2
 #define PRINT_CHAT		3
 
+const float MASK_GLOWS = 16;
+
 /* fonts */
 font_s FONT_16;
 font_s FONT_20;
