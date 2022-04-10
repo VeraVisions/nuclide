@@ -510,7 +510,8 @@ NSTalkMonster::Physics(void)
 		}
 		CheckRoute();
 		WalkRoute();
-		runstandardplayerphysics(this);
+		hitcontentsmaski = CONTENTBITS_MONSTER;
+		PMoveCustom_RunPlayerPhysics(this);
 		SetOrigin(origin);
 	}
 

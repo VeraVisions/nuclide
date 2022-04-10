@@ -572,6 +572,9 @@ PMoveCustom_RunPlayerPhysics(entity target)
 	self.dimension_solid = 254;
 	self.dimension_hit = 254;
 
+	if (self.maxspeed <= 0)
+		self.maxspeed = 240;
+
 	/* call accelerate before and after the actual move, 
 	 * with half the move each time. this reduces framerate dependence. 
 	 * and makes controlling jumps slightly easier */
