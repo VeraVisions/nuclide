@@ -307,8 +307,8 @@ NSSurfacePropEntity::PropDataFinish(void)
 		m_iPropData = -1;
 }
 #else
-float
-NSSurfacePropEntity::predraw(void)
+void
+NSSurfacePropEntity::RenderFire(void)
 {
 	if (flags & FL_ONFIRE) {
 		vector someorg;
@@ -321,6 +321,11 @@ NSSurfacePropEntity::predraw(void)
 			m_flBurnNext = time + 0.1f;
 		}
 	}
+}
+float
+NSSurfacePropEntity::predraw(void)
+{
+	RenderFire();
 	return super::predraw();
 }
 #endif

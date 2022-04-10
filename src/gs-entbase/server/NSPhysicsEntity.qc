@@ -16,6 +16,7 @@
 
 #define ODE_MODE 1
 
+/* all the documented phys vars...*/
 .float geomtype;
 .float friction;
 .float erp;
@@ -45,8 +46,8 @@ NSPhysicsEntity::PhysicsDisable(void)
 		physics_enable(this, FALSE);
 		SetMovetype(MOVETYPE_NONE);
 	} else {
-		SetMovetype(MOVETYPE_BOUNCE);
-		SetSolid(SOLID_CORPSE);
+		SetMovetype(MOVETYPE_NONE);
+		SetSolid(SOLID_BBOX);
 	}
 	m_iEnabled = FALSE;
 }
@@ -164,6 +165,8 @@ NSPhysicsEntity::ApplyTorqueCenter(vector vecTorque)
 void
 NSPhysicsEntity::TouchThink(void)
 {
+	if (!m_iEnabled)
+		return;
 
 	if (physics_supported() == FALSE) {
 	/* let players collide */

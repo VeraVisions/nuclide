@@ -31,6 +31,7 @@ class NSSurfacePropEntity:NSRenderableEntity
 	virtual void(void) ParentUpdate;
 #else
 	virtual float(void) predraw;
+	virtual void(void) RenderFire;
 #endif
 
 	/* new */

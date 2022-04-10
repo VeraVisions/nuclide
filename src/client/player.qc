@@ -48,6 +48,8 @@ player::predraw(void)
 	effects &= ~EF_NOSHADOW;
 	base_client cl = (base_client)pSeat->m_ePlayer;
 
+	RenderFire();
+
 	/* it's either us or us spectating */
 	if (Client_IsSpectator(cl)) {
 		spectator spec = (spectator)pSeat->m_ePlayer;
