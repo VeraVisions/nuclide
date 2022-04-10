@@ -218,7 +218,8 @@ class NSMonster:NSSurfacePropEntity
 	virtual void(float) Save;
 	virtual void(string,string) Restore;
 
-	virtual void(void) touch;
+	virtual bool(void) CanCrouch;
+	virtual void(entity) Touch;
 	virtual void(void) Hide;
 	virtual void(void) Respawn;
 	virtual void(void) Pain;

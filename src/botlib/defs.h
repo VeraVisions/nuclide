@@ -16,6 +16,7 @@
 
 #include "bot.h"
 #include "botinfo.h"
-#include "route.h"
 #include "cvar.h"
-#include "way.h"
+
+
+vector Route_SelectDestination( bot target );

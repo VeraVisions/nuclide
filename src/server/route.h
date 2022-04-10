@@ -15,7 +15,6 @@
  */
 
 int Route_RoundDistance( float flDist );
-vector Route_SelectDestination( bot target );
 void Bot_RouteCB( entity ent, vector dest, int numnodes, nodeslist_t *nodelist );
 
 int Route_GetNodeFlags(nodeslist_t *node);

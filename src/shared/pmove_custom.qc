@@ -594,4 +594,41 @@ PMoveCustom_RunPlayerPhysics(entity target)
 	touchtriggers();
 	self = oldself;
 }
+
+void
+PMoveCustom_RunCrouchPhysics(entity target)
+{
+	int iFixCrouch = FALSE;
+	if (input_buttons & INPUT_BUTTON8) {
+		target.flags |= FL_CROUCHING;
+	} else {
+		// If we aren't holding down duck anymore and 'attempt' to stand up, prevent it
+		if (target.flags & FL_CROUCHING) {
+			if (PMove_IsStuck(target, [0,0,36], PHY_HULL_MIN, PHY_HULL_MAX) == FALSE) {
+				target.flags &= ~FL_CROUCHING;
+				iFixCrouch = TRUE;
+			}
+		} else {
+			target.flags &= ~FL_CROUCHING;
+		}
+	}
+
+	if (target.flags & FL_CROUCHING) {
+		setsize(target, PHY_HULL_CROUCHED_MIN, PHY_HULL_CROUCHED_MAX);
+		target.view_ofs = PHY_VIEWPOS_CROUCHED;
+	} else {
+		setsize(target, PHY_HULL_MIN, PHY_HULL_MAX);
+		if (iFixCrouch && PMove_IsStuck(target, [0,0,0], PHY_HULL_MIN, PHY_HULL_MAX)) {
+			for (int i = 0; i < 36; i++) {
+				target.origin[2] += 1;
+				if (PMove_IsStuck(target, [0,0,0], target.mins, target.maxs) == FALSE) {
+					break;
+				}
+			}
+		}
+		setorigin(target, target.origin);
+		target.view_ofs = PHY_VIEWPOS;
+	}
+	PMoveCustom_RunPlayerPhysics(target);
+}
 #endif 

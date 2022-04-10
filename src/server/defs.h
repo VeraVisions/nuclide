@@ -25,6 +25,9 @@
 #include "traceattack.h"
 #include "footsteps.h"
 
+#include "route.h"
+#include "way.h"
+
 #define AREAPORTAL_CLOSED 0
 #define AREAPORTAL_OPEN 1
 

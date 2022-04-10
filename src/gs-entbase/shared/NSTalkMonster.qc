@@ -511,7 +511,12 @@ NSTalkMonster::Physics(void)
 		CheckRoute();
 		WalkRoute();
 		hitcontentsmaski = CONTENTBITS_MONSTER;
-		PMoveCustom_RunPlayerPhysics(this);
+
+		if (CanCrouch())
+			PMoveCustom_RunCrouchPhysics(this);
+		else
+			PMoveCustom_RunPlayerPhysics(this);
+
 		SetOrigin(origin);
 	}
 

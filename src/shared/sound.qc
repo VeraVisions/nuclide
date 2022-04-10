@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+void(vector origin, string sample, float volume, float attenuation, float pitch) pointsound_proper = #483;
+
 #ifndef SOUNDSHADER_DYNAMIC
 	#ifndef SOUNDSHADER_MAX
 		#define SOUNDSHADER_MAX 512
@@ -396,6 +398,63 @@ Sound_Distance(entity target, string shader)
 }
 
 void
+Sound_DistancePos(vector pos, string shader)
+{
+	int r;
+	float volume;
+	float radius;
+	float pitch;
+	int flag;
+	int sample;
+
+	flag = 0;
+	sample = (int)hash_get(g_hashsounds, shader, -1);
+
+	if (sample < 0) {
+#ifdef SERVER
+		print(sprintf("^1Sound_DistancePos: shader %s is not precached (SERVER)\n", shader));
+#else
+		print(sprintf("^1Sound_DistancePos: shader %s is not precached (CLIENT)\n", shader));
+#endif
+	}
+
+	/* pick a sample */
+	r = floor(random(0,  g_sounds[sample].sample_count));
+	tokenizebyseparator(g_sounds[sample].samples, "\n");
+
+	/* set pitch */
+	pitch = random(g_sounds[sample].pitch_min, g_sounds[sample].pitch_max);
+	radius = Sound_GetAttenuation(sample);
+	volume = g_sounds[sample].volume;
+
+	/* flags */
+	if (g_sounds[sample].flags & SNDFL_NOREVERB) {
+		flag |= SOUNDFLAG_NOREVERB;
+	}
+	if (g_sounds[sample].flags & SNDFL_LOOPING) {
+		flag |= SOUNDFLAG_FORCELOOP;
+	}
+	if (g_sounds[sample].flags & SNDFL_NODUPS) {
+		if (g_sounds[sample].playc >= g_sounds[sample].sample_count) {
+			g_sounds[sample].playc = 0;
+		}
+		r = g_sounds[sample].playc++;
+	}
+
+#ifdef CLIENT
+	if (g_sounds[sample].flags & SNDFL_OMNI) {
+		flag |= SOUNDFLAG_NOSPACIALISE;
+	}
+#endif
+
+#ifdef DEVELOPER
+	print(sprintf("Sound_DistancePos: %s\n", argv(r)));
+#endif
+
+	pointsound_proper(pos, argv(r), volume, ATTN_NONE, pitch);
+}
+
+void
 Sound_Play(entity target, int chan, string shader)
 {
 	int r;
@@ -512,7 +571,6 @@ Sound_Play(entity target, int chan, string shader)
 	}
 }
 
-void(vector origin, string sample, float volume, float attenuation, float pitch) pointsound_proper = #483;
 void
 Sound_PlayAt(vector pos, string shader)
 {
@@ -565,6 +623,10 @@ Sound_PlayAt(vector pos, string shader)
 
 	/* really? this doesn't do any more? */
 	pointsound_proper(pos, argv(r), g_sounds[sample].volume, Sound_GetAttenuation(sample), pitch);
+
+	if (g_sounds[sample].distshader) {
+		Sound_DistancePos(pos, g_sounds[sample].distshader);
+	}
 }
 
 #ifdef CLIENT

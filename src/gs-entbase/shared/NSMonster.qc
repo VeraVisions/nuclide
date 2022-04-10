@@ -432,6 +432,31 @@ NSMonster::CheckRoute(void)
 		}
 	}
 
+	/* crouch attempt */
+	if (CanCrouch()) {
+		vector src;
+		bool shouldcrouch = false;
+
+		/* test up */
+		src = origin + [0,0,24];
+		makevectors(angles);
+		traceline(src, src + v_forward * 128, MOVE_NORMAL, this);
+
+		/* we hit something */
+		if (trace_fraction < 1.0) {
+			src = origin + [0,0, -8];
+			traceline(src, src + v_forward * 128, MOVE_NORMAL, this);
+
+			/* we can crouch here, so let's do it */
+			if (trace_fraction >= 1.0)
+				shouldcrouch = true;
+		}
+
+		/* entire way-link needs to be crouched. that's the law of the land */
+		if (shouldcrouch || Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_CROUCH)
+			input_buttons |= INPUT_BUTTON8;
+	}
+
 	/*if (flDist == m_flLastDist) {
 		m_flNodeGiveup += frametime;
 	} else {
@@ -545,7 +570,7 @@ NSMonster::NewRoute(vector destination)
 
 const int CONTENTBITS_MONSTER = CONTENTBIT_SOLID|CONTENTBIT_BODY|CONTENTBIT_MONSTERCLIP|CONTENTBIT_BOTCLIP;	
 void PMoveCustom_RunPlayerPhysics(entity target);
-
+void PMoveCustom_RunCrouchPhysics(entity target);
 void
 NSMonster::Physics(void)
 {
@@ -569,9 +594,13 @@ NSMonster::Physics(void)
 		WalkRoute();
 
 		hitcontentsmaski = CONTENTBITS_MONSTER;
-		PMoveCustom_RunPlayerPhysics(this);
+		if (CanCrouch())
+			PMoveCustom_RunCrouchPhysics(this);
+		else
+			PMoveCustom_RunPlayerPhysics(this);
 		SetOrigin(origin);
 		IdleNoise();
+		button8 = input_buttons & INPUT_BUTTON8; // duck
 
 		if (style != MONSTER_DEAD) {
 			if (m_flAnimTime > time) {
@@ -611,15 +640,21 @@ NSMonster::Physics(void)
 	frame1time += frametime;
 }
 
+bool
+NSMonster::CanCrouch(void)
+{
+	return false;
+}
+
 void
-NSMonster::touch(void)
+NSMonster::Touch(entity eToucher)
 {
 	if (movetype != MOVETYPE_WALK)
 		return;
 
-	if (other.movetype == MOVETYPE_WALK) {
-		if (other.absmin[2] < origin[2])
-			velocity = normalize(other.origin - origin) * -128;
+	if (eToucher.movetype == MOVETYPE_WALK) {
+		if (eToucher.absmin[2] < origin[2])
+			velocity = normalize(eToucher.origin - origin) * -128;
 	}
 }
 
