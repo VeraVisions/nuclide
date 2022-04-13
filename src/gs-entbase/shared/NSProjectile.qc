@@ -68,4 +68,5 @@ NSProjectile::NSProjectile(void)
 	SetRenderColor([1,1,1]);
 	SetRenderAmt(1.0);
 	SetSolid(SOLID_BBOX);
+	hitcontentsmaski |= CONTENTBIT_PROJECTILE;
 }

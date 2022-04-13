@@ -154,37 +154,52 @@ typedef enum
 
 const int CONTENTBIT_NONE		= 0x00000000i;
 
-const int CONTENTBIT_SOLID		= 0x00000001i;	/* SOLID_BSP */
-const int CONTENTBIT_UNUSED1		= 0x00000002i;
-const int CONTENTBIT_UNUSED2		= 0x00000004i;
-const int CONTENTBIT_LAVA		= 0x00000008i;	/* surfaceParm lava */
+const int CONTENTBIT_SOLID		= 0x00000001i
+;	/* SOLID_BSP */
+const int CONTENTBIT_UNUSED1		= 0x00000002i
+;
+const int CONTENTBIT_UNUSED2		= 0x00000004i
+;
+const int CONTENTBIT_LAVA		= 0x00000008i;
+	/* surfaceParm lava */
 
-const int CONTENTBIT_SLIME		= 0x00000010i;	/* surfaceParm slime */
-const int CONTENTBIT_WATER		= 0x00000020i;	/* surfaceParm water */
-const int CONTENTBIT_UNUSED3		= 0x00000040i;
-const int CONTENTBIT_GRENADECLIP	= 0x00000080i;	/* surfaceParm grenadeclip */
+const int CONTENTBIT_SLIME		= 0x00000010i;
+	/* surfaceParm slime */
+const int CONTENTBIT_WATER		= 0x00000020i;
+	/* surfaceParm water */
+const int CONTENTBIT_UNUSED3		= 0x00000040i
+;
+const int CONTENTBIT_GRENADECLIP	= 0x00000080i
+;	/* surfaceParm grenadeclip */
 
 const int CONTENTBIT_UNUSED4		= 0x00000100i;
 const int CONTENTBIT_UNUSED5		= 0x00000200i;
-const int CONTENTBIT_UNUSED6		= 0x00000400i;
-const int CONTENTBIT_UNUSED7		= 0x00000800i;
+const int CONTENTBIT_UNUSED6		= 0x00000400i
+;
+const int CONTENTBIT_UNUSED7		= 0x00000800i
+;
 
 const int CONTENTBIT_UNUSED8		= 0x00001000i;
 const int CONTENTBIT_UNUSED9		= 0x00002000i;
 const int CONTENTBIT_FTELADDER		= 0x00004000i;	/* surfaceparm climb */
 const int CONTENTBIT_UNUSED10		= 0x00008000i;
 
-const int CONTENTBIT_PLAYERCLIP		= 0x00010000i;	/* surfaceParm playerclip */
-const int CONTENTBIT_MONSTERCLIP	= 0x00020000i;	/* surfaceParm monsterclip */
-const int CONTENTBIT_UNUSED11		= 0x00040000i;
+const int CONTENTBIT_PLAYERCLIP		= 0x00010000i;
+	/* surfaceParm playerclip */
+const int CONTENTBIT_MONSTERCLIP	= 0x00020000i;
+	/* surfaceParm monsterclip */
+const int CONTENTBIT_PROJECTILE		= 0x00040000i;
 const int CONTENTBIT_UNUSED12		= 0x00080000i;
 
 const int CONTENTBIT_CLUSTERPORTAL	= 0x00100000i;
 const int CONTENTBIT_DONOTENTER		= 0x00200000i;
-const int CONTENTBIT_BOTCLIP		= 0x00400000i;	/* surfaceParm botclip */
-const int CONTENTBIT_MOVER		= 0x00800000i;
+const int CONTENTBIT_BOTCLIP		= 0x00400000i
+;	/* surfaceParm botclip */
+const int CONTENTBIT_MOVER		= 0x00800000i
+;
 
-const int CONTENTBIT_UNUSED13		= 0x01000000i;
+const int CONTENTBIT_UNUSED13		= 0x01000000i
+;
 const int CONTENTBIT_BODY		= 0x02000000i;	/* SOLID_BBOX/SLIDEBOX */
 const int CONTENTBIT_CORPSE		= 0x04000000i;	/* SOLID_CORPSE */
 const int CONTENTBIT_UNUSED14		= 0x08000000i;

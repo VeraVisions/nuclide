@@ -58,7 +58,7 @@ TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon, f
 
 	/* make sure we can gib corpses */
 	int oldhitcontents = self.hitcontentsmaski;
-	self.hitcontentsmaski = CONTENTBITS_POINTSOLID | CONTENTBIT_CORPSE | CONTENTBIT_WATER | CONTENTBIT_SLIME | CONTENTBIT_LAVA;
+	self.hitcontentsmaski = CONTENTBITS_POINTSOLID | CONTENTBIT_CORPSE | CONTENTBIT_WATER | CONTENTBIT_SLIME | CONTENTBIT_LAVA | CONTENTBIT_PROJECTILE;
 	traceline(vecPos, vecPos + range, MOVE_LAGGED | MOVE_HITMODEL, self);
 	self.hitcontentsmaski = oldhitcontents;
 

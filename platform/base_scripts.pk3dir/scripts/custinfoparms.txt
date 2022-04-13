@@ -2,6 +2,7 @@
 	climb		0x00004000
 	vehicleclip	0x00008000
 	grenadeclip	0x00000080
+	projectile	0x00040000
 }
 {
 	leakssteam	0x00080000
