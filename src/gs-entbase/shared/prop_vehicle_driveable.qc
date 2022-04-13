@@ -102,6 +102,7 @@ class prop_vehicle_driveable:NSVehicle
 
 	virtual void(void) Physics;
 	virtual void(void) RunVehiclePhysics;
+	virtual void(void) WeaponInput;
 	virtual void(void) PlayerInput;
 	virtual void(void) OnRemoveEntity;
 
@@ -208,7 +209,18 @@ prop_vehicle_driveable_wheel::Bounce(vector normal)
 {
 	prop_vehicle_driveable vehParent;
 	vehParent = (prop_vehicle_driveable)owner;
-	velocity -= (velocity * normal) * normal * vehParent.m_flBounceFactor;
+
+	vector vecBounce = (velocity * normal) * normal * vehParent.m_flBounceFactor;
+	velocity -= vecBounce;
+	vehParent.velocity = velocity;
+
+#ifdef SERVER
+	float flStregth = vlen((velocity * normal) * normal);
+
+	if (flStregth > 96) {
+		Sound_Play(vehParent, CHAN_VOICE, "prop_vehicle_driveable.bounce");
+	}
+#endif
 }
 
 void
@@ -385,6 +397,22 @@ prop_vehicle_driveable_wheel::Accel(float flMoveTime, float m_flTurn)
 
 	/* apply gravity */
 	velocity += vehParent.m_vecGravityDir * flMoveTime * serverkeyfloat("phy_gravity") * trace_fraction;
+
+	tracebox(origin, mins * 4.0, maxs * 4.0, origin, MOVE_NORMAL, owner);
+	if (trace_ent && trace_ent != vehParent.m_eDriver) {
+		int iImpactDamage = vlen(velocity) / 100;
+
+		if (iImpactDamage > 10) {
+			trace_ent.velocity = velocity;
+			velocity *= 0.25f;
+#ifdef SERVER
+			if (trace_ent.takedamage) {
+				NSSurfacePropEntity foo = (NSSurfacePropEntity)trace_ent;
+				Damage_Apply(foo, vehParent.m_eDriver, iImpactDamage, 0, DMG_VEHICLE);
+			}
+#endif
+		}
+	}
 }
 
 void
@@ -414,7 +442,7 @@ prop_vehicle_driveable_wheel::Physics(float turnrate, float flTimeLength)
 
 	/* try to correct the wheel's position, in case it got stuck */
 	owner_pos = owner.origin + (owner.mins + owner.maxs) * 0.5f;
-	tracebox(owner_pos, mins, maxs, origin, MOVE_NOMONSTERS, owner);
+	tracebox(owner_pos, mins, maxs, origin, MOVE_NORMAL, owner);
 	setorigin(this, trace_endpos);
 
 	/* see if we're in-air */
@@ -481,6 +509,12 @@ prop_vehicle_driveable::PredictPostFrame(void)
 #endif
 
 void
+prop_vehicle_driveable::WeaponInput(void)
+{
+
+}
+
+void
 prop_vehicle_driveable::PlayerInput(void)
 {
 	m_vecMoveValues = input_movevalues;
@@ -489,9 +523,6 @@ prop_vehicle_driveable::PlayerInput(void)
 
 	/* prediction frame... */
 	RunVehiclePhysics();
-
-	/* only allow use key */
-	input_buttons = (input_buttons & INPUT_BUTTON5);
 
 #ifdef SERVER
 	/* allow us to exit */
@@ -503,6 +534,11 @@ prop_vehicle_driveable::PlayerInput(void)
 		}
 	}
 #endif
+
+	WeaponInput();
+
+	/* only allow use key */
+	input_buttons = (input_buttons & INPUT_BUTTON5);
 }
 
 void
@@ -811,11 +847,14 @@ prop_vehicle_driveable::SendEntity(entity ePVSent, float flSendFlags)
 void
 prop_vehicle_driveable::prop_vehicle_driveable(void)
 {
+#ifdef SERVER
+	Sound_Precache("prop_vehicle_driveable.bounce");
+#endif
 	m_eDriver = __NULL__;
-	m_flBounceFactor = 1.5f;
+	m_flBounceFactor = 1.25f;
 	m_flAcceleration = 600.0f;
 	m_flSkidSpeed = 256.0f;
-	m_flTraction = 4.0f;
+	m_flTraction = 5.0f;
 	m_flBreakFactor = 2.0f;
 	m_flSteerFactor = 1.0f;
 	m_flStraightenFactor = 1.0f;
