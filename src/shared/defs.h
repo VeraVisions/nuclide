@@ -235,3 +235,13 @@ setorigin_safe(entity target, vector testorg)
 
 	setorigin(target, testorg);
 }
+
+#ifdef NO_LEGACY
+void
+readcmd(string foo)
+{
+	localcmd(foo);
+}
+#else
+void(string cmd) readcmd = #0:readcmd;
+#endif

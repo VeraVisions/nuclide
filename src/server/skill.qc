@@ -14,8 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-string(string cmd) readcmd = #0;
-
 /*
 =================
 Skill_Init

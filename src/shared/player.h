@@ -87,7 +87,7 @@ base_player:spectator
 	float lastweapon;
 
 	virtual void(void) VehicleRelink;
-	virtual void(void) ClientRemove;
+	virtual void(void) OnRemoveEntity;
 	virtual void(float, float) ReceiveEntity;
 	virtual void(void) PredictPreFrame;
 	virtual void(void) PredictPostFrame;

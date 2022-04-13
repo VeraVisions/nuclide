@@ -213,20 +213,6 @@ NSEntity::TouchHandler(void)
 #ifdef CLIENT
 /*
 ============
-NSEntity::ClientRemove
-
-The client-side has received information that this entity has been
-removed on the server. This is where sub-entities of a class can safely
-get removed from the world as well.
-============
-*/
-void
-NSEntity::ClientRemove(void)
-{
-	
-};
-/*
-============
 NSEntity::RendererRestarted
 
 make sure any child-classes precache their assets in here
@@ -988,6 +974,18 @@ NSEntity::SpawnKey(string strKey, string strValue)
 
 /*
 ============
+OnRemoveEntity
+
+Empty method, meant for sub-classes to clean up their contents
+============
+*/
+void
+NSEntity::OnRemoveEntity(void)
+{
+}
+
+/*
+============
 NSEntity::Destroy
 
 Call if the entity is to be removed the next possible frame.
@@ -998,6 +996,8 @@ through your own hoops. This however will be sufficient 99,99% of the time.
 void
 NSEntity::Destroy(void)
 {
+	OnRemoveEntity();
+
 	think = Util_Destroy;
 
 	if (!time)

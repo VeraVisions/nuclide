@@ -125,7 +125,6 @@ logic_auto::Restore(string strKey, string strValue)
 	}
 }
 
-string(string cmd) readcmd = #0;
 void
 logic_auto::Processing(void)
 {

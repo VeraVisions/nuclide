@@ -728,7 +728,7 @@ CSQC_Ent_Remove(void)
 {
 	if (self.isCSQC) {
 		NSEntity me = (NSEntity)self;
-		me.ClientRemove();
+		me.OnRemoveEntity();
 
 		if (me.skeletonindex)
 			skel_delete(me.skeletonindex);

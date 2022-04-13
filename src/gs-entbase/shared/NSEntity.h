@@ -46,7 +46,7 @@ class NSEntity:NSTrigger
 	virtual void(float,float) ReceiveEntity;
 	virtual void(void) postdraw;
 	virtual void(void) RendererRestarted;
-	virtual void(void) ClientRemove;
+	virtual void(void) OnRemoveEntity;
 #endif
 
 	/* overrides */
@@ -150,4 +150,6 @@ class NSEntity:NSTrigger
 	virtual void(entity) Touch;
 	virtual void(entity) EndTouch;
 	nonvirtual void(void) TouchHandler;
+
+	virtual void(void) OnRemoveEntity;
 };

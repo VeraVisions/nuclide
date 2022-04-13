@@ -81,7 +81,7 @@ func_smokevolume_cloud::predraw(void)
 
 	alpha *= m_flMaxAlpha;
 
-	if (!(spawnflags) & 1) {
+	if (!(spawnflags & 1)) {
 		m_vecColor *= (getlight(origin) / 255);
 	}
 

@@ -109,7 +109,7 @@ base_player::VehicleRelink(void)
 }
 
 void
-base_player::ClientRemove(void)
+base_player::OnRemoveEntity(void)
 {
 	if (p_model)
 		remove(p_model);

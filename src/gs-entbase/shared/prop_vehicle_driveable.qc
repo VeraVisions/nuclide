@@ -79,6 +79,10 @@ class prop_vehicle_driveable:NSVehicle
 	float m_flTimeLength;
 	vector m_vecSeatOffest;
 
+	/* collision boxes */
+	NSEntity m_eCollBox1;
+	NSEntity m_eCollBox2;
+
 	prop_vehicle_driveable_wheel m_wlFL;
 	prop_vehicle_driveable_wheel m_wlFR;
 	prop_vehicle_driveable_wheel m_wlBL;
@@ -99,6 +103,7 @@ class prop_vehicle_driveable:NSVehicle
 	virtual void(void) Physics;
 	virtual void(void) RunVehiclePhysics;
 	virtual void(void) PlayerInput;
+	virtual void(void) OnRemoveEntity;
 
 #ifdef CLIENT
 	virtual bool(void) HideViewWeapon;
@@ -106,7 +111,6 @@ class prop_vehicle_driveable:NSVehicle
 	virtual void(void) PredictPostFrame;
 	virtual void(float, float) ReadEntity;
 	virtual void(void) UpdateView;
-	virtual void(void) ClientRemove;
 #else
 	virtual void(void) Respawn;
 	virtual void(void) OnPlayerUse;
@@ -156,16 +160,18 @@ prop_vehicle_driveable::Physics(void)
 #endif
 }
 
-#ifdef CLIENT
 void
-prop_vehicle_driveable::ClientRemove(void)
+prop_vehicle_driveable::OnRemoveEntity(void)
 {
 	remove(m_wlFL);
 	remove(m_wlFR);
 	remove(m_wlBL);
 	remove(m_wlBR);
+	remove(m_eCollBox1);
+	remove(m_eCollBox2);
 }
 
+#ifdef CLIENT
 void
 prop_vehicle_driveable::UpdateView(void)
 {
@@ -582,6 +588,13 @@ prop_vehicle_driveable::RunVehiclePhysics(void)
 	new_origin += m_wlBR.origin;
 	new_origin *= 0.25f;
 	setorigin(this, new_origin);
+
+	makevectors(angles);
+	m_eCollBox1.SetOrigin(origin + (v_forward * 64));
+	m_eCollBox2.SetOrigin(origin + (v_forward * -72));
+	m_eCollBox1.SetSolid(SOLID_BBOX);
+	m_eCollBox2.SetSolid(SOLID_BBOX);
+
 	PlayerAlign();
 
 	/* actiony stuff */
@@ -624,7 +637,7 @@ prop_vehicle_driveable::Respawn(void)
 	m_wlBR.velocity =
 	velocity = [0,0,0];
 	PlayerUse = OnPlayerUse;
-	setsize( this, [-50,-50,0], [50,50,70]);
+	setsize( this, [-50,-50,0], [50,50,64]);
 
 	if (m_eDriver)
 		PlayerLeave((base_player)m_eDriver);
@@ -647,7 +660,7 @@ prop_vehicle_driveable::ReadEntity(float flSendFlags, float flNew)
 		m_vecSeatOffest[0] = readfloat();
 		m_vecSeatOffest[1] = readfloat();
 		m_vecSeatOffest[2] = readfloat();
-		setsize( this, [-50,-50,0], [50,50,70]);
+		setsize( this, [-50,-50,0], [50,50,64]);
 	}
 
 	if (flSendFlags & VEHFL_ORIGIN) {
@@ -656,16 +669,17 @@ prop_vehicle_driveable::ReadEntity(float flSendFlags, float flNew)
 		origin[2] = readcoord();
 		setorigin(this, origin);
 
+		makevectors(angles);
 
-	makevectors(angles);
-
-	setorigin( m_wlFL, origin );
-	setorigin( m_wlBL, m_wlFL.origin - v_forward * 85 );
-	setorigin( m_wlFL, m_wlFL.origin + v_forward * 85 );
-	setorigin( m_wlFR, m_wlFL.origin + v_right * 40 );
-	setorigin( m_wlFL, m_wlFL.origin - v_right * 40 );
-	setorigin( m_wlBR, m_wlBL.origin + v_right * 40 );
-	setorigin( m_wlBL, m_wlBL.origin - v_right * 40 );
+		setorigin( m_wlFL, origin );
+		setorigin( m_wlBL, m_wlFL.origin - v_forward * 85 );
+		setorigin( m_wlFL, m_wlFL.origin + v_forward * 85 );
+		setorigin( m_wlFR, m_wlFL.origin + v_right * 40 );
+		setorigin( m_wlFL, m_wlFL.origin - v_right * 40 );
+		setorigin( m_wlBR, m_wlBL.origin + v_right * 40 );
+		setorigin( m_wlBL, m_wlBL.origin - v_right * 40 );
+		m_eCollBox1.SetOrigin(origin + (v_forward * 64));
+		m_eCollBox2.SetOrigin(origin + (v_forward * -72));
 	}
 
 	if (flSendFlags & VEHFL_ANGLES) {
@@ -808,13 +822,31 @@ prop_vehicle_driveable::prop_vehicle_driveable(void)
 	m_vecGravityDir = [0,0,-1];
 	m_iVehicleFlags |= VHF_FROZEN;
 
+	if (!m_eCollBox1)
+		m_eCollBox1 = spawn(NSEntity);
+	if (!m_eCollBox2)
+		m_eCollBox2 = spawn(NSEntity);
+
+	{
+		m_eCollBox1.SetSize([-32,-32,0], [32,32,32]);
+		m_eCollBox2.SetSize([-32,-32,0], [32,32,32]);
+	}
+
+	if (!m_wlFL)
+		m_wlFL = spawn(prop_vehicle_driveable_wheel);
+	if (!m_wlFR)
+		m_wlFR = spawn(prop_vehicle_driveable_wheel);
+	if (!m_wlBL)
+		m_wlBL = spawn(prop_vehicle_driveable_wheel);
+	if (!m_wlBR)
+		m_wlBR = spawn(prop_vehicle_driveable_wheel);
+
+	m_eCollBox1.owner = m_eCollBox2.owner = \
+		m_wlFL.owner = m_wlFR.owner = \
+		m_wlBL.owner = m_wlBR.owner = this;
+
 	super::NSVehicle();
 
-	m_wlFL = spawn(prop_vehicle_driveable_wheel);
-	m_wlFR = spawn(prop_vehicle_driveable_wheel);
-	m_wlBL = spawn(prop_vehicle_driveable_wheel);
-	m_wlBR = spawn(prop_vehicle_driveable_wheel);
-	m_wlFL.owner = m_wlFR.owner = m_wlBL.owner = m_wlBR.owner = this;
 	customphysics = Physics;
 }
 

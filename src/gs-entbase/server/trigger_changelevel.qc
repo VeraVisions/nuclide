@@ -46,7 +46,6 @@ enumflags
 	LC_USEONLY
 };
 
-string(string cmd) readcmd = #0;
 void
 ChangeTarget_Activate(void)
 {
