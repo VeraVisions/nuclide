@@ -54,7 +54,7 @@ GameText_DrawString(vector pos, string msg, vector col, float alpha)
 		rpos[1] += Font_GetHeight(FONT_20) * i;
 		rpos[1] -= (Font_GetHeight(FONT_20) * c) / 2;
 
-		Font_DrawText(rpos, argv(i), FONT_20);
+		Font_DrawText_RGBA(rpos, argv(i), col, alpha, FONT_20);
 	}
 }
 
