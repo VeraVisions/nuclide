@@ -14,6 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+float
+NSVehicle::DriverAnimation(void)
+{
+	return (-1);
+}
+
 entity
 NSVehicle::GetDriver(void)
 {
@@ -28,6 +34,11 @@ NSVehicle::HideViewWeapon(void)
 }
 bool
 NSVehicle::HideCrosshair(void)
+{
+	return true;
+}
+bool
+NSVehicle::HidePlayermodel(void)
 {
 	return true;
 }

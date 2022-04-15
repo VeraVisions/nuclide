@@ -45,6 +45,7 @@ class NSVehicle:NSSurfacePropEntity
 	virtual void(void) UpdateView;
 	virtual bool(void) HideViewWeapon;
 	virtual bool(void) HideCrosshair;
+	virtual bool(void) HidePlayermodel;
 #else
 	virtual vector(void) GetExitPos;
 	virtual void(void) EvaluateEntity;
@@ -57,6 +58,7 @@ class NSVehicle:NSSurfacePropEntity
 	virtual void(base_player) PlayerEnter;
 	virtual void(base_player) PlayerLeave;
 	virtual void() PlayerInput;
+	virtual float(void) DriverAnimation;
 };
 
 enumflags

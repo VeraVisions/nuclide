@@ -62,12 +62,18 @@ player::predraw(void)
 		}
 	}
 
+	if (this_us && flags & FL_INVEHICLE) {
+		NSVehicle veh = (NSVehicle)vehicle;
+		if (veh)
+			this_us = veh.HidePlayermodel();
+	}
+
 	if (autocvar_cl_thirdperson == TRUE || !this_us) {
 		Voice_Draw3D(this);
 		Player_PreDraw(this, TRUE);
 		if (p_model)
 			addentity(p_model);
-		addentity(this);
+		//addentity(this);
 	} else {
 		Player_PreDraw(this, FALSE);
 		if (p_model)

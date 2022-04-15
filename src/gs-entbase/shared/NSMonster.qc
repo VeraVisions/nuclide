@@ -208,7 +208,7 @@ NSMonster::SeeThink(void)
 		traceline(origin, w.origin, MOVE_EVERYTHING, this);
 
 		/* we have line of sight with the player */
-		if (trace_fraction == 1.0f) {
+		if (trace_fraction == 1.0f || trace_ent == w) {
 			if (m_eEnemy != w) {
 				m_eEnemy = w;
 				AlertNearby();
