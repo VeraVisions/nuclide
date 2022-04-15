@@ -80,7 +80,7 @@ class trigger_hurt:NSBrushTrigger
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
 	virtual void(entity, int) Trigger;
-	virtual void(void) touch;
+	virtual void(entity) Touch;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
 	virtual void(entity, string, string) Input;
@@ -149,32 +149,32 @@ trigger_hurt::Trigger(entity act, int state)
 }
 
 void
-trigger_hurt::touch(void)
+trigger_hurt::Touch(entity eToucher)
 {
-	if (other.takedamage == DAMAGE_NO) {
+	if (eToucher.takedamage == DAMAGE_NO) {
 		return;
-	} else if (HasSpawnFlags(SF_HURT_TOUCHPLAYER) && !(other.flags & FL_CLIENT)) {
+	} else if (HasSpawnFlags(SF_HURT_TOUCHPLAYER) && !(eToucher.flags & FL_CLIENT)) {
 		return;
-	} else if (HasSpawnFlags(SF_HURT_NOPLAYERS) && (other.flags & FL_CLIENT)) {
+	} else if (HasSpawnFlags(SF_HURT_NOPLAYERS) && (eToucher.flags & FL_CLIENT)) {
 		return;
-	} else if (other.hurt_next > time) {
+	} else if (eToucher.hurt_next > time) {
 		return;
 	}
 
 	if (!target) {
-		if (other.flags & FL_CLIENT)
-			UseOutput(other, m_strOnHurtPlayer);
+		if (eToucher.flags & FL_CLIENT)
+			UseOutput(eToucher, m_strOnHurtPlayer);
 		else
-			UseOutput(other, m_strOnHurt);
+			UseOutput(eToucher, m_strOnHurt);
 	} else {
 		if (HasSpawnFlags(SF_HURT_FIREONPLAYER)) {
-			if (other.flags & FL_CLIENT) {
-				eActivator = other;
-				UseTargets(other, TRIG_TOGGLE, m_flDelay);
+			if (eToucher.flags & FL_CLIENT) {
+				eActivator = eToucher;
+				UseTargets(eToucher, TRIG_TOGGLE, m_flDelay);
 			}
 		} else {
-			eActivator = other;
-			UseTargets(other, TRIG_TOGGLE, m_flDelay);
+			eActivator = eToucher;
+			UseTargets(eToucher, TRIG_TOGGLE, m_flDelay);
 		}
 	}
 
@@ -202,17 +202,17 @@ trigger_hurt::touch(void)
 			type |= DMG_CHEMICAL;
 	}
 
-	Damage_Apply(other, this, m_iDamage, 0, type);
+	Damage_Apply(eToucher, this, m_iDamage, 0, type);
 
 	dprint(sprintf("^2trigger_hurt::^3Touch^7: Hurting '%s' with %i\n", 
-		other.netname, m_iDamage));
+		eToucher.netname, m_iDamage));
 
 	/* shut it down if used once */
 	if (HasSpawnFlags(SF_HURT_ONCE)) {
-		Trigger(other, TRIG_OFF);
+		Trigger(eToucher, TRIG_OFF);
 	}
 
-	other.hurt_next = time + m_flNextDmg;
+	eToucher.hurt_next = time + m_flNextDmg;
 }
 
 void
