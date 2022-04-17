@@ -304,6 +304,10 @@ func_button::Trigger(entity act, int state)
 
 	UseOutput(act, m_strOnPressed);
 	UseTargets(act, TRIG_TOGGLE, m_flDelay);
+
+	if (message)
+		env_message_single(act, message);
+
 	health = GetSpawnHealth();
 }
 
@@ -436,6 +440,9 @@ void
 func_button::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
+	case "message":
+		message = strValue;
+		break;
 	case "speed":
 		m_flSpeed = stof(strValue);
 		break;

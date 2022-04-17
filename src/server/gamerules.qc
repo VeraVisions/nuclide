@@ -381,7 +381,7 @@ CGameRules::IntermissionEnd(void)
 	if (!(input_buttons & INPUT_BUTTON0) && !(input_buttons & INPUT_BUTTON2))
 		return;
 
-	localcmd("restart\n");
+	localcmd("nextmap\n");
 }
 
 void

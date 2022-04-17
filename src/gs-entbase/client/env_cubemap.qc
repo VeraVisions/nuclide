@@ -93,7 +93,7 @@ CMap_Shoot(void)
 		setproperty(VF_ANGLES, [0,0,0]);
 
 		strReflectcube = sprintf(
-					"env/%s_%d_%d_%d",
+					"env/%s_%d_%d_%d.ktx",
 					mapname,
 					g_vecCubePos[0],
 					g_vecCubePos[1],
@@ -103,7 +103,7 @@ CMap_Shoot(void)
 			strReflectcube,
 			tmp.m_iSize));
 		self.think = CMap_Check;
-		self.nextthink = time + 0.5f;
+		self.nextthink = time + 0.25f;
 	} else {
 		print("^2Cubemaps done...\n");
 		localcmd("vid_reload\n");
@@ -124,7 +124,7 @@ CMap_Check(void)
 {
 	self.owner = find(self.owner, classname, "env_cubemap");
 	self.think = CMap_Shoot;
-	self.nextthink = time + 0.25f; /* because sigh */
+	self.nextthink = time + 0.1f; /* because sigh */
 }
 
 /*
