@@ -24,6 +24,7 @@ Physics brush.
 This entity was introduced in Half-Life 2 (2004).
 */
 
+#ifndef PHYSICS_STATIC
 #define FNCPHYBX_ASLEEP 4096
 
 class func_physbox:NSPhysicsEntity
@@ -57,3 +58,33 @@ func_physbox::func_physbox(void)
 {
 	super::NSPhysicsEntity();
 }
+#else
+class func_physbox:NSSurfacePropEntity
+{
+	void(void) func_physbox;
+	virtual void(void) Respawn;
+	virtual void(void) Death;
+};
+
+void
+func_physbox::Death(void)
+{
+	Hide();
+}
+
+void
+func_physbox::Respawn(void)
+{
+	NSSurfacePropEntity::Respawn();
+	health = GetSpawnHealth();
+	SetTakedamage(DAMAGE_YES);
+	SetSolid(SOLID_BBOX);
+}
+
+void
+func_physbox::func_physbox(void)
+{
+	super::NSSurfacePropEntity();
+}
+
+#endif

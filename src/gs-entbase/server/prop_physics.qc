@@ -24,6 +24,7 @@ Physics model
 This entity was introduced in Half-Life 2 (2004).
 */
 
+#ifndef PHYSICS_STATIC
 #define PRPPHYS_ASLEEP 1
 
 class prop_physics:NSPhysicsEntity
@@ -57,3 +58,23 @@ prop_physics::prop_physics(void)
 {
 	super::NSPhysicsEntity();
 }
+#else
+class prop_physics:NSRenderableEntity
+{
+	void(void) prop_physics;
+	virtual void(void) Respawn;
+};
+
+void
+prop_physics::Respawn(void)
+{
+	super::Respawn();
+	SetSolid(SOLID_BBOX);
+}
+
+void
+prop_physics::prop_physics(void)
+{
+	super::NSRenderableEntity();
+}
+#endif

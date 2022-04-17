@@ -215,7 +215,7 @@ NSSurfacePropEntity::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "health":
-		health = stof(strValue);
+		max_health = health = stof(strValue);
 		m_oldHealth = health;
 		break;
 	case "propdata":

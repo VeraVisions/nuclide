@@ -218,7 +218,6 @@ func_breakable::Death(void)
 		return;
 	}
 
-	health = 0;
 	eActivator = g_dmg_eAttacker;
 
 	if (m_strBreakSpawn != "" && isfunction(m_strBreakSpawn)) {
@@ -241,9 +240,8 @@ func_breakable::Death(void)
 		nextthink = time + random(0.0,0.5);
 	} else {
 		FX_BreakModel(vlen(size) / 10, absmin, absmax, [0,0,0], GetSurfaceData(SURFDATA_MATERIAL));
-		/* TODO: ability to have whoever destroyed the crate be the activator */
-		UseTargets(this, TRIG_TOGGLE, 0.0f);
 		Hide();
+		UseTargets(eActivator, TRIG_TOGGLE, 0.0f);
 	}
 }
 

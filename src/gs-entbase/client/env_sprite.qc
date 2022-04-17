@@ -19,12 +19,49 @@ class env_sprite:NSRenderableEntity
 	float framerate;
 	int loops;
 	int maxframe; 
+	string m_strMaterial;
 
+	virtual float(void) predraw;
 	virtual void(void) Init;
 	virtual void(void) Initialized;
 	virtual void(float,float) ReceiveEntity;
 	virtual void(void) think;
 };
+
+float
+env_sprite::predraw(void)
+{
+	if (!m_strMaterial)
+		return (PREDRAW_NEXT);
+
+	int s = (float)getproperty(VF_ACTIVESEAT);
+	pSeat = &g_seats[s];
+	vector vecPlayer = pSeat->m_vecPredictedOrigin;
+	makevectors(view_angles);
+	makevectors(vectoangles(origin - vecPlayer));
+	vector forg = origin + (v_forward * -16);
+	vector fsize = [64,64];
+
+	traceline(origin, vecPlayer, MOVE_WORLDONLY, this);
+
+	if (trace_fraction < 1.0)
+		return;
+
+	R_BeginPolygon(m_strMaterial, 1, 0);
+	R_PolygonVertex(forg + v_right * fsize[0] - v_up * fsize[1],
+		[1,1], m_vecRenderColor, 1.0);
+	R_PolygonVertex(forg - v_right * fsize[0] - v_up * fsize[1],
+		[0,1], m_vecRenderColor, 1.0);
+	R_PolygonVertex(forg - v_right * fsize[0] + v_up * fsize[1],
+		[0,0], m_vecRenderColor, 1.0);
+	R_PolygonVertex(forg + v_right * fsize[0] + v_up * fsize[1],
+		[1,0], m_vecRenderColor, 1.0);
+	R_EndPolygon();
+
+	addentity(this);
+
+	return (PREDRAW_NEXT);
+}
 
 void
 env_sprite::think(void)
@@ -51,6 +88,7 @@ env_sprite::ReceiveEntity(float flNew, float flChanged)
 	modelindex = readfloat();
 	framerate = readfloat();
 	scale = readfloat();
+	m_strMaterial = readstring();
 
 #ifdef GS_RENDERFX
 	m_iRenderFX = readbyte();
@@ -92,6 +130,7 @@ EnvSprite_ParseEvent(void)
 	spr.modelindex = readfloat();
 	spr.framerate = readfloat();
 	spr.scale = readfloat();
+	spr.m_strMaterial = readstring();
 
 #ifdef GS_RENDERFX
 	spr.m_iRenderFX = readbyte();

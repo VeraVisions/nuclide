@@ -48,16 +48,32 @@ enumflags
 
 class env_sprite:NSRenderableEntity
 {
+	bool m_iIsShader;
 	int m_iToggled;
 	float m_flFramerate;
 	float m_flScale;
 	float m_flEffects;
+	string m_strMaterial;
 
 	void(void) env_sprite;
 	virtual void(entity, int) Trigger;
 	virtual float(entity, float) SendEntity;
 	virtual void(string, string) SpawnKey;
+	virtual void(entity, string, string) Input;
 };
+
+void
+env_sprite::Input(entity eAct, string strInput, string strData)
+{
+	switch (strInput) {
+	case "Color":
+		m_vecRenderColor = stov(strData) / 255;
+		SendFlags |= 1;
+		break;
+	default:
+		super::Input(eAct, strInput, strData);
+	}
+}
 
 float
 env_sprite::SendEntity(entity ePEnt, float flags)
@@ -80,6 +96,7 @@ env_sprite::SendEntity(entity ePEnt, float flags)
 	WriteFloat(MSG_ENTITY, modelindex);
 	WriteFloat(MSG_ENTITY, m_flFramerate);
 	WriteFloat(MSG_ENTITY, m_flScale);
+	WriteString(MSG_ENTITY, m_strMaterial);
 
 #ifdef GS_RENDERFX
 	WriteByte(MSG_ENTITY, m_iRenderFX);
@@ -109,6 +126,7 @@ env_sprite::NetworkOnce(void)
 	WriteFloat(MSG_MULTICAST, modelindex);
 	WriteFloat(MSG_MULTICAST, m_flFramerate);
 	WriteFloat(MSG_MULTICAST, m_flScale);
+	WriteString(MSG_MULTICAST, m_strMaterial);
 
 #ifdef GS_RENDERFX
 	WriteByte(MSG_MULTICAST, m_iRenderFX);
@@ -144,6 +162,10 @@ void
 env_sprite::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
+	case "shader":
+	case "material":
+		m_strMaterial = strValue;
+		break;
 	case "framerate":
 		m_flFramerate = stof(strValue);
 		break;
@@ -158,6 +180,7 @@ env_sprite::SpawnKey(string strKey, string strValue)
 void
 env_sprite::env_sprite(void)
 {
+	m_iIsShader = false;
 	m_flFramerate = 10;
 	m_flScale = 1.0f;
 
