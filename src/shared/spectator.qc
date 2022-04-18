@@ -182,6 +182,7 @@ spectator::InputNext(void)
 	float max_edict;
 	float sep = spec_ent;
 	float best = 0;
+	base_client cl;
 
 	max_edict = serverkeyfloat("sv_playerslots");
 
@@ -191,15 +192,20 @@ spectator::InputNext(void)
 		if (i <= sep && best == 0) {
 			f = edict_num(i);
 			if (f && f.classname == "player" && f != this) {
-				best = i;
+				cl = (base_client)f;
+				if (!cl.IsFakeSpectator())
+					best = i;
 			}
 		}
 
 		if (i > sep) {
 			f = edict_num(i);
 			if (f && f.classname == "player" && f != this) {
-				best = i;
-				break;
+				cl = (base_client)f;
+				if (!cl.IsFakeSpectator()) {
+					best = i;
+					break;
+				}
 			}
 		}
 	}
@@ -234,6 +240,7 @@ spectator::InputPrevious(void)
 	float max_edict;
 	float sep = spec_ent;
 	float best = 0;
+	base_client cl;
 
 	max_edict = serverkeyfloat("sv_playerslots");
 
@@ -243,8 +250,12 @@ spectator::InputPrevious(void)
 		/* remember the first valid one here */
 		if (i >= sep && best == 0) {
 			f = edict_num(i);
+
 			if (f && f.classname == "player") {
-				best = i;
+				cl = (base_client)f;
+
+				if (!cl.IsFakeSpectator())
+					best = i;
 			}
 		}
 
@@ -252,8 +263,11 @@ spectator::InputPrevious(void)
 		if (i < sep) {
 			f = edict_num(i);
 			if (f && f.classname == "player") {
-				best = i;
-				break;
+				cl = (base_client)f;
+				if (!cl.IsFakeSpectator()) {
+					best = i;
+					break;
+				}
 			}
 		}
 	}
@@ -278,11 +292,21 @@ spectator::InputMode(void)
 	if (spec_flags & SPECFLAG_BUTTON_RELEASED)
 		return;
 
-	crossprint("MODE\n");
-	spec_mode++;
+	base_client f;
+#ifdef CLIENT
+	f = (base_client)findfloat(world, ::entnum, spec_ent);
+#else
+	f = (base_client)edict_num(spec_ent);
+#endif
 
-	if (spec_mode > SPECMODE_FIRSTPERSON)
+	if (f == this || f.classname != "player")
 		spec_mode = SPECMODE_FREE;
+	else {
+		spec_mode++;
+
+		if (spec_mode > SPECMODE_FIRSTPERSON)
+			spec_mode = SPECMODE_FREE;
+	}
 
 	spec_flags |= SPECFLAG_BUTTON_RELEASED;
 }
@@ -331,13 +355,20 @@ void
 spectator::SpectatorTrackPlayer(void)
 {
 	if (spec_mode == SPECMODE_THIRDPERSON || spec_mode == SPECMODE_FIRSTPERSON ) {
-		entity b;
+		base_client b;
 
 	#ifdef CLIENT
-		b = findfloat(world, ::entnum, spec_ent);
+		b = (base_client)findfloat(world, ::entnum, spec_ent);
 	#else
-		b = edict_num(spec_ent);
+		b = (base_client)edict_num(spec_ent);
 	#endif
+
+		if (b && b.classname == "player")
+		if (b.IsFakeSpectator()) {
+			b = world;
+			spec_mode = SPECMODE_FREE;
+			InputNext();
+		}
 
 		/* if the ent is dead... or not available in this current frame
 		   just warp to the last 'good' one */
