@@ -52,19 +52,19 @@ varying vec2 lm0;
 			if (alpha <= 0.0) {
 					discard;
 			} else if (alpha <= 0.25) {
-				diffuse_f.a = 1.0f;
+				diffuse_f.a = 1.0;
 				if (x + y == 2)
 					discard;
 				if (x + y == 1)
 					discard;
 			} else if (alpha <= 0.5) {
-				diffuse_f.a = 1.0f;
+				diffuse_f.a = 1.0;
 				if (x + y == 2)
 					discard;
 				if (x + y == 0)
 					discard;
 			} else if (alpha < 1.0) {
-				diffuse_f.a = 1.0f;
+				diffuse_f.a = 1.0;
 				if (x + y == 2)
 					discard;
 			}

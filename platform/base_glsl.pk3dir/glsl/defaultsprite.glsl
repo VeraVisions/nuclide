@@ -36,13 +36,13 @@ uniform vec4 e_vlscale;
 		size.y = 1.0 / textureSize(targ, 0).y;
 
 		if (index == 0)
-			coord_ofs = vec2(0.25f, 0.0f);
+			coord_ofs = vec2(0.25, 0.0);
 		else if (index == 1)
-			coord_ofs = vec2(0.50f, 0.75f);
+			coord_ofs = vec2(0.50, 0.75);
 		else if (index == 2)
-			coord_ofs = vec2(0.75f, 0.50f);
+			coord_ofs = vec2(0.75, 0.50);
 		else if (index == 3)
-			coord_ofs = vec2(0.00f, 0.25f);
+			coord_ofs = vec2(0.00, 0.25);
 
 		return texture2D(targ, texc + coord_ofs * size);
 	}

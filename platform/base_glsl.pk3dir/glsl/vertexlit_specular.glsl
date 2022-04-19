@@ -124,9 +124,9 @@ varying mat3 invsurface;
 			discard;
 		}
 
-		light = (e_light_mul * lambert(norm, e_light_dir)) * 2.0f; /* directional light */
-		light += (e_light_ambient * lambert(norm, reflect(norm, e_light_dir))) * 0.5f; /* reverse ambient */
-		light *= 2.0f;
+		light = (e_light_mul * lambert(norm, e_light_dir)) * 2.0; /* directional light */
+		light += (e_light_ambient * lambert(norm, reflect(norm, e_light_dir))) * 0.5; /* reverse ambient */
+		light *= 2.0;
 
 	#if r_skipSpecular==0
 		vec3 halfdir = normalize(normalize(eyevector) + e_light_dir);

@@ -80,16 +80,16 @@ varying vec3 light;
 
 		if (gl_ldr == 1.0) {
 			if (light.r > 1.5)
-				light.r = 1.5f;
+				light.r = 1.5;
 			if (light.g > 1.5)
-				light.g = 1.5f;
+				light.g = 1.5;
 			if (light.b > 1.5)
-				light.b = 1.5f;
+				light.b = 1.5;
 
-			light.rgb * 0.5f;
+			light.rgb * 0.5;
 			light.rgb = floor(light.rgb * vec3(32,64,32))/vec3(32,64,32);
-			light.rgb * 2.0f;
-			light.rgb *= 0.75f;
+			light.rgb * 2.0;
+			light.rgb *= 0.75;
 		}
 
 #ifdef CHROME
@@ -132,13 +132,13 @@ varying vec3 light;
 		size.y = 1.0 / textureSize(targ, 0).y;
 
 		if (index == 0)
-			coord_ofs = vec2(0.25f, 0.0f);
+			coord_ofs = vec2(0.25, 0.0);
 		else if (index == 1)
-			coord_ofs = vec2(0.50f, 0.75f);
+			coord_ofs = vec2(0.50, 0.75);
 		else if (index == 2)
-			coord_ofs = vec2(0.75f, 0.50f);
+			coord_ofs = vec2(0.75, 0.50);
 		else if (index == 3)
-			coord_ofs = vec2(0.00f, 0.25f);
+			coord_ofs = vec2(0.00, 0.25);
 
 		return texture2D(targ, texc + coord_ofs * size);
 	}
@@ -263,19 +263,19 @@ varying vec3 light;
 		if (alpha <= 0.0) {
 				discard;
 		} else if (alpha <= 0.25) {
-			diffuse_f.a = 1.0f;
+			diffuse_f.a = 1.0;
 			if (x + y == 2)
 				discard;
 			if (x + y == 1)
 				discard;
 		} else if (alpha <= 0.5) {
-			diffuse_f.a = 1.0f;
+			diffuse_f.a = 1.0;
 			if (x + y == 2)
 				discard;
 			if (x + y == 0)
 				discard;
 		} else if (alpha < 1.0) {
-			diffuse_f.a = 1.0f;
+			diffuse_f.a = 1.0;
 			if (x + y == 2)
 				discard;
 		}
