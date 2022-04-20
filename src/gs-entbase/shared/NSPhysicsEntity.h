@@ -29,6 +29,35 @@ enumflags
 	BPHY_SHARP
 };
 
+
+enumflags
+{
+	PHYENT_CHANGED_ORIGIN_X,
+	PHYENT_CHANGED_ORIGIN_Y,
+	PHYENT_CHANGED_ORIGIN_Z,
+	PHYENT_CHANGED_ANGLES_X,
+	PHYENT_CHANGED_ANGLES_Y,
+	PHYENT_CHANGED_ANGLES_Z,
+	PHYENT_CHANGED_MODELINDEX,
+	PHYENT_CHANGED_SIZE,
+	PHYENT_CHANGED_FLAGS,
+	PHYENT_CHANGED_SOLID,
+	PHYENT_CHANGED_FRAME,
+	PHYENT_CHANGED_SKIN,
+	PHYENT_CHANGED_MOVETYPE,
+	PHYENT_CHANGED_EFFECTS,
+	PHYENT_CHANGED_BODY,
+	PHYENT_CHANGED_SCALE,
+	PHYENT_CHANGED_VELOCITY,
+#ifdef GS_RENDERFX
+	PHYENT_CHANGED_RENDERCOLOR,
+	PHYENT_CHANGED_RENDERAMT,
+	PHYENT_CHANGED_RENDERMODE,
+#else
+	PHYENT_CHANGED_ALPHA,
+#endif
+};
+
 class NSPhysicsEntity:NSSurfacePropEntity
 {
 	int m_iEnabled;
@@ -41,10 +70,17 @@ class NSPhysicsEntity:NSSurfacePropEntity
 
 	/* overrides */
 	virtual void(void) Respawn;
-	virtual void(void) touch;
 	virtual void(void) TouchThink;
+#ifdef SERVER
+	PREDICTED_VECTOR(m_vecNetAngles);
+
 	virtual void(void) Pain;
 	virtual void(void) Death;
+	virtual void(void) EvaluateEntity;
+	virtual float(entity, float) SendEntity;
+#else
+	virtual void(float, float) ReceiveEntity;
+#endif
 	virtual void(string, string) SpawnKey;
 
 	virtual void(float) SetMass;

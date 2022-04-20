@@ -22,6 +22,7 @@
 #include "NSEntity.h"
 #include "NSRenderableEntity.h"
 #include "NSSurfacePropEntity.h"
+#include "NSPhysicsEntity.h"
 #include "NSBrushTrigger.h"
 #include "NSPointTrigger.h"
 #include "NSMonster.h"

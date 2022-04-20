@@ -32,6 +32,9 @@ Entity_EntityUpdate(float type, float new)
 		}
 		rend.ReceiveEntity(new, readfloat());
 		break;
+	case ENT_PHYSICS:
+		NSPhysicsEntity_ReadEntity(new);
+		break;
 	case ENT_MONSTER:
 		NSMonster_ReadEntity(new);
 		self.customphysics = Empty;

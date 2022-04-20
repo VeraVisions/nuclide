@@ -773,7 +773,6 @@ NSEntity::GetFlags(void)
 }
 
 
-#ifdef SERVER
 vector
 NSEntity::GetSpawnOrigin(void)
 {
@@ -790,6 +789,7 @@ NSEntity::GetSpawnModel(void)
 	return m_oldModel;
 }
 
+#ifdef SERVER
 void
 NSEntity::Respawn(void)
 {
@@ -1026,10 +1026,7 @@ NSEntity::NSEntity(void)
 
 	super::NSTrigger();
 
-	m_oldAngle = angles;
-	m_oldOrigin = origin;
 	m_oldSolid = solid;
-	m_oldModel = Util_FixModel(model);
 	blocked = BlockedHandler;
 	touch = TouchHandler;
 
@@ -1044,4 +1041,8 @@ NSEntity::NSEntity(void)
 #else
 	isCSQC = 1;
 #endif
+
+	m_oldAngle = angles;
+	m_oldOrigin = origin;
+	m_oldModel = Util_FixModel(model);
 }

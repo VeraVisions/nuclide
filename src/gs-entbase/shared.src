@@ -8,6 +8,7 @@ shared/NSTrigger.qc
 shared/NSEntity.qc
 shared/NSRenderableEntity.qc
 shared/NSSurfacePropEntity.qc
+shared/NSPhysicsEntity.qc
 shared/NSBrushTrigger.qc
 shared/NSPointTrigger.qc
 shared/NSVehicle.qc
@@ -28,6 +29,7 @@ shared/func_tankmortar.qc
 shared/trigger_camera.qc
 shared/trigger_gravity.qc
 shared/info_particle_system.qc
+shared/prop_physics_multiplayer.qc
 shared/prop_vehicle_driveable.qc
 shared/prop_rope.qc
 shared/worldspawn.qc

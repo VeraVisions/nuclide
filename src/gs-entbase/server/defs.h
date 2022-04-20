@@ -16,47 +16,9 @@
 
 #include "../shared/baseentity.h"
 #include "NSOutput.h"
-#include "NSPhysicsEntity.h"
 
 void FX_Spark(vector, vector);
 void FX_BreakModel(int, vector, vector, vector, float);
-
-/* This is required because people who use Hammer do awful things
-   to get their models to update. We get a multitude of juicy
-   hacks and symbols that Half-Life's engine strips and now we have to
-   replicate this behaviour. Be thankful this is not done in-engine for
-   every game/mod ever.
-*/
-string Util_FixModel(string mdl)
-{
-	if (!mdl) {
-		return "";
-	}
-
-	int c = tokenizebyseparator(mdl, "/", "\\ ", "!");
-	string newpath = "";
-
-	for (int i = 0; i < c; i++) {
-		newpath = sprintf("%s/%s", newpath, argv(i));
-	}
-
-	/* Kill the first / */
-	newpath = substring(newpath, 1, strlen(newpath)-1);
-
-	/* Now we need to fix \/ because I hate people */
-	c = tokenizebyseparator(newpath, "\\/");
-	mdl = "";
-	for (int i = 0; i < c; i++) {
-		mdl = sprintf("%s/%s", mdl, argv(i));
-	}
-	/* Kill the first / again */
-	mdl = substring(mdl, 1, strlen(mdl)-1);
-
-	if (substring(mdl, 0, 1) == "/")
-		mdl = substring(mdl, 1, -1);
-
-	return mdl;
-}
 
 /* Backwards compat */
 class CBaseMonster:NSMonster

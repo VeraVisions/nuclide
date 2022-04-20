@@ -26,6 +26,11 @@ class NSEntity:NSTrigger
 	vector m_vecMins;
 	vector m_vecMaxs;
 
+	/* important spawn values */
+	vector m_oldOrigin;
+	vector m_oldAngle;
+	string m_oldModel;
+
 	/* keep track of these variables */
 	PREDICTED_VECTOR_N(origin);
 	PREDICTED_VECTOR_N(angles);
@@ -61,9 +66,6 @@ class NSEntity:NSTrigger
 #ifdef SERVER
 	/* respawn */
 	float m_oldSolid;
-	vector m_oldOrigin;
-	vector m_oldAngle;
-	string m_oldModel;
 
 	string m_parent;
 	string m_parent_attachment;
@@ -82,10 +84,6 @@ class NSEntity:NSTrigger
 	/* some ents need this */
 	nonvirtual void(void) RestoreAngles;
 	nonvirtual void(void) ClearAngles;
-
-	nonvirtual vector(void) GetSpawnOrigin;
-	nonvirtual vector(void) GetSpawnAngles;
-	nonvirtual string(void) GetSpawnModel;
 #endif
 
 	/* sets */
@@ -106,6 +104,10 @@ class NSEntity:NSTrigger
 	virtual void(float) AddFlags;
 	virtual void(float) RemoveFlags;
 	/* gets */
+	nonvirtual vector(void) GetSpawnOrigin;
+	nonvirtual vector(void) GetSpawnAngles;
+	nonvirtual string(void) GetSpawnModel;
+
 	virtual float(void) GetScale;
 	virtual entity(void) GetOwner;
 	virtual vector(void) GetVelocity;
