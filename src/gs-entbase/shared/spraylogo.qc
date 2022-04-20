@@ -89,6 +89,7 @@ CSEv_Spraylogo(void)
 #ifdef CLIENT
 class CSpraylogo
 {
+	vector m_vecColor;
 	vector m_vecPosition;
 	vector m_vecAngles;
 	int m_iOwnerID;
@@ -104,7 +105,7 @@ const string g_spray_mat = \
 		"polygonOffset\n" \
 		"{\n" \
 			"map $rt:%s\n" \
-			"blendfunc blendFunc GL_DST_COLOR GL_ZERO\n" \
+			"blendfunc GL_DST_COLOR GL_ZERO\n" \
 			"rgbGen vertex\n" \
 		"}\n" \
 	"}";
@@ -137,14 +138,21 @@ CSpraylogo::predraw(void)
 		vector width;
 		vector height;
 		vector light;
+		vector color;
+		vector combined;
+		color = stov(getplayerkeyvalue(m_iOwnerID, "spraycolor"));
+		light = (getlight(m_vecPosition) / 255);
 
-		light = getlight(m_vecPosition) / 255;
+		/* unrolling this because the compiler spat out garbage */
+		combined[0] = m_vecColor[0] * light[0];
+		combined[1] = m_vecColor[1] * light[1];
+		combined[2] = m_vecColor[2] * light[2];
 
 		/* TODO: handle spray dimensions independently */
 		makevectors(m_vecAngles);
 		width = v_up / 64;
 		height = v_forward / 64;
-		adddecal(m_strName, m_vecPosition, width, height, light, 1.0f);
+		adddecal(m_strName, m_vecPosition, width, height, combined, 1.0f);
 	}
 	return (PREDRAW_NEXT);
 }
@@ -165,5 +173,6 @@ Spray_Parse(void)
 	spSelf.m_iOwnerID = readentitynum() - 1;
 	spSelf.m_strName = sprintf("spray_%i", spSelf.m_iOwnerID);
 	spSelf.m_m_strPath = sprintf("simg_%i", spSelf.m_iOwnerID);
+	spSelf.m_vecColor = stov(getplayerkeyvalue(spSelf.m_iOwnerID, "spraycolor"));
 }
 #endif

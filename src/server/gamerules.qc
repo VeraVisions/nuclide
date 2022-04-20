@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+var bool autocvar_sv_friendlyFire = false;
+
 /* init */
 void
 CGameRules::InitPostEnts(void)
@@ -209,6 +211,14 @@ CGameRules::DamageApply(entity t, entity c, float dmg, int w, damageType_t type)
 	/* player god mode */
 	if (eTarget.flags & FL_CLIENT && eTarget.flags & FL_GODMODE)
 		return;
+
+	/* friendly fire */
+	if (autocvar_sv_friendlyFire == false)
+	if (IsTeamPlay()) {
+		if (t.flags & FL_CLIENT && c.flags & FL_CLIENT)
+			if (t.team == c.team)
+				return;
+	}
 
 	/* already dead, please avoid recursion */
 	if (eTarget.GetHealth() <= 0)

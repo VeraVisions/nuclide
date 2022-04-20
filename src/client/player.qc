@@ -71,8 +71,8 @@ player::predraw(void)
 	if (autocvar_cl_thirdperson == TRUE || !this_us) {
 		Voice_Draw3D(this);
 		Player_PreDraw(this, TRUE);
-		if (p_model)
-			addentity(p_model);
+		//if (p_model)
+		//	addentity(p_model);
 		//addentity(this);
 	} else {
 		Player_PreDraw(this, FALSE);

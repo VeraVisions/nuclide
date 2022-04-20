@@ -186,6 +186,8 @@ Weapons_Draw(player pl)
 
 	if (g_weapons[i].updateammo != __NULL__)
 		g_weapons[i].updateammo(pl);
+
+	pl.gflags |= GF_SEMI_TOGGLED;
 }
 
 void
@@ -203,6 +205,9 @@ Weapons_Primary(player pl)
 	int i = pl.activeweapon;
 
 	if (pl.flags & FL_NOATTACK)
+		return;
+	
+	if (pl.gflags & GF_SEMI_TOGGLED)
 		return;
 
 	if (g_weapons[i].primary != __NULL__)

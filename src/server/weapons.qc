@@ -123,8 +123,6 @@ int
 Weapons_AddItem(base_player pl, int w, int startammo)
 {
 	int value;
-	entity oldself = self;
-	self = pl;
 
 	/* let's check if we've got a limit */
 	int maxit;
@@ -139,7 +137,6 @@ Weapons_AddItem(base_player pl, int w, int startammo)
 
 				/* we're over the slot limit. */
 				if (c >= maxit) {
-					self = oldself;
 					return (0);
 				}
 			}
@@ -194,7 +191,6 @@ Weapons_AddItem(base_player pl, int w, int startammo)
 	}
 
 	Weapons_RefreshAmmo(pl);
-	self = oldself;
 	return value;
 }
 
