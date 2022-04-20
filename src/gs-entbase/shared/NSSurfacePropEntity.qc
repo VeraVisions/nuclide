@@ -14,6 +14,332 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/* networking */
+#ifdef SERVER
+void
+NSSurfacePropEntity::EvaluateEntity(void)
+{
+	if (ATTR_CHANGED(origin)) {
+		SetSendFlags(SRFENT_CHANGED_ORIGIN);
+	}
+	if (ATTR_CHANGED(angles)) {
+		SetSendFlags(SRFENT_CHANGED_ANGLES);
+	}
+	if (ATTR_CHANGED(modelindex)) {
+		SetSendFlags(SRFENT_CHANGED_MODELINDEX);
+	}
+	if (ATTR_CHANGED(solid)) {
+		SetSendFlags(SRFENT_CHANGED_SOLID);
+	}
+	if (ATTR_CHANGED(movetype)) {
+		SetSendFlags(SRFENT_CHANGED_MOVETYPE);
+	}
+	if (ATTR_CHANGED(flags)) {
+		SetSendFlags(SRFENT_CHANGED_FLAGS);
+	}
+	if (ATTR_CHANGED(size)) {
+		SetSendFlags(SRFENT_CHANGED_SIZE);
+	}
+	if (ATTR_CHANGED(frame)) {
+		SetSendFlags(SRFENT_CHANGED_FRAME);
+	}
+	if (ATTR_CHANGED(skin)) {
+		SetSendFlags(SRFENT_CHANGED_SKIN);
+	}
+	if (ATTR_CHANGED(effects)) {
+		SetSendFlags(SRFENT_CHANGED_EFFECTS);
+	}
+	if (ATTR_CHANGED(m_iBody)) {
+		SetSendFlags(SRFENT_CHANGED_BODY);
+	}
+	if (ATTR_CHANGED(scale)) {
+		SetSendFlags(SRFENT_CHANGED_SCALE);
+	}
+	if (ATTR_CHANGED(velocity)) {
+		SetSendFlags(SRFENT_CHANGED_VELOCITY);
+	}
+
+	SAVE_STATE(origin);
+	SAVE_STATE(angles);
+	SAVE_STATE(modelindex);
+	SAVE_STATE(solid);
+	SAVE_STATE(movetype);
+	SAVE_STATE(flags);
+	SAVE_STATE(size);
+	SAVE_STATE(frame);
+	SAVE_STATE(skin);
+	SAVE_STATE(effects);
+	SAVE_STATE(m_iBody);
+	SAVE_STATE(scale);
+	SAVE_STATE(velocity);
+
+#ifdef GS_RENDERFX
+	if (ATTR_CHANGED(m_iRenderMode)) {
+		SetSendFlags(SRFENT_CHANGED_RENDERMODE);
+	}
+	if (ATTR_CHANGED(m_iRenderFX)) {
+		SetSendFlags(SRFENT_CHANGED_RENDERMODE);
+	}
+
+	if (ATTR_CHANGED(m_vecRenderColor)) {
+		SetSendFlags(SRFENT_CHANGED_RENDERCOLOR);
+	}
+	if (ATTR_CHANGED(m_flRenderAmt)) {
+		SetSendFlags(SRFENT_CHANGED_RENDERAMT);
+	}
+	SAVE_STATE(m_iRenderMode);
+	SAVE_STATE(m_iRenderFX);
+	SAVE_STATE(m_vecRenderColor);
+	SAVE_STATE(m_flRenderAmt);
+#else
+	if (ATTR_CHANGED(alpha)) {
+		SetSendFlags(SRFENT_CHANGED_ALPHA);
+	}
+	SAVE_STATE(alpha);
+#endif
+}
+
+/* Make sure StartFrame calls this */
+float
+NSSurfacePropEntity::SendEntity(entity ePEnt, float fChanged)
+{
+	if (!modelindex)
+		return (0);
+
+	if (clienttype(ePEnt) != CLIENTTYPE_REAL)
+		return (0);
+
+	WriteByte(MSG_ENTITY, ENT_SURFPROP);
+
+	//print(sprintf("%s %x\n", classname, fChanged));
+
+#if 0
+	/* newly popped into the PVS, sadly this is the only hacky way to check
+	 * for this right now. convince the engine maintainer to make this more sensible */
+	if (fChanged == 0xFFFFFF) {
+		/* check for defaults. if these are predictable fields, don't even bother
+		 * networking them! you're just wasting bandwidth. */
+		if (frame == 0)
+			fChanged &= ~SRFENT_CHANGED_FRAME;
+		if (skin == 0)
+			fChanged &= ~SRFENT_CHANGED_SKIN;
+		if (effects == 0)
+			fChanged &= ~SRFENT_CHANGED_EFFECTS;
+		if (m_iBody == 0)
+			fChanged &= ~SRFENT_CHANGED_BODY;
+		if (scale == 0.0 || scale == 1.0)
+			fChanged &= ~SRFENT_CHANGED_SCALE;
+		if (origin == [0,0,0])
+			fChanged &= ~SRFENT_CHANGED_ORIGIN;
+		if (angles == [0,0,0])
+			fChanged &= ~SRFENT_CHANGED_ANGLES;
+		if (velocity == [0,0,0])
+			fChanged &= ~SRFENT_CHANGED_VELOCITY;
+		if (mins == [0,0,0] && maxs == [0,0,0])
+			fChanged &= ~SRFENT_CHANGED_SIZE;
+		if (solid == SOLID_NOT)
+			fChanged &= ~SRFENT_CHANGED_SOLID;
+		if (movetype == MOVETYPE_NONE)
+			fChanged &= ~SRFENT_CHANGED_MOVETYPE;
+#ifdef GS_RENDERFX
+		if (m_iRenderMode == RM_NORMAL)
+			fChanged &= ~SRFENT_CHANGED_RENDERMODE;
+#endif
+	}
+#endif
+
+	/* don't network triggers unless provoked */
+	/*if (cvar("developer") == 0 && m_iRenderMode == RM_TRIGGER)
+		return (0);*/
+
+	/* broadcast how much data is expected to be read */
+	WriteFloat(MSG_ENTITY, fChanged);
+
+	/* really trying to get our moneys worth with 23 bits of mantissa */
+	if (fChanged & SRFENT_CHANGED_ORIGIN) {
+		WriteCoord(MSG_ENTITY, origin[0]);
+		WriteCoord(MSG_ENTITY, origin[1]);
+		WriteCoord(MSG_ENTITY, origin[2]);
+	}
+	if (fChanged & SRFENT_CHANGED_ANGLES) {
+		WriteShort(MSG_ENTITY, angles[0] * 32767 / 360);
+		WriteShort(MSG_ENTITY, angles[1] * 32767 / 360);
+		WriteShort(MSG_ENTITY, angles[2] * 32767 / 360);
+	}
+	if (fChanged & SRFENT_CHANGED_MODELINDEX) {
+		WriteShort(MSG_ENTITY, modelindex);
+		WriteByte(MSG_ENTITY, colormap);
+	}
+	if (fChanged & SRFENT_CHANGED_SOLID) {
+		WriteByte(MSG_ENTITY, solid);
+	}
+	if (fChanged & SRFENT_CHANGED_MOVETYPE) {
+		WriteByte(MSG_ENTITY, movetype);
+	}
+	if (fChanged & SRFENT_CHANGED_FLAGS) {
+		WriteFloat(MSG_ENTITY, flags);
+	}
+	if (fChanged & SRFENT_CHANGED_SIZE) {
+		WriteCoord(MSG_ENTITY, mins[0]);
+		WriteCoord(MSG_ENTITY, mins[1]);
+		WriteCoord(MSG_ENTITY, mins[2]);
+		WriteCoord(MSG_ENTITY, maxs[0]);
+		WriteCoord(MSG_ENTITY, maxs[1]);
+		WriteCoord(MSG_ENTITY, maxs[2]);
+	}
+	if (fChanged & SRFENT_CHANGED_FRAME) {
+		WriteByte(MSG_ENTITY, frame);
+		WriteByte(MSG_ENTITY, frame1time);
+	}
+	if (fChanged & SRFENT_CHANGED_SKIN) {
+		WriteByte(MSG_ENTITY, skin + 128);
+	}
+	if (fChanged & SRFENT_CHANGED_EFFECTS) {
+		WriteFloat(MSG_ENTITY, effects);
+	}
+	if (fChanged & SRFENT_CHANGED_BODY) {
+		WriteByte(MSG_ENTITY, m_iBody);
+	}
+	if (fChanged & SRFENT_CHANGED_SCALE) {
+		WriteFloat(MSG_ENTITY, scale);
+	}
+	if (fChanged & SRFENT_CHANGED_VELOCITY) {
+		WriteFloat(MSG_ENTITY, velocity[0]);
+		WriteFloat(MSG_ENTITY, velocity[1]);
+		WriteFloat(MSG_ENTITY, velocity[2]);
+	}
+
+#ifdef GS_RENDERFX
+	if (fChanged & SRFENT_CHANGED_RENDERMODE) {
+		WriteByte(MSG_ENTITY, m_iRenderMode);
+		WriteByte(MSG_ENTITY, m_iRenderFX);
+	}
+
+	if (fChanged & SRFENT_CHANGED_RENDERCOLOR) {
+		WriteFloat(MSG_ENTITY, m_vecRenderColor[0]);
+		WriteFloat(MSG_ENTITY, m_vecRenderColor[1]);
+		WriteFloat(MSG_ENTITY, m_vecRenderColor[2]);
+		WriteFloat(MSG_ENTITY, glowmod[0]);
+		WriteFloat(MSG_ENTITY, glowmod[1]);
+		WriteFloat(MSG_ENTITY, glowmod[2]);
+	}
+	if (fChanged & SRFENT_CHANGED_RENDERAMT) {
+		WriteFloat(MSG_ENTITY, m_flRenderAmt);
+	}
+#else
+	if (fChanged & SRFENT_CHANGED_ALPHA) {
+		WriteFloat(MSG_ENTITY, alpha);
+	}
+#endif
+
+	return (1);
+}
+#else
+/*
+============
+NSSurfacePropEntity::ReceiveEntity
+============
+*/
+void
+NSSurfacePropEntity::ReceiveEntity(float flNew, float flChanged)
+{
+	if (flChanged & SRFENT_CHANGED_ORIGIN) {
+		origin[0] = readcoord();
+		origin[1] = readcoord();
+		origin[2] = readcoord();
+	}
+	if (flChanged & SRFENT_CHANGED_ANGLES) {
+		angles[0] = readshort() / (32767 / 360);
+		angles[1] = readshort() / (32767 / 360);
+		angles[2] = readshort() / (32767 / 360);
+	}
+	if (flChanged & SRFENT_CHANGED_MODELINDEX) {
+		setmodelindex(this, readshort());
+		colormap = readbyte();
+	}
+	if (flChanged & SRFENT_CHANGED_SOLID) {
+		solid = readbyte();
+	}
+	if (flChanged & SRFENT_CHANGED_MOVETYPE) {
+		movetype = readbyte();
+
+		if (movetype == MOVETYPE_PHYSICS) {
+			movetype = MOVETYPE_NONE;
+		}
+	}
+	if (flChanged & SRFENT_CHANGED_FLAGS) {
+		flags = readfloat();
+	}
+	if (flChanged & SRFENT_CHANGED_SIZE) {
+		mins[0] = readcoord();
+		mins[1] = readcoord();
+		mins[2] = readcoord();
+		maxs[0] = readcoord();
+		maxs[1] = readcoord();
+		maxs[2] = readcoord();
+	}
+	if (flChanged & SRFENT_CHANGED_FRAME) {
+		frame = readbyte();
+		frame1time =
+		frame2time = readbyte();
+	}
+	if (flChanged & SRFENT_CHANGED_SKIN) {
+		skin = readbyte() - 128;
+	}
+	if (flChanged & SRFENT_CHANGED_EFFECTS) {
+		effects = readfloat();
+	}
+	if (flChanged & SRFENT_CHANGED_BODY) {
+		m_iBody = readbyte();
+		setcustomskin(this, "", sprintf("geomset 0 %i\ngeomset 1 %i\n", m_iBody, m_iBody));
+	}
+	if (flChanged & SRFENT_CHANGED_SCALE) {
+		scale = readfloat();
+	}
+	if (flChanged & SRFENT_CHANGED_VELOCITY) {
+		velocity[0] = readfloat();
+		velocity[1] = readfloat();
+		velocity[2] = readfloat();
+	}
+
+#ifdef GS_RENDERFX
+	if (flChanged & SRFENT_CHANGED_RENDERMODE) {
+		m_iRenderMode = readbyte();
+		m_iRenderFX = readbyte();
+	}
+	if (flChanged & SRFENT_CHANGED_RENDERCOLOR) {
+		m_vecRenderColor[0] = readfloat();
+		m_vecRenderColor[1] = readfloat();
+		m_vecRenderColor[2] = readfloat();
+		glowmod[0] = readfloat();
+		glowmod[1] = readfloat();
+		glowmod[2] = readfloat();
+	}
+	if (flChanged & SRFENT_CHANGED_RENDERAMT) {
+		m_flRenderAmt = readfloat();
+	}
+#else
+	if (flChanged & SRFENT_CHANGED_ALPHA) {
+		alpha = readfloat();
+	}
+#endif
+
+	if (modelindex) {
+		drawmask = MASK_ENGINE;
+	} else {
+		drawmask = 0;
+	}
+
+	if (scale == 0.0)
+		scale = 1.0f;
+
+	if (flChanged & SRFENT_CHANGED_SIZE)
+		setsize(this, mins * scale, maxs * scale);
+
+	setorigin(this, origin);
+}
+#endif
+
 #ifdef SERVER
 void
 NSSurfacePropEntity::SetTakedamage(float type)
@@ -360,3 +686,17 @@ NSSurfacePropEntity::NSSurfacePropEntity(void)
 	m_strOnBreak = CreateOutput(m_strOnBreak);
 #endif
 }
+
+#ifdef CLIENT
+void
+NSSurfacePropEntity_ReadEntity(bool new)
+{
+	float fl;
+	NSSurfacePropEntity rend = (NSSurfacePropEntity)self;
+	if (new) {
+		spawnfunc_NSSurfacePropEntity();
+	}
+	fl = readfloat();
+	rend.ReceiveEntity(new, fl);
+}
+#endif

@@ -14,6 +14,30 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+enumflags
+{
+	SRFENT_CHANGED_ORIGIN,
+	SRFENT_CHANGED_ANGLES,
+	SRFENT_CHANGED_MODELINDEX,
+	SRFENT_CHANGED_SIZE,
+	SRFENT_CHANGED_FLAGS,
+	SRFENT_CHANGED_SOLID,
+	SRFENT_CHANGED_FRAME,
+	SRFENT_CHANGED_SKIN,
+	SRFENT_CHANGED_MOVETYPE,
+	SRFENT_CHANGED_EFFECTS,
+	SRFENT_CHANGED_BODY,
+	SRFENT_CHANGED_SCALE,
+	SRFENT_CHANGED_VELOCITY,
+#ifdef GS_RENDERFX
+	SRFENT_CHANGED_RENDERCOLOR,
+	SRFENT_CHANGED_RENDERAMT,
+	SRFENT_CHANGED_RENDERMODE,
+#else
+	SRFENT_CHANGED_ALPHA,
+#endif
+};
+
 class NSSurfacePropEntity:NSRenderableEntity
 {
 	float m_flBurnNext;
@@ -29,9 +53,12 @@ class NSSurfacePropEntity:NSRenderableEntity
 	virtual void(entity, string, string) Input;
 	virtual void(string, string) SpawnKey;
 	virtual void(void) ParentUpdate;
+	virtual void(void) EvaluateEntity;
+	virtual float(entity, float) SendEntity;
 #else
 	virtual float(void) predraw;
 	virtual void(void) RenderFire;
+	virtual void(float,float) ReceiveEntity;
 #endif
 
 	/* new */

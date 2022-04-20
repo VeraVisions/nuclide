@@ -26,11 +26,10 @@ Entity_EntityUpdate(float type, float new)
 		me.ReceiveEntity(new, readfloat());
 		break;
 	case ENT_ENTITYRENDERABLE:
-		NSRenderableEntity rend = (NSRenderableEntity)self;
-		if (new) {
-			spawnfunc_NSRenderableEntity();
-		}
-		rend.ReceiveEntity(new, readfloat());
+		NSRenderableEntity_ReadEntity(new);
+		break;
+	case ENT_SURFPROP:
+		NSSurfacePropEntity_ReadEntity(new);
 		break;
 	case ENT_PHYSICS:
 		NSPhysicsEntity_ReadEntity(new);

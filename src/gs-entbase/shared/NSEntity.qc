@@ -429,6 +429,7 @@ NSEntity::EvaluateEntity(void)
 	}
 
 	SAVE_STATE(origin);
+	angles = Math_FixDeltaVector(angles);
 	SAVE_STATE(angles);
 	SAVE_STATE(modelindex);
 	SAVE_STATE(size);

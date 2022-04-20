@@ -14,6 +14,34 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+enumflags
+{
+	RDENT_CHANGED_ORIGIN_X,
+	RDENT_CHANGED_ORIGIN_Y,
+	RDENT_CHANGED_ORIGIN_Z,
+	RDENT_CHANGED_ANGLES_X,
+	RDENT_CHANGED_ANGLES_Y,
+	RDENT_CHANGED_ANGLES_Z,
+	RDENT_CHANGED_MODELINDEX,
+	RDENT_CHANGED_SIZE,
+	RDENT_CHANGED_FLAGS,
+	RDENT_CHANGED_SOLID,
+	RDENT_CHANGED_FRAME,
+	RDENT_CHANGED_SKIN,
+	RDENT_CHANGED_MOVETYPE,
+	RDENT_CHANGED_EFFECTS,
+	RDENT_CHANGED_BODY,
+	RDENT_CHANGED_SCALE,
+	RDENT_CHANGED_VELOCITY,
+#ifdef GS_RENDERFX
+	RDENT_CHANGED_RENDERCOLOR,
+	RDENT_CHANGED_RENDERAMT,
+	RDENT_CHANGED_RENDERMODE,
+#else
+	RDENT_CHANGED_ALPHA,
+#endif
+};
+
 #ifdef CLIENT
 var int autocvar_cl_showtriggers = FALSE;
 var int autocvar_rm_unlit_additive = TRUE;
@@ -28,12 +56,12 @@ class NSRenderableEntity:NSEntity
 	/* overrides */
 	virtual void(string, string) SpawnKey;
 #ifdef SERVER
-	virtual float(entity, float) SendEntity;
 	virtual void(entity, string, string) Input;
 	virtual void(void) Respawn;
 	virtual void(float) Save;
 	virtual void(string,string) Restore;
 	virtual void(void) EvaluateEntity;
+	virtual float(entity, float) SendEntity;
 #else
 	virtual void(float,float) ReceiveEntity;
 	virtual float(void) predraw;

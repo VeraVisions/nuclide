@@ -51,44 +51,57 @@ NSRenderableEntity::MakeStatic(void)
 void
 NSRenderableEntity::EvaluateEntity(void)
 {
-	if (ATTR_CHANGED(origin)) {
-		SetSendFlags(BASEFL_CHANGED_ORIGIN);
+	if (VEC_CHANGED(origin,0)) {
+		SetSendFlags(RDENT_CHANGED_ORIGIN_X);
 	}
-	if (ATTR_CHANGED(angles)) {
-		SetSendFlags(BASEFL_CHANGED_ANGLES);
+	if (VEC_CHANGED(origin,1)) {
+		SetSendFlags(RDENT_CHANGED_ORIGIN_Y);
+	}
+	if (VEC_CHANGED(origin,2)) {
+		SetSendFlags(RDENT_CHANGED_ORIGIN_Z);
+	}
+	if (VEC_CHANGED(angles,0)) {
+		SetSendFlags(RDENT_CHANGED_ANGLES_X);
+	}
+	if (VEC_CHANGED(angles,1)) {
+		SetSendFlags(RDENT_CHANGED_ANGLES_Y);
+	}
+	if (VEC_CHANGED(angles,2)) {
+		SetSendFlags(RDENT_CHANGED_ANGLES_Z);
 	}
 	if (ATTR_CHANGED(modelindex)) {
-		SetSendFlags(BASEFL_CHANGED_MODELINDEX);
+		SetSendFlags(RDENT_CHANGED_MODELINDEX);
 	}
 	if (ATTR_CHANGED(solid)) {
-		SetSendFlags(BASEFL_CHANGED_SOLID);
+		SetSendFlags(RDENT_CHANGED_SOLID);
 	}
 	if (ATTR_CHANGED(movetype)) {
-		SetSendFlags(BASEFL_CHANGED_MOVETYPE);
+		SetSendFlags(RDENT_CHANGED_MOVETYPE);
 	}
 	if (ATTR_CHANGED(size)) {
-		SetSendFlags(BASEFL_CHANGED_SIZE);
+		SetSendFlags(RDENT_CHANGED_SIZE);
 	}
 	if (ATTR_CHANGED(frame)) {
-		SetSendFlags(BASEFL_CHANGED_FRAME);
+		SetSendFlags(RDENT_CHANGED_FRAME);
 	}
 	if (ATTR_CHANGED(skin)) {
-		SetSendFlags(BASEFL_CHANGED_SKIN);
+		SetSendFlags(RDENT_CHANGED_SKIN);
 	}
 	if (ATTR_CHANGED(effects)) {
-		SetSendFlags(BASEFL_CHANGED_EFFECTS);
+		SetSendFlags(RDENT_CHANGED_EFFECTS);
 	}
 	if (ATTR_CHANGED(m_iBody)) {
-		SetSendFlags(BASEFL_CHANGED_BODY);
+		SetSendFlags(RDENT_CHANGED_BODY);
 	}
 	if (ATTR_CHANGED(scale)) {
-		SetSendFlags(BASEFL_CHANGED_SCALE);
+		SetSendFlags(RDENT_CHANGED_SCALE);
 	}
 	if (ATTR_CHANGED(velocity)) {
-		SetSendFlags(BASEFL_CHANGED_VELOCITY);
+		SetSendFlags(RDENT_CHANGED_VELOCITY);
 	}
 
 	SAVE_STATE(origin);
+	angles = Math_FixDeltaVector(angles);
 	SAVE_STATE(angles);
 	SAVE_STATE(modelindex);
 	SAVE_STATE(solid);
@@ -103,22 +116,27 @@ NSRenderableEntity::EvaluateEntity(void)
 
 #ifdef GS_RENDERFX
 	if (ATTR_CHANGED(m_iRenderMode)) {
-		SetSendFlags(BASEFL_CHANGED_RENDERMODE);
+		SetSendFlags(RDENT_CHANGED_RENDERMODE);
 	}
 	if (ATTR_CHANGED(m_iRenderFX)) {
-		SetSendFlags(BASEFL_CHANGED_RENDERMODE);
+		SetSendFlags(RDENT_CHANGED_RENDERMODE);
 	}
 
 	if (ATTR_CHANGED(m_vecRenderColor)) {
-		SetSendFlags(BASEFL_CHANGED_RENDERCOLOR);
+		SetSendFlags(RDENT_CHANGED_RENDERCOLOR);
 	}
 	if (ATTR_CHANGED(m_flRenderAmt)) {
-		SetSendFlags(BASEFL_CHANGED_RENDERAMT);
+		SetSendFlags(RDENT_CHANGED_RENDERAMT);
 	}
+	SAVE_STATE(m_iRenderMode);
+	SAVE_STATE(m_iRenderFX);
+	SAVE_STATE(m_vecRenderColor);
+	SAVE_STATE(m_flRenderAmt);
 #else
 	if (ATTR_CHANGED(alpha)) {
-		SetSendFlags(BASEFL_CHANGED_ALPHA);
+		SetSendFlags(RDENT_CHANGED_ALPHA);
 	}
+	SAVE_STATE(alpha);
 #endif
 }
 
@@ -134,38 +152,48 @@ NSRenderableEntity::SendEntity(entity ePEnt, float fChanged)
 
 	WriteByte(MSG_ENTITY, ENT_ENTITYRENDERABLE);
 
+#if 0
 	/* newly popped into the PVS, sadly this is the only hacky way to check
 	 * for this right now. convince the engine maintainer to make this more sensible */
 	if (fChanged == 0xFFFFFF) {
 		/* check for defaults. if these are predictable fields, don't even bother
 		 * networking them! you're just wasting bandwidth. */
 		if (frame == 0)
-			fChanged &= ~BASEFL_CHANGED_FRAME;
+			fChanged &= ~RDENT_CHANGED_FRAME;
 		if (skin == 0)
-			fChanged &= ~BASEFL_CHANGED_SKIN;
+			fChanged &= ~RDENT_CHANGED_SKIN;
 		if (effects == 0)
-			fChanged &= ~BASEFL_CHANGED_EFFECTS;
+			fChanged &= ~RDENT_CHANGED_EFFECTS;
 		if (m_iBody == 0)
-			fChanged &= ~BASEFL_CHANGED_BODY;
+			fChanged &= ~RDENT_CHANGED_BODY;
 		if (scale == 0.0 || scale == 1.0)
-			fChanged &= ~BASEFL_CHANGED_SCALE;
-		if (origin == [0,0,0])
-			fChanged &= ~BASEFL_CHANGED_ORIGIN;
-		if (angles == [0,0,0])
-			fChanged &= ~BASEFL_CHANGED_ANGLES;
+			fChanged &= ~RDENT_CHANGED_SCALE;
+		if (origin[0] == 0)
+			fChanged &= ~RDENT_CHANGED_ORIGIN_X;
+		if (origin[1] == 0)
+			fChanged &= ~RDENT_CHANGED_ORIGIN_Y;
+		if (origin[2] == 0)
+			fChanged &= ~RDENT_CHANGED_ORIGIN_Z;
+		if (angles[0] == 0)
+			fChanged &= ~RDENT_CHANGED_ANGLES_X;
+		if (angles[1] == 0)
+			fChanged &= ~RDENT_CHANGED_ANGLES_Y;
+		if (angles[2] == 0)
+			fChanged &= ~RDENT_CHANGED_ANGLES_Z;
 		if (velocity == [0,0,0])
-			fChanged &= ~BASEFL_CHANGED_VELOCITY;
+			fChanged &= ~RDENT_CHANGED_VELOCITY;
 		if (mins == [0,0,0] && maxs == [0,0,0])
-			fChanged &= ~BASEFL_CHANGED_SIZE;
+			fChanged &= ~RDENT_CHANGED_SIZE;
 		if (solid == SOLID_NOT)
-			fChanged &= ~BASEFL_CHANGED_SOLID;
+			fChanged &= ~RDENT_CHANGED_SOLID;
 		if (movetype == MOVETYPE_NONE)
-			fChanged &= ~BASEFL_CHANGED_MOVETYPE;
+			fChanged &= ~RDENT_CHANGED_MOVETYPE;
 #ifdef GS_RENDERFX
 		if (m_iRenderMode == RM_NORMAL)
-			fChanged &= ~BASEFL_CHANGED_RENDERMODE;
+			fChanged &= ~RDENT_CHANGED_RENDERMODE;
 #endif
 	}
+#endif
 
 	/* don't network triggers unless provoked */
 	/*if (cvar("developer") == 0 && m_iRenderMode == RM_TRIGGER)
@@ -174,28 +202,38 @@ NSRenderableEntity::SendEntity(entity ePEnt, float fChanged)
 	/* broadcast how much data is expected to be read */
 	WriteFloat(MSG_ENTITY, fChanged);
 
+	//print(sprintf("rendent send: %s %x %d\n", classname, fChanged, fChanged));
+
 	/* really trying to get our moneys worth with 23 bits of mantissa */
-	if (fChanged & BASEFL_CHANGED_ORIGIN) {
+	if (fChanged & RDENT_CHANGED_ORIGIN_X) {
 		WriteCoord(MSG_ENTITY, origin[0]);
+	}
+	if (fChanged & RDENT_CHANGED_ORIGIN_Y) {
 		WriteCoord(MSG_ENTITY, origin[1]);
+	}
+	if (fChanged & RDENT_CHANGED_ORIGIN_Z) {
 		WriteCoord(MSG_ENTITY, origin[2]);
 	}
-	if (fChanged & BASEFL_CHANGED_ANGLES) {
+	if (fChanged & RDENT_CHANGED_ANGLES_X) {
 		WriteShort(MSG_ENTITY, angles[0] * 32767 / 360);
+	}
+	if (fChanged & RDENT_CHANGED_ANGLES_Y) {
 		WriteShort(MSG_ENTITY, angles[1] * 32767 / 360);
+	}
+	if (fChanged & RDENT_CHANGED_ANGLES_Z) {
 		WriteShort(MSG_ENTITY, angles[2] * 32767 / 360);
 	}
-	if (fChanged & BASEFL_CHANGED_MODELINDEX) {
+	if (fChanged & RDENT_CHANGED_MODELINDEX) {
 		WriteShort(MSG_ENTITY, modelindex);
 		WriteByte(MSG_ENTITY, colormap);
 	}
-	if (fChanged & BASEFL_CHANGED_SOLID) {
+	if (fChanged & RDENT_CHANGED_SOLID) {
 		WriteByte(MSG_ENTITY, solid);
 	}
-	if (fChanged & BASEFL_CHANGED_MOVETYPE) {
+	if (fChanged & RDENT_CHANGED_MOVETYPE) {
 		WriteByte(MSG_ENTITY, movetype);
 	}
-	if (fChanged & BASEFL_CHANGED_SIZE) {
+	if (fChanged & RDENT_CHANGED_SIZE) {
 		WriteCoord(MSG_ENTITY, mins[0]);
 		WriteCoord(MSG_ENTITY, mins[1]);
 		WriteCoord(MSG_ENTITY, mins[2]);
@@ -203,35 +241,35 @@ NSRenderableEntity::SendEntity(entity ePEnt, float fChanged)
 		WriteCoord(MSG_ENTITY, maxs[1]);
 		WriteCoord(MSG_ENTITY, maxs[2]);
 	}
-	if (fChanged & BASEFL_CHANGED_FRAME) {
+	if (fChanged & RDENT_CHANGED_FRAME) {
 		WriteByte(MSG_ENTITY, frame);
 		WriteByte(MSG_ENTITY, frame1time);
 	}
-	if (fChanged & BASEFL_CHANGED_SKIN) {
+	if (fChanged & RDENT_CHANGED_SKIN) {
 		WriteByte(MSG_ENTITY, skin + 128);
 	}
-	if (fChanged & BASEFL_CHANGED_EFFECTS) {
+	if (fChanged & RDENT_CHANGED_EFFECTS) {
 		WriteFloat(MSG_ENTITY, effects);
 	}
-	if (fChanged & BASEFL_CHANGED_BODY) {
+	if (fChanged & RDENT_CHANGED_BODY) {
 		WriteByte(MSG_ENTITY, m_iBody);
 	}
-	if (fChanged & BASEFL_CHANGED_SCALE) {
+	if (fChanged & RDENT_CHANGED_SCALE) {
 		WriteFloat(MSG_ENTITY, scale);
 	}
-	if (fChanged & BASEFL_CHANGED_VELOCITY) {
+	if (fChanged & RDENT_CHANGED_VELOCITY) {
 		WriteFloat(MSG_ENTITY, velocity[0]);
 		WriteFloat(MSG_ENTITY, velocity[1]);
 		WriteFloat(MSG_ENTITY, velocity[2]);
 	}
 
 #ifdef GS_RENDERFX
-	if (fChanged & BASEFL_CHANGED_RENDERMODE) {
+	if (fChanged & RDENT_CHANGED_RENDERMODE) {
 		WriteByte(MSG_ENTITY, m_iRenderMode);
 		WriteByte(MSG_ENTITY, m_iRenderFX);
 	}
 
-	if (fChanged & BASEFL_CHANGED_RENDERCOLOR) {
+	if (fChanged & RDENT_CHANGED_RENDERCOLOR) {
 		WriteFloat(MSG_ENTITY, m_vecRenderColor[0]);
 		WriteFloat(MSG_ENTITY, m_vecRenderColor[1]);
 		WriteFloat(MSG_ENTITY, m_vecRenderColor[2]);
@@ -239,11 +277,11 @@ NSRenderableEntity::SendEntity(entity ePEnt, float fChanged)
 		WriteFloat(MSG_ENTITY, glowmod[1]);
 		WriteFloat(MSG_ENTITY, glowmod[2]);
 	}
-	if (fChanged & BASEFL_CHANGED_RENDERAMT) {
+	if (fChanged & RDENT_CHANGED_RENDERAMT) {
 		WriteFloat(MSG_ENTITY, m_flRenderAmt);
 	}
 #else
-	if (fChanged & BASEFL_CHANGED_ALPHA) {
+	if (fChanged & RDENT_CHANGED_ALPHA) {
 		WriteFloat(MSG_ENTITY, alpha);
 	}
 #endif
@@ -476,31 +514,39 @@ NSRenderableEntity::ReceiveEntity
 void
 NSRenderableEntity::ReceiveEntity(float flNew, float flChanged)
 {
-	if (flChanged & BASEFL_CHANGED_ORIGIN) {
+	if (flChanged & RDENT_CHANGED_ORIGIN_X) {
 		origin[0] = readcoord();
+	}
+	if (flChanged & RDENT_CHANGED_ORIGIN_Y) {
 		origin[1] = readcoord();
+	}
+	if (flChanged & RDENT_CHANGED_ORIGIN_Z) {
 		origin[2] = readcoord();
 	}
-	if (flChanged & BASEFL_CHANGED_ANGLES) {
+	if (flChanged & RDENT_CHANGED_ANGLES_X) {
 		angles[0] = readshort() / (32767 / 360);
+	}
+	if (flChanged & RDENT_CHANGED_ANGLES_Y) {
 		angles[1] = readshort() / (32767 / 360);
+	}
+	if (flChanged & RDENT_CHANGED_ANGLES_Z) {
 		angles[2] = readshort() / (32767 / 360);
 	}
-	if (flChanged & BASEFL_CHANGED_MODELINDEX) {
+	if (flChanged & RDENT_CHANGED_MODELINDEX) {
 		setmodelindex(this, readshort());
 		colormap = readbyte();
 	}
-	if (flChanged & BASEFL_CHANGED_SOLID) {
+	if (flChanged & RDENT_CHANGED_SOLID) {
 		solid = readbyte();
 	}
-	if (flChanged & BASEFL_CHANGED_MOVETYPE) {
+	if (flChanged & RDENT_CHANGED_MOVETYPE) {
 		movetype = readbyte();
 
 		if (movetype == MOVETYPE_PHYSICS) {
 			movetype = MOVETYPE_NONE;
 		}
 	}
-	if (flChanged & BASEFL_CHANGED_SIZE) {
+	if (flChanged & RDENT_CHANGED_SIZE) {
 		mins[0] = readcoord();
 		mins[1] = readcoord();
 		mins[2] = readcoord();
@@ -508,36 +554,36 @@ NSRenderableEntity::ReceiveEntity(float flNew, float flChanged)
 		maxs[1] = readcoord();
 		maxs[2] = readcoord();
 	}
-	if (flChanged & BASEFL_CHANGED_FRAME) {
+	if (flChanged & RDENT_CHANGED_FRAME) {
 		frame = readbyte();
 		frame1time =
 		frame2time = readbyte();
 	}
-	if (flChanged & BASEFL_CHANGED_SKIN) {
+	if (flChanged & RDENT_CHANGED_SKIN) {
 		skin = readbyte() - 128;
 	}
-	if (flChanged & BASEFL_CHANGED_EFFECTS) {
+	if (flChanged & RDENT_CHANGED_EFFECTS) {
 		effects = readfloat();
 	}
-	if (flChanged & BASEFL_CHANGED_BODY) {
+	if (flChanged & RDENT_CHANGED_BODY) {
 		m_iBody = readbyte();
 		setcustomskin(this, "", sprintf("geomset 0 %i\ngeomset 1 %i\n", m_iBody, m_iBody));
 	}
-	if (flChanged & BASEFL_CHANGED_SCALE) {
+	if (flChanged & RDENT_CHANGED_SCALE) {
 		scale = readfloat();
 	}
-	if (flChanged & BASEFL_CHANGED_VELOCITY) {
+	if (flChanged & RDENT_CHANGED_VELOCITY) {
 		velocity[0] = readfloat();
 		velocity[1] = readfloat();
 		velocity[2] = readfloat();
 	}
 
 #ifdef GS_RENDERFX
-	if (flChanged & BASEFL_CHANGED_RENDERMODE) {
+	if (flChanged & RDENT_CHANGED_RENDERMODE) {
 		m_iRenderMode = readbyte();
 		m_iRenderFX = readbyte();
 	}
-	if (flChanged & BASEFL_CHANGED_RENDERCOLOR) {
+	if (flChanged & RDENT_CHANGED_RENDERCOLOR) {
 		m_vecRenderColor[0] = readfloat();
 		m_vecRenderColor[1] = readfloat();
 		m_vecRenderColor[2] = readfloat();
@@ -545,11 +591,11 @@ NSRenderableEntity::ReceiveEntity(float flNew, float flChanged)
 		glowmod[1] = readfloat();
 		glowmod[2] = readfloat();
 	}
-	if (flChanged & BASEFL_CHANGED_RENDERAMT) {
+	if (flChanged & RDENT_CHANGED_RENDERAMT) {
 		m_flRenderAmt = readfloat();
 	}
 #else
-	if (flChanged & BASEFL_CHANGED_ALPHA) {
+	if (flChanged & RDENT_CHANGED_ALPHA) {
 		alpha = readfloat();
 	}
 #endif
@@ -563,7 +609,7 @@ NSRenderableEntity::ReceiveEntity(float flNew, float flChanged)
 	if (scale == 0.0)
 		scale = 1.0f;
 
-	if (flChanged & BASEFL_CHANGED_SIZE)
+	if (flChanged & RDENT_CHANGED_SIZE)
 		setsize(this, mins * scale, maxs * scale);
 
 	setorigin(this, origin);
@@ -901,3 +947,21 @@ NSRenderableEntity::NSRenderableEntity(void)
 #endif
 #endif
 }
+
+#ifdef CLIENT
+void
+NSRenderableEntity_ReadEntity(bool new)
+{
+	float fl;
+
+	NSRenderableEntity rend = (NSRenderableEntity)self;
+	if (new) {
+		spawnfunc_NSRenderableEntity();
+	}
+
+	fl = readfloat();
+	rend.ReceiveEntity(new, fl);
+
+	//print(sprintf("rendent ent update: %d %x %d %v\n", self.entnum, fl, self.origin, vlen(self.velocity)));
+}
+#endif
