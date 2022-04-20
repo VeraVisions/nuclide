@@ -54,8 +54,41 @@ class prop_physics_multiplayer:NSPhysicsEntity
 void
 prop_physics_multiplayer::TouchThink(void)
 {
-	PhysicsEnable();
-	super::TouchThink();
+	//super::TouchThink();
+
+	{
+		float oldsolid, oldmovetype;
+		/* let players collide */
+		dimension_solid = 255;
+		dimension_hit = 255;
+		oldsolid = solid;
+		oldmovetype = movetype;
+		movetype = MOVETYPE_NONE;
+		solid = SOLID_TRIGGER;
+		tracebox(origin, mins, maxs, origin, MOVE_NORMAL, this);
+		solid = oldsolid;
+		movetype = oldmovetype;
+		dimension_solid = 1;
+		dimension_hit = 1;
+
+		if (trace_ent.flags & FL_CLIENT) {
+			//print(sprintf("%s %f\n", trace_ent.classname, trace_fraction));
+			PhysicsEnable();
+			makevectors(origin - trace_ent.origin);
+			ApplyForceCenter(v_forward * 64);
+			velocity = v_forward * 64;
+		}
+	}
+
+	if (m_iPhysicsMode == 3) {
+	} else {
+		if (vlen(velocity) < 2) {
+			velocity = [0,0,0];
+			PhysicsDisable();
+		}
+	}
+
+	nextthink = time;
 }
 
 void
