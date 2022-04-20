@@ -270,7 +270,9 @@ Weapon_DropCurrentWeapon(base_player pl)
 	if (g_weapons[pl.activeweapon].allow_drop != TRUE)
 		return;
 
-	item_pickup drop = spawn(item_pickup, m_iWasDropped: TRUE, m_iClip: pl.a_ammo1);
+	item_pickup drop = spawn(item_pickup);
+	drop.m_iWasDropped = TRUE;
+	drop.m_iClip = pl.a_ammo1;
 	drop.SetItem(pl.activeweapon);
 	setorigin(drop, pl.origin);
 	drop.solid = SOLID_NOT;
