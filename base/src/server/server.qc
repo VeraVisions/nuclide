@@ -27,6 +27,8 @@ Game_InitRules(void)
 void
 Game_Worldspawn(void)
 {
+	Sound_Precache("player.use");
+	Sound_Precache("player.use_denied");
 	precache_model("models/player.mdl");
 	Weapons_Init();
 	Player_Precache();
