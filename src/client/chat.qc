@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+var bool autocvar_cl_chat_enabled = true;
+
 #define CHAT_LINES 5
 #define CHAT_TIME 5
 
@@ -55,6 +57,9 @@ Chat_Draw(void)
 		temppos[0] = (g_hudres[0]/2) - (stringwidth(tempstr, TRUE, [12,12]) / 2);
 		Font_DrawText(temppos + [0,16], tempstr, g_fntChat);
 	}
+
+	if (autocvar_cl_chat_enabled == false)
+		return;
 
 	g_chatpos[0] = g_hudmins[0] + 16;
 	g_chatpos[1] = g_hudmins[1] + g_hudres[1] - 128;
@@ -100,6 +105,11 @@ Chat_Parse(string msg)
 	}
 
 	g_chattime = time + CHAT_TIME;
+
+	/* we need to be silent */
+	if (autocvar_cl_chat_enabled == false)
+		return;
+
 	localsound("misc/talk.wav");
 
 	/* log to client console */

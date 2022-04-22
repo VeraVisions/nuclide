@@ -59,7 +59,8 @@ class CUIWindow:CUIWidget
 	
 	virtual void(void(void) vFunc) CallOnResize;
 	virtual void(void(void) vFunc) CallOnMove;
-	
+
+	virtual bool(void) Visible;
 	virtual void(void) Draw;
 	virtual void(void) Hide;
 	virtual void(float, float, float, float) Input;
@@ -85,6 +86,12 @@ void CUIWindow::CUIWindow(void)
 	m_btnClose.SetSize([20,20]);
 	Add(m_btnClose);
 	SetSize([320,240]);
+}
+
+bool
+CUIWindow::Visible(void)
+{
+	return (m_iFlags & WINDOW_VISIBLE) ? true : false;
 }
 
 void CUIWindow::SetTitle (string strName)
