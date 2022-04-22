@@ -77,7 +77,7 @@ PointMessage_Visible(vector p1, vector p2, vector ang)
 	fov = delta * v_forward;
 
 	if (fov > 0.3) {
-		traceline(p2, p1, TRUE, self);
+		traceline(p2, p1, MOVE_WORLDONLY, self);
 		if (trace_fraction == 1.0) {
 			return (1);
 		}

@@ -214,6 +214,7 @@ CGameRules::DamageApply(entity t, entity c, float dmg, int w, damageType_t type)
 
 	/* friendly fire */
 	if (autocvar_sv_friendlyFire == false)
+	if (t != c)
 	if (IsTeamPlay()) {
 		if (t.flags & FL_CLIENT && c.flags & FL_CLIENT)
 			if (t.team == c.team)

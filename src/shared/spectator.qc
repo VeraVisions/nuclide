@@ -365,7 +365,7 @@ spectator::SpectatorTrackPlayer(void)
 
 		if (b && b.classname == "player")
 		if (b.IsFakeSpectator()) {
-			b = world;
+			b = 0;
 			spec_mode = SPECMODE_FREE;
 			InputNext();
 		}
