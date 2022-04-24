@@ -1,11 +1,11 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 SRCPATH="$( cd "$( dirname $(readlink -nf $0) )" && pwd )"
 
 cd "$SRCPATH/bin"
 
-if [ -f "$SRCPATH"/bin/fteqw ]; then
-	if [[ -z "${NUCLIDE_GDB}" ]]; then
+if [ -f "$SRCPATH/bin/fteqw" ]; then
+	if [ -z "$NUCLIDE_GDB" ]; then
 		./fteqw -basedir ../ $*
 	else
 		gdb --args ./fteqw -basedir ../ $*
