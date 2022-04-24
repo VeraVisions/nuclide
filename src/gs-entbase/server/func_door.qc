@@ -88,6 +88,7 @@ class func_door:NSRenderableEntity
 	int m_iLocked;
 	int m_iPortalState;
 	int m_iForceClosed;
+	bool m_iCanTouch;
 
 	float m_flSoundWait;
 	string m_strLockedSfx;
@@ -214,10 +215,6 @@ func_door::MoveBack(void)
 	if (m_strSndMove)
 		Sound_Play(this, CHAN_WEAPON, m_strSndMove);
 
-	if (!HasSpawnFlags(SF_MOV_USE)) {
-		touch = __NULL__;
-	}
-
 	m_iValue = 0;
 	m_iState = DOORSTATE_DOWN;
 	MoveToDestination(m_vecPos1, Returned);
@@ -286,6 +283,9 @@ func_door::Trigger(entity act, int state)
 void
 func_door::Touch(entity eToucher)
 {
+	if (m_iCanTouch == false)
+		return;
+
 	if (HasSpawnFlags(SF_MOV_USE))
 		return;
 
@@ -425,6 +425,11 @@ func_door::Respawn(void)
 	m_iState = DOORSTATE_LOWERED;
 	m_vecPos1 = GetSpawnOrigin();
 	m_vecPos2 = (m_vecPos1 + m_vecMoveDir * (fabs(m_vecMoveDir * size) - m_flLip));
+
+	if (spawnflags & SF_MOV_TOGGLE || spawnflags & SF_MOV_USE)
+		m_iCanTouch = false;
+	else
+		m_iCanTouch = true;
 
 	if (HasSpawnFlags(SF_MOV_OPEN)) {
 		SetOrigin(m_vecPos2);

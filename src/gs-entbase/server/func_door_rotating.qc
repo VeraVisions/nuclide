@@ -237,20 +237,18 @@ func_door_rotating::Away(void)
 	if (!HasSpawnFlags(SF_ROT_ONEWAY)) {
 		/* One way doors only work on the Y axis */
 		if (!HasSpawnFlags(SF_ROT_ZAXIS) || HasSpawnFlags(SF_ROT_XAXIS)) {
-			vector vDifference = (eActivator.origin - eActivator.view_ofs) - origin;
-			vector vAngles = eActivator.angles;
-			vAngles[0] = vAngles[2] = 0;
+			/* get the door facing dir */
+			vector door_dir = vectoangles(WorldSpaceCenter() - origin);
+			makevectors(door_dir);
+			float flDir = dotproduct(origin - eActivator.origin, v_right);
 
-			makevectors(vAngles);
-			vAngles = (eActivator.origin + (v_forward * 10)) - origin;
-
-			if (((vDifference[0] * vAngles[1]) - (vDifference[1] * vAngles[0])) < 0) {
+			if (flDir > 0) {
 				fDirection = -1.0f;
 			}
 		}
 	}
-	RotToDest(m_vecPos2 * fDirection, Arrived);
 
+	RotToDest(m_vecPos2 * fDirection, Arrived);
 	PortalOpen();
 }
 
