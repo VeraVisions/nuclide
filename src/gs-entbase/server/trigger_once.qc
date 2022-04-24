@@ -49,7 +49,7 @@ class trigger_once:NSBrushTrigger
 
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
-	virtual void(void) touch;
+	virtual void(entity) Touch;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
 };
@@ -78,26 +78,26 @@ trigger_once::Restore(string strKey, string strValue)
 }
 
 void
-trigger_once::touch(void)
+trigger_once::Touch(entity eToucher)
 {
 	if (GetMaster() == FALSE)
 		return;
-	if (HasSpawnFlags(TO_NOCLIENTS) && other.flags & FL_CLIENT)
+	if (HasSpawnFlags(TO_NOCLIENTS) && eToucher.flags & FL_CLIENT)
 		return;
-	if (!HasSpawnFlags(TO_MONSTERS) && other.flags & FL_MONSTER)
+	if (!HasSpawnFlags(TO_MONSTERS) && eToucher.flags & FL_MONSTER)
 		return;
-	if (!HasSpawnFlags(TO_PUSHABLES) && other.classname == "func_pushable")
+	if (!HasSpawnFlags(TO_PUSHABLES) && eToucher.classname == "func_pushable")
 		return;
 
 	SetSolid(SOLID_NOT); /* make inactive */
 	m_iValue = 1;
 
 	if (!target) {
-		UseOutput(other, m_strOnStartTouch);
+		UseOutput(eToucher, m_strOnStartTouch);
 		return;
 	}
 
-	UseTargets(other, TRIG_TOGGLE, m_flDelay);
+	UseTargets(eToucher, TRIG_TOGGLE, m_flDelay);
 }
 
 void

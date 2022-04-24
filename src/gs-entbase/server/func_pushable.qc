@@ -42,7 +42,7 @@ class func_pushable:func_breakable
 	virtual void(string, string) Restore;
 	virtual void(void) customphysics;
 	virtual void(void) Respawn;
-	virtual void(void) PlayerTouch;
+	virtual void(entity) Touch;
 	virtual void(void) OnPlayerUse;
 };
 
@@ -114,32 +114,29 @@ func_pushable::customphysics(void)
 	if (vlen(velocity))
 		runstandardplayerphysics(this);
 
-	setorigin(m_eCollBox, WorldSpaceCenter());
+	setorigin(m_eCollBox, position);
 }
 
 void
-func_pushable::PlayerTouch(void)
+func_pushable::Touch(entity eToucher)
 {
 	/* don't cause bounces */
-	if (other.movetype == MOVETYPE_NONE) {
+	if (eToucher.movetype == MOVETYPE_NONE) {
 		return;
 	}
 
-	/* get the real position of the pushable */
-	vector position = WorldSpaceCenter();
-
 	/* check if we're inside the pushable */
-	if (other.origin[0] >= absmin[0] && other.origin[0] <= absmax[0])
-	if (other.origin[1] >= absmin[1] && other.origin[1] <= absmax[1])
+	if (eToucher.origin[0] >= absmin[0] && eToucher.origin[0] <= absmax[0])
+	if (eToucher.origin[1] >= absmin[1] && eToucher.origin[1] <= absmax[1])
 		return;
 
 	/* check if we're above the pushable... */
-	if ((other.absmin[2] + 16) >= absmax[2]) {
+	if ((eToucher.absmin[2] + 16) >= absmax[2]) {
 		return;
 	}
 
 	/* get the direction of the pushing player towards the pushable, then get a matrix */
-	makevectors(vectoangles(other.origin - position));
+	makevectors(vectoangles(eToucher.origin - WorldSpaceCenter()));
 
 	/* add forward direction times speed */
 	velocity = v_forward * -64;
@@ -155,8 +152,9 @@ void
 func_pushable::Respawn(void)
 {
 	super::Respawn();
-	movetype = MOVETYPE_STEP;
-	touch = PlayerTouch;
+	//SetSolid(SOLID_BSP);
+	SetOrigin(GetSpawnOrigin());
+	SetMovetype(MOVETYPE_STEP);
 	PlayerUse = OnPlayerUse;
 
 	if (!m_eCollBox) {
