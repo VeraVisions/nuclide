@@ -41,6 +41,7 @@ void Footsteps_Update(void);
 void TraceAttack_FireBullets(int, vector, int, vector, int);
 #ifdef BULLETPENETRATION
 void TraceAttack_SetPenetrationPower(int);
+void TraceAttack_SetRangeModifier(float);
 #endif
 
 void Damage_Radius(vector, entity, float, float, int, int);

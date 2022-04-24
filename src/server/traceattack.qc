@@ -17,6 +17,8 @@
 entity g_multiDamage_Target;
 int g_multiDamage_Value;
 int g_multiDamage_HitBod;
+float g_pen_flMaxThickness;
+var float g_pen_flRangeMod = 1.0f;
 
 static void
 TraceAttack_Apply(entity eAttacker, int iWeapon)
@@ -140,7 +142,11 @@ TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon, f
 	if (iTotalPenetrations > 0) {
 		if (!(trace_surfaceflagsi & SURF_PENETRATE))
 			iTotalPenetrations -= 1;
-		TraceAttack_FireSingle(trace_endpos + (v_forward * 2), vAngle, iDamage / 2, iWeapon, dist);
+
+		float cont = pointcontents(trace_endpos + v_forward * g_pen_flMaxThickness);
+
+		if (cont == CONTENT_EMPTY)
+			TraceAttack_FireSingle(trace_endpos + (v_forward * 2), vAngle, iDamage / 2, iWeapon, dist);
 	}
 #endif
 }
@@ -187,8 +193,15 @@ TraceAttack_FireBullets(int iShots, vector vecPos, int iDamage, vector vecSpread
 
 #ifdef BULLETPENETRATION
 void
+TraceAttack_SetRangeModifier(float units)
+{
+	g_pen_flRangeMod = units;
+}
+void
 TraceAttack_SetPenetrationPower(int power)
 {
 	iTotalPenetrations = power;
+	/* thickness equals 8 units per power times rangemodifier */
+	g_pen_flMaxThickness = ((8 * power) * g_pen_flRangeMod);
 }
 #endif

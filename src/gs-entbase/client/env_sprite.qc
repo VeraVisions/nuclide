@@ -31,8 +31,9 @@ class env_sprite:NSRenderableEntity
 float
 env_sprite::predraw(void)
 {
-	if (!m_strMaterial)
-		return (PREDRAW_NEXT);
+	if (!m_strMaterial) {
+		return super::predraw();
+	}
 
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
