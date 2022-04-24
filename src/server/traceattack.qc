@@ -26,7 +26,7 @@ TraceAttack_Apply(entity eAttacker, int iWeapon)
 		return;
 
 	if (trace_ent.iBleeds == 1) {
-		FX_Blood(trace_endpos, [1,0,0]);
+		FX_Blood(trace_endpos, [0.5,0,0]);
 	}
 
 	trace_surface_id = g_multiDamage_HitBod;
