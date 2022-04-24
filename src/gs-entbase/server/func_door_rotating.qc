@@ -391,7 +391,7 @@ func_door_rotating::Respawn(void)
 	nextthink = 0.0f;
 	avelocity = [0,0,0];
 
-	if (spawnflags & SF_ROT_TOGGLE || spawnflags & SF_ROT_USE)
+	if (spawnflags & SF_ROT_USE)
 		m_iCanTouch = false;
 	else
 		m_iCanTouch = true;
