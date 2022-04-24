@@ -88,6 +88,7 @@ class func_door_rotating:NSRenderableEntity
 	vector m_vecPos2;
 	vector m_vecMoveDir;
 	int m_iPortalState;
+	bool m_iCanTouch;
 	
 	void(void) func_door_rotating;
 
@@ -137,7 +138,8 @@ void
 func_door_rotating::Unhinge(void)
 {
 	takedamage = DAMAGE_NO;
-	touch = think = __NULL__;
+	think = __NULL__;
+	m_iCanTouch = false;
 	SetSolid(SOLID_PHYSICS_BOX);
 	SetMovetype(MOVETYPE_PHYSICS);
 	physics_enable(this, TRUE);
@@ -148,7 +150,7 @@ void
 func_door_rotating::Arrived(void)
 {
 	SetAngles(m_vecDest);
-	avelocity = [0,0,0];
+	SetAngularVelocity([0,0,0]);
 	nextthink = 0.0f;
 
 	m_iState = STATE_RAISED;
@@ -170,7 +172,7 @@ void
 func_door_rotating::Returned(void)
 {
 	SetAngles(m_vecDest);
-	avelocity = [0,0,0];
+	SetAngularVelocity([0,0,0]);
 	nextthink = 0.0f;
 
 	if (m_strSndStop) {
@@ -204,10 +206,6 @@ func_door_rotating::Back(void)
 		}
 	}
 
-	if (!HasSpawnFlags(SF_ROT_USE)) {
-		touch = __NULL__;
-	}
-    
 	m_iState = STATE_DOWN;
 	RotToDest(m_vecPos1, Returned);
 }
@@ -295,6 +293,9 @@ func_door_rotating::Use(void)
 void
 func_door_rotating::Touch(entity eToucher)
 {
+	if (m_iCanTouch == false)
+		return;
+
 	if (m_iLocked || !GetMaster()) {
 		if (m_flSoundWait < time)
 			Sound_Play(this, CHAN_VOICE, m_strLockedSfx);
@@ -391,6 +392,11 @@ func_door_rotating::Respawn(void)
 	think = __NULL__;
 	nextthink = 0.0f;
 	avelocity = [0,0,0];
+
+	if (spawnflags & SF_ROT_TOGGLE || spawnflags & SF_ROT_USE)
+		m_iCanTouch = false;
+	else
+		m_iCanTouch = true;
 
 	/* this is a terrible hack */
 	if (m_flWait == 0)
