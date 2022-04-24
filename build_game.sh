@@ -17,7 +17,7 @@ set -e
 SCRPATH="$( cd "$( dirname $(readlink -nf $0) )" && pwd )"
 PATH="$SCRPATH"/bin:"$PATH"
 
-if [ -f "$SCRPATH"/bin/fteqcc ]; then
+if [ -x "$(command -v fteqcc)" ]; then
 
 	# We want to compile a specific game
 	if [ $# -gt 0 ]; then
