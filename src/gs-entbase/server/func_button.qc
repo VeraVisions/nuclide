@@ -93,6 +93,8 @@ class func_button:NSSurfacePropEntity
 	string m_strSndPressed;
 	string m_strSndUnpressed;
 
+	bool m_iCanTouch;
+
 	/* input/output */
 	string m_strOnPressed;
 	string m_strOnDamaged;
@@ -206,6 +208,7 @@ func_button::Arrived(void)
 	SetOrigin(m_vecDest);
 	velocity = [0,0,0];
 	nextthink = 0;
+	m_iCanTouch = true;
 
 	UseOutput(this, m_strOnIn);
 	m_iState = STATE_RAISED;
@@ -227,6 +230,7 @@ func_button::Returned(void)
 	SetOrigin(m_vecDest);
 	velocity = [0,0,0];
 	nextthink = 0;
+	m_iCanTouch = true;
 
 	m_iState = STATE_LOWERED;
 	SetFrame(FRAME_OFF);
@@ -235,7 +239,7 @@ func_button::Returned(void)
 void
 func_button::MoveBack(void)
 {
-	touch = __NULL__;
+	m_iCanTouch = false;
 	m_iState = STATE_DOWN;
 	m_iValue = 0;
 
@@ -256,7 +260,7 @@ func_button::MoveAway(void)
 	if (m_iState == STATE_UP) {
 		return;
 	}
-	touch = __NULL__;
+	m_iCanTouch = false;
 
 	if (m_iState == STATE_RAISED) {
 		nextthink = (ltime + m_flWait);
@@ -323,6 +327,9 @@ func_button::Touch(entity eToucher)
 	if (!HasSpawnFlags(SF_BTT_TOUCH_ONLY)) {
 		return;
 	}
+
+	if (m_iCanTouch == false)
+		return;
 
 	if (eToucher.movetype == MOVETYPE_WALK) {
 		Trigger(eToucher, TRIG_TOGGLE);

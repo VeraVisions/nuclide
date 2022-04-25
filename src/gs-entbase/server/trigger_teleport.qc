@@ -36,32 +36,32 @@ class trigger_teleport:NSBrushTrigger
 {
 	void(void) trigger_teleport;
 
-	virtual void(void) touch;
+	virtual void(entity) Touch;
 	virtual void(void) Respawn;
 };
 
 void
-trigger_teleport::touch(void)
+trigger_teleport::Touch(entity eToucher)
 {
 	if (GetMaster() == FALSE)
 		return;
-	if (HasSpawnFlags(TRIGTELE_NOCLIENTS) && other.flags & FL_CLIENT)
+	if (HasSpawnFlags(TRIGTELE_NOCLIENTS) && eToucher.flags & FL_CLIENT)
 		return;
-	if (!HasSpawnFlags(TRIGTELE_MONSTERS) && other.flags & FL_MONSTER)
+	if (!HasSpawnFlags(TRIGTELE_MONSTERS) && eToucher.flags & FL_MONSTER)
 		return;
 
-	if (other.movetype != MOVETYPE_NONE) {
-		eActivator = other;
+	if (eToucher.movetype != MOVETYPE_NONE) {
+		eActivator = eToucher;
 		entity eTarget = find(world, ::targetname, target);
 
 		if (eTarget) {
 			vector endpos = eTarget.origin + [0,0,16];
-			setorigin(other, endpos);
-			dprint(sprintf("^2trigger_teleport::^3touch^7: Teleported '%s' to `%v`\n", 
-				other.netname, endpos));
+			setorigin(eToucher, endpos);
+			dprint(sprintf("^2trigger_teleport::^3Touch^7: Teleported '%s' to `%v`\n", 
+				eToucher.netname, endpos));
 		} else {
-			print(sprintf("^2trigger_teleport::^3touch^7: Failed to teleport '%s'\n", 
-				other.netname));
+			print(sprintf("^2trigger_teleport::^3Touch^7: Failed to teleport '%s'\n", 
+				eToucher.netname));
 		}
 	}
 }

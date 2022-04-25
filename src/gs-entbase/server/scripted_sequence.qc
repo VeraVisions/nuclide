@@ -113,7 +113,7 @@ class scripted_sequence:NSPointTrigger
 	
 	virtual void(entity) RunOnEntity;
 	virtual void(void) InitIdle;
-	virtual void(void) touch;
+	virtual void(entity) Touch;
 };
 
 void
@@ -316,20 +316,20 @@ scripted_sequence::InitIdle(void)
 }
 
 void
-scripted_sequence::touch(void)
+scripted_sequence::Touch(entity eToucher)
 {
 	NSMonster f;
 
-	if (other.classname != m_strMonster)
+	if (eToucher.classname != m_strMonster)
 		return;
 
-	f = (NSMonster)other;
+	f = (NSMonster)eToucher;
 
 	/* we already ARE on a sequence. */
 	if (f.m_iSequenceState != SEQUENCESTATE_NONE)
 		return;
 
-	RunOnEntity(other);
+	RunOnEntity(eToucher);
 }
 
 void

@@ -99,6 +99,7 @@ class CSpraylogo
 	virtual float(void) predraw;
 };
 
+#ifdef WASTES
 const string g_spray_mat = \
 	"{\n" \
 		"cull disable\n" \
@@ -109,6 +110,18 @@ const string g_spray_mat = \
 			"rgbGen vertex\n" \
 		"}\n" \
 	"}";
+#else
+const string g_spray_mat = \
+	"{\n" \
+		"cull disable\n" \
+		"polygonOffset\n" \
+		"{\n" \
+			"map $rt:%s\n" \
+			"blendfunc blend\n" \
+			"rgbGen vertex\n" \
+		"}\n" \
+	"}";
+#endif
 
 float
 CSpraylogo::predraw(void)

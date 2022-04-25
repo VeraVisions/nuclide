@@ -38,7 +38,7 @@ class trigger_gravity:NSBrushTrigger
 
 	void(void) trigger_gravity;
 
-	virtual void(void) touch;
+	virtual void(entity) Touch;
 	virtual void(string, string) SpawnKey;
 	virtual void(void) Respawn;
 
@@ -48,9 +48,9 @@ class trigger_gravity:NSBrushTrigger
 };
 
 void
-trigger_gravity::touch(void)
+trigger_gravity::Touch(entity eToucher)
 {
-	other.gravity = m_flGravity;
+	eToucher.gravity = m_flGravity;
 }
 
 void

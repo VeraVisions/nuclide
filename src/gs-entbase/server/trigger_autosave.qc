@@ -31,7 +31,7 @@ class trigger_autosave:NSBrushTrigger
 
 	void(void) trigger_autosave;
 
-	virtual void(void) touch;
+	virtual void(entity) Touch;
 	virtual void(void) Respawn;
 };
 
@@ -55,7 +55,7 @@ trigger_autosave::Restore(string strKey, string strValue)
 }
 
 void
-trigger_autosave::touch(void)
+trigger_autosave::Touch(entity eToucher)
 {
 	if (GetMaster() == FALSE)
 		return;
@@ -70,14 +70,15 @@ trigger_autosave::touch(void)
 	msg_entity = this;
 	multicast(origin, MULTICAST_ALL);
 
-	dprint(sprintf("^2trigger_autosave::^3touch^7: %s called autosave\n", 
-		other.netname));
+	dprint(sprintf("^2trigger_autosave::^3Touch^7: %s called autosave\n", 
+		eToucher.netname));
 
-	//readcmd("save autosave\n");
+	localcmd("save autosave\n");
+
 	Hide();
 	SetSolid(SOLID_NOT);
 
-	UseTargets(other, TRIG_TOGGLE, m_flDelay);
+	UseTargets(eToucher, TRIG_TOGGLE, m_flDelay);
 }
 
 void

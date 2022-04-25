@@ -81,7 +81,7 @@ class func_rotating:NSRenderableEntity
 
 	virtual void(void) Rotate;
 	virtual void(entity) Blocked;
-	virtual void(void) BlockedTouch;
+	virtual void(entity) Touch;
 	virtual void(void) SetMovementDirection;
 };
 
@@ -169,9 +169,11 @@ func_rotating::Blocked(entity eBlocker)
 }
 
 void
-func_rotating::BlockedTouch(void)
+func_rotating::Touch(entity eToucher)
 {
-	Blocked(other);
+	if (HasSpawnFlags(FR_FANPAIN)) {
+		Blocked(eToucher);
+	}
 }
 
 void
@@ -198,10 +200,6 @@ func_rotating::Respawn(void)
 		avelocity = m_vecMoveDir * m_flSpeed;
 		think = Rotate;
 		nextthink = ltime + 1.5f;
-	}
-	
-	if (HasSpawnFlags(FR_FANPAIN)) {
-		touch = BlockedTouch;
 	}
 }
 

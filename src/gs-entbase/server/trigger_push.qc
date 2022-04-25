@@ -45,7 +45,7 @@ class trigger_push:NSBrushTrigger
 
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
-	virtual void(void) touch;
+	virtual void(entity) Touch;
 	virtual void(void) Respawn;
 	virtual void(entity, int) Trigger;
 	virtual void(void) SetMovementDirection;
@@ -104,11 +104,11 @@ trigger_push::Trigger(entity act, int state)
 }
 
 void
-trigger_push::touch(void)
+trigger_push::Touch(entity eToucher)
 {
-	eActivator = other;
+	eActivator = eToucher;
 
-	switch(other.movetype) {
+	switch(eToucher.movetype) {
 	case MOVETYPE_NONE:
 	case MOVETYPE_PUSH:
 	case MOVETYPE_NOCLIP:
@@ -117,21 +117,21 @@ trigger_push::touch(void)
 	}
 
 	/* trigger_push is not supposed to work underwater */
-	if (other.waterlevel > 1)
+	if (eToucher.waterlevel > 1)
 		return;
 
-	if (other.solid != SOLID_NOT && other.solid != SOLID_BSP) {
+	if (eToucher.solid != SOLID_NOT && eToucher.solid != SOLID_BSP) {
 		vector vecPush;
 		vecPush = (m_flSpeed * m_vecMoveDir);
 
 		if (HasSpawnFlags(TP_ONCE)) {
-			other.velocity += vecPush;
-			if (other.velocity[2] > 0) {
-				other.flags &= ~FL_ONGROUND;
+			eToucher.velocity += vecPush;
+			if (eToucher.velocity[2] > 0) {
+				eToucher.flags &= ~FL_ONGROUND;
 			}
 			Hide();
 		} else {
-			other.basevelocity += vecPush;
+			eToucher.basevelocity += vecPush;
 		}
 	}
 }

@@ -38,7 +38,7 @@ class target_cdaudio:NSPointTrigger
 
 	void(void) target_cdaudio;
 
-	virtual void(void) touch;
+	virtual void(entity) Touch;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
 };
@@ -67,9 +67,9 @@ target_cdaudio::Restore(string strKey, string strValue)
 }
 
 void
-target_cdaudio::touch(void)
+target_cdaudio::Touch(entity eToucher)
 {
-	if (!(other.flags & FL_CLIENT)) {
+	if (!(eToucher.flags & FL_CLIENT)) {
 		return;
 	}
 

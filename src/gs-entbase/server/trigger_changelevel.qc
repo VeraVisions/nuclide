@@ -89,7 +89,7 @@ class trigger_changelevel:NSBrushTrigger
 	virtual void(string, string) SpawnKey;
 
 	virtual void(void) Change;
-	virtual void(void) TouchTrigger;
+	virtual void(entity) Touch;
 	virtual int(entity, entity) IsInside;
 };
 
@@ -212,22 +212,21 @@ trigger_changelevel::Trigger(entity act, int unused)
 }
 
 void
-trigger_changelevel::TouchTrigger(void)
+trigger_changelevel::Touch(entity eToucher)
 {
-	if (!(other.flags & FL_CLIENT))
+	if (HasSpawnFlags(LC_USEONLY))
 		return;
 
-	Trigger(other, TRIG_TOGGLE);
+	if (!(eToucher.flags & FL_CLIENT))
+		return;
+
+	Trigger(eToucher, TRIG_TOGGLE);
 }
 
 void
 trigger_changelevel::Respawn(void)
 {
 	InitBrushTrigger();
-
-	if (!HasSpawnFlags(LC_USEONLY)) {
-		touch = TouchTrigger;
-	}
 }
 
 void

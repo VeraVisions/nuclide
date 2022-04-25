@@ -40,7 +40,7 @@ class func_conveyor:NSRenderableEntity
 	virtual void(string,string) Restore;
 	virtual void(void) Respawn;
 	virtual void(entity, int) Trigger;
-	virtual void(void) touch;
+	virtual void(entity) Touch;
 	virtual void(void) SetMovementDirection;
 	virtual void(entity, string, string) Input;
 	virtual void(string, string) SpawnKey;
@@ -83,12 +83,12 @@ func_conveyor::SetMovementDirection(void)
 }
 
 void
-func_conveyor::touch(void)
+func_conveyor::Touch(entity eToucher)
 {
 	if (HasSpawnFlags(SF_CONVEYOR_VISUAL))
 		return;
 
-	other.basevelocity = m_vecMoveDir * (m_flSpeed * -0.2);
+	eToucher.basevelocity = m_vecMoveDir * (m_flSpeed * -0.2);
 }
 
 void 

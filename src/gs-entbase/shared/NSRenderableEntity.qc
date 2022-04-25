@@ -393,16 +393,16 @@ NSRenderableEntity::RenderFXPass(void)
 
 	switch (m_iRenderFX) {
 	case RFX_SLOWPULSE:
-		alpha = sin(cltime * 0.5);
+		alpha = sin(cltime * 0.5) + (M_PI * 0.5);
 		break;
 	case RFX_FASTPULSE:
-		alpha = sin(cltime * 2.0);
+		alpha = sin(cltime * 2.0) + (M_PI * 0.5);
 		break;
 	case RFX_SLOWWIDEPULSE:
-		alpha = sin(cltime * 0.5);
+		alpha = (sin(cltime * 2.0));
 		break;
 	case RFX_FASTWIDEPULSE:
-		alpha = sin(cltime * 2.0);
+		alpha = sin(cltime * 2.0) + (M_PI * 0.5);
 		break;
 	case RFX_SLOWFADEAWAY:
 		alpha -= clframetime * 0.25;

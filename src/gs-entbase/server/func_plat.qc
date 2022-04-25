@@ -55,7 +55,7 @@ class func_plat:NSRenderableEntity
 	virtual void(vector, void(void)) Move;
 	virtual void(void) MoveToggle;
 	virtual void(void) Respawn;
-	virtual void(void) touch;
+	virtual void(entity) Touch;
 	virtual void(string, string) SpawnKey;
 };
 
@@ -151,9 +151,9 @@ func_plat::Trigger(entity act, int state)
 }
 
 void
-func_plat::touch(void)
+func_plat::Touch(entity eToucher)
 {
-	if (other.movetype != MOVETYPE_WALK) {
+	if (eToucher.movetype != MOVETYPE_WALK) {
 		return;
 	}
 

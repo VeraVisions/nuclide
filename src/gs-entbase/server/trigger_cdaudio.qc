@@ -35,7 +35,7 @@ class trigger_cdaudio:NSBrushTrigger
 	virtual void(string, string) Restore;
 	virtual void(entity, int) Trigger;
 	virtual void(void) Respawn;
-	virtual void(void) touch;
+	virtual void(entity) Touch;
 	virtual void(string, string) SpawnKey;
 };
 
@@ -78,9 +78,9 @@ trigger_cdaudio::Trigger(entity act, int unused)
 }
 
 void
-trigger_cdaudio::touch(void)
+trigger_cdaudio::Touch(entity eToucher)
 {
-	Trigger(other, TRIG_TOGGLE);
+	Trigger(eToucher, TRIG_TOGGLE);
 }
 
 void

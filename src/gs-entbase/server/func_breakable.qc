@@ -126,6 +126,8 @@ class func_breakable:NSSurfacePropEntity
 	int m_pressType;
 	int m_pressDamage;*/
 
+	bool m_iCanTouch;
+
 	void(void) func_breakable;
 
 	/* overrides */
@@ -138,7 +140,7 @@ class func_breakable:NSSurfacePropEntity
 	virtual void(string, string) Restore;
 
 	virtual void(void) Explode;
-	virtual void(void) PlayerTouch;
+	virtual void(entity) Touch;
 	/*virtual void(void) PressureDeath;*/
 };
 
@@ -253,38 +255,41 @@ func_breakable::Trigger(entity act, int state)
 }
 
 void
-func_breakable::PlayerTouch(void)
+func_breakable::Touch(entity eToucher)
 {
 	static void TriggerWrap(void) {
 		/* TODO: 'this' should be the person who touched the ent instead */
 		Trigger(this, TRIG_TOGGLE);
 	}
 
-	if (other.classname == classname) {
+	if (m_iCanTouch == false)
+		return;
+
+	if (eToucher.classname == classname) {
 		return;
 	}
 
-	if (other.solid == SOLID_CORPSE) {
-		if (vlen(other.velocity) > 100) {
+	if (eToucher.solid == SOLID_CORPSE) {
+		if (vlen(eToucher.velocity) > 100) {
 			Trigger(this, TRIG_ON);
 		}
 	}
 
 	if (HasSpawnFlags(SF_TOUCH)) {
-		int fDamage = (float)(vlen(other.velocity) * 0.01f);
+		int fDamage = (float)(vlen(eToucher.velocity) * 0.01f);
 
 		if (fDamage >= health) {
-			touch = __NULL__;
-			Damage_Apply(this, other, fDamage, 0, DMG_CRUSH);
+			m_iCanTouch = false;
+			Damage_Apply(this, eToucher, fDamage, 0, DMG_CRUSH);
 
 			if ((GetSurfaceData(SURFDATA_MATERIAL) == GSMATERIAL_GLASS) || (GetSurfaceData(SURFDATA_MATERIAL) == GSMATERIAL_COMPUTER)) {
-				Damage_Apply(other, this, fDamage / 4, 0, DMG_CRUSH);
+				Damage_Apply(eToucher, this, fDamage / 4, 0, DMG_CRUSH);
 			}
 		}
 	}
 
-	if (HasSpawnFlags(SF_PRESSURE) && (other.absmin[2] >= maxs[2] - 2)) {
-		touch = __NULL__;
+	if (HasSpawnFlags(SF_PRESSURE) && (eToucher.absmin[2] >= maxs[2] - 2)) {
+		m_iCanTouch = false;
 		think = TriggerWrap;
 
 		if (m_flDelay == 0) {
@@ -304,8 +309,8 @@ func_breakable::Respawn(void)
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
 	ClearAngles();
-	touch = PlayerTouch;
 	think = __NULL__;
+	m_iCanTouch = true;
 
 	if (HasSpawnFlags(SF_TRIGGER)) {
 		takedamage = DAMAGE_NO;

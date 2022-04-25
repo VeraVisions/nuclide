@@ -36,7 +36,7 @@ class func_friction:NSEntity
 
 	void(void) func_friction;
 
-	virtual void(void) touch;
+	virtual void(entity) Touch;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
 
@@ -46,9 +46,9 @@ class func_friction:NSEntity
 };
 
 void
-func_friction::touch(void)
+func_friction::Touch(entity eToucher)
 {
-	other.friction = m_flFriction;
+	eToucher.friction = m_flFriction;
 }
 
 void

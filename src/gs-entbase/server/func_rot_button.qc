@@ -76,7 +76,7 @@ class func_rot_button:NSRenderableEntity
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
 	virtual void(string, string) SpawnKey;
-	virtual void(void) touch;
+	virtual void(entity) Touch;
 	virtual void(void) Respawn;
 	virtual void(void) Death;
 
@@ -175,8 +175,10 @@ func_rot_button::OnPlayerUse(void)
 }
 
 void
-func_rot_button::touch(void)
+func_rot_button::Touch(entity eToucher)
 {
+	eActivator = eToucher;
+
 	if (HasSpawnFlags(FNCROTBUT_TOUCHABLE))
 		TurnToggle();
 }

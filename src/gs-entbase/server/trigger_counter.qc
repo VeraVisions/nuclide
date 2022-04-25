@@ -45,7 +45,7 @@ class trigger_counter:NSBrushTrigger
 
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
-	virtual void(void) touch;
+	virtual void(entity) Touch;
 	virtual void(entity,int) Trigger;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
@@ -75,9 +75,9 @@ trigger_counter::Restore(string strKey, string strValue)
 }
 
 void
-trigger_counter::touch(void)
+trigger_counter::Touch(entity eToucher)
 {
-	Trigger(other, TRIG_TOGGLE);
+	Trigger(eToucher, TRIG_TOGGLE);
 }
 
 void
