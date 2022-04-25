@@ -46,7 +46,7 @@ env_sprite::predraw(void)
 	traceline(origin, vecPlayer, MOVE_WORLDONLY, this);
 
 	if (trace_fraction < 1.0)
-		return;
+		return (PREDRAW_NEXT);
 
 	R_BeginPolygon(m_strMaterial, 1, 0);
 	R_PolygonVertex(forg + v_right * fsize[0] - v_up * fsize[1],
