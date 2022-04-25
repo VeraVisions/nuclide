@@ -1,4 +1,3 @@
-
 /* both base_player and base_spectator are based off this class */
 class
 base_client:NSSurfacePropEntity
@@ -15,7 +14,9 @@ base_client:NSSurfacePropEntity
 	virtual void(void) PostFrame;
 
 	virtual int(void) IsFakeSpectator;
-
+	virtual int(void) IsRealSpectator;
+	virtual int(void) IsDead;
+	virtual int(void) IsPlayer;
 
 #ifdef CLIENT
 	/* gives the chance to override input variables before networking */

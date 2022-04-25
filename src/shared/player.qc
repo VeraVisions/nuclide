@@ -15,13 +15,30 @@
  */
 
 int
+base_player::IsRealSpectator(void)
+{
+	return (FALSE);
+}
+
+int
+base_player::IsDead(void)
+{
+	if (health > 0)
+		return (FALSE);
+	else
+		return (TRUE);
+}
+
+int
+base_player::IsPlayer(void)
+{
+	return (FALSE);
+}
+
+int
 base_player::IsFakeSpectator(void)
 {
-#ifdef SERVER
-	if (infokey(this, "*spec") == "2")
-#else
-	if (getplayerkeyfloat(entnum - 1, "*spec") == 2)
-#endif
+	if (movetype == MOVETYPE_NOCLIP)
 		return (TRUE);
 
 	return (FALSE);
@@ -503,19 +520,17 @@ base_player::MakeTempSpectator(void)
 {
 	classname = "player";
 	flags = FL_CLIENT;
-	modelindex = 0;
+	SetModelindex(0);
+	SetSolid(SOLID_NOT);
+	SetMovetype(MOVETYPE_NOCLIP);
+	SetTakedamage(DAMAGE_NO);
+	maxspeed = 250;
 	max_health = health = 0;
 	armor = 0;
 	g_items = 0;
 	activeweapon = 0;
 	effects = 0;
 	alpha = 0.0f;
-	solid = SOLID_NOT;
-	movetype = MOVETYPE_NOCLIP;
-	maxspeed = 250;
-	takedamage = DAMAGE_NO;
-	forceinfokey(this, "*spec", "2");
-	forceinfokey(this, "*dead", "0");
 }
 
 /*
@@ -538,9 +553,7 @@ base_player::Death(void)
 	SetModelindex(0);
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_NOT);
-	takedamage = DAMAGE_NO;
-	forceinfokey(this, "*spec", "0");
-	forceinfokey(this, "*dead", "1");
+	SetTakedamage(DAMAGE_NO);
 	viewzoom = 1.0;
 	view_ofs = [0,0,0];
 	vehicle = __NULL__;
@@ -574,8 +587,6 @@ base_player::MakePlayer(void)
 	solid = SOLID_SLIDEBOX;
 	movetype = MOVETYPE_WALK;
 	takedamage = DAMAGE_YES;
-	forceinfokey(this, "*spec", "0");
-	forceinfokey(this, "*dead", "0");
 	viewzoom = 1.0;
 	vehicle = __NULL__;
 	velocity = [0,0,0];
@@ -829,7 +840,8 @@ _base_player_unuseworkaround(entity eTarget)
 =================
 base_player:: InputUse_Down
 
-Called when we hold down the +use button for the first time
+Called when we hold down the +use button for the first time,
+looks for an entity that has the .PlayerUse field set to a function and calls it.
 =================
 */
 void
@@ -843,22 +855,28 @@ base_player::InputUse_Down(void)
 	
 	vector vecSource;
 	entity eRad;
+	bool found_use = false;
 
 	makevectors(v_angle);
 	vecSource = origin + view_ofs;
 	traceline(vecSource, vecSource + (v_forward * 64), MOVE_EVERYTHING, this);
 
-	/* find anything in a 8 unit radius, including certain non-solids (func_door, func_rot_button etc. */
-	eRad = findradius(trace_endpos, 8);
-	bool found_use = false;
+	/* first see if we traced something head-on, else we'll findradius something */
+	if (trace_ent.PlayerUse) {
+		found_use = true;
+		eRad = trace_ent;
+	} else {
+		/* find anything in a 8 unit radius, including certain non-solids (func_door, func_rot_button etc. */
+		eRad = findradius(trace_endpos, 8);
 
-	/* loop through our chain and just pick the first valid one */
-	while (eRad) {
-		if (eRad.PlayerUse) {
-			found_use = true;
-			break;
+		/* loop through our chain and just pick the first valid one */
+		while (eRad) {
+			if (eRad.PlayerUse) {
+				found_use = true;
+				break;
+			}
+			eRad = eRad.chain;
 		}
-		eRad = eRad.chain;
 	}
 
 	/* TODO: maybe eRad will return something in the future that'll suppress a successfull use? */

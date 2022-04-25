@@ -19,6 +19,24 @@ base_client::IsFakeSpectator(void)
 	return (FALSE);
 }
 
+int
+base_client::IsRealSpectator(void)
+{
+	return (FALSE);
+}
+
+int
+base_client::IsDead(void)
+{
+	return (FALSE);
+}
+
+int
+base_client::IsPlayer(void)
+{
+	return (FALSE);
+}
+
 #ifdef CLIENT
 void
 base_client::ClientInputFrame(void)

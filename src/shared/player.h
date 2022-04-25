@@ -76,6 +76,9 @@ base_player:spectator
 	virtual void(void) Physics_Run;
 
 	virtual int(void) IsFakeSpectator;
+	virtual int(void) IsRealSpectator;
+	virtual int(void) IsDead;
+	virtual int(void) IsPlayer;
 
 #ifdef CLIENT
 	int sequence;
@@ -93,7 +96,6 @@ base_player:spectator
 	virtual void(void) PredictPostFrame;
 	virtual void(void) ClientInputFrame;
 #else
-	
 	int voted;
 	int step;
 	float step_time;

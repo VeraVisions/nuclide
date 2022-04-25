@@ -14,6 +14,31 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+
+int
+spectator::IsRealSpectator(void)
+{
+	return (TRUE);
+}
+
+int
+spectator::IsDead(void)
+{
+	return (FALSE);
+}
+
+int
+spectator::IsPlayer(void)
+{
+	return (FALSE);
+}
+
+int
+spectator::IsFakeSpectator(void)
+{
+	return (FALSE);
+}
+
 void
 spectator::ClientInput(void)
 {
@@ -434,10 +459,6 @@ spectator::spectator(void)
 	maxspeed = 250;
 	spec_ent = 0;
 	spec_mode = 0;
-
-#ifdef SERVER
-	forceinfokey(this, "*spec", "1");
-#endif
 }
 
 #ifdef CLIENT

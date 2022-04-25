@@ -17,8 +17,11 @@
 entity g_multiDamage_Target;
 int g_multiDamage_Value;
 int g_multiDamage_HitBod;
+
+#ifdef BULLETPENETRATION
 float g_pen_flMaxThickness;
 var float g_pen_flRangeMod = 1.0f;
+#endif
 
 static void
 TraceAttack_Apply(entity eAttacker, int iWeapon)

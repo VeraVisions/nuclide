@@ -424,7 +424,7 @@ func_door::Respawn(void)
 	m_vecPos1 = GetSpawnOrigin();
 	m_vecPos2 = (m_vecPos1 + m_vecMoveDir * (fabs(m_vecMoveDir * size) - m_flLip));
 
-	if (spawnflags & SF_MOV_TOGGLE || spawnflags & SF_MOV_USE)
+	if (spawnflags & SF_MOV_USE)
 		m_iCanTouch = false;
 	else
 		m_iCanTouch = true;

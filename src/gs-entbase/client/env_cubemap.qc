@@ -93,7 +93,7 @@ CMap_Shoot(void)
 		setproperty(VF_ANGLES, [0,0,0]);
 
 		strReflectcube = sprintf(
-					"env/%s_%d_%d_%d.ktx",
+					"env/%s_%d_%d_%d",
 					mapname,
 					g_vecCubePos[0],
 					g_vecCubePos[1],
