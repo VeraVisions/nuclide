@@ -1,7 +1,8 @@
 #!/bin/sh
 . ./build.cfg
 
-if ! [ -x "$(command -v git)" ]; then
+if ! [ -x "$(command -v git)" ]
+then
 	printf "'git' is not installed.\n"
 	exit
 fi
@@ -12,9 +13,11 @@ VVM_MAKEFILE=./src/vvmtool/Makefile
 COMPILE_SYS=$(uname)
 
 # Check how many cores/processors we should use for building
-if ! [ -x "$(command -v nproc)" ]; then
+if ! [ -x "$(command -v nproc)" ]
+then
 	# check if we're on OpenBSD then
-	if ! [ -x "$(command -v sysctl)" ]; then
+	if ! [ -x "$(command -v sysctl)" ]
+	then
 		BUILD_PROC=1
 	else
 		BUILD_PROC=$(sysctl -n hw.ncpu)
@@ -25,8 +28,10 @@ fi
 
 mkdir -p ./bin
 
-if [ -f "$VVM_MAKEFILE" ]; then
-	if [ "$BUILD_UPDATE" -eq 1 ]; then
+if [ -f "$VVM_MAKEFILE" ]
+then
+	if [ "$BUILD_UPDATE" -eq 1 ]
+	then
 		printf "vvmtool is present, updating...\n"
 		cd ./src/vvmtool
 		git pull
@@ -40,7 +45,8 @@ else
 	cd ./vvmtool
 fi
 
-if [ "$BUILD_CLEAN" -eq 1 ]; then
+if [ "$BUILD_CLEAN" -eq 1 ]
+then
 	gmake clean
 fi
 

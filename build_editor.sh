@@ -3,12 +3,14 @@
 
 mv_wsfile()
 {
-	if [ -f "./build/$1" ]; then
+	if [ -f "./build/$1" ]
+then
 		cp -v "./build/$1" "../../bin/$1"
 	fi
 }
 
-if ! [ -x "$(command -v git)" ]; then
+if ! [ -x "$(command -v git)" ]
+then
 	printf "'git' is not installed.\n"
 	exit
 fi
@@ -19,9 +21,11 @@ WS_MAKEFILE=./src/worldspawn/Makefile
 COMPILE_SYS=$(uname)
 
 # Check how many cores/processors we should use for building
-if ! [ -x "$(command -v nproc)" ]; then
+if ! [ -x "$(command -v nproc)" ]
+then
 	# check if we're on OpenBSD then
-	if ! [ -x "$(command -v sysctl)" ]; then
+	if ! [ -x "$(command -v sysctl)" ]
+then
 		BUILD_PROC=1
 	else
 		BUILD_PROC=$(sysctl -n hw.ncpu)
@@ -30,12 +34,14 @@ else
 	BUILD_PROC=$(nproc)
 fi
 
-if [ "$BUILD_DEBUG" -eq 1 ]; then
+if [ "$BUILD_DEBUG" -eq 1 ]
+then
 	WS_CFLAGS="-g"
 fi
 
 # handle search directories and platform specific libraries
-if [[ "$COMPILE_SYS" == "OpenBSD" ]]; then
+if [ "$COMPILE_SYS" = "OpenBSD" ]
+then
 	WS_CFLAGS="$WS_CFLAGS -I/usr/local/include -I/usr/local/include/gtkglext-1.0 -I/usr/local/lib/gtkglext-1.0/include -I/usr/local/include/libxml2/"
 	WS_LDFLAGS="$WS_LDFLAGS -L/usr/local/lib"
 	WS_CC=cc
@@ -49,8 +55,10 @@ fi
 
 mkdir -p ./bin
 
-if [ -f "$WS_MAKEFILE" ]; then
-	if [ "$BUILD_UPDATE" -eq 1 ]; then
+if [ -f "$WS_MAKEFILE" ]
+then
+	if [ "$BUILD_UPDATE" -eq 1 ]
+	then
 		printf "WorldSpawn is present, updating...\n"
 		cd ./src/worldspawn/
 		git pull
@@ -64,7 +72,8 @@ else
 	cd ./worldspawn
 fi
 
-if [ "$BUILD_CLEAN" -eq 1 ]; then
+if [ "$BUILD_CLEAN" -eq 1 ]
+then
 	gmake clean
 fi
 
