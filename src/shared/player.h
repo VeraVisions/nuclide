@@ -113,5 +113,8 @@ base_player:spectator
 	virtual void(void) Death;
 	virtual void(void) MakePlayer;
 	virtual void(void) MakeTempSpectator;
+
+	virtual void(void) InputUse_Down;
+	virtual void(void) InputUse_Up;
 #endif
 };

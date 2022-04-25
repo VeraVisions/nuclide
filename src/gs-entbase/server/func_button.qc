@@ -111,7 +111,7 @@ class func_button:NSSurfacePropEntity
 	virtual void(entity) Blocked;
 	virtual void(entity, int) Trigger;
 	virtual void(void) DeathTrigger;
-	virtual void(void) Use;
+	virtual void(void) PlayerUse;
 	
 	virtual void(void) SetMovementDirection;
 	virtual void(vector, void(void)) MoveToDestination;
@@ -337,8 +337,11 @@ func_button::Touch(entity eToucher)
 }
 
 void
-func_button::Use(void)
+func_button::PlayerUse(void)
 {
+	if (HasSpawnFlags(SF_BTT_TOUCH_ONLY)) {
+		return;
+	}
 	Trigger(eActivator, TRIG_TOGGLE);
 }
 
@@ -423,12 +426,6 @@ func_button::Respawn(void)
 
 	if (!m_flSpeed) {
 		m_flSpeed = 100;
-	}
-
-	if (HasSpawnFlags(SF_BTT_TOUCH_ONLY)) {
-		PlayerUse = __NULL__;
-	} else {
-		PlayerUse = Use;
 	}
 
 	m_vecPos1 = GetSpawnOrigin();

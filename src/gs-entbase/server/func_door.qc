@@ -113,7 +113,7 @@ class func_door:NSRenderableEntity
 	virtual void(entity, int) Trigger;
 	virtual void(entity) Blocked;
 	virtual void(entity) Touch;
-	virtual void(void) Use;
+	virtual void(void) PlayerUse;
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
 	virtual void(string, string) SpawnKey;
@@ -141,8 +141,11 @@ func_door::PortalClose(void)
 }
 
 void
-func_door::Use(void)
+func_door::PlayerUse(void)
 {
+	if (!HasSpawnFlags(SF_MOV_USE))
+		return;
+
 	eActivator.flags &= ~FL_USE_RELEASED;
 	Trigger(eActivator, TRIG_TOGGLE);
 }
@@ -398,6 +401,7 @@ func_door::Respawn(void)
 	SetMovetype(MOVETYPE_PUSH);
 	SetModel(GetSpawnModel());
 	SetOrigin(GetSpawnOrigin());
+	flags |= FL_FINDABLE_NONSOLID;
 
 	think = __NULL__;
 	nextthink = 0.0f;
@@ -413,12 +417,6 @@ func_door::Respawn(void)
 
 	if (!m_iDamage) {
 		m_iDamage = 2;
-	}
-
-	if (HasSpawnFlags(SF_MOV_USE)) {
-		PlayerUse = Use;
-	} else {
-		PlayerUse = __NULL__;
 	}
 
 	m_iValue = 0;

@@ -218,6 +218,7 @@ func_rot_button::Respawn(void)
 	SetOrigin(GetSpawnOrigin());
 	SetAngles(GetSpawnAngles());
 	PlayerUse = OnPlayerUse;
+	flags |= FL_FINDABLE_NONSOLID;
 	
 	m_iState = ROTBTNSTATE_OPENED;
 	think = __NULL__;

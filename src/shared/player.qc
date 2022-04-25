@@ -789,6 +789,110 @@ base_player::SendEntity(entity ePEnt, float fChanged)
 
 	return (1);
 }
+
+/*
+====================
+_base_player_useworkaround
+
+A wrapper to cleanly reset 'self' as to not mess up the QC VM
+====================
+*/
+void
+_base_player_useworkaround(entity eTarget)
+{
+	eActivator = self;
+	entity eOldSelf = self;
+	self = eTarget;
+	self.PlayerUse();
+	self = eOldSelf;
+}
+
+/*
+====================
+_base_player_useworkaround
+
+A wrapper to cleanly reset 'self' as to not mess up the QC VM
+====================
+*/
+void
+_base_player_unuseworkaround(entity eTarget)
+{
+	eActivator = self;
+	entity eOldSelf = self;
+	self = eTarget;
+	if (self.PlayerUseUnpressed)
+		self.PlayerUseUnpressed();
+	self = eOldSelf;
+}
+
+/*
+=================
+base_player:: InputUse_Down
+
+Called when we hold down the +use button for the first time
+=================
+*/
+void
+base_player::InputUse_Down(void)
+{
+	if (health <= 0) {
+		return;
+	} else if (!(flags & FL_USE_RELEASED)) {
+		return;
+	}
+	
+	vector vecSource;
+	entity eRad;
+
+	makevectors(v_angle);
+	vecSource = origin + view_ofs;
+	traceline(vecSource, vecSource + (v_forward * 64), MOVE_EVERYTHING, this);
+
+	/* find anything in a 8 unit radius, including certain non-solids (func_door, func_rot_button etc. */
+	eRad = findradius(trace_endpos, 8);
+	bool found_use = false;
+
+	/* loop through our chain and just pick the first valid one */
+	while (eRad) {
+		if (eRad.PlayerUse) {
+			found_use = true;
+			break;
+		}
+		eRad = eRad.chain;
+	}
+
+	/* TODO: maybe eRad will return something in the future that'll suppress a successfull use? */
+	if (eRad && found_use == true) {
+		flags &= ~FL_USE_RELEASED;
+		_base_player_useworkaround(eRad);
+		last_used = eRad;
+
+		/* Some entities want to support Use spamming */
+		if (!(flags & FL_USE_RELEASED)) {
+			sound(this, CHAN_ITEM, "common/wpn_select.wav", 0.25, ATTN_IDLE);
+		}
+	} else {
+		sound(this, CHAN_ITEM, "common/wpn_denyselect.wav", 0.25, ATTN_IDLE);
+		flags &= ~FL_USE_RELEASED;
+	}
+}
+
+/*
+=================
+base_player:: InputUse_Down
+
+Called when we let go of the +use button
+=================
+*/
+void
+base_player::InputUse_Up(void)
+{
+	if (!(flags & FL_USE_RELEASED)) {
+		_base_player_unuseworkaround(last_used);
+		last_used = world;
+		flags |= FL_USE_RELEASED;
+	}
+}
 #endif
 
 void
