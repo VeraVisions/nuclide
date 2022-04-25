@@ -140,11 +140,21 @@ TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon, f
 
 #ifdef BULLETPENETRATION
 	if (iTotalPenetrations > 0) {
+		float cont;
+
 		if (!(trace_surfaceflagsi & SURF_PENETRATE))
 			iTotalPenetrations -= 1;
 
-		float cont = pointcontents(trace_endpos + v_forward * g_pen_flMaxThickness);
+		/* check if this wall is 6 units thick... */
+		if (iTotalPenetrations > 0) {
+			cont = pointcontents(trace_endpos + v_forward * 5);
 
+			if (cont == CONTENT_SOLID)
+				iTotalPenetrations -= 1; /* deduct 1 penetration power */
+		}
+
+		cont = pointcontents(trace_endpos + v_forward * g_pen_flMaxThickness);
+		
 		if (cont == CONTENT_EMPTY)
 			TraceAttack_FireSingle(trace_endpos + (v_forward * 2), vAngle, iDamage / 2, iWeapon, dist);
 	}
