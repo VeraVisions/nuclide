@@ -47,20 +47,20 @@ au_btndone_start(void)
 void
 au_sldvolume_changed(float val)
 {
-	cvar_set("volume", ftos(val));
+	localcmd(sprintf("seta volume %f\n", val));
 }
 
 void
 au_sldsuitvolume_changed(float val)
 {
-	cvar_set("suitvolume", ftos(val));
+	localcmd(sprintf("seta suitvolume %f\n", val));
 }
 
 #ifndef ACCURATE
 void
 au_sldmusicvolume_changed(float val)
 {
-	cvar_set("bgmvolume", ftos(val));
+	localcmd(sprintf("seta bgmvolume %f\n", val));
 }
 #endif
 
@@ -72,20 +72,25 @@ au_cxcdmusic_changed(float val)
 void
 au_cxhqsound_changed(float val)
 {
-	cvar_set("loadas8bit", ftos(1-val));
+	localcmd(sprintf("seta loadas8bit %d\n", 1-val));
 	localcmd("snd_restart");
 }
 
 void
 au_cxa3dsound_changed(float val)
 {
-	
+	if (val)
+		localcmd(sprintf("seta s_al_hrtf %S\n", "Default HRTF"));
+	else
+		localcmd(sprintf("seta s_al_hrtf %S\n", ""));
+
+	localcmd("snd_restart\n");
 }
 
 void
 au_cxeaxsound_changed(float val)
 {
-	cvar_set("snd_eax", ftos(val));
+	localcmd(sprintf("seta s_al_use_reverb %f\n", val));
 }
 
 void
@@ -132,11 +137,13 @@ menu_audio_init(void)
 	au_cxA3DSound = spawn(CCheckBox);
 	au_cxA3DSound.SetPos(208,308);
 	au_cxA3DSound.SetCallback(au_cxa3dsound_changed);
+	au_cxA3DSound.SetValue((cvar_string("s_al_hrtf") == "Default HRTF") ? 1 : 0);
 	Widget_Add(fn_audio, au_cxA3DSound);
 	
 	au_cxEAXSound = spawn(CCheckBox);
 	au_cxEAXSound.SetPos(208,340);
 	au_cxEAXSound.SetCallback(au_cxeaxsound_changed);
+	au_cxEAXSound.SetValue(cvar("s_al_use_reverb"));
 	Widget_Add(fn_audio, au_cxEAXSound);
 }
 
