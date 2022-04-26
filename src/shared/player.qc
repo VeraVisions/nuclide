@@ -38,7 +38,7 @@ base_player::IsPlayer(void)
 int
 base_player::IsFakeSpectator(void)
 {
-	if (movetype == MOVETYPE_NOCLIP)
+	if (GetSolid() == SOLID_NOT)
 		return (TRUE);
 
 	return (FALSE);
@@ -557,8 +557,8 @@ base_player::Death(void)
 	viewzoom = 1.0;
 	view_ofs = [0,0,0];
 	vehicle = __NULL__;
-	velocity = [0,0,0];
-	gravity = __NULL__;
+	SetVelocity([0,0,0]);
+	SetGravity(1.0f);
 	customphysics = Empty;
 	iBleeds = FALSE;
 	forceinfokey(this, "*deaths", ftos(deaths));
@@ -583,19 +583,18 @@ base_player::MakePlayer(void)
 	activeweapon = 0;
 	effects = 0;
 	alpha = 1.0f;
-	takedamage = DAMAGE_YES;
-	solid = SOLID_SLIDEBOX;
-	movetype = MOVETYPE_WALK;
-	takedamage = DAMAGE_YES;
+	SetSolid(SOLID_SLIDEBOX);
+	SetMovetype(MOVETYPE_WALK);
+	SetTakedamage(DAMAGE_YES);
+	SetVelocity([0,0,0]);
 	viewzoom = 1.0;
 	vehicle = __NULL__;
-	velocity = [0,0,0];
-	gravity = __NULL__;
+	SetGravity(1.0f);
 	SendFlags = UPDATE_ALL;
 	customphysics = Empty;
 	iBleeds = TRUE;
 	forceinfokey(this, "*deaths", ftos(deaths));
-	setsize(this, VEC_HULL_MIN, VEC_HULL_MAX);
+	SetSize(VEC_HULL_MIN, VEC_HULL_MAX);
 }
 
 /*

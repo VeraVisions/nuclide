@@ -230,6 +230,13 @@ m_draw(vector screensize)
 	/* to prevent TCP timeouts */
 	menu_chatrooms_keepalive();
 
+	if (g_gamestate != clientstate()) {
+		g_gamestate = clientstate();
+
+		if (g_gamestate == 1)
+			RichPresence_Clear();
+	}
+
 	/* rich presence sanity check */
 	if (RichPresence_WasSet() == false) {
 		if (clientstate() == 2)

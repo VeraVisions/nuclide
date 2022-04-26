@@ -452,8 +452,8 @@ spectator::spectator(void)
 {
 	modelindex = 0;
 	flags = FL_CLIENT;
-	solid = SOLID_NOT;
-	movetype = MOVETYPE_NOCLIP;
+	SetSolid(SOLID_NOT);
+	SetMovetype(MOVETYPE_NOCLIP);
 	think = __NULL__;
 	nextthink = 0.0f;
 	maxspeed = 250;

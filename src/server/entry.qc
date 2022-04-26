@@ -98,6 +98,10 @@ ClientDisconnect(void)
 {
 	if (g_ents_initialized)
 		g_grMode.PlayerDisconnect((base_player)self);
+
+	/* this will hide/remove the player from other clients */
+	player pl = (player)self;
+	pl.SetModelindex(0);
 }
 
 /*
