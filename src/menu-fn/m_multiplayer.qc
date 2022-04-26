@@ -168,6 +168,7 @@ void
 mp_btndisconnect(void)
 {
 	localcmd("disconnect\n");
+	RichPresence_Clear();
 }
 
 void

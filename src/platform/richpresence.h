@@ -15,5 +15,7 @@
  */
 
 void RichPresence_Set(string strKey, string strValue);
+void RichPresence_DumpInfo(void);
+void RichPresence_Clear(void);
 
-//string RichPresence_Get(string strKey); 
+bool RichPresence_WasSet(void);

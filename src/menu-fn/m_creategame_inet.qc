@@ -24,13 +24,18 @@ createinet_btnok_start(void)
 {
 	static string startmap;
 	static void createinet_btnok_end(void) {
-		localcmd("stopmusic\nset sv_public 2\n");
+		int r = random(1000,9999);
+		localcmd(sprintf("stopmusic\nset sv_public /%i\n", r));
 		localcmd(sprintf("hostname %s\n", create_tbHostname.m_text));
 		localcmd(sprintf("sv_playerslots %s\n", create_tbMaxplayers.m_text));
 		localcmd(sprintf("password %s\n", create_tbPassword.m_text));
 		localcmd(sprintf("map %s\n", startmap));
 		g_menupage = PAGE_MULTIPLAYER;
 		cr_input_enter(sprintf("ACTION is now hosting '%s' on the map %s\n", create_tbHostname.m_text, startmap));
+
+		RichPresence_Clear();
+		RichPresence_Set("status", sprintf("Multiplayer: %s", startmap));
+		RichPresence_Set("connect", sprintf("+connect /%i", r));
 	}
 
 	/* Strip .bsp extension before submitting */

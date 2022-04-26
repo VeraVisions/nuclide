@@ -49,6 +49,7 @@ int g_active;
 float g_btnofs;
 float frametime;
 var int g_background = FALSE;
+var int g_gamestate;
 
 /* Font IDs */
 font_s font_label;

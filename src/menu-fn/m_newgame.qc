@@ -29,6 +29,8 @@ ng_btneasy_start(void)
 		localcmd("stopmusic\n");
 		localcmd("set skill 1; maxplayers 1\n");
 		localcmd(games[gameinfo_current].startmap);
+		RichPresence_Clear();
+		RichPresence_Set("status", "Singleplayer: Easy");
 	}
 	localsound("../media/launch_upmenu1.wav");
 	header.SetStartEndPos(45,45,70,208);
@@ -47,6 +49,8 @@ ng_btnnormal_start(void)
 		localcmd("stopmusic\n");
 		localcmd("set skill 2; maxplayers 1\n");
 		localcmd(games[gameinfo_current].startmap);
+		RichPresence_Clear();
+		RichPresence_Set("status", "Singleplayer: Normal");
 	}
 	localsound("../media/launch_upmenu1.wav");
 	header.SetStartEndPos(45,45,70,208);
@@ -65,6 +69,8 @@ ng_btnhard_start(void)
 		localcmd("stopmusic\n");
 		localcmd("set skill 3; maxplayers 1\n");
 		localcmd(games[gameinfo_current].startmap);
+		RichPresence_Clear();
+		RichPresence_Set("status", "Singleplayer: Hard");
 	}
 	localsound("../media/launch_upmenu1.wav");
 	header.SetStartEndPos(45,45,70,208);

@@ -39,6 +39,8 @@ lan_btnjoin(void)
 	if (addr) {
 		localcmd("stopmusic\n");
 		localcmd(sprintf("connect %s\n", addr));
+		RichPresence_Clear();
+		RichPresence_Set("status", sprintf("Multiplayer (LAN): %s", "Unknown"));
 		g_menupage = PAGE_MULTIPLAYER;
 	}
 }

@@ -46,6 +46,8 @@ create_btnok_start(void)
 		localcmd(sprintf("password %s\n", create_tbPassword.m_text));
 		localcmd(sprintf("map %s\n", startmap));
 		g_menupage = PAGE_MULTIPLAYER;
+		RichPresence_Clear();
+		RichPresence_Set("status", sprintf("Multiplayer (LAN): %s", startmap));
 	}
 	/* Strip .bsp extension before submitting */
 	startmap = substring(create_lbMaps.GetSelectedItem(), 0, -5);

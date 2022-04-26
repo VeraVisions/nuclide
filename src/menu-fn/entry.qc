@@ -113,6 +113,7 @@ m_init(void)
 	registercommand("menu_customgame");
 	registercommand("map_background");
 	registercommand("menu_musicstart");
+	registercommand("richpresence_dump");
 
 	Font_Load("fonts/fontcon.font", font_console);
 	Font_Load("fonts/menu_label.font", font_label);
@@ -228,6 +229,14 @@ m_draw(vector screensize)
 
 	/* to prevent TCP timeouts */
 	menu_chatrooms_keepalive();
+
+	/* rich presence sanity check */
+	if (RichPresence_WasSet() == false) {
+		if (clientstate() == 2)
+			RichPresence_Set("status", "In-game (Unknown)");
+		else
+			RichPresence_Set("status", "Main Menu");
+	}
 
 	if (!g_active && !g_background) {
 		/* make sure we're redirecting input when the background's gone */
@@ -351,6 +360,9 @@ m_consolecommand(string cmd)
 {
 	tokenize(cmd);
 	switch (argv(0)) {
+	case "richpresence_dump":
+		RichPresence_DumpInfo();
+		break;
 	case "menu_musicstart":
 		Music_MenuStart();
 		break;

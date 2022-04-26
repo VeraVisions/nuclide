@@ -79,6 +79,10 @@ btn_training(void)
 	localcmd("stopmusic\n");
 	localcmd("maxplayers 1\n");
 	localcmd(games[gameinfo_current].trainingmap);
+
+	/* TODO: Some mods may choose to put movies in this... */
+	RichPresence_Clear();
+	RichPresence_Set("status", "Singleplayer: Training");
 }
 
 void
