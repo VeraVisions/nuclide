@@ -15,28 +15,28 @@
  */
 
 
-int
+bool
 spectator::IsRealSpectator(void)
 {
-	return (TRUE);
+	return (true);
 }
 
-int
+bool
 spectator::IsDead(void)
 {
-	return (FALSE);
+	return (false);
 }
 
-int
+bool
 spectator::IsPlayer(void)
 {
-	return (FALSE);
+	return (false);
 }
 
-int
+bool
 spectator::IsFakeSpectator(void)
 {
-	return (FALSE);
+	return (false);
 }
 
 void
@@ -470,7 +470,7 @@ Spectator_ReadEntity(float new)
 	if (new || self.classname != "spectator") {
 		spawnfunc_spectator();
 		spec.classname = "spectator";
-		spec.solid = SOLID_SLIDEBOX;
+		spec.solid = SOLID_NOT;
 		spec.drawmask = MASK_ENGINE;
 		spec.customphysics = Empty;
 		setsize(spec, [0,0,0], [0,0,0]);

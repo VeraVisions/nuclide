@@ -415,7 +415,7 @@ CSQC_UpdateView(float w, float h, float focus)
 			GameText_Draw();
 			PointMessage_Draw();
 
-			if (!Client_IsSpectator(pl)) {
+			if (Client_IsSpectator(cl) == false) {
 				HUD_Draw();
 			} else {
 				HUD_DrawSpectator();

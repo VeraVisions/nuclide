@@ -32,8 +32,8 @@ Predict_EntityUpdate(player pl, float new)
 		pl.classname = "player";
 		
 		if (pl.entnum == player_localentnum) {
-			pl.solid = SOLID_SLIDEBOX;
-			pl.movetype = MOVETYPE_NONE;
+			//pl.solid = SOLID_SLIDEBOX;
+			//pl.movetype = MOVETYPE_NONE;
 			pl.customphysics = Empty;
 		} else {
 			/* other players will act like missiles for interpolation purposes */

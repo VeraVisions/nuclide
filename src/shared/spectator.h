@@ -44,10 +44,10 @@ class spectator:base_client
 	virtual void(void) PostFrame;
 	virtual void(void) SpectatorTrackPlayer;
 
-	virtual int(void) IsFakeSpectator;
-	virtual int(void) IsRealSpectator;
-	virtual int(void) IsDead;
-	virtual int(void) IsPlayer;
+	virtual bool(void) IsFakeSpectator;
+	virtual bool(void) IsRealSpectator;
+	virtual bool(void) IsDead;
+	virtual bool(void) IsPlayer;
 
 #ifdef SERVER
 	virtual void(void) EvaluateEntity;

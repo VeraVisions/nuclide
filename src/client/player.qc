@@ -20,6 +20,7 @@ player::draw(void)
 	/* mouth flapping */
 	this.bonecontrol5 = getplayerkeyfloat(this.entnum - 1, "voiploudness");
 
+#if 0
 	/* DEBUG! */
 	if (cvar("bonetest") == 1) {
 		this.bonecontrol1 = cvar("bonecontrol1");
@@ -32,6 +33,7 @@ player::draw(void)
 		this.basesubblendfrac = cvar("basesubblendfrac");
 		this.basesubblend2frac = cvar("basesubblend2frac");
 	}
+#endif
 }
 
 float
@@ -71,8 +73,8 @@ player::predraw(void)
 	if (autocvar_cl_thirdperson == TRUE || !this_us) {
 		Voice_Draw3D(this);
 		Player_PreDraw(this, TRUE);
-		//if (p_model)
-		//	addentity(p_model);
+		if (p_model)
+			addentity(p_model);
 		//addentity(this);
 	} else {
 		Player_PreDraw(this, FALSE);

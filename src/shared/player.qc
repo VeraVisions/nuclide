@@ -14,34 +14,34 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-int
+bool
 base_player::IsRealSpectator(void)
 {
-	return (FALSE);
+	return (false);
 }
 
-int
+bool
 base_player::IsDead(void)
 {
 	if (health > 0)
-		return (FALSE);
+		return (false);
 	else
-		return (TRUE);
+		return (true);
 }
 
-int
+bool
 base_player::IsPlayer(void)
 {
-	return (FALSE);
+	return (false);
 }
 
-int
+bool
 base_player::IsFakeSpectator(void)
 {
 	if (GetSolid() == SOLID_NOT)
-		return (TRUE);
+		return (true);
 
-	return (FALSE);
+	return (false);
 }
 
 void
@@ -277,8 +277,10 @@ base_player::ReceiveEntity(float new, float fl)
 		health = readbyte();
 	if (fl & PLAYER_ARMOR)
 		armor = readbyte();
-	if (fl & PLAYER_MOVETYPE)
+	if (fl & PLAYER_MOVETYPE) {
 		movetype = readbyte();
+		solid = readbyte();
+	}
 	if (fl & PLAYER_VIEWOFS)
 		view_ofs[2] = readfloat();
 
@@ -329,6 +331,7 @@ base_player::PredictPreFrame(void)
 	SAVE_STATE(health);
 	SAVE_STATE(armor);
 	SAVE_STATE(movetype);
+	SAVE_STATE(solid);
 	SAVE_STATE(view_ofs);
 
 	/* TO OPTIMISE */
@@ -374,6 +377,7 @@ base_player::PredictPostFrame(void)
 	ROLL_BACK(health);
 	ROLL_BACK(armor);
 	ROLL_BACK(movetype);
+	ROLL_BACK(solid);
 	ROLL_BACK(view_ofs);
 
 	/* TO OPTIMISE */
@@ -668,6 +672,9 @@ base_player::EvaluateEntity(void)
 	if (ATTR_CHANGED(movetype))
 		SetSendFlags(PLAYER_MOVETYPE);
 
+	if (ATTR_CHANGED(solid))
+		SetSendFlags(PLAYER_MOVETYPE);
+
 	if (ATTR_CHANGED(view_ofs))
 		SetSendFlags(PLAYER_VIEWOFS);
 
@@ -684,6 +691,7 @@ base_player::EvaluateEntity(void)
 	SAVE_STATE(health);
 	SAVE_STATE(armor);
 	SAVE_STATE(movetype);
+	SAVE_STATE(solid);
 	SAVE_STATE(view_ofs);
 
 	/* TO OPTIMISE */
@@ -770,8 +778,10 @@ base_player::SendEntity(entity ePEnt, float fChanged)
 	if (fChanged & PLAYER_ARMOR)
 		WriteByte(MSG_ENTITY, bound(0, armor, 255));
 
-	if (fChanged & PLAYER_MOVETYPE)
+	if (fChanged & PLAYER_MOVETYPE) {
 		WriteByte(MSG_ENTITY, movetype);
+		WriteByte(MSG_ENTITY, solid);
+	}
 
 	/* the view_ofs[0] and [1] are rarely changed */
 	if (fChanged & PLAYER_VIEWOFS)

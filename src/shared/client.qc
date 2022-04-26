@@ -13,28 +13,28 @@ base_client::PostFrame(void)
 {
 }
 
-int
+bool
 base_client::IsFakeSpectator(void)
 {
-	return (FALSE);
+	return (false);
 }
 
-int
+bool
 base_client::IsRealSpectator(void)
 {
-	return (FALSE);
+	return (false);
 }
 
-int
+bool
 base_client::IsDead(void)
 {
-	return (FALSE);
+	return (false);
 }
 
-int
+bool
 base_client::IsPlayer(void)
 {
-	return (FALSE);
+	return (false);
 }
 
 #ifdef CLIENT
