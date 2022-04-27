@@ -14,6 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+bool
+NSVehicle::CanDriverCrouch(void)
+{
+	return (false);
+}
+
 float
 NSVehicle::DriverAnimation(void)
 {
@@ -30,17 +36,17 @@ NSVehicle::GetDriver(void)
 bool
 NSVehicle::HideViewWeapon(void)
 {
-	return false;
+	return (false);
 }
 bool
 NSVehicle::HideCrosshair(void)
 {
-	return true;
+	return (true);
 }
 bool
 NSVehicle::HidePlayermodel(void)
 {
-	return true;
+	return (true);
 }
 
 void
@@ -61,9 +67,9 @@ NSVehicle::IsLocalDriver(void)
 	DriverRelink();
 
 	if (m_eDriver == pSeat->m_ePlayer)
-		return true;
+		return (true);
 	else
-		return false;
+		return (false);
 }
 
 void

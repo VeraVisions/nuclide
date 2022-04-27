@@ -225,14 +225,11 @@ base_player::Physics_MaxSpeed(void)
 void
 base_player::Physics_InputPreMove(void)
 {
+	NSVehicle veh = (NSVehicle)vehicle;
+
 	/* when pressing the 'use' button, we also walk slower for precision */
 	if (input_buttons & INPUT_BUTTON5) {
 		input_movevalues *= 0.25;
-	}
-
-	if (flags & FL_FROZEN || movetype == MOVETYPE_NONE) {
-		input_movevalues = [0,0,0];
-		input_buttons &= ~INPUT_BUTTON2;
 	}
 
 	/* move camera up (noclip, fly) when holding jump */
@@ -243,6 +240,16 @@ base_player::Physics_InputPreMove(void)
 	if (input_buttons & INPUT_BUTTON8) {
 		input_movevalues[2] = -240;
 	}
+
+	if (flags & FL_FROZEN || movetype == MOVETYPE_NONE) {
+		input_movevalues = [0,0,0];
+		input_buttons &= ~INPUT_BUTTON2;
+	}
+
+	/* suppress crouching in vehicles */
+	if (veh)
+		if (veh.CanDriverCrouch() == false)
+			input_buttons &= ~INPUT_BUTTON8;
 }
 
 /* timers get processed here after physics are run */

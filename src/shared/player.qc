@@ -109,7 +109,12 @@ base_player::ClientInput(void)
 	}
 
 	/* allow vehicles to prevent weapon logic from happening */
-	Vehicle_Input(this);
+	if (vehicle) {
+		NSVehicle veh = (NSVehicle)vehicle;
+
+		if (veh.PlayerInput)
+			veh.PlayerInput();
+	}
 
 	/* weapon/item logic of what the player controls */
 	Game_Input((player)this);
