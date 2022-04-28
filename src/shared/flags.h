@@ -37,7 +37,7 @@
 #define FL_INVEHICLE		(1<<18)
 #define FL_FROZEN		(1<<19)
 #define FL_USE_RELEASED		(1<<20)
-#define FL_NOATTACK		(1<<21)
+#define FL_FAKESPEC		(1<<21)
 #define FL_ONUSABLE		(1<<22)
 #define FL_ONFIRE		(1<<23)
 #define FL_GOALITEM		(1<<15)

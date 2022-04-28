@@ -204,9 +204,6 @@ Weapons_Primary(player pl)
 {
 	int i = pl.activeweapon;
 
-	if (pl.flags & FL_NOATTACK)
-		return;
-	
 	if (pl.gflags & GF_SEMI_TOGGLED)
 		return;
 
@@ -233,9 +230,6 @@ Weapons_Secondary(player pl)
 {
 	int i = pl.activeweapon;
 
-	if (pl.flags & FL_NOATTACK)
-		return;
-
 	if (g_weapons[i].secondary != __NULL__)
 		g_weapons[i].secondary(pl);
 
@@ -247,9 +241,6 @@ void
 Weapons_Reload(player pl)
 {
 	int i = pl.activeweapon;
-
-	if (pl.flags & FL_NOATTACK)
-		return;
 
 	if (g_weapons[i].reload != __NULL__)
 		g_weapons[i].reload(pl);

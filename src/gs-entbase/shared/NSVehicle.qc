@@ -333,8 +333,8 @@ NSVehicle::PlayerUpdateFlags(void)
 	if (m_iVehicleFlags & VHF_FROZEN)
 		m_eDriver.flags |= FL_FROZEN;
 
-	if (m_iVehicleFlags & VHF_NOATTACK)
-		m_eDriver.flags |= FL_NOATTACK;
+	/*if (m_iVehicleFlags & VHF_NOATTACK)
+		m_eDriver.flags |= FL_NOATTACK;*/
 }
 
 void
@@ -390,8 +390,8 @@ NSVehicle::PlayerLeave(base_player pl)
 	if (m_iVehicleFlags & VHF_FROZEN)
 		pl.flags &= ~FL_FROZEN;
 
-	if (m_iVehicleFlags & VHF_NOATTACK)
-		pl.flags &= ~FL_NOATTACK;
+	/*if (m_iVehicleFlags & VHF_NOATTACK)
+		pl.flags &= ~FL_NOATTACK;*/
 
 	pl.vehicle = __NULL__;
 	m_eDriver = __NULL__;

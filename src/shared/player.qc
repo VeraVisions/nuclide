@@ -38,7 +38,7 @@ base_player::IsPlayer(void)
 bool
 base_player::IsFakeSpectator(void)
 {
-	if (GetSolid() == SOLID_NOT)
+	if (GetFlags() & FL_FAKESPEC)
 		return (true);
 
 	return (false);
@@ -534,6 +534,7 @@ base_player::MakeTempSpectator(void)
 	SetMovetype(MOVETYPE_NOCLIP);
 	SetTakedamage(DAMAGE_NO);
 	maxspeed = 250;
+	flags |= FL_FAKESPEC;
 	max_health = health = 0;
 	armor = 0;
 	g_items = 0;
