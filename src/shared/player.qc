@@ -540,8 +540,6 @@ base_player::MakeTempSpectator(void)
 	activeweapon = 0;
 	effects = 0;
 	alpha = 0.0f;
-	think = __NULL__;
-	nextthink = 0.0f;
 }
 
 /*
