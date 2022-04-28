@@ -482,6 +482,7 @@ initents(void)
 	Sound_Precache("player.waterenter");
 	Sound_Precache("player.waterexit");
 	Sound_Precache("damage_bullet.hit");
+	Sound_Precache("player.spraylogo");
 
 	Game_InitRules();
 	Game_Worldspawn();

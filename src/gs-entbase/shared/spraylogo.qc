@@ -82,7 +82,8 @@ CSEv_Spraylogo(void)
 	spray.angles = vectoangles(co, trace_plane_normal);
 	spray.SendEntity = Spray_SendEntity;
 	spray.SendFlags = 1;
-	sound(self, CHAN_VOICE, "player/sprayer.wav", 1.0, ATTN_NORM);
+
+	Sound_Play(self, CHAN_VOICE, "player.spraylogo");
 }
 #endif
 
