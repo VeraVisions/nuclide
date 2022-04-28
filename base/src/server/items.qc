@@ -17,7 +17,14 @@
 void
 item_pickup::Touch(entity eToucher)
 {
+	player pl = (player)eToucher;
+
 	if (eToucher.classname != "player") {
+		return;
+	}
+
+	/* don't allow players inside vehicles to pick anything up by accident */
+	if (eToucher.flags & FL_INVEHICLE || pl.vehicle) {
 		return;
 	}
 
@@ -63,7 +70,6 @@ item_pickup::Respawn(void)
 	SetOrigin(GetSpawnOrigin());
 
 	/* At some points, the item id might not yet be set */
-
 	if (m_oldModel) {
 		SetModel(m_oldModel);
 	}
@@ -75,6 +81,9 @@ item_pickup::Respawn(void)
 
 	if (!m_iWasDropped) {
 		m_iClip = -1;
+	} else {
+		if (time > 30.0f)
+			Sound_Play(this, CHAN_ITEM, "item.respawn");
 	}
 
 	if (!m_bFloating) {

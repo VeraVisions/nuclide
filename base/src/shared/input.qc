@@ -36,6 +36,11 @@ Game_Input(player pl)
 	pl.impulse = 0;
 #endif
 
+	if (pl.health <= 0) {
+		Weapons_Release(pl);
+		return;
+	}
+
 	if (input_buttons & INPUT_BUTTON0)
 		Weapons_Primary(pl);
 	else if (input_buttons & INPUT_BUTTON4)
