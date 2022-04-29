@@ -525,4 +525,5 @@ bot::bot(void)
 {
 	classname = "player";
 	targetname = "_nuclide_bot_";
+	forceinfokey(this, "*bot", "1");
 }
