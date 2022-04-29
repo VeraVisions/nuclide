@@ -393,6 +393,9 @@ CGameRules::IntermissionEnd(void)
 		return;
 
 	localcmd("nextmap\n");
+
+	m_iIntermission = 0;
+	m_flIntermissionTime = -1;
 }
 
 void
