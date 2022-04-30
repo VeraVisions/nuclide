@@ -57,6 +57,7 @@ class func_tracktrain:NSRenderableEntity
 	float m_flDamage;
 	float m_flHeight;
 	float m_flStartSpeed;
+	float m_flBank;
 	string m_strMoveSnd;
 	string m_strStopSnd;
 
@@ -185,16 +186,34 @@ func_tracktrain::PathMove(void)
 
 	velocity = (vecVelocity * (1 / flTravelTime));
 
-	vector angledest;
-	/* get the difference in perspective */
-	angledest = vectoangles(eNode.origin - vecWorldPos);
-	angledest[1] += 180.0f; /* this is an evil hack */
-	angledest = (angledest - angles);
-	angledest[0] = 0;
-	angledest[1] = Math_FixDelta(angledest[1]);
-	angledest[2] = 0;
+	vector vecAngleDest;
+	vector vecDiff;
+	vector vecAngleDiff;
 
-	avelocity = angledest;
+	vecDiff = eNode.origin - origin;
+
+	/* the direction we're aiming for */
+	vecAngleDest = vectoangles(vecDiff);
+
+	vecAngleDest[1] += 180.0f; /* this is an evil hack */
+
+	/* we only care about YAW */
+	vecAngleDest[0] = -Math_FixDelta(vecAngleDest[0]);
+	vecAngleDest[1] = Math_FixDelta(vecAngleDest[1]);
+	vecAngleDest[2] = 0;
+
+	vecAngleDiff = vecAngleDest - angles;
+	vecAngleDiff[2] = 0;
+
+	print(sprintf("vecAngleDiff: %v\n", vecAngleDiff));
+
+	if (vecAngleDiff[1] == 0)
+		angles = vecAngleDest;
+	else
+		avelocity = (vecAngleDiff * (1 / flTravelTime));
+
+	if (!eNode)
+		avelocity = [0,0,0];
 
 	think = PathNext;
 	nextthink = (ltime + flTravelTime);
