@@ -14,12 +14,54 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifdef BULLETPENETRATION
-	var int iTotalPenetrations;
-#endif
-
 void TraceAttack_FireBullets(int iShots, vector vecPos, int iDamage, vector vecSpread, int iWeapon);
 
 #ifdef BULLETPENETRATION
 void TraceAttack_SetPenetrationPower(int power);
 #endif
+
+
+class
+NSTraceAttack
+{
+	/* multi-part damage */
+	entity m_eMultiTarget;
+	int m_iMultiValue;
+	int m_iMultiBody;
+
+	int m_iShots;
+	float m_flDamage;
+	vector m_vecSpread;
+	int m_iWeapon;
+	entity m_eOwner;
+	float m_flRange;
+	vector m_vecOrigin;
+
+	/* bullet penetration */
+#ifdef BULLETPENETRATION
+	float m_flMaxThickness;
+	float m_flRangeModifier;
+	int m_iTotalPenetrations;
+#endif
+
+	void(void) NSTraceAttack;
+
+	virtual void(void) _ApplyDamage;
+	virtual void(vector, vector, float, float) _FireSingle;
+	virtual void(void) Fire;
+
+	virtual void(int) SetShots;
+	virtual void(vector) SetOrigin;
+	virtual void(int) SetDamage;
+	virtual void(vector) SetSpread;
+	virtual void(int) SetWeapon;
+	virtual void(float) SetRange;
+	virtual void(entity) SetOwner;
+
+#ifdef BULLETPENETRATION
+	virtual void(float) SetPenetrationMaxThickness;
+	virtual void(int) SetPenetrationPower;
+#endif
+};
+
+NSTraceAttack g_traceAttack;

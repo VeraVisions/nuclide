@@ -14,65 +14,50 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-entity g_multiDamage_Target;
-int g_multiDamage_Value;
-int g_multiDamage_HitBod;
-
-#ifdef BULLETPENETRATION
-float g_pen_flMaxThickness;
-var float g_pen_flRangeMod = 1.0f;
-#endif
-
-static void
-TraceAttack_Apply(entity eAttacker, int iWeapon)
+void
+NSTraceAttack::_ApplyDamage(void)
 {
 	/* may not be defined yet */
-	if (g_multiDamage_Target == __NULL__)
+	if (m_eMultiTarget == __NULL__)
 		return;
 
 	if (trace_ent.iBleeds == 1) {
 		FX_Blood(trace_endpos, [0.5,0,0]);
 	}
 
-	trace_surface_id = g_multiDamage_HitBod;
-	Damage_Apply(g_multiDamage_Target, self, g_multiDamage_Value, iWeapon, DMG_BULLET);
-	g_multiDamage_Target = __NULL__;
-	g_multiDamage_Value = 0;
-	g_multiDamage_HitBod = 0;
+	trace_surface_id = m_iMultiBody;
+	Damage_Apply(m_eMultiTarget, m_eOwner, m_iMultiValue, m_iWeapon, DMG_BULLET);
+	m_eMultiTarget = __NULL__;
+	m_iMultiValue = 0;
+	m_iMultiBody = 0;
 }
+
 
 void
-TraceAttack_ImpactWorld(void)
-{
-	
-}
-
-/* cast a single bullet shot */
-static void
-TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon, float dist)
+NSTraceAttack::_FireSingle(vector vecPos, vector vecAngles, float flDamage, float flRange)
 {
 	vector range;
 
-	if (dist <= 0)
+	if (flRange <= 0)
 		return;
 
-	range = (vAngle * 8196);
+	range = (vecAngles * 8196);
 
-	self.dimension_solid = 255;
-	self.dimension_hit = 255;
+	m_eOwner.dimension_solid = 255;
+	m_eOwner.dimension_hit = 255;
 
 	/* make sure we can gib corpses */
-	int oldhitcontents = self.hitcontentsmaski;
-	self.hitcontentsmaski = CONTENTBITS_POINTSOLID | CONTENTBIT_CORPSE | CONTENTBIT_WATER | CONTENTBIT_SLIME | CONTENTBIT_LAVA | CONTENTBIT_PROJECTILE;
-	traceline(vecPos, vecPos + range, MOVE_LAGGED | MOVE_HITMODEL, self);
-	self.hitcontentsmaski = oldhitcontents;
+	int oldhitcontents = m_eOwner.hitcontentsmaski;
+	m_eOwner.hitcontentsmaski = CONTENTBITS_POINTSOLID | CONTENTBIT_CORPSE | CONTENTBIT_WATER | CONTENTBIT_SLIME | CONTENTBIT_LAVA | CONTENTBIT_PROJECTILE;
+	traceline(vecPos, vecPos + range, MOVE_LAGGED | MOVE_HITMODEL, m_eOwner);
+	m_eOwner.hitcontentsmaski = oldhitcontents;
 
-	dist -= trace_plane_dist;
+	flRange -= trace_plane_dist;
 
-	self.dimension_solid = 254;
-	self.dimension_hit = 254;
+	m_eOwner.dimension_solid = 254;
+	m_eOwner.dimension_hit = 254;
 
-	g_multiDamage_HitBod |= trace_surface_id;
+	m_iMultiBody |= trace_surface_id;
 
 	if (trace_fraction >= 1.0f)
 		return;
@@ -80,13 +65,13 @@ TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon, f
 	/* water impact */
 	if (trace_endcontentsi & CONTENTBIT_WATER) {
 		FX_Impact(IMPACT_SLOSH, trace_endpos, trace_plane_normal);
-		TraceAttack_FireSingle(trace_endpos + (v_forward * 2), vAngle, iDamage / 2, iWeapon, dist);
+		_FireSingle(trace_endpos + (v_forward * 2), vecAngles, flDamage / 2, flRange);
 	} else if (trace_endcontentsi & CONTENTBIT_SLIME) {
 		FX_Impact(IMPACT_SLOSH, trace_endpos, trace_plane_normal);
-		TraceAttack_FireSingle(trace_endpos + (v_forward * 2), vAngle, iDamage / 2, iWeapon, dist);
+		_FireSingle(trace_endpos + (v_forward * 2), vecAngles, flDamage / 2, flRange);
 	} else if (trace_endcontentsi & CONTENTBIT_LAVA) {
 		FX_Impact(IMPACT_SLOSH, trace_endpos, trace_plane_normal);
-		TraceAttack_FireSingle(trace_endpos + (v_forward * 2), vAngle, iDamage / 2, iWeapon, dist);
+		_FireSingle(trace_endpos + (v_forward * 2), vecAngles, flDamage / 2, flRange);
 	}
 
 	if (trace_ent.takedamage == DAMAGE_YES && trace_ent.iBleeds) {
@@ -99,31 +84,38 @@ TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon, f
 		case BODY_HEAD:
 			/* the helmet is one power house */
 			if (pl.g_items & ITEM_HELMET) {
-				iDamage = 0;
+				m_flDamage = 0;
 				Sound_Play(trace_ent, CHAN_BODY, "player.headshotarmor");
 				pl.g_items &= ~ITEM_HELMET;
 				return;
 			} else {
-				iDamage *= 4;
+				m_flDamage *= 4;
 				Sound_Play(trace_ent, CHAN_BODY, "player.headshot");
 			}
 			break;
 		case BODY_STOMACH:
-			iDamage *= 0.9;
+			m_flDamage *= 0.9;
 			if (pl.armor > 0)
 				Sound_Play(trace_ent, CHAN_BODY, "player.hitarmor");
 			break;
 		case BODY_LEGLEFT:
 		case BODY_LEGRIGHT:
-			iDamage *= 0.4;
+			m_flDamage *= 0.4;
 			break;
 		}
 #else
 		/* only headshots count in HL */
 		if (trace_surface_id == BODY_HEAD)
-			iDamage *= 3;
+			m_flDamage *= 3;
 #endif
 	}
+
+#ifdef WASTES
+	player pl1 = (player)self;
+	if (pl1.m_iWillpowerValue > 0) {
+		FX_Crit(trace_endpos, vectoangles(trace_endpos - pl1.origin), 0);
+	}
+#endif
 
 	/* impact per bullet */
 	if (trace_ent.iBleeds == 0) {
@@ -132,58 +124,58 @@ TraceAttack_FireSingle(vector vecPos, vector vAngle, int iDamage, int iWeapon, f
 
 	/* combine them into one single Damage_Apply call later */
 	if (trace_ent.takedamage == DAMAGE_YES) {
-		if (trace_ent != g_multiDamage_Target) {
-			TraceAttack_Apply(self, iWeapon);
-			g_multiDamage_Target = trace_ent;
-			g_multiDamage_Value = iDamage;
+		if (trace_ent != m_eMultiTarget) {
+			_ApplyDamage();
+			m_eMultiTarget = trace_ent;
+			m_iMultiValue = flDamage;
 		} else {
-			g_multiDamage_Value += iDamage;
+			m_iMultiValue += flDamage;
 		}
 	}
 
 #ifdef BULLETPENETRATION
-	if (iTotalPenetrations > 0) {
+	if (m_iTotalPenetrations > 0) {
 		float cont;
 
 		if (!(trace_surfaceflagsi & SURF_PENETRATE))
-			iTotalPenetrations -= 1;
+			m_iTotalPenetrations -= 1;
 
 		/* check if this wall is 6 units thick... */
-		if (iTotalPenetrations > 0) {
+		if (m_iTotalPenetrations > 0) {
 			cont = pointcontents(trace_endpos + v_forward * 5);
 
 			if (cont == CONTENT_SOLID)
-				iTotalPenetrations -= 1; /* deduct 1 penetration power */
+				m_iTotalPenetrations -= 1; /* deduct 1 penetration power */
 		}
 
-		cont = pointcontents(trace_endpos + v_forward * g_pen_flMaxThickness);
-		
+		cont = pointcontents(trace_endpos + v_forward * m_flMaxThickness);
+
 		if (cont == CONTENT_EMPTY)
-			TraceAttack_FireSingle(trace_endpos + (v_forward * 2), vAngle, iDamage / 2, iWeapon, dist);
+			_FireSingle(trace_endpos + (v_forward * 2), vecAngles, m_flDamage / 2, flRange);
 	}
 #endif
 }
 
-/* fire a given amount of shots */
 void
-TraceAttack_FireBullets(int iShots, vector vecPos, int iDamage, vector vecSpread, int iWeapon)
+NSTraceAttack::Fire(void)
 {
-	vector vDir;
-	makevectors(self.v_angle);
+	vector vecDir;
+	makevectors(m_eOwner.v_angle);
 
-	g_multiDamage_Target = __NULL__;
-	g_multiDamage_Value = 0;
+	m_eMultiTarget = __NULL__;
+	m_iMultiValue = 0;
 
-	while (iShots > 0) {
-		vDir = aim(self, 100000);
+	while (m_iShots > 0) {
+		vecDir = aim(m_eOwner, 100000);
+
 #ifndef BULLETPATTERNS
-		vDir += random(-1,1) * vecSpread[0] * v_right;
-		vDir += random(-1,1) * vecSpread[1] * v_up;
+		vecDir += random(-1,1) * m_vecSpread[0] * v_right;
+		vecDir += random(-1,1) * m_vecSpread[1] * v_up;
 #else
-		player pl = (player)self;
+		player pl = (player) m_eOwner;
 
 		/* weapons have already applied their multiplier... so attempt this */
-		int multiplier = pl.cs_shotmultiplier - iShots;
+		int multiplier = pl.cs_shotmultiplier - m_iShots;
 		float frand = (multiplier / 6);
 
 		/* shoddy attempt at spray patterns */
@@ -192,29 +184,123 @@ TraceAttack_FireBullets(int iShots, vector vecPos, int iDamage, vector vecSpread
 		else if (frand <= 2)
 			frand = 2 - (frand * 1.5);
 
-		vDir += frand * vecSpread[0] * v_right;
-		vDir += (vecSpread[1] * v_up) * 2;
+		vecDir += frand * m_vecSpread[0] * v_right;
+		vecDir += (m_vecSpread[1] * v_up) * 2;
 #endif
-		TraceAttack_FireSingle(vecPos, vDir, iDamage, iWeapon, 8196);
-		iShots--;
+		_FireSingle(m_vecOrigin, vecDir, m_flDamage, m_flRange);
+		m_iShots--;
 	}
-	
-	if (g_multiDamage_Target) {
-		TraceAttack_Apply(self, iWeapon);
+
+	if (m_eMultiTarget) {
+		_ApplyDamage();
 	}
+}
+
+void
+NSTraceAttack::SetShots(int iShots)
+{
+	m_iShots = iShots;
+}
+
+void
+NSTraceAttack::SetOrigin(vector vecOrigin)
+{
+	m_vecOrigin = vecOrigin;
+}
+
+void
+NSTraceAttack::SetDamage(int iDamage)
+{
+	m_flDamage = (float)iDamage;
+}
+
+void
+NSTraceAttack::SetSpread(vector vecSpread)
+{
+	m_vecSpread = vecSpread;
+}
+
+void
+NSTraceAttack::SetWeapon(int iWeapon)
+{
+	m_iWeapon = iWeapon;
+}
+
+void
+NSTraceAttack::SetRange(float flRange)
+{
+	m_flRange = flRange;
+}
+
+void
+NSTraceAttack::SetOwner(entity eOwner)
+{
+	m_eOwner = eOwner;
+}
+
+
+#ifdef BULLETPENETRATION
+void
+NSTraceAttack::SetPenetrationMaxThickness(float flThickness)
+{
+	m_flMaxThickness = flThickness;
+}
+void
+NSTraceAttack::SetPenetrationPower(int iPower)
+{
+	m_iTotalPenetrations = iPower;
+}
+#endif
+
+void
+NSTraceAttack::NSTraceAttack(void)
+{
+	m_eMultiTarget = __NULL__;
+	m_iMultiValue = 0;
+	m_iMultiBody = 0;
+	m_flRange = 8196;
+
+#ifdef BULLETPENETRATION
+	m_flMaxThickness = 5.0f;
+	m_flRangeModifier = 1.0f;
+	m_iTotalPenetrations = 0;
+#endif
+};
+
+/* fire a given amount of shots */
+void
+TraceAttack_FireBullets(int iShots, vector vecPos, int iDamage, vector vecSpread, int iWeapon)
+{
+	if (!g_traceAttack) {
+		g_traceAttack = spawn(NSTraceAttack);
+	}
+
+	g_traceAttack.SetShots(iShots);
+	g_traceAttack.SetOrigin(vecPos);
+	g_traceAttack.SetDamage(iDamage);
+	g_traceAttack.SetSpread(vecSpread);
+	g_traceAttack.SetWeapon(iWeapon);
+	g_traceAttack.SetOwner(self);
+	g_traceAttack.Fire();
 }
 
 #ifdef BULLETPENETRATION
 void
 TraceAttack_SetRangeModifier(float units)
 {
-	g_pen_flRangeMod = units;
+	if (!g_traceAttack) {
+		g_traceAttack = spawn(NSTraceAttack);
+	}
+	g_traceAttack.m_flRangeModifier = (units);
 }
 void
 TraceAttack_SetPenetrationPower(int power)
 {
-	iTotalPenetrations = power;
+	if (!g_traceAttack) {
+		g_traceAttack = spawn(NSTraceAttack);
+	}
+	g_traceAttack.SetPenetrationPower(power);
 	/* thickness equals 8 units per power times rangemodifier */
-	g_pen_flMaxThickness = ((8 * power) * g_pen_flRangeMod);
+	g_traceAttack.SetPenetrationMaxThickness((8 * power) * g_traceAttack.m_flRangeModifier);
 }
 #endif
