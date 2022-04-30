@@ -89,7 +89,7 @@ env_fog_controller:NSPointTrigger
 	virtual float(void) FogRender;
 	virtual void(void) FogUpdate;
 	virtual void(void) RendererRestarted;
-	virtual void(float,float) ReadEntity;
+	virtual void(float,float) ReceiveEntity;
 #else
 	/* main spawn attributes */
 	int m_iSpawnEnable;
@@ -200,7 +200,7 @@ env_fog_controller::RendererRestarted(void)
 }
 
 void
-env_fog_controller::ReadEntity(float flSendFlags, float flNew)
+env_fog_controller::ReceiveEntity(float flSendFlags, float flNew)
 {
 	if (flSendFlags & ENVFOG_CHANGED_ACTIVE)
 		m_iFogActive = readbyte();
@@ -539,6 +539,6 @@ env_fog_controller_readentity(float isnew)
 	if (isnew)
 		spawnfunc_env_fog_controller();
 
-	fog.ReadEntity(flags, isnew);
+	fog.ReceiveEntity(flags, isnew);
 }
 #endif

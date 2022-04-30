@@ -258,10 +258,10 @@ CSEv_CallVote_s(string text)
 	tokenize(text);
 	switch (argv(0)) {
 	case "map":
-		/*if (whichpack(sprintf("maps/%s.bsp", argv(1))) == __NULL__) {
+		if not (whichpack(sprintf("maps/%s.bsp", argv(1)))) {
 			sprint(self, PRINT_CHAT, sprintf("Map '%s' not available on server.\n", argv(1)));
 			break;
-		}*/
+		}
 	case "kick":
 	case "slowmo":
 	case "timelimit":

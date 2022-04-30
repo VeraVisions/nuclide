@@ -110,7 +110,7 @@ class prop_vehicle_driveable:NSVehicle
 	virtual bool(void) HideViewWeapon;
 	virtual void(void) PredictPreFrame;
 	virtual void(void) PredictPostFrame;
-	virtual void(float, float) ReadEntity;
+	virtual void(float, float) ReceiveEntity;
 	virtual void(void) UpdateView;
 #else
 	virtual void(void) Respawn;
@@ -684,7 +684,7 @@ prop_vehicle_driveable::Respawn(void)
 
 #ifdef CLIENT
 void
-prop_vehicle_driveable::ReadEntity(float flSendFlags, float flNew)
+prop_vehicle_driveable::ReceiveEntity(float flSendFlags, float flNew)
 {
 	if (flSendFlags & VEHFL_DRIVER) {
 		driver_entnum = readentitynum();
@@ -899,6 +899,6 @@ prop_vehicle_driveable_readentity(float isnew)
 	if (isnew)
 		spawnfunc_prop_vehicle_driveable();
 
-	veh.ReadEntity(flags, isnew);
+	veh.ReceiveEntity(flags, isnew);
 }
 #endif

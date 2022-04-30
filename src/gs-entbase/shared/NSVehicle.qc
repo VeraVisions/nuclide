@@ -104,7 +104,7 @@ NSVehicle::PredictPostFrame(void)
 }
 
 void
-NSVehicle::ReadEntity(float fChanged, float new)
+NSVehicle::ReceiveEntity(float fChanged, float new)
 {
 	if (fChanged & VEHFL_CHANGED_ORIGIN) {
 		origin[0] = readcoord();
@@ -416,6 +416,6 @@ basevehicle_readentity(float isnew)
 	if (isnew)
 		spawnfunc_NSVehicle();
 
-	veh.ReadEntity(flags, isnew);
+	veh.ReceiveEntity(flags, isnew);
 }
 #endif

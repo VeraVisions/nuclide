@@ -61,7 +61,7 @@ class prop_rope:NSEntity
 
 #ifdef CLIENT
 	virtual float() predraw;
-	virtual void(float,float) ReadEntity;
+	virtual void(float,float) ReceiveEntity;
 	virtual void(vector, vector, vector) DrawSegment;
 #else
 	virtual void(void) Respawn;
@@ -146,7 +146,7 @@ prop_rope::predraw(void)
 }
 
 void
-prop_rope::ReadEntity(float flSendFlags, float new)
+prop_rope::ReceiveEntity(float flSendFlags, float new)
 {
 	if (flSendFlags & PROPROPE_CHANGED_MAT)
 		m_strShader = readstring();
@@ -301,6 +301,6 @@ prop_rope_readentity(float isnew)
 	if (isnew)
 		spawnfunc_prop_rope();
 
-	rope.ReadEntity(flags, isnew);
+	rope.ReceiveEntity(flags, isnew);
 }
 #endif

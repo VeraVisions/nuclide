@@ -28,7 +28,20 @@ Event_ProcessModel(float flTimeStamp, int iCode, string strData)
 {
 	switch(iCode) {
 	case 1004:
-		sound(self, CHAN_BODY, strData, 1.0f, ATTN_NORM);
+		if (substring(strData, 0, 1) == "*")
+			sound(self, CHAN_BODY, substring(strData, 1, -1), 1.0f, ATTN_NORM);
+		else
+			sound(self, CHAN_BODY, strData, 1.0f, ATTN_NORM);
+		break;
+	case 1005:
+		NSTalkMonster targ = (NSTalkMonster)self;
+		targ.Sentence(strData);
+		break;
+	case 1008:
+		if (substring(strData, 0, 1) == "*")
+			sound(self, CHAN_VOICE, substring(strData, 1, -1), 1.0f, ATTN_NORM);
+		else
+			sound(self, CHAN_VOICE, strData, 1.0f, ATTN_NORM);
 		break;
 	case 5004: /* view model sound */
 		localsound(strData, CHAN_AUTO, 1.0);
@@ -53,6 +66,8 @@ Event_ProcessModel(float flTimeStamp, int iCode, string strData)
 		pSeat->m_eMuzzleflash.scale = 0.25;
 		pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 3;
 		break;
+	default:
+		print(sprintf("Unknown model event: %f %i %S\n", flTimeStamp, iCode, strData));
 	}
 }
 

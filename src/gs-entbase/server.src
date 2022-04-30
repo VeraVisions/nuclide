@@ -11,7 +11,6 @@ server/info_null.qc
 server/info_notnull.qc
 server/info_intermission.qc
 server/button_target.qc
-server/ambient_generic.qc
 server/cycler.qc
 server/cycler_sprite.qc
 server/env_beam.qc

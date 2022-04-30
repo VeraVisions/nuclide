@@ -82,7 +82,7 @@ Entity_EntityUpdate(float type, float new)
 		Decal_Parse();
 		break;
 	case ENT_AMBIENTSOUND:
-		Sound_ParseLoopingEntity(self, new);
+		ambient_generic_ReadEntity(new);
 		break;
 	case ENT_OLDCAMERA:
 		trigger_camera tc = (trigger_camera)self;

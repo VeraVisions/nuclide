@@ -90,7 +90,7 @@ class func_tankmortar:NSVehicle
 #ifdef CLIENT
 	virtual void(void) PredictPreFrame;
 	virtual void(void) PredictPostFrame;
-	virtual void(float, float) ReadEntity;
+	virtual void(float, float) ReceiveEntity;
 	virtual void(void) UpdateView;
 #else
 	virtual float(entity, float) SendEntity;
@@ -123,7 +123,7 @@ func_tankmortar::PredictPostFrame(void)
 }
 
 void
-func_tankmortar::ReadEntity(float fChanged, float new)
+func_tankmortar::ReceiveEntity(float fChanged, float new)
 {
 	if (fChanged & VEHFL_CHANGED_ORIGIN) {
 		origin[0] = readcoord();
@@ -457,6 +457,6 @@ func_tankmortar_readentity(float isnew)
 	if (isnew)
 		spawnfunc_func_tankmortar();
 
-	veh.ReadEntity(flags, isnew);
+	veh.ReceiveEntity(flags, isnew);
 }
 #endif

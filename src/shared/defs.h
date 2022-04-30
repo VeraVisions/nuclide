@@ -19,10 +19,12 @@
 #define PREDICTED_FLOAT(x) float x; float x ##_net
 #define PREDICTED_VECTOR(x) vector x; vector x ##_net
 #define PREDICTED_ENT(x) entity x; entity x ##_net
+#define PREDICTED_STRING(x) string x; string x ##_net
 
 #define PREDICTED_INT_N(x) int x ##_net
 #define PREDICTED_FLOAT_N(x) float x ##_net
 #define PREDICTED_VECTOR_N(x) vector x ##_net
+#define PREDICTED_STRING_N(x) string x ##_net
 
 #define ROLL_BACK(x) x = x ##_net
 #define SAVE_STATE(x) x ##_net = x

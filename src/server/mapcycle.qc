@@ -43,11 +43,9 @@ Mapcycle_Init(void)
 
 	/* read the lines in, see if the map exists and define an enumerated alias */
 	while ((temp = fgets(fs_mapcycle))) {
-#if 0
-		print(sprintf( "checking for map %s whichpack result: %S\n", strcat("maps/", temp, ".bsp"), whichpack(strcat("maps/", temp, ".bsp"))));
-		if (!whichpack(strcat("maps/", temp, ".bsp")))
+		if not (whichpack(strcat("maps/", temp, ".bsp")))
 			continue;
-#endif
+
 		readcmd(sprintf("alias m%i \"map %s;alias nextmap m%i\"\n", mapcount, temp, mapcount + 1i));
 
 		if (mapname == lastmap)

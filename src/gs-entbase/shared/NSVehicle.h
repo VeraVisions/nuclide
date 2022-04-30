@@ -41,7 +41,7 @@ class NSVehicle:NSSurfacePropEntity
 	virtual bool(void) IsLocalDriver;
 	virtual void(void) PredictPreFrame;
 	virtual void(void) PredictPostFrame;
-	virtual void(float, float) ReadEntity;
+	virtual void(float, float) ReceiveEntity;
 	virtual void(void) UpdateView;
 	virtual bool(void) HideViewWeapon;
 	virtual bool(void) HideCrosshair;
