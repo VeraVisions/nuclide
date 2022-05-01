@@ -840,6 +840,7 @@ games_init(void)
 		games[id].info_type = GAMEINFO_NONE;
 	}
 #endif
+	games_set(id);
 }
 
 void
