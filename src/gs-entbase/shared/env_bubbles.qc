@@ -238,7 +238,7 @@ env_bubbles::EmitBubbles(void)
 {
 	vector vecPos;
 
-	//if (m_bEnabled)
+	if (m_bEnabled)
 	for (int i = 0; i < m_iDensity; i++) {
 		float timer;
 		vecPos[0] = mins[0] + (random() * (maxs[0] - mins[0]));
