@@ -72,7 +72,7 @@
 #endif
 
 #ifndef PHY_VIEWPOS
-	#define PHY_VIEWPOS [0,0,24]
+	#define PHY_VIEWPOS [0,0,28]
 #endif
 
 #ifndef PHY_VIEWPOS_CROUCHED
