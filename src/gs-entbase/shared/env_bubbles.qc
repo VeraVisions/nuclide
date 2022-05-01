@@ -1,0 +1,361 @@
+/*
+ * Copyright (c) 2016-2022 Marco Cawthorne <marco@icculus.org>
+ *
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
+ * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
+ * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+
+/*QUAKED env_bubbles (1 0 0) ? BUBFL_STARTOFF
+Brush volume that emits rising bubbles.
+
+-------- KEYS --------
+"targetname" : Name
+"density"    : Bubble count when it's emitting
+"frequency"  : Emitting frequency in seconds
+"angles"     : Direction of water current
+"current"    : Speed of the water current
+
+-------- SPAWNFLAGS --------
+BUBFL_STARTOFF : Start disabled.
+
+-------- INPUTS --------
+"Activate"     : Turns the entity on
+"Deactive"     : Turns the entity off
+"Toggle"       : Toggles the entity to an on/off state
+"SetDensity"   : Sets the bubble count when it's emitting
+"SetFrequency" : Sets the emitting frequency in seconds
+"SetCurrent"   : Sets the speed of the water current
+
+-------- NOTES --------
+The bubbles emit will pick a random place in the volume (although always at the bottom)
+and rise up in varying speeds. This means you can only place vertical bubble emitters.
+
+-------- TRIVIA --------
+This entity was introduced in Half-Life (1998).
+*/
+
+enumflags
+{
+	BUBBLES_ORIGIN,
+	BUBBLES_ANGLES,
+	BUBBLES_DENSITY,
+	BUBBLES_FREQUENCY,
+	BUBBLES_CURRENT,
+	BUBBLES_ENABLED
+};
+
+#define BUBFL_STARTOFF 1
+
+class
+env_bubbles:NSPointTrigger
+{
+	PREDICTED_INT(m_iDensity);
+	PREDICTED_FLOAT(m_flFrequency);
+	PREDICTED_FLOAT(m_flCurrent);
+	PREDICTED_BOOL(m_bEnabled);
+
+	/* spawn values */
+	int m_iSpawnDensity;
+	float m_flSpawnFrequency;
+	float m_flSpawnCurrent;
+
+	void(void) env_bubbles;
+
+	/* overrides */
+	virtual void(string, string) SpawnKey;
+	virtual void(void) Respawn;
+
+#ifdef SERVER
+	virtual void(float) Save;
+	virtual void(string, string) Restore;
+	virtual void(void) EvaluateEntity;
+	virtual float(entity, float) SendEntity;
+	virtual void(entity, int) Trigger;
+	virtual void(entity, string, string) Input;
+#else
+	virtual void(void) EmitBubbles;
+	virtual void(float, float) ReceiveEntity;
+#endif
+};
+
+#ifdef SERVER
+void
+env_bubbles::Save(float handle)
+{
+	SaveInt(handle, "density", m_iDensity);
+	SaveFloat(handle, "frequency", m_flFrequency);
+	SaveFloat(handle, "current", m_flCurrent);
+	SaveBool(handle, "enabled", m_bEnabled);
+
+	SaveInt(handle, "spawn_density", m_iSpawnDensity);
+	SaveFloat(handle, "spawn_frequency", m_flSpawnFrequency);
+	SaveFloat(handle, "spawn_current", m_flSpawnCurrent);
+
+	super::Save(handle);
+}
+
+void
+env_bubbles::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "density":
+		m_iDensity = ReadInt(strValue);
+		break;
+	case "frequency":
+		m_flFrequency = ReadFloat(strValue);
+		break;
+	case "current":
+		m_flCurrent = ReadFloat(strValue);
+		break;
+	case "enabled":
+		m_bEnabled = ReadBool(strValue);
+		break;
+	case "spawn_density":
+		m_iSpawnDensity = ReadInt(strValue);
+		break;
+	case "spawn_frequency":
+		m_flSpawnFrequency = ReadFloat(strValue);
+		break;
+	case "spawn_current":
+		m_flSpawnCurrent = ReadFloat(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
+
+void
+env_bubbles::Input(entity eAct, string strKey, string strData)
+{
+	switch (strKey) {
+	case "Activate":
+		Trigger(eAct, TRIG_ON);
+		break;
+	case "Deactivate":
+		Trigger(eAct, TRIG_OFF);
+		break;
+	case "Toggle":
+		Trigger(eAct, TRIG_TOGGLE);
+		break;
+	case "SetDensity":
+		m_iDensity = stoi(strData);
+		break;
+	case "SetFrequency":
+		m_flSpawnFrequency = stof(strData);
+		break;
+	case "SetCurrent":
+		m_flSpawnCurrent = stof(strData);
+		break;
+	default:
+		super::Input(eAct, strKey, strData);
+	}
+}
+
+void
+env_bubbles::Trigger(entity eAct, int iState)
+{
+	switch (iState) {
+	case TRIG_OFF:
+		m_bEnabled = false;
+		break;
+	case TRIG_ON:
+		m_bEnabled = true;
+		break;
+	default:
+		m_bEnabled = true - m_bEnabled;
+	}
+}
+void
+env_bubbles::EvaluateEntity(void)
+{
+	if (ATTR_CHANGED(origin))
+		SetSendFlags(BUBBLES_ORIGIN);
+	if (ATTR_CHANGED(angles))
+		SetSendFlags(BUBBLES_ANGLES);
+	if (ATTR_CHANGED(m_iDensity))
+		SetSendFlags(BUBBLES_DENSITY);
+	if (ATTR_CHANGED(m_flFrequency))
+		SetSendFlags(BUBBLES_FREQUENCY);
+	if (ATTR_CHANGED(m_flCurrent))
+		SetSendFlags(BUBBLES_CURRENT);
+	if (ATTR_CHANGED(m_bEnabled))
+		SetSendFlags(BUBBLES_ENABLED);
+
+	SAVE_STATE(origin);
+	SAVE_STATE(angles);
+	SAVE_STATE(m_iDensity);
+	SAVE_STATE(m_flFrequency);
+	SAVE_STATE(m_flCurrent);
+	SAVE_STATE(m_bEnabled);
+}
+float
+env_bubbles::SendEntity(entity ePVSent, float flChanged)
+{
+	WriteByte(MSG_ENTITY, ENT_BUBBLES);
+	WriteFloat(MSG_ENTITY, flChanged);
+
+	if (flChanged & BUBBLES_ORIGIN) {
+		WriteCoord(MSG_ENTITY, origin[0]);
+		WriteCoord(MSG_ENTITY, origin[1]);
+		WriteCoord(MSG_ENTITY, origin[2]);
+		WriteCoord(MSG_ENTITY, mins[0]);
+		WriteCoord(MSG_ENTITY, mins[1]);
+		WriteCoord(MSG_ENTITY, mins[2]);
+		WriteCoord(MSG_ENTITY, maxs[0]);
+		WriteCoord(MSG_ENTITY, maxs[1]);
+		WriteCoord(MSG_ENTITY, maxs[2]);
+	}
+
+	if (flChanged & BUBBLES_ANGLES) {
+		WriteCoord(MSG_ENTITY, angles[0]);
+		WriteCoord(MSG_ENTITY, angles[1]);
+		WriteCoord(MSG_ENTITY, angles[2]);
+	}
+	
+	if (flChanged & BUBBLES_DENSITY)
+		WriteByte(MSG_ENTITY, m_iDensity);
+	if (flChanged & BUBBLES_FREQUENCY)
+		WriteFloat(MSG_ENTITY, m_flFrequency);
+	if (flChanged & BUBBLES_CURRENT)
+		WriteFloat(MSG_ENTITY, m_flCurrent);
+	if (flChanged & BUBBLES_ENABLED)
+		WriteByte(MSG_ENTITY, m_bEnabled);
+
+	return (1);
+}
+#else
+void
+env_bubbles::EmitBubbles(void)
+{
+	vector vecPos;
+
+	//if (m_bEnabled)
+	for (int i = 0; i < m_iDensity; i++) {
+		float timer;
+		vecPos[0] = mins[0] + (random() * (maxs[0] - mins[0]));
+		vecPos[1] = mins[1] + (random() * (maxs[1] - mins[1]));
+		vecPos[2] = mins[2];
+
+		env_sprite eBubble = spawn(env_sprite);
+		setorigin(eBubble, vecPos);
+		setmodel(eBubble, "sprites/bubble.spr");
+		eBubble.drawmask = MASK_ENGINE;
+		eBubble.m_vecRenderColor = [1,1,1];
+		eBubble.m_iRenderMode = RM_ADDITIVE;
+		eBubble.m_flRenderAmt = 1.0f;
+		eBubble.movetype = MOVETYPE_FLY;
+		eBubble.velocity[2] = 100 + random(0, 50);
+
+		/* apply current */
+		if (m_flCurrent > 0) {
+			makevectors(eBubble.angles);
+			eBubble.velocity *= v_forward * m_flCurrent;
+		}
+
+		/* destroy the bubble once it exits out the water */
+		timer = (size[2] / eBubble.velocity[2]);
+		eBubble.think = Util_Destroy;
+		eBubble.nextthink = time + timer;
+	}
+
+	nextthink = time + m_flFrequency;
+}
+
+void
+env_bubbles::ReceiveEntity(float is_new, float flChanged)
+{
+	if (flChanged & BUBBLES_ORIGIN) {
+		origin[0] = readcoord();
+		origin[1] = readcoord();
+		origin[2] = readcoord();
+		mins[0] = readcoord();
+		mins[1] = readcoord();
+		mins[2] = readcoord();
+		maxs[0] = readcoord();
+		maxs[1] = readcoord();
+		maxs[2] = readcoord();
+		setsize(this, mins, maxs);
+		setorigin(this, origin);
+	}
+
+	if (flChanged & BUBBLES_ANGLES) {
+		angles[0] = readcoord();
+		angles[1] = readcoord();
+		angles[2] = readcoord();
+	}
+	
+	if (flChanged & BUBBLES_DENSITY)
+		m_iDensity = readbyte();
+	if (flChanged & BUBBLES_FREQUENCY)
+		m_flFrequency = readfloat();
+	if (flChanged & BUBBLES_CURRENT)
+		m_flCurrent = readfloat();
+	if (flChanged & BUBBLES_ENABLED)
+		m_bEnabled = readbyte();
+
+	think = EmitBubbles;
+	nextthink = time + m_flFrequency;
+}
+#endif
+
+void
+env_bubbles::SpawnKey(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "density":
+		m_iSpawnDensity = stoi(strValue);
+		break;
+	case "frequency":
+		m_flSpawnFrequency = stof(strValue);
+		break;
+	case "current":
+		m_flSpawnCurrent = stof(strValue);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+env_bubbles::Respawn(void)
+{
+	SetModel(GetSpawnModel());
+	SetSolid(SOLID_NOT);
+	SetOrigin(GetSpawnOrigin());
+	SetAngles(GetSpawnAngles());
+	m_iDensity = m_iSpawnDensity;
+	m_flFrequency = m_flSpawnFrequency;
+	m_flCurrent = m_flSpawnCurrent;
+
+	if (spawnflags & BUBFL_STARTOFF)
+		m_bEnabled = false;
+	else
+		m_bEnabled = true;
+}
+
+void
+env_bubbles::env_bubbles(void)
+{
+	super::NSPointTrigger();
+}
+
+#ifdef CLIENT
+void
+env_bubbles_ReadEntity(float new)
+{
+	env_bubbles me = (env_bubbles)self;
+	if (new) {
+		spawnfunc_env_bubbles();
+	}
+	me.ReceiveEntity(new, readfloat());
+}
+#endif

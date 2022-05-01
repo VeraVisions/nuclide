@@ -19,6 +19,7 @@ shared/ambient_generic.qc
 shared/decals.qc
 shared/spraylogo.qc
 shared/func_friction.qc
+shared/env_bubbles.qc
 shared/env_projectedtexture.qc
 shared/env_fog_controller.qc
 shared/light_dynamic.qc

@@ -20,6 +20,7 @@
 #define PREDICTED_VECTOR(x) vector x; vector x ##_net
 #define PREDICTED_ENT(x) entity x; entity x ##_net
 #define PREDICTED_STRING(x) string x; string x ##_net
+#define PREDICTED_BOOL(x) bool x; bool x ##_net
 
 #define PREDICTED_INT_N(x) int x ##_net
 #define PREDICTED_FLOAT_N(x) float x ##_net

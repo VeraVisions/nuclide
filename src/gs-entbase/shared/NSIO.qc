@@ -160,6 +160,12 @@ NSIO::Respawn(void)
 }
 
 void
+NSIO::SaveBool(float handle, string key, bool value)
+{
+	if (value)
+	fputs(handle, sprintf("%S \"%f\"\n", key, value));
+}
+void
 NSIO::SaveFloat(float handle, string key, float value)
 {
 	if (value)
@@ -184,6 +190,13 @@ NSIO::SaveVector(float handle, string key, vector value)
 	fputs(handle, sprintf("%S \"%v\"\n", key, value));
 }
 
+float
+NSIO::ReadBool(string strValue)
+{
+	if (strValue && strValue != "")
+		return stof(strValue);
+	return __NULL__;
+}
 float
 NSIO::ReadFloat(string strValue)
 {

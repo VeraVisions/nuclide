@@ -54,10 +54,12 @@ class NSIO
 	nonvirtual void(float, string, int) SaveInt;
 	nonvirtual void(float, string, string) SaveString;
 	nonvirtual void(float, string, vector) SaveVector;
+	nonvirtual void(float, string, bool) SaveBool;
 	nonvirtual float(string) ReadFloat;
 	nonvirtual int(string) ReadInt;
 	nonvirtual string(string) ReadString;
 	nonvirtual vector(string) ReadVector;
+	nonvirtual bool(string) ReadBool;
 
 	/* Handle incoming entities input messaging */
 	virtual void(entity, string, string) Input;
