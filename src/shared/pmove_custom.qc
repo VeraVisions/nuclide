@@ -91,6 +91,8 @@ PMoveCustom_Categorize(void)
 		} else {
 			self.flags &= ~FL_ONGROUND;
 		}
+	} else {
+		self.groundentity = __NULL__;
 	}
 
 	self.flags &= ~FL_WATERJUMP;
@@ -460,7 +462,6 @@ PMoveCustom_Move(void)
 	if (!(self.flags & FL_ONGROUND)) {
 		self.basevelocity[2] = 0;
 	}
-	self.velocity += self.basevelocity;
 
 	/* we need to bounce off surfaces (in order to slide along them), 
 	 * so we need at 2 attempts */
@@ -501,7 +502,7 @@ PMoveCustom_Move(void)
 			float roof_fraction = trace_fraction;
 			vector roof_plane_normal = trace_plane_normal;
 
-			dest = trace_endpos + self.velocity*move_time;
+			dest = trace_endpos + (self.velocity*move_time);
 			dest[2] = trace_endpos[2]; /*only horizontally*/
 
 			/* move forwards */
@@ -556,9 +557,6 @@ PMoveCustom_Move(void)
 		self.groundentity = trace_ent;
 	}
 
-	/* make sure that the basevelocity we've applied is discarded by next frame */
-	self.velocity -= self.basevelocity;
-
 	tracebox(self.origin, self.mins, self.maxs, self.origin, MOVE_NORMAL, self);
 }
 
@@ -588,7 +586,6 @@ PMoveCustom_RunPlayerPhysics(entity target)
 
 	/* clear base-velocity and ground-entity */
 	self.basevelocity = [0,0,0];
-	self.groundentity = __NULL__;
 
 	/* activate any SOLID_TRIGGER entities */
 	touchtriggers();

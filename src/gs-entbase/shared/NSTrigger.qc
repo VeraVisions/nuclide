@@ -100,16 +100,16 @@ NSTrigger::GetMaster(void)
 
 	/* we couldn't find it, so let's not even bother going further */
 	if (!t) {
-		print(sprintf("^2%s::^3GetMaster^7: Invalid master (%s), return success\n", 
+		dprint(sprintf("^2%s::^3GetMaster^7: Invalid master (%s), return success\n", 
 		this.classname, m_strMaster));
 		return (1);
 	}
 
 	if (t.GetValue() == 1)
-		print(sprintf("^2%s::^3GetMaster^7: %s learns %s ^2POSITIVE\n", 
+		dprint(sprintf("^2%s::^3GetMaster^7: %s learns %s ^2POSITIVE\n", 
 		this.classname, targetname, m_strMaster));
 	else
-		print(sprintf("^2%s::^3GetMaster^7: %s learns %s ^1NEGATIVE\n", 
+		dprint(sprintf("^2%s::^3GetMaster^7: %s learns %s ^1NEGATIVE\n", 
 		this.classname, targetname, m_strMaster));
 	
 	return t.GetValue();
