@@ -64,19 +64,19 @@ NSMonster::Restore(string strKey, string strValue)
 int
 NSMonster::AnimIdle(void)
 {
-	return frameforaction(modelindex, ACT_IDLE);
+	return -1;
 }
 
 int
 NSMonster::AnimWalk(void)
 {
-	return frameforaction(modelindex, ACT_WALK);
+	return -1;
 }
 
 int
 NSMonster::AnimRun(void)
 {
-	return frameforaction(modelindex, ACT_RUN);
+	return -1;
 }
 
 void
@@ -568,6 +568,62 @@ NSMonster::NewRoute(vector destination)
 	}
 }
 
+void
+NSMonster::AnimationUpdate(void)
+{
+	int frame, act;
+
+	if (style == MONSTER_DEAD)
+		return;
+
+	float spvel = vlen(velocity);
+	float midspeed = GetWalkSpeed() + ((GetRunSpeed() -  GetWalkSpeed()) * 0.5f);
+
+	if (spvel < 5) {
+		frame = AnimIdle();
+
+		if (m_iMoveState != MOVESTATE_IDLE)
+			m_flAnimTime = 0.0f;
+
+		if (frame == -1)
+			act = (frameforaction(modelindex, ACT_IDLE));
+
+
+		m_iMoveState = MOVESTATE_IDLE;
+	} else if (spvel < midspeed) {
+		frame = AnimWalk();
+
+		if (m_iMoveState != MOVESTATE_WALK)
+				m_flAnimTime = 0.0f;
+
+		if (frame == -1)
+			act = (frameforaction(modelindex, ACT_WALK));
+		
+
+		m_iMoveState = MOVESTATE_WALK;
+	} else {
+		frame = AnimRun();
+
+		if (m_iMoveState != MOVESTATE_RUN)
+			m_flAnimTime = 0.0f;
+
+		if (frame == -1)
+			act = (frameforaction(modelindex, ACT_RUN));
+
+		m_iMoveState = MOVESTATE_RUN;
+	}
+
+	if (m_flAnimTime > 0.0f) {
+		return;
+	}
+
+	if (frame == -1)
+		AnimPlay(act);
+	else
+		SetFrame(frame);
+	
+}
+
 const int CONTENTBITS_MONSTER = CONTENTBIT_SOLID|CONTENTBIT_BODY|CONTENTBIT_MONSTERCLIP|CONTENTBIT_BOTCLIP;	
 void PMoveCustom_RunPlayerPhysics(entity target);
 void PMoveCustom_RunCrouchPhysics(entity target);
@@ -602,22 +658,7 @@ NSMonster::Physics(void)
 		IdleNoise();
 		button8 = input_buttons & INPUT_BUTTON8; // duck
 
-		if (style != MONSTER_DEAD) {
-			if (m_flAnimTime > time) {
-				input_movevalues = [0,0,0];
-			} else {
-				float spvel = vlen(velocity);
-				float midspeed = GetWalkSpeed() + ((GetRunSpeed() -  GetWalkSpeed()) * 0.5f);
-
-				if (spvel < 5) {
-					SetFrame(AnimIdle());
-				} else if (spvel < midspeed) {
-					SetFrame(AnimWalk());
-				} else {
-					SetFrame(AnimRun());
-				}
-			}
-		}
+		AnimationUpdate();
 	}
 
 	if (!(flags & FL_ONGROUND) && velocity[2] < -415) {

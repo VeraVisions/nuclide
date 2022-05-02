@@ -149,6 +149,13 @@ typedef enum
 	MAL_ROGUE   /* no allies, not even amongst themselves */
 } allianceState_t;
 
+typedef enum
+{
+	MOVESTATE_IDLE,
+	MOVESTATE_WALK,
+	MOVESTATE_RUN
+} movementState_t;
+
 /* These numerations involve the m_iTriggerCondition attribute.
  * Basically these conditions are being checked and triggered depending on what
  * it's set to. If any of those checks are successful, we trigger our target
@@ -192,6 +199,7 @@ class NSMonster:NSSurfacePropEntity
 	vector m_vecSequenceAngle;
 	vector m_vecTurnAngle;
 	int m_iSequenceFlags;
+	movementState_t m_iMoveState;
 
 	int m_iTriggerCondition;
 	string m_strTriggerTarget;
@@ -268,6 +276,7 @@ class NSMonster:NSSurfacePropEntity
 	virtual int(void) AnimWalk;
 	virtual int(void) AnimRun;
 	virtual void(float) AnimPlay;
+	virtual void(void) AnimationUpdate;
 
 	/* TriggerTarget/Condition */
 	virtual int(void) GetTriggerCondition;

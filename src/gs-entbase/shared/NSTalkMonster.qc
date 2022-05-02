@@ -493,20 +493,7 @@ NSTalkMonster::Physics(void)
 				}
 			}
 
-			if (m_flAnimTime > time) {
-				input_movevalues = [0,0,0];
-			} else {
-				spvel = vlen(velocity);
-				float midspeed = GetWalkSpeed() + ((GetRunSpeed() -  GetWalkSpeed()) * 0.5f);
-
-				if (spvel < 5) {
-					SetFrame(AnimIdle());
-				} else if (spvel < midspeed) {
-					SetFrame(AnimWalk());
-				} else {
-					SetFrame(AnimRun());
-				}
-			}
+			AnimationUpdate();
 		}
 		CheckRoute();
 		WalkRoute();
