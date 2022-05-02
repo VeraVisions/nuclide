@@ -63,7 +63,7 @@ env_message::Play(entity act, int state)
 	WriteFloat(MSG_MULTICAST, m_flVolume);
 	WriteByte(MSG_MULTICAST, m_iAttenuation);
 
-	if (HasSpawnFlags(EMF_ALLPLAYERS)) {
+	if (!(act.flags & FL_CLIENT) || HasSpawnFlags(EMF_ALLPLAYERS)) {
 		msg_entity = this;
 		multicast(origin, MULTICAST_ALL);
 	} else {
