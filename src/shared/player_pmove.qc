@@ -89,6 +89,8 @@ base_player::Physics_CheckJump(float premove)
 		return;
 	if (!(flags & FL_ONGROUND))
 		return;
+
+	if (!infokey(this, "autojump") == "1")
 	if (!(flags & FL_JUMPRELEASED))
 		return;
 
