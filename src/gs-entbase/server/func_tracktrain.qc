@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*QUAKED func_tracktrain (0 .5 .8) ? TRAIN_WAIT x x TRAIN_NOTSOLID
+/*QUAKED func_tracktrain (0 .5 .8) ? TRAIN_WAIT TRAIN_NOPITCH x TRAIN_NOTSOLID
 Moving platform following along path_corner entities, aka nodes.
 Most of its behaviour is controlled by the path_corner entities it passes over.
 See the entity definition for path_corner to find out more.
@@ -45,7 +45,7 @@ This entity was introduced in Quake (1996).
 enumflags
 {
 	TRAIN_WAIT,
-	TRAIN_UNUSED1,
+	TRAIN_NOPITCH,
 	TRAIN_UNUSED2,
 	TRAIN_NOTSOLID
 };
@@ -198,7 +198,10 @@ func_tracktrain::PathMove(void)
 	vecAngleDest[1] += 180.0f; /* this is an evil hack */
 
 	/* we only care about YAW */
-	vecAngleDest[0] = -Math_FixDelta(vecAngleDest[0]);
+	if (HasSpawnFlags(TRAIN_NOPITCH))
+		vecAngleDest[0] = 0;
+	else
+		vecAngleDest[0] = -Math_FixDelta(vecAngleDest[0]);
 	vecAngleDest[1] = Math_FixDelta(vecAngleDest[1]);
 	vecAngleDest[2] = 0;
 
