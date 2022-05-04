@@ -338,11 +338,17 @@ NSMonster::FreeState(void)
 	m_iSequenceState = SEQUENCESTATE_NONE;
 	m_iSequenceFlags = 0;
 
+	if (m_ssLast) {
+		scripted_sequence seq = (scripted_sequence)m_ssLast;
+		seq.m_iValue = TRUE;
+	}
+
 	/* we're clearing m_strRouteEnded early, because m_strRouteEnded
 	   might change when .Trigger is executed. It could be another scripted
 	   sequence triggering another sequence. Hence the caching */
 	to_trigger = m_strRouteEnded;
 	m_strRouteEnded = __NULL__;
+	m_ssLast = __NULL__;
 		
 	/* trigger when required */
 	if (to_trigger) {

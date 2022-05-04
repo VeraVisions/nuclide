@@ -198,6 +198,7 @@ multi_manager::Trigger(entity act, int state)
 		dprint(sprintf("^2%s::^3Trigger^7: %s (%s)\n", 
 			this.classname, wow.target, eFind.classname));
 
+		m_iValue = TRUE;
 		UseTargets(wow.m_eActivator, TRIG_TOGGLE, 0.0f);
 	}
 
@@ -221,8 +222,8 @@ multi_manager::Trigger(entity act, int state)
 			continue;
 
 		m_eTriggers[i].think = mm_enttrigger;
+		m_eTriggers[i].m_iValue = FALSE;
 		m_eTriggers[i].nextthink = time + m_eTriggers[i].m_flUntilTriggered;
-		m_eTriggers[i].m_iValue = TRUE;
 		m_eTriggers[i].m_eActivator = act;
 	}
 }

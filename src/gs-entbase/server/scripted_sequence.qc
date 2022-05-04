@@ -187,13 +187,16 @@ scripted_sequence::RunOnEntity(entity targ)
 	if (target) {
 		dprint(sprintf("\tTrigger when finished: %s\n", target));
 		f.m_strRouteEnded = target;
+		f.m_ssLast = this;
+		m_iValue = FALSE; /* will be marked as used once triggered */
 	} else {
 		/* make sure we're not about to trigger _anything_ */
 		f.m_strRouteEnded = __NULL__;
+		f.m_ssLast = __NULL__;
+		/* mark us as having been used, for multisources. */
+		m_iValue = TRUE;
 	}
 
-	/* mark us as having been used, for multisources. */
-	m_iValue = TRUE;
 
 	/* mark the state */
 	f.m_iSequenceState = SEQUENCESTATE_ACTIVE;

@@ -183,6 +183,7 @@ typedef enum
 class NSMonster:NSSurfacePropEntity
 {
 #ifdef SERVER
+	entity m_ssLast;
 	vector oldnet_velocity;
 	float m_flPitch;
 	int m_iFlags;
