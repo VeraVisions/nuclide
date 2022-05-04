@@ -19,7 +19,7 @@
    which is our basic entity model.
 
    This is a very low-level class. You're never meant to use this.
-   Use NSEntity as a basis for your classes
+   Use NSEntity as a basis for your classes.
 */
 
 class NSIO
@@ -50,11 +50,15 @@ class NSIO
 
 	virtual void(float) Save;
 	virtual void(string,string) Restore;
+
+	/* save game */
 	nonvirtual void(float, string, float) SaveFloat;
 	nonvirtual void(float, string, int) SaveInt;
 	nonvirtual void(float, string, string) SaveString;
 	nonvirtual void(float, string, vector) SaveVector;
 	nonvirtual void(float, string, bool) SaveBool;
+
+	/* load game */
 	nonvirtual float(string) ReadFloat;
 	nonvirtual int(string) ReadInt;
 	nonvirtual string(string) ReadString;

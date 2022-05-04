@@ -72,6 +72,8 @@ class NSTalkMonster:NSMonster
 	sound_t *m_pSentenceQue;
 	int m_iSentenceCount;
 	int m_iSentencePos;
+	float m_sndVoiceOffs;
+	bool m_bWasPaused;
 #endif
 
 	void(void) NSTalkMonster;

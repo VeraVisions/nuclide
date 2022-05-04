@@ -222,7 +222,8 @@ class NSMonster:NSSurfacePropEntity
 
 	void(void) NSMonster;
 
-#ifdef SERVER
+#ifdef SERVER	
+	/* overrides */
 	virtual void(float) Save;
 	virtual void(string,string) Restore;
 

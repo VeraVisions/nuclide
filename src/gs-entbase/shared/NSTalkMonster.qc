@@ -777,6 +777,19 @@ NSTalkMonster::predraw(void)
 	m_flBaseTime = frame1time;
 	ProcessWordQue();
 
+	if (serverkeyfloat(SERVERKEY_PAUSESTATE) != 1) {
+		if (m_bWasPaused == true) {
+			soundupdate(this, CHAN_VOICE, "", 1.0, ATTN_NORM, 0, 0, -m_sndVoiceOffs);
+		}
+		m_sndVoiceOffs = getsoundtime(this, CHAN_VOICE);
+		m_bWasPaused = false;
+	} else {
+		if (m_bWasPaused == false) {
+			soundupdate(this, CHAN_VOICE, "", 0.0, ATTN_NORM, 0, 0, -m_sndVoiceOffs);
+		}
+		m_bWasPaused = true;
+	}
+
 	return render;
 }
 
