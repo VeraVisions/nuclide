@@ -129,6 +129,10 @@ worldspawn::SpawnKey(string strField, string strKey)
 void
 worldspawn::worldspawn(void)
 {
+#ifdef CLIENT
+	Init();
+#else
 	super::NSEntity();
+#endif
 }
 #endif
