@@ -777,16 +777,20 @@ NSTalkMonster::predraw(void)
 	m_flBaseTime = frame1time;
 	ProcessWordQue();
 
+	/* pause/unpause CHAN_VOICE */
 	if (serverkeyfloat(SERVERKEY_PAUSESTATE) != 1) {
-		if (m_bWasPaused == true) {
+		/* resume; negative soundofs makes soundupdate act absolute */
+		if (m_bWasPaused == true)
 			soundupdate(this, CHAN_VOICE, "", 1.0, ATTN_NORM, 0, 0, -m_sndVoiceOffs);
-		}
-		m_sndVoiceOffs = getsoundtime(this, CHAN_VOICE);
+
 		m_bWasPaused = false;
 	} else {
-		if (m_bWasPaused == false) {
-			soundupdate(this, CHAN_VOICE, "", 0.0, ATTN_NORM, 0, 0, -m_sndVoiceOffs);
-		}
+		/* called once when pausing */
+		if (m_bWasPaused == false)
+			m_sndVoiceOffs = getsoundtime(this, CHAN_VOICE); /* length into the sample */
+
+		/* make silent and keep updating so the sample doesn't stop */
+		soundupdate(this, CHAN_VOICE, "", 0.0, ATTN_NORM, 0, 0, -m_sndVoiceOffs);
 		m_bWasPaused = true;
 	}
 
