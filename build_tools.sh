@@ -26,6 +26,21 @@ else
 	BUILD_PROC=$(nproc)
 fi
 
+# Compiler choice
+if [ "$COMPILE_SYS" = "OpenBSD" ]
+then
+	ENGINE_CC=cc
+	ENGINE_CXX=c++
+else
+	if [ "$BUILD_CLANG" = "1" ]; then
+		ENGINE_CC=clang
+		ENGINE_CXX=clang++
+	else
+		ENGINE_CC=gcc
+		ENGINE_CXX=g++
+	fi
+fi
+
 mkdir -p ./bin
 
 if [ -f "$VVM_MAKEFILE" ]
@@ -50,7 +65,7 @@ then
 	gmake clean
 fi
 
-gmake -j $BUILD_PROC
+CC=$ENGINE_CC CXX=$ENGINE_CXX gmake -j $BUILD_PROC
 printf "Built vvmtool successfully.\n"
 cp -v vvmtool ../../bin/vvmtool
 printf "DONE. Built ALL components successfully.\n"

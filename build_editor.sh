@@ -49,8 +49,14 @@ then
 else
 	WS_CFLAGS="$WS_CFLAGS"
 	WS_LDFLAGS="$WS_LDFLAGS -ldl"
-	WS_CC=gcc
-	WS_CXX=g++
+
+	if [ "$BUILD_CLANG" = "1" ]; then
+		WS_CC=clang
+		WS_CXX=clang++
+	else
+		WS_CC=gcc
+		WS_CXX=g++
+	fi
 fi
 
 mkdir -p ./bin

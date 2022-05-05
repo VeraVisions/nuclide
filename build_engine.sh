@@ -26,6 +26,21 @@ else
 	BUILD_PROC=$(nproc)
 fi
 
+# Compiler choice
+if [ "$COMPILE_SYS" = "OpenBSD" ]
+then
+	ENGINE_CC=cc
+	ENGINE_CXX=c++
+else
+	if [ "$BUILD_CLANG" = "1" ]; then
+		ENGINE_CC=clang
+		ENGINE_CXX=clang++
+	else
+		ENGINE_CC=gcc
+		ENGINE_CXX=g++
+	fi
+fi
+
 if [ "$BUILD_DEBUG" -eq 1 ]
 	then
 	MAKETARGET=gl-dbg
@@ -107,24 +122,25 @@ fi
 
 if [ "$BUILD_ENGINE_DEPENDENCIES" -eq 1 ]
 then
-	gmake -j $BUILD_PROC makelibs FTE_TARGET=$PLATFORM
+	CC=$ENGINE_CC CXX=$ENGINE_CXX gmake -j $BUILD_PROC makelibs FTE_TARGET=$PLATFORM
 	printf "Built the static dependencies successfully.\n\n"
 fi
 
-gmake -j $BUILD_PROC $MAKETARGET  CFLAGS=-DMULTITHREAD FTE_TARGET=$PLATFORM
+CC=$ENGINE_CC CXX=$ENGINE_CXX gmake -j $BUILD_PROC $MAKETARGET  CFLAGS=-DMULTITHREAD FTE_TARGET=$PLATFORM
 cp -v "$OUTPUT" ../../../bin/fteqw
 printf "Built the client engine successfully.\n\n"
 
-gmake -j $BUILD_PROC sv-dbg
+CC=$ENGINE_CC CXX=$ENGINE_CXX gmake -j $BUILD_PROC sv-dbg
 cp -v ./debug/fteqw-sv ../../../bin/fteqw-sv
 printf "Built the dedicated server successfully.\n\n"
 
-gmake -j $BUILD_PROC qcc-rel
+CC=$ENGINE_CC CXX=$ENGINE_CXX gmake -j $BUILD_PROC qcc-rel
 cp -v ./release/fteqcc ../../../bin/fteqcc
 printf "Built the QuakeC compiler successfully.\n\n"
 
 if [ "$BUILD_IMGTOOL" -eq 1 ]
 then
+	# Note: DOESN'T LIKE CLANG!
 	gmake -j $BUILD_PROC imgtool-rel
 	cp -v ./release/imgtool ../../../bin/imgtool
 	printf "Built the imgtool successfully.\n\n"
@@ -132,6 +148,7 @@ fi
 
 if [ "$BUILD_SOURCE" -eq 1 ]
 then
+	# Note: DOESN'T LIKE CLANG!
 	gmake -j $BUILD_PROC plugins-rel CFLAGS=-DGLQUAKE NATIVE_PLUGINS="hl2"
 	find ./release/ -name 'fteplug_hl2_*.so' -exec cp -prv '{}' '../../../bin/' ';'
 	printf "Built the Source Engine plugin successfully.\n\n"
@@ -139,21 +156,21 @@ fi
 
 if [ "$BUILD_BULLET" -eq 1 ]
 then
-	gmake -j $BUILD_PROC plugins-rel NATIVE_PLUGINS="bullet"
+	CC=$ENGINE_CC CXX=$ENGINE_CXX gmake -j $BUILD_PROC plugins-rel NATIVE_PLUGINS="bullet"
 	find ./release/ -name 'fteplug_bullet_*.so' -exec cp -prv '{}' '../../../bin/' ';'
 	printf "Built the bullet plugin successfully.\n\n"
 fi
 
 if [ "$BUILD_ODE" -eq 1 ]
 then
-	gmake -j $BUILD_PROC plugins-rel NATIVE_PLUGINS="ode"
+	CC=$ENGINE_CC CXX=$ENGINE_CXX gmake -j $BUILD_PROC plugins-rel NATIVE_PLUGINS="ode"
 	find ./release/ -name 'fteplug_ode_*.so' -exec cp -prv '{}' '../../../bin/' ';'
 	printf "Built the ode plugin successfully.\n\n"
 fi
 
 if [ "$BUILD_FFMPEG" -eq 1 ]
 then
-	gmake -j $BUILD_PROC plugins-rel NATIVE_PLUGINS="ffmpeg"
+	CC=$ENGINE_CC CXX=$ENGINE_CXX gmake -j $BUILD_PROC plugins-rel NATIVE_PLUGINS="ffmpeg"
 	find ./release/ -name 'fteplug_ffmpeg_*.so' -exec cp -prv '{}' '../../../bin/' ';'
 	printf "Built the ffmpeg plugin successfully.\n\n"
 fi
