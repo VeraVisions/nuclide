@@ -400,15 +400,16 @@ prop_vehicle_driveable_wheel::Accel(float flMoveTime, float m_flTurn)
 
 	tracebox(origin, mins * 4.0, maxs * 4.0, origin, MOVE_NORMAL, owner);
 	if (trace_ent && trace_ent != vehParent.m_eDriver) {
-		int iImpactDamage = vlen(velocity) / 100;
+		int iImpactDamage = vlen(velocity) / 10;
 
 		if (iImpactDamage > 10) {
-			trace_ent.velocity = velocity;
+			trace_ent.velocity = velocity * 2.0 + [0,0,500];
 			velocity *= 0.25f;
 #ifdef SERVER
 			if (trace_ent.takedamage) {
 				NSSurfacePropEntity foo = (NSSurfacePropEntity)trace_ent;
 				Damage_Apply(foo, vehParent.m_eDriver, iImpactDamage, 0, DMG_VEHICLE);
+				print(sprintf("Delivering %i impact damage\n", iImpactDamage));
 			}
 #endif
 		}

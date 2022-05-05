@@ -44,7 +44,7 @@ This entity was introduced in Quake (1996).
 
 #ifdef CLIENT
 /* High Dynamic Range - Iris Adaption */
-var float g_flHDRIrisMinValue = 0.0;
+var float g_flHDRIrisMinValue = 1.0;
 var float g_flHDRIrisMaxValue = 2.0;
 var float g_flHDRIrisMultiplier = 1.0;
 var float g_flHDRIrisFadeUp = 0.1;
@@ -74,8 +74,6 @@ worldspawn::Initialized(void)
 	cvar_set("r_hdr_irisadaptation_multiplier", ftos(g_flHDRIrisMultiplier));
 	cvar_set("r_hdr_irisadaptation_fade_up", ftos(g_flHDRIrisFadeUp));
 	cvar_set("r_hdr_irisadaptation_fade_down", ftos(g_flHDRIrisFadeDown));
-
-	remove(this);
 }
 
 void
