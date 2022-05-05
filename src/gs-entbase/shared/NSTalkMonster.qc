@@ -907,11 +907,12 @@ NSTalkMonster_ParseSentence(void)
 	ent = findfloat(world, entnum, e);
 
 	if (ent) {
-		if (ent.classname != "NSTalkMonster")
+		if (ent.classname != "NSTalkMonster" && ent.classname != "ambient_generic")
 		dprint(sprintf("^3 NSTalkMonster_ParseSentence ^7: Entity %d not a NSTalkMonster!\n", e));
 		else {
 			targ = (NSTalkMonster)ent;
 			targ.Sentence(sentence);
+			dprint(sprintf("^3 NSTalkMonster_ParseSentence ^7: Entity %d saying %s\n", e, sentence));
 		}
 	} else {
 		dprint(sprintf("^3 NSTalkMonster_ParseSentence ^7: Entity %d not in PVS\n", e));

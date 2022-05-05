@@ -772,6 +772,8 @@ CheckSpawn(void() spawnfunc)
 	if (spawnfunc) {
 		spawnfunc();
 		self._mapspawned = true;
-	} else
+	} else {
+		print(sprintf("^1Cannot find entity class ^7%s\n", self.classname));
 		remove(self);
+	}
 }

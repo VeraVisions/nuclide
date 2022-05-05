@@ -56,18 +56,19 @@ enumflags
 	AMBIENT_VOLUME,
 	AMBIENT_RADIUS,
 	AMBIENT_PITCH,
-	AMBIENT_ORIGIN
+	AMBIENT_ORIGIN,
+	AMBIENT_ENABLED
 };
 
-class ambient_generic:NSPointTrigger
+class ambient_generic:NSTalkMonster
 {
 	/* networked attributes */
 	PREDICTED_STRING(m_strActivePath);
 	PREDICTED_FLOAT(m_flVolume);
 	PREDICTED_FLOAT(m_flRadius);
 	PREDICTED_FLOAT(m_flPitch);
+	PREDICTED_BOOL(m_bLoops);
 	bool m_bToggle;
-	bool m_bLoops;
 
 	/* spawn values */
 	string m_strSpawnPath;
@@ -87,6 +88,8 @@ class ambient_generic:NSPointTrigger
 	virtual void(entity, int) UseLoop;
 #else
 	virtual void(float, float) ReceiveEntity;
+	virtual float(void) predraw;
+	virtual void(string) SentenceSample;
 #endif
 	virtual void(string, string) SpawnKey;
 	virtual void(void) OnRemoveEntity;
@@ -95,7 +98,7 @@ class ambient_generic:NSPointTrigger
 void
 ambient_generic::OnRemoveEntity(void)
 {
-	sound(this, CHAN_VOICE, "common/null.wav", 0.1f, 0);
+	sound(this, CHAN_BODY, "common/null.wav", 0.1f, 0);
 }
 
 #ifdef SERVER
@@ -148,7 +151,20 @@ ambient_generic::UseNormal(entity act, int state)
 	dprint(sprintf("Sound once: %S Volume: %f; Radius: %d; Pitch: %d\n", \
 		m_strActivePath, m_flVolume, m_flRadius, m_flPitch));
 
-	sound(this, CHAN_VOICE, m_strActivePath, m_flVolume, m_flRadius, m_flPitch);
+	if (substring(m_strActivePath, 0, 1) == "!") {
+		string seq = Sentences_GetSamples(m_strActivePath);
+
+		if (seq == "")
+			return;
+
+		WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+		WriteByte(MSG_MULTICAST, EV_SENTENCE);
+		WriteEntity(MSG_MULTICAST, this);
+		WriteString(MSG_MULTICAST, seq);
+		msg_entity = this;
+		multicast(origin, MULTICAST_PHS);
+	} else
+		sound(this, CHAN_BODY, m_strActivePath, m_flVolume, m_flRadius, m_flPitch);
 }
 
 void
@@ -228,19 +244,21 @@ ambient_generic::EvaluateEntity(void)
 		SetSendFlags(AMBIENT_RADIUS);
 	if (ATTR_CHANGED(m_flPitch))
 		SetSendFlags(AMBIENT_PITCH);
+	if (ATTR_CHANGED(m_bLoops))
+		SetSendFlags(AMBIENT_ENABLED);
 
 	SAVE_STATE(origin);
 	SAVE_STATE(m_strActivePath);
 	SAVE_STATE(m_flVolume);
 	SAVE_STATE(m_flRadius);
 	SAVE_STATE(m_flPitch);
+	SAVE_STATE(m_bLoops);
 }
 
 float
 ambient_generic::SendEntity(entity ePEnt, float flChanged)
 {
-	/* only override when we're doing the toggle guff */
-	if (m_bLoops == false)
+	if (m_bLoops == true && m_bToggle == false)
 		return (0);
 
 	WriteByte(MSG_ENTITY, ENT_AMBIENTSOUND);
@@ -260,6 +278,8 @@ ambient_generic::SendEntity(entity ePEnt, float flChanged)
 		WriteByte(MSG_ENTITY, m_flRadius);
 	if (flChanged & AMBIENT_PITCH)
 		WriteFloat(MSG_ENTITY, m_flPitch);
+	if (flChanged & AMBIENT_ENABLED)
+		WriteByte(MSG_ENTITY, m_bLoops);
 
 	return (1);
 }
@@ -273,6 +293,7 @@ ambient_generic::ReceiveEntity(float isnew, float flChanged)
 		origin[2] = readcoord();
 		setsize(this, [0,0,0], [0,0,0]);
 		setorigin(this, origin);
+		drawmask = MASK_ENGINE;
 	}
 	
 	if (flChanged & AMBIENT_PATH)
@@ -283,10 +304,46 @@ ambient_generic::ReceiveEntity(float isnew, float flChanged)
 		m_flRadius = readbyte();
 	if (flChanged & AMBIENT_PITCH)
 		m_flPitch = readfloat();
+	if (flChanged & AMBIENT_ENABLED)
+		m_bLoops = readbyte();
 
 	dprint(sprintf("Sound received: %S Volume: %f; Radius: %d; Pitch: %d\n", m_strActivePath, m_flVolume, m_flRadius, m_flPitch));
-	//sound(this, CHAN_VOICE, m_strActivePath, m_flVolume, m_flRadius, m_flPitch);
-	soundupdate(this, CHAN_VOICE, m_strActivePath, m_flVolume, m_flRadius, m_flPitch, 0, 0);
+
+
+	if (m_bLoops == true)
+		soundupdate(this, CHAN_BODY, m_strActivePath, m_flVolume, m_flRadius, m_flPitch, 0, 0);
+}
+
+void
+ambient_generic::SentenceSample(string sample)
+{
+	/* honestly, the 0.25 for the radius is probably inaccurate (winged it), ATTN_NORM is too short though */
+	sound(this, CHAN_VOICE, sample, 1.0, 0.25, 100, SOUNDFLAG_FOLLOW);
+}
+
+float
+ambient_generic::predraw(void)
+{
+	ProcessWordQue();
+
+	/* pause/unpause CHAN_VOICE, because yes these ents are used for SPEECH */
+	if (serverkeyfloat(SERVERKEY_PAUSESTATE) != 1) {
+		/* resume; negative soundofs makes soundupdate act absolute */
+		if (m_bWasPaused == true)
+			soundupdate(this, CHAN_VOICE, "", 1.0, 0.25, 0, 0, -m_sndVoiceOffs);
+
+		m_bWasPaused = false;
+	} else {
+		/* called once when pausing */
+		if (m_bWasPaused == false)
+			m_sndVoiceOffs = getsoundtime(this, CHAN_VOICE); /* length into the sample */
+
+		/* make silent and keep updating so the sample doesn't stop */
+		soundupdate(this, CHAN_VOICE, "", 0.0, 0.25, 0, 0, -m_sndVoiceOffs);
+		m_bWasPaused = true;
+	}
+
+	return (PREDRAW_NEXT);
 }
 #endif
 
@@ -332,7 +389,7 @@ ambient_generic::SpawnKey(string strKey, string strValue)
 void
 ambient_generic::ambient_generic(void)
 {
-	super::NSPointTrigger();
+	super::NSTalkMonster();
 }
 
 #ifdef CLIENT
