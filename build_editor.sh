@@ -83,7 +83,7 @@ then
 	gmake clean
 fi
 
-CC=$WS_CC CXX=$WS_CXX CFLAGS="$WS_CFLAGS" LDFLAGS="$WS_LDFLAGS" gmake -j $BUILD_PROC
+gmake -j $BUILD_PROC CC=$WS_CC CXX=$WS_CXX CFLAGS="$WS_CFLAGS" LDFLAGS="$WS_LDFLAGS"
 
 mkdir -p ../../bin/bitmaps
 mv_wsfile defaultkeys.ini

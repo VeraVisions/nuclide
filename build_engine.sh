@@ -122,19 +122,19 @@ fi
 
 if [ "$BUILD_ENGINE_DEPENDENCIES" -eq 1 ]
 then
-	CC=$ENGINE_CC CXX=$ENGINE_CXX gmake -j $BUILD_PROC makelibs FTE_TARGET=$PLATFORM
+	gmake -j $BUILD_PROC CC=$ENGINE_CC CXX=$ENGINE_CXX  makelibs FTE_TARGET=$PLATFORM
 	printf "Built the static dependencies successfully.\n\n"
 fi
 
-CC=$ENGINE_CC CXX=$ENGINE_CXX gmake -j $BUILD_PROC $MAKETARGET  CFLAGS=-DMULTITHREAD FTE_TARGET=$PLATFORM
+gmake -j $BUILD_PROC CC=$ENGINE_CC CXX=$ENGINE_CXX $MAKETARGET  CFLAGS=-DMULTITHREAD FTE_TARGET=$PLATFORM
 cp -v "$OUTPUT" ../../../bin/fteqw
 printf "Built the client engine successfully.\n\n"
 
-CC=$ENGINE_CC CXX=$ENGINE_CXX gmake -j $BUILD_PROC sv-dbg
+gmake -j $BUILD_PROC CC=$ENGINE_CC CXX=$ENGINE_CXX sv-dbg
 cp -v ./debug/fteqw-sv ../../../bin/fteqw-sv
 printf "Built the dedicated server successfully.\n\n"
 
-CC=$ENGINE_CC CXX=$ENGINE_CXX gmake -j $BUILD_PROC qcc-rel
+gmake -j $BUILD_PROC CC=$ENGINE_CC CXX=$ENGINE_CXX qcc-rel
 cp -v ./release/fteqcc ../../../bin/fteqcc
 printf "Built the QuakeC compiler successfully.\n\n"
 

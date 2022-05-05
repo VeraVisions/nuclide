@@ -65,7 +65,7 @@ then
 	gmake clean
 fi
 
-CC=$ENGINE_CC CXX=$ENGINE_CXX gmake -j $BUILD_PROC
+gmake -j $BUILD_PROC CC=$ENGINE_CC CXX=$ENGINE_CXX
 printf "Built vvmtool successfully.\n"
 cp -v vvmtool ../../bin/vvmtool
 printf "DONE. Built ALL components successfully.\n"

@@ -21,7 +21,7 @@ Plays a sound sample of whatever format the engine is configured to support.
 "targetname" : Name
 "target" : Target when triggered.
 "killtarget" : Target to kill when triggered.
-"message" : Sound file to play
+"message" : Sound file to play, or sentences.txt entry if prefixed with a '!'
 "volume" : Playback volume from 0.0 to 1.0
 "pitch" : Playback pitch from 0.0 to 2.0
 
