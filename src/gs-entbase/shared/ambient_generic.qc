@@ -318,7 +318,7 @@ void
 ambient_generic::SentenceSample(string sample)
 {
 	/* honestly, the 0.25 for the radius is probably inaccurate (winged it), ATTN_NORM is too short though */
-	sound(this, CHAN_VOICE, sample, 1.0, 0.25, 100, SOUNDFLAG_FOLLOW);
+	sound(this, CHAN_VOICE, sample, 1.0, m_flRadius, 100, SOUNDFLAG_FOLLOW);
 }
 
 float
