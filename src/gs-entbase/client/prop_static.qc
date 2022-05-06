@@ -17,6 +17,8 @@
 class
 prop_static:NSEntity
 {
+	int m_iBody;
+
 	void(void) prop_static;
 
 	virtual void(string, string) SpawnKey;
@@ -32,6 +34,9 @@ prop_static::SpawnKey(string strKey, string strValue)
 	case "skin":
 		skin = stof(strValue);
 		break;
+	case "body":
+		m_iBody = stoi(strValue);
+		break;
 	default:
 		super::SpawnKey(strKey, strValue);
 	}
@@ -40,11 +45,14 @@ prop_static::SpawnKey(string strKey, string strValue)
 void
 prop_static::prop_static(void)
 {
+	float skindata;
 	drawmask = MASK_ENGINE;
 	Init();
 
 	solid = SOLID_NOT;
 	setmodel(this, model);
+	skindata = loadcustomskin("", sprintf("geomset 0 %i\ngeomset 1 %i\n", m_iBody, m_iBody));
+	applycustomskin(this, skindata);
 	setorigin(this, origin);
 	setsize(this, mins * scale, maxs * scale);
 	makestatic(this);
