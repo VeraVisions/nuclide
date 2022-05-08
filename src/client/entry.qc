@@ -272,7 +272,6 @@ CSQC_UpdateView(float w, float h, float focus)
 
 		View_PreDraw();
 #endif
-
 		addentities(MASK_ENGINE);
 
 		/* ideally move this into a base_player method */
@@ -347,6 +346,7 @@ CSQC_UpdateView(float w, float h, float focus)
 		addentities(MASK_GLOWS);
 		setproperty(VF_DRAWWORLD, 1);
 		SkyCamera_Setup(getproperty(VF_ORIGIN));
+		XR_UpdateView(self);
 
 		/* draw the viewmodel in a second pass if desired */
 		if (autocvar_r_viewmodelpass && pl.health > 0) {

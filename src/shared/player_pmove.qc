@@ -330,6 +330,10 @@ base_player::Physics_Run(void)
 	input_buttons = saved_input_buttons;
 	Physics_InputPostMove();
 
+	angles[0] = Math_FixDelta(angles[0]);
+	angles[1] = Math_FixDelta(angles[1]);
+	angles[2] = Math_FixDelta(angles[2]);
+
 #ifdef SERVER
 	/* Use Flagger */
 	vector src, dest;
@@ -345,9 +349,9 @@ base_player::Physics_Run(void)
 			flags |= FL_ONUSABLE;
 		}
 	}
-#endif
 
-	angles[0] = Math_FixDelta(angles[0]);
-	angles[1] = Math_FixDelta(angles[1]);
-	angles[2] = Math_FixDelta(angles[2]);
+	
+	m_xrSpace.SetOrigin(origin + view_ofs);
+	m_xrSpace.SetAngles(angles);
+#endif
 }

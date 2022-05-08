@@ -185,6 +185,7 @@ struct
 	string m_strPrintBuffer[5];
 	int m_iPrintLines;
 
+	bool m_iInputAttack;
 	int m_iInputAttack2;
 	int m_iInputReload;
 	int m_iInputUse;
@@ -212,4 +213,7 @@ struct
 	/* vehicles */
 	float m_flVehTransition;
 	vector m_vecVehEntry;
+
+	/* new XR helpers */
+	bool m_bMoveForward;
 } g_seats[4], *pSeat;

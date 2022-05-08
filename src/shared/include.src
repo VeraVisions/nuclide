@@ -9,4 +9,5 @@ player.qc
 player_pmove.qc
 propdata.qc
 surfaceproperties.qc
+../xr/include.src
 #endlist

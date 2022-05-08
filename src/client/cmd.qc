@@ -267,6 +267,30 @@ Cmd_Parse(string sCMD)
 	case "player_geomtest":
 		CMD_player_geomtest();
 		break;
+
+	/* XR binds, engine binds them currently */
+	case "+attack_left":
+		pSeat->m_bMoveForward = true;
+		break;
+	case "-attack_left":
+		pSeat->m_bMoveForward = false;
+		break;
+	case "+menu_left":
+		break;
+	case "-menu_left":
+		break;
+	case "+attack_right":
+		pSeat->m_iInputAttack = true;
+		break;
+	case "-attack_right":
+		pSeat->m_iInputAttack = false;
+		break;
+	case "+menu_right":
+		pSeat->m_iInputReload = TRUE;
+		break;
+	case "-menu_right":
+		pSeat->m_iInputReload = FALSE;
+		break;
 	default:
 		return (0);
 	}
@@ -343,4 +367,14 @@ Cmd_Init(void)
 	/* Requested by Slacer */
 	registercommand("+zoomin");
 	registercommand("-zoomin");
+
+	/* XR binds, temporady until the engine standardizes things */
+	registercommand("+attack_left");
+	registercommand("-attack_left");
+	registercommand("+attack_right");
+	registercommand("-attack_right");
+	registercommand("+menu_left");
+	registercommand("-menu_left");
+	registercommand("+menu_right");
+	registercommand("-menu_right");
 }

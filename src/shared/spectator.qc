@@ -450,6 +450,7 @@ spectator::PostFrame(void)
 void
 spectator::spectator(void)
 {
+	super::base_client();
 	modelindex = 0;
 	flags = FL_CLIENT;
 	SetSolid(SOLID_NOT);

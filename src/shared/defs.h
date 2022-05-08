@@ -41,6 +41,7 @@
 #endif
 
 #include "../gs-entbase/shared/baseentity.h"
+#include "../xr/defs.h"
 #include "client.h"
 #include "spectator.h"
 #include "player.h"

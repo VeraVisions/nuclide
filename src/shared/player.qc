@@ -102,6 +102,8 @@ base_player::PostFrame(void)
 void
 base_player::ClientInput(void)
 {
+	XR_InputFrame(this);
+
 	if (!Client_InIntermission() && IsFakeSpectator()) {
 		spectator::ClientInput();
 		SpectatorTrackPlayer();
@@ -135,6 +137,8 @@ base_player::OnRemoveEntity(void)
 {
 	if (p_model)
 		remove(p_model);
+
+	super::OnRemoveEntity();
 }
 
 /*
@@ -195,6 +199,17 @@ base_player::ClientInputFrame(void)
 		input_buttons &= ~INPUT_BUTTON3;
 		pSeat->m_iInputAttack2 = FALSE;
 		return;
+	}
+
+	/* some input overrides for XR */
+	if (XR_Available(this)) {
+		if (pSeat->m_bMoveForward) {
+			input_movevalues[0] = cvar("cl_forwardspeed");
+		}
+
+		if (pSeat->m_iInputAttack) {
+			input_buttons |= INPUT_BUTTON0;
+		}
 	}
 
 	/* compat*/
@@ -931,5 +946,6 @@ base_player::InputUse_Up(void)
 void
 base_player::base_player(void)
 {
+	super::spectator();
 	vehicle = __NULL__;
 }

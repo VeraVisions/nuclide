@@ -1,4 +1,10 @@
 void
+base_client::OnRemoveEntity(void)
+{
+	XR_Shutdown(this);
+}
+
+void
 base_client::ClientInput(void)
 {
 }
@@ -63,7 +69,7 @@ base_client::predraw(void)
 void
 base_client::base_client(void)
 {
-
+	XR_Init(this);
 }
 
 

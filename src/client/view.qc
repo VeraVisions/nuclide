@@ -207,12 +207,25 @@ View_DrawViewModel(void)
 
 	/* now apply the scale hack */
 	m_eViewModelL.scale = m_eViewModel.scale = autocvar_r_viewmodelscale;
-	m_eViewModelL.origin = m_eViewModel.origin = pSeat->m_vecPredictedOrigin + pl.view_ofs;
+	m_eViewModelL.origin = pl.m_xrInputLeft.GetOrigin();
+	m_eViewModel.origin = pl.m_xrInputRight.GetOrigin();
 
-	/* we only calculate bob on the right model, to avoid double speed bobbing */
-	Viewmodel_CalcBob();
-	Viewmodel_ApplyBob(m_eViewModel);
-	Viewmodel_ApplyBob(m_eViewModelL);
+	if (XR_Available(pl)) {
+		m_eViewModel.angles = pl.m_xrInputLeft.GetAngles();
+		m_eViewModelL.angles = pl.m_xrInputRight.GetAngles();
+	} else {
+		/* we only calculate bob on the right model, to avoid double speed bobbing */
+		Viewmodel_CalcBob();
+		Viewmodel_ApplyBob(m_eViewModel);
+		Viewmodel_ApplyBob(m_eViewModelL);
+
+		/* view roll */
+		if (pl.movetype == MOVETYPE_WALK) {
+			Camera_StrafeRoll(view_angles);
+			Camera_RunBob(view_angles);
+			setproperty(VF_ANGLES, view_angles + pl.punchangle);
+		}
+	}
 
 	/* this is currently broken */
 #if 0
@@ -259,13 +272,6 @@ View_DrawViewModel(void)
 		setorigin(m_eViewModelL, m_eViewModel.origin);
 		addentity(m_eViewModel);
 		addentity(m_eViewModelL);
-	}
-
-	/* view roll */
-	if (pl.movetype == MOVETYPE_WALK) {
-		Camera_StrafeRoll(view_angles);
-		Camera_RunBob(view_angles);
-		setproperty(VF_ANGLES, view_angles + pl.punchangle);
 	}
 }
 
