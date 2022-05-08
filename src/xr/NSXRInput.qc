@@ -33,7 +33,11 @@ NSXRInput::GetAngles(void)
 		return [0,0,0];
 	}
 
-	return m_xrSpace.RoomToWorldAngles(m_vecAngles); 
+	if (m_inputType != XR_INPUT_HEAD)
+		return m_xrSpace.RoomToWorldAngles(m_vecAngles);
+
+	/* head only cares about reporting yaw right now */
+	return m_xrSpace.RoomToWorldAngles([0, m_vecAngles[1], 0]);
 }
 
 vector
@@ -71,27 +75,40 @@ NSXRInput::InputFrame(void)
 {
 	switch (m_inputType) {
 	case XR_INPUT_HEAD:
-		m_vecOrigin = input_head_origin;
-		m_vecAngles = input_head_angles;
-		m_vecVelocity = input_head_velocity;
-		m_vecAVelocity = input_head_avelocity;
 		m_iStatus = input_head_status;
+		
+		if (m_iStatus & XR_STATUS_ORG)
+			m_vecOrigin = input_head_origin;
+		if (m_iStatus & XR_STATUS_ANG)
+			m_vecAngles = input_head_angles;
+		if (m_iStatus & XR_STATUS_VEL)
+			m_vecVelocity = input_head_velocity;
+		if (m_iStatus & XR_STATUS_AVEL)
+			m_vecAVelocity = input_head_avelocity;
 		m_iWeapon = input_head_weapon;
 		break;
 	case XR_INPUT_LEFT:
-		m_vecOrigin = input_left_origin;
-		m_vecAngles = input_left_angles;
-		m_vecVelocity = input_left_velocity;
-		m_vecAVelocity = input_left_avelocity;
 		m_iStatus = input_left_status;
+		if (m_iStatus & XR_STATUS_ORG)
+			m_vecOrigin = input_left_origin;
+		if (m_iStatus & XR_STATUS_ANG)
+			m_vecAngles = input_left_angles;
+		if (m_iStatus & XR_STATUS_VEL)
+			m_vecVelocity = input_left_velocity;
+		if (m_iStatus & XR_STATUS_AVEL)
+			m_vecAVelocity = input_left_avelocity;
 		m_iWeapon = input_left_weapon;
 		break;
 	case XR_INPUT_RIGHT:
-		m_vecOrigin = input_right_origin;
-		m_vecAngles = input_right_angles;
-		m_vecVelocity = input_right_velocity;
-		m_vecAVelocity = input_right_avelocity;
 		m_iStatus = input_right_status;
+		if (m_iStatus & XR_STATUS_ORG)
+			m_vecOrigin = input_right_origin;
+		if (m_iStatus & XR_STATUS_ANG)
+			m_vecAngles = input_right_angles;
+		if (m_iStatus & XR_STATUS_VEL)
+			m_vecVelocity = input_right_velocity;
+		if (m_iStatus & XR_STATUS_AVEL)
+			m_vecAVelocity = input_right_avelocity;
 		m_iWeapon = input_right_weapon;
 		break;
 	default:

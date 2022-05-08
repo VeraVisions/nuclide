@@ -350,8 +350,12 @@ base_player::Physics_Run(void)
 		}
 	}
 
-	
-	m_xrSpace.SetOrigin(origin + view_ofs);
-	m_xrSpace.SetAngles(angles);
+	if (XR_Available(this)) {
+		m_xrSpace.SetOrigin(origin);
+		m_xrSpace.SetAngles(input_angles);
+	} else {
+		m_xrSpace.SetOrigin(origin + view_ofs);
+		m_xrSpace.SetAngles(input_angles);
+	}
 #endif
 }

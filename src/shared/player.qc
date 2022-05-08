@@ -204,7 +204,7 @@ base_player::ClientInputFrame(void)
 	/* some input overrides for XR */
 	if (XR_Available(this)) {
 		if (pSeat->m_bMoveForward) {
-			input_movevalues[0] = cvar("cl_forwardspeed");
+			input_movevalues[0] = 100;
 		}
 
 		if (pSeat->m_iInputAttack) {

@@ -211,8 +211,8 @@ View_DrawViewModel(void)
 	m_eViewModel.origin = pl.m_xrInputRight.GetOrigin();
 
 	if (XR_Available(pl)) {
-		m_eViewModel.angles = pl.m_xrInputLeft.GetAngles();
-		m_eViewModelL.angles = pl.m_xrInputRight.GetAngles();
+		m_eViewModel.angles = pl.m_xrInputRight.GetAngles();
+		m_eViewModelL.angles = pl.m_xrInputLeft.GetAngles();
 	} else {
 		/* we only calculate bob on the right model, to avoid double speed bobbing */
 		Viewmodel_CalcBob();

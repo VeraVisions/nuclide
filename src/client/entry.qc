@@ -131,6 +131,9 @@ void
 CSQC_RenderScene(void)
 {
 	renderscene();
+
+	if (XR_Available(pSeat->m_ePlayer))
+		renderscene(); /* render it twice, for the normal window */
 }
 
 /*

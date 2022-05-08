@@ -22,3 +22,6 @@ void XR_InputFrame(entity);
 #ifdef CLIENT
 void XR_UpdateView(entity);
 #endif
+
+var float autocvar_xr_roomscale = 1.0f;
+var float autocvar_xr_viewheight = -48.0f;
