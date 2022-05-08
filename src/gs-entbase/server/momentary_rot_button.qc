@@ -25,7 +25,7 @@ in use. It affects momentary_door.
 "returnspeed" : Speed at which it returns to its original position.
 
 -------- SPAWNFLAGS --------
-MRBFL_DOORHACK : Unimplemented.
+MRBFL_DOORHACK : This entity will move along with another momentary_rot_button of the same name.
 MRBFL_NOTUSE : Don't allow interaction via "use" key/button.
 MRBFL_AUTORETURN : Rotate back to its original state when not being used.
 MRBFL_XAXIS : Rotate along the X-axis.
@@ -161,9 +161,9 @@ momentary_rot_button::OnPlayerUse(void)
 
 	for (entity e = world; (e = find(e, ::targetname, targetname));) { 
 		CBaseMomentary b = (CBaseMomentary)e;
-		
+
 		/* door hack: any entity with the same name as ours will follow our states */
-		if (HasSpawnFlags(MRBFL_DOORHACK))
+		if (b.HasSpawnFlags(MRBFL_DOORHACK))
 			b.SetMoveState(iEndState);
 	}
 }
