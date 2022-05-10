@@ -28,38 +28,4 @@
 #include "NSMonster.h"
 #include "NSTalkMonster.h"
 #include "NSProjectile.h"
-
-/*
-============
-Compatibility Layer
-
-CBaseEntity was once the main, bloated class.
-It's since been replaced by a smaller NSEntity class.
-
-Here we have to make sure that CBaseEntity points to the
-largest general purpose entity that is renderable.
-============
-*/
-/* TODO: Throw this out */
-class CBaseEntity:NSSurfacePropEntity
-{
-	void(void) CBaseEntity;
-};
-
-void
-CBaseEntity::CBaseEntity(void)
-{
-	NSSurfacePropEntity::NSSurfacePropEntity();
-}
-
-class CBaseTrigger:CBaseEntity
-{
-	void(void) CBaseTrigger;
-};
-
-void
-CBaseTrigger::CBaseTrigger(void)
-{
-	CBaseEntity::CBaseEntity();
-}
 #endif

@@ -19,34 +19,3 @@
 
 void FX_Spark(vector, vector);
 void FX_BreakModel(int, vector, vector, vector, float);
-
-/* Backwards compat */
-class CBaseMonster:NSMonster
-{
-	void(void) CBaseMonster;
-};
-void
-CBaseMonster::CBaseMonster(void)
-{
-	super::NSMonster();
-}
-
-class CBaseNPC:NSTalkMonster
-{
-	void(void) CBaseNPC;
-};
-void
-CBaseNPC::CBaseNPC(void)
-{
-	super::NSTalkMonster();
-}
-
-class CBasePhysics:NSPhysicsEntity
-{
-	void(void) CBasePhysics;
-};
-void
-CBasePhysics::CBasePhysics(void)
-{
-	super::NSPhysicsEntity();
-}

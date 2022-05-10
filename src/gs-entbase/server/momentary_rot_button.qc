@@ -47,7 +47,8 @@ enumflags
 	MRBFL_YAXIS
 };
 
-class momentary_rot_button:CBaseMomentary
+class
+momentary_rot_button:NSMomentary
 {
 	int m_iTurnDir;
 
@@ -155,12 +156,12 @@ momentary_rot_button::OnPlayerUse(void)
 	m_iTurnDir = 1 - m_iTurnDir;
 
 	for (entity e = world; (e = find(e, ::targetname, target));) { 
-		CBaseMomentary b = (CBaseMomentary)e;
+		NSMomentary b = (NSMomentary)e;
 		b.SetMoveState(iEndState);
 	}
 
 	for (entity e = world; (e = find(e, ::targetname, targetname));) { 
-		CBaseMomentary b = (CBaseMomentary)e;
+		NSMomentary b = (NSMomentary)e;
 
 		/* door hack: any entity with the same name as ours will follow our states */
 		if (b.HasSpawnFlags(MRBFL_DOORHACK))
@@ -185,12 +186,12 @@ momentary_rot_button::OnPlayerUnUse(void)
 	SetMoveState(iEndState);
 
 	for (entity e = world; (e = find(e, ::targetname, target));) { 
-		CBaseMomentary b = (CBaseMomentary)e;
+		NSMomentary b = (NSMomentary)e;
 		b.SetMoveState(iEndState);
 	}
 
 	for (entity e = world; (e = find(e, ::targetname, targetname));) {
-		CBaseMomentary b = (CBaseMomentary)e;
+		NSMomentary b = (NSMomentary)e;
 		
 		/* door hack: any entity with the same name as ours will follow our states */
 		if (b.HasSpawnFlags(MRBFL_DOORHACK))
@@ -262,5 +263,5 @@ void
 momentary_rot_button::momentary_rot_button(void)
 {
 	m_flReturnspeed = m_flSpeed = -1;
-	super::CBaseMomentary();
+	super::NSMomentary();
 }

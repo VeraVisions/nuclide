@@ -21,7 +21,8 @@ typedef enum
 	MOMENTARY_RETURNING
 };
 
-class CBaseMomentary:NSRenderableEntity
+class
+NSMomentary:NSRenderableEntity
 {
 	entity m_eUser;
 	vector m_vecMoveDir;
@@ -36,7 +37,7 @@ class CBaseMomentary:NSRenderableEntity
 	float m_flSpeed;
 	float m_flReturnspeed;
 
-	void(void) CBaseMomentary;
+	void(void) NSMomentary;
 
 	/* overrides */
 	virtual void(float) Save;
@@ -48,19 +49,19 @@ class CBaseMomentary:NSRenderableEntity
 };
 
 float
-CBaseMomentary::GetProgress(void)
+NSMomentary::GetProgress(void)
 {
 	return 0.0f;
 }
 
 void
-CBaseMomentary::MovementStateChanged(void)
+NSMomentary::MovementStateChanged(void)
 {
 	/* this is handled by the respective sub entity */
 }
 
 void
-CBaseMomentary::SetMoveState(int status)
+NSMomentary::SetMoveState(int status)
 {
 	if (m_iMoveState == status)
 		return;
@@ -70,7 +71,7 @@ CBaseMomentary::SetMoveState(int status)
 }
 
 void
-CBaseMomentary::Save(float handle)
+NSMomentary::Save(float handle)
 {
 	SaveFloat(handle, "user", num_for_edict(m_eUser));
 	SaveVector(handle, "move_dir", m_vecMoveDir);
@@ -85,7 +86,7 @@ CBaseMomentary::Save(float handle)
 }
 
 void
-CBaseMomentary::Restore(string strKey, string strValue)
+NSMomentary::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "user":
@@ -118,7 +119,7 @@ CBaseMomentary::Restore(string strKey, string strValue)
 }
 
 void
-CBaseMomentary::CBaseMomentary(void)
+NSMomentary::NSMomentary(void)
 {
 	super::NSRenderableEntity();
 }

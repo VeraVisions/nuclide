@@ -73,6 +73,13 @@
 
 #define printf(x, ...) print(sprintf(x, ...))
 
+void
+_NSLog(string msg)
+{
+	print(sprintf("%f %s\n", time, msg));
+}
+#define NSLog(x, ...) _NSLog(sprintf(x, ...))
+
 const vector VEC_HULL_MIN = [-16,-16,-36];
 const vector VEC_HULL_MAX = [16,16,36];
 const vector VEC_CHULL_MIN = [-16,-16,-18];

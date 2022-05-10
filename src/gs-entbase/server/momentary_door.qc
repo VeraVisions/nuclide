@@ -24,7 +24,8 @@ Dynamic door that will move back down if it's not being used.
 This entity was introduced in Half-Life (1998).
 */
 
-class momentary_door:CBaseMomentary
+class
+momentary_door:NSMomentary
 {
 	void(void) momentary_door;
 
@@ -137,5 +138,5 @@ momentary_door::SpawnKey(string strKey, string strValue)
 void
 momentary_door::momentary_door(void)
 {
-	super::CBaseMomentary();
+	super::NSMomentary();
 }
