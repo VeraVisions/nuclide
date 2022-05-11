@@ -1,11 +1,11 @@
 #includelist
-client.qc
-spectator.qc
+NSClient.qc
+NSClientSpectator.qc
 pmove.qc
 pmove_custom.qc
 sound.qc
 math.qc
-player.qc
+NSClientPlayer.qc
 player_pmove.qc
 propdata.qc
 surfaceproperties.qc

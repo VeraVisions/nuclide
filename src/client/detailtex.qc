@@ -51,7 +51,7 @@ DetailTex_Parse(string maptex, string detailtex, float xscale, float yscale)
 	xscale *= autocvar(r_detailtextures_xscale, 1.0, "X scale multiplier for detail tex");
 	yscale *= autocvar(r_detailtextures_yscale, 1.0, "Y scale multiplier for detail tex");
 
-	dprint(sprintf("DETAIL: %s %s %f %f\n", maptex, detailtex, xscale, yscale));
+	NSLog("DETAIL: %s %s %f %f", maptex, detailtex, xscale, yscale);
 
 #if 1
 	shaderforname(strcat(maptex, "_detail"), sprintf(g_detail_shader, detailtex, xscale, yscale));

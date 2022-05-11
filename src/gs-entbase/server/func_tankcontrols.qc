@@ -54,9 +54,9 @@ func_tankcontrols::OnPlayerUse(void)
 
 	if (tank) {
 		if (!tank.m_eDriver)
-			tank.PlayerEnter((base_player)eActivator);
+			tank.PlayerEnter((NSClientPlayer)eActivator);
 		else if (tank.m_eDriver == eActivator)
-			tank.PlayerLeave((base_player)eActivator);
+			tank.PlayerLeave((NSClientPlayer)eActivator);
 	}
 }
 

@@ -26,7 +26,7 @@ MultiplayerRules::FrameStart(void)
 }
 
 void
-MultiplayerRules::PlayerDeath(base_player pl)
+MultiplayerRules::PlayerDeath(NSClientPlayer pl)
 {
 	Plugin_PlayerObituary(g_dmg_eAttacker, g_dmg_eTarget, g_dmg_iWeapon, g_dmg_iHitBody, g_dmg_iDamage);
 
@@ -61,7 +61,7 @@ MultiplayerRules::PlayerDeath(base_player pl)
 }
 
 void
-MultiplayerRules::PlayerSpawn(base_player pp)
+MultiplayerRules::PlayerSpawn(NSClientPlayer pp)
 {
 	player pl = (player)pp;
 	/* this is where the mods want to deviate */
@@ -99,7 +99,7 @@ MultiplayerRules::PlayerSpawn(base_player pp)
 }
 
 float
-MultiplayerRules::ConsoleCommand(base_player pp, string cmd)
+MultiplayerRules::ConsoleCommand(NSClientPlayer pp, string cmd)
 {
 	tokenize(cmd);
 

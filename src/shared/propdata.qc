@@ -227,7 +227,7 @@ PropData_ForModel(string modelname)
 	fh = fopen(strcat(modelname, ".propdata"), FILE_READ);
 	if (fh < 0) {
 		g_propdata_count--;
-		dprint(sprintf("Can't find propdata for model %s\n", modelname));
+		NSLog("Can't find propdata for model %s", modelname);
 		return -1;
 	}
 	while ((line = fgets(fh))) {

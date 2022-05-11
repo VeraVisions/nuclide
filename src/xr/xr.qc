@@ -30,7 +30,7 @@
 void
 XR_Init(entity ePlayer)
 {
-	base_client pl = (base_client)ePlayer;
+	NSClient pl = (NSClient)ePlayer;
 
 	print("--------- Initializing XR ----------\n");
 	pl.m_xrSpace = spawn(NSXRSpace);
@@ -50,7 +50,7 @@ XR_Init(entity ePlayer)
 void
 XR_Shutdown(entity ePlayer)
 {
-	base_client pl = (base_client)ePlayer;
+	NSClient pl = (NSClient)ePlayer;
 	remove(pl.m_xrInputHead);
 	remove(pl.m_xrInputLeft);
 	remove(pl.m_xrInputRight);
@@ -61,7 +61,7 @@ XR_Shutdown(entity ePlayer)
 void
 XR_UpdateView(entity ePlayer)
 {
-	base_client pl = (base_client)ePlayer;
+	NSClient pl = (NSClient)ePlayer;
 
 	/* not yet ready */
 	if (!pl.m_xrSpace)
@@ -88,7 +88,7 @@ XR_UpdateView(entity ePlayer)
 void
 XR_InputFrame(entity ePlayer)
 {
-	base_client pl = (base_client)ePlayer;
+	NSClient pl = (NSClient)ePlayer;
 
 	/* not yet ready */
 	if (!pl.m_xrSpace)
@@ -118,7 +118,7 @@ XR_InputFrame(entity ePlayer)
 bool
 XR_Available(entity ePlayer)
 {
-	base_client pl = (base_client)ePlayer;
+	NSClient pl = (NSClient)ePlayer;
 
 	/* we only care about the HMD... otherwise why even bother? */
 	return pl.m_xrInputHead.IsAvailable();

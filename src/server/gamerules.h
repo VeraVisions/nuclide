@@ -26,22 +26,22 @@ class CGameRules
 
 	/* logic */
 	virtual void(void) FrameStart;
-	virtual float(base_player,string) ConsoleCommand;
+	virtual float(NSClientPlayer,string) ConsoleCommand;
 
 	/* client */
-	virtual void(base_player) PlayerConnect;
-	virtual void(base_player) PlayerDisconnect;
-	virtual void(base_player) PlayerKill;
-	virtual void(base_player) PlayerSpawn;
-	virtual void(base_player) PlayerPreFrame;
-	virtual void(base_player) PlayerPostFrame;
-	virtual void(base_player) PlayerDeath;
-	virtual void(base_player) PlayerPain;
-	virtual bool(base_player) PlayerCanAttack;
+	virtual void(NSClientPlayer) PlayerConnect;
+	virtual void(NSClientPlayer) PlayerDisconnect;
+	virtual void(NSClientPlayer) PlayerKill;
+	virtual void(NSClientPlayer) PlayerSpawn;
+	virtual void(NSClientPlayer) PlayerPreFrame;
+	virtual void(NSClientPlayer) PlayerPostFrame;
+	virtual void(NSClientPlayer) PlayerDeath;
+	virtual void(NSClientPlayer) PlayerPain;
+	virtual bool(NSClientPlayer) PlayerCanAttack;
 
 	/* level transitions */
 	virtual void(void) LevelNewParms;
-	virtual void(base_player) LevelChangeParms;
+	virtual void(NSClientPlayer) LevelChangeParms;
 
 	/* Entities/Item manipulation */
 	virtual int(int) MaxItemPerSlot;
@@ -59,9 +59,9 @@ class CGameRules
 	virtual float(void) IsTeamPlay;
 
 	/* spectator */
-	/*virtual void(base_player) SpectatorConnect;
-	virtual void(base_player) SpectatorDisconnect;
-	virtual void(base_player) SpectatorThink;*/
+	/*virtual void(NSClientPlayer) SpectatorConnect;
+	virtual void(NSClientPlayer) SpectatorDisconnect;
+	virtual void(NSClientPlayer) SpectatorThink;*/
 };
 
 /* our currently running mode */

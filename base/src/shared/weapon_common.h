@@ -72,7 +72,7 @@ vector Weapons_GetCameraPos(player pl);
 void Weapons_ViewAnimation(player pl, int);
 void Weapons_ViewPunchAngle(player pl, vector);
 int Weapons_IsPresent(player, int);
-void Weapons_UpdateAmmo(base_player, int, int, int);
+void Weapons_UpdateAmmo(NSClientPlayer, int, int, int);
 int Weapons_GetAnimation(player pl);
 void Weapons_EnableModel(void);
 void Weapons_DisableModel(void);

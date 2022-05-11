@@ -48,7 +48,7 @@ void CUIListBox::SetSize (vector vecSize)
 void CUIListBox::SetItemCount (int iCount)
 {
 	if (!m_iItemCount) {
-		dprint(sprintf("CUIListBox: Initialized with a maximum of %i entries\n", iCount));
+		NSLog("CUIListBox: Initialized with a maximum of %i entries", iCount);
 		m_iItemCount = iCount;
 		m_strItems = memalloc(iCount * sizeof(string));
 	}

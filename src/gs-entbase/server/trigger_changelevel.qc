@@ -153,8 +153,8 @@ trigger_changelevel::Change(void)
 
 	/* standard level change */
 	if (!m_strLandmark) {
-		dprint(sprintf("^2trigger_changelevel::^3Change^7: Change to `%s`\n", 
-			m_strMap));
+		NSLog("^2trigger_changelevel::^3Change^7: Change to `%s`", 
+			m_strMap);
 		parm_string = m_strChangeTarget;
 		changelevel(m_strMap);
 		return;
@@ -185,7 +185,7 @@ trigger_changelevel::Change(void)
 		info_landmark lm = (info_landmark)e;
 		/* found it */
 		if (lm.targetname == m_strLandmark) {
-			dprint(sprintf("^2trigger_changelevel::^3Change^7: Found landmark for %s\n", m_strLandmark));
+			NSLog("^2trigger_changelevel::^3Change^7: Found landmark for %s", m_strLandmark);
 			g_landmarkpos = m_activator.origin - lm.origin;
 			changelevel(m_strMap, m_strLandmark);
 			break;
@@ -285,7 +285,7 @@ Landmark_GetSpot(void)
 		info_landmark lm = (info_landmark)e;
 		/* found it */
 		if (lm.targetname == startspot) {
-			dprint(sprintf("^3Landmark_GetSpot^7: Found landmark for %s\n", startspot));
+			NSLog("^3Landmark_GetSpot^7: Found landmark for %s", startspot);
 			return lm.origin + g_landmarkpos;
 		}
 	}

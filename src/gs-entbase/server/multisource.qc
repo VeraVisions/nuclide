@@ -111,12 +111,12 @@ void
 multisource::Trigger(entity act, int unused)
 {
 	if (QueryTargets() == FALSE) {
-		dprint(sprintf("[^1MULTISOURCE^7] %s is inactive.\n", targetname));
+		NSLog("[^1MULTISOURCE^7] %s is inactive.", targetname);
 		m_iValue = FALSE;
 		return;
 	}
 
-	dprint(sprintf("[^1MULTISOURCE^7] %s is now active.\n", targetname));
+	NSLog("[^1MULTISOURCE^7] %s is now active.", targetname);
 	m_iValue = TRUE;
 	UseTargets(act, TRIG_TOGGLE, m_flDelay);
 }

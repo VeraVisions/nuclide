@@ -30,51 +30,51 @@ CGameRules::FrameStart(void)
 	//print("StartFrame!\n");
 }
 float
-CGameRules::ConsoleCommand(base_player pl, string cmd)
+CGameRules::ConsoleCommand(NSClientPlayer pl, string cmd)
 {
 	return (0);
 }
 
 /* client */
 void
-CGameRules::PlayerConnect(base_player pl)
+CGameRules::PlayerConnect(NSClientPlayer pl)
 {
 	//print("ClientConnect!\n");
 }
 void
-CGameRules::PlayerDisconnect(base_player pl)
+CGameRules::PlayerDisconnect(NSClientPlayer pl)
 {
 	//print("ClientDisconnect!\n");
 }
 void
-CGameRules::PlayerKill(base_player pl)
+CGameRules::PlayerKill(NSClientPlayer pl)
 {
 	//print("PlayerKill!\n");
 }
 void
-CGameRules::PlayerDeath(base_player pl)
+CGameRules::PlayerDeath(NSClientPlayer pl)
 {
 	//print("PlayerDeath!\n");
 	pl.Death();
 }
 void
-CGameRules::PlayerPain(base_player pl)
+CGameRules::PlayerPain(NSClientPlayer pl)
 {
 	//print("ClientKill!\n");
 	pl.Pain();
 }
 void
-CGameRules::PlayerSpawn(base_player pl)
+CGameRules::PlayerSpawn(NSClientPlayer pl)
 {
 	//print("PutClientInServer!\n");
 }
 void
-CGameRules::PlayerPreFrame(base_player pl)
+CGameRules::PlayerPreFrame(NSClientPlayer pl)
 {
 	//print("PlayerPreThink!\n");
 }
 void
-CGameRules::PlayerPostFrame(base_player pl)
+CGameRules::PlayerPostFrame(NSClientPlayer pl)
 {
 	//print("PlayerPostThink!\n");
 }
@@ -86,7 +86,7 @@ CGameRules::LevelNewParms(void)
 	//print("LevelNewParms!\n");
 }
 void
-CGameRules::LevelChangeParms(base_player pl)
+CGameRules::LevelChangeParms(NSClientPlayer pl)
 {
 	//print("LevelChangeParms!\n");
 }
@@ -230,7 +230,7 @@ CGameRules::DamageApply(entity t, entity c, float dmg, int w, damageType_t type)
 
 	/* only clients have armor */
 	if (eTarget.flags & FL_CLIENT) {
-		base_player tp = (base_player)t;
+		NSClientPlayer tp = (NSClientPlayer)t;
 
 		/* don't allow any damage */
 		if (PlayerCanAttack(tp) == false) {
@@ -414,7 +414,7 @@ Gamerules_IsTeamPlay(void)
 }
 
 bool
-CGameRules::PlayerCanAttack(base_player bp)
+CGameRules::PlayerCanAttack(NSClientPlayer bp)
 {
 	return true;
 }

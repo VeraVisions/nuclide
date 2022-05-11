@@ -213,7 +213,7 @@ void
 func_tank::customphysics(void)
 {
 	if (m_eDriver && m_eDriver.health <= 0)
-		PlayerLeave((base_player)m_eDriver);
+		PlayerLeave((NSClientPlayer)m_eDriver);
 
 	if (m_eDriver) {
 		vector endorg;
@@ -223,7 +223,7 @@ func_tank::customphysics(void)
 		PlayerUpdateFlags();
 
 		if (vlen(m_eDriver.origin - origin) > 128)
-			PlayerLeave((base_player)m_eDriver);
+			PlayerLeave((NSClientPlayer)m_eDriver);
 	}
 }
 
@@ -273,7 +273,7 @@ func_tank::Respawn(void)
 	SetAngles(GetSpawnAngles());
 
 	if (m_eDriver)
-		PlayerLeave((base_player)m_eDriver);
+		PlayerLeave((NSClientPlayer)m_eDriver);
 }
 
 void

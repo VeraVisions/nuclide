@@ -318,8 +318,8 @@ EFX_UpdateListener(void)
 	}
 	g_flEFXTime += clframetime;
 #else
-	dprint(sprintf("EFX_UpdateListener: Changed style to %s (%i)\n", 
-		g_efx_name[g_iEFX], g_iEFX));
+	NSLog("EFX_UpdateListener: Changed style to %s (%i)", 
+		g_efx_name[g_iEFX], g_iEFX);
 
 	old_dsp = g_iEFX;
 	setup_reverb(12, &g_efx[g_iEFX], sizeof(reverbinfo_t));

@@ -20,7 +20,7 @@ TCP_Connect(tcpinfo_t *in, string path)
 	in.m_fSocket = fopen(path, -1);
 
 	if (in.m_fSocket < 0) {
-		dprint(sprintf("^1TCP_Connect^7: Unable to access %s\n", path));
+		print(sprintf("^1TCP_Connect^7: Unable to access %s\n", path));
 	} else {
 		/* we got at least this far */
 		in.m_iState = STATE_CONNECTING;

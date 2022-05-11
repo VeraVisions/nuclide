@@ -55,8 +55,8 @@ class NSVehicle:NSSurfacePropEntity
 	virtual entity(void) GetDriver;
 	virtual void(void) PlayerUpdateFlags;
 	virtual void(void) PlayerAlign;
-	virtual void(base_player) PlayerEnter;
-	virtual void(base_player) PlayerLeave;
+	virtual void(NSClientPlayer) PlayerEnter;
+	virtual void(NSClientPlayer) PlayerLeave;
 	virtual void() PlayerInput;
 	virtual float(void) DriverAnimation;
 
@@ -84,15 +84,3 @@ enumflags
 #ifdef CLIENT
 void basevehicle_readentity(float isnew);
 #endif
-
-/* vehicle hakku */
-class CBaseVehicle:NSVehicle
-{
-	void(void) CBaseVehicle;
-};
-
-void
-CBaseVehicle::CBaseVehicle(void)
-{
-	NSVehicle::NSVehicle();
-}

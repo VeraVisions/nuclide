@@ -69,7 +69,7 @@ ClientConnect(void)
 	}
 
 	if (g_ents_initialized)
-		g_grMode.PlayerConnect((base_player)self);
+		g_grMode.PlayerConnect((NSClientPlayer)self);
 
 	for (entity a = world; (a = find(a, ::classname, "player"));)
 		playercount++;
@@ -97,7 +97,7 @@ void
 ClientDisconnect(void)
 {
 	if (g_ents_initialized)
-		g_grMode.PlayerDisconnect((base_player)self);
+		g_grMode.PlayerDisconnect((NSClientPlayer)self);
 
 	/* this will hide/remove the player from other clients */
 	player pl = (player)self;
@@ -116,15 +116,15 @@ void
 ClientKill(void)
 {
 	if (g_ents_initialized)
-		g_grMode.PlayerKill((base_player)self);
+		g_grMode.PlayerKill((NSClientPlayer)self);
 }
 
 /*
 =================
 SpectatorThink
 
-Run every frame on every spectator.
-The 'self' global refers to one of any given amount of spectators.
+Run every frame on every NSClientSpectator.
+The 'self' global refers to one of any given amount of NSClientSpectators.
 =================
 */
 void
@@ -133,7 +133,7 @@ SpectatorThink(void)
 	Game_SpectatorThink();
 
 	if (self.classname == "spectator") {
-		spectator spec = (spectator)self;
+		NSClientSpectator spec = (NSClientSpectator)self;
 		spec.PreFrame();
 		spec.PostFrame();
 		return;
@@ -144,23 +144,23 @@ SpectatorThink(void)
 =================
 SpectatorConnect
 
-Called when a spectator joins the server.
-The 'self' global is the connecting spectator in question.
+Called when a NSClientSpectator joins the server.
+The 'self' global is the connecting NSClientSpectator in question.
 =================
 */
 void
 SpectatorConnect(void)
 {
 	Game_SpectatorConnect();
-	spawnfunc_spectator();
+	spawnfunc_NSClientSpectator();
 }
 
 /*
 =================
 SpectatorDisconnect
 
-Called when a spectator leaves the server.
-The 'self' global is the leaving spectator in question.
+Called when a NSClientSpectator leaves the server.
+The 'self' global is the leaving NSClientSpectator in question.
 Attributes cleared when this function is done executing.
 =================
 */
@@ -185,9 +185,9 @@ void
 PutClientInServer(void)
 {
 	if (g_ents_initialized)
-		g_grMode.PlayerSpawn((base_player)self);
+		g_grMode.PlayerSpawn((NSClientPlayer)self);
 
-	Plugin_PlayerEntered((base_player)self);
+	Plugin_PlayerEntered((NSClientPlayer)self);
 
 	/* activate all game_playerspawn entities */
 	for (entity a = world; (a = find(a, ::targetname, "game_playerspawn"));) {
@@ -211,7 +211,7 @@ void
 PlayerPreThink(void)
 {
 	if (self.classname == "spectator") {
-		//spectator spec = (spectator)self;
+		//NSClientSpectator spec = (NSClientSpectator)self;
 		//spec.PreFrame();
 		return;
 	}
@@ -227,7 +227,7 @@ PlayerPreThink(void)
 #endif
 
 	if (g_ents_initialized)
-		g_grMode.PlayerPreFrame((base_player)self);
+		g_grMode.PlayerPreFrame((NSClientPlayer)self);
 }
 
 /*
@@ -259,7 +259,7 @@ PlayerPostThink(void)
 
 	if (g_ents_initialized) {
 		player pl = (player)self;
-		g_grMode.PlayerPostFrame((base_player)self);
+		g_grMode.PlayerPostFrame((NSClientPlayer)self);
 		pl.EvaluateEntity();
 	}
 }
@@ -300,7 +300,7 @@ SetChangeParms(void)
 	print("--------- Setting Level-Change Parameters ----------\n");
 
 	if (g_ents_initialized)
-		g_grMode.LevelChangeParms((base_player)self);
+		g_grMode.LevelChangeParms((NSClientPlayer)self);
 }
 
 /*
@@ -317,7 +317,7 @@ void
 SV_RunClientCommand(void)
 {
 	if (self.classname == "spectator") {
-		spectator spec = (spectator)self;
+		NSClientSpectator spec = (NSClientSpectator)self;
 		spec.RunClientCommand();
 	}
 
@@ -365,7 +365,7 @@ SV_ParseClientCommand(string cmd)
 		if (self.classname != "player")
 			break;
 		ClientKill();
-		spawnfunc_spectator();
+		spawnfunc_NSClientSpectator();
 		break;
 	case "play":
 		if (self.classname != "spectator")

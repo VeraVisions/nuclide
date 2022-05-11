@@ -33,17 +33,17 @@ Event_ServerModelEvent(float flTimeStamp, int iCode, string strData)
 			NSEntity trigger = (NSEntity)f;
 			if (trigger.Trigger != __NULL__) {
 				trigger.Trigger(self, TRIG_TOGGLE);
-				dprint(sprintf("^2%s^7::^3ModelEvent^7: " \
+				NSLog("^2%s^7::^3ModelEvent^7: " \
 					"Calling trigger '%s'\n",
-					self.classname, strData));
+					self.classname, strData);
 			}
 		}
 		break;
 	case 1004:
 		break;
 	default:
-		dprint(sprintf("^3[SERVER]^7 Unknown model-event code " \
-			"%i with data %s\n", iCode, strData));
+		NSLog("^3[SERVER]^7 Unknown model-event code " \
+			"%i with data %s\n", iCode, strData);
 		break;
 	} 
 }

@@ -91,22 +91,22 @@ env_render::Trigger(entity act, int state)
 		(e = find(e, ::targetname, target));) {
 		NSRenderableEntity trigger = (NSRenderableEntity)e;
 
-		dprint(sprintf("^2env_render::^3Trigger^7: with spawnflags %d\n", spawnflags));
-			dprint(sprintf("\tTarget: %s\n", target));
+		NSLog("^2env_render::^3Trigger^7: with spawnflags %d", spawnflags);
+			NSLog("\tTarget: %s", target);
 		if (!HasSpawnFlags(SF_NORENDERMODE)) {
-			dprint(sprintf("\tMode change from %d to %d\n", trigger.m_iRenderMode, m_iRenderMode));
+			NSLog("\tMode change from %d to %d", trigger.m_iRenderMode, m_iRenderMode);
 			trigger.SetRenderMode(m_iRenderMode);
 		}
 		if (!HasSpawnFlags(SF_NORENDERCOLOR)) {
-			dprint(sprintf("\tColor change from %v to %v\n", trigger.m_vecRenderColor, m_vecRenderColor));
+			NSLog("\tColor change from %v to %v", trigger.m_vecRenderColor, m_vecRenderColor);
 			trigger.SetRenderColor(m_vecRenderColor);
 		}
 		if (!HasSpawnFlags(SF_NORENDERAMT)) {
-			dprint(sprintf("\tAmt change from %d to %d\n", trigger.m_flRenderAmt, m_flRenderAmt));
+			NSLog("\tAmt change from %d to %d", trigger.m_flRenderAmt, m_flRenderAmt);
 			trigger.SetRenderAmt(m_flRenderAmt);
 		}
 		if (!HasSpawnFlags(SF_NORENDERFX)) {
-			dprint(sprintf("\tFX change from %d to %d\n", trigger.m_iRenderFX, m_iRenderFX));
+			NSLog("\tFX change from %d to %d", trigger.m_iRenderFX, m_iRenderFX);
 			trigger.SetRenderFX(m_iRenderFX);
 		}
 	}

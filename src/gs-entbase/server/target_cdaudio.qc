@@ -73,8 +73,8 @@ target_cdaudio::Touch(entity eToucher)
 		return;
 	}
 
-	dprint(sprintf("^2target_cdaudio::^3Trigger^7: CD Track %i requested\n", 
-		m_iCDTrack));
+	NSLog("^2target_cdaudio::^3Trigger^7: CD Track %i requested", 
+		m_iCDTrack);
 
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_MUSICTRACK);

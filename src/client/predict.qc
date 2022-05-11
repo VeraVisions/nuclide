@@ -102,7 +102,7 @@ Propagate our pmove state to whatever the current frame before its stomped on
 =================
 */
 void
-Predict_SpectatorPreFrame(spectator pl)
+Predict_SpectatorPreFrame(NSClientSpectator pl)
 {	
 }
 
@@ -116,6 +116,6 @@ Rewind our pmove state back to before we started predicting.
 =================
 */
 void
-Predict_SpectatorPostFrame(spectator pl)
+Predict_SpectatorPostFrame(NSClientSpectator pl)
 {
 }

@@ -14,14 +14,14 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void Weapons_PickupNotify(base_player pl, int w);
-void Weapons_RefreshAmmo(base_player pl);
-void Weapons_SwitchBest(base_player pl, optional float skip);
-int Weapons_AddItem(base_player pl, int w, int startammo);
-void Weapons_RemoveItem(base_player pl, int w);
+void Weapons_PickupNotify(NSClientPlayer pl, int w);
+void Weapons_RefreshAmmo(NSClientPlayer pl);
+void Weapons_SwitchBest(NSClientPlayer pl, optional float skip);
+int Weapons_AddItem(NSClientPlayer pl, int w, int startammo);
+void Weapons_RemoveItem(NSClientPlayer pl, int w);
 void Weapons_InitItem(int w);
-void Weapons_UpdateAmmo(base_player pl, int a1, int a2, int a3);
-void Weapons_ReloadWeapon(base_player pl, .int mag, .int ammo, int max);
-void Weapon_DropCurrentWeapon(base_player pl);
+void Weapons_UpdateAmmo(NSClientPlayer pl, int a1, int a2, int a3);
+void Weapons_ReloadWeapon(NSClientPlayer pl, .int mag, .int ammo, int max);
+void Weapon_DropCurrentWeapon(NSClientPlayer pl);
 int Weapon_GetCount();
 int Weapon_GetBitID(int);

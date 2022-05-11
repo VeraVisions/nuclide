@@ -70,8 +70,8 @@ trigger_autosave::Touch(entity eToucher)
 	msg_entity = this;
 	multicast(origin, MULTICAST_ALL);
 
-	dprint(sprintf("^2trigger_autosave::^3Touch^7: %s called autosave\n", 
-		eToucher.netname));
+	NSLog("^2trigger_autosave::^3Touch^7: %s called autosave", 
+		eToucher.netname);
 
 	localcmd("save autosave\n");
 

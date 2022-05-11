@@ -714,7 +714,7 @@ NSTalkMonster::ProcessWordQue(void)
 
 	SentenceSample(m_pSentenceQue[m_iSentencePos].m_strSnd);
 
-	dprint(sprintf("^2NSEntity::^3ProcessWordQue^7: Speaking %s\n", m_pSentenceQue[m_iSentencePos].m_strSnd));
+	NSLog("^2NSEntity::^3ProcessWordQue^7: Speaking %s", m_pSentenceQue[m_iSentencePos].m_strSnd);
 	m_iSentencePos++;
 
 	if (m_iSentencePos == m_iSentenceCount) {
@@ -908,14 +908,14 @@ NSTalkMonster_ParseSentence(void)
 
 	if (ent) {
 		if (ent.classname != "NSTalkMonster" && ent.classname != "ambient_generic")
-		dprint(sprintf("^3 NSTalkMonster_ParseSentence ^7: Entity %d not a NSTalkMonster!\n", e));
+		NSLog("^3 NSTalkMonster_ParseSentence ^7: Entity %d not a NSTalkMonster!", e);
 		else {
 			targ = (NSTalkMonster)ent;
 			targ.Sentence(sentence);
-			dprint(sprintf("^3 NSTalkMonster_ParseSentence ^7: Entity %d saying %s\n", e, sentence));
+			NSLog("^3 NSTalkMonster_ParseSentence ^7: Entity %d saying %s", e, sentence);
 		}
 	} else {
-		dprint(sprintf("^3 NSTalkMonster_ParseSentence ^7: Entity %d not in PVS\n", e));
+		NSLog("^3 NSTalkMonster_ParseSentence ^7: Entity %d not in PVS", e);
 	}
 }
 

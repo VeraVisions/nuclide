@@ -51,7 +51,7 @@ Tells the client if we picked up a NEW weapon item.
 =================
 */
 void
-Weapons_PickupNotify(base_player pl, int w)
+Weapons_PickupNotify(NSClientPlayer pl, int w)
 {
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_WEAPON_PICKUP);
@@ -68,7 +68,7 @@ Just calls updateammo() when available... maybe a bit redundant.
 =================
 */
 void
-Weapons_RefreshAmmo(base_player pl)
+Weapons_RefreshAmmo(NSClientPlayer pl)
 {
 	if (g_weapons[pl.activeweapon].updateammo != __NULL__) {
 		g_weapons[pl.activeweapon].updateammo((player)pl);
@@ -83,7 +83,7 @@ Switch to the 'best' weapon according to our weight system.
 =================
 */
 void
-Weapons_SwitchBest(base_player pl, optional float skip = 0)
+Weapons_SwitchBest(NSClientPlayer pl, optional float skip = 0)
 {
 	entity oldself = self;
 	self = pl;
@@ -120,7 +120,7 @@ returns TRUE if weapon pickup gets removed from this world
 =================
 */
 int
-Weapons_AddItem(base_player pl, int w, int startammo)
+Weapons_AddItem(NSClientPlayer pl, int w, int startammo)
 {
 	int value;
 
@@ -202,7 +202,7 @@ Makes sure the item bit of g_items is reliably unset without errors.
 =================
 */
 void
-Weapons_RemoveItem(base_player pl, int w)
+Weapons_RemoveItem(NSClientPlayer pl, int w)
 {
 	if (pl.activeweapon == w)
 		pl.activeweapon = WEAPON_NONE;
@@ -236,7 +236,7 @@ Manipulates the .mag and .ammo field pointer with some basic reload logic.
 =================
 */
 void
-Weapons_ReloadWeapon(base_player pl, .int mag, .int ammo, int max)
+Weapons_ReloadWeapon(NSClientPlayer pl, .int mag, .int ammo, int max)
 {
 	int iNeed = max - pl.(mag);
 	int iHave = pl.(ammo);
@@ -256,7 +256,7 @@ Weapon_DropCurrentWeapon
 =================
 */
 void
-Weapon_DropCurrentWeapon(base_player pl)
+Weapon_DropCurrentWeapon(NSClientPlayer pl)
 {
 	
 	static void DropWeapon_Enable(void)

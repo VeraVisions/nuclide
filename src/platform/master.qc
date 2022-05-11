@@ -37,7 +37,7 @@ Master_GetTotalServers(void)
 	int a = gethostcachevalue(SLIST_HOSTCACHETOTALCOUNT);
 	
 	if (a) {
-		dprint(sprintf("Master reports a total of %i servers.\n", a));
+		NSLog("Master reports a total of %i servers.", a);
 	}
 	return gethostcachevalue(SLIST_HOSTCACHETOTALCOUNT);
 }
@@ -76,7 +76,7 @@ Master_RefreshCache(void)
 	int a = gethostcachevalue(SLIST_HOSTCACHETOTALCOUNT);
 	
 	if (a) {
-		dprint(sprintf("Master reports a total of %i servers.\n", a));
+		NSLog("Master reports a total of %i servers.", a);
 	}
 }
 
@@ -92,7 +92,7 @@ Master_UpdateCache(void)
 	int a = gethostcachevalue(SLIST_HOSTCACHETOTALCOUNT);
 	
 	if (a) {
-		dprint(sprintf("Master reports a total of %i servers.\n", a));
+		NSLog("Master reports a total of %i servers.", a);
 	}
 }
 

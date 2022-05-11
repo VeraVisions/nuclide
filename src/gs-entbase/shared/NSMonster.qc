@@ -158,7 +158,7 @@ NSMonster::AlertNearby(void)
 		if (vlen(origin - w.origin) > 512)
 			continue;
 
-		//dprint(sprintf("Alert! %s get %s\n", w.classname, m_eEnemy.classname));
+		//NSLog("Alert! %s get %s", w.classname, m_eEnemy.classname);
 		NSMonster f = (NSMonster)w;
 
 		/* we shouldn't override this when they already got a target */
@@ -310,14 +310,14 @@ NSMonster::AttackRanged(void)
 void
 NSMonster::AttackDraw(void)
 {
-	dprint(sprintf("^1%s::AttackDraw: Not defined!\n", classname));
+	NSLog("^1%s::AttackDraw: Not defined!", classname);
 	m_flAttackThink = time + 0.5f;
 }
 
 void
 NSMonster::AttackHolster(void)
 {
-	dprint(sprintf("^1%s::AttackHolster: Not defined!\n", classname));
+	NSLog("^1%s::AttackHolster: Not defined!", classname);
 	m_flAttackThink = time + 0.5f;
 }
 
@@ -398,8 +398,8 @@ NSMonster::CheckRoute(void)
 	flDist = floor(vlen(evenpos - origin));
 
 	if (flDist < 8) {
-		dprint(sprintf("^2NSMonster::^3CheckRoute^7: " \
-			"%s reached node\n", this.targetname));
+		NSLog("^2NSMonster::^3CheckRoute^7: " \
+			"%s reached node\n", this.targetname);
 		m_iCurNode--;
 		velocity = [0,0,0]; /* clamp friction */
 
@@ -419,7 +419,7 @@ NSMonster::CheckRoute(void)
 
 	if (m_iCurNode < -1) {
 		ClearRoute();
-		dprint(sprintf("^2NSMonster::^3CheckRoute^7: %s reached end\n", this.targetname));
+		NSLog("^2NSMonster::^3CheckRoute^7: %s reached end", this.targetname);
 
 		/* mark that we've ended a sequence, if we're in one and que anim */
 		if (m_iSequenceState == SEQUENCESTATE_ACTIVE) {
@@ -428,12 +428,12 @@ NSMonster::CheckRoute(void)
 				m_iSequenceState = SEQUENCESTATE_ENDING;
 				think = (m_iSequenceFlags & SSFL_NOSCRIPTMOVE) ? FreeState : FreeStateMoved;
 				nextthink = time + duration;
-				dprint(sprintf("^2NSMonster::^3CheckRoute^7: %s overriding anim for %f seconds (modelindex %d, frame %d)\n", this.targetname, duration, modelindex, m_flSequenceEnd));
+				NSLog("^2NSMonster::^3CheckRoute^7: %s overriding anim for %f seconds (modelindex %d, frame %d)", this.targetname, duration, modelindex, m_flSequenceEnd);
 			} else {
 				/* we still need to trigger targets */
 				think = (m_iSequenceFlags & SSFL_NOSCRIPTMOVE) ? FreeState : FreeStateMoved;
 				nextthink = time;
-				dprint(sprintf("^2NSMonster::^3CheckRoute^7: %s has no anim, finished sequence.\n", this.targetname));
+				NSLog("^2NSMonster::^3CheckRoute^7: %s has no anim, finished sequence.", this.targetname);
 			}
 		}
 	}

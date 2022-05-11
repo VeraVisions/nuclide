@@ -105,12 +105,12 @@ NSIO::CreateOutput(string outmsg)
 		new_minion.m_iOldCount = new_minion.m_iCount;
 
 		/* print final debug output */
-		dprint(sprintf("^2%s::CreateOutput report:\n", classname));
-		dprint(sprintf("Target: %s\n", new_minion.m_strTarget));
-		dprint(sprintf("Input: %s\n", new_minion.m_strInput));
-		dprint(sprintf("Data Message: %s\n", new_minion.m_strData));
-		dprint(sprintf("Delay: %f\n", new_minion.m_flDelay));
-		dprint(sprintf("Uses: %i\n\n", new_minion.m_iCount));
+		NSLog("^2%s::CreateOutput report:", classname);
+		NSLog("Target: %s", new_minion.m_strTarget);
+		NSLog("Input: %s", new_minion.m_strInput);
+		NSLog("Data Message: %s", new_minion.m_strData);
+		NSLog("Delay: %f", new_minion.m_flDelay);
+		NSLog("Uses: %i\n", new_minion.m_iCount);
 	}
 
 	/* return the name that'll act as the trigger for all outputs */
@@ -315,8 +315,8 @@ NSIO::SpawnKey(string strKey, string strValue)
 		break;
 #endif
 	default:
-		dprint(sprintf("^3%s^7::SpawnKey:: Unknown key '%s' with value '%s'\n",
-		      classname, strKey, strValue));
+		NSLog("^3%s^7::SpawnKey:: Unknown key '%s' with value '%s'",
+		      classname, strKey, strValue);
 		break;
 	}
 }

@@ -15,7 +15,7 @@
  */
 
 void
-Player_PreDraw(base_player pl, int thirdperson)
+Player_PreDraw(NSClientPlayer pl, int thirdperson)
 {
 	/* Handle the flashlights... */
 	if (pl.gflags & GF_FLASHLIGHT) {

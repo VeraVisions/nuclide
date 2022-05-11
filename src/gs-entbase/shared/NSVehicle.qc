@@ -55,9 +55,9 @@ NSVehicle::DriverRelink(void)
 	if (!driver_entnum)
 		m_eDriver = __NULL__;
 	else {
-		base_player pl;
+		NSClientPlayer pl;
 		m_eDriver = findentity(world, ::entnum, driver_entnum);
-		pl = (base_player)m_eDriver;
+		pl = (NSClientPlayer)m_eDriver;
 		pl.vehicle = this;
 	}
 }
@@ -354,7 +354,7 @@ NSVehicle::PlayerAlign(void)
 }
 
 void
-NSVehicle::PlayerEnter(base_player pl)
+NSVehicle::PlayerEnter(NSClientPlayer pl)
 {
 	vector offs;
 
@@ -379,7 +379,7 @@ NSVehicle::PlayerEnter(base_player pl)
 }
 
 void
-NSVehicle::PlayerLeave(base_player pl)
+NSVehicle::PlayerLeave(NSClientPlayer pl)
 {
 	if (!pl)
 		return;

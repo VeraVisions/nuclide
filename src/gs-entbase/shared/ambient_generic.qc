@@ -148,8 +148,8 @@ ambient_generic::Restore(string strKey, string strValue)
 void
 ambient_generic::UseNormal(entity act, int state)
 {
-	dprint(sprintf("Sound once: %S Volume: %f; Radius: %d; Pitch: %d\n", \
-		m_strActivePath, m_flVolume, m_flRadius, m_flPitch));
+	NSLog("Sound once: %S Volume: %f; Radius: %d; Pitch: %d", \
+		m_strActivePath, m_flVolume, m_flRadius, m_flPitch);
 
 	if (substring(m_strActivePath, 0, 1) == "!") {
 		string seq = Sentences_GetSamples(m_strActivePath);
@@ -171,13 +171,13 @@ void
 ambient_generic::UseLoop(entity act, int state)
 {
 	if (m_bToggle == TRUE) {
-		dprint(sprintf("^2ambient_generic::^3UseLoop^7: %s stops `%s`\n", 
-			target, m_strActivePath));
+		NSLog("^2ambient_generic::^3UseLoop^7: %s stops `%s`", 
+			target, m_strActivePath);
 		m_strActivePath = "common/null.wav";
 	} else {
 		m_strActivePath = m_strSpawnPath;
-		dprint(sprintf("^2ambient_generic::^3UseLoop^7: %s plays `%s`\n", 
-			target, m_strActivePath));
+		NSLog("^2ambient_generic::^3UseLoop^7: %s plays `%s`", 
+			target, m_strActivePath);
 	}
 
 	m_bToggle = 1 - m_bToggle;
@@ -307,7 +307,7 @@ ambient_generic::ReceiveEntity(float isnew, float flChanged)
 	if (flChanged & AMBIENT_ENABLED)
 		m_bLoops = readbyte();
 
-	dprint(sprintf("Sound received: %S Volume: %f; Radius: %d; Pitch: %d\n", m_strActivePath, m_flVolume, m_flRadius, m_flPitch));
+	NSLog("Sound received: %S Volume: %f; Radius: %d; Pitch: %d", m_strActivePath, m_flVolume, m_flRadius, m_flPitch);
 
 
 	if (m_bLoops == true)

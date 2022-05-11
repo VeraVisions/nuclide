@@ -50,6 +50,7 @@ server/func_rotating.qc
 server/func_rot_button.qc
 server/func_physbox.qc
 server/func_plat.qc
+server/func_platrot.qc
 server/func_pendulum.qc
 server/func_vehicle.qc
 server/func_vehiclecontrols.qc

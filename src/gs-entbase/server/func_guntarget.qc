@@ -90,7 +90,7 @@ func_guntarget::Move(void)
 	node = (path_corner)find(world, ::targetname, target);
 
 	if (!node) {
-		dprint(sprintf("^1func_guntarget::^3Move^7: Path node for %s not found!\n", targetname));
+		NSLog("^1func_guntarget::^3Move^7: Path node for %s not found!", targetname);
 		return;
 	}
 
@@ -115,7 +115,7 @@ func_guntarget::NextPath(void)
 {
 	path_corner node;
 
-	dprint(sprintf("^2func_guntarget::^3NextPath^7: Talking to current target %s... ", target));
+	NSLog("^2func_guntarget::^3NextPath^7: Talking to current target %s... ", target);
 	node = (path_corner)find(world, ::targetname, target);
 
 	if (!node) {

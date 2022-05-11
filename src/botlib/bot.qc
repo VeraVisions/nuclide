@@ -207,8 +207,8 @@ bot::CheckRoute(void)
 
 	/* we're inside the radius */
 	if (flDist <= flRadius) {
-		dprint(sprintf("^2bot::^3CheckRoute^7: " \
-			"%s reached node\n", this.targetname));
+		NSLog("^2bot::^3CheckRoute^7: " \
+			"%s reached node\n", this.targetname);
 		m_iCurNode--;
 
 		/* if we're inside an actual node (not a virtual one */
@@ -314,8 +314,8 @@ bot::RunAI(void)
 	if (!m_iNodes && autocvar_bot_aimless == 0) {
 		CreateObjective();
 
-		dprint(sprintf("bot::RunAI: %s is calculating first bot route\n",
-			this.netname));
+		NSLog("bot::RunAI: %s is calculating first bot route",
+			this.netname);
 
 		/* our route probably has not been processed yet */
 		if (!m_iNodes) {

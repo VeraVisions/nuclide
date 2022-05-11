@@ -152,7 +152,7 @@ int CUIList::GetOffset(void)
 void CUIList::SetItemCount (int iCount)
 {
 	if (!m_iItemCount) {
-		dprint(sprintf("CUIList: Initialized with a maximum of %i entries\n", iCount));
+		NSLog("CUIList: Initialized with a maximum of %i entries", iCount);
 		m_iItemCount = iCount;
 		m_strItems = memalloc(iCount * sizeof(string));
 	}

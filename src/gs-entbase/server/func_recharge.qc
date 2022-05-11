@@ -133,7 +133,7 @@ func_recharge::OnPlayerUse(void)
 		return;
 	}
 
-	base_player pl = (base_player)eActivator;
+	NSClientPlayer pl = (NSClientPlayer)eActivator;
 	if (pl.armor >= 100) {
 		eActivator.flags &= ~FL_USE_RELEASED;
 		sound(this, CHAN_VOICE, m_strSndDone, 1.0, ATTN_NORM);

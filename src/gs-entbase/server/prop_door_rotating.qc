@@ -79,7 +79,7 @@ prop_door_rotating::Turn(vector vecDest, void(void) vFunc)
 	float flTravelLength, flTravelTime;
 
 	if (!m_flSpeed) {
-		dprint(sprintf("^1prop_door_rotating::^3RotToDest^7: No speed defined for %s!", targetname));
+		NSLog("^1prop_door_rotating::^3RotToDest^7: No speed defined for %s!", targetname);
 		prop_door_rotating::Respawn();
 		return;
 	}

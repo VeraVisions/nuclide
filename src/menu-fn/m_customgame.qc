@@ -765,16 +765,16 @@ games_init_2(void)
 		games[id].steambg = 0;
 
 		if (games_check_manifest(id, gamedirname) == 1) {
-			dprint(sprintf("[MENU] Found manifest for %s\n", gamedirname));
+			NSLog("[MENU] Found manifest for %s", gamedirname);
 			games[id].info_type = GAMEINFO_MANIFEST;
 		} else if (games_check_gtxt(id, gamedirname) == 1) {
-			dprint(sprintf("[MENU] Found gameinfo for %s\n", gamedirname));
+			NSLog("[MENU] Found gameinfo for %s", gamedirname);
 			games[id].info_type = GAMEINFO_GITXT;
 		} else if (games_check_liblist(id, gamedirname) == 1) {
-			dprint(sprintf("[MENU] Found liblist for %s\n", gamedirname));
+			NSLog("[MENU] Found liblist for %s", gamedirname);
 			games[id].info_type = GAMEINFO_LIBLIST;
 		} else {
-			dprint(sprintf("[MENU] Found nothing for %s\n", gamedirname));
+			NSLog("[MENU] Found nothing for %s", gamedirname);
 			games[id].info_type = GAMEINFO_NONE;
 		}
 
@@ -827,16 +827,16 @@ games_init(void)
 
 #ifndef WEBMENU
 	if (games_check_manifest(id, gamedirname) == 1) {
-		dprint(sprintf("[MENU] Found manifest for %s\n", gamedirname));
+		NSLog("[MENU] Found manifest for %s", gamedirname);
 		games[id].info_type = GAMEINFO_MANIFEST;
 	} else if (games_check_gtxt(id, gamedirname) == 1) {
-		dprint(sprintf("[MENU] Found gameinfo for %s\n", gamedirname));
+		NSLog("[MENU] Found gameinfo for %s", gamedirname);
 		games[id].info_type = GAMEINFO_GITXT;
 	} else if (games_check_liblist(id, gamedirname) == 1) {
-		dprint(sprintf("[MENU] Found liblist for %s\n", gamedirname));
+		NSLog("[MENU] Found liblist for %s", gamedirname);
 		games[id].info_type = GAMEINFO_LIBLIST;
 	} else {
-		dprint(sprintf("[MENU] Found nothing for %s\n", gamedirname));
+		NSLog("[MENU] Found nothing for %s", gamedirname);
 		games[id].info_type = GAMEINFO_NONE;
 	}
 #endif

@@ -204,8 +204,8 @@ trigger_hurt::Touch(entity eToucher)
 
 	Damage_Apply(eToucher, this, m_iDamage, 0, type);
 
-	dprint(sprintf("^2trigger_hurt::^3Touch^7: Hurting '%s' with %i\n", 
-		eToucher.netname, m_iDamage));
+	NSLog("^2trigger_hurt::^3Touch^7: Hurting '%s' with %i", 
+		eToucher.netname, m_iDamage);
 
 	/* shut it down if used once */
 	if (HasSpawnFlags(SF_HURT_ONCE)) {

@@ -32,6 +32,13 @@
 #define ATTR_CHANGED(x) (x ##_net != x)
 #define VEC_CHANGED(x,y) (x ##_net[y] != x[y])
 
+void
+_NSLog(string msg)
+{
+	print(sprintf("%f %s\n", time, msg));
+}
+#define NSLog(x, ...) _NSLog(sprintf(x, __VA_ARGS__))
+
 #include "sound.h"
 
 #ifdef CLIENT
@@ -42,9 +49,9 @@
 
 #include "../gs-entbase/shared/baseentity.h"
 #include "../xr/defs.h"
-#include "client.h"
-#include "spectator.h"
-#include "player.h"
+#include "NSClient.h"
+#include "NSClientSpectator.h"
+#include "NSClientPlayer.h"
 #include "damage.h"
 #include "flags.h"
 #include "entities.h"
@@ -72,13 +79,6 @@
 #define CLASSEXPORT(classname,classa) void classname(void) { spawnfunc_##classa(); }
 
 #define printf(x, ...) print(sprintf(x, ...))
-
-void
-_NSLog(string msg)
-{
-	print(sprintf("%f %s\n", time, msg));
-}
-#define NSLog(x, ...) _NSLog(sprintf(x, ...))
 
 const vector VEC_HULL_MIN = [-16,-16,-36];
 const vector VEC_HULL_MAX = [16,16,36];
@@ -184,9 +184,9 @@ __wrap string
 precache_model(string m)
 {
 #ifdef CLIENT
-	dprint(sprintf("^3Client precaching model ^7%s\n", m));
+	NSLog("^3Client precaching model ^7%s\n", m);
 #else
-	dprint(sprintf("^3Server precaching model ^7%s\n", m));
+	NSLog("^3Server precaching model ^7%s\n", m);
 #endif
 	return prior(m);
 }

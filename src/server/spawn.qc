@@ -22,7 +22,7 @@ Find a spawnpoint for spectators and set origin and angle of the 'pl' target.
 =================
 */
 void
-Spawn_ObserverCam(base_player pl)
+Spawn_ObserverCam(NSClientPlayer pl)
 {
 	entity eTarget;
 	entity eCamera = find(world, ::classname, "trigger_camera");

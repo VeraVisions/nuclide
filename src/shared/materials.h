@@ -215,9 +215,9 @@ const int CONTENTBIT_SKY		= 0x80000000i;	/* Q1BSP only! */
  * prefixes and limit our material-name to 12 chars for everything to be
  * identified correctly */
 string
-Materials_FixName(string tex_name)
+Materials_FixName(string old_name)
 {
-	dprint(sprintf("^3Materials_FixName^7: %s > ", tex_name));
+	string tex_name = old_name;
 
 	/* strip the first 2 chars when they're frame/random indicators */
 	if (str2chr(tex_name, 0) == '-')
@@ -234,7 +234,7 @@ Materials_FixName(string tex_name)
 	/* limit to 12 chars! */
 	tex_name = substring(tex_name, 0, 12);
 
-	dprint(sprintf("%s\n", tex_name));
+	NSLog("%s > %s", old_name, tex_name);
 
 	return tex_name;
 }

@@ -277,7 +277,7 @@ Sound_Precache(string shader)
 		cache = (int)hash_get(g_hashsounds, shader, -1);
 
 		if (cache >= 0) {
-			dprint(sprintf("^1Sound_Precache: shader %s already precached\n", shader));
+			NSLog("^1Sound_Precache: shader %s already precached", shader);
 			return cache;
 		}
 	}

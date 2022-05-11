@@ -313,7 +313,7 @@ func_vehicle::customphysics(void)
 {
 	/* eject the dead */
 	if (m_eDriver && m_eDriver.health <= 0) {
-		PlayerLeave((base_player)m_eDriver);
+		PlayerLeave((NSClientPlayer)m_eDriver);
 	}
 
 	if (m_eDriver) {
@@ -429,9 +429,9 @@ func_vehicle::OnPlayerUse(void)
 		return;
 
 	if (m_eDriver == eActivator) {
-		PlayerLeave((base_player)eActivator);
+		PlayerLeave((NSClientPlayer)eActivator);
 	} else if (!m_eDriver) {
-		PlayerEnter((base_player)eActivator);
+		PlayerEnter((NSClientPlayer)eActivator);
 	}
 }
 
@@ -509,7 +509,7 @@ func_vehicle::Respawn(void)
 	PlayerUse = OnPlayerUse;
 
 	if (m_eDriver)
-		PlayerLeave((base_player)m_eDriver);
+		PlayerLeave((NSClientPlayer)m_eDriver);
 }
 
 void

@@ -180,7 +180,7 @@ monstermaker::Spawner(void)
 		unit.think = monstermaker_spawnunit;
 		unit.nextthink = time + 0.1f;
 		unit.real_owner = this;
-		dprint(sprintf("^2monstermaker::^3Trigger^7: Spawning %s\n", m_strMonster));
+		NSLog("^2monstermaker::^3Trigger^7: Spawning %s", m_strMonster);
 		setorigin(unit, origin);
 		unit.angles = angles;
 		m_iMonsterSpawned++;
@@ -194,7 +194,7 @@ monstermaker::Spawner(void)
 			unit.spawnflags |= MSF_MONSTERCLIP;
 		}
 	} else {
-		print(sprintf("^1monstermaker::^3Trigger^7: cannot call spawnfunction for %s\n", m_strMonster));
+		NSLog("^1monstermaker::^3Trigger^7: cannot call spawnfunction for %s", m_strMonster);
 		remove(this);
 		return;
 	}

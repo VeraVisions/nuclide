@@ -19,8 +19,8 @@
 void
 NSTrigger::Trigger(entity act, int state)
 {
-	dprint(sprintf("^2%s::^3Input^7: Triggerd by %s with no consequence\n", 
-		this.classname, act.classname));
+	NSLog("^2%s::^3Input^7: Triggerd by %s with no consequence", 
+		this.classname, act.classname);
 }
 
 void
@@ -35,8 +35,8 @@ NSTrigger::UseTargets(entity act, int state, float fDelay)
 		return;
 
 	if (fDelay > 0.0f) {
-		dprint(sprintf("^2%s::^3UseTargets^7: Triggering `%s`\n", 
-			this.classname, target));
+		NSLog("^2%s::^3UseTargets^7: Triggering `%s`", 
+			this.classname, target);
 
 		NSTrigger eTimer = spawn(NSTrigger);
 		eTimer.owner = act;
@@ -48,10 +48,10 @@ NSTrigger::UseTargets(entity act, int state, float fDelay)
 		for (entity f = world; (f = find(f, ::targetname, target));) {
 			NSTrigger trigger = (NSTrigger)f;
 
-			dprint(sprintf("^2%s::^3UseTargets^7:" \
+			NSLog("^2%s::^3UseTargets^7:" \
 			       "Triggering %s `%s` from %s\n", \
 			        this.classname, f.classname, \
-			        trigger.targetname, act.classname));
+			        trigger.targetname, act.classname);
 
 			if (trigger.Trigger != __NULL__) {
 				trigger.Trigger(act, state);
@@ -91,7 +91,7 @@ NSTrigger::GetMaster(void)
 
 	/* default to success */
 	if (!m_strMaster) {
-		/*dprint(sprintf("^2%s::^3GetMaster^7: No master, return success\n", 
+		/*NSLog("^2%s::^3GetMaster^7: No master, return success", 
 		this.classname));*/
 		return (1);
 	}
@@ -100,17 +100,17 @@ NSTrigger::GetMaster(void)
 
 	/* we couldn't find it, so let's not even bother going further */
 	if (!t) {
-		dprint(sprintf("^2%s::^3GetMaster^7: Invalid master (%s), return success\n", 
-		this.classname, m_strMaster));
+		NSLog("^2%s::^3GetMaster^7: Invalid master (%s), return success", 
+		this.classname, m_strMaster);
 		return (1);
 	}
 
 	if (t.GetValue() == 1)
-		dprint(sprintf("^2%s::^3GetMaster^7: %s learns %s ^2POSITIVE\n", 
-		this.classname, targetname, m_strMaster));
+		NSLog("^2%s::^3GetMaster^7: %s learns %s ^2POSITIVE", 
+		this.classname, targetname, m_strMaster);
 	else
-		dprint(sprintf("^2%s::^3GetMaster^7: %s learns %s ^1NEGATIVE\n", 
-		this.classname, targetname, m_strMaster));
+		NSLog("^2%s::^3GetMaster^7: %s learns %s ^1NEGATIVE", 
+		this.classname, targetname, m_strMaster);
 	
 	return t.GetValue();
 }

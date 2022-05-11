@@ -3,7 +3,7 @@ vector saved_input_movevalues;
 int saved_input_buttons;
 
 void
-base_player::Physics_Fall(float flDownforce)
+NSClientPlayer::Physics_Fall(float flDownforce)
 {
 	if (flDownforce > 580) {
 #ifdef SERVER
@@ -21,7 +21,7 @@ base_player::Physics_Fall(float flDownforce)
 }
 
 void
-base_player::Physics_Crouch(void)
+NSClientPlayer::Physics_Crouch(void)
 {
 	int iFixCrouch = FALSE;
 	if (input_buttons & INPUT_BUTTON8) {
@@ -58,7 +58,7 @@ base_player::Physics_Crouch(void)
 
 
 void
-base_player::Physics_Jump(void)
+NSClientPlayer::Physics_Jump(void)
 {
 	/* climb out of substances when underwater */
 	if (waterlevel >= 2) {
@@ -77,7 +77,7 @@ base_player::Physics_Jump(void)
 
 /* check if we're elligible to jump */
 void
-base_player::Physics_CheckJump(float premove)
+NSClientPlayer::Physics_CheckJump(float premove)
 {
 	/* unset jump-key whenever it's not set */
 	if (!(input_buttons & INPUT_BUTTON2)) {
@@ -107,7 +107,7 @@ base_player::Physics_CheckJump(float premove)
 
 /* establish the right size and camera position */
 void
-base_player::Physics_SetViewParms(void)
+NSClientPlayer::Physics_SetViewParms(void)
 {
 	if (flags & FL_CROUCHING) {
 		mins = PHY_HULL_CROUCHED_MIN;
@@ -122,7 +122,7 @@ base_player::Physics_SetViewParms(void)
 }
 
 void
-base_player::Physics_WaterJump(void)
+NSClientPlayer::Physics_WaterJump(void)
 {
 	vector vStart;
 	vector vEnd;
@@ -152,7 +152,7 @@ base_player::Physics_WaterJump(void)
 
 /* handle your time underwater */
 void
-base_player::Physics_WaterMove(void)
+NSClientPlayer::Physics_WaterMove(void)
 {
 	if (movetype == MOVETYPE_NOCLIP) {
 		return;
@@ -219,13 +219,13 @@ base_player::Physics_WaterMove(void)
 }
 
 float
-base_player::Physics_MaxSpeed(void)
+NSClientPlayer::Physics_MaxSpeed(void)
 {
 	return (flags & FL_CROUCHING) ? 135 : 270;
 }
 
 void
-base_player::Physics_InputPreMove(void)
+NSClientPlayer::Physics_InputPreMove(void)
 {
 	NSVehicle veh = (NSVehicle)vehicle;
 
@@ -256,7 +256,7 @@ base_player::Physics_InputPreMove(void)
 
 /* timers get processed here after physics are run */
 void
-base_player::Physics_InputPostMove(void)
+NSClientPlayer::Physics_InputPostMove(void)
 {
 	float punch;
 	/* timers, these are predicted and shared across client and server */
@@ -279,7 +279,7 @@ base_player::Physics_InputPostMove(void)
 
 /* the main physics routine, the head */
 void
-base_player::Physics_Run(void)
+NSClientPlayer::Physics_Run(void)
 {
 	float flFallVel = (flags & FL_ONGROUND) ? 0 : -velocity[2];
 

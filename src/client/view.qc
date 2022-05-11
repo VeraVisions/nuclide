@@ -130,11 +130,11 @@ View_DrawViewModel(void)
 	entity m_eMuzzleflashL = pSeat->m_eMuzzleflashL;
 
 	player pl = __NULL__;
-	base_client cl = (base_client)pSeat->m_ePlayer;
+	NSClient cl = (NSClient)pSeat->m_ePlayer;
 
 	/* it's either us or us spectating */
 	if (Client_IsSpectator(cl)) {
-		spectator spec = (spectator)self;
+		NSClientSpectator spec = (NSClientSpectator)self;
 		pl = (player)findfloat(world, ::entnum, spec.spec_ent);
 
 		if (spec.spec_mode != SPECMODE_FIRSTPERSON)

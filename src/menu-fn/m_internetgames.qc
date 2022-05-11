@@ -136,10 +136,10 @@ inet_refreshframe(void)
 		inet_lbServers_Game.AddEntry(gethostcachestring(srv_fldGame, i));
 		inet_lbServers_Players.AddEntry(players);
 		inet_lbServers_Addresses.AddEntry(address);
-		dprint(sprintf("Adding %s to the Internet server list\n", address));
+		NSLog("Adding %s to the Internet server list", address);
 		added++;
 	}
-	dprint(sprintf("Added %i Internet servers.\n", added));
+	NSLog("Added %i Internet servers.", added);
 	inet_sbServers.SetMax(added);
 }
 

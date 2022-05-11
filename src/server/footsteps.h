@@ -15,7 +15,7 @@
  */
 
 void Footsteps_Init(void);
-void Footsteps_HLBSP(base_player target);
-void Footsteps_VVBSP(base_player target);
-void Footsteps_Default(base_player target);
+void Footsteps_HLBSP(NSClientPlayer target);
+void Footsteps_VVBSP(NSClientPlayer target);
+void Footsteps_Default(NSClientPlayer target);
 void Footsteps_Update(void);

@@ -19,6 +19,14 @@
 var int autocvar_menu_intro = TRUE;
 var int autocvar__menu_singleplayer;
 
+void
+_NSLog(string msg)
+{
+	if (cvar("g_developer"))
+	print(sprintf("%f %s\n", time, msg));
+}
+#define NSLog(x, ...) _NSLog(sprintf(x, __VA_ARGS__))
+
 #define KEY_UNKNOWN		-1
 #define KEY_GAME		0
 #define KEY_MENU		2

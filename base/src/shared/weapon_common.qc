@@ -436,7 +436,7 @@ Sets .a_ammoX fields and clamps them so they can be networked as a single byte.
 =================
 */
 void
-Weapons_UpdateAmmo(base_player pl, int a1, int a2, int a3)
+Weapons_UpdateAmmo(NSClientPlayer pl, int a1, int a2, int a3)
 {
 	/* no change */
 	if (a1 == -1)

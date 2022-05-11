@@ -15,7 +15,7 @@
  */
 
 void
-SingleplayerRules::PlayerDeath(base_player pl)
+SingleplayerRules::PlayerDeath(NSClientPlayer pl)
 {
 	pl.movetype = MOVETYPE_NONE;
 	pl.solid = SOLID_NOT;
@@ -31,7 +31,7 @@ SingleplayerRules::PlayerDeath(base_player pl)
 }
 
 void
-SingleplayerRules::PlayerSpawn(base_player pl)
+SingleplayerRules::PlayerSpawn(NSClientPlayer pl)
 {
 	pl.classname = "player";
 	pl.health = pl.max_health = 100;

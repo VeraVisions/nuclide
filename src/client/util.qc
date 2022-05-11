@@ -1,6 +1,6 @@
 
 float
-Client_IsSpectator(base_client cl)
+Client_IsSpectator(NSClient cl)
 {
 	if (cl.IsRealSpectator() || cl.IsFakeSpectator())
 		return true;
@@ -9,25 +9,25 @@ Client_IsSpectator(base_client cl)
 }
 
 float
-Client_IsRealSpectator(base_client cl)
+Client_IsRealSpectator(NSClient cl)
 {
 	return cl.IsRealSpectator();
 }
 
 float
-Client_IsFakeSpectator(base_client cl)
+Client_IsFakeSpectator(NSClient cl)
 {
 	return cl.IsFakeSpectator();
 }
 
 float
-Client_IsDead(base_client cl)
+Client_IsDead(NSClient cl)
 {
 	return cl.IsDead();
 }
 
 float
-Client_IsPlayer(base_client cl)
+Client_IsPlayer(NSClient cl)
 {
 	return cl.IsPlayer();
 }

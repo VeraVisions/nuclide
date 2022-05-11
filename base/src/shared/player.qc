@@ -42,7 +42,7 @@ enumflags
 	PLAYER_UNUSED7
 };
 
-class player:base_player
+class player:NSClientPlayer
 {
 	PREDICTED_INT(mode_tempstate);
 
@@ -68,7 +68,7 @@ player::ReceiveEntity
 void
 player::ReceiveEntity(float new, float fl)
 {
-	base_player::ReceiveEntity(new, fl);
+	NSClientPlayer::ReceiveEntity(new, fl);
 	setorigin(this, origin);
 }
 
@@ -83,7 +83,7 @@ so we can roll them back later.
 void
 player::PredictPreFrame(void)
 {
-	base_player::PredictPreFrame();
+	NSClientPlayer::PredictPreFrame();
 }
 
 /*
@@ -96,14 +96,14 @@ Where we roll back our values to the ones last sent/verified by the server.
 void
 player::PredictPostFrame(void)
 {
-	base_player::PredictPostFrame();
+	NSClientPlayer::PredictPostFrame();
 }
 
 #else
 void
 player::EvaluateEntity(void)
 {
-	base_player::EvaluateEntity();
+	NSClientPlayer::EvaluateEntity();
 }
 
 /*
@@ -132,7 +132,7 @@ player::SendEntity(entity ePEnt, float fChanged)
 	WriteFloat(MSG_ENTITY, fChanged);
 
 	/* the generic client attributes */
-	base_player::SendEntity(ePEnt, fChanged);
+	NSClientPlayer::SendEntity(ePEnt, fChanged);
 	return (1);
 }
 #endif

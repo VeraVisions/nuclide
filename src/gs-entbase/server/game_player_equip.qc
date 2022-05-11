@@ -100,8 +100,8 @@ game_player_equip::SpawnUnit(string cname, vector org)
 	unit.nextthink = time;
 	unit.real_owner = this;
 	setorigin(unit, org);
-	dprint(sprintf("^2game_player_equip::^3Trigger^7: Spawning %s\n",
-	       cname));
+	NSLog("^2game_player_equip::^3Trigger^7: Spawning %s",
+	       cname);
 }
 
 void

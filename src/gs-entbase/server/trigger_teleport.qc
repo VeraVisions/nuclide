@@ -57,8 +57,8 @@ trigger_teleport::Touch(entity eToucher)
 		if (eTarget) {
 			vector endpos = eTarget.origin + [0,0,16];
 			setorigin(eToucher, endpos);
-			dprint(sprintf("^2trigger_teleport::^3Touch^7: Teleported '%s' to `%v`\n", 
-				eToucher.netname, endpos));
+			NSLog("^2trigger_teleport::^3Touch^7: Teleported '%s' to `%v`", 
+				eToucher.netname, endpos);
 		} else {
 			print(sprintf("^2trigger_teleport::^3Touch^7: Failed to teleport '%s'\n", 
 				eToucher.netname));

@@ -65,8 +65,8 @@ trigger_cdaudio::Trigger(entity act, int unused)
 		return;
 	}
 
-	dprint(sprintf("^2trigger_cdaudio::^3Trigger^7: CD Track %i requested\n", 
-		m_iCDTrack));
+	NSLog("^2trigger_cdaudio::^3Trigger^7: CD Track %i requested", 
+		m_iCDTrack);
 
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_MUSICTRACK);

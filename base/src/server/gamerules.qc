@@ -17,7 +17,7 @@
 var int autocvar_sv_playerkeepalive = TRUE;
 
 void
-GameRules::LevelDecodeParms(base_player pp)
+GameRules::LevelDecodeParms(NSClientPlayer pp)
 {
 	player pl = (player)pp;
 	g_landmarkpos[0] = parm1;
@@ -41,7 +41,7 @@ GameRules::LevelDecodeParms(base_player pp)
 }
 
 void
-GameRules::LevelChangeParms(base_player pp)
+GameRules::LevelChangeParms(NSClientPlayer pp)
 {
 	player pl = (player)pp;
 	parm1 = g_landmarkpos[0];
@@ -72,19 +72,19 @@ GameRules::LevelNewParms(void)
 /* we check what fields have changed over the course of the frame and network
  * only the ones that have actually changed */
 void
-GameRules::PlayerPostFrame(base_player pl)
+GameRules::PlayerPostFrame(NSClientPlayer pl)
 {
 }
 
 void
-GameRules::PlayerConnect(base_player pl)
+GameRules::PlayerConnect(NSClientPlayer pl)
 {
 	if (Plugin_PlayerConnect(pl) == FALSE)
 		bprint(PRINT_HIGH, sprintf("%s connected\n", pl.netname));
 }
 
 void
-GameRules::PlayerDisconnect(base_player pl)
+GameRules::PlayerDisconnect(NSClientPlayer pl)
 {
 	if (Plugin_PlayerDisconnect(pl) == FALSE)
 		bprint(PRINT_HIGH, sprintf("%s disconnected\n", pl.netname));
@@ -99,7 +99,7 @@ GameRules::PlayerDisconnect(base_player pl)
 }
 
 void
-GameRules::PlayerKill(base_player pl)
+GameRules::PlayerKill(NSClientPlayer pl)
 {
 	Damage_Apply(pl, pl, pl.health, WEAPON_NONE, DMG_SKIP_ARMOR);
 } 

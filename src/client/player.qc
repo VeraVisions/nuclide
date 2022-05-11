@@ -48,13 +48,13 @@ player::predraw(void)
 
 	/* make sure we're enabling shadow rendering on us */
 	effects &= ~EF_NOSHADOW;
-	base_client cl = (base_client)pSeat->m_ePlayer;
+	NSClient cl = (NSClient)pSeat->m_ePlayer;
 
 	RenderFire();
 
 	/* it's either us or us spectating */
 	if (Client_IsSpectator(cl)) {
-		spectator spec = (spectator)pSeat->m_ePlayer;
+		NSClientSpectator spec = (NSClientSpectator)pSeat->m_ePlayer;
 		if (entnum == spec.spec_ent && spec.spec_mode == SPECMODE_FIRSTPERSON) {
 			this_us = 1;
 		}

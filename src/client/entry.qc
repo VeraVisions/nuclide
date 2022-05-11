@@ -147,8 +147,8 @@ void
 CSQC_UpdateView(float w, float h, float focus)
 {
 	player pl = __NULL__;
-	base_client cl = __NULL__;
-	spectator spec;
+	NSClient cl = __NULL__;
+	NSClientSpectator spec;
 	int s;
 	entity c;
 
@@ -208,14 +208,14 @@ CSQC_UpdateView(float w, float h, float focus)
 
 		pSeat->m_ePlayer = self = findfloat(world, entnum, player_localentnum);
 		pl = (player)self;
-		cl = (base_client)self;
+		cl = (NSClient)self;
 
 		/* player slot not present */
 		if (!self) {
 			continue;
 		}
 
-		/* this needs to be moved into a base_client method */
+		/* this needs to be moved into a NSClient method */
 #if 1
 		cl.PreFrame();
 
@@ -259,7 +259,7 @@ CSQC_UpdateView(float w, float h, float focus)
 
 			pl.viewzoom = oldzoom;
 		} else if (Client_IsSpectator(pl)) {
-			spec = (spectator)self;
+			spec = (NSClientSpectator)self;
 
 			if (spec.spec_mode == SPECMODE_FIRSTPERSON || spec.spec_mode == SPECMODE_THIRDPERSON) {
 				c = findfloat(world, ::entnum, spec.spec_ent);
@@ -277,7 +277,7 @@ CSQC_UpdateView(float w, float h, float focus)
 #endif
 		addentities(MASK_ENGINE);
 
-		/* ideally move this into a base_player method */
+		/* ideally move this into a NSClientPlayer method */
 #if 1
 		if (pSeat->m_flCameraTime > time || pSeat->m_flCameraTime == -1) {
 			view_angles = pSeat->m_vecCameraAngle;
@@ -307,7 +307,7 @@ CSQC_UpdateView(float w, float h, float focus)
 				Shake_Update(pl);
 				setproperty(VF_ANGLES, view_angles + pl.punchangle);
 			} else if (Client_IsSpectator(pl)) {
-				spec = (spectator)self;
+				spec = (NSClientSpectator)self;
 				switch (spec.spec_mode) {
 				case SPECMODE_THIRDPERSON:
 					makevectors(view_angles);
@@ -364,7 +364,7 @@ CSQC_UpdateView(float w, float h, float focus)
 			View_DrawViewModel();
 		} else {
 			if (Client_IsSpectator(pl)) {
-				spec = (spectator)self;
+				spec = (NSClientSpectator)self;
 
 				/* 0 means world */
 				if (spec.spec_ent) {
@@ -437,7 +437,7 @@ CSQC_UpdateView(float w, float h, float focus)
 			}
 		}
 
-		/* move this into base_client methods */
+		/* move this into NSClient methods */
 #if 1
 		cl.PostFrame();
 #endif
@@ -527,7 +527,7 @@ CSQC_Input_Frame(void)
 	me = pSeat->m_ePlayer;
 
 	if (me.classname == "player" || me.classname == "spectator") {
-		base_client pl = (base_client)me;
+		NSClient pl = (NSClient)me;
 		pl.ClientInputFrame();
 	}
 }

@@ -73,7 +73,7 @@ to specify materials.
 =================
 */
 void
-Footsteps_HLBSP(base_player target)
+Footsteps_HLBSP(NSClientPlayer target)
 {
 	string mat_name = "";
 	string tex_name = "";
@@ -154,7 +154,7 @@ Modern BSP format which uses surfaceflags to specify materials on surfaces.
 =================
 */
 void
-Footsteps_VVBSP(base_player target)
+Footsteps_VVBSP(NSClientPlayer target)
 {
 	string mat_name = "";
 
@@ -234,7 +234,7 @@ materials for.
 =================
 */
 void
-Footsteps_Default(base_player target)
+Footsteps_Default(NSClientPlayer target)
 {
 	string mat_name = "";
 
@@ -262,12 +262,12 @@ Run every frame for each player, plays material based footsteps
 void
 Footsteps_Update(void)
 {
-	base_player pl;
+	NSClientPlayer pl;
 
 	if (self.classname != "player")
 		return;
 
-	pl = (base_player)self;
+	pl = (NSClientPlayer)self;
 
 	if (pl.movetype == MOVETYPE_WALK) {
 		if ((pl.velocity[0] == 0 && pl.velocity[1] == 0) || pl.step_time > time) {

@@ -34,13 +34,13 @@ class player_weaponstrip:NSPointTrigger
 void
 player_weaponstrip::Trigger(entity act, int unused)
 {
-	base_player pl;
+	NSClientPlayer pl;
 
 	if (!(act.flags & FL_CLIENT)) {
 		return;
 	}
 
-	pl = (base_player)act;
+	pl = (NSClientPlayer)act;
 
 	for (int i = 1; i < Weapon_GetCount(); i++) {
 		pl.g_items &= ~Weapon_GetBitID(i);

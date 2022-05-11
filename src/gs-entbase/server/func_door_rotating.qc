@@ -349,7 +349,7 @@ func_door_rotating::RotToDest(vector vDestAngle, void(void) func)
 	float flTravelLength, flTravelTime;
 
 	if (!m_flSpeed) {
-		dprint(sprintf("^1func_door_rotating::^3RotToDest^7: No speed defined for %s!", targetname));
+		NSLog("^1func_door_rotating::^3RotToDest^7: No speed defined for %s!", targetname);
 		func_door_rotating::Respawn();
 		return;
 	}

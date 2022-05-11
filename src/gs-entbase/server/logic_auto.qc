@@ -157,7 +157,7 @@ logic_auto::Processing(void)
 		UseOutput(this, m_strOnBackgroundMap);
 
 	if (HasSpawnFlags(1)) {
-		dprint(sprintf("^2logic_auto::^3think^7: %s triggerer removed self\n",  target));
+		NSLog("^2logic_auto::^3think^7: %s triggerer removed self",  target);
 		remove(this);
 	}
 }

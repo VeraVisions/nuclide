@@ -214,7 +214,7 @@ Called whenever a new client connect to the game
 =================
 */
 int
-Plugin_PlayerConnect(base_player cl)
+Plugin_PlayerConnect(NSClientPlayer cl)
 {
 	int rval;
 	int tval;
@@ -249,7 +249,7 @@ Called whenever a client leaves the game
 =================
 */
 int
-Plugin_PlayerDisconnect(base_player cl)
+Plugin_PlayerDisconnect(NSClientPlayer cl)
 {
 	int rval;
 	int tval;
@@ -284,7 +284,7 @@ Called when a player has fully connected and entered the server
 =================
 */
 int
-Plugin_PlayerEntered(base_player cl)
+Plugin_PlayerEntered(NSClientPlayer cl)
 {
 	int rval;
 	int tval;

@@ -170,9 +170,9 @@ scripted_sequence::RunOnEntity(entity targ)
 	if (!HasSpawnFlags(SSFL_REPEATABLE))
 		m_iEnabled = FALSE;
 
-	dprint(sprintf("\tName: %s\n", targetname));
-	dprint(sprintf("\tTarget: %s\n", m_strMonster));
-	dprint(sprintf("\tStarted: %f\n", time));
+	NSLog("\tName: %s", targetname);
+	NSLog("\tTarget: %s", m_strMonster);
+	NSLog("\tStarted: %f", time);
 
 	/* if we're told an anim, we better have it... or else. */
 	if (m_strActionAnim) {
@@ -185,7 +185,7 @@ scripted_sequence::RunOnEntity(entity targ)
 
 	/* entity to trigger after sequence ends */
 	if (target) {
-		dprint(sprintf("\tTrigger when finished: %s\n", target));
+		NSLog("\tTrigger when finished: %s", target);
 		f.m_strRouteEnded = target;
 		f.m_ssLast = this;
 		m_iValue = FALSE; /* will be marked as used once triggered */
@@ -228,20 +228,20 @@ scripted_sequence::RunOnEntity(entity targ)
 	if (m_strActionAnim) {
 		duration = frameduration(f.modelindex, f.m_flSequenceEnd);
 		f.nextthink = time + duration;
-		dprint(sprintf(
+		NSLog(
 			"\tAnimation: %s Duration: %f seconds (modelindex %d, frame %d)\n",
 			m_strActionAnim,
 			duration,
 			f.modelindex,
 			f.m_flSequenceEnd
-		));
+		);
 	} else {
 		f.nextthink = time;
-		dprint(sprintf(
+		NSLog(
 			"\t^1WARNING: %s skipping animation on script type %i\n",
 			f.targetname,
 			m_iMove
-		));
+		);
 	}
 
 	f.m_iSequenceState = SEQUENCESTATE_ENDING;
@@ -251,7 +251,7 @@ scripted_sequence::RunOnEntity(entity targ)
 	else
 		f.think = NSMonster::FreeStateMoved;
 
-	dprint(sprintf("\tEnding: %f\n", f.nextthink));
+	NSLog("\tEnding: %f", f.nextthink);
 
 	/* make sure we're forgetting about enemies and attack states in sequence */
 	f.m_eEnemy = __NULL__;
@@ -264,7 +264,7 @@ scripted_sequence::Trigger(entity act, int unused)
 {
 	NSMonster f;
 
-	dprint(sprintf("^2scripted_sequence::^3Trigger^7: with spawnflags %d\n", spawnflags));
+	NSLog("^2scripted_sequence::^3Trigger^7: with spawnflags %d", spawnflags);
 	f = (NSMonster)find(world, ::targetname, m_strMonster);
 
 	/* target doesn't exist/hasn't spawned */
@@ -291,7 +291,7 @@ scripted_sequence::InitIdle(void)
 {
 	NSMonster f;
 
-	dprint(sprintf("^2scripted_sequence::^3InitIdle^7: with spawnflags %d\n", spawnflags));
+	NSLog("^2scripted_sequence::^3InitIdle^7: with spawnflags %d", spawnflags);
 	f = (NSMonster)find(world, ::targetname, m_strMonster);
 
 	/* target doesn't exist/hasn't spawned */
@@ -307,7 +307,7 @@ scripted_sequence::InitIdle(void)
 
 		/* cancel out. this trigger is broken. */
 		if (!f) {
-			dprint(sprintf("^1scripted_sequence::^3InitIdle^7: Unknown target %s\n", m_strMonster));
+			NSLog("^1scripted_sequence::^3InitIdle^7: Unknown target %s", m_strMonster);
 			return;
 		}
 	}

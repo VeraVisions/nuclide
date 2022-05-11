@@ -16,21 +16,21 @@
 
 class GameRules:CGameRules
 {
-	virtual void(base_player) PlayerConnect;
-	virtual void(base_player) PlayerDisconnect;
-	virtual void(base_player) PlayerKill;
-	virtual void(base_player) PlayerPostFrame;
+	virtual void(NSClientPlayer) PlayerConnect;
+	virtual void(NSClientPlayer) PlayerDisconnect;
+	virtual void(NSClientPlayer) PlayerKill;
+	virtual void(NSClientPlayer) PlayerPostFrame;
 
-	virtual void(base_player) LevelDecodeParms;
-	virtual void(base_player) LevelChangeParms;
+	virtual void(NSClientPlayer) LevelDecodeParms;
+	virtual void(NSClientPlayer) LevelChangeParms;
 	virtual void(void) LevelNewParms;
 };
 
 class SingleplayerRules:GameRules
 {
 	/* client */
-	virtual void(base_player) PlayerSpawn;
-	virtual void(base_player) PlayerDeath;
+	virtual void(NSClientPlayer) PlayerSpawn;
+	virtual void(NSClientPlayer) PlayerDeath;
 };
 
 class MultiplayerRules:GameRules
@@ -41,7 +41,7 @@ class MultiplayerRules:GameRules
 	virtual void(void) FrameStart;
 
 	/* client */
-	virtual void(base_player) PlayerSpawn;
-	virtual void(base_player) PlayerDeath;
-	virtual float(base_player, string) ConsoleCommand;
+	virtual void(NSClientPlayer) PlayerSpawn;
+	virtual void(NSClientPlayer) PlayerDeath;
+	virtual float(NSClientPlayer, string) ConsoleCommand;
 };

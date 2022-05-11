@@ -89,7 +89,7 @@ trigger_auto::Processing(void)
 	UseTargets(this, m_iTriggerState, m_flDelay);
 
 	if (HasSpawnFlags(1)) {
-		dprint(sprintf("^2trigger_auto::^3think^7: %s triggerer removed self\n",  target));
+		NSLog("^2trigger_auto::^3think^7: %s triggerer removed self",  target);
 		remove(this);
 	}
 }

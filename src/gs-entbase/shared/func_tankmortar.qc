@@ -297,7 +297,7 @@ func_tankmortar::PlayerInput(void)
 {
 #ifdef SERVER
 	if (m_eDriver && m_eDriver.health <= 0)
-		PlayerLeave((base_player)m_eDriver);
+		PlayerLeave((NSClientPlayer)m_eDriver);
 #else
 	print("foooo\n");
 #endif
@@ -368,7 +368,7 @@ func_tankmortar::Respawn(void)
 	SetAngles(GetSpawnAngles());
 
 	if (m_eDriver)
-		PlayerLeave((base_player)m_eDriver);
+		PlayerLeave((NSClientPlayer)m_eDriver);
 }
 
 void

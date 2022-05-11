@@ -140,7 +140,7 @@ NSXRInput::SetParentSpace(NSXRSpace xrSpace)
 void
 NSXRInput::PrintInfo(void)
 {
-	string deviceType;
+	string deviceType = "UNKNOWN";
 
 	switch (m_inputType) {
 	case XR_INPUT_HEAD:

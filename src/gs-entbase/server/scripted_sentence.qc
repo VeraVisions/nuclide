@@ -116,7 +116,7 @@ scripted_sentence::Trigger(entity act, int unused)
 		return;
 	}
 
-	dprint(sprintf("^2scripted_sentence::^3Trigger^7: %s on %s\n", m_strSentence, m_strSpeaker));
+	NSLog("^2scripted_sentence::^3Trigger^7: %s on %s", m_strSentence, m_strSpeaker);
 
 	NSTalkMonster npc = (NSTalkMonster)spe;
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);

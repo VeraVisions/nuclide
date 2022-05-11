@@ -548,7 +548,7 @@ prop_vehicle_driveable::RunVehiclePhysics(void)
 #if SERVER
 	/* eject the dead */
 	if (m_eDriver && m_eDriver.health <= 0) {
-		PlayerLeave((base_player)m_eDriver);
+		PlayerLeave((NSClientPlayer)m_eDriver);
 	}
 #endif
 
@@ -645,10 +645,10 @@ prop_vehicle_driveable::OnPlayerUse(void)
 		return;
 
 	if (m_eDriver == eActivator) {
-		PlayerLeave((base_player)eActivator);
+		PlayerLeave((NSClientPlayer)eActivator);
 		setorigin(eActivator, GetExitPos());
 	} else if (!m_eDriver) {
-		PlayerEnter((base_player)eActivator);
+		PlayerEnter((NSClientPlayer)eActivator);
 		m_vecPlayerPos = [0,0,0];
 	}
 	m_flUseTime = time + 2.0f;
@@ -677,7 +677,7 @@ prop_vehicle_driveable::Respawn(void)
 	setsize( this, [-50,-50,0], [50,50,64]);
 
 	if (m_eDriver)
-		PlayerLeave((base_player)m_eDriver);
+		PlayerLeave((NSClientPlayer)m_eDriver);
 
 	SendFlags = -1;
 }
