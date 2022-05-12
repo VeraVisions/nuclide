@@ -67,6 +67,7 @@ class NSSurfacePropEntity:NSRenderableEntity
 	entity m_eBurner;
 	int m_iBurnWeapon;
 	float m_flBurnTime;
+	float m_flBurnDmgTime; /* for whenever they touch a hot flame */
 
 	/* I/O */
 	string m_strOnBreak;

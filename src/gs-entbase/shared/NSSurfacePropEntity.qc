@@ -414,7 +414,7 @@ NSSurfacePropEntity::ParentUpdate(void)
 				flags &= ~FL_ONFIRE;
 			}
 
-			Damage_Apply(this, m_eBurner, 5, m_iBurnWeapon, DMG_BURN);
+			Damage_Apply(this, m_eBurner, 5, m_iBurnWeapon, DMG_BURN | DMG_SKIP_ARMOR);
 			m_flBurnNext = time + 0.5f;
 		}
 	}
@@ -430,6 +430,11 @@ NSSurfacePropEntity::Ignite(entity attacker, float flLifetime, int iWeapon)
 	m_eBurner = attacker;
 	m_iBurnWeapon = iWeapon;
 	m_flBurnTime = time + flLifetime;
+
+	if (m_flBurnDmgTime < time) {
+		Damage_Apply(this, attacker, 5, iWeapon, DMG_BURN | DMG_SKIP_ARMOR);
+		m_flBurnDmgTime = time + 0.25f;
+	}
 }
 
 void
