@@ -30,7 +30,7 @@ Print_Draw(void)
 	}
 
 	for (int i = 0; i < 5; i++) {
-		drawstring(pos, pSeat->m_strPrintBuffer[i], [12,12], [1,1,1], 1.0f, 0);
+		Font_DrawText_A(pos, pSeat->m_strPrintBuffer[i], 1.0f, FONT_CON);
 		pos[1] += 14;
 	}
 }
