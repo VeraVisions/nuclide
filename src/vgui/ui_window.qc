@@ -82,6 +82,7 @@ void CUIWindow::CUIWindow(void)
 	m_btnClose = spawn(CUIButton);
 	m_btnClose.SetTitle(__NULL__);
 	m_btnClose.m_strIcon = "textures/ui/steam/icon_close";
+	m_btnClose.SetColor(m_vecColor);
 	m_btnClose.SetFunc(WindowButtonClose);
 	m_btnClose.SetSize([20,20]);
 	Add(m_btnClose);
@@ -190,14 +191,14 @@ void CUIWindow::Draw(void)
 	drawfill(m_vecOrigin + [m_vecSize[0] - 1, 1], [1, m_vecSize[1] - 2], [0,0,0], 0.5f);
 
 	if (m_iFlags & WINDOW_CANRESIZE) {
-		drawpic(m_vecOrigin + m_vecSize - [16,16], "textures/ui/steam/icon_resizer", [16,16], [1,1,1], 1.0f, 0);
+		drawpic(m_vecOrigin + m_vecSize - [16,16], "textures/ui/steam/icon_resizer", [16,16], m_vecColor, 1.0f, 0);
 	}
 #endif
 
 	if (m_strTitle) {
 		if (m_strIcon) {
 			Font_DrawText(m_vecOrigin + [26, 8], m_strTitle, g_fntDefault);
-			drawpic(m_vecOrigin + [4, 4], m_strIcon, [16,16], [1,1,1], 1.0f, 0);
+			drawpic(m_vecOrigin + [4, 4], m_strIcon, [16,16], m_vecColor, 1.0f, 0);
 		} else {
 			Font_DrawText(m_vecOrigin + [8, 8], m_strTitle, g_fntDefault);
 		}

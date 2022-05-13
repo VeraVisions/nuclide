@@ -41,6 +41,7 @@ class CUIButton:CUIWidget
 	virtual void(vector) SetSize;
 	virtual void(string) SetTitle;
 	virtual void(string) SetIcon;
+	virtual void(vector) SetColor;
 	virtual void(void(void)) SetFunc;
 	virtual void(string) SetExec;
 	virtual void(float, float, float, float) Input;
@@ -55,6 +56,12 @@ CUIButton::CUIButton(void)
 	m_flAlpha = 1.0f;
 	m_vecSize = [96,24];
 	m_iFlags = BUTTON_VISIBLE;
+}
+
+void
+CUIButton::SetColor(vector vecColor)
+{
+	m_vecColor = vecColor;
 }
 
 void
@@ -159,7 +166,7 @@ CUIButton::Draw(void)
 		}
 	}
 	if (m_strIcon) {
-		drawpic(m_parent.m_vecOrigin + m_vecOrigin + [2,2], m_strIcon, [16,16], [1,1,1], 1.0f, 0);
+		drawpic(m_parent.m_vecOrigin + m_vecOrigin + [2,2], m_strIcon, [16,16], m_vecColor, 1.0f, 0);
 	}
 }
 

@@ -117,7 +117,27 @@ class func_door:NSRenderableEntity
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
 	virtual void(string, string) SpawnKey;
+	virtual void(entity, string, string) Input;
 };
+
+
+void
+func_door::Input(entity eAct, string strInput, string strData)
+{
+	switch (strInput) {
+	case "Open":
+		Trigger(eAct, TRIG_OFF);
+		break;
+	case "Close":
+		Trigger(eAct, TRIG_ON);
+		break;
+	case "Toggle":
+		Trigger(eAct, TRIG_TOGGLE);
+		break;
+	default:
+		super::Input(eAct, strInput, strData);
+	}
+}
 
 void
 func_door::PortalOpen(void)

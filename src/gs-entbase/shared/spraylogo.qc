@@ -96,7 +96,7 @@ class NSSpraylogo:NSEntity
 	int m_iOwnerID;
 	string m_strName;
 	string m_m_strPath;
-	int m_iInitialized;
+	bool m_bInitialized;
 	bool m_bMonochrome;
 
 	void(void) NSSpraylogo;
@@ -130,7 +130,7 @@ const string g_spray_mat_0 = \
 void
 NSSpraylogo::RendererRestarted(void)
 {
-	m_iInitialized = FALSE;
+	m_bInitialized = false;
 }
 
 float
@@ -145,9 +145,9 @@ NSSpraylogo::predraw(void)
 		return (PREDRAW_NEXT);
 	}
 
-	if (m_iInitialized == FALSE) {
+	if (m_bInitialized == false) {
 		void *image;
-		m_iInitialized = TRUE;
+		m_bInitialized = true;
 
 		/* load the blob */
 		image = memalloc(iSize + 1);
@@ -190,6 +190,7 @@ NSSpraylogo::NSSpraylogo(void)
 	m_vecColor = [1,1,1];
 	m_bMonochrome = false;
 	isCSQC = true;
+	m_bInitialized = false;
 }
 
 void
@@ -204,7 +205,6 @@ Spray_Parse(void)
 	spSelf.m_vecAngles[0] = readcoord();
 	spSelf.m_vecAngles[1] = readcoord();
 	spSelf.m_vecAngles[2] = readcoord();
-	spSelf.m_iInitialized = FALSE;
 	spSelf.m_iOwnerID = readentitynum() - 1;
 	spSelf.m_bMonochrome = getplayerkeyfloat(spSelf.m_iOwnerID, "spraytype");
 	spSelf.m_strName = sprintf("spray_%i_%d", spSelf.m_iOwnerID, spSelf.m_bMonochrome);
