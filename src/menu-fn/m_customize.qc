@@ -90,6 +90,12 @@ cz_cbSprayChanged(void)
 	string mdl = cz_psSpray.GetPic();
 	localcmd(sprintf("seta _cl_playerspray %s\n", mdl));
 	localcmd(sprintf("setinfoblob spray %s\n", mdl));
+
+	/* bmp are always monochrome */
+	if (substring(mdl, strlen(mdl) - 3, 3) == "bmp")
+		localcmd("setinfo spraytype 1\n");
+	else
+		localcmd("setinfo spraytype 0\n");
 }
 
 void

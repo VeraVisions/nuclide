@@ -97,22 +97,26 @@ class CSpraylogo
 	string m_strName;
 	string m_m_strPath;
 	int m_iInitialized;
+	bool m_bMonochrome;
+
+	void(void) CSpraylogo;
 	virtual float(void) predraw;
+	virtual void(void) RendererRestarted;
 };
 
-#ifdef WASTES
-const string g_spray_mat = \
+
+const string g_spray_mat_1 = \
 	"{\n" \
 		"cull disable\n" \
 		"polygonOffset\n" \
 		"{\n" \
 			"map $rt:%s\n" \
-			"blendfunc GL_DST_COLOR GL_ONE\n" \
+			"blendfunc GL_SRC_COLOR GL_ONE_MINUS_SRC_COLOR\n" \
 			"rgbGen vertex\n" \
 		"}\n" \
 	"}";
-#else
-const string g_spray_mat = \
+
+const string g_spray_mat_0 = \
 	"{\n" \
 		"cull disable\n" \
 		"polygonOffset\n" \
@@ -122,7 +126,12 @@ const string g_spray_mat = \
 			"rgbGen vertex\n" \
 		"}\n" \
 	"}";
-#endif
+
+void
+CSpraylogo::RendererRestarted(void)
+{
+	m_iInitialized = false;
+}
 
 float
 CSpraylogo::predraw(void)
@@ -147,7 +156,10 @@ CSpraylogo::predraw(void)
 		memfree(image);
 
 		/* push the material into memory */
-		shaderforname(m_strName, sprintf(g_spray_mat, m_m_strPath));
+		if (m_bMonochrome == true)
+			shaderforname(m_strName, sprintf(g_spray_mat_1, m_m_strPath));
+		else
+			shaderforname(m_strName, sprintf(g_spray_mat_0, m_m_strPath));
 	} else {
 		vector width;
 		vector height;
@@ -172,6 +184,14 @@ CSpraylogo::predraw(void)
 }
 
 void
+CSpraylogo::CSpraylogo(void)
+{
+	// boo
+	m_vecColor = [1,1,1];
+	m_bMonochrome = false;
+}
+
+void
 Spray_Parse(void)
 {
 	spawnfunc_CSpraylogo();
@@ -185,8 +205,9 @@ Spray_Parse(void)
 	spSelf.m_vecAngles[2] = readcoord();
 	spSelf.m_iInitialized = FALSE;
 	spSelf.m_iOwnerID = readentitynum() - 1;
-	spSelf.m_strName = sprintf("spray_%i", spSelf.m_iOwnerID);
-	spSelf.m_m_strPath = sprintf("simg_%i", spSelf.m_iOwnerID);
+	spSelf.m_bMonochrome = getplayerkeyfloat(spSelf.m_iOwnerID, "spraytype");
+	spSelf.m_strName = sprintf("spray_%i_%d", spSelf.m_iOwnerID, spSelf.m_bMonochrome);
+	spSelf.m_m_strPath = sprintf("simg_%i_%d", spSelf.m_iOwnerID, spSelf.m_bMonochrome);
 	spSelf.m_vecColor = stov(getplayerkeyvalue(spSelf.m_iOwnerID, "spraycolor"));
 }
 #endif
