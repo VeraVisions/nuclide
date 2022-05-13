@@ -412,7 +412,7 @@ CSQC_UpdateView(float w, float h, float focus)
 		Fade_Update((int)video_mins[0],(int)video_mins[1], (int)w, (int)h);
 		View_PostDraw();
 
-		if (Client_InIntermission() || cl.IsDead()) {
+		if (Client_InIntermission() || (!cl.IsFakeSpectator() && cl.IsDead())) {
 			Scores_Draw();
 		} else if (focus == TRUE) {
 			GameText_Draw();
