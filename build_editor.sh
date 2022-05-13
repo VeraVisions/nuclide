@@ -73,8 +73,8 @@ if [ "$COMPILE_OS" = "Msys" ]; then
 	MAKE=make
 	WS_CC=cc
 	WS_CXX=c++
-	WS_CFLAGS="$WS_CFLAGS -static-libgcc -static-libstdc++"
-	WS_LDFLAGS="$WS_LDFLAGS -lws2_32"
+	WS_CFLAGS="$CFLAGS -static-libgcc -static-libstdc++"
+	WS_LDFLAGS="$LDFLAGS -lws2_32"
 	WS_LIB_EXT=dll
 else
 	MAKE=gmake
@@ -247,6 +247,15 @@ mv_wsfile plugins/libbrushexport.dll
 mv_wsfile plugins/libprtview.dll
 mv_wsfile worldspawn.exe
 mv_wsfile vmap.exe
+cd ../../bin/
+ldd worldspawn.exe | grep '\/mingw.*\.dll' -o | xargs -I{} cp -v "{}" .
+ldd vmap.exe | grep '\/mingw.*\.dll' -o | xargs -I{} cp -v "{}" .
+ldd plugins/* | grep '\/mingw.*\.dll' -o | xargs -I{} cp -v "{}" .
+cp -r /c/msys64/mingw64/bin/zlib1.dll ./zlib1.dll
+cp -r /c/msys64/mingw64/bin/libdatrie-1.dll ./libdatrie-1.dll
+ldd *.dll | grep '\/mingw.*\.dll' -o | xargs -I{} cp -v "{}" .
+cd ..
+cp -r /c/msys64/mingw64/lib/gdk-pixbuf-2.0/ ./lib/
 else
 mv_wsfile plugins/libarchivezip.so
 mv_wsfile plugins/libarchivepak.so
