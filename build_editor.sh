@@ -4,7 +4,15 @@
 mv_wsfile()
 {
 	if [ -f "./build/$1" ]
-then
+	then
+		cp -v "./build/$1" "../../bin/$1"
+	fi
+}
+
+mv_msysfile()
+{
+	if [ -f "./build/$1" ]
+	then
 		cp -v "./build/$1" "../../bin/$1"
 	fi
 }
@@ -19,6 +27,7 @@ set -e
 
 WS_MAKEFILE=./src/worldspawn/Makefile
 COMPILE_SYS=$(uname)
+COMPILE_OS=$(uname -o)
 
 # Check how many cores/processors we should use for building
 if ! [ -x "$(command -v nproc)" ]
@@ -59,6 +68,18 @@ else
 	fi
 fi
 
+# GNU Make is _not_ make!...
+if [ "$COMPILE_OS" = "Msys" ]; then
+	MAKE=make
+	WS_CC=cc
+	WS_CXX=c++
+	WS_CFLAGS="$WS_CFLAGS -static-libgcc -static-libstdc++"
+	WS_LDFLAGS="$WS_LDFLAGS -lws2_32"
+	WS_LIB_EXT=dll
+else
+	MAKE=gmake
+fi
+
 mkdir -p ./bin
 
 if [ -f "$WS_MAKEFILE" ]
@@ -80,10 +101,11 @@ fi
 
 if [ "$BUILD_CLEAN" -eq 1 ]
 then
-	gmake clean
+	$MAKE clean
 fi
 
-gmake -j $BUILD_PROC CC=$WS_CC CXX=$WS_CXX CFLAGS="$WS_CFLAGS" LDFLAGS="$WS_LDFLAGS"
+$MAKE -j $BUILD_PROC CC=$WS_CC CXX=$WS_CXX CFLAGS="$WS_CFLAGS" LDFLAGS="$WS_LDFLAGS" LIB_EXT=$WS_LIB_EXT
+
 
 mkdir -p ../../bin/bitmaps
 mv_wsfile defaultkeys.ini
@@ -199,7 +221,33 @@ mv_wsfile gl/zfill_fp.glp
 mv_wsfile gl/zfill_fp.glsl
 mv_wsfile gl/zfill_vp.glp
 mv_wsfile gl/zfill_vp.glsl
+
+mkdir -p ../../bin/platform.game
+mv_wsfile platform.game/default_build_menu.xml
+mkdir -p ../../bin/platform.game/platform
+mv_wsfile platform.game/platform/entities.def
+mkdir -p ../../bin/goldsrc.game
+mv_wsfile goldsrc.game/default_build_menu.xml
+
 mkdir -p ../../bin/plugins
+if [ "$COMPILE_OS" = "Msys" ]; then
+mv_wsfile plugins/libarchivezip.dll
+mv_wsfile plugins/libarchivepak.dll
+mv_wsfile plugins/libarchivewad.dll
+mv_wsfile plugins/libentity.dll
+mv_wsfile plugins/libimage.dll
+mv_wsfile plugins/libimagehl.dll
+mv_wsfile plugins/libiqmmodel.dll
+mv_wsfile plugins/libmapq3.dll
+mv_wsfile plugins/libmodel.dll
+mv_wsfile plugins/libshaders.dll
+mv_wsfile plugins/libmatsys.dll
+mv_wsfile plugins/libvfspk3.dll
+mv_wsfile plugins/libbrushexport.dll
+mv_wsfile plugins/libprtview.dll
+mv_wsfile worldspawn.exe
+mv_wsfile vmap.exe
+else
 mv_wsfile plugins/libarchivezip.so
 mv_wsfile plugins/libarchivepak.so
 mv_wsfile plugins/libarchivewad.so
@@ -214,15 +262,8 @@ mv_wsfile plugins/libmatsys.so
 mv_wsfile plugins/libvfspk3.so
 mv_wsfile plugins/libbrushexport.so
 mv_wsfile plugins/libprtview.so
-
-mkdir -p ../../bin/platform.game
-mv_wsfile platform.game/default_build_menu.xml
-mkdir -p ../../bin/platform.game/platform
-mv_wsfile platform.game/platform/entities.def
-
-mkdir -p ../../bin/goldsrc.game
-mv_wsfile goldsrc.game/default_build_menu.xml
-
 mv_wsfile worldspawn
 mv_wsfile vmap
+fi
+
 printf "Built the editor successfully.\nInsert './worldspawn' to run.\n"

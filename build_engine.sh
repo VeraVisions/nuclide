@@ -11,6 +11,7 @@ set -e
 
 FTE_MAKEFILE=./src/engine/engine/Makefile
 COMPILE_SYS=$(uname)
+COMPILE_OS=$(uname -o)
 
 # Check how many cores/processors we should use for building
 if ! [ -x "$(command -v nproc)" ]
@@ -81,6 +82,14 @@ else
 	fi
 fi
 
+# GNU Make is _not_ make!...
+if [ "$COMPILE_OS" = "Msys" ]; then
+	MAKE=make
+	PLATFORM=win64
+else
+	MAKE=gmake
+fi
+
 mkdir -p ./bin
 
 if [ -f "$FTE_MAKEFILE" ]
@@ -116,32 +125,32 @@ fi
 
 if [ "$BUILD_CLEAN" -eq 1 ]
 then
-	gmake clean
+	$MAKE clean
 	printf "Cleaned the build directory.\n\n"
 fi
 
 if [ "$BUILD_ENGINE_DEPENDENCIES" -eq 1 ]
 then
-	gmake -j $BUILD_PROC CC=$ENGINE_CC CXX=$ENGINE_CXX  makelibs FTE_TARGET=$PLATFORM
+	$MAKE -j $BUILD_PROC CC=$ENGINE_CC CXX=$ENGINE_CXX  makelibs FTE_TARGET=$PLATFORM
 	printf "Built the static dependencies successfully.\n\n"
 fi
 
-gmake -j $BUILD_PROC CC=$ENGINE_CC CXX=$ENGINE_CXX $MAKETARGET  CFLAGS=-DMULTITHREAD FTE_TARGET=$PLATFORM
+$MAKE -j $BUILD_PROC CC=$ENGINE_CC CXX=$ENGINE_CXX $MAKETARGET  CFLAGS=-DMULTITHREAD FTE_TARGET=$PLATFORM
 cp -v "$OUTPUT" ../../../bin/fteqw
 printf "Built the client engine successfully.\n\n"
 
-gmake -j $BUILD_PROC CC=$ENGINE_CC CXX=$ENGINE_CXX sv-dbg
+$MAKE -j $BUILD_PROC CC=$ENGINE_CC CXX=$ENGINE_CXX sv-dbg
 cp -v ./debug/fteqw-sv ../../../bin/fteqw-sv
 printf "Built the dedicated server successfully.\n\n"
 
-gmake -j $BUILD_PROC CC=$ENGINE_CC CXX=$ENGINE_CXX qcc-rel
+$MAKE -j $BUILD_PROC CC=$ENGINE_CC CXX=$ENGINE_CXX qcc-rel
 cp -v ./release/fteqcc ../../../bin/fteqcc
 printf "Built the QuakeC compiler successfully.\n\n"
 
 if [ "$BUILD_IMGTOOL" -eq 1 ]
 then
 	# Note: DOESN'T LIKE CLANG!
-	gmake -j $BUILD_PROC imgtool-rel
+	$MAKE -j $BUILD_PROC imgtool-rel
 	cp -v ./release/imgtool ../../../bin/imgtool
 	printf "Built the imgtool successfully.\n\n"
 fi
@@ -149,28 +158,28 @@ fi
 if [ "$BUILD_SOURCE" -eq 1 ]
 then
 	# Note: DOESN'T LIKE CLANG!
-	gmake -j $BUILD_PROC plugins-rel CFLAGS=-DGLQUAKE NATIVE_PLUGINS="hl2"
+	$MAKE -j $BUILD_PROC plugins-rel CFLAGS=-DGLQUAKE NATIVE_PLUGINS="hl2"
 	find ./release/ -name 'fteplug_hl2_*.so' -exec cp -prv '{}' '../../../bin/' ';'
 	printf "Built the Source Engine plugin successfully.\n\n"
 fi
 
 if [ "$BUILD_BULLET" -eq 1 ]
 then
-	CC=$ENGINE_CC CXX=$ENGINE_CXX gmake -j $BUILD_PROC plugins-rel NATIVE_PLUGINS="bullet"
+	CC=$ENGINE_CC CXX=$ENGINE_CXX $MAKE -j $BUILD_PROC plugins-rel NATIVE_PLUGINS="bullet"
 	find ./release/ -name 'fteplug_bullet_*.so' -exec cp -prv '{}' '../../../bin/' ';'
 	printf "Built the bullet plugin successfully.\n\n"
 fi
 
 if [ "$BUILD_ODE" -eq 1 ]
 then
-	CC=$ENGINE_CC CXX=$ENGINE_CXX gmake -j $BUILD_PROC plugins-rel NATIVE_PLUGINS="ode"
+	CC=$ENGINE_CC CXX=$ENGINE_CXX $MAKE -j $BUILD_PROC plugins-rel NATIVE_PLUGINS="ode"
 	find ./release/ -name 'fteplug_ode_*.so' -exec cp -prv '{}' '../../../bin/' ';'
 	printf "Built the ode plugin successfully.\n\n"
 fi
 
 if [ "$BUILD_FFMPEG" -eq 1 ]
 then
-	CC=$ENGINE_CC CXX=$ENGINE_CXX gmake -j $BUILD_PROC plugins-rel NATIVE_PLUGINS="ffmpeg"
+	CC=$ENGINE_CC CXX=$ENGINE_CXX $MAKE -j $BUILD_PROC plugins-rel NATIVE_PLUGINS="ffmpeg"
 	find ./release/ -name 'fteplug_ffmpeg_*.so' -exec cp -prv '{}' '../../../bin/' ';'
 	printf "Built the ffmpeg plugin successfully.\n\n"
 fi
