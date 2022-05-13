@@ -35,7 +35,8 @@
 void
 _NSLog(string msg)
 {
-	print(sprintf("%f %s\n", time, msg));
+	if (cvar("g_developer") == 1)
+		print(sprintf("%f %s\n", time, msg));
 }
 #define NSLog(x, ...) _NSLog(sprintf(x, __VA_ARGS__))
 
@@ -184,9 +185,9 @@ __wrap string
 precache_model(string m)
 {
 #ifdef CLIENT
-	NSLog("^3Client precaching model ^7%s\n", m);
+	NSLog("^3Client precaching model ^7%s", m);
 #else
-	NSLog("^3Server precaching model ^7%s\n", m);
+	NSLog("^3Server precaching model ^7%s", m);
 #endif
 	return prior(m);
 }

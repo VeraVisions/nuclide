@@ -88,7 +88,7 @@ CSEv_Spraylogo(void)
 #endif
 
 #ifdef CLIENT
-class CSpraylogo
+class NSSpraylogo:NSEntity
 {
 	vector m_vecColor;
 	vector m_vecPosition;
@@ -99,7 +99,7 @@ class CSpraylogo
 	int m_iInitialized;
 	bool m_bMonochrome;
 
-	void(void) CSpraylogo;
+	void(void) NSSpraylogo;
 	virtual float(void) predraw;
 	virtual void(void) RendererRestarted;
 };
@@ -128,13 +128,13 @@ const string g_spray_mat_0 = \
 	"}";
 
 void
-CSpraylogo::RendererRestarted(void)
+NSSpraylogo::RendererRestarted(void)
 {
-	m_iInitialized = false;
+	m_iInitialized = FALSE;
 }
 
 float
-CSpraylogo::predraw(void)
+NSSpraylogo::predraw(void)
 {
 	int iSize;
 
@@ -184,18 +184,19 @@ CSpraylogo::predraw(void)
 }
 
 void
-CSpraylogo::CSpraylogo(void)
+NSSpraylogo::NSSpraylogo(void)
 {
 	// boo
 	m_vecColor = [1,1,1];
 	m_bMonochrome = false;
+	isCSQC = true;
 }
 
 void
 Spray_Parse(void)
 {
-	spawnfunc_CSpraylogo();
-	CSpraylogo spSelf =(CSpraylogo)self;
+	spawnfunc_NSSpraylogo();
+	NSSpraylogo spSelf =(NSSpraylogo)self;
 	spSelf.drawmask = MASK_ENGINE;
 	spSelf.m_vecPosition[0] = readcoord();
 	spSelf.m_vecPosition[1] = readcoord();
