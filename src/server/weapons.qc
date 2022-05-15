@@ -194,6 +194,78 @@ Weapons_AddItem(NSClientPlayer pl, int w, int startammo)
 	return value;
 }
 
+
+int
+Weapons_AddItemSilent(NSClientPlayer pl, int w, int startammo)
+{
+	int value;
+
+	/* let's check if we've got a limit */
+	int maxit;
+	CGameRules rules = (CGameRules)g_grMode;
+	maxit = rules.MaxItemPerSlot(g_weapons[w].slot);
+	if (maxit > 0) {
+		int wantslot = g_weapons[w].slot;
+		int c = 0;
+		for (int i = 0; i < g_weapons.length; i++) {
+			if (pl.g_items & g_weapons[i].id && g_weapons[i].slot == wantslot) {
+				c++;
+
+				/* we're over the slot limit. */
+				if (c >= maxit) {
+					return (0);
+				}
+			}
+		}
+	}
+
+	/* in case programmer decided not to add a pickup callback */
+	if (g_weapons[w].pickup == __NULL__) {
+		if (pl.g_items & g_weapons[w].id) {
+			/* already present, skip */
+			value = FALSE;
+		} else {
+			/* new to our arsenal */
+			pl.g_items |= g_weapons[w].id;
+			value = TRUE;
+
+			/* it's new, so autoswitch? */
+			if (pl.activeweapon == 0 && autocvar_sv_forceweapondraw == 1) {
+				pl.activeweapon = w;
+				Weapons_Draw((player)pl);
+			}
+		}
+	} else {
+		/* call pickup to handle the ammo */
+		if (pl.g_items & g_weapons[w].id) {
+			/* we have the item already, se let's see if we hit maxammo */
+			value = g_weapons[w].pickup((player)pl, FALSE, startammo);
+
+			/* FALSE means maxammo is hit */
+			if (!value)
+				return value;
+		} else {
+			/* new to our arsenal */
+			if (g_weapons[w].pickup((player)pl, TRUE, startammo) == TRUE) {
+				pl.g_items |= g_weapons[w].id;
+				value = TRUE;
+
+				/* it's new, so autoswitch? */
+				if (pl.activeweapon == 0 && autocvar_sv_forceweapondraw == 1) {
+					pl.activeweapon = w;
+					Weapons_Draw((player)pl);
+				}
+			} else {
+				/* cannot pickup this weapon (weapon says no) */
+				return FALSE;
+			}
+		}
+	}
+
+	Weapons_RefreshAmmo(pl);
+	return value;
+}
+
 /*
 =================
 Weapons_RemoveItem

@@ -120,7 +120,6 @@ class func_door:NSRenderableEntity
 	virtual void(entity, string, string) Input;
 };
 
-
 void
 func_door::Input(entity eAct, string strInput, string strData)
 {
@@ -149,6 +148,7 @@ func_door::PortalOpen(void)
 	setorigin(this, origin);
 	openportal(this, AREAPORTAL_OPEN);
 }
+
 void
 func_door::PortalClose(void)
 {

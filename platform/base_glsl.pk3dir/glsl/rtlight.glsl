@@ -15,12 +15,14 @@
 !!permu FRAMEBLEND
 !!permu SKELETAL
 !!permu FOG
+!!permu UPPERLOWER
 
 !!cvardf r_glsl_pcf
 !!samps diffuse
 !!samps =BUMP normalmap reflectcube
 !!samps =PCF shadowmap
 !!samps =CUBE projectionmap
+!!samps =UPPERLOWER upper
 
 !!cvardf r_skipDiffuse
 
@@ -169,6 +171,10 @@ varying vec3 lightvector;
 
 		diff *= colorscale * l_lightcolour;
 		diff.rgb *= vc.a;
+
+		#if defined(UPPERLOWER)
+			diff.rgb *= texture2D(s_upper, tex_c * 4.0).rgb;
+		#endif
 
 		gl_FragColor = vec4(fog3additive(diff), vc.a);
 	}

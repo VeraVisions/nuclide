@@ -95,6 +95,7 @@ NSClientPlayer:NSClientSpectator
 	virtual void(void) PredictPreFrame;
 	virtual void(void) PredictPostFrame;
 	virtual void(void) ClientInputFrame;
+	virtual void(void) UpdateAliveCam;
 #else
 	int voted;
 	int step;

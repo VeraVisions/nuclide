@@ -122,6 +122,11 @@ CGameRules::IntermissionStart(void)
 
 	m_iIntermission = TRUE;
 	m_flIntermissionTime = time + 5.0f;
+
+	for (entity p = world; (p = find(p, ::classname, "player"));) {
+		p.health = 0;
+		p.modelindex = 0;
+	}
 }
 
 void

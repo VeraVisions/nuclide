@@ -141,6 +141,30 @@ NSClientPlayer::OnRemoveEntity(void)
 	super::OnRemoveEntity();
 }
 
+void
+NSClientPlayer::UpdateAliveCam(void)
+{
+	setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin + view_ofs);
+
+	if (vehicle) {
+		NSVehicle veh = (NSVehicle)vehicle;
+					
+		if (veh.UpdateView)
+			veh.UpdateView();
+	} else if (health) {
+		if (autocvar_cl_thirdperson == TRUE) {
+			makevectors(view_angles);
+			vector vStart = [pSeat->m_vecPredictedOrigin[0], pSeat->m_vecPredictedOrigin[1], pSeat->m_vecPredictedOrigin[2] + 16] + (v_right * 4);
+			vector vEnd = vStart + (v_forward * -48) + [0,0,16] + (v_right * 4);
+			traceline(vStart, vEnd, FALSE, self);
+			setproperty(VF_ORIGIN, trace_endpos + (v_forward * 5));
+		}
+	}
+
+	Shake_Update(this);
+	setproperty(VF_ANGLES, view_angles + punchangle);
+}
+
 /*
 =================
 NSClientPlayer::ClientInputFrame
@@ -245,9 +269,7 @@ NSClientPlayer::ReceiveEntity(float new, float fl)
 		gravity = 1.0f;
 	}
 
-	if (fl & PLAYER_MODELINDEX) {
-		modelindex = readshort();
-	}
+	modelindex = readint();
 
 	if (fl & PLAYER_ORIGIN) {
 		origin[0] = readcoord();
@@ -556,6 +578,8 @@ NSClientPlayer::MakeTempSpectator(void)
 	activeweapon = 0;
 	effects = 0;
 	alpha = 0.0f;
+	forceinfokey(this, "*spectator", "0"); /* not a real spectator */
+	forceinfokey(this, "*dead", "0");
 }
 
 /*
@@ -586,8 +610,10 @@ NSClientPlayer::Death(void)
 	SetGravity(1.0f);
 	customphysics = Empty;
 	iBleeds = FALSE;
-	forceinfokey(this, "*deaths", ftos(deaths));
 	setsize(this, [0,0,0], [0,0,0]);
+	forceinfokey(this, "*deaths", ftos(deaths));
+	forceinfokey(this, "*dead", "1");
+	forceinfokey(this, "*spectator", "0");
 }
 
 /*
@@ -618,8 +644,10 @@ NSClientPlayer::MakePlayer(void)
 	SendFlags = UPDATE_ALL;
 	customphysics = Empty;
 	iBleeds = TRUE;
-	forceinfokey(this, "*deaths", ftos(deaths));
 	SetSize(VEC_HULL_MIN, VEC_HULL_MAX);
+	forceinfokey(this, "*spectator", "0");
+	forceinfokey(this, "*deaths", ftos(deaths));
+	forceinfokey(this, "*dead", "0");
 }
 
 /*
@@ -634,10 +662,7 @@ at the top of player::EvaluateEntity
 void
 NSClientPlayer::EvaluateEntity(void)
 {
-	SetSendFlags(PLAYER_KEEPALIVE);
-
-	if (ATTR_CHANGED(modelindex))
-		SetSendFlags(PLAYER_MODELINDEX);
+	SetSendFlags(PLAYER_MODELINDEX);
 
 	if (VEC_CHANGED(origin, 0))
 		SetSendFlags(PLAYER_ORIGIN);
@@ -745,7 +770,7 @@ NSClientPlayer::SendEntity(entity ePEnt, float fChanged)
 {
 	/* really trying to get our moneys worth with 23 bits of mantissa */
 	if (fChanged & PLAYER_MODELINDEX) {
-		WriteShort(MSG_ENTITY, modelindex);
+		WriteInt(MSG_ENTITY, modelindex);
 	}
 
 	/* if origin[0] changes, it's very likely [1] changes too, since

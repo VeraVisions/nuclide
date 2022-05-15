@@ -9,12 +9,14 @@
 !!permu FOG
 !!permu BUMP
 !!permu DELUXE
+!!permu UPPERLOWER
 !!samps diffuse normalmap
 
 !!samps lightmap
 !!samps =LIGHTSTYLED lightmap1 lightmap2 lightmap3
 !!samps =DELUXE deluxemap
 !!samps =LIGHTSTYLED =DELUXE deluxemap1 deluxemap2 deluxemap3
+!!samps =UPPERLOWER upper
 
 !!permu FAKESHADOWS
 !!cvardf r_glsl_pcf
@@ -158,6 +160,11 @@ varying vec2 lm1, lm2, lm3;
 
 		#ifdef FAKESHADOWS
 		diffuse_f *= ShadowmapFilter(s_shadowmap, vtexprojcoord);
+		#endif
+
+
+		#if defined(UPPERLOWER)
+			diffuse_f.rgb *= texture2D(s_upper, tex_c * 4.0).rgb;
 		#endif
 
 		gl_FragColor = vec4(fog3(diffuse_f), alpha);

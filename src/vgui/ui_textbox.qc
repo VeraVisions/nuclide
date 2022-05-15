@@ -76,16 +76,24 @@ void CUITextBox::Draw(void)
 #endif
 	m_flTime += frametime * 2;
 
+	/* these are to deal with text going off-screen */
+	float len = Font_StringWidth(m_strText, TRUE, g_fntDefault);
+	float ofs = bound(0, len - (m_vecSize[0] - 16), len);
+
 	// blinking cursor
 	if (m_iFlags & TEXTBOX_FOCUS) {
 		if (rint(m_flTime) & 1) {
-			Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [8, 8], sprintf("%s|", m_strText), g_fntDefault);
+			drawsetcliparea(m_parent.m_vecOrigin[0] + m_vecOrigin[0], m_parent.m_vecOrigin[1] + m_vecOrigin[1], m_vecSize[0], m_vecSize[1]);
+			Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [8 - ofs, 8], sprintf("%s|", m_strText), g_fntDefault);
+			drawresetcliparea();
 			return;
 		}
 	}
 	
 	if (m_strText) {
-		Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [8, 8], m_strText, g_fntDefault);
+			drawsetcliparea(m_parent.m_vecOrigin[0] + m_vecOrigin[0], m_parent.m_vecOrigin[1] + m_vecOrigin[1], m_vecSize[0], m_vecSize[1]);
+		Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [8 - ofs, 8], m_strText, g_fntDefault);
+		drawresetcliparea();
 	}
 }
 
@@ -107,9 +115,15 @@ void CUITextBox::Input (float flEVType, float flKey, float flChar, float flDevID
 			break;
 		default:
 			if (m_iFlags & TEXTBOX_FOCUS) {
+#if 0
 				if ((flChar >= 48 && flChar <= 57) || (flChar >= 65 && flChar <= 90) || (flChar >= 97 && flChar <= 122)) {
 					m_strText = sprintf("%s%s", m_strText, chr2str(flChar));
 				}
+#else
+				if ((flChar >= 32 && flChar <= 125)) {
+					m_strText = sprintf("%s%s", m_strText, chr2str(flChar));
+				}
+#endif
 			}
 		}
 	} else if (flEVType == IE_KEYUP) {

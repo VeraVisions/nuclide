@@ -15,6 +15,7 @@
 !!permu DELUXE
 !!permu LIGHTSTYLED
 !!permu FULLBRIGHT
+!!permu UPPERLOWER
 !!samps diffuse 
 
 !!samps lightmap
@@ -23,6 +24,7 @@
 !!samps =DELUXE deluxemap
 !!samps =LIGHTSTYLED =DELUXE deluxemap1 deluxemap2 deluxemap3
 !!samps =FULLBRIGHT fullbright
+!!samps =UPPERLOWER upper
 
 !!permu FAKESHADOWS
 !!cvardf r_glsl_pcf
@@ -190,7 +192,7 @@ varying mat3 invsurface;
 				vec3 cube_c;
 				vec3 env_f;
 				float refl = texture2D(s_normalmap, tex_c).a;
-				cube_c = reflect(normalize(-eyevector), normal_f.rgb);
+				cube_c = reflect(normalize(-eyevector), vec3(0.0, 0.0, 1.0));
 				cube_c = cube_c.x * invsurface[0] + 
 						 cube_c.y * invsurface[1] + 
 						 cube_c.z * invsurface[2];
@@ -211,6 +213,11 @@ varying mat3 invsurface;
 
 		if (alpha > 1.0)
 			alpha = 1.0;
+
+
+		#if defined(UPPERLOWER)
+			diffuse_f.rgb *= texture2D(s_upper, tex_c * 4.0).rgb;
+		#endif
 
 		gl_FragColor = vec4(fog3(diffuse_f.rgb), alpha);
 	}

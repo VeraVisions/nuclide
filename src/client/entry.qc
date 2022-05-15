@@ -287,25 +287,7 @@ CSQC_UpdateView(float w, float h, float focus)
 		} else {
 			/* we're not spectating at all */
 			if (!Client_IsSpectator(pl)) {
-				setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin + pl.view_ofs);
-
-				if (pl.vehicle) {
-					NSVehicle veh = (NSVehicle)pl.vehicle;
-					
-					if (veh.UpdateView)
-						veh.UpdateView();
-				} else if (pl.health) {
-					if (autocvar_cl_thirdperson == TRUE) {
-						makevectors(view_angles);
-						vector vStart = [pSeat->m_vecPredictedOrigin[0], pSeat->m_vecPredictedOrigin[1], pSeat->m_vecPredictedOrigin[2] + 16] + (v_right * 4);
-						vector vEnd = vStart + (v_forward * -48) + [0,0,16] + (v_right * 4);
-						traceline(vStart, vEnd, FALSE, self);
-						setproperty(VF_ORIGIN, trace_endpos + (v_forward * 5));
-					}
-				}
-
-				Shake_Update(pl);
-				setproperty(VF_ANGLES, view_angles + pl.punchangle);
+				cl.UpdateAliveCam();
 			} else if (Client_IsSpectator(pl)) {
 				spec = (NSClientSpectator)self;
 				switch (spec.spec_mode) {
@@ -338,10 +320,7 @@ CSQC_UpdateView(float w, float h, float focus)
 			}
 
 			if (Client_InIntermission()) {
-				view_angles = pSeat->m_vecCameraAngle;
-				view_angles += [sin(time), sin(time * 1.5f)] * 0.1f;
-				setproperty(VF_ORIGIN, pSeat->m_vecCameraOrigin);
-				setproperty(VF_CL_VIEWANGLES, view_angles);
+				cl.UpdateIntermissionCam();
 			}
 		}
 #endif
@@ -412,7 +391,9 @@ CSQC_UpdateView(float w, float h, float focus)
 		Fade_Update((int)video_mins[0],(int)video_mins[1], (int)w, (int)h);
 		View_PostDraw();
 
-		if (Client_InIntermission() || (!cl.IsFakeSpectator() && cl.IsDead())) {
+		int players = (int)serverkeyfloat("sv_playerslots");
+
+		if (players > 1 && !VGUI_Active() && (Client_InIntermission() || (!cl.IsFakeSpectator() && cl.IsDead()))) {
 			Scores_Draw();
 		} else if (focus == TRUE) {
 			GameText_Draw();

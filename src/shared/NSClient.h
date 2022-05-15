@@ -29,8 +29,14 @@ NSClient:NSSurfacePropEntity
 	/* gives the chance to override input variables before networking */
 	virtual void(void) ClientInputFrame;
 
+	/* our camera when we're alive */
+	virtual void(void) UpdateAliveCam;
+
 	/* our camera when we're dead */
 	virtual void(void) UpdateDeathcam;
+
+	/* our camera when we're in an intermission */
+	virtual void(void) UpdateIntermissionCam;
 
 	/* run every frame before renderscene() */
 	virtual float(void) predraw;

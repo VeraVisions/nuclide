@@ -460,6 +460,10 @@ NSClientSpectator::NSClientSpectator(void)
 	maxspeed = 250;
 	spec_ent = 0;
 	spec_mode = 0;
+
+#ifdef SERVER
+	forceinfokey(this, "*spectator", "1");
+#endif
 }
 
 #ifdef CLIENT

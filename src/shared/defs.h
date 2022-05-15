@@ -233,7 +233,6 @@ memalloc(int size)
 void
 setorigin_safe(entity target, vector testorg)
 {
-
 	for (int i = 0; i < 16; i++) {
 		tracebox(testorg, target.mins, target.maxs, testorg, MOVE_NORMAL, target);
 
