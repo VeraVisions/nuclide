@@ -24,7 +24,9 @@ enumflags
 
 class CUIButton:CUIWidget
 {
+	vector m_vecIMGSize;
 	vector m_vecColor;
+	vector m_vecIconColor;
 	float m_flAlpha;
 	vector m_vecSize;
 	string m_strTitle;
@@ -55,6 +57,7 @@ CUIButton::CUIButton(void)
 	m_vecColor = UI_MAINCOLOR;
 	m_flAlpha = 1.0f;
 	m_vecSize = [96,24];
+	m_vecIconColor = [1,1,1];
 	m_iFlags = BUTTON_VISIBLE;
 }
 
@@ -63,6 +66,12 @@ CUIButton::SetColor(vector vecColor)
 {
 	m_vecColor = vecColor;
 }
+
+void
+CUIButton::SetIconColor(vector vecColor)
+{
+	m_vecIconColor = vecColor;
+};
 
 void
 CUIButton::SetSize(vector vecSize)
@@ -104,7 +113,13 @@ CUIButton::SetTitle(string strName)
 void
 CUIButton::SetIcon(string strName)
 {
+	vector vecImgSize;
 	m_strIcon = strName;
+	m_vecIMGSize = drawgetimagesize(strName);
+
+	if (vlen(GetSize()) < vlen(m_vecIMGSize)) {
+		SetSize(m_vecIMGSize + [4,4]);
+	}
 }
 void
 CUIButton::SetFunc(void(void) vFunc)
@@ -166,7 +181,10 @@ CUIButton::Draw(void)
 		}
 	}
 	if (m_strIcon) {
-		drawpic(m_parent.m_vecOrigin + m_vecOrigin + [2,2], m_strIcon, [16,16], m_vecColor, 1.0f, 0);
+		if (m_iFlags & BUTTON_DOWN)
+			drawpic(m_parent.m_vecOrigin + m_vecOrigin + [2,2], m_strIcon, m_vecIMGSize, m_vecIconColor * 0.25, 1.0f, 0);
+		else
+			drawpic(m_parent.m_vecOrigin + m_vecOrigin + [2,2], m_strIcon, m_vecIMGSize, m_vecIconColor, 1.0f, 0);
 	}
 }
 

@@ -81,7 +81,8 @@ void CUIWindow::CUIWindow(void)
 
 	m_btnClose = spawn(CUIButton);
 	m_btnClose.SetTitle(__NULL__);
-	m_btnClose.m_strIcon = "textures/ui/steam/icon_close";
+	m_btnClose.SetIcon("textures/ui/steam/icon_close");
+	m_btnClose.SetIconColor(m_vecColor);
 	m_btnClose.SetColor(m_vecColor);
 	m_btnClose.SetFunc(WindowButtonClose);
 	m_btnClose.SetSize([20,20]);
