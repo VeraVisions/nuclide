@@ -61,6 +61,8 @@ varying vec3 eyevector;
 varying mat3 invsurface;
 #endif
 
+varying vec3 norm;
+
 #ifdef VERTEX_SHADER
 	void lightmapped_init(void)
 	{
@@ -92,6 +94,7 @@ varying mat3 invsurface;
 		invsurface[1] = v_tvector;
 		invsurface[2] = v_normal;
 	#endif
+		norm = v_normal;
 	}
 #endif
 
@@ -154,6 +157,11 @@ varying mat3 invsurface;
 	}
 #endif
 
+	float lambert(vec3 normal, vec3 dir)
+	{
+		return max(dot(normal, dir), 0.0);
+	}
+
 	void main (void)
 	{
 		vec4 diffuse_f;
@@ -208,6 +216,15 @@ varying mat3 invsurface;
 			diffuse_f.rgb += texture2D(s_fullbright, tex_c).rgb;
 		#endif
 
+		#if defined (VERTEXLIT)
+			vec3 light;
+			/* directional light */
+			light = (vec3(0.5,0.5,0.5) * lambert(norm, vec3(-1,-0.5,0.5))) * 2.0;
+			light += (vec3(0.25,0.25,0.25) * lambert(norm, reflect(norm, vec3(0.75, 0, 0)))) * 0.5;
+			light *= 2.0;
+			diffuse_f.rgb = texture2D(s_diffuse, tex_c).rgb * light;
+		#endif
+
 		// start blend at half-way point
 		alpha = vex_color.a * 1.5;
 
@@ -216,7 +233,7 @@ varying mat3 invsurface;
 
 
 		#if defined(UPPERLOWER)
-			diffuse_f.rgb *= texture2D(s_upper, tex_c * 4.0).rgb;
+			diffuse_f.rgb *= (texture2D(s_upper, tex_c * 4.0).rgb + 0.5);
 		#endif
 
 		gl_FragColor = vec4(fog3(diffuse_f.rgb), alpha);
