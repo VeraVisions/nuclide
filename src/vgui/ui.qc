@@ -62,7 +62,7 @@ class CUIWidget
 	virtual int(void) GetPosHeight;
 	virtual void(void) Draw;
 	virtual void(void) Reposition;
-	virtual void(float, float, float, float) Input;
+	virtual bool(float, float, float, float) Input;
 };
 
 void
@@ -124,25 +124,26 @@ void
 CUIWidget::Draw(void)
 {
 	CUIWidget wNext = this;
-	do {
-		wNext = wNext.m_next;
-		if (wNext && wNext.m_iFlags & 1 && wNext.m_parent.m_iFlags & 1) {
-			wNext.Draw();
-		}
-	} while (wNext);
-}
-
-void
-CUIWidget::Input(float flEVType, float flKey, float flChar, float flDevID)
-{
-	CUIWidget wNext = this;
-
 	g_vguiWidgetCount = 0;
 	do {
 		wNext = wNext.m_next;
 		if (wNext && wNext.m_iFlags & 1 && wNext.m_parent.m_iFlags & 1) {
 			g_vguiWidgetCount++;
-			wNext.Input(flEVType, flKey, flChar, flDevID);
+			wNext.Draw();
+		}
+	} while (wNext);
+}
+
+bool
+CUIWidget::Input(float flEVType, float flKey, float flChar, float flDevID)
+{
+	CUIWidget wNext = this;
+
+	do {
+		wNext = wNext.m_next;
+		if (wNext && wNext.m_iFlags & 1 && wNext.m_parent.m_iFlags & 1) {
+			if (wNext.Input(flEVType, flKey, flChar, flDevID) == true)
+				return;
 		}
 	} while (wNext);
 }

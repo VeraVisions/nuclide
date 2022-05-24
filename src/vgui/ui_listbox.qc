@@ -31,7 +31,7 @@ class CUIListBox:CUIWidget
 	virtual string(int) GetItem;
 	virtual int(void) GetSelected;
 	virtual void(void) Draw;
-	virtual void(float, float, float, float) Input;
+	virtual bool(float, float, float, float) Input;
 };
 
 void CUIListBox::CUIListBox(void)
@@ -115,8 +115,9 @@ void CUIListBox::Draw(void)
 	}
 }
 
-void CUIListBox::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool CUIListBox::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
+	bool ret = false;
 	int iMaxDisplay;
 	iMaxDisplay = bound(0, m_iItemCount, floor(m_vecSize[1] / 20));
 	
@@ -126,14 +127,17 @@ void CUIListBox::Input (float flEVType, float flKey, float flChar, float flDevID
 			for (int i = m_iDrawOffset; i < iMaxDisplay + m_iDrawOffset; i++) {
 				if (Util_MouseAbove(getmousepos(), m_parent.m_vecOrigin + m_vecOrigin + vecOffset, [m_vecSize[0] - 16, 20])) {
 					m_iSelected = i;
-					return;
+					ret = true;
 				}
 				vecOffset[1] += 20;
 			}
 		} else if (flKey == K_MWHEELUP) {
 			SetOffset(--m_iDrawOffset);
+			ret = true;
 		} else if (flKey == K_MWHEELDOWN) {
 			SetOffset(++m_iDrawOffset);
+			ret = true;
 		}
 	}
+	return (ret);
 }

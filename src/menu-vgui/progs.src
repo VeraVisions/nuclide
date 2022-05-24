@@ -1,9 +1,11 @@
 #pragma target fte
-#pragma progs_dat  "../../platform/data.pk3dir/menu.dat"
+#pragma progs_dat  "../../platform/menu.dat"
 #define MENU
 
 #includelist
 ../shared/fteextensions.qc
+../shared/global.h
+../client/font.h
 defs.h
 
 ../vgui/include.src
@@ -21,4 +23,5 @@ ui_musicplayer.qc
 ui_modelviewer.qc
 desktop.qc
 main.qc
+../client/font.qc
 #endlist

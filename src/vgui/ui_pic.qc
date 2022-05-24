@@ -33,7 +33,7 @@ class CUIPic:CUIWidget
 	virtual string() GetImage;
 	
 	virtual void(void) Draw;
-	virtual void(float, float, float, float) Input;
+	virtual bool(float, float, float, float) Input;
 };
 
 void CUIPic::CUIPic(void)
@@ -49,8 +49,9 @@ void CUIPic::Draw(void)
 	}
 }
 
-void CUIPic::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool CUIPic::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
+	return false;
 }
 
 void CUIPic::SetSize (vector vecSize)

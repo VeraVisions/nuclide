@@ -28,7 +28,7 @@ class CUITabView:CUIWidget
 	virtual void(vector) SetSize;
 	virtual vector() GetSize;
 	virtual void(string) SetTitle;
-	virtual void(float, float, float, float) Input;
+	virtual float(float, float, float, float) Input;
 };
 
 void CUITabView::CUITabView(void)
@@ -73,6 +73,7 @@ void CUITabView::Draw(void)
 	//Font_DrawText(m_parent.m_vecOrigin + m_vecOrigin + [8, 8], m_strTitle, g_fntDefault);
 }
 
-void CUITabView::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool CUITabView::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
+	return false;
 }

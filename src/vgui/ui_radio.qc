@@ -37,7 +37,7 @@ class CUIRadio:CUIWidget
 	virtual int(void) GetValue;
 	virtual void(int) SetValue;
 	virtual void(void(void)) SetFunc;
-	virtual void(float, float, float, float) Input;
+	virtual bool(float, float, float, float) Input;
 };
 
 void CUIRadio::CUIRadio(void)
@@ -112,12 +112,15 @@ void CUIRadio::Draw(void)
 	}
 }
 
-void CUIRadio::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool CUIRadio::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
+	bool ret = false;
+
 	if (flEVType == IE_KEYDOWN) {
 		if (flKey == K_MOUSE1) {
 			if (Util_MouseAbove(getmousepos(), m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
 				m_iFlags |= RADIO_DOWN;
+				ret = true;
 			}
 		}
 	} else if (flEVType == IE_KEYUP) {
@@ -127,8 +130,10 @@ void CUIRadio::Input (float flEVType, float flKey, float flChar, float flDevID)
 					m_vFunc();
 				}
 				SetValue(TRUE);
+				ret = true;
 			}
 			m_iFlags -= (m_iFlags & RADIO_DOWN);
 		}
 	}
+	return (ret);
 }

@@ -22,12 +22,6 @@
 #include "cmd.h"
 #include "util.h"
 
-/* flags for 2d drawing */
-#define DRAWFLAG_NORMAL		0
-#define DRAWFLAG_ADDITIVE	1
-#define DRAWFLAG_MODULATE	2
-#define DRAWFLAG_2XMODULATE	3
-
 /* undocumented printcall types */
 #define PRINT_LOW		0
 #define PRINT_MEDIUM	1

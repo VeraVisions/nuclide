@@ -32,14 +32,7 @@
 #define ATTR_CHANGED(x) (x ##_net != x)
 #define VEC_CHANGED(x,y) (x ##_net[y] != x[y])
 
-void
-_NSLog(string msg)
-{
-	if (cvar("g_developer") == 1)
-		print(sprintf("%f %s\n", time, msg));
-}
-#define NSLog(x, ...) _NSLog(sprintf(x, __VA_ARGS__))
-
+#include "global.h"
 #include "sound.h"
 
 #ifdef CLIENT

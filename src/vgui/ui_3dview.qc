@@ -35,7 +35,7 @@ class CUI3DView:CUIWidget
 
 	void(void) CUI3DView;
 	virtual void(void) m_vDrawFunc = 0;
-	virtual void(float, float, float, float) m_vInputFunc = 0;
+	virtual float(float, float, float, float) m_vInputFunc = 0;
 	virtual void(void) Draw;
 	virtual vector() GetSize;
 	virtual vector() Get3DPos;
@@ -44,8 +44,8 @@ class CUI3DView:CUIWidget
 	virtual void(vector) Set3DPos;
 	virtual void(vector) Set3DAngles;
 	virtual void(void(void)) SetDrawFunc;
-	virtual void(void(float, float, float, float)) SetInputFunc;
-	virtual void(float, float, float, float) Input;
+	virtual void(float(float, float, float, float)) SetInputFunc;
+	virtual bool(float, float, float, float) Input;
 };
 
 void
@@ -100,7 +100,7 @@ CUI3DView::SetDrawFunc(void(void) vFunc)
 }
 
 void
-CUI3DView::SetInputFunc(void(float, float, float, float) vFunc)
+CUI3DView::SetInputFunc(float(float, float, float, float) vFunc)
 {
 	m_vInputFunc = vFunc;
 }
@@ -121,12 +121,12 @@ CUI3DView::Draw(void)
 	renderscene();
 }
 
-void
+bool
 CUI3DView::Input(float flEVType, float flKey, float flChar, float flDevID)
 {
 	if (!m_vInputFunc) {
-		return;
+		return false;
 	}
 
-	m_vInputFunc(flEVType, flKey, flChar, flDevID);
+	return m_vInputFunc(flEVType, flKey, flChar, flDevID);
 }

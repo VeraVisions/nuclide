@@ -15,17 +15,10 @@
  */
 
 #include "../client/font.h"
+#include "../shared/global.h"
 
 var int autocvar_menu_intro = TRUE;
 var int autocvar__menu_singleplayer;
-
-void
-_NSLog(string msg)
-{
-	if (cvar("g_developer"))
-	print(sprintf("%f %s\n", time, msg));
-}
-#define NSLog(x, ...) _NSLog(sprintf(x, __VA_ARGS__))
 
 #define KEY_UNKNOWN		-1
 #define KEY_GAME		0
@@ -36,16 +29,6 @@ _NSLog(string msg)
 #define TARGET_CLIENT		2
 
 #define DRAWFLAG_ADDITIVE 1
-
-enumflags
-{
-	SEARCH_INSENSITIVE,
-	SEARCH_FULLPACKAGE,
-	SEARCH_ALLOWDUPES,
-	SEARCH_FORCESEARCH,
-	SEARCH_MULTISEARCH,
-	SEARCH_NAMESORT
-};
 
 /* Basic Menu Globals */
 int g_vidsize[2];

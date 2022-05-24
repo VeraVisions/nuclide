@@ -63,7 +63,7 @@ class CUIWindow:CUIWidget
 	virtual bool(void) Visible;
 	virtual void(void) Draw;
 	virtual void(void) Hide;
-	virtual void(float, float, float, float) Input;
+	virtual bool(float, float, float, float) Input;
 };
 
 void CUIWindow::CUIWindow(void)
@@ -82,7 +82,12 @@ void CUIWindow::CUIWindow(void)
 	m_btnClose = spawn(CUIButton);
 	m_btnClose.SetTitle(__NULL__);
 	m_btnClose.SetIcon("textures/ui/steam/icon_close");
+
+#ifdef CLASSIC_VGUI
 	m_btnClose.SetIconColor(m_vecColor);
+#else
+	m_btnClose.SetIconColor([1,1,1]);
+#endif
 	m_btnClose.SetColor(m_vecColor);
 	m_btnClose.SetFunc(WindowButtonClose);
 	m_btnClose.SetSize([20,20]);
@@ -199,7 +204,7 @@ void CUIWindow::Draw(void)
 	if (m_strTitle) {
 		if (m_strIcon) {
 			Font_DrawText(m_vecOrigin + [26, 8], m_strTitle, g_fntDefault);
-			drawpic(m_vecOrigin + [4, 4], m_strIcon, [16,16], m_vecColor, 1.0f, 0);
+			drawpic(m_vecOrigin + [4, 4], m_strIcon, [16,16], [1,1,1], 1.0f, 0);
 		} else {
 			Font_DrawText(m_vecOrigin + [8, 8], m_strTitle, g_fntDefault);
 		}
@@ -215,8 +220,10 @@ void CUIWindow::Draw(void)
 #endif
 }
 
-void CUIWindow::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool CUIWindow::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
+	bool ret = false;
+
 	if (flEVType == IE_KEYDOWN) {
 		if (flKey == K_MOUSE1) {
 			if (m_iFlags & WINDOW_CANRESIZE && Util_MouseAbove(getmousepos(), m_vecOrigin + (m_vecSize - [16,16]), [16,16])) {
@@ -242,6 +249,7 @@ void CUIWindow::Input (float flEVType, float flKey, float flChar, float flDevID)
 				m_vResizeCB();
 			}
 		}
+		ret = true;
 	} else if (m_iFlags & WINDOW_DRAGGING) {
 		if (flEVType == IE_MOUSEABS) {
 			vector vNewPos = [flKey, flChar] - m_vecOrigin;
@@ -251,5 +259,7 @@ void CUIWindow::Input (float flEVType, float flKey, float flChar, float flDevID)
 				m_vMoveCB();
 			}
 		}
+		ret = true;
 	}
+	return (ret);
 }

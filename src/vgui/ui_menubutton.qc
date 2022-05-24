@@ -40,7 +40,7 @@ class CUIMenuButton:CUIWidget
 	virtual void(string) SetTitle;
 	virtual void(string) SetIcon;
 	virtual void(void(void)) SetFunc;
-	virtual void(float, float, float, float) Input;
+	virtual bool(float, float, float, float) Input;
 };
 
 void CUIMenuButton::CUIMenuButton(void)
@@ -101,16 +101,18 @@ void CUIMenuButton::Draw(void)
 	}
 }
 
-void CUIMenuButton::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool CUIMenuButton::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
+	bool ret = false;
+
 	// If we're not ingame
 	if (clientstate() == 2 && !g_background) {
 		if (!(m_iFlags & MBUTTON_SHOWSP)) {
-			return;
+			return false;
 		}
 	} else {
 		if (!(m_iFlags & MBUTTON_SHOWOFFLINE)) {
-			return;
+			return false;
 		}
 	}
 
@@ -118,6 +120,7 @@ void CUIMenuButton::Input (float flEVType, float flKey, float flChar, float flDe
 		if (flKey == K_MOUSE1) {
 			if (Util_MouseAbove(getmousepos(), m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
 				m_iFlags |= MBUTTON_DOWN;
+				ret = true;
 			}
 		}
 	} else if (flEVType == IE_KEYUP) {
@@ -126,10 +129,12 @@ void CUIMenuButton::Input (float flEVType, float flKey, float flChar, float flDe
 				if (m_vFunc) {
 					m_vFunc();
 				}
+				ret = true;
 			}
 			m_iFlags -= (m_iFlags & MBUTTON_DOWN);
 		}
 	}
+	return (ret);
 }
 
 void CUIMenuButton::SetSize (vector vecSize)

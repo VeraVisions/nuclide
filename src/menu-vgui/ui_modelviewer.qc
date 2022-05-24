@@ -124,7 +124,7 @@ void UI_ModelViewer_Show ( void )
 			picBackground.FlagRemove( IMAGE_VISIBLE );
 		}
 	}
-	static void UI_ModelViewer_Input ( float flEVType, float flKey, float flChar, float flDevID ) {
+	static float UI_ModelViewer_Input ( float flEVType, float flKey, float flChar, float flDevID ) {
 		static int iMouseDrag = FALSE;
 		static int iShiftDrag = FALSE;
 		static vector vecDragOfs;
@@ -135,14 +135,17 @@ void UI_ModelViewer_Show ( void )
 			if ( flKey == K_MOUSE1 && iMouseOver == TRUE ) {
 				iMouseDrag = TRUE;
 				vecDragOfs = getmousepos();
+				return true;
 			} else if ( flKey == K_MWHEELUP && iMouseOver == TRUE ) {
 				vecDistance[0] = bound( 0, --vecDistance[0], 512 );
 				AngleVectors( viewModel.Get3DAngles() );
 				viewModel.Set3DPos( v_forward * -vecDistance[0] + v_right * vecDistance[1] + v_up * vecDistance[2] );
+				return true;
 			} else if ( flKey == K_MWHEELDOWN && iMouseOver == TRUE ) {
 				vecDistance[0] = bound( 0, ++vecDistance[0], 512 );
 				AngleVectors( viewModel.Get3DAngles() );
 				viewModel.Set3DPos( v_forward * -vecDistance[0] + v_right * vecDistance[1] + v_up * vecDistance[2] );
+				return true;
 			} else if ( flKey == K_LSHIFT && iMouseOver == TRUE ) {
 				iShiftDrag = TRUE;
 			}
@@ -161,6 +164,7 @@ void UI_ModelViewer_Show ( void )
 				AngleVectors( viewModel.Get3DAngles() );
 				viewModel.Set3DPos( v_forward * -vecDistance[0] + v_right * vecDistance[1] + v_up * vecDistance[2] );
 				vecDragOfs = getmousepos();
+				return true;
 			}
 		} else if ( iMouseDrag == TRUE && iShiftDrag == TRUE ) {
 			if ( flEVType == IE_MOUSEABS ) {
@@ -169,8 +173,10 @@ void UI_ModelViewer_Show ( void )
 				vecDistance[2] += vecDifference[0];
 				viewModel.Set3DPos( v_forward * -vecDistance[0] + v_right * vecDistance[1] + v_up * vecDistance[2] );
 				vecDragOfs = getmousepos();
+				return true;
 			}
 		}
+		return false;
 	}
 	static void UI_ModelViewer_Resize ( void ) {
 		// Resize the background and viewer

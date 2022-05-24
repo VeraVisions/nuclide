@@ -23,7 +23,7 @@ class CUILabel:CUIWidget
 	virtual void(void) Draw;
 	virtual void(vector) SetSize;
 	virtual void(string) SetTitle;
-	virtual void(float, float, float, float) Input;
+	virtual bool(float, float, float, float) Input;
 };
 
 void CUILabel::CUILabel(void)
@@ -56,6 +56,7 @@ void CUILabel::Draw(void)
 	}
 }
 
-void CUILabel::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool CUILabel::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
+	return false;
 }

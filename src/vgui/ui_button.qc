@@ -46,7 +46,7 @@ class CUIButton:CUIWidget
 	virtual void(vector) SetColor;
 	virtual void(void(void)) SetFunc;
 	virtual void(string) SetExec;
-	virtual void(float, float, float, float) Input;
+	virtual bool(float, float, float, float) Input;
 	virtual void(void) Show;
 	virtual void(void) Hide;
 };
@@ -188,11 +188,13 @@ CUIButton::Draw(void)
 	}
 }
 
-void
+bool
 CUIButton::Input(float flEVType, float flKey, float flChar, float flDevID)
 {
+	bool ret = false;
+
 	if (!(m_iFlags & BUTTON_VISIBLE))
-		return;
+		return false;
 
 	if (flEVType == IE_KEYDOWN) {
 		if (flKey == K_MOUSE1) {
@@ -200,6 +202,7 @@ CUIButton::Input(float flEVType, float flKey, float flChar, float flDevID)
 			if (Util_MouseAbove(getmousepos(), m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
 				FlagAdd(BUTTON_DOWN);
 				FlagAdd(BUTTON_LASTACTIVE);
+				ret = true;
 			}
 		}
 	} else if (flEVType == IE_KEYUP) {
@@ -209,8 +212,11 @@ CUIButton::Input(float flEVType, float flKey, float flChar, float flDevID)
 					m_vFunc();
 				if (m_strExec)
 					localcmd(sprintf("%s\n", m_strExec));
+
+				ret = true;
 			}
 			FlagRemove(BUTTON_DOWN);
 		}
 	}
+	return (ret);
 }

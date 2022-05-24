@@ -29,7 +29,7 @@ class CUISlider:CUIWidget
 
 	void(void) CUISlider;
 	virtual void(void) Draw;
-	virtual void(float, float, float, float) Input;
+	virtual bool(float, float, float, float) Input;
 	virtual void(vector) SetSize;
 	virtual void(string) SetTitle;
 };
@@ -66,9 +66,9 @@ void CUISlider::Draw(void)
 	}
 }
 
-void CUISlider::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool CUISlider::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
-
+	return false;
 }
 
 void CUISlider::SetSize (vector vecSize)

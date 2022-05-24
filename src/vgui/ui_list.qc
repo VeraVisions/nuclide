@@ -44,7 +44,7 @@ class CUIList:CUIWidget
 	virtual void(void(void)) CallOnScroll;
 	
 	virtual void(void) Draw;
-	virtual void(float, float, float, float) Input;
+	virtual bool(float, float, float, float) Input;
 };
 
 void CUIList::CUIList(void)
@@ -96,8 +96,9 @@ void CUIList::Draw(void)
 	drawresetcliparea();
 }
 
-void CUIList::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool CUIList::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
+	bool ret;
 	int iMaxDisplay;
 	int iMouseOver = Util_MouseAbove(getmousepos(), m_parent.m_vecOrigin + m_vecOrigin, m_vecSize);
 	iMaxDisplay = bound(0, m_iItemCount, floor(m_vecSize[1] / 20));
@@ -108,16 +109,19 @@ void CUIList::Input (float flEVType, float flKey, float flChar, float flDevID)
 			for (int i = m_iDrawOffset; i < iMaxDisplay + m_iDrawOffset; i++) {
 				if (Util_MouseAbove(getmousepos(), m_parent.m_vecOrigin + m_vecOrigin + vecOffset, [m_vecSize[0] - 16, 20])) {
 					m_iSelected = i;
-					return;
+					ret = true;
 				}
 				vecOffset[1] += 20;
 			}
 		} else if (flKey == K_MWHEELUP && iMouseOver) {
 			SetOffset(m_iDrawOffset - (iMaxDisplay / 4), TRUE);
+			ret = true;
 		} else if (flKey == K_MWHEELDOWN && iMouseOver) {
 			SetOffset(m_iDrawOffset + (iMaxDisplay / 4), TRUE);
+			ret = true;
 		}
 	}
+	return (ret);
 }
 
 void CUIList::SetSize (vector vecSize)

@@ -50,7 +50,7 @@ class CUIScrollbar:CUIWidget
 	
 	virtual void(void(void)) CallOnChange;
 	
-	virtual void(float, float, float, float) Input;
+	virtual bool(float, float, float, float) Input;
 	virtual void(void) Draw;
 };
 
@@ -168,8 +168,9 @@ void CUIScrollbar::Draw(void)
 #endif
 }
 
-void CUIScrollbar::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool CUIScrollbar::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
+	bool ret = false;
 	vector vecUpPos = m_parent.m_vecOrigin + m_vecOrigin;
 	vector vecDownPos = m_parent.m_vecOrigin + m_vecOrigin + [0, m_iLength - 20];
 	
@@ -177,25 +178,32 @@ void CUIScrollbar::Input (float flEVType, float flKey, float flChar, float flDev
 		if (flKey == K_MOUSE1) {
 			if (Util_MouseAbove(getmousepos(), vecUpPos, [20,20])) {
 				m_iFlags |= SCROLLBAR_UP_DOWN;
+				ret = true;
 			} else if (Util_MouseAbove(getmousepos(), vecDownPos, [20,20])) {
 				m_iFlags |= SCROLLBAR_DN_DOWN;
+				ret = true;
 			}
 		}
 	} else if (flEVType == IE_KEYUP) {
 		if (flKey == K_MOUSE1) {
 			if (m_iFlags & SCROLLBAR_UP_DOWN && Util_MouseAbove(getmousepos(), vecUpPos, [20,20])) {
 				SetValue(GetValue() - GetStep(), TRUE);
+				ret = true;
 			} else if (m_iFlags & SCROLLBAR_DN_DOWN && Util_MouseAbove(getmousepos(), vecDownPos, [20,20])) {
 				SetValue(GetValue() + GetStep(), TRUE);
+				ret = true;
 			}
 			m_iFlags -= (m_iFlags & SCROLLBAR_UP_DOWN);
 			m_iFlags -= (m_iFlags & SCROLLBAR_DN_DOWN);
 		} else if (flKey == K_MWHEELDOWN && Util_MouseAbove(getmousepos(), m_parent.m_vecOrigin + m_vecOrigin, [20, m_iLength])) {
 			SetValue(GetValue() + GetStep(), TRUE);
+			ret = true;
 		} else if (flKey == K_MWHEELUP && Util_MouseAbove(getmousepos(), m_parent.m_vecOrigin + m_vecOrigin, [20, m_iLength])) {
 			SetValue(GetValue() - GetStep(), TRUE);
+			ret = true;
 		}
 	}
+	return (ret);
 }
 
 void CUIScrollbar::SetLength (int iLength)

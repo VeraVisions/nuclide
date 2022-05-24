@@ -35,7 +35,7 @@ class CUITextBox:CUIWidget
 	virtual void(vector) SetSize;
 	virtual void(string) SetText;
 	virtual string() GetText;
-	virtual void(float, float, float, float) Input;
+	virtual bool(float, float, float, float) Input;
 };
 
 void CUITextBox::CUITextBox(void)
@@ -97,13 +97,16 @@ void CUITextBox::Draw(void)
 	}
 }
 
-void CUITextBox::Input (float flEVType, float flKey, float flChar, float flDevID)
+bool CUITextBox::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
+	bool ret = false;
+
 	if (flEVType == IE_KEYDOWN) {
 		switch (flKey) {
 		case K_MOUSE1 :
 			if (Util_MouseAbove(getmousepos(), m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
 				m_iFlags |= TEXTBOX_DOWN;
+				ret = true;
 			}
 			break;
 		case K_BACKSPACE:
@@ -130,10 +133,13 @@ void CUITextBox::Input (float flEVType, float flKey, float flChar, float flDevID
 		if (flKey == K_MOUSE1) {
 			if (m_iFlags & TEXTBOX_DOWN && Util_MouseAbove(getmousepos(), m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
 				m_iFlags |= TEXTBOX_FOCUS;
+				ret = true;
 			} else {
 				m_iFlags -= (m_iFlags & TEXTBOX_FOCUS);
+				ret = true;
 			}
 			m_iFlags -= (m_iFlags & TEXTBOX_DOWN);
 		}
 	}
+	return (ret);
 }
