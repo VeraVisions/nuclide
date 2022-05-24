@@ -188,19 +188,15 @@ bool CUIScrollbar::Input (float flEVType, float flKey, float flChar, float flDev
 		if (flKey == K_MOUSE1) {
 			if (m_iFlags & SCROLLBAR_UP_DOWN && Util_MouseAbove(getmousepos(), vecUpPos, [20,20])) {
 				SetValue(GetValue() - GetStep(), TRUE);
-				ret = true;
 			} else if (m_iFlags & SCROLLBAR_DN_DOWN && Util_MouseAbove(getmousepos(), vecDownPos, [20,20])) {
 				SetValue(GetValue() + GetStep(), TRUE);
-				ret = true;
 			}
 			m_iFlags -= (m_iFlags & SCROLLBAR_UP_DOWN);
 			m_iFlags -= (m_iFlags & SCROLLBAR_DN_DOWN);
 		} else if (flKey == K_MWHEELDOWN && Util_MouseAbove(getmousepos(), m_parent.m_vecOrigin + m_vecOrigin, [20, m_iLength])) {
 			SetValue(GetValue() + GetStep(), TRUE);
-			ret = true;
 		} else if (flKey == K_MWHEELUP && Util_MouseAbove(getmousepos(), m_parent.m_vecOrigin + m_vecOrigin, [20, m_iLength])) {
 			SetValue(GetValue() - GetStep(), TRUE);
-			ret = true;
 		}
 	}
 	return (ret);

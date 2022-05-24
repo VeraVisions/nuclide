@@ -133,10 +133,8 @@ bool CUITextBox::Input (float flEVType, float flKey, float flChar, float flDevID
 		if (flKey == K_MOUSE1) {
 			if (m_iFlags & TEXTBOX_DOWN && Util_MouseAbove(getmousepos(), m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
 				m_iFlags |= TEXTBOX_FOCUS;
-				ret = true;
 			} else {
 				m_iFlags -= (m_iFlags & TEXTBOX_FOCUS);
-				ret = true;
 			}
 			m_iFlags -= (m_iFlags & TEXTBOX_DOWN);
 		}

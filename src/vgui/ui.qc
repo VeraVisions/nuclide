@@ -134,11 +134,17 @@ CUIWidget::Draw(void)
 	} while (wNext);
 }
 
+typedef struct
+{
+	CUIWidget member;
+} vgui_input_scene_t;
+
 bool
 CUIWidget::Input(float flEVType, float flKey, float flChar, float flDevID)
 {
 	CUIWidget wNext = this;
 
+#if 0
 	do {
 		wNext = wNext.m_next;
 		if (wNext && wNext.m_iFlags & 1 && wNext.m_parent.m_iFlags & 1) {
@@ -146,6 +152,37 @@ CUIWidget::Input(float flEVType, float flKey, float flChar, float flDevID)
 				return;
 		}
 	} while (wNext);
+#else
+	/* this is garbage, but it'll work */
+	int c = 0;
+	do {
+		wNext = wNext.m_next;
+		c++;
+	} while (wNext);
+
+	/* we got the count of valid items */
+	vgui_input_scene_t *tree = memalloc(sizeof(vgui_input_scene_t) * c);
+
+	int i = 0;
+	CUIWidget wNext = this;
+	do {
+		wNext = wNext.m_next;
+		tree[i].member = wNext;
+		i++;
+	} while (wNext);
+
+	/* traverse the list in reverse */
+	for (int i = c-1; i >= 0; i--) {
+		wNext = tree[i].member;
+
+		if (wNext && wNext.m_iFlags & 1 && wNext.m_parent.m_iFlags & 1)
+			if (wNext.Input(flEVType, flKey, flChar, flDevID) == true)
+				return;
+	}
+
+	memfree(tree);
+
+#endif
 }
 
 void
