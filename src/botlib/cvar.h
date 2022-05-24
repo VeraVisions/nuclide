@@ -20,3 +20,5 @@ var int autocvar_bot_aimless = FALSE;
 
 var int autocvar_nav_linksize = 256;
 var int autocvar_nav_radius = 8;
+
+var string autocvar_bot_prefix = "";

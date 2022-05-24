@@ -89,6 +89,8 @@ class bot:player
 	virtual void(entity) SetEnemy;
 	virtual float(void) GetRunSpeed;
 	virtual float(void) GetWalkSpeed;
+
+	virtual void(string) SetName;
 };
 
 entity Bot_AddQuick(void);

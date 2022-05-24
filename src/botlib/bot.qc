@@ -521,6 +521,15 @@ bot::PostFrame(void)
 }
 
 void
+bot::SetName(string nickname)
+{
+	if (autocvar_bot_prefix)
+		forceinfokey(this, "name", sprintf("%s %s", autocvar_bot_prefix, nickname));
+	else
+		forceinfokey(this, "name", nickname);
+}
+
+void
 bot::bot(void)
 {
 	classname = "player";

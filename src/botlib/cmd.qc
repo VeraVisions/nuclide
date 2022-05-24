@@ -24,7 +24,11 @@ Bot_PickName(entity target)
 		if (clienttype(pbot) == CLIENTTYPE_BOT)
 			n++;
 
-	forceinfokey(target, "name", sprintf("Bot %i", n));
+	if (autocvar_bot_prefix)
+		forceinfokey(target, "name", sprintf("%s Bot %i", autocvar_bot_prefix, n));
+	else
+		forceinfokey(target, "name", sprintf("Bot %i", n));
+
 	forceinfokey(target, "model", "robo");
 }
 
