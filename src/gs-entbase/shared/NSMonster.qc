@@ -180,6 +180,15 @@ NSMonster::SeeThink(void)
 
 	m_flSeeTime = time + 0.25f;
 
+	/* a horse type monster always knows where the nearest player is */
+	if (m_iFlags & MSF_HORDE) {
+		m_eEnemy = Entity_FindClosest(this, "player");
+
+		if (m_eEnemy)
+			NewRoute(m_eEnemy.origin);
+		return;
+	}
+
 	for (entity w = world; (w = findfloat(w, ::takedamage, DAMAGE_YES));) {
 		/* prevent them from shooting non-sentient stuff */
 		if (!(w.flags & FL_MONSTER) && !(w.flags & FL_CLIENT))

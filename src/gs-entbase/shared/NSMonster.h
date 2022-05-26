@@ -117,7 +117,8 @@ typedef enumflags
 	MSF_PREDISASTER,
 	MSF_FADECORPSE,
 	MSF_MULTIPLAYER,
-	MSF_FALLING
+	MSF_FALLING,
+	MSF_HORDE
 } monsterFlag_t;
 
 /* movement states */
