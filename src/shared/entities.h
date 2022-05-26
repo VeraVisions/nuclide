@@ -44,3 +44,70 @@ enum
 	ENT_BUBBLES,
 	ENT_SEPARATOR,
 };
+
+
+/*
+=================
+Entity_FindClosest
+
+Returns the closest point entity of a given classname.
+world means it failed. most likely.
+=================
+*/
+entity Entity_FindClosest(entity target, string cname) {
+	entity best = world;
+	float bestdist;
+	float dist;
+
+	bestdist = 9999999;
+
+	for (entity e = world; (e = find(e, classname, cname));) {
+		dist = vlen(target.origin - e.origin);
+
+		if (dist < bestdist) {
+			bestdist = dist;
+			best = e;
+		}
+	}
+
+	return best;
+}
+
+/*
+=================
+Entity_SelectRandom
+
+Returns a random entity of a given classname.
+Check for world at all times. If world is returned then the given classname
+will most likely never return anything valid.
+=================
+*/
+entity Entity_SelectRandom(string cname) 
+{
+	entity spot = world;
+	float max = 0;
+
+	/* count our max count */
+	for (entity e = world;(e = find(e, ::classname, cname));) {
+		max++;
+	}
+
+	/* immediately exit out */
+	if (max == 0) {
+		print(sprintf("^1Error: %s is not present on this map.\n", cname));
+		return __NULL__;
+	}
+
+	/* select a random point */
+	for (int i = random(1, max); i > 0; i--) {
+		spot = find(spot, classname, cname);
+	}
+
+	/* we might end up not finding anything, wrap around? */
+	if (spot == __NULL__) {
+		spot = find(spot, classname, cname);
+	}
+
+	/* we should have returned something valid now */
+	return spot;
+}
