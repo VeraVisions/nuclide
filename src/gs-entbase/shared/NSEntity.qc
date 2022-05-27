@@ -124,15 +124,18 @@ NSEntity::Visible(entity ent)
 	float flFoV;
 
 	makevectors(angles);
-	flDelta = normalize (ent.origin - origin);
+	flDelta = normalize(ent.origin - origin);
 	flFoV = flDelta * v_forward;
 
+	/* is it in our field of view? */
 	if (flFoV > 0.3) {
 		traceline(origin, ent.origin, MOVE_NORMAL, this);
-		if (trace_fraction == 1.0) {
+		if (trace_fraction == 1.0 || trace_ent == ent) {
+			print(sprintf("%s can see %s\n", classname, ent.classname));
 			return (true);
 		}
 	}
+	print(sprintf("%s can not see %s\n", classname, ent.classname));
 	return (false);
 }
 
