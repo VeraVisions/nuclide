@@ -32,6 +32,8 @@ This entity was introduced in Half-Life 2 (2004).
 
 #define VEH_SKIDDING FL_USE_RELEASED
 
+#define VEHSF_NOFLIP 2048
+
 enumflags
 {
 	VEHFL_DRIVER,
@@ -577,6 +579,11 @@ prop_vehicle_driveable::RunVehiclePhysics(void)
 		}
 
 		PlayerUpdateFlags();
+	}
+
+	if (spawnflags & VEHSF_NOFLIP) {
+		angles[0] = bound (-45, angles[0], 45);
+		angles[2] = bound (-45, angles[2], 45);
 	}
 
 	flags &= ~VEH_SKIDDING;
