@@ -111,6 +111,35 @@ void drawrect(vector pos, vector sz, float thickness, vector rgb, float al, opti
 }
 
 void
+drawpic3d(vector worldpos, string mat, vector sz, vector rgb, float alpha)
+{
+	static bool
+	drawpic3d_visible(vector p1) {
+		vector delta;
+		float fov;
+		vector p2 = getproperty(VF_ORIGIN);
+		vector ang = getproperty(VF_CL_VIEWANGLES);
+
+		makevectors(ang);
+		delta = normalize (p1 - p2);
+		fov = delta * v_forward;
+
+		if (fov > (getproperty(VF_AFOV)/180)) {
+			traceline(p2, p1, MOVE_WORLDONLY, self);
+			if (trace_fraction == 1.0) {
+				return (1);
+			}
+		}
+		return (0);
+	}
+
+	if (drawpic3d_visible(worldpos) == true) {
+		vector vecProj = project(worldpos) - (sz/2);
+		drawpic(vecProj, mat, sz, rgb, alpha);
+	}
+}
+
+void
 precache_cubemap(string path)
 {
 	precache_pic(strcat(path, "_bk"));
