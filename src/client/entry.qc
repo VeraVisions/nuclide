@@ -396,6 +396,8 @@ CSQC_UpdateView(float w, float h, float focus)
 
 		if (players > 1 && !VGUI_Active() && (Client_InIntermission() || (!cl.IsFakeSpectator() && cl.IsDead()))) {
 			Scores_Draw();
+			Chat_Draw();
+			Print_Draw();
 		} else if (focus == TRUE) {
 			GameText_Draw();
 			PointMessage_Draw();
