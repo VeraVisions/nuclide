@@ -95,6 +95,7 @@ item_pickup::Respawn(void)
 void
 item_pickup::Spawned(void)
 {
+	super::Spawned();
 #ifdef WASTES
 	Sound_Precache("item_weapon.pickup");
 #endif
