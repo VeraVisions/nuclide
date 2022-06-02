@@ -102,7 +102,7 @@ void UI_ModelViewer_Show ( void )
 		if ( !initialized ) {
 			initialized = TRUE;
 			eModel = spawn();
-			UI_ModelViewer_SetModel( "models/player.mdl" );
+			UI_ModelViewer_SetModel( "models/error.vvm" );
 			AngleVectors( viewModel.Get3DAngles() );
 			viewModel.Set3DPos( v_forward * -vecDistance[0] + v_right * vecDistance[1] + v_up * vecDistance[2] );
 		}
@@ -294,7 +294,7 @@ void UI_ModelViewer_Show ( void )
 		btnSeqPrev.SetTitle( "<<" );
 		btnSeqPrev.SetFunc( UI_ModelViewer_SetFrameM );
 		
-		searchhandle shModels = search_begin( "models/*.mdl", SEARCH_NAMESORT, TRUE );
+		searchhandle shModels = search_begin( "models/*.mdl:models/*.vvm", SEARCH_NAMESORT | SEARCH_MULTISEARCH, TRUE );
 		lstModels = spawn( CUIList );
 		lstModels.SetItemCount( search_getsize( shModels ) );
 		lstModels.CallOnScroll( ModelViewer_ScrollUpdate );
