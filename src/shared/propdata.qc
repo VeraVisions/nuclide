@@ -129,8 +129,12 @@ void
 BreakModel_ParseField(int i, int a)
 {
 	if (a == 2) {
-		precache_model(argv(0));
-		g_breakmodel[i].data = sprintf("%s%S %S\n", g_breakmodel[i].data, argv(0), argv(1));
+		string mdl, fadetime;
+		mdl = argv(0);
+		fadetime = argv(1);
+		precache_model(mdl);
+		print(sprintf("caching breakmodel %s %s\n", mdl, fadetime));
+		g_breakmodel[i].data = sprintf("%s%S %S\n", g_breakmodel[i].data, mdl, fadetime);
 	}
 };
 
@@ -502,6 +506,8 @@ BreakModel_Spawn(vector smins, vector smaxs, vector dir, float speed, int count,
 		gib.velocity[2] += (random() - 0.5) * (speed * 0.25);
 		gib.avelocity = vectoangles(gib.velocity);
 		gib.movetype = MOVETYPE_BOUNCE;
+		gib.think = Util_Destroy;
+		gib.nextthink = time + fadetime;
 
 		#ifdef CLIENT
 			gib.drawmask = MASK_ENGINE;
@@ -552,6 +558,8 @@ BreakModel_SpawnUnit(vector smins, vector smaxs, vector dir, float speed, string
 		gib.velocity[2] += (random() - 0.5) * (speed * 0.25);
 		gib.avelocity = vectoangles(gib.velocity);
 		gib.movetype = MOVETYPE_BOUNCE;
+		gib.think = Util_Destroy;
+		gib.nextthink = time + fadetime;
 
 		#ifdef CLIENT
 			gib.drawmask = MASK_ENGINE;
