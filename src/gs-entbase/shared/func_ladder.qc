@@ -129,9 +129,4 @@ func_ladder::Init(void)
 void
 func_ladder::func_ladder(void)
 {
-#ifdef CLIENT
-	Init();
-#else
-	super::NSRenderableEntity();
-#endif
 }

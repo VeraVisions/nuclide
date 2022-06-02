@@ -45,7 +45,7 @@ class func_smokevolume:NSEntity
 	float m_flMaxDrawDistance;
 
 	void(void) func_smokevolume;
-	virtual void(void) Init;
+	virtual void(void) Spawned;
 	virtual float() predraw;
 	virtual void(string, string) SpawnKey;
 };
@@ -157,15 +157,14 @@ func_smokevolume::predraw(void)
 }
 
 void
-func_smokevolume::Init(void)
+func_smokevolume::Spawned(void)
 {
-	super::Init();
+	super::Spawned();
 
 	precache_model(model);
 	setmodel(this, model);
 	setorigin(this, origin);
 	movetype = MOVETYPE_NONE;
-	drawmask = MASK_ENGINE;
 
 	if (m_iCount == -1)
 		m_iCount = (int)(vlen(size) / 100);
@@ -211,6 +210,4 @@ func_smokevolume::func_smokevolume(void)
 	m_vecColor1 = m_vecColor2 = [0,0,0];
 
 	solid = SOLID_NOT;
-
-	Init();
 }

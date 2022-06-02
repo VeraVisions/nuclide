@@ -134,5 +134,6 @@ trigger_counter::SpawnKey(string strKey, string strValue)
 void
 trigger_counter::trigger_counter(void)
 {
-	super::NSBrushTrigger();
+	m_iCounted = 0;
+	m_iMaxCount = 0;
 }

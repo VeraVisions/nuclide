@@ -49,7 +49,7 @@ cycler::Pain(void)
 	} else {
 		frame += 1;
 	}
-	health = 9999;
+	SetHealth(9999);
 }
 
 void
@@ -58,12 +58,11 @@ cycler::Respawn(void)
 	super::Respawn();
 
 	SetSolid(SOLID_BBOX);
-	takedamage = DAMAGE_YES;
-	health = 9999;
+	SetTakedamage(DAMAGE_YES);
+	SetHealth(9999);
 }
 
 void
 cycler::cycler(void)
 {
-	super::NSSurfacePropEntity();
 }

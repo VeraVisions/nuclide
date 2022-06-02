@@ -159,7 +159,7 @@ varying vec2 lm1, lm2, lm3;
 	#endif
 
 		#if defined(UPPERLOWER)
-			output_f.rgb *= texture2D(s_upper, tex_c * 4.0).rgb;
+			output_f.rgb *= (texture2D(s_upper, tex_c * 4.0).rgb + 0.5);
 		#endif
 
 		gl_FragColor = fog4( vec4( output_f.rgb, 1.0 ) );

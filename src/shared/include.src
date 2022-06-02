@@ -9,5 +9,7 @@ NSClientPlayer.qc
 player_pmove.qc
 propdata.qc
 surfaceproperties.qc
+NSMaterial.qc
 ../xr/include.src
+../materials/include.src
 #endlist

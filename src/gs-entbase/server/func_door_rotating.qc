@@ -92,6 +92,7 @@ class func_door_rotating:NSRenderableEntity
 	
 	void(void) func_door_rotating;
 
+	virtual void(void) Spawned;
 	virtual void(void) PortalOpen;
 	virtual void(void) PortalClose;
 	virtual void(void) Respawn;
@@ -492,13 +493,9 @@ func_door_rotating::SpawnKey(string strKey, string strValue)
 }
 
 void
-func_door_rotating::func_door_rotating(void)
+func_door_rotating::Spawned(void)
 {
-	m_flSpeed = 100;
-	m_flDelay = 4;
-	m_flDistance = 90;
-
-	super::NSRenderableEntity();
+	super::Spawned();
 
 	if (m_strSndOpen)
 		Sound_Precache(m_strSndOpen);
@@ -508,4 +505,12 @@ func_door_rotating::func_door_rotating(void)
 		Sound_Precache(m_strSndStop);
 	if (m_strLockedSfx)
 		Sound_Precache(m_strLockedSfx);
+}
+
+void
+func_door_rotating::func_door_rotating(void)
+{
+	m_flSpeed = 100;
+	m_flDelay = 4;
+	m_flDistance = 90;
 }

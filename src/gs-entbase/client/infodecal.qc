@@ -55,12 +55,8 @@ infodecal::SpawnKey(string strField, string strKey)
 void
 infodecal::infodecal(void)
 {
-	Init();
-
 	if (targetname) {
 		remove(this);
 		return;
 	}
-
-	drawmask = MASK_ENGINE;
 }

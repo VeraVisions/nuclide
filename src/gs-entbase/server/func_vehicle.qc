@@ -579,8 +579,6 @@ func_vehicle::func_vehicle(void)
 	m_vecGravityDir = [0,0,-1];
 	m_iVehicleFlags |= VHF_FROZEN;
 
-	super::NSVehicle();
-
 	m_wlFL = spawn(func_vehicle_wheel);
 	m_wlFR = spawn(func_vehicle_wheel);
 	m_wlBL = spawn(func_vehicle_wheel);

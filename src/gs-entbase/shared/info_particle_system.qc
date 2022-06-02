@@ -255,7 +255,5 @@ info_particle_system::info_particle_system(void)
 #ifdef CLIENT
 	drawmask = MASK_ENGINE;
 	think = Emit;
-#elif SERVER
-	super::NSPointTrigger();
 #endif
 }

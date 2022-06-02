@@ -464,6 +464,7 @@ void
 SurfData_Impact(entity e, int fl, vector org, vector ang)
 {
 	static void SurfData_Impact_SurfaceParm(entity e, int fl, vector org, vector ang) {
+#if 1
 		switch (serverkeyfloat("*bspversion")) {
 		case BSPVER_HL:
 			float surf;
@@ -481,6 +482,13 @@ SurfData_Impact(entity e, int fl, vector org, vector ang)
 		default:
 			FX_Impact(IMPACT_DEFAULT, org, ang);
 		}
+#else
+		float surf = getsurfacenearpoint(e, org);
+		NSMaterial foo = Material_FromTexture(getsurfacetexture(e, surf));
+
+		if (foo)
+			foo.Impact(org, ang);
+#endif
 	}
 
 	/* the static world */

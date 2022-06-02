@@ -42,6 +42,7 @@ class func_recharge:NSRenderableEntity
 	void(void) func_recharge;
 
 	/* overrides */
+	virtual void(void) Spawned;
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
 	virtual void(string, string) SpawnKey;
@@ -217,15 +218,19 @@ func_recharge::Respawn(void)
 }
 
 void
+func_recharge::Spawned(void)
+{
+	super::Spawned();
+
+	precache_sound(m_strSndFirst);
+	precache_sound(m_strSndCharging);
+	precache_sound(m_strSndDone);
+}
+
+void
 func_recharge::func_recharge(void)
 {
 	m_strSndFirst = "items/suitchargeok1.wav";
 	m_strSndCharging = "items/suitcharge1.wav";
 	m_strSndDone = "items/suitchargeno1.wav";
-
-	super::NSRenderableEntity();
-
-	precache_sound(m_strSndFirst);
-	precache_sound(m_strSndCharging);
-	precache_sound(m_strSndDone);
 }

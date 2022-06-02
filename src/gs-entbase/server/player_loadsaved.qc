@@ -140,5 +140,4 @@ player_loadsaved::SpawnKey(string strKey, string strValue)
 void
 player_loadsaved::player_loadsaved(void)
 {
-	super::NSRenderableEntity();
 }

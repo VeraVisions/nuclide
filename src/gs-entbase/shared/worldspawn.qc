@@ -56,11 +56,11 @@ class worldspawn:NSEntity
 	void(void) worldspawn;
 
 	virtual void(string, string) SpawnKey;
-	virtual void(void) Initialized;
+	virtual void(void) Spawned;
 };
 
 void
-worldspawn::Initialized(void)
+worldspawn::Spawned(void)
 {
 	g_vecSunDir = [90,0];
 
@@ -127,10 +127,5 @@ worldspawn::SpawnKey(string strField, string strKey)
 void
 worldspawn::worldspawn(void)
 {
-#ifdef CLIENT
-	Init();
-#else
-	super::NSEntity();
-#endif
 }
 #endif

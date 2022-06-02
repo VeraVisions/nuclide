@@ -55,6 +55,8 @@ class trigger_multiple:NSBrushTrigger
 
 	void(void) trigger_multiple;
 
+	virtual void(void) Spawned;
+
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
 	virtual void(entity) Touch;
@@ -136,12 +138,6 @@ trigger_multiple::Touch(entity eToucher)
 }
 
 void
-trigger_multiple::Respawn(void)
-{
-	InitBrushTrigger();
-}
-
-void
 trigger_multiple::SpawnKey(string strKey, string strValue)
 {
 	switch (strKey) {
@@ -164,9 +160,15 @@ trigger_multiple::SpawnKey(string strKey, string strValue)
 }
 
 void
-trigger_multiple::trigger_multiple(void)
+trigger_multiple::Respawn(void)
 {
-	super::NSBrushTrigger();
+	InitBrushTrigger();
+}
+
+void
+trigger_multiple::Spawned(void)
+{
+	super::Spawned();
 
 	if (m_strOnTrigger)
 		m_strOnTrigger = CreateOutput(m_strOnTrigger);
@@ -174,4 +176,15 @@ trigger_multiple::trigger_multiple(void)
 		m_strOnStartTouch = CreateOutput(m_strOnStartTouch);
 	if (m_strOnEndTouchAll)
 		m_strOnEndTouchAll = CreateOutput(m_strOnEndTouchAll);
+}
+
+void
+trigger_multiple::trigger_multiple(void)
+{
+	m_flWait = 0.0f;
+
+	/* Input/Output */
+	m_strOnStartTouch =
+	m_strOnEndTouchAll =
+	m_strOnTrigger =  __NULL__;
 }

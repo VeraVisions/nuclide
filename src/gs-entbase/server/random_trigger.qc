@@ -121,5 +121,4 @@ random_trigger::SpawnKey(string strKey, string strValue)
 void
 random_trigger::random_trigger(void)
 {
-	super::NSPointTrigger();
 }

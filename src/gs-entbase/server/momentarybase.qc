@@ -121,5 +121,4 @@ NSMomentary::Restore(string strKey, string strValue)
 void
 NSMomentary::NSMomentary(void)
 {
-	super::NSRenderableEntity();
 }

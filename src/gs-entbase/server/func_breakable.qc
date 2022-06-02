@@ -131,6 +131,7 @@ class func_breakable:NSSurfacePropEntity
 	void(void) func_breakable;
 
 	/* overrides */
+	virtual void(void) Spawned;
 	virtual void(void) Respawn;
 	virtual void(void) Pain;
 	virtual void(void) Death;
@@ -369,8 +370,10 @@ func_breakable::SpawnKey(string strKey, string strValue)
 }
 
 void
-func_breakable::func_breakable(void)
+func_breakable::Spawned(void)
 {
+	super::Spawned();
+
 	/* func_breakable defaults to glass */
 	if (classname == "func_breakable") {
 		SetPropData(funcbreakable_surftable[0]);
@@ -380,9 +383,11 @@ func_breakable::func_breakable(void)
 		SetSurfaceData(funcbreakable_surftable[1]);
 	}
 
-	/* proper init */
-	super::NSSurfacePropEntity();
-
 	/* precache impact sound */
 	Sound_Precache(GetSurfaceData(SURFDATA_SND_BULLETIMPACT));
+}
+
+void
+func_breakable::func_breakable(void)
+{
 }

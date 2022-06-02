@@ -58,7 +58,6 @@ monster_furniture::Respawn(void)
 void
 monster_furniture::monster_furniture(void)
 {
-	super::NSMonster();
 	spawnflags |= MSF_MULTIPLAYER;
 }
 

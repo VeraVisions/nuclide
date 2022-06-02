@@ -440,6 +440,7 @@ NSClientPlayer::PredictPostFrame(void)
 void
 NSClientPlayer::Save(float handle)
 {
+	SaveFloat(handle, "max_health", max_health);
 	SaveFloat(handle, "health", health);
 	SaveFloat(handle, "armor", armor);
 	SaveFloat(handle, "modelindex", modelindex);
@@ -454,6 +455,7 @@ NSClientPlayer::Save(float handle)
 	SaveVector(handle, "v_angle", v_angle);
 	SaveVector(handle, "punchangle", punchangle);
 	SaveFloat(handle, "movetype", movetype);
+	SaveFloat(handle, "solid", solid);
 	SaveFloat(handle, "pmove_flags", pmove_flags);
 	SaveFloat(handle, "w_attack_next", w_attack_next);
 	SaveFloat(handle, "w_idle_next", w_idle_next);
@@ -463,12 +465,16 @@ NSClientPlayer::Save(float handle)
 	SaveInt(handle, "g_items", g_items);
 	SaveFloat(handle, "activeweapon", activeweapon);
 	SaveFloat(handle, "vehicle", num_for_edict(vehicle));
+	super::Save(handle);
 }
 
 void
 NSClientPlayer::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
+	case "max_health":
+		max_health = ReadFloat(strValue);
+		break;
 	case "health":
 		health = ReadFloat(strValue);
 		break;
@@ -504,6 +510,9 @@ NSClientPlayer::Restore(string strKey, string strValue)
 		break;
 	case "punchangle":
 		punchangle = ReadVector(strValue);
+		break;
+	case "solid":
+		solid = ReadFloat(strValue);
 		break;
 	case "movetype":
 		movetype = ReadFloat(strValue);
@@ -971,6 +980,5 @@ NSClientPlayer::InputUse_Up(void)
 void
 NSClientPlayer::NSClientPlayer(void)
 {
-	super::NSClientSpectator();
 	vehicle = __NULL__;
 }

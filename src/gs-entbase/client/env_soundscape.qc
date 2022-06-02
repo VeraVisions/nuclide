@@ -38,6 +38,7 @@ class env_soundscape:NSEntity
 
 	void(void) env_soundscape;
 
+	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
 };
 
@@ -66,14 +67,18 @@ env_soundscape::SpawnKey(string strField, string strKey)
 }
 
 void
+env_soundscape::Respawn(void)
+{
+	SetSize([0,0,0], [0,0,0]);
+	SetOrigin(GetSpawnOrigin());
+}
+
+void
 env_soundscape::env_soundscape(void)
 {
 	g_scapes+=1;
 	m_iID = g_scapes;
 	m_iRadius = 1024;
-	setsize(this, [0,0,0], [0,0,0]);
-	Init();
-	setorigin(this, origin);
 }
 
 void

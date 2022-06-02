@@ -87,6 +87,7 @@ trigger_auto::Processing(void)
 			return;
 
 	UseTargets(this, m_iTriggerState, m_flDelay);
+	print(sprintf("%S %i %f\n", target, m_iTriggerState, m_flDelay));
 
 	if (HasSpawnFlags(1)) {
 		NSLog("^2trigger_auto::^3think^7: %s triggerer removed self",  target);
@@ -97,6 +98,8 @@ trigger_auto::Processing(void)
 void
 trigger_auto::Respawn(void)
 {
+	InitPointTrigger();
+
 	think = Processing;
 	nextthink = time + 0.2f;
 }
@@ -111,6 +114,9 @@ trigger_auto::SpawnKey(string strKey, string strValue)
 	case "triggerstate":
 		m_iTriggerState = stoi(strValue);
 		break;
+	case "delay":
+		m_flDelay = stof(strValue);
+		break;
 	default:
 		super::SpawnKey(strKey, strValue);
 	}
@@ -121,6 +127,6 @@ trigger_auto::trigger_auto(void)
 {
 	/* default is always toggle */
 	m_iTriggerState = TRIG_TOGGLE;
-
-	super::NSPointTrigger();
+	m_strGlobalState = __NULL__;
+	m_flDelay = 0.0f;
 }

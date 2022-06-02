@@ -51,5 +51,4 @@ trigger_endsection::Respawn(void)
 void
 trigger_endsection::trigger_endsection(void)
 {
-	super::NSBrushTrigger();
 }

@@ -46,6 +46,7 @@
 #include "NSClient.h"
 #include "NSClientSpectator.h"
 #include "NSClientPlayer.h"
+#include "NSMaterial.h"
 #include "damage.h"
 #include "flags.h"
 #include "entities.h"

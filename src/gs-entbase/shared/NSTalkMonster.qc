@@ -454,7 +454,6 @@ NSTalkMonster::FollowChain(void)
 void
 NSTalkMonster::Physics(void)
 {
-	float spvel;
 	input_movevalues = [0,0,0];
 	input_impulse = 0;
 	input_buttons = 0;
@@ -924,7 +923,6 @@ NSTalkMonster_ParseSentence(void)
 void
 NSTalkMonster::NSTalkMonster(void)
 {
-	super::NSMonster();
 #ifdef SERVER
 	m_eFollowing = world;
 #endif

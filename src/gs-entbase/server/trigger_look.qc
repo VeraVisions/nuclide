@@ -48,6 +48,7 @@ class trigger_look:NSBrushTrigger
 
 	void(void) trigger_look;
 
+	virtual void(void) Spawned;
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
 	virtual void(entity) Touch;
@@ -177,13 +178,17 @@ trigger_look::SpawnKey(string strKey, string strValue)
 }
 
 void
+trigger_look::Spawned(void)
+{
+	super::Spawned();
+
+	if (m_strOnTrigger)
+		m_strOnTrigger = CreateOutput(m_strOnTrigger);
+}
+
+void
 trigger_look::trigger_look(void)
 {
 	m_flLookTime = 0.5f;
 	m_flFOV = 0.9f;
-
-	super::NSBrushTrigger();
-
-	if (m_strOnTrigger)
-		m_strOnTrigger = CreateOutput(m_strOnTrigger);
 }

@@ -141,6 +141,4 @@ infodecal::infodecal(void)
 		remove(self);
 		return;
 	}
-
-	super::NSPointTrigger();
 }

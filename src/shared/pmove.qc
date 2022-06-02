@@ -79,6 +79,19 @@
 	#define PHY_VIEWPOS_CROUCHED [0,0,12]
 #endif
 
+/* stamina system, inspired by idTech 4 */
+#ifndef PMOVE_STAMINA
+	#define PMOVE_STAMINA 24
+#endif
+
+#ifndef PMOVE_STAMINARATE
+	#define PMOVE_STAMINARATE 0.75
+#endif
+
+#ifndef PMOVE_STAMINATHRESHOLD
+	#define PMOVE_STAMINATHRESHOLD 4
+#endif
+
 
 /* Those are constant for HL BSP and CANNOT be changed.
  * Blame Valve for purchasing a Quake II license but not

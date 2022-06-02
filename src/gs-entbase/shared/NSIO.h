@@ -27,8 +27,11 @@ class NSIO
 	void(void) NSIO;
 
 	virtual void(void) Init;
-	virtual void(void) Initialized;
-	
+	virtual void(void) Spawned;
+
+	/* whenever gamerules want entities to respawn */
+	virtual void(void) Respawn;
+
 	/* Handle entity key/value pairs on init */
 	virtual void(string, string) SpawnKey;
 
@@ -44,9 +47,6 @@ class NSIO
 	nonvirtual void(entity, string) UseOutput;
 	nonvirtual string(string, string) PrepareOutput;
 	nonvirtual string(string) CreateOutput;
-
-	/* whenever gamerules want entities to respawn */
-	virtual void(void) Respawn;
 
 	virtual void(float) Save;
 	virtual void(string,string) Restore;

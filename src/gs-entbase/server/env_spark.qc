@@ -53,6 +53,7 @@ class env_spark:NSPointTrigger
 
 	void(void) env_spark;
 
+	virtual void(void) Spawned;
 	virtual void(void) CreateSpark;
 	virtual void(void) TimedSpark;
 	virtual void(entity, int) Trigger;
@@ -124,8 +125,14 @@ env_spark::SpawnKey(string strKey, string strValue)
 }
 
 void
+env_spark::Spawned(void)
+{
+	super::Spawned();
+
+	Sound_Precache("env_spark.sfx");
+}
+
+void
 env_spark::env_spark(void)
 {
-	Sound_Precache("env_spark.sfx");
-	super::NSPointTrigger();
 }

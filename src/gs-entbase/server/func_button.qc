@@ -102,6 +102,7 @@ class func_button:NSSurfacePropEntity
 	string m_strOnIn;
 	string m_strOnOut;
 
+	virtual void(void) Spawned;
 	virtual void(void) Respawn;
 	virtual void(void) Arrived;
 	virtual void(void) Returned;
@@ -488,20 +489,29 @@ func_button::SpawnKey(string strKey, string strValue)
 }
 
 void
-func_button::func_button(void)
+func_button::Spawned(void)
 {
-	m_flWait = 4.0f;
-
-	super::NSSurfacePropEntity();
+	super::Spawned();
 
 	/* sounds */
 	Sound_Precache(m_strSndPressed);
 	Sound_Precache(m_strSndUnpressed);
 
 	/* input/output */
-	m_strOnPressed = CreateOutput(m_strOnPressed);
-	m_strOnDamaged = CreateOutput(m_strOnDamaged);
-	m_strOnUseLocked = CreateOutput(m_strOnUseLocked);
-	m_strOnIn = CreateOutput(m_strOnIn);
-	m_strOnOut = CreateOutput(m_strOnOut);
+	if (m_strOnPressed)
+		m_strOnPressed = CreateOutput(m_strOnPressed);
+	if (m_strOnDamaged)
+		m_strOnDamaged = CreateOutput(m_strOnDamaged);
+	if (m_strOnUseLocked)
+		m_strOnUseLocked = CreateOutput(m_strOnUseLocked);
+	if (m_strOnIn)
+		m_strOnIn = CreateOutput(m_strOnIn);
+	if (m_strOnOut)
+		m_strOnOut = CreateOutput(m_strOnOut);
+}
+
+void
+func_button::func_button(void)
+{
+	m_flWait = 4.0f;
 }

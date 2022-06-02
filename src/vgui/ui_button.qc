@@ -113,7 +113,6 @@ CUIButton::SetTitle(string strName)
 void
 CUIButton::SetIcon(string strName)
 {
-	vector vecImgSize;
 	m_strIcon = strName;
 	m_vecIMGSize = drawgetimagesize(strName);
 

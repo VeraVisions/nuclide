@@ -45,8 +45,10 @@ class env_glow:NSEntity /* change to renderablentity? */
 
 	void(void) env_glow;
 
-	virtual float() predraw;
-	virtual void() postdraw;
+	virtual void(void) Spawned;
+	virtual void(void) Respawn;
+	virtual float(void) predraw;
+	virtual void(void) postdraw;
 	virtual void(string, string) SpawnKey;
 	virtual void(void) RendererRestarted;
 };
@@ -203,16 +205,24 @@ env_glow::SpawnKey(string strField, string strKey)
 }
 
 void
+env_glow::Respawn(void)
+{
+	SetSize([0,0,0], [0,0,0]);
+	SetOrigin(GetSpawnOrigin());
+	effects &= ~EF_NOSHADOW;
+}
+
+void
+env_glow::Spawned(void)
+{
+	RendererRestarted();
+}
+
+void
 env_glow::env_glow(void)
 {
 	m_flScale = 1.0f;
 	m_flMaxAlpha = 1.0f;
 	m_vecColor = [1,1,1];
 	drawmask = MASK_GLOWS;
-	setsize(this, [0,0,0], [0,0,0]);
-	effects &= ~EF_NOSHADOW;
-	Init();
-
-	RendererRestarted();
-	setorigin(this, origin);
 }

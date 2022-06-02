@@ -78,6 +78,7 @@ class ambient_generic:NSTalkMonster
 	void(void) ambient_generic;
 
 	/* overrides */
+	virtual void(void) Spawned;
 #ifdef SERVER
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
@@ -387,9 +388,14 @@ ambient_generic::SpawnKey(string strKey, string strValue)
 }
 
 void
+ambient_generic::Spawned(void)
+{
+	precache_sound("common/null.wav");
+}
+
+void
 ambient_generic::ambient_generic(void)
 {
-	super::NSTalkMonster();
 }
 
 #ifdef CLIENT

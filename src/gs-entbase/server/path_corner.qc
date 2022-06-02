@@ -146,5 +146,4 @@ path_corner::path_corner(void)
 {
 	m_flWait = 1.0f;
 	m_flSpeed = 100.0f;
-	super::NSPointTrigger();
 }

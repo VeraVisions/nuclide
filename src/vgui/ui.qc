@@ -144,15 +144,6 @@ CUIWidget::Input(float flEVType, float flKey, float flChar, float flDevID)
 {
 	CUIWidget wNext = this;
 
-#if 0
-	do {
-		wNext = wNext.m_next;
-		if (wNext && wNext.m_iFlags & 1 && wNext.m_parent.m_iFlags & 1) {
-			if (wNext.Input(flEVType, flKey, flChar, flDevID) == true)
-				return;
-		}
-	} while (wNext);
-#else
 	/* this is garbage, but it'll work */
 	int c = 0;
 	do {
@@ -164,7 +155,7 @@ CUIWidget::Input(float flEVType, float flKey, float flChar, float flDevID)
 	vgui_input_scene_t *tree = memalloc(sizeof(vgui_input_scene_t) * c);
 
 	int i = 0;
-	CUIWidget wNext = this;
+	wNext = this;
 	do {
 		wNext = wNext.m_next;
 		tree[i].member = wNext;
@@ -172,17 +163,17 @@ CUIWidget::Input(float flEVType, float flKey, float flChar, float flDevID)
 	} while (wNext);
 
 	/* traverse the list in reverse */
-	for (int i = c-1; i >= 0; i--) {
-		wNext = tree[i].member;
+	for (int x = c-1; x >= 0; x--) {
+		wNext = tree[x].member;
 
 		if (wNext && wNext.m_iFlags & 1 && wNext.m_parent.m_iFlags & 1)
 			if (wNext.Input(flEVType, flKey, flChar, flDevID) == true)
-				return;
+				return (false);
 	}
 
 	memfree(tree);
 
-#endif
+	return (false);
 }
 
 void

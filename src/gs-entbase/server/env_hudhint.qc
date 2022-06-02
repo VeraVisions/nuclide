@@ -71,7 +71,6 @@ env_hudhint::SpawnKey(string strKey, string strValue)
 void
 env_hudhint::env_hudhint(void)
 {
-	super::NSPointTrigger();
 }
 
 void

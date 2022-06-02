@@ -386,7 +386,6 @@ scripted_sequence::SpawnKey(string strKey, string strValue)
 void
 scripted_sequence::scripted_sequence(void)
 {
-	super::NSPointTrigger();
 }
 
 CLASSEXPORT(aiscripted_sequence, scripted_sequence)

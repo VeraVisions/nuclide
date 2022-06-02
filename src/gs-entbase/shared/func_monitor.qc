@@ -333,7 +333,5 @@ func_monitor::func_monitor(void)
 {
 #ifdef CLIENT
 	drawmask = MASK_ENGINE;
-#elif SERVER
-	super::NSRenderableEntity();
 #endif
 }

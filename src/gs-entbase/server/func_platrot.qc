@@ -237,5 +237,4 @@ void
 func_platrot::func_platrot(void)
 {
 	m_flSpeed = 100.0f;
-	super::NSRenderableEntity();
 }

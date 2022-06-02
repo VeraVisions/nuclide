@@ -76,5 +76,4 @@ env_laser::ReceiveEntity(float flNew, float flChanged)
 void
 env_laser::env_laser(void)
 {
-	drawmask = MASK_ENGINE;
 }

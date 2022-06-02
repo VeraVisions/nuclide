@@ -934,8 +934,6 @@ NSRenderableEntity::NSRenderableEntity(void)
 	effects |= EF_NOSHADOW;
 	//scale = 1.0f;
 
-	super::NSEntity();
-
 #ifdef SERVER
 #ifdef GS_RENDERFX
 	m_oldiRenderFX = m_iRenderFX;
@@ -945,6 +943,8 @@ NSRenderableEntity::NSRenderableEntity(void)
 	m_oldvecRenderColor = m_vecRenderColor;
 	m_oldflRenderAmt = m_flRenderAmt;
 #endif
+#else
+	drawmask = MASK_ENGINE;
 #endif
 }
 

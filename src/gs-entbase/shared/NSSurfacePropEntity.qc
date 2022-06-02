@@ -14,6 +14,22 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+void
+NSSurfacePropEntity::Spawned(void)
+{
+	super::Spawned();
+
+#ifdef SERVER
+	/* tokenization complete, now we can load propdata */
+	SurfaceDataFinish();
+	PropDataFinish();
+
+	/* Input/Output system */
+	if (m_strOnBreak)
+		m_strOnBreak = CreateOutput(m_strOnBreak);
+#endif
+}
+
 /* networking */
 #ifdef SERVER
 void
@@ -577,6 +593,9 @@ NSSurfacePropEntity::Pain(void)
 void
 NSSurfacePropEntity::Death(void)
 {
+	print(sprintf("%S", m_strOnBreak));
+	print("\n");
+
 	UseOutput(g_dmg_eAttacker, m_strOnBreak);
 
 	if (HasPropData() == false)
@@ -680,15 +699,7 @@ NSSurfacePropEntity::NSSurfacePropEntity(void)
 	m_iPropData = -1;
 	m_iMaterial = -1;
 	max_health = 100;
-
-	super::NSRenderableEntity();
-
-	/* tokenization complete, now we can load propdata */
-	SurfaceDataFinish();
-	PropDataFinish();
-
-	/* Input/Output system */
-	m_strOnBreak = CreateOutput(m_strOnBreak);
+	m_strOnBreak = __NULL__;
 #endif
 }
 

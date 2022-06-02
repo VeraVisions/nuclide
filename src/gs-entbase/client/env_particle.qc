@@ -40,6 +40,8 @@ class env_particle:NSEntity
 	string m_strTarget;
 
 	void(void) env_particle;
+
+	virtual void(void) Respawn;
 	virtual void(void) customphysics;
 	virtual void(string, string) SpawnKey;
 };
@@ -96,10 +98,13 @@ void env_particle::SpawnKey(string strField, string strKey)
 	}
 }
 
+void
+env_particle::Respawn(void)
+{
+	SetOrigin(GetSpawnOrigin());
+	SetSize([0,0,0], [0,0,0]);
+}
+
 void env_particle::env_particle(void)
 {
-	drawmask = MASK_ENGINE;
-	Init();
-	setorigin(this, origin);
-	setsize(this, [0,0,0], [0,0,0]);
 }

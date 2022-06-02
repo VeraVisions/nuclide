@@ -112,5 +112,4 @@ env_explosion::SpawnKey(string strKey, string strValue)
 void
 env_explosion::env_explosion(void)
 {
-	super::NSPointTrigger();
 }

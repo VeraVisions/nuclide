@@ -95,5 +95,5 @@ trigger_autosave::trigger_autosave(void)
 		return;
 	}
 
-	super::NSBrushTrigger();
+	m_flDelay = 0.0f;
 }

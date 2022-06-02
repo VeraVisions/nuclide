@@ -172,6 +172,9 @@ NSTrigger::SpawnKey(string strKey, string strValue)
 	case "target":
 		target = strValue;
 		break;
+	case "targetname":
+		targetname = strValue;
+		break;
 #ifdef SERVER
 	case "killtarget":
 		m_strKillTarget = strValue;
@@ -198,5 +201,4 @@ NSTrigger::SpawnKey(string strKey, string strValue)
 void
 NSTrigger::NSTrigger(void)
 {
-	super::NSIO();
 }

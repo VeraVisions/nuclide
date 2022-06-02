@@ -102,6 +102,7 @@ class prop_vehicle_driveable:NSVehicle
 
 	void(void) prop_vehicle_driveable;
 
+	virtual void(void) Spawned;
 	virtual void(void) Physics;
 	virtual void(void) RunVehiclePhysics;
 	virtual void(void) WeaponInput;
@@ -853,11 +854,18 @@ prop_vehicle_driveable::SendEntity(entity ePVSent, float flSendFlags)
 #endif
 
 void
-prop_vehicle_driveable::prop_vehicle_driveable(void)
+prop_vehicle_driveable::Spawned(void)
 {
+	super::Spawned();
+
 #ifdef SERVER
 	Sound_Precache("prop_vehicle_driveable.bounce");
 #endif
+}
+
+void
+prop_vehicle_driveable::prop_vehicle_driveable(void)
+{
 	m_eDriver = __NULL__;
 	m_flBounceFactor = 1.25f;
 	m_flAcceleration = 600.0f;
@@ -891,8 +899,6 @@ prop_vehicle_driveable::prop_vehicle_driveable(void)
 	m_eCollBox1.owner = m_eCollBox2.owner = \
 		m_wlFL.owner = m_wlFR.owner = \
 		m_wlBL.owner = m_wlBR.owner = this;
-
-	super::NSVehicle();
 
 	customphysics = Physics;
 }

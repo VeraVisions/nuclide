@@ -39,6 +39,7 @@ class func_guntarget:NSSurfacePropEntity
 	void(void) func_guntarget;
 	
 	/* overrides */
+	virtual void(void) Spawned;
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
 	virtual void(void) Respawn;
@@ -246,11 +247,16 @@ func_guntarget::SpawnKey(string strKey, string strValue)
 	}
 }
 
-void func_guntarget::func_guntarget(void)
+void
+func_guntarget::Spawned(void)
 {
-	m_flSpeed = 100;
-	super::NSSurfacePropEntity();
+	super::Spawned();
 
 	if (m_strOnDeath)
 		m_strOnDeath = CreateOutput(m_strOnDeath);
+}
+
+void func_guntarget::func_guntarget(void)
+{
+	m_flSpeed = 100;
 }

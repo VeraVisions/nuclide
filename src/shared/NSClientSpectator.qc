@@ -450,20 +450,6 @@ NSClientSpectator::PostFrame(void)
 void
 NSClientSpectator::NSClientSpectator(void)
 {
-	super::NSClient();
-	modelindex = 0;
-	flags = FL_CLIENT;
-	SetSolid(SOLID_NOT);
-	SetMovetype(MOVETYPE_NOCLIP);
-	think = __NULL__;
-	nextthink = 0.0f;
-	maxspeed = 250;
-	spec_ent = 0;
-	spec_mode = 0;
-
-#ifdef SERVER
-	forceinfokey(this, "*spectator", "1");
-#endif
 }
 
 #ifdef CLIENT

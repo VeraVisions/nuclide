@@ -74,5 +74,4 @@ prop_dynamic::SpawnKey(string strKey, string strValue)
 void
 prop_dynamic::prop_dynamic(void)
 {
-	super::NSSurfacePropEntity();
 }

@@ -165,6 +165,6 @@ trigger_push::SpawnKey(string strKey, string strValue)
 void
 trigger_push::trigger_push(void)
 {
+	m_vecMoveDir = [0,0,0];
 	m_flSpeed = 100;
-	super::NSBrushTrigger();
 }

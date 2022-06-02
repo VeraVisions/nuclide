@@ -164,5 +164,4 @@ prop_door_rotating::prop_door_rotating(void)
 {
 	m_flDistance = 90;
 	m_flSpeed = 100;
-	super::NSPointTrigger();
 }

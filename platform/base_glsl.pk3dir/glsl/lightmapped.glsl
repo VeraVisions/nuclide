@@ -36,6 +36,7 @@
 !!cvardf r_skipNormal
 !!cvardf r_skipEnvmap
 !!cvardf r_skipLightmap
+!!cvardf r_skipDetail
 
 #include "sys/defs.h"
 
@@ -232,8 +233,10 @@ varying vec3 norm;
 			alpha = 1.0;
 
 
+		#if r_skipDetail == 0
 		#if defined(UPPERLOWER)
 			diffuse_f.rgb *= (texture2D(s_upper, tex_c * 4.0).rgb + 0.5);
+		#endif
 		#endif
 
 		gl_FragColor = vec4(fog3(diffuse_f.rgb), alpha);

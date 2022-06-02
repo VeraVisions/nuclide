@@ -42,6 +42,7 @@ class func_healthcharger:NSRenderableEntity
 	void(void) func_healthcharger;
 
 	/* overrides */
+	virtual void(void) Spawned;
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
 	virtual void(string, string) SpawnKey;
@@ -211,15 +212,19 @@ func_healthcharger::Respawn(void)
 }
 
 void
+func_healthcharger::Spawned(void)
+{
+	super::Spawned();
+
+	precache_sound(m_strSndFirst);
+	precache_sound(m_strSndCharging);
+	precache_sound(m_strSndDone);
+}
+
+void
 func_healthcharger::func_healthcharger(void)
 {
 	m_strSndFirst = "items/medshot4.wav";
 	m_strSndCharging = "items/medcharge4.wav";
 	m_strSndDone = "items/medshotno1.wav";
-
-	super::NSRenderableEntity();
-
-	precache_sound(m_strSndFirst);
-	precache_sound(m_strSndCharging);
-	precache_sound(m_strSndDone);
 }

@@ -524,7 +524,6 @@ env_fog_controller::env_fog_controller(void)
 #ifdef SERVER
 	m_vecSpawnColor = [1.0, 1.0, 1.0];
 	m_flSpawnMaxDensity = 1.0f;
-	super::NSPointTrigger();
 #endif
 }
 

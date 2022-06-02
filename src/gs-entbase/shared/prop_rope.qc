@@ -282,8 +282,6 @@ prop_rope::prop_rope(void)
 	m_flSag = 15.0f;
 	m_iSegments = 16;
 	m_strShader = "textures/props/wire_default";
-
-	super::NSEntity();
 #else
 	/* this is empty for a good reason */
 	drawmask = MASK_ENGINE;

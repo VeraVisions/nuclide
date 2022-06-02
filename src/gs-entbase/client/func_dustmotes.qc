@@ -31,7 +31,8 @@ class func_dustmotes:NSEntity
 	float m_flNexTime;
 
 	void(void) func_dustmotes;
-	virtual void(void) Init;
+
+	virtual void(void) Spawned;
 	virtual float() predraw;
 	virtual void(string, string) SpawnKey;
 };
@@ -66,15 +67,15 @@ func_dustmotes::predraw(void)
 }
 
 void
-func_dustmotes::Init(void)
+func_dustmotes::Spawned(void)
 {
-	super::Init();
+	super::Spawned();
 
 	precache_model(model);
 	setmodel(this, model);
 	setorigin(this, origin);
 	movetype = MOVETYPE_NONE;
-	drawmask = MASK_ENGINE;
+	m_iCount = vlen(size) / 10;
 }
 
 void
@@ -94,6 +95,4 @@ void
 func_dustmotes::func_dustmotes(void)
 {
 	solid = SOLID_NOT;
-	Init();
-	m_iCount = vlen(size) / 10;
 }

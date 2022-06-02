@@ -69,5 +69,4 @@ NSXRSpace::SetAngles(vector vecAngles)
 void
 NSXRSpace::NSXRSpace(void)
 {
-	print("allocated NSXRSpace\n");
 }

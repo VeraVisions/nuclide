@@ -38,13 +38,10 @@ class trigger_gravity:NSBrushTrigger
 
 	void(void) trigger_gravity;
 
+	virtual void(void) Spawned;
 	virtual void(entity) Touch;
 	virtual void(string, string) SpawnKey;
 	virtual void(void) Respawn;
-
-#ifdef CLIENT
-	virtual void(void) Initialized;
-#endif
 };
 
 void
@@ -80,17 +77,17 @@ trigger_gravity::SpawnKey(string strField, string strKey)
 }
 
 void
-trigger_gravity::trigger_gravity(void)
+trigger_gravity::Spawned(void)
 {
-#ifdef SERVER
-	super::NSBrushTrigger();
+	super::Spawned();
+
+#ifdef CLIENT
+	Respawn();
 #endif
 }
 
-#ifdef CLIENT
 void
-trigger_gravity::Initialized(void)
+trigger_gravity::trigger_gravity(void)
 {
-	Respawn();
+	m_flGravity = 1.0;
 }
-#endif

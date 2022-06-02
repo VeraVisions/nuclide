@@ -89,6 +89,7 @@ class func_tank:NSVehicle
 
 	void(void) func_tank;
 
+	virtual void(void) Spawned;
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
 	virtual void(void) customphysics;
@@ -337,13 +338,18 @@ func_tank::SpawnKey(string strKey, string strValue)
 }
 
 void
-func_tank::func_tank(void)
+func_tank::Spawned(void)
 {
-	m_iVehicleFlags |= VHF_FROZEN | VHF_NOATTACK;
-	super::NSVehicle();
+	super::Spawned();
 
 	if (m_strSpriteFlash)
 		precache_model(m_strSpriteFlash);
 	if (m_strSpriteSmoke)
 		precache_model(m_strSpriteSmoke);
+}
+
+void
+func_tank::func_tank(void)
+{
+	m_iVehicleFlags |= VHF_FROZEN | VHF_NOATTACK;
 }

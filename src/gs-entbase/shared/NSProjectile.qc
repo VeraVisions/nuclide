@@ -61,7 +61,6 @@ NSProjectile::Animate(int startframe, int endframe, float framerate)
 void
 NSProjectile::NSProjectile(void)
 {
-	super::NSSurfacePropEntity();
 	touch = ProjectileTouch;
 
 	SetMovetype(MOVETYPE_FLY);

@@ -115,6 +115,5 @@ env_render::Trigger(entity act, int state)
 void
 env_render::env_render(void)
 {
-	super::NSRenderableEntity();
 }
 #endif

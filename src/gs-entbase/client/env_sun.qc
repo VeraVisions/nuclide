@@ -51,8 +51,8 @@ class env_sun:NSEntity
 	int m_iUseAngles;
 
 	void(void) env_sun;
-	virtual void(void) Init;
-	virtual void(void) Initialized;
+
+	virtual void(void) Spawned;
 	virtual void(void) postdraw;
 	virtual float(void) predraw;
 	virtual void(string, string) SpawnKey;
@@ -127,16 +127,11 @@ env_sun::postdraw(void)
 }
 
 void
-env_sun::Init(void)
+env_sun::Spawned(void)
 {
-	super::Init();
-	setorigin(this, origin);
-	drawmask = MASK_ENGINE;
-}
+	super::Spawned();
 
-void
-env_sun::Initialized(void)
-{
+	setorigin(this, origin);
 	makevectors(m_vecLensPos);
 	m_vecLensPos = vectoangles(v_forward);
 	localcmd(sprintf("r_shadows_throwdirection %v\n", v_forward));
@@ -163,10 +158,6 @@ env_sun::SpawnKey(string strField, string strKey)
 void
 env_sun::env_sun(void)
 {
-	drawmask = MASK_ENGINE;
-	setsize(this, [0,0,0], [0,0,0]);
-	setorigin(this, origin);
-	Init();
 }
 
 void

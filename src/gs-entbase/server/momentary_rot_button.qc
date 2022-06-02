@@ -263,5 +263,4 @@ void
 momentary_rot_button::momentary_rot_button(void)
 {
 	m_flReturnspeed = m_flSpeed = -1;
-	super::NSMomentary();
 }

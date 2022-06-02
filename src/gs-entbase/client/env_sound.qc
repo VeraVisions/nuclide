@@ -71,6 +71,7 @@ class env_sound:NSEntity
 
 	void(void) env_sound;
 
+	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
 };
 
@@ -100,11 +101,14 @@ env_sound::SpawnKey(string strField, string strKey)
 }
 
 void
+env_sound::Respawn(void)
+{
+	SetSize([0,0,0], [0,0,0]);
+	SetOrigin(GetSpawnOrigin());
+}
+
+void
 env_sound::env_sound(void)
 {
 	m_iRadius = 256;
-	Init();
-
-	setsize(this, [0,0,0], [0,0,0]);
-	setorigin(this, origin);
 }

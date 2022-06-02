@@ -32,7 +32,6 @@ XR_Init(entity ePlayer)
 {
 	NSClient pl = (NSClient)ePlayer;
 
-	print("--------- Initializing XR ----------\n");
 	pl.m_xrSpace = spawn(NSXRSpace);
 
 	/* the only 3 devices that matter right now */

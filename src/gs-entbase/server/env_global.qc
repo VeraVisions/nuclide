@@ -50,6 +50,7 @@ class env_global:NSPointTrigger
 	void(void) env_global;
 
 	/* overrides */
+	virtual void(void) Spawned;
 	virtual void(float) Save;
 	virtual void(string,string) Restore;
 	virtual void(entity, int) Trigger;
@@ -169,9 +170,9 @@ env_global::SpawnKey(string strKey, string strValue)
 }
 
 void
-env_global::env_global(void)
+env_global::Spawned(void)
 {
-	super::NSPointTrigger();
+	super::Spawned();
 
 	if (!m_strGlobalState) {
 		objerror("env_global: No globalstate name given! Aborting\n");
@@ -182,4 +183,9 @@ env_global::env_global(void)
 			AddNewGlobal(m_strGlobalState, m_iInitialState);
 		}
 	}
+}
+
+void
+env_global::env_global(void)
+{
 }

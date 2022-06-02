@@ -81,6 +81,7 @@ class trigger_changelevel:NSBrushTrigger
 	void(void) trigger_changelevel;
 
 	/* overrides */
+	virtual void(void) Spawned;
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
 	virtual void(entity, int) Trigger;
@@ -267,14 +268,18 @@ trigger_changelevel::SpawnKey(string strKey, string strValue)
 }
 
 void
-trigger_changelevel::trigger_changelevel(void)
+trigger_changelevel::Spawned(void)
 {
-	m_strChangeTarget = __NULL__;
-
-	super::NSBrushTrigger();
+	super::Spawned();
 
 	if (m_strOnLevelChange)
 		m_strOnLevelChange = CreateOutput(m_strOnLevelChange);
+}
+
+void
+trigger_changelevel::trigger_changelevel(void)
+{
+	m_strChangeTarget = __NULL__;
 }
 
 vector

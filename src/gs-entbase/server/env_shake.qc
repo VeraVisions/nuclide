@@ -77,5 +77,4 @@ env_shake::SpawnKey(string strKey, string strValue)
 void
 env_shake::env_shake(void)
 {
-	super::NSPointTrigger();
 }

@@ -162,5 +162,4 @@ NSXRInput::PrintInfo(void)
 void
 NSXRInput::NSXRInput(void)
 {
-	print("registered NSXRInput\n");
 }

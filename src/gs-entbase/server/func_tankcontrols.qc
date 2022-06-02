@@ -72,5 +72,4 @@ func_tankcontrols::Respawn(void)
 void
 func_tankcontrols::func_tankcontrols(void)
 {
-	super::NSBrushTrigger();
 }

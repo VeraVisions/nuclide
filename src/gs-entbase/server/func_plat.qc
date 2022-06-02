@@ -193,5 +193,4 @@ void
 func_plat::func_plat(void)
 {
 	m_flSpeed = 100.0f;
-	super::NSRenderableEntity();
 }

@@ -170,5 +170,4 @@ func_pushable::Respawn(void)
 void
 func_pushable::func_pushable(void)
 {
-	super::func_breakable();
 }

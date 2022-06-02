@@ -343,9 +343,14 @@ env_bubbles::Respawn(void)
 }
 
 void
+env_bubbles::Spawned(void)
+{
+	precache_model("sprites/bubble.spr");
+}
+
+void
 env_bubbles::env_bubbles(void)
 {
-	super::NSPointTrigger();
 }
 
 #ifdef CLIENT

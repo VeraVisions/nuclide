@@ -14,6 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+void
+NSIO::Respawn(void)
+{
+	// Respawn code goes here...
+}
+
 #ifdef CLIENT
 string __fullspawndata;
 #endif
@@ -21,11 +27,7 @@ string __fullspawndata;
 void
 NSIO::Init(void)
 {
-#ifdef CLIENT
-	isCSQC = TRUE;
-	effects |= EF_NOSHADOW;
-#endif
-
+	/* annoylingly our starting offsets differ */
 #ifdef CLIENT
 	for (int i = 0; i < (tokenize(__fullspawndata) - 1); i += 2)
 		SpawnKey(argv(i), argv(i+1));
@@ -40,12 +42,22 @@ NSIO::Init(void)
 	   inherit stuff from the last previously loaded entity */
 	__fullspawndata = "";
 #endif
-	Initialized();
+	Spawned();
 }
 
 void
-NSIO::Initialized(void)
+NSIO::Spawned(void)
 {
+#ifdef SERVER
+	if (m_strOnUser1)
+		m_strOnUser1 = CreateOutput(m_strOnUser1);
+	if (m_strOnUser2)
+		m_strOnUser2 = CreateOutput(m_strOnUser2);
+	if (m_strOnUser3)
+		m_strOnUser3 = CreateOutput(m_strOnUser3);
+	if (m_strOnUser4)
+		m_strOnUser4 = CreateOutput(m_strOnUser4);
+#endif
 }
 
 #ifdef SERVER
@@ -80,10 +92,10 @@ NSIO::CreateOutput(string outmsg)
 	string outname = "";
 	float c;
 
-	if (!outmsg)
-		return ("");
+	if not (outmsg)
+		error("Cannot assign EMPTY contents to CreateOutput!");
 
-	outname = sprintf("output_%i\n", outcount);
+	outname = sprintf("output_%i", outcount);
 	outcount++;
 
 	/* to make sure tokenize 'remembers' to tell us about the commonly
@@ -151,12 +163,6 @@ NSIO::Input(entity eAct, string strInput, string strData)
 		print(sprintf("^2%s::^3Input^7: Receives input %s from %s\n", 
 			this.classname, strInput, eAct.classname));
 	}
-}
-
-void
-NSIO::Respawn(void)
-{
-	// Respawn code goes here...
 }
 
 void
@@ -289,7 +295,6 @@ NSIO::SpawnKey(string strKey, string strValue)
 	/* we do re-read a lot of the builtin fields in case we want to set
 	   defaults. just in case anybody is wondering. */
 	switch (strKey) {
-	case "zhlt_lightflags":
 	case "classname":
 	case "spawnflags":
 		break;
@@ -333,12 +338,17 @@ NSIO::NSIO(void)
 		}
 	}
 
-	Init();
-
-	/* assign our onuser crap */
-	m_strOnUser1 = CreateOutput(m_strOnUser1);
-	m_strOnUser2 = CreateOutput(m_strOnUser2);
-	m_strOnUser3 = CreateOutput(m_strOnUser3);
-	m_strOnUser4 = CreateOutput(m_strOnUser4);
+	/* null all of them */
+	m_strOnTrigger =
+	m_strOnUser1 =
+	m_strOnUser2 =
+	m_strOnUser3 =
+	m_strOnUser4 = __NULL__;
+#else
+	isCSQC = TRUE;
+	effects |= EF_NOSHADOW;
 #endif
+
+	/* called last */
+	Init();
 }

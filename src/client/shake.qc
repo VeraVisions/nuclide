@@ -1,5 +1,5 @@
 void
-Shake_Update(player pl)
+Shake_Update(NSClientPlayer pl)
 {
 	if (pSeat->m_flShakeDuration > 0.0) {
 		vector vecShake = [0,0,0];

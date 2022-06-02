@@ -62,13 +62,13 @@ button_target::Respawn(void)
 	if (HasSpawnFlags(BUTTA_USE)) {
 		PlayerUse = PUseWrapper;
 	} else {
-		health = 1;
-		takedamage = DAMAGE_YES;
+		SetHealth(1);
+		SetTakedamage(DAMAGE_YES);
 		Pain = Death = Damage;
 	}
 
 	/* purely cosmetic */
-	frame = HasSpawnFlags(BUTTA_TEXON) ? 1 : 0;
+	SetFrame(HasSpawnFlags(BUTTA_TEXON) ? 1 : 0);
 }
 
 void
@@ -76,7 +76,7 @@ button_target::Trigger(entity act, int status)
 {
 	/* make unusable */
 	PlayerUse = __NULL__;
-	takedamage = DAMAGE_NO;
+	SetTakedamage(DAMAGE_NO);
 
 	frame = 1 - frame;
 	UseTargets(act, status, m_flDelay);
@@ -91,5 +91,4 @@ button_target::Damage(void)
 void
 button_target::button_target(void)
 {
-	super::NSSurfacePropEntity();
 }

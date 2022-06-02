@@ -166,6 +166,4 @@ void
 point_camera::point_camera(void)
 {
 	m_flFOV = 90;
-
-	super::NSPointTrigger();
 }

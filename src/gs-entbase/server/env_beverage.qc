@@ -52,6 +52,7 @@ class env_beverage:NSRenderableEntity
 
 	void(void) env_beverage;
 
+	virtual void(void) Spawned;
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
 	virtual void(entity, int) Trigger;
@@ -116,13 +117,17 @@ env_beverage::SpawnKey(string strKey, string strValue)
 }
 
 void
-env_beverage::env_beverage(void)
+env_beverage::Spawned(void)
 {
+	super::Spawned();
+
 	precache_model("models/can.mdl");
 	precache_sound("weapons/g_bounce3.wav");
+}
 
-	super::NSRenderableEntity();
-
+void
+env_beverage::env_beverage(void)
+{
 	if (!m_iUses) {
 		m_iUses = 10;
 	}

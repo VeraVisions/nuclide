@@ -43,5 +43,4 @@ func_traincontrols::Respawn(void)
 void
 func_traincontrols::func_traincontrols(void)
 {
-	super::NSBrushTrigger();
 }

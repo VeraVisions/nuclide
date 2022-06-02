@@ -206,6 +206,5 @@ env_laser::SpawnKey(string strKey, string strValue)
 void
 env_laser::env_laser(void)
 {
-	super::NSPointTrigger();
 	pvsflags = PVSF_IGNOREPVS;
 }

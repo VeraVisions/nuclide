@@ -39,10 +39,6 @@ class func_friction:NSEntity
 	virtual void(entity) Touch;
 	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
-
-#ifdef CLIENT
-	virtual void(void) Initialized;
-#endif
 };
 
 void
@@ -76,18 +72,7 @@ func_friction::SpawnKey(string strField, string strKey)
 	}
 }
 
-#ifdef CLIENT
-void
-func_friction::Initialized(void)
-{
-	setmodel(this, model);
-	movetype = MOVETYPE_NONE;
-	solid = SOLID_BSPTRIGGER;
-}
-#endif
-
 void
 func_friction::func_friction(void)
 {
-	super::NSEntity();
 }

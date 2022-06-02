@@ -39,5 +39,4 @@ class info_intermission:NSPointTrigger
 void
 info_intermission::info_intermission(void)
 {
-	super::NSPointTrigger();
 }

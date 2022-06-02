@@ -23,7 +23,6 @@ class env_sprite:NSRenderableEntity
 
 	virtual float(void) predraw;
 	virtual void(void) Init;
-	virtual void(void) Initialized;
 	virtual void(float,float) ReceiveEntity;
 	virtual void(void) think;
 };
@@ -110,10 +109,6 @@ env_sprite::ReceiveEntity(float flNew, float flChanged)
 /* make sure we're not spawning on the client-side */
 void
 env_sprite::Init(void)
-{
-}
-void
-env_sprite::Initialized(void)
 {
 }
 void

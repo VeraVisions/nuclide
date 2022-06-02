@@ -586,7 +586,8 @@ NSMonster::NewRoute(vector destination)
 void
 NSMonster::AnimationUpdate(void)
 {
-	int frame, act;
+	int fr = 0;
+	int act = 0;
 
 	if (style == MONSTER_DEAD)
 		return;
@@ -595,34 +596,34 @@ NSMonster::AnimationUpdate(void)
 	float midspeed = GetWalkSpeed() + ((GetRunSpeed() -  GetWalkSpeed()) * 0.5f);
 
 	if (spvel < 5) {
-		frame = AnimIdle();
+		fr = AnimIdle();
 
 		if (m_iMoveState != MOVESTATE_IDLE)
 			m_flAnimTime = 0.0f;
 
-		if (frame == -1)
+		if (fr == -1)
 			act = (frameforaction(modelindex, ACT_IDLE));
 
 
 		m_iMoveState = MOVESTATE_IDLE;
 	} else if (spvel < midspeed) {
-		frame = AnimWalk();
+		fr = AnimWalk();
 
 		if (m_iMoveState != MOVESTATE_WALK)
 				m_flAnimTime = 0.0f;
 
-		if (frame == -1)
+		if (fr == -1)
 			act = (frameforaction(modelindex, ACT_WALK));
 		
 
 		m_iMoveState = MOVESTATE_WALK;
 	} else {
-		frame = AnimRun();
+		fr = AnimRun();
 
 		if (m_iMoveState != MOVESTATE_RUN)
 			m_flAnimTime = 0.0f;
 
-		if (frame == -1)
+		if (fr == -1)
 			act = (frameforaction(modelindex, ACT_RUN));
 
 		m_iMoveState = MOVESTATE_RUN;
@@ -632,10 +633,10 @@ NSMonster::AnimationUpdate(void)
 		return;
 	}
 
-	if (frame == -1)
+	if (fr == -1)
 		AnimPlay(act);
 	else
-		SetFrame(frame);
+		SetFrame(fr);
 	
 }
 
@@ -1068,8 +1069,6 @@ NSMonster::NSMonster(void)
 		return;
 	}
 #endif
-
-	super::NSSurfacePropEntity();
 }
 
 #ifdef CLIENT

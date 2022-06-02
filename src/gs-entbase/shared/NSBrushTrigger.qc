@@ -27,5 +27,4 @@ NSBrushTrigger::InitBrushTrigger(void)
 void
 NSBrushTrigger::NSBrushTrigger(void)
 {
-	super::NSEntity();
 }

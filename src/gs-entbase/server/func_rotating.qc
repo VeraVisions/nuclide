@@ -238,6 +238,4 @@ void
 func_rotating::func_rotating(void)
 {
 	m_flSpeed = 100;
-	super::NSRenderableEntity();
-	Respawn();
 }

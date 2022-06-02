@@ -194,5 +194,4 @@ game_text::SpawnKey(string strKey, string strValue)
 void
 game_text::game_text(void)
 {
-	super::NSPointTrigger();
 }

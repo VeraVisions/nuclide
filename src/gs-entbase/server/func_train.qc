@@ -64,6 +64,8 @@ class func_train:NSRenderableEntity
 
 	void(void) func_train;
 
+	virtual void(void) Spawned;
+
 	/* overrides */
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
@@ -299,15 +301,19 @@ func_train::SpawnKey(string strKey, string strValue)
 }
 
 void
+func_train::Spawned(void)
+{
+	super::Spawned();
+
+	if (m_strMoveSnd)
+		Sound_Precache(m_strMoveSnd);
+	if (m_strStopSnd)
+		Sound_Precache(m_strStopSnd);
+}
+
+void
 func_train::func_train(void)
 {
 	/* FIXME: This is all decided by the first path_corner pretty much */
 	m_flSpeed = 100;
-	super::NSRenderableEntity();
-
-	if (m_strMoveSnd)
-		Sound_Precache(m_strMoveSnd);
-
-	if (m_strStopSnd)
-		Sound_Precache(m_strStopSnd);
 }

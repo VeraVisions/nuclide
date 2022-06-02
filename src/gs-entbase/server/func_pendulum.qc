@@ -167,5 +167,4 @@ func_pendulum::SpawnKey(string strKey, string strValue)
 void
 func_pendulum::func_pendulum(void)
 {
-	super::NSRenderableEntity();
 }

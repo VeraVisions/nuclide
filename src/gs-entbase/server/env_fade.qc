@@ -126,5 +126,4 @@ env_fade::SpawnKey(string strKey, string strValue)
 void
 env_fade::env_fade(void)
 {
-	super::NSRenderableEntity();
 }

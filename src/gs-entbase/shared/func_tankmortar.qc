@@ -83,6 +83,7 @@ class func_tankmortar:NSVehicle
 	float m_flFireTime;
 	void(void) func_tankmortar;
 
+	virtual void(void) Spawned;
 	virtual void(void) PlayerInput;
 	virtual void(vector) SpriteSmoke;
 	virtual void(vector) SpriteFlash;
@@ -433,18 +434,21 @@ func_tankmortar::SpawnKey(string strKey, string strValue)
 #endif
 
 void
-func_tankmortar::func_tankmortar(void)
+func_tankmortar::Spawned(void)
 {
-	m_iVehicleFlags |= VHF_FROZEN | VHF_NOATTACK;
-
-	super::NSVehicle();
-
 #ifdef SERVER
 	if (m_strSpriteFlash)
 		precache_model(m_strSpriteFlash);
 	if (m_strSpriteSmoke)
 		precache_model(m_strSpriteSmoke);
 #endif
+}
+
+void
+func_tankmortar::func_tankmortar(void)
+{
+	m_iVehicleFlags |= VHF_FROZEN | VHF_NOATTACK;
+
 }
 
 #ifdef CLIENT

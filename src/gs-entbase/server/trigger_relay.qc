@@ -104,5 +104,6 @@ trigger_relay::SpawnKey(string strKey, string strValue)
 void
 trigger_relay::trigger_relay(void)
 {
-	super::NSPointTrigger();
+	m_iTriggerState =
+	m_iEnabled = 0;
 }

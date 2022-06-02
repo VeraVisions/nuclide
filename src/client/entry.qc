@@ -66,6 +66,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 	Sentences_Init();
 	Decals_Init();
 	Way_Init();
+	Materials_Init();
 
 	/* let the menu know we're a multi or a singleplayer game */
 	if (serverkeyfloat("sv_playerslots") == 1)
@@ -694,6 +695,11 @@ CSQC_WorldLoaded(void)
 			print("^1[WARNING] ^7Bad entity data\n");
 			break;
 		}
+	}
+
+	for (entity a = world; (a = findfloat(a, ::isCSQC, TRUE));) {
+		NSEntity ent = (NSEntity)a;
+		ent.Respawn();
 	}
 
 	print("Client world initialized.\n");

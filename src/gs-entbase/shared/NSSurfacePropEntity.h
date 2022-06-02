@@ -44,6 +44,8 @@ class NSSurfacePropEntity:NSRenderableEntity
 
 	void(void) NSSurfacePropEntity;
 
+	virtual void(void) Spawned;
+
 	/* overrides */
 	virtual void(string) SetModel;
 #ifdef SERVER

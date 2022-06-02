@@ -51,5 +51,4 @@ player_weaponstrip::Trigger(entity act, int unused)
 void
 player_weaponstrip::player_weaponstrip(void)
 {
-	super::NSPointTrigger();
 }

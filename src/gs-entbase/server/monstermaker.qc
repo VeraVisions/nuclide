@@ -271,5 +271,4 @@ void
 monstermaker::monstermaker(void)
 {
 	m_flDelay = 1.0f;
-	super::NSPointTrigger();
 }

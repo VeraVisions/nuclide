@@ -102,7 +102,6 @@ env_message::SpawnKey(string strKey, string strValue)
 
 void env_message::env_message(void)
 {
-	super::NSPointTrigger();
 }
 
 void

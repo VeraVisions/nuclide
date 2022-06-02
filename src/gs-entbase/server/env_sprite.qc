@@ -56,6 +56,8 @@ class env_sprite:NSRenderableEntity
 	string m_strMaterial;
 
 	void(void) env_sprite;
+
+	virtual void(void) Spawned;
 	virtual void(entity, int) Trigger;
 	virtual float(entity, float) SendEntity;
 	virtual void(string, string) SpawnKey;
@@ -178,17 +180,19 @@ env_sprite::SpawnKey(string strKey, string strValue)
 }
 
 void
-env_sprite::env_sprite(void)
+env_sprite::Spawned(void)
 {
-	m_iIsShader = false;
-	m_flFramerate = 10;
-	m_flScale = 1.0f;
-
-	super::NSRenderableEntity();
-
 	m_iToggled = (HasSpawnFlags(ENVS_STARTON) > 0) ? TRUE : FALSE;
 
 	/* how pointless this would be otherwise. */
 	if (!targetname)
 		m_iToggled = TRUE;
+}
+
+void
+env_sprite::env_sprite(void)
+{
+	m_iIsShader = false;
+	m_flFramerate = 10;
+	m_flScale = 1.0f;
 }

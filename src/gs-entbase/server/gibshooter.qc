@@ -47,5 +47,4 @@ void gibshooter2::gibshooter2(void)
 	m_flScale = 1.0;
 
 	precache_model(m_strShootModel);
-	super::env_shooter();
 }

@@ -53,5 +53,4 @@ func_lod::Respawn(void)
 void
 func_lod::func_lod(void)
 {
-	super::NSEntity();
 }

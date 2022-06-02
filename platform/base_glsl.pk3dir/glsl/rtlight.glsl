@@ -173,7 +173,7 @@ varying vec3 lightvector;
 		diff.rgb *= vc.a;
 
 		#if defined(UPPERLOWER)
-			diff.rgb *= texture2D(s_upper, tex_c * 4.0).rgb;
+			diff.rgb *= (texture2D(s_upper, tex_c * 4.0).rgb + 0.5);
 		#endif
 
 		gl_FragColor = vec4(fog3additive(diff), vc.a);

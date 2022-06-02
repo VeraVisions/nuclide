@@ -150,8 +150,6 @@ env_shooter::SpawnKey(string strKey, string strValue)
 void
 env_shooter::env_shooter(void)
 {
-	super::NSPointTrigger();
-
 	if (!m_strShootModel) {
 		remove(this);
 	}

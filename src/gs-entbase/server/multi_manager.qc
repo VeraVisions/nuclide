@@ -78,7 +78,9 @@ multi_manager_sub::Restore(string strKey, string strValue)
 void
 multi_manager_sub::multi_manager_sub(void)
 {
-	super::NSPointTrigger();
+	m_eActivator = __NULL__;
+	m_iValue = 0;
+	m_flUntilTriggered = 0.0f;
 }
 
 class multi_manager:NSPointTrigger
@@ -87,6 +89,8 @@ class multi_manager:NSPointTrigger
 	string m_strBuffer;
 	int m_iBusy;
 	int m_iValue;
+
+	virtual void(void) Spawned;
 
 	/* overrides */
 	virtual void(entity, int) Trigger;
@@ -251,6 +255,9 @@ multi_manager::SpawnKey(string strKey, string strValue)
 	case "spawnflags":
 	case "angle":
 	case "angles":
+	case "target":
+	case "spawnflags":
+		super::SpawnKey(strKey, strValue);
 		break;
 	default:
 		if (substring(strKey, strlen(strKey) - 3,  1) == "#") {
@@ -272,13 +279,12 @@ multi_manager::SpawnKey(string strKey, string strValue)
 }
 
 void
-multi_manager::multi_manager(void)
+multi_manager::Spawned(void)
 {
 	int iFields;
 	int b;
-	m_strBuffer = "";
 
-	super::NSPointTrigger();
+	super::Spawned();
 
 	for (b = 0; b < 16; b++) {
 		m_eTriggers[b] = spawn(multi_manager_sub);
@@ -303,4 +309,15 @@ multi_manager::multi_manager(void)
 			b++;
 		}
 	}
+}
+
+void
+multi_manager::multi_manager(void)
+{
+	for (int i = 0; i < 16; i++)
+		m_eTriggers[i] = __NULL__;
+
+	m_strBuffer = __NULL__;
+	m_iBusy =
+	m_iValue = 0;
 }

@@ -146,5 +146,4 @@ void
 game_counter::game_counter(void)
 {
 	m_iStartCount = 0;
-	super::NSPointTrigger();
 }

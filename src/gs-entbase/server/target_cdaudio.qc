@@ -112,5 +112,6 @@ target_cdaudio::SpawnKey(string strKey, string strValue)
 void
 target_cdaudio::target_cdaudio(void)
 {
-	super::NSPointTrigger();
+	m_flRadius = 0.0f;
+	m_iCDTrack = 0;
 }

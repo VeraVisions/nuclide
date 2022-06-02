@@ -137,9 +137,4 @@ func_illusionary::Init(void)
 void
 func_illusionary::func_illusionary(void)
 {
-#ifdef CLIENT
-	Init();
-#else
-	super::NSRenderableEntity();
-#endif
 }

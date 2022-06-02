@@ -36,7 +36,8 @@ class func_lod:NSRenderableEntity
 	int m_iDisappearDist;
 
 	void(void) func_lod;
-	virtual void(void) Init;
+
+	virtual void(void) Spawned;
 	virtual float() predraw;
 	virtual void(string,string) SpawnKey;
 };
@@ -91,9 +92,9 @@ func_lod::SpawnKey(string strField, string strKey)
 }
 
 void
-func_lod::Init(void)
+func_lod::Spawned(void)
 {
-	super::Init();
+	super::Spawned();
 
 	precache_model(model);
 	setmodel(this, model);
@@ -107,5 +108,4 @@ func_lod::func_lod(void)
 {
 	m_iDisappearDist = 2000;
 	solid = SOLID_BSP;
-	Init();
 }

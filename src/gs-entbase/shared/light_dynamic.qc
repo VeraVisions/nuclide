@@ -88,7 +88,7 @@ class light_dynamic:NSPointTrigger
 #ifdef CLIENT
 	virtual void(float,float) ReceiveEntity;
 	virtual float(void) predraw;
-	virtual void(void) Initialized;
+	virtual void(void) Spawned;
 	virtual void(void) RendererRestarted;
 #else
 
@@ -185,7 +185,7 @@ light_dynamic::RendererRestarted(void)
 #endif
 }
 void
-light_dynamic::Initialized(void)
+light_dynamic::Spawned(void)
 {
 	/* we're meant to be a server controlled entity. cancel out and kill us ASAP */
 	if (targetname) {
@@ -383,9 +383,6 @@ light_dynamic::light_dynamic(void)
 #ifdef CLIENT
 	drawmask = MASK_ENGINE;
 #else
-
-	super::NSPointTrigger();
-
 	/* the client-side will handle dlights without targetnames */
 	if (!targetname) {
 		think = Util_Destroy;

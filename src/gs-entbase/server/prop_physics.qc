@@ -56,7 +56,6 @@ prop_physics::SpawnKey(string strKey, string strValue)
 void
 prop_physics::prop_physics(void)
 {
-	super::NSPhysicsEntity();
 }
 #else
 class prop_physics:NSRenderableEntity
@@ -75,6 +74,5 @@ prop_physics::Respawn(void)
 void
 prop_physics::prop_physics(void)
 {
-	super::NSRenderableEntity();
 }
 #endif

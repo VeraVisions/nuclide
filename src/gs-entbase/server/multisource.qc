@@ -143,5 +143,4 @@ void
 multisource::multisource(void)
 {
 	m_strGlobalState = __NULL__;
-	super::NSPointTrigger();
 }

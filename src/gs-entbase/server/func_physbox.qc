@@ -56,7 +56,6 @@ func_physbox::SpawnKey(string strKey, string strValue)
 void
 func_physbox::func_physbox(void)
 {
-	super::NSPhysicsEntity();
 }
 #else
 class func_physbox:NSSurfacePropEntity
@@ -84,7 +83,6 @@ func_physbox::Respawn(void)
 void
 func_physbox::func_physbox(void)
 {
-	super::NSSurfacePropEntity();
 }
 
 #endif

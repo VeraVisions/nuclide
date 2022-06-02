@@ -184,5 +184,8 @@ random_speaker::SpawnKey(string strKey, string strValue)
 void
 random_speaker::random_speaker(void)
 {
-	super::NSPointTrigger();
+	m_strSample = __NULL__;
+	m_flVolume = 1.0f;
+	m_flMinPos = 0.0f;
+	m_flRandPercent = 0.0f;
 }

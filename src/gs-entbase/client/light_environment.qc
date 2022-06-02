@@ -53,22 +53,14 @@ class light_environment:NSEntity
 {
 	void(void) light_environment;
 
-	virtual void(void) Init;
-	virtual void(void) Initialized;
+	virtual void(void) Respawn;
 	virtual void(string, string) SpawnKey;
 };
 
 void
-light_environment::Init(void)
+light_environment::Respawn(void)
 {
-	super::Init();
 	setorigin(this, origin);
-	drawmask = MASK_ENGINE;
-}
-
-void
-light_environment::Initialized(void)
-{
 	makevectors(g_vecSunDir);
 	cvar_set("r_shadows_throwdirection", sprintf("%v", v_forward));
 }
@@ -92,5 +84,4 @@ void
 light_environment::light_environment(void)
 {
 	solid = SOLID_NOT;
-	Init();
 }

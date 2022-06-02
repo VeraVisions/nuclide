@@ -172,5 +172,6 @@ speaker::SpawnKey(string strKey, string strValue)
 void
 speaker::speaker(void)
 {
-	super::NSTalkMonster();
+	m_strSentence = __NULL__;
+	m_flVolume = 1.0f;
 }

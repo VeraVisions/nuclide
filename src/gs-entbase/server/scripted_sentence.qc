@@ -155,5 +155,4 @@ scripted_sentence::SpawnKey(string strKey, string strValue)
 void
 scripted_sentence::scripted_sentence(void)
 {
-	super::NSPointTrigger();
 }

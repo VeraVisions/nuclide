@@ -77,6 +77,7 @@ class trigger_hurt:NSBrushTrigger
 
 	void(void) trigger_hurt;
 
+	virtual void(void) Spawned;
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
 	virtual void(entity, int) Trigger;
@@ -262,17 +263,21 @@ trigger_hurt::SpawnKey(string strKey, string strValue)
 }
 
 void
-trigger_hurt::trigger_hurt(void)
+trigger_hurt::Spawned(void)
 {
-	/* defaults */
-	m_iDamage = 15;
-	m_flNextDmg = 0.5f;
-
-	super::NSBrushTrigger();
+	super::Spawned();
 
 	if (m_strOnHurt)
 		m_strOnHurt = CreateOutput(m_strOnHurt);
 
 	if (m_strOnHurtPlayer)
 		m_strOnHurtPlayer = CreateOutput(m_strOnHurtPlayer);
+}
+
+void
+trigger_hurt::trigger_hurt(void)
+{
+	/* defaults */
+	m_iDamage = 15;
+	m_flNextDmg = 0.5f;
 }

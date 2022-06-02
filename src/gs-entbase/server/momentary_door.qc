@@ -138,5 +138,4 @@ momentary_door::SpawnKey(string strKey, string strValue)
 void
 momentary_door::momentary_door(void)
 {
-	super::NSMomentary();
 }

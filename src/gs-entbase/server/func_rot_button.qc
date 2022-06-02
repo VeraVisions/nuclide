@@ -269,5 +269,4 @@ func_rot_button::SpawnKey(string strKey, string strValue)
 void
 func_rot_button::func_rot_button(void)
 {
-	super::NSRenderableEntity();
 }

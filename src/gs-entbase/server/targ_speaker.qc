@@ -103,5 +103,4 @@ targ_speaker::Respawn(void)
 void
 targ_speaker::targ_speaker(void)
 {
-	super::NSPointTrigger();
 }

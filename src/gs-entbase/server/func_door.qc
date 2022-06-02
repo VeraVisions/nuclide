@@ -101,6 +101,8 @@ class func_door:NSRenderableEntity
 
 	void(void) func_door;
 
+	virtual void(void) Spawned;
+
 	virtual void(void) PortalOpen;
 	virtual void(void) PortalClose;
 	virtual void(void) SetMovementDirection;
@@ -638,9 +640,9 @@ func_door::SpawnKey(string strKey, string strValue)
 }
 
 void
-func_door::func_door(void)
+func_door::Spawned(void)
 {
-	super::NSRenderableEntity();
+	super::Spawned();
 
 	if (m_strSndOpen)
 		Sound_Precache(m_strSndOpen);
@@ -656,6 +658,39 @@ func_door::func_door(void)
 		Sound_Precache(m_strLockedSfx);
 	if (m_strUnlockedSfx)
 		Sound_Precache(m_strUnlockedSfx);
+}
+
+void
+func_door::func_door(void)
+{
+	m_vecPos1 =
+	m_vecPos2 =
+	m_vecDest =
+	m_vecMoveDir = [0,0,0];
+
+	m_flSpeed =
+	m_flLip =
+	m_iState =
+	m_flNextTrigger =
+	m_flWait =
+	m_flDelay = 0.0f;
+
+	m_iDamage =
+	m_iLocked =
+	m_iPortalState =
+	m_iForceClosed = 0;
+
+	m_iCanTouch = false;
+	m_flSoundWait = 0.0f;
+
+	targetClose =
+	m_strLockedSfx =
+	m_strUnlockedSfx =
+
+	m_strSndOpen =
+	m_strSndClose =
+	m_strSndMove =
+	m_strSndStop = __NULL__;
 }
 
 void

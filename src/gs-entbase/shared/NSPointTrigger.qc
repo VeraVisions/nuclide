@@ -25,5 +25,4 @@ NSPointTrigger::InitPointTrigger(void)
 void
 NSPointTrigger::NSPointTrigger(void)
 {
-	super::NSEntity();
 }

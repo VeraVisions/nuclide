@@ -40,5 +40,4 @@ class info_notnull:NSPointTrigger
 void
 info_notnull::info_notnull(void)
 {
-	super::NSPointTrigger();
 }

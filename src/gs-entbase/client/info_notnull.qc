@@ -16,5 +16,10 @@
 
 class info_notnull:NSEntity
 {
-	
+	void(void) info_notnull;
 };
+
+void
+info_notnull::info_notnull(void)
+{
+}

@@ -75,7 +75,6 @@ trigger_teleport::Respawn(void)
 void
 trigger_teleport::trigger_teleport(void)
 {
-	super::NSBrushTrigger();
 }
 
 /*QUAKED info_teleport_destination (1 0 0) (-8 -8 -8) (8 8 8)

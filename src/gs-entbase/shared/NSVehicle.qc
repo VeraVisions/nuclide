@@ -403,7 +403,6 @@ void
 NSVehicle::NSVehicle(void)
 {
 	m_eDriver = __NULL__;
-	super::NSSurfacePropEntity();
 }
 
 #ifdef CLIENT

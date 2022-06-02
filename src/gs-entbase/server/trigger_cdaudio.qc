@@ -105,5 +105,5 @@ trigger_cdaudio::SpawnKey(string strKey, string strValue)
 void
 trigger_cdaudio::trigger_cdaudio(void)
 {
-	super::NSBrushTrigger();
+	m_iCDTrack = 0;
 }

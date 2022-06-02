@@ -68,9 +68,7 @@ info_null::Respawn(void)
 void
 info_null::info_null(void)
 {
-#ifdef DEBUG_INFONULL
-		super::NSPointTrigger();
-#else
+#ifndef DEBUG_INFONULL
 		remove(self);
 #endif
 }

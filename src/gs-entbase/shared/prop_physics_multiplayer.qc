@@ -160,11 +160,6 @@ prop_physics_multiplayer::Init(void)
 void
 prop_physics_multiplayer::prop_physics_multiplayer(void)
 {
-#ifdef CLIENT
-	Init();
-#else
-	super::NSPhysicsEntity();
-#endif
 }
 
 #else
@@ -185,7 +180,6 @@ prop_physics_multiplayer::Respawn(void)
 void
 prop_physics_multiplayer::prop_physics_multiplayer(void)
 {
-	super::NSRenderableEntity();
 }
 #endif
 #endif

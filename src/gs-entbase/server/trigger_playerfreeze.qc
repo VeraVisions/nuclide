@@ -82,5 +82,4 @@ trigger_playerfreeze::Respawn(void)
 void
 trigger_playerfreeze::trigger_playerfreeze(void)
 {
-	super::NSBrushTrigger();
 }

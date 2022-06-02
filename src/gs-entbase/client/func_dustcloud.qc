@@ -41,7 +41,7 @@ class func_dustcloud:NSEntity
 	float m_flLifetimeMax;
 
 	void(void) func_dustcloud;
-	virtual void(void) Init;
+	virtual void(void) Spawned;
 	virtual float() predraw;
 	virtual void(string, string) SpawnKey;
 };
@@ -139,9 +139,9 @@ func_dustcloud::predraw(void)
 }
 
 void
-func_dustcloud::Init(void)
+func_dustcloud::Spawned(void)
 {
-	super::Init();
+	super::Spawned();
 
 	precache_model(model);
 	setmodel(this, model);
@@ -194,6 +194,4 @@ func_dustcloud::func_dustcloud(void)
 	m_vecColor = [1,1,1];
 */
 	solid = SOLID_NOT;
-
-	Init();
 }

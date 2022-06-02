@@ -247,8 +247,6 @@ light::light(void)
 	m_flStyle = 0;
 	m_flSwitchStyle = 0;
 
-	super::NSPointTrigger();
-
 	/* switch styles before 12 are builtins from Quake. */
 	if (m_flSwitchStyle > 0 && m_flSwitchStyle <= 11) {
 		m_strPattern = getlightstyle(m_flSwitchStyle);

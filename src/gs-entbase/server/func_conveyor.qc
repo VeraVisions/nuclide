@@ -165,5 +165,4 @@ func_conveyor::SpawnKey(string strKey, string strValue)
 void
 func_conveyor::func_conveyor(void)
 {
-	super::NSRenderableEntity();
 }

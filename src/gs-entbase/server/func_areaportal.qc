@@ -132,5 +132,4 @@ func_areaportal::PortalClose(void)
 void
 func_areaportal::func_areaportal(void)
 {
-	super::NSEntity();
 }

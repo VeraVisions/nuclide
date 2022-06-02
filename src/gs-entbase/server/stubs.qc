@@ -80,6 +80,12 @@ CLASSEXPORT(env_sound, info_notnull)
 CLASSEXPORT(env_sun, info_notnull)
 CLASSEXPORT(info_intermission, info_notnull)
 
+CLASSEXPORT(prop_static, info_null)
+CLASSEXPORT(func_dustmotes, info_null)
+CLASSEXPORT(env_soundscape, info_null)
+CLASSEXPORT(env_cubemap, info_null)
+CLASSEXPORT(sky_camera, info_null)
+
 void
 env_glow(void)
 {

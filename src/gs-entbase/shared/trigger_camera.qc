@@ -273,10 +273,7 @@ trigger_camera::SpawnKey(string strKey, string strValue)
 void
 trigger_camera::trigger_camera(void)
 {
-#ifdef CLIENT
-	drawmask = MASK_ENGINE;
-#else
+#ifndef CLIENT
 	m_flWait = 4.0f;
-	super::NSPointTrigger();
 #endif
 }

@@ -98,7 +98,7 @@ void CUIList::Draw(void)
 
 bool CUIList::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
-	bool ret;
+	bool ret = false;
 	int iMaxDisplay;
 	int iMouseOver = Util_MouseAbove(getmousepos(), m_parent.m_vecOrigin + m_vecOrigin, m_vecSize);
 	iMaxDisplay = bound(0, m_iItemCount, floor(m_vecSize[1] / 20));

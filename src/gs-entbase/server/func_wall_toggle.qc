@@ -85,7 +85,7 @@ func_wall_toggle::Trigger(entity act, int state)
 
 	if (m_iVisible) {
 		SetSolid(SOLID_BSP);
-		SetModelindex(m_oldmodelindex);
+		SetModel(GetSpawnModel());
 	} else {
 		SetSolid(SOLID_NOT);
 		SetModelindex(0);
@@ -124,5 +124,4 @@ func_wall_toggle::Input(entity eAct, string strInput, string strData)
 void
 func_wall_toggle::func_wall_toggle(void)
 {
-	super::NSRenderableEntity();
 }

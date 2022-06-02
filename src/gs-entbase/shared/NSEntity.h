@@ -53,6 +53,7 @@ class NSEntity:NSTrigger
 	vector m_oldOrigin;
 	vector m_oldAngle;
 	string m_oldModel;
+	float m_oldSolid;
 
 	/* keep track of these variables */
 	PREDICTED_VECTOR_N(origin);
@@ -69,6 +70,8 @@ class NSEntity:NSTrigger
 	float m_flTouchTime;
 	bool m_beingTouched;
 	entity m_eTouchLast;
+
+	virtual void(void) Spawned;
 
 #ifdef CLIENT
 	virtual void(float,float) ReceiveEntity;
@@ -87,9 +90,6 @@ class NSEntity:NSTrigger
 #endif
 
 #ifdef SERVER
-	/* respawn */
-	float m_oldSolid;
-
 	string m_parent;
 	string m_parent_attachment;
 

@@ -1010,6 +1010,28 @@ NSEntity::Destroy(void)
 		nextthink = time;
 };
 
+void
+NSEntity::Spawned(void)
+{
+	super::Spawned();
+
+	m_oldAngle = angles;
+	m_oldOrigin = origin;
+	m_oldModel = Util_FixModel(model);
+	m_oldSolid = solid;
+
+#ifdef SERVER
+	m_oldstrTarget = target;
+
+	if (m_oldModel) {
+		precache_model(GetSpawnModel());
+	}
+
+	if (m_strOnTrigger)
+		m_strOnTrigger = CreateOutput(m_strOnTrigger);
+#endif
+}
+
 /*
 ============
 NSEntity::NSEntity
@@ -1021,32 +1043,12 @@ void
 NSEntity::NSEntity(void)
 {
 #ifdef SERVER
-	/* don't call this function more than once per entity */
-	if (identity == 1)
-		return;
-
 	identity = 1; /* .identity is a global ent field we abuse to let find() calls
 			reliably know that those are NSEntity class-based */
 
-	super::NSTrigger();
-
-	m_oldSolid = solid;
 	blocked = BlockedHandler;
 	touch = TouchHandler;
-
-	/* Input/Output system */
-	m_strOnTrigger = CreateOutput(m_strOnTrigger);
-
-	m_oldstrTarget = target;
-
-	if (m_oldModel != "") {
-		precache_model(GetSpawnModel());
-	}
 #else
 	isCSQC = 1;
 #endif
-
-	m_oldAngle = angles;
-	m_oldOrigin = origin;
-	m_oldModel = Util_FixModel(model);
 }

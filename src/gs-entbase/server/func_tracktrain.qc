@@ -63,6 +63,7 @@ class func_tracktrain:NSRenderableEntity
 
 	void(void) func_tracktrain;
 
+	virtual void(void) Spawned;
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
 	virtual void(entity, int) Trigger;
@@ -348,15 +349,19 @@ func_tracktrain::SpawnKey(string strKey, string strValue)
 }
 
 void
+func_tracktrain::Spawned(void)
+{
+	super::Spawned();
+
+	if (m_strMoveSnd)
+		Sound_Precache(m_strMoveSnd);
+	if (m_strStopSnd)
+		Sound_Precache(m_strStopSnd);
+}
+
+void
 func_tracktrain::func_tracktrain(void)
 {
 	/* FIXME: This is all decided by the first path_corner pretty much */
 	m_flSpeed = 100;
-	super::NSRenderableEntity();
-
-	if (m_strMoveSnd)
-		Sound_Precache(m_strMoveSnd);
-
-	if (m_strStopSnd)
-		Sound_Precache(m_strStopSnd);
 }

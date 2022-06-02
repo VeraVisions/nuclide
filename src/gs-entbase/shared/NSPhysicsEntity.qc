@@ -716,7 +716,6 @@ NSPhysicsEntity::NSPhysicsEntity(void)
 {
 	mass = 1.0f;
 	m_flInertiaScale = 1.0f;
-	super::NSSurfacePropEntity();
 
 	cvar_set("physics_ode_iterationsperframe", "1");
 	cvar_set("physics_ode_movelimit", "0.1");

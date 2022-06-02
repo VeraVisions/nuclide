@@ -41,5 +41,4 @@ trigger_transition::Respawn(void)
 void
 trigger_transition::trigger_transition(void)
 {
-	super::NSBrushTrigger();
 }

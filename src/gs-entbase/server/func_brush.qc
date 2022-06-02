@@ -130,5 +130,4 @@ func_brush::Respawn(void)
 void
 func_brush::func_brush(void)
 {
-	super::NSRenderableEntity();
 }

@@ -128,9 +128,4 @@ func_wall::Init(void)
 void
 func_wall::func_wall(void)
 {
-#ifdef CLIENT
-	Init();
-#else
-	super::NSRenderableEntity();
-#endif
 }

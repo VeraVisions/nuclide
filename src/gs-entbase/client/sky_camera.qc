@@ -62,7 +62,6 @@ void
 sky_camera::sky_camera(void)
 {
 	g_skyscale = 16;
-	Init();
 }
 
 void

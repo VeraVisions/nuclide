@@ -93,12 +93,14 @@ item_pickup::Respawn(void)
 }
 
 void
-item_pickup::item_pickup(void)
+item_pickup::Spawned(void)
 {
 #ifdef WASTES
 	Sound_Precache("item_weapon.pickup");
 #endif
+}
 
-	super::NSRenderableEntity();
-	Respawn();
+void
+item_pickup::item_pickup(void)
+{
 }

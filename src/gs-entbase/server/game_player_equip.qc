@@ -155,5 +155,4 @@ game_player_equip::SpawnKey(string strKey, string strValue)
 void
 game_player_equip::game_player_equip(void)
 {
-	super::NSPointTrigger();
 }

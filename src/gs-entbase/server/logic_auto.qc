@@ -66,6 +66,7 @@ class logic_auto:NSPointTrigger
 	void(void) logic_auto;
 
 	/* overrides */
+	virtual void(void) Spawned;
 	virtual void(float) Save;
 	virtual void(string, string) Restore;
 	virtual void(void) Respawn;
@@ -204,11 +205,9 @@ logic_auto::SpawnKey(string strKey, string strValue)
 }
 
 void
-logic_auto::logic_auto(void)
+logic_auto::Spawned(void)
 {
-	m_iFromSaveGame = 0;
-
-	super::NSPointTrigger();
+	super::Spawned();
 
 	if (m_strOnMapSpawn)
 		m_strOnMapSpawn = CreateOutput(m_strOnMapSpawn);
@@ -224,4 +223,10 @@ logic_auto::logic_auto(void)
 		m_strOnMultiNewMap = CreateOutput(m_strOnMultiNewMap);
 	if (m_strOnMultiNewRound)
 		m_strOnMultiNewRound = CreateOutput(m_strOnMultiNewRound);
+}
+
+void
+logic_auto::logic_auto(void)
+{
+	m_iFromSaveGame = 0;
 }

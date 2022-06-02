@@ -90,5 +90,5 @@ trigger_changetarget::SpawnKey(string strKey, string strValue)
 void
 trigger_changetarget::trigger_changetarget(void)
 {
-	super::NSPointTrigger();
+	m_strNewTarget = __NULL__;
 }

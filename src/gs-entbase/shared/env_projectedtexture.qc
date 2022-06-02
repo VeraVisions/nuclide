@@ -323,9 +323,7 @@ env_projectedtexture::Respawn(void)
 void
 env_projectedtexture::env_projectedtexture(void)
 {
-#ifdef CLIENT
-	drawmask = MASK_ENGINE;
-#else
+#ifndef CLIENT
 	m_strPattern = "z";
 	m_vecLight = [255,255,255];
 	m_flIntensity = 512;
@@ -333,8 +331,6 @@ env_projectedtexture::env_projectedtexture(void)
 	m_flNearZ = 0;
 	m_strTextureName = "textures/flashlight";
 	m_flFOV = 90;
-
-	super::NSPointTrigger();
 
 	if (m_flStyle > 0 && m_flStyle < 12)
 		m_strPattern = getlightstyle(m_flStyle);

@@ -236,5 +236,4 @@ func_mortar_field::SpawnKey(string strKey, string strValue)
 void
 func_mortar_field::func_mortar_field(void)
 {
-	super::NSBrushTrigger();
 }
