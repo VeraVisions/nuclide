@@ -215,6 +215,7 @@ env_glow::Respawn(void)
 void
 env_glow::Spawned(void)
 {
+	super::Spawned();
 	RendererRestarted();
 }
 
