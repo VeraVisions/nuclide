@@ -108,4 +108,5 @@ func_lod::func_lod(void)
 {
 	m_iDisappearDist = 2000;
 	solid = SOLID_BSP;
+	isCSQC = true;
 }

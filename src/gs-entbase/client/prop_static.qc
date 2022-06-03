@@ -67,4 +67,5 @@ prop_static::Spawned(void)
 void
 prop_static::prop_static(void)
 {
+	isCSQC = true;
 }

@@ -226,4 +226,5 @@ env_glow::env_glow(void)
 	m_flMaxAlpha = 1.0f;
 	m_vecColor = [1,1,1];
 	drawmask = MASK_GLOWS;
+	isCSQC = true;
 }

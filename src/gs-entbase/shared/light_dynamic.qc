@@ -84,11 +84,11 @@ class light_dynamic:NSPointTrigger
 
 	void(void) light_dynamic;
 	virtual void(string, string) SpawnKey;
+	virtual void(void) Spawned;
 
 #ifdef CLIENT
 	virtual void(float,float) ReceiveEntity;
 	virtual float(void) predraw;
-	virtual void(void) Spawned;
 	virtual void(void) RendererRestarted;
 #else
 
@@ -137,6 +137,7 @@ light_dynamic::ReceiveEntity(float flNew, float flFlags)
 		origin[1] = readcoord();
 		origin[2] = readcoord();
 		setorigin(this, origin);
+		print(sprintf("received %v\n", origin));
 	}
 
 	if (flFlags & DLIGHTFL_CHANGED_ANGLES) {
@@ -184,17 +185,6 @@ light_dynamic::RendererRestarted(void)
 		dynamiclight_set(p, LFIELD_STYLESTRING, m_strPattern);
 #endif
 }
-void
-light_dynamic::Spawned(void)
-{
-	/* we're meant to be a server controlled entity. cancel out and kill us ASAP */
-	if (targetname) {
-		Destroy();
-		return;
-	}
-
-	RendererRestarted();
-}
 #else
 void
 light_dynamic::EvaluateEntity(void)
@@ -240,6 +230,7 @@ light_dynamic::SendEntity(entity ePEnt, float flFlags)
 		WriteCoord(MSG_ENTITY, origin[0]);
 		WriteCoord(MSG_ENTITY, origin[1]);
 		WriteCoord(MSG_ENTITY, origin[2]);
+		print(sprintf("sending %v\n", origin));
 	}
 
 	if (flFlags & DLIGHTFL_CHANGED_ANGLES) {
@@ -323,6 +314,7 @@ light_dynamic::Input(entity eAct, string strInput, string strData)
 		super::Input(eAct, strInput, strData);
 	}
 }
+
 void
 light_dynamic::Respawn(void)
 {
@@ -330,7 +322,6 @@ light_dynamic::Respawn(void)
 	SetSize([-16,-16,-16], [16,16,16]);
 	SetOrigin(GetSpawnOrigin());
 	SetAngles(GetSpawnAngles());
-
 	m_iState = (m_iStartActive == 1) ? 1 : 0;
 }
 #endif
@@ -374,14 +365,18 @@ light_dynamic::SpawnKey(string strKey, string strValue)
 }
 
 void
-light_dynamic::light_dynamic(void)
+light_dynamic::Spawned(void)
 {
-	m_vecLight = [255,255,255];
-	m_flDistance = 256;
-	m_iStartActive = 1;
+	super::Spawned();
 
 #ifdef CLIENT
-	drawmask = MASK_ENGINE;
+	/* we're meant to be a server controlled entity. cancel out and kill us ASAP */
+	if (isCSQC == true && targetname) {
+		Destroy();
+		return;
+	}
+
+	RendererRestarted();
 #else
 	/* the client-side will handle dlights without targetnames */
 	if (!targetname) {
@@ -391,5 +386,29 @@ light_dynamic::light_dynamic(void)
 #endif
 }
 
+void
+light_dynamic::light_dynamic(void)
+{
+	m_vecLight = [255,255,255];
+	m_flDistance = 256;
+	m_iStartActive = 1;
+}
+
 /* compatibility for q3map users, stay safe out there */
 class dynamic_light:light_dynamic { };
+
+#ifdef CLIENT
+void
+light_dynamic_ReadEntity(float new)
+{
+	light_dynamic dl = (light_dynamic)self;
+
+	if (new) {
+		spawnfunc_light_dynamic();
+	}
+
+	dl.isCSQC = false;
+	dl.ReceiveEntity(new, readfloat());
+	dl.drawmask = MASK_GLOWS;
+}
+#endif

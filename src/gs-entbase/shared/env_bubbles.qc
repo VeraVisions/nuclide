@@ -345,6 +345,8 @@ env_bubbles::Respawn(void)
 void
 env_bubbles::Spawned(void)
 {
+	super::Spawned();
+
 	precache_model("sprites/bubble.spr");
 }
 

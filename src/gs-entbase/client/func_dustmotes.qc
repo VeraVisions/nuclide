@@ -95,4 +95,5 @@ void
 func_dustmotes::func_dustmotes(void)
 {
 	solid = SOLID_NOT;
+	isCSQC = true;
 }

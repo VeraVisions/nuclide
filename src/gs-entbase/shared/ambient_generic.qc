@@ -390,6 +390,8 @@ ambient_generic::SpawnKey(string strKey, string strValue)
 void
 ambient_generic::Spawned(void)
 {
+	super::Spawned();
+
 	precache_sound("common/null.wav");
 }
 

@@ -69,6 +69,7 @@ void
 env_cubemap::env_cubemap(void)
 {
 	m_iSize = 32;
+	isCSQC = true;
 }
 
 /*

@@ -84,4 +84,5 @@ void
 light_environment::light_environment(void)
 {
 	solid = SOLID_NOT;
+	isCSQC = true;
 }

@@ -63,6 +63,7 @@ point_message::point_message(void)
 {
 	m_flRadius = 512;
 	m_strMessage = "No message";
+	isCSQC = true;
 }
 
 int

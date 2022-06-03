@@ -210,4 +210,5 @@ func_smokevolume::func_smokevolume(void)
 	m_vecColor1 = m_vecColor2 = [0,0,0];
 
 	solid = SOLID_NOT;
+	isCSQC = true;
 }

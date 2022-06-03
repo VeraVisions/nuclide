@@ -79,6 +79,7 @@ env_soundscape::env_soundscape(void)
 	g_scapes+=1;
 	m_iID = g_scapes;
 	m_iRadius = 1024;
+	isCSQC = true;
 }
 
 void

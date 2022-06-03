@@ -194,4 +194,5 @@ func_dustcloud::func_dustcloud(void)
 	m_vecColor = [1,1,1];
 */
 	solid = SOLID_NOT;
+	isCSQC = true;
 }

@@ -436,6 +436,8 @@ func_tankmortar::SpawnKey(string strKey, string strValue)
 void
 func_tankmortar::Spawned(void)
 {
+	super::Spawned();
+
 #ifdef SERVER
 	if (m_strSpriteFlash)
 		precache_model(m_strSpriteFlash);

@@ -158,6 +158,7 @@ env_sun::SpawnKey(string strField, string strKey)
 void
 env_sun::env_sun(void)
 {
+	isCSQC = true;
 }
 
 void

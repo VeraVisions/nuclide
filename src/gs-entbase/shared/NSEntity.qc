@@ -1045,10 +1045,8 @@ NSEntity::NSEntity(void)
 #ifdef SERVER
 	identity = 1; /* .identity is a global ent field we abuse to let find() calls
 			reliably know that those are NSEntity class-based */
+#endif
 
 	blocked = BlockedHandler;
 	touch = TouchHandler;
-#else
-	isCSQC = 1;
-#endif
 }

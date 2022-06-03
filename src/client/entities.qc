@@ -99,11 +99,7 @@ Entity_EntityUpdate(float type, float new)
 		fc.ReceiveEntity(new, readfloat());
 		break;
 	case ENT_DLIGHT:
-		light_dynamic dl = (light_dynamic)self;
-		if (new) {
-			spawnfunc_light_dynamic();
-		}
-		dl.ReceiveEntity(new, readfloat());
+		light_dynamic_ReadEntity(new);
 		break;
 	case ENT_PROJECTEDTEXTURE:
 		env_projectedtexture ept = (env_projectedtexture)self;
@@ -163,14 +159,11 @@ Entities_ParseLump(void)
 			if (!eEnt.classname) {
 				break;
 			}
-			/* when we've reached the end of the lump, initialize the class! */
-			if (iClass == TRUE) {
-				eEnt.Init();
-				return (1);
-			}
+
+			__fullspawndata = "";
 
 			/* remove if we've found no valid class to go with us */
-			if (eEnt) {
+			if (eEnt && eEnt.isCSQC == false) {
 				remove(eEnt);
 			}
 			return (1);

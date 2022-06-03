@@ -111,4 +111,5 @@ void
 env_sound::env_sound(void)
 {
 	m_iRadius = 256;
+	isCSQC = true;
 }

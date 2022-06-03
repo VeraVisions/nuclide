@@ -107,4 +107,5 @@ env_particle::Respawn(void)
 
 void env_particle::env_particle(void)
 {
+	isCSQC = true;
 }
