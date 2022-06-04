@@ -137,7 +137,6 @@ light_dynamic::ReceiveEntity(float flNew, float flFlags)
 		origin[1] = readcoord();
 		origin[2] = readcoord();
 		setorigin(this, origin);
-		print(sprintf("received %v\n", origin));
 	}
 
 	if (flFlags & DLIGHTFL_CHANGED_ANGLES) {
@@ -230,7 +229,6 @@ light_dynamic::SendEntity(entity ePEnt, float flFlags)
 		WriteCoord(MSG_ENTITY, origin[0]);
 		WriteCoord(MSG_ENTITY, origin[1]);
 		WriteCoord(MSG_ENTITY, origin[2]);
-		print(sprintf("sending %v\n", origin));
 	}
 
 	if (flFlags & DLIGHTFL_CHANGED_ANGLES) {
@@ -376,7 +374,6 @@ light_dynamic::Spawned(void)
 		return;
 	}
 
-	RendererRestarted();
 #else
 	/* the client-side will handle dlights without targetnames */
 	if (!targetname) {

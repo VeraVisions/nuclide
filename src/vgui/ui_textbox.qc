@@ -104,7 +104,7 @@ bool CUITextBox::Input (float flEVType, float flKey, float flChar, float flDevID
 	if (flEVType == IE_KEYDOWN) {
 		switch (flKey) {
 		case K_MOUSE1 :
-			if (Util_MouseAbove(getmousepos(), m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
+			if (Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
 				m_iFlags |= TEXTBOX_DOWN;
 				ret = true;
 			}
@@ -131,7 +131,7 @@ bool CUITextBox::Input (float flEVType, float flKey, float flChar, float flDevID
 		}
 	} else if (flEVType == IE_KEYUP) {
 		if (flKey == K_MOUSE1) {
-			if (m_iFlags & TEXTBOX_DOWN && Util_MouseAbove(getmousepos(), m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
+			if (m_iFlags & TEXTBOX_DOWN && Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
 				m_iFlags |= TEXTBOX_FOCUS;
 			} else {
 				m_iFlags -= (m_iFlags & TEXTBOX_FOCUS);

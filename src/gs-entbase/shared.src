@@ -15,6 +15,7 @@ shared/NSVehicle.qc
 shared/NSMonster.qc
 shared/NSTalkMonster.qc
 shared/NSProjectile.qc
+shared/NSInteractiveSurface.qc
 shared/ambient_generic.qc
 shared/decals.qc
 shared/spraylogo.qc

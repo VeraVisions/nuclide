@@ -481,6 +481,21 @@ CSQC_InputEvent(float fEventType, float fKey, float fCharacter, float fDeviceID)
 		return (1);
 	}
 
+	pSeat->m_bInterfaceFocused = false;
+
+	for (entity e = world; (e = find(e, ::classname, "NSInteractiveSurface"));) {
+		vector vecPos = pSeat->m_ePlayer.origin + pSeat->m_ePlayer.view_ofs;
+		NSInteractiveSurface surf = (NSInteractiveSurface) e;
+		
+		if (surf.FocusCheck(vecPos, view_angles)) {
+			pSeat->m_bInterfaceFocused = true;
+			surf.Input(fEventType, fKey, fCharacter, fDeviceID);
+			break;
+		}
+	}
+
+	g_vecMousePos = getmousepos();
+
 	VGUI_Input(fEventType, fKey, fCharacter, fDeviceID);
 
 	if (g_vguiWidgetCount) {
@@ -515,7 +530,6 @@ CSQC_Input_Frame(void)
 		pl.ClientInputFrame();
 	}
 }
-
 
 /*
 =================

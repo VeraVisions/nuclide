@@ -100,14 +100,14 @@ bool CUIList::Input (float flEVType, float flKey, float flChar, float flDevID)
 {
 	bool ret = false;
 	int iMaxDisplay;
-	int iMouseOver = Util_MouseAbove(getmousepos(), m_parent.m_vecOrigin + m_vecOrigin, m_vecSize);
+	int iMouseOver = Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin, m_vecSize);
 	iMaxDisplay = bound(0, m_iItemCount, floor(m_vecSize[1] / 20));
 	
 	vector vecOffset = [8,8];
 	if (flEVType == IE_KEYDOWN) {
 		if (flKey == K_MOUSE1) {
 			for (int i = m_iDrawOffset; i < iMaxDisplay + m_iDrawOffset; i++) {
-				if (Util_MouseAbove(getmousepos(), m_parent.m_vecOrigin + m_vecOrigin + vecOffset, [m_vecSize[0] - 16, 20])) {
+				if (Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin + vecOffset, [m_vecSize[0] - 16, 20])) {
 					m_iSelected = i;
 					ret = true;
 				}

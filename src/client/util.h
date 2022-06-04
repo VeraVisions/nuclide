@@ -15,3 +15,5 @@ float Client_IsPlayer(NSClient cl);
 
 /* Are we in an intermission? (Match ending screen) */
 float Client_InIntermission(void);
+
+string Util_GetKeyString(string);

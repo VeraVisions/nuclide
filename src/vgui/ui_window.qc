@@ -226,11 +226,11 @@ bool CUIWindow::Input (float flEVType, float flKey, float flChar, float flDevID)
 
 	if (flEVType == IE_KEYDOWN) {
 		if (flKey == K_MOUSE1) {
-			if (m_iFlags & WINDOW_CANRESIZE && Util_MouseAbove(getmousepos(), m_vecOrigin + (m_vecSize - [16,16]), [16,16])) {
+			if (m_iFlags & WINDOW_CANRESIZE && Util_MouseAbove(g_vecMousePos, m_vecOrigin + (m_vecSize - [16,16]), [16,16])) {
 				m_iFlags |= WINDOW_RESIZING;
-			} else if (Util_MouseAbove(getmousepos(), m_vecOrigin, [m_vecSize[0] - 32, 16])) {
+			} else if (Util_MouseAbove(g_vecMousePos, m_vecOrigin, [m_vecSize[0] - 32, 16])) {
 				m_iFlags |= WINDOW_DRAGGING;
-				m_vecDragOffset = m_vecOrigin - getmousepos();
+				m_vecDragOffset = m_vecOrigin - g_vecMousePos;
 			}
 		}
 	} else if (flEVType == IE_KEYUP) {

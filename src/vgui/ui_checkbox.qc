@@ -113,14 +113,14 @@ bool CUICheckbox::Input (float flEVType, float flKey, float flChar, float flDevI
 
 	if (flEVType == IE_KEYDOWN) {
 		if (flKey == K_MOUSE1) {
-			if (Util_MouseAbove(getmousepos(), m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
+			if (Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
 				m_iFlags |= CHECKBOX_DOWN;
 				ret = true;
 			}
 		}
 	} else if (flEVType == IE_KEYUP) {
 		if (flKey == K_MOUSE1) {
-			if (m_iFlags & CHECKBOX_DOWN && Util_MouseAbove(getmousepos(), m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
+			if (m_iFlags & CHECKBOX_DOWN && Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
 				SetValue(!GetValue());
 				ret = true;
 			}

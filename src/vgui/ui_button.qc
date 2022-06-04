@@ -198,7 +198,7 @@ CUIButton::Input(float flEVType, float flKey, float flChar, float flDevID)
 	if (flEVType == IE_KEYDOWN) {
 		if (flKey == K_MOUSE1) {
 			FlagRemove(BUTTON_LASTACTIVE);
-			if (Util_MouseAbove(getmousepos(), m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
+			if (Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
 				FlagAdd(BUTTON_DOWN);
 				FlagAdd(BUTTON_LASTACTIVE);
 				ret = true;
@@ -206,7 +206,7 @@ CUIButton::Input(float flEVType, float flKey, float flChar, float flDevID)
 		}
 	} else if (flEVType == IE_KEYUP) {
 		if (flKey == K_MOUSE1) {
-			if (m_iFlags & BUTTON_DOWN && Util_MouseAbove(getmousepos(), m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
+			if (m_iFlags & BUTTON_DOWN && Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
 				if (m_vFunc)
 					m_vFunc();
 				if (m_strExec)

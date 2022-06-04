@@ -181,7 +181,7 @@ NSClientPlayer::ClientInputFrame(void)
 	}
 
 	/* If we are inside a VGUI, don't let the client do stuff outside */
-	if (VGUI_Active()) {
+	if (VGUI_Active() || pSeat->m_bInterfaceFocused) {
 		input_impulse = 0;
 		input_buttons = 0;
 		return;

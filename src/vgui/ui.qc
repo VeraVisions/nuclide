@@ -53,6 +53,8 @@ class CUIWidget
 	CUIWidget m_parent;
 	int m_iFlags;
 
+	void(void) CUIWidget;
+
 	virtual void(CUIWidget) Add;
 	virtual void(int) FlagAdd;
 	virtual void(int) FlagRemove;
@@ -63,6 +65,7 @@ class CUIWidget
 	virtual void(void) Draw;
 	virtual void(void) Reposition;
 	virtual bool(float, float, float, float) Input;
+	virtual void(void) Spawned;
 };
 
 void
@@ -177,6 +180,17 @@ CUIWidget::Input(float flEVType, float flKey, float flChar, float flDevID)
 }
 
 void
+CUIWidget::Spawned(void)
+{
+}
+
+void
+CUIWidget::CUIWidget(void)
+{
+	Spawned();
+}
+
+void
 UISystem_Init(void)
 {
 	/* we support fancier stuff in non-classic mode */
@@ -215,4 +229,25 @@ UISystem_Init(void)
 	precache_pic("textures/ui/steam/icon_down");
 	precache_pic("textures/ui/steam/icon_up");
 	precache_pic("textures/ui/steam/icon_close");
+}
+
+CUIWidget
+UIClass_Spawn(string cname)
+{
+	string func = strcat("spawnfunc_", cname);
+
+	if (isfunction(func)) {
+		entity oldself = self;
+		void(void) vFunc;
+		vFunc = externvalue(-2, func);
+		CUIWidget new_uiclass = spawn(CUIWidget);
+		self = new_uiclass;
+		vFunc();
+		self = oldself;
+		return (new_uiclass);
+	} else {
+		error("UIClass_Spawn: failed loading designated UI class\n");
+	}
+
+	return __NULL__;
 }

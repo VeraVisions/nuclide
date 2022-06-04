@@ -31,3 +31,32 @@ Client_IsPlayer(NSClient cl)
 {
 	return cl.IsPlayer();
 }
+
+/*
+=================
+Util_GetKeyString
+=================
+*/
+string
+Util_GetKeyString(string strBind)
+{
+	float flBindKey = tokenize(findkeysforcommand(strBind));
+	string strBindTx = "";
+	float j, k;
+	
+	for (j = 0; j < flBindKey; ++j) {
+		k = stof(argv(j));
+
+		if (k != -1) {
+			if (strBindTx != "")
+				strBindTx = strcat(strBindTx, ", ");
+
+			strBindTx = strcat(strBindTx, keynumtostring(k));
+		}
+	}
+
+	if (!strBindTx)
+		strBindTx = "UNBOUND";
+
+	return strtoupper(strBindTx);
+}

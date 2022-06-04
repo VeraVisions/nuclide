@@ -239,4 +239,8 @@ struct
 
 	/* new XR helpers */
 	bool m_bMoveForward;
+
+	bool m_bInterfaceFocused;
 } g_seats[4], *pSeat;
+
+var vector g_vecMousePos;

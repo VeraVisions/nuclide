@@ -176,26 +176,26 @@ bool CUIScrollbar::Input (float flEVType, float flKey, float flChar, float flDev
 	
 	if (flEVType == IE_KEYDOWN) {
 		if (flKey == K_MOUSE1) {
-			if (Util_MouseAbove(getmousepos(), vecUpPos, [20,20])) {
+			if (Util_MouseAbove(g_vecMousePos, vecUpPos, [20,20])) {
 				m_iFlags |= SCROLLBAR_UP_DOWN;
 				ret = true;
-			} else if (Util_MouseAbove(getmousepos(), vecDownPos, [20,20])) {
+			} else if (Util_MouseAbove(g_vecMousePos, vecDownPos, [20,20])) {
 				m_iFlags |= SCROLLBAR_DN_DOWN;
 				ret = true;
 			}
 		}
 	} else if (flEVType == IE_KEYUP) {
 		if (flKey == K_MOUSE1) {
-			if (m_iFlags & SCROLLBAR_UP_DOWN && Util_MouseAbove(getmousepos(), vecUpPos, [20,20])) {
+			if (m_iFlags & SCROLLBAR_UP_DOWN && Util_MouseAbove(g_vecMousePos, vecUpPos, [20,20])) {
 				SetValue(GetValue() - GetStep(), TRUE);
-			} else if (m_iFlags & SCROLLBAR_DN_DOWN && Util_MouseAbove(getmousepos(), vecDownPos, [20,20])) {
+			} else if (m_iFlags & SCROLLBAR_DN_DOWN && Util_MouseAbove(g_vecMousePos, vecDownPos, [20,20])) {
 				SetValue(GetValue() + GetStep(), TRUE);
 			}
 			m_iFlags -= (m_iFlags & SCROLLBAR_UP_DOWN);
 			m_iFlags -= (m_iFlags & SCROLLBAR_DN_DOWN);
-		} else if (flKey == K_MWHEELDOWN && Util_MouseAbove(getmousepos(), m_parent.m_vecOrigin + m_vecOrigin, [20, m_iLength])) {
+		} else if (flKey == K_MWHEELDOWN && Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin, [20, m_iLength])) {
 			SetValue(GetValue() + GetStep(), TRUE);
-		} else if (flKey == K_MWHEELUP && Util_MouseAbove(getmousepos(), m_parent.m_vecOrigin + m_vecOrigin, [20, m_iLength])) {
+		} else if (flKey == K_MWHEELUP && Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin, [20, m_iLength])) {
 			SetValue(GetValue() - GetStep(), TRUE);
 		}
 	}

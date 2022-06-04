@@ -182,6 +182,8 @@ env_sprite::SpawnKey(string strKey, string strValue)
 void
 env_sprite::Spawned(void)
 {
+	super::Spawned();
+
 	m_iToggled = (HasSpawnFlags(ENVS_STARTON) > 0) ? TRUE : FALSE;
 
 	/* how pointless this would be otherwise. */

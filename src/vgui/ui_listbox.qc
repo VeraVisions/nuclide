@@ -125,7 +125,7 @@ bool CUIListBox::Input (float flEVType, float flKey, float flChar, float flDevID
 	if (flEVType == IE_KEYDOWN) {
 		if (flKey == K_MOUSE1) {
 			for (int i = m_iDrawOffset; i < iMaxDisplay + m_iDrawOffset; i++) {
-				if (Util_MouseAbove(getmousepos(), m_parent.m_vecOrigin + m_vecOrigin + vecOffset, [m_vecSize[0] - 16, 20])) {
+				if (Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin + vecOffset, [m_vecSize[0] - 16, 20])) {
 					m_iSelected = i;
 					ret = true;
 				}

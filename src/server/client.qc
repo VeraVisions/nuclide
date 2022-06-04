@@ -62,3 +62,15 @@ Client_ShakeOnce(vector pos, float radius, float duration, float frequency, floa
 		multicast([0,0,0], MULTICAST_ONE);
 	}
 };
+
+void
+CSEv_TriggerTarget_s(string tname)
+{
+	if (tname)
+	for (entity a = world; (a = find(a, ::targetname, tname));) {
+		NSEntity t = (NSEntity)a;
+
+		if (t.Trigger)
+			t.Trigger(self, TRIG_TOGGLE);
+	}
+}

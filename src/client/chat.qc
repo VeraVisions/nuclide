@@ -50,11 +50,11 @@ Chat_Draw(void)
 		Font_DrawText(temppos, tempstr, g_fntChat);
 
 		tempstr = sprintf(
-			"^2Yes: %s    ^1No: %s",
-					serverkey("votes_y"),
-					serverkey("votes_n")
+			"^2Yes (%s): %s    ^1No (%s): %s",
+					Util_GetKeyString("vote yes"), serverkey("votes_y"), 
+					Util_GetKeyString("vote no"), serverkey("votes_n")
 			);
-		temppos[0] = (g_hudres[0]/2) - (stringwidth(tempstr, TRUE, [12,12]) / 2);
+		temppos[0] = (g_hudres[0]/2) - (Font_StringWidth(tempstr, TRUE, g_fntChat) / 2);
 		Font_DrawText(temppos + [0,16], tempstr, g_fntChat);
 	}
 
