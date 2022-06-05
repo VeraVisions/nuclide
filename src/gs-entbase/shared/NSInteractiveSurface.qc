@@ -234,6 +234,7 @@ NSInteractiveSurface::Spawned(void)
 
 	/* initialize UI panel here */
 	m_UIChain = spawn(CUIWidget);
+	m_UIChain.m_iFlags = 1;
 
 	child = UIClass_Spawn(m_strUIClass);
 
@@ -279,6 +280,8 @@ TestUI::TestTrigger(void)
 void
 TestUI::Spawned(void)
 {
+	super::Spawned();
+	
 	testbutton = spawn(CUIButton);
 	testbutton.SetPos([32,48]);
 	testbutton.SetTitle("Test Button!");

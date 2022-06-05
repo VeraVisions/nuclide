@@ -178,7 +178,6 @@ void CUIWindow::Show(void)
 
 void CUIWindow::Draw(void)
 {
-
 #ifdef CLASSIC_VGUI
 	drawfill(m_vecOrigin, m_vecSize, [0,0,0], 0.5);
 	drawfill(m_vecOrigin, [m_vecSize[0], 1], m_vecColor, 1.0f);

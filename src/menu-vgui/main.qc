@@ -104,6 +104,8 @@ float Menu_InputEvent ( float evtype, float scanx, float chary, float devid )
 			break;
 	}
 
+	g_vecMousePos = getmousepos();
+
 	g_uiDesktop.Input( evtype, scanx, chary, devid );
 	return (float)g_iMenuActive;
 }

@@ -30,3 +30,5 @@ var float lasttime;
 
 #define TARGET_MENU 	1
 #define TARGET_CLIENT 	2
+
+var vector g_vecMousePos;

@@ -231,6 +231,7 @@ UISystem_Init(void)
 	precache_pic("textures/ui/steam/icon_close");
 }
 
+#ifdef CLIENT
 CUIWidget
 UIClass_Spawn(string cname)
 {
@@ -251,3 +252,4 @@ UIClass_Spawn(string cname)
 
 	return __NULL__;
 }
+#endif
