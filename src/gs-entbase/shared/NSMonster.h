@@ -94,15 +94,6 @@ typedef enum {
 	ACT_FLINCH_RIGHTLEG,
 } monster_activity_e;
 
-/* if this is changed, it needs to be changed in the engine (server/sv_move.c)
- * as well. */
-typedef struct
-{
-	vector m_vecDest;
-	int m_iFlags;
-	float m_flRadius;
-} nodeslist_t;
-
 /* monster flags, these are defined by the level designers */
 typedef enumflags
 {

@@ -68,16 +68,31 @@ else
 	fi
 fi
 
-# GNU Make is _not_ make!...
 if [ "$COMPILE_OS" = "Msys" ]; then
-	MAKE=make
 	WS_CC=cc
 	WS_CXX=c++
 	WS_CFLAGS="$CFLAGS -static-libgcc -static-libstdc++"
 	WS_LDFLAGS="$LDFLAGS -lws2_32"
 	WS_LIB_EXT=dll
+fi
+
+# GNU Make is _not_ make!...
+if [ "$COMPILE_OS" = "Msys" ]; then
+	MAKE=make
+	PLATFORM=win64
 else
-	MAKE=gmake
+	if ! [ -x "$(command -v gmake)" ]
+	then
+		# only assume that Linux may not ship with a gmake... HACK!
+		if [ "$COMPILE_SYS" = "Linux" ]
+		then
+			MAKE=make
+		else
+			printf "You need to install GNU make.\n"
+		fi
+	else
+		MAKE=gmake
+	fi
 fi
 
 mkdir -p ./bin

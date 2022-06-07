@@ -1,7 +1,7 @@
 #!/bin/sh
 . ./build.cfg
 
-if [ "$SKIP_UPDATE" == "1" ]; then
+if [ "$SKIP_UPDATE" = "1" ]; then
 	BUILD_UPDATE=0
 fi
 

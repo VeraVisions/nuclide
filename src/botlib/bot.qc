@@ -192,8 +192,8 @@ bot::CheckRoute(void)
 		vecEndPos = m_vecLastNode;
 		flRadius = 128; /* destination is not a node, therefore has a virtual radius */
 	} else {
-		vecEndPos = m_pRoute[m_iCurNode].m_vecDest;
-		flRadius = m_pRoute[m_iCurNode].m_flRadius;
+		vecEndPos = m_pRoute[m_iCurNode].dest;
+		flRadius = m_pRoute[m_iCurNode].radius;
 	}
 
 	/* we need to have a sensible radius */
@@ -216,7 +216,7 @@ bot::CheckRoute(void)
 			/* if a node is flagged as jumpy, jump! */
 			if (Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_JUMP) {
 				//input_buttons |= INPUT_BUTTON2;
-				velocity = Route_GetJumpVelocity(origin, m_pRoute[m_iCurNode].m_vecDest, gravity);
+				velocity = Route_GetJumpVelocity(origin, m_pRoute[m_iCurNode].dest, gravity);
 			}
 
 			/* find the nearest usable item (func_button) and use them */
@@ -374,9 +374,9 @@ bot::RunAI(void)
 				aimpos = m_vecLastNode;
 			else {
 				if (m_iCurNode > 0 && !(Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_AIM))
-					aimpos = m_pRoute[m_iCurNode - 1].m_vecDest;
+					aimpos = m_pRoute[m_iCurNode - 1].dest;
 				else
-					aimpos = m_pRoute[m_iCurNode].m_vecDest;
+					aimpos = m_pRoute[m_iCurNode].dest;
 			}
 		} else {
 			/* aim towards the enemy */
@@ -464,7 +464,7 @@ bot::RunAI(void)
 				aimpos = m_vecLastNode;
 				//printf("going to last node\n");
 			} else {
-				aimpos = m_pRoute[m_iCurNode].m_vecDest;
+				aimpos = m_pRoute[m_iCurNode].dest;
 				//printf("going to next node\n");
 			}
 		} else {

@@ -41,6 +41,25 @@ else
 	fi
 fi
 
+# GNU Make is _not_ make!...
+if [ "$COMPILE_OS" = "Msys" ]; then
+	MAKE=make
+	PLATFORM=win64
+else
+	if ! [ -x "$(command -v gmake)" ]
+	then
+		# only assume that Linux may not ship with a gmake... HACK!
+		if [ "$COMPILE_SYS" = "Linux" ]
+		then
+			MAKE=make
+		else
+			printf "You need to install GNU make.\n"
+		fi
+	else
+		MAKE=gmake
+	fi
+fi
+
 mkdir -p ./bin
 
 if [ -f "$VVM_MAKEFILE" ]
@@ -62,10 +81,10 @@ fi
 
 if [ "$BUILD_CLEAN" -eq 1 ]
 then
-	gmake clean
+	$MAKE clean
 fi
 
-gmake -j $BUILD_PROC CC=$ENGINE_CC CXX=$ENGINE_CXX
+$MAKE -j $BUILD_PROC CC=$ENGINE_CC CXX=$ENGINE_CXX
 printf "Built vvmtool successfully.\n"
 cp -v vvmtool ../../bin/vvmtool
 printf "DONE. Built ALL components successfully.\n"

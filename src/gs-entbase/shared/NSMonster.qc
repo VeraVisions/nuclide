@@ -400,7 +400,7 @@ NSMonster::CheckRoute(void)
 		evenpos = m_vecLastNode;
 		evenpos[2] = origin[2];
 	} else {
-		evenpos = m_pRoute[m_iCurNode].m_vecDest;
+		evenpos = m_pRoute[m_iCurNode].dest;
 		evenpos[2] = origin[2];
 	}
 
@@ -503,7 +503,7 @@ NSMonster::WalkRoute(void)
 		if (m_iCurNode < 0) {
 			endangles = vectoangles(m_vecLastNode - origin);
 		} else {
-			endangles = vectoangles(m_pRoute[m_iCurNode].m_vecDest - origin);
+			endangles = vectoangles(m_pRoute[m_iCurNode].dest - origin);
 		}
 		m_vecTurnAngle[1] = endangles[1];
 		input_movevalues = [m_flSequenceSpeed, 0, 0];
@@ -560,7 +560,7 @@ NSMonster::NewRoute(vector destination)
 
 			/* run through all nodes, mark the closest direct path possible */
 			for (int i = 0; i < p.m_iNodes; i++) {
-				vector vecDest = p.m_pRoute[i].m_vecDest;
+				vector vecDest = p.m_pRoute[i].dest;
 				tracebox(p.origin, p.mins, p.maxs, vecDest, TRUE, p);
 				//traceline(p.origin, vecDest, MOVE_NORMAL, this);
 

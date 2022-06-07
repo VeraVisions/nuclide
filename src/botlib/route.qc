@@ -283,7 +283,7 @@ Route_SelectDestination(bot target)
 int
 Route_GetNodeFlags(nodeslist_t *node)
 {
-	int fl = node.m_iFlags;
+	int fl = node.linkflags;
 
 	/* to avoid random buttons being pressed */
 	if (fl < 0)
