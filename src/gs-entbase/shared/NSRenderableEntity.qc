@@ -494,6 +494,15 @@ NSRenderableEntity::RenderFXPass(void)
 		alpha = 1.0f;
 		effects = 0;
 		break;
+	case RFX_Q2PULSE:
+		drawflags = 6;
+		abslight = ((sin(time * 4) + (M_PI/2)) * 128);
+		forceshader = 0;
+		fatness = 0;
+		colormod = [1,1,1];
+		alpha = 1.0f;
+		effects = 0;
+		break;
 	default:
 		break;
 	}
