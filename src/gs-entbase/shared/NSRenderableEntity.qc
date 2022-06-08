@@ -496,7 +496,7 @@ NSRenderableEntity::RenderFXPass(void)
 		break;
 	case RFX_Q2PULSE:
 		drawflags = 6;
-		abslight = ((sin(time * 4) + (M_PI/2)) * 128);
+		abslight = ((sin(time * autocvar(rfx_q2pulse_speed, 4)) + (M_PI/2)) * autocvar(rfx_q2pulse_intensity, 128));
 		forceshader = 0;
 		fatness = 0;
 		colormod = [1,1,1];
