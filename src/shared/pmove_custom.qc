@@ -564,6 +564,9 @@ PMoveCustom_Move(void)
 void
 PMoveCustom_RunPlayerPhysics(entity target)
 {
+	if (target.movetype == MOVETYPE_NONE)
+		return;
+
 	entity oldself = self;
 	self = target;
 
@@ -595,10 +598,13 @@ PMoveCustom_RunPlayerPhysics(entity target)
 void
 PMoveCustom_RunCrouchPhysics(entity target)
 {
+	if (target.movetype == MOVETYPE_NONE)
+		return;
+
 	int iFixCrouch = FALSE;
 	if (input_buttons & INPUT_BUTTON8) {
 		target.flags |= FL_CROUCHING;
-	} else {
+	} else {	
 		// If we aren't holding down duck anymore and 'attempt' to stand up, prevent it
 		if (target.flags & FL_CROUCHING) {
 			if (PMove_IsStuck(target, [0,0,36], PHY_HULL_MIN, PHY_HULL_MAX) == FALSE) {
