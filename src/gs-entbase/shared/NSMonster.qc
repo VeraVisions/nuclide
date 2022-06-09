@@ -182,7 +182,7 @@ NSMonster::SeeThink(void)
 
 	/* a horse type monster always knows where the nearest player is */
 	if (m_iFlags & MSF_HORDE) {
-		m_eEnemy = Entity_FindClosest(this, "player");
+		m_eEnemy = NSMonster_FindClosestPlayer(this);
 
 		if (m_eEnemy)
 			NewRoute(m_eEnemy.origin);
@@ -1120,5 +1120,28 @@ NSMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
 	}
 
 	g_monsteralert_timer = time + 0.5f;
+}
+
+entity NSMonster_FindClosestPlayer(entity target) {
+	entity best = world;
+	float bestdist;
+	float dist;
+
+	bestdist = 9999999;
+
+	for (entity e = world; (e = find(e, classname, "player"));) {
+		/* hack: don't ever return dead players. they're invisible. */
+		if (e.health <= 0)
+			continue;
+
+		dist = vlen(target.origin - e.origin);
+
+		if (dist < bestdist) {
+			bestdist = dist;
+			best = e;
+		}
+	}
+
+	return best;
 }
 #endif
