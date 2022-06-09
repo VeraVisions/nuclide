@@ -62,6 +62,10 @@ entity Entity_FindClosest(entity target, string cname) {
 	bestdist = 9999999;
 
 	for (entity e = world; (e = find(e, classname, cname));) {
+		/* hack: don't ever return dead players. they're invisible. */
+		if (cname == "player" && e.health <= 0)
+			continue;
+
 		dist = vlen(target.origin - e.origin);
 
 		if (dist < bestdist) {
