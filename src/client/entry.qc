@@ -504,7 +504,7 @@ CSQC_InputEvent(float fEventType, float fKey, float fCharacter, float fDeviceID)
 		setcursormode(FALSE, "gfx/cursor", [0,0,0], 1.0f);
 	}
 
-	if (VGUI_Active())
+	if (VGUI_Active() && !(fEventType == IE_KEYDOWN && fCharacter == K_ESCAPE))
 		return (1);
 	else
 		return (0);
