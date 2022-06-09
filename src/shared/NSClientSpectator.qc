@@ -450,6 +450,7 @@ NSClientSpectator::PostFrame(void)
 void
 NSClientSpectator::NSClientSpectator(void)
 {
+	flags |= FL_CLIENT;
 }
 
 #ifdef CLIENT

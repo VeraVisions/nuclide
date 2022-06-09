@@ -263,10 +263,17 @@ CSQC_UpdateView(float w, float h, float focus)
 			spec = (NSClientSpectator)self;
 
 			if (spec.spec_mode == SPECMODE_FIRSTPERSON || spec.spec_mode == SPECMODE_THIRDPERSON) {
+				NSClientPlayer spec_target;
 				c = findfloat(world, ::entnum, spec.spec_ent);
+				spec_target = (NSClientPlayer)c;
 				pSeat->m_vecPredictedOrigin = c.origin;
 				pSeat->m_vecPredictedVelocity = c.velocity;
 				pSeat->m_flPredictedFlags = c.flags;
+
+				if (spec.spec_mode == SPECMODE_FIRSTPERSON)
+					setproperty(VF_AFOV, cvar("fov") * spec_target.viewzoom);
+				else
+					setproperty(VF_AFOV, cvar("fov"));
 			} else {
 				pSeat->m_vecPredictedOrigin = spec.origin;
 				pSeat->m_vecPredictedVelocity = spec.velocity;

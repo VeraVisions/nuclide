@@ -85,6 +85,7 @@ NSClient::predraw(void)
 void
 NSClient::NSClient(void)
 {
+	flags |= FL_CLIENT;
 	XR_Init(this);
 }
 

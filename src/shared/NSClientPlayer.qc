@@ -980,5 +980,6 @@ NSClientPlayer::InputUse_Up(void)
 void
 NSClientPlayer::NSClientPlayer(void)
 {
+	flags |= FL_CLIENT;
 	vehicle = __NULL__;
 }
