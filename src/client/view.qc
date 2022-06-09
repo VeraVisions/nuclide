@@ -207,10 +207,18 @@ View_DrawViewModel(void)
 
 	/* now apply the scale hack */
 	m_eViewModelL.scale = m_eViewModel.scale = autocvar_r_viewmodelscale;
-	m_eViewModelL.origin = pl.m_xrInputLeft.GetOrigin();
-	m_eViewModel.origin = pl.m_xrInputRight.GetOrigin();
 
-	if (XR_Available(pl)) {
+	if (Client_IsSpectator(cl)) {
+		m_eViewModelL.origin = getproperty(VF_ORIGIN);
+		m_eViewModel.origin = getproperty(VF_ORIGIN);
+		m_eViewModel.angles = pl.v_angle;
+		m_eViewModelL.angles = pl.v_angle;
+	} else {
+		m_eViewModelL.origin = pl.m_xrInputLeft.GetOrigin();
+		m_eViewModel.origin = pl.m_xrInputRight.GetOrigin();
+	}
+
+	if (XR_Available(pl) && !Client_IsSpectator(cl)) {
 		m_eViewModel.angles = pl.m_xrInputRight.GetAngles();
 		m_eViewModelL.angles = pl.m_xrInputLeft.GetAngles();
 	} else {
