@@ -22,9 +22,9 @@
 
 enumflags
 {
-	AF_RIGHT,
-	AF_TOP,
 	AF_LEFT,
+	AF_TOP,
+	AF_RIGHT,
 	AF_BOTTOM
 };
 

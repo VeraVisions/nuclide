@@ -24,6 +24,7 @@ var float g_chattime;
 var int g_chatlines = -1;
 string g_chatbuffer[CHAT_LINES];
 font_s g_fntChat;
+string g_chatbuffer_final;
 
 void
 Chat_Init(void)
@@ -62,7 +63,7 @@ Chat_Draw(void)
 		return;
 
 	g_chatpos[0] = g_hudmins[0] + 16;
-	g_chatpos[1] = g_hudmins[1] + g_hudres[1] - 128;
+	g_chatpos[1] = g_hudmins[1] + (g_hudres[1] / 2) - 80;
 
 	if (g_chatlines < 0) {
 		return;
@@ -82,10 +83,7 @@ Chat_Draw(void)
 		g_chattime = time + CHAT_TIME;
 	}
 
-	for (i = 0; i < CHAT_LINES; i++) {
-		Font_DrawText([g_chatpos[0],g_chatpos[1]], g_chatbuffer[i], g_fntChat);
-		g_chatpos[1] += 14;
-	}
+	Font_DrawField([g_chatpos[0],g_chatpos[1]], [g_hudres[0]/2,g_hudres[1]/2], g_chatbuffer_final, g_fntChat, AF_LEFT | AF_BOTTOM);
 }
 
 /*
@@ -111,6 +109,15 @@ Chat_Parse(string msg)
 		return;
 
 	localsound("misc/talk.wav");
+
+	g_chatbuffer_final = "";
+
+	for (int i = 0; i < CHAT_LINES; i++) {
+		if (i == 0)
+			g_chatbuffer_final = g_chatbuffer[i];
+		else
+			g_chatbuffer_final = sprintf("%s\n%s", g_chatbuffer_final, g_chatbuffer[i]);
+	}
 
 	/* log to client console */
 	print(msg);
