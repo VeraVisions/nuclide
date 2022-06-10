@@ -174,6 +174,13 @@ then
 	printf "Built the Source Engine plugin successfully.\n\n"
 fi
 
+if [ "$BUILD_QUAKE3" -eq 1 ]
+then
+	CC=$ENGINE_CC CXX=$ENGINE_CXX $MAKE -j $BUILD_PROC plugins-rel NATIVE_PLUGINS="quake3"
+	find ./release/ -name 'fteplug_quake3_*.so' -exec cp -prv '{}' '../../../bin/' ';'
+	printf "Built the Quake III plugin successfully.\n\n"
+fi
+
 if [ "$BUILD_BULLET" -eq 1 ]
 then
 	CC=$ENGINE_CC CXX=$ENGINE_CXX $MAKE -j $BUILD_PROC plugins-rel NATIVE_PLUGINS="bullet"
