@@ -172,20 +172,26 @@ NSTraceAttack::Fire(void)
 		vecDir += random(-1,1) * m_vecSpread[0] * v_right;
 		vecDir += random(-1,1) * m_vecSpread[1] * v_up;
 #else
-		player pl = (player) m_eOwner;
+		/* FOR NOW Monsters will not be able to do spread like players if patterns are enabled */
+		if (!(flags & FL_CLIENT)) {
+			vecDir += random(-1,1) * m_vecSpread[0] * v_right;
+			vecDir += random(-1,1) * m_vecSpread[1] * v_up;
+		} else {
+			player pl = (player) m_eOwner;
 
-		/* weapons have already applied their multiplier... so attempt this */
-		int multiplier = pl.cs_shotmultiplier - m_iShots;
-		float frand = (multiplier / 6);
+			/* weapons have already applied their multiplier... so attempt this */
+			int multiplier = pl.cs_shotmultiplier - m_iShots;
+			float frand = (multiplier / 6);
 
-		/* shoddy attempt at spray patterns */
-		if (frand < 1)
-			frand = frand;
-		else if (frand <= 2)
-			frand = 2 - (frand * 1.5);
+			/* shoddy attempt at spray patterns */
+			if (frand < 1)
+				frand = frand;
+			else if (frand <= 2)
+				frand = 2 - (frand * 1.5);
 
-		vecDir += frand * m_vecSpread[0] * v_right;
-		vecDir += (m_vecSpread[1] * v_up) * 2;
+			vecDir += frand * m_vecSpread[0] * v_right;
+			vecDir += (m_vecSpread[1] * v_up) * 2;
+		}
 #endif
 		_FireSingle(m_vecOrigin, vecDir, m_flDamage, m_flRange);
 		m_iShots--;

@@ -412,7 +412,7 @@ prop_vehicle_driveable_wheel::Accel(float flMoveTime, float m_flTurn)
 			if (trace_ent.takedamage) {
 				NSSurfacePropEntity foo = (NSSurfacePropEntity)trace_ent;
 				Damage_Apply(foo, vehParent.m_eDriver, iImpactDamage, 0, DMG_VEHICLE);
-				print(sprintf("Delivering %i impact damage\n", iImpactDamage));
+				//print(sprintf("Delivering %i impact damage\n", iImpactDamage));
 			}
 #endif
 		}
@@ -762,8 +762,6 @@ prop_vehicle_driveable::ReceiveEntity(float flSendFlags, float flNew)
 		velocity = [0,0,0];
 		RunVehiclePhysics();
 		customphysics = Physics;
-
-		print(sprintf("%v\n", origin));
 	}
 
 	PredictPreFrame();
@@ -794,7 +792,6 @@ prop_vehicle_driveable::EvaluateEntity(void)
 		SetSendFlags(VEHFL_DRIVER);
 	if (ATTR_CHANGED(flags))
 		SetSendFlags(VEHFL_FLAGS);
-
 
 	SAVE_STATE(origin);
 	SAVE_STATE(angles);
