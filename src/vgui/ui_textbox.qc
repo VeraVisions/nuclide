@@ -101,43 +101,44 @@ bool CUITextBox::Input (float flEVType, float flKey, float flChar, float flDevID
 {
 	bool ret = false;
 
-	if (flEVType == IE_KEYDOWN) {
-		switch (flKey) {
-		case K_MOUSE1 :
+	switch (flKey) {
+	case K_MOUSE1 :
+		if (flEVType == IE_KEYDOWN) {
 			if (Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
 				m_iFlags |= TEXTBOX_DOWN;
 				ret = true;
 			}
-			break;
-		case K_BACKSPACE:
-			if (m_iFlags & TEXTBOX_FOCUS) {
-				m_strText = substring(m_strText, 0, strlen(m_strText) - 1);
-			}
-			break;
-		case K_ENTER:
-			break;
-		default:
-			if (m_iFlags & TEXTBOX_FOCUS) {
-#if 0
-				if ((flChar >= 48 && flChar <= 57) || (flChar >= 65 && flChar <= 90) || (flChar >= 97 && flChar <= 122)) {
-					m_strText = sprintf("%s%s", m_strText, chr2str(flChar));
-				}
-#else
-				if ((flChar >= 32 && flChar <= 125)) {
-					m_strText = sprintf("%s%s", m_strText, chr2str(flChar));
-				}
-#endif
-			}
-		}
-	} else if (flEVType == IE_KEYUP) {
-		if (flKey == K_MOUSE1) {
+		} else {
 			if (m_iFlags & TEXTBOX_DOWN && Util_MouseAbove(g_vecMousePos, m_parent.m_vecOrigin + m_vecOrigin, m_vecSize)) {
 				m_iFlags |= TEXTBOX_FOCUS;
+				ret = true;
 			} else {
 				m_iFlags -= (m_iFlags & TEXTBOX_FOCUS);
 			}
 			m_iFlags -= (m_iFlags & TEXTBOX_DOWN);
 		}
+		break;
+	case K_BACKSPACE:
+			if (flEVType == IE_KEYDOWN)
+				if (m_iFlags & TEXTBOX_FOCUS)
+					m_strText = substring(m_strText, 0, strlen(m_strText) - 1);
+		break;
+	case K_ENTER:
+		break;
+	default:
+		if (m_iFlags & TEXTBOX_DOWN)
+			ret = true;
+		else if (m_iFlags & TEXTBOX_FOCUS) {
+			if ((flChar >= 32 && flChar <= 125)) {
+				if (flEVType == IE_KEYDOWN)
+					m_strText = sprintf("%s%s", m_strText, chr2str(flChar));
+				ret = true;
+			}
+			if ((flKey >= 32 && flKey <= 125)) {
+				ret = true;
+			}
+		}
 	}
+
 	return (ret);
 }

@@ -170,12 +170,13 @@ CUIWidget::Input(float flEVType, float flKey, float flChar, float flDevID)
 		wNext = tree[x].member;
 
 		if (wNext && wNext.m_iFlags & 1 && wNext.m_parent.m_iFlags & 1)
-			if (wNext.Input(flEVType, flKey, flChar, flDevID) == true)
-				return (false);
+			if (wNext.Input(flEVType, flKey, flChar, flDevID) == true) {
+				memfree(tree);
+				return (true);
+			}
 	}
 
 	memfree(tree);
-
 	return (false);
 }
 

@@ -31,17 +31,15 @@ VGUI_Draw(void)
 	return (1);
 }
 
-int
+bool
 VGUI_Input(float flEvType, float flScanX, float flCharY, float flDevID)
 {
-	g_uiDesktop.Input(flEvType, flScanX, flCharY, flDevID);
-	return (1);
+	return g_uiDesktop.Input(flEvType, flScanX, flCharY, flDevID);
 }
 
 void
 VGUI_Reposition(void)
 {
-	
 	CUIWidget wNext = g_uiDesktop;
 	do {
 		wNext = wNext.m_next;

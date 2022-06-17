@@ -503,7 +503,7 @@ CSQC_InputEvent(float fEventType, float fKey, float fCharacter, float fDeviceID)
 
 	g_vecMousePos = getmousepos();
 
-	VGUI_Input(fEventType, fKey, fCharacter, fDeviceID);
+	bool vgui_pressed = VGUI_Input(fEventType, fKey, fCharacter, fDeviceID);
 
 	if (g_vguiWidgetCount) {
 		setcursormode(TRUE, "gfx/cursor", [0,0,0], 1.0f);
@@ -511,10 +511,7 @@ CSQC_InputEvent(float fEventType, float fKey, float fCharacter, float fDeviceID)
 		setcursormode(FALSE, "gfx/cursor", [0,0,0], 1.0f);
 	}
 
-	if (VGUI_Active() && !(fEventType == IE_KEYDOWN && fCharacter == K_ESCAPE))
-		return (1);
-	else
-		return (0);
+	return (vgui_pressed);
 }
 
 /*

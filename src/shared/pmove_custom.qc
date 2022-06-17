@@ -570,9 +570,6 @@ PMoveCustom_RunPlayerPhysics(entity target)
 	entity oldself = self;
 	self = target;
 
-	self.dimension_solid = 254;
-	self.dimension_hit = 254;
-
 	if (self.maxspeed <= 0)
 		self.maxspeed = 240;
 
