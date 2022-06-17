@@ -471,9 +471,9 @@ prop_vehicle_driveable_wheel::Physics(float turnrate, float flTimeLength)
 void
 prop_vehicle_driveable_wheel::prop_vehicle_driveable_wheel(void)
 {
-	hitcontentsmaski = CONTENTBIT_SOLID | CONTENTBIT_BODY;
 	mins = [-8,-8,-35];
 	maxs = [8,8,8];
+	hitcontentsmaski = CONTENTBIT_BODY | CONTENTBITS_POINTSOLID | CONTENTBIT_VEHICLECLIP;
 }
 
 #ifdef CLIENT
@@ -873,6 +873,7 @@ prop_vehicle_driveable::prop_vehicle_driveable(void)
 	m_flStraightenFactor = 1.0f;
 	m_vecGravityDir = [0,0,-1];
 	m_iVehicleFlags |= VHF_FROZEN;
+	hitcontentsmaski = CONTENTBIT_BODY | CONTENTBITS_POINTSOLID | CONTENTBIT_VEHICLECLIP;
 
 	if (!m_eCollBox1)
 		m_eCollBox1 = spawn(NSEntity);
@@ -883,6 +884,9 @@ prop_vehicle_driveable::prop_vehicle_driveable(void)
 		m_eCollBox1.SetSize([-32,-32,0], [32,32,32]);
 		m_eCollBox2.SetSize([-32,-32,0], [32,32,32]);
 	}
+
+	m_eCollBox1.hitcontentsmaski = hitcontentsmaski;	
+	m_eCollBox2.hitcontentsmaski = hitcontentsmaski;	
 
 	if (!m_wlFL)
 		m_wlFL = spawn(prop_vehicle_driveable_wheel);

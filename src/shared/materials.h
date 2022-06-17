@@ -182,7 +182,7 @@ const int CONTENTBIT_UNUSED7		= 0x00000800i
 const int CONTENTBIT_UNUSED8		= 0x00001000i;
 const int CONTENTBIT_UNUSED9		= 0x00002000i;
 const int CONTENTBIT_FTELADDER		= 0x00004000i;	/* surfaceparm climb */
-const int CONTENTBIT_UNUSED10		= 0x00008000i;
+const int CONTENTBIT_VEHICLECLIP		= 0x00008000i;
 
 const int CONTENTBIT_PLAYERCLIP		= 0x00010000i;
 	/* surfaceParm playerclip */
