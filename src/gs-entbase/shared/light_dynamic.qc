@@ -81,15 +81,17 @@ class light_dynamic:NSPointTrigger
 	string m_strPattern;
 	int m_iState;
 	int m_iStartActive;
+	float m_light; /* our light handle */
 
 	void(void) light_dynamic;
 	virtual void(string, string) SpawnKey;
-	virtual void(void) Spawned;
 
 #ifdef CLIENT
+	virtual void(void) OnRemoveEntity;
 	virtual void(float,float) ReceiveEntity;
 	virtual float(void) predraw;
 	virtual void(void) RendererRestarted;
+	virtual void(float) LightChanged;
 #else
 
 	virtual void(entity, int) Trigger;
@@ -101,6 +103,14 @@ class light_dynamic:NSPointTrigger
 };
 
 #ifdef CLIENT
+void
+light_dynamic::OnRemoveEntity(void)
+{
+	/* this tells the engine to re-use this for a later light */
+	dynamiclight_set(m_light, LFIELD_RADIUS, 0);
+	m_light = 0;
+}
+
 float
 light_dynamic::predraw(void)
 {
@@ -116,17 +126,47 @@ light_dynamic::predraw(void)
 		R_EndPolygon();
 	}
 
-	if (!m_iState) {
-		return (PREDRAW_NEXT);
+	return (PREDRAW_NEXT);
+}
+
+void
+light_dynamic::LightChanged(float flFlags)
+{
+	/* apply our changes to the static light */
+	if (flFlags & DLIGHTFL_CHANGED_ORIGIN) {
+		dynamiclight_set(m_light, LFIELD_ORIGIN, origin);
+	}
+	if (flFlags & DLIGHTFL_CHANGED_ANGLES) {
+		dynamiclight_set(m_light, LFIELD_ANGLES, angles);
+	}
+	if (flFlags & DLIGHTFL_CHANGED_RADIUS) {
+		dynamiclight_set(m_light, LFIELD_RADIUS, m_flDistance);
 	}
 
-	float p = dynamiclight_add(origin, m_flDistance, m_vecLight, m_flStyle);
-	dynamiclight_set(p, LFIELD_ANGLES, angles);
+	/* did our state change? */
+	 if (flFlags & DLIGHTFL_CHANGED_STYLE) {
+		/* only need to bother checking for style if state didn't change */
+		dynamiclight_set(m_light, LFIELD_STYLE, m_flStyle);
+	}
 
+	if (flFlags & DLIGHTFL_CHANGED_LIGHT) {
+		dynamiclight_set(m_light, LFIELD_COLOUR, m_vecLight);
+	}
+
+	/* we always want to refresh the state */
+	if (!m_iState) {
+		/* black skips rendering */
+		dynamiclight_set(m_light, LFIELD_STYLE, 254);
+	} else {
+		dynamiclight_set(m_light, LFIELD_STYLE, m_flStyle);
+	}
+
+	/* light style pattern change */
+	if (flFlags & DLIGHTFL_CHANGED_PATTERN)
 	if (m_strPattern)
-		dynamiclight_set(p, LFIELD_STYLESTRING, m_strPattern);
-
-	return (PREDRAW_NEXT);
+		dynamiclight_set(m_light, LFIELD_STYLESTRING, m_strPattern);
+	else
+		dynamiclight_set(m_light, LFIELD_STYLESTRING, "m");
 }
 
 void
@@ -136,6 +176,7 @@ light_dynamic::ReceiveEntity(float flNew, float flFlags)
 		origin[0] = readcoord();
 		origin[1] = readcoord();
 		origin[2] = readcoord();
+		setsize(this, [0,0,0], [0,0,0]);
 		setorigin(this, origin);
 	}
 
@@ -168,21 +209,21 @@ light_dynamic::ReceiveEntity(float flNew, float flFlags)
 	if (flFlags & DLIGHTFL_CHANGED_PATTERN)
 		m_strPattern = readstring();
 
+	if (flNew) {
+		RendererRestarted();
+	} else {
+		LightChanged(flFlags);
+	}
+
 	classname = "light_dynamic";
 }
 
 void
 light_dynamic::RendererRestarted(void)
 {
-#if 1
-	float p = dynamiclight_spawnstatic(origin, m_flDistance, m_vecLight / 255);
-	dynamiclight_set(p, LFIELD_ANGLES, angles);
-	
-	if (m_flStyle)
-		dynamiclight_set(p, LFIELD_STYLE, m_flStyle);
-	if (m_strPattern)
-		dynamiclight_set(p, LFIELD_STYLESTRING, m_strPattern);
-#endif
+	OnRemoveEntity();
+	m_light = dynamiclight_spawnstatic(origin, m_flDistance, m_vecLight);
+	LightChanged(0xFFFFFFFF);
 }
 #else
 void
@@ -317,7 +358,7 @@ void
 light_dynamic::Respawn(void)
 {
 	SetSolid(SOLID_NOT);
-	SetSize([-16,-16,-16], [16,16,16]);
+	SetSize([-0,-0,-0], [0,0,0]);
 	SetOrigin(GetSpawnOrigin());
 	SetAngles(GetSpawnAngles());
 	m_iState = (m_iStartActive == 1) ? 1 : 0;
@@ -363,32 +404,15 @@ light_dynamic::SpawnKey(string strKey, string strValue)
 }
 
 void
-light_dynamic::Spawned(void)
-{
-	super::Spawned();
-
-#ifdef CLIENT
-	/* we're meant to be a server controlled entity. cancel out and kill us ASAP */
-	if (isCSQC == true && targetname) {
-		Destroy();
-		return;
-	}
-
-#else
-	/* the client-side will handle dlights without targetnames */
-	if (!targetname) {
-		think = Util_Destroy;
-		nextthink = time + 0.1f;
-	}
-#endif
-}
-
-void
 light_dynamic::light_dynamic(void)
 {
 	m_vecLight = [255,255,255];
 	m_flDistance = 256;
 	m_iStartActive = 1;
+
+#ifdef CLIENT
+	lightstyle(254, "=0");
+#endif
 }
 
 /* compatibility for q3map users, stay safe out there */
@@ -404,7 +428,6 @@ light_dynamic_ReadEntity(float new)
 		spawnfunc_light_dynamic();
 	}
 
-	dl.isCSQC = false;
 	dl.ReceiveEntity(new, readfloat());
 	dl.drawmask = MASK_GLOWS;
 }
