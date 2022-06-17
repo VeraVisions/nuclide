@@ -173,7 +173,7 @@ NSTraceAttack::Fire(void)
 		vecDir += random(-1,1) * m_vecSpread[1] * v_up;
 #else
 		/* FOR NOW Monsters will not be able to do spread like players if patterns are enabled */
-		if (!(flags & FL_CLIENT)) {
+		if (!(m_eOwner.flags & FL_CLIENT)) {
 			vecDir += random(-1,1) * m_vecSpread[0] * v_right;
 			vecDir += random(-1,1) * m_vecSpread[1] * v_up;
 		} else {
