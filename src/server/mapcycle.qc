@@ -16,9 +16,10 @@
 
 var int autocvar_mapcycle_enabled = TRUE;
 var string autocvar_mapcycle_file = "mapcycle.txt";
+var string g_mapcycle_override = __NULL__;
 
 void
-Mapcycle_Init(void)
+Mapcycle_Load(string filename)
 {
 	filestream fs_mapcycle;
 	string temp;
@@ -29,15 +30,13 @@ Mapcycle_Init(void)
 	if (!autocvar_mapcycle_enabled)
 		return;
 
-	print("--------- Initializing MapCycle ----------\n");
-
 	/*if (Rules_IsMultiplayer())
 		return;*/
 
-	fs_mapcycle = fopen(autocvar_mapcycle_file, FILE_READ);
+	fs_mapcycle = fopen(filename, FILE_READ);
 
 	if (fs_mapcycle < 0) {
-		print(strcat("^1could not load ", autocvar_mapcycle_file, "\n"));
+		print(strcat("^1could not load ", filename, "\n"));
 		return;
 	}
 
@@ -67,4 +66,12 @@ Mapcycle_Init(void)
 	readcmd(sprintf("alias nextmap m%i\n", map_next));
 
 	print(sprintf("mapcycle initialized with %i entries.\n", mapcount));
+}
+
+void
+Mapcycle_Init(void)
+{
+	print("--------- Initializing MapCycle ----------\n");
+
+	Mapcycle_Load(autocvar_mapcycle_file);
 }

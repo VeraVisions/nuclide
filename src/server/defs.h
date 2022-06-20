@@ -53,6 +53,7 @@ void Game_ServerModelEvent(float, int, string);
 void Event_ServerModelEvent(float, int, string);
 
 int Rules_IsTeamPlay(void);
+void Mapcycle_Load(string);
 
 entity eActivator;
 
