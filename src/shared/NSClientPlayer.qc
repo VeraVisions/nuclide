@@ -111,7 +111,7 @@ NSClientPlayer::ClientInput(void)
 	}
 
 	/* allow vehicles to prevent weapon logic from happening */
-	if (vehicle) {
+	if (vehicle && !Client_InIntermission()) {
 		NSVehicle veh = (NSVehicle)vehicle;
 
 		if (veh.PlayerInput)
