@@ -164,6 +164,7 @@ struct
 	float m_flEventTime;
 	float m_flEventFrame;
 	float m_flEventMdl;
+	int m_iEventWeapon;
 
 	int m_iLastWeapon;
 	int m_iOldWeapon;

@@ -67,6 +67,8 @@ View_AddEvent(void(void) pCallback, float flTime)
 	pSeat->m_flEventTime = flTime;
 	pSeat->m_flEventFrame = pSeat->m_eViewModel.frame;
 	pSeat->m_flEventMdl = pSeat->m_eViewModel.modelindex;
+	NSClientPlayer pl = (NSClientPlayer)pSeat->m_ePlayer;
+	pSeat->m_iEventWeapon = pl.activeweapon;
 }
 
 void

@@ -41,6 +41,9 @@ NSTraceAttack::_FireSingle(vector vecPos, vector vecAngles, float flDamage, floa
 	if (flRange <= 0)
 		return;
 
+	if (flDamage < 1)
+		return;
+
 	range = (vecAngles * 8196);
 
 	m_eOwner.dimension_solid = 255;
@@ -151,7 +154,7 @@ NSTraceAttack::_FireSingle(vector vecPos, vector vecAngles, float flDamage, floa
 		cont = pointcontents(trace_endpos + v_forward * m_flMaxThickness);
 
 		if (cont == CONTENT_EMPTY)
-			_FireSingle(trace_endpos + (v_forward * 2), vecAngles, m_flDamage / 2, flRange);
+			_FireSingle(trace_endpos + (v_forward * 2), vecAngles, flDamage / 2, flRange);
 	}
 #endif
 }
