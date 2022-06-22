@@ -202,6 +202,14 @@ NSEntity::EndTouch(entity eToucher)
 void
 NSEntity::TouchHandler(void)
 {
+#ifdef SERVER
+	if (g_grMode.IsTeamPlay())
+	if (m_iTeam > 0)
+	if (m_iTeam != other.team) {
+		return;
+	}
+#endif
+
 	/* start touch in case we haven't */
 	if (m_beingTouched != true)
 		StartTouch(other);
