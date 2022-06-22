@@ -45,6 +45,10 @@ NSTrigger::UseTargets(entity act, int state, float fDelay)
 		eTimer.nextthink = time + fDelay;
 		eTimer.health = state;  /* ugly */
 	} else {
+		if (m_strMessage) {
+			env_message_single(act, m_strMessage);
+		}
+
 		for (entity f = world; (f = find(f, ::targetname, target));) {
 			NSTrigger trigger = (NSTrigger)f;
 
