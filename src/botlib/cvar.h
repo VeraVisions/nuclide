@@ -21,4 +21,13 @@ var int autocvar_bot_aimless = FALSE;
 var int autocvar_nav_linksize = 256;
 var int autocvar_nav_radius = 8;
 
+typedef enum
+{
+	BOTSKILL_EASY = 1,
+	BOTSKILL_MEDIUM,
+	BOTSKILL_HARD
+} botskill_e;
+
+var botskill_e autocvar_bot_skill = 2;
+
 var string autocvar_bot_prefix = "";

@@ -93,8 +93,22 @@ bot::WeaponAttack(void)
 			input_buttons |= INPUT_BUTTON0;
 		}
 
-		if (m_wtWeaponType != WPNTYPE_FULLAUTO)
-			m_flAttackTime = time + 0.1f;
+		/* this might not affect much */
+		if (m_wtWeaponType != WPNTYPE_FULLAUTO) {
+			switch (cvar("bot_skill")) {
+			case 1:
+				m_flAttackTime = time + 0.25f;
+				break;
+			case 2:
+				m_flAttackTime = time + 0.10f;
+				break;
+			case 3:
+				m_flAttackTime = time + 0.05f;
+				break;
+			default:
+				m_flAttackTime = time + 1.0;
+			}
+		}
 	} else {
 		input_buttons &= ~INPUT_BUTTON0;
 		input_buttons &= ~INPUT_BUTTON4;

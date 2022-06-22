@@ -139,7 +139,20 @@ bot::SeeThink(void)
 	if (autocvar_bot_pacifist)
 		return;
 
-	m_flSeeTime = time + 0.25f;
+	/* reaction time, in a way */
+	switch (cvar("bot_skill")) {
+	case 1:
+		m_flSeeTime = time + 0.5f;
+		break;
+	case 2:
+		m_flSeeTime = time + 0.25f;
+		break;
+	case 3:
+		m_flSeeTime = time + 0.15f;
+		break;
+	default:
+		m_flSeeTime = time + 1.0f;
+	}
 
 	for (entity w = world; (w = findfloat(w, ::takedamage, DAMAGE_YES));) {
 		float flDot;
