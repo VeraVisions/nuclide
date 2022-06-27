@@ -26,6 +26,13 @@ void main ()
 void main ()
 {
 	vec4 d_f = texture2D( s_diffuse, tex_c );
+
+#ifdef MASK
+		// alpha-testing happens here
+		if (d_f.a < MASK)
+			discard;
+#endif
+
 	gl_FragColor = fog4( d_f );
 }
 #endif
