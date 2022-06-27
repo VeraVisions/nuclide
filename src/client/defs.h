@@ -53,6 +53,7 @@ var int autocvar_r_viewmodelpass = 0;
 var float autocvar_r_viewmodelfov = 90.0f;
 var float autocvar_r_viewmodelscale = 1.0f;
 var float autocvar_cl_hudaspect = 0.0f;
+var bool autocvar_cl_crouch_toggle = false;
 
 /* particle descriptors */
 var float PART_DUSTMOTE;
