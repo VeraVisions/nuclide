@@ -63,6 +63,7 @@ class NSRenderableEntity:NSEntity
 	virtual void(void) EvaluateEntity;
 	virtual float(entity, float) SendEntity;
 #else
+	virtual void(void) RenderDebugSkeleton;
 	virtual void(float,float) ReceiveEntity;
 	virtual float(void) predraw;
 #endif

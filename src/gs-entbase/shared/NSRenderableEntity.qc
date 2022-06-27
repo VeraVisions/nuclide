@@ -495,14 +495,6 @@ NSRenderableEntity::RenderFXPass(void)
 		effects = 0;
 		break;
 	case RFX_Q2PULSE:
-		drawflags = 6;
-		abslight = ((sin(time * autocvar(rfx_q2pulse_speed, 4)) + (M_PI/2)) * autocvar(rfx_q2pulse_intensity, 128));
-		forceshader = 0;
-		fatness = 0;
-		colormod = [1,1,1];
-		alpha = 1.0f;
-		effects = 0;
-		break;
 	default:
 		break;
 	}
@@ -623,6 +615,29 @@ NSRenderableEntity::ReceiveEntity(float flNew, float flChanged)
 
 	setorigin(this, origin);
 }
+
+void
+NSRenderableEntity::RenderDebugSkeleton(void)
+{
+	if (autocvar(r_showSkeleton, 0))
+	for (int i = 1; i < 64; i++) {
+		vector v1 = gettaginfo(this, i);
+
+		if (v1 == this.origin) {
+			continue;
+		}
+
+		makevectors(input_angles);
+		R_BeginPolygon("textures/dev/model_bone", 0, 0);
+		R_PolygonVertex(v1 + v_right * 1 - v_up * 1, [1,1], [1,1,1], 1.0f);
+		R_PolygonVertex(v1 - v_right * 1 - v_up * 1, [0,1], [1,1,1], 1.0f);
+		R_PolygonVertex(v1 - v_right * 1 + v_up * 1, [0,0], [1,1,1], 1.0f);
+		R_PolygonVertex(v1 + v_right * 1 + v_up * 1, [1,0], [1,1,1],1.0f);
+		R_EndPolygon();
+		alpha = 0.25f;
+	}
+}
+
 /*
 ============
 NSEntity::predraw
@@ -643,23 +658,7 @@ NSRenderableEntity::predraw(void)
 	RenderFXPass();
 #endif
 
-	if (autocvar(r_showSkeleton, 0))
-	for (int i = 1; i < 64; i++) {
-		vector v1 = gettaginfo(this, i);
-
-		if (v1 == this.origin) {
-			continue;
-		}
-
-		makevectors(input_angles);
-		R_BeginPolygon("textures/dev/model_bone", 0, 0);
-		R_PolygonVertex(v1 + v_right * 1 - v_up * 1, [1,1], [1,1,1], 1.0f);
-		R_PolygonVertex(v1 - v_right * 1 - v_up * 1, [0,1], [1,1,1], 1.0f);
-		R_PolygonVertex(v1 - v_right * 1 + v_up * 1, [0,0], [1,1,1], 1.0f);
-		R_PolygonVertex(v1 + v_right * 1 + v_up * 1, [1,0], [1,1,1],1.0f);
-		R_EndPolygon();
-		alpha = 0.25f;
-	}
+	RenderDebugSkeleton();
 
 	if (serverkeyfloat(SERVERKEY_PAUSESTATE) != 1)
 		frame1time += frametime;
@@ -667,8 +666,16 @@ NSRenderableEntity::predraw(void)
 	processmodelevents(modelindex, frame, m_flBaseTime,
 		frame1time, ClientGame_ModelEvent);
 
-	if (alpha > 0.0)
-		addentity(this);
+	if (alpha > 0.0) {
+		/* TODO: Move this somewhere more sane */
+		if (m_iRenderFX == RFX_Q2PULSE) {
+			float dim = ((sin(time * autocvar(rfx_q2pulse_speed, 4)) + (M_PI/2)) * autocvar(rfx_q2pulse_intensity, 1.0));
+			dim += 1.0f;
+			addentity_lighting(this, [0,0,0], [dim, dim, dim], [0,0,0], 0, 0);
+		} else {
+			addentity(this);
+		}
+	}
 
 	return (PREDRAW_NEXT);
 }
