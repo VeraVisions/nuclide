@@ -95,8 +95,6 @@ Event_Callback(float mtime, __inout float btime)
 	if (pSeat->m_flEventMdl != pSeat->m_eViewModel.modelindex)
 		return;
 
-	print(sprintf("%d %d %i\n", pSeat->m_flEventFrame, pSeat->m_flEventMdl, pSeat->m_iEventWeapon));
-
 	/* weapon changed */
 	player pl = (player)(pSeat->m_ePlayer);
 

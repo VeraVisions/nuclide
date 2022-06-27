@@ -48,6 +48,8 @@ void(float radius, vector texcoordbias) R_EndPolygonRibbon = #0;
 var int autocvar_rope_debug = FALSE;
 var float autocvar_rope_sag = 2.0;
 var float autocvar_rope_swing = 2.0;
+var bool autocvar_rope_fast = TRUE;
+var int autocvar_rope_maxsegments = -1;
 
 class prop_rope:NSEntity
 {
@@ -79,12 +81,20 @@ prop_rope::DrawSegment(vector pos1, vector pos2, vector vecPlayer)
 	vector lit1 = /*[0.1,0.1,0.1] */ getlight(pos1) / 255;
 	vector lit2 = /*[0.1,0.1,0.1] */ getlight(pos2) / 255;
 
-	makevectors(getproperty(VF_CL_VIEWANGLES));
-	setproperty(VF_ORIGIN, vecPlayer);
 	R_BeginPolygon(m_strShader, 0, 0);
 		R_PolygonVertex(pos1, [0,0], lit1, 1.0f);
 		R_PolygonVertex(pos2, [0,1], lit2, 1.0f);
 	R_EndPolygonRibbon(2, [-1,0]);
+}
+
+/* a is a value between 0.0 - 1.0, aka our progress */
+float
+ropecos(float a)
+{
+	a *= 0.5f;
+	float b = (a - 0.5f) * 2.0;
+	float c = 1.0 - b;
+	return -(b * a);
 }
 
 float
@@ -99,9 +109,6 @@ prop_rope::predraw(void)
 	pSeat = &g_seats[s];
 	vecPlayer = pSeat->m_vecPredictedOrigin;
 
-	if (checkpvs(vecPlayer, this) == FALSE)
-		return (PREDRAW_NEXT);
-
 	/* draw the start/end without segments */
 	if (autocvar_rope_debug == TRUE) {
 		R_BeginPolygon("", 0, 0);
@@ -110,33 +117,45 @@ prop_rope::predraw(void)
 		R_EndPolygon();
 	}
 
-	segments = (float)m_iSegments;
+	if (autocvar_rope_maxsegments > 0)
+		segments = bound(1, autocvar_rope_maxsegments, (float)m_iSegments);
+	else
+		segments = (float)m_iSegments;
+
 	float travel = 1.0f / segments;
 	float progress= 0.0f;
 	pos1 = origin;
+
+	makevectors(getproperty(VF_CL_VIEWANGLES));
+	setproperty(VF_ORIGIN, vecPlayer);
+
+	/* get the direction */
+	makevectors(vectoangles(m_vecTarget - origin));
 
 	for (float i = 0; i < segments; i++) {
 		float sag = 0.0f;
 		float swing = 0.0f;
 		progress += travel;
+		float c1 = ropecos(progress) * M_PI;
+		float c2 = ropecos(progress) * M_PI;
 
+		/* loose hanging rope */
 		if (flags & 1) {
-			sag = cos(M_PI * (progress * 0.5) - (M_PI/2)) * m_flSag;
-			swing = cos(M_PI * (progress * 0.5) - (M_PI/2)) * m_flSwingFactor;
+			sag = c1 * m_flSag;
+			swing = c1 * m_flSwingFactor;
 		} else {
-			sag = cos(M_PI * (progress) - (M_PI/2)) * m_flSag;
-			swing = cos(M_PI * (progress) - (M_PI/2)) * m_flSwingFactor;
+			sag = c2 * m_flSag;
+			swing = c2 * m_flSwingFactor;
 		}
-
-		/* get the direction */
-		makevectors(vectoangles(m_vecTarget - origin));
 
 		/* travel further and sag */
 		pos2[0] = Math_Lerp(origin[0], m_vecTarget[0], progress);
 		pos2[1] = Math_Lerp(origin[1], m_vecTarget[1], progress);
 		pos2[2] = Math_Lerp(origin[2], m_vecTarget[2], progress);
 		pos2 += (v_up * -sag) * autocvar_rope_sag;
-		pos2 += ((v_right * swing) * sin(time)) * autocvar_rope_swing;
+
+		if (!autocvar_rope_fast)
+			pos2 += ((v_right * swing) * sin(time)) * autocvar_rope_swing;
 
 		DrawSegment(pos1, pos2, vecPlayer);
 		pos1 = pos2;

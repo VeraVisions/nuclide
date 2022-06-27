@@ -923,6 +923,7 @@ NSClientPlayer::InputUse_Down(void)
 
 	makevectors(v_angle);
 	vecSource = origin + view_ofs;
+
 	traceline(vecSource, vecSource + (v_forward * 64), MOVE_EVERYTHING, this);
 
 	/* first see if we traced something head-on, else we'll findradius something */
