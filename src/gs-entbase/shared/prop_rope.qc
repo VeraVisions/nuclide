@@ -136,16 +136,15 @@ prop_rope::predraw(void)
 		float sag = 0.0f;
 		float swing = 0.0f;
 		progress += travel;
-		float c1 = ropecos(progress) * M_PI;
-		float c2 = ropecos(progress) * M_PI;
+		float c1 = (ropecos(progress) * M_PI) * 2.25f;
 
 		/* loose hanging rope */
 		if (flags & 1) {
 			sag = c1 * m_flSag;
 			swing = c1 * m_flSwingFactor;
 		} else {
-			sag = c2 * m_flSag;
-			swing = c2 * m_flSwingFactor;
+			sag = c1 * m_flSag;
+			swing = c1 * m_flSwingFactor;
 		}
 
 		/* travel further and sag */
