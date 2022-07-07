@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Cawthorne <marco@icculus.org>
+ * Copyright (c) 2016-2022 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -12,9 +12,9 @@
  * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
+*/
 
-/*QUAKED gibshooter (1 0 0) (-8 -8 -8) (8 8 8)
+/*QUAKED gibshooter (1 0 0) (-8 -8 -8) (8 8 8) GIBS_REPEATABLE
 Shoots model bouncy entities from its location.
 
 -------- KEYS --------
@@ -35,16 +35,22 @@ Shoots model bouncy entities from its location.
 This entity was introduced in Half-Life (1998).
 */
 
-class gibshooter2:env_shooter
+class gibshooter:env_shooter
 {
-	void(void) gibshooter2;
+	void(void) gibshooter;
+	virtual void(void) Spawned;
 };
 
-void gibshooter2::gibshooter2(void)
+void
+gibshooter::Spawned(void)
 {
+	super::Spawned();
+
 	m_strShootModel = "models/hgibs.mdl";
 	m_flShootSounds = 3;
-	m_flScale = 1.0;
-
 	precache_model(m_strShootModel);
+}
+
+void gibshooter::gibshooter(void)
+{
 }

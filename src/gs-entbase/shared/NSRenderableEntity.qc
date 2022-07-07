@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2021 Marco Cawthorne <marco@icculus.org>
+ * Copyright (c) 2016-2022 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -12,7 +12,7 @@
  * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
+*/
 
 /*
 ============
@@ -31,12 +31,10 @@ NSRenderableEntity::MakeStatic(void)
 #ifdef CLIENT
 	/* give renderFX the opportunity to write into renderable
 	 * fields at least once before forever pulling it out the cgame */
-#ifdef GS_RENDERFX
 	if (m_iRenderMode > RM_FULLBRIGHT)
 		return;
 
 	RenderFXPass();
-#endif
 
 	/* static ents = no collision, so let's make a copy for visibility */
 	if (alpha > 0.0)
@@ -114,7 +112,6 @@ NSRenderableEntity::EvaluateEntity(void)
 	SAVE_STATE(scale);
 	SAVE_STATE(velocity);
 
-#ifdef GS_RENDERFX
 	if (ATTR_CHANGED(m_iRenderMode)) {
 		SetSendFlags(RDENT_CHANGED_RENDERMODE);
 	}
@@ -132,12 +129,6 @@ NSRenderableEntity::EvaluateEntity(void)
 	SAVE_STATE(m_iRenderFX);
 	SAVE_STATE(m_vecRenderColor);
 	SAVE_STATE(m_flRenderAmt);
-#else
-	if (ATTR_CHANGED(alpha)) {
-		SetSendFlags(RDENT_CHANGED_ALPHA);
-	}
-	SAVE_STATE(alpha);
-#endif
 }
 
 /* Make sure StartFrame calls this */
@@ -188,10 +179,8 @@ NSRenderableEntity::SendEntity(entity ePEnt, float fChanged)
 			fChanged &= ~RDENT_CHANGED_SOLID;
 		if (movetype == MOVETYPE_NONE)
 			fChanged &= ~RDENT_CHANGED_MOVETYPE;
-#ifdef GS_RENDERFX
 		if (m_iRenderMode == RM_NORMAL)
 			fChanged &= ~RDENT_CHANGED_RENDERMODE;
-#endif
 	}
 #endif
 
@@ -263,7 +252,6 @@ NSRenderableEntity::SendEntity(entity ePEnt, float fChanged)
 		WriteFloat(MSG_ENTITY, velocity[2]);
 	}
 
-#ifdef GS_RENDERFX
 	if (fChanged & RDENT_CHANGED_RENDERMODE) {
 		WriteByte(MSG_ENTITY, m_iRenderMode);
 		WriteByte(MSG_ENTITY, m_iRenderFX);
@@ -280,16 +268,11 @@ NSRenderableEntity::SendEntity(entity ePEnt, float fChanged)
 	if (fChanged & RDENT_CHANGED_RENDERAMT) {
 		WriteFloat(MSG_ENTITY, m_flRenderAmt);
 	}
-#else
-	if (fChanged & RDENT_CHANGED_ALPHA) {
-		WriteFloat(MSG_ENTITY, alpha);
-	}
-#endif
 
 	return (1);
 }
 #else
-#ifdef GS_RENDERFX
+
 /*
 ============
 NSRenderableEntity::RenderFXPass
@@ -362,6 +345,8 @@ NSRenderableEntity::RenderFXPass(void)
 		alpha = (m_flRenderAmt == 0.0) ? 0.0f : 1.0f;
 		break;
 	case RM_ADDITIVE:
+		effects = EF_ADDITIVE;
+		break;
 	case RM_ADDFRAC: /* TODO: Figure out what this does differently */
 		effects = EF_ADDITIVE;
 		if (autocvar_rm_unlit_additive == 0) {
@@ -389,6 +374,7 @@ NSRenderableEntity::RenderFXPass(void)
 	case RM_DONTRENDER:
 		/* prevent addentity() from being called */
 		alpha = 0.0f;
+		break;
 	}
 
 	switch (m_iRenderFX) {
@@ -506,7 +492,7 @@ NSRenderableEntity::RenderFXPass(void)
 		glowmod[0] = 1.0f;
 	}
 }
-#endif
+
 /*
 ============
 NSRenderableEntity::ReceiveEntity
@@ -579,11 +565,11 @@ NSRenderableEntity::ReceiveEntity(float flNew, float flChanged)
 		velocity[2] = readfloat();
 	}
 
-#ifdef GS_RENDERFX
 	if (flChanged & RDENT_CHANGED_RENDERMODE) {
 		m_iRenderMode = readbyte();
 		m_iRenderFX = readbyte();
 	}
+
 	if (flChanged & RDENT_CHANGED_RENDERCOLOR) {
 		m_vecRenderColor[0] = readfloat();
 		m_vecRenderColor[1] = readfloat();
@@ -592,19 +578,9 @@ NSRenderableEntity::ReceiveEntity(float flNew, float flChanged)
 		glowmod[1] = readfloat();
 		glowmod[2] = readfloat();
 	}
+
 	if (flChanged & RDENT_CHANGED_RENDERAMT) {
 		m_flRenderAmt = readfloat();
-	}
-#else
-	if (flChanged & RDENT_CHANGED_ALPHA) {
-		alpha = readfloat();
-	}
-#endif
-
-	if (modelindex) {
-		drawmask = MASK_ENGINE;
-	} else {
-		drawmask = 0;
 	}
 
 	if (scale == 0.0)
@@ -640,7 +616,7 @@ NSRenderableEntity::RenderDebugSkeleton(void)
 
 /*
 ============
-NSEntity::predraw
+NSRenderableEntity::predraw
 
 a lot of the things in here don't even apply to most
 entities, so TODO: make things like anims, sentences apply
@@ -654,10 +630,7 @@ NSRenderableEntity::predraw(void)
 		return (PREDRAW_NEXT);
 	}
 
-#ifdef GS_RENDERFX
 	RenderFXPass();
-#endif
-
 	RenderDebugSkeleton();
 
 	if (serverkeyfloat(SERVERKEY_PAUSESTATE) != 1)
@@ -685,14 +658,12 @@ NSRenderableEntity::predraw(void)
 void
 NSRenderableEntity::Respawn(void)
 {
-	NSEntity::Respawn();
+	super::Respawn();
 
-#ifdef GS_RENDERFX
 	SetRenderFX(m_oldiRenderFX);
 	SetRenderMode(m_oldiRenderMode);
 	SetRenderAmt(m_oldflRenderAmt);
 	SetRenderColor(m_oldvecRenderColor);
-#endif
 }
 
 void
@@ -753,7 +724,6 @@ NSRenderableEntity::SetScale(float newScale)
 	setsize(this, m_vecMins * scale, m_vecMaxs * scale);
 }
 
-#ifdef GS_RENDERFX
 void
 NSRenderableEntity::SetRenderFX(float newFX)
 {
@@ -786,30 +756,21 @@ NSRenderableEntity::SetRenderColor(vector newColor)
 
 	m_vecRenderColor = newColor;
 }
-#endif
-
 
 #ifdef SERVER
 void
 NSRenderableEntity::Save(float handle)
 {
+	super::Save(handle);
 	SaveInt(handle, "body", m_iBody);
 	SaveFloat(handle, "frame", frame);
 	SaveFloat(handle, "scale", scale);
 	SaveFloat(handle, "skin", skin);
 	SaveFloat(handle, "effects", effects);
-
-#ifndef GS_RENDERFX
-	SaveVector(handle, "color", colormod);
-	SaveFloat(handle, "alpha", alpha);
-#else
 	SaveFloat(handle, "renderamt", m_flRenderAmt);
 	SaveVector(handle, "rendercolor", m_vecRenderColor);
 	SaveFloat(handle, "rendermode", m_iRenderMode);
 	SaveFloat(handle, "renderfx", m_iRenderFX);
-#endif
-
-	super::Save(handle);
 }
 void
 NSRenderableEntity::Restore(string strKey, string strValue)
@@ -830,14 +791,6 @@ NSRenderableEntity::Restore(string strKey, string strValue)
 	case "effects":
 		effects = stof(strValue);
 		break;
-#ifndef GS_RENDERFX
-	case "color":
-		colormod = stov(strValue);
-		break;
-	case "alpha":
-		alpha = stof(strValue);
-		break;
-#else
 	case "renderamt":
 		m_flRenderAmt = stof(strValue) / 255;
 		break;
@@ -850,7 +803,6 @@ NSRenderableEntity::Restore(string strKey, string strValue)
 	case "renderfx":
 		m_iRenderFX = stof(strValue);
 		break;
-#endif
 	default:
 		super::Restore(strKey, strValue);
 	}
@@ -861,18 +813,10 @@ NSRenderableEntity::Input(entity eAct, string strInput, string strData)
 {
 	switch (strInput) {
 	case "Color":
-#ifdef GS_RENDERFX
 		SetRenderColor(stov(strData) / 255);
-#else
-		colormod = stov(strData) / 255;
-#endif
 		break;
 	case "Alpha":
-#ifdef GS_RENDERFX
 		SetRenderAmt(stof(strData) / 255);
-#else
-		alpha = stof(strData) / 255;
-#endif
 		break;
 	case "DisableShadow":
 		effects |= EF_NOSHADOW;
@@ -881,7 +825,7 @@ NSRenderableEntity::Input(entity eAct, string strInput, string strData)
 		effects &= ~EF_NOSHADOW;
 		break;
 	default:
-		NSEntity::Input(eAct, strInput, strData);
+		super::Input(eAct, strInput, strData);
 	}
 }
 #endif
@@ -910,36 +854,33 @@ NSRenderableEntity::SpawnKey(string strKey, string strValue)
 		if (stof(strValue) == 1) {
 			effects |= EF_NOSHADOW;
 		}
-	case "color":
-#ifdef GS_RENDERFX
-		m_vecRenderColor = stov(strValue);
-#else
-		colormod = stov(strValue);
-#endif
 		break;
-	case "alpha":
-#ifdef GS_RENDERFX
-		m_flRenderAmt = stof(strValue);
-#else
-		alpha = stof(strValue);
-#endif
-		break;
-#ifdef GS_RENDERFX
 	case "renderamt":
 		m_flRenderAmt = stof(strValue) / 255;
+#ifdef SERVER
+		m_oldflRenderAmt = m_flRenderAmt;
+#endif
 		break;
 	case "rendercolor":
 		m_vecRenderColor = stov(strValue) / 255;
+#ifdef SERVER
+		m_oldvecRenderColor = m_vecRenderColor;
+#endif
 		break;
 	case "rendermode":
 		m_iRenderMode = stof(strValue);
+#ifdef SERVER
+		m_oldiRenderMode = m_iRenderMode;
+#endif
 		break;
 	case "renderfx":
 		m_iRenderFX = stof(strValue);
-		break;
+#ifdef SERVER
+		m_oldiRenderFX = m_iRenderFX;
 #endif
+		break;
 	default:
-		NSEntity::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 		break;
 	}
 }
@@ -948,18 +889,8 @@ void
 NSRenderableEntity::NSRenderableEntity(void)
 {
 	effects |= EF_NOSHADOW;
-	//scale = 1.0f;
 
-#ifdef SERVER
-#ifdef GS_RENDERFX
-	m_oldiRenderFX = m_iRenderFX;
-	m_oldiRenderMode = m_iRenderMode;
-	m_oldvecRenderColor = m_vecRenderColor;
-	m_oldflRenderAmt = m_flRenderAmt;
-	m_oldvecRenderColor = m_vecRenderColor;
-	m_oldflRenderAmt = m_flRenderAmt;
-#endif
-#else
+#ifdef CLIENT
 	drawmask = MASK_ENGINE;
 #endif
 }
@@ -977,7 +908,5 @@ NSRenderableEntity_ReadEntity(bool new)
 
 	fl = readfloat();
 	rend.ReceiveEntity(new, fl);
-
-	//print(sprintf("rendent ent update: %d %x %d %v\n", self.entnum, fl, self.origin, vlen(self.velocity)));
 }
 #endif

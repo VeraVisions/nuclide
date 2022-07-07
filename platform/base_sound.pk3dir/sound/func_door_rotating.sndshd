@@ -1,9 +1,0 @@
-func_door_rotating.move_0
-{
-	sample misc/missing.wav
-}
-
-func_door_rotating.stop_0
-{
-	sample misc/missing.wav
-}

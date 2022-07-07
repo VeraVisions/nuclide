@@ -12,7 +12,6 @@ client/env_glow.qc
 client/env_sun.qc
 client/env_sound.qc
 client/env_soundscape.qc
-client/env_sprite.qc
 client/env_particle.qc
 client/env_laser.qc
 client/func_lod.qc

@@ -1,9 +1,0 @@
-func_train.move_1
-{
-	sample misc/missing.wav
-}
-
-func_train.stop_1
-{
-	sample misc/missing.wav
-}

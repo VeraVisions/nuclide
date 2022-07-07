@@ -16,7 +16,6 @@ server/cycler_sprite.qc
 server/env_beam.qc
 server/env_fade.qc
 server/env_hudhint.qc
-server/env_sprite.qc
 server/env_spark.qc
 server/env_explosion.qc
 server/env_render.qc

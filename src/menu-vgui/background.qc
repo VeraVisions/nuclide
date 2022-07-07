@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Cawthorne <marco@icculus.org>
+ * Copyright (c) 2016-2022 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -12,38 +12,23 @@
  * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
+*/
 
-#ifdef GAME_TW
-	#define BACKGROUND_IMG "textures/gfx/background"
-#elif GAME_CS
-	#define BACKGROUND_IMG "textures/gfx/background"
-#else
-	#define BACKGROUND_IMG "gfx/conback"
-#endif
+#define BACKGROUND_IMG "gfx/background"
 
-var int g_iBackgroundLoaded = FALSE;
-
-void Background_Init ( void )
+void
+Background_Init(void)
 {
-	precache_pic( BACKGROUND_IMG );
-
-	if ( iscachedpic( BACKGROUND_IMG ) ) {
-		g_iBackgroundLoaded = TRUE;
-	}
+	precache_pic(BACKGROUND_IMG);
 }
 
-void Background_Draw ( vector vecSize )
+void
+Background_Draw(vector vecSize)
 {
-	if ( clientstate() == 2 ) {
+	if (clientstate() == 2) {
 		if (!g_background)
-			drawfill( [ 0, 0 ], vecSize, [ 0, 0, 0 ], 0.5f );
-	} else {
-		if ( g_iBackgroundLoaded == TRUE ) {
-			drawpic( [ 0, 0 ], BACKGROUND_IMG, vecSize, [ 1, 1, 1 ], 1.0f );
-		} else {
-			drawfill( [ 0, 0 ], vecSize, [ 0, 0, 0 ], 1.0f );
-			drawfill( [ 0, 0 ], vecSize, UI_MAINCOLOR, 0.5f );
-		}
-	}
+			drawfill([ 0, 0 ], vecSize, [ 0, 0, 0 ], 0.5f);
+	} else
+		drawpic([ 0, 0 ], BACKGROUND_IMG, vecSize, [ 1, 1, 1 ], 1.0f);
+
 }

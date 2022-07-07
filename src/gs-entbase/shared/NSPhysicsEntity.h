@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Cawthorne <marco@icculus.org>
+ * Copyright (c) 2016-2022 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -12,7 +12,7 @@
  * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
+*/
 
 enum
 {
@@ -49,13 +49,9 @@ enumflags
 	PHYENT_CHANGED_BODY,
 	PHYENT_CHANGED_SCALE,
 	PHYENT_CHANGED_VELOCITY,
-#ifdef GS_RENDERFX
 	PHYENT_CHANGED_RENDERCOLOR,
 	PHYENT_CHANGED_RENDERAMT,
 	PHYENT_CHANGED_RENDERMODE,
-#else
-	PHYENT_CHANGED_ALPHA,
-#endif
 };
 
 class NSPhysicsEntity:NSSurfacePropEntity

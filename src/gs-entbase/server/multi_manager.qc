@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Cawthorne <marco@icculus.org>
+ * Copyright (c) 2016-2022 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -12,7 +12,7 @@
  * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
+*/
 
 /*QUAKED multi_manager (1 0 0) (-8 -8 -8) (8 8 8) MM_MULTITHREADED
 Triggers a maximum of 16 user defined entities with additonal timers.
@@ -301,13 +301,14 @@ multi_manager::Spawned(void)
 		if (!argv(i))
 			break;
 
-		// HACK: Avoid infinite loops
-		if (targetname != argv(i)) {
-			m_eTriggers[b].target = argv(i);
-			m_eTriggers[b].m_oldstrTarget = argv(i);
-			m_eTriggers[b].m_flUntilTriggered = stof(argv(i+1));
-			b++;
-		}
+		/* avoid infinite-loops, only when MULTITHREADED flag is NOT set */
+		if ((!HasSpawnFlags(MM_MULTITHREADED) && targetname == argv(i)))
+			continue;
+
+		m_eTriggers[b].target = argv(i);
+		m_eTriggers[b].m_oldstrTarget = argv(i);
+		m_eTriggers[b].m_flUntilTriggered = stof(argv(i+1));
+		b++;
 	}
 }
 

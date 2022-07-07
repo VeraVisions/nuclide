@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Cawthorne <marco@icculus.org>
+ * Copyright (c) 2016-2022 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -12,7 +12,7 @@
  * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
+*/
 
 /*QUAKED light_dynamic (1 0 0) (-8 -8 -8) (8 8 8)
 Dynamic light entity. Can be parented to things, it even has some inputs that
@@ -223,7 +223,7 @@ light_dynamic::RendererRestarted(void)
 {
 	OnRemoveEntity();
 	m_light = dynamiclight_spawnstatic(origin, m_flDistance, m_vecLight);
-	LightChanged(0xFFFFFFFF);
+	LightChanged(0xFFFFFF);
 }
 #else
 void

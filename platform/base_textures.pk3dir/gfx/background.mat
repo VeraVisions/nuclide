@@ -1,0 +1,22 @@
+// Vera Visions Material
+{
+	{
+		map "textures/dev/model_bone.tga"
+		tcMod scroll -1 2
+		tcMod scale 0.1 0.1
+	}
+	{
+		map "textures/dev/info_node.tga"
+		tcMod scroll -2 4
+		tcMod scale 0.05 0.05
+		blendFunc blend
+	}
+
+	{
+		map "logos/fte.tga"
+		tcMod turb triangle 0.25 1.0 0.15
+		tcMod scale 8 8
+		blendFunc blend
+		alphaGen const 0.25
+	}
+}

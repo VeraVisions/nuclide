@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2021 Marco Cawthorne <marco@icculus.org>
+ * Copyright (c) 2016-2022 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -12,7 +12,7 @@
  * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
+*/
 
 var bool autocvar_v_modellag = 0;
 var bool autocvar_v_muzzledlight = 1;
@@ -26,28 +26,28 @@ View_Init(void)
 			/* right side */
 			pSeat->m_eViewModel = spawn();
 			pSeat->m_eViewModel.classname = "vm";
-			pSeat->m_eViewModel.renderflags = RF_DEPTHHACK;
+			pSeat->m_eViewModel.renderflags = RF_DEPTHHACK | RF_FIRSTPERSON;
 			pSeat->m_eViewModel.effects |= EF_NOSHADOW;
 			pSeat->m_eViewModel.alpha = 1.0f;
 			setsize(pSeat->m_eViewModel, [0,0,0], [0,0,0]);
 
 			pSeat->m_eMuzzleflash = spawn();
 			pSeat->m_eMuzzleflash.classname = "mflash";
-			pSeat->m_eMuzzleflash.renderflags = RF_ADDITIVE;
+			pSeat->m_eMuzzleflash.renderflags = RF_ADDITIVE | RF_FIRSTPERSON;
 			pSeat->m_eMuzzleflash.effects |= EF_NOSHADOW;
 			setsize(pSeat->m_eMuzzleflash, [0,0,0], [0,0,0]);
 
 			/* left side */
 			pSeat->m_eViewModelL = spawn();
 			pSeat->m_eViewModelL.classname = "vm";
-			pSeat->m_eViewModelL.renderflags = RF_DEPTHHACK;
+			pSeat->m_eViewModelL.renderflags = RF_DEPTHHACK | RF_FIRSTPERSON;
 			pSeat->m_eViewModelL.effects |= EF_NOSHADOW;
 			pSeat->m_eViewModelL.alpha = 1.0f;
 			setsize(pSeat->m_eViewModelL, [0,0,0], [0,0,0]);
 
 			pSeat->m_eMuzzleflashL = spawn();
 			pSeat->m_eMuzzleflashL.classname = "mflash";
-			pSeat->m_eMuzzleflashL.renderflags = RF_ADDITIVE;
+			pSeat->m_eMuzzleflashL.renderflags = RF_ADDITIVE | RF_FIRSTPERSON;
 			pSeat->m_eMuzzleflashL.effects |= EF_NOSHADOW;
 			setsize(pSeat->m_eMuzzleflashL, [0,0,0], [0,0,0]);
 		}

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Marco Cawthorne <marco@icculus.org>
+ * Copyright (c) 2016-2022 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -12,19 +12,19 @@
  * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
+*/
 
 /*QUAKED NSInteractiveSurface (1 0 0) (-8 -8 -8) (8 8 8)
 Fully interactive surface
 
 -------- KEYS --------
-"angles" : Sets the pitch, yaw and roll angles of the sprite.
+"angles" : Sets the pitch, yaw and roll angles of the surface.
 "ui_class" : Which UI class to use
 "ui_res" : Resolution of the interface
 "ui_size" : Size of the interface in world coordinates
 
 -------- SPAWNFLAGS --------
-None
+None yet
 
 -------- NOTES --------
 Similar to surfaces in Doom III and Duke 4
@@ -167,6 +167,8 @@ NSInteractiveSurface::Input(float flEVType, float flKey, float flChar, float flD
 {
 	if (m_UIChain)
 		m_UIChain.Input(flEVType, flKey, flChar, flDevID);
+
+	return true;
 }
 
 /* called whenever we are in the proximity of a surface */

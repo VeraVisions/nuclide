@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2021 Marco Cawthorne <marco@icculus.org>
+ * Copyright (c) 2016-2022 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -12,7 +12,7 @@
  * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
+*/
 
 void
 NSSurfacePropEntity::Spawned(void)
@@ -89,7 +89,6 @@ NSSurfacePropEntity::EvaluateEntity(void)
 	SAVE_STATE(scale);
 	SAVE_STATE(velocity);
 
-#ifdef GS_RENDERFX
 	if (ATTR_CHANGED(m_iRenderMode)) {
 		SetSendFlags(SRFENT_CHANGED_RENDERMODE);
 	}
@@ -107,12 +106,6 @@ NSSurfacePropEntity::EvaluateEntity(void)
 	SAVE_STATE(m_iRenderFX);
 	SAVE_STATE(m_vecRenderColor);
 	SAVE_STATE(m_flRenderAmt);
-#else
-	if (ATTR_CHANGED(alpha)) {
-		SetSendFlags(SRFENT_CHANGED_ALPHA);
-	}
-	SAVE_STATE(alpha);
-#endif
 }
 
 /* Make sure StartFrame calls this */
@@ -157,10 +150,8 @@ NSSurfacePropEntity::SendEntity(entity ePEnt, float fChanged)
 			fChanged &= ~SRFENT_CHANGED_SOLID;
 		if (movetype == MOVETYPE_NONE)
 			fChanged &= ~SRFENT_CHANGED_MOVETYPE;
-#ifdef GS_RENDERFX
 		if (m_iRenderMode == RM_NORMAL)
 			fChanged &= ~SRFENT_CHANGED_RENDERMODE;
-#endif
 	}
 #endif
 
@@ -225,7 +216,6 @@ NSSurfacePropEntity::SendEntity(entity ePEnt, float fChanged)
 		WriteFloat(MSG_ENTITY, velocity[2]);
 	}
 
-#ifdef GS_RENDERFX
 	if (fChanged & SRFENT_CHANGED_RENDERMODE) {
 		WriteByte(MSG_ENTITY, m_iRenderMode);
 		WriteByte(MSG_ENTITY, m_iRenderFX);
@@ -242,11 +232,7 @@ NSSurfacePropEntity::SendEntity(entity ePEnt, float fChanged)
 	if (fChanged & SRFENT_CHANGED_RENDERAMT) {
 		WriteFloat(MSG_ENTITY, m_flRenderAmt);
 	}
-#else
-	if (fChanged & SRFENT_CHANGED_ALPHA) {
-		WriteFloat(MSG_ENTITY, alpha);
-	}
-#endif
+
 
 	return (1);
 }
@@ -318,7 +304,6 @@ NSSurfacePropEntity::ReceiveEntity(float flNew, float flChanged)
 		velocity[2] = readfloat();
 	}
 
-#ifdef GS_RENDERFX
 	if (flChanged & SRFENT_CHANGED_RENDERMODE) {
 		m_iRenderMode = readbyte();
 		m_iRenderFX = readbyte();
@@ -334,11 +319,6 @@ NSSurfacePropEntity::ReceiveEntity(float flNew, float flChanged)
 	if (flChanged & SRFENT_CHANGED_RENDERAMT) {
 		m_flRenderAmt = readfloat();
 	}
-#else
-	if (flChanged & SRFENT_CHANGED_ALPHA) {
-		alpha = readfloat();
-	}
-#endif
 
 	if (modelindex) {
 		drawmask = MASK_ENGINE;

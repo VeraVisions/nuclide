@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Cawthorne <marco@icculus.org>
+ * Copyright (c) 2016-2022 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -12,9 +12,10 @@
  * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
+*/
 
 var int autocvar_r_autoscale = TRUE;
+
 void
 Menu_AutoScale(void)
 {
@@ -33,15 +34,16 @@ Menu_AutoScale(void)
 	}
 }
 
-void m_init ( void )
+void
+m_init(void)
 {
 	UISystem_Init();
 	Background_Init();
 	Desktop_Init();
 	
-	registercommand( "menu_quit" );
-	registercommand( "menu_music" );
-	registercommand( "map_background" );
+	registercommand("menu_quit");
+	registercommand("menu_music");
+	registercommand("map_background");
 	Menu_AutoScale();
 }
 
@@ -52,12 +54,14 @@ Menu_RendererRestarted(string renderer)
 	Menu_AutoScale();
 }
 
-void m_shutdown ( void )
+void
+m_shutdown(void)
 {
 	
 }
 
-void m_draw ( vector vecScreensize )
+void
+m_draw(vector vecScreensize)
 {
 	if (vecScreensize != video_res) {
 		Menu_AutoScale();
@@ -88,11 +92,12 @@ void m_draw ( vector vecScreensize )
 	lasttime = time;
 
 	video_res = vecScreensize;
-	Background_Draw( vecScreensize );
+	Background_Draw(vecScreensize);
 	Desktop_Draw();
 }
 
-float Menu_InputEvent ( float evtype, float scanx, float chary, float devid )
+float
+Menu_InputEvent (float evtype, float scanx, float chary, float devid)
 {
 	switch (evtype) {
 		case IE_KEYDOWN:
@@ -105,8 +110,7 @@ float Menu_InputEvent ( float evtype, float scanx, float chary, float devid )
 	}
 
 	g_vecMousePos = getmousepos();
-
-	g_uiDesktop.Input( evtype, scanx, chary, devid );
+	g_uiDesktop.Input(evtype, scanx, chary, devid);
 	return (float)g_iMenuActive;
 }
 
@@ -141,19 +145,18 @@ m_toggle
 void
 m_toggle(float fMode)
 {
-	if (fMode == FALSE) {
+	if (fMode == FALSE)
 		m_hide();
-	} else {
+	else
 		m_display();
-	}
 }
 
-float m_consolecommand ( string strCommand )
+float m_consolecommand(string strCommand)
 {
-	dprint( sprintf( "[MENU] m_consolecommand: %s\n", strCommand ) );
-	tokenize( strCommand );
+	dprint(sprintf("[MENU] m_consolecommand: %s\n", strCommand));
+	tokenize(strCommand);
 
-	switch ( argv( 0 ) ) {
+	switch (argv(0)) {
 	case "menu_quit":
 		UI_QuitGame_Show();
 		break;

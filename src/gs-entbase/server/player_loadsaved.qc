@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Cawthorne <marco@icculus.org>
+ * Copyright (c) 2016-2022 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -12,7 +12,7 @@
  * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
+*/
 
 /*QUAKED player_loadsaved (1 0 0) (-8 -8 -8) (8 8 8)
 This trigger reloads the last autosaved game with a custom message.
@@ -93,17 +93,10 @@ player_loadsaved::Trigger(entity act, int unused)
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
 	WriteByte(MSG_MULTICAST, EV_FADE);
 
-#ifdef GS_RENDERFX
 	WriteFloat(MSG_MULTICAST, m_vecRenderColor[0]);
 	WriteFloat(MSG_MULTICAST, m_vecRenderColor[1]);
 	WriteFloat(MSG_MULTICAST, m_vecRenderColor[2]);
 	WriteFloat(MSG_MULTICAST, m_flRenderAmt);
-#else
-	WriteFloat(MSG_MULTICAST, colormod[0]);
-	WriteFloat(MSG_MULTICAST, colormod[1]);
-	WriteFloat(MSG_MULTICAST, colormod[2]);
-	WriteFloat(MSG_MULTICAST, alpha);
-#endif
 
 	WriteFloat(MSG_MULTICAST, m_flFadeDuration);
 	WriteFloat(MSG_MULTICAST, m_flFadeHold);

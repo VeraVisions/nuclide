@@ -1,9 +1,0 @@
-modelevent_shell.eject
-{
-	sample misc/missing.wav
-}
-
-modelevent_shell.land
-{
-	sample misc/missing.wav
-}

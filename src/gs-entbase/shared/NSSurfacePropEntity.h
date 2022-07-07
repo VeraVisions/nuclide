@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2021 Marco Cawthorne <marco@icculus.org>
+ * Copyright (c) 2016-2022 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -12,7 +12,7 @@
  * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
+*/
 
 enumflags
 {
@@ -29,13 +29,9 @@ enumflags
 	SRFENT_CHANGED_BODY,
 	SRFENT_CHANGED_SCALE,
 	SRFENT_CHANGED_VELOCITY,
-#ifdef GS_RENDERFX
 	SRFENT_CHANGED_RENDERCOLOR,
 	SRFENT_CHANGED_RENDERAMT,
 	SRFENT_CHANGED_RENDERMODE,
-#else
-	SRFENT_CHANGED_ALPHA,
-#endif
 };
 
 class NSSurfacePropEntity:NSRenderableEntity

@@ -209,7 +209,7 @@
 }
 // entity 6
 {
-"classname" "dynamic_light"
+"classname" "light_dynamic"
 "origin" "-192.000000 128.000000 64.000000"
 "_light" "255 255 255"
 "brightness" "250"
@@ -222,7 +222,7 @@
 }
 // entity 8
 {
-"classname" "dynamic_light"
+"classname" "light_dynamic"
 "origin" "-192.000000 -64.000000 64.000000"
 "pattern" "zm"
 "_light" "255 255 128"
@@ -236,7 +236,7 @@
 }
 // entity 10
 {
-"classname" "dynamic_light"
+"classname" "light_dynamic"
 "origin" "192.000000 128.000000 64.000000"
 "targetname" "foobar1"
 "style" "1"
@@ -251,7 +251,7 @@
 }
 // entity 12
 {
-"classname" "dynamic_light"
+"classname" "light_dynamic"
 "origin" "192.000000 -128.000000 64.000000"
 "targetname" "foobar2"
 "style" "2"

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Cawthorne <marco@icculus.org>
+ * Copyright (c) 2016-2022 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -12,7 +12,7 @@
  * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
+*/
 
 /* networking helpers */
 #define PREDICTED_INT(x) int x; int x ##_net
@@ -184,6 +184,18 @@ precache_model(string m)
 	NSLog("^3Server precaching model ^7%s", m);
 #endif
 	return prior(m);
+}
+
+__wrap string
+precache_sound(string sample)
+{
+	if (sample != "") /* not empty */
+		if not(whichpack(strcat("sound/", sample))) { /* not present on disk */
+			print(strcat("^1sfx sample ", sample, " does not exist!\n"));
+			return "misc/missing.wav";
+		}
+
+	return prior(sample);
 }
 
 /* this could probably be a lot better, use this from now on so that it can be improved later */

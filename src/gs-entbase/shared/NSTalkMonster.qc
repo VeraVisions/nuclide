@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Cawthorne <marco@icculus.org>
+ * Copyright (c) 2016-2022 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -12,7 +12,7 @@
  * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
+*/
 
 #ifdef SERVER
 void
@@ -655,7 +655,6 @@ NSTalkMonster::SendEntity(entity ePEnt, float fChanged)
 		WriteFloat(MSG_ENTITY, velocity[2]);
 	}
 
-#ifdef GS_RENDERFX
 	if (fChanged & BASEFL_CHANGED_RENDERMODE) {
 		WriteByte(MSG_ENTITY, m_iRenderMode);
 		WriteByte(MSG_ENTITY, m_iRenderFX);
@@ -669,11 +668,6 @@ NSTalkMonster::SendEntity(entity ePEnt, float fChanged)
 	if (fChanged & BASEFL_CHANGED_RENDERAMT) {
 		WriteFloat(MSG_ENTITY, m_flRenderAmt);
 	}
-#else
-	if (fChanged & BASEFL_CHANGED_ALPHA) {
-		WriteFloat(MSG_ENTITY, alpha);
-	}
-#endif
 
 	return (1);
 }
@@ -860,7 +854,6 @@ NSTalkMonster::ReceiveEntity(float flNew, float flChanged)
 		velocity[2] = readfloat();
 	}
 
-#ifdef GS_RENDERFX
 	if (flChanged & BASEFL_CHANGED_RENDERMODE) {
 		m_iRenderMode = readbyte();
 		m_iRenderFX = readbyte();
@@ -873,11 +866,6 @@ NSTalkMonster::ReceiveEntity(float flNew, float flChanged)
 	if (flChanged & BASEFL_CHANGED_RENDERAMT) {
 		m_flRenderAmt = readfloat();
 	}
-#else
-	if (flChanged & BASEFL_CHANGED_ALPHA) {
-		alpha = readfloat();
-	}
-#endif
 
 	if (modelindex) {
 		drawmask = MASK_ENGINE;

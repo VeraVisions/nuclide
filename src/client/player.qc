@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Cawthorne <marco@icculus.org>
+ * Copyright (c) 2016-2022 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -12,7 +12,7 @@
  * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
+*/
 
 void
 player::draw(void)
@@ -71,16 +71,25 @@ player::predraw(void)
 	}
 
 	if (autocvar_cl_thirdperson == TRUE || !this_us) {
+		renderflags &= ~RF_EXTERNALMODEL;
+
 		Voice_Draw3D(this);
 		Player_PreDraw(this, TRUE);
-		if (p_model)
+		if (p_model) {
+			p_model.renderflags &= ~RF_EXTERNALMODEL;
 			addentity(p_model);
+		}
 		//addentity(this);
 	} else {
+		renderflags |= RF_EXTERNALMODEL;
+
 		Player_PreDraw(this, FALSE);
-		if (p_model)
-			removeentity(p_model);
-		removeentity(this);
+
+		if (p_model) {
+			p_model.renderflags |= RF_EXTERNALMODEL;
+			addentity(p_model);
+		}
+		addentity(this);
 	}
 
 	return (PREDRAW_NEXT);

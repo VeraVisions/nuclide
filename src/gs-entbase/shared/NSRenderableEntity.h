@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2021 Marco Cawthorne <marco@icculus.org>
+ * Copyright (c) 2016-2022 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -12,7 +12,7 @@
  * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
+*/
 
 enumflags
 {
@@ -33,13 +33,9 @@ enumflags
 	RDENT_CHANGED_BODY,
 	RDENT_CHANGED_SCALE,
 	RDENT_CHANGED_VELOCITY,
-#ifdef GS_RENDERFX
 	RDENT_CHANGED_RENDERCOLOR,
 	RDENT_CHANGED_RENDERAMT,
 	RDENT_CHANGED_RENDERMODE,
-#else
-	RDENT_CHANGED_ALPHA,
-#endif
 };
 
 #ifdef CLIENT
@@ -87,7 +83,6 @@ class NSRenderableEntity:NSEntity
 	nonvirtual void(float) SetScale;
 	virtual void(void) MakeStatic;
 
-#ifdef GS_RENDERFX
 	PREDICTED_FLOAT(m_iRenderFX);
 	PREDICTED_FLOAT(m_iRenderMode);
 	PREDICTED_FLOAT(m_flRenderAmt);
@@ -108,5 +103,4 @@ class NSRenderableEntity:NSEntity
 		float m_oldflRenderAmt;
 		vector m_oldvecRenderColor;
 	#endif
-#endif
 };

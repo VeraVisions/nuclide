@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Cawthorne <marco@icculus.org>
+ * Copyright (c) 2016-2022 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -12,9 +12,9 @@
  * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
+*/
 
-/*QUAKED env_shooter (1 0 0) (-8 -8 -8) (8 8 8)
+/*QUAKED env_shooter (1 0 0) (-8 -8 -8) (8 8 8) EVSHOOTER_REPEATABLE
 Shoots model entities from its location.
 
 -------- KEYS --------
@@ -34,6 +34,8 @@ Shoots model entities from its location.
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
+
+#define EVSHOOTER_REPEATABLE 1
 
 class env_shooter:NSPointTrigger
 {
@@ -92,6 +94,9 @@ env_shooter::Trigger(entity act, int state)
 		nextthink = 0.0f;
 		break;
 	case TRIG_ON:
+		if (spawnflags & EVSHOOTER_REPEATABLE)
+			m_iGibsLeft = m_iGibs;
+
 		think = ShootGib;
 		nextthink = time + m_flVariance;
 		break;
@@ -106,6 +111,11 @@ env_shooter::Trigger(entity act, int state)
 void
 env_shooter::Respawn(void)
 {
+	if (!m_strShootModel) {
+		Destroy();
+		return;
+	}
+
 	m_iGibsLeft = m_iGibs;
 	think = __NULL__;
 }
@@ -150,7 +160,14 @@ env_shooter::SpawnKey(string strKey, string strValue)
 void
 env_shooter::env_shooter(void)
 {
-	if (!m_strShootModel) {
-		remove(this);
-	}
+	m_flVariance = 0.0f;
+	m_flDelay = 0.0f;
+	m_iGibs = 1;
+	m_iGibsLeft = 1;
+	m_flVelocity = 0;
+	m_flGibLife = 1.0f;
+	m_strShootModel = __NULL__;
+	m_flShootSounds = 0;
+	m_flScale = 1.0;
+	m_flSkin = 0;
 }

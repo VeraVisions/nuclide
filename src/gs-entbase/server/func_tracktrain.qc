@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Marco Cawthorne <marco@icculus.org>
+ * Copyright (c) 2016-2022 Vera Visions LLC.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -12,7 +12,7 @@
  * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
+*/
 
 /*QUAKED func_tracktrain (0 .5 .8) ? TRAIN_WAIT TRAIN_NOPITCH x TRAIN_NOTSOLID
 Moving platform following along path_corner entities, aka nodes.
@@ -209,7 +209,7 @@ func_tracktrain::PathMove(void)
 	vecAngleDiff = vecAngleDest - angles;
 	vecAngleDiff[2] = 0;
 
-	print(sprintf("vecAngleDiff: %v\n", vecAngleDiff));
+	//print(sprintf("vecAngleDiff: %v\n", vecAngleDiff));
 
 	if (vecAngleDiff[1] == 0)
 		angles = vecAngleDest;

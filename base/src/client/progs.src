@@ -3,7 +3,6 @@
 
 #define CSQC
 #define CLIENT
-#define GS_RENDERFX
 
 #includelist
 /* first the engine, then nuclide headers for client/shared */
