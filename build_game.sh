@@ -56,9 +56,7 @@ if [ -x "$(command -v fteqcc)" ]; then
 		if [ -f "$NEWDIR/../.git/config" ]; then
 			printf "Updating git repo inside $NEWDIR\n"
 			if [ "$BUILD_UPDATE" -eq 1 ]; then
-				set +e
 				git pull
-				set -e
 			fi
 		fi
 		cd $OLDDIR
