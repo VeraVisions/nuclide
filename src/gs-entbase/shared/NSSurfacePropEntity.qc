@@ -74,6 +74,21 @@ NSSurfacePropEntity::EvaluateEntity(void)
 	if (ATTR_CHANGED(velocity)) {
 		SetSendFlags(SRFENT_CHANGED_VELOCITY);
 	}
+	if (ATTR_CHANGED(m_flBoneControl1)) {
+		SetSendFlags(SRFENT_CHANGED_CONTROLLER);
+	}
+	if (ATTR_CHANGED(m_flBoneControl2)) {
+		SetSendFlags(SRFENT_CHANGED_CONTROLLER);
+	}
+	if (ATTR_CHANGED(m_flBoneControl3)) {
+		SetSendFlags(SRFENT_CHANGED_CONTROLLER);
+	}
+	if (ATTR_CHANGED(m_flBoneControl4)) {
+		SetSendFlags(SRFENT_CHANGED_CONTROLLER);
+	}
+	if (ATTR_CHANGED(m_flBoneControl5)) {
+		SetSendFlags(SRFENT_CHANGED_CONTROLLER);
+	}
 
 	SAVE_STATE(origin);
 	SAVE_STATE(angles);
@@ -88,6 +103,11 @@ NSSurfacePropEntity::EvaluateEntity(void)
 	SAVE_STATE(m_iBody);
 	SAVE_STATE(scale);
 	SAVE_STATE(velocity);
+	SAVE_STATE(m_flBoneControl1);
+	SAVE_STATE(m_flBoneControl2);
+	SAVE_STATE(m_flBoneControl3);
+	SAVE_STATE(m_flBoneControl4);
+	SAVE_STATE(m_flBoneControl5);
 
 	if (ATTR_CHANGED(m_iRenderMode)) {
 		SetSendFlags(SRFENT_CHANGED_RENDERMODE);
@@ -232,7 +252,13 @@ NSSurfacePropEntity::SendEntity(entity ePEnt, float fChanged)
 	if (fChanged & SRFENT_CHANGED_RENDERAMT) {
 		WriteFloat(MSG_ENTITY, m_flRenderAmt);
 	}
-
+	if (fChanged & SRFENT_CHANGED_CONTROLLER) {
+		WriteShort(MSG_ENTITY, m_flBoneControl1 * 32767 / 360);
+		WriteShort(MSG_ENTITY, m_flBoneControl2 * 32767 / 360);
+		WriteShort(MSG_ENTITY, m_flBoneControl3 * 32767 / 360);
+		WriteShort(MSG_ENTITY, m_flBoneControl4 * 32767 / 360);
+		WriteShort(MSG_ENTITY, m_flBoneControl5 * 32767 / 360);
+	}
 
 	return (1);
 }
@@ -318,6 +344,13 @@ NSSurfacePropEntity::ReceiveEntity(float flNew, float flChanged)
 	}
 	if (flChanged & SRFENT_CHANGED_RENDERAMT) {
 		m_flRenderAmt = readfloat();
+	}
+	if (flChanged & SRFENT_CHANGED_CONTROLLER) {
+		m_flBoneControl1 = readshort() / (32767 / 360);
+		m_flBoneControl2 = readshort() / (32767 / 360);
+		m_flBoneControl3 = readshort() / (32767 / 360);
+		m_flBoneControl4 = readshort() / (32767 / 360);
+		m_flBoneControl5 = readshort() / (32767 / 360);
 	}
 
 	if (modelindex) {
@@ -533,7 +566,7 @@ NSSurfacePropEntity::Input(entity eAct, string strInput, string strData)
 		Extinguish();
 		break;
 	default:
-		NSRenderableEntity::Input(eAct, strInput, strData);
+		super::Input(eAct, strInput, strData);
 	}
 }
 
@@ -559,7 +592,7 @@ NSSurfacePropEntity::SpawnKey(string strKey, string strValue)
 		break;
 #endif
 	default:
-		NSRenderableEntity::SpawnKey(strKey, strValue);
+		super::SpawnKey(strKey, strValue);
 		break;
 	}
 }

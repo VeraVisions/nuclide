@@ -36,6 +36,7 @@ enumflags
 	RDENT_CHANGED_RENDERCOLOR,
 	RDENT_CHANGED_RENDERAMT,
 	RDENT_CHANGED_RENDERMODE,
+	RDENT_CHANGED_CONTROLLER
 };
 
 #ifdef CLIENT
@@ -65,8 +66,14 @@ class NSRenderableEntity:NSEntity
 #endif
 
 	/* new */
+	PREDICTED_FLOAT(m_flBoneControl1);
+	PREDICTED_FLOAT(m_flBoneControl2);
+	PREDICTED_FLOAT(m_flBoneControl3);
+	PREDICTED_FLOAT(m_flBoneControl4);
+	PREDICTED_FLOAT(m_flBoneControl5);
 	PREDICTED_INT(m_iBody);
 	PREDICTED_FLOAT_N(frame);
+	PREDICTED_FLOAT_N(colormap);
 	PREDICTED_FLOAT_N(skin);
 	PREDICTED_FLOAT_N(effects);
 	/* model events */

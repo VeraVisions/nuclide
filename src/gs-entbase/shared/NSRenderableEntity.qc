@@ -97,11 +97,30 @@ NSRenderableEntity::EvaluateEntity(void)
 	if (ATTR_CHANGED(velocity)) {
 		SetSendFlags(RDENT_CHANGED_VELOCITY);
 	}
+	if (ATTR_CHANGED(colormap)) {
+		SetSendFlags(RDENT_CHANGED_MODELINDEX);
+	}
+	if (ATTR_CHANGED(m_flBoneControl1)) {
+		SetSendFlags(RDENT_CHANGED_CONTROLLER);
+	}
+	if (ATTR_CHANGED(m_flBoneControl2)) {
+		SetSendFlags(RDENT_CHANGED_CONTROLLER);
+	}
+	if (ATTR_CHANGED(m_flBoneControl3)) {
+		SetSendFlags(RDENT_CHANGED_CONTROLLER);
+	}
+	if (ATTR_CHANGED(m_flBoneControl4)) {
+		SetSendFlags(RDENT_CHANGED_CONTROLLER);
+	}
+	if (ATTR_CHANGED(m_flBoneControl5)) {
+		SetSendFlags(RDENT_CHANGED_CONTROLLER);
+	}
 
 	SAVE_STATE(origin);
 	angles = Math_FixDeltaVector(angles);
 	SAVE_STATE(angles);
 	SAVE_STATE(modelindex);
+	SAVE_STATE(colormap);
 	SAVE_STATE(solid);
 	SAVE_STATE(movetype);
 	SAVE_STATE(size);
@@ -111,6 +130,11 @@ NSRenderableEntity::EvaluateEntity(void)
 	SAVE_STATE(m_iBody);
 	SAVE_STATE(scale);
 	SAVE_STATE(velocity);
+	SAVE_STATE(m_flBoneControl1);
+	SAVE_STATE(m_flBoneControl2);
+	SAVE_STATE(m_flBoneControl3);
+	SAVE_STATE(m_flBoneControl4);
+	SAVE_STATE(m_flBoneControl5);
 
 	if (ATTR_CHANGED(m_iRenderMode)) {
 		SetSendFlags(RDENT_CHANGED_RENDERMODE);
@@ -267,6 +291,13 @@ NSRenderableEntity::SendEntity(entity ePEnt, float fChanged)
 	}
 	if (fChanged & RDENT_CHANGED_RENDERAMT) {
 		WriteFloat(MSG_ENTITY, m_flRenderAmt);
+	}
+	if (fChanged & RDENT_CHANGED_CONTROLLER) {
+		WriteShort(MSG_ENTITY, m_flBoneControl1 * 32767 / 360);
+		WriteShort(MSG_ENTITY, m_flBoneControl2 * 32767 / 360);
+		WriteShort(MSG_ENTITY, m_flBoneControl3 * 32767 / 360);
+		WriteShort(MSG_ENTITY, m_flBoneControl4 * 32767 / 360);
+		WriteShort(MSG_ENTITY, m_flBoneControl5 * 32767 / 360);
 	}
 
 	return (1);
@@ -582,6 +613,13 @@ NSRenderableEntity::ReceiveEntity(float flNew, float flChanged)
 	if (flChanged & RDENT_CHANGED_RENDERAMT) {
 		m_flRenderAmt = readfloat();
 	}
+	if (flChanged & RDENT_CHANGED_CONTROLLER) {
+		m_flBoneControl1 = readshort() / (32767 / 360);
+		m_flBoneControl2 = readshort() / (32767 / 360);
+		m_flBoneControl3 = readshort() / (32767 / 360);
+		m_flBoneControl4 = readshort() / (32767 / 360);
+		m_flBoneControl5 = readshort() / (32767 / 360);
+	}
 
 	if (scale == 0.0)
 		scale = 1.0f;
@@ -629,6 +667,12 @@ NSRenderableEntity::predraw(void)
 	if (!modelindex) {
 		return (PREDRAW_NEXT);
 	}
+
+	bonecontrol1 = m_flBoneControl1;
+	bonecontrol2 = m_flBoneControl2;
+	bonecontrol3 = m_flBoneControl3;
+	bonecontrol4 = m_flBoneControl4;
+	bonecontrol5 = m_flBoneControl5;
 
 	RenderFXPass();
 	RenderDebugSkeleton();
@@ -755,6 +799,36 @@ NSRenderableEntity::SetRenderColor(vector newColor)
 		return;
 
 	m_vecRenderColor = newColor;
+}
+
+void
+NSRenderableEntity::SetBoneControl1(float val)
+{
+	m_flBoneControl1 = val;
+}
+
+void
+NSRenderableEntity::SetBoneControl2(float val)
+{
+	m_flBoneControl2 = val;
+}
+
+void
+NSRenderableEntity::SetBoneControl3(float val)
+{
+	m_flBoneControl3 = val;
+}
+
+void
+NSRenderableEntity::SetBoneControl4(float val)
+{
+	m_flBoneControl4 = val;
+}
+
+void
+NSRenderableEntity::SetBoneControl5(float val)
+{
+	m_flBoneControl5 = val;
 }
 
 #ifdef SERVER
