@@ -264,6 +264,11 @@ Footsteps_Update(void)
 {
 	NSClientPlayer pl;
 
+	/* mp_footsteps is only available in MP matches */
+	if (Util_IsSingleplayer() == false)
+		if (autocvar(mp_footsteps, 1) == 0)
+			return;
+
 	if (self.classname != "player")
 		return;
 

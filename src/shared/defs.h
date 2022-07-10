@@ -298,3 +298,20 @@ string Util_FixModel(string mdl)
 
 	return mdl;
 }
+
+bool
+Util_IsSingleplayer(void)
+{
+#ifdef SERVER
+	/* playerslots 1 is always singleplayer */
+	if (cvar("sv_playerslots") == 1)
+		return true;
+
+	/* only when coop is 1, only in multiplayer */
+	if (cvar("coop") == 1 && cvar("sv_playerslots") > 1)
+		return true;
+#endif
+
+	/* else we're multiplayer */
+	return false;
+}
