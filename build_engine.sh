@@ -142,7 +142,7 @@ fi
 
 if [ "$BUILD_ENGINE_DEPENDENCIES" -eq 1 ]
 then
-	$MAKE -j $BUILD_PROC CC=$ENGINE_CC CXX=$ENGINE_CXX makelibs FTE_TARGET=$PLATFORM
+	$MAKE -j $BUILD_PROC makelibs
 	printf "Built the static dependencies successfully.\n\n"
 fi
 
