@@ -244,9 +244,9 @@ NSClientPlayer::Physics_WaterMove(void)
 	/* we've just exited water */
 	if (WaterLevel() != 3) {
 		if (m_flUnderwaterTime < time) {
-			Sound_Play(this, CHAN_BODY, "player.gasplight");
-		} else if (m_flUnderwaterTime < time + 9) {
 			Sound_Play(this, CHAN_BODY, "player.gaspheavy");
+		} else if (m_flUnderwaterTime < time + 9) {
+			Sound_Play(this, CHAN_BODY, "player.gasplight");
 		}
 		m_flUnderwaterTime = time + 12;
 	} else if (m_flUnderwaterTime < time) {
