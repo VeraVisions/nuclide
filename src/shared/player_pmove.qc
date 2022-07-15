@@ -58,13 +58,11 @@ int saved_input_buttons;
 void
 NSClientPlayer::Physics_Fall(float flDownforce)
 {
-#if 0
 	/* apply some predicted punch to the player */
 	if (flDownforce >= PHY_FALLDMG_DISTANCE)
 		punchangle += [15,0,(input_sequence & 1) ? 15 : -15];
 	else if (flDownforce >= PHY_FALL_DISTANCE)
 		punchangle += [15,0,0];
-#endif
 
 	/* basic server-side falldamage */
 #ifdef SERVER
