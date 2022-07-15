@@ -17,48 +17,107 @@
 vector saved_input_movevalues;
 int saved_input_buttons;
 
+/* distance after which we take damage */
+#ifndef PHY_FALLDMG_DISTANCE
+	#define PHY_FALLDMG_DISTANCE 580
+#endif
+
+/* distance after which we'll receive 100 damage */
+#ifndef PHY_FALLDMG_MAXDISTANCE
+	#define PHY_FALLDMG_MAXDISTANCE 1024
+#endif
+
+#ifndef PHY_FALL_DISTANCE
+	#define PHY_FALL_DISTANCE 400
+#endif
+
+#ifndef PHY_FALLDMG_TYPE
+	#define PHY_FALLDMG_TYPE 1
+#endif
+
+#ifndef PHY_JUMP_HEIGHT
+	#define PHY_JUMP_HEIGHT 240
+#endif
+
+#ifndef PHY_WATERJUMP_HEIGHT
+	#define PHY_WATERJUMP_HEIGHT 350
+#endif
+
+#ifndef PHY_DIVESPEED_WATER
+	#define PHY_DIVESPEED_WATER 100
+#endif
+
+#ifndef PHY_DIVESPEED_SLIME
+	#define PHY_DIVESPEED_SLIME 80
+#endif
+
+#ifndef PHY_DIVESPEED_LAVA
+	#define PHY_DIVESPEED_LAVA 50
+#endif
+
 void
 NSClientPlayer::Physics_Fall(float flDownforce)
 {
-	if (flDownforce > 580) {
-#ifdef SERVER
-		float fFallDamage = (flDownforce - 580) * (100 / (1024 - 580));
-		Damage_Apply(this, world, fFallDamage, 0, DMG_FALL);
-		Sound_Play(this, CHAN_VOICE, "player.fall");
-#endif
+#if 0
+	/* apply some predicted punch to the player */
+	if (flDownforce >= PHY_FALLDMG_DISTANCE)
 		punchangle += [15,0,(input_sequence & 1) ? 15 : -15];
-	} else if (flDownforce > 400) {
+	else if (flDownforce >= PHY_FALL_DISTANCE)
 		punchangle += [15,0,0];
-#ifdef SERVER
-		Sound_Play(this, CHAN_VOICE, "player.lightfall");
 #endif
+
+	/* basic server-side falldamage */
+#ifdef SERVER
+	/* if we've reached a fallheight of PHY_FALLDMG_DISTANCE qu, start applying damage */
+	if (flDownforce >= PHY_FALLDMG_DISTANCE) {
+		float fFallDamage;
+
+		/* 0 = basic quake style, 1 = 'realistic' HL style */
+		if (PHY_FALLDMG_TYPE == 0)
+			fFallDamage = 10;
+		else if (PHY_FALLDMG_TYPE == 1) {
+			/* distance of A to B decides how much of 100 HP dmg we get*/
+			float flFallDist = PHY_FALLDMG_DISTANCE;
+			float flMaxDist = PHY_FALLDMG_MAXDISTANCE;
+			fFallDamage = (flDownforce - flFallDist) * (100 / (flMaxDist - flFallDist));
+		}
+
+		Damage_Apply(this, world, fFallDamage, 0, DMG_FALL | DMG_SKIP_ARMOR);
+		Sound_Play(this, CHAN_VOICE, "player.fall");
+	} else if (flDownforce >= PHY_FALL_DISTANCE) {
+		Sound_Play(this, CHAN_VOICE, "player.lightfall");
 	}
+#endif
 }
 
 void
 NSClientPlayer::Physics_Crouch(void)
 {
-	int iFixCrouch = FALSE;
+	bool crouchfix = false;
+
 	if (input_buttons & INPUT_BUTTON8) {
-		flags |= FL_CROUCHING;
+		AddFlags(FL_CROUCHING);
 	} else {
-		// If we aren't holding down duck anymore and 'attempt' to stand up, prevent it
-		if (flags & FL_CROUCHING) {
-			if (PMove_IsStuck(this, [0,0,36], PHY_HULL_MIN, PHY_HULL_MAX) == FALSE) {
-				flags &= ~FL_CROUCHING;
-				iFixCrouch = TRUE;
+		/* if we aren't holding down duck anymore and 'attempt' to stand up, prevent it */
+		if (GetFlags() & FL_CROUCHING) {
+			vector vecTest = [0, 0, PHY_HULL_MAX[2]];
+			if (PMove_IsStuck(this, vecTest, PHY_HULL_MIN, PHY_HULL_MAX) == FALSE) {
+				RemoveFlags(FL_CROUCHING);
+				crouchfix = true;
 			}
 		} else {
-			flags &= ~FL_CROUCHING;
+			RemoveFlags(FL_CROUCHING);
 		}
 	}
 
-	if (flags & FL_CROUCHING) {
-		setsize(this, PHY_HULL_CROUCHED_MIN, PHY_HULL_CROUCHED_MAX);
+	if (GetFlags() & FL_CROUCHING) {
+		SetSize(PHY_HULL_CROUCHED_MIN, PHY_HULL_CROUCHED_MAX);
 		view_ofs = PHY_VIEWPOS_CROUCHED;
 	} else {
-		setsize(this, PHY_HULL_MIN, PHY_HULL_MAX);
-		if (iFixCrouch && PMove_IsStuck(this, [0,0,0], PHY_HULL_MIN, PHY_HULL_MAX)) {
+		SetSize(PHY_HULL_MIN, PHY_HULL_MAX);
+
+		if (crouchfix == true && PMove_IsStuck(this, [0,0,0], PHY_HULL_MIN, PHY_HULL_MAX)) {
+			/* check if we can get unstuck by testing up to a few units up */
 			for (int i = 0; i < 36; i++) {
 				origin[2] += 1;
 				if (PMove_IsStuck(this, [0,0,0], mins, maxs) == FALSE) {
@@ -66,7 +125,7 @@ NSClientPlayer::Physics_Crouch(void)
 				}
 			}
 		}
-		setorigin(this, origin);
+		SetOrigin(origin);
 		view_ofs = PHY_VIEWPOS;
 	}
 }
@@ -75,18 +134,19 @@ NSClientPlayer::Physics_Crouch(void)
 void
 NSClientPlayer::Physics_Jump(void)
 {
-	/* climb out of substances when underwater */
-	if (waterlevel >= 2) {
-		if (watertype == CONTENT_WATER) {
-			velocity[2] = 100;
-		} else if (watertype == CONTENT_SLIME) {
-			velocity[2] = 80;
-		} else {
-			velocity[2] = 50;
-		}
+	/* we're underwater... */
+	if (WaterLevel() >= 2) {
+		/* different water contents allow for different speeds */
+		if (WaterLevel() == CONTENT_WATER)
+			velocity[2] = PHY_DIVESPEED_WATER;
+		else if (WaterLevel() == CONTENT_SLIME)
+			velocity[2] = PHY_DIVESPEED_SLIME;
+		else
+			velocity[2] = PHY_DIVESPEED_LAVA;
 	} else {
-		if (flags & FL_ONGROUND)
-			velocity[2] += 240;
+		/* standard jump here */
+		if (GetFlags() & FL_ONGROUND)
+			velocity[2] += PHY_JUMP_HEIGHT;
 	}
 }
 
@@ -96,17 +156,18 @@ NSClientPlayer::Physics_CheckJump(float premove)
 {
 	/* unset jump-key whenever it's not set */
 	if (!(input_buttons & INPUT_BUTTON2)) {
-		flags |= FL_JUMPRELEASED;
+		AddFlags(FL_JUMPRELEASED);
 		return;
 	}
 
-	if (flags & FL_WATERJUMP)
+	if (GetFlags() & FL_WATERJUMP)
 		return;
-	if (!(flags & FL_ONGROUND))
+	if (!(GetFlags() & FL_ONGROUND))
 		return;
 
+	/* if a player wants to be able to hold jump, let them */
 	if (!(infokey(this, "autojump") == "1"))
-	if (!(flags & FL_JUMPRELEASED))
+	if (!(GetFlags() & FL_JUMPRELEASED))
 		return;
 
 	if (input_buttons & INPUT_BUTTON2 && premove) {
@@ -115,8 +176,8 @@ NSClientPlayer::Physics_CheckJump(float premove)
 		}
 
 		Physics_Jump();
-		flags &= ~FL_ONGROUND;
-		flags &= ~FL_JUMPRELEASED;
+		RemoveFlags(FL_ONGROUND);
+		RemoveFlags(FL_JUMPRELEASED);
 	}
 }
 
@@ -124,7 +185,7 @@ NSClientPlayer::Physics_CheckJump(float premove)
 void
 NSClientPlayer::Physics_SetViewParms(void)
 {
-	if (flags & FL_CROUCHING) {
+	if (GetFlags() & FL_CROUCHING) {
 		mins = PHY_HULL_CROUCHED_MIN;
 		maxs = PHY_HULL_CROUCHED_MAX;
 		view_ofs = PHY_VIEWPOS_CROUCHED;
@@ -133,33 +194,34 @@ NSClientPlayer::Physics_SetViewParms(void)
 		maxs = PHY_HULL_MAX;
 		view_ofs = PHY_VIEWPOS;
 	}
-	setsize(this, mins, maxs);
+
+	SetSize(mins, maxs);
 }
 
 void
 NSClientPlayer::Physics_WaterJump(void)
 {
-	vector vStart;
-	vector vEnd;
+	vector vecStart;
 
-	makevectors(angles);
-	vStart = origin;
-	vStart[2] = vStart[2] + 8; 
-	v_forward[2] = 0;
-	normalize(v_forward);
-	vEnd = vStart + (v_forward * 24);
-	traceline(vStart, vEnd, TRUE, this);
+	/* bit above waist height */
+	vecStart = GetOrigin();
+	vecStart[2] += 8;
 
-	if (trace_fraction < 1) {
-		vStart[2] = vStart[2] + maxs[2];
-		vEnd = vStart + (v_forward * 24);
-		//movedir = trace_plane_normal * -50;
-		traceline(vStart, vEnd, TRUE, this);
-		
-		if (trace_fraction == 1) {
-			flags |= FL_WATERJUMP;
-			velocity[2] = 350;
-			flags &= ~FL_JUMPRELEASED;
+	/* look 24 qu ahead for a surface */
+	makevectors(v_angle);
+	traceline(vecStart, vecStart + (v_forward * 24), MOVE_NORMAL, this);
+
+	/* we've hit a surface */
+	if (trace_fraction < 1.0) {
+		/* let's check if we can potentially climb up */
+		vecStart[2] += maxs[2];
+		traceline(vecStart, vecStart + (v_forward * 24), MOVE_NORMAL, this);
+
+		/* there's nothing preventing us from putting our hands up here */
+		if (trace_fraction == 1.0) {
+			velocity[2] = PHY_WATERJUMP_HEIGHT;
+			AddFlags(FL_WATERJUMP);
+			RemoveFlags(FL_JUMPRELEASED);
 			return;
 		}
 	}
@@ -169,17 +231,17 @@ NSClientPlayer::Physics_WaterJump(void)
 void
 NSClientPlayer::Physics_WaterMove(void)
 {
-	if (movetype == MOVETYPE_NOCLIP) {
+	if (GetMovetype() == MOVETYPE_NOCLIP) {
 		return;
 	}
 
 #ifdef SERVER
-	if (health < 0) {
+	if (GetHealth() < 0) {
 		return;
 	}
 
 	/* we've just exited water */
-	if (waterlevel != 3) {
+	if (WaterLevel() != 3) {
 		if (underwater_time < time) {
 			Sound_Play(this, CHAN_BODY, "player.gasplight");
 		} else if (underwater_time < time + 9) {
@@ -195,23 +257,23 @@ NSClientPlayer::Physics_WaterMove(void)
 	}
 #endif
 
-	if (!waterlevel){
-		if (flags & FL_INWATER) {
+	if (!WaterLevel()){
+		if (GetFlags() & FL_INWATER) {
 #ifdef SERVER
 			Sound_Play(this, CHAN_BODY, "player.waterexit");
 #endif
-			flags &= ~FL_INWATER;
+			RemoveFlags(FL_INWATER);
 		}
 		return;
 	}
 
 #ifdef SERVER
-	if (watertype == CONTENT_LAVA) {
+	if (WaterLevel() == CONTENT_LAVA) {
 		if (pain_time < time) {
 			pain_time = time + 0.2;
 			Damage_Apply(this, world, 10 * waterlevel, 0, DMG_BURN);
 		}
-	} else if (watertype == CONTENT_SLIME) {
+	} else if (WaterLevel() == CONTENT_SLIME) {
 		if (pain_time < time) {
 			pain_time = time + 1;
 			Damage_Apply(this, world, 4 * waterlevel, 0, DMG_ACID);
@@ -219,16 +281,16 @@ NSClientPlayer::Physics_WaterMove(void)
 	}
 #endif
 
-	if (!(flags & FL_INWATER)) {
+	if (!(GetFlags() & FL_INWATER)) {
 #ifdef SERVER
 		Sound_Play(this, CHAN_BODY, "player.waterenter");
 		pain_time = 0;
 #endif
-		flags |= FL_INWATER;
+		AddFlags(FL_INWATER);
 	}
 
 	/* we might need to apply extra-velocity to get out of water-volumes */
-	if (waterlevel >= 2) {
+	if (WaterLevel() >= 2) {
 		Physics_WaterJump();
 	}
 }
@@ -236,7 +298,7 @@ NSClientPlayer::Physics_WaterMove(void)
 float
 NSClientPlayer::Physics_MaxSpeed(void)
 {
-	return (flags & FL_CROUCHING) ? 135 : 270;
+	return (GetFlags() & FL_CROUCHING) ? 135 : 270;
 }
 
 void
