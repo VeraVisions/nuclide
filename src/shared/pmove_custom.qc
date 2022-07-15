@@ -241,6 +241,10 @@ PMoveCustom_AccelFriction(float move_time, float premove, vector wish_dir, float
 		vecTemp[2] = 0;
 		flFriction = vlen(vecTemp);
 
+		/* Next few lines of code assumes self is using player's hull, however it could be a monster
+			who use differen hull size, therefore it is invalid, so we probably better of using mins/maxs,
+			on the other hand edge friction is probably not that important. */
+
 		// if the leading edge is over a dropoff, increase friction
 		vecTemp = self.origin + normalize(vecTemp) * 16 + [0,0,1] * PHY_HULL_MIN[2];
 		traceline(vecTemp, vecTemp + [0,0,-34], TRUE, self);
@@ -592,6 +596,7 @@ PMoveCustom_RunPlayerPhysics(entity target)
 	self = oldself;
 }
 
+/* Next code assumes self is using player's hull, so it should not be used for monsters who use different hull size. */
 void
 PMoveCustom_RunCrouchPhysics(entity target)
 {
