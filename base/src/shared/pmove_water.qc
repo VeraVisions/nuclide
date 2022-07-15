@@ -37,7 +37,7 @@ GamePMove_WaterMove(player target)
 	} else if (target.underwater_time < time) {
 		/* we've been underwater... for too long. */
 		if (target.pain_time < time) {
-			Damage_Apply(target, world, 5, DMG_DROWN, 0);
+			Damage_Apply(target, world, 5, 0, DMG_DROWN);
 			target.pain_time = time + 1;
 		}
 	}
@@ -57,12 +57,12 @@ GamePMove_WaterMove(player target)
 	if (target.watertype == CONTENT_LAVA) {
 		if (target.pain_time < time) {
 			target.pain_time = time + 0.2;
-			Damage_Apply(target, world, 10*target.waterlevel, DMG_BURN, 0);
+			Damage_Apply(target, world, 10*target.waterlevel, 0, DMG_BURN);
 		}
 	} else if (target.watertype == CONTENT_SLIME) {
 		if (target.pain_time < time) {
 			target.pain_time = time + 1;
-			Damage_Apply(target, world, 4*target.waterlevel, DMG_ACID, 0);
+			Damage_Apply(target, world, 4*target.waterlevel, 0, DMG_ACID);
 		}
 	}
 #endif

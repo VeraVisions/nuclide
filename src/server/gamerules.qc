@@ -39,17 +39,26 @@ CGameRules::ConsoleCommand(NSClientPlayer pl, string cmd)
 void
 CGameRules::PlayerConnect(NSClientPlayer pl)
 {
-	//print("ClientConnect!\n");
+	if (Plugin_PlayerConnect(pl) == FALSE)
+		bprint(PRINT_HIGH, sprintf("%s connected\n", pl.netname));
 }
 void
 CGameRules::PlayerDisconnect(NSClientPlayer pl)
 {
-	//print("ClientDisconnect!\n");
+	bprint(PRINT_HIGH, sprintf("%s disconnected\n", pl.netname));
+
+	/* make the client 'unusable' */
+	pl.SetSolid(SOLID_NOT);
+	pl.SetMovetype(MOVETYPE_NONE);
+	pl.SetModelindex(0);
+	pl.SetHealth(0);
+	pl.SetTakedamage(DAMAGE_NO);
 }
+
 void
 CGameRules::PlayerKill(NSClientPlayer pl)
 {
-	//print("PlayerKill!\n");
+	Damage_Apply(pl, pl, pl.health, 0, DMG_SKIP_ARMOR);
 }
 void
 CGameRules::PlayerDeath(NSClientPlayer pl)

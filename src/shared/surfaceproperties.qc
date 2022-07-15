@@ -464,7 +464,7 @@ void
 SurfData_Impact(entity e, int fl, vector org, vector ang)
 {
 	static void SurfData_Impact_SurfaceParm(entity e, int fl, vector org, vector ang) {
-#if 1
+#ifndef NEW_MATERIALS
 		switch (serverkeyfloat("*bspversion")) {
 		case BSPVER_HL:
 			float surf;

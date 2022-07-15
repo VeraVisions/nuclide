@@ -189,7 +189,7 @@ NSClientPlayer::Physics_WaterMove(void)
 	} else if (underwater_time < time) {
 		/* we've been underwater... for too long. */
 		if (pain_time < time) {
-			Damage_Apply(this, world, 5, DMG_DROWN, 0);
+			Damage_Apply(this, world, 5, 0, DMG_DROWN);
 			pain_time = time + 1;
 		}
 	}
@@ -209,12 +209,12 @@ NSClientPlayer::Physics_WaterMove(void)
 	if (watertype == CONTENT_LAVA) {
 		if (pain_time < time) {
 			pain_time = time + 0.2;
-			Damage_Apply(this, world, 10*waterlevel, DMG_BURN, 0);
+			Damage_Apply(this, world, 10 * waterlevel, 0, DMG_BURN);
 		}
 	} else if (watertype == CONTENT_SLIME) {
 		if (pain_time < time) {
 			pain_time = time + 1;
-			Damage_Apply(this, world, 4*waterlevel, DMG_ACID, 0);
+			Damage_Apply(this, world, 4 * waterlevel, 0, DMG_ACID);
 		}
 	}
 #endif

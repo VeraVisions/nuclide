@@ -28,6 +28,20 @@
 #include "route.h"
 #include "way.h"
 
+/* helper macros */
+#define EVALUATE_FIELD(fieldname, changedflag) {\
+			if (ATTR_CHANGED(fieldname)) { \
+				SetSendFlags(changedflag); \
+			} \
+			SAVE_STATE(fieldname); \
+           }
+#define EVALUATE_VECTOR(fieldname, id, changedflag) {\
+			if (VEC_CHANGED(fieldname, id)) { \
+				SetSendFlags(changedflag); \
+			} \
+			SAVE_STATE(fieldname);\
+           }
+
 #define AREAPORTAL_CLOSED 0
 #define AREAPORTAL_OPEN 1
 

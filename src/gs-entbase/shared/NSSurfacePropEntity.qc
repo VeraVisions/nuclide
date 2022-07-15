@@ -32,100 +32,93 @@ NSSurfacePropEntity::Spawned(void)
 
 /* networking */
 #ifdef SERVER
+
+#if INDEV
+typedef enum
+{
+	NETFIELD_BYTE,
+	NETFIELD_SHORT,
+	NETFIELD_FLOAT,
+	NETFIELD_INT,
+	NETFIELD_COORD,
+	NETFIELD_ANGLE,
+	NETFIELD_ENTITY,
+	NETFIELD_STRING
+} nettype_e;
+
+typedef struct
+{
+	.variant field;
+	.variant field_net;
+	int changedflag;
+	__variant defaultvalue;
+	nettype_e type;
+} netinfo_t;
+
+const netinfo_t n_NSSurfacePropEntity[] =
+{
+	{origin[0], NSEntity::origin_net[0], SRFENT_CHANGED_ORIGIN, 0, NETFIELD_COORD},
+	{origin[1], NSEntity::origin_net[1], SRFENT_CHANGED_ORIGIN, 0, NETFIELD_COORD},
+	{origin[2], NSEntity::origin_net[2], SRFENT_CHANGED_ORIGIN, 0, NETFIELD_COORD},
+	{angles[0], NSEntity::angles_net[0], SRFENT_CHANGED_ANGLES, 0, NETFIELD_ANGLE},
+	{angles[1], NSEntity::angles_net[1], SRFENT_CHANGED_ANGLES, 0, NETFIELD_ANGLE},
+	{angles[2], NSEntity::angles_net[2], SRFENT_CHANGED_ANGLES, 0, NETFIELD_ANGLE},
+	{modelindex, NSEntity::modelindex_net, SRFENT_CHANGED_MODELINDEX, 0, NETFIELD_SHORT},
+	{solid, NSEntity::solid_net, SRFENT_CHANGED_SOLID, 0, NETFIELD_BYTE},
+	{movetype, NSEntity::movetype_net, SRFENT_CHANGED_MOVETYPE, 0, NETFIELD_BYTE},
+	{flags, NSEntity::flags_net, SRFENT_CHANGED_FLAGS, 0, NETFIELD_FLOAT},
+	{size[0], NSEntity::size_net[0], SRFENT_CHANGED_SIZE, 0, NETFIELD_SHORT},
+	{size[1], NSEntity::size_net[1], SRFENT_CHANGED_SIZE, 0, NETFIELD_SHORT},
+	{size[2], NSEntity::size_net[2], SRFENT_CHANGED_SIZE, 0, NETFIELD_SHORT},
+	{frame, NSRenderableEntity::frame_net, SRFENT_CHANGED_FRAME, 0, NETFIELD_SHORT},
+	{skin, NSRenderableEntity::skin_net, SRFENT_CHANGED_SKIN, 0, NETFIELD_BYTE},
+	{effects, NSRenderableEntity::effects_net, SRFENT_CHANGED_EFFECTS, 0, NETFIELD_SHORT},
+	{NSRenderableEntity::m_iBody, NSRenderableEntity::m_iBody_net, SRFENT_CHANGED_BODY, 0, NETFIELD_BYTE},
+	{scale, NSEntity::scale_net, SRFENT_CHANGED_SCALE, 0, NETFIELD_FLOAT},
+	{velocity[0], NSEntity::velocity_net[0], SRFENT_CHANGED_VELOCITY, 0, NETFIELD_ANGLE},
+	{velocity[1], NSEntity::velocity_net[1], SRFENT_CHANGED_VELOCITY, 0, NETFIELD_ANGLE},
+	{velocity[2], NSEntity::velocity_net[2], SRFENT_CHANGED_VELOCITY, 0, NETFIELD_ANGLE},
+	{NSRenderableEntity::m_iRenderMode, NSRenderableEntity::m_iRenderMode_net, SRFENT_CHANGED_RENDERMODE, 0, NETFIELD_BYTE},
+	{NSRenderableEntity::m_iRenderFX, NSRenderableEntity::m_iRenderFX_net, SRFENT_CHANGED_RENDERMODE, 0, NETFIELD_BYTE},
+};
+
 void
 NSSurfacePropEntity::EvaluateEntity(void)
 {
-	if (ATTR_CHANGED(origin)) {
-		SetSendFlags(SRFENT_CHANGED_ORIGIN);
-	}
-	if (ATTR_CHANGED(angles)) {
-		SetSendFlags(SRFENT_CHANGED_ANGLES);
-	}
-	if (ATTR_CHANGED(modelindex)) {
-		SetSendFlags(SRFENT_CHANGED_MODELINDEX);
-	}
-	if (ATTR_CHANGED(solid)) {
-		SetSendFlags(SRFENT_CHANGED_SOLID);
-	}
-	if (ATTR_CHANGED(movetype)) {
-		SetSendFlags(SRFENT_CHANGED_MOVETYPE);
-	}
-	if (ATTR_CHANGED(flags)) {
-		SetSendFlags(SRFENT_CHANGED_FLAGS);
-	}
-	if (ATTR_CHANGED(size)) {
-		SetSendFlags(SRFENT_CHANGED_SIZE);
-	}
-	if (ATTR_CHANGED(frame)) {
-		SetSendFlags(SRFENT_CHANGED_FRAME);
-	}
-	if (ATTR_CHANGED(skin)) {
-		SetSendFlags(SRFENT_CHANGED_SKIN);
-	}
-	if (ATTR_CHANGED(effects)) {
-		SetSendFlags(SRFENT_CHANGED_EFFECTS);
-	}
-	if (ATTR_CHANGED(m_iBody)) {
-		SetSendFlags(SRFENT_CHANGED_BODY);
-	}
-	if (ATTR_CHANGED(scale)) {
-		SetSendFlags(SRFENT_CHANGED_SCALE);
-	}
-	if (ATTR_CHANGED(velocity)) {
-		SetSendFlags(SRFENT_CHANGED_VELOCITY);
-	}
-	if (ATTR_CHANGED(m_flBoneControl1)) {
-		SetSendFlags(SRFENT_CHANGED_CONTROLLER);
-	}
-	if (ATTR_CHANGED(m_flBoneControl2)) {
-		SetSendFlags(SRFENT_CHANGED_CONTROLLER);
-	}
-	if (ATTR_CHANGED(m_flBoneControl3)) {
-		SetSendFlags(SRFENT_CHANGED_CONTROLLER);
-	}
-	if (ATTR_CHANGED(m_flBoneControl4)) {
-		SetSendFlags(SRFENT_CHANGED_CONTROLLER);
-	}
-	if (ATTR_CHANGED(m_flBoneControl5)) {
-		SetSendFlags(SRFENT_CHANGED_CONTROLLER);
-	}
+	for (int i = 0; i < n_NSSurfacePropEntity.length; i++) {
+		if (this.(n_NSSurfacePropEntity[i].field) != this.(n_NSSurfacePropEntity[i].field_net))
+			SetSendFlags(n_NSSurfacePropEntity[i].changedflag);
 
-	SAVE_STATE(origin);
-	SAVE_STATE(angles);
-	SAVE_STATE(modelindex);
-	SAVE_STATE(solid);
-	SAVE_STATE(movetype);
-	SAVE_STATE(flags);
-	SAVE_STATE(size);
-	SAVE_STATE(frame);
-	SAVE_STATE(skin);
-	SAVE_STATE(effects);
-	SAVE_STATE(m_iBody);
-	SAVE_STATE(scale);
-	SAVE_STATE(velocity);
-	SAVE_STATE(m_flBoneControl1);
-	SAVE_STATE(m_flBoneControl2);
-	SAVE_STATE(m_flBoneControl3);
-	SAVE_STATE(m_flBoneControl4);
-	SAVE_STATE(m_flBoneControl5);
+		this.(n_NSSurfacePropEntity[i].field_net) = this.(n_NSSurfacePropEntity[i].field);
+	}
+}
+#endif
 
-	if (ATTR_CHANGED(m_iRenderMode)) {
-		SetSendFlags(SRFENT_CHANGED_RENDERMODE);
-	}
-	if (ATTR_CHANGED(m_iRenderFX)) {
-		SetSendFlags(SRFENT_CHANGED_RENDERMODE);
-	}
-
-	if (ATTR_CHANGED(m_vecRenderColor)) {
-		SetSendFlags(SRFENT_CHANGED_RENDERCOLOR);
-	}
-	if (ATTR_CHANGED(m_flRenderAmt)) {
-		SetSendFlags(SRFENT_CHANGED_RENDERAMT);
-	}
-	SAVE_STATE(m_iRenderMode);
-	SAVE_STATE(m_iRenderFX);
-	SAVE_STATE(m_vecRenderColor);
-	SAVE_STATE(m_flRenderAmt);
+void
+NSSurfacePropEntity::EvaluateEntity(void)
+{
+	EVALUATE_FIELD(origin, SRFENT_CHANGED_ORIGIN)
+	EVALUATE_FIELD(angles, SRFENT_CHANGED_ANGLES)
+	EVALUATE_FIELD(modelindex, SRFENT_CHANGED_MODELINDEX)
+	EVALUATE_FIELD(solid, SRFENT_CHANGED_SOLID)
+	EVALUATE_FIELD(movetype, SRFENT_CHANGED_FLAGS)
+	EVALUATE_FIELD(flags, SRFENT_CHANGED_FLAGS)
+	EVALUATE_FIELD(size, SRFENT_CHANGED_SIZE)
+	EVALUATE_FIELD(frame, SRFENT_CHANGED_FRAME)
+	EVALUATE_FIELD(skin, SRFENT_CHANGED_SKIN)
+	EVALUATE_FIELD(effects, SRFENT_CHANGED_EFFECTS)
+	EVALUATE_FIELD(m_iBody, SRFENT_CHANGED_BODY)
+	EVALUATE_FIELD(scale, SRFENT_CHANGED_SCALE)
+	EVALUATE_FIELD(velocity, SRFENT_CHANGED_VELOCITY)
+	EVALUATE_FIELD(m_iRenderMode, SRFENT_CHANGED_RENDERMODE)
+	EVALUATE_FIELD(m_iRenderFX, SRFENT_CHANGED_RENDERMODE)
+	EVALUATE_FIELD(m_vecRenderColor, SRFENT_CHANGED_RENDERCOLOR)
+	EVALUATE_FIELD(m_flRenderAmt, SRFENT_CHANGED_RENDERAMT)
+	EVALUATE_FIELD(m_flBoneControl1, SRFENT_CHANGED_CONTROLLER)
+	EVALUATE_FIELD(m_flBoneControl2, SRFENT_CHANGED_CONTROLLER)
+	EVALUATE_FIELD(m_flBoneControl3, SRFENT_CHANGED_CONTROLLER)
+	EVALUATE_FIELD(m_flBoneControl4, SRFENT_CHANGED_CONTROLLER)
+	EVALUATE_FIELD(m_flBoneControl5, SRFENT_CHANGED_CONTROLLER)
 }
 
 /* Make sure StartFrame calls this */

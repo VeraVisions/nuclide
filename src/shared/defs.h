@@ -32,6 +32,7 @@
 #define ATTR_CHANGED(x) (x ##_net != x)
 #define VEC_CHANGED(x,y) (x ##_net[y] != x[y])
 
+
 #include "global.h"
 #include "sound.h"
 
