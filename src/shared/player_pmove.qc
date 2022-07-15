@@ -240,17 +240,17 @@ NSClientPlayer::Physics_WaterMove(void)
 
 	/* we've just exited water */
 	if (WaterLevel() != 3) {
-		if (underwater_time < time) {
+		if (m_flUnderwaterTime < time) {
 			Sound_Play(this, CHAN_BODY, "player.gasplight");
-		} else if (underwater_time < time + 9) {
+		} else if (m_flUnderwaterTime < time + 9) {
 			Sound_Play(this, CHAN_BODY, "player.gaspheavy");
 		}
-		underwater_time = time + 12;
-	} else if (underwater_time < time) {
+		m_flUnderwaterTime = time + 12;
+	} else if (m_flUnderwaterTime < time) {
 		/* we've been underwater... for too long. */
-		if (pain_time < time) {
+		if (m_flPainTime < time) {
 			Damage_Apply(this, world, 5, 0, DMG_DROWN);
-			pain_time = time + 1;
+			m_flPainTime = time + 1;
 		}
 	}
 #endif
@@ -267,14 +267,14 @@ NSClientPlayer::Physics_WaterMove(void)
 
 #ifdef SERVER
 	if (WaterLevel() == CONTENT_LAVA) {
-		if (pain_time < time) {
-			pain_time = time + 0.2;
-			Damage_Apply(this, world, 10 * waterlevel, 0, DMG_BURN);
+		if (m_flPainTime < time) {
+			Damage_Apply(this, world, 10 * WaterLevel(), 0, DMG_BURN);
+			m_flPainTime = time + 0.2;
 		}
 	} else if (WaterLevel() == CONTENT_SLIME) {
-		if (pain_time < time) {
-			pain_time = time + 1;
-			Damage_Apply(this, world, 4 * waterlevel, 0, DMG_ACID);
+		if (m_flPainTime < time) {
+			Damage_Apply(this, world, 4 * WaterLevel(), 0, DMG_ACID);
+			m_flPainTime = time + 1;
 		}
 	}
 #endif
@@ -282,7 +282,7 @@ NSClientPlayer::Physics_WaterMove(void)
 	if (!(GetFlags() & FL_INWATER)) {
 #ifdef SERVER
 		Sound_Play(this, CHAN_BODY, "player.waterenter");
-		pain_time = 0;
+		m_flPainTime = 0;
 #endif
 		AddFlags(FL_INWATER);
 	}
@@ -347,8 +347,7 @@ NSClientPlayer::Physics_InputPostMove(void)
 	Animation_TimerUpdate((player)this, input_timelength);
 	Animation_PlayerUpdate((player)this);
 
-	flags &= ~FL_FROZEN;
-
+	RemoveFlags(FL_FROZEN);
 	ClientInput();
 }
 
@@ -417,7 +416,7 @@ NSClientPlayer::Physics_Run(void)
 	dest = src + v_forward * 64;
 	traceline(src, dest, MOVE_NORMAL, this);
 
-	flags &= ~FL_ONUSABLE;
+	RemoveFlags(FL_ONUSABLE);
 	if (trace_ent.identity == 1) {
 		NSEntity foo = (NSEntity)trace_ent;
 		if (foo.PlayerUse) {

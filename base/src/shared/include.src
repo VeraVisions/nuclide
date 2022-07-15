@@ -5,7 +5,6 @@ weapon_common.h
 animations.h
 animations.qc
 pmove.qc
-pmove_water.qc
 
 fx_blood.qc
 fx_breakmodel.qc
