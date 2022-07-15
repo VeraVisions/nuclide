@@ -101,8 +101,8 @@ NSClientPlayer:NSClientSpectator
 	int step;
 	float step_time;
 
+	int m_iUnderwaterDamage;
 	float m_flUnderwaterTime;
-	//float underwater_dmg;
 	float m_flPainTime;
 
 	entity last_used;

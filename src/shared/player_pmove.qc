@@ -93,6 +93,9 @@ NSClientPlayer::Physics_Crouch(void)
 {
 	bool crouchfix = false;
 
+	if (GetMovetype() != MOVETYPE_WALK)
+		return;
+
 	if (input_buttons & INPUT_BUTTON8) {
 		AddFlags(FL_CROUCHING);
 	} else {
@@ -309,13 +312,17 @@ NSClientPlayer::Physics_InputPreMove(void)
 		input_movevalues *= 0.25;
 	}
 
-	/* move camera up (noclip, fly) when holding jump */
-	if (input_buttons & INPUT_BUTTON2) {
-		input_movevalues[2] = 240;
-	}
-	/* move camera down (noclip, fly) when holding crouching */
-	if (input_buttons & INPUT_BUTTON8) {
-		input_movevalues[2] = -240;
+	bool flying = ((GetMovetype() == MOVETYPE_NOCLIP) || (GetMovetype() == MOVETYPE_FLY));
+
+	if (flying == true) {
+		/* move camera up (noclip, fly) when holding jump */
+		if (input_buttons & INPUT_BUTTON2) {
+			input_movevalues[2] = 240;
+		}
+		/* move camera down (noclip, fly) when holding crouching */
+		if (input_buttons & INPUT_BUTTON8) {
+			input_movevalues[2] = -240;
+		}
 	}
 
 	if (flags & FL_FROZEN || movetype == MOVETYPE_NONE) {
