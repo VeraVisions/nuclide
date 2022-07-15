@@ -299,7 +299,9 @@ NSClientPlayer::Physics_WaterMove(void)
 float
 NSClientPlayer::Physics_MaxSpeed(void)
 {
-	return (GetFlags() & FL_CROUCHING) ? 135 : 270;
+	float maxspeed = serverkeyfloat("phy_maxspeed");
+	float desiredspeed = (GetFlags() & FL_CROUCHING) ? PMOVE_STEP_WALKSPEED : maxspeed;
+	return min(desiredspeed, maxspeed);
 }
 
 void
