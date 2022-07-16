@@ -169,11 +169,44 @@ NSMonster::AlertNearby(void)
 	}
 }
 
+/* returns TRUE if 'enemy' should be considered a valid target for killing */
+bool
+NSMonster::IsValidEnemy(entity enemy)
+{
+	if (enemy == __NULL__)
+		return FALSE;
+	/* dead enemy should not be considered valid */
+	if (enemy.solid == SOLID_CORPSE || enemy.health <= 0)
+		return FALSE;
+	/* such monster should ignore players */
+	if ((enemy.flags & FL_CLIENT) && HasSpawnFlags(MSF_IGNOREPLAYER))
+		return FALSE;
+	/* monsters ignore enemy who uses notarget cheat, useful for development */
+	if (enemy.flags & FL_NOTARGET)
+		return FALSE;
+	/* if they're our friend... ignore */
+	if (IsFriend(enemy.m_iAlliance))
+		return FALSE;
+	/* prevent from shooting non-sentient stuff */
+	if (!(enemy.flags & (FL_MONSTER | FL_CLIENT)))
+		return FALSE;
+
+	return TRUE;
+}
+
 void
 NSMonster::SeeThink(void)
 {
-	if (m_eEnemy)
-		return;
+	if (m_eEnemy) {
+		/* check if we should invalidate current enemy */
+		if (IsValidEnemy(m_eEnemy))
+			return;
+		/* enemy is not valid anymore, reset it, clear route and search for new enemy */
+		m_iMState = MONSTER_IDLE;
+		m_eEnemy = __NULL__;
+		ClearRoute();
+		m_flSeeTime = 0;
+	}
 
 	if (m_flSeeTime > time)
 		return;
@@ -190,20 +223,8 @@ NSMonster::SeeThink(void)
 	}
 
 	for (entity w = world; (w = findfloat(w, ::takedamage, DAMAGE_YES));) {
-		/* prevent them from shooting non-sentient stuff */
-		if (!(w.flags & FL_MONSTER) && !(w.flags & FL_CLIENT))
-			continue;
-
-		/* if they're our friend... ignore*/
-		if (IsFriend(w.m_iAlliance))
-			continue;
-
-		/* is the target dead? */
-		if (w.health <= 0)
-			continue;
-
-		/* some monsters will ignore players */
-		if ((w.flags & FL_CLIENT) && HasSpawnFlags(MSF_IGNOREPLAYER))
+		/* check if 'w' could be a valid enemy */
+		if (!IsValidEnemy(w))
 			continue;
 
 		/* first, is the potential enemy in our field of view? */
@@ -258,12 +279,6 @@ NSMonster::AttackThink(void)
 
 	if (!m_eEnemy)
 		return;
-
-	/* reset */
-	if (m_eEnemy.solid == SOLID_CORPSE || (m_eEnemy && m_eEnemy.health <= 0)) {
-		m_eEnemy = __NULL__;
-		ClearRoute();
-	}
 
 	/* do we have a clear shot? */
 	other = world;
@@ -493,7 +508,7 @@ NSMonster::WalkRoute(void)
 	vector endangles;
 
 	/* we're busy shooting at something, don't walk */
-	if (m_iMState == MONSTER_AIMING) {
+	if (m_iMState == MONSTER_AIMING && m_eEnemy) {
 		endangles = vectoangles(m_eEnemy.origin - origin);
 
 		/* TODO: lerp */
@@ -507,7 +522,7 @@ NSMonster::WalkRoute(void)
 		}
 		m_vecTurnAngle[1] = endangles[1];
 		input_movevalues = [m_flSequenceSpeed, 0, 0];
-	} else if (m_iMState == MONSTER_CHASING) {
+	} else if (m_iMState == MONSTER_CHASING && m_eEnemy) {
 		/* we've got 'em in our sights, just need to walk closer */
 		endangles = vectoangles(m_eEnemy.origin - origin);
 		input_movevalues = [GetChaseSpeed(), 0, 0];
@@ -1108,6 +1123,7 @@ NSMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
 }
 
 entity NSMonster_FindClosestPlayer(entity target) {
+	NSMonster t = (NSMonster)target;
 	entity best = world;
 	float bestdist;
 	float dist;
@@ -1116,7 +1132,7 @@ entity NSMonster_FindClosestPlayer(entity target) {
 
 	for (entity e = world; (e = find(e, classname, "player"));) {
 		/* hack: don't ever return dead players. they're invisible. */
-		if (e.health <= 0)
+		if (!t.IsValidEnemy(e))
 			continue;
 
 		dist = vlen(target.origin - e.origin);
