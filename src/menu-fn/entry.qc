@@ -141,14 +141,12 @@ m_init(void)
 		Music_MenuStart();
 	}
 
-#if 0
 	if (games[gameinfo_current].pkgfile != "")
-	if (!whichpack(games[gameinfo_current].pkgfile) || autocvar_menu_updating) {
+	if not (whichpack(games[gameinfo_current].pkgfile) || autocvar_menu_updating) {
 		/* reload in case of video restarts? */
 		shaderforname("logo_avi", "{\n{\nvideomap av:media/logo.avi\n}\n}");
 		g_menupage = PAGE_UPDATES;
 	}
-#endif
 
 	Menu_AutoScale();
 	Menu_GammaHack();

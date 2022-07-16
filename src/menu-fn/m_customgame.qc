@@ -32,7 +32,6 @@ CMainButton customgame_btnDone;
 int g_iModInstallCache;
 string g_strModInstallCache;
 
-
 #if 1
 /* get installing id */
 void
@@ -701,6 +700,16 @@ customgame_lbmods_changed(void)
 	}
 }
 
+/* set some sane default packages, so that we don't need to ship a custom liblist */
+void
+games_setdefaultpkgs(int id)
+{
+	if (games[id].gamedir == "valve") {
+		games[id].pkgname = "valve_dayone;valve_uplink;valve_realmedia;valve_opfordemo;valve_hlds;valve_patch1110;addon_furtherdata;addon_holidaymodels";
+		games[id].pkgfile = "maps/crossfire.bsp";
+	}
+}
+
 void
 games_init_2(void)
 {
@@ -764,6 +773,8 @@ games_init_2(void)
 		games[id].pkgid = -1;
 		games[id].steambg = 0;
 
+		games_setdefaultpkgs(id);
+
 		if (games_check_manifest(id, gamedirname) == 1) {
 			NSLog("[MENU] Found manifest for %s", gamedirname);
 			games[id].info_type = GAMEINFO_MANIFEST;
@@ -824,6 +835,7 @@ games_init(void)
 	games[id].pkgid = -1;
 	games[id].steambg = 0;
 	gameinfo_current = 0;
+	games_setdefaultpkgs(id);
 
 #ifndef WEBMENU
 	if (games_check_manifest(id, gamedirname) == 1) {
