@@ -117,47 +117,9 @@ Empty(void)
 	
 }
 
-void
-Util_Destroy(void)
-{
-	remove(self);
-}
-
-string
-Util_TimeToString(float fTime)
-{
-	fTime = rint(fTime);
-
-	switch (fTime) {
-		case 0: return "less than one";
-		case 1: return "one";
-		case 2: return "two";
-		case 3: return "three";
-		case 4: return "four";
-		case 5: return "five";
-		case 6: return "six";
-		case 7: return "seven";
-		case 8: return "eight";
-		case 9: return "nine";
-		case 10: return "ten";
-		default: return "over ten";
-	}
-}
-
-
-/* returns whether or not the mode we're playing is a team game */
-#ifdef SERVER
-int Gamerules_IsTeamPlay(void);
-#endif
-int
-Util_IsTeamPlay(void)
-{
-#ifdef SERVER
-	return Gamerules_IsTeamPlay();
-#else
-	return (serverkeyfloat("teams") > 0) ? TRUE : FALSE;
-#endif
-}
+void Util_Destroy(void);
+string Util_TimeToString(float fTime);
+int Util_IsTeamplay(void);
 
 __wrap void
 dprint(string m)

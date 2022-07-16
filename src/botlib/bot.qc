@@ -166,7 +166,7 @@ bot::SeeThink(void)
 			continue;
 
 		/* ain't go hurt our brothers and sisters */
-		if (rules.IsTeamPlay() == TRUE)
+		if (rules.IsTeamplay() == TRUE)
 			if (team == w.team)
 				continue;
 

@@ -31,7 +31,7 @@ Client_FixAngle(entity target, vector ang)
 	WriteFloat(MSG_MULTICAST, ang[1]);
 	WriteFloat(MSG_MULTICAST, ang[2]);
 	msg_entity = target;
-	multicast([0,0,0], MULTICAST_ONE);
+	multicast([0,0,0], MULTICAST_ONE_R);
 }
 
 /*

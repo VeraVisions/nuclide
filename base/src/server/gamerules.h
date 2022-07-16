@@ -43,5 +43,5 @@ class MultiplayerRules:GameRules
 	/* client */
 	virtual void(NSClientPlayer) PlayerSpawn;
 	virtual void(NSClientPlayer) PlayerDeath;
-	virtual float(NSClientPlayer, string) ConsoleCommand;
+	virtual bool(NSClientPlayer, string) ConsoleCommand;
 };

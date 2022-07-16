@@ -14,13 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-var int g_initialized = FALSE;
+var bool g_initialized = false;
 
 #define FN_UPDATE_PKGLIST "http://www.frag-net.com/dl/%s_packages"
 
 const string LICENSE_TEXT = "\
 ==============================================================================\
-Copyright (c) 2016-2020 Marco Cawthorne <marco@icculus.org>\
+Copyright (c) 2016-2022 Marco Cawthorne <marco@vera-visions.com>\
 \
 Permission to use, copy, modify, and distribute this software for any\
 purpose with or without fee is hereby granted, provided that the above\
@@ -69,12 +69,12 @@ void
 Menu_GammaHack(void)
 {
 	if (cvar("brightness") != cvar("vid_brightness")) {
-		cvar_set("brightness", "0");
+		localcmd("seta brightness 0\n");
 		print("^1Menu_RendererRestarted^7: Brightness hack.\n");
 	}
 
 	if (cvar("gamma") != cvar("vid_gamma")) {
-		cvar_set("gamma", "1");
+		localcmd("seta gamma 1\n");
 		print("^1Menu_RendererRestarted^7: Gamma hack.\n");
 	}
 }
@@ -135,7 +135,6 @@ m_init(void)
 
 	Colors_Init();
 	Strings_Init();
-	g_initialized = TRUE;
 
 	if (games[gameinfo_current].gamedir != "valve" || games[gameinfo_current].steambg == 1) {
 		m_intro_skip();
@@ -166,6 +165,8 @@ m_init(void)
 		string mapname = games[gameinfo_current].menumap;
 		localcmd(strcat("map_background ", mapname, "\n"));
 	}
+
+	g_initialized = true;
 }
 
 /* called upon vid_reload, vid_restart, but not menu init/restart */
@@ -180,7 +181,8 @@ Menu_RendererRestarted(string rendererdesc)
 void
 m_shutdown(void)
 {
-	g_initialized = FALSE;
+	g_initialized = false;
+
 	/*int i = 0;
 	for (i = 0; i < g_bmp.length; i++) {
 		freepic(g_bmp[i]);
@@ -203,11 +205,13 @@ m_draw(vector screensize)
 {
 	static float oldtime;
 	frametime = time - oldtime;
-	
-	if (g_initialized == FALSE) {
+
+	/* don't attempt to draw unless we're done loading everything */
+	if (g_initialized == false) {
 		return;
 	}
 
+	/* set new scale whenever the resolution changes */
 	if ((screensize[0] != g_vidsize[0]) || (screensize[1] != g_vidsize[1])) {
 		g_vidsize[0] = screensize[0];
 		g_vidsize[1] = screensize[1];
@@ -230,6 +234,7 @@ m_draw(vector screensize)
 	/* to prevent TCP timeouts */
 	menu_chatrooms_keepalive();
 
+	/* clear rich presence whenever the state suddenly changes */
 	if (g_gamestate != clientstate()) {
 		g_gamestate = clientstate();
 
@@ -245,6 +250,7 @@ m_draw(vector screensize)
 			RichPresence_Set("status", "Main Menu");
 	}
 
+	/* if the menu is not visible and we're no background map... */
 	if (!g_active && !g_background) {
 		/* make sure we're redirecting input when the background's gone */
 		if (getkeydest() != KEY_GAME) {
@@ -252,21 +258,28 @@ m_draw(vector screensize)
 			setmousetarget(TARGET_CLIENT);
 			setcursormode(FALSE);
 		}
+
+		/* don't draw the menu below */
 		return;
 	}
 
+	/* when ingame, we'll draw a slight black tint... */
 	if (clientstate() == 2) {
+		/* ...unless we're in background map mode. */
 		if (!g_background)
 			drawfill([0,0], screensize, [0,0,0], 0.75f);
 	} else {
+		/* clear screen */
 		drawfill([0,0], screensize, [0,0,0], 1.0f);
 
+		/* draw either WON or Steam background */
 		if (games[gameinfo_current].steambg == 0)
 				Background_WON();
 		else
 				Background_Steam();
 	}
 
+	/* water mark for version info */
 	const string ver = "Nuclide (build " __DATE__ ")";
 	drawfont = Font_GetID(font_console);
 
@@ -277,6 +290,7 @@ m_draw(vector screensize)
 				  [1.0f,1.0f,1.0f],
 				  0.5f, 0, font_console);
 
+	/* draw the actual widgets */
 	main_draw();
 
 #ifndef WEBMENU
@@ -287,6 +301,7 @@ m_draw(vector screensize)
 		localcmd(sprintf("gameinfo_gamedir %s\nmenu_restart\n", cvar_string("fs_game")));
 	}
 #endif
+
 	oldtime = time;
 }
 

@@ -14,8 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-var int autocvar_sv_playerkeepalive = TRUE;
-
 void
 GameRules::LevelDecodeParms(NSClientPlayer pp)
 {

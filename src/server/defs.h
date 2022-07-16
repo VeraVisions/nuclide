@@ -45,7 +45,7 @@
 #define AREAPORTAL_CLOSED 0
 #define AREAPORTAL_OPEN 1
 
-var int autocvar_mp_flashlight = TRUE;
+var bool autocvar_mp_flashlight = true;
 
 void FX_Impact(impactType_t, vector, vector);
 void FX_Explosion(vector);
@@ -66,7 +66,6 @@ void Client_ShakeOnce(vector, float, float, float, float);
 void Game_ServerModelEvent(float, int, string);
 void Event_ServerModelEvent(float, int, string);
 
-int Rules_IsTeamPlay(void);
 void Mapcycle_Load(string);
 
 entity eActivator;
@@ -74,7 +73,7 @@ entity eActivator;
 /* Generic entity fields */
 .void(void) PlayerUse;
 .void(void) PlayerUseUnpressed;
-.int iBleeds;
+.bool iBleeds;
 .entity eUser;
 .float material;
 .float deaths;
@@ -99,7 +98,7 @@ bodyType_t g_dmg_iHitBody;
 int g_dmg_iFlags;
 int g_dmg_iWeapon;
 
-var int g_ents_initialized = FALSE;
+var bool g_ents_initialized = FALSE;
 
 /* main is a qcc leftover */
 void main(void)

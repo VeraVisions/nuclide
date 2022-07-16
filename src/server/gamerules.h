@@ -26,7 +26,7 @@ class CGameRules
 
 	/* logic */
 	virtual void(void) FrameStart;
-	virtual float(NSClientPlayer,string) ConsoleCommand;
+	virtual bool(NSClientPlayer,string) ConsoleCommand;
 
 	/* client */
 	virtual void(NSClientPlayer) PlayerConnect;
@@ -45,18 +45,19 @@ class CGameRules
 
 	/* Entities/Item manipulation */
 	virtual int(int) MaxItemPerSlot;
-	virtual int(void) MonstersSpawn;
+	virtual bool(void) MonstersSpawn;
 	virtual void(entity,entity,float,int,damageType_t) DamageApply;
-	virtual int(entity, vector) DamageCheckTrace;
+	virtual bool(entity, vector) DamageCheckTrace;
 	virtual void(vector,entity,float,float,int,int) DamageRadius;
 
 	/* end of a game */
 	virtual void(void) IntermissionStart;
 	virtual void(void) IntermissionCycle;
 	virtual void(void) IntermissionEnd;
-	virtual int(void) InIntermission;
+	virtual bool(void) InIntermission;
 
-	virtual float(void) IsTeamPlay;
+	virtual bool(void) IsTeamplay;
+	virtual bool(void) IsMultiplayer;
 
 	/* spectator */
 	/*virtual void(NSClientPlayer) SpectatorConnect;

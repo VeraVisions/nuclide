@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-var int autocvar_mapcycle_enabled = TRUE;
+var bool autocvar_mapcycle_enabled = true;
 var string autocvar_mapcycle_file = "mapcycle.txt";
 noref var string g_mapcycle_override = __NULL__;
 
@@ -26,12 +26,6 @@ Mapcycle_Load(string filename)
 	int mapcount = 0i;
 	string lastmap = "";
 	int map_next = 0i;
-
-	if (!autocvar_mapcycle_enabled)
-		return;
-
-	/*if (Rules_IsMultiplayer())
-		return;*/
 
 	fs_mapcycle = fopen(filename, FILE_READ);
 
@@ -71,7 +65,16 @@ Mapcycle_Load(string filename)
 void
 Mapcycle_Init(void)
 {
-	print("--------- Initializing MapCycle ----------\n");
+	/* by default, this will be multiplayer only */
+	if (g_grMode.IsMultiplayer() == false)
+		return;
 
+	/* in case some server admin wants a map to continously loop */
+	if (autocvar_mapcycle_enabled == false) {
+		print("mapcycle disabled via cvar. skipping\n");
+		return;
+	}
+
+	print("--------- Initializing MapCycle ----------\n");
 	Mapcycle_Load(autocvar_mapcycle_file);
 }

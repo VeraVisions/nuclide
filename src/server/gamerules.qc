@@ -29,10 +29,10 @@ CGameRules::FrameStart(void)
 {
 	//print("StartFrame!\n");
 }
-float
+bool
 CGameRules::ConsoleCommand(NSClientPlayer pl, string cmd)
 {
-	return (0);
+	return (false);
 }
 
 /* client */
@@ -189,23 +189,28 @@ CGameRules::IntermissionCycle(void)
 	
 }
 
-int
+bool
 CGameRules::InIntermission(void)
 {
-	return (m_iIntermission) ? 1 : 0;
+	return (m_iIntermission) ? true : false;
 }
 
-int
+bool
 CGameRules::MonstersSpawn(void)
 {
-	return (TRUE);
+	return (true);
 }
 
 /* init */
-float
-CGameRules::IsTeamPlay(void)
+bool
+CGameRules::IsTeamplay(void)
 {
-	return (FALSE);
+	return (false);
+}
+bool
+CGameRules::IsMultiplayer(void)
+{
+	return (false);
 }
 
 void
@@ -229,7 +234,7 @@ CGameRules::DamageApply(entity t, entity c, float dmg, int w, damageType_t type)
 	/* friendly fire */
 	if (autocvar_sv_friendlyFire == false)
 	if (t != c)
-	if (IsTeamPlay()) {
+	if (IsTeamplay()) {
 		if (t.flags & FL_CLIENT && c.flags & FL_CLIENT)
 			if (t.team == c.team)
 				return;
@@ -323,36 +328,34 @@ CGameRules::DamageApply(entity t, entity c, float dmg, int w, damageType_t type)
 }
 
 /* checks if we can hit an entity at 5 of the same spots */
-int
+bool
 CGameRules::DamageCheckTrace(entity t, vector vecHitPos)
 {
 	/* We're lazy. Who cares */
-	if (t.solid == SOLID_BSP) {
-		return (TRUE);
-	}
+	if (t.solid == SOLID_BSP)
+		return (true);
 
-	traceline(vecHitPos, t.origin, 1, self);
-	if (trace_fraction == 1) {
-		return (TRUE);
-	}
-	traceline(vecHitPos, t.origin + [15,15,0], 1, self);
-	if (trace_fraction == 1) {
-		return (TRUE);
-	}
-	traceline(vecHitPos, t.origin + [-15,-15,0], 1, self);
-	if (trace_fraction == 1) {
-		return (TRUE);
-	}
-	traceline(vecHitPos, t.origin + [-15,15,0], 1, self);
-	if (trace_fraction == 1) {
-		return (TRUE);
-	}
-	traceline(vecHitPos, t.origin + [15,-15,0], 1, self);
-	if (trace_fraction == 1) {
-		return (TRUE);
-	}
+	traceline(vecHitPos, t.origin, 1, this);
+	if (trace_fraction == 1)
+		return (true);
 
-	return (FALSE);
+	traceline(vecHitPos, t.origin + [15,15,0], 1, this);
+	if (trace_fraction == 1)
+		return (true);
+
+	traceline(vecHitPos, t.origin + [-15,-15,0], 1, this);
+	if (trace_fraction == 1)
+		return (true);
+
+	traceline(vecHitPos, t.origin + [-15,15,0], 1, this);
+	if (trace_fraction == 1)
+		return (true);
+
+	traceline(vecHitPos, t.origin + [15,-15,0], 1, this);
+	if (trace_fraction == 1)
+		return (true);
+
+	return (false);
 }
 
 void
@@ -412,6 +415,12 @@ CGameRules::IntermissionEnd(void)
 	m_flIntermissionTime = -1;
 }
 
+bool
+CGameRules::PlayerCanAttack(NSClientPlayer bp)
+{
+	return true;
+}
+
 void
 CGameRules::CGameRules(void)
 {
@@ -420,15 +429,3 @@ CGameRules::CGameRules(void)
 
 /* our currently running mode */
 CGameRules g_grMode;
-
-int
-Gamerules_IsTeamPlay(void)
-{
-	return (g_grMode.IsTeamPlay()) ? TRUE : FALSE;
-}
-
-bool
-CGameRules::PlayerCanAttack(NSClientPlayer bp)
-{
-	return true;
-}

@@ -30,7 +30,6 @@ client.qc
 server.qc
 damage.qc
 items.qc
-rules.qc
 flashlight.qc
 modelevent.qc
 spawn.qc

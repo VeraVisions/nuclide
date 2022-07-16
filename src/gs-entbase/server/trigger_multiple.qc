@@ -116,7 +116,7 @@ trigger_multiple::Touch(entity eToucher)
 	if (!HasSpawnFlags(TM_PUSHABLES) && eToucher.classname == "func_pushable")
 		return;
 
-	if (Rules_IsTeamPlay() == TRUE) {
+	if (g_grMode.IsTeamplay() == TRUE) {
 		if (m_iTeam > 0 && eActivator.team != m_iTeam + 1) {
 			return;
 		}

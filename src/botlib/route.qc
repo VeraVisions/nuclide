@@ -187,7 +187,7 @@ Route_SelectDestination(bot target)
 
 	entity dest = world;
 
-	if (rules.IsTeamPlay()) {
+	if (rules.IsTeamplay()) {
 		/* we have the goal item, so capture it */
 		if (target.flags & FL_GOALITEM) {
 			print(sprintf("%s going for capture\n", target.netname));

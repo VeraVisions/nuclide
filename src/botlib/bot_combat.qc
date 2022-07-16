@@ -21,7 +21,7 @@ bot::Pain(void)
 
 	super::Pain();
 
-	if (rules.IsTeamPlay()) {
+	if (rules.IsTeamplay()) {
 		if (g_dmg_eAttacker.flags & FL_CLIENT && g_dmg_eAttacker.team == team) {
 			ChatSayTeam("Stop shooting me!");
 			return;
@@ -143,7 +143,7 @@ BotLib_Alert(vector pos, float radius, float t)
 			continue;
 
 		/* if they're our friend... ignore*/
-		if (rules.IsTeamPlay()) 
+		if (rules.IsTeamplay()) 
 			if (w.team == t)
 				continue;
 

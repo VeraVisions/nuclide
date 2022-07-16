@@ -10,6 +10,7 @@ player_pmove.qc
 propdata.qc
 surfaceproperties.qc
 NSMaterial.qc
+util.qc
 ../xr/include.src
 ../materials/include.src
 #endlist

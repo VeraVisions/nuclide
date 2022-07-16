@@ -203,7 +203,7 @@ void
 NSEntity::TouchHandler(void)
 {
 #ifdef SERVER
-	if (g_grMode.IsTeamPlay())
+	if (g_grMode.IsTeamplay())
 	if (m_iTeam > 0)
 	if (m_iTeam != other.team) {
 		return;
