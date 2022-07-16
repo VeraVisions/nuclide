@@ -16,7 +16,7 @@
 
 var int autocvar_mapcycle_enabled = TRUE;
 var string autocvar_mapcycle_file = "mapcycle.txt";
-var string g_mapcycle_override = __NULL__;
+noref var string g_mapcycle_override = __NULL__;
 
 void
 Mapcycle_Load(string filename)
