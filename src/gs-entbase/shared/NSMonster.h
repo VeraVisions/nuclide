@@ -110,18 +110,19 @@ typedef enumflags
 	MSF_MULTIPLAYER,
 	MSF_FALLING,
 	MSF_HORDE
-} monsterFlag_t;
+} monsterFlag_e;
 
 /* movement states */
 typedef enum
 {
 	MONSTER_IDLE,
+	MONSTER_ALERT,
 	MONSTER_FOLLOWING,
 	MONSTER_CHASING,
 	MONSTER_AIMING,
 	MONSTER_DEAD,
 	MONSTER_GIBBED
-} monsterState_t;
+} monsterState_e;
 
 /* scripted sequence states */
 typedef enum
@@ -130,7 +131,7 @@ typedef enum
 	SEQUENCESTATE_IDLE,
 	SEQUENCESTATE_ACTIVE,
 	SEQUENCESTATE_ENDING
-} sequenceState_t;
+} sequenceState_e;
 
 /* alliance state */
 typedef enum
@@ -139,14 +140,14 @@ typedef enum
 	MAL_ENEMY,  /* unfriendly towards the player */
 	MAL_ALIEN,  /* unfriendly towards anyone but themselves */
 	MAL_ROGUE   /* no allies, not even amongst themselves */
-} allianceState_t;
+} allianceState_e;
 
 typedef enum
 {
 	MOVESTATE_IDLE,
 	MOVESTATE_WALK,
 	MOVESTATE_RUN
-} movementState_t;
+} movementState_e;
 
 /* These numerations involve the m_iTriggerCondition attribute.
  * Basically these conditions are being checked and triggered depending on what
@@ -166,7 +167,7 @@ typedef enum
 	MTRIG_HEARWEAPONS,			/* we hear weapons being fired */
 	MTRIG_SEEPLAYER,			/* we see a player, don't have to be angry at him. */
 	MTRIG_SEEPLAYER_RELAXED,	/* we see a player and we're currently attacking anything */
-} triggerCondition_t;
+} triggerCondition_e;
 
 /* FIXME: I'd like to move this into NSMonster, but our current IsFriend()
  * check is currently only checking on a .takedamage basis. */
@@ -192,7 +193,7 @@ class NSMonster:NSSurfacePropEntity
 	vector m_vecSequenceAngle;
 	vector m_vecTurnAngle;
 	int m_iSequenceFlags;
-	movementState_t m_iMoveState;
+	movementState_e m_iMoveState;
 
 	int m_iTriggerCondition;
 	string m_strTriggerTarget;
@@ -203,7 +204,8 @@ class NSMonster:NSSurfacePropEntity
 	/* attack/alliance system */
 	entity m_eEnemy;
 	float m_flAttackThink;
-	int m_iMState;
+	monsterState_e m_iMState;
+	monsterState_e m_iOldMState;
 	vector m_vecLKPos; /* last-known pos */
 
 	/* pathfinding */
@@ -232,6 +234,9 @@ class NSMonster:NSSurfacePropEntity
 	virtual void(void) Gib;
 	virtual void(string) Sound;
 	virtual void(string, string) SpawnKey;
+
+	virtual bool(void) IsAlive;
+	virtual bool(int) IsFriend;
 
 	/* see/hear subsystem */
 	float m_flSeeTime;
@@ -273,6 +278,11 @@ class NSMonster:NSSurfacePropEntity
 	virtual int(void) AnimRun;
 	virtual void(float) AnimPlay;
 	virtual void(void) AnimationUpdate;
+
+	/* states */
+	virtual void(monsterState_e, monsterState_e) StateChanged;
+	virtual void(monsterState_e) SetState;
+	virtual monsterState_e(void) GetState;
 
 	/* TriggerTarget/Condition */
 	virtual int(void) GetTriggerCondition;

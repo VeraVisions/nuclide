@@ -139,7 +139,7 @@ NSTalkMonster::StartleAllies(void)
 void
 NSTalkMonster::Sentence(string sentence)
 {
-	if (style == MONSTER_DEAD)
+	if (GetState() == MONSTER_DEAD)
 		return;
 
 	string seq = Sentences_GetSamples(sentence);
@@ -158,7 +158,7 @@ NSTalkMonster::Sentence(string sentence)
 void
 NSTalkMonster::Speak(string sentence)
 {
-	if (style == MONSTER_DEAD)
+	if (GetState() == MONSTER_DEAD)
 		return;
 
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
@@ -463,7 +463,7 @@ NSTalkMonster::Physics(void)
 	/* make sure we're forgetting about enemies and attack states in sequence */
 	if (m_iSequenceState != SEQUENCESTATE_NONE) {
 		m_eEnemy = __NULL__;
-		m_iMState = MONSTER_IDLE;
+		SetState(MONSTER_IDLE);
 	}
 
 	/* override whatever we did above with this */
@@ -471,7 +471,7 @@ NSTalkMonster::Physics(void)
 		input_angles = v_angle = angles = m_vecSequenceAngle;
 		SetFrame(m_flSequenceEnd);
 	} else {
-		if (style != MONSTER_DEAD) {
+		if (GetState() != MONSTER_DEAD) {
 			if (m_iSequenceState == SEQUENCESTATE_NONE) {
 				SeeThink();
 				AttackThink();
@@ -612,9 +612,9 @@ NSTalkMonster::SendEntity(entity ePEnt, float fChanged)
 		WriteCoord(MSG_ENTITY, origin[2]);
 	}
 	if (fChanged & BASEFL_CHANGED_ANGLES) {
-		WriteShort(MSG_ENTITY, angles[0] * 32767 / 360);
+		WriteShort(MSG_ENTITY, 0);
 		WriteShort(MSG_ENTITY, angles[1] * 32767 / 360);
-		WriteShort(MSG_ENTITY, angles[2] * 32767 / 360);
+		WriteShort(MSG_ENTITY, 0);
 	}
 	if (fChanged & BASEFL_CHANGED_MODELINDEX) {
 		WriteShort(MSG_ENTITY, modelindex);

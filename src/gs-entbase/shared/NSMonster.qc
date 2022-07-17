@@ -14,6 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+const int CONTENTBITS_MONSTER = CONTENTBIT_SOLID|CONTENTBIT_BODY|CONTENTBIT_MONSTERCLIP|CONTENTBIT_BOTCLIP;	
+
 #ifdef SERVER
 int
 NSMonster::GetTriggerCondition(void)
@@ -113,15 +115,15 @@ NSMonster::IdleNoise(void)
 {
 }
 
-int
+bool
 NSMonster::IsFriend(int al)
 {
 	if (m_iAlliance == MAL_ROGUE)
-		return (0);
+		return (false);
 	else if (al == m_iAlliance)
-		return (1);
+		return (true);
 
-	return (0);
+	return (false);
 }
 
 /* The maximum distance to which we should attempt an attack */
@@ -201,8 +203,9 @@ NSMonster::SeeThink(void)
 		/* check if we should invalidate current enemy */
 		if (IsValidEnemy(m_eEnemy))
 			return;
+
 		/* enemy is not valid anymore, reset it, clear route and search for new enemy */
-		m_iMState = MONSTER_IDLE;
+		SetState(MONSTER_ALERT);
 		m_eEnemy = __NULL__;
 		ClearRoute();
 		m_flSeeTime = 0;
@@ -286,7 +289,7 @@ NSMonster::AttackThink(void)
 
 	/* something is blocking us */
 	if (trace_fraction < 1.0f) {
-		m_iMState = MONSTER_IDLE;
+		SetState(MONSTER_ALERT);
 
 		/* FIXME: This is unreliable, but unlikely that a player ever is here */
 		if (m_vecLKPos != [0,0,0]) {
@@ -296,13 +299,17 @@ NSMonster::AttackThink(void)
 			m_vecLKPos = [0,0,0];
 		}
 	} else {
-		m_iMState = MONSTER_AIMING;
+		SetState(MONSTER_AIMING);
 
 		/* make sure we remember the last known position. */
 		m_vecLKPos = m_eEnemy.origin;
 	}
 
-	if (m_iMState == MONSTER_AIMING) {
+	/* the state may have switched */
+	if (m_flAttackThink > time)
+		return;
+
+	if (GetState() == MONSTER_AIMING) {
 		int m;
 		if (MeleeCondition() == TRUE)
 			m = AttackMelee();
@@ -311,7 +318,7 @@ NSMonster::AttackThink(void)
 
 			/* if we don't have the desired attack mode, walk */
 			if (m == FALSE)
-				m_iMState = MONSTER_CHASING;	
+				SetState(MONSTER_CHASING);	
 
 		}
 	}
@@ -508,12 +515,12 @@ NSMonster::WalkRoute(void)
 	vector endangles;
 
 	/* we're busy shooting at something, don't walk */
-	if (m_iMState == MONSTER_AIMING && m_eEnemy) {
+	if (GetState() == MONSTER_AIMING && m_eEnemy) {
 		endangles = vectoangles(m_eEnemy.origin - origin);
 
 		/* TODO: lerp */
 		m_vecTurnAngle[1] = endangles[1];
-	} else if (m_iNodes && m_iMState == MONSTER_IDLE) {
+	} else if (m_iNodes && GetState() == MONSTER_IDLE) {
 		/* we're on our last node */
 		if (m_iCurNode < 0) {
 			endangles = vectoangles(m_vecLastNode - origin);
@@ -522,7 +529,7 @@ NSMonster::WalkRoute(void)
 		}
 		m_vecTurnAngle[1] = endangles[1];
 		input_movevalues = [m_flSequenceSpeed, 0, 0];
-	} else if (m_iMState == MONSTER_CHASING && m_eEnemy) {
+	} else if (GetState() == MONSTER_CHASING && m_eEnemy) {
 		/* we've got 'em in our sights, just need to walk closer */
 		endangles = vectoangles(m_eEnemy.origin - origin);
 		input_movevalues = [GetChaseSpeed(), 0, 0];
@@ -543,9 +550,9 @@ NSMonster::WalkRoute(void)
 	makevectors(angles);
 	old_ang = v_forward;
 
-	tmp[0] = Math_Lerp(old_ang[0], new_ang[0], frametime * 5);
+	tmp[0] = 0;
 	tmp[1] = Math_Lerp(old_ang[1], new_ang[1], frametime * 5);
-	tmp[2] = Math_Lerp(old_ang[2], new_ang[2], frametime * 5);
+	tmp[2] = 0;
 	angles = vectoangles(tmp);
 #endif
 }
@@ -604,7 +611,7 @@ NSMonster::AnimationUpdate(void)
 	int fr = 0;
 	int act = 0;
 
-	if (style == MONSTER_DEAD)
+	if (GetState() == MONSTER_DEAD)
 		return;
 
 	float spvel = vlen(velocity);
@@ -652,10 +659,41 @@ NSMonster::AnimationUpdate(void)
 		AnimPlay(act);
 	else
 		SetFrame(fr);
-	
 }
 
-const int CONTENTBITS_MONSTER = CONTENTBIT_SOLID|CONTENTBIT_BODY|CONTENTBIT_MONSTERCLIP|CONTENTBIT_BOTCLIP;	
+/* for an NSMonster, health doesn't matter that much, as we could be a corpse */
+bool
+NSMonster::IsAlive(void)
+{
+	if (GetState() == MONSTER_DEAD)
+		return false;
+
+	return true;
+}
+
+void
+NSMonster::StateChanged(monsterState_e oldState, monsterState_e newState)
+{
+	print(sprintf("%s state changed from %d to %d\n", classname, oldState, newState));
+}
+
+void
+NSMonster::SetState(monsterState_e newState)
+{
+	if (newState == m_iMState)
+		return;
+
+	m_iOldMState = m_iMState;
+	m_iMState = newState;
+	StateChanged(m_iOldMState, m_iMState);
+}
+
+monsterState_e
+NSMonster::GetState(void)
+{
+	return m_iMState;
+}
+
 void PMoveCustom_RunPlayerPhysics(entity target);
 void PMoveCustom_RunCrouchPhysics(entity target);
 void
@@ -733,9 +771,26 @@ NSMonster::Touch(entity eToucher)
 void
 NSMonster::Pain(void)
 {
+	/* dead things tell nuthin */
+	if (IsAlive() == false)
+		return;
+
+	if (GetHealth() <= (base_health / 2)) {
+		if (IsFriend(g_dmg_eAttacker.m_iAlliance) == true)
+			m_iAlliance = MAL_ROGUE;
+	}
+
+	if (IsFriend(g_dmg_eAttacker.m_iAlliance) == true)
+		return;
+
+	/* if don't have an enemy, set one; else make it random */
 	if (!m_eEnemy || (random() < 0.5))
 		m_eEnemy = g_dmg_eAttacker;
 
+	/* an alert monster will take a while to calm back down */
+	SetState(MONSTER_ALERT);
+
+	/* alert all nearby friendlies */
 	AlertNearby();
 }
 
@@ -743,7 +798,7 @@ void
 NSMonster::Death(void)
 {
 	/* we were already dead before, so gib */
-	if (style == MONSTER_DEAD) {
+	if (GetState() == MONSTER_DEAD) {
 		Gib();
 		return;
 	}
@@ -751,21 +806,21 @@ NSMonster::Death(void)
 	m_iFlags = 0x0;
 
 	/* if we make more than 50 damage, gib immediately */
-	if (health < -50) {
+	if (GetHealth() < -50) {
 		Gib();
 		return;
 	}
 
 	/* make sure we're not causing any more obituaries */
-	flags &= ~FL_MONSTER;
-	m_iFlags = 0x0;
+	RemoveFlags(FL_MONSTER);
 
-	/* gibbing action */
+	/* set the monster up for getting gibbed */
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_CORPSE);
-	health = 50 + health; 
-	style = MONSTER_DEAD;
+	SetHealth(50 + GetHealth());
+	SetState(MONSTER_DEAD);
 
+	/* monsters trigger their targets when dead */
 	if (GetTriggerCondition() == MTRIG_DEATH)
 		TriggerTargets();
 }
@@ -786,16 +841,16 @@ NSMonster::Respawn(void)
 	v_angle[0] = Math_FixDelta(v_angle[0]);
 	v_angle[1] = Math_FixDelta(v_angle[1]);
 	v_angle[2] = Math_FixDelta(v_angle[2]);
-	flags |= FL_MONSTER;
-	takedamage = DAMAGE_YES;
+
+	AddFlags(FL_MONSTER);
+	SetTakedamage(DAMAGE_YES);
+	SetVelocity([0,0,0]);
+	SetState(MONSTER_IDLE);
+	SetHealth(base_health);
+	m_eEnemy = __NULL__;
+	m_iFlags = 0x0;
 	iBleeds = TRUE;
 	customphysics = Physics;
-	velocity = [0,0,0];
-	m_iFlags = 0x0;
-	SendFlags = 0xff;
-	style = MONSTER_IDLE;
-	health = base_health;
-	m_eEnemy = __NULL__;
 
 	SetAngles(v_angle);
 	SetSolid(SOLID_SLIDEBOX);
@@ -804,7 +859,7 @@ NSMonster::Respawn(void)
 	SetSize(base_mins, base_maxs);
 	SetOrigin(GetSpawnOrigin());
 
-	droptofloor();
+	DropToFloor();
 }
 
 void
@@ -1109,6 +1164,7 @@ NSMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
 		/* if they're our friend... ignore*/
 		if (f.IsFriend(alliance))
 			continue;
+
 		/* if the monster is dead... ignore */
 		if (f.health <= 0)
 			continue;

@@ -79,6 +79,7 @@ class NSSurfacePropEntity:NSRenderableEntity
 	float m_oldHealth;
 	virtual void(void) Pain;
 	virtual void(void) Death;
+	virtual bool(void) IsAlive;
 
 	/* Generic Damage */
 	nonvirtual void(float) SetTakedamage;

@@ -33,6 +33,12 @@ NSSurfacePropEntity::Spawned(void)
 /* networking */
 #ifdef SERVER
 
+bool
+NSSurfacePropEntity::IsAlive(void)
+{
+	return (health > 0) ? true : false;
+}
+
 #if INDEV
 typedef enum
 {
