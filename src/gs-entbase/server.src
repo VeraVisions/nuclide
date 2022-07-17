@@ -10,6 +10,8 @@ shared/NSVehicle.h
 server/info_null.qc
 server/info_notnull.qc
 server/info_intermission.qc
+server/info_node.qc
+server/info_hint.qc
 server/button_target.qc
 server/cycler.qc
 server/cycler_sprite.qc

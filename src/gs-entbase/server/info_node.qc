@@ -23,3 +23,5 @@ It's a node, helping monsters navigate on the ground.
 -------- TRIVIA --------
 This entity was introduced in Half-Life (1998).
 */
+
+CLASSEXPORT(info_node, info_notnull)

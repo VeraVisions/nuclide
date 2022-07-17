@@ -74,7 +74,6 @@ of the entity, keep that in mind.
 This entity was introduced in Quake (1996).
 */
 
-CLASSEXPORT(info_node, info_notnull)
 CLASSEXPORT(info_target, info_notnull)
 CLASSEXPORT(env_sound, info_notnull)
 CLASSEXPORT(env_sun, info_notnull)
