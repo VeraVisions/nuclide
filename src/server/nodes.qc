@@ -132,7 +132,7 @@ Node_AutoLink(node_t *new)
 			[-16,-16,-8],
 			[16,16,32],
 			g_pNodes[i].origin,
-			TRUE,
+			MOVE_NORMAL,
 			world
 		);
 
@@ -163,6 +163,7 @@ Nodes_BuildFromEnts(void)
 		Node_AutoLink(n);
 	}
 
+#if 0
 	for (entity a = world; (a = find(a, ::classname, "scripted_sequence"));) {
 		int iID = g_iNodes++;
 		g_pNodes = (node_t *)memrealloc(g_pNodes, sizeof(node_t), iID, g_iNodes);
@@ -173,6 +174,7 @@ Nodes_BuildFromEnts(void)
 		n->radius = 32;
 		Node_AutoLink(n);
 	}
+#endif
 
 	print(sprintf("%i possible nodes found in %s\n", g_iNodes, mapname));
 
