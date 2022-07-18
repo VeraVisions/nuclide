@@ -629,6 +629,24 @@ ConsoleCmd(string cmd)
 			ent.Respawn();
 		}
 		break;
+	case "spawn":
+
+		entity unit = spawn();
+		unit.classname =  strcat("spawnfunc_", argv(1));
+		self = unit;
+		callfunction(self.classname);
+		self = pl;
+
+		makevectors(pl.v_angle);
+		if (unit.identity == 1) {
+			NSEntity ent = (NSEntity)unit
+			ent.Respawn();
+		}
+		traceline(pl.origin, pl.origin + (v_forward * 1024), MOVE_NORMAL, pl);
+		setorigin(unit, trace_endpos);
+
+
+		break;
 #ifdef BOT_INCLUDED
 	case "way":
 		Way_Cmd();
