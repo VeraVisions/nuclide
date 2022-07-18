@@ -42,6 +42,9 @@ class NSTalkMonster:NSMonster
 	vector m_vecLastUserPos;
 	float m_flChangePath;
 	float m_flTraceTime;
+	float m_flFollowSpeedChanged;
+	float m_flFollowSpeed;
+	
 
 	/* sentences identifiers */
 	string m_talkAnswer; /* random answer to whenever a question is asked */

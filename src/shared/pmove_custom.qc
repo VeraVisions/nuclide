@@ -227,6 +227,12 @@ PMoveCustom_AccelFriction(float move_time, float premove, vector wish_dir, float
 	float flFriction;
 	vector vecTemp;
 
+	/* friction does not apply to monsters right now */
+	if (self.flags & FL_MONSTER) {
+		self.velocity = wish_dir * wish_speed;
+		return;
+	}
+
 	flApplyFriction = serverkeyfloat("phy_friction");
 
 	/* per frame basis friction modifier */
@@ -246,7 +252,7 @@ PMoveCustom_AccelFriction(float move_time, float premove, vector wish_dir, float
 			on the other hand edge friction is probably not that important. */
 
 		// if the leading edge is over a dropoff, increase friction
-		vecTemp = self.origin + normalize(vecTemp) * 16 + [0,0,1] * PHY_HULL_MIN[2];
+		vecTemp = self.origin + normalize(vecTemp) * 16 + [0,0,1] * self.mins[2];
 		traceline(vecTemp, vecTemp + [0,0,-34], TRUE, self);
 
 		// apply friction

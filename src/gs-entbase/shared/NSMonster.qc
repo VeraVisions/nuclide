@@ -561,6 +561,12 @@ NSMonster::GetSequenceState(void)
 	return m_iSequenceState;
 }
 
+bool
+NSMonster::InSequence(void)
+{
+	return (GetSequenceState() == SEQUENCESTATE_NONE) ? false : true;
+}
+
 void
 NSMonster::RunAI(void)
 {
@@ -587,25 +593,26 @@ NSMonster::Physics(void)
 
 	/* we're ending a scripted sequence, so play its animation */
 	if (GetSequenceState() == SEQUENCESTATE_ENDING) {
-		input_angles[1] = m_vecSequenceAngle[1];
+		angles[1] = input_angles[1] = m_vecSequenceAngle[1];
 		SetFrame(m_flSequenceEnd);
 	} else {
 		/* if still alive... */
-		if (GetState() != MONSTER_DEAD) {
-			/* not in a sequence */
-			if (GetSequenceState() == SEQUENCESTATE_NONE) {
+		if (IsAlive()) {
+			/* only run AI functions when not in a scripted sequence */
+			if (InSequence() == false) {
 				RunAI();
 			}
 
 			AnimationUpdate();
 		}
 
-		if (InAnimation() == false) {
+		/* suppress movement when playing an animation outside
+		   a scripted sequence */
+		if (InAnimation() == true && InSequence() == false) {
+			input_movevalues = [0,0,0];
+		} else {
 			CheckRoute();
 			WalkRoute();
-		} else {
-			input_movevalues = [0,0,0];
-			
 		}
 
 		hitcontentsmaski = CONTENTBITS_MONSTER;

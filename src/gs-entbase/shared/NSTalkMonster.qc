@@ -387,11 +387,22 @@ NSTalkMonster::FollowPlayer(void)
 	if (flPlayerDist > 1024) {
 		m_eFollowing = world;
 	} else if (flPlayerDist > 64) {
-		/* if we're close enough, we ought to walk */
-		if (flPlayerDist > 256)
-			input_movevalues[0] = GetChaseSpeed();
-		else
-			input_movevalues[0] = GetWalkSpeed();
+		/* we only allow speed changes every second, avoid jitter */
+		if (m_flFollowSpeedChanged < time) {
+			float flNextSpeed = GetChaseSpeed();
+
+			/* if we're close enough, we ought to walk */
+			if (flPlayerDist < 256)
+				flNextSpeed = GetWalkSpeed();
+
+			/* only update the timer when speed changed */
+			if (flNextSpeed != m_flFollowSpeed) {
+				m_flFollowSpeed = flNextSpeed;
+				m_flFollowSpeedChanged = time + 1.0f;
+			}
+		}
+
+		input_movevalues[0] = m_flFollowSpeed;
 
 		other = world;
 		traceline(origin, m_eFollowingChain.origin, MOVE_OTHERONLY, this);

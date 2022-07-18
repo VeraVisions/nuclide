@@ -263,6 +263,7 @@ class NSMonster:NSNavAI
 	virtual void(void) RouteEnded;
 	virtual void(void) WalkRoute;
 	virtual int(void) GetSequenceState;
+	virtual bool(void) InSequence;
 
 	/* animation cycles */
 	float m_flAnimTime;
