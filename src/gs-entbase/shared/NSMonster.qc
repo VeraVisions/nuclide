@@ -140,10 +140,10 @@ NSMonster::MeleeMaxDistance(void)
 }
 
 /* Whether or not we should attempt a melee attack */
-int
+bool
 NSMonster::MeleeCondition(void)
 {
-	return (vlen(origin - m_eEnemy.origin) < MeleeMaxDistance()) ? TRUE : FALSE;
+	return (vlen(origin - m_eEnemy.origin) < MeleeMaxDistance()) ? true : false;
 }
 
 float

@@ -48,6 +48,9 @@ void
 NSClientPlayer::PreFrame(void)
 {
 #ifdef CLIENT
+	if (Util_IsPaused())
+		return;
+
 	/* this is where a game/mod would decide to add more prediction rollback
 	 * information. */
 	PredictPreFrame();
@@ -86,6 +89,9 @@ void
 NSClientPlayer::PostFrame(void)
 {
 #ifdef CLIENT
+	if (Util_IsPaused())
+		return;
+
 	/* give the game/mod a chance to roll back its values too */
 	PredictPostFrame();
 	setorigin(this, origin);  /* update bounds */
@@ -101,7 +107,10 @@ NSClientPlayer::PostFrame(void)
 
 void
 NSClientPlayer::ClientInput(void)
-{
+{	
+	if (Util_IsPaused())
+		return;
+
 	XR_InputFrame(this);
 
 	if (!Client_InIntermission() && IsFakeSpectator()) {
@@ -174,7 +183,10 @@ This is basically CSQC_Input_Frame! So games can override this as they please.
 */
 void
 NSClientPlayer::ClientInputFrame(void)
-{
+{	
+	if (Util_IsPaused())
+		return;
+
 	if (IsFakeSpectator()) {
 		NSClientSpectator::ClientInputFrame();
 		return;

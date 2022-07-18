@@ -120,6 +120,7 @@ Empty(void)
 void Util_Destroy(void);
 string Util_TimeToString(float fTime);
 int Util_IsTeamplay(void);
+bool Util_IsPaused(void);
 
 __wrap void
 dprint(string m)

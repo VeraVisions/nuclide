@@ -369,16 +369,29 @@ NSTalkMonster::TalkStopFollow(void)
 void
 NSTalkMonster::FollowPlayer(void)
 {
+	float flPlayerDist;
 	input_angles = vectoangles(m_eFollowingChain.origin - origin);
 	input_angles[0] = 0;
 	input_angles[1] = Math_FixDelta(input_angles[1]);
 	input_angles[2] = 0;
 
+	/* for best results, we want to ignore the Z plane
+	   this avoids the problem of a follower spinning 
+	    around when above/below you on a platform */
+	vector vecParent = m_eFollowingChain.origin;
+	vecParent[2] = origin[2];
+
+	flPlayerDist = vlen(vecParent - origin);
+
 	/* Give up after 1024 units */
-	if (vlen(m_eFollowingChain.origin - origin) > 1024) {
+	if (flPlayerDist > 1024) {
 		m_eFollowing = world;
-	} else if (vlen(m_eFollowingChain.origin - origin) > 64) {
-		input_movevalues[0] = GetChaseSpeed();
+	} else if (flPlayerDist > 64) {
+		/* if we're close enough, we ought to walk */
+		if (flPlayerDist > 256)
+			input_movevalues[0] = GetChaseSpeed();
+		else
+			input_movevalues[0] = GetWalkSpeed();
 
 		other = world;
 		traceline(origin, m_eFollowingChain.origin, MOVE_OTHERONLY, this);

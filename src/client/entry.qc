@@ -526,6 +526,9 @@ CSQC_Input_Frame(void)
 {
 	entity me;
 
+	if (Util_IsPaused())
+		return;
+
 	CSQC_UpdateSeat();
 	me = pSeat->m_ePlayer;
 

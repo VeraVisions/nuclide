@@ -26,6 +26,9 @@ Propagate our pmove state to whatever the current frame before its stomped on
 void
 Predict_EntityUpdate(player pl, float new)
 {
+	if (Util_IsPaused())
+		return;
+
 	/* this is a new client entity, let's set it up right */
 	if (new || self.classname != "player") {
 		spawnfunc_player();

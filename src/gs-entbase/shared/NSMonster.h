@@ -253,7 +253,7 @@ class NSMonster:NSNavAI
 	virtual int(void) AttackRanged;
 
 	virtual float(void) MeleeMaxDistance;
-	virtual int(void) MeleeCondition;
+	virtual bool(void) MeleeCondition;
 
 	virtual bool(entity enemy) IsValidEnemy;
 

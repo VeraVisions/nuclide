@@ -14,6 +14,16 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+bool
+Util_IsPaused(void)
+{
+#ifdef CLIENT
+	return serverkeyfloat(SERVERKEY_PAUSESTATE) == 1 ? true : false;
+#else
+	return false;
+#endif
+}
+
 void
 Util_Destroy(void)
 {
