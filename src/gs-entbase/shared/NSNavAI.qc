@@ -67,12 +67,25 @@ NSNavAI::CheckRoute(void)
 		}
 	}
 
+	/* check if we can reach the node after the current one */
+	if (m_iCurNode > 0) {
+		int iNextNode = (m_iCurNode - 1);
+		vector vecNextNode = m_pRoute[iNextNode].dest;
+
+		tracebox(origin, mins, maxs, vecNextNode, MOVE_NORMAL, this);
+
+		/* it's accessible */
+		if (trace_fraction == 1.0f) {
+			evenpos = vecNextNode;
+			m_iCurNode = iNextNode;
+		}
+	}
+
+	/* reached the end of the line */
 	if (m_iCurNode < -1) {
 		ClearRoute();
 		RouteEnded();
 		NSLog("^2NSNavAI::^3CheckRoute^7: %s reached end", this.targetname);
-
-		
 	}
 
 	/* crouch attempt */
