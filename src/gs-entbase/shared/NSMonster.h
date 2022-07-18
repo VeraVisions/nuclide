@@ -271,6 +271,7 @@ class NSMonster:NSNavAI
 	virtual int(void) AnimRun;
 	virtual void(float) AnimPlay;
 	virtual void(void) AnimationUpdate;
+	virtual bool(void) InAnimation;
 
 	/* states */
 	virtual void(monsterState_e, monsterState_e) StateChanged;

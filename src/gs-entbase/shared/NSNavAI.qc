@@ -206,5 +206,11 @@ NSNavAI::ClearRoute(void)
 void
 NSNavAI::NSNavAI(void)
 {
-
+#ifdef SERVER
+	m_iNodes = 0;
+	m_iCurNode = -1;
+	m_pRoute = __NULL__;
+	m_vecLastNode = [0,0,0];
+	m_vecTurnAngle = [0,0,0];
+#endif
 }

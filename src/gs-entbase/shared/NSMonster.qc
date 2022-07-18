@@ -91,6 +91,12 @@ NSMonster::AnimPlay(float seq)
 	m_flAnimTime = time + frameduration(modelindex, frame);
 }
 
+bool
+NSMonster::InAnimation(void)
+{
+	return (m_flAnimTime > time) ? true : false;
+}
+
 void
 NSMonster::Sound(string msg)
 {
@@ -100,7 +106,7 @@ NSMonster::Sound(string msg)
 void
 NSMonster::Gib(void)
 {
-	takedamage = DAMAGE_NO;
+	SetTakedamage(DAMAGE_NO);
 	FX_GibHuman(origin, vectoangles(origin - g_dmg_eAttacker.origin), g_dmg_iDamage * 2.0f);
 	Hide();
 }
@@ -594,8 +600,14 @@ NSMonster::Physics(void)
 			AnimationUpdate();
 		}
 
-		CheckRoute();
-		WalkRoute();
+		if (InAnimation() == false) {
+			CheckRoute();
+			WalkRoute();
+		} else {
+			input_movevalues = [0,0,0];
+			
+		}
+
 		hitcontentsmaski = CONTENTBITS_MONSTER;
 
 		if (CanCrouch())

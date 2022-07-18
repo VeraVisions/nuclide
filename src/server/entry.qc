@@ -639,7 +639,7 @@ ConsoleCmd(string cmd)
 
 		makevectors(pl.v_angle);
 		if (unit.identity == 1) {
-			NSEntity ent = (NSEntity)unit
+			NSEntity ent = (NSEntity)unit;
 			ent.Respawn();
 		}
 		traceline(pl.origin, pl.origin + (v_forward * 1024), MOVE_NORMAL, pl);
