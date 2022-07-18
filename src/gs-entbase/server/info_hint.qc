@@ -74,9 +74,9 @@ The 'IgnoreFacing' field can be one of 3 values:
 
 The 'MinimumState' and 'MaximumState' field can be one of 3 values:
 
-	AISTATE_IDLE = 0
-	AISTATE_ALERT = 1
-	AISTATE_COMBAT = 2
+  AISTATE_IDLE = 0
+  AISTATE_ALERT = 1
+  AISTATE_COMBAT = 2
 
 -------- TRIVIA --------
 This entity was introduced in Half-Life 2 (2004).
@@ -156,7 +156,6 @@ info_hint:NSPointTrigger
 	virtual void(string,string) Restore;
 	virtual void(string, string) SpawnKey;
 };
-
 
 void
 info_hint::Save(float handle)

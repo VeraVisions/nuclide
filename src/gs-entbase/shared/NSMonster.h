@@ -173,7 +173,7 @@ typedef enum
  * check is currently only checking on a .takedamage basis. */
 .int m_iAlliance;
 
-class NSMonster:NSSurfacePropEntity
+class NSMonster:NSNavAI
 {
 #ifdef SERVER
 	entity m_ssLast;
@@ -191,7 +191,6 @@ class NSMonster:NSSurfacePropEntity
 	float m_flSequenceEnd;
 	float m_flSequenceSpeed;
 	vector m_vecSequenceAngle;
-	vector m_vecTurnAngle;
 	int m_iSequenceFlags;
 	movementState_e m_iMoveState;
 
@@ -208,11 +207,6 @@ class NSMonster:NSSurfacePropEntity
 	monsterState_e m_iOldMState;
 	vector m_vecLKPos; /* last-known pos */
 
-	/* pathfinding */
-	int m_iNodes;
-	int m_iCurNode;
-	nodeslist_t *m_pRoute;
-	vector m_vecLastNode;
 #endif
 
 	void(void) NSMonster;
@@ -222,13 +216,13 @@ class NSMonster:NSSurfacePropEntity
 	virtual void(float) Save;
 	virtual void(string,string) Restore;
 
-	virtual bool(void) CanCrouch;
 	virtual void(entity) Touch;
 	virtual void(void) Hide;
 	virtual void(void) Respawn;
 	virtual void(void) Pain;
 	virtual void(void) Death;
 	virtual void(void) Physics;
+	virtual void(void) RunAI;
 	virtual void(void) IdleNoise;
 	virtual void(void) FallNoise;
 	virtual void(void) Gib;
@@ -266,10 +260,9 @@ class NSMonster:NSSurfacePropEntity
 	/* sequences */
 	virtual void(void) FreeState;
 	virtual void(void) FreeStateMoved;
-	virtual void(void) ClearRoute;
-	virtual void(void) CheckRoute;
+	virtual void(void) RouteEnded;
 	virtual void(void) WalkRoute;
-	virtual void(vector) NewRoute;
+	virtual int(void) GetSequenceState;
 
 	/* animation cycles */
 	float m_flAnimTime;

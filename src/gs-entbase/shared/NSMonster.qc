@@ -353,15 +353,6 @@ NSMonster::AttackHolster(void)
 }
 
 void
-NSMonster::ClearRoute(void)
-{
-	if (m_iNodes) {
-		m_iNodes = 0;
-		memfree(m_pRoute);
-	}
-}
-
-void
 NSMonster::FreeState(void)
 {
 	string to_trigger;
@@ -409,104 +400,25 @@ NSMonster::FreeStateMoved(void)
 }
 
 void
-NSMonster::CheckRoute(void)
+NSMonster::RouteEnded(void)
 {
-	float flDist;
-	vector evenpos;
+	super::RouteEnded();
 
-	if (!m_iNodes)
-		return;
-
-	/* level out position/node stuff */
-	if (m_iCurNode < 0) {
-		evenpos = m_vecLastNode;
-		evenpos[2] = origin[2];
-	} else {
-		evenpos = m_pRoute[m_iCurNode].dest;
-		evenpos[2] = origin[2];
-	}
-
-	flDist = floor(vlen(evenpos - origin));
-
-	if (flDist < 8) {
-		NSLog("^2NSMonster::^3CheckRoute^7: " \
-			"%s reached node\n", this.targetname);
-		m_iCurNode--;
-		velocity = [0,0,0]; /* clamp friction */
-
-		/* we've still traveling and from this node we may be able to walk
-		 * directly to our end-destination */
-		if (m_iCurNode > -1) {
-			tracebox(origin, mins, maxs, m_vecLastNode, MOVE_NORMAL, this);
-
-			/* can we walk directly to our target destination? */
-			if (trace_fraction == 1.0) {
-				dprint("^2NSMonster::^3CheckRoute^7: " \
-					"Walking directly to last node\n");
-				m_iCurNode = -1;
-			}
-		}
-	}
-
-	if (m_iCurNode < -1) {
-		ClearRoute();
-		NSLog("^2NSMonster::^3CheckRoute^7: %s reached end", this.targetname);
-
-		/* mark that we've ended a sequence, if we're in one and que anim */
+	/* mark that we've ended a sequence, if we're in one and que anim */
 		if (m_iSequenceState == SEQUENCESTATE_ACTIVE) {
 			if (m_flSequenceEnd) {
 				float duration = frameduration(modelindex, m_flSequenceEnd);
 				m_iSequenceState = SEQUENCESTATE_ENDING;
 				think = (m_iSequenceFlags & SSFL_NOSCRIPTMOVE) ? FreeState : FreeStateMoved;
 				nextthink = time + duration;
-				NSLog("^2NSMonster::^3CheckRoute^7: %s overriding anim for %f seconds (modelindex %d, frame %d)", this.targetname, duration, modelindex, m_flSequenceEnd);
+				NSLog("^2NSNavAI::^3CheckRoute^7: %s overriding anim for %f seconds (modelindex %d, frame %d)", this.targetname, duration, modelindex, m_flSequenceEnd);
 			} else {
 				/* we still need to trigger targets */
 				think = (m_iSequenceFlags & SSFL_NOSCRIPTMOVE) ? FreeState : FreeStateMoved;
 				nextthink = time;
-				NSLog("^2NSMonster::^3CheckRoute^7: %s has no anim, finished sequence.", this.targetname);
+				NSLog("^2NSNavAI::^3CheckRoute^7: %s has no anim, finished sequence.", this.targetname);
 			}
 		}
-	}
-
-	/* crouch attempt */
-	if (CanCrouch()) {
-		vector src;
-		bool shouldcrouch = false;
-
-		/* test up */
-		src = origin + [0,0,24];
-		makevectors(angles);
-		traceline(src, src + v_forward * 128, MOVE_NORMAL, this);
-
-		/* we hit something */
-		if (trace_fraction < 1.0) {
-			src = origin + [0,0, -8];
-			traceline(src, src + v_forward * 128, MOVE_NORMAL, this);
-
-			/* we can crouch here, so let's do it */
-			if (trace_fraction >= 1.0)
-				shouldcrouch = true;
-		}
-
-		/* entire way-link needs to be crouched. that's the law of the land */
-		if (shouldcrouch || Route_GetNodeFlags(&m_pRoute[m_iCurNode]) & LF_CROUCH)
-			input_buttons |= INPUT_BUTTON8;
-	}
-
-	/*if (flDist == m_flLastDist) {
-		m_flNodeGiveup += frametime;
-	} else {
-		m_flNodeGiveup = bound(0, m_flNodeGiveup - frametime, 1.0);
-	}
-
-	m_flLastDist = flDist;
-
-	if (m_flNodeGiveup >= 1.0f) {
-		print(sprintf("NSMonster::CheckNode: %s gave up route\n",
-			this.netname));
-		ClearRoute();
-	}*/
 }
 
 void
@@ -516,92 +428,35 @@ NSMonster::WalkRoute(void)
 
 	/* we're busy shooting at something, don't walk */
 	if (GetState() == MONSTER_AIMING && m_eEnemy) {
-		endangles = vectoangles(m_eEnemy.origin - origin);
-
-		/* TODO: lerp */
-		m_vecTurnAngle[1] = endangles[1];
-	} else if (m_iNodes && GetState() == MONSTER_IDLE) {
-		/* we're on our last node */
-		if (m_iCurNode < 0) {
-			endangles = vectoangles(m_vecLastNode - origin);
-		} else {
-			endangles = vectoangles(m_pRoute[m_iCurNode].dest - origin);
-		}
-		m_vecTurnAngle[1] = endangles[1];
-		input_movevalues = [m_flSequenceSpeed, 0, 0];
+		input_angles = vectoangles(m_eEnemy.origin - origin);
+		input_angles[0] = input_angles[2] = 0;
+	} else if (m_iNodes && (GetState() == MONSTER_IDLE || GetState() == MONSTER_ALERT)) {
+		input_angles = GetRouteDirection();
+		input_angles[0] = input_angles[2] = 0;
+		input_movevalues = GetRouteMovevalues() * m_flSequenceSpeed;
 	} else if (GetState() == MONSTER_CHASING && m_eEnemy) {
 		/* we've got 'em in our sights, just need to walk closer */
-		endangles = vectoangles(m_eEnemy.origin - origin);
+		input_angles = vectoangles(m_eEnemy.origin - origin);
+		input_angles[0] = input_angles[2] = 0;
 		input_movevalues = [GetChaseSpeed(), 0, 0];
-		m_vecTurnAngle[1] = endangles[1];
 	} else
 		return;
 
-	/* functional */
-	input_angles[1] = v_angle[1] = m_vecTurnAngle[1];
-
-#if 1
-	/* cosmetic */
+	/* yaw interpolation */
+	{
 	vector new_ang;
 	vector old_ang;
 	vector tmp;
-	makevectors(m_vecTurnAngle);
+	makevectors(input_angles);
 	new_ang = v_forward;
 	makevectors(angles);
 	old_ang = v_forward;
 
-	tmp[0] = 0;
+	tmp[0] = Math_Lerp(old_ang[0], new_ang[0], frametime * 5);
 	tmp[1] = Math_Lerp(old_ang[1], new_ang[1], frametime * 5);
-	tmp[2] = 0;
-	angles = vectoangles(tmp);
-#endif
-}
-
-void
-NSMonster::NewRoute(vector destination)
-{
-	/* engine calls this upon successfully creating a route */
-	static void NewRoute_RouteCB(entity ent, vector dest, int numnodes, nodeslist_t *nodelist)
-	{
-		NSMonster p = (NSMonster)ent;
-		p.m_iNodes = numnodes;
-		p.m_iCurNode = numnodes - 1;
-		p.m_pRoute = nodelist;
-
-		//traceline(p.origin, dest, MOVE_NORMAL, this);
-		tracebox(p.origin, p.mins, p.maxs, dest, MOVE_NORMAL, this);
-
-		/* can we walk directly to our target destination? */
-		if (trace_fraction == 1.0) {
-			dprint("^2NSMonster::^3NewRoute^7: " \
-				"Walking directly to last node\n");
-			p.m_iCurNode = -1;
-		} else {
-			dprint("^2NSMonster::^3NewRoute^7: " \
-				"Path obstructed, calculating route\n");
-
-			/* run through all nodes, mark the closest direct path possible */
-			for (int i = 0; i < p.m_iNodes; i++) {
-				vector vecDest = p.m_pRoute[i].dest;
-				tracebox(p.origin, p.mins, p.maxs, vecDest, TRUE, p);
-				//traceline(p.origin, vecDest, MOVE_NORMAL, this);
-
-				if (trace_fraction == 1.0) {
-					p.m_iCurNode = i;
-					break;
-				}
-			}
-		}
-	}
-
-	if (!g_nodes_present)
-		return;
-
-	ClearRoute();
-
-	if (!m_iNodes) {
-		route_calculate(this, destination, 0, NewRoute_RouteCB);
-		m_vecLastNode = destination;
+	tmp[2] = Math_Lerp(old_ang[2], new_ang[2], frametime * 5);
+	input_angles = vectoangles(tmp);
+	input_angles[0] = input_angles[2] = 0;
 	}
 }
 
@@ -694,6 +549,19 @@ NSMonster::GetState(void)
 	return m_iMState;
 }
 
+int
+NSMonster::GetSequenceState(void)
+{
+	return m_iSequenceState;
+}
+
+void
+NSMonster::RunAI(void)
+{
+	SeeThink();
+	AttackThink();
+}
+
 void PMoveCustom_RunPlayerPhysics(entity target);
 void PMoveCustom_RunCrouchPhysics(entity target);
 void
@@ -702,37 +570,46 @@ NSMonster::Physics(void)
 	input_movevalues = [0,0,0];
 	input_impulse = 0;
 	input_buttons = 0;
-	input_angles = v_angle;
 	input_timelength = frametime;
+	input_angles = angles;
 
-	/* override whatever we did above with this */
-	if (m_iSequenceState == SEQUENCESTATE_ENDING) {
-		input_angles = v_angle = angles = m_vecSequenceAngle;
+	/* when stuck in a sequence, forget enemies, combat stance */
+	if (GetSequenceState() != SEQUENCESTATE_NONE) {
+		m_eEnemy = __NULL__;
+		SetState(MONSTER_IDLE);
+	}
+
+	/* we're ending a scripted sequence, so play its animation */
+	if (GetSequenceState() == SEQUENCESTATE_ENDING) {
+		input_angles[1] = m_vecSequenceAngle[1];
 		SetFrame(m_flSequenceEnd);
-	} else if (movetype == MOVETYPE_WALK) {
-		if (m_iSequenceState == SEQUENCESTATE_NONE) {
-			SeeThink();
-			AttackThink();
+	} else {
+		/* if still alive... */
+		if (GetState() != MONSTER_DEAD) {
+			/* not in a sequence */
+			if (GetSequenceState() == SEQUENCESTATE_NONE) {
+				RunAI();
+			}
+
+			AnimationUpdate();
 		}
 
 		CheckRoute();
 		WalkRoute();
-
 		hitcontentsmaski = CONTENTBITS_MONSTER;
+
 		if (CanCrouch())
 			PMoveCustom_RunCrouchPhysics(this);
 		else
 			PMoveCustom_RunPlayerPhysics(this);
-		SetOrigin(origin);
-		IdleNoise();
-		button8 = input_buttons & INPUT_BUTTON8; // duck
 
-		AnimationUpdate();
+		SetOrigin(origin);
 	}
 
-	if (!(flags & FL_ONGROUND) && velocity[2] < -415) {
-		if (!(m_iFlags & MSF_FALLING))
+	if (!(GetFlags() & FL_ONGROUND) && velocity[2] < -415) {
+		if (!(m_iFlags & MSF_FALLING)) {
 			FallNoise();
+		}
 
 		m_iFlags |= MSF_FALLING;
 	} else {
@@ -747,13 +624,11 @@ NSMonster::Physics(void)
 		}
 	}
 
+	m_flBaseTime = frame1time;
 	frame1time += frametime;
-}
 
-bool
-NSMonster::CanCrouch(void)
-{
-	return false;
+	processmodelevents(modelindex, frame, m_flBaseTime,
+		frame1time, Game_ServerModelEvent);
 }
 
 void
@@ -890,37 +765,6 @@ NSMonster::SendEntity(entity ePEnt, float fChanged)
 		return (0);
 
 	WriteByte(MSG_ENTITY, ENT_MONSTER);
-
-	/* newly popped into the PVS, sadly this is the only hacky way to check
-	 * for this right now. convince the engine maintainer to make this more sensible */
-	if (fChanged == 0xFFFFFF) {
-		/* check for defaults. if these are predictable fields, don't even bother
-		 * networking them! you're just wasting bandwidth. */
-		if (frame == 0)
-			fChanged &= ~BASEFL_CHANGED_FRAME;
-		if (skin == 0)
-			fChanged &= ~BASEFL_CHANGED_SKIN;
-		if (effects == 0)
-			fChanged &= ~BASEFL_CHANGED_EFFECTS;
-		if (m_iBody == 0)
-			fChanged &= ~BASEFL_CHANGED_BODY;
-		if (scale == 0.0 || scale == 1.0)
-			fChanged &= ~BASEFL_CHANGED_SCALE;
-		if (origin == [0,0,0])
-			fChanged &= ~BASEFL_CHANGED_ORIGIN;
-		if (angles == [0,0,0])
-			fChanged &= ~BASEFL_CHANGED_ANGLES;
-		if (velocity == [0,0,0])
-			fChanged &= ~BASEFL_CHANGED_VELOCITY;
-		if (mins == [0,0,0] && maxs == [0,0,0])
-			fChanged &= ~BASEFL_CHANGED_SIZE;
-		if (solid == SOLID_NOT)
-			fChanged &= ~BASEFL_CHANGED_SOLID;
-		if (movetype == MOVETYPE_NONE)
-			fChanged &= ~BASEFL_CHANGED_MOVETYPE;
-		if (m_iRenderMode == RM_NORMAL)
-			fChanged &= ~BASEFL_CHANGED_RENDERMODE;
-	}
 
 	/* don't network triggers unless provoked */
 	/*if (cvar("developer") == 0 && m_iRenderMode == RM_TRIGGER)

@@ -369,10 +369,10 @@ NSTalkMonster::TalkStopFollow(void)
 void
 NSTalkMonster::FollowPlayer(void)
 {
-	v_angle = vectoangles(m_eFollowingChain.origin - origin);
-	v_angle[0] = 0;
-	v_angle[1] = Math_FixDelta(v_angle[1]);
-	v_angle[2] = 0;
+	input_angles = vectoangles(m_eFollowingChain.origin - origin);
+	input_angles[0] = 0;
+	input_angles[1] = Math_FixDelta(input_angles[1]);
+	input_angles[2] = 0;
 
 	/* Give up after 1024 units */
 	if (vlen(m_eFollowingChain.origin - origin) > 1024) {
@@ -385,10 +385,10 @@ NSTalkMonster::FollowPlayer(void)
 
 		/* Tracing failed, there's world geometry in the way */
 		if (trace_fraction < 1.0f) {
-			v_angle = vectoangles(m_vecLastUserPos - origin);
-			v_angle[0] = 0;
-			v_angle[1] = Math_FixDelta(v_angle[1]);
-			v_angle[2] = 0;
+			input_angles = vectoangles(m_vecLastUserPos - origin);
+			input_angles[0] = 0;
+			input_angles[1] = Math_FixDelta(input_angles[1]);
+			input_angles[2] = 0;
 		} else {
 			m_vecLastUserPos = m_eFollowingChain.origin;
 		}
@@ -424,10 +424,9 @@ NSTalkMonster::PanicFrame(void)
 	}
 
 	if (m_flChangePath < time) {
-		v_angle[1] -= 180 + ((random() - 0.5) * 90);
-		v_angle[1] = Math_FixDelta(v_angle[1]);
+		input_angles[1] -= 180 + ((random() - 0.5) * 90);
+		input_angles[1] = Math_FixDelta(input_angles[1]);
 		m_flChangePath = time + floor(random(2,10));
-		angles = input_angles = v_angle;
 	}
 
 	if (m_flNextSentence > time)
@@ -452,83 +451,24 @@ NSTalkMonster::FollowChain(void)
 }
 
 void
-NSTalkMonster::Physics(void)
+NSTalkMonster::RunAI(void)
 {
-	input_movevalues = [0,0,0];
-	input_impulse = 0;
-	input_buttons = 0;
-	input_timelength = frametime;
-	input_angles = v_angle;
+	SeeThink();
+	AttackThink();
+	TalkPlayerGreet();
+	FollowChain();
 
-	/* make sure we're forgetting about enemies and attack states in sequence */
-	if (m_iSequenceState != SEQUENCESTATE_NONE) {
-		m_eEnemy = __NULL__;
-		SetState(MONSTER_IDLE);
-	}
-
-	/* override whatever we did above with this */
-	if (m_iSequenceState == SEQUENCESTATE_ENDING) {
-		input_angles = v_angle = angles = m_vecSequenceAngle;
-		SetFrame(m_flSequenceEnd);
+	if (m_eFollowing != world) {
+		FollowPlayer();
+	} else if (m_iFlags & MONSTER_FEAR) {
+		PanicFrame();
 	} else {
-		if (GetState() != MONSTER_DEAD) {
-			if (m_iSequenceState == SEQUENCESTATE_NONE) {
-				SeeThink();
-				AttackThink();
-				TalkPlayerGreet();
-				FollowChain();
-
-				if (m_eFollowing != world) {
-					FollowPlayer();
-					input_angles = angles = v_angle;
-				} else if (m_iFlags & MONSTER_FEAR) {
-					PanicFrame();
-				} else {
-					if (random() < 0.5) {
-						TalkPlayerAsk();
-					} else {
-						TalkPlayerIdle();
-					}
-				}
-			}
-
-			AnimationUpdate();
-		}
-		CheckRoute();
-		WalkRoute();
-		hitcontentsmaski = CONTENTBITS_MONSTER;
-
-		if (CanCrouch())
-			PMoveCustom_RunCrouchPhysics(this);
-		else
-			PMoveCustom_RunPlayerPhysics(this);
-
-		SetOrigin(origin);
-	}
-
-	if (!(flags & FL_ONGROUND) && velocity[2] < -415) {
-		if (!(m_iFlags & MSF_FALLING)) {
-			FallNoise();
-		}
-
-		m_iFlags |= MSF_FALLING;
-	} else {
-		m_iFlags &= ~MSF_FALLING;
-	}
-
-	/* support for think/nextthink */
-	if (think && nextthink > 0.0f) {
-		if (nextthink < time) {
-			nextthink = 0.0f;
-			think();
+		if (random() < 0.5) {
+			TalkPlayerAsk();
+		} else {
+			TalkPlayerIdle();
 		}
 	}
-
-	m_flBaseTime = frame1time;
-	frame1time += frametime;
-
-	processmodelevents(modelindex, frame, m_flBaseTime,
-		frame1time, Game_ServerModelEvent);
 }
 
 void
@@ -612,9 +552,9 @@ NSTalkMonster::SendEntity(entity ePEnt, float fChanged)
 		WriteCoord(MSG_ENTITY, origin[2]);
 	}
 	if (fChanged & BASEFL_CHANGED_ANGLES) {
-		WriteShort(MSG_ENTITY, 0);
+		WriteShort(MSG_ENTITY, angles[0] * 32767 / 360);
 		WriteShort(MSG_ENTITY, angles[1] * 32767 / 360);
-		WriteShort(MSG_ENTITY, 0);
+		WriteShort(MSG_ENTITY, angles[2] * 32767 / 360);
 	}
 	if (fChanged & BASEFL_CHANGED_MODELINDEX) {
 		WriteShort(MSG_ENTITY, modelindex);

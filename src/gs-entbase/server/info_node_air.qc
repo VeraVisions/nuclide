@@ -14,8 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED info_node (0 0 0) (-8 -8 -8) (8 8 8)
-It's a node, helping monsters navigate on the ground.
+/*QUAKED info_node_air (0 0 0) (-8 -8 -8) (8 8 8)
+It's a node, helping monsters navigate in the air as well as underwater.
 
 -------- KEYS --------
 "targetname" : Name
@@ -25,29 +25,27 @@ This entity was introduced in Half-Life (1998).
 */
 
 class
-info_node:NSPointTrigger
+info_node_air:NSPointTrigger
 {
-	void(void) info_node;
+	void(void) info_node_air;
 
 	virtual void(void) Respawn;
 };
 
 void
-info_node::Respawn(void)
+info_node_air::Respawn(void)
 {
 	SetSize([0,0,0], [0,0,0]);
 	SetSolid(SOLID_NOT);
 	SetMovetype(MOVETYPE_NONE);
 
-	/* drop to floor, then 32-units above ground
+	/* air nodes just stay where they are
 	   see https://twhl.info/wiki/page/Tutorial%3A_All_about_info_nodes */
 	SetOrigin(GetSpawnOrigin());
-	DropToFloor();
-	SetOrigin(GetOrigin() + [0,0,32]);
 }
 
 void
-info_node::info_node(void)
+info_node_air:: info_node_air(void)
 {
 	
 }

@@ -14,40 +14,30 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/*QUAKED info_node (0 0 0) (-8 -8 -8) (8 8 8)
-It's a node, helping monsters navigate on the ground.
-
--------- KEYS --------
-"targetname" : Name
-
--------- TRIVIA --------
-This entity was introduced in Half-Life (1998).
-*/
-
 class
-info_node:NSPointTrigger
+NSNavAI:NSSurfacePropEntity
 {
-	void(void) info_node;
+#ifdef SERVER
+	/* pathfinding */
+	int m_iNodes;
+	int m_iCurNode;
+	nodeslist_t *m_pRoute;
+	vector m_vecLastNode;
+	vector m_vecTurnAngle;
+#endif
 
-	virtual void(void) Respawn;
+	void(void) NSNavAI;
+
+#ifdef SERVER
+	/* methods we'd like others to override */
+	virtual bool(void) CanCrouch;
+
+	virtual vector(void) GetRouteMovevalues;
+	virtual vector(void) GetRouteDirection;
+
+	virtual void(void) RouteEnded;
+	virtual void(void) ClearRoute;
+	virtual void(void) CheckRoute;
+	virtual void(vector) NewRoute;
+#endif
 };
-
-void
-info_node::Respawn(void)
-{
-	SetSize([0,0,0], [0,0,0]);
-	SetSolid(SOLID_NOT);
-	SetMovetype(MOVETYPE_NONE);
-
-	/* drop to floor, then 32-units above ground
-	   see https://twhl.info/wiki/page/Tutorial%3A_All_about_info_nodes */
-	SetOrigin(GetSpawnOrigin());
-	DropToFloor();
-	SetOrigin(GetOrigin() + [0,0,32]);
-}
-
-void
-info_node::info_node(void)
-{
-	
-}

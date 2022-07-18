@@ -25,6 +25,7 @@
 #include "NSPhysicsEntity.h"
 #include "NSBrushTrigger.h"
 #include "NSPointTrigger.h"
+#include "NSNavAI.h"
 #include "NSMonster.h"
 #include "NSTalkMonster.h"
 #include "NSProjectile.h"

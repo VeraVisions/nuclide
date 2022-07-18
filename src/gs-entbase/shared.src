@@ -12,6 +12,7 @@ shared/NSPhysicsEntity.qc
 shared/NSBrushTrigger.qc
 shared/NSPointTrigger.qc
 shared/NSVehicle.qc
+shared/NSNavAI.qc
 shared/NSMonster.qc
 shared/NSTalkMonster.qc
 shared/NSProjectile.qc
