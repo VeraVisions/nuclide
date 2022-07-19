@@ -14,6 +14,44 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+
+#ifdef SERVER
+void
+NSPhysicsEntity::Save(float handle)
+{
+	SaveInt(handle, "m_iEnabled", m_iEnabled);
+	SaveInt(handle, "m_iShape", m_iShape);
+	SaveInt(handle, "m_iMaterial", m_iMaterial);
+	SaveInt(handle, "m_iFlags", m_iFlags);
+	SaveFloat(handle, "m_flInertiaScale", m_flInertiaScale);
+	super::Save(handle);
+}
+
+void
+NSPhysicsEntity::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_iEnabled":
+		m_iEnabled = ReadInt(strValue);
+		break;
+	case "m_iShape":
+		m_iShape = ReadInt(strValue);
+		break;
+	case "m_iMaterial":
+		m_iMaterial = ReadInt(strValue);
+		break;
+	case "m_iFlags":
+		m_iFlags = ReadInt(strValue);
+		break;
+	case "m_flInertiaScale":
+		m_flInertiaScale = ReadFloat(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
+#endif
+
 #define ODE_MODE 1
 
 #ifdef CLIENT

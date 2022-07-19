@@ -50,6 +50,8 @@ class NSVehicle:NSSurfacePropEntity
 	virtual vector(void) GetExitPos;
 	virtual void(void) EvaluateEntity;
 	virtual float(entity, float) SendEntity;
+	virtual void(float) Save;
+	virtual void(string,string) Restore;
 #endif
 
 	virtual entity(void) GetDriver;

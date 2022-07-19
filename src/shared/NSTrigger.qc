@@ -156,6 +156,7 @@ NSTrigger::Restore(string strKey, string strValue)
 		super::Restore(strKey, strValue);
 	}
 }
+
 void
 NSTrigger::Input(entity eAct, string strInput, string strData)
 {

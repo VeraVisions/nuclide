@@ -14,6 +14,23 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#ifdef SERVER
+void
+NSClientSpectator::Save(float handle)
+{
+	super::Save(handle);
+}
+
+void
+NSClientSpectator::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
+#endif
+
 bool
 NSClientSpectator::IsRealSpectator(void)
 {

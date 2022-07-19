@@ -14,6 +14,51 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#ifdef SERVER
+void
+NSVehicle::Save(float handle)
+{
+	SaveInt(handle, "m_iVehicleFlags", m_iVehicleFlags);
+	SaveInt(handle, "m_iMoveButtons", m_iMoveButtons);
+	SaveVector(handle, "m_vecMoveValues",  m_vecMoveValues);
+	SaveFloat(handle, "m_eDriver", num_for_edict(m_eDriver));
+	SaveFloat(handle, "m_eDriverLast", num_for_edict(m_eDriverLast));
+	SaveVector(handle, "m_vecPlayerPos",  m_vecPlayerPos);
+	SaveVector(handle, "m_vecExitPos",  m_vecExitPos);
+
+	super::Save(handle);
+}
+void
+NSVehicle::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_iVehicleFlags":
+		m_iVehicleFlags = ReadInt(strValue);
+		break;
+	case "m_iMoveButtons":
+		m_iMoveButtons = ReadInt(strValue);
+		break;
+	case "m_vecMoveValues":
+		m_vecMoveValues = ReadVector(strValue);
+		break;
+	case "m_eDriver":
+		m_eDriver = edict_num(stof(strValue));
+		break;
+	case "m_eDriverLast":
+		m_eDriverLast = edict_num(stof(strValue));
+		break;
+	case "m_vecPlayerPos":
+		m_vecPlayerPos = ReadVector(strValue);
+		break;
+	case "m_vecExitPos":
+		m_vecExitPos = ReadVector(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
+#endif
+
 bool
 NSVehicle::CanDriverCrouch(void)
 {

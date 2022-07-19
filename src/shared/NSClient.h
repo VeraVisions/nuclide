@@ -56,5 +56,8 @@ NSClient:NSSurfacePropEntity
 
 	/* run every frame before renderscene() */
 	virtual float(void) predraw;
+#else
+	virtual void(float) Save;
+	virtual void(string,string) Restore;
 #endif
 };

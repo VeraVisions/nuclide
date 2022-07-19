@@ -14,6 +14,25 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+
+#ifdef SERVER
+void
+NSNavAI::Save(float handle)
+{
+	super::Save(handle);
+}
+
+void
+NSNavAI::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
+#endif
+
+
 #ifdef SERVER
 bool
 NSNavAI::CanCrouch(void)

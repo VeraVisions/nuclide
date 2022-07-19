@@ -32,6 +32,9 @@ NSNavAI:NSSurfacePropEntity
 	void(void) NSNavAI;
 
 #ifdef SERVER
+	virtual void(float) Save;
+	virtual void(string,string) Restore;
+
 	/* methods we'd like others to override */
 	virtual bool(void) CanCrouch;
 

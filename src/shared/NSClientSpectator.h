@@ -66,6 +66,8 @@ class NSClientSpectator:NSClient
 	virtual bool(void) IsPlayer;
 
 #ifdef SERVER
+	virtual void(float) Save;
+	virtual void(string,string) Restore;
 	virtual void(void) EvaluateEntity;
 	virtual float(entity, float) SendEntity;
 	virtual void(void) RunClientCommand;

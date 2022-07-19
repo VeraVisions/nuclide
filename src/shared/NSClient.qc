@@ -14,6 +14,23 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#ifdef SERVER
+void
+NSClient::Save(float handle)
+{
+	super::Save(handle);
+}
+
+void
+NSClient::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
+#endif
+
 void
 NSClient::OnRemoveEntity(void)
 {

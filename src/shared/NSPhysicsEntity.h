@@ -74,6 +74,8 @@ class NSPhysicsEntity:NSSurfacePropEntity
 	virtual void(void) Death;
 	virtual void(void) EvaluateEntity;
 	virtual float(entity, float) SendEntity;
+	virtual void(float) Save;
+	virtual void(string,string) Restore;
 #else
 	virtual void(float, float) ReceiveEntity;
 #endif
