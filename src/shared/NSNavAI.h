@@ -14,6 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/* NSNavAI is a moving/pathfinding object. It knows how to deal
+   with waypoint based nodes. 
+*/
 class
 NSNavAI:NSSurfacePropEntity
 {

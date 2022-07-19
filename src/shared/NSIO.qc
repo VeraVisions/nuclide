@@ -20,10 +20,6 @@ NSIO::Respawn(void)
 	// Respawn code goes here...
 }
 
-#ifdef CLIENT
-string __fullspawndata;
-#endif
-
 void
 NSIO::Init(void)
 {

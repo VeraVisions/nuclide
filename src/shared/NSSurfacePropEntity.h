@@ -104,5 +104,8 @@ class NSSurfacePropEntity:NSRenderableEntity
 	nonvirtual void(void) SurfaceDataFinish;
 	nonvirtual void(void) PropDataFinish;
 #endif
-
 };
+
+#ifdef CLIENT
+void NSSurfacePropEntity_ReadEntity(bool);
+#endif

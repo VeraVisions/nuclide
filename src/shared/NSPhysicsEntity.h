@@ -94,3 +94,7 @@ class NSPhysicsEntity:NSSurfacePropEntity
 	virtual void(vector) ApplyTorqueCenter;
 	virtual float(int, int) CalculateImpactDamage;
 };
+
+#ifdef CLIENT
+void NSPhysicsEntity_ReadEntity(bool);
+#endif

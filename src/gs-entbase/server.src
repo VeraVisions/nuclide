@@ -5,8 +5,6 @@
 #includelist
 baseentity.h
 decals.h
-server/NSOutput.qc
-shared/NSVehicle.h
 server/info_null.qc
 server/info_notnull.qc
 server/info_intermission.qc

@@ -20,7 +20,7 @@ void
 NSTrigger::Trigger(entity act, int state)
 {
 	NSLog("^2%s::^3Input^7: Triggerd by %s with no consequence", 
-		this.classname, act.classname);
+		classname, act.classname);
 }
 
 void
@@ -36,7 +36,7 @@ NSTrigger::UseTargets(entity act, int state, float fDelay)
 
 	if (fDelay > 0.0f) {
 		NSLog("^2%s::^3UseTargets^7: Triggering `%s`", 
-			this.classname, target);
+			classname, target);
 
 		NSTrigger eTimer = spawn(NSTrigger);
 		eTimer.owner = act;
@@ -53,8 +53,8 @@ NSTrigger::UseTargets(entity act, int state, float fDelay)
 			NSTrigger trigger = (NSTrigger)f;
 
 			NSLog("^2%s::^3UseTargets^7:" \
-			       "Triggering %s `%s` from %s\n", \
-			        this.classname, f.classname, \
+			       "Triggering %s `%s` from %s", \
+			        classname, f.classname, \
 			        trigger.targetname, act.classname);
 
 			if (trigger.Trigger != __NULL__) {
@@ -96,7 +96,7 @@ NSTrigger::GetMaster(void)
 	/* default to success */
 	if (!m_strMaster) {
 		/*NSLog("^2%s::^3GetMaster^7: No master, return success", 
-		this.classname));*/
+		classname));*/
 		return (1);
 	}
 
@@ -105,16 +105,16 @@ NSTrigger::GetMaster(void)
 	/* we couldn't find it, so let's not even bother going further */
 	if (!t) {
 		NSLog("^2%s::^3GetMaster^7: Invalid master (%s), return success", 
-		this.classname, m_strMaster);
+		classname, m_strMaster);
 		return (1);
 	}
 
 	if (t.GetValue() == 1)
 		NSLog("^2%s::^3GetMaster^7: %s learns %s ^2POSITIVE", 
-		this.classname, targetname, m_strMaster);
+		classname, targetname, m_strMaster);
 	else
 		NSLog("^2%s::^3GetMaster^7: %s learns %s ^1NEGATIVE", 
-		this.classname, targetname, m_strMaster);
+		classname, targetname, m_strMaster);
 	
 	return t.GetValue();
 }

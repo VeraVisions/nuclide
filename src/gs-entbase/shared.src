@@ -3,20 +3,6 @@
 #endif
 
 #includelist
-shared/NSIO.qc
-shared/NSTrigger.qc
-shared/NSEntity.qc
-shared/NSRenderableEntity.qc
-shared/NSSurfacePropEntity.qc
-shared/NSPhysicsEntity.qc
-shared/NSBrushTrigger.qc
-shared/NSPointTrigger.qc
-shared/NSVehicle.qc
-shared/NSNavAI.qc
-shared/NSMonster.qc
-shared/NSTalkMonster.qc
-shared/NSProjectile.qc
-shared/NSInteractiveSurface.qc
 shared/ambient_generic.qc
 shared/decals.qc
 shared/spraylogo.qc

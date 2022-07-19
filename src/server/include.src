@@ -1,4 +1,5 @@
 #includelist
+NSOutput.qc
 plugins.qc
 logging.qc
 nodes.qc

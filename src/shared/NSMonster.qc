@@ -280,7 +280,7 @@ NSMonster::GetRunSpeed(void)
 void
 NSMonster::AttackThink(void)
 {
-	if (m_iSequenceState != SEQUENCESTATE_NONE)
+	if (InSequence())
 		return;
 
 	if (m_flAttackThink > time)
@@ -391,17 +391,17 @@ NSMonster::FreeState(void)
 	if (m_iSequenceRemove) {
 		Hide();
 	}
-	dprint("NSMonster::FreeState\n");
+	NSLog("^2%s::^3FreeState^7: (%i, %S)", classname, m_iSequenceRemove, to_trigger);
 }
 
 void
 NSMonster::FreeStateMoved(void)
 {
 	vector new_origin;
-	dprint("NSMonster::FreeStateMoved\n");
 	new_origin = gettaginfo(this, 1);
+	NSLog("^2%s::^3FreeStateMoved^7: moved to %v", classname, new_origin);
 	SetOrigin(new_origin);
-	droptofloor();
+	DropToFloor();
 	FreeState();
 }
 
@@ -410,21 +410,24 @@ NSMonster::RouteEnded(void)
 {
 	super::RouteEnded();
 
+	if (GetSequenceState() != SEQUENCESTATE_ACTIVE)
+		return;
+
 	/* mark that we've ended a sequence, if we're in one and que anim */
-		if (m_iSequenceState == SEQUENCESTATE_ACTIVE) {
-			if (m_flSequenceEnd) {
-				float duration = frameduration(modelindex, m_flSequenceEnd);
-				m_iSequenceState = SEQUENCESTATE_ENDING;
-				think = (m_iSequenceFlags & SSFL_NOSCRIPTMOVE) ? FreeState : FreeStateMoved;
-				nextthink = time + duration;
-				NSLog("^2NSNavAI::^3CheckRoute^7: %s overriding anim for %f seconds (modelindex %d, frame %d)", this.targetname, duration, modelindex, m_flSequenceEnd);
-			} else {
-				/* we still need to trigger targets */
-				think = (m_iSequenceFlags & SSFL_NOSCRIPTMOVE) ? FreeState : FreeStateMoved;
-				nextthink = time;
-				NSLog("^2NSNavAI::^3CheckRoute^7: %s has no anim, finished sequence.", this.targetname);
-			}
-		}
+	if (m_flSequenceEnd) {
+		float duration = frameduration(modelindex, m_flSequenceEnd);
+		m_iSequenceState = SEQUENCESTATE_ENDING;
+		think = (m_iSequenceFlags & SSFL_NOSCRIPTMOVE) ? FreeState : FreeStateMoved;
+		nextthink = time + duration;
+		NSLog("^2%s::^3CheckRoute^7: %s overriding anim for %f seconds (modelindex %d, frame %d)", \
+			classname, this.targetname, duration, modelindex, m_flSequenceEnd);
+	} else {
+		/* we still need to trigger targets */
+		think = (m_iSequenceFlags & SSFL_NOSCRIPTMOVE) ? FreeState : FreeStateMoved;
+		nextthink = time;
+		NSLog("^2%s::^3CheckRoute^7: %s has no anim, finished sequence", \
+			classname, this.targetname);
+	}
 }
 
 void
@@ -535,7 +538,8 @@ NSMonster::IsAlive(void)
 void
 NSMonster::StateChanged(monsterState_e oldState, monsterState_e newState)
 {
-	print(sprintf("%s state changed from %d to %d\n", classname, oldState, newState));
+	NSLog("^2%s::^3StateChanged^7: state changed from %d to %d", \
+		classname, oldState, newState);
 }
 
 void

@@ -206,22 +206,22 @@ scripted_sequence::RunOnEntity(entity targ)
 	f.m_iSequenceFlags = spawnflags;
 
 	if (m_iMove == SS_NO) {
-		dprint("\tType: SS_NO\n");
+		NSLog("\tType: SS_NO (%i)", m_iMove);
 	} else if (m_iMove == SS_WALK) {
 		f.NewRoute(origin);
 		f.m_flSequenceSpeed = f.GetWalkSpeed();
-		dprint("\tType: SS_WALK\n");
+		NSLog("\tType: SS_WALK (%i)", m_iMove);
 		return;
 	} else if (m_iMove == SS_RUN) {
 		f.NewRoute(origin);
 		f.m_flSequenceSpeed = f.GetRunSpeed();
-		dprint("\tType: SS_RUN\n");
+		NSLog("\tType: SS_RUN (%i)", m_iMove);
 		return;
 	} else if (m_iMove == SS_INSTANTANEOUS) {
 		setorigin(f, this.origin);
-		dprint("\tType: SS_INSTANTANEOUS\n");
+		NSLog("\tType: SS_INSTANTANEOUS (%i)", m_iMove);
 	} else if (m_iMove == SS_TURNTOFACE) {
-		dprint("\tType: SS_TURNTOFACE\n");
+		NSLog("\tType: SS_TURNTOFACE (%i)", m_iMove);
 	}
 
 	/* all the non-moving targets will do this at least */
@@ -229,7 +229,7 @@ scripted_sequence::RunOnEntity(entity targ)
 		duration = frameduration(f.modelindex, f.m_flSequenceEnd);
 		f.nextthink = time + duration;
 		NSLog(
-			"\tAnimation: %s Duration: %f seconds (modelindex %d, frame %d)\n",
+			"\tAnimation: %s Duration: %f seconds (modelindex %d, frame %d)",
 			m_strActionAnim,
 			duration,
 			f.modelindex,
@@ -238,7 +238,7 @@ scripted_sequence::RunOnEntity(entity targ)
 	} else {
 		f.nextthink = time;
 		NSLog(
-			"\t^1WARNING: %s skipping animation on script type %i\n",
+			"\t^1WARNING: %s skipping animation on script type %i",
 			f.targetname,
 			m_iMove
 		);

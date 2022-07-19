@@ -127,3 +127,8 @@ class NSTalkMonster:NSMonster
 	virtual void(float,float) ReceiveEntity;
 #endif
 };
+
+#ifdef CLIENT
+void NSTalkMonster_ParseSentence(void);
+void NSTalkMonster_ReadEntity(bool);
+#endif

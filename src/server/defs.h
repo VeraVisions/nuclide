@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include "NSOutput.h"
 #include "gamerules.h"
 #include "sentences.h"
 #include "skill.h"

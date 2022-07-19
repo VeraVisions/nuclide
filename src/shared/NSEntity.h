@@ -36,6 +36,8 @@ enumflags
 
 /* NSEntity is the lowest, user accessible class.
    It's responsible for handling practically every entity in Nuclide.
+	Try to avoid using the built-in 'entity' type unless you know exactly
+   what you are doing.
 */
 class NSEntity:NSTrigger
 {

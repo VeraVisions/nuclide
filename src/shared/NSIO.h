@@ -21,7 +21,6 @@
    This is a very low-level class. You're never meant to use this.
    Use NSEntity as a basis for your classes.
 */
-
 class NSIO
 {
 	void(void) NSIO;

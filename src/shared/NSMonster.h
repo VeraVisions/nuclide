@@ -294,6 +294,7 @@ class NSMonster:NSNavAI
 #ifdef CLIENT
 string Sentences_GetSamples(string);
 string Sentences_ProcessSample(string);
+void NSMonster_ReadEntity(bool);
 #else
 void NSMonster_AlertEnemyAlliance(vector pos, float radius, int alliance);
 entity NSMonster_FindClosestPlayer(entity);

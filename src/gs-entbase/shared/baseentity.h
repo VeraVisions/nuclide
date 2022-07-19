@@ -17,17 +17,5 @@
 #ifndef BASEENTITY
 #define BASEENTITY
 
-#include "NSIO.h"
-#include "NSTrigger.h"
-#include "NSEntity.h"
-#include "NSRenderableEntity.h"
-#include "NSSurfacePropEntity.h"
-#include "NSPhysicsEntity.h"
-#include "NSBrushTrigger.h"
-#include "NSPointTrigger.h"
-#include "NSNavAI.h"
-#include "NSMonster.h"
-#include "NSTalkMonster.h"
-#include "NSProjectile.h"
 #include "env_sprite.h"
 #endif

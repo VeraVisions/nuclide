@@ -15,7 +15,6 @@
 */
 
 #include "../shared/baseentity.h"
-#include "NSOutput.h"
 
 void FX_Spark(vector, vector);
 void FX_BreakModel(int, vector, vector, vector, float);

@@ -32,6 +32,9 @@
 #define ATTR_CHANGED(x) (x ##_net != x)
 #define VEC_CHANGED(x,y) (x ##_net[y] != x[y])
 
+#ifdef CLIENT
+string __fullspawndata;
+#endif
 
 #include "global.h"
 #include "sound.h"
@@ -43,10 +46,27 @@
 #endif
 
 #include "../gs-entbase/shared/baseentity.h"
+
+#include "NSIO.h"
+#include "NSTrigger.h"
+#include "NSEntity.h"
+#include "NSRenderableEntity.h"
+#include "NSSurfacePropEntity.h"
+#include "NSPhysicsEntity.h"
+#include "NSBrushTrigger.h"
+#include "NSPointTrigger.h"
+#include "NSNavAI.h"
+#include "NSMonster.h"
+#include "NSTalkMonster.h"
+#include "NSProjectile.h"
+
 #include "../xr/defs.h"
 #include "NSClient.h"
 #include "NSClientSpectator.h"
 #include "NSClientPlayer.h"
+
+#include "NSVehicle.h"
+
 #include "NSMaterial.h"
 #include "damage.h"
 #include "flags.h"

@@ -111,3 +111,7 @@ class NSRenderableEntity:NSEntity
 		vector m_oldvecRenderColor;
 	#endif
 };
+
+#ifdef CLIENT
+void NSRenderableEntity_ReadEntity(bool)
+#endif

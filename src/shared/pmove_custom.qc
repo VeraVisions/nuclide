@@ -482,7 +482,7 @@ PMoveCustom_Move(void)
 
 		if (trace_startsolid) {
 			if (!PMoveCustom_Fix_Origin()) {
-				dprint("PHYSICS ERROR: We are stuck!\n");
+				dprint(sprintf("%s PHYSICS ERROR: We are stuck!\n", self.classname));
 				return;
 			}
 			continue;

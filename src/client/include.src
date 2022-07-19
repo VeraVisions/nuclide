@@ -1,4 +1,5 @@
 #includelist
+NSInteractiveSurface.qc
 fog.qc
 font.qc
 sky.qc

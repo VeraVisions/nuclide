@@ -6,7 +6,6 @@
 baseentity.h
 decals.h
 client/defs.h
-shared/NSVehicle.h
 client/env_cubemap.qc
 client/env_glow.qc
 client/env_sun.qc
