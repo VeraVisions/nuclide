@@ -49,14 +49,8 @@ bot::GetRunSpeed(void)
 void
 bot::RouteClear(void)
 {
-	if (!m_iNodes)
-		return;
-
-	m_iCurNode = BOTROUTE_END;
-	m_iNodes = 0;
+	super::RouteClear();
 	m_flNodeGiveup = 0.0f;
-	memfree(m_pRoute);
-	print(sprintf("%s cleared his route.\n", netname));
 }
 
 void
@@ -70,7 +64,7 @@ bot::BrainThink(int enemyvisible, int enemydistant)
 		}
 	} else if (m_eTarget && enemyvisible && enemydistant) {
 		/* we can see the player, but are too far away, plot a route */
-		route_calculate(this, m_eTarget.origin, 0, Bot_RouteCB);
+		RouteToPosition(m_eTarget.origin);
 	}
 }
 
@@ -288,15 +282,9 @@ bot::CheckRoute(void)
 }
 
 void
-bot::NewRoute(vector pos)
-{
-	route_calculate(this, pos, 0, Bot_RouteCB);
-}
-
-void
 bot::CreateObjective(void)
 {
-	route_calculate(this, Route_SelectDestination(this), 0, Bot_RouteCB);
+	RouteToPosition(Route_SelectDestination(this));
 }
 
 void

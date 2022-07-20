@@ -213,7 +213,7 @@ NSMonster::SeeThink(void)
 		/* enemy is not valid anymore, reset it, clear route and search for new enemy */
 		SetState(MONSTER_ALERT);
 		m_eEnemy = __NULL__;
-		ClearRoute();
+		RouteClear();
 		m_flSeeTime = 0;
 	}
 
@@ -227,7 +227,7 @@ NSMonster::SeeThink(void)
 		m_eEnemy = NSMonster_FindClosestPlayer(this);
 
 		if (m_eEnemy)
-			NewRoute(m_eEnemy.origin);
+			RouteToPosition(m_eEnemy.origin);
 		return;
 	}
 
@@ -299,8 +299,8 @@ NSMonster::AttackThink(void)
 
 		/* FIXME: This is unreliable, but unlikely that a player ever is here */
 		if (m_vecLKPos != [0,0,0]) {
-			ClearRoute();
-			NewRoute(m_vecLKPos);
+			RouteClear();
+			RouteToPosition(m_vecLKPos);
 			m_flSequenceSpeed = 140;
 			m_vecLKPos = [0,0,0];
 		}
@@ -433,8 +433,6 @@ NSMonster::RouteEnded(void)
 void
 NSMonster::WalkRoute(void)
 {
-	vector endangles;
-
 	/* we're busy shooting at something, don't walk */
 	if (GetState() == MONSTER_AIMING && m_eEnemy) {
 		input_angles = vectoangles(m_eEnemy.origin - origin);
@@ -1037,8 +1035,8 @@ NSMonster_AlertEnemyAlliance(vector pos, float radius, int alliance)
 			continue;
 
 		/* we've heard a noise. investigate the location */
-		f.ClearRoute();
-		f.NewRoute(pos);
+		f.RouteClear();
+		f.RouteToPosition(pos);
 		f.m_flSequenceSpeed = 140;
 	}
 

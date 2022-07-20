@@ -482,7 +482,7 @@ Way_GoToPoint(entity pl)
 			bot targ;
 			targ = (bot)a;
 			targ.RouteClear();
-			route_calculate(targ, pl.origin, 0, Bot_RouteCB);
+			targ.RouteToPosition(pl.origin);
 			print(sprintf("Told bot to go to %v\n", trace_endpos));
 		}
 	}

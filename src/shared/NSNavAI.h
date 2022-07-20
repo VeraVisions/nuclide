@@ -42,8 +42,8 @@ NSNavAI:NSSurfacePropEntity
 	virtual vector(void) GetRouteDirection;
 
 	virtual void(void) RouteEnded;
-	virtual void(void) ClearRoute;
+	virtual void(void) RouteClear;
 	virtual void(void) CheckRoute;
-	virtual void(vector) NewRoute;
+	virtual void(vector) RouteToPosition;
 #endif
 };

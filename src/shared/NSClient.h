@@ -16,7 +16,7 @@
 
 /* both NSClientPlayer and base_NSClientSpectator are based off this class */
 class
-NSClient:NSSurfacePropEntity
+NSClient:NSNavAI
 {
 	vector origin_net;
 	vector velocity_net;

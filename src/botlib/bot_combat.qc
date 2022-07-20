@@ -154,7 +154,7 @@ BotLib_Alert(vector pos, float radius, float t)
 		/* we've heard a noise. investigate the location */
 		print(sprintf("bot alerted by noise at %v\n", pos));
 		f.RouteClear();
-		f.NewRoute(pos);
+		f.RouteToPosition(pos);
 	}
 
 	g_botalert_timer = time + 0.5f;

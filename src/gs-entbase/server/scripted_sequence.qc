@@ -208,12 +208,12 @@ scripted_sequence::RunOnEntity(entity targ)
 	if (m_iMove == SS_NO) {
 		NSLog("\tType: SS_NO (%i)", m_iMove);
 	} else if (m_iMove == SS_WALK) {
-		f.NewRoute(origin);
+		f.RouteToPosition(origin);
 		f.m_flSequenceSpeed = f.GetWalkSpeed();
 		NSLog("\tType: SS_WALK (%i)", m_iMove);
 		return;
 	} else if (m_iMove == SS_RUN) {
-		f.NewRoute(origin);
+		f.RouteToPosition(origin);
 		f.m_flSequenceSpeed = f.GetRunSpeed();
 		NSLog("\tType: SS_RUN (%i)", m_iMove);
 		return;

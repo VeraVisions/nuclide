@@ -104,7 +104,7 @@ NSNavAI::CheckRoute(void)
 
 	/* reached the end of the line */
 	if (m_iCurNode < -1) {
-		ClearRoute();
+		RouteClear();
 		RouteEnded();
 		NSLog("^2%s::^3CheckRoute^7: %s reached end", classname, targetname);
 	}
@@ -145,7 +145,7 @@ NSNavAI::CheckRoute(void)
 	if (m_flNodeGiveup >= 1.0f) {
 		print(sprintf("NSNavAI::CheckNode: %s gave up route\n",
 			this.netname));
-		ClearRoute();
+		RouteClear();
 	}*/
 }
 
@@ -179,10 +179,10 @@ NSNavAI::GetRouteDirection(void)
 }
 
 void
-NSNavAI::NewRoute(vector destination)
+NSNavAI::RouteToPosition(vector destination)
 {
 	/* engine calls this upon successfully creating a route */
-	static void NewRoute_RouteCB(entity ent, vector dest, int numnodes, nodeslist_t *nodelist)
+	static void RouteToPosition_RouteCB(entity ent, vector dest, int numnodes, nodeslist_t *nodelist)
 	{
 		NSNavAI p = (NSNavAI)ent;
 		p.m_iNodes = numnodes;
@@ -194,11 +194,11 @@ NSNavAI::NewRoute(vector destination)
 
 		/* can we walk directly to our target destination? */
 		if (trace_fraction == 1.0) {
-			NSLog("^2%s::^3NewRoute^7: " \
+			NSLog("^2%s::^3RouteToPosition^7: " \
 				"Walking directly to last node", classname);
 			p.m_iCurNode = -1;
 		} else {
-			NSLog("^2%s::^3NewRoute^7: " \
+			NSLog("^2%s::^3RouteToPosition^7: " \
 				"Path obstructed, calculating route", classname);
 
 			/* run through all nodes, mark the closest direct path possible */
@@ -218,21 +218,24 @@ NSNavAI::NewRoute(vector destination)
 	if (!g_nodes_present)
 		return;
 
-	ClearRoute();
+	RouteClear();
 
 	if (!m_iNodes) {
-		route_calculate(this, destination, 0, NewRoute_RouteCB);
+		route_calculate(this, destination, 0, RouteToPosition_RouteCB);
 		m_vecLastNode = destination;
 	}
 }
 
 void
-NSNavAI::ClearRoute(void)
+NSNavAI::RouteClear(void)
 {
-	if (m_iNodes) {
-		m_iNodes = 0;
-		memfree(m_pRoute);
-	}
+	if (!m_iNodes)
+		return;
+
+	m_iCurNode = BOTROUTE_END;
+	m_iNodes = 0;
+	memfree(m_pRoute);
+	print(sprintf("%s cleared his route.\n", netname));
 }
 
 #endif

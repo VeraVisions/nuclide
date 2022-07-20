@@ -163,22 +163,6 @@ Route_SelectRandomSpot(void)
 	return (eLastSpot);
 }
 
-void
-Bot_RouteCB(entity ent, vector dest, int numnodes, nodeslist_t *nodelist)
-{
-	bot b = (bot)ent;
-	b.m_iNodes = numnodes;
-	b.m_iCurNode = numnodes - 1;
-	b.m_pRoute = nodelist;
-	b.m_vecLastNode = dest;
-	b.m_flNodeGiveup = 0.0f;
-
-	print("Bot: Route calculated.\n");
-	print(sprintf("Bot: # of nodes: %i\n", b.m_iNodes) );
-	print(sprintf("Bot: # current node: %i\n", b.m_iCurNode) );
-	print(sprintf("Bot: # endpos: %v\n", dest));
-}
-
 vector
 Route_SelectDestination(bot target)
 {
