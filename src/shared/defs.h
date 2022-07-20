@@ -45,8 +45,6 @@ string __fullspawndata;
 #include "../gs-entbase/server/defs.h"
 #endif
 
-#include "../gs-entbase/shared/baseentity.h"
-
 #include "NSIO.h"
 #include "NSTrigger.h"
 #include "NSEntity.h"
