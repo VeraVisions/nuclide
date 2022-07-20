@@ -108,10 +108,9 @@ trigger_counter::Trigger(entity act, int state)
 void
 trigger_counter::Respawn(void)
 {
+	InitBrushTrigger();
 	m_iValue = 0;
 	m_iCounted = 0;
-	SetSolid(SOLID_TRIGGER);
-	InitBrushTrigger();
 }
 
 void

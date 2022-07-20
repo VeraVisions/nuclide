@@ -105,9 +105,8 @@ trigger_once::Touch(entity eToucher)
 void
 trigger_once::Respawn(void)
 {
-	m_iValue = 0;
-	SetSolid(SOLID_TRIGGER);
 	InitBrushTrigger();
+	m_iValue = 0;
 }
 
 void

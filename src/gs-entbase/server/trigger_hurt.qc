@@ -219,6 +219,8 @@ trigger_hurt::Touch(entity eToucher)
 void
 trigger_hurt::Respawn(void)
 {
+	InitBrushTrigger();
+
 	if (HasSpawnFlags(SF_HURT_OFF)) {
 		Trigger(this, TRIG_OFF);
 	} else {
