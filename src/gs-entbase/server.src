@@ -3,7 +3,6 @@
 #endif
 
 #includelist
-baseentity.h
 decals.h
 server/info_null.qc
 server/info_notnull.qc

@@ -68,3 +68,5 @@ class NSIO
 	virtual void(entity, string, string) Input;
 #endif
 };
+
+.bool _mapspawned;

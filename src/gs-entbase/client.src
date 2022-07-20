@@ -3,7 +3,6 @@
 #endif
 
 #includelist
-baseentity.h
 decals.h
 client/defs.h
 client/env_cubemap.qc
