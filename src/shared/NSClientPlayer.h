@@ -45,6 +45,11 @@ NSClientPlayer:NSClientSpectator
 	PREDICTED_INT(g_items);
 	PREDICTED_FLOAT(activeweapon);
 
+#ifdef NEW_INVENTORY
+	NSWeapon m_weapons[MAX_WEAPONS];
+	NSWeapon m_activeweapon;
+#endif
+
 	/* vehicle info */
 	PREDICTED_ENT(vehicle);
 

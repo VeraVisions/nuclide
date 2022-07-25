@@ -3,6 +3,7 @@
 
 #define QWSSQC
 #define SERVER
+#define NEW_INVENTORY
 
 #includelist
 /* engine, then nuclide headers & functions */

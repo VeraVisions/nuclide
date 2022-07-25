@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#ifndef NEW_INVENTORY
 var int g_weapon_weights[g_weapons.length];
 
 #ifdef CLIENT
@@ -436,7 +437,7 @@ Sets .a_ammoX fields and clamps them so they can be networked as a single byte.
 =================
 */
 void
-Weapons_UpdateAmmo(NSClientPlayer pl, int a1, int a2, int a3)
+Weapons_UpdateAmmo(player pl, int a1, int a2, int a3)
 {
 	/* no change */
 	if (a1 == -1)
@@ -471,3 +472,4 @@ Weapons_Sound(entity pl, float channel, string snd)
 	#endif
 #endif
 }
+#endif

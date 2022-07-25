@@ -139,6 +139,11 @@ class NSRenderableEntity:NSEntity
 	nonvirtual void(float) SetRenderMode;
 	nonvirtual void(float) SetRenderAmt;
 	nonvirtual void(vector) SetRenderColor;
+	nonvirtual void(float) SetBoneControl1;
+	nonvirtual void(float) SetBoneControl2;
+	nonvirtual void(float) SetBoneControl3;
+	nonvirtual void(float) SetBoneControl4;
+	nonvirtual void(float) SetBoneControl5;
 
 	#ifdef CLIENT
 		nonvirtual void(void) RenderFXPass;

@@ -61,6 +61,7 @@ string __fullspawndata;
 #include "../xr/defs.h"
 #include "NSClient.h"
 #include "NSClientSpectator.h"
+#include "NSWeapon.h"
 #include "NSClientPlayer.h"
 
 #include "NSVehicle.h"
@@ -80,6 +81,7 @@ string __fullspawndata;
 #include "propdata.h"
 #include "surfaceproperties.h"
 #include "colors.h"
+#include "weapons.h"
 
 #define BSPVER_PREREL 	28
 #define BSPVER_Q1		29

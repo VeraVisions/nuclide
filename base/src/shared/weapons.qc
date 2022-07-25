@@ -14,7 +14,9 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#ifndef NEW_INVENTORY
 weapon_t w_null = {};
 weapon_t g_weapons[] = {
 	w_null
 };
+#endif

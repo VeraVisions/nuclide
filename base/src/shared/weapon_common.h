@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#ifndef NEW_INVENTORY
 /* for AI identification purposes */
 typedef enum
 {
@@ -72,7 +73,7 @@ vector Weapons_GetCameraPos(player pl);
 void Weapons_ViewAnimation(player pl, int);
 void Weapons_ViewPunchAngle(player pl, vector);
 int Weapons_IsPresent(player, int);
-void Weapons_UpdateAmmo(NSClientPlayer, int, int, int);
+void Weapons_UpdateAmmo(player, int, int, int);
 int Weapons_GetAnimation(player pl);
 void Weapons_EnableModel(void);
 void Weapons_DisableModel(void);
@@ -93,4 +94,6 @@ void Weapons_Sound(entity, float, string);
 #ifdef CLIENT
 string Weapons_GetPlayermodel(player, int);
 void Weapons_HUDPic(player, int, int, vector, float);
+#endif
+#else
 #endif

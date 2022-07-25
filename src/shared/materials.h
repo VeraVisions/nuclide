@@ -209,6 +209,8 @@ const int CONTENTBIT_Q2LADDER		= 0x20000000i;	/* Q2BSP climbables */
 const int CONTENTBIT_UNUSED16		= 0x40000000i;
 const int CONTENTBIT_SKY		= 0x80000000i;	/* Q1BSP only! */
 
+/* a bit content group */
+const int CONTENTBITS_MONSTER = CONTENTBIT_SOLID|CONTENTBIT_BODY|CONTENTBIT_MONSTERCLIP|CONTENTBIT_BOTCLIP;
 
 /* this is used for material-lookups using the external materials.txt file
  * method used in Half-Life. In that environment we have to strip any

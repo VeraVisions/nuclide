@@ -623,6 +623,13 @@ ConsoleCmd(string cmd)
 				t.Trigger(self, TRIG_TOGGLE);
 		}
 		break;
+	case "goto_ent":
+		static entity finder;
+		finder = find(finder, ::classname, argv(1));
+
+		if (finder)
+			setorigin(pl, finder.origin);
+		break;
 	case "respawn_ents":
 		for (entity a = world; (a = findfloat(a, ::identity, 1));) {
 			NSEntity ent = (NSEntity)a;
@@ -630,7 +637,6 @@ ConsoleCmd(string cmd)
 		}
 		break;
 	case "spawn":
-
 		entity unit = spawn();
 		unit.classname =  strcat("spawnfunc_", argv(1));
 		self = unit;
@@ -644,8 +650,6 @@ ConsoleCmd(string cmd)
 		}
 		traceline(pl.origin, pl.origin + (v_forward * 1024), MOVE_NORMAL, pl);
 		setorigin(unit, trace_endpos);
-
-
 		break;
 #ifdef BOT_INCLUDED
 	case "way":

@@ -97,7 +97,7 @@ Player_UseUp(void) {
 	}
 }
 
-void Weapons_Draw(player);
+void Weapons_Draw(NSClientPlayer);
 
 void
 CSEv_PlayerSwitchWeapon_i(int w)

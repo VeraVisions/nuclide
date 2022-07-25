@@ -20,7 +20,6 @@ void Weapons_SwitchBest(NSClientPlayer pl, optional float skip);
 int Weapons_AddItem(NSClientPlayer pl, int w, int startammo);
 void Weapons_RemoveItem(NSClientPlayer pl, int w);
 void Weapons_InitItem(int w);
-void Weapons_UpdateAmmo(NSClientPlayer pl, int a1, int a2, int a3);
 void Weapons_ReloadWeapon(NSClientPlayer pl, .int mag, .int ammo, int max);
 void Weapon_DropCurrentWeapon(NSClientPlayer pl);
 int Weapon_GetCount();

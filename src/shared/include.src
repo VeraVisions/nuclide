@@ -8,6 +8,7 @@ NSSurfacePropEntity.qc
 NSPhysicsEntity.qc
 NSBrushTrigger.qc
 NSPointTrigger.qc
+NSWeapon.qc
 NSVehicle.qc
 NSNavAI.qc
 NSMonster.qc
@@ -26,6 +27,8 @@ propdata.qc
 surfaceproperties.qc
 NSMaterial.qc
 util.qc
+weapons.qc
+
 ../xr/include.src
 ../materials/include.src
 #endlist

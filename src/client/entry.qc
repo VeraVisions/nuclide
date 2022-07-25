@@ -105,7 +105,11 @@ CSQC_RendererRestarted(string rstr)
 
 	/* View */
 	Chat_Init();
+
+#ifndef NEW_INVENTORY
 	Weapons_Init();
+#endif
+
 	Scores_Init();
 	View_Init();
 	ClientGame_RendererRestart(rstr);

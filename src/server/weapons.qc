@@ -14,6 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#ifndef NEW_INVENTORY
 /* force the drawing of the first weapon that's picked up */
 var int autocvar_sv_forceweapondraw = TRUE;
 
@@ -372,3 +373,4 @@ CSEv_DropWeapon(void)
 	player pl = (player)self;
 	Weapon_DropCurrentWeapon(pl);
 }
+#endif

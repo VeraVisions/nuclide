@@ -513,12 +513,14 @@ bot::PreFrame(void)
 void
 bot::PostFrame(void)
 {
+#ifndef NEW_INVENTORY
 	/* we've picked something new up */
 	if (m_iOldItems != g_items) {
 		Weapons_SwitchBest(this);
 		print(sprintf("%s is now using %s (%d)\n", netname, g_weapons[activeweapon].name, activeweapon));
 		m_iOldItems = g_items;
 	}
+#endif
 }
 
 void
