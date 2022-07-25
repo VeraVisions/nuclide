@@ -174,13 +174,13 @@ NSWeapon::SetClip2(int new_clip)
 bool
 NSWeapon::AllowsAutoSwitchFrom(void)
 {
-
+	return true;
 }
 
 bool
 NSWeapon::AllowsAutoSwitchTo(void)
 {
-
+	return true;
 }
 
 bool
