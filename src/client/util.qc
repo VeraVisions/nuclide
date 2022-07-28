@@ -75,3 +75,15 @@ Util_GetKeyString(string strBind)
 
 	return strtoupper(strBindTx);
 }
+
+bool
+Util_IsFocused(void)
+{
+	return g_focus;
+}
+
+int
+Util_GetMaxPlayers(void)
+{
+	return g_numplayerslots;
+}

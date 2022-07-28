@@ -21,6 +21,7 @@
 #include "fade.h"
 #include "cmd.h"
 #include "util.h"
+#include "NSView.h"
 
 /* undocumented printcall types */
 #define PRINT_LOW		0
@@ -29,6 +30,11 @@
 #define PRINT_CHAT		3
 
 const float MASK_GLOWS = 16;
+var bool g_focus;
+bool Util_IsFocused(void);
+
+var int g_numplayerslots;
+int Util_GetMaxPlayers(void);
 
 /* fonts */
 font_s FONT_16;

@@ -29,6 +29,7 @@ CSQC_UpdateSeat(void)
 	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
 	pSeatLocal = &g_seatslocal[s];
+	g_view = g_viewSeats[s];
 }
 
 /*
@@ -43,8 +44,16 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 {
 	print("--------- Initializing Client Game ----------\n");
 
+	for (int i = 0; i < 4; i++) {
+		g_viewSeats[i] = spawn(NSView);
+		//g_viewSeats[i].SetSeatID(i+1);
+	}
+
 	pSeat = &g_seats[0];
 	pSeatLocal = &g_seatslocal[0];
+	g_view = g_viewSeats[0];
+
+	g_numplayerslots = (int)serverkeyfloat("sv_playerslots");
 
 	Cmd_Init();
 
@@ -141,6 +150,39 @@ CSQC_RenderScene(void)
 		renderscene(); /* render it twice, for the normal window */
 }
 
+void
+CSQC_Update2D(float w, float h, bool focus)
+{
+	NSClientPlayer cl = (NSClientPlayer)pSeat->m_ePlayer;
+
+	if (Util_GetMaxPlayers() > 1 && !VGUI_Active() && (Client_InIntermission() || (!cl.IsFakeSpectator() && cl.IsDead()))) {
+		Scores_Draw();
+		Chat_Draw();
+		Print_Draw();
+	} else if (Util_IsFocused() == true) {
+		GameText_Draw();
+		PointMessage_Draw();
+
+		if (Client_IsSpectator(cl) == false) {
+			HUD_Draw();
+		} else {
+			HUD_DrawSpectator();
+		}
+
+		Voice_DrawHUD();
+		Chat_Draw();
+		Print_Draw();
+
+		/* no prints overlapping scoreboards */
+		if (pSeat->m_iScoresVisible == TRUE) {
+			Scores_Draw();
+		} else {
+			VGUI_Draw();
+			Print_DrawCenterprint();
+		}
+	}
+}
+
 /*
 =================
 CSQC_UpdateView
@@ -151,11 +193,10 @@ Run every single frame we're connected to a session.
 void
 CSQC_UpdateView(float w, float h, float focus)
 {
-	player pl = __NULL__;
 	NSClient cl = __NULL__;
-	NSClientSpectator spec;
 	int s;
-	entity c;
+
+	g_focus = (bool)focus;
 
 	if (w == 0 || h == 0) {
 		return;
@@ -178,264 +219,56 @@ CSQC_UpdateView(float w, float h, float focus)
 		VGUI_Reposition();
 	}
 
+	/* these have to be checked every frame */
 	Fog_Update();
 	Sky_Update(FALSE);
 	cvar_set("_background", serverkey("background"));
 
-	if (serverkeyfloat("background") == 1) {
+	/* ensure background maps do not get paused */
+	if (serverkeyfloat("background") == 1) 
 		setpause(FALSE);
-	}
 
+	/* prepare rendering our views... */
 	clearscene();
 	setproperty(VF_DRAWENGINESBAR, 0);
 	setproperty(VF_DRAWCROSSHAIR, 0);
 
-	//just in case...
+	/* bounds sanity check */
 	if (numclientseats > g_seats.length) {
 		numclientseats = g_seats.length;
 	}
 
+	/* null our globals */
 	for (s = g_seats.length; s-- > numclientseats;) {
 		pSeat = &g_seats[s];
 		pSeatLocal = &g_seatslocal[s];
+		g_view = g_viewSeats[0];
 		pSeat->m_ePlayer = world;
 	}
 
+	/* now render each player seat */
 	for (s = numclientseats; s-- > 0;) {
 		pSeat = &g_seats[s];
 		pSeatLocal = &g_seatslocal[s];
+		g_view = g_viewSeats[s];
+		pSeat->m_ePlayer = findfloat(world, ::entnum, player_localentnum);
+		cl = (NSClient)pSeat->m_ePlayer;
 
 		/* set up our single/split viewport */
 		View_CalcViewport(s, w, h);
-		setproperty(VF_ACTIVESEAT, (float)s);
-		setproperty(VF_MIN, video_mins);
-		setproperty(VF_SIZE, video_res);
 
-		pSeat->m_ePlayer = self = findfloat(world, entnum, player_localentnum);
-		pl = (player)self;
-		cl = (NSClient)self;
+		/* our view target ourselves, if we're alive... */
+		g_view.SetViewTarget((NSEntity)pSeat->m_ePlayer);
 
-		/* player slot not present */
-		if (!self) {
-			continue;
-		}
+		if (Client_IsSpectator(cl))
+			g_view.SetViewMode(VIEWMODE_SPECTATING);
+		else
+			g_view.SetViewMode(VIEWMODE_FPS);
 
-		/* this needs to be moved into a NSClient method */
-#if 1
-		cl.PreFrame();
+		g_view.UpdateView();
 
-		if (!Client_IsSpectator(pl)) {
-
-			pSeat->m_vecPredictedOrigin = pl.origin;
-			pSeat->m_vecPredictedVelocity = pl.velocity;
-			pSeat->m_flPredictedFlags = pl.flags;
-
-			/* Don't hide the player entity */
-			if (autocvar_cl_thirdperson == TRUE && pl.health) {
-				setproperty(VF_VIEWENTITY, (float)0);
-			} else {
-				setproperty(VF_VIEWENTITY, (float)player_localentnum);
-			}
-
-			float oldzoom = pl.viewzoom;
-			if (pl.viewzoom == 1.0f) {
-				pl.viewzoom = 1.0 - (0.5 * pSeat->m_flZoomTime);
-
-				/* +zoomin requested by Slacer */
-				if (pSeat->m_iZoomed) {
-					pSeat->m_flZoomTime += clframetime * 15;
-				} else {
-					pSeat->m_flZoomTime -= clframetime * 15;
-				}
-				pSeat->m_flZoomTime = bound(0, pSeat->m_flZoomTime, 1);
-			}
-
-			setproperty(VF_AFOV, cvar("fov") * pl.viewzoom);
-
-			if (autocvar_zoom_sensitivity && pl.viewzoom < 1.0f) {
-				setsensitivityscaler(pl.viewzoom * autocvar_zoom_sensitivity);
-			} else {
-				setsensitivityscaler(pl.viewzoom);
-			}
-
-			if (pl.viewzoom <= 0.0f) {
-				setsensitivityscaler(1.0f);
-			}
-
-			pl.viewzoom = oldzoom;
-		} else if (Client_IsSpectator(pl)) {
-			spec = (NSClientSpectator)self;
-
-			if (spec.spec_mode == SPECMODE_FIRSTPERSON || spec.spec_mode == SPECMODE_THIRDPERSON) {
-				NSClientPlayer spec_target;
-				c = findfloat(world, ::entnum, spec.spec_ent);
-				spec_target = (NSClientPlayer)c;
-				pSeat->m_vecPredictedOrigin = c.origin;
-				pSeat->m_vecPredictedVelocity = c.velocity;
-				pSeat->m_flPredictedFlags = c.flags;
-
-				if (spec.spec_mode == SPECMODE_FIRSTPERSON)
-					setproperty(VF_AFOV, cvar("fov") * spec_target.viewzoom);
-				else
-					setproperty(VF_AFOV, cvar("fov"));
-			} else {
-				pSeat->m_vecPredictedOrigin = spec.origin;
-				pSeat->m_vecPredictedVelocity = spec.velocity;
-				pSeat->m_flPredictedFlags = spec.flags;
-			}
-		}
-
-		View_PreDraw();
-#endif
-		addentities(MASK_ENGINE);
-
-		/* ideally move this into a NSClientPlayer method */
-#if 1
-		if (pSeat->m_flCameraTime > time || pSeat->m_flCameraTime == -1) {
-			view_angles = pSeat->m_vecCameraAngle;
-			setproperty(VF_ORIGIN, pSeat->m_vecCameraOrigin);
-			setproperty(VF_CL_VIEWANGLES, view_angles);
-			setproperty(VF_ANGLES, view_angles);
-		} else {
-			/* we're not spectating at all */
-			if (!Client_IsSpectator(pl)) {
-				cl.UpdateAliveCam();
-			} else if (Client_IsSpectator(pl)) {
-				spec = (NSClientSpectator)self;
-				switch (spec.spec_mode) {
-				case SPECMODE_THIRDPERSON:
-					makevectors(view_angles);
-					vector vecStart;
-					vecStart[0] = pSeat->m_vecPredictedOrigin[0];
-					vecStart[1] = pSeat->m_vecPredictedOrigin[1];
-					vecStart[2] = pSeat->m_vecPredictedOrigin[2] + 16;
-					vecStart += (v_right * 4);
-
-					vector vecEnd = vecStart + (v_forward * -48) + [0,0,16] + (v_right * 4);
-					traceline(vecStart, vecEnd, FALSE, self);
-					setproperty(VF_ORIGIN, trace_endpos + (v_forward * 5));
-					break;
-				case SPECMODE_FIRSTPERSON:
-					c = findfloat(world, ::entnum, spec.spec_ent);
-					
-					if (c.classname == "player") {
-						player bp = (player)c;
-						removeentity(c);
-						setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin + bp.view_ofs);
-						setproperty(VF_ANGLES, bp.v_angle);
-						setproperty(VF_CL_VIEWANGLES, bp.v_angle);
-					}
-					break;
-				default:
-					setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin);
-				}
-			}
-
-			if (Client_InIntermission()) {
-				cl.UpdateIntermissionCam();
-			}
-		}
-#endif
-
-		addentities(MASK_GLOWS);
-		setproperty(VF_DRAWWORLD, 1);
-		SkyCamera_Setup(getproperty(VF_ORIGIN));
-		XR_UpdateView(self);
-
-		/* draw the viewmodel in a second pass if desired */
-		if (autocvar_r_viewmodelpass && pl.health > 0) {
-			CSQC_RenderScene();
-			clearscene();
-			setproperty(VF_MIN, video_mins);
-			setproperty(VF_SIZE, video_res);
-			setproperty(VF_ANGLES, view_angles + pl.punchangle);
-			setproperty(VF_DRAWWORLD, 0);
-			setproperty(VF_AFOV, autocvar_r_viewmodelfov);
-			setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin + pl.view_ofs);
-			View_DrawViewModel();
-		} else {
-			if (Client_IsSpectator(pl)) {
-				spec = (NSClientSpectator)self;
-
-				/* 0 means world */
-				if (spec.spec_ent) {
-					c = findfloat(world, ::entnum, spec.spec_ent);
-
-					/* we found them */
-					if (c && c != spec) {
-						player ps = (player)c;
-						if (ps.health <= 0)
-							pl.UpdateDeathcam();
-						else
-							View_DrawViewModel();
-					}
-				}
-			} else if (Client_IsDead(pl)) {
-				pl.UpdateDeathcam();
-			} else {
-				View_DrawViewModel();
-			}
-		}
-
-		/* this is running whenever we're doing 'buildcubemaps' */
-		if (g_iCubeProcess == TRUE) {
-			setproperty(VF_ORIGIN, g_vecCubePos);
-			setproperty(VF_SIZE_X, g_dCubeSize);
-			setproperty(VF_SIZE_Y, g_dCubeSize);
-			setproperty(VF_AFOV, 90);
-		}
-
-		/* render the scene, then put monitor RenderTargets on top */
-		CSQC_RenderScene();
-		RenderTarget_Monitor_Update();
-
-		if (g_iCubeProcess == TRUE) {
-			cl.PostFrame();
-			continue;
-		}
-
-		/* all 2D operations happen after this point */
-		for (entity b = world; (b = findfloat(b, ::isCSQC, 1));) {
-			NSEntity pf = (NSEntity) b;
-			pf.postdraw();
-		}
-
-		Fade_Update((int)video_mins[0],(int)video_mins[1], (int)w, (int)h);
-		View_PostDraw();
-
-		int players = (int)serverkeyfloat("sv_playerslots");
-
-		if (players > 1 && !VGUI_Active() && (Client_InIntermission() || (!cl.IsFakeSpectator() && cl.IsDead()))) {
-			Scores_Draw();
-			Chat_Draw();
-			Print_Draw();
-		} else if (focus == TRUE) {
-			GameText_Draw();
-			PointMessage_Draw();
-
-			if (Client_IsSpectator(cl) == false) {
-				HUD_Draw();
-			} else {
-				HUD_DrawSpectator();
-			}
-
-			Voice_DrawHUD();
-			Chat_Draw();
-			Print_Draw();
-
-			/* no prints overlapping scoreboards */
-			if (pSeat->m_iScoresVisible == TRUE) {
-				Scores_Draw();
-			} else {
-				VGUI_Draw();
-				Print_DrawCenterprint();
-			}
-		}
-
-		/* move this into NSClient methods */
-#if 1
-		cl.PostFrame();
-#endif
+		/* 2D calls happen here, after rendering is done */
+		CSQC_Update2D(w, h, focus);
 	}
 
 	/* this sucks and doesn't take seats into account */

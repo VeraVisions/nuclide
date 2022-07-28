@@ -74,6 +74,7 @@ View_AddEvent(void(void) pCallback, float flTime)
 void
 View_CalcViewport(int s, float fWinWidth, float fWinHeight)
 {
+#if 0
 	//FIXME: this is awkward. renderscene internally rounds to pixels.
 	//on the other hand, drawpic uses linear filtering and multisample and stuff.
 	//this means that there can be a pixel or so difference between scene and 2d.
@@ -107,6 +108,31 @@ View_CalcViewport(int s, float fWinWidth, float fWinHeight)
 		g_hudres[0] = video_res[1] * autocvar_cl_hudaspect;
 		g_hudres[1] = video_res[1];
 	}
+#else
+	switch (numclientseats) {
+	case 3:
+		if (!s) {
+	case 2:
+		g_viewSeats[s].SetViewSize([fWinWidth, fWinHeight * 0.5]);
+		g_viewSeats[s].SetViewPosition([0, (s & 1) * g_viewSeats[s].GetViewHeight()]);
+		break;
+		}
+		s++;
+	case 4:
+		g_viewSeats[s].SetViewSize([fWinWidth, fWinHeight] * 0.5);
+		g_viewSeats[s].SetViewPosition([(s&1) * g_viewSeats[s].GetViewWidth(), (s / 2i) * g_viewSeats[s].GetViewHeight()]);
+		break;
+	default:
+		g_viewSeats[s].SetViewSize([fWinWidth, fWinHeight]);
+		g_viewSeats[s].SetViewPosition([0, 0]);
+		break;
+	}
+
+	video_res = g_viewSeats[s].m_vecSize;
+	video_mins = g_viewSeats[s].m_vecPosition;
+	g_hudmins = g_viewSeats[s].GetHUDCanvasPos();
+	g_hudres = g_viewSeats[s].GetHUDCanvasSize();
+#endif
 }
 
 void
@@ -136,13 +162,13 @@ View_DrawViewModel(void)
 
 	/* it's either us or us spectating */
 	if (Client_IsSpectator(cl)) {
-		NSClientSpectator spec = (NSClientSpectator)self;
+		NSClientSpectator spec = (NSClientSpectator)pSeat->m_ePlayer;
 		pl = (player)findfloat(world, ::entnum, spec.spec_ent);
 
 		if (spec.spec_mode != SPECMODE_FIRSTPERSON)
 			return;
 	} else {
-		pl = (player)self;
+		pl = (player)pSeat->m_ePlayer;
 	}
 
 	if (!pl)
@@ -164,7 +190,6 @@ View_DrawViewModel(void)
 	}
 
 	View_UpdateWeapon(pl, m_eViewModel, m_eMuzzleflash);
-
 	float fBaseTime2 = m_eViewModel.frame1time;
 	float fBaseTime = m_eViewModel.frame1time;
 	m_eViewModelL.frame = m_eViewModel.frame = pl.weaponframe;

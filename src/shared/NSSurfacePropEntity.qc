@@ -14,6 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+vector
+NSSurfacePropEntity::GetEyePos(void)
+{
+	return origin + view_ofs;
+}
+
 void
 NSSurfacePropEntity::Spawned(void)
 {

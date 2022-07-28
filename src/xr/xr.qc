@@ -75,7 +75,7 @@ XR_UpdateView(entity ePlayer)
 		setviewprop(VF_ANGLES, pl.m_xrInputHead.GetAngles());
 		setviewprop(VF_ORIGIN, pl.m_xrInputHead.GetOrigin() + [0,0,autocvar_xr_viewheight]);
 	} else {
-		pl.m_xrSpace.SetOrigin(pSeat->m_vecPredictedOrigin + pSeat->m_ePlayer.view_ofs);
+		pl.m_xrSpace.SetOrigin(g_view.GetCameraOrigin());
 		pl.m_xrSpace.SetAngles(input_angles);
 
 	/*

@@ -6,6 +6,14 @@
    is done in the NSView.
 */
 
+typedef enum
+{
+	VIEWMODE_NORMAL,		/* just a regular camera with no special logic */
+	VIEWMODE_FPS,			/* uses view target position + view offset */
+	VIEWMODE_THIRDPERSON,	/* third person view, fixed */
+	VIEWMODE_SPECTATING		/* spectating, mixed viewmodes inside */
+} viewmode_e;
+
 class
 NSView
 {
@@ -15,6 +23,7 @@ NSView
 	vector m_vecPosition;
 	vector m_vecSize;
 	float m_flFieldOfView;
+	viewmode_e m_viewmode;
 
 	/* the entity we're targetting */
 	NSEntity m_viewTarget;
@@ -26,6 +35,13 @@ NSView
 	virtual void(void) SetupView;
 	virtual void(void) RenderView;
 
+	virtual void(viewmode_e) SetViewMode;
+	virtual viewmode_e(void) GetViewMode;
+
+	virtual void(void) UpdateView;
+
+	virtual void(void) Render2D;
+
 	virtual void(vector) SetViewPosition;
 	virtual void(vector) SetViewSize;
 	virtual void(NSEntity) SetViewTarget;
@@ -35,6 +51,15 @@ NSView
 	virtual void(vector) SetCameraAngle;
 	virtual void(int) SetSeatID;
 	virtual void(float) SetAFOV;
+
+	virtual vector(void) GetHUDCanvasSize;
+	virtual vector(void) GetHUDCanvasPos;
+
+	virtual float(void) GetViewWidth;
+	virtual float(void) GetViewHeight;
+
+	virtual vector(void) GetCameraOrigin;
+	virtual vector(void) GetCameraAngle;
 };
 
 NSView g_viewSeats[4];

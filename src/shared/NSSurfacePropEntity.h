@@ -104,6 +104,9 @@ class NSSurfacePropEntity:NSRenderableEntity
 	nonvirtual void(void) SurfaceDataFinish;
 	nonvirtual void(void) PropDataFinish;
 #endif
+
+	/* misc 'being' methods */
+	virtual vector(void) GetEyePos;
 };
 
 #ifdef CLIENT
