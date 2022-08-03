@@ -25,6 +25,8 @@ NSView
 	float m_flFieldOfView;
 	viewmode_e m_viewmode;
 
+	vector m_vecLastOrigin;
+
 	/* the entity we're targetting */
 	NSEntity m_viewTarget;
 
@@ -37,10 +39,10 @@ NSView
 
 	virtual void(viewmode_e) SetViewMode;
 	virtual viewmode_e(void) GetViewMode;
+	virtual void(void) StairSmooth;
+	virtual void(vector) AddPunchAngle;
 
 	virtual void(void) UpdateView;
-
-	virtual void(void) Render2D;
 
 	virtual void(vector) SetViewPosition;
 	virtual void(vector) SetViewSize;

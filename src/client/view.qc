@@ -235,20 +235,12 @@ View_DrawViewModel(void)
 	/* now apply the scale hack */
 	m_eViewModelL.scale = m_eViewModel.scale = autocvar_r_viewmodelscale;
 
-	if (Client_IsSpectator(cl)) {
-		m_eViewModelL.origin = getproperty(VF_ORIGIN);
-		m_eViewModel.origin = getproperty(VF_ORIGIN);
-		m_eViewModel.angles = pl.v_angle;
-		m_eViewModelL.angles = pl.v_angle;
-	} else {
-		m_eViewModelL.origin = pl.m_xrInputLeft.GetOrigin();
-		m_eViewModel.origin = pl.m_xrInputRight.GetOrigin();
-	}
+	if (Client_IsSpectator(cl) || XR_Available(pl) == false) {
+		m_eViewModelL.origin = g_view.GetCameraOrigin();
+		m_eViewModel.origin = g_view.GetCameraOrigin();
+		m_eViewModel.angles = g_view.GetCameraAngle();
+		m_eViewModelL.angles = g_view.GetCameraAngle();
 
-	if (XR_Available(pl) && !Client_IsSpectator(cl)) {
-		m_eViewModel.angles = pl.m_xrInputRight.GetAngles();
-		m_eViewModelL.angles = pl.m_xrInputLeft.GetAngles();
-	} else {
 		/* we only calculate bob on the right model, to avoid double speed bobbing */
 		Viewmodel_CalcBob();
 		Viewmodel_ApplyBob(m_eViewModel);
@@ -260,6 +252,11 @@ View_DrawViewModel(void)
 			Camera_RunBob(view_angles);
 			setproperty(VF_ANGLES, view_angles + pl.punchangle);
 		}
+	} else {
+		m_eViewModelL.origin = pl.m_xrInputLeft.GetOrigin();
+		m_eViewModel.origin = pl.m_xrInputRight.GetOrigin();
+		m_eViewModel.angles = pl.m_xrInputRight.GetAngles();
+		m_eViewModelL.angles = pl.m_xrInputLeft.GetAngles();
 	}
 
 	/* this is currently broken */
@@ -311,40 +308,9 @@ View_DrawViewModel(void)
 }
 
 void
-View_Stairsmooth(void)
-{
-	vector currentpos = pSeat->m_vecPredictedOrigin;
-	vector endpos = currentpos;
-	static vector oldpos;
-
-	/* Have we gone up since last frame? */
-	if ((pSeat->m_flPredictedFlags & FL_ONGROUND) && (endpos[2] - oldpos[2] > 0)) {
-		endpos[2] = oldpos[2] += (clframetime * 150);
-
-		if (endpos[2] > currentpos[2]) {
-			endpos[2] = currentpos[2];
-		}
-		if (currentpos[2] - endpos[2] > 18) {
-			endpos[2] = currentpos[2] - 18;
-		}
-	}
-
-	// Teleport hack
-	if (fabs(currentpos[2] - oldpos[2]) > 64) {
-		endpos[2] = currentpos[2];
-	}
-
-	//setproperty(VF_ORIGIN, endpos);
-	pSeat->m_vecPredictedOrigin = endpos;
-	oldpos = endpos;
-}
-
-
-void
 View_PreDraw(void)
 {
 	ClientGame_PreDraw();
-	View_Stairsmooth();
 }
 
 void

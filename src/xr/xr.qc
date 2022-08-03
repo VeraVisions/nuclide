@@ -68,7 +68,7 @@ XR_UpdateView(entity ePlayer)
 
 	/* update our space */
 	if (XR_Available(ePlayer)) {
-		pl.m_xrSpace.SetOrigin(pSeat->m_vecPredictedOrigin);
+		pl.m_xrSpace.SetOrigin(g_view.GetCameraOrigin());
 		pl.m_xrSpace.SetAngles(view_angles);
 
 		/* now we get the HMD's org/ang and send that off to the renderer */

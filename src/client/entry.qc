@@ -46,7 +46,7 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 
 	for (int i = 0; i < 4; i++) {
 		g_viewSeats[i] = spawn(NSView);
-		//g_viewSeats[i].SetSeatID(i+1);
+		g_viewSeats[i].SetSeatID(i);
 	}
 
 	pSeat = &g_seats[0];
@@ -145,15 +145,13 @@ void
 CSQC_RenderScene(void)
 {
 	renderscene();
-
-	if (XR_Available(pSeat->m_ePlayer))
-		renderscene(); /* render it twice, for the normal window */
 }
 
 void
 CSQC_Update2D(float w, float h, bool focus)
 {
 	NSClientPlayer cl = (NSClientPlayer)pSeat->m_ePlayer;
+	self = cl;
 
 	if (Util_GetMaxPlayers() > 1 && !VGUI_Active() && (Client_InIntermission() || (!cl.IsFakeSpectator() && cl.IsDead()))) {
 		Scores_Draw();
@@ -228,10 +226,6 @@ CSQC_UpdateView(float w, float h, float focus)
 	if (serverkeyfloat("background") == 1) 
 		setpause(FALSE);
 
-	/* prepare rendering our views... */
-	clearscene();
-	setproperty(VF_DRAWENGINESBAR, 0);
-	setproperty(VF_DRAWCROSSHAIR, 0);
 
 	/* bounds sanity check */
 	if (numclientseats > g_seats.length) {
@@ -246,29 +240,44 @@ CSQC_UpdateView(float w, float h, float focus)
 		pSeat->m_ePlayer = world;
 	}
 
-	/* now render each player seat */
-	for (s = numclientseats; s-- > 0;) {
-		pSeat = &g_seats[s];
-		pSeatLocal = &g_seatslocal[s];
-		g_view = g_viewSeats[s];
-		pSeat->m_ePlayer = findfloat(world, ::entnum, player_localentnum);
-		cl = (NSClient)pSeat->m_ePlayer;
+	/* this is running whenever we're doing 'buildcubemaps' */
+	if (g_iCubeProcess == TRUE) {
+		setproperty(VF_DRAWENGINESBAR, 0);
+		setproperty(VF_DRAWCROSSHAIR, 0);
+		setproperty(VF_DRAWWORLD, 1);
+		setproperty(VF_MIN, [0,0]);
+		setproperty(VF_VIEWENTITY, player_localentnum);
+		setproperty(VF_ORIGIN, g_vecCubePos);
+		setproperty(VF_ANGLES, [0,0,0]);
+		setproperty(VF_SIZE_X, g_dCubeSize);
+		setproperty(VF_SIZE_Y, g_dCubeSize);
+		setproperty(VF_AFOV, 90);
+		CSQC_RenderScene();
+	} else {
+		/* now render each player seat */
+		for (s = numclientseats; s-- > 0;) {
+			pSeat = &g_seats[s];
+			pSeatLocal = &g_seatslocal[s];
+			g_view = g_viewSeats[s];
+			pSeat->m_ePlayer = findfloat(world, ::entnum, player_localentnum);
+			cl = (NSClient)pSeat->m_ePlayer;
 
-		/* set up our single/split viewport */
-		View_CalcViewport(s, w, h);
+			/* set up our single/split viewport */
+			View_CalcViewport(s, w, h);
 
-		/* our view target ourselves, if we're alive... */
-		g_view.SetViewTarget((NSEntity)pSeat->m_ePlayer);
+			/* our view target ourselves, if we're alive... */
+			g_view.SetViewTarget((NSEntity)pSeat->m_ePlayer);
 
-		if (Client_IsSpectator(cl))
-			g_view.SetViewMode(VIEWMODE_SPECTATING);
-		else
-			g_view.SetViewMode(VIEWMODE_FPS);
+			if (Client_IsSpectator(cl))
+				g_view.SetViewMode(VIEWMODE_SPECTATING);
+			else
+				g_view.SetViewMode(VIEWMODE_FPS);
 
-		g_view.UpdateView();
+			g_view.UpdateView();
 
-		/* 2D calls happen here, after rendering is done */
-		CSQC_Update2D(w, h, focus);
+			/* 2D calls happen here, after rendering is done */
+			CSQC_Update2D(w, h, focus);
+		}
 	}
 
 	/* this sucks and doesn't take seats into account */
