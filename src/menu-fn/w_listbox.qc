@@ -41,6 +41,7 @@ class CListBox:CWidget
 	virtual string(void) GetSelectedItem;
 	virtual int(void) GetSelected;
 	virtual int(void) GetCount;
+	virtual void(int) SetScroll;
 };
 
 void

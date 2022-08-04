@@ -229,6 +229,8 @@ NSView::UpdateView(void)
 		StairSmooth();
 		AddPunchAngle(cl.punchangle);
 
+		SetAFOV(cvar("fov") * pl.viewzoom);
+
 		if (Client_IsDead(pl))
 			pl.UpdateDeathcam();
 		else
@@ -260,6 +262,7 @@ NSView::UpdateView(void)
 				removeentity(c);
 				SetCameraOrigin(bp.GetEyePos());
 				SetCameraAngle(bp.v_angle);
+				SetAFOV(cvar("fov") * bp.viewzoom);
 
 				/* 0 means world */
 				if (spec.spec_ent) {

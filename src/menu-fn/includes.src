@@ -19,7 +19,6 @@ w_dialog.qc
 w_header.qc
 w_frame.qc
 w_label.qc
-w_combobox.qc
 w_listbox.qc
 w_textbuffer.qc
 w_servers.qc
@@ -32,6 +31,7 @@ w_slider.qc
 w_textbox.qc
 w_scrollbar.qc
 w_updatelist.qc
+w_combobox.qc
 
 m_addserver.qc
 m_advancedcontrols.qc
