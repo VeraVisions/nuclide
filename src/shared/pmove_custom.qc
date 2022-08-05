@@ -131,16 +131,16 @@ PMoveCustom_Categorize(void)
 			if (PMoveCustom_Contents(self.origin + self.maxs - [0,0,1])
 				& CONTENTBITS_FLUID)
 			{
-				self.waterlevel = 3;
+				self.waterlevel = WATERLEVEL_SUBMERGED;
 			} else {
-				self.waterlevel = 2;
+				self.waterlevel = WATERLEVEL_CHEST;
 			}
 		} else {
-			self.waterlevel = 1;
+			self.waterlevel = WATERLEVEL_KNEE;
 		}
 	} else {
 		self.watertype = CONTENT_EMPTY;
-		self.waterlevel = 0;
+		self.waterlevel = WATERLEVEL_OUTSIDE;
 	}
 }
 
