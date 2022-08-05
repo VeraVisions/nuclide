@@ -55,19 +55,15 @@ Util_GetKeyString
 string
 Util_GetKeyString(string strBind)
 {
-	float flBindKey = tokenize(findkeysforcommand(strBind));
+	float flBindKey = tokenize(findkeysforcommandex(strBind, 0));
 	string strBindTx = "";
-	float j, k;
-	
+	float j;
+
 	for (j = 0; j < flBindKey; ++j) {
-		k = stof(argv(j));
+		if (strBindTx != "")
+			strBindTx = strcat(strBindTx, ", ");
 
-		if (k != -1) {
-			if (strBindTx != "")
-				strBindTx = strcat(strBindTx, ", ");
-
-			strBindTx = strcat(strBindTx, keynumtostring(k));
-		}
+		strBindTx = strcat(strBindTx, argv(j));
 	}
 
 	if (!strBindTx)
