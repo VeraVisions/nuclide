@@ -65,11 +65,6 @@ var bool autocvar_cl_crouch_toggle = false;
 var float PART_DUSTMOTE;
 var float PART_BURNING;
 
-/* muzzleflash indices */
-var int MUZZLE_SMALL;
-var int MUZZLE_RIFLE;
-var int MUZZLE_WEIRD;
-
 /* misc globals */
 vector video_mins;
 vector video_res;
