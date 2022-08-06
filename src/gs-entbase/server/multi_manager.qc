@@ -49,7 +49,7 @@ void
 multi_manager_sub::Save(float handle)
 {
 	SaveInt(handle, "m_iValue", m_iValue);
-	SaveFloat(handle, "m_eActivator", num_for_edict(m_eActivator));
+	SaveEntity(handle, "m_eActivator", m_eActivator);
 	SaveFloat(handle, "m_flUntilTriggered", m_flUntilTriggered);
 	super::Save(handle);
 }
@@ -62,10 +62,7 @@ multi_manager_sub::Restore(string strKey, string strValue)
 		m_iValue = ReadInt(strValue);
 		break;
 	case "m_eActivator":
-		float num = ReadFloat(strValue);
-
-		if (num)
-			m_eActivator = edict_num(num);
+		m_eActivator = ReadEntity(strValue);
 		break;
 	case "m_flUntilTriggered":
 		m_flUntilTriggered = ReadFloat(strValue);
@@ -105,22 +102,22 @@ multi_manager::Save(float handle)
 	SaveString(handle, "m_strBuffer", m_strBuffer);
 	SaveInt(handle, "m_iBusy", m_iBusy);
 	SaveInt(handle, "m_iValue", m_iValue);
-	SaveFloat(handle, "m_eTriggers_0", num_for_edict(m_eTriggers[0]));
-	SaveFloat(handle, "m_eTriggers_1", num_for_edict(m_eTriggers[1]));
-	SaveFloat(handle, "m_eTriggers_2", num_for_edict(m_eTriggers[2]));
-	SaveFloat(handle, "m_eTriggers_3", num_for_edict(m_eTriggers[3]));
-	SaveFloat(handle, "m_eTriggers_4", num_for_edict(m_eTriggers[4]));
-	SaveFloat(handle, "m_eTriggers_5", num_for_edict(m_eTriggers[5]));
-	SaveFloat(handle, "m_eTriggers_6", num_for_edict(m_eTriggers[6]));
-	SaveFloat(handle, "m_eTriggers_7", num_for_edict(m_eTriggers[7]));
-	SaveFloat(handle, "m_eTriggers_8", num_for_edict(m_eTriggers[8]));
-	SaveFloat(handle, "m_eTriggers_9", num_for_edict(m_eTriggers[9]));
-	SaveFloat(handle, "m_eTriggers_10", num_for_edict(m_eTriggers[10]));
-	SaveFloat(handle, "m_eTriggers_11", num_for_edict(m_eTriggers[11]));
-	SaveFloat(handle, "m_eTriggers_12", num_for_edict(m_eTriggers[12]));
-	SaveFloat(handle, "m_eTriggers_13", num_for_edict(m_eTriggers[13]));
-	SaveFloat(handle, "m_eTriggers_14", num_for_edict(m_eTriggers[14]));
-	SaveFloat(handle, "m_eTriggers_15", num_for_edict(m_eTriggers[15]));
+	SaveEntity(handle, "m_eTriggers_0", m_eTriggers[0]);
+	SaveEntity(handle, "m_eTriggers_1", m_eTriggers[1]);
+	SaveEntity(handle, "m_eTriggers_2", m_eTriggers[2]);
+	SaveEntity(handle, "m_eTriggers_3", m_eTriggers[3]);
+	SaveEntity(handle, "m_eTriggers_4", m_eTriggers[4]);
+	SaveEntity(handle, "m_eTriggers_5", m_eTriggers[5]);
+	SaveEntity(handle, "m_eTriggers_6", m_eTriggers[6]);
+	SaveEntity(handle, "m_eTriggers_7", m_eTriggers[7]);
+	SaveEntity(handle, "m_eTriggers_8", m_eTriggers[8]);
+	SaveEntity(handle, "m_eTriggers_9", m_eTriggers[9]);
+	SaveEntity(handle, "m_eTriggers_10", m_eTriggers[10]);
+	SaveEntity(handle, "m_eTriggers_11", m_eTriggers[11]);
+	SaveEntity(handle, "m_eTriggers_12", m_eTriggers[12]);
+	SaveEntity(handle, "m_eTriggers_13", m_eTriggers[13]);
+	SaveEntity(handle, "m_eTriggers_14", m_eTriggers[14]);
+	SaveEntity(handle, "m_eTriggers_15", m_eTriggers[15]);
 	super::Save(handle);
 }
 
@@ -129,61 +126,61 @@ multi_manager::Restore(string strKey, string strValue)
 {
 switch (strKey) {
 	case "m_strBuffer":
-		m_strBuffer = strValue;
+		m_strBuffer = ReadString(strValue);
 		break;
 	case "m_iBusy":
-		m_iBusy = stoi(strValue);
+		m_iBusy = ReadInt(strValue);
 		break;
 	case "m_iValue":
-		m_iValue = stoi(strValue);
+		m_iValue = ReadInt(strValue);
 		break;
 	case "m_eTriggers_0":
-		m_eTriggers[0] = (multi_manager_sub)edict_num(stof(strValue));
+		m_eTriggers[0] = ReadEntity(strValue);
 		break;
 	case "m_eTriggers_1":
-		m_eTriggers[1] = (multi_manager_sub)edict_num(stof(strValue));
+		m_eTriggers[1] = ReadEntity(strValue);
 		break;
 	case "m_eTriggers_2":
-		m_eTriggers[2] = (multi_manager_sub)edict_num(stof(strValue));
+		m_eTriggers[2] = ReadEntity(strValue);
 		break;
 	case "m_eTriggers_3":
-		m_eTriggers[3] = (multi_manager_sub)edict_num(stof(strValue));
+		m_eTriggers[3] = ReadEntity(strValue);
 		break;
 	case "m_eTriggers_4":
-		m_eTriggers[4] = (multi_manager_sub)edict_num(stof(strValue));
+		m_eTriggers[4] = ReadEntity(strValue);
 		break;
 	case "m_eTriggers_5":
-		m_eTriggers[5] = (multi_manager_sub)edict_num(stof(strValue));
+		m_eTriggers[5] = ReadEntity(strValue);
 		break;
 	case "m_eTriggers_6":
-		m_eTriggers[6] = (multi_manager_sub)edict_num(stof(strValue));
+		m_eTriggers[6] = ReadEntity(strValue);
 		break;
 	case "m_eTriggers_7":
-		m_eTriggers[7] = (multi_manager_sub)edict_num(stof(strValue));
+		m_eTriggers[7] = ReadEntity(strValue);
 		break;
 	case "m_eTriggers_8":
-		m_eTriggers[8] = (multi_manager_sub)edict_num(stof(strValue));
+		m_eTriggers[8] = ReadEntity(strValue);
 		break;
 	case "m_eTriggers_9":
-		m_eTriggers[9] = (multi_manager_sub)edict_num(stof(strValue));
+		m_eTriggers[9] = ReadEntity(strValue);
 		break;
 	case "m_eTriggers_10":
-		m_eTriggers[10] = (multi_manager_sub)edict_num(stof(strValue));
+		m_eTriggers[10] = ReadEntity(strValue);
 		break;
 	case "m_eTriggers_11":
-		m_eTriggers[11] = (multi_manager_sub)edict_num(stof(strValue));
+		m_eTriggers[11] = ReadEntity(strValue);
 		break;
 	case "m_eTriggers_12":
-		m_eTriggers[12] = (multi_manager_sub)edict_num(stof(strValue));
+		m_eTriggers[12] = ReadEntity(strValue);
 		break;
 	case "m_eTriggers_13":
-		m_eTriggers[13] = (multi_manager_sub)edict_num(stof(strValue));
+		m_eTriggers[13] = ReadEntity(strValue);
 		break;
 	case "m_eTriggers_14":
-		m_eTriggers[14] = (multi_manager_sub)edict_num(stof(strValue));
+		m_eTriggers[14] = ReadEntity(strValue);
 		break;
 	case "m_eTriggers_15":
-		m_eTriggers[15] = (multi_manager_sub)edict_num(stof(strValue));
+		m_eTriggers[15] = ReadEntity(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);

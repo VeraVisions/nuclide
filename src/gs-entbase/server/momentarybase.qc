@@ -73,7 +73,7 @@ NSMomentary::SetMoveState(int status)
 void
 NSMomentary::Save(float handle)
 {
-	SaveFloat(handle, "user", num_for_edict(m_eUser));
+	SaveEntity(handle, "user", m_eUser);
 	SaveVector(handle, "move_dir", m_vecMoveDir);
 	SaveVector(handle, "pos1", m_vecPos1);
 	SaveVector(handle, "pos2", m_vecPos2);
@@ -90,7 +90,7 @@ NSMomentary::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "user":
-		m_eUser = edict_num(ReadFloat(strValue));
+		m_eUser = ReadEntity(strValue);
 		break;
 	case "move_dir":
 		m_vecMoveDir = ReadVector(strValue);

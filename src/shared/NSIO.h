@@ -56,6 +56,7 @@ class NSIO
 	nonvirtual void(float, string, string) SaveString;
 	nonvirtual void(float, string, vector) SaveVector;
 	nonvirtual void(float, string, bool) SaveBool;
+	nonvirtual void(float, string, entity) SaveEntity;
 
 	/* load game */
 	nonvirtual float(string) ReadFloat;
@@ -63,6 +64,7 @@ class NSIO
 	nonvirtual string(string) ReadString;
 	nonvirtual vector(string) ReadVector;
 	nonvirtual bool(string) ReadBool;
+	nonvirtual entity(string) ReadEntity;
 
 	/* Handle incoming entities input messaging */
 	virtual void(entity, string, string) Input;

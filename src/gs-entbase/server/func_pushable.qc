@@ -49,8 +49,8 @@ class func_pushable:func_breakable
 void
 func_pushable::Save(float handle)
 {
-	SaveFloat(handle, "puller", num_for_edict(m_pPuller));
-	SaveFloat(handle, "collbox", num_for_edict(m_eCollBox));
+	SaveEntity(handle, "puller", m_pPuller);
+	SaveEntity(handle, "collbox", m_eCollBox);
 	super::Save(handle);
 }
 
@@ -59,10 +59,10 @@ func_pushable::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "puller":
-		m_pPuller = edict_num(ReadFloat(strValue));
+		m_pPuller = ReadEntity(strValue);
 		break;
 	case "collbox":
-		m_eCollBox = edict_num(ReadFloat(strValue));
+		m_eCollBox = ReadEntity(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);

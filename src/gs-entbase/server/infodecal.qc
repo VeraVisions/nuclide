@@ -53,7 +53,7 @@ class infodecal:NSPointTrigger
 void
 infodecal::Save(float handle)
 {
-	SaveFloat(handle, "child", num_for_edict(m_decChild));
+	SaveEntity(handle, "child", m_decChild);
 	SaveString(handle, "texture", m_strTexture);
 	super::Save(handle);
 }
@@ -63,7 +63,7 @@ infodecal::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "child":
-		m_decChild = (decal)edict_num(ReadFloat(strValue));
+		m_decChild = (decal)ReadEntity(strValue);
 		break;
 	case "texture":
 		m_strTexture = ReadString(strValue);

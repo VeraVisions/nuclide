@@ -56,7 +56,7 @@ class func_recharge:NSRenderableEntity
 void
 func_recharge::Save(float handle)
 {
-	SaveFloat(handle, "user", num_for_edict(m_eUser));
+	SaveEntity(handle, "user", m_eUser);
 	SaveFloat(handle, "delay", m_flDelay);
 	SaveFloat(handle, "check", m_flCheck);
 	SaveString(handle, "snd_first", m_strSndFirst);
@@ -70,7 +70,7 @@ func_recharge::Restore(string strKey, string strValue)
 {
 	switch (strKey) {
 	case "user":
-		m_eUser = edict_num(ReadFloat(strValue));
+		m_eUser = ReadEntity(strValue);
 		break;
 	case "delay":
 		m_flDelay = ReadFloat(strValue);

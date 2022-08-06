@@ -165,31 +165,39 @@ void
 NSIO::SaveBool(float handle, string key, bool value)
 {
 	if (value)
-	fputs(handle, sprintf("%S \"%f\"\n", key, value));
+		fputs(handle, sprintf("%S \"%f\"\n", key, value));
 }
 void
 NSIO::SaveFloat(float handle, string key, float value)
 {
 	if (value)
-	fputs(handle, sprintf("%S \"%f\"\n", key, value));
+		fputs(handle, sprintf("%S \"%f\"\n", key, value));
 }
 void
 NSIO::SaveInt(float handle, string key, int value)
 {
 	if (value)
-	fputs(handle, sprintf("%S \"%i\"\n", key, value));
+		fputs(handle, sprintf("%S \"%i\"\n", key, value));
 }
 void
 NSIO::SaveString(float handle, string key, string value)
 {
 	if (value && value != "")
-	fputs(handle, sprintf("%S %S\n", key, value));
+		fputs(handle, sprintf("%S %S\n", key, value));
 }
 void
 NSIO::SaveVector(float handle, string key, vector value)
 {
 	if (value)
-	fputs(handle, sprintf("%S \"%v\"\n", key, value));
+		fputs(handle, sprintf("%S \"%v\"\n", key, value));
+}
+void
+NSIO::SaveEntity(float handle, string key, entity targ)
+{
+	float value = num_for_edict(targ);
+
+	if (value)
+		fputs(handle, sprintf("%S \"%f\"\n", key, value));
 }
 
 float
@@ -227,7 +235,17 @@ NSIO::ReadVector(string strValue)
 		return stov(strValue);
 	return __NULL__;
 }
+entity
+NSIO::ReadEntity(string strValue)
+{
+	if (strValue && strValue != "") {
+		float num = stof(strValue);
 
+		if (num)
+			return edict_num(num);
+	}
+	return __NULL__;
+}
 
 void
 NSIO::Save(float handle)
