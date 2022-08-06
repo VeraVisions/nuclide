@@ -135,52 +135,52 @@ switch (strKey) {
 		m_iValue = ReadInt(strValue);
 		break;
 	case "m_eTriggers_0":
-		m_eTriggers[0] = ReadEntity(strValue);
+		m_eTriggers[0] = (multi_manager_sub)ReadEntity(strValue);
 		break;
 	case "m_eTriggers_1":
-		m_eTriggers[1] = ReadEntity(strValue);
+		m_eTriggers[1] = (multi_manager_sub)ReadEntity(strValue);
 		break;
 	case "m_eTriggers_2":
-		m_eTriggers[2] = ReadEntity(strValue);
+		m_eTriggers[2] = (multi_manager_sub)ReadEntity(strValue);
 		break;
 	case "m_eTriggers_3":
-		m_eTriggers[3] = ReadEntity(strValue);
+		m_eTriggers[3] = (multi_manager_sub)ReadEntity(strValue);
 		break;
 	case "m_eTriggers_4":
-		m_eTriggers[4] = ReadEntity(strValue);
+		m_eTriggers[4] = (multi_manager_sub)ReadEntity(strValue);
 		break;
 	case "m_eTriggers_5":
-		m_eTriggers[5] = ReadEntity(strValue);
+		m_eTriggers[5] = (multi_manager_sub)ReadEntity(strValue);
 		break;
 	case "m_eTriggers_6":
-		m_eTriggers[6] = ReadEntity(strValue);
+		m_eTriggers[6] = (multi_manager_sub)ReadEntity(strValue);
 		break;
 	case "m_eTriggers_7":
-		m_eTriggers[7] = ReadEntity(strValue);
+		m_eTriggers[7] = (multi_manager_sub)ReadEntity(strValue);
 		break;
 	case "m_eTriggers_8":
-		m_eTriggers[8] = ReadEntity(strValue);
+		m_eTriggers[8] = (multi_manager_sub)ReadEntity(strValue);
 		break;
 	case "m_eTriggers_9":
-		m_eTriggers[9] = ReadEntity(strValue);
+		m_eTriggers[9] = (multi_manager_sub)ReadEntity(strValue);
 		break;
 	case "m_eTriggers_10":
-		m_eTriggers[10] = ReadEntity(strValue);
+		m_eTriggers[10] = (multi_manager_sub)ReadEntity(strValue);
 		break;
 	case "m_eTriggers_11":
-		m_eTriggers[11] = ReadEntity(strValue);
+		m_eTriggers[11] = (multi_manager_sub)ReadEntity(strValue);
 		break;
 	case "m_eTriggers_12":
-		m_eTriggers[12] = ReadEntity(strValue);
+		m_eTriggers[12] = (multi_manager_sub)ReadEntity(strValue);
 		break;
 	case "m_eTriggers_13":
-		m_eTriggers[13] = ReadEntity(strValue);
+		m_eTriggers[13] = (multi_manager_sub)ReadEntity(strValue);
 		break;
 	case "m_eTriggers_14":
-		m_eTriggers[14] = ReadEntity(strValue);
+		m_eTriggers[14] = (multi_manager_sub)ReadEntity(strValue);
 		break;
 	case "m_eTriggers_15":
-		m_eTriggers[15] = ReadEntity(strValue);
+		m_eTriggers[15] = (multi_manager_sub)ReadEntity(strValue);
 		break;
 	default:
 		super::Restore(strKey, strValue);
