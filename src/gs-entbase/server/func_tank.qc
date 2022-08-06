@@ -186,11 +186,15 @@ func_tank::SpriteSmoke(vector org)
 	if (!m_strSpriteSmoke)
 		return;
 
-	entity smoke = spawn();
-	setmodel(smoke, m_strSpriteSmoke);
-	setorigin(smoke, org);
+	NSRenderableEntity smoke = spawn(NSRenderableEntity);
+	smoke.SetModel(m_strSpriteSmoke);
+	smoke.SetOrigin(org);
 	smoke.think = Die;
 	smoke.nextthink = time + 0.1f;
+	smoke.scale = m_flSpriteScale;
+	smoke.SetRenderMode(RM_ADDITIVE);
+	smoke.SetRenderColor([1,1,1]);
+	smoke.SetRenderAmt(1.0f);
 }
 
 void
@@ -203,11 +207,15 @@ func_tank::SpriteFlash(vector org)
 	if (!m_strSpriteFlash)
 		return;
 
-	entity smoke = spawn();
-	setmodel(smoke, m_strSpriteFlash);
-	setorigin(smoke, org);
-	smoke.think = Die;
-	smoke.nextthink = time + 0.1f;
+	NSRenderableEntity flash = spawn(NSRenderableEntity);
+	flash.SetModel(m_strSpriteFlash);
+	flash.SetOrigin(org);
+	flash.think = Die;
+	flash.nextthink = time + 0.1f;
+	flash.scale = m_flSpriteScale;
+	flash.SetRenderMode(RM_ADDITIVE);
+	flash.SetRenderColor([1,1,1]);
+	flash.SetRenderAmt(1.0f);
 }
 
 void
