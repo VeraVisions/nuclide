@@ -831,6 +831,52 @@ NSRenderableEntity::SetBoneControl5(float val)
 	m_flBoneControl5 = val;
 }
 
+float
+NSRenderableEntity::GetRenderMode(void)
+{
+	return m_iRenderMode;
+}
+float
+NSRenderableEntity::GetRenderFX(void)
+{
+	return m_iRenderFX;
+}
+float
+NSRenderableEntity::GetRenderAmt(void)
+{
+	return m_flRenderAmt;
+}
+vector
+NSRenderableEntity::GetRenderColor(void)
+{
+	return m_vecRenderColor;
+}
+float
+NSRenderableEntity::GetBoneControl1(void)
+{
+	return m_flBoneControl1;
+}
+float
+NSRenderableEntity::GetBoneControl2(void)
+{
+	return m_flBoneControl2;
+}
+float
+NSRenderableEntity::GetBoneControl3(void)
+{
+	return m_flBoneControl3;
+}
+float
+NSRenderableEntity::GetBoneControl4(void)
+{
+	return m_flBoneControl4;
+}
+float
+NSRenderableEntity::GetBoneControl5(void)
+{
+	return m_flBoneControl5;
+}
+
 #ifdef SERVER
 void
 NSRenderableEntity::Save(float handle)

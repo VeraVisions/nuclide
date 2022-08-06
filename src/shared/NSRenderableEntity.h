@@ -145,6 +145,16 @@ class NSRenderableEntity:NSEntity
 	nonvirtual void(float) SetBoneControl4;
 	nonvirtual void(float) SetBoneControl5;
 
+	nonvirtual float(void) GetRenderMode;
+	nonvirtual float(void) GetRenderFX;
+	nonvirtual float(void) GetRenderAmt;
+	nonvirtual vector(void) GetRenderColor;
+	nonvirtual float(void) GetBoneControl1;
+	nonvirtual float(void) GetBoneControl2;
+	nonvirtual float(void) GetBoneControl3;
+	nonvirtual float(void) GetBoneControl4;
+	nonvirtual float(void) GetBoneControl5;
+
 	#ifdef CLIENT
 		nonvirtual void(void) RenderFXPass;
 	#else

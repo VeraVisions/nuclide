@@ -49,7 +49,8 @@ func_wall:NSRenderableEntity
 float
 func_wall::SendEntity(entity pvsent, float fl)
 {
-	if (targetname)
+	/* if we have a target name, act norm */
+	if ((GetRenderMode() != RM_NORMAL) || (targetname))
 		return super::SendEntity(pvsent, fl);
 	else
 		return (0);
@@ -109,7 +110,7 @@ func_wall::Init(void)
 	super::Init();
 
 	/* this entity is being controlled by the server, remove it */
-	if (targetname) {
+	if ((GetRenderMode() != RM_NORMAL) && (targetname)) {
 		Destroy();
 		return;
 	}
@@ -128,4 +129,7 @@ func_wall::Init(void)
 void
 func_wall::func_wall(void)
 {
+#ifdef CLIENT
+	isCSQC = true;
+#endif
 }

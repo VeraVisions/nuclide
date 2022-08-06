@@ -49,7 +49,7 @@ func_illusionary:NSRenderableEntity
 float
 func_illusionary::SendEntity(entity pvsent, float fl)
 {
-	if (targetname)
+	if ((GetRenderMode() != RM_NORMAL) || (targetname))
 		return super::SendEntity(pvsent, fl);
 	else
 		return (0);
@@ -114,7 +114,7 @@ func_illusionary::Init(void)
 	super::Init();
 
 	/* this entity is being controlled by the server, remove it */
-	if (targetname) {
+	if ((GetRenderMode() != RM_NORMAL) || (targetname)) {
 		Destroy();
 		return;
 	}
@@ -137,4 +137,7 @@ func_illusionary::Init(void)
 void
 func_illusionary::func_illusionary(void)
 {
+#ifdef CLIENT
+	isCSQC = true;
+#endif
 }
