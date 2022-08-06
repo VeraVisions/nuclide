@@ -153,11 +153,12 @@ NSClientPlayer::OnRemoveEntity(void)
 void
 NSClientPlayer::UpdateAliveCam(void)
 {
-	setproperty(VF_ORIGIN, pSeat->m_vecPredictedOrigin + view_ofs);
+	g_view.SetCameraOrigin(GetEyePos());
+	g_view.SetCameraAngle(view_angles);
 
 	if (vehicle) {
 		NSVehicle veh = (NSVehicle)vehicle;
-					
+
 		if (veh.UpdateView)
 			veh.UpdateView();
 	} else if (health) {
@@ -166,12 +167,12 @@ NSClientPlayer::UpdateAliveCam(void)
 			vector vStart = [pSeat->m_vecPredictedOrigin[0], pSeat->m_vecPredictedOrigin[1], pSeat->m_vecPredictedOrigin[2] + 16] + (v_right * 4);
 			vector vEnd = vStart + (v_forward * -48) + [0,0,16] + (v_right * 4);
 			traceline(vStart, vEnd, FALSE, self);
-			setproperty(VF_ORIGIN, trace_endpos + (v_forward * 5));
+			g_view.SetCameraOrigin(trace_endpos + (v_forward * 5));
 		}
 	}
 
 	Shake_Update(this);
-	setproperty(VF_ANGLES, view_angles + punchangle);
+	g_view.AddPunchAngle(punchangle);
 }
 
 /*

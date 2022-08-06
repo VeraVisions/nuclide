@@ -713,6 +713,7 @@ NSRenderableEntity::Respawn(void)
 void
 NSRenderableEntity::Show(void)
 {
+	/* this needs to be more useful */
 }
 
 void
@@ -728,11 +729,9 @@ NSRenderableEntity::Hide(void)
 void
 NSRenderableEntity::SetEffects(float newEffects)
 {
-	if (newEffects == effects)
-		return;
-
 	effects = newEffects;
 }
+
 void
 NSRenderableEntity::SetFrame(float newFrame)
 {
@@ -742,22 +741,19 @@ NSRenderableEntity::SetFrame(float newFrame)
 	frame = newFrame;
 	frame1time = 0.0f;
 }
+
 void
 NSRenderableEntity::SetSkin(float newSkin)
 {
-	if (newSkin == skin)
-		return;
-
 	skin = newSkin;
 }
+
 void
 NSRenderableEntity::SetBody(int newBody)
 {
-	if (newBody == m_iBody)
-		return;
-
 	m_iBody = newBody;
 }
+
 void
 NSRenderableEntity::SetScale(float newScale)
 {
@@ -771,33 +767,24 @@ NSRenderableEntity::SetScale(float newScale)
 void
 NSRenderableEntity::SetRenderFX(float newFX)
 {
-	if (newFX == m_iRenderFX)
-		return;
-
 	m_iRenderFX = newFX;
 }
+
 void
 NSRenderableEntity::SetRenderMode(float newMode)
 {
-	if (newMode == m_iRenderMode)
-		return;
-
 	m_iRenderMode = newMode;
 }
+
 void
 NSRenderableEntity::SetRenderAmt(float newAmt)
 {
-	if (newAmt == m_flRenderAmt)
-		return;
-
 	m_flRenderAmt = newAmt;
 }
+
 void
 NSRenderableEntity::SetRenderColor(vector newColor)
 {
-	if (newColor == m_vecRenderColor)
-		return;
-
 	m_vecRenderColor = newColor;
 }
 
@@ -836,41 +823,49 @@ NSRenderableEntity::GetRenderMode(void)
 {
 	return m_iRenderMode;
 }
+
 float
 NSRenderableEntity::GetRenderFX(void)
 {
 	return m_iRenderFX;
 }
+
 float
 NSRenderableEntity::GetRenderAmt(void)
 {
 	return m_flRenderAmt;
 }
+
 vector
 NSRenderableEntity::GetRenderColor(void)
 {
 	return m_vecRenderColor;
 }
+
 float
 NSRenderableEntity::GetBoneControl1(void)
 {
 	return m_flBoneControl1;
 }
+
 float
 NSRenderableEntity::GetBoneControl2(void)
 {
 	return m_flBoneControl2;
 }
+
 float
 NSRenderableEntity::GetBoneControl3(void)
 {
 	return m_flBoneControl3;
 }
+
 float
 NSRenderableEntity::GetBoneControl4(void)
 {
 	return m_flBoneControl4;
 }
+
 float
 NSRenderableEntity::GetBoneControl5(void)
 {
@@ -892,6 +887,7 @@ NSRenderableEntity::Save(float handle)
 	SaveFloat(handle, "rendermode", m_iRenderMode);
 	SaveFloat(handle, "renderfx", m_iRenderFX);
 }
+
 void
 NSRenderableEntity::Restore(string strKey, string strValue)
 {

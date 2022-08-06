@@ -37,7 +37,6 @@ func_wall:NSRenderableEntity
 	virtual float(entity, float) SendEntity;
 	virtual void(entity, int) Trigger;
 #else
-	virtual float() predraw;
 	virtual void(void) Init;
 #endif
 };
@@ -86,24 +85,6 @@ func_wall::Respawn(void)
 	ClearAngles();
 }
 #else
-float
-func_wall::predraw(void)
-{
-	vector vecPlayer;
-
-	int s = (float)getproperty(VF_ACTIVESEAT);
-	pSeat = &g_seats[s];
-	vecPlayer = pSeat->m_vecPredictedOrigin;
-
-	if (checkpvs(vecPlayer, this) == FALSE) {
-		return (PREDRAW_NEXT);
-	}
-
-	super::predraw();
-	addentity(self);
-	return (PREDRAW_NEXT);
-}
-
 void
 func_wall::Init(void)
 {
@@ -116,11 +97,11 @@ func_wall::Init(void)
 	}
 
 	precache_model(model);
-	setmodel(this, model);
-	setorigin(this, origin);
-	movetype = MOVETYPE_PUSH;
-	solid = SOLID_BSP;
-	angles = [0,0,0];
+	SetModel(model);
+	SetOrigin(origin);
+	SetAngles([0,0,0]);
+	SetMovetype(MOVETYPE_NONE);
+	SetSolid(SOLID_NOT);
 
 	MakeStatic();
 }

@@ -48,6 +48,9 @@ NSView
 
 	NSClient m_client;
 
+	vector m_vecClientAngle;
+	bool m_bSetClientAngle;
+
 	void(void) NSView;
 
 	/* the only method we we want to call setproperty() */
@@ -75,8 +78,10 @@ NSView
 
 	virtual void(vector) SetCameraOrigin;
 	virtual void(vector) SetCameraAngle;
+	virtual void(vector) SetClientAngle;
 	virtual void(int) SetSeatID;
 	virtual void(float) SetAFOV;
+	virtual float(void) GetAFOV;
 
 	virtual vector(void) GetHUDCanvasSize;
 	virtual vector(void) GetHUDCanvasPos;

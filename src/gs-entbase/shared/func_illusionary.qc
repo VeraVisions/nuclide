@@ -37,7 +37,6 @@ func_illusionary:NSRenderableEntity
 	virtual float(entity, float) SendEntity;
 	virtual void(entity, int) Trigger;
 #else
-	virtual float() predraw;
 	virtual void(void) Init;
 #endif
 };
@@ -90,23 +89,6 @@ func_illusionary::Respawn(void)
 	}
 }
 #else
-float
-func_illusionary::predraw(void)
-{
-	vector vecPlayer;
-
-	int s = (float)getproperty(VF_ACTIVESEAT);
-	pSeat = &g_seats[s];
-	vecPlayer = pSeat->m_vecPredictedOrigin;
-
-	if (checkpvs(vecPlayer, this) == FALSE) {
-		return (PREDRAW_NEXT);
-	}
-
-	super::predraw();
-	addentity(self);
-	return (PREDRAW_NEXT);
-}
 
 void
 func_illusionary::Init(void)
@@ -120,12 +102,11 @@ func_illusionary::Init(void)
 	}
 
 	precache_model(model);
-	setmodel(this, model);
-	setorigin(this, origin);
+	SetModel(model);
+	SetOrigin(origin);
 	SetAngles([0,0,0]);
 	SetMovetype(MOVETYPE_NONE);
 	SetSolid(SOLID_NOT);
-	angles = [0,0,0];
 
 	if (skin == -1 && m_iRenderMode == RM_TEXTURE)
 		SetRenderMode(RM_TRIGGER);

@@ -115,8 +115,8 @@ Event_Parse(float type)
 		a[0] = readfloat();
 		a[1] = readfloat();
 		a[2] = readfloat();
-		setproperty(VF_CL_VIEWANGLES, a);
-		setproperty(VF_ANGLES, a);
+        g_view.SetCameraAngle(a);
+        g_view.SetClientAngle(a);
 		break;
 	case EV_SHAKE:
 		if (me.classname == "spectator")

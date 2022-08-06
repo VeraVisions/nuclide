@@ -88,9 +88,9 @@ CMap_Shoot(void)
 		print("^3Cubemap processing...\n");
 		g_vecCubePos = tmp.origin;
 		g_dCubeSize = (float)tmp.m_iSize;
-		
-		setproperty(VF_CL_VIEWANGLES, [0,0,0]);
-		setproperty(VF_ANGLES, [0,0,0]);
+
+		g_view.SetClientAngle([0,0,0]);
+		g_view.SetCameraAngle([0,0,0]);
 
 		strReflectcube = sprintf(
 					"env/%s_%d_%d_%d",

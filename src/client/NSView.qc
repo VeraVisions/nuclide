@@ -39,6 +39,14 @@ NSView::SetupView(void)
 		setproperty(VF_ANGLES, angles);
 	}
 
+	/* the view may not have gotten the chance to set the client angle early on */
+	/* honestly this could be handled a lot better, but I don't know of a more reliable solution right now */
+	if (m_bSetClientAngle == true || cltime <= 0.5) {
+		setproperty(VF_ANGLES, m_vecClientAngle);
+		setproperty(VF_CL_VIEWANGLES, m_vecClientAngle);
+		m_bSetClientAngle = false;
+	}
+
 	m_vecLastOrigin = origin;
 }
 
@@ -72,7 +80,6 @@ NSView::StairSmooth(void)
 			endpos[2] = origin[2];
 		}
 
-		//setproperty(VF_ORIGIN, endpos);
 		origin = endpos;
 	}
 }
@@ -120,6 +127,13 @@ NSView::GetCameraAngle(void)
 }
 
 void
+NSView::SetClientAngle(vector new_angle)
+{
+	m_vecClientAngle = new_angle;
+	m_bSetClientAngle = true;
+}
+
+void
 NSView::SetViewMode(viewmode_e new_mode)
 {
 	m_viewmode = new_mode;
@@ -147,6 +161,12 @@ void
 NSView::SetAFOV(float new_fov)
 {
 	m_flFieldOfView = new_fov;
+}
+
+float
+NSView::GetAFOV(void)
+{
+	return m_flFieldOfView;
 }
 
 vector
@@ -224,10 +244,7 @@ NSView::UpdateView(void)
 			cl.UpdateIntermissionCam();
 		}
 
-		SetCameraOrigin(cl.GetEyePos());
-		SetCameraAngle(view_angles);
 		StairSmooth();
-		AddPunchAngle(cl.punchangle);
 
 		SetAFOV(cvar("fov") * pl.viewzoom);
 
@@ -316,7 +333,7 @@ NSView::UpdateView(void)
 	/* move this into NSClient methods */
 	cl.PostFrame();
 
-#if 0
+#if 1
 	Font_DrawText(m_vecPosition + [8,8], "NSView Debug Information", FONT_CON);
 	Font_DrawText(m_vecPosition + [8,20], sprintf("Seat: %i", m_iSeat), FONT_CON);
 	Font_DrawText(m_vecPosition + [8,32], sprintf("FOV: %d", m_flFieldOfView), FONT_CON);

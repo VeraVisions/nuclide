@@ -119,14 +119,14 @@ drawpic3d(vector worldpos, string mat, vector sz, vector rgb, float alpha)
 	drawpic3d_visible(vector p1) {
 		vector delta;
 		float fov;
-		vector p2 = getproperty(VF_ORIGIN);
-		vector ang = getproperty(VF_CL_VIEWANGLES);
+		vector p2 = g_view.GetCameraOrigin();
+		vector ang = g_view.GetCameraAngle();
 
 		makevectors(ang);
 		delta = normalize (p1 - p2);
 		fov = delta * v_forward;
 
-		if (fov > (getproperty(VF_AFOV)/180)) {
+		if (fov > (g_view.GetAFOV()/180)) {
 			traceline(p2, p1, MOVE_WORLDONLY, self);
 			if (trace_fraction == 1.0) {
 				return (1);

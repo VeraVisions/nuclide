@@ -96,8 +96,8 @@ trigger_camera::ReceiveEntity(float flNew, float flFlags)
 		else
 			pSeat->m_flCameraTime = time + flWait;
 
-		setproperty(VF_CL_VIEWANGLES, angles);
-		setproperty(VF_ANGLES, angles);
+		g_view.SetCameraAngle(angles);
+		g_view.SetClientAngle(angles);
 	}
 
 	classname = "trigger_camera";

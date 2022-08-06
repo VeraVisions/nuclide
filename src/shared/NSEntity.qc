@@ -83,7 +83,6 @@ NSEntity::WaterLevel(void)
 	return waterlevel;
 }
 
-
 /*
 ============
 NSEntity::VisibleVec
@@ -234,7 +233,7 @@ void
 NSEntity::RendererRestarted(void)
 {
 	
-};
+}
 
 /*
 ============
@@ -481,21 +480,25 @@ NSEntity::ParentUpdate(void)
 				m_eTouchLast = __NULL__;
 		}
 }
+
 entity
 NSEntity::GetParent(void)
 {
 	return find(world, ::targetname, m_parent);
 }
+
 void
 NSEntity::SetParent(string name)
 {
 	m_parent = name;
 }
+
 void
 NSEntity::SetParentAttachment(string name)
 {
 	m_parent_attachment = name;
 }
+
 void
 NSEntity::ClearParent(void)
 {
@@ -508,6 +511,7 @@ NSEntity::RestoreAngles(void)
 {
 	angles = GetSpawnAngles();
 }
+
 void
 NSEntity::ClearAngles(void)
 {
@@ -519,19 +523,19 @@ void
 NSEntity::SetOwner(entity newOwner)
 {
 	owner = newOwner;
-};
+}
 
 void
 NSEntity::SetVelocity(vector vecNew)
 {
 	velocity = vecNew;
-};
+}
 
 void
 NSEntity::SetTouch(void() newTouch)
 {
 	touch = newTouch;
-};
+}
 
 /* we want to really use those set functions because they'll notify of any
  * networking related changes. otherwise we'll have to keep track of copies
@@ -561,6 +565,7 @@ NSEntity::SetSolid(float newSolid)
 {
 	solid = newSolid;
 }
+
 void
 NSEntity::SetScale(float newScale)
 {
@@ -783,7 +788,6 @@ NSEntity::GetFlags(void)
 {
 	return flags;
 }
-
 
 vector
 NSEntity::GetSpawnOrigin(void)
@@ -1016,7 +1020,7 @@ NSEntity::Destroy(void)
 		nextthink = time + 0.01;
 	else
 		nextthink = time;
-};
+}
 
 void
 NSEntity::Spawned(void)

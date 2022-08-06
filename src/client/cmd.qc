@@ -101,8 +101,8 @@ CMD_setpos(void)
 void
 CMD_setang(void)
 {
-	setproperty(VF_CL_VIEWANGLES, stov(argv(1)));
-	setproperty(VF_ANGLES, stov(argv(1)));
+    g_view.SetCameraAngle(stov(argv(1)));
+    g_view.SetClientAngle(stov(argv(1)));
 }
 
 void

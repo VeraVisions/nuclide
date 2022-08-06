@@ -187,7 +187,8 @@ prop_vehicle_driveable::UpdateView(void)
 	vecEnd = vecStart + (v_forward * -256) + [0,0,16] + (v_right * 4);
 	other = world;
 	traceline(vecStart, vecEnd, MOVE_OTHERONLY, this);
-	setproperty(VF_ORIGIN, trace_endpos + (v_forward * 16));
+	g_view.SetCameraOrigin(trace_endpos + (v_forward * 16));
+	g_view.SetClientAngle(view_angles);
 }
 
 void
