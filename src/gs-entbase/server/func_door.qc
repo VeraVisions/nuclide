@@ -190,14 +190,11 @@ func_door::Arrived(void)
 	if (m_strSndMove)
 		sound(this, CHAN_WEAPON, "common/null.wav", 1.0f, ATTN_NORM);
 
-	if (m_flWait < 0) {
+	if ((m_flWait < 0.0f) || HasSpawnFlags(SF_MOV_TOGGLE) == true)
 		return;
-	}
 
-	if (!HasSpawnFlags(SF_MOV_TOGGLE)) {
-		think = MoveBack;
-		nextthink = (ltime + m_flWait);
-	}
+	think = MoveBack;
+	nextthink = (ltime + m_flWait);
 }
 
 void
@@ -703,6 +700,5 @@ func_water(void)
 	door.SetSolid(SOLID_BSP);
 	door.SetSkin(CONTENT_WATER);
 	door.effects |= EF_FULLBRIGHT;
-	door.spawnflags |= SF_MOV_TOGGLE;
 	setorigin(door, door.origin); // relink. have to do this.
 }

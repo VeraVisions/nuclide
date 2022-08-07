@@ -162,7 +162,7 @@ func_door_rotating::Arrived(void)
 		sound(this, CHAN_VOICE, "common/null.wav", 1.0f, ATTN_NORM);
 	}
 
-	if (HasSpawnFlags(SF_ROT_TOGGLE) || m_flWait < 0)
+	if ((m_flWait < 0.0f) || HasSpawnFlags(SF_ROT_TOGGLE) == true)
 		return;
 
 	think = Back;
