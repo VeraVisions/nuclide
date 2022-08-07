@@ -14,6 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+void
+NSClientSpectator::NSClientSpectator(void)
+{
+	flags |= FL_CLIENT;
+}
+
 #ifdef SERVER
 void
 NSClientSpectator::Save(float handle)
@@ -461,12 +467,6 @@ NSClientSpectator::PostFrame(void)
 	ROLL_BACK(spec_mode);
 	ROLL_BACK(spec_flags);
 #endif
-}
-
-void
-NSClientSpectator::NSClientSpectator(void)
-{
-	flags |= FL_CLIENT;
 }
 
 #ifdef CLIENT

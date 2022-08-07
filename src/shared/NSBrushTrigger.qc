@@ -14,6 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+void
+NSBrushTrigger::NSBrushTrigger(void)
+{
+}
+
 #ifdef SERVER
 void
 NSBrushTrigger::InitBrushTrigger(void)
@@ -23,8 +28,3 @@ NSBrushTrigger::InitBrushTrigger(void)
 	SetSolid(SOLID_BSPTRIGGER);
 }
 #endif
-
-void
-NSBrushTrigger::NSBrushTrigger(void)
-{
-}

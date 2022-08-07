@@ -1,3 +1,9 @@
+void
+NSWeapon::NSWeapon(void)
+{
+
+}
+
 /* calls */
 void
 NSWeapon::Precache(void)
@@ -187,10 +193,4 @@ bool
 NSWeapon::HasAmmo(void)
 {
 	return false;
-}
-
-void
-NSWeapon::NSWeapon(void)
-{
-
 }

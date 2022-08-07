@@ -75,19 +75,19 @@ class func_door_rotating:NSRenderableEntity
 	string m_strSndClose;
 	string m_strLockedSfx;
 	float m_flSoundWait;
-	int m_iDamage;
-	int m_iLocked;
 	float m_flDistance;
 	float m_flSpeed;
 	float m_iState;
 	float m_flNextAction;
 	float m_flWait;
 	float m_flDelay;
+	int m_iPortalState;
+	int m_iDamage;
+	int m_iLocked;
 	vector m_vecDest;
 	vector m_vecPos1;
 	vector m_vecPos2;
 	vector m_vecMoveDir;
-	int m_iPortalState;
 	bool m_iCanTouch;
 	
 	void(void) func_door_rotating;
@@ -112,6 +112,263 @@ class func_door_rotating:NSRenderableEntity
 	virtual void(void) Unhinge;
 #endif
 };
+
+void
+func_door_rotating::func_door_rotating(void)
+{
+	targetClose = __NULL__;
+	m_strSndStop = __NULL__;
+	m_strSndOpen = __NULL__;
+	m_strSndClose = __NULL__;
+	m_strLockedSfx = __NULL__;
+	m_flSoundWait = 0.0f;
+	m_iDamage = 0i;
+	m_iLocked = 0i;
+	m_flDistance = 90.0f;
+	m_flSpeed = 100.0f;
+	m_iState = 0i;
+	m_flNextAction = 0.0f;
+	m_flWait = 0.0f;
+	m_flDelay = 4.0f;
+	m_vecDest = [0.0f, 0.0f, 0.0f];
+	m_vecPos1 = [0.0f, 0.0f, 0.0f];
+	m_vecPos2 = [0,0,0];
+	m_vecMoveDir = [0.0f, 0.0f, 0.0f];
+	m_iPortalState = 0i;
+	m_iCanTouch = false;
+}
+
+void
+func_door_rotating::Save(float handle)
+{
+	SaveString(handle, "targetClose", targetClose);
+	SaveString(handle, "m_strSndStop", m_strSndStop);
+	SaveString(handle, "m_strSndOpen", m_strSndOpen);
+	SaveString(handle, "m_strSndClose", m_strSndClose);
+	SaveString(handle, "m_strLockedSfx", m_strLockedSfx);
+	SaveFloat(handle, "m_flSoundWait", m_flSoundWait);
+	SaveFloat(handle, "m_flDistance", m_flDistance);
+	SaveFloat(handle, "m_flSpeed", m_flSpeed);
+	SaveFloat(handle, "m_iState", m_iState);
+	SaveFloat(handle, "m_flNextAction", m_flNextAction);
+	SaveFloat(handle, "m_flWait", m_flWait);
+	SaveFloat(handle, "m_flDelay", m_flDelay);
+	SaveInt(handle, "m_iPortalState", m_iPortalState);
+	SaveInt(handle, "m_iDamage", m_iDamage);
+	SaveInt(handle, "m_iLocked", m_iLocked);
+	SaveVector(handle, "m_vecDest", m_vecDest);
+	SaveVector(handle, "m_vecPos1", m_vecPos1);
+	SaveVector(handle, "m_vecPos2", m_vecPos2);
+	SaveVector(handle, "m_vecMoveDir", m_vecMoveDir);
+	SaveBool(handle, "____", m_iCanTouch);
+
+	super::Save(handle);
+}
+
+void
+func_door_rotating::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "targetClose":
+		targetClose = ReadString(strValue);
+		break;
+	case "m_strSndStop":
+		m_strSndStop = ReadString(strValue);
+		break;
+	case "m_strSndOpen":
+		m_strSndOpen = ReadString(strValue);
+		break;
+	case "m_strSndClose":
+		m_strSndClose = ReadString(strValue);
+		break;
+	case "m_strLockedSfx":
+		m_strLockedSfx = ReadString(strValue);
+		break;
+	case "m_flSoundWait":
+		m_flSoundWait = ReadFloat(strValue);
+		break;
+	case "m_flDistance":
+		m_flDistance = ReadFloat(strValue);
+		break;
+	case "m_flSpeed":
+		m_flSpeed = ReadFloat(strValue);
+		break;
+	case "m_iState":
+		m_iState = ReadInt(strValue);
+		break;
+	case "m_flNextAction":
+		m_flNextAction = ReadFloat(strValue);
+		break;
+	case "m_flWait":
+		m_flWait = ReadFloat(strValue);
+		break;
+	case "m_flDelay":
+		m_flDelay = ReadFloat(strValue);
+		break;
+	case "m_iPortalState":
+		m_iPortalState = ReadInt(strValue);
+		break;
+	case "m_iDamage":
+		m_iDamage = ReadInt(strValue);
+		break;
+	case "m_iLocked":
+		m_iLocked = ReadInt(strValue);
+		break;
+	case "m_vecDest":
+		m_vecDest = ReadVector(strValue);
+		break;
+	case "m_vecPos1":
+		m_vecPos1 = ReadVector(strValue);
+		break;
+	case "m_vecPos2":
+		m_vecPos2 = ReadVector(strValue);
+		break;
+	case "m_vecMoveDir":
+		m_vecMoveDir = ReadVector(strValue);
+		break;
+	case "m_iCanTouch":
+		m_iCanTouch = ReadInt(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
+
+void
+func_door_rotating::Spawned(void)
+{
+	super::Spawned();
+
+	if (m_strSndOpen)
+		Sound_Precache(m_strSndOpen);
+	if (m_strSndClose)
+		Sound_Precache(m_strSndClose);
+	if (m_strSndStop)
+		Sound_Precache(m_strSndStop);
+	if (m_strLockedSfx)
+		Sound_Precache(m_strLockedSfx);
+}
+
+void
+func_door_rotating::Respawn(void)
+{
+	RestoreAngles();
+	SetMovementDirection();
+	ClearAngles();
+
+#ifdef GS_PHYSICS
+	takedamage = DAMAGE_YES;
+	health = 100;
+	Death = func_door_rotating::Unhinge;
+#endif
+
+	SetSolid(SOLID_BSP);
+	SetMovetype(MOVETYPE_PUSH);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
+	think = __NULL__;
+	nextthink = 0.0f;
+	avelocity = [0,0,0];
+
+	if (spawnflags & SF_ROT_USE)
+		m_iCanTouch = false;
+	else
+		m_iCanTouch = true;
+
+	/* this is a terrible hack */
+	if (m_flWait == 0)
+		m_flWait = 0.01f;
+
+	if (HasSpawnFlags(SF_ROT_USE)) {
+		PlayerUse = Use;
+	} else {
+		PlayerUse = __NULL__;
+	}
+
+	m_vecPos1 = GetSpawnAngles();
+
+	if (HasSpawnFlags(SF_ROT_BACKWARDS)) {
+		m_vecPos2 = GetSpawnAngles() + m_vecMoveDir * -m_flDistance;
+	} else {
+		m_vecPos2 = GetSpawnAngles() + m_vecMoveDir * m_flDistance;
+	}
+
+	if (HasSpawnFlags(SF_ROT_OPEN)) {
+		vector vTemp = m_vecPos2;
+		m_vecPos2 = m_vecPos1;
+		m_vecPos1 = vTemp;
+		m_vecMoveDir = m_vecMoveDir * -1;
+		PortalOpen();
+	} else {
+		PortalClose();
+	}
+
+	m_iState = STATE_LOWERED;
+
+	if (HasSpawnFlags(SF_ROT_PASSABLE)) {
+		SetSolid(SOLID_NOT);
+	}
+
+	if (targetname) {
+		m_iLocked = TRUE;
+	}
+
+	SetAngles(m_vecPos1);
+}
+
+void
+func_door_rotating::SpawnKey(string strKey, string strValue)
+{
+	int x = 0;
+	switch (strKey) {
+	case "speed":
+		m_flSpeed = stof(strValue);
+		break;
+	/*case "lip":
+		m_flDistance = stof(strValue);
+		break;*/
+	case "snd_open":
+		m_strSndOpen = strValue;
+		break;
+	case "snd_close":
+		m_strSndClose = strValue;
+		break;
+	case "noise1":
+		m_strSndOpen = m_strSndClose = strValue;
+		break;
+	case "snd_stop":
+	case "noise2":
+		m_strSndStop = strValue;
+		break;
+	/* GoldSrc compat */
+	case "movesnd":
+		x = stoi(strValue);
+		m_strSndOpen = m_strSndClose = sprintf("func_door_rotating.move_%i", x);
+		break;
+	case "stopsnd":
+		x = stoi(strValue);
+		m_strSndStop = sprintf("func_door_rotating.stop_%i", x);
+		break;
+	case "distance":
+		m_flDistance = stof(strValue);
+		break;
+	case "dmg":
+		m_iDamage = stoi(strValue);
+		break;
+	case "wait":
+		m_flWait = stof(strValue);
+		break;
+	case "netname":
+		targetClose = strValue;
+		break;
+	case "locked_sound":
+		x = stoi(strValue);
+		m_strLockedSfx = sprintf("func_button.hlsfx_%i", x+1i);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
 
 void
 func_door_rotating::PortalOpen(void)
@@ -369,148 +626,4 @@ func_door_rotating::RotToDest(vector vDestAngle, void(void) func)
 		think = func;
 		nextthink = (ltime + flTravelTime);
 	}
-}
-
-void
-func_door_rotating::Respawn(void)
-{
-	RestoreAngles();
-	SetMovementDirection();
-	ClearAngles();
-
-#ifdef GS_PHYSICS
-	takedamage = DAMAGE_YES;
-	health = 100;
-	Death = func_door_rotating::Unhinge;
-#endif
-
-	SetSolid(SOLID_BSP);
-	SetMovetype(MOVETYPE_PUSH);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
-	think = __NULL__;
-	nextthink = 0.0f;
-	avelocity = [0,0,0];
-
-	if (spawnflags & SF_ROT_USE)
-		m_iCanTouch = false;
-	else
-		m_iCanTouch = true;
-
-	/* this is a terrible hack */
-	if (m_flWait == 0)
-		m_flWait = 0.01f;
-
-	if (HasSpawnFlags(SF_ROT_USE)) {
-		PlayerUse = Use;
-	} else {
-		PlayerUse = __NULL__;
-	}
-
-	m_vecPos1 = GetSpawnAngles();
-
-	if (HasSpawnFlags(SF_ROT_BACKWARDS)) {
-		m_vecPos2 = GetSpawnAngles() + m_vecMoveDir * -m_flDistance;
-	} else {
-		m_vecPos2 = GetSpawnAngles() + m_vecMoveDir * m_flDistance;
-	}
-
-	if (HasSpawnFlags(SF_ROT_OPEN)) {
-		vector vTemp = m_vecPos2;
-		m_vecPos2 = m_vecPos1;
-		m_vecPos1 = vTemp;
-		m_vecMoveDir = m_vecMoveDir * -1;
-		PortalOpen();
-	} else {
-		PortalClose();
-	}
-
-	m_iState = STATE_LOWERED;
-
-	if (HasSpawnFlags(SF_ROT_PASSABLE)) {
-		SetSolid(SOLID_NOT);
-	}
-
-	if (targetname) {
-		m_iLocked = TRUE;
-	}
-
-	SetAngles(m_vecPos1);
-}
-
-void
-func_door_rotating::SpawnKey(string strKey, string strValue)
-{
-	int x = 0;
-	switch (strKey) {
-	case "speed":
-		m_flSpeed = stof(strValue);
-		break;
-	/*case "lip":
-		m_flLip = stof(strValue);
-		break;*/
-	case "snd_open":
-		m_strSndOpen = strValue;
-		break;
-	case "snd_close":
-		m_strSndClose = strValue;
-		break;
-	case "noise1":
-		m_strSndOpen = m_strSndClose = strValue;
-		break;
-	case "snd_stop":
-	case "noise2":
-		m_strSndStop = strValue;
-		break;
-	/* GoldSrc compat */
-	case "movesnd":
-		x = stoi(strValue);
-		m_strSndOpen = m_strSndClose = sprintf("func_door_rotating.move_%i", x);
-		break;
-	case "stopsnd":
-		x = stoi(strValue);
-		m_strSndStop = sprintf("func_door_rotating.stop_%i", x);
-		break;
-	case "distance":
-		m_flDistance = stof(strValue);
-		break;
-	case "dmg":
-		m_iDamage = stoi(strValue);
-		break;
-	case "wait":
-		m_flWait = stof(strValue);
-		break;
-	case "netname":
-		targetClose = strValue;
-		break;
-	case "locked_sound":
-		x = stoi(strValue);
-		m_strLockedSfx = sprintf("func_button.hlsfx_%i", x+1i);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-func_door_rotating::Spawned(void)
-{
-	super::Spawned();
-
-	if (m_strSndOpen)
-		Sound_Precache(m_strSndOpen);
-	if (m_strSndClose)
-		Sound_Precache(m_strSndClose);
-	if (m_strSndStop)
-		Sound_Precache(m_strSndStop);
-	if (m_strLockedSfx)
-		Sound_Precache(m_strLockedSfx);
-}
-
-void
-func_door_rotating::func_door_rotating(void)
-{
-	m_flSpeed = 100;
-	m_flDelay = 4;
-	m_flDistance = 90;
 }

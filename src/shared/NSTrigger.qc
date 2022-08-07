@@ -14,6 +14,21 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+void
+NSTrigger::NSTrigger(void)
+{
+#ifdef SERVER
+	m_oldstrTarget = __NULL__;
+	m_strGlobalState = 0;
+	m_strKillTarget = __NULL__;
+	m_strMessage = __NULL__;
+	m_strMaster = __NULL__;
+	m_iUseType = 0;
+	m_iTeam = 0;
+	m_iValue = 0;
+#endif
+}
+
 #ifdef SERVER
 /* legacy trigger architecture */
 void
@@ -201,9 +216,4 @@ NSTrigger::SpawnKey(string strKey, string strValue)
 		NSIO::SpawnKey(strKey, strValue);
 		break;
 	}
-}
-
-void
-NSTrigger::NSTrigger(void)
-{
 }

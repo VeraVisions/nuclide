@@ -15,6 +15,21 @@
 */
 
 void
+NSProjectile::NSProjectile(void)
+{
+	m_iProjectileAnimEnd = 0i;
+	m_iProjectileAnimStart = 0i;
+	m_flProjectileFramerate = 0.1f; /* default to 10 hz */
+	touch = ProjectileTouch;
+
+	SetMovetype(MOVETYPE_FLY);
+	SetRenderColor([1,1,1]);
+	SetRenderAmt(1.0);
+	SetSolid(SOLID_BBOX);
+	hitcontentsmaski |= CONTENTBIT_PROJECTILE;
+}
+
+void
 NSProjectile::ProjectileTouch(void)
 {
 	if (m_pImpact)
@@ -56,16 +71,4 @@ NSProjectile::Animate(int startframe, int endframe, float framerate)
 	frame = startframe;
 	think = AnimateThink;
 	nextthink = time + m_flProjectileFramerate;
-}
-
-void
-NSProjectile::NSProjectile(void)
-{
-	touch = ProjectileTouch;
-
-	SetMovetype(MOVETYPE_FLY);
-	SetRenderColor([1,1,1]);
-	SetRenderAmt(1.0);
-	SetSolid(SOLID_BBOX);
-	hitcontentsmaski |= CONTENTBIT_PROJECTILE;
 }

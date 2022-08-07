@@ -14,6 +14,18 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+void
+NSMonster::NSMonster(void)
+{
+#ifdef SERVER
+	if (!HasSpawnFlags(MSF_MULTIPLAYER))
+	if (g_grMode.MonstersSpawn() == FALSE) {
+		remove(this);
+		return;
+	}
+#endif
+}
+
 #ifdef SERVER
 int
 NSMonster::GetTriggerCondition(void)
@@ -83,7 +95,7 @@ void
 NSMonster::AnimPlay(float seq)
 {
 	/* forces a client-side update */
-	SetSendFlags(BASEFL_CHANGED_FRAME);
+	SetSendFlags(MONFL_CHANGED_FRAME);
 
 	SetFrame(seq);
 	m_flAnimTime = time + frameduration(modelindex, frame);
@@ -773,9 +785,44 @@ NSMonster::SpawnKey(string strKey, string strValue)
 	}
 }
 
+void
+NSMonster::EvaluateEntity(void)
+{
+	EVALUATE_VECTOR(origin, 0, MONFL_CHANGED_ORIGIN_X)
+	EVALUATE_VECTOR(origin, 1, MONFL_CHANGED_ORIGIN_Y)
+	EVALUATE_VECTOR(origin, 2, MONFL_CHANGED_ORIGIN_Z)
+	EVALUATE_VECTOR(angles, 0, MONFL_CHANGED_ANGLES_X)
+	EVALUATE_VECTOR(angles, 1, MONFL_CHANGED_ANGLES_Y)
+	EVALUATE_VECTOR(angles, 2, MONFL_CHANGED_ANGLES_Z)
+	EVALUATE_FIELD(modelindex, MONFL_CHANGED_MODELINDEX)
+	EVALUATE_FIELD(solid, MONFL_CHANGED_SOLID)
+	EVALUATE_FIELD(movetype, MONFL_CHANGED_FLAGS)
+	EVALUATE_FIELD(flags, MONFL_CHANGED_FLAGS)
+	EVALUATE_VECTOR(mins, 0, MONFL_CHANGED_SIZE)
+	EVALUATE_VECTOR(mins, 1, MONFL_CHANGED_SIZE)
+	EVALUATE_VECTOR(mins, 2, MONFL_CHANGED_SIZE)
+	EVALUATE_VECTOR(maxs, 0, MONFL_CHANGED_SIZE)
+	EVALUATE_VECTOR(maxs, 1, MONFL_CHANGED_SIZE)
+	EVALUATE_VECTOR(maxs, 2, MONFL_CHANGED_SIZE)
+	EVALUATE_FIELD(frame, MONFL_CHANGED_FRAME)
+	EVALUATE_FIELD(skin, MONFL_CHANGED_SKIN)
+	EVALUATE_FIELD(effects, MONFL_CHANGED_EFFECTS)
+	EVALUATE_FIELD(m_iBody, MONFL_CHANGED_BODY)
+	EVALUATE_FIELD(scale, MONFL_CHANGED_SCALE)
+	EVALUATE_VECTOR(velocity, 0, MONFL_CHANGED_VELOCITY)
+	EVALUATE_VECTOR(velocity, 1, MONFL_CHANGED_VELOCITY)
+	EVALUATE_VECTOR(velocity, 2, MONFL_CHANGED_VELOCITY)
+	EVALUATE_FIELD(m_iRenderMode, MONFL_CHANGED_RENDERMODE)
+	EVALUATE_FIELD(m_iRenderFX, MONFL_CHANGED_RENDERMODE)
+	EVALUATE_VECTOR(m_vecRenderColor, 0, MONFL_CHANGED_RENDERCOLOR)
+	EVALUATE_VECTOR(m_vecRenderColor, 1, MONFL_CHANGED_RENDERCOLOR)
+	EVALUATE_VECTOR(m_vecRenderColor, 2, MONFL_CHANGED_RENDERCOLOR)
+	EVALUATE_FIELD(m_flRenderAmt, MONFL_CHANGED_RENDERAMT)
+}
+
 /* Make sure StartFrame calls this */
 float
-NSMonster::SendEntity(entity ePEnt, float fChanged)
+NSMonster::SendEntity(entity ePEnt, float flChanged)
 {
 	if (!modelindex)
 		return (0);
@@ -790,70 +837,38 @@ NSMonster::SendEntity(entity ePEnt, float fChanged)
 		return (0);*/
 
 	/* broadcast how much data is expected to be read */
-	WriteFloat(MSG_ENTITY, fChanged);
+	WriteFloat(MSG_ENTITY, flChanged);
 
-	/* really trying to get our moneys worth with 23 bits of mantissa */
-	if (fChanged & BASEFL_CHANGED_ORIGIN) {
-		WriteCoord(MSG_ENTITY, origin[0]);
-		WriteCoord(MSG_ENTITY, origin[1]);
-		WriteCoord(MSG_ENTITY, origin[2]);
-	}
-	if (fChanged & BASEFL_CHANGED_ANGLES) {
-		WriteShort(MSG_ENTITY, angles[0] * 32767 / 360);
-		WriteShort(MSG_ENTITY, angles[1] * 32767 / 360);
-		WriteShort(MSG_ENTITY, angles[2] * 32767 / 360);
-	}
-	if (fChanged & BASEFL_CHANGED_MODELINDEX) {
-		WriteShort(MSG_ENTITY, modelindex);
-	}
-	if (fChanged & BASEFL_CHANGED_SOLID) {
-		WriteByte(MSG_ENTITY, solid);
-	}
-	if (fChanged & BASEFL_CHANGED_MOVETYPE) {
-		WriteByte(MSG_ENTITY, movetype);
-	}
-	if (fChanged & BASEFL_CHANGED_SIZE) {
-		WriteCoord(MSG_ENTITY, mins[0]);
-		WriteCoord(MSG_ENTITY, mins[1]);
-		WriteCoord(MSG_ENTITY, mins[2]);
-		WriteCoord(MSG_ENTITY, maxs[0]);
-		WriteCoord(MSG_ENTITY, maxs[1]);
-		WriteCoord(MSG_ENTITY, maxs[2]);
-	}
-	if (fChanged & BASEFL_CHANGED_FRAME) {
-		WriteByte(MSG_ENTITY, frame);
-		WriteFloat(MSG_ENTITY, frame1time);
-	}
-	if (fChanged & BASEFL_CHANGED_SKIN) {
-		WriteByte(MSG_ENTITY, skin + 128);
-	}
-	if (fChanged & BASEFL_CHANGED_EFFECTS) {
-		WriteFloat(MSG_ENTITY, effects);
-	}
-	if (fChanged & BASEFL_CHANGED_BODY) {
-		WriteByte(MSG_ENTITY, m_iBody);
-	}
-	if (fChanged & BASEFL_CHANGED_SCALE) {
-		WriteFloat(MSG_ENTITY, scale);
-	}
-	if (fChanged & BASEFL_CHANGED_VELOCITY) {
-		WriteFloat(MSG_ENTITY, velocity[0]);
-		WriteFloat(MSG_ENTITY, velocity[1]);
-		WriteFloat(MSG_ENTITY, velocity[2]);
-	}
-	if (fChanged & BASEFL_CHANGED_RENDERMODE) {
-		WriteByte(MSG_ENTITY, m_iRenderMode);
-		WriteByte(MSG_ENTITY, m_iRenderFX);
-	}
-
-	if (fChanged & BASEFL_CHANGED_RENDERCOLOR) {
-		WriteFloat(MSG_ENTITY, m_vecRenderColor[0]);
-		WriteFloat(MSG_ENTITY, m_vecRenderColor[1]);
-		WriteFloat(MSG_ENTITY, m_vecRenderColor[2]);
-	}
-	if (fChanged & BASEFL_CHANGED_RENDERAMT) {
-		WriteFloat(MSG_ENTITY, m_flRenderAmt);
-	}
+	SENDENTITY_COORD(origin[0], MONFL_CHANGED_ORIGIN_X)
+	SENDENTITY_COORD(origin[1], MONFL_CHANGED_ORIGIN_Y)
+	SENDENTITY_COORD(origin[2], MONFL_CHANGED_ORIGIN_Z)
+	SENDENTITY_ANGLE(angles[0], MONFL_CHANGED_ANGLES_X)
+	SENDENTITY_ANGLE(angles[1], MONFL_CHANGED_ANGLES_Y)
+	SENDENTITY_ANGLE(angles[2], MONFL_CHANGED_ANGLES_Z)
+	SENDENTITY_SHORT(modelindex, MONFL_CHANGED_MODELINDEX)
+	SENDENTITY_BYTE(solid, MONFL_CHANGED_SOLID)
+	SENDENTITY_BYTE(movetype, MONFL_CHANGED_FLAGS)
+	SENDENTITY_INT(flags, MONFL_CHANGED_FLAGS)
+	SENDENTITY_COORD(mins[0], MONFL_CHANGED_SIZE)
+	SENDENTITY_COORD(mins[1], MONFL_CHANGED_SIZE)
+	SENDENTITY_COORD(mins[2], MONFL_CHANGED_SIZE)
+	SENDENTITY_COORD(maxs[0], MONFL_CHANGED_SIZE)
+	SENDENTITY_COORD(maxs[1], MONFL_CHANGED_SIZE)
+	SENDENTITY_COORD(maxs[2], MONFL_CHANGED_SIZE)
+	SENDENTITY_BYTE(frame, MONFL_CHANGED_FRAME)
+	SENDENTITY_BYTE(skin, MONFL_CHANGED_SKIN)
+	SENDENTITY_FLOAT(effects, MONFL_CHANGED_EFFECTS)
+	SENDENTITY_BYTE(m_iBody, MONFL_CHANGED_BODY)
+	SENDENTITY_FLOAT(scale, MONFL_CHANGED_SCALE)
+	SENDENTITY_COORD(velocity[0], MONFL_CHANGED_VELOCITY)
+	SENDENTITY_COORD(velocity[1], MONFL_CHANGED_VELOCITY)
+	SENDENTITY_COORD(velocity[2], MONFL_CHANGED_VELOCITY)
+	SENDENTITY_BYTE(m_iRenderMode, MONFL_CHANGED_RENDERMODE)
+	SENDENTITY_BYTE(m_iRenderFX, MONFL_CHANGED_RENDERMODE)
+	SENDENTITY_ANGLE(m_vecRenderColor[0], MONFL_CHANGED_RENDERCOLOR)
+	SENDENTITY_ANGLE(m_vecRenderColor[1], MONFL_CHANGED_RENDERCOLOR)
+	SENDENTITY_ANGLE(m_vecRenderColor[2], MONFL_CHANGED_RENDERCOLOR)
+	SENDENTITY_ANGLE(m_flRenderAmt, MONFL_CHANGED_RENDERAMT)
 
 	return (1);
 }
@@ -896,98 +911,50 @@ NSMonster::ReceiveEntity
 void
 NSMonster::ReceiveEntity(float flNew, float flChanged)
 {
-	if (flChanged & BASEFL_CHANGED_ORIGIN) {
-		origin[0] = readcoord();
-		origin[1] = readcoord();
-		origin[2] = readcoord();
-	}
-	if (flChanged & BASEFL_CHANGED_ANGLES) {
-		angles[0] = readshort() / (32767 / 360);
-		angles[1] = readshort() / (32767 / 360);
-		angles[2] = readshort() / (32767 / 360);
-	}
-	if (flChanged & BASEFL_CHANGED_MODELINDEX) {
-		setmodelindex(this, readshort());
-	}
-	if (flChanged & BASEFL_CHANGED_SOLID) {
-		solid = readbyte();
-	}
-	if (flChanged & BASEFL_CHANGED_MOVETYPE) {
-		movetype = readbyte();
-
-		if (movetype == MOVETYPE_PHYSICS) {
-			movetype = MOVETYPE_NONE;
-		}
-	}
-	if (flChanged & BASEFL_CHANGED_SIZE) {
-		mins[0] = readcoord();
-		mins[1] = readcoord();
-		mins[2] = readcoord();
-		maxs[0] = readcoord();
-		maxs[1] = readcoord();
-		maxs[2] = readcoord();
-		setsize(this, mins, maxs);
-	}
-	if (flChanged & BASEFL_CHANGED_FRAME) {
-		frame = readbyte();
-		frame1time = readfloat();
-	}
-	if (flChanged & BASEFL_CHANGED_SKIN) {
-		skin = readbyte() - 128;
-	}
-	if (flChanged & BASEFL_CHANGED_EFFECTS) {
-		effects = readfloat();
-	}
-	if (flChanged & BASEFL_CHANGED_BODY) {
-		m_iBody = readbyte();
-		setcustomskin(this, "", sprintf("geomset 1 %i\n", m_iBody));
-	}
-	if (flChanged & BASEFL_CHANGED_SCALE) {
-		scale = readfloat();
-	}
-	if (flChanged & BASEFL_CHANGED_VELOCITY) {
-		velocity[0] = readfloat();
-		velocity[1] = readfloat();
-		velocity[2] = readfloat();
-	}
-
-	if (flChanged & BASEFL_CHANGED_RENDERMODE) {
-		m_iRenderMode = readbyte();
-		m_iRenderFX = readbyte();
-	}
-	if (flChanged & BASEFL_CHANGED_RENDERCOLOR) {
-		m_vecRenderColor[0] = readfloat();
-		m_vecRenderColor[1] = readfloat();
-		m_vecRenderColor[2] = readfloat();
-	}
-	if (flChanged & BASEFL_CHANGED_RENDERAMT) {
-		m_flRenderAmt = readfloat();
-	}
-
-	if (modelindex) {
-		drawmask = MASK_ENGINE;
-	} else {
-		drawmask = 0;
-	}
+	READENTITY_COORD(origin[0], MONFL_CHANGED_ORIGIN_X)
+	READENTITY_COORD(origin[1], MONFL_CHANGED_ORIGIN_Y)
+	READENTITY_COORD(origin[2], MONFL_CHANGED_ORIGIN_Z)
+	READENTITY_ANGLE(angles[0], MONFL_CHANGED_ANGLES_X)
+	READENTITY_ANGLE(angles[1], MONFL_CHANGED_ANGLES_Y)
+	READENTITY_ANGLE(angles[2], MONFL_CHANGED_ANGLES_Z)
+	READENTITY_SHORT(modelindex, MONFL_CHANGED_MODELINDEX)
+	READENTITY_BYTE(solid, MONFL_CHANGED_SOLID)
+	READENTITY_BYTE(movetype, MONFL_CHANGED_FLAGS)
+	READENTITY_INT(flags, MONFL_CHANGED_FLAGS)
+	READENTITY_COORD(mins[0], MONFL_CHANGED_SIZE)
+	READENTITY_COORD(mins[1], MONFL_CHANGED_SIZE)
+	READENTITY_COORD(mins[2], MONFL_CHANGED_SIZE)
+	READENTITY_COORD(maxs[0], MONFL_CHANGED_SIZE)
+	READENTITY_COORD(maxs[1], MONFL_CHANGED_SIZE)
+	READENTITY_COORD(maxs[2], MONFL_CHANGED_SIZE)
+	READENTITY_BYTE(frame, MONFL_CHANGED_FRAME)
+	READENTITY_BYTE(skin, MONFL_CHANGED_SKIN)
+	READENTITY_FLOAT(effects, MONFL_CHANGED_EFFECTS)
+	READENTITY_BYTE(m_iBody, MONFL_CHANGED_BODY)
+	READENTITY_FLOAT(scale, MONFL_CHANGED_SCALE)
+	READENTITY_COORD(velocity[0], MONFL_CHANGED_VELOCITY)
+	READENTITY_COORD(velocity[1], MONFL_CHANGED_VELOCITY)
+	READENTITY_COORD(velocity[2], MONFL_CHANGED_VELOCITY)
+	READENTITY_BYTE(m_iRenderMode, MONFL_CHANGED_RENDERMODE)
+	READENTITY_BYTE(m_iRenderFX, MONFL_CHANGED_RENDERMODE)
+	READENTITY_ANGLE(m_vecRenderColor[0], MONFL_CHANGED_RENDERCOLOR)
+	READENTITY_ANGLE(m_vecRenderColor[1], MONFL_CHANGED_RENDERCOLOR)
+	READENTITY_ANGLE(m_vecRenderColor[2], MONFL_CHANGED_RENDERCOLOR)
+	READENTITY_ANGLE(m_flRenderAmt, MONFL_CHANGED_RENDERAMT)
 
 	if (scale == 0.0)
 		scale = 1.0f;
 
+	if (flChanged & MONFL_CHANGED_FRAME)
+		frame1time = 0.0f;
+	if (flChanged & MONFL_CHANGED_SIZE)
+		setsize(this, mins * scale, maxs * scale);
+	if (flChanged & MONFL_CHANGED_BODY)
+		setcustomskin(this, "", sprintf("geomset 0 %i\ngeomset 1 %i\n", m_iBody, m_iBody));
+
 	setorigin(this, origin);
 }
 #endif
-
-void
-NSMonster::NSMonster(void)
-{
-#ifdef SERVER
-	if (!HasSpawnFlags(MSF_MULTIPLAYER))
-	if (g_grMode.MonstersSpawn() == FALSE) {
-		remove(this);
-		return;
-	}
-#endif
-}
 
 #ifdef CLIENT
 void

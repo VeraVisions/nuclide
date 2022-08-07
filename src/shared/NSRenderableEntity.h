@@ -111,10 +111,8 @@ class NSRenderableEntity:NSEntity
 	PREDICTED_FLOAT(m_flBoneControl4);
 	PREDICTED_FLOAT(m_flBoneControl5);
 	PREDICTED_INT(m_iBody);
-	PREDICTED_FLOAT_N(frame);
 	PREDICTED_FLOAT_N(colormap);
-	PREDICTED_FLOAT_N(skin);
-	PREDICTED_FLOAT_N(effects);
+	PREDICTED_VECTOR_N(glowmod);
 	/* model events */
 	float m_flBaseTime;
 

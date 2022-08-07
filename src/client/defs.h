@@ -23,6 +23,51 @@
 #include "util.h"
 #include "NSView.h"
 
+#define READENTITY_BYTE(field, changedflag) {\
+	if (flChanged & changedflag)\
+		field = readbyte();\
+}
+
+#define READENTITY_SHORT(field, changedflag) {\
+	if (flChanged & changedflag)\
+		field = readshort();\
+}
+
+#define READENTITY_FLOAT(field, changedflag) {\
+	if (flChanged & changedflag)\
+		field = readfloat();\
+}
+
+#define READENTITY_INT(field, changedflag) {\
+	if (flChanged & changedflag)\
+		field = readint();\
+}
+
+#define READENTITY_STRING(field, changedflag) {\
+	if (flChanged & changedflag)\
+		field = readstring();\
+}
+
+#define READENTITY_COORD(field, changedflag) {\
+	if (flChanged & changedflag)\
+		field = readcoord();\
+}
+
+#define READENTITY_ANGLE(field, changedflag) {\
+	if (flChanged & changedflag)\
+		field = readshort() / (32767 / 360);\
+}
+
+#define READENTITY_ENTITY(field, changedflag) {\
+	if (flChanged & changedflag)\
+		field = findfloat(world, ::entnum, readentitynum());\
+}
+
+#define READENTITY_ENTNUM(field, changedflag) {\
+	if (flChanged & changedflag)\
+		field = readentitynum();\
+}
+
 /* undocumented printcall types */
 #define PRINT_LOW		0
 #define PRINT_MEDIUM	1

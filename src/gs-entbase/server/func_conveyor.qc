@@ -109,7 +109,7 @@ func_conveyor::Trigger(entity act, int state)
 	/* changes direction */
 	glowmod[1] = 0.5f;
 	glowmod[2] = m_flSpeed / 1024;
-	SetSendFlags(BASEFL_CHANGED_RENDERCOLOR);
+	SetSendFlags(RDENT_CHANGED_RENDERMODE);
 }
 
 void

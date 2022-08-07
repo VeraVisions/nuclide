@@ -304,7 +304,7 @@ func_tankmortar::PlayerInput(void)
 	if (m_eDriver && m_eDriver.health <= 0)
 		PlayerLeave((NSClientPlayer)m_eDriver);
 #else
-	print("foooo\n");
+	//print("foooo\n");
 #endif
 
 	if (m_eDriver) {

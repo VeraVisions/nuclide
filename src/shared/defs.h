@@ -29,6 +29,7 @@
 
 #define ROLL_BACK(x) x = x ##_net
 #define SAVE_STATE(x) x ##_net = x
+#define SAVE_STATE_FIELD(x, y) x ##_net[y] = x[y]
 #define ATTR_CHANGED(x) (x ##_net != x)
 #define VEC_CHANGED(x,y) (x ##_net[y] != x[y])
 

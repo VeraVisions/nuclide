@@ -14,6 +14,17 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+void
+NSNavAI::NSNavAI(void)
+{
+#ifdef SERVER
+	m_iNodes = 0;
+	m_iCurNode = -1;
+	m_pRoute = __NULL__;
+	m_vecLastNode = [0,0,0];
+	m_vecTurnAngle = [0,0,0];
+#endif
+}
 
 #ifdef SERVER
 void
@@ -237,17 +248,4 @@ NSNavAI::RouteClear(void)
 	memfree(m_pRoute);
 	print(sprintf("%s cleared his route.\n", netname));
 }
-
 #endif
-
-void
-NSNavAI::NSNavAI(void)
-{
-#ifdef SERVER
-	m_iNodes = 0;
-	m_iCurNode = -1;
-	m_pRoute = __NULL__;
-	m_vecLastNode = [0,0,0];
-	m_vecTurnAngle = [0,0,0];
-#endif
-}

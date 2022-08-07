@@ -14,6 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+void
+NSClientPlayer::NSClientPlayer(void)
+{
+	flags |= FL_CLIENT;
+	vehicle = __NULL__;
+}
+
 bool
 NSClientPlayer::IsRealSpectator(void)
 {
@@ -269,7 +276,7 @@ at the top of player::ReceiveEntity
 =================
 */
 void
-NSClientPlayer::ReceiveEntity(float new, float fl)
+NSClientPlayer::ReceiveEntity(float new, float flChanged)
 {
 	/* store which input sequence we're on, this helps us
 	 * later when we run prediction again between last/latest
@@ -277,86 +284,62 @@ NSClientPlayer::ReceiveEntity(float new, float fl)
 	sequence = servercommandframe;
 
 	/* HACK: we need to make this more reliable */
-	if (fl == UPDATE_ALL) {
+	if (flChanged == UPDATE_ALL) {
 		/* we respawned */
 		gravity = 1.0f;
 	}
 
-	modelindex = readint();
+	READENTITY_INT(modelindex, PLAYER_MODELINDEX)
+	READENTITY_COORD(origin[0], PLAYER_ORIGIN)
+	READENTITY_COORD(origin[1], PLAYER_ORIGIN)
+	READENTITY_COORD(origin[2], PLAYER_ORIGIN)
+	READENTITY_ANGLE(v_angle[0], PLAYER_ANGLES)
+	READENTITY_ANGLE(v_angle[1], PLAYER_ANGLES)
+	READENTITY_ANGLE(v_angle[2], PLAYER_ANGLES)
+	READENTITY_ANGLE(angles[0], PLAYER_ANGLES)
+	READENTITY_ANGLE(angles[1], PLAYER_ANGLES)
+	READENTITY_ANGLE(angles[2], PLAYER_ANGLES)
+	READENTITY_BYTE(colormap, PLAYER_VELOCITY)
+	READENTITY_COORD(velocity[0], PLAYER_VELOCITY)
+	READENTITY_COORD(velocity[1], PLAYER_VELOCITY)
+	READENTITY_COORD(velocity[2], PLAYER_VELOCITY)
+	READENTITY_INT(flags, PLAYER_FLAGS)
+	READENTITY_INT(gflags, PLAYER_FLAGS)
+	READENTITY_INT(pmove_flags, PLAYER_FLAGS)
+	READENTITY_BYTE(activeweapon, PLAYER_WEAPON)
+	READENTITY_BYTE(weaponframe, PLAYER_WEAPON)
+	READENTITY_INT(g_items, PLAYER_ITEMS)
+	READENTITY_BYTE(health, PLAYER_HEALTH)
+	READENTITY_BYTE(armor, PLAYER_HEALTH)
+	READENTITY_COORD(mins[0], PLAYER_SIZE)
+	READENTITY_COORD(mins[1], PLAYER_SIZE)
+	READENTITY_COORD(mins[2], PLAYER_SIZE)
+	READENTITY_COORD(maxs[0], PLAYER_SIZE)
+	READENTITY_COORD(maxs[1], PLAYER_SIZE)
+	READENTITY_COORD(maxs[2], PLAYER_SIZE)
+	READENTITY_BYTE(view_ofs[2], PLAYER_SIZE)
+	READENTITY_BYTE(movetype, PLAYER_MOVETYPE)
+	READENTITY_BYTE(solid, PLAYER_MOVETYPE)
+	READENTITY_FLOAT(punchangle[0], PLAYER_PUNCHANGLE)
+	READENTITY_FLOAT(punchangle[1], PLAYER_PUNCHANGLE)
+	READENTITY_FLOAT(punchangle[2], PLAYER_PUNCHANGLE)
+	READENTITY_FLOAT(viewzoom, PLAYER_VIEWZOOM)
+	READENTITY_FLOAT(teleport_time, PLAYER_TIMINGS)
+	READENTITY_FLOAT(weapontime, PLAYER_TIMINGS)
+	READENTITY_FLOAT(w_attack_next, PLAYER_TIMINGS)
+	READENTITY_FLOAT(w_idle_next, PLAYER_TIMINGS)
+	READENTITY_ENTNUM(vehicle_entnum, PLAYER_VEHICLE)
+	READENTITY_BYTE(spec_ent, PLAYER_SPECTATE)
+	READENTITY_BYTE(spec_mode, PLAYER_SPECTATE)
+	READENTITY_BYTE(spec_flags, PLAYER_SPECTATE)
 
-	if (fl & PLAYER_ORIGIN) {
-		origin[0] = readcoord();
-		origin[1] = readcoord();
-	}
-
-	if (fl & PLAYER_ORIGIN_Z)
-		origin[2] = readcoord();
-	if (fl & PLAYER_ANGLES_X) {
-		v_angle[0] = readshort() / (32767 / 360);
-		v_angle[1] = readshort() / (32767 / 360);
-		v_angle[2] = readshort() / (32767 / 360);
-	}
-	if (fl & PLAYER_ANGLES_Y) {
-		angles[0] = readshort() / (32767 / 360);
-		angles[1] = readshort() / (32767 / 360);
-		angles[2] = readshort() / (32767 / 360);
-	}
-	if (fl & PLAYER_COLORMAP)
-		colormap = readbyte();
-
-	if (fl & PLAYER_VELOCITY) {
-		velocity[0] = readcoord();
-		velocity[1] = readcoord();
-	}
-
-	if (fl & PLAYER_VELOCITY_Z)
-		velocity[2] = readcoord();
-	if (fl & PLAYER_FLAGS) {
-		flags = readfloat();
-		gflags = readfloat();
-		pmove_flags = readfloat();
-
-		/* mainly used for other players receiving us */
-		if (flags & FL_CROUCHING)
-			setsize(self, PHY_HULL_CROUCHED_MIN, PHY_HULL_CROUCHED_MAX);
-		else
-			setsize(self, PHY_HULL_MIN, PHY_HULL_MAX);
-	}
-	if (fl & PLAYER_WEAPON) {
-		activeweapon = readbyte();
-		weaponframe = (int)readbyte();
-	}
-	if (fl & PLAYER_ITEMS)
-		g_items = (__variant)readfloat();
-	if (fl & PLAYER_HEALTH)
-		health = readbyte();
-	if (fl & PLAYER_ARMOR)
-		armor = readbyte();
-	if (fl & PLAYER_MOVETYPE) {
-		movetype = readbyte();
-		solid = readbyte();
-	}
-	if (fl & PLAYER_VIEWOFS)
-		view_ofs[2] = readfloat();
-
-	/* TO OPTIMISE */
-	teleport_time = readfloat();
-	viewzoom = readfloat();
-	weapontime = readfloat();
-	w_attack_next = readfloat();
-	w_idle_next = readfloat();
-	punchangle[0] = readfloat();
-	punchangle[1] = readfloat();
-	punchangle[2] = readfloat();
-	vehicle_entnum = readentitynum();
 	VehicleRelink();
-
-	/* FIXME: Make this temp spec only */
-	spec_ent = readbyte();
-	spec_mode = readbyte();
-	spec_flags = readbyte();
-
 	PredictPreFrame();
+
+	if (flChanged & PLAYER_SIZE)
+		setsize(this, mins, maxs);
+
+	setorigin(this, origin);
 }
 
 /*
@@ -371,34 +354,32 @@ at the top of player::PredictPreFrame
 void
 NSClientPlayer::PredictPreFrame(void)
 {
-	/* base player attributes/fields we're going to roll back */
 	SAVE_STATE(modelindex);
 	SAVE_STATE(origin);
-	SAVE_STATE(angles);
 	SAVE_STATE(v_angle);
+	SAVE_STATE(angles);
 	SAVE_STATE(colormap);
 	SAVE_STATE(velocity);
 	SAVE_STATE(flags);
 	SAVE_STATE(gflags);
 	SAVE_STATE(pmove_flags);
 	SAVE_STATE(activeweapon);
+	SAVE_STATE(weaponframe);
 	SAVE_STATE(g_items);
 	SAVE_STATE(health);
 	SAVE_STATE(armor);
+	SAVE_STATE(mins);
+	SAVE_STATE(maxs);
+	SAVE_STATE(view_ofs);
 	SAVE_STATE(movetype);
 	SAVE_STATE(solid);
-	SAVE_STATE(view_ofs);
-
-	/* TO OPTIMISE */
-	SAVE_STATE(teleport_time);
+	SAVE_STATE(punchangle);
 	SAVE_STATE(viewzoom);
-	SAVE_STATE(weaponframe);
+	SAVE_STATE(teleport_time);
 	SAVE_STATE(weapontime);
 	SAVE_STATE(w_attack_next);
 	SAVE_STATE(w_idle_next);
-	SAVE_STATE(punchangle);
 	SAVE_STATE(vehicle_entnum);
-
 	SAVE_STATE(spec_ent);
 	SAVE_STATE(spec_mode);
 	SAVE_STATE(spec_flags);
@@ -417,34 +398,32 @@ at the top of player::PredictPostFrame
 void
 NSClientPlayer::PredictPostFrame(void)
 {
-	/* finally roll the values back */
 	ROLL_BACK(modelindex);
 	ROLL_BACK(origin);
-	ROLL_BACK(angles);
 	ROLL_BACK(v_angle);
+	ROLL_BACK(angles);
 	ROLL_BACK(colormap);
 	ROLL_BACK(velocity);
 	ROLL_BACK(flags);
 	ROLL_BACK(gflags);
 	ROLL_BACK(pmove_flags);
 	ROLL_BACK(activeweapon);
+	ROLL_BACK(weaponframe);
 	ROLL_BACK(g_items);
 	ROLL_BACK(health);
 	ROLL_BACK(armor);
+	ROLL_BACK(mins);
+	ROLL_BACK(maxs);
+	ROLL_BACK(view_ofs);
 	ROLL_BACK(movetype);
 	ROLL_BACK(solid);
-	ROLL_BACK(view_ofs);
-
-	/* TO OPTIMISE */
-	ROLL_BACK(teleport_time);
+	ROLL_BACK(punchangle);
 	ROLL_BACK(viewzoom);
-	ROLL_BACK(weaponframe);
+	ROLL_BACK(teleport_time);
 	ROLL_BACK(weapontime);
 	ROLL_BACK(w_attack_next);
 	ROLL_BACK(w_idle_next);
-	ROLL_BACK(punchangle);
 	ROLL_BACK(vehicle_entnum);
-
 	ROLL_BACK(spec_ent);
 	ROLL_BACK(spec_mode);
 	ROLL_BACK(spec_flags);
@@ -684,98 +663,49 @@ at the top of player::EvaluateEntity
 void
 NSClientPlayer::EvaluateEntity(void)
 {
-	SetSendFlags(PLAYER_MODELINDEX);
-
-	if (VEC_CHANGED(origin, 0))
-		SetSendFlags(PLAYER_ORIGIN);
-
-	if (VEC_CHANGED(origin, 1))
-		SetSendFlags(PLAYER_ORIGIN);
-
-	if (VEC_CHANGED(origin, 2))
-		SetSendFlags(PLAYER_ORIGIN_Z);
-
-	if (VEC_CHANGED(v_angle, 0) || VEC_CHANGED(v_angle, 1) || VEC_CHANGED(v_angle, 2))
-		SetSendFlags(PLAYER_ANGLES_X);
-
-	if (VEC_CHANGED(angles, 0) || VEC_CHANGED(angles, 1) || VEC_CHANGED(angles, 2))
-		SetSendFlags(PLAYER_ANGLES_Y);
-
-	if (ATTR_CHANGED(colormap))
-		SetSendFlags(PLAYER_COLORMAP);
-
-	if (VEC_CHANGED(velocity, 0))
-		SetSendFlags(PLAYER_VELOCITY);
-
-	if (VEC_CHANGED(velocity, 1))
-		SetSendFlags(PLAYER_VELOCITY);
-
-	if (VEC_CHANGED(velocity, 2))
-		SetSendFlags(PLAYER_VELOCITY_Z);
-
-	if (ATTR_CHANGED(flags))
-		SetSendFlags(PLAYER_FLAGS);
-
-	if (ATTR_CHANGED(gflags))
-		SetSendFlags(PLAYER_FLAGS);
-
-	if (ATTR_CHANGED(pmove_flags))
-		SetSendFlags(PLAYER_FLAGS);
-
-	if (ATTR_CHANGED(weaponframe))
-		SetSendFlags(PLAYER_WEAPON);
-
-	if (ATTR_CHANGED(activeweapon))
-		SetSendFlags(PLAYER_WEAPON);
-
-	if (ATTR_CHANGED(g_items))
-		SetSendFlags(PLAYER_ITEMS);
-
-	if (ATTR_CHANGED(health))
-		SetSendFlags(PLAYER_HEALTH);
-
-	if (ATTR_CHANGED(armor))
-		SetSendFlags(PLAYER_ARMOR);
-
-	if (ATTR_CHANGED(movetype))
-		SetSendFlags(PLAYER_MOVETYPE);
-
-	if (ATTR_CHANGED(solid))
-		SetSendFlags(PLAYER_MOVETYPE);
-
-	if (ATTR_CHANGED(view_ofs))
-		SetSendFlags(PLAYER_VIEWOFS);
-
-	SAVE_STATE(modelindex);
-	SAVE_STATE(origin);
-	SAVE_STATE(angles);
-	SAVE_STATE(colormap);
-	SAVE_STATE(velocity);
-	SAVE_STATE(flags);
-	SAVE_STATE(gflags);
-	SAVE_STATE(pmove_flags);
-	SAVE_STATE(activeweapon);
-	SAVE_STATE(g_items);
-	SAVE_STATE(health);
-	SAVE_STATE(armor);
-	SAVE_STATE(movetype);
-	SAVE_STATE(solid);
-	SAVE_STATE(view_ofs);
-
-	/* TO OPTIMISE */
-	SAVE_STATE(teleport_time);
-	SAVE_STATE(viewzoom);
-	SAVE_STATE(weaponframe);
-	SAVE_STATE(weapontime);
-	SAVE_STATE(w_attack_next);
-	SAVE_STATE(w_idle_next);
-	SAVE_STATE(punchangle);
-	SAVE_STATE(vehicle);
-
-	/* FIXME: Make this temp spec only */
-	SAVE_STATE(spec_ent);
-	SAVE_STATE(spec_mode);
-	SAVE_STATE(spec_flags);
+	EVALUATE_FIELD(modelindex, PLAYER_MODELINDEX)
+	EVALUATE_VECTOR(origin, 0, PLAYER_ORIGIN)
+	EVALUATE_VECTOR(origin, 1, PLAYER_ORIGIN)
+	EVALUATE_VECTOR(origin, 2, PLAYER_ORIGIN)
+	EVALUATE_VECTOR(v_angle, 0, PLAYER_ANGLES)
+	EVALUATE_VECTOR(v_angle, 1, PLAYER_ANGLES)
+	EVALUATE_VECTOR(v_angle, 2, PLAYER_ANGLES)
+	EVALUATE_VECTOR(angles, 0, PLAYER_ANGLES)
+	EVALUATE_VECTOR(angles, 1, PLAYER_ANGLES)
+	EVALUATE_VECTOR(angles, 2, PLAYER_ANGLES)
+	EVALUATE_FIELD(colormap, PLAYER_VELOCITY)
+	EVALUATE_VECTOR(velocity, 0, PLAYER_VELOCITY)
+	EVALUATE_VECTOR(velocity, 1, PLAYER_VELOCITY)
+	EVALUATE_VECTOR(velocity, 2, PLAYER_VELOCITY)
+	EVALUATE_FIELD(flags, PLAYER_FLAGS)
+	EVALUATE_FIELD(gflags, PLAYER_FLAGS)
+	EVALUATE_FIELD(pmove_flags, PLAYER_FLAGS)
+	EVALUATE_FIELD(activeweapon, PLAYER_WEAPON)
+	EVALUATE_FIELD(weaponframe, PLAYER_WEAPON)
+	EVALUATE_FIELD(g_items, PLAYER_ITEMS)
+	EVALUATE_FIELD(health, PLAYER_HEALTH)
+	EVALUATE_FIELD(armor, PLAYER_HEALTH)
+	EVALUATE_VECTOR(mins, 0, PLAYER_SIZE)
+	EVALUATE_VECTOR(mins, 1, PLAYER_SIZE)
+	EVALUATE_VECTOR(mins, 2, PLAYER_SIZE)
+	EVALUATE_VECTOR(maxs, 0, PLAYER_SIZE)
+	EVALUATE_VECTOR(maxs, 1, PLAYER_SIZE)
+	EVALUATE_VECTOR(maxs, 2, PLAYER_SIZE)
+	EVALUATE_FIELD(view_ofs, 2, PLAYER_SIZE)
+	EVALUATE_FIELD(movetype, PLAYER_MOVETYPE)
+	EVALUATE_FIELD(solid, PLAYER_MOVETYPE)
+	EVALUATE_VECTOR(punchangle, 0, PLAYER_PUNCHANGLE)
+	EVALUATE_VECTOR(punchangle, 1, PLAYER_PUNCHANGLE)
+	EVALUATE_VECTOR(punchangle, 2, PLAYER_PUNCHANGLE)
+	EVALUATE_FIELD(viewzoom, PLAYER_VIEWZOOM)
+	EVALUATE_FIELD(teleport_time, PLAYER_TIMINGS)
+	EVALUATE_FIELD(weapontime, PLAYER_TIMINGS)
+	EVALUATE_FIELD(w_attack_next, PLAYER_TIMINGS)
+	EVALUATE_FIELD(w_idle_next, PLAYER_TIMINGS)
+	EVALUATE_FIELD(vehicle, PLAYER_VEHICLE)
+	EVALUATE_FIELD(spec_ent, PLAYER_SPECTATE)
+	EVALUATE_FIELD(spec_mode, PLAYER_SPECTATE)
+	EVALUATE_FIELD(spec_flags, PLAYER_SPECTATE)
 }
 
 /*
@@ -788,92 +718,51 @@ at the top of player::SendEntity
 =================
 */
 float
-NSClientPlayer::SendEntity(entity ePEnt, float fChanged)
+NSClientPlayer::SendEntity(entity ePEnt, float flChanged)
 {
-	/* really trying to get our moneys worth with 23 bits of mantissa */
-	if (fChanged & PLAYER_MODELINDEX) {
-		WriteInt(MSG_ENTITY, modelindex);
-	}
-
-	/* if origin[0] changes, it's very likely [1] changes too, since
-	 * we rarely ever walk in a straight line on the world grid */
-	if (fChanged & PLAYER_ORIGIN) {
-		WriteCoord(MSG_ENTITY, origin[0]);
-		WriteCoord(MSG_ENTITY, origin[1]);
-	}
-	/* the height doesn't change as much */
-	if (fChanged & PLAYER_ORIGIN_Z)
-		WriteCoord(MSG_ENTITY, origin[2]);
-
-	if (fChanged & PLAYER_ANGLES_X) {
-		WriteShort(MSG_ENTITY, v_angle[0] * 32767 / 360);
-		WriteShort(MSG_ENTITY, v_angle[1] * 32767 / 360);
-		WriteShort(MSG_ENTITY, v_angle[2] * 32767 / 360);
-	}
-	if (fChanged & PLAYER_ANGLES_Y) {
-		WriteShort(MSG_ENTITY, angles[0] * 32767 / 360);
-		WriteShort(MSG_ENTITY, angles[1] * 32767 / 360);
-		WriteShort(MSG_ENTITY, angles[2] * 32767 / 360);
-	}
-	if (fChanged & PLAYER_COLORMAP)
-		WriteByte(MSG_ENTITY, colormap);
-
-	/* similar as with origin, we separate x/y from z */
-	if (fChanged & PLAYER_VELOCITY) {
-		WriteCoord(MSG_ENTITY, velocity[0]);
-		WriteCoord(MSG_ENTITY, velocity[1]);
-	}
-	if (fChanged & PLAYER_VELOCITY_Z)
-		WriteCoord(MSG_ENTITY, velocity[2]);
-
-	if (fChanged & PLAYER_FLAGS) {
-		WriteFloat(MSG_ENTITY, flags);
-		WriteFloat(MSG_ENTITY, gflags);
-		WriteFloat(MSG_ENTITY, pmove_flags);
-	}
-	if (fChanged & PLAYER_WEAPON) {
-		WriteByte(MSG_ENTITY, activeweapon);
-		WriteByte(MSG_ENTITY, weaponframe);
-	}
-
-	/* g_items is a proper integer, so we can't let WriteFloat truncate it (hence __variant) */
-	if (fChanged & PLAYER_ITEMS)
-		WriteFloat(MSG_ENTITY, (__variant)g_items);
-
-	/* only got byte precision, clamp to avoid weird values on the client-side */
-	if (fChanged & PLAYER_HEALTH)
-		WriteByte(MSG_ENTITY, bound(0, health, 255));
-	if (fChanged & PLAYER_ARMOR)
-		WriteByte(MSG_ENTITY, bound(0, armor, 255));
-
-	if (fChanged & PLAYER_MOVETYPE) {
-		WriteByte(MSG_ENTITY, movetype);
-		WriteByte(MSG_ENTITY, solid);
-	}
-
-	/* the view_ofs[0] and [1] are rarely changed */
-	if (fChanged & PLAYER_VIEWOFS)
-		WriteFloat(MSG_ENTITY, view_ofs[2]);
-
-	/* TO OPTIMISE */
-	WriteFloat(MSG_ENTITY, teleport_time);
-	WriteFloat(MSG_ENTITY, viewzoom);
-	WriteFloat(MSG_ENTITY, weapontime);
-	WriteFloat(MSG_ENTITY, w_attack_next);
-	WriteFloat(MSG_ENTITY, w_idle_next);
-	WriteFloat(MSG_ENTITY, punchangle[0]);
-	WriteFloat(MSG_ENTITY, punchangle[1]);
-	WriteFloat(MSG_ENTITY, punchangle[2]);
-
-	if (vehicle)
-		WriteEntity(MSG_ENTITY, vehicle);
-	else
-		WriteEntity(MSG_ENTITY, __NULL__);
-
-	/* FIXME: Make this fake NSClientSpectator only. */
-	WriteByte(MSG_ENTITY, spec_ent);
-	WriteByte(MSG_ENTITY, spec_mode);
-	WriteByte(MSG_ENTITY, spec_flags);
+	SENDENTITY_INT(modelindex, PLAYER_MODELINDEX)
+	SENDENTITY_COORD(origin[0], PLAYER_ORIGIN)
+	SENDENTITY_COORD(origin[1], PLAYER_ORIGIN)
+	SENDENTITY_COORD(origin[2], PLAYER_ORIGIN)
+	SENDENTITY_ANGLE(v_angle[0], PLAYER_ANGLES)
+	SENDENTITY_ANGLE(v_angle[1], PLAYER_ANGLES)
+	SENDENTITY_ANGLE(v_angle[2], PLAYER_ANGLES)
+	SENDENTITY_ANGLE(angles[0], PLAYER_ANGLES)
+	SENDENTITY_ANGLE(angles[1], PLAYER_ANGLES)
+	SENDENTITY_ANGLE(angles[2], PLAYER_ANGLES)
+	SENDENTITY_BYTE(colormap, PLAYER_VELOCITY)
+	SENDENTITY_COORD(velocity[0], PLAYER_VELOCITY)
+	SENDENTITY_COORD(velocity[1], PLAYER_VELOCITY)
+	SENDENTITY_COORD(velocity[2], PLAYER_VELOCITY)
+	SENDENTITY_INT(flags, PLAYER_FLAGS)
+	SENDENTITY_INT(gflags, PLAYER_FLAGS)
+	SENDENTITY_INT(pmove_flags, PLAYER_FLAGS)
+	SENDENTITY_BYTE(activeweapon, PLAYER_WEAPON)
+	SENDENTITY_BYTE(weaponframe, PLAYER_WEAPON)
+	SENDENTITY_INT(g_items, PLAYER_ITEMS)
+	SENDENTITY_BYTE(health, PLAYER_HEALTH)
+	SENDENTITY_BYTE(armor, PLAYER_HEALTH)
+	SENDENTITY_COORD(mins[0], PLAYER_SIZE)
+	SENDENTITY_COORD(mins[1], PLAYER_SIZE)
+	SENDENTITY_COORD(mins[2], PLAYER_SIZE)
+	SENDENTITY_COORD(maxs[0], PLAYER_SIZE)
+	SENDENTITY_COORD(maxs[1], PLAYER_SIZE)
+	SENDENTITY_COORD(maxs[2], PLAYER_SIZE)
+	SENDENTITY_BYTE(view_ofs[2], PLAYER_SIZE)
+	SENDENTITY_BYTE(movetype, PLAYER_MOVETYPE)
+	SENDENTITY_BYTE(solid, PLAYER_MOVETYPE)
+	SENDENTITY_FLOAT(punchangle[0], PLAYER_PUNCHANGLE)
+	SENDENTITY_FLOAT(punchangle[1], PLAYER_PUNCHANGLE)
+	SENDENTITY_FLOAT(punchangle[2], PLAYER_PUNCHANGLE)
+	SENDENTITY_FLOAT(viewzoom, PLAYER_VIEWZOOM)
+	SENDENTITY_FLOAT(teleport_time, PLAYER_TIMINGS)
+	SENDENTITY_FLOAT(weapontime, PLAYER_TIMINGS)
+	SENDENTITY_FLOAT(w_attack_next, PLAYER_TIMINGS)
+	SENDENTITY_FLOAT(w_idle_next, PLAYER_TIMINGS)
+	SENDENTITY_ENTITY(vehicle, PLAYER_VEHICLE)
+	SENDENTITY_BYTE(spec_ent, PLAYER_SPECTATE)
+	SENDENTITY_BYTE(spec_mode, PLAYER_SPECTATE)
+	SENDENTITY_BYTE(spec_flags, PLAYER_SPECTATE)
 
 	return (1);
 }
@@ -990,10 +879,3 @@ NSClientPlayer::InputUse_Up(void)
 	}
 }
 #endif
-
-void
-NSClientPlayer::NSClientPlayer(void)
-{
-	flags |= FL_CLIENT;
-	vehicle = __NULL__;
-}

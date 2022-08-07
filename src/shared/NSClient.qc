@@ -14,6 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+void
+NSClient::NSClient(void)
+{
+	flags |= FL_CLIENT;
+	XR_Init(this);
+}
+
 #ifdef SERVER
 void
 NSClient::Save(float handle)
@@ -114,14 +121,6 @@ NSClient::predraw(void)
 	return (PREDRAW_NEXT);
 }
 #endif
-
-void
-NSClient::NSClient(void)
-{
-	flags |= FL_CLIENT;
-	XR_Init(this);
-}
-
 
 float
 Client_InIntermission(void)

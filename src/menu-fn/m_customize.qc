@@ -136,7 +136,7 @@ menu_customize_init(void)
 		}
 	}
 
-	if (g_sprayscount) {
+	if (g_sprayscount >= 1) {
 		/* only allocate what we truly need */
 		g_sprays = memalloc(sizeof(string) * g_sprayscount);
 		for (int i = 0; i < search_getsize(searchy); i++) {
@@ -159,7 +159,7 @@ menu_customize_init(void)
 
 	g_modelcount = search_getsize(searchy);
 
-	if (g_modelcount) {
+	if (g_modelcount >= 1) {
 		g_models = memalloc(sizeof(string) * g_modelcount);
 		for (int i = 0; i < g_modelcount; i++) {
 			g_models[i] = substring(search_getfilename(searchy, i), 0, -5);

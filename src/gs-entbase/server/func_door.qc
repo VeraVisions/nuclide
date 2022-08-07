@@ -123,6 +123,301 @@ class func_door:NSRenderableEntity
 };
 
 void
+func_door::func_door(void)
+{
+	m_vecPos1 =
+	m_vecPos2 =
+	m_vecDest =
+	m_vecMoveDir = [0,0,0];
+
+	m_flSpeed =
+	m_flLip =
+	m_iState =
+	m_flNextTrigger =
+	m_flWait =
+	m_flDelay = 0.0f;
+
+	m_iDamage =
+	m_iLocked =
+	m_iPortalState =
+	m_iForceClosed = 0;
+
+	m_iCanTouch = false;
+	m_flSoundWait = 0.0f;
+
+	targetClose =
+	m_strLockedSfx =
+	m_strUnlockedSfx =
+
+	m_strSndOpen =
+	m_strSndClose =
+	m_strSndMove =
+	m_strSndStop = __NULL__;
+}
+
+void
+func_door::Save(float handle)
+{
+	SaveVector(handle, "m_vecPos1", m_vecPos1);
+	SaveVector(handle, "m_vecPos2", m_vecPos2);
+	SaveVector(handle, "m_vecDest", m_vecDest);
+	SaveVector(handle, "m_vecMoveDir", m_vecMoveDir);
+
+	SaveFloat(handle, "m_flSpeed", m_flSpeed);
+	SaveFloat(handle, "m_flLip", m_flLip);
+	SaveFloat(handle, "m_iState", m_iState);
+	SaveFloat(handle, "m_flNextTrigger", m_flNextTrigger);
+	SaveFloat(handle, "m_flWait", m_flWait);
+	SaveFloat(handle, "m_flDelay", m_flDelay);
+	SaveFloat(handle, "m_flSoundWait", m_flSoundWait);
+
+	SaveInt(handle, "m_iDamage", m_iDamage);
+	SaveInt(handle, "m_iLocked", m_iLocked);
+	SaveInt(handle, "m_iPortalState", m_iPortalState);
+	SaveInt(handle, "m_iForceClosed", m_iForceClosed);
+
+	SaveString(handle, "m_strLockedSfx", m_strLockedSfx);
+	SaveString(handle, "m_strUnlockedSfx", m_strUnlockedSfx);
+	SaveString(handle, "m_strSndOpen", m_strSndOpen);
+	SaveString(handle, "m_strSndClose", m_strSndClose);
+	SaveString(handle, "m_strSndStop", m_strSndStop);
+	SaveString(handle, "m_strSndMove", m_strSndMove);
+	SaveString(handle, "targetClose", targetClose);
+
+	super::Save(handle);
+}
+
+void
+func_door::Restore(string strKey, string strValue)
+{
+	switch (strKey) {
+	case "m_vecPos1":
+		m_vecPos1 = ReadVector(strValue);
+		break;
+	case "m_vecPos2":
+		m_vecPos2 = ReadVector(strValue);
+		break;
+	case "m_vecDest":
+		m_vecDest = ReadVector(strValue);
+		break;
+	case "m_vecMoveDir":
+		m_vecMoveDir = ReadVector(strValue);
+		break;
+
+	case "m_flSpeed":
+		m_flSpeed = ReadFloat(strValue);
+		break;
+	case "m_flLip":
+		m_flLip = ReadFloat(strValue);
+		break;
+	case "m_iState":
+		m_iState = ReadFloat(strValue);
+		break;
+	case "m_flNextTrigger":
+		m_flNextTrigger = ReadFloat(strValue);
+		break;
+	case "m_flWait":
+		m_flWait = ReadFloat(strValue);
+		break;
+	case "m_flDelay":
+		m_flDelay = ReadFloat(strValue);
+		break;
+	case "m_flSoundWait":
+		m_flSoundWait = ReadFloat(strValue);
+		break;
+
+	case "m_iDamage":
+		m_iDamage = ReadInt(strValue);
+		break;
+	case "m_iLocked":
+		m_iLocked = ReadInt(strValue);
+		break;
+	case "m_iPortalState":
+		m_iPortalState = ReadInt(strValue);
+		break;
+	case "m_iForceClosed":
+		m_iForceClosed = ReadInt(strValue);
+		break;
+
+	case "m_strLockedSfx":
+		m_strLockedSfx = ReadString(strValue);
+		break;
+	case "m_strUnlockedSfx":
+		m_strUnlockedSfx = ReadString(strValue);
+		break;
+	case "m_strSndOpen":
+		m_strSndOpen = ReadString(strValue);
+		break;
+	case "m_strSndClose":
+		m_strSndClose = ReadString(strValue);
+		break;
+	case "m_strSndStop":
+		m_strSndStop = ReadString(strValue);
+		break;
+	case "m_strSndMove":
+		m_strSndMove = ReadString(strValue);
+		break;
+	case "targetClose":
+		targetClose = ReadString(strValue);
+		break;
+	default:
+		super::Restore(strKey, strValue);
+	}
+}
+
+void
+func_door::SpawnKey(string strKey, string strValue)
+{
+	int x;
+
+	switch (strKey) {
+	case "speed":
+		m_flSpeed = stof(strValue);
+		break;
+	case "lip":
+		m_flLip = stof(strValue);
+		break;
+	case "wait":
+		m_flWait = stof(strValue);
+		break;
+	case "netname":
+		targetClose = strValue;
+		netname = __NULL__;
+		break;
+	case "dmg":
+		m_iDamage = stoi(strValue);
+		break;
+	case "snd_open":
+		m_strSndOpen = strValue;
+		break;
+	case "snd_close":
+		m_strSndClose = strValue;
+		break;
+	case "noise1":
+		m_strSndOpen = m_strSndClose = strValue;
+		break;
+	case "snd_stop":
+	case "noise2":
+		m_strSndStop = strValue;
+		break;
+	case "snd_move":
+		m_strSndMove = strValue;
+		break;
+	case "forceclosed":
+		m_iForceClosed = stoi(strValue);
+		break;
+	/* GoldSrc compat */
+	case "movesnd":
+		x = stoi(strValue);
+		m_strSndOpen = m_strSndClose = sprintf("func_door.move_%i", x);
+		break;
+	case "stopsnd":
+		x = stoi(strValue);
+		m_strSndStop = sprintf("func_door.stop_%i", x);
+		break;
+	case "locked_sound":
+		x = stoi(strValue);
+		m_strLockedSfx = sprintf("func_button.hlsfx_%i", x+1i);
+		break;
+	case "unlocked_sound":
+		x = stoi(strValue);
+		m_strUnlockedSfx = sprintf("func_button.hlsfx_%i", x+1i);
+		break;
+	default:
+		super::SpawnKey(strKey, strValue);
+	}
+}
+
+void
+func_door::Spawned(void)
+{
+	super::Spawned();
+
+	if (m_strSndOpen)
+		Sound_Precache(m_strSndOpen);
+	if (m_strSndClose)
+		Sound_Precache(m_strSndClose);
+	if (m_strSndStop)
+		Sound_Precache(m_strSndStop);
+	if (m_strSndMove)
+		Sound_Precache(m_strSndMove);
+
+	/* GoldSrc compat */
+	if (m_strLockedSfx)
+		Sound_Precache(m_strLockedSfx);
+	if (m_strUnlockedSfx)
+		Sound_Precache(m_strUnlockedSfx);
+}
+
+void
+func_door::Respawn(void)
+{
+	/* reset */
+	m_vecPos1 = [0,0,0];
+	m_vecPos2 = [0,0,0];
+	m_vecDest = [0,0,0];
+	m_vecMoveDir = [0,0,0];
+
+	/* this is a terrible hack */
+	if (m_flWait == 0)
+		m_flWait = 0.01f;
+
+	RestoreAngles();
+	SetMovementDirection();
+	ClearAngles();
+
+	if (HasSpawnFlags(SF_MOV_PASSABLE))
+		SetSolid(SOLID_NOT);
+	else
+		SetSolid(SOLID_BSP);
+
+	SetMovetype(MOVETYPE_PUSH);
+	SetModel(GetSpawnModel());
+	SetOrigin(GetSpawnOrigin());
+	flags |= FL_FINDABLE_NONSOLID;
+
+	think = __NULL__;
+	nextthink = 0.0f;
+
+	/* FIXME: Is this correct? */
+	if (m_flWait == -1) {
+		spawnflags |= SF_MOV_TOGGLE;
+	}
+
+	if (!m_flSpeed) {
+		m_flSpeed = 100.0f;
+	}
+
+	if (!m_iDamage) {
+		m_iDamage = 2;
+	}
+
+	m_iValue = 0;
+	m_iState = DOORSTATE_LOWERED;
+	m_vecPos1 = GetSpawnOrigin();
+	m_vecPos2 = (m_vecPos1 + m_vecMoveDir * (fabs(m_vecMoveDir * size) - m_flLip));
+
+	if (spawnflags & SF_MOV_USE)
+		m_iCanTouch = false;
+	else
+		m_iCanTouch = true;
+
+	if (HasSpawnFlags(SF_MOV_OPEN)) {
+		SetOrigin(m_vecPos2);
+		m_vecPos2 = m_vecPos1;
+		m_vecPos1 = origin;
+		m_iValue = 1;
+		PortalOpen();
+	} else {
+		PortalClose();
+	}
+
+	if (targetname) {
+		m_iLocked = TRUE;
+	}
+}
+
+void
 func_door::Input(entity eAct, string strInput, string strData)
 {
 	switch (strInput) {
@@ -393,301 +688,6 @@ func_door::MoveToDestination(vector vecDest, void(void) func)
 
 	nextthink = (ltime + fTravelTime);
 	velocity = (vecDifference * (1.0f / fTravelTime));
-}
-
-void
-func_door::Respawn(void)
-{
-	/* reset */
-	m_vecPos1 = [0,0,0];
-	m_vecPos2 = [0,0,0];
-	m_vecDest = [0,0,0];
-	m_vecMoveDir = [0,0,0];
-
-	/* this is a terrible hack */
-	if (m_flWait == 0)
-		m_flWait = 0.01f;
-
-	RestoreAngles();
-	SetMovementDirection();
-	ClearAngles();
-
-	if (HasSpawnFlags(SF_MOV_PASSABLE))
-		SetSolid(SOLID_NOT);
-	else
-		SetSolid(SOLID_BSP);
-
-	SetMovetype(MOVETYPE_PUSH);
-	SetModel(GetSpawnModel());
-	SetOrigin(GetSpawnOrigin());
-	flags |= FL_FINDABLE_NONSOLID;
-
-	think = __NULL__;
-	nextthink = 0.0f;
-
-	/* FIXME: Is this correct? */
-	if (m_flWait == -1) {
-		spawnflags |= SF_MOV_TOGGLE;
-	}
-
-	if (!m_flSpeed) {
-		m_flSpeed = 100.0f;
-	}
-
-	if (!m_iDamage) {
-		m_iDamage = 2;
-	}
-
-	m_iValue = 0;
-	m_iState = DOORSTATE_LOWERED;
-	m_vecPos1 = GetSpawnOrigin();
-	m_vecPos2 = (m_vecPos1 + m_vecMoveDir * (fabs(m_vecMoveDir * size) - m_flLip));
-
-	if (spawnflags & SF_MOV_USE)
-		m_iCanTouch = false;
-	else
-		m_iCanTouch = true;
-
-	if (HasSpawnFlags(SF_MOV_OPEN)) {
-		SetOrigin(m_vecPos2);
-		m_vecPos2 = m_vecPos1;
-		m_vecPos1 = origin;
-		m_iValue = 1;
-		PortalOpen();
-	} else {
-		PortalClose();
-	}
-
-	if (targetname) {
-		m_iLocked = TRUE;
-	}
-}
-
-void
-func_door::Save(float handle)
-{
-	SaveVector(handle, "m_vecPos1", m_vecPos1);
-	SaveVector(handle, "m_vecPos2", m_vecPos2);
-	SaveVector(handle, "m_vecDest", m_vecDest);
-	SaveVector(handle, "m_vecMoveDir", m_vecMoveDir);
-
-	SaveFloat(handle, "m_flSpeed", m_flSpeed);
-	SaveFloat(handle, "m_flLip", m_flLip);
-	SaveFloat(handle, "m_iState", m_iState);
-	SaveFloat(handle, "m_flNextTrigger", m_flNextTrigger);
-	SaveFloat(handle, "m_flWait", m_flWait);
-	SaveFloat(handle, "m_flDelay", m_flDelay);
-	SaveFloat(handle, "m_flSoundWait", m_flSoundWait);
-
-	SaveInt(handle, "m_iDamage", m_iDamage);
-	SaveInt(handle, "m_iLocked", m_iLocked);
-	SaveInt(handle, "m_iPortalState", m_iPortalState);
-	SaveInt(handle, "m_iForceClosed", m_iForceClosed);
-
-	SaveString(handle, "m_strLockedSfx", m_strLockedSfx);
-	SaveString(handle, "m_strUnlockedSfx", m_strUnlockedSfx);
-	SaveString(handle, "m_strSndOpen", m_strSndOpen);
-	SaveString(handle, "m_strSndClose", m_strSndClose);
-	SaveString(handle, "m_strSndStop", m_strSndStop);
-	SaveString(handle, "m_strSndMove", m_strSndMove);
-	SaveString(handle, "targetClose", targetClose);
-
-	super::Save(handle);
-}
-
-void
-func_door::Restore(string strKey, string strValue)
-{
-	switch (strKey) {
-	case "m_vecPos1":
-		m_vecPos1 = ReadVector(strValue);
-		break;
-	case "m_vecPos2":
-		m_vecPos2 = ReadVector(strValue);
-		break;
-	case "m_vecDest":
-		m_vecDest = ReadVector(strValue);
-		break;
-	case "m_vecMoveDir":
-		m_vecMoveDir = ReadVector(strValue);
-		break;
-
-	case "m_flSpeed":
-		m_flSpeed = ReadFloat(strValue);
-		break;
-	case "m_flLip":
-		m_flLip = ReadFloat(strValue);
-		break;
-	case "m_iState":
-		m_iState = ReadFloat(strValue);
-		break;
-	case "m_flNextTrigger":
-		m_flNextTrigger = ReadFloat(strValue);
-		break;
-	case "m_flWait":
-		m_flWait = ReadFloat(strValue);
-		break;
-	case "m_flDelay":
-		m_flDelay = ReadFloat(strValue);
-		break;
-	case "m_flSoundWait":
-		m_flSoundWait = ReadFloat(strValue);
-		break;
-
-	case "m_iDamage":
-		m_iDamage = ReadInt(strValue);
-		break;
-	case "m_iLocked":
-		m_iLocked = ReadInt(strValue);
-		break;
-	case "m_iPortalState":
-		m_iPortalState = ReadInt(strValue);
-		break;
-	case "m_iForceClosed":
-		m_iForceClosed = ReadInt(strValue);
-		break;
-
-	case "m_strLockedSfx":
-		m_strLockedSfx = ReadString(strValue);
-		break;
-	case "m_strUnlockedSfx":
-		m_strUnlockedSfx = ReadString(strValue);
-		break;
-	case "m_strSndOpen":
-		m_strSndOpen = ReadString(strValue);
-		break;
-	case "m_strSndClose":
-		m_strSndClose = ReadString(strValue);
-		break;
-	case "m_strSndStop":
-		m_strSndStop = ReadString(strValue);
-		break;
-	case "m_strSndMove":
-		m_strSndMove = ReadString(strValue);
-		break;
-	case "targetClose":
-		targetClose = ReadString(strValue);
-		break;
-	default:
-		super::Restore(strKey, strValue);
-	}
-}
-
-void
-func_door::SpawnKey(string strKey, string strValue)
-{
-	int x;
-
-	switch (strKey) {
-	case "speed":
-		m_flSpeed = stof(strValue);
-		break;
-	case "lip":
-		m_flLip = stof(strValue);
-		break;
-	case "wait":
-		m_flWait = stof(strValue);
-		break;
-	case "netname":
-		targetClose = strValue;
-		netname = __NULL__;
-		break;
-	case "dmg":
-		m_iDamage = stoi(strValue);
-		break;
-	case "snd_open":
-		m_strSndOpen = strValue;
-		break;
-	case "snd_close":
-		m_strSndClose = strValue;
-		break;
-	case "noise1":
-		m_strSndOpen = m_strSndClose = strValue;
-		break;
-	case "snd_stop":
-	case "noise2":
-		m_strSndStop = strValue;
-		break;
-	case "snd_move":
-		m_strSndMove = strValue;
-		break;
-	case "forceclosed":
-		m_iForceClosed = stoi(strValue);
-		break;
-	/* GoldSrc compat */
-	case "movesnd":
-		x = stoi(strValue);
-		m_strSndOpen = m_strSndClose = sprintf("func_door.move_%i", x);
-		break;
-	case "stopsnd":
-		x = stoi(strValue);
-		m_strSndStop = sprintf("func_door.stop_%i", x);
-		break;
-	case "locked_sound":
-		x = stoi(strValue);
-		m_strLockedSfx = sprintf("func_button.hlsfx_%i", x+1i);
-		break;
-	case "unlocked_sound":
-		x = stoi(strValue);
-		m_strUnlockedSfx = sprintf("func_button.hlsfx_%i", x+1i);
-		break;
-	default:
-		super::SpawnKey(strKey, strValue);
-	}
-}
-
-void
-func_door::Spawned(void)
-{
-	super::Spawned();
-
-	if (m_strSndOpen)
-		Sound_Precache(m_strSndOpen);
-	if (m_strSndClose)
-		Sound_Precache(m_strSndClose);
-	if (m_strSndStop)
-		Sound_Precache(m_strSndStop);
-	if (m_strSndMove)
-		Sound_Precache(m_strSndMove);
-
-	/* GoldSrc compat */
-	if (m_strLockedSfx)
-		Sound_Precache(m_strLockedSfx);
-	if (m_strUnlockedSfx)
-		Sound_Precache(m_strUnlockedSfx);
-}
-
-void
-func_door::func_door(void)
-{
-	m_vecPos1 =
-	m_vecPos2 =
-	m_vecDest =
-	m_vecMoveDir = [0,0,0];
-
-	m_flSpeed =
-	m_flLip =
-	m_iState =
-	m_flNextTrigger =
-	m_flWait =
-	m_flDelay = 0.0f;
-
-	m_iDamage =
-	m_iLocked =
-	m_iPortalState =
-	m_iForceClosed = 0;
-
-	m_iCanTouch = false;
-	m_flSoundWait = 0.0f;
-
-	targetClose =
-	m_strLockedSfx =
-	m_strUnlockedSfx =
-
-	m_strSndOpen =
-	m_strSndClose =
-	m_strSndMove =
-	m_strSndStop = __NULL__;
 }
 
 void

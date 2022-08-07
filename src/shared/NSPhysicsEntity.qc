@@ -14,6 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+void
+NSPhysicsEntity::NSPhysicsEntity(void)
+{
+	mass = 1.0f;
+	m_flInertiaScale = 1.0f;
+
+	m_iEnabled = 0i;
+	m_iShape = PHYSM_BOX;
+	m_iMaterial = 0i;
+	m_iFlags = 0i;
+
+	cvar_set("physics_ode_iterationsperframe", "1");
+	cvar_set("physics_ode_movelimit", "0.1");
+}
 
 #ifdef SERVER
 void
@@ -727,16 +741,6 @@ NSPhysicsEntity::SpawnKey(string strKey, string strValue)
 		super::SpawnKey(strKey, strValue);
 		break;
 	}
-}
-
-void
-NSPhysicsEntity::NSPhysicsEntity(void)
-{
-	mass = 1.0f;
-	m_flInertiaScale = 1.0f;
-
-	cvar_set("physics_ode_iterationsperframe", "1");
-	cvar_set("physics_ode_movelimit", "0.1");
 }
 
 #ifdef CLIENT

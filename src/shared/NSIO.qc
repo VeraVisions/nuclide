@@ -15,6 +15,33 @@
 */
 
 void
+NSIO::NSIO(void)
+{
+#ifdef SERVER
+	/* Not in Deathmatch */
+	if (spawnflags & 2048) {
+		if (cvar("sv_playerslots") > 1) {
+			remove(this);
+			return;
+		}
+	}
+
+	/* null all of them */
+	m_strOnTrigger =
+	m_strOnUser1 =
+	m_strOnUser2 =
+	m_strOnUser3 =
+	m_strOnUser4 = __NULL__;
+#else
+	isCSQC = TRUE;
+	effects |= EF_NOSHADOW;
+#endif
+
+	/* called last */
+	Init();
+}
+
+void
 NSIO::Respawn(void)
 {
 	// Respawn code goes here...
@@ -338,31 +365,4 @@ NSIO::SpawnKey(string strKey, string strValue)
 		      classname, strKey, strValue);
 		break;
 	}
-}
-
-void
-NSIO::NSIO(void)
-{
-#ifdef SERVER
-	/* Not in Deathmatch */
-	if (spawnflags & 2048) {
-		if (cvar("sv_playerslots") > 1) {
-			remove(this);
-			return;
-		}
-	}
-
-	/* null all of them */
-	m_strOnTrigger =
-	m_strOnUser1 =
-	m_strOnUser2 =
-	m_strOnUser3 =
-	m_strOnUser4 = __NULL__;
-#else
-	isCSQC = TRUE;
-	effects |= EF_NOSHADOW;
-#endif
-
-	/* called last */
-	Init();
 }

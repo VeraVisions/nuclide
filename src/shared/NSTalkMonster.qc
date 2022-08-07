@@ -14,6 +14,50 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+void
+NSTalkMonster::NSTalkMonster(void)
+{
+#ifdef SERVER
+	m_eFollowing = world;
+	float m_flPitch = 1.0f;
+	float m_flNextSentence = 0.0f;
+	int m_iFlags = 0i;
+	m_eFollowingChain = __NULL__;
+	m_vecLastUserPos = [0,0,0];
+	m_flChangePath = 0.0f;
+	m_flTraceTime = 0.0f;
+	m_flFollowSpeedChanged = 0.0f;
+	m_flFollowSpeed = 0.0f;
+	m_talkAnswer = __NULL__;
+	m_talkAsk = __NULL__;
+	m_talkAllyShot = __NULL__;
+	m_talkGreet = __NULL__;
+	m_talkIdle = __NULL__;
+	m_talkPanic = __NULL__;
+	m_talkHearing = __NULL__;
+	m_talkSmelling = __NULL__;
+	m_talkStare = __NULL__;
+	m_talkSurvived = __NULL__;
+	m_talkWounded = __NULL__;
+	m_talkPlayerAsk = __NULL__;
+	m_talkPlayerGreet = __NULL__;
+	m_talkPlayerIdle = __NULL__;
+	m_talkPlayerWounded1 = __NULL__;
+	m_talkPlayerWounded2 = __NULL__;
+	m_talkPlayerWounded3 = __NULL__;
+	m_talkUnfollow = __NULL__;
+	m_talkFollow = __NULL__;
+	m_talkStopFollow = __NULL__;
+#else
+	m_flSentenceTime = 0.0f;
+	m_pSentenceQue = __NULL__;
+	m_iSentenceCount = 0i;
+	m_iSentencePos = 0i;
+	m_sndVoiceOffs = 0.0f;
+	m_bWasPaused = false;
+#endif
+}
+
 #ifdef SERVER
 void
 NSTalkMonster::Save(float handle)
@@ -552,7 +596,7 @@ NSTalkMonster::Hide(void)
 }
 
 float
-NSTalkMonster::SendEntity(entity ePEnt, float fChanged)
+NSTalkMonster::SendEntity(entity ePEnt, float flChanged)
 {
 	if (!modelindex)
 		return (0);
@@ -567,71 +611,38 @@ NSTalkMonster::SendEntity(entity ePEnt, float fChanged)
 		return (0);*/
 
 	/* broadcast how much data is expected to be read */
-	WriteFloat(MSG_ENTITY, fChanged);
+	WriteFloat(MSG_ENTITY, flChanged);
 
-	/* really trying to get our moneys worth with 23 bits of mantissa */
-	if (fChanged & BASEFL_CHANGED_ORIGIN) {
-		WriteCoord(MSG_ENTITY, origin[0]);
-		WriteCoord(MSG_ENTITY, origin[1]);
-		WriteCoord(MSG_ENTITY, origin[2]);
-	}
-	if (fChanged & BASEFL_CHANGED_ANGLES) {
-		WriteShort(MSG_ENTITY, angles[0] * 32767 / 360);
-		WriteShort(MSG_ENTITY, angles[1] * 32767 / 360);
-		WriteShort(MSG_ENTITY, angles[2] * 32767 / 360);
-	}
-	if (fChanged & BASEFL_CHANGED_MODELINDEX) {
-		WriteShort(MSG_ENTITY, modelindex);
-	}
-	if (fChanged & BASEFL_CHANGED_SOLID) {
-		WriteByte(MSG_ENTITY, solid);
-	}
-	if (fChanged & BASEFL_CHANGED_MOVETYPE) {
-		WriteByte(MSG_ENTITY, movetype);
-	}
-	if (fChanged & BASEFL_CHANGED_SIZE) {
-		WriteCoord(MSG_ENTITY, mins[0]);
-		WriteCoord(MSG_ENTITY, mins[1]);
-		WriteCoord(MSG_ENTITY, mins[2]);
-		WriteCoord(MSG_ENTITY, maxs[0]);
-		WriteCoord(MSG_ENTITY, maxs[1]);
-		WriteCoord(MSG_ENTITY, maxs[2]);
-	}
-	if (fChanged & BASEFL_CHANGED_FRAME) {
-		WriteByte(MSG_ENTITY, frame);
-		WriteFloat(MSG_ENTITY, frame1time);
-	}
-	if (fChanged & BASEFL_CHANGED_SKIN) {
-		WriteByte(MSG_ENTITY, skin + 128);
-	}
-	if (fChanged & BASEFL_CHANGED_EFFECTS) {
-		WriteFloat(MSG_ENTITY, effects);
-	}
-	if (fChanged & BASEFL_CHANGED_BODY) {
-		WriteByte(MSG_ENTITY, m_iBody);
-	}
-	if (fChanged & BASEFL_CHANGED_SCALE) {
-		WriteFloat(MSG_ENTITY, scale);
-	}
-	if (fChanged & BASEFL_CHANGED_VELOCITY) {
-		WriteFloat(MSG_ENTITY, velocity[0]);
-		WriteFloat(MSG_ENTITY, velocity[1]);
-		WriteFloat(MSG_ENTITY, velocity[2]);
-	}
-
-	if (fChanged & BASEFL_CHANGED_RENDERMODE) {
-		WriteByte(MSG_ENTITY, m_iRenderMode);
-		WriteByte(MSG_ENTITY, m_iRenderFX);
-	}
-
-	if (fChanged & BASEFL_CHANGED_RENDERCOLOR) {
-		WriteFloat(MSG_ENTITY, m_vecRenderColor[0]);
-		WriteFloat(MSG_ENTITY, m_vecRenderColor[1]);
-		WriteFloat(MSG_ENTITY, m_vecRenderColor[2]);
-	}
-	if (fChanged & BASEFL_CHANGED_RENDERAMT) {
-		WriteFloat(MSG_ENTITY, m_flRenderAmt);
-	}
+	SENDENTITY_COORD(origin[0], MONFL_CHANGED_ORIGIN_X)
+	SENDENTITY_COORD(origin[1], MONFL_CHANGED_ORIGIN_Y)
+	SENDENTITY_COORD(origin[2], MONFL_CHANGED_ORIGIN_Z)
+	SENDENTITY_ANGLE(angles[0], MONFL_CHANGED_ANGLES_X)
+	SENDENTITY_ANGLE(angles[1], MONFL_CHANGED_ANGLES_Y)
+	SENDENTITY_ANGLE(angles[2], MONFL_CHANGED_ANGLES_Z)
+	SENDENTITY_SHORT(modelindex, MONFL_CHANGED_MODELINDEX)
+	SENDENTITY_BYTE(solid, MONFL_CHANGED_SOLID)
+	SENDENTITY_BYTE(movetype, MONFL_CHANGED_FLAGS)
+	SENDENTITY_INT(flags, MONFL_CHANGED_FLAGS)
+	SENDENTITY_COORD(mins[0], MONFL_CHANGED_SIZE)
+	SENDENTITY_COORD(mins[1], MONFL_CHANGED_SIZE)
+	SENDENTITY_COORD(mins[2], MONFL_CHANGED_SIZE)
+	SENDENTITY_COORD(maxs[0], MONFL_CHANGED_SIZE)
+	SENDENTITY_COORD(maxs[1], MONFL_CHANGED_SIZE)
+	SENDENTITY_COORD(maxs[2], MONFL_CHANGED_SIZE)
+	SENDENTITY_BYTE(frame, MONFL_CHANGED_FRAME)
+	SENDENTITY_BYTE(skin, MONFL_CHANGED_SKIN)
+	SENDENTITY_FLOAT(effects, MONFL_CHANGED_EFFECTS)
+	SENDENTITY_BYTE(m_iBody, MONFL_CHANGED_BODY)
+	SENDENTITY_FLOAT(scale, MONFL_CHANGED_SCALE)
+	SENDENTITY_COORD(velocity[0], MONFL_CHANGED_VELOCITY)
+	SENDENTITY_COORD(velocity[1], MONFL_CHANGED_VELOCITY)
+	SENDENTITY_COORD(velocity[2], MONFL_CHANGED_VELOCITY)
+	SENDENTITY_BYTE(m_iRenderMode, MONFL_CHANGED_RENDERMODE)
+	SENDENTITY_BYTE(m_iRenderFX, MONFL_CHANGED_RENDERMODE)
+	SENDENTITY_ANGLE(m_vecRenderColor[0], MONFL_CHANGED_RENDERCOLOR)
+	SENDENTITY_ANGLE(m_vecRenderColor[1], MONFL_CHANGED_RENDERCOLOR)
+	SENDENTITY_ANGLE(m_vecRenderColor[2], MONFL_CHANGED_RENDERCOLOR)
+	SENDENTITY_ANGLE(m_flRenderAmt, MONFL_CHANGED_RENDERAMT)
 
 	return (1);
 }
@@ -762,83 +773,46 @@ NSTalkMonster::ReceiveEntity
 void
 NSTalkMonster::ReceiveEntity(float flNew, float flChanged)
 {
-	if (flChanged & BASEFL_CHANGED_ORIGIN) {
-		origin[0] = readcoord();
-		origin[1] = readcoord();
-		origin[2] = readcoord();
-	}
-	if (flChanged & BASEFL_CHANGED_ANGLES) {
-		angles[0] = readshort() / (32767 / 360);
-		angles[1] = readshort() / (32767 / 360);
-		angles[2] = readshort() / (32767 / 360);
-	}
-	if (flChanged & BASEFL_CHANGED_MODELINDEX) {
-		setmodelindex(this, readshort());
-	}
-	if (flChanged & BASEFL_CHANGED_SOLID) {
-		solid = readbyte();
-	}
-	if (flChanged & BASEFL_CHANGED_MOVETYPE) {
-		movetype = readbyte();
-
-		if (movetype == MOVETYPE_PHYSICS) {
-			movetype = MOVETYPE_NONE;
-		}
-	}
-	if (flChanged & BASEFL_CHANGED_SIZE) {
-		mins[0] = readcoord();
-		mins[1] = readcoord();
-		mins[2] = readcoord();
-		maxs[0] = readcoord();
-		maxs[1] = readcoord();
-		maxs[2] = readcoord();
-		setsize(this, mins, maxs);
-	}
-	if (flChanged & BASEFL_CHANGED_FRAME) {
-		frame = readbyte();
-		frame1time = readfloat();
-		frame2time = frame1time;
-	}
-	if (flChanged & BASEFL_CHANGED_SKIN) {
-		skin = readbyte() - 128;
-	}
-	if (flChanged & BASEFL_CHANGED_EFFECTS) {
-		effects = readfloat();
-	}
-	if (flChanged & BASEFL_CHANGED_BODY) {
-		m_iBody = readbyte();
-		setcustomskin(this, "", sprintf("geomset 1 %i\n", m_iBody));
-	}
-	if (flChanged & BASEFL_CHANGED_SCALE) {
-		scale = readfloat();
-	}
-	if (flChanged & BASEFL_CHANGED_VELOCITY) {
-		velocity[0] = readfloat();
-		velocity[1] = readfloat();
-		velocity[2] = readfloat();
-	}
-
-	if (flChanged & BASEFL_CHANGED_RENDERMODE) {
-		m_iRenderMode = readbyte();
-		m_iRenderFX = readbyte();
-	}
-	if (flChanged & BASEFL_CHANGED_RENDERCOLOR) {
-		m_vecRenderColor[0] = readfloat();
-		m_vecRenderColor[1] = readfloat();
-		m_vecRenderColor[2] = readfloat();
-	}
-	if (flChanged & BASEFL_CHANGED_RENDERAMT) {
-		m_flRenderAmt = readfloat();
-	}
-
-	if (modelindex) {
-		drawmask = MASK_ENGINE;
-	} else {
-		drawmask = 0;
-	}
+	READENTITY_COORD(origin[0], MONFL_CHANGED_ORIGIN_X)
+	READENTITY_COORD(origin[1], MONFL_CHANGED_ORIGIN_Y)
+	READENTITY_COORD(origin[2], MONFL_CHANGED_ORIGIN_Z)
+	READENTITY_ANGLE(angles[0], MONFL_CHANGED_ANGLES_X)
+	READENTITY_ANGLE(angles[1], MONFL_CHANGED_ANGLES_Y)
+	READENTITY_ANGLE(angles[2], MONFL_CHANGED_ANGLES_Z)
+	READENTITY_SHORT(modelindex, MONFL_CHANGED_MODELINDEX)
+	READENTITY_BYTE(solid, MONFL_CHANGED_SOLID)
+	READENTITY_BYTE(movetype, MONFL_CHANGED_FLAGS)
+	READENTITY_INT(flags, MONFL_CHANGED_FLAGS)
+	READENTITY_COORD(mins[0], MONFL_CHANGED_SIZE)
+	READENTITY_COORD(mins[1], MONFL_CHANGED_SIZE)
+	READENTITY_COORD(mins[2], MONFL_CHANGED_SIZE)
+	READENTITY_COORD(maxs[0], MONFL_CHANGED_SIZE)
+	READENTITY_COORD(maxs[1], MONFL_CHANGED_SIZE)
+	READENTITY_COORD(maxs[2], MONFL_CHANGED_SIZE)
+	READENTITY_BYTE(frame, MONFL_CHANGED_FRAME)
+	READENTITY_BYTE(skin, MONFL_CHANGED_SKIN)
+	READENTITY_FLOAT(effects, MONFL_CHANGED_EFFECTS)
+	READENTITY_BYTE(m_iBody, MONFL_CHANGED_BODY)
+	READENTITY_FLOAT(scale, MONFL_CHANGED_SCALE)
+	READENTITY_COORD(velocity[0], MONFL_CHANGED_VELOCITY)
+	READENTITY_COORD(velocity[1], MONFL_CHANGED_VELOCITY)
+	READENTITY_COORD(velocity[2], MONFL_CHANGED_VELOCITY)
+	READENTITY_BYTE(m_iRenderMode, MONFL_CHANGED_RENDERMODE)
+	READENTITY_BYTE(m_iRenderFX, MONFL_CHANGED_RENDERMODE)
+	READENTITY_ANGLE(m_vecRenderColor[0], MONFL_CHANGED_RENDERCOLOR)
+	READENTITY_ANGLE(m_vecRenderColor[1], MONFL_CHANGED_RENDERCOLOR)
+	READENTITY_ANGLE(m_vecRenderColor[2], MONFL_CHANGED_RENDERCOLOR)
+	READENTITY_ANGLE(m_flRenderAmt, MONFL_CHANGED_RENDERAMT)
 
 	if (scale == 0.0)
 		scale = 1.0f;
+
+	if (flChanged & MONFL_CHANGED_FRAME)
+		frame1time = 0.0f;
+	if (flChanged & MONFL_CHANGED_SIZE)
+		setsize(this, mins * scale, maxs * scale);
+	if (flChanged & MONFL_CHANGED_BODY)
+		setcustomskin(this, "", sprintf("geomset 0 %i\ngeomset 1 %i\n", m_iBody, m_iBody));
 
 	setorigin(this, origin);
 }
@@ -869,17 +843,7 @@ NSTalkMonster_ParseSentence(void)
 		NSLog("^3 NSTalkMonster_ParseSentence ^7: Entity %d not in PVS", e);
 	}
 }
-
 #endif
-
-void
-NSTalkMonster::NSTalkMonster(void)
-{
-#ifdef SERVER
-	m_eFollowing = world;
-#endif
-}
-
 
 #ifdef CLIENT
 void

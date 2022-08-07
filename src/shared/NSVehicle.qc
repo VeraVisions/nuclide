@@ -14,6 +14,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+void
+NSVehicle::NSVehicle(void)
+{
+	m_eDriver = __NULL__;
+}
+
 #ifdef SERVER
 void
 NSVehicle::Save(float handle)
@@ -442,12 +448,6 @@ NSVehicle::PlayerLeave(NSClientPlayer pl)
 	m_eDriver = __NULL__;
 
 	SetSendFlags(VEHFL_CHANGED_DRIVER);
-}
-
-void
-NSVehicle::NSVehicle(void)
-{
-	m_eDriver = __NULL__;
 }
 
 #ifdef CLIENT

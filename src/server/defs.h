@@ -31,17 +31,58 @@
 
 /* helper macros */
 #define EVALUATE_FIELD(fieldname, changedflag) {\
-			if (ATTR_CHANGED(fieldname)) { \
-				SetSendFlags(changedflag); \
-			} \
-			SAVE_STATE(fieldname); \
-           }
+	if (ATTR_CHANGED(fieldname)) {\
+		SetSendFlags(changedflag);\
+	}\
+	SAVE_STATE(fieldname);\
+}
+
 #define EVALUATE_VECTOR(fieldname, id, changedflag) {\
-			if (VEC_CHANGED(fieldname, id)) { \
-				SetSendFlags(changedflag); \
-			} \
-			SAVE_STATE(fieldname);\
-           }
+	if (VEC_CHANGED(fieldname, id)) {\
+		SetSendFlags(changedflag);\
+	}\
+	SAVE_STATE_FIELD(fieldname, id);\
+}
+
+#define SENDENTITY_BYTE(field, changedflag) {\
+	if (flChanged & changedflag)\
+		WriteByte(MSG_ENTITY, field);\
+}
+
+#define SENDENTITY_SHORT(field, changedflag) {\
+	if (flChanged & changedflag)\
+		WriteShort(MSG_ENTITY, field);\
+}
+
+#define SENDENTITY_INT(field, changedflag) {\
+	if (flChanged & changedflag)\
+		WriteInt(MSG_ENTITY, field);\
+}
+
+#define SENDENTITY_FLOAT(field, changedflag) {\
+	if (flChanged & changedflag)\
+		WriteFloat(MSG_ENTITY, field);\
+}
+
+#define SENDENTITY_STRING(field, changedflag) {\
+	if (flChanged & changedflag)\
+		WriteString(MSG_ENTITY, field);\
+}
+
+#define SENDENTITY_COORD(field, changedflag) {\
+	if (flChanged & changedflag)\
+		WriteCoord(MSG_ENTITY, field);\
+}
+
+#define SENDENTITY_ANGLE(field, changedflag) {\
+	if (flChanged & changedflag)\
+		WriteShort(MSG_ENTITY, field * 32767 / 360);\
+}
+
+#define SENDENTITY_ENTITY(field, changedflag) {\
+	if (flChanged & changedflag)\
+		WriteEntity(MSG_ENTITY, field);\
+}
 
 #define AREAPORTAL_CLOSED 0
 #define AREAPORTAL_OPEN 1
