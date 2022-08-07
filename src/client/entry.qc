@@ -85,6 +85,9 @@ CSQC_Init(float apilevel, string enginename, float engineversion)
 
 	/* end msg */
 	print("Client game initialized.\n");
+
+	/* because the engine will do really bad hacks to our models otherwise. e.g. R6284 */
+	cvar_set("r_fullbrightSkins", "0");
 }
 
 /*
