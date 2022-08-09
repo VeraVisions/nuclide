@@ -290,6 +290,7 @@ NSClientPlayer::ReceiveEntity(float new, float flChanged)
 	}
 
 	READENTITY_INT(modelindex, PLAYER_MODELINDEX)
+	READENTITY_BYTE(colormap, PLAYER_MODELINDEX)
 	READENTITY_COORD(origin[0], PLAYER_ORIGIN)
 	READENTITY_COORD(origin[1], PLAYER_ORIGIN)
 	READENTITY_COORD(origin[2], PLAYER_ORIGIN)
@@ -299,7 +300,6 @@ NSClientPlayer::ReceiveEntity(float new, float flChanged)
 	READENTITY_ANGLE(angles[0], PLAYER_ANGLES)
 	READENTITY_ANGLE(angles[1], PLAYER_ANGLES)
 	READENTITY_ANGLE(angles[2], PLAYER_ANGLES)
-	READENTITY_BYTE(colormap, PLAYER_VELOCITY)
 	READENTITY_COORD(velocity[0], PLAYER_VELOCITY)
 	READENTITY_COORD(velocity[1], PLAYER_VELOCITY)
 	READENTITY_COORD(velocity[2], PLAYER_VELOCITY)
@@ -664,6 +664,7 @@ void
 NSClientPlayer::EvaluateEntity(void)
 {
 	EVALUATE_FIELD(modelindex, PLAYER_MODELINDEX)
+	EVALUATE_FIELD(colormap, PLAYER_MODELINDEX)
 	EVALUATE_VECTOR(origin, 0, PLAYER_ORIGIN)
 	EVALUATE_VECTOR(origin, 1, PLAYER_ORIGIN)
 	EVALUATE_VECTOR(origin, 2, PLAYER_ORIGIN)
@@ -673,7 +674,6 @@ NSClientPlayer::EvaluateEntity(void)
 	EVALUATE_VECTOR(angles, 0, PLAYER_ANGLES)
 	EVALUATE_VECTOR(angles, 1, PLAYER_ANGLES)
 	EVALUATE_VECTOR(angles, 2, PLAYER_ANGLES)
-	EVALUATE_FIELD(colormap, PLAYER_VELOCITY)
 	EVALUATE_VECTOR(velocity, 0, PLAYER_VELOCITY)
 	EVALUATE_VECTOR(velocity, 1, PLAYER_VELOCITY)
 	EVALUATE_VECTOR(velocity, 2, PLAYER_VELOCITY)
@@ -721,6 +721,7 @@ float
 NSClientPlayer::SendEntity(entity ePEnt, float flChanged)
 {
 	SENDENTITY_INT(modelindex, PLAYER_MODELINDEX)
+	SENDENTITY_BYTE(colormap, PLAYER_MODELINDEX)
 	SENDENTITY_COORD(origin[0], PLAYER_ORIGIN)
 	SENDENTITY_COORD(origin[1], PLAYER_ORIGIN)
 	SENDENTITY_COORD(origin[2], PLAYER_ORIGIN)
@@ -730,7 +731,6 @@ NSClientPlayer::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_ANGLE(angles[0], PLAYER_ANGLES)
 	SENDENTITY_ANGLE(angles[1], PLAYER_ANGLES)
 	SENDENTITY_ANGLE(angles[2], PLAYER_ANGLES)
-	SENDENTITY_BYTE(colormap, PLAYER_VELOCITY)
 	SENDENTITY_COORD(velocity[0], PLAYER_VELOCITY)
 	SENDENTITY_COORD(velocity[1], PLAYER_VELOCITY)
 	SENDENTITY_COORD(velocity[2], PLAYER_VELOCITY)
@@ -765,6 +765,35 @@ NSClientPlayer::SendEntity(entity ePEnt, float flChanged)
 	SENDENTITY_BYTE(spec_flags, PLAYER_SPECTATE)
 
 	return (1);
+}
+
+float
+NSClientPlayer::OptimiseChangedFlags(entity ePEnt, float flChanged)
+{
+	bool is_spec = false;
+	bool spectarget = false;
+
+	/* figure out if we should optimise this player */
+	if (ePEnt.flags & FL_CLIENT && ePEnt != this) {
+		NSClientSpectator sp = (NSClientSpectator)ePEnt;
+		is_spec = (sp.IsFakeSpectator() || sp.IsRealSpectator());
+		spectarget = (is_spec == true && edict_num(sp.spec_ent) == this);
+	}
+
+	/* if we're a spectator of any type and spectate this player */
+	if (ePEnt != this && spectarget == false) {
+		flChanged &= ~PLAYER_ITEMS;
+		flChanged &= ~PLAYER_HEALTH;
+		flChanged &= ~PLAYER_TIMINGS;
+		flChanged &= ~PLAYER_AMMO1;
+		flChanged &= ~PLAYER_AMMO2;
+		flChanged &= ~PLAYER_AMMO3;
+		flChanged &= ~PLAYER_FLAGS;
+		flChanged &= ~PLAYER_PUNCHANGLE;
+		flChanged &= ~PLAYER_VIEWZOOM;
+		flChanged &= ~PLAYER_SPECTATE;
+	}
+	return flChanged;
 }
 
 /*

@@ -117,6 +117,7 @@ NSClientPlayer:NSClientSpectator
 	virtual void(void) Respawn;
 	virtual void(void) EvaluateEntity;
 	virtual float(entity, float) SendEntity;
+	virtual float(entity, float) OptimiseChangedFlags;
 
 	virtual void(void) Death;
 	virtual void(void) MakePlayer;
@@ -133,7 +134,6 @@ enumflags
 	PLAYER_MODELINDEX,
 	PLAYER_ORIGIN,
 	PLAYER_ANGLES,
-	PLAYER_COLORMAP,
 	PLAYER_VELOCITY,
 	PLAYER_FLAGS,
 	PLAYER_WEAPON,
@@ -146,5 +146,5 @@ enumflags
 	PLAYER_TIMINGS,
 	PLAYER_VEHICLE,
 	PLAYER_SPECTATE,
-	PLAYER_CUSTOMFIELDSTART = PLAYER_SPECTATE
+	PLAYER_CUSTOMFIELDSTART,
 };
