@@ -180,9 +180,9 @@ NSInteractiveSurface::RenderScene(void)
 
 	clearscene();
 
-	setviewprop(VF_RT_DESTCOLOUR, m_strSurfaceMat, 1, m_vecUIRes);
+	setviewprop(VF_RT_DESTCOLOUR, m_strSurfaceMat, (float)1, m_vecUIRes);
 	setviewprop(VF_SIZE, m_vecUIRes);
-	setviewprop(VF_DRAWENGINESBAR, 0);
+	setviewprop(VF_DRAWENGINESBAR, (float)0);
 	setviewprop(VF_ORIGIN, [0,0,0]);
 	setviewprop(VF_ANGLES, [0,0,0]);
 	setviewprop(VF_AFOV, 90.0f);

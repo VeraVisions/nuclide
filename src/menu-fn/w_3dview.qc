@@ -111,7 +111,7 @@ CUI3DView::Draw(void)
 
 	clearscene();
 	setproperty(VF_VIEWPORT, [m_x + g_menuofs[0],m_y + g_menuofs[1]], m_vecSize);
-	setproperty(VF_AFOV, 90);
+	setproperty(VF_AFOV, 90.0f);
 	setproperty(VF_ORIGIN, m_vec3DPos);
 	setproperty(VF_ANGLES, m_vec3DAngles);
 

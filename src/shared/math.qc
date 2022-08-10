@@ -18,7 +18,7 @@
 float
 Math_LerpAngle(float fStart, float fEnd, float fAmount)
 {
-	float shortest_angle = ((((fEnd - fStart) % 360) + 540) % 360) - 180;
+	float shortest_angle = ((((fEnd - fStart) % 360.0f) + 540.0f) % 360.0f) - 180.0f;
 	return shortest_angle * fAmount;
 }
 

@@ -245,16 +245,16 @@ CSQC_UpdateView(float w, float h, float focus)
 
 	/* this is running whenever we're doing 'buildcubemaps' */
 	if (g_iCubeProcess == TRUE) {
-		setproperty(VF_DRAWENGINESBAR, 0);
-		setproperty(VF_DRAWCROSSHAIR, 0);
-		setproperty(VF_DRAWWORLD, 1);
+		setproperty(VF_DRAWENGINESBAR, (float)0);
+		setproperty(VF_DRAWCROSSHAIR, (float)0);
+		setproperty(VF_DRAWWORLD, (float)1);
 		setproperty(VF_MIN, [0,0]);
 		setproperty(VF_VIEWENTITY, player_localentnum);
 		setproperty(VF_ORIGIN, g_vecCubePos);
 		setproperty(VF_ANGLES, [0,0,0]);
 		setproperty(VF_SIZE_X, g_dCubeSize);
 		setproperty(VF_SIZE_Y, g_dCubeSize);
-		setproperty(VF_AFOV, 90);
+		setproperty(VF_AFOV, 90.0f);
 		CSQC_RenderScene();
 	} else {
 		/* now render each player seat */

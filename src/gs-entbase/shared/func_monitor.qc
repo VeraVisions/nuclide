@@ -45,9 +45,9 @@ RenderTarget_Monitor_Update(void)
 	}
 
 	clearscene();
-	setviewprop(VF_RT_DESTCOLOUR, "base", 1, g_iRenderTargetSize);
+	setviewprop(VF_RT_DESTCOLOUR, "base", (float)1, g_iRenderTargetSize);
 	setviewprop(VF_SIZE, g_iRenderTargetSize);
-	setviewprop(VF_DRAWENGINESBAR, 0);
+	setviewprop(VF_DRAWENGINESBAR, (float)0);
 	setviewprop(VF_ORIGIN, g_vecRenderTargetPos);
 	setviewprop(VF_ANGLES, g_vecRenderTargetAngles);
 	setviewprop(VF_AFOV, g_flRenderTargetFOV);

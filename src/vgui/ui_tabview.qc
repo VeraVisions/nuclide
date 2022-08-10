@@ -28,7 +28,7 @@ class CUITabView:CUIWidget
 	virtual void(vector) SetSize;
 	virtual vector() GetSize;
 	virtual void(string) SetTitle;
-	virtual float(float, float, float, float) Input;
+	virtual bool(float, float, float, float) Input;
 };
 
 void CUITabView::CUITabView(void)

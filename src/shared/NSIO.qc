@@ -199,7 +199,7 @@ void
 NSIO::SaveBool(float handle, string key, bool value)
 {
 	//if (value)
-		fputs(handle, sprintf("%S \"%f\"\n", key, value));
+		fputs(handle, sprintf("%S \"%d\"\n", key, value));
 }
 void
 NSIO::SaveFloat(float handle, string key, float value)
@@ -234,7 +234,7 @@ NSIO::SaveEntity(float handle, string key, entity targ)
 		fputs(handle, sprintf("%S \"%f\"\n", key, value));
 }
 
-float
+bool
 NSIO::ReadBool(string strValue)
 {
 	if (strValue && strValue != "")

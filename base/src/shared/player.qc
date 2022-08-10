@@ -17,29 +17,14 @@
 /* all potential SendFlags bits we can possibly send */
 enumflags
 {
-	PLAYER_KEEPALIVE,
-	PLAYER_MODELINDEX,
-	PLAYER_ORIGIN,
-	PLAYER_ORIGIN_Z,
-	PLAYER_ANGLES_X,
-	PLAYER_ANGLES_Y,
-	PLAYER_COLORMAP,
-	PLAYER_VELOCITY,
-	PLAYER_VELOCITY_Z,
-	PLAYER_FLAGS,
-	PLAYER_WEAPON,
-	PLAYER_ITEMS,
-	PLAYER_HEALTH,
-	PLAYER_ARMOR,
-	PLAYER_MOVETYPE,
-	PLAYER_VIEWOFS,
-	PLAYER_UNUSED1,
-	PLAYER_UNUSED2,
-	PLAYER_UNUSED3,
-	PLAYER_UNUSED4,
+	PLAYER_AMMO1 = PLAYER_CUSTOMFIELDSTART,
+	PLAYER_AMMO2,
+	PLAYER_AMMO3,
 	PLAYER_UNUSED5,
 	PLAYER_UNUSED6,
-	PLAYER_UNUSED7
+	PLAYER_UNUSED7,
+	PLAYER_UNUSED7,
+	PLAYER_UNUSED8
 };
 
 class player:NSClientPlayer
@@ -120,13 +105,7 @@ player::SendEntity(entity ePEnt, float fChanged)
 	if (!GetModelindex() && ePEnt != this)
 		return (0);
 
-	/* other players don't need to know about these attributes */
-	if (ePEnt != self) {
-		fChanged &= ~PLAYER_ITEMS;
-		fChanged &= ~PLAYER_HEALTH;
-		fChanged &= ~PLAYER_ARMOR;
-		fChanged &= ~PLAYER_VIEWOFS;
-	}
+	fChanged = OptimiseChangedFlags(ePEnt, fChanged);
 
 	WriteByte(MSG_ENTITY, ENT_PLAYER);
 	WriteFloat(MSG_ENTITY, fChanged);

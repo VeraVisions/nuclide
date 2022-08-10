@@ -188,11 +188,11 @@ noref float input_sequence;
 float
 pseudorandom()
 {
-	float seed = (float)input_sequence % 5;
-	seed += (float)input_sequence % 8;
-	seed += (float)input_sequence % 4;
-	seed += (float)input_sequence % 13;
-	seed += (float)input_sequence % 70;
+	float seed = (float)input_sequence % 5.0f;
+	seed += (float)input_sequence % 8.0f;
+	seed += (float)input_sequence % 4.0f;
+	seed += (float)input_sequence % 13.0f;
+	seed += (float)input_sequence % 70.0f;
 
 	/* like the engine its random(), never return 0, never return 1 */
 	return bound(0.01, (seed) / 100.0f, 0.99f);

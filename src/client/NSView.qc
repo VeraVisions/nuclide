@@ -17,9 +17,9 @@
 void
 NSView::SetupView(void)
 {
-	setproperty(VF_DRAWENGINESBAR, 0);
-	setproperty(VF_DRAWCROSSHAIR, 0);
-	setproperty(VF_DRAWWORLD, 1);
+	setproperty(VF_DRAWENGINESBAR, (float)0);
+	setproperty(VF_DRAWCROSSHAIR, (float)0);
+	setproperty(VF_DRAWWORLD, (float)1);
 	setproperty(VF_ACTIVESEAT, (float)m_iSeat);
 	setproperty(VF_MIN, m_vecPosition);
 	setproperty(VF_SIZE, m_vecSize);

@@ -24,7 +24,7 @@
 int
 Route_RoundDistance(float flDist)
 {
-	float r = fabs(flDist) % 2;
+	float r = fabs(flDist) % 2.0f;
 
 	if (r == 0)
 		return (flDist);
@@ -32,7 +32,7 @@ Route_RoundDistance(float flDist)
 	if (flDist < 0)
 		return -(fabs(flDist) - r);
 	else
-		return (flDist + 2 - r);
+		return (flDist + 2.0f - r);
 }
 
 

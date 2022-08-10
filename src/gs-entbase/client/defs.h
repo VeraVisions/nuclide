@@ -17,7 +17,7 @@
 vector g_vecSunDir;
 
 /* TODO: Find a better way to figure out what's a NSEntity at heart */
-.float isCSQC;
+.bool isCSQC;
 
 /* things we don't have in CSQC normally and oughta be global */
 .string target;
