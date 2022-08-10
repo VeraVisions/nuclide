@@ -26,8 +26,8 @@ typedef enum
 	BOTSKILL_EASY = 1,
 	BOTSKILL_MEDIUM,
 	BOTSKILL_HARD
-} botskill_e;
+} botskill_t;
 
-var botskill_e autocvar_bot_skill = 2;
+var botskill_t autocvar_bot_skill = 2;
 
 var string autocvar_bot_prefix = "";

@@ -28,7 +28,7 @@ typedef enum
 	VIEWMODE_FPS,			/* uses view target position + view offset */
 	VIEWMODE_THIRDPERSON,	/* third person view, fixed */
 	VIEWMODE_SPECTATING		/* spectating, mixed viewmodes inside */
-} viewmode_e;
+} viewmode_t;
 
 class
 NSView
@@ -39,7 +39,7 @@ NSView
 	vector m_vecPosition;
 	vector m_vecSize;
 	float m_flFieldOfView;
-	viewmode_e m_viewmode;
+	viewmode_t m_viewmode;
 
 	vector m_vecLastOrigin;
 
@@ -68,8 +68,8 @@ NSView
 	virtual void(void) UpdateView;
 
 	/* set/get */
-	virtual void(viewmode_e) SetViewMode;
-	virtual viewmode_e(void) GetViewMode;
+	virtual void(viewmode_t) SetViewMode;
+	virtual viewmode_t(void) GetViewMode;
 
 	virtual void(vector) SetViewPosition;
 	virtual void(vector) SetViewSize;

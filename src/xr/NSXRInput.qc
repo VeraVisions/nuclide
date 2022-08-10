@@ -64,7 +64,7 @@ NSXRInput::GetWeapon(void)
 	return m_iWeapon;
 }
 
-xrinput_e
+xrinput_t
 NSXRInput::GetType(void)
 {
 	return m_inputType;
@@ -126,7 +126,7 @@ NSXRInput::IsAvailable(void)
 }
 
 void
-NSXRInput::SetType(xrinput_e type)
+NSXRInput::SetType(xrinput_t type)
 {
 	m_inputType = type;
 }

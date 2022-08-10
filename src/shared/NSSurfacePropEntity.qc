@@ -75,7 +75,7 @@ typedef enum
 	NETFIELD_ANGLE,
 	NETFIELD_ENTITY,
 	NETFIELD_STRING
-} nettype_e;
+} nettype_t;
 
 typedef struct
 {

@@ -118,14 +118,14 @@ typedef enum
 	HINT_WORLD_BLINKING_LIGHT = 1001,
 	HINT_WORLD_HUMAN_BLOOD = 1002,
 	HINT_WORLD_ALIEN_BLOOD = 1003,
-} hinttype_e;
+} hinttype_t;
 
 typedef enum
 {
 	IGNORE_NO,
 	IGNORE_YES,
 	IGNORE_DEFAULT
-} ignorefacing_e;
+} ignorefacing_t;
 
 /* TODO: Make this match NSMonster more */
 typedef enum
@@ -133,21 +133,21 @@ typedef enum
 	AISTATE_IDLE,
 	AISTATE_ALERT,
 	AISTATE_COMBAT
-} aistate_e;
+} aistate_t;
 
 #define HINTSF_ALLOWJUMPUP 65536
 
 class
 info_hint:NSPointTrigger
 {
-	hinttype_e m_hintType;
+	hinttype_t m_hintType;
 	string m_strHintActivity;
 	float m_flNodeFOV;
 	bool m_bStartDisabled;
 	string m_strHintGroup;
-	ignorefacing_e m_ignoreFacing;
-	aistate_e m_minState;
-	aistate_e m_maxState;
+	ignorefacing_t m_ignoreFacing;
+	aistate_t m_minState;
+	aistate_t m_maxState;
 
 	void(void) info_hint;
 

@@ -116,7 +116,7 @@ typedef enum {
 	ACT_FLINCH_RIGHTARM,
 	ACT_FLINCH_LEFTLEG,
 	ACT_FLINCH_RIGHTLEG,
-} monster_activity_e;
+} monster_activity_t;
 
 /* monster flags, these are defined by the level designers */
 typedef enumflags
@@ -134,7 +134,7 @@ typedef enumflags
 	MSF_MULTIPLAYER,
 	MSF_FALLING,
 	MSF_HORDE
-} monsterFlag_e;
+} monsterFlag_t;
 
 /* movement states */
 typedef enum
@@ -146,7 +146,7 @@ typedef enum
 	MONSTER_AIMING,
 	MONSTER_DEAD,
 	MONSTER_GIBBED
-} monsterState_e;
+} monsterState_t;
 
 /* scripted sequence states */
 typedef enum
@@ -155,7 +155,7 @@ typedef enum
 	SEQUENCESTATE_IDLE,
 	SEQUENCESTATE_ACTIVE,
 	SEQUENCESTATE_ENDING
-} sequenceState_e;
+} sequenceState_t;
 
 /* alliance state */
 typedef enum
@@ -164,14 +164,14 @@ typedef enum
 	MAL_ENEMY,  /* unfriendly towards the player */
 	MAL_ALIEN,  /* unfriendly towards anyone but themselves */
 	MAL_ROGUE   /* no allies, not even amongst themselves */
-} allianceState_e;
+} allianceState_t;
 
 typedef enum
 {
 	MOVESTATE_IDLE,
 	MOVESTATE_WALK,
 	MOVESTATE_RUN
-} movementState_e;
+} movementState_t;
 
 /* These numerations involve the m_iTriggerCondition attribute.
  * Basically these conditions are being checked and triggered depending on what
@@ -191,7 +191,7 @@ typedef enum
 	MTRIG_HEARWEAPONS,			/* we hear weapons being fired */
 	MTRIG_SEEPLAYER,			/* we see a player, don't have to be angry at him. */
 	MTRIG_SEEPLAYER_RELAXED,	/* we see a player and we're currently attacking anything */
-} triggerCondition_e;
+} triggerCondition_t;
 
 /* FIXME: I'd like to move this into NSMonster, but our current IsFriend()
  * check is currently only checking on a .takedamage basis. */
@@ -216,7 +216,7 @@ class NSMonster:NSNavAI
 	float m_flSequenceSpeed;
 	vector m_vecSequenceAngle;
 	int m_iSequenceFlags;
-	movementState_e m_iMoveState;
+	movementState_t m_iMoveState;
 
 	int m_iTriggerCondition;
 	string m_strTriggerTarget;
@@ -227,8 +227,8 @@ class NSMonster:NSNavAI
 	/* attack/alliance system */
 	entity m_eEnemy;
 	float m_flAttackThink;
-	monsterState_e m_iMState;
-	monsterState_e m_iOldMState;
+	monsterState_t m_iMState;
+	monsterState_t m_iOldMState;
 	vector m_vecLKPos; /* last-known pos */
 
 #endif
@@ -299,9 +299,9 @@ class NSMonster:NSNavAI
 	virtual bool(void) InAnimation;
 
 	/* states */
-	virtual void(monsterState_e, monsterState_e) StateChanged;
-	virtual void(monsterState_e) SetState;
-	virtual monsterState_e(void) GetState;
+	virtual void(monsterState_t, monsterState_t) StateChanged;
+	virtual void(monsterState_t) SetState;
+	virtual monsterState_t(void) GetState;
 
 	/* TriggerTarget/Condition */
 	virtual int(void) GetTriggerCondition;

@@ -28,7 +28,7 @@ typedef enum
 	WATERLEVEL_KNEE,
 	WATERLEVEL_CHEST,
 	WATERLEVEL_SUBMERGED
-} waterlevel_e;
+} waterlevel_t;
 
 #ifdef SERVER
 void PMove_StartFrame(void);

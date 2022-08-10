@@ -628,14 +628,14 @@ NSMonster::IsAlive(void)
 }
 
 void
-NSMonster::StateChanged(monsterState_e oldState, monsterState_e newState)
+NSMonster::StateChanged(monsterState_t oldState, monsterState_t newState)
 {
 	NSLog("^2%s::^3StateChanged^7: state changed from %d to %d", \
 		classname, oldState, newState);
 }
 
 void
-NSMonster::SetState(monsterState_e newState)
+NSMonster::SetState(monsterState_t newState)
 {
 	if (newState == m_iMState)
 		return;
@@ -645,7 +645,7 @@ NSMonster::SetState(monsterState_e newState)
 	StateChanged(m_iOldMState, m_iMState);
 }
 
-monsterState_e
+monsterState_t
 NSMonster::GetState(void)
 {
 	return m_iMState;

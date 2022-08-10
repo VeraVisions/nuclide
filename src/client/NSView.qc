@@ -59,6 +59,10 @@ NSView::RenderView(void)
 void
 NSView::StairSmooth(void)
 {
+	/* don't run this on anything going up or down... */
+	if (fabs(m_viewTarget.groundentity.velocity[2]))
+		return;
+
 	/* handle stair stepping */
 	if (GetViewMode() == VIEWMODE_FPS) {
 		vector endpos = origin;
@@ -134,12 +138,12 @@ NSView::SetClientAngle(vector new_angle)
 }
 
 void
-NSView::SetViewMode(viewmode_e new_mode)
+NSView::SetViewMode(viewmode_t new_mode)
 {
 	m_viewmode = new_mode;
 }
 
-viewmode_e
+viewmode_t
 NSView::GetViewMode(void)
 {
 	return m_viewmode;

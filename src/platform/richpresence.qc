@@ -22,7 +22,7 @@ typedef enum
 {
 	RICHPRES_STATUS,
 	RICHPRES_CONNECT
-} richpresence_e;
+} richpresence_t;
 
 string g_richpres[RICHPRESENCE_KEYS];
 var bool g_richpresence_set = false;

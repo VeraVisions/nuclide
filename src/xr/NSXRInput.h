@@ -20,7 +20,7 @@ typedef enum
 	XR_INPUT_HEAD,
 	XR_INPUT_LEFT,
 	XR_INPUT_RIGHT
-} xrinput_e;
+} xrinput_t;
 
 #define XR_STATUS_ORG	(1u<<0)
 #define XR_STATUS_ANG	(1u<<1)
@@ -38,10 +38,10 @@ NSXRInput
 	unsigned int m_iStatus;
 	unsigned int m_iWeapon;
 
-	xrinput_e m_inputType;
+	xrinput_t m_inputType;
 
 	void(void) NSXRInput;
-	virtual void(xrinput_e) SetType;
+	virtual void(xrinput_t) SetType;
 	virtual void(NSXRSpace) SetParentSpace;
 
 	virtual vector(void) GetOrigin;
@@ -50,7 +50,7 @@ NSXRInput
 	virtual vector(void) GetAngularVelocity;
 	virtual unsigned int(void) GetStatus;
 	virtual unsigned int(void) GetWeapon;
-	virtual xrinput_e (void) GetType;
+	virtual xrinput_t(void) GetType;
 
 	virtual bool(void) IsAvailable;
 	virtual void(void) InputFrame;
